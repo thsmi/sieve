@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://sieve/locale/locale.dtd">
+
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        buttons="accept"
+				onload="onDialogLoad(this);"
+				ondialogaccept="return onDialogAccept(this);"
+        persist="screenX screenY"
+        style="width: 45em; height: 27em;"
+        title="&options.title;">
+
+  <script type="application/x-javascript" src="chrome://sieve/content/options/SieveAccountOptions.js"/>
+  <vbox>
+    <hbox>
+      <groupbox flex="1">
+        <caption label="&options.login;" />
+        <radiogroup id="rgLogin" onselect="onLoginSelect(this);">
+          <radio id="rbNoAuth" label="&options.login.noAuth;"/>
+          <radio id="rbImapAuth" label="&options.login.imapAuth;"/>
+          <radio id="rbCustomAuth" label="&options.login.customAuth;"/>
+        </radiogroup> 
+<hbox >     
+<spacer width="21px" />
+        <grid >
+          <colums>
+            <column/>
+            <column/>
+          </colums>
+          <rows>
+            <row align="center">
+              <label value="&options.login.username;" accesskey="&options.login.username.key;"
+          			control="txtUsername"/>
+              <textbox id="txtUsername" size="20" onchange="onLoginChange(this)"/>
+            </row>
+            <row align="center">
+              <label value="&options.login.password;" accesskey="&options.login.password.key;" 
+          			control="txtPassword"/>
+              <textbox id="txtPassword" type="password" size="20" onchange="onLoginChange(this)" onfocus="onPasswordFocus(this)"/>
+            </row>
+            <row>
+              <spacer />              
+              <checkbox id="cbxPassword" oncommand="onPasswordCommand(this)" accesskey="&options.login.password.remember.key;" 
+            		label="&options.login.password.remember;"/>
+            </row>            
+          </rows>
+        </grid>
+       </hbox>
+      </groupbox>
+            
+      <groupbox flex="1">
+        <caption>          
+          <checkbox id="cbxHost" label="&options.host;" accesskey="&options.host.key;" 
+          		oncommand="onHostCommand(this)"/>
+        </caption>
+        <grid>
+        <colums>
+          <column/>
+          <column/>
+        </colums>
+        <rows>
+          <row align="center">
+            <label value="&options.host.hostname;" accesskey="&options.host.hostname.key;"
+            		control="txtHostname" />
+            <textbox id="txtHostname" size="25" onchange="onHostnameChange(this)"/>
+          </row>
+          <row align="center">
+            <label  value="&options.host.port;" accesskey="&options.host.port.key;"
+            		control="txtPort" />
+            <hbox align="center">
+            <textbox id="txtPort" size="5" onchange="onPortChange(this)"/>
+            <label value="&options.host.port.default;" />
+            </hbox>
+          </row>
+          <row>
+            <spacer />
+            <checkbox id="cbxTLS" oncommand="onTLSCommand(this)" label="&options.host.tls;"
+            		accesskey="&options.host.tls.key;" />
+         </row>
+</rows>
+</grid>
+</groupbox>
+</hbox>
+
+   <groupbox>
+     <caption label="&options.misc;" />
+     <grid>
+       <colums>
+         <column/>
+         <column/>
+         <column/>
+       </colums>
+       <rows>
+         <row align="center">
+           <checkbox id="cbxKeepAlive" label="&options.misc.keepalive;"
+           		accesskey="&options.misc.keepalive.key;" oncommand="onKeepAliveCommand(this)" />
+           <textbox id="txtKeepAlive" onchange="onKeepAliveChange(this)" size="6"/>
+           <label value="ms" />
+         </row>
+         <row align="center">
+           <checkbox id="cbxCompile" label="&options.misc.compile;"
+           		accesskey="&options.misc.compile.key;" oncommand="onCompileCommand(this)" />
+           <textbox id="txtCompile" onchange="onCompileChange(this)" size="6"/>
+           <label value="ms" />
+          </row>
+        </rows>
+      </grid>
+    </groupbox>
+  </vbox>
+</dialog>

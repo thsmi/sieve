@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE overlay SYSTEM "chrome://sieve/locale/locale.dtd">
+
+<overlay id="sieveOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<menupopup id="taskPopup">
+  <menuitem id="mnuSieveOptionsDialog" insertafter="applyFilters" label="&menu.options;"
+  		oncommand='window.open("chrome://sieve/content/options/SieveOptions.xul", "aboutMyExtension", "chrome,centerscreen");' 
+  		accesskey="&menu.options.key;" />
+  <menuitem id="mnuSieveListDialog" insertafter="applyFilters" label="&menu.filters;"
+  		oncommand='window.open("chrome://sieve/content/editor/SieveFilterExplorer.xul", "aboutMyExtension", "chrome,centerscreen");' 
+  		accesskey="&menu.filters.key;" />  		
+  <menuseparator id="mnuSieveSeparator" insertafter="applyFilters"/>  		
+</menupopup>
+
+</overlay>

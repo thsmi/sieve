@@ -1,0 +1,5 @@
+content		sieve   chrome/chromeFiles/content/
+locale		sieve	en-US	chrome/chromeFiles/locale/en-US/
+
+overlay		chrome://global/content/globalOverlay.xul chrome://sieve/content/SieveOverlay.xul
+

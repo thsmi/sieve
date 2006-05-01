@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://sieve/locale/locale.dtd">
+
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        onload="onWindowLoad();"
+        onclose="return onWindowClose();"
+        persist="screenX screenY"
+        style="width: 45em; height: 31em;"
+        title="&list.title;">
+
+  <script type="application/x-javascript" src="chrome://sieve/content/editor/SieveFilterExplorer.js"/>
+
+  <hbox align="center">
+    <label value="&list.accounts;"  control="serverMenu"/>
+      <menulist id="menuImapAccounts" oncommand="onSelectAccount(this.value);">
+	  </menulist> 
+      <spacer flex="1"/> 
+      <vbox>
+        <button label="&list.log;" disabled="true" oncommand="onLog();"/>
+      </vbox> 
+  </hbox>
+
+  <grid flex="1">
+    <columns>
+      <column flex="1"/>
+      <column/>
+    </columns>
+    <rows>
+      <row>
+        <separator class="thin"/>
+      </row>
+      <row>
+        <description>&list.tree;</description>
+      </row>
+      
+      
+      <row flex="1">
+        <vbox>
+          <tree id="treeImapRules" flex="1" hidecolumnpicker="true"  seltype="single" >
+            <treecols>
+			  <treecol id="namecol" label="&list.tree.name;" flex="1"/>
+   			  <treecol id="active" label="&list.tree.active;" cycler="true"/> 			  
+            </treecols>
+            <treechildren/>
+          </tree>
+     </vbox>
+
+        <vbox>
+          <button id="newButton" label="&list.new;" 
+                  oncommand="onNewClick();"/>
+          <button id="editButton" label="&list.edit;"
+                  oncommand="onEditClick();"/>
+          <button id="deleteButton" label="&list.delete;"
+                  oncommand="onDeleteClick();"/>
+          <spacer flex="1"/>
+          <button id="capabilites" label="&list.capability;" 
+                  oncommand="onCapabilitesClick();"/>
+ <!--         <button id="settings" label="Settings" 
+                  oncommand="onSettingsClick();"/>-->
+          <spacer flex="1"/>
+        </vbox>
+      </row>
+    </rows>
+  </grid>
+  <label id="logger" value="" />
+
+<!--  <separator class="thin"/>
+  <statusbar class="chromeclass-status" id="status-bar">
+    <statusbarpanel id="statusText" flex="1" crop="right"/>
+    <statusbarpanel class="statusbarpanel-progress" collapsed="true" id="statusbar-progresspanel">
+      <progressmeter class="progressmeter-statusbar" id="statusbar-icon" mode="normal" value="0"/>
+    </statusbarpanel>
+  </statusbar> -->
+
+</window>
+

@@ -1,0 +1,80 @@
+<!-- Options Dialog -->
+<!ENTITY options.title "Sieve Options">
+
+<!ENTITY options.tree.active "Active">
+<!ENTITY options.tree.name "Name">
+
+<!ENTITY options.login "Authentification">
+<!ENTITY options.login.key "A">
+<!ENTITY options.login.noAuth "No Authentification">
+<!ENTITY options.login.imapAuth "Use IMAP settings">
+<!ENTITY options.login.customAuth "Username and Password">
+<!ENTITY options.login.username "Username">
+<!ENTITY options.login.username.key "u">
+<!ENTITY options.login.password "Password">
+<!ENTITY options.login.password.key "p">
+<!ENTITY options.login.password.remember "Remember Password">
+<!ENTITY options.login.password.remember.key "R">
+
+<!ENTITY options.host "ignore IMAP Settings">
+<!ENTITY options.host.key "I">
+<!ENTITY options.host.hostname "Hostname">
+<!ENTITY options.host.hostname.key "h">
+<!ENTITY options.host.port "Port">
+<!ENTITY options.host.port.key "o">
+<!ENTITY options.host.port.default "Default: 2000">
+<!ENTITY options.host.tls.key "t">
+<!ENTITY options.host.tls "use TLS, if avaiable">
+
+<!ENTITY options.misc "General Settings">
+<!ENTITY options.misc.keepalive "Send 'keep alive' every">
+<!ENTITY options.misc.keepalive.key "k">
+<!ENTITY options.misc.compile "Compile on server every">
+<!ENTITY options.misc.compile.key "c">
+
+<!ENTITY options.info.servername "Server Name:">
+<!ENTITY options.info.port "Port:">
+<!ENTITY options.info.secure "Secure Connection:">
+<!ENTITY options.info.username "User Name:">
+<!ENTITY options.info.auth "Authentification:">
+
+
+<!-- Menu entries -->
+<!ENTITY menu.filters "Sieve Message Filters...">
+<!ENTITY menu.filters.key "M">
+<!ENTITY menu.options "Sieve Filter Settings...">
+<!ENTITY menu.options.key "S">
+
+
+<!-- Locales for the List Filter Dialog -->
+<!ENTITY list.title "Sieve Filters">
+
+<!ENTITY list.accounts "Filters for:">
+
+<!ENTITY list.log "Log">
+
+<!ENTITY list.tree "Serverside Sieve mailfilters">
+<!ENTITY list.tree.active "Active">
+<!ENTITY list.tree.name "Name">
+
+<!ENTITY list.new "New">
+<!ENTITY list.edit "Edit">
+<!ENTITY list.delete "Delete">
+<!ENTITY list.capability "Capability">
+
+
+<!-- Locales for the Edit Filter Dialog -->
+<!ENTITY edit.title "Edit Sievefilter">
+
+<!ENTITY edit.scriptname "Scriptname:">
+<!ENTITY edit.script "Script:">
+<!ENTITY edit.errors "Compile Errors:">
+
+<!ENTITY edit.cancel "Cancel">
+<!ENTITY edit.ok "Ok">
+
+<!-- Locales for the Capabitity dialog -->
+<!ENTITY capability.title "Sieve Capabilities">
+<!ENTITY capability.implementation "Server Version">
+<!ENTITY capability.sasl "SASL">
+<!ENTITY capability.extensions "Sieve Extensions">

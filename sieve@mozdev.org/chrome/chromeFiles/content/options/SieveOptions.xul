@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<?xml-stylesheet href="chrome://messenger/skin/accountManage.css" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://sieve/locale/locale.dtd">
+
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        onload="onWindowLoad();"
+        persist="screenX screenY"
+        style="width: 45em; height: 25em;"
+        title="&list.title;">
+        
+  <script type="application/x-javascript" src="chrome://sieve/content/options/SieveOptions.js"/> 
+
+  <grid flex="1">
+    <columns>
+      <column flex="1"/>
+      <column/>
+    </columns>
+    <rows>
+      <row>
+        <description>Configure the Sieve Filters for your IMAP Accounts</description>
+      </row>            
+      <row flex="1">
+        <vbox>
+  				<tree  id="treeAccounts" flex="1" hidecolumnpicker="true" seltype="single" onselect="onTreeSelect(this)">
+				    <treecols>
+				      <treecol id="active" label="&options.tree.active;" cycler="true" />      
+				      <treecol id="namecol" label="&options.tree.name;" flex="1" />
+				    </treecols>
+					  <treechildren />
+				  </tree>  
+		    </vbox>
+
+        <vbox>
+          <button id="btnEdit" label="Edit"
+                  oncommand="onEditClick();"/>
+          <button id="btnEnable" label="Enable"
+                  oncommand="onEnableClick(this);"/>
+<!--          <spacer flex="1"/>
+          <button id="btnHelp" label="Help" 
+                  oncommand="onHelpClick();"/>         
+          <spacer flex="1"/> -->
+        </vbox>
+      </row>
+    </rows>
+  </grid>
+  <separator/>
+  <hbox id="smtpServerInfoBox">
+    <stack flex="1" class="inset">
+      <spacer id="backgroundBox"/>
+      <grid>
+        <columns>
+          <column/>
+          <column flex="1"/>
+        </columns>
+        <rows>
+          <row align="center">
+            <hbox pack="end"><label id="lblHost" value="&options.info.servername;"/></hbox>
+            <textbox id="txtHostname" class="plain"/>
+          </row>
+          <row align="center">
+            <hbox pack="end"><label id="lblPort" value="&options.info.port;"/></hbox>
+            <textbox id="txtPort" class="plain"/>
+          </row>
+          <row align="center">
+            <hbox pack="end"><label id="lblAuth" value="&options.info.auth;"/></hbox>
+            <textbox id="txtAuth" class="plain"/>
+          </row>          
+          <row align="center">
+            <hbox pack="end"><label id="lblUserName" value="&options.info.username;"/></hbox>
+            <textbox id="txtUserName" class="plain"/>
+          </row>
+          <row align="center">
+            <hbox pack="end"><label id="lblTLS" value="&options.info.secure;"/></hbox>
+            <textbox id="txtTLS" class="plain"/>
+          </row>
+        </rows>
+      </grid>
+    </stack>
+  </hbox>
+  <label id="logger" value="" />
+</window>

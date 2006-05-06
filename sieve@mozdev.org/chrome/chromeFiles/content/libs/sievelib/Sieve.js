@@ -1,10 +1,18 @@
+
+var jsLibLoaded = false
+
 function Sieve(host, port) 
 {
   var jsLoader = Components
 										.classes["@mozilla.org/moz/jssubscript-loader;1"]
 										.getService(Components.interfaces.mozIJSSubScriptLoader);
-  jsLoader
-    .loadSubScript("chrome://sieve/content/libs/jslib/jslib.js");
+										
+	if (jsLibLoaded == false)
+	{
+	  jsLoader
+  	  .loadSubScript("chrome://sieve/content/libs/jslib/jslib.js");
+  	  jsLibLoaded = true;
+	}
   include("chrome://sieve/content/libs/jslib/network/socket.js");
   
   this.host = host;

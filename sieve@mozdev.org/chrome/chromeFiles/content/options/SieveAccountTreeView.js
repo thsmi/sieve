@@ -1,6 +1,6 @@
 // This is our custom view, based on the treeview interface
 
-function SievePrefTreeView()
+function SievePrefTreeView(listener)
 {
 	// Load all the Libraries we need...
 	var jsLoader = Components
@@ -12,6 +12,7 @@ function SievePrefTreeView()
   this.sieveAccounts = new SieveAccounts();    
   this.accounts = this.sieveAccounts.getAccounts();
   this.rowCount = this.accounts.length;
+  this.listener = listener;
 }
 
 SievePrefTreeView.prototype.update
@@ -81,6 +82,8 @@ SievePrefTreeView.prototype.cycleCell
     = function(row, col)
 {
     this.accounts[row].setEnabled( ! this.accounts[row].isEnabled())
+		this.listener.onCycleCell(this)
+		this.selection.select(row);
 }
 
 SievePrefTreeView.prototype.getAccount

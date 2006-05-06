@@ -91,4 +91,5 @@ SieveTreeView.prototype.cycleCell
     = function(row, col)
 {    
     this.listener.onCycleCell(row,col,this.rules[row][0],this.rules[row][1]);
+ 		this.selection.select(row);
 }

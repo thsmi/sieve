@@ -13,12 +13,17 @@ function onWindowLoad()
     
 	// now set our custom TreeView Renderer...
 	var tree = document.getElementById('treeAccounts');	
-	sieveAccountTreeView = new SievePrefTreeView();
+	sieveAccountTreeView = new SievePrefTreeView(this);
 	tree.view = sieveAccountTreeView;
 		
   // ... and make sure that an entry is selected.
 	if ((tree.currentIndex == -1) && (tree.view.rowCount > 0))
 	    tree.view.selection.select(0);
+}
+
+function onCycleCell(sender)
+{
+		onTreeSelect(document.getElementById('treeAccounts'));
 }
 
 function onTreeSelect(sender)

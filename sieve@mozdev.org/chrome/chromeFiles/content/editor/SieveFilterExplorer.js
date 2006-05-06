@@ -70,9 +70,17 @@ var event =
 	},
 	onPlainLoginResponse: function(response)
 	{
+		// enable the disabled controls....
+	  document.getElementById('newButton').removeAttribute('disabled');
+	  document.getElementById('editButton').removeAttribute('disabled');
+	  document.getElementById('deleteButton').removeAttribute('disabled');
+	  document.getElementById('capabilites').removeAttribute('disabled');
+	  document.getElementById('treeImapRules').removeAttribute('disabled');
+		postStatus("Connected");
+		
 		// wenn wir verbunden sind dann die vorhanden scripte ausgeben
 		sieve.addRequest(new SieveListScriptRequest(event));
-	},
+	},	
 	
 	onLogoutResponse: function(response)
 	{
@@ -248,17 +256,27 @@ function onSelectAccount()
 			if ((sieve != null) && (sieve.isAlive()))
 				sieve.disconnect();
 
-            // always clear the TreeView
-            var tree = document.getElementById('treeImapRules');
-    		tree.currentIndex = -1;
-        	sieveTreeView.update(new Array());
-		    tree.view = sieveTreeView;
+      // always clear the TreeView
+      var tree = document.getElementById('treeImapRules');
+   		tree.currentIndex = -1;
+     	sieveTreeView.update(new Array());
+	    tree.view = sieveTreeView;
 
-            var account = getSelectedAccount();
+      var account = getSelectedAccount();
 		
+			// Disable and cancel if account is not enabled
 			if (account.isEnabled() == false)
-			    return;
-			    
+			{
+				document.getElementById('newButton').setAttribute('disabled','true');
+				document.getElementById('editButton').setAttribute('disabled','true');
+				document.getElementById('deleteButton').setAttribute('disabled','true');
+				document.getElementById('capabilites').setAttribute('disabled','true');
+				document.getElementById('treeImapRules').setAttribute('disabled','true');
+				postStatus("Not connected - go to Tool -> Sieve Settings to activate this account")
+				return;
+			}			
+
+			postStatus("Connecting...");
 			if (account.getSettings().isKeepAlive())
 			    keepAliveInterval = setInterval("onKeepAlive()",account.getSettings().getKeepAliveInterval());
 
@@ -341,4 +359,9 @@ function onCapabilitesClick()
 function onSettingsClick()
 {
 	window.openDialog("chrome://sieve/content/options/SieveOptions.xul", "FilterEditor", "chrome,modal,titlebar,resizable,centerscreen");
+}
+
+function postStatus(progress)
+{
+	document.getElementById('logger').value = progress;
 }

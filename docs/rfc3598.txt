@@ -1,0 +1,339 @@
+
+
+
+
+
+
+Network Working Group                                       K. Murchison
+Request for Comments: 3598                            Oceana Matrix Ltd.
+Category: Standards Track                                 September 2003
+
+
+             Sieve Email Filtering -- Subaddress Extension
+
+Status of this Memo
+
+   This document specifies an Internet standards track protocol for the
+   Internet community, and requests discussion and suggestions for
+   improvements.  Please refer to the current edition of the "Internet
+   Official Protocol Standards" (STD 1) for the standardization state
+   and status of this protocol.  Distribution of this memo is unlimited.
+
+Copyright Notice
+
+   Copyright (C) The Internet Society (2003).  All Rights Reserved.
+
+Abstract
+
+   On email systems that allow for "subaddressing" or "detailed
+   addressing" (e.g., "ken+sieve@example.org"), it is sometimes
+   desirable to make comparisons against these sub-parts of addresses.
+   This document defines an extension to the Sieve mail filtering
+   language that allows users to compare against the user and detail
+   parts of an address.
+
+Table of Contents
+
+   1.  Introduction. . . . . . . . . . . . . . . . . . . . . . . . .   2
+   2.  Capability Identifier . . . . . . . . . . . . . . . . . . . .   2
+   3.  Subaddress Comparisons. . . . . . . . . . . . . . . . . . . .   2
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   4
+   5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   4
+   6.  Normative References. . . . . . . . . . . . . . . . . . . . .   4
+   7.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .   5
+   8.  Intellectual Property Statement . . . . . . . . . . . . . . .   5
+   9.  Author's Address. . . . . . . . . . . . . . . . . . . . . . .   5
+   10. Full Copyright Statement. . . . . . . . . . . . . . . . . . .   6
+
+
+
+
+
+
+
+
+
+
+
+Murchison                   Standards Track                     [Page 1]
+
+RFC 3598                 Sieve Email Filtering            September 2003
+
+
+1.  Introduction
+
+   Subaddressing is the practice of appending some "detail" information
+   to the local-part of an [IMAIL] address to indicate that the message
+   should be delivered to the mailbox specified by the "detail"
+   information.  The "detail" information is prefixed with a special
+   "separator character" (typically "+") which forms the boundary
+   between the "user" (original local-part) and the "detail" sub-parts
+   of the address, much like the "@" character forms the boundary
+   between the local-part and domain.
+
+   Typical uses of subaddressing might be:
+
+   -  A message addressed to "ken+sieve@example.org" is delivered into a
+      mailbox called "sieve" belonging to the user "ken".
+
+   -  A message addressed to "5551212#123@example.org" is delivered to
+      the voice mailbox number "123" at phone number "5551212".
+
+   This document describes an extension to the Sieve language defined by
+   [SIEVE] for comparing against the "user" and "detail" sub-parts of an
+   address.
+
+   Conventions for notations are as in [SIEVE] section 1.1, including
+   use of [KEYWORDS].
+
+2.  Capability Identifier
+
+   The capability string associated with the extension defined in this
+   document is "subaddress".
+
+3.  Subaddress Comparisons
+
+   Commands that act exclusively on addresses may take the optional
+   tagged arguments ":user"  and ":detail" to specify what sub-part of
+   the local-part of the address will be acted upon.
+
+   NOTE: In most cases, the envelope "to" address is the preferred
+   address to examine for subaddress information when the desire is to
+   sort messages based on how they were addressed so as to get to a
+   specific recipient.  The envelope address is, after all, the reason a
+   given message is being processed by a given sieve script for a given
+   user.  This is particularly true when mailing lists, aliases, and
+   "virtual domains" are involved since the envelope may be the only
+   source of detail information for the specific recipient.
+
+
+
+
+
+
+Murchison                   Standards Track                     [Page 2]
+
+RFC 3598                 Sieve Email Filtering            September 2003
+
+
+   The ":user" argument specifies that sub-part of the local-part which
+   lies to the left of the separator character (e.g., "ken" in
+   "ken+sieve@example.org").  If no separator character exists, then
+   ":user" specifies the entire left-side of the address (equivalent to
+   ":localpart").
+
+   The ":detail" argument specifies that sub-part of the local-part
+   which lies to the right of the separator character (e.g., "sieve" in
+   "ken+sieve@example.org").  If no separator character exists, the test
+   evaluates to false.  If nothing lies to the right of the separator
+   character, then ":detail" ":is" the null key ("").  Otherwise, the
+   ":detail" sub-part contains the null key.
+
+   Implementations MUST make sure that the separator character matches
+   that which is used and/or allowed by the encompassing mail system,
+   otherwise unexpected results might occur.  Implementations SHOULD
+   allow the separator character to be configurable so that they may be
+   used with a variety of mail systems.  Note that the mechanisms used
+   to define and/or query the separator character used by the mail
+   system are outside the scope of this document.
+
+   The ":user" and ":detail" address parts are subject to the same rules
+   and restrictions as the standard address parts defined in [SIEVE].
+   For convenience, the "ADDRESS-PART" syntax element defined in [SIEVE]
+   is augmented here as follows:
+
+      ADDRESS-PART  =/  ":user" / ":detail"
+
+   A diagram showing the ADDRESS-PARTs of a email address utilizing a
+   separator character of '+' is shown below:
+
+       :user "+" :detail  "@" :domain
+      `-----------------'
+          :local-part
+
+   Example:
+
+   require "subaddress";
+
+   # File mailing list messages (subscribed as "ken+mta-filters").
+   if envelope :detail "to" "mta-filters" {
+     fileinto "inbox.ietf-mta-filters";
+   }
+
+   # If a message is not to me (ignoring +detail), junk it.
+   if not allof (address :user ["to", "cc", "bcc"] "ken",
+        address :domain ["to", "cc", "bcc"] "example.org") {
+     discard;
+
+
+
+Murchison                   Standards Track                     [Page 3]
+
+RFC 3598                 Sieve Email Filtering            September 2003
+
+
+   }
+
+   # Redirect all mail sent to +foo.
+   if envelope :detail ["to", "cc", "bcc"] "foo" {
+     redirect "ken@example.edu";
+   }
+
+4.  Security Considerations
+
+   Security considerations are discussed in [SIEVE].  It is believed
+   that this extension does not introduce any additional security
+   concerns.
+
+5.  IANA Considerations
+
+   The following template specifies the IANA registration of the Sieve
+   extension specified in this document:
+
+   To: iana@iana.org
+   Subject: Registration of new Sieve extension
+
+   Capability name: subaddress
+   Capability keyword: subaddress
+   Capability arguments: N/A
+   Standards Track/RFC 3598
+   Person and email address to contact for further information:
+
+   Kenneth Murchison
+   ken@oceana.com
+
+   This information has been added to the list of sieve extensions given
+   on http://www.iana.org/assignments/sieve-extensions.
+
+6.  Normative References
+
+   [IMAIL]    Resnick, P., Ed., "Internet Message Format", RFC 2822,
+              April 2001.
+
+   [KEYWORDS] Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119, March 1997.
+
+   [SIEVE]    Showalter, T., "Sieve: A Mail Filtering Language", RFC
+              3028, January 2001.
+
+
+
+
+
+
+
+
+Murchison                   Standards Track                     [Page 4]
+
+RFC 3598                 Sieve Email Filtering            September 2003
+
+
+7.  Acknowledgments
+
+   Thanks to Tim Showalter, Alexey Melnikov, Michael Salmon, Randall
+   Gellens, Philip Guenther and Jutta Degener for their help with this
+   document.
+
+8.  Intellectual Property Statement
+
+   The IETF takes no position regarding the validity or scope of any
+   intellectual property or other rights that might be claimed to
+   pertain to the implementation or use of the technology described in
+   this document or the extent to which any license under such rights
+   might or might not be available; neither does it represent that it
+   has made any effort to identify any such rights.  Information on the
+   IETF's procedures with respect to rights in standards-track and
+   standards-related documentation can be found in BCP-11.  Copies of
+   claims of rights made available for publication and any assurances of
+   licenses to be made available, or the result of an attempt made to
+   obtain a general license or permission for the use of such
+   proprietary rights by implementors or users of this specification can
+   be obtained from the IETF Secretariat.
+
+   The IETF invites any interested party to bring to its attention any
+   copyrights, patents or patent applications, or other proprietary
+   rights which may cover technology that may be required to practice
+   this standard.  Please address the information to the IETF Executive
+   Director.
+
+9.  Author's Address
+
+   Kenneth Murchison
+   Oceana Matrix Ltd.
+   21 Princeton Place
+   Orchard Park, NY 14127
+
+   EMail: ken@oceana.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Murchison                   Standards Track                     [Page 5]
+
+RFC 3598                 Sieve Email Filtering            September 2003
+
+
+10.  Full Copyright Statement
+
+   Copyright (C) The Internet Society (2003).  All Rights Reserved.
+
+   This document and translations of it may be copied and furnished to
+   others, and derivative works that comment on or otherwise explain it
+   or assist in its implementation may be prepared, copied, published
+   and distributed, in whole or in part, without restriction of any
+   kind, provided that the above copyright notice and this paragraph are
+   included on all such copies and derivative works.  However, this
+   document itself may not be modified in any way, such as by removing
+   the copyright notice or references to the Internet Society or other
+   Internet organizations, except as needed for the purpose of
+   developing Internet standards in which case the procedures for
+   copyrights defined in the Internet Standards process must be
+   followed, or as required to translate it into languages other than
+   English.
+
+   The limited permissions granted above are perpetual and will not be
+   revoked by the Internet Society or its successors or assignees.
+
+   This document and the information contained herein is provided on an
+   "AS IS" basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
+   TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
+   BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION
+   HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
+   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+
+Acknowledgement
+
+   Funding for the RFC Editor function is currently provided by the
+   Internet Society.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Murchison                   Standards Track                     [Page 6]
+

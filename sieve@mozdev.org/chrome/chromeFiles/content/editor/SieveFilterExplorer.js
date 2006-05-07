@@ -9,42 +9,52 @@ var event =
 {	
 	onInitResponse: function(response)
 	{
-	    if (response.hasError())
-	    {
-	        alert("ERROR ON INIT");
-	        return
-	    }
 
     	var login = getSelectedAccount().getLogin();
     	
     	// is the Server TLS capable?
     	if (getSelectedAccount().getHost().isTLS() && response.getTLS())
-    	    sieve.addRequest(new SieveStartTLSRequest(event));
+    	{
+    	  var request = new SieveStartTLSRequest(event);
+    	  request.addStartTLSListener(event);
+    	  request.addErrorListener(event);
+
+   		  sieve.addRequest(request);
+    	}
+    	  
     	else
     	{
-           	if (login.hasUsername() == false)
-           	{
-       	        event.onPlainLoginResponse(null);
-           	    return;
-           	}
-    	    if (login.hasPassword())
-        	    sieve.addRequest(new SievePlainLoginRequest(login.getUsername(), login.getPassword(), event));
-        	else
-        	{
-        	    var password = promptPassword();
-            	if (password == null)
-    	            return;
-    	            
-    	        sieve.addRequest(new SievePlainLoginRequest(login.getUsername(), password, event));
-    	    }
-        }
+      if (login.hasUsername() == false)
+      {
+        event.onPlainLoginResponse(null);
+        return;
+      }
+           	
+    	if (login.hasPassword())
+    	{
+          var request = new SievePlainLoginRequest(login.getUsername(), login.getPassword());
+	      request.addPlainLoginListener(event);
+	      request.addErrorListener(event);
+    		
+        sieve.addRequest(request);    		
+    	}
+      else
+      {
+        var password = promptPassword();
+        if (password == null)
+    	    return;
+    	    
+	      var request = new SievePlainLoginRequest(login.getUsername(), password);
+	      request.addPlainLoginListener(event);
+	      request.addErrorListener(event);
+    		
+        sieve.addRequest(request);    	            
+      }
+    }
 	},
 	
 	onStartTLSResponse : function(response)
-	{
-	    if (response.hasError())
-	        return;
-	        
+	{	        
 	    // activate TLS
 	    sieve.startTLS();
 	    
@@ -57,30 +67,46 @@ var event =
        	    return;
        	}
        	
+
     	if (login.hasPassword())
-            sieve.addRequest(new SievePlainLoginRequest(login.getUsername(), login.getPassword(), event));
-        else
-        {
-        	var password = promptPassword();
-            if (password == null)
-    	        return;
-    	            
-    	    sieve.addRequest(new SievePlainLoginRequest(login.getUsername(), password, event));
-    	}       	
+    	{
+	      var request = new SievePlainLoginRequest(login.getUsername(), login.getPassword());
+	      request.addPlainLoginListener(event);
+	      request.addErrorListener(event);
+    		
+        sieve.addRequest(request);
+    	}
+      else
+      {
+        var password = promptPassword();
+        if (password == null)
+    	    return;
+
+	      var request = new SievePlainLoginRequest(login.getUsername(), password);
+	      request.addPlainLoginListener(event);
+	      request.addErrorListener(event);
+    		
+        sieve.addRequest(request);
+    	}      	
 	},
+	
 	onPlainLoginResponse: function(response)
 	{
-		// enable the disabled controls....
+      // enable the disabled controls....
 	  document.getElementById('newButton').removeAttribute('disabled');
 	  document.getElementById('editButton').removeAttribute('disabled');
 	  document.getElementById('deleteButton').removeAttribute('disabled');
 	  document.getElementById('capabilites').removeAttribute('disabled');
 	  document.getElementById('treeImapRules').removeAttribute('disabled');
-		postStatus("Connected");
+      postStatus("Connected");
 		
-		// wenn wir verbunden sind dann die vorhanden scripte ausgeben
-		sieve.addRequest(new SieveListScriptRequest(event));
-	},	
+      // wenn wir verbunden sind dann die vorhanden scripte ausgeben
+      var request = new SieveListScriptRequest();
+      request.addListScriptListener(event);
+      request.addErrorListener(event);
+
+      sieve.addRequest(request);
+	},
 	
 	onLogoutResponse: function(response)
 	{
@@ -116,7 +142,11 @@ var event =
 			alert("Command \"setActive\" failed");
 		
 		// Always refresh the table ...
-		sieve.addRequest(new SieveListScriptRequest(event));
+		var request = new SieveListScriptRequest();
+		request.addListScriptListener(event);
+		request.addErrorListener(event);
+		
+		sieve.addRequest(request);
 	},
 	
 	onDeleteScriptResponse:  function(response)
@@ -125,50 +155,61 @@ var event =
 			alert("Command \"DELETESCRIPT\" failed\n"+response.getMessage());
 
 		// Always refresh the table ...
-		sieve.addRequest(new SieveListScriptRequest(event));
+		var request = new SieveListScriptRequest();
+		request.addListScriptListener(event);
+		request.addErrorListener(event);
+		
+		sieve.addRequest(request);
 	},
 	
 	onCapabilitiesResponse: function(response)
 	{
-	    if (response.hasError())
-	    {
-	        alert("Command \"CAPABILITY\" failed");
-	        return
-	    }
+    if (response.hasError())
+	  {
+	    alert("Command \"CAPABILITY\" failed");
+	    return
+	  }
 	    
-        var args = new Array();
-        args["implementation"] = response.getImplementation();
-        args["extensions"] = response.getExtensions();
-        args["sasl"] = response.getSasl();
-       
-       	window.openDialog("chrome://sieve/content/editor/SieveCapabilities.xul", "FilterEditor", "chrome,modal,titlebar,centerscreen", args);
+    var args = new Array();
+    args["implementation"] = response.getImplementation();
+    args["extensions"] = response.getExtensions();
+    args["sasl"] = response.getSasl();
+
+    window.openDialog("chrome://sieve/content/editor/SieveCapabilities.xul", "FilterEditor", "chrome,modal,titlebar,centerscreen", args);
 	},	
-    onCycleCell: function(row,col,script,active)
-    {
-        if (active == true)
-            sieve.addRequest(new SieveSetActiveRequest("",event));
-        else
-            sieve.addRequest(new SieveSetActiveRequest(script,event));
-    }
+	
+  onError: function(response)
+  {
+  		alert("FATAL ERROR:"+response.getMessage());
+  },
+  
+  onCycleCell: function(row,col,script,active)
+  {
+  	var request = null;
+    if (active == true)
+      request = new SieveSetActiveRequest();
+    else
+      request = new SieveSetActiveRequest(script)
+      
+    request.addSetScriptListener(event);
+    request.addErrorListener(event);
     
+    sieve.addRequest(request);
+  }
 }
 
 function onKeepAlive()
 {
-    var levent =
-    {
-    	onCapabilitiesResponse: function(response) { /*do nothing...*/ }
-    }
-    
-    sieve.addRequest(new SieveCapabilitiesRequest(levent))
+  // create a sieve request without an eventhandler...
+  sieve.addRequest(new SieveCapabilitiesRequest())
 }
 
 function onWindowLoad()
 {
-	// Load all the Libraries we need...
-	var jsLoader = Components
-										.classes["@mozilla.org/moz/jssubscript-loader;1"]
-										.getService(Components.interfaces.mozIJSSubScriptLoader);
+  // Load all the Libraries we need...
+  var jsLoader = Components
+                   .classes["@mozilla.org/moz/jssubscript-loader;1"]
+                   .getService(Components.interfaces.mozIJSSubScriptLoader);
   jsLoader
     .loadSubScript("chrome://sieve/content/libs/sievelib/SieveAccounts.js");
   jsLoader
@@ -207,20 +248,24 @@ function onWindowLoad()
    
 function onWindowClose()
 {
-    if (keepAliveInterval != null)
-    {
-    	clearInterval(keepAliveInterval);
-    	keepAliveInterval = null;
-    }
-    
-    if (sieve == null)
-        return true;
-	// Force disconnect in 500 MS
-   	closeTimeout = setTimeout("sieve.disconnect(); close();",250);
+  if (keepAliveInterval != null)
+  {
+    clearInterval(keepAliveInterval);
+    keepAliveInterval = null;
+  }
+  
+  if (sieve == null)
+    return true;
+  // Force disconnect in 500 MS
+  closeTimeout = setTimeout("sieve.disconnect(); close();",250);
 
-	sieve.addRequest(new SieveLogoutRequest(event));
+  var request = new SieveLogoutRequest(event)
+  request.addLogoutListener(event);
+  request.addErrorListener(event)
+  
+  sieve.addRequest(request);
 
-	return false;
+  return false;
 }   
 
 function getSelectedAccount()
@@ -281,7 +326,12 @@ function onSelectAccount()
 			    keepAliveInterval = setInterval("onKeepAlive()",account.getSettings().getKeepAliveInterval());
 
 		    sieve = new Sieve(account.getHost().getHostname(),account.getHost().getPort());
-		    sieve.addRequest(new SieveInitRequest(event));
+		    
+		    var request = new SieveInitRequest();
+		    request.addErrorListener(event)
+		    request.addInitListener(event)
+		    sieve.addRequest(request);
+		    
 		    sieve.connect();
 		}
 	}
@@ -302,8 +352,10 @@ function onSelectAccount()
     	clearInterval(keepAliveInterval);
     	keepAliveInterval = null;
     }
-    	
-	sieve.addRequest(new SieveLogoutRequest(levent));	
+  var request = new SieveLogoutRequest();
+  request.addLogoutListener(levent);
+  request.addErrorListener(event);
+	sieve.addRequest(request);	
 }
 
 function onDeleteClick()
@@ -316,7 +368,11 @@ function onDeleteClick()
 	var scriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));	
 		
 	// delete the script...
-	sieve.addRequest(new SieveDeleteScriptRequest(scriptName, event));
+	var request = new SieveDeleteScriptRequest(scriptName);
+	request.addDeleteScriptListener(event);
+	request.addErrorListener(event);
+	
+	sieve.addRequest(request);
 }
 
 function onNewClick()
@@ -327,33 +383,44 @@ function onNewClick()
 	args["compileDelay"] = getSelectedAccount().getSettings().getCompileDelay();
 		
 	window.openDialog("chrome://sieve/content/editor/SieveFilterEditor.xul", "FilterEditor", "chrome,modal,titlebar,resizable,centerscreen", args);
+
+	var request = new SieveListScriptRequest();
+	request.addListScriptListener(event);
+	request.addErrorListener(event);
 	
-	sieve.addRequest(new SieveListScriptRequest(event));	
+	sieve.addRequest(request);	
 }
 
 function onEditClick()
 {
-	var tree = document.getElementById('treeImapRules');	
-	if (tree.currentIndex == -1)
-		return;
+  var tree = document.getElementById('treeImapRules');	
+  if (tree.currentIndex == -1)
+    return;
 
-	var scriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));	
-	
-    var args = new Array();
-	args["scriptName"] = scriptName;
-	args["sieve"] = sieve;
-	args["compile"] = getSelectedAccount().getSettings().isCompile();
-	args["compileDelay"] = getSelectedAccount().getSettings().getCompileDelay();
-	
+  var scriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));	
 
-	window.openDialog("chrome://sieve/content/editor/SieveFilterEditor.xul", "FilterEditor", "chrome,modal,titlebar,resizable,centerscreen", args);
-			
-	sieve.addRequest(new SieveListScriptRequest(event));
+  var args = new Array();
+  args["scriptName"] = scriptName;
+  args["sieve"] = sieve;
+  args["compile"] = getSelectedAccount().getSettings().isCompile();
+  args["compileDelay"] = getSelectedAccount().getSettings().getCompileDelay();
+
+  window.openDialog("chrome://sieve/content/editor/SieveFilterEditor.xul", "FilterEditor", "chrome,modal,titlebar,resizable,centerscreen", args);
+
+  var request = new SieveListScriptRequest();
+  request.addListScriptListener(event);
+  request.addErrorListener(event);
+    			
+  sieve.addRequest(request);
 }
 
 function onCapabilitesClick()
 {
-    sieve.addRequest(new SieveCapabilitiesRequest(event));
+  var request = new SieveCapabilitiesRequest();
+  request.addCapabilitiesListener(event);
+  request.addErrorListener(event);	
+	
+  sieve.addRequest(request);
 }
 
 function onSettingsClick()

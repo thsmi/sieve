@@ -6,85 +6,73 @@ var gCompileDelay = null;
 
 var event = 
 {
-	onDeleteScriptResponse:  function(response)
-	{
-		if (response.hasError())
-	        alert(response.getMessage());
+  onDeleteScriptResponse:  function(response)
+  {
 
-        clearInterval(gCompileTimeout);
-        close();
-	},
+    clearInterval(gCompileTimeout);
+    close();
+  },
 	
-    onPutScriptResponse: function(response)
-	{
-	    if (response.hasError())
-	    {
-	        alert(response.getMessage());
-	        return
-	    }
-    
-        // is the script renamed?
-        if ((window.arguments[0]["scriptName"] != null)
-            && (window.arguments[0]["scriptName"] != document.getElementById("txtName").value))
-        {
-		    sieve.addRequest(
-		        new SieveDeleteScriptRequest(
-		            new String(window.arguments[0]["scriptName"]),event));
+  onPutScriptResponse: function(response)
+  {    
+    // is the script renamed?
+    if ((window.arguments[0]["scriptName"] != null)
+        && (window.arguments[0]["scriptName"] != document.getElementById("txtName").value))
+    {
+      var request = new SieveDeleteScriptRequest(
+    									new String(window.arguments[0]["scriptName"]));
+      request.addDeleteScriptListener(event);
+      request.addErrorListener(event);
+    	
+      sieve.addRequest(request);
 		    
-		    return
-        }
+      return
+    }
         
-        clearTimeout(gCompileTimeout);
-        close();
-	},
-		
-	onGetScriptResponse: function(response)
-	{
+    clearTimeout(gCompileTimeout);
+    close();
+  },
 	
-	    if (response.hasError())
-		{
-		    alert("unknown error");
-			close();
-	    }
-		
-	    document.getElementById("txtName").value = response.getScriptName();
-		document.getElementById("txtScript").value = response.getScriptBody();
-		
-	   	//compileInterval = setInterval("onCompile()",4000);
-	}
+  onError: function(response)
+  {
+    alert("FATAL ERROR:"+response.getMessage());
+  },
+  
+  onGetScriptResponse: function(response)
+  {		
+    document.getElementById("txtName").value = response.getScriptName();
+    document.getElementById("txtScript").value = response.getScriptBody();
+  }
 }
 
 function onCompile()
 {
-    var lEvent = 
+  var lEvent = 
+  {
+    onPutScriptResponse: function(response)
     {
-    	onDeleteScriptResponse:  function(response)
-	    {
-	        // ignore everything
-    	},
-	
-        onPutScriptResponse: function(response)
-	    {
-	    
-	        if (response.hasError())
-	        {
-	            document.getElementById("gbError").removeAttribute('hidden');
-       	        document.getElementById("lblError").value = response.getMessage();
-       	    }
-       	    else
-  	            document.getElementById("gbError").setAttribute('hidden','true')
-       	        
-            sieve.addRequest(
-                new SieveDeleteScriptRequest(
-	                "TMP_FILE_DELETE_ME",lEvent));
-    	}
+      document.getElementById("gbError").setAttribute('hidden','true')
+       	
+      // we need no handlers thus we don't care if the call succseeds
+      sieve.addRequest(new SieveDeleteScriptRequest("TMP_FILE_DELETE_ME"));
+    },
+    	
+    onError: function(response)
+    {
+      document.getElementById("gbError").removeAttribute('hidden');
+      document.getElementById("lblError").value = response.getMessage();    		
+
+      // the server did not accept our script therfore wa can't delete it...   		
     }
+  }
 
-
-    sieve.addRequest(
-        new SievePutScriptRequest(
-            "TMP_FILE_DELETE_ME",
-            new String(document.getElementById("txtScript").value),lEvent));
+  var request = new SievePutScriptRequest(
+                  "TMP_FILE_DELETE_ME",
+                  new String(document.getElementById("txtScript").value));
+  request.addPutScriptListener(lEvent);
+  request.addErrorListener(lEvent);
+  
+  sieve.addRequest(request);
 }
 
 function onBtnCompile()
@@ -112,8 +100,8 @@ function onInput()
         gCompileTimeout = null;
     }
             
-    if (gCompile)
-       	gCompileTimeout = setTimeout("onCompile()",gCompileDelay);
+  if (gCompile)
+    gCompileTimeout = setTimeout("onCompile()",gCompileDelay);
 }
 
 function onLoad()
@@ -128,24 +116,30 @@ function onLoad()
     if ( window.arguments[0]["scriptName"] == null )
         return
         
-	sieve.addRequest(
-	    new SieveGetScriptRequest(
-	        new String(window.arguments[0]["scriptName"]), event));		        
+  var request = new SieveGetScriptRequest(
+                  new String(window.arguments[0]["scriptName"]))
+  request.addGetScriptListener(event);
+  request.addErrorListener(event);
+
+  sieve.addRequest(request);
 }
 
 function onAccept()
 {
-    sieve.addRequest(
-        new SievePutScriptRequest(
-            new String(document.getElementById("txtName").value),
-            new String(document.getElementById("txtScript").value),event));
+  var request = new SievePutScriptRequest(
+                  new String(document.getElementById("txtName").value),
+                  new String(document.getElementById("txtScript").value));
+  request.addPutScriptListener(event)
+  request.addErrorListener(event)
+
+  sieve.addRequest(request)
     
-    return false;
+  return false;
 }
 
 function onCancel()
 {
-    close();
+  close();
 }
 
 function onImport()

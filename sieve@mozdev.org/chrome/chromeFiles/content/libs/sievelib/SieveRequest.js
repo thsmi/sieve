@@ -2,24 +2,42 @@
 //******************************************************************
 
 
-function SieveGetScriptRequest(script, listener) 
+function SieveGetScriptRequest(script) 
 {
-	this.listener = listener;
-	this.script = script;
+  this.script = script;
+}
+
+SieveGetScriptRequest.prototype.addGetScriptListener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
+   
+SieveGetScriptRequest.prototype.addErrorListener
+    = function (listener)
+{
+	this.errorListener = listener;
 }
 
 SieveGetScriptRequest.prototype.getCommand
     = function ()
 {
-
   return "GETSCRIPT \""+this.script+"\"\r\n";
 }
+
 
 SieveGetScriptRequest.prototype.setResponse
     = function (data)
 {
-    this.listener.onGetScriptResponse(
-        new SieveGetScriptResponse(this.script,data));
+
+  var response = new SieveGetScriptResponse(this.script,data);
+		
+  if ((response.getResponse() == 0) && (this.responseListener != null))
+    this.responseListener.onGetScriptResponse(response);			
+  else if ((response.getResponse() != 0) && (this.errorListener != null))
+    this.errorListener.onError(response);
+  else
+    alert("response dropped");
 }
 
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -43,28 +61,45 @@ SieveGetScriptRequest.prototype.setResponse
 
 ********************************************************************************/
 
-function SievePutScriptRequest(script, body, listener) 
+function SievePutScriptRequest(script, body) 
 {
-	this.listener = listener;
-	this.script = script;
-	this.body = body;
+  this.script = script;
+  this.body = body;
 }
 
 SievePutScriptRequest.prototype.getCommand
     = function ()
 {
-    //"PUTSCRIPT \"xxxx\" {4+}\r\n1234\r\n"
-    //"PUTSCRIPT \"xxxx\" \"TEST MAX 1024 Zeichen\"\r\n"
+  //"PUTSCRIPT \"xxxx\" {4+}\r\n1234\r\n"
+  //"PUTSCRIPT \"xxxx\" \"TEST MAX 1024 Zeichen\"\r\n"
     
-    return "PUTSCRIPT \""+this.script+"\" {"+this.body.length+"+}\r\n"
+  return "PUTSCRIPT \""+this.script+"\" {"+this.body.length+"+}\r\n"
         +this.body+"\r\n"
+}
+
+SievePutScriptRequest.prototype.addPutScriptListener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
+   
+SievePutScriptRequest.prototype.addErrorListener
+    = function (listener)
+{
+  this.errorListener = listener;
 }
 
 SievePutScriptRequest.prototype.setResponse
     = function (data)
-{   
-    this.listener.onPutScriptResponse(
-        new SievePutScriptResponse(data));
+{
+  var response = new SievePutScriptResponse(data);
+
+  if ((response.getResponse() == 0) && (this.responseListener != null))
+    this.responseListener.onPutScriptResponse(response);
+  else if ((response.getResponse() != 0) && (this.errorListener != null))
+    this.errorListener.onError(response);
+  else
+    alert("PUTSCRIPT RESPONSE dropped");        
 }
 
 /*******************************************************************************
@@ -96,10 +131,12 @@ SievePutScriptRequest.prototype.setResponse
 // es kann immer nur ein Script aktiv sein! 
 // -> wenn kein Script angegeben wird werden alle inaktiv
 // -> sonst wird das aktuelle ative deaktiviert und das neue aktiv
-function SieveSetActiveRequest(script, listener) 
+function SieveSetActiveRequest(script) 
 {
-	this.listener = listener;
-	this.script = script;
+  if (script == null)
+    this.script = "";
+  else
+    this.script = script;
 }
 
 SieveSetActiveRequest.prototype.getCommand
@@ -108,11 +145,29 @@ SieveSetActiveRequest.prototype.getCommand
   return "SETACTIVE \""+this.script+"\"\r\n";
 }
 
+SieveSetActiveRequest.prototype.addSetScriptListener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
+   
+SieveSetActiveRequest.prototype.addErrorListener
+    = function (listener)
+{
+  this.errorListener = listener;
+}
+
 SieveSetActiveRequest.prototype.setResponse
     = function (data)
 {
-    this.listener.onSetActiveResponse(
-        new SieveSetActiveResponse(data));
+  var response = new SieveSetActiveResponse(data);
+
+  if ((response.getResponse() == 0) && (this.responseListener != null))
+    this.responseListener.onSetActiveResponse(response);
+  else if ((response.getResponse() != 0) && (this.errorListener != null))
+    this.errorListener.onError(response);
+  else
+    alert("SETACTIVE RESPONSE dropped");
 }
 
 /*******************************************************************************
@@ -134,20 +189,37 @@ SieveSetActiveRequest.prototype.setResponse
 
 ********************************************************************************/
 
-function SieveCapabilitiesRequest(listener)
+function SieveCapabilitiesRequest()
 {
-	this.listener = listener;
 }
 
 SieveCapabilitiesRequest.prototype.getCommand = function ()
 {
-    return "CAPABILITY\r\n";
+  return "CAPABILITY\r\n";
+}
+
+SieveCapabilitiesRequest.prototype.addCapabilitiesListener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
+   
+SieveCapabilitiesRequest.prototype.addErrorListener
+    = function (listener)
+{
+  this.errorListener = listener;
 }
 
 SieveCapabilitiesRequest.prototype.setResponse = function (data)
 {
-    this.listener.onCapabilitiesResponse(
-            new SieveCapabilitiesResponse(data));
+  var response = new SieveCapabilitiesResponse(data);
+			
+  if ((response.getResponse() == 0) && (this.responseListener != null))
+    this.responseListener.onCapabilitiesResponse(response);			
+  else if ((response.getResponse() != 0) && (this.errorListener != null))
+    this.errorListener.onError(response);
+  else
+    alert("DELETESCRIPTS RESPONSE dropped");			
 }
 
 /*******************************************************************************
@@ -169,10 +241,9 @@ SieveCapabilitiesRequest.prototype.setResponse = function (data)
 
 ********************************************************************************/
 
-function SieveDeleteScriptRequest(script, listener) 
+function SieveDeleteScriptRequest(script) 
 {
-	this.listener = listener;
-	this.script = script;
+  this.script = script;
 }
 
 SieveDeleteScriptRequest.prototype.getCommand
@@ -181,11 +252,30 @@ SieveDeleteScriptRequest.prototype.getCommand
   return "DELETESCRIPT \""+this.script+"\"\r\n";
 }
 
+SieveDeleteScriptRequest.prototype.addDeleteScriptListener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
+   
+SieveDeleteScriptRequest.prototype.addErrorListener
+    = function (listener)
+{
+  this.errorListener = listener;
+}
+
 SieveDeleteScriptRequest.prototype.setResponse
     = function (data)
 {
-    this.listener.onDeleteScriptResponse(
-        new SieveDeleteScriptResponse(data));
+        
+  var response = new SieveDeleteScriptResponse(data);
+			
+  if ((response.getResponse() == 0) && (this.responseListener != null))
+    this.responseListener.onDeleteScriptResponse(response);			
+  else if ((response.getResponse() != 0) && (this.errorListener != null))
+    this.errorListener.onError(response);
+  else
+    alert("DELETESCRIPTS RESPONSE dropped");
 }
 
 /*******************************************************************************
@@ -207,22 +297,40 @@ SieveDeleteScriptRequest.prototype.setResponse
 
 ********************************************************************************/
 
-function SieveListScriptRequest(listener) 
+function SieveListScriptRequest() 
 {
-	this.listener = listener;
 }
 
 SieveListScriptRequest.prototype.getCommand
     = function ()
 {
-    return "LISTSCRIPTS\r\n";
+  return "LISTSCRIPTS\r\n";
+}
+
+SieveListScriptRequest.prototype.addListScriptListener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
+   
+SieveListScriptRequest.prototype.addErrorListener
+    = function (listener)
+{
+  this.errorListener = listener;
 }
 
 SieveListScriptRequest.prototype.setResponse 
     = function (data)
 {	
-	this.listener.onListScriptResponse(
-	    new SieveListScriptResponse(data));	
+	
+  var response = new SieveListScriptResponse(data);
+			
+  if ((response.getResponse() == 0) && (this.responseListener != null))
+    this.responseListener.onListScriptResponse(response);			
+  else if ((response.getResponse() != 0) && (this.errorListener != null))
+    this.errorListener.onError(response);
+  else
+    alert("LISTSCRIPTS RESPONSE dropped");			
 }
 
 /*******************************************************************************
@@ -244,22 +352,39 @@ SieveListScriptRequest.prototype.setResponse
 
 ********************************************************************************/
 
-function SieveStartTLSRequest(listener) 
+function SieveStartTLSRequest() 
 {
-	this.listener = listener;
 }
 
 SieveStartTLSRequest.prototype.getCommand
     = function ()
 {
-    return "STARTTLS\r\n";
+  return "STARTTLS\r\n";
+}
+
+SieveStartTLSRequest.prototype.addStartTLSListener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
+   
+SieveStartTLSRequest.prototype.addErrorListener
+    = function (listener)
+{
+  this.errorListener = listener;
 }
 
 SieveStartTLSRequest.prototype.setResponse 
     = function (data)
-{	
-	this.listener.onStartTLSResponse(
-	    new SieveStartTLSResponse(data));
+{		    
+  var response = new SieveStartTLSResponse(data);
+			
+  if ((response.getResponse() == 0) && (this.responseListener != null))
+    this.responseListener.onStartTLSResponse(response);			
+  else if ((response.getResponse() != 0) && (this.errorListener != null))
+    this.errorListener.onError(response);
+  else
+    alert("STARTTLS RESPONSE dropped");			    
 }
 
 /*******************************************************************************
@@ -281,9 +406,8 @@ SieveStartTLSRequest.prototype.setResponse
 
 ********************************************************************************/
 
-function SieveLogoutRequest(listener) 
+function SieveLogoutRequest() 
 {
-	this.listener = listener;
 }
 
 SieveLogoutRequest.prototype.getCommand 
@@ -292,11 +416,32 @@ SieveLogoutRequest.prototype.getCommand
   return "LOGOUT\r\n";
 }
 
+SieveLogoutRequest.prototype.addLogoutListener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
+   
+SieveLogoutRequest.prototype.addErrorListener
+    = function (listener)
+{
+  this.errorListener = listener;
+}
+
 SieveLogoutRequest.prototype.setResponse 
     = function (data)
-{
-	this.listener.onLogoutResponse(
-	    new SieveLogoutResponse(data));
+{		    
+  var response = new SieveLogoutResponse(data);
+			
+  // a "BYE" or "OK" is in this case a good answer...
+  if (((response.getResponse() == 0) || (response.getResponse() == 1))
+       && (this.responseListener != null))
+    this.responseListener.onLogoutResponse(response);			
+  else if ((response.getResponse() != 0) && (response.getResponse() != 1) 
+	        && (this.errorListener != null))
+    this.errorListener.onError(response);
+  else
+    alert("STARTTLS RESPONSE dropped");			    
 }
 
 /*******************************************************************************
@@ -318,22 +463,39 @@ SieveLogoutRequest.prototype.setResponse
 
 ********************************************************************************/
 
-function SieveInitRequest(listener)
+function SieveInitRequest()
 {
-	this.listener = listener;
 }
 
 SieveInitRequest.prototype.getCommand 
     = function ()
 {
-    return "";
+  return "";
+}
+
+SieveInitRequest.prototype.addInitListener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
+   
+SieveInitRequest.prototype.addErrorListener
+    = function (listener)
+{
+  this.errorListener = listener;
 }
 
 SieveInitRequest.prototype.setResponse
     = function (data)
 {
-	this.listener.onInitResponse(
-	    new SieveInitResponse(data));
+  var response = new SieveInitResponse(data);
+			
+  if ((response.getResponse() == 0) && (this.responseListener != null))
+    this.responseListener.onInitResponse(response);			
+  else if ((response.getResponse() != 0) && (this.errorListener != null))
+    this.errorListener.onError(response);
+  else
+    alert("init response dropped");		
 }
 
 /*******************************************************************************
@@ -355,11 +517,10 @@ SieveInitRequest.prototype.setResponse
 
 ********************************************************************************/
 
-function SievePlainLoginRequest(username, password, listener) 
+function SievePlainLoginRequest(username, password) 
 {
-	this.username = username;
-	this.password = password;
-	this.listener = listener;
+  this.username = username;
+  this.password = password;
 }
 
 SievePlainLoginRequest.prototype.getCommand 
@@ -369,9 +530,27 @@ SievePlainLoginRequest.prototype.getCommand
   return "AUTHENTICATE \"PLAIN\" \""+logon+"\"\r\n";
 }
 
+SievePlainLoginRequest.prototype.addPlainLoginListener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
+   
+SievePlainLoginRequest.prototype.addErrorListener
+    = function (listener)
+{
+  this.errorListener = listener;
+}
+
 SievePlainLoginRequest.prototype.setResponse 
     = function (data)
 {
-	this.listener.onPlainLoginResponse(
-	    new SievePlainLoginResponse(data));
+  var response = new SievePlainLoginResponse(data);
+			
+  if ((response.getResponse() == 0) && (this.responseListener != null))
+    this.responseListener.onPlainLoginResponse(response);			
+  else if ((response.getResponse() != 0) && (this.errorListener != null))
+    this.errorListener.onError(response);
+  else
+    alert("AUTHENTICATE PLAIN response dropped");					
 }

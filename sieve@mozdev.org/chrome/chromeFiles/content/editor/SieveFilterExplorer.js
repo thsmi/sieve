@@ -90,23 +90,23 @@ var event =
     	}      	
 	},
 	
-	onPlainLoginResponse: function(response)
-	{
-      // enable the disabled controls....
-	  document.getElementById('newButton').removeAttribute('disabled');
-	  document.getElementById('editButton').removeAttribute('disabled');
-	  document.getElementById('deleteButton').removeAttribute('disabled');
-	  document.getElementById('capabilites').removeAttribute('disabled');
-	  document.getElementById('treeImapRules').removeAttribute('disabled');
-      postStatus("Connected");
+  onPlainLoginResponse: function(response)
+  {
+    // enable the disabled controls....
+    document.getElementById('newButton').removeAttribute('disabled');
+    document.getElementById('editButton').removeAttribute('disabled');
+    document.getElementById('deleteButton').removeAttribute('disabled');
+    document.getElementById('capabilites').removeAttribute('disabled');
+    document.getElementById('treeImapRules').removeAttribute('disabled');
+    postStatus("Connected");
 		
-      // wenn wir verbunden sind dann die vorhanden scripte ausgeben
-      var request = new SieveListScriptRequest();
-      request.addListScriptListener(event);
-      request.addErrorListener(event);
+    // List all scripts as soon as we are connected
+    var request = new SieveListScriptRequest();
+    request.addListScriptListener(event);
+    request.addErrorListener(event);
 
-      sieve.addRequest(request);
-	},
+    sieve.addRequest(request);
+  },
 	
 	onLogoutResponse: function(response)
 	{
@@ -180,7 +180,26 @@ var event =
 	
   onError: function(response)
   {
-  		alert("FATAL ERROR:"+response.getMessage());
+    var code = response.getResponseCode();
+
+    if (code instanceof SieveRespCodeReferral)
+    {
+      postStatus("Referral aktiv...")
+      alert("Server referral to: "+code.getSieveUrl())
+
+      var account = getSelectedAccount();
+      sieve = new Sieve(code.getHostname(),account.getHost().getPort());		  
+  
+      var request = new SieveInitRequest();
+      request.addErrorListener(event)
+      request.addInitListener(event)
+      sieve.addRequest(request);
+		    
+      sieve.connect();
+      return
+    }
+
+    alert("SERVER ERROR:"+response.getMessage());
   },
   
   onCycleCell: function(row,col,script,active)
@@ -221,29 +240,30 @@ function onWindowLoad()
   jsLoader
     .loadSubScript("chrome://sieve/content/libs/sievelib/SieveResponseParser.js");        
   jsLoader
+    .loadSubScript("chrome://sieve/content/libs/sievelib/SieveResponseCodes.js");
+  jsLoader
     .loadSubScript("chrome://sieve/content/editor/SieveFiltersTreeView.js");
 //	var actList = document.getElementById("conImapAcct");
 //	var actpopup = document.createElement("menupopup");
 //	actList.appendChild(actpopup);
 
-	var menuImapAccounts = document.getElementById("menuImapAccounts");
+  var menuImapAccounts = document.getElementById("menuImapAccounts");
 
-    accounts = (new SieveAccounts()).getAccounts();
+  accounts = (new SieveAccounts()).getAccounts();
 
-	for (var i = 0; i < accounts.length; i++)
-	{   
-       if (accounts[i].isEnabled() == false)
-          menuImapAccounts.appendItem( accounts[i].getDescription(),"","- disabled").disabled = true;
-       else
-          menuImapAccounts.appendItem( accounts[i].getDescription(),"","").disabled = false;
-  	}
+  for (var i = 0; i < accounts.length; i++)
+  {   
+    if (accounts[i].isEnabled() == false)
+      menuImapAccounts.appendItem( accounts[i].getDescription(),"","- disabled").disabled = true;
+    else
+      menuImapAccounts.appendItem( accounts[i].getDescription(),"","").disabled = false;
+  }
 	
-	sieveTreeView = new SieveTreeView(new Array(),event);	
-	document.getElementById('treeImapRules').view = sieveTreeView;
+  sieveTreeView = new SieveTreeView(new Array(),event);	
+  document.getElementById('treeImapRules').view = sieveTreeView;
 	
-    menuImapAccounts.selectedIndex = 0;
-/*	var selectedItem = menuImapAccounts.selectedItem.value;*/
-	onSelectAccount();
+  menuImapAccounts.selectedIndex = 0;
+  onSelectAccount();
 }
    
 function onWindowClose()
@@ -425,10 +445,10 @@ function onCapabilitesClick()
 
 function onSettingsClick()
 {
-	window.openDialog("chrome://sieve/content/options/SieveOptions.xul", "FilterEditor", "chrome,modal,titlebar,resizable,centerscreen");
+  window.openDialog("chrome://sieve/content/options/SieveOptions.xul", "FilterEditor", "chrome,modal,titlebar,resizable,centerscreen");
 }
 
 function postStatus(progress)
 {
-	document.getElementById('logger').value = progress;
+  document.getElementById('logger').value = progress;
 }

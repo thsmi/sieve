@@ -12,7 +12,7 @@
 function SieveAbstractResponse(parser)
 {
     this.message = "";
-    this.errorCode = "";
+    this.responseCode = "";
     
     if (parser.startsWith("OK"))
     {
@@ -39,14 +39,13 @@ function SieveAbstractResponse(parser)
     // remove the space
     parser.extractSpace();
     
-    // we got an errorcode
+    // we got an responseCode
     if (parser.startsWith("("))
     {
         // remove the opening bracket
         this.extract(1);
         
-        // TODO Parse errorcodes, we only remove them from the string
-        this.errorCode = parser.extractToken(")");
+        this.responseCode = parser.extractToken(")");
         
         if (parser.isLineBreak())
             return;
@@ -74,8 +73,26 @@ SieveAbstractResponse.prototype.hasError
 SieveAbstractResponse.prototype.getResponse
     = function () { return this.response; }
 
-SieveAbstractResponse.prototype.getErrorCode
-    = function () { return this.errorCode; }
+SieveAbstractResponse.prototype.getResponseCode
+    = function ()
+{
+  if (this.responseCode.indexOf("AUTH-TOO-WEAK") == 0)
+    return new SieveRespCodeAuthTooWeak();
+  else if (this.responseCode.indexOf("ENCRYPT-NEEDED") == 0)
+    return new SieveRespCodeEncryptNeeded();
+  else if (this.responseCode.indexOf("QUOTA") == 0)
+    return new SieveRespCodeQuota();
+  else if (this.responseCode.indexOf("SASL") == 0)
+    return new SieveRespCodeSasl(this.responseCode);    
+  else if (this.responseCode.indexOf("REFERRAL") == 0)
+    return new SieveRespCodeReferral(this.responseCode);
+  else if (this.responseCode.indexOf("TRANSITION-NEEDED") == 0)
+    return new SieveRespCodeTransitionNeeded();
+  else if (this.responseCode.indexOf("TRYLATER") == 0)
+    return new SieveRespCodeTryLater();    
+
+  return new SieveRespCodeUnknown(this.responseCode);
+}
 
 //*************************************
 
@@ -95,8 +112,8 @@ SievePutScriptResponse.prototype.hasError
 SievePutScriptResponse.prototype.getResponse
     = function () { return this.superior.getResponse(); }
 
-SievePutScriptResponse.prototype.getErrorCode
-    = function () { return this.superior.getErrorCode(); }
+SievePutScriptResponse.prototype.getResponseCode
+    = function () { return this.superior.getResponseCode(); }
 
 //*************************************
 
@@ -116,8 +133,8 @@ SieveSetActiveResponse.prototype.hasError
 SieveSetActiveResponse.prototype.getResponse
     = function () { return this.superior.getResponse(); }
 
-SieveSetActiveResponse.prototype.getErrorCode
-    = function () { return this.superior.getErrorCode(); }
+SieveSetActiveResponse.prototype.getResponseCode
+    = function () { return this.superior.getResponseCode(); }
 
 
 //*************************************
@@ -162,8 +179,8 @@ SieveCapabilitiesResponse.prototype.hasError
 SieveCapabilitiesResponse.prototype.getResponse
     = function () { return this.superior.getResponse(); }
 
-SieveCapabilitiesResponse.prototype.getErrorCode
-    = function () { return this.superior.getErrorCode(); }
+SieveCapabilitiesResponse.prototype.getResponseCode
+    = function () { return this.superior.getResponseCode(); }
 
 SieveCapabilitiesResponse.prototype.getImplementation
     = function () { return this.implementation; }
@@ -192,8 +209,8 @@ SieveDeleteScriptResponse.prototype.hasError
 SieveDeleteScriptResponse.prototype.getResponse
     = function () { return this.superior.getResponse(); }
 
-SieveDeleteScriptResponse.prototype.getErrorCode
-    = function () { return this.superior.getErrorCode(); }
+SieveDeleteScriptResponse.prototype.getResponseCode
+    = function () { return this.superior.getResponseCode(); }
 
 //*************************************
 function SieveListScriptResponse(data)
@@ -245,8 +262,8 @@ SieveListScriptResponse.prototype.hasError
 SieveListScriptResponse.prototype.getResponse
     = function () { return this.superior.getResponse(); }
 
-SieveListScriptResponse.prototype.getErrorCode
-    = function () { return this.superior.getErrorCode(); }
+SieveListScriptResponse.prototype.getResponseCode
+    = function () { return this.superior.getResponseCode(); }
     
 SieveListScriptResponse.prototype.getScripts
     = function () { return this.scripts; }
@@ -267,8 +284,8 @@ SieveStartTLSResponse.prototype.hasError
 SieveStartTLSResponse.prototype.getResponse
     = function () { return this.superior.getResponse(); }
 
-SieveStartTLSResponse.prototype.getErrorCode
-    = function () { return this.superior.getErrorCode(); }
+SieveStartTLSResponse.prototype.getResponseCode
+    = function () { return this.superior.getResponseCode(); }
 
 //*************************************
 function SieveLogoutResponse(data)
@@ -286,8 +303,8 @@ SieveLogoutResponse.prototype.hasError
 SieveLogoutResponse.prototype.getResponse
     = function () { return this.superior.getResponse(); }
 
-SieveLogoutResponse.prototype.getErrorCode
-    = function () { return this.superior.getErrorCode(); }
+SieveLogoutResponse.prototype.getResponseCode
+    = function () { return this.superior.getResponseCode(); }
 
 //*************************************
 function SievePlainLoginResponse(data)
@@ -305,8 +322,8 @@ SievePlainLoginResponse.prototype.hasError
 SievePlainLoginResponse.prototype.getResponse
     = function () { return this.superior.getResponse(); }
 
-SievePlainLoginResponse.prototype.getErrorCode
-    = function () { return this.superior.getErrorCode(); }
+SievePlainLoginResponse.prototype.getResponseCode
+    = function () { return this.superior.getResponseCode(); }
 
 
 /*******************************************************************************
@@ -318,7 +335,7 @@ SievePlainLoginResponse.prototype.getErrorCode
     DECLARED FUNCTIONS : String getMessage()
                        : boolean hasError()
                        : getResponse()
-                       : int getErrorCode()
+                       : int getResponseCode()
                        : String getImplementation()
                        : String getSasl()
                        : String getExtensions()
@@ -385,8 +402,8 @@ SieveInitResponse.prototype.hasError
 SieveInitResponse.prototype.getResponse
     = function () { return this.superior.getResponse(); }
 
-SieveInitResponse.prototype.getErrorCode
-    = function () { return this.superior.getErrorCode(); }
+SieveInitResponse.prototype.getResponseCode
+    = function () { return this.superior.getResponseCode(); }
 
 SieveInitResponse.prototype.getImplementation
     = function () { return this.implementation; }
@@ -434,8 +451,8 @@ SieveGetScriptResponse.prototype.hasError
 SieveGetScriptResponse.prototype.getResponse
     = function () { return this.superior.getResponse(); }
 
-SieveGetScriptResponse.prototype.getErrorCode
-    = function () { return this.superior.getErrorCode(); }
+SieveGetScriptResponse.prototype.getResponseCode
+    = function () { return this.superior.getResponseCode(); }
     
 SieveGetScriptResponse.prototype.getScriptBody
     = function () { return this.scriptBody; }

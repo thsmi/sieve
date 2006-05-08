@@ -43,7 +43,7 @@ function SieveAbstractResponse(parser)
     if (parser.startsWith("("))
     {
         // remove the opening bracket
-        this.extract(1);
+        parser.extract(1);
         
         this.responseCode = parser.extractToken(")");
         

@@ -36,8 +36,8 @@ SieveGetScriptRequest.prototype.setResponse
     this.responseListener.onGetScriptResponse(response);			
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
-  else
-    alert("response dropped");
+
+
 }
 
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -98,8 +98,6 @@ SievePutScriptRequest.prototype.setResponse
     this.responseListener.onPutScriptResponse(response);
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
-  else
-    alert("PUTSCRIPT RESPONSE dropped");        
 }
 
 /*******************************************************************************
@@ -166,8 +164,6 @@ SieveSetActiveRequest.prototype.setResponse
     this.responseListener.onSetActiveResponse(response);
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
-  else
-    alert("SETACTIVE RESPONSE dropped");
 }
 
 /*******************************************************************************
@@ -218,8 +214,6 @@ SieveCapabilitiesRequest.prototype.setResponse = function (data)
     this.responseListener.onCapabilitiesResponse(response);			
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
-  else
-    alert("DELETESCRIPTS RESPONSE dropped");			
 }
 
 /*******************************************************************************
@@ -274,8 +268,6 @@ SieveDeleteScriptRequest.prototype.setResponse
     this.responseListener.onDeleteScriptResponse(response);			
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
-  else
-    alert("DELETESCRIPTS RESPONSE dropped");
 }
 
 /*******************************************************************************
@@ -329,8 +321,6 @@ SieveListScriptRequest.prototype.setResponse
     this.responseListener.onListScriptResponse(response);			
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
-  else
-    alert("LISTSCRIPTS RESPONSE dropped");			
 }
 
 /*******************************************************************************
@@ -382,9 +372,7 @@ SieveStartTLSRequest.prototype.setResponse
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onStartTLSResponse(response);			
   else if ((response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(response);
-  else
-    alert("STARTTLS RESPONSE dropped");			    
+    this.errorListener.onError(response);		    
 }
 
 /*******************************************************************************
@@ -439,9 +427,7 @@ SieveLogoutRequest.prototype.setResponse
     this.responseListener.onLogoutResponse(response);			
   else if ((response.getResponse() != 0) && (response.getResponse() != 1) 
 	        && (this.errorListener != null))
-    this.errorListener.onError(response);
-  else
-    alert("STARTTLS RESPONSE dropped");			    
+    this.errorListener.onError(response);		    
 }
 
 /*******************************************************************************
@@ -494,8 +480,6 @@ SieveInitRequest.prototype.setResponse
     this.responseListener.onInitResponse(response);			
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
-  else
-    alert("init response dropped");		
 }
 
 /*******************************************************************************
@@ -551,6 +535,4 @@ SievePlainLoginRequest.prototype.setResponse
     this.responseListener.onPlainLoginResponse(response);			
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
-  else
-    alert("AUTHENTICATE PLAIN response dropped");					
 }

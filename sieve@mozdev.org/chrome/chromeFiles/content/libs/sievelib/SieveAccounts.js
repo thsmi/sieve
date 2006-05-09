@@ -136,7 +136,7 @@ SieveCustomAuth.prototype.getPassword
         var passwd = e.getNext().QueryInterface(Components.interfaces.nsIPassword);
         
         
-        if (passwd.host != new String("sieve://"+this.URI))
+        if (passwd.host != new String("sieve://"+this.uri))
             continue;
             
         if (passwd.user != username)
@@ -151,10 +151,10 @@ SieveCustomAuth.prototype.getPassword
 SieveCustomAuth.prototype.getUsername
     = function ()
 {
-    if (gPref.prefHasUserValue(this.prefURI+".login.username"))
-        return username = gPref.getCharPref(this.prefURI+".login.username");
-                
-	return "";
+  if (gPref.prefHasUserValue(this.prefURI+".login.username"))
+    return gPref.getCharPref(this.prefURI+".login.username");
+            
+  return "";
 }
 
 SieveCustomAuth.prototype.hasPassword
@@ -250,7 +250,7 @@ SieveCustomHost.prototype.getPort
     = function ()
 {
     if (gPref.prefHasUserValue(this.prefURI+".port"))
-        return port = gPref.getIntPref(this.prefURI+".port");
+        return gPref.getIntPref(this.prefURI+".port");
 
 	return 2000;
 }
@@ -314,7 +314,7 @@ SieveAccountSettings.prototype.getKeepAliveInterval
     if (gPref.prefHasUserValue(this.prefURI+".keepalive.interval"))
         return gPref.getCharPref(this.prefURI+".keepalive.interval");
 
-    return keepAliveInterval = "1200000"; //30*60*1000 = 30 Minuten
+    return "1200000"; //30*60*1000 = 30 Minuten
 }
 
 SieveAccountSettings.prototype.setKeepAliveInterval
@@ -335,7 +335,7 @@ SieveAccountSettings.prototype.isCompile
 SieveAccountSettings.prototype.setCompile
     = function (enabled)
 {
-    gPref.setBoolPref(this.prefURI+".compile",enabled);
+  gPref.setBoolPref(this.prefURI+".compile",enabled);
 }
 
 SieveAccountSettings.prototype.getCompileDelay
@@ -450,13 +450,13 @@ SieveAccount.prototype.isEnabled
 SieveAccount.prototype.setEnabled
     = function (enabled) 
 {
-    gPref.setBoolPref(this.prefURI+".enabled",enabled);
+  gPref.setBoolPref(this.prefURI+".enabled",enabled);
 }
 
 SieveAccount.prototype.getSettings
     = function ()
 {
-	return this.settings;
+  return this.settings;
 }
 
 function SieveAccounts()

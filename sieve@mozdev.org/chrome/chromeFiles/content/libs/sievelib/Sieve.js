@@ -38,7 +38,8 @@ Sieve.prototype.addRequest = function(request)
 	// daher muss die Requestwarteschalnge neu angesto�en werden.
 	if (this.requests.length > 1)
 		return
-		 
+	
+	// filtert den initrequest heraus...	 
 	if (request.getCommand() == "")
 		return;
 		
@@ -47,6 +48,7 @@ Sieve.prototype.addRequest = function(request)
 
 Sieve.prototype.connect = function () 
 {
+
 	if( this.socket.isConnected )
 	{
 		alert("connected")
@@ -55,7 +57,7 @@ Sieve.prototype.connect = function ()
    
 	// open socket connection to host - enable binary input 
 	this.socket.open(this.host,this.port,true,true);
-	this.socket.async(this);	
+	this.socket.async(this);
 }
 
 /*
@@ -87,7 +89,7 @@ Sieve.prototype.receiveData
   consoleService.logStringMessage(data);
 
 	// is a Request listener existing?
-	if ((this.requests.length == 0))		
+	if ((this.requests.length == 0))
 		return
 									
 	// ok es gibt einen, dem �bergeben wir mal die daten...

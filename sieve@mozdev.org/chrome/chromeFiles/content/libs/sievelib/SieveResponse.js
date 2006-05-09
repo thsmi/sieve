@@ -47,6 +47,9 @@ function SieveAbstractResponse(parser)
         
         this.responseCode = parser.extractToken(")");
         
+        // remove the closing bracket
+        parser.extract(1);        
+        
         if (parser.isLineBreak())
             return;
              

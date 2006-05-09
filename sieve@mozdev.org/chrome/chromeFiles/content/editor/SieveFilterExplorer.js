@@ -9,7 +9,6 @@ var event =
 {	
 	onInitResponse: function(response)
 	{
-
     	var login = getSelectedAccount().getLogin();
     	
     	// is the Server TLS capable?
@@ -93,11 +92,7 @@ var event =
   onPlainLoginResponse: function(response)
   {
     // enable the disabled controls....
-    document.getElementById('newButton').removeAttribute('disabled');
-    document.getElementById('editButton').removeAttribute('disabled');
-    document.getElementById('deleteButton').removeAttribute('disabled');
-    document.getElementById('capabilites').removeAttribute('disabled');
-    document.getElementById('treeImapRules').removeAttribute('disabled');
+    disableControls(false);
     postStatus("Connected");
 		
     // List all scripts as soon as we are connected
@@ -151,9 +146,6 @@ var event =
 	
 	onDeleteScriptResponse:  function(response)
 	{
-		if (response.hasError())
-			alert("Command \"DELETESCRIPT\" failed\n"+response.getMessage());
-
 		// Always refresh the table ...
 		var request = new SieveListScriptRequest();
 		request.addListScriptListener(event);
@@ -164,11 +156,6 @@ var event =
 	
 	onCapabilitiesResponse: function(response)
 	{
-    if (response.hasError())
-	  {
-	    alert("Command \"CAPABILITY\" failed");
-	    return
-	  }
 	    
     var args = new Array();
     args["implementation"] = response.getImplementation();
@@ -184,11 +171,13 @@ var event =
 
     if (code instanceof SieveRespCodeReferral)
     {
-      postStatus("Referral aktiv...")
-      alert("Server referral to: "+code.getSieveUrl())
-
-      var account = getSelectedAccount();
-      sieve = new Sieve(code.getHostname(),account.getHost().getPort());		  
+      disableControls(true);
+      // close the old sieve connection
+      sieve.disconnect();
+        
+      postStatus("Referral to "+code.getHostname()+" ...");
+      
+      sieve = new Sieve(code.getHostname(),getSelectedAccount().getHost().getPort());		  
   
       var request = new SieveInitRequest();
       request.addErrorListener(event)
@@ -332,11 +321,7 @@ function onSelectAccount()
 			// Disable and cancel if account is not enabled
 			if (account.isEnabled() == false)
 			{
-				document.getElementById('newButton').setAttribute('disabled','true');
-				document.getElementById('editButton').setAttribute('disabled','true');
-				document.getElementById('deleteButton').setAttribute('disabled','true');
-				document.getElementById('capabilites').setAttribute('disabled','true');
-				document.getElementById('treeImapRules').setAttribute('disabled','true');
+			    disableControls(true);
 				postStatus("Not connected - go to Tool -> Sieve Settings to activate this account")
 				return;
 			}			
@@ -451,4 +436,24 @@ function onSettingsClick()
 function postStatus(progress)
 {
   document.getElementById('logger').value = progress;
+}
+
+function disableControls(disabled)
+{
+  if (disabled)
+  {
+    document.getElementById('newButton').setAttribute('disabled','true');
+    document.getElementById('editButton').setAttribute('disabled','true');
+    document.getElementById('deleteButton').setAttribute('disabled','true');
+    document.getElementById('capabilites').setAttribute('disabled','true');
+    document.getElementById('treeImapRules').setAttribute('disabled','true');
+  }
+  else
+  {
+    document.getElementById('newButton').removeAttribute('disabled');
+    document.getElementById('editButton').removeAttribute('disabled');
+    document.getElementById('deleteButton').removeAttribute('disabled');
+    document.getElementById('capabilites').removeAttribute('disabled');
+    document.getElementById('treeImapRules').removeAttribute('disabled');  
+  }
 }

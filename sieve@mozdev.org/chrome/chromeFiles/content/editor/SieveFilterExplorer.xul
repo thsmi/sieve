@@ -54,6 +54,8 @@
                   oncommand="onEditClick();"/>
           <button id="deleteButton" label="&list.delete;"
                   oncommand="onDeleteClick();"/>
+          <button id="renameButton" label="&list.rename;"
+                  oncommand="onRenameClick();"/>                  
           <spacer flex="1"/>
           <button id="capabilites" label="&list.capability;" 
                   oncommand="onCapabilitesClick();"/>

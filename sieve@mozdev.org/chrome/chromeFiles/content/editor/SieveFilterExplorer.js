@@ -457,3 +457,75 @@ function disableControls(disabled)
     document.getElementById('treeImapRules').removeAttribute('disabled');  
   }
 }
+
+function onRenameClick()
+{
+  
+  var lEvent = 
+  {
+    oldScriptName : null,    
+    newScriptName : null,
+    
+    onGetScriptResponse: function(response)
+    {
+      
+      var request = new SievePutScriptRequest(
+                      new String(lEvent.newScriptName),
+                      new String(response.getScriptBody()));
+
+      request.addPutScriptListener(lEvent)
+      request.addErrorListener(event)
+      sieve.addRequest(request);  
+    },
+        
+    onPutScriptResponse: function(response)
+    {
+      // we redirect this request to event not lEvent!
+      // because event.onDeleteScript is doing exactly what we want!
+      var request = new SieveDeleteScriptRequest(lEvent.oldScriptName);
+      request.addDeleteScriptListener(event);
+      request.addErrorListener(event);
+      sieve.addRequest(request);
+    }    	
+  }
+
+  var tree = document.getElementById('treeImapRules');
+
+  if (tree.currentIndex == -1)
+    return;
+
+
+  lEvent.oldScriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));
+
+  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                  .getService(Components.interfaces.nsIPromptService);
+
+  input = {value:lEvent.oldScriptName};
+  check = {value:false};
+
+  var result
+       = prompts.prompt(
+           window,
+           "Rename Sieve Script",
+           "Enter the new name for your Sieve script ",
+           input, null, check);
+
+  // Did the User cancel the dialog?
+  if (result != true)
+    return;
+
+  lEvent.newScriptName = input.value;
+  
+  // it the old name equals the new name, ignore the request.
+  if (lEvent.newScriptName.toLowerCase() == lEvent.oldScriptName.toLowerCase())
+    return;   
+
+  // first get the script and redirect the event to a local event...
+  // ... in order to put it up under its new name an then finally delete it
+  var request = new SieveGetScriptRequest(lEvent.oldScriptName);
+
+  request.addGetScriptListener(lEvent);
+  request.addErrorListener(event);
+
+  sieve.addRequest(request);	
+}

@@ -60,6 +60,7 @@
 <!ENTITY list.new "New">
 <!ENTITY list.edit "Edit">
 <!ENTITY list.delete "Delete">
+<!ENTITY list.rename "Rename">
 <!ENTITY list.capability "Capability">
 
 

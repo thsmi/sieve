@@ -5,52 +5,77 @@
 
 //Extractfunctions return null if Function failed or the extracted Value
 
-function extractBracketComment(data)
+function SieveScriptParser(data)
 {
-    if (data.indexOf("/*") != 0)
-        return null;       
-    
-    var end = data.indexOf("*/");
-    
-    // end > 1 -> exclude /*/ comments..
-    if ((end == -1) && (end > 1))
-        return null;
-    
-    var result = data.slice(2,end);    
-    data = data.slice(end+2);
-    
-    return result;    
+    this.data = data;
 }
 
-function extractHashComment(data)
+SieveScriptParser.prototype.extract
+    = function (size)
 {
-    if (data.indexOf("#") != 0)
-        return null;
-    
-    var end = data.indexOf("\r\n")
-    
-    if (end == -1)
-        return null;
-
-    var result = data.slice(1,end);
-    data = data.slice(end+2);
-
-    return result;
+    this.data = this.data.slice(size);
 }
 
-function extractComment(data)
+SieveScriptParser.prototype.isBracketComment
+    = function ()
 {
-    var result = null;
+  if (this.data.getCharAt(0) != "/")
+    return false;
     
-    result = extractBracketComment(data);    
-    if (result != null)
-        return result;
+  if (this.data.getCharAt(1) != "*")
+    return false;
+  
+  return true;  
+}
+
+SieveScriptParser.prototype.extractBracketComment
+    = function ()
+{
+  if (this.data.indexOf("/*") != 0)
+    throw "/* expected";
     
-    result = extractHashComment(data)
-    if (result != null)
-        return result;
-        
-    return null;
+  // remove the "/*"
+  this.extract(2);
+
+  
+  var end = this.data.indexOf("*/"); 
+  if (end == -1)
+    throw "*/ expected";
+    
+  var result = this.data.slice(0,end);    
+  this.data = this.data.slice(end+2);
+    
+  return result;
+}
+
+SieveScriptParser.prototype.isHashComment
+    = function ()
+{
+  if (this.data.getCharAt(0) != "#")
+    return false;
+
+  return true;  
+}
+
+SieveScriptParser.prototype.extractHashComment
+    = function ()
+{
+  // is this a valid HashComment...
+  if (this.data.indexOf("#") != 0)
+    throw "# expected";
+  
+  // ... then remove the Hash # ...
+  this.extract(1);
+    
+  // ... and find the end of the comment
+  var end = this.data.indexOf("\r\n")    
+  if (end == -1)
+   throw "linebreak expected";
+   
+  var result = this.data.slice(0,end);
+  this.data = this.data.slice(end+2);
+
+  return result;
 }
 
 function extractIdentifier(data)
@@ -206,9 +231,10 @@ function isCharNotSlash(data)
         return false;        
 }
 
-function isCharNotStar(data)
+SieveScriptParser.prototype.isCharNotStar
+    = function ()
 {
-    var ch = data.charCodeAt(0);
+    var ch = this.data.charCodeAt(0);
     
     if ((ch >= 0x00) && (ch <= 0x51))
         return true;

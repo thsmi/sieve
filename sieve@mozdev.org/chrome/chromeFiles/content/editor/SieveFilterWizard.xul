@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://sieve/locale/locale.dtd">
+
+<window id="FilterEditor"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  title="&edit.title;"
+  style="width: 45em; height: 31em;"
+  persist="width height screenX screenY"
+  buttons="accept,cancel,help"
+  onload="onLoad(this);"
+  ondialogaccept="return onAccept(this);" >  
+
+  <script type="application/x-javascript" src="chrome://sieve/content/editor/SieveFilterWizard.js" /> 
+    
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveScriptParser.js" />  
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveScriptElements.js" />    
+
+  <vbox flex="1">
+    <label value="&edit.script;"/>
+    <hbox flex="1">
+        <textbox flex="1" id="txtScript" multiline="true" oninput="onInput();" wrap="off" />
+    </hbox>
+  </vbox>
+  <hbox id="wizard">
+
+  </hbox>
+  <hbox align="center">
+    <spacer flex="1" />
+    <button label ="parse" oncommand="onParse()"/>
+    <button label ="exit" oncommand="onExit()"/>
+  </hbox>
+  <separator/>
+</window>

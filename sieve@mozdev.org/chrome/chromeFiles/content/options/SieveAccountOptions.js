@@ -49,6 +49,9 @@ function onDialogLoad(sender)
  	var cbxCompile = document.getElementById('cbxCompile');
   cbxCompile.checked = account.getSettings().isCompile();
   enableCompile(cbxCompile.checked);	
+  
+  var cbxDebug = document.getElementById('cbxDebug');
+  cbxDebug.checked = account.getSettings().isDebug();
 }
 
 function onDialogAccept(sender)
@@ -203,3 +206,7 @@ function onCompileChange(sender)
   account.getSettings().setCompileDelay(sender.value)    
 }
 
+function onDebugCommand(sender)
+{    
+  account.getSettings().setDebug(sender.checked);
+}

@@ -177,7 +177,10 @@ var event =
         
       postStatus("Referral to "+code.getHostname()+" ...");
       
-      sieve = new Sieve(code.getHostname(),getSelectedAccount().getHost().getPort());		  
+      sieve = new Sieve(
+                    code.getHostname(),
+                    getSelectedAccount().getHost().getPort(),
+                    getSelectedAccount().getSettings().isDebug() );
   
       var request = new SieveInitRequest();
       request.addErrorListener(event)
@@ -330,16 +333,19 @@ function onSelectAccount()
 			if (account.getSettings().isKeepAlive())
 			    keepAliveInterval = setInterval("onKeepAlive()",account.getSettings().getKeepAliveInterval());
 
-		    sieve = new Sieve(account.getHost().getHostname(),account.getHost().getPort());
+      sieve = new Sieve(
+                    account.getHost().getHostname(),
+                    account.getHost().getPort(),
+                    account.getSettings().isDebug() );
 		    
-		    var request = new SieveInitRequest();
-		    request.addErrorListener(event)
-		    request.addInitListener(event)
-		    sieve.addRequest(request);
-		    
-		    sieve.connect();
-		}
-	}
+      var request = new SieveInitRequest();
+      request.addErrorListener(event)
+      request.addInitListener(event)
+      sieve.addRequest(request);
+  
+      sieve.connect();
+    }
+  }
 
 	// Besteht das Objekt überhaupt bzw besteht eine Verbindung?
 	if ((sieve == null) || (sieve.isAlive() == false))

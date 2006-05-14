@@ -80,32 +80,33 @@
          </row>
 </rows>
 </grid>
-</groupbox>
-</hbox>
-
-   <groupbox>
-     <caption label="&options.misc;" />
-     <grid>
-       <colums>
-         <column/>
-         <column/>
-         <column/>
-       </colums>
-       <rows>
-         <row align="center">
-           <checkbox id="cbxKeepAlive" label="&options.misc.keepalive;"
-           		accesskey="&options.misc.keepalive.key;" oncommand="onKeepAliveCommand(this)" />
-           <textbox id="txtKeepAlive" onchange="onKeepAliveChange(this)" size="6"/>
-           <label value="ms" />
-         </row>
-         <row align="center">
-           <checkbox id="cbxCompile" label="&options.misc.compile;"
-           		accesskey="&options.misc.compile.key;" oncommand="onCompileCommand(this)" />
-           <textbox id="txtCompile" onchange="onCompileChange(this)" size="6"/>
-           <label value="ms" />
+      </groupbox>
+    </hbox>
+    <groupbox>
+    <caption label="&options.misc;" />
+      <grid>
+        <colums>
+          <column/>
+          <column/>
+          <column/>
+        </colums>
+        <rows>
+          <row align="center">
+            <checkbox id="cbxKeepAlive" label="&options.misc.keepalive;"
+               accesskey="&options.misc.keepalive.key;" oncommand="onKeepAliveCommand(this)" />
+            <textbox id="txtKeepAlive" onchange="onKeepAliveChange(this)" size="6"/>
+            <label value="ms" />
+          </row>
+          <row align="center">
+            <checkbox id="cbxCompile" label="&options.misc.compile;"
+         		   accesskey="&options.misc.compile.key;" oncommand="onCompileCommand(this)" />
+            <textbox id="txtCompile" onchange="onCompileChange(this)" size="6"/>
+            <label value="ms" />
           </row>
         </rows>
       </grid>
+      <checkbox id="cbxDebug" label="&options.misc.debug;"
+         accesskey="&options.misc.debug.key;" oncommand="onDebugCommand(this)" />      
     </groupbox>
   </vbox>
 </dialog>

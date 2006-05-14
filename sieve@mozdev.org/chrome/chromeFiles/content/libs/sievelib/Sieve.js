@@ -1,7 +1,7 @@
 
 var jsLibLoaded = false
 
-function Sieve(host, port) 
+function Sieve(host, port, debug) 
 {
   var jsLoader = Components
 										.classes["@mozilla.org/moz/jssubscript-loader;1"]
@@ -14,6 +14,11 @@ function Sieve(host, port)
   	  jsLibLoaded = true;
 	}
   include("chrome://sieve/content/libs/jslib/network/socket.js");
+ 
+  if (debug == null) 
+    this.debug = false;    
+  else
+    this.debug = debug;    
   
   this.host = host;
   this.port = port;
@@ -84,21 +89,25 @@ Sieve.prototype.streamStopped
 Sieve.prototype.receiveData
 	= function (data)
 {
-  var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
-                                 .getService(Components.interfaces.nsIConsoleService);
-  consoleService.logStringMessage(data);
+  
+  if (this.debug)
+  {
+    var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
+                           .getService(Components.interfaces.nsIConsoleService);
+    consoleService.logStringMessage(data);
+  }  
 
-	// is a Request listener existing?
+	// is a request handler waiting?
 	if ((this.requests.length == 0))
 		return
 									
-	// ok es gibt einen, dem �bergeben wir mal die daten...
+	// ... yes, there is one, so we can handle the response...
 	this.requests[0].setResponse(data);
 
-	// und da nun der Request beendet ist fliegt er raus
+	// ... delete the request, it is processed...
 	this.requests.splice(0,1);
 
-	// n�chster Request aufrufen
+	// ... are there any other requests waiting in the queue.
 	if ((this.requests.length > 0))
 		this.socket.write(this.requests[0].getCommand());
 }

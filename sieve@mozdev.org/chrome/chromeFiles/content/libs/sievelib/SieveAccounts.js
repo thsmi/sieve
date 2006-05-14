@@ -287,10 +287,11 @@ SieveCustomHost.prototype.getType
 
 function SieveAccountSettings(uri)
 {
-    if (uri == null)
-        throw "SieveAccountSettings: URI can't be null"; 
+  if (uri == null)
+    throw "SieveAccountSettings: URI can't be null"; 
+    
 	this.uri = uri;
-    this.prefURI = "extensions.sieve.account."+this.uri;
+  this.prefURI = "extensions.sieve.account."+this.uri;
 }
 
 SieveAccountSettings.prototype.isKeepAlive
@@ -353,6 +354,22 @@ SieveAccountSettings.prototype.setCompileDelay
 {
     gPref.setIntPref(this.prefURI+".compile.delay",ms);
 }
+
+SieveAccountSettings.prototype.isDebug
+    = function ()
+{
+    if (gPref.prefHasUserValue(this.prefURI+".debug"))
+        return gPref.getBoolPref(this.prefURI+".debug");
+        
+    return false;
+}
+
+SieveAccountSettings.prototype.setDebug
+    = function (enabled)
+{
+  gPref.setBoolPref(this.prefURI+".debug",enabled);
+}
+
 
 
 //*******************

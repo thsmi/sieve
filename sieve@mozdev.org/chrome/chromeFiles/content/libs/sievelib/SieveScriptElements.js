@@ -689,7 +689,7 @@ SieveHashComment.prototype.parse
   this.text = data.slice(0,end);
        
   //remove the \r\n
-  return data = data.slice(end+2);  
+  return data = data.slice(end+1);
 }
 
 SieveHashComment.prototype.toString
@@ -1252,7 +1252,7 @@ SieveHeaderTest.prototype.parse
   
   if (isSieveComparator(data))
   {
-    element = new SieveComparator();
+    var element = new SieveComparator();
     data = element.parse(data);
     this.options[0] = element;
     
@@ -1267,7 +1267,7 @@ SieveHeaderTest.prototype.parse
   }  
   else if (isSieveMatchType(data))
   {
-    element = new SieveMatchType();
+    var element = new SieveMatchType();
     data = element.parse(data);
     this.options[0] = element;
     

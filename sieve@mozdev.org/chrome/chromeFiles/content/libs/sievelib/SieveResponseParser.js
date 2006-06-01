@@ -30,10 +30,10 @@ SieveResponseParser.prototype.extractLineBreak
 SieveResponseParser.prototype.isSpace
     = function ()
 {
-    if (this.data.indexOf(" ") != 0)
-        return false;
+    if (this.data.charAt(0) == " ")
+        return true;
 
-    return true;
+    return false;
 }
 
 SieveResponseParser.prototype.extractSpace
@@ -49,13 +49,13 @@ SieveResponseParser.prototype.extractSpace
 SieveResponseParser.prototype.isLiteral
     = function ()
 {
-    if (this.data.indexOf("{") != 0)
-        return false;
+    if (this.data.charAt(0) == "{")
+        return true;
 
-    return true;
+    return false;
 }
 
-// gibt einen string zurück, wenn keiner Existiert wird null übergeben
+// gibt einen string zurï¿½ck, wenn keiner Existiert wird null ï¿½bergeben
 // bei syntaxfehlern filegt eine exception;
 SieveResponseParser.prototype.extractLiteral
     = function ()
@@ -91,7 +91,7 @@ SieveResponseParser.prototype.extractLiteral
 SieveResponseParser.prototype.isQuoted
     = function ()
 {
-    if (this.data.indexOf("\"") == 0)
+    if (this.data.charAt(0) == "\"")
         return true;
 
     return false;

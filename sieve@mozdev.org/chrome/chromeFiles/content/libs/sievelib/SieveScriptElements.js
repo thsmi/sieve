@@ -593,7 +593,7 @@ SieveElse.prototype.toString
     = function ()
 {
   return "else"
-    + this.whiteSpace.toString();
+    + this.whiteSpace.toString()
     + this.block.toString();
 }
 
@@ -1303,7 +1303,7 @@ SieveHeaderTest.prototype.toString
     + this.whiteSpace[2].toString()
     + this.headerNames.toString()
     + this.whiteSpace[3].toString()
-    + this.keyList.toString();
+    + this.keyList.toString()
     + this.whiteSpace[4].toString()
 }
 
@@ -1931,7 +1931,9 @@ function isSieveElement(data,index)
   if (isSieveDeadCode(data,index))
     return true;
   if (isSieveCondition(data,index))
-    return true;  
+    return true;
+  
+  return false;
 }
 
 function SieveElementParser(data)

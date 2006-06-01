@@ -55,7 +55,7 @@ SieveNumber.prototype.parse
   this.number = data.slice(0,i);  
   data = data.slice(i); 
   
-  ch = data.charAt(0).toUpperCase();
+  var ch = data.charAt(0).toUpperCase();
 
   if ((ch == 'K') ||  (ch == 'M') || (ch == 'G'))
   {
@@ -446,7 +446,7 @@ SieveIf.prototype.parse
   data = this.whiteSpace[0].parse(data);
               
   // ...then extract the test...
-  parser = new SieveTestParser(data)
+  var parser = new SieveTestParser(data)
   this.test = parser.extract();  
   data = parser.getData();
   
@@ -517,7 +517,7 @@ SieveElsIf.prototype.parse
   data = this.whiteSpace[0].parse(data);
               
   // ...then extract the test...
-  parser = new SieveTestParser(data)
+  var parser = new SieveTestParser(data)
   this.test = parser.extract();  
   data = parser.getData();
   

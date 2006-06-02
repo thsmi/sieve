@@ -451,6 +451,7 @@ function disableControls(disabled)
     document.getElementById('newButton').setAttribute('disabled','true');
     document.getElementById('editButton').setAttribute('disabled','true');
     document.getElementById('deleteButton').setAttribute('disabled','true');
+    document.getElementById('renameButton').setAttribute('disabled','true');
     document.getElementById('capabilites').setAttribute('disabled','true');
     document.getElementById('treeImapRules').setAttribute('disabled','true');
   }
@@ -459,6 +460,7 @@ function disableControls(disabled)
     document.getElementById('newButton').removeAttribute('disabled');
     document.getElementById('editButton').removeAttribute('disabled');
     document.getElementById('deleteButton').removeAttribute('disabled');
+    document.getElementById('renameButton').removeAttribute('disabled');    
     document.getElementById('capabilites').removeAttribute('disabled');
     document.getElementById('treeImapRules').removeAttribute('disabled');  
   }
@@ -502,6 +504,8 @@ function onRenameClick()
 
 
   lEvent.oldScriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));
+  
+  // TODO remember if the Script is active
 
   var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
                   .getService(Components.interfaces.nsIPromptService);

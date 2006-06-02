@@ -3,12 +3,6 @@
  */
 
 
-// Tests to be implemented
-// "address"
-// "not"
-// "true"
-// "false"
-// "envelope"
 // TODO: clean up code
 
 
@@ -1101,7 +1095,7 @@ SieveKeep.prototype.parse
 
   // ... and finally remove the semicolon;
   if (isSieveSemicolon(data) == false)
-    throw "Syntaxerror: keep - Semicolon expected";
+    throw "Syntaxerror: Semicolon expected";
     
   return data.slice(1);
 }    
@@ -1120,11 +1114,9 @@ SieveKeep.prototype.toXUL
 }
 /******************************************************************************/
 
-  // compatators legen den zeichensatz fest, z.B. nur kleinschreibung
-  // oder nur großbuchstaben etc ...  
-  // sieve untsersützt i;octet and i;ascii-casemap
-  // Header comparisons are always done with the "i;ascii-casemap" operator, i.e., case-insensitive
-  // -> i;octet ~> case  sensitive...
+  // Comparators define the charset. All Sieve implementation have to support
+  // "i;octet which" is case sensitive and "i;ascii-codemap" which is case
+  // insensitive.
 
 function isSieveComparator(data,index)
 {
@@ -1192,7 +1184,7 @@ function isSieveMatchType(data,index)
 
 function SieveMatchType()
 {
-  this.type = "";
+  this.type = null;
 }
 
 SieveMatchType.prototype.parse
@@ -1221,6 +1213,62 @@ SieveMatchType.prototype.toString
 }
 
 SieveMatchType.prototype.toXul
+    = function ()
+{
+  
+}
+
+/******************************************************************************/
+
+//":localpart" / ":domain" / ":all"
+
+function isSieveAddressPart(data,index)
+{
+  if (index == null)
+    index = 0;
+    
+  var token = data.substr(index,11).toLowerCase();
+  if (token.indexOf(":localpart") == 0)
+    return true;
+  if (token.indexOf(":domain") == 0)
+    return true;
+  if (token.indexOf(":all") == 0)
+    return true;
+  
+  return false;
+}
+
+function SieveAddressPart()
+{
+  this.part = null;
+}
+
+SieveAddressPart.prototype.parse
+    = function (data)
+{
+  var token = data.substr(0,11).toLowerCase();
+  if (token.indexOf(":localpart") == 0)
+    this.part = "localpart";
+  else if (token.indexOf(":domain") == 0)
+    this.part = "domain";
+  else if (token.indexOf(":all") == 0)
+    this.part = "all"
+  else 
+    throw "Syntaxerror, unknown address part";
+  
+  return data.slice(this.part.length+1);
+}
+
+SieveAddressPart.prototype.toString
+    = function ()
+{
+  if (this.part == null)
+    return "";
+    
+  return ":"+this.part;
+}
+
+SieveAddressPart.prototype.toXul
     = function ()
 {
   
@@ -1312,6 +1360,66 @@ SieveHeaderTest.prototype.toXul
 {
   
 }
+
+/******************************************************************************/
+
+function isSieveBooleanTest(data)
+{   
+  data = data.toLowerCase();
+  if (data.indexOf("true") == 0)
+    return true;
+  if (data.indexOf("false") == 0)
+    return true;
+  
+  return false;
+}
+
+function SieveBooleanTest() 
+{
+  // first line with deadcode
+  this.whiteSpace = new SieveDeadCode();
+  
+  this.value = false;
+}
+
+SieveBooleanTest.prototype.parse
+    = function (data)
+{
+  var token = data.substr(0,5).toLowerCase();
+  
+  if (token.indexOf("true") == null)
+  {
+    this.value = true
+    data = data.slice("true".length);
+  }
+  
+  if (token.indexOf("false") == null)
+  {
+    this.value = false;
+    data = data.slice("false".length);
+  }
+  
+  data = this.whiteSpace.parse(data);
+    
+  return data;
+    
+}    
+
+SieveBooleanTest.prototype.toString
+    = function ()
+{
+  if (this.value)
+    return "true"+this.whiteSpace.toString();
+
+  return "false"+this.whiteSpace.toString();    
+}
+
+SieveBooleanTest.prototype.toXUL
+    = function ()
+{
+  
+}
+
 /******************************************************************************/
 
 function SieveSizeTest() 
@@ -1560,6 +1668,156 @@ SieveNotTest.prototype.toXUL
 
 /******************************************************************************/
 
+//<envelope> [COMPARATOR] [ADDRESS-PART] [MATCH-TYPE] 
+//  <envelope-part: string-list> <key-list: string-list>
+function SieveEnvelopeTest() 
+{
+  // first line with deadcode
+  this.options = new Array(null,null,null);
+  this.whiteSpace 
+    = new Array(new SieveDeadCode(),
+                new SieveDeadCode(),
+                new SieveDeadCode(),
+                new SieveDeadCode(),
+                new SieveDeadCode(),
+                new SieveDeadCode());
+  this.envelopeList = new SieveStringList();
+  this.keyList = new SieveStringList();
+}
+
+SieveEnvelopeTest.prototype.parse
+    = function (data)
+{
+  data = data.slice("envelope".length);
+  data = this.whiteSpace[0].parse(data);
+  
+  for (var i=0; i< 3; i++)
+  {
+    if (isSieveAddressPart(data))
+      this.options[i] = new SieveAddressPart();
+    else if (isSieveComparator(data))
+      this.options[i] = new SieveComparator();
+    else if (isSieveMatchType(data))
+      this.options[i] = new SieveMatchType();
+    else
+      break;
+    
+    data = this.options[i].parse(data);
+    data = this.whiteSpace[i+1].parse(data);
+  }
+  
+  data = this.envelopeList.parse(data);
+  
+  data = this.whiteSpace[4].parse(data);
+  
+  data = this.keyList.parse(data);
+    
+  data = this.whiteSpace[5].parse(data);
+  
+  return data;
+}    
+
+SieveEnvelopeTest.prototype.toString
+    = function ()
+{
+  return "envelope"
+    + this.whiteSpace[0].toString()
+    + ((this.options[0] != null)?this.options[0].toString():"")
+    + ((this.options[0] != null)?this.whiteSpace[1].toString():"")
+    + ((this.options[1] != null)?this.options[1].toString():"")
+    + ((this.options[1] != null)?this.whiteSpace[2].toString():"")
+    + ((this.options[2] != null)?this.options[2].toString():"")
+    + ((this.options[2] != null)?this.whiteSpace[3].toString():"")
+    + this.envelopeList.toString()
+    + this.whiteSpace[4].toString()
+    + this.keyList.toString()
+    + this.whiteSpace[5].toString();
+}
+
+SieveEnvelopeTest.prototype.toXUL
+    = function ()
+{
+  
+}
+
+/******************************************************************************/
+
+
+//address [ADDRESS-PART] [COMPARATOR] [MATCH-TYPE]
+//             <header-list: string-list> <key-list: string-list>
+             
+function SieveAddressTest() 
+{
+  // first line with deadcode
+  this.options = new Array(null,null,null);
+  this.whiteSpace 
+    = new Array(new SieveDeadCode(),
+                new SieveDeadCode(),
+                new SieveDeadCode(),
+                new SieveDeadCode(),
+                new SieveDeadCode(),
+                new SieveDeadCode());
+  this.headerList = new SieveStringList();
+  this.keyList = new SieveStringList();
+}
+
+SieveAddressTest.prototype.parse
+    = function (data)
+{
+  data = data.slice("address".length);
+  data = this.whiteSpace[0].parse(data);
+  
+  for (var i=0; i< 3; i++)
+  {
+    if (isSieveAddressPart(data))
+      this.options[i] = new SieveAddressPart();
+    else if (isSieveComparator(data))
+      this.options[i] = new SieveComparator();
+    else if (isSieveMatchType(data))
+      this.options[i] = new SieveMatchType();
+    else
+      break;
+    
+    data = this.options[i].parse(data);
+    data = this.whiteSpace[i+1].parse(data);
+  }
+  
+  data = this.headerList.parse(data);
+  
+  data = this.whiteSpace[4].parse(data);
+  
+  data = this.keyList.parse(data);
+    
+  data = this.whiteSpace[5].parse(data);
+  
+  return data;
+}    
+
+SieveAddressTest.prototype.toString
+    = function ()
+{
+  return "address"
+    + this.whiteSpace[0].toString()
+    + ((this.options[0] != null)?this.options[0].toString():"")
+    + ((this.options[0] != null)?this.whiteSpace[1].toString():"")
+    + ((this.options[1] != null)?this.options[1].toString():"")
+    + ((this.options[1] != null)?this.whiteSpace[2].toString():"")
+    + ((this.options[2] != null)?this.options[2].toString():"")
+    + ((this.options[2] != null)?this.whiteSpace[3].toString():"")
+    + this.headerList.toString()
+    + this.whiteSpace[4].toString()
+    + this.keyList.toString()
+    + this.whiteSpace[5].toString();
+}
+
+SieveAddressTest.prototype.toXUL
+    = function ()
+{
+  
+}
+
+/******************************************************************************/
+
 // anyof (not exists ["From", "Date"],
 //                   header :contains "from" "fool@example.edu")
 //  test-list = "(" test *("," test) ")"
@@ -1662,8 +1920,10 @@ function isSieveTest (data, index)
   var token = data.substr(index,10).toLowerCase();
 
   if (token.indexOf("not") == 0)
-    return true;  
-  if (token.indexOf("address") == 0)
+    return true;
+  else if (isSieveBooleanTest(token))
+    return true;
+  else if (token.indexOf("address") == 0)
     return true;
   else if (token.indexOf("anyof") == 0)
     return true;
@@ -1693,6 +1953,8 @@ SieveTestParser.prototype.extract
   
   if (token.indexOf("not") == 0)
     element = new SieveNotTest();
+  else if (isSieveBooleanTest(token))
+    element = new SieveBooleanTest();
   else if (token.indexOf("address") == 0)
     element = new SieveAddressTest();
   else if (token.indexOf("anyof") == 0)

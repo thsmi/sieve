@@ -27,8 +27,9 @@ function isSieveNumber(data,index)
   return true;
 }
 
-function SieveNumber()
+function SieveNumber(id)
 {
+  this.id = id
   this.number = "1";
   this.unit = null;
 }
@@ -36,7 +37,7 @@ function SieveNumber()
 SieveNumber.prototype.parse
     = function(data)
 {
-  var i;
+  var i
   
   for (i=0; i<data.length; i++)
   {
@@ -60,6 +61,12 @@ SieveNumber.prototype.parse
   return data;
 }
 
+SieveNumber.prototype.getID
+    = function ()
+{
+  return this.id;
+}
+
 SieveNumber.prototype.toString
     = function ()
 {
@@ -70,7 +77,20 @@ SieveNumber.prototype.toString
 SieveNumber.prototype.toXUL
     = function ()
 {
-  
+  return "<html:div class='SieveNumber'>"
+    + "  <html:input type='text' value='"+this.number+"' />"
+    + "  <html:select>"
+    + "    <html:option "+((this.unit.toUpperCase()=="K")?"selected='true'":"")+">"
+    + "      Kilobytes"
+    + "    </html:option>"
+    + "    <html:option "+((this.unit.toUpperCase()=="M")?"selected='true'":"")+">"
+    + "      Megabytes"
+    + "    </html:option>"
+    + "    <html:option "+((this.unit.toUpperCase()=="G")?"selected='true'":"")+">"
+    + "      Gigabytes" 
+    + "    </html:option>"
+    + "  </html:select>"
+    + "</html:div>";
 }
 /******************************************************************************/
 function isSieveMultiLineString(data)
@@ -132,6 +152,13 @@ SieveMultiLineString.prototype.parse
   return data;
 }
 
+SieveMultiLineString.prototype.getValue
+    = function ()
+{
+  return this.text;
+} 
+
+
 SieveMultiLineString.prototype.toString
     = function ()
 {
@@ -145,7 +172,7 @@ SieveMultiLineString.prototype.toString
 SieveMultiLineString.prototype.toXUL
     = function ()
 {
-  
+  return "MultilineString - to be implemented";
 }
 
 /******************************************************************************/
@@ -179,6 +206,12 @@ SieveQuotedString.prototype.parse
    return data = data.slice(size+1); 
 }
 
+SieveQuotedString.prototype.getValue
+    = function ()
+{
+  return this.text;
+} 
+
 SieveQuotedString.prototype.toString
     = function ()
 {
@@ -188,9 +221,8 @@ SieveQuotedString.prototype.toString
 SieveQuotedString.prototype.toXUL
     = function ()
 {
-  
+  return "QuotedString - to be implemented";
 }
-
 /******************************************************************************/
 
 function isSieveString(data)
@@ -221,6 +253,12 @@ SieveString.prototype.parse
   return this.string.parse(data);    
 }
 
+SieveString.prototype.getValue
+    = function ()
+{
+  return this.string.getValue();
+} 
+   
 SieveString.prototype.toString
     = function ()
 {
@@ -230,7 +268,7 @@ SieveString.prototype.toString
 SieveString.prototype.toXUL
     = function ()
 {
-  
+  return "SieveString.toXul - Not Implemented";
 }
 
 
@@ -328,7 +366,7 @@ SieveStringList.prototype.toString
 SieveStringList.prototype.toXUL
     = function ()
 {
-  
+  return "Stringlist";
 }
 
 /******************************************************************************/
@@ -341,8 +379,9 @@ function isSieveCondition(data)
   return false;
 }
 
-function SieveCondition(data) 
-{  
+function SieveCondition(id) 
+{ 
+  this.id = id;
   this.elements = new Array();
 }
 
@@ -359,25 +398,32 @@ function SieveCondition(data)
 SieveCondition.prototype.parse
     = function (data)
 {  
-  var element = new SieveIf()
+  var element = new SieveIf(this.id+".0")
   data = element.parse(data);
   this.elements.push(element);
   
   while (true)
   {  
-      
+    var id = this.id+"_"+this.elements.length;
+    
     if (isSieveDeadCode(data))
-      element = new SieveDeadCode()
+      element = new SieveDeadCode(id)
     else if (isSieveElsIf(data))
-      element = new SieveElsIf();
+      element = new SieveElsIf(id);
     else if (isSieveElse(data))
-      element = new SieveElse();
+      element = new SieveElse(id);
     else
       return data;
-      
+
     data = element.parse(data);
     this.elements.push(element);
   }
+}
+
+SieveCondition.prototype.getID
+    = function ()
+{
+  return this.id;
 }
 
 SieveCondition.prototype.toString
@@ -387,14 +433,19 @@ SieveCondition.prototype.toString
   for (var i=0; i<this.elements.length;i++)
   {
     str += this.elements[i].toString();
-  }  
+  }
   return str;
 }
 
 SieveCondition.prototype.toXUL
     = function ()
 {
-  
+  var xul = "";
+  for (var i=0; i<this.elements.length;i++)
+  {
+    xul += this.elements[i].toXUL();
+  }
+  return xul;  
 }
 
 
@@ -408,13 +459,14 @@ function isSieveIf(data)
   return false;
 }
 
-function SieveIf() 
+function SieveIf(id) 
 {
+  this.id = id;
   this.test = null;
-  this.block = new SieveBlock();
+  this.block = new SieveBlock(this.id+"_3");
   this.whiteSpace 
-    = new Array(new SieveDeadCode(),
-                new SieveDeadCode());
+    = new Array(new SieveDeadCode(this.id+"_0"),
+                new SieveDeadCode(this.id+"_2"));
 }
 
 /*
@@ -440,7 +492,7 @@ SieveIf.prototype.parse
   data = this.whiteSpace[0].parse(data);
               
   // ...then extract the test...
-  var parser = new SieveTestParser(data)
+  var parser = new SieveTestParser(data,this.id+"_1");
   this.test = parser.extract();  
   data = parser.getData();
   
@@ -451,6 +503,12 @@ SieveIf.prototype.parse
   data = this.block.parse(data);
    
   return data;
+}
+
+SieveIf.prototype.getID
+    = function ()
+{
+  return this.id;
 }
 
 SieveIf.prototype.toString
@@ -466,7 +524,9 @@ SieveIf.prototype.toString
 SieveIf.prototype.toXUL
     = function ()
 {
-  
+  return "if "
+    + this.test.toXUL()
+    + this.block.toXUL();  
 }
 
 /******************************************************************************/
@@ -479,13 +539,14 @@ function isSieveElsIf(data)
   return false;
 }
 
-function SieveElsIf() 
+function SieveElsIf(id) 
 {
+  this.id = id
   this.test = null;
-  this.block = new SieveBlock();
+  this.block = new SieveBlock(this.id+"_3");
   this.whiteSpace 
-    = new Array(new SieveDeadCode(),
-                new SieveDeadCode());
+    = new Array(new SieveDeadCode(this.id+"_0"),
+                new SieveDeadCode(this.id+"_2"));
 }
 
 /*
@@ -511,7 +572,7 @@ SieveElsIf.prototype.parse
   data = this.whiteSpace[0].parse(data);
               
   // ...then extract the test...
-  var parser = new SieveTestParser(data)
+  var parser = new SieveTestParser(data,this.id+"_1");
   this.test = parser.extract();  
   data = parser.getData();
   
@@ -522,6 +583,12 @@ SieveElsIf.prototype.parse
   data = this.block.parse(data);
    
   return data;
+}
+
+SieveElsIf.prototype.getID
+    = function ()
+{
+  return this.id; 
 }
 
 SieveElsIf.prototype.toString
@@ -537,7 +604,9 @@ SieveElsIf.prototype.toString
 SieveElsIf.prototype.toXUL
     = function ()
 {
-  
+  return "else if"
+    + this.test.toXUL()
+    + this.block.toXUL();   
 }
 
 /******************************************************************************/
@@ -551,10 +620,11 @@ function isSieveElse(data)
   return false;
 }
 
-function SieveElse() 
+function SieveElse(id) 
 {
-  this.block = new SieveBlock();
-  this.whiteSpace = new SieveDeadCode();
+  this.id = id;
+  this.block = new SieveBlock(this.id+"_1");
+  this.whiteSpace = new SieveDeadCode(this.id+"_0");
 
 }
 
@@ -583,6 +653,12 @@ SieveElse.prototype.parse
   return data;
 }
 
+SieveElse.prototype.getID
+    = function ()
+{
+  return this.id;
+}
+
 SieveElse.prototype.toString
     = function ()
 {
@@ -594,7 +670,8 @@ SieveElse.prototype.toString
 SieveElse.prototype.toXUL
     = function ()
 {
-
+  return "else"
+    + this.block.toXUL(); 
 }
 
 /******************************************************************************/
@@ -644,7 +721,7 @@ SieveBracketComment.prototype.toString
 SieveBracketComment.prototype.toXUL
     = function ()
 {
-  
+  return ""; 
 }
 
 /******************************************************************************/
@@ -660,8 +737,9 @@ function isSieveHashComment(data, index)
   return true;
 }
 
-function SieveHashComment() 
+function SieveHashComment(id) 
 {
+  this.id = id;
   this.text = "";
 }
 
@@ -686,6 +764,12 @@ SieveHashComment.prototype.parse
   return data = data.slice(end+1);
 }
 
+SieveHashComment.prototype.getID
+    = function ()
+{
+  return this.id;
+}
+
 SieveHashComment.prototype.toString
     = function ()
 {
@@ -695,19 +779,21 @@ SieveHashComment.prototype.toString
 SieveHashComment.prototype.toXUL
     = function ()
 {
-  
+  // this element is invisible in XUL
+  return "";
 }
 
 
 /******************************************************************************/
 
 
-function SieveRequire() 
+function SieveRequire(id) 
 {
+  this.id = id;
   this.whiteSpace 
-    = new Array(new SieveDeadCode(),
-                new SieveDeadCode());  
-  this.strings = new SieveStringList();
+    = new Array(new SieveDeadCode(this.id+"_0"),
+                new SieveDeadCode(this.id+"_2"));  
+  this.strings = new SieveStringList(this.id+"_1");
 }
 
 SieveRequire.prototype.parse
@@ -735,6 +821,12 @@ SieveRequire.prototype.parse
   return data.slice(1);  
 }
 
+SieveRequire.prototype.getID
+    = function ()
+{
+  return this.id;
+}
+
 SieveRequire.prototype.toString
     = function ()
 {
@@ -748,7 +840,8 @@ SieveRequire.prototype.toString
 SieveRequire.prototype.toXUL
     = function ()
 {
-  
+  // we hide requires from the user
+  return "";  
 }
 
 /******************************************************************************/
@@ -761,12 +854,13 @@ SieveRequire.prototype.toXUL
   return false;
 }*/
 
-function SieveFileInto() 
+function SieveFileInto(id) 
 {
+  this.id = id;
   this.whiteSpace 
-    = new Array(new SieveDeadCode(),
-                new SieveDeadCode());  
-  this.string = new SieveString();
+    = new Array(new SieveDeadCode(this.id+"_0"),
+                new SieveDeadCode(this.id+"_2"));  
+  this.string = new SieveString(this.id+"_1");
 }
 
 SieveFileInto.prototype.parse
@@ -793,6 +887,11 @@ SieveFileInto.prototype.parse
   return data.slice(1);
 }
 
+SieveFileInto.prototype.getID
+    = function ()
+{
+  return this.id;
+}
 
 SieveFileInto.prototype.toString
     = function ()
@@ -807,10 +906,8 @@ SieveFileInto.prototype.toString
 SieveFileInto.prototype.toXUL
     = function ()
 {
-  
+  return "Fileinto not implemented" ;
 }
-
-
 
 /******************************************************************************/
 
@@ -832,8 +929,9 @@ function isSieveWhiteSpace(data, index)
   return false;
 }
 
-function SieveWhiteSpace() 
+function SieveWhiteSpace(id)
 {
+  this.id = id;
   this.whiteSpace = "";
 }
 
@@ -862,6 +960,12 @@ SieveWhiteSpace.prototype.parse
   return data.slice(i);  
 }
 
+SieveWhiteSpace.prototype.getID
+    = function ()
+{
+  return this.id;
+}
+
 SieveWhiteSpace.prototype.toString
     = function ()
 {
@@ -872,6 +976,7 @@ SieveWhiteSpace.prototype.toXUL
     = function ()
 {
   // whitespaces do nothing in xul 
+  return "";
 }
 
 /******************************************************************************/
@@ -884,8 +989,9 @@ SieveWhiteSpace.prototype.toXUL
   return false;
 }*/
 
-function SieveDiscard() 
+function SieveDiscard(id) 
 {
+  this.id = id;
   this.whiteSpace = new SieveDeadCode();
 }
 
@@ -916,20 +1022,36 @@ SieveDiscard.prototype.toString
     + ";";  
 }
 
+SieveDiscard.prototype.getID
+    = function ()
+{
+  return this.id;
+}    
+
 SieveDiscard.prototype.toXUL
     = function ()
 {
-  
+    return "<html:div class='SieveDiscard'" 
+    + "  onmouseover='document.getElementById(\""+this.id+"_opt\").style.display=\"inline\";'"
+    + "  onmouseout='document.getElementById(\""+this.id+"_opt\").style.display=\"none\";'" 
+    + "  id='"+this.id+"' >\n" 
+    + "  Discard incomming message silently\n"
+    + "  <html:div id='"+this.id+"_opt' class='SieveOptions' style='display:none'>\n"
+    + "    <html:input type='image' src='chrome://sieve/content/images/add.png' onclick='blubb();' />\n"
+    + "    <html:input type='image' src='chrome://sieve/content/images/delete.png' onclick='blubb();' />\n"
+    + "  </html:div>\n"
+    + "</html:div>\n";
 }
 
 //***************************************
 
-function SieveRedirect(data) 
+function SieveRedirect(id)
 {
+  this.id = id;
   this.whiteSpace 
-    = new Array(new SieveDeadCode(),
-                new SieveDeadCode());  
-  this.address = new SieveString();  
+    = new Array(new SieveDeadCode(this.id+"_0"),
+                new SieveDeadCode(this.id+"_2"));  
+  this.address = new SieveString(this.id+"_1");  
 }
 
 SieveRedirect.prototype.parse
@@ -958,6 +1080,12 @@ SieveRedirect.prototype.parse
   return data.slice(1);    
 }
 
+SieveRedirect.prototype.getID
+    = function ()
+{
+  return this.id;
+}
+
 SieveRedirect.prototype.toString
     = function ()
 {
@@ -971,17 +1099,26 @@ SieveRedirect.prototype.toString
 SieveRedirect.prototype.toXUL
     = function ()
 {
-  
+  return "<html:div class='SieveRedirect'>" 
+    + "  Redirect messages to the following email address:"
+    + "  <html:br />"
+    + "  <html:input type='text' value='"+this.address.getValue()+"' />"
+    + "  <html:div class='SieveOptions'>"
+    + "    <html:input type='image' src='chrome://sieve/content/images/add.png' onclick='blubb();' />"
+    + "    <html:input type='image' src='chrome://sieve/content/images/delete.png' onclick='blubb();' />"
+    + "  </html:div>"
+    + "</html:div>";
 }
 
 /******************************************************************************/
 
-function SieveReject() 
+function SieveReject(id)
 {
+  this.id = id;
   this.whiteSpace 
-    = new Array(new SieveDeadCode(),
-                new SieveDeadCode());  
-  this.reason = new SieveString();
+    = new Array(new SieveDeadCode(this.id+"_0"),
+                new SieveDeadCode(this.id+"_2"));  
+  this.reason = new SieveString(this.id+"_1");
 }
 
 SieveReject.prototype.parse
@@ -1009,6 +1146,12 @@ SieveReject.prototype.parse
   return data.slice(1); 
 }
 
+SieveReject.prototype.getID
+    = function ()
+{
+  return this.id;
+}
+
 SieveReject.prototype.toString
     = function ()
 { 
@@ -1022,7 +1165,16 @@ SieveReject.prototype.toString
 SieveReject.prototype.toXUL
     = function ()
 {
-  
+ 
+  return "<html:div class='SieveReject'>" 
+    + "  Reject incomming messages and reply the following reason:"
+    + "  <html:br />"
+    + "  <html:input type='text' value='"+this.reason.getValue()+"' />"
+    + "  <html:div class='SieveOptions'>"
+    + "    <html:input type='image' src='chrome://sieve/content/images/add.png' onclick='blubb();' />"
+    + "    <html:input type='image' src='chrome://sieve/content/images/delete.png' onclick='blubb();' />"
+    + "  </html:div>"    
+    + "</html:div>"; 
 }
 
 
@@ -1047,9 +1199,10 @@ SieveVacation.prototype.toXUL
 
 /******************************************************************************/
 
-function SieveStop() 
+function SieveStop(id) 
 {
-  this.whiteSpace = new SieveDeadCode();
+  this.id = id;
+  this.whiteSpace = new SieveDeadCode(this.id+"_0");
 }
 
 SieveStop.prototype.parse
@@ -1066,24 +1219,40 @@ SieveStop.prototype.parse
   return data.slice(1); 
 }    
 
+SieveStop.prototype.getID
+    = function ()
+{
+  return this.id;
+}
+
 SieveStop.prototype.toString
     = function ()
 {
-  return stop
+  return "stop"
     + this.whiteSpace.toString()+";";
 }
 
 SieveStop.prototype.toXUL
     = function ()
-{
+{ 
   
+  return "<html:div class='SieveStop'" 
+    + "  onMouseOver='"+this.id+"_opt.style.visibility=\"hidden\";'"
+    + "  onMouseOut='"+this.id+"_opt.style.visibility=\"visible\";'  >" 
+    + "  Stop script execution"
+    + "  <html:div id='"+this.id+"_opt' class='SieveOptions'>"
+    + "    <html:input type='image' src='chrome://sieve/content/images/add.png' onclick='blubb();' />"
+    + "    <html:input type='image' src='chrome://sieve/content/images/delete.png' onclick='blubb();' />"
+    + "  </html:div>"
+    + "</html:div>";
 }
 
-//********************************************
+/******************************************************************************/
 
-function SieveKeep() 
+function SieveKeep(id)
 {
-  this.whiteSpace = new SieveDeadCode();
+  this.id = id;
+  this.whiteSpace = new SieveDeadCode(this.id+"_0");
 }
 
 SieveKeep.prototype.parse
@@ -1100,6 +1269,12 @@ SieveKeep.prototype.parse
   return data.slice(1);
 }    
 
+SieveKeep.prototype.getID
+    = function ()
+{
+  return this.id;
+}
+
 SieveKeep.prototype.toString
     = function ()
 {
@@ -1110,7 +1285,9 @@ SieveKeep.prototype.toString
 SieveKeep.prototype.toXUL
     = function ()
 {
-  
+  return "<html:div class='SieveKeep'>" 
+    + "Move the message into the main inbox"
+    + "</html:div>";      
 }
 /******************************************************************************/
 
@@ -1130,10 +1307,11 @@ function isSieveComparator(data,index)
   return false;
 }
 
-function SieveComparator()
+function SieveComparator(id)
 {
-  this.whiteSpace = new SieveDeadCode();
-  this.comparator = new SieveQuotedString();
+  this.id = id;
+  this.whiteSpace = new SieveDeadCode(this.id+"_0");
+  this.comparator = new SieveQuotedString(this.id+"_1");
 }
 
 SieveComparator.prototype.parse
@@ -1151,6 +1329,12 @@ SieveComparator.prototype.parse
   return data;
 }
 
+SieveComparator.prototype.getID
+    = function ()
+{
+  return this.id;
+}    
+
 SieveComparator.prototype.toString
     = function ()
 {
@@ -1159,10 +1343,10 @@ SieveComparator.prototype.toString
     +this.comparator.toString();
 }
 
-SieveComparator.prototype.toXul
+SieveComparator.prototype.toXUL
     = function ()
 {
-  
+  return "Comparator - to be implemented";
 }
 /******************************************************************************/
 
@@ -1182,8 +1366,9 @@ function isSieveMatchType(data,index)
   return false;
 }
 
-function SieveMatchType()
+function SieveMatchType(id)
 {
+  this.id = id;
   this.type = null;
 }
 
@@ -1203,6 +1388,12 @@ SieveMatchType.prototype.parse
   return data.slice(this.type.length+1);
 }
 
+SieveMatchType.prototype.getID
+    = function ()
+{
+  return this.id;
+}
+
 SieveMatchType.prototype.toString
     = function ()
 {
@@ -1212,10 +1403,14 @@ SieveMatchType.prototype.toString
   return ":"+this.type;
 }
 
-SieveMatchType.prototype.toXul
+SieveMatchType.prototype.toXUL
     = function ()
 {
-  
+  return "<html:div class='SieveMatchType'>"
+    + "<html:option "+((this.type=="is")?"selected":"")+">is</html:option>" 
+    + "<html:option "+((this.type=="matches")?"selected":"")+">matches</html:option>" 
+    + "<html:option "+((this.type=="contains")?"selected":"")+">contains</html:option>"
+    + "</html:div>"
 }
 
 /******************************************************************************/
@@ -1238,8 +1433,9 @@ function isSieveAddressPart(data,index)
   return false;
 }
 
-function SieveAddressPart()
+function SieveAddressPart(id)
 {
+  this.id = id;
   this.part = null;
 }
 
@@ -1259,6 +1455,12 @@ SieveAddressPart.prototype.parse
   return data.slice(this.part.length+1);
 }
 
+SieveAddressPart.prototype.getID
+    = function ()
+{
+  return this.id;
+}
+
 SieveAddressPart.prototype.toString
     = function ()
 {
@@ -1268,10 +1470,10 @@ SieveAddressPart.prototype.toString
   return ":"+this.part;
 }
 
-SieveAddressPart.prototype.toXul
+SieveAddressPart.prototype.toXUL
     = function ()
 {
-  
+  return "addresspart to be implemented"
 }
 /******************************************************************************/
 
@@ -1355,10 +1557,10 @@ SieveHeaderTest.prototype.toString
     + this.whiteSpace[4].toString()
 }
 
-SieveHeaderTest.prototype.toXul
+SieveHeaderTest.prototype.toXUL
     = function ()
 {
-  
+  return "Headertest - to be Implemented";
 }
 
 /******************************************************************************/
@@ -1374,10 +1576,11 @@ function isSieveBooleanTest(data)
   return false;
 }
 
-function SieveBooleanTest() 
+function SieveBooleanTest(id) 
 {
   // first line with deadcode
-  this.whiteSpace = new SieveDeadCode();
+  this.id = id;
+  this.whiteSpace = new SieveDeadCode(this.id+"_0");
   
   this.value = false;
 }
@@ -1405,6 +1608,12 @@ SieveBooleanTest.prototype.parse
     
 }    
 
+SieveBooleanTest.prototype.getID
+    = function ()
+{
+  return this.id;
+}
+
 SieveBooleanTest.prototype.toString
     = function ()
 {
@@ -1417,21 +1626,21 @@ SieveBooleanTest.prototype.toString
 SieveBooleanTest.prototype.toXUL
     = function ()
 {
-  
+  return "Headertest - to be Implemented";  
 }
 
 /******************************************************************************/
 
-function SieveSizeTest() 
+function SieveSizeTest(id) 
 {
-  // first line with deadcode
+  this.id = id;
   this.whiteSpace 
-    = new Array(new SieveDeadCode(),
-                new SieveDeadCode(),
-                new SieveDeadCode());
+    = new Array(new SieveDeadCode(this.id+"_0"),
+                new SieveDeadCode(this.id+"_1"),
+                new SieveDeadCode(this.id+"_3"));
   
   this.over = false;
-  this.size = new SieveNumber();
+  this.size = new SieveNumber(this.id+"_2");
 }
 
 SieveSizeTest.prototype.parse
@@ -1466,6 +1675,12 @@ SieveSizeTest.prototype.parse
     
 }    
 
+SieveSizeTest.prototype.getID
+    = function ()
+{
+  return this.id;
+}
+
 SieveSizeTest.prototype.toString
     = function ()
 {
@@ -1480,19 +1695,27 @@ SieveSizeTest.prototype.toString
 SieveSizeTest.prototype.toXUL
     = function ()
 {
-  
+  return "<html:div class='SieveSizeTest'>"
+    + " message is "
+    + "<html:select>"
+    + "<html:option "+((this.over)?"selected='true'":"")+" >bigger</html:option>" 
+    + "<html:option "+((this.over)?"":"selected'true'")+" >smaler</html:option>" 
+    + "</html:select>"
+    + " than "
+    + this.size.toXUL()
+    + "</html:div>"
 }
 
 /******************************************************************************/
 
-function SieveExistsTest() 
+function SieveExistsTest(id)
 {
-  // first line with deadcode
+  this.id = id;
   this.whiteSpace 
-    = new Array(new SieveDeadCode(),
-                new SieveDeadCode());
+    = new Array(new SieveDeadCode(this.id+"_0"),
+                new SieveDeadCode(this.id+"_2"));
   
-  this.headerNames = new SieveStringList();
+  this.headerNames = new SieveStringList(this.id+"_1");
 }
 
 SieveExistsTest.prototype.parse
@@ -1513,6 +1736,12 @@ SieveExistsTest.prototype.parse
     
 }    
 
+SieveExistsTest.prototype.getID
+    = function ()
+{
+ return this.id; 
+}
+
 SieveExistsTest.prototype.toString
     = function ()
 {
@@ -1525,19 +1754,19 @@ SieveExistsTest.prototype.toString
 SieveExistsTest.prototype.toXUL
     = function ()
 {
-  
+  return "exists to be implemented";
 }
 
 /******************************************************************************/
 
-function SieveAnyOfTest() 
+function SieveAnyOfTest(id)
 {
-  // first line with deadcode
-  this.whiteSpace 
-    = new Array(new SieveDeadCode(),
-                new SieveDeadCode());
+  this.id = id;
+  this.whiteSpace
+    = new Array(new SieveDeadCode(this.id+"_0"),
+                new SieveDeadCode(this.id+"_2"));
   
-  this.testList = new SieveTestList();
+  this.testList = new SieveTestList(this.id+"_1");
 }
 
 SieveAnyOfTest.prototype.parse
@@ -1558,6 +1787,12 @@ SieveAnyOfTest.prototype.parse
     
 }    
 
+SieveAnyOfTest.prototype.getID
+    = function ()
+{
+  return this.id;
+}
+
 SieveAnyOfTest.prototype.toString
     = function ()
 {
@@ -1570,18 +1805,18 @@ SieveAnyOfTest.prototype.toString
 SieveAnyOfTest.prototype.toXUL
     = function ()
 {
-  
+  return "anyof to be implemented" ;
 }
 /******************************************************************************/
 
-function SieveAllOfTest() 
+function SieveAllOfTest(id) 
 {
-  // first line with deadcode
+  this.id = id;
   this.whiteSpace 
-    = new Array(new SieveDeadCode(),
-                new SieveDeadCode());
+    = new Array(new SieveDeadCode(this.id+"_0"),
+                new SieveDeadCode(this.id+"_2"));
   
-  this.testList = new SieveTestList();
+  this.testList = new SieveTestList(this.id+"_1");
 }
 
 SieveAllOfTest.prototype.parse
@@ -1614,7 +1849,7 @@ SieveAllOfTest.prototype.toString
 SieveAllOfTest.prototype.toXUL
     = function ()
 {
-  
+  return "allof to be implemented";
 }
 /******************************************************************************/
 
@@ -1663,7 +1898,7 @@ SieveNotTest.prototype.toString
 SieveNotTest.prototype.toXUL
     = function ()
 {
-  
+  return "not - to be implemented";
 }
 
 /******************************************************************************/
@@ -1737,7 +1972,7 @@ SieveEnvelopeTest.prototype.toString
 SieveEnvelopeTest.prototype.toXUL
     = function ()
 {
-  
+  return "envelope - to be implented";
 }
 
 /******************************************************************************/
@@ -1746,19 +1981,19 @@ SieveEnvelopeTest.prototype.toXUL
 //address [ADDRESS-PART] [COMPARATOR] [MATCH-TYPE]
 //             <header-list: string-list> <key-list: string-list>
              
-function SieveAddressTest() 
+function SieveAddressTest(id)
 {
-  // first line with deadcode
+  this.id = id;  
   this.options = new Array(null,null,null);
   this.whiteSpace 
-    = new Array(new SieveDeadCode(),
-                new SieveDeadCode(),
-                new SieveDeadCode(),
-                new SieveDeadCode(),
-                new SieveDeadCode(),
-                new SieveDeadCode());
-  this.headerList = new SieveStringList();
-  this.keyList = new SieveStringList();
+    = new Array(new SieveDeadCode(this.id+"_3"),
+                new SieveDeadCode(this.id+"_4"),
+                new SieveDeadCode(this.id+"_5"),
+                new SieveDeadCode(this.id+"_6"),
+                new SieveDeadCode(this.id+"_7"),
+                new SieveDeadCode(this.id+"_8"));
+  this.headerList = new SieveStringList(this.id+"_9");
+  this.keyList = new SieveStringList(this.id+"_10");
 }
 
 SieveAddressTest.prototype.parse
@@ -1770,11 +2005,11 @@ SieveAddressTest.prototype.parse
   for (var i=0; i< 3; i++)
   {
     if (isSieveAddressPart(data))
-      this.options[i] = new SieveAddressPart();
+      this.options[i] = new SieveAddressPart(this.id+"_"+i);
     else if (isSieveComparator(data))
-      this.options[i] = new SieveComparator();
+      this.options[i] = new SieveComparator(this.id+"_"+i);
     else if (isSieveMatchType(data))
-      this.options[i] = new SieveMatchType();
+      this.options[i] = new SieveMatchType(this.id+"_"+i);
     else
       break;
     
@@ -1792,6 +2027,12 @@ SieveAddressTest.prototype.parse
   
   return data;
 }    
+
+SieveAddressTest.prototype.getID
+    = function ()
+{
+  return this.id;
+}
 
 SieveAddressTest.prototype.toString
     = function ()
@@ -1813,7 +2054,7 @@ SieveAddressTest.prototype.toString
 SieveAddressTest.prototype.toXUL
     = function ()
 {
-  
+  return "address - to be implemented";
 }
 
 /******************************************************************************/
@@ -1903,13 +2144,8 @@ SieveTestList.prototype.toString
 SieveTestList.prototype.toXUL
     = function ()
 {
-  
+  return "testlist to be implemented";
 }
-
-
-
-
-
 
 /******************************************************************************/
 function isSieveTest (data, index)
@@ -1983,7 +2219,7 @@ SieveTestParser.prototype.getData
 
 /******************************************************************************/
 
-// a block can only follow afer an if, elsif, or else
+// a block can only follow after an if, elsif, or else
 
 function isSieveBlock(data,index)
 {
@@ -1996,9 +2232,10 @@ function isSieveBlock(data,index)
   return false;
 }
 
-function SieveBlock()
+function SieveBlock(id)
 {
-  this.elements = new Array();
+  this.id = id;
+  this.element = new SieveDom(this.id+"_0");  
 }
 
 SieveBlock.prototype.parse
@@ -2010,41 +2247,34 @@ SieveBlock.prototype.parse
   // remove the "/*"
   data = data.slice(1);
   
-  var parser = new SieveElementParser(data);
-  
-  while (parser.hasMoreElements())
-  {
-    this.elements.push(parser.extract())
-  }
-  
-  data = parser.getData();    
+  data = this.element.parse(data);
   
   if (data.charAt(0) != "}")
     throw " \"}\" expected";
 
   // remove the }
-  data = data.slice(1);  
+  data = data.slice(1);
   return data;
+}
+
+SieveBlock.prototype.getID
+    = function ()
+{
+  return this.id;
 }
 
 SieveBlock.prototype.toString
     = function ()
-{    
-  var cmd = "{";
-  
-  for (var i = 0;i<this.elements.length; i++)
-  {    
-    cmd += this.elements[i].toString();
-  }
-  cmd += "}";
-  
-  return cmd;
+{
+  return "{"
+    + this.element.toString()
+    + "}";
 }
 
 SieveBlock.prototype.toXUL
     = function ()
 {
-  
+  return this.element.toXUL();
 }
 
 /******************************************************************************/
@@ -2138,8 +2368,9 @@ function isSieveDeadCode(data, index)
   return false;  
 }
 
-function SieveDeadCode()
+function SieveDeadCode(id)
 {
+  this.id = id;
   this.elements = new Array();
 }
 
@@ -2148,20 +2379,27 @@ SieveDeadCode.prototype.parse
 {
   while(true)
   {
+    var id = this.id+"_"+this.elements.length;
     var element = null;
     
     if (isSieveWhiteSpace(data))
-      element = new SieveWhiteSpace();
+      element = new SieveWhiteSpace(id);
     else if (isSieveBracketComment(data))
-      element = new SieveBracketComment();
+      element = new SieveBracketComment(id);
     else if (isSieveHashComment(data))
-      element = new SieveHashComment();
+      element = new SieveHashComment(id);
     else
       return data;
     
     data = element.parse(data);
     this.elements.push(element);
   }
+}
+
+SieveDeadCode.prototype.getID
+    = function ()
+{
+  return this.id;
 }
 
 SieveDeadCode.prototype.toString
@@ -2175,69 +2413,83 @@ SieveDeadCode.prototype.toString
   return str;
 }
     
-SieveDeadCode.prototype.toXul
+SieveDeadCode.prototype.toXUL
     = function()
 {
-      
+  return "";    
 }
 
 /******************************************************************************/
 
-function isSieveElement(data,index)
+function SieveDom(id)
 {
-  if (index == null)
-    index = 0;
+  this.id = id;  
+  this.elements = new Array();
+}
+
+SieveDom.prototype.parse
+    = function (data)
+{
+  while (true)
+  {
+    var id = this.id+"_"+this.elements.length
+    var element = null;
     
-  if (isSieveAction(data,index))
-    return true;
-  if (isSieveDeadCode(data,index))
-    return true;
-  if (isSieveCondition(data,index))
-    return true;
+    if (isSieveAction(data))
+    {
+      var parser = new SieveActionParser(data,id);
+      element = parser.extract();
+      data = parser.getData();
+    }
+    else if (isSieveDeadCode(data))
+    {
+      element = new SieveDeadCode(id);
+      data = element.parse(data);
+    }
+    else if (isSieveCondition(data))
+    {
+      element = new SieveCondition(id);
+      data = element.parse(data);
+    }
+    else
+      break;
+      
+    this.elements.push(element);
+  }
   
-  return false;
+  return data;
 }
 
-function SieveElementParser(data)
+SieveDom.prototype.getID
+    = function ()
 {
-  this.data = data;
+  return this.id;
 }
 
-SieveElementParser.prototype.hasMoreElements
-   = function()
-{
-  return isSieveElement(this.data);
-}
-
-SieveElementParser.prototype.extract
-    = function()
-{
-  var element = null;
-  
-  if (isSieveAction(this.data))
+SieveDom.prototype.toString
+    = function ()
+{  
+  var str ="";
+  for (var i=0; i<this.elements.length;i++)
   {
-    var parser = new SieveActionParser(this.data);
-    element = parser.extract();
-    this.data = parser.getData();
-  }
-  else if (isSieveDeadCode(this.data))
-  {
-    element = new SieveDeadCode();
-    this.data = element.parse(this.data);
-  }
-  else if (isSieveCondition(this.data))
-  {
-    element = new SieveCondition();
-    this.data = element.parse(this.data);
-  }
-  else
-    throw "Syntax error, unknown command"    
-
-  return element;
+    str += this.elements[i].toString();
+  }  
+  return str;
 }
 
-SieveElementParser.prototype.getData
-    = function()
-{
-  return this.data;
+SieveDom.prototype.toXUL
+    = function ()
+{  
+  var xul ="";
+  for (var i=0; i<this.elements.length;i++)
+  {
+    xul += this.elements[i].toXUL();
+  }  
+  return xul;  
+//  return ""
+//    + "<html:a href='javascript:alert(\"test\")'>"
+//    + blubb
+//    + "<html:input type='image' src='chrome://sieve/content/images/add.png' onclick='blubb();' />"
+//    + "<html:img src='chrome://sieve/content/images/delete.png' />"
+//    + "</html:a>";
 }

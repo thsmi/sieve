@@ -5,11 +5,11 @@
 
 <window id="FilterEditor"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  
   title="&edit.title;"
   style="width: 45em; height: 31em;"
-  persist="width height screenX screenY"
   buttons="accept,cancel,help"
-  onload="onLoad(this);"
+  onload=";"
   ondialogaccept="return onAccept(this);" >  
 
   <script type="application/x-javascript" src="chrome://sieve/content/editor/SieveFilterWizard.js" /> 
@@ -17,17 +17,30 @@
   <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveScriptParser.js" />  
   <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveScriptElements.js" />    
 
+  
   <vbox flex="1">
     <label value="&edit.script;"/>
     <hbox flex="1">
-        <textbox flex="1" id="txtScript" multiline="true" oninput="onInput();" wrap="off" />
+        <textbox flex="1" id="txtScript" multiline="true" wrap="off" />
     </hbox>
-  </vbox>
+    <hbox flex="1">
+        <textbox flex="1" id="txtScript2" multiline="true" wrap="off" />
+    </hbox>  
+    <html:div id="divContext" xmlns:html="http://www.w3.org/1999/xhtml">  
+      dummyText...
+      <button id="btnUpload"  image="chrome://sieve/content/images/add.png" style="min-width:0px"/>      
+      <html:a href='javascript:alert("test")' >
+      <html:input type="Button" onClick="alert('test');" />
+      </html:a>
+    </html:div>
+ <!--   <html:iframe id="myCanvas" flex="100%" /> -->
+  </vbox>  
   <hbox id="wizard">
 
   </hbox>
   <hbox align="center">
     <spacer flex="1" />
+    <button label ="parse" oncommand="onTest()"/>
     <button label ="parse" oncommand="onParse()"/>
     <button label ="exit" oncommand="onExit()"/>
   </hbox>

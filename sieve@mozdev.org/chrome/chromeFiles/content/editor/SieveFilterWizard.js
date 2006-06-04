@@ -1,4 +1,16 @@
 
+function onTest()
+{
+  
+    var str = document.getElementById("txtScript").value;  
+    var dom  = new SieveDom("0");
+    dom.parse(str);
+    
+    document.getElementById("txtScript2").value = dom.toString();
+    
+    document.getElementById("divContext").innerHTML = dom.toXUL();
+}
+
 function onExit()
 {
   close();

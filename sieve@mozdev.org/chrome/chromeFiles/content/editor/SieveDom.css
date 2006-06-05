@@ -14,7 +14,7 @@ div.SieveOptionsAdd
 {
   width: 16px;
   height: 16px;
-  background-image: url("http://www.mozdev.org/source/browse/~checkout~/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/images/add.png?content-type=image/png");
+  background-image: url("chrome://sieve/content/images/add.png");
   background-position: center center;
   background-repeat: no-repeat;
   float:left;
@@ -24,7 +24,7 @@ div.SieveOptionsDelete
 {
   width: 16px;
   height: 16px;
-  background-image: url("http://www.mozdev.org/source/browse/~checkout~/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/images/delete.png?content-type=image/png");
+  background-image: url("chrome://sieve/content/images/delete.png");
   background-position: center center;
   background-repeat: no-repeat;
   float:left;

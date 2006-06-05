@@ -1,0 +1,31 @@
+
+div.SieveOptions
+{
+  display:none;
+  float:left;
+}
+
+div.SieveDiscardText
+{
+  float:left;
+}
+
+div.SieveOptionsAdd
+{
+  width: 16px;
+  height: 16px;
+  background-image: url("http://www.mozdev.org/source/browse/~checkout~/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/images/add.png?content-type=image/png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  float:left;
+}
+
+div.SieveOptionsDelete
+{
+  width: 16px;
+  height: 16px;
+  background-image: url("http://www.mozdev.org/source/browse/~checkout~/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/images/delete.png?content-type=image/png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  float:left;
+}

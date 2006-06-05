@@ -1032,13 +1032,15 @@ SieveDiscard.prototype.toXUL
     = function ()
 {
     return "<html:div class='SieveDiscard'" 
-    + "  onmouseover='document.getElementById(\""+this.id+"_opt\").style.display=\"inline\";'"
+    + "  onmouseover='document.getElementById(\""+this.id+"_opt\").style.display=\"block\";'"
     + "  onmouseout='document.getElementById(\""+this.id+"_opt\").style.display=\"none\";'" 
     + "  id='"+this.id+"' >\n" 
+    + "  <html:div class='SieveDiscardText'>"
     + "  Discard incomming message silently\n"
-    + "  <html:div id='"+this.id+"_opt' class='SieveOptions' style='display:none'>\n"
-    + "    <html:input type='image' src='chrome://sieve/content/images/add.png' onclick='blubb();' />\n"
-    + "    <html:input type='image' src='chrome://sieve/content/images/delete.png' onclick='blubb();' />\n"
+    + "  </html:div>"
+    + "  <html:div id='"+this.id+"_opt' class='SieveOptions' >\n"
+    + "    <html:div class='SieveOptionsAdd' onclick='blubb();' />\n"
+    + "    <html:div class='SieveOptionsDelete' onclick='blubb();' />\n"
     + "  </html:div>\n"
     + "</html:div>\n";
 }

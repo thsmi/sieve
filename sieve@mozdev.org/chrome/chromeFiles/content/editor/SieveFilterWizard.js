@@ -3,11 +3,10 @@ function onTest()
 {
   
     var str = document.getElementById("txtScript").value;  
-    var dom  = new SieveDom("0");
-    dom.parse(str);
+    var dom  = new SieveDom();
+    dom.setScript(str);
     
-    document.getElementById("txtScript2").value = dom.toString();
-    
+    document.getElementById("txtScript2").value = dom.toString();    
     document.getElementById("divContext").innerHTML = dom.toXUL();
 }
 

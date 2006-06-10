@@ -3,9 +3,6 @@
  */
 
 
-// TODO: clean up code
-
-
 function isSieveSemicolon(data)
 {
   if (data.charAt(0) != ";")
@@ -786,6 +783,19 @@ SieveHashComment.prototype.toXUL
 
 /******************************************************************************/
 
+
+function isSieveRequire(data, index)
+{  
+  if (index == null)
+    index = 0;
+    
+  var token = data.substr(index,7).toLowerCase();
+  
+  if (token.indexOf("require") == 0)
+    return true;  
+    
+  return false
+}
 
 function SieveRequire(id) 
 {
@@ -2237,7 +2247,7 @@ function isSieveBlock(data,index)
 function SieveBlock(id)
 {
   this.id = id;
-  this.element = new SieveDom(this.id+"_0");  
+  this.element = new SieveElement(this.id+"_0");  
 }
 
 SieveBlock.prototype.parse
@@ -2289,9 +2299,7 @@ function isSieveAction(data, index)
   var token = data.substr(index,10).toLowerCase();
   
   if (token.indexOf("discard") == 0)
-    return true;    
-  if (token.indexOf("require") == 0)
-    return true;  
+    return true;
   if (token.indexOf("keep") == 0)
     return true;  
   if (token.indexOf("stop") == 0)
@@ -2423,13 +2431,27 @@ SieveDeadCode.prototype.toXUL
 
 /******************************************************************************/
 
-function SieveDom(id)
+function isSieveElement(data, index)
+{  
+  if (index == null)
+    index = 0;
+    
+  if (isSieveAction(data,index))
+    return true;
+  if  (isSieveCondition(data,index))
+    return true;
+        
+  return false
+}
+
+
+function SieveElement(id)
 {
   this.id = id;  
   this.elements = new Array();
 }
 
-SieveDom.prototype.parse
+SieveElement.prototype.parse
     = function (data)
 {
   while (true)
@@ -2462,10 +2484,86 @@ SieveDom.prototype.parse
   return data;
 }
 
-SieveDom.prototype.getID
+SieveElement.prototype.getID
     = function ()
 {
   return this.id;
+}
+
+SieveElement.prototype.toString
+    = function ()
+{  
+  var str ="";
+  for (var i=0; i<this.elements.length;i++)
+  {
+    str += this.elements[i].toString();
+  }  
+  return str;
+}
+
+SieveElement.prototype.toXUL
+    = function ()
+{  
+  var xul ="";
+  for (var i=0; i<this.elements.length;i++)
+  {
+    xul += this.elements[i].toXUL();
+  }  
+  return xul;  
+//  return ""
+//    + "<html:a href='javascript:alert(\"test\")'>"
+//    + blubb
+//    + "<html:input type='image' src='chrome://sieve/content/images/add.png' onclick='blubb();' />"
+//    + "<html:img src='chrome://sieve/content/images/delete.png' />"
+//    + "</html:a>";
+}
+
+/******************************************************************************/
+
+function SieveDom()
+{
+  this.elements = new Array();
+  this.id = 0;
+}
+
+SieveDom.prototype.setScript
+    = function (data)
+{
+  // requires are only valid if they are
+  // before any other sieve command!
+  
+  var isImportSection = false;
+  
+  while (true)
+  {
+    var id = this.id+"_"+this.elements.length;
+    var element = null;
+
+    if (isSieveDeadCode(data))
+    {
+      element = new SieveDeadCode(id);
+    }
+    else if (isSieveElement(data))
+    {
+      element = new SieveElement(id);
+      isImportSection = false;
+    }
+    else if (isSieveRequire(data))
+    {
+      alert("require");      
+      if (isImportSection == false)
+        throw "Syntaxerror - misplaced require";
+        
+      element = new SieveRequire(id);
+    }
+    else
+      break;
+
+    data = element.parse(data);      
+    this.elements.push(element);
+  }
+  
+  return data;
 }
 
 SieveDom.prototype.toString
@@ -2488,10 +2586,4 @@ SieveDom.prototype.toXUL
     xul += this.elements[i].toXUL();
   }  
   return xul;  
-//  return ""
-//    + "<html:a href='javascript:alert(\"test\")'>"
-//    + blubb
-//    + "<html:input type='image' src='chrome://sieve/content/images/add.png' onclick='blubb();' />"
-//    + "<html:img src='chrome://sieve/content/images/delete.png' />"
-//    + "</html:a>";
 }

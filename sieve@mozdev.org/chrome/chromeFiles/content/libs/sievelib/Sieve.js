@@ -83,7 +83,7 @@ Sieve.prototype.streamStarted
 Sieve.prototype.streamStopped
 	= function (socketContext, status)
 {
-//	alert("Stopped\n:"+status)
+	alert("Stopped\n:"+status)
 }
 
 Sieve.prototype.receiveData

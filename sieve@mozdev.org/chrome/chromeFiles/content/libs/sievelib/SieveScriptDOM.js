@@ -2532,7 +2532,7 @@ SieveDom.prototype.setScript
   // requires are only valid if they are
   // before any other sieve command!
   
-  var isImportSection = false;
+  var isImportSection = true;
   
   while (true)
   {
@@ -2550,7 +2550,6 @@ SieveDom.prototype.setScript
     }
     else if (isSieveRequire(data))
     {
-      alert("require");      
       if (isImportSection == false)
         throw "Syntaxerror - misplaced require";
         

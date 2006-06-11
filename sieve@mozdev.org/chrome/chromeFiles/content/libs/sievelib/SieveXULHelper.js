@@ -3,9 +3,11 @@
 function SieveOptionsDiv(id,tag,element)
 {
     return "<html:div class='"+tag+"'\n" 
-    + "  onmouseover='document.getElementById(\""+id+"_opt\").style.display=\"block\";'\n"
-    + "  onmouseout='document.getElementById(\""+id+"_opt\").style.display=\"none\";'\n" 
-    + "  id='"+id+"' >\n" 
+    + "  onmouseover='document.getElementById(\""+id+"_opt\").style.display=\"block\";" 
+    + "               document.getElementById(\""+id+"\").style.borderWidth=\"2px\"'\n"
+    + "  onmouseout='document.getElementById(\""+id+"_opt\").style.display=\"none\";"
+    + "              document.getElementById(\""+id+"\").style.borderWidth=\"0px\"'\n"
+    + "  id='"+id+"' >\n"
     + "  <html:div class='"+tag+"Text'>\n"
     + element.toString()
     + "  </html:div>\n"
@@ -15,4 +17,3 @@ function SieveOptionsDiv(id,tag,element)
     + "  </html:div>\n"
     + "</html:div>\n";  
 }
-

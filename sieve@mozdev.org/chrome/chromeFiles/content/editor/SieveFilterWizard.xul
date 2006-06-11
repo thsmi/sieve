@@ -15,9 +15,8 @@
 
   <script type="application/x-javascript" src="chrome://sieve/content/editor/SieveFilterWizard.js" /> 
     
-  <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveScriptParser.js" />  
-  <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveScriptDOM.js" />    
-
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveScriptDOM.js" />
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveXULHelper.js" />  
   
   <vbox flex="1">
     <label value="&edit.script;"/>

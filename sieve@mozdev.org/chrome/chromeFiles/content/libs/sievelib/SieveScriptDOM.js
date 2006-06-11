@@ -395,7 +395,7 @@ function SieveCondition(id)
 SieveCondition.prototype.parse
     = function (data)
 {  
-  var element = new SieveIf(this.id+".0")
+  var element = new SieveIf(this.id+"_0")
   data = element.parse(data);
   this.elements.push(element);
   
@@ -1041,18 +1041,9 @@ SieveDiscard.prototype.getID
 SieveDiscard.prototype.toXUL
     = function ()
 {
-    return "<html:div class='SieveDiscard'" 
-    + "  onmouseover='document.getElementById(\""+this.id+"_opt\").style.display=\"block\";'"
-    + "  onmouseout='document.getElementById(\""+this.id+"_opt\").style.display=\"none\";'" 
-    + "  id='"+this.id+"' >\n" 
-    + "  <html:div class='SieveDiscardText'>"
-    + "  Discard incomming message silently\n"
-    + "  </html:div>"
-    + "  <html:div id='"+this.id+"_opt' class='SieveOptions' >\n"
-    + "    <html:div class='SieveOptionsAdd' onclick='blubb();' />\n"
-    + "    <html:div class='SieveOptionsDelete' onclick='blubb();' />\n"
-    + "  </html:div>\n"
-    + "</html:div>\n";
+  return SieveOptionsDiv(
+            this.id, "SieveDiscard",
+            "Discard incomming message silently")
 }
 
 //***************************************
@@ -1111,15 +1102,13 @@ SieveRedirect.prototype.toString
 SieveRedirect.prototype.toXUL
     = function ()
 {
-  return "<html:div class='SieveRedirect'>" 
-    + "  Redirect messages to the following email address:"
+  var xulBody 
+    = "  Redirect messages to the following email address:"
     + "  <html:br />"
-    + "  <html:input type='text' value='"+this.address.getValue()+"' />"
-    + "  <html:div class='SieveOptions'>"
-    + "    <html:input type='image' src='chrome://sieve/content/images/add.png' onclick='blubb();' />"
-    + "    <html:input type='image' src='chrome://sieve/content/images/delete.png' onclick='blubb();' />"
-    + "  </html:div>"
-    + "</html:div>";
+    + "  <html:input type='text' value='"+this.address.getValue()+"' />";
+    
+  return SieveOptionsDiv(
+            this.id, "SieveRedirect",xulBody)
 }
 
 /******************************************************************************/
@@ -1177,16 +1166,13 @@ SieveReject.prototype.toString
 SieveReject.prototype.toXUL
     = function ()
 {
- 
-  return "<html:div class='SieveReject'>" 
-    + "  Reject incomming messages and reply the following reason:"
+  var xulBody 
+    = "  Reject incomming messages and reply the following reason:"
     + "  <html:br />"
-    + "  <html:input type='text' value='"+this.reason.getValue()+"' />"
-    + "  <html:div class='SieveOptions'>"
-    + "    <html:input type='image' src='chrome://sieve/content/images/add.png' onclick='blubb();' />"
-    + "    <html:input type='image' src='chrome://sieve/content/images/delete.png' onclick='blubb();' />"
-    + "  </html:div>"    
-    + "</html:div>"; 
+    + "  <html:input type='text' value='"+this.reason.getValue()+"' />";
+    
+  return SieveOptionsDiv(
+            this.id, "SieveReject",xulBody)
 }
 
 
@@ -1246,17 +1232,9 @@ SieveStop.prototype.toString
 
 SieveStop.prototype.toXUL
     = function ()
-{ 
-  
-  return "<html:div class='SieveStop'" 
-    + "  onMouseOver='"+this.id+"_opt.style.visibility=\"hidden\";'"
-    + "  onMouseOut='"+this.id+"_opt.style.visibility=\"visible\";'  >" 
-    + "  Stop script execution"
-    + "  <html:div id='"+this.id+"_opt' class='SieveOptions'>"
-    + "    <html:input type='image' src='chrome://sieve/content/images/add.png' onclick='blubb();' />"
-    + "    <html:input type='image' src='chrome://sieve/content/images/delete.png' onclick='blubb();' />"
-    + "  </html:div>"
-    + "</html:div>";
+{   
+  return SieveOptionsDiv(
+            this.id, "SieveStop","Stop script execution");
 }
 
 /******************************************************************************/
@@ -1489,17 +1467,18 @@ SieveAddressPart.prototype.toXUL
 }
 /******************************************************************************/
 
-function SieveHeaderTest() 
+function SieveHeaderTest(id) 
 {
+  this.id = id;
   this.whiteSpace 
-    = new Array(new SieveDeadCode(),
-                new SieveDeadCode(),
-                new SieveDeadCode(),
-                new SieveDeadCode(),                
-                new SieveDeadCode());
+    = new Array(new SieveDeadCode(this.id+"_0"),
+                new SieveDeadCode(this.id+"_1"),
+                new SieveDeadCode(this.id+"_2"),
+                new SieveDeadCode(this.id+"_3"),                
+                new SieveDeadCode(this.id+"_4"));
   this.options = new Array(null,null);
-  this.headerNames = new SieveStringList();
-  this.keyList = new SieveStringList();
+  this.headerNames = new SieveStringList(this.id+"_5");
+  this.keyList = new SieveStringList(this.id+"_6");
 }
 
 SieveHeaderTest.prototype.parse
@@ -1514,7 +1493,7 @@ SieveHeaderTest.prototype.parse
   
   if (isSieveComparator(data))
   {
-    var element = new SieveComparator();
+    var element = new SieveComparator(this.id+"_7");
     data = element.parse(data);
     this.options[0] = element;
     
@@ -1522,14 +1501,14 @@ SieveHeaderTest.prototype.parse
     
     if (isSieveMatchType(data))
     {
-      element = new SieveMatchType();
+      element = new SieveMatchType(this.id+"_8");
       data = element.parse(data);
       this.options[1] = element;
     }
   }  
   else if (isSieveMatchType(data))
   {
-    var element = new SieveMatchType();
+    var element = new SieveMatchType(this.id+"_7");
     data = element.parse(data);
     this.options[0] = element;
     
@@ -1537,7 +1516,7 @@ SieveHeaderTest.prototype.parse
 
     if (isSieveComparator(data))
     {
-      element = new SieveComparator();
+      element = new SieveComparator(this.id+"_8");
       data = element.parse(data);
       this.options[1] = element;
     }
@@ -2316,9 +2295,10 @@ function isSieveAction(data, index)
   return false
 }
 
-function SieveActionParser(data)
+function SieveActionParser(data,id)
 {
   this.data = data;
+  this.id = id;
 }
 
 
@@ -2332,21 +2312,21 @@ SieveActionParser.prototype.extract
   var token = this.data.substr(0,10).toLowerCase()
 
   if (token.indexOf("discard") == 0)
-    element = new SieveDiscard(); 
+    element = new SieveDiscard(this.id+"_0"); 
   else if (token.indexOf("require") == 0)
-    element = new SieveRequire();
+    element = new SieveRequire(this.id+"_0");
   else if (token.indexOf("keep") == 0)
-    element = new SieveKeep();
+    element = new SieveKeep(this.id+"_0");
   else if (token.indexOf("stop") == 0)
-    element = new SieveStop();
+    element = new SieveStop(this.id+"_0");
   else if (token.indexOf("redirect") == 0)    
-    element = new SieveRedirect();
+    element = new SieveRedirect(this.id+"_0");
   else if (token.indexOf("vacation") == 0)
-    element = new SieveVaction();
+    element = new SieveVaction(this.id+"_0");
   else if (token.indexOf("fileinto") == 0)
-    element = new SieveFileInto();
+    element = new SieveFileInto(this.id+"_0");
   else if (token.indexOf("reject") == 0)
-    element = new SieveReject();
+    element = new SieveReject(this.id+"_0");
 
   if (element == null)
     throw "Syntax error, Sieve Action Statement expected";
@@ -2456,7 +2436,7 @@ SieveElement.prototype.parse
 {
   while (true)
   {
-    var id = this.id+"_"+this.elements.length
+    var id = this.id+"_"+this.elements.length;
     var element = null;
     
     if (isSieveAction(data))

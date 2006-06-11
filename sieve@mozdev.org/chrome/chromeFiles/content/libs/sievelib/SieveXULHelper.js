@@ -12,8 +12,8 @@ function SieveOptionsDiv(id,tag,element)
     + element.toString()
     + "  </html:div>\n"
     + "  <html:div id='"+id+"_opt' class='SieveOptions' >\n"
-    + "    <html:div class='SieveOptionsAdd' onclick='blubb();' />\n"
-    + "    <html:div class='SieveOptionsDelete' onclick='blubb();' />\n"
+    + "    <html:div class='SieveOptionsAdd' onclick='blubb();'></html:div>\n"
+    + "    <html:div class='SieveOptionsDelete' onclick='blubb();'></html:div>\n"
     + "  </html:div>\n"
     + "</html:div>\n";  
 }

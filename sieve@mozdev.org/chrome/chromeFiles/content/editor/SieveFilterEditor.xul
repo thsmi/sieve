@@ -34,31 +34,48 @@
     <toolbarseperator />
     <toolbarbutton id="btnCompile" label=" Syntaxcheck" type="checkbox" oncommand="onBtnCompile();"
     			   image="chrome://sieve/content/images/syntaxCheckOn.png" />
+    <toolbarbutton id="btnCompile" label=" View Source" checked="true" type="checkbox" oncommand="onBtnChangeView();" />
   </toolbar>
 </toolbox>
 
-  <separator/>
+  <separator class="thin"/>
   <hbox align="center">
     <label value="&edit.scriptname;"/>
     <textbox flex="50%" id="txtName"/>
     <spacer flex="50%"/>
   </hbox>
 
-  <separator/>
+  <separator class="thin"/>
 
-  <vbox flex="1">
-    <label value="&edit.script;"/>
-    <hbox flex="1">
-        <textbox flex="1" id="txtScript" multiline="true" oninput="onInput();" wrap="off" />
-    </hbox>
-  </vbox>
-  <groupbox id="gbError" hidden="true">
-  	<caption>
-  	  <image src="chrome://sieve/content/images/syntaxError.png" width="16" height="16"/>
-  	  <label value="&edit.errors;"/>
-    </caption>
-  	<textbox flex="1" id="lblError" multiline="true" rows="3" readonly="true" class="plain"/>
-  </groupbox>  
+<deck id="dkView" flex="1" selectedIndex="0">
+  <box flex="1">
+    <vbox flex="1">
+      <label value="&edit.script;"/>
+      <textbox flex="1" id="txtScript" multiline="true" oninput="onInput();" wrap="off" />
+
+      <groupbox id="gbError" hidden="true">
+        <caption>
+          <image src="chrome://sieve/content/images/syntaxError.png" width="16" height="16"/>
+          <label value="&edit.errors;"/>
+        </caption>
+        <textbox flex="1" id="lblError" multiline="true" rows="3" readonly="true" class="plain"/>
+      </groupbox>  
+    </vbox>
+  </box>
+  <box flex="1" style="overflow:auto">
+    <html:div id="divContext" xmlns:html="http://www.w3.org/1999/xhtml">  
+      dummyText...
+      <button id="btnUpload"  image="chrome://sieve/content/images/add.png" style="min-width:0px"/>      
+      <html:a href='javascript:alert("test")' >
+      <html:br />
+      <html:br />
+      <html:br />
+      <html:br />
+      <html:input type="Button" onClick="alert('test');" />
+      </html:a>
+    </html:div>
+  </box>
+</deck>
   <hbox align="center">
     <spacer flex="1" />
     <button label ="&edit.ok;" oncommand="onAccept()"/>

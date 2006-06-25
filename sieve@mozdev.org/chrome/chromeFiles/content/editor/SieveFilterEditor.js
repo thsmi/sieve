@@ -201,3 +201,16 @@ function onCut() { goDoCommand("cmd_cut"); }
 function onCopy() { goDoCommand("cmd_copy"); }
 
 function onPaste() { goDoCommand("cmd_paste"); }
+
+function onBtnChangeView()
+{
+  var deck = document.getElementById("dkView");
+  
+  alert(deck.selectedIndex);
+  
+  if (deck.selectedIndex == 0)
+    document.getElementById("dkView").selectedIndex = 1;
+  else
+    document.getElementById("dkView").selectedIndex = 0;
+  
+}

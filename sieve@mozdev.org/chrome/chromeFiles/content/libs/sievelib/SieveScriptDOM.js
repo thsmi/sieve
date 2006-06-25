@@ -523,6 +523,7 @@ SieveIf.prototype.toXUL
 {
   return "if "
     + this.test.toXUL()
+    + "then execute "
     + this.block.toXUL();  
 }
 
@@ -916,7 +917,17 @@ SieveFileInto.prototype.toString
 SieveFileInto.prototype.toXUL
     = function ()
 {
-  return "Fileinto not implemented" ;
+    var xulBody 
+    = "  Copy the incomming message into:"
+    + "  <html:br />"
+    + "  <html:select>"
+    + "    <html:option>"
+    + "      INBOX" 
+    + "    </html:option>"
+    + "  </html:select>";
+    
+  return SieveOptionsDiv(
+            this.id, "SieveRedirect",xulBody);
 }
 
 /******************************************************************************/
@@ -1526,7 +1537,7 @@ SieveHeaderTest.prototype.parse
   
   data = this.whiteSpace[3].parse(data);
   
-  data = this.keyList.parse(data)
+  data = this.keyList.parse(data);
   
   data = this.whiteSpace[4].parse(data);
   
@@ -1551,7 +1562,7 @@ SieveHeaderTest.prototype.toString
 SieveHeaderTest.prototype.toXUL
     = function ()
 {
-  return "Headertest - to be Implemented";
+  return "message header, that contains a [casesensitive]  [match to be Implemented";
 }
 
 /******************************************************************************/
@@ -1796,9 +1807,10 @@ SieveAnyOfTest.prototype.toString
 SieveAnyOfTest.prototype.toXUL
     = function ()
 {
-  return "anyof to be implemented" ;
+  return "any of the following conditions match"
+    + this.testList.toXUL();
 }
-/******************************************************************************/
+/*****************************************************************************/
 
 function SieveAllOfTest(id) 
 {
@@ -1840,7 +1852,8 @@ SieveAllOfTest.prototype.toString
 SieveAllOfTest.prototype.toXUL
     = function ()
 {
-  return "allof to be implemented";
+  return "all of the following conditions match"
+    + this.testList.toXUL();
 }
 /******************************************************************************/
 
@@ -1889,7 +1902,7 @@ SieveNotTest.prototype.toString
 SieveNotTest.prototype.toXUL
     = function ()
 {
-  return "not - to be implemented";
+  return "not"+test.toXUL();
 }
 
 /******************************************************************************/
@@ -2135,7 +2148,16 @@ SieveTestList.prototype.toString
 SieveTestList.prototype.toXUL
     = function ()
 {
-  return "testlist to be implemented";
+  var result = "";
+  for (var i = 0; i<this.elements.length; i++)
+  {
+    if (this.elements[i] instanceof SieveDeadCode)
+     continue;
+    
+    result += this.elements[i].toXUL();
+    result += "<html:br />";
+  }
+  return result;
 }
 
 /******************************************************************************/
@@ -2268,6 +2290,22 @@ SieveBlock.prototype.toXUL
   return this.element.toXUL();
 }
 
+SieveBlock.prototype.onMessage
+    = function (id,message)
+{
+  if (this.element.getID() != id[0])
+    return ;
+  
+  id.shift();  
+  this.element.onMessage(id,data);
+}
+
+SieveBlock.prototype.onBouble  
+    = function (message)
+{
+  this.element.onBouble(message);
+}
+
 /******************************************************************************/
 
 function isSieveAction(data, index)
@@ -2292,7 +2330,7 @@ function isSieveAction(data, index)
   if (token.indexOf("reject") == 0)
     return true;   
     
-  return false
+  return false;
 }
 
 function SieveActionParser(data,id)
@@ -2406,7 +2444,19 @@ SieveDeadCode.prototype.toString
 SieveDeadCode.prototype.toXUL
     = function()
 {
-  return "";    
+  return "";
+}
+
+SieveDeadCode.prototype.onMessage
+    = function (id,message)
+{
+  // do nothing, because deadcode can't receive messages
+}
+
+SieveDeadCode.prototype.onBouble  
+    = function (message)
+{
+  // do nothing, because deadcode can't receive messages
 }
 
 /******************************************************************************/
@@ -2421,7 +2471,7 @@ function isSieveElement(data, index)
   if  (isSieveCondition(data,index))
     return true;
         
-  return false
+  return false;
 }
 
 
@@ -2498,6 +2548,29 @@ SieveElement.prototype.toXUL
 //    + "</html:a>";
 }
 
+SieveElement.prototype.onMessage
+    = function (id,message)
+{
+  for (var i=0; i<this.elements.length; i++)
+  {
+    if (this.elements[i].getID() != id[0])
+      continue;
+      
+    // remove the first id ...
+    id.shift();
+    
+    this.elements[i].onMessage(id,data);
+  } 
+}
+
+SieveElement.prototype.onBouble  
+    = function (message)
+{
+  for (var i=0; i<this.elements.length; i++)
+  {    
+    this.elements[i].onBouble(message);
+  }  
+}
 /******************************************************************************/
 
 function SieveDom()
@@ -2565,4 +2638,33 @@ SieveDom.prototype.toXUL
     xul += this.elements[i].toXUL();
   }  
   return xul;  
+}
+
+SieveDom.prototype.sendMessage
+    = function (id,message)
+{
+  // convert the id into an array...
+  var id = id.split("_");
+
+  for (var i=0; i<this.elements.length; i++)
+  {
+    if (this.elements[i].getID() != id[0])
+      continue;
+      
+    // remove the first id ...
+    id.shift(); 
+    this.elements[i].onMessage(id,data);
+  } 
+}
+
+SieveDom.prototype.boubleMessage
+    = function (message)
+{
+  // drop the first id
+ // id.shift();
+  
+  for (var i=0; i<this.elements.length; i++)
+  {    
+    this.elements[i].onBouble(message);
+  }  
 }

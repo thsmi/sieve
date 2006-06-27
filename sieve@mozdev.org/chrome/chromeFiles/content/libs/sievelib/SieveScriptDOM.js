@@ -265,9 +265,11 @@ SieveString.prototype.toString
 SieveString.prototype.toXUL
     = function ()
 {
-  return "SieveString.toXul - Not Implemented";
+  // TODO a single ' crashes in html -> convert it into &...; syntax
+  return "<html:input type='text' value='"+this.string.getValue()+"' />";  
 }
 
+// TODO descide on update message weather it is a Multiline oder Quoted...
 
 
 /******************************************************************************/
@@ -442,7 +444,7 @@ SieveCondition.prototype.toXUL
   {
     xul += this.elements[i].toXUL();
   }
-  return xul;  
+  return xul;
 }
 
 
@@ -523,7 +525,7 @@ SieveIf.prototype.toXUL
 {
   return "if "
     + this.test.toXUL()
-    + "then execute "
+    + " then "
     + this.block.toXUL();  
 }
 
@@ -604,6 +606,7 @@ SieveElsIf.prototype.toXUL
 {
   return "else if"
     + this.test.toXUL()
+    + " then"
     + this.block.toXUL();   
 }
 
@@ -918,16 +921,11 @@ SieveFileInto.prototype.toXUL
     = function ()
 {
     var xulBody 
-    = "  Copy the incomming message into:"
-    + "  <html:br />"
-    + "  <html:select>"
-    + "    <html:option>"
-    + "      INBOX" 
-    + "    </html:option>"
-    + "  </html:select>";
+    = "  Copy the incomming message into:  <html:br />"
+    + this.string.toXUL();
     
   return SieveOptionsDiv(
-            this.id, "SieveRedirect",xulBody);
+            this.id, "SieveFileInto",xulBody);
 }
 
 /******************************************************************************/
@@ -1116,7 +1114,7 @@ SieveRedirect.prototype.toXUL
   var xulBody 
     = "  Redirect messages to the following email address:"
     + "  <html:br />"
-    + "  <html:input type='text' value='"+this.address.getValue()+"' />";
+    + this.address.toXUL();
     
   return SieveOptionsDiv(
             this.id, "SieveRedirect",xulBody)
@@ -1180,7 +1178,7 @@ SieveReject.prototype.toXUL
   var xulBody 
     = "  Reject incomming messages and reply the following reason:"
     + "  <html:br />"
-    + "  <html:input type='text' value='"+this.reason.getValue()+"' />";
+    + this.reason.toXUL();
     
   return SieveOptionsDiv(
             this.id, "SieveReject",xulBody)
@@ -1286,9 +1284,8 @@ SieveKeep.prototype.toString
 SieveKeep.prototype.toXUL
     = function ()
 {
-  return "<html:div class='SieveKeep'>" 
-    + "Move the message into the main inbox"
-    + "</html:div>";      
+  return SieveOptionsDiv(
+            this.id, "SieveKeep","Move the message into the main inbox");
 }
 /******************************************************************************/
 
@@ -1562,7 +1559,9 @@ SieveHeaderTest.prototype.toString
 SieveHeaderTest.prototype.toXUL
     = function ()
 {
-  return "message header, that contains a [casesensitive]  [match to be Implemented";
+  return "any of the following messageheaders "+this.headerNames.toXUL() 
+      + "[casesensitive/insensitive] [matchtype e.g. contains]"
+      + " one of the following values "+ this.keyList.toXUL();
 }
 
 /******************************************************************************/
@@ -1628,7 +1627,10 @@ SieveBooleanTest.prototype.toString
 SieveBooleanTest.prototype.toXUL
     = function ()
 {
-  return "Headertest - to be Implemented";  
+  if (this.value)
+    return  " true ";
+
+  return " false ";
 }
 
 /******************************************************************************/
@@ -1698,12 +1700,11 @@ SieveSizeTest.prototype.toXUL
     = function ()
 {
   return "<html:div class='SieveSizeTest'>"
-    + " message is "
+    + " message size is "
     + "<html:select>"
-    + "<html:option "+((this.over)?"selected='true'":"")+" >bigger</html:option>" 
-    + "<html:option "+((this.over)?"":"selected'true'")+" >smaler</html:option>" 
+    + "<html:option "+((this.over)?"selected='true'":"")+" >over</html:option>" 
+    + "<html:option "+((this.over)?"":"selected='true'")+" >under</html:option>" 
     + "</html:select>"
-    + " than "
     + this.size.toXUL()
     + "</html:div>"
 }
@@ -1756,7 +1757,8 @@ SieveExistsTest.prototype.toString
 SieveExistsTest.prototype.toXUL
     = function ()
 {
-  return "exists to be implemented";
+  return " one of the following mailheader exists<html:br/>"
+    + this.headerNames.toXUL();
 }
 
 /******************************************************************************/
@@ -1902,7 +1904,7 @@ SieveNotTest.prototype.toString
 SieveNotTest.prototype.toXUL
     = function ()
 {
-  return "not"+test.toXUL();
+  return " not "+this.test.toXUL();
 }
 
 /******************************************************************************/
@@ -2644,7 +2646,7 @@ SieveDom.prototype.sendMessage
     = function (id,message)
 {
   // convert the id into an array...
-  var id = id.split("_");
+  id = id.split("_");
 
   for (var i=0; i<this.elements.length; i++)
   {

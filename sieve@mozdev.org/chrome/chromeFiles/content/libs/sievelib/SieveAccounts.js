@@ -1,7 +1,7 @@
 var gPref = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
 
 // Sieve No Auth Class
-// This class is used when no authentification is needed
+// This class is used when no authentication is needed
 function SieveNoAuth() 
 {}
 

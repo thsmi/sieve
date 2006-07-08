@@ -59,7 +59,7 @@ function onDialogAccept(sender)
 	// Do nothing since there should be only valid entries...
 }
 
-// Function for the custom authentification
+// Function for the custom authentication
 function onLoginSelect(sender)
 {
   var type = 0;

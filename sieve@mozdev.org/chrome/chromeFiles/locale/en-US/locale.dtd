@@ -4,9 +4,9 @@
 <!ENTITY options.tree.active "Active">
 <!ENTITY options.tree.name "Name">
 
-<!ENTITY options.login "Authentification">
+<!ENTITY options.login "Authentication">
 <!ENTITY options.login.key "A">
-<!ENTITY options.login.noAuth "No Authentification">
+<!ENTITY options.login.noAuth "No Authentication">
 <!ENTITY options.login.imapAuth "Use IMAP settings">
 <!ENTITY options.login.customAuth "Username and Password">
 <!ENTITY options.login.username "Username">
@@ -38,7 +38,7 @@
 <!ENTITY options.info.port "Port:">
 <!ENTITY options.info.secure "Secure Connection:">
 <!ENTITY options.info.username "User Name:">
-<!ENTITY options.info.auth "Authentification:">
+<!ENTITY options.info.auth "Authentication:">
 
 
 <!-- Menu entries -->

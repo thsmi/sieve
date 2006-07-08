@@ -59,7 +59,7 @@ function onTreeSelect(sender)
   var authType = ""; 	
   switch (account.getLogin().getType())
   {
-  	case 0: authType = "No Authentification"; break;
+  	case 0: authType = "No Authentication"; break;
   	case 1: authType = "Use login from IMAP Account"; break;
   	case 2: authType = "Use custom a custom login"; break;
   }

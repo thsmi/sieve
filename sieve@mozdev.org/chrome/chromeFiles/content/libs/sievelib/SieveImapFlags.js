@@ -1,38 +1,30 @@
 
 // setflag <variablename: string> <list-of-flags: string-list>
 
+
 function SieveSetFlag(id) 
 {
   this.id = id;
   this.whiteSpace 
     = new Array(new SieveDeadCode(this.id+"_0"),
-                new SieveDeadCode(this.id+"_2"),    
-                new SieveDeadCode(this.id+"_4"));  
+                new SieveDeadCode(this.id+"_2"));  
                 
-  this.variable = new SieveString(this.id+"_1");
-  this.flaglist = new SieveStringList(this.id+"_3");
+  this.flaglist = new SieveStringList(this.id+"_1");
 }
 
 SieveSetFlag.prototype.parse
     = function (data)
 {
   // Syntax :
-  // <"fileinto"> <string> <";">
   
   data = data.slice("setflag".length);
   
   // ... eat the deadcode before the string...
   data = this.whiteSpace[0].parse(data);
-  
-  // read the string
-  data = this.variable.parse(data);
-  
-  // ... eat again deadcode
-  data = this.whiteSpace[1].parse(data);
-  
+      
   data = this.flaglist.parse(data)
 
-  data = this.whiteSpace[2].parse(data);
+  data = this.whiteSpace[1].parse(data);
     
   // ... and finally remove the semicolon;
   if (isSieveSemicolon(data) == false)
@@ -52,10 +44,8 @@ SieveSetFlag.prototype.toString
 {
   return "setflag"
     + this.whiteSpace[0].toString()
-    + this.varibale.toString()
-    + this.whiteSpace[1].toString()
     + this.flaglist
-    + this.whiteSpace[2].toString()        
+    + this.whiteSpace[1].toString()        
     + ";";
 }
 
@@ -74,11 +64,9 @@ function SieveAddFlag(id)
   this.id = id;
   this.whiteSpace 
     = new Array(new SieveDeadCode(this.id+"_0"),
-                new SieveDeadCode(this.id+"_2"),    
-                new SieveDeadCode(this.id+"_4"));  
+                new SieveDeadCode(this.id+"_2"));  
                 
-  this.variable = new SieveString(this.id+"_1");
-  this.flaglist = new SieveStringList(this.id+"_3");
+  this.flaglist = new SieveStringList(this.id+"_1");
 }
 
 SieveAddFlag.prototype.parse
@@ -92,15 +80,9 @@ SieveAddFlag.prototype.parse
   // ... eat the deadcode before the string...
   data = this.whiteSpace[0].parse(data);
   
-  // read the string
-  data = this.variable.parse(data);
-  
-  // ... eat again deadcode
-  data = this.whiteSpace[1].parse(data);
-  
   data = this.flaglist.parse(data)
 
-  data = this.whiteSpace[2].parse(data);
+  data = this.whiteSpace[1].parse(data);
     
   // ... and finally remove the semicolon;
   if (isSieveSemicolon(data) == false)
@@ -120,10 +102,8 @@ SieveAddFlag.prototype.toString
 {
   return "addflag"
     + this.whiteSpace[0].toString()
-    + this.varibale.toString()
-    + this.whiteSpace[1].toString()
     + this.flaglist
-    + this.whiteSpace[2].toString()        
+    + this.whiteSpace[1].toString()        
     + ";";
 }
 
@@ -142,11 +122,9 @@ function SieveRemoveFlag(id)
   this.id = id;
   this.whiteSpace 
     = new Array(new SieveDeadCode(this.id+"_0"),
-                new SieveDeadCode(this.id+"_2"),    
-                new SieveDeadCode(this.id+"_4"));  
+                new SieveDeadCode(this.id+"_2"));  
                 
-  this.variable = new SieveString(this.id+"_1");
-  this.flaglist = new SieveStringList(this.id+"_3");
+  this.flaglist = new SieveStringList(this.id+"_1");
 }
 
 SieveRemoveFlag.prototype.parse
@@ -159,16 +137,10 @@ SieveRemoveFlag.prototype.parse
   
   // ... eat the deadcode before the string...
   data = this.whiteSpace[0].parse(data);
-  
-  // read the string
-  data = this.variable.parse(data);
-  
-  // ... eat again deadcode
-  data = this.whiteSpace[1].parse(data);
-  
+      
   data = this.flaglist.parse(data)
 
-  data = this.whiteSpace[2].parse(data);
+  data = this.whiteSpace[1].parse(data);
     
   // ... and finally remove the semicolon;
   if (isSieveSemicolon(data) == false)
@@ -188,10 +160,8 @@ SieveRemoveFlag.prototype.toString
 {
   return "removeflag"
     + this.whiteSpace[0].toString()
-    + this.varibale.toString()
-    + this.whiteSpace[1].toString()
     + this.flaglist
-    + this.whiteSpace[2].toString()        
+    + this.whiteSpace[1].toString()        
     + ";";
 }
 
@@ -213,10 +183,8 @@ function SieveHasFlagTest(id)
   this.whiteSpace[0]  = new SieveDeadCode(this.id+"_0");
   this.matchType      = null;
   this.whiteSpace[1]  = new SieveDeadCode(this.id+"_2");
-  this.varList        = new SieveStringList(this.id+"_3");
+  this.flagList       = new SieveStringList(this.id+"_3");
   this.whiteSpace[2]  = new SieveDeadCode(this.id+"_4");
-  this.flagList       = new SieveStringList(this.id+"_5");
-  this.whiteSpace[3]  = new SieveDeadCode(this.id+"_6");
 }
 
 SieveHasFlagTest.prototype.parse
@@ -234,10 +202,8 @@ SieveHasFlagTest.prototype.parse
     data = this.whiteSpace[1].parse(data);    
   }
   
-  data = this.varList.parse(data);
-  data = this.whiteSpace[2].parse(data);
   data = this.flagList.parse(data);
-  data = this.whiteSpace[3].parse(data);
+  data = this.whiteSpace[2].parse(data);
       
   return data;
 }    
@@ -255,10 +221,8 @@ SieveHasFlagTest.prototype.toString
     + this.whiteSpace[0].toString()
     + ((this.matchType != null)?this.matchType[0].toString():"")
     + ((this.matchType != null)?this.whiteSpace[1].toString():"")
-    + this.varList.toString()
-    + this.whiteSpace[2].toString()
     + this.flagList.toString()
-    + this.whiteSpace[3].toString();
+    + this.whiteSpace[2].toString();
 }
 
 SieveHasFlagTest.prototype.toXUL
@@ -269,6 +233,7 @@ SieveHasFlagTest.prototype.toXUL
 
 /******************************************************************************/
 
+// ARGUMENTS ARE NOT IMPLEMENTED IN CYRUS!
 //[identifier] [:arguments] [parameter]
 
 //":flags" <list-of-flags: string-list>

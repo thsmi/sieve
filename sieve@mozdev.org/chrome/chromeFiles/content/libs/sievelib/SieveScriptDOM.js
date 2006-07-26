@@ -2186,6 +2186,8 @@ function isSieveTest (data, index)
     return true;
   else if (token.indexOf("size") == 0)
     return true;
+  else if (token.indexOf("hasflag") == 0)
+    return true;
     
   return false
 }
@@ -2218,6 +2220,8 @@ SieveTestParser.prototype.extract
     element = new SieveHeaderTest();
   else if (token.indexOf("size") == 0)
     element = new SieveSizeTest();
+  else if (token.indexOf("hasflag") == 0)
+    element = new SieveHasFlagTest();
   else
     throw " :... - Sieve Test expected";
           
@@ -2331,6 +2335,12 @@ function isSieveAction(data, index)
     return true;  
   if (token.indexOf("reject") == 0)
     return true;   
+  if (token.indexOf("setflag") == 0)
+    return true;
+  if (token.indexOf("addflag") == 0)
+    return true;
+  if (token.indexOf("removeflag") == 0)
+    return true;
     
   return false;
 }
@@ -2367,6 +2377,12 @@ SieveActionParser.prototype.extract
     element = new SieveFileInto(this.id+"_0");
   else if (token.indexOf("reject") == 0)
     element = new SieveReject(this.id+"_0");
+  else if (token.indexOf("setflag") == 0)
+    element = new SieveSetFlag(this.id+"_0");
+  else if (token.indexOf("addflag") == 0)
+    element = new SieveAddFlag(this.id+"_0");
+  else if (token.indexOf("removeflag") == 0)
+    element = new SieveRemoveFlag(this.id+"_0");
 
   if (element == null)
     throw "Syntax error, Sieve Action Statement expected";

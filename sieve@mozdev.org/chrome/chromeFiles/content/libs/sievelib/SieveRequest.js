@@ -72,6 +72,17 @@ SievePutScriptRequest.prototype.getCommand
 {
   //"PUTSCRIPT \"xxxx\" {4+}\r\n1234\r\n"
   //"PUTSCRIPT \"xxxx\" \"TEST MAX 1024 Zeichen\"\r\n"
+  
+  //  We have to convert all linebreaks thus Mozilla uses 
+  //  \n as linebreak but sieve wants \r\n. For some reason 
+  //  it happens, that we end up with mixed linebreaks...
+     
+  // convert all \r\n to \r ...
+  this.body = this.body.replace(/\r\n/,"\r");
+  // ... now convert all \n to \r ...
+  this.body = this.body.replace(/\n/,"\r");  
+  // ... finally convert all \r to \r\n
+  this.body = this.body.replace(/\r/,"\r\n");
     
   return "PUTSCRIPT \""+this.script+"\" {"+this.body.length+"+}\r\n"
         +this.body+"\r\n"

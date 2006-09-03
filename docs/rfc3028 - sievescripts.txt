@@ -170,3 +170,9 @@ else
         # folder.
         fileinto "personal";
         }
+        
+__________________________________________________        
+if anyof address :domain :is ["From", "To"] "company.com"
+           {
+           keep;               # keep in "In" folder
+           }        

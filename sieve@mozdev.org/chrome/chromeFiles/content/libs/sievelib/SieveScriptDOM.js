@@ -323,16 +323,32 @@ SieveStringList.prototype.parse
       continue;
     }
         
-    var element = null;
-    
+    var element = new Array();
+        
     if (isSieveDeadCode(data))
-      element = new SieveDeadCode();
-    else if (isSieveQuotedString(data))
-      element = new SieveQuotedString();
+    {
+      element[0] = new SieveDeadCode();
+      data = element[0].parse(data);
+    }
     else
-      throw "unexpected Command";
+      element[0] = "";
+      
+    if (isSieveQuotedString(data))
+    {
+      element[1] = new SieveQuotedString();
+      data = element[1].parse(data);
+    }
+    else
+      throw "Quoted String expected";
+      
+    if (isSieveDeadCode(data))
+    {
+      element[2] = new SieveDeadCode();
+      data = element[0].parse(data);
+    }
+    else
+      element[2] = "";
     
-    data = element.parse(data);
     this.elements.push(element);
   }
   
@@ -343,29 +359,37 @@ SieveStringList.prototype.toString
   if (this.compact)
     return this.elements[0].toString();
     
-  var cmd = "[";
-  var sep = "";
+  var result = "[";
+  var separator = "";
   
   for (var i = 0;i<this.elements.length; i++)
   {
-    // ugly hack ...
-    if (this.elements[i] instanceof SieveQuotedString)
-    {
-      cmd  += sep;
-      sep = ",";
-    }
-    
-    cmd += this.elements[i].toString();
+    result = result
+             + separator
+             + this.elements[i][0].toString()
+             + this.elements[i][1].toString()
+             + this.elements[i][2].toString();
+             
+    separator = ",";
   }
-  cmd += "]";
+  result += "]";
   
-  return cmd;    
+  return result;    
 }
 
 SieveStringList.prototype.toXUL
     = function ()
 {
-  return "Stringlist";
+  if (this.compact)
+    return this.elements[0].getValue();
+   
+  var result = "";   
+  for (var i = 0;i<this.elements.length; i++)
+  {
+    result += this.elements[i][1].getValue()+" | ";
+  }
+  
+  return result; 
 }
 
 /******************************************************************************/
@@ -2604,12 +2628,11 @@ SieveDom.prototype.setScript
   // they have to be converted to \r\n
 
   // convert all \r\n to \r ...
-  this.data = this.data.replace(/\r\n/,"\r");
+  data = data.replace(/\r\n/,"\r");
   // ... now convert all \n to \r ...
-  this.data = this.data.replace(/\n/,"\r");  
+  data = data.replace(/\n/,"\r");  
   // ... finally convert all \r to \r\n
-  this.data = this.data.replace(/\r/,"\r\n");  
-  
+  data = data.replace(/\r/,"\r\n");    
   
   // requires are only valid if they are
   // before any other sieve command!

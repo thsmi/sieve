@@ -64,21 +64,13 @@
   </box>
   <box flex="1" style="overflow:auto">
     <html:div id="divContext" xmlns:html="http://www.w3.org/1999/xhtml">  
-      dummyText...
-      <button id="btnUpload"  image="chrome://sieve/content/images/add.png" style="min-width:0px"/>      
-      <html:a href='javascript:alert("test")' >
-      <html:br />
-      <html:br />
-      <html:br />
-      <html:br />
-      <html:input type="Button" onClick="alert('test');" />
-      </html:a>
+      nothing there yet...      
     </html:div>
   </box>
 </deck>
   <hbox align="center">
     <spacer flex="1" />
-    <button label ="&edit.ok;" oncommand="onAccept()"/>
+    <button label ="&edit.save;" oncommand="onAccept()"/>
     <button label ="&edit.cancel;" oncommand="onCancel()"/>
   </hbox>
   <separator/>

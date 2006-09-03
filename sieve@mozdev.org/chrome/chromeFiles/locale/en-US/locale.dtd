@@ -74,7 +74,7 @@
 <!ENTITY edit.errors "Compile Errors:">
 
 <!ENTITY edit.cancel "Cancel">
-<!ENTITY edit.ok "Ok">
+<!ENTITY edit.save "Save">
 
 <!-- Locales for the Capabitity dialog -->
 <!ENTITY capability.title "Sieve Capabilities">

@@ -5,25 +5,23 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>sieve@mozdev.org</em:id>
-    <em:version>0.1.1</em:version>
+    <em:version>0.1.2</em:version>
     <em:type>2</em:type>
-   
-    <!-- Target Application this extension can install into, 
-         with minimum and maximum supported versions. --> 
+
     <em:targetApplication>
       <Description>
         <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
         <em:minVersion>1.0+</em:minVersion>
-    	<em:maxVersion>10.0</em:maxVersion> 
+      	<em:maxVersion>10.0</em:maxVersion>  
       </Description>
     </em:targetApplication>
    
-    <!-- Front End MetaData -->
     <em:name>Sieve</em:name>
-    <em:description>Sets serverside sieve email filters</em:description>
+    <em:description>Configures serverside sieve email filters</em:description>
     <em:creator>Thomas Schmid</em:creator>
     <em:homepageURL>http://sieve.mozdev.org/</em:homepageURL>
 <!--    <em:iconURL>chrome://sieve/skin/icon.png</em:iconURL> -->
     <em:optionsURL>chrome://sieve/content/options/SieveOptions.xul</em:optionsURL>   
+    <em:updateURL>http://sieve.mozdev.org/update.rdf</em:updateURL>    
   </Description>      
 </RDF>

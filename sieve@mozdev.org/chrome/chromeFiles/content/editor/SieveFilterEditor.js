@@ -80,7 +80,9 @@ function onBtnCompile()
     if ( document.getElementById("btnCompile").checked == false)
     {
         gCompile = true;
-        onCompile()
+        document.getElementById("btnCompile")
+          .setAttribute("image","chrome://sieve/content/images/syntaxCheckOn.png");
+        onCompile();
         return
     }
 
@@ -88,6 +90,8 @@ function onBtnCompile()
     gCompileTimeout = null;
     
     gCompile = false;
+    document.getElementById("btnCompile")
+      .setAttribute("image","chrome://sieve/content/images/syntaxCheckOff.png");
     document.getElementById("gbError").setAttribute('hidden','true')    
 }
 
@@ -205,8 +209,6 @@ function onPaste() { goDoCommand("cmd_paste"); }
 function onBtnChangeView()
 {
   var deck = document.getElementById("dkView");
-  
-  alert(deck.selectedIndex);
   
   if (deck.selectedIndex == 0)
     document.getElementById("dkView").selectedIndex = 1;

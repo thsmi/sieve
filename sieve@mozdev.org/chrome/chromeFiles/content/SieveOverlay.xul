@@ -6,10 +6,10 @@
 
 <menupopup id="taskPopup">
   <menuitem id="mnuSieveOptionsDialog" insertafter="applyFilters" label="&menu.options;"
-  		oncommand='window.open("chrome://sieve/content/options/SieveOptions.xul", "aboutMyExtension", "chrome,centerscreen");' 
+  		oncommand='window.open("chrome://sieve/content/options/SieveOptions.xul", "sieveOptions", "chrome,centerscreen");' 
   		accesskey="&menu.options.key;" />
   <menuitem id="mnuSieveListDialog" insertafter="applyFilters" label="&menu.filters;"
-  		oncommand='window.open("chrome://sieve/content/editor/SieveFilterExplorer.xul", "aboutMyExtension", "chrome,centerscreen");' 
+  		oncommand='window.open("chrome://sieve/content/editor/SieveFilterExplorer.xul", "sieveFilterExplorer", "chrome,centerscreen");' 
   		accesskey="&menu.filters.key;" />  		
   <menuseparator id="mnuSieveSeparator" insertafter="applyFilters"/>  		
 </menupopup>

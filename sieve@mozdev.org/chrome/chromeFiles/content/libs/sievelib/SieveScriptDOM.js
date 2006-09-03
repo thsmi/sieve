@@ -323,31 +323,26 @@ SieveStringList.prototype.parse
       continue;
     }
         
-    var element = new Array();
+    var element = new Array("","","");
         
     if (isSieveDeadCode(data))
     {
       element[0] = new SieveDeadCode();
       data = element[0].parse(data);
     }
-    else
-      element[0] = "";
       
-    if (isSieveQuotedString(data))
-    {
-      element[1] = new SieveQuotedString();
-      data = element[1].parse(data);
-    }
-    else
+    if (isSieveQuotedString(data) == false)
       throw "Quoted String expected";
+    
+    element[1] = new SieveQuotedString();
+    data = element[1].parse(data);
+         
       
     if (isSieveDeadCode(data))
     {
       element[2] = new SieveDeadCode();
       data = element[0].parse(data);
     }
-    else
-      element[2] = "";
     
     this.elements.push(element);
   }
@@ -2123,24 +2118,28 @@ SieveTestList.prototype.parse
       data = data.slice(1);
       continue;
     }
-        
-    var element = null;
+            
+    var element = new Array("","","");
     
     if (isSieveDeadCode(data))
     {
-      element = new SieveDeadCode();
-      data = element.parse(data);
+      element[0] = new SieveDeadCode();
+      data = element[0].parse(data);
     }
-    else if (isSieveTest(data))
-    {
-      var parser = new SieveTestParser(data);
-      element = parser.extract();
-      data = parser.getData();
-    }
-    else
-      throw "unexpected Command";
     
-
+    if (isSieveTest(data) == false)
+      throw "Test expression expected";
+    
+    var parser = new SieveTestParser(data);
+    element[1] = parser.extract();
+    data = parser.getData();
+    
+    if (isSieveDeadCode(data))
+    {
+      element[2] = new SieveDeadCode();
+      data = element[2].parse(data);
+    }
+        
     this.elements.push(element);
   }
   
@@ -2148,27 +2147,23 @@ SieveTestList.prototype.parse
 
 SieveTestList.prototype.toString
     = function ()
-{
-  if (this.compact)
-    return this.elements[0].toString();
-    
-  var cmd = "(";
-  var sep = "";
+{          
+  var result = "(";
+  var separator = "";
   
   for (var i = 0;i<this.elements.length; i++)
   {
-    // ugly hack ...
-    if (this.elements[i] instanceof SieveQuotedString)
-    {
-      cmd  += sep;
-      sep = ",";
-    }
-    
-    cmd += this.elements[i].toString();
+    result = result
+             + separator
+             + this.elements[i][0].toString()
+             + this.elements[i][1].toString()
+             + this.elements[i][2].toString();
+             
+    separator = ",";
   }
-  cmd += ")";
+  result += ")";
   
-  return cmd;    
+  return result;   
 }
 
 SieveTestList.prototype.toXUL
@@ -2176,11 +2171,8 @@ SieveTestList.prototype.toXUL
 {
   var result = "";
   for (var i = 0; i<this.elements.length; i++)
-  {
-    if (this.elements[i] instanceof SieveDeadCode)
-     continue;
-    
-    result += this.elements[i].toXUL();
+  {    
+    result += this.elements[i][1].toXUL();
     result += "<html:br />";
   }
   return result;

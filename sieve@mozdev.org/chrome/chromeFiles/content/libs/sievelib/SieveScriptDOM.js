@@ -136,14 +136,14 @@ SieveMultiLineString.prototype.parse
     data = this.hashComment.parse(data);
   }
   
-  var end = data.indexOf("\n.\n");
+  var end = data.indexOf("\r\n.\r\n");
 
   if (end == -1)
     throw "Syntaxerror: Multiline String not closed, \".\\r\\n missing" ;
   
-  this.text = data.slice(0,end+1);
+  this.text = data.slice(0,end+2);
        
-  data = data.slice(end+3);
+  data = data.slice(end+5);
   
   //remove the \r\n
   return data;
@@ -161,9 +161,9 @@ SieveMultiLineString.prototype.toString
 {
   return "text:"
     +this.whiteSpace
-    +((this.hashComment == null)?"\n":this.hashComment.toString())
+    +((this.hashComment == null)?"\r\n":this.hashComment.toString())
     +this.text
-    +".\n";
+    +".\r\n";
 }
 
 SieveMultiLineString.prototype.toXUL
@@ -755,14 +755,14 @@ SieveHashComment.prototype.parse
   data = data.slice(1);
     
   // ... and find the end of the comment
-  var end = data.indexOf("\n");
+  var end = data.indexOf("\r\n");
   if (end == -1)
     end = data.length;
   
   this.text = data.slice(0,end);
        
   //remove the \r\n
-  return data = data.slice(end+1);
+  return data = data.slice(end+2);
 }
 
 SieveHashComment.prototype.getID
@@ -1778,9 +1778,9 @@ SieveAnyOfTest.prototype.parse
 {
   // Syntax :
   // <"anyof"> <tests: test-list>
-  
+
   data = data.slice("anyof".length);
-  
+    
   data = this.whiteSpace[0].parse(data);
   
   data = this.testList.parse(data);
@@ -2600,8 +2600,20 @@ function SieveDom()
 SieveDom.prototype.setScript
     = function (data)
 {
+  // the sieve syntax prohibits single \n and \r
+  // they have to be converted to \r\n
+
+  // convert all \r\n to \r ...
+  this.data = this.data.replace(/\r\n/,"\r");
+  // ... now convert all \n to \r ...
+  this.data = this.data.replace(/\n/,"\r");  
+  // ... finally convert all \r to \r\n
+  this.data = this.data.replace(/\r/,"\r\n");  
+  
+  
   // requires are only valid if they are
   // before any other sieve command!
+  
   
   var isImportSection = true;
   

@@ -32,9 +32,9 @@
     <toolbarbutton image="chrome://sieve/content/images/copy.png" oncommand="onCopy();" />    
     <toolbarbutton image="chrome://sieve/content/images/paste.png" oncommand="onPaste();" />    
     <toolbarseperator />
-    <toolbarbutton id="btnCompile" label=" Syntaxcheck" type="checkbox" oncommand="onBtnCompile();"
+    <toolbarbutton id="btnCompile" label="Syntaxcheck" type="checkbox" oncommand="onBtnCompile();"
     			   image="chrome://sieve/content/images/syntaxCheckOn.png" />
-    <toolbarbutton id="btnCompile" label=" View Source" checked="true" type="checkbox" oncommand="onBtnChangeView();" />
+    <toolbarbutton id="btnViewSource" label="View Source" checked="true" type="checkbox" hidden="true" oncommand="onBtnChangeView();" />
   </toolbar>
 </toolbox>
 

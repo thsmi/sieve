@@ -14,7 +14,8 @@
   ondialogaccept="return onAccept(this);" >  
 
   <script type="application/x-javascript" src="chrome://sieve/content/editor/SieveFilterWizard.js" /> 
-    
+  
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveImapFlags.js" />    
   <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveScriptDOM.js" />
   <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveXULHelper.js" />  
   

@@ -78,11 +78,11 @@ SievePutScriptRequest.prototype.getCommand
   //  it happens, that we end up with mixed linebreaks...
      
   // convert all \r\n to \r ...
-  this.body = this.body.replace(/\r\n/,"\r");
+  this.body = this.body.replace(/\\r\\n/,"\r");
   // ... now convert all \n to \r ...
-  this.body = this.body.replace(/\n/,"\r");  
+  this.body = this.body.replace(/\\n/,"\r");  
   // ... finally convert all \r to \r\n
-  this.body = this.body.replace(/\r/,"\r\n");
+  this.body = this.body.replace(/\\r/,"\r\n");
     
   return "PUTSCRIPT \""+this.script+"\" {"+this.body.length+"+}\r\n"
         +this.body+"\r\n"

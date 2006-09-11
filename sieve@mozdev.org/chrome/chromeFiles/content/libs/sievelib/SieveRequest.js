@@ -78,12 +78,26 @@ SievePutScriptRequest.prototype.getCommand
   //  it happens, that we end up with mixed linebreaks...
      
   // convert all \r\n to \r ...
-  this.body = this.body.replace(/\\r\\n/,"\r");
+  this.body = this.body.replace(/\r\n/g,"\r");
   // ... now convert all \n to \r ...
-  this.body = this.body.replace(/\\n/,"\r");  
+  this.body = this.body.replace(/\n/g,"\r");  
   // ... finally convert all \r to \r\n
-  this.body = this.body.replace(/\\r/,"\r\n");
-    
+  this.body = this.body.replace(/\r/g,"\r\n");
+
+  var r = 0;
+  var n = 0;
+  for (var i=0; i< this.body.length; i++)
+  {
+    if (this.body.charCodeAt(i) == "\r".charCodeAt(0))
+      r++;
+    if (this.body.charCodeAt(i) == "\n".charCodeAt(0))
+      n++;
+  }
+  if (n != r)
+   alert("Something went terribly wrong. The linebreaks are mixed up...\n");
+//  alert("n:"+n+"/r:"+r);
+      
+      
   return "PUTSCRIPT \""+this.script+"\" {"+this.body.length+"+}\r\n"
         +this.body+"\r\n"
 }

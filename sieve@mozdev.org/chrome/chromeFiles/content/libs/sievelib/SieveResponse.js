@@ -144,6 +144,9 @@ SieveSetActiveResponse.prototype.getResponseCode
 function SieveCapabilitiesResponse(data)
 {
     //*(string [SP string] CRLF) response-oknobye    
+    this.implementation = "";
+    this.sasl = "";
+    this.extensions = "";
     
     var parser = new SieveResponseParser(data);
     while (parser.isString() )
@@ -189,7 +192,7 @@ SieveCapabilitiesResponse.prototype.getImplementation
     = function () { return this.implementation; }
 
 SieveCapabilitiesResponse.prototype.getSasl
-    = function () { return this.sasl; }
+    = function () { return this.sasl.split(" "); }
     
 SieveCapabilitiesResponse.prototype.getExtensions
     = function () { return this.extensions; }
@@ -310,23 +313,97 @@ SieveLogoutResponse.prototype.getResponseCode
     = function () { return this.superior.getResponseCode(); }
 
 //*************************************
-function SievePlainLoginResponse(data)
+function SieveSaslLoginResponse()
+{
+  this.superior = null
+  this.state = 0;
+}
+
+SieveSaslLoginResponse.prototype.add
+  = function (data) 
+{
+  // C: AUTHENTICATE "LOGIN"
+  // S: {12}
+  // S: VXNlcm5hbWU6
+  // Please enter your password:
+  // C: {8+}
+  // Y3lydXM=
+  // S: {12}
+  // S: UGFzc3dvcmQ6
+  // C: {8+}
+  // Y3lydXM=
+  // S: OK...
+  var parser = new SieveResponseParser(data);
+    
+  if (parser.isString())
+  {
+    this.state ++;
+    return;
+  }
+    
+  this.state = 4;
+  this.superior = new SieveAbstractResponse(parser);
+}
+
+SieveSaslLoginResponse.getState
+  = function () { return this.state; }
+
+SieveSaslLoginResponse.prototype.getMessage
+  = function ()
+{
+  if (this.state != 4)
+    throw "Illegal State, request not completed";
+      
+  return this.superior.getMessage(); 
+}
+
+SieveSaslLoginResponse.prototype.hasError
+  = function () 
+{
+  if (this.state != 4)
+    throw "Illegal State, request not completed";
+    
+  return this.superior.hasError(); 
+}
+
+SieveSaslLoginResponse.prototype.getResponse
+  = function () 
+{
+  if (this.state != 4)
+    throw "Illegal State, request not completed";
+      
+  return this.superior.getResponse(); 
+}
+
+SieveSaslLoginResponse.prototype.getResponseCode
+  = function () 
+{
+  if (this.state != 4)
+    throw "Illegal State, request not completed";
+    
+  return this.superior.getResponseCode(); 
+}
+
+
+//*************************************
+function SieveSaslPlainResponse(data)
 {
     this.superior = new SieveAbstractResponse(
                         new SieveResponseParser(data));
 }
 
-SievePlainLoginResponse.prototype.getMessage
+SieveSaslPlainResponse.prototype.getMessage
     = function (){ return this.superior.getMessage(); }
 
-SievePlainLoginResponse.prototype.hasError
+SieveSaslPlainResponse.prototype.hasError
     = function () { return this.superior.hasError(); }
 
-SievePlainLoginResponse.prototype.getResponse
+SieveSaslPlainResponse.prototype.getResponse
     = function () { return this.superior.getResponse(); }
 
-SievePlainLoginResponse.prototype.getResponseCode
+SieveSaslPlainResponse.prototype.getResponseCode
     = function () { return this.superior.getResponseCode(); }
+
 
 
 /*******************************************************************************
@@ -412,7 +489,7 @@ SieveInitResponse.prototype.getImplementation
     = function () { return this.implementation; }
 
 SieveInitResponse.prototype.getSasl
-    = function () { return this.sasl; }
+    = function () { return this.sasl.split(" "); }
     
 SieveInitResponse.prototype.getExtensions
     = function () { return this.extensions; }

@@ -19,25 +19,27 @@ SieveGetScriptRequest.prototype.addErrorListener
 	this.errorListener = listener;
 }
 
-SieveGetScriptRequest.prototype.getCommand
+SieveGetScriptRequest.prototype.hasNextRequest
+    = function ()
+{
+  return false;
+}
+
+SieveGetScriptRequest.prototype.getNextRequest
     = function ()
 {
   return "GETSCRIPT \""+this.script+"\"\r\n";
 }
 
-
-SieveGetScriptRequest.prototype.setResponse
+SieveGetScriptRequest.prototype.addResponse
     = function (data)
 {
-
-  var response = new SieveGetScriptResponse(this.script,data);
+  var response = new SieveGetScriptResponse(this.script,data); 
 		
   if ((response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onGetScriptResponse(response);			
+    this.responseListener.onGetScriptResponse(response);
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
-
-
 }
 
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -67,7 +69,13 @@ function SievePutScriptRequest(script, body)
   this.body = body;
 }
 
-SievePutScriptRequest.prototype.getCommand
+SievePutScriptRequest.prototype.hasNextRequest
+    = function ()
+{
+  return false;
+}
+
+SievePutScriptRequest.prototype.getNextRequest
     = function ()
 {
   //"PUTSCRIPT \"xxxx\" {4+}\r\n1234\r\n"
@@ -114,7 +122,7 @@ SievePutScriptRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
-SievePutScriptRequest.prototype.setResponse
+SievePutScriptRequest.prototype.addResponse
     = function (data)
 {
   var response = new SievePutScriptResponse(data);
@@ -162,7 +170,13 @@ function SieveSetActiveRequest(script)
     this.script = script;
 }
 
-SieveSetActiveRequest.prototype.getCommand
+SieveSetActiveRequest.prototype.hasNextRequest
+    = function ()
+{
+  return false;
+}
+
+SieveSetActiveRequest.prototype.getNextRequest
     = function ()
 {
   return "SETACTIVE \""+this.script+"\"\r\n";
@@ -180,7 +194,7 @@ SieveSetActiveRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
-SieveSetActiveRequest.prototype.setResponse
+SieveSetActiveRequest.prototype.addResponse
     = function (data)
 {
   var response = new SieveSetActiveResponse(data);
@@ -214,7 +228,15 @@ function SieveCapabilitiesRequest()
 {
 }
 
-SieveCapabilitiesRequest.prototype.getCommand = function ()
+SieveCapabilitiesRequest.prototype.hasNextRequest
+    = function ()
+{
+  return false;
+}
+
+
+SieveCapabilitiesRequest.prototype.getNextRequest
+    = function ()
 {
   return "CAPABILITY\r\n";
 }
@@ -231,7 +253,8 @@ SieveCapabilitiesRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
-SieveCapabilitiesRequest.prototype.setResponse = function (data)
+SieveCapabilitiesRequest.prototype.addResponse
+    = function (data)
 {
   var response = new SieveCapabilitiesResponse(data);
 			
@@ -265,10 +288,16 @@ function SieveDeleteScriptRequest(script)
   this.script = script;
 }
 
-SieveDeleteScriptRequest.prototype.getCommand
+SieveDeleteScriptRequest.prototype.getNextRequest
     = function ()
 {
   return "DELETESCRIPT \""+this.script+"\"\r\n";
+}
+
+SieveDeleteScriptRequest.prototype.hasNextRequest
+    = function ()
+{
+  return false;
 }
 
 SieveDeleteScriptRequest.prototype.addDeleteScriptListener
@@ -283,7 +312,7 @@ SieveDeleteScriptRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
-SieveDeleteScriptRequest.prototype.setResponse
+SieveDeleteScriptRequest.prototype.addResponse
     = function (data)
 {
         
@@ -318,7 +347,13 @@ function SieveListScriptRequest()
 {
 }
 
-SieveListScriptRequest.prototype.getCommand
+SieveListScriptRequest.prototype.hasNextRequest
+    = function ()
+{
+  return false;
+}
+
+SieveListScriptRequest.prototype.getNextRequest
     = function ()
 {
   return "LISTSCRIPTS\r\n";
@@ -336,7 +371,7 @@ SieveListScriptRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
-SieveListScriptRequest.prototype.setResponse 
+SieveListScriptRequest.prototype.addResponse 
     = function (data)
 {	
 	
@@ -371,7 +406,13 @@ function SieveStartTLSRequest()
 {
 }
 
-SieveStartTLSRequest.prototype.getCommand
+SieveStartTLSRequest.prototype.hasNextRequest
+    = function ()
+{
+  return false;
+}
+
+SieveStartTLSRequest.prototype.getNextRequest
     = function ()
 {
   return "STARTTLS\r\n";
@@ -389,7 +430,7 @@ SieveStartTLSRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
-SieveStartTLSRequest.prototype.setResponse 
+SieveStartTLSRequest.prototype.addResponse 
     = function (data)
 {		    
   var response = new SieveStartTLSResponse(data);
@@ -423,10 +464,16 @@ function SieveLogoutRequest()
 {
 }
 
-SieveLogoutRequest.prototype.getCommand 
+SieveLogoutRequest.prototype.getNextRequest
     = function ()
 {
   return "LOGOUT\r\n";
+}
+
+SieveLogoutRequest.prototype.hasNextRequest
+    = function ()
+{
+  return false;
 }
 
 SieveLogoutRequest.prototype.addLogoutListener
@@ -441,7 +488,7 @@ SieveLogoutRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
-SieveLogoutRequest.prototype.setResponse 
+SieveLogoutRequest.prototype.addResponse 
     = function (data)
 {		    
   var response = new SieveLogoutResponse(data);
@@ -478,10 +525,16 @@ function SieveInitRequest()
 {
 }
 
-SieveInitRequest.prototype.getCommand 
+SieveInitRequest.prototype.getNextRequest
     = function ()
 {
   return "";
+}
+
+SieveInitRequest.prototype.hasNextRequest
+    = function ()
+{
+  return false;
 }
 
 SieveInitRequest.prototype.addInitListener
@@ -496,7 +549,7 @@ SieveInitRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
-SieveInitRequest.prototype.setResponse
+SieveInitRequest.prototype.addResponse
     = function (data)
 {
   var response = new SieveInitResponse(data);
@@ -526,38 +579,148 @@ SieveInitRequest.prototype.setResponse
 
 ********************************************************************************/
 
-function SievePlainLoginRequest(username, password) 
+function SieveSaslPlainRequest(username, password) 
 {
   this.username = username;
   this.password = password;
 }
 
-SievePlainLoginRequest.prototype.getCommand 
+SieveSaslPlainRequest.prototype.setUsername
+    = function (username)
+{
+  this.username = username;  
+}
+
+SieveSaslPlainRequest.prototype.setPassword
+    = function (password)
+{
+  this.password = password;  
+}
+
+SieveSaslPlainRequest.prototype.hasNextRequest
     = function ()
 {
+  return false;
+}
+
+SieveSaslPlainRequest.prototype.getNextRequest 
+    = function ()
+{
+  // TODO add request length eg:
+  // AUTHENTICATE "PLAIN" {88+}
+  // cnVkeS5nZXZhZXJ0MkBtYWlsLnVnZW50LmJlAHJ1ZHkuZ2V2YWVydDJAbWFpbC51Z2VudC5iZQB0ZXN0dXNlcjE=
   var logon = btoa("\0"+this.username+"\0"+this.password);  
   return "AUTHENTICATE \"PLAIN\" \""+logon+"\"\r\n";
 }
 
-SievePlainLoginRequest.prototype.addPlainLoginListener
+SieveSaslPlainRequest.prototype.addSaslPlainListener
     = function (listener)
 {
   this.responseListener = listener;
 } 
    
-SievePlainLoginRequest.prototype.addErrorListener
+SieveSaslPlainRequest.prototype.addErrorListener
     = function (listener)
 {
   this.errorListener = listener;
 }
 
-SievePlainLoginRequest.prototype.setResponse 
+SieveSaslPlainRequest.prototype.addResponse
     = function (data)
 {
-  var response = new SievePlainLoginResponse(data);
+  var response = new SieveSaslPlainResponse(data);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onPlainLoginResponse(response);			
+    this.responseListener.onSaslPlainResponse(response);			
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
 }
+
+/*******************************************************************************
+    CLASS NAME         : SievePlainRequest
+    USES CLASSES       : SievePlainResponse
+        
+    CONSCTURCTOR       : SievePlainRequest(String username, String password, listener)
+    DECLARED FUNCTIONS : String getCommand()
+                         void setResponse(String data)
+    EXCEPTIONS         : 
+
+
+    AUTHOR             : Thomas Schmid        
+    DESCRIPTION        : 
+    ...
+
+    EXAMPLE            :
+    ...
+
+********************************************************************************/
+
+function SieveSaslLoginRequest() 
+{
+  this.response = new SieveSaslLoginResponse();
+}
+
+SieveSaslLoginRequest.prototype.setUsername
+    = function (username)
+{
+  this.username = username;
+}
+
+SieveSaslLoginRequest.prototype.setPassword
+    = function (password)
+{
+  this.password = password;
+}
+
+SieveSaslLoginRequest.prototype.getNextRequest
+    = function ()
+{
+  switch (response.getState())
+  {
+    case 0: 
+      return "AUTHENTICATE \"LOGIN\" \r\n";    
+    case 1: 
+      return "{"+btoa(this.username).length+"}\r\n"+btoa(this.username);
+    case 2:
+      return "{"+btoa(this.password).length+"}\r\n"+btoa(this.password);        
+  }  
+}
+
+SieveSaslLoginRequest.prototype.hasNextRequest
+    = function ()
+{
+  if (this.response.getState() == 4) 
+    return false;
+  
+  return true;
+}
+
+SieveSaslLoginRequest.prototype.addSaslLoginListener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
+   
+SieveSaslLoginRequest.prototype.addErrorListener
+    = function (listener)
+{
+  this.errorListener = listener;
+}
+
+SieveSaslLoginRequest.prototype.addResponse 
+    = function (data)
+{
+//  http://www.opensource.apple.com/darwinsource/Current/CyrusIMAP-156.10/cyrus_imap/imap/AppleOD.c
+  //
+
+  this.response.addResponse(data);	
+		
+	if (this.response.getState() != 4)
+	  return;
+	
+  if ((response.getResponse() == 0) && (this.responseListener != null))
+    this.responseListener.onSaslLoginResponse(response);			
+  else if ((response.getResponse() != 0) && (this.errorListener != null))
+    this.errorListener.onError(response);
+}
+

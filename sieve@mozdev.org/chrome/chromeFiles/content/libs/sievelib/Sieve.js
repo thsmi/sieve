@@ -43,12 +43,14 @@ Sieve.prototype.addRequest = function(request)
 	// daher muss die Requestwarteschalnge neu angesto�en werden.
 	if (this.requests.length > 1)
 		return
-	
-	// filtert den initrequest heraus...	 
-	if (request.getCommand() == "")
-		return;
-		
-	this.socket.write(request.getCommand());
+
+	// filtert den initrequest heraus...	 	
+	if (request instanceof SieveInitRequest)
+	  return;
+
+/*	if (request.getCommand() == "")
+		return;*/
+ 	this.socket.write(request.getNextRequest());
 }
 
 Sieve.prototype.connect = function () 
@@ -102,12 +104,14 @@ Sieve.prototype.receiveData
 		return
 									
 	// ... yes, there is one, so we can handle the response...
-	this.requests[0].setResponse(data);
+	this.requests[0].addResponse(data);
 
-	// ... delete the request, it is processed...
-	this.requests.splice(0,1);
+ 	// ... delete the request, it is processed...	
+	if (this.requests[0].hasNextRequest() == false)
+  	this.requests.splice(0,1);
+
 
 	// ... are there any other requests waiting in the queue.
 	if ((this.requests.length > 0))
-		this.socket.write(this.requests[0].getCommand());
+		this.socket.write(this.requests[0].getNextRequest());
 }

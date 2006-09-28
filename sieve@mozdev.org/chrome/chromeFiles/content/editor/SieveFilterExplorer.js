@@ -7,90 +7,96 @@ var accounts = new Array();
 
 var event = 
 {	
-	onInitResponse: function(response)
+  onAuthenticate: function(response)
+  {
+    var login = getSelectedAccount().getLogin();
+    
+    if (login.hasUsername() == false)
+    {
+      event.onSaslPlainResponse(null);
+      return;
+    }
+    
+    var request = null;
+    // the first in the sasl list is prefferd by the server
+    switch (response.getSasl()[0].toLowerCase())
+    {
+
+      case "login":
+        request = new SieveSaslLoginRequest();      
+  	    request.addSaslLoginListener(event);
+        break;
+      case "plain":
+      default: // plain is the fallback...
+        request = new SieveSaslPlainRequest();
+   	    request.addSaslPlainListener(event);
+        break;        
+    }
+
+    request.addErrorListener(event);
+    request.setUsername(login.getUsername())
+    
+    if (login.hasPassword())
+      request.setPassword(login.getPassword());
+    else
+    {
+      var password = promptPassword();
+      if (password == null)
+    	  return;
+
+      request.setPassword(login.password);    	    	
+    }
+    		
+    sieve.addRequest(request);    		
+    
+  },
+  
+  onInitResponse: function(response)
 	{
     	var login = getSelectedAccount().getLogin();
     	
     	// is the Server TLS capable?
     	if (getSelectedAccount().getHost().isTLS() && response.getTLS())
     	{
-    	  var request = new SieveStartTLSRequest(event);
+    	  var request = new SieveStartTLSRequest();
     	  request.addStartTLSListener(event);
     	  request.addErrorListener(event);
 
    		  sieve.addRequest(request);
-    	}
-    	  
-    	else
-    	{
-      if (login.hasUsername() == false)
-      {
-        event.onPlainLoginResponse(null);
-        return;
-      }
-           	
-    	if (login.hasPassword())
-    	{
-          var request = new SievePlainLoginRequest(login.getUsername(), login.getPassword());
-	      request.addPlainLoginListener(event);
-	      request.addErrorListener(event);
-    		
-        sieve.addRequest(request);    		
-    	}
-      else
-      {
-        var password = promptPassword();
-        if (password == null)
-    	    return;
-    	    
-	      var request = new SievePlainLoginRequest(login.getUsername(), password);
-	      request.addPlainLoginListener(event);
-	      request.addErrorListener(event);
-    		
-        sieve.addRequest(request);    	            
-      }
-    }
+   		  return;
+    	}    	  
+    	
+    	event.onAuthenticate(response);
 	},
 	
 	onStartTLSResponse : function(response)
 	{	        
-	    // activate TLS
-	    sieve.startTLS();
+    // activate TLS
+	  sieve.startTLS();
 	    
-	    // and login	    
-       	var login = getSelectedAccount().getLogin();
-       	
-       	if (login.hasUsername() == false)
-       	{
-       	    event.onPlainLoginResponse(null);
-       	    return;
-       	}
-       	
-
-    	if (login.hasPassword())
-    	{
-	      var request = new SievePlainLoginRequest(login.getUsername(), login.getPassword());
-	      request.addPlainLoginListener(event);
-	      request.addErrorListener(event);
-    		
-        sieve.addRequest(request);
-    	}
-      else
-      {
-        var password = promptPassword();
-        if (password == null)
-    	    return;
-
-	      var request = new SievePlainLoginRequest(login.getUsername(), password);
-	      request.addPlainLoginListener(event);
-	      request.addErrorListener(event);
-    		
-        sieve.addRequest(request);
-    	}      	
+    // we should call now Capabilities ...
+    // .. they can change with enabled TLS
+    
+    var request = new SieveCapabilitiesRequest();
+    request.addCapabilitiesListener(event);
+    request.addErrorListener(event);	
+		
+    sieve.addRequest(request);	  
 	},
 	
-  onPlainLoginResponse: function(response)
+  onSaslLoginResponse: function(response)
   {
+    event.onLoginResponse(response);
+  },
+
+	
+  onSaslPlainResponse: function(response)
+  {
+    event.onLoginResponse(response);
+  },
+	
+	onLoginResponse: function(response)
+	{
     // enable the disabled controls....
     disableControls(false);
     postStatus("Connected");
@@ -100,8 +106,8 @@ var event =
     request.addListScriptListener(event);
     request.addErrorListener(event);
 
-    sieve.addRequest(request);
-  },
+    sieve.addRequest(request);	  	  
+	},
 	
 	onLogoutResponse: function(response)
 	{
@@ -156,13 +162,7 @@ var event =
 	
 	onCapabilitiesResponse: function(response)
 	{
-	    
-    var args = new Array();
-    args["implementation"] = response.getImplementation();
-    args["extensions"] = response.getExtensions();
-    args["sasl"] = response.getSasl();
-
-    window.openDialog("chrome://sieve/content/editor/SieveCapabilities.xul", "FilterEditor", "chrome,modal,titlebar,centerscreen", args);
+	  event.onAuthenticate(response);
 	},	
 	
   onError: function(response)
@@ -427,8 +427,24 @@ function onEditClick()
 
 function onCapabilitesClick()
 {
+  var lEvent = 
+  {    
+    onCapabilitiesResponse: function(response)
+    {
+      var args = new Array();
+      args["implementation"] = response.getImplementation();
+      args["extensions"] = response.getExtensions();
+      if (response.getSasl() != "")
+        args["sasl"] = response.getSasl();
+      else
+        args["sasl"] = "Not supported, thus you are authenticated"
+
+      window.openDialog("chrome://sieve/content/editor/SieveCapabilities.xul", "FilterEditor", "chrome,modal,titlebar,centerscreen", args);
+    }
+  }   
+    
   var request = new SieveCapabilitiesRequest();
-  request.addCapabilitiesListener(event);
+  request.addCapabilitiesListener(lEvent);
   request.addErrorListener(event);	
 	
   sieve.addRequest(request);

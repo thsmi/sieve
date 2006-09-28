@@ -31,7 +31,7 @@
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.compile "Compile on server every">
 <!ENTITY options.misc.compile.key "c">
-<!ENTITY options.misc.debug "Debug all Sieve responses to JavaScript Console">
+<!ENTITY options.misc.debug "Debug all Sieve responses to Error Console">
 <!ENTITY options.misc.debug.key "D">
 
 <!ENTITY options.info.servername "Server Name:">

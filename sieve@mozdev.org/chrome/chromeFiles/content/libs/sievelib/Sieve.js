@@ -57,10 +57,7 @@ Sieve.prototype.connect = function ()
 {
 
 	if( this.socket.isConnected )
-	{
-		alert("connected")
 		return;
-	}
    
 	// open socket connection to host - enable binary input 
 	this.socket.open(this.host,this.port,true,true);
@@ -85,7 +82,7 @@ Sieve.prototype.streamStarted
 Sieve.prototype.streamStopped
 	= function (socketContext, status)
 {
-	alert("Stopped\n:"+status)
+//	alert("Stopped\n:"+status)
 }
 
 Sieve.prototype.receiveData

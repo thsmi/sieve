@@ -322,17 +322,7 @@ function SieveSaslLoginResponse()
 SieveSaslLoginResponse.prototype.add
   = function (data) 
 {
-  // C: AUTHENTICATE "LOGIN"
-  // S: {12}
-  // S: VXNlcm5hbWU6
-  // Please enter your password:
-  // C: {8+}
-  // Y3lydXM=
-  // S: {12}
-  // S: UGFzc3dvcmQ6
-  // C: {8+}
-  // Y3lydXM=
-  // S: OK...
+  
   var parser = new SieveResponseParser(data);
     
   if (parser.isString())
@@ -345,7 +335,7 @@ SieveSaslLoginResponse.prototype.add
   this.superior = new SieveAbstractResponse(parser);
 }
 
-SieveSaslLoginResponse.getState
+SieveSaslLoginResponse.prototype.getState
   = function () { return this.state; }
 
 SieveSaslLoginResponse.prototype.getMessage

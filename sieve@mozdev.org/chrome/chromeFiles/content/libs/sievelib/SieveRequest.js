@@ -561,30 +561,63 @@ SieveInitRequest.prototype.addResponse
 }
 
 /*******************************************************************************
-    CLASS NAME         : SievePlainRequest
-    USES CLASSES       : SievePlainResponse
+ 
+  FACTSHEET: 
+  ==========
+   
+    CLASS NAME          : SievePlainRequest
+    USES CLASSES        : SievePlainResponse
         
-    CONSCTURCTOR       : SievePlainRequest(String username, String password, listener)
-    DECLARED FUNCTIONS : String getCommand()
-                         void setResponse(String data)
-    EXCEPTIONS         : 
+    CONSCTURCTOR        : SievePlainRequest(String username)
+    DECLARED FUNCTIONS  : void addSaslPlainListener(...)
+                          void addErrorListener(...)
+                          void addResponse(String data)                          
+                          String getNextRequest()
+                          Boolean hasNextRequest()
+                          void setPassword(String password)
+    EXCEPTIONS          : 
+    AUTHOR              : Thomas Schmid
+    
+  DESCRIPTION:
+  ============
+    TODO: ... 
 
+  EXAMPLE:
+  ========
+     
+    var event = {
+      onSaslPlainResponse: function(response) 
+      {
+        alert("Login successfull");
+      }
+      ,                          
+      onError: function(response) 
+      {
+        alert("SERVER ERROR:"+response.getMessage());
+      }
+    } 
+                          
+    var request = new SieveSaslPlainRequest('geek');
+    request.setPassword('th3g33k1');
+    sieve.addErrorListener(event);
+    sieve.addSaslPlainListener(event);
+                        
+    sieve.addRequest(request);
 
-    AUTHOR             : Thomas Schmid        
-    DESCRIPTION        : 
-    ...
+  PROTOCOL INTERACTION: 
+  =====================
 
-    EXAMPLE            :
-    ...
+    Client > AUTHENTICATE "PLAIN" AHRlc3QAc2VjcmV0   | AUTHENTICATE "PLAIN" [UTF8NULL]test[UTF8NULL]secret
+    Server < OK                                      | OK
 
 ********************************************************************************/
 
-function SieveSaslPlainRequest(username, password) 
+function SieveSaslPlainRequest(username) 
 {
   this.username = username;
-  this.password = password;
 }
 
+// TODO obsolete
 SieveSaslPlainRequest.prototype.setUsername
     = function (username)
 {
@@ -606,9 +639,6 @@ SieveSaslPlainRequest.prototype.hasNextRequest
 SieveSaslPlainRequest.prototype.getNextRequest 
     = function ()
 {
-  // TODO add request length eg:
-  // AUTHENTICATE "PLAIN" {88+}
-  // cnVkeS5nZXZhZXJ0MkBtYWlsLnVnZW50LmJlAHJ1ZHkuZ2V2YWVydDJAbWFpbC51Z2VudC5iZQB0ZXN0dXNlcjE=
   var logon = btoa("\0"+this.username+"\0"+this.password);  
   return "AUTHENTICATE \"PLAIN\" \""+logon+"\"\r\n";
 }
@@ -637,29 +667,76 @@ SieveSaslPlainRequest.prototype.addResponse
 }
 
 /*******************************************************************************
-    CLASS NAME         : SievePlainRequest
-    USES CLASSES       : SievePlainResponse
+ 
+  FACTSHEET: 
+  ==========
+    CLASS NAME          : SieveSaslLoginRequest
+    USES CLASSES        : SieveSaslLoginResponse
         
-    CONSCTURCTOR       : SievePlainRequest(String username, String password, listener)
-    DECLARED FUNCTIONS : String getCommand()
-                         void setResponse(String data)
-    EXCEPTIONS         : 
+    CONSCTURCTOR        : SieveLoginRequest(String username)
+    DECLARED FUNCTIONS  : void addSaslLoginListener(...)
+                          void addErrorListener(...)
+                          void addResponse(String data)                          
+                          String getNextRequest()
+                          Boolean hasNextRequest()
+                          void setPassword(String password)
+    EXCEPTIONS          : 
+    AUTHOR              : Thomas Schmid        
+    
+  DESCRIPTION:
+  ============
+    TODO: ... 
 
+  LINKS:
+  ======
+      * http://darwinsource.opendarwin.org/Current/CyrusIMAP-156.9/cyrus_imap/imap/AppleOD.c
+      * http://www.opensource.apple.com/darwinsource/Current/CyrusIMAP-156.10/cyrus_imap/imap/AppleOD.c
 
-    AUTHOR             : Thomas Schmid        
-    DESCRIPTION        : 
-    ...
+  EXAMPLE:
+  ========
+     
+    var event = {
+      onSaslLoginResponse: function(response) 
+      {
+        alert("Login successfull");
+      }
+      ,                          
+      onError: function(response) 
+      {
+        alert("SERVER ERROR:"+response.getMessage());
+      }
+    } 
+                          
+    var request = new SieveSaslLoginRequest('geek');
+    request.setPassword('th3g33k1');
+    sieve.addErrorListener(event);
+    sieve.addSaslLoginListener(event);
+                        
+    sieve.addRequest(request);
 
-    EXAMPLE            :
-    ...
+  PROTOCOL INTERACTION: 
+  =====================
+     
+    Client > AUTHENTICATE "LOGIN"   | AUTHENTICATE "LOGIN"
+    Server < {12}                   | {12}
+           < VXNlcm5hbWU6           | Username:
+    Client > {8+}                   | {8+}
+           > Z2Vlaw==               | geek
+    Server < {12}                   | {12}
+           < UGFzc3dvcmQ6           | Password:
+    Client > {12+}                  | {12+}
+           > dGgzZzMzazE=           | th3g33k1
+    Server < OK                     | OK
 
 ********************************************************************************/
 
-function SieveSaslLoginRequest() 
+function SieveSaslLoginRequest(username) 
 {
+  this.username = username;
   this.response = new SieveSaslLoginResponse();
 }
 
+// TODO obsolete...
 SieveSaslLoginRequest.prototype.setUsername
     = function (username)
 {
@@ -675,14 +752,16 @@ SieveSaslLoginRequest.prototype.setPassword
 SieveSaslLoginRequest.prototype.getNextRequest
     = function ()
 {
-  switch (response.getState())
+  switch (this.response.getState())
   {
     case 0: 
       return "AUTHENTICATE \"LOGIN\" \r\n";    
     case 1: 
       return "{"+btoa(this.username).length+"}\r\n"+btoa(this.username);
     case 2:
-      return "{"+btoa(this.password).length+"}\r\n"+btoa(this.password);        
+      return "{"+btoa(this.password).length+"}\r\n"+btoa(this.password); 
+    default : 
+      return ""; //it might be better to throw an Execption       
   }  
 }
 
@@ -710,10 +789,8 @@ SieveSaslLoginRequest.prototype.addErrorListener
 SieveSaslLoginRequest.prototype.addResponse 
     = function (data)
 {
-//  http://www.opensource.apple.com/darwinsource/Current/CyrusIMAP-156.10/cyrus_imap/imap/AppleOD.c
-  //
 
-  this.response.addResponse(data);	
+  this.response.add(data);	
 		
 	if (this.response.getState() != 4)
 	  return;

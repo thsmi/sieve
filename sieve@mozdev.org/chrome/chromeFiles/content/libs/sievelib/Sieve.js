@@ -77,12 +77,23 @@ Sieve.prototype.disconnect
 Sieve.prototype.streamStarted 
 	= function (socketContext)
 {
+    if (this.debug)
+  {
+    var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
+                           .getService(Components.interfaces.nsIConsoleService);
+    consoleService.logStringMessage("Connected...");
+  }    
 } 
 
 Sieve.prototype.streamStopped
 	= function (socketContext, status)
 {
-//	alert("Stopped\n:"+status)
+  if (this.debug)
+  {
+    var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
+                           .getService(Components.interfaces.nsIConsoleService);
+    consoleService.logStringMessage("Disconnected\n:"+status);
+  } 
 }
 
 Sieve.prototype.receiveData

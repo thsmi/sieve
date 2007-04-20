@@ -8,8 +8,30 @@
 
 "YES\r\n"*/
 
-// *********** BASIC CLASS
-function SieveAbstractResponse(parser)
+/*******************************************************************************
+ 
+  FACTSHEET: 
+  ==========
+    CLASS NAME          : SieveAbstractResponse
+    USES CLASSES        : SieveResponseParser
+        
+    CONSCTURCTOR        : SieveAbstractResponse(SieveResponseParser parser)
+    DECLARED FUNCTIONS  : String getMessage()
+                          String getResponse()
+                          int getResponseCode()                          
+                          boolean hasError()
+    EXCEPTIONS          : 
+    AUTHOR              : Thomas Schmid        
+    
+  DESCRIPTION:
+  ============
+    Every Sieve Response is tailed bei eithern an OK, BYE or NO followed by 
+    optional messages and/or error codes.
+    This class is capable of parsing this part of the sieve response, therefore
+    it should be implemented by and SieveResponse.
+    
+********************************************************************************/
+function SieveAbstractResponse(data)
 {
     this.message = "";
     this.responseCode = "";
@@ -97,9 +119,30 @@ SieveAbstractResponse.prototype.getResponseCode
   return new SieveRespCodeUnknown(this.responseCode);
 }
 
-//*************************************
+/*******************************************************************************
+ 
+  FACTSHEET: 
+  ==========
+    CLASS NAME          : SievePutScriptResponse
+    USES CLASSES        : SieveResponseParser
+                          SieveAbstractResponse
+        
+    CONSCTURCTOR        : SievePutScriptResponse(String data)
+    DECLARED FUNCTIONS  : String getMessage()
+                          String getResponse()
+                          int getResponseCode()                          
+                          boolean hasError()
+    EXCEPTIONS          : 
+    AUTHOR              : Thomas Schmid        
+    
+  DESCRIPTION:
+  ============
+    Encapsulates a SieveAbstractResponse object in order to parse 
+    SievePutScriptResponses
+      ( see SieveAbstracResponse for more details )
+     
+********************************************************************************/
 
-// encapsulates SieveAbstractScripResponse...
 function SievePutScriptResponse(data)
 {
     this.superior = new SieveAbstractResponse(
@@ -315,7 +358,7 @@ SieveLogoutResponse.prototype.getResponseCode
 //*************************************
 function SieveSaslLoginResponse()
 {
-  this.superior = null
+  this.superior = null;
   this.state = 0;
 }
 
@@ -324,15 +367,30 @@ SieveSaslLoginResponse.prototype.add
 {
   
   var parser = new SieveResponseParser(data);
-    
-  if (parser.isString())
+  
+  if ((this.state == 0) && (parser.isString()))
   {
-    this.state ++;
+    // String should be 'Username:' or something similar
+    this.state++;
+    return;
+  }
+  
+  if ((this.state == 1) && (parser.isString()))
+  {
+    // Sting should be equivalten to 'Password:'
+    this.state++;
+    return;
+  }
+  
+  if (this.state == 2)
+  {
+    // Should be either a NO, BYE or OK
+    this.state = 4;
+    this.superior = new SieveAbstractResponse(data);
     return;
   }
     
-  this.state = 4;
-  this.superior = new SieveAbstractResponse(parser);
+  throw new Exception('Illegal State:'+this.state+' / '+data);
 }
 
 SieveSaslLoginResponse.prototype.getState

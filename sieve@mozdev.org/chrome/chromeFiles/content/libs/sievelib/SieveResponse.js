@@ -1,13 +1,3 @@
-/*"NO (0000) \"Meldung\"\r\n"
-"BYE (0000) {4+}\r\n1234\r\n"
-
-"NO \"Meldung\"\r\n"
-"BYE {4+}\r\n1234\r\n"
-
-"NO (0000)\r\n"
-
-"YES\r\n"*/
-
 /*******************************************************************************
  
   FACTSHEET: 
@@ -29,9 +19,17 @@
     optional messages and/or error codes.
     This class is capable of parsing this part of the sieve response, therefore
     it should be implemented by and SieveResponse.
+
+  PROTOCOL SNIPLET EXAMPLES: 
+  ==========================
+    'NO (0000) "Meldung"\r\n'
+    'BYE (0000) {4+}\r\n1234\r\n'
+    'NO \"Meldung\"\r\n'
+    'BYE {4+}\r\n1234\r\n'
+    'NO (0000)\r\n'
     
 ********************************************************************************/
-function SieveAbstractResponse(data)
+function SieveAbstractResponse(parser)
 {
     this.message = "";
     this.responseCode = "";
@@ -52,7 +50,7 @@ function SieveAbstractResponse(data)
         parser.extract(2);
     }
     else
-        throw "YES, NO or BYE expected";
+        throw "NO, OK or BYE expected";
 
     // is there a Message?
     if (parser.isLineBreak())
@@ -89,10 +87,10 @@ SieveAbstractResponse.prototype.getMessage
 SieveAbstractResponse.prototype.hasError
     = function ()
 {
-    if (this.response == 0)
-        return false;
+  if (this.response == 0)
+    return false;
 
-    return true;
+  return true;
 }
 
 SieveAbstractResponse.prototype.getResponse

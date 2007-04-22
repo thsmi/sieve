@@ -262,6 +262,7 @@ SieveCustomHost.prototype.setPort
     gPref.setIntPref(this.prefURI+".port",port);
 }
 
+// TODO Should be renamed in "secure"
 SieveCustomHost.prototype.isTLS
     = function ()
 {

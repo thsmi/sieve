@@ -17,11 +17,11 @@
   <script type="application/x-javascript" src="chrome://sieve/content/libs/jslib/jslib.js" />
   <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js" />
   
-  <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/Sieve.js" />  
-  <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveRequest.js" />
-  <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveResponse.js" />
-  <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveResponseParser.js"/>
-  <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveAccounts.js" />
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/Sieve.js" />  
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/SieveRequest.js" />
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/SieveResponse.js" />
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/SieveResponseParser.js"/>
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js" />
   
 <toolbox>
   <toolbar id="nav-toolbar">

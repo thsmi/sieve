@@ -15,9 +15,13 @@
 
   <script type="application/x-javascript" src="chrome://sieve/content/editor/SieveFilterWizard.js" /> 
   
-  <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveImapFlags.js" />    
-  <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveScriptDOM.js" />
-  <script type="application/x-javascript" src="chrome://sieve/content/libs/sievelib/SieveXULHelper.js" />  
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/libSieveDOM/SieveAtoms.js" />
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/libSieveDOM/SieveActions.js" />
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/libSieveDOM/SieveTests.js" />
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/libSieveDOM/SieveCondition.js" />
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/libSieveDOM/SieveImapFlags.js" />  
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/libSieveDOM/SieveScriptDOM.js" />
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/libSieveDOM/SieveXULHelper.js" />
   
   <vbox flex="1">
     <label value="&edit.script;"/>

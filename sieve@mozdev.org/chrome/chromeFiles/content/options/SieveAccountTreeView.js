@@ -7,7 +7,7 @@ function SievePrefTreeView(listener)
 										.classes["@mozilla.org/moz/jssubscript-loader;1"]
 										.getService(Components.interfaces.mozIJSSubScriptLoader);
   jsLoader
-    .loadSubScript("chrome://sieve/content/libs/sievelib/SieveAccounts.js");
+    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveAccounts.js");
 	
   this.sieveAccounts = new SieveAccounts();    
   this.accounts = this.sieveAccounts.getAccounts();

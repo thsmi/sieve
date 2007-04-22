@@ -21,7 +21,6 @@ var event =
     // the first in the sasl list is prefferd by the server
     switch (response.getSasl()[0].toLowerCase())
     {
-
       case "login":
         request = new SieveSaslLoginRequest();      
   	    request.addSaslLoginListener(event);
@@ -107,6 +106,7 @@ var event =
     request.addErrorListener(event);
 
     sieve.addRequest(request);	  	  
+    disableControls(false);
 	},
 	
 	onLogoutResponse: function(response)
@@ -180,6 +180,7 @@ var event =
       sieve = new Sieve(
                     code.getHostname(),
                     getSelectedAccount().getHost().getPort(),
+                    getSelectedAccount().isTLS(),
                     getSelectedAccount().getSettings().isDebug() );
   
       var request = new SieveInitRequest();
@@ -222,17 +223,17 @@ function onWindowLoad()
                    .classes["@mozilla.org/moz/jssubscript-loader;1"]
                    .getService(Components.interfaces.mozIJSSubScriptLoader);
   jsLoader
-    .loadSubScript("chrome://sieve/content/libs/sievelib/SieveAccounts.js");
+    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveAccounts.js");
   jsLoader
-    .loadSubScript("chrome://sieve/content/libs/sievelib/Sieve.js");
+    .loadSubScript("chrome://sieve/content/libs/libManageSieve/Sieve.js");
   jsLoader
-    .loadSubScript("chrome://sieve/content/libs/sievelib/SieveRequest.js");
+    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveRequest.js");
   jsLoader
-    .loadSubScript("chrome://sieve/content/libs/sievelib/SieveResponse.js");    
+    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponse.js");    
   jsLoader
-    .loadSubScript("chrome://sieve/content/libs/sievelib/SieveResponseParser.js");        
+    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponseParser.js");        
   jsLoader
-    .loadSubScript("chrome://sieve/content/libs/sievelib/SieveResponseCodes.js");
+    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponseCodes.js");
   jsLoader
     .loadSubScript("chrome://sieve/content/editor/SieveFiltersTreeView.js");
 //	var actList = document.getElementById("conImapAcct");
@@ -321,10 +322,10 @@ function onSelectAccount()
 
       var account = getSelectedAccount();
 		
+		  disableControls(true);
 			// Disable and cancel if account is not enabled
 			if (account.isEnabled() == false)
-			{
-			    disableControls(true);
+			{			    
 				postStatus("Not connected - go to Tool -> Sieve Settings to activate this account")
 				return;
 			}			
@@ -336,6 +337,7 @@ function onSelectAccount()
       sieve = new Sieve(
                     account.getHost().getHostname(),
                     account.getHost().getPort(),
+                    account.getHost().isTLS(),
                     account.getSettings().isDebug() );
 		    
       var request = new SieveInitRequest();
@@ -439,7 +441,7 @@ function onCapabilitesClick()
       else
         args["sasl"] = "Not supported, thus you are authenticated"
 
-      window.openDialog("chrome://sieve/content/editor/SieveCapabilities.xul", "FilterEditor", "chrome,modal,titlebar,centerscreen", args);
+      window.openDialog("chrome://sieve/content/editor/SieveCapabilities.xul", "FilterCapabilities", "chrome,modal,titlebar,centerscreen", args);
     }
   }   
     

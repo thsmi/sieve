@@ -208,11 +208,11 @@ function onPaste() { goDoCommand("cmd_paste"); }
 
 function onBtnChangeView()
 {
-  var deck = document.getElementById("dkView");
+ /* var deck = document.getElementById("dkView");
   
   if (deck.selectedIndex == 0)
     document.getElementById("dkView").selectedIndex = 1;
   else
-    document.getElementById("dkView").selectedIndex = 0;
+    document.getElementById("dkView").selectedIndex = 0;*/
   
 }

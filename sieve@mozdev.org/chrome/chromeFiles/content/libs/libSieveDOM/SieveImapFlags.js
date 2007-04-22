@@ -1,6 +1,14 @@
 
 // setflag <variablename: string> <list-of-flags: string-list>
 
+SieveSetFlag.isSetFlag
+  = function(token)
+{ 
+ if (token.indexOf("setflag") == 0)
+    return true;
+ 
+ return false;
+}
 
 function SieveSetFlag(id) 
 {
@@ -58,6 +66,15 @@ SieveSetFlag.prototype.toXUL
 /******************************************************************************/
 
 //addflag <variablename: string> <list-of-flags: string-list>
+
+SieveAddFlag.isAddFlag
+  = function(token)
+{ 
+ if (token.indexOf("addflag") == 0)
+    return true;
+ 
+ return false;
+}
 
 function SieveAddFlag(id) 
 {
@@ -117,6 +134,15 @@ SieveAddFlag.prototype.toXUL
 
 //removeflag <variablename: string> <list-of-flags: string-list>
 
+SieveRemoveFlag.isRemoveFlag
+  = function(token)
+{ 
+ if (token.indexOf("removeflag") == 0)
+    return true;
+ 
+ return false;
+}
+
 function SieveRemoveFlag(id) 
 {
   this.id = id;
@@ -174,8 +200,23 @@ SieveRemoveFlag.prototype.toXUL
 /******************************************************************************/
 
 //hasflag [MATCH-TYPE] <variable-list: string-list> <list-of-flags: string-list>
-             
-function SieveHasFlagTest(id)
+
+// REGISTER 
+
+
+
+SieveHasFlag.isHasFlag
+  = function(token)
+{ 
+ if (token.indexOf("hasflag") == 0)
+    return true;
+ 
+ return false;
+}
+ 
+
+    
+function SieveHasFlag(id)
 {
   this.id = id;
 //  this.data  = new Object();
@@ -187,7 +228,7 @@ function SieveHasFlagTest(id)
   this.whiteSpace[2]  = new SieveDeadCode(this.id+"_4");
 }
 
-SieveHasFlagTest.prototype.parse
+SieveHasFlag.prototype.parse
     = function (data)
 {
   data = data.slice("hasflag".length);
@@ -208,13 +249,13 @@ SieveHasFlagTest.prototype.parse
   return data;
 }    
 
-SieveHasFlagTest.prototype.getID
+SieveHasFlag.prototype.getID
     = function ()
 {
   return this.id;
 }
 
-SieveHasFlagTest.prototype.toString
+SieveHasFlag.prototype.toString
     = function ()
 {
   return "hasflag"
@@ -225,8 +266,19 @@ SieveHasFlagTest.prototype.toString
     + this.whiteSpace[2].toString();
 }
 
-SieveHasFlagTest.prototype.toXUL
+SieveHasFlag.prototype.toXUL
     = function ()
 {
   return "hasflag Test - to be impelented";
+}
+
+/******************************************************************************/
+
+SieveTest.register("hasflag","SieveHasFlag",SieveHasFlag.isHasFlag);
+
+with(SieveAction)
+{
+  register("addflag","SieveAddFlag",SieveAddFlag.isAddFlag);
+  register("removeflag","SieveRemoveFlag",SieveRemoveFlag.isRemoveFlag);
+  register("setflag","SieveSetFlag",SieveSetFlag.isSetFlag);  
 }

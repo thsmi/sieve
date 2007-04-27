@@ -356,19 +356,31 @@ SieveAccountSettings.prototype.setCompileDelay
     gPref.setIntPref(this.prefURI+".compile.delay",ms);
 }
 
-SieveAccountSettings.prototype.isDebug
+SieveAccountSettings.prototype.getDebugFlags
     = function ()
 {
-    if (gPref.prefHasUserValue(this.prefURI+".debug"))
-        return gPref.getBoolPref(this.prefURI+".debug");
+    if (gPref.prefHasUserValue(this.prefURI+".debug.flags"))
+        return gPref.getIntPref(this.prefURI+".debug.flags");
         
-    return false;
+    return 0;
 }
 
-SieveAccountSettings.prototype.setDebug
-    = function (enabled)
+SieveAccountSettings.prototype.isDebugFlag
+    = function (flag)
 {
-  gPref.setBoolPref(this.prefURI+".debug",enabled);
+  if (this.getDebugFlags() & (1 << flag))
+    return true;
+  
+  return false;
+}
+
+SieveAccountSettings.prototype.setDebugFlag
+    = function (flag, value)
+{
+  if (value)
+    gPref.setIntPref(this.prefURI+".debug.flags",this.getDebugFlags()| (1 << flag)  );
+  else
+    gPref.setIntPref(this.prefURI+".debug.flags",this.getDebugFlags() & ~(1 << flag) );
 }
 
 

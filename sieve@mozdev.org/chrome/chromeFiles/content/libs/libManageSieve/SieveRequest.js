@@ -596,8 +596,8 @@ SieveInitRequest.prototype.addResponse
                           
     var request = new SieveSaslPlainRequest('geek');
     request.setPassword('th3g33k1');
-    sieve.addErrorListener(event);
-    sieve.addSaslPlainListener(event);
+    request.addErrorListener(event);
+    request.addSaslPlainListener(event);
                         
     sieve.addRequest(request);
 
@@ -706,8 +706,8 @@ SieveSaslPlainRequest.prototype.addResponse
                           
     var request = new SieveSaslLoginRequest('geek');
     request.setPassword('th3g33k1');
-    sieve.addErrorListener(event);
-    sieve.addSaslLoginListener(event);
+    request.addErrorListener(event);
+    request.addSaslLoginListener(event);
                         
     sieve.addRequest(request);
 
@@ -797,4 +797,3 @@ SieveSaslLoginRequest.prototype.addResponse
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
 }
-

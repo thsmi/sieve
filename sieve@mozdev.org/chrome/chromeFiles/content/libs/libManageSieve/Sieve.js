@@ -1,9 +1,57 @@
+/*******************************************************************************
+ 
+  FACTSHEET: 
+  ==========
+    CLASS NAME          : Sieve
+        
+    CONSCTURCTOR        : Sieve(String host, int port, boolean secure, boolean debug)
+    DECLARED FUNCTIONS  : void connect()
+                          void disconnect()
+                          boolean isAlive()
+                          void startTLS()
+                          void addRequest(SieveRequest request)
+    EXCEPTIONS          : 
+    AUTHOR              : Thomas Schmid        
+    
+  DESCRIPTION:
+  ============
+    This class is a simple socket implementation for sieve requests. Due to the 
+    asymetric nature of the Mozilla sockets we need some kind of message queue. 
+    New requests can be added via the "addRequest" method. In case of an response, 
+    the corresponding request will be automatically calledback via its "addResponse"
+    method.
+    If you need a secure connection, set the flag secure in the constructor. Then
+    connect to the host. And invoke the "startTLS" Method as soon as you nagociated 
+    the switch to a crypted connection. After calling startTLS Mozilla will imediately
+    switch to a cryped connection.
+    The constructor flag "debug" specifies wheather only requests, only responses, 
+    both or nothing is logged to the error console. A value of "1" means olny request
+    "2" is equivalent to responses only, "3" states that both (request and 
+    responses) should be logged and a "0" disables any logging.
+
+  EXAMPLE:
+  ========
+   
+    var sieve = new Sieve("example.com",2000,false,3)
+    
+    var request = new SieveInitRequest();    
+    sieve.addRequest(request);
+     
+    sieve.connect();
+		    
+    var request = new SieveSaslLoginRequest('geek');
+    request.setPassword('th3g33k1');                        
+    sieve.addRequest(request);
+    
+    sieve.disconnect();
+
+********************************************************************************/
 
 function Sieve(host, port, secure, debug) 
 {
- 
+
   if (debug == null) 
-    this.debug = false;    
+    this.debug = 0x00;    
   else
     this.debug = debug;    
   
@@ -114,8 +162,8 @@ Sieve.prototype.onDataAvailable = function(request, context, inputStream, offset
   instream.init(inputStream);
       
   var data = instream.read(count);
-    
-  if (this.debug)
+
+  if (this.debug & (1 << 1))
   {
     var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
                            .getService(Components.interfaces.nsIConsoleService);
@@ -153,6 +201,14 @@ Sieve.prototype.onDataAvailable = function(request, context, inputStream, offset
 	if ((this.requests.length > 0))
 	{
 	  var output = this.requests[0].getNextRequest();
+	  
+    if (this.debug & (1 << 0))
+    {
+      var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
+                             .getService(Components.interfaces.nsIConsoleService);
+      consoleService.logStringMessage(output);
+    } 	  
+    
 	  this.outstream.write(output,output.length);
 	}
 }

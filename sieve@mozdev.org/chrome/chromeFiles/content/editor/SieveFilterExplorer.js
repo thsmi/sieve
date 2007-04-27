@@ -181,7 +181,7 @@ var event =
                     code.getHostname(),
                     getSelectedAccount().getHost().getPort(),
                     getSelectedAccount().isTLS(),
-                    getSelectedAccount().getSettings().isDebug() );
+                    getSelectedAccount().getSettings().getDebugFlags() );
   
       var request = new SieveInitRequest();
       request.addErrorListener(event)
@@ -338,7 +338,7 @@ function onSelectAccount()
                     account.getHost().getHostname(),
                     account.getHost().getPort(),
                     account.getHost().isTLS(),
-                    account.getSettings().isDebug() );
+                    account.getSettings().getDebugFlags() );
 		    
       var request = new SieveInitRequest();
       request.addErrorListener(event)

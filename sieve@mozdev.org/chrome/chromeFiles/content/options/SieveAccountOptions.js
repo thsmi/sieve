@@ -50,8 +50,11 @@ function onDialogLoad(sender)
   cbxCompile.checked = account.getSettings().isCompile();
   enableCompile(cbxCompile.checked);	
   
-  var cbxDebug = document.getElementById('cbxDebug');
-  cbxDebug.checked = account.getSettings().isDebug();
+  var cbxDebugRequest = document.getElementById('cbxDebugRequest');
+  cbxDebugRequest.checked = account.getSettings().isDebugFlag(0);
+  
+  var cbxDebugResponse = document.getElementById('cbxDebugResponse');
+  cbxDebugResponse.checked = account.getSettings().isDebugFlag(1);  
 }
 
 function onDialogAccept(sender)
@@ -206,7 +209,14 @@ function onCompileChange(sender)
   account.getSettings().setCompileDelay(sender.value)    
 }
 
-function onDebugCommand(sender)
-{    
-  account.getSettings().setDebug(sender.checked);
+function onDebugRequestCommand(sender)
+{
+  account.getSettings().setDebugFlag(0,sender.checked);
 }
+
+function onDebugResponseCommand(sender)
+{    
+  account.getSettings().setDebugFlag(1,sender.checked);
+} 
+
+

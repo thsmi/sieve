@@ -47,14 +47,33 @@ function onDialogLoad(sender)
   	= account.getSettings().getCompileDelay();
             
  	var cbxCompile = document.getElementById('cbxCompile');
-  cbxCompile.checked = account.getSettings().isCompile();
+  cbxCompile.checked = account.getSettings().hasCompileDelay();
   enableCompile(cbxCompile.checked);	
   
   var cbxDebugRequest = document.getElementById('cbxDebugRequest');
-  cbxDebugRequest.checked = account.getSettings().isDebugFlag(0);
+  cbxDebugRequest.checked = account.getSettings().hasDebugFlag(0);
   
   var cbxDebugResponse = document.getElementById('cbxDebugResponse');
-  cbxDebugResponse.checked = account.getSettings().isDebugFlag(1);  
+  cbxDebugResponse.checked = account.getSettings().hasDebugFlag(1);  
+  
+  var cbxAuthMechanism = document.getElementById('cbxAuthMechanism');
+  cbxAuthMechanism.checked = account.getSettings().hasForcedAuthMechanism();
+  enableAuthMechanism(cbxAuthMechanism.checked);
+   
+  var list = document.getElementById('mlAuthMechanism');
+  var items = list.getElementsByTagName('menuitem');
+  
+  var mechanism = account.getSettings().getForcedAuthMechanism();
+  
+  for (var i = 0; i < items.length; i++)
+  {
+    if (list.getItemAtIndex(i).value != mechanism)
+      continue;
+    
+    list.selectedIndex = i;
+    break;
+  }
+  
 }
 
 function onDialogAccept(sender)
@@ -173,7 +192,7 @@ function onTLSCommand(sender)
 // Function for the general Settings...
 function onKeepAliveCommand(sender)
 {   
-  account.getSettings().setKeepAlive(sender.checked);
+  account.getSettings().enableKeepAlive(sender.checked);
   enableKeepAlive(sender.checked);    
 }
 
@@ -192,7 +211,7 @@ function onKeepAliveChange(sender)
 
 function onCompileCommand(sender)
 {    
-  account.getSettings().setCompile(sender.checked); 
+  account.getSettings().enableCompile(sender.checked); 
   enableCompile(sender.checked);    
 }
 
@@ -219,4 +238,25 @@ function onDebugResponseCommand(sender)
   account.getSettings().setDebugFlag(1,sender.checked);
 } 
 
+function onAuthMechanismCommand(sender)
+{
+  account.getSettings().enableForcedAuthMechanism(sender.checked);
+  enableAuthMechanism(sender.checked);
+}
 
+function enableAuthMechanism(enabled)
+{
+  if (enabled)
+    document.getElementById('mlAuthMechanism').removeAttribute('disabled');
+  else
+    document.getElementById('mlAuthMechanism').setAttribute('disabled','true'); 
+}
+
+function onAuthMechanismSelect(sender)
+{
+  // on startup it will happen that select is called before the account object exists...
+  if (account == null)
+    return;
+ 
+  account.getSettings().setForcedAuthMechanism(sender.selectedItem.value);
+}

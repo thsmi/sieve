@@ -7,7 +7,7 @@
 <!ENTITY options.login "Authentication">
 <!ENTITY options.login.key "A">
 <!ENTITY options.login.noAuth "No Authentication">
-<!ENTITY options.login.imapAuth "Use IMAP settings">
+<!ENTITY options.login.imapAuth "Use IMAP Username and Password">
 <!ENTITY options.login.customAuth "Username and Password">
 <!ENTITY options.login.username "Username">
 <!ENTITY options.login.username.key "u">
@@ -26,13 +26,20 @@
 <!ENTITY options.host.tls.key "t">
 <!ENTITY options.host.tls "use TLS, if avaiable">
 
-<!ENTITY options.misc "General Settings">
-<!ENTITY options.misc.keepalive "Send 'keep alive' every">
+<!ENTITY options.misc "Advanced Settings">
+<!ENTITY options.misc.keepalive "Send 'keep alive' request every">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.compile "Compile on server every">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.debug.request "Debug Sieve requests to Error Console">
 <!ENTITY options.misc.debug.response "Debug Sieve responses to Error Console">
+
+<!ENTITY options.misc.authmechanism "Override suggested Authentication Mechanism">
+<!ENTITY options.misc.authmechanism.default "Use always:">
+<!ENTITY options.misc.authmechanism.crammd5 "CRAM-MD5">
+<!ENTITY options.misc.authmechanism.digestmd5 "DIGEST-MD5">
+<!ENTITY options.misc.authmechanism.login "Login">
+<!ENTITY options.misc.authmechanism.plain "Plain">
 
 <!ENTITY options.info.servername "Server Name:">
 <!ENTITY options.info.port "Port:">

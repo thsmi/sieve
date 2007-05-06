@@ -9,52 +9,67 @@ var event =
 {	
   onAuthenticate: function(response)
   {
-    var login = getSelectedAccount().getLogin();
     
-    if (login.hasUsername() == false)
+    var account =  getSelectedAccount();
+    
+    // Without a username, we can skip the authentication 
+    if (account.getLogin().hasUsername() == false)
     {
-      event.onSaslPlainResponse(null);
+      event.onLoginResponse(null);
       return;
     }
-    
-    var request = null;
-    // the first in the sasl list is prefferd by the server
-    switch (response.getSasl()[0].toLowerCase())
+
+
+    // We have to figure out which ist the best SASL Mechanism for the login ...
+    // ... therefore we check first whether a mechanism is forced by the user ...
+    // ... if no one is specified, we follow the rfc advice and use the first 
+    // .... mechanism listed in the capability response.
+    var mechanism = null;        
+    if (account.getSettings().hasForcedAuthMechanism())
+      mechanism = account.getSettings().getForcedAuthMechanism();
+    else
+      mechanism = response.getSasl()[0];
+
+          
+    // ... translate the SASL Mechanism String into an SieveSaslLogin Object ...
+    var request = null;  
+    switch (mechanism.toLowerCase())
     {
       case "login":
         request = new SieveSaslLoginRequest();      
   	    request.addSaslLoginListener(event);
         break;
       case "plain":
-      default: // plain is the fallback...
+      default: // plain is always the fallback...
         request = new SieveSaslPlainRequest();
-   	    request.addSaslPlainListener(event);
+   	    request.addSaslPlainListener(event); 	    
         break;        
     }
 
     request.addErrorListener(event);
-    request.setUsername(login.getUsername())
+    request.setUsername(account.getLogin().getUsername())
     
-    if (login.hasPassword())
-      request.setPassword(login.getPassword());
+    if (account.getLogin().hasPassword())
+      request.setPassword(account.getLogin().getPassword());
     else
     {
       var password = promptPassword();
       if (password == null)
     	  return;
 
-      request.setPassword(login.password);    	    	
+      request.setPassword(password);  	
     }
-    		
+
     sieve.addRequest(request);    		
     
   },
   
   onInitResponse: function(response)
-	{
-    	var login = getSelectedAccount().getLogin();
+	{    	
+    	// establish a secure connection if TLS ist enabled and if the Server ...
+    	// ... is capable of handling TLS, otherwise simply skip it and ...
+    	// ... use an insecure connection
     	
-    	// is the Server TLS capable?
     	if (getSelectedAccount().getHost().isTLS() && response.getTLS())
     	{
     	  var request = new SieveStartTLSRequest();
@@ -74,7 +89,7 @@ var event =
 	  sieve.startTLS();
 	    
     // we should call now Capabilities ...
-    // .. they can change with enabled TLS
+    // ... they can change with enabled TLS
     
     var request = new SieveCapabilitiesRequest();
     request.addCapabilitiesListener(event);
@@ -392,7 +407,7 @@ function onNewClick()
 {
 	var args = new Array();
 	args["sieve"] = sieve;
-	args["compile"] = getSelectedAccount().getSettings().isCompile();
+	args["compile"] = getSelectedAccount().getSettings().hasCompileDelay();
 	args["compileDelay"] = getSelectedAccount().getSettings().getCompileDelay();
 		
 	window.openDialog("chrome://sieve/content/editor/SieveFilterEditor.xul", "FilterEditor", "chrome,modal,titlebar,resizable,centerscreen", args);
@@ -415,7 +430,7 @@ function onEditClick()
   var args = new Array();
   args["scriptName"] = scriptName;
   args["sieve"] = sieve;
-  args["compile"] = getSelectedAccount().getSettings().isCompile();
+  args["compile"] = getSelectedAccount().getSettings().hasCompileDelay();
   args["compileDelay"] = getSelectedAccount().getSettings().getCompileDelay();
 
   window.openDialog("chrome://sieve/content/editor/SieveFilterEditor.xul", "FilterEditor", "chrome,modal,titlebar,resizable,centerscreen", args);

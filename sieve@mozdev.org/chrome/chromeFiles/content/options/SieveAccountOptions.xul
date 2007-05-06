@@ -8,7 +8,7 @@
 				onload="onDialogLoad(this);"
 				ondialogaccept="return onDialogAccept(this);"
         persist="screenX screenY"
-        style="width: 45em; height: 27em;"
+        style="width: 48em; height: 27em;"
         title="&options.title;">
 
   <script type="application/x-javascript" src="chrome://sieve/content/options/SieveAccountOptions.js"/>
@@ -21,9 +21,8 @@
           <radio id="rbImapAuth" label="&options.login.imapAuth;"/>
           <radio id="rbCustomAuth" label="&options.login.customAuth;"/>
         </radiogroup> 
-<hbox >     
-<spacer width="21px" />
-        <grid >
+        <hbox >
+        <grid class="indent">
           <colums>
             <column/>
             <column/>
@@ -109,6 +108,22 @@
          oncommand="onDebugRequestCommand(this)" />
       <checkbox id="cbxDebugResponse" label="&options.misc.debug.response;"
          oncommand="onDebugResponseCommand(this)" />
+      <checkbox id="cbxAuthMechanism" label="&options.misc.authmechanism;"
+         oncommand="onAuthMechanismCommand(this)" />
+      <hbox>
+        <hbox id="hbAuthMechanism" align="center" class="indent">
+          <label control="mlAuthMechanism" value="&options.misc.authmechanism.default;" />
+          <menulist id="mlAuthMechanism" onselect="onAuthMechanismSelect(this)">
+            <menupopup>
+              <menuitem id="miAuthMechanismPlain" label="&options.misc.authmechanism.plain;" value="plain"/>
+              <menuitem id="miAuthMechanismLogin" label="&options.misc.authmechanism.login;" value="login"/>
+              <menuitem id="miAuthMechanismDigest" label="&options.misc.authmechanism.digestmd5;" value="digest-md5"/>
+              <menuitem id="miAuthMechanismCram" label="&options.misc.authmechanism.crammd5;" value="cram-md5"/>
+            </menupopup>
+          </menulist>
+        </hbox>
+        <hbox flex="1"/>
+     </hbox>
     </groupbox>
   </vbox>
 </dialog>

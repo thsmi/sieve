@@ -304,7 +304,7 @@ SieveAccountSettings.prototype.isKeepAlive
     return true;
 }
 
-SieveAccountSettings.prototype.setKeepAlive
+SieveAccountSettings.prototype.enableKeepAlive
     = function (enabled) 
 {
     gPref.setBoolPref(this.prefURI+".keepalive",enabled);
@@ -325,7 +325,7 @@ SieveAccountSettings.prototype.setKeepAliveInterval
     gPref.setCharPref(this.prefURI+".keepalive.interval",ms);
 }
 
-SieveAccountSettings.prototype.isCompile
+SieveAccountSettings.prototype.hasCompileDelay
     = function ()
 {
     if (gPref.prefHasUserValue(this.prefURI+".compile"))
@@ -334,7 +334,7 @@ SieveAccountSettings.prototype.isCompile
     return true;
 }
 
-SieveAccountSettings.prototype.setCompile
+SieveAccountSettings.prototype.enableCompileDelay
     = function (enabled)
 {
   gPref.setBoolPref(this.prefURI+".compile",enabled);
@@ -365,7 +365,7 @@ SieveAccountSettings.prototype.getDebugFlags
     return 0;
 }
 
-SieveAccountSettings.prototype.isDebugFlag
+SieveAccountSettings.prototype.hasDebugFlag
     = function (flag)
 {
   if (this.getDebugFlags() & (1 << flag))
@@ -383,6 +383,34 @@ SieveAccountSettings.prototype.setDebugFlag
     gPref.setIntPref(this.prefURI+".debug.flags",this.getDebugFlags() & ~(1 << flag) );
 }
 
+SieveAccountSettings.prototype.hasForcedAuthMechanism
+    = function ()
+{
+  if (gPref.prefHasUserValue(this.prefURI+".sasl.forced"))
+    return gPref.getBoolPref(this.prefURI+".sasl.forced");
+        
+  return false;
+}
+
+SieveAccountSettings.prototype.enableForcedAuthMechanism
+    = function(enabled)
+{
+  gPref.setBoolPref(this.prefURI+".sasl.forced",enabled);
+}
+
+SieveAccountSettings.prototype.setForcedAuthMechanism
+    = function(method)
+{
+  gPref.setCharPref(this.prefURI+".sasl.mechanism",method);
+}
+SieveAccountSettings.prototype.getForcedAuthMechanism
+    = function ()
+{
+    if (gPref.prefHasUserValue(this.prefURI+".sasl.mechanism"))
+      return gPref.getCharPref(this.prefURI+".sasl.mechanism");
+        
+    return "plain";
+}
 
 
 //*******************

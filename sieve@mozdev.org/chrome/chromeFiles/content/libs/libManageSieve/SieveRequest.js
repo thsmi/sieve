@@ -500,23 +500,51 @@ SieveLogoutRequest.prototype.addResponse
 }
 
 /*******************************************************************************
-    CLASS NAME         : SieveInitRequest
-    USES CLASSES       : SieveInitResponse
+ 
+  FACTSHEET: 
+  ==========
+   
+    CLASS NAME          : SieveInitRequest
+    USES CLASSES        : SieveInitResponse
         
-    CONSCTURCTOR       : SieveInitRequest(listener)
-    DECLARED FUNCTIONS : String getCommand()
-                         void setResponse(String data)
-    EXCEPTIONS         : 
+    CONSCTURCTOR        : SieveInitRequest()
+    DECLARED FUNCTIONS  : void addInitListener(...)
+                          void addErrorListener(...)
+                          void addResponse(String data)                          
+                          String getNextRequest()
+                          Boolean hasNextRequest()
+    EXCEPTIONS          : 
+    AUTHOR              : Thomas Schmid
+    
+  DESCRIPTION:
+  ============
+     A sieve server will automatically post his capabilities as soon as the 
+     connection is established. In order to capture this information a dummy 
+     request has to be used. It won't send a real request, but it parses the 
+     initial response of the sieve server. Therefore it is important to add 
+     the request before the connection is established. Otherwise the message 
+     queue will be jammed.
 
+  EXAMPLE:
+  ========
 
-    AUTHOR             : Thomas Schmid        
-    DESCRIPTION        : 
-    ...
+    var sieve = new Sieve("example.com",2000,false,3)
+    
+    var request = new SieveInitRequest();    
+    sieve.addRequest(request);
+     
+    sieve.connect();
+          
+  PROTOCOL INTERACTION: 
+  =====================
 
-    EXAMPLE            :
-    ...
+    Server < "IMPLEMENTATION" "Cyrus timsieved v2.1.18-IPv6-Debian-2.1.18-1+sarge2"
+           < "SASL" "PLAIN"
+           < "SIEVE" "fileinto reject envelope vacation imapflags notify subaddress relational regex"
+           < "STARTTLS"
+           < OK
 
-********************************************************************************/
+*******************************************************************************/
 
 function SieveInitRequest()
 {
@@ -577,7 +605,10 @@ SieveInitRequest.prototype.addResponse
     
   DESCRIPTION:
   ============
-    TODO: ... 
+    This request implements the SALS Plain autentication method. 
+    Please note, that the passwort is only base64 encoded. Therefore it can be 
+    read or sniffed easily. A secure connection will solve this issue. So send 
+    whenever possible, a SieveStartTLSRequest before calling this request.     
 
   EXAMPLE:
   ========
@@ -607,7 +638,7 @@ SieveInitRequest.prototype.addResponse
     Client > AUTHENTICATE "PLAIN" AHRlc3QAc2VjcmV0   | AUTHENTICATE "PLAIN" [UTF8NULL]test[UTF8NULL]secret
     Server < OK                                      | OK
 
-********************************************************************************/
+*******************************************************************************/
 
 function SieveSaslPlainRequest(username) 
 {
@@ -682,7 +713,14 @@ SieveSaslPlainRequest.prototype.addResponse
     
   DESCRIPTION:
   ============
-    TODO: ... 
+    This request implements the SALS Login autentication method. It is similar 
+    to the SASL Plain method. The main difference is that SASL Login is somekind
+    of dialog driven. The server will request first the username and then the 
+    password. With SASL Plain both, username and password are requested at the 
+    sametime.
+    Please note, that the passwort is only base64 encoded. Therefore it can be 
+    read or sniffed easily. A secure connection will solve this issue. So send 
+    whenever possible, a SieveStartTLSRequest before calling this request.     
 
   LINKS:
   ======
@@ -725,7 +763,7 @@ SieveSaslPlainRequest.prototype.addResponse
            > dGgzZzMzazE=           | th3g33k1
     Server < OK                     | OK
 
-********************************************************************************/
+*******************************************************************************/
 
 function SieveSaslLoginRequest(username) 
 {

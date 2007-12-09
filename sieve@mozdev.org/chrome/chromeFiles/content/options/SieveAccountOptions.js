@@ -121,7 +121,7 @@ function onLoginChange(sender)
 {
   var cbx = document.getElementById('cbxPassword');
 	if (cbx.checked == false)
-	  acccount.getLogin(2).setLogin(document.getElementById('txtUsername').value);
+	  account.getLogin(2).setLogin(document.getElementById('txtUsername').value);
   else
 	  account.getLogin(2).setLogin(document.getElementById('txtUsername').value,
 	  		document.getElementById('txtPassword').value);   	

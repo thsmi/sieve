@@ -63,6 +63,7 @@ function Sieve(host, port, secure, debug)
   this.data = "";
     
   this.requests = new Array();  
+  this.timeout = null;
 }
 
 Sieve.prototype.isAlive = function()
@@ -93,12 +94,17 @@ Sieve.prototype.addRequest = function(request)
 	if (this.requests.length > 1)
 		return
 
+  this.timeout = window.setTimeout(function (this_) {this_.onTimeout();},1000,this);
+  //this.timeout = window.setTimeout(this.onTimeout,1000,this);
+  
 	// filtert den initrequest heraus...	 	
 	if (request instanceof SieveInitRequest)
 	  return;
 
   var output = request.getNextRequest();
   this.outstream.write(output,output.length);
+  
+  return;
 }
 
 Sieve.prototype.connect = function () 
@@ -108,7 +114,7 @@ Sieve.prototype.connect = function ()
 
   if ( (this.socket != null) && (this.socket.isAlive()))
     return;
-
+  
   var transportService =
       Components.classes["@mozilla.org/network/socket-transport-service;1"]
         .getService(Components.interfaces.nsISocketTransportService);
@@ -127,10 +133,17 @@ Sieve.prototype.connect = function ()
                   
   pump.init(stream, -1, -1, 5000, 2, true);
   pump.asyncRead(this,null);
+  
+  return;
 }
 
 Sieve.prototype.disconnect = function () 
 {	
+  // free requests...
+  //this.requests = new Array();
+  if (this.timeout != null)
+    clearTimeout(this.timeout);
+  
   if (this.socket == null)
     return;
   
@@ -154,6 +167,22 @@ Sieve.prototype.onStartRequest = function(request, context)
   }  
 }
 
+Sieve.prototype.onTimeout = function()
+{
+  var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
+                         .getService(Components.interfaces.nsIConsoleService);
+                         
+  consoleService.logStringMessage("Timeout - server not responding");
+  
+  this.timeout = null;  
+  
+  this.requests[0].addResponse('NO (0000) "Timeout - Server <b>not</b> responding"\r\n');
+  // close sockets if neccessary...
+  this.disconnect();
+  //cleanup of requests...
+  
+}
+
 Sieve.prototype.onDataAvailable = function(request, context, inputStream, offset, count)
 {
   
@@ -172,19 +201,30 @@ Sieve.prototype.onDataAvailable = function(request, context, inputStream, offset
 
 	// is a request handler waiting?
 	if ((this.requests.length == 0))
-		return
+		return;
 	
-	// responses could be fragmented
+	// responses packets could be fragmented...
 	this.data += data;
 	
-	// therefore we test if the response is parsable...
+	// ... therefore we test, if the response is parsable
 	try
-	{								
+	{
+	  // first clear the timeout...
+	  window.clearTimeout(this.timeout);
+	  this.timeout = null;
+	  
+	  // ... then try to parse the request
 	  this.requests[0].addResponse(this.data);
 	}
 	catch (ex)
 	{
-	  // it was not parsable, so we have to wait for the next one
+	  // ... we encounterned an error, this is most likely caused ...
+	  // ... by a fragmented packet, so we skip processing and start ...
+	  // ... the timeout timer again. Either the next packet or a timeout ...
+	  // ... will resolve this situation.
+	  
+	  this.timeout = window.setTimeout(function (this_) {this_.onTimeout();},1000,this);
+	  //this.timeout = window.setTimeout(this.onTimeout,1000,this);
 	  return;
 	}
   
@@ -210,5 +250,9 @@ Sieve.prototype.onDataAvailable = function(request, context, inputStream, offset
     } 	  
     
 	  this.outstream.write(output,output.length);
+	  
+	  // the request is transmitted, therefor activate the timeout
+	  this.timeout = window.setTimeout(function (this_) {this_.onTimeout();},1000,this);
+	  //this.timeout = window.setTimeout(this.onTimeout,1000,this);
 	}
 }

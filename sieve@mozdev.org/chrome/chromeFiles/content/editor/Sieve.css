@@ -1,0 +1,9 @@
+textbox.sieve
+ {
+   -moz-appearance: none !important;
+   background: url(chrome://sieve/content/images/splitter.png) repeat-y 650px 0px;    
+   background-color: -moz-field !important;
+   font-family: monospace;   
+   color: -moz-fieldtext; 
+   font-size: 12px;
+ }

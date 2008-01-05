@@ -3,6 +3,8 @@
 
 <!DOCTYPE window SYSTEM "chrome://sieve/locale/locale.dtd">
 
+<?xml-stylesheet href="sieve.css" type="text/css"?>
+
 <window id="FilterEditor"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   title="&edit.title;"
@@ -12,11 +14,7 @@
   onload="onLoad(this);"
   ondialogaccept="return onAccept(this);" >  
 
-  <script type="application/x-javascript" src="chrome://sieve/content/editor/SieveFilterEditor.js" />
-  
-  <script type="application/x-javascript" src="chrome://sieve/content/libs/jslib/jslib.js" />
-  <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js" />
-  
+  <script type="application/x-javascript" src="chrome://sieve/content/editor/SieveFilterEditor.js" />  
   <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/Sieve.js" />  
   <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/SieveRequest.js" />
   <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/SieveResponse.js" />
@@ -37,37 +35,43 @@
     <toolbarbutton id="btnViewSource" label="View Source" checked="true" type="checkbox" hidden="true" oncommand="onBtnChangeView();" />
   </toolbar>
 </toolbox>
-
   <separator class="thin"/>
-  <hbox align="center">
-    <label value="&edit.scriptname;"/>
-    <textbox flex="50%" id="txtName"/>
-    <spacer flex="50%"/>
-  </hbox>
+  <hbox flex="1" >
+    <vbox flex ="1" >
+      <hbox align="center">
+        <label value="&edit.scriptname;"/>
+        <textbox flex="50%" id="txtName"/>
+        <spacer flex="50%"/>
+      </hbox>
+      <separator class="thin"/>
+      <deck id="dkView" flex="1" selectedIndex="0">
+        <box flex="1">
+          <vbox flex="1">
+            <label value="&edit.script;"/>
+            <!-- style="background-color: #E0E0E0 !!important;" -->
+            <textbox flex="1" id="txtScript" multiline="true" oninput="onInput();" wrap="off" class="sieve"/>
 
-  <separator class="thin"/>
-
-<deck id="dkView" flex="1" selectedIndex="0">
-  <box flex="1">
-    <vbox flex="1">
-      <label value="&edit.script;"/>
-      <textbox flex="1" id="txtScript" multiline="true" oninput="onInput();" wrap="off" />
-
-      <groupbox id="gbError" hidden="true">
-        <caption>
-          <image src="chrome://sieve/content/images/syntaxError.png" width="16" height="16"/>
-          <label value="&edit.errors;"/>
-        </caption>
-        <textbox flex="1" id="lblError" multiline="true" rows="3" readonly="true" class="plain"/>
-      </groupbox>  
+            <groupbox id="gbError" hidden="true">
+              <caption>
+                <image src="chrome://sieve/content/images/syntaxError.png" width="16" height="16"/>
+                <label value="&edit.errors;"/>
+              </caption>
+              <textbox flex="1" id="lblError" multiline="true" rows="3" readonly="true" class="plain"/>
+            </groupbox>  
+          </vbox>
+        </box>
+        <box flex="1" style="overflow:auto">
+          <html:div id="divContext" xmlns:html="http://www.w3.org/1999/xhtml">  
+            nothing there yet...      
+          </html:div>
+        </box>
+      </deck>
     </vbox>
-  </box>
-  <box flex="1" style="overflow:auto">
-    <html:div id="divContext" xmlns:html="http://www.w3.org/1999/xhtml">  
-      nothing there yet...      
-    </html:div>
-  </box>
-</deck>
+    <splitter collapse="after" resizeafter="farthest">
+    <grippy/>
+  </splitter>
+  <iframe src="&edit.sidebar.uri;" id="content-1" width="250px" />
+</hbox>
   <hbox align="center">
     <spacer flex="1" />
     <button label ="&edit.save;" oncommand="onAccept()"/>

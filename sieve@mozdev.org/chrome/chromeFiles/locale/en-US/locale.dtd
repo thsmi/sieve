@@ -83,8 +83,11 @@
 <!ENTITY edit.cancel "Cancel">
 <!ENTITY edit.save "Save">
 
+<!ENTITY edit.sidebar.uri "http://sieve.mozdev.org/reference/en/index.html">
+
 <!-- Locales for the Capabitity dialog -->
 <!ENTITY capability.title "Sieve Capabilities">
 <!ENTITY capability.implementation "Server Version">
 <!ENTITY capability.sasl "SASL">
 <!ENTITY capability.extensions "Sieve Extensions">
+

@@ -70,24 +70,23 @@
 <!ENTITY list.edit "Edit">
 <!ENTITY list.delete "Delete">
 <!ENTITY list.rename "Rename">
-<!ENTITY list.capability "Capability">
+
+<!ENTITY list.details.capability "Server Sieve Capabilities">
+<!ENTITY list.details.capability.implementation "Server Version:">
+<!ENTITY list.details.capability.sasl "SASL Mechanisms:">
+<!ENTITY list.details.capability.extensions "Extensions:">
 
 
 <!-- Locales for the Edit Filter Dialog -->
 <!ENTITY edit.title "Edit Sievefilter">
 
 <!ENTITY edit.scriptname "Scriptname:">
-<!ENTITY edit.script "Script:">
 <!ENTITY edit.errors "Compile Errors:">
 
 <!ENTITY edit.cancel "Cancel">
 <!ENTITY edit.save "Save">
 
 <!ENTITY edit.sidebar.uri "http://sieve.mozdev.org/reference/en/index.html">
+<!ENTITY edit.sidebar.title "Sieve Language Reference">
 
-<!-- Locales for the Capabitity dialog -->
-<!ENTITY capability.title "Sieve Capabilities">
-<!ENTITY capability.implementation "Server Version">
-<!ENTITY capability.sasl "SASL">
-<!ENTITY capability.extensions "Sieve Extensions">
 

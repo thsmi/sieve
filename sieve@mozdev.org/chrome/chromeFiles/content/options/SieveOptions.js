@@ -61,7 +61,7 @@ function onTreeSelect(sender)
   {
   	case 0: authType = "No Authentication"; break;
   	case 1: authType = "Use login from IMAP Account"; break;
-  	case 2: authType = "Use custom a custom login"; break;
+  	case 2: authType = "Use a custom login"; break;
   }
   document.getElementById('txtAuth').value = authType;
   document.getElementById('txtUserName').value

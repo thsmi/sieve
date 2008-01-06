@@ -10,9 +10,8 @@
   title="&edit.title;"
   style="width: 45em; height: 31em;"
   persist="width height screenX screenY"
-  buttons="accept,cancel,help"
   onload="onLoad(this);"
-  ondialogaccept="return onAccept(this);" >  
+  onclose="return onAccept(this);">  
 
   <script type="application/x-javascript" src="chrome://sieve/content/editor/SieveFilterEditor.js" />  
   <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/Sieve.js" />  
@@ -22,17 +21,36 @@
   <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js" />
   
 <toolbox>
-  <toolbar id="nav-toolbar">
-    <toolbarbutton image="chrome://sieve/content/images/import.png" oncommand="onImport();" />
-    <toolbarbutton image="chrome://sieve/content/images/export.png" oncommand="onExport();" />    
+  <toolbar>
+    <toolbarbutton image="chrome://sieve/content/images/import.png" 
+                   label="Import" orient="vertical" 
+                   oncommand="onImport();" />
+    <toolbarbutton image="chrome://sieve/content/images/export.png"
+                   label="Export" orient="vertical" 
+                   oncommand="onExport();" />
     <toolbarseperator />
-    <toolbarbutton image="chrome://sieve/content/images/cut.png" oncommand="onCut();" />    
-    <toolbarbutton image="chrome://sieve/content/images/copy.png" oncommand="onCopy();" />    
-    <toolbarbutton image="chrome://sieve/content/images/paste.png" oncommand="onPaste();" />    
+    <toolbarbutton image="chrome://sieve/content/images/cut.png"
+                   label="Cut" orient="vertical"
+                   oncommand="onCut();" />    
+    <toolbarbutton image="chrome://sieve/content/images/copy.png"
+                   label="Copy" orient="vertical"
+                   oncommand="onCopy();" />    
+    <toolbarbutton image="chrome://sieve/content/images/paste.png"
+                   label="Paste" orient="vertical" 
+                   oncommand="onPaste();" />    
     <toolbarseperator />
-    <toolbarbutton id="btnCompile" label="Syntaxcheck" type="checkbox" oncommand="onBtnCompile();"
-    			   image="chrome://sieve/content/images/syntaxCheckOn.png" />
-    <toolbarbutton id="btnViewSource" label="View Source" checked="true" type="checkbox" hidden="true" oncommand="onBtnChangeView();" />
+    <toolbarbutton id="btnCompile" type="checkbox"
+                   image="chrome://sieve/content/images/syntaxCheckOn.png" 
+                   label="Syntaxcheck" orient="vertical"  
+                   oncommand="onBtnCompile();" />
+    <toolbarbutton id="btnViewSource" checked="true" type="checkbox" hidden="true"  
+                   label="View Source" orient="vertical"
+                   oncommand="onBtnChangeView();" />
+    <toolbarseperator />
+    <toolbarbutton id="btnReference"  type="checkbox" checked="true"
+                   image="chrome://sieve/content/images/syntaxCheckOn.png"  
+                   label="Reference" orient="vertical"
+                   oncommand="onBtnRefernece();"/>
   </toolbar>
 </toolbox>
   <separator class="thin"/>
@@ -63,7 +81,7 @@
         </box>
       </deck>
     </vbox>
-    <splitter id="splitter" collapse="after" resizeafter="farthest">
+    <splitter id="splitter" resizeafter="farthest">
     <!-- <grippy/> -->
   </splitter>
   <vbox id="vbSidebar" class="sieveSideBar">
@@ -79,10 +97,7 @@
     <iframe id="sideBarBrowser" flex="1" src="about:blank" width="250px" />    
   </vbox>
 </hbox>
-  <hbox align="center">
-    <spacer flex="1" />
-    <button label ="&edit.save;" oncommand="onAccept()"/>
-    <button label ="&edit.cancel;" oncommand="onCancel()"/>
-  </hbox>
-  <separator/>
+<statusbar>
+	<statusbarpanel flex="1" label=""/>
+</statusbar>
 </window>

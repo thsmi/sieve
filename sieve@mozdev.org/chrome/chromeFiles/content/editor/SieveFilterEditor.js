@@ -2,6 +2,7 @@ var sieve = null;
 var gCompileTimeout = null;
 var gCompile = null
 var gCompileDelay = null;
+var gChanged = false;
 
 
 var event = 
@@ -96,12 +97,14 @@ function onBtnCompile()
 
 function onInput()
 {
-    // on every keypress we reset the timeout
-    if (gCompileTimeout != null)
-    {
-        clearTimeout(gCompileTimeout);
-        gCompileTimeout = null;
-    }
+  gChanged = true;
+  
+  // on every keypress we reset the timeout
+  if (gCompileTimeout != null)
+  {
+    clearTimeout(gCompileTimeout);
+    gCompileTimeout = null;
+  }
             
   if (gCompile)
     gCompileTimeout = setTimeout("onCompile()",gCompileDelay);
@@ -133,6 +136,9 @@ function onLoad()
 
 function onAccept()
 {
+  if (gChanged == true)
+    alert('do you want to save changes?');
+    
   var request = new SievePutScriptRequest(
                   new String(document.getElementById("txtName").value),
                   new String(document.getElementById("txtScript").value));
@@ -211,7 +217,25 @@ function onPaste() { goDoCommand("cmd_paste"); }
 
 function onSideBarClose()
 {
-  document.getElementById('splitter').setAttribute('state','collapsed'); 
+  document.getElementById('splitter').setAttribute('hidden','true');
+  document.getElementById('vbSidebar').setAttribute('hidden','true');
+  
+  document.getElementById("btnReference").checked = false; 
+}
+
+function onBtnRefernece()
+{  
+  if (document.getElementById("btnReference").checked == false)
+  {
+    document.getElementById('splitter').setAttribute('hidden','true');
+    document.getElementById('vbSidebar').setAttribute('hidden','true'); 
+  }
+  else
+  {
+    document.getElementById('splitter').removeAttribute('hidden','true');
+    document.getElementById('vbSidebar').removeAttribute('hidden','true');
+  }
+
 }
 
 function onBtnChangeView()

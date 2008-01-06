@@ -40,17 +40,13 @@
     <vbox flex ="1" >
       <hbox align="center">
         <label value="&edit.scriptname;"/>
-        <textbox flex="50%" id="txtName"/>
-        <spacer flex="50%"/>
+        <textbox flex="1" id="txtName"/>
       </hbox>
       <separator class="thin"/>
       <deck id="dkView" flex="1" selectedIndex="0">
         <box flex="1">
           <vbox flex="1">
-            <label value="&edit.script;"/>
-            <!-- style="background-color: #E0E0E0 !!important;" -->
             <textbox flex="1" id="txtScript" multiline="true" oninput="onInput();" wrap="off" class="sieve"/>
-
             <groupbox id="gbError" hidden="true">
               <caption>
                 <image src="chrome://sieve/content/images/syntaxError.png" width="16" height="16"/>
@@ -67,10 +63,21 @@
         </box>
       </deck>
     </vbox>
-    <splitter collapse="after" resizeafter="farthest">
-    <grippy/>
+    <splitter id="splitter" collapse="after" resizeafter="farthest">
+    <!-- <grippy/> -->
   </splitter>
-  <iframe src="&edit.sidebar.uri;" id="content-1" width="250px" />
+  <vbox id="vbSidebar" class="sieveSideBar">
+    <stack class="outset">
+      <image flex="1"/> 
+      <hbox>
+        <label flex="1" value="&edit.sidebar.title;" />
+        <toolbarbutton 
+            class="sieveCloseButton"
+            oncommand="onSideBarClose();"/>
+      </hbox>
+    </stack>
+    <iframe id="sideBarBrowser" flex="1" src="about:blank" width="250px" />    
+  </vbox>
 </hbox>
   <hbox align="center">
     <spacer flex="1" />

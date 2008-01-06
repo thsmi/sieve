@@ -8,7 +8,6 @@ var event =
 {
   onDeleteScriptResponse:  function(response)
   {
-
     clearInterval(gCompileTimeout);
     close();
   },
@@ -126,6 +125,10 @@ function onLoad()
   request.addErrorListener(event);
 
   sieve.addRequest(request);
+  
+  // load sidebar iframe.src = &edit.sidebar.uri;
+  document.getElementById("sideBarBrowser").setAttribute('src' 
+      ,"http://sieve.mozdev.org/reference/en/index.html");
 }
 
 function onAccept()
@@ -205,6 +208,11 @@ function onCut() { goDoCommand("cmd_cut"); }
 function onCopy() { goDoCommand("cmd_copy"); }
 
 function onPaste() { goDoCommand("cmd_paste"); }
+
+function onSideBarClose()
+{
+  document.getElementById('splitter').setAttribute('state','collapsed'); 
+}
 
 function onBtnChangeView()
 {

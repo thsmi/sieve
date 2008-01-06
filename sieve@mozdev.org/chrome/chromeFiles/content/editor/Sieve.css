@@ -1,5 +1,5 @@
 textbox.sieve
- {
+{
    -moz-appearance: none !important;
    background: url(chrome://sieve/content/images/splitter.png) repeat-y 650px 0px;    
    background-color: -moz-field !important;
@@ -7,3 +7,62 @@ textbox.sieve
    color: -moz-fieldtext; 
    font-size: 12px;
  }
+ 
+#sideBarTitle2
+{
+	height: 20px;
+	background: url(chrome://sieve/content/images/sidebarTitle.png) repeat;
+	-moz-appearance: none;	
+}
+
+.sieveSideBar image
+{
+	list-style-image: url(chrome://sieve/content/images/sidebarTitle.png);
+}
+
+.sieveSideBar stack
+{
+	margin: 0px;
+	padding: 0px;	
+  height: 20px;
+}
+
+#vbServerDetails spacer {
+  background-color: #FFFFFF;
+  opacity: 0.5;
+}
+
+#vbServerDetails textbox {
+  background-color: transparent;
+}
+
+#btnServerDetails 
+{
+	border: 0px !important;
+  background-color: transparent;
+  -moz-appearance: none;
+}
+
+#btnServerDetails description
+{
+	border:1px solid #0000ff;
+}
+
+.sieveCloseButton 
+{
+  border: 1px solid transparent;
+  width: 17px;
+  height: 17px;
+  background: url(chrome://sieve/content/images/close.png) no-repeat 0 0;
+  margin-right: 5px;
+}
+
+.sieveCloseButton:hover 
+{
+    background-image: url(chrome://sieve/content/images/closeHover.png);
+}
+
+.sieveCloseButton:hover:active 
+{
+    background-image: url(chrome://sieve/content/images/closeActive.png);
+}

@@ -11,7 +11,7 @@
   style="width: 45em; height: 31em;"
   persist="width height screenX screenY"
   onload="onLoad(this);"
-  onclose="return onAccept(this);">  
+  onclose="return onClose();">  
 
   <script type="application/x-javascript" src="chrome://sieve/content/editor/SieveFilterEditor.js" />  
   <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/Sieve.js" />  
@@ -22,6 +22,9 @@
   
 <toolbox>
   <toolbar>
+    <toolbarbutton image="chrome://sieve/content/images/syntaxCheckOn.png" 
+                   label="Save" orient="vertical" 
+                   oncommand="onSave();" />  
     <toolbarbutton image="chrome://sieve/content/images/import.png" 
                    label="Import" orient="vertical" 
                    oncommand="onImport();" />
@@ -50,7 +53,7 @@
     <toolbarbutton id="btnReference"  type="checkbox" checked="true"
                    image="chrome://sieve/content/images/syntaxCheckOn.png"  
                    label="Reference" orient="vertical"
-                   oncommand="onBtnRefernece();"/>
+                   oncommand="onBtnRefernece();"/> 
   </toolbar>
 </toolbox>
   <separator class="thin"/>
@@ -58,13 +61,15 @@
     <vbox flex ="1" >
       <hbox align="center">
         <label value="&edit.scriptname;"/>
-        <textbox flex="1" id="txtName"/>
+        <textbox flex="1" id="txtName" readonly="true" />
       </hbox>
       <separator class="thin"/>
       <deck id="dkView" flex="1" selectedIndex="0">
         <box flex="1">
           <vbox flex="1">
-            <textbox flex="1" id="txtScript" multiline="true" oninput="onInput();" wrap="off" class="sieve"/>
+            <textbox id="txtScript" class="sieve" 
+                     onmousemove="onUpdateCursorPos(250);" onkeypress="onUpdateCursorPos(50);" oninput="onInput();" 
+                     flex="1"  multiline="true" wrap="off" />
             <groupbox id="gbError" hidden="true">
               <caption>
                 <image src="chrome://sieve/content/images/syntaxError.png" width="16" height="16"/>
@@ -94,10 +99,26 @@
             oncommand="onSideBarClose();"/>
       </hbox>
     </stack>
-    <iframe id="sideBarBrowser" flex="1" src="about:blank" width="250px" />    
+    <hbox style="overflow:auto">
+      <toolbarbutton id="sideBarBack"
+                     image="chrome://sieve/content/images/syntaxCheckOn.png" 
+                     label="Back" orient="vertical" 
+                     oncommand="onSideBarBack();" />  
+      <toolbarbutton id="sideBarForward"
+                     image="chrome://sieve/content/images/import.png" 
+                     label="Forward" orient="vertical" 
+                     oncommand="onSideBarForward();" />
+      <toolbarbutton image="chrome://sieve/content/images/export.png"
+                     label="Home" orient="vertical" 
+                     oncommand="onSideBarGo();" />    
+    </hbox>
+    <browser style="display:hidden;" type="content" id="sideBarBrowser" flex="1" 
+             src="about:blank" width="250px" /> 
   </vbox>
 </hbox>
 <statusbar>
+	<statusbarpanel width="100px" id="sbCursorPos" label=""/>
+	<statusbarpanel width="100px" label="Changed"/>
 	<statusbarpanel flex="1" label=""/>
 </statusbar>
 </window>

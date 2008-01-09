@@ -4,6 +4,9 @@ var gCompile = null
 var gCompileDelay = null;
 var gChanged = false;
 
+var gBackHistory = new Array();
+var gForwardHistory = new Array();
+
 
 var event = 
 {
@@ -12,12 +15,17 @@ var event =
     clearInterval(gCompileTimeout);
     close();
   },
+  
+  onGetScriptResponse: function(response)
+  {		
+    document.getElementById("txtScript").value = response.getScriptBody();
+  },  
 	
   onPutScriptResponse: function(response)
   {    
+    gChanged = false;
     // is the script renamed?
-    if ((window.arguments[0]["scriptName"] != null)
-        && (window.arguments[0]["scriptName"] != document.getElementById("txtName").value))
+    if (window.arguments[0]["scriptName"] != document.getElementById("txtName").value)
     {
       var request = new SieveDeleteScriptRequest(
     									new String(window.arguments[0]["scriptName"]));
@@ -36,12 +44,6 @@ var event =
   onError: function(response)
   {
     alert("FATAL ERROR:"+response.getMessage());
-  },
-  
-  onGetScriptResponse: function(response)
-  {		
-    document.getElementById("txtName").value = response.getScriptName();
-    document.getElementById("txtScript").value = response.getScriptBody();
   }
 }
 
@@ -110,35 +112,122 @@ function onInput()
     gCompileTimeout = setTimeout("onCompile()",gCompileDelay);
 }
 
+/*var myListener =
+{
+  QueryInterface : function(aIID)
+  {
+    if (aIID.equals(Components.interfaces.nsIWebProgressListener) ||
+        aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
+        aIID.equals(Components.interfaces.nsISupports))
+      return this;
+    throw Components.results.NS_NOINTERFACE;
+  },
+  onStateChange:function(aProgress,aRequest,aFlag,aStatus)
+  {
+    if(aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP)
+    {
+      aRequest.QueryInterface(Components.interfaces.nsIChannel);
+      alert("Wait a moment!\n"+aRequest.URI.spec);
+    }
+  },
+  onLocationChange:function(a,b,c){},
+  onProgressChange:function(a,b,c,d,e,f){},
+  onStatusChange:function(a,b,c,d){},
+  onSecurityChange:function(a,b,c){},
+  onLinkIconAvailable:function(a){}
+}*/ 
+
 function onLoad()
 {
-    // script laden
-    sieve = window.arguments[0]["sieve"];
-    gCompile = window.arguments[0]["compile"];        
-    gCompileDelay = window.arguments[0]["compileDelay"];
+  // script laden
+  sieve = window.arguments[0]["sieve"];
+  gCompile = window.arguments[0]["compile"];        
+  gCompileDelay = window.arguments[0]["compileDelay"];
     
-    document.getElementById("btnCompile").checked = gCompile;
+  document.getElementById("btnCompile").checked = gCompile;
     
-    if ( window.arguments[0]["scriptName"] == null )
-        return
-        
-  var request = new SieveGetScriptRequest(
-                  new String(window.arguments[0]["scriptName"]))
-  request.addGetScriptListener(event);
-  request.addErrorListener(event);
-
-  sieve.addRequest(request);
+  document.getElementById("txtName").value = window.arguments[0]["scriptName"];    
   
-  // load sidebar iframe.src = &edit.sidebar.uri;
-  document.getElementById("sideBarBrowser").setAttribute('src' 
-      ,"http://sieve.mozdev.org/reference/en/index.html");
+  if (window.arguments[0]["scriptBody"] != null)
+  {
+    document.getElementById("txtScript").value = window.arguments[0]["scriptBody"];    
+  }
+  else
+  {
+    var request = new SieveGetScriptRequest(window.arguments[0]["scriptName"]);
+    request.addGetScriptListener(event);
+    request.addErrorListener(event);
+
+    sieve.addRequest(request);
+  }        
+
+  // hack to prevent links to be opened in the default browser window...       
+  document.getElementById("sideBarBrowser").
+    addEventListener("click",onSideBarBrowserClick,false);
+    
+/*  document.getElementById("sideBarBrowser")
+    .webProgress.addProgressListener(myListener,
+                                     Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT);*/ 
+  
+  onSideBarGo();
 }
 
-function onAccept()
+function onSideBarBrowserClick(event)
 {
-  if (gChanged == true)
-    alert('do you want to save changes?');
+  var href = null; 
+
+  if (event.target.nodeName == "A")
+    href = event.target.href;  
+  else if (event.target.parentNode.nodeName == "A")
+    href = event.target.parentNode.href;
+  else
+    return;
     
+  event.preventDefault();
+  onSideBarGo(href);
+}
+
+function onSideBarBack()
+{
+  // store the current location in the history...
+  gForwardHistory.push(gBackHistory.pop());
+  // ... and go back to the last page
+  onSideBarGo(gBackHistory.pop());  
+}
+
+function onSideBarForward()
+{
+  onSideBarGo(gForwardHistory.pop());  
+}
+
+function onSideBarGo(uri)
+{
+  if (uri == null)
+    uri = "http://sieve.mozdev.org/reference/en/index.html"
+    
+  gBackHistory.push(uri);
+  
+  if (gBackHistory.length > 20)
+    gBackHistory.shift();
+  
+  
+  if (gBackHistory.length == 1)
+    document.getElementById("sideBarBack").setAttribute('disabled',"true");    
+  else
+    document.getElementById("sideBarBack").removeAttribute('disabled');
+    
+  if (gForwardHistory.length == 0)
+    document.getElementById("sideBarForward").setAttribute('disabled',"true");
+  else
+    document.getElementById("sideBarForward").removeAttribute('disabled');    
+     
+  document.getElementById("sideBarBrowser").setAttribute('src',uri);
+}
+
+
+
+function onSave()
+{
   var request = new SievePutScriptRequest(
                   new String(document.getElementById("txtName").value),
                   new String(document.getElementById("txtScript").value));
@@ -146,13 +235,24 @@ function onAccept()
   request.addErrorListener(event)
 
   sieve.addRequest(request)
-    
-  return false;
 }
 
-function onCancel()
+function onClose()
 {
-  close();
+  if (gChanged == false)
+    return true;    
+
+  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                          .getService(Components.interfaces.nsIPromptService);
+                          
+  var result = prompts.confirm(window, "Title", "Do you want to save changes?");
+    
+  if (result != true)
+    return true;
+    
+  onSave();
+    
+  return false;
 }
 
 function onImport()
@@ -238,6 +338,30 @@ function onBtnRefernece()
 
 }
 
+var gUpdateScheduled = false;
+
+function UpdateCursorPos()
+{
+  var el = document.getElementById("txtScript");
+  var lines = el.value.substr(0,el.selectionEnd).split("\n");
+  
+  document.getElementById("sbCursorPos")
+          .label = lines.length +":" +(lines[lines.length-1].length +1); 
+  
+  gUpdateScheduled=false;
+}
+
+
+function onUpdateCursorPos(timeout)
+{
+  if (gUpdateScheduled)
+    return;
+
+  setTimeout(function () {UpdateCursorPos();gUpdateScheduled=false;},200);
+
+  gUpdateScheduled = true; 
+}
+
 function onBtnChangeView()
 {
  /* var deck = document.getElementById("dkView");
@@ -248,3 +372,4 @@ function onBtnChangeView()
     document.getElementById("dkView").selectedIndex = 0;*/
   
 }
+

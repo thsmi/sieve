@@ -3,6 +3,9 @@
 
 <!DOCTYPE window SYSTEM "chrome://sieve/locale/locale.dtd">
 
+<?xml-stylesheet href="sieve.css" type="text/css"?>
+<?xml-stylesheet href="chrome://messenger/skin/accountManage.css" type="text/css"?>
+
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         onload="onWindowLoad();"
         onclose="return onWindowClose();"
@@ -10,7 +13,7 @@
         style="width: 45em; height: 31em;"
         title="&list.title;">
 
-  <script type="application/x-javascript" src="chrome://sieve/content/editor/SieveFilterExplorer.js"/>
+  <script type="application/x-javascript" src="chrome://sieve/content/editor/SieveFilterExplorer.js"/>  
 
   <hbox align="center">
     <label value="&list.accounts;"  control="serverMenu"/>
@@ -22,7 +25,7 @@
       </vbox> 
   </hbox>
 
-  <grid flex="1">
+  <grid flex="1" id="gridList" >
     <columns>
       <column flex="1"/>
       <column/>
@@ -35,18 +38,52 @@
         <description>&list.tree;</description>
       </row>
       
-      
       <row flex="1">
         <vbox>
           <tree id="treeImapRules" flex="1" hidecolumnpicker="true"  seltype="single" >
             <treecols>
-			  <treecol id="namecol" label="&list.tree.name;" flex="1"/>
-   			  <treecol id="active" label="&list.tree.active;" cycler="true"/> 			  
+			        <treecol id="namecol" label="&list.tree.name;" flex="1"/>
+   			      <treecol id="active" label="&list.tree.active;" cycler="true"/> 			  
             </treecols>
             <treechildren/>
           </tree>
-     </vbox>
-
+          <vbox>          
+                <button id="btnServerDetails" oncommand="onServerDetails();" flex="1">
+                  <hbox flex="1"  align="center" >
+                   <image pack="center" id="imgServerDetails" height="9px" width="9px" 
+                            src="chrome://sieve/content/images/twisty-clsd.png" />
+                   <label style="text-align:left" value="&list.details.capability;" flex="1" />
+                  </hbox>
+                </button>                                  
+          
+            <vbox id="vbServerDetails" >
+            <!--<hbox smtpServerInfoBox>-->
+              <stack flex="1" class="inset">                
+                <spacer/>                                          
+                <grid>
+                  <columns>
+                    <column />
+                    <column flex="1"/>
+                  </columns>
+                  <rows>
+                    <row align="baseline">
+                      <hbox pack="end"><label value="&list.details.capability.implementation;"/></hbox>
+                      <textbox id="txtImplementation" class="plain"/>                      
+                    </row>
+                    <row align="baseline">
+                      <hbox pack="end"><label value="&list.details.capability.extensions;"/></hbox>
+                      <textbox id="txtExtensions" class="plain"/>                      
+                    </row>
+                    <row align="baseline">
+                      <hbox pack="end"><label value="&list.details.capability.sasl;"/></hbox>           
+                      <textbox id="txtSASL" class="plain"/>           
+                    </row>          
+                  </rows>
+                </grid>                  
+              </stack>
+            </vbox>
+          </vbox>          
+        </vbox>
         <vbox>
           <button id="newButton" label="&list.new;" 
                   oncommand="onNewClick();"/>
@@ -56,10 +93,11 @@
                   oncommand="onDeleteClick();"/>
           <button id="renameButton" label="&list.rename;"
                   oncommand="onRenameClick();"/>                  
+ <!--     
           <spacer flex="1"/>
           <button id="capabilites" label="&list.capability;" 
                   oncommand="onCapabilitesClick();"/>
- <!--         <button id="settings" label="Settings" 
+           <button id="settings" label="Settings" 
                   oncommand="onSettingsClick();"/>-->
           <spacer flex="1"/>
         </vbox>

@@ -1,9 +1,124 @@
 
-var sieve = null;
+  // TODO make sure that the scripts are imported only once.
+  // TODO place imports in the corresponding files like the header import in c...
+  
+  // Load all the Libraries we need...
+  var jsLoader = Components
+                   .classes["@mozilla.org/moz/jssubscript-loader;1"]
+                   .getService(Components.interfaces.mozIJSSubScriptLoader);
+  jsLoader
+    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveAccounts.js");
+  jsLoader
+    .loadSubScript("chrome://sieve/content/libs/libManageSieve/Sieve.js");
+  jsLoader
+    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveRequest.js");
+  jsLoader
+    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponse.js");    
+  jsLoader
+    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponseParser.js");        
+  jsLoader
+    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponseCodes.js");
+  jsLoader
+    .loadSubScript("chrome://sieve/content/editor/SieveFiltersTreeView.js");
+
+  // we are done importing script, so free ... 
+  // ... the loader inorder to prevent XPCOM leaks
+  jsLoader = null;
+
+
+var gSieve = null;
+
+// contains a [@mozilla.org/consoleservice;1] interface
+var gLogger = null; 
+ 
 var sieveTreeView = null;
 var closeTimeout = null;
-var keepAliveInterval = null;
 var accounts = new Array();
+
+var gSieveWatchDog =
+{
+  timeout         : null,
+  timeoutInterval : null,
+  
+  idle            : null,
+  idleInterval    : null,
+    
+  onAttach : function(timeoutInterval, idleInterval)
+  {
+    gSieveWatchDog.timeoutInterval = timeoutInterval;
+    gSieveWatchDog.idleInterval = idleInterval;
+  },
+  
+  onDeattach : function()
+  {
+    if (gSieveWatchDog == null)
+      return;
+      
+    if (gSieveWatchDog.timeout != null)
+      clearTimeout(gSieveWatchDog.timeout);
+    
+    if (gSieveWatchDog.idle != null)
+      clearTimeout(gSieveWatchDog.idle);
+    
+    return;
+  },  
+  
+  onStart: function()
+  {    
+    gSieveWatchDog.timeout 
+      = setTimeout(function() {gSieveWatchDog.onTimeout();},
+                   gSieveWatchDog.timeoutInterval);
+    
+    return;    
+  },
+  
+  onStop: function()
+  {
+    clearTimeout(gSieveWatchDog.timeout);
+    gSieveWatchDog.timeout = null;
+    
+    if (gSieveWatchDog.idleInterval == null)
+      return;
+      
+    if (gSieveWatchDog.idle != null)
+      clearTimeout(gSieveWatchDog.idle);
+    
+    gSieveWatchDog.idle 
+      = setTimeout(function() {gSieveWatchDog.onIdle();},
+                   gSieveWatchDog.idleInterval);
+    
+    return;
+  },
+  
+  onIdle: function ()
+  {
+    // we simply do notihng in case of an error...
+    var lEvent = 
+    {
+      onCapabilitiesResponse: function() {},
+      onTimeout: function() {},
+      onError: function() {}
+    }
+    
+    if (gSieveWatchDog.idle != null)
+      clearTimeout(gSieveWatchDog.idle);
+          
+    gSieveWatchDog.idle = null;
+    
+    var request = new SieveCapabilitiesRequest();
+    request.addCapabilitiesListener(lEvent);
+    request.addErrorListener(lEvent);
+  
+    // create a sieve request without an eventhandler...
+    gSieve.addRequest(request);
+  },
+  
+  onTimeout: function()
+  {
+    gSieveWatchDog.timeout = null;
+    gSieve.onWatchDogTimeout();
+  }  
+}
 
 var event = 
 {	
@@ -30,6 +145,12 @@ var event =
     else
       mechanism = response.getSasl()[0];
 
+    document.getElementById('txtSASL').value
+        = response.getSasl();
+    document.getElementById('txtExtensions').value    
+        = response.getExtensions(); 
+    document.getElementById('txtImplementation').value 
+        = response.getImplementation();
           
     // ... translate the SASL Mechanism String into an SieveSaslLogin Object ...
     var request = null;  
@@ -60,7 +181,7 @@ var event =
       request.setPassword(password);  	
     }
 
-    sieve.addRequest(request);    		
+    gSieve.addRequest(request);    		
     
   },
   
@@ -76,7 +197,7 @@ var event =
     	  request.addStartTLSListener(event);
     	  request.addErrorListener(event);
 
-   		  sieve.addRequest(request);
+   		  gSieve.addRequest(request);
    		  return;
     	}    	  
     	
@@ -85,17 +206,46 @@ var event =
 	
 	onStartTLSResponse : function(response)
 	{	        
-    // activate TLS
-	  sieve.startTLS();
-	    
-    // we should call now Capabilities ...
-    // ... they can change with enabled TLS
-    
-    var request = new SieveCapabilitiesRequest();
-    request.addCapabilitiesListener(event);
-    request.addErrorListener(event);	
+	  
+	  // workaround for timsieved bug...
+    var lEvent = 
+    {   
+      onInitResponse: function(response)
+      {
+        event.onAuthenticate(response);
+      },
+      
+      onError: function(response)
+      {
+        event.onError(response);
+      },
+      
+      onTimeout: function()
+      {
+        var request = new SieveCapabilitiesRequest();
+        request.addCapabilitiesListener(event);
+        request.addErrorListener(event);	
 		
-    sieve.addRequest(request);	  
+        gSieve.addRequest(request)
+      }    	
+    }
+    	  
+    // after calling startTLS the server will propagate his capabilities...
+    // ... like at the login, therefore we reuse the SieveInitRequest
+    
+    // some revision of timsieved fail to resissue the capabilities...
+    // ... which causes the extension to be jammed. Therefore we have to ...
+    // ... do a rather nasty workaround. The jammed extension causes a timeout,
+    // ... we catch this timeout and continue as if nothing happend...
+    
+	  var request = new SieveInitRequest();
+	  request.addInitListener(lEvent);
+	  request.addErrorListener(lEvent);
+	  	  
+	  gSieve.addRequest(request);
+	  
+    // activate TLS
+	  gSieve.startTLS(true);
 	},
 	
   onSaslLoginResponse: function(response)
@@ -120,15 +270,16 @@ var event =
     request.addListScriptListener(event);
     request.addErrorListener(event);
 
-    sieve.addRequest(request);	  	  
+    gSieve.addRequest(request);	  	  
     disableControls(false);
 	},
 	
 	onLogoutResponse: function(response)
 	{
-		if (sieve.isAlive())
-			sieve.disconnect();
-		clearTimeout(closeTimeout);
+	  clearTimeout(closeTimeout);
+	  
+		if (gSieve.isAlive())
+			gSieve.disconnect();
 		
 		// this will close the Dialog!
 		close();		
@@ -162,7 +313,7 @@ var event =
 		request.addListScriptListener(event);
 		request.addErrorListener(event);
 		
-		sieve.addRequest(request);
+		gSieve.addRequest(request);
 	},
 	
 	onDeleteScriptResponse:  function(response)
@@ -172,13 +323,23 @@ var event =
 		request.addListScriptListener(event);
 		request.addErrorListener(event);
 		
-		sieve.addRequest(request);
+		gSieve.addRequest(request);
 	},
-	
+
+  
 	onCapabilitiesResponse: function(response)
 	{
 	  event.onAuthenticate(response);
-	},	
+	},    		
+	
+	onTimeout: function()
+	{
+	  disableControls(true);
+	  if (gSieve.isAlive())
+			gSieve.disconnect();
+			
+	  alert("The connection has timed out, the Server is not responding...")
+	},
 	
   onError: function(response)
   {
@@ -188,23 +349,33 @@ var event =
     {
       disableControls(true);
       // close the old sieve connection
-      sieve.disconnect();
+      gSieve.disconnect();
         
       postStatus("Referral to "+code.getHostname()+" ...");
       
-      sieve = new Sieve(
+      var account = getSelectedAccount();
+
+      gSieve = new Sieve(
                     code.getHostname(),
-                    getSelectedAccount().getHost().getPort(),
-                    getSelectedAccount().isTLS(),
-                    getSelectedAccount().getSettings().getDebugFlags() );
-  
+                    account.getHost().getPort(),
+                    account.getHost().isTLS(),
+                    (account.getSettings().isKeepAlive() ?
+                        account.getSettings().getKeepAliveInterval():
+                        null));
+                                                   
+      gSieve.setDebugLevel(
+               account.getSettings().getDebugFlags(),
+               gLogger);
+                      
       var request = new SieveInitRequest();
       request.addErrorListener(event)
       request.addInitListener(event)
-      sieve.addRequest(request);
-		    
-      sieve.connect();
-      return
+      gSieve.addRequest(request);
+
+      gSieve.addWatchDogListener(gSieveWatchDog);		    
+      gSieve.connect();
+      
+      return;
     }
 
     alert("SERVER ERROR:"+response.getMessage());
@@ -221,39 +392,22 @@ var event =
     request.addSetScriptListener(event);
     request.addErrorListener(event);
     
-    sieve.addRequest(request);
+    gSieve.addRequest(request);
   }
-}
-
-function onKeepAlive()
-{
-  // create a sieve request without an eventhandler...
-  sieve.addRequest(new SieveCapabilitiesRequest())
+  
 }
 
 function onWindowLoad()
 {
-  // Load all the Libraries we need...
-  var jsLoader = Components
-                   .classes["@mozilla.org/moz/jssubscript-loader;1"]
-                   .getService(Components.interfaces.mozIJSSubScriptLoader);
-  jsLoader
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveAccounts.js");
-  jsLoader
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/Sieve.js");
-  jsLoader
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveRequest.js");
-  jsLoader
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponse.js");    
-  jsLoader
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponseParser.js");        
-  jsLoader
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponseCodes.js");
-  jsLoader
-    .loadSubScript("chrome://sieve/content/editor/SieveFiltersTreeView.js");
+
 //	var actList = document.getElementById("conImapAcct");
 //	var actpopup = document.createElement("menupopup");
 //	actList.appendChild(actpopup);
+
+  // now create a logger session...
+  gLogger = Components.classes["@mozilla.org/consoleservice;1"]
+                    .getService(Components.interfaces.nsIConsoleService);
+
 
   var menuImapAccounts = document.getElementById("menuImapAccounts");
 
@@ -276,22 +430,19 @@ function onWindowLoad()
    
 function onWindowClose()
 {
-  if (keepAliveInterval != null)
-  {
-    clearInterval(keepAliveInterval);
-    keepAliveInterval = null;
-  }
+  // unbind the logger inoder to prevent xpcom memory holes
+  gLogger = null;
   
-  if (sieve == null)
+  if (gSieve == null)
     return true;
   // Force disconnect in 500 MS
-  closeTimeout = setTimeout("sieve.disconnect(); close();",250);
+  closeTimeout = setTimeout("gSieve.disconnect(); close();",250);
 
   var request = new SieveLogoutRequest(event)
   request.addLogoutListener(event);
   request.addErrorListener(event)
   
-  sieve.addRequest(request);
+  gSieve.addRequest(request);
 
   return false;
 }   
@@ -326,8 +477,8 @@ function onSelectAccount()
 		onLogoutResponse: function(response)
 		{
 			clearTimeout(logoutTimeout);
-			if ((sieve != null) && (sieve.isAlive()))
-				sieve.disconnect();
+			if ((gSieve != null) && (gSieve.isAlive()))
+				gSieve.disconnect();
 
       // always clear the TreeView
       var tree = document.getElementById('treeImapRules');
@@ -346,26 +497,32 @@ function onSelectAccount()
 			}			
 
 			postStatus("Connecting...");
-			if (account.getSettings().isKeepAlive())
-			    keepAliveInterval = setInterval("onKeepAlive()",account.getSettings().getKeepAliveInterval());
 
-      sieve = new Sieve(
+      // when pathing this lines always keep refferal code in sync
+      gSieve = new Sieve(
                     account.getHost().getHostname(),
                     account.getHost().getPort(),
                     account.getHost().isTLS(),
-                    account.getSettings().getDebugFlags() );
-		    
+                    (account.getSettings().isKeepAlive() ?
+                        account.getSettings().getKeepAliveInterval():
+                        null));
+
+      gSieve.setDebugLevel(
+               account.getSettings().getDebugFlags(),
+               gLogger);                
+
       var request = new SieveInitRequest();
       request.addErrorListener(event)
       request.addInitListener(event)
-      sieve.addRequest(request);
+      gSieve.addRequest(request);
   
-      sieve.connect();
+      gSieve.addWatchDogListener(gSieveWatchDog);	
+      gSieve.connect();
     }
   }
 
 	// Besteht das Objekt überhaupt bzw besteht eine Verbindung?
-	if ((sieve == null) || (sieve.isAlive() == false))
+	if ((gSieve == null) || (gSieve.isAlive() == false))
 	{
 		// beides schein nicht zu existieren, daher connect direkt aufrufen...
 		levent.onLogoutResponse("");
@@ -375,15 +532,15 @@ function onSelectAccount()
 	// hier haben wir etwas weniger Zeit ...
 	logoutTimeout = setTimeout("levent.onLogoutResponse(\"\")",250);
 	
-    if (keepAliveInterval != null)
+    /*if (keepAliveInterval != null)
     {
     	clearInterval(keepAliveInterval);
     	keepAliveInterval = null;
-    }
+    }*/
   var request = new SieveLogoutRequest();
   request.addLogoutListener(levent);
   request.addErrorListener(event);
-	sieve.addRequest(request);	
+	gSieve.addRequest(request);	
 }
 
 function onDeleteClick()
@@ -400,23 +557,56 @@ function onDeleteClick()
 	request.addDeleteScriptListener(event);
 	request.addErrorListener(event);
 	
-	sieve.addRequest(request);
+	gSieve.addRequest(request);
 }
+
+function sivOpenEditor(scriptName,scriptBody)
+{
+  var args = new Array();
+  args["scriptName"] = scriptName;
+  args["scriptBody"] = scriptBody;
+  args["sieve"] = gSieve;
+  args["compile"] = getSelectedAccount().getSettings().hasCompileDelay();
+  args["compileDelay"] = getSelectedAccount().getSettings().getCompileDelay();
+
+  window.openDialog("chrome://sieve/content/editor/SieveFilterEditor.xul", 
+                    "FilterEditor", 
+                    "chrome,modal,titlebar,resizable,centerscreen", args);
+
+  var request = new SieveListScriptRequest();
+  request.addListScriptListener(event);
+  request.addErrorListener(event);
+    			
+  gSieve.addRequest(request);
+  
+  return;  
+}
+
 
 function onNewClick()
 {
-	var args = new Array();
-	args["sieve"] = sieve;
-	args["compile"] = getSelectedAccount().getSettings().hasCompileDelay();
-	args["compileDelay"] = getSelectedAccount().getSettings().getCompileDelay();
-		
-	window.openDialog("chrome://sieve/content/editor/SieveFilterEditor.xul", "FilterEditor", "chrome,modal,titlebar,resizable,centerscreen", args);
+  // Instead of prompting for the scriptname, setting the scriptname to an 
+  // unused scriptname (eg. unnamed+000]) would offer a better workflow...
+  // Also put a template script would be good...
 
-	var request = new SieveListScriptRequest();
-	request.addListScriptListener(event);
-	request.addErrorListener(event);
-	
-	sieve.addRequest(request);	
+  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                  .getService(Components.interfaces.nsIPromptService);
+
+  var input = {value:"unnamed"};
+  var check = {value:false};
+
+  var result
+       = prompts.prompt(
+           window,
+          "Create a new Script",
+           "Enter the name for your new Sieve script (existing scripts will be overwritten)",
+           input, null, check);
+
+  // Did the User cancel the dialog?
+  if (result != true)
+    return;
+
+  sivOpenEditor(input.value,"#template");	
 }
 
 function onEditClick()
@@ -425,46 +615,11 @@ function onEditClick()
   if (tree.currentIndex == -1)
     return;
 
-  var scriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));	
-
-  var args = new Array();
-  args["scriptName"] = scriptName;
-  args["sieve"] = sieve;
-  args["compile"] = getSelectedAccount().getSettings().hasCompileDelay();
-  args["compileDelay"] = getSelectedAccount().getSettings().getCompileDelay();
-
-  window.openDialog("chrome://sieve/content/editor/SieveFilterEditor.xul", "FilterEditor", "chrome,modal,titlebar,resizable,centerscreen", args);
-
-  var request = new SieveListScriptRequest();
-  request.addListScriptListener(event);
-  request.addErrorListener(event);
-    			
-  sieve.addRequest(request);
-}
-
-function onCapabilitesClick()
-{
-  var lEvent = 
-  {    
-    onCapabilitiesResponse: function(response)
-    {
-      var args = new Array();
-      args["implementation"] = response.getImplementation();
-      args["extensions"] = response.getExtensions();
-      if (response.getSasl() != "")
-        args["sasl"] = response.getSasl();
-      else
-        args["sasl"] = "Not supported, thus you are authenticated"
-
-      window.openDialog("chrome://sieve/content/editor/SieveCapabilities.xul", "FilterCapabilities", "chrome,modal,titlebar,centerscreen", args);
-    }
-  }   
+  var scriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));
+  
+  sivOpenEditor(scriptName);
     
-  var request = new SieveCapabilitiesRequest();
-  request.addCapabilitiesListener(lEvent);
-  request.addErrorListener(event);	
-	
-  sieve.addRequest(request);
+  return;
 }
 
 function onSettingsClick()
@@ -480,22 +635,23 @@ function postStatus(progress)
 function disableControls(disabled)
 {
   if (disabled)
-  {
+  {    
     document.getElementById('newButton').setAttribute('disabled','true');
     document.getElementById('editButton').setAttribute('disabled','true');
     document.getElementById('deleteButton').setAttribute('disabled','true');
-    document.getElementById('renameButton').setAttribute('disabled','true');
-    document.getElementById('capabilites').setAttribute('disabled','true');
+    document.getElementById('renameButton').setAttribute('disabled','true');   
     document.getElementById('treeImapRules').setAttribute('disabled','true');
+    document.getElementById('btnServerDetails').setAttribute('disabled','true');
+    document.getElementById('vbServerDetails').setAttribute('hidden','true');
   }
   else
-  {
+  {    
     document.getElementById('newButton').removeAttribute('disabled');
     document.getElementById('editButton').removeAttribute('disabled');
     document.getElementById('deleteButton').removeAttribute('disabled');
-    document.getElementById('renameButton').removeAttribute('disabled');    
-    document.getElementById('capabilites').removeAttribute('disabled');
-    document.getElementById('treeImapRules').removeAttribute('disabled');  
+    document.getElementById('renameButton').removeAttribute('disabled');
+    document.getElementById('treeImapRules').removeAttribute('disabled');
+    document.getElementById('btnServerDetails').removeAttribute('disabled');      
   }
 }
 
@@ -516,7 +672,7 @@ function onRenameClick()
 
       request.addPutScriptListener(lEvent)
       request.addErrorListener(event)
-      sieve.addRequest(request);  
+      gSieve.addRequest(request);  
     },
         
     onPutScriptResponse: function(response)
@@ -526,7 +682,7 @@ function onRenameClick()
       var request = new SieveDeleteScriptRequest(lEvent.oldScriptName);
       request.addDeleteScriptListener(event);
       request.addErrorListener(event);
-      sieve.addRequest(request);
+      gSieve.addRequest(request);
     }    	
   }
 
@@ -570,5 +726,22 @@ function onRenameClick()
   request.addGetScriptListener(lEvent);
   request.addErrorListener(event);
 
-  sieve.addRequest(request);	
+  gSieve.addRequest(request);	
+}
+
+function onServerDetails()
+{
+  var el = document.getElementById("vbServerDetails");  
+  var img = document.getElementById("imgServerDetails");
+    
+  if (el.hidden == true)
+  {    
+    el.removeAttribute('hidden');
+    img.setAttribute('src','chrome://global/skin/tree/twisty-clsd.png');
+  }
+  else
+  {
+    el.setAttribute('hidden','true');
+    img.setAttribute('src','chrome://global/skin/tree/twisty-open.png');
+  }  
 }

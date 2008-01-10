@@ -4,7 +4,7 @@
   ==========
     CLASS NAME          : Sieve
         
-    CONSCTURCTOR        : Sieve(String host, int port, boolean secure, boolean debug)
+    CONSCTURCTOR        : Sieve(String host, int port, boolean secure, int timeout)
     DECLARED FUNCTIONS  : void connect()
                           void disconnect()
                           boolean isAlive()
@@ -24,15 +24,15 @@
     connect to the host. And invoke the "startTLS" Method as soon as you nagociated 
     the switch to a crypted connection. After calling startTLS Mozilla will imediately
     switch to a cryped connection.
-    The constructor flag "debug" specifies wheather only requests, only responses, 
-    both or nothing is logged to the error console. A value of "1" means olny request
-    "2" is equivalent to responses only, "3" states that both (request and 
-    responses) should be logged and a "0" disables any logging.
+    The Method setDebugLevel specifies wheather only requests, only responses, 
+    both or nothing is logged to the error console. A "level" value of "1" means 
+    olny request "2" is equivalent to responses only, "3" states that both (request 
+    and responses) should be logged and a "0" disables any logging.
 
   EXAMPLE:
   ========
    
-    var sieve = new Sieve("example.com",2000,false,3)
+    var sieve = new Sieve("example.com",2000,false,1800000);
     
     var request = new SieveInitRequest();    
     sieve.addRequest(request);
@@ -47,13 +47,8 @@
 
 ********************************************************************************/
 
-function Sieve(host, port, secure, debug) 
-{
-
-  if (debug == null) 
-    this.debug = 0x00;    
-  else
-    this.debug = debug;    
+function Sieve(host, port, secure, idleInterval) 
+{  
   
   this.host = host;
   this.port = port;
@@ -61,9 +56,48 @@ function Sieve(host, port, secure, debug)
   
   this.socket = null;
   this.data = "";
+  
+  this.requests = new Array();
     
-  this.requests = new Array();  
-  this.timeout = null;
+  this.watchDog = null;
+  
+  this.idleInterval = idleInterval;
+  
+  this.debug = new Object();
+  this.debug.level  = 0x00;
+  this.debug.logger = null;  
+}
+
+/*
+ * level:
+ *   is a bitfield which defines which debugmessages are logged to the console.
+ * 
+ * console: 
+ *   passes the logger which should be used. 
+ *   A via logger needs to interface a logStringMessage(String) Method. 
+ */
+
+Sieve.prototype.setDebugLevel = function(level, logger)
+{
+  // make sure that any existing logger is freed...
+  // ... this should prevent xpcom memory holes.  
+  this.debug.logger = null;
+   
+  // set the debuglevel...
+  if (level == null)  
+    this.debug.level = 0x00;    
+  else
+    this.debug.level = level;   
+
+  // a debug level of 0x00 means no debugging, ...
+  // ... therefore we can skip setting up the logger.
+  if (this.debug.level == 0x00)
+    return;
+  
+  // ... and bind the new login device
+  this.debug.logger = logger;
+  
+  return;
 }
 
 Sieve.prototype.isAlive = function()
@@ -74,7 +108,8 @@ Sieve.prototype.isAlive = function()
 	return this.socket.isAlive(); 
 }
 
-Sieve.prototype.startTLS = function ()
+// if the parameter ignoreCertError is set, cert errors will be ignored
+Sieve.prototype.startTLS = function (ignoreCertError)
 {
   if (this.secure != true)
     throw new Exception("TLS can't be started no secure socket");
@@ -83,7 +118,17 @@ Sieve.prototype.startTLS = function ()
     throw new Exception("Can't start TLS, your are not connected to "+host);
 
   var securityInfo = this.socket.securityInfo.QueryInterface(Components.interfaces.nsISSLSocketControl);
-  securityInfo.StartTLS();     
+  
+  if ((ignoreCertError != null) && (ignoreCertError == true))
+    securityInfo.notificationCallbacks = new BadCertHandler(this.debug.logger);
+
+  securityInfo.StartTLS();
+}
+
+Sieve.prototype.addWatchDogListener = function(watchDog)
+{
+  this.watchDog = watchDog;
+  this.watchDog.onAttach(1000,this.idleInterval);
 }
 
 Sieve.prototype.addRequest = function(request)
@@ -92,16 +137,20 @@ Sieve.prototype.addRequest = function(request)
 	// wenn die länge nun eins ist war sie vorher null
 	// daher muss die Requestwarteschalnge neu angestoßen werden.
 	if (this.requests.length > 1)
-		return
+		return;
 
-  this.timeout = window.setTimeout(function (this_) {this_.onTimeout();},1000,this);
-  //this.timeout = window.setTimeout(this.onTimeout,1000,this);
+  if( this.watchDog != null)
+    this.watchDog.onStart();
   
 	// filtert den initrequest heraus...	 	
 	if (request instanceof SieveInitRequest)
 	  return;
 
   var output = request.getNextRequest();
+  
+  if (this.debug.level & (1 << 0))
+    this.debug.logger.logStringMessage(output);
+
   this.outstream.write(output,output.length);
   
   return;
@@ -141,8 +190,8 @@ Sieve.prototype.disconnect = function ()
 {	
   // free requests...
   //this.requests = new Array();
-  if (this.timeout != null)
-    clearTimeout(this.timeout);
+  if( this.watchDog != null)
+    this.watchDog.onDeattach();
   
   if (this.socket == null)
     return;
@@ -159,28 +208,22 @@ Sieve.prototype.onStopRequest =  function(request, context, status)
 
 Sieve.prototype.onStartRequest = function(request, context)
 {
-  if (this.debug)
-  {
-    var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
-                           .getService(Components.interfaces.nsIConsoleService);
-    consoleService.logStringMessage("Connected to "+this.host+":"+this.port+" ...");
-  }  
+  if (this.debug.level)
+    this.debug.logger.logStringMessage("Connected to "+this.host+":"+this.port+" ...");
 }
 
-Sieve.prototype.onTimeout = function()
+//Sieve.prototype.onTimeout = function()
+Sieve.prototype.onWatchDogTimeout = function() 
 {
-  var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
-                         .getService(Components.interfaces.nsIConsoleService);
-                         
-  consoleService.logStringMessage("Timeout - server not responding");
   
-  this.timeout = null;  
-  
-  this.requests[0].addResponse('NO (0000) "Timeout - Server <b>not</b> responding"\r\n');
-  // close sockets if neccessary...
-  this.disconnect();
-  //cleanup of requests...
-  
+  // clear receive buffer and any pending request...
+  this.data = "";  
+  var request = this.requests[0];
+  this.requests.splice(0,1);
+
+  // then signal with a null response a timeout
+  if (request != null)   
+    request.addResponse(null);  
 }
 
 Sieve.prototype.onDataAvailable = function(request, context, inputStream, offset, count)
@@ -192,17 +235,13 @@ Sieve.prototype.onDataAvailable = function(request, context, inputStream, offset
       
   var data = instream.read(count);
 
-  if (this.debug & (1 << 1))
-  {
-    var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
-                           .getService(Components.interfaces.nsIConsoleService);
-    consoleService.logStringMessage(data);
-  }  
+  if (this.debug.level & (1 << 1))
+    this.debug.logger.logStringMessage(data);
 
 	// is a request handler waiting?
 	if ((this.requests.length == 0))
 		return;
-	
+		
 	// responses packets could be fragmented...
 	this.data += data;
 	
@@ -210,21 +249,24 @@ Sieve.prototype.onDataAvailable = function(request, context, inputStream, offset
 	try
 	{
 	  // first clear the timeout...
-	  window.clearTimeout(this.timeout);
-	  this.timeout = null;
+    if( this.watchDog != null)
+      this.watchDog.onStop();
 	  
 	  // ... then try to parse the request
 	  this.requests[0].addResponse(this.data);
 	}
 	catch (ex)
 	{
+	  if (this.debug.level)      
+	    this.debug.logger.logStringMessage("Parsing Exception:\n"+ex);
 	  // ... we encounterned an error, this is most likely caused ...
 	  // ... by a fragmented packet, so we skip processing and start ...
 	  // ... the timeout timer again. Either the next packet or a timeout ...
 	  // ... will resolve this situation.
+
+    if( this.watchDog != null)
+      this.watchDog.onStart();
 	  
-	  this.timeout = window.setTimeout(function (this_) {this_.onTimeout();},1000,this);
-	  //this.timeout = window.setTimeout(this.onTimeout,1000,this);
 	  return;
 	}
   
@@ -242,17 +284,115 @@ Sieve.prototype.onDataAvailable = function(request, context, inputStream, offset
 	{
 	  var output = this.requests[0].getNextRequest();
 	  
-    if (this.debug & (1 << 0))
-    {
-      var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
-                             .getService(Components.interfaces.nsIConsoleService);
-      consoleService.logStringMessage(output);
-    } 	  
+    if (this.debug.level & (1 << 0))
+      this.debug.logger.logStringMessage(output);
     
 	  this.outstream.write(output,output.length);
 	  
 	  // the request is transmitted, therefor activate the timeout
-	  this.timeout = window.setTimeout(function (this_) {this_.onTimeout();},1000,this);
-	  //this.timeout = window.setTimeout(this.onTimeout,1000,this);
+    if( this.watchDog != null)
+      this.watchDog.onStart();
+	  
 	}
 }
+
+/******************************************************************************/
+// Helper class to override the "bad cert" dialog...
+// see nsIBadCertListener for details
+
+function BadCertHandler(logger) 
+{
+  this.logger = logger;
+}
+
+BadCertHandler.prototype.confirmUnknownIssuer = function(socketInfo, cert, certAddType) 
+{
+  alert("invalid Password");
+  
+  if (this.logger != null)
+    this.logger.logStringMessage("Sieve BadCertHandler: Unknown issuer");
+      
+  return true;
+}
+
+BadCertHandler.prototype.confirmMismatchDomain = function(socketInfo, targetURL, cert) 
+{
+  if (this.logger != null)
+    this.logger.logStringMessage("Sieve BadCertHandler: Mismatched domain");
+
+  return true;
+}
+
+BadCertHandler.prototype.confirmCertExpired = function(socketInfo, cert) 
+{
+  if (this.logger != null)
+    this.logger.logStringMessage("Sieve BadCertHandler: Expired certificate");
+
+  return true;
+}
+
+BadCertHandler.prototype.notifyCrlNextupdate = function(socketInfo, targetURL, cert) 
+{
+}
+/* BadCert2 Interface...
+ * 
+ * http://lxr.mozilla.org/security/source/security/manager/ssl/public/nsISSLStatus.idl
+ * http://lxr.mozilla.org/seamonkey/source/security/manager/ssl/public/nsICertOverrideService.idl
+ * http://lxr.mozilla.org/seamonkey/source/security/manager/ssl/public/nsIBadCertListener2.idl
+ */
+
+BadCertHandler.prototype.notifyCertProblem = function (socketInfo,/*nsISSLStatus*/SSLStatus,/*String*/targetSite)
+{
+  if (this.logger != null)
+    this.logger.logStringMessage("Cert Problem - Override enabled...");  
+
+  // see http://lxr.mozilla.org/seamonkey/source/security/manager/pki/resources/content/exceptionDialog.js
+  // addEcsption Method..
+  var overrideService = Components.classes["@mozilla.org/security/certoverride;1"]
+                                   .getService(Components.interfaces.nsICertOverrideService);
+                                   
+  var flags = 0;
+  //if(gSSLStatus.isUntrusted)
+  flags |= overrideService.ERROR_UNTRUSTED;
+  //if(gSSLStatus.isDomainMismatch)
+  flags |= overrideService.ERROR_MISMATCH;
+  //if(gSSLStatus.isNotValidAtThisTime)
+  flags |= overrideService.ERROR_TIME;
+  
+  var cert = SSLStatus.QueryInterface(Components.interfaces.nsISSLStatus).serverCert;
+  
+  this.logger.logStringMessage(targetSite);
+    
+  overrideService.rememberValidityOverride(
+      targetSite, // Host Name with port (host:port)
+      cert,                            // -> SSLStatus
+      flags,
+      false); //temporary 
+}
+
+
+  // nsIInterfaceRequestor
+BadCertHandler.prototype.getInterface = function(iid) 
+{
+  if (iid.equals(Components.interfaces.nsIBadCertListener) ||
+        iid.equals(Components.interfaces.nsIBadCertListener2))  
+    return this;
+
+  Components.returnCode = Components.results.NS_ERROR_NO_INTERFACE;
+  return null;
+}
+
+  // nsISupports
+BadCertHandler.prototype.QueryInterface = function(iid) 
+{
+  if (!iid.equals(Components.interfaces.nsIBadCertListener) &&
+      !iid.equals(Components.interfaces.nsIBadCertListener2) &&
+      !iid.equals(Components.interfaces.nsIInterfaceRequestor) &&
+      !iid.equals(Components.interfaces.nsISupports))
+  {
+    throw Components.results.NS_ERROR_NO_INTERFACE;
+  }
+    
+  return this;
+}
+

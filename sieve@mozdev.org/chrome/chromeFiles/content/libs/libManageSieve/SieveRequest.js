@@ -1,3 +1,28 @@
+/*******************************************************************************
+ 
+  NOTES:
+  ======
+  
+  The communication in this library is asynchonous! After sending a request,
+  you will be notified by a listerner, as soon as a response arrives. 
+  
+  If a request caused an error or timeout, its error listener will be called 
+  to resolve the issue. If a server rejects a request, the onError() function 
+  of the error listener will be invoked. In case of a timeout situation, the 
+  onTimeout() function is called.
+   
+  If a request succees, the corresponding response listener of the request 
+  will be notified.
+   
+  The addResponse(), getNextRequest(), hasNextRequest() Methods are used by the 
+  Sieve object, and should not be invoked manually.  
+  
+  When the sieve object receives a response, it is passed to the addResponse() 
+  Method of the requesting object. A timeout is singaled by passing null to 
+  the addResponse() Method.  
+  
+    
+********************************************************************************/
 
 function SieveGetScriptRequest(script) 
 {
@@ -31,6 +56,14 @@ SieveGetScriptRequest.prototype.getNextRequest
 SieveGetScriptRequest.prototype.addResponse
     = function (data)
 {
+  if (data == null)
+  {
+    if (this.errorListener != null)
+      this.errorListener.onTimeout();
+      
+    return;
+  }
+  
   var response = new SieveGetScriptResponse(this.script,data); 
 		
   if ((response.getResponse() == 0) && (this.responseListener != null))
@@ -122,12 +155,22 @@ SievePutScriptRequest.prototype.addErrorListener
 SievePutScriptRequest.prototype.addResponse
     = function (data)
 {
+  if (data == null)
+  {
+    if (this.errorListener != null)
+      this.errorListener.onTimeout();
+      
+    return;
+  }
+  
   var response = new SievePutScriptResponse(data);
 
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onPutScriptResponse(response);
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
+    
+  return;
 }
 
 /*******************************************************************************
@@ -194,6 +237,14 @@ SieveSetActiveRequest.prototype.addErrorListener
 SieveSetActiveRequest.prototype.addResponse
     = function (data)
 {
+  if (data == null)
+  {
+    if (this.errorListener != null)
+      this.errorListener.onTimeout();
+      
+    return;
+  }
+  
   var response = new SieveSetActiveResponse(data);
 
   if ((response.getResponse() == 0) && (this.responseListener != null))
@@ -206,7 +257,7 @@ SieveSetActiveRequest.prototype.addResponse
     CLASS NAME         : SieveCapabilitiesRequest
     USES CLASSES       : SieveCapabilitiesResponse
         
-    CONSCTURCTOR       : SieveCapabilitiesRequest(listener)
+    CONSCTURCTOR       : SieveCapabilitiesRequest()
     DECLARED FUNCTIONS : String getCommand()
                          void setResponse(data)
     EXCEPTIONS         : 
@@ -253,6 +304,14 @@ SieveCapabilitiesRequest.prototype.addErrorListener
 SieveCapabilitiesRequest.prototype.addResponse
     = function (data)
 {
+  if (data == null)
+  {
+    if (this.errorListener != null)
+      this.errorListener.onTimeout();
+      
+    return;
+  }
+  
   var response = new SieveCapabilitiesResponse(data);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
@@ -265,7 +324,7 @@ SieveCapabilitiesRequest.prototype.addResponse
     CLASS NAME         : SieveDeleteScriptRequest
     USES CLASSES       : SieveDeleteScriptResponse
         
-    CONSCTURCTOR       : SieveDeleteScriptRequest(String script, listener)
+    CONSCTURCTOR       : SieveDeleteScriptRequest(String script)
     DECLARED FUNCTIONS : String getCommand()
                          void setResponse(data)
     EXCEPTIONS         : 
@@ -312,6 +371,14 @@ SieveDeleteScriptRequest.prototype.addErrorListener
 SieveDeleteScriptRequest.prototype.addResponse
     = function (data)
 {
+  if (data == null)
+  {
+    if (this.errorListener != null)
+      this.errorListener.onTimeout();
+      
+    return;
+  }
+  
         
   var response = new SieveDeleteScriptResponse(data);
 			
@@ -370,7 +437,14 @@ SieveListScriptRequest.prototype.addErrorListener
 
 SieveListScriptRequest.prototype.addResponse 
     = function (data)
-{	
+{
+  if (data == null)
+  {
+    if (this.errorListener != null)
+      this.errorListener.onTimeout();
+      
+    return;
+  }
 	
   var response = new SieveListScriptResponse(data);
 			
@@ -378,6 +452,8 @@ SieveListScriptRequest.prototype.addResponse
     this.responseListener.onListScriptResponse(response);			
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
+  
+  return;
 }
 
 /*******************************************************************************
@@ -430,6 +506,14 @@ SieveStartTLSRequest.prototype.addErrorListener
 SieveStartTLSRequest.prototype.addResponse 
     = function (data)
 {		    
+  if (data == null)
+  {
+    if (this.errorListener != null)
+      this.errorListener.onTimeout();
+      
+    return;
+  }
+  
   var response = new SieveStartTLSResponse(data);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
@@ -456,6 +540,58 @@ SieveStartTLSRequest.prototype.addResponse
     ...
 
 ********************************************************************************/
+
+/*******************************************************************************
+ 
+  FACTSHEET: 
+  ==========
+   
+    CLASS NAME          : SieveLogoutRequest
+    USES CLASSES        : SieveLogoutResponse
+        
+    CONSCTURCTOR        : SieveLogoutRequest()
+    DECLARED FUNCTIONS  : void addLogoutListener(...)
+                          void addErrorListener(...)
+                          void addResponse(String data)                          
+                          String getNextRequest()
+                          Boolean hasNextRequest()
+    EXCEPTIONS          : 
+    AUTHOR              : Thomas Schmid
+    
+  DESCRIPTION:
+  ============
+    A logout request signals the server that the client wishes to terminate
+    the current session.       
+
+  EXAMPLE:
+  ========
+     
+    var event = {
+      onLogoutResponse: function(response) 
+      {
+        alert("Logout successfull");
+      }
+      ,                          
+      onError: function(response) 
+      {
+        alert("SERVER ERROR:"+response.getMessage());
+      }
+    } 
+                          
+    var request = new SieveLogoutRequest();
+    request.addErrorListener(event);
+    request.addSaslPlainListener(event);
+                        
+    sieve.addRequest(request);
+
+  PROTOCOL INTERACTION: 
+  =====================
+
+    Client > LOGOUT                               
+    Server < OK "Logout Complete"
+    < connection terminated >
+
+*******************************************************************************/
 
 function SieveLogoutRequest() 
 {
@@ -487,7 +623,15 @@ SieveLogoutRequest.prototype.addErrorListener
 
 SieveLogoutRequest.prototype.addResponse 
     = function (data)
-{		    
+{
+  if (data == null)
+  {
+    if (this.errorListener != null)
+      this.errorListener.onTimeout();
+      
+    return;
+  }
+  
   var response = new SieveLogoutResponse(data);
 			
   // a "BYE" or "OK" is in this case a good answer...
@@ -496,7 +640,9 @@ SieveLogoutRequest.prototype.addResponse
     this.responseListener.onLogoutResponse(response);			
   else if ((response.getResponse() != 0) && (response.getResponse() != 1) 
 	        && (this.errorListener != null))
-    this.errorListener.onError(response);		    
+    this.errorListener.onError(response);
+    
+  return;		    
 }
 
 /*******************************************************************************
@@ -519,11 +665,12 @@ SieveLogoutRequest.prototype.addResponse
   DESCRIPTION:
   ============
      A sieve server will automatically post his capabilities as soon as the 
-     connection is established. In order to capture this information a dummy 
-     request has to be used. It won't send a real request, but it parses the 
-     initial response of the sieve server. Therefore it is important to add 
-     the request before the connection is established. Otherwise the message 
-     queue will be jammed.
+     connection is established or a secure channel is successfully started 
+     (STARTTLS command). In order to capture this information a dummy request 
+     has to be used. It won't send a real request, but it parses the initial 
+     response of the sieve server. Therefore it is important to add the request 
+     before the connection is established. Otherwise the message queue will be 
+     jammed.
 
   EXAMPLE:
   ========
@@ -577,12 +724,22 @@ SieveInitRequest.prototype.addErrorListener
 SieveInitRequest.prototype.addResponse
     = function (data)
 {
+  if (data == null)
+  {
+    if (this.errorListener != null)
+      this.errorListener.onTimeout();
+      
+    return;
+  }
+  
   var response = new SieveInitResponse(data);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onInitResponse(response);			
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
+    
+  return;
 }
 
 /*******************************************************************************
@@ -640,9 +797,8 @@ SieveInitRequest.prototype.addResponse
 
 *******************************************************************************/
 
-function SieveSaslPlainRequest(username) 
+function SieveSaslPlainRequest() 
 {
-  this.username = username;
 }
 
 // TODO obsolete
@@ -765,13 +921,11 @@ SieveSaslPlainRequest.prototype.addResponse
 
 *******************************************************************************/
 
-function SieveSaslLoginRequest(username) 
+function SieveSaslLoginRequest() 
 {
-  this.username = username;
   this.response = new SieveSaslLoginResponse();
 }
 
-// TODO obsolete...
 SieveSaslLoginRequest.prototype.setUsername
     = function (username)
 {
@@ -832,6 +986,115 @@ SieveSaslLoginRequest.prototype.addResponse
 	
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onSaslLoginResponse(response);			
+  else if ((response.getResponse() != 0) && (this.errorListener != null))
+    this.errorListener.onError(response);
+}
+
+/*******************************************************************************
+ 
+  FACTSHEET: 
+  ==========
+    CLASS NAME          : SieveSaslCramMd5Request
+    USES CLASSES        : SieveSaslCramMd5Response
+        
+    CONSCTURCTOR        : SieveCramMd5Request(String username)
+    DECLARED FUNCTIONS  : void addSaslCramMd5Listener(...)
+                          void addErrorListener(...)
+                          void addResponse(String data)                          
+                          String getNextRequest()
+                          Boolean hasNextRequest()
+                          void setPassword(String password)
+    EXCEPTIONS          : 
+    AUTHOR              : Thomas Schmid        
+    
+  DESCRIPTION:
+  ============
+    [...]
+
+  EXAMPLE:
+  ========
+
+  PROTOCOL INTERACTION: 
+  =====================
+
+*******************************************************************************/
+
+function SieveSaslCramMd5Request() 
+{
+  this.response = new SieveSaslLoginResponse();
+}
+
+SieveSaslCramMd5Request.prototype.setUsername
+    = function (username)
+{
+  this.username = username;
+}
+
+SieveSaslCramMd5Request.prototype.setPassword
+    = function (password)
+{
+  this.password = password;
+}
+
+SieveSaslCramMd5Request.prototype.getNextRequest
+    = function ()
+{
+  switch (this.response.getState())
+  {
+    case 0: 
+      return "AUTHENTICATE \"CRAM-MD5\" \r\n";    
+    case 1: 
+      this.response.getChallange();
+      // TODO build the response for the challange
+      var cryptoHash =
+        Components.classes["@mozilla.org/security/hash;1"]
+          .getService(Components.interfaces.nsICryptoHash);
+ 
+      cryptoHash.initWithString("MD5");
+      
+      //TODO see http://developer.mozilla.org/en/docs/nsICryptoHash#Computing_the_Hash_of_a_String
+      cryptoHash.update("test".split(''),4);
+      alert(cryptoHash.finish(true));      
+      
+      var challange = "";
+      return "{"+challange.length+"}\r\n"+challange;
+    default : 
+      return ""; //it might be better to throw an Execption       
+  }  
+}
+
+SieveSaslCramMd5Request.prototype.hasNextRequest
+    = function ()
+{
+  if (this.response.getState() == 4) 
+    return false;
+  
+  return true;
+}
+
+SieveSaslCramMd5Request.prototype.addSaslCramMd5Listener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
+   
+SieveSaslCramMd5Request.prototype.addErrorListener
+    = function (listener)
+{
+  this.errorListener = listener;
+}
+
+SieveSaslCramMd5Request.prototype.addResponse 
+    = function (data)
+{
+
+  this.response.add(data);	
+		
+	if (this.response.getState() != 4)
+	  return;
+	
+  if ((response.getResponse() == 0) && (this.responseListener != null))
+    this.responseListener.onSaslCramMd5Response(response);			
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
 }

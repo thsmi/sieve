@@ -2,6 +2,7 @@ var sieve = null;
 var gCompileTimeout = null;
 var gCompile = null
 var gCompileDelay = null;
+
 var gChanged = false;
 
 var gBackHistory = new Array();
@@ -10,12 +11,6 @@ var gForwardHistory = new Array();
 
 var event = 
 {
-  onDeleteScriptResponse:  function(response)
-  {
-    clearInterval(gCompileTimeout);
-    close();
-  },
-  
   onGetScriptResponse: function(response)
   {		
     document.getElementById("txtScript").value = response.getScriptBody();
@@ -24,19 +19,7 @@ var event =
   onPutScriptResponse: function(response)
   {    
     gChanged = false;
-    // is the script renamed?
-    if (window.arguments[0]["scriptName"] != document.getElementById("txtName").value)
-    {
-      var request = new SieveDeleteScriptRequest(
-    									new String(window.arguments[0]["scriptName"]));
-      request.addDeleteScriptListener(event);
-      request.addErrorListener(event);
-    	
-      sieve.addRequest(request);
-		    
-      return
-    }
-        
+       
     clearTimeout(gCompileTimeout);
     close();
   },
@@ -53,16 +36,16 @@ function onCompile()
   {
     onPutScriptResponse: function(response)
     {
-      document.getElementById("gbError").setAttribute('hidden','true')
-       	
       // we need no handlers thus we don't care if the call succseeds
       sieve.addRequest(new SieveDeleteScriptRequest("TMP_FILE_DELETE_ME"));
+      
+      document.getElementById("lblErrorBar").value 
+        = "Server thinks this script is syntactical correct";
     },
     	
     onError: function(response)
     {
-      document.getElementById("gbError").removeAttribute('hidden');
-      document.getElementById("lblError").value = response.getMessage();    		
+      document.getElementById("lblErrorBar").value = response.getMessage();    		
 
       // the server did not accept our script therfore wa can't delete it...   		
     }
@@ -77,25 +60,7 @@ function onCompile()
   sieve.addRequest(request);
 }
 
-function onBtnCompile()
-{
-    if ( document.getElementById("btnCompile").checked == false)
-    {
-        gCompile = true;
-        document.getElementById("btnCompile")
-          .setAttribute("image","chrome://sieve/content/images/syntaxCheckOn.png");
-        onCompile();
-        return
-    }
 
-    clearTimeout(gCompileTimeout);
-    gCompileTimeout = null;
-    
-    gCompile = false;
-    document.getElementById("btnCompile")
-      .setAttribute("image","chrome://sieve/content/images/syntaxCheckOff.png");
-    document.getElementById("gbError").setAttribute('hidden','true')    
-}
 
 function onInput()
 {
@@ -170,6 +135,7 @@ function onLoad()
                                      Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT);*/ 
   
   onSideBarGo();
+  onErrorBar(true);
 }
 
 function onSideBarBrowserClick(event)
@@ -231,10 +197,10 @@ function onSave()
   var request = new SievePutScriptRequest(
                   new String(document.getElementById("txtName").value),
                   new String(document.getElementById("txtScript").value));
-  request.addPutScriptListener(event)
-  request.addErrorListener(event)
+  request.addPutScriptListener(event);
+  request.addErrorListener(event);
 
-  sieve.addRequest(request)
+  sieve.addRequest(request);
 }
 
 function onClose()
@@ -323,6 +289,30 @@ function onSideBarClose()
   document.getElementById("btnReference").checked = false; 
 }
 
+function onErrorBarClose()
+{  
+  onErrorBar(false);  
+}
+
+function onErrorBar(state)
+{  
+  if (state == true)
+  {
+    document.getElementById('spErrorBar').removeAttribute('hidden');
+    document.getElementById('vbErrorBar').removeAttribute('hidden');
+    gCompile = true;
+    onCompile();
+    return 
+  }
+  
+  clearTimeout(gCompileTimeout);
+  gCompileTimeout = null;
+    
+  gCompile = false;
+  document.getElementById("vbErrorBar").setAttribute('hidden','true');
+  document.getElementById('spErrorBar').setAttribute('hidden','true');    
+}
+
 function onBtnRefernece()
 {  
   if (document.getElementById("btnReference").checked == false)
@@ -332,8 +322,8 @@ function onBtnRefernece()
   }
   else
   {
-    document.getElementById('splitter').removeAttribute('hidden','true');
-    document.getElementById('vbSidebar').removeAttribute('hidden','true');
+    document.getElementById('splitter').removeAttribute('hidden');
+    document.getElementById('vbSidebar').removeAttribute('hidden');
   }
 
 }
@@ -372,4 +362,6 @@ function onBtnChangeView()
     document.getElementById("dkView").selectedIndex = 0;*/
   
 }
+
+
 

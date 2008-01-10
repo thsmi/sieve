@@ -22,37 +22,37 @@
   
 <toolbox>
   <toolbar>
-    <toolbarbutton image="chrome://sieve/content/images/syntaxCheckOn.png" 
+    <toolbarbutton image="chrome://sieve/content/images/save24.png" 
                    label="Save" orient="vertical" 
                    oncommand="onSave();" />  
-    <toolbarbutton image="chrome://sieve/content/images/import.png" 
+    <toolbarbutton image="chrome://sieve/content/images/import24.png" 
                    label="Import" orient="vertical" 
                    oncommand="onImport();" />
-    <toolbarbutton image="chrome://sieve/content/images/export.png"
+    <toolbarbutton image="chrome://sieve/content/images/export24.png"
                    label="Export" orient="vertical" 
                    oncommand="onExport();" />
     <toolbarseperator />
-    <toolbarbutton image="chrome://sieve/content/images/cut.png"
-                   label="Cut" orient="vertical"
+    <toolbarbutton image="chrome://sieve/content/images/cut24.png"
+                   label="&edit.toolbar.cut;" orient="vertical"
                    oncommand="onCut();" />    
-    <toolbarbutton image="chrome://sieve/content/images/copy.png"
+    <toolbarbutton image="chrome://sieve/content/images/copy24.png"
                    label="Copy" orient="vertical"
                    oncommand="onCopy();" />    
-    <toolbarbutton image="chrome://sieve/content/images/paste.png"
+    <toolbarbutton image="chrome://sieve/content/images/paste24.png"
                    label="Paste" orient="vertical" 
                    oncommand="onPaste();" />    
     <toolbarseperator />
     <toolbarbutton id="btnCompile" type="checkbox"
                    image="chrome://sieve/content/images/syntaxCheckOn.png" 
                    label="Syntaxcheck" orient="vertical"  
-                   oncommand="onBtnCompile();" />
-    <toolbarbutton id="btnViewSource" checked="true" type="checkbox" hidden="true"  
+                   oncommand="onErrorBar(this.checked);" />
+    <!--<toolbarbutton id="btnViewSource" checked="true" type="checkbox" hidden="true"  
                    label="View Source" orient="vertical"
-                   oncommand="onBtnChangeView();" />
+                   oncommand="onBtnChangeView();" /> -->
     <toolbarseperator />
     <toolbarbutton id="btnReference"  type="checkbox" checked="true"
                    image="chrome://sieve/content/images/syntaxCheckOn.png"  
-                   label="Reference" orient="vertical"
+                   label="Quick Reference" orient="vertical"
                    oncommand="onBtnRefernece();"/> 
   </toolbar>
 </toolbox>
@@ -70,13 +70,21 @@
             <textbox id="txtScript" class="sieve" 
                      onmousemove="onUpdateCursorPos(250);" onkeypress="onUpdateCursorPos(50);" oninput="onInput();" 
                      flex="1"  multiline="true" wrap="off" />
-            <groupbox id="gbError" hidden="true">
-              <caption>
+            <splitter id="spErrorBar" resizeafter="farthest" /> 
+            <vbox id="vbErrorBar" class="sieveSideBar">
+              <stack class="outset">
+                <image flex="1"/> 
+                <hbox>
+                  <label flex="1" value="&edit.errorbar.title;" />
+                    <toolbarbutton class="sieveCloseButton"
+                                   oncommand="onErrorBarClose();"/>
+                </hbox>
+              </stack>
+              <hbox style="overflow:auto">
                 <image src="chrome://sieve/content/images/syntaxError.png" width="16" height="16"/>
-                <label value="&edit.errors;"/>
-              </caption>
-              <textbox flex="1" id="lblError" multiline="true" rows="3" readonly="true" class="plain"/>
-            </groupbox>  
+                <textbox flex="1" id="lblErrorBar" multiline="true" rows="3" readonly="true" class="plain"/>
+              </hbox>
+            </vbox>
           </vbox>
         </box>
         <box flex="1" style="overflow:auto">
@@ -101,14 +109,14 @@
     </stack>
     <hbox style="overflow:auto">
       <toolbarbutton id="sideBarBack"
-                     image="chrome://sieve/content/images/syntaxCheckOn.png" 
+                     image="chrome://sieve/content/images/back24.png" 
                      label="Back" orient="vertical" 
                      oncommand="onSideBarBack();" />  
       <toolbarbutton id="sideBarForward"
-                     image="chrome://sieve/content/images/import.png" 
+                     image="chrome://sieve/content/images/forward24.png" 
                      label="Forward" orient="vertical" 
                      oncommand="onSideBarForward();" />
-      <toolbarbutton image="chrome://sieve/content/images/export.png"
+      <toolbarbutton image="chrome://sieve/content/images/home24.png"
                      label="Home" orient="vertical" 
                      oncommand="onSideBarGo();" />    
     </hbox>

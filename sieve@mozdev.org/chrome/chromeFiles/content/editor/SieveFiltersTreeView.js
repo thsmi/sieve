@@ -1,7 +1,4 @@
 // This is our custom view, based on the treeview interface
-
-var consoleService 
-    = Components.classes['@mozilla.org/consoleservice;1'].getService(Components.interfaces.nsIConsoleService);
     
 /*
  -> onChange
@@ -9,7 +6,7 @@ var consoleService
 function SieveTreeView(rules, listener)
 {
     this.listener     = listener;
-	this.rules        = rules;
+    this.rules        = rules;
     this.rowCount     = rules.length;
 }
 
@@ -23,29 +20,16 @@ SieveTreeView.prototype.update
 SieveTreeView.prototype.getCellValue
 	= function(row,column)
 {
-/*    consoleService.logStringMessage("xxx"+row+"/"+column.id+"/"+this.rules[row][1]);
-    return this.rules[row][1];*/
-    return "";
+  return "";
 }
 
 SieveTreeView.prototype.getCellText 
 	= function(row,column)
 {
-    //consoleService.logStringMessage(row+"/"+column.id+"/"+column+"/"+column.cycler+"/"+column.type);
-    
-    if (column.id == "namecol") 
-        return this.rules[row][0];
-    else 
-        return "";//this.rules[row][1];
-         
-/*	if ((new String(column.id)).indexOf("activeColumn") == 0)
-	{
-		return new Boolean(this.rules[row][1]);
-	}
-	else
-	{
-		return new String(this.rules[row][0]);
-	}	*/
+  if (column.id == "namecol") 
+    return this.rules[row][0];
+  else 
+    return "";
 }
     
 SieveTreeView.prototype.setTree

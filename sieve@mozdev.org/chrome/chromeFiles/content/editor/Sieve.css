@@ -33,6 +33,10 @@ textbox.sieve
   height: 20px;
 }
 
+#imgErrorBar
+{
+	padding: 5px;
+}
 #vbServerDetails spacer {
   background-color: #FFFFFF;
   opacity: 0.5;

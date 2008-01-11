@@ -127,7 +127,10 @@ function onCompile()
       gSieve.addRequest(new SieveDeleteScriptRequest("TMP_FILE_DELETE_ME"));
       
       document.getElementById("lblErrorBar").firstChild.nodeValue
-        = "Server thinks this script is syntactical correct\ntest<br/>test";        
+        = "Server thinks this script is syntactical correct\ntest<br/>test";
+        
+      document.getElementById("imgErrorBar").src
+        = "chrome://sieve/content/images/syntax-ok.png";        
     },
     	
     onError: function(response)
@@ -135,6 +138,8 @@ function onCompile()
       document.getElementById("lblErrorBar").firstChild.nodeValue            
          = response.getMessage();    		
 
+      document.getElementById("imgErrorBar").src
+        = "chrome://sieve/content/images/syntax-error.png";
       // the server did not accept our script therfore wa can't delete it...   		
     }
   }

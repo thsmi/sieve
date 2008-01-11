@@ -81,7 +81,7 @@
                 </hbox>
               </stack>             
               <hbox align="center" height="50px" flex="1" style="overflow:auto" class="box-inset">
-                <image pack="center"   src="chrome://sieve/content/images/syntaxError.png" width="16" height="16"/>
+                <image id="imgErrorBar" pack="center"   src="chrome://sieve/content/images/syntax-ok.png"/>
                 <description flex="1" id="lblErrorBar" style="white-space: pre;" > 
                  
                  

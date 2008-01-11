@@ -562,6 +562,12 @@ function onDeleteClick()
 
 function sivOpenEditor(scriptName,scriptBody)
 {
+  // The listner is bound to a window object. This makes passing the Sieve...
+  // ... object to an other window difficult. At first we have to deattach the 
+  // listener then pass the object, and finally attach a new listern of the new
+  // window   
+  gSieve.removeWatchDogListener();
+  
   var args = new Array();
   args["scriptName"] = scriptName;
   args["scriptBody"] = scriptBody;
@@ -573,6 +579,7 @@ function sivOpenEditor(scriptName,scriptBody)
                     "FilterEditor", 
                     "chrome,modal,titlebar,resizable,centerscreen", args);
 
+  gSieve.addWatchDogListener(gSieveWatchDog);
   var request = new SieveListScriptRequest();
   request.addListScriptListener(event);
   request.addErrorListener(event);

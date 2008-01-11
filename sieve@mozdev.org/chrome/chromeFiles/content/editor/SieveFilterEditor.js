@@ -1,4 +1,4 @@
-var sieve = null;
+var gSieve = null;
 var gCompileTimeout = null;
 var gCompile = null
 var gCompileDelay = null;
@@ -7,6 +7,92 @@ var gChanged = false;
 
 var gBackHistory = new Array();
 var gForwardHistory = new Array();
+
+var gSieveWatchDog =
+{
+  timeout         : null,
+  timeoutInterval : null,
+  
+  idle            : null,
+  idleInterval    : null,
+    
+  onAttach : function(timeoutInterval, idleInterval)
+  {
+    gSieveWatchDog.timeoutInterval = timeoutInterval;
+    gSieveWatchDog.idleInterval = idleInterval;
+  },
+  
+  onDeattach : function()
+  {
+    if (gSieveWatchDog == null)
+      return;
+      
+    if (gSieveWatchDog.timeout != null)
+      clearTimeout(gSieveWatchDog.timeout);
+    
+    if (gSieveWatchDog.idle != null)
+      clearTimeout(gSieveWatchDog.idle);
+    
+    return;
+  },  
+  
+  onStart: function()
+  {    
+    gSieveWatchDog.timeout 
+      = setTimeout(function() {gSieveWatchDog.onTimeout();},
+                   gSieveWatchDog.timeoutInterval);
+    
+    return;    
+  },
+  
+  onStop: function()
+  {
+    clearTimeout(gSieveWatchDog.timeout);
+    gSieveWatchDog.timeout = null;
+    
+    if (gSieveWatchDog.idleInterval == null)
+      return;
+      
+    if (gSieveWatchDog.idle != null)
+      clearTimeout(gSieveWatchDog.idle);
+    
+    gSieveWatchDog.idle 
+      = setTimeout(function() {gSieveWatchDog.onIdle();},
+                   gSieveWatchDog.idleInterval);
+    
+    return;
+  },
+  
+  onIdle: function ()
+  {
+    // we simply do notihng in case of an error...
+    var lEvent = 
+    {
+      onCapabilitiesResponse: function() {},
+      onTimeout: function() {},
+      onError: function() {}
+    }
+    
+    if (gSieveWatchDog.idle != null)
+      clearTimeout(gSieveWatchDog.idle);
+          
+    gSieveWatchDog.idle = null;
+    
+    var request = new SieveCapabilitiesRequest();
+    request.addCapabilitiesListener(lEvent);
+    request.addErrorListener(lEvent);
+  
+    // create a sieve request without an eventhandler...
+    gSieve.addRequest(request);
+  },
+  
+  onTimeout: function()
+  {
+    gSieveWatchDog.timeout = null;
+    gSieve.onWatchDogTimeout();
+  }  
+}
+
 
 
 var event = 
@@ -21,6 +107,7 @@ var event =
     gChanged = false;
        
     clearTimeout(gCompileTimeout);
+    gSieve.removeWatchDogListener();
     close();
   },
 	
@@ -37,15 +124,16 @@ function onCompile()
     onPutScriptResponse: function(response)
     {
       // we need no handlers thus we don't care if the call succseeds
-      sieve.addRequest(new SieveDeleteScriptRequest("TMP_FILE_DELETE_ME"));
+      gSieve.addRequest(new SieveDeleteScriptRequest("TMP_FILE_DELETE_ME"));
       
-      document.getElementById("lblErrorBar").value 
-        = "Server thinks this script is syntactical correct";
+      document.getElementById("lblErrorBar").firstChild.nodeValue
+        = "Server thinks this script is syntactical correct\ntest<br/>test";        
     },
     	
     onError: function(response)
     {
-      document.getElementById("lblErrorBar").value = response.getMessage();    		
+      document.getElementById("lblErrorBar").firstChild.nodeValue            
+         = response.getMessage();    		
 
       // the server did not accept our script therfore wa can't delete it...   		
     }
@@ -57,7 +145,7 @@ function onCompile()
   request.addPutScriptListener(lEvent);
   request.addErrorListener(lEvent);
   
-  sieve.addRequest(request);
+  gSieve.addRequest(request);
 }
 
 
@@ -77,7 +165,7 @@ function onInput()
     gCompileTimeout = setTimeout("onCompile()",gCompileDelay);
 }
 
-/*var myListener =
+var myListener =
 {
   QueryInterface : function(aIID)
   {
@@ -87,12 +175,14 @@ function onInput()
       return this;
     throw Components.results.NS_NOINTERFACE;
   },
+  
   onStateChange:function(aProgress,aRequest,aFlag,aStatus)
   {
     if(aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP)
     {
       aRequest.QueryInterface(Components.interfaces.nsIChannel);
-      alert("Wait a moment!\n"+aRequest.URI.spec);
+      document.getElementById("dkSideBarBrowser").selectedIndex = 0;
+      //alert("Wait a moment!\n"+aRequest.URI.spec);
     }
   },
   onLocationChange:function(a,b,c){},
@@ -100,12 +190,14 @@ function onInput()
   onStatusChange:function(a,b,c,d){},
   onSecurityChange:function(a,b,c){},
   onLinkIconAvailable:function(a){}
-}*/ 
+} 
 
 function onLoad()
 {
   // script laden
-  sieve = window.arguments[0]["sieve"];
+  gSieve = window.arguments[0]["sieve"];
+  gSieve.addWatchDogListener(gSieveWatchDog);
+  
   gCompile = window.arguments[0]["compile"];        
   gCompileDelay = window.arguments[0]["compileDelay"];
     
@@ -123,19 +215,20 @@ function onLoad()
     request.addGetScriptListener(event);
     request.addErrorListener(event);
 
-    sieve.addRequest(request);
+    gSieve.addRequest(request);
   }        
 
   // hack to prevent links to be opened in the default browser window...       
   document.getElementById("sideBarBrowser").
     addEventListener("click",onSideBarBrowserClick,false);
     
-/*  document.getElementById("sideBarBrowser")
+  document.getElementById("sideBarBrowser")
     .webProgress.addProgressListener(myListener,
-                                     Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT);*/ 
+                                     Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT); 
   
   onSideBarGo();
   onErrorBar(true);
+  onSideBar(true);
 }
 
 function onSideBarBrowserClick(event)
@@ -150,6 +243,10 @@ function onSideBarBrowserClick(event)
     return;
     
   event.preventDefault();
+  
+  if (gForwardHistory.length != 0)
+    gForwardHistory = new Array();
+    
   onSideBarGo(href);
 }
 
@@ -168,6 +265,8 @@ function onSideBarForward()
 
 function onSideBarGo(uri)
 {
+  document.getElementById("dkSideBarBrowser").selectedIndex = 1;
+  
   if (uri == null)
     uri = "http://sieve.mozdev.org/reference/en/index.html"
     
@@ -200,13 +299,17 @@ function onSave()
   request.addPutScriptListener(event);
   request.addErrorListener(event);
 
-  sieve.addRequest(request);
+  gSieve.addRequest(request);
 }
 
 function onClose()
 {
   if (gChanged == false)
+  {
+    gSieve.removeWatchDogListener();
     return true;    
+  }
+    
 
   var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
                           .getService(Components.interfaces.nsIPromptService);
@@ -214,7 +317,10 @@ function onClose()
   var result = prompts.confirm(window, "Title", "Do you want to save changes?");
     
   if (result != true)
+  {
+    gSieve.removeWatchDogListener();
     return true;
+  }
     
   onSave();
     
@@ -310,22 +416,24 @@ function onErrorBar(state)
     
   gCompile = false;
   document.getElementById("vbErrorBar").setAttribute('hidden','true');
-  document.getElementById('spErrorBar').setAttribute('hidden','true');    
+  document.getElementById('spErrorBar').setAttribute('hidden','true');
+  
+  return;    
 }
 
-function onBtnRefernece()
+function onSideBar(state)
 {  
-  if (document.getElementById("btnReference").checked == false)
-  {
-    document.getElementById('splitter').setAttribute('hidden','true');
-    document.getElementById('vbSidebar').setAttribute('hidden','true'); 
-  }
-  else
+  if (state == true)
   {
     document.getElementById('splitter').removeAttribute('hidden');
     document.getElementById('vbSidebar').removeAttribute('hidden');
+    
+    return;  
   }
 
+  document.getElementById('splitter').setAttribute('hidden','true');
+  document.getElementById('vbSidebar').setAttribute('hidden','true');
+  return; 
 }
 
 var gUpdateScheduled = false;

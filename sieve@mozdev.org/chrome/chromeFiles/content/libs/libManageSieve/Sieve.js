@@ -131,6 +131,14 @@ Sieve.prototype.addWatchDogListener = function(watchDog)
   this.watchDog.onAttach(1000,this.idleInterval);
 }
 
+Sieve.prototype.removeWatchDogListener = function()
+{
+  if( this.watchDog != null)
+    this.watchDog.onDeattach();
+    
+  this.watchDog = null;
+}
+
 Sieve.prototype.addRequest = function(request)
 {
 	this.requests[this.requests.length] = request;

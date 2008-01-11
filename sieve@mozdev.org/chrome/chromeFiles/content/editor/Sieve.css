@@ -15,9 +15,15 @@ textbox.sieve
 	-moz-appearance: none;	
 }
 
-.sieveSideBar image
+.sieveSideBar stack image
 {
 	list-style-image: url(chrome://sieve/content/images/sidebarTitle.png);
+}
+
+.sieveSideBar deck image
+{
+	background: url(chrome://sieve/content/images/load.gif) no-repeat center;
+	background-color: white;
 }
 
 .sieveSideBar stack

@@ -53,7 +53,7 @@
     <toolbarbutton id="btnReference"  type="checkbox" checked="true"
                    image="chrome://sieve/content/images/syntaxCheckOn.png"  
                    label="Quick Reference" orient="vertical"
-                   oncommand="onBtnRefernece();"/> 
+                   oncommand="onSideBar(this.checked);"/> 
   </toolbar>
 </toolbox>
   <separator class="thin"/>
@@ -70,7 +70,7 @@
             <textbox id="txtScript" class="sieve" 
                      onmousemove="onUpdateCursorPos(250);" onkeypress="onUpdateCursorPos(50);" oninput="onInput();" 
                      flex="1"  multiline="true" wrap="off" />
-            <splitter id="spErrorBar" resizeafter="farthest" /> 
+           <splitter id="spErrorBar" resizeafter="farthest" /> 
             <vbox id="vbErrorBar" class="sieveSideBar">
               <stack class="outset">
                 <image flex="1"/> 
@@ -79,10 +79,15 @@
                     <toolbarbutton class="sieveCloseButton"
                                    oncommand="onErrorBarClose();"/>
                 </hbox>
-              </stack>
-              <hbox style="overflow:auto">
-                <image src="chrome://sieve/content/images/syntaxError.png" width="16" height="16"/>
-                <textbox flex="1" id="lblErrorBar" multiline="true" rows="3" readonly="true" class="plain"/>
+              </stack>             
+              <hbox align="center" height="50px" flex="1" style="overflow:auto" class="box-inset">
+                <image pack="center"   src="chrome://sieve/content/images/syntaxError.png" width="16" height="16"/>
+                <description flex="1" id="lblErrorBar" style="white-space: pre;" > 
+                 
+                 
+                 
+                </description>             
+                <!-- <textbox flex="1" id="lblErrorBar" multiline="true" rows="3" readonly="true" class="plain"/>-->
               </hbox>
             </vbox>
           </vbox>
@@ -94,9 +99,7 @@
         </box>
       </deck>
     </vbox>
-    <splitter id="splitter" resizeafter="farthest">
-    <!-- <grippy/> -->
-  </splitter>
+    <splitter id="splitter" resizeafter="farthest" />
   <vbox id="vbSidebar" class="sieveSideBar">
     <stack class="outset">
       <image flex="1"/> 
@@ -118,10 +121,13 @@
                      oncommand="onSideBarForward();" />
       <toolbarbutton image="chrome://sieve/content/images/home24.png"
                      label="Home" orient="vertical" 
-                     oncommand="onSideBarGo();" />    
+                     oncommand="onSideBarGo(null);" />
     </hbox>
-    <browser style="display:hidden;" type="content" id="sideBarBrowser" flex="1" 
-             src="about:blank" width="250px" /> 
+    <deck id="dkSideBarBrowser" flex="1" selectedIndex="1">
+      <browser type="content" id="sideBarBrowser" flex="1" 
+             src="about:blank" width="250px" />
+      <image flex="1" />
+    </deck> 
   </vbox>
 </hbox>
 <statusbar>

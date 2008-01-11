@@ -29,9 +29,11 @@ var gSieveWatchDog =
       
     if (gSieveWatchDog.timeout != null)
       clearTimeout(gSieveWatchDog.timeout);
+    gSieveWatchDog.timeout = null;
     
     if (gSieveWatchDog.idle != null)
       clearTimeout(gSieveWatchDog.idle);
+    gSieveWatchDog.idle = null;
     
     return;
   },  
@@ -234,6 +236,8 @@ function onLoad()
   onSideBarGo();
   onErrorBar(true);
   onSideBar(true);
+  
+  window.arguments[0]["test"] = "b";
 }
 
 function onSideBarBrowserClick(event)

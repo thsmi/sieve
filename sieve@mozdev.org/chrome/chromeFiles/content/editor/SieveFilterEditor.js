@@ -116,7 +116,12 @@ var event =
   onError: function(response)
   {
     alert("FATAL ERROR:"+response.getMessage());
-  }
+  },
+  
+  onTimeout: function()
+  {
+    alert("A Timeout occured");
+  }  
 }
 
 function onCompile()
@@ -129,7 +134,7 @@ function onCompile()
       gSieve.addRequest(new SieveDeleteScriptRequest("TMP_FILE_DELETE_ME"));
       
       document.getElementById("lblErrorBar").firstChild.nodeValue
-        = "Server thinks this script is syntactical correct\ntest<br/>test";
+        = "Server reports no script errors...";
         
       document.getElementById("imgErrorBar").src
         = "chrome://sieve/content/images/syntax-ok.png";        
@@ -142,7 +147,12 @@ function onCompile()
 
       document.getElementById("imgErrorBar").src
         = "chrome://sieve/content/images/syntax-error.png";
-      // the server did not accept our script therfore wa can't delete it...   		
+      // the server did not accept our script therfore we can't delete it...   		
+    },
+    
+    onTimeout: function()
+    {
+      alert("A Timeout occured");
     }
   }
 
@@ -364,8 +374,8 @@ function onExport()
     var filePicker = Components.classes["@mozilla.org/filepicker;1"]
                             .createInstance(Components.interfaces.nsIFilePicker);
 
-    filePicker.defaultExtension = ".sieve";
-    filePicker.defaultString    = document.getElementById("txtName").value+".sieve";
+    filePicker.defaultExtension = ".siv";
+    filePicker.defaultString    = document.getElementById("txtName").value+".siv";
 
     filePicker.appendFilter("Sieve Scripts (*.siv)", "*.siv");
     filePicker.init(window, "Export Sieve Script", filePicker.modeSave);

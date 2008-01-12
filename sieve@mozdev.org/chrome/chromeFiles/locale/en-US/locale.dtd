@@ -81,6 +81,9 @@
 <!ENTITY edit.title "Edit Sievefilter">
 
 <!ENTITY edit.toolbar.cut "Cut">
+<!ENTITY edit.toolbar.undo "Undo">
+<!ENTITY edit.toolbar.redo "Redo">
+<!ENTITY edit.toolbar.tools "Tools">
 
 <!ENTITY edit.scriptname "Scriptname:">
 <!ENTITY edit.errorbar.title "Syntax Errors">

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
+
 <!DOCTYPE window SYSTEM "chrome://sieve/locale/locale.dtd">
 
 <?xml-stylesheet href="sieve.css" type="text/css"?>
@@ -20,40 +21,54 @@
   <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/SieveResponseParser.js"/>
   <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js" />
   
-<toolbox>
+<toolbox class="toolbox-top">
   <toolbar>
-    <toolbarbutton image="chrome://sieve/content/images/save24.png" 
+    <toolbarbutton image="chrome://sieve/content/images/toolbar.save.png" 
                    label="Save" orient="vertical" 
                    oncommand="onSave();" />  
-    <toolbarbutton image="chrome://sieve/content/images/import24.png" 
-                   label="Import" orient="vertical" 
-                   oncommand="onImport();" />
-    <toolbarbutton image="chrome://sieve/content/images/export24.png"
-                   label="Export" orient="vertical" 
-                   oncommand="onExport();" />
-    <toolbarseperator />
-    <toolbarbutton image="chrome://sieve/content/images/cut24.png"
+    <toolbarspacer />
+    <toolbarspacer /> 
+    <toolbarbutton image="chrome://sieve/content/images/toolbar.undo.png"
+                   label="&edit.toolbar.undo;" orient="vertical"
+                   oncommand="onUndo();" />    
+    <toolbarbutton image="chrome://sieve/content/images/toolbar.redo.png"
+                   label="&edit.toolbar.redo;" orient="vertical"
+                   oncommand="onRedo();" />                    
+    <toolbarspacer />
+    <toolbarspacer />
+    <toolbarbutton image="chrome://sieve/content/images/toolbar.cut.png"
                    label="&edit.toolbar.cut;" orient="vertical"
                    oncommand="onCut();" />    
-    <toolbarbutton image="chrome://sieve/content/images/copy24.png"
-                   label="Copy" orient="vertical"
+    <toolbarbutton image="chrome://sieve/content/images/toolbar.copy.png"
+                   label="Copy" orient="vertical"                   
                    oncommand="onCopy();" />    
-    <toolbarbutton image="chrome://sieve/content/images/paste24.png"
+    <toolbarbutton image="chrome://sieve/content/images/toolbar.paste.png"
                    label="Paste" orient="vertical" 
                    oncommand="onPaste();" />    
-    <toolbarseperator />
+    <toolbarspacer />
+    <toolbarspacer />
     <toolbarbutton id="btnCompile" type="checkbox"
-                   image="chrome://sieve/content/images/syntaxCheckOn.png" 
+                   image="chrome://sieve/content/images/toolbar.compile.png" 
                    label="Syntaxcheck" orient="vertical"  
                    oncommand="onErrorBar(this.checked);" />
     <!--<toolbarbutton id="btnViewSource" checked="true" type="checkbox" hidden="true"  
                    label="View Source" orient="vertical"
                    oncommand="onBtnChangeView();" /> -->
-    <toolbarseperator />
     <toolbarbutton id="btnReference"  type="checkbox" checked="true"
-                   image="chrome://sieve/content/images/syntaxCheckOn.png"  
+                   image="chrome://sieve/content/images/toolbar.reference.png"  
                    label="Quick Reference" orient="vertical"
-                   oncommand="onSideBar(this.checked);"/> 
+                   oncommand="onSideBar(this.checked);"/>
+    <toolbarspacer />
+    <toolbarspacer />                   
+    <toolbarbutton image="chrome://sieve/content/images/toolbar.tools.png" 
+                   label="&edit.toolbar.tools;" 
+                   type="menu"  class="toolbarbutton-1" >
+      <menupopup>
+        <menuitem label="Import Script" oncommand="onImport();" />
+        <menuitem label="Export Script" oncommand="onExport();" />
+      </menupopup>
+      
+    </toolbarbutton>                   
   </toolbar>
 </toolbox>
   <separator class="thin"/>

@@ -26,44 +26,40 @@
   
 <toolbox class="toolbox-top">
   <toolbar class="toolbar-primary">
-    <toolbarbutton image="chrome://sieve/content/images/toolbar.save.png" 
-                   label="Save" class="toolbarbutton-1"
+    <toolbarbutton id="btnSave" 
+                   label="&edit.toolbar.save;" class="toolbarbutton-1"
                    oncommand="onSave();" />  
     <toolbarspacer /> 
-    <toolbarbutton image="chrome://sieve/content/images/toolbar.undo.png"
+    <toolbarbutton id="btnUndo"
                    label="&edit.toolbar.undo;" class="toolbarbutton-1"
                    oncommand="goDoCommand('cmd_undo');" />    
-    <toolbarbutton image="chrome://sieve/content/images/toolbar.redo.png"
+    <toolbarbutton id="btnRedo"
                    label="&edit.toolbar.redo;" class="toolbarbutton-1"
                    oncommand="goDoCommand('cmd_redo');" />                    
     <toolbarspacer />
-    <toolbarbutton image="chrome://sieve/content/images/toolbar.cut.png"
+    <toolbarbutton id="btnCut"
                    label="&edit.toolbar.cut;" class="toolbarbutton-1"
                    oncommand="goDoCommand('cmd_cut');" />    
-    <toolbarbutton image="chrome://sieve/content/images/toolbar.copy.png"
-                   label="Copy" class="toolbarbutton-1"
+    <toolbarbutton id="btnCopy"
+                   label="&edit.toolbar.copy;" class="toolbarbutton-1"
                    oncommand="goDoCommand('cmd_copy');" />    
-    <toolbarbutton image="chrome://sieve/content/images/toolbar.paste.png"
-                   label="Paste" class="toolbarbutton-1"
+    <toolbarbutton id="btnPaste"
+                   label="&edit.toolbar.paste;" class="toolbarbutton-1"
                    oncommand=" goDoCommand('cmd_paste');" />    
     <toolbarspacer />
     <toolbarbutton id="btnCompile" type="checkbox"
-                   image="chrome://sieve/content/images/toolbar.compile.png" 
-                   label="Syntaxcheck" class="toolbarbutton-1"  
+                   label="&edit.toolbar.compile;" class="toolbarbutton-1"  
                    oncommand="onErrorBar(this.checked);" />
-    <!--<toolbarbutton id="btnViewSource" checked="true" type="checkbox" hidden="true"  
-                   label="View Source" class="toolbarbutton-1"
-                   oncommand="onBtnChangeView();" /> -->
     <toolbarbutton id="btnReference"  type="checkbox" checked="true"                     
-                   label="Quick Reference" class="toolbarbutton-1"
+                   label="&edit.toolbar.reference;" class="toolbarbutton-1"
                    oncommand="onSideBar(this.checked);"/>
     <toolbarspacer />                   
     <toolbarbutton id="btnTools" 
                    label="&edit.toolbar.tools;" 
-                    type="menu"  class="toolbarbutton-1" >
+                   type="menu"  class="toolbarbutton-1" >
       <menupopup id="puTools">
-        <menuitem label="Import Script" oncommand="onImport();" />
-        <menuitem label="Export Script" oncommand="onExport();" />
+        <menuitem label="&edit.toolbar.import;" oncommand="onImport();" />
+        <menuitem label="&edit.toolbar.export;" oncommand="onExport();" />
       </menupopup>
       
     </toolbarbutton>                   
@@ -96,9 +92,6 @@
               <hbox align="center" min-height="50px" flex="1" style="overflow:auto" class="box-inset">
                 <image id="imgErrorBar" pack="center"   src="chrome://sieve/content/images/syntax-ok.png"/>
                 <description flex="1" id="lblErrorBar" style="white-space: pre;" > 
-                 
-                 
-                 
                 </description>             
                 <!-- <textbox flex="1" id="lblErrorBar" multiline="true" rows="3" readonly="true" class="plain"/>-->
               </hbox>
@@ -123,18 +116,16 @@
             oncommand="onSideBarClose();"/>
       </hbox>
     </stack>
-    <hbox style="overflow:auto">
-      <toolbarbutton id="sideBarBack"
-                     image="chrome://sieve/content/images/back24.png" 
-                     label="Back" orient="vertical" 
-                     oncommand="onSideBarBack();" />  
-      <toolbarbutton id="sideBarForward"
-                     image="chrome://sieve/content/images/forward24.png" 
-                     label="Forward" orient="vertical" 
-                     oncommand="onSideBarForward();" />
-      <toolbarbutton image="chrome://sieve/content/images/home24.png"
-                     label="Home" orient="vertical" 
-                     oncommand="onSideBarGo(null);" />
+    <hbox >
+        <toolbarbutton id="btnSideBarBack" 
+                       label="&edit.toolbar.back;" class="toolbarbutton-1" 
+                       oncommand="onSideBarBack();" />  
+        <toolbarbutton id="btnSideBarForward"
+                       label="&edit.toolbar.forward;" class="toolbarbutton-1" 
+                       oncommand="onSideBarForward();" />
+        <toolbarbutton id="btnSideBarHome"
+                       label="&edit.toolbar.home;" class="toolbarbutton-1" 
+                       oncommand="onSideBarGo(null);" />
     </hbox>
     <deck id="dkSideBarBrowser" flex="1" selectedIndex="1">
       <browser type="content" id="sideBarBrowser" flex="1" 
@@ -145,7 +136,7 @@
 </hbox>
 <statusbar>
 	<statusbarpanel width="100px" id="sbCursorPos" label=""/>
-	<statusbarpanel width="100px" label="Changed"/>
+	<statusbarpanel width="100px" id="sbChanged" label=""/>
 	<statusbarpanel flex="1" label=""/>
 </statusbar>
 </window>

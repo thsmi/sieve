@@ -62,7 +62,7 @@ textbox.sieve
 	border:1px solid #0000ff;
 }
 
- .toolbarbutton-1[type="menu"] {
+.toolbarbutton-1[type="menu"] {
     -moz-binding: url("chrome://global/content/bindings/toolbarbutton.xml#menu-vertical") !important;
  }
 
@@ -70,7 +70,41 @@ textbox.sieve
 {
    -moz-box-orient: vertical;
    min-width: 0px;
-   list-style-image: url("chrome://messenger/skin/messengercompose/compose-toolbar.png");
+}
+
+#btnSave
+{
+	list-style-image: url(chrome://sieve/content/images/toolbar.save.png);
+}
+
+#btnUndo
+{
+	list-style-image: url(chrome://sieve/content/images/toolbar.undo.png);
+}
+
+#btnRedo
+{
+	list-style-image: url(chrome://sieve/content/images/toolbar.redo.png);
+}
+
+#btnCopy
+{
+	list-style-image: url(chrome://sieve/content/images/toolbar.copy.png);
+}
+
+#btnCut
+{
+	list-style-image: url(chrome://sieve/content/images/toolbar.cut.png);
+}
+
+#btnPaste
+{
+	list-style-image: url(chrome://sieve/content/images/toolbar.paste.png);
+}
+
+#btnCompile
+{
+	list-style-image: url(chrome://sieve/content/images/toolbar.compile.png);
 }
 
 #btnTools
@@ -83,6 +117,20 @@ textbox.sieve
 	list-style-image: url(chrome://sieve/content/images/toolbar.reference.png);
 }
 
+#btnSideBarBack
+{
+  list-style-image: url(chrome://sieve/content/images/toolbar.back.png);
+}
+
+#btnSideBarForward
+{
+  list-style-image: url(chrome://sieve/content/images/toolbar.forward.png);
+}	
+	
+#btnSideBarHome	
+{
+  list-style-image: url(chrome://sieve/content/images/toolbar.home.png);
+}
 
 .sieveCloseButton 
 {

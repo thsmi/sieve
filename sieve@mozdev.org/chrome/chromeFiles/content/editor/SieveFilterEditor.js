@@ -102,6 +102,7 @@ var event =
   onGetScriptResponse: function(response)
   {		
     document.getElementById("txtScript").value = response.getScriptBody();
+    UpdateCursorPos();
   },  
 	
   onPutScriptResponse: function(response)
@@ -169,7 +170,11 @@ function onCompile()
 
 function onInput()
 {
+  if (gChanged == false)
+    document.getElementById("sbChanged").label = "Changed";
+    
   gChanged = true;
+  
   
   // on every keypress we reset the timeout
   if (gCompileTimeout != null)
@@ -179,7 +184,7 @@ function onInput()
   }
             
   if (gCompile)
-    gCompileTimeout = setTimeout("onCompile()",gCompileDelay);
+    gCompileTimeout = setTimeout("onCompile()",gCompileDelay);    
 }
 
 var myListener =
@@ -247,7 +252,7 @@ function onLoad()
   onErrorBar(true);
   onSideBar(true);
   
-  window.arguments[0]["test"] = "b";
+  document.getElementById("txtScript").focus();
 }
 
 function onSideBarBrowserClick(event)
@@ -296,14 +301,14 @@ function onSideBarGo(uri)
   
   
   if (gBackHistory.length == 1)
-    document.getElementById("sideBarBack").setAttribute('disabled',"true");    
+    document.getElementById("btnSideBarBack").setAttribute('disabled',"true");    
   else
-    document.getElementById("sideBarBack").removeAttribute('disabled');
+    document.getElementById("btnSideBarBack").removeAttribute('disabled');
     
   if (gForwardHistory.length == 0)
-    document.getElementById("sideBarForward").setAttribute('disabled',"true");
+    document.getElementById("btnSideBarForward").setAttribute('disabled',"true");
   else
-    document.getElementById("sideBarForward").removeAttribute('disabled');    
+    document.getElementById("btnSideBarForward").removeAttribute('disabled');    
      
   document.getElementById("sideBarBrowser").setAttribute('src',uri);
 }
@@ -365,12 +370,22 @@ function onImport()
     scriptableStream.init(inputStream);
 
     // todo insert imported snipplet instead of replacing the whole script
-    document.getElementById("txtScript").value = scriptableStream.read(scriptableStream.available());
+    var script  = scriptableStream.read(scriptableStream.available());
 
     scriptableStream.close();
     inputStream.close();
     
-    onInput();
+    // Find the Start and End Position  
+    var el = document.getElementById("txtScript");
+    var start = el.selectionStart; 
+    var end   = el.selectionEnd; 
+ 
+    /* Remember obj is a textarea or input field */ 
+    el.value = el.value.substr(0, start) 
+      + script
+      + el.value.substr(end, el.value.length);
+           
+   onInput();
 }
 
 function onExport()
@@ -403,16 +418,6 @@ function onExport()
     outputStream.write(data, data.length);
     outputStream.close();
 }
-
-function onCut() { goDoCommand("cmd_cut"); }
-
-function onCopy() { goDoCommand("cmd_copy"); }
-
-function onPaste() {goDoCommand("cmd_paste"); }
-
-function onUndo() {goDoCommand("cmd_undo"); }
-
-function onRedo() {goDoCommand("cmd_redo"); }
 
 function onSideBarClose()
 {
@@ -468,10 +473,18 @@ var gUpdateScheduled = false;
 function UpdateCursorPos()
 {
   var el = document.getElementById("txtScript");
-  var lines = el.value.substr(0,el.selectionEnd).split("\n");
+  var lines = el.value.substr(0,el.selectionStart).split("\n");
   
   document.getElementById("sbCursorPos")
-          .label = lines.length +":" +(lines[lines.length-1].length +1); 
+          .label = lines.length +":" +(lines[lines.length-1].length +1);
+          
+  if(el.selectionEnd != el.selectionStart)
+  {
+    lines = el.value.substr(0,el.selectionEnd).split("\n");
+    document.getElementById("sbCursorPos")
+          .label += " - " + lines.length +":" +(lines[lines.length-1].length +1);
+  }
+    
   
   gUpdateScheduled=false;
 }

@@ -1,3 +1,7 @@
+@import url("chrome://messenger/skin/");
+@import url("chrome://global/skin/toolbar.css");
+
+
 textbox.sieve
 {
    -moz-appearance: none !important;
@@ -57,6 +61,28 @@ textbox.sieve
 {
 	border:1px solid #0000ff;
 }
+
+ .toolbarbutton-1[type="menu"] {
+    -moz-binding: url("chrome://global/content/bindings/toolbarbutton.xml#menu-vertical") !important;
+ }
+
+.toolbarbutton-1 
+{
+   -moz-box-orient: vertical;
+   min-width: 0px;
+   list-style-image: url("chrome://messenger/skin/messengercompose/compose-toolbar.png");
+}
+
+#btnTools
+{
+	list-style-image: url(chrome://sieve/content/images/toolbar.tools.png);
+}
+
+#btnReference
+{
+	list-style-image: url(chrome://sieve/content/images/toolbar.reference.png);
+}
+
 
 .sieveCloseButton 
 {

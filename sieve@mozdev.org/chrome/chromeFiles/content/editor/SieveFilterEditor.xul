@@ -12,7 +12,10 @@
   style="width: 45em; height: 31em;"
   persist="width height screenX screenY"
   onload="onLoad(this);"
-  onclose="return onClose();">  
+  onclose="return onClose();">
+  
+  <!-- needed for copy and paste -->
+  <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js" />   
 
   <script type="application/x-javascript" src="chrome://sieve/content/editor/SieveFilterEditor.js" />  
   <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/Sieve.js" />  
@@ -22,48 +25,43 @@
   <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js" />
   
 <toolbox class="toolbox-top">
-  <toolbar>
+  <toolbar class="toolbar-primary">
     <toolbarbutton image="chrome://sieve/content/images/toolbar.save.png" 
-                   label="Save" orient="vertical" 
+                   label="Save" class="toolbarbutton-1"
                    oncommand="onSave();" />  
-    <toolbarspacer />
     <toolbarspacer /> 
     <toolbarbutton image="chrome://sieve/content/images/toolbar.undo.png"
-                   label="&edit.toolbar.undo;" orient="vertical"
-                   oncommand="onUndo();" />    
+                   label="&edit.toolbar.undo;" class="toolbarbutton-1"
+                   oncommand="goDoCommand('cmd_undo');" />    
     <toolbarbutton image="chrome://sieve/content/images/toolbar.redo.png"
-                   label="&edit.toolbar.redo;" orient="vertical"
-                   oncommand="onRedo();" />                    
-    <toolbarspacer />
+                   label="&edit.toolbar.redo;" class="toolbarbutton-1"
+                   oncommand="goDoCommand('cmd_redo');" />                    
     <toolbarspacer />
     <toolbarbutton image="chrome://sieve/content/images/toolbar.cut.png"
-                   label="&edit.toolbar.cut;" orient="vertical"
-                   oncommand="onCut();" />    
+                   label="&edit.toolbar.cut;" class="toolbarbutton-1"
+                   oncommand="goDoCommand('cmd_cut');" />    
     <toolbarbutton image="chrome://sieve/content/images/toolbar.copy.png"
-                   label="Copy" orient="vertical"                   
-                   oncommand="onCopy();" />    
+                   label="Copy" class="toolbarbutton-1"
+                   oncommand="goDoCommand('cmd_copy');" />    
     <toolbarbutton image="chrome://sieve/content/images/toolbar.paste.png"
-                   label="Paste" orient="vertical" 
-                   oncommand="onPaste();" />    
-    <toolbarspacer />
+                   label="Paste" class="toolbarbutton-1"
+                   oncommand=" goDoCommand('cmd_paste');" />    
     <toolbarspacer />
     <toolbarbutton id="btnCompile" type="checkbox"
                    image="chrome://sieve/content/images/toolbar.compile.png" 
-                   label="Syntaxcheck" orient="vertical"  
+                   label="Syntaxcheck" class="toolbarbutton-1"  
                    oncommand="onErrorBar(this.checked);" />
     <!--<toolbarbutton id="btnViewSource" checked="true" type="checkbox" hidden="true"  
-                   label="View Source" orient="vertical"
+                   label="View Source" class="toolbarbutton-1"
                    oncommand="onBtnChangeView();" /> -->
-    <toolbarbutton id="btnReference"  type="checkbox" checked="true"
-                   image="chrome://sieve/content/images/toolbar.reference.png"  
-                   label="Quick Reference" orient="vertical"
+    <toolbarbutton id="btnReference"  type="checkbox" checked="true"                     
+                   label="Quick Reference" class="toolbarbutton-1"
                    oncommand="onSideBar(this.checked);"/>
-    <toolbarspacer />
     <toolbarspacer />                   
-    <toolbarbutton image="chrome://sieve/content/images/toolbar.tools.png" 
+    <toolbarbutton id="btnTools" 
                    label="&edit.toolbar.tools;" 
-                   type="menu"  class="toolbarbutton-1" >
-      <menupopup>
+                    type="menu"  class="toolbarbutton-1" >
+      <menupopup id="puTools">
         <menuitem label="Import Script" oncommand="onImport();" />
         <menuitem label="Export Script" oncommand="onExport();" />
       </menupopup>

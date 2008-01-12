@@ -351,6 +351,7 @@ function onImport()
     var filePicker   = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
 
     filePicker.appendFilter("Sieve Scripts (*.siv)", "*.siv");
+    filePicker.appendFilter("All Files (*.*)", "*.*");
     filePicker.init(window, "Import Sieve Script", filePicker.modeOpen);
 
     // If the user selected a style sheet
@@ -363,10 +364,13 @@ function onImport()
     inputStream.init(filePicker.file, 0x01, 00444, null);
     scriptableStream.init(inputStream);
 
+    // todo insert imported snipplet instead of replacing the whole script
     document.getElementById("txtScript").value = scriptableStream.read(scriptableStream.available());
 
     scriptableStream.close();
     inputStream.close();
+    
+    onInput();
 }
 
 function onExport()
@@ -404,7 +408,11 @@ function onCut() { goDoCommand("cmd_cut"); }
 
 function onCopy() { goDoCommand("cmd_copy"); }
 
-function onPaste() { goDoCommand("cmd_paste"); }
+function onPaste() {goDoCommand("cmd_paste"); }
+
+function onUndo() {goDoCommand("cmd_undo"); }
+
+function onRedo() {goDoCommand("cmd_redo"); }
 
 function onSideBarClose()
 {

@@ -47,12 +47,12 @@
                    label="&edit.toolbar.paste;" class="toolbarbutton-1"
                    oncommand=" goDoCommand('cmd_paste');" />    
     <toolbarspacer />
-    <toolbarbutton id="btnCompile" type="checkbox"
+    <toolbarbutton id="btnCompile" type="checkbox" 
                    label="&edit.toolbar.compile;" class="toolbarbutton-1"  
-                   oncommand="onErrorBar(this.checked);" />
-    <toolbarbutton id="btnReference"  type="checkbox" checked="true"                     
+                   oncommand="onErrorBar(!this.checked);" />                   
+    <toolbarbutton id="btnReference"  type="checkbox" checked="true"                  
                    label="&edit.toolbar.reference;" class="toolbarbutton-1"
-                   oncommand="onSideBar(this.checked);"/>
+                   oncommand="onSideBar(!this.checked);"/>
     <toolbarspacer />                   
     <toolbarbutton id="btnTools" 
                    label="&edit.toolbar.tools;" 

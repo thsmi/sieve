@@ -223,8 +223,6 @@ function onLoad()
   gCompile = window.arguments[0]["compile"];        
   gCompileDelay = window.arguments[0]["compileDelay"];
     
-  document.getElementById("btnCompile").checked = gCompile;
-    
   document.getElementById("txtName").value = window.arguments[0]["scriptName"];    
   
   if (window.arguments[0]["scriptBody"] != null)
@@ -249,8 +247,10 @@ function onLoad()
                                      Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT); 
   
   onSideBarGo();
-  onErrorBar(true);
-  onSideBar(true);
+  
+  document.getElementById("btnCompile").checked = gCompile;
+  onErrorBar(document.getElementById("btnCompile").checked);
+  onSideBar(document.getElementById("btnReference").checked);
   
   document.getElementById("txtScript").focus();
 }
@@ -421,14 +421,13 @@ function onExport()
 
 function onSideBarClose()
 {
-  document.getElementById('splitter').setAttribute('hidden','true');
-  document.getElementById('vbSidebar').setAttribute('hidden','true');
-  
-  document.getElementById("btnReference").checked = false; 
+  document.getElementById("btnReference").removeAttribute('checked');
+  onSideBar(false);
 }
 
 function onErrorBarClose()
-{  
+{ 
+  document.getElementById("btnCompile").removeAttribute('checked'); 
   onErrorBar(false);  
 }
 
@@ -450,7 +449,7 @@ function onErrorBar(state)
   document.getElementById("vbErrorBar").setAttribute('hidden','true');
   document.getElementById('spErrorBar').setAttribute('hidden','true');
   
-  return;    
+  return;
 }
 
 function onSideBar(state)
@@ -459,7 +458,6 @@ function onSideBar(state)
   {
     document.getElementById('splitter').removeAttribute('hidden');
     document.getElementById('vbSidebar').removeAttribute('hidden');
-    
     return;  
   }
 

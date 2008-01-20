@@ -170,17 +170,14 @@ var event =
     request.addErrorListener(event);
     request.setUsername(account.getLogin().getUsername())
     
-    if (account.getLogin().hasPassword())
-      request.setPassword(account.getLogin().getPassword());
-    else
-    {
-      var password = promptPassword();
-      if (password == null)
-    	  return;
-
-      request.setPassword(password);  	
-    }
-
+    var password = account.getLogin().getPassword();
+    
+    // TODO: terminate connection in case of an invalid password
+    if (password == null)
+      return;
+      
+    request.setPassword(password);
+    
     gSieve.addRequest(request);    		
     
   },
@@ -451,21 +448,6 @@ function getSelectedAccount()
 {
     var menu = document.getElementById("menuImapAccounts")
     return accounts[menu.selectedIndex];
-}
-
-function promptPassword()
-{
-    var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-                        .getService(Components.interfaces.nsIPromptService);
-                        
-    input = {value:null};
-    check = {value:false}; 
-    var result = prompts.promptPassword(window,"Password", "Please enter the password for your Sieve account", input, null, check);
-    
-    if (result)
-        return input.value;
-
-    return null;
 }
 
 function onSelectAccount()

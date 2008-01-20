@@ -17,12 +17,6 @@ SieveNoAuth.prototype.getUsername
 	return null;
 }
 
-SieveNoAuth.prototype.hasPassword
-    = function ()
-{
-	return false;
-}
-
 SieveNoAuth.prototype.hasUsername
     = function ()
 {
@@ -47,26 +41,32 @@ function SieveImapAuth(account)
 SieveImapAuth.prototype.getPassword
     = function ()
 {
-	return this.account.password;
+  // in case the passwordPromptRequired attribute is true...
+  // ... thunderbird will take care on retrieving a valid password...
+  //       
+  if (this.account.passwordPromptRequired == false)
+    return this.account.password;
+    
+  // ... otherwise we it is our job...
+  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                      .getService(Components.interfaces.nsIPromptService);
+                        
+  var input = {value:null};
+  var check = {value:false}; 
+  var result = prompts.promptPassword(window,"Password", "Please enter the password for your Sieve account", input, null, check);
+  
+  prompts = null;
+  
+  if (result)
+    return input.value;
+
+  return null;
 }
 
 SieveImapAuth.prototype.getUsername
     = function ()
 {
 	return this.account.username;
-}
-
-SieveImapAuth.prototype.hasPassword
-    = function ()
-{
-    // passwordPromptRequired liefert zurück, ob wir uns um ein 
-    // gültiges Passwort kümmern müssen, oder nicht. Bei einem false 
-    // ist es Thunderbirds Aufgabe ein gültiges Passwort zu beschaffen.
-    // Ein True bedeutet hingegen, dass es unsere Aufgabe ist...
-    	
-	// Somit ist der Rückgabewert genau Spiegelverkehrt...
-	// ... und muss negiert werden!
-	return ! this.account.passwordPromptRequired;
 }
 
 SieveImapAuth.prototype.hasUsername
@@ -84,68 +84,103 @@ SieveImapAuth.prototype.getType
 // The Sieve account needs a different login than the IMAP Account
 function SieveCustomAuth(uri)
 {
-    if (uri == null)
-        throw "SieveCustomAuth: URI can't be null"; 
-        
-	this.uri = uri;
-    this.prefURI = "extensions.sieve.account."+this.uri;
+  if (uri == null)
+    throw "SieveCustomAuth: URI can't be null"; 
+    
+  this.uri = uri;
+  this.prefURI = "extensions.sieve.account."+this.uri;
 }
 
-SieveCustomAuth.prototype.setLogin
-    = function (username,password)
-{   
-    if ((username == null) || (username == ""))
-    	throw "SieveCustomAuth: Username is empty or null";
-    	
-    // remove the existing user    
+SieveCustomAuth.prototype.setUsername
+    = function (username)
+{
+  if ((username == null) || (username == ""))
+    throw "SieveCustomAuth: Username is empty or null";
+
+  // drop any existing password, if the username changed...
+  if (this.hasPassword())
+  {    	
     var pwMgr = Components.classes["@mozilla.org/passwordmanager;1"]
-                    .getService(Components.interfaces.nsIPasswordManager);
+                  .getService(Components.interfaces.nsIPasswordManager);
     try
     {
-	    pwMgr.removeUser(new String("sieve://"+this.uri) , this.getUsername());    
-	}
-	catch (e)
-	{
-		// do nothing 
-	}    
-    
-    if ((password == null) || (password == ""))
-    {
-        gPref.setCharPref(this.prefURI+".login.username",username);    
-	    gPref.setBoolPref(this.prefURI+".login.hasPassword",false);
-    	return;
-    }
-	
-    pwMgr.addUser(new String("sieve://"+this.uri),username, password);    
-    gPref.setBoolPref(this.prefURI+".login.hasPassword",true);   
+      pwMgr.removeUser(new String("sieve://"+this.uri) , this.getUsername());
+	  }
+	  catch (e)
+	  { /* do nothing */ }
+	  
+	  // make XPCOM happy...
+	  pwMgr = null;
+  }    
+
+  // set new username...  
+  gPref.setBoolPref(this.prefURI+".login.hasPassword",false);
+  gPref.setCharPref(this.prefURI+".login.username",username);  
 }    
 
 SieveCustomAuth.prototype.getPassword
     = function ()
 {
-	if (this.hasPassword() == false)
-		return null;
-		
+  if (this.hasPassword() == true)
+  {
+    // the password is remembered...
     var pwMgr = Components.classes["@mozilla.org/passwordmanager;1"]
-                    .getService(Components.interfaces.nsIPasswordManager);
+                  .getService(Components.interfaces.nsIPasswordManager);
     var e = pwMgr.enumerator;
     
     var username = this.getUsername();    
     while (e.hasMoreElements()) 
     {        
-        var passwd = e.getNext().QueryInterface(Components.interfaces.nsIPassword);
-        
-        
-        if (passwd.host != new String("sieve://"+this.uri))
-            continue;
+      var passwd = e.getNext().QueryInterface(Components.interfaces.nsIPassword);
             
-        if (passwd.user != username)
-            continue;
-        
-        return passwd.password;
+      if (passwd.host != new String("sieve://"+this.uri))
+        continue;
+            
+      if (passwd.user != username)
+        continue;
+
+      return passwd.password;
     }
-    
+    // no password stored...
+  }
+  
+  // ... prompt for password
+  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                    .getService(Components.interfaces.nsIPromptService);
+                        
+  var input = {value:null};
+  var check = {value:false};
+     
+  var result = 
+    prompts.promptPassword(//window,
+        null,
+        "Password", 
+        "Please enter the password for your Sieve account", 
+        input, 
+        "Remember Password", 
+        check);
+  
+  // make XPCOM happy...
+  prompts = null;
+  
+  // user aborts password dialog...
+  if (result == false)
     return null;
+    
+  // user wants the password to be remembered...
+  if (check.value == true)
+  {
+    var pwMgr =
+      Components.classes["@mozilla.org/passwordmanager;1"]
+                .getService(Components.interfaces.nsIPasswordManager);
+
+    pwMgr.addUser(new String("sieve://"+this.uri),this.getUsername(), input.value);    
+    gPref.setBoolPref(this.prefURI+".login.hasPassword",true);
+    
+    pwMgr = null;
+  }
+    
+  return input.value;
 }
 
 SieveCustomAuth.prototype.getUsername
@@ -153,16 +188,16 @@ SieveCustomAuth.prototype.getUsername
 {
   if (gPref.prefHasUserValue(this.prefURI+".login.username"))
     return gPref.getCharPref(this.prefURI+".login.username");
-            
+
   return "";
 }
 
 SieveCustomAuth.prototype.hasPassword
     = function ()
 {
-    if (gPref.prefHasUserValue(this.prefURI+".login.hasPassword"))
-        return gPref.getBoolPref(this.prefURI+".login.hasPassword");
-        
+  if (gPref.prefHasUserValue(this.prefURI+".login.hasPassword"))
+    return gPref.getBoolPref(this.prefURI+".login.hasPassword");
+
 	return false;
 }
 

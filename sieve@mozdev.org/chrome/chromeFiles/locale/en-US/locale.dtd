@@ -1,20 +1,20 @@
+<!-- Accounts Dialog -->
+
+<!ENTITY accounts.edit "Edit">
+<!ENTITY accounts.column.active "Active">
+<!ENTITY accounts.column.name "Name">
+<!ENTITY accounts.description "Configure the MANAGESIEVE connectivity of your IMAP Accounts">
+
 <!-- Options Dialog -->
 <!ENTITY options.title "Sieve Options">
-
-<!ENTITY options.tree.active "Active">
-<!ENTITY options.tree.name "Name">
-
 <!ENTITY options.login "Authentication">
 <!ENTITY options.login.key "A">
 <!ENTITY options.login.noAuth "No Authentication">
-<!ENTITY options.login.imapAuth "Use IMAP Username and Password">
+<!ENTITY options.login.imapAuth "IMAP Username and Password">
 <!ENTITY options.login.customAuth "Username and Password">
 <!ENTITY options.login.username "Username">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.password "Password">
-<!ENTITY options.login.password.key "p">
-<!ENTITY options.login.password.remember "Remember Password">
-<!ENTITY options.login.password.remember.key "R">
+<!ENTITY options.login.show "Show Saved Passwords...">
 
 <!ENTITY options.host "ignore IMAP Settings">
 <!ENTITY options.host.key "I">
@@ -55,7 +55,7 @@
 <!ENTITY menu.options.key "S">
 
 
-<!-- Locales for the List Filter Dialog -->
+<!-- Locale for the List Filter Dialog -->
 <!ENTITY list.title "Sieve Filters">
 
 <!ENTITY list.accounts "Filters for:">
@@ -77,7 +77,7 @@
 <!ENTITY list.details.capability.extensions "Extensions:">
 
 
-<!-- Locales for the Edit Filter Dialog -->
+<!-- Locale for the Edit Filter Dialog -->
 <!ENTITY edit.title "Edit Sievefilter">
 
 <!ENTITY edit.toolbar.save "Save">

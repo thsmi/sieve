@@ -19,21 +19,21 @@
     </columns>
     <rows>
       <row>
-        <description>Configure the Sieve Filters for your IMAP Accounts</description>
+        <description>&accounts.description;</description>
       </row>            
       <row flex="1">
         <vbox>
   				<tree  id="treeAccounts" flex="1" hidecolumnpicker="true" seltype="single" onselect="onTreeSelect(this)">
 				    <treecols>
-				      <treecol id="active" label="&options.tree.active;" cycler="true" />      
-				      <treecol id="namecol" label="&options.tree.name;" flex="1" />
+				      <treecol id="active" label="&accounts.column.active;" cycler="true" />      
+				      <treecol id="namecol" label="&accounts.column.name;" flex="1" />
 				    </treecols>
 					  <treechildren />
 				  </tree>  
 		    </vbox>
 
         <vbox>
-          <button id="btnEdit" label="Edit"
+          <button id="btnEdit" label="&accounts.edit;"
                   oncommand="onEditClick();"/>
           <button id="btnEnable" label="Enable"
                   oncommand="onEnableClick(this);"/>

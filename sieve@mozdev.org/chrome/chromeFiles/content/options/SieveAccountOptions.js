@@ -23,15 +23,6 @@ function onDialogLoad(sender)
   document.getElementById('txtUsername').value
   	= account.getLogin(2).getUsername();
         
-  var cbxPassword = document.getElementById('cbxPassword');
-  if (account.getLogin(2).hasPassword() == true)
-  {
-  	cbxPassword.checked = true;
-   	document.getElementById('txtPassword').value = account.getLogin(2).getPassword();
-  }
-  else
-  	cbxPassword.checked = false;
-
   var rgLogin = document.getElementById('rgLogin');
   rgLogin.selectedIndex = account.getLogin().getType();
   enableLogin(rgLogin.selectedIndex);
@@ -67,17 +58,17 @@ function onDialogLoad(sender)
   
   for (var i = 0; i < items.length; i++)
   {
-    if (list.getItemAtIndex(i).value != mechanism)
+    if (items[i].value != mechanism)
       continue;
     
-    list.selectedIndex = i;
+    list.selectedItem = items[i];
     break;
   }
   
 }
 
 function onDialogAccept(sender)
-{
+{ 
 	// Do nothing since there should be only valid entries...
 }
 
@@ -98,53 +89,15 @@ function onLoginSelect(sender)
 
 function enableLogin(type)
 {
-	switch (type)
-	{
-		case 0:
-		case 1: document.getElementById('txtUsername').setAttribute('disabled','true');
-        		document.getElementById('txtPassword').setAttribute('disabled','true');
-		        document.getElementById('cbxPassword').setAttribute('disabled','true');
-
-		        break;
-		case 2: document.getElementById('txtUsername').removeAttribute('disabled');                
-		        document.getElementById('cbxPassword').removeAttribute('disabled');
-		        
-		        var cbxPassword = document.getElementById('cbxPassword');
-        		if (cbxPassword.checked)
-		          document.getElementById('txtPassword').removeAttribute('disabled');
-        		else
-		          document.getElementById('txtPassword').setAttribute('disabled','true');
-	}
-}
-
-function onLoginChange(sender)
-{
-  var cbx = document.getElementById('cbxPassword');
-	if (cbx.checked == false)
-	  account.getLogin(2).setLogin(document.getElementById('txtUsername').value);
+  if (type == 2)
+    document.getElementById('txtUsername').removeAttribute('disabled');
   else
-	  account.getLogin(2).setLogin(document.getElementById('txtUsername').value,
-	  		document.getElementById('txtPassword').value);   	
+    document.getElementById('txtUsername').setAttribute('disabled','true');
 }
 
-function onPasswordFocus(sender)
+function onUsernameChange(sender)
 {
-  //  document.getElementById('txtPassword').value = "";
-}
-
-
-function onPasswordCommand(sender)
-{
-	onLoginChange(sender);    
-  enablePassword(sender.checked); 
-}
-
-function enablePassword(enabled)
-{
-  if (enabled)
-    document.getElementById('txtPassword').removeAttribute('disabled');
-  else
-    document.getElementById('txtPassword').setAttribute('disabled','true');
+  account.getLogin(2).setUsername(document.getElementById('txtUsername').value);
 }
 
 // Function for the custom server settings
@@ -254,9 +207,25 @@ function enableAuthMechanism(enabled)
 
 function onAuthMechanismSelect(sender)
 {
-  // on startup it will happen that select is called before the account object exists...
-  if (account == null)
-    return;
- 
   account.getSettings().setForcedAuthMechanism(sender.selectedItem.value);
+}
+
+function onShowPassword()
+{  
+
+  var name = "Toolkit:PasswordManager"
+  var uri = "chrome://messenger/content/preferences/viewpasswords.xul"
+
+  var w = Components
+    .classes["@mozilla.org/appshell/window-mediator;1"]
+    .getService(Components.interfaces.nsIWindowMediator)
+    .getMostRecentWindow(name);
+
+  if (w)
+    w.focus();
+  else
+    Components
+      .classes["@mozilla.org/embedcomp/window-watcher;1"]
+      .getService(Components.interfaces.nsIWindowWatcher)
+      .openWindow(null, uri, name, "chrome,resizable", null);  
 }

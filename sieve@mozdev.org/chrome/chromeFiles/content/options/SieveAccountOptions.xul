@@ -20,32 +20,16 @@
           <radio id="rbNoAuth" label="&options.login.noAuth;"/>
           <radio id="rbImapAuth" label="&options.login.imapAuth;"/>
           <radio id="rbCustomAuth" label="&options.login.customAuth;"/>
-        </radiogroup> 
-        <hbox >
-        <grid class="indent">
-          <colums>
-            <column/>
-            <column/>
-          </colums>
-          <rows>
-            <row align="center">
-              <label value="&options.login.username;" accesskey="&options.login.username.key;"
-          			control="txtUsername"/>
-              <textbox id="txtUsername" size="20" onchange="onLoginChange(this)"/>
-            </row>
-            <row align="center">
-              <label value="&options.login.password;" accesskey="&options.login.password.key;" 
-          			control="txtPassword"/>
-              <textbox id="txtPassword" type="password" size="20" onchange="onLoginChange(this)" onfocus="onPasswordFocus(this)"/>
-            </row>
-            <row>
-              <spacer />              
-              <checkbox id="cbxPassword" oncommand="onPasswordCommand(this)" accesskey="&options.login.password.remember.key;" 
-            		label="&options.login.password.remember;"/>
-            </row>            
-          </rows>
-        </grid>
-       </hbox>
+        </radiogroup>
+        <vbox class="indent">
+          <hbox align="center">
+            <label value="&options.login.username;" accesskey="&options.login.username.key;"
+                  control="txtUsername"/>
+            <textbox id="txtUsername" size="20" onchange="onUsernameChange(this)"/>
+          </hbox>
+          <button id="btnShowPasswords" label="&options.login.show;" 
+                  oncommand="onShowPassword()" />
+        </vbox>       
       </groupbox>
             
       <groupbox flex="1">
@@ -113,12 +97,12 @@
       <hbox>
         <hbox id="hbAuthMechanism" align="center" class="indent">
           <label control="mlAuthMechanism" value="&options.misc.authmechanism.default;" />
-          <menulist id="mlAuthMechanism" onselect="onAuthMechanismSelect(this)">
+          <menulist id="mlAuthMechanism" oncommand="onAuthMechanismSelect(this)">
             <menupopup>
               <menuitem id="miAuthMechanismPlain" label="&options.misc.authmechanism.plain;" value="plain"/>
               <menuitem id="miAuthMechanismLogin" label="&options.misc.authmechanism.login;" value="login"/>
-              <menuitem id="miAuthMechanismDigest" label="&options.misc.authmechanism.digestmd5;" value="digest-md5"/>
-              <menuitem id="miAuthMechanismCram" label="&options.misc.authmechanism.crammd5;" value="cram-md5"/>
+              <!--<menuitem id="miAuthMechanismDigest" label="&options.misc.authmechanism.digestmd5;" value="digest-md5"/>
+              <menuitem id="miAuthMechanismCram" label="&options.misc.authmechanism.crammd5;" value="cram-md5"/>-->
             </menupopup>
           </menulist>
         </hbox>

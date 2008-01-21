@@ -11,6 +11,8 @@
   <menuitem id="mnuSieveListDialog" insertafter="applyFilters" label="&menu.filters;"
   		oncommand='window.open("chrome://sieve/content/editor/SieveFilterExplorer.xul", "sieveFilterExplorer", "resizable,chrome,centerscreen");' 
   		accesskey="&menu.filters.key;" />  		
+<!--  <menuitem id="mnuSieveWizard" insertafter="applyFilters" label="Wizard"
+  		oncommand='window.open("chrome://sieve/content/editor/SieveFilterWizard.xul", "sieveFilterWizard", "chrome,centerscreen");'/> -->	
   <menuseparator id="mnuSieveSeparator" insertafter="applyFilters"/>  		
 </menupopup>
 

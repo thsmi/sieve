@@ -474,7 +474,7 @@ function onSelectAccount()
 			// Disable and cancel if account is not enabled
 			if (account.isEnabled() == false)
 			{			    
-				postStatus("Not connected - go to Tool -> Sieve Settings to activate this account")
+				postStatus("Not connected! Goto 'Tools -> Sieve Settings' to activate this account")
 				return;
 			}			
 
@@ -526,7 +526,24 @@ function onSelectAccount()
 }
 
 function onDeleteClick()
-{	
+{
+  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                  .getService(Components.interfaces.nsIPromptService);
+  	
+  var check = {value: false};                  // default the checkbox to false
+ 
+  var flags = prompts.BUTTON_POS_0 * prompts.BUTTON_TITLE_YES +
+              prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_NO;
+
+  // The checkbox will be hidden, and button will contain the index of the button pressed,
+  // 0, 1, or 2.
+
+  var button = prompts.confirmEx(null, "Confirm Delete", "Do you want to delete the selected script?",
+                               flags, "", "", "", null, check);
+  
+  if (button != 0)
+    return;
+  
 	var tree = document.getElementById('treeImapRules');	
 	
 	if (tree.currentIndex == -1)
@@ -558,7 +575,7 @@ function sivOpenEditor(scriptName,scriptBody)
   args["compileDelay"] = getSelectedAccount().getSettings().getCompileDelay();
 
   window.openDialog("chrome://sieve/content/editor/SieveFilterEditor.xul", 
-                    "FilterEditor", 
+                    "SieveFilterEditor", 
                     "chrome,modal,titlebar,resizable,centerscreen", args);
 
   gSieve.addWatchDogListener(gSieveWatchDog);
@@ -609,11 +626,6 @@ function onEditClick()
   sivOpenEditor(scriptName);
     
   return;
-}
-
-function onSettingsClick()
-{
-  window.openDialog("chrome://sieve/content/options/SieveOptions.xul", "FilterEditor", "chrome,modal,titlebar,resizable,centerscreen");
 }
 
 function postStatus(progress)

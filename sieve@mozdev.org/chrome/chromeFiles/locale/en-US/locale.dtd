@@ -1,6 +1,7 @@
 <!-- Accounts Dialog -->
 
-<!ENTITY accounts.edit "Edit">
+<!ENTITY accounts.properties "Properties...">
+<!ENTITY accounts.filters "Filters...">
 <!ENTITY accounts.column.active "Active">
 <!ENTITY accounts.column.name "Name">
 <!ENTITY accounts.description "Configure the MANAGESIEVE connectivity of your IMAP Accounts">

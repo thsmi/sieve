@@ -10,7 +10,8 @@
         style="width: 45em; height: 25em;"
         title="&list.title;">
         
-  <script type="application/x-javascript" src="chrome://sieve/content/options/SieveOptions.js"/> 
+  <script type="application/x-javascript" src="chrome://sieve/content/options/SieveOptions.js"/>
+  <script type="application/x-javascript" src="chrome://sieve/content/SieveOverlay.js"/>  
 
   <grid flex="1">
     <columns>
@@ -33,10 +34,13 @@
 		    </vbox>
 
         <vbox>
-          <button id="btnEdit" label="&accounts.edit;"
+          <button id="btnEdit" label="&accounts.properties;"
                   oncommand="onEditClick();"/>
+          <button id="btnFilters" label="&accounts.filters;"
+                  oncommand="sivOpenFilters();"/>                  
           <button id="btnEnable" label="Enable"
                   oncommand="onEnableClick(this);"/>
+          <spacer />                  
 <!--          <spacer flex="1"/>
           <button id="btnHelp" label="Help" 
                   oncommand="onHelpClick();"/>         

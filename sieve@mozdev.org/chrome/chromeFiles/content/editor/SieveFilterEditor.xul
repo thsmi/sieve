@@ -6,13 +6,15 @@
 
 <?xml-stylesheet href="sieve.css" type="text/css"?>
 
-<window id="FilterEditor"
+<window 
+  id="SieveFilterEditor"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   title="&edit.title;"
   style="width: 45em; height: 31em;"
-  persist="width height screenX screenY"
+  persist="width height screenX screenY sizemode"
   onload="onLoad(this);"
-  onclose="return onClose();">
+  onclose="return onClose();"
+  windowtype="Sieve:FilterEditor" >
   
   <!-- needed for copy and paste -->
   <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js" />   
@@ -50,7 +52,8 @@
     <toolbarbutton id="btnCompile" type="checkbox" 
                    label="&edit.toolbar.compile;" class="toolbarbutton-1"  
                    oncommand="onErrorBar(!this.checked);" />                   
-    <toolbarbutton id="btnReference"  type="checkbox" checked="true"                  
+    <toolbarbutton id="btnReference"  type="checkbox" 
+                   persist="checked"                  
                    label="&edit.toolbar.reference;" class="toolbarbutton-1"
                    oncommand="onSideBar(!this.checked);"/>
     <toolbarspacer />                   
@@ -127,9 +130,12 @@
                        label="&edit.toolbar.home;" class="toolbarbutton-1" 
                        oncommand="onSideBarGo(null);" />
     </hbox>
+    <!--
+          <browser type="content" id="sideBarBrowser" flex="1" 
+             src="about:blank" width="250px" /> -->
     <deck id="dkSideBarBrowser" flex="1" selectedIndex="1">
-      <browser type="content" id="sideBarBrowser" flex="1" 
-             src="about:blank" width="250px" />
+      <iframe id="ifSideBar" flex="1" src="about:blank">
+      </iframe>
       <image flex="1" />
     </deck> 
   </vbox>

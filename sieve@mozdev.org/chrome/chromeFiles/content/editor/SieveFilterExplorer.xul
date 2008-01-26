@@ -7,11 +7,13 @@
 <?xml-stylesheet href="chrome://messenger/skin/accountManage.css" type="text/css"?>
 
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        id="SieveFilterExplorer"
         onload="onWindowLoad();"
         onclose="return onWindowClose();"
-        persist="screenX screenY"
+        persist="width height screenX screenY sizemode"
         style="width: 45em; height: 31em;"
-        title="&list.title;">
+        title="&list.title;"
+        windowtype="Sieve:FilterExplorer">
 
   <script type="application/x-javascript" src="chrome://sieve/content/editor/SieveFilterExplorer.js"/>  
 

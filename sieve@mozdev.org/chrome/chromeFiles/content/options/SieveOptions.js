@@ -31,6 +31,7 @@ function onTreeSelect(sender)
   if (sender.currentIndex == -1)
 	{
 		document.getElementById('btnEdit').setAttribute('disabled','true');
+		document.getElementById('btnFilters').setAttribute('disabled','true');
 		document.getElementById('btnEnable').setAttribute('disabled','true');		
 		return;
 	}
@@ -41,11 +42,13 @@ function onTreeSelect(sender)
   if (account.isEnabled() == false)
   {
   	document.getElementById('btnEdit').setAttribute('disabled','true');
+  	document.getElementById('btnFilters').setAttribute('disabled','true');
   	document.getElementById('btnEnable').label = "Enable";
   }
   else
   {
   	document.getElementById('btnEdit').removeAttribute('disabled');
+  	document.getElementById('btnFilters').removeAttribute('disabled');
 	 	document.getElementById('btnEnable').label = "Disable";	
   }
 		
@@ -102,3 +105,4 @@ function onEnableClick(sender)
 
 	onTreeSelect(tree);		
 }
+

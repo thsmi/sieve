@@ -4,12 +4,14 @@
 
 <overlay id="sieveOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
+<script type="application/x-javascript" src="chrome://sieve/content/SieveOverlay.js" />
+
 <menupopup id="taskPopup">
   <menuitem id="mnuSieveOptionsDialog" insertafter="applyFilters" label="&menu.options;"
   		oncommand='window.open("chrome://sieve/content/options/SieveOptions.xul", "sieveOptions", "chrome,centerscreen");' 
   		accesskey="&menu.options.key;" />
   <menuitem id="mnuSieveListDialog" insertafter="applyFilters" label="&menu.filters;"
-  		oncommand='window.open("chrome://sieve/content/editor/SieveFilterExplorer.xul", "sieveFilterExplorer", "resizable,chrome,centerscreen");' 
+  		oncommand='sivOpenFilters();' 
   		accesskey="&menu.filters.key;" />  		
 <!--  <menuitem id="mnuSieveWizard" insertafter="applyFilters" label="Wizard"
   		oncommand='window.open("chrome://sieve/content/editor/SieveFilterWizard.xul", "sieveFilterWizard", "chrome,centerscreen");'/> -->	

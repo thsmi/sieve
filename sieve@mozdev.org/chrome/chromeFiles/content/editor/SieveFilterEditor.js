@@ -187,33 +187,6 @@ function onInput()
     gCompileTimeout = setTimeout("onCompile()",gCompileDelay);    
 }
 
-var myListener =
-{
-  QueryInterface : function(aIID)
-  {
-    if (aIID.equals(Components.interfaces.nsIWebProgressListener) ||
-        aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
-        aIID.equals(Components.interfaces.nsISupports))
-      return this;
-    throw Components.results.NS_NOINTERFACE;
-  },
-  
-  onStateChange:function(aProgress,aRequest,aFlag,aStatus)
-  {
-    if(aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP)
-    {
-      aRequest.QueryInterface(Components.interfaces.nsIChannel);
-      document.getElementById("dkSideBarBrowser").selectedIndex = 0;
-      //alert("Wait a moment!\n"+aRequest.URI.spec);
-    }
-  },
-  onLocationChange:function(a,b,c){},
-  onProgressChange:function(a,b,c,d,e,f){},
-  onStatusChange:function(a,b,c,d){},
-  onSecurityChange:function(a,b,c){},
-  onLinkIconAvailable:function(a){}
-} 
-
 function onLoad()
 {
   // script laden
@@ -239,12 +212,8 @@ function onLoad()
   }        
 
   // hack to prevent links to be opened in the default browser window...       
-  document.getElementById("sideBarBrowser").
-    addEventListener("click",onSideBarBrowserClick,false);
-    
-  document.getElementById("sideBarBrowser")
-    .webProgress.addProgressListener(myListener,
-                                     Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT); 
+  document.getElementById("ifSideBar").
+    addEventListener("click",onSideBarBrowserClick,false);    
   
   onSideBarGo();
   
@@ -287,9 +256,29 @@ function onSideBarForward()
   onSideBarGo(gForwardHistory.pop());  
 }
 
+function onSideBarLoaded(event)
+{
+  onSideBarLoading(false);
+/*  var result ="";
+  for (var i in event)
+  {
+    result += "." + i + " = " + event[i] + "<br>";
+  }
+  
+  alert(result);*/
+}
+
+function onSideBarLoading(loading)
+{
+  if (loading)
+    document.getElementById("dkSideBarBrowser").selectedIndex = 1;
+  else
+    document.getElementById("dkSideBarBrowser").selectedIndex = 0;
+}
+
 function onSideBarGo(uri)
 {
-  document.getElementById("dkSideBarBrowser").selectedIndex = 1;
+  onSideBarLoading(true);
   
   if (uri == null)
     uri = "http://sieve.mozdev.org/reference/en/index.html"
@@ -309,8 +298,11 @@ function onSideBarGo(uri)
     document.getElementById("btnSideBarForward").setAttribute('disabled',"true");
   else
     document.getElementById("btnSideBarForward").removeAttribute('disabled');    
-     
-  document.getElementById("sideBarBrowser").setAttribute('src',uri);
+
+  if (document.getElementById("ifSideBar").addEventListener)
+    document.addEventListener("DOMContentLoaded", onSideBarLoaded, false);
+         
+  document.getElementById("ifSideBar").setAttribute('src',uri);
 }
 
 

@@ -944,7 +944,7 @@ SieveSaslLoginRequest.prototype.getNextRequest
   switch (this.response.getState())
   {
     case 0: 
-      return "AUTHENTICATE \"LOGIN\" \r\n";    
+      return "AUTHENTICATE \"LOGIN\"\r\n";    
     case 1: 
       return "{"+btoa(this.username).length+"}\r\n"+btoa(this.username);
     case 2:

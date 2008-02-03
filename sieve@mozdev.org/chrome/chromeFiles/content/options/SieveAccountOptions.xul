@@ -102,7 +102,7 @@
     </vbox>
     
     
-    <!-- advanved panel -->
+    <!-- advanced panel -->
     <vbox>
       <hbox align="center" style="background-color: #FFFFCC; border: 1px solid black; padding: 5px; margin-top : 5px;">
         <image id="imgErrorBar" pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
@@ -111,7 +111,7 @@
       <groupbox>
         <caption label="Authentication Mechanism" />
         <description>
-          In certain situatuions e.g. when using Proxy Authentication you might want to force a specific Authentication Mechanism. 
+          In certain situations e.g. when using Proxy Authentication you might want to force a specific Authentication Mechanism. 
         </description>
         <checkbox id="cbxAuthMechanism" label="&options.misc.authmechanism;"
                   oncommand="onAuthMechanismCommand(this)" />
@@ -129,22 +129,22 @@
         <caption label="Proxy Authorization" /> 
         <description>
           Proxy authorization, allows an authenticated user to act on the behalf of another user. 
-          Usually servers are configured, that this feature is only avaiable for administrators.
+          Usually servers are configured, that this feature is only available for administrators.
         </description>
         <description>
           When using this feature you should force "SASL PLAIN" Authentication.
         </description>
-        <radiogroup id="rgLogin"><!--  onselect="alert('not implemented')" -->
-          <radio id="rbNoAuth" label="No Autorization"/>
-          <radio id="rbImapAuth" label="Sieve Username"/>
-          <radio id="rbCustomAuth" label="Prompt for Autorization"/>
-          <radio id="rbCustomAuth" label="Authorize as"/>
+        <radiogroup id="rgAuthorization" onselect="onAuthorizationSelect(this);">
+          <radio id="rbNoAuthorization" label="No Authorization"/>
+          <radio id="rbDefaultAuthorization" label="Sieve Username"/>
+          <radio id="rbPromptAuthorization" label="Prompt for Authorization"/>
+          <radio id="rbCustomAuthorization" label="Authorize as"/>
         </radiogroup>
         <vbox class="indent">
           <hbox align="center">
             <label value="Username" 
-                  control="txtUsername"/>
-            <textbox id="txtUsername" size="20" onchange="alert('not implemented')"/>
+                  control="txtAuthorization"/>
+            <textbox id="txtAuthorization" size="20" onchange="onAuthorizationChange(this);"/>
           </hbox>
         </vbox>       
       </groupbox>

@@ -173,10 +173,19 @@ var event =
     var password = account.getLogin().getPassword();
     
     // TODO: terminate connection in case of an invalid password
+    // and notify the user
     if (password == null)
       return;
       
     request.setPassword(password);
+    
+    var authorization = account.getAuthorization().getAuthorization();
+    // TODO: terminate connection an notify that authorization settings
+    // are invalid...
+    if (authorization == null)
+      return;
+      
+    request.setAuthorization(authorization);
     
     gSieve.addRequest(request);    		
     
@@ -612,7 +621,9 @@ function onNewClick()
   if (result != true)
     return;
 
-  sivOpenEditor(input.value,"#template");	
+  var date = new Date();
+  var script = "#\r\n# "+date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()+"\r\n#\r\n";
+  sivOpenEditor(input.value,script);	
 }
 
 function onEditClick()
@@ -630,7 +641,7 @@ function onEditClick()
 
 function postStatus(progress)
 {
-  document.getElementById('logger').value = progress;
+  document.getElementById('sbStatus').label = progress;
 }
 
 function disableControls(disabled)

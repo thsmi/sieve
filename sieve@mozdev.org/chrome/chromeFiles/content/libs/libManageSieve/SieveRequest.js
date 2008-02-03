@@ -799,6 +799,10 @@ SieveInitRequest.prototype.addResponse
 
 function SieveSaslPlainRequest() 
 {
+  this.authorization = "";
+  this.username = "";
+  this.password = "";
+  
 }
 
 // TODO obsolete
@@ -814,6 +818,12 @@ SieveSaslPlainRequest.prototype.setPassword
   this.password = password;  
 }
 
+SieveSaslPlainRequest.prototype.setAuthorization
+    = function (authorization)
+{
+  this.authorization = authorization;
+}
+
 SieveSaslPlainRequest.prototype.hasNextRequest
     = function ()
 {
@@ -823,7 +833,7 @@ SieveSaslPlainRequest.prototype.hasNextRequest
 SieveSaslPlainRequest.prototype.getNextRequest 
     = function ()
 {
-  var logon = btoa("\0"+this.username+"\0"+this.password);  
+  var logon = btoa(this.authorization+"\0"+this.username+"\0"+this.password);  
   return "AUTHENTICATE \"PLAIN\" \""+logon+"\"\r\n";
 }
 
@@ -932,6 +942,12 @@ SieveSaslLoginRequest.prototype.setUsername
   this.username = username;
 }
 
+SieveSaslLoginRequest.prototype.setAuthorization
+    = function (authorization)
+{
+  // login can't handle authorization...
+}
+
 SieveSaslLoginRequest.prototype.setPassword
     = function (password)
 {
@@ -1019,7 +1035,7 @@ SieveSaslLoginRequest.prototype.addResponse
 
 *******************************************************************************/
 
-function SieveSaslCramMd5Request() 
+/*function SieveSaslCramMd5Request() 
 {
   this.response = new SieveSaslLoginResponse();
 }
@@ -1098,3 +1114,4 @@ SieveSaslCramMd5Request.prototype.addResponse
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
 }
+*/

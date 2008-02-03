@@ -134,7 +134,7 @@
           <browser type="content" id="sideBarBrowser" flex="1" 
              src="about:blank" width="250px" /> -->
     <deck id="dkSideBarBrowser" flex="1" selectedIndex="1">
-      <iframe id="ifSideBar" flex="1" src="about:blank">
+      <iframe id="ifSideBar" width="250px" flex="1" src="about:blank" >
       </iframe>
       <image flex="1" />
     </deck> 

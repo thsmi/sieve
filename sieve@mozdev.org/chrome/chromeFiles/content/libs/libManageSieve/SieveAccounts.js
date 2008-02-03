@@ -1,6 +1,10 @@
 var gPref = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
 
-// Sieve No Auth Class
+
+
+
+
+// Sieve No Authentication Class
 // This class is used when no authentication is needed
 function SieveNoAuth() 
 {}
@@ -447,24 +451,129 @@ SieveAccountSettings.prototype.getForcedAuthMechanism
     return "plain";
 }
 
+/******************************************************************************/
+
+function SieveNoAuthorization()
+{
+  
+}
+
+SieveNoAuthorization.prototype.getType
+    = function ()
+{
+  return 0;
+}
+
+SieveNoAuthorization.prototype.getAuthorization
+    = function ()
+{
+  return "";
+}
+
+/******************************************************************************/
+
+function SievePromptAuthorization()
+{  
+}
+
+SievePromptAuthorization.prototype.getType
+    = function ()
+{
+  return 2;
+}
+
+SievePromptAuthorization.prototype.getAuthorization
+    = function ()
+{
+  var check = {value: false}; 
+  var input = {value: ""};
+  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                        .getService(Components.interfaces.nsIPromptService);
+  
+  var result = 
+    prompts.prompt(
+       null, 
+       "Authorization", 
+       "Please enter the username you want to be authorized as", 
+       input, 
+       null, 
+       check);
+   
+  if (result == false)
+    return null;
+  
+  return input.value;
+}
+
+/******************************************************************************/
+
+function SieveCustomAuthorization(uri)
+{
+  if (uri == null)
+    throw "SieveCustomAuthorization: URI can't be null"; 
+    
+  this.uri = uri;
+  this.prefURI = "extensions.sieve.account."+this.uri;  
+}
+
+SieveCustomAuthorization.prototype.getType
+    = function ()
+{
+  return 3;
+}
+
+SieveCustomAuthorization.prototype.getAuthorization
+    = function ()
+{
+  if (gPref.prefHasUserValue(this.prefURI+".sasl.authorization.username"))
+    return gPref.getCharPref(this.prefURI+".sasl.authorization.username");
+  
+  return null;
+}
+
+SieveCustomAuthorization.prototype.setAuthorization
+    = function (authorization)
+{
+  if ((authorization == null) || (authorization == ""))
+    throw "Authorization can't be empty or null";
+
+  gPref.setCharPref(this.prefURI+".sasl.authorization.username",authorization);
+}
+
+
+/******************************************************************************/
+    
+function SieveDefaultAuthorization(authorization)
+{
+  this.authorization = authorization;
+} 
+
+SieveDefaultAuthorization.prototype.getType
+    = function ()
+{
+  return 1;
+}
+
+SieveDefaultAuthorization.prototype.getAuthorization
+    = function ()
+{
+  return this.authorization;
+}
 
 //*******************
 
+// any changes are directly written to the preferences. 
+
 function SieveAccount(account)
 {
-    if (account == null)
-        throw "SieveAccount: Account can't be null"; 
+  if (account == null)
+    throw "SieveAccount: Account can't be null"; 
 
-    this.URI = account.rootMsgFolder.baseMessageURI.slice(15);
-    this.prefURI = "extensions.sieve.account."+this.URI;
+  this.URI = account.rootMsgFolder.baseMessageURI.slice(15);
+  this.prefURI = "extensions.sieve.account."+this.URI;
     
-    this.description = account.prettyName;    
-	// initalize the host settings
-	this.host = new Array(new SieveImapHost(account),new SieveCustomHost(this.URI));
-	// Initalize Logins setings
-	this.login = new Array(new SieveNoAuth(),new SieveImapAuth(account),new SieveCustomAuth(this.URI))
-	// Initalize the general settings
-	this.settings = new SieveAccountSettings(this.URI);
+  this.description = account.prettyName;
+  this.account = account;	
 }
 
 SieveAccount.prototype.getDescription
@@ -473,21 +582,16 @@ SieveAccount.prototype.getDescription
 SieveAccount.prototype.getLogin
     = function (type) 
 {
-	// wenn kein bestimmter Logintyp angegeben ist ...
-	// ... nehmen wir die Standardeinstellung
-	if (type == null)
-	{
-	    // Login Related Prefs
-        if (gPref.prefHasUserValue(this.prefURI+".activeLogin"))
-            return this.getLogin(gPref.getIntPref(this.prefURI+".activeLogin"));
-        
-    	return this.login[1]; 	
-	}
+	if ((type == null) && gPref.prefHasUserValue(this.prefURI+".activeLogin")) 
+	  type = gPref.getIntPref(this.prefURI+".activeLogin");
 
-	if ((type < 0) || (type > 2))
-		throw "invalid login type";
-	
-	return this.login[type];
+  switch (type)
+  {
+    case 0  : return new SieveNoAuth();
+    case 2  : return new SieveCustomAuth(this.URI);
+    
+    default : return new SieveImapAuth(this.account);
+  }
 }
 
 SieveAccount.prototype.setActiveLogin
@@ -504,20 +608,13 @@ SieveAccount.prototype.setActiveLogin
 SieveAccount.prototype.getHost
     = function (type)
 {
+	if ((type == null ) && gPref.prefHasUserValue(this.prefURI+".activeHost"))
+	  type = gPref.getIntPref(this.prefURI+".activeHost");
 
-	if (type == null)
-	{
-	    // Login Related Prefs
-	    if (gPref.prefHasUserValue(this.prefURI+".activeHost"))
-            return this.getHost(gPref.getIntPref(this.prefURI+".activeHost"));
-        
-    	return this.host[0]; 
-    }
-
-	if ((type < 0) || (type > 1))
-		throw "invalid host type";
-	
-	return this.host[type];
+  if (type == 1)
+    return new SieveCustomHost(this.URI)
+  else
+    return new SieveImapHost(this.account)
 }
 
 SieveAccount.prototype.setActiveHost
@@ -530,6 +627,36 @@ SieveAccount.prototype.setActiveHost
 
 	gPref.setIntPref(this.prefURI+".activeHost",type);
 }
+
+SieveAccount.prototype.getAuthorization
+    = function (type)
+{ 
+  if ((type == null) && gPref.prefHasUserValue(this.prefURI+".activeAuthorization")) 
+  {
+   type = gPref.getIntPref(this.prefURI+".activeAuthorization");
+  }
+
+  switch (type)
+  {
+    case 0  : return new SieveNoAuthorization();
+    case 2  : return new SievePromptAuthorization();
+    case 3  : return new SieveCustomAuthorization(this.URI);
+    
+    default : return new SieveDefaultAuthorization(this.getLogin().getUsername()); 
+  }
+}
+
+SieveAccount.prototype.setActiveAuthorization
+    = function (type)
+{ 
+  if (type == null)
+    throw "Authorization type is null";
+  if ((type < 0) || (type > 3))
+    throw "invalid Authorization type";
+
+  gPref.setIntPref(this.prefURI+".activeAuthorization",type);
+}
+
 
 SieveAccount.prototype.isEnabled
     = function ()
@@ -549,9 +676,9 @@ SieveAccount.prototype.setEnabled
 SieveAccount.prototype.getSettings
     = function ()
 {
-  return this.settings;
+  return new SieveAccountSettings(this.URI);
 }
-
+/******************************************************************************/
 function SieveAccounts()
 {            
 	var accountManager = Components.classes['@mozilla.org/messenger/account-manager;1']

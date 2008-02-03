@@ -106,15 +106,8 @@
       </row>
     </rows>
   </grid>
-  <label id="logger" value="" />
-
-<!--  <separator class="thin"/>
-  <statusbar class="chromeclass-status" id="status-bar">
-    <statusbarpanel id="statusText" flex="1" crop="right"/>
-    <statusbarpanel class="statusbarpanel-progress" collapsed="true" id="statusbar-progresspanel">
-      <progressmeter class="progressmeter-statusbar" id="statusbar-icon" mode="normal" value="0"/>
-    </statusbarpanel>
-  </statusbar> -->
-
+  <statusbar>
+    <statusbarpanel flex="1" id="sbStatus" label=""/>
+  </statusbar>
 </window>
 

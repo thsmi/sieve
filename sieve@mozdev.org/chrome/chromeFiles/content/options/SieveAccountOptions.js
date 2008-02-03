@@ -19,13 +19,22 @@ function onDialogLoad(sender)
    	cbxHost.checked = false;   	
   enableHost(cbxHost.checked);
     
-  // Login field.
+  // initalize login related elements...
   document.getElementById('txtUsername').value
   	= account.getLogin(2).getUsername();
         
   var rgLogin = document.getElementById('rgLogin');
   rgLogin.selectedIndex = account.getLogin().getType();
   enableLogin(rgLogin.selectedIndex);
+
+  // initalize the authorization related elements...
+  document.getElementById('txtAuthorization').value
+    = account.getAuthorization(3).getAuthorization(); 
+  
+  var rgAuthorization = document.getElementById('rgAuthorization');
+  rgAuthorization.selectedIndex = account.getAuthorization().getType();
+  enableAuthorization(rgAuthorization.selectedIndex);
+
     
   document.getElementById('txtKeepAlive').value
   	= account.getSettings().getKeepAliveInterval();
@@ -72,10 +81,27 @@ function onDialogAccept(sender)
 	// Do nothing since there should be only valid entries...
 }
 
+function onAuthorizationSelect(sender)
+{
+  var type = 1;
+  
+  if (sender.selectedItem.id == "rbNoAuthorization")
+    type = 0;
+  else if (sender.selectedItem.id == "rbDefaultAuthorization")
+    type = 1;
+  else if (sender.selectedItem.id == "rbPromptAuthorization")
+    type = 2;
+  else if (sender.selectedItem.id == "rbCustomAuthorization")
+    type = 3;
+
+  account.setActiveAuthorization(type);        
+  enableAuthorization(type);
+}
+
 // Function for the custom authentication
 function onLoginSelect(sender)
 {
-  var type = 0;
+  var type = 1;
   if (sender.selectedItem.id == "rbNoAuth")
   	type = 0;
   else if (sender.selectedItem.id == "rbImapAuth")
@@ -95,9 +121,24 @@ function enableLogin(type)
     document.getElementById('txtUsername').setAttribute('disabled','true');
 }
 
+function enableAuthorization(type)
+{
+  if (type == 3)
+    document.getElementById('txtAuthorization').removeAttribute('disabled');
+  else
+    document.getElementById('txtAuthorization').setAttribute('disabled','true');
+}
+
+
 function onUsernameChange(sender)
 {
   account.getLogin(2).setUsername(document.getElementById('txtUsername').value);
+}
+
+function onAuthorizationChange(sender)
+{
+  account.getAuthorization(3)
+      .setAuthorization(document.getElementById('txtAuthorization').value);
 }
 
 // Function for the custom server settings

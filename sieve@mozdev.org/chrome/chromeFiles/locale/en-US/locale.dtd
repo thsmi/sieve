@@ -27,7 +27,7 @@
 <!ENTITY options.host.tls.key "t">
 <!ENTITY options.host.tls "use TLS, if avaiable">
 
-<!ENTITY options.misc "Advanced Settings">
+<!ENTITY options.misc "Miscellaneous Settings">
 <!ENTITY options.misc.keepalive "Send 'keep alive' request every">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.compile "Compile on server every">

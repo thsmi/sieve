@@ -105,9 +105,19 @@
               <menuitem id="miAuthMechanismCram" label="&options.misc.authmechanism.crammd5;" value="cram-md5"/>-->
             </menupopup>
           </menulist>
-        </hbox>
+        </hbox>        
         <hbox flex="1"/>
-     </hbox>
+      </hbox>
+      <!--
+      <checkbox id="cbxProxyAuth" label="use proxy authentication"
+         oncommand="alert('Not Implemented')" />
+      <hbox>
+        <hbox id="hbProxyAuth" align="center" class="indent">
+          <label control="txtProxyAuth" value="Authorize as User:" />
+          <textbox id="txtProxyAuth" onchange="alert('Not Implemented')" size="12"/>
+        </hbox>        
+        <hbox flex="1"/>
+      </hbox>-->     
     </groupbox>
   </vbox>
 </dialog>

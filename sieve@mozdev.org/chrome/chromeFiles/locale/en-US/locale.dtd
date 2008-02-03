@@ -67,8 +67,8 @@
 <!ENTITY list.tree.active "Active">
 <!ENTITY list.tree.name "Name">
 
-<!ENTITY list.new "New">
-<!ENTITY list.edit "Edit">
+<!ENTITY list.new "New...">
+<!ENTITY list.edit "Edit...">
 <!ENTITY list.delete "Delete">
 <!ENTITY list.rename "Rename">
 

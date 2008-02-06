@@ -83,6 +83,9 @@ function onDialogAccept(sender)
 
 function onAuthorizationSelect(sender)
 {
+  if (account == null)
+    return;
+    
   var type = 1;
   
   if (sender.selectedItem.id == "rbNoAuthorization")
@@ -101,6 +104,9 @@ function onAuthorizationSelect(sender)
 // Function for the custom authentication
 function onLoginSelect(sender)
 {
+  if (account == null)
+    return;
+    
   var type = 1;
   if (sender.selectedItem.id == "rbNoAuth")
   	type = 0;
@@ -132,18 +138,27 @@ function enableAuthorization(type)
 
 function onUsernameChange(sender)
 {
+  if (account == null)
+    return;
+    
   account.getLogin(2).setUsername(document.getElementById('txtUsername').value);
 }
 
 function onAuthorizationChange(sender)
 {
+  if (account == null)
+    return;
+    
   account.getAuthorization(3)
       .setAuthorization(document.getElementById('txtAuthorization').value);
 }
 
 // Function for the custom server settings
 function onHostCommand(sender)
-{   
+{
+  if (account == null)
+    return;
+
   if (sender.checked)
     account.setActiveHost(true);
   else
@@ -170,22 +185,34 @@ function enableHost(enabled)
 
 function onHostnameChange(sender)
 {
+  if (account == null)
+    return;
+  
   account.getHost(1).setHostname(sender.value);
 }
 
 function onPortChange(sender)
 {
+  if (account == null)
+    return;
+  
 	account.getHost(1).setPort(sender.value)
 }
 
 function onTLSCommand(sender)
 {
+  if (account == null)
+    return;
+  
   account.getHost(1).setTLS(sender.checked);        
 }
 
 // Function for the general Settings...
 function onKeepAliveCommand(sender)
-{   
+{
+  if (account == null)
+    return;
+    
   account.getSettings().enableKeepAlive(sender.checked);
   enableKeepAlive(sender.checked);    
 }
@@ -200,11 +227,17 @@ function enableKeepAlive(enabled)
 
 function onKeepAliveChange(sender)
 {
+  if (account == null)
+    return;
+  
   account.getSettings().setKeepAliveInterval(sender.value)    
 }
 
 function onCompileCommand(sender)
-{    
+{
+  if (account == null)
+    return;
+     
   account.getSettings().enableCompile(sender.checked); 
   enableCompile(sender.checked);    
 }
@@ -219,21 +252,33 @@ function enableCompile(enabled)
 
 function onCompileChange(sender)
 {
+  if (account == null)
+    return;
+  
   account.getSettings().setCompileDelay(sender.value)    
 }
 
 function onDebugRequestCommand(sender)
 {
+  if (account == null)
+    return;
+  
   account.getSettings().setDebugFlag(0,sender.checked);
 }
 
 function onDebugResponseCommand(sender)
-{    
+{
+  if (account == null)
+    return;
+     
   account.getSettings().setDebugFlag(1,sender.checked);
 } 
 
 function onAuthMechanismCommand(sender)
 {
+  if (account == null)
+    return;
+  
   account.getSettings().enableForcedAuthMechanism(sender.checked);
   enableAuthMechanism(sender.checked);
 }
@@ -248,6 +293,9 @@ function enableAuthMechanism(enabled)
 
 function onAuthMechanismSelect(sender)
 {
+  if (account == null)
+    return;
+  
   account.getSettings().setForcedAuthMechanism(sender.selectedItem.value);
 }
 

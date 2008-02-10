@@ -8,6 +8,11 @@
 
 <!-- Options Dialog -->
 <!ENTITY options.title "Sieve Options">
+
+<!ENTITY options.tab.general  "General">
+<!ENTITY options.tab.advanced "Advanced">
+<!ENTITY options.tab.debug    "Debug">
+
 <!ENTITY options.login "Authentication">
 <!ENTITY options.login.key "A">
 <!ENTITY options.login.noAuth "No Authentication">

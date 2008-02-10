@@ -14,9 +14,9 @@
   <script type="application/x-javascript" src="chrome://sieve/content/options/SieveAccountOptions.js"/>
   <tabbox  flex="1">
   <tabs >
-    <tab label="General" />
-    <tab label="Advanced" />
-    <tab label="Debug" />
+    <tab label="&options.tab.general;" />
+    <tab label="&options.tab.advanced;" />
+    <tab label="&options.tab.debug;" />
   </tabs>
   <tabpanels flex="1" >
     <vbox>

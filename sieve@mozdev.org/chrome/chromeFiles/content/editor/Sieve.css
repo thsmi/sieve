@@ -19,6 +19,38 @@ textbox.sieve
 	-moz-appearance: none;	
 }
 
+#sivExplorerWait
+{
+	background: white url(chrome://sieve/content/images/load.gif) no-repeat center;	
+}
+
+
+#sivxplorerError
+{
+	background-color: white	
+}
+
+#sivExplorerError hbox
+{
+	background-color: #ffe6e6; 
+	border: 1px solid black; 
+	padding: 5px; 
+	margin-top : 5px;	
+}
+                    
+#sivExplorerWarning
+{
+  background-color: white		
+}
+
+#sivExplorerWarning hbox
+{
+	background-color: #FFFFCC;
+	border: 1px solid black; 
+	padding: 5px; 
+	margin-top : 5px;
+}
+
 .sieveSideBar stack image
 {
 	list-style-image: url(chrome://sieve/content/images/sidebarTitle.png);

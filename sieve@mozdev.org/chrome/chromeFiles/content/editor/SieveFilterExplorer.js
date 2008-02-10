@@ -92,12 +92,13 @@ var gSieveWatchDog =
   
   onIdle: function ()
   {
+    //alert('onIdle');
     // we simply do notihng in case of an error...
     var lEvent = 
     {
       onCapabilitiesResponse: function() {},
-      onTimeout: function() {},
-      onError: function() {}
+      onTimeout: function() { alert('Timeout2');},
+      onError: function() {alert('Error2');}
     }
     
     if (gSieveWatchDog.idle != null)
@@ -175,7 +176,10 @@ var event =
     // TODO: terminate connection in case of an invalid password
     // and notify the user
     if (password == null)
+    {
+      sivSetStatus(2, "Error: Unable to retrieve Authentication information.");
       return;
+    }
       
     request.setPassword(password);
     
@@ -183,7 +187,10 @@ var event =
     // TODO: terminate connection an notify that authorization settings
     // are invalid...
     if (authorization == null)
+    {
+      sivSetStatus(2, "Error: Unable to retrieve Authorization information");
       return;
+    }
       
     request.setAuthorization(authorization);
     
@@ -278,6 +285,7 @@ var event =
 
     gSieve.addRequest(request);	  	  
     disableControls(false);
+    sivSetStatus(4);
 	},
 	
 	onLogoutResponse: function(response)
@@ -343,8 +351,9 @@ var event =
 	  disableControls(true);
 	  if (gSieve.isAlive())
 			gSieve.disconnect();
-			
-	  alert("The connection has timed out, the Server is not responding...")
+
+    alert("Timeout...");
+    sivSetStatus(1, "The connection has timed out, the Server is not responding...");
 	},
 	
   onError: function(response)
@@ -384,7 +393,8 @@ var event =
       return;
     }
 
-    alert("SERVER ERROR:"+response.getMessage());
+   alert("Error:"+response.getMessage());
+    sivSetStatus(2, "Action failed server reported an error...\n"+response.getMessage());
   },
   
   onCycleCell: function(row,col,script,active)
@@ -412,9 +422,8 @@ function onWindowLoad()
 
   // now create a logger session...
   gLogger = Components.classes["@mozilla.org/consoleservice;1"]
-                    .getService(Components.interfaces.nsIConsoleService);
-
-
+                    .getService(Components.interfaces.nsIConsoleService);  
+  
   var menuImapAccounts = document.getElementById("menuImapAccounts");
 
   accounts = (new SieveAccounts()).getAccounts();
@@ -425,12 +434,21 @@ function onWindowLoad()
       menuImapAccounts.appendItem( accounts[i].getDescription(),"","- disabled").disabled = true;
     else
       menuImapAccounts.appendItem( accounts[i].getDescription(),"","").disabled = false;
+
+    if ((window.arguments[0] instanceof Components.interfaces.nsIDialogParamBlock)
+           && (window.arguments[0].GetString(0) == accounts[i].getUri()))
+    {
+      menuImapAccounts.selectedIndex = i;
+    }
+      
   }
 	
   sieveTreeView = new SieveTreeView(new Array(),event);	
   document.getElementById('treeImapRules').view = sieveTreeView;
 	
-  menuImapAccounts.selectedIndex = 0;
+	if (menuImapAccounts.selectedIndex == -1)
+    menuImapAccounts.selectedIndex = 0;
+    
   onSelectAccount();
 }
    
@@ -488,6 +506,7 @@ function onSelectAccount()
 			}			
 
 			postStatus("Connecting...");
+			sivSetStatus(3);
 
       // when pathing this lines always keep refferal code in sync
       gSieve = new Sieve(
@@ -639,9 +658,32 @@ function onEditClick()
   return;
 }
 
-function postStatus(progress)
+function sivSetStatus(state, message)
 {
-  document.getElementById('sbStatus').label = progress;
+  document.getElementById('sivExplorerWarning').setAttribute('hidden','true');
+  document.getElementById('sivExplorerError').setAttribute('hidden','true');
+  document.getElementById('sivExplorerWait').setAttribute('hidden','true');
+  document.getElementById('sivExplorerTree').setAttribute('collapsed','true');
+  
+  switch (state)
+  {
+    case 1: document.getElementById('sivExplorerWarning').removeAttribute('hidden');
+            document.getElementById('sivExplorerWarningMsg').value = message;
+            break;
+    case 2: document.getElementById('sivExplorerError').removeAttribute('hidden');
+            document.getElementById('sivExplorerWarningMsg').value = message;    
+            break;
+    case 3: document.getElementById('sivExplorerWait').removeAttribute('hidden');
+            break;
+    case 4: document.getElementById('sivExplorerTree').removeAttribute('collapsed');
+            break
+  }
+  
+}
+
+function postStatus(message)
+{
+  document.getElementById('sbStatus').label = message;
 }
 
 function disableControls(disabled)

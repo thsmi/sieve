@@ -576,6 +576,9 @@ function SieveAccount(account)
   this.account = account;	
 }
 
+SieveAccount.prototype.getUri
+    = function () { return this.URI; }
+
 SieveAccount.prototype.getDescription
     = function () { return this.description; }
 

@@ -39,53 +39,71 @@
       <row>
         <description>&list.tree;</description>
       </row>
-      
-      <row flex="1">
-        <vbox>
-          <tree id="treeImapRules" flex="1" hidecolumnpicker="true"  seltype="single" >
-            <treecols>
-			        <treecol id="namecol" label="&list.tree.name;" flex="1"/>
-   			      <treecol id="active" label="&list.tree.active;" cycler="true"/> 			  
-            </treecols>
-            <treechildren/>
-          </tree>
-          <vbox>          
-                <button id="btnServerDetails" oncommand="onServerDetails();" flex="1">
-                  <hbox flex="1"  align="center" >
-                   <image pack="center" id="imgServerDetails" height="9px" width="9px" 
-                            src="chrome://sieve/content/images/twisty-clsd.png" />
-                   <label style="text-align:left" value="&list.details.capability;" flex="1" />
-                  </hbox>
-                </button>                                  
+    
+      <row flex="1">        
+          <vbox>
+            <tree id="treeImapRules" flex="1" hidecolumnpicker="true"  seltype="single" >
+              <treecols>
+			          <treecol id="namecol" label="&list.tree.name;" flex="1"/>
+   			        <treecol id="active" label="&list.tree.active;" cycler="true"/> 			  
+              </treecols>
+              
+              <treechildren id="sivExplorerTree" collapsed="true" /> <!--collapsed="true" -->
+              
+              <box id="sivExplorerWait" hidden="true" align="center" pack="center" flex="1" />
+              
+              <box id="sivExplorerWarning" align="center" pack="center" flex="1" > 
+                <hbox align="center">
+                  <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
+                  <label id="sivExplorerWarningMsg" pack="center" 
+                         value="This account is not configured for manage sieve,\n goto 'Tools-> SieveMessage Filters'"  />
+                </hbox>
+              </box>
+              
+              <box id="sivExplorerError" hidden="true" align="center" pack="center" flex="1">
+                <hbox align="center">
+                  <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
+                  <label id="sivExplorerErrorMsg" pack="center" 
+                         value="Connecting to server failed [error message]"  />
+                </hbox>
+              </box>
+            </tree>
+            <vbox>          
+              <button id="btnServerDetails" oncommand="onServerDetails();" flex="1">
+                <hbox flex="1"  align="center" >
+                  <image pack="center" id="imgServerDetails" height="9px" width="9px" 
+                         src="chrome://sieve/content/images/twisty-clsd.png" />
+                  <label style="text-align:left" value="&list.details.capability;" flex="1" />
+                </hbox>
+              </button>                                  
           
-            <vbox id="vbServerDetails" >
-            <!--<hbox smtpServerInfoBox>-->
-              <stack flex="1" class="inset">                
-                <spacer/>                                          
-                <grid>
-                  <columns>
-                    <column />
-                    <column flex="1"/>
-                  </columns>
-                  <rows>
-                    <row align="baseline">
-                      <hbox pack="end"><label value="&list.details.capability.implementation;"/></hbox>
-                      <textbox id="txtImplementation" class="plain"/>                      
-                    </row>
-                    <row align="baseline">
-                      <hbox pack="end"><label value="&list.details.capability.extensions;"/></hbox>
-                      <textbox id="txtExtensions" class="plain"/>                      
-                    </row>
-                    <row align="baseline">
-                      <hbox pack="end"><label value="&list.details.capability.sasl;"/></hbox>           
-                      <textbox id="txtSASL" class="plain"/>           
-                    </row>          
-                  </rows>
-                </grid>                  
-              </stack>
-            </vbox>
-          </vbox>          
-        </vbox>
+              <vbox id="vbServerDetails" >
+                <stack flex="1" class="inset">                
+                  <spacer/>                                          
+                  <grid>
+                    <columns>
+                      <column />
+                      <column flex="1"/>
+                    </columns>
+                    <rows>
+                      <row align="baseline">
+                        <hbox pack="end"><label value="&list.details.capability.implementation;"/></hbox>
+                        <textbox id="txtImplementation" class="plain"/>                      
+                      </row>
+                      <row align="baseline">
+                        <hbox pack="end"><label value="&list.details.capability.extensions;"/></hbox>
+                        <textbox id="txtExtensions" class="plain"/>                      
+                      </row>
+                      <row align="baseline">
+                        <hbox pack="end"><label value="&list.details.capability.sasl;"/></hbox>           
+                        <textbox id="txtSASL" class="plain"/>           
+                      </row>          
+                    </rows>
+                  </grid>                  
+                </stack>
+              </vbox>
+            </vbox>          
+          </vbox>
         <vbox>
           <button id="newButton" label="&list.new;" 
                   oncommand="onNewClick();"/>

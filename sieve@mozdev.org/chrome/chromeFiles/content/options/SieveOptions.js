@@ -106,3 +106,15 @@ function onEnableClick(sender)
 	onTreeSelect(tree);		
 }
 
+function onShowFiltersClick()
+{
+	var tree = document.getElementById('treeAccounts');
+
+	// should never happen
+  if (tree.currentIndex == -1)
+		return;				
+			
+  sivOpenFilters(sieveAccountTreeView.getAccount(tree.currentIndex).getUri());
+ 
+  return;   
+}

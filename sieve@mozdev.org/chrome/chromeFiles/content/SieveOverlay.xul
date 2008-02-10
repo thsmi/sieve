@@ -11,7 +11,7 @@
   		oncommand='window.open("chrome://sieve/content/options/SieveOptions.xul", "sieveOptions", "chrome,centerscreen");' 
   		accesskey="&menu.options.key;" />
   <menuitem id="mnuSieveListDialog" insertafter="applyFilters" label="&menu.filters;"
-  		oncommand='sivOpenFilters();' 
+  		oncommand='sivOpenFilters(sivGetActiveAccount(),window);' 
   		accesskey="&menu.filters.key;" />  		
 <!--  <menuitem id="mnuSieveWizard" insertafter="applyFilters" label="Wizard"
   		oncommand='window.open("chrome://sieve/content/editor/SieveFilterWizard.xul", "sieveFilterWizard", "chrome,centerscreen");'/> -->	

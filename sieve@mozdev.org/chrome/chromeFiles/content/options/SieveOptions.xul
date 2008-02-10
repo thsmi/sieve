@@ -37,7 +37,7 @@
           <button id="btnEdit" label="&accounts.properties;"
                   oncommand="onEditClick();"/>
           <button id="btnFilters" label="&accounts.filters;"
-                  oncommand="sivOpenFilters();"/>                  
+                  oncommand="onShowFiltersClick();"/>                  
           <button id="btnEnable" label="Enable"
                   oncommand="onEnableClick(this);"/>
           <spacer />                  

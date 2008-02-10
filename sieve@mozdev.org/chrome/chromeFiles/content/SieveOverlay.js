@@ -1,4 +1,4 @@
-function sivOpenFilters(server)
+function sivOpenFilters(account,parentWin)
 {
   
   var w = null;
@@ -22,18 +22,24 @@ function sivOpenFilters(server)
     w.focus();
     return;
   }
-  
+
+
+  var params = Components.classes["@mozilla.org/embedcomp/dialogparam;1"]
+                .createInstance(Components.interfaces.nsIDialogParamBlock);
+  params.SetNumberStrings(1);
+  params.SetString(0, new String(account));
+
   // use window... method
   Components
     .classes["@mozilla.org/embedcomp/window-watcher;1"]
     .getService(Components.interfaces.nsIWindowWatcher)
-    .openWindow(null, "chrome://sieve/content/editor/SieveFilterExplorer.xul"
-                ,"Sieve:FilterExplorer", "chrome,resizable,centerscreen", null);
+    .openWindow(parentWin, "chrome://sieve/content/editor/SieveFilterExplorer.xul"
+                ,"Sieve:FilterExplorer", "chrome,resizable,centerscreen,all", params);
 
 }
 
 
-function sivGetAccount()
+function sivGetActiveAccount()
 {
   // this function depends on funtions of the overlayed message window...
   if (typeof(GetFirstSelectedMsgFolder) == "undefined")

@@ -112,10 +112,10 @@ Sieve.prototype.isAlive = function()
 Sieve.prototype.startTLS = function (ignoreCertError)
 {
   if (this.secure != true)
-    throw new Exception("TLS can't be started no secure socket");
+    throw "TLS can't be started no secure socket";
     
   if (this.socket == null)
-    throw new Exception("Can't start TLS, your are not connected to "+host);
+    throw "Can't start TLS, your are not connected to "+host;
 
   var securityInfo = this.socket.securityInfo.QueryInterface(Components.interfaces.nsISSLSocketControl);
   

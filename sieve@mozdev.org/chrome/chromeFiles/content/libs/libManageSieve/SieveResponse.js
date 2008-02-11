@@ -388,7 +388,7 @@ SieveSaslLoginResponse.prototype.add
     return;
   }
     
-  throw new Exception('Illegal State:'+this.state+' / '+data);
+  throw 'Illegal State:'+this.state+' / '+data;
 }
 
 SieveSaslLoginResponse.prototype.getState
@@ -460,7 +460,7 @@ SieveSaslCramMd5Response.prototype.add
     return;
   }
     
-  throw new Exception('Illegal State:'+this.state+' / '+data);
+  throw 'Illegal State:'+this.state+' / '+data;
 }
 
 SieveSaslCramMd5Response.prototype.getState

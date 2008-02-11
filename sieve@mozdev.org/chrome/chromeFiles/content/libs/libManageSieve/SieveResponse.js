@@ -384,8 +384,20 @@ SieveSaslLoginResponse.prototype.add
   {
     // Should be either a NO, BYE or OK
     this.state = 4;
-    this.superior = new SieveAbstractResponse(data);
+    this.superior = new SieveAbstractResponse(parser);
     return;
+  }
+  
+  // finally test if the 
+  try
+  {
+    this.superior = new SieveAbstractResponse(parser);
+    this.state = 4;
+    return;
+  }
+  catch (ex) 
+  {
+    throw 'Illegal State:'+this.state+' / '+data+'\n'+ex;    
   }
     
   throw 'Illegal State:'+this.state+' / '+data;
@@ -456,7 +468,7 @@ SieveSaslCramMd5Response.prototype.add
   {
     // Should be either a NO, BYE or OK
     this.state = 4;
-    this.superior = new SieveAbstractResponse(data);
+    this.superior = new SieveAbstractResponse(parser);
     return;
   }
     

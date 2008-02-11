@@ -1000,10 +1000,10 @@ SieveSaslLoginRequest.prototype.addResponse
 	if (this.response.getState() != 4)
 	  return;
 	
-  if ((response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onSaslLoginResponse(response);			
-  else if ((response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(response);
+  if ((this.response.getResponse() == 0) && (this.responseListener != null))
+    this.responseListener.onSaslLoginResponse(this.response);			
+  else if ((this.response.getResponse() != 0) && (this.errorListener != null))
+    this.errorListener.onError(this.response);
 }
 
 /*******************************************************************************

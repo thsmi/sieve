@@ -25,7 +25,7 @@ textbox.sieve
 }
 
 
-#sivxplorerError
+#sivExplorerError
 {
 	background-color: white	
 }
@@ -36,6 +36,11 @@ textbox.sieve
 	border: 1px solid black; 
 	padding: 5px; 
 	margin-top : 5px;	
+}
+
+#sivExplorerError description
+{
+	white-space: pre;
 }
                     
 #sivExplorerWarning
@@ -49,6 +54,11 @@ textbox.sieve
 	border: 1px solid black; 
 	padding: 5px; 
 	margin-top : 5px;
+}
+
+#sivExplorerWarning description
+{
+	white-space: pre;
 }
 
 .sieveSideBar stack image

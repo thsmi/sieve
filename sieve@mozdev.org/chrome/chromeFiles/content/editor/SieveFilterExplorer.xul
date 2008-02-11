@@ -55,16 +55,17 @@
               <box id="sivExplorerWarning" align="center" pack="center" flex="1" > 
                 <hbox align="center">
                   <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
-                  <label id="sivExplorerWarningMsg" pack="center" 
-                         value="This account is not configured for manage sieve,\n goto 'Tools-> SieveMessage Filters'"  />
+                  <description id="sivExplorerWarningMsg" pack="center">
+This account is not configured for manage sieve,\n goto 'Tools-> SieveMessage Filters'"
+                  </description>
                 </hbox>
               </box>
               
               <box id="sivExplorerError" hidden="true" align="center" pack="center" flex="1">
                 <hbox align="center">
                   <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
-                  <label id="sivExplorerErrorMsg" pack="center" 
-                         value="Connecting to server failed [error message]"  />
+                  <description id="sivExplorerErrorMsg" pack="center" >
+                  </description> 
                 </hbox>
               </box>
             </tree>

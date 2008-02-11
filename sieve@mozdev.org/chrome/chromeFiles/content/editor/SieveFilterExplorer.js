@@ -394,7 +394,7 @@ var event =
     }
 
    alert("Error:"+response.getMessage());
-    sivSetStatus(2, "Action failed server reported an error...\n"+response.getMessage());
+    sivSetStatus(2, "Action failed, server reported an error...\n"+response.getMessage());
   },
   
   onCycleCell: function(row,col,script,active)
@@ -668,10 +668,12 @@ function sivSetStatus(state, message)
   switch (state)
   {
     case 1: document.getElementById('sivExplorerWarning').removeAttribute('hidden');
-            document.getElementById('sivExplorerWarningMsg').value = message;
+            document.getElementById('sivExplorerWarningMsg')
+                .firstChild.nodeValue = message;
             break;
     case 2: document.getElementById('sivExplorerError').removeAttribute('hidden');
-            document.getElementById('sivExplorerWarningMsg').value = message;    
+            document.getElementById('sivExplorerErrorMsg')
+                .firstChild.nodeValue = message;    
             break;
     case 3: document.getElementById('sivExplorerWait').removeAttribute('hidden');
             break;

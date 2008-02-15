@@ -37,8 +37,9 @@
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.compile "Compile on server every">
 <!ENTITY options.misc.compile.key "c">
-<!ENTITY options.misc.debug.request "Debug Sieve requests to Error Console">
+<!ENTITY options.misc.debug.request  "Debug Sieve requests to Error Console">
 <!ENTITY options.misc.debug.response "Debug Sieve responses to Error Console">
+<!ENTITY options.misc.debug.advanced "Debug Errors and State Information">
 
 <!ENTITY options.misc.authmechanism "Override suggested Authentication Mechanism">
 <!ENTITY options.misc.authmechanism.default "Use always:">

@@ -30,7 +30,7 @@ textbox.sieve
 	background-color: white	
 }
 
-#sivExplorerError hbox
+#sivExplorerError > hbox
 {
 	background-color: #ffe6e6; 
 	border: 1px solid black; 
@@ -38,17 +38,17 @@ textbox.sieve
 	margin-top : 5px;	
 }
 
-#sivExplorerError description
+/*#sivExplorerError description
 {
 	white-space: pre;
-}
+}*/
                     
 #sivExplorerWarning
 {
   background-color: white		
 }
 
-#sivExplorerWarning hbox
+#sivExplorerWarning > hbox
 {
 	background-color: #FFFFCC;
 	border: 1px solid black; 

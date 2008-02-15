@@ -64,8 +64,13 @@ This account is not configured for manage sieve,\n goto 'Tools-> SieveMessage Fi
               <box id="sivExplorerError" hidden="true" align="center" pack="center" flex="1">
                 <hbox align="center">
                   <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
-                  <description id="sivExplorerErrorMsg" pack="center" >
-                  </description> 
+                  <vbox>
+                    <description>
+                      The connection was terminated due to an error
+                    </description>
+                    <description id="sivExplorerErrorMsg" pack="center" >                    
+                    </description>
+                  </vbox> 
                 </hbox>
               </box>
             </tree>

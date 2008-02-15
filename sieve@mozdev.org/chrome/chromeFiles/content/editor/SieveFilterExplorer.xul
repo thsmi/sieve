@@ -53,7 +53,7 @@
               <box id="sivExplorerWait" hidden="true" align="center" pack="center" flex="1" />
               
               <box id="sivExplorerWarning" align="center" pack="center" flex="1" > 
-                <hbox align="center">
+                <hbox align="center" class="sivWarning">
                   <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
                   <description id="sivExplorerWarningMsg" pack="center">
 This account is not configured for manage sieve,\n goto 'Tools-> SieveMessage Filters'"
@@ -62,7 +62,7 @@ This account is not configured for manage sieve,\n goto 'Tools-> SieveMessage Fi
               </box>
               
               <box id="sivExplorerError" hidden="true" align="center" pack="center" flex="1">
-                <hbox align="center">
+                <hbox align="center" class="sivError">
                   <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
                   <vbox>
                     <description>

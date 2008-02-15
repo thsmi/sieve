@@ -30,13 +30,13 @@ textbox.sieve
 	background-color: white	
 }
 
-#sivExplorerError > hbox
+.sivError
 {
 	background-color: #ffe6e6; 
 	border: 1px solid black; 
 	padding: 5px; 
 	margin-top : 5px;
-	-moz-border-radius: 7px;	
+	-moz-border-radius: 5px;	
 }
 
 /*#sivExplorerError description
@@ -44,18 +44,18 @@ textbox.sieve
 	white-space: pre;
 }*/
                     
-#sivExplorerWarning
+.sivExplorerWarning
 {
   background-color: white		
 }
 
-#sivExplorerWarning > hbox
+.sivWarning
 {
 	background-color: #FFFFCC;
 	border: 1px solid black; 
 	padding: 5px; 
 	margin-top : 5px;
-	-moz-border-radius: 7px;	
+	-moz-border-radius: 5px;	
 }
 
 #sivExplorerWarning description

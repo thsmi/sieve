@@ -104,7 +104,7 @@
     
     <!-- advanced panel -->
     <vbox>
-      <hbox align="center" style="background-color: #FFFFCC; -moz-border-radius: 7px;	border: 1px solid black; padding: 5px; margin-top : 5px;">
+      <hbox align="center" class="sivWarning" >
         <image id="imgErrorBar" pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
         <label pack="center" value="These settings are intended for advanced users..."  />
       </hbox> 

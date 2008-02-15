@@ -142,7 +142,7 @@
         </radiogroup>
         <vbox class="indent">
           <hbox align="center">
-            <label value="Username" 
+            <label value="Username:" 
                   control="txtAuthorization"/>
             <textbox id="txtAuthorization" size="20" onchange="onAuthorizationChange(this);"/>
           </hbox>
@@ -154,10 +154,15 @@
     <vbox> 
       <groupbox>
         <caption label="Debug settings" />
+        <description>
+          blubber blubber blubber ... Error Console ... [link bzw. button]
+        </description>
         <checkbox id="cbxDebugRequest" label="&options.misc.debug.request;"
                   oncommand="onDebugRequestCommand(this)" />
         <checkbox id="cbxDebugResponse" label="&options.misc.debug.response;"
-                  oncommand="onDebugResponseCommand(this)" />        
+                  oncommand="onDebugResponseCommand(this)" />
+        <checkbox id="cbxDebugAdvanced" label="&options.misc.debug.advanced;"
+                  oncommand="alert('Not yet Implemented')" />                          
       </groupbox>
     </vbox>  
   </tabpanels>

@@ -375,7 +375,7 @@ SieveSaslLoginResponse.prototype.add
   
   if ((this.state == 1) && (parser.isString()))
   {
-    // Sting should be equivalten to 'Password:'
+    // String should be equivalten to 'Password:'
     this.state++;
     return;
   }
@@ -388,7 +388,7 @@ SieveSaslLoginResponse.prototype.add
     return;
   }
   
-  // finally test if the 
+  // is it an error message? 
   try
   {
     this.superior = new SieveAbstractResponse(parser);

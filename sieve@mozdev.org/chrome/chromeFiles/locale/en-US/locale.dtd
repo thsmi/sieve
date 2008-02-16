@@ -37,16 +37,21 @@
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.compile "Compile on server every">
 <!ENTITY options.misc.compile.key "c">
-<!ENTITY options.misc.debug.request  "Debug Sieve requests to Error Console">
-<!ENTITY options.misc.debug.response "Debug Sieve responses to Error Console">
-<!ENTITY options.misc.debug.advanced "Debug Errors and State Information">
 
-<!ENTITY options.misc.authmechanism "Override suggested Authentication Mechanism">
-<!ENTITY options.misc.authmechanism.default "Use always:">
-<!ENTITY options.misc.authmechanism.crammd5 "CRAM-MD5">
-<!ENTITY options.misc.authmechanism.digestmd5 "DIGEST-MD5">
-<!ENTITY options.misc.authmechanism.login "Login">
-<!ENTITY options.misc.authmechanism.plain "Plain">
+<!ENTITY options.debug.caption "Debug settings">
+<!ENTITY options.debug.request "Client to Server communication (requests)">
+<!ENTITY options.debug.response "Server to Client communication (responses)">
+<!ENTITY options.debug.exceptions "Exceptions and State Machine Information">
+
+<!ENTITY options.authmechanism.caption "Authentication Mechanism">
+<!ENTITY options.authmechanism "Override suggested Authentication Mechanism">
+<!ENTITY options.authmechanism.default "Use always:">
+<!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
+<!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
+<!ENTITY options.authmechanism.login "Login">
+<!ENTITY options.authmechanism.plain "Plain">
+
+<!ENTITY options.proxyauth.caption "Proxy Authorization">
 
 <!ENTITY options.info.servername "Server Name:">
 <!ENTITY options.info.port "Port:">

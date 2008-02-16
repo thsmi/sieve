@@ -45,20 +45,25 @@ function onDialogLoad(sender)
 
   document.getElementById('txtCompile').value
   	= account.getSettings().getCompileDelay();
+  
+  var element = null;
             
- 	var cbxCompile = document.getElementById('cbxCompile');
-  cbxCompile.checked = account.getSettings().hasCompileDelay();
-  enableCompile(cbxCompile.checked);	
+ 	element = document.getElementById('cbxCompile');
+  element.checked = account.getSettings().hasCompileDelay();
+  enableCompile(element.checked);	
+   
+  document.getElementById('cbxDebugRequest').checked 
+      = account.getSettings().hasDebugFlag(0);
+   
+  document.getElementById('cbxDebugResponse').checked 
+      = account.getSettings().hasDebugFlag(1);
   
-  var cbxDebugRequest = document.getElementById('cbxDebugRequest');
-  cbxDebugRequest.checked = account.getSettings().hasDebugFlag(0);
+  document.getElementById('cbxDebugExceptions').checked 
+      = account.getSettings().hasDebugFlag(2);
   
-  var cbxDebugResponse = document.getElementById('cbxDebugResponse');
-  cbxDebugResponse.checked = account.getSettings().hasDebugFlag(1);  
-  
-  var cbxAuthMechanism = document.getElementById('cbxAuthMechanism');
-  cbxAuthMechanism.checked = account.getSettings().hasForcedAuthMechanism();
-  enableAuthMechanism(cbxAuthMechanism.checked);
+  element = document.getElementById('cbxAuthMechanism');
+  element.checked = account.getSettings().hasForcedAuthMechanism();
+  enableAuthMechanism(element.checked);
    
   var list = document.getElementById('mlAuthMechanism');
   var items = list.getElementsByTagName('menuitem');
@@ -274,6 +279,14 @@ function onDebugResponseCommand(sender)
   account.getSettings().setDebugFlag(1,sender.checked);
 } 
 
+function onDebugExceptionCommand(sender)
+{
+  if (account == null)
+    return;
+    
+  account.getSettings().setDebugFlag(2,sender.checked);
+}
+
 function onAuthMechanismCommand(sender)
 {
   if (account == null)
@@ -317,4 +330,25 @@ function onShowPassword()
       .classes["@mozilla.org/embedcomp/window-watcher;1"]
       .getService(Components.interfaces.nsIWindowWatcher)
       .openWindow(null, uri, name, "chrome,resizable", null);  
+}
+
+function onShowErrorConsole()
+{
+  var name = "global:console"
+  var uri = "chrome://global/content/console.xul"
+
+  var w = Components
+    .classes["@mozilla.org/appshell/window-mediator;1"]
+    .getService(Components.interfaces.nsIWindowMediator)
+    .getMostRecentWindow(name);
+
+  if (w)
+    w.focus();
+  else
+    Components
+      .classes["@mozilla.org/embedcomp/window-watcher;1"]
+      .getService(Components.interfaces.nsIWindowWatcher)
+      .openWindow(null, uri, name, "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar", null);
+      
+    //window.open(uri, "_blank", "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar");          
 }

@@ -818,6 +818,12 @@ SieveSaslPlainRequest.prototype.setPassword
   this.password = password;  
 }
 
+SieveSaslPlainRequest.prototype.isAuthorizable
+    = function () 
+{
+  return true;
+}
+
 SieveSaslPlainRequest.prototype.setAuthorization
     = function (authorization)
 {
@@ -942,6 +948,13 @@ SieveSaslLoginRequest.prototype.setUsername
   this.username = username;
 }
 
+// checks if authorization is implemented...
+SieveSaslLoginRequest.prototype.isAuthorizable
+    = function () 
+{
+  return false;
+}
+
 SieveSaslLoginRequest.prototype.setAuthorization
     = function (authorization)
 {
@@ -959,7 +972,7 @@ SieveSaslLoginRequest.prototype.getNextRequest
 {
   switch (this.response.getState())
   {
-    case 0: 
+    case 0:
       return "AUTHENTICATE \"LOGIN\"\r\n";    
     case 1: 
       return "{"+btoa(this.username).length+"}\r\n"+btoa(this.username);

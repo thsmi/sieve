@@ -206,17 +206,20 @@ Sieve.prototype.disconnect = function ()
   
   this.socket.close(0);
   this.socket = null;
+  
+  if ((this.debug.level & (1 << 1)) || (this.debug.level & (1 << 0)))
+    this.debug.logger.logStringMessage("Disconnected ...");      
 }
 
 Sieve.prototype.onStopRequest =  function(request, context, status)
 {
   if (this.socket != null)
-    this.disconnect();
+    this.disconnect();        
 }
 
 Sieve.prototype.onStartRequest = function(request, context)
 {
-  if (this.debug.level)
+  if ((this.debug.level & (1 << 1)) || (this.debug.level & (1 << 0)))
     this.debug.logger.logStringMessage("Connected to "+this.host+":"+this.port+" ...");
 }
 
@@ -261,16 +264,18 @@ Sieve.prototype.onDataAvailable = function(request, context, inputStream, offset
       this.watchDog.onStop();
 	  
 	  // ... then try to parse the request
-	  this.requests[0].addResponse(this.data);
+	  this.requests[0].addResponse(""+this.data); 
 	}
 	catch (ex)
 	{
-	  if (this.debug.level)      
+	  if (this.debug.level & (1 << 2))
 	    this.debug.logger.logStringMessage("Parsing Exception in libManageSieve/Sieve.js:\n"+ex);
 	  // ... we encounterned an error, this is most likely caused ...
 	  // ... by a fragmented packet, so we skip processing and start ...
 	  // ... the timeout timer again. Either the next packet or a timeout ...
 	  // ... will resolve this situation.
+	  
+	  
 
     if( this.watchDog != null)
       this.watchDog.onStart();
@@ -371,6 +376,7 @@ BadCertHandler.prototype.notifyCertProblem = function (socketInfo,/*nsISSLStatus
   
   this.logger.logStringMessage(targetSite);
     
+    // TODO: add server cert inorder to establish line of trust
   overrideService.rememberValidityOverride(
       targetSite, // Host Name with port (host:port)
       cert,                            // -> SSLStatus

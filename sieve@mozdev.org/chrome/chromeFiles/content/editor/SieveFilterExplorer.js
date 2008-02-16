@@ -183,17 +183,22 @@ var event =
       
     request.setPassword(password);
     
-    var authorization = account.getAuthorization().getAuthorization();
-    // TODO: terminate connection an notify that authorization settings
-    // are invalid...
-    if (authorization == null)
+    // check if the authentication method supports proxy authorization...
+    if (request.isAuthorizable())
     {
-      sivSetStatus(2, "Error: Unable to retrieve Authorization information");
-      return;
-    }
+      // ... if so retrieve the authorization identity   
+      var authorization = account.getAuthorization().getAuthorization();
+      // TODO: terminate connection an notify that authorization settings
+      // are invalid...
+      if (authorization == null)
+      {
+        sivSetStatus(2, "Error: Unable to retrieve Authorization information");
+        return;
+      }
       
-    request.setAuthorization(authorization);
-    
+      request.setAuthorization(authorization);
+    }
+     
     gSieve.addRequest(request);    		
     
   },
@@ -540,7 +545,7 @@ function onSelectAccount()
 	}
 	
 	// hier haben wir etwas weniger Zeit ...
-	logoutTimeout = setTimeout("levent.onLogoutResponse(\"\")",250);
+	logoutTimeout = setTimeout(levent.onLogoutResponse,250);
 	
     /*if (keepAliveInterval != null)
     {

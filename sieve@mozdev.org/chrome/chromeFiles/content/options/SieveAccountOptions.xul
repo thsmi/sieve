@@ -2,6 +2,7 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://sieve/locale/locale.dtd">
+<?xml-stylesheet href="chrome://sieve/content/editor/Sieve.css" type="text/css"?>
 
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         buttons="accept"
@@ -109,30 +110,31 @@
         <label pack="center" value="These settings are intended for advanced users..."  />
       </hbox> 
       <groupbox>
-        <caption label="Authentication Mechanism" />
+        <caption label="&options.authmechanism.caption;" />
         <description>
-          In certain situations e.g. when using Proxy Authentication you might want to force a specific Authentication Mechanism. 
+          In certain situations e.g. when using Proxy Authentication you might 
+          want to force a specific Authentication Mechanism. 
         </description>
-        <checkbox id="cbxAuthMechanism" label="&options.misc.authmechanism;"
+        <checkbox id="cbxAuthMechanism" label="&options.authmechanism;"
                   oncommand="onAuthMechanismCommand(this)" />
         <hbox id="hbAuthMechanism" align="center" class="indent">
-          <label control="mlAuthMechanism" value="&options.misc.authmechanism.default;" />
+          <label control="mlAuthMechanism" value="&options.authmechanism.default;" />
           <menulist id="mlAuthMechanism" oncommand="onAuthMechanismSelect(this)">
             <menupopup>
-              <menuitem id="miAuthMechanismPlain" label="&options.misc.authmechanism.plain;" value="plain"/>
-              <menuitem id="miAuthMechanismLogin" label="&options.misc.authmechanism.login;" value="login"/>
+              <menuitem id="miAuthMechanismPlain" label="&options.authmechanism.plain;" value="plain"/>
+              <menuitem id="miAuthMechanismLogin" label="&options.authmechanism.login;" value="login"/>
             </menupopup>
           </menulist>
         </hbox>        
       </groupbox>
       <groupbox>
-        <caption label="Proxy Authorization" /> 
+        <caption label="&options.proxyauth.caption;" /> 
         <description>
           Proxy authorization, allows an authenticated user to act on the behalf of another user. 
           Usually servers are configured, that this feature is only available for administrators.
         </description>
         <description>
-          When using this feature you should force "SASL PLAIN" Authentication.
+          When using proxy authorization you should force "SASL PLAIN" Authentication.
         </description>
         <radiogroup id="rgAuthorization" onselect="onAuthorizationSelect(this);">
           <radio id="rbNoAuthorization" label="No Authorization"/>
@@ -142,28 +144,35 @@
         </radiogroup>
         <vbox class="indent">
           <hbox align="center">
-            <label value="Username:" 
-                  control="txtAuthorization"/>
-            <textbox id="txtAuthorization" size="20" onchange="onAuthorizationChange(this);"/>
+            <label value="Username:" control="txtAuthorization"/>
+            <textbox id="txtAuthorization" size="20" 
+                     onchange="onAuthorizationChange(this);"/>
           </hbox>
-        </vbox>       
+        </vbox>
       </groupbox>
       <hbox flex="1"/>
-    </vbox>   
+    </vbox>
     <!-- debug panel -->
-    <vbox> 
+    <vbox>
       <groupbox>
-        <caption label="Debug settings" />
-        <description>
-          blubber blubber blubber ... Error Console ... [link bzw. button]
-        </description>
-        <checkbox id="cbxDebugRequest" label="&options.misc.debug.request;"
+        <caption label="&options.debug.caption;" />
+        <checkbox id="cbxDebugRequest" label="&options.debug.request;"
                   oncommand="onDebugRequestCommand(this)" />
-        <checkbox id="cbxDebugResponse" label="&options.misc.debug.response;"
+        <checkbox id="cbxDebugResponse" label="&options.debug.response;"
                   oncommand="onDebugResponseCommand(this)" />
-        <checkbox id="cbxDebugAdvanced" label="&options.misc.debug.advanced;"
-                  oncommand="alert('Not yet Implemented')" />                          
+        <checkbox id="cbxDebugExceptions" label="&options.debug.exceptions;"
+                  oncommand="onDebugExceptionCommand(this)" />
       </groupbox>
+      <groupbox>
+        <caption label="Debug Output" />
+        <hbox align="center">
+          <description control="btnShowPasswords" flex="1">
+            Debug information is posted to the error console
+          </description>          
+          <button id="btnShowPasswords" label="Show Error Console..." 
+                  oncommand="onShowErrorConsole()" />
+         </hbox>
+      </groupbox>      
     </vbox>  
   </tabpanels>
   </tabbox>

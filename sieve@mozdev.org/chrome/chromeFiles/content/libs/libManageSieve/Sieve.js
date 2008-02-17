@@ -141,9 +141,10 @@ Sieve.prototype.removeWatchDogListener = function()
 
 Sieve.prototype.addRequest = function(request)
 {
+    
 	this.requests[this.requests.length] = request;
 	// wenn die länge nun eins ist war sie vorher null
-	// daher muss die Requestwarteschalnge neu angestoßen werden.
+	// daher muss die Requestwarteschlange neu angestoßen werden.
 	if (this.requests.length > 1)
 		return;
 
@@ -208,13 +209,22 @@ Sieve.prototype.disconnect = function ()
   this.socket = null;
   
   if ((this.debug.level & (1 << 1)) || (this.debug.level & (1 << 0)))
-    this.debug.logger.logStringMessage("Disconnected ...");      
+    this.debug.logger.logStringMessage("Disconnected ...");
+  
+    
 }
 
 Sieve.prototype.onStopRequest =  function(request, context, status)
 {
+  // this method is invoked anytime when the socket connection is closed
+  // ... either by going to offlinemode or when the network cable is disconnected
+/*  if (this.debug.level & (1 << 2))
+    this.debug.logger.logStringMessage("Stop request received ...");
+ 
+  this.onWatchDogTimeout();
+           
   if (this.socket != null)
-    this.disconnect();        
+    this.disconnect();*/        
 }
 
 Sieve.prototype.onStartRequest = function(request, context)

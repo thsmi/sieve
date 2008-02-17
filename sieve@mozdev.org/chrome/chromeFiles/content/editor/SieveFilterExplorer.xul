@@ -65,11 +65,13 @@ This account is not configured for manage sieve,\n goto 'Tools-> SieveMessage Fi
                 <hbox align="center" class="sivError">
                   <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
                   <vbox>
-                    <description>
-                      The connection was terminated due to an error
+                    <description style="font-weight:bold">
+                      Last Command failed, because the server reported an error:
                     </description>
                     <description id="sivExplorerErrorMsg" pack="center" >                    
                     </description>
+                    <button label="ignore" />
+                    <button label="disconnect" />
                   </vbox> 
                 </hbox>
               </box>

@@ -11,6 +11,8 @@
   jsLoader
     .loadSubScript("chrome://sieve/content/libs/libManageSieve/Sieve.js");
   jsLoader
+    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveWatchDog.js");    
+  jsLoader
     .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveRequest.js");
   jsLoader
     .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponse.js");    
@@ -35,91 +37,7 @@ var sieveTreeView = null;
 var closeTimeout = null;
 var accounts = new Array();
 
-var gSieveWatchDog =
-{
-  timeout         : null,
-  timeoutInterval : null,
-  
-  idle            : null,
-  idleInterval    : null,
-    
-  onAttach : function(timeoutInterval, idleInterval)
-  {
-    gSieveWatchDog.timeoutInterval = timeoutInterval;
-    gSieveWatchDog.idleInterval = idleInterval;
-  },
-  
-  onDeattach : function()
-  {
-    if (gSieveWatchDog == null)
-      return;
-      
-    if (gSieveWatchDog.timeout != null)
-      clearTimeout(gSieveWatchDog.timeout);
-    
-    if (gSieveWatchDog.idle != null)
-      clearTimeout(gSieveWatchDog.idle);
-    
-    return;
-  },  
-  
-  onStart: function()
-  {    
-    gSieveWatchDog.timeout 
-      = setTimeout(function() {gSieveWatchDog.onTimeout();},
-                   gSieveWatchDog.timeoutInterval);
-    
-    return;    
-  },
-  
-  onStop: function()
-  {
-    clearTimeout(gSieveWatchDog.timeout);
-    gSieveWatchDog.timeout = null;
-    
-    if (gSieveWatchDog.idleInterval == null)
-      return;
-      
-    if (gSieveWatchDog.idle != null)
-      clearTimeout(gSieveWatchDog.idle);
-    
-    gSieveWatchDog.idle 
-      = setTimeout(function() {gSieveWatchDog.onIdle();},
-                   gSieveWatchDog.idleInterval);
-    
-    return;
-  },
-  
-  onIdle: function ()
-  {
-    //alert('onIdle');
-    // we simply do notihng in case of an error...
-    var lEvent = 
-    {
-      onCapabilitiesResponse: function() {},
-      onTimeout: function() { alert('Timeout2');},
-      onError: function() {alert('Error2');}
-    }
-    
-    if (gSieveWatchDog.idle != null)
-      clearTimeout(gSieveWatchDog.idle);
-          
-    gSieveWatchDog.idle = null;
-    
-    var request = new SieveCapabilitiesRequest();
-    request.addCapabilitiesListener(lEvent);
-    request.addErrorListener(lEvent);
-  
-    // create a sieve request without an eventhandler...
-    gSieve.addRequest(request);
-  },
-  
-  onTimeout: function()
-  {
-    gSieveWatchDog.timeout = null;
-    gSieve.onWatchDogTimeout();
-  }  
-}
+var gSieveWatchDog = null;
 
 var event = 
 {	
@@ -235,6 +153,7 @@ var event =
       
       onError: function(response)
       {
+        alert("error");
         event.onError(response);
       },
       
@@ -244,7 +163,7 @@ var event =
         request.addCapabilitiesListener(event);
         request.addErrorListener(event);	
 		
-        gSieve.addRequest(request)
+        gSieve.addRequest(request)      
       }    	
     }
     	  
@@ -288,7 +207,7 @@ var event =
     request.addListScriptListener(event);
     request.addErrorListener(event);
 
-    gSieve.addRequest(request);	  	  
+    gSieve.addRequest(request);
     disableControls(false);
     sivSetStatus(4);
 	},
@@ -298,7 +217,10 @@ var event =
 	  clearTimeout(closeTimeout);
 	  
 		if (gSieve.isAlive())
-			gSieve.disconnect();
+		{
+		  gSieve.removeWatchDogListener();
+		  gSieve.disconnect();
+		}
 		
 		// this will close the Dialog!
 		close();		
@@ -354,11 +276,10 @@ var event =
 	onTimeout: function()
 	{
 	  disableControls(true);
-	  if (gSieve.isAlive())
-			gSieve.disconnect();
-
-    alert("Timeout...");
-    sivSetStatus(1, "The connection has timed out, the Server is not responding...");
+	  sivSetStatus(1, "The connection has timed out, the Server is not responding...");
+	  postStatus("Disconnected");
+	  
+	  gSieve.disconnect();
 	},
 	
   onError: function(response)
@@ -375,30 +296,11 @@ var event =
       
       var account = getSelectedAccount();
 
-      gSieve = new Sieve(
-                    code.getHostname(),
-                    account.getHost().getPort(),
-                    account.getHost().isTLS(),
-                    (account.getSettings().isKeepAlive() ?
-                        account.getSettings().getKeepAliveInterval():
-                        null));
-                                                   
-      gSieve.setDebugLevel(
-               account.getSettings().getDebugFlags(),
-               gLogger);
-                      
-      var request = new SieveInitRequest();
-      request.addErrorListener(event)
-      request.addInitListener(event)
-      gSieve.addRequest(request);
-
-      gSieve.addWatchDogListener(gSieveWatchDog);		    
-      gSieve.connect();
+      sivConnect(account,code.getHostname());
       
       return;
     }
 
-   alert("Error:"+response.getMessage());
     sivSetStatus(2, "Action failed, server reported an error...\n"+response.getMessage());
   },
   
@@ -414,8 +316,25 @@ var event =
     request.addErrorListener(event);
     
     gSieve.addRequest(request);
-  }
+  },
   
+  onIdle: function ()
+  { 
+    // as we send a keep alive request, we don't care
+    // about the response...
+    var request = new SieveCapabilitiesRequest();
+    request.addErrorListener(event);
+  
+    
+    gSieve.addRequest(request);
+  },
+    
+  onWatchDogTimeout : function()
+  {
+    // call sieve object indirect inoder to prevent a 
+    // ring reference
+    gSieve.onWatchDogTimeout();
+  }    
 }
 
 function onWindowLoad()
@@ -482,6 +401,39 @@ function getSelectedAccount()
     return accounts[menu.selectedIndex];
 }
 
+function sivConnect(account,hostname)
+{
+  postStatus("Connecting...");
+  sivSetStatus(3);
+  
+  if (hostname == null)
+    hostname = account.getHost().getHostname();
+
+  // when pathing this lines always keep refferal code in sync
+      gSieve = new Sieve(
+                    hostname,
+                    account.getHost().getPort(),
+                    account.getHost().isTLS(),
+                    (account.getSettings().isKeepAlive() ?
+                        account.getSettings().getKeepAliveInterval():
+                        null));
+
+      gSieve.setDebugLevel(
+               account.getSettings().getDebugFlags(),
+               gLogger);                
+
+      var request = new SieveInitRequest();
+      request.addErrorListener(event)
+      request.addInitListener(event)
+      gSieve.addRequest(request);
+      
+      gSieveWatchDog = new SieveWatchDog();
+      gSieveWatchDog.addListener(event);  
+      
+      gSieve.addWatchDogListener(gSieveWatchDog);       
+      gSieve.connect();  
+}
+
 function onSelectAccount()
 {
 	var logoutTimeout = null;	
@@ -509,30 +461,7 @@ function onSelectAccount()
 				postStatus("Not connected! Goto 'Tools -> Sieve Settings' to activate this account")
 				return;
 			}			
-
-			postStatus("Connecting...");
-			sivSetStatus(3);
-
-      // when pathing this lines always keep refferal code in sync
-      gSieve = new Sieve(
-                    account.getHost().getHostname(),
-                    account.getHost().getPort(),
-                    account.getHost().isTLS(),
-                    (account.getSettings().isKeepAlive() ?
-                        account.getSettings().getKeepAliveInterval():
-                        null));
-
-      gSieve.setDebugLevel(
-               account.getSettings().getDebugFlags(),
-               gLogger);                
-
-      var request = new SieveInitRequest();
-      request.addErrorListener(event)
-      request.addInitListener(event)
-      gSieve.addRequest(request);
-  
-      gSieve.addWatchDogListener(gSieveWatchDog);	
-      gSieve.connect();
+      sivConnect(account);
     }
   }
 
@@ -637,7 +566,7 @@ function onNewClick()
   var result
        = prompts.prompt(
            window,
-          "Create a new Script",
+           "Create a new Script",
            "Enter the name for your new Sieve script (existing scripts will be overwritten)",
            input, null, check);
 

@@ -1,3 +1,19 @@
+
+  // TODO make sure that the scripts are imported only once.
+  // TODO place imports in the corresponding files like the header import in c...
+  
+  // Load all the Libraries we need...
+  var jsLoader = Components
+                   .classes["@mozilla.org/moz/jssubscript-loader;1"]
+                   .getService(Components.interfaces.mozIJSSubScriptLoader);
+/*  jsLoader
+    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveWatchDog.js");*/
+    
+  // we are done importing script, so free ... 
+  // ... the loader inorder to prevent XPCOM leaks
+  jsLoader = null;    
+
+
 var gSieve = null;
 var gCompileTimeout = null;
 var gCompile = null
@@ -94,7 +110,6 @@ var gSieveWatchDog =
     gSieve.onWatchDogTimeout();
   }  
 }
-
 
 
 var event = 
@@ -389,6 +404,8 @@ function onExport()
     filePicker.defaultString    = document.getElementById("txtName").value+".siv";
 
     filePicker.appendFilter("Sieve Scripts (*.siv)", "*.siv");
+    filePicker.appendFilter("Text Files (*.txt)", "*.txt");
+    filePicker.appendFilter("All Files (*.*)", "*.*");
     filePicker.init(window, "Export Sieve Script", filePicker.modeSave);
 
     var result = filePicker.show();

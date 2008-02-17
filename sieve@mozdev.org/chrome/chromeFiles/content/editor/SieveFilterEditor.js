@@ -6,8 +6,8 @@
   var jsLoader = Components
                    .classes["@mozilla.org/moz/jssubscript-loader;1"]
                    .getService(Components.interfaces.mozIJSSubScriptLoader);
-/*  jsLoader
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveWatchDog.js");*/
+  jsLoader
+    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveWatchDog.js");
     
   // we are done importing script, so free ... 
   // ... the loader inorder to prevent XPCOM leaks
@@ -15,6 +15,8 @@
 
 
 var gSieve = null;
+var gSieveWatchDog = null
+
 var gCompileTimeout = null;
 var gCompile = null
 var gCompileDelay = null;
@@ -23,94 +25,6 @@ var gChanged = false;
 
 var gBackHistory = new Array();
 var gForwardHistory = new Array();
-
-var gSieveWatchDog =
-{
-  timeout         : null,
-  timeoutInterval : null,
-  
-  idle            : null,
-  idleInterval    : null,
-    
-  onAttach : function(timeoutInterval, idleInterval)
-  {
-    gSieveWatchDog.timeoutInterval = timeoutInterval;
-    gSieveWatchDog.idleInterval = idleInterval;
-  },
-  
-  onDeattach : function()
-  {
-    if (gSieveWatchDog == null)
-      return;
-      
-    if (gSieveWatchDog.timeout != null)
-      clearTimeout(gSieveWatchDog.timeout);
-    gSieveWatchDog.timeout = null;
-    
-    if (gSieveWatchDog.idle != null)
-      clearTimeout(gSieveWatchDog.idle);
-    gSieveWatchDog.idle = null;
-    
-    return;
-  },  
-  
-  onStart: function()
-  {    
-    gSieveWatchDog.timeout 
-      = setTimeout(function() {gSieveWatchDog.onTimeout();},
-                   gSieveWatchDog.timeoutInterval);
-    
-    return;    
-  },
-  
-  onStop: function()
-  {
-    clearTimeout(gSieveWatchDog.timeout);
-    gSieveWatchDog.timeout = null;
-    
-    if (gSieveWatchDog.idleInterval == null)
-      return;
-      
-    if (gSieveWatchDog.idle != null)
-      clearTimeout(gSieveWatchDog.idle);
-    
-    gSieveWatchDog.idle 
-      = setTimeout(function() {gSieveWatchDog.onIdle();},
-                   gSieveWatchDog.idleInterval);
-    
-    return;
-  },
-  
-  onIdle: function ()
-  {
-    // we simply do notihng in case of an error...
-    var lEvent = 
-    {
-      onCapabilitiesResponse: function() {},
-      onTimeout: function() {},
-      onError: function() {}
-    }
-    
-    if (gSieveWatchDog.idle != null)
-      clearTimeout(gSieveWatchDog.idle);
-          
-    gSieveWatchDog.idle = null;
-    
-    var request = new SieveCapabilitiesRequest();
-    request.addCapabilitiesListener(lEvent);
-    request.addErrorListener(lEvent);
-  
-    // create a sieve request without an eventhandler...
-    gSieve.addRequest(request);
-  },
-  
-  onTimeout: function()
-  {
-    gSieveWatchDog.timeout = null;
-    gSieve.onWatchDogTimeout();
-  }  
-}
-
 
 var event = 
 {
@@ -137,7 +51,24 @@ var event =
   onTimeout: function()
   {
     alert("A Timeout occured");
-  }  
+  },
+
+  onIdle: function ()
+  { 
+    // as we send a keep alive request, we don't care
+    // about the response...
+    var request = new SieveCapabilitiesRequest();
+    request.addErrorListener(event);
+    
+    gSieve.addRequest(request);
+  },
+    
+  onWatchDogTimeout : function()
+  {
+    // call sieve object indirect inoder to prevent a 
+    // ring reference
+    gSieve.onWatchDogTimeout();
+  }     
 }
 
 function onCompile()
@@ -206,6 +137,9 @@ function onLoad()
 {
   // script laden
   gSieve = window.arguments[0]["sieve"];
+  
+  gSieveWatchDog = new SieveWatchDog();
+  gSieveWatchDog.addListener(event);
   gSieve.addWatchDogListener(gSieveWatchDog);
   
   gCompile = window.arguments[0]["compile"];        

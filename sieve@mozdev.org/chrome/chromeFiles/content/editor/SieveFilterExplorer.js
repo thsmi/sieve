@@ -29,6 +29,7 @@
 
 
 var gSieve = null;
+var gSieveWatchDog = null;
 
 // contains a [@mozilla.org/consoleservice;1] interface
 var gLogger = null; 
@@ -37,7 +38,7 @@ var sieveTreeView = null;
 var closeTimeout = null;
 var accounts = new Array();
 
-var gSieveWatchDog = null;
+
 
 var event = 
 {	

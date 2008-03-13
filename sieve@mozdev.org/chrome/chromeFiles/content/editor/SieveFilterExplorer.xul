@@ -56,7 +56,7 @@
                 <hbox align="center" class="sivWarning">
                   <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
                   <description id="sivExplorerWarningMsg" pack="center">
-This account is not configured for manage sieve,\n goto 'Tools-> SieveMessage Filters'"
+This account is not configured for manage sieve, goto 'Tools-> SieveMessage Filters'"
                   </description>
                 </hbox>
               </box>
@@ -70,8 +70,6 @@ This account is not configured for manage sieve,\n goto 'Tools-> SieveMessage Fi
                     </description>
                     <description id="sivExplorerErrorMsg" pack="center" >                    
                     </description>
-                    <button label="ignore" />
-                    <button label="disconnect" />
                   </vbox> 
                 </hbox>
               </box>

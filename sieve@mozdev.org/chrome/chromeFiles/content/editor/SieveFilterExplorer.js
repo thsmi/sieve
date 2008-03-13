@@ -690,8 +690,8 @@ function onRenameClick()
   var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
                   .getService(Components.interfaces.nsIPromptService);
 
-  input = {value:lEvent.oldScriptName};
-  check = {value:false};
+  var input = {value:lEvent.oldScriptName};
+  var check = {value:false};
 
   var result
        = prompts.prompt(

@@ -26,6 +26,8 @@ var gChanged = false;
 var gBackHistory = new Array();
 var gForwardHistory = new Array();
 
+var gPrintSettings = null;
+
 var event = 
 {
   onGetScriptResponse: function(response)
@@ -168,7 +170,8 @@ function onLoad()
   
   document.getElementById("btnCompile").checked = gCompile;
   onErrorBar(document.getElementById("btnCompile").checked);
-  onSideBar(document.getElementById("btnReference").checked);
+  
+  onSideBar();
   
   document.getElementById("txtScript").focus();
 }
@@ -395,18 +398,18 @@ function onErrorBar(state)
   return;
 }
 
-function onSideBar(state)
+function onSideBar()
 {  
-  if (state == true)
+  if (document.getElementById("btnReference").getAttribute("checked"))
   {
     document.getElementById('splitter').removeAttribute('hidden');
-    document.getElementById('vbSidebar').removeAttribute('hidden');
-    return;  
+    document.getElementById('vbSidebar').removeAttribute('hidden');    
+    return;    
   }
 
   document.getElementById('splitter').setAttribute('hidden','true');
   document.getElementById('vbSidebar').setAttribute('hidden','true');
-  return; 
+  return;   
 }
 
 var gUpdateScheduled = false;
@@ -452,5 +455,51 @@ function onBtnChangeView()
   
 }
 
+function onPrint()
+{  
+  var statusFeedback;
+  statusFeedback = Components.classes["@mozilla.org/messenger/statusfeedback;1"].createInstance();
+  statusFeedback = statusFeedback.QueryInterface(Components.interfaces.nsIMsgStatusFeedback);
+
+  // we print in xml this means any specail charaters have to be html entities...
+  // ... so we need a dirty hack to convert all entities...
+  
+  var script = document.getElementById("txtScript").value;
+  script = (new XMLSerializer()).serializeToString(document.createTextNode(script));
+  
+  script = script.replace(/\r\n/g,"\r");
+  script = script.replace(/\n/g,"\r");
+  script = script.replace(/\r/g,"\r\n");
+ 
+  var data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" 
+     + "<?xml-stylesheet type=\"text/css\" href=\"chrome://sieve/content/editor/print.css\"?>\r\n"
+     + "<SieveScript>\r\n"
+       + "<title xmlns=\"http://www.w3.org/1999/xhtml\">\r\n"
+         + document.getElementById("txtName").value
+       + "</title>\r\n"
+       + "<SieveScriptName>\r\n" 
+         + document.getElementById("txtName").value
+       + "</SieveScriptName>\r\n"   
+       + "<SieveScriptLine>\r\n"       
+         + script
+       + "</SieveScriptLine>\r\n"          
+     + "</SieveScript>\r\n";    
+  
+  data =  "data:application/xml;base64,"+btoa(data);  
+  
+
+  if (gPrintSettings == null) 
+    gPrintSettings = PrintUtils.getPrintSettings();    
+
+  printEngineWindow = window.openDialog("chrome://messenger/content/msgPrintEngine.xul",
+                                         "",
+                                         "chrome,dialog=no,all,centerscreen",
+                                          1, [data], statusFeedback,
+                                          gPrintSettings,false,
+                                          Components.interfaces.nsIMsgPrintEngine.MNAB_PRINT_MSG,
+                                          window);
+
+  return;
+}
 
 

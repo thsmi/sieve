@@ -156,6 +156,11 @@ textbox.sieve
 	list-style-image: url(chrome://sieve/content/images/toolbar.tools.png);
 }
 
+#btnPrint
+{
+	list-style-image: url(chrome://sieve/content/images/toolbar.print.png);
+}	
+
 #btnReference
 {
 	list-style-image: url(chrome://sieve/content/images/toolbar.reference.png);

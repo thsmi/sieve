@@ -106,6 +106,7 @@
 <!ENTITY edit.toolbar.back "Back" >
 <!ENTITY edit.toolbar.forward "Forward" >
 <!ENTITY edit.toolbar.home "Home" >
+<!ENTITY edit.toolbar.print "Print" >
 
 <!ENTITY edit.scriptname "Scriptname:">
 <!ENTITY edit.errorbar.title "Syntax Errors">

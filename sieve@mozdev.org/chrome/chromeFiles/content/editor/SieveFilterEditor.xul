@@ -25,6 +25,8 @@
   <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/SieveResponse.js" />
   <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/SieveResponseParser.js"/>
   <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js" />
+  <script type="application/x-javascript" src="chrome://global/content/printUtils.js"/>
+  <script type="application/x-javascript" src="chrome://messenger/content/msgPrintEngine.js"/>
   
 <toolbox class="toolbox-top">
   <toolbar class="toolbar-primary">
@@ -55,8 +57,11 @@
     <toolbarbutton id="btnReference"  type="checkbox" 
                    persist="checked"                  
                    label="&edit.toolbar.reference;" class="toolbarbutton-1"
-                   oncommand="onSideBar(!this.checked);"/>
-    <toolbarspacer />                   
+                   oncommand="onSideBar();"/>
+    <toolbarspacer />               
+    <toolbarbutton id="btnPrint"  
+                   label="&edit.toolbar.print;" class="toolbarbutton-1"                    
+                   oncommand="onPrint();" />        
     <toolbarbutton id="btnTools" 
                    label="&edit.toolbar.tools;" 
                    type="menu"  class="toolbarbutton-1" >
@@ -80,7 +85,9 @@
         <box flex="1">
           <vbox flex="1">
             <textbox id="txtScript" class="sieve" 
-                     onmousemove="onUpdateCursorPos(250);" onkeypress="onUpdateCursorPos(50);" oninput="onInput();" 
+                     onmousemove="onUpdateCursorPos(250);" 
+                     onkeypress="onUpdateCursorPos(50);" 
+                     oninput="onInput();" 
                      flex="1"  multiline="true" wrap="off" />
            <splitter id="spErrorBar" resizeafter="farthest" /> 
             <vbox id="vbErrorBar" class="sieveSideBar">

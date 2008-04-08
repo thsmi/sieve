@@ -11,7 +11,7 @@
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   title="&edit.title;"
   style="width: 45em; height: 31em;"
-  persist="width height screenX screenY sizemode"
+  persist="width height screenX screenY"
   onload="onLoad(this);"
   onclose="return onClose();"
   windowtype="Sieve:FilterEditor" >

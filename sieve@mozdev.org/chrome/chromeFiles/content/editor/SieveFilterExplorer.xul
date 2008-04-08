@@ -10,7 +10,7 @@
         id="SieveFilterExplorer"
         onload="onWindowLoad();"
         onclose="return onWindowClose();"
-        persist="width height screenX screenY sizemode"
+        persist="width height screenX screenY"
         style="width: 45em; height: 31em;"
         title="&list.title;"
         windowtype="Sieve:FilterExplorer">

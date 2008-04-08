@@ -1,0 +1,1359 @@
+Network Working Group                                         Tim Martin
+INTERNET-DRAFT                                      BeThereBeSquare Inc.
+Intended status: Standards Track                         Alexey Melnikov
+Expires: February 2008                                     Isode Limited
+                                                         August 14, 2007
+
+
+
+               A Protocol for Remotely Managing Sieve Scripts
+                      <draft-martin-managesieve-08.txt>
+
+Status of this Memo
+
+   By submitting this Internet-Draft, each author represents that any
+   applicable patent or other IPR claims of which he or she is aware
+   have been or will be disclosed, and any of which he or she becomes
+   aware will be disclosed, in accordance with Section 6 of BCP 79.
+
+   Internet-Drafts are working documents of the Internet
+   Engineering Task Force (IETF), its areas, and its
+   working groups. Note that other groups may also distribute
+   working documents as Internet-Drafts.
+
+   Internet-Drafts are draft documents valid for a maximum of
+   six months and may be updated, replaced, or obsoleted by
+   other documents at any time. It is inappropriate to use
+   Internet-Drafts as reference material or to cite them other
+   than as "work in progress."
+
+   The list of current Internet-Drafts can be accessed at
+   http://www.ietf.org/1id-abstracts.html
+
+   The list of Internet-Draft Shadow Directories can be accessed at
+   http://www.ietf.org/shadow.html
+
+   Distribution of this memo is unlimited.
+
+Copyright Notice
+
+   Copyright (C) The IETF Trust (2007).
+
+
+Abstract
+
+    Sieve scripts allow users to filter incoming email. Message stores
+    are commonly sealed servers so users cannot log into them, yet users
+    must be able to update their scripts on them.  This document
+    describes a protocol "sieve" for securely managing Sieve scripts on
+    a remote server.  This protocol allows a user to have multiple
+    scripts, and also alerts a user to syntactically flawed scripts.
+
+
+                           Table of Contents
+
+
+
+Status of this Memo  . . . . . . . . . . . . . . . . . . . . . . . .   1
+Abstract . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   1
+1.     Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
+1.1.   Changes . . . . . . . . . . . . . . . . . . . . . . . . . . .   3
+1.2.   Conventions Used in the Document  . . . . . . . . . . . . . .   4
+1.3.   Syntax  . . . . . . . . . . . . . . . . . . . . . . . . . . .   4
+1.4.   Response Codes  . . . . . . . . . . . . . . . . . . . . . . .   5
+1.5.   Active Script . . . . . . . . . . . . . . . . . . . . . . . .   6
+1.6.   Quotas  . . . . . . . . . . . . . . . . . . . . . . . . . . .   7
+1.7.   Script Names  . . . . . . . . . . . . . . . . . . . . . . . .   7
+1.8.   Capabilities  . . . . . . . . . . . . . . . . . . . . . . . .   7
+2.     Commands  . . . . . . . . . . . . . . . . . . . . . . . . . .   8
+2.1.   AUTHENTICATE Command  . . . . . . . . . . . . . . . . . . . .   8
+2.2.   STARTTLS Command  . . . . . . . . . . . . . . . . . . . . . .  10
+2.3.   LOGOUT Command  . . . . . . . . . . . . . . . . . . . . . . .  10
+2.4.   CAPABILITY Command  . . . . . . . . . . . . . . . . . . . . .  11
+2.5.   HAVESPACE Command . . . . . . . . . . . . . . . . . . . . . .  11
+2.6.   PUTSCRIPT Command . . . . . . . . . . . . . . . . . . . . . .  11
+2.7.   LISTSCRIPTS Command . . . . . . . . . . . . . . . . . . . . .  13
+2.8.   SETACTIVE Command . . . . . . . . . . . . . . . . . . . . . .  13
+2.9.   GETSCRIPT Command . . . . . . . . . . . . . . . . . . . . . .  13
+2.10.   DELETESCRIPT Command . . . . . . . . . . . . . . . . . . . .  14
+3.     Sieve URL Scheme  . . . . . . . . . . . . . . . . . . . . . .  14
+4.     Formal Syntax . . . . . . . . . . . . . . . . . . . . . . . .  15
+5.     Security Considerations . . . . . . . . . . . . . . . . . . .  18
+7.     References  . . . . . . . . . . . . . . . . . . . . . . . . .
+7.1.   Normative References  . . . . . . . . . . . . . . . . . . . .
+7.2.   Informative References  . . . . . . . . . . . . . . . . . . .
+8.     Author's Address  . . . . . . . . . . . . . . . . . . . . . .
+
+
+1.  Introduction
+
+
+
+1.1.  Changes
+
+    [[Note to RFC editor: please delete this section before
+    publication]]
+
+    Changes since 07
+
+    -Fixed examples to match 3028bis - capability names are case
+     sensitive, so examples should show "fileinto" instead of
+     "FILEINTO", etc.
+     
+    -Minor editorial changes
+
+    Changes since 06
+    
+    -Clarified meaning of the QUOTA response code
+    
+    -Clarified which characters are not allowed in script names
+     and the maximum script name length
+     
+    -Clarified that the empty list of SASL mechanisms is allowed
+    
+    -Clarified that PUTSCRIPT must not store data after anonymous
+     authentication
+    
+    -Move text about NOTIFY capability into this document
+    
+    -Additional examples
+    
+    -Updated ABNF, References, Contact information
+    
+    Changes since 05
+    
+    -More ABNF fixes
+    
+    -Added IANA considerations
+    
+    -Added/fixed text about AUTHENTICATE.
+    
+    -Updated the text om Sieve URLs.
+    
+    -Updated and added new examples.
+    
+    Changes since 04
+
+    -Updated boilerplate and some references. Added Alexey as co-editor.
+
+    -Minor ABNF fixes
+
+    -Cleaned up terminology (for example, made more consistent with
+     SASL)
+
+    -Added more examples, fixed some existing examples
+
+    -Clarified that STARTTLS command is optional
+    
+    -Clarified that disabling an active script when there is no script
+     active is not an error.
+
+    Changes since 03
+
+    -Add referals and Sieve URLs
+
+    -Lots of spelling/grammer fixes
+
+    -Don't give capabilities after successful STARTTLS. This is because
+    it isn't consistant with AUTHENTICATE. There is language specifying
+    that a client should re-issue a CAPABILITY command after
+    AUTHENTICATE/STARTTLS.
+
+    -Putting a script of length 0 doesn't remove the script. If this
+    functionality is desired, the DELETESCRIPT command should be used.
+
+    Changes since 02
+
+    -add BYE response
+
+    -typo on line 588
+
+    -allow ANONYMOUS access for sieve script verification
+
+    -updated SIEVE spec reference
+
+    Changes since 01
+
+    -changed contact info
+
+    Changes since 00
+
+    -added response codes (from ACAP)
+
+    -removed special-ok response from authenticate command (response
+    codes obsolete it)
+
+    -changed service name to "sieve"
+
+    -ABNF fixes
+
+    -Alexey's wording changes
+
+    -Eliminated lame PLAIN paragraph
+
+    Changes since PRE
+
+    -dropped synchronized literals. added HAVESPACE command
+
+    -changed capability response syntax. added CAPABILITY command
+
+    -allowed pipelining
+
+    - "sieve" -> "Sieve". Other minor fixes
+
+    -made script names more flexible
+
+    -added starttls support
+
+
+1.2.  Conventions Used in the Document
+
+    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+    document are to be interpreted as described in [KEYWORDS].
+
+    In examples, "C:" and "S:" indicate lines sent by the client and
+    server respectively. Line breaks that do not start a new "C:" or
+    "S:" exist for editorial reasons.
+
+
+1.3.  Syntax
+
+    This a line oriented protocol much like [IMAP4rev1] or [ACAP]. There
+    are three types: ATOMS, numbers and strings. Strings may be quoted
+    or literal. See [ACAP] for detailed descriptions of these types.
+    <<Clarify that the CRLF after the literal size is not "end of the
+    line">>
+
+    Each command consists of an atom followed by zero or more strings
+    and numbers terminated by a newline.
+
+    All client queries are replied to with either an OK, NO, or BYE
+    response. Each response may be followed by a response code (see
+    response codes section) and by a string consisting of human readable
+    text in the local language. The contents of the string SHOULD be
+    shown to the user and implementations MUST NOT attempt to parse the
+    message for meaning.
+
+    The BYE response may be used if the server wishes to close the
+    connection. A server may wish to do this because the client was idle
+    for too long or there were too many failed authentication attempts.
+    This response can be issued at any time and should be immediately
+    followed by a server hang-up of the connection. If a server has a
+    inactivity timeout resulting in client autologout it MUST be no less
+    than 30 minutes.
+
+    <<IANA registration is pending. Current implementations generally
+    use port number 2000.>>
+
+
+1.4.  Response Codes
+
+    An OK, NO, or BYE response from the server MAY contain a response
+    code to describe the event in a more detailed machine parsable
+    fashion. A response code consists of data inside parentheses in the
+    form of an atom, possibly followed by a space and arguments.
+    Response codes are defined when there is a specific action that a
+    client can take based upon the additional information. In order to
+    support future extension, the response code is represented as a
+    slash-separated hierarchy with each level of hierarchy representing
+    increasing detail about the error. Clients MUST tolerate additional
+    hierarchical response code detail which they don't understand.
+
+    The currently defined response codes are:
+
+    AUTH-TOO-WEAK
+
+    This response code is returned in the NO response from an
+    AUTHENTICATE command. It indicates that site security policy forbids
+    the use of the requested mechanism for the specified authentication
+    identity.
+
+    ENCRYPT-NEEDED
+
+    This response code is returned in the NO response from an
+    AUTHENTICATE command. It indicates that site security policy
+    requires the use of a strong encryption mechanism for the specified
+    authentication identity and mechanism.
+
+    QUOTA
+
+    If this response code is returned in the NO/BYE response, it means
+    that the command would have placed the user above the site-defined
+    quota constraints. If this response code is returned in the OK
+    response, it can mean that the user is near its quota or that the
+    user exceeded its quota, but the server supports soft quotas.
+
+    REFERRAL
+
+    This response code may be returned with a BYE result from any
+    command, and includes a mandatory parameter that indicates what
+    server to access to manage this user's sieve scripts.  The server
+    will be specified by a Sieve URL (see "Sieve URL Scheme" section).
+    The scriptname portion of the URL MUST NOT be specified. The client
+    should authenticate to the specified server and use it for all
+    further commands in the current session.
+
+    SASL
+
+    This response code can occur in the OK response to a successful
+    AUTHENTICATE command and includes the optional final server response
+    data from the server as specified by [SASL].
+
+    TRANSITION-NEEDED
+
+    This response code occurs in a NO response of an AUTHENTICATE
+    command. It indicates that the user name is valid, but the entry in
+    the authentication database needs to be updated in order to permit
+    authentication with the specified mechanism. This is typically done
+    by establishing a secure channel using TLS, followed by
+    authenticating once using the [PLAIN] authentication mechanism.
+    The selected mechanism SHOULD then work for authentications in
+    subsequent sessions.
+
+    This condition can happen if a user has an entry in a system
+    authentication database such as Unix /etc/passwd, but does not have
+    credentials suitable for use by the specified mechanism.
+    
+    TRYLATER
+
+    A command failed due to a temporary server failure. The client MAY
+    continue using local information and try the command later. This
+    response code only make sense when returned in a NO/BYE response.
+
+
+    Client implementations MUST tolerate response codes that they do not
+    recognize.
+
+
+1.5.  Active Script
+
+    A user may have multiple Sieve scripts on the server, yet only one
+    script may be used for filtering of incoming messages. This is the
+    active script. Users may have zero or one active scripts and MUST
+    use the SETACTIVE command described below for changing the active
+    script or disabling Sieve processing. For example, a user may have
+    an everyday script they normally use and a special script they use
+    when they go on vacation. Users can change which script is being
+    used without having to download and upload a script stored somewhere
+    else.
+
+
+1.6.  Quotas
+
+    Servers SHOULD impose quotas to prevent malicious users from
+    overflowing available storage. If a command would place a user over
+    a quota setting, servers that impose such quotas MUST reply with a
+    NO response. Client implementations MUST be able to handle commands
+    failing because of quota restrictions.
+
+
+1.7.  Script Names
+
+    Sieve script names may contain any valid UTF-8 characters, except
+    for NUL, CR or LF. Names MUST be at least one octet long. Zero
+    octets script name has special meaning (see SETACTIVE command
+    section). Servers MUST allow names of up to 128 Unicode characters
+    in length, and MAY allow longer names.
+
+
+1.8.  Capabilities
+
+    Server capabilities are sent by the server upon a client connection.
+    Clients may request the capabilities at a later time by issuing the
+    CAPABILITY command described later. The capabilities consist of a
+    series of lines each with one or two strings. The first string is
+    the name of the capability, which is case-insensitive. The second
+    optional string is the value associated with that capability.
+    Order of capabilities is arbitrary, but each capability name can
+    appear at most once.
+
+    The following capabilities are defined in this document:
+
+    IMPLEMENTATION - Name of implementation and version
+
+    SASL - List of SASL mechanisms supported by the server, each
+    separated by a space. This list can be empty if and only if
+    STARTTLS is also advertised. This means that the client must
+    negotiate TLS encryption with STARTTLS first, at which point
+    the SASL capability will list a non empty list of SASL mechanisms.
+    <<But STARTTLS is optional!>>
+
+    SIEVE - List of space separated Sieve extensions (as listed
+    in Sieve "require" action [SIEVE]) supported by the Sieve engine
+
+    STARTTLS - If TLS [TLS] is supported by this implementation
+
+    NOTIFY - A space separated list of URI schema parts for supported
+    notification methods. This capability MUST be specified if the
+    Sieve implementation supports the "enotify" extension
+    [NOTIFY].
+
+    A server implementation MUST return SIEVE and IMPLEMENTATION
+    capabilities.
+
+    A client implementation MUST ignore any listed capabilities
+    that it does not understand.
+
+    Example:
+
+    S: "IMPlemENTATION" "Example1 ManageSieved v001"
+    S: "SASl" "DIGEST-MD5 GSSAPI"
+    S: "SIeVE" "fileinto vacation"
+    S: "StaRTTLS"
+    S: "NOTIFY" "xmpp mailto"
+    S: OK
+
+    <<Add RENAMESCRIPT>>
+
+
+2.  Commands
+
+    The following commands are valid. Prior to successful authentication
+    only the AUTHENTICATE, CAPABILITY, STARTTLS, and LOGOUT commands are
+    valid. Servers MUST reject all other commands with a NO response.
+    Clients may pipeline commands (send more than one command at a time
+    without waiting for completion of the first command ). However, a
+    group of commands sent together MUST NOT have an AUTHENTICATE,
+    a STARTTLS or a HAVESPACE command anywhere but the last command in
+    the list.
+
+
+2.1.  AUTHENTICATE Command
+
+    Arguments:
+         String - mechanism
+         String - initial data (optional)
+
+    The AUTHENTICATE command indicates a SASL [SASL] authentication
+    mechanism to the server.  If the server supports the requested
+    authentication mechanism, it performs an authentication protocol
+    exchange to identify and authenticate the user.  Optionally, it also
+    negotiates a security layer for subsequent protocol interactions.
+    If the requested authentication mechanism is not supported, the
+    server rejects the AUTHENTICATE command by sending the NO response.
+
+    The authentication protocol exchange consists of a series of server
+    challenges and client responses that are specific to the selected
+    authentication mechanism.  A server challenge consists of a string
+    (quoted or literal) followed by a CRLF. The contents of the string
+    is a base-64 encoding [BASE64] of the SASL data. A client response
+    consists of a string (quoted or literal) with the base-64 encoding
+    of the SASL data followed by a CRLF. If the client wishes to cancel
+    the authentication exchange, it issues a string containing a single
+    "*". If the server receives such a response, it MUST reject the
+    AUTHENTICATE command by sending an NO reply.
+
+    Note that an empty challenge/response is sent as an empty string.
+    If the mechanism dictates that the final response is sent by the
+    server this data MAY be placed within the data portion of the SASL
+    response code to save a round trip.
+
+    The optional initial-response argument to the AUTHENTICATE command
+    is used to save a round trip when using authentication mechanisms
+    that are defined to send no data in the initial challenge.  When the
+    initial-response argument is used with such a mechanism, the initial
+    empty challenge is not sent to the client and the server uses the
+    data in the initial-response argument as if it were sent in response
+    to the empty challenge.  If the initial-response argument to the
+    AUTHENTICATE command is used with a mechanism that sends data in the
+    initial challenge, the server rejects the AUTHENTICATE command by
+    sending the NO response.
+
+    The service name specified by this protocol's profile of SASL is
+    "sieve".
+    
+    Reauthentication is not supported by ManageSieve protocol's profile
+    of SASL. I.e. after a successfully completed AUTHENTICATE command,
+    no more AUTHENTICATE commands may be issued in the same session.
+    After a successful AUTHENTICATE command completes, a server MUST
+    reject any further AUTHENTICATE commands with a NO reply.
+
+    If a security layer is negotiated through the SASL authentication
+    exchange, it takes effect immediately following the CRLF that
+    concludes the authentication exchange for the client, and the CRLF
+    of the OK response for the server.
+
+    When a security layer takes effect, the ManageSieve protocol is
+    reset to the initial state (the state in ManageSieve after a client
+    has connected to the server).  The server MUST discard any
+    knowledge obtained from the client which was not obtained from
+    the SASL (or TLS) negotiation itself.
+    Likewise, the client MUST discard any knowledge obtained from
+    the server, such as the list of ManageSieve extensions, which
+    was not obtained from the SASL (or TLS) negotiation itself.
+    (Note that a client MAY compare the advertised SASL mechanisms
+    before and after authentication in order to detect an active
+    down-negotiation attack. See below.)
+    
+    Once a SASL security layer is established, the server MUST re-issue
+    the capability results, followed by an OK response. This is
+    necessary to protect against man-in-the-middle attacks which alter
+    the capabilities list prior to SASL negotiation.
+    The capability results MUST include all SASL mechanisms. This is
+    done in order to allow client to detect active down-negotiation
+    attack.
+
+    When both [TLS] and SASL security layers are in effect, the
+    TLS encoding MUST be applied (when sending data) after the SASL
+    encoding, regardless of the order in which the layers were
+    negotiated.
+
+    Server implementations SHOULD support SASL proxy authentication so
+    that an administrator can administer a user's scripts. Proxy
+    authentication is when a user authenticates as herself/himself but
+    requests the server to act (authorize) as another user.
+
+    <<The authorization identity generated by this [SASL] exchange
+    is a simple username, and both client and server MUST use the
+    [SASLprep] profile of the [StringPrep] algorithm to prepare
+    these names for transmission or comparison.  If preparation of
+    the authorization identity fails or results in an empty string
+    (unless it was transmitted as the empty string), the server
+    MUST fail the authentication.>>
+
+    If an AUTHENTICATE command fails with a NO response, the client may
+    try another authentication mechanism by issuing another AUTHENTICATE
+    command.  In other words, the client may request authentication
+    types in decreasing order of preference.
+
+    Note that a failed NO response to the AUTHENTICATE command may
+    contain one of the following response codes: AUTH-TOO-WEAK,
+    ENCRYPT-NEEDED or TRANSITION-NEEDED. See section 1.4 for detailed
+    description of the relevant conditions.
+
+    To ensure interoperability, client and server implementations
+    of this extension MUST implement the [DIGEST-MD5] SASL
+    mechanism. <<What is the IESG policy on this?>>
+
+
+    Implementations MAY advertise the ANONYMOUS SASL mechanism
+    [SASL-ANON]. This indicates that the server supports ANONYMOUS SIEVE
+    script syntax verification. Only the CAPABILITY, PUTSCRIPT and
+    LOGOUT commands are available to the anonymous user. All other
+    commands MUST give NO responses. Furthermore the PUTSCRIPT command
+    MUST NOT persistently store any data. In this mode a positive
+    response to the PUTSCRIPT command indicates that the given script
+    does not have any syntax errors.
+
+    Examples (Note that long lines are folded for readability and are
+              not part of protocol exchange):
+
+    S: "IMPLEMENTATION" "Example1 ManageSieved v001"
+    S: "SASL" "DIGEST-MD5 GSSAPI"
+    S: "SIEVE" "fileinto vacation"
+    S: "STARTTLS"
+    S: OK
+    C: Authenticate "DIGEST-MD5"
+    S: "cmVhbG09ImVsd29vZC5pbm5vc29mdC5jb20iLG5vbmNlPSJPQTZNRzl0
+        RVFHbTJoaCIscW9wPSJhdXRoIixhbGdvcml0aG09bWQ1LXNlc3MsY2hh
+        cnNldD11dGYtOA=="
+    C: "Y2hhcnNldD11dGYtOCx1c2VybmFtZT0iY2hyaXMiLHJlYWxtPSJlbHdvb2
+        QuaW5ub3NvZnQuY29tIixub25jZT0iT0E2TUc5dEVRR20yaGgiLG5jPTAw
+        MDAwMDAxLGNub25jZT0iT0E2TUhYaDZWcVRyUmsiLGRpZ2VzdC11cmk9Im
+        ltYXAvZWx3b29kLmlubm9zb2Z0LmNvbSIscmVzcG9uc2U9ZDM4OGRhZDkw
+        ZDRiYmQ3NjBhMTUyMzIxZjIxNDNhZjcscW9wPWF1dGg="
+    S: OK (SASL "cnNwYXV0aD1lYTQwZjYwMzM1YzQyN2I1NTI3Yjg0ZGJhYmNkZ
+        mZmZA==")
+    
+    A slightly different variant of the same authentication exchange:
+
+    S: "IMPLEMENTATION" "Example1 ManageSieved v001"
+    S: "SASL" "DIGEST-MD5 GSSAPI"
+    S: "SIEVE" "fileinto vacation"
+    S: "STARTTLS"
+    S: OK
+    C: Authenticate "DIGEST-MD5"
+    S: {128+}
+    S: cmVhbG09ImVsd29vZC5pbm5vc29mdC5jb20iLG5vbmNlPSJPQTZNRzl0
+       RVFHbTJoaCIscW9wPSJhdXRoIixhbGdvcml0aG09bWQ1LXNlc3MsY2hh
+       cnNldD11dGYtOA==
+    C: {276+}
+    C: Y2hhcnNldD11dGYtOCx1c2VybmFtZT0iY2hyaXMiLHJlYWxtPSJlbHdvb2
+       QuaW5ub3NvZnQuY29tIixub25jZT0iT0E2TUc5dEVRR20yaGgiLG5jPTAw
+       MDAwMDAxLGNub25jZT0iT0E2TUhYaDZWcVRyUmsiLGRpZ2VzdC11cmk9Im
+       ltYXAvZWx3b29kLmlubm9zb2Z0LmNvbSIscmVzcG9uc2U9ZDM4OGRhZDkw
+       ZDRiYmQ3NjBhMTUyMzIxZjIxNDNhZjcscW9wPWF1dGg="
+    S: {56+}
+    S: cnNwYXV0aD1lYTQwZjYwMzM1YzQyN2I1NTI3Yjg0ZGJhYmNkZmZmZA==
+    C: ""
+    S: OK
+    
+    Another example demostrating use of SASL PLAIN mechanism under TLS.
+    This example also demonstrate use of SASL "initial response"
+    (the second parameter to the Authenticate command):
+
+    S: "IMPLEMENTATION" "Example1 ManageSieved v001"
+    S: "SASL" ""
+    S: "SIEVE" "fileinto vacation"
+    S: "STARTTLS"
+    S: OK
+    C: STARTTLS
+    S: OK
+    <TLS negotiation, further commands are under TLS layer>
+    S: "IMPLEMENTATION" "Example1 ManageSieved v001"
+    S: "SASL" "PLAIN"
+    S: "SIEVE" "fileinto vacation"
+    S: OK
+    C: Authenticate "PLAIN" "QJIrweAPyo6Q1T9xu"
+    S: NO
+    C: Authenticate "PLAIN" "QJIrweAPyo6Q1T9xz"
+    S: NO
+    C: Authenticate "PLAIN" "QJIrweAPyo6Q1T9xy"
+    S: BYE "Too many failed authentication attempts"
+    <Server closes connection>
+    
+    The following example demonstrate use of SASL "initial response".
+    It also demonstrates that an empty response can be sent as a
+    literal:
+    
+    C: AUTHENTICATE "GSSAPI" {1488+}
+    C: YIIE[...1480 octets here ...]dA==
+    S: {208+}
+    S: YIGZBgkqhkiG9xIBAgICAG+BiTCBhqADAgEFoQMCAQ+iejB4oAMCARKic
+       [...114 octets here ...]
+       /yzpAy9p+Y0LanLskOTvMc0MnjgAa4YEr3eJ6
+    C: {0+}
+    C: 
+    S: {44+}
+    S: BQQF/wAMAAwAAAAAYRGFAo6W0vIHti8i1UXODgEAEAA=
+    C: {44+}
+    C: BQQE/wAMAAwAAAAAIsT1iv9UkZApw471iXt6cwEAAAE=
+    S: OK
+
+
+2.2.  STARTTLS Command
+
+    Support for STARTTLS command in servers is optional. Its
+    availability is advertised with "STARTTLS" capability as described
+    in section 1.8.
+
+    The STARTTLS command requests commencement of a TLS negotiation.
+    The negotiation begins immediately after the CRLF in the OK
+    response. After a client issues a STARTTLS command, it MUST NOT
+    issue further commands until a server response is seen and the TLS
+    negotiation is complete.
+
+    The STARTTLS command is only valid in non-authenticated state. The
+    server remains in non-authenticated state, even if client
+    credentials are supplied during the TLS negotiation. The SASL [SASL]
+    EXTERNAL mechanism MAY be used to authenticate once TLS client
+    credentials are successfully exchanged, but servers supporting the
+    STARTTLS command are not required to support the EXTERNAL mechanism.
+
+    After the TLS layer is established, the server MUST re-issue the
+    capability results, followed by an OK response. This is necessary to
+    protect against man-in-the-middle attacks which alter the
+    capabilities list prior to STARTTLS. This capability result MUST NOT
+    include the STARTTLS capability.
+    
+    The client MUST discard cached capability information and replace it
+    with the new information. The server MAY advertise different
+    capabilities after STARTTLS.
+
+    Example:
+
+    C: StartTls
+    S: oK
+    <TLS negotiation, further commands are under TLS layer>
+    S: "IMPLEMENTATION" "Example1 ManageSieved v001"
+    S: "SASL" "PLAIN DIGEST-MD5 GSSAPI"
+    S: "SIEVE" "fileinto vacation"
+    S: ok
+
+
+2.3.  LOGOUT Command
+
+    The client sends the LOGOUT command when it is finished with a
+    connection and wishes to terminate it. The server MUST reply with an
+    OK response and terminate the connection. The server MUST ignore
+    commands issued by the client after the LOGOUT command.
+
+    Example:
+
+    C: Logout
+    S: Ok
+    <connection terminated>
+
+
+2.4.  CAPABILITY Command
+
+    The CAPABILITY command requests the server capabilities as described
+    earlier in this document. While the capabilities are sent upon
+    connection, they may change during authentication. The client SHOULD
+    issue a CAPABILITY command after successful authentication or after
+    negotiating a security layer using STARTTLS.
+
+
+    Example:
+
+    C: CAPABILITY
+    S: "IMPLEMENTATION" "Example1 ManageSieved v001"
+    S: "SASL" "PLAIN KERBEROS_V4 GSSAPI"
+    S: "SIEVE" "fileinto vacation"
+    S: "STARTTLS"
+    S: OK
+
+
+2.5.  HAVESPACE Command
+
+    Arguments:
+         String - name
+         Number - size
+
+    The HAVESPACE command is used to query the server for available
+    space. Clients specify the name they wish to save the script as and
+    its size in octets. Servers respond with an NO if storing a script
+    with that name and size would fail or OK otherwise. Clients SHOULD
+    issue this command before attempting to place a script on the
+    server.
+
+    Example:
+
+    C: HAVESPACE "myscript" 999999
+    S: NO (QUOTA) "Quota exceeded"
+
+    C: HAVESPACE "foobar" 435
+    S: OK
+
+
+2.6.  PUTSCRIPT Command
+
+    Arguments:
+         String - Script name
+         String - Script content
+
+    The PUTSCRIPT command is used by the client to submit a Sieve script
+    to the server.
+
+    If the script already exists, upon success the old script will be
+    overwritten. The old script MUST NOT be overwritten if PUTSCRIPT
+    fails in any way. A script of zero length SHOULD be disallowed.
+
+    This command places the script on the server. It does not affect
+    whether the script is processed on incoming mail, unless it replaces
+    the script which is already active. The SETACTIVE
+    command is used to mark a script as active.
+
+    When submitting large scripts clients SHOULD use the HAVESPACE
+    command beforehand to query if the server is willing to accept a
+    script of that size.
+
+    The server MUST check the submitted script for syntactic validity.
+    If the script fails this test the server MUST reply with a NO
+    response. Any script that fails the validity test MUST NOT be stored
+    on the server. The message given with a NO response MUST be human
+    readable and SHOULD contain a specific error message giving the line
+    number of the first error. Implementors should strive to produce
+    helpful error messages similar to those given by programming
+    language compilers. Client implementations should note that this may
+    be a multiline literal string with more than one error message
+    separated by newlines.
+
+    Example:
+
+    C: Putscript "foo" {31+}
+    C: #comment
+    C: InvalidSieveCommand
+    C:
+    S: NO "line 2: Syntax error"
+
+    C: Putscript "mysievescript" {110+}
+    C: require ["fileinto"];
+    C:
+    C: if envelope :contains "to" "tmartin+sent" {
+    C:   fileinto "INBOX.sent";
+    C: }
+    S: OK
+
+
+2.7.  LISTSCRIPTS Command
+
+    This command lists the scripts the user has on the server. Upon
+    success a list of CRLF separated script names (each represented
+    as a quoted or literal string) is returned followed by an OK
+    response. If there exists an active script the atom ACTIVE is
+    appended to the corresponding script name. The atom ACTIVE
+    MUST NOT appear on more than one response line.
+
+    Example:
+
+    C: Listscripts
+    S: "summer_script"
+    S: "vacation_script"
+    S: {13+}
+    S: clever"script
+    S: "main_script" ACTIVE
+    S: OK
+
+    C: listscripts
+    S: "summer_script"
+    S: "main_script" active
+    S: OK
+
+
+2.8.  SETACTIVE Command
+
+    Arguments:
+         String - script name
+
+    This command sets a script active. If the script name is the empty
+    string (i.e. "") then any active script is disabled. Disabling an
+    active script when there is no script active is not an error and
+    MUST result in OK reply.
+
+    If the script does not exist on the server then the server MUST
+    reply with a NO response.
+
+    Examples:
+
+    C: Setactive "vacationscript"
+    S: Ok
+
+    C: Setactive ""
+    S: Ok
+
+    C: Setactive "baz"
+    S: No "There is no script by that name"
+
+    C: Setactive "baz"
+    S: No {31+}
+    S: There is no script by that name
+
+
+2.9.  GETSCRIPT Command
+
+    Arguments:
+         String - Script name
+
+    This command gets the contents of the specified script. If the
+    script does not exist the server MUST reply with a NO response. Upon
+    success a string with the contents of the script is returned
+    followed by a OK response.
+
+    Example:
+
+    C: Getscript "myscript"
+    S: {54+}
+    S: #this is my wonderful script
+    S: reject "I reject all";
+    S:
+    S: OK
+
+
+2.10.  DELETESCRIPT Command
+
+    Parameters:
+         sieve-name - Script name
+
+    This command is used to delete a user's Sieve script. Servers MUST
+    reply with a NO response if the script does not exist. The server
+    MUST NOT allow the client to delete an active script, so the server
+    MUST reply with a NO response if attempted. If a client wishes to
+    delete an active script it should use the SETACTIVE command to
+    disable the script first.
+
+    Example:
+
+    C: Deletescript "foo"
+    S: Ok
+
+    C: Deletescript "baz"
+    S: No "You may not delete an active script"
+
+
+3.  Sieve URL Scheme
+
+    URI scheme name: sieve
+    
+    Status: permanent
+
+    URI scheme syntax:
+
+      Described using ABNF [ABNF] and ABNF entities from [URI-GEN].
+
+      sieveurl = sieveurl-server / sieveurl-script
+      
+      sieveurl-server = "sieve://" authority
+      
+      sieveurl-script = "sieve://" [ authority ] "/" scriptname
+
+      scriptname = *pchar
+
+    URI scheme semantics:
+
+      A Sieve URL identifies a Sieve server or a Sieve
+      script on a Sieve server.  <<The latter form is associated with
+      application/sieve MIME type.>>
+      <<There is no MIME type associated with this URI.>>
+      
+      The server form is used in the REFERRAL response code in order
+      to designate another server where the client should perform
+      its operations. 
+      
+      The script form allows to retrieve (GETSCRIPT), update
+      (PUTSCRIPT), delete (DELETESCRIPT) or activate (SETACTIVE)
+      the named script, however the most typical action would be to
+      retrieve the script. If the script name is empty, the URI
+      requests that the client lists available scripts using
+      the LISTSCRIPTS command.
+
+    Encoding considerations: The script name, if present,
+      is in UTF-8.  Non-US-ASCII UTF-8 octets MUST be percent-encoded as
+      described in [URI-GEN].
+      
+      The user name (in the "authority" part), if present,
+      is in UTF-8.  Non-US-ASCII UTF-8 octets MUST be percent-encoded as
+      described in [URI-GEN].
+
+    Applications/protocols that use this URI scheme name:
+      ManageSieve [RFC XXXX] clients and servers.
+      Clients that can store user preferences in protocols such as
+      LDAP or ACAP. <<Add ref>>
+
+    Interoperability considerations:  None.
+
+    Security considerations:  <<None>>.
+
+    Contact: Alexey Melnikov <alexey.melnikov@isode.com>
+
+    Author/Change controller: IESG.
+
+    References:  This document and <<RFC 3028>> [SIEVE].
+
+
+4.  Formal Syntax
+
+    The following syntax specification uses the augmented Backus-Naur
+    Form (BNF) notation as specified in [ABNF]. This uses the ABNF core
+    rules as specified in Appendix A of the ABNF specification [ABNF].
+
+    Except as noted otherwise, all alphabetic characters are case-
+    insensitive. The use of upper or lower case characters to define
+    token strings is for editorial clarity only. Implementations MUST
+    accept these strings in a case-insensitive fashion.
+
+
+    SAFE-CHAR             = %x01-09 / %x0B-0C / %x0E-21 / %x23-5B /
+                            %x5D-7F
+                            ;; any TEXT-CHAR except QUOTED-SPECIALS
+
+    QUOTED-CHAR           = SAFE-UTF8-CHAR / DQUOTE QUOTED-SPECIALS
+
+    QUOTED-SPECIALS       = DQUOTE / "\"
+
+    SAFE-UTF8-CHAR        = SAFE-CHAR / UTF8-2 / UTF8-3 / UTF8-4 /
+                            UTF8-5 / UTF8-6
+
+    UTF8-1                = %x80-BF
+
+    UTF8-2                = %xC0-DF UTF8-1
+
+    UTF8-3                = %xE0-EF 2UTF8-1
+
+    UTF8-4                = %xF0-F7 3UTF8-1
+
+    UTF8-5                = %xF8-FB 4UTF8-1
+
+    UTF8-6                = %xFC-FD 5UTF8-1
+
+    auth-type             = DQUOTE auth-type-name DQUOTE
+
+    auth-type-name        = iana-token
+                            ;; as defined in SASL [SASL]
+
+    command               = command-authenticate / command-logout /
+                            command-getscript / command-setactive /
+                            command-listscripts / command-deletescript /
+                            command-putscript / command-capability /
+                            command-havespace / command-starttls
+
+    command-authenticate  = "AUTHENTICATE" SP auth-type [SP string]
+                            *(CRLF string) CRLF
+
+    command-capability    = "CAPABILITY" CRLF
+
+    command-deletescript  = "DELETESCRIPT" SP sieve-name CRLF
+
+    command-getscript     = "GETSCRIPT" SP sieve-name CRLF
+
+    command-havespace     = "HAVESPACE" SP sieve-name SP number CRLF
+
+    command-listscripts   = "LISTSCRIPTS" CRLF
+
+    command-logout        = "LOGOUT" CRLF
+
+    command-putscript     = "PUTSCRIPT" SP sieve-name SP string CRLF
+
+    command-setactive     = "SETACTIVE" SP sieve-name CRLF
+
+    command-starttls      = "STARTTLS" CRLF
+
+    literal               = "{" number  "+}" CRLF *OCTET
+                            ;; The number represents the number of
+                            ;; octets.
+<<Need to make "+" only allowed from clients to server, to match
+  IMAP LITERAL+). Also need to also update the examples to match.>>
+
+    number                = 1*DIGIT
+                            ;; A 32-bit unsigned number.
+                            ;; (0 <= n < 4,294,967,296)
+
+    quoted                = DQUOTE *1024QUOTED-CHAR DQUOTE
+                            ;; limited to 1024 octets between the <">s
+
+    resp-code             = "AUTH-TOO-WEAK" / "ENCRYPT-NEEDED" /
+                            "QUOTA" / resp-code-sasl /
+                            resp-code-referral /
+                            "TRANSITION-NEEDED" / "TRYLATER" /
+                            resp-code-ext
+
+    resp-code-referral    = "REFERRAL" SP sieveurl
+
+    resp-code-sasl        = "SASL" SP string
+
+    resp-code-ext         = iana-token [SP extension-data]
+                            ;; unknown response codes MUST be tolerated
+                            ;; by the client. <<"iana-token" and
+                            ;; "extension-data" are defined in ACAP>>
+
+    response              = response-authenticate /
+                            response-logout /
+                            response-getscript /
+                            response-setactive /
+                            response-listscripts /
+                            response-deletescript /
+                            response-putscript /
+                            response-capability /
+                            response-havespace /
+                            response-starttls
+
+    response-authenticate = *(string CRLF) (response-oknobye)
+
+    response-capability   = *(single-capability) response-oknobye
+     
+    single-capability     = capability-name [SP string] CRLF
+    
+    capability-name       = string
+     <<Note that literals are allowed!>>
+
+    initial-capabilities  = DQUOTE "IMPLEMENTATION" DQUOTE SP string /
+                            DQUOTE "SASL" DQUOTE SP sasl-mechs /
+                            DQUOTE "SIEVE" DQUOTE SP sieve-extensions /
+                            DQUOTE "STARTTLS" DQUOTE
+                            ;; Each capability conforms to
+                            ;; the syntax for single-capability.
+                            ;; Also note that the capability name
+                            ;; can be returned as either literal
+                            ;; or quoted, even though only "quoted"
+                            ;; string is shown above.
+                            
+    sasl-mechs = string
+                 ; space separated list of SASL mechanisms,
+                 ; can be empty
+                 
+    sieve-extensions = string
+                 ; space separated list of supported SIEVE extensions,
+                 ; can be empty
+
+    response-deletescript = response-oknobye
+
+    response-getscript    = [string CRLF] response-oknobye
+                            <<Need to rewrite ABNF to make it clear that
+                            script content is required with OK response
+                            and must not be sent with the NO (and
+                            possibly BYE) response.>>
+
+    response-havespace    = response-oknobye
+
+    response-listscripts  = *(sieve-name [SP "ACTIVE"] CRLF)
+                            response-oknobye
+                            ;; ACTIVE may only occur with one sieve-name
+
+    response-logout       = response-oknobye
+
+    response-oknobye      = ("OK" / "NO" / "BYE") [SP "(" resp-code ")"]
+                            [SP string] CRLF
+
+    response-putscript    = response-oknobye
+
+    response-setactive    = response-oknobye
+
+    response-starttls     = response-oknobye
+
+    sieve-name            = string
+                            ;; MUST NOT contain NUL, CR or LF
+
+    string                = quoted / literal
+
+
+5.  Security Considerations
+
+    The AUTHENTICATE command uses SASL [SASL] to provide authentication
+    and authorization services.
+    Integrity and privacy services can be provided by [SASL] and/or
+    [TLS]. When a SASL mechanism is used the security considerations for
+    that mechanism apply.
+
+    This protocol's transactions are susceptible to passive observers or
+    man in the middle attacks which alter the data, unless the optional
+    encryption and integrity services of the SASL (via the AUTHENTICATE
+    command) and/or [TLS] (via the STARTTLS command) are enabled, or an
+    external security mechanism is used for protection. It may be useful
+    to allow configuration of both clients and servers to refuse to
+    transfer sensitive information in the absence of strong encryption.
+
+
+6.  IANA Considerations
+
+    IANA is requested to reserve TCP port number 2000 for use with
+    the Manage Sieve protocol described in this document.
+
+    IANA is requested to create a new registry for Manage Sieve
+    capabilities. The registration template for Manage Sieve
+    capabilities is specified in the next section.
+    Manage Sieve protocol capabilities MUST be specified in a standards
+    track or IESG approved experimental RFC.
+    
+    <<Add a new registry for response codes, as per ABNF comments.>>
+    
+    <<Reference to SIEVE URL registration.>>
+    
+    
+6.1. Manage Sieve Capability Registration Template
+
+       To: iana@iana.org
+       Subject: Manage Sieve Capability Registration
+
+       Please register the following Manage Sieve Capability:
+
+        Capability name: 
+
+        Description: 
+
+        Relevant publications: 
+
+        Person & email address to contact for further information: 
+       
+        Author/Change controller: 
+               
+
+6.2. Registration of Initial Manage Sieve capabilities.
+
+       To: iana@iana.org
+       Subject: Manage Sieve Capability Registration
+
+       Please register the following Manage Sieve Capability:
+
+        Capability name: IMPLEMENTATION
+
+        Description: Its value contains name of server
+                     implementation and its version.
+
+        Relevant publications: this RFC, section 1.8.
+
+        Person & email address to contact for further information: 
+         Alexey Melnikov <alexey.melnikov@isode.com>
+       
+        Author/Change controller: IESG.
+        
+
+       To: iana@iana.org
+       Subject: Manage Sieve Capability Registration
+
+       Please register the following Manage Sieve Capability:
+
+        Capability name: SASL
+
+        Description: Its value contains a space separated
+                     list of SASL mechanisms supported by server.
+
+        Relevant publications: this RFC, sections 1.8 and 2.1.
+
+        Person & email address to contact for further information: 
+         Alexey Melnikov <alexey.melnikov@isode.com>
+       
+        Author/Change controller: IESG.
+    
+
+       To: iana@iana.org
+       Subject: Manage Sieve Capability Registration
+
+       Please register the following Manage Sieve Capability:
+
+        Capability name: SIEVE
+
+        Description: Its value contains a space separated
+                     list of supported SIEVE extensions
+
+        Relevant publications: this RFC, section 1.8.
+         <<Also [SIEVE]>>
+
+        Person & email address to contact for further information: 
+         Alexey Melnikov <alexey.melnikov@isode.com>
+       
+        Author/Change controller: IESG.
+
+
+       To: iana@iana.org
+       Subject: Manage Sieve Capability Registration
+
+       Please register the following Manage Sieve Capability:
+
+        Capability name: STARTTLS
+
+        Description: This capability is returned if server
+                     supports TLS (STARTTLS command).
+
+        Relevant publications: this RFC, sections 1.8 and 2.2.
+
+        Person & email address to contact for further information: 
+         Alexey Melnikov <alexey.melnikov@isode.com>
+       
+        Author/Change controller: IESG.
+        
+
+       To: iana@iana.org
+       Subject: Manage Sieve Capability Registration
+
+       Please register the following Manage Sieve Capability:
+
+        Capability name: NOTIFY
+
+        Description: This capability is returned if server
+                     supports 'enotify' Sieve extension.
+
+        Relevant publications: this RFC, section 1.8.
+
+        Person & email address to contact for further information: 
+         Alexey Melnikov <alexey.melnikov@isode.com>
+       
+        Author/Change controller: IESG.
+    
+7.  References
+
+7.1.  Normative References
+
+    [KEYWORDS]  Bradner, S., "Key words for use in RFCs to Indicate
+    Requirement Levels", BCP 14, RFC 2119, March 1997.
+
+    [ABNF] Crocker, D. and P. Overell, "Augmented BNF for Syntax
+    Specifications: ABNF", RFC 4234, October 2005.
+
+    [ACAP] Newman, Myers, "ACAP -- Application Configuration Access
+    Protocol", RFC 2244, Innosoft, Netscape, November 1997.
+
+    [SASL] Melnikov, A. and K. Zeilenga, "Simple Authentication and
+    Security Layer (SASL)", RFC 4422, June 2006.
+
+    [SASLprep] Zeilega, K., "SASLprep: Stringprep profile for User Names
+    and Passwords", RFC 4013, February 2005.
+
+    [StringPrep]  Hoffman, P. and M. Blanchet, "Preparation of
+    Internationalized Strings ("stringprep")", RFC 3454, December 2002.
+
+    [SASL-ANON] K. Zeilenga (Ed.), "Anonymous Simple Authentication and
+    Security Layer (SASL) Mechanism", RFC 4505, June 2006.
+
+    [SIEVE] Guenther, P. and Showalter, T., "Sieve: An Email Filtering
+    Language", work in Progress, draft-ietf-sieve-3028bis-XX.txt
+
+    [TLS] Dierks, T. and E. Rescorla, "The Transport Layer Security
+    (TLS) Protocol Version 1.1", RFC 4346, April 2006.
+
+    [URI-GEN] Berners-Lee, T., Fielding, R. and L. Masinter,
+    "Uniform Resource Identifier (URI): Generic Syntax", RFC 3986,
+    January 2005.
+
+    [BASE64] - Josefsson, S., "The Base16, Base32, and Base64 Data
+    Encodings", RFC 4648, October 2006.
+
+    [NOTIFY] Melnikov, A. (Ed.), Leiba, B. (Ed.), Segmuller, W. and
+    T. Martin, "Sieve Extension: Notifications", work in progress,
+    draft-ietf-sieve-notify-XX.txt.
+
+
+7.2.  Informative References
+
+    [IMAP4rev1] Crispin, M., "Internet Message Access Protocol - Version
+    4rev1", RFC 3501, March 2003.
+
+    [PLAIN] K. Zeilenga, "The PLAIN Simple Authentication and Security
+    Layer (SASL) Mechanism", RFC 4616, August 2006.
+
+    [DIGEST-MD5] Melnikov, A. (Ed.), "Using Digest Authentication as
+    a SASL Mechanism", work in progress,
+    draft-ietf-sasl-rfc2831bis-XX.txt.
+
+
+8.  Author's Address
+
+    Tim Martin
+    BeThereBeSquare Inc.
+    672 Haight st.
+    San Francisco, CA 94117
+    Phone: (510) 260-4175
+    EMail: timmartin@alumni.cmu.edu
+
+    Alexey Melnikov
+    Isode Ltd.
+    5 Castle Business Village
+    36 Station Road
+    Hampton, Middlesex, TW12 2BX, GB
+    Email: alexey.melnikov@isode.com
+
+
+Intellectual Property
+
+   The IETF takes no position regarding the validity or scope of any
+   Intellectual Property Rights or other rights that might be claimed
+   to pertain to the implementation or use of the technology described
+   in this document or the extent to which any license under such
+   rights might or might not be available; nor does it represent that
+   it has made any independent effort to identify any such rights.
+   Information on the procedures with respect to rights in RFC
+   documents can be found in BCP 78 and BCP 79.
+
+   Copies of IPR disclosures made to the IETF Secretariat and any
+   assurances of licenses to be made available, or the result of an
+   attempt made to obtain a general license or permission for the use
+   of such proprietary rights by implementers or users of this
+   specification can be obtained from the IETF on-line IPR repository
+   at http://www.ietf.org/ipr.
+
+   The IETF invites any interested party to bring to its attention any
+   copyrights, patents or patent applications, or other proprietary
+   rights that may cover technology that may be required to implement
+   this standard.  Please address the information to the IETF at ietf-
+   ipr@ietf.org.
+
+
+18.  Full Copyright Statement
+
+   Copyright (C) The IETF Trust (2007).
+
+   This document is subject to the rights, licenses and restrictions
+   contained in BCP 78, and except as set forth therein, the authors
+   retain all their rights.
+
+   This document and the information contained herein are provided on
+   an "AS IS" basis and THE CONTRIBUTOR, THE ORGANIZATION HE/SHE
+   REPRESENTS OR IS SPONSORED BY (IF ANY), THE INTERNET SOCIETY, THE
+   IETF TRUST AND THE INTERNET ENGINEERING TASK FORCE DISCLAIM ALL
+   WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY
+   WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE
+   ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS
+   FOR A PARTICULAR PURPOSE.
+
+Acknowledgement
+
+   Funding for the RFC Editor function is currently provided by the
+   Internet Society.
+
+
+Appendix A. Acknowledgments
+
+    Thanks to Simon Josefsson, Larry Greenfield, Allen Johnson, Chris
+    Newman, Lyndon Nerenberg, Tim Showalter, Sarah Robeson, Walter
+    Wong, Barry Leiba, Arnt Gulbrandsen, Stephan Bosch for help with
+    this document.

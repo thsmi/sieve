@@ -1,6 +1,9 @@
 function SieveResponseParser(data)
 {
-    this.data = data;
+  if (data == null)
+    throw "Error Parsing Request...";
+  
+  this.data = data;
 }
 
 SieveResponseParser.prototype.extract

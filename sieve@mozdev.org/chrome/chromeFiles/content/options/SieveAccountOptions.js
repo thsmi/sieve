@@ -243,7 +243,7 @@ function onCompileCommand(sender)
   if (account == null)
     return;
      
-  account.getSettings().enableCompile(sender.checked); 
+  account.getSettings().enableCompileDelay(sender.checked); 
   enableCompile(sender.checked);    
 }
 
@@ -315,21 +315,23 @@ function onAuthMechanismSelect(sender)
 function onShowPassword()
 {  
 
-  var name = "Toolkit:PasswordManager"
+  var winName = "Toolkit:PasswordManager"
   var uri = "chrome://messenger/content/preferences/viewpasswords.xul"
 
   var w = Components
     .classes["@mozilla.org/appshell/window-mediator;1"]
     .getService(Components.interfaces.nsIWindowMediator)
-    .getMostRecentWindow(name);
+    .getMostRecentWindow(winName);
 
   if (w)
     w.focus();
   else
+    window.openDialog(uri,winName, "");    
+  /*else
     Components
       .classes["@mozilla.org/embedcomp/window-watcher;1"]
       .getService(Components.interfaces.nsIWindowWatcher)
-      .openWindow(null, uri, name, "chrome,resizable", null);  
+      .openWindow(null, uri, name, "chrome,resizable", null);*/  
 }
 
 function onShowErrorConsole()

@@ -34,10 +34,37 @@ function sivOpenFilters(account,parentWin)
     .classes["@mozilla.org/embedcomp/window-watcher;1"]
     .getService(Components.interfaces.nsIWindowWatcher)
     .openWindow(parentWin, "chrome://sieve/content/editor/SieveFilterExplorer.xul"
-                ,"Sieve:FilterExplorer", "chrome,resizable,centerscreen,all", params);
+                ,null, "chrome,resizable,centerscreen,all", params);
+
+ //       window.openDialog("chrome://browser/content/preferences/cookies.xul",
+ //                         "Browser:Cookies", "", {filterString : eTLD});
 
 }
 
+/* 810       openDialog(kDesktopBackgroundURL, "",
+ 811                  "centerscreen,chrome,dialog=no,dependent,resizable=no",
+ 812                  this.target);
+*/
+
+/*
+ 167   **
+ 168    * Open the login manager window
+ 169    *
+ 170   viewPasswords : function()
+ 171   {
+ 172     var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+ 173                        .getService(Components.interfaces.nsIWindowMediator);
+ 174     var win = wm.getMostRecentWindow("Toolkit:PasswordManager");
+ 175     if (win) {
+ 176       win.setFilter(this._getSecurityInfo().hostName);
+ 177       win.focus();
+ 178     }
+ 179     else
+ 180       window.openDialog("chrome://passwordmgr/content/passwordManager.xul",
+ 181                         "Toolkit:PasswordManager", "", 
+ 182                         {filterString : this._getSecurityInfo().hostName});
+ 183   }
+*/
 
 function sivGetActiveAccount()
 {

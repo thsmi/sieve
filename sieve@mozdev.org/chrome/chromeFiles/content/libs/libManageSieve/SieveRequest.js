@@ -24,6 +24,36 @@
     
 ********************************************************************************/
 
+/*******************************************************************************
+  Sieve literals are encoded in UTF-8 and transmitted as Octets (Bytes).
+  Hence the literal length does not reflect the number of characters within the
+  literal. It is equivalent to the effective length in bytes. 
+   
+  This method retrieve this effective length in bytes for an UTF-8 encoded String
+  
+********************************************************************************/ 
+
+function UTF8ByteLen(str)
+{
+  //UTF-8 is uses Huffman enconding...
+  //  ... http://de.wikipedia.org/wiki/UTF-8
+  var len = 0;
+
+  for (var i = 0; i< str.length; i++)
+  {  
+    if (str.charCodeAt(i) > 0x007F)    
+      len++
+    if (str.charCodeAt(i) > 0x07FF)  
+      len++
+    if (str.charCodeAt(i) > 0xFFFF)  
+      len++
+
+    len++
+  }
+  
+  return len;
+}
+
 function SieveGetScriptRequest(script) 
 {
   this.script = script;
@@ -135,8 +165,7 @@ SievePutScriptRequest.prototype.getNextRequest
    alert("Something went terribly wrong. The linebreaks are mixed up...\n");
 //  alert("n:"+n+"/r:"+r);
       
-      
-  return "PUTSCRIPT \""+this.script+"\" {"+this.body.length+"+}\r\n"
+  return "PUTSCRIPT \""+this.script+"\" {"+UTF8ByteLen(this.body)+"+}\r\n"
         +this.body+"\r\n"
 }
 

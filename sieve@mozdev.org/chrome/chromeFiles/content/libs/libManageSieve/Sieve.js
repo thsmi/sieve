@@ -66,13 +66,15 @@ function Sieve(host, port, secure, idleInterval)
   this.debug = new Object();
   this.debug.level  = 0x00;
   this.debug.logger = null;  
+  
+  this.outstream = null;
 }
 
 /*
  * level:
  *   is a bitfield which defines which debugmessages are logged to the console.
  * 
- * console: 
+ * logger: 
  *   passes the logger which should be used. 
  *   A via logger needs to interface a logStringMessage(String) Method. 
  */
@@ -160,7 +162,7 @@ Sieve.prototype.addRequest = function(request)
   if (this.debug.level & (1 << 0))
     this.debug.logger.logStringMessage(output);
 
-  this.outstream.write(output,output.length);
+  this.outstream.writeString(output);
   
   return;
 }
@@ -181,8 +183,11 @@ Sieve.prototype.connect = function ()
     this.socket = transportService.createTransport(["starttls"], 1,this.host, this.port, null); 
   else
     this.socket = transportService.createTransport(null, 0,this.host, this.port, null);    
-        
-  this.outstream = this.socket.openOutputStream(0,0,0);
+
+  this.outstream = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+                     .createInstance(Components.interfaces.nsIConverterOutputStream);
+
+  this.outstream.init(this.socket.openOutputStream(0,0,0), "UTF-8", 0, "?");
   
   var stream = this.socket.openInputStream(0,0,0);
   var pump = Components.
@@ -204,8 +209,11 @@ Sieve.prototype.disconnect = function ()
   
   if (this.socket == null)
     return;
-  
+
+  this.outstream.close();  
   this.socket.close(0);
+
+  this.outstream = null
   this.socket = null;
   
   if ((this.debug.level & (1 << 1)) || (this.debug.level & (1 << 0)))
@@ -237,6 +245,9 @@ Sieve.prototype.onStartRequest = function(request, context)
 Sieve.prototype.onWatchDogTimeout = function() 
 {
   
+  if (this.debug.level & (1 << 2))
+    this.debug.logger.logStringMessage("libManageSieve/Sieve.js:\nOnTimeout");
+      
   // clear receive buffer and any pending request...
   this.data = "";  
   var request = this.requests[0];
@@ -249,22 +260,40 @@ Sieve.prototype.onWatchDogTimeout = function()
 
 Sieve.prototype.onDataAvailable = function(request, context, inputStream, offset, count)
 {
+  try
+  {
+   
+  /*var instream = Components.classes["@mozilla.org/intl/converter-input-stream;1"]
+                   .createInstance(Components.interfaces.nsIConverterInputStream);
+                   
+  instream.init(inputStream,"UTF-8", count, Components.interfaces.nsIConverterInputStream.DEFAULT_REPLACEMENT_CHARACTER)
+  */
   
   var instream = Components.classes["@mozilla.org/scriptableinputstream;1"]
       .createInstance(Components.interfaces.nsIScriptableInputStream);  
   instream.init(inputStream);
-      
+  
   var data = instream.read(count);
+  
+  if (this.debug.level & (1 << 1))
+    this.debug.logger.logStringMessage("Reading...");  
+    
+/*  var data = {};
+  if ( instream.readString(count, data) == 0 )
+    throw "Sieve::onDataAvailable - Reading data failed";
+    
+  instream.close();*/
+        
 
   if (this.debug.level & (1 << 1))
-    this.debug.logger.logStringMessage(data);
+    this.debug.logger.logStringMessage(data.value);
 
 	// is a request handler waiting?
 	if ((this.requests.length == 0))
 		return;
 		
 	// responses packets could be fragmented...
-	this.data += data;
+	this.data += data.value;
 	
 	// ... therefore we test, if the response is parsable
 	try
@@ -273,20 +302,23 @@ Sieve.prototype.onDataAvailable = function(request, context, inputStream, offset
     if( this.watchDog != null)
       this.watchDog.onStop();
 	  
+	  this.debug.logger.logStringMessage(this.data);
 	  // ... then try to parse the request
 	  this.requests[0].addResponse(""+this.data); 
 	}
 	catch (ex)
 	{
-	  if (this.debug.level & (1 << 2))
-	    this.debug.logger.logStringMessage("Parsing Exception in libManageSieve/Sieve.js:\n"+ex);
-	  // ... we encounterned an error, this is most likely caused ...
-	  // ... by a fragmented packet, so we skip processing and start ...
-	  // ... the timeout timer again. Either the next packet or a timeout ...
-	  // ... will resolve this situation.
 	  
-	  
+    // ... we encounterned an error, this is most likely caused ...
+    // ... by a fragmented packet, so we skip processing and start ...
+    // ... the timeout timer again. Either the next packet or a timeout ...
+    // ... will resolve this situation.
 
+	  
+	  if (this.debug.level & (1 << 2))
+	    this.debug.logger
+	       .logStringMessage("Parsing Exception in libManageSieve/Sieve.js:\n"+ex+"\n"+requests[0]);
+	  
     if( this.watchDog != null)
       this.watchDog.onStart();
 	  
@@ -310,13 +342,19 @@ Sieve.prototype.onDataAvailable = function(request, context, inputStream, offset
     if (this.debug.level & (1 << 0))
       this.debug.logger.logStringMessage(output);
     
-	  this.outstream.write(output,output.length);
+	  this.outstream.writeString(output);
 	  
 	  // the request is transmitted, therefor activate the timeout
     if( this.watchDog != null)
       this.watchDog.onStart();
 	  
 	}
+  }
+  catch (ex)
+  { 
+    this.debug.logger.logStringMessage("Fatal Exception in libManageSieve/Sieve.js:\n"+ex);
+  }
+	
 }
 
 /******************************************************************************/

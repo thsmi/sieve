@@ -1,7 +1,7 @@
 function SieveResponseParser(data)
 {
   if (data == null)
-    throw "Error Parsing Request...";
+    throw "Error Parsing Response...\nData is null";
   
   this.data = data;
 }
@@ -58,7 +58,7 @@ SieveResponseParser.prototype.isLiteral
     return false;
 }
 
-// gibt einen string zur�ck, wenn keiner Existiert wird null �bergeben
+// gibt einen string zur?ck, wenn keiner Existiert wird null ?bergeben
 // bei syntaxfehlern filegt eine exception;
 SieveResponseParser.prototype.extractLiteral
     = function ()

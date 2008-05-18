@@ -217,7 +217,7 @@ SieveCustomAuth.prototype.getType
 	return 2;
 }
 
-// Dies läd die Imap einstellungen direkt vom Account
+// Loads the account related Imap settings
 function SieveImapHost(account)
 {
     if (account == null)

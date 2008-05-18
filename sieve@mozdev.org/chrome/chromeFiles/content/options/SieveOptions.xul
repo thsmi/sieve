@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
 <?xml-stylesheet href="chrome://messenger/skin/accountManage.css" type="text/css"?>
@@ -9,7 +9,8 @@
         persist="screenX screenY"
         style="width: 45em; height: 25em;"
         title="&list.title;">
-        
+  
+  <script type="application/x-javascript" src="chrome://sieve/content/options/SieveAccountTreeView.js"/>      
   <script type="application/x-javascript" src="chrome://sieve/content/options/SieveOptions.js"/>
   <script type="application/x-javascript" src="chrome://sieve/content/SieveOverlay.js"/>  
 

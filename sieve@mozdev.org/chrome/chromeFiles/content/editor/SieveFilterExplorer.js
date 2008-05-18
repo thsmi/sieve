@@ -466,7 +466,7 @@ function onSelectAccount()
     }
   }
 
-	// Besteht das Objekt Ã¼berhaupt bzw besteht eine Verbindung?
+	// Besteht das Objekt überhaupt bzw besteht eine Verbindung?
 	if ((gSieve == null) || (gSieve.isAlive() == false))
 	{
 		// beides schein nicht zu existieren, daher connect direkt aufrufen...

@@ -4,12 +4,12 @@ var sieveAccountTreeView = null;
 function onWindowLoad()
 {
 	// Load all the Libraries we need...
-	var jsLoader = Components
+	/*var jsLoader = Components
 										.classes["@mozilla.org/moz/jssubscript-loader;1"]
 										.getService(Components.interfaces.mozIJSSubScriptLoader);
 
   jsLoader
-    .loadSubScript("chrome://sieve/content/options/SieveAccountTreeView.js");
+    .loadSubScript("chrome://sieve/content/options/SieveAccountTreeView.js");*/
     
 	// now set our custom TreeView Renderer...
 	var tree = document.getElementById('treeAccounts');	

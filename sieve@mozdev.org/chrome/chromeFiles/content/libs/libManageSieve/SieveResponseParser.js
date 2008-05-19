@@ -1,3 +1,45 @@
+
+/*******************************************************************************
+  Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy 
+  binary, and javascript is something in between. This means we have to convert
+  UTF-8 into a binary and vice versa by our own...   
+********************************************************************************/
+
+  // public method for url decoding
+  function UTF8Decode(utftext) 
+  {
+    var string = "";
+    var i = 0;
+    var c = c1 = c2 = 0;
+
+    while ( i < utftext.length ) 
+    {
+      c = utftext.charCodeAt(i);
+
+      if (c < 128) 
+      {
+        string += String.fromCharCode(c);
+        i++;
+      }
+      else if((c > 191) && (c < 224)) 
+      {
+        c2 = utftext.charCodeAt(i+1);
+        string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+        i += 2;
+      }
+      else
+      {
+        c2 = utftext.charCodeAt(i+1);
+        c3 = utftext.charCodeAt(i+2);
+        string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+        i += 3;
+      }
+
+    }
+
+    return string;
+  } 
+
 function SieveResponseParser(data)
 {
   if (data == null)
@@ -85,7 +127,8 @@ SieveResponseParser.prototype.extractLiteral
     this.extractLineBreak();
 
     // extract the Size...
-    var literal = this.data.slice(0,size);
+    
+    var literal = UTF8Decode(this.data.slice(0,size));
     this.data = this.data.slice(size);
 
     return literal;
@@ -115,7 +158,7 @@ SieveResponseParser.prototype.extractQuoted
     if (nextQuote == -1)
         throw "Error unbalanced quotes";
 
-	var quoted = this.data.slice(0,nextQuote);
+	  var quoted = UTF8Decode(this.data.slice(0,nextQuote));
 
     this.data = this.data.slice(nextQuote+1);
 

@@ -25,34 +25,42 @@
 ********************************************************************************/
 
 /*******************************************************************************
-  Sieve literals are encoded in UTF-8 and transmitted as Octets (Bytes).
-  Hence the literal length does not reflect the number of characters within the
-  literal. It is equivalent to the effective length in bytes. 
-   
-  This method retrieve this effective length in bytes for an UTF-8 encoded String
-  
-********************************************************************************/ 
+  Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy 
+  binary, and javascript is something in between. This means we have to convert
+  UTF-8 into a binary by our own...   
+********************************************************************************/
 
-function UTF8ByteLen(str)
-{
-  //UTF-8 is uses Huffman enconding...
-  //  ... http://de.wikipedia.org/wiki/UTF-8
-  var len = 0;
+// BYTES -> UTF8
 
-  for (var i = 0; i< str.length; i++)
-  {  
-    if (str.charCodeAt(i) > 0x007F)    
-      len++
-    if (str.charCodeAt(i) > 0x07FF)  
-      len++
-    if (str.charCodeAt(i) > 0xFFFF)  
-      len++
+   // From Public examples from SELFHTML...
+   // public method for url encoding
+  function UTF8Encode (string) 
+  {
+    var utftext = "";
+    var c;
 
-    len++
+    for (var n = 0; n < string.length; n++) 
+    {
+      c = string.charCodeAt(n);
+
+      if (c < 128)
+        utftext += String.fromCharCode(c);
+      else if((c > 127) && (c < 2048))
+      {
+        utftext += String.fromCharCode((c >> 6) | 192);
+        utftext += String.fromCharCode((c & 63) | 128);
+      }
+      else
+      {
+        utftext += String.fromCharCode((c >> 12) | 224);
+        utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+        utftext += String.fromCharCode((c & 63) | 128);
+      }
+
+    }
+    return utftext;
   }
-  
-  return len;
-}
+
 
 function SieveGetScriptRequest(script) 
 {
@@ -126,7 +134,7 @@ SieveGetScriptRequest.prototype.addResponse
 function SievePutScriptRequest(script, body) 
 {
   this.script = script;
-  this.body = body;
+  this.body = UTF8Encode(body);
 }
 
 SievePutScriptRequest.prototype.hasNextRequest
@@ -165,7 +173,7 @@ SievePutScriptRequest.prototype.getNextRequest
    alert("Something went terribly wrong. The linebreaks are mixed up...\n");
 //  alert("n:"+n+"/r:"+r);
       
-  return "PUTSCRIPT \""+this.script+"\" {"+UTF8ByteLen(this.body)+"+}\r\n"
+  return "PUTSCRIPT \""+this.script+"\" {"+this.body.length+"+}\r\n"
         +this.body+"\r\n"
 }
 

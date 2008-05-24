@@ -22,6 +22,6 @@
     <em:homepageURL>http://sieve.mozdev.org/</em:homepageURL>
 <!--    <em:iconURL>chrome://sieve/skin/icon.png</em:iconURL> -->
     <em:optionsURL>chrome://sieve/content/options/SieveOptions.xul</em:optionsURL>   
-    <em:updateURL>http://sieve.mozdev.org/update.rdf</em:updateURL>    
+    <em:updateURL>https://www.mozdev.org/p/updates/sieve/sieve@mozdev.org/update.rdf</em:updateURL>    
   </Description>      
 </RDF>

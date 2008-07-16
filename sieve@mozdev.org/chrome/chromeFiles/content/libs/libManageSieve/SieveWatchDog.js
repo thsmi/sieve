@@ -5,19 +5,24 @@
 function SieveWatchDog()
 {
   this.timeout      = null;
-  this.timeoutDelay = 1000;
+  this.timeoutDelay = 20000;
   this.idle         = null;
   this.idleDelay    = 30*60*1000;
   this.listener     = null;
 }
 
+SieveWatchDog.prototype.setTimeoutInterval
+    = function (interval)
+{
+  this.timeoutDelay = interval;
+}
+
 SieveWatchDog.prototype.onAttach
-    = function (timeoutDelay, idleDelay)
+    = function (idleDelay)
 {   
   this.timeout 
     = Components.classes["@mozilla.org/timer;1"]
         .createInstance(Components.interfaces.nsITimer);
-  this.timeoutDelay = timeoutDelay;
   
   if (idleDelay == null)
     return;
@@ -56,9 +61,11 @@ SieveWatchDog.prototype.notify
 }
 
 SieveWatchDog.prototype.onStart
-    = function ()
+    = function (timeout)
 {
-  this.timeout.initWithCallback(this,this.timeoutDelay,
+  this.timeout.initWithCallback(
+         this,
+         ((timeout != null) ? timeout : this.timeoutDelay),
          Components.interfaces.nsITimer.TYPE_ONE_SHOT);
 }
 

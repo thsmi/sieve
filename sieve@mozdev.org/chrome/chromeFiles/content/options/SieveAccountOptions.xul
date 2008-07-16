@@ -6,8 +6,8 @@
 
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         buttons="accept"
-				onload="onDialogLoad(this);"
-				ondialogaccept="return onDialogAccept(this);"
+        onload="onDialogLoad(this);"
+        ondialogaccept="return onDialogAccept(this);"
         persist="screenX screenY"
         style="width: 48em; height: 27em;"
         title="&options.title;">
@@ -16,6 +16,7 @@
   <tabbox  flex="1">
   <tabs >
     <tab label="&options.tab.general;" />
+    <tab label="Compatibility" />
     <tab label="&options.tab.advanced;" />
     <tab label="&options.tab.debug;" />
   </tabs>
@@ -43,7 +44,7 @@
         <groupbox flex="1">
           <caption>          
             <checkbox id="cbxHost" label="&options.host;" accesskey="&options.host.key;" 
-          		        oncommand="onHostCommand(this)"/>
+                      oncommand="onHostCommand(this)"/>
           </caption>
           <grid>
             <colums>
@@ -53,12 +54,12 @@
             <rows>
               <row align="center">
                 <label value="&options.host.hostname;" accesskey="&options.host.hostname.key;"
-            		       control="txtHostname" />
+                       control="txtHostname" />
                 <textbox id="txtHostname" size="25" onchange="onHostnameChange(this)"/>
               </row>
               <row align="center">
                 <label  value="&options.host.port;" accesskey="&options.host.port.key;"
-                     		control="txtPort" />
+                        control="txtPort" />
                 <hbox align="center">
                   <textbox id="txtPort" size="5" onchange="onPortChange(this)"/>
                   <label value="&options.host.port.default;" />
@@ -67,7 +68,7 @@
               <row>
                 <spacer />
                 <checkbox id="cbxTLS" oncommand="onTLSCommand(this)" label="&options.host.tls;"
-            		          accesskey="&options.host.tls.key;" />
+                          accesskey="&options.host.tls.key;" />
               </row>
             </rows>
           </grid>
@@ -100,6 +101,25 @@
         </grid>
         <hbox flex="1"/>
       </groupbox>
+    </vbox>
+
+    <!-- compatibility panel -->
+    <vbox>
+      <hbox align="center" class="sivWarning" >
+        <image id="imgErrorBar" pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
+        <label pack="center" value="These settings are intended for advanced users..."  />
+      </hbox> 
+      <groupbox>
+        <caption label="Cyrus TLS Bug" />
+        <description>
+          Older Cyrus server revisions do not implement TLS handshake as suggested in the ManageSieve RFC. If you encounter a "hang" during TLS handshake, try to change this setting.
+        </description>
+        <radiogroup id="rgHandshake" onselect="onHandshakeSelect(this);">
+          <radio id="rbStrictHandshake" label="Strict RFC handshake"/>
+          <radio id="rbCyrusHandshake" label="Cyrus handshake"/>
+        </radiogroup>
+      </groupbox>
+      <hbox flex="1"/>
     </vbox>
     
     
@@ -152,9 +172,13 @@
       </groupbox>
       <hbox flex="1"/>
     </vbox>
+
     <!-- debug panel -->
     <vbox>
       <groupbox>
+        <description>
+          Keep in mind that neither SASL Login nor SASL Plain cypher your password, it might be posted in cleartext to the error console.
+        </description>
         <caption label="&options.debug.caption;" />
         <checkbox id="cbxDebugRequest" label="&options.debug.request;"
                   oncommand="onDebugRequestCommand(this)" />

@@ -91,17 +91,16 @@ SieveGetScriptRequest.prototype.getNextRequest
   return "GETSCRIPT \""+this.script+"\"\r\n";
 }
 
+SieveGetScriptRequest.prototype.cancel
+    = function ()
+{
+  if (this.errorListener != null)
+    this.errorListener.onTimeout();  
+}
+
 SieveGetScriptRequest.prototype.addResponse
     = function (data)
-{
-  if (data == null)
-  {
-    if (this.errorListener != null)
-      this.errorListener.onTimeout();
-      
-    return;
-  }
-  
+{  
   var response = new SieveGetScriptResponse(this.script,data); 
 		
   if ((response.getResponse() == 0) && (this.responseListener != null))
@@ -189,17 +188,16 @@ SievePutScriptRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
+SievePutScriptRequest.prototype.cancel
+    = function ()
+{
+  if (this.errorListener != null)
+    this.errorListener.onTimeout();  
+}    
+
 SievePutScriptRequest.prototype.addResponse
     = function (data)
-{
-  if (data == null)
-  {
-    if (this.errorListener != null)
-      this.errorListener.onTimeout();
-      
-    return;
-  }
-  
+{  
   var response = new SievePutScriptResponse(data);
 
   if ((response.getResponse() == 0) && (this.responseListener != null))
@@ -271,17 +269,16 @@ SieveSetActiveRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
+SieveSetActiveRequest.prototype.cancel
+    = function ()
+{
+  if (this.errorListener != null)
+    this.errorListener.onTimeout();  
+}
+
 SieveSetActiveRequest.prototype.addResponse
     = function (data)
-{
-  if (data == null)
-  {
-    if (this.errorListener != null)
-      this.errorListener.onTimeout();
-      
-    return;
-  }
-  
+{  
   var response = new SieveSetActiveResponse(data);
 
   if ((response.getResponse() == 0) && (this.responseListener != null))
@@ -338,16 +335,16 @@ SieveCapabilitiesRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
+SieveCapabilitiesRequest.prototype.cancel
+    = function ()
+{
+  if (this.errorListener != null)
+    this.errorListener.onTimeout();  
+}
+
 SieveCapabilitiesRequest.prototype.addResponse
     = function (data)
 {
-  if (data == null)
-  {
-    if (this.errorListener != null)
-      this.errorListener.onTimeout();
-      
-    return;
-  }
   
   var response = new SieveCapabilitiesResponse(data);
 			
@@ -405,18 +402,16 @@ SieveDeleteScriptRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
+SieveDeleteScriptRequest.prototype.cancel
+    = function ()
+{
+  if (this.errorListener != null)
+    this.errorListener.onTimeout();  
+}
+
 SieveDeleteScriptRequest.prototype.addResponse
     = function (data)
-{
-  if (data == null)
-  {
-    if (this.errorListener != null)
-      this.errorListener.onTimeout();
-      
-    return;
-  }
-  
-        
+{        
   var response = new SieveDeleteScriptResponse(data);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
@@ -472,17 +467,16 @@ SieveListScriptRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
+SieveListScriptRequest.prototype.cancel
+    = function ()
+{
+  if (this.errorListener != null)
+    this.errorListener.onTimeout();  
+}
+
 SieveListScriptRequest.prototype.addResponse 
     = function (data)
-{
-  if (data == null)
-  {
-    if (this.errorListener != null)
-      this.errorListener.onTimeout();
-      
-    return;
-  }
-	
+{	
   var response = new SieveListScriptResponse(data);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
@@ -540,17 +534,16 @@ SieveStartTLSRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
+SieveStartTLSRequest.prototype.cancel
+    = function ()
+{
+  if (this.errorListener != null)
+    this.errorListener.onTimeout();  
+}
+
 SieveStartTLSRequest.prototype.addResponse 
     = function (data)
-{		    
-  if (data == null)
-  {
-    if (this.errorListener != null)
-      this.errorListener.onTimeout();
-      
-    return;
-  }
-  
+{
   var response = new SieveStartTLSResponse(data);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
@@ -658,17 +651,17 @@ SieveLogoutRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
+SieveLogoutRequest.prototype.cancel
+    = function ()
+{
+  if (this.errorListener != null)
+    this.errorListener.onTimeout();  
+}
+
+
 SieveLogoutRequest.prototype.addResponse 
     = function (data)
-{
-  if (data == null)
-  {
-    if (this.errorListener != null)
-      this.errorListener.onTimeout();
-      
-    return;
-  }
-  
+{  
   var response = new SieveLogoutResponse(data);
 			
   // a "BYE" or "OK" is in this case a good answer...
@@ -758,17 +751,16 @@ SieveInitRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
+SieveInitRequest.prototype.cancel
+    = function ()
+{
+  if (this.errorListener != null)
+    this.errorListener.onTimeout();  
+}
+
 SieveInitRequest.prototype.addResponse
     = function (data)
-{
-  if (data == null)
-  {
-    if (this.errorListener != null)
-      this.errorListener.onTimeout();
-      
-    return;
-  }
-  
+{  
   var response = new SieveInitResponse(data);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
@@ -890,6 +882,13 @@ SieveSaslPlainRequest.prototype.addErrorListener
     = function (listener)
 {
   this.errorListener = listener;
+}
+
+SieveSaslPlainRequest.prototype.cancel
+    = function ()
+{
+  if (this.errorListener != null)
+    this.errorListener.onTimeout();  
 }
 
 SieveSaslPlainRequest.prototype.addResponse
@@ -1040,6 +1039,14 @@ SieveSaslLoginRequest.prototype.addErrorListener
 {
   this.errorListener = listener;
 }
+
+SieveSaslLoginRequest.prototype.cancel
+    = function ()
+{
+  if (this.errorListener != null)
+    this.errorListener.onTimeout();  
+}
+
 
 SieveSaslLoginRequest.prototype.addResponse 
     = function (data)

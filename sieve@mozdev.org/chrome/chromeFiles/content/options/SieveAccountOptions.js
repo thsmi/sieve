@@ -79,11 +79,28 @@ function onDialogLoad(sender)
     break;
   }
   
+  document.getElementById('rgHandshake').selectedIndex 
+    = (account.getSettings().isCyrusBugCompatible()?1:0);  
 }
 
 function onDialogAccept(sender)
 { 
 	// Do nothing since there should be only valid entries...
+}
+
+function onHandshakeSelect(sender)
+{ 
+  if (account == null)
+    return;
+  
+  var compatible = false;
+  
+  if (sender.selectedItem.id == "rbStrictHandshake")
+    compatible = false;
+  else if (sender.selectedItem.id == "rbCyrusHandshake")
+    compatible = true;
+  
+  account.getSettings().enableCyrusBugCompatibility(compatible);
 }
 
 function onAuthorizationSelect(sender)

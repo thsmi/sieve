@@ -334,13 +334,28 @@ function SieveAccountSettings(uri)
   this.prefURI = "extensions.sieve.account."+this.uri;
 }
 
+SieveAccountSettings.prototype.isCyrusBugCompatible
+    = function ()
+{
+  if (gPref.prefHasUserValue(this.prefURI+".cyrusBugCompatibility"))
+    return gPref.getBoolPref(this.prefURI+".cyrusBugCompatibility");
+        
+  return false;
+}
+
+SieveAccountSettings.prototype.enableCyrusBugCompatibility
+    = function (enabled)
+{
+  gPref.setBoolPref(this.prefURI+".cyrusBugCompatibility",enabled);
+}
+
 SieveAccountSettings.prototype.isKeepAlive
     = function () 
 {
-    if (gPref.prefHasUserValue(this.prefURI+".keepalive"))
-        return gPref.getBoolPref(this.prefURI+".keepalive");
+  if (gPref.prefHasUserValue(this.prefURI+".keepalive"))
+    return gPref.getBoolPref(this.prefURI+".keepalive");
         
-    return true;
+  return true;
 }
 
 SieveAccountSettings.prototype.enableKeepAlive

@@ -146,26 +146,11 @@ var event =
 	  
 	  // workaround for timsieved bug...
     var lEvent = 
-    {   
+    {        
       onInitResponse: function(response)
       {
         event.onAuthenticate(response);
-      },
-      
-      onError: function(response)
-      {
-        alert("error");
-        event.onError(response);
-      },
-      
-      onTimeout: function()
-      {
-        var request = new SieveCapabilitiesRequest();
-        request.addCapabilitiesListener(event);
-        request.addErrorListener(event);	
-		
-        gSieve.addRequest(request)      
-      }    	
+      }      
     }
     	  
     // after calling startTLS the server will propagate his capabilities...
@@ -174,16 +159,32 @@ var event =
     // some revision of timsieved fail to resissue the capabilities...
     // ... which causes the extension to be jammed. Therefore we have to ...
     // ... do a rather nasty workaround. The jammed extension causes a timeout,
-    // ... we catch this timeout and continue as if nothing happend...
+    // ... we catch this timeout and continue as if nothing happend...   
     
-	  var request = new SieveInitRequest();
-	  request.addInitListener(lEvent);
-	  request.addErrorListener(lEvent);
-	  	  
-	  gSieve.addRequest(request);
+    if (getSelectedAccount().getSettings().isCyrusBugCompatible())
+    {
+      postStatus("Starting TLS [Cyrus compatibility]");
+      
+      gSieve.startTLS(true);
+      
+      var request = new SieveCapabilitiesRequest();
+      request.addCapabilitiesListener(event);
+      request.addErrorListener(event);  
+    
+      gSieve.addRequest(request);   
+    }
+    else
+    {
+      postStatus("Starting TLS [Strict RFC]");
+             
+	    var request = new SieveInitRequest();
+	    request.addInitListener(lEvent);
+	    request.addErrorListener(event);  
+	    gSieve.addRequest(request);
 	  
-    // activate TLS
-	  gSieve.startTLS(true);
+      // activate TLS
+	    gSieve.startTLS(true);
+    }
 	},
 	
   onSaslLoginResponse: function(response)
@@ -217,12 +218,7 @@ var event =
 	{
 	  clearTimeout(closeTimeout);
 	  
-		if (gSieve.isAlive())
-		{
-		  gSieve.removeWatchDogListener();
-		  gSieve.disconnect();
-		}
-		
+	  sivDisconnect();		
 		// this will close the Dialog!
 		close();		
 	},
@@ -280,7 +276,7 @@ var event =
 	  sivSetStatus(1, "The connection has timed out, the Server is not responding...");
 	  postStatus("Disconnected");
 	  
-	  gSieve.disconnect();
+	  sivDisconnect();
 	},
 	
   onError: function(response)
@@ -291,7 +287,7 @@ var event =
     {
       disableControls(true);
       // close the old sieve connection
-      gSieve.disconnect();
+      sivDisconnect();
         
       postStatus("Referral to "+code.getHostname()+" ...");
       
@@ -384,8 +380,9 @@ function onWindowClose()
   
   if (gSieve == null)
     return true;
+  
   // Force disconnect in 500 MS
-  closeTimeout = setTimeout("gSieve.disconnect(); close();",250);
+  closeTimeout = setTimeout("sivDisconnect(); close();",250);
 
   var request = new SieveLogoutRequest(event)
   request.addLogoutListener(event);
@@ -429,11 +426,28 @@ function sivConnect(account,hostname)
       gSieve.addRequest(request);
       
       gSieveWatchDog = new SieveWatchDog();
+      // TODO load Timeout interval from account settings...
+      gSieveWatchDog.setTimeoutInterval(20000);
       gSieveWatchDog.addListener(event);  
       
       gSieve.addWatchDogListener(gSieveWatchDog);       
       gSieve.connect();  
 }
+
+function sivDisconnect()
+{
+  if (gSieve == null)
+    return;
+    
+  /*if (gSieve.isAlive() == false)
+    return;*/    
+    
+  gSieve.removeWatchDogListener();
+    
+  gSieve.disconnect();
+  gSieve = null;  
+}
+
 
 function onSelectAccount()
 {
@@ -444,8 +458,8 @@ function onSelectAccount()
 		onLogoutResponse: function(response)
 		{
 			clearTimeout(logoutTimeout);
-			if ((gSieve != null) && (gSieve.isAlive()))
-				gSieve.disconnect();
+			
+			sivDisconnect();
 
       // always clear the TreeView
       var tree = document.getElementById('treeImapRules');

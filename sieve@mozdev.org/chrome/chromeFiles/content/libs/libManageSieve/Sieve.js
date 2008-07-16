@@ -130,7 +130,7 @@ Sieve.prototype.startTLS = function (ignoreCertError)
 Sieve.prototype.addWatchDogListener = function(watchDog)
 {
   this.watchDog = watchDog;
-  this.watchDog.onAttach(1000,this.idleInterval);
+  this.watchDog.onAttach(this.idleInterval);
 }
 
 Sieve.prototype.removeWatchDogListener = function()
@@ -251,7 +251,7 @@ Sieve.prototype.onWatchDogTimeout = function()
 
   // then signal with a null response a timeout
   if (request != null)   
-    request.addResponse(null);  
+    request.cancel();
 }
 
 Sieve.prototype.onDataAvailable = function(request, context, inputStream, offset, count)

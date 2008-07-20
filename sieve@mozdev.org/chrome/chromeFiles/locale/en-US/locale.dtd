@@ -30,7 +30,7 @@
 <!ENTITY options.host.port.key "o">
 <!ENTITY options.host.port.default "Default: 2000">
 <!ENTITY options.host.tls.key "t">
-<!ENTITY options.host.tls "use TLS, if avaiable">
+<!ENTITY options.host.tls "use TLS, if available">
 
 <!ENTITY options.misc "Miscellaneous Settings">
 <!ENTITY options.misc.keepalive "Send 'keep alive' request every">

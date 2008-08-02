@@ -14,54 +14,57 @@
   If a request succees, the corresponding response listener of the request 
   will be notified.
    
-  The addResponse(), getNextRequest(), hasNextRequest() Methods are used by the 
-  Sieve object, and should not be invoked manually.  
+  The addResponse(), getNextRequest(), hasNextRequest(), cancel() Methods are 
+  used by the Sieve object, and should not be invoked manually.  
   
   When the sieve object receives a response, it is passed to the addResponse() 
-  Method of the requesting object. A timeout is singaled by passing null to 
-  the addResponse() Method.  
+  Method of the requesting object. A timeout is singaled by passing invoking 
+  the cancel() Method.  
   
-    
-********************************************************************************/
+*******************************************************************************/
 
-/*******************************************************************************
-  Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy 
-  binary, and javascript is something in between. This means we have to convert
-  UTF-8 into a binary by our own...   
-********************************************************************************/
+/**
+ * Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy 
+ * binary, and javascript is something inbetween. This means we have to convert
+ * UTF-8 into a binary by our own...
+ * 
+ * @param {String} string The binary string which should be converted 
+ * @return {String} The converted string in UTF8 
+ * 
+ * @author Thomas Schmid
+ */ 
+function UTF8Encode (string) 
+{
+  // Based on a public example on Selfhtml.org...
+  
+  var utftext = "";
+  var c;
 
-// BYTES -> UTF8
-
-   // From Public examples from SELFHTML...
-   // public method for url encoding
-  function UTF8Encode (string) 
+  for (var n = 0; n < string.length; n++) 
   {
-    var utftext = "";
-    var c;
+    c = string.charCodeAt(n);
 
-    for (var n = 0; n < string.length; n++) 
+    if (c < 128)
+      utftext += String.fromCharCode(c);
+    else if((c > 127) && (c < 2048))
     {
-      c = string.charCodeAt(n);
-
-      if (c < 128)
-        utftext += String.fromCharCode(c);
-      else if((c > 127) && (c < 2048))
-      {
-        utftext += String.fromCharCode((c >> 6) | 192);
-        utftext += String.fromCharCode((c & 63) | 128);
-      }
-      else
-      {
-        utftext += String.fromCharCode((c >> 12) | 224);
-        utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-        utftext += String.fromCharCode((c & 63) | 128);
-      }
-
+      utftext += String.fromCharCode((c >> 6) | 192);
+      utftext += String.fromCharCode((c & 63) | 128);
     }
-    return utftext;
+    else
+    {
+      utftext += String.fromCharCode((c >> 12) | 224);
+      utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+      utftext += String.fromCharCode((c & 63) | 128);
+    }
   }
+  return utftext;
+}
 
-
+/**
+ * @param {String} script
+ * @author Thomas Schmid
+ */
 function SieveGetScriptRequest(script) 
 {
   this.script = script;
@@ -79,18 +82,21 @@ SieveGetScriptRequest.prototype.addErrorListener
 	this.errorListener = listener;
 }
 
+/** @return {Boolean} */
 SieveGetScriptRequest.prototype.hasNextRequest
     = function ()
 {
   return false;
 }
 
+/** @return {String} */
 SieveGetScriptRequest.prototype.getNextRequest
     = function ()
 {
   return "GETSCRIPT \""+this.script+"\"\r\n";
 }
 
+/** */
 SieveGetScriptRequest.prototype.cancel
     = function ()
 {
@@ -98,6 +104,7 @@ SieveGetScriptRequest.prototype.cancel
     this.errorListener.onTimeout();  
 }
 
+/** @param {String} data */
 SieveGetScriptRequest.prototype.addResponse
     = function (data)
 {  
@@ -109,39 +116,26 @@ SieveGetScriptRequest.prototype.addResponse
     this.errorListener.onError(response);
 }
 
-// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-
-/*******************************************************************************
-    CLASS NAME         : SievePutRequest
-    USES CLASSES       : SievePutResponse
-        
-    CONSCTURCTOR       : SievePutRequest(listener)
-    DECLARED FUNCTIONS : String getCommand()
-                         void setResponse(String data)
-    EXCEPTIONS         : 
-
-
-    AUTHOR             : Thomas Schmid        
-    DESCRIPTION        : 
-    ...
-
-    EXAMPLE            :
-    ...
-
-********************************************************************************/
-
+/**
+ * @param {String} script
+ * @param {String} body
+ * 
+ * @author Thomas Schmid
+ */
 function SievePutScriptRequest(script, body) 
 {
   this.script = script;
   this.body = UTF8Encode(body);
 }
 
+/** @return {Boolean} */
 SievePutScriptRequest.prototype.hasNextRequest
     = function ()
 {
   return false;
 }
 
+/** @return {String} */
 SievePutScriptRequest.prototype.getNextRequest
     = function ()
 {
@@ -159,18 +153,22 @@ SievePutScriptRequest.prototype.getNextRequest
   // ... finally convert all \r to \r\n
   this.body = this.body.replace(/\r/g,"\r\n");
 
-  var r = 0;
-  var n = 0;
-  for (var i=0; i< this.body.length; i++)
-  {
-    if (this.body.charCodeAt(i) == "\r".charCodeAt(0))
-      r++;
-    if (this.body.charCodeAt(i) == "\n".charCodeAt(0))
-      n++;
-  }
-  if (n != r)
-   alert("Something went terribly wrong. The linebreaks are mixed up...\n");
-//  alert("n:"+n+"/r:"+r);
+  /*  
+  //BEGIN DEBUG CODE
+    var r = 0;
+    var n = 0;
+    for (var i=0; i< this.body.length; i++)
+    {
+      if (this.body.charCodeAt(i) == "\r".charCodeAt(0))
+        r++;
+      if (this.body.charCodeAt(i) == "\n".charCodeAt(0))
+        n++;
+    }
+    
+    if (n != r)
+      alert("Something went terribly wrong. The linebreaks are mixed up...\n");
+  // END DEBUG CODE
+  */
       
   return "PUTSCRIPT \""+this.script+"\" {"+this.body.length+"+}\r\n"
         +this.body+"\r\n"
@@ -188,6 +186,7 @@ SievePutScriptRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
+/** */
 SievePutScriptRequest.prototype.cancel
     = function ()
 {
@@ -195,6 +194,7 @@ SievePutScriptRequest.prototype.cancel
     this.errorListener.onTimeout();  
 }    
 
+/** @param {String} data */
 SievePutScriptRequest.prototype.addResponse
     = function (data)
 {  
@@ -208,35 +208,20 @@ SievePutScriptRequest.prototype.addResponse
   return;
 }
 
-/*******************************************************************************
-    CLASS NAME         : SieveSetActiveRequest
-    USES CLASSES       : SieveSetActiveResponse
-        
-    CONSCTURCTOR       : SieveSetActiveRequest(script, listener)
-    DECLARED FUNCTIONS : getCommand()
-                         setResponse(data)
-    EXCEPTIONS         : 
-
-
-    AUTHOR             : Thomas Schmid        
-    DESCRIPTION        : This class encapulates a Sieve SETACTIVE request. 
-                         Either none or one serverscripts can be active,
-                         this means you can't have more than one active scripts
-                         
-                         You activate a Script by calling SETACTIVE and the 
-                         sciptname. At activation the previous active Script
-                         will become inactive.
-                         The Scriptname "" is reserved. It means deactivate the
-                         active Script.
-
-    EXAMPLE            :
-    ...
-
-********************************************************************************/
-//******************************************************************
-// es kann immer nur ein Script aktiv sein! 
-// -> wenn kein Script angegeben wird werden alle inaktiv
-// -> sonst wird das aktuelle ative deaktiviert und das neue aktiv
+/**
+ * This class encapulates a Sieve SETACTIVE request.
+ * <p>
+ * Either none or one serverscripts can be active, this means you can't have 
+ * more than one active scripts
+ * <p>
+ * You activate a Script by calling SETACTIVE and the scriptname. At activation 
+ * the previous active Script will become inactive.
+ * 
+ * @param {String} script - The script name which should be activated. Passing 
+ * an empty string deactivates the active script.
+ * 
+ * @author Thomas Schmid
+ */
 function SieveSetActiveRequest(script) 
 {
   if (script == null)
@@ -245,12 +230,14 @@ function SieveSetActiveRequest(script)
     this.script = script;
 }
 
+/** @return {Boolean} */
 SieveSetActiveRequest.prototype.hasNextRequest
     = function ()
 {
   return false;
 }
 
+/** @return {String} */
 SieveSetActiveRequest.prototype.getNextRequest
     = function ()
 {
@@ -269,6 +256,7 @@ SieveSetActiveRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
+/** */
 SieveSetActiveRequest.prototype.cancel
     = function ()
 {
@@ -276,6 +264,7 @@ SieveSetActiveRequest.prototype.cancel
     this.errorListener.onTimeout();  
 }
 
+/** @param {String} data */
 SieveSetActiveRequest.prototype.addResponse
     = function (data)
 {  
@@ -305,18 +294,22 @@ SieveSetActiveRequest.prototype.addResponse
     ...
 
 ********************************************************************************/
-
+/**
+ * 
+ * @author Thomas Schmid
+ */
 function SieveCapabilitiesRequest()
 {
 }
 
+/** @return {Boolean} */
 SieveCapabilitiesRequest.prototype.hasNextRequest
     = function ()
 {
   return false;
 }
 
-
+/** @return {String} */
 SieveCapabilitiesRequest.prototype.getNextRequest
     = function ()
 {
@@ -335,6 +328,7 @@ SieveCapabilitiesRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
+/** */
 SieveCapabilitiesRequest.prototype.cancel
     = function ()
 {
@@ -342,6 +336,7 @@ SieveCapabilitiesRequest.prototype.cancel
     this.errorListener.onTimeout();  
 }
 
+/** @param {String} data */
 SieveCapabilitiesRequest.prototype.addResponse
     = function (data)
 {
@@ -373,17 +368,23 @@ SieveCapabilitiesRequest.prototype.addResponse
 
 ********************************************************************************/
 
+/**
+ * @param {String} script
+ * @author Thomas Schmid
+ */
 function SieveDeleteScriptRequest(script) 
 {
   this.script = script;
 }
 
+/** @return {String} */
 SieveDeleteScriptRequest.prototype.getNextRequest
     = function ()
 {
   return "DELETESCRIPT \""+this.script+"\"\r\n";
 }
 
+/** @return {Boolean} */
 SieveDeleteScriptRequest.prototype.hasNextRequest
     = function ()
 {
@@ -402,6 +403,7 @@ SieveDeleteScriptRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
+/** */
 SieveDeleteScriptRequest.prototype.cancel
     = function ()
 {
@@ -409,6 +411,7 @@ SieveDeleteScriptRequest.prototype.cancel
     this.errorListener.onTimeout();  
 }
 
+/** @param {String} data */
 SieveDeleteScriptRequest.prototype.addResponse
     = function (data)
 {        
@@ -420,35 +423,22 @@ SieveDeleteScriptRequest.prototype.addResponse
     this.errorListener.onError(response);
 }
 
-/*******************************************************************************
-    CLASS NAME         : SieveListScriptRequest
-    USES CLASSES       : SieveListScriptResponse
-        
-    CONSCTURCTOR       : SieveListScriptRequest(String script, listener)
-    DECLARED FUNCTIONS : String getCommand()
-                         void setResponse(String data)
-    EXCEPTIONS         : 
 
-
-    AUTHOR             : Thomas Schmid        
-    DESCRIPTION        : 
-    ...
-
-    EXAMPLE            :
-    ...
-
-********************************************************************************/
-
+/**
+ * @author Thomas Schmid
+ */
 function SieveListScriptRequest() 
 {
 }
 
+/** @return {Boolean} */
 SieveListScriptRequest.prototype.hasNextRequest
     = function ()
 {
   return false;
 }
 
+/** @return {String} */
 SieveListScriptRequest.prototype.getNextRequest
     = function ()
 {
@@ -460,7 +450,7 @@ SieveListScriptRequest.prototype.addListScriptListener
 {
   this.responseListener = listener;
 } 
-   
+
 SieveListScriptRequest.prototype.addErrorListener
     = function (listener)
 {
@@ -474,6 +464,7 @@ SieveListScriptRequest.prototype.cancel
     this.errorListener.onTimeout();  
 }
 
+/** @param {String} data */
 SieveListScriptRequest.prototype.addResponse 
     = function (data)
 {	
@@ -510,12 +501,14 @@ function SieveStartTLSRequest()
 {
 }
 
+/** @return {Boolean} */
 SieveStartTLSRequest.prototype.hasNextRequest
     = function ()
 {
   return false;
 }
 
+/** @return {String} */
 SieveStartTLSRequest.prototype.getNextRequest
     = function ()
 {
@@ -541,6 +534,7 @@ SieveStartTLSRequest.prototype.cancel
     this.errorListener.onTimeout();  
 }
 
+/** @param {String} data */
 SieveStartTLSRequest.prototype.addResponse 
     = function (data)
 {
@@ -552,87 +546,50 @@ SieveStartTLSRequest.prototype.addResponse
     this.errorListener.onError(response);		    
 }
 
-/*******************************************************************************
-    CLASS NAME         : SieveLogoutRequest
-    USES CLASSES       : SieveLogoutResponse
-        
-    CONSCTURCTOR       : SieveLogoutRequest(listener)
-    DECLARED FUNCTIONS : String getCommand()
-                         void setResponse(String data)
-    EXCEPTIONS         : 
-
-
-    AUTHOR             : Thomas Schmid        
-    DESCRIPTION        : 
-    ...
-
-    EXAMPLE            :
-    ...
-
-********************************************************************************/
-
-/*******************************************************************************
- 
-  FACTSHEET: 
-  ==========
-   
-    CLASS NAME          : SieveLogoutRequest
-    USES CLASSES        : SieveLogoutResponse
-        
-    CONSCTURCTOR        : SieveLogoutRequest()
-    DECLARED FUNCTIONS  : void addLogoutListener(...)
-                          void addErrorListener(...)
-                          void addResponse(String data)                          
-                          String getNextRequest()
-                          Boolean hasNextRequest()
-    EXCEPTIONS          : 
-    AUTHOR              : Thomas Schmid
-    
-  DESCRIPTION:
-  ============
-    A logout request signals the server that the client wishes to terminate
-    the current session.       
-
-  EXAMPLE:
-  ========
-     
-    var event = {
-      onLogoutResponse: function(response) 
-      {
-        alert("Logout successfull");
-      }
-      ,                          
-      onError: function(response) 
-      {
-        alert("SERVER ERROR:"+response.getMessage());
-      }
-    } 
-                          
-    var request = new SieveLogoutRequest();
-    request.addErrorListener(event);
-    request.addSaslPlainListener(event);
-                        
-    sieve.addRequest(request);
-
-  PROTOCOL INTERACTION: 
-  =====================
-
-    Client > LOGOUT                               
-    Server < OK "Logout Complete"
-    < connection terminated >
-
-*******************************************************************************/
-
+/**
+ * A logout request signals the server that the client wishes to terminate
+ * the current session.
+ * <pre>
+ * Client > LOGOUT                               
+ * Server < OK "Logout Complete"
+ * [ connection terminated ]
+ * </pre>
+ * <p>
+ * The following example shows how to use a SieveLogoutRequest:
+ * <pre>
+ *  var event = {
+ *    onLogoutResponse: function(response) 
+ *    {
+ *      alert("Logout successfull");
+ *    }
+ *    ,                          
+ *    onError: function(response) 
+ *    {
+ *      alert("SERVER ERROR:"+response.getMessage());
+ *    }
+ *  } 
+ *                 
+ *  var request = new SieveLogoutRequest();
+ *  request.addErrorListener(event);
+ *  request.addSaslPlainListener(event);
+ *                       
+ *  sieve.addRequest(request);
+ * </pre>
+ * 
+ * @author Thomas Schmid
+ */
 function SieveLogoutRequest() 
 {
 }
 
+/** @return {String} */
 SieveLogoutRequest.prototype.getNextRequest
     = function ()
 {
   return "LOGOUT\r\n";
 }
 
+/** @return {Boolean} */
 SieveLogoutRequest.prototype.hasNextRequest
     = function ()
 {
@@ -658,7 +615,7 @@ SieveLogoutRequest.prototype.cancel
     this.errorListener.onTimeout();  
 }
 
-
+/** @param {String} data */
 SieveLogoutRequest.prototype.addResponse 
     = function (data)
 {  
@@ -727,12 +684,14 @@ function SieveInitRequest()
 {
 }
 
+/** @return {String} */
 SieveInitRequest.prototype.getNextRequest
     = function ()
 {
   return "";
 }
 
+/** @return {Boolean} */
 SieveInitRequest.prototype.hasNextRequest
     = function ()
 {
@@ -751,6 +710,7 @@ SieveInitRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
+/** */
 SieveInitRequest.prototype.cancel
     = function ()
 {
@@ -758,6 +718,7 @@ SieveInitRequest.prototype.cancel
     this.errorListener.onTimeout();  
 }
 
+/** @param {String} data */
 SieveInitRequest.prototype.addResponse
     = function (data)
 {  
@@ -810,7 +771,7 @@ SieveInitRequest.prototype.addResponse
         alert("SERVER ERROR:"+response.getMessage());
       }
     } 
-                          
+
     var request = new SieveSaslPlainRequest('geek');
     request.setPassword('th3g33k1');
     request.addErrorListener(event);
@@ -818,7 +779,7 @@ SieveInitRequest.prototype.addResponse
                         
     sieve.addRequest(request);
 
-  PROTOCOL INTERACTION: 
+  PROTOCOL INTERACTION:
   =====================
 
     Client > AUTHENTICATE "PLAIN" AHRlc3QAc2VjcmV0   | AUTHENTICATE "PLAIN" [UTF8NULL]test[UTF8NULL]secret
@@ -826,6 +787,9 @@ SieveInitRequest.prototype.addResponse
 
 *******************************************************************************/
 
+/**
+ * 
+ */
 function SieveSaslPlainRequest() 
 {
   this.authorization = "";
@@ -834,37 +798,42 @@ function SieveSaslPlainRequest()
   
 }
 
-// TODO obsolete
+/** @param {String} username */
 SieveSaslPlainRequest.prototype.setUsername
     = function (username)
 {
   this.username = username;  
 }
 
+/** @param {String} password */
 SieveSaslPlainRequest.prototype.setPassword
     = function (password)
 {
   this.password = password;  
 }
 
+/** @return {Boolean} */
 SieveSaslPlainRequest.prototype.isAuthorizable
     = function () 
 {
   return true;
 }
 
+/** @param {String} authorization */
 SieveSaslPlainRequest.prototype.setAuthorization
     = function (authorization)
 {
   this.authorization = authorization;
 }
 
+/** @return {Boolean} */
 SieveSaslPlainRequest.prototype.hasNextRequest
     = function ()
 {
   return false;
 }
 
+/** @return {String} */
 SieveSaslPlainRequest.prototype.getNextRequest 
     = function ()
 {
@@ -901,6 +870,7 @@ SieveSaslPlainRequest.prototype.addResponse
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
 }
+
 
 /*******************************************************************************
  
@@ -973,36 +943,63 @@ SieveSaslPlainRequest.prototype.addResponse
 
 *******************************************************************************/
 
+/** 
+ * This request implements the SALS Login autentication method. It is deprecated
+ * and has been superseeded by SASL Plain method. SASL Login uses a question and 
+ * answer style communication. The server will request first the username and 
+ * then the password. 
+ * <p>
+ * Please note, that the passwort is not encrypted it is only base64 encoded. 
+ * Therefore it can be read or sniffed easily. A secure connection will solve 
+ * this issue. So send whenever possible, a SieveStartTLSRequest before calling 
+ * this request.
+ * 
+ * @author Thomas Schmid
+ */
 function SieveSaslLoginRequest() 
 {
   this.response = new SieveSaslLoginResponse();
 }
 
+/** 
+ * @param {String} username
+ */
 SieveSaslLoginRequest.prototype.setUsername
     = function (username)
 {
   this.username = username;
 }
 
-// checks if authorization is implemented...
+/**
+ * checks if authorization is implemented...
+ * @return {Boolean}
+ */
 SieveSaslLoginRequest.prototype.isAuthorizable
     = function () 
 {
   return false;
 }
 
+/**
+ * @param {String} authorization
+ */
 SieveSaslLoginRequest.prototype.setAuthorization
     = function (authorization)
 {
   // login can't handle authorization...
 }
 
+/**
+ * 
+ * @param {String} password
+ */
 SieveSaslLoginRequest.prototype.setPassword
     = function (password)
 {
   this.password = password;
 }
 
+/** @return {String} */
 SieveSaslLoginRequest.prototype.getNextRequest
     = function ()
 {
@@ -1019,6 +1016,7 @@ SieveSaslLoginRequest.prototype.getNextRequest
   }  
 }
 
+/** @return {Boolean} */
 SieveSaslLoginRequest.prototype.hasNextRequest
     = function ()
 {
@@ -1040,6 +1038,7 @@ SieveSaslLoginRequest.prototype.addErrorListener
   this.errorListener = listener;
 }
 
+/** */
 SieveSaslLoginRequest.prototype.cancel
     = function ()
 {
@@ -1047,11 +1046,10 @@ SieveSaslLoginRequest.prototype.cancel
     this.errorListener.onTimeout();  
 }
 
-
+/** @param {String} data */
 SieveSaslLoginRequest.prototype.addResponse 
     = function (data)
 {
-
   this.response.add(data);	
 		
 	if (this.response.getState() != 4)
@@ -1062,6 +1060,7 @@ SieveSaslLoginRequest.prototype.addResponse
   else if ((this.response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(this.response);
 }
+
 
 /*******************************************************************************
  

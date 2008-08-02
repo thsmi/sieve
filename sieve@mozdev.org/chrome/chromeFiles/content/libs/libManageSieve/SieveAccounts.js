@@ -1,9 +1,5 @@
 var gPref = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
 
-
-
-
-
 // Sieve No Authentication Class
 // This class is used when no authentication is needed
 function SieveNoAuth() 
@@ -32,24 +28,36 @@ SieveNoAuth.prototype.getType
 {
 	return 0;
 }
-// Sieve Imap Auth Class
-// This class uses the Settings from the IMAP account
-function SieveImapAuth(account)
-{
-    if (account == null)
-        throw "SieveImapHost: Account can't be null"; 
 
-	this.account = account;
+/**
+ * The SieveImapAuth class uses the Authentication settings of the associated 
+ * IMAP account. Any Settings are loaded dynamically when needed. This means 
+ * any changes to the imap Account apply imediately to this class.
+ *  
+ * @param {String} imapKey 
+ *   The imapKey of the associated IMAP account.
+ */
+function SieveImapAuth(imapKey)
+{
+  if (imapKey == null)
+    throw "SieveImapHost: IMAP account key can't be null"; 
+
+	this.imapKey = imapKey;
 }
 
 SieveImapAuth.prototype.getPassword
     = function ()
 {
+  // use the IMAP Key to load the Account...
+	var account = Components.classes['@mozilla.org/messenger/account-manager;1']
+	                .getService(Components.interfaces.nsIMsgAccountManager)
+	                .getIncomingServer(this.imapKey);
+  	
   // in case the passwordPromptRequired attribute is true...
   // ... thunderbird will take care on retrieving a valid password...
   //       
-  if (this.account.passwordPromptRequired == false)
-    return this.account.password;
+  if (account.passwordPromptRequired == false)
+    return account.password;
     
   // ... otherwise we it is our job...
   var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
@@ -57,7 +65,11 @@ SieveImapAuth.prototype.getPassword
                         
   var input = {value:null};
   var check = {value:false}; 
-  var result = prompts.promptPassword(window,"Password", "Please enter the password for your Sieve account", input, null, check);
+  var result 
+    = prompts.promptPassword(
+        window,"Password", 
+        "Please enter the password for your Sieve account",
+        input, null, check);
   
   prompts = null;
   
@@ -70,7 +82,12 @@ SieveImapAuth.prototype.getPassword
 SieveImapAuth.prototype.getUsername
     = function ()
 {
-	return this.account.username;
+  // use the IMAP Key to load the Account...
+	var account = Components.classes['@mozilla.org/messenger/account-manager;1']
+	                .getService(Components.interfaces.nsIMsgAccountManager)
+	                .getIncomingServer(this.imapKey);
+	                
+	return account.realUsername;
 }
 
 SieveImapAuth.prototype.hasUsername
@@ -216,19 +233,31 @@ SieveCustomAuth.prototype.getType
 {
 	return 2;
 }
-
-// Loads the account related Imap settings
-function SieveImapHost(account)
+/**
+ * This class loads the host settings from an IMAP account. The settings are
+ * read dynamically when needed. This ensures the always the most recent 
+ * settings are used.
+ * 
+ * @param {String} imapKey
+ *   The IMAP Key which host settings should be used. 
+ */
+function SieveImapHost(imapKey)
 {
-    if (account == null)
-        throw "SieveImapHost: Account can't be null"; 
-    this.account = account;
+  if (imapKey == null)
+    throw "SieveImapHost: IMAP account key can't be null"; 
+  
+  this.imapKey = imapKey;
 }
 
 SieveImapHost.prototype.getHostname
     = function ()
 {
-	return this.account.hostName;
+  // use the IMAP Key to load the Account...
+  var account = Components.classes['@mozilla.org/messenger/account-manager;1']
+                    .getService(Components.interfaces.nsIMsgAccountManager)
+                    .getIncomingServer(this.imapKey);
+
+  return account.realHostName;
 }
 
 SieveImapHost.prototype.getPort
@@ -240,25 +269,37 @@ SieveImapHost.prototype.getPort
 SieveImapHost.prototype.isTLS
     = function ()
 {
-	if ( this.account.socketType == 0)
-		return false;
+  // use the IMAP Key to load the Account...
+  var account = Components.classes['@mozilla.org/messenger/account-manager;1']
+                  .getService(Components.interfaces.nsIMsgAccountManager)
+                  .getIncomingServer(this.imapKey);
+
+  if ( account.socketType == 0)
+    return false;
 		
-	return true;
+  return true;
 }
 
 SieveImapHost.prototype.getType
     = function ()
 {
-	return 0;
+  return 0;
 }
 
-// Diese klasse verwaltet die benutzerdefinierten hosteinstellungen eines Sieve Accounts
+/**
+ * This Class manages a custom host setting for a Sieve Account. Sieve Accounts 
+ * are identified by URIs.
+ * 
+ * @param {String} uri 
+ * @throws Exception 
+ */
 function SieveCustomHost(uri)
 {
-    if (uri == null)
-        throw "SieveCustomHost: URI can't be null"; 
-	this.uri = uri;
-    this.prefURI = "extensions.sieve.account."+this.uri;
+  if (uri == null)
+    throw "SieveCustomHost: URI can't be null";
+    
+  this.uri = uri;
+  this.prefURI = "extensions.sieve.account."+this.uri;
 }
 
 SieveCustomHost.prototype.toString
@@ -575,28 +616,57 @@ SieveDefaultAuthorization.prototype.getAuthorization
   return this.authorization;
 }
 
-//*******************
+//****************************************************************************//
 
-// any changes are directly written to the preferences. 
-
-function SieveAccount(account)
+/**
+ * Sieve depends on IMAP, so every Sieve Accounts is directly bound to an IMAP 
+ * accounts. IMAP accounts are idenfified by the "internal pref key", which is 
+ * guaranteed to be unique across all servers in a Thunderbird profile.
+ * 
+ * @param {String} sieveUri 
+ *   Identifies this account, has to be unique.
+ * @param {String} imapKey 
+ *   The unique internal pref key of the IMAP account. 
+ * @param {String} description 
+ *   A human readable description for this account.  
+ */
+function SieveAccount(sieveUri,imapKey,description)
 {
-  if (account == null)
-    throw "SieveAccount: Account can't be null"; 
-
-  this.URI = account.rootMsgFolder.baseMessageURI.slice(15);
-  this.prefURI = "extensions.sieve.account."+this.URI;
+	// Check parameters...
+  if ((sieveUri == null) || (imapKey == null) || (description == null))
+    throw "SieveAccount: Parameter missing...";
     
-  this.description = account.prettyName;
-  this.account = account;	
+  this.Uri = sieveUri;
+  this.prefURI = "extensions.sieve.account."+this.Uri;
+  
+  this.imapKey = imapKey;
+  this.description = description;	
 }
 
 SieveAccount.prototype.getUri
-    = function () { return this.URI; }
+    = function () { return this.Uri; }
 
+/**
+ * As Uris are not very user friendly, Thunderbird uses for every IMAP account 
+ * a "PrettyName". It is either an an userdefined string or the hostname of the 
+ * IMAP account.
+ * 
+ * @return {String} 
+ *   The description for this account.
+ */
 SieveAccount.prototype.getDescription
     = function () { return this.description; }
 
+/**
+ * Retrieves the Authentication Settings for this SieveAccount.
+ * 
+ * @param {Int} type 
+ *   defines which Authentication Settings ({@link SieveNoAuth}, 
+ *   {@link SieveCustomAuth}, {@link SieveImapAuth}) should be loaded. If this 
+ *   parameter is skipped the default Authentication settings will be returned. 
+ * @return {SieveImapAuth,SieveNoAuth,SieveCustomAuth}
+ *   Returns the Authentication Settings for this SieveAccount
+ */
 SieveAccount.prototype.getLogin
     = function (type) 
 {
@@ -606,9 +676,9 @@ SieveAccount.prototype.getLogin
   switch (type)
   {
     case 0  : return new SieveNoAuth();
-    case 2  : return new SieveCustomAuth(this.URI);
+    case 2  : return new SieveCustomAuth(this.Uri);
     
-    default : return new SieveImapAuth(this.account);
+    default : return new SieveImapAuth(this.imapKey);
   }
 }
 
@@ -630,9 +700,9 @@ SieveAccount.prototype.getHost
 	  type = gPref.getIntPref(this.prefURI+".activeHost");
 
   if (type == 1)
-    return new SieveCustomHost(this.URI)
+    return new SieveCustomHost(this.Uri)
   else
-    return new SieveImapHost(this.account)
+    return new SieveImapHost(this.imapKey)
 }
 
 SieveAccount.prototype.setActiveHost
@@ -658,7 +728,7 @@ SieveAccount.prototype.getAuthorization
   {
     case 0  : return new SieveNoAuthorization();
     case 2  : return new SievePromptAuthorization();
-    case 3  : return new SieveCustomAuthorization(this.URI);
+    case 3  : return new SieveCustomAuthorization(this.Uri);
     
     default : return new SieveDefaultAuthorization(this.getLogin().getUsername()); 
   }
@@ -674,7 +744,6 @@ SieveAccount.prototype.setActiveAuthorization
 
   gPref.setIntPref(this.prefURI+".activeAuthorization",type);
 }
-
 
 SieveAccount.prototype.isEnabled
     = function ()
@@ -694,30 +763,43 @@ SieveAccount.prototype.setEnabled
 SieveAccount.prototype.getSettings
     = function ()
 {
-  return new SieveAccountSettings(this.URI);
+  return new SieveAccountSettings(this.Uri);
 }
-/******************************************************************************/
+
+//****************************************************************************//
+
 function SieveAccounts()
-{            
+{
 	var accountManager = Components.classes['@mozilla.org/messenger/account-manager;1']
 	                        .getService(Components.interfaces.nsIMsgAccountManager);
-	
+                          
 	this.accounts = new Array();
 	
-	for (var i = 0; i < accountManager.allServers.Count(); i++)
-	{
-		var account = accountManager.allServers.GetElementAt(i)
-		                .QueryInterface(Components.interfaces.nsIMsgIncomingServer);
+  for (var i = 0; i < accountManager.allServers.Count(); i++)
+  {
+    var account = accountManager.allServers.GetElementAt(i)
+                      .QueryInterface(Components.interfaces.nsIMsgIncomingServer);
 		      
-        if (account.type != "imap")
-          continue;
+    if (account.type != "imap")
+      continue;
 
-        this.accounts.push(new SieveAccount(account));
-	}
+    // pass the key if the imap account, not the account! This ensures, that... 
+    // ... we always use the most recent settings.
+    this.accounts.push(
+      new SieveAccount(
+        account.rootMsgFolder.baseMessageURI.slice(15),
+        account.key,
+        account.prettyName));
+  }
 }
 
+/**
+ * Returns all SieveAccounts of the currently active Thunderbrid profile.  
+ * @return {SieveAccount[]}
+ *   Array containing SieveAccounts
+ */
 SieveAccounts.prototype.getAccounts
     = function () 
 {   
-    return this.accounts;
-}    
+  return this.accounts;
+}

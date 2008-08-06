@@ -21,9 +21,10 @@ textbox.sieve
 
 #sivExplorerWait
 {
-	background: white url(chrome://sieve/content/images/load.gif) no-repeat center;	
+  background: white;
+  font-weight: bold;
+  color: darkgray;	
 }
-
 
 #sivExplorerError
 {

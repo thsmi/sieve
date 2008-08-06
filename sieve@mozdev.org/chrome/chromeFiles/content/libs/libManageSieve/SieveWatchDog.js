@@ -11,10 +11,17 @@ function SieveWatchDog()
   this.listener     = null;
 }
 
+/**
+ * 
+ * @param {} interval
+ */
 SieveWatchDog.prototype.setTimeoutInterval
     = function (interval)
 {
-  this.timeoutDelay = interval;
+  if (interval == null)
+    this.timeoutDelay = 20000;
+  else
+    this.timeoutDelay = interval;
 }
 
 SieveWatchDog.prototype.onAttach

@@ -50,13 +50,21 @@
               
               <treechildren id="sivExplorerTree" collapsed="true" /> <!--collapsed="true" -->
               
-              <box id="sivExplorerWait" hidden="true" align="center" pack="center" flex="1" />
+              <!-- <box id="sivExplorerWait" hidden="true" align="center" pack="center" flex="1" /> -->
+              <vbox id="sivExplorerWait" hidden="true" align="center" pack="center" flex="1" >
+                <!--<vbox align="center" class="sivWait">-->
+                  <image pack="center" src="chrome://sieve/content/images/load.gif"/>
+                  <spacer/> 
+                  <description id="sivExplorerWaitMsg" pack="center">          
+                  </description>
+                <!--</vbox> -->
+              </vbox>
               
               <box id="sivExplorerWarning" align="center" pack="center" flex="1" > 
                 <hbox align="center" class="sivWarning">
                   <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
                   <description id="sivExplorerWarningMsg" pack="center">
-This account is not configured for manage sieve, goto 'Tools-> SieveMessage Filters'"
+                    &list.warning;
                   </description>
                 </hbox>
               </box>

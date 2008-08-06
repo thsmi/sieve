@@ -1,11 +1,13 @@
-
+// Hints for Spekt IDE autocomplete...
+//@include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
+//@include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/Sieve.js"
   // TODO make sure that the scripts are imported only once.
   // TODO place imports in the corresponding files like the header import in c...
   
   // Load all the Libraries we need...
   var jsLoader = Components
                    .classes["@mozilla.org/moz/jssubscript-loader;1"]
-                   .getService(Components.interfaces.mozIJSSubScriptLoader);
+                   .getService(Components.interfaces.mozIJSSubScriptLoader);                   
   jsLoader
     .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveAccounts.js");
   jsLoader
@@ -27,8 +29,9 @@
   // ... the loader inorder to prevent XPCOM leaks
   jsLoader = null;
 
-
+/** @type {Sieve} */
 var gSieve = null;
+/** @type {SieveWatchDog} */
 var gSieveWatchDog = null;
 
 // contains a [@mozilla.org/consoleservice;1] interface
@@ -44,7 +47,7 @@ var event =
 {	
   onAuthenticate: function(response)
   {
-    
+    sivSetStatus(3,"Authenticating...");
     var account =  getSelectedAccount();
     
     // Without a username, we can skip the authentication 
@@ -149,8 +152,30 @@ var event =
     {        
       onInitResponse: function(response)
       {
+        sivSetStatus(3,"Starting TLS (Strict RFC)");
+        
+        gSieveWatchDog.setTimeoutInterval();
         event.onAuthenticate(response);
-      }      
+      },
+      
+      onError: function(response)
+      {
+        gSieveWatchDog.setTimeoutInterval();
+        alert("error");
+        event.onError(response);
+      },
+      
+      onTimeout: function()
+      {
+        sivSetStatus(3,"Starting TLS (Cyrus compatibility)");
+        
+        gSieveWatchDog.setTimeoutInterval();
+        var request = new SieveCapabilitiesRequest();
+        request.addCapabilitiesListener(event);
+        request.addErrorListener(event);	
+		
+        gSieve.addRequest(request);
+      }    	
     }
     	  
     // after calling startTLS the server will propagate his capabilities...
@@ -159,31 +184,47 @@ var event =
     // some revision of timsieved fail to resissue the capabilities...
     // ... which causes the extension to be jammed. Therefore we have to ...
     // ... do a rather nasty workaround. The jammed extension causes a timeout,
-    // ... we catch this timeout and continue as if nothing happend...   
+    // ... we catch this timeout and continue as if nothing happend...
     
-    if (getSelectedAccount().getSettings().isCyrusBugCompatible())
-    {
-      postStatus("Starting TLS [Cyrus compatibility]");
-      
-      gSieve.startTLS(true);
-      
-      var request = new SieveCapabilitiesRequest();
-      request.addCapabilitiesListener(event);
-      request.addErrorListener(event);  
+    var compatibility = getSelectedAccount().getSettings().getCompatibility(); 
     
-      gSieve.addRequest(request);   
-    }
-    else
+    switch (compatibility.getHandshakeMode())
     {
-      postStatus("Starting TLS [Strict RFC]");
+      case 0:
+        sivSetStatus(3,"Autodetecting TLS Handshake...");      
+        var request = new SieveInitRequest();
+        request.addInitListener(lEvent);
+        request.addErrorListener(lEvent);
+        
+        gSieveWatchDog.setTimeoutInterval(compatibility.getHandshakeTimeout());
+        gSieve.addRequest(request);
+    
+        gSieve.startTLS(true);   
+        break;
+        
+      case 1:
+        sivSetStatus(3,"Starting TLS (Strict RFC)");
              
-	    var request = new SieveInitRequest();
-	    request.addInitListener(lEvent);
-	    request.addErrorListener(event);  
-	    gSieve.addRequest(request);
-	  
-      // activate TLS
-	    gSieve.startTLS(true);
+        var request = new SieveInitRequest();
+        request.addInitListener(lEvent);
+        request.addErrorListener(event);  
+        gSieve.addRequest(request);
+    
+        // activate TLS
+        gSieve.startTLS(true);
+        
+        break;
+      case 2:
+        sivSetStatus(3,"Starting TLS (Cyrus compatibility)");
+      
+        gSieve.startTLS(true);
+      
+        var request = new SieveCapabilitiesRequest();
+        request.addCapabilitiesListener(event);
+        request.addErrorListener(event);  
+    
+        gSieve.addRequest(request);
+        break;
     }
 	},
 	
@@ -392,7 +433,10 @@ function onWindowClose()
 
   return false;
 }   
-
+/**
+ * XXX
+ * @return {SieveAccount}
+ */
 function getSelectedAccount()
 {
     var menu = document.getElementById("menuImapAccounts")
@@ -402,7 +446,7 @@ function getSelectedAccount()
 function sivConnect(account,hostname)
 {
   postStatus("Connecting...");
-  sivSetStatus(3);
+  sivSetStatus(3,"Connecting...");
   
   if (hostname == null)
     hostname = account.getHost().getHostname();
@@ -442,10 +486,11 @@ function sivDisconnect()
   /*if (gSieve.isAlive() == false)
     return;*/    
     
-  gSieve.removeWatchDogListener();
-    
+  gSieve.removeWatchDogListener();    
   gSieve.disconnect();
+  
   gSieve = null;  
+  gSieveWatchDog = null;
 }
 
 
@@ -480,7 +525,7 @@ function onSelectAccount()
     }
   }
 
-	// Besteht das Objekt überhaupt bzw besteht eine Verbindung?
+	// Besteht das Objekt ï¿½berhaupt bzw besteht eine Verbindung?
 	if ((gSieve == null) || (gSieve.isAlive() == false))
 	{
 		// beides schein nicht zu existieren, daher connect direkt aufrufen...
@@ -625,6 +670,8 @@ function sivSetStatus(state, message)
                 .firstChild.nodeValue = message;    
             break;
     case 3: document.getElementById('sivExplorerWait').removeAttribute('hidden');
+            document.getElementById('sivExplorerWaitMsg')
+                .firstChild.nodeValue = message;    
             break;
     case 4: document.getElementById('sivExplorerTree').removeAttribute('collapsed');
             break

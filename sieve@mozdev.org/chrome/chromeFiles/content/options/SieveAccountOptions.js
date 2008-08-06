@@ -1,5 +1,12 @@
-var account = null;
-    
+
+//@include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
+
+/** 
+ * @type {SieveAccount} 
+ **/
+var account;
+account= null; 
+
 function onDialogLoad(sender)
 {
 	account = window.arguments[0]["SieveAccount"];
@@ -78,9 +85,14 @@ function onDialogLoad(sender)
     list.selectedItem = items[i];
     break;
   }
-  
-  document.getElementById('rgHandshake').selectedIndex 
-    = (account.getSettings().isCyrusBugCompatible()?1:0);  
+
+  // initalize login related elements...
+  document.getElementById('txtHandshakeTimeout').value
+    = account.getSettings().getCompatibility().getHandshakeTimeout();
+        
+  element = document.getElementById('rgHandshake');
+  element.selectedIndex = account.getSettings().getCompatibility().getHandshakeMode();
+  enableHandshakeTimeout(element.selectedIndex);  
 }
 
 function onDialogAccept(sender)
@@ -92,17 +104,37 @@ function onHandshakeSelect(sender)
 { 
   if (account == null)
     return;
+
+  var type = 0;
   
-  var compatible = false;
-  
-  if (sender.selectedItem.id == "rbStrictHandshake")
-    compatible = false;
+  if (sender.selectedItem.id == "rbAutoHandshake")
+    type = 0;
+  else if (sender.selectedItem.id == "rbStrictHandshake")
+    type = 1;
   else if (sender.selectedItem.id == "rbCyrusHandshake")
-    compatible = true;
+    type = 2;
   
-  account.getSettings().enableCyrusBugCompatibility(compatible);
+  account.getSettings().getCompatibility().setHandshakeMode(type);
+  enableHandshakeTimeout(type);
 }
 
+
+function enableHandshakeTimeout(type)
+{
+  if (type == 0)
+    document.getElementById('txtHandshakeTimeout').removeAttribute('disabled');
+  else
+    document.getElementById('txtHandshakeTimeout').setAttribute('disabled','true');
+}
+
+function onHandshakeTimeoutChange(sender)
+{
+  if (account == null)
+    return;
+    
+  account.getSettings().getCompatibility()
+    .setHandshakeTimeout(document.getElementById('txtHandshakeTimeout').value);
+}
 function onAuthorizationSelect(sender)
 {
   if (account == null)
@@ -156,7 +188,6 @@ function enableAuthorization(type)
   else
     document.getElementById('txtAuthorization').setAttribute('disabled','true');
 }
-
 
 function onUsernameChange(sender)
 {

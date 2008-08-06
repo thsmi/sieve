@@ -112,11 +112,28 @@
       <groupbox>
         <caption label="Cyrus TLS Bug" />
         <description>
-          Older Cyrus server revisions do not implement TLS handshake as suggested in the ManageSieve RFC. If you encounter a "hang" during TLS handshake, try to change this setting.
+          Some Cyrus releases do not implement the TLS handshake as suggested in the RFC Draft.
+        </description>
+        <description>
+          As a workaround this extension tries first a RFC conform handshake. 
+          In case the server does not reply within a reasonable time, it 
+          automagically fallsback to a cyrus style handshake.
+        </description>
+        <description>
+          This magic fails with slow connections or servers suffering from high 
+          load. If you encounter a "hang" or "crash" during TLS handshake, play 
+          with these setting!
         </description>
         <radiogroup id="rgHandshake" onselect="onHandshakeSelect(this);">
-          <radio id="rbStrictHandshake" label="Strict RFC handshake"/>
-          <radio id="rbCyrusHandshake" label="Cyrus handshake"/>
+          <radio id="rbAutoHandshake" label="Autodetect (default)"/>
+          <box class="indent" align="center">
+            <label value="Automatic fallback after" control="txtHandshakeTimeout"/>
+            <textbox id="txtHandshakeTimeout" size="20" 
+                     onchange="onHandshakeTimeoutChange(this);"/>
+             <label value="ms"/>
+          </box>
+          <radio id="rbStrictHandshake" label="Strict RFC style handshake"/>
+          <radio id="rbCyrusHandshake" label="Cyrus style handshake"/>
         </radiogroup>
       </groupbox>
       <hbox flex="1"/>
@@ -161,14 +178,12 @@
           <radio id="rbDefaultAuthorization" label="Sieve Username"/>
           <radio id="rbPromptAuthorization" label="Prompt for Authorization"/>
           <radio id="rbCustomAuthorization" label="Authorize as"/>
+          <box class="indent" align="center">
+              <label value="Username:" control="txtAuthorization"/>
+              <textbox id="txtAuthorization" size="20" 
+                       onchange="onAuthorizationChange(this);"/>
+        </box>
         </radiogroup>
-        <vbox class="indent">
-          <hbox align="center">
-            <label value="Username:" control="txtAuthorization"/>
-            <textbox id="txtAuthorization" size="20" 
-                     onchange="onAuthorizationChange(this);"/>
-          </hbox>
-        </vbox>
       </groupbox>
       <hbox flex="1"/>
     </vbox>

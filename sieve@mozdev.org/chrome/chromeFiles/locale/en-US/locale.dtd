@@ -88,6 +88,10 @@
 <!ENTITY list.details.capability.sasl "SASL Mechanisms:">
 <!ENTITY list.details.capability.extensions "Extensions:">
 
+<!ENTITY list.warning 
+  "This account is not configured for manage sieve, goto 'Tools-> SieveMessage Filters'">
+<!ENTITY list.wait.connect 
+  "Connecting...">
 
 <!-- Locale for the Edit Filter Dialog -->
 <!ENTITY edit.title "Edit Sievefilter">

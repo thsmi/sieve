@@ -364,37 +364,122 @@ SieveCustomHost.prototype.getType
 	return 1;
 }
 
-// Sieve account Settings class
 
-function SieveAccountSettings(uri)
+//== SieveCompatibilitySettings ==============================================//
+/**
+ * This class manages compatibility related settings for the given sieve account
+ * <p>
+ * According to the RFC, a server should implicitely send his capabilites after 
+ * a succesfull TLS Handshake. But Cyrus servers used to expect an explicit 
+ * capability request. So there are now two incomaptible TLS Hanshake mechanisms
+ * common - the RFC conform and the cyrus like TLS Handshake.
+ * <p> 
+ * In Addition to the two mechanisms above an automatic detection is implemented
+ * by the extension. In case the server fails to send his capabilities within a 
+ * given time, it is assumed that the server is not RFC conform and requires an 
+ * explicitely capability request.
+ * <p>
+ * This mechanism is not failsave, in case of a slow connection or a server 
+ * suffering from high load, the timeout could be accidentially triggered and
+ * causes the Extension to hang.
+ *  
+ * @param {String} sieveKey
+ *   The unique identifiert for the sieve account
+ */
+function SieveCompatibilitySettings(sieveKey)
 {
-  if (uri == null)
-    throw "SieveAccountSettings: URI can't be null"; 
+  if (sieveKey == null)
+    throw "SieveCompatibility: Sieve Key can't be null"; 
     
-	this.uri = uri;
-  this.prefURI = "extensions.sieve.account."+this.uri;
+  this.sieveKey = sieveKey+".compatibility";  
 }
 
-SieveAccountSettings.prototype.isCyrusBugCompatible
+/**
+ * Returns the Hanshake mechanism. A value of 0 means automatic detection, 1 is 
+ * equivalent to RFC conform respectively 2 to Cyrus like handshake.
+ *  
+ * @return {Int} the Handshake mechanism as integer
+ */
+SieveCompatibilitySettings.prototype.getHandshakeMode
     = function ()
 {
-  if (gPref.prefHasUserValue(this.prefURI+".cyrusBugCompatibility"))
-    return gPref.getBoolPref(this.prefURI+".cyrusBugCompatibility");
-        
-  return false;
+  if (gPref.prefHasUserValue(this.sieveKey+".tls"))
+    return gPref.getIntPref(this.sieveKey+".tls");
+
+  return 0;
 }
 
-SieveAccountSettings.prototype.enableCyrusBugCompatibility
-    = function (enabled)
+/**
+ * Sets a the handshake mechanism that should be used. A value of 0 enables 
+ * automatic detection. Respectively 1 is equivalent to a RFC conform and 2 
+ * equals a Cyrus like handshake.
+ * 
+ * @param {Int} type
+ *   the Handshake mechanism that should be used as integer.
+ */
+SieveCompatibilitySettings.prototype.setHandshakeMode
+    = function (mode)
 {
-  gPref.setBoolPref(this.prefURI+".cyrusBugCompatibility",enabled);
+  gPref.setIntPref(this.sieveKey+".tls",mode);
+}
+
+/**
+ * Returns a timeout, which is needed for the automatic handshake detection.
+ * 
+ * @return {Int}
+ *   the timeout in Milliseconds
+ */
+SieveCompatibilitySettings.prototype.getHandshakeTimeout
+    = function () 
+{
+    if (gPref.prefHasUserValue(this.sieveKey+".tls.timeout"))
+        return gPref.getCharPref(this.sieveKey+".tls.timeout");
+
+    return "7500"; //20*1000 = 20 Seconds
+}
+
+/**
+ * Defines the timeout for the automatic handshake detection.
+ * @param {Int} ms
+ *   the timeout in Milliseconds
+ */
+SieveCompatibilitySettings.prototype.setHandshakeTimeout
+    = function (ms)
+{
+    gPref.setCharPref(this.sieveKey+".tls.timeout",ms);
+}
+
+
+//== SieveAccountSettings ====================================================//
+/**
+ * This class manages general settings for the given sieve account.
+ * 
+ * @param {String} SieveKey
+ *   The unique internal pref key of the sieve account.  
+ */
+function SieveAccountSettings(sieveKey)
+{
+  if (sieveKey == null)
+    throw "SieveAccountSettings: Sieve Key can't be null"; 
+    
+	this.sieveKey = sieveKey;
+}
+
+/**
+ * XXX:
+ * @return {SieveCompatibilitySettings}
+ */
+SieveAccountSettings.prototype.getCompatibility
+    = function () 
+{
+  return (new SieveCompatibilitySettings(this.sieveKey));
 }
 
 SieveAccountSettings.prototype.isKeepAlive
     = function () 
 {
-  if (gPref.prefHasUserValue(this.prefURI+".keepalive"))
-    return gPref.getBoolPref(this.prefURI+".keepalive");
+  if (gPref.prefHasUserValue(this.sieveKey+".keepalive"))
+    return gPref.getBoolPref(this.sieveKey+".keepalive");
         
   return true;
 }
@@ -402,60 +487,67 @@ SieveAccountSettings.prototype.isKeepAlive
 SieveAccountSettings.prototype.enableKeepAlive
     = function (enabled) 
 {
-    gPref.setBoolPref(this.prefURI+".keepalive",enabled);
+    gPref.setBoolPref(this.sieveKey+".keepalive",enabled);
 }
 
 SieveAccountSettings.prototype.getKeepAliveInterval
     = function () 
 {
-    if (gPref.prefHasUserValue(this.prefURI+".keepalive.interval"))
-        return gPref.getCharPref(this.prefURI+".keepalive.interval");
+  if (gPref.prefHasUserValue(this.sieveKey+".keepalive.interval"))
+    return gPref.getCharPref(this.sieveKey+".keepalive.interval");
 
-    return "1200000"; //30*60*1000 = 30 Minuten
+  return "1200000"; //30*60*1000 = 30 Minutes
 }
 
 SieveAccountSettings.prototype.setKeepAliveInterval
     = function (ms)
 {
-    gPref.setCharPref(this.prefURI+".keepalive.interval",ms);
+  gPref.setCharPref(this.sieveKey+".keepalive.interval",ms);
 }
 
 SieveAccountSettings.prototype.hasCompileDelay
     = function ()
 {
-    if (gPref.prefHasUserValue(this.prefURI+".compile"))
-        return gPref.getBoolPref(this.prefURI+".compile");
-        
-    return true;
+  if (gPref.prefHasUserValue(this.sieveKey+".compile"))
+    return gPref.getBoolPref(this.sieveKey+".compile");
+  
+  return true;
 }
 
 SieveAccountSettings.prototype.enableCompileDelay
     = function (enabled)
 {
-  gPref.setBoolPref(this.prefURI+".compile",enabled);
+  gPref.setBoolPref(this.sieveKey+".compile",enabled);
 }
 
+/**
+ * Returns the minimal delay between a keypress and a automatic syntax check. 
+ * This is used while editing a sieve script, it basically prevents useless 
+ * systax checks while the User is typing.
+ * 
+ * @return {Number}
+ *  The delay in mili seconds
+ */
 SieveAccountSettings.prototype.getCompileDelay
     = function () 
 {     
-	if (gPref.prefHasUserValue(this.prefURI+".compile.delay"))
-        return gPref.getIntPref(this.prefURI+".compile.delay");
+	if (gPref.prefHasUserValue(this.sieveKey+".compile.delay"))
+        return gPref.getIntPref(this.sieveKey+".compile.delay");
         
     return 500; // = 500 mSec
 }
     
-
 SieveAccountSettings.prototype.setCompileDelay
     = function (ms) 
 {
-    gPref.setIntPref(this.prefURI+".compile.delay",ms);
+  gPref.setIntPref(this.sieveKey+".compile.delay",ms);
 }
 
 SieveAccountSettings.prototype.getDebugFlags
     = function ()
 {
-    if (gPref.prefHasUserValue(this.prefURI+".debug.flags"))
-        return gPref.getIntPref(this.prefURI+".debug.flags");
+    if (gPref.prefHasUserValue(this.sieveKey+".debug.flags"))
+        return gPref.getIntPref(this.sieveKey+".debug.flags");
         
     return 0;
 }
@@ -473,16 +565,16 @@ SieveAccountSettings.prototype.setDebugFlag
     = function (flag, value)
 {
   if (value)
-    gPref.setIntPref(this.prefURI+".debug.flags",this.getDebugFlags()| (1 << flag)  );
+    gPref.setIntPref(this.sieveKey+".debug.flags",this.getDebugFlags()| (1 << flag)  );
   else
-    gPref.setIntPref(this.prefURI+".debug.flags",this.getDebugFlags() & ~(1 << flag) );
+    gPref.setIntPref(this.sieveKey+".debug.flags",this.getDebugFlags() & ~(1 << flag) );
 }
 
 SieveAccountSettings.prototype.hasForcedAuthMechanism
     = function ()
 {
-  if (gPref.prefHasUserValue(this.prefURI+".sasl.forced"))
-    return gPref.getBoolPref(this.prefURI+".sasl.forced");
+  if (gPref.prefHasUserValue(this.sieveKey+".sasl.forced"))
+    return gPref.getBoolPref(this.sieveKey+".sasl.forced");
         
   return false;
 }
@@ -490,19 +582,19 @@ SieveAccountSettings.prototype.hasForcedAuthMechanism
 SieveAccountSettings.prototype.enableForcedAuthMechanism
     = function(enabled)
 {
-  gPref.setBoolPref(this.prefURI+".sasl.forced",enabled);
+  gPref.setBoolPref(this.sieveKey+".sasl.forced",enabled);
 }
 
 SieveAccountSettings.prototype.setForcedAuthMechanism
     = function(method)
 {
-  gPref.setCharPref(this.prefURI+".sasl.mechanism",method);
+  gPref.setCharPref(this.sieveKey+".sasl.mechanism",method);
 }
 SieveAccountSettings.prototype.getForcedAuthMechanism
     = function ()
 {
-    if (gPref.prefHasUserValue(this.prefURI+".sasl.mechanism"))
-      return gPref.getCharPref(this.prefURI+".sasl.mechanism");
+    if (gPref.prefHasUserValue(this.sieveKey+".sasl.mechanism"))
+      return gPref.getCharPref(this.sieveKey+".sasl.mechanism");
         
     return "plain";
 }
@@ -511,7 +603,6 @@ SieveAccountSettings.prototype.getForcedAuthMechanism
 
 function SieveNoAuthorization()
 {
-  
 }
 
 SieveNoAuthorization.prototype.getType
@@ -526,7 +617,7 @@ SieveNoAuthorization.prototype.getAuthorization
   return "";
 }
 
-/******************************************************************************/
+//== SievePromptAuthorization ================================================//
 
 function SievePromptAuthorization()
 {  
@@ -561,7 +652,7 @@ SievePromptAuthorization.prototype.getAuthorization
   return input.value;
 }
 
-/******************************************************************************/
+//****************************************************************************//
 
 function SieveCustomAuthorization(uri)
 {
@@ -597,7 +688,7 @@ SieveCustomAuthorization.prototype.setAuthorization
 }
 
 
-/******************************************************************************/
+//****************************************************************************//
     
 function SieveDefaultAuthorization(authorization)
 {
@@ -637,9 +728,10 @@ function SieveAccount(sieveUri,imapKey,description)
     throw "SieveAccount: Parameter missing...";
     
   this.Uri = sieveUri;
-  this.prefURI = "extensions.sieve.account."+this.Uri;
   
+  this.sieveKey = "extensions.sieve.account."+this.Uri;  
   this.imapKey = imapKey;
+  
   this.description = description;	
 }
 
@@ -648,7 +740,7 @@ SieveAccount.prototype.getUri
 
 /**
  * As Uris are not very user friendly, Thunderbird uses for every IMAP account 
- * a "PrettyName". It is either an an userdefined string or the hostname of the 
+ * a "PrettyName". It is either an userdefined string or the hostname of the 
  * IMAP account.
  * 
  * @return {String} 
@@ -670,8 +762,8 @@ SieveAccount.prototype.getDescription
 SieveAccount.prototype.getLogin
     = function (type) 
 {
-	if ((type == null) && gPref.prefHasUserValue(this.prefURI+".activeLogin")) 
-	  type = gPref.getIntPref(this.prefURI+".activeLogin");
+	if ((type == null) && gPref.prefHasUserValue(this.sieveKey+".activeLogin")) 
+	  type = gPref.getIntPref(this.sieveKey+".activeLogin");
 
   switch (type)
   {
@@ -690,19 +782,19 @@ SieveAccount.prototype.setActiveLogin
 	if ((type < 0) || (type > 2))
 		throw "invalid login type";
 
-	gPref.setIntPref(this.prefURI+".activeLogin",type);
+	gPref.setIntPref(this.sieveKey+".activeLogin",type);
 }
 
 SieveAccount.prototype.getHost
     = function (type)
 {
-	if ((type == null ) && gPref.prefHasUserValue(this.prefURI+".activeHost"))
-	  type = gPref.getIntPref(this.prefURI+".activeHost");
+	if ((type == null ) && gPref.prefHasUserValue(this.sieveKey+".activeHost"))
+	  type = gPref.getIntPref(this.sieveKey+".activeHost");
 
   if (type == 1)
     return new SieveCustomHost(this.Uri)
-  else
-    return new SieveImapHost(this.imapKey)
+  
+  return new SieveImapHost(this.imapKey)
 }
 
 SieveAccount.prototype.setActiveHost
@@ -713,16 +805,14 @@ SieveAccount.prototype.setActiveHost
 	if ((type < 0) || (type > 1))
 		throw "invalid host type";
 
-	gPref.setIntPref(this.prefURI+".activeHost",type);
+	gPref.setIntPref(this.sieveKey+".activeHost",type);
 }
 
 SieveAccount.prototype.getAuthorization
     = function (type)
 { 
-  if ((type == null) && gPref.prefHasUserValue(this.prefURI+".activeAuthorization")) 
-  {
-   type = gPref.getIntPref(this.prefURI+".activeAuthorization");
-  }
+  if ((type == null) && gPref.prefHasUserValue(this.sieveKey+".activeAuthorization")) 
+   type = gPref.getIntPref(this.sieveKey+".activeAuthorization");
 
   switch (type)
   {
@@ -742,28 +832,31 @@ SieveAccount.prototype.setActiveAuthorization
   if ((type < 0) || (type > 3))
     throw "invalid Authorization type";
 
-  gPref.setIntPref(this.prefURI+".activeAuthorization",type);
+  gPref.setIntPref(this.sieveKey+".activeAuthorization",type);
 }
 
 SieveAccount.prototype.isEnabled
     = function ()
 {
-    if (gPref.prefHasUserValue(this.prefURI+".enabled"))        
-        return gPref.getBoolPref(this.prefURI+".enabled");
+  if (gPref.prefHasUserValue(this.sieveKey+".enabled"))        
+    return gPref.getBoolPref(this.sieveKey+".enabled");
     
-    return false;
+  return false;
 }
 
 SieveAccount.prototype.setEnabled
     = function (enabled) 
 {
-  gPref.setBoolPref(this.prefURI+".enabled",enabled);
+  gPref.setBoolPref(this.sieveKey+".enabled",enabled);
 }
-
+/**
+ * XXX ...
+ * @return {SieveAccountSettings} returns the account settings.
+ */
 SieveAccount.prototype.getSettings
     = function ()
 {
-  return new SieveAccountSettings(this.Uri);
+  return new SieveAccountSettings(this.sieveKey);
 }
 
 //****************************************************************************//

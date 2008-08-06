@@ -15,19 +15,7 @@
     
   DESCRIPTION:
   ============
-    This class is a simple socket implementation for sieve requests. Due to the 
-    asymetric nature of the Mozilla sockets we need some kind of message queue. 
-    New requests can be added via the "addRequest" method. In case of an response, 
-    the corresponding request will be automatically calledback via its "addResponse"
-    method.
-    If you need a secure connection, set the flag secure in the constructor. Then
-    connect to the host. And invoke the "startTLS" Method as soon as you nagociated 
-    the switch to a crypted connection. After calling startTLS Mozilla will imediately
-    switch to a cryped connection.
-    The Method setDebugLevel specifies wheather only requests, only responses, 
-    both or nothing is logged to the error console. A "level" value of "1" means 
-    olny request "2" is equivalent to responses only, "3" states that both (request 
-    and responses) should be logged and a "0" disables any logging.
+
 
   EXAMPLE:
   ========
@@ -46,7 +34,30 @@
     sieve.disconnect();
 
 ********************************************************************************/
-
+/**
+ *  This class is a simple socket implementation for the manage sieve protocol. 
+ *  Due to the asymetric nature of the Mozilla sockets we need message queue.
+ *  <p>
+ *  New requests are added via the "addRequest" method. In case of a response, 
+ *  the corresponding request will be automatically calledback via its 
+ *  "addResponse" method.
+ *  <p>
+ *  If you need a secure connection, set the flag secure in the constructor. 
+ *  Then connect to the host. And invoke the "startTLS" Method as soon as you 
+ *  nagociated the switch to a crypted connection. After calling startTLS 
+ *  Mozilla will imediately switch to a cryped connection.
+ *  <p>
+ *   
+ * @param {String} host 
+ *   The target hostname or IP address as String
+ * @param {Int} port
+ *   The target port as Interger
+ * @param {Boolean} secure
+ *   If true, a secure socket will be created. This allows switching to a secure
+ *   connection.
+ * @param {Int} idleInterval
+ *   XXX
+ */
 function Sieve(host, port, secure, idleInterval) 
 {  
   
@@ -70,13 +81,24 @@ function Sieve(host, port, secure, idleInterval)
   this.outstream = null;
 }
 
-/*
- * level:
- *   is a bitfield which defines which debugmessages are logged to the console.
- * 
- * console: 
- *   passes the logger which should be used. 
- *   A via logger needs to interface a logStringMessage(String) Method. 
+/**
+ *  The Method setDebugLevel specifies which Debuglevel which Logger should be
+ *  used. 
+ *  <p>
+ *  The debug level specified is a bitmask. Setting all bits to zero disables 
+ *  any logging. The first bit activates request, the second response logging. 
+ *  If the third is set, status information and exceptions from the stateengine 
+ *  are logged. The fourth, fifth etc. Bits are unused and should be set to zero.
+ *  <p>
+ *  In order to activate request and response logging, you have to set the first
+ *  and the second bit to high any other bit to low. In this case this bitmask 
+ *  is equivalent to the mummeric representation of the number 3.
+ *  
+ * @param {int} level
+ *   specifies the debug settings as bitfield.
+ * @param {nsIConsoleService} logger
+ *   an nsIConsoleService compatible Object. Any Debuginforamtion will be 
+ *   posted to the logStringMessage(String) Method of this object.
  */
 
 Sieve.prototype.setDebugLevel = function(level, logger)
@@ -102,6 +124,10 @@ Sieve.prototype.setDebugLevel = function(level, logger)
   return;
 }
 
+/**
+ * XXX
+ * @return {Boolean}
+ */
 Sieve.prototype.isAlive = function()
 {
   if (this.socket == null)
@@ -141,12 +167,14 @@ Sieve.prototype.removeWatchDogListener = function()
   this.watchDog = null;
 }
 
-Sieve.prototype.addRequest = function(request)
+Sieve.prototype.addRequest 
+    = function(request)
 {
-    
-	this.requests[this.requests.length] = request;
-	// wenn die länge nun eins ist war sie vorher null
-	// daher muss die Requestwarteschlange neu angestoßen werden.
+  // Add the request to the message queue
+  this.requests[this.requests.length] = request;
+  
+  // If the queue was empty before adding the new request, we have to...
+  // ... reinitialize the request pump. If not we can skip right here.
 	if (this.requests.length > 1)
 		return;
 
@@ -215,7 +243,6 @@ Sieve.prototype.disconnect = function ()
   
   if ((this.debug.level & (1 << 1)) || (this.debug.level & (1 << 0)))
     this.debug.logger.logStringMessage("Disconnected ...");
-  
     
 }
 
@@ -238,7 +265,6 @@ Sieve.prototype.onStartRequest = function(request, context)
     this.debug.logger.logStringMessage("Connected to "+this.host+":"+this.port+" ...");
 }
 
-//Sieve.prototype.onTimeout = function()
 Sieve.prototype.onWatchDogTimeout = function() 
 {
   if (this.debug.level & (1 << 2))
@@ -286,10 +312,9 @@ Sieve.prototype.onDataAvailable = function(request, context, inputStream, offset
 	catch (ex)
 	{
 
-	  // ... we encounterned an error, this is most likely caused ...
-	  // ... by a fragmented packet, so we skip processing and start ...
-	  // ... the timeout timer again. Either the next packet or a timeout ...
-	  // ... will resolve this situation.
+	  // we encounterned an error, this is most likely caused by a fragmented ... 
+    // ... packet, so we skip processing and start the timeout timer again... 
+    // ... Either the next packet or a timeout will resolve this situation.
 	  
 	  if (this.debug.level & (1 << 2))
 	    this.debug.logger.logStringMessage("Parsing Exception in libManageSieve/Sieve.js:\n"+ex);	  
@@ -300,16 +325,16 @@ Sieve.prototype.onDataAvailable = function(request, context, inputStream, offset
 	  return;
 	}
   
-  // if we are here the response was parsable, so we can drop the
-  // transmitted data, thus it is now saved in the object
+  // As we reached this point the response was parsable and has been processed.
+  // We do some cleanup as we don't need the transmitted data anymore...
   this.data = "";
      
- 	// ... delete the request, it is processed...	
+ 	// ... and delete the request, if it is processed.	
 	if (this.requests[0].hasNextRequest() == false)
   	this.requests.splice(0,1);
 
 
-	// ... are there any other requests waiting in the queue.
+	// Are there any other requests waiting in the queue.
 	if ((this.requests.length > 0))
 	{
 	  var output = this.requests[0].getNextRequest();

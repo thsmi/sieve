@@ -161,7 +161,7 @@ var event =
       onError: function(response)
       {
         gSieveWatchDog.setTimeoutInterval();
-        alert("error");
+        alert("Error");
         event.onError(response);
       },
       
@@ -385,7 +385,7 @@ function onWindowLoad()
   // now create a logger session...
   gLogger = Components.classes["@mozilla.org/consoleservice;1"]
                     .getService(Components.interfaces.nsIConsoleService);  
-  
+
   var menuImapAccounts = document.getElementById("menuImapAccounts");
 
   accounts = (new SieveAccounts()).getAccounts();
@@ -478,6 +478,18 @@ function sivConnect(account,hostname)
       gSieve.connect();  
 }
 
+function onActivateClick()
+{
+  var tree = document.getElementById('treeImapRules');  
+  if (tree.currentIndex == -1)
+    return;
+
+  // imitate klick in the treeview
+  tree.view.cycleCell(tree.currentIndex,tree.columns.getColumnAt(1));
+    
+  return;
+}
+
 function sivDisconnect()
 {
   if (gSieve == null)
@@ -493,20 +505,19 @@ function sivDisconnect()
   gSieveWatchDog = null;
 }
 
-
 function onSelectAccount()
 {
-	var logoutTimeout = null;	
-	// Override the unsual request handler because we have to logout first
+	//var logoutTimeout = null;	
+	// Override the response handler. We should always logout before reconnecting...
 	var levent = 
 	{
 		onLogoutResponse: function(response)
 		{
-			clearTimeout(logoutTimeout);
+			//clearTimeout(logoutTimeout);
 			
 			sivDisconnect();
 
-      // always clear the TreeView
+      // update the TreeView...
       var tree = document.getElementById('treeImapRules');
    		tree.currentIndex = -1;
      	sieveTreeView.update(new Array());
@@ -525,7 +536,7 @@ function onSelectAccount()
     }
   }
 
-	// Besteht das Objekt �berhaupt bzw besteht eine Verbindung?
+	// Besteht das Objekt überhaupt bzw besteht eine Verbindung?
 	if ((gSieve == null) || (gSieve.isAlive() == false))
 	{
 		// beides schein nicht zu existieren, daher connect direkt aufrufen...
@@ -534,13 +545,9 @@ function onSelectAccount()
 	}
 	
 	// hier haben wir etwas weniger Zeit ...
-	logoutTimeout = setTimeout(levent.onLogoutResponse,250);
+  // TODO: can be removed as timeoust are implemented via the watchdong ?!?
+	//logoutTimeout = setTimeout(levent.onLogoutResponse,250);
 	
-    /*if (keepAliveInterval != null)
-    {
-    	clearInterval(keepAliveInterval);
-    	keepAliveInterval = null;
-    }*/
   var request = new SieveLogoutRequest();
   request.addLogoutListener(levent);
   request.addErrorListener(event);
@@ -580,13 +587,17 @@ function onDeleteClick()
 	
 	gSieve.addRequest(request);
 }
-
+/**
+ * XXX
+ * @param {String} scriptName
+ * @param {String} scriptBody
+ */
 function sivOpenEditor(scriptName,scriptBody)
 {
-  // The listner is bound to a window object. This makes passing the Sieve...
-  // ... object to an other window difficult. At first we have to deattach the 
-  // listener then pass the object, and finally attach a new listern of the new
-  // window   
+  // The scope of listners is bound to a window. This makes passing the Sieve...
+  // ... object to an other window difficult. At first we have to deattach the... 
+  // ... listener, then pass the object, and finally attach a new listern of...
+  // ... the new window   
   gSieve.removeWatchDogListener();
   
   var args = new Array();
@@ -604,7 +615,7 @@ function sivOpenEditor(scriptName,scriptBody)
   var request = new SieveListScriptRequest();
   request.addListScriptListener(event);
   request.addErrorListener(event);
-    			
+  
   gSieve.addRequest(request);
   
   return;  
@@ -692,6 +703,7 @@ function disableControls(disabled)
     document.getElementById('editButton').setAttribute('disabled','true');
     document.getElementById('deleteButton').setAttribute('disabled','true');
     document.getElementById('renameButton').setAttribute('disabled','true');   
+    document.getElementById('btnActivateScript').setAttribute('disabled','true');
     document.getElementById('treeImapRules').setAttribute('disabled','true');
     document.getElementById('btnServerDetails').setAttribute('disabled','true');
     document.getElementById('vbServerDetails').setAttribute('hidden','true');
@@ -701,6 +713,7 @@ function disableControls(disabled)
     document.getElementById('newButton').removeAttribute('disabled');
     document.getElementById('editButton').removeAttribute('disabled');
     document.getElementById('deleteButton').removeAttribute('disabled');
+    document.getElementById('btnActivateScript').removeAttribute('disabled');
     document.getElementById('renameButton').removeAttribute('disabled');
     document.getElementById('treeImapRules').removeAttribute('disabled');
     document.getElementById('btnServerDetails').removeAttribute('disabled');      

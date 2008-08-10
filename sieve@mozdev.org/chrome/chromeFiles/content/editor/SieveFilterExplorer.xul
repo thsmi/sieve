@@ -50,14 +50,11 @@
               
               <treechildren id="sivExplorerTree" collapsed="true" /> <!--collapsed="true" -->
               
-              <!-- <box id="sivExplorerWait" hidden="true" align="center" pack="center" flex="1" /> -->
               <vbox id="sivExplorerWait" hidden="true" align="center" pack="center" flex="1" >
-                <!--<vbox align="center" class="sivWait">-->
                   <image pack="center" src="chrome://sieve/content/images/load.gif"/>
                   <spacer/> 
                   <description id="sivExplorerWaitMsg" pack="center">          
                   </description>
-                <!--</vbox> -->
               </vbox>
               
               <box id="sivExplorerWarning" align="center" pack="center" flex="1" > 
@@ -126,7 +123,9 @@
           <button id="deleteButton" label="&list.delete;"
                   oncommand="onDeleteClick();"/>
           <button id="renameButton" label="&list.rename;"
-                  oncommand="onRenameClick();"/>                  
+                  oncommand="onRenameClick();"/>
+          <button id="btnActivateScript" label="Activate"
+                  oncommand="onActivateClick();"/>
  <!--     
           <spacer flex="1"/>
           <button id="capabilites" label="&list.capability;" 

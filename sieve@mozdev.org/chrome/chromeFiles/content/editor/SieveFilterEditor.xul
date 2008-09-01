@@ -51,17 +51,16 @@
                    label="&edit.toolbar.paste;" class="toolbarbutton-1"
                    oncommand=" goDoCommand('cmd_paste');" />    
     <toolbarspacer />
-    <toolbarbutton id="btnCompile" type="checkbox" 
-                   label="&edit.toolbar.compile;" class="toolbarbutton-1"  
-                   oncommand="onErrorBar(!this.checked);" />                   
-    <toolbarbutton id="btnReference"  type="checkbox" 
-                   persist="checked"                  
-                   label="&edit.toolbar.reference;" class="toolbarbutton-1"
-                   oncommand="onSideBar();"/>
+    <toolbarbutton id="btnCompile" type="checkbox"
+                   label="&edit.toolbar.compile;" class="toolbarbutton-1" />  
+                   <!--oncommand="onErrorBar();" -->                   
+    <toolbarbutton id="btnReference" type="checkbox"  
+                   label="&edit.toolbar.reference;" class="toolbarbutton-1" />
+                   <!--oncommand="onSideBar();"-->
     <toolbarspacer />               
-    <toolbarbutton id="btnPrint"  
+    <!--<toolbarbutton id="btnPrint"  
                    label="&edit.toolbar.print;" class="toolbarbutton-1"                    
-                   oncommand="onPrint();" />        
+                   oncommand="onPrint();" />-->        
     <toolbarbutton id="btnTools" 
                    label="&edit.toolbar.tools;" 
                    type="menu"  class="toolbarbutton-1" >
@@ -96,7 +95,7 @@
                 <hbox>
                   <label flex="1" value="&edit.errorbar.title;" />
                     <toolbarbutton class="sieveCloseButton"
-                                   oncommand="onErrorBarClose();"/>
+                                   oncommand="onErrorBarHide();"/>
                 </hbox>
               </stack>             
               <hbox align="center" min-height="50px" flex="1" style="overflow:auto" class="box-inset">
@@ -123,7 +122,7 @@
         <label flex="1" value="&edit.sidebar.title;" />
         <toolbarbutton 
             class="sieveCloseButton"
-            oncommand="onSideBarClose();"/>
+            oncommand="onSideBarHide();"/>
       </hbox>
     </stack>
     <hbox >
@@ -135,7 +134,7 @@
                        oncommand="onSideBarForward();" />
         <toolbarbutton id="btnSideBarHome"
                        label="&edit.toolbar.home;" class="toolbarbutton-1" 
-                       oncommand="onSideBarGo(null);" />
+                       oncommand="onSideBarHome();" />
     </hbox>
     <!--
           <browser type="content" id="sideBarBrowser" flex="1" 

@@ -18,7 +18,6 @@ var gSieve = null;
 var gSieveWatchDog = null
 
 var gCompileTimeout = null;
-var gCompile = null
 var gCompileDelay = null;
 
 var gChanged = false;
@@ -115,7 +114,6 @@ function onCompile()
 }
 
 
-
 function onInput()
 {
   if (gChanged == false)
@@ -131,20 +129,41 @@ function onInput()
     gCompileTimeout = null;
   }
             
-  if (gCompile)
-    gCompileTimeout = setTimeout("onCompile()",gCompileDelay);    
+  if (document.getElementById("btnCompile").checked)
+    gCompileTimeout = setTimeout(function() {onCompile();},gCompileDelay);      
 }
 
 function onLoad()
 {
-  // script laden
+  // checkbox buttons are buggy,this has been fixed in Thunderbird3 but... 
+  // ...we need a workaround. See Bug 382457 for details.
+  
+  document.getElementById("btnCompile").
+    addEventListener(
+      "command", 
+      function(){onErrorBar();},
+      false);
+      
+  document.getElementById("btnReference").
+    addEventListener(
+      "command",
+      function(){ onSideBar(); },
+      false);
+
+  // hack to prevent links to be opened in the default browser window...       
+  document.getElementById("ifSideBar").
+    addEventListener(
+      "click",
+      function(event) { onSideBarBrowserClick(event); },
+      false);
+    
+  // now load the script...
   gSieve = window.arguments[0]["sieve"];
   
   gSieveWatchDog = new SieveWatchDog();
   gSieveWatchDog.addListener(event);
   gSieve.addWatchDogListener(gSieveWatchDog);
-  
-  gCompile = window.arguments[0]["compile"];        
+
   gCompileDelay = window.arguments[0]["compileDelay"];
     
   document.getElementById("txtName").value = window.arguments[0]["scriptName"];    
@@ -162,16 +181,11 @@ function onLoad()
     gSieve.addRequest(request);
   }        
 
-  // hack to prevent links to be opened in the default browser window...       
-  document.getElementById("ifSideBar").
-    addEventListener("click",onSideBarBrowserClick,false);    
+  //preload sidebar...
+  onSideBarHome();
   
-  onSideBarGo();
-  
-  document.getElementById("btnCompile").checked = gCompile;
-  onErrorBar(document.getElementById("btnCompile").checked);
-  
-  onSideBar();
+  onErrorBar(window.arguments[0]["compile"]);  
+  onSideBar(true);
   
   document.getElementById("txtScript").focus();
 }
@@ -208,16 +222,13 @@ function onSideBarForward()
   onSideBarGo(gForwardHistory.pop());  
 }
 
-function onSideBarLoaded(event)
+function onSideBarHome()
 {
-  onSideBarLoading(false);
-/*  var result ="";
-  for (var i in event)
-  {
-    result += "." + i + " = " + event[i] + "<br>";
-  }
+  if (gForwardHistory.length != 0)
+    gForwardHistory = new Array();
   
-  alert(result);*/
+  //document.getElementById("ifSideBar").setAttribute('src',uri);
+  onSideBarGo("http://sieve.mozdev.org/reference/en/index.html");
 }
 
 function onSideBarLoading(loading)
@@ -231,10 +242,7 @@ function onSideBarLoading(loading)
 function onSideBarGo(uri)
 {
   onSideBarLoading(true);
-  
-  if (uri == null)
-    uri = "http://sieve.mozdev.org/reference/en/index.html"
-    
+      
   gBackHistory.push(uri);
   
   if (gBackHistory.length > 20)
@@ -250,11 +258,15 @@ function onSideBarGo(uri)
     document.getElementById("btnSideBarForward").setAttribute('disabled',"true");
   else
     document.getElementById("btnSideBarForward").removeAttribute('disabled');    
-
+ 
+  /*if (document.getElementById("ifSideBar").addEventListener)
+    document.addEventListener(
+      "DOMContentLoaded", function(event) { onSideBarLoading(false); }, false);*/
   if (document.getElementById("ifSideBar").addEventListener)
-    document.addEventListener("DOMContentLoaded", onSideBarLoaded, false);
-         
-  document.getElementById("ifSideBar").setAttribute('src',uri);
+    document.getElementById("ifSideBar").addEventListener(
+      "DOMContentLoaded", function(event) { onSideBarLoading(false); }, false);
+      
+  document.getElementById("ifSideBar").setAttribute('src',uri);      
 }
 
 
@@ -365,51 +377,77 @@ function onExport()
     outputStream.close();
 }
 
-function onSideBarClose()
+function onErrorBarShow()
 {
-  document.getElementById("btnReference").removeAttribute('checked');
-  onSideBar(false);
-}
-
-function onErrorBarClose()
-{ 
-  document.getElementById("btnCompile").removeAttribute('checked'); 
-  onErrorBar(false);  
-}
-
-function onErrorBar(state)
-{  
-  if (state == true)
-  {
-    document.getElementById('spErrorBar').removeAttribute('hidden');
-    document.getElementById('vbErrorBar').removeAttribute('hidden');
-    gCompile = true;
-    onCompile();
-    return 
-  }
+  document.getElementById("btnCompile").setAttribute('checked','true')
+  document.getElementById('spErrorBar').removeAttribute('hidden');
+  document.getElementById('vbErrorBar').removeAttribute('hidden');
   
+  onCompile();
+  
+  return;
+}
+
+function onErrorBarHide()
+{
   clearTimeout(gCompileTimeout);
   gCompileTimeout = null;
     
-  gCompile = false;
+  document.getElementById("btnCompile").removeAttribute('checked');
   document.getElementById("vbErrorBar").setAttribute('hidden','true');
   document.getElementById('spErrorBar').setAttribute('hidden','true');
   
   return;
 }
 
-function onSideBar()
+function onErrorBar(visible)
 {  
-  if (document.getElementById("btnReference").getAttribute("checked"))
-  {
-    document.getElementById('splitter').removeAttribute('hidden');
-    document.getElementById('vbSidebar').removeAttribute('hidden');    
-    return;    
-  }
+  if (visible == null)
+    visible = document.getElementById('btnCompile').checked
+    
+  if (visible)
+    onErrorBarShow();
+  else
+    onErrorBarHide();
+ 
+  return;
+}
 
+/**
+ * Shows the Sidebar containing the Sieve Reference
+ */
+function onSideBarShow()
+{
+  document.getElementById('btnReference').setAttribute('checked','true')
+  document.getElementById('splitter').removeAttribute('hidden');
+  document.getElementById('vbSidebar').removeAttribute('hidden');
+  
+  return;
+}
+
+/**
+ * Shows the Sidebar containing the Sieve Reference
+ */
+function onSideBarHide()
+{
+  document.getElementById('btnReference').removeAttribute('checked');  
   document.getElementById('splitter').setAttribute('hidden','true');
-  document.getElementById('vbSidebar').setAttribute('hidden','true');
-  return;   
+  document.getElementById('vbSidebar').setAttribute('hidden','true')
+  
+  return;
+}
+
+function onSideBar(visible)
+{  
+  if (visible == null)
+    visible = document.getElementById('btnReference').checked
+    
+  if (visible)
+    onSideBarShow();
+  else
+    onSideBarHide();
+    
+  return;
 }
 
 var gUpdateScheduled = false;
@@ -431,6 +469,8 @@ function UpdateCursorPos()
     
   
   gUpdateScheduled=false;
+  
+  return;
 }
 
 
@@ -441,7 +481,7 @@ function onUpdateCursorPos(timeout)
 
   setTimeout(function () {UpdateCursorPos();gUpdateScheduled=false;},200);
 
-  gUpdateScheduled = true; 
+  gUpdateScheduled = true;
 }
 
 function onBtnChangeView()
@@ -455,7 +495,120 @@ function onBtnChangeView()
   
 }
 
+function getPrintSettings()
+{
+  var pref = Components.classes["@mozilla.org/preferences-service;1"]
+               .getService(Components.interfaces.nsIPrefBranch);
+  if (pref) 
+  {
+    var gPrintSettingsAreGlobal = pref.getBoolPref("print.use_global_printsettings", false);
+    var gSavePrintSettings = pref.getBoolPref("print.save_print_settings", false);
+  }
+ 
+  var printSettings;
+  try 
+  {
+    var PSSVC = Components.classes["@mozilla.org/gfx/printsettings-service;1"]
+                  .getService(Components.interfaces.nsIPrintSettingsService);
+    if (gPrintSettingsAreGlobal) 
+    {
+      printSettings = PSSVC.globalPrintSettings;
+      this.setPrinterDefaultsForSelectedPrinter(PSSVC, printSettings);
+    }
+    else
+    {
+      printSettings = PSSVC.newPrintSettings;
+    }
+  }
+  catch (e)
+  {
+    alert("getPrintSettings: "+e+"\n");
+  }
+  return printSettings;
+}
+
+
 function onPrint()
+{
+  // we print in xml this means any specail charaters have to be html entities...
+  // ... so we need a dirty hack to convert all entities...
+  alert("Print");
+  var script = document.getElementById("txtScript").value;
+  script = (new XMLSerializer()).serializeToString(document.createTextNode(script));
+  
+  script = script.replace(/\r\n/g,"\r");
+  script = script.replace(/\n/g,"\r");
+  script = script.replace(/\r/g,"\r\n");
+ 
+  var data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" 
+     + "<?xml-stylesheet type=\"text/css\" href=\"chrome://sieve/content/editor/print.css\"?>\r\n"
+     + "<SieveScript>\r\n"
+       + "<title xmlns=\"http://www.w3.org/1999/xhtml\">\r\n"
+         + document.getElementById("txtName").value
+       + "</title>\r\n"
+       + "<SieveScriptName>\r\n" 
+         + document.getElementById("txtName").value
+       + "</SieveScriptName>\r\n"   
+       + "<SieveScriptLine>\r\n"       
+         + script
+       + "</SieveScriptLine>\r\n"          
+     + "</SieveScript>\r\n";    
+  
+  data =  "data:application/xml;base64,"+btoa(data);  
+
+   /*// get URI and add to list for printing
+  var messageList =  new Array(1);
+  messageList[0] = data;
+     
+  var prevPS = gPrintSettings;
+ 
+  var printSettingsService = 
+        Components.classes["@mozilla.org/gfx/printsettings-service;1"]
+          .getService(Components.interfaces.nsIPrintSettingsService);
+   
+  var printSettings = printSettingsService.CreatePrintSettings();
+  // var printSettings = printSettingsService.globalPrintSettings;
+
+  printEngineWindow = window.openDialog("chrome://messenger/content/msgPrintEngine.xul",
+                                        "",
+                                        "chrome,dialog=no,all,centerscreen",
+                                        messageList.length, messageList, statusFeedback, 
+                                        printSettings, false, 
+                                        Components.interfaces.nsIMsgPrintEngine.MNAB_PRINT_MSG,
+                                        window)*/
+                  
+
+   var printSettings;// = getPrintSettings();
+   /* get the print engine instance */
+   var printEngine = Components.classes["@mozilla.org/messenger/msgPrintEngine;1"].createInstance();
+   printEngine.QueryInterface(Components.interfaces.nsIMsgPrintEngine);
+
+   var printSettingsService = 
+        Components.classes["@mozilla.org/gfx/printsettings-service;1"]
+          .getService(Components.interfaces.nsIPrintSettingsService);
+   var printSettings = printSettingsService.newPrintSettings;
+   
+   printEngine.setWindow(window);
+   printEngine.doPrintPreview = false;
+   printEngine.showWindow(false);
+   printEngine.setMsgType(Components.interfaces.nsIMsgPrintEngine.MNAB_PRINT_MSG);
+   printEngine.setParentWindow(null);
+   //printEngine.setParentWindow(window);   
+
+   var messageList =  new Array(1);
+   messageList[0] = data;
+ 
+   printEngine.setPrintURICount(messageList.length);
+   printEngine.addPrintURI(messageList);
+   
+   printEngine.startPrintOperation(printSettings);
+ 
+//     printEngine.setStatusFeedback(statusFeedback);
+//     printEngine.setStartupPPObserver(gStartupPPObserver);
+                     
+  alert("End Print");
+}
+/*function onPrint()
 {  
   var statusFeedback;
   statusFeedback = Components.classes["@mozilla.org/messenger/statusfeedback;1"].createInstance();
@@ -500,6 +653,5 @@ function onPrint()
                                           window);
 
   return;
-}
-
+}*/
 

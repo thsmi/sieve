@@ -52,6 +52,7 @@
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "Login">
 <!ENTITY options.authmechanism.plain "Plain">
+<!ENTITY options.authmechanism.description "In certain situations e.g. when using Proxy Authentication you might want to force a specific Authentication Mechanism." > 
 
 <!ENTITY options.proxyauth.caption "Proxy Authorization">
 

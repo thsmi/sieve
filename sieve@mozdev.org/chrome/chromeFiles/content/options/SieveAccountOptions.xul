@@ -149,8 +149,7 @@
       <groupbox>
         <caption label="&options.authmechanism.caption;" />
         <description>
-          In certain situations e.g. when using Proxy Authentication you might 
-          want to force a specific Authentication Mechanism. 
+          &options.authmechanism.description;
         </description>
         <checkbox id="cbxAuthMechanism" label="&options.authmechanism;"
                   oncommand="onAuthMechanismCommand(this)" />

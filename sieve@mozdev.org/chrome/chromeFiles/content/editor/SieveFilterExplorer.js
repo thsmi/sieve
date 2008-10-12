@@ -266,27 +266,18 @@ var event =
 	
 	onListScriptResponse: function(response)
 	{
-		if (response.hasError())
-		{
-			alert("Command \"Listscripts\" failed");
-			return
-		}
-		
 		sieveTreeView.update(response.getScripts());
 
 		var tree = document.getElementById('treeImapRules');
 		tree.view = sieveTreeView;
 		
 		// always select something
-		if ((tree.currentIndex == -1) && (tree.view.rowCount > 0))
+		if ((tree.currentIndex < 0) && (tree.view.rowCount > 0))
 			tree.view.selection.select(0);
 	},
 	
 	onSetActiveResponse: function(response)
 	{
-		if (response.hasError())
-			alert("Command \"setActive\" failed");
-		
 		// Always refresh the table ...
 		var request = new SieveListScriptRequest();
 		request.addListScriptListener(event);
@@ -363,7 +354,6 @@ var event =
     var request = new SieveCapabilitiesRequest();
     request.addErrorListener(event);
   
-    
     gSieve.addRequest(request);
   },
     

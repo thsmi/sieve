@@ -9,9 +9,10 @@
 <!-- Options Dialog -->
 <!ENTITY options.title "Sieve Options">
 
-<!ENTITY options.tab.general  "General">
+<!ENTITY options.tab.general "General">
+<!ENTITY options.tab.compatibility  "Compatibility">
 <!ENTITY options.tab.advanced "Advanced">
-<!ENTITY options.tab.debug    "Debug">
+<!ENTITY options.tab.debug "Debug">
 
 <!ENTITY options.login "Authentication">
 <!ENTITY options.login.key "A">
@@ -38,6 +39,7 @@
 <!ENTITY options.misc.compile "Compile on server every">
 <!ENTITY options.misc.compile.key "c">
 
+<!ENTITY options.debug.warning "Keep in mind that neither SASL Login nor SASL Plain cypher your password, it might be posted in cleartext to the error console.">
 <!ENTITY options.debug.caption "Debug settings">
 <!ENTITY options.debug.request "Client to Server communication (requests)">
 <!ENTITY options.debug.response "Server to Client communication (responses)">

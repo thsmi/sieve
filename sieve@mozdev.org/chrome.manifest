@@ -1,4 +1,5 @@
 content		sieve   chrome/chromeFiles/content/
 locale		sieve	en-US	chrome/chromeFiles/locale/en-US/
+locale    sieve de-DE chrome/chromeFiles/locale/de-DE/
 
 overlay     chrome://messenger/content/messenger.xul chrome://sieve/content/SieveOverlay.xul

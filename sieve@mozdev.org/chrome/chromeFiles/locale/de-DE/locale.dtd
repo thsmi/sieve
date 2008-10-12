@@ -7,7 +7,7 @@
 <!ENTITY accounts.description "Konfiguration der MANAGESIEVE Verbindung zu Ihrem IMAP Konto">
 
 <!-- Options Dialog -->
-<!ENTITY options.title "Sieve Optionen">
+<!ENTITY options.title "Sieve Einstellungen">
 
 <!ENTITY options.tab.general  "Allgemein">
 <!ENTITY options.tab.advanced "Erweitert">
@@ -21,9 +21,9 @@
 <!ENTITY options.login.customAuth "Benutzername und Passwort">
 <!ENTITY options.login.username "Benutzername">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "Zeige gespeicherte Passwörter...">
+<!ENTITY options.login.show "Passwörter anzeigen...">
 
-<!ENTITY options.host "ignoriere IMAP Einstellungen">
+<!ENTITY options.host "IMAP Einstellungen ignorieren">
 <!ENTITY options.host.key "I">
 <!ENTITY options.host.hostname "Hostname">
 <!ENTITY options.host.hostname.key "h">
@@ -31,22 +31,22 @@
 <!ENTITY options.host.port.key "o">
 <!ENTITY options.host.port.default "Standard: 2000">
 <!ENTITY options.host.tls.key "t">
-<!ENTITY options.host.tls "nutze TLS, falls verfügbar">
+<!ENTITY options.host.tls "TLS, falls möglich">
 
 <!ENTITY options.misc "Sonstige Einstellungen">
-<!ENTITY options.misc.keepalive "Schicke 'keep alive' Anfragen jede">
+<!ENTITY options.misc.keepalive "Schicke 'keep alive' Anfragen alle">
 <!ENTITY options.misc.keepalive.key "k">
-<!ENTITY options.misc.compile "Kompiliere auf dem Server jede">
+<!ENTITY options.misc.compile "Kompiliere auf dem Server alle">
 <!ENTITY options.misc.compile.key "p">
 
 <!ENTITY options.debug.caption "Debug Einstellungen">
 <!ENTITY options.debug.warning "Keep in mind that neither SASL Login nor SASL Plain cypher your password, it might be posted in cleartext to the error console.">
 <!ENTITY options.debug.request "Client zu Server Kommunikation (Anfragen)">
-<!ENTITY options.debug.response "Server zu Client Kommunikation (Anfragen)">
-<!ENTITY options.debug.exceptions "Exceptions und State Machine Informationen">
+<!ENTITY options.debug.response "Server zu Client Kommunikation (Antworten)">
+<!ENTITY options.debug.exceptions "Ausnahmefehler und State Machine Informationen">
 
-<!ENTITY options.authmechanism.caption "Authentifizierungs-Mechanismen">
-<!ENTITY options.authmechanism "Überschreibe vorgeschlagene Authentifizierungs-Mechanismen">
+<!ENTITY options.authmechanism.caption "Authentifizierungsmechanismus">
+<!ENTITY options.authmechanism "Empfohlenen Mechanismus ignorieren">
 <!ENTITY options.authmechanism.default "Benutze immer:">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
@@ -64,7 +64,7 @@
 
 
 <!-- Menu entries -->
-<!ENTITY menu.filters "Sieve Nachrichten-Filter...">
+<!ENTITY menu.filters "Sieve Filter...">
 <!ENTITY menu.filters.key "N">
 <!ENTITY menu.options "Sieve Filter Einstellungen...">
 <!ENTITY menu.options.key "S">
@@ -77,14 +77,14 @@
 
 <!ENTITY list.log "Log">
 
-<!ENTITY list.tree "Serverseitige Sieve Nachrichtenfilter">
+<!ENTITY list.tree "Serverseitige Sieveskripte:">
 <!ENTITY list.tree.active "Aktiv">
 <!ENTITY list.tree.name "Name">
 
 <!ENTITY list.new "Neu...">
 <!ENTITY list.edit "Bearbeiten...">
 <!ENTITY list.delete "Löschen">
-<!ENTITY list.rename "Umbennenen">
+<!ENTITY list.rename "Umbenennen...">
 
 <!ENTITY list.details.capability "Server Sieve Fähigkeiten">
 <!ENTITY list.details.capability.implementation "Server Version:">
@@ -92,7 +92,7 @@
 <!ENTITY list.details.capability.extensions "Erweiterungen:">
 
 <!ENTITY list.warning 
-  "Dieses Konto ist nicht für managesieve eingerichtet. Bitte gehen Sie zu 'Extras-> Sieve Filteri Einstellungen'">
+  "Dieses Konto ist nicht für managesieve eingerichtet. Bitte rufen 'Extras-> Sieve Filter Einstellungen' auf">
 <!ENTITY list.wait.connect 
   "Verbinden...">
 
@@ -106,13 +106,13 @@
 <!ENTITY edit.toolbar.copy "Kopieren">
 <!ENTITY edit.toolbar.paste "Einfügen">
 <!ENTITY edit.toolbar.compile "Syntaxprüfung">
-<!ENTITY edit.toolbar.reference "Schnellreferenz">
+<!ENTITY edit.toolbar.reference "Sprachreferenz">
 <!ENTITY edit.toolbar.tools "Extras">
-<!ENTITY edit.toolbar.import "Import Skript">
-<!ENTITY edit.toolbar.export "Export Skript">
+<!ENTITY edit.toolbar.import "Skript Improtieren">
+<!ENTITY edit.toolbar.export "Skript Exprotieren">
 <!ENTITY edit.toolbar.back "Zurück" >
 <!ENTITY edit.toolbar.forward "Weiter" >
-<!ENTITY edit.toolbar.home "Home" >
+<!ENTITY edit.toolbar.home "Inhalt" >
 <!ENTITY edit.toolbar.print "Drucken" >
 
 <!ENTITY edit.scriptname "Skriptname:">

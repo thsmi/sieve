@@ -114,7 +114,7 @@ function onShowFiltersClick()
   if (tree.currentIndex == -1)
 		return;				
 			
-  sivOpenFilters(sieveAccountTreeView.getAccount(tree.currentIndex).getUri());
+  sivOpenFilters(sieveAccountTreeView.getAccount(tree.currentIndex).getUri(),this.window);
  
   return;   
 }

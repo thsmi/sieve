@@ -646,17 +646,18 @@ SieveInitResponse.prototype.getTLS
 
 function SieveGetScriptResponse(scriptName,data)
 {
-	this.scriptName = scriptName;
-
-    var parser = new SieveResponseParser(data);
+  /** @private, @type {String} */ this.scriptName = scriptName;
+  /** @private, @type {String} */ this.scriptBody = "";
+  
+  var parser = new SieveResponseParser(data);
     
-    if (parser.isString())
-    {
-        this.scriptBody = parser.extractString();
-        parser.extractLineBreak();
-    }
+  if (parser.isString())
+  {
+    this.scriptBody = parser.extractString();
+    parser.extractLineBreak();
+  }
 	
-    this.superior = new SieveAbstractResponse(parser);
+  this.superior = new SieveAbstractResponse(parser);
 }
 
 SieveGetScriptResponse.prototype.getMessage
@@ -670,9 +671,14 @@ SieveGetScriptResponse.prototype.getResponse
 
 SieveGetScriptResponse.prototype.getResponseCode
     = function () { return this.superior.getResponseCode(); }
-    
+/**
+ * @return {String}
+ */    
 SieveGetScriptResponse.prototype.getScriptBody
     = function () { return this.scriptBody; }
-    
+
+/**
+ * @return {String}
+ */
 SieveGetScriptResponse.prototype.getScriptName
     = function () { return this.scriptName; }        

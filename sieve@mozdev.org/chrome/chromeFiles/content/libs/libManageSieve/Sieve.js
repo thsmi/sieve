@@ -344,7 +344,7 @@ Sieve.prototype.onDataAvailable = function(request, context, inputStream, offset
     
 	  this.outstream.write(output,output.length);
 	  
-	  // the request is transmitted, therefor activate the timeout
+	  // the request is transmited, therefor activate the timeout
     if( this.watchDog != null)
       this.watchDog.onStart();
 	  

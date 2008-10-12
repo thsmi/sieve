@@ -1,4 +1,5 @@
 
+// @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveResponse.js"
   // TODO make sure that the scripts are imported only once.
   // TODO place imports in the corresponding files like the header import in c...
   
@@ -20,6 +21,7 @@ var gSieveWatchDog = null
 var gCompileTimeout = null;
 var gCompileDelay = null;
 
+/** @type Boolean */
 var gChanged = false;
 
 var gBackHistory = new Array();
@@ -27,14 +29,31 @@ var gForwardHistory = new Array();
 
 var gPrintSettings = null;
 
+// the cursor position is updated lazyly
+var gUpdateScheduled = false;
+
 var event = 
 {
+  /**
+   * @param {SieveGetScriptResponse} response
+   */
   onGetScriptResponse: function(response)
-  {		
-    document.getElementById("txtScript").value = response.getScriptBody();
-    UpdateCursorPos();
+  {
+    event.onScriptLoaded(response.getScriptBody());
   },  
+  
+  /**
+   * @param {String} script
+   */
+  onScriptLoaded: function(script)
+  {
+    document.getElementById("txtScript").value = script;
+    UpdateCursorPos();      
+  },
 	
+  /**
+   * @param {SievePutScriptResponse} response
+   */
   onPutScriptResponse: function(response)
   {    
     gChanged = false;
@@ -44,6 +63,9 @@ var event =
     close();
   },
 	
+  /**
+   * @param {SieveAbstractResponse} response
+   */  
   onError: function(response)
   {
     alert("FATAL ERROR:"+response.getMessage());
@@ -103,10 +125,14 @@ function onCompile()
       alert("A Timeout occured");
     }
   }
-
+  
+  var script = new String(document.getElementById("txtScript").value);
+  
+  if (script.length == 0)
+    return;
+  
   var request = new SievePutScriptRequest(
-                  "TMP_FILE_DELETE_ME",
-                  new String(document.getElementById("txtScript").value));
+                  "TMP_FILE_DELETE_ME",script);
   request.addPutScriptListener(lEvent);
   request.addErrorListener(lEvent);
   
@@ -157,20 +183,24 @@ function onLoad()
       function(event) { onSideBarBrowserClick(event); },
       false);
     
-  // now load the script...
+  // Connect to the Sieve Object...
   gSieve = window.arguments[0]["sieve"];
   
+  // ... redirect errors into this window
   gSieveWatchDog = new SieveWatchDog();
   gSieveWatchDog.addListener(event);
   gSieve.addWatchDogListener(gSieveWatchDog);
 
   gCompileDelay = window.arguments[0]["compileDelay"];
     
-  document.getElementById("txtName").value = window.arguments[0]["scriptName"];    
+  document.getElementById("txtName").value = window.arguments[0]["scriptName"];
   
+  document.getElementById("lblErrorBar").firstChild.nodeValue
+    = "Server reports no script errors...";  
+    
   if (window.arguments[0]["scriptBody"] != null)
   {
-    document.getElementById("txtScript").value = window.arguments[0]["scriptBody"];    
+    event.onScriptLoaded(window.arguments[0]["scriptBody"]);
   }
   else
   {
@@ -270,7 +300,6 @@ function onSideBarGo(uri)
 }
 
 
-
 function onSave()
 {
   var request = new SievePutScriptRequest(
@@ -288,8 +317,7 @@ function onClose()
   {
     gSieve.removeWatchDogListener();
     return true;    
-  }
-    
+  }    
 
   var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
                           .getService(Components.interfaces.nsIPromptService);
@@ -315,9 +343,8 @@ function onImport()
     filePicker.appendFilter("All Files (*.*)", "*.*");
     filePicker.init(window, "Import Sieve Script", filePicker.modeOpen);
 
-    // If the user selected a style sheet
     if(filePicker.show() != filePicker.returnOK)
-        return
+      return;
         
     var inputStream      = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
     var scriptableStream = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance(Components.interfaces.nsIScriptableInputStream);
@@ -360,12 +387,12 @@ function onExport()
     var result = filePicker.show();
     
     if ((result != filePicker.returnOK) && (result != filePicker.returnReplace))
-        return
+      return;
         
     var file = filePicker.file;
     
     if(file.exists() == false)
-        file.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 00444);
+      file.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 00444);
 
     var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
                             .createInstance(Components.interfaces.nsIFileOutputStream);
@@ -377,6 +404,9 @@ function onExport()
     outputStream.close();
 }
 
+/**
+ * Shows the sidebar containing script errors
+ */
 function onErrorBarShow()
 {
   document.getElementById("btnCompile").setAttribute('checked','true')
@@ -388,6 +418,9 @@ function onErrorBarShow()
   return;
 }
 
+/**
+ * Hides the sidebar containing script errors...
+ */
 function onErrorBarHide()
 {
   clearTimeout(gCompileTimeout);
@@ -449,8 +482,6 @@ function onSideBar(visible)
     
   return;
 }
-
-var gUpdateScheduled = false;
 
 function UpdateCursorPos()
 {

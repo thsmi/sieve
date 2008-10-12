@@ -3,7 +3,7 @@
 
 <!DOCTYPE window SYSTEM "chrome://sieve/locale/locale.dtd">
 
-<?xml-stylesheet href="sieve.css" type="text/css"?>
+<?xml-stylesheet href="chrome://sieve/content/editor/Sieve.css" type="text/css"?>
 <?xml-stylesheet href="chrome://messenger/skin/accountManage.css" type="text/css"?>
 
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"

@@ -277,7 +277,7 @@ var event =
 		var tree = document.getElementById('treeImapRules');
 		tree.view = sieveTreeView;
 		
-		// allways select something
+		// always select something
 		if ((tree.currentIndex == -1) && (tree.view.rowCount > 0))
 			tree.view.selection.select(0);
 	},
@@ -383,8 +383,11 @@ function onWindowLoad()
 //	actList.appendChild(actpopup);
 
   // now create a logger session...
-  gLogger = Components.classes["@mozilla.org/consoleservice;1"]
-                    .getService(Components.interfaces.nsIConsoleService);  
+  if (gLogger == null)
+  {
+    gLogger = Components.classes["@mozilla.org/consoleservice;1"]
+                    .getService(Components.interfaces.nsIConsoleService);
+  }
 
   var menuImapAccounts = document.getElementById("menuImapAccounts");
 
@@ -397,12 +400,13 @@ function onWindowLoad()
     else
       menuImapAccounts.appendItem( accounts[i].getDescription(),"","").disabled = false;
 
-    if ((window.arguments[0] instanceof Components.interfaces.nsIDialogParamBlock)
-           && (window.arguments[0].GetString(0) == accounts[i].getUri()))
-    {
-      menuImapAccounts.selectedIndex = i;
-    }
+    if (window.arguments.length != 0)
+      continue;
+    
+    if (window.arguments[0] != accounts[i].getUri())
+      continue;
       
+    menuImapAccounts.selectedIndex = i;      
   }
 	
   sieveTreeView = new SieveTreeView(new Array(),event);	
@@ -437,9 +441,14 @@ function onWindowClose()
  * XXX
  * @return {SieveAccount}
  */
+//sivGetActiveAccount()
 function getSelectedAccount()
 {
-    var menu = document.getElementById("menuImapAccounts")
+    var menu = document.getElementById("menuImapAccounts") 
+    
+    if (menu.selectedIndex <0)
+      return null;
+      
     return accounts[menu.selectedIndex];
 }
 
@@ -481,7 +490,7 @@ function sivConnect(account,hostname)
 function onActivateClick()
 {
   var tree = document.getElementById('treeImapRules');  
-  if (tree.currentIndex == -1)
+  if (tree.currentIndex < 0)
     return;
 
   // imitate klick in the treeview
@@ -506,24 +515,27 @@ function sivDisconnect()
 }
 
 function onSelectAccount()
-{
-	//var logoutTimeout = null;	
+{	
 	// Override the response handler. We should always logout before reconnecting...
 	var levent = 
 	{
 		onLogoutResponse: function(response)
 		{
-			//clearTimeout(logoutTimeout);
 			
 			sivDisconnect();
 
       // update the TreeView...
       var tree = document.getElementById('treeImapRules');
-   		tree.currentIndex = -1;
+      
+      tree.view.selection.clearSelection();
+  
      	sieveTreeView.update(new Array());
 	    tree.view = sieveTreeView;
 
       var account = getSelectedAccount();
+      
+      if (account == null)
+        sivSetStatus(2,"Fatal error no account selected...");
 		
 		  disableControls(true);
 			// Disable and cancel if account is not enabled
@@ -539,13 +551,14 @@ function onSelectAccount()
 	// Besteht das Objekt überhaupt bzw besteht eine Verbindung?
 	if ((gSieve == null) || (gSieve.isAlive() == false))
 	{
-		// beides schein nicht zu existieren, daher connect direkt aufrufen...
-		levent.onLogoutResponse("");
+    // ... no sieve object, let's simulate a logout...
+    setTimeout(function() {levent.onLogoutResponse("");},10);
+		//levent.onLogoutResponse("");
 		return
 	}
 	
 	// hier haben wir etwas weniger Zeit ...
-  // TODO: can be removed as timeoust are implemented via the watchdong ?!?
+  // TODO: can be removed as timeout are implemented via the watchdog ?!?
 	//logoutTimeout = setTimeout(levent.onLogoutResponse,250);
 	
   var request = new SieveLogoutRequest();
@@ -653,10 +666,13 @@ function onNewClick()
 function onEditClick()
 {
   var tree = document.getElementById('treeImapRules');	
-  if (tree.currentIndex == -1)
+  if (tree.currentIndex < 0)
     return;
 
   var scriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));
+  
+  if (scriptName == "")
+    alert
   
   sivOpenEditor(scriptName);
     

@@ -9,36 +9,26 @@ function sivOpenFilters(account,parentWin)
   // as the filter explorer opens a modal dialog...
   // ... we have to check for this dialog first.
   
-  w = mediator.getMostRecentWindow("Sieve:FilterEditor");  
-  if (w)
+  w = mediator.getMostRecentWindow("Sieve:FilterEditor");
+  if (w && (typeof(w) != "undefined") &&!w.closed)
   {
     w.focus();
     return;
   }
     
   w =  mediator.getMostRecentWindow("Sieve:FilterExplorer");
-  if (w)
+  if (w && (typeof(w) != "undefined") &&!w.closed)
   {
     w.focus();
     return;
   }
+  
+  if (parentWin == null)
+    parentWin = window;
 
-
-  var params = Components.classes["@mozilla.org/embedcomp/dialogparam;1"]
-                .createInstance(Components.interfaces.nsIDialogParamBlock);
-  params.SetNumberStrings(1);
-  params.SetString(0, new String(account));
-
-  // use window... method
-  Components
-    .classes["@mozilla.org/embedcomp/window-watcher;1"]
-    .getService(Components.interfaces.nsIWindowWatcher)
-    .openWindow(parentWin, "chrome://sieve/content/editor/SieveFilterExplorer.xul"
-                ,null, "chrome,resizable,centerscreen,all", params);
-
- //       window.openDialog("chrome://browser/content/preferences/cookies.xul",
- //                         "Browser:Cookies", "", {filterString : eTLD});
-
+  parentWin.openDialog("chrome://sieve/content/editor/SieveFilterExplorer.xul", 
+                    "Sieve:FilterExplorer", 
+                    "chrome,resizable,centerscreen,all", account);                    
 }
 
 /* 810       openDialog(kDesktopBackgroundURL, "",

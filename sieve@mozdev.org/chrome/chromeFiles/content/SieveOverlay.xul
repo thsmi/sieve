@@ -10,7 +10,7 @@
   	  	oncommand='window.open("chrome://sieve/content/options/SieveOptions.xul", "sieveOptions", "chrome,centerscreen");' 
   		  accesskey="&menu.options.key;" />
     <menuitem id="mnuSieveListDialog" insertafter="applyFilters" label="&menu.filters;"
-  	  	oncommand='sivOpenFilters(sivGetActiveAccount(),window);' 
+  	  	oncommand='sivOpenFilters(sivGetActiveAccount());' 
     		accesskey="&menu.filters.key;" />  		
     <menuseparator id="mnuSieveSeparator" insertafter="applyFilters"/>  		
 </menupopup>

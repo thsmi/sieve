@@ -1,7 +1,17 @@
+/* 
+ * The contents of this file is licenced. You may obtain a copy of
+ * the license at http://sieve.mozdev.org or request it via email 
+ * from the author. Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+
+
 // we have one central sieve object , but a seperate message queue for every window. 
 // therefore we need a for every window a seperate watchdog inorder to link
 // the global sieve object with the local message queue
- 
+
 function SieveWatchDog()
 {
   this.timeout      = null;

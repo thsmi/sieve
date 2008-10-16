@@ -1,5 +1,13 @@
-/*******************************************************************************
- 
+/* 
+ * The contents of this file is licenced. You may obtain a copy of
+ * the license at http://sieve.mozdev.org or request it via email 
+ * from the author. Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+
+/* 
   NOTES:
   ======
   
@@ -21,7 +29,7 @@
   Method of the requesting object. A timeout is singaled by passing invoking 
   the cancel() Method.  
   
-*******************************************************************************/
+*/
 
 /**
  * Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy 
@@ -31,7 +39,7 @@
  * @param {String} string The binary string which should be converted 
  * @return {String} The converted string in UTF8 
  * 
- * @author Thomas Schmid
+ * @author Thomas Schmid <schmid-thomas@gmx.net>
  */ 
 function UTF8Encode (string) 
 {

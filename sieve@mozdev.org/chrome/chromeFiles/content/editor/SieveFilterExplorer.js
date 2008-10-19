@@ -1,3 +1,12 @@
+/* 
+ * The contents of this file is licenced. You may obtain a copy of
+ * the license at http://sieve.mozdev.org or request it via email 
+ * from the author. Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+ 
 // Hints for Spekt IDE autocomplete...
 //@include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
 //@include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/Sieve.js"
@@ -7,7 +16,7 @@
   // Load all the Libraries we need...
   var jsLoader = Components
                    .classes["@mozilla.org/moz/jssubscript-loader;1"]
-                   .getService(Components.interfaces.mozIJSSubScriptLoader);                   
+                   .getService(Components.interfaces.mozIJSSubScriptLoader);
   jsLoader
     .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveAccounts.js");
   jsLoader
@@ -126,28 +135,28 @@ var event =
   },
   
   onInitResponse: function(response)
-	{    	
-    	// establish a secure connection if TLS ist enabled and if the Server ...
-    	// ... is capable of handling TLS, otherwise simply skip it and ...
-    	// ... use an insecure connection
-    	
-    	if (getSelectedAccount().getHost().isTLS() && response.getTLS())
-    	{
-    	  var request = new SieveStartTLSRequest();
-    	  request.addStartTLSListener(event);
-    	  request.addErrorListener(event);
+  {
+    // establish a secure connection if TLS ist enabled and if the Server ...
+    // ... is capable of handling TLS, otherwise simply skip it and ...
+    // ... use an insecure connection
+    
+    if (getSelectedAccount().getHost().isTLS() && response.getTLS())
+    {
+      var request = new SieveStartTLSRequest();
+      request.addStartTLSListener(event);
+      request.addErrorListener(event);
+      
+      gSieve.addRequest(request);
+      return;
+    }
+    
+    event.onAuthenticate(response);
+  },
 
-   		  gSieve.addRequest(request);
-   		  return;
-    	}    	  
-    	
-    	event.onAuthenticate(response);
-	},
-	
-	onStartTLSResponse : function(response)
-	{	        
-	  
-	  // workaround for timsieved bug...
+  onStartTLSResponse : function(response)
+  {
+    
+    // workaround for timsieved bug...
     var lEvent = 
     {        
       onInitResponse: function(response)
@@ -226,7 +235,7 @@ var event =
         gSieve.addRequest(request);
         break;
     }
-	},
+  },
 	
   onSaslLoginResponse: function(response)
   {
@@ -239,8 +248,8 @@ var event =
     event.onLoginResponse(response);
   },
 	
-	onLoginResponse: function(response)
-	{
+  onLoginResponse: function(response)
+  {
     // enable the disabled controls....
     disableControls(false);
     postStatus("Connected");
@@ -253,63 +262,62 @@ var event =
     gSieve.addRequest(request);
     disableControls(false);
     sivSetStatus(4);
-	},
+  },
 	
-	onLogoutResponse: function(response)
-	{
-	  clearTimeout(closeTimeout);
-	  
-	  sivDisconnect();		
-		// this will close the Dialog!
-		close();		
-	},
-	
-	onListScriptResponse: function(response)
-	{
-		sieveTreeView.update(response.getScripts());
+  onLogoutResponse: function(response)
+  {
+    clearTimeout(closeTimeout);
+    
+    sivDisconnect();
+    // this will close the Dialog!
+    close();
+  },
 
-		var tree = document.getElementById('treeImapRules');
-		tree.view = sieveTreeView;
-		
-		// always select something
-		if ((tree.currentIndex < 0) && (tree.view.rowCount > 0))
-			tree.view.selection.select(0);
-	},
-	
-	onSetActiveResponse: function(response)
-	{
-		// Always refresh the table ...
-		var request = new SieveListScriptRequest();
-		request.addListScriptListener(event);
-		request.addErrorListener(event);
-		
-		gSieve.addRequest(request);
-	},
-	
-	onDeleteScriptResponse:  function(response)
-	{
-		// Always refresh the table ...
-		var request = new SieveListScriptRequest();
-		request.addListScriptListener(event);
-		request.addErrorListener(event);
-		
-		gSieve.addRequest(request);
-	},
+  onListScriptResponse: function(response)
+  {
+    sieveTreeView.update(response.getScripts());
+    
+    var tree = document.getElementById('treeImapRules');
+    tree.view = sieveTreeView;
+    
+    // always select something
+    if ((tree.currentIndex < 0) && (tree.view.rowCount > 0))
+      tree.view.selection.select(0);
+  },
 
+  onSetActiveResponse: function(response)
+  {
+    // Always refresh the table ...
+    var request = new SieveListScriptRequest();
+    request.addListScriptListener(event);
+    request.addErrorListener(event);
+    
+    gSieve.addRequest(request);
+  },
+
+  onDeleteScriptResponse:  function(response)
+  {
+    // Always refresh the table ...
+    var request = new SieveListScriptRequest();
+    request.addListScriptListener(event);
+    request.addErrorListener(event);
+    
+    gSieve.addRequest(request);
+  },
   
-	onCapabilitiesResponse: function(response)
-	{
-	  event.onAuthenticate(response);
-	},    		
-	
-	onTimeout: function()
-	{
-	  disableControls(true);
-	  sivSetStatus(1, "The connection has timed out, the Server is not responding...");
-	  postStatus("Disconnected");
-	  
-	  sivDisconnect();
-	},
+  onCapabilitiesResponse: function(response)
+  {
+    event.onAuthenticate(response);
+  },
+
+  onTimeout: function()
+  {
+    disableControls(true);
+    sivSetStatus(1, "The connection has timed out, the Server is not responding...");
+    postStatus("Disconnected");
+    
+    sivDisconnect();
+  },
 	
   onError: function(response)
   {
@@ -434,12 +442,12 @@ function onWindowClose()
 //sivGetActiveAccount()
 function getSelectedAccount()
 {
-    var menu = document.getElementById("menuImapAccounts") 
-    
-    if (menu.selectedIndex <0)
-      return null;
-      
-    return accounts[menu.selectedIndex];
+  var menu = document.getElementById("menuImapAccounts") 
+  
+  if (menu.selectedIndex <0)
+    return null;
+  
+  return accounts[menu.selectedIndex];
 }
 
 function sivConnect(account,hostname)
@@ -506,55 +514,55 @@ function sivDisconnect()
 
 function onSelectAccount()
 {	
-	// Override the response handler. We should always logout before reconnecting...
-	var levent = 
-	{
-		onLogoutResponse: function(response)
-		{
-			
-			sivDisconnect();
-
+  // Override the response handler. We should always logout before reconnecting...
+  var levent = 
+  {
+    onLogoutResponse: function(response)
+    {
+      
+      sivDisconnect();
+      
       // update the TreeView...
       var tree = document.getElementById('treeImapRules');
       
       tree.view.selection.clearSelection();
-  
-     	sieveTreeView.update(new Array());
-	    tree.view = sieveTreeView;
-
+      
+      sieveTreeView.update(new Array());
+      tree.view = sieveTreeView;
+      
       var account = getSelectedAccount();
       
       if (account == null)
         sivSetStatus(2,"Fatal error no account selected...");
-		
-		  disableControls(true);
-			// Disable and cancel if account is not enabled
-			if (account.isEnabled() == false)
-			{			    
-				postStatus("Not connected! Goto 'Tools -> Sieve Settings' to activate this account")
-				return;
-			}			
+      
+      disableControls(true);
+      // Disable and cancel if account is not enabled
+      if (account.isEnabled() == false)
+      {
+        postStatus("Not connected! Goto 'Tools -> Sieve Settings' to activate this account")
+        return;
+      }			
       sivConnect(account);
     }
   }
-
-	// Besteht das Objekt überhaupt bzw besteht eine Verbindung?
-	if ((gSieve == null) || (gSieve.isAlive() == false))
-	{
+  
+  // Besteht das Objekt überhaupt bzw besteht eine Verbindung?
+  if ((gSieve == null) || (gSieve.isAlive() == false))
+  {
     // ... no sieve object, let's simulate a logout...
     setTimeout(function() {levent.onLogoutResponse("");},10);
-		//levent.onLogoutResponse("");
-		return
-	}
-	
-	// hier haben wir etwas weniger Zeit ...
+    //levent.onLogoutResponse("");
+    return;
+  }
+  
+  // hier haben wir etwas weniger Zeit ...
   // TODO: can be removed as timeout are implemented via the watchdog ?!?
-	//logoutTimeout = setTimeout(levent.onLogoutResponse,250);
-	
+  //logoutTimeout = setTimeout(levent.onLogoutResponse,250);
+  
   var request = new SieveLogoutRequest();
   request.addLogoutListener(levent);
   request.addErrorListener(event);
-	gSieve.addRequest(request);	
+  gSieve.addRequest(request);	
 }
 
 function onDeleteClick()
@@ -576,19 +584,19 @@ function onDeleteClick()
   if (button != 0)
     return;
   
-	var tree = document.getElementById('treeImapRules');	
-	
-	if (tree.currentIndex == -1)
-		return;
-
-	var scriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));	
-		
-	// delete the script...
-	var request = new SieveDeleteScriptRequest(scriptName);
-	request.addDeleteScriptListener(event);
-	request.addErrorListener(event);
-	
-	gSieve.addRequest(request);
+  var tree = document.getElementById('treeImapRules');
+  
+  if (tree.currentIndex == -1)
+    return;
+  
+  var scriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));	
+  
+  // delete the script...
+  var request = new SieveDeleteScriptRequest(scriptName);
+  request.addDeleteScriptListener(event);
+  request.addErrorListener(event);
+  
+  gSieve.addRequest(request);
 }
 /**
  * XXX
@@ -660,10 +668,7 @@ function onEditClick()
     return;
 
   var scriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));
-  
-  if (scriptName == "")
-    alert
-  
+   
   sivOpenEditor(scriptName);
     
   return;

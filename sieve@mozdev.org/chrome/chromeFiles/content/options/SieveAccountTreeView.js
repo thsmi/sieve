@@ -1,14 +1,24 @@
+/* 
+ * The contents of this file is licenced. You may obtain a copy of
+ * the license at http://sieve.mozdev.org or request it via email 
+ * from the author. Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+ 
 // This is our custom view, based on the treeview interface
 
 function SievePrefTreeView(listener)
 {
-	// Load all the Libraries we need...
-	var jsLoader = Components
-										.classes["@mozilla.org/moz/jssubscript-loader;1"]
-										.getService(Components.interfaces.mozIJSSubScriptLoader);
+  // Load all the Libraries we need...
+  var jsLoader = Components
+    .classes["@mozilla.org/moz/jssubscript-loader;1"]
+    .getService(Components.interfaces.mozIJSSubScriptLoader);
+  
   jsLoader
     .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveAccounts.js");
-	
+  
   this.sieveAccounts = new SieveAccounts();    
   this.accounts = this.sieveAccounts.getAccounts();
   this.rowCount = this.accounts.length;
@@ -16,74 +26,74 @@ function SievePrefTreeView(listener)
 }
 
 SievePrefTreeView.prototype.update
-	= function(rules)
+    = function(rules)
 {
-    this.accounts = this.sieveAccounts.getAccounts();
-	this.rowCount = this.accounts.length;
+  this.accounts = this.sieveAccounts.getAccounts();
+  this.rowCount = this.accounts.length;
 }
 
 SievePrefTreeView.prototype.getCellValue
-	= function(row,column)
+    = function(row,column)
 {
-    return "";
+  return "";
 }
 
 SievePrefTreeView.prototype.getCellText 
-	= function(row,column)
+    = function(row,column)
 {
-    //consoleService.logStringMessage(row+"/"+column.id+"/"+column+"/"+column.cycler+"/"+column.type);
-    
-    if (column.id == "namecol") 
-        return this.accounts[row].getDescription();
-    else 
-        return "";         
+  //consoleService.logStringMessage(row+"/"+column.id+"/"+column+"/"+column.cycler+"/"+column.type);
+  
+  if (column.id == "namecol")
+    return this.accounts[row].getDescription();
+  else
+    return "";
 }
     
 SievePrefTreeView.prototype.setTree
-	= function(treebox){ this.treebox = treebox; }
+    = function(treebox){ this.treebox = treebox; }
 		
 SievePrefTreeView.prototype.isContainer
-	= function(row){ return false; }
+    = function(row){ return false; }
 
 SievePrefTreeView.prototype.isSeparator
-	= function(row){ return false; }
+    = function(row){ return false; }
 
 SievePrefTreeView.prototype.isSorted
-	= function(row){ return false; }
+    = function(row){ return false; }
 	
 SievePrefTreeView.prototype.getLevel
-	= function(row){ return 0; }
+    = function(row){ return 0; }
 
 SievePrefTreeView.prototype.getImageSrc
-	= function(row,column)
+    = function(row,column)
 {
-    if (column.id == "namecol")
-    	return null; 
-    
-    if (this.accounts[row].isEnabled())
-    	return "chrome://sieve/content/images/active.png"
-    else
-    	return "chrome://sieve/content/images/passive.png"
+  if (column.id == "namecol")
+    return null; 
+  
+  if (this.accounts[row].isEnabled())
+    return "chrome://sieve/content/images/active.png";
+  else
+    return "chrome://sieve/content/images/passive.png";
 }
 	
 SievePrefTreeView.prototype.getRowProperties
-	= function(row,props){}
+    = function(row,props){}
 	
 SievePrefTreeView.prototype.getCellProperties
-	= function(row,col,props){}
+    = function(row,col,props){}
 	
 SievePrefTreeView.prototype.getColumnProperties
-	= function(colid,col,props){}
+    = function(colid,col,props){}
 
 SievePrefTreeView.prototype.cycleHeader
-	= function(col){}
+    = function(col){}
 	
 SievePrefTreeView.prototype.cycleCell
     = function(row, col)
 {
-    this.accounts[row].setEnabled( ! this.accounts[row].isEnabled())
-		this.listener.onCycleCell(this)
-		this.selection.select(row);
+  this.accounts[row].setEnabled( ! this.accounts[row].isEnabled());
+  this.listener.onCycleCell(this);
+  this.selection.select(row);
 }
 
 SievePrefTreeView.prototype.getAccount

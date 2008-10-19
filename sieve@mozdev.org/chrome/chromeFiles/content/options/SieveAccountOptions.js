@@ -1,15 +1,28 @@
+/* 
+ * The contents of this file is licenced. You may obtain a copy of
+ * the license at http://sieve.mozdev.org or request it via email 
+ * from the author. Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
 
-//@include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
+// Interfaces used in this File
+const nsIWindowMediator = Components.interfaces.nsIWindowMediator;
 
-/** 
- * @type {SieveAccount} 
- **/
+// Contact IDs (CID) used in this File
+const CID_WINDOW_MEDIATOR = "@mozilla.org/appshell/window-mediator;1";
+
+
+//  @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
+
+/** @type SieveAccount */
 var account;
-account= null; 
+account = null;
 
 function onDialogLoad(sender)
 {
-	account = window.arguments[0]["SieveAccount"];
+  account = window.arguments[0]["SieveAccount"];
     
   // get the custom Host settings
   document.getElementById('txtHostname').value
@@ -55,7 +68,7 @@ function onDialogLoad(sender)
   
   var element = null;
             
- 	element = document.getElementById('cbxCompile');
+  element = document.getElementById('cbxCompile');
   element.checked = account.getSettings().hasCompileDelay();
   enableCompile(element.checked);	
    
@@ -97,7 +110,7 @@ function onDialogLoad(sender)
 
 function onDialogAccept(sender)
 { 
-	// Do nothing since there should be only valid entries...
+  // Do nothing since there should be only valid entries...
 }
 
 function onHandshakeSelect(sender)
@@ -193,7 +206,7 @@ function onUsernameChange(sender)
 {
   if (account == null)
     return;
-    
+  
   account.getLogin(2).setUsername(document.getElementById('txtUsername').value);
 }
 
@@ -201,7 +214,7 @@ function onAuthorizationChange(sender)
 {
   if (account == null)
     return;
-    
+  
   account.getAuthorization(3)
       .setAuthorization(document.getElementById('txtAuthorization').value);
 }
@@ -249,7 +262,7 @@ function onPortChange(sender)
   if (account == null)
     return;
   
-	account.getHost(1).setPort(sender.value)
+  account.getHost(1).setPort(sender.value)
 }
 
 function onTLSCommand(sender)

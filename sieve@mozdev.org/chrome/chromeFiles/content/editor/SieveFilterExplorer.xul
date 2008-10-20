@@ -56,13 +56,27 @@
                   <description id="sivExplorerWaitMsg" pack="center">          
                   </description>
               </vbox>
+
+            <!--  <box id="sivExplorerDisabled" align="center" pack="center" flex="1" > 
+                <hbox align="center" class="sivWarning">
+                  <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
+                  <vbox>
+                     <hbox>
+                       <description id="sivExplorerWarningMsg" pack="center">
+                         This account is not configured for ManageSieve...
+                     </description>
+                    </hbox>
+                    <hbox pack="center">
+                      <button label="Open Configuration" />
+                     </hbox>
+                    </vbox>
+                </hbox>
+              </box> -->
               
               <box id="sivExplorerWarning" align="center" pack="center" flex="1" > 
                 <hbox align="center" class="sivWarning">
                   <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
-                  <description id="sivExplorerWarningMsg" pack="center">
-                    &list.warning;
-                  </description>
+                  <description id="sivExplorerWarningMsg" pack="center">&list.warning;</description>
                 </hbox>
               </box>
               
@@ -126,12 +140,9 @@
                   oncommand="onRenameClick();"/>
           <button id="btnActivateScript" label="Activate"
                   oncommand="onActivateClick();"/>
- <!--     
           <spacer flex="1"/>
-          <button id="capabilites" label="&list.capability;" 
-                  oncommand="onCapabilitesClick();"/>
-           <button id="settings" label="Settings" 
-                  oncommand="onSettingsClick();"/>-->
+          <button id="settings" label="Settings" 
+                  oncommand="onSettingsClick();"/>
           <spacer flex="1"/>
         </vbox>
       </row>

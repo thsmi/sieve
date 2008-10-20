@@ -7,13 +7,6 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-// Interfaces used in this File
-const nsIWindowMediator = Components.interfaces.nsIWindowMediator;
-
-// Contact IDs (CID) used in this File
-const CID_WINDOW_MEDIATOR = "@mozilla.org/appshell/window-mediator;1";
-
-
 //  @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
 
 /** @type SieveAccount */
@@ -109,7 +102,7 @@ function onDialogLoad(sender)
 }
 
 function onDialogAccept(sender)
-{ 
+{
   // Do nothing since there should be only valid entries...
 }
 

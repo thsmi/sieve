@@ -34,10 +34,10 @@
             <hbox align="center">
               <label value="&options.login.username;" accesskey="&options.login.username.key;"
                     control="txtUsername"/>
-              <textbox id="txtUsername" size="20" onchange="onUsernameChange(this)"/>
+              <textbox flex="1" id="txtUsername" size="20" onchange="onUsernameChange(this)"/>
             </hbox>
-            <button id="btnShowPasswords" label="&options.login.show;" 
-                    oncommand="onShowPassword()" />
+            <hbox align="right"><button  id="btnShowPasswords" label="&options.login.show;" 
+                    oncommand="onShowPassword()" /></hbox>                    
           </vbox>       
         </groupbox>
             

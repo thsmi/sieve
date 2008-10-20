@@ -7,12 +7,39 @@
 
   <menupopup id="taskPopup">
     <menuitem id="mnuSieveOptionsDialog" insertafter="applyFilters" label="&menu.options;"
-  	  	oncommand='window.open("chrome://sieve/content/options/SieveOptions.xul", "sieveOptions", "chrome,centerscreen");' 
+  	  	oncommand='MsgAccountManager("am-sieve-account.xul");' 
   		  accesskey="&menu.options.key;" />
     <menuitem id="mnuSieveListDialog" insertafter="applyFilters" label="&menu.filters;"
   	  	oncommand='sivOpenFilters(sivGetActiveAccount());' 
-    		accesskey="&menu.filters.key;" />  		
+    		accesskey="&menu.filters.key;" />
     <menuseparator id="mnuSieveSeparator" insertafter="applyFilters"/>  		
 </menupopup>
 
+<!--
+// selectPage: the xul file name for the viewing page, 
+// null for the account main page, other pages are
+// 'am-server.xul', 'am-copies.xul', 'am-offline.xul', 
+// 'am-addressing.xul', 'am-smtp.xul'
+function MsgAccountManager(selectPage)
+{
+    var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].
+                            getService(Components.interfaces.nsIWindowMediator);
+
+    var existingAccountManager = windowManager.getMostRecentWindow("mailnews:accountmanager");
+
+    if (existingAccountManager)
+        existingAccountManager.focus();
+    else {
+        var server;
+        try {
+            var folderURI = GetSelectedFolderURI();
+            server = GetServer(folderURI);
+        } catch (ex) { /* functions might not be defined */}
+        
+        window.openDialog("chrome://messenger/content/AccountManager.xul",
+                          "AccountManager", "chrome,centerscreen,modal,titlebar",
+                          { server: server, selectPage: selectPage });
+    }
+}
+-->
 </overlay>

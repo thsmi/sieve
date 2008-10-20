@@ -14,6 +14,12 @@ var gPref = Components.classes["@mozilla.org/preferences-service;1"].getService(
 // This class is used when no authentication is needed
 function SieveNoAuth() {}
 
+SieveNoAuth.prototype.getDescription
+    = function ()
+{
+  return "No Authentication";
+}
+
 SieveNoAuth.prototype.getPassword
     = function ()
 {
@@ -52,6 +58,12 @@ function SieveImapAuth(imapKey)
     throw "SieveImapHost: IMAP account key can't be null"; 
 
   this.imapKey = imapKey;
+}
+
+SieveImapAuth.prototype.getDescription
+    = function ()
+{
+  return "Use login from IMAP Account";
 }
 
 SieveImapAuth.prototype.getPassword
@@ -119,6 +131,12 @@ function SieveCustomAuth(uri)
     
   this.uri = uri;
   this.prefURI = "extensions.sieve.account."+this.uri;
+}
+
+SieveCustomAuth.prototype.getDescription
+    = function ()
+{
+  return "Use a custom login";
 }
 
 SieveCustomAuth.prototype.setUsername

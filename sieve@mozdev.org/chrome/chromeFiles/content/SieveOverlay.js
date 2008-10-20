@@ -7,6 +7,9 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+
+// move to a sieve utils file...
+// ... and add option for opening config dialog..
 function sivOpenFilters(account,parentWin)
 {
   var w = null;
@@ -27,16 +30,30 @@ function sivOpenFilters(account,parentWin)
   w =  mediator.getMostRecentWindow("Sieve:FilterExplorer");
   if (w && (typeof(w) != "undefined") &&!w.closed)
   {
+    // notify window to switch accounts...
     w.focus();
     return;
   }
-  
+
+  var params = Components.classes["@mozilla.org/embedcomp/dialogparam;1"]
+                .createInstance(Components.interfaces.nsIDialogParamBlock);
+  params.SetNumberStrings(1);
+  params.SetString(0, new String(account));
+
+  // use window... method
+  Components
+    .classes["@mozilla.org/embedcomp/window-watcher;1"]
+    .getService(Components.interfaces.nsIWindowWatcher)
+    .openWindow(parentWin, "chrome://sieve/content/editor/SieveFilterExplorer.xul"
+                ,null, "chrome,resizable,centerscreen,all", params);
+
+/*                
   if (parentWin == null)
     parentWin = window;
-
+    
   parentWin.openDialog("chrome://sieve/content/editor/SieveFilterExplorer.xul", 
                     "Sieve:FilterExplorer", 
-                    "chrome,resizable,centerscreen,all", account);                    
+                    "chrome,resizable,centerscreen,all", account);*/                    
 }
 
 /* 810       openDialog(kDesktopBackgroundURL, "",

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="chrome://messenger/skin/accountManage.css" type="text/css"?>
+<!DOCTYPE page SYSTEM "chrome://sieve/locale/locale.dtd">
+
+<page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
+      onload="parent.onPanelLoaded('am-sieve-account.xul');">
+  
+  <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js"/>
+  <script type="application/x-javascript" src="chrome://sieve/content/SieveOverlay.js" />   
+  <script type="application/x-javascript" src="chrome://messenger/content/AccountManager.js"/>
+  <script type="application/x-javascript" src="chrome://sieve/content/am-sieve-account.js"/> 
+  <dialogheader title="Sieve Settings"/>
+
+  <description>
+Sieve is a powerful script language for server-side mail filtering. 
+  </description>
+  <description>
+Do you want to activate managing Sieve Scripts for this account?
+  </description>
+          <radiogroup id="rgAccount" onselect="onAccountStatusChange(this);">
+            <radio label="No, this account does not support Sieve "/>
+            <radio label="Yes, manage Sieve scripts for this account:"/>
+          </radiogroup>
+  <hbox id="smtpServerInfoBox" class="indent">
+    <stack flex="1" class="inset">
+      <spacer id="backgroundBox"/>
+      <grid>
+        <columns>
+          <column/>
+          <column flex="1"/>
+        </columns>
+        <rows>
+          <row align="center">
+            <hbox pack="end"><label id="lblHost" value="&options.info.servername;"/></hbox>
+            <textbox id="txtHostname" class="plain"/>
+          </row>
+          <row align="center">
+            <hbox pack="end"><label id="lblPort" value="&options.info.port;"/></hbox>
+            <textbox id="txtPort" class="plain"/>
+          </row>
+          <row align="center">
+            <hbox pack="end"><label id="lblAuth" value="&options.info.auth;"/></hbox>
+            <textbox id="txtAuth" class="plain"/>
+          </row>          
+          <row align="center">
+            <hbox pack="end"><label id="lblUserName" value="&options.info.username;"/></hbox>
+            <textbox id="txtUserName" class="plain"/>
+          </row>
+          <row align="center">
+            <hbox pack="end"><label id="lblTLS" value="&options.info.secure;"/></hbox>
+            <textbox id="txtTLS" class="plain"/>
+          </row>
+        </rows>
+      </grid>
+    </stack>
+  </hbox>
+  <hbox align="right">
+    <button label ="Edit Filters..." oncommand="onFiltersClick();" />
+    <button label ="Change Settings..." oncommand="onSettingsClick();"/>
+  </hbox>
+               
+  <vbox flex = "1"/>
+</page>

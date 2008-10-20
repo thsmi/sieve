@@ -821,3 +821,27 @@ function onServerDetails()
     img.setAttribute('src','chrome://global/skin/tree/twisty-open.png');
   }  
 }
+
+function onSettingsClick()
+{
+    var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].
+                            getService(Components.interfaces.nsIWindowMediator);
+
+    var existingAccountManager = windowManager.getMostRecentWindow("mailnews:accountmanager");
+
+    if (existingAccountManager)
+        existingAccountManager.focus();
+    else 
+    {       
+      // use the IMAP Key to load the Account...
+      var server = Components.classes['@mozilla.org/messenger/account-manager;1']
+                      .getService(Components.interfaces.nsIMsgAccountManager)
+                      .getIncomingServer(getSelectedAccount().imapKey);
+                       
+        window.openDialog("chrome://messenger/content/AccountManager.xul",
+                          "AccountManager", "chrome,centerscreen,titlebar,modal",
+                          { server: server, selectPage: 'am-sieve-account.xul' });
+    }  
+}
+
+

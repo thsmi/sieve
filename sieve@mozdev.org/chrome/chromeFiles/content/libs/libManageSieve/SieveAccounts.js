@@ -175,8 +175,8 @@ SieveCustomAuth.prototype.getPassword
   }
   
   // ... prompt for password
-  var prompts = Components.classes[CID_PROMPT_SERVICE]
-                  .getService(nsIPromptService);
+  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                  .getService(Components.interfaces.nsIPromptService);  
                         
   var input = {value:null};
   var check = {value:false};
@@ -200,9 +200,8 @@ SieveCustomAuth.prototype.getPassword
   // user wants the password to be remembered...
   if (check.value == true)
   {
-    var pwMgr =
-      Components.classes[CID_PASSWORD_MANAGER]
-                .getService(nsIPasswordManager);
+    var pwMgr = Components.classes["@mozilla.org/passwordmanager;1"]
+                  .getService(Components.interfaces.nsIPasswordManager);                
 
     pwMgr.addUser(new String("sieve://"+this.uri),this.getUsername(), input.value);    
     gPref.setBoolPref(this.prefURI+".login.hasPassword",true);
@@ -263,8 +262,8 @@ SieveImapHost.prototype.getHostname
     = function ()
 {
   // use the IMAP Key to load the Account...
-  var account = Components.classes[CID_ACCOUNT_MANAGER]
-                    .getService(nsIMsgAccountManager)
+  var account = Components.classes['@mozilla.org/messenger/account-manager;1']  
+                    .getService(Components.interfaces.nsIMsgAccountManager)
                     .getIncomingServer(this.imapKey);
 
   return account.realHostName;
@@ -280,8 +279,8 @@ SieveImapHost.prototype.isTLS
     = function ()
 {
   // use the IMAP Key to load the Account...
-  var account = Components.classes[CID_ACCOUNT_MANAGER]
-                  .getService(nsIMsgAccountManager)
+  var account = Components.classes['@mozilla.org/messenger/account-manager;1']
+                  .getService(Components.interfaces.nsIMsgAccountManager)
                   .getIncomingServer(this.imapKey);
 
   if ( account.socketType == 0)
@@ -724,26 +723,28 @@ SieveDefaultAuthorization.prototype.getAuthorization
  * accounts. IMAP accounts are idenfified by the "internal pref key", which is 
  * guaranteed to be unique across all servers in a Thunderbird profile.
  * 
- * @param {String} sieveUri 
- *   Identifies this account, has to be unique.
- * @param {String} imapKey 
- *   The unique internal pref key of the IMAP account. 
- * @param {String} description 
- *   A human readable description for this account.  
+ * The account object is only used in the constructor. It is not cached, this
+ * ensures, that we use always the most recent settings!
+ * 
+ * @param {nsIMsgIncomingServer} account 
+ *   The account settings of the associated IMAP account.
  */
-function SieveAccount(sieveUri,imapKey,description)
-{
+function SieveAccount(account)
+{   
 	// Check parameters...
-  if ((sieveUri == null) || (imapKey == null) || (description == null))
+  if (account == null)
     throw "SieveAccount: Parameter missing...";
   
-  /** @private */ this.Uri = sieveUri; 
+  /** @private */ this.Uri = account.rootMsgFolder.baseMessageURI.slice(15); 
   
   /** @private */ this.sieveKey = "extensions.sieve.account."+this.Uri;
-  /** @private */ this.imapKey = imapKey;
+  /** @private */ this.imapKey = account.key;
   
-  /** @private */ this.description = description;	
+  /** @private */ this.description = account.prettyName;	
 }
+
+SieveAccount.prototype.getKey
+    = function () { return this.imapKey; }
 
 SieveAccount.prototype.getUri
     = function () { return this.Uri; }
@@ -886,13 +887,7 @@ function SieveAccounts()
     if (account.type != "imap")
       continue;
 
-    // pass the key if the imap account, not the account! This ensures, that... 
-    // ... we always use the most recent settings.
-    this.accounts.push(
-      new SieveAccount(
-        account.rootMsgFolder.baseMessageURI.slice(15),
-        account.key,
-        account.prettyName));
+    this.accounts.push(new SieveAccount(account));        
   }
 }
 

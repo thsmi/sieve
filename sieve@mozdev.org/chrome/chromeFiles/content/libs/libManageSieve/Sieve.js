@@ -29,7 +29,10 @@
  *   If true, a secure socket will be created. This allows switching to a secure
  *   connection.
  * @param {Int} idleInterval
- *   XXX
+ *   Specifies the maximal time interval between request. It basically is used 
+ *   for sending "Keep alive" packets. It ensures that in worst case every 
+ *   idleInterval exactly one Packet is send. This prefents that the connection
+ *   to the server times out.
  */
 function Sieve(host, port, secure, idleInterval) 
 {  

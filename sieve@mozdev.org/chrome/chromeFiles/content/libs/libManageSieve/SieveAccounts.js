@@ -10,10 +10,16 @@
 
 var gPref = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
 
-// Sieve No Authentication Class
-// This class is used when no authentication is needed
+/**
+ * The SieveNoAuth is used when no authentication is needed o access the sieve
+ * account. This class is basically an empty stub, mostly returning null or false
+ */
 function SieveNoAuth() {}
 
+/**
+ * An human readable description, which describes the authentication procedure.
+ * @return {String} String containing the description.
+ */
 SieveNoAuth.prototype.getDescription
     = function ()
 {
@@ -45,12 +51,12 @@ SieveNoAuth.prototype.getType
 }
 
 /**
- * The SieveImapAuth class uses the Authentication settings of the associated 
- * IMAP account. Any Settings are loaded dynamically when needed. This means 
- * any changes to the imap Account apply imediately to this class.
+ * If you want to use the Authentication Settings of an existing IMAP account 
+ * use this class. Any Settings are loaded dynamically when needed. This means 
+ * any changes to the IMAP account apply imediately to this class.
  *  
  * @param {String} imapKey 
- *   The imapKey of the associated IMAP account.
+ *   The unique imapKey of the IMAP account, which should be used.
  */
 function SieveImapAuth(imapKey)
 {
@@ -122,8 +128,14 @@ SieveImapAuth.prototype.getType
 {
   return 1;
 }
-// Sieve Custom Auth Class
-// The Sieve account needs a different login than the IMAP Account
+
+/**
+ * Incase the Sieve Account requires a different login than the IMAP Account,
+ * use this Class. It stores the username and the password if desired.
+ *  
+ * @param {String} uri
+ *   the unique URI of the associated sieve account
+ */
 function SieveCustomAuth(uri)
 {
   if (uri == null)
@@ -761,6 +773,15 @@ function SieveAccount(account)
   /** @private */ this.description = account.prettyName;	
 }
 
+/**
+ * Every SIEVE Account needs to be bound to an IMAP Account. IMAP Accounts
+ * are usually accessed via the so called IMAP Key. It is garanteed to uniquely 
+ * Identify the IMAP Account. Therefore it is used for binding SIEVE and IMAP 
+ * Account together. 
+ *  
+ * @return {String} 
+ *   Returns the unique IMAP Key of the IMAP Account bound to this SIEVE Account.
+ */
 SieveAccount.prototype.getKey
     = function () { return this.imapKey; }
 
@@ -768,7 +789,7 @@ SieveAccount.prototype.getUri
     = function () { return this.Uri; }
 
 /**
- * As Uris are not very user friendly, Thunderbird uses for every IMAP account 
+ * As URIs are not very user friendly, Thunderbird uses for every IMAP account 
  * a "PrettyName". It is either an userdefined string or the hostname of the 
  * IMAP account.
  * 

@@ -86,18 +86,18 @@
 <!ENTITY list.delete "Löschen">
 <!ENTITY list.rename "Umbenennen...">
 
-<!ENTITY list.details.capability "Server Sieve Fähigkeiten">
+<!ENTITY list.details.capability "Sieve Server Eigenschaften">
 <!ENTITY list.details.capability.implementation "Server Version:">
 <!ENTITY list.details.capability.sasl "SASL Mechanismen:">
 <!ENTITY list.details.capability.extensions "Erweiterungen:">
 
 <!ENTITY list.warning 
-  "Dieses Konto ist nicht für managesieve eingerichtet. Bitte rufen 'Extras-> Sieve Filter Einstellungen' auf">
+  "Dieses Konto ist nicht für managesieve eingerichtet. Bitte rufen Sie 'Extras-> Sieve Filter Einstellungen' auf">
 <!ENTITY list.wait.connect 
   "Verbinden...">
 
 <!-- Locale for the Edit Filter Dialog -->
-<!ENTITY edit.title "Bearbeite Sievefilter">
+<!ENTITY edit.title "Sieveskript bearbeiten">
 
 <!ENTITY edit.toolbar.save "Speichern">
 <!ENTITY edit.toolbar.undo "Undo">
@@ -118,7 +118,7 @@
 <!ENTITY edit.scriptname "Skriptname:">
 <!ENTITY edit.errorbar.title "Syntax Fehler">
 
-<!ENTITY edit.cancel "Abbruch">
+<!ENTITY edit.cancel "Abbrechen">
 <!ENTITY edit.save "Speichern">
 
 <!ENTITY edit.sidebar.uri "http://sieve.mozdev.org/reference/en/index.html">

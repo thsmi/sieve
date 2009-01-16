@@ -357,7 +357,7 @@ function onImport()
     var inputStream      = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
     var scriptableStream = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance(Components.interfaces.nsIScriptableInputStream);
 
-    inputStream.init(filePicker.file, 0x01, 00444, null);
+    inputStream.init(filePicker.file, 0x01, 0444, null);
     scriptableStream.init(inputStream);
 
     // todo insert imported snipplet instead of replacing the whole script
@@ -400,12 +400,12 @@ function onExport()
     var file = filePicker.file;
     
     if(file.exists() == false)
-      file.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 00444);
+      file.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0644);
 
     var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
                             .createInstance(Components.interfaces.nsIFileOutputStream);
                             
-    outputStream.init(file, 0x04 | 0x08 | 0x20, 00444, null);
+    outputStream.init(file, 0x04 | 0x08 | 0x20, 0644, null);
 
     var data = document.getElementById("txtScript").value;
     outputStream.write(data, data.length);

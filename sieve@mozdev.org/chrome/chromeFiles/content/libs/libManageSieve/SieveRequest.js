@@ -160,6 +160,8 @@ SievePutScriptRequest.prototype.getNextRequest
   this.body = this.body.replace(/\n/g,"\r");  
   // ... finally convert all \r to \r\n
   this.body = this.body.replace(/\r/g,"\r\n");
+  
+  //this.body = this.body.replace(/\r\n|\r|\n/g, "\r\n")
 
   /*  
   //BEGIN DEBUG CODE

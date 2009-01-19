@@ -1,12 +1,13 @@
-/* 
- * The contents of this file is licenced. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email 
- * from the author. Do not remove or change this comment. 
+/*
+ * The contents of this file is licenced. You may obtain a copy of the license
+ * at http://sieve.mozdev.org or request it via email from the author. 
+ *
+ * Do not remove or change this comment.
  * 
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
- 
+
 // @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveResponse.js"
   // TODO make sure that the scripts are imported only once.
   // TODO place imports in the corresponding files like the header import in c...
@@ -17,11 +18,10 @@
                    .getService(Components.interfaces.mozIJSSubScriptLoader);
   jsLoader
     .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveWatchDog.js");
-    
-  // we are done importing script, so free ... 
-  // ... the loader inorder to prevent XPCOM leaks
-  jsLoader = null;    
 
+  // we are done importing script, so free ...
+  // ... the loader inorder to prevent XPCOM leaks
+  jsLoader = null;
 
 var gSieve = null;
 var gSieveWatchDog = null
@@ -48,7 +48,7 @@ var event =
   onGetScriptResponse: function(response)
   {
     event.onScriptLoaded(response.getScriptBody());
-  },  
+  },
   
   /**
    * @param {String} script
@@ -56,78 +56,79 @@ var event =
   onScriptLoaded: function(script)
   {
     document.getElementById("txtScript").value = script;
-    UpdateCursorPos();      
+    document.getElementById("txtScript").setSelectionRange(0, 0);
+	UpdateCursorPos();
   },
-	
+
   /**
    * @param {SievePutScriptResponse} response
    */
   onPutScriptResponse: function(response)
-  {    
+  {
     gChanged = false;
-       
+
     clearTimeout(gCompileTimeout);
     gSieve.removeWatchDogListener();
     close();
   },
-	
+
   /**
    * @param {SieveAbstractResponse} response
-   */  
+   */
   onError: function(response)
   {
     alert("FATAL ERROR:"+response.getMessage());
   },
-  
+
   onTimeout: function()
   {
     alert("A Timeout occured");
   },
 
-  onIdle: function ()
-  { 
+  onIdle: function()
+  {
     // as we send a keep alive request, we don't care
     // about the response...
     var request = new SieveCapabilitiesRequest();
     request.addErrorListener(event);
-    
+
     gSieve.addRequest(request);
   },
-    
-  onWatchDogTimeout : function()
+
+  onWatchDogTimeout: function()
   {
-    // call sieve object indirect inoder to prevent a 
+    // call sieve object indirect inoder to prevent a
     // ring reference
     gSieve.onWatchDogTimeout();
-  }     
+  }
 }
 
 function onCompile()
 {
-  var lEvent = 
+  var lEvent =
   {
     onPutScriptResponse: function(response)
     {
       // we need no handlers thus we don't care if the call succseeds
       gSieve.addRequest(new SieveDeleteScriptRequest("TMP_FILE_DELETE_ME"));
-      
+
       document.getElementById("lblErrorBar").firstChild.nodeValue
         = "Server reports no script errors...";
-        
+
       document.getElementById("imgErrorBar").src
-        = "chrome://sieve/content/images/syntax-ok.png";        
+        = "chrome://sieve/content/images/syntax-ok.png";
     },
-    	
+
     onError: function(response)
     {
-      document.getElementById("lblErrorBar").firstChild.nodeValue            
-         = response.getMessage();    		
+      document.getElementById("lblErrorBar").firstChild.nodeValue
+        = response.getMessage();
 
       document.getElementById("imgErrorBar").src
         = "chrome://sieve/content/images/syntax-error.png";
-      // the server did not accept our script therfore we can't delete it...   		
+      // the server did not accept our script therfore we can't delete it...
     },
-    
+
     onTimeout: function()
     {
       alert("A Timeout occured");
@@ -147,14 +148,12 @@ function onCompile()
   gSieve.addRequest(request);
 }
 
-
 function onInput()
 {
   if (gChanged == false)
     document.getElementById("sbChanged").label = "Changed";
-    
-  gChanged = true;
   
+  gChanged = true;
   
   // on every keypress we reset the timeout
   if (gCompileTimeout != null)
@@ -162,35 +161,41 @@ function onInput()
     clearTimeout(gCompileTimeout);
     gCompileTimeout = null;
   }
-            
+  
   if (document.getElementById("btnCompile").checked)
-    gCompileTimeout = setTimeout(function() {onCompile();},gCompileDelay);      
+    gCompileTimeout = setTimeout(function() {onCompile();}, gCompileDelay);
 }
 
 function onLoad()
 {
-  // checkbox buttons are buggy,this has been fixed in Thunderbird3 but... 
+  // checkbox buttons are buggy,this has been fixed in Thunderbird3 but...
   // ...we need a workaround. See Bug 382457 for details.
-  
+
   document.getElementById("btnCompile").
     addEventListener(
-      "command", 
-      function(){onErrorBar();},
+      "command",
+      function() {onErrorBar();},
       false);
-      
+  
   document.getElementById("btnReference").
     addEventListener(
       "command",
-      function(){ onSideBar(); },
+      function() {onSideBar(); },
       false);
-
-  // hack to prevent links to be opened in the default browser window...       
+  
+  document.getElementById("btnSearchBar").
+    addEventListener(
+      "command",
+      function() {onSearchBar();},
+      false);
+  
+  // hack to prevent links to be opened in the default browser window...
   document.getElementById("ifSideBar").
     addEventListener(
       "click",
-      function(event) { onSideBarBrowserClick(event); },
+      function(event) {onSideBarBrowserClick(event);},
       false);
-    
+  
   // Connect to the Sieve Object...
   gSieve = window.arguments[0]["sieve"];
   
@@ -198,14 +203,14 @@ function onLoad()
   gSieveWatchDog = new SieveWatchDog();
   gSieveWatchDog.addListener(event);
   gSieve.addWatchDogListener(gSieveWatchDog);
-
+  
   gCompileDelay = window.arguments[0]["compileDelay"];
-    
+  
   document.getElementById("txtName").value = window.arguments[0]["scriptName"];
   
   document.getElementById("lblErrorBar").firstChild.nodeValue
-    = "Server reports no script errors...";  
-    
+    = "Server reports no script errors...";
+  
   if (window.arguments[0]["scriptBody"] != null)
   {
     event.onScriptLoaded(window.arguments[0]["scriptBody"]);
@@ -217,33 +222,42 @@ function onLoad()
     request.addErrorListener(event);
 
     gSieve.addRequest(request);
-  }        
-
+  }
+  
   //preload sidebar...
   onSideBarHome();
   
-  onErrorBar(window.arguments[0]["compile"]);  
+  onErrorBar(window.arguments[0]["compile"]);
   onSideBar(true);
+  onSearchBar(false);
   
+  document.getElementById("txtScript").setSelectionRange(0, 0);
   document.getElementById("txtScript").focus();
+
+  /*
+   * window.document.documentElement.addEventListener('focus', function(event) {
+   * if (event.target.nodeName=='textbox' &&
+   * event.target.hasAttribute('readonly')) {
+   * window.document.documentElement.focus(); } }, true);
+   */
 }
 
 function onSideBarBrowserClick(event)
 {
-  var href = null; 
-
+  var href = null;
+  
   if (event.target.nodeName == "A")
-    href = event.target.href;  
+    href = event.target.href;
   else if (event.target.parentNode.nodeName == "A")
     href = event.target.parentNode.href;
   else
     return;
-    
+
   event.preventDefault();
-  
+
   if (gForwardHistory.length != 0)
     gForwardHistory = new Array();
-    
+
   onSideBarGo(href);
 }
 
@@ -252,19 +266,19 @@ function onSideBarBack()
   // store the current location in the history...
   gForwardHistory.push(gBackHistory.pop());
   // ... and go back to the last page
-  onSideBarGo(gBackHistory.pop());  
+  onSideBarGo(gBackHistory.pop());
 }
 
 function onSideBarForward()
 {
-  onSideBarGo(gForwardHistory.pop());  
+  onSideBarGo(gForwardHistory.pop());
 }
 
 function onSideBarHome()
 {
   if (gForwardHistory.length != 0)
     gForwardHistory = new Array();
-  
+
   //document.getElementById("ifSideBar").setAttribute('src',uri);
   onSideBarGo("http://sieve.mozdev.org/reference/en/index.html");
 }
@@ -280,33 +294,31 @@ function onSideBarLoading(loading)
 function onSideBarGo(uri)
 {
   onSideBarLoading(true);
-      
+  
   gBackHistory.push(uri);
   
   if (gBackHistory.length > 20)
     gBackHistory.shift();
   
-  
   if (gBackHistory.length == 1)
-    document.getElementById("btnSideBarBack").setAttribute('disabled',"true");    
+    document.getElementById("btnSideBarBack").setAttribute('disabled',"true");
   else
     document.getElementById("btnSideBarBack").removeAttribute('disabled');
-    
+
   if (gForwardHistory.length == 0)
     document.getElementById("btnSideBarForward").setAttribute('disabled',"true");
   else
-    document.getElementById("btnSideBarForward").removeAttribute('disabled');    
- 
+    document.getElementById("btnSideBarForward").removeAttribute('disabled');
+  
   /*if (document.getElementById("ifSideBar").addEventListener)
     document.addEventListener(
       "DOMContentLoaded", function(event) { onSideBarLoading(false); }, false);*/
   if (document.getElementById("ifSideBar").addEventListener)
     document.getElementById("ifSideBar").addEventListener(
-      "DOMContentLoaded", function(event) { onSideBarLoading(false); }, false);
-      
-  document.getElementById("ifSideBar").setAttribute('src',uri);      
+      "DOMContentLoaded", function(event) {	onSideBarLoading(false); }, false);
+  
+  document.getElementById("ifSideBar").setAttribute('src', uri);
 }
-
 
 function onSave()
 {
@@ -315,7 +327,7 @@ function onSave()
                   new String(document.getElementById("txtScript").value));
   request.addPutScriptListener(event);
   request.addErrorListener(event);
-
+  
   gSieve.addRequest(request);
 }
 
@@ -324,92 +336,102 @@ function onClose()
   if (gChanged == false)
   {
     gSieve.removeWatchDogListener();
-    return true;    
-  }    
+    return true;
+  }
 
   var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
                           .getService(Components.interfaces.nsIPromptService);
-                          
-  var result = prompts.confirm(window, "Title", "Do you want to save changes?");
-    
-  if (result != true)
+  
+  // The flags 393733 equals [Save] [Don't Save] [Cancel]
+  var result =
+    prompts.confirmEx(
+      window, "Save Sieve Script",
+      "Script has not been saved. Do you want to save changes?", 393733,
+      "", "", "", null, { value : false	});
+  
+  switch (result)
   {
-    gSieve.removeWatchDogListener();
-    return true;
+    case 2 : // Don't save
+      gSieve.removeWatchDogListener();
+      return true;
+    case 0 : // Save
+      onSave();
   }
-    
-  onSave();
-    
+  
   return false;
 }
 
 function onImport()
 {
-    var filePicker   = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
+  var filePicker = Components.classes["@mozilla.org/filepicker;1"]
+                             .createInstance(Components.interfaces.nsIFilePicker);
 
-    filePicker.appendFilter("Sieve Scripts (*.siv)", "*.siv");
-    filePicker.appendFilter("All Files (*.*)", "*.*");
-    filePicker.init(window, "Import Sieve Script", filePicker.modeOpen);
+  filePicker.appendFilter("Sieve Scripts (*.siv)", "*.siv");
+  filePicker.appendFilter("All Files (*.*)", "*.*");
+  filePicker.init(window, "Import Sieve Script", filePicker.modeOpen);
 
-    if(filePicker.show() != filePicker.returnOK)
-      return;
-        
-    var inputStream      = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
-    var scriptableStream = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance(Components.interfaces.nsIScriptableInputStream);
+  if (filePicker.show() != filePicker.returnOK)
+    return;
 
-    inputStream.init(filePicker.file, 0x01, 0444, null);
-    scriptableStream.init(inputStream);
+  var inputStream = Components.classes["@mozilla.org/network/file-input-stream;1"]
+                              .createInstance(Components.interfaces.nsIFileInputStream);
+  var scriptableStream = Components.classes["@mozilla.org/scriptableinputstream;1"]
+                                   .createInstance(Components.interfaces.nsIScriptableInputStream);
 
-    // todo insert imported snipplet instead of replacing the whole script
-    var script  = scriptableStream.read(scriptableStream.available());
+  inputStream.init(filePicker.file, 0x01, 0444, null);
+  scriptableStream.init(inputStream);
 
-    scriptableStream.close();
-    inputStream.close();
-    
-    // Find the Start and End Position  
-    var el = document.getElementById("txtScript");
-    var start = el.selectionStart; 
-    var end   = el.selectionEnd; 
- 
-    /* Remember obj is a textarea or input field */ 
-    el.value = el.value.substr(0, start) 
-      + script
-      + el.value.substr(end, el.value.length);
-           
-   onInput();
+  // todo insert imported snipplet instead of replacing the whole script
+  var script = scriptableStream.read(scriptableStream.available());
+
+  scriptableStream.close();
+  inputStream.close();
+
+  // Find the Start and End Position
+  var el = document.getElementById("txtScript");
+  var start = el.selectionStart;
+  var end = el.selectionEnd;
+
+  /* Remember obj is a textarea or input field */
+  el.value = el.value.substr(0, start)
+    + script
+    + el.value.substr(end, el.value.length);
+  
+  onInput();
 }
 
 function onExport()
 {
-    var filePicker = Components.classes["@mozilla.org/filepicker;1"]
-                            .createInstance(Components.interfaces.nsIFilePicker);
+  var filePicker = Components.classes["@mozilla.org/filepicker;1"]
+			.createInstance(Components.interfaces.nsIFilePicker);
 
-    filePicker.defaultExtension = ".siv";
-    filePicker.defaultString    = document.getElementById("txtName").value+".siv";
+	filePicker.defaultExtension = ".siv";
+	filePicker.defaultString = document.getElementById("txtName").value
+			+ ".siv";
 
-    filePicker.appendFilter("Sieve Scripts (*.siv)", "*.siv");
-    filePicker.appendFilter("Text Files (*.txt)", "*.txt");
-    filePicker.appendFilter("All Files (*.*)", "*.*");
-    filePicker.init(window, "Export Sieve Script", filePicker.modeSave);
+	filePicker.appendFilter("Sieve Scripts (*.siv)", "*.siv");
+	filePicker.appendFilter("Text Files (*.txt)", "*.txt");
+	filePicker.appendFilter("All Files (*.*)", "*.*");
+	filePicker.init(window, "Export Sieve Script", filePicker.modeSave);
 
-    var result = filePicker.show();
-    
-    if ((result != filePicker.returnOK) && (result != filePicker.returnReplace))
-      return;
-        
-    var file = filePicker.file;
-    
-    if(file.exists() == false)
-      file.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0644);
+	var result = filePicker.show();
 
-    var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
-                            .createInstance(Components.interfaces.nsIFileOutputStream);
-                            
-    outputStream.init(file, 0x04 | 0x08 | 0x20, 0644, null);
+	if ((result != filePicker.returnOK) && (result != filePicker.returnReplace))
+		return;
 
-    var data = document.getElementById("txtScript").value;
-    outputStream.write(data, data.length);
-    outputStream.close();
+	var file = filePicker.file;
+
+	if (file.exists() == false)
+		file.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0644);
+
+	var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
+			.createInstance(Components.interfaces.nsIFileOutputStream);
+
+	outputStream.init(file, 0x04 | 0x08 | 0x20, 0644, null);
+
+	var data = document.getElementById("txtScript").value;
+	outputStream.write(data, data.length);
+	outputStream.close();
 }
 
 /**
@@ -417,12 +439,12 @@ function onExport()
  */
 function onErrorBarShow()
 {
-  document.getElementById("btnCompile").setAttribute('checked','true')
+  document.getElementById("btnCompile").setAttribute('checked', 'true')
   document.getElementById('spErrorBar').removeAttribute('hidden');
   document.getElementById('vbErrorBar').removeAttribute('hidden');
-  
+
   onCompile();
-  
+
   return;
 }
 
@@ -433,24 +455,24 @@ function onErrorBarHide()
 {
   clearTimeout(gCompileTimeout);
   gCompileTimeout = null;
-    
+  
   document.getElementById("btnCompile").removeAttribute('checked');
-  document.getElementById("vbErrorBar").setAttribute('hidden','true');
-  document.getElementById('spErrorBar').setAttribute('hidden','true');
+  document.getElementById("vbErrorBar").setAttribute('hidden', 'true');
+  document.getElementById('spErrorBar').setAttribute('hidden', 'true');
   
   return;
 }
 
 function onErrorBar(visible)
-{  
+{
   if (visible == null)
     visible = document.getElementById('btnCompile').checked
-    
+
   if (visible)
     onErrorBarShow();
   else
     onErrorBarHide();
- 
+
   return;
 }
 
@@ -459,7 +481,7 @@ function onErrorBar(visible)
  */
 function onSideBarShow()
 {
-  document.getElementById('btnReference').setAttribute('checked','true')
+  document.getElementById('btnReference').setAttribute('checked', 'true')
   document.getElementById('splitter').removeAttribute('hidden');
   document.getElementById('vbSidebar').removeAttribute('hidden');
   
@@ -471,54 +493,181 @@ function onSideBarShow()
  */
 function onSideBarHide()
 {
-  document.getElementById('btnReference').removeAttribute('checked');  
-  document.getElementById('splitter').setAttribute('hidden','true');
-  document.getElementById('vbSidebar').setAttribute('hidden','true')
+  document.getElementById('btnReference').removeAttribute('checked');
+  document.getElementById('splitter').setAttribute('hidden', 'true');
+  document.getElementById('vbSidebar').setAttribute('hidden', 'true')
+  
+  onSearchBarHide();
   
   return;
 }
 
 function onSideBar(visible)
-{  
+{
   if (visible == null)
     visible = document.getElementById('btnReference').checked
-    
+  
   if (visible)
     onSideBarShow();
   else
     onSideBarHide();
-    
+  
   return;
 }
 
-function UpdateCursorPos()
+/**
+ * Shows the SearchBar. As it is embedded in the SideBar, it will automatically
+ * display the SideBar if it is not already visible
+ */
+function onSearchBarShow()
 {
-  var el = document.getElementById("txtScript");
-  var lines = el.value.substr(0,el.selectionStart).split("\n");
+  onSideBarShow();
   
-  document.getElementById("sbCursorPos")
-          .label = lines.length +":" +(lines[lines.length-1].length +1);
-          
-  if(el.selectionEnd != el.selectionStart)
-  {
-    lines = el.value.substr(0,el.selectionEnd).split("\n");
-    document.getElementById("sbCursorPos")
-          .label += " - " + lines.length +":" +(lines[lines.length-1].length +1);
-  }
-    
-  
-  gUpdateScheduled=false;
+  document.getElementById('btnSearchBar').setAttribute('checked', 'true')
+  document.getElementById('vbSearchBar').removeAttribute('hidden');
   
   return;
 }
 
+/**
+ * Hides the in the SideBar embedded SearchBar...
+ */
+function onSearchBarHide()
+{
+  
+  document.getElementById('vbSearchBar').setAttribute('hidden', 'true')
+  document.getElementById('btnSearchBar').removeAttribute('checked');
+  
+  return;
+}
+
+function onSearchBar(visible)
+{
+  if (visible == null)
+    visible = document.getElementById('btnSearchBar').checked
+
+  if (visible)
+    onSearchBarShow();
+  else
+    onSearchBarHide();
+
+  return;
+}
+
+function OnFindString()
+{
+  var txtScript = document.getElementById("txtScript");
+  var script = new String(txtScript.value);
+  
+  if (script.length == 0)
+    return;
+  
+  // Get the cursor position...
+  var position = txtScript.selectionStart;
+  
+  if (txtScript.selectionStart != txtScript.selectionEnd)
+    position = txtScript.selectionEnd;
+  
+  // ... and prepare strings for search...
+  var token = new String(document.getElementById("txtToken").value);
+  
+  // ... convert to lowercase, if the search is not case sensitive...
+  if (document.getElementById('cbxCaseSensitive').checked == false)
+  {
+    script = script.toLowerCase();
+    token = token.toLowerCase();
+  }
+  
+  var result = -1;
+  
+  // ... the backward search is a bit tricky...
+  if (document.getElementById('cbxBackward').checked)
+  {
+    // The search result has to be before the current cursor...
+    // ... position, this means we can drop anything behind it.
+    script = script.substring(0, position - 1);
+    result = script.lastIndexOf(token);
+    
+    position = script.length - position;
+  }
+  else
+  {
+    result = script.indexOf(token, position);
+  }
+
+  // start search from cursor pos...
+  if (result == -1)
+  {
+    alert('Phrase not found...')
+    return -1;
+  }
+
+  txtScript.focus();
+
+  txtScript.setSelectionRange(result, result + token.length);
+  txtScript.editor.selectionController.scrollSelectionIntoView(1, 1, true);
+
+  return 0;
+}
+
+function OnReplaceString()
+{
+  var txtScript = document.getElementById("txtScript");
+  var token = new String(document.getElementById("txtToken").value);
+  
+  var selectedToken =
+    txtScript.value.substring(txtScript.selectionStart,txtScript.selectionEnd);
+  
+  if (selectedToken != token)
+    this.OnFindString();
+  
+  selectedToken = 
+    txtScript.value.substring(txtScript.selectionStart,txtScript.selectionEnd);
+  
+  if (selectedToken != token)
+    return;
+  
+  var newToken = new String(document.getElementById("txtReplace").value);
+  var selStart = txtScript.selectionStart;
+  var selEnd = txtScript.selectionEnd
+  /* Remember obj is a textarea or input field */
+  txtScript.value = txtScript.value.substr(0, selStart) + newToken
+    + txtScript.value.substr(selEnd, txtScript.value.length);
+  
+  txtScript.focus();
+  
+  txtScript.setSelectionRange(selStart, selStart + newToken.length);
+  txtScript.editor.selectionController.scrollSelectionIntoView(1, 1, true);
+  
+  this.onInput();
+  
+}
+
+function UpdateCursorPos() {
+  var el = document.getElementById("txtScript");
+  var lines = el.value.substr(0, el.selectionStart).split("\n");
+
+  document.getElementById("sbCursorPos")
+          .label = lines.length+":"+(lines[lines.length - 1].length + 1);
+  
+  if (el.selectionEnd != el.selectionStart)
+  {
+    lines = el.value.substr(0, el.selectionEnd).split("\n");
+    document.getElementById("sbCursorPos")
+            .label += " - " + lines.length+ ":" + (lines[lines.length - 1].length + 1);
+  }
+  
+  gUpdateScheduled = false;
+  
+  return;
+}
 
 function onUpdateCursorPos(timeout)
 {
   if (gUpdateScheduled)
     return;
 
-  setTimeout(function () {UpdateCursorPos();gUpdateScheduled=false;},200);
+  setTimeout(function() {UpdateCursorPos();	gUpdateScheduled = false;}, 200);
 
   gUpdateScheduled = true;
 }

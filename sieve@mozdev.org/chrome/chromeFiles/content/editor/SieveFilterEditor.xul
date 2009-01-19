@@ -56,6 +56,8 @@
     <toolbarbutton id="btnReference" type="checkbox"  
                    label="&edit.toolbar.reference;" class="toolbarbutton-1" />
                    <!--oncommand="onSideBar();"-->
+    <toolbarbutton id="btnSearchBar" type="checkbox"  
+                   label="Search" class="toolbarbutton-1" />                   
     <toolbarspacer />               
     <!--<toolbarbutton id="btnPrint"  
                    label="&edit.toolbar.print;" class="toolbarbutton-1"                    
@@ -83,6 +85,7 @@
         <box flex="1">
           <vbox flex="1">
             <textbox id="txtScript" class="sieve" 
+                     autocomplete="off"
                      onmousemove="onUpdateCursorPos(250);" 
                      onkeypress="onUpdateCursorPos(50);" 
                      oninput="onInput();" 
@@ -99,7 +102,7 @@
               </stack>             
               <hbox align="center" min-height="50px" flex="1" style="overflow:auto" class="box-inset">
                 <image id="imgErrorBar" pack="center"   src="chrome://sieve/content/images/syntax-ok.png"/>
-                <description flex="1" id="lblErrorBar" style="white-space: pre;" > 
+                <description flex="1" id="lblErrorBar" style="white-space: pre;" >
                 </description>             
                 <!-- <textbox flex="1" id="lblErrorBar" multiline="true" rows="3" readonly="true" class="plain"/>-->
               </hbox>
@@ -115,6 +118,37 @@
     </vbox>
     <splitter id="splitter" resizeafter="farthest" />
   <vbox id="vbSidebar" class="sieveSideBar">
+   <vbox id="vbSearchBar">
+    <stack class="outset">
+      <image flex="1"/> 
+      <hbox>
+        <label flex="1" value="Search and Replace" />
+        <toolbarbutton 
+            class="sieveCloseButton"
+            oncommand="onSearchBarHide();"/>
+      </hbox>
+    </stack>
+
+      <hbox align="center">
+        <label value="Search for:"/>
+        <textbox flex="1" id="txtToken"/>
+      </hbox>
+      <hbox align="center">
+        <label value="Replace with:"/>
+        <textbox flex="1" id="txtReplace" />
+      </hbox>
+        <groupbox orient="vertical" >
+          <caption label="Options"/>
+          <checkbox id="cbxCaseSensitive" label="Case Sensitive" />
+          <checkbox id="cbxBackward" label="Backward"/>
+        </groupbox>
+    <hbox pack="end">
+      <button id="btnFind" label="Find"  oncommand="OnFindString();"/>
+      <button  id="btnReplace" label="Replace" oncommand="OnReplaceString();"/>
+    </hbox>
+    <splitter resizeafter="farthest" disabled="true" />
+   </vbox>
+   <vbox flex="1">    
     <stack class="outset">
       <image flex="1"/> 
       <hbox>
@@ -144,10 +178,11 @@
       <image flex="1" />
     </deck> 
   </vbox>
+  </vbox>
 </hbox>
 <statusbar>
-	<statusbarpanel width="100px" id="sbCursorPos" label=""/>
-	<statusbarpanel width="100px" id="sbChanged" label=""/>
-	<statusbarpanel flex="1" label=""/>
+  <statusbarpanel width="100px" id="sbCursorPos" label=""/>
+  <statusbarpanel width="100px" id="sbChanged" label=""/>
+  <statusbarpanel flex="1" label=""/>
 </statusbar>
 </window>

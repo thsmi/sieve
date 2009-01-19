@@ -152,6 +152,11 @@ textbox.sieve
 	list-style-image: url(chrome://sieve/content/images/toolbar.compile.png);
 }
 
+#btnSearchBar
+{
+  list-style-image: url(chrome://sieve/content/images/toolbar.search.png);
+}
+
 #btnTools
 {
 	list-style-image: url(chrome://sieve/content/images/toolbar.tools.png);

@@ -7,8 +7,9 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
+
 var gSieveAccount = null;
-var gIncommingServer = null;
+var gSivIncomingServer = null;
 
 function onAcceptEditor() { }
 
@@ -16,12 +17,12 @@ function onSave() { }
 
 function onPreInit(account, accountvalues)
 {
-  gIncommingServer = account.incomingServer;
+  gSivIncomingServer = account.incomingServer;
 }
 
 function onInit(pageId, serverId)
 {
-  gSieveAccount = new SieveAccount(gIncommingServer);  
+  gSieveAccount = new SieveAccount(gSivIncomingServer);  
   UpdatePage();
 }
 
@@ -58,7 +59,7 @@ function onAccountStatusChange()
 
 function onFiltersClick()
 {
-  sivOpenFilters(gSieveAccount);  
+  gSivExtUtils.OpenFilters(gSivIncomingServer);
 }
 
 function onSettingsClick()

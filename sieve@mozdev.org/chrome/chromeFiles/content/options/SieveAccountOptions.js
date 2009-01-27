@@ -365,12 +365,23 @@ function onAuthMechanismSelect(sender)
   
   account.getSettings().setForcedAuthMechanism(sender.selectedItem.value);
 }
-
+/**
+ * Opens the password manager dialog of thunderbird.
+ * 
+ * The dialog call might me non modal.
+ */
 function onShowPassword()
-{  
-
+{
+  
   var winName = "Toolkit:PasswordManager"
-  var uri = "chrome://messenger/content/preferences/viewpasswords.xul"
+  var uri = "chrome://passwordmgr/content/passwordManager.xul"
+  
+  if ("@mozilla.org/passwordmanager;1" in Components.classes) 
+  {
+    // Password Manager exists so this is not Thunderbird 3 
+    winName = "Toolkit:PasswordManager"
+    uri = "chrome://messenger/content/preferences/viewpasswords.xul"
+  }
 
   var w = Components
     .classes["@mozilla.org/appshell/window-mediator;1"]

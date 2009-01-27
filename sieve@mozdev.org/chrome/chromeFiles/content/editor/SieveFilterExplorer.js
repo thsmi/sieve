@@ -13,6 +13,7 @@
   // TODO make sure that the scripts are imported only once.
   // TODO place imports in the corresponding files like the header import in c...
   
+  // TODO Move "imports" to xul...
   // Load all the Libraries we need...
   var jsLoader = Components
                    .classes["@mozilla.org/moz/jssubscript-loader;1"]
@@ -398,10 +399,10 @@ function onWindowLoad()
     else
       menuImapAccounts.appendItem( accounts[i].getDescription(),"","").disabled = false;
 
-    if (window.arguments.length != 0)
+    if (window.arguments.length == 0)
       continue;
     
-    if (window.arguments[0] != accounts[i].getUri())
+    if (window.arguments[0].server != accounts[i].getUri())
       continue;
       
     menuImapAccounts.selectedIndex = i;      
@@ -824,24 +825,11 @@ function onServerDetails()
 
 function onSettingsClick()
 {
-    var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].
-                            getService(Components.interfaces.nsIWindowMediator);
-
-    var existingAccountManager = windowManager.getMostRecentWindow("mailnews:accountmanager");
-
-    if (existingAccountManager)
-        existingAccountManager.focus();
-    else 
-    {       
-      // use the IMAP Key to load the Account...
-      var server = Components.classes['@mozilla.org/messenger/account-manager;1']
-                      .getService(Components.interfaces.nsIMsgAccountManager)
-                      .getIncomingServer(getSelectedAccount().imapKey);
-                       
-        window.openDialog("chrome://messenger/content/AccountManager.xul",
-                          "AccountManager", "chrome,centerscreen,titlebar,modal",
-                          { server: server, selectPage: 'am-sieve-account.xul' });
-    }  
+ var server = Components.classes['@mozilla.org/messenger/account-manager;1']
+                   .getService(Components.interfaces.nsIMsgAccountManager)
+                   .getIncomingServer(getSelectedAccount().imapKey);
+                      
+  gSivExtUtils.OpenSettings(server);
 }
 
 

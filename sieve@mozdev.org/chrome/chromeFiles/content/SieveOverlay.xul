@@ -7,10 +7,10 @@
 
   <menupopup id="taskPopup">
     <menuitem id="mnuSieveOptionsDialog" insertafter="applyFilters" label="&menu.options;"
-  	  	oncommand='MsgAccountManager("am-sieve-account.xul");' 
+  	  	oncommand='gSivExtUtils.OpenSettings();' 
   		  accesskey="&menu.options.key;" />
     <menuitem id="mnuSieveListDialog" insertafter="applyFilters" label="&menu.filters;"
-  	  	oncommand='sivOpenFilters(sivGetActiveAccount());' 
+  	  	oncommand='gSivExtUtils.OpenFilters();' 
     		accesskey="&menu.filters.key;" />
     <menuseparator id="mnuSieveSeparator" insertafter="applyFilters"/>  		
 </menupopup>

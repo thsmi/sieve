@@ -23,6 +23,10 @@
   // ... the loader inorder to prevent XPCOM leaks
   jsLoader = null;
 
+// TODO protect namespace:
+//var gSivEditor = {
+// call this with gSivEditor...
+  
 var gSieve = null;
 var gSieveWatchDog = null
 
@@ -642,6 +646,43 @@ function OnReplaceString()
   this.onInput();
   
 }
+
+/*function onBlubb()
+{
+  
+  
+  var txtScript = document.getElementById("txtScript");
+  
+  alert(txtScript.editor);
+  
+  if (txtScript.editor instanceof Components.interfaces.nsIHTMLEditor)
+    alert("HTML");
+    
+  if (txtScript.editor instanceof Components.interfaces.nsIPlaintextEditor)
+    alert("plain text");
+    
+  return;
+  
+  var myDocument = txtScript.editor.document;
+
+  
+  var neuB = myDocument.createElement("b");
+  var neuBText = myDocument.createTextNode("mit fettem Text ");
+  neuB.appendChild(neuBText);
+  
+  //document.getElementById("derText").insertBefore(neuB, document.getElementById("derKursiveText"));
+ 
+  var root = txtScript.editor.rootElement;
+
+//106           const nsIDOMNSEditableElement = Components.interfaces.nsIDOMNSEditableElement;
+//107           return this.inputField.QueryInterface(nsIDOMNSEditableElement).editor;
+
+  root.appendChild(neuB);
+  //root.firstChild.insertBefore(neuB, document.getElementById("derKursiveText"));
+  
+  for (var item = root.firstChild; item; item = item.nextSibling) 
+    alert(item);
+}*/
 
 function UpdateCursorPos() {
   var el = document.getElementById("txtScript");

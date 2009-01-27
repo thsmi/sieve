@@ -15,7 +15,8 @@
         title="&list.title;"
         windowtype="Sieve:FilterExplorer">
 
-  <script type="application/x-javascript" src="chrome://sieve/content/editor/SieveFilterExplorer.js"/>  
+  <script type="application/x-javascript" src="chrome://sieve/content/SieveOverlay.js" />
+  <script type="application/x-javascript" src="chrome://sieve/content/editor/SieveFilterExplorer.js"/>
 
   <hbox align="center">
     <label value="&list.accounts;"  control="serverMenu"/>

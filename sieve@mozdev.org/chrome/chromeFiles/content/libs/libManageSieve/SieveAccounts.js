@@ -132,12 +132,299 @@ SieveImapAuth.prototype.getType
 /**
  * Incase the Sieve Account requires a different login than the IMAP Account,
  * use this Class. It stores the username and the password if desired.
+ * 
+ * 
+ * As the password manager in Thunderbird 3 broke compatibility with older
+ * releases, it is our job to maintain compatibility. 
+ * 
+ * 
+ * Therefore SieveCustomAuth2 is compatible with Thunderbird 3 and up, while
+ * the class SieveCustomAuth supports legacy Thunderbird releases.
+ * 
+ * Entries in the new Login-Manager are identified and enumerated by their hostname.
+ * 
+ * @see SieveCustomAuth
+ *
+ * @param {String} host
+ *   the original hostname for this account  
+ * @param {String} uri
+ *   the unique URI of the associated sieve account
+ */
+function SieveCustomAuth2(host, uri)
+{
+  if (("@mozilla.org/login-manager;1" in Components.classes) == false)
+    throw "SieveCustomAuth2: No login manager component found...";
+  
+  if (uri == null)
+    throw "SieveCustomAuth2: URI can't be null"; 
+
+  if (host == null || host == "")
+    throw "SieveCustomAuth2: Host can't be empty or null";
+    
+  // the "original hostname"
+  this.host = host;
+
+  // we need the uri for backword compatibility...
+  this.uri = uri;
+  
+  // ... but we can use it to build our pref key...
+  this.sieveKey = "extensions.sieve.account."+this.uri;
+    
+  // the username is stored in the prefs and is used to find a matching account...
+  // the accountname in the prefs schould be the original hostname...
+    
+  // we don't use the uri anymore, as described in bug 474277, the original
+  // hostname is a better option . https://bugzilla.mozilla.org/show_bug.cgi?id=433316
+    
+/*
+ * chrome://passwordmgr/content/passwordManager.xul
+ * 
+ *  var extLoginInfo = new nsLoginInfo('chrome://firefoo',null, null,'bob', '123sEcReT', "", "");
+ * 
+ * current entries are:
+ *   hostname      = sieve://thomas@imap.wh-netz.de
+ *   httpRealm     = NULL
+ *   formsubmiturl = ""
+ *   usernamefield = "\=username=\"
+ *   passwordfield = "\=password=\"
+ *   encrypteduser = ...
+ *   encryptedpass = ...
+ *
+ * but should be:
+ *  hostname sieve://imap.wh-netz.de
+ *  httpRealm sieve://imap.wh-netz.de
+ *  formsubmiturl NULL
+ *  usernamefield =""
+ *  passwordfield=""
+ *  encrypteduser=...
+ *  encrypedpass=...
+ */    
+    
+  
+  // SieveCustom auth uses as constructor parameter, original hostname 
+  // and sieve key and the uri for compatibility... 
+       
+  //  username
+
+}
+
+SieveCustomAuth2.prototype.getDescription
+    = function ()
+{
+  return "Use a custom login";
+}
+
+/**
+ * Updates the username. 
+ * Any saved passwords associated with this account will be updated too.
+ * This is the default behaviour for Thunderbird3 an up.
+ * 
+ * @param {String} username
+ *   the username as string, has to be neither empty nor null.
+ */
+SieveCustomAuth2.prototype.setUsername
+    = function (username)
+{
+  if ((username == null) || (username == ""))
+    throw "SieveCustomAuth2: Username is empty or null";
+
+  // first we need to cache the old username...
+  var oldUserName = this.getUsername();
+  
+  // ... and update the new username.
+  gPref.setCharPref(this.sieveKey+".login.username",username);
+    
+  
+  // we should also update the LoginManager...
+  var loginManager = Components.classes["@mozilla.org/login-manager;1"]
+                        .getService(Components.interfaces.nsILoginManager);
+                        
+  // ...first look for entries which meet the proposed naming...  
+  var logins = 
+        loginManager.findLogins(
+            {},"sieve://"+this.host,null,"sieve://"+this.host);
+    
+  for (var i = 0; i < logins.length; i++)
+  {
+    if (logins[i].username != oldUserName)
+      continue;
+   
+    loginManager.removeLogin(logins[i]);
+    
+    logins[i].username = username;
+    
+    loginManager.addLogin(logins[i]);
+    return;
+  }
+    
+  // but as Thunderbird fails to import the password and username properly...
+  // ...there might be entries which want to be repaired...    
+  
+  logins = 
+    loginManager.findLogins({},"sieve://"+this.uri,"",null);
+  
+  for (var i = 0; i < logins.length; i++)
+  {
+    if (logins[i].username != oldUserName)
+      continue;
+   
+    loginManager.removeLogin(logins[i]);
+    
+    logins[i].hostname = "sieve://"+this.host;
+    logins[i].httpRealm = "sieve://"+this.host;
+    logins[i].formSubmitURL = null;
+    logins[i].username = username;
+    logins[i].usernameField = "";
+    logins[i].passwordField = "";
+    
+    loginManager.addLogin(logins[i]);
+    return;
+  }
+  
+  // ok we give up, there is no passwort entry, this might be because...
+  // ... the user might never set one, or because it deleted it in the...
+  // ... Login-Manager
+}    
+
+
+/**
+ * Retrieves the password for the given account.
+ * 
+ * If no suitable login information is stored in the password manager, a ...
+ * ... dialog requesting the user for his password will be automatically ...
+ * ... displayed, if needed.
+ * 
+ * @return {String}
+ *   The password as string or null in case the password could not be retrived.
+ */
+
+SieveCustomAuth2.prototype.getPassword
+    = function ()
+{
+  var username = this.getUsername();
+    
+  var loginManager = Components.classes["@mozilla.org/login-manager;1"]
+                        .getService(Components.interfaces.nsILoginManager);
+  
+  // First look for entries which meet the proposed naming...  
+  var logins = 
+        loginManager.findLogins(
+            {},"sieve://"+this.host,null,"sieve://"+this.host);
+
+  for (var i = 0; i < logins.length; i++)
+  {
+    if (logins[i].username != username)
+      continue;
+    
+    return logins[i].password;    
+  }
+  
+  // but as Thunderbird fails to import the passwort and username properly...
+  // ...there might be some slightly different entries...      
+  logins = 
+    loginManager.findLogins({},"sieve://"+this.uri,"",null);
+  
+  for (var i = 0; i < logins.length; i++)
+  {
+    if (logins[i].username != username)
+      continue;
+    
+    return logins[i].password;    
+  }
+  
+  // we found no password, so let's prompt for it
+  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                  .getService(Components.interfaces.nsIPromptService);  
+                        
+  var input = {value:null};
+  var check = {value:false};
+     
+  var result = 
+    prompts.promptPassword(//window,
+        null,
+        "Password", 
+        "Please enter the password for your Sieve account", 
+        input, 
+        "Remember Password", 
+        check);
+  
+  // no password, as the user canceled the dialog...
+  if (result == false)
+    return null;
+  
+  // user wants the password to be remembered...
+  if (check.value == true)
+  {
+    // the password might be already added while the password prompt is displayed    
+    try
+    {      
+      var login = Components.classes["@mozilla.org/login-manager/loginInfo;1"]
+                            .createInstance(Components.interfaces.nsILoginInfo); 
+
+      login.init("sieve://"+this.host,null,"sieve://"+this.host, 
+                 ""+this.getUsername(),""+input.value,"", "");
+    
+      loginManager.addLogin(login);
+    }
+    catch (e)
+    {
+      // we don't care if we fail, it might work the next time...
+    }
+  }
+    
+  return input.value;
+}
+
+/**
+ * Returns the username for this login. 
+ * 
+ * The username is stored in the user preferences not in the Login Manager!
+ * 
+ * @return {String}
+ *   The username or an empty string in case of a failure
+ */
+SieveCustomAuth2.prototype.getUsername
+    = function ()
+{
+  if (gPref.prefHasUserValue(this.sieveKey+".login.username"))
+    return gPref.getCharPref(this.sieveKey+".login.username");
+
+  return "";
+}
+
+SieveCustomAuth2.prototype.hasUsername
+    = function ()
+{
+  return true;
+}
+
+SieveCustomAuth2.prototype.getType
+    = function ()
+{
+  return 2;
+}
+
+
+/**
+ * Incase the Sieve Account requires a different login than the IMAP Account,
+ * use this Class. It stores the username and the password if desired.
+ * 
+ * As the password manager in Thunderbird 3 broke compatibility with older...
+ * ... releases, it is our job to maintain compatibility. 
+ * 
+ * Therefore SieveCustomAuth2 is compatible with Thunderbird 3 and up, while...
+ * ... the class SieveCustomAuth supports legacy Thunderbird releases
+ * 
+ * @see SieveCustomAuth
  *  
  * @param {String} uri
  *   the unique URI of the associated sieve account
  */
 function SieveCustomAuth(uri)
 {
+  if (("@mozilla.org/passwordmanager;1" in Components.classes) == false)
+    throw "SieveCustomAuth: No Password Manager Component found";
+  
   if (uri == null)
     throw "SieveCustomAuth: URI can't be null"; 
     
@@ -151,6 +438,14 @@ SieveCustomAuth.prototype.getDescription
   return "Use a custom login";
 }
 
+/**
+ * Updates the username and deletes all passworts which are associated ...
+ * ... with htis account. This strange is behaviour is normal for builds ...
+ * ... prior to Thunderbird3.
+ * 
+ * @param {String} username
+ *    the username as string, has to be neither empty nor null. 
+ */
 SieveCustomAuth.prototype.setUsername
     = function (username)
 {
@@ -771,6 +1066,9 @@ function SieveAccount(account)
   /** @private */ this.imapKey = account.key;
   
   /** @private */ this.description = account.prettyName;	
+  
+  // the "original" hostname...
+  /** @private */ this.host = account.hostName
 }
 
 /**
@@ -817,10 +1115,16 @@ SieveAccount.prototype.getLogin
 
   switch (type)
   {
-    case 0  : return new SieveNoAuth();
-    case 2  : return new SieveCustomAuth(this.Uri);
+    case 0:
+      return new SieveNoAuth();
+      
+    case 2:
+      if ("@mozilla.org/passwordmanager;1" in Components.classes)
+        return new SieveCustomAuth(this.Uri);
+      return new SieveCustomAuth2(this.host,this.Uri);
     
-    default : return new SieveImapAuth(this.imapKey);
+    default:
+      return new SieveImapAuth(this.imapKey);
   }
 }
 

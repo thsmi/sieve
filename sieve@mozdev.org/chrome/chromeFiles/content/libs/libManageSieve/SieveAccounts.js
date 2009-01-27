@@ -141,7 +141,13 @@ SieveImapAuth.prototype.getType
  * Therefore SieveCustomAuth2 is compatible with Thunderbird 3 and up, while
  * the class SieveCustomAuth supports legacy Thunderbird releases.
  * 
- * Entries in the new Login-Manager are identified and enumerated by their hostname.
+ * Entries in the new Login-Manager are identified and enumerated by their 
+ * original hostname. Furthermore the username is stored in the prefs and 
+ * is used to find a matching account, as the original hostname is not 
+ * garanteed to be unique.
+ * 
+ *  and their username. The latter one is storedsaved in the 
+ * preferences.
  * 
  * @see SieveCustomAuth
  *
@@ -164,48 +170,15 @@ function SieveCustomAuth2(host, uri)
   // the "original hostname"
   this.host = host;
 
-  // we need the uri for backword compatibility...
+  // We actually don't use the uri anymore. As described in bug 474277 ...
+  // ... the original hostname is a better option. But we still need it ...
+  // ... for backward compatibility ...
   this.uri = uri;
   
-  // ... but we can use it to build our pref key...
+  // ... and to recover our pref key.
   this.sieveKey = "extensions.sieve.account."+this.uri;
-    
-  // the username is stored in the prefs and is used to find a matching account...
-  // the accountname in the prefs schould be the original hostname...
-    
-  // we don't use the uri anymore, as described in bug 474277, the original
-  // hostname is a better option . https://bugzilla.mozilla.org/show_bug.cgi?id=433316
-    
-/*
- * chrome://passwordmgr/content/passwordManager.xul
- * 
- *  var extLoginInfo = new nsLoginInfo('chrome://firefoo',null, null,'bob', '123sEcReT', "", "");
- * 
- * current entries are:
- *   hostname      = sieve://thomas@imap.wh-netz.de
- *   httpRealm     = NULL
- *   formsubmiturl = ""
- *   usernamefield = "\=username=\"
- *   passwordfield = "\=password=\"
- *   encrypteduser = ...
- *   encryptedpass = ...
- *
- * but should be:
- *  hostname sieve://imap.wh-netz.de
- *  httpRealm sieve://imap.wh-netz.de
- *  formsubmiturl NULL
- *  usernamefield =""
- *  passwordfield=""
- *  encrypteduser=...
- *  encrypedpass=...
- */    
-    
   
-  // SieveCustom auth uses as constructor parameter, original hostname 
-  // and sieve key and the uri for compatibility... 
-       
-  //  username
-
+  return;
 }
 
 SieveCustomAuth2.prototype.getDescription

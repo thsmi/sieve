@@ -642,57 +642,33 @@ SieveLogoutRequest.prototype.addResponse
   return;		    
 }
 
-/*******************************************************************************
- 
-  FACTSHEET: 
-  ==========
-   
-    CLASS NAME          : SieveInitRequest
-    USES CLASSES        : SieveInitResponse
-        
-    CONSCTURCTOR        : SieveInitRequest()
-    DECLARED FUNCTIONS  : void addInitListener(...)
-                          void addErrorListener(...)
-                          void addResponse(String data)                          
-                          String getNextRequest()
-                          Boolean hasNextRequest()
-    EXCEPTIONS          : 
-    AUTHOR              : Thomas Schmid
-    
-  DESCRIPTION:
-  ============
-     A sieve server will automatically post his capabilities as soon as the 
-     connection is established or a secure channel is successfully started 
-     (STARTTLS command). In order to capture this information a dummy request 
-     has to be used. It won't send a real request, but it parses the initial 
-     response of the sieve server. Therefore it is important to add the request 
-     before the connection is established. Otherwise the message queue will be 
-     jammed.
-
-  EXAMPLE:
-  ========
-
-    var sieve = new Sieve("example.com",2000,false,3)
-    
-    var request = new SieveInitRequest();    
-    sieve.addRequest(request);
-     
-    sieve.connect();
-          
-  PROTOCOL INTERACTION: 
-  =====================
-
-    Server < "IMPLEMENTATION" "Cyrus timsieved v2.1.18-IPv6-Debian-2.1.18-1+sarge2"
-           < "SASL" "PLAIN"
-           < "SIEVE" "fileinto reject envelope vacation imapflags notify subaddress relational regex"
-           < "STARTTLS"
-           < OK
-
-*******************************************************************************/
-
-function SieveInitRequest()
-{
-}
+/**
+ * A ManageSieve server automatically post his capabilities as soon as the
+ * connection is established or a secure channel is successfully started
+ * (STARTTLS command). In order to capture this information a dummy request 
+ * is used. It does not send a real request, but it parses the initial response 
+ * of the sieve server. Therefore it is important to add the request before the 
+ * connection is established. Otherwise the message queue will be jammed.
+ * 
+ * @example
+ * Server < "IMPLEMENTATION" "Cyrus timsieved v2.1.18-IPv6-Debian-2.1.18-1+sarge2"
+ *        < "SASL" "PLAIN"
+ *        < "SIEVE" "fileinto reject envelope vacation imapflags notify subaddress relational regex"
+ *        < "STARTTLS"
+ *        < OK
+ *
+ * @example 
+ *  var sieve = new Sieve("example.com",2000,false,3)
+ *    
+ *  var request = new SieveInitRequest();    
+ *  sieve.addRequest(request);
+ *    
+ *  sieve.connect();
+ *  
+ * @author Thomas Schmid <schmid-thomas@gmx.net>
+ *
+ */
+function SieveInitRequest() {}
 
 /** @return {String} */
 SieveInitRequest.prototype.getNextRequest
@@ -732,7 +708,7 @@ SieveInitRequest.prototype.cancel
 SieveInitRequest.prototype.addResponse
     = function (data)
 {  
-  var response = new SieveInitResponse(data);
+  var response = new SieveCapabilitiesResponse(data);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onInitResponse(response);			

@@ -189,41 +189,77 @@ SieveSetActiveResponse.prototype.getResponse
 SieveSetActiveResponse.prototype.getResponseCode
     = function () { return this.superior.getResponseCode(); }
 
-
-//*************************************
-function SieveCapabilitiesResponse(data)
-{
-    //*(string [SP string] CRLF) response-oknobye    
-    this.implementation = "";
-    this.sasl = "";
-    this.extensions = "";
     
-    var parser = new SieveResponseParser(data);
-    while (parser.isString() )
+/**
+ * Parses the capabilites posted by the ManageSieve server upon a  * client connection, after successful STARTTLS and AUTHENTICATE or by issuing 
+ * the CAPABILITY command. 
+ * 
+ * @see {SieveCapabilitiesRequest}
+ * 
+ * @param {String} data
+ *   a string containing the response sent by the server 
+ */
+function SieveCapabilitiesResponse(data)
+{    
+  this.implementation = "";
+  this.version = "";
+  
+  this.extensions = {};
+  this.tls = false;
+  this.sasl = {};
+  
+  this.maxredirects = -1;
+  this.owner =""
+  this.notify = {};
+  this.language = "";
+  
+  var parser = new SieveResponseParser(data);
+  while (parser.isString() )
+  {
+    var tag = parser.extractString();
+    var value = "";
+    
+    if ( parser.isLineBreak() == false)
     {
-        var tag = parser.extractString();
-        
-        if ( parser.isLineBreak() )
-        {
-            parser.extractLineBreak();
-            continue;            
-        }
-        
-        parser.extractSpace();
-        
-        var value = parser.extractString();
-        
-        parser.extractLineBreak();
-
-        if (tag.toUpperCase() == "IMPLEMENTATION")
-            this.implementation = value;
-        if (tag.toUpperCase() == "SASL")
-            this.sasl = value;
-        if (tag.toUpperCase() == "SIEVE")
-            this.extensions = value;
+      parser.extractSpace();
+      value = parser.extractString();
     }
-        
-    this.superior = new SieveAbstractResponse(parser);
+      
+    parser.extractLineBreak();
+    
+    switch (tag.toUpperCase())
+    {
+      case "STARTTLS":
+        this.tls = true;
+        break;
+      case "IMPLEMENTATION":
+        this.implementation = value;
+        break;
+      case "SASL":
+        this.sasl = value.split(" ");
+        break;
+      case "SIEVE":
+        this.extensions = value.split(" ");
+        break;
+      case "VERSION":
+        this.version = value;
+        break;
+      case "MAXREDIRECTS":
+        this.maxredirects = parseInt(value);
+        break;
+      case "LANGUAGE":
+        this.language = value;
+        break;
+      case "NOTIFY": 
+        this.notify = value.split(" ");
+        break;
+      case "OWNER":
+        this.owner = value;
+        break;
+    }
+    
+  }        
+  this.superior = new SieveAbstractResponse(parser);
 }
 
 SieveCapabilitiesResponse.prototype.getMessage
@@ -242,10 +278,89 @@ SieveCapabilitiesResponse.prototype.getImplementation
     = function () { return this.implementation; }
 
 SieveCapabilitiesResponse.prototype.getSasl
-    = function () { return this.sasl.split(" "); }
+    = function () { return this.sasl; }
     
 SieveCapabilitiesResponse.prototype.getExtensions
     = function () { return this.extensions; }
+
+/**
+ * Indicates wether or not TLS is supported by this implementation.
+ * 
+ * Note: After the command STARTTLS or AUTHENTICATE completes successfully, this 
+ * value is always false.
+ * 
+ * @return {Boolean}
+ *   true if TLS is supported, false if not.  
+ */
+SieveCapabilitiesResponse.prototype.getTLS
+    = function () { return this.tls; }
+    
+/**
+ * Inorder to maintain compatibility to older implementations, the servers 
+ * should state their compatibility level upon login. 
+ *
+ * An empty version string indicates, minimal ManageSieve support. This 
+ * means the server implements the commands AUTHENTICATE, STARTTLS, LOGOUT,
+ * CAPABILITY, HAVESPACE, PUTSCRIPT, LISTSCRIPTS, SETACTIVE, GETSCRIPT and
+ * DELETESCRIPT
+ * 
+ * A value of "1.0" adds to the minimal ManageSieve Support the commands 
+ * RENAMESCRIPT, CHECKSCRIPT and NOOP.
+ * 
+ * @return {String}
+ *   String describing the compatibility level of the ManageSieve server.
+ */
+SieveCapabilitiesResponse.prototype.getVersion
+    = function () { return this.version; }  
+
+/**
+ * Returns the limit on the number of Sieve "redirect" actions a script can 
+ * perform during a single evaluation.
+ * 
+ * Note, that this is different from the total number of "redirect" actions a 
+ * script can contain. 
+ * 
+ * @return {int}
+ *   a non-negative number of redirects, or -1 for infinite redirects 
+ */
+SieveCapabilitiesResponse.prototype.getMaxRedirects
+    = function () { return this.maxredirects; } 
+
+/**
+ * Returns a string array of URI schema parts for supported notification
+ * methods. This capability is be specified, if the Sieve implementation 
+ * supports the "enotify" extension.
+ * 
+ *  @return {String[]}
+ *    The schema parts as string array
+ */    
+SieveCapabilitiesResponse.prototype.getNotify
+    = function () { return this.notify; }
+
+/**
+ * Returns the language currently used for human readable error messages.  
+ * If this capability is not returned, the "i-default" [RFC2277] language is 
+ * assumed.  
+ * 
+ * Note that the current language might be per-user configurable (i.e. it 
+ * might change after authentication)
+ * 
+ * @return {String}
+ *   a [RFC4646] conform language tag as string 
+ */    
+SieveCapabilitiesResponse.prototype.getLanguage
+    = function () { return this.language; }
+
+/**
+ * Gets the name of the logged in user.
+ * 
+ * Note: This value is only avaiable after AUTHENTICATE command succeeds
+ * 
+ * @return {String}
+ *   a String containing the username
+ */    
+SieveCapabilitiesResponse.prototype.getOwner
+    = function () { return this.owner; }    
 
 //*************************************
 
@@ -553,98 +668,6 @@ SieveSaslPlainResponse.prototype.getResponseCode
     = function () { return this.superior.getResponseCode(); }
 
 
-
-/*******************************************************************************
-    CLASS NAME         : SieveInitResponse
-    USES CLASSES       : SieveAbstractResponse
-                         SieveResposeParser
-        
-    CONSCTURCTOR       : SieveInitResponse(String data)
-    DECLARED FUNCTIONS : String getMessage()
-                       : boolean hasError()
-                       : getResponse()
-                       : int getResponseCode()
-                       : String getImplementation()
-                       : String getSasl()
-                       : String getExtensions()
-                       : boolean prototype.getTLS()                         
-    EXCEPTIONS         : 
-
-
-    AUTHOR             : Thomas Schmid        
-    DESCRIPTION        : 
-    ...
-
-    EXAMPLE            :
-    ...
-
-********************************************************************************/
-
-function SieveInitResponse(data)
-{
-    //*(string [SP string] CRLF) response-oknobye
-    this.implementation = "";
-    this.tls = false;
-    this.sasl = "";
-    this.extensions = "";
-
-    var parser = new SieveResponseParser(data);
-    
-    while (parser.isString() )
-    {
-        var tag = parser.extractString();
-        
-        if ( parser.isLineBreak() )
-        {
-            parser.extractLineBreak();
-            
-            if (tag.toUpperCase() == "STARTTLS")
-                this.tls = true; 
-                
-            continue;            
-        }
-        
-        parser.extractSpace();
-        
-        var value = parser.extractString();
-        
-        parser.extractLineBreak();
-
-        if (tag.toUpperCase() == "IMPLEMENTATION")
-            this.implementation = value;
-        if (tag.toUpperCase() == "SASL")
-            this.sasl = value;
-        if (tag.toUpperCase() == "SIEVE")
-            this.extensions = value;
-    }
-        
-    this.superior = new SieveAbstractResponse(parser);
-}
-
-SieveInitResponse.prototype.getMessage
-    = function (){ return this.superior.getMessage(); }
-    
-SieveInitResponse.prototype.hasError
-    = function () { return this.superior.hasError(); }
-
-SieveInitResponse.prototype.getResponse
-    = function () { return this.superior.getResponse(); }
-
-SieveInitResponse.prototype.getResponseCode
-    = function () { return this.superior.getResponseCode(); }
-
-SieveInitResponse.prototype.getImplementation
-    = function () { return this.implementation; }
-
-SieveInitResponse.prototype.getSasl
-    = function () { return this.sasl.split(" "); }
-    
-SieveInitResponse.prototype.getExtensions
-    = function () { return this.extensions; }
-    
-SieveInitResponse.prototype.getTLS
-    = function () { return this.tls; }    
-    
 
 /*********************************************************
     literal               = "{" number  "+}" CRLF *OCTET

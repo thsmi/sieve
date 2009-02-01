@@ -24,7 +24,7 @@
     
   DESCRIPTION:
   ============
-    Every Sieve Response is tailed bei eithern an OK, BYE or NO followed by 
+    Every Sieve Response is tailed by eithern an OK, BYE or NO followed by 
     optional messages and/or error codes.
     This class is capable of parsing this part of the sieve response, therefore
     it should be implemented by and SieveResponse.
@@ -126,73 +126,37 @@ SieveAbstractResponse.prototype.getResponseCode
   return new SieveRespCodeUnknown(this.responseCode);
 }
 
-/*******************************************************************************
- 
-  FACTSHEET: 
-  ==========
-    CLASS NAME          : SievePutScriptResponse
-    USES CLASSES        : SieveResponseParser
-                          SieveAbstractResponse
-        
-    CONSCTURCTOR        : SievePutScriptResponse(String data)
-    DECLARED FUNCTIONS  : String getMessage()
-                          String getResponse()
-                          int getResponseCode()                          
-                          boolean hasError()
-    EXCEPTIONS          : 
-    AUTHOR              : Thomas Schmid        
-    
-  DESCRIPTION:
-  ============
-    Encapsulates a SieveAbstractResponse object in order to parse 
-    SievePutScriptResponses
-      ( see SieveAbstracResponse for more details )
-     
-********************************************************************************/
-
-function SievePutScriptResponse(data)
+/**
+ * This class implements a generic response handler for simple sieve requests.
+ * 
+ * Simple Requests indicate, wether the command succeded or not. They return
+ * only status information, and do not contain any data relevant for the user.
+ *  
+ * @param {} data
+ *  a string containing the response sent by the server
+ */
+function SieveSimpleResponse(data)
 {
-    this.superior = new SieveAbstractResponse(
+  this.superior = new SieveAbstractResponse(
                         new SieveResponseParser(data));
 }
 
-SievePutScriptResponse.prototype.getMessage
+SieveSimpleResponse.prototype.getMessage
     = function () { return this.superior.getMessage(); }
     
-SievePutScriptResponse.prototype.hasError 
+SieveSimpleResponse.prototype.hasError 
     = function () { return this.superior.hasError(); }
 
-SievePutScriptResponse.prototype.getResponse
+SieveSimpleResponse.prototype.getResponse
     = function () { return this.superior.getResponse(); }
 
-SievePutScriptResponse.prototype.getResponseCode
+SieveSimpleResponse.prototype.getResponseCode
     = function () { return this.superior.getResponseCode(); }
 
-//*************************************
-
-// encapsulates SieveAbstractScripResponse...
-function SieveSetActiveResponse(data)
-{
-    this.superior = new SieveAbstractResponse(
-                        new SieveResponseParser(data));
-}
-
-SieveSetActiveResponse.prototype.getMessage
-    = function (){ return this.superior.getMessage(); }
-    
-SieveSetActiveResponse.prototype.hasError 
-    = function () { return this.superior.hasError(); }
-
-SieveSetActiveResponse.prototype.getResponse
-    = function () { return this.superior.getResponse(); }
-
-SieveSetActiveResponse.prototype.getResponseCode
-    = function () { return this.superior.getResponseCode(); }
-
-    
 /**
- * Parses the capabilites posted by the ManageSieve server upon a  * client connection, after successful STARTTLS and AUTHENTICATE or by issuing 
- * the CAPABILITY command. 
+ * Parses the capabilites posted by the ManageSieve server upon a client 
+ * connection, after successful STARTTLS and AUTHENTICATE or by issuing the 
+ * CAPABILITY command. 
  * 
  * @see {SieveCapabilitiesRequest}
  * 
@@ -362,28 +326,8 @@ SieveCapabilitiesResponse.prototype.getLanguage
 SieveCapabilitiesResponse.prototype.getOwner
     = function () { return this.owner; }    
 
-//*************************************
-
-// encapsulates SieveAbstractScripResponse...
-function SieveDeleteScriptResponse(data)
-{
-    this.superior = new SieveAbstractResponse(
-                        new SieveResponseParser(data));
-}
-
-SieveDeleteScriptResponse.prototype.getMessage
-    = function (){ return this.superior.getMessage(); }
-
-SieveDeleteScriptResponse.prototype.hasError
-    = function () { return this.superior.hasError(); }
-
-SieveDeleteScriptResponse.prototype.getResponse
-    = function () { return this.superior.getResponse(); }
-
-SieveDeleteScriptResponse.prototype.getResponseCode
-    = function () { return this.superior.getResponseCode(); }
-
-//*************************************
+//***************************************************************************//
+    
 function SieveListScriptResponse(data)
 {
     //    sieve-name    = string
@@ -439,43 +383,6 @@ SieveListScriptResponse.prototype.getResponseCode
 SieveListScriptResponse.prototype.getScripts
     = function () { return this.scripts; }
 
-//*************************************
-function SieveStartTLSResponse(data)
-{
-    this.superior = new SieveAbstractResponse(
-                        new SieveResponseParser(data));
-}
-
-SieveStartTLSResponse.prototype.getMessage
-    = function (){ return this.superior.getMessage(); }
-
-SieveStartTLSResponse.prototype.hasError
-    = function () { return this.superior.hasError(); }
-
-SieveStartTLSResponse.prototype.getResponse
-    = function () { return this.superior.getResponse(); }
-
-SieveStartTLSResponse.prototype.getResponseCode
-    = function () { return this.superior.getResponseCode(); }
-
-//*************************************
-function SieveLogoutResponse(data)
-{
-    this.superior = new SieveAbstractResponse(
-                        new SieveResponseParser(data));
-}
-
-SieveLogoutResponse.prototype.getMessage
-    = function (){ return this.superior.getMessage(); }
-
-SieveLogoutResponse.prototype.hasError
-    = function () { return this.superior.hasError(); }
-
-SieveLogoutResponse.prototype.getResponse
-    = function () { return this.superior.getResponse(); }
-
-SieveLogoutResponse.prototype.getResponseCode
-    = function () { return this.superior.getResponseCode(); }
 
 //*************************************
 function SieveSaslLoginResponse()
@@ -646,28 +553,6 @@ SieveSaslCramMd5Response.prototype.getResponseCode
     
   return this.superior.getResponseCode(); 
 }
-
-
-//*************************************
-function SieveSaslPlainResponse(data)
-{
-    this.superior = new SieveAbstractResponse(
-                        new SieveResponseParser(data));
-}
-
-SieveSaslPlainResponse.prototype.getMessage
-    = function (){ return this.superior.getMessage(); }
-
-SieveSaslPlainResponse.prototype.hasError
-    = function () { return this.superior.hasError(); }
-
-SieveSaslPlainResponse.prototype.getResponse
-    = function () { return this.superior.getResponse(); }
-
-SieveSaslPlainResponse.prototype.getResponseCode
-    = function () { return this.superior.getResponseCode(); }
-
-
 
 /*********************************************************
     literal               = "{" number  "+}" CRLF *OCTET

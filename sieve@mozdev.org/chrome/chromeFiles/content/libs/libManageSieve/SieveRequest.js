@@ -208,7 +208,7 @@ SievePutScriptRequest.prototype.cancel
 SievePutScriptRequest.prototype.addResponse
     = function (data)
 {  
-  var response = new SievePutScriptResponse(data);
+  var response = new SieveSimpleResponse(data);
 
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onPutScriptResponse(response);
@@ -278,7 +278,7 @@ SieveSetActiveRequest.prototype.cancel
 SieveSetActiveRequest.prototype.addResponse
     = function (data)
 {  
-  var response = new SieveSetActiveResponse(data);
+  var response = new SieveSimpleResponse(data);
 
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onSetActiveResponse(response);
@@ -425,10 +425,134 @@ SieveDeleteScriptRequest.prototype.cancel
 SieveDeleteScriptRequest.prototype.addResponse
     = function (data)
 {        
-  var response = new SieveDeleteScriptResponse(data);
+  var response = new SieveSimpleResponse(data);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onDeleteScriptResponse(response);			
+  else if ((response.getResponse() != 0) && (this.errorListener != null))
+    this.errorListener.onError(response);
+}
+
+/**
+ * The NOOP request does nothing, it is used for protocol re-synchronisation or
+ * to reset any inactivity auto-logout timer on the server.
+ * 
+ * The response to the NOOP command is always OK. 
+ * 
+ * @author Thomas Schmid
+ */
+function SieveNoopRequest() 
+{
+}
+
+/** @return {String} */
+SieveNoopRequest.prototype.getNextRequest
+    = function ()
+{
+  return "NOOP\r\n";
+}
+
+/** @return {Boolean} */
+SieveNoopRequest.prototype.hasNextRequest
+    = function ()
+{
+  return false;
+}
+
+SieveNoopRequest.prototype.addDeleteScriptListener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
+   
+SieveNoopRequest.prototype.addErrorListener
+    = function (listener)
+{
+  // yes even the request always returns Ok, we might need this...
+  // ... error listener in case of a connection timeout.
+  this.errorListener = listener;
+}
+
+/** */
+SieveNoopRequest.prototype.cancel
+    = function ()
+{
+  if (this.errorListener != null)
+    this.errorListener.onTimeout();  
+}
+
+/** @param {String} data */
+SieveNoopRequest.prototype.addResponse
+    = function (data)
+{        
+  var response = new SieveSimpleResponse(data);
+      
+  if ((response.getResponse() == 0) && (this.responseListener != null))
+    this.responseListener.onNoopResponse(response);     
+  else if ((response.getResponse() != 0) && (this.errorListener != null))
+    this.errorListener.onError(response);
+}
+
+/**
+ * This command is used to rename a user's Sieve script. The Server will
+ * reply with a NO response if the old script does not exist, or a script
+ * with the new name already exists.
+ * 
+ * Renaming the active script is allowed, the renamed script remains active.
+ *  
+ * @param {String} Name of the script, which should be renamed
+ * @param {String} new name of the Script
+ * 
+ * @author Thomas Schmid
+ */
+function SieveRenameScriptRequest(oldScript, newScript) 
+{
+  this.oldScript = oldScript;
+  this.newScript = newScript
+}
+
+/** @return {String} */
+SieveRenameScriptRequest.prototype.getNextRequest
+    = function ()
+{
+  return "RENAMESCRIPT \""+this.oldScript+"\" \""+this.newScript+"\"\r\n";
+}
+
+/** @return {Boolean} */
+SieveRenameScriptRequest.prototype.hasNextRequest
+    = function ()
+{
+  return false;
+}
+
+SieveRenameScriptRequest.prototype.addDeleteScriptListener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
+   
+SieveRenameScriptRequest.prototype.addErrorListener
+    = function (listener)
+{
+  this.errorListener = listener;
+}
+
+/** */
+SieveRenameScriptRequest.prototype.cancel
+    = function ()
+{
+  if (this.errorListener != null)
+    this.errorListener.onTimeout();  
+}
+
+/** @param {String} data */
+SieveRenameScriptRequest.prototype.addResponse
+    = function (data)
+{        
+  var response = new SieveSimpleResponse(data);
+      
+  if ((response.getResponse() == 0) && (this.responseListener != null))
+    this.responseListener.onRenameScriptResponse(response);     
   else if ((response.getResponse() != 0) && (this.errorListener != null))
     this.errorListener.onError(response);
 }
@@ -548,7 +672,7 @@ SieveStartTLSRequest.prototype.cancel
 SieveStartTLSRequest.prototype.addResponse 
     = function (data)
 {
-  var response = new SieveStartTLSResponse(data);
+  var response = new SieveSimpleResponse(data);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onStartTLSResponse(response);			
@@ -629,7 +753,7 @@ SieveLogoutRequest.prototype.cancel
 SieveLogoutRequest.prototype.addResponse 
     = function (data)
 {  
-  var response = new SieveLogoutResponse(data);
+  var response = new SieveSimpleResponse(data);
 			
   // a "BYE" or "OK" is in this case a good answer...
   if (((response.getResponse() == 0) || (response.getResponse() == 1))
@@ -849,7 +973,7 @@ SieveSaslPlainRequest.prototype.cancel
 SieveSaslPlainRequest.prototype.addResponse
     = function (data)
 {
-  var response = new SieveSaslPlainResponse(data);
+  var response = new SieveSimpleResponse(data);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onSaslPlainResponse(response);			

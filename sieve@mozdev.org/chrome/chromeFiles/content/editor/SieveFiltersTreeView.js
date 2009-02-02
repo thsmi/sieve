@@ -22,7 +22,10 @@ SieveTreeView.prototype.update
   this.rules 		= rules;
   this.rowCount	= this.rules.length;
     
-  this.rules.sort(function(a,b) {if (a.script > b.script) return 1; return 0;});
+  this.rules.sort( function(a,b){ 
+      if (a.script.toLowerCase() > b.script.toLowerCase()) return 1; 
+      if (a.script.toLowerCase() < b.script.toLowerCase()) return -1;
+      return 0;});
 }
 
 SieveTreeView.prototype.getCellValue

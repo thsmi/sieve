@@ -84,6 +84,8 @@ var event =
         = response.getExtensions(); 
     document.getElementById('txtImplementation').value 
         = response.getImplementation();
+    document.getElementById('txtVersion').value
+        = response.getVersion();
           
     // ... translate the SASL Mechanism String into an SieveSaslLogin Object ...
     var request = null;  
@@ -140,6 +142,8 @@ var event =
     // establish a secure connection if TLS ist enabled and if the Server ...
     // ... is capable of handling TLS, otherwise simply skip it and ...
     // ... use an insecure connection
+    
+    gSieve.setCompatibility(response.getVersion());
     
     if (getSelectedAccount().getHost().isTLS() && response.getTLS())
     {
@@ -350,7 +354,7 @@ var event =
     else
       request = new SieveSetActiveRequest(script)
       
-    request.addSetScriptListener(event);
+    request.addSetActiveListener(event);
     request.addErrorListener(event);
     
     gSieve.addRequest(request);
@@ -732,17 +736,37 @@ function disableControls(disabled)
   }
 }
 
-function onRenameClick()
+function sivRename2(oldName, newName)
 {
+  var lEvent = 
+  {    
+    onRenameScriptListener: function(response)
+    {
+      var request = new SieveListScriptRequest();
+      request.addListScriptListener(event);
+      request.addErrorListener(event);
   
+      gSieve.addRequest(request);            
+    }
+  }
+  
+  var request = new SieveRenameScriptRequest(oldName, newName);
+  request.addRenameScriptListener(lEvent)
+  request.addErrorListener(event);
+    
+  gSieve.addRequest(request)
+}
+
+function sivRename(oldName, newName, isActive)
+{
   var lEvent = 
   {
-    oldScriptName : null,    
-    newScriptName : null,
+    oldScriptName  : null,    
+    newScriptName  : null,
+    isActive       : null,
     
     onGetScriptResponse: function(response)
     {
-      
       var request = new SievePutScriptRequest(
                       new String(lEvent.newScriptName),
                       new String(response.getScriptBody()));
@@ -750,9 +774,23 @@ function onRenameClick()
       request.addPutScriptListener(lEvent)
       request.addErrorListener(event)
       gSieve.addRequest(request);  
-    },
-        
+    },    
     onPutScriptResponse: function(response)
+    {
+      
+      if (lEvent.isActive == true)
+      {
+        var request = new SieveSetActiveRequest(lEvent.newScriptName)
+      
+        request.addSetActiveListener(lEvent);
+        request.addErrorListener(event);
+    
+        gSieve.addRequest(request);
+      }
+      else
+        lEvent.onSetActiveResponse(null);
+    },
+    onSetActiveResponse: function(response)
     {
       // we redirect this request to event not lEvent!
       // because event.onDeleteScript is doing exactly what we want!
@@ -760,23 +798,38 @@ function onRenameClick()
       request.addDeleteScriptListener(event);
       request.addErrorListener(event);
       gSieve.addRequest(request);
-    }    	
+    }     
   }
+  
+  lEvent.oldScriptName  = oldName;
+  lEvent.newScriptName  = newName;
+  lEvent.isActive =  (isActive=="true"?true:false);
+      
+  // first get the script and redirect the event to a local event...
+  // ... in order to put it up under its new name an then finally delete it
+  var request = new SieveGetScriptRequest(lEvent.oldScriptName);
 
+  request.addGetScriptListener(lEvent);
+  request.addErrorListener(event);
+
+  gSieve.addRequest(request);   
+}
+
+function onRenameClick()
+{
+  
   var tree = document.getElementById('treeImapRules');
 
   if (tree.currentIndex == -1)
     return;
-
-
-  lEvent.oldScriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));
+   
+  var oldScriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));
   
   // TODO remember if the Script is active
-
   var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
                   .getService(Components.interfaces.nsIPromptService);
 
-  var input = {value:lEvent.oldScriptName};
+  var input = {value:oldScriptName};
   var check = {value:false};
 
   var result
@@ -789,21 +842,16 @@ function onRenameClick()
   // Did the User cancel the dialog?
   if (result != true)
     return;
-
-  lEvent.newScriptName = input.value;
   
   // it the old name equals the new name, ignore the request.
-  if (lEvent.newScriptName.toLowerCase() == lEvent.oldScriptName.toLowerCase())
+  if (input.value.toLowerCase() == oldScriptName.toLowerCase())
     return;   
 
-  // first get the script and redirect the event to a local event...
-  // ... in order to put it up under its new name an then finally delete it
-  var request = new SieveGetScriptRequest(lEvent.oldScriptName);
-
-  request.addGetScriptListener(lEvent);
-  request.addErrorListener(event);
-
-  gSieve.addRequest(request);	
+  if (gSieve.getCompatibility() >=1)
+   sivRename2(oldScriptName, input.value);
+  else
+   sivRename(oldScriptName, input.value, 
+     tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(1)));   
 }
 
 function onServerDetails()

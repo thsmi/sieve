@@ -55,6 +55,33 @@ function Sieve(host, port, secure, idleInterval)
   this.debug.logger = null;  
   
   this.outstream = null;
+  
+  this.version = 0;
+}
+
+/**
+ * Give this socket a hint, which maximal Protocol version of ManageSieve is 
+ * supported by the server
+ * @param {float} version
+ *   the maximal protocol version supported by this server.
+ */
+Sieve.prototype.setCompatibility
+  = function(version) 
+{
+  this.version = version;
+}
+
+/**
+ * Returns maximal protocol version of the server. This value is not retrived
+ * automatically, you have to set it via setCompatiblity
+ * 
+ * @return {float}
+ *   a floating point number indicating the compatibility
+ */
+Sieve.prototype.getCompatibility
+  = function()
+{
+  return this.version;
 }
 
 /**

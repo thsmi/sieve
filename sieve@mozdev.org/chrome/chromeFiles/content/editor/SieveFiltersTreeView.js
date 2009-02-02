@@ -21,19 +21,24 @@ SieveTreeView.prototype.update
 {
   this.rules 		= rules;
   this.rowCount	= this.rules.length;
+    
+  this.rules.sort(function(a,b) {if (a.script > b.script) return 1; return 0;});
 }
 
 SieveTreeView.prototype.getCellValue
     = function(row,column)
 {
-  return "";
+  if (column.id == "namecol") 
+    return this.rules[row].script;
+  else
+    return this.rules[row].active;
 }
 
 SieveTreeView.prototype.getCellText 
     = function(row,column)
 {
   if (column.id == "namecol") 
-    return this.rules[row][0];
+    return this.rules[row].script;
   else 
     return "";
 }
@@ -59,7 +64,7 @@ SieveTreeView.prototype.getImageSrc
   if (column.id == "namecol")
     return null;
   
-  if (this.rules[row][1])
+  if (this.rules[row].active)
     return "chrome://sieve/content/images/active.png"
   
   return "chrome://sieve/content/images/passive.png"
@@ -80,6 +85,6 @@ SieveTreeView.prototype.cycleHeader
 SieveTreeView.prototype.cycleCell
     = function(row, col)
 {    
-  this.listener.onCycleCell(row,col,this.rules[row][0],this.rules[row][1]);
+  this.listener.onCycleCell(row,col,this.rules[row].script,this.rules[row].active);
   this.selection.select(row);
 }

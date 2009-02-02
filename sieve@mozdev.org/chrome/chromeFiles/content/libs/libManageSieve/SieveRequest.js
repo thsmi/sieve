@@ -219,7 +219,90 @@ SievePutScriptRequest.prototype.addResponse
 }
 
 /**
- * This class encapulates a Sieve SETACTIVE request.
+ * The CheckScriptRequest validates the Syntax of a Sieve script. The script
+ * is not stored on the server.
+ * 
+ * If the script fails this test, the server replies with a NO response. The 
+ * response contains one or more CRLF separated error messages.
+ *
+ * An OK response can contain Syntax Warnings. 
+ * 
+ * @example
+ *   C: CheckScript {31+}
+ *   C: #comment
+ *   C: InvalidSieveCommand
+ *   C:
+ *   S: NO "line 2: Syntax error"
+ * 
+ * @param {String} body
+ *   the script which should be check for syntactical validity 
+ */
+function SieveCheckScriptRequest(body) 
+{
+  // Strings in JavaScript should use the encoding of the xul document and...
+  // ... sockets use binary strings. That means for us we have to convert...
+  // ... the JavaScript string into a UTF8 String.
+  
+  // Further more Sieve expects line breaks to be \r\n. Mozilla uses \n ... 
+  // ... according to the documentation. But for some unknown reason a ...
+  // ... string sometimes  contains mixed line breaks. Thus we convert ...
+  // ... any \r\n, \r and \n to \r\n. 
+    
+  this.body = UTF8Encode(body).replace(/\r\n|\r|\n/g, "\r\n");
+}
+
+/** @return {Boolean} */
+SieveCheckScriptRequest.prototype.hasNextRequest
+    = function ()
+{
+  return false;
+}
+
+/** @return {String} */
+SieveCheckScriptRequest.prototype.getNextRequest
+    = function ()
+{
+  return "CHECKSCRIPT {"+this.body.length+"+}\r\n"
+        +this.body+"\r\n"
+}
+
+SieveCheckScriptRequest.prototype.addCheckScriptListener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
+   
+SieveCheckScriptRequest.prototype.addErrorListener
+    = function (listener)
+{
+  this.errorListener = listener;
+}
+
+/** */
+SieveCheckScriptRequest.prototype.cancel
+    = function ()
+{
+  if (this.errorListener != null)
+    this.errorListener.onTimeout();  
+}    
+
+/** @param {String} data */
+SieveCheckScriptRequest.prototype.addResponse
+    = function (data)
+{  
+  var response = new SieveSimpleResponse(data);
+
+  if ((response.getResponse() == 0) && (this.responseListener != null))
+    this.responseListener.onCheckScriptResponse(response);
+  else if ((response.getResponse() != 0) && (this.errorListener != null))
+    this.errorListener.onError(response);
+    
+  return;
+}
+
+
+/**
+ * This class encaspulates a Sieve SETACTIVE request.
  * <p>
  * Either none or one serverscripts can be active, this means you can't have 
  * more than one active scripts
@@ -254,7 +337,7 @@ SieveSetActiveRequest.prototype.getNextRequest
   return "SETACTIVE \""+this.script+"\"\r\n";
 }
 
-SieveSetActiveRequest.prototype.addSetScriptListener
+SieveSetActiveRequest.prototype.addSetActiveListener
     = function (listener)
 {
   this.responseListener = listener;
@@ -459,7 +542,7 @@ SieveNoopRequest.prototype.hasNextRequest
   return false;
 }
 
-SieveNoopRequest.prototype.addDeleteScriptListener
+SieveNoopRequest.prototype.addNoopScriptListener
     = function (listener)
 {
   this.responseListener = listener;
@@ -525,7 +608,7 @@ SieveRenameScriptRequest.prototype.hasNextRequest
   return false;
 }
 
-SieveRenameScriptRequest.prototype.addDeleteScriptListener
+SieveRenameScriptRequest.prototype.addRenameScriptListener
     = function (listener)
 {
   this.responseListener = listener;

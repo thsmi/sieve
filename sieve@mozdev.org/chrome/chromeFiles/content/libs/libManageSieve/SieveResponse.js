@@ -123,6 +123,9 @@ SieveAbstractResponse.prototype.getResponseCode
   else if (this.responseCode.indexOf("TRYLATER") == 0)
     return new SieveRespCodeTryLater();    
 
+  // TODO Implement these Response codes:
+  //"ACTIVE" / "NONEXISTENT" / "ALREADYEXISTS" / "WARNINGS" 
+    
   return new SieveRespCodeUnknown(this.responseCode);
 }
 
@@ -166,7 +169,7 @@ SieveSimpleResponse.prototype.getResponseCode
 function SieveCapabilitiesResponse(data)
 {    
   this.implementation = "";
-  this.version = "";
+  this.version = 0;
   
   this.extensions = {};
   this.tls = false;
@@ -206,7 +209,7 @@ function SieveCapabilitiesResponse(data)
         this.extensions = value.split(" ");
         break;
       case "VERSION":
-        this.version = value;
+        this.version = parseFloat(value);
         break;
       case "MAXREDIRECTS":
         this.maxredirects = parseInt(value);
@@ -263,16 +266,15 @@ SieveCapabilitiesResponse.prototype.getTLS
  * Inorder to maintain compatibility to older implementations, the servers 
  * should state their compatibility level upon login. 
  *
- * An empty version string indicates, minimal ManageSieve support. This 
- * means the server implements the commands AUTHENTICATE, STARTTLS, LOGOUT,
- * CAPABILITY, HAVESPACE, PUTSCRIPT, LISTSCRIPTS, SETACTIVE, GETSCRIPT and
- * DELETESCRIPT
+ * A value of "0" indicates, minimal ManageSieve support. This means the server 
+ * implements the commands AUTHENTICATE, STARTTLS, LOGOUT, CAPABILITY, HAVESPACE,
+ * PUTSCRIPT, LISTSCRIPTS, SETACTIVE, GETSCRIPT and DELETESCRIPT
  * 
  * A value of "1.0" adds to the minimal ManageSieve Support the commands 
  * RENAMESCRIPT, CHECKSCRIPT and NOOP.
  * 
- * @return {String}
- *   String describing the compatibility level of the ManageSieve server.
+ * @return {float}
+ *   Positive Floating describing the compatibility level of the ManageSieve server.
  */
 SieveCapabilitiesResponse.prototype.getVersion
     = function () { return this.version; }  
@@ -343,12 +345,12 @@ function SieveListScriptResponse(data)
     {
         i++;
 
-        this.scripts[i] = new Array();        
-        this.scripts[i][0] = parser.extractString();
+        this.scripts[i] = new Object();        
+        this.scripts[i].script = parser.extractString();
         
         if ( parser.isLineBreak() )
         {        
-            this.scripts[i][1] = false;
+            this.scripts[i].active = false;
             parser.extractLineBreak();
             
             continue;
@@ -359,7 +361,7 @@ function SieveListScriptResponse(data)
         if (parser.extractToken("\r\n").toUpperCase() != "ACTIVE")
             throw "Error \"ACTIVE\" expected";
 
-        this.scripts[i][1] = true;        
+        this.scripts[i].active = true;        
         parser.extractLineBreak();
         
     }

@@ -124,6 +124,10 @@
                         <hbox pack="end"><label value="&list.details.capability.sasl;"/></hbox>           
                         <textbox id="txtSASL" class="plain"/>           
                       </row>          
+                      <row align="baseline">
+                        <hbox pack="end"><label value="Protocol Version:"/></hbox>           
+                        <textbox id="txtVersion" class="plain"/>           
+                      </row>                         
                     </rows>
                   </grid>                  
                 </stack>

@@ -1,15 +1,19 @@
 /* 
+ * 
  * The contents of this file is licenced. You may obtain a copy of
  * the license at http://sieve.mozdev.org or request it via email 
  * from the author. Do not remove or change this comment. 
  * 
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
+ *
+ * Hints for Spekt IDE autocomplete, they have to be in the first comment...
+ *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
+ *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/Sieve.js"
+ *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveRequest.js"
+ *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveResponse.js"
  */
  
-// Hints for Spekt IDE autocomplete...
-//@include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
-//@include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/Sieve.js"
   // TODO make sure that the scripts are imported only once.
   // TODO place imports in the corresponding files like the header import in c...
   
@@ -51,8 +55,6 @@ var sieveTreeView = null;
 var closeTimeout = null;
 var accounts = new Array();
 
-
-
 var event = 
 {	
   onAuthenticate: function(response)
@@ -66,7 +68,6 @@ var event =
       event.onLoginResponse(null);
       return;
     }
-
 
     // We have to figure out which ist the best SASL Mechanism for the login ...
     // ... therefore we check first whether a mechanism is forced by the user ...
@@ -441,10 +442,8 @@ function onWindowClose()
   return false;
 }   
 /**
- * XXX
  * @return {SieveAccount}
  */
-//sivGetActiveAccount()
 function getSelectedAccount()
 {
   var menu = document.getElementById("menuImapAccounts") 
@@ -604,7 +603,6 @@ function onDeleteClick()
   gSieve.addRequest(request);
 }
 /**
- * XXX
  * @param {String} scriptName
  * @param {String} scriptBody
  */
@@ -825,7 +823,6 @@ function onRenameClick()
    
   var oldScriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));
   
-  // TODO remember if the Script is active
   var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
                   .getService(Components.interfaces.nsIPromptService);
 

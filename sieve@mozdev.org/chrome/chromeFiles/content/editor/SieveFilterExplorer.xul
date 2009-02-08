@@ -15,9 +15,28 @@
         title="&list.title;"
         windowtype="Sieve:FilterExplorer">
 
-  <script type="application/x-javascript" src="chrome://sieve/content/SieveOverlay.js" />
-  <script type="application/x-javascript" src="chrome://sieve/content/editor/SieveFilterExplorer.js"/>
-
+  <script type="application/x-javascript"
+          src="chrome://sieve/content/libs/libManageSieve/Sieve.js"/>
+  <script type="application/x-javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveWatchDog.js"/>
+  <script type="application/x-javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js"/>
+  <script type="application/x-javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveRequest.js"/>
+  <script type="application/x-javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveResponseParser.js"/>
+  <script type="application/x-javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveResponseCodes.js"/>
+  <script type="application/x-javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveResponse.js"/>
+          
+  <script type="application/x-javascript" 
+          src="chrome://sieve/content/SieveOverlay.js" />
+  <script type="application/x-javascript" 
+          src="chrome://sieve/content/editor/SieveFiltersTreeView.js"/>          
+  <script type="application/x-javascript" 
+          src="chrome://sieve/content/editor/SieveFilterExplorer.js"/>
+              
   <hbox align="center">
     <label value="&list.accounts;"  control="serverMenu"/>
       <menulist id="menuImapAccounts" oncommand="onSelectAccount(this.value);">

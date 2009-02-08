@@ -9,19 +9,6 @@
  */
 
 // @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveResponse.js"
-  // TODO make sure that the scripts are imported only once.
-  // TODO place imports in the corresponding files like the header import in c...
-  
-  // Load all the Libraries we need...
-  var jsLoader = Components
-                   .classes["@mozilla.org/moz/jssubscript-loader;1"]
-                   .getService(Components.interfaces.mozIJSSubScriptLoader);
-  jsLoader
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveWatchDog.js");
-
-  // we are done importing script, so free ...
-  // ... the loader inorder to prevent XPCOM leaks
-  jsLoader = null;
 
 // TODO protect namespace:
 //var gSivEditor = {

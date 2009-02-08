@@ -23,9 +23,10 @@ SieveTreeView.prototype.update
   this.rowCount	= this.rules.length;
     
   this.rules.sort( function(a,b){ 
-      if (a.script.toLowerCase() > b.script.toLowerCase()) return 1; 
+      return a.script.toLocaleLowerCase().localeCompare(b.script.toLocaleLowerCase());
+      /*if (a.script.toLowerCase() > b.script.toLowerCase()) return 1; 
       if (a.script.toLowerCase() < b.script.toLowerCase()) return -1;
-      return 0;});
+      return 0;*/});
 }
 
 SieveTreeView.prototype.getCellValue

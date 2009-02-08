@@ -10,38 +10,13 @@
  * Hints for Spekt IDE autocomplete, they have to be in the first comment...
  *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
  *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/Sieve.js"
+ *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveWatchDog.js"
  *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveRequest.js"
  *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveResponse.js"
+ *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/SieveOverlay.js
+ *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/editor/SieveFilterTreeView.js"
  */
- 
-  // TODO make sure that the scripts are imported only once.
-  // TODO place imports in the corresponding files like the header import in c...
-  
-  // TODO Move "imports" to xul...
-  // Load all the Libraries we need...
-  var jsLoader = Components
-                   .classes["@mozilla.org/moz/jssubscript-loader;1"]
-                   .getService(Components.interfaces.mozIJSSubScriptLoader);
-  jsLoader
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveAccounts.js");
-  jsLoader
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/Sieve.js");
-  jsLoader
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveWatchDog.js");    
-  jsLoader
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveRequest.js");
-  jsLoader
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponse.js");    
-  jsLoader
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponseParser.js");        
-  jsLoader
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponseCodes.js");
-  jsLoader
-    .loadSubScript("chrome://sieve/content/editor/SieveFiltersTreeView.js");
 
-  // we are done importing script, so free ... 
-  // ... the loader inorder to prevent XPCOM leaks
-  jsLoader = null;
 
 /** @type {Sieve} */
 var gSieve = null;
@@ -738,7 +713,7 @@ function sivRename2(oldName, newName)
 {
   var lEvent = 
   {    
-    onRenameScriptListener: function(response)
+    onRenameScriptResponse: function(response)
     {
       var request = new SieveListScriptRequest();
       request.addListScriptListener(event);

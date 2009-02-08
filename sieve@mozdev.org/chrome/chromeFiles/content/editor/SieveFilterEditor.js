@@ -6,9 +6,11 @@
  * 
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
+ *   
+ * Hints for Spekt IDE autocomplete, they have to be in the first comment...
+ *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveResponse.js"
+ *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveRequest.js"   
  */
-
-// @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveResponse.js"
 
 // TODO protect namespace:
 //var gSivEditor = {
@@ -100,29 +102,48 @@ function onCompile()
   {
     onPutScriptResponse: function(response)
     {
-      // we need no handlers thus we don't care if the call succseeds
-      gSieve.addRequest(new SieveDeleteScriptRequest("TMP_FILE_DELETE_ME"));
+      // the script is syntactically correct. This means the server accepted...
+      // ... our temporary script. So we need to do some cleanup and remove...
+      // ... the script again.   
 
+      // Call delete, without response handlers, we don't care if the ...
+      // ... command succeeds or fails.
+      gSieve.addRequest(new SieveDeleteScriptRequest("TMP_FILE_DELETE_ME"));
+      
+      // Call CHECKSCRIPT's response handler to complete the hack...  
+      lEvent.onCheckScriptResponse(response);
+    },
+
+    onCheckScriptResponse: function(response)
+    {
+      // TODO: The response might contain warnings, parse them
       document.getElementById("lblErrorBar").firstChild.nodeValue
         = "Server reports no script errors...";
 
       document.getElementById("imgErrorBar").src
-        = "chrome://sieve/content/images/syntax-ok.png";
+        = "chrome://sieve/content/images/syntax-ok.png";      
     },
-
+    
     onError: function(response)
     {
+      // CHECKSCRIPT or PUTSCRIPT failed and the server rejected the script...
+      // ... most likely because of syntax errors. 
+      //
+      // In case we used the PUTSCRIPT hack, we don't need to delete the...
+      // ... temporary script because it was never stored on the server, due...
+      // ... to this error... 
+      
       document.getElementById("lblErrorBar").firstChild.nodeValue
         = response.getMessage();
 
       document.getElementById("imgErrorBar").src
         = "chrome://sieve/content/images/syntax-error.png";
-      // the server did not accept our script therfore we can't delete it...
     },
 
     onTimeout: function()
     {
-      alert("A Timeout occured");
+      // Forward timeouts to the global listener...
+      event.onTimeout();
     }
   }
   
@@ -131,9 +152,28 @@ function onCompile()
   if (script.length == 0)
     return;
   
-  var request = new SievePutScriptRequest(
-                  "TMP_FILE_DELETE_ME",script);
-  request.addPutScriptListener(lEvent);
+  // Use the CHECKSCRIPT command when possible, otherwise we need to ...
+  // ... fallback to the PUTSCRIPT/DELETESCRIPT Hack...
+    
+  var request = null;
+  
+  if (gSieve.getCompatibility() >=1)
+  {
+    // ... we use can the CHECKSCRIPT command
+    request = new SieveCheckScriptRequest(script)
+    request.addCheckScriptListener(lEvent);
+  }
+  else
+  {
+    // ... we have to use the PUTSCRIPT/DELETESCRIPT Hack...
+    
+    // First we use PUTSCRIPT to store a temporary script on the server...
+    // ... incase the command fails, it is most likely due to an syntax error...
+    // ... if it sucseeds the script is syntactically correct! 
+    request = new SievePutScriptRequest("TMP_FILE_DELETE_ME",script);
+    request.addPutScriptListener(lEvent);
+  }
+  
   request.addErrorListener(lEvent);
   
   gSieve.addRequest(request);

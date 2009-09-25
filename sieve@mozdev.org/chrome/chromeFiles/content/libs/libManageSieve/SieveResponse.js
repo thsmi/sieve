@@ -43,46 +43,49 @@ function SieveAbstractResponse(parser)
     this.message = "";
     this.responseCode = "";
     
-    if (parser.startsWith("OK"))
+    // OK
+    if (parser.startsWith([[79,111],[75,107]]))
     {
-        this.response = 0;
-        parser.extract(2);
+      this.response = 0;
+      parser.extract(2);
     }
-    else if (parser.startsWith("BYE"))
+    // BYE
+    else if (parser.startsWith([[66,98],[89,121],[69,101]]))
     {
-        this.response = 1;
-        parser.extract(3);
+      this.response = 1;
+      parser.extract(3);
     }
-    else if (parser.startsWith("NO"))
+    // NO
+    else if (parser.startsWith([[78,110],[79,111]]))
     {
-        this.response = 2;
-        parser.extract(2);
+      this.response = 2;
+      parser.extract(2);
     }
     else
-        throw "NO, OK or BYE expected";
+      throw "NO, OK or BYE expected in"+this.parser.getData();
 
     // is there a Message?
     if (parser.isLineBreak())
-        return;
+      return;
 
     // remove the space
     parser.extractSpace();
-    
-    // we got an responseCode
-    if (parser.startsWith("("))
+
+    // we got an responseCode    
+    if (parser.startsWith([[40]]))
     {
-        // remove the opening bracket
-        parser.extract(1);
+      // remove the opening bracket
+      parser.extract(1);
         
-        this.responseCode = parser.extractToken(")");
+      this.responseCode = parser.extractToken(41);
         
-        // remove the closing bracket
-        parser.extract(1);        
+      // remove the closing bracket
+      parser.extract(1);        
         
-        if (parser.isLineBreak())
-            return;
+      if (parser.isLineBreak())
+        return;
              
-        parser.extractSpace();
+      parser.extractSpace();
     }
     
     this.message = parser.extractString();
@@ -123,6 +126,11 @@ SieveAbstractResponse.prototype.getResponseCode
   else if (this.responseCode.indexOf("TRYLATER") == 0)
     return new SieveRespCodeTryLater();    
 
+  // SieveSimpleResponseCode
+  // SieveSaslResponseCode
+  // SieveReferalResponseCode
+     // -> implement get Message
+    
   // TODO Implement these Response codes:
   //"ACTIVE" / "NONEXISTENT" / "ALREADYEXISTS" / "WARNINGS" 
     
@@ -143,7 +151,6 @@ function SieveSimpleResponse(data)
   this.superior = new SieveAbstractResponse(
                         new SieveResponseParser(data));
 }
-
 SieveSimpleResponse.prototype.getMessage
     = function () { return this.superior.getMessage(); }
     
@@ -176,22 +183,23 @@ function SieveCapabilitiesResponse(data)
   this.sasl = {};
   
   this.maxredirects = -1;
-  this.owner =""
+  this.owner = ""
   this.notify = {};
   this.language = "";
   
   var parser = new SieveResponseParser(data);
+  
   while (parser.isString() )
   {
     var tag = parser.extractString();
-    var value = "";
     
+    var value = "";
     if ( parser.isLineBreak() == false)
     {
-      parser.extractSpace();
-      value = parser.extractString();
-    }
-      
+      parser.extractSpace();      
+      value = parser.extractString();       
+    };
+     
     parser.extractLineBreak();
     
     switch (tag.toUpperCase())
@@ -225,7 +233,8 @@ function SieveCapabilitiesResponse(data)
         break;
     }
     
-  }        
+  } 
+
   this.superior = new SieveAbstractResponse(parser);
 }
 
@@ -332,17 +341,17 @@ SieveCapabilitiesResponse.prototype.getOwner
     
 function SieveListScriptResponse(data)
 {
-    //    sieve-name    = string
-    //    string        = quoted / literal
-    //    (sieve-name [SP "ACTIVE"] CRLF) response-oknobye
+  //    sieve-name    = string
+  //    string        = quoted / literal
+  //    (sieve-name [SP "ACTIVE"] CRLF) response-oknobye
 
-    var parser = new SieveResponseParser(data);
-        
-    this.scripts = new Array();
-    var i = -1;
+  var parser = new SieveResponseParser(data);
+  
+  this.scripts = new Array();
+  var i = -1;
     
-    while ( parser.isString() )
-    {
+  while ( parser.isString() )
+  {   
         i++;
 
         this.scripts[i] = new Object();        
@@ -358,14 +367,14 @@ function SieveListScriptResponse(data)
         
         parser.extractSpace();
         
-        if (parser.extractToken("\r\n").toUpperCase() != "ACTIVE")
-            throw "Error \"ACTIVE\" expected";
+        if (parser.extractToken(13).toUpperCase() != "ACTIVE")
+            throw "Error \"ACTIVE\" expected";   
 
         this.scripts[i].active = true;        
         parser.extractLineBreak();
         
     }
-
+    
 	// War die Anfrage erfolgreich?
     this.superior = new SieveAbstractResponse(parser);
 }
@@ -396,7 +405,6 @@ function SieveSaslLoginResponse()
 SieveSaslLoginResponse.prototype.add
   = function (data) 
 {
-  
   var parser = new SieveResponseParser(data);
   
   if ((this.state == 0) && (parser.isString()))
@@ -569,7 +577,7 @@ function SieveGetScriptResponse(scriptName,data)
   /** @private, @type {String} */ this.scriptBody = "";
   
   var parser = new SieveResponseParser(data);
-    
+  
   if (parser.isString())
   {
     this.scriptBody = parser.extractString();

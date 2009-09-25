@@ -14,98 +14,84 @@
 ********************************************************************************/
 
   // public method for url decoding
-  function UTF8Decode(utftext) 
+  
+  function StringFromBytes(byteArray, startIndex, endIndex)
   {
-    var string = "";
-    var i = 0;
-    var c = c1 = c2 = 0;
+    var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+                    .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+    converter.charset = "UTF-8" ;
+  
+    byteArray = byteArray.slice(startIndex,endIndex);
+    return converter.convertFromByteArray(byteArray, byteArray.length);
+  }
 
-    while ( i < utftext.length ) 
-    {
-      c = utftext.charCodeAt(i);
-
-      if (c < 128) 
-      {
-        string += String.fromCharCode(c);
-        i++;
-      }
-      else if((c > 191) && (c < 224)) 
-      {
-        c2 = utftext.charCodeAt(i+1);
-        string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-        i += 2;
-      }
-      else
-      {
-        c2 = utftext.charCodeAt(i+1);
-        c3 = utftext.charCodeAt(i+2);
-        string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-        i += 3;
-      }
-
-    }
-
-    return string;
-  } 
-
+/**
+ * 
+ * @param {Byte[]} data
+ */
 function SieveResponseParser(data)
 {
   if (data == null)
     throw "Error Parsing Response...\nData is null";
-  
+
+  this.pos = 0;
   this.data = data;
 }
 
 SieveResponseParser.prototype.extract
     = function (size)
 {
-    this.data = this.data.slice(size);
+  this.pos += size;
 }
 
 SieveResponseParser.prototype.isLineBreak
     = function ()
 {
-    if (this.data.indexOf("\r\n") != 0)
-        return false;
+  // TODO test for array out of bounds...
+  if (this.data[this.pos] != 13)
+    return false;
+    
+  if (this.data[this.pos+1] != 10)
+    return false;
 
-    return true;
+  return true;
 }
 
 SieveResponseParser.prototype.extractLineBreak
     = function ()
 {
-    if (this.isLineBreak() == false)
-        throw "Linebreak expected";
-        
-    this.data = this.data.slice(2);
+  if (this.isLineBreak() == false)
+    throw "Linebreak expected:\r\n"+this.getData();
+  
+  this.pos += 2;
 }
 
 SieveResponseParser.prototype.isSpace
     = function ()
-{
-    if (this.data.charAt(0) == " ")
-        return true;
-
-    return false;
+{ 
+  if (this.data[this.pos] == 32)
+    return true;
+    
+  return false;
 }
 
 SieveResponseParser.prototype.extractSpace
     = function ()
 {
-    if (this.isSpace() == false)
-        throw "Space expected";
+  if (this.isSpace() == false)
+    throw "Space expected in :\r\n"+this.getData();
     
-    this.data = this.data.slice(1);
+  this.pos++;
 }
 
 //     literal               = "{" number  "+}" CRLF *OCTET
 SieveResponseParser.prototype.isLiteral
     = function ()
 {
-    if (this.data.charAt(0) == "{")
-        return true;
+  if (this.data[this.pos] == 123)
+    return true;
 
-    return false;
+  return false;
 }
 
 // gibt einen string zur?ck, wenn keiner Existiert wird null ?bergeben
@@ -113,117 +99,165 @@ SieveResponseParser.prototype.isLiteral
 SieveResponseParser.prototype.extractLiteral
     = function ()
 {
-    if ( this.isLiteral() == false )
-        throw "Literal Expected";
+  if ( this.isLiteral() == false )
+    throw "Literal Expected in :\r\n"+this.getData();
+         
+  // remove the "{"
+  this.pos++;
+
+  // some sieve implementations are broken, this means ....
+  // ... we can get "{4+}\r\n1234" or "{4}\r\n1234"
+  
+  var nextBracket = this.indexOf(125);
+  if (nextBracket == -1)
+    throw "Error unbalanced parathesis \"{\"";
+  
+  // extract the size, and ignore "+"
+  var size = parseInt(StringFromBytes(this.data, this.pos, nextBracket).replace(/\+/,""));
     
-    // remove the "{"
-    this.data = this.data.slice(1);
+  this.pos = nextBracket+1;
 
-    // some sieveserves don't care about the Documentation
-    // this means instead of "{4+}\r\n1234" we can get "{4}\r\n1234"
-    var nextBracket = this.data.indexOf("}");
-    if (nextBracket == -1)
-        throw "Error unbalanced parathesis \"{\"";
-
-    // extract the size, and ignore "+"
-    var size = parseInt(this.data.slice(0,nextBracket).replace(/\+/,""));
-    this.data = this.data.slice(nextBracket+1);
-
-    if ( this.isLineBreak() == false)
-        throw "Linebreak Expected";        
+  if ( this.isLineBreak() == false)
+    throw "Linebreak Expected";        
         
-    this.extractLineBreak();
+  this.extractLineBreak();
 
-    // extract the Size...
-    
-    var literal = UTF8Decode(this.data.slice(0,size));
-    this.data = this.data.slice(size);
+  // extract the literal...  
+  var literal = StringFromBytes(this.data, this.pos, this.pos+size);
+  this.pos += size;
 
-    return literal;
+  return literal;
+}
+
+SieveResponseParser.prototype.indexOf
+    = function (character)
+{     
+  for (var i=this.pos; i<this.data.length; i++)
+  {
+    if (this.data[i] == character)
+      return i;
+  }
+  
+  return -1;
 }
 
 SieveResponseParser.prototype.isQuoted
     = function ()
-{
-    if (this.data.charAt(0) == "\"")
-        return true;
+{ 
+  if (this.data[this.pos] == 34)
+    return true;
 
-    return false;
+  return false;
 }
 
 SieveResponseParser.prototype.extractQuoted
     = function ()
 {
-    if (this.isQuoted() == false)
-        throw "Quoted expected";
+  if (this.isQuoted() == false)
+    throw "Quoted expected";
 
-    // remove the Quote "
-    this.data = this.data.slice(1);
+  // remove the Quote "
+  this.pos++;
+  
+  // save the position of the next "
+  var nextQuote = this.indexOf(34);
 
-    // save the position of the next "
-    var nextQuote = this.data.indexOf("\"");
+  if (nextQuote == -1)
+    throw "Error unbalanced quotes";
 
-    if (nextQuote == -1)
-        throw "Error unbalanced quotes";
+  var quoted = StringFromBytes(this.data,this.pos,nextQuote);
 
-	  var quoted = UTF8Decode(this.data.slice(0,nextQuote));
+  this.pos = nextQuote+1;
 
-    this.data = this.data.slice(nextQuote+1);
-
-    return quoted;
+  return quoted;
 }
 
 
 SieveResponseParser.prototype.isString
     = function ()
 {
-    if ( this.isQuoted() )
-        return true;
-    else if ( this.isLiteral() )
-        return true;
+  if ( this.isQuoted() )
+    return true;
+    
+  if ( this.isLiteral() )
+    return true;
 
-    return false;
+  return false;
 }
 
 SieveResponseParser.prototype.extractString
     = function ()
 {
-    if ( this.isQuoted() )
-        return this.extractQuoted();
-    if ( this.isLiteral() )
-        return this.extractLiteral();
+  if ( this.isQuoted() )
+    return this.extractQuoted();
+  if ( this.isLiteral() )
+    return this.extractLiteral();
         
-    throw "Message String expected";        
+  throw "Message String expected";        
 }
 
 // Tokens end with an linebreak or a Space
 SieveResponseParser.prototype.extractToken
     = function ( delimiter )
 {
-    var size = this.data.indexOf(delimiter)
-    if (size == -1)
-        throw "Delimiter not found";        
+  var index = this.indexOf(delimiter);
+
+  if (index == -1)
+    throw "Delimiter >>"+delimiter+"<< not found in :\r\n"+this.getData();        
+  
+  var token = StringFromBytes(this.data,this.pos,index);
+  this.pos = index;
     
-    var token = this.data.slice(0,size);
-    this.data = this.data.slice(size);
-    
-    return token;
+  return token;
 }
 
 SieveResponseParser.prototype.startsWith
+    = function ( array )
+{
+  if (array.length == 0)
+    return false;
+    
+  for (var i=0; i<array.length; i++) 
+  {  
+    var result = false;
+    
+    for (var ii=0; ii<array[i].length; ii++)
+      if (array[i][ii] == this.data[this.pos+i])
+        result = true;
+    
+    if (result == false)
+      return false     
+  }
+  
+  return true;
+}
+
+/*SieveResponseParser.prototype.startsWith
     = function ( string )
 {
-    var tmp = this.data.slice(0,string.length).toUpperCase();    
+  string = new String(string);
+  
+  var upper = string.toUpperCase();
+  var lower = string.toLowerCase();
+  
+  // TODO convert Strings to byte array...
+  
+  for (var i; i<string.length; i++)
+    if ((this.data[this.pos+i] != upper[i]) && (this.data[this.pos+i] != lower[i])) 
+      return false;
+      
+  return true;        
+}*/
 
-    if (tmp.indexOf(string.toUpperCase()) == 0)
-        return true;
-    
-    return false;
+SieveResponseParser.prototype.getByteArray
+    = function ()
+{ 
+  return this.data.slice(this.pos, this.data.length);
 }
 
 SieveResponseParser.prototype.getData
     = function ()
-{
-    return this.data;
+{ 
+  return StringFromBytes(this.data, this.pos, this.data.length);
 }    
     

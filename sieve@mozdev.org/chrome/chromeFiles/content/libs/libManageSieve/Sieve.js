@@ -34,6 +34,7 @@
  *   idleInterval exactly one Packet is send. This prefents that the connection
  *   to the server times out.
  */
+ 
 function Sieve(host, port, secure, idleInterval) 
 {  
   
@@ -42,7 +43,7 @@ function Sieve(host, port, secure, idleInterval)
   this.secure = secure;
   
   this.socket = null;
-  this.data = "";
+  this.data = null;
   
   this.requests = new Array();
     
@@ -55,6 +56,7 @@ function Sieve(host, port, secure, idleInterval)
   this.debug.logger = null;  
   
   this.outstream = null;
+  this.binaryOutStream = null;
   
   this.version = 0;
 }
@@ -129,7 +131,6 @@ Sieve.prototype.setDebugLevel
 }
 
 /**
- * XXX
  * @return {Boolean}
  */
 Sieve.prototype.isAlive 
@@ -197,8 +198,14 @@ Sieve.prototype.addRequest
   
   if (this.debug.level & (1 << 0))
     this.debug.logger.logStringMessage(output);
-
-  this.outstream.write(output,output.length);
+    
+  output = bytesFromJSString(output);    
+  
+  if (this.debug.level & (1 << 3))
+    this.debug.logger.logStringMessage(output);
+    
+  this.binaryOutStream.writeByteArray(output,output.length)
+  //this.outstream. write(output,output.length);
   
   return;
 }
@@ -219,8 +226,14 @@ Sieve.prototype.connect = function ()
     this.socket = transportService.createTransport(["starttls"], 1,this.host, this.port, null); 
   else
     this.socket = transportService.createTransport(null, 0,this.host, this.port, null);    
-        
+            
   this.outstream = this.socket.openOutputStream(0,0,0);
+
+  this.binaryOutStream = 
+      Components.classes["@mozilla.org/binaryoutputstream;1"]
+        .createInstance(Components.interfaces.nsIBinaryOutputStream);
+ 
+  this.binaryOutStream.setOutputStream(this.outstream);
   
   var stream = this.socket.openInputStream(0,0,0);
   var pump = Components.
@@ -244,9 +257,11 @@ Sieve.prototype.disconnect
   if (this.socket == null)
     return;
   
+  this.binaryOutStream.close();
   this.outstream.close();  
   this.socket.close(0);
   
+  this.binaryOutStream = null;
   this.outstream = null
   this.socket = null;
   
@@ -283,7 +298,7 @@ Sieve.prototype.onWatchDogTimeout
     this.debug.logger.logStringMessage("libManageSieve/Sieve.js:\nOnTimeout");
       
   // clear receive buffer and any pending request...
-  this.data = "";  
+  this.data = null;
   var request = this.requests[0];
   this.requests.splice(0,1);
 
@@ -295,22 +310,29 @@ Sieve.prototype.onWatchDogTimeout
 Sieve.prototype.onDataAvailable 
     = function(request, context, inputStream, offset, count)
 {
-  var instream = Components.classes["@mozilla.org/scriptableinputstream;1"]
-      .createInstance(Components.interfaces.nsIScriptableInputStream);
-  instream.init(inputStream);
-      
-  var data = instream.read(count);
+  var binaryInStream = Components.classes["@mozilla.org/binaryinputstream;1"]
+      .createInstance(Components.interfaces.nsIBinaryInputStream)
+  
+  binaryInStream.setInputStream(inputStream);
+  
+  var data = binaryInStream.readByteArray(count);
 
-  if (this.debug.level & (1 << 1))
+  if (this.debug.level & (1 << 3))
     this.debug.logger.logStringMessage(data);
+      
+  if (this.debug.level & (1 << 1))
+    this.debug.logger.logStringMessage(StringFromBytes(data,0,data.length));
 
   // is a request handler waiting?
   if ((this.requests.length == 0))
     return;
-		
-  // responses packets could be fragmented...
-  this.data += data;
-	
+
+  // responses packets could be fragmented...    
+  if (this.data == null)
+    this.data = data;
+  else
+    this.data = this.data.concat(data);
+  
   // ... therefore we test, if the response is parsable
   try
   {
@@ -319,7 +341,7 @@ Sieve.prototype.onDataAvailable
       this.watchDog.onStop();
 	  
     // ... then try to parse the request
-    this.requests[0].addResponse(""+this.data); 
+    this.requests[0].addResponse(this.data); 
   }
   catch (ex)
   {
@@ -338,7 +360,7 @@ Sieve.prototype.onDataAvailable
   
   // As we reached this point the response was parsable and has been processed.
   // We do some cleanup as we don't need the transmitted data anymore...
-  this.data = "";
+  this.data = null;
      
   // ... and delete the request, if it is processed.	
   if (this.requests[0].hasNextRequest() == false)
@@ -349,11 +371,16 @@ Sieve.prototype.onDataAvailable
   if ((this.requests.length > 0))
   {
     var output = this.requests[0].getNextRequest();
-
-    if (this.debug.level & (1 << 0))
-      this.debug.logger.logStringMessage(output);
     
-    this.outstream.write(output,output.length);
+    if (this.debug.level & (1 << 0))
+      this.debug.logger.logStringMessage(output);    
+    // force to UTF-8...
+    output = bytesFromJSString(output);    
+  
+    if (this.debug.level & (1 << 3))
+      this.debug.logger.logStringMessage(output);
+      
+    this.binaryOutStream.writeByteArray(output,output.length)      
 	  
     // the request is transmited, therefor activate the timeout
     if( this.watchDog != null)

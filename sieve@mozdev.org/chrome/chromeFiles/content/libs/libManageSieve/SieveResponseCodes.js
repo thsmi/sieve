@@ -6,7 +6,9 @@
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
- 
+
+
+// TODO Simplify response codes...
 function SieveRespCodeAuthTooWeak(code) 
 {
   this.code = code

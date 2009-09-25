@@ -41,33 +41,20 @@
  * 
  * @author Thomas Schmid <schmid-thomas@gmx.net>
  */ 
-function UTF8Encode (string) 
+
+function bytesFromJSString(str) 
 {
-  // Based on a public example on Selfhtml.org...
+  // cleanup linebreaks...
+  str = str.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
   
-  var utftext = "";
-  var c;
-
-  for (var n = 0; n < string.length; n++) 
-  {
-    c = string.charCodeAt(n);
-
-    if (c < 128)
-      utftext += String.fromCharCode(c);
-    else if((c > 127) && (c < 2048))
-    {
-      utftext += String.fromCharCode((c >> 6) | 192);
-      utftext += String.fromCharCode((c & 63) | 128);
-    }
-    else
-    {
-      utftext += String.fromCharCode((c >> 12) | 224);
-      utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-      utftext += String.fromCharCode((c & 63) | 128);
-    }
-  }
-  return utftext;
+  // ... and convert to UTF-8
+  var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+                    .createInstance(Components.interfaces.nsIScriptableUnicodeConverter); 
+  converter.charset = "UTF-8"; 
+ 
+  return converter.convertToByteArray(str, {});
 }
+
 
 /**
  * @param {String} script
@@ -133,7 +120,8 @@ SieveGetScriptRequest.prototype.addResponse
 function SievePutScriptRequest(script, body) 
 {
   this.script = script;
-  this.body = UTF8Encode(body);
+   
+  this.body = body.replace(/\r\n|\r|\n/g, "\r\n");
 }
 
 /** @return {Boolean} */
@@ -155,11 +143,11 @@ SievePutScriptRequest.prototype.getNextRequest
   //  it happens, that we end up with mixed linebreaks...
      
   // convert all \r\n to \r ...
-  this.body = this.body.replace(/\r\n/g,"\r");
+  //this.body = this.body.replace(/\r\n/g,"\r");
   // ... now convert all \n to \r ...
-  this.body = this.body.replace(/\n/g,"\r");  
+  //this.body = this.body.replace(/\n/g,"\r");  
   // ... finally convert all \r to \r\n
-  this.body = this.body.replace(/\r/g,"\r\n");
+  //this.body = this.body.replace(/\r/g,"\r\n");
   
   //this.body = this.body.replace(/\r\n|\r|\n/g, "\r\n")
 
@@ -179,9 +167,20 @@ SievePutScriptRequest.prototype.getNextRequest
       alert("Something went terribly wrong. The linebreaks are mixed up...\n");
   // END DEBUG CODE
   */
-      
-  return "PUTSCRIPT \""+this.script+"\" {"+this.body.length+"+}\r\n"
-        +this.body+"\r\n"
+//  var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+//                    .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+//
+//  converter.charset = "utf-8" ;
+//
+  //return converter.ConvertFromUnicode(aStr);}
+
+
+
+  // sieve -> outputstream to nsIBinaryOutputStream
+  // 
+  
+  return "PUTSCRIPT \""+this.script+"\" {"+bytesFromJSString(this.body).length+"+}\r\n"
+        +this.body+"\r\n";
 }
 
 SievePutScriptRequest.prototype.addPutScriptListener
@@ -247,8 +246,8 @@ function SieveCheckScriptRequest(body)
   // ... according to the documentation. But for some unknown reason a ...
   // ... string sometimes  contains mixed line breaks. Thus we convert ...
   // ... any \r\n, \r and \n to \r\n. 
-    
-  this.body = UTF8Encode(body).replace(/\r\n|\r|\n/g, "\r\n");
+  this.body = body.replace(/\r\n|\r|\n/g, "\r\n");  
+  //this.body = UTF8Encode(body).replace(/\r\n|\r|\n/g, "\r\n");
 }
 
 /** @return {Boolean} */
@@ -262,7 +261,7 @@ SieveCheckScriptRequest.prototype.hasNextRequest
 SieveCheckScriptRequest.prototype.getNextRequest
     = function ()
 {
-  return "CHECKSCRIPT {"+this.body.length+"+}\r\n"
+  return "CHECKSCRIPT {"+bytesFromJSString(this.body).length+"+}\r\n"
         +this.body+"\r\n"
 }
 

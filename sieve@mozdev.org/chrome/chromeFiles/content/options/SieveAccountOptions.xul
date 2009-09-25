@@ -200,6 +200,8 @@
                   oncommand="onDebugResponseCommand(this)" />
         <checkbox id="cbxDebugExceptions" label="&options.debug.exceptions;"
                   oncommand="onDebugExceptionCommand(this)" />
+        <checkbox id="cbxDebugStream" label="Raw Dump/ Dump Byte Stream"
+                  oncommand="onDebugStreamCommand(this)" />                  
       </groupbox>
       <groupbox>
         <caption label="Debug Output" />

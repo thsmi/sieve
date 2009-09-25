@@ -73,7 +73,10 @@ function onDialogLoad(sender)
   
   document.getElementById('cbxDebugExceptions').checked 
       = account.getSettings().hasDebugFlag(2);
-  
+
+  document.getElementById('cbxDebugStream').checked 
+      = account.getSettings().hasDebugFlag(3);
+      
   element = document.getElementById('cbxAuthMechanism');
   element.checked = account.getSettings().hasForcedAuthMechanism();
   enableAuthMechanism(element.checked);
@@ -339,6 +342,14 @@ function onDebugExceptionCommand(sender)
     return;
     
   account.getSettings().setDebugFlag(2,sender.checked);
+}
+
+function onDebugStreamCommand(sender)
+{
+  if (account == null)
+    return;
+    
+  account.getSettings().setDebugFlag(3,sender.checked);
 }
 
 function onAuthMechanismCommand(sender)

@@ -15,8 +15,8 @@
         title="&list.title;"
         windowtype="Sieve:FilterExplorer">
 
-  <script type="application/x-javascript"
-          src="chrome://sieve/content/libs/libManageSieve/Sieve.js"/>
+<!--  <script type="application/x-javascript"
+          src="chrome://sieve/content/libs/libManageSieve/Sieve.js"/>-->
   <script type="application/x-javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveWatchDog.js"/>
   <script type="application/x-javascript" 

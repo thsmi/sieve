@@ -159,6 +159,7 @@
             <menupopup>
               <menuitem id="miAuthMechanismPlain" label="&options.authmechanism.plain;" value="plain"/>
               <menuitem id="miAuthMechanismLogin" label="&options.authmechanism.login;" value="login"/>
+              <menuitem id="miAuthMechanismCramMd5" label="&options.authmechanism.crammd5;" value="crammd5"/>
             </menupopup>
           </menulist>
         </hbox>        

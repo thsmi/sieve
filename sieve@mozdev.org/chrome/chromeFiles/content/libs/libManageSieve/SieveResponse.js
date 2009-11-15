@@ -498,8 +498,8 @@ SieveSaslCramMd5Response.prototype.add
   
   if ((this.state == 0) && (parser.isString()))
   {
-    // The challange is contained within a string
-    this.challange = parser.extractString();
+    // The challenge is contained within a string
+    this.challenge = parser.extractString();
     this.state++;
     
     return;
@@ -519,13 +519,13 @@ SieveSaslCramMd5Response.prototype.add
 SieveSaslCramMd5Response.prototype.getState
   = function () { return this.state; }
 
-SieveSaslCramMd5Response.prototype.getChallange
+SieveSaslCramMd5Response.prototype.getChallenge
   = function ()
 {
   if (this.state < 1)
     throw "Illegal State, request not completed";
       
-  return this.challange; 
+  return this.challenge; 
 }
 
 SieveSaslCramMd5Response.prototype.getMessage

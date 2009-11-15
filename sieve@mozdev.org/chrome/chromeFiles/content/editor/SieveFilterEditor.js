@@ -17,7 +17,6 @@
 // call this with gSivEditor...
   
 var gSieve = null;
-var gSieveWatchDog = null
 
 var gCompileTimeout = null;
 var gCompileDelay = null;
@@ -59,9 +58,11 @@ var event =
   onPutScriptResponse: function(response)
   {
     gChanged = false;
-
     clearTimeout(gCompileTimeout);
+    
     gSieve.removeWatchDogListener();
+    gSieve = null;
+
     close();
   },
 
@@ -227,13 +228,15 @@ function onLoad()
       function(event) {onSideBarBrowserClick(event);},
       false);
   
-  // Connect to the Sieve Object...
-  gSieve = window.arguments[0]["sieve"];
+  // Connect to the Sieve Object...  
+  var sivManager = Components.classes["@sieve.mozdev.org/transport-service;1"].getService();      
+  gSieve = sivManager.wrappedJSObject.getSession(window.arguments[0]["sieve"]);
   
   // ... redirect errors into this window
-  gSieveWatchDog = new SieveWatchDog();
-  gSieveWatchDog.addListener(event);
-  gSieve.addWatchDogListener(gSieveWatchDog);
+  var sieveWatchDog = new SieveWatchDog();
+  sieveWatchDog.addListener(event);
+  
+  gSieve.addWatchDogListener(sieveWatchDog);
   
   gCompileDelay = window.arguments[0]["compileDelay"];
   
@@ -364,32 +367,32 @@ function onSave()
 
 function onClose()
 {
-  if (gChanged == false)
+  if (gChanged == true)
   {
-    gSieve.removeWatchDogListener();
-    return true;
-  }
-
-  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+    var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
                           .getService(Components.interfaces.nsIPromptService);
-  
-  // The flags 393733 equals [Save] [Don't Save] [Cancel]
-  var result =
-    prompts.confirmEx(
-      window, "Save Sieve Script",
-      "Script has not been saved. Do you want to save changes?", 393733,
-      "", "", "", null, { value : false	});
-  
-  switch (result)
-  {
-    case 2 : // Don't save
-      gSieve.removeWatchDogListener();
-      return true;
-    case 0 : // Save
+
+    // The flags 393733 equals [Save] [Don't Save] [Cancel]
+    var result =
+      prompts.confirmEx(
+        window, "Save Sieve Script",
+        "Script has not been saved. Do you want to save changes?", 393733,
+        "", "", "", null, { value : false });
+   
+    // Save the Script if the user descides to...
+    if (result == 0)
       onSave();
+   
+    // ... and abort quitting if the user clicked on "Save" or "Cancel"
+    if (result != 2)
+      return false;                          
   }
   
-  return false;
+  // either the script has not changed or the user did not want to save... 
+  // ... the script, so it's ok to exit.
+  gSieve.removeWatchDogListener();
+  gSieve = null;
+  return true;  
 }
 
 function onImport()
@@ -910,4 +913,3 @@ function onPrint()
 
   return;
 }*/
-

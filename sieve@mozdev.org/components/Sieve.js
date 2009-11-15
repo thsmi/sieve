@@ -1,11 +1,17 @@
 /* 
- * The contents of this file is licenced. You may obtain a copy of
+ * The content of this file is licenced. You may obtain a copy of
  * the license at http://sieve.mozdev.org or request it via email 
- * from the author. Do not remove or change this comment. 
+ * from the author(s). Do not remove or change this comment. 
  * 
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
+
+const nsISupports = Components.interfaces.nsISupports;
+
+const CLASS_ID = Components.ID("280edf85-fa0d-47b1-87dd-763a90cc0cc7");
+const CLASS_NAME = "Manage Sieve Transport";
+const CONTRACT_ID = "@sieve.mozdev.org/transport;1";
 
 /**
  *  This class is a simple socket implementation for the manage sieve protocol. 
@@ -35,12 +41,16 @@
  *   to the server times out.
  */
  
-function Sieve(host, port, secure, idleInterval) 
+function Sieve() 
 {  
+  // you can cheat and use this
+  // while testing without
+  // writing your own interface
+  this.wrappedJSObject = this;
   
-  this.host = host;
-  this.port = port;
-  this.secure = secure;
+  this.host = null;
+  this.port = null;
+  this.secure = null;
   
   this.socket = null;
   this.data = null;
@@ -49,7 +59,7 @@ function Sieve(host, port, secure, idleInterval)
     
   this.watchDog = null;
   
-  this.idleInterval = idleInterval;
+  this.idleInterval = null;
   
   this.debug = new Object();
   this.debug.level  = 0x00;
@@ -59,6 +69,21 @@ function Sieve(host, port, secure, idleInterval)
   this.binaryOutStream = null;
   
   this.version = 0;
+  
+  // a private function to convert a JSString to an byte array---
+  this.bytesFromJSString
+    = function (str) 
+  {
+    // cleanup linebreaks...
+    str = str.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
+  
+    // ... and convert to UTF-8
+    var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+                      .createInstance(Components.interfaces.nsIScriptableUnicodeConverter); 
+    converter.charset = "UTF-8"; 
+ 
+    return converter.convertToByteArray(str, {});
+  }
 }
 
 /**
@@ -154,8 +179,8 @@ Sieve.prototype.startTLS
 
   var securityInfo = this.socket.securityInfo.QueryInterface(Components.interfaces.nsISSLSocketControl);
   
-  if ((ignoreCertError != null) && (ignoreCertError == true))
-    securityInfo.notificationCallbacks = new BadCertHandler(this.debug.logger);
+ /* if ((ignoreCertError != null) && (ignoreCertError == true))
+    securityInfo.notificationCallbacks = new BadCertHandler(this.debug.logger);*/
 
   securityInfo.StartTLS();
 }
@@ -165,6 +190,12 @@ Sieve.prototype.addWatchDogListener
 {
   this.watchDog = watchDog;
   this.watchDog.onAttach(this.idleInterval);
+}
+
+Sieve.prototype.getWatchDogListener
+   = function()
+{
+  return this.watchDog;    
 }
 
 Sieve.prototype.removeWatchDogListener 
@@ -190,16 +221,19 @@ Sieve.prototype.addRequest
   if( this.watchDog != null)
     this.watchDog.onStart();
 
-  // filtert den initrequest heraus...	 	
-  if (request instanceof SieveInitRequest)
-    return;
-
+  //if (request instanceof SieveInitRequest)
+  // Catch the init request, we simply check for an addInitListener function,
+  // ... as instanceof does not work with properly with components. The Scope...
+  // ... could be different.
+  if (request.addInitListener != null)
+    return;    
+  
   var output = request.getNextRequest();
   
   if (this.debug.level & (1 << 0))
     this.debug.logger.logStringMessage(output);
     
-  output = bytesFromJSString(output);    
+  output = this.bytesFromJSString(output);    
   
   if (this.debug.level & (1 << 3))
     this.debug.logger.logStringMessage(output);
@@ -210,14 +244,19 @@ Sieve.prototype.addRequest
   return;
 }
 
-Sieve.prototype.connect = function () 
-{
+Sieve.prototype.connect = function (host, port, secure,idleInterval) 
+{  
   if( this.socket != null)
     return;
 
-  if ( (this.socket != null) && (this.socket.isAlive()))
-    return;
-  
+  /*if ( (this.socket != null) && (this.socket.isAlive()) )
+    return;*/
+ 
+  this.host = host;
+  this.port = port;
+  this.secure = secure;
+  this.idleInterval = idleInterval;
+    
   var transportService =
       Components.classes["@mozilla.org/network/socket-transport-service;1"]
         .getService(Components.interfaces.nsISocketTransportService);
@@ -321,7 +360,17 @@ Sieve.prototype.onDataAvailable
     this.debug.logger.logStringMessage(data);
       
   if (this.debug.level & (1 << 1))
-    this.debug.logger.logStringMessage(StringFromBytes(data,0,data.length));
+  {
+    var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+                      .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+                      
+    converter.charset = "UTF-8" ;
+    
+    var byteArray = data.slice(0,data.length);
+    
+    this.debug.logger
+      .logStringMessage(converter.convertFromByteArray(byteArray, byteArray.length));
+  }
 
   // is a request handler waiting?
   if ((this.requests.length == 0))
@@ -375,7 +424,7 @@ Sieve.prototype.onDataAvailable
     if (this.debug.level & (1 << 0))
       this.debug.logger.logStringMessage(output);    
     // force to UTF-8...
-    output = bytesFromJSString(output);    
+    output = this.bytesFromJSString(output);    
   
     if (this.debug.level & (1 << 3))
       this.debug.logger.logStringMessage(output);
@@ -388,11 +437,23 @@ Sieve.prototype.onDataAvailable
   }
 }
 
+// This is the implementation of your component.
+Sieve.prototype.QueryInterface
+    = function(aIID)
+{
+  // add any other interfaces you support here
+  if (!aIID.equals(nsISupports))
+    throw Components.results.NS_ERROR_NO_INTERFACE;
+  return this;
+}
+
+
+
 /******************************************************************************/
 // Helper class to override the "bad cert" dialog...
 // see nsIBadCertListener for details
 
-function BadCertHandler(logger) 
+/*function BadCertHandler(logger) 
 {
   this.logger = logger;
 }
@@ -430,15 +491,15 @@ BadCertHandler.prototype.notifyCrlNextupdate
    = function(socketInfo, targetURL, cert) 
 {
 }
-/* BadCert2 Interface...
- * 
- * http://lxr.mozilla.org/security/source/security/manager/ssl/public/nsISSLStatus.idl
- * http://lxr.mozilla.org/seamonkey/source/security/manager/ssl/public/nsICertOverrideService.idl
- * http://lxr.mozilla.org/seamonkey/source/security/manager/ssl/public/nsIBadCertListener2.idl
- */
+// BadCert2 Interface...
+// 
+// http://lxr.mozilla.org/security/source/security/manager/ssl/public/nsISSLStatus.idl
+// http://lxr.mozilla.org/seamonkey/source/security/manager/ssl/public/nsICertOverrideService.idl
+// http://lxr.mozilla.org/seamonkey/source/security/manager/ssl/public/nsIBadCertListener2.idl
+///
 
 BadCertHandler.prototype.notifyCertProblem
-  = function (socketInfo,/*nsISSLStatus*/SSLStatus,/*String*/targetSite)
+  = function (socketInfo,SSLStatus,targetSite)
 {
   if (this.logger != null)
     this.logger.logStringMessage("Cert Problem - Override enabled...");  
@@ -495,4 +556,49 @@ BadCertHandler.prototype.QueryInterface
     
   return this;
 }
+*/
 
+//=================================================
+// Note: You probably don't want to edit anything
+// below this unless you know what you're doing.
+//
+// Factory
+var SieveFactory = {
+  createInstance: function (aOuter, aIID)
+  {
+    if (aOuter != null)
+      throw Components.results.NS_ERROR_NO_AGGREGATION;
+    return (new Sieve()).QueryInterface(aIID);
+  }
+};
+
+// Module
+var SieveModule = {
+  registerSelf: function(aCompMgr, aFileSpec, aLocation, aType)
+  {
+    aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
+    aCompMgr.registerFactoryLocation(CLASS_ID, CLASS_NAME, CONTRACT_ID, aFileSpec, aLocation, aType);
+  },
+
+  unregisterSelf: function(aCompMgr, aLocation, aType)
+  {
+    aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
+    aCompMgr.unregisterFactoryLocation(CLASS_ID, aLocation);        
+  },
+  
+  getClassObject: function(aCompMgr, aCID, aIID)
+  {
+    if (!aIID.equals(Components.interfaces.nsIFactory))
+      throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
+
+    if (aCID.equals(CLASS_ID))
+      return SieveFactory;
+
+    throw Components.results.NS_ERROR_NO_INTERFACE;
+  },
+
+  canUnload: function(aCompMgr) { return true; }
+};
+
+//module initialization
+function NSGetModule(aCompMgr, aFileSpec) { return SieveModule; }

@@ -20,8 +20,9 @@
 
 /** @type {Sieve} */
 var gSieve = null;
+var hSieve = null;
 /** @type {SieveWatchDog} */
-var gSieveWatchDog = null;
+//var gSieveWatchDog = null;
 
 // contains a [@mozilla.org/consoleservice;1] interface
 var gLogger = null; 
@@ -44,16 +45,6 @@ var event =
       return;
     }
 
-    // We have to figure out which ist the best SASL Mechanism for the login ...
-    // ... therefore we check first whether a mechanism is forced by the user ...
-    // ... if no one is specified, we follow the rfc advice and use the first 
-    // .... mechanism listed in the capability response.
-    var mechanism = null;        
-    if (account.getSettings().hasForcedAuthMechanism())
-      mechanism = account.getSettings().getForcedAuthMechanism();
-    else
-      mechanism = response.getSasl()[0];
-
     document.getElementById('txtSASL').value
         = response.getSasl();
     document.getElementById('txtExtensions').value    
@@ -62,22 +53,52 @@ var event =
         = response.getImplementation();
     document.getElementById('txtVersion').value
         = response.getVersion();
-          
+
+    // We have to figure out which ist the best SASL Mechanism for the login ...
+    // ... therefore we check first whether a mechanism is forced by the user ...
+    // ... if no one is specified, we follow the rfc advice and use the first 
+    // .... mechanism listed in the capability response we support.
+    
+    var mechanism = [];        
+    if (account.getSettings().hasForcedAuthMechanism())
+      mechanism = [account.getSettings().getForcedAuthMechanism()];      
+    else
+      mechanism = response.getSasl();
+    
     // ... translate the SASL Mechanism String into an SieveSaslLogin Object ...
-    var request = null;  
-    switch (mechanism.toLowerCase())
+    var request = null;    
+    for (var i=0; i<mechanism.length; i++)
     {
-      case "login":
+      gLogger.logStringMessage("Testing sasl mechanism "+mechanism[i]+" for comaptibility");
+      
+      if (mechanism[i].toLowerCase() == "login")
+      {
         request = new SieveSaslLoginRequest();      
-  	    request.addSaslLoginListener(event);
-        break;
-      case "plain":
-      default: // plain is always the fallback...
-        request = new SieveSaslPlainRequest();
-   	    request.addSaslPlainListener(event); 	    
+        request.addSaslLoginListener(event);
         break;        
+      }
+       
+      if (mechanism[i].toLowerCase() == "plain")
+      {
+        request = new SieveSaslPlainRequest();
+        request.addSaslPlainListener(event);      
+        break;        
+      }
+      
+      if (mechanism[i].toLowerCase() == "crammd5")
+      {
+        request = new SieveSaslCramMd5Request();
+        request.addSaslCramMd5Listener(event);
+        break;   
+      }
     }
 
+    if (request == null)
+    {
+      sivSetStatus(2, "Error: Unable to negotiate SASL mechanism.");
+      return;
+    }
+    
     request.addErrorListener(event);
     request.setUsername(account.getLogin().getUsername())
     
@@ -144,13 +165,13 @@ var event =
       {
         sivSetStatus(3,"Starting TLS (Strict RFC)");
         
-        gSieveWatchDog.setTimeoutInterval();
+        gSieve.getWatchDogListener().setTimeoutInterval();
         event.onAuthenticate(response);
       },
       
       onError: function(response)
       {
-        gSieveWatchDog.setTimeoutInterval();
+        gSieve.getWatchDogListener().setTimeoutInterval();
         alert("Error");
         event.onError(response);
       },
@@ -159,7 +180,7 @@ var event =
       {
         sivSetStatus(3,"Starting TLS (Cyrus compatibility)");
         
-        gSieveWatchDog.setTimeoutInterval();
+        gSieve.getWatchDogListener().setTimeoutInterval();
         var request = new SieveCapabilitiesRequest();
         request.addCapabilitiesListener(event);
         request.addErrorListener(event);	
@@ -186,7 +207,7 @@ var event =
         request.addInitListener(lEvent);
         request.addErrorListener(lEvent);
         
-        gSieveWatchDog.setTimeoutInterval(compatibility.getHandshakeTimeout());
+        gSieve.getWatchDogListener().setTimeoutInterval(compatibility.getHandshakeTimeout());
         gSieve.addRequest(request);
     
         gSieve.startTLS(true);   
@@ -228,7 +249,12 @@ var event =
   {
     event.onLoginResponse(response);
   },
-	
+
+  onSaslCramMd5Response: function(response)
+  {
+    event.onLoginResponse(response);
+  },
+   
   onLoginResponse: function(response)
   {
     // enable the disabled controls....
@@ -363,10 +389,8 @@ function onWindowLoad()
 
   // now create a logger session...
   if (gLogger == null)
-  {
     gLogger = Components.classes["@mozilla.org/consoleservice;1"]
                     .getService(Components.interfaces.nsIConsoleService);
-  }
 
   var menuImapAccounts = document.getElementById("menuImapAccounts");
 
@@ -437,31 +461,42 @@ function sivConnect(account,hostname)
   if (hostname == null)
     hostname = account.getHost().getHostname();
 
+  var sivManager = Components.classes["@sieve.mozdev.org/transport-service;1"].getService();
+
+
+  hSieve = sivManager.wrappedJSObject.openSession();  
+  gSieve = sivManager.wrappedJSObject.getSession(hSieve);
+  // TODO Replace by a real Interface...
+  //sieveTransport.QueryInterface(Components.interfaces.sivITransport);
+
   // when pathing this lines always keep refferal code in sync
-      gSieve = new Sieve(
+/*      gSieve = new Sieve(
                     hostname,
                     account.getHost().getPort(),
                     account.getHost().isTLS(),
                     (account.getSettings().isKeepAlive() ?
                         account.getSettings().getKeepAliveInterval():
-                        null));
+                        null));*/
 
-      gSieve.setDebugLevel(
-               account.getSettings().getDebugFlags(),
-               gLogger);                
+   gSieve.setDebugLevel(
+            account.getSettings().getDebugFlags(),
+            gLogger);                
 
-      var request = new SieveInitRequest();
-      request.addErrorListener(event)
-      request.addInitListener(event)
-      gSieve.addRequest(request);
+   var request = new SieveInitRequest();
+   request.addErrorListener(event)
+   request.addInitListener(event)
+   gSieve.addRequest(request);
       
-      gSieveWatchDog = new SieveWatchDog();
-      // TODO load Timeout interval from account settings...
-      gSieveWatchDog.setTimeoutInterval(20000);
-      gSieveWatchDog.addListener(event);  
-      
-      gSieve.addWatchDogListener(gSieveWatchDog);       
-      gSieve.connect();  
+   var sieveWatchDog = new SieveWatchDog();
+   // TODO load Timeout interval from account settings...
+   sieveWatchDog.setTimeoutInterval(20000);
+   sieveWatchDog.addListener(event);       
+   gSieve.addWatchDogListener(sieveWatchDog);
+   
+   gSieve.connect(hostname,account.getHost().getPort(),
+            account.getHost().isTLS(),
+            (account.getSettings().isKeepAlive() ?
+                account.getSettings().getKeepAliveInterval(): null));  
 }
 
 function onActivateClick()
@@ -479,16 +514,13 @@ function onActivateClick()
 function sivDisconnect()
 {
   if (gSieve == null)
-    return;
-    
-  /*if (gSieve.isAlive() == false)
-    return;*/    
-    
-  gSieve.removeWatchDogListener();    
-  gSieve.disconnect();
+    return;  
+
+  var sivManager = Components.classes["@sieve.mozdev.org/transport-service;1"].getService();  
+  sivManager.wrappedJSObject.closeSession(hSieve);  
   
+
   gSieve = null;  
-  gSieveWatchDog = null;
 }
 
 function onSelectAccount()
@@ -587,12 +619,15 @@ function sivOpenEditor(scriptName,scriptBody)
   // ... object to an other window difficult. At first we have to deattach the... 
   // ... listener, then pass the object, and finally attach a new listern of...
   // ... the new window   
+  var watchDogListener = gSieve.getWatchDogListener();
   gSieve.removeWatchDogListener();
+  
+  gSieve = null;
   
   var args = new Array();
   args["scriptName"] = scriptName;
   args["scriptBody"] = scriptBody;
-  args["sieve"] = gSieve;
+  args["sieve"] = hSieve;
   args["compile"] = getSelectedAccount().getSettings().hasCompileDelay();
   args["compileDelay"] = getSelectedAccount().getSettings().getCompileDelay();
 
@@ -600,7 +635,12 @@ function sivOpenEditor(scriptName,scriptBody)
                     "SieveFilterEditor", 
                     "chrome,modal,titlebar,resizable,centerscreen", args);
 
-  gSieve.addWatchDogListener(gSieveWatchDog);
+  // make sure there is only one instance of the sieve object...
+  var sivManager = Components.classes["@sieve.mozdev.org/transport-service;1"].getService();  
+  gSieve = sivManager.wrappedJSObject.getSession(hSieve);  
+  
+  gSieve.addWatchDogListener(watchDogListener);
+  
   var request = new SieveListScriptRequest();
   request.addListScriptListener(event);
   request.addErrorListener(event);

@@ -40,17 +40,20 @@
  * @return {String} The converted string in UTF8 
  * 
  * @author Thomas Schmid <schmid-thomas@gmx.net>
+ * @author Max Dittrich
  */ 
 
-function bytesFromJSString(str) 
-{
-  // cleanup linebreaks...
-  str = str.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
-  
+
+function JSStringToByteArray(str,charset) 
+{  
   // ... and convert to UTF-8
   var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
                     .createInstance(Components.interfaces.nsIScriptableUnicodeConverter); 
-  converter.charset = "UTF-8"; 
+  
+  if (charset == null)
+    converter.charset = "UTF-8";
+  else
+    converter.charset = charset;
  
   return converter.convertToByteArray(str, {});
 }
@@ -121,7 +124,8 @@ function SievePutScriptRequest(script, body)
 {
   this.script = script;
    
-  this.body = body.replace(/\r\n|\r|\n/g, "\r\n");
+  // cleanup linebreaks...
+  this.body = body.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
 }
 
 /** @return {Boolean} */
@@ -179,7 +183,7 @@ SievePutScriptRequest.prototype.getNextRequest
   // sieve -> outputstream to nsIBinaryOutputStream
   // 
   
-  return "PUTSCRIPT \""+this.script+"\" {"+bytesFromJSString(this.body).length+"+}\r\n"
+  return "PUTSCRIPT \""+this.script+"\" {"+JSStringToByteArray(this.body).length+"+}\r\n"
         +this.body+"\r\n";
 }
 
@@ -245,8 +249,8 @@ function SieveCheckScriptRequest(body)
   // Further more Sieve expects line breaks to be \r\n. Mozilla uses \n ... 
   // ... according to the documentation. But for some unknown reason a ...
   // ... string sometimes  contains mixed line breaks. Thus we convert ...
-  // ... any \r\n, \r and \n to \r\n. 
-  this.body = body.replace(/\r\n|\r|\n/g, "\r\n");  
+  // ... any \r\n, \r and \n to \r\n.   
+  this.body = body.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");  
   //this.body = UTF8Encode(body).replace(/\r\n|\r|\n/g, "\r\n");
 }
 
@@ -261,7 +265,7 @@ SieveCheckScriptRequest.prototype.hasNextRequest
 SieveCheckScriptRequest.prototype.getNextRequest
     = function ()
 {
-  return "CHECKSCRIPT {"+bytesFromJSString(this.body).length+"+}\r\n"
+  return "CHECKSCRIPT {"+JSStringToByteArray(this.body).length+"+}\r\n"
         +this.body+"\r\n"
 }
 
@@ -1269,7 +1273,8 @@ SieveSaslLoginRequest.prototype.addResponse
                           Boolean hasNextRequest()
                           void setPassword(String password)
     EXCEPTIONS          : 
-    AUTHOR              : Thomas Schmid        
+    AUTHOR              : Thomas Schmid
+                          Max Dittrich    
     
   DESCRIPTION:
   ============
@@ -1283,9 +1288,11 @@ SieveSaslLoginRequest.prototype.addResponse
 
 *******************************************************************************/
 
-/*function SieveSaslCramMd5Request() 
+function SieveSaslCramMd5Request() 
 {
-  this.response = new SieveSaslLoginResponse();
+  this.response = new SieveSaslCramMd5Response();
+  this.username = "";
+  this.password = "";
 }
 
 SieveSaslCramMd5Request.prototype.setUsername
@@ -1300,6 +1307,19 @@ SieveSaslCramMd5Request.prototype.setPassword
   this.password = password;
 }
 
+/** @return {Boolean} */
+SieveSaslCramMd5Request.prototype.isAuthorizable
+    = function () 
+{
+  return false;
+}
+
+/** @param {String} authorization */
+SieveSaslCramMd5Request.prototype.setAuthorization
+    = function (authorization)
+{
+}
+
 SieveSaslCramMd5Request.prototype.getNextRequest
     = function ()
 {
@@ -1307,21 +1327,12 @@ SieveSaslCramMd5Request.prototype.getNextRequest
   {
     case 0: 
       return "AUTHENTICATE \"CRAM-MD5\" \r\n";    
-    case 1: 
-      this.response.getChallange();
-      // TODO build the response for the challange
-      var cryptoHash =
-        Components.classes["@mozilla.org/security/hash;1"]
-          .getService(Components.interfaces.nsICryptoHash);
- 
-      cryptoHash.initWithString("MD5");
+    case 1:
+      //decoding the base64-encoded challenge
+      var challenge = atob(this.response.getChallenge());        
+      var hmac = this.hmacMD5( challenge, this.password );
       
-      //TODO see http://developer.mozilla.org/en/docs/nsICryptoHash#Computing_the_Hash_of_a_String
-      cryptoHash.update("test".split(''),4);
-      alert(cryptoHash.finish(true));      
-      
-      var challange = "";
-      return "{"+challange.length+"}\r\n"+challange;
+      return "\"" + btoa( this.username + " " + hmac ) + "\"\r\n";
     default : 
       return ""; //it might be better to throw an Execption       
   }  
@@ -1334,6 +1345,13 @@ SieveSaslCramMd5Request.prototype.hasNextRequest
     return false;
   
   return true;
+}
+
+SieveSaslCramMd5Request.prototype.cancel
+    = function ()
+{
+  if (this.errorListener != null)
+    this.errorListener.onTimeout();  
 }
 
 SieveSaslCramMd5Request.prototype.addSaslCramMd5Listener
@@ -1351,15 +1369,97 @@ SieveSaslCramMd5Request.prototype.addErrorListener
 SieveSaslCramMd5Request.prototype.addResponse 
     = function (data)
 {
-
   this.response.add(data);	
 		
 	if (this.response.getState() != 4)
 	  return;
-	
-  if ((response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onSaslCramMd5Response(response);			
-  else if ((response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(response);
+
+  if ((this.response.getResponse() == 0) && (this.responseListener != null))
+    this.responseListener.onSaslCramMd5Response(this.response);      
+  else if ((this.response.getResponse() != 0) && (this.errorListener != null))
+    this.errorListener.onError(this.response);    
 }
-*/
+
+
+SieveSaslCramMd5Request.prototype.hmacMD5
+    = function (challenge, secret)
+{
+  
+  if ( !secret )
+    secret = "";
+
+  // Gecko 1.9.0 offers native HMAC-MD5 support
+  // https://ubiquity.mozilla.com/hg/ubiquity-firefox/file/7872ca345a33/ubiquity/modules/utils.js#l569
+    
+  if (("@mozilla.org/security/hmac;1" in Components.classes) 
+        && ("@mozilla.org/security/keyobjectfactory;1" in Components.classes))
+  {
+    var challengeBytes = JSStringToByteArray(challenge);
+    var crypto = Components.classes["@mozilla.org/security/hmac;1"]
+                     .createInstance( Components.interfaces.nsICryptoHMAC );
+    var keyObject = Components.classes["@mozilla.org/security/keyobjectfactory;1"]
+                        .getService( Components.interfaces.nsIKeyObjectFactory )
+                        .keyFromString( Components.interfaces.nsIKeyObject.HMAC, secret);
+
+    crypto.init( Components.interfaces.nsICryptoHMAC.MD5, keyObject );
+    crypto.update( challengeBytes, challengeBytes.length );
+        
+    return this.byteArrayToHexString(
+             this.strToByteArray(crypto.finish(false)));
+  }
+
+  var hasher = Components.classes["@mozilla.org/security/hash;1"]
+                   .createInstance(Components.interfaces.nsICryptoHash);
+
+  var secretBytes = JSStringToByteArray(secret);
+  if(secretBytes.length > 64)
+    secretBytes = this.calculateMd5(hasher,secretBytes);
+
+  var challengeBytes = JSStringToByteArray(challenge);
+ 
+  var ipad = new Array();
+  var opad = new Array();
+ 
+  for ( var i = 0; i < 64; i++ ) 
+  {
+    ipad[i] = (secretBytes.length > i) ? secretBytes[i] ^ 0x36 : 0x36;
+    opad[i] = (secretBytes.length > i) ? secretBytes[i] ^ 0x5c : 0x5c;
+  }
+  
+  return this.ByteArrayToHexString(
+           this.calculateMd5(hasher,opad,
+             this.calculateMd5(hasher,ipad,challengeBytes)));
+}
+
+SieveSaslCramMd5Request.prototype.calculateMd5
+    = function (hasher,a1,a2)
+{
+  hasher.initWithString( "MD5" );
+  hasher.update( a1, a1.length );
+  if (a2 != null)
+    hasher.update( a2, a2.length );
+  
+  return this.strToByteArray(hasher.finish(false));  
+}
+
+SieveSaslCramMd5Request.prototype.strToByteArray
+     = function ( str )
+{
+  var bytes = new Array();
+
+  for ( var i = 0; i < str.length; i++ ) 
+    bytes[ i ] = str.charCodeAt( i );
+
+  return bytes;
+}
+
+SieveSaslCramMd5Request.prototype.byteArrayToHexString
+    = function (tmp)
+{
+  var str = ""; 
+  for ( var i = 0; i < tmp.length; i++ ) 
+    str += ("0"+tmp[i].toString(16)).slice(-2);
+ 
+  return str;    
+}
+

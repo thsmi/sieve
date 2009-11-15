@@ -1,17 +1,28 @@
+<!--
+/* 
+ * The content of this file is licenced. You may obtain a copy of
+ * the license at http://sieve.mozdev.org or request it via email 
+ * from the author. Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+ -->
+
 <!-- Accounts Dialog -->
 
 <!ENTITY accounts.properties "Eigenschaften...">
 <!ENTITY accounts.filters "Filter...">
 <!ENTITY accounts.column.active "Aktiv">
 <!ENTITY accounts.column.name "Name">
-<!ENTITY accounts.description "Konfiguration der MANAGESIEVE Verbindung zu Ihrem IMAP Konto">
+<!ENTITY accounts.description "Konfiguration der MANAGESIEVE Verbindung von Ihrem IMAP Konto">
 
 <!-- Options Dialog -->
 <!ENTITY options.title "Sieve Einstellungen">
 
 <!ENTITY options.tab.general  "Allgemein">
+<!ENTITY options.tab.compatibility  "Kompatibilität">
 <!ENTITY options.tab.advanced "Erweitert">
-<!ENTITY options.tab.compatibility  "Compatibility">
 <!ENTITY options.tab.debug    "Debug">
 
 <!ENTITY options.login "Authentifizierung">
@@ -40,7 +51,7 @@
 <!ENTITY options.misc.compile.key "p">
 
 <!ENTITY options.debug.caption "Debug Einstellungen">
-<!ENTITY options.debug.warning "Keep in mind that neither SASL Login nor SASL Plain cypher your password, it might be posted in cleartext to the error console.">
+<!ENTITY options.debug.warning "Beachten sie, dass weder SASL Login noch SASL Plain ihr Passwort verschlüssen, es könnte im Klartext als Debugmeldung in die Fehlerkonsole geschrieben werden.">
 <!ENTITY options.debug.request "Client zu Server Kommunikation (Anfragen)">
 <!ENTITY options.debug.response "Server zu Client Kommunikation (Antworten)">
 <!ENTITY options.debug.exceptions "Ausnahmefehler und State Machine Informationen">
@@ -52,7 +63,7 @@
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "LOGIN">
 <!ENTITY options.authmechanism.plain "PLAIN">
-<!ENTITY options.authmechanism.description "In certain situations e.g. when using Proxy Authentication you might want to force a specific Authentication Mechanism." >
+<!ENTITY options.authmechanism.description "In Ausnahmefällen, z.B. wenn sie Proxy Authenitifzierung nutzen, können sie hier einen Autentifizierungsmechanismus erzwingen." >
 
 <!ENTITY options.proxyauth.caption "Proxy Authorisation">
 
@@ -108,8 +119,8 @@
 <!ENTITY edit.toolbar.compile "Syntaxprüfung">
 <!ENTITY edit.toolbar.reference "Sprachreferenz">
 <!ENTITY edit.toolbar.tools "Extras">
-<!ENTITY edit.toolbar.import "Skript Improtieren">
-<!ENTITY edit.toolbar.export "Skript Exprotieren">
+<!ENTITY edit.toolbar.import "Skript Importieren">
+<!ENTITY edit.toolbar.export "Skript Exportieren">
 <!ENTITY edit.toolbar.back "Zurück" >
 <!ENTITY edit.toolbar.forward "Weiter" >
 <!ENTITY edit.toolbar.home "Inhalt" >
@@ -123,5 +134,3 @@
 
 <!ENTITY edit.sidebar.uri "http://sieve.mozdev.org/reference/en/index.html">
 <!ENTITY edit.sidebar.title "Sieve Sprachreferenz">
-
-

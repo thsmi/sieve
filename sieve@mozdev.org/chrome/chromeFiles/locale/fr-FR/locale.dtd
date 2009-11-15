@@ -1,0 +1,140 @@
+<!--
+/* 
+ * The content of this file is licenced. You may obtain a copy of
+ * the license at http://sieve.mozdev.org or request it via email 
+ * from the author. Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Sébastien
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+ -->
+
+
+<!-- Accounts Dialog -->
+
+<!ENTITY accounts.properties "Propriétés...">
+<!ENTITY accounts.filters "Filtres...">
+<!ENTITY accounts.column.active "Actif">
+<!ENTITY accounts.column.name "Nom">
+<!ENTITY accounts.description "Configurer la connectivité MANAGESIEVE de vos comptes IMAP">
+
+<!-- Options Dialog -->
+<!ENTITY options.title "Options Sieve">
+
+<!ENTITY options.tab.general "Général">
+<!ENTITY options.tab.compatibility  "Compatibilité">
+<!ENTITY options.tab.advanced "Avancée">
+<!ENTITY options.tab.debug "Debuggage">
+
+<!ENTITY options.login "Authentification">
+<!ENTITY options.login.key "A">
+<!ENTITY options.login.noAuth "Aucune Authentification">
+<!ENTITY options.login.imapAuth "Utilisateur et mot de passe du compte IMAP">
+<!ENTITY options.login.customAuth "Utilisateur et mot de passe">
+<!ENTITY options.login.username "Utilisateur">
+<!ENTITY options.login.username.key "u">
+<!ENTITY options.login.show "Afficher les mots de passe enregistrés...">
+
+<!ENTITY options.host "ignorer les paramètres IMAP">
+<!ENTITY options.host.key "I">
+<!ENTITY options.host.hostname "Hôte">
+<!ENTITY options.host.hostname.key "h">
+<!ENTITY options.host.port "Port">
+<!ENTITY options.host.port.key "o">
+<!ENTITY options.host.port.default "Défaut: 2000">
+<!ENTITY options.host.tls.key "t">
+<!ENTITY options.host.tls "utiliser TLS, si disponible">
+
+<!ENTITY options.misc "Paramètres diversMiscellaneous Settings">
+<!ENTITY options.misc.keepalive "Toujours envoyer une requête 'keep alive'">
+<!ENTITY options.misc.keepalive.key "k">
+<!ENTITY options.misc.compile "Toujours compiler sur le serveur">
+<!ENTITY options.misc.compile.key "c">
+
+<!ENTITY options.debug.warning 
+  "Gardez à l'esprit que ni SASL Utilisateur ou SASL En clair crypte votre mot de passe, 
+  il doit être envoyé en clair à la console d'erreur.">
+<!ENTITY options.debug.caption "Paramètres de debuggage">
+<!ENTITY options.debug.request "Communication du Client vers le Serveur (demandes)">
+<!ENTITY options.debug.response "Communication du Serveur vers le Client (réponses)">
+<!ENTITY options.debug.exceptions "Information d'éxceptions et d'état de la machine">
+
+<!ENTITY options.authmechanism.caption "Méchanisme d'authentification ">
+<!ENTITY options.authmechanism "Redéfinir le méchanisme d'authentification suggèré">
+<!ENTITY options.authmechanism.default "Use always:">
+<!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
+<!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
+<!ENTITY options.authmechanism.login "Utilsateur">
+<!ENTITY options.authmechanism.plain "En clair">
+<!ENTITY options.authmechanism.description "Dans certaines situations, par exemple quand vous utilisez une authenfication proxy, vous pouvez forcer un méchanisme d'authentification spécifique." > 
+
+<!ENTITY options.proxyauth.caption "Autorisation Proxy">
+
+<!ENTITY options.info.servername "Nom du serveur:">
+<!ENTITY options.info.port "Port:">
+<!ENTITY options.info.secure "Connexion sécurisée:">
+<!ENTITY options.info.username "Utilisateur:">
+<!ENTITY options.info.auth "Authentification:">
+
+
+<!-- Menu entries -->
+<!ENTITY menu.filters "Filtres Sieve...">
+<!ENTITY menu.filters.key "M">
+<!ENTITY menu.options "Paramètres des filtres Sieve...">
+<!ENTITY menu.options.key "S">
+
+
+<!-- Locale for the List Filter Dialog -->
+<!ENTITY list.title "Filtres Sieve">
+
+<!ENTITY list.accounts "Filtres pour:">
+
+<!ENTITY list.log "Journal d'évenements">
+
+<!ENTITY list.tree "Filtres Sieve côté serveur">
+<!ENTITY list.tree.active "Actif">
+<!ENTITY list.tree.name "Nom">
+
+<!ENTITY list.new "Nouveau...">
+<!ENTITY list.edit "Modifier...">
+<!ENTITY list.delete "Supprimer">
+<!ENTITY list.rename "Renommer">
+
+<!ENTITY list.details.capability "Capacités Sieve côté serveur">
+<!ENTITY list.details.capability.implementation "Version du serveur:">
+<!ENTITY list.details.capability.sasl "Méchanisme SASL:">
+<!ENTITY list.details.capability.extensions "Extensions:">
+
+<!ENTITY list.warning "Ce compte n'est pas configuré pour Sieve, aller à 'Outils-> Filtres Sieve'">
+<!ENTITY list.wait.connect "Connexion...">
+
+<!-- Locale for the Edit Filter Dialog -->
+<!ENTITY edit.title "Modifier le filtre Sieve">
+
+<!ENTITY edit.toolbar.save "Sauver">
+<!ENTITY edit.toolbar.undo "Défaire">
+<!ENTITY edit.toolbar.redo "Refaire">
+<!ENTITY edit.toolbar.cut "Couper">
+<!ENTITY edit.toolbar.copy "Copier">
+<!ENTITY edit.toolbar.paste "Coller">
+<!ENTITY edit.toolbar.compile "Vérifier la syntaxe">
+<!ENTITY edit.toolbar.reference "Référence rapide">
+<!ENTITY edit.toolbar.tools "Outils">
+<!ENTITY edit.toolbar.import "Importer le script">
+<!ENTITY edit.toolbar.export "Exporter le script">
+<!ENTITY edit.toolbar.back "Précédent" >
+<!ENTITY edit.toolbar.forward "Suivant" >
+<!ENTITY edit.toolbar.home "Accueil" >
+<!ENTITY edit.toolbar.print "Imprimer" >
+
+<!ENTITY edit.scriptname "Nom du script:">
+<!ENTITY edit.errorbar.title "Erreurs de syntaxe">
+
+<!ENTITY edit.cancel "Annuler">
+<!ENTITY edit.save "Sauver">
+
+<!ENTITY edit.sidebar.uri "http://sieve.mozdev.org/reference/en/index.html">
+<!ENTITY edit.sidebar.title "Sieve Language Reference">
+
+

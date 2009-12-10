@@ -112,6 +112,29 @@
                   </vbox> 
                 </hbox>
               </box>
+              
+              <box id="sivExplorerBadCert" hidden="true" align="center" pack="center" flex="1">
+                <hbox align="center" class="sivWarning" >
+                  <image pack="center" src="chrome://sieve/content/images/sslWarning.png"/>
+                  <vbox>
+                    <description style="font-weight:bold">
+                      Your mail server attempts to identify itself with invalid information.
+                    </description>
+                    <description id="sivExplorerErrorMsg" pack="center" style="white-space: pre-wrap;">       
+If you usually connect to this server without problems, this error could 
+mean that someone is trying to impersonate the server.
+
+Do not continue unless you know there's a good reason why 
+this server doesn't use trusted identification.
+                    </description>
+<checkbox id="cbBadCertRemember" label="Remember my desicion" checked="true"/>
+                <hbox align="right">
+                    <button id="btnIgnoreBadCert" label="Continue" />
+                    <button id="btnAbortBadCert" label="Abort" />
+                </hbox>
+                  </vbox> 
+                </hbox>
+              </box>
             </tree>
             <vbox>          
               <button id="btnServerDetails" oncommand="onServerDetails();" flex="1">

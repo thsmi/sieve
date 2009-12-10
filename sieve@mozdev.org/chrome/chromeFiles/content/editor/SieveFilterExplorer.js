@@ -209,8 +209,8 @@ var event =
         
         gSieve.getWatchDogListener().setTimeoutInterval(compatibility.getHandshakeTimeout());
         gSieve.addRequest(request);
-    
-        gSieve.startTLS(true);   
+            
+        gSieve.startTLS();   
         break;
         
       case 1:
@@ -222,13 +222,13 @@ var event =
         gSieve.addRequest(request);
     
         // activate TLS
-        gSieve.startTLS(true);
+        gSieve.startTLS();
         
         break;
       case 2:
         sivSetStatus(3,"Starting TLS (Cyrus compatibility)");
       
-        gSieve.startTLS(true);
+        gSieve.startTLS();
       
         var request = new SieveCapabilitiesRequest();
         request.addCapabilitiesListener(event);
@@ -458,6 +458,9 @@ function sivConnect(account,hostname)
   postStatus("Connecting...");
   sivSetStatus(3,"Connecting...");
   
+  if (account == null)
+    account = getSelectedAccount();
+  
   if (hostname == null)
     hostname = account.getHost().getHostname();
 
@@ -496,7 +499,8 @@ function sivConnect(account,hostname)
    gSieve.connect(hostname,account.getHost().getPort(),
             account.getHost().isTLS(),
             (account.getSettings().isKeepAlive() ?
-                account.getSettings().getKeepAliveInterval(): null));  
+                account.getSettings().getKeepAliveInterval(): null),
+            new BadCertHandler(gLogger));  
 }
 
 function onActivateClick()
@@ -550,7 +554,7 @@ function onSelectAccount()
       // Disable and cancel if account is not enabled
       if (account.isEnabled() == false)
       {
-        postStatus("Not connected! Goto 'Tools -> Sieve Settings' to activate this account")
+        postStatus("Not connected! Goto 'Tools -> Sieve Settings' to activate this account");
         return;
       }			
       sivConnect(account);
@@ -697,6 +701,7 @@ function sivSetStatus(state, message)
   document.getElementById('sivExplorerWarning').setAttribute('hidden','true');
   document.getElementById('sivExplorerError').setAttribute('hidden','true');
   document.getElementById('sivExplorerWait').setAttribute('hidden','true');
+  document.getElementById('sivExplorerBadCert').setAttribute('hidden','true');
   document.getElementById('sivExplorerTree').setAttribute('collapsed','true');
   
   switch (state)
@@ -714,7 +719,14 @@ function sivSetStatus(state, message)
                 .firstChild.nodeValue = message;    
             break;
     case 4: document.getElementById('sivExplorerTree').removeAttribute('collapsed');
-            break
+            break;
+    case 5: document.getElementById('sivExplorerBadCert').removeAttribute('hidden');
+            document.getElementById("btnIgnoreBadCert").setAttribute("oncommand",
+                "onBadCertOverride('"+message+"',document.getElementById('cbBadCertRemember').checked)");
+            document.getElementById("btnAbortBadCert").setAttribute("oncommand",
+                "sivSetStatus(1,'This account is not configured for ...')");
+            
+            break;
   }
   
 }
@@ -893,3 +905,176 @@ function onSettingsClick()
 }
 
 
+function onBadCertOverride(targetSite,permanent)
+{
+
+  try
+  {
+    gLogger.logStringMessage(">>|"+permanent+"|<<");
+    
+    var overrideService = Components.classes["@mozilla.org/security/certoverride;1"]
+                            .getService(Components.interfaces.nsICertOverrideService);
+
+    var recentCertsSvc = Components.classes["@mozilla.org/security/recentbadcerts;1"]
+                             .getService(Components.interfaces.nsIRecentBadCertsService);
+                             
+    var status = recentCertsSvc.getRecentBadCert(targetSite);    
+    if (!status)
+      throw "No certificate stored for taget Site..."
+
+    var flags = ((status.isUntrusted)? overrideService.ERROR_UNTRUSTED : 0)
+                  | ((status.isDomainMismatch)? overrideService.ERROR_MISMATCH : 0)
+                  | ((status.isNotVaildAtThisTime)? overrideService.ERROR_TIME : 0);      
+
+    var cert = status.QueryInterface(Components.interfaces.nsISSLStatus).serverCert;
+    if (!cert)
+      throw "Status does not contain a certificate..."
+      
+    gLogger.logStringMessage(targetSite+"|"+flags+"|"+!permanent)
+                                                         
+    overrideService.rememberValidityOverride(
+      targetSite.split(":")[0], // Host Name with port (host:port)
+      targetSite.split(":")[1],
+      cert, 
+      flags,
+      !permanent);
+      
+    sivConnect();
+  }
+  catch (ex)
+  {
+    sivSetStatus(2,"Failed to override broken certificate");
+    gLogger.logStringMessage(ex); 
+  }
+                                           
+  
+}
+
+
+
+/******************************************************************************/
+// Helper class to override the "bad cert" dialog...
+// see nsIBadCertListener for details
+
+/* This object implements nsIBadCertListener2
+ * The idea is to suppress the default UI's alert box
+ * and allow the exception to propagate normally
+ */
+
+function BadCertHandler(logger) 
+{
+  this.logger = logger;
+}
+ 
+BadCertHandler.prototype.getInterface =
+  function (aIID)
+{
+     return this.QueryInterface(aIID);
+}
+ 
+BadCertHandler.prototype.QueryInterface =
+  function badcert_queryinterface(aIID)
+{
+  if (aIID.equals(Components.interfaces.nsIBadCertListener2) ||
+      aIID.equals(Components.interfaces.nsIBadCertListener) || // TB2 compatibility  
+      aIID.equals(Components.interfaces.nsISSLErrorListener) ||
+      aIID.equals(Components.interfaces.nsIInterfaceRequestor) ||
+      aIID.equals(Components.interfaces.nsISupports))
+      {
+        return this;
+      }
+ 
+     throw Components.results.NS_ERROR_NO_INTERFACE;
+ }
+
+// nsIBadCertListener implementation for Thunderbird 2...
+/**
+ * @deprecated removed from Thunderbird 3
+ * @param {} socketInfo
+ * @param {} cert
+ * @param {} certAddType
+ * @return {Boolean}
+ */
+BadCertHandler.prototype.confirmUnknownIssuer
+    = function(socketInfo, cert, certAddType) 
+{ 
+  if (this.logger != null)
+    this.logger.logStringMessage("Sieve BadCertHandler: Unknown issuer");
+      
+  return true;
+}
+
+/**
+ * @deprecated removed from Thunderbird 3
+ * @param {} socketInfo
+ * @param {} targetURL
+ * @param {} cert
+ * @return {Boolean}
+ */
+
+BadCertHandler.prototype.confirmMismatchDomain
+    = function(socketInfo, targetURL, cert) 
+{
+  if (this.logger != null)
+    this.logger.logStringMessage("Sieve BadCertHandler: Mismatched domain");
+
+  return true;
+}
+
+/**
+ * @deprecated removed from Thunderbird 3
+ * @param {} socketInfo
+ * @param {} cert
+ * @return {Boolean}
+ */
+BadCertHandler.prototype.confirmCertExpired
+    = function(socketInfo, cert) 
+{
+  if (this.logger != null)
+    this.logger.logStringMessage("Sieve BadCertHandler: Expired certificate");
+
+  return true;
+}
+
+/**
+ * @deprecated removed from Thunderbird 3
+ * @param {} socketInfo
+ * @param {String} targetURL
+ * @param {} cert
+ */
+BadCertHandler.prototype.notifyCrlNextupdate
+   = function(socketInfo, targetURL, cert) 
+{
+  if (this.logger != null)
+    this.logger.logStringMessage("Sieve BadCertHandler: notifyCrlNextupdate");
+}
+ 
+
+// nsIBadCertListener2 implementation for Thunderbird 3...
+
+ /* Returning true in the following two callbacks
+  * means suppress default the error UI (modal alert).
+  */
+ /**
+  * @param {} socketInfo
+  * @param {} sslStatus
+  * @param {String} targetSite
+  * @return {Boolean}
+  */
+ BadCertHandler.prototype.notifyCertProblem
+     = function (socketInfo, sslStatus, targetSite)
+ {
+   this.logger.logStringMessage("Sieve BadCertHandler: notifyCertProblem");
+   
+   sivDisconnect();
+   sivSetStatus(5,targetSite);  
+  
+   return true;
+ }
+
+ BadCertHandler.prototype.notifySSLError =
+ function badcert_notifySSLError(socketInfo, error, targetSite)
+ {
+      this.logger.logStringMessage("Sieve BadCertHandler: notifySSLError");
+     return true;
+ }

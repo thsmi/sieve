@@ -26,19 +26,6 @@ const CONTRACT_ID = "@sieve.mozdev.org/transport;1";
  *  nagociated the switch to a crypted connection. After calling startTLS 
  *  Mozilla will imediately switch to a cryped connection.
  *  <p>
- *   
- * @param {String} host 
- *   The target hostname or IP address as String
- * @param {Int} port
- *   The target port as Interger
- * @param {Boolean} secure
- *   If true, a secure socket will be created. This allows switching to a secure
- *   connection.
- * @param {Int} idleInterval
- *   Specifies the maximal time interval between request. It basically is used 
- *   for sending "Keep alive" packets. It ensures that in worst case every 
- *   idleInterval exactly one Packet is send. This prefents that the connection
- *   to the server times out.
  */
  
 function Sieve() 
@@ -168,8 +155,20 @@ Sieve.prototype.isAlive
 }
 
 // if the parameter ignoreCertError is set, cert errors will be ignored
+/**
+ * This method secures the connection to the sieve server. By activating 
+ * Transport Layer Security all Data exchanged is crypted. 
+ * 
+ * Before calling this method you need to request a crypted connection by
+ * sending a startTLSRequest. Invoke this method imediately after the server 
+ * confirms switching to TLS.
+ *   
+ * @param {nsIBadCertListener2} ignoreCertError
+ *   an nsIBadCertListerner2 compatible Object, which handles any certificate
+ *   errors while establishing the TLS link 
+ */
 Sieve.prototype.startTLS 
-   = function (ignoreCertError)
+   = function ()
 {
   if (this.secure != true)
     throw "TLS can't be started no secure socket";
@@ -178,9 +177,6 @@ Sieve.prototype.startTLS
     throw "Can't start TLS, your are not connected to "+host;
 
   var securityInfo = this.socket.securityInfo.QueryInterface(Components.interfaces.nsISSLSocketControl);
-  
- /* if ((ignoreCertError != null) && (ignoreCertError == true))
-    securityInfo.notificationCallbacks = new BadCertHandler(this.debug.logger);*/
 
   securityInfo.StartTLS();
 }
@@ -244,7 +240,25 @@ Sieve.prototype.addRequest
   return;
 }
 
-Sieve.prototype.connect = function (host, port, secure,idleInterval) 
+/**
+ * 
+ *   
+ * @param {String} host 
+ *   The target hostname or IP address as String
+ * @param {Int} port
+ *   The target port as Interger
+ * @param {Boolean} secure
+ *   If true, a secure socket will be created. This allows switching to a secure
+ *   connection.
+ * @param {Int} idleInterval
+ *   Specifies the maximal time interval between request. It basically is used 
+ *   for sending "Keep alive" packets. It ensures that in worst case every 
+ *   idleInterval exactly one Packet is send. This prefents that the connection
+ *   to the server times out.
+ * @param {Components.interfaces.nsIBadCertListener2} badCertHandler
+ */
+
+Sieve.prototype.connect = function (host, port, secure,idleInterval,badCertHandler) 
 {  
   if( this.socket != null)
     return;
@@ -256,6 +270,8 @@ Sieve.prototype.connect = function (host, port, secure,idleInterval)
   this.port = port;
   this.secure = secure;
   this.idleInterval = idleInterval;
+  
+
     
   var transportService =
       Components.classes["@mozilla.org/network/socket-transport-service;1"]
@@ -265,7 +281,10 @@ Sieve.prototype.connect = function (host, port, secure,idleInterval)
     this.socket = transportService.createTransport(["starttls"], 1,this.host, this.port, null); 
   else
     this.socket = transportService.createTransport(null, 0,this.host, this.port, null);    
-            
+
+  if (badCertHandler != null)
+    this.socket.securityCallbacks = badCertHandler;  
+    
   this.outstream = this.socket.openOutputStream(0,0,0);
 
   this.binaryOutStream = 
@@ -285,6 +304,9 @@ Sieve.prototype.connect = function (host, port, secure,idleInterval)
   return;
 }
 
+/**
+ * 
+ */
 Sieve.prototype.disconnect
     = function () 
 {	
@@ -404,7 +426,7 @@ Sieve.prototype.onDataAvailable
     if( this.watchDog != null)
       this.watchDog.onStart();
   
-	return;
+	  return;
   }
   
   // As we reached this point the response was parsable and has been processed.
@@ -449,114 +471,6 @@ Sieve.prototype.QueryInterface
 
 
 
-/******************************************************************************/
-// Helper class to override the "bad cert" dialog...
-// see nsIBadCertListener for details
-
-/*function BadCertHandler(logger) 
-{
-  this.logger = logger;
-}
-
-BadCertHandler.prototype.confirmUnknownIssuer
-    = function(socketInfo, cert, certAddType) 
-{
-  alert("invalid Password");
-  
-  if (this.logger != null)
-    this.logger.logStringMessage("Sieve BadCertHandler: Unknown issuer");
-      
-  return true;
-}
-
-BadCertHandler.prototype.confirmMismatchDomain
-    = function(socketInfo, targetURL, cert) 
-{
-  if (this.logger != null)
-    this.logger.logStringMessage("Sieve BadCertHandler: Mismatched domain");
-
-  return true;
-}
-
-BadCertHandler.prototype.confirmCertExpired
-    = function(socketInfo, cert) 
-{
-  if (this.logger != null)
-    this.logger.logStringMessage("Sieve BadCertHandler: Expired certificate");
-
-  return true;
-}
-
-BadCertHandler.prototype.notifyCrlNextupdate
-   = function(socketInfo, targetURL, cert) 
-{
-}
-// BadCert2 Interface...
-// 
-// http://lxr.mozilla.org/security/source/security/manager/ssl/public/nsISSLStatus.idl
-// http://lxr.mozilla.org/seamonkey/source/security/manager/ssl/public/nsICertOverrideService.idl
-// http://lxr.mozilla.org/seamonkey/source/security/manager/ssl/public/nsIBadCertListener2.idl
-///
-
-BadCertHandler.prototype.notifyCertProblem
-  = function (socketInfo,SSLStatus,targetSite)
-{
-  if (this.logger != null)
-    this.logger.logStringMessage("Cert Problem - Override enabled...");  
-
-  // see http://lxr.mozilla.org/seamonkey/source/security/manager/pki/resources/content/exceptionDialog.js
-  // addEcsption Method..
-  var overrideService = Components.classes["@mozilla.org/security/certoverride;1"]
-                                   .getService(Components.interfaces.nsICertOverrideService);
-                                   
-  var flags = 0;
-  //if(gSSLStatus.isUntrusted)
-  flags |= overrideService.ERROR_UNTRUSTED;
-  //if(gSSLStatus.isDomainMismatch)
-  flags |= overrideService.ERROR_MISMATCH;
-  //if(gSSLStatus.isNotValidAtThisTime)
-  flags |= overrideService.ERROR_TIME;
-  
-  var cert = SSLStatus.QueryInterface(Components.interfaces.nsISSLStatus).serverCert;
-  
-  this.logger.logStringMessage(targetSite);
-    
-    // TODO: add server cert inorder to establish line of trust
-  overrideService.rememberValidityOverride(
-      targetSite, // Host Name with port (host:port)
-      cert,                            // -> SSLStatus
-      flags,
-      false); //temporary 
-}
-
-
-  // nsIInterfaceRequestor
-BadCertHandler.prototype.getInterface
-  = function(iid) 
-{
-  if (iid.equals(Components.interfaces.nsIBadCertListener) ||
-        iid.equals(Components.interfaces.nsIBadCertListener2))
-    return this;
-
-  Components.returnCode = Components.results.NS_ERROR_NO_INTERFACE;
-  return null;
-}
-
-// nsISupports
-BadCertHandler.prototype.QueryInterface
-  = function(iid) 
-{
-  if (!iid.equals(Components.interfaces.nsIBadCertListener) &&
-      !iid.equals(Components.interfaces.nsIBadCertListener2) &&
-      !iid.equals(Components.interfaces.nsIInterfaceRequestor) &&
-      !iid.equals(Components.interfaces.nsISupports))
-  {
-    throw Components.results.NS_ERROR_NO_INTERFACE;
-  }
-    
-  return this;
-}
-*/
 
 //=================================================
 // Note: You probably don't want to edit anything

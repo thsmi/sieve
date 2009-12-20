@@ -187,6 +187,8 @@ function SieveCapabilitiesResponse(data)
   this.notify = {};
   this.language = "";
   
+  this.capabilities = {};
+  
   var parser = new SieveResponseParser(data);
   
   while (parser.isString() )
@@ -218,6 +220,14 @@ function SieveCapabilitiesResponse(data)
         break;
       case "VERSION":
         this.version = parseFloat(value);
+        if (this.version < 1.0)
+          break;
+        
+        // Version 1.0 introduced rename, noop and checkscript
+        this.capabilities.renamescript = true;
+        this.capabilities.noop = true;
+        this.capabilities.checkscript = true;
+        
         break;
       case "MAXREDIRECTS":
         this.maxredirects = parseInt(value);
@@ -230,6 +240,12 @@ function SieveCapabilitiesResponse(data)
         break;
       case "OWNER":
         this.owner = value;
+        break;
+      case "RENAME":
+        this.capabilities.renamescript = true;
+        break;
+      case "NOOP":
+        this.capabilities.noop = true;
         break;
     }
     
@@ -327,6 +343,21 @@ SieveCapabilitiesResponse.prototype.getLanguage
     = function () { return this.language; }
 
 /**
+ * Returns a list with sieve commands which are supported by this implementation
+ * and are not part of the absolute minimal ManageSieve support.
+ * 
+ * The server advertises such additional commands either by explicitely
+ * naming the command or by using the compatiblility level capability. 
+ * 
+ * Examples are RENAME, NOOP and CHECKSCRIPT.     
+ *  
+ * @return {Object}
+ *   an associative array containing additional sieve commands
+ */
+SieveCapabilitiesResponse.prototype.getCapabilities
+    = function () { return this.capabilities; }        
+    
+/**
  * Gets the name of the logged in user.
  * 
  * Note: This value is only avaiable after AUTHENTICATE command succeeds
@@ -337,6 +368,7 @@ SieveCapabilitiesResponse.prototype.getLanguage
 SieveCapabilitiesResponse.prototype.getOwner
     = function () { return this.owner; }    
 
+    
 //***************************************************************************//
     
 function SieveListScriptResponse(data)

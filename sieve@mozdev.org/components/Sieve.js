@@ -30,9 +30,8 @@ const CONTRACT_ID = "@sieve.mozdev.org/transport;1";
  
 function Sieve() 
 {  
-  // you can cheat and use this
-  // while testing without
-  // writing your own interface
+  // as we are using only java script, we can cheat...
+  // ... we use this component without writing your own interface.
   this.wrappedJSObject = this;
   
   this.host = null;
@@ -46,8 +45,6 @@ function Sieve()
     
   this.watchDog = null;
   
-  this.idleInterval = null;
-  
   this.debug = new Object();
   this.debug.level  = 0x00;
   this.debug.logger = null;  
@@ -55,8 +52,23 @@ function Sieve()
   this.outstream = null;
   this.binaryOutStream = null;
   
-  this.version = 0;
-  
+  // out of the box we support the following manage sieve commands...
+  // ... the server might advertise aditional commands they are added ...
+  // ... or removed by the set compatibility method
+  this.compatibility = {
+    authenticate : true,
+    starttls     : true,
+    logout       : true,
+    capability   : true,  
+    // until now we do not support havespace...
+    //havespace  : false, 
+    putscript    : true,
+    listscripts  : true,
+    setactive    : true,
+    getscript    : true,
+    deletescript : true  
+  };
+   
   // a private function to convert a JSString to an byte array---
   this.bytesFromJSString
     = function (str) 
@@ -74,28 +86,52 @@ function Sieve()
 }
 
 /**
- * Give this socket a hint, which maximal Protocol version of ManageSieve is 
- * supported by the server
- * @param {float} version
- *   the maximal protocol version supported by this server.
+ * Gives this socket a hint, whether a sieve commands is supported or not.
+ * 
+ * Setting the corresponding attribute to false, indecates, that a sieve command
+ * should not be used. As this is only an advice, such command will still be 
+ * processed by this sieve socket.
+ * 
+ * By default the socket seek maximal compatibility.
+ * 
+ * @param {Struct} supported commands
+ *   the supported sieve commands as an associative array. Attribute names have
+ *   to be in lower case, the values can be either null, undefined, true or false.
+ * @example
+ *   sieve.setCompatibility({checkscript:true,rename:true,starttls:false});
  */
+
 Sieve.prototype.setCompatibility
-  = function(version) 
+  = function(capabilites) 
 {
-  this.version = version;
+  for (var capability in capabilites)
+    this.compatibility[capability] = capabilites[capability];  
 }
 
 /**
- * Returns maximal protocol version of the server. This value is not retrived
- * automatically, you have to set it via setCompatiblity
+ * Returns a list of supported sieve commands. As the socket seeks 
+ * maximal compatibility, it always suggest the absolute minimal sieve 
+ * command set defined in the rfc. This value is only a hint, and does 
+ * not represent the server's capabilities!
  * 
- * @return {float}
- *   a floating point number indicating the compatibility
+ * A command is most likely unsupported if the corresponding attribute is null and
+ * disabled if the the attribute is false
+ * 
+ * You should override these defaults as soon as possible.  
+ * 
+ * @return {Struct}
+ *   an associative array structure indecating supported sieve command. 
+ *   Unsupported commands are indecated by a null, disabled by false value...
+ *   
+ * @example
+ *   if (sieve.getCompatiblity().putscript)
+ *     // put script command supported... 
+ *  
  */
 Sieve.prototype.getCompatibility
   = function()
 {
-  return this.version;
+  return this.compatibility;
 }
 
 /**
@@ -185,7 +221,7 @@ Sieve.prototype.addWatchDogListener
    = function(watchDog)
 {
   this.watchDog = watchDog;
-  this.watchDog.onAttach(this.idleInterval);
+  this.watchDog.onAttach();
 }
 
 Sieve.prototype.getWatchDogListener
@@ -250,15 +286,10 @@ Sieve.prototype.addRequest
  * @param {Boolean} secure
  *   If true, a secure socket will be created. This allows switching to a secure
  *   connection.
- * @param {Int} idleInterval
- *   Specifies the maximal time interval between request. It basically is used 
- *   for sending "Keep alive" packets. It ensures that in worst case every 
- *   idleInterval exactly one Packet is send. This prefents that the connection
- *   to the server times out.
  * @param {Components.interfaces.nsIBadCertListener2} badCertHandler
  */
 
-Sieve.prototype.connect = function (host, port, secure,idleInterval,badCertHandler) 
+Sieve.prototype.connect = function (host, port, secure,badCertHandler) 
 {  
   if( this.socket != null)
     return;
@@ -269,9 +300,6 @@ Sieve.prototype.connect = function (host, port, secure,idleInterval,badCertHandl
   this.host = host;
   this.port = port;
   this.secure = secure;
-  this.idleInterval = idleInterval;
-  
-
     
   var transportService =
       Components.classes["@mozilla.org/network/socket-transport-service;1"]

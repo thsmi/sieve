@@ -20,12 +20,11 @@
 
 /** @type {Sieve} */
 var gSieve = null;
+/** @type {int} */
 var hSieve = null;
-/** @type {SieveWatchDog} */
-//var gSieveWatchDog = null;
 
-// contains a [@mozilla.org/consoleservice;1] interface
-var gLogger = null; 
+/** @type {{Components.interfaces.nsIConsoleService}}*/
+var gLogger = null;
  
 var sieveTreeView = null;
 var closeTimeout = null;
@@ -140,7 +139,7 @@ var event =
     // ... is capable of handling TLS, otherwise simply skip it and ...
     // ... use an insecure connection
     
-    gSieve.setCompatibility(response.getVersion());
+    gSieve.setCompatibility(response.getCapabilities());
     
     if (getSelectedAccount().getHost().isTLS() && response.getTLS())
     {
@@ -366,7 +365,13 @@ var event =
   { 
     // as we send a keep alive request, we don't care
     // about the response...
-    var request = new SieveCapabilitiesRequest();
+    var request = null
+    
+    if (gSieve.getCompatibility().noop)
+      request = new SieveNoopRequest();
+    else
+      request = new SieveCapabilitiesRequest();
+
     request.addErrorListener(event);
   
     gSieve.addRequest(request);
@@ -490,16 +495,19 @@ function sivConnect(account,hostname)
    request.addInitListener(event)
    gSieve.addRequest(request);
       
-   var sieveWatchDog = new SieveWatchDog();
+   var sieveWatchDog = null;
+
    // TODO load Timeout interval from account settings...
-   sieveWatchDog.setTimeoutInterval(20000);
+   if (account.getSettings().isKeepAlive())
+     sieveWatchDog = new SieveWatchDog(20000,account.getSettings().getKeepAliveInterval());
+   else
+     sieveWatchDog = new SieveWatchDog(20000);
+     
    sieveWatchDog.addListener(event);       
    gSieve.addWatchDogListener(sieveWatchDog);
    
    gSieve.connect(hostname,account.getHost().getPort(),
             account.getHost().isTLS(),
-            (account.getSettings().isKeepAlive() ?
-                account.getSettings().getKeepAliveInterval(): null),
             new BadCertHandler(gLogger));  
 }
 
@@ -569,11 +577,7 @@ function onSelectAccount()
     //levent.onLogoutResponse("");
     return;
   }
-  
-  // hier haben wir etwas weniger Zeit ...
-  // TODO: can be removed as timeout are implemented via the watchdog ?!?
-  //logoutTimeout = setTimeout(levent.onLogoutResponse,250);
-  
+   
   var request = new SieveLogoutRequest();
   request.addLogoutListener(levent);
   request.addErrorListener(event);
@@ -634,6 +638,8 @@ function sivOpenEditor(scriptName,scriptBody)
   args["sieve"] = hSieve;
   args["compile"] = getSelectedAccount().getSettings().hasCompileDelay();
   args["compileDelay"] = getSelectedAccount().getSettings().getCompileDelay();
+  args["idle"] = getSelectedAccount().getSettings().isKeepAlive();
+  args["idleDelay"] = getSelectedAccount().getSettings().getKeepAliveInterval();
 
   window.openDialog("chrome://sieve/content/editor/SieveFilterEditor.xul", 
                     "SieveFilterEditor", 
@@ -871,7 +877,7 @@ function onRenameClick()
   if (input.value.toLowerCase() == oldScriptName.toLowerCase())
     return;   
 
-  if (gSieve.getCompatibility() >=1)
+  if (gSieve.getCompatibility().renamescript)
    sivRename2(oldScriptName, input.value);
   else
    sivRename(oldScriptName, input.value, 
@@ -910,8 +916,6 @@ function onBadCertOverride(targetSite,permanent)
 
   try
   {
-    gLogger.logStringMessage(">>|"+permanent+"|<<");
-    
     var overrideService = Components.classes["@mozilla.org/security/certoverride;1"]
                             .getService(Components.interfaces.nsICertOverrideService);
 
@@ -929,8 +933,6 @@ function onBadCertOverride(targetSite,permanent)
     var cert = status.QueryInterface(Components.interfaces.nsISSLStatus).serverCert;
     if (!cert)
       throw "Status does not contain a certificate..."
-      
-    gLogger.logStringMessage(targetSite+"|"+flags+"|"+!permanent)
                                                          
     overrideService.rememberValidityOverride(
       targetSite.split(":")[0], // Host Name with port (host:port)
@@ -1065,7 +1067,7 @@ BadCertHandler.prototype.notifyCrlNextupdate
      = function (socketInfo, sslStatus, targetSite)
  {
    this.logger.logStringMessage("Sieve BadCertHandler: notifyCertProblem");
-   
+       
    sivDisconnect();
    sivSetStatus(5,targetSite);  
   

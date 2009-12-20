@@ -1,5 +1,5 @@
 /*
- * The contents of this file is licenced. You may obtain a copy of the license
+ * The content of this file is licenced. You may obtain a copy of the license
  * at http://sieve.mozdev.org or request it via email from the author. 
  *
  * Do not remove or change this comment.
@@ -81,9 +81,15 @@ var event =
 
   onIdle: function()
   {
+    var request = null
+    
+    if (gSieve.getCompatibility().noop)
+      request = new SieveNoopRequest();
+    else
+      request = new SieveCapabilitiesRequest();
+      
     // as we send a keep alive request, we don't care
     // about the response...
-    var request = new SieveCapabilitiesRequest();
     request.addErrorListener(event);
 
     gSieve.addRequest(request);
@@ -158,7 +164,7 @@ function onCompile()
     
   var request = null;
   
-  if (gSieve.getCompatibility() >=1)
+  if (gSieve.getCompatibility().checkscript)
   {
     // ... we use can the CHECKSCRIPT command
     request = new SieveCheckScriptRequest(script)
@@ -233,9 +239,14 @@ function onLoad()
   gSieve = sivManager.wrappedJSObject.getSession(window.arguments[0]["sieve"]);
   
   // ... redirect errors into this window
-  var sieveWatchDog = new SieveWatchDog();
-  sieveWatchDog.addListener(event);
+  var sieveWatchDog = null
   
+  if (window.arguments[0]["idle"])
+    sieveWatchDog = new SieveWatchDog(20000,window.arguments[0]["idleDelay"]);
+  else
+    sieveWatchDog = new SieveWatchDog(20000);
+        
+  sieveWatchDog.addListener(event);  
   gSieve.addWatchDogListener(sieveWatchDog);
   
   gCompileDelay = window.arguments[0]["compileDelay"];

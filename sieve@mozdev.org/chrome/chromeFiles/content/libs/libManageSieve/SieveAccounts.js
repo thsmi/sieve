@@ -389,6 +389,7 @@ SieveCustomAuth2.prototype.getType
  * ... the class SieveCustomAuth supports legacy Thunderbird releases
  * 
  * @see SieveCustomAuth
+ * @deprecated since Thunderbird 3
  *  
  * @param {String} uri
  *   the unique URI of the associated sieve account

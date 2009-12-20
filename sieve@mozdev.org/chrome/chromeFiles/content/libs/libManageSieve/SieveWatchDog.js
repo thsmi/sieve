@@ -8,61 +8,95 @@
  */
 
 
-// we have one central sieve object , but a seperate message queue for every window. 
-// therefore we need a for every window a seperate watchdog inorder to link
-// the global sieve object with the local message queue
-
-function SieveWatchDog()
+/**
+ * A managse sieve server always respond to a request within a certain time. If 
+ * it fails to do so, something most likely went terribliy wrong. 
+ *
+ * As we are using an event driven design. Losing contact to the server, 
+ * unexpected and unparsable responses jam the event queue for ever. There
+ * is a request and no matching response...
+ * 
+ * ... the watchdog kicks in here. If the client receives no or no parsable 
+ * response within a specified timeout interval. The Watchdog assumes a broken 
+ * event queue and invokes onWatchdogTimeout().  
+ * 
+ * Furthermore servers close inactive conections after a certain time. In order
+ * to prevent that, we need to send a "Keep alive" packet when neede. The countdown 
+ * timer starts imediately after receiving a response and will be reset upon sending 
+ * a request. In case such an idle timout occures onIdleTimeout() is invoked.  
+ *
+ * NOTE: Every XUL window has a seperate message queue, furthermore a sieve 
+ * object supports only one watchdog. This means you need a seperate watchdog
+ * for every window that uses the sieve object. 
+ * 
+ * @param {} timeout
+ *   specifies the maximal intervall between a request and a response.  
+ * @param {Int} idle
+ *   Specifies the maximal time interval between a response and a request. 
+ *   It basically is used for sending "Keep alive" packets. It can be used to
+ *   ensures that in worst case every idleInterval a packet is send. 
+ *   
+ *   This parameter is optional and can be null.
+ */
+function SieveWatchDog(timeout, idle)
 {
-  this.timeout      = null;
-  this.timeoutDelay = 20000;
-  this.idle         = null;
-  this.idleDelay    = 30*60*1000;
+  if (!timeout)
+    timeout = 20000;
+    
+  if (!idle)
+    idle = null;
+    
+  this.timeout = { timer:null, delay:timeout};
+  this.idle    = { timer:null, delay:idle};
+  
   this.listener     = null;
 }
 
 /**
- * 
+ * sets the timout 
  * @param {} interval
+ *   the number of miliseconds before the watchdog
  */
 SieveWatchDog.prototype.setTimeoutInterval
     = function (interval)
 {
   if (interval == null)
-    this.timeoutDelay = 20000;
+    this.timeout.delay = 20000;
   else
-    this.timeoutDelay = interval;
+    this.timeout.delay = interval;
 }
 
+
+
 SieveWatchDog.prototype.onAttach
-    = function (idleDelay)
+    = function ()
 {   
-  this.timeout 
+  this.timeout.timer 
     = Components.classes["@mozilla.org/timer;1"]
         .createInstance(Components.interfaces.nsITimer);
   
-  if (idleDelay == null)
+  if (this.idle.delay == null)
     return;
   
-  this.idle 
+  this.idle.timer 
     = Components.classes["@mozilla.org/timer;1"]
         .createInstance(Components.interfaces.nsITimer);
-  this.idleDelay = idleDelay;        
+          
 }
 
 SieveWatchDog.prototype.onDeattach
     = function ()
 {
-  if (this.timeout != null)
+  if (this.timeout.timer != null)
   {
-    this.timeout.cancel();
-    this.timeout = null;
+    this.timeout.timer.cancel();
+    this.timeout.timer = null;
   }
   
-  if (this.idle != null)
+  if (this.idle.timer != null)
   {
-    this.idle.cancel();
-    this.idle = null;
+    this.idle.timer.cancel();
+    this.idle.timer = null;
   }
 }   
 
@@ -70,33 +104,32 @@ SieveWatchDog.prototype.notify
     = function (timer) 
 {
   timer.cancel();  
-  if ((this.timeout == timer) && (this.listener != null))
+  if ((this.timeout.timer == timer) && (this.listener != null))
     this.listener.onWatchDogTimeout();
   
-  if ((this.idle == timer) && (this.listener != null))
+  if ((this.idle.timer == timer) && (this.listener != null))
     this.listener.onIdle();
 }
 
 SieveWatchDog.prototype.onStart
-    = function (timeout)
+    = function ()
 {
-  this.timeout.initWithCallback(
-         this,
-         ((timeout != null) ? timeout : this.timeoutDelay),
+  this.timeout.timer.initWithCallback(
+         this, this.timeout.delay,
          Components.interfaces.nsITimer.TYPE_ONE_SHOT);
 }
 
 SieveWatchDog.prototype.onStop
     = function()
 {
-  if (this.timeout != null)
-    this.timeout.cancel();
+  if (this.timeout.timer != null)
+    this.timeout.timer.cancel();
     
-  if (this.idle == null)
+  if (this.idle.timer == null)
     return;
       
-  this.idle.cancel();
-  this.idle.initWithCallback(this,this.idleDelay,
+  this.idle.timer.cancel();  
+  this.idle.timer.initWithCallback(this,this.idle.delay,
          Components.interfaces.nsITimer.TYPE_ONE_SHOT);
     
   return;

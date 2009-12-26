@@ -69,7 +69,7 @@ var event =
     while((mechanism.length > 0) && (request == null))
     {
       // remove and test the first element...
-      switch (machanism.shift().toLowerCase())
+      switch (mechanism.shift().toLowerCase())
       {
         case "plain":
           request = new SieveSaslPlainRequest();

@@ -1426,7 +1426,7 @@ SieveSaslCramMd5Request.prototype.hmacMD5
     opad[i] = (secretBytes.length > i) ? secretBytes[i] ^ 0x5c : 0x5c;
   }
   
-  return this.ByteArrayToHexString(
+  return this.byteArrayToHexString(
            this.calculateMd5(hasher,opad,
              this.calculateMd5(hasher,ipad,challengeBytes)));
 }

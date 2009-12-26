@@ -63,33 +63,34 @@ var event =
       mechanism = [account.getSettings().getForcedAuthMechanism()];      
     else
       mechanism = response.getSasl();
-    
-    // ... translate the SASL Mechanism String into an SieveSaslLogin Object ...
-    var request = null;    
-    for (var i=0; i<mechanism.length; i++)
+
+    // ... translate the SASL Mechanism String into an SieveSaslLogin Object ...      
+    var request = null;
+    while((mechanism.length > 0) && (request == null))
     {
-      gLogger.logStringMessage("Testing sasl mechanism "+mechanism[i]+" for comaptibility");
-      
-      if (mechanism[i].toLowerCase() == "login")
+      // remove and test the first element...
+      switch (machanism.shift().toLowerCase())
       {
-        request = new SieveSaslLoginRequest();      
-        request.addSaslLoginListener(event);
-        break;        
-      }
-       
-      if (mechanism[i].toLowerCase() == "plain")
-      {
-        request = new SieveSaslPlainRequest();
-        request.addSaslPlainListener(event);      
-        break;        
-      }
-      
-      if (mechanism[i].toLowerCase() == "crammd5")
-      {
-        request = new SieveSaslCramMd5Request();
-        request.addSaslCramMd5Listener(event);
-        break;   
-      }
+        case "plain":
+          request = new SieveSaslPlainRequest();
+          request.addSaslPlainListener(event);      
+          break;
+        case "crammd5":
+          request = new SieveSaslCramMd5Request();
+          request.addSaslCramMd5Listener(event);
+          break;          
+        case "login":
+          // we use SASL LOGIN only as last resort...
+          // ... as suggested in the RFC.        
+          if (mechanism.length > 0)
+          {
+            mechanism.push("login");
+            break;
+          }
+          request = new SieveSaslLoginRequest();      
+          request.addSaslLoginListener(event);
+          break;
+      }      
     }
 
     if (request == null)

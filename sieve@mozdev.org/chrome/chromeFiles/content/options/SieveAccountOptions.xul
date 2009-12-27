@@ -12,7 +12,7 @@
         style="width: 48em; height: 27em;"
         title="&options.title;">
 
-  <script type="application/x-javascript" src="chrome://sieve/content/options/SieveAccountOptions.js"/>
+  <script type="application/javascript" src="chrome://sieve/content/options/SieveAccountOptions.js"/>
   <tabbox  flex="1">
   <tabs >
     <tab label="&options.tab.general;" />

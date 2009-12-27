@@ -16,24 +16,24 @@
   windowtype="Sieve:FilterEditor" >
   
   <!-- needed for copy and paste -->
-  <script type="application/x-javascript"
+  <script type="application/javascript"
           src="chrome://global/content/globalOverlay.js" />   
   
-  <script type="application/x-javascript" 
+  <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveWatchDog.js" />
-  <script type="application/x-javascript" 
+  <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveRequest.js" />
-  <script type="application/x-javascript" 
+  <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveResponse.js" />
-  <script type="application/x-javascript" 
+  <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveResponseParser.js"/>
-  <script type="application/x-javascript" 
+  <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js" />
-  <script type="application/x-javascript" 
+  <script type="application/javascript" 
           src="chrome://sieve/content/editor/SieveFilterEditor.js" />
-  <script type="application/x-javascript" 
+  <script type="application/javascript" 
           src="chrome://global/content/printUtils.js"/>
-  <script type="application/x-javascript" 
+  <script type="application/javascript" 
           src="chrome://messenger/content/msgPrintEngine.js"/>
   
  
@@ -105,9 +105,7 @@
               </vbox>
               <textbox id="sivContentEditor" flex="1" 
                        multiline="true" wrap="off" 
-                       autocomplete="off"
-                       onmousemove="onUpdateCursorPos(250);" 
-                       onkeypress="onUpdateCursorPos(50);" />                
+                       autocomplete="off" />                
             </hbox> 
            <splitter id="spErrorBar" resizeafter="farthest" /> 
             <vbox id="vbErrorBar" class="sieveSideBar">

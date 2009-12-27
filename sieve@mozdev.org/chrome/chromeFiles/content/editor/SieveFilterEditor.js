@@ -11,31 +11,28 @@
  *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveResponse.js"
  *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveRequest.js"   
  */
-
-// TODO protect namespace:
-//var gSivEditor = {
-// call this with gSivEditor...
-  
+ 
 var gSieve = null;
-
-var gCompileTimeout = null;
-var gCompileDelay = null;
-
-/** @type Boolean */
-var gChanged = false;
 
 var gBackHistory = new Array();
 var gForwardHistory = new Array();
 
 var gPrintSettings = null;
 
-// the cursor position is updated lazyly
-var gUpdateScheduled = false;
-
-// update line numbers lazyly
-var gScrollUpdateScheduled = false;
-var gRows = 1;
-
+var gEditorStatus =
+{
+  selectionStart    : -1,
+  selectionEnd      : -1,
+  selectionChanged  : false,
+  
+  contentChanged    : false,
+  
+  scrollChanged     : false,
+  rowCount          : 1,
+  
+  checkScriptDelay  : 200,
+  checkScriptTimer  : null
+}
 
 var event = 
 {
@@ -55,6 +52,7 @@ var event =
     document.getElementById("sivContentEditor").value = script;
     document.getElementById("sivContentEditor").setSelectionRange(0, 0);
 	UpdateCursorPos();
+    UpdateLines();
   },
 
   /**
@@ -62,8 +60,8 @@ var event =
    */
   onPutScriptResponse: function(response)
   {
-    gChanged = false;
-    clearTimeout(gCompileTimeout);
+    gEditorStatus.contentChanged = false;
+    clearTimeout(gEditorStatus.checkScriptTimer);
     
     gSieve.removeWatchDogListener();
     gSieve = null;
@@ -193,24 +191,26 @@ function onCompile()
 
 function onInput()
 {
-  if (gChanged == false)
+  if (gEditorStatus.contentChanged == false)
     document.getElementById("sbChanged").label = "Changed";
   
-  gChanged = true;
+  gEditorStatus.contentChanged = true;
   
   // on every keypress we reset the timeout
-  if (gCompileTimeout != null)
+  if (gEditorStatus.checkScriptTimer != null)
   {
-    clearTimeout(gCompileTimeout);
-    gCompileTimeout = null;
+    clearTimeout(gEditorStatus.checkScriptTimer);
+    gEditorStatus.checkScriptTimer = null;
   }
   
   if (document.getElementById("btnCompile").checked)
-    gCompileTimeout = setTimeout(function() {onCompile();}, gCompileDelay);
+    gEditorStatus.checkScriptTimer = setTimeout(function() {onCompile();}, gEditorStatus.checkScriptDelay);
+  
+  UpdateLinesLazy();
 }
 
 function onLoad()
-{
+{ 
   // checkbox buttons are buggy in Gecko 1.8, this has been fixed in ...
   // ...Gecko 1.9 (Thunderbird 3).
   // We implement the workaround mentioned in Bug 382457.
@@ -244,17 +244,22 @@ function onLoad()
   {
     document.getElementById("sivLineNumbers").removeAttribute('hidden');
     document.getElementById("sivContentEditor")
-      .addEventListener("input",function() {onInput();UpdateLinesLazy();},false);
-    document.getElementById("sivContentEditor")
-      .addEventListener("scroll", function() {UpdateScrollPos();},false);
+        .addEventListener("scroll", function() {onEditorScroll();},false);
   }
-  else 
+  else
   {
     document.getElementById("sivLineNumbers").setAttribute('hidden', 'true');
-    document.getElementById("sivContentEditor")
-      .addEventListener("input",function() {onInput();},false);
   }
+
+  // add event listeners to Editor
+  document.getElementById("sivContentEditor")
+      .addEventListener("input",function() {onInput();},false);   
       
+  document.getElementById("sivContentEditor")
+      .addEventListener("mousemove",function() {onUpdateCursorPos(250);},false);
+      
+  document.getElementById("sivContentEditor")
+      .addEventListener("keypress",function() {onUpdateCursorPos(50);},false);
       
   // hack to prevent links to be opened in the default browser window...
   document.getElementById("ifSideBar").
@@ -278,7 +283,7 @@ function onLoad()
   sieveWatchDog.addListener(event);  
   gSieve.addWatchDogListener(sieveWatchDog);
   
-  gCompileDelay = window.arguments[0]["compileDelay"];
+  gEditorStatus.checkScriptDelay = window.arguments[0]["compileDelay"];
   
   document.getElementById("txtName").value = window.arguments[0]["scriptName"];
   
@@ -407,7 +412,7 @@ function onSave()
 
 function onClose()
 {
-  if (gChanged == true)
+  if (gEditorStatus.contentChanged == true)
   {
     var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
                           .getService(Components.interfaces.nsIPromptService);
@@ -527,8 +532,8 @@ function onErrorBarShow()
  */
 function onErrorBarHide()
 {
-  clearTimeout(gCompileTimeout);
-  gCompileTimeout = null;
+  clearTimeout(gEditorStatus.checkScriptTimer);
+  gEditorStatus.checkScriptTimer = null;
   
   document.getElementById("btnCompile").removeAttribute('checked');
   document.getElementById("vbErrorBar").setAttribute('hidden', 'true');
@@ -754,8 +759,16 @@ function OnReplaceString()
     alert(item);
 }*/
 
-function UpdateCursorPos() {
+function UpdateCursorPos()
+{
+  
   var el = document.getElementById("sivContentEditor");
+  
+  // We can skip if the cursor position did not change at all...
+  if ((gEditorStatus.selectionStart == el.selectionStart) 
+        && (gEditorStatus.selectionEnd == el.selectionEnd))
+    return;  
+  
   var lines = el.value.substr(0, el.selectionStart).split("\n");
 
   document.getElementById("sbCursorPos")
@@ -768,14 +781,17 @@ function UpdateCursorPos() {
             .label += " - " + lines.length+ ":" + (lines[lines.length - 1].length + 1);
   }
   
-  gUpdateScheduled = false;
+  gEditorStatus.selectionStart = el.selectionStart;
+  gEditorStatus.selectionEnd = el.selectionEnd;
+  
+  gEditorStatus.selectionChanged = false;
   
   return;
 }
 
 
 
-function UpdateScrollPos()
+function onEditorScroll()
 {
   var first = document.getAnonymousElementByAttribute(document.getElementById("sivLineNumbersEditor"), 'anonid', 'input');
   var second = document.getAnonymousElementByAttribute(document.getElementById("sivContentEditor"), 'anonid', 'input');
@@ -786,6 +802,9 @@ function UpdateScrollPos()
 
 function UpdateLines()
 {
+  if (document.getElementById("sivLineNumbers").hasAttribute('hidden'))
+    return;
+   
   // TODO do lazy update 100ms ...
   var first = document.getAnonymousElementByAttribute(document.getElementById("sivLineNumbersEditor"), 'anonid', 'input');
   var second = document.getAnonymousElementByAttribute(document.getElementById("sivContentEditor"), 'anonid', 'input');
@@ -799,39 +818,42 @@ function UpdateLines()
   var textRows = (second.value).split('\n');
 
   // no line breaks changed?
-  if (gRows == textRows.length)
+  if (gEditorStatus.rowCount == textRows.length)
    return;
  
- gRows = textRows.length;
+  gEditorStatus.rowCount = textRows.length;
 
  // TODO calculate how many lines changed instead of rebuilding all...
  var str= "1";
-  for (var i=1; i < gRows; i++)
+  for (var i=1; i < gEditorStatus.rowCount; i++)
     str+= "\n"+ (i+1);
 
   first.value = str;
 
-  UpdateScrollPos();
+  onEditorScroll();
 }
 
 function UpdateLinesLazy()
 {
-  if (gScrollUpdateScheduled)
+  if (document.getElementById("sivLineNumbers").hasAttribute('hidden'))
+    return;
+    
+  if (gEditorStatus.scrollChanged)
     return;
 
-  setTimeout(function () {gScrollUpdateScheduled=false;UpdateLines();},75);
+  setTimeout(function () {gEditorStatus.scrollChanged=false;UpdateLines();},75);
 
-  gScrollUpdateScheduled = true;
+  gEditorStatus.scrollChanged = true;
 }
 
 function onUpdateCursorPos(timeout)
 {
-  if (gUpdateScheduled)
+  if (gEditorStatus.selectionChanged)
     return;
 
-  setTimeout(function() {UpdateCursorPos();	gUpdateScheduled = false;}, 200);
+  setTimeout(function() {UpdateCursorPos();	gEditorStatus.selectionChanged = false;}, 200);
 
-  gUpdateScheduled = true;
+  gEditorStatus.selectionChanged = true;
 }
 
 function onBtnChangeView()

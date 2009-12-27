@@ -6,10 +6,10 @@
 <page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
       onload="parent.onPanelLoaded('am-sieve-account.xul');">
   
-  <script type="application/x-javascript" src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js"/>
-  <script type="application/x-javascript" src="chrome://sieve/content/SieveOverlay.js" />   
-  <script type="application/x-javascript" src="chrome://messenger/content/AccountManager.js"/>
-  <script type="application/x-javascript" src="chrome://sieve/content/am-sieve-account.js"/> 
+  <script type="application/javascript" src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js"/>
+  <script type="application/javascript" src="chrome://sieve/content/SieveOverlay.js" />   
+  <script type="application/javascript" src="chrome://messenger/content/AccountManager.js"/>
+  <script type="application/javascript" src="chrome://sieve/content/am-sieve-account.js"/> 
   <dialogheader title="Sieve Settings"/>
 
   <description>

@@ -1,17 +1,71 @@
 @import url("chrome://messenger/skin/");
 @import url("chrome://global/skin/toolbar.css");
-
-
-textbox.sieve
-{
-   -moz-appearance: none !important;
-   background: url(chrome://sieve/content/images/splitter.png) repeat-y 650px 0px;    
-   background-color: -moz-field !important;
-   font-family: monospace;   
-   color: -moz-fieldtext; 
-   font-size: 12px;
+ 
+ 
+ /* the surrounding box */
+ .sivEditor
+ {
+	 -moz-appearance: textfield
+ }	 
+ 
+ .sivEditor textbox
+ {
+     -moz-appearance: none !important;
+	 margin: 0px !important;
+     border: none !important;
+     padding: 2px !important;	 	 
+	 
+	 font-family: monospace;   
+     color: -moz-fieldtext; 
+     font-size: 12px;	
  }
  
+ /* the editor */
+ .sivEditor #sivContentEditor
+ {
+    background: url(chrome://sieve/content/images/splitter.png) repeat-y 650px 0px;    
+	 
+	 overflow:hidden;
+ }
+ 
+ .sivEditor #sivContentEditor textarea
+ {	 
+	 overflow-y:scroll;
+	 overflow-x:scroll;
+ }
+ 
+ /* style the line numbers column  */
+ .sivEditor #sivLineNumbers
+ {
+	 margin:0px;
+	 padding:0px;  
+	 
+	 border: none; 
+	 border-right: 1px groove; 
+	 background:-moz-dialog;
+ }
+ 
+ .sivEditor #sivLineNumbers textbox
+ { 
+	 width:50px;  
+	 background:-moz-dialog !important; 	 
+	 overflow:hidden;
+ }
+ 
+/* the previous textbox contains an anonymous textarea... */
+.sivEditor  #sivLineNumbers textarea 
+{
+	 overflow:hidden; 
+	 text-align:right !important;  	 
+} 
+ 
+.sivEditor #sivLineNumbers  scrollbar
+{
+	 visibility:hidden;
+	 width:50px;
+}
+ 
+
 #sideBarTitle2
 {
 	height: 20px;

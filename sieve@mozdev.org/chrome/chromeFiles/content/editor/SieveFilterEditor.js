@@ -32,6 +32,11 @@ var gPrintSettings = null;
 // the cursor position is updated lazyly
 var gUpdateScheduled = false;
 
+// update line numbers lazyly
+var gScrollUpdateScheduled = false;
+var gRows = 1;
+
+
 var event = 
 {
   /**
@@ -47,8 +52,8 @@ var event =
    */
   onScriptLoaded: function(script)
   {
-    document.getElementById("txtScript").value = script;
-    document.getElementById("txtScript").setSelectionRange(0, 0);
+    document.getElementById("sivContentEditor").value = script;
+    document.getElementById("sivContentEditor").setSelectionRange(0, 0);
 	UpdateCursorPos();
   },
 
@@ -154,7 +159,7 @@ function onCompile()
     }
   }
   
-  var script = new String(document.getElementById("txtScript").value);
+  var script = new String(document.getElementById("sivContentEditor").value);
   
   if (script.length == 0)
     return;
@@ -206,8 +211,9 @@ function onInput()
 
 function onLoad()
 {
-  // checkbox buttons are buggy,this has been fixed in Thunderbird3 but...
-  // ...we need a workaround. See Bug 382457 for details.
+  // checkbox buttons are buggy in Gecko 1.8, this has been fixed in ...
+  // ...Gecko 1.9 (Thunderbird 3).
+  // We implement the workaround mentioned in Bug 382457.
 
   document.getElementById("btnCompile").
     addEventListener(
@@ -226,7 +232,30 @@ function onLoad()
       "command",
       function() {onSearchBar();},
       false);
-  
+ 
+  // Gecko 1.8.1 does not propagate onscroll events for textboxes...
+  // ... the bug is fixed in Gecko 1.9 (Thunderbird 3)
+  // As the is no workaround, we simply deactivate line numbers in Gecko 1.8
+  var version  = Components.classes["@mozilla.org/xre/app-info;1"]
+                              .getService(Components.interfaces.nsIXULAppInfo)
+                              .platformVersion.split(".");
+
+  if ((version[0] >= 1) && (version[1] >=9))
+  {
+    document.getElementById("sivLineNumbers").removeAttribute('hidden');
+    document.getElementById("sivContentEditor")
+      .addEventListener("input",function() {onInput();UpdateLinesLazy();},false);
+    document.getElementById("sivContentEditor")
+      .addEventListener("scroll", function() {UpdateScrollPos();},false);
+  }
+  else 
+  {
+    document.getElementById("sivLineNumbers").setAttribute('hidden', 'true');
+    document.getElementById("sivContentEditor")
+      .addEventListener("input",function() {onInput();},false);
+  }
+      
+      
   // hack to prevent links to be opened in the default browser window...
   document.getElementById("ifSideBar").
     addEventListener(
@@ -276,8 +305,8 @@ function onLoad()
   onSideBar(true);
   onSearchBar(false);
   
-  document.getElementById("txtScript").setSelectionRange(0, 0);
-  document.getElementById("txtScript").focus();
+  document.getElementById("sivContentEditor").setSelectionRange(0, 0);
+  document.getElementById("sivContentEditor").focus();
 
   /*
    * window.document.documentElement.addEventListener('focus', function(event) {
@@ -369,7 +398,7 @@ function onSave()
 {
   var request = new SievePutScriptRequest(
                   new String(document.getElementById("txtName").value),
-                  new String(document.getElementById("txtScript").value));
+                  new String(document.getElementById("sivContentEditor").value));
   request.addPutScriptListener(event);
   request.addErrorListener(event);
   
@@ -433,7 +462,7 @@ function onImport()
   inputStream.close();
 
   // Find the Start and End Position
-  var el = document.getElementById("txtScript");
+  var el = document.getElementById("sivContentEditor");
   var start = el.selectionStart;
   var end = el.selectionEnd;
 
@@ -474,7 +503,7 @@ function onExport()
 
 	outputStream.init(file, 0x04 | 0x08 | 0x20, 0644, null);
 
-	var data = document.getElementById("txtScript").value;
+	var data = document.getElementById("sivContentEditor").value;
 	outputStream.write(data, data.length);
 	outputStream.close();
 }
@@ -601,7 +630,7 @@ function onSearchBar(visible)
 
 function OnFindString()
 {
-  var txtScript = document.getElementById("txtScript");
+  var txtScript = document.getElementById("sivContentEditor");
   var script = new String(txtScript.value);
   
   if (script.length == 0)
@@ -657,7 +686,7 @@ function OnFindString()
 
 function OnReplaceString()
 {
-  var txtScript = document.getElementById("txtScript");
+  var txtScript = document.getElementById("sivContentEditor");
   var token = new String(document.getElementById("txtToken").value);
   
   var selectedToken =
@@ -692,7 +721,7 @@ function OnReplaceString()
 {
   
   
-  var txtScript = document.getElementById("txtScript");
+  var txtScript = document.getElementById("sivContentEditor");
   
   alert(txtScript.editor);
   
@@ -726,7 +755,7 @@ function OnReplaceString()
 }*/
 
 function UpdateCursorPos() {
-  var el = document.getElementById("txtScript");
+  var el = document.getElementById("sivContentEditor");
   var lines = el.value.substr(0, el.selectionStart).split("\n");
 
   document.getElementById("sbCursorPos")
@@ -742,6 +771,57 @@ function UpdateCursorPos() {
   gUpdateScheduled = false;
   
   return;
+}
+
+
+
+function UpdateScrollPos()
+{
+  var first = document.getAnonymousElementByAttribute(document.getElementById("sivLineNumbersEditor"), 'anonid', 'input');
+  var second = document.getAnonymousElementByAttribute(document.getElementById("sivContentEditor"), 'anonid', 'input');
+
+  if (first.scrollTop != second.scrollTop);
+      first.scrollTop= second.scrollTop;
+}
+
+function UpdateLines()
+{
+  // TODO do lazy update 100ms ...
+  var first = document.getAnonymousElementByAttribute(document.getElementById("sivLineNumbersEditor"), 'anonid', 'input');
+  var second = document.getAnonymousElementByAttribute(document.getElementById("sivContentEditor"), 'anonid', 'input');
+
+  // the scroll height can be equal or bigger than clientHeight. If its bigger we can take a shortcut...
+  // ... to thest if the linecount changed...
+  if ((second.scrollHeight > second.clientHeight) && (second.scrollHeight == first.scrollHeight))
+    return;
+  
+  // Count linebreaks...
+  var textRows = (second.value).split('\n');
+
+  // no line breaks changed?
+  if (gRows == textRows.length)
+   return;
+ 
+ gRows = textRows.length;
+
+ // TODO calculate how many lines changed instead of rebuilding all...
+ var str= "1";
+  for (var i=1; i < gRows; i++)
+    str+= "\n"+ (i+1);
+
+  first.value = str;
+
+  UpdateScrollPos();
+}
+
+function UpdateLinesLazy()
+{
+  if (gScrollUpdateScheduled)
+    return;
+
+  setTimeout(function () {gScrollUpdateScheduled=false;UpdateLines();},75);
+
+  gScrollUpdateScheduled = true;
 }
 
 function onUpdateCursorPos(timeout)
@@ -803,7 +883,7 @@ function onPrint()
   // we print in xml this means any specail charaters have to be html entities...
   // ... so we need a dirty hack to convert all entities...
   alert("Print");
-  var script = document.getElementById("txtScript").value;
+  var script = document.getElementById("sivContentEditor").value;
   script = (new XMLSerializer()).serializeToString(document.createTextNode(script));
   
   script = script.replace(/\r\n/g,"\r");
@@ -887,7 +967,7 @@ function onPrint()
   // we print in xml this means any specail charaters have to be html entities...
   // ... so we need a dirty hack to convert all entities...
   
-  var script = document.getElementById("txtScript").value;
+  var script = document.getElementById("sivContentEditor").value;
   script = (new XMLSerializer()).serializeToString(document.createTextNode(script));
   
   script = script.replace(/\r\n/g,"\r");

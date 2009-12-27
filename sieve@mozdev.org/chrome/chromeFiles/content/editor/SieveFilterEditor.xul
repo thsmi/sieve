@@ -94,12 +94,21 @@
       <deck id="dkView" flex="1" selectedIndex="0">
         <box flex="1">
           <vbox flex="1">
-            <textbox id="txtScript" class="sieve" 
-                     autocomplete="off"
-                     onmousemove="onUpdateCursorPos(250);" 
-                     onkeypress="onUpdateCursorPos(50);" 
-                     oninput="onInput();" 
-                     flex="1"  multiline="true" wrap="off" />
+            <hbox id="sivEditor" flex="1" class="sivEditor">
+              <vbox id="sivLineNumbers" hidden="true"> 
+                <textbox id="sivLineNumbersEditor" flex="1" 
+                         disabled="true" multiline="true" 
+                         wrap="off" value="1"
+                         autocomplete="off" />
+                <!-- We use this hidden elemen as dummy, otherwise the scrollbar of the content editor could have a line number-->
+                <scrollbar/>
+              </vbox>
+              <textbox id="sivContentEditor" flex="1" 
+                       multiline="true" wrap="off" 
+                       autocomplete="off"
+                       onmousemove="onUpdateCursorPos(250);" 
+                       onkeypress="onUpdateCursorPos(50);" />                
+            </hbox> 
            <splitter id="spErrorBar" resizeafter="farthest" /> 
             <vbox id="vbErrorBar" class="sieveSideBar">
               <stack class="outset">

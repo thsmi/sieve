@@ -41,7 +41,8 @@ var event =
    */
   onGetScriptResponse: function(response)
   {
-    event.onScriptLoaded(response.getScriptBody());
+    sivSetStatus(0);
+    event.onScriptLoaded(response.getScriptBody());    
   },
   
   /**
@@ -51,7 +52,7 @@ var event =
   {
     document.getElementById("sivContentEditor").value = script;
     document.getElementById("sivContentEditor").setSelectionRange(0, 0);
-	UpdateCursorPos();
+	  UpdateCursorPos();
     UpdateLines();
   },
 
@@ -296,6 +297,8 @@ function onLoad()
   }
   else
   {
+    sivSetStatus(1,"Loading Script...");
+      
     var request = new SieveGetScriptRequest(window.arguments[0]["scriptName"]);
     request.addGetScriptListener(event);
     request.addErrorListener(event);
@@ -1026,3 +1029,20 @@ function onPrint()
 
   return;
 }*/
+
+function sivSetStatus(state, message)
+{
+  document.getElementById('sivEditorWait').setAttribute('hidden','true');
+  document.getElementById('sivEditor').setAttribute('collapsed','true');
+  
+  switch (state)
+  {
+    case 1: document.getElementById('sivEditorWait').removeAttribute('hidden');
+            document.getElementById('sivEditorWaitMsg')
+                .firstChild.nodeValue = message;    
+            break;
+    case 0: document.getElementById('sivEditor').removeAttribute('collapsed');
+            break;
+  }
+  
+}

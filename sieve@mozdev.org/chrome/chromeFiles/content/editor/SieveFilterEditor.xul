@@ -94,7 +94,14 @@
       <deck id="dkView" flex="1" selectedIndex="0">
         <box flex="1">
           <vbox flex="1">
-            <hbox id="sivEditor" flex="1" class="sivEditor">
+            <vbox id="sivEditorWait" style="-moz-appearance: textfield;" 
+                  align="center" pack="center" flex="1" >
+              <image pack="center" src="chrome://sieve/content/images/load.gif"/>
+              <spacer/> 
+              <description id="sivEditorWaitMsg" pack="center">          
+              </description>
+            </vbox>            
+            <hbox id="sivEditor" collapsed="true" flex="1" class="sivEditor">
               <vbox id="sivLineNumbers" hidden="true"> 
                 <textbox id="sivLineNumbersEditor" flex="1" 
                          disabled="true" multiline="true" 
@@ -107,7 +114,7 @@
                        multiline="true" wrap="off" 
                        autocomplete="off" />                
             </hbox> 
-           <splitter id="spErrorBar" resizeafter="farthest" /> 
+            <splitter id="spErrorBar" resizeafter="farthest" /> 
             <vbox id="vbErrorBar" class="sieveSideBar">
               <stack class="outset">
                 <image flex="1"/> 

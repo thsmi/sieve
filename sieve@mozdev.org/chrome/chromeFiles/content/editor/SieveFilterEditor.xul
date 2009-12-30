@@ -124,7 +124,7 @@
                                    oncommand="onErrorBarHide();"/>
                 </hbox>
               </stack>             
-              <hbox align="center" min-height="50px" flex="1" style="overflow:auto" class="box-inset">
+              <hbox align="center" min-height="50px" flex="1" style="overflow:auto;-moz-appearance: textfield;" class="box-inset">
                 <image id="imgErrorBar" pack="center"   src="chrome://sieve/content/images/syntax-ok.png"/>
                 <description flex="1" id="lblErrorBar" style="white-space: pre;" >
                 </description>             

@@ -6,13 +6,13 @@
   <script type="application/javascript" src="chrome://sieve/content/SieveOverlay.js" />
 
   <menupopup id="taskPopup">
-    <menuitem id="mnuSieveOptionsDialog" insertafter="applyFilters" label="&menu.options;"
+    <menuitem id="mnuSieveListDialog" insertbefore="filtersCmd" label="&menu.filters;"
+  	  	oncommand='gSivExtUtils.OpenFilters();' 
+    		accesskey="&menu.filters.key;" />  
+    <menuitem id="mnuSieveOptionsDialog" insertbefore="filtersCmd" label="&menu.options;"
   	  	oncommand='gSivExtUtils.OpenSettings();' 
   		  accesskey="&menu.options.key;" />
-    <menuitem id="mnuSieveListDialog" insertafter="applyFilters" label="&menu.filters;"
-  	  	oncommand='gSivExtUtils.OpenFilters();' 
-    		accesskey="&menu.filters.key;" />
-    <menuseparator id="mnuSieveSeparator" insertafter="applyFilters"/>  		
+    <menuseparator id="mnuSieveSeparator" insertbefore="filtersCmd"/>  		
 </menupopup>
 
 <!--

@@ -804,7 +804,7 @@ SieveAccountSettings.prototype.getKeepAliveInterval
   if (gPref.prefHasUserValue(this.sieveKey+".keepalive.interval"))
     return gPref.getCharPref(this.sieveKey+".keepalive.interval");
 
-  return "1200000"; //30*60*1000 = 30 Minutes
+  return "300000"; //5*60*1000 = 5 Minutes
 }
 
 SieveAccountSettings.prototype.setKeepAliveInterval

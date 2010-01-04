@@ -41,7 +41,6 @@ var event =
    */
   onGetScriptResponse: function(response)
   {
-    sivSetStatus(0);
     event.onScriptLoaded(response.getScriptBody());    
   },
   
@@ -50,6 +49,7 @@ var event =
    */
   onScriptLoaded: function(script)
   {
+    sivSetStatus(0);    
     document.getElementById("sivContentEditor").value = script;
     document.getElementById("sivContentEditor").setSelectionRange(0, 0);
 	  UpdateCursorPos();

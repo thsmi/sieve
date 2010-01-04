@@ -1116,7 +1116,8 @@ SieveSaslPlainRequest.prototype.addResponse
       }
     } 
                           
-    var request = new SieveSaslLoginRequest('geek');
+    var request = new SieveSaslLoginRequest();
+    request.setUsername('geek');
     request.setPassword('th3g33k1');
     request.addErrorListener(event);
     request.addSaslLoginListener(event);
@@ -1204,9 +1205,9 @@ SieveSaslLoginRequest.prototype.getNextRequest
     case 0:
       return "AUTHENTICATE \"LOGIN\"\r\n";    
     case 1: 
-      return "{"+btoa(this.username).length+"+}\r\n"+btoa(this.username);
+      return '"'+btoa(this.username)+"\"\r\n";
     case 2:
-      return "{"+btoa(this.password).length+"+}\r\n"+btoa(this.password); 
+      return '"'+btoa(this.password)+"\"\r\n"; 
     default : 
       return ""; //it might be better to throw an Execption       
   }  

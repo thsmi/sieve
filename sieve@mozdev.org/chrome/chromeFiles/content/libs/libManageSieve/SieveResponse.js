@@ -62,7 +62,7 @@ function SieveAbstractResponse(parser)
       parser.extract(2);
     }
     else
-      throw "NO, OK or BYE expected in"+this.parser.getData();
+      throw "NO, OK or BYE expected in"+parser.getData();
 
     // is there a Message?
     if (parser.isLineBreak())

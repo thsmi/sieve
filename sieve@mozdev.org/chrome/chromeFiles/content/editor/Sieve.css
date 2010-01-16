@@ -11,11 +11,11 @@
  .sivEditor textbox
  {
      -moz-appearance: none !important;
-	 margin: 0px !important;
+     margin: 0px !important;
      border: none !important;
      padding: 2px !important;	 	 
 	 
-	 font-family: monospace;   
+	   font-family: monospace;   
      color: -moz-fieldtext; 
      font-size: 12px;	
  }

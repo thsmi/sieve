@@ -14,6 +14,10 @@
   onload="onLoad();"
   onclose="return onClose();"
   windowtype="Sieve:FilterEditor" >
+
+  <stringbundleset id="stringbundleset">
+    <stringbundle id="strings" src="chrome://sieve/locale/locale.properties"/>
+  </stringbundleset>
   
   <!-- needed for copy and paste -->
   <script type="application/javascript"

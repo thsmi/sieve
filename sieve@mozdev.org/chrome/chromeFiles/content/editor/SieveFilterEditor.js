@@ -192,6 +192,7 @@ function onCompile()
 
 function onInput()
 {
+  // TODO use show/hide instead of changing the label...
   if (gEditorStatus.contentChanged == false)
     document.getElementById("sbChanged").label = "Changed";
   
@@ -241,6 +242,7 @@ function onLoad()
                               .getService(Components.interfaces.nsIXULAppInfo)
                               .platformVersion.split(".");
 
+  // FIXME Failes with 2.0 ? 
   if ((version[0] >= 1) && (version[1] >=9))
   {
     document.getElementById("sivLineNumbers").removeAttribute('hidden');

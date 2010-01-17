@@ -34,7 +34,7 @@ var event =
 {	
   onAuthenticate: function(response)
   {
-    sivSetStatus(3,"Authenticating...");
+    sivSetStatus(3,"progress.authenticating");
     var account =  getSelectedAccount();
     
     // Without a username, we can skip the authentication 
@@ -95,7 +95,7 @@ var event =
 
     if (request == null)
     {
-      sivSetStatus(2, "Error: Unable to negotiate SASL mechanism.");
+      sivDisconnect(2, "error.sasl");
       return;
     }
     
@@ -104,11 +104,9 @@ var event =
     
     var password = account.getLogin().getPassword();
     
-    // TODO: terminate connection in case of an invalid password
-    // and notify the user
     if (password == null)
     {
-      sivSetStatus(2, "Error: Unable to retrieve Authentication information.");
+      sivDisconnect(2, "error.authentication");
       return;
     }
       
@@ -119,11 +117,9 @@ var event =
     {
       // ... if so retrieve the authorization identity   
       var authorization = account.getAuthorization().getAuthorization();
-      // TODO: terminate connection an notify that authorization settings
-      // are invalid...
       if (authorization == null)
       {
-        sivSetStatus(2, "Error: Unable to retrieve Authorization information");
+        sivDisconnect(2, "error.authentication");
         return;
       }
       
@@ -163,7 +159,7 @@ var event =
     {        
       onInitResponse: function(response)
       {
-        sivSetStatus(3,"Starting TLS (Strict RFC)");
+        sivSetStatus(3,"progress.tls.rfc");
         
         gSieve.getWatchDogListener().setTimeoutInterval();
         event.onAuthenticate(response);
@@ -178,7 +174,7 @@ var event =
       
       onTimeout: function()
       {
-        sivSetStatus(3,"Starting TLS (Cyrus compatibility)");
+        sivSetStatus(3,"progress.tls.cyrus");
         
         gSieve.getWatchDogListener().setTimeoutInterval();
         var request = new SieveCapabilitiesRequest();
@@ -202,7 +198,7 @@ var event =
     switch (compatibility.getHandshakeMode())
     {
       case 0:
-        sivSetStatus(3,"Autodetecting TLS Handshake...");      
+        sivSetStatus(3,"progress.tls.auto");      
         var request = new SieveInitRequest();
         request.addInitListener(lEvent);
         request.addErrorListener(lEvent);
@@ -214,7 +210,7 @@ var event =
         break;
         
       case 1:
-        sivSetStatus(3,"Starting TLS (Strict RFC)");
+        sivSetStatus(3,"progress.tls.rfc");
              
         var request = new SieveInitRequest();
         request.addInitListener(lEvent);
@@ -226,7 +222,7 @@ var event =
         
         break;
       case 2:
-        sivSetStatus(3,"Starting TLS (Cyrus compatibility)");
+        sivSetStatus(3,"progress.tls.cyrus");
       
         gSieve.startTLS();
       
@@ -256,19 +252,16 @@ var event =
   },
    
   onLoginResponse: function(response)
-  {
-    // enable the disabled controls....
-    disableControls(false);
-    postStatus("Connected");
-		
+  { 		
     // List all scripts as soon as we are connected
     var request = new SieveListScriptRequest();
     request.addListScriptListener(event);
     request.addErrorListener(event);
 
     gSieve.addRequest(request);
-    disableControls(false);
-    sivSetStatus(4);
+    
+    // Show List View...
+    sivSetStatus(0);
   },
 	
   onLogoutResponse: function(response)
@@ -319,11 +312,7 @@ var event =
 
   onTimeout: function()
   {
-    disableControls(true);
-    sivSetStatus(1, "The connection has timed out, the Server is not responding...");
-    postStatus("Disconnected");
-    
-    sivDisconnect();
+    sivDisconnect(1,"warning.timeout");
   },
 	
   onError: function(response)
@@ -332,11 +321,8 @@ var event =
 
     if (code instanceof SieveRespCodeReferral)
     {
-      disableControls(true);
       // close the old sieve connection
       sivDisconnect();
-        
-      postStatus("Referral to "+code.getHostname()+" ...");
       
       var account = getSelectedAccount();
 
@@ -345,7 +331,8 @@ var event =
       return;
     }
 
-    sivSetStatus(2, "Action failed, server reported an error...\n"+response.getMessage());
+    gLogger.logStringMessage("OnError: "+response.getMessage());
+    sivDisconnect(2,"error.fatal");
   },
   
   onCycleCell: function(row,col,script,active)
@@ -435,8 +422,9 @@ function onWindowClose()
   if (gSieve == null)
     return true;
   
+    
   // Force disconnect in 500 MS
-  closeTimeout = setTimeout("sivDisconnect(); close();",250);
+  closeTimeout = setTimeout(function() {sivDisconnect(); close();},250);
 
   var request = new SieveLogoutRequest(event)
   request.addLogoutListener(event);
@@ -461,8 +449,8 @@ function getSelectedAccount()
 
 function sivConnect(account,hostname)
 {
-  postStatus("Connecting...");
-  sivSetStatus(3,"Connecting...");
+  
+  sivSetStatus(3,"progress.connecting","status.connecting");
   
   if (account == null)
     account = getSelectedAccount();
@@ -472,29 +460,14 @@ function sivConnect(account,hostname)
 
   var sivManager = Components.classes["@sieve.mozdev.org/transport-service;1"].getService();
 
-
   hSieve = sivManager.wrappedJSObject.openSession();  
   gSieve = sivManager.wrappedJSObject.getSession(hSieve);
   // TODO Replace by a real Interface...
   //sieveTransport.QueryInterface(Components.interfaces.sivITransport);
 
-  // when pathing this lines always keep refferal code in sync
-/*      gSieve = new Sieve(
-                    hostname,
-                    account.getHost().getPort(),
-                    account.getHost().isTLS(),
-                    (account.getSettings().isKeepAlive() ?
-                        account.getSettings().getKeepAliveInterval():
-                        null));*/
-
    gSieve.setDebugLevel(
             account.getSettings().getDebugFlags(),
             gLogger);                
-
-   var request = new SieveInitRequest();
-   request.addErrorListener(event)
-   request.addInitListener(event)
-   gSieve.addRequest(request);
       
    var sieveWatchDog = null;
 
@@ -507,6 +480,11 @@ function sivConnect(account,hostname)
    sieveWatchDog.addListener(event);       
    gSieve.addWatchDogListener(sieveWatchDog);
    
+   var request = new SieveInitRequest();
+   request.addErrorListener(event)
+   request.addInitListener(event)
+   gSieve.addRequest(request);   
+   
    gSieve.connect(hostname,account.getHost().getPort(),
             account.getHost().isTLS(),
             new BadCertHandler(gLogger));  
@@ -518,17 +496,22 @@ function onActivateClick()
   if (tree.currentIndex < 0)
     return;
 
-  // imitate klick in the treeview
+  // imitate click in the treeview
   tree.view.cycleCell(tree.currentIndex,tree.columns.getColumnAt(1));
     
   return;
 }
 
-function sivDisconnect()
+function sivDisconnect(state,message)
 {
+  disableControls(true);
+  
+  if ((state) && (message))
+    sivSetStatus(state,message,"status.disconnected");  
+  
   if (gSieve == null)
-    return;  
-
+    return;        
+  
   var sivManager = Components.classes["@sieve.mozdev.org/transport-service;1"].getService();  
   sivManager.wrappedJSObject.closeSession(hSieve);  
   
@@ -557,13 +540,12 @@ function onSelectAccount()
       var account = getSelectedAccount();
       
       if (account == null)
-        sivSetStatus(2,"Fatal error no account selected...");
+        sivSetStatus(2,"error.noaccount");
       
-      disableControls(true);
       // Disable and cancel if account is not enabled
       if (account.isEnabled() == false)
       {
-        postStatus("Not connected! Goto 'Tools -> Sieve Settings' to activate this account");
+        sivSetStatus(1,"warning.noaccount");
         return;
       }			
       sivConnect(account);
@@ -703,44 +685,48 @@ function onEditClick()
   return;
 }
 
-function sivSetStatus(state, message)
+
+
+function sivSetStatus(state, message, statusbar)
 {
+  var strbundle = document.getElementById("strings");
+  
   document.getElementById('sivExplorerWarning').setAttribute('hidden','true');
   document.getElementById('sivExplorerError').setAttribute('hidden','true');
   document.getElementById('sivExplorerWait').setAttribute('hidden','true');
   document.getElementById('sivExplorerBadCert').setAttribute('hidden','true');
   document.getElementById('sivExplorerTree').setAttribute('collapsed','true');
+
+  if (statusbar)
+    document.getElementById('sbStatus').label = strbundle.getString(statusbar);  
   
   switch (state)
   {
+    case 0: disableControls(false);            
+            document.getElementById('sbStatus').label = strbundle.getString("status.connected");
+            document.getElementById('sivExplorerTree').removeAttribute('collapsed');
+            break;    
     case 1: document.getElementById('sivExplorerWarning').removeAttribute('hidden');
             document.getElementById('sivExplorerWarningMsg')
-                .firstChild.nodeValue = message;
+                .firstChild.nodeValue = strbundle.getString(message);
             break;
     case 2: document.getElementById('sivExplorerError').removeAttribute('hidden');
             document.getElementById('sivExplorerErrorMsg')
-                .firstChild.nodeValue = message;    
+                .firstChild.nodeValue = strbundle.getString(message);    
             break;
     case 3: document.getElementById('sivExplorerWait').removeAttribute('hidden');
             document.getElementById('sivExplorerWaitMsg')
-                .firstChild.nodeValue = message;    
-            break;
-    case 4: document.getElementById('sivExplorerTree').removeAttribute('collapsed');
+                .firstChild.nodeValue = strbundle.getString(message);    
             break;
     case 5: document.getElementById('sivExplorerBadCert').removeAttribute('hidden');
             document.getElementById("btnIgnoreBadCert").setAttribute("oncommand",
                 "onBadCertOverride('"+message+"',document.getElementById('cbBadCertRemember').checked)");
             document.getElementById("btnAbortBadCert").setAttribute("oncommand",
-                "sivSetStatus(1,'This account is not configured for ...')");
+                "sivSetStatus(1,'warning.brokencert')");
             
             break;
   }
   
-}
-
-function postStatus(message)
-{
-  document.getElementById('sbStatus').label = message;
 }
 
 function disableControls(disabled)
@@ -946,7 +932,7 @@ function onBadCertOverride(targetSite,permanent)
   }
   catch (ex)
   {
-    sivSetStatus(2,"Failed to override broken certificate");
+    sivSetStatus(2,"error.brokencert");
     gLogger.logStringMessage(ex); 
   }
                                            
@@ -1069,8 +1055,7 @@ BadCertHandler.prototype.notifyCrlNextupdate
  {
    this.logger.logStringMessage("Sieve BadCertHandler: notifyCertProblem");
        
-   sivDisconnect();
-   sivSetStatus(5,targetSite);  
+   sivDisconnect(5,targetSite);
   
    return true;
  }
@@ -1078,6 +1063,6 @@ BadCertHandler.prototype.notifyCrlNextupdate
  BadCertHandler.prototype.notifySSLError =
  function badcert_notifySSLError(socketInfo, error, targetSite)
  {
-      this.logger.logStringMessage("Sieve BadCertHandler: notifySSLError");
-     return true;
+   this.logger.logStringMessage("Sieve BadCertHandler: notifySSLError");
+   return true;
  }

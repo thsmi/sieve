@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   The content of this file is licenced. You may obtain a copy of
+   the license at http://sieve.mozdev.org or request it via email 
+   from the author. Do not remove or change this comment. 
+  
+   The initial author of the code is:
+     Thomas Schmid <schmid-thomas@gmx.net>
+   
+   Contributor(s):
+     Marion Desnault <marion.desnault@free.fr>
+-->
+
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://sieve/locale/locale.dtd">
@@ -107,33 +120,23 @@
     <vbox>
       <hbox align="center" class="sivWarning" >
         <image id="imgErrorBar" pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
-        <label pack="center" value="These settings are intended for advanced users..."  />
+        <label pack="center" value="&options.tab.compatibility.warning;" />
       </hbox> 
       <groupbox>
-        <caption label="Cyrus TLS Bug" />
-        <description>
-          Some Cyrus releases do not implement the TLS handshake as suggested in the RFC Draft.
-        </description>
-        <description>
-          As a workaround this extension tries first a RFC conform handshake. 
-          In case the server does not reply within a reasonable time, it 
-          automagically fallsback to a cyrus style handshake.
-        </description>
-        <description>
-          This magic fails with slow connections or servers suffering from high 
-          load. If you encounter a "hang" or "crash" during TLS handshake, play 
-          with these setting!
-        </description>
+        <caption label="&options.cyrus;" />
+        <description>&options.cyrus.rfc;</description>
+        <description>&options.cyrus.workaround;</description>
+        <description>&options.cyrus.fails;</description>
         <radiogroup id="rgHandshake" onselect="onHandshakeSelect(this);">
-          <radio id="rbAutoHandshake" label="Autodetect (default)"/>
+          <radio id="rbAutoHandshake" label="&options.cyrus.handshake.auto;"/>
           <box class="indent" align="center">
-            <label value="Automatic fallback after" control="txtHandshakeTimeout"/>
+            <label value="&options.cyrus.handshake.timeout;" control="txtHandshakeTimeout"/>
             <textbox id="txtHandshakeTimeout" size="20" 
                      onchange="onHandshakeTimeoutChange(this);"/>
              <label value="ms"/>
           </box>
-          <radio id="rbStrictHandshake" label="Strict RFC style handshake"/>
-          <radio id="rbCyrusHandshake" label="Cyrus style handshake"/>
+          <radio id="rbStrictHandshake" label="&options.cyrus.handshake.rfc;"/>
+          <radio id="rbCyrusHandshake" label="&options.cyrus.handshake.cyrus;"/>
         </radiogroup>
       </groupbox>
       <hbox flex="1"/>
@@ -144,7 +147,7 @@
     <vbox>
       <hbox align="center" class="sivWarning" >
         <image id="imgErrorBar" pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
-        <label pack="center" value="These settings are intended for advanced users..."  />
+        <label pack="center" value="&options.tab.advanced.warning;" />
       </hbox> 
       <groupbox>
         <caption label="&options.authmechanism.caption;" />
@@ -166,23 +169,18 @@
       </groupbox>
       <groupbox>
         <caption label="&options.proxyauth.caption;" /> 
-        <description>
-          Proxy authorization, allows an authenticated user to act on the behalf of another user. 
-          Usually servers are configured, that this feature is only available for administrators.
-        </description>
-        <description>
-          When using proxy authorization you should force "SASL PLAIN" Authentication.
-        </description>
+        <description>&options.proxyauth.desc;</description>
+        <description>&options.proxyauth.force; </description>
         <radiogroup id="rgAuthorization" onselect="onAuthorizationSelect(this);">
-          <radio id="rbNoAuthorization" label="No Authorization"/>
-          <radio id="rbDefaultAuthorization" label="Sieve Username"/>
-          <radio id="rbPromptAuthorization" label="Prompt for Authorization"/>
-          <radio id="rbCustomAuthorization" label="Authorize as"/>
+          <radio id="rbNoAuthorization" label="&options.proxyauth.none;"/>
+          <radio id="rbDefaultAuthorization" label="&options.proxyauth.default;"/>
+          <radio id="rbPromptAuthorization" label="&options.proxyauth.prompt;"/>
+          <radio id="rbCustomAuthorization" label="&options.proxyauth.custom;"/>
           <box class="indent" align="center">
-              <label value="Username:" control="txtAuthorization"/>
-              <textbox id="txtAuthorization" size="20" 
-                       onchange="onAuthorizationChange(this);"/>
-        </box>
+            <label value="&options.proxyauth.custom.username;" control="txtAuthorization"/>
+            <textbox id="txtAuthorization" size="20" 
+                     onchange="onAuthorizationChange(this);"/>
+          </box>
         </radiogroup>
       </groupbox>
       <hbox flex="1"/>
@@ -201,16 +199,14 @@
                   oncommand="onDebugResponseCommand(this)" />
         <checkbox id="cbxDebugExceptions" label="&options.debug.exceptions;"
                   oncommand="onDebugExceptionCommand(this)" />
-        <checkbox id="cbxDebugStream" label="Raw Dump/ Dump Byte Stream"
-                  oncommand="onDebugStreamCommand(this)" />                  
+        <checkbox id="cbxDebugStream" label="&options.debug.stream;"
+                   oncommand="onDebugStreamCommand(this)" />                  
       </groupbox>
       <groupbox>
-        <caption label="Debug Output" />
+        <caption label="&options.debug.output;" />
         <hbox align="center">
-          <description control="btnShowPasswords" flex="1">
-            Debug information is posted to the error console
-          </description>          
-          <button id="btnShowPasswords" label="Show Error Console..." 
+          <description control="btnShowErrorConsole" flex="1">&options.debug.console;</description>          
+          <button id="btnShowErrorConsole" label="&options.debug.console.open;" 
                   oncommand="onShowErrorConsole()" />
          </hbox>
       </groupbox>      

@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   The content of this file is licenced. You may obtain a copy of
+   the license at http://sieve.mozdev.org or request it via email 
+   from the author. Do not remove or change this comment. 
+  
+   The initial author of the code is:
+     Thomas Schmid <schmid-thomas@gmx.net>
+   
+   Contributor(s):
+     Marion Desnault
+-->
+
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
 <!DOCTYPE window SYSTEM "chrome://sieve/locale/locale.dtd">
@@ -108,9 +121,7 @@
                 <hbox align="center" class="sivError">
                   <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
                   <vbox>
-                    <description style="font-weight:bold">
-                      Last Command failed, because the server reported an error:
-                    </description>
+                    <description style="font-weight:bold">&list.error;</description>
                     <description id="sivExplorerErrorMsg" pack="center" >                    
                     </description>
                   </vbox> 
@@ -121,20 +132,12 @@
                 <hbox align="center" class="sivWarning" >
                   <image pack="center" src="chrome://sieve/content/images/sslWarning.png"/>
                   <vbox>
-                    <description style="font-weight:bold">
-                      Your mail server attempts to identify itself with invalid information.
-                    </description>
-                    <description id="sivExplorerErrorMsg" pack="center" style="white-space: pre-wrap;">       
-If you usually connect to this server without problems, this error could 
-mean that someone is trying to impersonate the server.
-
-Do not continue unless you know there's a good reason why 
-this server doesn't use trusted identification.
-                    </description>
-<checkbox id="cbBadCertRemember" label="Remember my desicion" checked="true"/>
+                     <description style="font-weight:bold">&list.badcert;</description>
+                     <description id="sivExplorerErrorMsg" pack="center" style="white-space: pre-wrap;">&list.badcert.error;</description>
+                     <checkbox id="cbBadCertRemember" label="&list.badcert.remember;" checked="true"/>
                 <hbox align="right">
-                    <button id="btnIgnoreBadCert" label="Continue" />
-                    <button id="btnAbortBadCert" label="Abort" />
+                    <button id="btnIgnoreBadCert" label="&list.badcert.ignore;" />
+                    <button id="btnAbortBadCert" label="&list.badcert.abort;" />
                 </hbox>
                   </vbox> 
                 </hbox>
@@ -171,7 +174,7 @@ this server doesn't use trusted identification.
                         <textbox id="txtSASL" class="plain"/>           
                       </row>          
                       <row align="baseline">
-                        <hbox pack="end"><label value="Protocol Version:"/></hbox>           
+                        <hbox pack="end"><label value="&list.details.capability.protocol;"/></hbox>           
                         <textbox id="txtVersion" class="plain"/>           
                       </row>                         
                     </rows>
@@ -189,11 +192,11 @@ this server doesn't use trusted identification.
                   oncommand="onDeleteClick();"/>
           <button id="renameButton" label="&list.rename;"
                   oncommand="onRenameClick();"/>
-          <button id="btnActivateScript" label="Activate"
+          <button id="btnActivateScript" label="&list.activate;"
                   oncommand="onActivateClick();"/>
           <spacer flex="1"/>
-          <button id="settings" label="Settings" 
-                  oncommand="onSettingsClick();"/>
+          <button id="settings" label="&list.settings;" 
+                   oncommand="onSettingsClick();"/>
           <spacer flex="1"/>
         </vbox>
       </row>

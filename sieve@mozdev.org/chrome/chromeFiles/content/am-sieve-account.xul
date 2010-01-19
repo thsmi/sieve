@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+ <!--
+   The content of this file is licenced. You may obtain a copy of
+   the license at http://sieve.mozdev.org or request it via email 
+   from the author. Do not remove or change this comment. 
+  
+   The initial author of the code is:
+     Thomas Schmid <schmid-thomas@gmx.net>
+   
+   Contributor(s):
+     Marion Desnault
+-->
+
 <?xml-stylesheet href="chrome://messenger/skin/accountManage.css" type="text/css"?>
 <!DOCTYPE page SYSTEM "chrome://sieve/locale/locale.dtd">
 
@@ -10,18 +22,15 @@
   <script type="application/javascript" src="chrome://sieve/content/SieveOverlay.js" />   
   <script type="application/javascript" src="chrome://messenger/content/AccountManager.js"/>
   <script type="application/javascript" src="chrome://sieve/content/am-sieve-account.js"/> 
-  <dialogheader title="Sieve Settings"/>
+  <dialogheader title="&options.title;"/>
 
-  <description>
-Sieve is a powerful script language for server-side mail filtering. 
-  </description>
-  <description>
-Do you want to activate managing Sieve Scripts for this account?
-  </description>
-          <radiogroup id="rgAccount" onselect="onAccountStatusChange(this);">
-            <radio label="No, this account does not support Sieve "/>
-            <radio label="Yes, manage Sieve scripts for this account:"/>
-          </radiogroup>
+  <description>&options.account.sieve;</description>
+  <description>&options.account.activate;</description>
+
+  <radiogroup id="rgAccount" onselect="onAccountStatusChange(this);">
+    <radio label="&options.account.activate.no;"/>
+    <radio label="&options.account.activate.yes;"/>
+  </radiogroup>
   <hbox id="smtpServerInfoBox" class="indent">
     <stack flex="1" class="inset">
       <spacer id="backgroundBox"/>
@@ -56,8 +65,8 @@ Do you want to activate managing Sieve Scripts for this account?
     </stack>
   </hbox>
   <hbox align="right">
-    <button label ="Edit Filters..." oncommand="onFiltersClick();" />
-    <button label ="Change Settings..." oncommand="onSettingsClick();"/>
+    <button label ="&options.account.filters;" oncommand="onFiltersClick();" />
+    <button label ="&options.account.settings;" oncommand="onSettingsClick();"/>
   </hbox>
                
   <vbox flex = "1"/>

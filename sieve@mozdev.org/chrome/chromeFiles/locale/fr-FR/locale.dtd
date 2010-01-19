@@ -6,25 +6,20 @@
  * 
  * The initial author of the code is:
  *   Sébastien
- *   Thomas Schmid <schmid-thomas@gmx.net>
+ * 
+ * Contributor(s):
+ *   Marion DESNAULT <marion.desnault@free.fr>
  */
  -->
 
-
-<!-- Accounts Dialog -->
-
-<!ENTITY accounts.properties "Propriétés...">
-<!ENTITY accounts.filters "Filtres...">
-<!ENTITY accounts.column.active "Actif">
-<!ENTITY accounts.column.name "Nom">
-<!ENTITY accounts.description "Configurer la connectivité MANAGESIEVE de vos comptes IMAP">
-
 <!-- Options Dialog -->
-<!ENTITY options.title "Options Sieve">
+<!ENTITY options.title "Paramètres Sieve">
 
 <!ENTITY options.tab.general "Général">
-<!ENTITY options.tab.compatibility  "Compatibilité">
+<!ENTITY options.tab.compatibility "Compatibilité">
+<!ENTITY options.tab.compatibility.warning "Ces paramètres sont destinés aux utilisateurs avancés...">
 <!ENTITY options.tab.advanced "Avancée">
+<!ENTITY options.tab.advanced.warning "Ces paramètres sont destinés aux utilisateurs avancés...">
 <!ENTITY options.tab.debug "Debuggage">
 
 <!ENTITY options.login "Authentification">
@@ -36,7 +31,7 @@
 <!ENTITY options.login.username.key "u">
 <!ENTITY options.login.show "Afficher les mots de passe enregistrés...">
 
-<!ENTITY options.host "ignorer les paramètres IMAP">
+<!ENTITY options.host "Ignorer les paramètres IMAP">
 <!ENTITY options.host.key "I">
 <!ENTITY options.host.hostname "Hôte">
 <!ENTITY options.host.hostname.key "h">
@@ -44,32 +39,43 @@
 <!ENTITY options.host.port.key "o">
 <!ENTITY options.host.port.default "Défaut: 2000">
 <!ENTITY options.host.tls.key "t">
-<!ENTITY options.host.tls "utiliser TLS, si disponible">
+<!ENTITY options.host.tls "Utiliser TLS, si disponible">
 
-<!ENTITY options.misc "Paramètres diversMiscellaneous Settings">
-<!ENTITY options.misc.keepalive "Toujours envoyer une requête 'keep alive'">
+<!ENTITY options.misc "Paramètres divers">
+<!ENTITY options.misc.keepalive "Envoyer un 'keep alive' toutes les">
 <!ENTITY options.misc.keepalive.key "k">
-<!ENTITY options.misc.compile "Toujours compiler sur le serveur">
+<!ENTITY options.misc.compile "Compiler sur le serveur toutes les">
 <!ENTITY options.misc.compile.key "c">
 
 <!ENTITY options.debug.warning 
-  "Gardez à l'esprit que ni SASL Utilisateur ou SASL En clair crypte votre mot de passe, 
-  il doit être envoyé en clair à la console d'erreur.">
+  "Gardez à l'esprit que ni &quot;SASL LOGIN&quot; ni &quot;SASL PLAIN&quot; ne crypte votre mot de passe, 
+  il risque d'apparaître en clair dans la console d'erreur.">
 <!ENTITY options.debug.caption "Paramètres de debuggage">
 <!ENTITY options.debug.request "Communication du Client vers le Serveur (demandes)">
 <!ENTITY options.debug.response "Communication du Serveur vers le Client (réponses)">
-<!ENTITY options.debug.exceptions "Information d'éxceptions et d'état de la machine">
+<!ENTITY options.debug.exceptions "Information d'exceptions et d'état de la machine">
+<!ENTITY options.debug.stream "Dump brut / Dump du flux de données">
+<!ENTITY options.debug.output "Sortie de débuggage">
+<!ENTITY options.debug.console "Les informations de débuggage sont envoyées vers la console d'erreur">
+<!ENTITY options.debug.console.open "Voir la console d'erreur">
 
-<!ENTITY options.authmechanism.caption "Méchanisme d'authentification ">
-<!ENTITY options.authmechanism "Redéfinir le méchanisme d'authentification suggèré">
-<!ENTITY options.authmechanism.default "Use always:">
+<!ENTITY options.authmechanism.caption "Méchanisme d'authentification">
+<!ENTITY options.authmechanism "Redéfinir le méchanisme d'authentification">
+<!ENTITY options.authmechanism.default "Toujours utiliser:">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
-<!ENTITY options.authmechanism.login "Utilsateur">
-<!ENTITY options.authmechanism.plain "En clair">
-<!ENTITY options.authmechanism.description "Dans certaines situations, par exemple quand vous utilisez une authenfication proxy, vous pouvez forcer un méchanisme d'authentification spécifique." > 
+<!ENTITY options.authmechanism.login "LOGIN">
+<!ENTITY options.authmechanism.plain "PLAIN">
+<!ENTITY options.authmechanism.description "Dans certaines situations, par exemple quand vous utilisez un proxy d'authentification, vous pourriez vouloir forcer un méchanisme d'authentification spécifique." > 
 
-<!ENTITY options.proxyauth.caption "Autorisation Proxy">
+<!ENTITY options.proxyauth.caption "Proxy d'autorisation">
+<!ENTITY options.proxyauth.desc "Le proxy d'autorisation permet à un utilisateur authentifié d'agir pour le compte d'un autre utilisateur. En général, les serveurs sont configurés de façon à ce que cette fonctionalité ne soit disponible que pour les administrateurs.">
+<!ENTITY options.proxyauth.force "Lorsque vous utilisez le proxy d'autorisation, vous devriez forcer le méchanisme d'authentification à &quot;SASL PLAIN&quot;.">
+<!ENTITY options.proxyauth.none "Aucun">
+<!ENTITY options.proxyauth.default "Utilisateur Sieve">
+<!ENTITY options.proxyauth.prompt "Me demander">
+<!ENTITY options.proxyauth.custom "En tant que">
+<!ENTITY options.proxyauth.custom.username "Utilisateur:">
 
 <!ENTITY options.info.servername "Nom du serveur:">
 <!ENTITY options.info.port "Port:">
@@ -77,11 +83,28 @@
 <!ENTITY options.info.username "Utilisateur:">
 <!ENTITY options.info.auth "Authentification:">
 
+<!ENTITY options.account.sieve "Sieve est un puissant langage de script pour le filtrage des mails côté serveur.">
+<!ENTITY options.account.activate "Voulez-vous activer la gestion des scripts Sieve de ce compte?">
+<!ENTITY options.account.activate.yes "Oui, gérer les scripts Sieve de ce compte:">
+<!ENTITY options.account.activate.no "Non, ce compte ne gère pas Sieve">
+<!ENTITY options.account.filters "Modifier les filtres">
+<!ENTITY options.account.settings "Changer les paramètres">
+
+<!ENTITY options.cyrus "Bug TLS Cyrus">
+<!ENTITY options.cyrus.rfc "Certaines versions de Cyrus n'implémentent pas la poignée de main TLS comme suggéré dans le brouillon de la RFC.">
+<!ENTITY options.cyrus.workaround "Pour contourner le problème, cette extension tente d'abord une poignée de main conforme à la RFC. Au cas où le serveur ne répond pas dans un délai raisonnable, on passe automatiquement à une poignée de main de type Cyrus.">
+<!ENTITY options.cyrus.fails "Cette technique ne fonctionne pas avec des connexions lentes ou des serveurs sous forte charge. Si vous rencontrez des &quot;gèles&quot; ou &quot;plantages&quot; durant la poignée de main TLS, essayez de modifier ces paramètres!">
+<!ENTITY options.cyrus.handshake.auto "Autodétection (par défaut)">
+<!ENTITY options.cyrus.handshake.timeout "Changement automatique après">
+<!ENTITY options.cyrus.handshake.rfc "Poignée de main type RFC stricte">
+<!ENTITY options.cyrus.handshake.cyrus "Poignée de main type Cyrus">
+
+
 
 <!-- Menu entries -->
 <!ENTITY menu.filters "Filtres Sieve...">
 <!ENTITY menu.filters.key "M">
-<!ENTITY menu.options "Paramètres des filtres Sieve...">
+<!ENTITY menu.options "Paramètres Sieve...">
 <!ENTITY menu.options.key "S">
 
 
@@ -100,14 +123,29 @@
 <!ENTITY list.edit "Modifier...">
 <!ENTITY list.delete "Supprimer">
 <!ENTITY list.rename "Renommer">
+<!ENTITY list.activate "Activer">
+<!ENTITY list.settings "Paramètres">
+
 
 <!ENTITY list.details.capability "Capacités Sieve côté serveur">
 <!ENTITY list.details.capability.implementation "Version du serveur:">
-<!ENTITY list.details.capability.sasl "Méchanisme SASL:">
+<!ENTITY list.details.capability.sasl "Méchanismes SASL:">
 <!ENTITY list.details.capability.extensions "Extensions:">
+<!ENTITY list.details.capability.protocol "Version du protocole:">
 
-<!ENTITY list.warning "Ce compte n'est pas configuré pour Sieve, aller à 'Outils-> Filtres Sieve'">
 <!ENTITY list.wait.connect "Connexion...">
+
+<!ENTITY list.warning "Ce compte n'est pas configuré pour Sieve, aller dans 'Outils -> Filtres Sieve'">
+<!ENTITY list.error "La dernière commande a échouée:">
+<!ENTITY list.badcert "Votre serveur de mails essai de s'identifier avec des informtions invalides.">
+<!ENTITY list.badcert.error 
+  "Si habituellement vous vous connectez sans problème, cette erreur pourrait signifier que quelqu'un tente d'usurper l'identité du serveur.
+
+  Ne continuez pas à moins que vous sachiez qu'il y a une bonne raison pour laquelle le serveur n'utilise pas une identification de confiance.">
+<!ENTITY list.badcert.remember "Se rappeler mon choix">
+<!ENTITY list.badcert.ignore "Continuer">
+<!ENTITY list.badcert.abort "Annuler">
+
 
 <!-- Locale for the Edit Filter Dialog -->
 <!ENTITY edit.title "Modifier le filtre Sieve">
@@ -123,10 +161,12 @@
 <!ENTITY edit.toolbar.tools "Outils">
 <!ENTITY edit.toolbar.import "Importer le script">
 <!ENTITY edit.toolbar.export "Exporter le script">
-<!ENTITY edit.toolbar.back "Précédent" >
-<!ENTITY edit.toolbar.forward "Suivant" >
-<!ENTITY edit.toolbar.home "Accueil" >
-<!ENTITY edit.toolbar.print "Imprimer" >
+<!ENTITY edit.toolbar.back "Précédent">
+<!ENTITY edit.toolbar.forward "Suivant">
+<!ENTITY edit.toolbar.home "Accueil">
+<!ENTITY edit.toolbar.print "Imprimer">
+<!ENTITY edit.toolbar.search "Rechercher">
+
 
 <!ENTITY edit.scriptname "Nom du script:">
 <!ENTITY edit.errorbar.title "Erreurs de syntaxe">
@@ -135,6 +175,14 @@
 <!ENTITY edit.save "Sauver">
 
 <!ENTITY edit.sidebar.uri "http://sieve.mozdev.org/reference/en/index.html">
-<!ENTITY edit.sidebar.title "Sieve Language Reference">
+<!ENTITY edit.sidebar.title "Base de référence du langage Sieve">
 
 
+<!ENTITY edit.searchreplace.title "Rechercher et Remplacer">
+<!ENTITY edit.searchreplace.searchfor "Rechercher:">
+<!ENTITY edit.searchreplace.replacewith "Remplacer par:">
+<!ENTITY edit.searchreplace.options "Options">
+<!ENTITY edit.searchreplace.case "Respecter la casse">
+<!ENTITY edit.searchreplace.backward "Vers le haut">
+<!ENTITY edit.searchreplace.find "Suivant">
+<!ENTITY edit.searchreplace.replace "Remplacer">

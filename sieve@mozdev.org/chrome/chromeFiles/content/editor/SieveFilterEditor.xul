@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+ <!--
+   The content of this file is licenced. You may obtain a copy of
+   the license at http://sieve.mozdev.org or request it via email 
+   from the author. Do not remove or change this comment. 
+  
+   The initial author of the code is:
+     Thomas Schmid <schmid-thomas@gmx.net>
+   
+   Contributor(s):
+     Marion Desnault
+-->
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
 <!DOCTYPE window SYSTEM "chrome://sieve/locale/locale.dtd">
@@ -71,7 +83,7 @@
                    label="&edit.toolbar.reference;" class="toolbarbutton-1" />
                    <!--oncommand="onSideBar();"-->
     <toolbarbutton id="btnSearchBar" type="checkbox"  
-                   label="Search" class="toolbarbutton-1" />                   
+                   label="&edit.toolbar.search;" class="toolbarbutton-1" />                    
     <toolbarspacer />               
     <!--<toolbarbutton id="btnPrint"  
                    label="&edit.toolbar.print;" class="toolbarbutton-1"                    
@@ -150,7 +162,7 @@
     <stack class="outset">
       <image flex="1"/> 
       <hbox>
-        <label flex="1" value="Search and Replace" />
+        <label flex="1" value="&edit.searchreplace.title;" />
         <toolbarbutton 
             class="sieveCloseButton"
             oncommand="onSearchBarHide();"/>
@@ -158,21 +170,21 @@
     </stack>
 
       <hbox align="center">
-        <label value="Search for:"/>
+        <label value="&edit.searchreplace.searchfor;"/>
         <textbox flex="1" id="txtToken"/>
       </hbox>
       <hbox align="center">
-        <label value="Replace with:"/>
+        <label value="&edit.searchreplace.replacewith;"/>
         <textbox flex="1" id="txtReplace" />
       </hbox>
         <groupbox orient="vertical" >
-          <caption label="Options"/>
-          <checkbox id="cbxCaseSensitive" label="Case Sensitive" />
-          <checkbox id="cbxBackward" label="Backward"/>
+          <caption label="&edit.searchreplace.options;"/>
+          <checkbox id="cbxCaseSensitive" label="&edit.searchreplace.case;" />
+          <checkbox id="cbxBackward" label="&edit.searchreplace.backward;"/>
         </groupbox>
     <hbox pack="end">
-      <button id="btnFind" label="Find"  oncommand="OnFindString();"/>
-      <button  id="btnReplace" label="Replace" oncommand="OnReplaceString();"/>
+      <button id="btnFind" label="&edit.searchreplace.find;"  oncommand="OnFindString();"/>
+      <button  id="btnReplace" label="&edit.searchreplace.replace;" oncommand="OnReplaceString();"/>
     </hbox>
     <splitter resizeafter="farthest" disabled="true" />
    </vbox>

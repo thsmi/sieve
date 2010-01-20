@@ -6,9 +6,6 @@
  * 
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *
- * Contributor(s):
- *
  */
  -->
 
@@ -48,8 +45,8 @@
 <!ENTITY options.misc.compile.key "c">
 
 <!ENTITY options.debug.warning 
-  "Keep in mind that neither SASL Login nor SASL Plain cypher your password, 
-  it might be posted in cleartext to the error console.">
+"Keep in mind that neither SASL Login nor SASL Plain cypher your password, 
+it might be posted in cleartext to the error console.">
 <!ENTITY options.debug.caption "Debug settings">
 <!ENTITY options.debug.request "Client to Server communication (requests)">
 <!ENTITY options.debug.response "Server to Client communication (responses)">
@@ -66,7 +63,9 @@
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "Login">
 <!ENTITY options.authmechanism.plain "Plain">
-<!ENTITY options.authmechanism.description "In certain situations e.g. when using Proxy Authentication you might want to force a specific Authentication Mechanism." > 
+<!ENTITY options.authmechanism.description 
+"In certain situations e.g. when using Proxy Authentication you might want to 
+force a specific Authentication Mechanism." > 
 
 <!ENTITY options.proxyauth.caption "Proxy Authorization">
 <!ENTITY options.proxyauth.desc 

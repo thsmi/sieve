@@ -9,21 +9,15 @@
  */
  -->
 
-<!-- Accounts Dialog -->
-
-<!ENTITY accounts.properties "Eigenschaften...">
-<!ENTITY accounts.filters "Filter...">
-<!ENTITY accounts.column.active "Aktiv">
-<!ENTITY accounts.column.name "Name">
-<!ENTITY accounts.description "Konfiguration der MANAGESIEVE Verbindung von Ihrem IMAP Konto">
-
 <!-- Options Dialog -->
 <!ENTITY options.title "Sieve Einstellungen">
 
-<!ENTITY options.tab.general  "Allgemein">
+<!ENTITY options.tab.general "Allgemein">
 <!ENTITY options.tab.compatibility  "Kompatibilität">
+<!ENTITY options.tab.compatibility.warning "Diese Einstellungen sind für fortgeschrittene Benutzer gedacht...">
 <!ENTITY options.tab.advanced "Erweitert">
-<!ENTITY options.tab.debug    "Debug">
+<!ENTITY options.tab.advanced.warning "Diese Einstellungen sind für fortgeschrittene Benutzer gedacht...">
+<!ENTITY options.tab.debug "Debug">
 
 <!ENTITY options.login "Authentifizierung">
 <!ENTITY options.login.key "A">
@@ -42,19 +36,25 @@
 <!ENTITY options.host.port.key "o">
 <!ENTITY options.host.port.default "Standard: 2000">
 <!ENTITY options.host.tls.key "t">
-<!ENTITY options.host.tls "TLS, falls möglich">
+<!ENTITY options.host.tls "TLS, wenn möglich">
 
 <!ENTITY options.misc "Sonstige Einstellungen">
-<!ENTITY options.misc.keepalive "Schicke 'keep alive' Anfragen alle">
+<!ENTITY options.misc.keepalive "'Keep alive' Paket mindestens alle">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.compile "Kompiliere auf dem Server alle">
 <!ENTITY options.misc.compile.key "p">
 
+<!ENTITY options.debug.warning 
+"Bitte beachten Sie, dass Debugmeldungen von SASL Login und SASL Plain Ihr 
+Passwort im Klartext enthalten!">
 <!ENTITY options.debug.caption "Debug Einstellungen">
-<!ENTITY options.debug.warning "Beachten sie, dass weder SASL Login noch SASL Plain ihr Passwort verschlüssen, es könnte im Klartext als Debugmeldung in die Fehlerkonsole geschrieben werden.">
-<!ENTITY options.debug.request "Client zu Server Kommunikation (Anfragen)">
-<!ENTITY options.debug.response "Server zu Client Kommunikation (Antworten)">
+<!ENTITY options.debug.request "Client zu Server Kommunikation (requests)">
+<!ENTITY options.debug.response "Server zu Client Kommunikation (responses)">
 <!ENTITY options.debug.exceptions "Ausnahmefehler und State Machine Informationen">
+<!ENTITY options.debug.stream "Rohdaten">
+<!ENTITY options.debug.output "Debugmeldungen">
+<!ENTITY options.debug.console "Debugmeldungen werden in die Fehlerkonsole geschrieben">
+<!ENTITY options.debug.console.open "Fehlerkonsole öffnen...">
 
 <!ENTITY options.authmechanism.caption "Authentifizierungsmechanismus">
 <!ENTITY options.authmechanism "Empfohlenen Mechanismus ignorieren">
@@ -63,9 +63,23 @@
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "LOGIN">
 <!ENTITY options.authmechanism.plain "PLAIN">
-<!ENTITY options.authmechanism.description "In Ausnahmefällen, z.B. wenn sie Proxy Authenitifzierung nutzen, können sie hier einen Autentifizierungsmechanismus erzwingen." >
+<!ENTITY options.authmechanism.description 
+"In Ausnahmefällen, z.B. wenn Sie Proxy Authenitifzierung nutzen, können Sie 
+hier einen Autentifizierungsmechanismus erzwingen." >
 
 <!ENTITY options.proxyauth.caption "Proxy Authorisation">
+<!ENTITY options.proxyauth.desc 
+"Die Proxy Authorisation ermöglicht einem authentifiziertem Benuter, sich als  
+ein anderer Benutzer auszugeben. 
+Diese Funktionalität setzt besondere Rechte auf dem Mailserver vorraus und steht
+daher meist nur Administratoren zur Verfügung."
+<!ENTITY options.proxyauth.force 
+"Die Proxy Authorisation erfordert zwingend eine 'SASL PLAIN' Authentifizierung">
+<!ENTITY options.proxyauth.none "Keine Authorisation">
+<!ENTITY options.proxyauth.default "Sieve Benutzername">
+<!ENTITY options.proxyauth.prompt "Benutzername abfragen">
+<!ENTITY options.proxyauth.custom "Authorisierung als">
+<!ENTITY options.proxyauth.custom.username "Benutername:">
 
 <!ENTITY options.info.servername "Server Name:">
 <!ENTITY options.info.port "Port:">
@@ -73,6 +87,28 @@
 <!ENTITY options.info.username "Benutzername:">
 <!ENTITY options.info.auth "Authentifizierung:">
 
+<!ENTITY options.account.sieve "Sieve ist eine mächtige Skriptsprache für serverseitige Mail Filterung.">
+<!ENTITY options.account.activate "Möchten die Sie Sieve Scripte für diesen Account verwalten?">
+<!ENTITY options.account.activate.yes "Ja, dieser Server untersützt Sieve:">
+<!ENTITY options.account.activate.no "Nein, dieses Konto unterstützt kein Sieve">
+<!ENTITY options.account.filters "Filters bearbeiten...">
+<!ENTITY options.account.settings "Einstellungen ändern Settings...">
+
+<!ENTITY options.cyrus "Cyrus TLS Fehler">
+<!ENTITY options.cyrus.rfc "Einige Cyrus server implementieren den TLS Handshake fehlerhaft">
+<!ENTITY options.cyrus.workaround 
+"Daher verwendet diese Erweiterung einen Mechanismus um diesen Fehler zu umgehen. 
+Als erstes versucht die erweiterung einen RFC konformen TLS Handshake auszuhandel.
+Wenn dies nicht innerhalb einer angemessenen Zeit erfolgreich war, nimmt die Erweiterung
+an dass es sich um einen Fehlerhaften Cyrus Server handelt.">
+<!ENTITY options.cyrus.fails
+"Dieser mechanismus versagt bei langsam antwortenden der mailserver 
+z.B. druch eine hohe last oder eine langsame verbindung. Spielen Sie mit diesen
+einstellungen fals die Erweiterung während des TLS handshakes abstürz.">
+<!ENTITY options.cyrus.handshake.auto "Automatisch (Standard)">
+<!ENTITY options.cyrus.handshake.timeout "Fallback nach">
+<!ENTITY options.cyrus.handshake.rfc "RFC Konformer handshake">
+<!ENTITY options.cyrus.handshake.cyrus "Cyrus handshake">
 
 <!-- Menu entries -->
 <!ENTITY menu.filters "Sieve Filter...">

@@ -87,27 +87,27 @@ daher meist nur Administratoren zur Verfügung."
 <!ENTITY options.info.username "Benutzername:">
 <!ENTITY options.info.auth "Authentifizierung:">
 
-<!ENTITY options.account.sieve "Sieve ist eine mächtige Skriptsprache für serverseitige Mail Filterung.">
-<!ENTITY options.account.activate "Möchten die Sie Sieve Scripte für diesen Account verwalten?">
+<!ENTITY options.account.sieve "Sieve ist eine Skriptsprache für serverseitige Mail Filterung.">
+<!ENTITY options.account.activate "Möchten Sie Sieve Scripte für diesen Account verwalten?">
 <!ENTITY options.account.activate.yes "Ja, dieser Server untersützt Sieve:">
 <!ENTITY options.account.activate.no "Nein, dieses Konto unterstützt kein Sieve">
 <!ENTITY options.account.filters "Filters bearbeiten...">
 <!ENTITY options.account.settings "Einstellungen ändern Settings...">
 
 <!ENTITY options.cyrus "Cyrus TLS Fehler">
-<!ENTITY options.cyrus.rfc "Einige Cyrus server implementieren den TLS Handshake fehlerhaft">
+<!ENTITY options.cyrus.rfc "Einige Cyrus Server implementieren den TLS Handshake fehlerhaft">
 <!ENTITY options.cyrus.workaround 
 "Daher verwendet diese Erweiterung einen Mechanismus um diesen Fehler zu umgehen. 
-Als erstes versucht die erweiterung einen RFC konformen TLS Handshake auszuhandel.
+Als erstes versucht die Erweiterung einen RFC konformen TLS Handshake auszuhandel.
 Wenn dies nicht innerhalb einer angemessenen Zeit erfolgreich war, nimmt die Erweiterung
-an dass es sich um einen Fehlerhaften Cyrus Server handelt.">
+an, dass es sich um einen fehlerhaften Cyrus Server handelt.">
 <!ENTITY options.cyrus.fails
-"Dieser mechanismus versagt bei langsam antwortenden der mailserver 
-z.B. druch eine hohe last oder eine langsame verbindung. Spielen Sie mit diesen
-einstellungen fals die Erweiterung während des TLS handshakes abstürz.">
+"Bei einem langsam antwortendem Mailserver (z.B. durch eine hohen Last oder 
+eine langsamen Verbindung) versagt dieser Mechanismus. Spielen Sie mit diesen
+Einstellungen falls die Erweiterung während des TLS handshakes abstürzt.">
 <!ENTITY options.cyrus.handshake.auto "Automatisch (Standard)">
 <!ENTITY options.cyrus.handshake.timeout "Fallback nach">
-<!ENTITY options.cyrus.handshake.rfc "RFC Konformer handshake">
+<!ENTITY options.cyrus.handshake.rfc "RFC konformer handshake">
 <!ENTITY options.cyrus.handshake.cyrus "Cyrus handshake">
 
 <!-- Menu entries -->
@@ -132,16 +132,32 @@ einstellungen fals die Erweiterung während des TLS handshakes abstürz.">
 <!ENTITY list.edit "Bearbeiten...">
 <!ENTITY list.delete "Löschen">
 <!ENTITY list.rename "Umbenennen...">
+<!ENTITY list.activate "Aktivieren">
+<!ENTITY list.settings "Einstellungen...">
 
 <!ENTITY list.details.capability "Sieve Server Eigenschaften">
 <!ENTITY list.details.capability.implementation "Server Version:">
 <!ENTITY list.details.capability.sasl "SASL Mechanismen:">
 <!ENTITY list.details.capability.extensions "Erweiterungen:">
+<!ENTITY list.details.capability.protocol "Protokoll:">
+
+<!ENTITY list.wait.connect  "Verbinden...">
 
 <!ENTITY list.warning 
-  "Dieses Konto ist nicht für managesieve eingerichtet. Bitte rufen Sie 'Extras-> Sieve Filter Einstellungen' auf">
-<!ENTITY list.wait.connect 
-  "Verbinden...">
+  "Dieses Konto ist nicht konfiguriert. Bitte rufen Sie 'Extras-> Sieve Filter Einstellungen' auf">
+<!ENTITY list.error "Aktion fehlgeschlagen, Server meldet einen schweren Fehler">
+<!ENTITY list.badcert 
+"Ihr Mailserver kann nicht Identifiziert werden und wird als nicht 
+vertrauenswürdig eingestuft.">
+<!ENTITY list.badcert.error 
+"Es könnte es sein, dass sich jemand als Ihr Mailserver ausgibt, um 
+beispielsweise an Ihr Passwort zu gelangen.
+
+Ignorieren Sie diese Meldung nur, wenn Sie sich wirklich sicher sind, 
+dass Sie tatsächlich mit dem gewünschten Server verbunden sind.">
+<!ENTITY list.badcert.remember "Meldung nicht mehr anzeigen">
+<!ENTITY list.badcert.ignore "Weiter">
+<!ENTITY list.badcert.abort "Abbrechen">
 
 <!-- Locale for the Edit Filter Dialog -->
 <!ENTITY edit.title "Sieveskript bearbeiten">
@@ -161,6 +177,7 @@ einstellungen fals die Erweiterung während des TLS handshakes abstürz.">
 <!ENTITY edit.toolbar.forward "Weiter" >
 <!ENTITY edit.toolbar.home "Inhalt" >
 <!ENTITY edit.toolbar.print "Drucken" >
+<!ENTITY edit.toolbar.search "Suchen">
 
 <!ENTITY edit.scriptname "Skriptname:">
 <!ENTITY edit.errorbar.title "Syntax Fehler">
@@ -170,3 +187,12 @@ einstellungen fals die Erweiterung während des TLS handshakes abstürz.">
 
 <!ENTITY edit.sidebar.uri "http://sieve.mozdev.org/reference/en/index.html">
 <!ENTITY edit.sidebar.title "Sieve Sprachreferenz">
+
+<!ENTITY edit.searchreplace.title "Suchen und ersetzen">
+<!ENTITY edit.searchreplace.searchfor "Suchen nach:">
+<!ENTITY edit.searchreplace.replacewith "Ersetzen mit:">
+<!ENTITY edit.searchreplace.options "Optionen">
+<!ENTITY edit.searchreplace.case "Groß/Kleinschreibung">
+<!ENTITY edit.searchreplace.backward "Rückwärts">
+<!ENTITY edit.searchreplace.find "Suchen">
+<!ENTITY edit.searchreplace.replace "Ersetzen">

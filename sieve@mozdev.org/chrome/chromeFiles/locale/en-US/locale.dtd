@@ -46,7 +46,7 @@
 
 <!ENTITY options.debug.warning 
 "Keep in mind that neither SASL Login nor SASL Plain cypher your password, 
-it might be posted in cleartext to the error console.">
+it might be posted in clear text to the error console.">
 <!ENTITY options.debug.caption "Debug settings">
 <!ENTITY options.debug.request "Client to Server communication (requests)">
 <!ENTITY options.debug.response "Server to Client communication (responses)">
@@ -69,7 +69,7 @@ force a specific Authentication Mechanism." >
 
 <!ENTITY options.proxyauth.caption "Proxy Authorization">
 <!ENTITY options.proxyauth.desc 
-"Proxy authorization, allows an authenticated user to act on the behalf of another user.
+"Proxy authorization, allows an authenticated user to act on behalf of another user.
 Usually servers are configured, that this feature is only available for administrators.">
 <!ENTITY options.proxyauth.force "When using proxy authorization you should force &quot;SASL PLAIN&quot; Authentication.">
 <!ENTITY options.proxyauth.none "No Authorization">
@@ -94,9 +94,9 @@ Usually servers are configured, that this feature is only available for administ
 <!ENTITY options.cyrus "Cyrus TLS Bug">
 <!ENTITY options.cyrus.rfc "Some Cyrus releases do not implement the TLS handshake as suggested in the RFC Draft.">
 <!ENTITY options.cyrus.workaround 
-"As a workaround this extension tries first a RFC conform handshake. 
+"As a work around this extension tries first a RFC conform handshake. 
 In case the server does not reply within a reasonable time, it 
-automagically fallsback to a cyrus style handshake.">
+automagically falls back to a cyrus style handshake.">
 <!ENTITY options.cyrus.fails
 "This magic fails with slow connections or servers suffering from high 
 load. If you encounter a 'hang' or 'crash' during TLS handshake, play 
@@ -130,7 +130,7 @@ with these setting!">
 <!ENTITY list.delete "Delete">
 <!ENTITY list.rename "Rename">
 <!ENTITY list.activate "Activate">
-<!ENTITY list.settings "Settings">
+<!ENTITY list.settings "Settings...">
 
 
 <!ENTITY list.details.capability "Server Sieve Capabilities">

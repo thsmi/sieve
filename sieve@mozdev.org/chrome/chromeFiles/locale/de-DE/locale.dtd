@@ -72,7 +72,7 @@ hier einen Autentifizierungsmechanismus erzwingen." >
 "Die Proxy Authorisation ermöglicht einem authentifiziertem Benuter, sich als  
 ein anderer Benutzer auszugeben. 
 Diese Funktionalität setzt besondere Rechte auf dem Mailserver vorraus und steht
-daher meist nur Administratoren zur Verfügung."
+daher meist nur Administratoren zur Verfügung.">
 <!ENTITY options.proxyauth.force 
 "Die Proxy Authorisation erfordert zwingend eine 'SASL PLAIN' Authentifizierung">
 <!ENTITY options.proxyauth.none "Keine Authorisation">

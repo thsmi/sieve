@@ -29,6 +29,7 @@
   <tabbox  flex="1">
   <tabs >
     <tab label="&options.tab.general;" />
+    <tab label="Proxy" />
     <tab label="&options.tab.compatibility;" />
     <tab label="&options.tab.advanced;" />
     <tab label="&options.tab.debug;" />
@@ -86,7 +87,7 @@
             </rows>
           </grid>
         </groupbox>
-      </hbox>
+      </hbox>     
       <groupbox>
         <caption label="&options.misc;" />
         <grid>
@@ -116,6 +117,29 @@
       </groupbox>
     </vbox>
 
+
+    <!-- proxy panel -->
+    <vbox>
+      <groupbox label="Proxy configuration">
+        <caption  label="Proxy configuration" /> 
+        <description>Connections to sieve servers may be proxied through a transparent socks proxy.
+SOCKSv5 resolves hostnames on the proxy server, while SOCKSv4 resolves hostnames on the client side</description>         
+        <checkbox id="cbxProxy" label="Use Socks Proxy" oncommand="onCbxProxyCommand(this)" />
+         <hbox class="indent" align="center">
+        <menulist id="mlProxy" oncommand="onMlProxySelect(this)">
+          <menupopup>
+            <menuitem id="miSocks5Proxy" label="SOCKSv5" value="socks5"/>
+            <menuitem id="miSocks4Proxy" label="SOCKSv4" value="socks4"/>
+          </menupopup>
+        </menulist>
+        <label value="Host:" control="txtProxyHost" />
+         <textbox id="txtProxyHost" size="25" onchange="onProxyHostChange(this)"/>
+        <label value="Port:"  control="txtProxyPort" />
+         <textbox id="txtProxyPort" size="5" onchange="onProxyPortChange(this)"/>                  
+        </hbox>
+      </groupbox>
+    </vbox>
+ 
     <!-- compatibility panel -->
     <vbox>
       <hbox align="center" class="sivWarning" >

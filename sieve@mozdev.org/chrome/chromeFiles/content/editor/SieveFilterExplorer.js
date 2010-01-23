@@ -484,10 +484,11 @@ function sivConnect(account,hostname)
    request.addErrorListener(event)
    request.addInitListener(event)
    gSieve.addRequest(request);   
-   
+
    gSieve.connect(hostname,account.getHost().getPort(),
             account.getHost().isTLS(),
-            new BadCertHandler(gLogger));  
+            new BadCertHandler(gLogger),
+            account.getProxy().getProxyInfo());
 }
 
 function onActivateClick()

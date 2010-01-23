@@ -9,6 +9,7 @@
 
 //  @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
 
+    
 /** @type SieveAccount */
 var account;
 account = null;
@@ -102,6 +103,38 @@ function onDialogLoad(sender)
   element = document.getElementById('rgHandshake');
   element.selectedIndex = account.getSettings().getCompatibility().getHandshakeMode();
   enableHandshakeTimeout(element.selectedIndex);  
+  
+  
+  // Proxy Configuration...
+  var proxy = account.getProxy();
+
+  var cbxProxy = document.getElementById('cbxProxy');  
+  if (proxy.isEnabled())
+    cbxProxy.checked = true;
+  else 
+    cbxProxy.checked = false;
+  
+  enableProxy(cbxProxy.checked);
+
+  
+  document.getElementById('txtProxyHost').value
+    = proxy.getHost(); 
+  
+  document.getElementById('txtProxyPort').value
+    = proxy.getPort();   
+
+    
+  var list = document.getElementById('mlProxy');
+  var items = list.getElementsByTagName('menuitem');
+  
+  for (var i = 0; i < items.length; i++)
+  {
+    if (items[i].value != proxy.getType())
+      continue;
+    
+    list.selectedItem = items[i];
+    break;
+  }  
 }
 
 function onDialogAccept(sender)
@@ -429,4 +462,54 @@ function onShowErrorConsole()
       .openWindow(null, uri, name, "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar", null);
       
     //window.open(uri, "_blank", "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar");          
+}
+
+function enableProxy(enabled)
+{
+
+  if (enabled)
+  {
+    document.getElementById('txtProxyPort').removeAttribute('disabled');
+    document.getElementById('txtProxyHost').removeAttribute('disabled');
+    document.getElementById('mlProxy').removeAttribute('disabled');
+  }
+  else
+  {
+    document.getElementById('txtProxyPort').setAttribute('disabled','true');    
+    document.getElementById('txtProxyHost').setAttribute('disabled','true');        
+    document.getElementById('mlProxy').setAttribute('disabled','true');        
+  }
+}
+
+function onCbxProxyCommand(sender)
+{
+  if (account == null)
+    return;
+  
+  account.getProxy().setEnabled(sender.checked);
+  enableProxy(sender.checked);
+}
+
+function onMlProxySelect(sender)
+{
+  if (account == null)
+    return;
+  
+  account.getProxy().setType(sender.selectedItem.value);
+}
+
+function onProxyHostChange(sender)
+{
+  if (account == null)
+    return;
+  
+  account.getProxy().setHost(sender.value);
+}
+
+function onProxyPortChange(sender)
+{
+  if (account == null)
+    return;
+  
+  account.getProxy().setPort(sender.value)
 }

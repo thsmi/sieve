@@ -542,6 +542,97 @@ SieveCustomAuth.prototype.getType
 }
 
 /**
+ * This maintains SOCKS proxy settings 
+ * @param {String} sieveKey
+ *   the unique URI of the associated sieve account
+ */
+function SieveProxyInfo(sieveKey)
+{
+  this.prefURI = sieveKey+".proxy";
+}
+
+SieveProxyInfo.prototype.isEnabled
+    = function()
+{
+  if (gPref.prefHasUserValue(this.prefURI+".enabled"))
+    return gPref.getBoolPref(this.prefURI+".enabled");
+
+  return false;
+}
+
+SieveProxyInfo.prototype.setEnabled
+    = function(enabled)
+{
+  gPref.setBoolPref(this.prefURI+".enabled",enabled);
+}
+
+SieveProxyInfo.prototype.getType
+    = function()
+{
+  if (gPref.prefHasUserValue(this.prefURI+".type"))
+    return gPref.getCharPref(this.prefURI+".type");
+
+  return "socks";
+}
+
+SieveProxyInfo.prototype.setType
+    = function(type)
+{
+  gPref.setCharPref(this.prefURI+".type",type);
+}
+
+SieveProxyInfo.prototype.getHost
+    = function()
+{
+  if (gPref.prefHasUserValue(this.prefURI+".host"))
+    return gPref.getCharPref(this.prefURI+".host");
+
+  return ""; 
+}
+
+SieveProxyInfo.prototype.setHost
+    = function(host)
+{
+  gPref.setCharPref(this.prefURI+".host",host);
+}
+
+SieveProxyInfo.prototype.getPort
+    = function()
+{
+  if (gPref.prefHasUserValue(this.prefURI+".port"))
+    return gPref.getCharPref(this.prefURI+".port");
+
+  return ""; 
+}
+
+SieveProxyInfo.prototype.setPort
+    = function(port)
+{
+  gPref.setCharPref(this.prefURI+".port",port);
+}
+
+SieveProxyInfo.prototype.getProxyInfo
+    = function()
+{
+  // return null for no proxy
+  if (this.isEnabled() == false)
+    return null;
+ 
+  // generate proxy info
+  var pps = Components.classes["@mozilla.org/network/protocol-proxy-service;1"].getService();
+    
+  switch (this.getType())
+  {
+    case "socks":
+      return pps.newProxyInfo(this.getType(),this.getHost(),this.getPort(),1<<0,4294967295,null)
+    case "socks4" :
+      return pps.newProxyInfo(this.getType(),this.getHost(),this.getPort(),0,4294967295,null)
+  }      
+ 
+  throw "Incompatible Proxy Type";
+}
+
+/**
  * This class loads the host settings from an IMAP account. The settings are
  * read dynamically when needed. This ensures the always the most recent 
  * settings are used.
@@ -1187,6 +1278,12 @@ SieveAccount.prototype.getSettings
   return new SieveAccountSettings(this.sieveKey);
 }
 
+SieveAccount.prototype.getProxy
+    = function ()
+{
+  return new SieveProxyInfo(this.sieveKey)      
+}
+
 //****************************************************************************//
 
 function SieveAccounts()
@@ -1218,3 +1315,4 @@ SieveAccounts.prototype.getAccounts
 {   
   return this.accounts;
 }
+

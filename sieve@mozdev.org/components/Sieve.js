@@ -277,8 +277,8 @@ Sieve.prototype.addRequest
 }
 
 /**
- * 
- *   
+ * Connects to a ManageSieve server
+ *    
  * @param {String} host 
  *   The target hostname or IP address as String
  * @param {Int} port
@@ -287,9 +287,13 @@ Sieve.prototype.addRequest
  *   If true, a secure socket will be created. This allows switching to a secure
  *   connection.
  * @param {Components.interfaces.nsIBadCertListener2} badCertHandler
+ *   Listener to call incase of an SSL Error. Can be null. See startTLS for more 
+ *   details. 
+ * @param {Components.interfaces.nsIProxyInfo} proxy
+ *   Specifies the proxy type, to use. Set to null if no proxy should be used. 
  */
 
-Sieve.prototype.connect = function (host, port, secure,badCertHandler) 
+Sieve.prototype.connect = function (host, port, secure, badCertHandler, proxy) 
 {  
   if( this.socket != null)
     return;
@@ -304,11 +308,11 @@ Sieve.prototype.connect = function (host, port, secure,badCertHandler)
   var transportService =
       Components.classes["@mozilla.org/network/socket-transport-service;1"]
         .getService(Components.interfaces.nsISocketTransportService);
-  
+        
   if (this.secure)
-    this.socket = transportService.createTransport(["starttls"], 1,this.host, this.port, null); 
+    this.socket = transportService.createTransport(["starttls"], 1,this.host, this.port,proxy); 
   else
-    this.socket = transportService.createTransport(null, 0,this.host, this.port, null);    
+    this.socket = transportService.createTransport(null, 0,this.host, this.port,proxy);    
 
   if (badCertHandler != null)
     this.socket.securityCallbacks = badCertHandler;  

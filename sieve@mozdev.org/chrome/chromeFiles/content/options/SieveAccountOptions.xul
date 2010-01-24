@@ -33,6 +33,7 @@
     <tab label="&options.tab.compatibility;" />
     <tab label="&options.tab.advanced;" />
     <tab label="&options.tab.debug;" />
+    <tab label="Credits" />
   </tabs>
   <tabpanels flex="1" >
     <vbox>
@@ -234,7 +235,13 @@ SOCKSv5 resolves hostnames on the proxy server, while SOCKSv4 resolves hostnames
                   oncommand="onShowErrorConsole()" />
          </hbox>
       </groupbox>      
-    </vbox>  
+    </vbox>   
+    <vbox align="center">
+       <label value="Many thanks to all contributors:"/>
+        <hbox  flex="1" align="center">
+        <image src="chrome://sieve/content/images/contributors.png"/>
+        </hbox>
+    </vbox>   
   </tabpanels>
   </tabbox>
 </dialog>

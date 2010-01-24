@@ -242,8 +242,7 @@ function onLoad()
                               .getService(Components.interfaces.nsIXULAppInfo)
                               .platformVersion.split(".");
 
-  // FIXME Failes with 2.0 ? 
-  if ((version[0] >= 1) && (version[1] >=9))
+  if (((version[0] == 1) && (version[1] >=9)) || version[0] >2)
   {
     document.getElementById("sivLineNumbers").removeAttribute('hidden');
     document.getElementById("sivContentEditor")

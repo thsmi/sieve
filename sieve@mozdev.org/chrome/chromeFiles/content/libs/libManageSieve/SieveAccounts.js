@@ -608,6 +608,7 @@ SieveProxyInfo.prototype.getPort
 SieveProxyInfo.prototype.setPort
     = function(port)
 {
+  // TODO: Check If port is a valid integer
   gPref.setCharPref(this.prefURI+".port",port);
 }
 

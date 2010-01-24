@@ -16,11 +16,13 @@
 <!ENTITY options.title "Sieve Einstellungen">
 
 <!ENTITY options.tab.general "Allgemein">
+<!ENTITY options.tab.proxy "Proxy">
 <!ENTITY options.tab.compatibility  "Kompatibilität">
 <!ENTITY options.tab.compatibility.warning "Diese Einstellungen sind für fortgeschrittene Benutzer gedacht...">
 <!ENTITY options.tab.advanced "Erweitert">
 <!ENTITY options.tab.advanced.warning "Diese Einstellungen sind für fortgeschrittene Benutzer gedacht...">
 <!ENTITY options.tab.debug "Debug">
+<!ENTITY options.tab.credits "Danksagung">
 
 <!ENTITY options.login "Authentifizierung">
 <!ENTITY options.login.key "A">
@@ -112,6 +114,23 @@ Einstellungen falls die Erweiterung während des TLS handshakes abstürzt.">
 <!ENTITY options.cyrus.handshake.timeout "Fallback nach">
 <!ENTITY options.cyrus.handshake.rfc "RFC konformer handshake">
 <!ENTITY options.cyrus.handshake.cyrus "Cyrus handshake">
+
+<!-- Credits -->
+<!ENTITY options.credits "Vielen Dank an alle die dieses Projekt unterstützen:">
+
+
+<!-- Proxy Settings -->
+<!ENTITY options.proxy "Proxy Einstellungen">
+<!ENTITY options.proxy.description 
+"Um eine Firewall zu umgehen können Verbindungen zu einem Sieve Server durch 
+einen transparenten SOCKS Proxy geleitet werden. 
+Bei SOCKSv5 werden Hostnamen vom DNS des SOCKS Proxy aufgelöst. Bei SOCKSv4 
+hingegen werden sie lokal ermittelt.">
+<!ENTITY options.proxy.enabled "Verwende einen Socks Proxy">
+<!ENTITY options.proxy.host "Hostname:">
+<!ENTITY options.proxy.port "Port:"> 
+
+
 
 <!-- Menu entries -->
 <!ENTITY menu.filters "Sieve Filter...">

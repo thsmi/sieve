@@ -29,11 +29,11 @@
   <tabbox  flex="1">
   <tabs >
     <tab label="&options.tab.general;" />
-    <tab label="Proxy" />
+    <tab label="&options.tab.proxy;" />
     <tab label="&options.tab.compatibility;" />
     <tab label="&options.tab.advanced;" />
     <tab label="&options.tab.debug;" />
-    <tab label="Credits" />
+    <tab label="&options.tab.credits;" />
   </tabs>
   <tabpanels flex="1" >
     <vbox>
@@ -121,11 +121,10 @@
 
     <!-- proxy panel -->
     <vbox>
-      <groupbox label="Proxy configuration">
-        <caption  label="Proxy configuration" /> 
-        <description>Connections to sieve servers may be proxied through a transparent socks proxy.
-SOCKSv5 resolves hostnames on the proxy server, while SOCKSv4 resolves hostnames on the client side</description>         
-        <checkbox id="cbxProxy" label="Use Socks Proxy" oncommand="onCbxProxyCommand(this)" />
+      <groupbox>
+        <caption label="&options.proxy;" /> 
+        <description>&options.proxy.description;</description>                 
+        <checkbox id="cbxProxy" label="&options.proxy.enabled;" oncommand="onCbxProxyCommand(this)" />
          <hbox class="indent" align="center">
         <menulist id="mlProxy" oncommand="onMlProxySelect(this)">
           <menupopup>
@@ -133,9 +132,9 @@ SOCKSv5 resolves hostnames on the proxy server, while SOCKSv4 resolves hostnames
             <menuitem id="miSocks4Proxy" label="SOCKSv4" value="socks4"/>
           </menupopup>
         </menulist>
-        <label value="Host:" control="txtProxyHost" />
+        <label value="&options.proxy.host;" control="txtProxyHost" />
          <textbox id="txtProxyHost" size="25" onchange="onProxyHostChange(this)"/>
-        <label value="Port:"  control="txtProxyPort" />
+        <label value="&options.proxy.port;"  control="txtProxyPort" />
          <textbox id="txtProxyPort" size="5" onchange="onProxyPortChange(this)"/>                  
         </hbox>
       </groupbox>
@@ -236,8 +235,10 @@ SOCKSv5 resolves hostnames on the proxy server, while SOCKSv4 resolves hostnames
          </hbox>
       </groupbox>      
     </vbox>   
+    
+    <!-- credits panel -->
     <vbox align="center">
-       <label value="Many thanks to all contributors:"/>
+       <label value="&options.credits;"/>
         <hbox  flex="1" align="center">
         <image src="chrome://sieve/content/images/contributors.png"/>
         </hbox>

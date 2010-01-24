@@ -16,11 +16,13 @@
 <!ENTITY options.title "Paramètres Sieve">
 
 <!ENTITY options.tab.general "Général">
+<!ENTITY options.tab.proxy "Proxy">
 <!ENTITY options.tab.compatibility "Compatibilité">
 <!ENTITY options.tab.compatibility.warning "Ces paramètres sont destinés aux utilisateurs avancés...">
 <!ENTITY options.tab.advanced "Avancée">
 <!ENTITY options.tab.advanced.warning "Ces paramètres sont destinés aux utilisateurs avancés...">
 <!ENTITY options.tab.debug "Debuggage">
+<!ENTITY options.tab.credits "Crédits">
 
 <!ENTITY options.login "Authentification">
 <!ENTITY options.login.key "A">
@@ -98,6 +100,19 @@
 <!ENTITY options.cyrus.handshake.timeout "Changement automatique après">
 <!ENTITY options.cyrus.handshake.rfc "Poignée de main type RFC stricte">
 <!ENTITY options.cyrus.handshake.cyrus "Poignée de main type Cyrus">
+
+<!-- Credits -->
+<!ENTITY options.credits "Many thanks to all contributors:">
+
+<!-- Proxy Settings -->
+<!ENTITY options.proxy "Proxy configuration">
+<!ENTITY options.proxy.description 
+"Connections to sieve servers may be proxied through a transparent socks proxy.
+SOCKSv5 resolves hostnames on the proxy server, while SOCKSv4 resolves hostnames 
+on the client side">
+<!ENTITY options.proxy.enabled "Utiliser un SOCKS Proxy">
+<!ENTITY options.proxy.host "Hôte SOCKS:">
+<!ENTITY options.proxy.port "Port:"> 
 
 
 

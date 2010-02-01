@@ -168,7 +168,6 @@ var event =
       onError: function(response)
       {
         gSieve.getWatchDogListener().setTimeoutInterval();
-        alert("Error");
         event.onError(response);
       },
       
@@ -332,7 +331,7 @@ var event =
     }
 
     gLogger.logStringMessage("OnError: "+response.getMessage());
-    sivDisconnect(2,"error.fatal");
+    sivDisconnect(4,response.getMessage());
   },
   
   onCycleCell: function(row,col,script,active)
@@ -711,6 +710,7 @@ function sivSetStatus(state, message, statusbar)
             document.getElementById('sivExplorerWarningMsg')
                 .firstChild.nodeValue = strbundle.getString(message);
             break;
+    // client error            
     case 2: document.getElementById('sivExplorerError').removeAttribute('hidden');
             document.getElementById('sivExplorerErrorMsg')
                 .firstChild.nodeValue = strbundle.getString(message);    
@@ -719,6 +719,11 @@ function sivSetStatus(state, message, statusbar)
             document.getElementById('sivExplorerWaitMsg')
                 .firstChild.nodeValue = strbundle.getString(message);    
             break;
+    // server error
+    case 4: document.getElementById('sivExplorerError').removeAttribute('hidden');
+            document.getElementById('sivExplorerErrorMsg')
+                .firstChild.nodeValue = message;    
+            break;            
     case 5: document.getElementById('sivExplorerBadCert').removeAttribute('hidden');
             document.getElementById("btnIgnoreBadCert").setAttribute("oncommand",
                 "onBadCertOverride('"+message+"',document.getElementById('cbBadCertRemember').checked)");

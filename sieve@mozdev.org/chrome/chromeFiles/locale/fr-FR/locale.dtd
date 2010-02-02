@@ -107,13 +107,19 @@
 <!-- Proxy Settings -->
 <!ENTITY options.proxy "Proxy configuration">
 <!ENTITY options.proxy.description 
-"Connections to sieve servers may be proxied through a transparent socks proxy.
-SOCKSv5 resolves hostnames on the proxy server, while SOCKSv4 resolves hostnames 
-on the client side">
-<!ENTITY options.proxy.enabled "Utiliser un SOCKS Proxy">
-<!ENTITY options.proxy.host "Hôte SOCKS:">
-<!ENTITY options.proxy.port "Port:"> 
-
+"Instead of  a direct connection you may use a SOCKS Proxy to transparently and 
+securely traverse a firewall.">
+<!ENTITY options.proxy.description.nameresolution
+"With SOCKSv4 hostnames are always resolved on the local machine. SOCKSv5 also 
+supports resolving hostnames by the SOCKS proxy. If you can trust the SOCKSv5 
+proxy, the latter is considered to be more secure and should be prefered.">
+<!ENTITY options.proxy.direct "Direct Connection">
+<!ENTITY options.proxy.default "Default Proxy configuration">
+<!ENTITY options.proxy.socks4 "SOCKSv4">
+<!ENTITY options.proxy.socks5 "SOCKSv5">
+<!ENTITY options.proxy.nameresolution "Resolve hostnames on proxy">
+<!ENTITY options.proxy.host "Hôte:">
+<!ENTITY options.proxy.port "Port:">
 
 
 <!-- Menu entries -->

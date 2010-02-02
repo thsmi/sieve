@@ -123,13 +123,18 @@ Einstellungen falls die Erweiterung während des TLS handshakes abstürzt.">
 <!ENTITY options.proxy "Proxy Einstellungen">
 <!ENTITY options.proxy.description 
 "Um eine Firewall zu umgehen können Verbindungen zu einem Sieve Server durch 
-einen transparenten SOCKS Proxy geleitet werden. 
-Bei SOCKSv5 werden Hostnamen vom DNS des SOCKS Proxy aufgelöst. Bei SOCKSv4 
-hingegen werden sie lokal ermittelt.">
-<!ENTITY options.proxy.enabled "Verwende einen Socks Proxy">
+einen transparenten SOCKS Proxy geleitet werden. ">
+<!ENTITY options.proxy.description.nameresolution
+"SOCKSv4 löst Hostnamen über den lokal Rechner auf. Bei SOCKSv5 können
+Hostnamen auch vom DNS des Proxy ermittelt werden. Falls der Proxy vertrauenswürdig
+ist sollte die letzere Variante genutzt werden.">
+<!ENTITY options.proxy.direct "Direkte Verbindung">
+<!ENTITY options.proxy.default "Automatische Konfiguration">
+<!ENTITY options.proxy.socks4 "SOCKSv4">
+<!ENTITY options.proxy.socks5 "SOCKSv5">
+<!ENTITY options.proxy.nameresolution "Proxy ermittelt Hostnamen">
 <!ENTITY options.proxy.host "Hostname:">
 <!ENTITY options.proxy.port "Port:"> 
-
 
 
 <!-- Menu entries -->

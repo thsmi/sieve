@@ -119,24 +119,31 @@
     </vbox>
 
 
-    <!-- proxy panel -->
+  <!-- proxy panel -->
     <vbox>
       <groupbox>
         <caption label="&options.proxy;" /> 
-        <description>&options.proxy.description;</description>                 
-        <checkbox id="cbxProxy" label="&options.proxy.enabled;" oncommand="onCbxProxyCommand(this)" />
-         <hbox class="indent" align="center">
-        <menulist id="mlProxy" oncommand="onMlProxySelect(this)">
-          <menupopup>
-            <menuitem id="miSocks5Proxy" label="SOCKSv5" value="socks5"/>
-            <menuitem id="miSocks4Proxy" label="SOCKSv4" value="socks4"/>
-          </menupopup>
-        </menulist>
-        <label value="&options.proxy.host;" control="txtProxyHost" />
-         <textbox id="txtProxyHost" size="25" onchange="onProxyHostChange(this)"/>
-        <label value="&options.proxy.port;"  control="txtProxyPort" />
-         <textbox id="txtProxyPort" size="5" onchange="onProxyPortChange(this)"/>                  
-        </hbox>
+        <description>&options.proxy.description;</description>
+        <description>&options.proxy.description.nameresolution;</description>                 
+        <radiogroup id="rgSocksProxy" onselect="onProxySelect(this);">
+          <radio id="rbProxyDirect" label="&options.proxy.direct;"/>
+          <radio id="rbProxyDefault" label="&options.proxy.default;"/>
+          <radio id="rbProxySocks4" label="&options.proxy.socks4;"/>
+          <box class="indent" align="center">
+        <label value="&options.proxy.host;" control="txtSocks4Host" />
+         <textbox id="txtSocks4Host" size="25" onchange="onSocks4HostChange(this)"/>
+        <label value="&options.proxy.port;"  control="txtSocks4Port" />
+         <textbox id="txtSocks4Port" size="5" onchange="onSocks4PortChange(this)"/>                  
+          </box>
+          <radio id="rbProxySocks5" label="&options.proxy.socks5;"/>
+          <box class="indent" align="center">
+              <label value="&options.proxy.host;" control="txtSocks5Host" />
+              <textbox id="txtSocks5Host" size="25" onchange="onSocks5HostChange(this)"/>
+              <label value="&options.proxy.port;"  control="txtSocks5Port" />
+              <textbox id="txtSocks5Port" size="5" onchange="onSocks5PortChange(this)"/>                  
+          </box>
+          <checkbox class="indent" id="cbxSocks5RemoteDNS" label="&options.proxy.nameresolution;" oncommand="onSocks5RemoteDNSCommand(this)" />     
+        </radiogroup>
       </groupbox>
     </vbox>
  

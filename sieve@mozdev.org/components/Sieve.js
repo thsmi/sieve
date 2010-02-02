@@ -13,6 +13,9 @@ const CLASS_ID = Components.ID("280edf85-fa0d-47b1-87dd-763a90cc0cc7");
 const CLASS_NAME = "Manage Sieve Transport";
 const CONTRACT_ID = "@sieve.mozdev.org/transport;1";
 
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+
 /**
  *  This class is a simple socket implementation for the manage sieve protocol. 
  *  Due to the asymetric nature of the Mozilla sockets we need message queue.
@@ -77,8 +80,8 @@ function Sieve()
     str = str.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
   
     // ... and convert to UTF-8
-    var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-                      .createInstance(Components.interfaces.nsIScriptableUnicodeConverter); 
+    var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
+                      .createInstance(Ci.nsIScriptableUnicodeConverter); 
     converter.charset = "UTF-8"; 
  
     return converter.convertToByteArray(str, {});
@@ -212,7 +215,7 @@ Sieve.prototype.startTLS
   if (this.socket == null)
     throw "Can't start TLS, your are not connected to "+host;
 
-  var securityInfo = this.socket.securityInfo.QueryInterface(Components.interfaces.nsISSLSocketControl);
+  var securityInfo = this.socket.securityInfo.QueryInterface(Ci.nsISSLSocketControl);
 
   securityInfo.StartTLS();
 }
@@ -277,7 +280,7 @@ Sieve.prototype.addRequest
 }
 
 /**
- * Connects to a ManageSieve server
+ * Connects to a ManageSieve server.  
  *    
  * @param {String} host 
  *   The target hostname or IP address as String
@@ -289,11 +292,17 @@ Sieve.prototype.addRequest
  * @param {Components.interfaces.nsIBadCertListener2} badCertHandler
  *   Listener to call incase of an SSL Error. Can be null. See startTLS for more 
  *   details. 
- * @param {Components.interfaces.nsIProxyInfo} proxy
- *   Specifies the proxy type, to use. Set to null if no proxy should be used. 
+ * @param {Array[nsIProxyInfo]} proxy
+ *   An Array of nsIProxyInfo Objects which specifies the proxy to use.
+ *   Pass an empty array for no proxy. 
+ *   Set to null if the default proxy should be resolved. Resolving proxy info is
+ *   done asynchronous. The connect method returns imedately, without any 
+ *   information on the connection status... 
+ *   Currently only the first array entry is evaluated.  
  */
 
-Sieve.prototype.connect = function (host, port, secure, badCertHandler, proxy) 
+Sieve.prototype.connect
+    = function (host, port, secure, badCertHandler, proxy) 
 {  
   if( this.socket != null)
     return;
@@ -304,36 +313,72 @@ Sieve.prototype.connect = function (host, port, secure, badCertHandler, proxy)
   this.host = host;
   this.port = port;
   this.secure = secure;
+  this.badCertHandler = badCertHandler;
     
-  var transportService =
-      Components.classes["@mozilla.org/network/socket-transport-service;1"]
-        .getService(Components.interfaces.nsISocketTransportService);
-        
-  if (this.secure)
-    this.socket = transportService.createTransport(["starttls"], 1,this.host, this.port,proxy); 
-  else
-    this.socket = transportService.createTransport(null, 0,this.host, this.port,proxy);    
+  // If we know the proxy setting, we can do a shortcut...
+  if (proxy)
+  {
+    this.onProxyAvailable(null,null,proxy[0],null);
+    return;
+  }
+  
+  var ios = Cc["@mozilla.org/network/io-service;1"]
+                .getService(Ci.nsIIOService);
+                    
+  var uri = ios.newURI("x-sieve://"+this.host+":"+this.port, null, null);
+    
+  var pps = Cc["@mozilla.org/network/protocol-proxy-service;1"]
+                .getService(Ci.nsIProtocolProxyService);
+  pps.asyncResolve(uri,0,this);
+}
 
-  if (badCertHandler != null)
-    this.socket.securityCallbacks = badCertHandler;  
+/**
+ * @private
+ * 
+ * This is an closure for asyncronous Proxy
+ * @param {} aRequest
+ * @param {} aURI
+ * @param {} aProxyInfo
+ * @param {} aStatus
+ */
+Sieve.prototype.onProxyAvailable
+    = function (aRequest, aURI,aProxyInfo,aStatus)
+{
+  if (this.debug.level & (1 << 2))
+  {
+    if  (aProxyInfo)
+      this.debug.logger.logStringMessage("Using Proxy: ["+aProxyInfo.type+"] "+aProxyInfo.host+":"+aProxyInfo.port);
+    else
+      this.debug.logger.logStringMessage("Using Proxy: Direct");
+  }
+  
+  var transportService =
+      Cc["@mozilla.org/network/socket-transport-service;1"]
+        .getService(Ci.nsISocketTransportService);
+    
+  if (this.secure)
+    this.socket = transportService.createTransport(["starttls"], 1,this.host, this.port,aProxyInfo); 
+  else
+    this.socket = transportService.createTransport(null, 0,this.host, this.port,aProxyInfo);    
+
+  if (this.badCertHandler != null)
+    this.socket.securityCallbacks = this.badCertHandler;  
     
   this.outstream = this.socket.openOutputStream(0,0,0);
 
   this.binaryOutStream = 
-      Components.classes["@mozilla.org/binaryoutputstream;1"]
-        .createInstance(Components.interfaces.nsIBinaryOutputStream);
+      Cc["@mozilla.org/binaryoutputstream;1"]
+        .createInstance(Ci.nsIBinaryOutputStream);
  
   this.binaryOutStream.setOutputStream(this.outstream);
   
   var stream = this.socket.openInputStream(0,0,0);
-  var pump = Components.
-    classes["@mozilla.org/network/input-stream-pump;1"].
-      createInstance(Components.interfaces.nsIInputStreamPump);
+  var pump = Cc["@mozilla.org/network/input-stream-pump;1"].
+      createInstance(Ci.nsIInputStreamPump);
 
   pump.init(stream, -1, -1, 5000, 2, true);
   pump.asyncRead(this,null);
   
-  return;
 }
 
 /**
@@ -403,8 +448,8 @@ Sieve.prototype.onWatchDogTimeout
 Sieve.prototype.onDataAvailable 
     = function(request, context, inputStream, offset, count)
 {
-  var binaryInStream = Components.classes["@mozilla.org/binaryinputstream;1"]
-      .createInstance(Components.interfaces.nsIBinaryInputStream)
+  var binaryInStream = Cc["@mozilla.org/binaryinputstream;1"]
+      .createInstance(Ci.nsIBinaryInputStream)
   
   binaryInStream.setInputStream(inputStream);
   
@@ -415,8 +460,8 @@ Sieve.prototype.onDataAvailable
       
   if (this.debug.level & (1 << 1))
   {
-    var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-                      .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+    var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
+                      .createInstance(Ci.nsIScriptableUnicodeConverter);
                       
     converter.charset = "UTF-8" ;
     
@@ -495,10 +540,19 @@ Sieve.prototype.onDataAvailable
 Sieve.prototype.QueryInterface
     = function(aIID)
 {
-  // add any other interfaces you support here
-  if (!aIID.equals(nsISupports))
-    throw Components.results.NS_ERROR_NO_INTERFACE;
-  return this;
+  if (aIID.equals(Ci.nsISupports))
+    return this;
+  // onProxyAvailable...
+  if (aIID.equals(Ci.nsIProtocolProxyCallback))
+    return this;
+  // onDataAvailable...
+  if (aIID.equals(Ci.nsIStreamListener))
+    return this;
+  // onStartRequest and onStopRequest...
+  if (aIID.equals(Ci.nsIRequestObserver))
+    return this;
+    
+  throw Components.results.NS_ERROR_NO_INTERFACE;;
 }
 
 
@@ -522,19 +576,19 @@ var SieveFactory = {
 var SieveModule = {
   registerSelf: function(aCompMgr, aFileSpec, aLocation, aType)
   {
-    aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
+    aCompMgr = aCompMgr.QueryInterface(Ci.nsIComponentRegistrar);
     aCompMgr.registerFactoryLocation(CLASS_ID, CLASS_NAME, CONTRACT_ID, aFileSpec, aLocation, aType);
   },
 
   unregisterSelf: function(aCompMgr, aLocation, aType)
   {
-    aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
+    aCompMgr = aCompMgr.QueryInterface(Ci.nsIComponentRegistrar);
     aCompMgr.unregisterFactoryLocation(CLASS_ID, aLocation);        
   },
   
   getClassObject: function(aCompMgr, aCID, aIID)
   {
-    if (!aIID.equals(Components.interfaces.nsIFactory))
+    if (!aIID.equals(Ci.nsIFactory))
       throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 
     if (aCID.equals(CLASS_ID))

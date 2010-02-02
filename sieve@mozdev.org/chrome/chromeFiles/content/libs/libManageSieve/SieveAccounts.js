@@ -546,42 +546,57 @@ SieveCustomAuth.prototype.getType
  * @param {String} sieveKey
  *   the unique URI of the associated sieve account
  */
-function SieveProxyInfo(sieveKey)
+function SieveNoProxy()
 {
-  this.prefURI = sieveKey+".proxy";
 }
 
-SieveProxyInfo.prototype.isEnabled
+SieveNoProxy.prototype.getType
     = function()
 {
-  if (gPref.prefHasUserValue(this.prefURI+".enabled"))
-    return gPref.getBoolPref(this.prefURI+".enabled");
-
-  return false;
+  return 0;
 }
 
-SieveProxyInfo.prototype.setEnabled
-    = function(enabled)
-{
-  gPref.setBoolPref(this.prefURI+".enabled",enabled);
-}
-
-SieveProxyInfo.prototype.getType
+SieveNoProxy.prototype.getProxyInfo
     = function()
 {
-  if (gPref.prefHasUserValue(this.prefURI+".type"))
-    return gPref.getCharPref(this.prefURI+".type");
-
-  return "socks";
+  return [];
 }
 
-SieveProxyInfo.prototype.setType
-    = function(type)
+/**
+ * 
+ * @param {} imapKey
+ */
+function SieveSystemProxy()
 {
-  gPref.setCharPref(this.prefURI+".type",type);
 }
 
-SieveProxyInfo.prototype.getHost
+SieveSystemProxy.prototype.getType
+    = function()
+{
+  return 1;
+}
+
+SieveSystemProxy.prototype.getProxyInfo
+    = function()
+{
+  return null;
+}
+/**
+ * 
+ * @param {} imapKey
+ */
+function SieveSocks4Proxy(sieveKey)
+{
+  this.prefURI = sieveKey+".proxy.socks4";
+}
+
+SieveSocks4Proxy.prototype.getType
+    = function()
+{
+  return 2;
+}
+
+SieveSocks4Proxy.prototype.getHost
     = function()
 {
   if (gPref.prefHasUserValue(this.prefURI+".host"))
@@ -590,13 +605,13 @@ SieveProxyInfo.prototype.getHost
   return ""; 
 }
 
-SieveProxyInfo.prototype.setHost
+SieveSocks4Proxy.prototype.setHost
     = function(host)
 {
   gPref.setCharPref(this.prefURI+".host",host);
 }
 
-SieveProxyInfo.prototype.getPort
+SieveSocks4Proxy.prototype.getPort
     = function()
 {
   if (gPref.prefHasUserValue(this.prefURI+".port"))
@@ -605,32 +620,89 @@ SieveProxyInfo.prototype.getPort
   return ""; 
 }
 
-SieveProxyInfo.prototype.setPort
+SieveSocks4Proxy.prototype.setPort
     = function(port)
 {
   // TODO: Check If port is a valid integer
   gPref.setCharPref(this.prefURI+".port",port);
 }
 
-SieveProxyInfo.prototype.getProxyInfo
+SieveSocks4Proxy.prototype.getProxyInfo
     = function()
 {
-  // return null for no proxy
-  if (this.isEnabled() == false)
-    return null;
- 
   // generate proxy info
-  var pps = Components.classes["@mozilla.org/network/protocol-proxy-service;1"].getService();
-    
-  switch (this.getType())
-  {
-    case "socks":
-      return pps.newProxyInfo(this.getType(),this.getHost(),this.getPort(),1<<0,4294967295,null)
-    case "socks4" :
-      return pps.newProxyInfo(this.getType(),this.getHost(),this.getPort(),0,4294967295,null)
-  }      
- 
-  throw "Incompatible Proxy Type";
+  var pps = Components.classes["@mozilla.org/network/protocol-proxy-service;1"]
+                .getService(Components.interfaces.nsIProtocolProxyService);
+  return [pps.newProxyInfo("socks4",this.getHost(),this.getPort(),0,4294967295,null)]
+}
+/**
+ * 
+ * @param {} imapKey
+ */
+function SieveSocks5Proxy(sieveKey)
+{
+  this.prefURI = sieveKey+".proxy.socks5";
+}
+
+SieveSocks5Proxy.prototype.getType
+    = function()
+{
+  return 3;
+}
+
+SieveSocks5Proxy.prototype.getHost
+    = function()
+{
+  if (gPref.prefHasUserValue(this.prefURI+".host"))
+    return gPref.getCharPref(this.prefURI+".host");
+
+  return ""; 
+}
+
+SieveSocks5Proxy.prototype.setHost
+    = function(host)
+{
+  gPref.setCharPref(this.prefURI+".host",host);
+}
+
+SieveSocks5Proxy.prototype.getPort
+    = function()
+{
+  if (gPref.prefHasUserValue(this.prefURI+".port"))
+    return gPref.getCharPref(this.prefURI+".port");
+
+  return ""; 
+}
+
+SieveSocks5Proxy.prototype.setPort
+    = function(port)
+{
+  // TODO: Check If port is a valid integer
+  gPref.setCharPref(this.prefURI+".port",port);
+}
+
+SieveSocks5Proxy.prototype.usesRemoteDNS
+    = function()
+{
+  if (gPref.prefHasUserValue(this.prefURI+".remote_dns"))
+    return gPref.getBoolPref(this.prefURI+".remote_dns");
+
+  return true; 
+}
+
+SieveSocks5Proxy.prototype.setRemoteDNS
+    = function(enabled)
+{
+  gPref.setBoolPref(this.prefURI+".remote_dns",enabled);
+}
+
+SieveSocks5Proxy.prototype.getProxyInfo
+    = function()
+{ 
+  // generate proxy info
+  var pps = Components.classes["@mozilla.org/network/protocol-proxy-service;1"]
+                .getService(Components.interfaces.nsIProtocolProxyService);   
+  return [pps.newProxyInfo("socks",this.getHost(),this.getPort(),0,4294967295,null)];
 }
 
 /**
@@ -1280,9 +1352,31 @@ SieveAccount.prototype.getSettings
 }
 
 SieveAccount.prototype.getProxy
-    = function ()
+    = function (type)
 {
-  return new SieveProxyInfo(this.sieveKey)      
+  if ((type == null) && gPref.prefHasUserValue(this.sieveKey+".proxy.type")) 
+    type = gPref.getIntPref(this.sieveKey+".proxy.type");
+
+  switch (type)
+  {
+    case 0  : return new SieveNoProxy();
+    case 2  : return new SieveSocks4Proxy(this.sieveKey);
+    case 3  : return new SieveSocks5Proxy(this.sieveKey);
+    
+    default : return new SieveSystemProxy(); 
+  }  
+        
+}
+
+SieveAccount.prototype.setProxy
+    = function (type)
+{
+  if (type == null)
+    throw "Proxy type is null";
+  if ((type < 0) || (type > 3))
+    throw "Invalid proxy type";
+
+  gPref.setIntPref(this.sieveKey+".proxy.type",type);
 }
 
 //****************************************************************************//

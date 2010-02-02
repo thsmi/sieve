@@ -106,35 +106,23 @@ function onDialogLoad(sender)
   
   
   // Proxy Configuration...
-  var proxy = account.getProxy();
-
-  var cbxProxy = document.getElementById('cbxProxy');  
-  if (proxy.isEnabled())
-    cbxProxy.checked = true;
-  else 
-    cbxProxy.checked = false;
   
-  enableProxy(cbxProxy.checked);
-
-  
-  document.getElementById('txtProxyHost').value
-    = proxy.getHost(); 
-  
-  document.getElementById('txtProxyPort').value
-    = proxy.getPort();   
-
+  document.getElementById('txtSocks4Host').value
+    = account.getProxy(2).getHost();
+  document.getElementById('txtSocks4Port').value
+    = account.getProxy(2).getPort();
     
-  var list = document.getElementById('mlProxy');
-  var items = list.getElementsByTagName('menuitem');
+  document.getElementById('txtSocks5Host').value
+    = account.getProxy(3).getHost();
+  document.getElementById('txtSocks5Port').value
+    = account.getProxy(3).getPort();  
+  document.getElementById('cbxSocks5RemoteDNS').checked
+    = account.getProxy(3).usesRemoteDNS();
+
+  var rgSocksProxy = document.getElementById('rgSocksProxy');
+  rgSocksProxy.selectedIndex = account.getProxy().getType();    
+  enableProxy(rgSocksProxy.selectedIndex);
   
-  for (var i = 0; i < items.length; i++)
-  {
-    if (items[i].value != proxy.getType())
-      continue;
-    
-    list.selectedItem = items[i];
-    break;
-  }  
 }
 
 function onDialogAccept(sender)
@@ -464,52 +452,84 @@ function onShowErrorConsole()
     //window.open(uri, "_blank", "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar");          
 }
 
-function enableProxy(enabled)
+function enableProxy(type)
 {
-
-  if (enabled)
+  document.getElementById('txtSocks4Port').setAttribute('disabled','true');    
+  document.getElementById('txtSocks4Host').setAttribute('disabled','true');  
+  document.getElementById('txtSocks5Port').setAttribute('disabled','true');    
+  document.getElementById('txtSocks5Host').setAttribute('disabled','true');
+  document.getElementById('cbxSocks5RemoteDNS').setAttribute('disabled','true');
+  
+  switch (type)
   {
-    document.getElementById('txtProxyPort').removeAttribute('disabled');
-    document.getElementById('txtProxyHost').removeAttribute('disabled');
-    document.getElementById('mlProxy').removeAttribute('disabled');
-  }
-  else
-  {
-    document.getElementById('txtProxyPort').setAttribute('disabled','true');    
-    document.getElementById('txtProxyHost').setAttribute('disabled','true');        
-    document.getElementById('mlProxy').setAttribute('disabled','true');        
-  }
+    case 2:
+      document.getElementById('txtSocks4Port').removeAttribute('disabled');
+      document.getElementById('txtSocks4Host').removeAttribute('disabled');
+      break;
+    case 3:
+      document.getElementById('txtSocks5Port').removeAttribute('disabled');
+      document.getElementById('txtSocks5Host').removeAttribute('disabled');  
+      document.getElementById('cbxSocks5RemoteDNS').removeAttribute('disabled');
+      break;
+  }   
 }
 
-function onCbxProxyCommand(sender)
+function onSocks5RemoteDNSCommand(sender)
 {
   if (account == null)
     return;
   
-  account.getProxy().setEnabled(sender.checked);
-  enableProxy(sender.checked);
+  account.getProxy(3).setRemoteDNS(sender.checked);
 }
 
-function onMlProxySelect(sender)
+function onSocks5HostChange(sender)
 {
   if (account == null)
     return;
   
-  account.getProxy().setType(sender.selectedItem.value);
+  account.getProxy(3).setHost(sender.value);
 }
 
-function onProxyHostChange(sender)
+function onSocks5PortChange(sender)
 {
   if (account == null)
     return;
   
-  account.getProxy().setHost(sender.value);
+  account.getProxy(3).setPort(sender.value)
 }
 
-function onProxyPortChange(sender)
+function onSocks4HostChange(sender)
 {
   if (account == null)
     return;
   
-  account.getProxy().setPort(sender.value)
+  account.getProxy(2).setHost(sender.value);
+}
+
+function onSocks4PortChange(sender)
+{
+  if (account == null)
+    return;
+  
+  account.getProxy(2).setPort(sender.value)
+}
+
+function onProxySelect(sender)
+{ 
+  if (account == null)
+    return;
+
+  var type = 1;
+  
+  if (sender.selectedItem.id == "rbProxyDirect")
+    type = 0;
+  else if (sender.selectedItem.id == "rbProxyDefault")
+    type = 1;
+  else if (sender.selectedItem.id == "rbProxySocks4")
+    type = 2;
+  else if (sender.selectedItem.id == "rbProxySocks5")
+    type = 3;
+  
+  account.setProxy(type);
+  enableProxy(type);
 }

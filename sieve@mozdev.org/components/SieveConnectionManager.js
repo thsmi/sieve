@@ -10,7 +10,7 @@
 const nsISupports = Components.interfaces.nsISupports;
 
 // You can change these if you like
-const CLASS_ID = Components.ID("229e3f9b-240f-45d8-afaf-e1c14606bfe9");
+const CLASS_ID = Components.ID("7ec95cc0-14eb-11df-b46e-0002a5d5c51b");
 const CLASS_NAME = "Sieve Connection Manager";
 const CONTRACT_ID = "@sieve.mozdev.org/transport-service;1";
 

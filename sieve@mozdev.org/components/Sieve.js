@@ -9,7 +9,7 @@
 
 const nsISupports = Components.interfaces.nsISupports;
 
-const CLASS_ID = Components.ID("280edf85-fa0d-47b1-87dd-763a90cc0cc7");
+const CLASS_ID = Components.ID("92025260-14eb-11df-9ae2-0002a5d5c51b");
 const CLASS_NAME = "Manage Sieve Transport";
 const CONTRACT_ID = "@sieve.mozdev.org/transport;1";
 

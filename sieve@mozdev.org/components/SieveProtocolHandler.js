@@ -21,7 +21,7 @@ const SIEVE_CONTRACT_ID =
 const SIEVE_CLASS_NAME =
     SIEVE_SCHEME+" protocol handler"
 const SIEVE_CLASS_ID =
-    Components.ID("{A8E07546-0EC6-11DF-92F2-D92D56D89593}");
+    Components.ID("{65f30660-14eb-11df-8351-0002a5d5c51b}");
 
 
 // class constructor

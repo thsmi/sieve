@@ -119,6 +119,9 @@ securely traverse a firewall.">
 "With SOCKSv4 hostnames are always resolved on the local machine. SOCKSv5 also 
 supports resolving hostnames by the SOCKS proxy. If you can trust the SOCKSv5 
 proxy, the latter is considered to be more secure and should be prefered.">
+<!ENTITY options.proxy.description.localhost
+"On some system using 'localhost' as proxy host does not function properly, 
+use '127.0.0.1' instead.">
 <!ENTITY options.proxy.direct "Direct Connection">
 <!ENTITY options.proxy.default "Default Proxy configuration">
 <!ENTITY options.proxy.socks4 "SOCKSv4">

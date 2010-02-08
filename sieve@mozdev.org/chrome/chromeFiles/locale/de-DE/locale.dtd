@@ -97,7 +97,7 @@ daher meist nur Administratoren zur Verfügung.">
 <!ENTITY options.account.activate.yes "Ja, dieser Server untersützt Sieve:">
 <!ENTITY options.account.activate.no "Nein, dieses Konto unterstützt kein Sieve">
 <!ENTITY options.account.filters "Filters bearbeiten...">
-<!ENTITY options.account.settings "Einstellungen ändern Settings...">
+<!ENTITY options.account.settings "Einstellungen ändern...">
 
 <!ENTITY options.cyrus "Cyrus TLS Fehler">
 <!ENTITY options.cyrus.rfc "Einige Cyrus Server implementieren den TLS Handshake fehlerhaft">
@@ -128,6 +128,9 @@ einen transparenten SOCKS Proxy geleitet werden. ">
 "SOCKSv4 löst Hostnamen über den lokal Rechner auf. Bei SOCKSv5 können
 Hostnamen auch vom DNS des Proxy ermittelt werden. Falls der Proxy vertrauenswürdig
 ist sollte die letzere Variante genutzt werden.">
+<!ENTITY options.proxy.description.localhost
+"Der Hostname 'localhost' wird auf manchen Systemen nicht richtig aufgelöst,
+als Workaround die Loopback IP '127.0.0.1' nutzen.">
 <!ENTITY options.proxy.direct "Direkte Verbindung">
 <!ENTITY options.proxy.default "Automatische Konfiguration">
 <!ENTITY options.proxy.socks4 "SOCKSv4">

@@ -124,7 +124,8 @@
       <groupbox>
         <caption label="&options.proxy;" /> 
         <description>&options.proxy.description;</description>
-        <description>&options.proxy.description.nameresolution;</description>                 
+        <description>&options.proxy.description.nameresolution;</description>
+        <description>&options.proxy.description.localhost;</description>                 
         <radiogroup id="rgSocksProxy" onselect="onProxySelect(this);">
           <radio id="rbProxyDirect" label="&options.proxy.direct;"/>
           <radio id="rbProxyDefault" label="&options.proxy.default;"/>

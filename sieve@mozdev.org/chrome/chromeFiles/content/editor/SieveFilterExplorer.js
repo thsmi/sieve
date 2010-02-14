@@ -17,6 +17,8 @@
  *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/editor/SieveFilterTreeView.js"
  */
 
+const Cc = Components.classes;
+const Ci = Components.interfaces;
 
 /** @type {Sieve} */
 var gSieve = null;
@@ -311,7 +313,12 @@ var event =
 
   onTimeout: function()
   {
-    sivDisconnect(1,"warning.timeout");
+    var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);  
+    
+    if (ioService.offline)
+      sivSetStatus(6);
+    else
+      sivDisconnect(1,"warning.timeout");
   },
 	
   onError: function(response)
@@ -381,8 +388,8 @@ function onWindowLoad()
 
   // now create a logger session...
   if (gLogger == null)
-    gLogger = Components.classes["@mozilla.org/consoleservice;1"]
-                    .getService(Components.interfaces.nsIConsoleService);
+    gLogger = Cc["@mozilla.org/consoleservice;1"]
+                    .getService(Ci.nsIConsoleService);
 
   var menuImapAccounts = document.getElementById("menuImapAccounts");
 
@@ -446,8 +453,19 @@ function getSelectedAccount()
   return accounts[menu.selectedIndex];
 }
 
+function onGoOnlineClick()
+{
+  var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);  
+  ioService.offline = false;  
+  sivConnect();
+}
+
 function sivConnect(account,hostname)
 {
+  var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+  
+  if (ioService.offline)
+    return sivSetStatus(6); 
   
   sivSetStatus(3,"progress.connecting","status.connecting");
   
@@ -457,12 +475,12 @@ function sivConnect(account,hostname)
   if (hostname == null)
     hostname = account.getHost().getHostname();
 
-  var sivManager = Components.classes["@sieve.mozdev.org/transport-service;1"].getService();
+  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"].getService();
 
   hSieve = sivManager.wrappedJSObject.openSession();  
   gSieve = sivManager.wrappedJSObject.getSession(hSieve);
   // TODO Replace by a real Interface...
-  //sieveTransport.QueryInterface(Components.interfaces.sivITransport);
+  //sieveTransport.QueryInterface(Ci.sivITransport);
 
    gSieve.setDebugLevel(
             account.getSettings().getDebugFlags(),
@@ -512,7 +530,7 @@ function sivDisconnect(state,message)
   if (gSieve == null)
     return;        
   
-  var sivManager = Components.classes["@sieve.mozdev.org/transport-service;1"].getService();  
+  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"].getService();  
   sivManager.wrappedJSObject.closeSession(hSieve);  
   
 
@@ -569,8 +587,8 @@ function onSelectAccount()
 
 function onDeleteClick()
 {
-  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-                  .getService(Components.interfaces.nsIPromptService);
+  var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
+                  .getService(Ci.nsIPromptService);
   	
   var check = {value: false};                  // default the checkbox to false
  
@@ -629,7 +647,7 @@ function sivOpenEditor(scriptName,scriptBody)
                     "chrome,modal,titlebar,resizable,centerscreen", args);
 
   // make sure there is only one instance of the sieve object...
-  var sivManager = Components.classes["@sieve.mozdev.org/transport-service;1"].getService();  
+  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"].getService();  
   gSieve = sivManager.wrappedJSObject.getSession(hSieve);  
   
   gSieve.addWatchDogListener(watchDogListener);
@@ -650,8 +668,8 @@ function onNewClick()
   // unused scriptname (eg. unnamed+000]) would offer a better workflow...
   // Also put a template script would be good...
 
-  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-                  .getService(Components.interfaces.nsIPromptService);
+  var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
+                  .getService(Ci.nsIPromptService);
 
   var input = {value:"unnamed"};
   var check = {value:false};
@@ -695,6 +713,7 @@ function sivSetStatus(state, message, statusbar)
   document.getElementById('sivExplorerError').setAttribute('hidden','true');
   document.getElementById('sivExplorerWait').setAttribute('hidden','true');
   document.getElementById('sivExplorerBadCert').setAttribute('hidden','true');
+  document.getElementById('sivExplorerOffline').setAttribute('hidden','true');
   document.getElementById('sivExplorerTree').setAttribute('collapsed','true');
 
   if (statusbar)
@@ -728,8 +747,10 @@ function sivSetStatus(state, message, statusbar)
             document.getElementById("btnIgnoreBadCert").setAttribute("oncommand",
                 "onBadCertOverride('"+message+"',document.getElementById('cbBadCertRemember').checked)");
             document.getElementById("btnAbortBadCert").setAttribute("oncommand",
-                "sivSetStatus(1,'warning.brokencert')");
-            
+                "sivSetStatus(1,'warning.brokencert')");            
+            break;
+    // Offline Mode
+    case 6: document.getElementById('sivExplorerOffline').removeAttribute('hidden');
             break;
   }
   
@@ -849,8 +870,8 @@ function onRenameClick()
    
   var oldScriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));
   
-  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-                  .getService(Components.interfaces.nsIPromptService);
+  var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
+                  .getService(Ci.nsIPromptService);
 
   var input = {value:oldScriptName};
   var check = {value:false};
@@ -896,8 +917,8 @@ function onServerDetails()
 
 function onSettingsClick()
 {
- var server = Components.classes['@mozilla.org/messenger/account-manager;1']
-                   .getService(Components.interfaces.nsIMsgAccountManager)
+ var server = Cc['@mozilla.org/messenger/account-manager;1']
+                   .getService(Ci.nsIMsgAccountManager)
                    .getIncomingServer(getSelectedAccount().imapKey);
                       
   gSivExtUtils.OpenSettings(server);
@@ -909,11 +930,11 @@ function onBadCertOverride(targetSite,permanent)
 
   try
   {
-    var overrideService = Components.classes["@mozilla.org/security/certoverride;1"]
-                            .getService(Components.interfaces.nsICertOverrideService);
+    var overrideService = Cc["@mozilla.org/security/certoverride;1"]
+                            .getService(Ci.nsICertOverrideService);
 
-    var recentCertsSvc = Components.classes["@mozilla.org/security/recentbadcerts;1"]
-                             .getService(Components.interfaces.nsIRecentBadCertsService);
+    var recentCertsSvc = Cc["@mozilla.org/security/recentbadcerts;1"]
+                             .getService(Ci.nsIRecentBadCertsService);
                              
     var status = recentCertsSvc.getRecentBadCert(targetSite);    
     if (!status)
@@ -923,7 +944,7 @@ function onBadCertOverride(targetSite,permanent)
                   | ((status.isDomainMismatch)? overrideService.ERROR_MISMATCH : 0)
                   | ((status.isNotVaildAtThisTime)? overrideService.ERROR_TIME : 0);      
 
-    var cert = status.QueryInterface(Components.interfaces.nsISSLStatus).serverCert;
+    var cert = status.QueryInterface(Ci.nsISSLStatus).serverCert;
     if (!cert)
       throw "Status does not contain a certificate..."
                                                          
@@ -970,11 +991,11 @@ BadCertHandler.prototype.getInterface =
 BadCertHandler.prototype.QueryInterface =
   function badcert_queryinterface(aIID)
 {
-  if (aIID.equals(Components.interfaces.nsIBadCertListener2) ||
-      aIID.equals(Components.interfaces.nsIBadCertListener) || // TB2 compatibility  
-      aIID.equals(Components.interfaces.nsISSLErrorListener) ||
-      aIID.equals(Components.interfaces.nsIInterfaceRequestor) ||
-      aIID.equals(Components.interfaces.nsISupports))
+  if (aIID.equals(Ci.nsIBadCertListener2) ||
+      aIID.equals(Ci.nsIBadCertListener) || // TB2 compatibility  
+      aIID.equals(Ci.nsISSLErrorListener) ||
+      aIID.equals(Ci.nsIInterfaceRequestor) ||
+      aIID.equals(Ci.nsISupports))
       {
         return this;
       }

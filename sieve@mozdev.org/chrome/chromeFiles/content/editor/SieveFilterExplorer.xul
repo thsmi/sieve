@@ -133,7 +133,7 @@
                   <image pack="center" src="chrome://sieve/content/images/sslWarning.png"/>
                   <vbox>
                      <description style="font-weight:bold">&list.badcert;</description>
-                     <description id="sivExplorerErrorMsg" pack="center" style="white-space: pre-wrap;">&list.badcert.error;</description>
+                     <description pack="center" style="white-space: pre-wrap;">&list.badcert.error;</description>
                      <checkbox id="cbBadCertRemember" label="&list.badcert.remember;" checked="true"/>
                 <hbox align="right">
                     <button id="btnIgnoreBadCert" label="&list.badcert.ignore;" />
@@ -142,6 +142,22 @@
                   </vbox> 
                 </hbox>
               </box>
+
+              <!--  Error Message: Thunderbird in offline mode-->
+              <box id="sivExplorerOffline" hidden="true" align="center" pack="center" flex="1">
+                <hbox align="center" class="sivWarning" >
+                  <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
+                  <vbox>                    
+                     <description pack="center"  flex="1">
+                       You are currently offline. Click 'Go Online' and try again
+                     </description>
+                     <hbox align="right">
+                      <button label="Go Online" oncommand="onGoOnlineClick();" />
+                     </hbox>
+                  </vbox> 
+                </hbox>
+              </box>
+                       
             </tree>
             <vbox>          
               <button id="btnServerDetails" oncommand="onServerDetails();" flex="1">

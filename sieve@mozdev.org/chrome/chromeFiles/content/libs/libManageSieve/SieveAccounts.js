@@ -1382,22 +1382,8 @@ SieveAccount.prototype.setProxy
 //****************************************************************************//
 
 function SieveAccounts()
-{
-  var accountManager = Components.classes['@mozilla.org/messenger/account-manager;1']
-                         .getService(Components.interfaces.nsIMsgAccountManager);
-                          
-  this.accounts = new Array();
-	
-  for (var i = 0; i < accountManager.allServers.Count(); i++)
-  {
-    var account = accountManager.allServers.GetElementAt(i)
-                    .QueryInterface(Components.interfaces.nsIMsgIncomingServer);
-		      
-    if (account.type != "imap")
-      continue;
-
-    this.accounts.push(new SieveAccount(account));        
-  }
+{  
+  this.accounts = null;  
 }
 
 /**
@@ -1407,7 +1393,43 @@ function SieveAccounts()
  */
 SieveAccounts.prototype.getAccounts
     = function () 
-{   
+{
+  // as cache the array containting the account information...
+  // ... we check if we already enumerated the accounts.
+  if (this.accounts)
+    return this.accounts
+    
+  var accountManager = Components.classes['@mozilla.org/messenger/account-manager;1']
+                           .getService(Components.interfaces.nsIMsgAccountManager);
+                          
+  this.accounts = new Array();
+  
+  for (var i = 0; i < accountManager.allServers.Count(); i++)
+  {
+    var account = accountManager.allServers.GetElementAt(i)
+                    .QueryInterface(Components.interfaces.nsIMsgIncomingServer);
+          
+    if (account.type != "imap")
+      continue;
+
+    this.accounts.push(new SieveAccount(account));        
+  }
+      
   return this.accounts;
 }
 
+/**
+ * Loads a Sieve Account by its associated IMAP Account
+ * @param {String} key
+ *   The Unique Identifier of the associated IMAP Account
+ * @return {SieveAccount}
+ *   A corresponding SieveAccount
+ */
+SieveAccounts.prototype.getAccount
+    = function (key)
+{
+  var accountManager = Components.classes['@mozilla.org/messenger/account-manager;1']
+                         .getService(Components.interfaces.nsIMsgAccountManager);
+
+  return new SieveAccount(accountManager.getIncomingServer(key));                       
+}

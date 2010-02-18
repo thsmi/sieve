@@ -30,7 +30,6 @@ var gLogger = null;
  
 var sieveTreeView = null;
 var closeTimeout = null;
-var accounts = new Array();
 
 var event = 
 {	
@@ -393,14 +392,18 @@ function onWindowLoad()
 
   var menuImapAccounts = document.getElementById("menuImapAccounts");
 
-  accounts = (new SieveAccounts()).getAccounts();
+  var accounts = (new SieveAccounts()).getAccounts();
 
   for (var i = 0; i < accounts.length; i++)
   {   
     if (accounts[i].isEnabled() == false)
-      menuImapAccounts.appendItem( accounts[i].getDescription(),"","- disabled").disabled = true;
+      menuImapAccounts.appendItem(
+        accounts[i].getDescription(),
+        accounts[i].getKey(),"- disabled").disabled = true;
     else
-      menuImapAccounts.appendItem( accounts[i].getDescription(),"","").disabled = false;
+      menuImapAccounts.appendItem( 
+        accounts[i].getDescription(),
+        accounts[i].getKey(),"").disabled = false;
 
     if (window.arguments.length == 0)
       continue;
@@ -445,12 +448,12 @@ function onWindowClose()
  */
 function getSelectedAccount()
 {
-  var menu = document.getElementById("menuImapAccounts") 
-  
-  if (menu.selectedIndex <0)
+  var selectedItem = document.getElementById("menuImapAccounts").selectedItem; 
+    
+  if (!selectedItem)
     return null;
-  
-  return accounts[menu.selectedIndex];
+    
+  return (new SieveAccounts()).getAccount(selectedItem.value); 
 }
 
 function onGoOnlineClick()

@@ -27,7 +27,7 @@ function SieveComparator(id)
   this.comparator = new SieveQuotedString(this.id+"_1");
 }
 
-SieveComparator.prototype.parse
+SieveComparator.prototype.init
     = function (data)
 {
   // Syntax :
@@ -35,9 +35,9 @@ SieveComparator.prototype.parse
   
   data = data.slice(":comparator".length);
   
-  data = this.whiteSpace.parse(data);
+  data = this.whiteSpace.init(data);
   
-  data = this.comparator.parse(data);
+  data = this.comparator.init(data);
   
   return data;
 }
@@ -85,7 +85,7 @@ function SieveMatchType(id)
   this.type = null;
 }
 
-SieveMatchType.prototype.parse
+SieveMatchType.prototype.init
     = function (data)
 {
   var token = data.substr(0,9).toLowerCase();
@@ -152,7 +152,7 @@ function SieveAddressPart(id)
   this.part = null;
 }
 
-SieveAddressPart.prototype.parse
+SieveAddressPart.prototype.init
     = function (data)
 {
   var token = data.substr(0,11).toLowerCase();
@@ -193,111 +193,6 @@ SieveAddressPart.prototype.toXUL
 
 /******************************************************************************/
 
-function isSieveElement(data, index)
-{  
-  if (index == null)
-    index = 0;
-    
-  if (SieveAction.isAction(data,index))
-    return true;
-        
-  return false;
-}
-
-
-function SieveElement(id)
-{
-  this.id = id;  
-  this.elements = new Array();
-}
-
-SieveElement.prototype.parse
-    = function (data)
-{
-  while (true)
-  {
-    var id = this.id+"_"+this.elements.length;
-    var element = null;
-    
-    if (SieveAction.isAction(data))
-    {
-      var parser = new SieveAction(data,id);
-      element = parser.extract();
-
-      data = parser.getData();
-
-    }
-    else if (SieveDeadCode.isDeadCode(data))
-    {
-      element = new SieveDeadCode(id);
-      data = element.parse(data);
-    }
-    else
-      break;
-      
-    this.elements.push(element);
-  }
-  
-  return data;
-}
-
-SieveElement.prototype.getID
-    = function ()
-{
-  return this.id;
-}
-
-SieveElement.prototype.toString
-    = function ()
-{  
-  var str ="";
-  for (var i=0; i<this.elements.length;i++)
-  {
-    str += this.elements[i].toString();
-  }  
-  return str;
-}
-
-SieveElement.prototype.toXUL
-    = function ()
-{  
-  var xul ="";
-  for (var i=0; i<this.elements.length;i++)
-  {
-    xul += this.elements[i].toXUL();
-  }  
-  return xul;  
-//  return ""
-//    + "<html:a href='javascript:alert(\"test\")'>"
-//    + blubb
-//    + "<html:input type='image' src='chrome://sieve/content/images/add.png' onclick='blubb();' />"
-//    + "<html:img src='chrome://sieve/content/images/delete.png' />"
-//    + "</html:a>";
-}
-
-SieveElement.prototype.onMessage
-    = function (id,message)
-{
-  for (var i=0; i<this.elements.length; i++)
-  {
-    if (this.elements[i].getID() != id[0])
-      continue;
-      
-    // remove the first id ...
-    id.shift();
-    
-    this.elements[i].onMessage(id,data);
-  } 
-}
-
-SieveElement.prototype.onBouble  
-    = function (message)
-{
-  for (var i=0; i<this.elements.length; i++)
-  {    
-    this.elements[i].onBouble(message);
-  }  
-}
 /******************************************************************************/
 
 function SieveDom()
@@ -334,37 +229,29 @@ SieveDom.prototype.setScript
   // requires are only valid if they are
   // before any other sieve command!
   
-  
-  var isImportSection = true;
-  
-  while (true)
+  // action, deadcode, import, body
+ 
+  // The import section consists of require and deadcode statments...
+  while (SieveLexer.probeByClass(["import","deadcode"],data))
   {
-    var id = this.id+"_"+this.elements.length;
-    var element = null;
-
-    if (SieveDeadCode.isDeadCode(data))
-    {
-      element = new SieveDeadCode(id);
-    }
-    else if (isSieveElement(data))
-    {
-      element = new SieveElement(id);
-      isImportSection = false;
-    }
-    else if (SieveRequire.isRequire(data))
-    {
-      if (isImportSection == false)
-        throw "Syntaxerror - misplaced require";
-        
-      element = new SieveRequire(id);
-    }
-    else
-      break;
-
-    data = element.parse(data);      
-    this.elements.push(element);
+    var elm = SieveLexer.createByClass(["import","deadcode"],data,this.id+"_"+this.elements.length);    
+    data = elm.init(data);
+    
+    this.elements.push(elm);    
   }
   
+  // After the import section only deadcode and actions are valid
+  while (SieveLexer.probeByClass(["action","conditions","deadcode"],data))
+  {
+    var elm = SieveLexer.createByClass(["action","conditions","deadcode"],data,this.id+"_"+this.elements.length);
+    data = elm.init(data);
+    
+    this.elements.push(elm);
+  }
+  
+  if (data.length != 0)
+    alert("Parser error!"+data);
+  // data should be empty right here...
   return data;
 }
 
@@ -372,10 +259,10 @@ SieveDom.prototype.toString
     = function ()
 {  
   var str ="";
-  for (var i=0; i<this.elements.length;i++)
-  {
-    str += this.elements[i].toString();
-  }  
+  
+  for (var key in this.elements)
+    str += this.elements[key].toString();
+    
   return str;
 }
 
@@ -384,9 +271,8 @@ SieveDom.prototype.toXUL
 {  
   var xul ="";
   for (var i=0; i<this.elements.length;i++)
-  {
     xul += this.elements[i].toXUL();
-  }  
+
   return xul;  
 }
 

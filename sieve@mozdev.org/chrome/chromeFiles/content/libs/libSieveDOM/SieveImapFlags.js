@@ -13,26 +13,25 @@ SieveSetFlag.isSetFlag
 function SieveSetFlag(id) 
 {
   this.id = id;
-  this.whiteSpace 
-    = new Array(new SieveDeadCode(this.id+"_0"),
-                new SieveDeadCode(this.id+"_2"));  
+  
+  this.whiteSpace = [];
+  this.whiteSpace[0] = SieveLexer.createByName("deadcode");
+  this.whiteSpace[1] = SieveLexer.createByName("deadcode");
                 
-  this.flaglist = new SieveStringList(this.id+"_1");
+  this.flaglist = SieveLexer.createByName("stringlist",this.id+"_1");
 }
 
-SieveSetFlag.prototype.parse
+SieveSetFlag.prototype.init
     = function (data)
-{
-  // Syntax :
-  
+{  
   data = data.slice("setflag".length);
   
   // ... eat the deadcode before the string...
-  data = this.whiteSpace[0].parse(data);
+  data = this.whiteSpace[0].init(data);
       
-  data = this.flaglist.parse(data)
+  data = this.flaglist.init(data)
 
-  data = this.whiteSpace[1].parse(data);
+  data = this.whiteSpace[1].init(data);
     
   // ... and finally remove the semicolon;
   if (isSieveSemicolon(data) == false)
@@ -86,7 +85,7 @@ function SieveAddFlag(id)
   this.flaglist = new SieveStringList(this.id+"_1");
 }
 
-SieveAddFlag.prototype.parse
+SieveAddFlag.prototype.init
     = function (data)
 {
   // Syntax :
@@ -95,11 +94,11 @@ SieveAddFlag.prototype.parse
   data = data.slice("addflag".length);
   
   // ... eat the deadcode before the string...
-  data = this.whiteSpace[0].parse(data);
+  data = this.whiteSpace[0].init(data);
   
-  data = this.flaglist.parse(data)
+  data = this.flaglist.init(data)
 
-  data = this.whiteSpace[1].parse(data);
+  data = this.whiteSpace[1].init(data);
     
   // ... and finally remove the semicolon;
   if (isSieveSemicolon(data) == false)
@@ -153,7 +152,7 @@ function SieveRemoveFlag(id)
   this.flaglist = new SieveStringList(this.id+"_1");
 }
 
-SieveRemoveFlag.prototype.parse
+SieveRemoveFlag.prototype.init
     = function (data)
 {
   // Syntax :
@@ -162,11 +161,11 @@ SieveRemoveFlag.prototype.parse
   data = data.slice("removeflag".length);
   
   // ... eat the deadcode before the string...
-  data = this.whiteSpace[0].parse(data);
+  data = this.whiteSpace[0].init(data);
       
-  data = this.flaglist.parse(data)
+  data = this.flaglist.init(data)
 
-  data = this.whiteSpace[1].parse(data);
+  data = this.whiteSpace[1].init(data);
     
   // ... and finally remove the semicolon;
   if (isSieveSemicolon(data) == false)
@@ -228,23 +227,23 @@ function SieveHasFlag(id)
   this.whiteSpace[2]  = new SieveDeadCode(this.id+"_4");
 }
 
-SieveHasFlag.prototype.parse
+SieveHasFlag.prototype.init
     = function (data)
 {
   data = data.slice("hasflag".length);
   
-  this.whiteSpace[0].parse(data)
+  this.whiteSpace[0].init(data)
   
   if (isSieveMatchType(data))
   {
     this.matchType = new SieveMatchType(this.id+"_1");
-    data = this.matchType.parse(data);
+    data = this.matchType.init(data);
     
-    data = this.whiteSpace[1].parse(data);    
+    data = this.whiteSpace[1].init(data);    
   }
   
-  data = this.flagList.parse(data);
-  data = this.whiteSpace[2].parse(data);
+  data = this.flagList.init(data);
+  data = this.whiteSpace[2].init(data);
       
   return data;
 }    
@@ -274,11 +273,24 @@ SieveHasFlag.prototype.toXUL
 
 /******************************************************************************/
 
-SieveTest.register("hasflag","SieveHasFlag",SieveHasFlag.isHasFlag);
+if (!SieveLexer)
+  throw "Could not register IMAP Flags";
 
-with(SieveAction)
+with (SieveLexer)
 {
-  register("addflag","SieveAddFlag",SieveAddFlag.isAddFlag);
-  register("removeflag","SieveRemoveFlag",SieveRemoveFlag.isRemoveFlag);
-  register("setflag","SieveSetFlag",SieveSetFlag.isSetFlag);  
+  register("action","action/addflag",
+      function(token) {return SieveAddFlag.isAddFlag(token)}, 
+      function(id) {return new SieveAddFlag(id)});
+      
+  register("action","action/removeflag",
+      function(token) {return SieveRemoveFlag.isRemoveFlag(token)}, 
+      function(id) {return new SieveRemoveFlag(id)});  
+      
+  register("action","action/setflag",
+      function(token) {return SieveSetFlag.isSetFlag(token)},
+      function(id) {return new SieveSetFlag(id)});
+      
+  register("test","test/hasflag",
+      function(token) {return SieveHasFlag.isHasFlag(token)},
+      function(id) {return new SieveHasFlag(id)});  
 }

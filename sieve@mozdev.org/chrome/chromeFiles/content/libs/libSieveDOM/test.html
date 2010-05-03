@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<html lang="en">
+ <head>
+<title>mozdev.org - sieve: parser</title>
+
+<link rel="stylesheet" href="/project.css" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta content="text/css" http-equiv="Content-Style-Type">
+
+</head>
+<body class="sieve sieve-parser" id="sieve-mozdev-org">
+
+<link rel=stylesheet type="text/css" href="http://sieve.mozdev.org/parser.css">
+<script src="SieveLexer.js" type="text/javascript" />
+</script>
+<script src="SieveAtoms.js" type="text/javascript" />
+</script>
+<script src="./RFC3028/SieveDeadCode.js" type="text/javascript" />
+</script>
+<script src="./RFC3028/SieveStrings.js" type="text/javascript" />
+</script>
+<script src="SieveScriptDOM.js" type="text/javascript" />
+</script>
+<script src="SieveActions.js" type="text/javascript" />
+</script>
+<script src="SieveXULHelper.js" type="text/javascript"/>
+</script>
+<script src="SieveImapFlags.js" type="text/javascript" />
+</script>
+<script src="./RFC3028/SieveConditions.js" type="text/javascript" />
+</script>
+<script src="./RFC3028/SieveTests.js" type="text/javascript" />
+</script>
+<script type="text/javascript">
+function parse()
+{
+  /*try
+  {*/
+  
+    var str = document.getElementById("txtScript").value;  
+    var dom  = new SieveDom();
+    dom.setScript(str);
+        
+    document.getElementById("txtOutput").value = dom.toString();
+    
+    var xul = dom.toXUL();
+    xul = xul.replace(/html:/g, "");
+    
+    document.getElementById("divOutput").innerHTML =  xul;
+/*  }
+  catch (e)
+  {
+    alert(e);
+  }*/
+}
+</script>
+
+<div id="SIEVE_MAIN_CONTENT">
+  <h5>Sieve Script Parser</h5>
+  <p>
+
+    Input:<br />
+    <textarea id="txtScript" cols="50" rows="10"></textarea>
+    <br />
+    <input value="Parse Sieve Script" onclick="parse()" type="button">
+    <br />
+    <br />
+    Result:<br />
+
+    <textarea id="txtOutput" cols="50" rows="10" readonly="readonly"></textarea>
+    <br>    
+    <div id="divOutput">
+    </div>
+  </p>  
+</div>
+
+</body>
+
+</html>

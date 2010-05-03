@@ -1,11 +1,18 @@
-
+/* 
+ * The contents of this file is licenced. You may obtain a copy of
+ * the license at http://sieve.mozdev.org or request it via email 
+ * from the author. Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
 
 /******************************************************************************/
 
 function SieveDiscard(id) 
 {
   this.id = id;
-  this.whiteSpace = new SieveDeadCode();
+  this.whiteSpace = SieveLexer.createByName("deadcode");
 }
 
 SieveDiscard.isDiscard
@@ -17,7 +24,7 @@ SieveDiscard.isDiscard
   return false;
 }
 
-SieveDiscard.prototype.parse
+SieveDiscard.prototype.init
     = function (data)
 {
   // Syntax :
@@ -26,7 +33,8 @@ SieveDiscard.prototype.parse
   data = data.slice("discard".length);
   
   // ... eat the deadcode before the string...
-  data = this.whiteSpace.parse(data);
+  if (SieveLexer.probeByName("deadcode",data))      
+    data = this.whiteSpace.init(data);
   
   // ... and finally remove the semicolon;
   if (isSieveSemicolon(data) == false)
@@ -78,7 +86,7 @@ SieveRedirect.isRedirect
   return false;
 }
 
-SieveRedirect.prototype.parse
+SieveRedirect.prototype.init
     = function (data)
 {
   
@@ -89,13 +97,13 @@ SieveRedirect.prototype.parse
   data = data.slice("redirect".length);
   
   // ... eat the deadcode before the stringlist...
-  data = this.whiteSpace[0].parse(data);
+  data = this.whiteSpace[0].init(data);
   
   // ... extract the redirect address...
-  data = this.address.parse(data);
+  data = this.address.init(data);
     
   // ... eat again deadcode
-  data = this.whiteSpace[1].parse(data);
+  data = this.whiteSpace[1].init(data);
   
   // ... and finally remove the semicolon;
   if (isSieveSemicolon(data) == false)
@@ -152,7 +160,7 @@ SieveReject.isReject
   return false;
 }
 
-SieveReject.prototype.parse
+SieveReject.prototype.init
     = function (data)
 { 
   // Syntax :
@@ -162,13 +170,13 @@ SieveReject.prototype.parse
   data = data.slice("reject".length);
   
   // ... eat the deadcode before the stringlist...
-  data = this.whiteSpace[0].parse(data);
+  data = this.whiteSpace[0].init(data);
   
   // ... extract the reject reason...
-  data = this.reason.parse(data);
+  data = this.reason.init(data);
     
   // ... eat again deadcode
-  data = this.whiteSpace[1].parse(data);
+  data = this.whiteSpace[1].init(data);
   
   // ... and finally remove the semicolon;
   if (isSieveSemicolon(data) == false)
@@ -225,12 +233,12 @@ SieveStop.isStop
   return false;
 }
 
-SieveStop.prototype.parse
+SieveStop.prototype.init
     = function (data)
 {
   data = data.slice("stop".length);
   
-  data = this.whiteSpace.parse(data);
+  data = this.whiteSpace.init(data);
 
   // ... and finally remove the semicolon;
   if (isSieveSemicolon(data) == false)
@@ -276,12 +284,12 @@ SieveKeep.isKeep
   return false;
 }
 
-SieveKeep.prototype.parse
+SieveKeep.prototype.init
     = function (data)
 {
   data = data.slice("keep".length);
   
-  data = this.whiteSpace.parse(data);
+  data = this.whiteSpace.init(data);
 
   // ... and finally remove the semicolon;
   if (isSieveSemicolon(data) == false)
@@ -330,13 +338,15 @@ SieveRequire.isRequire
 function SieveRequire(id) 
 {
   this.id = id;
-  this.whiteSpace 
-    = new Array(new SieveDeadCode(this.id+"_0"),
-                new SieveDeadCode(this.id+"_2"));  
-  this.strings = new SieveStringList(this.id+"_1");
+  
+  this.whiteSpace = [];
+  this.whiteSpace[0] = SieveLexer.createByName("deadcode");
+  this.whiteSpace[1] = SieveLexer.createByName("deadcode");
+  
+  this.strings = SieveLexer.createByName("stringlist",this.id+"_1");    
 }
 
-SieveRequire.prototype.parse
+SieveRequire.prototype.init
     = function (data)
 {
   // Syntax :
@@ -344,16 +354,18 @@ SieveRequire.prototype.parse
   
   // remove the "require" identifier ...
   data = data.slice("require".length);
-  
+
   // ... eat the deadcode before the stringlist...
-  data = this.whiteSpace[0].parse(data);
-  
-  // ... extract the stringlist...
-  data = this.strings.parse(data);
+  if (SieveLexer.probeByClass(["deadcode"],data))
+    data = this.whiteSpace[0].init(data);
     
-  // ... eat again deadcode
-  data = this.whiteSpace[1].parse(data);
+  // ... extract the stringlist...
+  data = this.strings.init(data);
   
+  // ... eat again deadcode  
+  if (SieveLexer.probeByClass(["deadcode"],data))
+    data = this.whiteSpace[1].init(data);
+ 
   // ... and finally remove the semicolon;
   if (isSieveSemicolon(data) == false)
     throw "Syntaxerror: Semicolon expected";
@@ -405,7 +417,7 @@ function SieveFileInto(id)
   this.string = new SieveString(this.id+"_1");
 }
 
-SieveFileInto.prototype.parse
+SieveFileInto.prototype.init
     = function (data)
 {
   // Syntax :
@@ -414,13 +426,13 @@ SieveFileInto.prototype.parse
   data = data.slice("fileinto".length);
   
   // ... eat the deadcode before the string...
-  data = this.whiteSpace[0].parse(data);
+  data = this.whiteSpace[0].init(data);
   
   // read the string
-  data = this.string.parse(data);
+  data = this.string.init(data);
   
   // ... eat again deadcode
-  data = this.whiteSpace[1].parse(data);
+  data = this.whiteSpace[1].init(data);
   
   // ... and finally remove the semicolon;
   if (isSieveSemicolon(data) == false)
@@ -458,14 +470,36 @@ SieveFileInto.prototype.toXUL
 
 /******************************************************************************/
 
-with (SieveAction)
-{
-  register("discard","SieveDiscard",SieveDiscard.isDiscard);  
-  register("fileinto","SieveFileInto",SieveFileInto.isFileInto);  
-  register("keep","SieveKeep",SieveKeep.isKeep);
-  register("redirect","SieveRedirect",SieveRedirect.isRedirect);  
-  register("reject","SieveReject",SieveReject.isReject);
-  register("stop","SieveStop",SieveStop.isStop);
-}
+if (!SieveLexer)
+  throw "Could not register Actions";
 
-//SieveDom.register("require","SieveRequire",SieveRequire.isRequire);  
+with (SieveLexer)
+{
+  register("action","action/discard",
+      function(token) {return SieveDiscard.isDiscard(token)}, 
+      function(id) {return new SieveDiscard(id)});
+      
+  register("action","action/fileinto",
+      function(token) {return SieveFileInto.isFileInto(token)}, 
+      function(id) {return new SieveFileInto(id)});  
+      
+  register("action","action/keep",
+      function(token) {return SieveKeep.isKeep(token)},
+      function(id) {return new SieveKeep(id)});
+      
+  register("action","action/redirect",
+      function(token) {return SieveRedirect.isRedirect(token)},
+      function(id) {return new SieveRedirect(id)});
+      
+  register("action","action/reject",
+      function(token) {return SieveReject.isReject(token)},
+      function(id) {return new SieveReject(id)});
+      
+  register("action","action/stop",
+      function(token) {return SieveStop.isStop(token)},
+      function(id) {return new SieveStop(id)});
+      
+  register("import","action/require",
+      function(token) {return SieveRequire.isRequire(token)},
+      function(id) {return new SieveRequire(id)});      
+}

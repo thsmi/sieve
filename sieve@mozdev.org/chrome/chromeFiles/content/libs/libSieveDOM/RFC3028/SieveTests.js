@@ -19,7 +19,7 @@ function SieveAnyOf(id)
   this.testList = new SieveTestList(this.id+"_1");
 }
 
-SieveAnyOf.prototype.parse
+SieveAnyOf.prototype.init
     = function (data)
 {
   // Syntax :
@@ -27,11 +27,11 @@ SieveAnyOf.prototype.parse
 
   data = data.slice("anyof".length);
     
-  data = this.whiteSpace[0].parse(data);
+  data = this.whiteSpace[0].init(data);
   
-  data = this.testList.parse(data);
+  data = this.testList.init(data);
     
-  data = this.whiteSpace[1].parse(data);
+  data = this.whiteSpace[1].init(data);
   
   return data;
     
@@ -87,10 +87,10 @@ function SieveAllOf(id)
     = new Array(new SieveDeadCode(this.id+"_0"),
                 new SieveDeadCode(this.id+"_2"));
   
-  this.testList = new SieveTestList(this.id+"_1");
+  this.testList = "";
 }
 
-SieveAllOf.prototype.parse
+SieveAllOf.prototype.init
     = function (data)
 {
   // Syntax :
@@ -98,11 +98,12 @@ SieveAllOf.prototype.parse
   
   data = data.slice("allof".length);
   
-  data = this.whiteSpace[0].parse(data);
-  
-  data = this.testList.parse(data);
+  data = this.whiteSpace[0].init(data);
+ 
+  this.testList = SieveLexer.createByName("test/testlist");  
+  data = this.testList.init(data);
     
-  data = this.whiteSpace[1].parse(data);
+  data = this.whiteSpace[1].init(data);
   
   return data;
     
@@ -144,25 +145,26 @@ function SieveNot()
   this.test = null;
 }
 
-SieveNot.prototype.parse
+SieveNot.prototype.init
     = function (data)
 {
   // Syntax :
-  // <"allof"> <tests: test-list>
+  // <"not"> <tests: test-list>
   
   data = data.slice("not".length);
   
-  data = this.whiteSpace[0].parse(data);
+  data = this.whiteSpace[0].init(data);
   
-  var parser = new SieveTest(data);
-  this.test = parser.extract()
-  data = parser.getData();
+  if (SieveLexer.probeByClass(["test"],data) == false)
+    throw "Test command expected but found '"+data.substr(0,50)+"...'";  
   
+  this.test = SieveLexer.createByClass(["test"],data);
+  data = this.test.init(data);
+   
   // TODO implement to all tests an setNot
   // this.test.invertLogic(true);
     
-  data = this.whiteSpace[1].parse(data);
-  
+  data = this.whiteSpace[1].init(data); 
   return data;
     
 }    
@@ -211,11 +213,11 @@ function SieveEnvelopeTest()
   this.keyList = new SieveStringList();
 }
 
-SieveEnvelopeTest.prototype.parse
+SieveEnvelopeTest.prototype.init
     = function (data)
 {
   data = data.slice("envelope".length);
-  data = this.whiteSpace[0].parse(data);
+  data = this.whiteSpace[0].init(data);
   
   for (var i=0; i< 3; i++)
   {
@@ -228,17 +230,17 @@ SieveEnvelopeTest.prototype.parse
     else
       break;
     
-    data = this.options[i].parse(data);
-    data = this.whiteSpace[i+1].parse(data);
+    data = this.options[i].init(data);
+    data = this.whiteSpace[i+1].init(data);
   }
   
-  data = this.envelopeList.parse(data);
+  data = this.envelopeList.init(data);
   
-  data = this.whiteSpace[4].parse(data);
+  data = this.whiteSpace[4].init(data);
   
-  data = this.keyList.parse(data);
+  data = this.keyList.init(data);
     
-  data = this.whiteSpace[5].parse(data);
+  data = this.whiteSpace[5].init(data);
   
   return data;
 }    
@@ -276,7 +278,7 @@ SieveEnvelopeTest.prototype.toXUL
 SieveAddress.isAddress
   = function(token)
 {             
-  if (token.indexOf("address") == 0)
+  if (token.substr(0,7).toLowerCase().indexOf("address") == 0)
     return true;
     
   return false
@@ -297,11 +299,11 @@ function SieveAddress(id)
   this.keyList = new SieveStringList(this.id+"_10");
 }
 
-SieveAddress.prototype.parse
+SieveAddress.prototype.init
     = function (data)
 {
   data = data.slice("address".length);
-  data = this.whiteSpace[0].parse(data);
+  data = this.whiteSpace[0].init(data);
   
   for (var i=0; i< 3; i++)
   {
@@ -314,17 +316,17 @@ SieveAddress.prototype.parse
     else
       break;
     
-    data = this.options[i].parse(data);
-    data = this.whiteSpace[i+1].parse(data);
+    data = this.options[i].init(data);
+    data = this.whiteSpace[i+1].init(data);
   }
   
-  data = this.headerList.parse(data);
+  data = this.headerList.init(data);
   
-  data = this.whiteSpace[4].parse(data);
+  data = this.whiteSpace[4].init(data);
   
-  data = this.keyList.parse(data);
+  data = this.keyList.init(data);
     
-  data = this.whiteSpace[5].parse(data);
+  data = this.whiteSpace[5].init(data);
   
   return data;
 }    
@@ -381,7 +383,7 @@ function SieveBoolean(id)
   this.value = false;
 }
 
-SieveBoolean.prototype.parse
+SieveBoolean.prototype.init
     = function (data)
 {
   var token = data.substr(0,5).toLowerCase();
@@ -398,7 +400,7 @@ SieveBoolean.prototype.parse
     data = data.slice("false".length);
   }
   
-  data = this.whiteSpace.parse(data);
+  data = this.whiteSpace.init(data);
     
   return data;
     
@@ -450,7 +452,7 @@ function SieveSizeTest(id)
   this.size = new SieveNumber(this.id+"_2");
 }
 
-SieveSizeTest.prototype.parse
+SieveSizeTest.prototype.init
     = function (data)
 {
   // Syntax :
@@ -458,7 +460,7 @@ SieveSizeTest.prototype.parse
   
   data = data.slice("size".length);
   
-  data = this.whiteSpace[0].parse(data);
+  data = this.whiteSpace[0].init(data);
   
   var token = data.substr(0,6).toLowerCase();
   if (token.indexOf(":over") == 0)
@@ -474,9 +476,9 @@ SieveSizeTest.prototype.parse
   else 
     throw "Syntaxerror, :under or :over expected";
     
-  data = this.whiteSpace[1].parse(data);
-  data = this.size.parse(data);
-  data = this.whiteSpace[2].parse(data);
+  data = this.whiteSpace[1].init(data);
+  data = this.size.init(data);
+  data = this.whiteSpace[2].init(data);
   
   return data;
     
@@ -533,7 +535,7 @@ function SieveExists(id)
   this.headerNames = new SieveStringList(this.id+"_1");
 }
 
-SieveExists.prototype.parse
+SieveExists.prototype.init
     = function (data)
 {
   // Syntax :
@@ -541,11 +543,11 @@ SieveExists.prototype.parse
   
   data = data.slice("exists".length);
   
-  data = this.whiteSpace[0].parse(data);
+  data = this.whiteSpace[0].init(data);
   
-  data = this.headerNames.parse(data);
+  data = this.headerNames.init(data);
     
-  data = this.whiteSpace[1].parse(data);
+  data = this.whiteSpace[1].init(data);
   
   return data;
     
@@ -599,7 +601,7 @@ function SieveHeader(id)
   this.keyList = new SieveStringList(this.id+"_6");
 }
 
-SieveHeader.prototype.parse
+SieveHeader.prototype.init
     = function (data)
 {
   // Syntax :
@@ -607,46 +609,46 @@ SieveHeader.prototype.parse
   
   data = data.slice("header".length);
   
-  data = this.whiteSpace[0].parse(data);
+  data = this.whiteSpace[0].init(data);
   
   if (isSieveComparator(data))
   {
     var element = new SieveComparator(this.id+"_7");
-    data = element.parse(data);
+    data = element.init(data);
     this.options[0] = element;
     
-    data = this.whiteSpace[1].parse(data)
+    data = this.whiteSpace[1].init(data)
     
     if (isSieveMatchType(data))
     {
       element = new SieveMatchType(this.id+"_8");
-      data = element.parse(data);
+      data = element.init(data);
       this.options[1] = element;
     }
   }  
   else if (isSieveMatchType(data))
   {
     var element = new SieveMatchType(this.id+"_7");
-    data = element.parse(data);
+    data = element.init(data);
     this.options[0] = element;
     
-    data = this.whiteSpace[1].parse(data)
+    data = this.whiteSpace[1].init(data)
 
     if (isSieveComparator(data))
     {
       element = new SieveComparator(this.id+"_8");
-      data = element.parse(data);
+      data = element.init(data);
       this.options[1] = element;
     }
   }
-  data = this.whiteSpace[2].parse(data);  
-  data = this.headerNames.parse(data);
+  data = this.whiteSpace[2].init(data);  
+  data = this.headerNames.init(data);
   
-  data = this.whiteSpace[3].parse(data);
+  data = this.whiteSpace[3].init(data);
   
-  data = this.keyList.parse(data);
+  data = this.keyList.init(data);
   
-  data = this.whiteSpace[4].parse(data);
+  data = this.whiteSpace[4].init(data);
   
   return data;    
 }
@@ -674,17 +676,169 @@ SieveHeader.prototype.toXUL
       + " one of the following values "+ this.keyList.toXUL();
 }
 
-// IMPORT ALL STANDARD SIEVE TESTS
-with (SieveTest)
+/*******************************************************************************
+    CLASSNAME: 
+      SieveTestList implements SieveObject
+    
+    CONSTUCTOR:
+      public SieveTestList()
+
+    PUBLIC FUNCTIONS:      
+      public static boolean isTestList(String data)
+      public boolean parse(String data) throws Exception
+      public String toString()
+      public String toXUL()
+
+    MEMBER VARIABLES: 
+      private Array[] elements;
+
+    DESCRIPTION: 
+      A Testlist is an array of SieveTests. 
+                   
+      Syntax : 
+        test-list = (" test *("," test) ")"
+        
+      Example :
+        anyof (not exists ["From", "Date"],
+             header :contains "from" "fool@example.edu")
+      
+*******************************************************************************/
+
+// CONSTRUCTOR:
+function SieveTestList(size)
+{  
+  this.elements = new Array();
+}
+
+// PUBLIC STATIC:
+SieveTestList.isTestList
+  = function (data)
 {
-  register("address","SieveAddress",SieveAddress.isAddress);
-  register("allof","SieveAllOf",SieveAllOf.isAllOf);
-  register("anyof","SieveAnyOf",SieveAnyOf.isAnyOf);
-  register("boolean","SieveBoolean",SieveBoolean.isBoolean);
+  if (data.charAt(0) == "(")
+    return true;
+    
+  return false;
+}
+
+// PUBLIC:
+SieveTestList.prototype.init
+  = function (data)
+{  
+  // remove the (
+  if (data.charAt(0) != "(")
+    throw "Test list expected but found:\n'"+data.substr(0,50)+"'...";
+    
+  data = data.slice(1);
+    
+  while (data.charAt(0) != ")")
+  {
+    if (data.charAt(0) == ",")
+      data= data.slice(1);
+            
+    var element = ["","",""];
+    
+    if (SieveLexer.probeByName("deadcode",data))
+    {
+      element[0] = SieveLexer.createByName("deadcode");
+      data = element[0].init(data);
+    }
+    
+    if (SieveLexer.probeByClass(["test"],data) == false)
+      throw "Test command expected but found:\n'"+data.substr(0,50)+"'...";    
+    
+    element[1] =  SieveLexer.createByClass(["test"],data)
+    data = element[1].init(data);
+    
+    
+    if (SieveLexer.probeByName("deadcode",data))
+    {
+      element[2] = SieveLexer.createByName("deadcode");
+      data = element[2].init(data);
+    }
+        
+    this.elements.push(element);
+  }
   
-  register("envelope","SieveEnvelopeTest",SieveEnvelopeTest.isEnvelopeTest);
-  register("exists","SieveExists",SieveExists.isExists);  
-  register("header","SieveHeader",SieveHeader.isHeader);  
-  register("not","SieveNot",SieveNot.isNot);  
-  register("size","SieveSizeTest",SieveSizeTest.isSizeTest);
+  data = data.slice(1);
+  
+  return data;
+}
+
+SieveTestList.prototype.toString
+    = function ()
+{          
+  var result = "(";
+  var separator = "";
+  
+  for (var i = 0;i<this.elements.length; i++)
+  {
+    result = result
+             + separator
+             + this.elements[i][0].toString()
+             + this.elements[i][1].toString()
+             + this.elements[i][2].toString();
+             
+    separator = ",";
+  }
+  result += ")";
+  
+  return result;   
+}
+
+SieveTestList.prototype.toXUL
+    = function ()
+{
+  var result = "";
+  for (var i = 0; i<this.elements.length; i++)
+  {    
+    result += this.elements[i][1].toXUL();
+    result += "<html:br />";
+  }
+  return result;
+}
+
+
+if (!SieveLexer)
+  throw "Could not register Conditional Elements";
+
+with (SieveLexer)
+{  
+  register("test","test/address",
+      function(token) {return SieveAddress.isAddress(token)}, 
+      function(id) {return new SieveAddress(id)});
+      
+  register("test","test/allof",
+      function(token) {return SieveAllOf.isAllOf(token)}, 
+      function(id) {return new SieveAllOf(id)});
+      
+  register("test","test/anyof",
+      function(token) {return SieveAnyOf.isAnyOf(token)}, 
+      function(id) {return new SieveAnyOf(id)});
+  register("test","test/boolean",
+      function(token) {return SieveBoolean.isBoolean(token)}, 
+      function(id) {return new SieveBoolean(id)});
+  
+  register("test","test/envelope",
+      function(token) {return SieveEnvelopeTest.isEnvelopeTest(token)}, 
+      function(id) {return new SieveEnvelopeTest(id)});
+  register("test","test/exists",
+      function(token) {return SieveExists.isExists(token)}, 
+      function(id) {return new SieveExists(id)});  
+  register("test","test/header",
+      function(token) {return SieveHeader.isHeader(token)}, 
+      function(id) {return new SieveHeader(id)});  
+  register("test","test/not",
+      function(token) {return SieveNot.isNot(token)}, 
+      function(id) {return new SieveNot(id)});  
+  register("test","test/size",
+      function(token) {return SieveSizeTest.isSizeTest(token)}, 
+      function(id) {return new SieveSizeTest(id)});
+
+  register("test/","test/testlist",
+      function(token) {return SieveTestList.isTestList(token)}, 
+      function(id) {return new SieveTestList(id)});     
+      
+  register("test/","test/testlist",
+      function(token) {return SieveTestList.isTestList(token)}, 
+      function(id) {return new SieveTestList(id)});      
 }

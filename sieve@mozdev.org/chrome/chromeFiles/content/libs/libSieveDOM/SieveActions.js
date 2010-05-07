@@ -71,10 +71,12 @@ SieveDiscard.prototype.toXUL
 function SieveRedirect(id)
 {
   this.id = id;
-  this.whiteSpace 
-    = new Array(new SieveDeadCode(this.id+"_0"),
-                new SieveDeadCode(this.id+"_2"));  
-  this.address = new SieveString(this.id+"_1");  
+  
+  this.whiteSpace = [];
+  this.whiteSpace[0] = SieveLexer.createByName("deadcode");
+  this.whiteSpace[1] = SieveLexer.createByName("deadcode");
+  
+  this.address = SieveLexer.createByName("string");  
 }
 
 SieveRedirect.isRedirect
@@ -145,9 +147,10 @@ SieveRedirect.prototype.toXUL
 function SieveReject(id)
 {
   this.id = id;
-  this.whiteSpace 
-    = new Array(new SieveDeadCode(this.id+"_0"),
-                new SieveDeadCode(this.id+"_2"));  
+  this.whiteSpace = [];
+  this.whiteSpace[0] = SieveLexer.createByName("deadcode");
+  this.whiteSpace[1] = SieveLexer.createByName("deadcode");
+    
   this.reason = new SieveString(this.id+"_1");
 }
 
@@ -221,7 +224,7 @@ SieveReject.prototype.toXUL
 function SieveStop(id) 
 {
   this.id = id;
-  this.whiteSpace = new SieveDeadCode(this.id+"_0");
+  this.whiteSpace = SieveLexer.createByName("deadcode");  
 }
 
 SieveStop.isStop
@@ -272,7 +275,7 @@ SieveStop.prototype.toXUL
 function SieveKeep(id)
 {
   this.id = id;
-  this.whiteSpace = new SieveDeadCode(this.id+"_0");
+  this.whiteSpace = SieveLexer.createByName("deadcode");
 }
 
 SieveKeep.isKeep
@@ -343,7 +346,7 @@ function SieveRequire(id)
   this.whiteSpace[0] = SieveLexer.createByName("deadcode");
   this.whiteSpace[1] = SieveLexer.createByName("deadcode");
   
-  this.strings = SieveLexer.createByName("stringlist",this.id+"_1");    
+  this.strings = SieveLexer.createByName("stringlist");    
 }
 
 SieveRequire.prototype.init
@@ -356,18 +359,18 @@ SieveRequire.prototype.init
   data = data.slice("require".length);
 
   // ... eat the deadcode before the stringlist...
-  if (SieveLexer.probeByClass(["deadcode"],data))
+  if (SieveLexer.probeByName("deadcode",data))
     data = this.whiteSpace[0].init(data);
     
   // ... extract the stringlist...
   data = this.strings.init(data);
   
   // ... eat again deadcode  
-  if (SieveLexer.probeByClass(["deadcode"],data))
+  if (SieveLexer.probeByName("deadcode",data))
     data = this.whiteSpace[1].init(data);
  
   // ... and finally remove the semicolon;
-  if (isSieveSemicolon(data) == false)
+  if (data.charAt(0) != ";")
     throw "Syntaxerror: Semicolon expected";
     
   return data.slice(1);  
@@ -411,9 +414,11 @@ SieveFileInto.isFileInto
 function SieveFileInto(id) 
 {
   this.id = id;
-  this.whiteSpace 
-    = new Array(new SieveDeadCode(this.id+"_0"),
-                new SieveDeadCode(this.id+"_2"));  
+  
+  this.whiteSpace = [];
+  this.whiteSpace[0] = SieveLexer.createByName("deadcode");
+  this.whiteSpace[1] = SieveLexer.createByName("deadcode");
+    
   this.string = new SieveString(this.id+"_1");
 }
 

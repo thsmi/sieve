@@ -7,28 +7,6 @@
  */
  
 
-function SieveObject()
-{
-}
-
-SieveObject.prototype.init
-  = function (data)
-{
-  return data;
-}
-
-SieveObject.prototype.toString
-  = function ()
-{
-  return "";
-}
-
-SieveObject.prototype.toXUL
-  = function ()
-{
-  return "";  
-}
-
 /******************************************************************************/
 function isSieveSemicolon(data)
 {
@@ -39,37 +17,6 @@ function isSieveSemicolon(data)
 }
 
  
-
-/*******************************************************************************
-    CLASSNAME: 
-      SieveTestParser implements SieveParser
-    
-    CONSTUCTOR:
-      public SieveTestParser(String data)
-
-    PUBLIC FUNCTIONS:      
-      public static boolean isTest(String data, int index)
-      public static void registerTest(String id, String classname)
-      public Object extract() throws Exception
-      public String getData()
-
-    MEMBER VARIABLES: 
-      private String data;
-
-    DESCRIPTION: 
-      This Wrapper class converts a Sting into a SieveTest Object. The function
-      isTest() probes wether a String contains a SieveTest Object or not. This
-      Object can be extracted by calling the extract(). After calling extract,
-      you can retrive the data String via getData(). This will return the String
-      passed to the constructor minus the extracted Object(s).
-      
-      !!! All SieveTest have to register via registerTest() !!!
-                   
-      
-*******************************************************************************/
-
-
-
 /******************************************************************************/
 
 /******************************************************************************/

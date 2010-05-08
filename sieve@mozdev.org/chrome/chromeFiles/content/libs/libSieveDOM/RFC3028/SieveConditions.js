@@ -100,7 +100,8 @@ SieveCondition.prototype.toXUL
   var str = "<html:div class='SieveCon'>"
   
   for (var i=1; i<this.tests.length;i++)
-    str += this.tests[i].toXUL();
+    //str += this.tests[i].toXUL();
+    str += this.tests[i].toString();
   
   str += "</html:div>";
   
@@ -207,11 +208,10 @@ SieveIf.prototype.toString
 
 SieveIf.prototype.toXUL
     = function ()
-{
+{  
   var str = "<html:div class='SieveCondition'>";
-  
  
-  str +="<html:div class='SieveIf'>If Message"+this.elements[0].toXUL()+"</html:div>";
+  str +="<html:div class='SieveIf'>If"+this.elements[0].toXUL()+"</html:div>";
   
   for (var i=1; i<this.elements.length;i++)
   {

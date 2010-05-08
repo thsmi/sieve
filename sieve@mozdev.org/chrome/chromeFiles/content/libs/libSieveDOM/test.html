@@ -7,6 +7,48 @@
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta content="text/css" http-equiv="Content-Style-Type">
 
+<style xml:base="/" type="text/css" >
+.SivElement {
+  background-color: -moz-dialog;
+  background-image: -moz-linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
+  color: -moz-dialogText;
+  margin: 1px;
+  -moz-border-radius: 2px;
+
+  margin-left: auto;
+  margin-right: auto;
+  width:600px;
+  border: 1px solid #000066;
+ 
+//  background-color: hsl(219,45%,60%);
+//  background-color: hsl(92,45%,52%);
+}
+
+.SivFocusedElement {
+  background-color: -moz-dialog;
+  background-image: -moz-linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
+  color: -moz-dialogText;
+  margin: 1px;
+  -moz-border-radius: 2px;
+
+  margin-left: auto;
+  margin-right: auto;
+  width:600px;
+  border: 1px solid #000066;
+
+  background-color: hsl(92,45%,52%);
+}
+
+.SivElement:hover {
+background-image: -moz-linear-gradient(rgba(255,255,255,.5), rgba(50%,50%,50%,.2), rgba(0,0,0,.15));
+  // selected...
+  //background-image: -moz-linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.1));
+}
+
+
+
+</style>
+
 </head>
 <body class="sieve sieve-parser" id="sieve-mozdev-org">
 
@@ -43,10 +85,13 @@ function parse()
         
     document.getElementById("txtOutput").value = dom.toString();
     
-    var xul = dom.toXUL();
-    xul = xul.replace(/html:/g, "");
+    /*var xul = dom.toXUL();
+    xul = xul.replace(/html:/g, "");*/
     
-    document.getElementById("divOutput").innerHTML =  xul;
+    document.getElementById("divOutput").innerHTML =  " ";
+    document.getElementById("divOutput").appendChild(dom.toXUL());
+    
+    
 /*  }
   catch (e)
   {

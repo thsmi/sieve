@@ -419,7 +419,7 @@ function SieveFileInto(id)
   this.whiteSpace[0] = SieveLexer.createByName("deadcode");
   this.whiteSpace[1] = SieveLexer.createByName("deadcode");
     
-  this.string = new SieveString(this.id+"_1");
+  this.string = SieveLexer.createByName("string");
 }
 
 SieveFileInto.prototype.init
@@ -462,15 +462,48 @@ SieveFileInto.prototype.toString
     + ";";  
 }
 
-SieveFileInto.prototype.toXUL
+SieveFileInto.prototype.onEdit
+    = function (sender)
+{   
+  var elm = document.createElement("div");
+  elm.className = "SivFocusedElement"
+  
+  elm.innerHTML = "";
+  
+  elm.appendChild(
+        document.createTextNode("Copy incomming message into: "));
+
+  elm.appendChild(
+        document.createElement("br"));
+        
+  var input = document.createElement("input");  
+  input.setAttribute( "type", "text" );
+  input.setAttribute( "value", ""+this.string.getValue());
+  
+  elm.appendChild(input);
+  
+  sender.parentNode.replaceChild(elm,sender);
+}
+
+SieveFileInto.prototype.toElement
     = function ()
 {
-    var xulBody 
-    = "  Copy the incomming message into:  <html:br />"
-    + this.string.toXUL();
-    
-  return SieveOptionsDiv(
-            this.id, "SieveFileInto",xulBody);
+ 
+  //var document = parent.ownerDocument;
+  
+  var elm = document.createElement("div");
+  elm.className = "SivElement"
+  
+  var that = this;
+  
+  elm.appendChild(
+        document.createTextNode("Copy the incomming message into: "+this.string.getValue()))
+  
+  elm.addEventListener("click",function(e){ alert("bla"); alert(this.className); that.onEdit(e.target);}, false );
+  //elm.addEventListener("click",this.onclick, false );
+    // e.target = sender
+  
+  return elm;
 }
 
 /******************************************************************************/

@@ -269,11 +269,13 @@ SieveDom.prototype.toString
 SieveDom.prototype.toXUL
     = function ()
 {  
-  var xul ="";
+  var elm = document.createElement("div");
+  
   for (var i=0; i<this.elements.length;i++)
-    xul += this.elements[i].toXUL();
+    if (this.elements[i].toElement)
+      elm.appendChild(this.elements[i].toElement());
 
-  return xul;  
+  return elm;  
 }
 
 SieveDom.prototype.sendMessage

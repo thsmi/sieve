@@ -61,13 +61,6 @@ SieveWhiteSpace.prototype.toString
   return this.whiteSpace;
 }
 
-SieveWhiteSpace.prototype.toXUL
-    = function ()
-{
-  // whitespaces do nothing in xul 
-  return "";
-}
-
 /******************************************************************************/
 
 SieveBracketComment.isBracketComment
@@ -111,12 +104,6 @@ SieveBracketComment.prototype.toString
     = function ()
 {
   return "/*"+this.text+"*/";
-}
-
-SieveBracketComment.prototype.toXUL
-    = function ()
-{
-  return ""; 
 }
 
 /******************************************************************************/
@@ -224,14 +211,6 @@ SieveDeadCode.prototype.toString
     
   return result;
 }
-
-SieveDeadCode.prototype.toXUL
-    = function ()
-{
-  // this element is invisible in XUL
-  return "";
-}  
-  
 
 if (!SieveLexer)
   throw "Could not register DeadCode Elements";

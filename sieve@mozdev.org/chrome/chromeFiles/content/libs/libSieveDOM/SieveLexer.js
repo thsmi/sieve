@@ -14,9 +14,9 @@ var SieveLexer =
   register: function(type,name,onProbe,onCreate)
   {
     if (onProbe == null)
-      throw "Lexer Error: Probe function for "+id+" missing";
+      throw "Lexer Error: Probe function for "+name+" missing";
     if (onCreate == null)
-      throw "Lexer Error: Parse function for "+id+" missing";
+      throw "Lexer Error: Create function for "+name+" missing";
       
     if (this.types[type] == null)
       this.types[type] = new Array()
@@ -54,14 +54,14 @@ var SieveLexer =
    * @param {} data
    * @return {}
    */
-  createByClass : function(types,data,id)
+  createByClass : function(types,data)
   {
     var c = this.getConstructor(types,data);
     
     if (c==null)
       throw " "+types+" "+data;
     
-    return this.getConstructor(types,data)(id);
+    return this.getConstructor(types,data)();
     
 /*    var result = {};
     
@@ -73,11 +73,11 @@ var SieveLexer =
     return result;*/ 
   },
   
-  createByName : function(name,id)
+  createByName : function(name)
   {    
     try
     {
-      return this.names[name].onNew(id);
+      return this.names[name].onNew();
     }
     catch (e)
     {

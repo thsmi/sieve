@@ -170,6 +170,12 @@ SieveQuotedString.prototype.getValue
     = function ()
 {
   return this.text;
+}
+
+SieveQuotedString.prototype.setValue
+    = function (value)
+{
+  this.text = value;
 } 
 
 SieveQuotedString.prototype.toString
@@ -377,6 +383,13 @@ SieveString.prototype.getValue
     = function ()
 {
   return this.string.getValue();
+}
+
+SieveString.prototype.setValue
+    = function (value)
+{
+  //TODO: convert from/to multiline and singleline
+  return this.string.setValue(value);
 } 
    
 SieveString.prototype.toString

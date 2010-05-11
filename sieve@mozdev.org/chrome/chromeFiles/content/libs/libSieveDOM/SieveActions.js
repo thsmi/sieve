@@ -130,18 +130,59 @@ SieveRedirect.prototype.toString
     + ";";
 }
 
-SieveRedirect.prototype.toXUL
-    = function ()
+SieveRedirect.prototype.onEdit
+    = function (e)
 {
-  var xulBody 
-    = "  Redirect messages to the following email address:"
-    + "  <html:br />"
-    + this.address.toXUL();
-    
-  return SieveOptionsDiv(
-            this.id, "SieveRedirect",xulBody)
+  e.stopPropagation();
+  
+  var elm = document.createElement("vbox");
+  elm.className = "SivFocusedElement";
+  
+  elm.appendChild(
+        document.createTextNode("Redirect messages to the following email address: "));
+        
+  var input = document.createElement("textbox");  
+  input.setAttribute( "value", ""+this.address.getValue());
+  input.addEventListener("click",function(e){alert('input click');/*e.stopPropagation()*/;}, true);
+  
+  elm.appendChild(input);
+
+  // prevent default event listeners...
+  elm.addEventListener("click",function(e){e.stopPropagation();}, false);
+  
+  e.target.parentNode.replaceChild(elm,e.target);
+ 
+  // cache edit dialog...
+  this.elm = elm;  
 }
 
+SieveRedirect.prototype.toElement
+    = function ()
+{ 
+  var elm = document.createElement("vbox");
+  elm.className = "SivElement";
+  
+  elm.appendChild(
+        document.createTextNode("Redirect message to: "+this.address.getValue()));
+  
+  var that = this;
+  elm.addEventListener("click",function(e){ that.onEdit(e);},true);
+  
+  return elm;
+}
+
+SieveRedirect.prototype.onBouble
+    = function (message)
+{
+  if ((message == 'blur') && (this.elm != null))
+  {
+    // read input value and update string...
+    this.address.setValue(this.elm.getElementsByTagName('input')[0].value);
+    // recreate element...
+    this.elm.parentNode.replaceChild(this.toElement(),this.elm);
+    this.elm = null;
+  }
+}  
 /******************************************************************************/
 
 function SieveReject(id)
@@ -151,7 +192,7 @@ function SieveReject(id)
   this.whiteSpace[0] = SieveLexer.createByName("deadcode");
   this.whiteSpace[1] = SieveLexer.createByName("deadcode");
     
-  this.reason = new SieveString(this.id+"_1");
+  this.reason = SieveLexer.createByName("string");
 }
 
 SieveReject.isReject
@@ -204,19 +245,64 @@ SieveReject.prototype.toString
     + ";"; 
 }
 
-SieveReject.prototype.toXUL
-    = function ()
+SieveReject.prototype.onEdit
+    = function (e)
 {
-  var xulBody 
-    = "  Reject incomming messages and reply the following reason:"
-    + "  <html:br />"
-    + this.reason.toXUL();
-    
-  return SieveOptionsDiv(
-            this.id, "SieveReject",xulBody)
+  e.stopPropagation();
+  
+  var elm = document.createElement("vbox");
+  elm.className = "SivFocusedElement";
+  
+  elm.appendChild(
+        document.createTextNode("Reject incomming messages and reply the following reason: "));
+        
+  var input = document.createElement("textbox");  
+  input.setAttribute( "value", ""+this.reason.getValue());
+  input.addEventListener("click",function(e){alert('input click');/*e.stopPropagation()*/;}, true);
+  
+  elm.appendChild(input);
+
+  // prevent default event listeners...
+  elm.addEventListener("click",function(e){e.stopPropagation();}, false);
+  
+  e.target.parentNode.replaceChild(elm,e.target);
+ 
+  // cache edit dialog...
+  this.elm = elm;  
 }
 
+SieveReject.prototype.toElement
+    = function ()
+{ 
+  var elm = document.createElement("vbox");
+  elm.className = "SivElement";
+  
+  elm.appendChild(
+        document.createTextNode("Reject incomming messages and reply the following reason:"));
 
+  elm.appendChild(
+        document.createTextNode(""+this.reason.getValue()));
+  
+  var that = this;
+  elm.addEventListener("click",function(e){ that.onEdit(e);},true );
+  
+  return elm;
+}
+
+SieveReject.prototype.onBouble
+    = function (message)
+{
+  if ((message == 'blur') && (this.elm != null))
+  {
+    // read input value and update string...
+    //this.address.setValue(this.elm.getElementsByTagName('input')[0].value);
+    // recreate element...
+    this.elm.parentNode.replaceChild(this.toElement(),this.elm);
+    this.elm = null;
+    
+    // return false on error and true if blur is ok...
+  }
+} 
 
 
 /******************************************************************************/
@@ -263,12 +349,18 @@ SieveStop.prototype.toString
     + this.whiteSpace.toString()+";";
 }
 
-SieveStop.prototype.toXUL
+SieveStop.prototype.toElement
     = function ()
-{   
-  return SieveOptionsDiv(
-            this.id, "SieveStop","Stop script execution");
+{
+  var elm = createDragBox();
+  
+  elm.appendChild(
+        document.createTextNode("End Script (Stop processing)")); 
+  
+  return elm;
 }
+
+
 
 /******************************************************************************/
 
@@ -314,12 +406,33 @@ SieveKeep.prototype.toString
     + this.whiteSpace.toString()+";";
 }
 
-SieveKeep.prototype.toXUL
+SieveKeep.prototype.toElement
     = function ()
 {
-  return SieveOptionsDiv(
-            this.id, "SieveKeep","Move the message into the main inbox");
+  var elm = document.createElement("vbox");
+  elm.className = "SivElement"
+  
+  elm.appendChild(
+        document.createTextNode("Keep a message's copy in the main inbox"));
+        
+  elm.addEventListener("draggesture", 
+    function (event) {
+      alert("blubber22"+event.target.parentNode)
+      var dt = event.dataTransfer;
+      dt.mozSetDataAt('sieve/action',event.target.parentNode,0);
+      
+      event.stopPropagation();
+    },
+    true);          
+  
+  return elm;
 }
+
+SieveKeep.prototype.onBouble
+    = function (message)
+{
+  alert(this.toString());
+} 
 
 /******************************************************************************/
 
@@ -392,13 +505,6 @@ SieveRequire.prototype.toString
     + ";";
 }
 
-SieveRequire.prototype.toXUL
-    = function ()
-{
-  // we hide requires from the user
-  return "";  
-}
-
 /******************************************************************************/
 
 
@@ -420,6 +526,8 @@ function SieveFileInto(id)
   this.whiteSpace[1] = SieveLexer.createByName("deadcode");
     
   this.string = SieveLexer.createByName("string");
+  
+  this.elm = null;
 }
 
 SieveFileInto.prototype.init
@@ -463,12 +571,12 @@ SieveFileInto.prototype.toString
 }
 
 SieveFileInto.prototype.onEdit
-    = function (sender)
-{   
-  var elm = document.createElement("div");
-  elm.className = "SivFocusedElement"
+    = function (e)
+{
+  e.stopPropagation();
   
-  elm.innerHTML = "";
+  var elm = document.createElement("vbox");
+  elm.className = "SivFocusedElement";
   
   elm.appendChild(
         document.createTextNode("Copy incomming message into: "));
@@ -479,29 +587,69 @@ SieveFileInto.prototype.onEdit
   var input = document.createElement("input");  
   input.setAttribute( "type", "text" );
   input.setAttribute( "value", ""+this.string.getValue());
+  input.addEventListener("click",function(e){alert('input click');/*e.stopPropagation()*/;}, true);
   
   elm.appendChild(input);
+
+  // prevent default event listeners...
+  elm.addEventListener("click",function(e){e.stopPropagation();}, false);
   
-  sender.parentNode.replaceChild(elm,sender);
+  e.target.parentNode.replaceChild(elm,e.target);
+ 
+  // cache edit dialog...
+  this.elm = elm;  
 }
 
 SieveFileInto.prototype.toElement
     = function ()
 {
- 
-  //var document = parent.ownerDocument;
-  
-  var elm = document.createElement("div");
-  elm.className = "SivElement"
-  
-  var that = this;
+  var elm = createDragBox();
   
   elm.appendChild(
         document.createTextNode("Copy the incomming message into: "+this.string.getValue()))
   
-  elm.addEventListener("click",function(e){ alert("bla"); alert(this.className); that.onEdit(e.target);}, false );
-  //elm.addEventListener("click",this.onclick, false );
-    // e.target = sender
+  var that = this;
+  elm.addEventListener("click",function(e){ that.onEdit(e);}, true );
+  
+  return elm;
+}
+
+SieveFileInto.prototype.onBouble
+    = function (message)
+{
+  if ((message == 'blur') && (this.elm != null))
+  {
+    // read input value and update string...
+    this.string.setValue(this.elm.getElementsByTagName('input')[0].value);
+    // recreate element...
+    this.elm.parentNode.replaceChild(this.toElement(),this.elm);
+    this.elm = null;
+  }
+}
+
+// TODO add listeners for callsbacks...
+function createDragBox(listener)
+{
+  // TODO use atrribute instead of className to distinguish...
+  var elm = document.createElement("vbox");
+  elm.className ="SivElement";
+  
+  elm.addEventListener("draggesture", 
+    function (event) {
+      
+      var node = event.target;
+      while (node && (node.className != "SivElement"))
+        node = node.parentNode;
+        
+      var dt = event.dataTransfer;
+      
+      // dragbox and action are an atomic pair...
+      dt.mozSetDataAt('sieve/action',node,0);
+      dt.mozSetDataAt('sieve/action',node.previousSibling,1);
+      
+      event.stopPropagation();
+    },
+    true);  
   
   return elm;
 }

@@ -5,6 +5,7 @@ var SieveLexer =
 {
   types :  [],
   names : [],
+  maxId : 0,
   /**
    * @param {} type 
    * @param {} id
@@ -61,28 +62,24 @@ var SieveLexer =
     if (c==null)
       throw " "+types+" "+data;
     
-    return this.getConstructor(types,data)();
-    
-/*    var result = {};
-    
-    result.elm = 
-    
-    // TODO: rename parse to serialize
-    result.data = result.elm.init(data);    
-    
-    return result;*/ 
+    return this.getConstructor(types,data)(++(this.maxId));    
   },
   
   createByName : function(name)
   {    
     try
     {
-      return this.names[name].onNew();
+      return this.names[name].onNew(++(this.maxId));
     }
     catch (e)
     {
-      alert(" "+e+" \r\n"+name+"\r\n"+this.names)
+      throw(" "+e+" \r\n"+name+"\r\n"+this.names)
     }
+  },
+  
+  getMaxId : function ()
+  {
+    return this.maxId();
   },
   
   probeByName : function(name,data)

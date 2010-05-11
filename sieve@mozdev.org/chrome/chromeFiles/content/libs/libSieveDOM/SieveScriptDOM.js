@@ -197,8 +197,8 @@ SieveAddressPart.prototype.toXUL
 
 function SieveDom()
 {
-  this.elements = new Array();
-  this.id = 0;
+  this.blkRequire = SieveLexer.createByName("block/import");
+  this.blkBody = SieveLexer.createByName("block/body");
 }
 
 SieveDom.prototype.setScript
@@ -228,26 +228,12 @@ SieveDom.prototype.setScript
   
   // requires are only valid if they are
   // before any other sieve command!
-  
-  // action, deadcode, import, body
- 
-  // The import section consists of require and deadcode statments...
-  while (SieveLexer.probeByClass(["import","deadcode"],data))
-  {
-    var elm = SieveLexer.createByClass(["import","deadcode"],data,this.id+"_"+this.elements.length);    
-    data = elm.init(data);
-    
-    this.elements.push(elm);    
-  }
-  
-  // After the import section only deadcode and actions are valid
-  while (SieveLexer.probeByClass(["action","conditions","deadcode"],data))
-  {
-    var elm = SieveLexer.createByClass(["action","conditions","deadcode"],data,this.id+"_"+this.elements.length);
-    data = elm.init(data);
-    
-    this.elements.push(elm);
-  }
+  if (SieveLexer.probeByName("block/import",data))
+    data = this.blkRequire.init(data);
+
+  // After the import section only deadcode and actions are valid    
+  if (SieveLexer.probeByName("block/body",data))
+    data = this.blkBody.init(data);      
   
   if (data.length != 0)
     alert("Parser error!"+data);
@@ -258,27 +244,26 @@ SieveDom.prototype.setScript
 SieveDom.prototype.toString
     = function ()
 {  
-  var str ="";
-  
-  for (var key in this.elements)
-    str += this.elements[key].toString();
-    
-  return str;
+  return ""+this.blkRequire.toString() + this.blkBody.toString();
 }
 
 SieveDom.prototype.toXUL
     = function ()
 {  
-  var elm = document.createElement("div");
+  var elm = document.createElement("vbox");
   
-  for (var i=0; i<this.elements.length;i++)
-    if (this.elements[i].toElement)
-      elm.appendChild(this.elements[i].toElement());
+  // Imports are not rendered...
+  //elm.appendChild(this.blkRequire);
+  
+  elm.appendChild(this.blkBody.toElement());
+
+  var that = this;
+  elm.addEventListener("click",function(e){ that.boubleMessage('blur');},false );
 
   return elm;  
 }
 
-SieveDom.prototype.sendMessage
+/*SieveDom.prototype.sendMessage
     = function (id,message)
 {
   // convert the id into an array...
@@ -293,16 +278,18 @@ SieveDom.prototype.sendMessage
     id.shift(); 
     this.elements[i].onMessage(id,data);
   } 
-}
+}*/
 
+// messages: 'blur', null;
+// messages: 'removeElement', id : element
+// messages: 'addElement', id : element
 SieveDom.prototype.boubleMessage
-    = function (message)
-{
-  // drop the first id
- // id.shift();
+    = function (type,message)
+{ 
+  this.blkRequire.onBouble(type,message);
+  this.blkBody.onBouble(type,message);
   
-  for (var i=0; i<this.elements.length; i++)
-  {    
-    this.elements[i].onBouble(message);
-  }  
+/*  for (var i=0; i<this.elements.length; i++) 
+    if (this.elements[i].onBouble)
+      this.elements[i].onBouble(type,message);*/
 }

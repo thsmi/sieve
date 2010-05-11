@@ -6,15 +6,14 @@ SieveCondition.isCondition
 
 
 function SieveCondition(id)
-{
-  //this.predicate
-  
-  //this.alternative // condition+statements -> test+block  
-  
+{  
   this.id = id;
   this.tests = [];
-  this.elms = [];
-  this.ws = "";
+  
+  this.block = SieveLexer.createByName("block/body");
+  
+  this.ws = [];
+  this.ws[0] = SieveLexer.createByName("deadcode");
 }
 
 SieveCondition.prototype.hasCondition
@@ -30,9 +29,7 @@ SieveCondition.prototype.init
   = function (data)
 {
   // ... remove the deadcode ...
-  var elm = SieveLexer.createByName("deadcode",data);
-  data = elm.init(data);  
-  this.elms.push(elm);
+  data = this.ws[0].init(data);  
     
   if (SieveLexer.probeByClass(["test"],data))
   {
@@ -54,13 +51,7 @@ SieveCondition.prototype.init
   
   data = data.slice(1);
   
-  while (SieveLexer.probeByClass(["action","conditions","deadcode"],data))
-  {
-    var elm = SieveLexer.createByClass(["action","conditions","deadcode"],data);
-    data = elm.init(data);
-    
-    this.elms.push(elm);
-  }
+  data = this.block.init(data);
 
   if (data.charAt(0) != "}")  
     throw "} expected...";
@@ -69,8 +60,8 @@ SieveCondition.prototype.init
 
   if (SieveLexer.probeByName("deadcode",data))
   {
-    this.ws = SieveLexer.createByName("deadcode");
-    data = this.ws.init(data);  
+    this.ws[1] = SieveLexer.createByName("deadcode");
+    data = this.ws[1].init(data);  
   } 
     
   return data;  
@@ -79,44 +70,32 @@ SieveCondition.prototype.init
 SieveCondition.prototype.toString
   = function ()
 {
-  var str = this.elms[0].toString(); 
+  var str = this.ws[0].toString(); 
   
   for (var i=0; i<this.tests.length;i++)
     str += this.tests[i].toString();  
   
-  str+="{";
+  str+="{"+this.block+"}";
   
-  for (var i=1; i<this.elms.length;i++)
-    str += this.elms[i].toString();
-
-  str+="}"+this.ws.toString();  
+  if (this.ws[1])
+    str+=this.ws[1].toString();  
  
   return str;  
 }
 
-SieveCondition.prototype.toXUL
+SieveCondition.prototype.toElement
   = function ()
 {  
-  var str = "<html:div class='SieveCon'>"
-  
+    
+  var elm = document.createElement("vbox");
+
   for (var i=1; i<this.tests.length;i++)
-    //str += this.tests[i].toXUL();
-    str += this.tests[i].toString();
-  
-  str += "</html:div>";
-  
-  str += "<html:div class='SieveCon2'>";
-  for (var i=1; i<this.elms.length;i++)
-    str += this.elms[i].toXUL();
+    elm.appendChild(document.createTextNode(this.tests[i].toString()));
+    
+  elm.appendChild(this.block.toElement());
 
-  str += "</html:div>";
-  return str; 
-    /*+ this.element[1].toXUL()
-    + " then"
-    + this.element[3].toXUL();*/ 
+  return elm;
 }
-
-
 
 SieveIf.isIf
   = function(data)
@@ -190,7 +169,6 @@ SieveIf.prototype.getID
 SieveIf.prototype.toString
     = function ()
 {  
- 
   var str = "if"+this.elements[0].toString();
    
   for (var i=1; i<this.elements.length;i++)
@@ -206,25 +184,36 @@ SieveIf.prototype.toString
   return str;     
 }
 
-SieveIf.prototype.toXUL
+SieveIf.prototype.toElement
     = function ()
 {  
-  var str = "<html:div class='SieveCondition'>";
- 
-  str +="<html:div class='SieveIf'>If"+this.elements[0].toXUL()+"</html:div>";
+  var elm = document.createElement("vbox");
+  
+  var box = document.createElement("vbox");
+  box.appendChild(document.createTextNode(" >> If <<"));
+  elm.appendChild(box);
+  
+  elm.appendChild(this.elements[0].toElement());
   
   for (var i=1; i<this.elements.length;i++)
   {
-    
     if (this.elements[i].hasCondition())
-      str +="<html:div class='SieveElseIf'> Else If "+this.elements[i].toXUL()+"</html:div>";
-    else 
-      str +="<html:div class='SieveElse'> Else"+this.elements[i].toXUL()+"</html:div>";
+    {
+      var box = document.createElement("vbox");
+      box.appendChild(document.createTextNode(" >> ELSE IF <<"));
+      elm.appendChild(box);
+    }
+    else
+    {
+      var box = document.createElement("vbox");
+      box.appendChild(document.createTextNode(" >> ELSE <<"));
+      elm.appendChild(box);
+    }    
+
+    elm.appendChild(this.elements[i].toElement());
   }
   
-  str +="</html:div>";
-  
-  return str;    
+  return elm;    
 }
 
 if (!SieveLexer)

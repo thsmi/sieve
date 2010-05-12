@@ -34,7 +34,7 @@ SieveSetFlag.prototype.init
   data = this.whiteSpace[1].init(data);
     
   // ... and finally remove the semicolon;
-  if (isSieveSemicolon(data) == false)
+  if (data.charAt(0) != ";")
     throw "Syntaxerror: Semicolon expected";
     
   return data.slice(1);
@@ -101,7 +101,7 @@ SieveAddFlag.prototype.init
   data = this.whiteSpace[1].init(data);
     
   // ... and finally remove the semicolon;
-  if (isSieveSemicolon(data) == false)
+  if (data.charAt(0) != ";")
     throw "Syntaxerror: Semicolon expected";
     
   return data.slice(1);
@@ -168,7 +168,7 @@ SieveRemoveFlag.prototype.init
   data = this.whiteSpace[1].init(data);
     
   // ... and finally remove the semicolon;
-  if (isSieveSemicolon(data) == false)
+  if (data.charAt(0) != ";")
     throw "Syntaxerror: Semicolon expected";
     
   return data.slice(1);

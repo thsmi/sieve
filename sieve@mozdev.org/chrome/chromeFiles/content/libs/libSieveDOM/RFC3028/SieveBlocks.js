@@ -107,6 +107,7 @@ SieveBlockBody.prototype.toElement
     = function ()
 {
   var elm = document.createElement("vbox");
+  elm.className = "SivElementBlock";
    
   for (var i=0; i<this.elms.length;i++)
     if (this.elms[i].toElement)
@@ -116,6 +117,7 @@ SieveBlockBody.prototype.toElement
     }
       
   elm.appendChild(createDropTarget());
+   
   return elm; 
 }
 
@@ -136,6 +138,7 @@ function createDropTarget()
       dropTarget.className ="SieveDropTarget";
       dropTarget.addEventListener("dragenter", 
         function (event) {
+          // TODO Create Real Drop indecator...
           if (event.dataTransfer.mozGetDataAt('sieve/action',0))
             event.target.style.backgroundColor="red"; 
         },

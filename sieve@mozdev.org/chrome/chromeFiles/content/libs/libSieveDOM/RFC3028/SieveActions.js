@@ -37,7 +37,7 @@ SieveDiscard.prototype.init
     data = this.whiteSpace.init(data);
   
   // ... and finally remove the semicolon;
-  if (isSieveSemicolon(data) == false)
+  if (data.charAt(0) != ";")
     throw "Syntaxerror: Semicolon expected";
     
   return data.slice(1);  
@@ -58,12 +58,14 @@ SieveDiscard.prototype.getID
   return this.id;
 }    
 
-SieveDiscard.prototype.toXUL
+SieveDiscard.prototype.toElement
     = function ()
 {
-  return SieveOptionsDiv(
-            this.id, "SieveDiscard",
-            "Discard incomming message silently")
+  var elm = createDragBox();
+  
+  elm.appendChild(document.createTextNode("Discard incomming message silently"));
+  
+  return elm;
 }
 
 //***************************************
@@ -108,7 +110,7 @@ SieveRedirect.prototype.init
   data = this.whiteSpace[1].init(data);
   
   // ... and finally remove the semicolon;
-  if (isSieveSemicolon(data) == false)
+  if (data.charAt(0) != ";")
     throw "Syntaxerror: Semicolon expected";
     
   return data.slice(1);    
@@ -159,8 +161,7 @@ SieveRedirect.prototype.onEdit
 SieveRedirect.prototype.toElement
     = function ()
 { 
-  var elm = document.createElement("vbox");
-  elm.className = "SivElement";
+  var elm = createDragBox();
   
   elm.appendChild(
         document.createTextNode("Redirect message to: "+this.address.getValue()));
@@ -223,7 +224,7 @@ SieveReject.prototype.init
   data = this.whiteSpace[1].init(data);
   
   // ... and finally remove the semicolon;
-  if (isSieveSemicolon(data) == false)
+  if (data.charAt(0) != ";")
     throw "Syntaxerror: Semicolon expected";
     
   return data.slice(1); 
@@ -274,9 +275,8 @@ SieveReject.prototype.onEdit
 SieveReject.prototype.toElement
     = function ()
 { 
-  var elm = document.createElement("vbox");
-  elm.className = "SivElement";
-  
+  var elm = createDragBox("vbox");
+ 
   elm.appendChild(
         document.createTextNode("Reject incomming messages and reply the following reason:"));
 
@@ -330,7 +330,7 @@ SieveStop.prototype.init
   data = this.whiteSpace.init(data);
 
   // ... and finally remove the semicolon;
-  if (isSieveSemicolon(data) == false)
+  if (data.charAt(0) != ";")
     throw "Syntaxerror: Semicolon expected";
     
   return data.slice(1); 
@@ -387,7 +387,7 @@ SieveKeep.prototype.init
   data = this.whiteSpace.init(data);
 
   // ... and finally remove the semicolon;
-  if (isSieveSemicolon(data) == false)
+  if (data.charAt(0) != ";")
     throw "Syntaxerror: Semicolon expected";
     
   return data.slice(1);
@@ -409,21 +409,10 @@ SieveKeep.prototype.toString
 SieveKeep.prototype.toElement
     = function ()
 {
-  var elm = document.createElement("vbox");
-  elm.className = "SivElement"
+  var elm = createDragBox();
   
   elm.appendChild(
         document.createTextNode("Keep a message's copy in the main inbox"));
-        
-  elm.addEventListener("draggesture", 
-    function (event) {
-      alert("blubber22"+event.target.parentNode)
-      var dt = event.dataTransfer;
-      dt.mozSetDataAt('sieve/action',event.target.parentNode,0);
-      
-      event.stopPropagation();
-    },
-    true);          
   
   return elm;
 }
@@ -548,7 +537,7 @@ SieveFileInto.prototype.init
   data = this.whiteSpace[1].init(data);
   
   // ... and finally remove the semicolon;
-  if (isSieveSemicolon(data) == false)
+  if (data.charAt(0) != ";")
     throw "Syntaxerror: Semicolon expected";
     
   return data.slice(1);
@@ -628,9 +617,15 @@ SieveFileInto.prototype.onBouble
 }
 
 // TODO add listeners for callsbacks...
+// ... convert to xbl
+
+// Add button to show selection source...
+
+// add logic to dragbox for switching between editing and not editing...
+
 function createDragBox(listener)
 {
-  // TODO use atrribute instead of className to distinguish...
+  // TODO use atrribute instead of className to distinguish elements...
   var elm = document.createElement("vbox");
   elm.className ="SivElement";
   

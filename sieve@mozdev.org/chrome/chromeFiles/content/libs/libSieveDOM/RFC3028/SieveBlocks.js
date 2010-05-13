@@ -13,7 +13,7 @@ function SieveBlockImport(id)
 SieveBlockImport.isBlockImport
     = function (data)
 {
-  return SieveLexer.probeByClass(["import","deadcode"],data);
+  return SieveLexer.probeByClass(["import","whitespace"],data);
 }
 
 // PUBLIC:
@@ -21,9 +21,9 @@ SieveBlockImport.prototype.init
     = function (data)    
 {
   // The import section consists of require and deadcode statments...
-  while (SieveLexer.probeByClass(["import","deadcode"],data))
+  while (SieveLexer.probeByClass(["import","whitespace"],data))
   {
-    var elm = SieveLexer.createByClass(["import","deadcode"],data);    
+    var elm = SieveLexer.createByClass(["import","whitespace"],data);    
     data = elm.init(data);
     
     this.elms.push(elm);    
@@ -66,16 +66,16 @@ function SieveBlockBody(id)
 SieveBlockBody.isBlockBody
     = function (data)
 {
-  return SieveLexer.probeByClass(["action","conditions","deadcode"],data);
+  return SieveLexer.probeByClass(["action","conditions","whitespace"],data);
 }
 
 // PUBLIC:
 SieveBlockBody.prototype.init
     = function (data)    
 {
-  while (SieveLexer.probeByClass(["action","conditions","deadcode"],data))
+  while (SieveLexer.probeByClass(["action","conditions","whitespace"],data))
   {
-    var elm = SieveLexer.createByClass(["action","conditions","deadcode"],data);    
+    var elm = SieveLexer.createByClass(["action","conditions","whitespace"],data);    
     data = elm.init(data);
     
     this.elms.push(elm);    
@@ -115,8 +115,9 @@ SieveBlockBody.prototype.toElement
 }
 
 SieveBlockBody.prototype.onInsertBefore
-    = function (child,elm)
+    = function (elm,child)
 {
+  // append to end;
   if (!child)
   {
     this.elms[this.elms.length] = elm; 
@@ -125,7 +126,7 @@ SieveBlockBody.prototype.onInsertBefore
  
   for (var i=0; i<this.elms.length; i++)
   {
-    if (this.elms[i].id == child)
+    if (this.elms[i].id != child)
       continue;
    
     this.elms.splice(i,0,elm);
@@ -141,6 +142,7 @@ SieveBlockBody.prototype.removeChild
 {
   var rv = [this.elms[idx]];
   this.elms.splice(idx,1);
+  
   return rv;
 }
 
@@ -148,7 +150,8 @@ SieveBlockBody.prototype.onBouble
     = function (type,message)
 {  
   if ((type == "addElement") && (message.parent == this.id))
-    return this.onInsertBefore(message.child,message.elm)
+    return this.onInsertBefore(message.elm,message.child)
+  
   
   if (type == "removeElement")
     for (var i=0; i<this.elms.length; i++)
@@ -164,82 +167,7 @@ SieveBlockBody.prototype.onBouble
   return rv;
 }
 
-// //TODO move to ovn classfile...
-//  with flavour -> sieve/action, sieve/test etc...
-function createDropTarget(parentId,id)
-{
-      var dropTarget = document.createElement("vbox");
-      dropTarget.className ="SieveDropTarget";
-      dropTarget.addEventListener("dragenter", 
-        function (event) {
-          // TODO Create Real Drop indecator...
-          if (event.dataTransfer.mozGetDataAt('sieve/action',0))
-            event.target.style.backgroundColor="red"; 
-        },
-        true);
-        
-      dropTarget.addEventListener("dragexit",
-        function (event) {
-          if (event.dataTransfer.mozGetDataAt('sieve/action',0))
-            event.target.style.backgroundColor= null;
-        },
-        true);
-        
-      dropTarget.addEventListener("dragover",
-        function (event) { 
-          if (! event.dataTransfer.mozGetDataAt('sieve/action',0))
-            return
 
-          event.stopPropagation(); 
-          event.preventDefault();
-        },
-        true);
-        
-      dropTarget.addEventListener("dragdrop",
-        function (event) {
-          if (!event.dataTransfer.mozGetDataAt('sieve/action',0))
-            return; 
-
-          event.stopPropagation();
-          
-          event.target.style.backgroundColor= null;
-          
-          // use an type attribute instead of className...
-          var node = event.target;
-          while (node && (node.className != "SieveDropTarget"))
-            node = node.parentNode;
-          
-          // user drops element the droptarget which contains to the draged element
-          if (node == event.dataTransfer.mozGetDataAt('sieve/action',1))
-            return;
-
-          event.dataTransfer.mozGetDataAt('sieve/action',1).parentNode
-              .removeChild(event.dataTransfer.mozGetDataAt('sieve/action',1));
-             
-          node.parentNode.insertBefore(
-            createDropTarget(parentId,id)
-            //event.dataTransfer.mozGetDataAt('sieve/action',1)
-            ,node);
-          // TODO recreate drop traeget as it caches the parent id
-          node.parentNode.insertBefore(
-            event.dataTransfer.mozGetDataAt('sieve/action',0)
-            ,node);            
-           
-           // TODO ID should be an object which contains a namespace...
-           // ... inorder to retrieve a SieveDom... 
-           var elm = dom.removeElement(
-             event.dataTransfer.mozGetDataAt('sieve/action',2));
-             
-           if (!elm)
-             throw "No Element found";
-           // -1 means append to end...
-           dom.addElement(parentId,elm,id);
-           
-        },
-        true);
-        
-      return dropTarget;
-}
 
 if (!SieveLexer)
   throw "Could not register Block Elements";

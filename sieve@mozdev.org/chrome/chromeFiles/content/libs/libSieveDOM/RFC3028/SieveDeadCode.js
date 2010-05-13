@@ -1,30 +1,72 @@
+// TODO rename deadcode to whitespace
+
+// 1. Deadcode should be renamed to whitespace
+//     it handles HTAB, SP, comment and CRLF
+
+// 2. Whitespace should be renamed to deadcode
+//     it handles HTABs and SP
+
+// 3. WhiteSpaceLine
+//      WhiteSpaceLine should handle HTAB, SP comments and CRLF
+//      it should stop after parsing the first CRLF...
+
+
+SieveLineBreak.isLineBreak
+  = function (data)
+{
+  if (data.charAt(0) != "\r")
+    return false;
+    
+  if (data.charAt(1) != "\n")
+    return false;
+  
+  return true;
+}
+
+function SieveLineBreak(id)
+{
+  this.id = id;
+}
+
+SieveLineBreak.prototype.init
+    = function (data)
+{
+  if (data.charAt(0) != "\r")
+    throw "Linebreak expected \\r";
+    
+  if (data.charAt(1) != "\n")
+    throw "Linebreak expected \\n";
+      
+  return data.slice(2);  
+}
+
+SieveLineBreak.prototype.toString
+    = function ()
+{
+  return "\r\n";
+}
+
 /******************************************************************************/
-SieveWhiteSpace.isWhiteSpace
+
+
+SieveDeadCode.isDeadCode
   = function (data, index)
 {
-  if (index == null)
-    index = 0;
-  var ch = data.charAt(index);
+  var ch = data.charAt(0);
   
-  if (ch == " ")
-    return true;
-  if (ch == "\t")
-    return true;
-  if (ch == "\r")
-    return true;
-  if (ch == "\n")
-    return true;
+  if ((ch == " ") || (ch == "\t")) 
+    return true;    
     
   return false;
 }
 
-function SieveWhiteSpace(id)
+function SieveDeadCode(id)
 {
   this.id = id;
   this.whiteSpace = "";
 }
 
-SieveWhiteSpace.prototype.init
+SieveDeadCode.prototype.init
     = function (data)
 {
   var i;
@@ -32,16 +74,14 @@ SieveWhiteSpace.prototype.init
   for (i=0; i<data.length; i++)
   {
     var ch = data.charAt(i);
-    if (ch == " ")
-      continue;
+    
     if (ch == "\t")
       continue;
-    if (ch == "\r")
+      
+    if (ch == " ")
       continue;
-    if (ch == "\n")
-      continue;
-    
-    break;
+      
+    break;   
   }
 
   this.whiteSpace = data.slice(0,i);
@@ -49,13 +89,7 @@ SieveWhiteSpace.prototype.init
   return data.slice(i);  
 }
 
-SieveWhiteSpace.prototype.getID
-    = function ()
-{
-  return this.id;
-}
-
-SieveWhiteSpace.prototype.toString
+SieveDeadCode.prototype.toString
     = function ()
 {
   return this.whiteSpace;
@@ -168,41 +202,47 @@ SieveHashComment.prototype.toXUL
 
 
 
-SieveDeadCode.isDeadCode
+SieveWhiteSpace.isWhiteSpace
     = function (data, index)
 {
-  return SieveLexer.probeByClass(["deadcode/"],data); 
+  return SieveLexer.probeByClass(["whitespace/"],data); 
 }
 
-function SieveDeadCode(id) 
+function SieveWhiteSpace(id) 
 {
   this.id = id;
   this.elements = [];
 }
 
-SieveDeadCode.prototype.init
-    = function (data)
+SieveWhiteSpace.prototype.init
+    = function (data,crlf)
 {
+
+  //TODO deadcode should end at an CR/LF
+  
+  var isCrlf = false;
   // After the import section only deadcode and actions are valid
-  while (SieveLexer.probeByClass(["deadcode/"],data))
+  while (SieveLexer.probeByClass(["whitespace/"],data))
   {
-    var elm = SieveLexer.createByClass(["deadcode/"],data,this.id+"_"+this.elements.length);
+    // Check for CRLF...
+    if (crlf && SieveLexer.probeByName("whitespace/linebreak",data))
+      isCrlf = true;
+      
+    var elm = SieveLexer.createByClass(["whitespace/"],data);
       
     data = elm.init(data);
     
     this.elements.push(elm);
+    
+    // break if we found a CRLF
+    if (isCrlf)
+      break;
   }
 
   return data
 }
 
-SieveDeadCode.prototype.getID
-    = function ()
-{
-  return this.id;
-}
-
-SieveDeadCode.prototype.toString
+SieveWhiteSpace.prototype.toString
     = function ()
 {
   var result = "";
@@ -216,20 +256,24 @@ if (!SieveLexer)
   throw "Could not register DeadCode Elements";
 
 with (SieveLexer)
-{   
-  register("deadcode/","deadcode/whitespace",
-      function(token) {return SieveWhiteSpace.isWhiteSpace(token)}, 
-      function(id) {return new SieveWhiteSpace(id)});
+{
+  register("whitespace/","whitespace/linebreak",
+      function(token) {return SieveLineBreak.isLineBreak(token)}, 
+      function(id) {return new SieveLineBreak(id)});
       
-  register("deadcode/","deadcode/bracketcomment",
+  register("whitespace/","whitespace/deadcode",
+      function(token) {return SieveDeadCode.isDeadCode(token)}, 
+      function(id) {return new SieveDeadCode(id)});
+      
+  register("whitespace/","whitespace/bracketcomment",
       function(token) {return SieveBracketComment.isBracketComment(token)}, 
       function(id) {return new SieveBracketComment(id)});  
       
-  register("deadcode/","deadcode/hashcomment",
+  register("whitespace/","whitespace/hashcomment",
       function(token) {return SieveHashComment.isHashComment(token)},
       function(id) {return new SieveHashComment(id)});
 
-  register("deadcode","deadcode",
-      function(token) {return SieveDeadCode.isDeadCode(token)},
-      function(id) {return new SieveDeadCode(id)});         
+  register("whitespace","whitespace",
+      function(token) {return SieveWhiteSpace.isWhiteSpace(token)},
+      function(id) {return new SieveWhiteSpace(id)});         
 }

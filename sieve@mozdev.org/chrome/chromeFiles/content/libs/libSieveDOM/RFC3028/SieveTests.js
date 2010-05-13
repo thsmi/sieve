@@ -12,11 +12,11 @@ SieveAnyOf.isAnyOf
 function SieveAnyOf(id)
 {
   this.id = id;
-  this.whiteSpace
-    = new Array(new SieveDeadCode(this.id+"_0"),
-                new SieveDeadCode(this.id+"_2"));
+  this.whiteSpace = [];
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace");
   
-  this.testList = new SieveTestList(this.id+"_1");
+  this.testList = SieveLexer.createByName("test/testlist");
 }
 
 SieveAnyOf.prototype.init
@@ -36,12 +36,6 @@ SieveAnyOf.prototype.init
   return data;
     
 }    
-
-SieveAnyOf.prototype.getID
-    = function ()
-{
-  return this.id;
-}
 
 SieveAnyOf.prototype.toString
     = function ()
@@ -85,8 +79,8 @@ function SieveAllOf(id)
   this.id = id;
   
   this.whiteSpace = [];
-  this.whiteSpace[0] = SieveLexer.createByName("deadcode");
-  this.whiteSpace[1] = SieveLexer.createByName("deadcode");  
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace");  
   
   this.testList = SieveLexer.createByName("test/testlist");
 }
@@ -139,8 +133,8 @@ function SieveNot()
 {
   // first line with deadcode
   this.whiteSpace = [];
-  this.whiteSpace[0] = SieveLexer.createByName("deadcode");
-  this.whiteSpace[1] = SieveLexer.createByName("deadcode");
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace");
   
   this.test = null;
 }
@@ -204,12 +198,12 @@ function SieveEnvelopeTest()
   this.options = new Array(null,null,null);
   
   this.whiteSpace = [];
-  this.whiteSpace[0] = SieveLexer.createByName("deadcode");
-  this.whiteSpace[1] = SieveLexer.createByName("deadcode");
-  this.whiteSpace[2] = SieveLexer.createByName("deadcode");
-  this.whiteSpace[3] = SieveLexer.createByName("deadcode");
-  this.whiteSpace[4] = SieveLexer.createByName("deadcode");
-  this.whiteSpace[5] = SieveLexer.createByName("deadcode");
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[2] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[3] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[4] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[5] = SieveLexer.createByName("whitespace");
   
   this.envelopeList = SieveLexer.createByName("stringlist");
   this.keyList = SieveLexer.createByName("stringlist");
@@ -292,12 +286,12 @@ function SieveAddress(id)
   this.options = new Array(null,null,null);
   
   this.whiteSpace = []
-  this.whiteSpace[0] = SieveLexer.createByName("deadcode");
-  this.whiteSpace[1] = SieveLexer.createByName("deadcode");
-  this.whiteSpace[2] = SieveLexer.createByName("deadcode");
-  this.whiteSpace[3] = SieveLexer.createByName("deadcode");
-  this.whiteSpace[4] = SieveLexer.createByName("deadcode");
-  this.whiteSpace[5] = SieveLexer.createByName("deadcode");
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[2] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[3] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[4] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[5] = SieveLexer.createByName("whitespace");
                 
   this.headerList = SieveLexer.createByName("stringlist");
   this.keyList = SieveLexer.createByName("stringlist");
@@ -382,7 +376,7 @@ function SieveBoolean(id)
 {
   // first line with deadcode
   this.id = id;
-  this.whiteSpace = SieveLexer.createByName("deadcode");  
+  this.whiteSpace = SieveLexer.createByName("whitespace");  
   
   this.value = false;
 }
@@ -449,9 +443,9 @@ function SieveSizeTest(id)
   this.id = id;
   
   this.whiteSpace = [];
-  this.whiteSpace[0] = SieveLexer.createByName("deadcode");
-  this.whiteSpace[1] = SieveLexer.createByName("deadcode");  
-  this.whiteSpace[2] = SieveLexer.createByName("deadcode");  
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace");  
+  this.whiteSpace[2] = SieveLexer.createByName("whitespace");  
   
   this.over = false;
   this.size = new SieveNumber(this.id+"_2");
@@ -535,8 +529,8 @@ function SieveExists(id)
   this.id = id;
   
   this.whiteSpace = [];
-  this.whiteSpace[0] = SieveLexer.createByName("deadcode");
-  this.whiteSpace[1] = SieveLexer.createByName("deadcode");
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace");
   
   this.headerNames = SieveLexer.createByName("stringlist");
 }
@@ -596,12 +590,14 @@ SieveHeader.isHeader
 function SieveHeader(id) 
 {
   this.id = id;
-  this.whiteSpace 
-    = new Array(new SieveDeadCode(this.id+"_0"),
-                new SieveDeadCode(this.id+"_1"),
-                new SieveDeadCode(this.id+"_2"),
-                new SieveDeadCode(this.id+"_3"),                
-                new SieveDeadCode(this.id+"_4"));
+  
+  this.whiteSpace = [];
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace");  
+  this.whiteSpace[2] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[3] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[4] = SieveLexer.createByName("whitespace");
+  
   this.options = new Array(null,null);
   this.headerNames = new SieveStringList(this.id+"_5");
   this.keyList = new SieveStringList(this.id+"_6");
@@ -743,9 +739,9 @@ SieveTestList.prototype.init
             
     var element = ["","",""];
     
-    if (SieveLexer.probeByName("deadcode",data))
+    if (SieveLexer.probeByName("whitespace",data))
     {
-      element[0] = SieveLexer.createByName("deadcode");
+      element[0] = SieveLexer.createByName("whitespace");
       data = element[0].init(data);
     }
     
@@ -756,9 +752,9 @@ SieveTestList.prototype.init
     data = element[1].init(data);
     
     
-    if (SieveLexer.probeByName("deadcode",data))
+    if (SieveLexer.probeByName("whitespace",data))
     {
-      element[2] = SieveLexer.createByName("deadcode");
+      element[2] = SieveLexer.createByName("whitespace");
       data = element[2].init(data);
     }
         

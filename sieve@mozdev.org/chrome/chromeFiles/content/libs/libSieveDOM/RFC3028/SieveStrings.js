@@ -68,9 +68,9 @@ SieveMultiLineString.prototype.init
 
   this.whiteSpace = data.slice(0,i);
     
-  if (SieveLexer.probeByName("deadcode/hashcomment",data))
+  if (SieveLexer.probeByName("whitespace/hashcomment",data))
   {
-    this.hashComment = SieveLexer.createByName("deadcode/hashcomment");    
+    this.hashComment = SieveLexer.createByName("whitespace/hashcomment");    
     data = this.hashComment.init(data);
   }
   
@@ -256,22 +256,22 @@ SieveStringList.prototype.init
         
     var element = new Array("","","");
 
-    if (SieveLexer.probeByName("deadcode",data))
+    if (SieveLexer.probeByName("whitespace",data))
     {
-      element[0] = SieveLexer.createByName("deadcode",data);      
+      element[0] = SieveLexer.createByName("whitespace",data);      
       data = element[0].init(data);
     }
       
-    if (SieveLexer.probeByName("string/quoted",data) == false)
-      throw "Quoted String expected but found:";
+    if (SieveLexer.probeByName("string/quoted",data) == false)  
+      throw "Quoted String expected but found: \n"+data.substr(0,50)+"...";
     
     element[1] = SieveLexer.createByName("string/quoted");
     data = element[1].init(data);
          
       
-    if (SieveLexer.probeByName("deadcode",data))
+    if (SieveLexer.probeByName("whitespace",data))
     {
-      element[2] = SieveLexer.createByName("deadcode",data); 
+      element[2] = SieveLexer.createByName("whitespace",data); 
       data = element[2].init(data);
     }
     

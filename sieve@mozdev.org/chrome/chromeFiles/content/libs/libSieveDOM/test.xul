@@ -44,15 +44,17 @@
 
 .SivElement:hover {
 background-image: -moz-linear-gradient(rgba(255,255,255,.5), rgba(50%,50%,50%,.2), rgba(0,0,0,.15));
-  // selected...
-  //background-image: -moz-linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.1));
+  /* selected...
+  background-image: -moz-linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.1));*/
 }
 
 .SieveDropTarget {
-  height: 5px;
+  /*height: 5px;*/
 }
 
 </html:style>
+
+<script src="./xbl/SieveXBLHelper.js" type="text/javascript" />
 
 <script src="SieveLexer.js" type="text/javascript" />
 

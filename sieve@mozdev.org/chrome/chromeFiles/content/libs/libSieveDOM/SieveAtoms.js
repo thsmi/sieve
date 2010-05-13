@@ -92,3 +92,49 @@ SieveNumber.prototype.toXUL
 }
 
 /******************************************************************************/
+
+
+function SieveSemicolon(id) 
+{
+  this.id = id;
+  
+  this.whiteSpace = [];
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace");
+}
+
+SieveSemicolon.prototype.init
+    = function (data)
+{
+  // Syntax :
+  // [whitespace] <";"> [whitespace]
+  if (SieveLexer.probeByName("whitespace",data))
+    data = this.whiteSpace[0].init(data,true);
+
+  if (data.charAt(0) != ";")
+    throw "Syntaxerror: Semicolon expected";  
+  data = data.slice(1);
+
+  if (SieveLexer.probeByName("whitespace",data))
+    data = this.whiteSpace[1].init(data,true);  
+      
+  return data;
+}
+
+SieveSemicolon.prototype.toString
+    = function ()
+{
+  return this.whiteSpace[0].toString()+ ";" + this.whiteSpace[1].toString();
+}
+
+/******************************************************************************/
+
+if (!SieveLexer)
+  throw "Could not register Atoms";
+
+with (SieveLexer)
+{
+  register("atom/","atom/semicolon",
+      function(token) {return true}, 
+      function(id) {return new SieveSemicolon(id)});      
+}

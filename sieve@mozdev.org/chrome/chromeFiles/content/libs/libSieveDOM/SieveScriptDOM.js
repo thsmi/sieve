@@ -23,8 +23,8 @@ function isSieveComparator(data,index)
 function SieveComparator(id)
 {
   this.id = id;
-  this.whiteSpace = new SieveDeadCode(this.id+"_0");
-  this.comparator = new SieveQuotedString(this.id+"_1");
+  this.whiteSpace = SieveLexer.createByName("whitespace");
+  this.comparator = new SieveQuotedString();
 }
 
 SieveComparator.prototype.init
@@ -258,7 +258,7 @@ SieveDom.prototype.toXUL
   elm.appendChild(this.blkBody.toElement());
 
   var that = this;
-  elm.addEventListener("click",function(e){ that.boubleMessage('blur');},false );
+  //elm.addEventListener("click",function(e){ that.boubleMessage('blur');},false );
 
   return elm;  
 }

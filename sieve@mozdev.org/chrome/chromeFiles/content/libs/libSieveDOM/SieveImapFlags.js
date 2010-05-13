@@ -15,8 +15,8 @@ function SieveSetFlag(id)
   this.id = id;
   
   this.whiteSpace = [];
-  this.whiteSpace[0] = SieveLexer.createByName("deadcode");
-  this.whiteSpace[1] = SieveLexer.createByName("deadcode");
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace");
                 
   this.flaglist = SieveLexer.createByName("stringlist",this.id+"_1");
 }
@@ -78,9 +78,10 @@ SieveAddFlag.isAddFlag
 function SieveAddFlag(id) 
 {
   this.id = id;
-  this.whiteSpace 
-    = new Array(new SieveDeadCode(this.id+"_0"),
-                new SieveDeadCode(this.id+"_2"));  
+  
+  this.whiteSpace = [];
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace");  
                 
   this.flaglist = new SieveStringList(this.id+"_1");
 }
@@ -145,9 +146,10 @@ SieveRemoveFlag.isRemoveFlag
 function SieveRemoveFlag(id) 
 {
   this.id = id;
-  this.whiteSpace 
-    = new Array(new SieveDeadCode(this.id+"_0"),
-                new SieveDeadCode(this.id+"_2"));  
+  
+  this.whiteSpace = [];
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace");  
                 
   this.flaglist = new SieveStringList(this.id+"_1");
 }
@@ -213,18 +215,19 @@ SieveHasFlag.isHasFlag
  return false;
 }
  
-
-    
 function SieveHasFlag(id)
 {
   this.id = id;
-//  this.data  = new Object();
+
+  this.whiteSpace = [];
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[2] = SieveLexer.createByName("whitespace");    
+
+
   this.whiteSpace     = new Array();
-  this.whiteSpace[0]  = new SieveDeadCode(this.id+"_0");
   this.matchType      = null;
-  this.whiteSpace[1]  = new SieveDeadCode(this.id+"_2");
   this.flagList       = new SieveStringList(this.id+"_3");
-  this.whiteSpace[2]  = new SieveDeadCode(this.id+"_4");
 }
 
 SieveHasFlag.prototype.init

@@ -1,9 +1,3 @@
-SieveCondition.isCondition
-  = function(data)
-{ 
-  return true;
-}
-
 
 function SieveCondition(id)
 {  
@@ -13,7 +7,7 @@ function SieveCondition(id)
   this.block = SieveLexer.createByName("block/body");
   
   this.ws = [];
-  this.ws[0] = SieveLexer.createByName("deadcode");
+  this.ws[0] = SieveLexer.createByName("whitespace");
 }
 
 SieveCondition.prototype.hasCondition
@@ -38,9 +32,9 @@ SieveCondition.prototype.init
     this.tests.push(elm);
   
     // ... eat again the deadcode ...
-    if (SieveLexer.probeByName("deadcode",data))
+    if (SieveLexer.probeByName("whitespace",data))
     {
-      var elm = SieveLexer.createByName("deadcode");
+      var elm = SieveLexer.createByName("whitespace");
       data = elm.init(data);  
       this.tests.push(elm);
     }
@@ -58,9 +52,9 @@ SieveCondition.prototype.init
 
   data = data.slice(1);
 
-  if (SieveLexer.probeByName("deadcode",data))
+  if (SieveLexer.probeByName("whitespace",data))
   {
-    this.ws[1] = SieveLexer.createByName("deadcode");
+    this.ws[1] = SieveLexer.createByName("whitespace");
     data = this.ws[1].init(data);  
   } 
     
@@ -104,9 +98,9 @@ SieveCondition.prototype.onBouble
   
   rv = rv.concat(this.block.onBouble(type,message));
   
-  for (var i=0; i<this.tests.length; i++) 
+  /*for (var i=0; i<this.tests.length; i++) 
     if (this.tests[i].onBouble)
-      rv = rv.concat(this.tests[i].onBouble(type,message));
+      rv = rv.concat(this.tests[i].onBouble(type,message));*/
       
   return rv;
 }
@@ -197,7 +191,8 @@ SieveIf.prototype.toString
 SieveIf.prototype.toElement
     = function ()
 {  
-  var elm = document.createElement("vbox");
+  var elm = createDragBox(this.id);  
+  //var elm = document.createElement("vbox");
   
   var box = document.createElement("vbox");
   box.appendChild(document.createTextNode(" >> If <<"));
@@ -244,7 +239,7 @@ if (!SieveLexer)
 with (SieveLexer)
 {  
   register("conditions/","conditions/condition",
-      function(token) {return SieveCondition.isCondition(token)}, 
+      function(token) {return true }, 
       function(id) {return new SieveCondition(id)});
       
   register("conditions","conditions/if",

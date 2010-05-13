@@ -16,7 +16,7 @@ function SieveDiscard(id)
 }
 
 SieveDiscard.isDiscard
-  = function(token)
+    = function(token)
 { 
   if (token.indexOf("discard") == 0)
     return true;
@@ -52,18 +52,14 @@ SieveDiscard.prototype.toString
     + ";";  
 }
 
-SieveDiscard.prototype.getID
-    = function ()
-{
-  return this.id;
-}    
-
 SieveDiscard.prototype.toElement
     = function ()
 {
-  var elm = createDragBox();
+  var elm = createDragBox(this.id);
   
-  elm.appendChild(document.createTextNode("Discard incomming message silently"));
+  var desc = document.createElement("description");
+  desc.setAttribute("value","Discard incomming message silently");
+  elm.appendChild(desc);
   
   return elm;
 }
@@ -116,12 +112,6 @@ SieveRedirect.prototype.init
   return data.slice(1);    
 }
 
-SieveRedirect.prototype.getID
-    = function ()
-{
-  return this.id;
-}
-
 SieveRedirect.prototype.toString
     = function ()
 {
@@ -143,8 +133,12 @@ SieveRedirect.prototype.onEdit
   elm.appendChild(
         document.createTextNode("Redirect messages to the following email address: "));
         
-  var input = document.createElement("textbox");  
-  input.setAttribute( "value", ""+this.address.getValue());
+  // todo change to: <textbox type="autocomplete" autocompletesearch="mydomain addrbook"/>    
+                              
+  var input = document.createElement("textbox"); 
+  input.setAttribute("type","autocomplete");
+  input.setAttribute("autocompletesearch","mydomain addrbook");
+  input.setAttribute("value", ""+this.address.getValue());
   input.addEventListener("click",function(e){alert('input click');/*e.stopPropagation()*/;}, true);
   
   elm.appendChild(input);
@@ -161,10 +155,12 @@ SieveRedirect.prototype.onEdit
 SieveRedirect.prototype.toElement
     = function ()
 { 
-  var elm = createDragBox();
-  
-  elm.appendChild(
-        document.createTextNode("Redirect message to: "+this.address.getValue()));
+  var elm = createDragBox(this.id);
+
+  var desc = document.createElement("description");
+  desc.setAttribute("value",
+    "Redirect message to: "+this.address.getValue());
+  elm.appendChild(desc);
   
   var that = this;
   elm.addEventListener("click",function(e){ that.onEdit(e);},true);
@@ -183,6 +179,8 @@ SieveRedirect.prototype.onBouble
     this.elm.parentNode.replaceChild(this.toElement(),this.elm);
     this.elm = null;
   }
+  
+  return [];
 }  
 /******************************************************************************/
 
@@ -230,12 +228,6 @@ SieveReject.prototype.init
   return data.slice(1); 
 }
 
-SieveReject.prototype.getID
-    = function ()
-{
-  return this.id;
-}
-
 SieveReject.prototype.toString
     = function ()
 { 
@@ -255,7 +247,7 @@ SieveReject.prototype.onEdit
   elm.className = "SivFocusedElement";
   
   elm.appendChild(
-        document.createTextNode("Reject incomming messages and reply the following reason: "));
+        document.createTextNode("Reject incomming messages and reply the following reason:"));
         
   var input = document.createElement("textbox");  
   input.setAttribute( "value", ""+this.reason.getValue());
@@ -275,13 +267,15 @@ SieveReject.prototype.onEdit
 SieveReject.prototype.toElement
     = function ()
 { 
-  var elm = createDragBox("vbox");
+  var elm = createDragBox(this.id);
  
-  elm.appendChild(
-        document.createTextNode("Reject incomming messages and reply the following reason:"));
+  var desc = document.createElement("description");
+  desc.setAttribute("value","Reject incomming messages and reply the following reason:");
+  elm.appendChild(desc);
 
-  elm.appendChild(
-        document.createTextNode(""+this.reason.getValue()));
+  desc = document.createElement("description");
+  desc.setAttribute("value",this.reason.getValue());
+  elm.appendChild(desc);
   
   var that = this;
   elm.addEventListener("click",function(e){ that.onEdit(e);},true );
@@ -302,6 +296,8 @@ SieveReject.prototype.onBouble
     
     // return false on error and true if blur is ok...
   }
+  
+  return [];
 } 
 
 
@@ -336,12 +332,6 @@ SieveStop.prototype.init
   return data.slice(1); 
 }    
 
-SieveStop.prototype.getID
-    = function ()
-{
-  return this.id;
-}
-
 SieveStop.prototype.toString
     = function ()
 {
@@ -352,10 +342,12 @@ SieveStop.prototype.toString
 SieveStop.prototype.toElement
     = function ()
 {
-  var elm = createDragBox();
+  var elm = createDragBox(this.id);
   
-  elm.appendChild(
-        document.createTextNode("End Script (Stop processing)")); 
+  var desc = document.createElement("description");
+  desc.setAttribute("value",
+    "End Script (Stop processing)");
+  elm.appendChild(desc); 
   
   return elm;
 }
@@ -393,12 +385,6 @@ SieveKeep.prototype.init
   return data.slice(1);
 }    
 
-SieveKeep.prototype.getID
-    = function ()
-{
-  return this.id;
-}
-
 SieveKeep.prototype.toString
     = function ()
 {
@@ -409,19 +395,15 @@ SieveKeep.prototype.toString
 SieveKeep.prototype.toElement
     = function ()
 {
-  var elm = createDragBox();
-  
-  elm.appendChild(
-        document.createTextNode("Keep a message's copy in the main inbox"));
+  var elm = createDragBox(this.id);
+
+  var desc = document.createElement("description");
+  desc.setAttribute("value",
+    "Keep a message's copy in the main inbox");
+  elm.appendChild(desc);
   
   return elm;
 }
-
-SieveKeep.prototype.onBouble
-    = function (message)
-{
-  alert(this.toString());
-} 
 
 /******************************************************************************/
 
@@ -478,12 +460,6 @@ SieveRequire.prototype.init
   return data.slice(1);  
 }
 
-SieveRequire.prototype.getID
-    = function ()
-{
-  return this.id;
-}
-
 SieveRequire.prototype.toString
     = function ()
 {
@@ -497,14 +473,6 @@ SieveRequire.prototype.toString
 /******************************************************************************/
 
 
-SieveFileInto.isFileInto
-  = function(token)
-{ 
-  if (token.indexOf("fileinto") == 0)
-    return true;
-
-  return false;
-}
 
 function SieveFileInto(id) 
 {
@@ -517,6 +485,15 @@ function SieveFileInto(id)
   this.string = SieveLexer.createByName("string");
   
   this.elm = null;
+}
+
+SieveFileInto.isFileInto
+  = function(token)
+{ 
+  if (token.indexOf("fileinto") == 0)
+    return true;
+
+  return false;
 }
 
 SieveFileInto.prototype.init
@@ -541,12 +518,6 @@ SieveFileInto.prototype.init
     throw "Syntaxerror: Semicolon expected";
     
   return data.slice(1);
-}
-
-SieveFileInto.prototype.getID
-    = function ()
-{
-  return this.id;
 }
 
 SieveFileInto.prototype.toString
@@ -592,10 +563,12 @@ SieveFileInto.prototype.onEdit
 SieveFileInto.prototype.toElement
     = function ()
 {
-  var elm = createDragBox();
+  var elm = createDragBox(this.id);
   
-  elm.appendChild(
-        document.createTextNode("Copy the incomming message into: "+this.string.getValue()))
+  var desc = document.createElement("description");
+  desc.setAttribute("value",
+    "Copy the incomming message into: "+this.string.getValue());
+  elm.appendChild(desc);
   
   var that = this;
   elm.addEventListener("click",function(e){ that.onEdit(e);}, true );
@@ -614,6 +587,8 @@ SieveFileInto.prototype.onBouble
     this.elm.parentNode.replaceChild(this.toElement(),this.elm);
     this.elm = null;
   }
+  
+  return [];
 }
 
 // TODO add listeners for callsbacks...
@@ -623,7 +598,7 @@ SieveFileInto.prototype.onBouble
 
 // add logic to dragbox for switching between editing and not editing...
 
-function createDragBox(listener)
+function createDragBox(id,listener)
 {
   // TODO use atrribute instead of className to distinguish elements...
   var elm = document.createElement("vbox");
@@ -641,6 +616,7 @@ function createDragBox(listener)
       // dragbox and action are an atomic pair...
       dt.mozSetDataAt('sieve/action',node,0);
       dt.mozSetDataAt('sieve/action',node.previousSibling,1);
+      dt.mozSetDataAt('sieve/action',id,2);
       
       event.stopPropagation();
     },

@@ -97,6 +97,22 @@ SieveCondition.prototype.toElement
   return elm;
 }
 
+SieveCondition.prototype.onBouble
+    = function (type,message)
+{
+  var rv = [];
+  
+  rv = rv.concat(this.block.onBouble(type,message));
+  
+  for (var i=0; i<this.tests.length; i++) 
+    if (this.tests[i].onBouble)
+      rv = rv.concat(this.tests[i].onBouble(type,message));
+      
+  return rv;
+}
+
+
+
 SieveIf.isIf
   = function(data)
 {
@@ -160,12 +176,6 @@ SieveIf.prototype.init
   return data;
 }
 
-SieveIf.prototype.getID
-    = function ()
-{
-  return this.id;
-}
-
 SieveIf.prototype.toString
     = function ()
 {  
@@ -214,6 +224,18 @@ SieveIf.prototype.toElement
   }
   
   return elm;    
+}
+
+SieveIf.prototype.onBouble
+    = function (type,message)
+{
+  var rv = [];
+  
+  for (var i=0; i<this.elements.length; i++) 
+    if (this.elements[i].onBouble)
+      rv = rv.concat(this.elements[i].onBouble(type,message));
+      
+  return rv;
 }
 
 if (!SieveLexer)

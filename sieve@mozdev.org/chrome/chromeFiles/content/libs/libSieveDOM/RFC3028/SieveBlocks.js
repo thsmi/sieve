@@ -1,16 +1,5 @@
-// TODO Implement Blocks
-
-// Block with require no actions -> imports
-
-// Block with actions no require -> content
 
 // Blocks should handle Messages addChild / RemoveChild boubling...
-
-// Block implement Drop Targets... -> Blocks position child elements
-
-// Blocks do not implement ondragstart/ondraggesture
-
-// blocks do not support  { } ! -> { can only be used after an condition (if/elsif/else)
 
  
 // CONSTRUCTOR:
@@ -57,9 +46,12 @@ SieveBlockImport.prototype.toString
 SieveBlockImport.prototype.onBouble
     = function (type,message)
 {   
+  var rv = []
   for (var i=0; i<this.elms.length; i++) 
     if (this.elms[i].onBouble)
-      this.elms[i].onBouble(type,message);
+      rv=rv.concat(this.elms[i].onBouble(type,message));
+      
+  return rv;
 }
 
 /******************************************************************************/
@@ -96,9 +88,10 @@ SieveBlockBody.prototype.toString
     = function ()
 {
   var str ="";
-  
+
   for (var key in this.elms)
-    str += this.elms[key].toString();
+    if (this.elms[key])
+      str += this.elms[key].toString();
     
   return str;
 }
@@ -112,27 +105,68 @@ SieveBlockBody.prototype.toElement
   for (var i=0; i<this.elms.length;i++)
     if (this.elms[i].toElement)
     {    
-      elm.appendChild(createDropTarget()); 
+      elm.appendChild(createDropTarget(this.id,this.elms[i].id)); 
       elm.appendChild(this.elms[i].toElement());
     }
       
-  elm.appendChild(createDropTarget());
+  elm.appendChild(createDropTarget(this.id));
    
   return elm; 
 }
 
-SieveBlockBody.prototype.onBouble
-    = function (type,message)
-{   
-  for (var i=0; i<this.elms.length; i++) 
-    if (this.elms[i].onBouble)
-      this.elms[i].onBouble(type,message);
+SieveBlockBody.prototype.onInsertBefore
+    = function (child,elm)
+{
+  if (!child)
+  {
+    this.elms[this.elms.length] = elm; 
+    return [];
+  }
+ 
+  for (var i=0; i<this.elms.length; i++)
+  {
+    if (this.elms[i].id == child)
+      continue;
+   
+    this.elms.splice(i,0,elm);
+    
+    return [];
+  }
+  
+  return [];
 }
 
+SieveBlockBody.prototype.removeChild
+    = function (idx)
+{
+  var rv = [this.elms[idx]];
+  this.elms.splice(idx,1);
+  return rv;
+}
+
+SieveBlockBody.prototype.onBouble
+    = function (type,message)
+{  
+  if ((type == "addElement") && (message.parent == this.id))
+    return this.onInsertBefore(message.child,message.elm)
+  
+  if (type == "removeElement")
+    for (var i=0; i<this.elms.length; i++)
+      if (this.elms[i].id == message.child)
+        return this.removeChild(i);
+ 
+  var rv = [];      
+  // bouble message...        
+  for (var i=0; i<this.elms.length; i++) 
+    if (this.elms[i].onBouble)
+      rv = rv.concat(this.elms[i].onBouble(type,message));
+      
+  return rv;
+}
 
 // //TODO move to ovn classfile...
 //  with flavour -> sieve/action, sieve/test etc...
-function createDropTarget()
+function createDropTarget(parentId,id)
 {
       var dropTarget = document.createElement("vbox");
       dropTarget.className ="SieveDropTarget";
@@ -178,13 +212,29 @@ function createDropTarget()
           // user drops element the droptarget which contains to the draged element
           if (node == event.dataTransfer.mozGetDataAt('sieve/action',1))
             return;
-          
+
+          event.dataTransfer.mozGetDataAt('sieve/action',1).parentNode
+              .removeChild(event.dataTransfer.mozGetDataAt('sieve/action',1));
+             
           node.parentNode.insertBefore(
-            event.dataTransfer.mozGetDataAt('sieve/action',1)
+            createDropTarget(parentId,id)
+            //event.dataTransfer.mozGetDataAt('sieve/action',1)
             ,node);
+          // TODO recreate drop traeget as it caches the parent id
           node.parentNode.insertBefore(
             event.dataTransfer.mozGetDataAt('sieve/action',0)
             ,node);            
+           
+           // TODO ID should be an object which contains a namespace...
+           // ... inorder to retrieve a SieveDom... 
+           var elm = dom.removeElement(
+             event.dataTransfer.mozGetDataAt('sieve/action',2));
+             
+           if (!elm)
+             throw "No Element found";
+           // -1 means append to end...
+           dom.addElement(parentId,elm,id);
+           
         },
         true);
         

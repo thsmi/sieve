@@ -104,12 +104,6 @@ SieveMultiLineString.prototype.toString
     +".\r\n";
 }
 
-SieveMultiLineString.prototype.toXUL
-    = function ()
-{
-  return "MultilineString - to be implemented";
-}
-
 /*******************************************************************************
     CLASSNAME: 
       SieveQuotedString implements SieveObject
@@ -182,12 +176,6 @@ SieveQuotedString.prototype.toString
     = function ()
 {
   return "\""+this.text+"\"";
-}
-
-SieveQuotedString.prototype.toXUL
-    = function ()
-{
-  return "QuotedString - to be implemented";
 }
 
 /*******************************************************************************
@@ -396,13 +384,6 @@ SieveString.prototype.toString
     = function ()
 {
   return this.string.toString();
-}
-
-SieveString.prototype.toXUL
-    = function ()
-{
-  // TODO a single ' crashes in html -> convert it into &...; syntax
-  return "<html:input type='text' value='"+this.string.getValue()+"' />";  
 }
 
 

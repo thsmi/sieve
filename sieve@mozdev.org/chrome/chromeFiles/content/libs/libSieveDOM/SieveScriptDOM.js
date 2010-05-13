@@ -263,6 +263,25 @@ SieveDom.prototype.toXUL
   return elm;  
 }
 
+/**
+ * 
+ * @param {} parentId
+ * @param {} elm
+ * @param {} id
+ *   insert before element with id, pass null to append at end.
+ */
+SieveDom.prototype.addElement
+    = function (parentId,elm,id)
+{
+  this.boubleMessage("addElement",{parent:parentId, elm:elm, child:id})
+}
+
+SieveDom.prototype.removeElement
+    = function (id)
+{
+  return this.boubleMessage("removeElement",{child:id})[0];  
+}
+
 /*SieveDom.prototype.sendMessage
     = function (id,message)
 {
@@ -285,11 +304,11 @@ SieveDom.prototype.toXUL
 // messages: 'addElement', id : element
 SieveDom.prototype.boubleMessage
     = function (type,message)
-{ 
-  this.blkRequire.onBouble(type,message);
-  this.blkBody.onBouble(type,message);
-  
-/*  for (var i=0; i<this.elements.length; i++) 
-    if (this.elements[i].onBouble)
-      this.elements[i].onBouble(type,message);*/
+{
+  var rv = [];
+ 
+  rv = rv.concat(this.blkRequire.onBouble(type,message));
+  rv = rv.concat(this.blkBody.onBouble(type,message));
+
+  return rv;
 }

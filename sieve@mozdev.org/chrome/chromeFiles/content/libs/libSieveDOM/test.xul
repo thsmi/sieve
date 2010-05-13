@@ -78,12 +78,13 @@ background-image: -moz-linear-gradient(rgba(255,255,255,.5), rgba(50%,50%,50%,.2
 
 
 <script type="text/javascript">
+
 var dom  = new SieveDom();
 
 function parse()
 {  
     var str = document.getElementById("txtScript").value;  
-    
+
     dom.setScript(str);
         
     document.getElementById("txtOutput").value = dom.toString();
@@ -97,47 +98,6 @@ function update()
   document.getElementById("txtOutput").value = dom.toString();
 }
 
-function _onDropTrash(event)
-{
-  var source = event.dataTransfer.mozGetDataAt('application/blubb',0);
-
-  document.getElementById("trash").setAttribute("src","48px-User-trash-full.svg.png");  
-  setTimeout(function(){document.getElementById("trash").setAttribute("src","48px-User-trash.svg.png"); }, 1000);
-  
-  source.parentNode.removeChild(source);  
-  
-  event.stopPropagation();
-  
-  event.target.style.border = 'none';
-}
-
-function _onDrop(event)
-{
-  var data = event.dataTransfer.mozGetDataAt('application/blubb',0);
-  //var data = event.dataTransfer.mozGetDataAt('application/x-moz-node',0);
-  
-  event.target.appendChild(data);
-  event.stopPropagation();
-}
-
-// implement on drag enter / on drag exit ans visual indecators
-
-function _onDragOver(event)
-{
-  event.stopPropagation();
-  event.preventDefault();
-}
-
-function _onDragEnter(event)
-{
-  event.target.style.border = 'thick solid #0000FF';
-}
-
-function _onDragExit(event) 
-{
-  event.target.style.border = 'none';
-}
-
   function init()
   {
     // TODO Use create Drop target instead...
@@ -147,22 +107,26 @@ function _onDragExit(event)
 
     elm.addEventListener("dragenter", 
       function (event) {
-        if (event.dataTransfer.mozGetDataAt('sieve/action',0))
-          event.target.style.backgroundColor="red"; 
+        if ( !event.dataTransfer.mozGetDataAt('sieve/action',0))
+          return;
+          
+        document.getElementById("trash").setAttribute("src","48px-User-trash-full.svg.png");
       },
       true);
         
     elm.addEventListener("dragexit",
       function (event) {
-        if (event.dataTransfer.mozGetDataAt('sieve/action',0))
-          event.target.style.backgroundColor= null;
+        if ( !event.dataTransfer.mozGetDataAt('sieve/action',0))
+          return;
+        
+        document.getElementById("trash").setAttribute("src","48px-User-trash.svg.png");
       },
       true);
         
     elm.addEventListener("dragover",
       function (event) { 
-        if (! event.dataTransfer.mozGetDataAt('sieve/action',0))
-          return
+        if ( !event.dataTransfer.mozGetDataAt('sieve/action',0))
+          return;
 
         event.stopPropagation(); 
         event.preventDefault();
@@ -171,13 +135,10 @@ function _onDragExit(event)
         
     elm.addEventListener("dragdrop",
       function (event) {
-        if (!event.dataTransfer.mozGetDataAt('sieve/action',0))
+        if ( !event.dataTransfer.mozGetDataAt('sieve/action',0))
           return; 
-          
-        event.target.style.backgroundColor= null;
-          
-        document.getElementById("trash").setAttribute("src","48px-User-trash-full.svg.png");  
-        setTimeout(function(){document.getElementById("trash").setAttribute("src","48px-User-trash.svg.png"); }, 1000);
+        
+        document.getElementById("trash").setAttribute("src","48px-User-trash.svg.png");
   
         var source = event.dataTransfer.mozGetDataAt('sieve/action',0);
         source.parentNode.removeChild(source);  
@@ -185,9 +146,10 @@ function _onDragExit(event)
         source = event.dataTransfer.mozGetDataAt('sieve/action',1);
         source.parentNode.removeChild(source);
         
-        event.stopPropagation();
-  
-        event.target.style.border = 'none';          
+        dom.removeElement(
+             event.dataTransfer.mozGetDataAt('sieve/action',2));
+        
+        event.stopPropagation();          
       },
       true);    
   }
@@ -214,7 +176,7 @@ function _onDragExit(event)
         width='48' height='48'/>
   </vbox>
   <vbox flex="1" />
-  <vbox id="divOutput" style="background-color:gray;width:500px; overflow: auto"  />
+  <vbox id="divOutput" style="background-color:gray;overflow-y: scroll;"  />
   <vbox  flex="1" />
 </hbox>  
 </window>

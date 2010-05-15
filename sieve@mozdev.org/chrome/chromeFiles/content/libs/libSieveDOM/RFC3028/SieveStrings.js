@@ -93,13 +93,12 @@ SieveMultiLineString.prototype.getValue
   return this.text;
 } 
 
-
 SieveMultiLineString.prototype.toString
     = function ()
 {
   return "text:"
     +this.whiteSpace
-    +((this.hashComment == null)?"\r\n":this.hashComment.toString())
+    +((this.hashComment == null)?"":this.hashComment.toString())
     +this.text
     +".\r\n";
 }

@@ -83,8 +83,8 @@ SieveCondition.prototype.toElement
     
   var elm = document.createElement("vbox");
 
-  for (var i=1; i<this.tests.length;i++)
-    elm.appendChild(document.createTextNode(this.tests[i].toString()));
+  for (var i=0; i<this.tests.length;i++)
+    elm.appendChild(document.createTextNode(this.tests[i].toString())); 
     
   elm.appendChild(this.block.toElement());
 

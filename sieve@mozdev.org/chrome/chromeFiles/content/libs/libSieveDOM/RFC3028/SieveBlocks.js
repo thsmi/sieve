@@ -1,58 +1,6 @@
 
 // Blocks should handle Messages addChild / RemoveChild boubling...
 
- 
-// CONSTRUCTOR:
-function SieveBlockImport(id)
-{
-  this.id = id
-  this.elms = [];  
-}
-
-// PUBLIC STATIC:
-SieveBlockImport.isBlockImport
-    = function (data)
-{
-  return SieveLexer.probeByClass(["import","whitespace"],data);
-}
-
-// PUBLIC:
-SieveBlockImport.prototype.init
-    = function (data)    
-{
-  // The import section consists of require and deadcode statments...
-  while (SieveLexer.probeByClass(["import","whitespace"],data))
-  {
-    var elm = SieveLexer.createByClass(["import","whitespace"],data);    
-    data = elm.init(data);
-    
-    this.elms.push(elm);    
-  }
- 
-  return data;
-}
-
-SieveBlockImport.prototype.toString
-    = function ()
-{
-  var str ="";
-  
-  for (var key in this.elms)
-    str += this.elms[key].toString();
-    
-  return str;
-}
-
-SieveBlockImport.prototype.onBouble
-    = function (type,message)
-{   
-  var rv = []
-  for (var i=0; i<this.elms.length; i++) 
-    if (this.elms[i].onBouble)
-      rv=rv.concat(this.elms[i].onBouble(type,message));
-      
-  return rv;
-}
 
 /******************************************************************************/
 
@@ -173,11 +121,7 @@ if (!SieveLexer)
   throw "Could not register Block Elements";
 
 with (SieveLexer)
-{
-  register("block/","block/import",
-      function(token) {return SieveBlockImport.isBlockImport(token)}, 
-      function(id) {return new SieveBlockImport(id)});
-      
+{     
   register("block/","block/body",
       function(token) {return SieveBlockBody.isBlockBody(token)}, 
       function(id) {return new SieveBlockBody(id)});      

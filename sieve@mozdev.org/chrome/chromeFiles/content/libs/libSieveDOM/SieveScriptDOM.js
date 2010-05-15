@@ -197,7 +197,7 @@ SieveAddressPart.prototype.toXUL
 
 function SieveDom()
 {
-  this.blkRequire = SieveLexer.createByName("block/import");
+  this.blkRequire = SieveLexer.createByName("import");
   this.blkBody = SieveLexer.createByName("block/body");
 }
 
@@ -228,7 +228,7 @@ SieveDom.prototype.setScript
   
   // requires are only valid if they are
   // before any other sieve command!
-  if (SieveLexer.probeByName("block/import",data))
+  if (SieveLexer.probeByName("import",data))
     data = this.blkRequire.init(data);
 
   // After the import section only deadcode and actions are valid    

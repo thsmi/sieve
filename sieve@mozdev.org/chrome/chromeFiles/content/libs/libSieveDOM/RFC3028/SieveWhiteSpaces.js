@@ -1,15 +1,3 @@
-// TODO rename deadcode to whitespace
-
-// 1. Deadcode should be renamed to whitespace
-//     it handles HTAB, SP, comment and CRLF
-
-// 2. Whitespace should be renamed to deadcode
-//     it handles HTABs and SP
-
-// 3. WhiteSpaceLine
-//      WhiteSpaceLine should handle HTAB, SP comments and CRLF
-//      it should stop after parsing the first CRLF...
-
 
 SieveLineBreak.isLineBreak
   = function (data)
@@ -216,10 +204,7 @@ function SieveWhiteSpace(id)
 
 SieveWhiteSpace.prototype.init
     = function (data,crlf)
-{
-
-  //TODO deadcode should end at an CR/LF
-  
+{ 
   var isCrlf = false;
   // After the import section only deadcode and actions are valid
   while (SieveLexer.probeByClass(["whitespace/"],data))

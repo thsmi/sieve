@@ -1,17 +1,6 @@
-/*
- * This file defines the structure for all atomar sieve elements like
- *   - Strings
- *   - Numbers
- *   - Tests
- *   - Actions
- */
- 
-
 
  
-/******************************************************************************/
 
-/******************************************************************************/
 
 function SieveNumber(id)
 {
@@ -57,12 +46,6 @@ SieveNumber.prototype.init
   }
   
   return data;
-}
-
-SieveNumber.prototype.getID
-    = function ()
-{
-  return this.id;
 }
 
 SieveNumber.prototype.toString

@@ -374,60 +374,6 @@ SieveKeep.prototype.toElement
   return elm;
 }
 
-/******************************************************************************/
-
-SieveRequire.isRequire
-  = function (data, index)
-{  
-  if (index == null)
-    index = 0;
-    
-  var token = data.substr(index,7).toLowerCase();
-  
-  if (token.indexOf("require") == 0)
-    return true;  
-    
-  return false
-}
-
-function SieveRequire(id) 
-{
-  this.id = id;
-  
-  this.whiteSpace = SieveLexer.createByName("whitespace");
-  this.semicolon = SieveLexer.createByName("atom/semicolon");
-  
-  this.strings = SieveLexer.createByName("stringlist");    
-}
-
-SieveRequire.prototype.init
-    = function (data)
-{
-  // Syntax :
-  // <"require"> <stringlist> <";">
-  
-  // remove the "require" identifier ...
-  data = data.slice("require".length);
-
-  // ... eat the deadcode before the stringlist...
-  data = this.whiteSpace.init(data);
-    
-  // ... extract the stringlist...
-  data = this.strings.init(data);
-  
-  data = this.semicolon.init(data);
-    
-  return data;
-}
-
-SieveRequire.prototype.toString
-    = function ()
-{
-  return "require"
-    + this.whiteSpace.toString()
-    + this.strings.toString()
-    + this.semicolon.toString();
-}
 
 /******************************************************************************/
 
@@ -571,9 +517,5 @@ with (SieveLexer)
       
   register("action","action/stop",
       function(token) {return SieveStop.isStop(token)},
-      function(id) {return new SieveStop(id)});
-      
-  register("import","action/require",
-      function(token) {return SieveRequire.isRequire(token)},
-      function(id) {return new SieveRequire(id)});      
+      function(id) {return new SieveStop(id)});   
 }

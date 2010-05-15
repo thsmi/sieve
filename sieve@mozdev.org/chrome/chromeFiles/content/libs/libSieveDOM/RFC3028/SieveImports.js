@@ -65,7 +65,7 @@ function SieveBlockImport(id)
 SieveBlockImport.isBlockImport
     = function (data)
 {
-  return SieveLexer.probeByClass(["import","whitespace"],data);
+  return SieveLexer.probeByClass(["import/","whitespace"],data);
 }
 
 // PUBLIC:
@@ -73,9 +73,9 @@ SieveBlockImport.prototype.init
     = function (data)    
 {  
   // The import section consists of require and deadcode statments...
-  while (SieveLexer.probeByClass(["import","whitespace"],data))
+  while (SieveLexer.probeByClass(["import/","whitespace"],data))
   {
-    var elm = SieveLexer.createByClass(["import","whitespace"],data);    
+    var elm = SieveLexer.createByClass(["import/","whitespace"],data);    
     data = elm.init(data);
     
     this.elms.push(elm);    
@@ -107,7 +107,7 @@ SieveBlockImport.prototype.onBouble
 }
 
 if (!SieveLexer)
-  throw "Could not register Block Elements";
+  throw "Could not register Import Elements";
 
 with (SieveLexer)
 {

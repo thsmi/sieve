@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bindings
+    xmlns="http://www.mozilla.org/xbl" 
+    xmlns:html="http://www.w3.org/1999/xhtml" 
+    xmlns:xbl="http://www.mozilla.org/xbl"	
+    xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  
+  <binding id="SivDropBox">
+    <content>
+      <children/>
+    </content>
+    <implementation>
+      
+      <constructor>
+        <![CDATA[
+        
+        this.init = function() {
+          if (this.hasAttribute("sivAccepts"))
+            this.sivFlavour = this.getAttribute("sivAccepts");
+          else 
+            this.sivFlavour = "sieve/action";
+        
+          if (this.hasAttribute("sivSiblingId"))
+            this.sivSiblingId = this.getAttribute("sivSiblingId");
+          else
+            this.sivSiblingId = null;
+          
+          if (this.hasAttribute("sivOwnerId"))
+            this.sivOwnerId = this.getAttribute("sivOwnerId");
+          else
+            this.sivOwnerId = null;
+
+        }
+        
+        this.canDrop = function(event)
+        {
+          // accept only the registered drop flavour...
+          if ( ! event.dataTransfer.mozGetDataAt(this.sivFlavour,0))
+            return false;        
+            
+          // it should not be possible to drag the element on to itself...
+          if (this.isSameNode(event.dataTransfer.mozGetDataAt(this.sivFlavour,1)))
+            return false;
+          
+          if (this.previousSibling)
+            if (this.previousSibling.previousSibling)
+              if (this.previousSibling.previousSibling.isSameNode(event.dataTransfer.mozGetDataAt(this.sivFlavour,1)))
+                return false;
+            
+          
+          // ... or onto a parent into his child block          
+          for (var node = this; node; node = node.parentNode)
+            if (node.isSameNode(event.dataTransfer.mozGetDataAt(this.sivFlavour,0)))
+              return false;
+          
+          return true; 
+        }
+        
+        this.init();
+                    
+        ]]>
+      </constructor>
+    </implementation>
+      
+    <handlers>
+      <handler event="dragenter" phase="capturing">
+      <![CDATA[
+      
+        this.init();
+        
+        if (! this.canDrop(event))
+          return;
+        
+        this.setAttribute("sivDragging", "true");
+      ]]>
+      </handler>
+      
+      <handler event="dragexit" phase="capturing">
+       <![CDATA[
+       
+        this.init();
+        
+        if (! this.canDrop(event))
+          return;
+          
+        this.removeAttribute("sivDragging");
+        
+      ]]>
+      </handler>
+      
+      <handler event="dragover" phase="capturing">
+       <![CDATA[
+       
+        this.init();
+        
+        if (! this.canDrop(event))
+          return;
+          
+        this.setAttribute("sivDragging", "true");
+                  
+        event.stopPropagation(); 
+        event.preventDefault();
+      ]]>
+      </handler>
+      
+      <handler event="dragdrop" phase="capturing">
+       <![CDATA[
+       
+        this.init();
+          
+        if (! this.canDrop(event))
+          return;        
+        
+        this.removeAttribute("sivDragging");          
+
+        var elm = dom.removeElement(
+          event.dataTransfer.mozGetDataAt(this.sivFlavour,2));
+           
+        if (!elm)
+          throw "No Element found for "+event.dataTransfer.mozGetDataAt(this.sivFlavour,2); 
+               
+        // No Owner means delete element...
+        if (this.sivOwnerId)
+        {
+          dom.addElement(this.sivOwnerId,elm,this.sivSiblingId);
+                                    
+          this.parentNode.insertBefore(
+            event.dataTransfer.mozGetDataAt(this.sivFlavour,1)
+            ,this).setAttribute("sivOwnerId",this.sivOwnerId);
+
+          this.parentNode.insertBefore(
+            event.dataTransfer.mozGetDataAt(this.sivFlavour,0)
+            ,this);            
+        }
+        else
+        {       
+          // delete node...     
+          event.dataTransfer.mozGetDataAt(this.sivFlavour,0).parentNode
+            .removeChild(event.dataTransfer.mozGetDataAt(this.sivFlavour,0));
+            
+          event.dataTransfer.mozGetDataAt(this.sivFlavour,1).parentNode
+            .removeChild(event.dataTransfer.mozGetDataAt(this.sivFlavour,1));
+        }
+        
+        // TODO hookup listener ...
+           
+        //event.stopPropagation();
+      ]]>
+      </handler>      
+    </handlers>
+  </binding>
+  
+  <binding id="SivDragBox">
+    <!-- TODO implement dragBox -->
+  </binding>  
+</bindings>

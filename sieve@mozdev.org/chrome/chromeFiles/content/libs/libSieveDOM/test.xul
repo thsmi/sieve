@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<?xml-stylesheet href="./xbl/test.css" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
 <window xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="init();">
   <html:style>
+
+#trash 
+{
+  height: 80px;
+  width:80px;
+  background-color:transparent;   
+  background-image:url('48px-User-trash.svg.png');
+  background-repeat:no-repeat;
+  background-position:center center;   
+  
+} 
+ 
+#trash[sivDragging="true"] 
+{
+  background-image:url('48px-User-trash-full.svg.png');
+} 
    
 .SivElementBlock {
   padding-left: 20px;
@@ -46,10 +63,6 @@
 background-image: -moz-linear-gradient(rgba(255,255,255,.5), rgba(50%,50%,50%,.2), rgba(0,0,0,.15));
   /* selected...
   background-image: -moz-linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.1));*/
-}
-
-.SieveDropTarget {
-  /*height: 5px;*/
 }
 
 </html:style>
@@ -106,8 +119,28 @@ function update()
   {
     // TODO Use create Drop target instead...
     // ... and pass a listener for changing the icon...
-     
-    var elm = document.getElementById("trash");
+  /*  var elm = document.getElementById("trash");
+ 
+     elm.addEventListener("dragenter", 
+       function (event) {          
+        document.getElementById("trash").setAttribute("src","48px-User-trash-full.svg.png");
+        //alert(document.getElementById("trash").getAttribute("sivAcceptDrop"));
+      },
+      true);
+
+    elm.addEventListener("dragexit",
+      function (event) {
+        document.getElementById("trash").setAttribute("src","48px-User-trash.svg.png");
+        //alert(document.getElementById("trash").getAttribute("sivAcceptDrop"));
+      },
+      true);
+
+    elm.addEventListener("dragdrop",
+      function (event) {
+        document.getElementById("trash").setAttribute("src","48px-User-trash.svg.png");
+      },
+      true);*/
+/*    var elm = document.getElementById("trash");
 
     elm.addEventListener("dragenter", 
       function (event) {
@@ -155,7 +188,7 @@ function update()
         
         event.stopPropagation();          
       },
-      true);    
+      true);*/    
   }
 
 </script>
@@ -172,12 +205,10 @@ function update()
   <textbox id="txtOutput" cols="50" rows="10"  multiline="true" readonly="readonly"/>
   <spacer />
 </vbox>
-<hbox flex="1">  
+<hbox flex="1">    
   <vbox>
-    <spacer flex="1"/>
-    <image id="trash"
-        src="48px-User-trash.svg.png"      
-        width='48' height='48'/>
+    <spacer flex="1" />
+    <sivDropTarget id="trash" />
   </vbox>
   <vbox flex="1" />
   <vbox id="divOutput" style="background-color:gray;overflow-y: scroll;"  />

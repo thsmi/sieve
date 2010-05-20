@@ -1,18 +1,11 @@
-/******************************************************************************/
-
-SieveRequire.isRequire
-  = function (data, index)
-{  
-  if (index == null)
-    index = 0;
-    
-  var token = data.substr(index,7).toLowerCase();
-  
-  if (token.indexOf("require") == 0)
-    return true;  
-    
-  return false
-}
+/* 
+ * The contents of this file is licenced. You may obtain a copy of
+ * the license at http://sieve.mozdev.org or request it via email 
+ * from the author. Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
 
 function SieveRequire(id) 
 {
@@ -116,6 +109,7 @@ with (SieveLexer)
       function(id) {return new SieveBlockImport(id)});
       
   register("import/","import/require",
-      function(token) {return SieveRequire.isRequire(token)},
+      function(token) {
+        return (token.substr(0,7).toLowerCase().indexOf("require") == 0); },
       function(id) {return new SieveRequire(id)});               
 }

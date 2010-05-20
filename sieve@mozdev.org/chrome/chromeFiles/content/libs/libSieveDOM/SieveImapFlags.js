@@ -1,24 +1,21 @@
-
-// setflag <variablename: string> <list-of-flags: string-list>
-
-SieveSetFlag.isSetFlag
-  = function(token)
-{ 
- if (token.indexOf("setflag") == 0)
-    return true;
+/* 
+ * The contents of this file is licenced. You may obtain a copy of
+ * the license at http://sieve.mozdev.org or request it via email 
+ * from the author. Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
  
- return false;
-}
+// setflag <variablename: string> <list-of-flags: string-list>
 
 function SieveSetFlag(id) 
 {
   this.id = id;
   
-  this.whiteSpace = [];
-  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[1] = SieveLexer.createByName("whitespace");
-                
-  this.flaglist = SieveLexer.createByName("stringlist",this.id+"_1");
+  this.whiteSpace = SieveLexer.createByName("whitespace");
+  this.flaglist = SieveLexer.createByName("stringlist");
+  this.semicolon = SieveLexer.createByName("atom/semicolon");
 }
 
 SieveSetFlag.prototype.init
@@ -27,53 +24,27 @@ SieveSetFlag.prototype.init
   data = data.slice("setflag".length);
   
   // ... eat the deadcode before the string...
-  data = this.whiteSpace[0].init(data);
+  data = this.whiteSpace.init(data);
       
   data = this.flaglist.init(data)
 
-  data = this.whiteSpace[1].init(data);
+  data = this.semicolon.init(data);
     
-  // ... and finally remove the semicolon;
-  if (data.charAt(0) != ";")
-    throw "Syntaxerror: Semicolon expected";
-    
-  return data.slice(1);
-}
-
-SieveSetFlag.prototype.getID
-    = function ()
-{
-  return this.id;
+  return data;
 }
 
 SieveSetFlag.prototype.toString
     = function ()
 {
   return "setflag"
-    + this.whiteSpace[0].toString()
-    + this.flaglist
-    + this.whiteSpace[1].toString()        
-    + ";";
-}
-
-SieveSetFlag.prototype.toXUL
-    = function ()
-{
-  return "Set Flag";
+    + this.whiteSpace.toString()
+    + this.flaglist.toString()
+    + this.semicolon.toString();
 }
 
 /******************************************************************************/
 
 //addflag <variablename: string> <list-of-flags: string-list>
-
-SieveAddFlag.isAddFlag
-  = function(token)
-{ 
- if (token.indexOf("addflag") == 0)
-    return true;
- 
- return false;
-}
 
 function SieveAddFlag(id) 
 {
@@ -83,7 +54,7 @@ function SieveAddFlag(id)
   this.whiteSpace[0] = SieveLexer.createByName("whitespace");
   this.whiteSpace[1] = SieveLexer.createByName("whitespace");  
                 
-  this.flaglist = new SieveStringList(this.id+"_1");
+  this.flaglist = new SieveStringList(this.id);
 }
 
 SieveAddFlag.prototype.init
@@ -108,12 +79,6 @@ SieveAddFlag.prototype.init
   return data.slice(1);
 }
 
-SieveAddFlag.prototype.getID
-    = function ()
-{
-  return this.id;
-}
-
 SieveAddFlag.prototype.toString
     = function ()
 {
@@ -122,12 +87,6 @@ SieveAddFlag.prototype.toString
     + this.flaglist
     + this.whiteSpace[1].toString()        
     + ";";
-}
-
-SieveAddFlag.prototype.toXUL
-    = function ()
-{
-  return "Add Flag";
 }
 
 /******************************************************************************/
@@ -151,7 +110,7 @@ function SieveRemoveFlag(id)
   this.whiteSpace[0] = SieveLexer.createByName("whitespace");
   this.whiteSpace[1] = SieveLexer.createByName("whitespace");  
                 
-  this.flaglist = new SieveStringList(this.id+"_1");
+  this.flaglist = new SieveStringList();
 }
 
 SieveRemoveFlag.prototype.init
@@ -176,12 +135,6 @@ SieveRemoveFlag.prototype.init
   return data.slice(1);
 }
 
-SieveRemoveFlag.prototype.getID
-    = function ()
-{
-  return this.id;
-}
-
 SieveRemoveFlag.prototype.toString
     = function ()
 {
@@ -192,19 +145,12 @@ SieveRemoveFlag.prototype.toString
     + ";";
 }
 
-SieveRemoveFlag.prototype.toXUL
-    = function ()
-{
-  return "Remove Flag";
-}
 
 /******************************************************************************/
 
 //hasflag [MATCH-TYPE] <variable-list: string-list> <list-of-flags: string-list>
 
-// REGISTER 
-
-
+// REGISTER
 
 SieveHasFlag.isHasFlag
   = function(token)
@@ -227,7 +173,7 @@ function SieveHasFlag(id)
 
   this.whiteSpace     = new Array();
   this.matchType      = null;
-  this.flagList       = new SieveStringList(this.id+"_3");
+  this.flagList       = new SieveStringList();
 }
 
 SieveHasFlag.prototype.init
@@ -239,7 +185,7 @@ SieveHasFlag.prototype.init
   
   if (isSieveMatchType(data))
   {
-    this.matchType = new SieveMatchType(this.id+"_1");
+    this.matchType = new SieveMatchType();
     data = this.matchType.init(data);
     
     data = this.whiteSpace[1].init(data);    
@@ -250,12 +196,6 @@ SieveHasFlag.prototype.init
       
   return data;
 }    
-
-SieveHasFlag.prototype.getID
-    = function ()
-{
-  return this.id;
-}
 
 SieveHasFlag.prototype.toString
     = function ()
@@ -268,12 +208,6 @@ SieveHasFlag.prototype.toString
     + this.whiteSpace[2].toString();
 }
 
-SieveHasFlag.prototype.toXUL
-    = function ()
-{
-  return "hasflag Test - to be impelented";
-}
-
 /******************************************************************************/
 
 if (!SieveLexer)
@@ -282,7 +216,8 @@ if (!SieveLexer)
 with (SieveLexer)
 {
   register("action","action/addflag",
-      function(token) {return SieveAddFlag.isAddFlag(token)}, 
+      function(token) {
+        return (token.substring(0,7).toLowerCase().indexOf("addflag") == 0)}, 
       function(id) {return new SieveAddFlag(id)});
       
   register("action","action/removeflag",
@@ -290,7 +225,8 @@ with (SieveLexer)
       function(id) {return new SieveRemoveFlag(id)});  
       
   register("action","action/setflag",
-      function(token) {return SieveSetFlag.isSetFlag(token)},
+      function(token) {
+        return (token.substring(0,7).toLowerCase().indexOf("setflag") == 0)},
       function(id) {return new SieveSetFlag(id)});
       
   register("test","test/hasflag",

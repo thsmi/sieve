@@ -11,9 +11,17 @@
 
 function createDragBox(id,listener)
 {
-  // TODO use atrribute instead of className to distinguish elements...
-  var elm = document.createElement("vbox");
+  var elm = document.createElement("sivDragBox");
   elm.className ="SivElement";
+  elm.setAttribute("sivOwnerId",id);
+  
+  return elm;
+  
+  
+  // TODO use atrribute instead of className to distinguish elements...
+/*  var elm = document.createElement("vbox");
+  elm.className ="SivElement";
+  
   
   elm.addEventListener("draggesture", 
     function (event) {
@@ -34,7 +42,7 @@ function createDragBox(id,listener)
     },
     false);  
   
-  return elm;
+  return elm;*/
 }
 
 // //TODO move to own classfile...
@@ -42,12 +50,15 @@ function createDragBox(id,listener)
 // TODO Implement "accepts" list
 function createDropTarget(parentId,id)
 {
-  var dropTarget = document.createElement("sivDropTarget");
+  var dropTarget = document.createElement("sivDropBox");
   
   if (id)
     dropTarget.setAttribute("sivSiblingId",id);
     
-  dropTarget.setAttribute("sivOwnerId",parentId);
+  dropTarget.setAttribute("sivParentId",parentId);
           
   return dropTarget;
 }
+
+// TODO create an editableBox with on apply interface ...
+// it should build buttons and the box it.

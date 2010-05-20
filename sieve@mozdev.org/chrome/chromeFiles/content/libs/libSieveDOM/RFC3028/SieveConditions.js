@@ -1,19 +1,30 @@
-
+/* 
+ * The contents of this file is licenced. You may obtain a copy of
+ * the license at http://sieve.mozdev.org or request it via email 
+ * from the author. Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+ 
+ 
 function SieveCondition(id)
 {  
   this.id = id;
-  this.tests = [];
+  this.test = null;
   
   this.block = SieveLexer.createByName("block/body");
   
   this.ws = [];
   this.ws[0] = SieveLexer.createByName("whitespace");
+  this.ws[1] = SieveLexer.createByName("whitespace");
+  this.ws[2] = SieveLexer.createByName("whitespace");
 }
 
 SieveCondition.prototype.hasCondition
   = function (data)
 {
-  if (this.tests.length > 0)
+  if (this.test)
     return true;
     
   return false;
@@ -24,39 +35,32 @@ SieveCondition.prototype.init
 {
   // ... remove the deadcode ...
   data = this.ws[0].init(data);  
-    
-  if (SieveLexer.probeByClass(["test"],data))
+
+  // else blocks don't have a test...
+  if ( SieveLexer.probeByClass(["test"],data))
   {
-    var elm = SieveLexer.createByClass(["test"],data)
-    data = elm.init(data);
-    this.tests.push(elm);
-  
+    this.test = SieveLexer.createByClass(["test"],data);
+    data = this.test.init(data);
+    
     // ... eat again the deadcode ...
     if (SieveLexer.probeByName("whitespace",data))
-    {
-      var elm = SieveLexer.createByName("whitespace");
-      data = elm.init(data);  
-      this.tests.push(elm);
-    }
+      data = this.ws[1].init(data);
   }
   
-  if (data.charAt(0) != "{")  
-    throw "{ expected... before:"+data;
+  if (data.charAt(0) != "{")
+    throw "{ expected but found: \n"+data.substr(0,50)+"...";  
   
   data = data.slice(1);
   
   data = this.block.init(data);
 
-  if (data.charAt(0) != "}")  
-    throw "} expected...";
+  if (data.charAt(0) != "}")
+    throw "} expected but found: \n"+data.substr(0,50)+"...";  
 
   data = data.slice(1);
 
   if (SieveLexer.probeByName("whitespace",data))
-  {
-    this.ws[1] = SieveLexer.createByName("whitespace");
-    data = this.ws[1].init(data);  
-  } 
+    data = this.ws[2].init(data);  
     
   return data;  
 }
@@ -64,15 +68,14 @@ SieveCondition.prototype.init
 SieveCondition.prototype.toString
   = function ()
 {
-  var str = this.ws[0].toString(); 
+  var str = this.ws[0].toString();
   
-  for (var i=0; i<this.tests.length;i++)
-    str += this.tests[i].toString();  
+  if (this.test)  
+    str += this.test.toString() + this.ws[1].toString();      
   
-  str+="{"+this.block+"}";
+  str += "{"+this.block+"}";
   
-  if (this.ws[1])
-    str+=this.ws[1].toString();  
+  str += this.ws[2].toString();  
  
   return str;  
 }
@@ -82,9 +85,13 @@ SieveCondition.prototype.toElement
 {  
     
   var elm = document.createElement("vbox");
-
-  for (var i=0; i<this.tests.length;i++)
-    elm.appendChild(document.createTextNode(this.tests[i].toString())); 
+  
+  if (this.test)
+  {
+    var desc = document.createElement("description");
+    desc.setAttribute("value","Test:"+this.test.toString());
+    elm.appendChild(desc);
+  }
     
   elm.appendChild(this.block.toElement());
 
@@ -106,31 +113,14 @@ SieveCondition.prototype.onBouble
 }
 
 
-
-SieveIf.isIf
-  = function(data)
-{
-  if (data.toLowerCase().indexOf("if") == 0)
-    return true;
-  
-  return false;
-}
-
 function SieveIf(id) 
 {
   this.id = id;
   this.elements = new Array();
+  
+  this.elements[0] = SieveLexer.createByName("conditions/condition"); 
+  this.elements[0].init(" false {\r\n}\r\n")
 }
-
-/*
- if header :contains "from" "coyote" {
-    discard;
- } elsif header :contains ["subject"] ["$$$"] {
-    discard;
- } else {
-    fileinto "INBOX";
- }
- */
 
 SieveIf.prototype.init
     = function (data)
@@ -140,6 +130,7 @@ SieveIf.prototype.init
   // <"elsif"> <test> <block>  
   // <"else"> <block>
 
+  this.elements = [];
   // remove the "if"...
   data = data.slice(2);
     
@@ -191,12 +182,17 @@ SieveIf.prototype.toString
 SieveIf.prototype.toElement
     = function ()
 {  
-  var elm = createDragBox(this.id);  
-  //var elm = document.createElement("vbox");
+    
+  var elm = document.createElement("vbox");
+  elm.setAttribute("flex","1");
   
-  var box = document.createElement("vbox");
+  var desc = document.createElement("description");
+  desc.setAttribute("value",">>>If<<<");
+  elm.appendChild(desc);
+  
+  /*var box = document.createElement("vbox");
   box.appendChild(document.createTextNode(" >> If <<"));
-  elm.appendChild(box);
+  elm.appendChild(box);*/
   
   elm.appendChild(this.elements[0].toElement());
   
@@ -204,21 +200,31 @@ SieveIf.prototype.toElement
   {
     if (this.elements[i].hasCondition())
     {
-      var box = document.createElement("vbox");
+      var desc = document.createElement("description");
+      desc.setAttribute("value",">>>ELSE IF<<<");
+      elm.appendChild(desc);      
+      /*var box = document.createElement("vbox");
       box.appendChild(document.createTextNode(" >> ELSE IF <<"));
-      elm.appendChild(box);
+      elm.appendChild(box);*/
     }
     else
     {
-      var box = document.createElement("vbox");
+      var desc = document.createElement("description");
+      desc.setAttribute("value",">>>ELSE<<<");
+      elm.appendChild(desc);
+      
+      /*var box = document.createElement("vbox");
       box.appendChild(document.createTextNode(" >> ELSE <<"));
-      elm.appendChild(box);
+      elm.appendChild(box);*/
     }    
 
     elm.appendChild(this.elements[i].toElement());
   }
   
-  return elm;    
+  var box = createDragBox(this.id);
+  box.appendChild(elm);
+  
+  return box;    
 }
 
 SieveIf.prototype.onBouble
@@ -243,6 +249,7 @@ with (SieveLexer)
       function(id) {return new SieveCondition(id)});
       
   register("conditions","conditions/if",
-      function(token) {return SieveIf.isIf(token)}, 
+      function(token) {
+        return (token.substring(0,2).toLowerCase().indexOf("if") == 0)}, 
       function(id) {return new SieveIf(id)});
 }

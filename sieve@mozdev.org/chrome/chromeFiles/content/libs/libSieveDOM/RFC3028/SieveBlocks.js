@@ -1,5 +1,11 @@
-
-// Blocks should handle Messages addChild / RemoveChild boubling...
+/* 
+ * The contents of this file is licenced. You may obtain a copy of
+ * the license at http://sieve.mozdev.org or request it via email 
+ * from the author. Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
 
 
 /******************************************************************************/
@@ -7,14 +13,7 @@
 function SieveBlockBody(id)
 {
   this.id = id;
-  this.elms = [];  
-}
-
-// PUBLIC STATIC:
-SieveBlockBody.isBlockBody
-    = function (data)
-{
-  return SieveLexer.probeByClass(["action","conditions","whitespace"],data);
+  this.elms = [];
 }
 
 // PUBLIC:
@@ -48,6 +47,7 @@ SieveBlockBody.prototype.toElement
     = function ()
 {
   var elm = document.createElement("vbox");
+  elm.setAttribute("flex","1");
   elm.className = "SivElementBlock";
    
   for (var i=0; i<this.elms.length;i++)
@@ -123,6 +123,7 @@ if (!SieveLexer)
 with (SieveLexer)
 {     
   register("block/","block/body",
-      function(token) {return SieveBlockBody.isBlockBody(token)}, 
+      function(token) {
+        return SieveLexer.probeByClass(["action","conditions","whitespace"],token); }, 
       function(id) {return new SieveBlockBody(id)});      
 }

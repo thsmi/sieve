@@ -269,6 +269,12 @@ function SieveSemicolon(id)
   this.whiteSpace = [];
   this.whiteSpace[0] = SieveLexer.createByName("whitespace");
   this.whiteSpace[1] = SieveLexer.createByName("whitespace");
+  
+  // If this object is uninitalized it is better to return a "\r\n" after 
+  // the semicolon. This generates a much more readable code.
+  
+  // In case init() is called, this default settings will be overwritten...
+  this.whiteSpace[1].init("\r\n",true);
 }
 
 SieveSemicolon.prototype.init
@@ -283,8 +289,8 @@ SieveSemicolon.prototype.init
     throw "Syntaxerror: Semicolon expected";  
   data = data.slice(1);
 
-  if (SieveLexer.probeByName("whitespace",data))
-    data = this.whiteSpace[1].init(data,true);  
+  //if (SieveLexer.probeByName("whitespace",data))
+  data = this.whiteSpace[1].init(data,true);  
       
   return data;
 }

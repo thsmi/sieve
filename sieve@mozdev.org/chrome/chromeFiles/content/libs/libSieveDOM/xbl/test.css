@@ -1,11 +1,16 @@
-sivDropTarget {
+sivDropBox {
   -moz-binding: url("test.xml#SivDropBox");
 	height: 6px;
 	margin: 2px;
 }    
 
-sivDropTarget[sivDragging="true"] {
+sivDropBox[sivDragging="true"] {
   background-color : red;
   background-image: -moz-linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
   -moz-border-radius: 2px;	
 }
+
+
+sivDragBox {
+  -moz-binding: url("test.xml#SivDragBox");
+}    

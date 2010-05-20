@@ -1,3 +1,15 @@
+/* 
+ * The contents of this file is licenced. You may obtain a copy of
+ * the license at http://sieve.mozdev.org or request it via email 
+ * from the author. Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+
+// TODO HashComment seperated by linebreaks are equivalent to bracket Comments...
+
+
 
 SieveLineBreak.isLineBreak
   = function (data)
@@ -188,7 +200,7 @@ SieveHashComment.prototype.toXUL
   return "";
 }
 
-
+/******************************************************************************/
 
 SieveWhiteSpace.isWhiteSpace
     = function (data, index)
@@ -202,10 +214,24 @@ function SieveWhiteSpace(id)
   this.elements = [];
 }
 
+/**
+ * Parses a String for whitespace characters. It stops as soon as
+ * it finds the first non whitespace. This means this method extracts   
+ * zero or more whitespace characters
+ * 
+ * 
+ * @param {} data
+ * @param {boolean} crlf 
+ *   if true linebreaks (\r\n) are not considerd as valid whitespace characters
+ * @return {}
+ */
+
 SieveWhiteSpace.prototype.init
     = function (data,crlf)
 { 
   var isCrlf = false;
+  this.elements = [];
+  
   // After the import section only deadcode and actions are valid
   while (SieveLexer.probeByClass(["whitespace/"],data))
   {

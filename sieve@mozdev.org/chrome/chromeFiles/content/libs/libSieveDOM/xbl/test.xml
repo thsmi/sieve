@@ -25,18 +25,23 @@
           else
             this.sivSiblingId = null;
           
-          if (this.hasAttribute("sivOwnerId"))
-            this.sivOwnerId = this.getAttribute("sivOwnerId");
+          if (this.hasAttribute("sivParentId"))
+            this.sivParentId = this.getAttribute("sivParentId");
           else
-            this.sivOwnerId = null;
+            this.sivParentId = null;
 
         }
         
-        this.canDrop = function(event)
-        {
+        this.canDrop = function(event) {
           // accept only the registered drop flavour...
           if ( ! event.dataTransfer.mozGetDataAt(this.sivFlavour,0))
-            return false;        
+            return false;     
+            
+          if (event.dataTransfer.mozGetDataAt(this.sivFlavour,3) == "create")
+            return true;
+            
+          if (event.dataTransfer.mozGetDataAt(this.sivFlavour,3) != "move")
+            return false; 
             
           // it should not be possible to drag the element on to itself...
           if (this.isSameNode(event.dataTransfer.mozGetDataAt(this.sivFlavour,1)))
@@ -55,6 +60,52 @@
           
           return true; 
         }
+        
+        this.moveElement = function(event) {
+          var elm = dom.removeElement(
+                      event.dataTransfer.mozGetDataAt(this.sivFlavour,2));
+           
+          if (!elm)
+            throw "No Element found for "+event.dataTransfer.mozGetDataAt(this.sivFlavour,2); 
+               
+          // No Parent means delete element...
+          if (this.sivParentId)
+          {
+            dom.addElement(this.sivParentId,elm,this.sivSiblingId);
+                                    
+            this.parentNode.insertBefore(
+              event.dataTransfer.mozGetDataAt(this.sivFlavour,1)
+              ,this).setAttribute("sivParentId",this.sivParentId);
+
+            this.parentNode.insertBefore(
+              event.dataTransfer.mozGetDataAt(this.sivFlavour,0)
+              ,this);            
+          }
+          else
+          {       
+            // delete node...     
+            event.dataTransfer.mozGetDataAt(this.sivFlavour,0).parentNode
+              .removeChild(event.dataTransfer.mozGetDataAt(this.sivFlavour,0));
+            
+            event.dataTransfer.mozGetDataAt(this.sivFlavour,1).parentNode
+              .removeChild(event.dataTransfer.mozGetDataAt(this.sivFlavour,1));
+          }
+        }
+        
+        this.createElement = function(event) {
+          var elm = SieveLexer.createByName(
+                      event.dataTransfer.mozGetDataAt(this.sivFlavour,1));
+                      
+          dom.addElement(this.sivParentId,elm,this.sivSiblingId);
+          
+          this.parentNode.insertBefore(
+            createDropTarget(this.sivParentId),this);
+
+          this.parentNode.insertBefore(
+            elm.toElement(),this);          
+        }
+        
+
         
         this.init();
                     
@@ -111,37 +162,19 @@
         if (! this.canDrop(event))
           return;        
         
-        this.removeAttribute("sivDragging");          
-
-        var elm = dom.removeElement(
-          event.dataTransfer.mozGetDataAt(this.sivFlavour,2));
-           
-        if (!elm)
-          throw "No Element found for "+event.dataTransfer.mozGetDataAt(this.sivFlavour,2); 
-               
-        // No Owner means delete element...
-        if (this.sivOwnerId)
-        {
-          dom.addElement(this.sivOwnerId,elm,this.sivSiblingId);
-                                    
-          this.parentNode.insertBefore(
-            event.dataTransfer.mozGetDataAt(this.sivFlavour,1)
-            ,this).setAttribute("sivOwnerId",this.sivOwnerId);
-
-          this.parentNode.insertBefore(
-            event.dataTransfer.mozGetDataAt(this.sivFlavour,0)
-            ,this);            
-        }
-        else
-        {       
-          // delete node...     
-          event.dataTransfer.mozGetDataAt(this.sivFlavour,0).parentNode
-            .removeChild(event.dataTransfer.mozGetDataAt(this.sivFlavour,0));
-            
-          event.dataTransfer.mozGetDataAt(this.sivFlavour,1).parentNode
-            .removeChild(event.dataTransfer.mozGetDataAt(this.sivFlavour,1));
-        }
+        this.removeAttribute("sivDragging");       
         
+        switch (event.dataTransfer.mozGetDataAt(this.sivFlavour,3))
+        {
+          case "move" :
+            this.moveElement(event);
+            break;
+            
+          case "create" :
+            this.createElement(event);
+            break;
+        }   
+
         // TODO hookup listener ...
            
         //event.stopPropagation();
@@ -151,6 +184,81 @@
   </binding>
   
   <binding id="SivDragBox">
-    <!-- TODO implement dragBox -->
-  </binding>  
+    <content>
+      <children/>
+    </content>
+
+    <implementation>
+      <constructor>
+        <![CDATA[
+        
+        this.init = function() {
+          
+          if (this.hasAttribute("sivAction"))
+            this.sivAction = this.getAttribute("sivAction");
+          else
+            this.sivAction = "move";
+        
+          if (this.hasAttribute("sivAccepts"))
+            this.sivFlavour = this.getAttribute("sivAccepts");
+          else 
+            this.sivFlavour = "sieve/action";
+        
+          if (this.hasAttribute("sivOwnerId"))
+            this.sivOwnerId = this.getAttribute("sivOwnerId");
+          else
+            this.sivOwnerId = null;        
+            
+          if (this.hasAttribute("sivElmType"))
+            this.sivElmType = this.getAttribute("sivElmType");
+          else
+            this.sivElmType = null;
+        }
+                
+        this.init();
+                    
+        ]]>
+      </constructor> 
+    </implementation>    
+    
+    <handlers>
+      <handler event="draggesture" phase="boubble">
+       <![CDATA[
+       
+         this.init();
+         
+         with (event.dataTransfer)
+         {
+           switch (this.sivAction)
+           {
+             case "move" :
+               mozSetDataAt(this.sivFlavour,this,0);
+               mozSetDataAt(this.sivFlavour,this.previousSibling,1);
+               mozSetDataAt(this.sivFlavour,this.sivOwnerId,2);
+               mozSetDataAt(this.sivFlavour,"move",3);
+               
+               break;
+               
+             case "create" :
+               mozSetDataAt(this.sivFlavour,this,0);
+               mozSetDataAt(this.sivFlavour,this.sivElmType,1);
+               mozSetDataAt(this.sivFlavour,"",2);
+               mozSetDataAt(this.sivFlavour,"create",3);
+               
+               break;
+             
+             default :
+               throw "Unknown Action..."
+           }
+           
+           // TODO use this including the childs as drop image
+         }
+         
+         event.stopPropagation();
+         
+       ]]>
+       </handler>
+    </handlers>
+  </binding> 
+  
 </bindings>

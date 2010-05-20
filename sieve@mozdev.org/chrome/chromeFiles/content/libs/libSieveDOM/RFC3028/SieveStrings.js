@@ -345,7 +345,7 @@ SieveStringList.prototype.toXUL
 // CONSTRUCTOR: 
 function SieveString()
 {
-  this.string = null;
+  this.string = SieveLexer.createByName("string/quoted");
 }
 
 // PUBLIC STATIC:

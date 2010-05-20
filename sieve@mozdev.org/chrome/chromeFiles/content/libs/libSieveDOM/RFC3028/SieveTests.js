@@ -262,15 +262,15 @@ SieveEnvelopeTest.prototype.toXUL
 //             <header-list: string-list> <key-list: string-list>
 
              
-SieveAddress.isAddress
-  = function(token)
-{             
-  if (token.substr(0,7).toLowerCase().indexOf("address") == 0)
-    return true;
-    
-  return false
-}
-                 
+/* 
+ * The contents of this file is licenced. You may obtain a copy of
+ * the license at http://sieve.mozdev.org or request it via email 
+ * from the author. Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+ 
 function SieveAddress(id)
 {
   this.id = id;  
@@ -320,12 +320,6 @@ SieveAddress.prototype.init
   return data;
 }    
 
-SieveAddress.prototype.getID
-    = function ()
-{
-  return this.id;
-}
-
 SieveAddress.prototype.toString
     = function ()
 {
@@ -353,8 +347,8 @@ SieveAddress.prototype.toXUL
 
 SieveBoolean.isBoolean
  = function(data)
-{   
-  data = data.toLowerCase();
+{
+  data = data.substr(0,5).toLowerCase();
   if (data.indexOf("true") == 0)
     return true;
   if (data.indexOf("false") == 0)
@@ -377,13 +371,13 @@ SieveBoolean.prototype.init
 {
   var token = data.substr(0,5).toLowerCase();
   
-  if (token.indexOf("true") == null)
+  if (token.indexOf("true") == 0)
   {
     this.value = true
     data = data.slice("true".length);
   }
   
-  if (token.indexOf("false") == null)
+  if (token.indexOf("false") == 0)
   {
     this.value = false;
     data = data.slice("false".length);
@@ -394,12 +388,6 @@ SieveBoolean.prototype.init
   return data;
     
 }    
-
-SieveBoolean.prototype.getID
-    = function ()
-{
-  return this.id;
-}
 
 SieveBoolean.prototype.toString
     = function ()
@@ -423,7 +411,8 @@ SieveBoolean.prototype.toXUL
 SieveSizeTest.isSizeTest
   = function(token)
 { 
-  if (token.indexOf("size") == 0)
+  
+  if (token.substr(0,4).toLowerCase().indexOf("size") == 0)
     return true;
   
   return false
@@ -473,12 +462,6 @@ SieveSizeTest.prototype.init
   return data;
     
 }    
-
-SieveSizeTest.prototype.getID
-    = function ()
-{
-  return this.id;
-}
 
 SieveSizeTest.prototype.toString
     = function ()
@@ -544,12 +527,6 @@ SieveExists.prototype.init
     
 }    
 
-SieveExists.prototype.getID
-    = function ()
-{
- return this.id; 
-}
-
 SieveExists.prototype.toString
     = function ()
 {
@@ -569,14 +546,6 @@ SieveExists.prototype.toXUL
 /******************************************************************************/
 
 /******************************************************************************/
-SieveHeader.isHeader
-  = function(token)
-{ 
-  if (token.indexOf("header") == 0)
-    return true;
-  
-  return false;
-}
     
 function SieveHeader(id) 
 {
@@ -606,7 +575,7 @@ SieveHeader.prototype.init
   
   if (isSieveComparator(data))
   {
-    var element = new SieveComparator(this.id+"_7");
+    var element = new SieveComparator();
     data = element.init(data);
     this.options[0] = element;
     
@@ -797,7 +766,8 @@ if (!SieveLexer)
 with (SieveLexer)
 {  
   register("test","test/address",
-      function(token) {return SieveAddress.isAddress(token)}, 
+      function(token) {
+        return (token.substr(0,7).toLowerCase().indexOf("address") == 0); }, 
       function(id) {return new SieveAddress(id)});
       
   register("test","test/allof",
@@ -818,7 +788,8 @@ with (SieveLexer)
       function(token) {return SieveExists.isExists(token)}, 
       function(id) {return new SieveExists(id)});  
   register("test","test/header",
-      function(token) {return SieveHeader.isHeader(token)}, 
+      function(token) {
+        return (token.substring(0,6).toLowerCase().indexOf("header") == 0); }, 
       function(id) {return new SieveHeader(id)});  
   register("test","test/not",
       function(token) {return SieveNot.isNot(token)}, 

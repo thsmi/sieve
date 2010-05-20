@@ -117,6 +117,12 @@ function update()
 
   function init()
   {
+    // Create List with Elements...
+    // TODO Modify dom Lexer to enumerate elements...
+   
+    
+    
+    
     // TODO Use create Drop target instead...
     // ... and pass a listener for changing the icon...
   /*  var elm = document.getElementById("trash");
@@ -207,8 +213,32 @@ function update()
 </vbox>
 <hbox flex="1">    
   <vbox>
+    <vbox style="background-color:gray;overflow-y: scroll;">
+      <sivDragBox sivAction="create" sivElmType="action/discard" >
+        <label value="Discard Message" />
+      </sivDragBox>
+      <sivDragBox sivAction="create" sivElmType="action/fileinto" >
+        <label value="Move Message to Folder" />
+      </sivDragBox>
+      <sivDragBox sivAction="create" sivElmType="action/keep" >
+        <label value="Keep Message in Inbox" />
+      </sivDragBox>            
+      <sivDragBox sivAction="create" sivElmType="action/redirect" >
+        <label value="Redirect Message" />
+      </sivDragBox>
+      <sivDragBox sivAction="create" sivElmType="action/reject" >
+        <label value="Reject Message" />
+      </sivDragBox>
+      <sivDragBox sivAction="create" sivElmType="action/stop" >
+        <label value="Stop Processing message" />
+      </sivDragBox>  
+      <separator class="groove-thin"/>
+      <sivDragBox sivAction="create" sivElmType="conditions/if" >
+        <label value="Conditional Statement" />
+      </sivDragBox>                     
+    </vbox>
     <spacer flex="1" />
-    <sivDropTarget id="trash" />
+    <sivDropBox id="trash" />
   </vbox>
   <vbox flex="1" />
   <vbox id="divOutput" style="background-color:gray;overflow-y: scroll;"  />

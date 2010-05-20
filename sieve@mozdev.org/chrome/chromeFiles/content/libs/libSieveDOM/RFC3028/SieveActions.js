@@ -15,15 +15,6 @@ function SieveDiscard(id)
   this.semicolon = SieveLexer.createByName("atom/semicolon");
 }
 
-SieveDiscard.isDiscard
-    = function(token)
-{ 
-  if (token.indexOf("discard") == 0)
-    return true;
-  
-  return false;
-}
-
 SieveDiscard.prototype.init
     = function (data)
 {
@@ -62,18 +53,13 @@ function SieveRedirect(id)
 {
   this.id = id;
   
-  this.whiteSpace = SieveLexer.createByName("whitespace");    
-  this.address = SieveLexer.createByName("string");  
-  this.semicolon = SieveLexer.createByName("atom/semicolon");
-}
-
-SieveRedirect.isRedirect
-  = function(token)
-{ 
-  if (token.indexOf("redirect") == 0)
-    return true;
+  this.whiteSpace = SieveLexer.createByName("whitespace");
+  this.whiteSpace.init(" ");
   
-  return false;
+  this.address = SieveLexer.createByName("string"); 
+  this.address.init("\"username@example.com\"");
+  
+  this.semicolon = SieveLexer.createByName("atom/semicolon");
 }
 
 SieveRedirect.prototype.init
@@ -106,49 +92,74 @@ SieveRedirect.prototype.toString
     + this.semicolon.toString();
 }
 
-SieveRedirect.prototype.onEdit
-    = function (e)
+SieveRedirect.prototype.toElement
+    = function ()
 {
-  e.stopPropagation();
   
-  var elm = document.createElement("vbox");
-  elm.className = "SivFocusedElement";
+  var that = this;
   
-  elm.appendChild(
-        document.createTextNode("Redirect messages to the following email address: "));
-        
-  // todo change to: <textbox type="autocomplete" autocompletesearch="mydomain addrbook"/>    
-                              
-  var input = document.createElement("textbox"); 
+  var elm =  createDragBox(this.id);
+  elm.className = null;
+  
+  elm.appendChild(document.createElement("vbox"));
+  elm.appendChild(document.createElement("vbox"));
+    
+  // create read only box...
+  var box = elm.firstChild;
+  box.className ="SivElement";
+  box.appendChild(
+        document.createElement("description"))
+     .setAttribute("value",
+        "Redirect message to: "+this.address.getValue()); 
+  
+  // create edit box...
+  var box = elm.firstChild.nextSibling;
+  
+  box.className = "SivFocusedElement";
+  box.style.display = "none";
+  box.appendChild(
+        document.createElement("description"))
+     .setAttribute("value",
+        "Redirect message to:");
+
+        //TODO change to: <textbox type="autocomplete" autocompletesearch="mydomain addrbook"/>
+  var input = box.appendChild(document.createElement("textbox")); 
   input.setAttribute("type","autocomplete");
   input.setAttribute("autocompletesearch","mydomain addrbook");
   input.setAttribute("value", ""+this.address.getValue());
-  input.addEventListener("click",function(e){alert('input click');/*e.stopPropagation()*/;}, true);
   
-  elm.appendChild(input);
-
-  // prevent default event listeners...
-  elm.addEventListener("click",function(e){e.stopPropagation();}, false);
-  
-  e.target.parentNode.replaceChild(elm,e.target);
- 
-  // cache edit dialog...
-  this.elm = elm;  
-}
-
-SieveRedirect.prototype.toElement
-    = function ()
-{ 
-  var elm = createDragBox(this.id);
-
-  var desc = document.createElement("description");
-  desc.setAttribute("value",
-    "Redirect message to: "+this.address.getValue());
-  elm.appendChild(desc);
-  
-  var that = this;
-  elm.addEventListener("click",function(e){ that.onEdit(e);},true);
-  
+  box = box.appendChild(document.createElement("hbox"));
+  box.appendChild(
+        document.createElement("spacer"))
+     .setAttribute("flex","1");
+     
+  var btn = box.appendChild(document.createElement("button"));
+  btn.setAttribute("label","Apply");
+  btn.addEventListener("click",
+    function(e){ 
+      alert("apply changes");
+      // TODO that.string.setValue(Textbox.value)
+      
+      elm.firstChild.style.display = null;
+      elm.firstChild.nextSibling.style.display = "none";
+    },true );
+    
+  btn = box.appendChild(document.createElement("button"));
+  btn.setAttribute("label","Discard");
+  btn.addEventListener("click",
+    function(e){ 
+      alert("discard changes");
+      
+      elm.firstChild.style.display = null;
+      elm.firstChild.nextSibling.style.display = "none";
+    },true );       
+     
+  elm.firstChild.addEventListener("click",
+    function(e){ 
+      elm.firstChild.style.display = "none";
+      elm.firstChild.nextSibling.style.display = null;
+    }, true );
+      
   return elm;
 }
 
@@ -173,20 +184,13 @@ function SieveReject(id)
   this.id = id;
   
   this.reason = SieveLexer.createByName("string");
+  
   this.whiteSpace = SieveLexer.createByName("whitespace");
+  this.whiteSpace.init(" ");
+  
   this.semicolon = SieveLexer.createByName("atom/semicolon");    
   
 }
-
-SieveReject.isReject
-  = function(token)
-{ 
-  if (token.indexOf("reject") == 0)
-    return true;
-  
-  return false;
-}
-
 SieveReject.prototype.init
     = function (data)
 { 
@@ -288,15 +292,6 @@ function SieveStop(id)
   this.semicolon = SieveLexer.createByName("atom/semicolon");
 }
 
-SieveStop.isStop
-  = function(token)
-{ 
-  if (token.indexOf("stop") == 0)
-    return true;
-  
-  return false;
-}
-
 SieveStop.prototype.init
     = function (data)
 {
@@ -333,15 +328,6 @@ function SieveKeep(id)
 {
   this.id = id;
   this.semicolon = SieveLexer.createByName("atom/semicolon");
-}
-
-SieveKeep.isKeep
-  = function(token)
-{ 
-  if (token.indexOf("keep") == 0)
-    return true;
-  
-  return false;
 }
 
 SieveKeep.prototype.init
@@ -382,20 +368,12 @@ function SieveFileInto(id)
   this.id = id;
 
   this.whiteSpace = SieveLexer.createByName("whitespace");
+  this.whiteSpace.init(" ");
+  
   this.semicolon = SieveLexer.createByName("atom/semicolon");
       
   this.string = SieveLexer.createByName("string");
-  
-  this.elm = null;
-}
-
-SieveFileInto.isFileInto
-  = function(token)
-{ 
-  if (token.indexOf("fileinto") == 0)
-    return true;
-
-  return false;
+  this.string.init("\"INBOX\"");
 }
 
 SieveFileInto.prototype.init
@@ -427,49 +405,71 @@ SieveFileInto.prototype.toString
     + this.semicolon.toString();
 }
 
-SieveFileInto.prototype.onEdit
-    = function (e)
-{
-  e.stopPropagation();
-  
-  var elm = document.createElement("vbox");
-  elm.className = "SivFocusedElement";
-  
-  elm.appendChild(
-        document.createTextNode("Copy incomming message into: "));
-
-  elm.appendChild(
-        document.createElement("br"));
-        
-  var input = document.createElement("input");  
-  input.setAttribute( "type", "text" );
-  input.setAttribute( "value", ""+this.string.getValue());
-  input.addEventListener("click",function(e){alert('input click');/*e.stopPropagation()*/;}, true);
-  
-  elm.appendChild(input);
-
-  // prevent default event listeners...
-  elm.addEventListener("click",function(e){e.stopPropagation();}, false);
-  
-  e.target.parentNode.replaceChild(elm,e.target);
- 
-  // cache edit dialog...
-  this.elm = elm;  
-}
-
 SieveFileInto.prototype.toElement
     = function ()
 {
-  var elm = createDragBox(this.id);
-  
-  var desc = document.createElement("description");
-  desc.setAttribute("value",
-    "Copy the incomming message into: "+this.string.getValue());
-  elm.appendChild(desc);
   
   var that = this;
-  elm.addEventListener("click",function(e){ that.onEdit(e);}, true );
   
+  var elm =  createDragBox(this.id);
+  elm.className = null;
+  
+  elm.appendChild(document.createElement("vbox"));
+  elm.appendChild(document.createElement("vbox"));
+    
+  // create read only box...
+  var box = elm.firstChild;
+  box.className ="SivElement";
+  box.appendChild(
+        document.createElement("description"))
+     .setAttribute("value",
+        "Copy the incomming message into: "+this.string.getValue()); 
+  
+  // create edit box...
+  var box = elm.firstChild.nextSibling;
+  
+  box.className = "SivFocusedElement";
+  box.style.display = "none";
+  box.appendChild(
+        document.createElement("description"))
+     .setAttribute("value",
+        "Copy the incomming message into:");  
+  box.appendChild(
+        document.createElement("textbox"))
+     .setAttribute("value",""+this.string.getValue());
+  
+  box = box.appendChild(document.createElement("hbox"));
+  box.appendChild(
+        document.createElement("spacer"))
+     .setAttribute("flex","1");
+     
+  var btn = box.appendChild(document.createElement("button"));
+  btn.setAttribute("label","Apply");
+  btn.addEventListener("click",
+    function(e){ 
+      alert("apply changes");
+      // TODO that.string.setValue(Textbox.value)
+      
+      elm.firstChild.style.display = null;
+      elm.firstChild.nextSibling.style.display = "none";
+    },true );
+    
+  btn = box.appendChild(document.createElement("button"));
+  btn.setAttribute("label","Discard");
+  btn.addEventListener("click",
+    function(e){ 
+      alert("discard changes");
+      
+      elm.firstChild.style.display = null;
+      elm.firstChild.nextSibling.style.display = "none";
+    },true );       
+     
+  elm.firstChild.addEventListener("click",
+    function(e){ 
+      elm.firstChild.style.display = "none";
+      elm.firstChild.nextSibling.style.display = null;
+    }, true );
+      
   return elm;
 }
 
@@ -496,26 +496,32 @@ if (!SieveLexer)
 with (SieveLexer)
 {
   register("action","action/discard",
-      function(token) {return SieveDiscard.isDiscard(token)}, 
+      function(token) {
+        return (token.substring(0,7).toLowerCase().indexOf("discard") == 0); }, 
       function(id) {return new SieveDiscard(id)});
-      
+  
   register("action","action/fileinto",
-      function(token) {return SieveFileInto.isFileInto(token)}, 
+      function(token) {
+        return (token.substring(0,8).toLowerCase().indexOf("fileinto") == 0); }, 
       function(id) {return new SieveFileInto(id)});  
-      
+        
   register("action","action/keep",
-      function(token) {return SieveKeep.isKeep(token)},
+      function(token) {
+        return (token.substring(0,4).toLowerCase().indexOf("keep") == 0); },
       function(id) {return new SieveKeep(id)});
       
   register("action","action/redirect",
-      function(token) {return SieveRedirect.isRedirect(token)},
+      function(token) {
+        return (token.substring(0,8).toLowerCase().indexOf("redirect") == 0); },
       function(id) {return new SieveRedirect(id)});
       
   register("action","action/reject",
-      function(token) {return SieveReject.isReject(token)},
+      function(token) {
+        return (token.substring(0,6).toLowerCase().indexOf("reject") == 0); },
       function(id) {return new SieveReject(id)});
       
   register("action","action/stop",
-      function(token) {return SieveStop.isStop(token)},
+      function(token) {
+        return (token.substring(0,4).toLowerCase().indexOf("stop") == 0); },
       function(id) {return new SieveStop(id)});   
 }

@@ -6,7 +6,8 @@
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
- 
+
+//TODO  rename if to conditional action...
  
 function SieveCondition(id)
 {  
@@ -88,9 +89,19 @@ SieveCondition.prototype.toElement
   
   if (this.test)
   {
-    var desc = document.createElement("description");
-    desc.setAttribute("value","Test:"+this.test.toString());
-    elm.appendChild(desc);
+    // TODO this.test should be some kind of an array...
+    // ... allof anyof
+    // droptarget -> insert allofanyof
+    // test
+    // droptarget -> insertallofanyof
+    if (this.test.toElement)
+      elm.appendChild(this.test.toElement());
+    else
+      elm.appendChild(document.createElement("description"))
+        .setAttribute("value","Test:"+this.test.toString());
+    
+    elm.appendChild(document.createElement("description"))
+       .setAttribute("value","THEN");
   }
     
   elm.appendChild(this.block.toElement());
@@ -98,11 +109,38 @@ SieveCondition.prototype.toElement
   return elm;
 }
 
+SieveCondition.prototype.onInsertBefore
+    = function (elm,child)
+{
+  alert("Insert Any Of");
+}
+
+SieveCondition.prototype.removeChild
+    = function ()
+{
+  alert("Remove Test and insert false test...");
+}
+
 SieveCondition.prototype.onBouble
     = function (type,message)
 {
   var rv = [];
   
+  if ((type == "addElement") && (message.parent == this.id))
+    return this.onInsertBefore(message.elm,message.child)
+  
+  if (type == "removeElement")  
+    if (this.test != null)
+      if (this.test.id == message.child)
+        return this.removeChild();
+ 
+  var rv = [];      
+  // bouble message...        
+  
+  if (this.test)
+    if (this.test.onBouble)
+      rv = rv.concat(this.test.onBouble(type,message));
+    
   rv = rv.concat(this.block.onBouble(type,message));
   
   /*for (var i=0; i<this.tests.length; i++) 
@@ -186,9 +224,8 @@ SieveIf.prototype.toElement
   var elm = document.createElement("vbox");
   elm.setAttribute("flex","1");
   
-  var desc = document.createElement("description");
-  desc.setAttribute("value",">>>If<<<");
-  elm.appendChild(desc);
+  elm.appendChild(document.createElement("description"))
+     .setAttribute("value","IF");
   
   /*var box = document.createElement("vbox");
   box.appendChild(document.createTextNode(" >> If <<"));

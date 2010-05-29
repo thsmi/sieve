@@ -62,3 +62,58 @@ function createDropTarget(parentId,id)
 
 // TODO create an editableBox with on apply interface ...
 // it should build buttons and the box it.
+
+function createEditableTestBox(id,roBox,rwBox,listener)
+{
+  var elm = createEditableDragBox(id,roBox,rwBox,listener);
+  elm.setAttribute("sivAccepts","sieve/test");
+  return elm;  
+}
+
+function createEditableDragBox(id,roBox,rwBox,listener)
+{
+  var elm = createDragBox(id,listener);
+  
+  elm.setAttribute("sivElmType","editable");  
+   
+  roBox = elm.appendChild(roBox);
+  roBox.setAttribute("flex","1");
+
+  
+  rwBox = elm.appendChild(rwBox);
+  rwBox.style.display = "none";
+  rwBox.setAttribute("flex","1");
+ 
+  
+  rwBox = rwBox.appendChild(document.createElement("hbox"))
+  rwBox.setAttribute("pack","end");
+  rwBox.setAttribute("flex","1");
+  
+
+  var btn = rwBox.appendChild(document.createElement("button"));
+  btn.setAttribute("label","Apply");
+ 
+  
+  btn.addEventListener("click",
+    function(e){
+      if ((listener.onValidate) && (!listener.onValidate(e)))
+        return;
+        
+/*      that.reason.setValue(input.value);
+      elm.firstChild.firstChild.nextSibling
+        .setAttribute("value",that.reason.getValue());*/ 
+      
+      elm.removeAttribute("sivIsEditable");
+      elm.firstChild.style.display = null;
+      elm.firstChild.nextSibling.style.display = "none";
+    },true );
+    
+  elm.firstChild.addEventListener("click",
+    function(e){
+      elm.setAttribute("sivIsEditable","true");
+      elm.firstChild.style.display = "none";
+      elm.firstChild.nextSibling.style.display = null;
+    }, true );    
+    
+    return elm;      
+}

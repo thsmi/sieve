@@ -7,8 +7,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-
-/******************************************************************************/
+// TODO rename to SieveContentSection
 
 function SieveBlockBody(id)
 {

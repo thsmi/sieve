@@ -29,8 +29,9 @@
 function SieveMultiLineString()
 {
   this.text = "";
-  this.whiteSpace = "";
-  this.hashComment = null;  
+  
+  this.whiteSpace = SieveLexer.createByName("whitespace");
+  this.hashComment = null;
 }
 
 // PUBLIC STATIC:
@@ -48,40 +49,37 @@ SieveMultiLineString.isMultiLineString
 SieveMultiLineString.prototype.init
     = function (data)    
 {
-  //<"text:"> <hashcomment / CRLF>
+  //<"text:"> *(SP / HTAB) (hash-comment / CRLF)
+  if (SieveLexer.probeByName("string/multiline",data) == false)
+    throw "Multi-line String expected but found: \n"+data.substr(0,50)+"..."; 
   
   // remove the "text:"
   data = data.slice(5);
-
-  // remove whitespaces if any
-  var i;
-  for (i=0; i<data.length; i++)
-  {
-    var ch = data.charAt(i);
-    if (ch == " ")
-      continue;
-    if (ch == "\t")
-      continue;
-    
-    break;
-  }
-
-  this.whiteSpace = data.slice(0,i);
+  
+  data = this.whiteSpace.init(data,true);
     
   if (SieveLexer.probeByName("whitespace/hashcomment",data))
   {
-    this.hashComment = SieveLexer.createByName("whitespace/hashcomment");    
+    this.hashComment = SieveLexer.createByName("whitespace/hashcomment");
     data = this.hashComment.init(data);
   }
-  
-  var end = data.indexOf("\r\n.\r\n");
-
-  if (end == -1)
-    throw "Syntaxerror: Multiline String not closed, \".\\r\\n missing" ;
-  
-  this.text = data.slice(0,end+2);
-       
-  data = data.slice(end+5);
+     
+  while (true)
+  { 
+    var crlf = data.indexOf("\r\n")
+    
+    if (crlf == -1)
+      throw "Syntaxerror: Multiline String not closed, \".\\r\\n missing" ;
+      
+    // Split at linebreaks
+    var line = data.slice(0,crlf);
+    data = data.slice(crlf+2);
+    
+    if (line == ".")
+      break;
+     
+    this.text += (this.text != "" ? "\r\n" : "" ) + line;
+  }
   
   //remove the \r\n
   return data;
@@ -93,13 +91,19 @@ SieveMultiLineString.prototype.getValue
   return this.text;
 } 
 
+SieveMultiLineString.prototype.setValue
+    = function (value)
+{
+  this.text = value;
+} 
+
 SieveMultiLineString.prototype.toString
     = function ()
 {
   return "text:"
     +this.whiteSpace
     +((this.hashComment == null)?"":this.hashComment.toString())
-    +this.text
+    +this.text+(this.text != "" ? "\r\n" : "" )
     +".\r\n";
 }
 

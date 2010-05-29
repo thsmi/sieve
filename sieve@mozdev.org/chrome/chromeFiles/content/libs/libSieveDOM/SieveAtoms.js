@@ -233,6 +233,20 @@ SieveNumber.prototype.init
   return data;
 }
 
+SieveNumber.prototype.getValue
+  = function ()
+{
+  return { number: this.number, unit:this.unit};   
+}
+
+SieveNumber.prototype.setValue
+  = function (number,unit)
+{
+  // TODO test if number is a valid number and unit is a valid unit...
+  this.number = number;
+  this.unit = unit;
+}
+
 SieveNumber.prototype.toString
     = function ()
 {
@@ -286,7 +300,8 @@ SieveSemicolon.prototype.init
     data = this.whiteSpace[0].init(data,true);
 
   if (data.charAt(0) != ";")
-    throw "Syntaxerror: Semicolon expected";  
+    throw "Semicolon expected but found: \n"+data.substr(0,50)+"...";  
+  
   data = data.slice(1);
 
   //if (SieveLexer.probeByName("whitespace",data))

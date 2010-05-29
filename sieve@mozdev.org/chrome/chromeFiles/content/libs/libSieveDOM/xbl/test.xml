@@ -16,9 +16,9 @@
         
         this.init = function() {
           if (this.hasAttribute("sivAccepts"))
-            this.sivFlavour = this.getAttribute("sivAccepts");
+            this.sivFlavour = this.getAttribute("sivAccepts").split(",");
           else 
-            this.sivFlavour = "sieve/action";
+            this.sivFlavour = ["sieve/action"];
         
           if (this.hasAttribute("sivSiblingId"))
             this.sivSiblingId = this.getAttribute("sivSiblingId");
@@ -32,41 +32,41 @@
 
         }
         
-        this.canDrop = function(event) {
+        this.canDrop = function(sivFlavour, event) {
           // accept only the registered drop flavour...
-          if ( ! event.dataTransfer.mozGetDataAt(this.sivFlavour,0))
+          if ( ! event.dataTransfer.mozGetDataAt(sivFlavour,0))
             return false;     
             
-          if (event.dataTransfer.mozGetDataAt(this.sivFlavour,3) == "create")
+          if (event.dataTransfer.mozGetDataAt(sivFlavour,3) == "create")
             return true;
             
-          if (event.dataTransfer.mozGetDataAt(this.sivFlavour,3) != "move")
+          if (event.dataTransfer.mozGetDataAt(sivFlavour,3) != "move")
             return false; 
             
           // it should not be possible to drag the element on to itself...
-          if (this.isSameNode(event.dataTransfer.mozGetDataAt(this.sivFlavour,1)))
+          if (this.isSameNode(event.dataTransfer.mozGetDataAt(sivFlavour,1)))
             return false;
           
           if (this.previousSibling)
             if (this.previousSibling.previousSibling)
-              if (this.previousSibling.previousSibling.isSameNode(event.dataTransfer.mozGetDataAt(this.sivFlavour,1)))
+              if (this.previousSibling.previousSibling.isSameNode(event.dataTransfer.mozGetDataAt(sivFlavour,1)))
                 return false;
             
           
           // ... or onto a parent into his child block          
           for (var node = this; node; node = node.parentNode)
-            if (node.isSameNode(event.dataTransfer.mozGetDataAt(this.sivFlavour,0)))
+            if (node.isSameNode(event.dataTransfer.mozGetDataAt(sivFlavour,0)))
               return false;
           
           return true; 
         }
         
-        this.moveElement = function(event) {
+        this.moveElement = function(sivFlavour,event) {
           var elm = dom.removeElement(
-                      event.dataTransfer.mozGetDataAt(this.sivFlavour,2));
+                      event.dataTransfer.mozGetDataAt(sivFlavour,2));
            
           if (!elm)
-            throw "No Element found for "+event.dataTransfer.mozGetDataAt(this.sivFlavour,2); 
+            throw "No Element found for "+event.dataTransfer.mozGetDataAt(sivFlavour,2); 
                
           // No Parent means delete element...
           if (this.sivParentId)
@@ -74,27 +74,27 @@
             dom.addElement(this.sivParentId,elm,this.sivSiblingId);
                                     
             this.parentNode.insertBefore(
-              event.dataTransfer.mozGetDataAt(this.sivFlavour,1)
-              ,this).setAttribute("sivParentId",this.sivParentId);
+              event.dataTransfer.mozGetDataAt(sivFlavour,1)
+              ,this).setAttribute("sivParentId",sivParentId);
 
             this.parentNode.insertBefore(
-              event.dataTransfer.mozGetDataAt(this.sivFlavour,0)
+              event.dataTransfer.mozGetDataAt(sivFlavour,0)
               ,this);            
           }
           else
           {       
             // delete node...     
-            event.dataTransfer.mozGetDataAt(this.sivFlavour,0).parentNode
-              .removeChild(event.dataTransfer.mozGetDataAt(this.sivFlavour,0));
+            event.dataTransfer.mozGetDataAt(sivFlavour,0).parentNode
+              .removeChild(event.dataTransfer.mozGetDataAt(sivFlavour,0));
             
-            event.dataTransfer.mozGetDataAt(this.sivFlavour,1).parentNode
-              .removeChild(event.dataTransfer.mozGetDataAt(this.sivFlavour,1));
+            event.dataTransfer.mozGetDataAt(sivFlavour,1).parentNode
+              .removeChild(event.dataTransfer.mozGetDataAt(sivFlavour,1));
           }
         }
         
-        this.createElement = function(event) {
+        this.createElement = function(sivFlavour,event) {
           var elm = SieveLexer.createByName(
-                      event.dataTransfer.mozGetDataAt(this.sivFlavour,1));
+                      event.dataTransfer.mozGetDataAt(sivFlavour,1));
                       
           dom.addElement(this.sivParentId,elm,this.sivSiblingId);
           
@@ -104,8 +104,6 @@
           this.parentNode.insertBefore(
             elm.toElement(),this);          
         }
-        
-
         
         this.init();
                     
@@ -119,10 +117,9 @@
       
         this.init();
         
-        if (! this.canDrop(event))
-          return;
-        
-        this.setAttribute("sivDragging", "true");
+        for (var i=0; i<this.sivFlavour.length; i++)
+          if (this.canDrop(this.sivFlavour[i],event))
+            this.setAttribute("sivDragging", "true");
       ]]>
       </handler>
       
@@ -130,11 +127,10 @@
        <![CDATA[
        
         this.init();
-        
-        if (! this.canDrop(event))
-          return;
-          
-        this.removeAttribute("sivDragging");
+
+        for (var i=0; i<this.sivFlavour.length; i++)
+          if (this.canDrop(this.sivFlavour[i],event))
+            this.removeAttribute("sivDragging");        
         
       ]]>
       </handler>
@@ -143,14 +139,19 @@
        <![CDATA[
        
         this.init();
-        
-        if (! this.canDrop(event))
-          return;
-          
-        this.setAttribute("sivDragging", "true");
+  
+        for (var i=0; i<this.sivFlavour.length; i++)
+        {
+          if (this.canDrop(this.sivFlavour[i],event))
+          {
+            this.setAttribute("sivDragging", "true");
                   
-        event.stopPropagation(); 
-        event.preventDefault();
+            event.stopPropagation(); 
+            event.preventDefault();
+            
+            return;          
+          }
+        }
       ]]>
       </handler>
       
@@ -158,21 +159,25 @@
        <![CDATA[
        
         this.init();
-          
-        if (! this.canDrop(event))
-          return;        
-        
-        this.removeAttribute("sivDragging");       
-        
-        switch (event.dataTransfer.mozGetDataAt(this.sivFlavour,3))
+
+        for (var i=0; i<this.sivFlavour.length; i++)
         {
-          case "move" :
-            this.moveElement(event);
-            break;
+          if (this.canDrop(this.sivFlavour[i],event))
+          {
+            this.removeAttribute("sivDragging");       
+        
+            switch (event.dataTransfer.mozGetDataAt(this.sivFlavour[i],3))
+            {
+              case "move" :
+                this.moveElement(this.sivFlavour[i],event);
+                break;
             
-          case "create" :
-            this.createElement(event);
-            break;
+              case "create" :
+                this.createElement(this.sivFlavour[i],event);
+                break;
+            }
+            return;
+          }
         }   
 
         // TODO hookup listener ...
@@ -231,12 +236,12 @@
          {
            switch (this.sivAction)
            {
-             case "move" :
+             case "move" :             
                mozSetDataAt(this.sivFlavour,this,0);
                mozSetDataAt(this.sivFlavour,this.previousSibling,1);
                mozSetDataAt(this.sivFlavour,this.sivOwnerId,2);
                mozSetDataAt(this.sivFlavour,"move",3);
-               
+
                break;
                
              case "create" :
@@ -251,7 +256,9 @@
                throw "Unknown Action..."
            }
            
-           // TODO use this including the childs as drop image
+           // TODO use mouse vent and calculate real offset istead of using 5,5...
+           setDragImage(this,5,5);
+           
          }
          
          event.stopPropagation();

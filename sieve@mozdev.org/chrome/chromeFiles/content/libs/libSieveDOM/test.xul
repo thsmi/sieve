@@ -26,8 +26,14 @@
    
 .SivElementBlock {
   padding-left: 20px;
+  padding-right: 5px;
 }
-    
+
+.SivElementTest {
+  padding-left: 20px;
+  padding-right: 5px;
+}
+  
 .SivElement {
   background-color: -moz-dialog;
   background-image: -moz-linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
@@ -43,6 +49,24 @@
 /*  background-color: hsl(219,45%,60%);*/
 /*  background-color: hsl(92,45%,52%);*/
 }
+
+.SivElement[sivIsEditable=true]
+{
+  background-color: hsl(92,45%,52%);
+}
+
+/*sivDragBox : hoover
+.SivElement[sivIsEditable=true]
+{
+  background-color: hsl(92,45%,52%);
+}*/
+
+/*.SivElement[sivElmType=editable]
+{
+  background-image:url('edit');
+  background-repeat:no-repeat;
+  background-position:top left;   
+}*/
 
 .SivFocusedElement {
   background-color: -moz-dialog;
@@ -60,7 +84,7 @@
 }
 
 .SivElement:hover {
-background-image: -moz-linear-gradient(rgba(255,255,255,.5), rgba(50%,50%,50%,.2), rgba(0,0,0,.15));
+  background-image: -moz-linear-gradient(rgba(255,255,255,.5), rgba(50%,50%,50%,.2), rgba(0,0,0,.15));
   /* selected...
   background-image: -moz-linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.1));*/
 }
@@ -215,21 +239,27 @@ function update()
   <vbox>
     <vbox style="background-color:gray;overflow-y: scroll;">
       <sivDragBox sivAction="create" sivElmType="action/discard" >
+        <image pack="center" src="discard.png"/>
         <label value="Discard Message" />
       </sivDragBox>
-      <sivDragBox sivAction="create" sivElmType="action/fileinto" >
+      <sivDragBox sivAction="create" sivElmType="action/fileinto">
+        <image pack="center" src="fileinto.png"/>
         <label value="Move Message to Folder" />
       </sivDragBox>
       <sivDragBox sivAction="create" sivElmType="action/keep" >
+        <image pack="center" src="keep.png"/>
         <label value="Keep Message in Inbox" />
       </sivDragBox>            
       <sivDragBox sivAction="create" sivElmType="action/redirect" >
+        <image pack="center" src="forward.png"/>
         <label value="Redirect Message" />
       </sivDragBox>
       <sivDragBox sivAction="create" sivElmType="action/reject" >
+        <image pack="center" src="reply.png"/>
         <label value="Reject Message" />
       </sivDragBox>
       <sivDragBox sivAction="create" sivElmType="action/stop" >
+        <image pack="center" src="stop.png"/>
         <label value="Stop Processing message" />
       </sivDragBox>  
       <separator class="groove-thin"/>
@@ -238,7 +268,7 @@ function update()
       </sivDragBox>                     
     </vbox>
     <spacer flex="1" />
-    <sivDropBox id="trash" />
+    <sivDropBox id="trash" sivAccepts="sieve/action,sieve/test"/>
   </vbox>
   <vbox flex="1" />
   <vbox id="divOutput" style="background-color:gray;overflow-y: scroll;"  />

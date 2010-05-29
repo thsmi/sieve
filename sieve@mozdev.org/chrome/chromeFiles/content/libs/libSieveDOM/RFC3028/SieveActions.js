@@ -83,6 +83,15 @@ SieveRedirect.prototype.init
   return data;        
 }
 
+SieveRedirect.prototype.onValidate
+   = function ()
+{
+  this.address.setValue(this.domInput.value);  
+  this.domDescription.setAttribute("value",this.address.getValue());
+
+  return true;
+}
+
 SieveRedirect.prototype.toString
     = function ()
 {
@@ -95,88 +104,30 @@ SieveRedirect.prototype.toString
 SieveRedirect.prototype.toElement
     = function ()
 {
-  
-  var that = this;
-  
-  var elm =  createDragBox(this.id);
-  elm.className = null;
-  
-  elm.appendChild(document.createElement("vbox"));
-  elm.appendChild(document.createElement("vbox"));
-    
   // create read only box...
-  var box = elm.firstChild;
-  box.className ="SivElement";
-  box.appendChild(
-        document.createElement("description"))
-     .setAttribute("value",
-        "Redirect message to: "+this.address.getValue()); 
+  var roBox = document.createElement("vbox");
   
+  roBox.appendChild(document.createElement("description"))
+     .setAttribute("value","Redirect message to: ");
+        
+  this.domDescription = roBox.appendChild(document.createElement("description"));
+  this.domDescription.setAttribute("value",""+this.address.getValue());
+        
   // create edit box...
-  var box = elm.firstChild.nextSibling;
-  
-  box.className = "SivFocusedElement";
-  box.style.display = "none";
-  box.appendChild(
-        document.createElement("description"))
-     .setAttribute("value",
-        "Redirect message to:");
-
-        //TODO change to: <textbox type="autocomplete" autocompletesearch="mydomain addrbook"/>
-  var input = box.appendChild(document.createElement("textbox")); 
-  input.setAttribute("type","autocomplete");
-  input.setAttribute("autocompletesearch","mydomain addrbook");
-  input.setAttribute("value", ""+this.address.getValue());
-  
-  box = box.appendChild(document.createElement("hbox"));
-  box.appendChild(
-        document.createElement("spacer"))
-     .setAttribute("flex","1");
-     
-  var btn = box.appendChild(document.createElement("button"));
-  btn.setAttribute("label","Apply");
-  btn.addEventListener("click",
-    function(e){ 
-      alert("apply changes");
-      // TODO that.string.setValue(Textbox.value)
-      
-      elm.firstChild.style.display = null;
-      elm.firstChild.nextSibling.style.display = "none";
-    },true );
+  var rwBox = document.createElement("vbox");
     
-  btn = box.appendChild(document.createElement("button"));
-  btn.setAttribute("label","Discard");
-  btn.addEventListener("click",
-    function(e){ 
-      alert("discard changes");
-      
-      elm.firstChild.style.display = null;
-      elm.firstChild.nextSibling.style.display = "none";
-    },true );       
-     
-  elm.firstChild.addEventListener("click",
-    function(e){ 
-      elm.firstChild.style.display = "none";
-      elm.firstChild.nextSibling.style.display = null;
-    }, true );
-      
-  return elm;
-}
+  rwBox.appendChild(document.createElement("description"))
+     .setAttribute("value","Redirect message to: ");
 
-SieveRedirect.prototype.onBouble
-    = function (message)
-{
-  if ((message == 'blur') && (this.elm != null))
-  {
-    // read input value and update string...
-    this.address.setValue(this.elm.getElementsByTagName('input')[0].value);
-    // recreate element...
-    this.elm.parentNode.replaceChild(this.toElement(),this.elm);
-    this.elm = null;
-  }
-  
-  return [];
-}  
+  //TODO change to: <textbox type="autocomplete" autocompletesearch="mydomain addrbook"/>
+  this.domInput = rwBox.appendChild(document.createElement("textbox"));
+  this.domInput.setAttribute("type","autocomplete");
+  this.domInput.setAttribute("autocompletesearch","mydomain addrbook");
+  this.domInput.setAttribute("value",""+this.address.getValue());
+      
+  return createEditableDragBox(this.id,roBox,rwBox,this);  
+}
+ 
 /******************************************************************************/
 
 function SieveReject(id)
@@ -184,6 +135,7 @@ function SieveReject(id)
   this.id = id;
   
   this.reason = SieveLexer.createByName("string");
+  this.reason.init("text:\r\n.\r\n");
   
   this.whiteSpace = SieveLexer.createByName("whitespace");
   this.whiteSpace.init(" ");
@@ -221,67 +173,41 @@ SieveReject.prototype.toString
     + this.semicolon.toString();
 }
 
-SieveReject.prototype.onEdit
-    = function (e)
+SieveReject.prototype.onValidate
+   = function ()
 {
-  e.stopPropagation();
-  
-  var elm = document.createElement("vbox");
-  elm.className = "SivFocusedElement";
-  
-  elm.appendChild(
-        document.createTextNode("Reject incomming messages and reply the following reason:"));
-        
-  var input = document.createElement("textbox");  
-  input.setAttribute( "value", ""+this.reason.getValue());
-  input.addEventListener("click",function(e){alert('input click');/*e.stopPropagation()*/;}, true);
-  
-  elm.appendChild(input);
+  this.reason.setValue(this.domInput.value);  
+  this.domReason.setAttribute("value",this.reason.getValue());
 
-  // prevent default event listeners...
-  elm.addEventListener("click",function(e){e.stopPropagation();}, false);
-  
-  e.target.parentNode.replaceChild(elm,e.target);
- 
-  // cache edit dialog...
-  this.elm = elm;  
+  return true;
 }
 
 SieveReject.prototype.toElement
     = function ()
-{ 
-  var elm = createDragBox(this.id);
- 
-  var desc = document.createElement("description");
-  desc.setAttribute("value","Reject incomming messages and reply the following reason:");
-  elm.appendChild(desc);
-
-  desc = document.createElement("description");
-  desc.setAttribute("value",this.reason.getValue());
-  elm.appendChild(desc);
-  
-  var that = this;
-  elm.addEventListener("click",function(e){ that.onEdit(e);},true );
-  
-  return elm;
-}
-
-SieveReject.prototype.onBouble
-    = function (message)
 {
-  if ((message == 'blur') && (this.elm != null))
-  {
-    // read input value and update string...
-    //this.address.setValue(this.elm.getElementsByTagName('input')[0].value);
-    // recreate element...
-    this.elm.parentNode.replaceChild(this.toElement(),this.elm);
-    this.elm = null;
-    
-    // return false on error and true if blur is ok...
-  }
+  // create read only box...
+  var roBox = document.createElement("vbox");
   
-  return [];
-} 
+  roBox.appendChild(document.createElement("description"))
+     .setAttribute("value",
+        "Reject incomming messages and reply the following reason:");
+        
+  this.domReason = roBox.appendChild(document.createElement("description"));
+  this.domReason.setAttribute("value",this.reason.getValue());
+        
+  // create edit box...
+  var rwBox = document.createElement("vbox");
+    
+  rwBox.appendChild(document.createElement("description"))
+     .setAttribute("value",
+        "Reject incomming messages and reply the following reason:");
+
+  this.domInput = rwBox.appendChild(document.createElement("textbox")); 
+  this.domInput.setAttribute("multiline", "true");
+  this.domInput.setAttribute("value",""+this.reason.getValue());
+      
+  return createEditableDragBox(this.id,roBox,rwBox,this);
+}
 
 
 /******************************************************************************/
@@ -405,87 +331,39 @@ SieveFileInto.prototype.toString
     + this.semicolon.toString();
 }
 
+SieveFileInto.prototype.onValidate
+    = function ()
+{
+  this.string.setValue(this.domInput.value);  
+  this.domDescription.setAttribute("value",this.string.getValue());
+
+  return true;
+}
+
 SieveFileInto.prototype.toElement
     = function ()
 {
-  
-  var that = this;
-  
-  var elm =  createDragBox(this.id);
-  elm.className = null;
-  
-  elm.appendChild(document.createElement("vbox"));
-  elm.appendChild(document.createElement("vbox"));
-    
   // create read only box...
-  var box = elm.firstChild;
-  box.className ="SivElement";
-  box.appendChild(
-        document.createElement("description"))
-     .setAttribute("value",
-        "Copy the incomming message into: "+this.string.getValue()); 
+  var roBox = document.createElement("vbox");
   
+  roBox.appendChild(document.createElement("description"))
+     .setAttribute("value",
+        "Copy the incomming message into: ");
+        
+  this.domDescription = roBox.appendChild(document.createElement("description"));
+  this.domDescription.setAttribute("value",this.string.getValue());
+        
   // create edit box...
-  var box = elm.firstChild.nextSibling;
-  
-  box.className = "SivFocusedElement";
-  box.style.display = "none";
-  box.appendChild(
-        document.createElement("description"))
-     .setAttribute("value",
-        "Copy the incomming message into:");  
-  box.appendChild(
-        document.createElement("textbox"))
-     .setAttribute("value",""+this.string.getValue());
-  
-  box = box.appendChild(document.createElement("hbox"));
-  box.appendChild(
-        document.createElement("spacer"))
-     .setAttribute("flex","1");
-     
-  var btn = box.appendChild(document.createElement("button"));
-  btn.setAttribute("label","Apply");
-  btn.addEventListener("click",
-    function(e){ 
-      alert("apply changes");
-      // TODO that.string.setValue(Textbox.value)
-      
-      elm.firstChild.style.display = null;
-      elm.firstChild.nextSibling.style.display = "none";
-    },true );
+  var rwBox = document.createElement("vbox");
     
-  btn = box.appendChild(document.createElement("button"));
-  btn.setAttribute("label","Discard");
-  btn.addEventListener("click",
-    function(e){ 
-      alert("discard changes");
-      
-      elm.firstChild.style.display = null;
-      elm.firstChild.nextSibling.style.display = "none";
-    },true );       
-     
-  elm.firstChild.addEventListener("click",
-    function(e){ 
-      elm.firstChild.style.display = "none";
-      elm.firstChild.nextSibling.style.display = null;
-    }, true );
-      
-  return elm;
-}
+  rwBox.appendChild(document.createElement("description"))
+     .setAttribute("value",
+        "Copy the incomming message into: ");
 
-SieveFileInto.prototype.onBouble
-    = function (message)
-{
-  if ((message == 'blur') && (this.elm != null))
-  {
-    // read input value and update string...
-    this.string.setValue(this.elm.getElementsByTagName('input')[0].value);
-    // recreate element...
-    this.elm.parentNode.replaceChild(this.toElement(),this.elm);
-    this.elm = null;
-  }
-  
-  return [];
+  this.domInput = rwBox.appendChild(document.createElement("textbox")); 
+  this.domInput.setAttribute("value",""+this.string.getValue());
+      
+  return createEditableDragBox(this.id,roBox,rwBox,this);  
 }
 
 /******************************************************************************/

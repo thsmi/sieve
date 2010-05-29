@@ -1,73 +1,42 @@
-/******************************************************************************/
-
-SieveAnyOf.isAnyOf
-  = function(token)
-{ 
-  if (token.indexOf("anyof") == 0)
-    return true;
-  
-  return false
-}
-    
-function SieveAnyOf(id)
-{
-  this.id = id;
-  this.whiteSpace = [];
-  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[1] = SieveLexer.createByName("whitespace");
-  
-  this.testList = SieveLexer.createByName("test/testlist");
-}
-
-SieveAnyOf.prototype.init
-    = function (data)
-{
-  // Syntax :
-  // <"anyof"> <tests: test-list>
-
-  data = data.slice("anyof".length);
-    
-  data = this.whiteSpace[0].init(data);
-  
-  data = this.testList.init(data);
-    
-  data = this.whiteSpace[1].init(data);
-  
-  return data;
-    
-}    
-
-SieveAnyOf.prototype.toString
-    = function ()
-{
-  return "anyof"
-    + this.whiteSpace[0].toString()
-    + this.testList.toString()
-    + this.whiteSpace[1].toString();
-}
-
-SieveAnyOf.prototype.toXUL
-    = function ()
-{
-  return "any of the following conditions match"
-    + this.testList.toXUL();
-}
+/* 
+ * The contents of this file is licenced. You may obtain a copy of
+ * the license at http://sieve.mozdev.org or request it via email 
+ * from the author. Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
 
 
 /*****************************************************************************/
 
-SieveAllOf.isAllOf
+// TODO rename allofAnyOf to SieveTestSection...
+// ... and merge with testlist...
+// ... implement logic :
+//  * zero tests, one test or allof/anyof with one test...
+//    ... display only this test...
+//  * if it contains more than one test display display the testlist...
+//     ... and let the user decide via dropdown if he wants anyof or allof
+//
+
+SieveAllOfAnyOf.isAllOfAnyOf
   = function(token)
-{ 
+{
+  token = token.substring(0,5).toLowerCase();
+  
   if (token.indexOf("allof") == 0)
+    return true;
+  if (token.indexOf("anyof") == 0)
     return true;
 
   return false;
 }
 
-function SieveAllOf(id) 
+function SieveAllOfAnyOf(id) 
 {
   this.id = id;
+  
+  this.isAllOf = true;
   
   this.whiteSpace = [];
   this.whiteSpace[0] = SieveLexer.createByName("whitespace");
@@ -76,13 +45,20 @@ function SieveAllOf(id)
   this.testList = SieveLexer.createByName("test/testlist");
 }
 
-SieveAllOf.prototype.init
+SieveAllOfAnyOf.prototype.init
     = function (data)
 {
   // Syntax :
   // <"allof"> <tests: test-list>
   
-  data = data.slice("allof".length);
+  if ("allof" == data.substring(0,5).toLowerCase())
+    this.isAllOf = true;
+  else if ("anyof" == data.substring(0,5).toLowerCase())
+    this.isAllOf = false;
+  else
+    throw "allof or anyof expected but found: \n"+data.substr(0,50)+"...";
+  
+  data = data.slice(5);
   
   data = this.whiteSpace[0].init(data);
  
@@ -94,19 +70,25 @@ SieveAllOf.prototype.init
     
 }    
 
-SieveAllOf.prototype.toString
+SieveAllOfAnyOf.prototype.onBouble
+    = function (type,message)
+{
+  return this.testList.onBouble(type,message);  
+}
+
+SieveAllOfAnyOf.prototype.toString
     = function ()
 {
-  return "allof"
+  return (this.isAllOf?"allof":"anyof")
     + this.whiteSpace[0].toString()
     + this.testList.toString()
     + this.whiteSpace[1].toString();
 }
 
-SieveAllOf.prototype.toXUL
+SieveAllOfAnyOf.prototype.toXUL
     = function ()
 {
-  return "all of the following conditions match"
+  return (this.isAllOf?"all of":"any of")+" the following conditions match"
     + this.testList.toXUL();
 }
 /******************************************************************************/
@@ -428,7 +410,7 @@ function SieveSizeTest(id)
   this.whiteSpace[2] = SieveLexer.createByName("whitespace");  
   
   this.over = false;
-  this.size = new SieveNumber(this.id+"_2");
+  this.size = new SieveNumber();
 }
 
 SieveSizeTest.prototype.init
@@ -460,7 +442,6 @@ SieveSizeTest.prototype.init
   data = this.whiteSpace[2].init(data);
   
   return data;
-    
 }    
 
 SieveSizeTest.prototype.toString
@@ -474,17 +455,92 @@ SieveSizeTest.prototype.toString
     + this.whiteSpace[2].toString();
 }
 
-SieveSizeTest.prototype.toXUL
+SieveSizeTest.prototype.onValidate
     = function ()
 {
-  return "<html:div class='SieveSizeTest'>"
-    + " message size is "
-    + "<html:select>"
-    + "<html:option "+((this.over)?"selected='true'":"")+" >over</html:option>" 
-    + "<html:option "+((this.over)?"":"selected='true'")+" >under</html:option>" 
-    + "</html:select>"
-    + this.size.toXUL()
-    + "</html:div>"
+  if (this.domOver.selectedItem.value == ":over")
+    this.isOver = true;
+  else if (this.domOver.selectedItem.value == ":under")
+    this.isOver = false;
+  else
+    return false;
+    
+  this.size.setValue(this.domInput.value,this.domUnit.selectedItem.value)
+  
+  this.domDescription.setAttribute("value",
+      "message is "+(this.isOver?"larger":"smaller")+" than "+this.size.toString());
+  
+  return true;      
+}
+
+SieveSizeTest.prototype.toElement
+    = function ()
+{
+  // create read only box...
+  var roBox = document.createElement("hbox");
+  
+  this.domDescription = roBox.appendChild(document.createElement("description"));
+  this.domDescription.setAttribute("value",
+      "message is "+(this.isOver?"larger":"smaller")+" than "+this.size.toString());
+          
+  // create edit box...
+  var rwBox = document.createElement("vbox").appendChild(document.createElement("hbox"));
+  rwBox.setAttribute("align","baseline");
+  rwBox.appendChild(document.createElement("description"))
+     .setAttribute("value","Message is");
+
+     
+  this.domOver = document.createElement("menulist");
+  this.domOver.appendChild(document.createElement("menupopup"));
+  
+  var item = document.createElement("menuitem");  
+  item.setAttribute("label","bigger");
+  item.setAttribute("value",":over");
+  if (this.isOver)
+    item.setAttribute("selected","true");
+  this.domOver.firstChild.appendChild(item);
+
+  var item = document.createElement("menuitem");
+  item.setAttribute("label","smaler");
+  item.setAttribute("value",":under");
+  if (!this.isOver)
+    item.setAttribute("selected","true");
+  this.domOver.firstChild.appendChild(item);
+  
+  rwBox.appendChild(this.domOver);
+  
+  
+  this.domInput = rwBox.appendChild(document.createElement("textbox"));
+  this.domInput.setAttribute("value",""+this.size.getValue().number);
+  
+  this.domUnit = document.createElement("menulist");
+  this.domUnit.appendChild(document.createElement("menupopup"));
+  
+  
+  var item = document.createElement("menuitem");  
+  item.setAttribute("label","Kilobytes");
+  item.setAttribute("value","K");
+  if (this.size.getValue().unit == "K")
+    item.setAttribute("selected","true");
+  this.domUnit.firstChild.appendChild(item);
+
+  var item = document.createElement("menuitem");
+  item.setAttribute("label","Megabytes");
+  item.setAttribute("value","M");
+  if (this.size.getValue().unit == "M")
+    item.setAttribute("selected","true");
+  this.domUnit.firstChild.appendChild(item);
+
+  var item = document.createElement("menuitem");
+  item.setAttribute("label","Gigabytes");
+  item.setAttribute("value","G");
+  if (this.size.getValue().unit == "G")
+    item.setAttribute("selected","true");
+  this.domUnit.firstChild.appendChild(item);  
+  
+  rwBox.appendChild(this.domUnit);
+  
+  return createEditableTestBox(this.id,roBox,rwBox.parentNode,this);
 }
 
 /******************************************************************************/
@@ -567,7 +623,7 @@ SieveHeader.prototype.init
     = function (data)
 {
   // Syntax :
-  // <"header"> [COMPARATOR] [MATCH-TYPE] <header-names: string-list> <key-list: string-list>             
+  // <"header"> [COMPARATOR] [MATCH-TYPE] <header-names: string-list> <key-list: string-list>         
   
   data = data.slice("header".length);
   
@@ -632,7 +688,7 @@ SieveHeader.prototype.toString
 
 SieveHeader.prototype.toXUL
     = function ()
-{
+{  
   return "any of the following messageheaders "+this.headerNames.toXUL() 
       + "[casesensitive/insensitive] [matchtype e.g. contains]"
       + " one of the following values "+ this.keyList.toXUL();
@@ -669,7 +725,7 @@ SieveHeader.prototype.toXUL
 // CONSTRUCTOR:
 function SieveTestList(size)
 {  
-  this.elements = new Array();
+  this.elements = [];
 }
 
 // PUBLIC STATIC:
@@ -726,6 +782,13 @@ SieveTestList.prototype.init
   return data;
 }
 
+SieveTestList.prototype.onBouble
+    = function (type,message)
+{  
+  // TODO Implement addElement and removeElement       
+  return [];
+}
+
 SieveTestList.prototype.toString
     = function ()
 {          
@@ -770,13 +833,10 @@ with (SieveLexer)
         return (token.substr(0,7).toLowerCase().indexOf("address") == 0); }, 
       function(id) {return new SieveAddress(id)});
       
-  register("test","test/allof",
-      function(token) {return SieveAllOf.isAllOf(token)}, 
-      function(id) {return new SieveAllOf(id)});
+  register("test","test/allofanyof",
+      function(token) {return SieveAllOfAnyOf.isAllOfAnyOf(token)}, 
+      function(id) {return new SieveAllOfAnyOf(id)});
       
-  register("test","test/anyof",
-      function(token) {return SieveAnyOf.isAnyOf(token)}, 
-      function(id) {return new SieveAnyOf(id)});
   register("test","test/boolean",
       function(token) {return SieveBoolean.isBoolean(token)}, 
       function(id) {return new SieveBoolean(id)});
@@ -796,11 +856,7 @@ with (SieveLexer)
       function(id) {return new SieveNot(id)});  
   register("test","test/size",
       function(token) {return SieveSizeTest.isSizeTest(token)}, 
-      function(id) {return new SieveSizeTest(id)});
-
-  register("test/","test/testlist",
-      function(token) {return SieveTestList.isTestList(token)}, 
-      function(id) {return new SieveTestList(id)});     
+      function(id) {return new SieveSizeTest(id)});     
       
   register("test/","test/testlist",
       function(token) {return SieveTestList.isTestList(token)}, 

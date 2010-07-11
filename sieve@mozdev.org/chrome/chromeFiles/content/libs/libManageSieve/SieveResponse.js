@@ -93,6 +93,10 @@ function SieveAbstractResponse(parser)
     parser.extractLineBreak();
 }
 
+SieveAbstractResponse.prototype.message = null;
+SieveAbstractResponse.prototype.responseCode = null;
+SieveAbstractResponse.prototype.response = -1;
+
 SieveAbstractResponse.prototype.getMessage
     = function () { return this.message; }
 
@@ -148,20 +152,11 @@ SieveAbstractResponse.prototype.getResponseCode
  */
 function SieveSimpleResponse(data)
 {
-  this.superior = new SieveAbstractResponse(
-                        new SieveResponseParser(data));
+  SieveAbstractResponse.call(this,new SieveResponseParser(data));
 }
-SieveSimpleResponse.prototype.getMessage
-    = function () { return this.superior.getMessage(); }
-    
-SieveSimpleResponse.prototype.hasError 
-    = function () { return this.superior.hasError(); }
 
-SieveSimpleResponse.prototype.getResponse
-    = function () { return this.superior.getResponse(); }
-
-SieveSimpleResponse.prototype.getResponseCode
-    = function () { return this.superior.getResponseCode(); }
+// Inherrit prototypes from SieveAbstractResponse...
+SieveSimpleResponse.prototype.__proto__ = SieveAbstractResponse.prototype;
 
 /**
  * Parses the capabilites posted by the ManageSieve server upon a client 
@@ -251,20 +246,12 @@ function SieveCapabilitiesResponse(data)
     
   } 
 
-  this.superior = new SieveAbstractResponse(parser);
+  // invoke inheritted Object constructor...
+  SieveAbstractResponse.call(this,parser);  
 }
 
-SieveCapabilitiesResponse.prototype.getMessage
-    = function (){ return this.superior.getMessage(); }
-    
-SieveCapabilitiesResponse.prototype.hasError
-    = function () { return this.superior.hasError(); }
-
-SieveCapabilitiesResponse.prototype.getResponse
-    = function () { return this.superior.getResponse(); }
-
-SieveCapabilitiesResponse.prototype.getResponseCode
-    = function () { return this.superior.getResponseCode(); }
+// Inherrit properties from SieveAbstractResponse
+SieveCapabilitiesResponse.prototype.__proto__ = SieveAbstractResponse.prototype;
 
 SieveCapabilitiesResponse.prototype.getImplementation
     = function () { return this.implementation; }
@@ -406,23 +393,14 @@ function SieveListScriptResponse(data)
         parser.extractLineBreak();
         
     }
-    
-	// War die Anfrage erfolgreich?
-    this.superior = new SieveAbstractResponse(parser);
+
+  // invoke inheritted Object constructor...
+  SieveAbstractResponse.call(this,parser);  
 }
 
-SieveListScriptResponse.prototype.getMessage
-    = function (){ return this.superior.getMessage(); }
-
-SieveListScriptResponse.prototype.hasError
-    = function () { return this.superior.hasError(); }
-
-SieveListScriptResponse.prototype.getResponse
-    = function () { return this.superior.getResponse(); }
-
-SieveListScriptResponse.prototype.getResponseCode
-    = function () { return this.superior.getResponseCode(); }
-    
+// Inherrit properties from SieveAbstractResponse
+SieveListScriptResponse.prototype.__proto__ = SieveAbstractResponse.prototype;    
+   
 SieveListScriptResponse.prototype.getScripts
     = function () { return this.scripts; }
 
@@ -616,28 +594,24 @@ function SieveGetScriptResponse(scriptName,data)
     parser.extractLineBreak();
   }
 	
-  this.superior = new SieveAbstractResponse(parser);
+  // invoke inheritted Object constructor...
+  SieveAbstractResponse.call(this,parser);  
 }
 
-SieveGetScriptResponse.prototype.getMessage
-    = function (){ return this.superior.getMessage(); }
-    
-SieveGetScriptResponse.prototype.hasError
-    = function () { return this.superior.hasError(); }
+// Inherrit properties from SieveAbstractResponse
+SieveGetScriptResponse.prototype.__proto__ = SieveAbstractResponse.prototype;    
 
-SieveGetScriptResponse.prototype.getResponse
-    = function () { return this.superior.getResponse(); }
-
-SieveGetScriptResponse.prototype.getResponseCode
-    = function () { return this.superior.getResponseCode(); }
 /**
- * @return {String}
+ * Conatins the requested sieve script. Script can't be locket, this means
+ * several clients can manipulate a script at the same time.
+ * 
+ * @return {String} returns the script's content
  */    
 SieveGetScriptResponse.prototype.getScriptBody
     = function () { return this.scriptBody; }
 
 /**
- * @return {String}
+ * @return {String} Containing the script's Name.
  */
 SieveGetScriptResponse.prototype.getScriptName
     = function () { return this.scriptName; }        

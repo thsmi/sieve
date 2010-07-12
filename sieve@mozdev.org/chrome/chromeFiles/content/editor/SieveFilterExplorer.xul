@@ -163,7 +163,7 @@
               <button id="btnServerDetails" oncommand="onServerDetails();" flex="1">
                 <hbox flex="1"  align="center" >
                   <image pack="center" id="imgServerDetails" height="9px" width="9px" 
-                         src="chrome://sieve/content/images/twisty-clsd.png" />
+                         src="chrome://global/skin/tree/twisty-clsd.png" />
                   <label style="text-align:left" value="&list.details.capability;" flex="1" />
                 </hbox>
               </button>                                  

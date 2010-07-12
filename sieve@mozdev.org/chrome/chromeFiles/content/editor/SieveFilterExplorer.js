@@ -906,15 +906,15 @@ function onServerDetails()
   var el = document.getElementById("vbServerDetails");  
   var img = document.getElementById("imgServerDetails");
     
-  if (el.hidden == true)
-  {    
-    el.removeAttribute('hidden');
-    img.setAttribute('src','chrome://global/skin/tree/twisty-clsd.png');
+  if (el.hasAttribute('hidden'))
+  {
+    img.setAttribute('src','chrome://global/skin/tree/twisty-open.png'); 
+    el.removeAttribute('hidden');       
   }
   else
   {
     el.setAttribute('hidden','true');
-    img.setAttribute('src','chrome://global/skin/tree/twisty-open.png');
+    img.setAttribute('src','chrome://global/skin/tree/twisty-clsd.png');
   }  
 }
 

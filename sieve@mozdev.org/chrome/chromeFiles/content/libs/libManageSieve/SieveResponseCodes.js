@@ -7,78 +7,69 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-
-// TODO Simplify response codes...
-function SieveRespCodeAuthTooWeak(code) 
+/**
+ * 
+ * @param {String} code
+ */
+function SieveResponseCode(code)
 {
-  this.code = code
+  this.code = code;  
+  
 }
 
-SieveRespCodeAuthTooWeak.prototype.getCode
-    = function ()
-{
-  return this.code;
-} 
+SieveResponseCode.prototype.code = "";
 
-
-function SieveRespCodeEncryptNeeded(code) 
+/**
+ * Responsecodes should not encapulsted in quotes according to the RFC.
+ * Never the less Cyrus Servers sometimes do encapsulate the response codes.  
+ * 
+ * This method is aware of this behaviour, and should be always when comparing
+ * ResponseCodes  
+ * 
+ * @param {String} code
+ *   the response code which should be testet for equality
+ */
+SieveResponseCode.prototype.equalsCode
+    = function (code)
 {
-  this.code = code;
+  // If the Response Code starts with a quote skip we run into the cyrus bug. 
+  // This means we need an offset of 1 first character...  
+  var offset = this.code[0] == '"'?1:0;
+  
+  if (this.code.toUpperCase().indexOf(code.toUpperCase()) == offset)
+    return true;
+    
+  return false;   
 }
 
-SieveRespCodeEncryptNeeded.prototype.getCode
-    = function ()
+/**
+ * 
+ * @param {String} code
+ */
+function SieveResponseCodeSasl(code)
 {
-  return this.code;
+  SieveResponseCode.call(this,code);
 }
 
-
-function SieveRespCodeQuota(code) 
-{
-  this.code = code;
-}
-
-SieveRespCodeQuota.prototype.getCode
-    = function ()
-{
-  return this.code;
-}
+// Inherrit prototypes from SieveResponseCode...
+SieveResponseCodeSasl.prototype.__proto__ = SieveResponseCode.prototype;
 
 
-function SieveRespCodeSasl(code)
-{
-  this.code = code
-}
-
-SieveRespCodeSasl.prototype.getCode
-    = function ()
-{
-  return this.code;
-}
-
-SieveRespCodeSasl.prototype.getSasl
+SieveResponseCodeSasl.prototype.getSasl
     = function ()
 {
   return this.code.slice("SASL ".length);
 }
 
-
-function SieveRespCodeReferral(code)
+/**
+ * 
+ * @param {String} code
+ */
+function SieveResponseCodeReferral(code)
 {
-  this.code = code
-}
-
-SieveRespCodeReferral.prototype.getCode
-    = function ()
-{
-  return this.code;
-}
-
-SieveRespCodeReferral.prototype.getHostname
-    = function ()
-{
+  SieveResponseCode.call(this,code.split(' ')[0]);
   
-  var hostname = this.code;
+  var hostname = code;
   
   //REFERRAL "sieve://c3.mail.example.com"
   // extract the quotet text
@@ -86,39 +77,14 @@ SieveRespCodeReferral.prototype.getHostname
   // remove the sieve:// prefix
   hostname = hostname.slice("sieve://".length);
   
-  return hostname;
+  this.hostname = hostname;  
 }
 
-function SieveRespCodeTransitionNeeded(code) 
-{
-  this.code = code;
-}
+// Inherrit prototypes from SieveResponseCode...
+SieveResponseCodeReferral.prototype.__proto__ = SieveResponseCode.prototype;
 
-SieveRespCodeTransitionNeeded.prototype.getCode
+SieveResponseCodeReferral.prototype.getHostname
     = function ()
-{
-  return this.code;
-}
-
-function SieveRespCodeTryLater(code) 
-{
-  this.code = code;
-}
-
-SieveRespCodeTryLater.prototype.getCode
-    = function ()
-{
-  return this.code;
-}
-
-
-function SieveRespCodeUnknown(code) 
-{
-  this.code = code;
-}
-
-SieveRespCodeUnknown.prototype.getCode
-    = function ()
-{
-  return this.code;
+{   
+  return this.hostname;
 }

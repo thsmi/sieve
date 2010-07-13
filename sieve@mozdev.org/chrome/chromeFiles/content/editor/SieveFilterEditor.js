@@ -142,7 +142,20 @@ function onCompile()
       //
       // In case we used the PUTSCRIPT hack, we don't need to delete the...
       // ... temporary script because it was never stored on the server, due...
-      // ... to this error... 
+      // ... to this error...
+      
+      // we got an overquota warning, this means syntaxcheck can't be performed
+      if (response.getResponseCode().equalsCode("QUOTA"))
+      {
+        document.getElementById("lblErrorBar").firstChild.nodeValue
+          = "Server has not enough free resources to perform a syntax check"
+          
+        document.getElementById("imgErrorBar").src
+          = "chrome://sieve/content/images/syntax-warning.png";
+          
+        return;
+      }
+
       
       document.getElementById("lblErrorBar").firstChild.nodeValue
         = response.getMessage();

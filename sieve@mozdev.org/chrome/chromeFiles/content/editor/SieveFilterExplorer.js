@@ -324,7 +324,7 @@ var event =
   {
     var code = response.getResponseCode();
 
-    if (code instanceof SieveRespCodeReferral)
+    if (code instanceof SieveResponseCodeReferral)
     {
       // close the old sieve connection
       sivDisconnect();

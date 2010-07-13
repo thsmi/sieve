@@ -71,12 +71,13 @@ function SieveAbstractResponse(parser)
     // remove the space
     parser.extractSpace();
 
-    // we got an responseCode    
+    // we found "(" so we got an responseCode    
     if (parser.startsWith([[40]]))
     {
       // remove the opening bracket
       parser.extract(1);
         
+      // extract Tokens until a ")" is found
       this.responseCode = parser.extractToken(41);
         
       // remove the closing bracket
@@ -115,30 +116,20 @@ SieveAbstractResponse.prototype.getResponse
 SieveAbstractResponse.prototype.getResponseCode
     = function ()
 {
-  if (this.responseCode.indexOf("AUTH-TOO-WEAK") == 0)
-    return new SieveRespCodeAuthTooWeak();
-  else if (this.responseCode.indexOf("ENCRYPT-NEEDED") == 0)
-    return new SieveRespCodeEncryptNeeded();
-  else if (this.responseCode.indexOf("QUOTA") == 0)
-    return new SieveRespCodeQuota();
-  else if (this.responseCode.indexOf("SASL") == 0)
-    return new SieveRespCodeSasl(this.responseCode);    
-  else if (this.responseCode.indexOf("REFERRAL") == 0)
-    return new SieveRespCodeReferral(this.responseCode);
-  else if (this.responseCode.indexOf("TRANSITION-NEEDED") == 0)
-    return new SieveRespCodeTransitionNeeded();
-  else if (this.responseCode.indexOf("TRYLATER") == 0)
-    return new SieveRespCodeTryLater();    
-
-  // SieveSimpleResponseCode
-  // SieveSaslResponseCode
-  // SieveReferalResponseCode
-     // -> implement get Message
+  // If the Response Code starts with a quote skip we run into a cyrus bug. 
+  // This means we need an offset of 1 first character...  
+  var offset = this.responseCode[0] == '"'?1:0;
+  
+  if (this.responseCode.toUpperCase().indexOf("REFERRAL") == offset)
+    return new SieveResponseCodeReferral(this.responseCode);
     
+  if (this.responseCode.toUpperCase().indexOf("SASL") == offset)
+    return new SieveResponseCodeSasl(this.responseCode);
+
   // TODO Implement these Response codes:
   //"ACTIVE" / "NONEXISTENT" / "ALREADYEXISTS" / "WARNINGS" 
     
-  return new SieveRespCodeUnknown(this.responseCode);
+  return new SieveResponseCode(this.responseCode);
 }
 
 /**

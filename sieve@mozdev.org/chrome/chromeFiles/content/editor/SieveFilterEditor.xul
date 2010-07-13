@@ -40,7 +40,9 @@
   <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveRequest.js" />
   <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveResponse.js" />
+          src="chrome://sieve/content/libs/libManageSieve/SieveResponseCodes.js" />                
+  <script type="application/javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveResponse.js" />    
   <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveResponseParser.js"/>
   <script type="application/javascript" 

@@ -58,7 +58,81 @@ function JSStringToByteArray(str,charset)
   return converter.convertToByteArray(str, {});
 }
 
+/**
+ * 
+ */
+function SieveAbstractRequest()
+{  
+  throw "Abstract Constructor, do not Invoke";
+}
 
+SieveAbstractRequest.prototype.errorListener = null;
+SieveAbstractRequest.prototype.responseListener = null;
+
+SieveAbstractRequest.prototype.addErrorListener
+    = function (listener)
+{
+  this.errorListener = listener;
+}
+
+SieveAbstractRequest.prototype.hasNextRequest
+    = function ()
+{
+  return false;
+}
+
+SieveAbstractRequest.prototype.cancel
+    = function ()
+{
+  if (this.errorListener != null)
+    this.errorListener.onTimeout();  
+}
+
+
+function SieveAbstractSaslRequest()
+{
+  throw "Abstract Constructor, do not Invoke";
+}
+
+SieveAbstractSaslRequest.prototype._username = "";
+SieveAbstractSaslRequest.prototype._password = "";
+SieveAbstractSaslRequest.prototype._authorizable = false;
+SieveAbstractSaslRequest.prototype._authorization = "";
+
+SieveAbstractSaslRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+
+
+/** @param {String} username */
+SieveAbstractSaslRequest.prototype.setUsername
+    = function (username)
+{
+  this._username = username;  
+}
+
+/** @param {String} password */
+SieveAbstractSaslRequest.prototype.setPassword
+    = function (password)
+{
+  this._password = password;  
+}
+
+/** @return {Boolean} */
+SieveAbstractSaslRequest.prototype.isAuthorizable
+    = function () 
+{
+  return this._authorizable;
+}
+
+/** @param {String} authorization */
+SieveAbstractSaslRequest.prototype.setAuthorization
+    = function (authorization)
+{
+  if (this._authorizable)
+    this._authorization = authorization;
+}
+
+
+/******************************************************************************/
 /**
  * @param {String} script
  * @author Thomas Schmid
@@ -68,38 +142,20 @@ function SieveGetScriptRequest(script)
   this.script = script;
 }
 
+// Inherrit prototypes from SieveAbstractRequest...
+SieveGetScriptRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+
 SieveGetScriptRequest.prototype.addGetScriptListener
     = function (listener)
 {
   this.responseListener = listener;
 } 
    
-SieveGetScriptRequest.prototype.addErrorListener
-    = function (listener)
-{
-	this.errorListener = listener;
-}
-
-/** @return {Boolean} */
-SieveGetScriptRequest.prototype.hasNextRequest
-    = function ()
-{
-  return false;
-}
-
 /** @return {String} */
 SieveGetScriptRequest.prototype.getNextRequest
     = function ()
 {
   return "GETSCRIPT \""+this.script+"\"\r\n";
-}
-
-/** */
-SieveGetScriptRequest.prototype.cancel
-    = function ()
-{
-  if (this.errorListener != null)
-    this.errorListener.onTimeout();  
 }
 
 /** @param {String} data */
@@ -128,12 +184,8 @@ function SievePutScriptRequest(script, body)
   this.body = body.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
 }
 
-/** @return {Boolean} */
-SievePutScriptRequest.prototype.hasNextRequest
-    = function ()
-{
-  return false;
-}
+// Inherrit prototypes from SieveAbstractRequest...
+SievePutScriptRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
 
 /** @return {String} */
 SievePutScriptRequest.prototype.getNextRequest
@@ -192,20 +244,6 @@ SievePutScriptRequest.prototype.addPutScriptListener
 {
   this.responseListener = listener;
 } 
-   
-SievePutScriptRequest.prototype.addErrorListener
-    = function (listener)
-{
-  this.errorListener = listener;
-}
-
-/** */
-SievePutScriptRequest.prototype.cancel
-    = function ()
-{
-  if (this.errorListener != null)
-    this.errorListener.onTimeout();  
-}    
 
 /** @param {String} data */
 SievePutScriptRequest.prototype.addResponse
@@ -254,12 +292,8 @@ function SieveCheckScriptRequest(body)
   //this.body = UTF8Encode(body).replace(/\r\n|\r|\n/g, "\r\n");
 }
 
-/** @return {Boolean} */
-SieveCheckScriptRequest.prototype.hasNextRequest
-    = function ()
-{
-  return false;
-}
+// Inherrit prototypes from SieveAbstractRequest...
+SieveCheckScriptRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
 
 /** @return {String} */
 SieveCheckScriptRequest.prototype.getNextRequest
@@ -274,20 +308,6 @@ SieveCheckScriptRequest.prototype.addCheckScriptListener
 {
   this.responseListener = listener;
 } 
-   
-SieveCheckScriptRequest.prototype.addErrorListener
-    = function (listener)
-{
-  this.errorListener = listener;
-}
-
-/** */
-SieveCheckScriptRequest.prototype.cancel
-    = function ()
-{
-  if (this.errorListener != null)
-    this.errorListener.onTimeout();  
-}    
 
 /** @param {String} data */
 SieveCheckScriptRequest.prototype.addResponse
@@ -326,12 +346,8 @@ function SieveSetActiveRequest(script)
     this.script = script;
 }
 
-/** @return {Boolean} */
-SieveSetActiveRequest.prototype.hasNextRequest
-    = function ()
-{
-  return false;
-}
+// Inherrit prototypes from SieveAbstractRequest...
+SieveSetActiveRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
 
 /** @return {String} */
 SieveSetActiveRequest.prototype.getNextRequest
@@ -346,20 +362,6 @@ SieveSetActiveRequest.prototype.addSetActiveListener
   this.responseListener = listener;
 } 
    
-SieveSetActiveRequest.prototype.addErrorListener
-    = function (listener)
-{
-  this.errorListener = listener;
-}
-
-/** */
-SieveSetActiveRequest.prototype.cancel
-    = function ()
-{
-  if (this.errorListener != null)
-    this.errorListener.onTimeout();  
-}
-
 /** @param {String} data */
 SieveSetActiveRequest.prototype.addResponse
     = function (data)
@@ -398,12 +400,8 @@ function SieveCapabilitiesRequest()
 {
 }
 
-/** @return {Boolean} */
-SieveCapabilitiesRequest.prototype.hasNextRequest
-    = function ()
-{
-  return false;
-}
+// Inherrit prototypes from SieveAbstractRequest...
+SieveCapabilitiesRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
 
 /** @return {String} */
 SieveCapabilitiesRequest.prototype.getNextRequest
@@ -418,20 +416,6 @@ SieveCapabilitiesRequest.prototype.addCapabilitiesListener
   this.responseListener = listener;
 } 
    
-SieveCapabilitiesRequest.prototype.addErrorListener
-    = function (listener)
-{
-  this.errorListener = listener;
-}
-
-/** */
-SieveCapabilitiesRequest.prototype.cancel
-    = function ()
-{
-  if (this.errorListener != null)
-    this.errorListener.onTimeout();  
-}
-
 /** @param {String} data */
 SieveCapabilitiesRequest.prototype.addResponse
     = function (data)
@@ -473,18 +457,14 @@ function SieveDeleteScriptRequest(script)
   this.script = script;
 }
 
+// Inherrit prototypes from SieveAbstractRequest...
+SieveDeleteScriptRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+
 /** @return {String} */
 SieveDeleteScriptRequest.prototype.getNextRequest
     = function ()
 {
   return "DELETESCRIPT \""+this.script+"\"\r\n";
-}
-
-/** @return {Boolean} */
-SieveDeleteScriptRequest.prototype.hasNextRequest
-    = function ()
-{
-  return false;
 }
 
 SieveDeleteScriptRequest.prototype.addDeleteScriptListener
@@ -493,20 +473,6 @@ SieveDeleteScriptRequest.prototype.addDeleteScriptListener
   this.responseListener = listener;
 } 
    
-SieveDeleteScriptRequest.prototype.addErrorListener
-    = function (listener)
-{
-  this.errorListener = listener;
-}
-
-/** */
-SieveDeleteScriptRequest.prototype.cancel
-    = function ()
-{
-  if (this.errorListener != null)
-    this.errorListener.onTimeout();  
-}
-
 /** @param {String} data */
 SieveDeleteScriptRequest.prototype.addResponse
     = function (data)
@@ -531,6 +497,9 @@ function SieveNoopRequest()
 {
 }
 
+// Inherrit prototypes from SieveAbstractRequest...
+SieveNoopRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+
 /** @return {String} */
 SieveNoopRequest.prototype.getNextRequest
     = function ()
@@ -538,35 +507,12 @@ SieveNoopRequest.prototype.getNextRequest
   return "NOOP\r\n";
 }
 
-/** @return {Boolean} */
-SieveNoopRequest.prototype.hasNextRequest
-    = function ()
-{
-  return false;
-}
-
-SieveNoopRequest.prototype.addNoopScriptListener
+SieveNoopRequest.prototype.addNoopListener
     = function (listener)
 {
   this.responseListener = listener;
 } 
    
-SieveNoopRequest.prototype.addErrorListener
-    = function (listener)
-{
-  // yes even the request always returns Ok, we might need this...
-  // ... error listener in case of a connection timeout.
-  this.errorListener = listener;
-}
-
-/** */
-SieveNoopRequest.prototype.cancel
-    = function ()
-{
-  if (this.errorListener != null)
-    this.errorListener.onTimeout();  
-}
-
 /** @param {String} data */
 SieveNoopRequest.prototype.addResponse
     = function (data)
@@ -597,18 +543,14 @@ function SieveRenameScriptRequest(oldScript, newScript)
   this.newScript = newScript
 }
 
+// Inherrit prototypes from SieveAbstractRequest...
+SieveRenameScriptRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+
 /** @return {String} */
 SieveRenameScriptRequest.prototype.getNextRequest
     = function ()
 {
   return "RENAMESCRIPT \""+this.oldScript+"\" \""+this.newScript+"\"\r\n";
-}
-
-/** @return {Boolean} */
-SieveRenameScriptRequest.prototype.hasNextRequest
-    = function ()
-{
-  return false;
 }
 
 SieveRenameScriptRequest.prototype.addRenameScriptListener
@@ -617,20 +559,6 @@ SieveRenameScriptRequest.prototype.addRenameScriptListener
   this.responseListener = listener;
 } 
    
-SieveRenameScriptRequest.prototype.addErrorListener
-    = function (listener)
-{
-  this.errorListener = listener;
-}
-
-/** */
-SieveRenameScriptRequest.prototype.cancel
-    = function ()
-{
-  if (this.errorListener != null)
-    this.errorListener.onTimeout();  
-}
-
 /** @param {String} data */
 SieveRenameScriptRequest.prototype.addResponse
     = function (data)
@@ -643,7 +571,6 @@ SieveRenameScriptRequest.prototype.addResponse
     this.errorListener.onError(response);
 }
 
-
 /**
  * @author Thomas Schmid
  */
@@ -651,12 +578,8 @@ function SieveListScriptRequest()
 {
 }
 
-/** @return {Boolean} */
-SieveListScriptRequest.prototype.hasNextRequest
-    = function ()
-{
-  return false;
-}
+// Inherrit prototypes from SieveAbstractRequest...
+SieveListScriptRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
 
 /** @return {String} */
 SieveListScriptRequest.prototype.getNextRequest
@@ -670,19 +593,6 @@ SieveListScriptRequest.prototype.addListScriptListener
 {
   this.responseListener = listener;
 } 
-
-SieveListScriptRequest.prototype.addErrorListener
-    = function (listener)
-{
-  this.errorListener = listener;
-}
-
-SieveListScriptRequest.prototype.cancel
-    = function ()
-{
-  if (this.errorListener != null)
-    this.errorListener.onTimeout();  
-}
 
 /** @param {String} data */
 SieveListScriptRequest.prototype.addResponse 
@@ -721,12 +631,8 @@ function SieveStartTLSRequest()
 {
 }
 
-/** @return {Boolean} */
-SieveStartTLSRequest.prototype.hasNextRequest
-    = function ()
-{
-  return false;
-}
+// Inherrit prototypes from SieveAbstractRequest...
+SieveStartTLSRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
 
 /** @return {String} */
 SieveStartTLSRequest.prototype.getNextRequest
@@ -741,19 +647,6 @@ SieveStartTLSRequest.prototype.addStartTLSListener
   this.responseListener = listener;
 } 
    
-SieveStartTLSRequest.prototype.addErrorListener
-    = function (listener)
-{
-  this.errorListener = listener;
-}
-
-SieveStartTLSRequest.prototype.cancel
-    = function ()
-{
-  if (this.errorListener != null)
-    this.errorListener.onTimeout();  
-}
-
 /** @param {String} data */
 SieveStartTLSRequest.prototype.addResponse 
     = function (data)
@@ -802,18 +695,14 @@ function SieveLogoutRequest()
 {
 }
 
+// Inherrit prototypes from SieveAbstractRequest...
+SieveLogoutRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+
 /** @return {String} */
 SieveLogoutRequest.prototype.getNextRequest
     = function ()
 {
   return "LOGOUT\r\n";
-}
-
-/** @return {Boolean} */
-SieveLogoutRequest.prototype.hasNextRequest
-    = function ()
-{
-  return false;
 }
 
 SieveLogoutRequest.prototype.addLogoutListener
@@ -822,19 +711,6 @@ SieveLogoutRequest.prototype.addLogoutListener
   this.responseListener = listener;
 } 
    
-SieveLogoutRequest.prototype.addErrorListener
-    = function (listener)
-{
-  this.errorListener = listener;
-}
-
-SieveLogoutRequest.prototype.cancel
-    = function ()
-{
-  if (this.errorListener != null)
-    this.errorListener.onTimeout();  
-}
-
 /** @param {String} data */
 SieveLogoutRequest.prototype.addResponse 
     = function (data)
@@ -880,18 +756,15 @@ SieveLogoutRequest.prototype.addResponse
  */
 function SieveInitRequest() {}
 
+// Inherrit prototypes from SieveAbstractRequest...
+SieveInitRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+
+
 /** @return {String} */
 SieveInitRequest.prototype.getNextRequest
     = function ()
 {
   return "";
-}
-
-/** @return {Boolean} */
-SieveInitRequest.prototype.hasNextRequest
-    = function ()
-{
-  return false;
 }
 
 SieveInitRequest.prototype.addInitListener
@@ -900,20 +773,6 @@ SieveInitRequest.prototype.addInitListener
   this.responseListener = listener;
 } 
    
-SieveInitRequest.prototype.addErrorListener
-    = function (listener)
-{
-  this.errorListener = listener;
-}
-
-/** */
-SieveInitRequest.prototype.cancel
-    = function ()
-{
-  if (this.errorListener != null)
-    this.errorListener.onTimeout();  
-}
-
 /** @param {String} data */
 SieveInitRequest.prototype.addResponse
     = function (data)
@@ -988,52 +847,17 @@ SieveInitRequest.prototype.addResponse
  */
 function SieveSaslPlainRequest() 
 {
-  this.authorization = "";
-  this.username = "";
-  this.password = "";
-  
+  this._authorizable = true;
 }
 
-/** @param {String} username */
-SieveSaslPlainRequest.prototype.setUsername
-    = function (username)
-{
-  this.username = username;  
-}
-
-/** @param {String} password */
-SieveSaslPlainRequest.prototype.setPassword
-    = function (password)
-{
-  this.password = password;  
-}
-
-/** @return {Boolean} */
-SieveSaslPlainRequest.prototype.isAuthorizable
-    = function () 
-{
-  return true;
-}
-
-/** @param {String} authorization */
-SieveSaslPlainRequest.prototype.setAuthorization
-    = function (authorization)
-{
-  this.authorization = authorization;
-}
-
-/** @return {Boolean} */
-SieveSaslPlainRequest.prototype.hasNextRequest
-    = function ()
-{
-  return false;
-}
+// Inherrit prototypes from SieveSASLAbstractRequest...
+SieveSaslPlainRequest.prototype.__proto__ = SieveAbstractSaslRequest.prototype;
 
 /** @return {String} */
 SieveSaslPlainRequest.prototype.getNextRequest 
     = function ()
 {
-  var logon = btoa(this.authorization+"\0"+this.username+"\0"+this.password);  
+  var logon = btoa(this._authorization+"\0"+this._username+"\0"+this._password);  
   return "AUTHENTICATE \"PLAIN\" \""+logon+"\"\r\n";
 }
 
@@ -1043,19 +867,6 @@ SieveSaslPlainRequest.prototype.addSaslPlainListener
   this.responseListener = listener;
 } 
    
-SieveSaslPlainRequest.prototype.addErrorListener
-    = function (listener)
-{
-  this.errorListener = listener;
-}
-
-SieveSaslPlainRequest.prototype.cancel
-    = function ()
-{
-  if (this.errorListener != null)
-    this.errorListener.onTimeout();  
-}
-
 SieveSaslPlainRequest.prototype.addResponse
     = function (data)
 {
@@ -1158,43 +969,8 @@ function SieveSaslLoginRequest()
   this.response = new SieveSaslLoginResponse();
 }
 
-/** 
- * @param {String} username
- */
-SieveSaslLoginRequest.prototype.setUsername
-    = function (username)
-{
-  this.username = username;
-}
-
-/**
- * checks if authorization is implemented...
- * @return {Boolean}
- */
-SieveSaslLoginRequest.prototype.isAuthorizable
-    = function () 
-{
-  return false;
-}
-
-/**
- * @param {String} authorization
- */
-SieveSaslLoginRequest.prototype.setAuthorization
-    = function (authorization)
-{
-  // login can't handle authorization...
-}
-
-/**
- * 
- * @param {String} password
- */
-SieveSaslLoginRequest.prototype.setPassword
-    = function (password)
-{
-  this.password = password;
-}
+// Inherrit prototypes from SieveAbstractRequest...
+SieveSaslLoginRequest.prototype.__proto__ = SieveAbstractSaslRequest.prototype;
 
 /** @return {String} */
 SieveSaslLoginRequest.prototype.getNextRequest
@@ -1205,9 +981,9 @@ SieveSaslLoginRequest.prototype.getNextRequest
     case 0:
       return "AUTHENTICATE \"LOGIN\"\r\n";    
     case 1: 
-      return '"'+btoa(this.username)+"\"\r\n";
+      return '"'+btoa(this._username)+"\"\r\n";
     case 2:
-      return '"'+btoa(this.password)+"\"\r\n"; 
+      return '"'+btoa(this._password)+"\"\r\n"; 
     default : 
       return ""; //it might be better to throw an Execption       
   }  
@@ -1229,20 +1005,6 @@ SieveSaslLoginRequest.prototype.addSaslLoginListener
   this.responseListener = listener;
 } 
    
-SieveSaslLoginRequest.prototype.addErrorListener
-    = function (listener)
-{
-  this.errorListener = listener;
-}
-
-/** */
-SieveSaslLoginRequest.prototype.cancel
-    = function ()
-{
-  if (this.errorListener != null)
-    this.errorListener.onTimeout();  
-}
-
 /** @param {String} data */
 SieveSaslLoginRequest.prototype.addResponse 
     = function (data)
@@ -1292,34 +1054,10 @@ SieveSaslLoginRequest.prototype.addResponse
 function SieveSaslCramMd5Request() 
 {
   this.response = new SieveSaslCramMd5Response();
-  this.username = "";
-  this.password = "";
 }
 
-SieveSaslCramMd5Request.prototype.setUsername
-    = function (username)
-{
-  this.username = username;
-}
-
-SieveSaslCramMd5Request.prototype.setPassword
-    = function (password)
-{
-  this.password = password;
-}
-
-/** @return {Boolean} */
-SieveSaslCramMd5Request.prototype.isAuthorizable
-    = function () 
-{
-  return false;
-}
-
-/** @param {String} authorization */
-SieveSaslCramMd5Request.prototype.setAuthorization
-    = function (authorization)
-{
-}
+// Inherrit prototypes from SieveAbstractRequest...
+SieveSaslCramMd5Request.prototype.__proto__ = SieveAbstractSaslRequest.prototype;
 
 SieveSaslCramMd5Request.prototype.getNextRequest
     = function ()
@@ -1331,9 +1069,9 @@ SieveSaslCramMd5Request.prototype.getNextRequest
     case 1:
       //decoding the base64-encoded challenge
       var challenge = atob(this.response.getChallenge());        
-      var hmac = this.hmacMD5( challenge, this.password );
+      var hmac = this.hmacMD5( challenge, this._password );
       
-      return "\"" + btoa( this.username + " " + hmac ) + "\"\r\n";
+      return "\"" + btoa( this._username + " " + hmac ) + "\"\r\n";
     default : 
       return ""; //it might be better to throw an Execption       
   }  
@@ -1348,25 +1086,12 @@ SieveSaslCramMd5Request.prototype.hasNextRequest
   return true;
 }
 
-SieveSaslCramMd5Request.prototype.cancel
-    = function ()
-{
-  if (this.errorListener != null)
-    this.errorListener.onTimeout();  
-}
-
 SieveSaslCramMd5Request.prototype.addSaslCramMd5Listener
     = function (listener)
 {
   this.responseListener = listener;
 } 
    
-SieveSaslCramMd5Request.prototype.addErrorListener
-    = function (listener)
-{
-  this.errorListener = listener;
-}
-
 SieveSaslCramMd5Request.prototype.addResponse 
     = function (data)
 {

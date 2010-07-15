@@ -122,3 +122,9 @@ function NSGetModule(compMgr, fileSpec)
 {
   return SieveProtocolHandlerModule;
 }
+
+function NSGetFactory(aCid)
+{
+  if (aCID.equals(SIEVE_CLASS_ID))
+    return SieveProtocolHandlerFactory;   
+}

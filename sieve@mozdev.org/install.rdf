@@ -15,6 +15,9 @@
         <em:minVersion>1.5</em:minVersion>
       	<em:maxVersion>10.0</em:maxVersion>  
       </Description>
+    </em:targetApplication>
+
+    <em:targetApplication>
       <!-- Postbox -->
       <Description>
         <em:id>postbox@postbox-inc.com</em:id>

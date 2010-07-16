@@ -22,17 +22,10 @@
  *  
  */
 
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const Cr = Components.results;
 
-// Define the Contract information needed for this Component...
-// ... the Unique Component Identifier, ...
-const SIEVE_CLASS_ID = Components.ID("{87f5b0a0-14eb-11df-a769-0002a5d5c51b}");
-// ... the description and ...
-const SIEVE_CLASS_NAME = "Sieve Account Manager Extension";
-// ... textual unique identifier or rendevous point in the ...
-// ... category manager.
-const SIEVE_CONTACT_ID = "@mozilla.org/accountmanager/extension;1?name=sieve.mozdev.org";
-
-// ************************************************************************** //
 
 //class constructor
 function SieveAccountManagerExtension() {};
@@ -40,7 +33,11 @@ function SieveAccountManagerExtension() {};
 // class definition
 SieveAccountManagerExtension.prototype = 
 {
-  name : "sieve-account",
+  classID : Components.ID("{87f5b0a0-14eb-11df-a769-0002a5d5c51b}"),
+  contactID : "@mozilla.org/accountmanager/extension;1?name=sieve.mozdev.org",
+  classDescription: "Sieve Account Manager Extension",
+  
+  name : "sieve-account",  
   chromePackageName : "sieve",
   showPanel: function(server) 
   {
@@ -89,38 +86,45 @@ var SieveAccountManagerExtensionModule =
 {
   registerSelf: function(compMgr, fileSpec, location, type)
   {
-    compMgr = compMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-    compMgr.registerFactoryLocation(SIEVE_CLASS_ID, SIEVE_CLASS_NAME, 
-        SIEVE_CONTACT_ID, fileSpec, location, type);
+    compMgr = compMgr.QueryInterface(Ci.nsIComponentRegistrar);
+    compMgr.registerFactoryLocation(
+        SieveAccountManagerExtension.prototype.classID, 
+        SieveAccountManagerExtension.prototype.classDescription,
+        SieveAccountManagerExtension.prototype.contactID,
+        fileSpec, location, type);
         
     var catMgr = Components.classes["@mozilla.org/categorymanager;1"]
-                     .getService(Components.interfaces.nsICategoryManager);
+                     .getService(Ci.nsICategoryManager);
                
-    catMgr.addCategoryEntry("mailnews-accountmanager-extensions",
-                            SIEVE_CLASS_NAME,SIEVE_CONTACT_ID, true, true);    
+    catMgr.addCategoryEntry(
+        "mailnews-accountmanager-extensions",
+        SieveAccountManagerExtension.prototype.classDescription,
+        SieveAccountManagerExtension.prototype.contactID,
+        true, true);    
   },
 
   unregisterSelf: function(compMgr, location, type)
   {
-    compMgr = compMgr.
-        QueryInterface(Components.interfaces.nsIComponentRegistrar);
-    compMgr.unregisterFactoryLocation(SIEVE_CLASS_ID, location);
+    compMgr = compMgr.QueryInterface(Ci.nsIComponentRegistrar);
+    compMgr.unregisterFactoryLocation(
+        SieveAccountManagerExtension.prototype.classID, location);
     
     var catMgr = Components.classes["@mozilla.org/categorymanager;1"]
-                     .getService(Components.interfaces.nsICategoryManager);
-    catMgr.deleteCategoryEntry("mailnews-accountmanager-extensions",
-                               SIEVE_CONTACT_ID, true);    
+                     .getService(Ci.nsICategoryManager);
+    catMgr.deleteCategoryEntry(
+        "mailnews-accountmanager-extensions",
+        SieveAccountManagerExtension.prototype.contactID, true);    
   },
   
   getClassObject: function(aCompMgr, aCID, aIID)
   {
-    if (!aIID.equals(Components.interfaces.nsIFactory))
-      throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
+    if (!aIID.equals(Ci.nsIFactory))
+      throw Cr.NS_ERROR_NOT_IMPLEMENTED;
 
-    if (aCID.equals(SIEVE_CLASS_ID))
+    if (aCID.equals(SieveAccountManagerExtension.prototype.classID))
       return SieveAccountManagerExtensionFactory;
 
-    throw Components.results.NS_ERROR_NO_INTERFACE;
+    throw Cr.NS_ERROR_NO_INTERFACE;
   },
 
   canUnload: function(aCompMgr) { return true; }
@@ -132,7 +136,17 @@ module initialization
 When the application registers the component, this function
 is called.
 ***********************************************************/
-function NSGetModule(aCompMgr, aFileSpec)
+
+try
 {
-  return SieveAccountManagerExtensionModule; 
+  Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 }
+catch (e) { }
+
+// Gecko 2.x uses NSGetFactory to register XPCOM Components...
+// ... while Gecko 1.x uses NSGetModule
+
+if ((XPCOMUtils) && (XPCOMUtils.generateNSGetFactory))
+  var NSGetFactory = XPCOMUtils.generateNSGetFactory([SieveAccountManagerExtension])
+else
+  var NSGetModule = function(compMgr, fileSpec) { return SieveAccountManagerExtensionModule; }

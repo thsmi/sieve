@@ -7,12 +7,9 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
-const nsISupports = Components.interfaces.nsISupports;
-
-// You can change these if you like
-const CLASS_ID = Components.ID("7ec95cc0-14eb-11df-b46e-0002a5d5c51b");
-const CLASS_NAME = "Sieve Connection Manager";
-const CONTRACT_ID = "@sieve.mozdev.org/transport-service;1";
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const Cr = Components.results;
 
 /**
  *  JavaScript Objects are usually create within the scope of a window. This 
@@ -23,12 +20,10 @@ const CONTRACT_ID = "@sieve.mozdev.org/transport-service;1";
  *  object. The Sieve objects basically live within this XPCOM component. 
  **/
 
-
 function SieveConnectionManager() 
 { 
-  // you can cheat and use this
-  // while testing without
-  // writing your own interface
+  // with this hack we can access this component from javascript...
+  // ...without writing your own interface
   this.wrappedJSObject = this;
   
   this.session = new Array();
@@ -37,18 +32,29 @@ function SieveConnectionManager()
 
 SieveConnectionManager.prototype =
 {
-  // returns a handle to the open session
+  classID : Components.ID("7ec95cc0-14eb-11df-b46e-0002a5d5c51b"),
+  contactID : "@sieve.mozdev.org/transport-service;1",
+  classDescription: "Sieve Connection Manager",
+  
+  /**
+   * Creates and opens a new Manage Sieve Session
+   * @return {int} a handle to the open session 
+   */
   openSession : function ()
   {   
     
     this.id ++;
-    this.session[this.id] 
-      = Components.classes["@sieve.mozdev.org/transport;1"].createInstance().wrappedJSObject;  
+    this.session[this.id] = Cc["@sieve.mozdev.org/transport;1"]
+                                .createInstance().wrappedJSObject;  
   
     return this.id;
   },
 
-  // closes the session ...
+  /**
+   * Closes and frees a Manage Sieve Session 
+   * @param {int} id
+   *   handle identifing the session that should be terminated
+   */
   closeSession : function (id)
   {
     // free resources if needed...
@@ -68,8 +74,8 @@ SieveConnectionManager.prototype =
   QueryInterface : function(aIID)
   {
     // add any other interfaces you support here
-    if (!aIID.equals(nsISupports))
-      throw Components.results.NS_ERROR_NO_INTERFACE;
+    if (!aIID.equals(Ci.nsISupports))
+      throw Cr.NS_ERROR_NO_INTERFACE;
     return this;
   }
 }
@@ -80,7 +86,7 @@ var SieveConnectionManagerFactory = {
   createInstance: function (aOuter, aIID)
   {
     if (aOuter != null)
-      throw Components.results.NS_ERROR_NO_AGGREGATION;
+      throw Cr.NS_ERROR_NO_AGGREGATION;
       
     if (this.singleton == null)
       this.singleton = new SieveConnectionManager();
@@ -93,29 +99,47 @@ var SieveConnectionManagerFactory = {
 var SieveConnectionManagerModule = {
   registerSelf: function(aCompMgr, aFileSpec, aLocation, aType)
   {
-    aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-    aCompMgr.registerFactoryLocation(CLASS_ID, CLASS_NAME, CONTRACT_ID, aFileSpec, aLocation, aType);
+    aCompMgr = aCompMgr.QueryInterface(Ci.nsIComponentRegistrar);
+    aCompMgr.registerFactoryLocation(
+        SieveConnectionManager.prototype.classID,
+        SieveConnectionManager.prototype.classDescription,
+        SieveConnectionManager.prototype.contactID, 
+        aFileSpec, aLocation, aType);
   },
 
   unregisterSelf: function(aCompMgr, aLocation, aType)
   {
-    aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-    aCompMgr.unregisterFactoryLocation(CLASS_ID, aLocation);        
+    aCompMgr = aCompMgr.QueryInterface(Ci.nsIComponentRegistrar);
+    aCompMgr.unregisterFactoryLocation(
+        SieveConnectionManager.prototype.classID, aLocation);        
   },
   
   getClassObject: function(aCompMgr, aCID, aIID)
   {
-    if (!aIID.equals(Components.interfaces.nsIFactory))
-      throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
+    if (!aIID.equals(Ci.nsIFactory))
+      throw Cr.NS_ERROR_NOT_IMPLEMENTED;
 
-    if (aCID.equals(CLASS_ID))
+    if (aCID.equals(SieveConnectionManager.prototype.classID))
       return SieveConnectionManagerFactory;
 
-    throw Components.results.NS_ERROR_NO_INTERFACE;
+    throw Cr.NS_ERROR_NO_INTERFACE;
   },
 
   canUnload: function(aCompMgr) { return true; }
 };
 
-//module initialization
-function NSGetModule(aCompMgr, aFileSpec) { return SieveConnectionManagerModule; }
+
+try
+{
+  Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+}
+catch (e) { }
+
+// Gecko 2.x uses NSGetFactory to register XPCOM Components...
+// ... while Gecko 1.x uses NSGetModule
+
+if ((XPCOMUtils) && (XPCOMUtils.generateNSGetFactory))
+  var NSGetFactory = XPCOMUtils.generateNSGetFactory([SieveConnectionManager])
+else
+  var NSGetModule = function(compMgr, fileSpec) { return SieveConnectionManagerModule; }
+

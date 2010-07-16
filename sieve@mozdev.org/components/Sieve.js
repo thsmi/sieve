@@ -7,14 +7,9 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-const nsISupports = Components.interfaces.nsISupports;
-
-const CLASS_ID = Components.ID("92025260-14eb-11df-9ae2-0002a5d5c51b");
-const CLASS_NAME = "Manage Sieve Transport";
-const CONTRACT_ID = "@sieve.mozdev.org/transport;1";
-
 const Cc = Components.classes;
 const Ci = Components.interfaces;
+const Cr = Components.results;
 
 /**
  *  This class is a simple socket implementation for the manage sieve protocol. 
@@ -86,6 +81,31 @@ function Sieve()
  
     return converter.convertToByteArray(str, {});
   }
+}
+
+ // Needed for the Gecko 2.0 Component Manager...
+Sieve.prototype = 
+{
+  classID : Components.ID("{92025260-14eb-11df-9ae3-0002a5d5c51b}"),
+  contactID : "@sieve.mozdev.org/transport;1",
+  classDescription : "Manage Sieve Transport",
+  
+  QueryInterface : function(aIID)
+  {
+    if (aIID.equals(Ci.nsISupports))
+      return this;
+    // onProxyAvailable...
+    if (aIID.equals(Ci.nsIProtocolProxyCallback))
+      return this;
+    // onDataAvailable...
+    if (aIID.equals(Ci.nsIStreamListener))
+      return this;
+    // onStartRequest and onStopRequest...
+    if (aIID.equals(Ci.nsIRequestObserver))
+      return this;
+    
+    throw Cr.NS_ERROR_NO_INTERFACE;;
+  }  
 }
 
 /**
@@ -536,24 +556,6 @@ Sieve.prototype.onDataAvailable
   }
 }
 
-// This is the implementation of your component.
-Sieve.prototype.QueryInterface
-    = function(aIID)
-{
-  if (aIID.equals(Ci.nsISupports))
-    return this;
-  // onProxyAvailable...
-  if (aIID.equals(Ci.nsIProtocolProxyCallback))
-    return this;
-  // onDataAvailable...
-  if (aIID.equals(Ci.nsIStreamListener))
-    return this;
-  // onStartRequest and onStopRequest...
-  if (aIID.equals(Ci.nsIRequestObserver))
-    return this;
-    
-  throw Components.results.NS_ERROR_NO_INTERFACE;;
-}
 
 
 
@@ -577,13 +579,17 @@ var SieveModule = {
   registerSelf: function(aCompMgr, aFileSpec, aLocation, aType)
   {
     aCompMgr = aCompMgr.QueryInterface(Ci.nsIComponentRegistrar);
-    aCompMgr.registerFactoryLocation(CLASS_ID, CLASS_NAME, CONTRACT_ID, aFileSpec, aLocation, aType);
+    aCompMgr.registerFactoryLocation(
+        Sieve.prototype.classID, 
+        Sieve.prototype.classDescription, 
+        Sieve.prototype.contactID, 
+        aFileSpec, aLocation, aType);
   },
 
   unregisterSelf: function(aCompMgr, aLocation, aType)
   {
     aCompMgr = aCompMgr.QueryInterface(Ci.nsIComponentRegistrar);
-    aCompMgr.unregisterFactoryLocation(CLASS_ID, aLocation);        
+    aCompMgr.unregisterFactoryLocation(Sieve.prototype.classID, aLocation);        
   },
   
   getClassObject: function(aCompMgr, aCID, aIID)
@@ -591,7 +597,7 @@ var SieveModule = {
     if (!aIID.equals(Ci.nsIFactory))
       throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 
-    if (aCID.equals(CLASS_ID))
+    if (aCID.equals(Sieve.prototype.classID))
       return SieveFactory;
 
     throw Components.results.NS_ERROR_NO_INTERFACE;
@@ -600,5 +606,16 @@ var SieveModule = {
   canUnload: function(aCompMgr) { return true; }
 };
 
-//module initialization
-function NSGetModule(aCompMgr, aFileSpec) { return SieveModule; }
+
+try
+{
+  Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+}
+catch (e) { }
+
+// Gecko 2.x uses NSGetFactory to register XPCOM Components...
+// ... while Gecko 1.x uses NSGetModule
+if ((XPCOMUtils) && (XPCOMUtils.generateNSGetFactory))
+  var NSGetFactory = XPCOMUtils.generateNSGetFactory([Sieve])
+else
+  var NSGetModule = function(compMgr, fileSpec) { return SieveModule; }

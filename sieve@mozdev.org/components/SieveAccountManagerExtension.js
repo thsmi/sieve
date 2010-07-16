@@ -146,7 +146,8 @@ catch (e) { }
 // Gecko 2.x uses NSGetFactory to register XPCOM Components...
 // ... while Gecko 1.x uses NSGetModule
 
-if ((XPCOMUtils) && (XPCOMUtils.generateNSGetFactory))
+
+if ((typeof(XPCOMUtils) != "undefined") && (typeof(XPCOMUtils.generateNSGetFactory) != "undefined"))
   var NSGetFactory = XPCOMUtils.generateNSGetFactory([SieveAccountManagerExtension])
 else
   var NSGetModule = function(compMgr, fileSpec) { return SieveAccountManagerExtensionModule; }

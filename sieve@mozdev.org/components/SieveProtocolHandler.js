@@ -75,6 +75,9 @@ SieveProtocolHandler.prototype =
 }
 
 // Factory
+/**
+ * @deprecated since Gecko 2.0  
+ */
 var SieveProtocolHandlerFactory = 
 {
   createInstance : function(aOuter, aIID)
@@ -90,6 +93,9 @@ var SieveProtocolHandlerFactory =
 }
 
 // Module
+/**
+ * @deprecated since Gecko 2.0  
+ */
 var SieveProtocolHandlerModule = 
 {
   registerSelf: function(aCompMgr, aFileSpec, aLocation, aType)

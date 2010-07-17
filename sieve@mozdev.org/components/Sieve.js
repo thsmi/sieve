@@ -565,6 +565,9 @@ Sieve.prototype.onDataAvailable
 // below this unless you know what you're doing.
 //
 // Factory
+/**
+ * @deprecated since Gecko 2.0  
+ */
 var SieveFactory = {
   createInstance: function (aOuter, aIID)
   {
@@ -575,6 +578,9 @@ var SieveFactory = {
 };
 
 // Module
+/**
+ * @deprecated since Gecko 2.0  
+ */
 var SieveModule = {
   registerSelf: function(aCompMgr, aFileSpec, aLocation, aType)
   {

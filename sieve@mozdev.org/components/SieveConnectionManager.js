@@ -81,6 +81,9 @@ SieveConnectionManager.prototype =
 }
 
 // Factory
+/**
+ * @deprecated since Gecko 2.0  
+ */
 var SieveConnectionManagerFactory = {
   singleton: null,
   createInstance: function (aOuter, aIID)
@@ -96,6 +99,9 @@ var SieveConnectionManagerFactory = {
 };
 
 // Module
+/**
+ * @deprecated since Gecko 2.0  
+ */
 var SieveConnectionManagerModule = {
   registerSelf: function(aCompMgr, aFileSpec, aLocation, aType)
   {

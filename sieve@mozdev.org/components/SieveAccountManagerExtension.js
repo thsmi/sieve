@@ -67,7 +67,8 @@ It is keyed off of the contract ID. Eg:
 myHelloWorld = Components.classes["@dietrich.ganx4.com/helloworld;1"].
                           createInstance(Components.interfaces.nsIHelloWorld);
 
-***********************************************************/
+* @deprecated since Gecko 2.0 
+*/
 var SieveAccountManagerExtensionFactory = 
 {
   createInstance : function (aOuter, aIID)
@@ -79,9 +80,11 @@ var SieveAccountManagerExtensionFactory =
   }
 }
 
-/***********************************************************
-module definition (xpcom registration)
-***********************************************************/
+/**
+ * module definition (xpcom registration)
+ *
+ * @deprecated since Gecko 2.0 
+ */
 var SieveAccountManagerExtensionModule = 
 {
   registerSelf: function(compMgr, fileSpec, location, type)

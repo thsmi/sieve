@@ -920,10 +920,10 @@ function onServerDetails()
 
 function onSettingsClick()
 {
- var server = Cc['@mozilla.org/messenger/account-manager;1']
+  var server = Cc['@mozilla.org/messenger/account-manager;1']
                    .getService(Ci.nsIMsgAccountManager)
                    .getIncomingServer(getSelectedAccount().imapKey);
-                      
+  
   gSivExtUtils.OpenSettings(server);
 }
 
@@ -945,7 +945,7 @@ function onBadCertOverride(targetSite,permanent)
 
     var flags = ((status.isUntrusted)? overrideService.ERROR_UNTRUSTED : 0)
                   | ((status.isDomainMismatch)? overrideService.ERROR_MISMATCH : 0)
-                  | ((status.isNotVaildAtThisTime)? overrideService.ERROR_TIME : 0);      
+                  | ((status.isNotValidAtThisTime)? overrideService.ERROR_TIME : 0);      
 
     var cert = status.QueryInterface(Ci.nsISSLStatus).serverCert;
     if (!cert)

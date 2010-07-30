@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="chrome://sieve/skin/ToolBarButton.css" type="text/css"?>
+
 <!DOCTYPE overlay SYSTEM "chrome://sieve/locale/locale.dtd">
 
 <overlay id="sieveOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -13,7 +15,21 @@
   	  	oncommand='gSivExtUtils.OpenSettings();' 
   		  accesskey="&menu.options.key;" />
     <menuseparator id="mnuSieveSeparator" insertbefore="filtersCmd"/>  		
-</menupopup>
+  </menupopup>
+
+  <!-- Toolbar Button for Thunderbird Mail Window -->
+  <toolbarpalette id='MailToolbarPalette'>
+    <toolbarbutton id="btnSieveFilter"/>
+  </toolbarpalette>
+
+  <!-- Toolbar Button details -->
+
+  <toolbarbutton id="btnSieveFilter"
+    label="&list.title;"
+    tooltiptext="&list.title;"
+    oncommand="gSivExtUtils.OpenFilters();"
+    class="toolbarbutton-1 chromeclass-toolbar-additional"/>
+    <!--class="toolbarbutton-1  " />-->
 
 <!--
 // selectPage: the xul file name for the viewing page, 

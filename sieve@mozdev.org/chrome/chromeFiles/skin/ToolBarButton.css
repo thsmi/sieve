@@ -1,0 +1,12 @@
+/*
+  Contains all CSS styles which target thunderbird's folderpane.
+*/
+
+#btnSieveFilter {
+    list-style-image: url('chrome://sieve/skin/images/filter24x24.png');
+}
+
+[iconsize="small"] #btnSieveFilter  {
+    list-style-image: url('chrome://sieve/skin/images/filter16x16.png');
+}
+

@@ -39,7 +39,7 @@
 <!ENTITY options.host.hostname.key "h">
 <!ENTITY options.host.port "Port">
 <!ENTITY options.host.port.key "o">
-<!ENTITY options.host.port.default "Défaut: 2000">
+<!ENTITY options.host.port.default "Défaut: 2000 ou 4190">
 <!ENTITY options.host.tls.key "t">
 <!ENTITY options.host.tls "Utiliser TLS, si disponible">
 

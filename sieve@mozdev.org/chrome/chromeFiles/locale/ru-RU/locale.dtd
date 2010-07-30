@@ -36,7 +36,7 @@
 <!ENTITY options.host.hostname.key "h">
 <!ENTITY options.host.port "Порт">
 <!ENTITY options.host.port.key "o">
-<!ENTITY options.host.port.default "По умолчанию: 2000">
+<!ENTITY options.host.port.default "По умолчанию: 2000 или 4190">
 <!ENTITY options.host.tls.key "t">
 <!ENTITY options.host.tls "Исп-ть TLS, если доступен">
 

@@ -53,7 +53,7 @@ function onAccountStatusChange()
   
   if (rgAccount.selectedIndex > 0)
     gSieveAccount.setEnabled(true);
-  else 
+  else if (gSieveAccount) 
     gSieveAccount.setEnabled(false);
 }
 

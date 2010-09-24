@@ -11,10 +11,27 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cr = Components.results;
 
+// The connection manager is a service therefore we need to ensure it's... 
+// ... a singleton, so we implement our own nsIFactory
+
+const SieveConnectionManagerFactory = {
+  _singleton: null,
+  createInstance: function (aOuter, aIID)
+  {
+    if (aOuter != null)
+      throw Cr.NS_ERROR_NO_AGGREGATION;
+      
+    if (this._singleton == null)
+      this._singleton = new SieveConnectionManager();
+      
+    return this._singleton.QueryInterface(aIID);
+  }
+};
+
 /**
  *  JavaScript Objects are usually create within the scope of a window. This 
  *  means it can't be shared between multiple windows. "The cleanest and most
- *  powerful way to share date" is according to MDC a XPCOM component.
+ *  powerful way to share data" is according to MDC a XPCOM component.
  *  <p>
  *  This component is a simple wrapper to create an window independent sieve 
  *  object. The Sieve objects basically live within this XPCOM component. 
@@ -77,26 +94,11 @@ SieveConnectionManager.prototype =
     if (!aIID.equals(Ci.nsISupports))
       throw Cr.NS_ERROR_NO_INTERFACE;
     return this;
-  }
-}
+  },
 
-// Factory
-/**
- * @deprecated since Gecko 2.0  
- */
-var SieveConnectionManagerFactory = {
-  singleton: null,
-  createInstance: function (aOuter, aIID)
-  {
-    if (aOuter != null)
-      throw Cr.NS_ERROR_NO_AGGREGATION;
-      
-    if (this.singleton == null)
-      this.singleton = new SieveConnectionManager();
-      
-    return this.singleton.QueryInterface(aIID);
-  }
+  _xpcom_factory: SieveConnectionManagerFactory
 };
+
 
 // Module
 /**

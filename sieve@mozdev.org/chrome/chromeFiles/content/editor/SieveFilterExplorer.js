@@ -408,7 +408,7 @@ function onWindowLoad()
     if (window.arguments.length == 0)
       continue;
     
-    if (window.arguments[0].server != accounts[i].getUri())
+    if (window.arguments[0].wrappedJSObject.server != accounts[i].getUri())
       continue;
       
     menuImapAccounts.selectedIndex = i;      
@@ -636,7 +636,9 @@ function sivOpenEditor(scriptName,scriptBody)
   
   gSieve = null;
   
+
   var args = new Array();
+  
   args["scriptName"] = scriptName;
   args["scriptBody"] = scriptBody;
   args["sieve"] = hSieve;
@@ -645,9 +647,17 @@ function sivOpenEditor(scriptName,scriptBody)
   args["idle"] = getSelectedAccount().getSettings().isKeepAlive();
   args["idleDelay"] = getSelectedAccount().getSettings().getKeepAliveInterval();
 
-  window.openDialog("chrome://sieve/content/editor/SieveFilterEditor.xul", 
+  // This is a hack from DEVMO
+  args.wrappedJSObject = args;
+  
+  Cc["@mozilla.org/embedcomp/window-watcher;1"].getService(Ci.nsIWindowWatcher)
+      .openWindow(window,"chrome://sieve/content/editor/SieveFilterEditor.xul",
+          "SieveFilterEditor", 
+          "chrome,modal,titlebar,resizable,centerscreen,dialog=yes", args);
+
+  /*  window.openDialog("chrome://sieve/content/editor/SieveFilterEditor.xul", 
                     "SieveFilterEditor", 
-                    "chrome,modal,titlebar,resizable,centerscreen", args);
+                    "chrome,modal,titlebar,resizable,centerscreen", args);*/
 
   // make sure there is only one instance of the sieve object...
   var sivManager = Cc["@sieve.mozdev.org/transport-service;1"].getService();  

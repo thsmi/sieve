@@ -283,37 +283,39 @@ function onLoad()
       function(event) {onSideBarBrowserClick(event);},
       false);
   
+  var args = window.arguments[0].wrappedJSObject;    
+      
   // Connect to the Sieve Object...  
   var sivManager = Components.classes["@sieve.mozdev.org/transport-service;1"].getService();      
-  gSieve = sivManager.wrappedJSObject.getSession(window.arguments[0]["sieve"]);
+  gSieve = sivManager.wrappedJSObject.getSession(args["sieve"]);
   
   // ... redirect errors into this window
   var sieveWatchDog = null
   
-  if (window.arguments[0]["idle"])
-    sieveWatchDog = new SieveWatchDog(20000,window.arguments[0]["idleDelay"]);
+  if (args["idle"])
+    sieveWatchDog = new SieveWatchDog(20000,args["idleDelay"]);
   else
     sieveWatchDog = new SieveWatchDog(20000);
         
   sieveWatchDog.addListener(event);  
   gSieve.addWatchDogListener(sieveWatchDog);
   
-  gEditorStatus.checkScriptDelay = window.arguments[0]["compileDelay"];
+  gEditorStatus.checkScriptDelay = args["compileDelay"];
   
-  document.getElementById("txtName").value = window.arguments[0]["scriptName"];
+  document.getElementById("txtName").value = args["scriptName"];
   
   document.getElementById("lblErrorBar").firstChild.nodeValue
     = "Server reports no script errors...";
   
-  if (window.arguments[0]["scriptBody"] != null)
+  if (args["scriptBody"] != null)
   {
-    event.onScriptLoaded(window.arguments[0]["scriptBody"]);
+    event.onScriptLoaded(args["scriptBody"]);
   }
   else
   {
     sivSetStatus(1,"Loading Script...");
       
-    var request = new SieveGetScriptRequest(window.arguments[0]["scriptName"]);
+    var request = new SieveGetScriptRequest(args["scriptName"]);
     request.addGetScriptListener(event);
     request.addErrorListener(event);
 
@@ -323,7 +325,7 @@ function onLoad()
   //preload sidebar...
   onSideBarHome();
   
-  onErrorBar(window.arguments[0]["compile"]);
+  onErrorBar(args["compile"]);
   onSideBar(true);
   onSearchBar(false);
   

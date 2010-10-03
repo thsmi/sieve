@@ -43,7 +43,10 @@ SieveAccountManagerExtension.prototype =
   {
     if (server.type == "imap")
       return true;
-    
+      
+    if (server.type == "pop3")
+      return true;
+      
     return false;
   },
 

@@ -84,7 +84,7 @@ SieveAbstractRequest.prototype.hasNextRequest
 SieveAbstractRequest.prototype.cancel
     = function ()
 {
-  if (this.errorListener != null)
+  if ((this.errorListener) && (this.errorListener.onTimeout))
     this.errorListener.onTimeout();  
 }
 

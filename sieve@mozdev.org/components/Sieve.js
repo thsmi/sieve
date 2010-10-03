@@ -104,7 +104,7 @@ Sieve.prototype =
     if (aIID.equals(Ci.nsIRequestObserver))
       return this;
     
-    throw Cr.NS_ERROR_NO_INTERFACE;;
+    throw Cr.NS_ERROR_NO_INTERFACE;
   }  
 }
 

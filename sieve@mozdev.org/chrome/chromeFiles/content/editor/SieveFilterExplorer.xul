@@ -32,10 +32,6 @@
   <stringbundle id="strings" src="chrome://sieve/locale/locale.properties"/>
 </stringbundleset>
 
-<!--  <script type="application/javascript"
-          src="chrome://sieve/content/libs/libManageSieve/Sieve.js"/>-->
-  <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveWatchDog.js"/>
   <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js"/>
   <script type="application/javascript" 

@@ -13,6 +13,8 @@
  */
  
 var gSieve = null;
+var gSid = null;
+var gCid = null;
 
 var gBackHistory = new Array();
 var gForwardHistory = new Array();
@@ -64,7 +66,10 @@ var event =
     gEditorStatus.contentChanged = false;
     clearTimeout(gEditorStatus.checkScriptTimer);
     
-    gSieve.removeWatchDogListener();
+    Components.classes["@sieve.mozdev.org/transport-service;1"]
+      .getService().wrappedJSObject
+      .closeChannel(gSid,gCid);
+    
     gSieve = null;
 
     close();
@@ -81,29 +86,6 @@ var event =
   onTimeout: function()
   {
     alert("A Timeout occured");
-  },
-
-  onIdle: function()
-  {
-    var request = null
-    
-    if (gSieve.getCompatibility().noop)
-      request = new SieveNoopRequest();
-    else
-      request = new SieveCapabilitiesRequest();
-      
-    // as we send a keep alive request, we don't care
-    // about the response...
-    request.addErrorListener(event);
-
-    gSieve.addRequest(request);
-  },
-
-  onWatchDogTimeout: function()
-  {
-    // call sieve object indirect inoder to prevent a
-    // ring reference
-    gSieve.onWatchDogTimeout();
   }
 }
 
@@ -286,19 +268,12 @@ function onLoad()
   var args = window.arguments[0].wrappedJSObject;    
       
   // Connect to the Sieve Object...  
-  var sivManager = Components.classes["@sieve.mozdev.org/transport-service;1"].getService();      
-  gSieve = sivManager.wrappedJSObject.getSession(args["sieve"]);
+  var sivManager = Components.classes["@sieve.mozdev.org/transport-service;1"]
+                     .getService().wrappedJSObject; 
   
-  // ... redirect errors into this window
-  var sieveWatchDog = null
-  
-  if (args["idle"])
-    sieveWatchDog = new SieveWatchDog(20000,args["idleDelay"]);
-  else
-    sieveWatchDog = new SieveWatchDog(20000);
-        
-  sieveWatchDog.addListener(event);  
-  gSieve.addWatchDogListener(sieveWatchDog);
+  gSid = args["sieve"];
+  gCid = sivManager.createChannel(gSid);
+  gSieve = sivManager.getChannel(gSid,gCid);
   
   gEditorStatus.checkScriptDelay = args["compileDelay"];
   
@@ -454,7 +429,9 @@ function onClose()
   
   // either the script has not changed or the user did not want to save... 
   // ... the script, so it's ok to exit.
-  gSieve.removeWatchDogListener();
+  Components.classes["@sieve.mozdev.org/transport-service;1"]
+      .getService().wrappedJSObject
+      .closeChannel(gSid,gCid);  
   gSieve = null;
   return true;  
 }

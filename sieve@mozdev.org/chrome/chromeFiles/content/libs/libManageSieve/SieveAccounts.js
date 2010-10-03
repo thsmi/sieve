@@ -389,7 +389,7 @@ SieveCustomAuth2.prototype.getType
  * ... the class SieveCustomAuth supports legacy Thunderbird releases
  * 
  * @see SieveCustomAuth
- * @deprecated since Thunderbird 3
+ * @deprecated Interface removed since Gecko 1.9.1 (Thunderbird 3)
  *  
  * @param {String} uri
  *   the unique URI of the associated sieve account
@@ -637,7 +637,7 @@ SieveSocks4Proxy.prototype.getProxyInfo
 }
 /**
  * 
- * @param {} imapKey
+ * @param {} sieveKey
  */
 function SieveSocks5Proxy(sieveKey)
 {
@@ -1409,7 +1409,7 @@ SieveAccounts.prototype.getAccounts
     var account = accountManager.allServers.GetElementAt(i)
                     .QueryInterface(Components.interfaces.nsIMsgIncomingServer);
           
-    if (account.type != "imap")
+    if ((account.type != "imap") && (account.type != "pop3"))
       continue;
 
     this.accounts.push(new SieveAccount(account));        
@@ -1419,9 +1419,9 @@ SieveAccounts.prototype.getAccounts
 }
 
 /**
- * Loads a Sieve Account by its associated IMAP Account
+ * Loads a Sieve Account by its associated nsIMsgIncomingServer Account
  * @param {String} key
- *   The Unique Identifier of the associated IMAP Account
+ *   The Unique Identifier of the associated nsIMsgIncomingServer Account
  * @return {SieveAccount}
  *   A corresponding SieveAccount
  */

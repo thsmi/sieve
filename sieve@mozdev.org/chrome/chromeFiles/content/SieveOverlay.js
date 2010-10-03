@@ -6,7 +6,6 @@
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
-
 // we don't want to pollute the global namespace more than necessay.
 var gSivExtUtils =
 {
@@ -17,16 +16,7 @@ var gSivExtUtils =
             .classes["@mozilla.org/appshell/window-mediator;1"]
             .getService(Components.interfaces.nsIWindowMediator);
     
-    // as the filter explorer opens a modal dialog...
-    // ... we have to check for this dialog first.
-  
-    w = mediator.getMostRecentWindow("Sieve:FilterEditor");
-    if (w && (typeof(w) != "undefined") &&!w.closed)
-    {
-      w.focus();
-      return;
-    }
-    
+    // we allow only one instance of the Filter Explorer Window...
     w =  mediator.getMostRecentWindow("Sieve:FilterExplorer");
     if (w && (typeof(w) != "undefined") &&!w.closed)
     {
@@ -36,31 +26,26 @@ var gSivExtUtils =
     }
 
     if (server == null)
-      server = this.GetActiveImapServer();      
+      server = this.GetActiveServer();      
 
     var options = {}
                      
     if (server != null)
       options = { server: server.rootMsgFolder.baseMessageURI.slice(15) }
+    
+    options.wrappedJSObject = options;
 
-    window.openDialog("chrome://sieve/content/editor/SieveFilterExplorer.xul",
-                      "Sieve:FilterExplorer",
-                      "chrome,resizable,centerscreen,all",
-                      options);
- /*   Components
+    //we need to call nsIWindowWatcher.openWindow with parentWindow set to ...
+    //...null, otherwise dialogs are broken on Mac!
+     
+    Components
         .classes["@mozilla.org/embedcomp/window-watcher;1"]
         .getService(Components.interfaces.nsIWindowWatcher)
         .openWindow(
-          parentWin,,
-          null, "chrome,resizable,centerscreen,all", options);*/
-
-/*                
-  if (parentWin == null)
-    parentWin = window;
-    
-  parentWin.openDialog("chrome://sieve/content/editor/SieveFilterExplorer.xul", 
-                    "Sieve:FilterExplorer", 
-                    "chrome,resizable,centerscreen,all", account);*/                    
+          null, 
+          "chrome://sieve/content/editor/SieveFilterExplorer.xul",
+          "Sieve:FilterExplorer", 
+          "chrome,resizable,centerscreen,all", options);
   },  
   
   
@@ -88,7 +73,7 @@ var gSivExtUtils =
     var options = {};
 
     if (server == null)
-      server = this.GetActiveImapServer();
+      server = this.GetActiveServer();
       
     if (server != null)
       options = { server: server, selectPage: 'am-sieve-account.xul' }
@@ -99,14 +84,14 @@ var gSivExtUtils =
   },
   
   /**
-   * Retrieves the currently focused IMAP server. If the user has not
-   * focused an IMAP server, it returns the default IMAP. In case no
-   * IMAP Server is configured, null is returned.
+   * Retrieves the currently focused nsIMsgIncomingServer object. If the user 
+   * has not focused an server, it returns the default. In case no Server is 
+   * configured, null is returned.
    * 
    * @return {nsIMsgIncomingServer} 
    *   the active server or null
    */
-  GetActiveImapServer : function()
+  GetActiveServer : function()
   {
     // this function depends on funtions of the overlayed message window...
     if (typeof(GetFirstSelectedMsgFolder) == "undefined")
@@ -122,9 +107,11 @@ var gSivExtUtils =
     else
       server = accountManager.defaultAccount.incomingServer;
       
-    if (server.type == "imap")
+    if ((server.type == "imap") || (server.type == "pop3")) 
       return server;
       
     return null;
   }
 }
+
+

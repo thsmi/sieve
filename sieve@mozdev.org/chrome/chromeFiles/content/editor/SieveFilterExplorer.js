@@ -20,10 +20,8 @@
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
-/** @type {Sieve} */
-var gSieve = null;
-/** @type {int} */
-var hSieve = null;
+var sid = null;
+var cid = null;
 
 /** @type {{Components.interfaces.nsIConsoleService}}*/
 var gLogger = null;
@@ -33,248 +31,11 @@ var closeTimeout = null;
 
 var event = 
 {	
-  onAuthenticate: function(response)
-  {
-    sivSetStatus(3,"progress.authenticating");
-    var account =  getSelectedAccount();
-    
-    // Without a username, we can skip the authentication 
-    if (account.getLogin().hasUsername() == false)
-    {
-      event.onLoginResponse(null);
-      return;
-    }
-
-    document.getElementById('txtSASL').value
-        = response.getSasl();
-    document.getElementById('txtExtensions').value    
-        = response.getExtensions(); 
-    document.getElementById('txtImplementation').value 
-        = response.getImplementation();
-    document.getElementById('txtVersion').value
-        = response.getVersion();
-
-    // We have to figure out which ist the best SASL Mechanism for the login ...
-    // ... therefore we check first whether a mechanism is forced by the user ...
-    // ... if no one is specified, we follow the rfc advice and use the first 
-    // .... mechanism listed in the capability response we support.
-    
-    var mechanism = [];        
-    if (account.getSettings().hasForcedAuthMechanism())
-      mechanism = [account.getSettings().getForcedAuthMechanism()];      
-    else
-      mechanism = response.getSasl();
-
-    // ... translate the SASL Mechanism String into an SieveSaslLogin Object ...      
-    var request = null;
-    while((mechanism.length > 0) && (request == null))
-    {
-      // remove and test the first element...
-      switch (mechanism.shift().toLowerCase())
-      {
-        case "plain":
-          request = new SieveSaslPlainRequest();
-          request.addSaslPlainListener(event);      
-          break;
-        case "crammd5":
-          request = new SieveSaslCramMd5Request();
-          request.addSaslCramMd5Listener(event);
-          break;          
-        case "login":
-          // we use SASL LOGIN only as last resort...
-          // ... as suggested in the RFC.        
-          if (mechanism.length > 0)
-          {
-            mechanism.push("login");
-            break;
-          }
-          request = new SieveSaslLoginRequest();      
-          request.addSaslLoginListener(event);
-          break;
-      }      
-    }
-
-    if (request == null)
-    {
-      sivDisconnect(2, "error.sasl");
-      return;
-    }
-    
-    request.addErrorListener(event);
-    request.setUsername(account.getLogin().getUsername())
-    
-    var password = account.getLogin().getPassword();
-    
-    if (password == null)
-    {
-      sivDisconnect(2, "error.authentication");
-      return;
-    }
-      
-    request.setPassword(password);
-    
-    // check if the authentication method supports proxy authorization...
-    if (request.isAuthorizable())
-    {
-      // ... if so retrieve the authorization identity   
-      var authorization = account.getAuthorization().getAuthorization();
-      if (authorization == null)
-      {
-        sivDisconnect(2, "error.authentication");
-        return;
-      }
-      
-      request.setAuthorization(authorization);
-    }
-     
-    gSieve.addRequest(request);    		
-    
-  },
-  
-  onInitResponse: function(response)
-  {
-    // establish a secure connection if TLS ist enabled and if the Server ...
-    // ... is capable of handling TLS, otherwise simply skip it and ...
-    // ... use an insecure connection
-    
-    gSieve.setCompatibility(response.getCapabilities());
-    
-    if (getSelectedAccount().getHost().isTLS() && response.getTLS())
-    {
-      var request = new SieveStartTLSRequest();
-      request.addStartTLSListener(event);
-      request.addErrorListener(event);
-      
-      gSieve.addRequest(request);
-      return;
-    }
-    
-    event.onAuthenticate(response);
-  },
-
-  onStartTLSResponse : function(response)
-  {
-    
-    // workaround for timsieved bug...
-    var lEvent = 
-    {        
-      onInitResponse: function(response)
-      {
-        sivSetStatus(3,"progress.tls.rfc");
-        
-        gSieve.getWatchDogListener().setTimeoutInterval();
-        event.onAuthenticate(response);
-      },
-      
-      onError: function(response)
-      {
-        gSieve.getWatchDogListener().setTimeoutInterval();
-        event.onError(response);
-      },
-      
-      onTimeout: function()
-      {
-        sivSetStatus(3,"progress.tls.cyrus");
-        
-        gSieve.getWatchDogListener().setTimeoutInterval();
-        var request = new SieveCapabilitiesRequest();
-        request.addCapabilitiesListener(event);
-        request.addErrorListener(event);	
-		
-        gSieve.addRequest(request);
-      }    	
-    }
-    	  
-    // after calling startTLS the server will propagate his capabilities...
-    // ... like at the login, therefore we reuse the SieveInitRequest
-    
-    // some revision of timsieved fail to resissue the capabilities...
-    // ... which causes the extension to be jammed. Therefore we have to ...
-    // ... do a rather nasty workaround. The jammed extension causes a timeout,
-    // ... we catch this timeout and continue as if nothing happend...
-    
-    var compatibility = getSelectedAccount().getSettings().getCompatibility(); 
-    
-    switch (compatibility.getHandshakeMode())
-    {
-      case 0:
-        sivSetStatus(3,"progress.tls.auto");      
-        var request = new SieveInitRequest();
-        request.addInitListener(lEvent);
-        request.addErrorListener(lEvent);
-        
-        gSieve.getWatchDogListener().setTimeoutInterval(compatibility.getHandshakeTimeout());
-        gSieve.addRequest(request);
-            
-        gSieve.startTLS();   
-        break;
-        
-      case 1:
-        sivSetStatus(3,"progress.tls.rfc");
-             
-        var request = new SieveInitRequest();
-        request.addInitListener(lEvent);
-        request.addErrorListener(event);  
-        gSieve.addRequest(request);
-    
-        // activate TLS
-        gSieve.startTLS();
-        
-        break;
-      case 2:
-        sivSetStatus(3,"progress.tls.cyrus");
-      
-        gSieve.startTLS();
-      
-        var request = new SieveCapabilitiesRequest();
-        request.addCapabilitiesListener(event);
-        request.addErrorListener(event);  
-    
-        gSieve.addRequest(request);
-        break;
-    }
-  },
-	
-  onSaslLoginResponse: function(response)
-  {
-    event.onLoginResponse(response);
-  },
-
-	
-  onSaslPlainResponse: function(response)
-  {
-    event.onLoginResponse(response);
-  },
-
-  onSaslCramMd5Response: function(response)
-  {
-    event.onLoginResponse(response);
-  },
-   
-  onLoginResponse: function(response)
-  { 		
-    // List all scripts as soon as we are connected
-    var request = new SieveListScriptRequest();
-    request.addListScriptListener(event);
-    request.addErrorListener(event);
-
-    gSieve.addRequest(request);
-    
-    // Show List View...
-    sivSetStatus(0);
-  },
-	
-  onLogoutResponse: function(response)
-  {
-    clearTimeout(closeTimeout);
-    
-    sivDisconnect();
-    // this will close the Dialog!
-    close();
-  },
-
   onListScriptResponse: function(response)
   {
+    // Show List View...
+    sivSetStatus(0);
+    
     sieveTreeView.update(response.getScripts());
     
     var tree = document.getElementById('treeImapRules');
@@ -291,8 +52,11 @@ var event =
     var request = new SieveListScriptRequest();
     request.addListScriptListener(event);
     request.addErrorListener(event);
-    
-    gSieve.addRequest(request);
+     
+    Cc["@sieve.mozdev.org/transport-service;1"]
+        .getService().wrappedJSObject
+        .getChannel(sid,cid)
+        .addRequest(request);  
   },
 
   onDeleteScriptResponse:  function(response)
@@ -302,12 +66,10 @@ var event =
     request.addListScriptListener(event);
     request.addErrorListener(event);
     
-    gSieve.addRequest(request);
-  },
-  
-  onCapabilitiesResponse: function(response)
-  {
-    event.onAuthenticate(response);
+    Cc["@sieve.mozdev.org/transport-service;1"]
+        .getService().wrappedJSObject
+        .getChannel(sid,cid)
+        .addRequest(request);
   },
 
   onTimeout: function()
@@ -322,7 +84,7 @@ var event =
 	
   onError: function(response)
   {
-    var code = response.getResponseCode();
+    /*var code = response.getResponseCode();
 
     if (code instanceof SieveResponseCodeReferral)
     {
@@ -334,7 +96,7 @@ var event =
       sivConnect(account,code.getHostname());
       
       return;
-    }
+    }*/
 
     gLogger.logStringMessage("OnError: "+response.getMessage());
     sivDisconnect(4,response.getMessage());
@@ -351,31 +113,47 @@ var event =
     request.addSetActiveListener(event);
     request.addErrorListener(event);
     
-    gSieve.addRequest(request);
-  },
-  
-  onIdle: function ()
-  { 
-    // as we send a keep alive request, we don't care
-    // about the response...
-    var request = null
-    
-    if (gSieve.getCompatibility().noop)
-      request = new SieveNoopRequest();
-    else
-      request = new SieveCapabilitiesRequest();
+    Cc["@sieve.mozdev.org/transport-service;1"]
+        .getService().wrappedJSObject
+        .getChannel(sid,cid)
+        .addRequest(request);  
 
-    request.addErrorListener(event);
-  
-    gSieve.addRequest(request);
   },
-    
-  onWatchDogTimeout : function()
+      
+  onChannelClosed : function()
   {
-    // call sieve object indirect inoder to prevent a 
-    // ring reference
-    gSieve.onWatchDogTimeout();
-  }    
+    // a channel is usually closed when a child window is closed. Therefore
+    // it is a good idea to refresh the list...
+          
+    var request = new SieveListScriptRequest();
+    request.addListScriptListener(event);
+    request.addErrorListener(event);
+
+    Cc["@sieve.mozdev.org/transport-service;1"]
+        .getService().wrappedJSObject
+        .getChannel(sid,cid)
+        .addRequest(request);      
+  },
+  
+  onChannelCreated : function(sieve)
+  {    
+    // List all scripts as soon as we are connected
+    var request = new SieveListScriptRequest();
+    request.addListScriptListener(event);
+    request.addErrorListener(event);
+
+    sieve.addRequest(request);
+  },
+  
+  onChannelStatus : function(id,text,statusbar)
+  {
+    sivSetStatus(id,text,statusbar);
+  },
+  
+  onBadCert : function(targetSite)
+  {
+    sivDisconnect(5,targetSite);
+  }  
 }
 
 function onWindowLoad()
@@ -425,23 +203,10 @@ function onWindowLoad()
    
 function onWindowClose()
 {
-  // unbind the logger inoder to prevent xpcom memory holes
-  gLogger = null;
+  // Don't forget to close this channel...
+  sivDisconnect();
   
-  if (gSieve == null)
-    return true;
-  
-    
-  // Force disconnect in 500 MS
-  closeTimeout = setTimeout(function() {sivDisconnect(); close();},250);
-
-  var request = new SieveLogoutRequest(event)
-  request.addLogoutListener(event);
-  request.addErrorListener(event)
-  
-  gSieve.addRequest(request);
-
-  return false;
+  return true;
 }   
 /**
  * @return {SieveAccount}
@@ -475,40 +240,17 @@ function sivConnect(account,hostname)
   if (account == null)
     account = getSelectedAccount();
   
-  if (hostname == null)
-    hostname = account.getHost().getHostname();
-
-  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"].getService();
-
-  hSieve = sivManager.wrappedJSObject.openSession();  
-  gSieve = sivManager.wrappedJSObject.getSession(hSieve);
-  // TODO Replace by a real Interface...
-  //sieveTransport.QueryInterface(Ci.sivITransport);
-
-   gSieve.setDebugLevel(
-            account.getSettings().getDebugFlags(),
-            gLogger);                
-      
-   var sieveWatchDog = null;
-
-   // TODO load Timeout interval from account settings...
-   if (account.getSettings().isKeepAlive())
-     sieveWatchDog = new SieveWatchDog(20000,account.getSettings().getKeepAliveInterval());
-   else
-     sieveWatchDog = new SieveWatchDog(20000);
-     
-   sieveWatchDog.addListener(event);       
-   gSieve.addWatchDogListener(sieveWatchDog);
-   
-   var request = new SieveInitRequest();
-   request.addErrorListener(event)
-   request.addInitListener(event)
-   gSieve.addRequest(request);   
-
-   gSieve.connect(hostname,account.getHost().getPort(),
-            account.getHost().isTLS(),
-            new BadCertHandler(gLogger),
-            account.getProxy().getProxyInfo());
+  // Ensure that Sieve Object is null...
+  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
+            .getService().wrappedJSObject;
+  
+        
+  sid = sivManager.createSession(account);
+  sivManager.addSessionListener(sid,event);
+  
+  cid = sivManager.createChannel(sid);
+  
+  sivManager.openChannel(sid,cid,hostname);
 }
 
 function onActivateClick()
@@ -530,62 +272,37 @@ function sivDisconnect(state,message)
   if ((state) && (message))
     sivSetStatus(state,message,"status.disconnected");  
   
-  if (gSieve == null)
-    return;        
-  
-  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"].getService();  
-  sivManager.wrappedJSObject.closeSession(hSieve);  
-  
-
-  gSieve = null;  
+  if ((!sid) || (!cid))
+    return;
+    
+  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
+                       .getService().wrappedJSObject;
+  sivManager.removeSessionListener(sid);
+  sivManager.closeChannel(sid,cid);    
 }
 
 function onSelectAccount()
-{	
-  // Override the response handler. We should always logout before reconnecting...
-  var levent = 
-  {
-    onLogoutResponse: function(response)
-    {
+{      
+  sivDisconnect();
       
-      sivDisconnect();
+  // update the TreeView...
+  var tree = document.getElementById('treeImapRules');
       
-      // update the TreeView...
-      var tree = document.getElementById('treeImapRules');
+  tree.view.selection.clearSelection();
       
-      tree.view.selection.clearSelection();
+  sieveTreeView.update(new Array());
+  tree.view = sieveTreeView;
       
-      sieveTreeView.update(new Array());
-      tree.view = sieveTreeView;
+  var account = getSelectedAccount();
       
-      var account = getSelectedAccount();
+  if (account == null)
+    return sivSetStatus(2,"error.noaccount");
       
-      if (account == null)
-        sivSetStatus(2,"error.noaccount");
-      
-      // Disable and cancel if account is not enabled
-      if (account.isEnabled() == false)
-      {
-        sivSetStatus(1,"warning.noaccount");
-        return;
-      }			
-      sivConnect(account);
-    }
-  }
-  
-  // Besteht das Objekt überhaupt bzw besteht eine Verbindung?
-  if ((gSieve == null) || (gSieve.isAlive() == false))
-  {
-    // ... no sieve object, let's simulate a logout...
-    setTimeout(function() {levent.onLogoutResponse("");},10);
-    //levent.onLogoutResponse("");
-    return;
-  }
-   
-  var request = new SieveLogoutRequest();
-  request.addLogoutListener(levent);
-  request.addErrorListener(event);
-  gSieve.addRequest(request);	
+  // Disable and cancel if account is not enabled
+  if (account.isEnabled() == false)
+    return sivSetStatus(1,"warning.noaccount");
+
+  sivConnect(account);
 }
 
 function onDeleteClick()
@@ -619,58 +336,51 @@ function onDeleteClick()
   request.addDeleteScriptListener(event);
   request.addErrorListener(event);
   
-  gSieve.addRequest(request);
+  Cc["@sieve.mozdev.org/transport-service;1"]
+        .getService().wrappedJSObject
+        .getChannel(sid,cid)
+        .addRequest(request);
 }
 /**
  * @param {String} scriptName
  * @param {String} scriptBody
  */
 function sivOpenEditor(scriptName,scriptBody)
-{
-  // The scope of listners is bound to a window. This makes passing the Sieve...
-  // ... object to an other window difficult. At first we have to deattach the... 
-  // ... listener, then pass the object, and finally attach a new listern of...
-  // ... the new window   
-  var watchDogListener = gSieve.getWatchDogListener();
-  gSieve.removeWatchDogListener();
-  
-  gSieve = null;
-  
+{  
+  var wm = Cc["@mozilla.org/appshell/window-mediator;1"]  
+             .getService(Ci.nsIWindowMediator);
+             
+  var enumerator = wm.getEnumerator("Sieve:FilterEditor");  
+  while(enumerator.hasMoreElements())
+  {  
+    var win = enumerator.getNext(); 
+    
+    if (win.name != "x-sieve:"+sid+"/"+scriptName)
+      continue
+    
+    if (win.closed)
+      continue;
+      
+    win.focus();    
+    return;
+  }     
 
   var args = new Array();
   
   args["scriptName"] = scriptName;
   args["scriptBody"] = scriptBody;
-  args["sieve"] = hSieve;
+  args["sieve"] = sid;
   args["compile"] = getSelectedAccount().getSettings().hasCompileDelay();
   args["compileDelay"] = getSelectedAccount().getSettings().getCompileDelay();
-  args["idle"] = getSelectedAccount().getSettings().isKeepAlive();
-  args["idleDelay"] = getSelectedAccount().getSettings().getKeepAliveInterval();
-
+  
   // This is a hack from DEVMO
-  args.wrappedJSObject = args;
+  args.wrappedJSObject = args;  
   
   Cc["@mozilla.org/embedcomp/window-watcher;1"].getService(Ci.nsIWindowWatcher)
-      .openWindow(window,"chrome://sieve/content/editor/SieveFilterEditor.xul",
-          "SieveFilterEditor", 
-          "chrome,modal,titlebar,resizable,centerscreen,dialog=yes", args);
-
-  /*  window.openDialog("chrome://sieve/content/editor/SieveFilterEditor.xul", 
-                    "SieveFilterEditor", 
-                    "chrome,modal,titlebar,resizable,centerscreen", args);*/
-
-  // make sure there is only one instance of the sieve object...
-  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"].getService();  
-  gSieve = sivManager.wrappedJSObject.getSession(hSieve);  
-  
-  gSieve.addWatchDogListener(watchDogListener);
-  
-  var request = new SieveListScriptRequest();
-  request.addListScriptListener(event);
-  request.addErrorListener(event);
-  
-  gSieve.addRequest(request);
-  
+      .openWindow(null,"chrome://sieve/content/editor/SieveFilterEditor.xul",
+          "x-sieve:"+sid+"/"+scriptName, 
+          "chrome,titlebar,resizable,centerscreen,all", args);
+    
   return;  
 }
 
@@ -804,7 +514,11 @@ function sivRename2(oldName, newName)
       request.addListScriptListener(event);
       request.addErrorListener(event);
   
-      gSieve.addRequest(request);            
+      Cc["@sieve.mozdev.org/transport-service;1"]
+          .getService().wrappedJSObject
+          .getChannel(sid,cid)
+          .addRequest(request);  
+           
     }
   }
   
@@ -812,7 +526,11 @@ function sivRename2(oldName, newName)
   request.addRenameScriptListener(lEvent)
   request.addErrorListener(event);
     
-  gSieve.addRequest(request)
+  Cc["@sieve.mozdev.org/transport-service;1"]
+      .getService().wrappedJSObject
+      .getChannel(sid,cid)
+      .addRequest(request);  
+
 }
 
 function sivRename(oldName, newName, isActive)
@@ -831,7 +549,11 @@ function sivRename(oldName, newName, isActive)
 
       request.addPutScriptListener(lEvent)
       request.addErrorListener(event)
-      gSieve.addRequest(request);  
+      Cc["@sieve.mozdev.org/transport-service;1"]
+        .getService().wrappedJSObject
+        .getChannel(sid,cid)
+        .addRequest(request);  
+  
     },    
     onPutScriptResponse: function(response)
     {
@@ -843,7 +565,11 @@ function sivRename(oldName, newName, isActive)
         request.addSetActiveListener(lEvent);
         request.addErrorListener(event);
     
-        gSieve.addRequest(request);
+        Cc["@sieve.mozdev.org/transport-service;1"]
+          .getService().wrappedJSObject
+          .getChannel(sid,cid)
+          .addRequest(request);  
+
       }
       else
         lEvent.onSetActiveResponse(null);
@@ -855,7 +581,11 @@ function sivRename(oldName, newName, isActive)
       var request = new SieveDeleteScriptRequest(lEvent.oldScriptName);
       request.addDeleteScriptListener(event);
       request.addErrorListener(event);
-      gSieve.addRequest(request);
+      Cc["@sieve.mozdev.org/transport-service;1"]
+        .getService().wrappedJSObject
+        .getChannel(sid,cid)
+        .addRequest(request);  
+
     }     
   }
   
@@ -870,7 +600,11 @@ function sivRename(oldName, newName, isActive)
   request.addGetScriptListener(lEvent);
   request.addErrorListener(event);
 
-  gSieve.addRequest(request);   
+  Cc["@sieve.mozdev.org/transport-service;1"]
+    .getService().wrappedJSObject
+    .getChannel(sid,cid)
+    .addRequest(request);  
+  
 }
 
 function onRenameClick()
@@ -904,7 +638,13 @@ function onRenameClick()
   if (input.value.toLowerCase() == oldScriptName.toLowerCase())
     return;   
 
-  if (gSieve.getCompatibility().renamescript)
+  var canRename = Cc["@sieve.mozdev.org/transport-service;1"]
+                    .getService().wrappedJSObject
+                    .getChannel(sid,cid)
+                    .getCompatibility().renamescript  
+    
+    
+  if (canRename)
    sivRename2(oldScriptName, input.value);
   else
    sivRename(oldScriptName, input.value, 
@@ -978,131 +718,3 @@ function onBadCertOverride(targetSite,permanent)
                                            
   
 }
-
-
-
-/******************************************************************************/
-// Helper class to override the "bad cert" dialog...
-// see nsIBadCertListener for details
-
-/* This object implements nsIBadCertListener2
- * The idea is to suppress the default UI's alert box
- * and allow the exception to propagate normally
- */
-
-function BadCertHandler(logger) 
-{
-  this.logger = logger;
-}
- 
-BadCertHandler.prototype.getInterface =
-  function (aIID)
-{
-     return this.QueryInterface(aIID);
-}
- 
-BadCertHandler.prototype.QueryInterface =
-  function badcert_queryinterface(aIID)
-{
-  if (aIID.equals(Ci.nsIBadCertListener2) ||
-      aIID.equals(Ci.nsIBadCertListener) || // TB2 compatibility  
-      aIID.equals(Ci.nsISSLErrorListener) ||
-      aIID.equals(Ci.nsIInterfaceRequestor) ||
-      aIID.equals(Ci.nsISupports))
-      {
-        return this;
-      }
- 
-     throw Components.results.NS_ERROR_NO_INTERFACE;
- }
-
-// nsIBadCertListener implementation for Thunderbird 2...
-/**
- * @deprecated removed from Thunderbird 3
- * @param {} socketInfo
- * @param {} cert
- * @param {} certAddType
- * @return {Boolean}
- */
-BadCertHandler.prototype.confirmUnknownIssuer
-    = function(socketInfo, cert, certAddType) 
-{ 
-  if (this.logger != null)
-    this.logger.logStringMessage("Sieve BadCertHandler: Unknown issuer");
-      
-  return true;
-}
-
-/**
- * @deprecated removed from Thunderbird 3
- * @param {} socketInfo
- * @param {} targetURL
- * @param {} cert
- * @return {Boolean}
- */
-
-BadCertHandler.prototype.confirmMismatchDomain
-    = function(socketInfo, targetURL, cert) 
-{
-  if (this.logger != null)
-    this.logger.logStringMessage("Sieve BadCertHandler: Mismatched domain");
-
-  return true;
-}
-
-/**
- * @deprecated removed from Thunderbird 3
- * @param {} socketInfo
- * @param {} cert
- * @return {Boolean}
- */
-BadCertHandler.prototype.confirmCertExpired
-    = function(socketInfo, cert) 
-{
-  if (this.logger != null)
-    this.logger.logStringMessage("Sieve BadCertHandler: Expired certificate");
-
-  return true;
-}
-
-/**
- * @deprecated removed from Thunderbird 3
- * @param {} socketInfo
- * @param {String} targetURL
- * @param {} cert
- */
-BadCertHandler.prototype.notifyCrlNextupdate
-   = function(socketInfo, targetURL, cert) 
-{
-  if (this.logger != null)
-    this.logger.logStringMessage("Sieve BadCertHandler: notifyCrlNextupdate");
-}
- 
-
-// nsIBadCertListener2 implementation for Thunderbird 3...
-
- /* Returning true in the following two callbacks
-  * means suppress default the error UI (modal alert).
-  */
- /**
-  * @param {} socketInfo
-  * @param {} sslStatus
-  * @param {String} targetSite
-  * @return {Boolean}
-  */
- BadCertHandler.prototype.notifyCertProblem
-     = function (socketInfo, sslStatus, targetSite)
- {
-   this.logger.logStringMessage("Sieve BadCertHandler: notifyCertProblem");
-       
-   sivDisconnect(5,targetSite);
-  
-   return true;
- }
-
- BadCertHandler.prototype.notifySSLError =
- function badcert_notifySSLError(socketInfo, error, targetSite)
- {
-   this.logger.logStringMessage("Sieve BadCertHandler: notifySSLError");
-   return true;
- }

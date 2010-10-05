@@ -12,6 +12,9 @@
  *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveRequest.js"   
  */
  
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+
 var gSieve = null;
 var gSid = null;
 var gCid = null;
@@ -64,15 +67,9 @@ var event =
   onPutScriptResponse: function(response)
   {
     gEditorStatus.contentChanged = false;
-    clearTimeout(gEditorStatus.checkScriptTimer);
-    
-    Components.classes["@sieve.mozdev.org/transport-service;1"]
-      .getService().wrappedJSObject
-      .closeChannel(gSid,gCid);
-    
-    gSieve = null;
 
-    close();
+    if (onClose())
+      close();
   },
 
   /**
@@ -86,6 +83,18 @@ var event =
   onTimeout: function()
   {
     alert("A Timeout occured");
+  },
+  
+  observe : function(aSubject, aTopic, aData)
+  {
+    if (aTopic != "quit-application-requested")
+      return;
+    
+      
+    if (onClose() == false)
+      aSubject.QueryInterface(Ci.nsISupportsPRBool).data = true;
+    else
+      close();
   }
 }
 
@@ -307,6 +316,10 @@ function onLoad()
   document.getElementById("sivContentEditor").setSelectionRange(0, 0);
   document.getElementById("sivContentEditor").focus();
 
+  Cc["@mozilla.org/observer-service;1"]
+      .getService (Ci.nsIObserverService)
+      .addObserver(event,"quit-application-requested", false);
+           
   /*
    * window.document.documentElement.addEventListener('focus', function(event) {
    * if (event.target.nodeName=='textbox' &&
@@ -316,7 +329,7 @@ function onLoad()
 }
 
 function onSideBarBrowserClick(event)
-{
+{     
   var href = null;
   
   if (event.target.nodeName == "A")
@@ -408,8 +421,8 @@ function onClose()
 {
   if (gEditorStatus.contentChanged == true)
   {
-    var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-                          .getService(Components.interfaces.nsIPromptService);
+    var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
+                          .getService(Ci.nsIPromptService);
 
     // The flags 393733 equals [Save] [Don't Save] [Cancel]
     var result =
@@ -426,20 +439,27 @@ function onClose()
     if (result != 2)
       return false;                          
   }
+   
+  clearTimeout(gEditorStatus.checkScriptTimer);
+  
+  Cc["@mozilla.org/observer-service;1"]
+      .getService (Ci.nsIObserverService)
+      .removeObserver(event,"quit-application-requested");  
   
   // either the script has not changed or the user did not want to save... 
   // ... the script, so it's ok to exit.
-  Components.classes["@sieve.mozdev.org/transport-service;1"]
+  Cc["@sieve.mozdev.org/transport-service;1"]
       .getService().wrappedJSObject
-      .closeChannel(gSid,gCid);  
+      .closeChannel(gSid,gCid);
+                  
   gSieve = null;
   return true;  
 }
 
 function onImport()
 {
-  var filePicker = Components.classes["@mozilla.org/filepicker;1"]
-                             .createInstance(Components.interfaces.nsIFilePicker);
+  var filePicker = Cc["@mozilla.org/filepicker;1"]
+                       .createInstance(Ci.nsIFilePicker);
 
   filePicker.appendFilter("Sieve Scripts (*.siv)", "*.siv");
   filePicker.appendFilter("All Files (*.*)", "*.*");
@@ -1039,3 +1059,4 @@ function sivSetStatus(state, message)
   }
   
 }
+

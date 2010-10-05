@@ -246,7 +246,7 @@ function onLoad()
                               .getService(Components.interfaces.nsIXULAppInfo)
                               .platformVersion.split(".");
 
-  if (((version[0] == 1) && (version[1] >=9)) || version[0] >2)
+  if (((version[0] == 1) && (version[1] >=9)) || version[0] >=2)
   {
     document.getElementById("sivLineNumbers").removeAttribute('hidden');
     document.getElementById("sivContentEditor")
@@ -287,6 +287,7 @@ function onLoad()
   gEditorStatus.checkScriptDelay = args["compileDelay"];
   
   document.getElementById("txtName").value = args["scriptName"];
+  document.title = ""+args["scriptName"]+" - Sieve Filters";
   
   document.getElementById("lblErrorBar").firstChild.nodeValue
     = "Server reports no script errors...";

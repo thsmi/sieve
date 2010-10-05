@@ -1,6 +1,5 @@
 * Tooltips
 * Parse Sieve Filters
-* Non modal Sieve editor dialog
 * Use the XUL Editor instead of a Textbox
   Because tabstops will work only in the Editor
 	http://www.xulplanet.com/references/xpcomref/ifaces/nsIEditor.html

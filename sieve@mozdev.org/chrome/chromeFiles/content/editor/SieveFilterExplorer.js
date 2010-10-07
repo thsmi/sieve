@@ -524,12 +524,21 @@ function sivRename2(oldName, newName)
           .getChannel(sid,cid)
           .addRequest(request);  
            
+    },
+    onTimeout: function()
+    {
+      event.onTimeout();
+    },
+    onError: function(response)
+    {
+      //TODO Display notification instead of an popup box.
+      alert(response.getMessage());
     }
   }
   
   var request = new SieveRenameScriptRequest(oldName, newName);
   request.addRenameScriptListener(lEvent)
-  request.addErrorListener(event);
+  request.addErrorListener(lEvent);
     
   Cc["@sieve.mozdev.org/transport-service;1"]
       .getService().wrappedJSObject
@@ -553,7 +562,7 @@ function sivRename(oldName, newName, isActive)
                       new String(response.getScriptBody()));
 
       request.addPutScriptListener(lEvent)
-      request.addErrorListener(event)
+      request.addErrorListener(lEvent)
       Cc["@sieve.mozdev.org/transport-service;1"]
         .getService().wrappedJSObject
         .getChannel(sid,cid)
@@ -591,8 +600,25 @@ function sivRename(oldName, newName, isActive)
         .getChannel(sid,cid)
         .addRequest(request);  
 
-    }     
+    },
+    onTimeout: function()
+    {
+      event.onTimeout();
+    },
+    onError: function(response)
+    {
+      //TODO Display notification instead of an popup box.
+      alert("Renaming\r\n"+response.getMessage());
+    }    
   }
+  
+  // As we are emulating rename, the server does not check for scripts with...
+  // ... conflicting names. Instead it will overwrite such a script silently...
+  // ... So we try hard and double check our cached scriptnames for possible...
+  // ... conflicts inoder to prevent possible dataloss. 
+  for(var i = 0; i < this.sieveTreeView.rules.length; i++)    
+    if (this.sieveTreeView.rules[i].script == newName)
+      return alert("Script already exists");
   
   lEvent.oldScriptName  = oldName;
   lEvent.newScriptName  = newName;

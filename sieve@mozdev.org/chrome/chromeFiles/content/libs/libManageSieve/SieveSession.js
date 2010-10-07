@@ -25,7 +25,22 @@ Cc["@mozilla.org/moz/jssubscript-loader;1"]
 Cc["@mozilla.org/moz/jssubscript-loader;1"]
     .getService(Ci.mozIJSSubScriptLoader) 
     .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponse.js");
-    
+
+/**
+ * This class pools and caches concurrent connections (Channel) to an destinct 
+ * remote server (Session).
+ * Furthermore it's a wrapper around the Sieve object. It implements
+ * the login/logout process, a watchdog, an hartbeat an much more. 
+ * 
+ * A session can contain arbitary connections, but there will be only one 
+ * "physical" link to the server. All channels share the session's link.
+ * 
+ * @param {} account
+ *   an reference to a sieve account. this is needed to obtain login informations.
+ * @param @optional {Object} sid
+ *   a unique Identifier for this Session. Only neede to make debugging easyer.
+ *   
+ */
 function SieveSession(account,sid)
 {
   this.idx = 0;
@@ -295,7 +310,8 @@ SieveSession.prototype =
     if (this.listener)
       this.listener.onChannelCreated(this.sieve);    
   },
-  
+
+  /** @private */  
   onLogoutResponse: function(response)
   {
     if (this.sieve)
@@ -304,6 +320,7 @@ SieveSession.prototype =
     this.sieve = null;
   },
   
+  /** @private */
   onError: function(response)
   {      
     var code = response.getResponseCode();
@@ -330,8 +347,19 @@ SieveSession.prototype =
       this.listener.onChannelError(); 
   },
   
-  /**************/
-    
+  /**
+   * Connects to a remote Sieve server. 
+   * 
+   * It warps the complex login process. For example it automatically requests 
+   * for a password, picks an authentication mechanism and starts a secure 
+   * connection.
+   * 
+   * You get notification on the login status through the listener. 
+   *
+   * @param {String} hostname - optional
+   *   overrides the default hostname supplied by the account. This is needed
+   *   for referrals and similar stuff.
+   */    
   connect : function(hostname)
   {
     if (this.sieve.isAlive())
@@ -390,7 +418,13 @@ SieveSession.prototype =
     this.sieve.addRequest(request);    
   },
     
-  /****/
+  /**
+   * Requests a channel for to this session. After use you have to revoke it via
+   * "removeChannel", this will close the channel. Otherwise the connection
+   * to the remote server might stay open. 
+   *    
+   * @return {} An unique Identifier
+   */
   addChannel : function()
   {
     
@@ -406,6 +440,21 @@ SieveSession.prototype =
     return cid;
   },
   
+  /**
+   * Closes and Invalidates a channel. In case all channels of a session are
+   * closed, the connection to the remote server will be terminated. That's why
+   * there's no close session command. Thus always close your channels.
+   * 
+   * This Method does not throw an Exception, even if you pass an invalid 
+   * session identifier! So it's save to call this method if you are unsure
+   * if you already closed a channel.
+   *  
+   * @param {} cid
+   *   The unique Identifier of the channel which should be closed and invalidated.
+   * @return {Boolean}
+   *   return true if the channel could be closed and false if not. A "false" 
+   *   means the identifier is invalid. 
+   */
   removeChannel : function(cid)
   { 
     if (!this.channels)
@@ -422,6 +471,11 @@ SieveSession.prototype =
     return true;
   },
   
+  /**
+   * Checks if the session has open/registered channels.
+   * @return {Boolean}
+   *   returns true incase the session has open channels. Otherwise false.
+   */
   hasChannels : function()
   { 
     if ((this.channels) && (this.channels.length > 0))
@@ -430,11 +484,20 @@ SieveSession.prototype =
     return false;
   },
   
+  /**
+   * Checks if a channel is registed with this session
+   * @param {} cid
+   *   the channels unique identifier
+   * @return {Boolean}
+   *   returns false in case the channel identifier is not registered with 
+   *   this session's object.
+   */
   hasChannel : function(cid)
   {
     return (this.channels.indexOf(cid) == -1)?false:true;    
   },
   
+  // Needed for Bad Cert Listener....
   QueryInterface :  function badcert_queryinterface(aIID)
   {
     if (aIID.equals(Ci.nsISupports))
@@ -448,7 +511,8 @@ SieveSession.prototype =
     if (aIID.equals(Ci.nsIInterfaceRequestor))
       return this;
       
-    // Deprecated interface used needed for Gecko 1.8 (Thunderbird 2)
+    // nsIBadCerListener ist deprectated since Gecko 1.8 (Thunderbird 2), ...
+    // ... we just keep it for compatibility
     if (aIID.equals(Ci.nsIBadCertListener))
       return this;
       
@@ -461,8 +525,8 @@ SieveSession.prototype =
     return this.QueryInterface(aIID);
   },  
   
+  // Ci.nsiBadCertListerner2
   // Implement nsIBadCertListener2 Interface to override
-  
   // the "bad cert" dialog. The the connection will be closed
   // after an Certificate error...
   /**
@@ -485,7 +549,7 @@ SieveSession.prototype =
     return true;
   },
   
-  // Implement nsISSLErrorListener
+  // Ci.nsISSLErrorListener
   /**
    * 
    * @param {} socketInfo
@@ -507,9 +571,9 @@ SieveSession.prototype =
     return true;
   },
   
-  // Implement nsIBadCertListener for TB2 / Gecko 1.8 compatibility
+  // Ci.nsIBadCertListener (Thunderbird 2 / Gecko 1.8.x compatibility)
   /**
-   * @deprecated Interface removed since Gecko 1.9.1 (Thunderbird 3)
+   * @deprecated Interface removed in Gecko 1.9.1 (Thunderbird 3)
    * @param {} socketInfo
    * @param {} cert
    * @return {Boolean}
@@ -523,7 +587,7 @@ SieveSession.prototype =
   },
 
   /**
-   * @deprecated Interface removed since Gecko 1.9.1 (Thunderbird 3)
+   * @deprecated Interface removed in Gecko 1.9.1 (Thunderbird 3)
    * @param {} socketInfo
    * @param {} targetURL
    * @param {} cert
@@ -538,7 +602,7 @@ SieveSession.prototype =
   },
  
   /**
-   * @deprecated Interface removed since Gecko 1.9.1 (Thunderbird 3)
+   * @deprecated Interface removed in Gecko 1.9.1 (Thunderbird 3)
    * @param {} socketInfo
    * @param {} cert
    * @param {} certAddType
@@ -553,7 +617,7 @@ SieveSession.prototype =
   },
   
   /**
-   * @deprecated Interface removed since Gecko 1.9.1 (Thunderbird 3)
+   * @deprecated Interface removed in Gecko 1.9.1 (Thunderbird 3)
    * @param {} socketInfo
    * @param {String} targetURL
    * @param {} cert

@@ -100,17 +100,10 @@ SieveSession.prototype =
     }
     
 
+    // Notify the listener to display capabilities. We simply pass the response... 
+    // ... to the listener. So the listener can pick whatever he needs.
     if (this.listener && this.listener.onChannelStatus)
       this.listener.onChannelStatus(7,response);
-    // TODO Update Capabilies...
-    /*document.getElementById('txtSASL').value
-        = response.getSasl();
-    document.getElementById('txtExtensions').value    
-        = response.getExtensions(); 
-    document.getElementById('txtImplementation').value 
-        = response.getImplementation();
-    document.getElementById('txtVersion').value
-        = response.getVersion();*/
 
     // We have to figure out which ist the best SASL Mechanism for the login ...
     // ... therefore we check first whether a mechanism is forced by the user ...

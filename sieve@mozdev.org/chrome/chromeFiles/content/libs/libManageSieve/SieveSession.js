@@ -98,7 +98,11 @@ SieveSession.prototype =
       this.onLoginResponse(null);
       return;
     }
+    
 
+    if (this.listener && this.listener.onChannelStatus)
+      this.listener.onChannelStatus(7,response);
+    // TODO Update Capabilies...
     /*document.getElementById('txtSASL').value
         = response.getSasl();
     document.getElementById('txtExtensions').value    

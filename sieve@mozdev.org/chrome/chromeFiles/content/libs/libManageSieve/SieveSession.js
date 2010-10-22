@@ -162,8 +162,7 @@ SieveSession.prototype =
 
     if (request == null)
     {
-      //TODO Fix me... 
-      sivDisconnect(2, "error.sasl");
+      this.disconnect(false,2,"error.sasl");
       return;
     }
     
@@ -174,8 +173,7 @@ SieveSession.prototype =
     
     if (password == null)
     {
-      //TODO Fix me...
-      sivDisconnect(2, "error.authentication");
+      this.disconnect(false,2,"error.authentication")
       return;
     }
       
@@ -188,7 +186,7 @@ SieveSession.prototype =
       var authorization = account.getAuthorization().getAuthorization();
       if (authorization == null)
       {
-        sivDisconnect(2, "error.authentication");
+        this.disconnect(false,2,"error.authentication");
         return;
       }
       
@@ -314,10 +312,7 @@ SieveSession.prototype =
   /** @private */  
   onLogoutResponse: function(response)
   {
-    if (this.sieve)
-      this.sieve.disconnect();
-      
-    this.sieve = null;
+    this.disconnect(true);
   },
   
   /** @private */
@@ -334,19 +329,11 @@ SieveSession.prototype =
       return;
     }
 
-    this.logger.logStringMessage("OnError: "+response.getMessage());
-    
-    // TODO FixMe:
-    /*sivDisconnect(4,response.getMessage());*/
-
-    // Kill the session, in case the sieve object terminated...
-    if ((this.sieve) || !(this.sieve.isAlive()))
-      this.onLogoutResponse(null);
-    
-    if (this.listener && this.listener.onChannelError)
-      this.listener.onChannelError(); 
+    //this.logger.logStringMessage("OnError: "+response.getMessage());
+    this.disconnect(false,4,response.getMessage())
   },
   
+
   /**
    * Connects to a remote Sieve server. 
    * 
@@ -364,8 +351,7 @@ SieveSession.prototype =
   {
     if (this.sieve.isAlive())
     {        
-      this.onLoginResponse(null);
-     
+      this.onLoginResponse(null);     
       return;
     }
     
@@ -404,18 +390,33 @@ SieveSession.prototype =
         this.account.getProxy().getProxyInfo());    
   },
   
-  disconnect : function(force)
+  disconnect : function(force, id, message)
   {
-    if (force)
-      return this.onLogoutResponse(null);
+    // at first we update the status, so that the user ...
+    // ... knows what happened.
+    if (id && this.listener && this.listener.onChannelStatus)
+      this.listener.onChannelStatus(id,message);
     
-    if (!(this.sieve) || !(this.sieve.isAlive()))
-      return this.onLogoutResponse(null);
+    // Skip if the connection already closed...
+    if (!this.sieve)
+      return;
       
-    var request = new SieveLogoutRequest();
-    request.addLogoutListener(this);
-    /*request.addErrorListener(levent);*/
-    this.sieve.addRequest(request);    
+    // ... we always try to exit with an Logout request...
+    if ( !force && this.sieve.isAlive())
+    {
+      var request = new SieveLogoutRequest();
+      request.addLogoutListener(this);
+      /*request.addErrorListener(levent);*/
+      this.sieve.addRequest(request);
+      
+      return;
+    }
+    
+    // ... but this obviously is not always usefull
+    this.sieve.disconnect();      
+    this.sieve = null;
+      
+    return;
   },
     
   /**

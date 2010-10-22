@@ -77,28 +77,18 @@ var event =
     var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);  
     
     if (ioService.offline)
-      sivSetStatus(6);
-    else
-      sivDisconnect(1,"warning.timeout");
+    {
+      sivDisconnect(6);
+      return;
+    }
+    
+    gLogger.logStringMessage("SivFilerExplorer.OnTimeout:");
+    sivDisconnect(1,"warning.timeout");
   },
 	
   onError: function(response)
   {
-    /*var code = response.getResponseCode();
-
-    if (code instanceof SieveResponseCodeReferral)
-    {
-      // close the old sieve connection
-      sivDisconnect();
-      
-      var account = getSelectedAccount();
-
-      sivConnect(account,code.getHostname());
-      
-      return;
-    }*/
-
-    gLogger.logStringMessage("OnError: "+response.getMessage());
+    gLogger.logStringMessage("SivFilerExplorer.OnError: "+response.getMessage());
     sivDisconnect(4,response.getMessage());
   },
   
@@ -269,7 +259,7 @@ function sivDisconnect(state,message)
 {
   disableControls(true);
   
-  if ((state) && (message))
+  if (state)
     sivSetStatus(state,message,"status.disconnected");  
   
   if ((!sid) || (!cid))

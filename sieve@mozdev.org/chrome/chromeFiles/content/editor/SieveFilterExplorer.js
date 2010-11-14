@@ -53,10 +53,7 @@ var event =
     request.addListScriptListener(event);
     request.addErrorListener(event);
      
-    Cc["@sieve.mozdev.org/transport-service;1"]
-        .getService().wrappedJSObject
-        .getChannel(sid,cid)
-        .addRequest(request);  
+    sivSendRequest(sid,cid,request);
   },
 
   onDeleteScriptResponse:  function(response)
@@ -66,10 +63,7 @@ var event =
     request.addListScriptListener(event);
     request.addErrorListener(event);
     
-    Cc["@sieve.mozdev.org/transport-service;1"]
-        .getService().wrappedJSObject
-        .getChannel(sid,cid)
-        .addRequest(request);
+    sivSendRequest(sid,cid,request);
   },
 
   onTimeout: function()
@@ -102,12 +96,8 @@ var event =
       
     request.addSetActiveListener(event);
     request.addErrorListener(event);
-    
-    Cc["@sieve.mozdev.org/transport-service;1"]
-        .getService().wrappedJSObject
-        .getChannel(sid,cid)
-        .addRequest(request);  
 
+    sivSendRequest(sid,cid,request);
   },
       
   onChannelClosed : function()
@@ -119,10 +109,7 @@ var event =
     request.addListScriptListener(event);
     request.addErrorListener(event);
 
-    Cc["@sieve.mozdev.org/transport-service;1"]
-        .getService().wrappedJSObject
-        .getChannel(sid,cid)
-        .addRequest(request);      
+    sivSendRequest(sid,cid,request);
   },
   
   onChannelCreated : function(sieve)
@@ -211,6 +198,18 @@ function getSelectedAccount()
   return (new SieveAccounts()).getAccount(selectedItem.value); 
 }
 
+function onActivateClick()
+{
+  var tree = document.getElementById('treeImapRules');  
+  if (tree.currentIndex < 0)
+    return;
+
+  // imitate click in the treeview
+  tree.view.cycleCell(tree.currentIndex,tree.columns.getColumnAt(1));
+    
+  return;
+}
+
 function onGoOnlineClick()
 {
   var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);  
@@ -243,17 +242,43 @@ function sivConnect(account,hostname)
   sivManager.openChannel(sid,cid,hostname);
 }
 
-function onActivateClick()
+function sivSendRequest(sid,cid,request)
 {
-  var tree = document.getElementById('treeImapRules');  
-  if (tree.currentIndex < 0)
-    return;
-
-  // imitate click in the treeview
-  tree.view.cycleCell(tree.currentIndex,tree.columns.getColumnAt(1));
+  // we do not send requests while in offline mode...
+  var ioService = Cc["@mozilla.org/network/io-service;1"]
+                      .getService(Ci.nsIIOService);  
     
-  return;
+  if (ioService.offline)
+  {
+    sivDisconnect(6);
+    return;
+  }
+  
+  // ... we are not so let's try. If the channel was closed...
+  // ... getChannel will throw an exception.
+  try
+  {
+    Cc["@sieve.mozdev.org/transport-service;1"]
+        .getService().wrappedJSObject
+        .getChannel(sid,cid)
+        .addRequest(request);  
+  }
+  catch (e)
+  {
+    // most likely getChannel caused this exception, but anyway we should ...
+    // ... display error message. If we do not catch the exception a timeout ...
+    // ... would accure, so let's display the timeout message directly.
+    
+    gLogger.logStringMessage("SivFilerExplorer.sivSendRequest:");
+    sivDisconnect(1,"warning.timeout");    
+  }
 }
+
+// TODO add observer and Lock interface when going offline
+// network:offline-status-changed
+//     data = 'online'|'offline'
+// network:offline-about-to-go-offline
+//  -> offline mode
 
 function sivDisconnect(state,message)
 {
@@ -326,10 +351,7 @@ function onDeleteClick()
   request.addDeleteScriptListener(event);
   request.addErrorListener(event);
   
-  Cc["@sieve.mozdev.org/transport-service;1"]
-        .getService().wrappedJSObject
-        .getChannel(sid,cid)
-        .addRequest(request);
+  sivSendRequest(sid,cid,request);
 }
 /**
  * @param {String} scriptName
@@ -509,11 +531,7 @@ function sivRename2(oldName, newName)
       request.addListScriptListener(event);
       request.addErrorListener(event);
   
-      Cc["@sieve.mozdev.org/transport-service;1"]
-          .getService().wrappedJSObject
-          .getChannel(sid,cid)
-          .addRequest(request);  
-           
+      sivSendRequest(sid,cid,request);           
     },
     onTimeout: function()
     {
@@ -530,11 +548,7 @@ function sivRename2(oldName, newName)
   request.addRenameScriptListener(lEvent)
   request.addErrorListener(lEvent);
     
-  Cc["@sieve.mozdev.org/transport-service;1"]
-      .getService().wrappedJSObject
-      .getChannel(sid,cid)
-      .addRequest(request);  
-
+  sivSendRequest(sid,cid,request);
 }
 
 function sivRename(oldName, newName, isActive)
@@ -553,11 +567,8 @@ function sivRename(oldName, newName, isActive)
 
       request.addPutScriptListener(lEvent)
       request.addErrorListener(lEvent)
-      Cc["@sieve.mozdev.org/transport-service;1"]
-        .getService().wrappedJSObject
-        .getChannel(sid,cid)
-        .addRequest(request);  
-  
+      
+      sivSendRequest(sid,cid,request);
     },    
     onPutScriptResponse: function(response)
     {
@@ -569,11 +580,7 @@ function sivRename(oldName, newName, isActive)
         request.addSetActiveListener(lEvent);
         request.addErrorListener(event);
     
-        Cc["@sieve.mozdev.org/transport-service;1"]
-          .getService().wrappedJSObject
-          .getChannel(sid,cid)
-          .addRequest(request);  
-
+        sivSendRequest(sid,cid,request);
       }
       else
         lEvent.onSetActiveResponse(null);
@@ -585,11 +592,8 @@ function sivRename(oldName, newName, isActive)
       var request = new SieveDeleteScriptRequest(lEvent.oldScriptName);
       request.addDeleteScriptListener(event);
       request.addErrorListener(event);
-      Cc["@sieve.mozdev.org/transport-service;1"]
-        .getService().wrappedJSObject
-        .getChannel(sid,cid)
-        .addRequest(request);  
-
+      
+      sivSendRequest(sid,cid,request);
     },
     onTimeout: function()
     {
@@ -621,10 +625,7 @@ function sivRename(oldName, newName, isActive)
   request.addGetScriptListener(lEvent);
   request.addErrorListener(event);
 
-  Cc["@sieve.mozdev.org/transport-service;1"]
-    .getService().wrappedJSObject
-    .getChannel(sid,cid)
-    .addRequest(request);  
+  sivSendRequest(sid,cid,request);
   
 }
 

@@ -110,13 +110,32 @@
       <deck id="dkView" flex="1" selectedIndex="0">
         <box flex="1">
           <vbox flex="1">
+            <!--   
+              TODO Show a Warning message, with an continue buttton in case of a timeout, or if
+              Thunderbird switched to offline mode
+             
+            <box id="sivEditorWarning" align="center" pack="center" flex="1" > 
+              <hbox align="center" class="sivWarning">
+                <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
+                <vbox>
+                  <description id="sivExplorerWarningMsg" pack="center">Description...</description>
+                  <hbox align="right">
+                    <button id="btnIgnoreBadCert" label="Ignore" />
+                  </hbox>
+                </vbox>                
+              </hbox>
+            </box>
+            -->
+            <!-- Loading animation -->
             <vbox id="sivEditorWait" style="-moz-appearance: textfield;" 
                   align="center" pack="center" flex="1" >
               <image pack="center" src="chrome://sieve/content/images/load.gif"/>
               <spacer/> 
               <description id="sivEditorWaitMsg" pack="center">          
               </description>
-            </vbox>            
+            </vbox>
+                        
+            <!-- Sieve Script editor -->                        
             <hbox id="sivEditor" collapsed="true" flex="1" class="sivEditor">
               <vbox id="sivLineNumbers" hidden="true"> 
                 <textbox id="sivLineNumbersEditor" flex="1" 
@@ -129,7 +148,9 @@
               <textbox id="sivContentEditor" flex="1" 
                        multiline="true" wrap="off" 
                        autocomplete="off" />                
-            </hbox> 
+            </hbox>
+            
+            <!-- Error Bar (Showing Script errors) --> 
             <splitter id="spErrorBar" resizeafter="farthest" /> 
             <vbox id="vbErrorBar" class="sieveSideBar">
               <stack class="outset">

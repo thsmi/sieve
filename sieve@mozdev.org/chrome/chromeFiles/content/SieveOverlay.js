@@ -58,6 +58,38 @@ var gSivExtUtils =
    */
   OpenSettings : function (server)
   {
+    
+    //#ifdef POSTBOX
+      // postbox includes accountmanager in Options Dialog..
+      // ... so we need a postbox specific hack.
+      var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
+                      .getService(Components.interfaces.nsIXULAppInfo).ID;
+                    
+      if (appInfo == "postbox@postbox-inc.com")
+      {
+        // we might need to load mailCore.js, as we can't be sure if it's...
+        // ... loaded or not.
+        if (typeof(openOptionsDialog) == "undefined")
+        {
+          Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+            .getService(Components.interfaces.mozIJSSubScriptLoader) 
+            .loadSubScript("chrome://messenger/content/mailCore.js");
+        }
+        
+        var options = {};
+
+        if (server == null)
+          server = this.GetActiveServer();
+      
+        if (server != null)
+          options = { server: server, selectPage: 'am-sieve-account.xul' }
+      
+        // we hit postbox, settings are where in the preferences menu...
+        openOptionsDialog('paneAccounts', '',  options);
+        return;
+      }
+    //#endif POSTPOX
+    
     var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].
                             getService(Components.interfaces.nsIWindowMediator);
 

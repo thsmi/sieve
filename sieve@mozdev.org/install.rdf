@@ -25,6 +25,15 @@
         <em:maxVersion>10.0</em:maxVersion>
       </Description>
     </em:targetApplication>
+
+    <em:targetApplication>
+      <!-- Seamonkey -->
+      <Description>
+        <em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
+        <em:minVersion>2.0</em:minVersion>
+        <em:maxVersion>10.0</em:maxVersion>
+      </Description>
+    </em:targetApplication>
    
     <em:name>Sieve</em:name>
     <em:description>Configures serverside sieve email filters</em:description>

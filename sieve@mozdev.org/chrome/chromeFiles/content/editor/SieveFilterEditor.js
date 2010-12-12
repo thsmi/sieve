@@ -15,7 +15,6 @@
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
-var gSieve = null;
 var gSid = null;
 var gCid = null;
 
@@ -26,10 +25,12 @@ var gPrintSettings = null;
 
 var gEditorStatus =
 {
+  
   selectionStart    : -1,
   selectionEnd      : -1,
   selectionChanged  : false,
   
+  hasContent        : false,
   contentChanged    : false,
   
   scrollChanged     : false,
@@ -54,7 +55,8 @@ var event =
    */
   onScriptLoaded: function(script)
   {
-    sivSetStatus(0);    
+    gEditorStatus.hasContent = true;
+    sivSetStatus(0);
     document.getElementById("sivContentEditor").value = script;
     document.getElementById("sivContentEditor").setSelectionRange(0, 0);
 	  UpdateCursorPos();
@@ -82,7 +84,7 @@ var event =
 
   onTimeout: function()
   {
-    alert("A Timeout occured");
+    sivSetStatus(2);
   },
   
   observe : function(aSubject, aTopic, aData)
@@ -110,7 +112,7 @@ function onCompile()
 
       // Call delete, without response handlers, we don't care if the ...
       // ... command succeeds or fails.
-      gSieve.addRequest(new SieveDeleteScriptRequest("TMP_FILE_DELETE_ME"));
+      sivSendRequest(gSid,gCid,new SieveDeleteScriptRequest("TMP_FILE_DELETE_ME"));
       
       // Call CHECKSCRIPT's response handler to complete the hack...  
       lEvent.onCheckScriptResponse(response);
@@ -172,7 +174,13 @@ function onCompile()
     
   var request = null;
   
-  if (gSieve.getCompatibility().checkscript)
+  var canCheck = Cc["@sieve.mozdev.org/transport-service;1"]
+                   .getService().wrappedJSObject  
+                   .getChannel(gSid,gCid)
+                   .getCompatibility()
+                   .checkscript;                
+
+  if (canCheck)
   {
     // ... we use can the CHECKSCRIPT command
     request = new SieveCheckScriptRequest(script)
@@ -191,7 +199,7 @@ function onCompile()
   
   request.addErrorListener(lEvent);
   
-  gSieve.addRequest(request);
+  sivSendRequest(gSid,gCid,request);
 }
 
 function onInput()
@@ -201,6 +209,7 @@ function onInput()
     document.getElementById("sbChanged").label = "Changed";
   
   gEditorStatus.contentChanged = true;
+  gEditorStatus.hasContent = true;
   
   // on every keypress we reset the timeout
   if (gEditorStatus.checkScriptTimer != null)
@@ -282,7 +291,6 @@ function onLoad()
   
   gSid = args["sieve"];
   gCid = sivManager.createChannel(gSid);
-  gSieve = sivManager.getChannel(gSid,gCid);
   
   gEditorStatus.checkScriptDelay = args["compileDelay"];
   
@@ -304,7 +312,7 @@ function onLoad()
     request.addGetScriptListener(event);
     request.addErrorListener(event);
 
-    gSieve.addRequest(request);
+    sivSendRequest(gSid,gCid,request);
   }
   
   //preload sidebar...
@@ -327,6 +335,38 @@ function onLoad()
    * event.target.hasAttribute('readonly')) {
    * window.document.documentElement.focus(); } }, true);
    */
+}
+
+function onIgnoreOffline()
+{
+  // try to go online again
+  try 
+  {
+    // Cid is removed, but try to reconnect...
+    gCid = Cc["@sieve.mozdev.org/transport-service;1"]
+               .getService().wrappedJSObject
+               .createChannel(gSid);
+    
+    // TODO: this is code exists twice remove me...
+    if (gEditorStatus.hasContent == false)
+    {
+      sivSetStatus(1,"Loading Script...");
+      
+      var args = window.arguments[0].wrappedJSObject;
+      
+      var request = new SieveGetScriptRequest(args["scriptName"]);
+      request.addGetScriptListener(event);
+      request.addErrorListener(event);
+
+      sivSendRequest(gSid,gCid,request);
+      
+      return;
+    }
+      
+  } 
+  catch (ex) {}
+  
+  sivSetStatus(0);
 }
 
 function onSideBarBrowserClick(event)
@@ -415,7 +455,7 @@ function onSave()
   request.addPutScriptListener(event);
   request.addErrorListener(event);
   
-  gSieve.addRequest(request);
+  sivSendRequest(gSid,gCid,request);
 }
 
 function onClose()
@@ -449,11 +489,8 @@ function onClose()
   
   // either the script has not changed or the user did not want to save... 
   // ... the script, so it's ok to exit.
-  Cc["@sieve.mozdev.org/transport-service;1"]
-      .getService().wrappedJSObject
-      .closeChannel(gSid,gCid);
+  sivDisconnect();
                   
-  gSieve = null;
   return true;  
 }
 
@@ -827,7 +864,7 @@ function UpdateLines()
   var second = document.getAnonymousElementByAttribute(document.getElementById("sivContentEditor"), 'anonid', 'input');
 
   // the scroll height can be equal or bigger than clientHeight. If its bigger we can take a shortcut...
-  // ... to thest if the linecount changed...
+  // ... to test if the linecount changed...
   if ((second.scrollHeight > second.clientHeight) && (second.scrollHeight == first.scrollHeight))
     return;
   
@@ -1044,13 +1081,62 @@ function onPrint()
   return;
 }*/
 
+function sivSendRequest(sid,cid,request)
+{
+  // we do not send requests while in offline mode...
+  var ioService = Cc["@mozilla.org/network/io-service;1"]
+                      .getService(Ci.nsIIOService);  
+    
+  if (ioService.offline)
+  {        
+    sivDisconnect(2);
+    return;
+  }
+  
+  // ... we are not so let's try. If the channel was closed...
+  // ... getChannel will throw an exception.
+  try
+  {
+    Cc["@sieve.mozdev.org/transport-service;1"]
+        .getService().wrappedJSObject
+        .getChannel(sid,cid)
+        .addRequest(request);  
+  }
+  catch (e)
+  {
+    // most likely getChannel caused this exception, but anyway we should ...
+    // ... display error message. If we do not catch the exception a timeout ...
+    // ... would accure, so let's display the timeout message directly.
+    
+    alert("SivFilerExplorer.sivSendRequest:"+e);
+    sivDisconnect(2);       
+  }
+}
+
+function sivDisconnect(state)
+{
+  
+  if (state)
+    sivSetStatus(state);
+    
+  if ((!gSid) || (!gCid))
+    return;
+    
+  Cc["@sieve.mozdev.org/transport-service;1"]
+      .getService().wrappedJSObject
+      .closeChannel(gSid,gCid); 
+}
+
 function sivSetStatus(state, message)
 {
+  document.getElementById('sivEditorWarning').setAttribute('hidden','true');
   document.getElementById('sivEditorWait').setAttribute('hidden','true');
   document.getElementById('sivEditor').setAttribute('collapsed','true');
   
   switch (state)
   {
+    case 2: document.getElementById('sivEditorWarning').removeAttribute('hidden');
+            break;    
     case 1: document.getElementById('sivEditorWait').removeAttribute('hidden');
             document.getElementById('sivEditorWaitMsg')
                 .firstChild.nodeValue = message;    

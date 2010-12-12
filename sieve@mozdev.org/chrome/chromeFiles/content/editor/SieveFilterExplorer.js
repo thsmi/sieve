@@ -44,6 +44,8 @@ var event =
     // always select something
     if ((tree.currentIndex < 0) && (tree.view.rowCount > 0))
       tree.view.selection.select(0);
+      
+    //TODO force repainting treeview...
   },
 
   onSetActiveResponse: function(response)
@@ -76,7 +78,7 @@ var event =
       return;
     }
     
-    gLogger.logStringMessage("SivFilerExplorer.OnTimeout:");
+    gLogger.logStringMessage("SivFilerExplorer.OnTimeout");
     sivDisconnect(1,"warning.timeout");
   },
 	
@@ -130,7 +132,19 @@ var event =
   onBadCert : function(targetSite)
   {
     sivDisconnect(5,targetSite);
-  }  
+  },
+  
+  observe : function(aSubject, aTopic, aData)
+  {
+    if (aTopic != "network:offline-status-changed")
+      return;
+    
+    if (aData == "offline")
+      sivDisconnect(6);
+    
+    if (aData == "online")
+      sivConnect(null,true);    
+  }
 }
 
 function onWindowLoad()
@@ -176,6 +190,10 @@ function onWindowLoad()
     menuImapAccounts.selectedIndex = 0;
     
   onSelectAccount();
+  
+  Cc["@mozilla.org/observer-service;1"]
+      .getService (Ci.nsIObserverService)
+      .addObserver(event,"network:offline-status-changed", false);  
 }
    
 function onWindowClose()
@@ -183,6 +201,10 @@ function onWindowClose()
   // Don't forget to close this channel...
   sivDisconnect();
   
+  Cc["@mozilla.org/observer-service;1"]
+      .getService (Ci.nsIObserverService)
+      .removeObserver(event,"network:offline-status-changed");  
+      
   return true;
 }   
 /**
@@ -214,10 +236,10 @@ function onGoOnlineClick()
 {
   var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);  
   ioService.offline = false;  
-  sivConnect();
+ // sivConnect(null,true);
 }
 
-function sivConnect(account,hostname)
+function sivConnect(account,reconnect)
 {
   var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
   
@@ -226,20 +248,19 @@ function sivConnect(account,hostname)
   
   sivSetStatus(3,"progress.connecting","status.connecting");
   
-  if (account == null)
-    account = getSelectedAccount();
-  
   // Ensure that Sieve Object is null...
   var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
             .getService().wrappedJSObject;
   
-        
+  if (account == null)
+    account = getSelectedAccount();
+ 
   sid = sivManager.createSession(account);
   sivManager.addSessionListener(sid,event);
   
   cid = sivManager.createChannel(sid);
   
-  sivManager.openChannel(sid,cid,hostname);
+  sivManager.openChannel(sid,cid);
 }
 
 function sivSendRequest(sid,cid,request)
@@ -273,12 +294,6 @@ function sivSendRequest(sid,cid,request)
     sivDisconnect(1,"warning.timeout");    
   }
 }
-
-// TODO add observer and Lock interface when going offline
-// network:offline-status-changed
-//     data = 'online'|'offline'
-// network:offline-about-to-go-offline
-//  -> offline mode
 
 function sivDisconnect(state,message)
 {

@@ -57,6 +57,7 @@
 <!ENTITY options.debug.response "Communication du Serveur vers le Client (réponses)">
 <!ENTITY options.debug.exceptions "Information d'exceptions et d'état de la machine">
 <!ENTITY options.debug.stream "Dump brut / Dump du flux de données">
+<!ENTITY options.debug.session "Session management">
 <!ENTITY options.debug.output "Sortie de débuggage">
 <!ENTITY options.debug.console "Les informations de débuggage sont envoyées vers la console d'erreur">
 <!ENTITY options.debug.console.open "Voir la console d'erreur">

@@ -46,10 +46,14 @@ function SieveSession(account,sid)
   this.idx = 0;
   this.sieve = Cc["@sieve.mozdev.org/transport;1"]
                    .createInstance().wrappedJSObject;
-  // Step 1: Register logging facility...
-  this.logger = Cc["@mozilla.org/consoleservice;1"]
-                    .getService(Ci.nsIConsoleService);
+
   this.account = account;
+  
+  this.debug = {};
+  this.debug.level = this.account.getSettings().getDebugFlags();
+  this.debug.logger = Cc["@mozilla.org/consoleservice;1"]
+                          .getService(Ci.nsIConsoleService);
+  
   this.sid = sid;
 }
 
@@ -358,7 +362,7 @@ SieveSession.prototype =
     // Step 1: Setup configure settings
     this.sieve.setDebugLevel(
         this.account.getSettings().getDebugFlags(),
-        this.logger);
+        this.debug.logger);
                    
     // Step 2: Create a Watchdog Instance...
     this.watchDog = null;
@@ -436,7 +440,9 @@ SieveSession.prototype =
     
     this.channels.push(cid);     
      
-    this.logger.logStringMessage("Channel Added: "+this.sid+"/"+cid+" ["+this.channels+"]");
+    
+    if (this.debug.level & (1 << 4))
+      this.debug.logger.logStringMessage("Channel Added: "+this.sid+"/"+cid+" ["+this.channels+"]");
      
     return cid;
   },
@@ -467,7 +473,8 @@ SieveSession.prototype =
       
     this.channels.splice(i, 1);
     
-    this.logger.logStringMessage("Channel Closed: "+this.sid+"/"+cid+" ["+this.channels+"]");
+    if (this.debug.level & (1 << 4))
+      this.debug.logger.logStringMessage("Channel Closed: "+this.sid+"/"+cid+" ["+this.channels+"]");
      
     return true;
   },
@@ -538,8 +545,8 @@ SieveSession.prototype =
    */
   notifyCertProblem : function (socketInfo, sslStatus, targetSite)
   {
-    if (this.logger != null)
-      this.logger.logStringMessage("Sieve BadCertHandler: notifyCertProblem");
+    if (this.debug.logger != null)
+      this.debug.logger.logStringMessage("Sieve BadCertHandler: notifyCertProblem");
   
     // no listener registert, show the default UI 
     if ( !(this.listener) || !(this.listener.onBadCert))
@@ -560,8 +567,8 @@ SieveSession.prototype =
    */
   notifySSLError : function (socketInfo, error, targetSite)
   {
-    if (this.logger != null)
-      this.logger.logStringMessage("Sieve BadCertHandler: notifySSLError");
+    if (this.debug.logger != null)
+      this.debug.logger.logStringMessage("Sieve BadCertHandler: notifySSLError");
     
     // no listener registert, show the default UI 
     if ( !(this.listener) || !(this.listener.onBadCert))
@@ -581,8 +588,8 @@ SieveSession.prototype =
    */
   confirmCertExpired : function(socketInfo, cert) 
   {
-    if (this.logger != null)
-      this.logger.logStringMessage("Sieve BadCertHandler: Expired certificate");
+    if (this.debug.logger != null)
+      this.debug.logger.logStringMessage("Sieve BadCertHandler: Expired certificate");
 
     return true;
   },
@@ -596,8 +603,8 @@ SieveSession.prototype =
    */
   confirmMismatchDomain : function(socketInfo, targetURL, cert) 
   {
-    if (this.logger != null)
-      this.logger.logStringMessage("Sieve BadCertHandler: Mismatched domain");
+    if (this.debug.logger != null)
+      this.debug.logger.logStringMessage("Sieve BadCertHandler: Mismatched domain");
 
     return true;
   },
@@ -611,8 +618,8 @@ SieveSession.prototype =
    */
   confirmUnknownIssuer : function(socketInfo, cert, certAddType) 
   { 
-    if (this.logger != null)
-      this.logger.logStringMessage("Sieve BadCertHandler: Unknown issuer");
+    if (this.debug.logger != null)
+      this.debug.logger.logStringMessage("Sieve BadCertHandler: Unknown issuer");
       
     return true;
   },
@@ -625,8 +632,8 @@ SieveSession.prototype =
    */
   notifyCrlNextupdate : function(socketInfo, targetURL, cert) 
   {
-    if (this.logger != null)
-      this.logger.logStringMessage("Sieve BadCertHandler: notifyCrlNextupdate");
+    if (this.debug.logger != null)
+      this.debug.logger.logStringMessage("Sieve BadCertHandler: notifyCrlNextupdate");
   }  
 
 }

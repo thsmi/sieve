@@ -226,13 +226,15 @@
         </description>
         <caption label="&options.debug.caption;" />
         <checkbox id="cbxDebugRequest" label="&options.debug.request;"
-                  oncommand="onDebugRequestCommand(this)" />
+                  oncommand="onDebugFlagCommand(this,0)" />
         <checkbox id="cbxDebugResponse" label="&options.debug.response;"
-                  oncommand="onDebugResponseCommand(this)" />
+                  oncommand="onDebugFlagCommand(this,1)" />
         <checkbox id="cbxDebugExceptions" label="&options.debug.exceptions;"
-                  oncommand="onDebugExceptionCommand(this)" />
+                  oncommand="onDebugFlagCommand(this,2)" />
         <checkbox id="cbxDebugStream" label="&options.debug.stream;"
-                   oncommand="onDebugStreamCommand(this)" />                  
+                  oncommand="onDebugFlagCommand(this,3)" />
+        <checkbox id="cbxDebugStream" label="&options.debug.session;"
+                  oncommand="onDebugFlagCommand(this,4)" />
       </groupbox>
       <groupbox>
         <caption label="&options.debug.output;" />

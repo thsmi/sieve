@@ -54,6 +54,7 @@ it might be posted in clear text to the error console.">
 <!ENTITY options.debug.response "Server to Client communication (responses)">
 <!ENTITY options.debug.exceptions "Exceptions and State Machine Information">
 <!ENTITY options.debug.stream "Raw Dump/ Dump Byte Stream">
+<!ENTITY options.debug.session "Session management">
 <!ENTITY options.debug.output "Debug Output">
 <!ENTITY options.debug.console "Debug information is posted to the error console">
 <!ENTITY options.debug.console.open "Show Error Console...">

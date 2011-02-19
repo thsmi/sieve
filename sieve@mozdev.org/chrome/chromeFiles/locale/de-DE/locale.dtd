@@ -57,6 +57,7 @@ Passwort im Klartext enthalten!">
 <!ENTITY options.debug.response "Server zu Client Kommunikation (responses)">
 <!ENTITY options.debug.exceptions "Ausnahmefehler und State Machine Informationen">
 <!ENTITY options.debug.stream "Rohdaten">
+<!ENTITY options.debug.session "Sessionmanagement">
 <!ENTITY options.debug.output "Debugmeldungen">
 <!ENTITY options.debug.console "Debugmeldungen werden in die Fehlerkonsole geschrieben">
 <!ENTITY options.debug.console.open "Fehlerkonsole öffnen...">

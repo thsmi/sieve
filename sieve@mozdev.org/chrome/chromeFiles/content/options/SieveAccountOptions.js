@@ -341,36 +341,12 @@ function onCompileChange(sender)
   account.getSettings().setCompileDelay(sender.value)    
 }
 
-function onDebugRequestCommand(sender)
+function onDebugFlagCommand(sender,bit)
 {
   if (account == null)
     return;
   
-  account.getSettings().setDebugFlag(0,sender.checked);
-}
-
-function onDebugResponseCommand(sender)
-{
-  if (account == null)
-    return;
-     
-  account.getSettings().setDebugFlag(1,sender.checked);
-} 
-
-function onDebugExceptionCommand(sender)
-{
-  if (account == null)
-    return;
-    
-  account.getSettings().setDebugFlag(2,sender.checked);
-}
-
-function onDebugStreamCommand(sender)
-{
-  if (account == null)
-    return;
-    
-  account.getSettings().setDebugFlag(3,sender.checked);
+  account.getSettings().setDebugFlag(bit,sender.checked);
 }
 
 function onAuthMechanismCommand(sender)

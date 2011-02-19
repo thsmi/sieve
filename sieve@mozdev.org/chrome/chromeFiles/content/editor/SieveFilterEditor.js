@@ -37,7 +37,9 @@ var gEditorStatus =
   rowCount          : 1,
   
   checkScriptDelay  : 200,
-  checkScriptTimer  : null
+  checkScriptTimer  : null,
+  
+  isClosing         : false
 }
 
 var event = 
@@ -70,7 +72,7 @@ var event =
   {
     gEditorStatus.contentChanged = false;
 
-    if (onClose())
+    if (gEditorStatus.isClosing && onClose())
       close();
   },
 
@@ -474,7 +476,10 @@ function onClose()
    
     // Save the Script if the user descides to...
     if (result == 0)
+    {
+      gEditorStatus.isClosing = true;
       onSave();
+    }
    
     // ... and abort quitting if the user clicked on "Save" or "Cancel"
     if (result != 2)

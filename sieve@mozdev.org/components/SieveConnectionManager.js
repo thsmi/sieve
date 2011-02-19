@@ -54,6 +54,33 @@ function SieveConnectionManager()
   this.wrappedJSObject = this;
   
   this.sessions = new Array();  
+  
+  /*var observerService = Components.classes["@mozilla.org/observer-service;1"]
+                      .getService(Components.interfaces.nsIObserverService);
+  observerService.addObserver(this,"network:offline-about-to-go-offline",false);
+  observerService.addObserver(this,"network:offline-status-changed",false);
+  // TODO close/suspend all session if going offline and reopen if going online...
+  // network:offline-about-to-go-offline
+  // TODO Lock interface when going offline
+  // network:offline-status-changed
+  // data = 'online'|'offline'  
+  
+  observe : function(aSubject, aTopic, aData)
+  {
+    if (aTopic != "network:offline-about-to-go-offline")
+    {
+      for (var i=0; i<sessions.length; i++)
+        this.sessions[i].goOffline();
+    }
+    if (aTopic != "quit-application-requested")
+      return;
+    
+      
+    if (onClose() == false)
+      aSubject.QueryInterface(Ci.nsISupportsPRBool).data = true;
+    else
+      close();
+  }*/
 }
 
 SieveConnectionManager.prototype =
@@ -93,7 +120,7 @@ SieveConnectionManager.prototype =
     return this.sessions[sid].addChannel();
   },  
   
-  openChannel : function (sid,cid,hostname)
+  openChannel : function (sid,cid)
   {
     if (!this.sessions[sid])
       throw "Invalid Session Identifier";
@@ -101,7 +128,7 @@ SieveConnectionManager.prototype =
     if (!this.sessions[sid].hasChannel(cid))
       throw "Invalid Channel";
     
-    this.sessions[sid].connect(hostname);    
+    this.sessions[sid].connect();    
   },
   
   addSessionListener : function (sid,listener)

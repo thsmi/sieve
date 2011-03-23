@@ -67,12 +67,19 @@ function SieveAbstractRequest()
 }
 
 SieveAbstractRequest.prototype.errorListener = null;
+SieveAbstractRequest.prototype.byeListener = null;
 SieveAbstractRequest.prototype.responseListener = null;
 
 SieveAbstractRequest.prototype.addErrorListener
     = function (listener)
 {
   this.errorListener = listener;
+}
+
+SieveAbstractRequest.prototype.addByeListener
+    = function (listener)
+{
+  this.byeListener = listener;      
 }
 
 SieveAbstractRequest.prototype.hasNextRequest
@@ -88,6 +95,20 @@ SieveAbstractRequest.prototype.cancel
     this.errorListener.onTimeout();  
 }
 
+/**
+ * An abstract helper, which calls the default message handlers.
+ * @param {SieveAbstractResponse} request
+ */
+SieveAbstractRequest.prototype.addResponse
+    = function (response)
+{
+  if ((response.getResponse() == 1) && (this.byeListener != null))
+    this.byeListener.onByeResponse(response);
+  else if ((response.getResponse() != 0) && (this.errorListener != null))
+    this.errorListener.onError(response);
+}
+
+/******************************************************************************/
 
 function SieveAbstractSaslRequest()
 {
@@ -166,8 +187,8 @@ SieveGetScriptRequest.prototype.addResponse
 		
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onGetScriptResponse(response);
-  else if ((response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(response);
+  else
+    SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
 
 /**
@@ -253,8 +274,8 @@ SievePutScriptRequest.prototype.addResponse
 
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onPutScriptResponse(response);
-  else if ((response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(response);
+  else
+    SieveAbstractRequest.prototype.addResponse.call(this,response);
     
   return;
 }
@@ -317,10 +338,8 @@ SieveCheckScriptRequest.prototype.addResponse
 
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onCheckScriptResponse(response);
-  else if ((response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(response);
-    
-  return;
+  else
+    SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
 
 
@@ -370,8 +389,8 @@ SieveSetActiveRequest.prototype.addResponse
 
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onSetActiveResponse(response);
-  else if ((response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(response);
+  else
+    SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
 
 /*******************************************************************************
@@ -425,8 +444,8 @@ SieveCapabilitiesRequest.prototype.addResponse
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onCapabilitiesResponse(response);			
-  else if ((response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(response);
+  else
+    SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
 
 /*******************************************************************************
@@ -481,8 +500,8 @@ SieveDeleteScriptRequest.prototype.addResponse
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onDeleteScriptResponse(response);			
-  else if ((response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(response);
+  else
+    SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
 
 /**
@@ -521,8 +540,8 @@ SieveNoopRequest.prototype.addResponse
       
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onNoopResponse(response);     
-  else if ((response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(response);
+  else
+    SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
 
 /**
@@ -567,8 +586,8 @@ SieveRenameScriptRequest.prototype.addResponse
       
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onRenameScriptResponse(response);     
-  else if ((response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(response);
+  else
+    SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
 
 /**
@@ -602,8 +621,8 @@ SieveListScriptRequest.prototype.addResponse
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onListScriptResponse(response);			
-  else if ((response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(response);
+  else
+    SieveAbstractRequest.prototype.addResponse.call(this,response);
   
   return;
 }
@@ -655,8 +674,8 @@ SieveStartTLSRequest.prototype.addResponse
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onStartTLSResponse(response);			
-  else if ((response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(response);		    
+  else
+    SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
 
 /**
@@ -718,14 +737,17 @@ SieveLogoutRequest.prototype.addResponse
   var response = new SieveSimpleResponse(data);
 			
   // a "BYE" or "OK" is in this case a good answer...
-  if (((response.getResponse() == 0) || (response.getResponse() == 1))
-       && (this.responseListener != null))
-    this.responseListener.onLogoutResponse(response);			
-  else if ((response.getResponse() != 0) && (response.getResponse() != 1) 
-	        && (this.errorListener != null))
-    this.errorListener.onError(response);
+  if (((response.getResponse() == 0) || (response.getResponse() == 1)))
+  {
+    if (this.responseListener != null)
+      this.responseListener.onLogoutResponse(response);    
     
-  return;		    
+    return;
+  }
+  
+  // The response is no, so the server has an error message which should be
+  // processed before disconnecting
+  SieveAbstractRequest.prototype.addResponse.call(this,response);    
 }
 
 /**
@@ -781,10 +803,8 @@ SieveInitRequest.prototype.addResponse
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onInitResponse(response);			
-  else if ((response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(response);
-    
-  return;
+  else
+    SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
 
 /*******************************************************************************
@@ -874,8 +894,8 @@ SieveSaslPlainRequest.prototype.addResponse
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onSaslPlainResponse(response);			
-  else if ((response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(response);
+  else
+    SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
 
 
@@ -1016,8 +1036,8 @@ SieveSaslLoginRequest.prototype.addResponse
 	
   if ((this.response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onSaslLoginResponse(this.response);			
-  else if ((this.response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(this.response);
+  else
+    SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
 
 
@@ -1102,8 +1122,8 @@ SieveSaslCramMd5Request.prototype.addResponse
 
   if ((this.response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onSaslCramMd5Response(this.response);      
-  else if ((this.response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(this.response);    
+  else
+    SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
 
 

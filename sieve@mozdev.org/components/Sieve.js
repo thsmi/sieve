@@ -42,6 +42,7 @@ function Sieve()
   this.requests = new Array();
     
   this.watchDog = null;
+  this.byeListener = null;
   
   this.debug = new Object();
   this.debug.level  = 0x00;
@@ -240,6 +241,12 @@ Sieve.prototype.startTLS
   securityInfo.StartTLS();
 }
 
+Sieve.prototype.addByeListener 
+    = function(listener)
+{
+  this.byeListener = listener; 
+}
+
 Sieve.prototype.addWatchDogListener 
    = function(watchDog)
 {
@@ -265,6 +272,9 @@ Sieve.prototype.removeWatchDogListener
 Sieve.prototype.addRequest 
     = function(request)
 {
+  if (this.byeListener)
+    request.addByeListener(this.byeListener);
+    
   // Add the request to the message queue
   this.requests[this.requests.length] = request;
   
@@ -518,7 +528,7 @@ Sieve.prototype.onDataAvailable
     // ... Either the next packet or a timeout will resolve this situation.
   
     if (this.debug.level & (1 << 2))
-      this.debug.logger.logStringMessage("Parsing Exception in libManageSieve/Sieve.js:\n"+ex);	  
+      this.debug.logger.logStringMessage("Parsing Exception in libManageSieve/Sieve.js:\n"+ex.toSource());	  
 
     if( this.watchDog != null)
       this.watchDog.onStart();

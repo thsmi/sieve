@@ -319,21 +319,34 @@ SieveSession.prototype =
     this.disconnect(true);
   },
   
-  /** @private */
-  onError: function(response)
-  {      
+  /**
+   * Called by the sieve object in case we received an bye response.
+   * @param {} response
+   */
+  onByeResponse: function(response)
+  {
+    // The server disconnected our session nicely...
     var code = response.getResponseCode();
-
+    
+    // ... we most likely received a referal    
     if (code instanceof SieveResponseCodeReferral)
     {
-      // We skip sending a logout message, this speeds up the referral 
-      this.disconnect(true);      
-      this.connect(this.account,code.getHostname);
-      
+      this.disconnect(true);
+      this.connect(this.account,code.getHostname);    
       return;
     }
-
-    //this.logger.logStringMessage("OnError: "+response.getMessage());
+    
+    // TODO Should we reconnect?
+    //this.connect();
+    
+    this.debug.logger.logStringMessage("OnByeResponse: "+response.getMessage());
+    this.onError(response);    
+  },
+  
+  /** @private */
+  onError: function(response)
+  {
+    this.debug.logger.logStringMessage("OnError: "+response.getMessage());
     this.disconnect(false,4,response.getMessage())
   },
   
@@ -375,7 +388,8 @@ SieveSession.prototype =
      
     this.watchDog.addListener(this);
   
-    this.sieve.addWatchDogListener(this.watchDog);    
+    this.sieve.addWatchDogListener(this.watchDog);
+    this.sieve.addByeListener(this);
   
     // Step 3: Initialize Message Queue...
     var request = new SieveInitRequest();

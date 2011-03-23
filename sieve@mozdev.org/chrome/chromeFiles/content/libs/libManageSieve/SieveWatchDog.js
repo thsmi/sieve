@@ -7,6 +7,8 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+// TODO the WatchDog is no more needed to be detachable. thus this code
+// could be merged into Sieve.js
 
 /**
  * A managse sieve server always respond to a request within a certain time. If 

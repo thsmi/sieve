@@ -69,15 +69,26 @@ function SieveResponseCodeReferral(code)
 {
   SieveResponseCode.call(this,code.split(' ')[0]);
   
-  var hostname = code;
+  // We should have received something similiar to
+  //   REFERRAL "sieve://c3.mail.example.com"
   
-  //REFERRAL "sieve://c3.mail.example.com"
-  // extract the quotet text
-  hostname = hostname.slice(hostname.indexOf("\"")+1,hostname.lastIndexOf("\""))
-  // remove the sieve:// prefix
-  hostname = hostname.slice("sieve://".length);
+  // the quoted text contains the authority
+  // authority = [ userinfo "@" ] host [ ":" port ]
+  var uri = code.slice(code.indexOf("\"")+1,code.lastIndexOf("\""))
   
-  this.hostname = hostname;  
+  // remove the sieve:// scheme
+  this.hostname = uri.slice("sieve://".length);
+  
+  // cleanup any script urls.
+  if (this.hostname.indexOf("/") >= 0)
+    this.hostname = this.hostname.slice(0,this.hostname.indexOf("/"));
+  
+  if (this.hostname.indexOf(":") == -1)
+    return;
+  
+  // extract the port
+  this.port = this.hostname.slice(this.hostname.indexOf(":")+1);
+  this.hostname = this.hostname.slice(0, this.hostname.indexOf(":"));
 }
 
 // Inherrit prototypes from SieveResponseCode...
@@ -87,4 +98,17 @@ SieveResponseCodeReferral.prototype.getHostname
     = function ()
 {   
   return this.hostname;
+}
+
+/**
+ * Returns the port of the referred server. If the server did not specify 
+ * any Port null is returend.
+ * 
+ * @return {Int}
+ *   the port number or null
+ */
+SieveResponseCodeReferral.prototype.getPort
+    = function ()
+{
+  return this.port;
 }

@@ -44,8 +44,6 @@ Cc["@mozilla.org/moz/jssubscript-loader;1"]
 function SieveSession(account,sid)
 {
   this.idx = 0;
-  this.sieve = Cc["@sieve.mozdev.org/transport;1"]
-                   .createInstance().wrappedJSObject;
 
   this.account = account;
   
@@ -320,27 +318,29 @@ SieveSession.prototype =
   },
   
   /**
-   * Called by the sieve object in case we received an bye response.
+   * Called by the sieve object in case we received an BYE response.
    * @param {} response
    */
   onByeResponse: function(response)
   {
-    // The server disconnected our session nicely...
+    // The server is going to disconnected our session nicely...
     var code = response.getResponseCode();
     
-    // ... we most likely received a referal    
-    if (code instanceof SieveResponseCodeReferral)
+    // ... we most likely received a referal 
+    if (code.equalsCode("REFERRAL"))
     {
       this.disconnect(true);
-      this.connect(this.account,code.getHostname);    
+      
+      if (this.debug.level & (1 << 4))
+        this.debug.logger.logStringMessage("Referred to Server: "+code.getHostname());
+      
+      this.connect(code.getHostname(), code.getPort());    
       return;
     }
     
-    // TODO Should we reconnect?
-    //this.connect();
-    
-    this.debug.logger.logStringMessage("OnByeResponse: "+response.getMessage());
-    this.onError(response);    
+    // ... it's either a timeout or we tried the wrong password...
+    // ... the best we can do is to report an error.
+    this.onError(response);
   },
   
   /** @private */
@@ -363,14 +363,19 @@ SieveSession.prototype =
    * @param {String} hostname - optional
    *   overrides the default hostname supplied by the account. This is needed
    *   for referrals and similar stuff.
+   * @param {int} port - optional
+   *   overrides the default port supplied by the account.
    */    
-  connect : function(hostname)
-  {
-    if (this.sieve.isAlive())
+  connect : function(hostname,port)
+  {                   
+    if (this.sieve && this.sieve.isAlive())
     {        
       this.onLoginResponse(null);     
       return;
     }
+    
+    this.sieve = Cc["@sieve.mozdev.org/transport;1"]
+                   .createInstance().wrappedJSObject;
     
     // Step 1: Setup configure settings
     this.sieve.setDebugLevel(
@@ -401,8 +406,11 @@ SieveSession.prototype =
     if (hostname == null)
       hostname = this.account.getHost().getHostname();
       
+    if (port == null)
+      port = this.account.getHost().getPort()
+      
     this.sieve.connect(
-        hostname,this.account.getHost().getPort(),
+        hostname,port,
         this.account.getHost().isTLS(),
         this,
         this.account.getProxy().getProxyInfo());    

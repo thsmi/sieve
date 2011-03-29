@@ -505,7 +505,7 @@ function sivSetStatus(state, message, statusbar)
     case 7: document.getElementById('txtSASL').value = message.getSasl();
             document.getElementById('txtExtensions').value = message.getExtensions(); 
             document.getElementById('txtImplementation').value = message.getImplementation();
-            document.getElementById('txtVersion').value = message.getVersion();
+            document.getElementById('txtVersion').value = "v"+message.getVersion().toFixed(2);
             break;
   }
   

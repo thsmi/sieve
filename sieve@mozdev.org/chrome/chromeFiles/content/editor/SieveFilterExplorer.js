@@ -504,6 +504,7 @@ function sivSetStatus(state, message, statusbar)
             document.getElementById('txtExtensions').value = message.getExtensions(); 
             document.getElementById('txtImplementation').value = message.getImplementation();
             document.getElementById('txtVersion').value = "v"+message.getVersion().toFixed(2);
+            document.getElementById('sivExplorerWait').removeAttribute('hidden');
             break;
   }
   

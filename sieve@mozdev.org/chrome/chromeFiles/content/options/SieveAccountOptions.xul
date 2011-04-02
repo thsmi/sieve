@@ -233,7 +233,7 @@
                   oncommand="onDebugFlagCommand(this,2)" />
         <checkbox id="cbxDebugStream" label="&options.debug.stream;"
                   oncommand="onDebugFlagCommand(this,3)" />
-        <checkbox id="cbxDebugStream" label="&options.debug.session;"
+        <checkbox id="cbxDebugSession" label="&options.debug.session;"
                   oncommand="onDebugFlagCommand(this,4)" />
       </groupbox>
       <groupbox>

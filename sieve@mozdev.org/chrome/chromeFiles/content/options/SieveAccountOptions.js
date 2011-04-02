@@ -78,6 +78,9 @@ function onDialogLoad(sender)
   document.getElementById('cbxDebugStream').checked 
       = account.getSettings().hasDebugFlag(3);
       
+  document.getElementById('cbxDebugSession').checked 
+      = account.getSettings().hasDebugFlag(4);      
+      
   element = document.getElementById('cbxAuthMechanism');
   element.checked = account.getSettings().hasForcedAuthMechanism();
   enableAuthMechanism(element.checked);

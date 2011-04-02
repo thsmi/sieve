@@ -4,10 +4,6 @@ const Cr = Components.results;*/
 
 Cc["@mozilla.org/moz/jssubscript-loader;1"]
     .getService(Ci.mozIJSSubScriptLoader) 
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveWatchDog.js");
-
-Cc["@mozilla.org/moz/jssubscript-loader;1"]
-    .getService(Ci.mozIJSSubScriptLoader) 
     .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveAccounts.js");
     
 Cc["@mozilla.org/moz/jssubscript-loader;1"]
@@ -73,13 +69,6 @@ SieveSession.prototype =
       request = new SieveCapabilitiesRequest();
   
     this.sieve.addRequest(request);      
-  },
-    
-  onWatchDogTimeout : function()
-  {
-    // call sieve object indirect inorder to prevent a 
-    // ring reference and threading issues
-    this.sieve.onWatchDogTimeout();
   },
 
   onInitResponse: function(response)
@@ -211,13 +200,13 @@ SieveSession.prototype =
       {
         that.listener.onChannelStatus(3,"progress.tls.rfc");
         
-        that.sieve.getWatchDogListener().setTimeoutInterval();
+        that.sieve.setTimeoutInterval();
         that.onAuthenticate(response);
       },
       
       onError: function(response)
       {
-        that.sieve.getWatchDogListener().setTimeoutInterval();
+        that.sieve.setTimeoutInterval();
         that.onError(response);
       },
       
@@ -225,7 +214,7 @@ SieveSession.prototype =
       {
         that.listener.onChannelStatus(3,"progress.tls.cyrus");
         
-        that.sieve.getWatchDogListener().setTimeoutInterval();
+        that.sieve.setTimeoutInterval();
         var request = new SieveCapabilitiesRequest();
         request.addCapabilitiesListener(that);
         request.addErrorListener(that);  
@@ -252,7 +241,7 @@ SieveSession.prototype =
         request.addInitListener(lEvent);
         request.addErrorListener(lEvent);
         
-        this.sieve.getWatchDogListener().setTimeoutInterval(compatibility.getHandshakeTimeout());
+        this.sieve.setTimeoutInterval(compatibility.getHandshakeTimeout());
         this.sieve.addRequest(request);
             
         this.sieve.startTLS();   
@@ -349,8 +338,14 @@ SieveSession.prototype =
     this.debug.logger.logStringMessage("OnError: "+response.getMessage());
     this.disconnect(false,4,response.getMessage())
   },
-  
 
+  /** @private */
+  onTimeout: function()
+  {
+    if (this.listener && this.listener.onTimeout)
+      this.listener.onTimeout();    
+  },
+  
   /**
    * Connects to a remote Sieve server. 
    * 
@@ -373,7 +368,7 @@ SieveSession.prototype =
       this.onLoginResponse(null);     
       return;
     }
-    
+        
     this.sieve = Cc["@sieve.mozdev.org/transport;1"]
                    .createInstance().wrappedJSObject;
     
@@ -382,27 +377,20 @@ SieveSession.prototype =
         this.account.getSettings().getDebugFlags(),
         this.debug.logger);
                    
-    // Step 2: Create a Watchdog Instance...
-    this.watchDog = null;
+    this.sieve.addListener(this);
   
-    // TODO load Timeout interval from account settings...
+    // TODO Load Timeout interval from account settings...
+    
     if (this.account.getSettings().isKeepAlive(this.account.getSettings()))
-      this.watchDog = new SieveWatchDog(20000,this.account.getSettings().getKeepAliveInterval());
-    else
-      this.watchDog = new SieveWatchDog(20000);
-     
-    this.watchDog.addListener(this);
-  
-    this.sieve.addWatchDogListener(this.watchDog);
-    this.sieve.addByeListener(this);
-  
-    // Step 3: Initialize Message Queue...
+      this.sieve.setKeepAliveInterval(this.account.getSettings().getKeepAliveInterval());    
+    
+    // Step 2: Initialize Message Queue...
     var request = new SieveInitRequest();
     request.addErrorListener(this)
     request.addInitListener(this)
     this.sieve.addRequest(request);   
 
-    // Step 4: Connect...
+    // Step 3: Connect...
     if (hostname == null)
       hostname = this.account.getHost().getHostname();
       

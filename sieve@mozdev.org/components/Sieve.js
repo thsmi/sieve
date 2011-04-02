@@ -41,8 +41,13 @@ function Sieve()
   
   this.requests = new Array();
     
-  this.watchDog = null;
-  this.byeListener = null;
+  this.timeout = {};
+  this.timeout.timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+  this.timeout.delay = 20000;
+        
+  this.idle = {}; 
+  this.idle.timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+  this.idle.delay = null;
   
   this.debug = new Object();
   this.debug.level  = 0x00;
@@ -222,11 +227,7 @@ Sieve.prototype.isAlive
  * Before calling this method you need to request a crypted connection by
  * sending a startTLSRequest. Invoke this method imediately after the server 
  * confirms switching to TLS.
- *   
- * @param {nsIBadCertListener2} ignoreCertError
- *   an nsIBadCertListerner2 compatible Object, which handles any certificate
- *   errors while establishing the TLS link 
- */
+ **/
 Sieve.prototype.startTLS 
    = function ()
 {
@@ -241,39 +242,67 @@ Sieve.prototype.startTLS
   securityInfo.StartTLS();
 }
 
-Sieve.prototype.addByeListener 
-    = function(listener)
+/**
+ * Specifies the maximal interval between a request and a response. If the
+ * timeout elapsed, all pending request will be canceled and the event queue
+ * will be cleared. Either the onTimeout() method of the most recend request 
+ * will invoked or in case the request does not support onTimeout() the
+ * default's listener will be called.
+ *    
+ * @param {int} interval
+ *   the number of milliseconds before the timeout is triggered.
+ *   Pass null to set the default timeout.
+ */
+Sieve.prototype.setTimeoutInterval
+    = function (interval)
 {
-  this.byeListener = listener; 
+  if (!interval)
+    this.timeout.delay = 20000;
+  else
+    this.timeout.delay = interval;
 }
 
-Sieve.prototype.addWatchDogListener 
-   = function(watchDog)
+/**
+ * Specifies the maximal interval between a response and a request. 
+ * If the max time elapsed, the listener's OnIdle() event will be called. 
+ * Thus it can be used for sending "Keep alive" packets. 
+ *   
+ * @param {int} interval
+ *  the maximal number of milliseconds between a response and a request,
+ *  pass null to deactivate.  
+ */
+Sieve.prototype.setKeepAliveInterval
+    = function (interval)
 {
-  this.watchDog = watchDog;
-  this.watchDog.onAttach();
+  if (interval)
+  {
+    this.idle.delay = interval;
+    return;
+  }
+  
+  // No keep alive Packets should be sent, so null the timer and the delay.
+  if (this.idle.timer)
+  {
+    this.idle.timer.cancel();
+    this.idle.timer = null;
+  }
+  
+  this.idle.delay = null;
+
+  return;      
 }
 
-Sieve.prototype.getWatchDogListener
-   = function()
+Sieve.prototype.addListener
+   = function(listener)
 {
-  return this.watchDog;    
-}
-
-Sieve.prototype.removeWatchDogListener 
-   = function()
-{
-  if( this.watchDog != null)
-    this.watchDog.onDeattach();
-    
-  this.watchDog = null;
+  this.listener = listener;
 }
 
 Sieve.prototype.addRequest 
     = function(request)
 {
-  if (this.byeListener)
-    request.addByeListener(this.byeListener);
+  if (this.listener)
+    request.addByeListener(this.listener);
     
   // Add the request to the message queue
   this.requests[this.requests.length] = request;
@@ -283,8 +312,7 @@ Sieve.prototype.addRequest
   if (this.requests.length > 1)
     return;
 
-  if( this.watchDog != null)
-    this.watchDog.onStart();
+  this._onStart();
 
   //if (request instanceof SieveInitRequest)
   // Catch the init request, we simply check for an addInitListener function,
@@ -418,9 +446,18 @@ Sieve.prototype.disconnect
     = function () 
 {	
   // free requests...
-  //this.requests = new Array();
-  if( this.watchDog != null)
-    this.watchDog.onDeattach();
+  //this.requests = new Array();    
+  if (this.timeout.timer != null)
+  {
+    this.timeout.timer.cancel();
+    this.timeout.timer = null;
+  }
+  
+  if (this.idle.timer != null)
+  {
+    this.idle.timer.cancel();
+    this.idle.timer = null;
+  }
   
   if (this.socket == null)
     return;
@@ -459,20 +496,63 @@ Sieve.prototype.onStartRequest
     this.debug.logger.logStringMessage("Connected to "+this.host+":"+this.port+" ...");
 }
 
-Sieve.prototype.onWatchDogTimeout 
-    = function() 
+Sieve.prototype.notify
+    = function (timer) 
 {
+  timer.cancel();
+  
+  if ((this.idle.timer == timer) && (this.listener != null))
+  {
+    this.listener.onIdle();
+    return;
+  }
+  
+  if (this.timeout.timer != timer)
+    return;
+    
   if (this.debug.level & (1 << 2))
     this.debug.logger.logStringMessage("libManageSieve/Sieve.js:\nOnTimeout");
-      
+    
   // clear receive buffer and any pending request...
   this.data = null;
   var request = this.requests[0];
   this.requests.splice(0,1);
 
-  // then signal with a null response a timeout
-  if (request != null)   
+  // ... and cancel any active request. It will automatically invoke the ... 
+  // ... request's onTimeout() listener.
+  if (request != null)
+  {
     request.cancel();
+    return;
+  }
+  
+  // in case no request is active, we call the global listener 
+  if ((this.listener != null) && (this.listener.onTimeout)) 
+    this.listener.onTimeout();
+}
+
+Sieve.prototype._onStart
+    = function ()
+{
+  this.timeout.timer.initWithCallback(
+         this, this.timeout.delay,
+         Components.interfaces.nsITimer.TYPE_ONE_SHOT);
+}
+
+Sieve.prototype._onStop
+    = function()
+{
+  if (this.timeout.timer != null)
+    this.timeout.timer.cancel();
+    
+  if (this.idle.timer == null)
+    return;
+      
+  this.idle.timer.cancel();  
+  this.idle.timer.initWithCallback(this,this.idle.delay,
+         Components.interfaces.nsITimer.TYPE_ONE_SHOT);
+    
+  return;
 }
 
 Sieve.prototype.onDataAvailable 
@@ -515,8 +595,7 @@ Sieve.prototype.onDataAvailable
   try
   {
     // first clear the timeout...
-    if( this.watchDog != null)
-      this.watchDog.onStop();
+    this._onStop();
 	  
     // ... then try to parse the request
     this.requests[0].addResponse(this.data); 
@@ -530,8 +609,7 @@ Sieve.prototype.onDataAvailable
     if (this.debug.level & (1 << 2))
       this.debug.logger.logStringMessage("Parsing Exception in libManageSieve/Sieve.js:\n"+ex.toSource());	  
 
-    if( this.watchDog != null)
-      this.watchDog.onStart();
+    this._onStart();
   
 	  return;
   }
@@ -561,8 +639,7 @@ Sieve.prototype.onDataAvailable
     this.binaryOutStream.writeByteArray(output,output.length)      
 	  
     // the request is transmited, therefor activate the timeout
-    if( this.watchDog != null)
-      this.watchDog.onStart();	  
+    this._onStart();	  
   }
 }
 

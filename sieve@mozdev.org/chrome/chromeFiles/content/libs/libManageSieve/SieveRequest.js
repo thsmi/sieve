@@ -31,6 +31,8 @@
   
 */
 
+//****************************************************************************//
+
 /**
  * Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy 
  * binary, and javascript is something inbetween. This means we have to convert
@@ -58,8 +60,10 @@ function JSStringToByteArray(str,charset)
   return converter.convertToByteArray(str, {});
 }
 
+//****************************************************************************//
+
 /**
- * 
+ * An abstract class, it is the prototype for any requests 
  */
 function SieveAbstractRequest()
 {  
@@ -108,8 +112,13 @@ SieveAbstractRequest.prototype.addResponse
     this.errorListener.onError(response);
 }
 
-/******************************************************************************/
+//****************************************************************************//
 
+/**
+ * An abstract calls derived from AbstractRequest. It is the foundation for
+ * any requests implementing a SASL compatible authentication.
+ * 
+ */
 function SieveAbstractSaslRequest()
 {
   throw "Abstract Constructor, do not Invoke";
@@ -152,8 +161,8 @@ SieveAbstractSaslRequest.prototype.setAuthorization
     this._authorization = authorization;
 }
 
+//****************************************************************************//
 
-/******************************************************************************/
 /**
  * @param {String} script
  * @author Thomas Schmid
@@ -190,6 +199,8 @@ SieveGetScriptRequest.prototype.addResponse
   else
     SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
+
+//****************************************************************************//
 
 /**
  * @param {String} script
@@ -250,11 +261,6 @@ SievePutScriptRequest.prototype.getNextRequest
 //  converter.charset = "utf-8" ;
 //
   //return converter.ConvertFromUnicode(aStr);}
-
-
-
-  // sieve -> outputstream to nsIBinaryOutputStream
-  // 
   
   return "PUTSCRIPT \""+this.script+"\" {"+JSStringToByteArray(this.body).length+"+}\r\n"
         +this.body+"\r\n";
@@ -279,6 +285,8 @@ SievePutScriptRequest.prototype.addResponse
     
   return;
 }
+
+//****************************************************************************//
 
 /**
  * The CheckScriptRequest validates the Syntax of a Sieve script. The script
@@ -342,6 +350,7 @@ SieveCheckScriptRequest.prototype.addResponse
     SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
 
+//****************************************************************************//
 
 /**
  * This class encaspulates a Sieve SETACTIVE request.
@@ -393,24 +402,8 @@ SieveSetActiveRequest.prototype.addResponse
     SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
 
-/*******************************************************************************
-    CLASS NAME         : SieveCapabilitiesRequest
-    USES CLASSES       : SieveCapabilitiesResponse
-        
-    CONSCTURCTOR       : SieveCapabilitiesRequest()
-    DECLARED FUNCTIONS : String getCommand()
-                         void setResponse(data)
-    EXCEPTIONS         : 
+//****************************************************************************//
 
-
-    AUTHOR             : Thomas Schmid        
-    DESCRIPTION        : 
-    ...
-
-    EXAMPLE            :
-    ...
-
-********************************************************************************/
 /**
  * 
  * @author Thomas Schmid
@@ -448,24 +441,7 @@ SieveCapabilitiesRequest.prototype.addResponse
     SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
 
-/*******************************************************************************
-    CLASS NAME         : SieveDeleteScriptRequest
-    USES CLASSES       : SieveDeleteScriptResponse
-        
-    CONSCTURCTOR       : SieveDeleteScriptRequest(String script)
-    DECLARED FUNCTIONS : String getCommand()
-                         void setResponse(data)
-    EXCEPTIONS         : 
-
-
-    AUTHOR             : Thomas Schmid        
-    DESCRIPTION        : 
-    ...
-
-    EXAMPLE            :
-    ...
-
-********************************************************************************/
+//****************************************************************************//
 
 /**
  * @param {String} script
@@ -503,6 +479,8 @@ SieveDeleteScriptRequest.prototype.addResponse
   else
     SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
+
+//****************************************************************************//
 
 /**
  * The NOOP request does nothing, it is used for protocol re-synchronisation or
@@ -544,15 +522,17 @@ SieveNoopRequest.prototype.addResponse
     SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
 
+//****************************************************************************//
+
 /**
- * This command is used to rename a user's Sieve script. The Server will
- * reply with a NO response if the old script does not exist, or a script
- * with the new name already exists.
+ * This command is used to rename a Sieve script's. The Server will reply with 
+ * a NO response if the old script does not exist, or a script with the new 
+ * name already exists.
  * 
  * Renaming the active script is allowed, the renamed script remains active.
  *  
  * @param {String} Name of the script, which should be renamed
- * @param {String} new name of the Script
+ * @param {String} New name of the Script
  * 
  * @author Thomas Schmid
  */
@@ -589,6 +569,8 @@ SieveRenameScriptRequest.prototype.addResponse
   else
     SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
+
+//****************************************************************************//
 
 /**
  * @author Thomas Schmid
@@ -627,24 +609,7 @@ SieveListScriptRequest.prototype.addResponse
   return;
 }
 
-/*******************************************************************************
-    CLASS NAME         : SieveListScriptRequest
-    USES CLASSES       : SieveListScriptResponse
-        
-    CONSCTURCTOR       : SieveListScriptRequest(script, listener)
-    DECLARED FUNCTIONS : String getCommand()
-                         void setResponse(String data)
-    EXCEPTIONS         : 
-
-
-    AUTHOR             : Thomas Schmid        
-    DESCRIPTION        : 
-    ...
-
-    EXAMPLE            :
-    ...
-
-********************************************************************************/
+//****************************************************************************//
 
 function SieveStartTLSRequest() 
 {
@@ -677,6 +642,8 @@ SieveStartTLSRequest.prototype.addResponse
   else
     SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
+
+//****************************************************************************//
 
 /**
  * A logout request signals the server that the client wishes to terminate
@@ -750,6 +717,8 @@ SieveLogoutRequest.prototype.addResponse
   SieveAbstractRequest.prototype.addResponse.call(this,response);    
 }
 
+//****************************************************************************//
+
 /**
  * A ManageSieve server automatically post his capabilities as soon as the
  * connection is established or a secure channel is successfully started
@@ -806,6 +775,7 @@ SieveInitRequest.prototype.addResponse
   else
     SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
+//****************************************************************************//
 
 /*******************************************************************************
  
@@ -1040,37 +1010,12 @@ SieveSaslLoginRequest.prototype.addResponse
     SieveAbstractRequest.prototype.addResponse.call(this,response);
 }
 
+//****************************************************************************//
 
-/*******************************************************************************
- 
-  FACTSHEET: 
-  ==========
-    CLASS NAME          : SieveSaslCramMd5Request
-    USES CLASSES        : SieveSaslCramMd5Response
-        
-    CONSCTURCTOR        : SieveCramMd5Request(String username)
-    DECLARED FUNCTIONS  : void addSaslCramMd5Listener(...)
-                          void addErrorListener(...)
-                          void addResponse(String data)                          
-                          String getNextRequest()
-                          Boolean hasNextRequest()
-                          void setPassword(String password)
-    EXCEPTIONS          : 
-    AUTHOR              : Thomas Schmid
-                          Max Dittrich    
-    
-  DESCRIPTION:
-  ============
-    [...]
-
-  EXAMPLE:
-  ========
-
-  PROTOCOL INTERACTION: 
-  =====================
-
-*******************************************************************************/
-
+/**
+ * @author Thomas Schmid
+ * @author Max Dittrich 
+ */
 function SieveSaslCramMd5Request() 
 {
   this.response = new SieveSaslCramMd5Response();

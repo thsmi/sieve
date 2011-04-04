@@ -76,7 +76,7 @@ var event =
       return;
     }
     
-    gLogger.logStringMessage("SivFilerExplorer.OnTimeout");
+    gLogger.logStringMessage("SivFilterExplorer.js\nOnTimeout");
     sivDisconnect(1,"warning.timeout");
   },
 	
@@ -141,7 +141,7 @@ var event =
       sivDisconnect(6);
     
     if (aData == "online")
-      sivConnect(null,true);    
+      sivConnect();    
   }
 }
 
@@ -237,7 +237,7 @@ function onGoOnlineClick()
  // sivConnect(null,true);
 }
 
-function sivConnect(account,reconnect)
+function sivConnect(account)
 {
   var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
   
@@ -250,7 +250,7 @@ function sivConnect(account,reconnect)
   var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
             .getService().wrappedJSObject;
   
-  if (account == null)
+  if (!account)
     account = getSelectedAccount();
  
   sid = sivManager.createSession(account);
@@ -329,7 +329,8 @@ function onSelectAccount()
   // Disable and cancel if account is not enabled
   if (account.isEnabled() == false)
     return sivSetStatus(1,"warning.noaccount");
-
+    
+ // TODO wait for timeout or session close before calling connect again
   sivConnect(account);
 }
 
@@ -716,7 +717,6 @@ function onSettingsClick()
 
 function onBadCertOverride(targetSite,permanent)
 {
-
   try
   {
     var overrideService = Cc["@mozilla.org/security/certoverride;1"]
@@ -751,6 +751,5 @@ function onBadCertOverride(targetSite,permanent)
     sivSetStatus(2,"error.brokencert");
     gLogger.logStringMessage(ex); 
   }
-                                           
-  
+ 
 }

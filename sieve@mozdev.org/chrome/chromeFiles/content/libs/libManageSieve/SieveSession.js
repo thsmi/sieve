@@ -31,7 +31,7 @@ Cc["@mozilla.org/moz/jssubscript-loader;1"]
  * A session can contain arbitary connections, but there will be only one 
  * "physical" link to the server. All channels share the session's link.
  * 
- * @param {} account
+ * @param {SieveAccount} account
  *   an reference to a sieve account. this is needed to obtain login informations.
  * @param @optional {Object} sid
  *   a unique Identifier for this Session. Only neede to make debugging easyer.

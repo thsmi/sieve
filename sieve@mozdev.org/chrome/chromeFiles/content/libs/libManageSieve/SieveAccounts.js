@@ -1071,8 +1071,7 @@ SieveAccountSettings.prototype.getForcedAuthMechanism
   return "plain";
 }
 
-/******************************************************************************/
-
+//** SieveNoAuthorization ****************************************************//
 function SieveNoAuthorization()
 {
 }
@@ -1089,7 +1088,7 @@ SieveNoAuthorization.prototype.getAuthorization
   return "";
 }
 
-//== SievePromptAuthorization ================================================//
+//** SievePromptAuthorization ************************************************//
 
 function SievePromptAuthorization()
 {  

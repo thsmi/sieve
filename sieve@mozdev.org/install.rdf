@@ -5,7 +5,7 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>sieve@mozdev.org</em:id>
-    <em:version>0.1.11</em:version>
+    <em:version>0.1.12</em:version>
     <em:type>2</em:type>
 
     <em:targetApplication>

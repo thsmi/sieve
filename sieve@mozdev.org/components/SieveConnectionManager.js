@@ -53,7 +53,7 @@ function SieveConnectionManager()
   // ...without writing your own interface
   this.wrappedJSObject = this;
   
-  this.sessions = new Array();  
+  this.sessions = new Array();
   
   /*var observerService = Components.classes["@mozilla.org/observer-service;1"]
                       .getService(Components.interfaces.nsIObserverService);
@@ -93,14 +93,14 @@ SieveConnectionManager.prototype =
    * Creates and opens a new Manage Sieve Session
    * @return {int} a handle to the open session 
    */
-  createSession : function (account)
+  createSession : function (accountId)
   {    
     // The session id should be something unique. As Mozilla garantees, that...
     // ...the account key is unique. So let's use it.
-    var sid = account.getKey();
+    var sid = accountId;
 
     if (!this.sessions[sid])
-      this.sessions[sid] = new SieveSession(account,sid);
+      this.sessions[sid] = new SieveSession(accountId,sid);
         
     return sid;    
   },

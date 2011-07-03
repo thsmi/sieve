@@ -19,8 +19,8 @@
 
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         buttons="accept"
-        onload="onDialogLoad(this);"
-        ondialogaccept="return onDialogAccept(this);"
+        onload="onDialogLoad();"
+        ondialogaccept="return onDialogAccept();"
         persist="screenX screenY"
         style="width: 48em; height: 27em;"
         title="&options.title;">
@@ -28,93 +28,125 @@
   <script type="application/javascript" src="chrome://sieve/content/options/SieveAccountOptions.js"/>
   <tabbox  flex="1">
   <tabs >
+    <tab label="Server" />
+    <tab label="Security" />
     <tab label="&options.tab.general;" />
     <tab label="&options.tab.proxy;" />
-    <tab label="&options.tab.compatibility;" />
     <tab label="&options.tab.advanced;" />
     <tab label="&options.tab.debug;" />
     <tab label="&options.tab.credits;" />
   </tabs>
   <tabpanels flex="1" >
-    <vbox>
-      <hbox>
-        <groupbox flex="1">
-          <caption label="&options.login;" />
-          <radiogroup id="rgLogin" onselect="onLoginSelect(this);">
-            <radio id="rbNoAuth" label="&options.login.noAuth;"/>
-            <radio id="rbImapAuth" label="&options.login.imapAuth;"/>
-            <radio id="rbCustomAuth" label="&options.login.customAuth;"/>
+    <!-- Server Panel -->
+    <vbox>      
+        <!-- Server Name Box -->
+        <groupbox>
+          <caption label="Server Name" /> 
+          <description>
+            Most Sieve implementations run directly on a mail server. 
+            Thus the Sieve server name is usually same as your IMAP server name.
+          </description>    
+          <radiogroup id="rgHost" onselect="onHostSelect(this.selectedIndex);">
+            <radio id="rbImapHost" label="IMAP Server: imap.1und1.com"/>
+            <radio id="rbCustomHost" label="Other Server:"/>
+            <box class="indent" align="center">
+              <textbox id="txtHostname" size="25" onchange="onHostnameChange(this.value)"/>
+            </box>
           </radiogroup>
-          <vbox class="indent">
-            <hbox align="center">
-              <label value="&options.login.username;" accesskey="&options.login.username.key;"
-                    control="txtUsername"/>
-              <textbox flex="1" id="txtUsername" size="20" onchange="onUsernameChange(this)"/>
-            </hbox>
-            <hbox align="right"><button  id="btnShowPasswords" label="&options.login.show;" 
-                    oncommand="onShowPassword()" /></hbox>                    
-          </vbox>       
         </groupbox>
+        <spacer />          
+        <!-- Server Port Box -->
+        <groupbox>
+          <caption label="Server Port" />
+        <description>        
+          The server port changed, when ManageSieve turned into a full RFC Standard. 
+        </description>
+        <description> 
+          Older server implementations still use port 2000, while newer standard 
+          conform server can only be accesse via port 4190.
+        </description>        
+          <radiogroup id="rgPort" onselect="onPortSelect(this.selectedIndex);">
+            <radio id="rbPort4190" label="4190 (Default)" />
+            <radio id="rbPort2000" label="2000" />
+            <box align="center">
+              <radio id="rbPortCustom" label="Other:"/>
+              <textbox id="txtPort" size="5" onchange="onPortChange(this.value)"/>
+            </box>
+          </radiogroup>
+        </groupbox>
+        </vbox>
+        <vbox>
+      <!-- Server Security -->
+      <groupbox>
+        <caption label="Security" />
+        <description>
+          Transport Layer Security (TLS) secures the connection to the manage sieve server.
+          It cyphers all data and is designed to prevent eavesdropping and tampering.
+        </description>
+        <description>
+          ManageSieve usually transfers passwords uncrypted. So unless you have a realy 
+          good reason (e.g. Debugging), you should not turn TLS off.
+        </description>
+        <checkbox id="cbxTLS" oncommand="onTLSCommand(this.checked)" label="&options.host.tls;"
+          accesskey="&options.host.tls.key;" />
+      </groupbox>
+        
+      <!-- Server Authentication -->
+      <groupbox>
+        <caption label="Authentication" /> 
+        <radiogroup id="rgLogin" onselect="onLoginSelect(this.selectedIndex);">
+          <radio label="&options.login.noAuth;"/>
+          <radio label="&options.login.imapAuth;"/>
+          <radio label="&options.login.customAuth;"/>
+        </radiogroup>
+        
+        <box class="indent" align="center">
+          <label value="&options.login.username;" accesskey="&options.login.username.key;"
+                 control="txtUsername"/>
             
-        <groupbox flex="1">
-          <caption>          
-            <checkbox id="cbxHost" label="&options.host;" accesskey="&options.host.key;" 
-                      oncommand="onHostCommand(this)"/>
-          </caption>
-          <grid>
-            <colums>
-              <column/>
-              <column/>
-            </colums>
-            <rows>
-              <row align="center">
-                <label value="&options.host.hostname;" accesskey="&options.host.hostname.key;"
-                       control="txtHostname" />
-                <textbox id="txtHostname" size="25" onchange="onHostnameChange(this)"/>
-              </row>
-              <row align="center">
-                <label  value="&options.host.port;" accesskey="&options.host.port.key;"
-                        control="txtPort" />
-                <hbox align="center">
-                  <textbox id="txtPort" size="5" onchange="onPortChange(this)"/>
-                  <label value="&options.host.port.default;" />
-                </hbox>
-              </row>
-              <row>
-                <spacer />
-                <checkbox id="cbxTLS" oncommand="onTLSCommand(this)" label="&options.host.tls;"
-                          accesskey="&options.host.tls.key;" />
-              </row>
-            </rows>
-          </grid>
-        </groupbox>
-      </hbox>     
+          <textbox id="txtUsername" size="20" onchange="onUsernameChange(this.value)"/>
+         </box>
+          <hbox align="right"><button  id="btnShowPasswords" label="&options.login.show;" 
+                oncommand="onShowPassword()" /></hbox>                           
+      </groupbox>
+    </vbox>
+    
+    <vbox>
+      <groupbox>
+        <caption label="Syntaxcheck" />
+        <description>
+          While editing Scripts, they can be checked for validity. The syntax 
+          check is performed by the server. In oder to keep network traffic 
+          low, syntax check requests are grouped.
+        </description>
+        
+        <checkbox id="cbxCompile" label="Check Scripts while typing"
+          accesskey="&options.misc.compile.key;" 
+          oncommand="onCompileCommand(this)" />
+        <box class="indent" align="center">
+          <label value="Validate at least every" />
+          <textbox id="txtCompile" onchange="onCompileChange(this)" size="6"/>
+          <label value="ms" />
+        </box>
+      </groupbox>
       <groupbox>
         <caption label="&options.misc;" />
-        <grid>
-          <colums>
-            <column/>
-            <column/>
-            <column/>
-          </colums>
-          <rows>
-            <row align="center">
-              <checkbox id="cbxKeepAlive" label="&options.misc.keepalive;"
-                        accesskey="&options.misc.keepalive.key;" 
-                        oncommand="onKeepAliveCommand(this)" />
-              <textbox id="txtKeepAlive" onchange="onKeepAliveChange(this)" size="6"/>
-              <label value="ms" />
-            </row>
-            <row align="center">
-              <checkbox id="cbxCompile" label="&options.misc.compile;"
-                        accesskey="&options.misc.compile.key;" 
-                        oncommand="onCompileCommand(this)" />
-              <textbox id="txtCompile" onchange="onCompileChange(this)" size="6"/>
-              <label value="ms" />
-            </row>
-          </rows>
-        </grid>
-        <hbox flex="1"/>
+        <description>
+          If the client was idle for too long (usually 30 minutes), the
+          server assumes the client is disconnected and hangs up the connection.
+        </description>
+        <description>  
+          A keepalive request indecates the connection is still active and
+          should be preserved.
+        </description>
+        <checkbox id="cbxKeepAlive" label="Enable keepalives"
+                  accesskey="&options.misc.keepalive.key;" 
+                  oncommand="onKeepAliveCommand(this)" />
+        <box class="indent" align="center">
+          <label value="Send every" />
+          <textbox id="txtKeepAlive" onchange="onKeepAliveChange(this)" size="6"/>
+          <label value="min" />
+        </box>
       </groupbox>
     </vbox>
 
@@ -126,15 +158,15 @@
         <description>&options.proxy.description;</description>
         <description>&options.proxy.description.nameresolution;</description>
         <description>&options.proxy.description.localhost;</description>                 
-        <radiogroup id="rgSocksProxy" onselect="onProxySelect(this);">
-          <radio id="rbProxyDirect" label="&options.proxy.direct;"/>
-          <radio id="rbProxyDefault" label="&options.proxy.default;"/>
-          <radio id="rbProxySocks4" label="&options.proxy.socks4;"/>
+        <radiogroup id="rgSocksProxy" onselect="onProxySelect(this.selectedIndex);">
+          <radio label="&options.proxy.direct;"/>
+          <radio label="&options.proxy.default;"/>
+          <radio label="&options.proxy.socks4;"/>
           <box class="indent" align="center">
-        <label value="&options.proxy.host;" control="txtSocks4Host" />
-         <textbox id="txtSocks4Host" size="25" onchange="onSocks4HostChange(this)"/>
-        <label value="&options.proxy.port;"  control="txtSocks4Port" />
-         <textbox id="txtSocks4Port" size="5" onchange="onSocks4PortChange(this)"/>                  
+            <label value="&options.proxy.host;" control="txtSocks4Host" />
+            <textbox id="txtSocks4Host" size="25" onchange="onSocks4HostChange(this)"/>
+            <label value="&options.proxy.port;"  control="txtSocks4Port" />
+            <textbox id="txtSocks4Port" size="5" onchange="onSocks4PortChange(this)"/>                  
           </box>
           <radio id="rbProxySocks5" label="&options.proxy.socks5;"/>
           <box class="indent" align="center">
@@ -143,37 +175,12 @@
               <label value="&options.proxy.port;"  control="txtSocks5Port" />
               <textbox id="txtSocks5Port" size="5" onchange="onSocks5PortChange(this)"/>                  
           </box>
-          <checkbox class="indent" id="cbxSocks5RemoteDNS" label="&options.proxy.nameresolution;" oncommand="onSocks5RemoteDNSCommand(this)" />     
+          <checkbox class="indent" id="cbxSocks5RemoteDNS" label="&options.proxy.nameresolution;" 
+                    oncommand="onSocks5RemoteDNSCommand(this)" />     
         </radiogroup>
       </groupbox>
     </vbox>
  
-    <!-- compatibility panel -->
-    <vbox>
-      <hbox align="center" class="sivWarning" >
-        <image id="imgErrorBar" pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
-        <label pack="center" value="&options.tab.compatibility.warning;" />
-      </hbox> 
-      <groupbox>
-        <caption label="&options.cyrus;" />
-        <description>&options.cyrus.rfc;</description>
-        <description>&options.cyrus.workaround;</description>
-        <description>&options.cyrus.fails;</description>
-        <radiogroup id="rgHandshake" onselect="onHandshakeSelect(this);">
-          <radio id="rbAutoHandshake" label="&options.cyrus.handshake.auto;"/>
-          <box class="indent" align="center">
-            <label value="&options.cyrus.handshake.timeout;" control="txtHandshakeTimeout"/>
-            <textbox id="txtHandshakeTimeout" size="20" 
-                     onchange="onHandshakeTimeoutChange(this);"/>
-             <label value="ms"/>
-          </box>
-          <radio id="rbStrictHandshake" label="&options.cyrus.handshake.rfc;"/>
-          <radio id="rbCyrusHandshake" label="&options.cyrus.handshake.cyrus;"/>
-        </radiogroup>
-      </groupbox>
-      <hbox flex="1"/>
-    </vbox>
-    
     
     <!-- advanced panel -->
     <vbox>
@@ -192,9 +199,9 @@
           <label control="mlAuthMechanism" value="&options.authmechanism.default;" />
           <menulist id="mlAuthMechanism" oncommand="onAuthMechanismSelect(this)">
             <menupopup>
-              <menuitem id="miAuthMechanismPlain" label="&options.authmechanism.plain;" value="plain"/>
-              <menuitem id="miAuthMechanismLogin" label="&options.authmechanism.login;" value="login"/>
-              <menuitem id="miAuthMechanismCramMd5" label="&options.authmechanism.crammd5;" value="crammd5"/>
+              <menuitem id="miAuthMechanismPlain" label="&options.authmechanism.plain;" value="PLAIN"/>
+              <menuitem id="miAuthMechanismLogin" label="&options.authmechanism.login;" value="LOGIN"/>
+              <menuitem id="miAuthMechanismCramMd5" label="&options.authmechanism.crammd5;" value="CRAM-MD5"/>
             </menupopup>
           </menulist>
         </hbox>        
@@ -203,15 +210,15 @@
         <caption label="&options.proxyauth.caption;" /> 
         <description>&options.proxyauth.desc;</description>
         <description>&options.proxyauth.force; </description>
-        <radiogroup id="rgAuthorization" onselect="onAuthorizationSelect(this);">
-          <radio id="rbNoAuthorization" label="&options.proxyauth.none;"/>
-          <radio id="rbDefaultAuthorization" label="&options.proxyauth.default;"/>
-          <radio id="rbPromptAuthorization" label="&options.proxyauth.prompt;"/>
-          <radio id="rbCustomAuthorization" label="&options.proxyauth.custom;"/>
+        <radiogroup id="rgAuthorization" onselect="onAuthorizationSelect(this.selectedIndex);">
+          <radio label="&options.proxyauth.none;"/>
+          <radio label="&options.proxyauth.default;"/>
+          <radio label="&options.proxyauth.prompt;"/>
+          <radio label="&options.proxyauth.custom;"/>
           <box class="indent" align="center">
             <label value="&options.proxyauth.custom.username;" control="txtAuthorization"/>
             <textbox id="txtAuthorization" size="20" 
-                     onchange="onAuthorizationChange(this);"/>
+                     onchange="onAuthorizationChange(this.value);"/>
           </box>
         </radiogroup>
       </groupbox>

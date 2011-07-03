@@ -11,6 +11,10 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cr = Components.results;
 
+Cc["@mozilla.org/moz/jssubscript-loader;1"]
+    .getService(Ci.mozIJSSubScriptLoader) 
+    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponseParser.js"); 
+
 /**
  *  This class is a simple socket implementation for the manage sieve protocol. 
  *  Due to the asymetric nature of the Mozilla sockets we need message queue.
@@ -38,6 +42,8 @@ function Sieve()
   
   this.socket = null;
   this.data = null;
+  
+  this.queueLocked = false;
   
   this.requests = new Array();
     
@@ -299,43 +305,42 @@ Sieve.prototype.addListener
 }
 
 Sieve.prototype.addRequest 
-    = function(request)
+    = function(request,greedy)
 {
   if (this.listener)
     request.addByeListener(this.listener);
     
+  // TODO: we should realy store this internally, instead ot tagging objects
+  if (greedy)
+    request.isGreedy = true;
+     
   // Add the request to the message queue
-  this.requests[this.requests.length] = request;
+  this.requests.push(request);
+
+  // If the message queue was empty, we might have to reinitalize the...
+  // ... request pump.
   
-  // If the queue was empty before adding the new request, we have to...
-  // ... reinitialize the request pump. If not we can skip right here.
-  if (this.requests.length > 1)
+  // We can skip this if queue is locked...
+  if (this.queueLocked)
+    return;
+    
+  // ... or it contains more than one full request
+  for (var idx = 0 ; idx<this.requests.length; idx++)
+    if ( this.requests[idx].getNextRequest )
+      break;
+  
+  if (idx == this.requests.length)
     return;
 
-  this._onStart();
-
-  //if (request instanceof SieveInitRequest)
-  // Catch the init request, we simply check for an addInitListener function,
-  // ... as instanceof does not work with properly with components. The Scope...
-  // ... could be different.
-  if (request.addInitListener != null)
-    return;    
-  
-  var output = request.getNextRequest();
-  
-  if (this.debug.level & (1 << 0))
-    this.debug.logger.logStringMessage(output);
-    
-  output = this.bytesFromJSString(output);    
-  
-  if (this.debug.level & (1 << 3))
-    this.debug.logger.logStringMessage(output);
-    
-  this.binaryOutStream.writeByteArray(output,output.length)
-  //this.outstream. write(output,output.length);
+  if (this.requests[idx] != request)
+    return;
+   
+  this._sendRequest();
   
   return;
 }
+
+
 
 /**
  * Connects to a ManageSieve server.  
@@ -478,6 +483,7 @@ Sieve.prototype.disconnect
 Sieve.prototype.onStopRequest 
     =  function(request, context, status)
 {
+  this.debug.logger.logStringMessage("Connection closed");
   // this method is invoked anytime when the socket connection is closed
   // ... either by going to offlinemode or when the network cable is disconnected
 /*  if (this.debug.level & (1 << 2))
@@ -515,18 +521,25 @@ Sieve.prototype.notify
     
   // clear receive buffer and any pending request...
   this.data = null;
-  var request = this.requests[0];
-  this.requests.splice(0,1);
+ 
+  var idx = 0;
+  while ((idx < this.requests.length) && (this.requests[idx].isGreedy))
+    idx++;
 
   // ... and cancel any active request. It will automatically invoke the ... 
-  // ... request's onTimeout() listener.
-  if (request != null)
+  // ... request's onTimeout() listener.    
+  if (idx < this.requests.length)
   {
+    var request = this.requests[idx];
+    this.requests.splice(0,idx+1);
+    
     request.cancel();
-    return;
+    return;    
   }
   
-  // in case no request is active, we call the global listener 
+  // in case no request is active, we call the global listener
+  this.requests = [];
+   
   if ((this.listener != null) && (this.listener.onTimeout)) 
     this.listener.onTimeout();
 }
@@ -566,7 +579,7 @@ Sieve.prototype.onDataAvailable
   var data = binaryInStream.readByteArray(count);
 
   if (this.debug.level & (1 << 3))
-    this.debug.logger.logStringMessage(data);
+    this.debug.logger.logStringMessage("Server -> Client [Byte Array]\n"+data);
       
   if (this.debug.level & (1 << 1))
   {
@@ -578,79 +591,153 @@ Sieve.prototype.onDataAvailable
     var byteArray = data.slice(0,data.length);
     
     this.debug.logger
-      .logStringMessage(converter.convertFromByteArray(byteArray, byteArray.length));
+      .logStringMessage("Server -> Client\n"+converter.convertFromByteArray(byteArray, byteArray.length));
   }
 
-  // is a request handler waiting?
-  if ((this.requests.length == 0))
-    return;
-
   // responses packets could be fragmented...    
-  if (this.data == null)
+  if ((this.data == null) || (this.data.length == 0))
     this.data = data;
   else
     this.data = this.data.concat(data);
   
-  // ... therefore we test, if the response is parsable
-  try
-  {
-    // first clear the timeout...
-    this._onStop();
-	  
-    // ... then try to parse the request
-    this.requests[0].addResponse(this.data); 
-  }
-  catch (ex)
-  {
-    // we encounterned an error, this is most likely caused by a fragmented ... 
-    // ... packet, so we skip processing and start the timeout timer again... 
-    // ... Either the next packet or a timeout will resolve this situation.
-  
-    if (this.debug.level & (1 << 2))
-      this.debug.logger.logStringMessage("Parsing Exception in libManageSieve/Sieve.js:\n"+ex.toSource());	  
-
-    this._onStart();
-  
-	  return;
-  }
-  
-  // As we reached this point the response was parsable and has been processed.
-  // We do some cleanup as we don't need the transmitted data anymore...
-  this.data = null;
-     
-  // ... and delete the request, if it is processed.	
-  if (this.requests[0].hasNextRequest() == false)
-  	this.requests.splice(0,1);
-
-
-  // Are there any other requests waiting in the queue.
-  if ((this.requests.length > 0))
-  {
-    var output = this.requests[0].getNextRequest();
+  // is a request handler waiting?
+  if (this.requests.length == 0)
+    return;
     
-    if (this.debug.level & (1 << 0))
-      this.debug.logger.logStringMessage(output);    
-    // force to UTF-8...
-    output = this.bytesFromJSString(output);    
+  var parser = new SieveResponseParser(this.data);
+
+  // first clear the timeout, parsing starts...
+  this._onStop();
   
-    if (this.debug.level & (1 << 3))
-      this.debug.logger.logStringMessage(output);
+  // As we are callback driven, we need to lock the event queue. Otherwise our
+  // callbacks could manipulate the event queue while we are working on it.
+  var requests = this._lockMessageQueue();
+  
+  // greedy request take might have an response but do not have to have one. 
+  // They munch what they get. If there's a request they are fine,
+  // if there's no matching request it's also ok.
+  var idx = -1;
+  
+  while (idx+1 < requests.length)
+  {    
+    idx++
+    
+    try
+    {      
+      requests[idx].addResponse(parser);
+    }
+    catch (ex)
+    { 
+      // request could be fragmented or something else, as it's greedy,
+      // we don't care about any exception. We just log them in oder
+      // to make debugging easier....
+      if (this.debug.level & (1 << 2))
+        this.debug.logger.logStringMessage("Parsing Warning in libManageSieve/Sieve.js:\n"+ex.toSource());
+        
+      // a greedy request might or might not get an request, thus 
+      // it's ok if it failes
+      if (requests[idx].isGreedy)
+        continue;
+        
+      // ... but a non greedy response must parse without an error. Otherwise...
+      // ... something is broken. this is most likely caused by a fragmented ... 
+      // ... packet, but could be also a broken response. So skip processing...
+      // ... and restart the timeout. Either way the next packet or the ...
+      // ... timeout will resolve this situation for us.
+        
+      this._unlockMessageQueue(requests);
+      this._onStart();
       
-    this.binaryOutStream.writeByteArray(output,output.length)      
-	  
-    // the request is transmited, therefor activate the timeout
-    this._onStart();	  
+      return;
+    }
+    
+    // clear event queue...
+    if (idx > 0)
+      requests = requests.slice(idx);
+    
+    // in case the request is completed
+    if (!requests[0].hasNextRequest())
+    {
+      // ... remove it from the message queue.
+      var request = requests.shift();
+      
+      //... it it's greedy keep parsing, the next request might be non greedy
+      if (request.isGreedy)
+      {
+        idx = -1;      
+        continue;        
+      }
+    }
+   
+    // As we reached this point the response was parsable and has been processed.
+    // We do some cleanup as we don't need the parsed data anymore...    
+    this.data = parser.getByteArray();
+     
+    this._unlockMessageQueue(requests);
+     
+    // Are there any other requests waiting in the queue.
+    this._sendRequest();     
+     
+    return;
   }
+
+  // we endup here if all responses were greedy and did not match...
+  // ... should never happen
+  this._unlockMessageQueue(requests);
+     
+  if (this.debug.level & (1 << 2))
+    this.debug.logger.logStringMessage("No Matching Request in Event Queue");  
 }
 
+Sieve.prototype._sendRequest
+  = function()
+{ 
+  for (var idx = 0; idx<this.requests.length; idx++)    
+    if ( this.requests[idx].getNextRequest )
+      break;
+       
+  if (idx >= this.requests.length)
+    return;
+    
+  // start the timout, before sending anything. Sothat we will timeout...
+  // ... in case the socket is jammed...
+  this._onStart();
+    
+  var output = this.requests[idx].getNextRequest();
+  
+  if (this.debug.level & (1 << 0))
+    this.debug.logger.logStringMessage("Client -> Server:\n"+output);    
 
+  // Force String to UTF-8...
+  output = this.bytesFromJSString(output);    
+  
+  if (this.debug.level & (1 << 3))
+    this.debug.logger.logStringMessage("Client -> Server [Byte Array]:\n"+output);
+      
+  this.binaryOutStream.writeByteArray(output,output.length);
+    
+  return;
+}
 
+Sieve.prototype._lockMessageQueue
+  = function()
+{
+  this.queueLocked = true;
+  var requests = this.requests.concat();
+  
+  this.requests = [];
 
+  return requests;
+}
+
+Sieve.prototype._unlockMessageQueue
+  = function(requests)
+{
+  this.requests = requests.concat(this.requests);
+  this.queueLocked = false;
+}
 
 //=================================================
-// Note: You probably don't want to edit anything
-// below this unless you know what you're doing.
-//
 // Factory
 /**
  * @deprecated since Gecko 2.0  

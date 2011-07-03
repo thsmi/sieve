@@ -66,17 +66,16 @@ var event =
     sivSendRequest(sid,cid,request);
   },
 
+  onOffline: function()
+  {
+    sivDisconnect(6);
+  },
+  
   onTimeout: function()
   {
-    var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);  
-    
-    if (ioService.offline)
-    {
-      sivDisconnect(6);
-      return;
-    }
-    
     gLogger.logStringMessage("SivFilterExplorer.js\nOnTimeout");
+    
+    
     sivDisconnect(1,"warning.timeout");
   },
 	
@@ -138,7 +137,7 @@ var event =
       return;
     
     if (aData == "offline")
-      sivDisconnect(6);
+      this.onOffline();
     
     if (aData == "online")
       sivConnect();    
@@ -253,7 +252,7 @@ function sivConnect(account)
   if (!account)
     account = getSelectedAccount();
  
-  sid = sivManager.createSession(account);
+  sid = sivManager.createSession(account.getKey());
   sivManager.addSessionListener(sid,event);
   
   cid = sivManager.createChannel(sid);
@@ -328,9 +327,15 @@ function onSelectAccount()
       
   // Disable and cancel if account is not enabled
   if (account.isEnabled() == false)
-    return sivSetStatus(1,"warning.noaccount");
+    return sivSetStatus(8);
     
  // TODO wait for timeout or session close before calling connect again
+ // otherwise we might endup using a closing channel. An isClosing function
+ // and the follwoing code migh help to detect this...
+ 
+/*  if (isClosing)
+  setTimeout(function(){sivDisconnect(force=true); sivConnect(account)}, 1000);*/
+    
   sivConnect(account);
 }
 
@@ -463,6 +468,8 @@ function sivSetStatus(state, message, statusbar)
   document.getElementById('sivExplorerWait').setAttribute('hidden','true');
   document.getElementById('sivExplorerBadCert').setAttribute('hidden','true');
   document.getElementById('sivExplorerOffline').setAttribute('hidden','true');
+  document.getElementById('sivExplorerDisabled').setAttribute('hidden','true');
+  
   document.getElementById('sivExplorerTree').setAttribute('collapsed','true');
 
   if (statusbar)
@@ -507,8 +514,10 @@ function sivSetStatus(state, message, statusbar)
             document.getElementById('txtVersion').value = "v"+message.getVersion().toFixed(2);
             document.getElementById('sivExplorerWait').removeAttribute('hidden');
             break;
+    // account disabled
+    case 8: document.getElementById('sivExplorerDisabled').removeAttribute('hidden');
+            break;            
   }
-  
 }
 
 function disableControls(disabled)
@@ -749,7 +758,7 @@ function onBadCertOverride(targetSite,permanent)
   catch (ex)
   {
     sivSetStatus(2,"error.brokencert");
-    gLogger.logStringMessage(ex); 
+    gLogger.logStringMessage("onBadCertOverride:"+ex); 
   }
  
 }

@@ -9,78 +9,208 @@
 
 //  @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
 
-    
+   
 /** @type SieveAccount */
-var account;
-account = null;
+var gAccount = null;
 
-function onDialogLoad(sender)
+// === Server Sheet ===========================================================
+function onServerSheetLoad(account)
 {
-  account = window.arguments[0]["SieveAccount"];
+  var rbHost = document.getElementById('rgHost');
+  rbHost.selectedIndex = account.getHost().getType();
+  enableHost(rbHost.selectedIndex);
     
   // get the custom Host settings
   document.getElementById('txtHostname').value
-  	= account.getHost(1).getHostname();
-  document.getElementById('txtPort').value
-  	= account.getHost(1).getPort();
-  document.getElementById('cbxTLS').checked
-  	= account.getHost(1).isTLS();
+    = account.getHost(1).getHostname();
 
-  var cbxHost = document.getElementById('cbxHost');  
-  if (account.getHost().getType() == 1)
-  	cbxHost.checked = true;
-  else 
-   	cbxHost.checked = false;   	
-  enableHost(cbxHost.checked);
+  var rbPort = document.getElementById('rgPort');
+
+  // Load custom port settings
+  var port = account.getHost().getPort(2);
     
+  if ((port==2000) || (port=4190))
+    port = "";
+    
+  document.getElementById('txtPort').value = port;    
+    
+  // Load port
+  port = account.getHost().getPort();
+  
+  if (port == 4190)
+    rbPort.selectedIndex = 0;
+  else if (port == 2000)
+    rbPort.selectedIndex = 1;
+  else
+  {
+    rbPort.selectedIndex = 2;
+    document.getElementById('txtPort').value = port;    
+  }
+  
+  enablePort(rbPort.selectedIndex);
+  
+  document.getElementById('cbxTLS').checked
+    = account.getHost().isTLS();
+}
+
+function enableHost(type)
+{
+  if (type == 1)
+    document.getElementById('txtHostname').removeAttribute('disabled');
+  else
+    document.getElementById('txtHostname').setAttribute('disabled','true');                   
+}
+
+function onHostSelect(idx)
+{
+  if (!gAccount)
+    return;
+    
+  gAccount.setActiveHost(idx);
+  enableHost(idx);  
+}
+
+function onHostnameChange(value)
+{
+  if (!gAccount)
+    return;
+    
+  gAccount.getHost(1).setHostname(value);
+}
+
+function enablePort(type)
+{
+  if (type == 2)
+    document.getElementById('txtPort').removeAttribute('disabled');
+  else
+    document.getElementById('txtPort').setAttribute('disabled','true');
+}
+
+function onPortSelect(idx)
+{
+  if (!gAccount)
+    return;
+    
+  if (idx == 0)
+    gAccount.getHost().setPort(4190);
+  else if (idx == 1) 
+    gAccount.getHost().setPort(2000);
+  else
+    onPortChange(document.getElementById('txtPort').value);
+  
+  enablePort(idx);
+}
+
+function onPortChange(value)
+{
+  if (!gAccount)
+    return;
+    
+  gAccount.getHost().setPort(value,true)
+}
+
+// === Security Sheet =========================================================
+function onSecuritySheetLoad(account)
+{
   // initalize login related elements...
   document.getElementById('txtUsername').value
-  	= account.getLogin(2).getUsername();
+    = account.getLogin(2).getUsername();
         
   var rgLogin = document.getElementById('rgLogin');
   rgLogin.selectedIndex = account.getLogin().getType();
   enableLogin(rgLogin.selectedIndex);
+}
 
-  // initalize the authorization related elements...
-  document.getElementById('txtAuthorization').value
-    = account.getAuthorization(3).getAuthorization(); 
-  
-  var rgAuthorization = document.getElementById('rgAuthorization');
-  rgAuthorization.selectedIndex = account.getAuthorization().getType();
-  enableAuthorization(rgAuthorization.selectedIndex);
-
+function onTLSCommand(checked)
+{
+  if (!gAccount)
+    return;
     
+  gAccount.getHost().setTLS(checked);        
+}
+
+function onLoginSelect(idx)
+{
+  if (!gAccount)
+    return;
+    
+  gAccount.setActiveLogin(idx);        
+  enableLogin(idx);
+}
+
+function enableLogin(type)
+{
+  if (type == 2)
+    document.getElementById('txtUsername').removeAttribute('disabled');
+  else
+    document.getElementById('txtUsername').setAttribute('disabled','true');
+}
+
+function onUsernameChange(value)
+{
+  if (!gAccount)
+    return;
+    
+  gAccount.getLogin(2).setUsername(value);
+}
+
+// === General Sheet ==========================================================
+function onGeneralSheetLoad(account)
+{
   document.getElementById('txtKeepAlive').value
-  	= account.getSettings().getKeepAliveInterval();
+    = account.getSettings().getKeepAliveInterval() / (1000*60);
     
   var cbxKeepAlive = document.getElementById('cbxKeepAlive');
   cbxKeepAlive.checked = account.getSettings().isKeepAlive();
   enableKeepAlive(cbxKeepAlive.checked);
 
   document.getElementById('txtCompile').value
-  	= account.getSettings().getCompileDelay();
+    = account.getSettings().getCompileDelay();
   
   var element = null;
             
   element = document.getElementById('cbxCompile');
   element.checked = account.getSettings().hasCompileDelay();
-  enableCompile(element.checked);	
-   
-  document.getElementById('cbxDebugRequest').checked 
-      = account.getSettings().hasDebugFlag(0);
-   
-  document.getElementById('cbxDebugResponse').checked 
-      = account.getSettings().hasDebugFlag(1);
-  
-  document.getElementById('cbxDebugExceptions').checked 
-      = account.getSettings().hasDebugFlag(2);
+  enableCompile(element.checked);     
+}
 
-  document.getElementById('cbxDebugStream').checked 
-      = account.getSettings().hasDebugFlag(3);
-      
-  document.getElementById('cbxDebugSession').checked 
-      = account.getSettings().hasDebugFlag(4);      
-      
+// === Proxy Sheet ============================================================
+function onProxySheetLoad(account)
+{
+  // Proxy Configuration...  
+  document.getElementById('txtSocks4Host').value
+    = account.getProxy(2).getHost();
+  document.getElementById('txtSocks4Port').value
+    = account.getProxy(2).getPort();
+    
+  document.getElementById('txtSocks5Host').value
+    = account.getProxy(3).getHost();
+  document.getElementById('txtSocks5Port').value
+    = account.getProxy(3).getPort();  
+  document.getElementById('cbxSocks5RemoteDNS').checked
+    = account.getProxy(3).usesRemoteDNS();
+
+  var rgSocksProxy = document.getElementById('rgSocksProxy');
+  rgSocksProxy.selectedIndex = account.getProxy().getType();    
+  enableProxy(rgSocksProxy.selectedIndex);  
+}
+
+function onProxySelect(type)
+{ 
+  if (gAccount == null)
+    return;
+
+  if ((type == null) ||(type > 3))
+    type = 1;
+    
+  gAccount.setProxy(type);
+  enableProxy(type);
+}
+
+// === Advanced Sheet ==========================================================
+
+function onAdvancedSheetLoad(account)
+{
   element = document.getElementById('cbxAuthMechanism');
   element.checked = account.getSettings().hasForcedAuthMechanism();
   enableAuthMechanism(element.checked);
@@ -98,122 +228,29 @@ function onDialogLoad(sender)
     list.selectedItem = items[i];
     break;
   }
-
-  // initalize login related elements...
-  document.getElementById('txtHandshakeTimeout').value
-    = account.getSettings().getCompatibility().getHandshakeTimeout();
-        
-  element = document.getElementById('rgHandshake');
-  element.selectedIndex = account.getSettings().getCompatibility().getHandshakeMode();
-  enableHandshakeTimeout(element.selectedIndex);  
   
+  // initalize the authorization related elements...
+  document.getElementById('txtAuthorization').value
+    = account.getAuthorization(3).getAuthorization(); 
   
-  // Proxy Configuration...
-  
-  document.getElementById('txtSocks4Host').value
-    = account.getProxy(2).getHost();
-  document.getElementById('txtSocks4Port').value
-    = account.getProxy(2).getPort();
-    
-  document.getElementById('txtSocks5Host').value
-    = account.getProxy(3).getHost();
-  document.getElementById('txtSocks5Port').value
-    = account.getProxy(3).getPort();  
-  document.getElementById('cbxSocks5RemoteDNS').checked
-    = account.getProxy(3).usesRemoteDNS();
-
-  var rgSocksProxy = document.getElementById('rgSocksProxy');
-  rgSocksProxy.selectedIndex = account.getProxy().getType();    
-  enableProxy(rgSocksProxy.selectedIndex);
-  
+  var rgAuthorization = document.getElementById('rgAuthorization');
+  rgAuthorization.selectedIndex = account.getAuthorization().getType();
+  enableAuthorization(rgAuthorization.selectedIndex);  
 }
 
-function onDialogAccept(sender)
+function onAuthorizationSelect(type)
 {
-  // Do nothing since there should be only valid entries...
-}
-
-function onHandshakeSelect(sender)
-{ 
-  if (account == null)
+  if (gAccount == null)
     return;
-
-  var type = 0;
-  
-  if (sender.selectedItem.id == "rbAutoHandshake")
-    type = 0;
-  else if (sender.selectedItem.id == "rbStrictHandshake")
+    
+  if ((type == null) || (type > 3))
     type = 1;
-  else if (sender.selectedItem.id == "rbCyrusHandshake")
-    type = 2;
-  
-  account.getSettings().getCompatibility().setHandshakeMode(type);
-  enableHandshakeTimeout(type);
-}
 
-
-function enableHandshakeTimeout(type)
-{
-  if (type == 0)
-    document.getElementById('txtHandshakeTimeout').removeAttribute('disabled');
-  else
-    document.getElementById('txtHandshakeTimeout').setAttribute('disabled','true');
-}
-
-function onHandshakeTimeoutChange(sender)
-{
-  if (account == null)
-    return;
-    
-  account.getSettings().getCompatibility()
-    .setHandshakeTimeout(document.getElementById('txtHandshakeTimeout').value);
-}
-function onAuthorizationSelect(sender)
-{
-  if (account == null)
-    return;
-    
-  var type = 1;
-  
-  if (sender.selectedItem.id == "rbNoAuthorization")
-    type = 0;
-  else if (sender.selectedItem.id == "rbDefaultAuthorization")
-    type = 1;
-  else if (sender.selectedItem.id == "rbPromptAuthorization")
-    type = 2;
-  else if (sender.selectedItem.id == "rbCustomAuthorization")
-    type = 3;
-
-  account.setActiveAuthorization(type);        
+  gAccount.setActiveAuthorization(type);        
   enableAuthorization(type);
 }
 
 // Function for the custom authentication
-function onLoginSelect(sender)
-{
-  if (account == null)
-    return;
-    
-  var type = 1;
-  if (sender.selectedItem.id == "rbNoAuth")
-  	type = 0;
-  else if (sender.selectedItem.id == "rbImapAuth")
-  	type = 1;
-  else if (sender.selectedItem.id == "rbCustomAuth")
-  	type = 2;
-
-  account.setActiveLogin(type);        
-  enableLogin(type);
-}
-
-function enableLogin(type)
-{
-  if (type == 2)
-    document.getElementById('txtUsername').removeAttribute('disabled');
-  else
-    document.getElementById('txtUsername').setAttribute('disabled','true');
-}
-
 function enableAuthorization(type)
 {
   if (type == 3)
@@ -222,84 +259,63 @@ function enableAuthorization(type)
     document.getElementById('txtAuthorization').setAttribute('disabled','true');
 }
 
-function onUsernameChange(sender)
+function onAuthorizationChange(value)
 {
-  if (account == null)
+  if (gAccount == null)
     return;
   
-  account.getLogin(2).setUsername(document.getElementById('txtUsername').value);
+  gAccount.getAuthorization(3).setAuthorization(value);
 }
 
-function onAuthorizationChange(sender)
+// === Debug Sheet =============================================================
+
+function onDebugSheetLoad(account)
 {
-  if (account == null)
-    return;
+  document.getElementById('cbxDebugRequest').checked 
+      = account.getSettings().hasDebugFlag(0);
+   
+  document.getElementById('cbxDebugResponse').checked 
+      = account.getSettings().hasDebugFlag(1);
   
-  account.getAuthorization(3)
-      .setAuthorization(document.getElementById('txtAuthorization').value);
+  document.getElementById('cbxDebugExceptions').checked 
+      = account.getSettings().hasDebugFlag(2);
+
+  document.getElementById('cbxDebugStream').checked 
+      = account.getSettings().hasDebugFlag(3);
+      
+  document.getElementById('cbxDebugSession').checked 
+      = account.getSettings().hasDebugFlag(4);  
 }
 
-// Function for the custom server settings
-function onHostCommand(sender)
+
+
+function onDialogLoad()
 {
-  if (account == null)
-    return;
-
-  if (sender.checked)
-    account.setActiveHost(true);
-  else
-    account.setActiveHost(false);    
-     
-  enableHost(sender.checked);
+  gAccount = window.arguments[0]["SieveAccount"];
+  onServerSheetLoad(gAccount);
+  onSecuritySheetLoad(gAccount);
+  onProxySheetLoad(gAccount);
+  onGeneralSheetLoad(gAccount);
+  onAdvancedSheetLoad(gAccount);
+  onDebugSheetLoad(gAccount); 
 }
 
-function enableHost(enabled)
+function onDialogAccept()
 {
-  if (enabled)
-  {
-    document.getElementById('txtHostname').removeAttribute('disabled');
-    document.getElementById('txtPort').removeAttribute('disabled');
-    document.getElementById('cbxTLS').removeAttribute('disabled');
-  }
-  else
-  {
-    document.getElementById('txtHostname').setAttribute('disabled','true');    
-    document.getElementById('txtPort').setAttribute('disabled','true');        
-    document.getElementById('cbxTLS').setAttribute('disabled','true');        
-  }
+  return true;
+  // Do nothing since there should be only valid entries...
 }
 
-function onHostnameChange(sender)
-{
-  if (account == null)
-    return;
-  
-  account.getHost(1).setHostname(sender.value);
-}
 
-function onPortChange(sender)
-{
-  if (account == null)
-    return;
-  
-  account.getHost(1).setPort(sender.value)
-}
 
-function onTLSCommand(sender)
-{
-  if (account == null)
-    return;
-  
-  account.getHost(1).setTLS(sender.checked);        
-}
 
 // Function for the general Settings...
 function onKeepAliveCommand(sender)
 {
-  if (account == null)
+  if (gAccount == null)
     return;
     
-  account.getSettings().enableKeepAlive(sender.checked);
+  gAccount.getSettings().enableKeepAlive(sender.checked);
   enableKeepAlive(sender.checked);    
 }
 
@@ -313,18 +329,18 @@ function enableKeepAlive(enabled)
 
 function onKeepAliveChange(sender)
 {
-  if (account == null)
+  if (gAccount == null)
     return;
   
-  account.getSettings().setKeepAliveInterval(sender.value)    
+  gAccount.getSettings().setKeepAliveInterval(sender.value*1000*60)    
 }
 
 function onCompileCommand(sender)
 {
-  if (account == null)
+  if (gAccount == null)
     return;
      
-  account.getSettings().enableCompileDelay(sender.checked); 
+  gAccount.getSettings().enableCompileDelay(sender.checked); 
   enableCompile(sender.checked);    
 }
 
@@ -338,15 +354,15 @@ function enableCompile(enabled)
 
 function onCompileChange(sender)
 {
-  if (account == null)
+  if (gAccount == null)
     return;
   
-  account.getSettings().setCompileDelay(sender.value)    
+  gAccount.getSettings().setCompileDelay(sender.value)    
 }
 
 function onDebugFlagCommand(sender,bit)
 {
-  if (account == null)
+  if (gAccount == null)
     return;
   
   account.getSettings().setDebugFlag(bit,sender.checked);
@@ -354,10 +370,10 @@ function onDebugFlagCommand(sender,bit)
 
 function onAuthMechanismCommand(sender)
 {
-  if (account == null)
+  if (gAccount == null)
     return;
   
-  account.getSettings().enableForcedAuthMechanism(sender.checked);
+  gAccount.getSettings().enableForcedAuthMechanism(sender.checked);
   enableAuthMechanism(sender.checked);
 }
 
@@ -371,10 +387,10 @@ function enableAuthMechanism(enabled)
 
 function onAuthMechanismSelect(sender)
 {
-  if (account == null)
+  if (gAccount == null)
     return;
   
-  account.getSettings().setForcedAuthMechanism(sender.selectedItem.value);
+  gAccount.getSettings().setForcedAuthMechanism(sender.selectedItem.value);
 }
 /**
  * Opens the password manager dialog of thunderbird.
@@ -455,60 +471,40 @@ function enableProxy(type)
 
 function onSocks5RemoteDNSCommand(sender)
 {
-  if (account == null)
+  if (gAccount == null)
     return;
   
-  account.getProxy(3).setRemoteDNS(sender.checked);
+  gAccount.getProxy(3).setRemoteDNS(sender.checked);
 }
 
 function onSocks5HostChange(sender)
 {
-  if (account == null)
+  if (gAccount == null)
     return;
   
-  account.getProxy(3).setHost(sender.value);
+  gAccount.getProxy(3).setHost(sender.value);
 }
 
 function onSocks5PortChange(sender)
 {
-  if (account == null)
+  if (gAccount == null)
     return;
   
-  account.getProxy(3).setPort(sender.value)
+  gAccount.getProxy(3).setPort(sender.value)
 }
 
 function onSocks4HostChange(sender)
 {
-  if (account == null)
+  if (gAccount == null)
     return;
   
-  account.getProxy(2).setHost(sender.value);
+  gAccount.getProxy(2).setHost(sender.value);
 }
 
 function onSocks4PortChange(sender)
 {
-  if (account == null)
+  if (gAccount == null)
     return;
   
-  account.getProxy(2).setPort(sender.value)
-}
-
-function onProxySelect(sender)
-{ 
-  if (account == null)
-    return;
-
-  var type = 1;
-  
-  if (sender.selectedItem.id == "rbProxyDirect")
-    type = 0;
-  else if (sender.selectedItem.id == "rbProxyDefault")
-    type = 1;
-  else if (sender.selectedItem.id == "rbProxySocks4")
-    type = 2;
-  else if (sender.selectedItem.id == "rbProxySocks5")
-    type = 3;
-  
-  account.setProxy(type);
-  enableProxy(type);
+  gAccount.getProxy(2).setPort(sender.value)
 }

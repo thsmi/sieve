@@ -37,16 +37,37 @@ Cc["@mozilla.org/moz/jssubscript-loader;1"]
  *   a unique Identifier for this Session. Only neede to make debugging easyer.
  *   
  */
-function SieveSession(account,sid)
+function SieveSession(accountId,sid)
 {
   this.idx = 0;
 
-  this.account = account;
+  // Load Account by ID
+  this.account = (new SieveAccounts()).getAccount(accountId);
   
   this.debug = {};
   this.debug.level = this.account.getSettings().getDebugFlags();
-  this.debug.logger = Cc["@mozilla.org/consoleservice;1"]
-                          .getService(Ci.nsIConsoleService);
+  
+  // Use an empty logger stub, it makes the logger easily exchangable...
+  // ... this.logger.logString is garanteed to exist within this file.
+  this.debug.logger = {}
+  //this.debug.logger.logStringMessage = function(msg) { };
+
+  /*this.debug.logger = Cc["@mozilla.org/consoleservice;1"]
+    .getService(Ci.nsIConsoleService);*/
+  
+  /*this.debug.logger = {}
+  this.debug.logger.logStringMessage = function(msg) {
+    Cc["@mozilla.org/embedcomp/prompt-service;1"]
+      .getService(Components.interfaces.nsIPromptService)
+      .alert(null, "Alert", msg);    
+  }*/
+  
+  this.debug.logger = {}
+  this.debug.logger.logStringMessage = function(msg) {
+    Cc["@mozilla.org/consoleservice;1"]
+      .getService(Ci.nsIConsoleService)
+      .logStringMessage("["+sid+"] "+msg);
+  }
   
   this.sid = sid;
 }
@@ -54,11 +75,7 @@ function SieveSession(account,sid)
 SieveSession.prototype = 
 {  
   onIdle: function ()
-  { 
-    // redirect to window managing the session...
-    /*if ((this.listener) && (this.listener.onIdle))
-     this.listener.onIdle(this.sieve);*/
- 
+  {  
     // as we send a keep alive request, we don't care
     // about the response...
     var request = null;
@@ -72,13 +89,11 @@ SieveSession.prototype =
   },
 
   onInitResponse: function(response)
-  {
+  {    
     // establish a secure connection if TLS ist enabled and if the Server ...
     // ... is capable of handling TLS, otherwise simply skip it and ...
     // ... use an insecure connection
-    
-    this.sieve.setCompatibility(response.getCapabilities());
-    
+      
     if (this.account.getHost().isTLS() && response.getTLS())
     {
       var request = new SieveStartTLSRequest();
@@ -86,7 +101,7 @@ SieveSession.prototype =
       request.addErrorListener(this);
       
       this.sieve.addRequest(request);
-      
+    
       return;
     }
     
@@ -94,7 +109,7 @@ SieveSession.prototype =
   },
   
   onAuthenticate: function(response)
-  {
+  { 
     this.listener.onChannelStatus(3,"progress.authenticating");
     var account =  this.account;
     
@@ -122,27 +137,29 @@ SieveSession.prototype =
     else
       mechanism = response.getSasl();
 
-    // ... translate the SASL Mechanism String into an SieveSaslLogin Object ...      
+    // ... translate the SASL Mechanism into an SieveSaslLogin Object ...      
     var request = null;
     while((mechanism.length > 0) && (request == null))
     {
       // remove and test the first element...
-      switch (mechanism.shift().toLowerCase())
+      switch (mechanism.shift().toUpperCase())
       {
-        case "plain":
+        case "PLAIN":
           request = new SieveSaslPlainRequest();
           request.addSaslPlainListener(this);      
           break;
-        case "crammd5":
+          
+        case "CRAM-MD5":
           request = new SieveSaslCramMd5Request();
           request.addSaslCramMd5Listener(this);
-          break;          
-        case "login":
+          break;
+          
+        case "LOGIN":
           // we use SASL LOGIN only as last resort...
           // ... as suggested in the RFC.        
           if (mechanism.length > 0)
           {
-            mechanism.push("login");
+            mechanism.push("LOGIN");
             break;
           }
           request = new SieveSaslLoginRequest();      
@@ -184,99 +201,33 @@ SieveSession.prototype =
       request.setAuthorization(authorization);
     }
      
-    this.sieve.addRequest(request);       
-    
+    this.sieve.addRequest(request);    
   },
 
   onStartTLSResponse : function(response)
-  {
-    // As we are an object we can't use this...
-    // it would refer to lEvent instead of SieveSession
+  { 
+    this.sieve.startTLS();
+
     var that = this;
-    // workaround for timsieved bug...
+    
     var lEvent = 
     {
-      onInitResponse: function(response)
-      {
-        that.listener.onChannelStatus(3,"progress.tls.rfc");
-        
-        that.sieve.setTimeoutInterval();
-        that.onAuthenticate(response);
-      },
-      
-      onError: function(response)
-      {
-        that.sieve.setTimeoutInterval();
-        that.onError(response);
-      },
-      
-      onTimeout: function()
-      {
-        that.listener.onChannelStatus(3,"progress.tls.cyrus");
-        
-        that.sieve.setTimeoutInterval();
-        var request = new SieveCapabilitiesRequest();
-        request.addCapabilitiesListener(that);
-        request.addErrorListener(that);  
-    
-        that.sieve.addRequest(request);
-      }     
+      onCapabilitiesResponse: function(response)
+      {        
+        that.onAuthenticate(response); 
+      }
     }
-        
-    // after calling startTLS the server will propagate his capabilities...
-    // ... like at the login, therefore we reuse the SieveInitRequest
     
-    // some revision of timsieved fail to resissue the capabilities...
-    // ... which causes the extension to be jammed. Therefore we have to ...
-    // ... do a rather nasty workaround. The jammed extension causes a timeout,
-    // ... we catch this timeout and continue as if nothing happend...
+    // explicitely request capabilites
+    var request = new SieveCapabilitiesRequest();
+    request.addCapabilitiesListener(lEvent);
     
-    var compatibility = this.account.getSettings().getCompatibility(); 
+    this.sieve.addRequest(request);
     
-    switch (compatibility.getHandshakeMode())
-    {
-      case 0:
-        this.listener.onChannelStatus(3,"progress.tls.auto");      
-        var request = new SieveInitRequest();
-        request.addInitListener(lEvent);
-        request.addErrorListener(lEvent);
-        
-        this.sieve.setTimeoutInterval(compatibility.getHandshakeTimeout());
-        this.sieve.addRequest(request);
-            
-        this.sieve.startTLS();   
-        break;
-        
-      case 1:
-        this.listener.onChannelStatus(3,"progress.tls.rfc");
-             
-        var request = new SieveInitRequest();
-        request.addInitListener(lEvent);
-        request.addErrorListener(this);  
-        this.sieve.addRequest(request);
-    
-        // activate TLS
-        this.sieve.startTLS();
-        
-        break;
-      case 2:
-        this.listener.onChannelStatus(3,"progress.tls.cyrus");
-        //sivSetStatus(3,"progress.tls.cyrus");
-      
-        this.sieve.startTLS();
-      
-        var request = new SieveCapabilitiesRequest();
-        request.addCapabilitiesListener(this);
-        request.addErrorListener(this);  
-    
-        this.sieve.addRequest(request);
-        break;
-    }
-  },
-  
-  onCapabilitiesResponse: function(response)
-  {
-    this.onAuthenticate(response);
+    // With a bugfree server we endup with two capability request, one 
+    // implicit after startTLS and one explicite from capbilites. So we have
+    // to consume one of them silently...
+    this.sieve.addRequest(new SieveInitRequest(),true);
   },
   
   onSaslLoginResponse: function(response)
@@ -340,10 +291,18 @@ SieveSession.prototype =
   },
 
   /** @private */
-  onTimeout: function()
+  onTimeout: function(message)
   {
+    var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);  
+    
+    if (ioService.offline && this.listener && this.listener.onOffline)
+    {
+      this.listener.onOffline();
+      return;
+    }
+    
     if (this.listener && this.listener.onTimeout)
-      this.listener.onTimeout();    
+      this.listener.onTimeout(message);    
   },
   
   /**
@@ -645,5 +604,6 @@ SieveSession.prototype =
     if (this.debug.logger != null)
       this.debug.logger.logStringMessage("Sieve BadCertHandler: notifyCrlNextupdate");
   }  
+  
 
 }

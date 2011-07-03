@@ -42,8 +42,6 @@
   <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveResponse.js" />    
   <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveResponseParser.js"/>
-  <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js" />
   <script type="application/javascript" 
           src="chrome://sieve/content/editor/SieveFilterEditor.js" />

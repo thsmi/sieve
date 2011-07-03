@@ -6,7 +6,8 @@
 <overlay id="sieveOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script type="application/javascript" src="chrome://sieve/content/SieveOverlay.js" />
-
+ <!-- <script type="application/javascript" src="chrome://sieve/content/SieveFolderOverlay.js" /> -->
+  
   <menupopup id="taskPopup">
     <menuitem id="mnuSieveListDialog" insertbefore="filtersCmd" label="&menu.filters;"
   	  	oncommand='gSivExtUtils.OpenFilters();' 
@@ -14,6 +15,9 @@
     <menuitem id="mnuSieveOptionsDialog" insertbefore="filtersCmd" label="&menu.options;"
   	  	oncommand='gSivExtUtils.OpenSettings();' 
   		  accesskey="&menu.options.key;" />
+<!--    <menuitem insertbefore="filtersCmd" label="Filter GUI"
+        oncommand='window.openDialog("chrome://sieve/content/libs/libSieveDOM/test.xul",
+                      "", "chrome,centerscreen,titlebar,resizable");' />-->
     <menuseparator id="mnuSieveSeparator" insertbefore="filtersCmd"/>  		
   </menupopup>
 

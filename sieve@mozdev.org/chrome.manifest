@@ -23,3 +23,6 @@ component {87f5b0a0-14eb-11df-a769-0002a5d5c51b} components/SieveAccountManagerE
 contract @mozilla.org/accountmanager/extension;1?name=sieve.mozdev.org {87f5b0a0-14eb-11df-a769-0002a5d5c51b}
 category mailnews-accountmanager-extensions sieve-accountmanager-extension @mozilla.org/accountmanager/extension;1?name=sieve.mozdev.org
 
+#component {fea5f17a-14eb-11df-d46c-0002a5d5c51b} components/SieveMsgFolder.js
+#contract @mozilla.org/rdf/resource-factory;1?name=x-sieve {fea5f17a-14eb-11df-d46c-0002a5d5c51b}
+

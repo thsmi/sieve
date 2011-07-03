@@ -59,7 +59,7 @@ var gSivExtUtils =
   OpenSettings : function (server)
   {
     
-    //#ifdef POSTBOX
+//#ifdef POSTBOX
       // postbox includes accountmanager in Options Dialog..
       // ... so we need a postbox specific hack.
       var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
@@ -88,7 +88,7 @@ var gSivExtUtils =
         openOptionsDialog('paneAccounts', '',  options);
         return;
       }
-    //#endif POSTPOX
+//#endif POSTBOX
     
     var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].
                             getService(Components.interfaces.nsIWindowMediator);

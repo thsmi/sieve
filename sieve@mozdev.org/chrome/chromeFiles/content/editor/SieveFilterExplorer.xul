@@ -37,8 +37,6 @@
   <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveRequest.js"/>
   <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveResponseParser.js"/>
-  <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveResponseCodes.js"/>
   <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveResponse.js"/>
@@ -89,22 +87,6 @@
                   <description id="sivExplorerWaitMsg" pack="center">          
                   </description>
               </vbox>
-
-            <!--  <box id="sivExplorerDisabled" align="center" pack="center" flex="1" > 
-                <hbox align="center" class="sivWarning">
-                  <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
-                  <vbox>
-                     <hbox>
-                       <description id="sivExplorerWarningMsg" pack="center">
-                         This account is not configured for ManageSieve...
-                     </description>
-                    </hbox>
-                    <hbox pack="center">
-                      <button label="Open Configuration" />
-                     </hbox>
-                    </vbox>
-                </hbox>
-              </box> -->
               
               <box id="sivExplorerWarning" align="center" pack="center" flex="1" > 
                 <hbox align="center" class="sivWarning">
@@ -139,6 +121,26 @@
                 </hbox>
               </box>
 
+              <!-- Error Message: Account not configured -->
+              <box id="sivExplorerDisabled" align="center" pack="center" flex="1" > 
+                <hbox align="center" class="sivWarning">
+                  <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
+                  <vbox>
+                     <vbox id="sivExplorerWarningMsg" pack="center">
+                       <description>
+                         This account is not configured for ManageSieve...
+                       </description>
+                       <description>
+                         Click on "Open Configuration" or goto Goto 'Tools -> Sieve Settings' to activate this account
+                       </description>
+                     </vbox>
+                     <hbox align="right">
+                       <button label="Open Configuration" oncommand="onSettingsClick();" />
+                     </hbox>
+                    </vbox>
+                </hbox>
+              </box>
+
               <!--  Error Message: Thunderbird in offline mode-->
               <box id="sivExplorerOffline" hidden="true" align="center" pack="center" flex="1">
                 <hbox align="center" class="sivWarning" >
@@ -153,7 +155,7 @@
                   </vbox> 
                 </hbox>
               </box>
-                       
+
             </tree>
             <vbox>          
               <button id="btnServerDetails" oncommand="onServerDetails();" flex="1">

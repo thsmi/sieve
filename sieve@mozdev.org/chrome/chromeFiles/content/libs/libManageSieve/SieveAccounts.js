@@ -61,7 +61,7 @@ SieveNoAuth.prototype.getType
 function SieveImapAuth(imapKey)
 {
   if (imapKey == null)
-    throw "SieveImapHost: IMAP account key can't be null"; 
+    throw "SieveImapAuth: IMAP account key can't be null"; 
 
   this.imapKey = imapKey;
 }
@@ -198,15 +198,15 @@ SieveCustomAuth2.prototype.getDescription
 SieveCustomAuth2.prototype.setUsername
     = function (username)
 {
-  if ((username == null) || (username == ""))
-    throw "SieveCustomAuth2: Username is empty or null";
+  if (username == null)
+    username = "";
 
   // first we need to cache the old username...
   var oldUserName = this.getUsername();
   
   // ... and update the new username.
   gPref.setCharPref(this.sieveKey+".login.username",username);
-    
+  
   
   // we should also update the LoginManager...
   var loginManager = Components.classes["@mozilla.org/login-manager;1"]
@@ -542,7 +542,7 @@ SieveCustomAuth.prototype.getType
 }
 
 /**
- * This maintains SOCKS proxy settings 
+ * Maintains SOCKS proxy settings 
  * @param {String} sieveKey
  *   the unique URI of the associated sieve account
  */
@@ -581,6 +581,8 @@ SieveSystemProxy.prototype.getProxyInfo
 {
   return null;
 }
+
+
 /**
  * 
  * @param {} imapKey
@@ -589,6 +591,9 @@ function SieveSocks4Proxy(sieveKey)
 {
   this.prefURI = sieveKey+".proxy.socks4";
 }
+
+// Inherrit prototypes from SieveSystemProxy...
+SieveSocks4Proxy.prototype.__proto__ = SieveSystemProxy.prototype;
 
 SieveSocks4Proxy.prototype.getType
     = function()
@@ -602,7 +607,7 @@ SieveSocks4Proxy.prototype.getHost
   if (gPref.prefHasUserValue(this.prefURI+".host"))
     return gPref.getCharPref(this.prefURI+".host");
 
-  return ""; 
+  return "localhost"; 
 }
 
 SieveSocks4Proxy.prototype.setHost
@@ -617,7 +622,7 @@ SieveSocks4Proxy.prototype.getPort
   if (gPref.prefHasUserValue(this.prefURI+".port"))
     return gPref.getCharPref(this.prefURI+".port");
 
-  return ""; 
+  return "1080"; 
 }
 
 SieveSocks4Proxy.prototype.setPort
@@ -635,6 +640,7 @@ SieveSocks4Proxy.prototype.getProxyInfo
                 .getService(Components.interfaces.nsIProtocolProxyService);
   return [pps.newProxyInfo("socks4",this.getHost(),this.getPort(),0,4294967295,null)]
 }
+
 /**
  * 
  * @param {} sieveKey
@@ -644,41 +650,13 @@ function SieveSocks5Proxy(sieveKey)
   this.prefURI = sieveKey+".proxy.socks5";
 }
 
+// Inherrit prototypes from SieveSocksProxy...
+SieveSocks5Proxy.prototype.__proto__ = SieveSocks4Proxy.prototype;
+
 SieveSocks5Proxy.prototype.getType
     = function()
 {
   return 3;
-}
-
-SieveSocks5Proxy.prototype.getHost
-    = function()
-{
-  if (gPref.prefHasUserValue(this.prefURI+".host"))
-    return gPref.getCharPref(this.prefURI+".host");
-
-  return ""; 
-}
-
-SieveSocks5Proxy.prototype.setHost
-    = function(host)
-{
-  gPref.setCharPref(this.prefURI+".host",host);
-}
-
-SieveSocks5Proxy.prototype.getPort
-    = function()
-{
-  if (gPref.prefHasUserValue(this.prefURI+".port"))
-    return gPref.getCharPref(this.prefURI+".port");
-
-  return ""; 
-}
-
-SieveSocks5Proxy.prototype.setPort
-    = function(port)
-{
-  // TODO: Check If port is a valid integer
-  gPref.setCharPref(this.prefURI+".port",port);
 }
 
 SieveSocks5Proxy.prototype.usesRemoteDNS
@@ -698,28 +676,100 @@ SieveSocks5Proxy.prototype.setRemoteDNS
 
 SieveSocks5Proxy.prototype.getProxyInfo
     = function()
-{ 
+{
   // generate proxy info
   var pps = Components.classes["@mozilla.org/network/protocol-proxy-service;1"]
-                .getService(Components.interfaces.nsIProtocolProxyService);   
-  return [pps.newProxyInfo("socks",this.getHost(),this.getPort(),0,4294967295,null)];
+                .getService(Components.interfaces.nsIProtocolProxyService);
+                                
+  return [ pps.newProxyInfo("socks",this.getHost(),this.getPort(),(this.usesRemoteDNS()?(1<<0):0),4294967295,null)]; 
 }
 
+/*********************************/
+
+function SieveAbstractHost(uri)
+{
+  if (uri == null)
+    throw "SieveCustomHost: URI can't be null";
+    
+  this.uri = uri;
+  this.prefURI = "extensions.sieve.account."+this.uri;  
+}
+
+SieveAbstractHost.prototype.getPort
+    = function (type)
+{    
+  var port = 4190;
+  
+  if ((type == null) && (gPref.prefHasUserValue(this.prefURI+".port.type"))) 
+    type = gPref.getIntPref(this.prefURI+".port.type");
+
+  if ((type == 2) && gPref.prefHasUserValue(this.prefURI+".port"))
+    return gPref.getCharPref(this.prefURI+".port");
+    
+  if (type == 1)
+    return 2000;
+
+  return 4190;
+}
+
+SieveAbstractHost.prototype.setPort
+    = function (port)
+{
+  var type = 2;
+  
+  if (port == 4190)
+    type = 0;
+  else if (port == 2000)
+    type = 1;
+    
+  gPref.setIntPref(this.prefURI+".port.type",type);
+  
+  if (type != 2)
+    return;
+    
+  port = parseInt(port);
+  
+  if (isNaN(port))
+    port = 4190;
+    
+  gPref.setCharPref(this.prefURI+".port",port);
+}
+
+SieveAbstractHost.prototype.isTLS
+    = function ()
+{
+  if (gPref.prefHasUserValue(this.prefURI+".TLS"))
+    return gPref.getBoolPref(this.prefURI+".TLS");
+    
+  return true;
+}
+
+SieveAbstractHost.prototype.setTLS
+    = function (enabled)
+{
+  gPref.setBoolPref(this.prefURI+".TLS",!!enabled);
+}
+
+/***********/
+
 /**
- * This class loads the host settings from an IMAP account. The settings are
- * read dynamically when needed. This ensures the always the most recent 
- * settings are used.
+ * This class loads the hostname from an IMAP account. The hostname is not 
+ * cached it. This ensures that always the most recent settings are used.
  * 
  * @param {String} imapKey
  *   The IMAP Key which host settings should be used. 
  */
-function SieveImapHost(imapKey)
+function SieveImapHost(uri,imapKey)
 {
+  SieveAbstractHost.call(this,uri);
+  
   if (imapKey == null)
     throw "SieveImapHost: IMAP account key can't be null"; 
   
   this.imapKey = imapKey;
 }
+
+SieveImapHost.prototype.__proto__ = SieveAbstractHost.prototype;
 
 SieveImapHost.prototype.getHostname
     = function ()
@@ -730,26 +780,6 @@ SieveImapHost.prototype.getHostname
                     .getIncomingServer(this.imapKey);
 
   return account.realHostName;
-}
-
-SieveImapHost.prototype.getPort
-    = function ()
-{
-  return 2000;
-}
-
-SieveImapHost.prototype.isTLS
-    = function ()
-{
-  // use the IMAP Key to load the Account...
-  var account = Components.classes['@mozilla.org/messenger/account-manager;1']
-                  .getService(Components.interfaces.nsIMsgAccountManager)
-                  .getIncomingServer(this.imapKey);
-
-  if ( account.socketType == 0)
-    return false;
-		
-  return true;
 }
 
 SieveImapHost.prototype.getType
@@ -767,12 +797,10 @@ SieveImapHost.prototype.getType
  */
 function SieveCustomHost(uri)
 {
-  if (uri == null)
-    throw "SieveCustomHost: URI can't be null";
-    
-  this.uri = uri;
-  this.prefURI = "extensions.sieve.account."+this.uri;
+  SieveAbstractHost.call(this,uri);
 }
+
+SieveCustomHost.prototype.__proto__ = SieveAbstractHost.prototype;
 
 SieveCustomHost.prototype.toString
     = function ()
@@ -792,42 +820,10 @@ SieveCustomHost.prototype.getHostname
 SieveCustomHost.prototype.setHostname
     = function (hostname)
 {
-  if ((hostname == null) || (hostname == ""))
-    throw "Hostname can't be empty or null";
+  if (hostname == null)
+    throw "Hostname can't be null";
 
   gPref.setCharPref(this.prefURI+".hostname",hostname);
-}
-
-SieveCustomHost.prototype.getPort
-    = function ()
-{
-  if (gPref.prefHasUserValue(this.prefURI+".port"))
-    return gPref.getIntPref(this.prefURI+".port");
-
-  return 2000;
-}
-
-SieveCustomHost.prototype.setPort
-    = function (port)
-{
-  // TODO: Check If port is a valid integer
-  gPref.setIntPref(this.prefURI+".port",port);
-}
-
-// TODO Should be renamed in "secure"
-SieveCustomHost.prototype.isTLS
-    = function ()
-{
-  if (gPref.prefHasUserValue(this.prefURI+".TLS"))
-    return gPref.getBoolPref(this.prefURI+".TLS");
-    
-  return true;
-}
-
-SieveCustomHost.prototype.setTLS
-    = function (enabled)
-{
-  gPref.setBoolPref(this.prefURI+".TLS",enabled);
 }
 
 SieveCustomHost.prototype.getType
@@ -835,92 +831,6 @@ SieveCustomHost.prototype.getType
 {
   return 1;
 }
-
-
-//== SieveCompatibilitySettings ==============================================//
-/**
- * This class manages compatibility related settings for the given sieve account
- * <p>
- * According to the RFC, a server should implicitely send his capabilites after 
- * a succesfull TLS Handshake. But Cyrus servers used to expect an explicit 
- * capability request. So there are now two incomaptible TLS Hanshake mechanisms
- * common - the RFC conform and the cyrus like TLS Handshake.
- * <p> 
- * In Addition to the two mechanisms above an automatic detection is implemented
- * by the extension. In case the server fails to send his capabilities within a 
- * given time, it is assumed that the server is not RFC conform and requires an 
- * explicitely capability request.
- * <p>
- * This mechanism is not failsave, in case of a slow connection or a server 
- * suffering from high load, the timeout could be accidentially triggered and
- * causes the Extension to hang.
- *  
- * @param {String} sieveKey
- *   The unique identifiert for the sieve account
- */
-function SieveCompatibilitySettings(sieveKey)
-{
-  if (sieveKey == null)
-    throw "SieveCompatibility: Sieve Key can't be null"; 
-    
-  this.sieveKey = sieveKey+".compatibility";  
-}
-
-/**
- * Returns the Hanshake mechanism. A value of 0 means automatic detection, 1 is 
- * equivalent to RFC conform respectively 2 to Cyrus like handshake.
- *  
- * @return {Int} the Handshake mechanism as integer
- */
-SieveCompatibilitySettings.prototype.getHandshakeMode
-    = function ()
-{
-  if (gPref.prefHasUserValue(this.sieveKey+".tls"))
-    return gPref.getIntPref(this.sieveKey+".tls");
-
-  return 0;
-}
-
-/**
- * Sets a the handshake mechanism that should be used. A value of 0 enables 
- * automatic detection. Respectively 1 is equivalent to a RFC conform and 2 
- * equals a Cyrus like handshake.
- * 
- * @param {Int} type
- *   the Handshake mechanism that should be used as integer.
- */
-SieveCompatibilitySettings.prototype.setHandshakeMode
-    = function (mode)
-{
-  gPref.setIntPref(this.sieveKey+".tls",mode);
-}
-
-/**
- * Returns a timeout, which is needed for the automatic handshake detection.
- * 
- * @return {Int}
- *   the timeout in Milliseconds
- */
-SieveCompatibilitySettings.prototype.getHandshakeTimeout
-    = function () 
-{
-  if (gPref.prefHasUserValue(this.sieveKey+".tls.timeout"))
-    return gPref.getCharPref(this.sieveKey+".tls.timeout");
-
-  return "7500"; //20*1000 = 20 Seconds
-}
-
-/**
- * Defines the timeout for the automatic handshake detection.
- * @param {Int} ms
- *   the timeout in Milliseconds
- */
-SieveCompatibilitySettings.prototype.setHandshakeTimeout
-    = function (ms)
-{
-  gPref.setCharPref(this.sieveKey+".tls.timeout",ms);
-}
-
 
 //== SieveAccountSettings ====================================================//
 /**
@@ -935,16 +845,6 @@ function SieveAccountSettings(sieveKey)
     throw "SieveAccountSettings: Sieve Key can't be null"; 
     
   this.sieveKey = sieveKey;
-}
-
-/**
- * XXX:
- * @return {SieveCompatibilitySettings}
- */
-SieveAccountSettings.prototype.getCompatibility
-    = function () 
-{
-  return (new SieveCompatibilitySettings(this.sieveKey));
 }
 
 SieveAccountSettings.prototype.isKeepAlive
@@ -974,6 +874,11 @@ SieveAccountSettings.prototype.getKeepAliveInterval
 SieveAccountSettings.prototype.setKeepAliveInterval
     = function (ms)
 {
+  ms = parseInt(ms);
+  
+  if (isNaN(ms))
+    ms = 300000;
+  
   gPref.setCharPref(this.sieveKey+".keepalive.interval",ms);
 }
 
@@ -1012,6 +917,11 @@ SieveAccountSettings.prototype.getCompileDelay
 SieveAccountSettings.prototype.setCompileDelay
     = function (ms) 
 {
+  ms = parseInt(ms);
+  
+  if (isNaN(ms))
+    ms = 500;
+    
   gPref.setIntPref(this.sieveKey+".compile.delay",ms);
 }
 
@@ -1285,7 +1195,7 @@ SieveAccount.prototype.getHost
   if (type == 1)
     return new SieveCustomHost(this.Uri)
   
-  return new SieveImapHost(this.imapKey)
+  return new SieveImapHost(this.Uri, this.imapKey)
 }
 
 SieveAccount.prototype.setActiveHost

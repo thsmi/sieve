@@ -66,7 +66,10 @@ function SieveAbstractResponse(parser)
 
     // is there a Message?
     if (parser.isLineBreak())
+    {
+      parser.extractLineBreak();
       return;
+    }
 
     // remove the space
     parser.extractSpace();
@@ -84,7 +87,10 @@ function SieveAbstractResponse(parser)
       parser.extract(1);        
         
       if (parser.isLineBreak())
-        return;
+      {
+        parser.extractLineBreak();
+        return
+      }
              
       parser.extractSpace();
     }
@@ -141,9 +147,9 @@ SieveAbstractResponse.prototype.getResponseCode
  * @param {} data
  *  a string containing the response sent by the server
  */
-function SieveSimpleResponse(data)
+function SieveSimpleResponse(parser)
 {
-  SieveAbstractResponse.call(this,new SieveResponseParser(data));
+  SieveAbstractResponse.call(this,parser);
 }
 
 // Inherrit prototypes from SieveAbstractResponse...
@@ -156,12 +162,12 @@ SieveSimpleResponse.prototype.__proto__ = SieveAbstractResponse.prototype;
  * 
  * @see {SieveCapabilitiesRequest}
  * 
- * @param {String} data
- *   a string containing the response sent by the server 
+ * @param {SieveResponseParser} parser
+ *   a parser containing the response sent by the server 
  */
-function SieveCapabilitiesResponse(data)
+function SieveCapabilitiesResponse(parser)
 {    
-  this.implementation = "";
+  this.implementation = null;
   this.version = 0;
   
   this.extensions = {};
@@ -174,8 +180,6 @@ function SieveCapabilitiesResponse(data)
   this.language = "";
   
   this.capabilities = {};
-  
-  var parser = new SieveResponseParser(data);
   
   while (parser.isString() )
   {
@@ -234,9 +238,11 @@ function SieveCapabilitiesResponse(data)
         this.capabilities.noop = true;
         break;
     }
-    
   } 
 
+  if (this.implementation === null)
+    throw "Implementation expected";
+    
   // invoke inheritted Object constructor...
   SieveAbstractResponse.call(this,parser);  
 }
@@ -349,13 +355,11 @@ SieveCapabilitiesResponse.prototype.getOwner
     
 //***************************************************************************//
     
-function SieveListScriptResponse(data)
+function SieveListScriptResponse(parser)
 {
   //    sieve-name    = string
   //    string        = quoted / literal
   //    (sieve-name [SP "ACTIVE"] CRLF) response-oknobye
-
-  var parser = new SieveResponseParser(data);
   
   this.scripts = new Array();
   var i = -1;
@@ -404,9 +408,8 @@ function SieveSaslLoginResponse()
 }
 
 SieveSaslLoginResponse.prototype.add
-  = function (data) 
+  = function (parser) 
 {
-  var parser = new SieveResponseParser(data);
   
   if ((this.state == 0) && (parser.isString()))
   {
@@ -439,10 +442,10 @@ SieveSaslLoginResponse.prototype.add
   }
   catch (ex) 
   {
-    throw 'Illegal State:'+this.state+' / '+data+'\n'+ex;    
+    throw 'Illegal State:'+this.state+' / '+parser.getData(0)+'\n'+ex;    
   }
     
-  throw 'Illegal State:'+this.state+' / '+data;
+  throw 'Illegal State:'+this.state+' / '+parser.getData(0);
 }
 
 SieveSaslLoginResponse.prototype.getState
@@ -492,10 +495,8 @@ function SieveSaslCramMd5Response()
 }
 
 SieveSaslCramMd5Response.prototype.add
-  = function (data) 
+  = function (parser) 
 {
-  
-  var parser = new SieveResponseParser(data);
   
   if ((this.state == 0) && (parser.isString()))
   {
@@ -514,7 +515,7 @@ SieveSaslCramMd5Response.prototype.add
     return;
   }
     
-  throw 'Illegal State:'+this.state+' / '+data;
+  throw 'Illegal State:'+this.state+' / '+parser.getData();
 }
 
 SieveSaslCramMd5Response.prototype.getState
@@ -572,12 +573,10 @@ SieveSaslCramMd5Response.prototype.getResponseCode
     string                = quoted / literal
 **********************************************************/
 
-function SieveGetScriptResponse(scriptName,data)
+function SieveGetScriptResponse(scriptName,parser)
 {
   /** @private, @type {String} */ this.scriptName = scriptName;
   /** @private, @type {String} */ this.scriptBody = "";
-  
-  var parser = new SieveResponseParser(data);
   
   if (parser.isString())
   {

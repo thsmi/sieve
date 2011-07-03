@@ -83,7 +83,7 @@ SieveAbstractRequest.prototype.addErrorListener
 SieveAbstractRequest.prototype.addByeListener
     = function (listener)
 {
-  this.byeListener = listener;      
+  this.byeListener = listener;
 }
 
 SieveAbstractRequest.prototype.hasNextRequest
@@ -188,11 +188,11 @@ SieveGetScriptRequest.prototype.getNextRequest
   return "GETSCRIPT \""+this.script+"\"\r\n";
 }
 
-/** @param {String} data */
+/** @param {SieveResponseParser} parser */
 SieveGetScriptRequest.prototype.addResponse
-    = function (data)
+    = function (parser)
 {  
-  var response = new SieveGetScriptResponse(this.script,data); 
+  var response = new SieveGetScriptResponse(this.script,parser); 
 		
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onGetScriptResponse(response);
@@ -272,11 +272,11 @@ SievePutScriptRequest.prototype.addPutScriptListener
   this.responseListener = listener;
 } 
 
-/** @param {String} data */
+/** @param {SieveResponseParser} parser */
 SievePutScriptRequest.prototype.addResponse
-    = function (data)
+    = function (parser)
 {  
-  var response = new SieveSimpleResponse(data);
+  var response = new SieveSimpleResponse(parser);
 
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onPutScriptResponse(response);
@@ -338,11 +338,11 @@ SieveCheckScriptRequest.prototype.addCheckScriptListener
   this.responseListener = listener;
 } 
 
-/** @param {String} data */
+/** @param {SieveResponseParser} parser */
 SieveCheckScriptRequest.prototype.addResponse
-    = function (data)
+    = function (parser)
 {  
-  var response = new SieveSimpleResponse(data);
+  var response = new SieveSimpleResponse(parser);
 
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onCheckScriptResponse(response);
@@ -390,11 +390,11 @@ SieveSetActiveRequest.prototype.addSetActiveListener
   this.responseListener = listener;
 } 
    
-/** @param {String} data */
+/** @param {SieveResponseParser} parser */
 SieveSetActiveRequest.prototype.addResponse
-    = function (data)
+    = function (parser)
 {  
-  var response = new SieveSimpleResponse(data);
+  var response = new SieveSimpleResponse(parser);
 
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onSetActiveResponse(response);
@@ -428,12 +428,12 @@ SieveCapabilitiesRequest.prototype.addCapabilitiesListener
   this.responseListener = listener;
 } 
    
-/** @param {String} data */
+/** @param {SieveResponseParser} parser */
 SieveCapabilitiesRequest.prototype.addResponse
-    = function (data)
+    = function (parser)
 {
   
-  var response = new SieveCapabilitiesResponse(data);
+  var response = new SieveCapabilitiesResponse(parser);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onCapabilitiesResponse(response);			
@@ -468,11 +468,11 @@ SieveDeleteScriptRequest.prototype.addDeleteScriptListener
   this.responseListener = listener;
 } 
    
-/** @param {String} data */
+/** @param {SieveResponseParser} parser */
 SieveDeleteScriptRequest.prototype.addResponse
-    = function (data)
+    = function (parser)
 {        
-  var response = new SieveSimpleResponse(data);
+  var response = new SieveSimpleResponse(parser);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onDeleteScriptResponse(response);			
@@ -510,11 +510,11 @@ SieveNoopRequest.prototype.addNoopListener
   this.responseListener = listener;
 } 
    
-/** @param {String} data */
+/** @param {SieveResponseParser} parser */
 SieveNoopRequest.prototype.addResponse
-    = function (data)
+    = function (parser)
 {        
-  var response = new SieveSimpleResponse(data);
+  var response = new SieveSimpleResponse(parser);
       
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onNoopResponse(response);     
@@ -558,11 +558,11 @@ SieveRenameScriptRequest.prototype.addRenameScriptListener
   this.responseListener = listener;
 } 
    
-/** @param {String} data */
+/** @param {SieveResponseParser} parser */
 SieveRenameScriptRequest.prototype.addResponse
-    = function (data)
+    = function (parser)
 {        
-  var response = new SieveSimpleResponse(data);
+  var response = new SieveSimpleResponse(parser);
       
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onRenameScriptResponse(response);     
@@ -595,11 +595,11 @@ SieveListScriptRequest.prototype.addListScriptListener
   this.responseListener = listener;
 } 
 
-/** @param {String} data */
+/** @param {SieveResponseParser} parser */
 SieveListScriptRequest.prototype.addResponse 
-    = function (data)
+    = function (parser)
 {	
-  var response = new SieveListScriptResponse(data);
+  var response = new SieveListScriptResponse(parser);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onListScriptResponse(response);			
@@ -623,6 +623,8 @@ SieveStartTLSRequest.prototype.getNextRequest
     = function ()
 {
   return "STARTTLS\r\n";
+  
+  //
 }
 
 SieveStartTLSRequest.prototype.addStartTLSListener
@@ -631,11 +633,11 @@ SieveStartTLSRequest.prototype.addStartTLSListener
   this.responseListener = listener;
 } 
    
-/** @param {String} data */
+/** @param {SieveResponseParser} parser */
 SieveStartTLSRequest.prototype.addResponse 
-    = function (data)
+    = function (parser)
 {
-  var response = new SieveSimpleResponse(data);
+  var response = new SieveSimpleResponse(parser);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onStartTLSResponse(response);			
@@ -697,11 +699,11 @@ SieveLogoutRequest.prototype.addLogoutListener
   this.responseListener = listener;
 } 
    
-/** @param {String} data */
+/** @param {SieveResponseParser} parser */
 SieveLogoutRequest.prototype.addResponse 
-    = function (data)
+    = function (parser)
 {  
-  var response = new SieveSimpleResponse(data);
+  var response = new SieveSimpleResponse(parser);
 			
   // a "BYE" or "OK" is in this case a good answer...
   if (((response.getResponse() == 0) || (response.getResponse() == 1)))
@@ -751,24 +753,17 @@ function SieveInitRequest() {}
 SieveInitRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
 
 
-/** @return {String} */
-SieveInitRequest.prototype.getNextRequest
-    = function ()
-{
-  return "";
-}
-
 SieveInitRequest.prototype.addInitListener
     = function (listener)
 {
   this.responseListener = listener;
 } 
    
-/** @param {String} data */
+/** @param {SieveResponseParser} parser */
 SieveInitRequest.prototype.addResponse
-    = function (data)
+    = function (parser)
 {  
-  var response = new SieveCapabilitiesResponse(data);
+  var response = new SieveCapabilitiesResponse(parser);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onInitResponse(response);			
@@ -788,7 +783,7 @@ SieveInitRequest.prototype.addResponse
     CONSCTURCTOR        : SievePlainRequest(String username)
     DECLARED FUNCTIONS  : void addSaslPlainListener(...)
                           void addErrorListener(...)
-                          void addResponse(String data)                          
+                          void addResponse(parser)                          
                           String getNextRequest()
                           Boolean hasNextRequest()
                           void setPassword(String password)
@@ -858,9 +853,9 @@ SieveSaslPlainRequest.prototype.addSaslPlainListener
 } 
    
 SieveSaslPlainRequest.prototype.addResponse
-    = function (data)
+    = function (parser)
 {
-  var response = new SieveSimpleResponse(data);
+  var response = new SieveSimpleResponse(parser);
 			
   if ((response.getResponse() == 0) && (this.responseListener != null))
     this.responseListener.onSaslPlainResponse(response);			
@@ -879,7 +874,7 @@ SieveSaslPlainRequest.prototype.addResponse
     CONSCTURCTOR        : SieveLoginRequest(String username)
     DECLARED FUNCTIONS  : void addSaslLoginListener(...)
                           void addErrorListener(...)
-                          void addResponse(String data)                          
+                          void addResponse(String parser)                          
                           String getNextRequest()
                           Boolean hasNextRequest()
                           void setPassword(String password)
@@ -973,10 +968,10 @@ SieveSaslLoginRequest.prototype.getNextRequest
     case 1: 
       return '"'+btoa(this._username)+"\"\r\n";
     case 2:
-      return '"'+btoa(this._password)+"\"\r\n"; 
-    default : 
-      return ""; //it might be better to throw an Execption       
-  }  
+      return '"'+btoa(this._password)+"\"\r\n";       
+  }
+  
+  throw "Unkown state in sasl login";
 }
 
 /** @return {Boolean} */
@@ -995,11 +990,11 @@ SieveSaslLoginRequest.prototype.addSaslLoginListener
   this.responseListener = listener;
 } 
    
-/** @param {String} data */
+/** @param {SieveResponseParser} parser */
 SieveSaslLoginRequest.prototype.addResponse 
-    = function (data)
+    = function (parser)
 {
-  this.response.add(data);	
+  this.response.add(parser);	
 		
 	if (this.response.getState() != 4)
 	  return;
@@ -1036,10 +1031,10 @@ SieveSaslCramMd5Request.prototype.getNextRequest
       var challenge = atob(this.response.getChallenge());        
       var hmac = this.hmacMD5( challenge, this._password );
       
-      return "\"" + btoa( this._username + " " + hmac ) + "\"\r\n";
-    default : 
-      return ""; //it might be better to throw an Execption       
-  }  
+      return "\"" + btoa( this._username + " " + hmac ) + "\"\r\n";       
+  }
+  
+  throw "Illegal state in SaslCram"; 
 }
 
 SieveSaslCramMd5Request.prototype.hasNextRequest
@@ -1058,9 +1053,9 @@ SieveSaslCramMd5Request.prototype.addSaslCramMd5Listener
 } 
    
 SieveSaslCramMd5Request.prototype.addResponse 
-    = function (data)
+    = function (parser)
 {
-  this.response.add(data);	
+  this.response.add(parser);	
 		
 	if (this.response.getState() != 4)
 	  return;
@@ -1153,4 +1148,3 @@ SieveSaslCramMd5Request.prototype.byteArrayToHexString
  
   return str;    
 }
-

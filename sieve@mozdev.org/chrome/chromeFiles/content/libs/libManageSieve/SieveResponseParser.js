@@ -251,10 +251,15 @@ SieveResponseParser.prototype.startsWith
 
 SieveResponseParser.prototype.getByteArray
     = function ()
-{ 
+{
   return this.data.slice(this.pos, this.data.length);
 }
 
+/**
+ * Returns content of the response parser's buffer. 
+ * 
+ * @return {String} the buffers content
+ */
 SieveResponseParser.prototype.getData
     = function ()
 { 

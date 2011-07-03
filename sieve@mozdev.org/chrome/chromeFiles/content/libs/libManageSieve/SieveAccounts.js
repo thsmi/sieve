@@ -704,7 +704,7 @@ SieveAbstractHost.prototype.getPort
     type = gPref.getIntPref(this.prefURI+".port.type");
 
   if ((type == 2) && gPref.prefHasUserValue(this.prefURI+".port"))
-    return gPref.getCharPref(this.prefURI+".port");
+    return gPref.getIntPref(this.prefURI+".port");
     
   if (type == 1)
     return 2000;
@@ -732,7 +732,7 @@ SieveAbstractHost.prototype.setPort
   if (isNaN(port))
     port = 4190;
     
-  gPref.setCharPref(this.prefURI+".port",port);
+  gPref.setIntPref(this.prefURI+".port",port);
 }
 
 SieveAbstractHost.prototype.isTLS

@@ -264,5 +264,14 @@ SieveResponseParser.prototype.getData
     = function ()
 { 
   return StringFromBytes(this.data, this.pos, this.data.length);
-}    
+}
+
+SieveResponseParser.prototype.isEmpty
+    = function ()
+{
+  if (this.data.length >= this.pos)
+    return true;
+    
+  return false;
+}
     

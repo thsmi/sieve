@@ -414,6 +414,9 @@ SieveSaslLoginResponse.prototype.add
   if ((this.state == 0) && (parser.isString()))
   {
     // String should be 'Username:' or something similar
+    parser.extractString();
+    parser.extractLineBreak();
+
     this.state++;
     return;
   }
@@ -421,6 +424,9 @@ SieveSaslLoginResponse.prototype.add
   if ((this.state == 1) && (parser.isString()))
   {
     // String should be equivalten to 'Password:'
+    parser.extractString();
+    parser.extractLineBreak();    
+
     this.state++;
     return;
   }
@@ -502,6 +508,8 @@ SieveSaslCramMd5Response.prototype.add
   {
     // The challenge is contained within a string
     this.challenge = parser.extractString();
+    parser.extractLineBreak();
+    
     this.state++;
     
     return;

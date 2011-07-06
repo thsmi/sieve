@@ -377,6 +377,9 @@ Sieve.prototype.connect
   this.port = port;
   this.secure = secure;
   this.badCertHandler = badCertHandler;
+
+  if ((this.debug.level & (1 << 1)) || (this.debug.level & (1 << 0)))
+    this.debug.logger.logStringMessage("Connecting to "+this.host+":"+this.port+" ...");
     
   // If we know the proxy setting, we can do a shortcut...
   if (proxy)
@@ -483,16 +486,17 @@ Sieve.prototype.disconnect
 Sieve.prototype.onStopRequest 
     =  function(request, context, status)
 {
-  this.debug.logger.logStringMessage("Connection closed");
+  //this.debug.logger.logStringMessage("Connection closed");
   // this method is invoked anytime when the socket connection is closed
   // ... either by going to offlinemode or when the network cable is disconnected
-/*  if (this.debug.level & (1 << 2))
+  if (this.debug.level & (1 << 2))
     this.debug.logger.logStringMessage("Stop request received ...");
  
-  this.onWatchDogTimeout();
-           
-  if (this.socket != null)
-    this.disconnect();*/        
+  if (this.socket == null)
+    return;
+    
+  //this.onWatchDogTimeout();
+  this.disconnect();
 }
 
 Sieve.prototype.onStartRequest 
@@ -603,8 +607,7 @@ Sieve.prototype.onDataAvailable
   // is a request handler waiting?
   if (this.requests.length == 0)
     return;
-    
-  var parser = new SieveResponseParser(this.data);
+
 
   // first clear the timeout, parsing starts...
   this._onStop();
@@ -612,19 +615,30 @@ Sieve.prototype.onDataAvailable
   // As we are callback driven, we need to lock the event queue. Otherwise our
   // callbacks could manipulate the event queue while we are working on it.
   var requests = this._lockMessageQueue();
-  
+
   // greedy request take might have an response but do not have to have one. 
   // They munch what they get. If there's a request they are fine,
   // if there's no matching request it's also ok.
   var idx = -1;
   
   while (idx+1 < requests.length)
-  {    
+  {
     idx++
-    
+    var parser = new SieveResponseParser(this.data);
+          
     try
-    {      
+    {
+      
       requests[idx].addResponse(parser);
+      
+      // We do some cleanup as we don't need the parsed data anymore...
+      this.data = parser.getByteArray();
+      
+      // parsing was successfull, so drop every previous request...
+      // ... keep in mid previous greedy request continue on exceptions.
+      requests = requests.slice(idx);
+      
+      // we started to parse the request, so it can't be greedy anymore.
     }
     catch (ex)
     { 
@@ -651,27 +665,20 @@ Sieve.prototype.onDataAvailable
       return;
     }
     
-    // clear event queue...
-    if (idx > 0)
-      requests = requests.slice(idx);
-    
-    // in case the request is completed
+    // Request is completed...
     if (!requests[0].hasNextRequest())
     {
-      // ... remove it from the message queue.
+      // so remove it from the event queue.
       var request = requests.shift();
       
-      //... it it's greedy keep parsing, the next request might be non greedy
+      // ... if it was greedy, we munched an unexpected packet...
+      // ... so there is still a valid request dangeling around.
       if (request.isGreedy)
-      {
-        idx = -1;      
-        continue;        
-      }
+        break;
     }
-   
-    // As we reached this point the response was parsable and has been processed.
-    // We do some cleanup as we don't need the parsed data anymore...    
-    this.data = parser.getByteArray();
+      
+    if (!parser.isEmpty())
+      continue;      
      
     this._unlockMessageQueue(requests);
      
@@ -681,12 +688,14 @@ Sieve.prototype.onDataAvailable
     return;
   }
 
-  // we endup here if all responses were greedy and did not match...
+  
+  // we endup here if all responses were greedy and did not match.
+  // Or if a greedy response ate an unexpected response...
   // ... should never happen
   this._unlockMessageQueue(requests);
      
   if (this.debug.level & (1 << 2))
-    this.debug.logger.logStringMessage("No Matching Request in Event Queue");  
+    this.debug.logger.logStringMessage("Skipping Event Queue");  
 }
 
 Sieve.prototype._sendRequest

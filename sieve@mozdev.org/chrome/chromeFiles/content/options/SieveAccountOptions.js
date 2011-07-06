@@ -23,6 +23,9 @@ function onServerSheetLoad(account)
   // get the custom Host settings
   document.getElementById('txtHostname').value
     = account.getHost(1).getHostname();
+    
+  document.getElementById('lblHostname').value
+    = account.getHost(0).getHostname();
 
   var rbPort = document.getElementById('rgPort');
 
@@ -287,6 +290,14 @@ function onDebugSheetLoad(account)
       = account.getSettings().hasDebugFlag(4);  
 }
 
+function onDebugFlagCommand(sender,bit)
+{
+  if (gAccount == null)
+    return;
+  
+  gAccount.getSettings().setDebugFlag(bit,sender.checked);
+}
+
 
 
 function onDialogLoad()
@@ -305,9 +316,6 @@ function onDialogAccept()
   return true;
   // Do nothing since there should be only valid entries...
 }
-
-
-
 
 // Function for the general Settings...
 function onKeepAliveCommand(sender)
@@ -360,13 +368,7 @@ function onCompileChange(sender)
   gAccount.getSettings().setCompileDelay(sender.value)    
 }
 
-function onDebugFlagCommand(sender,bit)
-{
-  if (gAccount == null)
-    return;
-  
-  account.getSettings().setDebugFlag(bit,sender.checked);
-}
+
 
 function onAuthMechanismCommand(sender)
 {

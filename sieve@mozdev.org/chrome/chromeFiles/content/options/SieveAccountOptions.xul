@@ -47,7 +47,10 @@
             Thus the Sieve server name is usually same as your IMAP server name.
           </description>    
           <radiogroup id="rgHost" onselect="onHostSelect(this.selectedIndex);">
-            <radio id="rbImapHost" label="IMAP Server: imap.1und1.com"/>
+            <box align="center">
+              <radio id="rbImapHost" label="IMAP Server:" />
+              <label id="lblHostname" />
+            </box>
             <radio id="rbCustomHost" label="Other Server:"/>
             <box class="indent" align="center">
               <textbox id="txtHostname" size="25" onchange="onHostnameChange(this.value)"/>
@@ -63,7 +66,7 @@
         </description>
         <description> 
           Older server implementations still use port 2000, while newer standard 
-          conform server can only be accesse via port 4190.
+          conform server can only be accessed via port 4190.
         </description>        
           <radiogroup id="rgPort" onselect="onPortSelect(this.selectedIndex);">
             <radio id="rbPort4190" label="4190 (Default)" />

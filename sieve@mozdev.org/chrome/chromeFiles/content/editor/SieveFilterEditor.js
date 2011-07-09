@@ -25,7 +25,17 @@ var gPrintSettings = null;
 
 var gEditorStatus =
 {
+  insert: function (text)
+  {
+    var params = Cc["@mozilla.org/embedcomp/command-params;1"].createInstance(Ci.nsICommandParams);
+    params.setStringValue("state_data",text);  
   
+    document.getElementById("sivContentEditor").controllers
+        .getControllerForCommand("cmd_insertText")
+        .QueryInterface(Ci.nsICommandController)
+        .doCommandWithParams("cmd_insertText",params);  
+  },
+
   selectionStart    : -1,
   selectionEnd      : -1,
   selectionChanged  : false,
@@ -57,10 +67,14 @@ var event =
    */
   onScriptLoaded: function(script)
   {
+    
     gEditorStatus.hasContent = true;
     sivSetStatus(0);
+    document.getElementById("sivContentEditor").editor.enableUndo(false);
     document.getElementById("sivContentEditor").value = script;
     document.getElementById("sivContentEditor").setSelectionRange(0, 0);
+    document.getElementById("sivContentEditor").editor.enableUndo(true);
+    
 	  UpdateCursorPos();
     UpdateLines();
   },
@@ -226,8 +240,27 @@ function onInput()
   UpdateLinesLazy();
 }
 
+function onEditorKeyDown(event)
+{
+  // we need this bypass the default onKeyDown only for the tab key...
+  if (event.keyCode != 9)
+    return;
+ 
+  if (event.shiftKey || event.ctrlKey || event.altKey || event.metaKey)
+    return;
+    
+  gEditorStatus.insert(String.fromCharCode(9));
+           
+  event.preventDefault();
+  
+  onInput();
+  //event.stopPropagation();
+}
+
 function onLoad()
 { 
+        
+   
   // checkbox buttons are buggy in Gecko 1.8, this has been fixed in ...
   // ...Gecko 1.9 (Thunderbird 3).
   // We implement the workaround mentioned in Bug 382457.
@@ -277,7 +310,9 @@ function onLoad()
       
   document.getElementById("sivContentEditor")
       .addEventListener("keypress",function() {onUpdateCursorPos(50);},false);
-      
+
+  document.getElementById("sivContentEditor")
+        .addEventListener("keydown", function(ev) { onEditorKeyDown(ev)},true);
   // hack to prevent links to be opened in the default browser window...
   document.getElementById("ifSideBar").
     addEventListener(

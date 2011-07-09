@@ -15,14 +15,39 @@
 <!-- Options Dialog -->
 <!ENTITY options.title "Sieve Einstellungen">
 
+<!ENTITY options.tab.server "Server">
+<!ENTITY options.tab.security "Security">
 <!ENTITY options.tab.general "Allgemein">
 <!ENTITY options.tab.proxy "Proxy">
-<!ENTITY options.tab.compatibility  "Kompatibilität">
-<!ENTITY options.tab.compatibility.warning "Diese Einstellungen sind für fortgeschrittene Benutzer gedacht...">
 <!ENTITY options.tab.advanced "Erweitert">
 <!ENTITY options.tab.advanced.warning "Diese Einstellungen sind für fortgeschrittene Benutzer gedacht...">
 <!ENTITY options.tab.debug "Debug">
 <!ENTITY options.tab.credits "Danksagung">
+
+<!ENTITY options.host.caption "Server Name">
+<!ENTITY options.host.description
+"Sieve ist üblicherweise direkt auf dem Mailserver installiert, daher ist
+meist der Sieve Servername mit dem des IMAP Servers identisch.">
+<!ENTITY options.host.imap "IMAP Server:">
+<!ENTITY options.host.custom "Anderer Server:">
+
+<!ENTITY options.port.caption "Server Port">
+<!ENTITY options.port.description
+"Seitdem Sieve in einen offiziellen RFC Standard übergegangen ist, hat sich der Port geändert.">
+<!ENTITY options.port.description2
+"Dementsprechend akzeptieren ältere Server akzeptieren nur Verbindungen
+über den Port 2000 während neuere Versionen den Port 4190 bevorzugen.">
+<!ENTITY options.port.custom "Anderer:">
+
+<!ENTITY options.security.caption "Security">
+<!ENTITY options.security.description
+"Transport Layer Security (TLS) verschlüsselt die Verbindung zum Manage Sieve server,
+hierdruch wird das Abhören der Zugangdaten sowie Manipulationen effektiv verhindert.">
+<!ENTITY options.security.description2 
+"ManageSieve überträgt normalerweise Passwörter unverschlüsselt. Daher 
+sollten Sie TLS immer aktivieren.">
+<!ENTITY options.security.tls "TLS, wenn möglich">
+<!ENTITY options.security.tls.key "t">
 
 <!ENTITY options.login "Authentifizierung">
 <!ENTITY options.login.key "A">
@@ -33,21 +58,25 @@
 <!ENTITY options.login.username.key "u">
 <!ENTITY options.login.show "Passwörter anzeigen...">
 
-<!ENTITY options.host "IMAP Einstellungen ignorieren">
-<!ENTITY options.host.key "I">
-<!ENTITY options.host.hostname "Hostname">
-<!ENTITY options.host.hostname.key "h">
-<!ENTITY options.host.port "Port">
-<!ENTITY options.host.port.key "o">
-<!ENTITY options.host.port.default "Standard: 2000 oder 4190">
-<!ENTITY options.host.tls.key "t">
-<!ENTITY options.host.tls "TLS, wenn möglich">
-
-<!ENTITY options.misc "Sonstige Einstellungen">
-<!ENTITY options.misc.keepalive "'Keep alive' Paket mindestens alle">
+<!ENTITY options.misc "Miscellaneous Settings">
+<!ENTITY options.misc.keepalive "Enable keepalives">
 <!ENTITY options.misc.keepalive.key "k">
-<!ENTITY options.misc.compile "Kompiliere auf dem Server alle">
-<!ENTITY options.misc.compile.key "p">
+<!ENTITY options.misc.keepalive2 "Send every">
+<!ENTITY options.misc.keepalive.description 
+"If the client was idle for too long (usually 30 minutes), the
+server assumes the client is disconnected and hangs up the connection.">
+<!ENTITY options.misc.keepalive.description2
+"A keepalive request indecates the connection is still active and
+should be preserved.">
+
+<!ENTITY options.misc.compile.caption "Syntax check">
+<!ENTITY options.misc.compile.description
+"While editing Scripts, they can be checked for validity. The syntax 
+check is performed by the server. In oder to keep network traffic 
+low, syntax check requests are grouped.">
+<!ENTITY options.misc.compile "Check Scripts while typing">
+<!ENTITY options.misc.compile.key "c">
+<!ENTITY options.misc.compile2 "Validate at least every"> 
 
 <!ENTITY options.debug.warning 
 "Bitte beachten Sie, dass Debugmeldungen von SASL Login und SASL Plain Ihr 
@@ -100,25 +129,8 @@ daher meist nur Administratoren zur Verfügung.">
 <!ENTITY options.account.filters "Filters bearbeiten...">
 <!ENTITY options.account.settings "Einstellungen ändern...">
 
-<!ENTITY options.cyrus "Cyrus TLS Fehler">
-<!ENTITY options.cyrus.rfc "Einige Cyrus Server implementieren den TLS Handshake fehlerhaft">
-<!ENTITY options.cyrus.workaround 
-"Daher verwendet diese Erweiterung einen Mechanismus um diesen Fehler zu umgehen. 
-Als erstes versucht die Erweiterung einen RFC konformen TLS Handshake auszuhandel.
-Wenn dies nicht innerhalb einer angemessenen Zeit erfolgreich war, nimmt die Erweiterung
-an, dass es sich um einen fehlerhaften Cyrus Server handelt.">
-<!ENTITY options.cyrus.fails
-"Bei einem langsam antwortendem Mailserver (z.B. durch eine hohen Last oder 
-eine langsamen Verbindung) versagt dieser Mechanismus. Spielen Sie mit diesen
-Einstellungen falls die Erweiterung während des TLS handshakes abstürzt.">
-<!ENTITY options.cyrus.handshake.auto "Automatisch (Standard)">
-<!ENTITY options.cyrus.handshake.timeout "Fallback nach">
-<!ENTITY options.cyrus.handshake.rfc "RFC konformer handshake">
-<!ENTITY options.cyrus.handshake.cyrus "Cyrus handshake">
-
 <!-- Credits -->
 <!ENTITY options.credits "Vielen Dank an alle die dieses Projekt unterstützen:">
-
 
 <!-- Proxy Settings -->
 <!ENTITY options.proxy "Proxy Einstellungen">

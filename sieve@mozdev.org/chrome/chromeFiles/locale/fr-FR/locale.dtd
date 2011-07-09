@@ -15,14 +15,40 @@
 <!-- Options Dialog -->
 <!ENTITY options.title "Paramètres Sieve">
 
+<!ENTITY options.tab.server "Server">
+<!ENTITY options.tab.security "Security">
 <!ENTITY options.tab.general "Général">
 <!ENTITY options.tab.proxy "Proxy">
-<!ENTITY options.tab.compatibility "Compatibilité">
-<!ENTITY options.tab.compatibility.warning "Ces paramètres sont destinés aux utilisateurs avancés...">
 <!ENTITY options.tab.advanced "Avancée">
 <!ENTITY options.tab.advanced.warning "Ces paramètres sont destinés aux utilisateurs avancés...">
 <!ENTITY options.tab.debug "Debuggage">
 <!ENTITY options.tab.credits "Crédits">
+
+<!ENTITY options.host.caption "Server Name">
+<!ENTITY options.host.description
+"Most Sieve implementations run directly on a mail server. 
+Thus the Sieve server name is usually same as your IMAP server name.">
+<!ENTITY options.host.imap "IMAP Server:">
+<!ENTITY options.host.custom "Other Server:">
+
+<!ENTITY options.port.caption "Server Port">
+<!ENTITY options.port.description
+"The server port changed, when ManageSieve turned into a full RFC Standard">
+<!ENTITY options.port.description2
+"Older server implementations still use port 2000, while newer standard 
+conform server can only be accessed via port 4190.">
+<!ENTITY options.port.custom "Other:">
+
+<!ENTITY options.security.caption "Security">
+<!ENTITY options.security.description
+"Transport Layer Security (TLS) secures the connection to the manage sieve server.
+It cyphers all data and is designed to prevent eavesdropping and tampering.">
+<!ENTITY options.security.description2 
+"ManageSieve usually transfers passwords uncrypted. So unless you have a realy 
+good reason (e.g. Debugging), you should not turn TLS off.">
+<!ENTITY options.security.tls "use TLS, if available">
+<!ENTITY options.security.tls.key "t">
+
 
 <!ENTITY options.login "Authentification">
 <!ENTITY options.login.key "A">

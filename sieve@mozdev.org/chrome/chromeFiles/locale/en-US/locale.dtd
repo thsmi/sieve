@@ -12,14 +12,39 @@
 <!-- Options Dialog -->
 <!ENTITY options.title "Sieve Options">
 
+<!ENTITY options.tab.server "Server">
+<!ENTITY options.tab.security "Security">
 <!ENTITY options.tab.general "General">
 <!ENTITY options.tab.proxy "Proxy">
-<!ENTITY options.tab.compatibility  "Compatibility">
-<!ENTITY options.tab.compatibility.warning "These settings are intended for advanced users...">
 <!ENTITY options.tab.advanced "Advanced">
 <!ENTITY options.tab.advanced.warning "These settings are intended for advanced users...">
 <!ENTITY options.tab.debug "Debug">
 <!ENTITY options.tab.credits "Credits">
+
+<!ENTITY options.host.caption "Server Name">
+<!ENTITY options.host.description
+"Most Sieve implementations run directly on a mail server. 
+Thus the Sieve server name is usually same as your IMAP server name.">
+<!ENTITY options.host.imap "IMAP Server:">
+<!ENTITY options.host.custom "Other Server:">
+
+<!ENTITY options.port.caption "Server Port">
+<!ENTITY options.port.description
+"The server port changed, when ManageSieve turned into a full RFC Standard">
+<!ENTITY options.port.description2
+"Older server implementations still use port 2000, while newer standard 
+conform server can only be accessed via port 4190.">
+<!ENTITY options.port.custom "Other:">
+
+<!ENTITY options.security.caption "Security">
+<!ENTITY options.security.description
+"Transport Layer Security (TLS) secures the connection to the manage sieve server.
+It cyphers all data and is designed to prevent eavesdropping and tampering.">
+<!ENTITY options.security.description2 
+"ManageSieve usually transfers passwords uncrypted. So unless you have a realy 
+good reason (e.g. Debugging), you should not turn TLS off.">
+<!ENTITY options.security.tls "use TLS, if available">
+<!ENTITY options.security.tls.key "t">
 
 <!ENTITY options.login "Authentication">
 <!ENTITY options.login.key "A">
@@ -30,21 +55,25 @@
 <!ENTITY options.login.username.key "u">
 <!ENTITY options.login.show "Show Saved Passwords...">
 
-<!ENTITY options.host "ignore IMAP Settings">
-<!ENTITY options.host.key "I">
-<!ENTITY options.host.hostname "Host">
-<!ENTITY options.host.hostname.key "h">
-<!ENTITY options.host.port "Port">
-<!ENTITY options.host.port.key "o">
-<!ENTITY options.host.port.default "Default: 2000 or 4190">
-<!ENTITY options.host.tls.key "t">
-<!ENTITY options.host.tls "use TLS, if available">
-
 <!ENTITY options.misc "Miscellaneous Settings">
-<!ENTITY options.misc.keepalive "Send 'keep alive' request every">
+<!ENTITY options.misc.keepalive "Enable keepalives">
 <!ENTITY options.misc.keepalive.key "k">
-<!ENTITY options.misc.compile "Compile on server every">
+<!ENTITY options.misc.keepalive2 "Send every">
+<!ENTITY options.misc.keepalive.description 
+"If the client was idle for too long (usually 30 minutes), the
+server assumes the client is disconnected and hangs up the connection.">
+<!ENTITY options.misc.keepalive.description2
+"A keepalive request indecates the connection is still active and
+should be preserved.">
+
+<!ENTITY options.misc.compile.caption "Syntax check">
+<!ENTITY options.misc.compile.description
+"While editing Scripts, they can be checked for validity. The syntax 
+check is performed by the server. In oder to keep network traffic 
+low, syntax check requests are grouped.">
+<!ENTITY options.misc.compile "Check Scripts while typing">
 <!ENTITY options.misc.compile.key "c">
+<!ENTITY options.misc.compile2 "Validate at least every"> 
 
 <!ENTITY options.debug.warning 
 "Keep in mind that neither SASL Login nor SASL Plain cypher your password, 
@@ -74,7 +103,8 @@ force a specific Authentication Mechanism." >
 <!ENTITY options.proxyauth.desc 
 "Proxy authorization, allows an authenticated user to act on behalf of another user.
 Usually servers are configured, that this feature is only available for administrators.">
-<!ENTITY options.proxyauth.force "When using proxy authorization you should force &quot;SASL PLAIN&quot; Authentication.">
+<!ENTITY options.proxyauth.force
+"When using proxy authorization you should force &quot;SASL PLAIN&quot; Authentication.">
 <!ENTITY options.proxyauth.none "No Authorization">
 <!ENTITY options.proxyauth.default "Sieve Username">
 <!ENTITY options.proxyauth.prompt "Prompt for Authorization">
@@ -93,21 +123,6 @@ Usually servers are configured, that this feature is only available for administ
 <!ENTITY options.account.activate.no "No, this account does not support Sieve">
 <!ENTITY options.account.filters "Edit Filters...">
 <!ENTITY options.account.settings "Change Settings...">
-
-<!ENTITY options.cyrus "Cyrus TLS Bug">
-<!ENTITY options.cyrus.rfc "Some Cyrus releases do not implement the TLS handshake as suggested in the RFC Draft.">
-<!ENTITY options.cyrus.workaround 
-"As a work around this extension tries first a RFC conform handshake. 
-In case the server does not reply within a reasonable time, it 
-automagically falls back to a cyrus style handshake.">
-<!ENTITY options.cyrus.fails
-"This magic fails with slow connections or servers suffering from high 
-load. If you encounter a 'hang' or 'crash' during TLS handshake, play 
-with these setting!">
-<!ENTITY options.cyrus.handshake.auto "Autodetect (default)">
-<!ENTITY options.cyrus.handshake.timeout "Automatic fallback after">
-<!ENTITY options.cyrus.handshake.rfc "Strict RFC style handshake">
-<!ENTITY options.cyrus.handshake.cyrus "Cyrus style handshake">
 
 <!-- Credits -->
 <!ENTITY options.credits "Many thanks to all contributors:">
@@ -157,7 +172,6 @@ use '127.0.0.1' instead.">
 <!ENTITY list.rename "Rename">
 <!ENTITY list.activate "Activate">
 <!ENTITY list.settings "Settings...">
-
 
 <!ENTITY list.details.capability "Server Sieve Capabilities">
 <!ENTITY list.details.capability.implementation "Server Version:">
@@ -219,4 +233,3 @@ this server doesn't use trusted identification.">
 <!ENTITY edit.searchreplace.backward "Backward">
 <!ENTITY edit.searchreplace.find "Find">
 <!ENTITY edit.searchreplace.replace "Replace">
-

@@ -7,9 +7,12 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cr = Components.results;
+if (typeof(Cc) == "undefined")
+  { var Cc = Components.classes; }
+if (typeof(Ci) == "undefined")
+  { var Ci = Components.interfaces; }
+if (typeof(Cr) == "undefined")
+  { var Cr = Components.results; }  
 
 Cc["@mozilla.org/moz/jssubscript-loader;1"]
     .getService(Ci.mozIJSSubScriptLoader) 
@@ -310,7 +313,7 @@ Sieve.prototype.addRequest
   if (this.listener)
     request.addByeListener(this.listener);
     
-  // TODO: we should realy store this internally, instead ot tagging objects
+  // TODO: we should realy store this internally, instead of tagging objects
   if (greedy)
     request.isGreedy = true;
      
@@ -492,11 +495,19 @@ Sieve.prototype.onStopRequest
   if (this.debug.level & (1 << 2))
     this.debug.logger.logStringMessage("Stop request received ...");
  
+  // we can ignore this if we are already disconnected.
   if (this.socket == null)
     return;
     
-  //this.onWatchDogTimeout();
+  // Stop timeout timer, the connection is gone, so... 
+  // ... it won't help us anymore...
   this.disconnect();
+
+  // if the request queue is not empty,
+  // we should call directly on timeout..
+
+  if ((this.listener) && (this.listener.onDisconnect))
+    this.listener.onDisconnect();
 }
 
 Sieve.prototype.onStartRequest 

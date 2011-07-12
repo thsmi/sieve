@@ -36,13 +36,13 @@ Thus the Sieve server name is usually same as your IMAP server name.">
 conform server can only be accessed via port 4190.">
 <!ENTITY options.port.custom "Other:">
 
-<!ENTITY options.security.caption "Security">
+<!ENTITY options.security.caption "Connection Security">
 <!ENTITY options.security.description
 "Transport Layer Security (TLS) secures the connection to the manage sieve server.
 It cyphers all data and is designed to prevent eavesdropping and tampering.">
 <!ENTITY options.security.description2 
 "ManageSieve usually transfers passwords uncrypted. So unless you have a realy 
-good reason (e.g. Debugging), you should not turn TLS off.">
+good reason (e.g. Debugging), you should alway force TLS.">
 <!ENTITY options.security.tls "use TLS, if available">
 <!ENTITY options.security.tls.key "t">
 

@@ -73,6 +73,7 @@
 	-moz-appearance: none;	
 }
 
+
 #sivExplorerWait
 {
   background: white;
@@ -98,6 +99,35 @@
 {
 	white-space: pre;
 }*/
+
+
+#sivAutoConfig 
+{
+  max-width: 430px;
+  background-color: white;
+  border: 1px solid ThreeDShadow;
+  padding: 20px;
+   
+  -moz-border-radius: 5px;  
+}
+
+#sivAutoConfigInfo 
+{
+  padding-left: 40px;
+  background: url(chrome://sieve/content/images/syntax-ok.png) no-repeat 0px 0px;
+}
+                    
+#sivAutoConfigWait
+{
+  padding-left: 40px;
+  background: url(chrome://sieve/content/images/load.gif) no-repeat 0px 0px;
+}
+
+#sivAutoConfigError
+{
+  padding-left: 40px;
+  background: url(chrome://sieve/content/images/syntax-warning.png) no-repeat 0px 0px;
+}
                     
 .sivExplorerWarning
 {

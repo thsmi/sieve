@@ -59,7 +59,7 @@ function SieveSession(accountId,sid)
   this.debug.logger.logStringMessage = function(msg) {
     Cc["@mozilla.org/embedcomp/prompt-service;1"]
       .getService(Components.interfaces.nsIPromptService)
-      .alert(null, "Alert", msg);    
+      .alert(null, "Alert", msg);
   }*/
   
   this.debug.logger = {}
@@ -73,9 +73,9 @@ function SieveSession(accountId,sid)
 }
 
 SieveSession.prototype = 
-{  
+{
   onIdle: function ()
-  {  
+  {
     // as we send a keep alive request, we don't care
     // about the response...
     var request = null;
@@ -84,28 +84,33 @@ SieveSession.prototype =
       request = new SieveNoopRequest();
     else
       request = new SieveCapabilitiesRequest();
-  
-    this.sieve.addRequest(request);      
+    
+    this.sieve.addRequest(request);
   },
 
   onInitResponse: function(response)
-  {    
+  {
     // establish a secure connection if TLS ist enabled and if the Server ...
     // ... is capable of handling TLS, otherwise simply skip it and ...
     // ... use an insecure connection
-      
-    if (this.account.getHost().isTLS() && response.getTLS())
-    {
-      var request = new SieveStartTLSRequest();
-      request.addStartTLSListener(this);
-      request.addErrorListener(this);
-      
-      this.sieve.addRequest(request);
     
+    if (!this.account.getHost().isTLSEnabled())
+    {
+      this.onAuthenticate(response);
       return;
     }
     
-    this.onAuthenticate(response);
+    if (!response.getTLS() && !this.account.getHost().isTLSForced())
+    {
+      this.onAuthenticate(response);
+      return;
+    }
+    
+    var request = new SieveStartTLSRequest();
+    request.addStartTLSListener(this);
+    request.addErrorListener(this);
+    
+    this.sieve.addRequest(request);
   },
   
   onAuthenticate: function(response)
@@ -358,7 +363,7 @@ SieveSession.prototype =
       
     this.sieve.connect(
         hostname,port,
-        this.account.getHost().isTLS(),
+        this.account.getHost().isTLSEnabled(),
         this,
         this.account.getProxy().getProxyInfo());    
   },

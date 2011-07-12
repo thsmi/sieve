@@ -38,7 +38,7 @@ function UpdatePage()
   document.getElementById('txtPort').value
     = gSieveAccount.getHost().getPort();
   document.getElementById('txtTLS').value
-    = gSieveAccount.getHost().isTLS();
+    = gSieveAccount.getHost().isTLSEnabled();
    
   document.getElementById('txtAuth').value
     = gSieveAccount.getLogin().getDescription();

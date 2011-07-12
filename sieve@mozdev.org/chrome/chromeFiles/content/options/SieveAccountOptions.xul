@@ -24,8 +24,20 @@
         persist="screenX screenY"
         style="width: 48em; height: 27em;"
         title="&options.title;">
+    
+  <script type="application/javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveRequest.js" />
+  <script type="application/javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveResponseCodes.js" />                
+  <script type="application/javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveResponse.js" />
+  <script type="application/javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js" />
+  <script type="application/javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveAutoConfig.js" />          
 
   <script type="application/javascript" src="chrome://sieve/content/options/SieveAccountOptions.js"/>
+  
   <tabbox  flex="1">
   <tabs >
     <tab label="&options.tab.server;" />
@@ -67,6 +79,24 @@
               <radio id="rbPortCustom" label="&options.port.custom;"/>
               <textbox id="txtPort" size="5" onchange="onPortChange(this.value)"/>
             </box>
+            <hbox align="right">
+              <deck id="dkAutoSelect">
+                <hbox align="right">
+                  <button label="Auto Select Port" oncommand="onPortAutoSelect()" />
+                </hbox>
+                <hbox align="center">
+                  <image src="chrome://sieve/content/images/active2.gif" />
+                  <label value="Selecting Port, please wait..." />
+                </hbox>
+                <hbox align="center">
+                  <label value="Sieve detected on Port " />
+                  <label id="lblAutoSelectPort" value="" />
+                </hbox>
+                <hbox align="center" pack="center">
+                  <label value="Selecting Port failed..." />
+                </hbox>                
+              </deck>    
+            </hbox>                           
           </radiogroup>
         </groupbox>
         </vbox>
@@ -76,9 +106,11 @@
         <caption label="&options.security.caption;" />
         <description>&options.security.description;</description>
         <description>&options.security.description2;</description>
-        <checkbox id="cbxTLS" oncommand="onTLSCommand(this.checked)" 
-                  label="&options.security.tls;" 
-                  accesskey="&options.security.tls.key;" />
+        <radiogroup id="rgTLS" onselect="onTLSSelect(this.selectedIndex);">
+          <radio label="No TLS" />
+          <radio label="TLS, when available" />
+          <radio label="Force TLS" />
+        </radiogroup>
       </groupbox>
         
       <!-- Server Authentication -->

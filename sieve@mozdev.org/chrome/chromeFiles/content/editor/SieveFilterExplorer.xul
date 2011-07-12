@@ -42,6 +42,9 @@
           src="chrome://sieve/content/libs/libManageSieve/SieveResponse.js"/>
           
   <script type="application/javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveAutoConfig.js" />          
+          
+  <script type="application/javascript" 
           src="chrome://sieve/content/SieveOverlay.js" />
   <script type="application/javascript" 
           src="chrome://sieve/content/editor/SieveFiltersTreeView.js"/>          
@@ -83,8 +86,8 @@
               
               <vbox id="sivExplorerWait" hidden="true" align="center" pack="center" flex="1" >
                   <image pack="center" src="chrome://sieve/content/images/load.gif"/>
-                  <spacer/> 
-                  <description id="sivExplorerWaitMsg" pack="center">          
+                  <spacer/>
+                  <description id="sivExplorerWaitMsg" pack="center">
                   </description>
               </vbox>
               
@@ -122,24 +125,74 @@
               </box>
 
               <!-- Error Message: Account not configured -->
-              <box id="sivExplorerDisabled" align="center" pack="center" flex="1" > 
-                <hbox align="center" class="sivWarning">
-                  <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
-                  <vbox>
-                     <vbox id="sivExplorerWarningMsg" pack="center">
-                       <description>
-                         This account is not configured for ManageSieve...
-                       </description>
-                       <description>
-                         Click on "Open Configuration" or goto Goto 'Tools -> Sieve Settings' to activate this account
-                       </description>
-                     </vbox>
-                     <hbox align="right">
-                       <button label="Open Configuration" oncommand="onSettingsClick();" />
-                     </hbox>
-                    </vbox>
-                </hbox>
-              </box>
+              <vbox id="sivExplorerDisabled" align="center" pack="center" flex="1">
+                <box>
+                <deck id="sivAutoConfig" selectedIndex="0">
+                  
+                  <!-- Welcome -->
+                  <vbox id="sivAutoConfigInfo">
+                    <label style="font-weight:bold">Welcome!</label>
+                    <description>
+This account is not Configured for manage sieve. 
+                    </description>
+                    <description>
+Click on "continue" to detect the configuration automatically.
+Or choose "Advanced" to configure the account manually.                      
+                    </description>
+                    <separator flex="1"/>
+                    <hbox align="right">
+                      <button label="Advanced" 
+                              oncommand="onSettingsClick();" />                      
+                      <button label="Continue" 
+                              oncommand="onAutoConfigRunClick();" />
+                    </hbox>
+                  </vbox>
+                  
+                  <!-- Detecting -->
+                  <vbox id="sivAutoConfigWait">
+                    <label style="font-weight:bold">Autodetecting Configuration</label>
+                    <label>Might take some minutes to complete...</label>
+                    <separator flex="1"/>
+                    <hbox align="right">
+                      <button label="Cancel" 
+                              oncommand="onAutoConfigCancelClick();" />
+                    </hbox>
+                  </vbox>
+                  
+                  <!-- Success -->
+                  <vbox id="sivAutoConfigInfo">
+                    <label style="font-weight:bold">Congratulations!</label>
+                    <description>
+Your account is now configured and ready to use...
+                    </description>
+                    <separator flex="1"/>
+                    <hbox align="right"  >
+                      <button label="Advanced" 
+                              oncommand="onSettingsClick();" />
+                      <button label="Continue"
+                              oncommand="onAutoConfigFinishedClick();" />
+                    </hbox>
+                  </vbox>                             
+                  
+                  <!-- Error -->
+                  <vbox id="sivAutoConfigError">
+                    <label style="font-weight:bold">Sorry</label>
+                    <description>
+It seems your mail server does not support manage sieve or requires
+a special configuration. Please contact your Mail provider or try
+to do a manual configuration.
+                    </description>
+                    <separator/>
+                    <hbox align="right">
+                      <button label="Re-test" 
+                              oncommand="onAutoConfigRunClick();" />
+                      <button label="Manual Configuration"
+                              oncommand="onSettingsClick();" />
+                    </hbox>                                                            
+                  </vbox>                                    
+                </deck>
+                </box>
+              </vbox>
 
               <!--  Error Message: Thunderbird in offline mode-->
               <box id="sivExplorerOffline" hidden="true" align="center" pack="center" flex="1">
@@ -155,7 +208,7 @@
                   </vbox> 
                 </hbox>
               </box>
-
+              
             </tree>
             <vbox>          
               <button id="btnServerDetails" oncommand="onServerDetails();" flex="1">

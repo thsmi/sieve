@@ -735,19 +735,32 @@ SieveAbstractHost.prototype.setPort
   gPref.setIntPref(this.prefURI+".port",port);
 }
 
-SieveAbstractHost.prototype.isTLS
+SieveAbstractHost.prototype.isTLSForced
     = function ()
 {
+  if (!this.isTLSEnabled())
+    return false;
+    
   if (gPref.prefHasUserValue(this.prefURI+".TLS"))
     return gPref.getBoolPref(this.prefURI+".TLS");
-    
-  return true;
+
+  return true;      
+}
+
+SieveAbstractHost.prototype.isTLSEnabled
+    = function ()
+{
+   if (gPref.prefHasUserValue(this.prefURI+".TLS.forced"))
+    return gPref.getBoolPref(this.prefURI+".TLS.forced");
+
+   return true;
 }
 
 SieveAbstractHost.prototype.setTLS
-    = function (enabled)
+    = function (enabled, forced)
 {
   gPref.setBoolPref(this.prefURI+".TLS",!!enabled);
+  gPref.setBoolPref(this.prefURI+".TLS.forced",!!forced);
 }
 
 /***********/

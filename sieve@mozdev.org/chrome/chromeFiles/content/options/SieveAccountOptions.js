@@ -6,10 +6,14 @@
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
+ 
+if (typeof(Cc) == "undefined")
+  { var Cc = Components.classes; }
+if (typeof(Ci) == "undefined")
+  { var Ci = Components.interfaces; }
 
 //  @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
-
-   
+  
 /** @type SieveAccount */
 var gAccount = null;
 
@@ -27,6 +31,7 @@ function onServerSheetLoad(account)
   document.getElementById('lblHostname').value
     = account.getHost(0).getHostname();
 
+    
   var rbPort = document.getElementById('rgPort');
 
   // Load custom port settings
@@ -51,9 +56,6 @@ function onServerSheetLoad(account)
   }
   
   enablePort(rbPort.selectedIndex);
-  
-  document.getElementById('cbxTLS').checked
-    = account.getHost().isTLS();
 }
 
 function enableHost(type)
@@ -112,6 +114,68 @@ function onPortChange(value)
   gAccount.getHost().setPort(value,true)
 }
 
+
+var gAutoConfig = null;
+
+var gAutoConfigCallback =
+{
+  onSuccess : function(host,port,proxy)
+  {
+    gAutoConfig = null;
+        
+    gAccount.getHost().setPort(port);
+    
+    document.getElementById("dkAutoSelect").selectedIndex = "2";
+    document.getElementById("lblAutoSelectPort").value = port;
+    
+    if (port == 4190)
+      document.getElementById("rgPort").selectedIndex = 0;
+    else if (port == 2000)
+      document.getElementById("rgPort").selectedIndex = 1;
+  },
+
+  onError : function()
+  {
+    gAutoConfig = null;
+    document.getElementById("dkAutoSelect").selectedIndex = "3";  
+  }
+} 
+
+function onPortAutoSelect()
+{          
+  try
+  {
+    document.getElementById("dkAutoSelect").selectedIndex = "1";
+    
+    gAutoConfig = new SieveAutoConfig();
+    
+    gAutoConfig.addHost(
+      gAccount.getHost().getHostname(),
+      4190,
+      gAccount.getProxy().getProxyInfo());
+
+    gAutoConfig.addHost(
+      gAccount.getHost().getHostname(),
+      2000,
+      gAccount.getProxy().getProxyInfo());
+  
+    var port = document.getElementById("txtPort").value;
+    port = parseInt(port);
+  
+    if (!isNaN(port))
+      gAutoConfig.addHost(
+        gAccount.getHost().getHostname(),
+        port,
+        gAccount.getProxy().getProxyInfo());      
+    
+    gAutoConfig.run(gAutoConfigCallback);
+  }
+  catch (ex)
+  {
+    window.alert("Exception\n"+ex.toSource());
+  }
+}
+
 // === Security Sheet =========================================================
 function onSecuritySheetLoad(account)
 {
@@ -122,14 +186,42 @@ function onSecuritySheetLoad(account)
   var rgLogin = document.getElementById('rgLogin');
   rgLogin.selectedIndex = account.getLogin().getType();
   enableLogin(rgLogin.selectedIndex);
+  
+  var rbTLS = document.getElementById('rgTLS');
+  
+  if (account.getHost().isTLSEnabled())
+  {
+    if (account.getHost().isTLSForced())
+      rbTLS .selectedIndex = 2;
+    else 
+      rbTLS .selectedIndex = 1;
+  }
+  else
+    rbTLS .selectedIndex = 0;  
 }
 
-function onTLSCommand(checked)
+function onTLSSelect(idx)
 {
+  try {
   if (!gAccount)
     return;
     
-  gAccount.getHost().setTLS(checked);        
+  var isEnabled = true;
+  var isForced = false;
+  
+  if (idx == 0)
+    isEnabled = false;
+    
+  if (idx == 2)
+    isForced = true;
+    
+  gAccount.getHost().setTLS(isForced,isEnabled);
+  }
+  catch (ex)
+  {
+    window.alert(ex);
+  }
+          
 }
 
 function onLoginSelect(idx)
@@ -405,16 +497,15 @@ function onShowPassword()
   var winName = "Toolkit:PasswordManager"
   var uri = "chrome://passwordmgr/content/passwordManager.xul"
   
-  if ("@mozilla.org/passwordmanager;1" in Components.classes) 
+  if ("@mozilla.org/passwordmanager;1" in Cc) 
   {
     // Password Manager exists so this is not Thunderbird 3 
     winName = "Toolkit:PasswordManager"
     uri = "chrome://messenger/content/preferences/viewpasswords.xul"
   }
 
-  var w = Components
-    .classes["@mozilla.org/appshell/window-mediator;1"]
-    .getService(Components.interfaces.nsIWindowMediator)
+  var w = Cc["@mozilla.org/appshell/window-mediator;1"]
+    .getService(Ci.nsIWindowMediator)
     .getMostRecentWindow(winName);
 
   if (w)
@@ -433,17 +524,15 @@ function onShowErrorConsole()
   var name = "global:console"
   var uri = "chrome://global/content/console.xul"
 
-  var w = Components
-    .classes["@mozilla.org/appshell/window-mediator;1"]
-    .getService(Components.interfaces.nsIWindowMediator)
+  var w = Cc["@mozilla.org/appshell/window-mediator;1"]
+    .getService(Ci.nsIWindowMediator)
     .getMostRecentWindow(name);
 
   if (w)
     w.focus();
   else
-    Components
-      .classes["@mozilla.org/embedcomp/window-watcher;1"]
-      .getService(Components.interfaces.nsIWindowWatcher)
+    Cc["@mozilla.org/embedcomp/window-watcher;1"]
+      .getService(Ci.nsIWindowWatcher)
       .openWindow(null, uri, name, "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar", null);
       
     //window.open(uri, "_blank", "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar");          

@@ -88,7 +88,7 @@ function SieveAutoConfigHost(host,port,proxy, listener)
   this.logger = Cc["@mozilla.org/consoleservice;1"]
       .getService(Ci.nsIConsoleService);
       
-  this.sieve.setDebugLevel(23,this.logger);
+  //this.sieve.setDebugLevel(23,this.logger);
 
   this.sieve.addListener(this);
   

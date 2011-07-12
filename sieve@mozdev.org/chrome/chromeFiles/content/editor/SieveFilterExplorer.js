@@ -16,8 +16,10 @@
  *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/editor/SieveFilterTreeView.js"
  */
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
+if (typeof(Cc) == "undefined")
+  { var Cc = Components.classes; }
+if (typeof(Ci) == "undefined")
+  { var Ci = Components.interfaces; }
 
 var sid = null;
 var cid = null;
@@ -162,14 +164,9 @@ function onWindowLoad()
 
   for (var i = 0; i < accounts.length; i++)
   {   
-    if (accounts[i].isEnabled() == false)
-      menuImapAccounts.appendItem(
-        accounts[i].getDescription(),
-        accounts[i].getKey(),"- disabled").disabled = true;
-    else
-      menuImapAccounts.appendItem( 
-        accounts[i].getDescription(),
-        accounts[i].getKey(),"").disabled = false;
+    menuImapAccounts.appendItem( 
+      accounts[i].getDescription(),
+      accounts[i].getKey(),"").disabled = false;
 
     if (window.arguments.length == 0)
       continue;
@@ -201,7 +198,13 @@ function onWindowClose()
   Cc["@mozilla.org/observer-service;1"]
       .getService (Ci.nsIObserverService)
       .removeObserver(event,"network:offline-status-changed");  
-      
+ 
+  if (gAutoConfig)
+  {
+    gAutoConfig.cancel();
+    gAutoConfig = null;
+  }
+    
   return true;
 }   
 /**
@@ -309,9 +312,15 @@ function sivDisconnect(state,message)
 }
 
 function onSelectAccount()
-{      
+{
+  if (gAutoConfig)
+  {
+    gAutoConfig.cancel();
+    gAutoConfig = null;
+  }
+    
   sivDisconnect();
-      
+  
   // update the TreeView...
   var tree = document.getElementById('treeImapRules');
       
@@ -516,6 +525,7 @@ function sivSetStatus(state, message, statusbar)
             break;
     // account disabled
     case 8: document.getElementById('sivExplorerDisabled').removeAttribute('hidden');
+            document.getElementById('sivAutoConfig').selectedIndex = message;
             break;            
   }
 }
@@ -761,4 +771,65 @@ function onBadCertOverride(targetSite,permanent)
     gLogger.logStringMessage("onBadCertOverride:"+ex); 
   }
  
+}
+
+/*
+ *  Auto Config
+ */ 
+
+var gAutoConfig = null;
+
+var gAutoConfigEvent =
+{
+  onSuccess : function(host,port,proxy)
+  {
+    sivSetStatus(8,2);
+    
+    getSelectedAccount().setActiveHost(0);
+    getSelectedAccount().getHost().setPort(port);
+    getSelectedAccount().setEnabled(true);
+    
+    gAutoConfig = null;
+  },
+
+  onError : function()
+  {
+    sivSetStatus(8,3);
+    gAutoConfig = null;
+  }
+}
+
+function onAutoConfigRunClick()
+{
+  if (gAutoConfig)
+    gAutoConfig.cancel();
+        
+  gAutoConfig = new SieveAutoConfig();
+  
+  gAutoConfig.addHost(
+    getSelectedAccount().getHost(0).getHostname(),
+    4190,
+    getSelectedAccount().getProxy().getProxyInfo());
+    
+  gAutoConfig.addHost(
+    getSelectedAccount().getHost(0).getHostname(),
+    2000,
+    getSelectedAccount().getProxy().getProxyInfo());
+  
+  gAutoConfig.run(gAutoConfigEvent);
+  
+  sivSetStatus(8,1);
+}
+
+function onAutoConfigCancelClick()
+{
+  gAutoConfig.cancel();
+  gAutoConfig = null;
+  
+  sivSetStatus(8,3);
+}
+
+function onAutoConfigFinishedClick()
+{
+  sivConnect();
 }

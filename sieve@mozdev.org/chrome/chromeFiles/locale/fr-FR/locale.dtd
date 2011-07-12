@@ -59,21 +59,25 @@ good reason (e.g. Debugging), you should not turn TLS off.">
 <!ENTITY options.login.username.key "u">
 <!ENTITY options.login.show "Afficher les mots de passe enregistrés...">
 
-<!ENTITY options.host "Ignorer les paramètres IMAP">
-<!ENTITY options.host.key "I">
-<!ENTITY options.host.hostname "Hôte">
-<!ENTITY options.host.hostname.key "h">
-<!ENTITY options.host.port "Port">
-<!ENTITY options.host.port.key "o">
-<!ENTITY options.host.port.default "Défaut: 2000 ou 4190">
-<!ENTITY options.host.tls.key "t">
-<!ENTITY options.host.tls "Utiliser TLS, si disponible">
-
 <!ENTITY options.misc "Paramètres divers">
-<!ENTITY options.misc.keepalive "Envoyer un 'keep alive' toutes les">
+<!ENTITY options.misc.keepalive "Enable keepalives">
 <!ENTITY options.misc.keepalive.key "k">
-<!ENTITY options.misc.compile "Compiler sur le serveur toutes les">
+<!ENTITY options.misc.keepalive2 "Send every">
+<!ENTITY options.misc.keepalive.description 
+"If the client was idle for too long (usually 30 minutes), the
+server assumes the client is disconnected and hangs up the connection.">
+<!ENTITY options.misc.keepalive.description2
+"A keepalive request indecates the connection is still active and
+should be preserved.">
+
+<!ENTITY options.misc.compile.caption "Syntax check">
+<!ENTITY options.misc.compile.description
+"While editing Scripts, they can be checked for validity. The syntax 
+check is performed by the server. In oder to keep network traffic 
+low, syntax check requests are grouped.">
+<!ENTITY options.misc.compile "Check Scripts while typing">
 <!ENTITY options.misc.compile.key "c">
+<!ENTITY options.misc.compile2 "Validate at least every">
 
 <!ENTITY options.debug.warning 
   "Gardez à l'esprit que ni &quot;SASL LOGIN&quot; ni &quot;SASL PLAIN&quot; ne crypte votre mot de passe, 
@@ -118,15 +122,6 @@ good reason (e.g. Debugging), you should not turn TLS off.">
 <!ENTITY options.account.activate.no "Non, ce compte ne gère pas Sieve">
 <!ENTITY options.account.filters "Modifier les filtres">
 <!ENTITY options.account.settings "Changer les paramètres">
-
-<!ENTITY options.cyrus "Bug TLS Cyrus">
-<!ENTITY options.cyrus.rfc "Certaines versions de Cyrus n'implémentent pas la poignée de main TLS comme suggéré dans le brouillon de la RFC.">
-<!ENTITY options.cyrus.workaround "Pour contourner le problème, cette extension tente d'abord une poignée de main conforme à la RFC. Au cas où le serveur ne répond pas dans un délai raisonnable, on passe automatiquement à une poignée de main de type Cyrus.">
-<!ENTITY options.cyrus.fails "Cette technique ne fonctionne pas avec des connexions lentes ou des serveurs sous forte charge. Si vous rencontrez des &quot;gèles&quot; ou &quot;plantages&quot; durant la poignée de main TLS, essayez de modifier ces paramètres!">
-<!ENTITY options.cyrus.handshake.auto "Autodétection (par défaut)">
-<!ENTITY options.cyrus.handshake.timeout "Changement automatique après">
-<!ENTITY options.cyrus.handshake.rfc "Poignée de main type RFC stricte">
-<!ENTITY options.cyrus.handshake.cyrus "Poignée de main type Cyrus">
 
 <!-- Credits -->
 <!ENTITY options.credits "Many thanks to all contributors:">
@@ -227,7 +222,6 @@ use '127.0.0.1' instead.">
 
 <!ENTITY edit.sidebar.uri "http://sieve.mozdev.org/reference/en/index.html">
 <!ENTITY edit.sidebar.title "Base de référence du langage Sieve">
-
 
 <!ENTITY edit.searchreplace.title "Rechercher et Remplacer">
 <!ENTITY edit.searchreplace.searchfor "Rechercher:">

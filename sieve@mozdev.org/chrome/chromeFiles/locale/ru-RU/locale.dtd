@@ -38,6 +38,10 @@ Thus the Sieve server name is usually same as your IMAP server name.">
 "Older server implementations still use port 2000, while newer standard 
 conform server can only be accessed via port 4190.">
 <!ENTITY options.port.custom "Other:">
+<!ENTITY options.port.autoselect "Auto Select Port">
+<!ENTITY options.port.autoselect.running "Selecting Port, please wait...">
+<!ENTITY options.port.autoselect.successful "Sieve detected on Port ">
+<!ENTITY options.port.autoselect.error "Selecting Port failed...">
 
 <!ENTITY options.security.caption "Security">
 <!ENTITY options.security.description
@@ -209,6 +213,34 @@ low, syntax check requests are grouped.">
 <!ENTITY list.badcert.ignore "Продолжить">
 <!ENTITY list.badcert.abort "Прекратить">
 
+<!ENTITY list.autoconfig.welcome.caption "Welcome!">
+<!ENTITY list.autoconfig.welcome.description1 
+"This account is not Configured for manage sieve.">
+<!ENTITY list.autoconfig.welcome.description2
+"Click on 'continue' to detect the configuration automatically.
+Or choose 'Advanced' to configure the account manually.">
+
+<!ENTITY list.autoconfig.advanced "Advanced">
+<!ENTITY list.autoconfig.continue "Continue">
+
+<!ENTITY list.autoconfig.detecting.caption "Autodetecting Configuration">
+<!ENTITY list.autoconfig.detecting.description 
+  "Might take some minutes to complete...">
+
+<!ENTITY list.autoconfig.cancel "Cancel">
+
+<!ENTITY list.autoconfig.success.caption "Congratulations!">
+<!ENTITY list.autoconfig.success.description 
+  "Your account is now configured and ready to use...">
+
+<!ENTITY list.autoconfig.error.caption "Sorry">
+<!ENTITY list.autoconfig.error.description 
+"It seems your mail server does not support manage sieve or requires
+a special configuration. Please contact your Mail provider or try
+to do a manual configuration.">
+
+<!ENTITY list.autoconfig.retest "Re-test">
+<!ENTITY list.autoconfig.config "Manual Configuration">
 
 <!-- Locale for the Edit Filter Dialog -->
 <!ENTITY edit.title "Редактировать фильтр Sieve">

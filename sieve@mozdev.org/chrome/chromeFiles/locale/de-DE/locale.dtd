@@ -38,6 +38,10 @@ meist der Sieve Servername mit dem des IMAP Servers identisch.">
 "Dementsprechend akzeptieren ältere Server akzeptieren nur Verbindungen
 über den Port 2000 während neuere Versionen den Port 4190 bevorzugen.">
 <!ENTITY options.port.custom "Anderer:">
+<!ENTITY options.port.autoselect "Auto Select Port">
+<!ENTITY options.port.autoselect.running "Selecting Port, please wait...">
+<!ENTITY options.port.autoselect.successful "Sieve detected on Port ">
+<!ENTITY options.port.autoselect.error "Selecting Port failed...">
 
 <!ENTITY options.security.caption "Security">
 <!ENTITY options.security.description
@@ -201,6 +205,36 @@ dass Sie tatsächlich mit dem gewünschten Server verbunden sind.">
 <!ENTITY list.badcert.remember "Meldung nicht mehr anzeigen">
 <!ENTITY list.badcert.ignore "Weiter">
 <!ENTITY list.badcert.abort "Abbrechen">
+
+<!ENTITY list.autoconfig.welcome.caption "Welcome!">
+<!ENTITY list.autoconfig.welcome.description1 
+"This account is not Configured for manage sieve.">
+<!ENTITY list.autoconfig.welcome.description2
+"Click on 'continue' to detect the configuration automatically.
+Or choose 'Advanced' to configure the account manually.">
+
+<!ENTITY list.autoconfig.advanced "Advanced">
+<!ENTITY list.autoconfig.continue "Continue">
+
+<!ENTITY list.autoconfig.detecting.caption "Autodetecting Configuration">
+<!ENTITY list.autoconfig.detecting.description 
+  "Might take some minutes to complete...">
+
+<!ENTITY list.autoconfig.cancel "Cancel">
+
+<!ENTITY list.autoconfig.success.caption "Congratulations!">
+<!ENTITY list.autoconfig.success.description 
+  "Your account is now configured and ready to use...">
+
+<!ENTITY list.autoconfig.error.caption "Sorry">
+<!ENTITY list.autoconfig.error.description 
+"It seems your mail server does not support manage sieve or requires
+a special configuration. Please contact your Mail provider or try
+to do a manual configuration.">
+
+<!ENTITY list.autoconfig.retest "Re-test">
+<!ENTITY list.autoconfig.config "Manual Configuration">
+
 
 <!-- Locale for the Edit Filter Dialog -->
 <!ENTITY edit.title "Sieveskript bearbeiten">

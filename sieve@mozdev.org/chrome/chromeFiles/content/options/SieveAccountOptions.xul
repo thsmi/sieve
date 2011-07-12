@@ -82,18 +82,18 @@
             <hbox align="right">
               <deck id="dkAutoSelect">
                 <hbox align="right">
-                  <button label="Auto Select Port" oncommand="onPortAutoSelect()" />
+                  <button label="&options.port.autoselect;" oncommand="onPortAutoSelect()" />
                 </hbox>
                 <hbox align="center">
                   <image src="chrome://sieve/content/images/active2.gif" />
-                  <label value="Selecting Port, please wait..." />
+                  <label value="&options.port.autoselect.running;" />
                 </hbox>
                 <hbox align="center">
-                  <label value="Sieve detected on Port " />
+                  <label value="&options.port.autoselect.successful;" />
                   <label id="lblAutoSelectPort" value="" />
                 </hbox>
                 <hbox align="center" pack="center">
-                  <label value="Selecting Port failed..." />
+                  <label value="&options.port.autoselect.error;" />
                 </hbox>                
               </deck>    
             </hbox>                           

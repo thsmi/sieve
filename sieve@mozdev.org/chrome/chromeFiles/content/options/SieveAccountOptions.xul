@@ -73,8 +73,8 @@
           <description>&options.port.description;</description>
           <description>&options.port.description2;</description>        
           <radiogroup id="rgPort" onselect="onPortSelect(this.selectedIndex);">
-            <radio id="rbPort4190" label="4190 (Default)" />
-            <radio id="rbPort2000" label="2000" />
+            <radio id="rbPort4190" label="&options.port.4190;" />
+            <radio id="rbPort2000" label="&options.port.2000;" />
             <box align="center">
               <radio id="rbPortCustom" label="&options.port.custom;"/>
               <textbox id="txtPort" size="5" onchange="onPortChange(this.value)"/>
@@ -107,9 +107,9 @@
         <description>&options.security.description;</description>
         <description>&options.security.description2;</description>
         <radiogroup id="rgTLS" onselect="onTLSSelect(this.selectedIndex);">
-          <radio label="No TLS" />
-          <radio label="TLS, when available" />
-          <radio label="Force TLS" />
+          <radio label="&options.security.tls.disabled;" />
+          <radio label="&options.security.tls.available;" />
+          <radio label="&options.security.tls.force;" />
         </radiogroup>
       </groupbox>
         
@@ -144,7 +144,7 @@
         <box class="indent" align="center">
           <label value="&options.misc.compile2;" />
           <textbox id="txtCompile" onchange="onCompileChange(this)" size="6"/>
-          <label value="ms" />
+          <label value="&options.misc.compile.ms;" />
         </box>
       </groupbox>
       <groupbox>
@@ -157,7 +157,7 @@
         <box class="indent" align="center">
           <label value="&options.misc.keepalive2;" />
           <textbox id="txtKeepAlive" onchange="onKeepAliveChange(this)" size="6"/>
-          <label value="min" />
+          <label value="&options.misc.keepalive.min;" />
         </box>
       </groupbox>
     </vbox>

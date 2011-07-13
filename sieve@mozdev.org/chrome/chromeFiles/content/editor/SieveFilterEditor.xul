@@ -204,6 +204,10 @@
           <checkbox id="cbxCaseSensitive" label="&edit.searchreplace.case;" />
           <checkbox id="cbxBackward" label="&edit.searchreplace.backward;"/>
         </groupbox>
+      <hbox align="center" id="boxSearchError" hidden="true">        
+        <image src="chrome://sieve/content/images/info.png" />
+        <label value="&edit.searchreplace.error;" />
+      </hbox>
     <hbox pack="end">
       <button id="btnFind" label="&edit.searchreplace.find;"  oncommand="OnFindString();"/>
       <button  id="btnReplace" label="&edit.searchreplace.replace;" oncommand="OnReplaceString();"/>

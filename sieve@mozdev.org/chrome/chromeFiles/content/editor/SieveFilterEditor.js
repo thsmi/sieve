@@ -138,7 +138,7 @@ function onCompile()
     {
       // TODO: The response might contain warnings, parse them
       document.getElementById("lblErrorBar").firstChild.nodeValue
-        = "Server reports no script errors...";
+        = document.getElementById("strings").getString("syntax.ok");
 
       document.getElementById("imgErrorBar").src
         = "chrome://sieve/content/images/syntax-ok.png";      
@@ -156,8 +156,9 @@ function onCompile()
       // we got an overquota warning, this means syntaxcheck can't be performed
       if (response.getResponseCode().equalsCode("QUOTA"))
       {
+        
         document.getElementById("lblErrorBar").firstChild.nodeValue
-          = "Server has not enough free resources to perform a syntax check"
+          = document.getElementById("strings").getString("syntax.quota");
           
         document.getElementById("imgErrorBar").src
           = "chrome://sieve/content/images/syntax-warning.png";
@@ -771,10 +772,11 @@ function OnFindString()
   // start search from cursor pos...
   if (result == -1)
   {
-    alert('Phrase not found...')
+    document.getElementById("boxSearchError").removeAttribute('hidden');
     return -1;
   }
 
+  document.getElementById("boxSearchError").setAttribute('hidden','true');
   txtScript.focus();
 
   txtScript.setSelectionRange(result, result + token.length);

@@ -23,7 +23,10 @@ function SieveNoAuth() {}
 SieveNoAuth.prototype.getDescription
     = function ()
 {
-  return "No Authentication";
+  return Components.classes["@mozilla.org/intl/stringbundle;1"]
+           .getService(Components.interfaces.nsIStringBundleService)
+           .createBundle("chrome://sieve/locale/locale.properties")
+           .GetStringFromName("account.auth.none");
 }
 
 SieveNoAuth.prototype.getPassword
@@ -69,7 +72,10 @@ function SieveImapAuth(imapKey)
 SieveImapAuth.prototype.getDescription
     = function ()
 {
-  return "Use login from IMAP Account";
+  return Components.classes["@mozilla.org/intl/stringbundle;1"]
+           .getService(Components.interfaces.nsIStringBundleService)
+           .createBundle("chrome://sieve/locale/locale.properties")
+           .GetStringFromName("account.auth.imap");
 }
 
 SieveImapAuth.prototype.getPassword
@@ -184,7 +190,10 @@ function SieveCustomAuth2(host, uri)
 SieveCustomAuth2.prototype.getDescription
     = function ()
 {
-  return "Use a custom login";
+  return Components.classes["@mozilla.org/intl/stringbundle;1"]
+           .getService(Components.interfaces.nsIStringBundleService)
+           .createBundle("chrome://sieve/locale/locale.properties")
+           .GetStringFromName("account.auth.custom");
 }
 
 /**

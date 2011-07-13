@@ -34,6 +34,8 @@ Thus the Sieve server name is usually same as your IMAP server name.">
 <!ENTITY options.port.description2
 "Older server implementations still use port 2000, while newer standard 
 conform server can only be accessed via port 4190.">
+<!ENTITY options.port.4190 "4190 (Default)" >
+<!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Other:">
 <!ENTITY options.port.autoselect "Auto Select Port">
 <!ENTITY options.port.autoselect.running "Selecting Port, please wait...">
@@ -45,10 +47,11 @@ conform server can only be accessed via port 4190.">
 "Transport Layer Security (TLS) secures the connection to the manage sieve server.
 It cyphers all data and is designed to prevent eavesdropping and tampering.">
 <!ENTITY options.security.description2 
-"ManageSieve usually transfers passwords uncrypted. So unless you have a realy 
-good reason (e.g. Debugging), you should alway force TLS.">
-<!ENTITY options.security.tls "use TLS, if available">
-<!ENTITY options.security.tls.key "t">
+"ManageSieve usually transfers passwords unencrypted. So unless you have a really 
+good reason (e.g. Debugging), you should always force TLS.">
+<!ENTITY options.security.tls.disabled "No TLS">
+<!ENTITY options.security.tls.available "TLS, when available">
+<!ENTITY options.security.tls.force "Force TLS">
 
 <!ENTITY options.login "Authentication">
 <!ENTITY options.login.key "A">
@@ -67,17 +70,19 @@ good reason (e.g. Debugging), you should alway force TLS.">
 "If the client was idle for too long (usually 30 minutes), the
 server assumes the client is disconnected and hangs up the connection.">
 <!ENTITY options.misc.keepalive.description2
-"A keepalive request indecates the connection is still active and
+"A keepalive request indicates the connection is still active and
 should be preserved.">
+<!ENTITY options.misc.keepalive.min "min">
 
 <!ENTITY options.misc.compile.caption "Syntax check">
 <!ENTITY options.misc.compile.description
 "While editing Scripts, they can be checked for validity. The syntax 
-check is performed by the server. In oder to keep network traffic 
+check is performed by the server. In order to keep network traffic 
 low, syntax check requests are grouped.">
 <!ENTITY options.misc.compile "Check Scripts while typing">
 <!ENTITY options.misc.compile.key "c">
-<!ENTITY options.misc.compile2 "Validate at least every"> 
+<!ENTITY options.misc.compile2 "Validate at least every">
+<!ENTITY options.misc.compile.ms "ms"> 
 
 <!ENTITY options.debug.warning 
 "Keep in mind that neither SASL Login nor SASL Plain cypher your password, 
@@ -121,8 +126,10 @@ Usually servers are configured, that this feature is only available for administ
 <!ENTITY options.info.username "User Name:">
 <!ENTITY options.info.auth "Authentication:">
 
-<!ENTITY options.account.sieve "Sieve is a powerful script language for server-side mail filtering.">
-<!ENTITY options.account.activate "Do you want to activate managing Sieve Scripts for this account?">
+<!ENTITY options.account.sieve
+"Sieve is a powerful script language for server-side mail filtering.">
+<!ENTITY options.account.activate
+"Do you want to activate managing Sieve Scripts for this account?">
 <!ENTITY options.account.activate.yes "Yes, manage Sieve scripts for this account:">
 <!ENTITY options.account.activate.no "No, this account does not support Sieve">
 <!ENTITY options.account.filters "Edit Filters...">
@@ -139,7 +146,7 @@ securely traverse a firewall.">
 <!ENTITY options.proxy.description.nameresolution
 "With SOCKSv4 hostnames are always resolved on the local machine. SOCKSv5 also 
 supports resolving hostnames by the SOCKS proxy. If you can trust the SOCKSv5 
-proxy, the latter is considered to be more secure and should be prefered.">
+proxy, the latter is considered to be more secure and should be preferred.">
 <!ENTITY options.proxy.description.localhost
 "On some system using 'localhost' as proxy host does not function properly, 
 use '127.0.0.1' instead.">
@@ -194,7 +201,7 @@ mean that someone is trying to impersonate the server.
 
 Do not continue unless you know there's a good reason why 
 this server doesn't use trusted identification.">
-<!ENTITY list.badcert.remember "Remember my desicion">
+<!ENTITY list.badcert.remember "Remember my decision">
 <!ENTITY list.badcert.ignore "Continue">
 <!ENTITY list.badcert.abort "Abort">
 
@@ -202,7 +209,7 @@ this server doesn't use trusted identification.">
 <!ENTITY list.autoconfig.welcome.description1 
 "This account is not Configured for manage sieve.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click on 'continue' to detect the configuration automatically.
+"Click on 'Continue' to detect the configuration automatically.
 Or choose 'Advanced' to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "Advanced">
@@ -265,3 +272,4 @@ to do a manual configuration.">
 <!ENTITY edit.searchreplace.backward "Backward">
 <!ENTITY edit.searchreplace.find "Find">
 <!ENTITY edit.searchreplace.replace "Replace">
+<!ENTITY edit.searchreplace.error "Phrase not found">

@@ -1,6 +1,6 @@
 <!--
 /* 
- * The contents of this file is licenced. You may obtain a copy of
+ * The contents of this file is licensed. You may obtain a copy of
  * the license at http://sieve.mozdev.org or request it via email 
  * from the author. Do not remove or change this comment. 
  * 
@@ -8,89 +8,85 @@
  *   Виктор Букреев
  *
  * Contributor(s):
- *   moiseev@mezonplus.ru
+ *   Александр Моисеев <moiseev@mezonplus.ru>
+ *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  -->
 
 <!-- Options Dialog -->
 <!ENTITY options.title "Параметры Sieve">
 
-<!ENTITY options.tab.server "Server">
-<!ENTITY options.tab.security "Security">
-<!ENTITY options.tab.general "Общие">
+<!ENTITY options.tab.server "Сервер">
+<!ENTITY options.tab.security "Защита">
+<!ENTITY options.tab.general "Основные">
 <!ENTITY options.tab.proxy "Прокси">
 <!ENTITY options.tab.advanced "Дополнительные">
 <!ENTITY options.tab.advanced.warning "Эти настройки предназначены для опытных пользователей...">
 <!ENTITY options.tab.debug "Отладка">
 <!ENTITY options.tab.credits "Credits">
 
-<!ENTITY options.host.caption "Server Name">
+<!ENTITY options.host.caption "Имя сервера">
 <!ENTITY options.host.description
-"Most Sieve implementations run directly on a mail server. 
-Thus the Sieve server name is usually same as your IMAP server name.">
-<!ENTITY options.host.imap "IMAP Server:">
-<!ENTITY options.host.custom "Other Server:">
+"Почти все реализации Sieve работают непосредственно на почтовом сервере. 
+Следовательно, имя сервера Sieve обычно тоже что и имя Вашего сервера IMAP.">
+<!ENTITY options.host.imap "Сервер IMAP:">
+<!ENTITY options.host.custom "Другой сервер:">
 
-<!ENTITY options.port.caption "Server Port">
+<!ENTITY options.port.caption "Порт сервера">
 <!ENTITY options.port.description
-"The server port changed, when ManageSieve turned into a full RFC Standard">
+"Порт сервера был изменён при разработке проекта стандарта RFC ManageSieve.">
 <!ENTITY options.port.description2
-"Older server implementations still use port 2000, while newer standard 
-conform server can only be accessed via port 4190.">
-<!ENTITY options.port.custom "Other:">
-<!ENTITY options.port.autoselect "Auto Select Port">
-<!ENTITY options.port.autoselect.running "Selecting Port, please wait...">
-<!ENTITY options.port.autoselect.successful "Sieve detected on Port ">
-<!ENTITY options.port.autoselect.error "Selecting Port failed...">
+"Старые реализации серверов все еще используют порт 2000, в то время как доступ к серверам, 
+соответсвующим новому стандарту, может быть получен только через порт 4190.">
+<!ENTITY options.port.4190 "4190 (Default)" >
+<!ENTITY options.port.2000 "2000" >
+<!ENTITY options.port.custom "Другой:">
+<!ENTITY options.port.autoselect "Автоматический выбор порта">
+<!ENTITY options.port.autoselect.running "Выбор порта, пожалуйста, подождите...">
+<!ENTITY options.port.autoselect.successful "Sieve обнаружен на порте ">
+<!ENTITY options.port.autoselect.error "Неудалось выбрать порт...">
 
-<!ENTITY options.security.caption "Security">
+<!ENTITY options.security.caption "Защита">
 <!ENTITY options.security.description
-"Transport Layer Security (TLS) secures the connection to the manage sieve server.
-It cyphers all data and is designed to prevent eavesdropping and tampering.">
+"Transport Layer Security (TLS) - транспортный уровень безопасности - защищает соединение с сервером ManageSieve.
+Он шифрует все данные и разработан для предотвращения перехвата и фальсификации.">
 <!ENTITY options.security.description2 
-"ManageSieve usually transfers passwords uncrypted. So unless you have a realy 
-good reason (e.g. Debugging), you should not turn TLS off.">
-<!ENTITY options.security.tls "use TLS, if available">
-<!ENTITY options.security.tls.key "t">
+"Обычно ManageSieve передает пароли в незашифрованном виде. Поэтому Вам не следует отключать TLS 
+без крайней необходимости (например, для отладки).">
+<!ENTITY options.security.tls.disabled "No TLS">
+<!ENTITY options.security.tls.available "TLS, when available">
+<!ENTITY options.security.tls.force "Force TLS">
 
 <!ENTITY options.login "Аутентификация">
 <!ENTITY options.login.key "A">
-<!ENTITY options.login.noAuth "Без Аутентификации">
+<!ENTITY options.login.noAuth "Без аутентификации">
 <!ENTITY options.login.imapAuth "Имя пользователя IMAP и пароль">
 <!ENTITY options.login.customAuth "Имя пользователя и пароль">
 <!ENTITY options.login.username "Имя пользователя">
 <!ENTITY options.login.username.key "u">
 <!ENTITY options.login.show "Показать сохранённые пароли...">
 
-<!ENTITY options.host "Игнорировать настройки IMAP">
-<!ENTITY options.host.key "I">
-<!ENTITY options.host.hostname "Имя хоста">
-<!ENTITY options.host.hostname.key "h">
-<!ENTITY options.host.port "Порт">
-<!ENTITY options.host.port.key "o">
-<!ENTITY options.host.port.default "По умолчанию: 2000 или 4190">
-<!ENTITY options.host.tls.key "t">
-<!ENTITY options.host.tls "Исп-ть TLS, если доступен">
-
-<!ENTITY options.misc "Miscellaneous Settings">
-<!ENTITY options.misc.keepalive "Enable keepalives">
+<!ENTITY options.misc "Прочие параметры">
+<!ENTITY options.misc.keepalive "Посылать запросы 'keepalive'">
 <!ENTITY options.misc.keepalive.key "k">
-<!ENTITY options.misc.keepalive2 "Send every">
+<!ENTITY options.misc.keepalive2 "Посылать каждые">
 <!ENTITY options.misc.keepalive.description 
-"If the client was idle for too long (usually 30 minutes), the
-server assumes the client is disconnected and hangs up the connection.">
+"Если клиент простаивает слишком долго (обычно 30 минут), 
+сервер считает, что клиент отключился, и разрывает соединение.">
 <!ENTITY options.misc.keepalive.description2
-"A keepalive request indecates the connection is still active and
-should be preserved.">
+"Поддерживающий запрос 'keepalive' служит признаком того, что соединение все еще активно и
+и должно быть сохранено.">
+<!ENTITY options.misc.keepalive.min "min">
 
-<!ENTITY options.misc.compile.caption "Syntax check">
+<!ENTITY options.misc.compile.caption "Проверка синтаксиса">
 <!ENTITY options.misc.compile.description
-"While editing Scripts, they can be checked for validity. The syntax 
-check is performed by the server. In oder to keep network traffic 
-low, syntax check requests are grouped.">
-<!ENTITY options.misc.compile "Check Scripts while typing">
+"Правильность скриптов может проверяться во время редактирования. Проверка 
+синтаксиса производится сервером. Для того, чтобы уменьшить сетевой трафик, 
+запросы проверки синтаксиса группируются.">
+<!ENTITY options.misc.compile "Проверять скрипты во время набора">
 <!ENTITY options.misc.compile.key "c">
-<!ENTITY options.misc.compile2 "Validate at least every"> 
+<!ENTITY options.misc.compile2 "Проверять не реже, чем каждые"> 
+<!ENTITY options.misc.compile.ms "ms">
 
 <!ENTITY options.debug.warning 
 "Имейте в виду, что так как ни SASL Login ни SASL Plain не шифруют Ваш пароль, 
@@ -105,7 +101,7 @@ low, syntax check requests are grouped.">
 <!ENTITY options.debug.console "Отладочная информация выводится на консоль ошибок">
 <!ENTITY options.debug.console.open "Показать консоль ошибок...">
 
-<!ENTITY options.authmechanism.caption "Механизмы Аутентификации">
+<!ENTITY options.authmechanism.caption "Механизм аутентификации">
 <!ENTITY options.authmechanism "Игнорировать предложенный механизм аутентификации">
 <!ENTITY options.authmechanism.default "Всегда использовать:">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
@@ -128,7 +124,7 @@ low, syntax check requests are grouped.">
 <!ENTITY options.proxyauth.custom "Авторизоваться как">
 <!ENTITY options.proxyauth.custom.username "Имя пользователя:">
 
-<!ENTITY options.info.servername "Имя cервера:">
+<!ENTITY options.info.servername "Имя сервера:">
 <!ENTITY options.info.port "Порт:">
 <!ENTITY options.info.secure "Безопасное соединение:">
 <!ENTITY options.info.username "Имя пользователя:">
@@ -168,9 +164,9 @@ low, syntax check requests are grouped.">
 
 
 <!-- Menu entries -->
-<!ENTITY menu.filters "Sieve Фильтры Писем...">
+<!ENTITY menu.filters "Sieve фильтры сообщений...">
 <!ENTITY menu.filters.key "M">
-<!ENTITY menu.options "Sieve Настройки Фильтра...">
+<!ENTITY menu.options "Настройки Sieve...">
 <!ENTITY menu.options.key "S">
 
 
@@ -192,55 +188,54 @@ low, syntax check requests are grouped.">
 <!ENTITY list.activate "Активировать">
 <!ENTITY list.settings "Настройки...">
 
-
 <!ENTITY list.details.capability "Возможности сервера Sieve">
 <!ENTITY list.details.capability.implementation "Версия сервера:">
 <!ENTITY list.details.capability.sasl "Механизмы SASL:">
-<!ENTITY list.details.capability.extensions "Расширения:">
+<!ENTITY list.details.capability.extensions "Дополнения:">
 <!ENTITY list.details.capability.protocol "Версия протокола:">
 
-<!ENTITY list.wait.connect "Подключаюсь...">
+<!ENTITY list.wait.connect "Подключение...">
 
-<!ENTITY list.warning "Эта учетная запись не настроена для работы с Sieve, перейдите 'Инструменты-> Sieve Фильтры Писем'">
+<!ENTITY list.warning "Эта учётная запись не настроена для работы с Sieve, перейдите 'Инструменты-> Sieve Фильтры Писем'">
 <!ENTITY list.error "Последняя команда не выполнена, так как сервер сообщил об ошибке:">
 <!ENTITY list.badcert "Ваш почтовый сервер использует недействительный сертификат.">
 <!ENTITY list.badcert.error 
 "Если обычно Вы соединяетесь с данным сервером без проблем, то эта ошибка может 
 означать, что кто-то пытается подменить этот сервер другим.
 
-В этом случае вам не следует продолжать соединение.">
+В этом случае Вам не следует продолжать соединение.">
 <!ENTITY list.badcert.remember "Запомнить мой выбор">
 <!ENTITY list.badcert.ignore "Продолжить">
 <!ENTITY list.badcert.abort "Прекратить">
 
-<!ENTITY list.autoconfig.welcome.caption "Welcome!">
+<!ENTITY list.autoconfig.welcome.caption "Добро пожаловать!">
 <!ENTITY list.autoconfig.welcome.description1 
-"This account is not Configured for manage sieve.">
+"Эта учётная запись не настроена для работы с Sieve.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click on 'continue' to detect the configuration automatically.
-Or choose 'Advanced' to configure the account manually.">
+"Для автоматической настройки кликните 'Продолжить'.
+Либо выберите 'Вручную', чтобы настроить учётную запись вручную.">
 
-<!ENTITY list.autoconfig.advanced "Advanced">
-<!ENTITY list.autoconfig.continue "Continue">
+<!ENTITY list.autoconfig.advanced "Вручную">
+<!ENTITY list.autoconfig.continue "Продолжить">
 
-<!ENTITY list.autoconfig.detecting.caption "Autodetecting Configuration">
+<!ENTITY list.autoconfig.detecting.caption "Автообнаружение настроек">
 <!ENTITY list.autoconfig.detecting.description 
-  "Might take some minutes to complete...">
+  "Может занять несколько минут...">
 
-<!ENTITY list.autoconfig.cancel "Cancel">
+<!ENTITY list.autoconfig.cancel "Отмена">
 
-<!ENTITY list.autoconfig.success.caption "Congratulations!">
+<!ENTITY list.autoconfig.success.caption "Поздравляем!">
 <!ENTITY list.autoconfig.success.description 
-  "Your account is now configured and ready to use...">
+  "Ваша учётная запись настроена и готова к использованию...">
 
-<!ENTITY list.autoconfig.error.caption "Sorry">
+<!ENTITY list.autoconfig.error.caption "Простите">
 <!ENTITY list.autoconfig.error.description 
-"It seems your mail server does not support manage sieve or requires
-a special configuration. Please contact your Mail provider or try
-to do a manual configuration.">
+"Вероятно Ваш почтовый сервер не поддерживает протокол ManageSieve или требует
+специальной настройки. Пожалуйста, свяжитесь с Вашим провайдером электронной почты, 
+либо попытайтесь выполнить настройку вручную.">
 
-<!ENTITY list.autoconfig.retest "Re-test">
-<!ENTITY list.autoconfig.config "Manual Configuration">
+<!ENTITY list.autoconfig.retest "Перепроверить">
+<!ENTITY list.autoconfig.config "Ручная настройка">
 
 <!-- Locale for the Edit Filter Dialog -->
 <!ENTITY edit.title "Редактировать фильтр Sieve">
@@ -254,8 +249,8 @@ to do a manual configuration.">
 <!ENTITY edit.toolbar.compile "Проверка синтаксиса">
 <!ENTITY edit.toolbar.reference "Быстрая подсказка">
 <!ENTITY edit.toolbar.tools "Инструменты">
-<!ENTITY edit.toolbar.import "Импортировать Скрипт">
-<!ENTITY edit.toolbar.export "Экспортировать Скрипт">
+<!ENTITY edit.toolbar.import "Импортировать скрипт">
+<!ENTITY edit.toolbar.export "Экспортировать скрипт">
 <!ENTITY edit.toolbar.back "Назад" >
 <!ENTITY edit.toolbar.forward "Вперёд" >
 <!ENTITY edit.toolbar.home "Домой" >
@@ -263,8 +258,8 @@ to do a manual configuration.">
 <!ENTITY edit.toolbar.search "Поиск">
 
 
-<!ENTITY edit.scriptname "Имя Скрипта:">
-<!ENTITY edit.errorbar.title "Синтаксичаские ошибки">
+<!ENTITY edit.scriptname "Имя скрипта:">
+<!ENTITY edit.errorbar.title "Синтаксические ошибки">
 
 <!ENTITY edit.cancel "Отменить">
 <!ENTITY edit.save "Сохранить">
@@ -280,4 +275,5 @@ to do a manual configuration.">
 <!ENTITY edit.searchreplace.backward "В обратном направлении">
 <!ENTITY edit.searchreplace.find "Найти">
 <!ENTITY edit.searchreplace.replace "Заменить">
+<!ENTITY edit.searchreplace.error "Phrase not found">
 

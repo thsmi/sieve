@@ -12,8 +12,10 @@
  *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveRequest.js"   
  */
  
-const Cc = Components.classes;
-const Ci = Components.interfaces;
+if (typeof(Cc) == "undefined")
+  { var Cc = Components.classes; }
+if (typeof(Ci) == "undefined")
+  { var Ci = Components.interfaces; }
 
 var gSid = null;
 var gCid = null;
@@ -25,15 +27,25 @@ var gPrintSettings = null;
 
 var gEditorStatus =
 {
-  insert: function (text)
+  insertString: function (text, select)
   {
+    var txtScript = document.getElementById("sivContentEditor");
+    
     var params = Cc["@mozilla.org/embedcomp/command-params;1"].createInstance(Ci.nsICommandParams);
     params.setStringValue("state_data",text);  
   
-    document.getElementById("sivContentEditor").controllers
+    txtScript.controllers
         .getControllerForCommand("cmd_insertText")
         .QueryInterface(Ci.nsICommandController)
-        .doCommandWithParams("cmd_insertText",params);  
+        .doCommandWithParams("cmd_insertText",params);
+    
+    txtScript.focus();
+    
+    if (!select)
+      return;
+      
+    var selStart = txtScript.selectionStart;  
+    txtScript.setSelectionRange(selStart - text.length, selStart);
   },
 
   selectionStart    : -1,
@@ -250,7 +262,7 @@ function onEditorKeyDown(event)
   if (event.shiftKey || event.ctrlKey || event.altKey || event.metaKey)
     return;
     
-  gEditorStatus.insert(String.fromCharCode(9));
+  gEditorStatus.insertString(String.fromCharCode(9));
            
   event.preventDefault();
   
@@ -336,7 +348,7 @@ function onLoad()
   document.title = ""+args["scriptName"]+" - Sieve Filters";
   
   document.getElementById("lblErrorBar").firstChild.nodeValue
-    = "Server reports no script errors...";
+      = document.getElementById("strings").getString("syntax.ok");
   
   if (args["scriptBody"] != null)
   {
@@ -344,7 +356,7 @@ function onLoad()
   }
   else
   {
-    sivSetStatus(1,"Loading Script...");
+    sivSetStatus(1,"status.loading");
       
     var request = new SieveGetScriptRequest(args["scriptName"]);
     request.addGetScriptListener(event);
@@ -388,7 +400,7 @@ function onIgnoreOffline()
     // TODO: this is code exists twice remove me...
     if (gEditorStatus.hasContent == false)
     {
-      sivSetStatus(1,"Loading Script...");
+      sivSetStatus(1,"status.loading");
       
       var args = window.arguments[0].wrappedJSObject;
       
@@ -768,7 +780,7 @@ function OnFindString()
   {
     result = script.indexOf(token, position);
   }
-
+  
   // start search from cursor pos...
   if (result == -1)
   {
@@ -802,17 +814,8 @@ function OnReplaceString()
   if (selectedToken != token)
     return;
   
-  var newToken = new String(document.getElementById("txtReplace").value);
-  var selStart = txtScript.selectionStart;
-  var selEnd = txtScript.selectionEnd
-  /* Remember obj is a textarea or input field */
-  txtScript.value = txtScript.value.substr(0, selStart) + newToken
-    + txtScript.value.substr(selEnd, txtScript.value.length);
-  
-  txtScript.focus();
-  
-  txtScript.setSelectionRange(selStart, selStart + newToken.length);
-  txtScript.editor.selectionController.scrollSelectionIntoView(1, 1, true);
+  var replace = document.getElementById("txtReplace").value;
+  gEditorStatus.insertString(replace,true);
   
   this.onInput();
   
@@ -1180,8 +1183,8 @@ function sivSetStatus(state, message)
     case 2: document.getElementById('sivEditorWarning').removeAttribute('hidden');
             break;    
     case 1: document.getElementById('sivEditorWait').removeAttribute('hidden');
-            document.getElementById('sivEditorWaitMsg')
-                .firstChild.nodeValue = message;    
+            document.getElementById('sivEditorWaitMsg').firstChild.nodeValue 
+                = document.getElementById("strings").getString(message);
             break;
     case 0: document.getElementById('sivEditor').removeAttribute('collapsed');
             break;

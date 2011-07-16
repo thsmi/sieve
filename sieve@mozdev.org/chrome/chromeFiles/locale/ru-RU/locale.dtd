@@ -196,9 +196,11 @@
 
 <!ENTITY list.wait.connect "Подключение...">
 
-<!ENTITY list.warning "Эта учётная запись не настроена для работы с Sieve, перейдите 'Инструменты-> Sieve Фильтры Писем'">
+<!ENTITY list.warning 
+  "Эта учётная запись не настроена для работы с Sieve, перейдите 'Инструменты-> Sieve Фильтры Писем'">
 <!ENTITY list.error "Последняя команда не выполнена, так как сервер сообщил об ошибке:">
-<!ENTITY list.badcert "Ваш почтовый сервер использует недействительный сертификат.">
+<!ENTITY list.badcert
+  "Ваш почтовый сервер использует недействительный сертификат.">
 <!ENTITY list.badcert.error 
 "Если обычно Вы соединяетесь с данным сервером без проблем, то эта ошибка может 
 означать, что кто-то пытается подменить этот сервер другим.
@@ -257,7 +259,6 @@
 <!ENTITY edit.toolbar.print "Печать" >
 <!ENTITY edit.toolbar.search "Поиск">
 
-
 <!ENTITY edit.scriptname "Имя скрипта:">
 <!ENTITY edit.errorbar.title "Синтаксические ошибки">
 
@@ -276,4 +277,3 @@
 <!ENTITY edit.searchreplace.find "Найти">
 <!ENTITY edit.searchreplace.replace "Заменить">
 <!ENTITY edit.searchreplace.error "Phrase not found">
-

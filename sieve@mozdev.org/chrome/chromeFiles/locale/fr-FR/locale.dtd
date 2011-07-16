@@ -37,6 +37,8 @@ Thus the Sieve server name is usually same as your IMAP server name.">
 <!ENTITY options.port.description2
 "Older server implementations still use port 2000, while newer standard 
 conform server can only be accessed via port 4190.">
+<!ENTITY options.port.4190 "4190 (Default)" >
+<!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Other:">
 <!ENTITY options.port.autoselect "Auto Select Port">
 <!ENTITY options.port.autoselect.running "Selecting Port, please wait...">
@@ -48,11 +50,11 @@ conform server can only be accessed via port 4190.">
 "Transport Layer Security (TLS) secures the connection to the manage sieve server.
 It cyphers all data and is designed to prevent eavesdropping and tampering.">
 <!ENTITY options.security.description2 
-"ManageSieve usually transfers passwords uncrypted. So unless you have a realy 
-good reason (e.g. Debugging), you should not turn TLS off.">
-<!ENTITY options.security.tls "use TLS, if available">
-<!ENTITY options.security.tls.key "t">
-
+"ManageSieve usually transfers passwords unencrypted. So unless you have a really 
+good reason (e.g. Debugging), you should always force TLS.">
+<!ENTITY options.security.tls.disabled "No TLS">
+<!ENTITY options.security.tls.available "TLS, when available">
+<!ENTITY options.security.tls.force "Force TLS">
 
 <!ENTITY options.login "Authentification">
 <!ENTITY options.login.key "A">
@@ -73,6 +75,7 @@ server assumes the client is disconnected and hangs up the connection.">
 <!ENTITY options.misc.keepalive.description2
 "A keepalive request indecates the connection is still active and
 should be preserved.">
+<!ENTITY options.misc.keepalive.min "min">
 
 <!ENTITY options.misc.compile.caption "Syntax check">
 <!ENTITY options.misc.compile.description
@@ -82,6 +85,7 @@ low, syntax check requests are grouped.">
 <!ENTITY options.misc.compile "Check Scripts while typing">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Validate at least every">
+<!ENTITY options.misc.compile.ms "ms"> 
 
 <!ENTITY options.debug.warning 
   "Gardez à l'esprit que ni &quot;SASL LOGIN&quot; ni &quot;SASL PLAIN&quot; ne crypte votre mot de passe, 
@@ -103,11 +107,16 @@ low, syntax check requests are grouped.">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "LOGIN">
 <!ENTITY options.authmechanism.plain "PLAIN">
-<!ENTITY options.authmechanism.description "Dans certaines situations, par exemple quand vous utilisez un proxy d'authentification, vous pourriez vouloir forcer un méchanisme d'authentification spécifique." > 
+<!ENTITY options.authmechanism.description 
+"Dans certaines situations, par exemple quand vous utilisez un proxy d'authentification,
+vous pourriez vouloir forcer un méchanisme d'authentification spécifique." > 
 
 <!ENTITY options.proxyauth.caption "Proxy d'autorisation">
-<!ENTITY options.proxyauth.desc "Le proxy d'autorisation permet à un utilisateur authentifié d'agir pour le compte d'un autre utilisateur. En général, les serveurs sont configurés de façon à ce que cette fonctionalité ne soit disponible que pour les administrateurs.">
-<!ENTITY options.proxyauth.force "Lorsque vous utilisez le proxy d'autorisation, vous devriez forcer le méchanisme d'authentification à &quot;SASL PLAIN&quot;.">
+<!ENTITY options.proxyauth.desc
+"Le proxy d'autorisation permet à un utilisateur authentifié d'agir pour le compte 
+d'un autre utilisateur. En général, les serveurs sont configurés de façon à ce que cette fonctionalité ne soit disponible que pour les administrateurs.">
+<!ENTITY options.proxyauth.force 
+"Lorsque vous utilisez le proxy d'autorisation, vous devriez forcer le méchanisme d'authentification à &quot;SASL PLAIN&quot;.">
 <!ENTITY options.proxyauth.none "Aucun">
 <!ENTITY options.proxyauth.default "Utilisateur Sieve">
 <!ENTITY options.proxyauth.prompt "Me demander">
@@ -120,8 +129,10 @@ low, syntax check requests are grouped.">
 <!ENTITY options.info.username "Utilisateur:">
 <!ENTITY options.info.auth "Authentification:">
 
-<!ENTITY options.account.sieve "Sieve est un puissant langage de script pour le filtrage des mails côté serveur.">
-<!ENTITY options.account.activate "Voulez-vous activer la gestion des scripts Sieve de ce compte?">
+<!ENTITY options.account.sieve 
+  "Sieve est un puissant langage de script pour le filtrage des mails côté serveur.">
+<!ENTITY options.account.activate 
+  "Voulez-vous activer la gestion des scripts Sieve de ce compte?">
 <!ENTITY options.account.activate.yes "Oui, gérer les scripts Sieve de ce compte:">
 <!ENTITY options.account.activate.no "Non, ce compte ne gère pas Sieve">
 <!ENTITY options.account.filters "Modifier les filtres">
@@ -185,9 +196,11 @@ use '127.0.0.1' instead.">
 
 <!ENTITY list.wait.connect "Connexion...">
 
-<!ENTITY list.warning "Ce compte n'est pas configuré pour Sieve, aller dans 'Outils -> Filtres Sieve'">
+<!ENTITY list.warning 
+  "Ce compte n'est pas configuré pour Sieve, aller dans 'Outils -> Filtres Sieve'">
 <!ENTITY list.error "La dernière commande a échouée:">
-<!ENTITY list.badcert "Votre serveur de mails essai de s'identifier avec des informtions invalides.">
+<!ENTITY list.badcert 
+  "Votre serveur de mails essai de s'identifier avec des informtions invalides.">
 <!ENTITY list.badcert.error 
   "Si habituellement vous vous connectez sans problème, cette erreur pourrait signifier que quelqu'un tente d'usurper l'identité du serveur.
 
@@ -224,7 +237,6 @@ to do a manual configuration.">
 
 <!ENTITY list.autoconfig.retest "Re-test">
 <!ENTITY list.autoconfig.config "Manual Configuration">
-
 
 <!-- Locale for the Edit Filter Dialog -->
 <!ENTITY edit.title "Modifier le filtre Sieve">
@@ -264,3 +276,4 @@ to do a manual configuration.">
 <!ENTITY edit.searchreplace.backward "Vers le haut">
 <!ENTITY edit.searchreplace.find "Suivant">
 <!ENTITY edit.searchreplace.replace "Remplacer">
+<!ENTITY edit.searchreplace.error "Phrase not found">

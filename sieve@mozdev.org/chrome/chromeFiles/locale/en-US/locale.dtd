@@ -192,9 +192,11 @@ use '127.0.0.1' instead.">
 
 <!ENTITY list.wait.connect "Connecting...">
 
-<!ENTITY list.warning "This account is not configured for manage sieve, goto 'Tools-> SieveMessage Filters'">
+<!ENTITY list.warning
+  "This account is not configured for manage sieve, goto 'Tools-> SieveMessage Filters'">
 <!ENTITY list.error "Last Command failed, because the server reported an error:">
-<!ENTITY list.badcert "Your mail server attempts to identify itself with invalid information.">
+<!ENTITY list.badcert 
+  "Your mail server attempts to identify itself with invalid information.">
 <!ENTITY list.badcert.error 
 "If you usually connect to this server without problems, this error could 
 mean that someone is trying to impersonate the server.
@@ -253,7 +255,6 @@ to do a manual configuration.">
 <!ENTITY edit.toolbar.home "Home">
 <!ENTITY edit.toolbar.print "Print">
 <!ENTITY edit.toolbar.search "Search">
-
 
 <!ENTITY edit.scriptname "Scriptname:">
 <!ENTITY edit.errorbar.title "Syntax Errors">

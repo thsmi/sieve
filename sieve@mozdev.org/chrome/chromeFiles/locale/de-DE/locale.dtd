@@ -37,6 +37,8 @@ meist der Sieve Servername mit dem des IMAP Servers identisch.">
 <!ENTITY options.port.description2
 "Dementsprechend akzeptieren ältere Server akzeptieren nur Verbindungen
 über den Port 2000 während neuere Versionen den Port 4190 bevorzugen.">
+<!ENTITY options.port.4190 "4190 (Default)" >
+<!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Anderer:">
 <!ENTITY options.port.autoselect "Auto Select Port">
 <!ENTITY options.port.autoselect.running "Selecting Port, please wait...">
@@ -50,8 +52,9 @@ hierdruch wird das Abhören der Zugangdaten sowie Manipulationen effektiv verhin
 <!ENTITY options.security.description2 
 "ManageSieve überträgt normalerweise Passwörter unverschlüsselt. Daher 
 sollten Sie TLS immer aktivieren.">
-<!ENTITY options.security.tls "TLS, wenn möglich">
-<!ENTITY options.security.tls.key "t">
+<!ENTITY options.security.tls.disabled "No TLS">
+<!ENTITY options.security.tls.available "TLS, when available">
+<!ENTITY options.security.tls.force "Force TLS">
 
 <!ENTITY options.login "Authentifizierung">
 <!ENTITY options.login.key "A">
@@ -72,6 +75,7 @@ server assumes the client is disconnected and hangs up the connection.">
 <!ENTITY options.misc.keepalive.description2
 "A keepalive request indecates the connection is still active and
 should be preserved.">
+<!ENTITY options.misc.keepalive.min "min">
 
 <!ENTITY options.misc.compile.caption "Syntax check">
 <!ENTITY options.misc.compile.description
@@ -81,6 +85,7 @@ low, syntax check requests are grouped.">
 <!ENTITY options.misc.compile "Check Scripts while typing">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Validate at least every"> 
+<!ENTITY options.misc.compile.ms "ms"> 
 
 <!ENTITY options.debug.warning 
 "Bitte beachten Sie, dass Debugmeldungen von SASL Login und SASL Plain Ihr 
@@ -126,8 +131,10 @@ daher meist nur Administratoren zur Verfügung.">
 <!ENTITY options.info.username "Benutzername:">
 <!ENTITY options.info.auth "Authentifizierung:">
 
-<!ENTITY options.account.sieve "Sieve ist eine Skriptsprache für serverseitige Mail Filterung.">
-<!ENTITY options.account.activate "Möchten Sie Sieve Scripte für diesen Account verwalten?">
+<!ENTITY options.account.sieve
+"Sieve ist eine Skriptsprache für serverseitige Mail Filterung.">
+<!ENTITY options.account.activate
+"Möchten Sie Sieve Scripte für diesen Account verwalten?">
 <!ENTITY options.account.activate.yes "Ja, dieser Server untersützt Sieve:">
 <!ENTITY options.account.activate.no "Nein, dieses Konto unterstützt kein Sieve">
 <!ENTITY options.account.filters "Filters bearbeiten...">
@@ -273,3 +280,4 @@ to do a manual configuration.">
 <!ENTITY edit.searchreplace.backward "Rückwärts">
 <!ENTITY edit.searchreplace.find "Suchen">
 <!ENTITY edit.searchreplace.replace "Ersetzen">
+<!ENTITY edit.searchreplace.error "Phrase not found">

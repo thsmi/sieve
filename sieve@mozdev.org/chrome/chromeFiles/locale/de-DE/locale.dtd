@@ -35,26 +35,26 @@ meist der Sieve Servername mit dem des IMAP Servers identisch.">
 <!ENTITY options.port.description
 "Seitdem Sieve in einen offiziellen RFC Standard übergegangen ist, hat sich der Port geändert.">
 <!ENTITY options.port.description2
-"Dementsprechend akzeptieren ältere Server akzeptieren nur Verbindungen
-über den Port 2000 während neuere Versionen den Port 4190 bevorzugen.">
+"Dementsprechend akzeptieren neuere Server nur Verbindungen
+über den Port 4190 während altere Versionen den Port 2000 bevorzugen.">
 <!ENTITY options.port.4190 "4190 (Default)" >
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Anderer:">
-<!ENTITY options.port.autoselect "Auto Select Port">
-<!ENTITY options.port.autoselect.running "Selecting Port, please wait...">
-<!ENTITY options.port.autoselect.successful "Sieve detected on Port ">
-<!ENTITY options.port.autoselect.error "Selecting Port failed...">
+<!ENTITY options.port.autoselect "Port automatisch wählen">
+<!ENTITY options.port.autoselect.running "Porterkennung aktiv, bitte warten...">
+<!ENTITY options.port.autoselect.successful "Erkennung erfolgreich, Server Port:">
+<!ENTITY options.port.autoselect.error "Auswahlfehlgeschalgen...">
 
-<!ENTITY options.security.caption "Security">
+<!ENTITY options.security.caption "Verbindungs Sicherheit">
 <!ENTITY options.security.description
-"Transport Layer Security (TLS) verschlüsselt die Verbindung zum Manage Sieve server,
-hierdruch wird das Abhören der Zugangdaten sowie Manipulationen effektiv verhindert.">
+"Transport Layer Security (TLS) verschlüsselt die Verbindung zum ManageSieve server,
+hierdruch werden Abhören der Zugangdaten sowie Manipulationen effektiv verhindert.">
 <!ENTITY options.security.description2 
 "ManageSieve überträgt normalerweise Passwörter unverschlüsselt. Daher 
-sollten Sie TLS immer aktivieren.">
-<!ENTITY options.security.tls.disabled "No TLS">
-<!ENTITY options.security.tls.available "TLS, when available">
-<!ENTITY options.security.tls.force "Force TLS">
+sollten Sie TLS immer erzwingen.">
+<!ENTITY options.security.tls.disabled "Kein TLS">
+<!ENTITY options.security.tls.available "TLS, wenn verfügbare">
+<!ENTITY options.security.tls.force "TLS erzwingen">
 
 <!ENTITY options.login "Authentifizierung">
 <!ENTITY options.login.key "A">
@@ -77,7 +77,7 @@ server assumes the client is disconnected and hangs up the connection.">
 should be preserved.">
 <!ENTITY options.misc.keepalive.min "min">
 
-<!ENTITY options.misc.compile.caption "Syntax check">
+<!ENTITY options.misc.compile.caption "Syntaxüberprüfung">
 <!ENTITY options.misc.compile.description
 "While editing Scripts, they can be checked for validity. The syntax 
 check is performed by the server. In oder to keep network traffic 
@@ -132,12 +132,12 @@ daher meist nur Administratoren zur Verfügung.">
 <!ENTITY options.info.auth "Authentifizierung:">
 
 <!ENTITY options.account.sieve
-"Sieve ist eine Skriptsprache für serverseitige Mail Filterung.">
+"Sieve ist eine Skriptsprache um serverseitig E-Mails zu filtern und sortieren.">
 <!ENTITY options.account.activate
 "Möchten Sie Sieve Scripte für diesen Account verwalten?">
-<!ENTITY options.account.activate.yes "Ja, dieser Server untersützt Sieve:">
+<!ENTITY options.account.activate.yes "Ja, dieses Konto untersützt Sieve:">
 <!ENTITY options.account.activate.no "Nein, dieses Konto unterstützt kein Sieve">
-<!ENTITY options.account.filters "Filters bearbeiten...">
+<!ENTITY options.account.filters "Filter bearbeiten...">
 <!ENTITY options.account.settings "Einstellungen ändern...">
 
 <!-- Credits -->
@@ -149,9 +149,9 @@ daher meist nur Administratoren zur Verfügung.">
 "Um eine Firewall zu umgehen können Verbindungen zu einem Sieve Server durch 
 einen transparenten SOCKS Proxy geleitet werden. ">
 <!ENTITY options.proxy.description.nameresolution
-"SOCKSv4 löst Hostnamen über den lokal Rechner auf. Bei SOCKSv5 können
-Hostnamen auch vom DNS des Proxy ermittelt werden. Falls der Proxy vertrauenswürdig
-ist sollte die letzere Variante genutzt werden.">
+"SOCKSv4 löst Hostnamen über den lokalen Rechner auf. Bei SOCKSv5 können
+Hostnamen über den DNS des Proxy ermittelt werden. Falls der Proxy vertrauenswürdig
+ist sollte die letztere Variante nutzen.">
 <!ENTITY options.proxy.description.localhost
 "Der Hostname 'localhost' wird auf manchen Systemen nicht richtig aufgelöst,
 als Workaround die Loopback IP '127.0.0.1' nutzen.">
@@ -213,34 +213,35 @@ dass Sie tatsächlich mit dem gewünschten Server verbunden sind.">
 <!ENTITY list.badcert.ignore "Weiter">
 <!ENTITY list.badcert.abort "Abbrechen">
 
-<!ENTITY list.autoconfig.welcome.caption "Welcome!">
+<!ENTITY list.autoconfig.welcome.caption "Willkommen!">
 <!ENTITY list.autoconfig.welcome.description1 
-"This account is not Configured for manage sieve.">
+"Dieses Sieve Konto ist derzeit noch nicht konfiguriert">
 <!ENTITY list.autoconfig.welcome.description2
-"Click on 'continue' to detect the configuration automatically.
-Or choose 'Advanced' to configure the account manually.">
+"Klicken Sie auf 'Weiter' um die Konfiguration automatisch zu erkennen, oder
+auf 'Erweitert' um das Konto manuell zu konfigurieren">
 
-<!ENTITY list.autoconfig.advanced "Advanced">
-<!ENTITY list.autoconfig.continue "Continue">
+<!ENTITY list.autoconfig.advanced "Erweitert">
+<!ENTITY list.autoconfig.continue "Weiter">
 
-<!ENTITY list.autoconfig.detecting.caption "Autodetecting Configuration">
+<!ENTITY list.autoconfig.detecting.caption "Analysiere Konfiguration">
 <!ENTITY list.autoconfig.detecting.description 
-  "Might take some minutes to complete...">
+  "Dauert mitunter mehrere Minuten...">
 
-<!ENTITY list.autoconfig.cancel "Cancel">
+<!ENTITY list.autoconfig.cancel "Abbrechen">
 
-<!ENTITY list.autoconfig.success.caption "Congratulations!">
+<!ENTITY list.autoconfig.success.caption "Erkennung erfolgreich">
 <!ENTITY list.autoconfig.success.description 
-  "Your account is now configured and ready to use...">
+  "Ihr Sieve Konto ist nun konfiguriert...">
 
-<!ENTITY list.autoconfig.error.caption "Sorry">
+<!ENTITY list.autoconfig.error.caption "Erkennung fehlgeschlagen">
 <!ENTITY list.autoconfig.error.description 
-"It seems your mail server does not support manage sieve or requires
-a special configuration. Please contact your Mail provider or try
-to do a manual configuration.">
+"Die Verbindungdaten konnten nicht automatisch erkannt werden. Entweder unterstützt
+Ihr Server das ManageSieve Protokoll nicht oder es ist eine spezielle 
+Konfiguration notwendig. Bitte erfagen Sie bei Ihren Mail die Verbindungsdaten
+und konfiguriern Sie das Sieve Konto manuell.">
 
-<!ENTITY list.autoconfig.retest "Re-test">
-<!ENTITY list.autoconfig.config "Manual Configuration">
+<!ENTITY list.autoconfig.retest "Nochmal erkennen">
+<!ENTITY list.autoconfig.config "Manuelle konfiguration">
 
 
 <!-- Locale for the Edit Filter Dialog -->
@@ -280,4 +281,4 @@ to do a manual configuration.">
 <!ENTITY edit.searchreplace.backward "Rückwärts">
 <!ENTITY edit.searchreplace.find "Suchen">
 <!ENTITY edit.searchreplace.replace "Ersetzen">
-<!ENTITY edit.searchreplace.error "Phrase not found">
+<!ENTITY edit.searchreplace.error "Suchbegriff nicht gefunden">

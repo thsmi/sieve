@@ -37,14 +37,14 @@
 "Порт сервера был изменён при разработке проекта стандарта RFC ManageSieve.">
 <!ENTITY options.port.description2
 "Старые реализации серверов все еще используют порт 2000, в то время как доступ к серверам, 
-соответсвующим новому стандарту, может быть получен только через порт 4190.">
-<!ENTITY options.port.4190 "4190 (Default)" >
+соответствующим новому стандарту, может быть получен только через порт 4190.">
+<!ENTITY options.port.4190 "4190 (стандартный)" >
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Другой:">
 <!ENTITY options.port.autoselect "Автоматический выбор порта">
 <!ENTITY options.port.autoselect.running "Выбор порта, пожалуйста, подождите...">
 <!ENTITY options.port.autoselect.successful "Sieve обнаружен на порте ">
-<!ENTITY options.port.autoselect.error "Неудалось выбрать порт...">
+<!ENTITY options.port.autoselect.error "Не удалось выбрать порт...">
 
 <!ENTITY options.security.caption "Защита">
 <!ENTITY options.security.description
@@ -53,9 +53,9 @@
 <!ENTITY options.security.description2 
 "Обычно ManageSieve передает пароли в незашифрованном виде. Поэтому Вам не следует отключать TLS 
 без крайней необходимости (например, для отладки).">
-<!ENTITY options.security.tls.disabled "No TLS">
-<!ENTITY options.security.tls.available "TLS, when available">
-<!ENTITY options.security.tls.force "Force TLS">
+<!ENTITY options.security.tls.disabled "Не использовать TLS">
+<!ENTITY options.security.tls.available "TLS, если возможно">
+<!ENTITY options.security.tls.force "Обязательно использовать TLS">
 
 <!ENTITY options.login "Аутентификация">
 <!ENTITY options.login.key "A">
@@ -76,7 +76,7 @@
 <!ENTITY options.misc.keepalive.description2
 "Поддерживающий запрос 'keepalive' служит признаком того, что соединение все еще активно и
 и должно быть сохранено.">
-<!ENTITY options.misc.keepalive.min "min">
+<!ENTITY options.misc.keepalive.min "мин">
 
 <!ENTITY options.misc.compile.caption "Проверка синтаксиса">
 <!ENTITY options.misc.compile.description
@@ -86,7 +86,7 @@
 <!ENTITY options.misc.compile "Проверять скрипты во время набора">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Проверять не реже, чем каждые"> 
-<!ENTITY options.misc.compile.ms "ms">
+<!ENTITY options.misc.compile.ms "мс">
 
 <!ENTITY options.debug.warning 
 "Имейте в виду, что так как ни SASL Login ни SASL Plain не шифруют Ваш пароль, 
@@ -276,4 +276,4 @@
 <!ENTITY edit.searchreplace.backward "В обратном направлении">
 <!ENTITY edit.searchreplace.find "Найти">
 <!ENTITY edit.searchreplace.replace "Заменить">
-<!ENTITY edit.searchreplace.error "Phrase not found">
+<!ENTITY edit.searchreplace.error "Фраза не найдена">

@@ -335,8 +335,11 @@ function onSelectAccount()
     return sivSetStatus(2,"error.noaccount");
       
   // Disable and cancel if account is not enabled
-  if (account.isEnabled() == false)
+  if ((!account.isEnabled()) || account.isFirstRun())
+  {
+    account.setFirstRun();
     return sivSetStatus(8);
+  }
     
  // TODO wait for timeout or session close before calling connect again
  // otherwise we might endup using a closing channel. An isClosing function

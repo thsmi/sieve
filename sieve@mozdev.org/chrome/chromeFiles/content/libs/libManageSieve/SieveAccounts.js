@@ -1272,6 +1272,30 @@ SieveAccount.prototype.setEnabled
 {
   gPref.setBoolPref(this.sieveKey+".enabled",enabled);
 }
+
+SieveAccount.prototype.isFirstRun
+    = function ()
+{
+  // if the host settings are set manually, we obiously don't need
+  // to show the first run dialog 
+  if ( this.getHost().getType() == 1)
+  {
+    this.setFirstRun();
+    return false;
+  }
+
+  if (gPref.prefHasUserValue(this.sieveKey+".firstRunDone"))
+    return !(gPref.getBoolPref(this.sieveKey+".firstRunDone"));
+  
+  return true;
+}
+
+SieveAccount.prototype.setFirstRun
+    = function()
+{
+  gPref.setBoolPref(this.sieveKey+".firstRunDone",true);      
+}
+
 /**
  * XXX ...
  * @return {SieveAccountSettings} returns the account settings.

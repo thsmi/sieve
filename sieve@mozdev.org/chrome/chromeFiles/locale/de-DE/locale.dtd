@@ -43,7 +43,7 @@ meist der Sieve Servername mit dem des IMAP Servers identisch.">
 <!ENTITY options.port.autoselect "Port automatisch wählen">
 <!ENTITY options.port.autoselect.running "Porterkennung aktiv, bitte warten...">
 <!ENTITY options.port.autoselect.successful "Erkennung erfolgreich, Server Port:">
-<!ENTITY options.port.autoselect.error "Auswahlfehlgeschalgen...">
+<!ENTITY options.port.autoselect.error "Auswahlfehlgeschlagen...">
 
 <!ENTITY options.security.caption "Verbindungs Sicherheit">
 <!ENTITY options.security.description
@@ -53,7 +53,7 @@ hierdruch werden Abhören der Zugangdaten sowie Manipulationen effektiv verhinde
 "ManageSieve überträgt normalerweise Passwörter unverschlüsselt. Daher 
 sollten Sie TLS immer erzwingen.">
 <!ENTITY options.security.tls.disabled "Kein TLS">
-<!ENTITY options.security.tls.available "TLS, wenn verfügbare">
+<!ENTITY options.security.tls.available "TLS, wenn verfügbar">
 <!ENTITY options.security.tls.force "TLS erzwingen">
 
 <!ENTITY options.login "Authentifizierung">
@@ -65,7 +65,7 @@ sollten Sie TLS immer erzwingen.">
 <!ENTITY options.login.username.key "u">
 <!ENTITY options.login.show "Passwörter anzeigen...">
 
-<!ENTITY options.misc "Miscellaneous Settings">
+<!ENTITY options.misc "Sonstige Einstellungen">
 <!ENTITY options.misc.keepalive "Enable keepalives">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.keepalive2 "Send every">

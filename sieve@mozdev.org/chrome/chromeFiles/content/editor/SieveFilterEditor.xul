@@ -23,8 +23,8 @@
   title="&edit.title;"
   style="width: 45em; height: 31em;"
   persist="width height screenX screenY"
-  onload="onLoad();"
-  onclose="return onClose();"
+  onload="onWindowLoad();"
+  onclose="return onWindowClose();"
   windowtype="Sieve:FilterEditor" >
 
   <stringbundleset id="stringbundleset">

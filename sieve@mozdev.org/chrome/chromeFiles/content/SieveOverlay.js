@@ -6,11 +6,70 @@
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
-// we don't want to pollute the global namespace more than necessay.
+
 var gSivExtUtils =
 {
   OpenFilters : function(server,parentWin)
   {
+    if (typeof(Cc) == "undefined")
+      { var Cc = Components.classes; }
+    if (typeof(Ci) == "undefined")
+      { var Ci = Components.interfaces; }
+    
+    if (server == null)
+      server = this.GetActiveServer();    
+      
+    var options = {}
+                     
+    if (server != null)
+      options = { server: server.rootMsgFolder.baseMessageURI.slice(15) }
+      
+    options.wrappedJSObject = options;
+
+    var mediator = Cc["@mozilla.org/appshell/window-mediator;1"]
+          .getService(Ci.nsIWindowMediator);
+    
+    var w = mediator.getXULWindowEnumerator(null);
+    
+    while(w.hasMoreElements())
+    {
+      var win = w.getNext();
+      var docShells = win
+              .QueryInterface(Ci.nsIXULWindow).docShell
+              .getDocShellEnumerator(Ci.nsIDocShellTreeItem.typeChrome,Ci.nsIDocShell.ENUMERATE_FORWARDS);           
+        
+      while (docShells.hasMoreElements())
+      {
+        var childDoc = docShells.getNext()
+                .QueryInterface(Ci.nsIDocShell)
+                .contentViewer.DOMDocument;
+  
+        if (childDoc.location.href != "chrome://sieve/content/editor/SieveFilterExplorer.xul")
+          continue;
+          
+        var tabmail = win.docShell.contentViewer.DOMDocument.getElementById("tabmail");
+       
+        if (!tabmail)
+          continue;
+    
+        if (!tabmail.tabModes.SieveExplorerTab)
+          continue;
+
+        if (!tabmail.tabModes.SieveExplorerTab.tabs.length)
+          continue;
+      
+        tabmail.switchToTab(tabmail.tabModes.SieveExplorerTab.tabs[0]);
+        childDoc.defaultView.QueryInterface(Ci.nsIDOMWindow).focus();
+        win
+        
+        return;
+    }
+  }
+  
+  document.getElementById("tabmail").openTab("SieveExplorerTab", options);
+    
+  return;
+   
     var w = null;
     var mediator = Components
             .classes["@mozilla.org/appshell/window-mediator;1"]
@@ -46,6 +105,7 @@ var gSivExtUtils =
           "chrome://sieve/content/editor/SieveFilterExplorer.xul",
           "Sieve:FilterExplorer", 
           "chrome,resizable,centerscreen,all", options);
+           
   },  
   
   
@@ -146,4 +206,161 @@ var gSivExtUtils =
   }
 }
 
+
+var SieveTabType =
+{
+  name: "SieveExplorerTab",
+  perTabPanel: "iframe",
+
+  modes: {
+    SieveExplorerTab: {
+      type: "SieveExplorerTab",
+      maxTabs: 1,
+      
+      openTab: function(aTab, aArgs)
+      {
+        aArgs.wrappedJSObject = aArgs;
+        aTab.panel.contentWindow.arguments = [aArgs];
+       
+        this._addListeners(aTab);
+        aTab.panel.contentWindow.tabmail = document.getElementById("tabmail");        
+        
+        aTab.panel.setAttribute("src","chrome://sieve/content/editor/SieveFilterExplorer.xul");
+      },
+      
+      persistTab: function(aTab)  
+      {
+        return {
+          account: aTab.panel.contentWindow.getSelectedAccount().getUri()
+        }
+      },
+      
+      restoreTab: function(aTabmail, aPersistedState)
+      {
+        aTabmail.openTab("SieveExplorerTab",{server:  aPersistedState.account})
+      }      
+    },
+    
+    SieveEditorTab: {
+      type: "SieveEditorTab",
+      
+      openTab: function(aTab, aArgs)
+      {
+        if (aArgs["uri"])
+          aTab.uri = aArgs["uri"];
+        
+        aArgs.wrappedJSObject = aArgs;
+        aTab.panel.contentWindow.arguments = [aArgs];
+               
+        this._addListeners(aTab);        
+        
+        aTab.panel.setAttribute("src","chrome://sieve/content/editor/SieveFilterEditor.xul");
+      },
+      
+      persistTab: function(aTab)  
+      {
+        if (! aTab.panel.contentWindow.onWindowPersist)
+          return null;
+          
+        var args = aTab.panel.contentWindow.onWindowPersist();
+        
+        if (aTab.uri)
+          args["uri"] = aTab.uri;
+          
+        return args;
+      },
+      
+      restoreTab: function(aTabmail, aPersitedState)
+      {
+        aTabmail.openTab("SieveEditorTab",  aPersitedState);
+      }
+    }
+  }, 
+  
+  closeTab: function(aTab)
+  {          
+    this._removeListeners(aTab);
+  },
+  
+  showTab: function onShowTab(aTab)
+  {
+    //aTab.panel.setAttribute("type", "content-primary");
+  },
+  
+  saveTabState: function onSaveTabState(aTab)
+  {
+  },
+      
+  onTitleChanged: function(aTab, aTabNode)
+  {
+    aTab.title = aTab.panel.contentWindow.document.title;
+  },
+  
+  tryCloseTab: function(aTab)
+  {
+    if (! aTab.panel.contentWindow.onWindowClose())
+      return false;
+    
+    return true;
+  },
+  
+  _addListeners: function(aTab)
+  {
+    function onDOMTitleChanged(aEvent)
+    {
+      document.getElementById("tabmail").setTabTitle(aTab);
+    }
+    // Save the function we'll use as listener so we can remove it later.
+    aTab.titleListener = onDOMTitleChanged;
+
+    function onDOMWindowClose(aEvent)
+    {
+      if (!aEvent.isTrusted)
+        return;
+ 
+      // Redirect any window.close events to closing the tab. As a 3-pane tab
+      // must be open, we don't need to worry about being the last tab open.
+      document.getElementById("tabmail").closeTab(aTab);
+      aEvent.preventDefault();
+    }
+    // Save the function we'll use as listener so we can remove it later.
+    aTab.closeListener = onDOMWindowClose;        
+    
+    function onLoad(aEvent)
+    {
+      document.getElementById("tabmail").setTabTitle(aTab);
+    }    
+    aTab.loadListener = onLoad;
+    
+    // Add the listener.
+    aTab.panel.contentWindow.addEventListener("DOMTitleChanged", aTab.titleListener, true);
+    
+    // Add the listener.
+    aTab.panel.contentWindow.addEventListener("DOMWindowClose", aTab.closeListener, true);
+    
+    aTab.panel.contentWindow.addEventListener("load",aTab.loadListener,true);
+  },
+  
+  _removeListeners: function(aTab)
+  {
+    if (aTab.titleListener)
+      aTab.panel.contentWindow.removeEventListener("DOMTitleChanged", aTab.titleListener, true);
+    
+    if (aTab.closeListener)
+      aTab.panel.contentWindow.removeEventListener("DOMWindowClose", aTab.closeListener, true);
+    
+    if (aTab.loadListeners)
+      aTab.panel.contentWindow.removeEventListener("load",aTab.loadListener,true)
+    
+    aTab.titleListener = null;
+    aTab.closeListener = null;
+    aTab.loadListener = null;
+  }
+    
+};
+
+window.addEventListener("load", function(e) {
+    var tabmail = document.getElementById('tabmail');
+    if( tabmail ) tabmail.registerTabType(SieveTabType);
+}, false);
 

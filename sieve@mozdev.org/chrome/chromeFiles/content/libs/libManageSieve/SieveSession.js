@@ -70,6 +70,9 @@ function SieveSession(accountId,sid)
   }
   
   this.sid = sid;
+  
+  // 0 = Offline 1 = Connecting 2 = connected 3= disconnecting 
+  this.state = 0;
 }
 
 SieveSession.prototype = 
@@ -115,7 +118,8 @@ SieveSession.prototype =
   
   onAuthenticate: function(response)
   { 
-    this.listener.onChannelStatus(3,"progress.authenticating");
+    this._invokeListeners("onChannelStatus",3,"progress.authenticating");
+      
     var account =  this.account;
     
     // Without a username, we can skip the authentication 
@@ -128,8 +132,7 @@ SieveSession.prototype =
 
     // Notify the listener to display capabilities. We simply pass the response... 
     // ... to the listener. So the listener can pick whatever he needs.
-    if (this.listener && this.listener.onChannelStatus)
-      this.listener.onChannelStatus(7,response);
+    this._invokeListeners("onChannelStatus",7,response);
 
     // We have to figure out which ist the best SASL Mechanism for the login ...
     // ... therefore we check first whether a mechanism is forced by the user ...
@@ -252,8 +255,52 @@ SieveSession.prototype =
    
   onLoginResponse: function(response)
   {
-    if (this.listener)
-      this.listener.onChannelCreated(this.sieve);    
+    // We are connected...
+    this.state = 2;
+    this._invokeListeners("onChannelCreated",this.sieve);
+  },
+  
+  addListener: function(listener)
+  {
+    if (!this.listeners)
+      this.listeners = [];
+      
+    this.listeners.push(listener);
+    
+  },
+  
+  removeListener: function(listener)
+  {
+    if (!this.listeners)
+      return;
+
+    for (var i=0; i< this.listeners.length; i++)
+      if (this.listeners[i] == listener)
+        this.listeners.splice(i,1);
+ 
+  },
+  
+  _hasListeners: function(callback)
+  {
+    if (!this.listeners)
+      return false;
+      
+    for (var i=0; i< this.listeners.length; i++)
+     if (this.listeners[i][callback])
+       return true;      
+  },
+  
+  _invokeListeners: function(callback,arg1, arg2)
+  {
+    if (!this.listeners)
+      return;
+   
+    if (!this._hasListeners(callback))
+      this.debug.logger.logStringMessage("No Listener for "+callback+"\n"+this.listeners.toSource());
+      
+    for (var i=0; i< this.listeners.length; i++)
+     if (this.listeners[i][callback])
+       this.listeners[i][callback](arg1, arg2);
   },
 
   /** @private */  
@@ -300,14 +347,13 @@ SieveSession.prototype =
   {
     var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);  
     
-    if (ioService.offline && this.listener && this.listener.onOffline)
+    if (ioService.offline)
     {
-      this.listener.onOffline();
+      this._invokeListeners("onOffline");
       return;
     }
     
-    if (this.listener && this.listener.onTimeout)
-      this.listener.onTimeout(message);    
+    this._invokeListeners("onTimeout",message);
   },
   
   /**
@@ -326,13 +372,10 @@ SieveSession.prototype =
    *   overrides the default port supplied by the account.
    */    
   connect : function(hostname,port)
-  {                   
-    if (this.sieve && this.sieve.isAlive())
-    {        
-      this.onLoginResponse(null);     
-      return;
-    }
-        
+  { 
+    // set state to connecting...
+    this.state = 1;
+    
     this.sieve = Cc["@sieve.mozdev.org/transport;1"]
                    .createInstance().wrappedJSObject;
     
@@ -370,10 +413,13 @@ SieveSession.prototype =
   
   disconnect : function(force, id, message)
   {
+    // update state we are now disconnecting...
+    this.state = 3;
+    
     // at first we update the status, so that the user ...
     // ... knows what happened.
-    if (id && this.listener && this.listener.onChannelStatus)
-      this.listener.onChannelStatus(id,message);
+    if (id)
+      this._invokeListeners("onChannelStatus",id,message);
     
     // Skip if the connection already closed...
     if (!this.sieve)
@@ -393,8 +439,31 @@ SieveSession.prototype =
     // ... but this obviously is not always usefull
     this.sieve.disconnect();      
     this.sieve = null;
+    
+    // update state: we are disconnected
+    this.state = 0;
       
     return;
+  },
+
+  isConnecting : function()
+  {
+    return (this.state == 1);
+  },
+
+  isConnected : function()
+  {
+    return (this.state == 2);
+  },
+
+  isDisconnecting : function()
+  {
+    return (this.state == 3);
+  },
+  
+  isDisconnected : function()
+  {
+    return (this.state == 0);
   },
     
   /**
@@ -420,7 +489,7 @@ SieveSession.prototype =
      
     return cid;
   },
-  
+    
   /**
    * Closes and Invalidates a channel. In case all channels of a session are
    * closed, the connection to the remote server will be terminated. That's why
@@ -522,12 +591,11 @@ SieveSession.prototype =
     if (this.debug.logger != null)
       this.debug.logger.logStringMessage("Sieve BadCertHandler: notifyCertProblem");
   
-    // no listener registert, show the default UI 
-    if ( !(this.listener) || !(this.listener.onBadCert))
+    // no listener registert, show the default UI
+    if (!this._hasListeners("onBadCert"))
       return false;
       
-    // otherwise call the listener and supress the default UI
-    this.listener.onBadCert(targetSite,sslStatus);
+    this._invokeListeners("onBadCert",targetSite,sslStatus);
     return true;
   },
   
@@ -545,12 +613,12 @@ SieveSession.prototype =
       this.debug.logger.logStringMessage("Sieve BadCertHandler: notifySSLError");
     
     // no listener registert, show the default UI 
-    if ( !(this.listener) || !(this.listener.onBadCert))
+    if (!this._hasListeners("onBadCert"))
       return false;
 
     // otherwise call the listener and supress the default UI
-    this.listener.onBadCert(targetSite,error);
-    return true;
+    this._invokeListeners("onBadCert",targetSite,error);
+    return true;      
   },
   
   // Ci.nsIBadCertListener (Thunderbird 2 / Gecko 1.8.x compatibility)
@@ -610,5 +678,4 @@ SieveSession.prototype =
       this.debug.logger.logStringMessage("Sieve BadCertHandler: notifyCrlNextupdate");
   }  
   
-
 }

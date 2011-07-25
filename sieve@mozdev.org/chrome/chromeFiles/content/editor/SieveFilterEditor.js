@@ -66,6 +66,42 @@ var gEditorStatus =
 
 var event = 
 {
+  
+  onChannelCreated : function(sieve)
+  { 
+    event.onChannelReady(gCid);
+  },
+  
+  onChannelReady : function(cid)
+  {
+    // We observe only our channel...
+    if (gCid != cid)
+      return;
+      
+    if (gEditorStatus.defaultScript)
+    {
+      event.onScriptLoaded(args["scriptBody"]);
+      return;
+    }
+      
+    var request = new SieveGetScriptRequest(document.getElementById("txtName").value);
+    request.addGetScriptListener(event);
+    request.addErrorListener(event);
+
+    sivSendRequest(gSid,gCid,request);    
+  },
+  
+  onChannelClosed : function(cid)
+  {
+    // some other channel died we don't care about that...
+  },
+  
+  onChannelStatus : function(id,text,statusbar)
+  {
+    //TODO Move First run wizard, badcert warning etc to a separate
+    // xul file so that both files can share the same connection logic.
+  },
+  
   /**
    * @param {SieveGetScriptResponse} response
    */
@@ -86,9 +122,11 @@ var event =
     document.getElementById("sivContentEditor").value = script;
     document.getElementById("sivContentEditor").setSelectionRange(0, 0);
     document.getElementById("sivContentEditor").editor.enableUndo(true);
-    
-	  UpdateCursorPos();
+  
+    UpdateCursorPos();
     UpdateLines();
+    
+    document.getElementById("sivContentEditor").focus();    
   },
 
   /**
@@ -98,7 +136,7 @@ var event =
   {
     gEditorStatus.contentChanged = false;
 
-    if (gEditorStatus.isClosing && onClose())
+    if (gEditorStatus.isClosing && onWindowClose())
       close();
   },
 
@@ -121,7 +159,7 @@ var event =
       return;
     
       
-    if (onClose() == false)
+    if (onWindowClose() == false)
       aSubject.QueryInterface(Ci.nsISupportsPRBool).data = true;
     else
       close();
@@ -270,10 +308,24 @@ function onEditorKeyDown(event)
   //event.stopPropagation();
 }
 
-function onLoad()
+function onWindowPersist()
+{
+  // we just mirror the open dialogs
+  var args = {};
+  
+  if (gEditorStatus.contentChanged)
+    args["scriptBody"] = document.getElementById("txtScript").value;
+    
+  args["scriptName"] = document.getElementById("txtName").value;
+  args["compile"] = document.getElementById('btnCompile').checked;
+  args["account"] = gEditorStatus.account;
+  
+  return args; 
+}
+
+function onWindowLoad()
 { 
         
-   
   // checkbox buttons are buggy in Gecko 1.8, this has been fixed in ...
   // ...Gecko 1.9 (Thunderbird 3).
   // We implement the workaround mentioned in Bug 382457.
@@ -332,59 +384,49 @@ function onLoad()
       "click",
       function(event) {onSideBarBrowserClick(event);},
       false);
+
+  var args = window.arguments[0].wrappedJSObject;
   
-  var args = window.arguments[0].wrappedJSObject;    
-      
+  // There might be a default or persisted script...
+  if (args["scriptBody"])
+    gEditorStatus.defaultScript = args["scriptBody"];  
+  
+  gEditorStatus.account = args["account"];
+  var account = (new SieveAccounts()).getAccount(gEditorStatus.account);
+  
+  gEditorStatus.checkScriptDelay = account.getSettings().getCompileDelay();
+  
+  document.getElementById("txtName").value = args["scriptName"];
+  document.title = ""+args["scriptName"]+" - Sieve Filters";
+
+  document.getElementById("lblErrorBar").firstChild.nodeValue
+      = document.getElementById("strings").getString("syntax.ok");
+    
+  sivSetStatus(1,"status.loading");
+
   // Connect to the Sieve Object...  
   var sivManager = Components.classes["@sieve.mozdev.org/transport-service;1"]
                      .getService().wrappedJSObject; 
   
-  gSid = args["sieve"];
+  gSid = sivManager.createSession(account.getKey());
+  sivManager.addSessionListener(gSid,event);
+  
   gCid = sivManager.createChannel(gSid);
-  
-  gEditorStatus.checkScriptDelay = args["compileDelay"];
-  
-  document.getElementById("txtName").value = args["scriptName"];
-  document.title = ""+args["scriptName"]+" - Sieve Filters";
-  
-  document.getElementById("lblErrorBar").firstChild.nodeValue
-      = document.getElementById("strings").getString("syntax.ok");
-  
-  if (args["scriptBody"] != null)
-  {
-    event.onScriptLoaded(args["scriptBody"]);
-  }
-  else
-  {
-    sivSetStatus(1,"status.loading");
-      
-    var request = new SieveGetScriptRequest(args["scriptName"]);
-    request.addGetScriptListener(event);
-    request.addErrorListener(event);
-
-    sivSendRequest(gSid,gCid,request);
-  }
-  
+  sivManager.openChannel(gSid,gCid);
+    
   //preload sidebar...
   onSideBarHome();
   
+  if (!args["compile"])
+    args["compile"] = account.getSettings().hasCompileDelay();
+
   onErrorBar(args["compile"]);
   onSideBar(true);
   onSearchBar(false);
-  
-  document.getElementById("sivContentEditor").setSelectionRange(0, 0);
-  document.getElementById("sivContentEditor").focus();
 
   Cc["@mozilla.org/observer-service;1"]
       .getService (Ci.nsIObserverService)
-      .addObserver(event,"quit-application-requested", false);
-           
-  /*
-   * window.document.documentElement.addEventListener('focus', function(event) {
-   * if (event.target.nodeName=='textbox' &&
-   * event.target.hasAttribute('readonly')) {
-   * window.document.documentElement.focus(); } }, true);
-   */
+      .addObserver(event,"quit-application-requested", false);           
 }
 
 function onIgnoreOffline()
@@ -508,7 +550,7 @@ function onSave()
   sivSendRequest(gSid,gCid,request);
 }
 
-function onClose()
+function onWindowClose()
 {
   if (gEditorStatus.contentChanged == true)
   {
@@ -536,9 +578,13 @@ function onClose()
    
   clearTimeout(gEditorStatus.checkScriptTimer);
   
-  Cc["@mozilla.org/observer-service;1"]
-      .getService (Ci.nsIObserverService)
-      .removeObserver(event,"quit-application-requested");  
+  try
+  {
+    Cc["@mozilla.org/observer-service;1"]
+        .getService (Ci.nsIObserverService)
+        .removeObserver(event,"quit-application-requested");
+  }
+  catch (ex) {}
   
   // either the script has not changed or the user did not want to save... 
   // ... the script, so it's ok to exit.

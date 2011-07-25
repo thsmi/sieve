@@ -22,7 +22,7 @@ if (typeof(Ci) == "undefined")
   { var Ci = Components.interfaces; }
 
 var sid = null;
-var cid = null;
+var gCid = null;
 
 /** @type {{Components.interfaces.nsIConsoleService}}*/
 var gLogger = null;
@@ -55,7 +55,7 @@ var event =
     request.addListScriptListener(event);
     request.addErrorListener(event);
      
-    sivSendRequest(sid,cid,request);
+    sivSendRequest(sid,gCid,request);
   },
 
   onDeleteScriptResponse:  function(response)
@@ -65,7 +65,7 @@ var event =
     request.addListScriptListener(event);
     request.addErrorListener(event);
     
-    sivSendRequest(sid,cid,request);
+    sivSendRequest(sid,gCid,request);
   },
 
   onOffline: function()
@@ -98,7 +98,7 @@ var event =
     request.addSetActiveListener(event);
     request.addErrorListener(event);
 
-    sivSendRequest(sid,cid,request);
+    sivSendRequest(sid,gCid,request);
   },
       
   onChannelClosed : function()
@@ -110,17 +110,26 @@ var event =
     request.addListScriptListener(event);
     request.addErrorListener(event);
 
-    sivSendRequest(sid,cid,request);
+    sivSendRequest(sid,gCid,request);
   },
   
   onChannelCreated : function(sieve)
-  {    
+  {
+    event.onChannelReady(gCid);
+  },
+  
+  onChannelReady : function(cid)
+  {
+    // We observe only our channel...
+    if (gCid != cid)
+      return;
+      
     // List all scripts as soon as we are connected
     var request = new SieveListScriptRequest();
     request.addListScriptListener(event);
     request.addErrorListener(event);
 
-    sieve.addRequest(request);
+    sivSendRequest(sid,gCid,request);
   },
   
   onChannelStatus : function(id,text,statusbar)
@@ -161,6 +170,7 @@ function onWindowLoad()
   var menuImapAccounts = document.getElementById("menuImapAccounts");
 
   var accounts = (new SieveAccounts()).getAccounts();
+  
 
   for (var i = 0; i < accounts.length; i++)
   {   
@@ -206,7 +216,8 @@ function onWindowClose()
   }
     
   return true;
-}   
+}
+
 /**
  * @return {SieveAccount}
  */
@@ -258,9 +269,9 @@ function sivConnect(account)
   sid = sivManager.createSession(account.getKey());
   sivManager.addSessionListener(sid,event);
   
-  cid = sivManager.createChannel(sid);
+  gCid = sivManager.createChannel(sid);
   
-  sivManager.openChannel(sid,cid);
+  sivManager.openChannel(sid,gCid);
 }
 
 function sivSendRequest(sid,cid,request)
@@ -302,13 +313,13 @@ function sivDisconnect(state,message)
   if (state)
     sivSetStatus(state,message,"status.disconnected");  
   
-  if ((!sid) || (!cid))
+  if ((!sid) || (!gCid))
     return;
     
   var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
                        .getService().wrappedJSObject;
-  sivManager.removeSessionListener(sid);
-  sivManager.closeChannel(sid,cid);    
+  sivManager.removeSessionListener(sid, event);
+  sivManager.closeChannel(sid,gCid);    
 }
 
 function onSelectAccount()
@@ -382,7 +393,7 @@ function onDeleteClick()
   request.addDeleteScriptListener(event);
   request.addErrorListener(event);
   
-  sivSendRequest(sid,cid,request);
+  sivSendRequest(sid,gCid,request);
 }
 /**
  * @param {String} scriptName
@@ -390,7 +401,7 @@ function onDeleteClick()
  */
 function sivOpenEditor(scriptName,scriptBody)
 {  
-  var wm = Cc["@mozilla.org/appshell/window-mediator;1"]  
+  /*var wm = Cc["@mozilla.org/appshell/window-mediator;1"]  
              .getService(Ci.nsIWindowMediator);
              
   var enumerator = wm.getEnumerator("Sieve:FilterEditor");  
@@ -406,24 +417,80 @@ function sivOpenEditor(scriptName,scriptBody)
       
     win.focus();    
     return;
-  }     
+  }     */
 
   var args = new Array();
   
   args["scriptName"] = scriptName;
-  args["scriptBody"] = scriptBody;
+  if (scriptBody)
+    args["scriptBody"] = scriptBody;
+    
   args["sieve"] = sid;
-  args["compile"] = getSelectedAccount().getSettings().hasCompileDelay();
-  args["compileDelay"] = getSelectedAccount().getSettings().getCompileDelay();
+  args["uri"] = "x-sieve:"+sid+"/"+scriptName;
+  args["account"] = this.getSelectedAccount().imapKey;
   
   // This is a hack from DEVMO
   args.wrappedJSObject = args;  
   
-  Cc["@mozilla.org/embedcomp/window-watcher;1"].getService(Ci.nsIWindowWatcher)
+  
+  /*Cc["@mozilla.org/embedcomp/window-watcher;1"].getService(Ci.nsIWindowWatcher)
       .openWindow(null,"chrome://sieve/content/editor/SieveFilterEditor.xul",
           "x-sieve:"+sid+"/"+scriptName, 
-          "chrome,titlebar,resizable,centerscreen,all", args);
+          "chrome,titlebar,resizable,centerscreen,all", args);*/
+
+  // Every script needs to be open in a unique tab...
+  // ... so we have to crawl through all windows through ... 
+  // ... looking for a tabmail component and test there if ...
+  // ... the script is already open.
+  var mediator = Components
+          .classes["@mozilla.org/appshell/window-mediator;1"]
+          .getService(Components.interfaces.nsIWindowMediator);
     
+  var w = mediator.getXULWindowEnumerator(null);
+    
+  while(w.hasMoreElements())
+  {
+    var win = w.getNext();
+    var docShells = win
+            .QueryInterface(Ci.nsIXULWindow).docShell
+            .getDocShellEnumerator(Ci.nsIDocShellTreeItem.typeChrome,Ci.nsIDocShell.ENUMERATE_FORWARDS);           
+        
+    while (docShells.hasMoreElements())
+    {
+      var childDoc = docShells.getNext()
+              .QueryInterface(Ci.nsIDocShell)
+              .contentViewer.DOMDocument;
+  
+      //if (childDoc.location.href == "chrome://sieve/content/editor/SieveFilterExplorer.xul")
+       
+      if (childDoc.location.href != "chrome://messenger/content/messenger.xul")
+        continue;
+         
+      var tabmail = childDoc.getElementById("tabmail");
+       
+      if (!tabmail)
+        continue;
+    
+      if (!tabmail.tabModes.SieveEditorTab)
+        continue;
+
+      if (!tabmail.tabModes.SieveEditorTab.tabs.length)
+        continue;
+      
+      for (var i = 0; i < tabmail.tabModes.SieveEditorTab.tabs.length ; i++)
+      {
+        if (tabmail.tabModes.SieveEditorTab.tabs[i].uri != args["uri"])
+          continue;
+
+        tabmail.switchToTab(tabmail.tabModes.SieveEditorTab.tabs[i]);
+        childDoc.defaultView.QueryInterface(Ci.nsIDOMWindow).focus();
+        
+        return;
+      } 
+    }
+  }
+  
+  window.tabmail.openTab("SieveEditorTab", args);
   return;  
 }
 
@@ -568,7 +635,7 @@ function sivRename2(oldName, newName)
       request.addListScriptListener(event);
       request.addErrorListener(event);
   
-      sivSendRequest(sid,cid,request);           
+      sivSendRequest(sid,gCid,request);           
     },
     onTimeout: function()
     {
@@ -585,7 +652,7 @@ function sivRename2(oldName, newName)
   request.addRenameScriptListener(lEvent)
   request.addErrorListener(lEvent);
     
-  sivSendRequest(sid,cid,request);
+  sivSendRequest(sid,gCid,request);
 }
 
 function sivRename(oldName, newName, isActive)
@@ -605,7 +672,7 @@ function sivRename(oldName, newName, isActive)
       request.addPutScriptListener(lEvent)
       request.addErrorListener(lEvent)
       
-      sivSendRequest(sid,cid,request);
+      sivSendRequest(sid,gCid,request);
     },    
     onPutScriptResponse: function(response)
     {
@@ -617,7 +684,7 @@ function sivRename(oldName, newName, isActive)
         request.addSetActiveListener(lEvent);
         request.addErrorListener(event);
     
-        sivSendRequest(sid,cid,request);
+        sivSendRequest(sid,gCid,request);
       }
       else
         lEvent.onSetActiveResponse(null);
@@ -630,7 +697,7 @@ function sivRename(oldName, newName, isActive)
       request.addDeleteScriptListener(event);
       request.addErrorListener(event);
       
-      sivSendRequest(sid,cid,request);
+      sivSendRequest(sid,gCid,request);
     },
     onTimeout: function()
     {
@@ -662,7 +729,7 @@ function sivRename(oldName, newName, isActive)
   request.addGetScriptListener(lEvent);
   request.addErrorListener(event);
 
-  sivSendRequest(sid,cid,request);
+  sivSendRequest(sid,gCid,request);
   
 }
 
@@ -699,7 +766,7 @@ function onRenameClick()
 
   var canRename = Cc["@sieve.mozdev.org/transport-service;1"]
                     .getService().wrappedJSObject
-                    .getChannel(sid,cid)
+                    .getChannel(sid,gCid)
                     .getCompatibility().renamescript  
     
     

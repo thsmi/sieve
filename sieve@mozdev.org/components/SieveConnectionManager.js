@@ -100,8 +100,11 @@ SieveConnectionManager.prototype =
     var sid = accountId;
 
     if (!this.sessions[sid])
+    {
       this.sessions[sid] = new SieveSession(accountId,sid);
-        
+      this.sessions[sid].listeners = [];
+    }
+    
     return sid;    
   },
 
@@ -127,7 +130,26 @@ SieveConnectionManager.prototype =
    
     if (!this.sessions[sid].hasChannel(cid))
       throw "Invalid Channel";
-    
+      
+    // skip if we are currently connecting...
+    // ... as onChannelCreated will be fired...
+    if (this.sessions[sid].isConnecting())
+      return;
+      
+    // ... if we are connected notify the callee...
+    // ... we reused an existing channel.
+    if (this.sessions[sid].isConnected())
+    {
+      this.sessions[sid]._invokeListeners("onChannelReady",cid);
+      return;
+    }
+      
+    // ... in case we are gracefully disconnecting, we...
+    // ... need to speed it up and force the disconnect
+    if (this.sessions[sid].isDisconnecting())
+      this.sessionss[sid].disconnnect(true);
+      
+    // ... we ensured we are disconnected so its safe to call connect
     this.sessions[sid].connect();    
   },
   
@@ -136,13 +158,15 @@ SieveConnectionManager.prototype =
     if (!this.sessions[sid])
       throw "addSessionListener: Invalid Session ("+sid+")";
       
-    this.sessions[sid].listener = listener;
+    this.sessions[sid].addListener(listener);
   },
   
-  removeSessionListener : function (sid)
+  removeSessionListener : function (sid,listener)
   {
-    if (this.sessions[sid])
-      delete this.sessions[sid].listener;
+    if (!this.sessions[sid])
+      return;
+      
+    this.sessions[sid].removeListener(listener);
   },
   
   /**
@@ -173,18 +197,15 @@ SieveConnectionManager.prototype =
   {
     if (!this.sessions[sid])
       return;
-      //throw "closeChannel: Invalid Session ("+sid+")";
           
     if (this.sessions[sid].removeChannel(cid))
-      if ((this.sessions[sid].listener) && (this.sessions[sid].listener.onChannelClosed))
-        this.sessions[sid].listener.onChannelClosed(cid);    
-    
+      this.sessions[sid]._invokeListeners("onChannelClosed",cid);
 
     // In case the seesion has no active channels...
     if (this.sessions[sid].hasChannels())
       return;
     
-    this.sessions[sid].listener = null;
+    this.sessions[sid].listeners = null;
     // ... it's ok to close the session
     this.sessions[sid].disconnect();
    

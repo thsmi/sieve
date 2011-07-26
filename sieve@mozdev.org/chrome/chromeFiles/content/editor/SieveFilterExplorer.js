@@ -579,10 +579,14 @@ function sivSetStatus(state, message, statusbar)
                 .firstChild.nodeValue = message;    
             break;            
     case 5: document.getElementById('sivExplorerBadCert').removeAttribute('hidden');
-            document.getElementById("btnIgnoreBadCert").setAttribute("oncommand",
-                "onBadCertOverride('"+message+"',document.getElementById('cbBadCertRemember').checked)");
-            document.getElementById("btnAbortBadCert").setAttribute("oncommand",
-                "sivSetStatus(1,'warning.brokencert')");            
+
+            document.getElementById("btnIgnoreBadCert").setAttribute("message", message);
+            document.getElementById("btnIgnoreBadCert").setAttribute("oncommand", 
+              "onBadCertOverride(this.getAttribute('message'),document.getElementById('cbBadCertRemember').checked);");
+              
+            document.getElementById("btnAbortBadCert").setAttribute("oncommand", 
+              "sivSetStatus(1,'warning.brokencert');");
+                            
             break;
     // Offline Mode
     case 6: document.getElementById('sivExplorerOffline').removeAttribute('hidden');

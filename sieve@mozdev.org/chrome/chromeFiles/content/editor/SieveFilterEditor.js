@@ -80,7 +80,7 @@ var event =
       
     if (gEditorStatus.defaultScript)
     {
-      event.onScriptLoaded(args["scriptBody"]);
+      event.onScriptLoaded(gEditorStatus.defaultScript);
       return;
     }
       

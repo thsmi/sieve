@@ -1025,7 +1025,7 @@ SieveSaslCramMd5Request.prototype.getNextRequest
   switch (this.response.getState())
   {
     case 0: 
-      return "AUTHENTICATE \"CRAM-MD5\" \r\n";    
+      return "AUTHENTICATE \"CRAM-MD5\"\r\n";    
     case 1:
       //decoding the base64-encoded challenge
       var challenge = atob(this.response.getChallenge());        

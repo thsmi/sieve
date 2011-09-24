@@ -638,8 +638,7 @@ Sieve.prototype.onDataAvailable
     var parser = new SieveResponseParser(this.data);
           
     try
-    {
-      
+    { 
       requests[idx].addResponse(parser);
       
       // We do some cleanup as we don't need the parsed data anymore...
@@ -681,11 +680,13 @@ Sieve.prototype.onDataAvailable
     {
       // so remove it from the event queue.
       var request = requests.shift();
+      // and update the index
+      idx--;
       
       // ... if it was greedy, we munched an unexpected packet...
       // ... so there is still a valid request dangeling around.
       if (request.isGreedy)
-        break;
+        continue;
     }
       
     if (!parser.isEmpty())
@@ -700,9 +701,10 @@ Sieve.prototype.onDataAvailable
   }
 
   
-  // we endup here if all responses were greedy and did not match.
-  // Or if a greedy response ate an unexpected response...
-  // ... should never happen
+  // we endup here only if all responses where greedy or there were no...
+  // ... response parser at all. Thus all we can do is release the message...
+  // ... queue, cache the data and wait for a new response to be added.
+  
   this._unlockMessageQueue(requests);
      
   if (this.debug.level & (1 << 2))

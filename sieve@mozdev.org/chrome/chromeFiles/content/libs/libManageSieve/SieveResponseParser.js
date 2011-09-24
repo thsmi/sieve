@@ -7,23 +7,6 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
-/*******************************************************************************
-  Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy 
-  binary, and javascript is something in between. This means we have to convert
-  UTF-8 into a binary and vice versa by our own...   
-********************************************************************************/
-
-  // public method for url decoding
-  
-  function StringFromBytes(byteArray, startIndex, endIndex)
-  {
-    var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-                    .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
-    converter.charset = "UTF-8" ;
-  
-    byteArray = byteArray.slice(startIndex,endIndex);
-    return converter.convertFromByteArray(byteArray, byteArray.length);
-  }
 
 /**
  * 
@@ -113,7 +96,7 @@ SieveResponseParser.prototype.extractLiteral
     throw "Error unbalanced parathesis \"{\"";
   
   // extract the size, and ignore "+"
-  var size = parseInt(StringFromBytes(this.data, this.pos, nextBracket).replace(/\+/,""));
+  var size = parseInt(this.getData(this.pos, nextBracket).replace(/\+/,""));
     
   this.pos = nextBracket+1;
 
@@ -123,7 +106,7 @@ SieveResponseParser.prototype.extractLiteral
   this.extractLineBreak();
 
   // extract the literal...  
-  var literal = StringFromBytes(this.data, this.pos, this.pos+size);
+  var literal = this.getData(this.pos, this.pos+size);
   this.pos += size;
 
   return literal;
@@ -165,7 +148,7 @@ SieveResponseParser.prototype.extractQuoted
   if (nextQuote == -1)
     throw "Error unbalanced quotes";
 
-  var quoted = StringFromBytes(this.data,this.pos,nextQuote);
+  var quoted = this.getData(this.pos,nextQuote);
 
   this.pos = nextQuote+1;
 
@@ -205,7 +188,7 @@ SieveResponseParser.prototype.extractToken
   if (index == -1)
     throw "Delimiter >>"+delimiter+"<< not found in :\r\n"+this.getData();        
   
-  var token = StringFromBytes(this.data,this.pos,index);
+  var token = this.getData(this.pos,index);
   this.pos = index;
     
   return token;
@@ -256,15 +239,36 @@ SieveResponseParser.prototype.getByteArray
 }
 
 /**
- * Returns content of the response parser's buffer. 
+ * Returns a copy of the response parser's buffer as an UTF-8 encoded string. 
  * 
- * @return {String} the buffers content
+ * Manage Sieve encodes literals in UTF-8 while network sockets are usualy 
+ * binary. So we can't use java scripts build in string functions as they expect 
+ * pure unicode.  
+ * 
+ * @param {int} startIndex
+ *   Optional zero-based index at which to begin.
+ * @param {int} endIndex
+ *   Optional Zero-based index at which to end.
+ * @return {String} the copy buffers content
  */
 SieveResponseParser.prototype.getData
-    = function ()
-{ 
-  return StringFromBytes(this.data, this.pos, this.data.length);
+    = function (startIndex, endIndex)
+{
+  if (startIndex === null)
+    startIndex = this.pos;
+    
+  if (endIndex === null)
+    endIndex = this.data.length;
+    
+  var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+                    .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+  converter.charset = "UTF-8" ;
+  
+  var byteArray = this.data.slice(startIndex,endIndex);
+  
+  return converter.convertFromByteArray(byteArray, byteArray.length);
 }
+
 
 SieveResponseParser.prototype.isEmpty
     = function ()

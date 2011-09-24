@@ -5,6 +5,9 @@
  * 
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
+ *   
+ * Contibutors:
+ *   Max Dittrich
  */
  
 /*******************************************************************************
@@ -62,7 +65,7 @@ function SieveAbstractResponse(parser)
       parser.extract(2);
     }
     else
-      throw "NO, OK or BYE expected in"+parser.getData();
+      throw "NO, OK or BYE expected in "+parser.getData();
 
     // is there a Message?
     if (parser.isLineBreak())
@@ -494,6 +497,10 @@ SieveSaslLoginResponse.prototype.getResponseCode
 }
 
 //*************************************
+/**
+ * @author Thomas Schmid
+ * @author Max Dittrich 
+ */
 function SieveSaslCramMd5Response()
 {
   this.superior = null;

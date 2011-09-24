@@ -1074,58 +1074,18 @@ SieveSaslCramMd5Request.prototype.hmacMD5
   if ( !secret )
     secret = "";
 
-  // Gecko 1.9.0 offers native HMAC-MD5 support
-  // https://ubiquity.mozilla.com/hg/ubiquity-firefox/file/7872ca345a33/ubiquity/modules/utils.js#l569
-    
-  if (("@mozilla.org/security/hmac;1" in Components.classes) 
-        && ("@mozilla.org/security/keyobjectfactory;1" in Components.classes))
-  {
-    var challengeBytes = JSStringToByteArray(challenge);
-    var crypto = Components.classes["@mozilla.org/security/hmac;1"]
-                     .createInstance( Components.interfaces.nsICryptoHMAC );
-    var keyObject = Components.classes["@mozilla.org/security/keyobjectfactory;1"]
-                        .getService( Components.interfaces.nsIKeyObjectFactory )
-                        .keyFromString( Components.interfaces.nsIKeyObject.HMAC, secret);
-
-    crypto.init( Components.interfaces.nsICryptoHMAC.MD5, keyObject );
-    crypto.update( challengeBytes, challengeBytes.length );
-        
-    return this.byteArrayToHexString(
-             this.strToByteArray(crypto.finish(false)));
-  }
-
-  var hasher = Components.classes["@mozilla.org/security/hash;1"]
-                   .createInstance(Components.interfaces.nsICryptoHash);
-
-  var secretBytes = JSStringToByteArray(secret);
-  if(secretBytes.length > 64)
-    secretBytes = this.calculateMd5(hasher,secretBytes);
-
   var challengeBytes = JSStringToByteArray(challenge);
- 
-  var ipad = new Array();
-  var opad = new Array();
- 
-  for ( var i = 0; i < 64; i++ ) 
-  {
-    ipad[i] = (secretBytes.length > i) ? secretBytes[i] ^ 0x36 : 0x36;
-    opad[i] = (secretBytes.length > i) ? secretBytes[i] ^ 0x5c : 0x5c;
-  }
-  
-  return this.byteArrayToHexString(
-           this.calculateMd5(hasher,opad,
-             this.calculateMd5(hasher,ipad,challengeBytes)));
-}
+  var crypto = Components.classes["@mozilla.org/security/hmac;1"]
+                   .createInstance( Components.interfaces.nsICryptoHMAC );
+  var keyObject = Components.classes["@mozilla.org/security/keyobjectfactory;1"]
+                    .getService( Components.interfaces.nsIKeyObjectFactory )
+                    .keyFromString( Components.interfaces.nsIKeyObject.HMAC, secret);
 
-SieveSaslCramMd5Request.prototype.calculateMd5
-    = function (hasher,a1,a2)
-{
-  hasher.initWithString( "MD5" );
-  hasher.update( a1, a1.length );
-  if (a2 != null)
-    hasher.update( a2, a2.length );
-  
-  return this.strToByteArray(hasher.finish(false));  
+  crypto.init( Components.interfaces.nsICryptoHMAC.MD5, keyObject );
+  crypto.update( challengeBytes, challengeBytes.length );
+        
+  return this.byteArrayToHexString(
+           this.strToByteArray(crypto.finish(false)));
 }
 
 SieveSaslCramMd5Request.prototype.strToByteArray

@@ -381,7 +381,7 @@ Sieve.prototype.connect
   this.secure = secure;
   this.badCertHandler = badCertHandler;
 
-  if ((this.debug.level & (1 << 1)) || (this.debug.level & (1 << 0)))
+  if (this.debug.level & (1 << 2))
     this.debug.logger.logStringMessage("Connecting to "+this.host+":"+this.port+" ...");
     
   // If we know the proxy setting, we can do a shortcut...
@@ -481,7 +481,7 @@ Sieve.prototype.disconnect
   this.outstream = null
   this.socket = null;
   
-  if ((this.debug.level & (1 << 1)) || (this.debug.level & (1 << 0)))
+  if (this.debug.level & (1 << 2))
     this.debug.logger.logStringMessage("Disconnected ...");
     
 }
@@ -513,7 +513,7 @@ Sieve.prototype.onStopRequest
 Sieve.prototype.onStartRequest 
     = function(request, context)
 {
-  if ((this.debug.level & (1 << 1)) || (this.debug.level & (1 << 0)))
+  if (this.debug.level & (1 << 2))
     this.debug.logger.logStringMessage("Connected to "+this.host+":"+this.port+" ...");
 }
 

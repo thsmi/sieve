@@ -1,6 +1,9 @@
-/*const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cr = Components.results;*/
+if (typeof(Cc) == "undefined")
+  var Cc = Components.classes;
+if (typeof(Ci) == "undefined")
+  var Ci = Components.interfaces;
+if (typeof(Cr) == "undefined")  
+  var Cr = Components.results;
 
 Cc["@mozilla.org/moz/jssubscript-loader;1"]
     .getService(Ci.mozIJSSubScriptLoader) 
@@ -50,7 +53,7 @@ function SieveSession(accountId,sid)
   // Use an empty logger stub, it makes the logger easily exchangable...
   // ... this.logger.logString is garanteed to exist within this file.
   this.debug.logger = {}
-  //this.debug.logger.logStringMessage = function(msg) { };
+  //this.debug.logger.logStringMessage = function(msg) { };  
 
   /*this.debug.logger = Cc["@mozilla.org/consoleservice;1"]
     .getService(Ci.nsIConsoleService);*/
@@ -62,12 +65,31 @@ function SieveSession(accountId,sid)
       .alert(null, "Alert", msg);
   }*/
   
-  this.debug.logger = {}
+  this.debug.logger = {};
+  this.debug.logger._sid = sid;
+  this.debug.logger._pad = function(n,m) {
+    var str = n;
+  
+    for (var i = 0; i < m; i++)
+      if (n < Math.pow(10,i))
+        str = '0'+str;
+
+     return str;    
+  };
+  
+  this.debug.logger.getTimestamp = function () {
+    var date = new  Date();
+    return this._pad(date.getHours(),2)
+      + ":"+this._pad(date.getMinutes(),2)
+      + ":"+this._pad(date.getSeconds(),2)
+      + "."+this._pad(date.getMilliseconds(),3);
+  };
+  
   this.debug.logger.logStringMessage = function(msg) {
     Cc["@mozilla.org/consoleservice;1"]
       .getService(Ci.nsIConsoleService)
-      .logStringMessage("["+sid+"] "+msg);
-  }
+      .logStringMessage("["+this.getTimestamp()+" "+this._sid+"] "+msg);
+  };
   
   this.sid = sid;
   

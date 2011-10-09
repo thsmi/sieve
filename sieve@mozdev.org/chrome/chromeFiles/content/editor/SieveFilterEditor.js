@@ -243,14 +243,13 @@ function onCompile()
   
   var canCheck = Cc["@sieve.mozdev.org/transport-service;1"]
                    .getService().wrappedJSObject  
-                   .getChannel(gSid,gCid)
-                   .getCompatibility()
-                   .checkscript;                
+                   .getChannel(gSid,gCid).getCompatibility()
+                   .checkscript;
 
   if (canCheck)
   {
     // ... we use can the CHECKSCRIPT command
-    request = new SieveCheckScriptRequest(script)
+    request = new SieveCheckScriptRequest(script);
     request.addCheckScriptListener(lEvent);
   }
   else
@@ -259,7 +258,7 @@ function onCompile()
     
     // First we use PUTSCRIPT to store a temporary script on the server...
     // ... incase the command fails, it is most likely due to an syntax error...
-    // ... if it sucseeds the script is syntactically correct! 
+    // ... if it sucseeds the script is syntactically correct!
     request = new SievePutScriptRequest("TMP_FILE_DELETE_ME",script);
     request.addPutScriptListener(lEvent);
   }
@@ -377,7 +376,7 @@ function onWindowLoad()
       .addEventListener("keypress",function() {onUpdateCursorPos(50);},false);
 
   document.getElementById("sivContentEditor")
-        .addEventListener("keydown", function(ev) { onEditorKeyDown(ev)},true);
+       .addEventListener("keydown", function(ev) { onEditorKeyDown(ev)},true);
   // hack to prevent links to be opened in the default browser window...
   document.getElementById("ifSideBar").
     addEventListener(
@@ -405,7 +404,7 @@ function onWindowLoad()
   sivSetStatus(1,"status.loading");
 
   // Connect to the Sieve Object...  
-  var sivManager = Components.classes["@sieve.mozdev.org/transport-service;1"]
+  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
                      .getService().wrappedJSObject; 
   
   gSid = sivManager.createSession(account.getKey());
@@ -454,7 +453,6 @@ function onIgnoreOffline()
       
       return;
     }
-      
   } 
   catch (ex) {}
   
@@ -605,10 +603,10 @@ function onImport()
   if (filePicker.show() != filePicker.returnOK)
     return;
 
-  var inputStream = Components.classes["@mozilla.org/network/file-input-stream;1"]
-                              .createInstance(Components.interfaces.nsIFileInputStream);
-  var scriptableStream = Components.classes["@mozilla.org/scriptableinputstream;1"]
-                                   .createInstance(Components.interfaces.nsIScriptableInputStream);
+  var inputStream = Cc["@mozilla.org/network/file-input-stream;1"]
+                        .createInstance(Ci.nsIFileInputStream);
+  var scriptableStream = Cc["@mozilla.org/scriptableinputstream;1"]
+                             .createInstance(Ci.nsIScriptableInputStream);
 
   inputStream.init(filePicker.file, 0x01, 0444, null);
   scriptableStream.init(inputStream);
@@ -634,8 +632,8 @@ function onImport()
 
 function onExport()
 {
-  var filePicker = Components.classes["@mozilla.org/filepicker;1"]
-			.createInstance(Components.interfaces.nsIFilePicker);
+  var filePicker = Cc["@mozilla.org/filepicker;1"]
+			.createInstance(Ci.nsIFilePicker);
 
 	filePicker.defaultExtension = ".siv";
 	filePicker.defaultString = document.getElementById("txtName").value
@@ -654,10 +652,10 @@ function onExport()
 	var file = filePicker.file;
 
 	if (file.exists() == false)
-		file.create(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0644);
+		file.create(Ci.nsIFile.NORMAL_FILE_TYPE, 0644);
 
-	var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
-			.createInstance(Components.interfaces.nsIFileOutputStream);
+	var outputStream = Cc["@mozilla.org/network/file-output-stream;1"]
+			.createInstance(Ci.nsIFileOutputStream);
 
 	outputStream.init(file, 0x04 | 0x08 | 0x20, 0644, null);
 

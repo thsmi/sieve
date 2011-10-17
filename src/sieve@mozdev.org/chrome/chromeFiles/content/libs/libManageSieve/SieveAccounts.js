@@ -736,7 +736,7 @@ SieveAbstractHost.prototype.setPort
   if (type != 2)
     return;
     
-  port = parseInt(port);
+  port = parseInt(port,10);
   
   if (isNaN(port))
     port = 4190;
@@ -896,7 +896,7 @@ SieveAccountSettings.prototype.getKeepAliveInterval
 SieveAccountSettings.prototype.setKeepAliveInterval
     = function (ms)
 {
-  ms = parseInt(ms);
+  ms = parseInt(ms,10);
   
   if (isNaN(ms))
     ms = 300000;
@@ -939,7 +939,7 @@ SieveAccountSettings.prototype.getCompileDelay
 SieveAccountSettings.prototype.setCompileDelay
     = function (ms) 
 {
-  ms = parseInt(ms);
+  ms = parseInt(ms,10);
   
   if (isNaN(ms))
     ms = 500;

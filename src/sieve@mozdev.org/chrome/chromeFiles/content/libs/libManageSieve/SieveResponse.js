@@ -10,121 +10,125 @@
  *   Max Dittrich
  */
  
-/*******************************************************************************
- 
-  FACTSHEET: 
-  ==========
-    CLASS NAME          : SieveAbstractResponse
-    USES CLASSES        : SieveResponseParser
-        
-    CONSCTURCTOR        : SieveAbstractResponse(SieveResponseParser parser)
-    DECLARED FUNCTIONS  : String getMessage()
-                          String getResponse()
-                          int getResponseCode()                          
-                          boolean hasError()
-    EXCEPTIONS          : 
-    AUTHOR              : Thomas Schmid        
-    
-  DESCRIPTION:
-  ============
-    Every Sieve Response is tailed by eithern an OK, BYE or NO followed by 
-    optional messages and/or error codes.
-    This class is capable of parsing this part of the sieve response, therefore
-    it should be implemented by and SieveResponse.
+/**
+ * This class implements a generic response handler for simple sieve requests.
+ * 
+ * Simple requests just indicate, wether the command succeded or not. They 
+ * return only status information, and do not contain any data relevant for 
+ * the user.
+ *  
+ * @see SieveResponseParser
+ *  
+ * @param {SieveResponseParser} parser
+ *  a SieveResponseParser object containing the response sent by the server
+ */
 
-  PROTOCOL SNIPLET EXAMPLES: 
-  ==========================
-    'NO (0000) "Meldung"\r\n'
-    'BYE (0000) {4+}\r\n1234\r\n'
-    'NO \"Meldung\"\r\n'
-    'BYE {4+}\r\n1234\r\n'
-    'NO (0000)\r\n'
-    
-********************************************************************************/
-function SieveAbstractResponse(parser)
+function SieveSimpleResponse(parser)
 {
-    this.message = "";
-    this.responseCode = "";
-    
-    // OK
-    if (parser.startsWith([[79,111],[75,107]]))
-    {
-      this.response = 0;
-      parser.extract(2);
-    }
-    // BYE
-    else if (parser.startsWith([[66,98],[89,121],[69,101]]))
-    {
-      this.response = 1;
-      parser.extract(3);
-    }
-    // NO
-    else if (parser.startsWith([[78,110],[79,111]]))
-    {
-      this.response = 2;
-      parser.extract(2);
-    }
-    else
-      throw "NO, OK or BYE expected in "+parser.getData();
+  /*
+   * Examples for simple responses
+   * 
+   * 'NO (0000) "Message"\r\n'
+   * 'BYE (0000) {4+}\r\n1234\r\n'
+   * 'NO \"Message\"\r\n'
+   * 'BYE {4+}\r\n1234\r\n'
+   * 'NO (0000)\r\n'
+   */
 
-    // is there a Message?
+  this.message = "";
+  this.responseCode = "";
+    
+  // OK
+  if (parser.startsWith([[79,111],[75,107]]))
+  {
+    this.response = 0;
+    parser.extract(2);
+  }
+  // BYE
+  else if (parser.startsWith([[66,98],[89,121],[69,101]]))
+  {
+    this.response = 1;
+    parser.extract(3);
+  }
+  // NO
+  else if (parser.startsWith([[78,110],[79,111]]))
+  {
+    this.response = 2;
+    parser.extract(2);
+  }
+  else
+    throw "NO, OK or BYE expected in "+parser.getData();
+
+  // is there a Message?
+  if (parser.isLineBreak())
+  {
+    parser.extractLineBreak();
+    return;
+  }
+
+  // remove the space
+  parser.extractSpace();
+
+  // we found "(" so we got an responseCode    
+  if (parser.startsWith([[40]]))
+  {
+    // remove the opening bracket
+    parser.extract(1);
+        
+    // extract Tokens until a ")" is found
+    this.responseCode = parser.extractToken(41);
+        
+    // remove the closing bracket
+    parser.extract(1);        
+        
     if (parser.isLineBreak())
     {
       parser.extractLineBreak();
-      return;
+      return
     }
-
-    // remove the space
-    parser.extractSpace();
-
-    // we found "(" so we got an responseCode    
-    if (parser.startsWith([[40]]))
-    {
-      // remove the opening bracket
-      parser.extract(1);
-        
-      // extract Tokens until a ")" is found
-      this.responseCode = parser.extractToken(41);
-        
-      // remove the closing bracket
-      parser.extract(1);        
-        
-      if (parser.isLineBreak())
-      {
-        parser.extractLineBreak();
-        return
-      }
              
-      parser.extractSpace();
-    }
+    parser.extractSpace();
+  }
     
-    this.message = parser.extractString();
+  this.message = parser.extractString();
     
-    parser.extractLineBreak();
+  parser.extractLineBreak();
 }
 
-SieveAbstractResponse.prototype.message = null;
-SieveAbstractResponse.prototype.responseCode = null;
-SieveAbstractResponse.prototype.response = -1;
+SieveSimpleResponse.prototype.message = null;
+SieveSimpleResponse.prototype.responseCode = null;
+SieveSimpleResponse.prototype.response = null;
 
-SieveAbstractResponse.prototype.getMessage
-    = function () { return this.message; }
+SieveSimpleResponse.prototype.getMessage
+    = function () 
+{ 
+  if (this.message == null)
+    throw "Message not Initialized";
+    
+  return this.message; 
+}
 
-SieveAbstractResponse.prototype.hasError
+SieveSimpleResponse.prototype.hasError
     = function ()
 {
+  if (this.response == null)
+    throw "response not Initialized";
+    
   if (this.response == 0)
     return false;
 
   return true;
 }
 
-SieveAbstractResponse.prototype.getResponse
+SieveSimpleResponse.prototype.getResponse
     = function () { return this.response; }
 
-SieveAbstractResponse.prototype.getResponseCode
+SieveSimpleResponse.prototype.getResponseCode
     = function ()
 {
+  if (this.responseCode == null)
+    throw "Response Code not Initialized";
+    
   // If the Response Code starts with a quote skip we run into a cyrus bug. 
   // This means we need an offset of 1 first character...  
   var offset = this.responseCode[0] == '"'?1:0;
@@ -141,22 +145,6 @@ SieveAbstractResponse.prototype.getResponseCode
   return new SieveResponseCode(this.responseCode);
 }
 
-/**
- * This class implements a generic response handler for simple sieve requests.
- * 
- * Simple Requests indicate, wether the command succeded or not. They return
- * only status information, and do not contain any data relevant for the user.
- *  
- * @param {} data
- *  a string containing the response sent by the server
- */
-function SieveSimpleResponse(parser)
-{
-  SieveAbstractResponse.call(this,parser);
-}
-
-// Inherrit prototypes from SieveAbstractResponse...
-SieveSimpleResponse.prototype.__proto__ = SieveAbstractResponse.prototype;
 
 /**
  * Parses the capabilites posted by the ManageSieve server upon a client 
@@ -223,7 +211,7 @@ function SieveCapabilitiesResponse(parser)
         
         break;
       case "MAXREDIRECTS":
-        this.maxredirects = parseInt(value);
+        this.maxredirects = parseInt(value,10);
         break;
       case "LANGUAGE":
         this.language = value;
@@ -247,11 +235,11 @@ function SieveCapabilitiesResponse(parser)
     throw "Implementation expected";
     
   // invoke inheritted Object constructor...
-  SieveAbstractResponse.call(this,parser);  
+  SieveSimpleResponse.call(this,parser);  
 }
 
-// Inherrit properties from SieveAbstractResponse
-SieveCapabilitiesResponse.prototype.__proto__ = SieveAbstractResponse.prototype;
+// Inherrit properties from SieveSimpleResponse
+SieveCapabilitiesResponse.prototype.__proto__ = SieveSimpleResponse.prototype;
 
 SieveCapabilitiesResponse.prototype.getImplementation
     = function () { return this.implementation; }
@@ -355,7 +343,7 @@ SieveCapabilitiesResponse.prototype.getCapabilities
 SieveCapabilitiesResponse.prototype.getOwner
     = function () { return this.owner; }    
 
-    
+
 //***************************************************************************//
     
 function SieveListScriptResponse(parser)
@@ -393,11 +381,11 @@ function SieveListScriptResponse(parser)
     }
 
   // invoke inheritted Object constructor...
-  SieveAbstractResponse.call(this,parser);  
+  SieveSimpleResponse.call(this,parser);  
 }
 
-// Inherrit properties from SieveAbstractResponse
-SieveListScriptResponse.prototype.__proto__ = SieveAbstractResponse.prototype;    
+// Inherrit properties from SieveSimpleResponse
+SieveListScriptResponse.prototype.__proto__ = SieveSimpleResponse.prototype;    
    
 SieveListScriptResponse.prototype.getScripts
     = function () { return this.scripts; }
@@ -406,9 +394,10 @@ SieveListScriptResponse.prototype.getScripts
 //*************************************
 function SieveSaslLoginResponse()
 {
-  this.superior = null;
   this.state = 0;
 }
+
+SieveSaslLoginResponse.prototype.__proto__ = SieveSimpleResponse.prototype;
 
 SieveSaslLoginResponse.prototype.add
   = function (parser) 
@@ -438,14 +427,14 @@ SieveSaslLoginResponse.prototype.add
   {
     // Should be either a NO, BYE or OK
     this.state = 4;
-    this.superior = new SieveAbstractResponse(parser);
+    SieveSimpleResponse.call(this,parser);
     return;
   }
   
   // is it an error message? 
   try
   {
-    this.superior = new SieveAbstractResponse(parser);
+    SieveSimpleResponse.call(this,parser);
     this.state = 4;
     return;
   }
@@ -460,42 +449,6 @@ SieveSaslLoginResponse.prototype.add
 SieveSaslLoginResponse.prototype.getState
   = function () { return this.state; }
 
-SieveSaslLoginResponse.prototype.getMessage
-  = function ()
-{
-  if (this.state != 4)
-    throw "Illegal State, request not completed";
-      
-  return this.superior.getMessage(); 
-}
-
-SieveSaslLoginResponse.prototype.hasError
-  = function () 
-{
-  if (this.state != 4)
-    throw "Illegal State, request not completed";
-    
-  return this.superior.hasError(); 
-}
-
-SieveSaslLoginResponse.prototype.getResponse
-  = function () 
-{
-  if (this.state != 4)
-    throw "Illegal State, request not completed";
-      
-  return this.superior.getResponse(); 
-}
-
-SieveSaslLoginResponse.prototype.getResponseCode
-  = function () 
-{
-  if (this.state != 4)
-    throw "Illegal State, request not completed";
-    
-  return this.superior.getResponseCode(); 
-}
-
 //*************************************
 /**
  * @author Thomas Schmid
@@ -503,9 +456,10 @@ SieveSaslLoginResponse.prototype.getResponseCode
  */
 function SieveSaslCramMd5Response()
 {
-  this.superior = null;
   this.state = 0;
 }
+
+SieveSaslCramMd5Response.prototype.__proto__ = SieveSimpleResponse.prototype;
 
 SieveSaslCramMd5Response.prototype.add
   = function (parser) 
@@ -526,7 +480,9 @@ SieveSaslCramMd5Response.prototype.add
   {
     // Should be either a NO, BYE or OK
     this.state = 4;
-    this.superior = new SieveAbstractResponse(parser);
+    
+    // Invoke the interited constructor to parse the rest of the message
+    SieveSimpleResponse.call(this,parser);
     return;
   }
     
@@ -543,42 +499,6 @@ SieveSaslCramMd5Response.prototype.getChallenge
     throw "Illegal State, request not completed";
       
   return this.challenge; 
-}
-
-SieveSaslCramMd5Response.prototype.getMessage
-  = function ()
-{
-  if (this.state != 4)
-    throw "Illegal State, request not completed";
-      
-  return this.superior.getMessage(); 
-}
-
-SieveSaslCramMd5Response.prototype.hasError
-  = function () 
-{
-  if (this.state != 4)
-    throw "Illegal State, request not completed";
-    
-  return this.superior.hasError(); 
-}
-
-SieveSaslCramMd5Response.prototype.getResponse
-  = function () 
-{
-  if (this.state != 4)
-    throw "Illegal State, request not completed";
-      
-  return this.superior.getResponse(); 
-}
-
-SieveSaslCramMd5Response.prototype.getResponseCode
-  = function () 
-{
-  if (this.state != 4)
-    throw "Illegal State, request not completed";
-    
-  return this.superior.getResponseCode(); 
 }
 
 /*********************************************************
@@ -600,17 +520,18 @@ function SieveGetScriptResponse(scriptName,parser)
   }
 	
   // invoke inheritted Object constructor...
-  SieveAbstractResponse.call(this,parser);  
+  SieveSimpleResponse.call(this,parser);  
 }
 
-// Inherrit properties from SieveAbstractResponse
-SieveGetScriptResponse.prototype.__proto__ = SieveAbstractResponse.prototype;    
+// Inherrit properties from SieveSimpleResponse
+SieveGetScriptResponse.prototype.__proto__ = SieveSimpleResponse.prototype;    
 
 /**
- * Conatins the requested sieve script. Script can't be locket, this means
- * several clients can manipulate a script at the same time.
+ * Contains the requested sieve script. 
+ * Keep in mind scripts can't be locked, so several clients may manipulate 
+ * a script at the same time.
  * 
- * @return {String} returns the script's content
+ * @return {String} returns the requested script's content
  */    
 SieveGetScriptResponse.prototype.getScriptBody
     = function () { return this.scriptBody; }
@@ -619,4 +540,196 @@ SieveGetScriptResponse.prototype.getScriptBody
  * @return {String} Containing the script's Name.
  */
 SieveGetScriptResponse.prototype.getScriptName
-    = function () { return this.scriptName; }        
+    = function () { return this.scriptName; }
+ 
+/**
+ * Parses responses for SCRAM-SHA-1 authentication.
+ * 
+ * SCRAM is a secure client first authentication mechanism. The client
+ * callanges the server and descides if the connection is trustworthy.
+ * 
+ * This requires a way mor logic on the client than with simple authentication
+ * mechanisms. It also requires more communication, in total two roundtrips. 
+ */
+ 
+function SieveSaslScramSha1Response()
+{
+  this.state = 0;
+}
+
+SieveSaslScramSha1Response.prototype.__proto__ = SieveSimpleResponse.prototype;
+
+
+/**
+ * @private
+ * 
+ * Parses the server-first-message it is defined to be:
+ *   [reserved-mext ","] nonce "," salt "," iteration-count ["," extensions]
+ * 
+ * Where 
+ *  reserved-mext   : "m=" 1*(value-char)
+ *  nonce           : "r=" c-nonce
+ *  salt            : "s=" base64(salt)
+ *  iteration-count : "i=" posit-number
+ * 
+ * Extensions are optional and for future use.
+ * Neithe c-nonce nor salt can contain a "," character 
+ * 
+ * @param {} string
+ */
+SieveSaslScramSha1Response.prototype._parseFirstMessage
+  = function (string)
+{
+  this._serverFirstMessage = string;
+  
+  var tokens = string.split(',');
+  
+  // Test for the reserved-mext token. If it is existant, we just skip it
+  if ((tokens[0].length <=2) || tokens[0][0] == "m")
+    tokens.shift();
+  
+  // Extract the nonce
+  if ((tokens[0].length <=2) || (tokens[0][0] != "r"))
+    throw "Nonce missing";
+    
+  this._nonce = tokens[0].substr(2);
+  
+  
+  if ((tokens[1].length <= 2) ||(tokens[1][0] != "s"))
+    throw "Salt missing";
+    
+  this._salt = atob(tokens[1].substr(2));
+  
+  
+  if ((tokens[2].length <= 2) || (tokens[2][0] != "i"))
+    throw "Iteration Count missing";
+    
+  this._iter = parseInt(tokens[2].substr(2),10);
+}
+
+/**
+ * Parses the server-final-message. It is defined to be:
+ *   (server-error / verifier) ["," extensions]
+ * 
+ * Where 
+ *  server-error    : "e=" server-error-value
+ *  verifier        : "v=" base64(ServerSignature)
+ * 
+ * Extensions are optional and for future use.
+ * As suggested by the RFC they will be ignored 
+ * 
+ * @param {} string
+ */
+SieveSaslScramSha1Response.prototype._parseFinalMessage
+  = function (string)
+{
+  // server-final-message = (server-error / verifier) ["," extensions]
+  var token = string.split(",");
+  
+  if (token[0].length <= 2)
+    throw "Response expected but got : "+ string;
+    
+  // server-error = "e="
+  if (token[0][0] == "e")
+  {
+    this._serverError = token[0].substr(2);
+    return;
+  }
+
+  // verifier = "v=" base64
+  if (token[0][0] == "v")
+  {
+    this._verifier = atob(token[0].substr(2));
+    return
+  }
+   
+  throw "Invalid Final message";
+}
+
+SieveSaslScramSha1Response.prototype.add
+  = function (parser) 
+{
+  
+  if ((this.state == 0) && (parser.isString()))
+  {
+    // TODO we need to base64 dencode our strings...
+    this._parseFirstMessage(parser.extractString());
+    parser.extractLineBreak();
+            
+    this.state++;
+    
+    return;
+  }
+  
+  if ((this.state == 1) && (parser.isString()))
+  {
+    //TODO we need to base64 dencode our strings...
+    this._parseFinalMessage(parser.extractString());
+    parser.extractLineBreak();
+
+    // Should be either a NO, BYE or OK
+    SieveSimpleResponse.call(this,parser);    
+    this.state = 4;
+
+    return;
+  }
+     
+  throw 'Illegal State:'+this.state+' / '+parser.getData();
+}
+
+SieveSaslScramSha1Response.prototype.getState
+  = function () { return this.state; }
+
+SieveSaslScramSha1Response.prototype.getSalt
+  = function ()
+{
+  if (this.state < 1)
+    throw "Illegal State, request not completed";
+      
+  return this._salt; 
+}
+
+SieveSaslScramSha1Response.prototype.getIterationCounter
+  = function ()
+{
+  if (this.state < 1)
+    throw "Illegal State, request not completed";
+      
+  return this._iter; 
+}
+
+SieveSaslScramSha1Response.prototype.getNonce
+  = function ()
+{
+  if (this.state < 1)
+    throw "Illegal State, request not completed";
+      
+  return this._nonce; 
+}
+
+SieveSaslScramSha1Response.prototype.getServerFirstMessage
+  = function ()
+{
+  if (this.state < 1)
+    throw "Illegal State, request not completed";
+      
+  return this._serverFirstMessage;     
+}
+
+SieveSaslScramSha1Response.prototype.getServerError
+  = function ()
+{
+  if (this.state < 2)
+    throw "Illegal State, request not completed";
+      
+  return this._serverError;     
+}
+
+SieveSaslScramSha1Response.prototype.getVerifier
+  = function ()
+{
+  if (this.state < 2)
+    throw "Illegal State, request not completed";
+      
+  return this._verifier;     
+}

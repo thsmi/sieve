@@ -141,7 +141,7 @@ var event =
   },
 
   /**
-   * @param {SieveAbstractResponse} response
+   * @param {SieveSimpleResponse} response
    */
   onError: function(response)
   {

@@ -176,12 +176,14 @@ SieveSession.prototype =
       {
         case "PLAIN":
           request = new SieveSaslPlainRequest();
-          request.addSaslPlainListener(this);      
           break;
           
         case "CRAM-MD5":
           request = new SieveSaslCramMd5Request();
-          request.addSaslCramMd5Listener(this);
+          break;
+          
+        case "SCRAM-SHA-1":
+          request = new SieveSaslScramSha1Request();
           break;
           
         case "LOGIN":
@@ -193,12 +195,11 @@ SieveSession.prototype =
             break;
           }
           request = new SieveSaslLoginRequest();      
-          request.addSaslLoginListener(this);
           break;
       }      
     }
 
-    if (request == null)
+    if (!request)
     {
       this.disconnect(false,2,"error.sasl");
       return;
@@ -215,6 +216,7 @@ SieveSession.prototype =
       return;
     }
       
+    request.addSaslListener(this);
     request.setPassword(password);
     
     // check if the authentication method supports proxy authorization...
@@ -228,7 +230,8 @@ SieveSession.prototype =
         return;
       }
       
-      request.setAuthorization(authorization);
+      if (authorization != "")
+        request.setAuthorization(authorization);
     }
      
     this.sieve.addRequest(request);    
@@ -260,21 +263,11 @@ SieveSession.prototype =
     this.sieve.addRequest(new SieveInitRequest(),true);
   },
   
-  onSaslLoginResponse: function(response)
+  onSaslResponse: function(response)
   {
     this.onLoginResponse(response);
   },
   
-  onSaslPlainResponse: function(response)
-  {
-    this.onLoginResponse(response);
-  },
-
-  onSaslCramMd5Response: function(response)
-  {
-    this.onLoginResponse(response);
-  },
-   
   onLoginResponse: function(response)
   {
     // We are connected...

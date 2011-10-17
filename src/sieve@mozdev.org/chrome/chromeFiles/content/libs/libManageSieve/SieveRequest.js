@@ -45,6 +45,10 @@
  * @author Max Dittrich
  */ 
 
+if (typeof(Cc) == "undefined")
+  { var Cc = Components.classes; }
+if (typeof(Ci) == "undefined")
+  { var Ci = Components.interfaces; }
 
 function JSStringToByteArray(str,charset) 
 {  
@@ -99,17 +103,41 @@ SieveAbstractRequest.prototype.cancel
     this.errorListener.onTimeout();  
 }
 
-/**
- * An abstract helper, which calls the default message handlers.
- * @param {SieveAbstractResponse} request
- */
-SieveAbstractRequest.prototype.addResponse
+SieveAbstractRequest.prototype.onNo
+    = function (response)
+{
+  if (this.errorListener != null)
+    this.errorListener.onError(response); 
+}
+
+SieveAbstractRequest.prototype.onBye
     = function (response)
 {
   if ((response.getResponse() == 1) && (this.byeListener != null))
     this.byeListener.onByeResponse(response);
-  else if ((response.getResponse() != 0) && (this.errorListener != null))
-    this.errorListener.onError(response);
+}
+
+SieveAbstractRequest.prototype.onOk
+    = function (response)
+{
+  throw "Abstract Method override me";
+}
+
+/**
+ * An abstract helper, which calls the default message handlers.
+ * @param {SieveSimpleResponse} request
+ */
+SieveAbstractRequest.prototype.addResponse
+    = function (response)
+{
+  if (response.getResponse() == 0)
+    this.onOk(response);
+  else if (response.getResponse() == 1)
+    this.onBye(response);
+  else if (response.getResponse() == 2)
+    this.onNo(response);
+  else
+    throw "Invalid Response Code";
 }
 
 //****************************************************************************//
@@ -161,6 +189,13 @@ SieveAbstractSaslRequest.prototype.setAuthorization
     this._authorization = authorization;
 }
 
+SieveAbstractSaslRequest.prototype.onOk
+    = function (response)
+{
+  if (this.responseListener != null)
+    this.responseListener.onSaslResponse(response);    
+}
+
 //****************************************************************************//
 
 /**
@@ -188,16 +223,19 @@ SieveGetScriptRequest.prototype.getNextRequest
   return "GETSCRIPT \""+this.script+"\"\r\n";
 }
 
+SieveGetScriptRequest.prototype.onOk
+    = function (response)
+{
+  if (this.responseListener != null)
+    this.responseListener.onGetScriptResponse(response);
+}
+
 /** @param {SieveResponseParser} parser */
 SieveGetScriptRequest.prototype.addResponse
     = function (parser)
-{  
-  var response = new SieveGetScriptResponse(this.script,parser); 
-		
-  if ((response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onGetScriptResponse(response);
-  else
-    SieveAbstractRequest.prototype.addResponse.call(this,response);
+{   
+  SieveAbstractRequest.prototype.addResponse.call(this,
+      new SieveGetScriptResponse(this.script,parser));
 }
 
 //****************************************************************************//
@@ -272,18 +310,19 @@ SievePutScriptRequest.prototype.addPutScriptListener
   this.responseListener = listener;
 } 
 
+SievePutScriptRequest.prototype.onOk
+    = function (response)
+{
+  if (this.responseListener != null)
+    this.responseListener.onPutScriptResponse(response);      
+}
+
 /** @param {SieveResponseParser} parser */
 SievePutScriptRequest.prototype.addResponse
     = function (parser)
 {  
-  var response = new SieveSimpleResponse(parser);
-
-  if ((response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onPutScriptResponse(response);
-  else
-    SieveAbstractRequest.prototype.addResponse.call(this,response);
-    
-  return;
+  SieveAbstractRequest.prototype.addResponse.call(this,
+      new SieveSimpleResponse(parser));
 }
 
 //****************************************************************************//
@@ -338,16 +377,19 @@ SieveCheckScriptRequest.prototype.addCheckScriptListener
   this.responseListener = listener;
 } 
 
+SieveCheckScriptRequest.prototype.onOk
+    = function (response)
+{
+  if (this.responseListener != null)
+    this.responseListener.onCheckScriptResponse(response);      
+}
+
 /** @param {SieveResponseParser} parser */
 SieveCheckScriptRequest.prototype.addResponse
     = function (parser)
 {  
-  var response = new SieveSimpleResponse(parser);
-
-  if ((response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onCheckScriptResponse(response);
-  else
-    SieveAbstractRequest.prototype.addResponse.call(this,response);
+  SieveAbstractRequest.prototype.addResponse.call(this,
+      new SieveSimpleResponse(parser));
 }
 
 //****************************************************************************//
@@ -389,17 +431,20 @@ SieveSetActiveRequest.prototype.addSetActiveListener
 {
   this.responseListener = listener;
 } 
-   
+
+SieveSetActiveRequest.prototype.onOk
+    = function (response)
+{
+  if (this.responseListener != null)
+    this.responseListener.onSetActiveResponse(response);     
+}
+
 /** @param {SieveResponseParser} parser */
 SieveSetActiveRequest.prototype.addResponse
     = function (parser)
 {  
-  var response = new SieveSimpleResponse(parser);
-
-  if ((response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onSetActiveResponse(response);
-  else
-    SieveAbstractRequest.prototype.addResponse.call(this,response);
+  SieveAbstractRequest.prototype.addResponse.call(this,
+      new SieveSimpleResponse(parser));
 }
 
 //****************************************************************************//
@@ -427,18 +472,20 @@ SieveCapabilitiesRequest.prototype.addCapabilitiesListener
 {
   this.responseListener = listener;
 } 
-   
+
+SieveCapabilitiesRequest.prototype.onOk
+    = function (response)
+{
+  if (this.responseListener != null)
+    this.responseListener.onCapabilitiesResponse(response);     
+}
+
 /** @param {SieveResponseParser} parser */
 SieveCapabilitiesRequest.prototype.addResponse
     = function (parser)
 {
-  
-  var response = new SieveCapabilitiesResponse(parser);
-			
-  if ((response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onCapabilitiesResponse(response);			
-  else
-    SieveAbstractRequest.prototype.addResponse.call(this,response);
+  SieveAbstractRequest.prototype.addResponse.call(this,
+      new SieveCapabilitiesResponse(parser));
 }
 
 //****************************************************************************//
@@ -466,18 +513,21 @@ SieveDeleteScriptRequest.prototype.addDeleteScriptListener
     = function (listener)
 {
   this.responseListener = listener;
-} 
-   
+}
+
+SieveDeleteScriptRequest.prototype.onOk
+    = function (response)
+{
+  if (this.responseListener != null)
+    this.responseListener.onDeleteScriptResponse(response);     
+}
+  
 /** @param {SieveResponseParser} parser */
 SieveDeleteScriptRequest.prototype.addResponse
     = function (parser)
-{        
-  var response = new SieveSimpleResponse(parser);
-			
-  if ((response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onDeleteScriptResponse(response);			
-  else
-    SieveAbstractRequest.prototype.addResponse.call(this,response);
+{
+  SieveAbstractRequest.prototype.addResponse.call(this,
+      new SieveSimpleResponse(parser));
 }
 
 //****************************************************************************//
@@ -509,17 +559,20 @@ SieveNoopRequest.prototype.addNoopListener
 {
   this.responseListener = listener;
 } 
-   
+
+SieveNoopRequest.prototype.onOk
+    = function (response)
+{
+  if (this.responseListener != null)
+    this.responseListener.onNoopResponse(response);     
+}
+
 /** @param {SieveResponseParser} parser */
 SieveNoopRequest.prototype.addResponse
     = function (parser)
 {        
-  var response = new SieveSimpleResponse(parser);
-      
-  if ((response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onNoopResponse(response);     
-  else
-    SieveAbstractRequest.prototype.addResponse.call(this,response);
+  SieveAbstractRequest.prototype.addResponse.call(this,
+      new SieveSimpleResponse(parser));
 }
 
 //****************************************************************************//
@@ -557,17 +610,20 @@ SieveRenameScriptRequest.prototype.addRenameScriptListener
 {
   this.responseListener = listener;
 } 
-   
+
+SieveRenameScriptRequest.prototype.onOk
+    = function (response)
+{
+  if (this.responseListener != null)
+    this.responseListener.onRenameScriptResponse(response);     
+}
+
 /** @param {SieveResponseParser} parser */
 SieveRenameScriptRequest.prototype.addResponse
     = function (parser)
 {        
-  var response = new SieveSimpleResponse(parser);
-      
-  if ((response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onRenameScriptResponse(response);     
-  else
-    SieveAbstractRequest.prototype.addResponse.call(this,response);
+  SieveAbstractRequest.prototype.addResponse.call(this,
+      new SieveSimpleResponse(parser));
 }
 
 //****************************************************************************//
@@ -595,18 +651,19 @@ SieveListScriptRequest.prototype.addListScriptListener
   this.responseListener = listener;
 } 
 
+SieveListScriptRequest.prototype.onOk
+    = function (response)
+{
+  if (this.responseListener != null)
+    this.responseListener.onListScriptResponse(response);     
+}
+
 /** @param {SieveResponseParser} parser */
 SieveListScriptRequest.prototype.addResponse 
     = function (parser)
 {	
-  var response = new SieveListScriptResponse(parser);
-			
-  if ((response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onListScriptResponse(response);			
-  else
-    SieveAbstractRequest.prototype.addResponse.call(this,response);
-  
-  return;
+  SieveAbstractRequest.prototype.addResponse.call(this,
+      new SieveListScriptResponse(parser));
 }
 
 //****************************************************************************//
@@ -623,8 +680,6 @@ SieveStartTLSRequest.prototype.getNextRequest
     = function ()
 {
   return "STARTTLS\r\n";
-  
-  //
 }
 
 SieveStartTLSRequest.prototype.addStartTLSListener
@@ -632,17 +687,20 @@ SieveStartTLSRequest.prototype.addStartTLSListener
 {
   this.responseListener = listener;
 } 
-   
+
+SieveStartTLSRequest.prototype.onOk
+    = function (response)
+{
+  if (this.responseListener != null)
+    this.responseListener.onStartTLSResponse(response);     
+}
+
 /** @param {SieveResponseParser} parser */
 SieveStartTLSRequest.prototype.addResponse 
     = function (parser)
 {
-  var response = new SieveSimpleResponse(parser);
-			
-  if ((response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onStartTLSResponse(response);			
-  else
-    SieveAbstractRequest.prototype.addResponse.call(this,response);
+  SieveAbstractRequest.prototype.addResponse.call(this,
+      new SieveSimpleResponse(parser));
 }
 
 //****************************************************************************//
@@ -672,7 +730,7 @@ SieveStartTLSRequest.prototype.addResponse
  *                 
  *  var request = new SieveLogoutRequest();
  *  request.addErrorListener(event);
- *  request.addSaslPlainListener(event);
+ *  request.addSaslListener(event);
  *                       
  *  sieve.addRequest(request);
  * </pre>
@@ -698,25 +756,28 @@ SieveLogoutRequest.prototype.addLogoutListener
 {
   this.responseListener = listener;
 } 
-   
+
+SieveLogoutRequest.prototype.onOk
+    = function (response)
+{
+  if (this.responseListener != null)
+    this.responseListener.onLogoutResponse(response);    
+}
+
+SieveLogoutRequest.prototype.onBye
+    = function (response)
+{
+  // As issued a logout request thus onBye response is perfectly fine...
+  // ... and equivalten to an ok in this case.
+  this.onOk(response);
+}
+
 /** @param {SieveResponseParser} parser */
 SieveLogoutRequest.prototype.addResponse 
     = function (parser)
-{  
-  var response = new SieveSimpleResponse(parser);
-			
-  // a "BYE" or "OK" is in this case a good answer...
-  if (((response.getResponse() == 0) || (response.getResponse() == 1)))
-  {
-    if (this.responseListener != null)
-      this.responseListener.onLogoutResponse(response);    
-    
-    return;
-  }
-  
-  // The response is no, so the server has an error message which should be
-  // processed before disconnecting
-  SieveAbstractRequest.prototype.addResponse.call(this,response);    
+{
+  SieveAbstractRequest.prototype.addResponse.call(this,
+      new SieveSimpleResponse(parser));    
 }
 
 //****************************************************************************//
@@ -758,19 +819,21 @@ SieveInitRequest.prototype.addInitListener
 {
   this.responseListener = listener;
 } 
-   
+
+SieveInitRequest.prototype.onOk
+    = function (response)
+{
+  if (this.responseListener != null)
+    this.responseListener.onInitResponse(response);    
+}
+
 /** @param {SieveResponseParser} parser */
 SieveInitRequest.prototype.addResponse
     = function (parser)
 {  
-  var response = new SieveCapabilitiesResponse(parser);
-			
-  if ((response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onInitResponse(response);			
-  else
-    SieveAbstractRequest.prototype.addResponse.call(this,response);
+  SieveAbstractRequest.prototype.addResponse.call(this,
+      new SieveCapabilitiesResponse(parser));
 }
-//****************************************************************************//
 
 /*******************************************************************************
  
@@ -781,7 +844,7 @@ SieveInitRequest.prototype.addResponse
     USES CLASSES        : SievePlainResponse
         
     CONSCTURCTOR        : SievePlainRequest(String username)
-    DECLARED FUNCTIONS  : void addSaslPlainListener(...)
+    DECLARED FUNCTIONS  : void addSaslListener(...)
                           void addErrorListener(...)
                           void addResponse(parser)                          
                           String getNextRequest()
@@ -801,7 +864,7 @@ SieveInitRequest.prototype.addResponse
   ========
      
     var event = {
-      onSaslPlainResponse: function(response) 
+      onSaslResponse: function(response) 
       {
         alert("Login successfull");
       }
@@ -815,7 +878,7 @@ SieveInitRequest.prototype.addResponse
     var request = new SieveSaslPlainRequest('geek');
     request.setPassword('th3g33k1');
     request.addErrorListener(event);
-    request.addSaslPlainListener(event);
+    request.addSaslListener(event);
                         
     sieve.addRequest(request);
 
@@ -846,7 +909,7 @@ SieveSaslPlainRequest.prototype.getNextRequest
   return "AUTHENTICATE \"PLAIN\" \""+logon+"\"\r\n";
 }
 
-SieveSaslPlainRequest.prototype.addSaslPlainListener
+SieveSaslPlainRequest.prototype.addSaslListener
     = function (listener)
 {
   this.responseListener = listener;
@@ -855,12 +918,8 @@ SieveSaslPlainRequest.prototype.addSaslPlainListener
 SieveSaslPlainRequest.prototype.addResponse
     = function (parser)
 {
-  var response = new SieveSimpleResponse(parser);
-			
-  if ((response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onSaslPlainResponse(response);			
-  else
-    SieveAbstractRequest.prototype.addResponse.call(this,response);
+  SieveAbstractRequest.prototype.addResponse.call(this,
+      new SieveSimpleResponse(parser));
 }
 
 
@@ -872,7 +931,7 @@ SieveSaslPlainRequest.prototype.addResponse
     USES CLASSES        : SieveSaslLoginResponse
         
     CONSCTURCTOR        : SieveLoginRequest(String username)
-    DECLARED FUNCTIONS  : void addSaslLoginListener(...)
+    DECLARED FUNCTIONS  : void addSaslListener(...)
                           void addErrorListener(...)
                           void addResponse(String parser)                          
                           String getNextRequest()
@@ -901,7 +960,7 @@ SieveSaslPlainRequest.prototype.addResponse
   ========
      
     var event = {
-      onSaslLoginResponse: function(response) 
+      onSaslResponse: function(response) 
       {
         alert("Login successfull");
       }
@@ -916,7 +975,7 @@ SieveSaslPlainRequest.prototype.addResponse
     request.setUsername('geek');
     request.setPassword('th3g33k1');
     request.addErrorListener(event);
-    request.addSaslLoginListener(event);
+    request.addSaslListener(event);
                         
     sieve.addRequest(request);
 
@@ -984,7 +1043,7 @@ SieveSaslLoginRequest.prototype.hasNextRequest
   return true;
 }
 
-SieveSaslLoginRequest.prototype.addSaslLoginListener
+SieveSaslLoginRequest.prototype.addSaslListener
     = function (listener)
 {
   this.responseListener = listener;
@@ -998,11 +1057,8 @@ SieveSaslLoginRequest.prototype.addResponse
 		
 	if (this.response.getState() != 4)
 	  return;
-	
-  if ((this.response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onSaslLoginResponse(this.response);			
-  else
-    SieveAbstractRequest.prototype.addResponse.call(this,response);
+
+  SieveAbstractRequest.prototype.addResponse.call(this,this.response);
 }
 
 //****************************************************************************//
@@ -1046,7 +1102,7 @@ SieveSaslCramMd5Request.prototype.hasNextRequest
   return true;
 }
 
-SieveSaslCramMd5Request.prototype.addSaslCramMd5Listener
+SieveSaslCramMd5Request.prototype.addSaslListener
     = function (listener)
 {
   this.responseListener = listener;
@@ -1060,10 +1116,7 @@ SieveSaslCramMd5Request.prototype.addResponse
 	if (this.response.getState() != 4)
 	  return;
 
-  if ((this.response.getResponse() == 0) && (this.responseListener != null))
-    this.responseListener.onSaslCramMd5Response(this.response);      
-  else
-    SieveAbstractRequest.prototype.addResponse.call(this,response);
+  SieveAbstractRequest.prototype.addResponse.call(this,this.response);
 }
 
 
@@ -1100,6 +1153,298 @@ SieveSaslCramMd5Request.prototype.strToByteArray
 }
 
 SieveSaslCramMd5Request.prototype.byteArrayToHexString
+    = function (tmp)
+{
+  var str = ""; 
+  for ( var i = 0; i < tmp.length; i++ ) 
+    str += ("0"+tmp[i].toString(16)).slice(-2);
+ 
+  return str;    
+}
+
+/**
+ * This reqeustest implements the Salted Challenge Response Authentication 
+ * Mechanism (SCRAM). A SASL SCRAM-SHA-1 compatible implementation is mandatory 
+ * for every manage sieve server. SASL SCRAM-SHA-1 superseeds DIGEST-MD5. 
+ * 
+ * @author Thomas Schmid
+ */
+
+function SieveSaslScramSha1Request() 
+{
+  this._authorizable = true;
+  this.response = new SieveSaslScramSha1Response();
+}
+
+// Inherrit prototypes from SieveAbstractRequest...
+SieveSaslScramSha1Request.prototype.__proto__ = SieveAbstractSaslRequest.prototype;
+
+/**
+ * Hi(str, salt, i) is a PBKDF2 [RFC2898] implementation with HMAC() as the 
+ * pseudorandom function (PRF) and with dkLen == output length of HMAC() == output 
+ * length of H().
+ * 
+ *  "str" is an octet input string while salt is a random octet string.
+ *  "i" is the iteration count, "+" is the string concatenation operator,
+ *  and INT(1) is a 4-octet encoding of the integer with the value 1.
+ * 
+ * Hi(str, salt, i):
+ * 
+ *   U1   := HMAC(str, salt + INT(1))
+ *   U2   := HMAC(str, U1)
+ *   ...
+ *   Ui-1 := HMAC(str, Ui-2)
+ *   Ui   := HMAC(str, Ui-1)
+ *
+ *   Hi := U1 XOR U2 XOR ... XOR Ui
+ * 
+ * @param {byte[]} str
+ *   an octet input string
+ * @param {byte[]} salt
+ *   random octet string
+ * @param {int} i
+ *   iteration count a positiv number (>= 1), suggested to be at least 4096
+ *   
+ * @return {byte[]}
+ *   the pseudorandom value as byte string   
+ */
+SieveSaslScramSha1Request.prototype._Hi
+    = function(str,salt,i)
+{  
+  if (salt.length < 2)
+    throw "insufficient salt";
+    
+  if (i <= 0)
+    throw "Invalid Iteration counter";
+  
+  if (!salt.push)
+    throw "Salt needs to be a byte array";
+    
+  salt.push(0,0,0,1);
+  
+  salt = this._HMAC(str,salt);
+  
+  var hi = salt;
+  
+  while (--i)
+  {
+    salt = this._HMAC(str,salt);
+
+    for (var j=0; j<hi.length; j++)
+      hi[j] ^= salt[j];
+  }
+    
+  return hi;  
+}
+
+/**
+ * Calculates the HMAC-SHA-1 keyed hash.
+ *  *   
+ * @param {byte[]} key
+ *   The key as octet string
+ * @param {byte[]} str
+ *   The input string as byte array
+ * @return {byte[]}
+ *   the calculated hash for the given input string. HMAC-SHA-1 hashes are 
+ *   always always 20 octets long.
+ */
+SieveSaslScramSha1Request.prototype._HMAC
+    = function (key, bytes)
+{  
+  key = this.byteArrayToStr(key);
+  
+  if ( !key )
+    key = "";
+
+  var crypto = Cc["@mozilla.org/security/hmac;1"]
+                   .createInstance( Ci.nsICryptoHMAC );
+  var keyObject = Cc["@mozilla.org/security/keyobjectfactory;1"]
+                    .getService( Components.interfaces.nsIKeyObjectFactory )
+                    .keyFromString( Ci.nsIKeyObject.HMAC, key);
+
+  crypto.init( Ci.nsICryptoHMAC.SHA1, keyObject );
+  crypto.update( bytes, bytes.length );
+        
+  return this.strToByteArray(crypto.finish(false));
+}
+
+/**
+ * Calculates the SHA1 hash.
+ * 
+ * @param {byte[]} bytes
+ *   The input string as byte array
+ * @return {string}
+ *   the calculated hash for the given input string. SHA-1 hashes are 
+ *   always always 20 octets.
+ */
+SieveSaslScramSha1Request.prototype._H
+    = function (bytes)
+{
+  var crypto = Cc["@mozilla.org/security/hash;1"]  
+                 .createInstance(Ci.nsICryptoHash);
+               
+  crypto.init(Ci.nsICryptoHash.SHA1);  
+  crypto.update(bytes, bytes.length);
+  
+  return this.strToByteArray(crypto.finish(false));
+}
+
+SieveSaslScramSha1Request.prototype.getNextRequest
+    = function ()
+{  
+      
+  // Step1: Client sends Message to server. See SASL Login how to integrate it
+  // into the AUTHENTICATE Command.
+  //
+  // e.g.: "AUTHENTICATE \"SCRAM-SHA-1\" \"n,,n=user,r=fyko+d2lbbFgONRv9qkxdawL\"\r\n"
+
+  switch (this.response.getState())
+  {
+    case 0:   
+      this._cnonce = this.byteArrayToHexString(
+                 this._H(""+(Math.random() * 1234567890)));
+          
+      // XXX: Debug Only
+      //this._cnonce = "fyko+d2lbbFgONRv9qkxdawL"
+
+      // TODO escape/normalize authorization and username 
+      // ;; UTF8-char except NUL, "=", and ","  
+      // "=" is escaped by =2C and "," by =3D
+                 
+      // Store client-first-message-bare 
+      this._authMessage = "n="+this._username+",r="+this._cnonce;
+      this._g2Header = "n,"+(this._authorization != "" ? "a="+this._authorization: "" )+",";
+
+      // TODO we need to base64 encode our strings...            
+      return "AUTHENTICATE \"SCRAM-SHA-1\" " 
+                +"\""+this._g2Header+this._authMessage+"\"\r\n";
+    case 1:
+      
+      // Check if the server returned our nonce. This should prevent...
+      // ... man in the middle attacks.
+      var nonce = this.response.getNonce();      
+      if ((nonce.substr(0, this._cnonce.length) != this._cnonce))
+        throw "Nonce invalid";
+
+      // As first step we need to salt the password...
+      var salt = this.strToByteArray(this.response.getSalt());
+      var iter = this.response.getIterationCounter();      
+      
+      // TODO Normalize password; and convert it into a byte array... 
+      // ... It might contain special charaters.
+      
+      // ... this is done by applying a simplified PBKDF2 algorithm...
+      // ... so we endup by calling Hi(Normalize(password), salt, i)
+      this._saltedPassword = this._Hi(this.strToByteArray(this._password),salt,iter);
+      
+      // the clientKey is defined as HMAC(SaltedPassword, "Client Key")
+      var clientKey = this._HMAC(this._saltedPassword, this.strToByteArray("Client Key"));
+              
+      // create the client-final-message-without-proof, ...
+      var msg = "c="+btoa(this._g2Header)+",r="+nonce;      
+      // ... append it and the server-first-message to client-first-message-bare...
+      this._authMessage += ","+this.response.getServerFirstMessage()+ ","+msg;      
+      // ... and convert it into a byte array.
+      this._authMessage = this.strToByteArray(this._authMessage);
+      
+      // As next Step sign out message, this is done by applying the client...
+      // ... key through a pseudorandom function to the message. It is defined...
+      // as HMAC(H(ClientKey), AuthMessage)
+      var clientSignature = this._HMAC(this._H(clientKey),this._authMessage);
+                                   
+      // We now complete the cryptographic part an apply our clientkey to the...
+      // ... Signature, so that the server can be sure it is talking to us. 
+      // The RFC defindes this step as ClientKey XOR ClientSignature    
+      var clientProof = clientKey;
+      for (var k = 0; k < clientProof.length; k++)
+        clientProof[k] ^= clientSignature[k];
+             
+      // TODO we need to base64 encode our strings...
+      // Every thing done so let's send the message...
+      //"c=" base64( (("" / "y") "," [ "a=" saslname ] "," ) "," "r=" c-nonce s-nonce ["," extensions] "," "p=" base64
+      return "\""+msg+",p="+btoa(this.byteArrayToStr(clientProof))+"\"\r\n";      
+  }
+  
+  throw "Illegal state in SaslCram"; 
+}
+
+SieveSaslScramSha1Request.prototype.hasNextRequest
+    = function ()
+{
+  if (this.response.getState() == 4) 
+    return false;
+  
+  return true;
+}
+
+SieveSaslScramSha1Request.prototype.addSaslListener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
+   
+SieveSaslScramSha1Request.prototype.onOk
+    = function (response)
+{
+  var serverSignature = this._HMAC(
+    this._HMAC(this._saltedPassword,this.strToByteArray("Server Key")),this._authMessage);
+      
+  if (response.getVerifier() != this.byteArrayToStr(serverSignature))
+  {
+    response.message = "Server Signature not invalid ";
+    response.response = 2;
+    this.onNo(response);
+    return;
+  }
+ 
+  SieveAbstractSaslRequest.prototype.onOk.call(this,response);
+}
+
+SieveSaslScramSha1Request.prototype.addResponse 
+    = function (parser)
+{
+  this.response.add(parser);
+      
+  if (this.response.getState() != 4)
+    return;
+    
+  SieveAbstractRequest.prototype.addResponse.call(this,this.response);
+}
+
+SieveSaslScramSha1Request.prototype.strToByteArray
+     = function ( str )
+{
+  var result = [];
+  
+  
+  for (var i=0; i<str.length; i++)
+  {
+    if (str.charCodeAt(i) > 255 )
+      throw "Invalid Charaters for Binary String :"+str.charCodeAt(i);
+      
+    result.push(str.charCodeAt(i))
+  }
+  
+  return result;
+}
+
+SieveSaslScramSha1Request.prototype.byteArrayToStr
+    = function (bytes)
+{
+  var result = "";
+  
+  for (var i=0; i<bytes.length; i++)
+  {
+    if (String.fromCharCode(bytes[i]) > 255)
+      throw "Byte Array Invalid: "+String.fromCharCode(bytes[i]);
+      
+    result += String.fromCharCode(bytes[i]);
+  }
+    
+  return result;    
+}
+
+SieveSaslScramSha1Request.prototype.byteArrayToHexString
     = function (tmp)
 {
   var str = ""; 

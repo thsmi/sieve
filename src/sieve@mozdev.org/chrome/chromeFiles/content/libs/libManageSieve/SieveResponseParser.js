@@ -96,7 +96,7 @@ SieveResponseParser.prototype.extractLiteral
     throw "Error unbalanced parathesis \"{\"";
   
   // extract the size, and ignore "+"
-  var size = parseInt(this.getData(this.pos, nextBracket).replace(/\+/,""));
+  var size = parseInt(this.getData(this.pos, nextBracket).replace(/\+/,""),10);
     
   this.pos = nextBracket+1;
 

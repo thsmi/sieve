@@ -1305,7 +1305,7 @@ SieveSaslScramSha1Request.prototype.getNextRequest
                  this._H(this.strToByteArray((Math.random() * 1234567890))));
           
       // TODO: SCRAM: Debug Only
-      //this._cnonce = "fyko+d2lbbFgONRv9qkxdawL"
+      //this._cnonce = "fyko+d2lbbFgONRv9qkxdawL";
 
       // TODO SCRAM: escape/normalize authorization and username 
       // ;; UTF8-char except NUL, "=", and ","  
@@ -1314,10 +1314,9 @@ SieveSaslScramSha1Request.prototype.getNextRequest
       // Store client-first-message-bare 
       this._authMessage = "n="+this._username+",r="+this._cnonce;
       this._g2Header = "n,"+(this._authorization != "" ? "a="+this._authorization: "" )+",";
-
-      // TODO we need to base64 encode our strings...            
+           
       return "AUTHENTICATE \"SCRAM-SHA-1\" " 
-                +"\""+this._g2Header+this._authMessage+"\"\r\n";
+                +"\""+btoa(this._g2Header+this._authMessage)+"\"\r\n";
     case 1:
       
       // Check if the server returned our nonce. This should prevent...
@@ -1359,10 +1358,9 @@ SieveSaslScramSha1Request.prototype.getNextRequest
       for (var k = 0; k < clientProof.length; k++)
         clientProof[k] ^= clientSignature[k];
              
-      // TODO we need to base64 encode our strings...
       // Every thing done so let's send the message...
       //"c=" base64( (("" / "y") "," [ "a=" saslname ] "," ) "," "r=" c-nonce s-nonce ["," extensions] "," "p=" base64
-      return "\""+msg+",p="+btoa(this.byteArrayToStr(clientProof))+"\"\r\n";  
+      return "\""+btoa(msg+",p="+btoa(this.byteArrayToStr(clientProof)))+"\"\r\n";  
       
     case 2:
       // obviously we have to send an empty response. The server did not wrap...

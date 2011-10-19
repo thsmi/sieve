@@ -616,10 +616,9 @@ SieveSaslScramSha1Response.prototype.__proto__ = SieveSimpleResponse.prototype;
 SieveSaslScramSha1Response.prototype._parseFirstMessage
   = function (string)
 {
-  //TODO we need to base64 dencode our strings...
-  this._serverFirstMessage = string;
+  this._serverFirstMessage = atob(string);
   
-  var tokens = string.split(',');
+  var tokens = this._serverFirstMessage.split(',');
   
   // Test for the reserved-mext token. If it is existant, we just skip it
   if ((tokens[0].length <=2) || tokens[0][0] == "m")
@@ -659,11 +658,9 @@ SieveSaslScramSha1Response.prototype._parseFirstMessage
  */
 SieveSaslScramSha1Response.prototype._parseFinalMessage
   = function (string)
-{
-  //TODO we need to base64 dencode our strings...
-  
+{ 
   // server-final-message = (server-error / verifier) ["," extensions]
-  var token = string.split(",");
+  var token = atob(string).split(",");
   
   if (token[0].length <= 2)
     throw "Response expected but got : "+ string;

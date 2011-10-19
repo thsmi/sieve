@@ -1302,12 +1302,12 @@ SieveSaslScramSha1Request.prototype.getNextRequest
   {
     case 0:   
       this._cnonce = this.byteArrayToHexString(
-                 this._H(""+(Math.random() * 1234567890)));
+                 this._H(this.strToByteArray((Math.random() * 1234567890))));
           
-      // XXX: Debug Only
+      // TODO: SCRAM: Debug Only
       //this._cnonce = "fyko+d2lbbFgONRv9qkxdawL"
 
-      // TODO escape/normalize authorization and username 
+      // TODO SCRAM: escape/normalize authorization and username 
       // ;; UTF8-char except NUL, "=", and ","  
       // "=" is escaped by =2C and "," by =3D
                  
@@ -1362,7 +1362,12 @@ SieveSaslScramSha1Request.prototype.getNextRequest
       // TODO we need to base64 encode our strings...
       // Every thing done so let's send the message...
       //"c=" base64( (("" / "y") "," [ "a=" saslname ] "," ) "," "r=" c-nonce s-nonce ["," extensions] "," "p=" base64
-      return "\""+msg+",p="+btoa(this.byteArrayToStr(clientProof))+"\"\r\n";      
+      return "\""+msg+",p="+btoa(this.byteArrayToStr(clientProof))+"\"\r\n";  
+      
+    case 2:
+      // obviously we have to send an empty response. The server did not wrap...
+      // ... the verifier into the Response Code...
+      return "\"\"\r\n";
   }
   
   throw "Illegal state in SaslCram"; 

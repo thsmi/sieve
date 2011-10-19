@@ -36,7 +36,7 @@ function SieveSimpleResponse(parser)
    */
 
   this.message = "";
-  this.responseCode = "";
+  this.responseCode = [];
     
   // OK
   if (parser.startsWith([[79,111],[75,107]]))
@@ -69,17 +69,52 @@ function SieveSimpleResponse(parser)
   // remove the space
   parser.extractSpace();
 
-  // we found "(" so we got an responseCode    
+  // we found "(" so we got an responseCode, they are extremely ugly...    
   if (parser.startsWith([[40]]))
   {
-    // remove the opening bracket
+    // remove the opening bracket...
     parser.extract(1);
-        
-    // extract Tokens until a ")" is found
-    this.responseCode = parser.extractToken(41);
-        
-    // remove the closing bracket
-    parser.extract(1);        
+    // ... but remember it 
+    var nesting = 0;
+  
+    // According to the RFC the first tag must be always an atom, but in...
+    // ... reality this is not true. Cyrus servers send it as a string
+    if (parser.isString())
+      this.responseCode.push(parser.extractString());
+    else
+      this.responseCode.push(parser.extractToken([32,41]));
+          
+    while (parser.isSpace())
+    {
+      parser.extractSpace();
+    
+      // We might stumbe upon opening brackets...
+      if (parser.startsWith([[40]]))
+      {
+        // ... oh we did, so increase our nesting counter.
+        parser.extract(1);
+        nesting++;
+      }
+    
+      // ok, more tokens, more fun...
+      // ... it could be either a string, a number, an atom or even a backet
+      if (parser.isString())
+        this.responseCode.push(parser.extractString());
+      else
+        this.responseCode.push(parser.extractToken([32,41]))
+
+      // is it a closing bracket
+      if (parser.startsWith([[41]]) && nesting)
+      {
+        parser.extract(1);
+        nesting--;
+      }
+    }
+    
+    if (!parser.startsWith([[41]]))
+      throw "Closing Backets expected in "+parser.getData();
+      
+    parser.extract(1);    
         
     if (parser.isLineBreak())
     {
@@ -88,7 +123,7 @@ function SieveSimpleResponse(parser)
     }
              
     parser.extractSpace();
-  }
+  }  
     
   this.message = parser.extractString();
     
@@ -129,22 +164,23 @@ SieveSimpleResponse.prototype.getResponseCode
   if (this.responseCode == null)
     throw "Response Code not Initialized";
     
-  // If the Response Code starts with a quote skip we run into a cyrus bug. 
-  // This means we need an offset of 1 first character...  
-  var offset = this.responseCode[0] == '"'?1:0;
-  
-  if (this.responseCode.toUpperCase().indexOf("REFERRAL") == offset)
-    return new SieveResponseCodeReferral(this.responseCode);
+  var code = "";  
+  if (this.responseCode.length)
+    code = this.responseCode[0].toUpperCase()
     
-  if (this.responseCode.toUpperCase().indexOf("SASL") == offset)
-    return new SieveResponseCodeSasl(this.responseCode);
+  switch (code)
+  {
+    case "REFERRAL":
+      return new SieveResponseCodeReferral(this.responseCode);
+      
+    case "SASL":
+      return new SieveResponseCodeSasl(this.responseCode);          
+  }
 
   // TODO Implement these Response codes:
-  //"ACTIVE" / "NONEXISTENT" / "ALREADYEXISTS" / "WARNINGS" 
-    
+  //"ACTIVE" / "NONEXISTENT" / "ALREADYEXISTS" / "WARNINGS"
   return new SieveResponseCode(this.responseCode);
 }
-
 
 /**
  * Parses the capabilites posted by the ManageSieve server upon a client 
@@ -372,7 +408,7 @@ function SieveListScriptResponse(parser)
         
         parser.extractSpace();
         
-        if (parser.extractToken(13).toUpperCase() != "ACTIVE")
+        if (parser.extractToken([13]).toUpperCase() != "ACTIVE")
             throw "Error \"ACTIVE\" expected";   
 
         this.scripts[i].active = true;        
@@ -580,6 +616,7 @@ SieveSaslScramSha1Response.prototype.__proto__ = SieveSimpleResponse.prototype;
 SieveSaslScramSha1Response.prototype._parseFirstMessage
   = function (string)
 {
+  //TODO we need to base64 dencode our strings...
   this._serverFirstMessage = string;
   
   var tokens = string.split(',');
@@ -623,6 +660,8 @@ SieveSaslScramSha1Response.prototype._parseFirstMessage
 SieveSaslScramSha1Response.prototype._parseFinalMessage
   = function (string)
 {
+  //TODO we need to base64 dencode our strings...
+  
   // server-final-message = (server-error / verifier) ["," extensions]
   var token = string.split(",");
   
@@ -652,7 +691,6 @@ SieveSaslScramSha1Response.prototype.add
   
   if ((this.state == 0) && (parser.isString()))
   {
-    // TODO we need to base64 dencode our strings...
     this._parseFirstMessage(parser.extractString());
     parser.extractLineBreak();
             
@@ -660,17 +698,46 @@ SieveSaslScramSha1Response.prototype.add
     
     return;
   }
+
+
+  // There are two valid responses...  
+  // ... either the Server sends us something like that:
+  //
+  //   S: cnNwYXV0aD1lYTQwZjYwMzM1YzQyN2I1NTI3Yjg0ZGJhYmNkZmZmZA==
+  //   C: ""
+  //   S: OK
   
   if ((this.state == 1) && (parser.isString()))
   {
-    //TODO we need to base64 dencode our strings...
+
     this._parseFinalMessage(parser.extractString());
     parser.extractLineBreak();
-
-    // Should be either a NO, BYE or OK
-    SieveSimpleResponse.call(this,parser);    
+      
+    this.state++;
+      
+    return;
+  }
+  
+  // Or the response is wrapped into the ResponseCode in order to save...
+  // ... roundtip time so we endup with the following
+  //
+  // S: OK (SASL "cnNwYXV0aD1lYTQwZjYwMzM1YzQyN2I1NTI3Yjg0ZGJhYmNkZmZmZA==")
+  
+  if (this.state == 1)
+  {
+    SieveSimpleResponse.call(this,parser);
+    
+    this._parseFinalMessage(this.getResponseCode().getSasl())
+    
     this.state = 4;
-
+     
+    return;
+  }
+    
+  if (this.state == 2)
+  {
+    SieveSimpleResponse.call(this,parser);
+    this.state = 4;
     return;
   }
      

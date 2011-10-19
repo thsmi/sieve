@@ -7,17 +7,12 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-/**
- * 
- * @param {String} code
- */
 function SieveResponseCode(code)
 {
-  this.code = code;  
-  
+  this.code = code;    
 }
 
-SieveResponseCode.prototype.code = "";
+SieveResponseCode.prototype.code = [];
 
 /**
  * Responsecodes should not encapulsted in quotes according to the RFC.
@@ -32,23 +27,22 @@ SieveResponseCode.prototype.code = "";
 SieveResponseCode.prototype.equalsCode
     = function (code)
 {
-  // If the Response Code starts with a quote skip we run into the cyrus bug. 
-  // This means we need an offset of 1 first character...  
-  var offset = this.code[0] == '"'?1:0;
-  
-  if (this.code.toUpperCase().indexOf(code.toUpperCase()) == offset)
-    return true;
+  if ((!this.code) || (!this.code.length))
+    return false;
     
-  return false;   
+  if (this.code[0].toUpperCase() != code.toUpperCase())
+    return false;
+    
+  return true;
 }
 
-/**
- * 
- * @param {String} code
- */
+
 function SieveResponseCodeSasl(code)
 {
   SieveResponseCode.call(this,code);
+  
+  if (this.code[0].toUpperCase() != "SASL")
+    throw "Malformed SASL Response Code"; 
 }
 
 // Inherrit prototypes from SieveResponseCode...
@@ -58,23 +52,23 @@ SieveResponseCodeSasl.prototype.__proto__ = SieveResponseCode.prototype;
 SieveResponseCodeSasl.prototype.getSasl
     = function ()
 {
-  return this.code.slice("SASL ".length);
+  return this.code[1];
 }
 
-/**
- * 
- * @param {String} code
- */
+
 function SieveResponseCodeReferral(code)
 {
-  SieveResponseCode.call(this,code.split(' ')[0]);
+  SieveResponseCode.call(this,code);
+  
+  if (this.code[0].toUpperCase() != "REFERRAL")
+    throw "Malformed REFERRAL Response Code";
   
   // We should have received something similiar to
   //   REFERRAL "sieve://c3.mail.example.com"
   
   // the quoted text contains the authority
   // authority = [ userinfo "@" ] host [ ":" port ]
-  var uri = code.slice(code.indexOf("\"")+1,code.lastIndexOf("\""))
+  var uri = this.code[1];
   
   // remove the sieve:// scheme
   this.hostname = uri.slice("sieve://".length);

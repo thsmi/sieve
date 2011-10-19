@@ -62,7 +62,7 @@ SieveResponseParser.prototype.extractSpace
     = function ()
 {
   if (this.isSpace() == false)
-    throw "Space expected in :\r\n"+this.getData();
+    throw "Space expected in: "+this.getData();
     
   this.pos++;
 }
@@ -77,7 +77,7 @@ SieveResponseParser.prototype.isLiteral
   return false;
 }
 
-// gibt einen string zur?ck, wenn keiner Existiert wird null ?bergeben
+// gibt einen string zurück, wenn keiner Existiert wird null übergeben
 // bei syntaxfehlern filegt eine exception;
 SieveResponseParser.prototype.extractLiteral
     = function ()
@@ -179,14 +179,37 @@ SieveResponseParser.prototype.extractString
   throw "Message String expected";        
 }
 
-// Tokens end with an linebreak or a Space
+/**
+ * Extracts a token form a response. The token is beeing delimited by any 
+ * separator. The extracted token does not include the separator. 
+ * 
+ * @param {byte[]} separators
+ *   an array containing possible token separators. The first match always wins.
+ * @return {String}
+ *   the extracted token.
+ */
 SieveResponseParser.prototype.extractToken
-    = function ( delimiter )
+    = function ( separators )
 {
-  var index = this.indexOf(delimiter);
+  // Search for the separators, the one with the lowest index which is not... 
+  // ... equal to -1 wins. The -2 indecates not initalized...
+  var index = -1;
+  
+  for (var i=0; i<separators.length;i++)
+  {   
+    var idx = this.indexOf(separators[i],this.pos);
+    
+    if (idx == -1)
+      continue;
+      
+    if (index == -1)
+      index = idx;
+    else
+      index = Math.min(index,idx);
+  }
 
   if (index == -1)
-    throw "Delimiter >>"+delimiter+"<< not found in :\r\n"+this.getData();        
+    throw "Delimiter >>"+separators+"<< not found in: "+this.getData();        
   
   var token = this.getData(this.pos,index);
   this.pos = index;
@@ -254,11 +277,11 @@ SieveResponseParser.prototype.getByteArray
 SieveResponseParser.prototype.getData
     = function (startIndex, endIndex)
 {
-  if (startIndex === null)
-    startIndex = this.pos;
-    
-  if (endIndex === null)
+  if (arguments.length < 2)
     endIndex = this.data.length;
+    
+  if (arguments.length < 1)
+    startIndex = this.pos;
     
   var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
                     .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
@@ -278,4 +301,3 @@ SieveResponseParser.prototype.isEmpty
     
   return false;
 }
-    

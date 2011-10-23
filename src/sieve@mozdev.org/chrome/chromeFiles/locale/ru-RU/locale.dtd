@@ -104,6 +104,7 @@
 <!ENTITY options.authmechanism.caption "Механизм аутентификации">
 <!ENTITY options.authmechanism "Игнорировать предложенный механизм аутентификации">
 <!ENTITY options.authmechanism.default "Всегда использовать:">
+<!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "Login">

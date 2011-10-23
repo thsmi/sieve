@@ -209,9 +209,10 @@
           <label control="mlAuthMechanism" value="&options.authmechanism.default;" />
           <menulist id="mlAuthMechanism" oncommand="onAuthMechanismSelect(this)">
             <menupopup>
-              <menuitem id="miAuthMechanismPlain" label="&options.authmechanism.plain;" value="PLAIN"/>
-              <menuitem id="miAuthMechanismLogin" label="&options.authmechanism.login;" value="LOGIN"/>
-              <menuitem id="miAuthMechanismCramMd5" label="&options.authmechanism.crammd5;" value="CRAM-MD5"/>
+              <menuitem label="&options.authmechanism.plain;" value="PLAIN"/>
+              <menuitem label="&options.authmechanism.login;" value="LOGIN"/>
+              <menuitem label="&options.authmechanism.crammd5;" value="CRAM-MD5"/>
+              <menuitem label="&options.authmechanism.scramsha1;" value="SCRAM-SHA-1"/>
             </menupopup>
           </menulist>
         </hbox>        

@@ -103,6 +103,7 @@ low, syntax check requests are grouped.">
 <!ENTITY options.authmechanism.caption "Méchanisme d'authentification">
 <!ENTITY options.authmechanism "Redéfinir le méchanisme d'authentification">
 <!ENTITY options.authmechanism.default "Toujours utiliser:">
+<!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "LOGIN">

@@ -103,6 +103,7 @@ Passwort im Klartext enthalten!">
 <!ENTITY options.authmechanism.caption "Authentifizierungsmechanismus">
 <!ENTITY options.authmechanism "Empfohlenen Mechanismus ignorieren">
 <!ENTITY options.authmechanism.default "Benutze immer:">
+<!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "LOGIN">

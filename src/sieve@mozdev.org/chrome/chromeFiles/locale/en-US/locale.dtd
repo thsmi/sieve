@@ -100,6 +100,7 @@ it might be posted in clear text to the error console.">
 <!ENTITY options.authmechanism.caption "Authentication Mechanism">
 <!ENTITY options.authmechanism "Override suggested Authentication Mechanism">
 <!ENTITY options.authmechanism.default "Use always:">
+<!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "Login">

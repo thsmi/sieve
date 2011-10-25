@@ -290,12 +290,7 @@ Sieve.prototype.setKeepAliveInterval
   }
   
   // No keep alive Packets should be sent, so null the timer and the delay.
-  if (this.idle.timer)
-  {
-    this.idle.timer.cancel();
-    this.idle.timer = null;
-  }
-  
+  this.idle.timer.cancel();  
   this.idle.delay = null;
 
   return;      
@@ -464,11 +459,7 @@ Sieve.prototype.disconnect
     this.timeout.timer = null;
   }
   
-  if (this.idle.timer != null)
-  {
-    this.idle.timer.cancel();
-    this.idle.timer = null;
-  }
+  this.idle.timer.cancel();
   
   if (this.socket == null)
     return;
@@ -572,11 +563,13 @@ Sieve.prototype._onStop
 {
   if (this.timeout.timer != null)
     this.timeout.timer.cancel();
-    
-  if (this.idle.timer == null)
+  
+  this.idle.timer.cancel();
+  
+  if (this.idle.delay == null)
     return;
-      
-  this.idle.timer.cancel();  
+    
+  // Restart idle timer...
   this.idle.timer.initWithCallback(this,this.idle.delay,
          Components.interfaces.nsITimer.TYPE_ONE_SHOT);
     

@@ -101,6 +101,9 @@ SieveSession.prototype =
 {
   onIdle: function ()
   {
+    if (this.debug.level & (1 << 2))
+      this.debug.logger.logStringMessage("Sending keep alive packet...");
+      
     // as we send a keep alive request, we don't care
     // about the response...
     var request = null;
@@ -401,9 +404,8 @@ SieveSession.prototype =
                    
     this.sieve.addListener(this);
   
-    // TODO Load Timeout interval from account settings...
-    
-    if (this.account.getSettings().isKeepAlive(this.account.getSettings()))
+    // TODO Load Timeout interval from account settings...    
+    if (this.account.getSettings().isKeepAlive())
       this.sieve.setKeepAliveInterval(this.account.getSettings().getKeepAliveInterval());    
     
     // Step 2: Initialize Message Queue...

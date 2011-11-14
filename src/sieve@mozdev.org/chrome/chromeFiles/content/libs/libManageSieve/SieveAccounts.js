@@ -900,6 +900,10 @@ SieveAccountSettings.prototype.setKeepAliveInterval
   
   if (isNaN(ms))
     ms = 300000;
+
+  // We limit the keep alive packet to 1 Minute.
+  if (ms < 60*1000)
+    ms = 60*1000;
   
   gPref.setCharPref(this.sieveKey+".keepalive.interval",ms);
 }

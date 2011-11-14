@@ -81,6 +81,7 @@ var event =
     if (gEditorStatus.defaultScript)
     {
       event.onScriptLoaded(gEditorStatus.defaultScript);
+      gEditorStatus.contentChanged = true;
       return;
     }
       
@@ -313,11 +314,14 @@ function onWindowPersist()
   var args = {};
   
   if (gEditorStatus.contentChanged)
-    args["scriptBody"] = document.getElementById("txtScript").value;
+  {
+    args["scriptBody"] = document.getElementById("sivContentEditor").value;
+    args["contentChanged"] = gEditorStatus.contentChanged;
+  }
     
   args["scriptName"] = document.getElementById("txtName").value;
   args["compile"] = document.getElementById('btnCompile').checked;
-  args["account"] = gEditorStatus.account;
+  args["account"] = gEditorStatus.account;  
   
   return args; 
 }
@@ -388,7 +392,8 @@ function onWindowLoad()
   
   // There might be a default or persisted script...
   if (args["scriptBody"])
-    gEditorStatus.defaultScript = args["scriptBody"];  
+    gEditorStatus.defaultScript = args["scriptBody"];
+  
   
   gEditorStatus.account = args["account"];
   var account = (new SieveAccounts()).getAccount(gEditorStatus.account);

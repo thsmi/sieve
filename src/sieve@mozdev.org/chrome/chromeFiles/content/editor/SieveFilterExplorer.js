@@ -364,6 +364,10 @@ function onSelectAccount()
 
 function onDeleteClick()
 {
+  var tree = document.getElementById('treeImapRules');  
+  if (tree.currentIndex < 0)
+    return;
+    
   var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
                   .getService(Ci.nsIPromptService);
   	
@@ -379,11 +383,6 @@ function onDeleteClick()
                                flags, "", "", "", null, check);
   
   if (button != 0)
-    return;
-  
-  var tree = document.getElementById('treeImapRules');
-  
-  if (tree.currentIndex == -1)
     return;
   
   var scriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));	

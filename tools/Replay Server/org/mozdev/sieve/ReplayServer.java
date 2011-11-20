@@ -14,7 +14,7 @@ import java.net.ServerSocket;
 public class ReplayServer
 {
   
-  static final tests test = tests.SCRAMSHA1;
+  static final tests test = tests.FRAGMENTATION;
   
   static boolean cyrusBug = true;
   static boolean tls = true;
@@ -282,7 +282,8 @@ public class ReplayServer
   private static void doFragmentationTest(SieveSocket sieve) throws Exception
   {
     sieve.sendPacket("\"IMPLEMENTATION\" \"1.1\"\r\n");
-    Thread.sleep(2000); 
+    //Thread.sleep(2000); 
+    Thread.sleep(50);
     
     sieve.sendPacket(
         "\"SASL\" \"PLAIN\"\r\n"
@@ -313,11 +314,13 @@ public class ReplayServer
     sieve.sendPacket("\"SIEVE\" \"fileinto\"\r\n");
     Thread.sleep(2000);
     
+    assertTrue(sieve.readLine(),"AUTHENTICATE \"PLAIN\"");
+    sieve.sendPacket("OK\r\n"+"OK\r\n"); 
+    
     assertTrue(sieve.readLine(),"LISTSCRIPTS");
     
     sieve.sendPacket(
-        "OK\r\n"
-        +"\"SCRIPT\"\r\n"
+        "\"SCRIPT\"\r\n"
         + "OK \"Listscript completed.\"\r\n");    
     
     sieve.readLine();    

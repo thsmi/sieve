@@ -45,16 +45,18 @@
  * @author Max Dittrich
  */ 
 
-if (typeof(Cc) == "undefined")
-  { var Cc = Components.classes; }
-if (typeof(Ci) == "undefined")
-  { var Ci = Components.interfaces; }
+if (typeof(Cc) == 'undefined')
+  { Cc = Components.classes; }
+
+if (typeof(Ci) == 'undefined')
+  { Ci = Components.interfaces; }
+
 
 function JSStringToByteArray(str,charset) 
 {  
   // ... and convert to UTF-8
-  var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-                    .createInstance(Components.interfaces.nsIScriptableUnicodeConverter); 
+  var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
+                    .createInstance(Ci.nsIScriptableUnicodeConverter); 
   
   if (charset == null)
     converter.charset = "UTF-8";
@@ -1128,13 +1130,13 @@ SieveSaslCramMd5Request.prototype.hmacMD5
     secret = "";
 
   var challengeBytes = JSStringToByteArray(challenge);
-  var crypto = Components.classes["@mozilla.org/security/hmac;1"]
-                   .createInstance( Components.interfaces.nsICryptoHMAC );
-  var keyObject = Components.classes["@mozilla.org/security/keyobjectfactory;1"]
-                    .getService( Components.interfaces.nsIKeyObjectFactory )
-                    .keyFromString( Components.interfaces.nsIKeyObject.HMAC, secret);
+  var crypto = Cc["@mozilla.org/security/hmac;1"]
+                   .createInstance( Ci.nsICryptoHMAC );
+  var keyObject = Cc["@mozilla.org/security/keyobjectfactory;1"]
+                    .getService( Ci.nsIKeyObjectFactory )
+                    .keyFromString( Ci.nsIKeyObject.HMAC, secret);
 
-  crypto.init( Components.interfaces.nsICryptoHMAC.MD5, keyObject );
+  crypto.init( Ci.nsICryptoHMAC.MD5, keyObject );
   crypto.update( challengeBytes, challengeBytes.length );
         
   return this.byteArrayToHexString(

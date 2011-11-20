@@ -7,10 +7,11 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
-if (typeof(Cc) == "undefined")
-  { var Cc = Components.classes; }
-if (typeof(Ci) == "undefined")
-  { var Ci = Components.interfaces; }
+if (typeof(Cc) == 'undefined')
+  { Cc = Components.classes; }
+
+if (typeof(Ci) == 'undefined')
+  { Ci = Components.interfaces; }  
 
 //  @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
   

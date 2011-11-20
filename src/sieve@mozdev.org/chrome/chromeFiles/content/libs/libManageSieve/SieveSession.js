@@ -1,9 +1,12 @@
-if (typeof(Cc) == "undefined")
-  var Cc = Components.classes;
-if (typeof(Ci) == "undefined")
-  var Ci = Components.interfaces;
-if (typeof(Cr) == "undefined")  
-  var Cr = Components.results;
+
+if (typeof(Cc) == 'undefined')
+  { Cc = Components.classes; }
+
+if (typeof(Ci) == 'undefined')
+  { Ci = Components.interfaces; }  
+
+if (typeof(Cr) == 'undefined')
+  { Cr = Components.results; }
 
 Cc["@mozilla.org/moz/jssubscript-loader;1"]
     .getService(Ci.mozIJSSubScriptLoader) 
@@ -309,12 +312,16 @@ SieveSession.prototype =
   },
   
   _invokeListeners: function(callback,arg1, arg2)
-  {
-    if (!this.listeners)
-      return;
-   
+  {     
     if (!this._hasListeners(callback))
-      this.debug.logger.logStringMessage("No Listener for "+callback+"\n"+this.listeners.toSource());
+    {
+      if (this.debug.level & (1 << 4))
+        this.debug.logger.logStringMessage("No Listener for "+callback+"\n"+this.listeners.toSource());
+      return;
+    }
+    
+    if (this.debug.level & (1 << 4))
+      this.debug.logger.logStringMessage("Invoking Listeners for "+callback+"\n");
       
     for (var i=0; i< this.listeners.length; i++)
      if (this.listeners[i][callback])

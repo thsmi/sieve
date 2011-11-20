@@ -12,10 +12,11 @@
  *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveRequest.js"   
  */
  
-if (typeof(Cc) == "undefined")
-  { var Cc = Components.classes; }
-if (typeof(Ci) == "undefined")
-  { var Ci = Components.interfaces; }
+if (typeof(Cc) == 'undefined')
+  { Cc = Components.classes; }
+
+if (typeof(Ci) == 'undefined')
+  { Ci = Components.interfaces; } 
 
 var gSid = null;
 var gCid = null;
@@ -351,23 +352,9 @@ function onWindowLoad()
       function() {onSearchBar();},
       false);
  
-  // Gecko 1.8.1 does not propagate onscroll events for textboxes...
-  // ... the bug is fixed in Gecko 1.9 (Thunderbird 3)
-  // As the is no workaround, we simply deactivate line numbers in Gecko 1.8
-  var version  = Components.classes["@mozilla.org/xre/app-info;1"]
-                              .getService(Components.interfaces.nsIXULAppInfo)
-                              .platformVersion.split(".");
-
-  if (((version[0] == 1) && (version[1] >=9)) || version[0] >=2)
-  {
-    document.getElementById("sivLineNumbers").removeAttribute('hidden');
-    document.getElementById("sivContentEditor")
-        .addEventListener("scroll", function() {onEditorScroll();},false);
-  }
-  else
-  {
-    document.getElementById("sivLineNumbers").setAttribute('hidden', 'true');
-  }
+  document.getElementById("sivLineNumbers").removeAttribute('hidden');
+  document.getElementById("sivContentEditor")
+      .addEventListener("scroll", function() {onEditorScroll();},false);
 
   // add event listeners to Editor
   document.getElementById("sivContentEditor")

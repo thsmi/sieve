@@ -7,9 +7,14 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cr = Components.results;
+if (typeof(Cc) == 'undefined')
+  { Cc = Components.classes; }
+
+if (typeof(Ci) == 'undefined')
+  { Ci = Components.interfaces; }  
+
+if (typeof(Cr) == 'undefined')
+  { Cr = Components.results; }
 
 Cc["@mozilla.org/moz/jssubscript-loader;1"]
     .getService(Ci.mozIJSSubScriptLoader) 

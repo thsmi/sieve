@@ -11,10 +11,11 @@ var gSivExtUtils =
 {
   OpenFilters : function(server,parentWin)
   {
-    if (typeof(Cc) == "undefined")
-      { var Cc = Components.classes; }
-    if (typeof(Ci) == "undefined")
-      { var Ci = Components.interfaces; }
+    if (typeof(Cc) == 'undefined')
+      { Cc = Components.classes; }
+
+    if (typeof(Ci) == 'undefined')
+      { Ci = Components.interfaces; }  
     
     if (server == null)
       server = this.GetActiveServer();    

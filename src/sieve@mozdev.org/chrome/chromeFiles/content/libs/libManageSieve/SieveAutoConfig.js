@@ -7,10 +7,13 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-if (typeof(Cc) == "undefined")
-  { var Cc = Components.classes; }
-if (typeof(Ci) == "undefined")
-  { var Ci = Components.interfaces; }
+
+if (typeof(Cc) == 'undefined')
+  { Cc = Components.classes; }
+
+if (typeof(Ci) == 'undefined')
+  { Ci = Components.interfaces; }
+
   
 function SieveAutoConfig()
 {

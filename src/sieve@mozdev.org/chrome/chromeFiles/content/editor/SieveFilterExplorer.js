@@ -16,10 +16,11 @@
  *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/editor/SieveFilterTreeView.js"
  */
 
-if (typeof(Cc) == "undefined")
-  { var Cc = Components.classes; }
-if (typeof(Ci) == "undefined")
-  { var Ci = Components.interfaces; }
+if (typeof(Cc) == 'undefined')
+  { Cc = Components.classes; }
+
+if (typeof(Ci) == 'undefined')
+  { Ci = Components.interfaces; } 
 
 var sid = null;
 var gCid = null;

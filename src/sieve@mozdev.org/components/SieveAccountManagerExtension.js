@@ -22,9 +22,14 @@
  *  
  */
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cr = Components.results;
+if (typeof(Cc) == 'undefined')
+  { Cc = Components.classes; }
+
+if (typeof(Ci) == 'undefined')
+  { Ci = Components.interfaces; }  
+
+if (typeof(Cr) == 'undefined')
+  { Cr = Components.results; }
 
 
 //class constructor

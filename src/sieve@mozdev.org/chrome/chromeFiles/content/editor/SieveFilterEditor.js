@@ -155,6 +155,11 @@ var event =
     sivSetStatus(2);
   },
   
+  onDisconnect:function(response)
+  {
+    sivSetStatus(3);
+  },
+  
   observe : function(aSubject, aTopic, aData)
   {
     if (aTopic != "quit-application-requested")
@@ -425,10 +430,16 @@ function onIgnoreOffline()
   // try to go online again
   try 
   {
+    var oldSid  = gSid;   
+               
     // Cid is removed, but try to reconnect...
     gCid = Cc["@sieve.mozdev.org/transport-service;1"]
                .getService().wrappedJSObject
                .createChannel(gSid);
+               
+    Cc["@sieve.mozdev.org/transport-service;1"]
+               .getService().wrappedJSObject
+               .closeChannel(oldSid);               
     
     // TODO: this is code exists twice remove me...
     if (gEditorStatus.hasContent == false)
@@ -449,6 +460,26 @@ function onIgnoreOffline()
   catch (ex) {}
   
   sivSetStatus(0);
+}
+
+
+function onReconnectClick()
+{
+  gEditorStatus.defaultScript = document.getElementById("sivContentEditor").value;
+  
+  var account = (new SieveAccounts()).getAccount(gEditorStatus.account);
+  
+  sivSetStatus(1,"status.loading");
+
+  // Connect to the Sieve Object...  
+  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
+                     .getService().wrappedJSObject; 
+  
+  gSid = sivManager.createSession(account.getKey());
+  sivManager.addSessionListener(gSid,event);
+  
+  gCid = sivManager.createChannel(gSid);
+  sivManager.openChannel(gSid,gCid);   
 }
 
 function onSideBarBrowserClick(event)
@@ -1212,10 +1243,13 @@ function sivSetStatus(state, message)
 {
   document.getElementById('sivEditorWarning').setAttribute('hidden','true');
   document.getElementById('sivEditorWait').setAttribute('hidden','true');
+  document.getElementById('sivExplorerConnectionLost').setAttribute('hidden','true');
   document.getElementById('sivEditor').setAttribute('collapsed','true');
-  
+    
   switch (state)
   {
+    case 3: document.getElementById('sivExplorerConnectionLost').removeAttribute('hidden');
+            break;    
     case 2: document.getElementById('sivEditorWarning').removeAttribute('hidden');
             break;    
     case 1: document.getElementById('sivEditorWait').removeAttribute('hidden');

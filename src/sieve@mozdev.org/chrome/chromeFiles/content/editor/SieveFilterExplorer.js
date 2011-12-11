@@ -88,6 +88,11 @@ var event =
     sivDisconnect(4,response.getMessage());
   },
   
+  onDisconnect: function()
+  {
+    sivDisconnect(9);
+  },
+  
   onCycleCell: function(row,col,script,active)
   {
   	var request = null;
@@ -242,6 +247,11 @@ function onActivateClick()
   tree.view.cycleCell(tree.currentIndex,tree.columns.getColumnAt(1));
     
   return;
+}
+
+function onReconnectClick()
+{
+  sivConnect();   
 }
 
 function onGoOnlineClick()
@@ -548,6 +558,7 @@ function sivSetStatus(state, message, statusbar)
   document.getElementById('sivExplorerBadCert').setAttribute('hidden','true');
   document.getElementById('sivExplorerOffline').setAttribute('hidden','true');
   document.getElementById('sivExplorerDisabled').setAttribute('hidden','true');
+  document.getElementById('sivExplorerConnectionLost').setAttribute('hidden','true');
   
   document.getElementById('sivExplorerTree').setAttribute('collapsed','true');
 
@@ -600,7 +611,9 @@ function sivSetStatus(state, message, statusbar)
     // account disabled
     case 8: document.getElementById('sivExplorerDisabled').removeAttribute('hidden');
             document.getElementById('sivAutoConfig').selectedIndex = message;
-            break;            
+            break;  
+    case 9: document.getElementById('sivExplorerConnectionLost').removeAttribute('hidden');
+            break;
   }
 }
 

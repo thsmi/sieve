@@ -83,7 +83,7 @@
               </treecols>
               
               <treechildren id="sivExplorerTree" collapsed="true" /> <!--collapsed="true" -->
-              
+                            
               <vbox id="sivExplorerWait" hidden="true" align="center" pack="center" flex="1" >
                   <image pack="center" src="chrome://sieve/content/images/load.gif"/>
                   <spacer/>
@@ -197,6 +197,22 @@
                   </vbox> 
                 </hbox>
               </box>
+              
+              <!-- Error Message: Connecton to server lost... -->              
+              <box id="sivExplorerConnectionLost" hidden="false" align="center" pack="center" flex="1">
+                <hbox align="center" class="sivError" >
+                  <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
+                  <vbox>                    
+                     <description pack="center"  flex="1">
+                       Server terminated unexpectedly the connection, click on reconnect to try again.
+                     </description>
+                     <hbox align="right">
+                      <button label="Reconnect" oncommand="onReconnectClick();" />
+                     </hbox>
+                  </vbox> 
+                </hbox>
+              </box>
+              
               
             </tree>
             <vbox>          

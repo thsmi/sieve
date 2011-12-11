@@ -312,8 +312,18 @@ SieveSession.prototype =
   },
   
   _invokeListeners: function(callback,arg1, arg2)
-  {     
-    if (!this._hasListeners(callback))
+  {
+    if (!this.listeners)
+      return false;
+
+    // the a callback function might manipulate our listeners...
+    // ... so we need to cache them before calling...      
+    var iterator = [];
+    for (var i=0; i< this.listeners.length; i++)
+      if (this.listeners[i][callback])
+        iterator.push(this.listeners[i][callback]);
+       
+    if (!iterator.length)
     {
       if (this.debug.level & (1 << 4))
         this.debug.logger.logStringMessage("No Listener for "+callback+"\n"+this.listeners.toSource());
@@ -323,9 +333,9 @@ SieveSession.prototype =
     if (this.debug.level & (1 << 4))
       this.debug.logger.logStringMessage("Invoking Listeners for "+callback+"\n");
       
-    for (var i=0; i< this.listeners.length; i++)
-     if (this.listeners[i][callback])
-       this.listeners[i][callback](arg1, arg2);
+    while (iterator.length)
+      iterator.pop()(arg1,arg2);
+      
   },
 
   /** @private */  
@@ -379,6 +389,20 @@ SieveSession.prototype =
     }
     
     this._invokeListeners("onTimeout",message);
+  },
+  
+  /**
+   * This listener is called when the conenction is lost or terminated by the server
+   * and the session is no more usable. It ensures that everything is disconnected
+   * correctly.
+   **/
+  onDisconnect: function()
+  {    
+    if (this.debug.level & (1 << 4))
+      this.debug.logger.logStringMessage("On Server Disconnect: "+this.sid+"/ ["+this.channels+"]");
+        
+    this._invokeListeners("onDisconnect");  
+    this.disconnect(true);
   },
   
   /**
@@ -444,13 +468,16 @@ SieveSession.prototype =
     // ... knows what happened.
     if (id)
       this._invokeListeners("onChannelStatus",id,message);
-    
+
     // Skip if the connection already closed...
     if (!this.sieve)
-      return;
-      
-    // ... we always try to exit with an Logout request...
-    if ( !force && this.sieve.isAlive())
+    {
+      this.state = 0;
+      return
+    }
+    
+    // ... we always try to exit with an Logout request...      
+    if (!force && this.sieve.isAlive())
     {
       var request = new SieveLogoutRequest();
       request.addLogoutListener(this);
@@ -463,6 +490,8 @@ SieveSession.prototype =
     // ... but this obviously is not always usefull
     this.sieve.disconnect();      
     this.sieve = null;
+    
+    this.channels = null;
     
     // update state: we are disconnected
     this.state = 0;

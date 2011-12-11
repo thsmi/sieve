@@ -498,7 +498,6 @@ Sieve.prototype.onStopRequest
 
   // if the request queue is not empty,
   // we should call directly on timeout..
-
   if ((this.listener) && (this.listener.onDisconnect))
     this.listener.onDisconnect();
 }

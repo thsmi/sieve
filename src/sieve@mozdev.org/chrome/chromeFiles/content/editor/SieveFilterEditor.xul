@@ -135,6 +135,21 @@
               <description id="sivEditorWaitMsg" pack="center">          
               </description>
             </vbox>
+            
+              <!-- Error Message: Connecton to server lost... -->              
+              <box id="sivExplorerConnectionLost" hidden="true" align="center" pack="center" flex="1">
+                <hbox align="center" class="sivError" >
+                  <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
+                  <vbox>                    
+                     <description pack="center"  flex="1">
+                       Server terminated unexpectedly the connection, click on reconnect to try again.
+                     </description>
+                     <hbox align="right">
+                      <button label="Reconnect" oncommand="onReconnectClick();" />
+                     </hbox>
+                  </vbox> 
+                </hbox>
+              </box>            
                         
             <!-- Sieve Script editor -->                        
             <hbox id="sivEditor" collapsed="true" flex="1" class="sivEditor">

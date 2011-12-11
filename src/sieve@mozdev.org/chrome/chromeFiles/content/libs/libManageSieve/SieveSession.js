@@ -356,7 +356,7 @@ SieveSession.prototype =
     // ... as the server must terminate the connection after sending a ...
     // ... bye response, we should also disconnect nicely which means in this...
     // ... case without a logout request.
-    this.disconnect(true);
+    this.disconnect(true);    
     
     // ... we most likely received a referal 
     if (code.equalsCode("REFERRAL"))

@@ -353,11 +353,14 @@ SieveSession.prototype =
     // The server is going to disconnected our session nicely...
     var code = response.getResponseCode();
     
+    // ... as the server must terminate the connection after sending a ...
+    // ... bye response, we should also disconnect nicely which means in this...
+    // ... case without a logout request.
+    this.disconnect(true);
+    
     // ... we most likely received a referal 
     if (code.equalsCode("REFERRAL"))
     {
-      this.disconnect(true);
-      
       if (this.debug.level & (1 << 4))
         this.debug.logger.logStringMessage("Referred to Server: "+code.getHostname());
       

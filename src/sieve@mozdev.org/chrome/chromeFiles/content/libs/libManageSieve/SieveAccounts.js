@@ -100,7 +100,7 @@ SieveImapAuth.prototype.getPassword
   var check = {value:false}; 
   var result 
     = prompts.promptPassword(
-        window,"Password", 
+        null,"Password", 
         "Please enter the password for your Sieve account",
         input, null, check);
   

@@ -66,9 +66,30 @@ var gSivExtUtils =
         return;
     }
   }
+
+  // opening tabs might be a bit more tricky. Tabmail does only exist in...
+  // ... mail:3pane windows, so we have to find one or open one. 
+  var tabmail = document.getElementById("tabmail");  
+  if (!tabmail)
+  {  
+    // Try opening new tabs in an existing 3pane window  
+    var mail3PaneWindow = Components.classes["@mozilla.org/appshell/window-mediator;1"]  
+                                  .getService(Components.interfaces.nsIWindowMediator)  
+                                  .getMostRecentWindow("mail:3pane");  
+    if (mail3PaneWindow)
+    {  
+    tabmail = mail3PaneWindow.document.getElementById("tabmail");  
+    mail3PaneWindow.focus();  
+    }
+  } 
   
-  document.getElementById("tabmail").openTab("SieveExplorerTab", options);
-    
+  if (tabmail)                      
+    tabmail.openTab("SieveExplorerTab", options);
+  else
+ -  window.openDialog("chrome://messenger/content/", "_blank",  
+                    "chrome,dialog=no,all", null,  
+                    { tabType: "SieveExplorerTab",  
+                      tabParams: options });    
   return;
    
     var w = null;

@@ -8,10 +8,12 @@
  */
 
 //TODO  rename if to conditional action...
+
+
  
 function SieveCondition(id)
 {  
-  this.id = id;
+  SieveAbstractElement.call(this,id); 
   this.test = null;
   
   this.block = SieveLexer.createByName("block/body");
@@ -20,7 +22,11 @@ function SieveCondition(id)
   this.ws[0] = SieveLexer.createByName("whitespace");
   this.ws[1] = SieveLexer.createByName("whitespace");
   this.ws[2] = SieveLexer.createByName("whitespace");
+  
+  
 }
+
+SieveCondition.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveCondition.prototype.hasCondition
   = function (data)
@@ -33,15 +39,16 @@ SieveCondition.prototype.hasCondition
 
 SieveCondition.prototype.init
   = function (data)
-{
+{  
   // ... remove the deadcode ...
   data = this.ws[0].init(data);  
-
+  
   // else blocks don't have a test...
-  if ( SieveLexer.probeByClass(["test"],data))
+  if ( SieveLexer.probeByName("operator",data))
   {
-    this.test = SieveLexer.createByClass(["test"],data);
+    this.test = SieveLexer.createByName("operator");
     data = this.test.init(data);
+    
     
     // ... eat again the deadcode ...
     if (SieveLexer.probeByName("whitespace",data))
@@ -66,26 +73,25 @@ SieveCondition.prototype.init
   return data;  
 }
 
-SieveCondition.prototype.toString
+SieveCondition.prototype.toScript
   = function ()
 {
-  var str = this.ws[0].toString();
+  var str = this.ws[0].toScript();
   
   if (this.test)  
-    str += this.test.toString() + this.ws[1].toString();      
+    str += this.test.toScript() + this.ws[1].toScript();      
   
-  str += "{"+this.block+"}";
+  str += "{"+this.block.toScript()+"}";
   
-  str += this.ws[2].toString();  
+  str += this.ws[2].toScript();  
  
   return str;  
 }
 
-SieveCondition.prototype.toElement
+SieveCondition.prototype.toWidget
   = function ()
-{  
-    
-  var elm = document.createElement("vbox");
+{              
+  var elm = $(document.createElement("div"));
   
   if (this.test)
   {
@@ -94,71 +100,69 @@ SieveCondition.prototype.toElement
     // droptarget -> insert allofanyof
     // test
     // droptarget -> insertallofanyof
-    if (this.test.toElement)
-      elm.appendChild(this.test.toElement());
+    if (this.test.toWidget)
+      elm.append(this.test.toWidget());
     else
-      elm.appendChild(document.createElement("description"))
-        .setAttribute("value","Test:"+this.test.toString());
-    
-    elm.appendChild(document.createElement("description"))
-       .setAttribute("value","THEN");
+      elm.text(this.test.toScript())
   }
     
-  elm.appendChild(this.block.toElement());
+  elm.append(this.block.toWidget());
 
   return elm;
 }
 
-SieveCondition.prototype.onInsertBefore
-    = function (elm,child)
-{
-  alert("Insert Any Of");
-}
 
-SieveCondition.prototype.removeChild
-    = function ()
+SieveCondition.prototype.append
+  = function (parentId,elm,childId)
 {
-  alert("Remove Test and insert false test...");
-}
-
-SieveCondition.prototype.onBouble
-    = function (type,message)
-{
-  var rv = [];
-  
-  if ((type == "addElement") && (message.parent == this.id))
-    return this.onInsertBefore(message.elm,message.child)
-  
-  if (type == "removeElement")  
-    if (this.test != null)
-      if (this.test.id == message.child)
-        return this.removeChild();
- 
-  var rv = [];      
-  // bouble message...        
-  
-  if (this.test)
-    if (this.test.onBouble)
-      rv = rv.concat(this.test.onBouble(type,message));
+  if (parentId == this.id)
+    throw "Impelemnt me";
     
-  rv = rv.concat(this.block.onBouble(type,message));
+  // XXX: remove me append should always exist
+  if (this.test.append)
+    if (this.test.append(parentId,elm,childId))
+      return true;
   
-  /*for (var i=0; i<this.tests.length; i++) 
-    if (this.tests[i].onBouble)
-      rv = rv.concat(this.tests[i].onBouble(type,message));*/
-      
-  return rv;
+  return this.block.append(parentId,elm,childId)
+}
+
+SieveCondition.prototype.remove
+  = function (childId)
+{      
+  // It's most likely one of our block elements..
+  var elm = this.block.remove(childId);
+  
+  if (elm)
+    return elm;
+    
+  // ... obviously not, so try the test...
+  if (!this.test)
+    return null;
+    
+   // XXX: remove me "remove" should always exist
+  if (this.test.id == childId)
+  {
+    elm = this.test;
+    this.test = null;
+    return elm;    
+  }
+  
+  if (this.test.remove)
+    return this.test.remove(childId);
+  
+  return null;
 }
 
 
 function SieveIf(id) 
 {
-  this.id = id;
-  this.elements = new Array();
+  SieveBlockBody.call(this,id);
   
-  this.elements[0] = SieveLexer.createByName("conditions/condition"); 
-  this.elements[0].init(" false {\r\n}\r\n")
+  this.elms[0] = SieveLexer.createByName("conditions/condition"); 
+  this.elms[0].init(" false {\r\n}\r\n")
 }
+
+SieveIf.prototype.__proto__ = SieveBlockBody.prototype;
 
 SieveIf.prototype.init
     = function (data)
@@ -168,13 +172,13 @@ SieveIf.prototype.init
   // <"elsif"> <test> <block>  
   // <"else"> <block>
 
-  this.elements = [];
+  this.elms = [];
   // remove the "if"...
   data = data.slice(2);
     
   var element = SieveLexer.createByName("conditions/condition");
   data = element.init(data);
-  this.elements.push(element);
+  this.elms.push(element);
   
   // now read the elsif block...
   while (data.substr(0,5).toLowerCase().indexOf("elsif") == 0)
@@ -184,7 +188,7 @@ SieveIf.prototype.init
     
     element = SieveLexer.createByName("conditions/condition");
     data = element.init(data);
-    this.elements.push(element);        
+    this.elms.push(element);        
   }
    
   if (data.substr(0,5).toLowerCase().indexOf("else") == 0)
@@ -193,100 +197,44 @@ SieveIf.prototype.init
     
     element = SieveLexer.createByName("conditions/condition");
     data = element.init(data);
-    this.elements.push(element); 
+    this.elms.push(element); 
   }
   
   return data;
 }
 
-SieveIf.prototype.toString
+SieveIf.prototype.toScript
     = function ()
 {  
-  var str = "if"+this.elements[0].toString();
+  var str = "if"+this.elms[0].toScript();
    
-  for (var i=1; i<this.elements.length;i++)
+  for (var i=1; i<this.elms.length;i++)
   {
-    if (this.elements[i].hasCondition())
+    if (this.elms[i].hasCondition())
       str += "elsif"
     else 
       str += "else" 
       
-    str += this.elements[i].toString();
+    str += this.elms[i].toScript();
   }
   
   return str;     
 }
 
-SieveIf.prototype.toElement
+SieveIf.prototype.toWidget
     = function ()
-{  
-    
-  var elm = document.createElement("vbox");
-  elm.setAttribute("flex","1");
-  
-  elm.appendChild(document.createElement("description"))
-     .setAttribute("value","IF");
-  
-  /*var box = document.createElement("vbox");
-  box.appendChild(document.createTextNode(" >> If <<"));
-  elm.appendChild(box);*/
-  
-  elm.appendChild(this.elements[0].toElement());
-  
-  for (var i=1; i<this.elements.length;i++)
-  {
-    if (this.elements[i].hasCondition())
-    {
-      var desc = document.createElement("description");
-      desc.setAttribute("value",">>>ELSE IF<<<");
-      elm.appendChild(desc);      
-      /*var box = document.createElement("vbox");
-      box.appendChild(document.createTextNode(" >> ELSE IF <<"));
-      elm.appendChild(box);*/
-    }
-    else
-    {
-      var desc = document.createElement("description");
-      desc.setAttribute("value",">>>ELSE<<<");
-      elm.appendChild(desc);
-      
-      /*var box = document.createElement("vbox");
-      box.appendChild(document.createTextNode(" >> ELSE <<"));
-      elm.appendChild(box);*/
-    }    
-
-    elm.appendChild(this.elements[i].toElement());
-  }
-  
-  var box = createDragBox(this.id);
-  box.appendChild(elm);
-  
-  return box;    
-}
-
-SieveIf.prototype.onBouble
-    = function (type,message)
 {
-  var rv = [];
-  
-  for (var i=0; i<this.elements.length; i++) 
-    if (this.elements[i].onBouble)
-      rv = rv.concat(this.elements[i].onBouble(type,message));
-      
-  return rv;
+  return (new SieveIfUI(this)).getWidget();  
 }
 
 if (!SieveLexer)
   throw "Could not register Conditional Elements";
 
-with (SieveLexer)
-{  
-  register("conditions/","conditions/condition",
+SieveLexer.register("conditions/","conditions/condition",
       function(token) {return true }, 
       function(id) {return new SieveCondition(id)});
       
-  register("conditions","conditions/if",
+SieveLexer.register("conditions","conditions/if",
       function(token) {
         return (token.substring(0,2).toLowerCase().indexOf("if") == 0)}, 
       function(id) {return new SieveIf(id)});
-}

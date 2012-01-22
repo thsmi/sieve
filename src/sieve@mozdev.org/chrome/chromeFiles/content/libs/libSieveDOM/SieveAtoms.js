@@ -42,15 +42,15 @@ SieveComparator.prototype.getID
   return this.id;
 }    
 
-SieveComparator.prototype.toString
+SieveComparator.prototype.toScript
     = function ()
 {
   return ":comparator"
-    +this.whiteSpace.toString()
-    +this.comparator.toString();
+    +this.whiteSpace.toScript()
+    +this.comparator.toScript();
 }
 
-SieveComparator.prototype.toXUL
+SieveComparator.prototype.toWidget
     = function ()
 {
   return "Comparator - to be implemented";
@@ -101,7 +101,7 @@ SieveMatchType.prototype.getID
   return this.id;
 }
 
-SieveMatchType.prototype.toString
+SieveMatchType.prototype.toScript
     = function ()
 {
   if (this.type == null)
@@ -110,7 +110,7 @@ SieveMatchType.prototype.toString
   return ":"+this.type;
 }
 
-SieveMatchType.prototype.toXUL
+SieveMatchType.prototype.toWidget
     = function ()
 {
   return "<html:div class='SieveMatchType'>"
@@ -168,7 +168,7 @@ SieveAddressPart.prototype.getID
   return this.id;
 }
 
-SieveAddressPart.prototype.toString
+SieveAddressPart.prototype.toScript
     = function ()
 {
   if (this.part == null)
@@ -177,7 +177,7 @@ SieveAddressPart.prototype.toString
   return ":"+this.part;
 }
 
-SieveAddressPart.prototype.toXUL
+SieveAddressPart.prototype.toWidget
     = function ()
 {
   return "addresspart to be implemented"
@@ -185,92 +185,76 @@ SieveAddressPart.prototype.toXUL
 
 
  
-
+// TODO Move To SieveNumbers
 
 function SieveNumber(id)
 {
-  this.id = id
-  this.number = "1";
-  this.unit = null;
+  SieveAbstractElement.call(this,id);
+  
+  this._number = "1";
+  this._unit = "";
 }
 
-SieveNumber.isNumber
-  = function (data,index)
+SieveNumber.isElement
+    = function (data,index)
 {
-  if (index == null)
+  if (isNaN(index))
     index = 0;
     
-  if (isNaN(data.charAt(index)))
-    return false;
-  
-  return true;
+  return isNaN(data.charAt(index));
 }
+
+SieveNumber.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveNumber.prototype.init
     = function(data)
-{
-  var i
-  
-  for (i=0; i<data.length; i++)
-  {
-    if (SieveNumber.isNumber(data,i))
-      continue;
-    
-    break;
-  }
+{  
+  for (var i=0; i<data.length; i++)
+    if (isNaN(data.charAt(i)))
+      break;
 
-  this.number = data.slice(0,i);  
-  data = data.slice(i); 
+  this._number = data.slice(0,i)
+  data = data.slice(i);
   
-  var ch = data.charAt(0).toUpperCase();
+  var ch = data.charAt(0);
 
   if ((ch == 'K') ||  (ch == 'M') || (ch == 'G'))
   {
-    this.unit = data.slice(0,1);
+    this._unit = data.slice(0,1);
     data = data.slice(1);
   }
   
   return data;
 }
 
-SieveNumber.prototype.getValue
-  = function ()
+SieveNumber.prototype.value
+  = function (number)
 {
-  return { number: this.number, unit:this.unit};   
+  if (typeof(number) === "undefined")
+    return this._number;
+
+  // TODO Test if number is valid...
+  this._number = number;   
+  return this;
 }
 
-SieveNumber.prototype.setValue
-  = function (number,unit)
+SieveNumber.prototype.unit
+  = function (unit)
 {
-  // TODO test if number is a valid number and unit is a valid unit...
-  this.number = number;
-  this.unit = unit;
+  if (typeof(unit) === "undefined")
+    return this._unit;
+
+  if ((unit != "") && (unit != "K") && (unit != "M") && (unit != "G"))
+    throw "Invalid unit mut be either K, M or G";  
+
+  this._unit = unit;
+  return this;
 }
 
-SieveNumber.prototype.toString
+SieveNumber.prototype.toScript
     = function ()
 {
-  return this.number
-    +((this.unit==null)?"":this.unit);
-}
-
-SieveNumber.prototype.toXUL
-    = function ()
-{
-  return "<html:div class='SieveNumber'>"
-    + "  <html:input type='text' value='"+this.number+"' />"
-    + "  <html:select>"
-    + "    <html:option "+((this.unit.toUpperCase()=="K")?"selected='true'":"")+">"
-    + "      Kilobytes"
-    + "    </html:option>"
-    + "    <html:option "+((this.unit.toUpperCase()=="M")?"selected='true'":"")+">"
-    + "      Megabytes"
-    + "    </html:option>"
-    + "    <html:option "+((this.unit.toUpperCase()=="G")?"selected='true'":"")+">"
-    + "      Gigabytes" 
-    + "    </html:option>"
-    + "  </html:select>"
-    + "</html:div>";
+  return this._number+this._unit;
 }
 
 /******************************************************************************/
@@ -310,10 +294,10 @@ SieveSemicolon.prototype.init
   return data;
 }
 
-SieveSemicolon.prototype.toString
+SieveSemicolon.prototype.toScript
     = function ()
 {
-  return this.whiteSpace[0].toString()+ ";" + this.whiteSpace[1].toString();
+  return this.whiteSpace[0].toScript()+ ";" + this.whiteSpace[1].toScript();
 }
 
 /******************************************************************************/
@@ -321,9 +305,7 @@ SieveSemicolon.prototype.toString
 if (!SieveLexer)
   throw "Could not register Atoms";
 
-with (SieveLexer)
-{
-  register("atom/","atom/semicolon",
+SieveLexer.register2("atom/","atom/number",SieveNumber)
+SieveLexer.register("atom/","atom/semicolon",
       function(token) {return true}, 
-      function(id) {return new SieveSemicolon(id)});      
-}
+      function(id) {return new SieveSemicolon(id)});

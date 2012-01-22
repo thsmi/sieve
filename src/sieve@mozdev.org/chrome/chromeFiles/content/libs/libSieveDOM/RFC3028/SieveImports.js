@@ -9,12 +9,20 @@
 
 function SieveRequire(id) 
 {
-  this.id = id;
+  SieveAbstractElement.call(this,id);
   
   this.whiteSpace = SieveLexer.createByName("whitespace");
   this.semicolon = SieveLexer.createByName("atom/semicolon");
   
   this.strings = SieveLexer.createByName("stringlist");    
+}
+
+SieveRequire.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveRequire.isElement
+  = function (token)
+{
+  return (token.substr(0,7).toLowerCase().indexOf("require") == 0); 
 }
 
 SieveRequire.prototype.init
@@ -37,28 +45,30 @@ SieveRequire.prototype.init
   return data;
 }
 
-SieveRequire.prototype.toString
+SieveRequire.prototype.toScript
     = function ()
 {
   return "require"
-    + this.whiteSpace.toString()
-    + this.strings.toString()
-    + this.semicolon.toString();
+    + this.whiteSpace.toScript()
+    + this.strings.toScript()
+    + this.semicolon.toScript();
 }
 
 
 // CONSTRUCTOR:
 function SieveBlockImport(id)
 {
-  this.id = id
+  SieveBlockBody.call(this,id);
   this.elms = [];  
 }
 
+SieveBlockImport.prototype.__proto__ = SieveBlockBody.prototype;
+
 // PUBLIC STATIC:
-SieveBlockImport.isBlockImport
+SieveBlockImport.isElement
     = function (data)
 {
-  return SieveLexer.probeByClass(["import/","whitespace"],data);
+  return SieveLexer.probeByClass(["import/","whitespace"],data);  
 }
 
 // PUBLIC:
@@ -77,39 +87,17 @@ SieveBlockImport.prototype.init
   return data;
 }
 
-SieveBlockImport.prototype.toString
+SieveBlockImport.prototype.toWidget
     = function ()
 {
-  var str ="";
-  
-  for (var key in this.elms)
-    str += this.elms[key].toString();
-    
-  return str;
-}
-
-SieveBlockImport.prototype.onBouble
-    = function (type,message)
-{   
-  var rv = []
-  for (var i=0; i<this.elms.length; i++) 
-    if (this.elms[i].onBouble)
-      rv=rv.concat(this.elms[i].onBouble(type,message));
-      
-  return rv;
+  // override the inherited toWidget function...
+  return null;
 }
 
 if (!SieveLexer)
   throw "Could not register Import Elements";
 
-with (SieveLexer)
-{
-  register("import","import",
-      function(token) {return SieveBlockImport.isBlockImport(token)}, 
-      function(id) {return new SieveBlockImport(id)});
+
+SieveLexer.register2("import","import",SieveBlockImport);
+SieveLexer.register2("import/","import/require",SieveRequire);
       
-  register("import/","import/require",
-      function(token) {
-        return (token.substr(0,7).toLowerCase().indexOf("require") == 0); },
-      function(id) {return new SieveRequire(id)});               
-}

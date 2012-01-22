@@ -9,13 +9,23 @@
 
 // TODO rename to SieveContentSection
 
+ // Inherrit from DragBox
 function SieveBlockBody(id)
 {
-  this.id = id;
+  SieveAbstractElement.call(this,id);
+  
+  // Initialize Block Elements
   this.elms = [];
 }
 
-// PUBLIC:
+SieveBlockBody.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveBlockBody.isElement
+    = function (data)
+{
+  return SieveLexer.probeByClass(["action","conditions","whitespace"],data);  
+}
+
 SieveBlockBody.prototype.init
     = function (data)    
 {
@@ -27,102 +37,99 @@ SieveBlockBody.prototype.init
     this.elms.push(elm);    
   }
  
-  return data;  
+  return data;
 }
 
-SieveBlockBody.prototype.toString
+SieveBlockBody.prototype.children
+    = function (idx)
+{
+  if (typeof(idx) === "undefined")
+    return this.elms;  
+    
+  return this.elms[idx];
+}
+
+SieveBlockBody.prototype.toScript
     = function ()
 {
   var str ="";
 
   for (var key in this.elms)
-    if (this.elms[key])
-      str += this.elms[key].toString();
+    str += this.elms[key].toScript();
     
   return str;
 }
 
-SieveBlockBody.prototype.toElement
+SieveBlockBody.prototype.toWidget
     = function ()
 {
-  var elm = document.createElement("vbox");
-  elm.setAttribute("flex","1");
-  elm.className = "SivElementBlock";
-   
-  for (var i=0; i<this.elms.length;i++)
-    if (this.elms[i].toElement)
-    {    
-      elm.appendChild(createDropTarget(this.id,this.elms[i].id)); 
-      elm.appendChild(this.elms[i].toElement());
-    }
-      
-  elm.appendChild(createDropTarget(this.id));
-   
-  return elm; 
+  return (new SieveBlockUI(this)).getWidget();
 }
 
-SieveBlockBody.prototype.onInsertBefore
-    = function (elm,child)
+SieveBlockBody.prototype.append
+    = function (parentId, elm, siblingId)
 {
-  // append to end;
-  if (!child)
+  // crawl throug all child elements
+  if (parentId != this.id)
+  {
+    for (var i=0; i<this.elms.length; i++)
+      if (this.elms[i].append(parentId,elm,siblingId))
+        return true;
+
+    return false;
+  }
+  
+  // the id matches, so we have to do the work
+  if ((!siblingId) || (siblingId < 0))
   {
     this.elms[this.elms.length] = elm; 
-    return [];
+    return true;
   }
  
   for (var i=0; i<this.elms.length; i++)
   {
-    if (this.elms[i].id != child)
+    if (this.elms[i].id != siblingId)
       continue;
-   
-    this.elms.splice(i,0,elm);
     
-    return [];
+    this.elms.splice(i,0,elm);
+    return true;
   }
   
-  return [];
+  // we did not manage to add the element...
+  return false;
 }
 
-SieveBlockBody.prototype.removeChild
-    = function (idx)
+SieveBlockBody.prototype.remove
+    = function (childId)
 {
-  var rv = [this.elms[idx]];
-  this.elms.splice(idx,1);
+  var elm = null;
+  // Is it a direct match?
+  for (var i=0; i<this.elms.length; i++)
+  {
+    if (this.elms[i].id != childId)
+      continue;
+    
+    elm = this.elms[i];
+    this.elms.splice(i,1);
+    
+    return elm;
+  }
+    
+  // ... ok we have to crawl through all child nodes.
+  elm = null;
   
-  return rv;
+  for (var i=0; i<this.elms.length; i++)
+  {
+    elm = this.elms[i].remove(childId);
+    
+    if (elm)
+      break;
+  }
+
+  return elm;
 }
-
-SieveBlockBody.prototype.onBouble
-    = function (type,message)
-{  
-  if ((type == "addElement") && (message.parent == this.id))
-    return this.onInsertBefore(message.elm,message.child)
-  
-  
-  if (type == "removeElement")
-    for (var i=0; i<this.elms.length; i++)
-      if (this.elms[i].id == message.child)
-        return this.removeChild(i);
- 
-  var rv = [];      
-  // bouble message...        
-  for (var i=0; i<this.elms.length; i++) 
-    if (this.elms[i].onBouble)
-      rv = rv.concat(this.elms[i].onBouble(type,message));
-      
-  return rv;
-}
-
-
 
 if (!SieveLexer)
   throw "Could not register Block Elements";
 
-with (SieveLexer)
-{     
-  register("block/","block/body",
-      function(token) {
-        return SieveLexer.probeByClass(["action","conditions","whitespace"],token); }, 
-      function(id) {return new SieveBlockBody(id)});      
-}
+SieveLexer.register2("block/","block/body",SieveBlockBody);

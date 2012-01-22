@@ -1,5 +1,7 @@
 
+// TODO create an abstract class for get and set string...
 // TODO descide on update message weather it is a Multiline oder Quoted...
+  
  
 /*******************************************************************************
     CLASSNAME: 
@@ -12,7 +14,7 @@
       public static boolean isMultiLineString(String data)
       public boolean parse(String data) throws Exception
       public String getValue()
-      public String toString()
+      public String toScript()
       public String toXUL()
 
     MEMBER VARIABLES: 
@@ -35,7 +37,7 @@ function SieveMultiLineString()
 }
 
 // PUBLIC STATIC:
-SieveMultiLineString.isMultiLineString
+SieveMultiLineString.isElement
     = function (data)
 {
   var token = data.substr(0,5).toLowerCase();
@@ -97,12 +99,12 @@ SieveMultiLineString.prototype.setValue
   this.text = value;
 } 
 
-SieveMultiLineString.prototype.toString
+SieveMultiLineString.prototype.toScript
     = function ()
 {
   return "text:"
     +this.whiteSpace
-    +((this.hashComment == null)?"":this.hashComment.toString())
+    +((this.hashComment == null)?"":this.hashComment.toScript())
     +this.text+(this.text != "" ? "\r\n" : "" )
     +".\r\n";
 }
@@ -118,7 +120,7 @@ SieveMultiLineString.prototype.toString
       public static boolean isQuotedString(String data)
       public boolean parse(String data) throws Exception
       public String getValue()
-      public String toString()
+      public String toScript()
       public String toXUL()
 
     MEMBER VARIABLES: 
@@ -137,7 +139,7 @@ function SieveQuotedString()
 }
 
 // PUBLIC STATIC:
-SieveQuotedString.isQuotedString
+SieveQuotedString.isElement
     = function (data)
 {
   if (data.charAt(0) == "\"")
@@ -175,7 +177,7 @@ SieveQuotedString.prototype.setValue
   this.text = value;
 } 
 
-SieveQuotedString.prototype.toString
+SieveQuotedString.prototype.toScript
     = function ()
 {
   return "\""+this.text+"\"";
@@ -191,7 +193,7 @@ SieveQuotedString.prototype.toString
     PUBLIC FUNCTIONS:      
       public static boolean isStringList(String data)
       public boolean parse(String data) throws Exception
-      public String toString()
+      public String toScript()
       public String toXUL()
 
     MEMBER VARIABLES: 
@@ -216,7 +218,7 @@ function SieveStringList(size)
 }
 
 // PUBLIC STATIC:
-SieveStringList.isStringList
+SieveStringList.isElement
    = function (data)
 {
   // the [ is not necessary if the list contains only one enty!
@@ -282,31 +284,31 @@ SieveStringList.prototype.init
   }
   
 }
-SieveStringList.prototype.toString
+SieveStringList.prototype.toScript
     = function ()
 {
   if (this.compact)
-    return this.elements[0].toString();
+    return this.elements[0].toScript();
     
   var result = "[";
   var separator = "";
   
   for (var i = 0;i<this.elements.length; i++)
-  {
+  {      
     result = result
              + separator
              + this.elements[i][0].toString()
-             + this.elements[i][1].toString()
+             + this.elements[i][1].toScript()
              + this.elements[i][2].toString();
              
     separator = ",";
   }
   result += "]";
   
-  return result;    
+  return result;
 }
 
-SieveStringList.prototype.toXUL
+SieveStringList.prototype.toWidget
     = function ()
 {
   if (this.compact)
@@ -333,7 +335,7 @@ SieveStringList.prototype.toXUL
       public static boolean isString(String data)
       public boolean parse(String data) throws Exception
       public String getValue()
-      public String toString()
+      public String toScript()
       public String toXUL()
 
     MEMBER VARIABLES: 
@@ -353,7 +355,7 @@ function SieveString()
 }
 
 // PUBLIC STATIC:
-SieveString.isString
+SieveString.isElement
   = function(data)
 {
   return SieveLexer.probeByClass(["string/"],data);
@@ -383,31 +385,17 @@ SieveString.prototype.setValue
   return this.string.setValue(value);
 } 
    
-SieveString.prototype.toString
+SieveString.prototype.toScript
     = function ()
 {
-  return this.string.toString();
+  return this.string.toScript();
 }
 
 
 if (!SieveLexer)
   throw "Could not register Strings Elements";
 
-with (SieveLexer)
-{
-  register("stringlist","stringlist",
-      function(token) {return SieveStringList.isStringList(token)}, 
-      function(id) {return new SieveStringList(id)}); 
-  
-  register("string","string",
-      function(token) {return SieveString.isString(token)}, 
-      function(id) {return new SieveString(id)});
-
-  register("string/","string/quoted",
-      function(token) {return SieveQuotedString.isQuotedString(token)}, 
-      function(id) {return new SieveQuotedString(id)});
-
-  register("string/","string/multiline",
-      function(token) {return SieveMultiLineString.isMultiLineString(token)}, 
-      function(id) {return new SieveMultiLineString(id)});     
-}
+SieveLexer.register2("stringlist","stringlist",SieveStringList); 
+SieveLexer.register2("string","string", SieveString);
+SieveLexer.register2("string/","string/quoted",SieveQuotedString);
+SieveLexer.register2("string/","string/multiline",SieveMultiLineString);

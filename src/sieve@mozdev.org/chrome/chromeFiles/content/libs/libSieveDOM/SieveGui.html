@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sieve DOM</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+  <link rel="stylesheet" href="style.css" type="text/css" />
+	
+    <style type="text/css" >
+
+    #trash 
+    {
+      height: 80px;
+      width:80px;
+      background-color:transparent;   
+      background-image:url('48px-User-trash.svg.png');
+      background-repeat:no-repeat;
+      background-position:center center;   
+    } 
+ 
+#trash[sivDragging="true"] 
+{
+  background-image:url('48px-User-trash-full.svg.png');
+} 
+   
+.SivElementBlock {
+  padding-left: 20px;
+  padding-right: 5px;
+}
+
+.SivElementTest {
+  padding-left: 20px;
+  padding-right: 5px;
+}
+  
+.SivElement {
+  background-color: -moz-dialog;
+  background-image: -moz-linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
+  color: -moz-dialogText;
+  margin: 1px;
+  -moz-border-radius: 2px;
+
+  margin-left: auto;
+  margin-right: auto;
+  width:600px;
+  border: 1px solid #000066;
+ 
+/*  background-color: hsl(219,45%,60%);*/
+/*  background-color: hsl(92,45%,52%);*/
+}
+
+.SivElement[sivIsEditable=true]
+{
+  background-color: hsl(92,45%,52%);
+}
+
+/*sivDragBox : hoover
+.SivElement[sivIsEditable=true]
+{
+  background-color: hsl(92,45%,52%);
+}*/
+
+/*.SivElement[sivElmType=editable]
+{
+  background-image:url('edit');
+  background-repeat:no-repeat;
+  background-position:top left;   
+}*/
+
+.SivFocusedElement {
+  background-color: -moz-dialog;
+  background-image: -moz-linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
+  color: -moz-dialogText;
+  margin: 1px;
+  -moz-border-radius: 2px;
+
+  margin-left: auto;
+  margin-right: auto;
+  width:600px;
+  border: 1px solid #000066;
+
+  background-color: hsl(92,45%,52%);
+}
+
+.SivElement:hover {
+  background-image: -moz-linear-gradient(rgba(255,255,255,.5), rgba(50%,50%,50%,.2), rgba(0,0,0,.15));
+  /* selected...
+  background-image: -moz-linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.1));*/
+}
+
+</style>
+
+</head>
+<body class="sieve sieve-parser" id="sieve-mozdev-org">
+
+
+  
+  <script src="SieveScriptDOM.js" type="text/javascript"></script>
+  <script src="SieveLexer.js" type="text/javascript"></script>
+  <script src="SieveXBLHelper.js" type="text/javascript"></script>
+  
+  <script type="application/javascript;version=1.8" src="UI/jquery.js"></script>
+  <script type="application/javascript;version=1.8" src="UI/Boxes.js"></script>
+  <script type="application/javascript;version=1.8" src="UI/Actions.js"></script>
+  <script type="application/javascript;version=1.8" src="UI/Block.js"></script>  
+  <script type="application/javascript;version=1.8" src="UI/Condition.js"></script>  
+  <script type="application/javascript;version=1.8" src="UI/Tests.js"></script>  
+
+  <script src="RFC3028/SieveOperators.js" type="text/javascript"></script>
+  <script src="RFC3028/SieveBlocks.js" type="text/javascript"></script>
+  <script src="RFC3028/SieveImports.js" type="text/javascript"></script>
+  <script src="RFC3028/SieveActions.js" type="text/javascript"></script>
+  <script src="SieveAtoms.js" type="text/javascript"></script>
+
+  <script src="RFC3028/SieveWhiteSpaces.js" type="text/javascript"></script>
+  <script src="RFC3028/SieveStrings.js" type="text/javascript"></script>
+  <script src="SieveImapFlags.js" type="text/javascript"></script>
+  <script src="RFC3028/SieveConditions.js" type="text/javascript"></script>
+  <script src="RFC3028/SieveTests.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+//<![CDATA[
+$(document).ready(function() {
+  init();
+});
+
+function parse()
+{
+    dom = new SieveDom();
+    dom.setScript($("#txtScript").val());
+        
+	$("#txtOutput")
+	  .val(dom.toScript());
+	  
+	$("#divOutput")
+	  .empty()
+	  .append(dom.getWidget())
+	  
+    //document.getElementById("divOutput").innerHTML =  " ";
+}
+
+function update()
+{
+  $("#txtOutput").val(dom.toScript());
+}
+
+function debug(obj)
+{
+  //var logger = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
+
+  var str = "";
+  for (tempVar in obj)
+    str += tempVar+"\n";
+	
+  alert(str);
+  //logger.logStringMessage(str);
+}
+
+  function createMenuItem(action,flavour)
+  {    
+    var elm2 = (new SieveDragBoxUI());
+    elm2._elmType = action;
+    elm2._action = "create";
+    elm2._flavour = flavour;
+      
+    //debug(elm2.toElement().get(0));
+	
+    elm2.getWidget().append($(document.createTextNode(action.split('/')[1])))
+   
+    return elm2.getWidget();  
+  }
+
+  function init()
+  {
+    // Yes it's a global object
+    dom  = new SieveDom();
+	
+    var elm = $("#sivActions");
+    
+    for (var key in SieveLexer.types["action"])
+      elm.append(createMenuItem(key,"sieve/action"));
+
+    elm.append($(document.createElement('div')));
+    
+    for (var key in SieveLexer.types["test"])
+      elm.append(createMenuItem(key,"sieve/test").get(0));
+
+    elm.append($(document.createElement('div')));
+
+    for (var key in SieveLexer.types["conditions"])
+      elm.append(createMenuItem(key,"sieve/action"));
+      
+	elm
+	  .append($(document.createElement('div'))
+	    .addClass("spacer"))
+      .append($(new SieveTrashBoxUI(["sieve/action","sieve/test"]).getWidget())
+	    .attr('id','trash'));
+  }
+//]]>
+</script>
+
+
+<div>
+   <div style="overflow: hidden;width: 100%;">
+     <div style="float:left">
+        <div>Input:</div>
+        <textarea id="txtScript" cols="50" rows="10">
+redirect "test";
+        </textarea>
+      </div>
+      <div style="float: left;">
+        <div>Result:</div>
+        <textarea id="txtOutput" cols="50" rows="10" readonly="readonly"></textarea>
+      </div>
+    </div>
+</div >
+<div>
+    <button onclick="parse()">
+	   Parse Sieve Script
+	 </button>
+    <button onclick="update()">
+	  Update Sieve Script
+	</button>
+    <button onclick="blub()">
+	   Blubb
+	</button>
+</div>
+
+<div>   
+ 
+  <div>
+    <div id="sivActions" style="background-color:gray;overflow-y: scroll;width:150px;float: left;">  
+	 </div>
+  </div>
+  
+  <div id="divOutput" style="background-color:gray;height:100%;">
+  </div>
+</div>  
+</body>
+</html>

@@ -33,13 +33,13 @@ SieveSetFlag.prototype.init
   return data;
 }
 
-SieveSetFlag.prototype.toString
+SieveSetFlag.prototype.toScript
     = function ()
 {
   return "setflag"
-    + this.whiteSpace.toString()
-    + this.flaglist.toString()
-    + this.semicolon.toString();
+    + this.whiteSpace.toScript()
+    + this.flaglist.toScript()
+    + this.semicolon.toScript();
 }
 
 /******************************************************************************/
@@ -79,13 +79,13 @@ SieveAddFlag.prototype.init
   return data.slice(1);
 }
 
-SieveAddFlag.prototype.toString
+SieveAddFlag.prototype.toScript
     = function ()
 {
   return "addflag"
-    + this.whiteSpace[0].toString()
+    + this.whiteSpace[0].toScript()
     + this.flaglist
-    + this.whiteSpace[1].toString()        
+    + this.whiteSpace[1].toScript()        
     + ";";
 }
 
@@ -135,13 +135,13 @@ SieveRemoveFlag.prototype.init
   return data.slice(1);
 }
 
-SieveRemoveFlag.prototype.toString
+SieveRemoveFlag.prototype.toScript
     = function ()
 {
   return "removeflag"
-    + this.whiteSpace[0].toString()
+    + this.whiteSpace[0].toScript()
     + this.flaglist
-    + this.whiteSpace[1].toString()        
+    + this.whiteSpace[1].toScript()        
     + ";";
 }
 
@@ -197,39 +197,37 @@ SieveHasFlag.prototype.init
   return data;
 }    
 
-SieveHasFlag.prototype.toString
+SieveHasFlag.prototype.toScript
     = function ()
 {
   return "hasflag"
-    + this.whiteSpace[0].toString()
-    + ((this.matchType != null)?this.matchType[0].toString():"")
-    + ((this.matchType != null)?this.whiteSpace[1].toString():"")
-    + this.flagList.toString()
-    + this.whiteSpace[2].toString();
+    + this.whiteSpace[0].toScript()
+    + ((this.matchType != null)?this.matchType[0].toScript():"")
+    + ((this.matchType != null)?this.whiteSpace[1].toScript():"")
+    + this.flagList.toScript()
+    + this.whiteSpace[2].toScript();
 }
 
 /******************************************************************************/
-
+/*
 if (!SieveLexer)
   throw "Could not register IMAP Flags";
 
-with (SieveLexer)
-{
-  register("action","action/addflag",
+SieveLexer.register("action","action/addflag",
       function(token) {
         return (token.substring(0,7).toLowerCase().indexOf("addflag") == 0)}, 
       function(id) {return new SieveAddFlag(id)});
       
-  register("action","action/removeflag",
+SieveLexer.register("action","action/removeflag",
       function(token) {return SieveRemoveFlag.isRemoveFlag(token)}, 
       function(id) {return new SieveRemoveFlag(id)});  
       
-  register("action","action/setflag",
+SieveLexer.register("action","action/setflag",
       function(token) {
         return (token.substring(0,7).toLowerCase().indexOf("setflag") == 0)},
       function(id) {return new SieveSetFlag(id)});
       
-  register("test","test/hasflag",
+SieveLexer.register("test","test/hasflag",
       function(token) {return SieveHasFlag.isHasFlag(token)},
-      function(id) {return new SieveHasFlag(id)});  
-}
+      function(id) {return new SieveHasFlag(id)});
+*/  

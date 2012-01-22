@@ -11,9 +11,20 @@
 
 var SieveLexer = 
 {
-  types :  [],
-  names : [],
+  types :  {},
+  names : {},//[],
   maxId : 0,
+  
+  register2: function (type,name,callback)
+  {
+    if (!callback.isElement)
+      throw "Lexer Error: isElement function for "+name+" missing";
+      
+    this.register(type,name,
+      function(token) {return callback.isElement(token)}, 
+      function(id) {return new callback(id)});
+  },
+  
   /**
    * @param {} type 
    * @param {} id
@@ -21,14 +32,14 @@ var SieveLexer =
    * @param {} onNew // Callback to get an object
    */
   register: function(type,name,onProbe,onCreate)
-  {
+  { 
     if (onProbe == null)
       throw "Lexer Error: Probe function for "+name+" missing";
     if (onCreate == null)
       throw "Lexer Error: Create function for "+name+" missing";
       
     if (this.types[type] == null)
-      this.types[type] = new Array()
+      this.types[type] = new Object();
     
     //alert("Registering"+type+"  "+name);
     
@@ -43,6 +54,9 @@ var SieveLexer =
   
   getConstructor : function(selectors, token)
   {
+    if (!selectors.length)
+      throw "Invalid Type list, not an array";
+      
     // enumerate all selectors...
     for (var selector in selectors)
     {
@@ -66,7 +80,7 @@ var SieveLexer =
   createByClass : function(types,data)
   {
     var c = this.getConstructor(types,data);
-    
+
     if (c==null)
       throw " "+types+" "+data;
     
@@ -74,7 +88,10 @@ var SieveLexer =
   },
   
   createByName : function(name)
-  {    
+  {   
+    if (!this.names[name])
+      throw "No Constructor for "+name+" found";
+      
     try
     {
       return this.names[name].onNew(++(this.maxId));

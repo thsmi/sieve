@@ -11,21 +11,15 @@
 
 
 
-SieveLineBreak.isLineBreak
-  = function (data)
-{
-  if (data.charAt(0) != "\r")
-    return false;
-    
-  if (data.charAt(1) != "\n")
-    return false;
-  
-  return true;
-}
-
 function SieveLineBreak(id)
 {
   this.id = id;
+}
+
+SieveLineBreak.isElement
+  = function (data)
+{
+  return ((data.charAt(0) == "\r") && (data.charAt(1) == "\n"))
 }
 
 SieveLineBreak.prototype.init
@@ -40,7 +34,7 @@ SieveLineBreak.prototype.init
   return data.slice(2);  
 }
 
-SieveLineBreak.prototype.toString
+SieveLineBreak.prototype.toScript
     = function ()
 {
   return "\r\n";
@@ -89,7 +83,7 @@ SieveDeadCode.prototype.init
   return data.slice(i);  
 }
 
-SieveDeadCode.prototype.toString
+SieveDeadCode.prototype.toScript
     = function ()
 {
   return this.whiteSpace;
@@ -134,7 +128,7 @@ SieveBracketComment.prototype.init
   return data = data.slice(end+2);
 }
 
-SieveBracketComment.prototype.toString
+SieveBracketComment.prototype.toScript
     = function ()
 {
   return "/*"+this.text+"*/";
@@ -142,22 +136,18 @@ SieveBracketComment.prototype.toString
 
 /******************************************************************************/
 
-SieveHashComment.isHashComment
-    = function (data, index)
-{
-  if (index == null)
-    index = 0;
-    
-  if (data.charAt(index) != "#")
-    return false;
-
-  return true;
-}
-
 function SieveHashComment(id) 
 {
-  this.id = id;
+  SieveAbstractElement.call(this,id);
   this.text = "";
+}
+
+SieveHashComment.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveHashComment.isElement
+    = function (data)
+{
+  return (data.charAt(0) == "#");
 }
 
 SieveHashComment.prototype.init
@@ -181,37 +171,26 @@ SieveHashComment.prototype.init
   return data = data.slice(end+2);
 }
 
-SieveHashComment.prototype.getID
-    = function ()
-{
-  return this.id;
-}
-
-SieveHashComment.prototype.toString
+SieveHashComment.prototype.toScript
     = function ()
 {
   return "#"+this.text+"\r\n";
 }
 
-SieveHashComment.prototype.toXUL
-    = function ()
-{
-  // this element is invisible in XUL
-  return "";
-}
-
 /******************************************************************************/
-
-SieveWhiteSpace.isWhiteSpace
-    = function (data, index)
-{
-  return SieveLexer.probeByClass(["whitespace/"],data); 
-}
 
 function SieveWhiteSpace(id) 
 {
-  this.id = id;
+  SieveAbstractElement.call(this,id);
   this.elements = [];
+}
+
+SieveWhiteSpace.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveWhiteSpace.isElement
+    = function (data)
+{
+  return SieveLexer.probeByClass(["whitespace/"],data); 
 }
 
 /**
@@ -253,12 +232,12 @@ SieveWhiteSpace.prototype.init
   return data
 }
 
-SieveWhiteSpace.prototype.toString
+SieveWhiteSpace.prototype.toScript
     = function ()
 {
   var result = "";
   for (var key in this.elements)
-    result += this.elements[key].toString();
+    result += this.elements[key].toScript();
     
   return result;
 }
@@ -266,25 +245,17 @@ SieveWhiteSpace.prototype.toString
 if (!SieveLexer)
   throw "Could not register DeadCode Elements";
 
-with (SieveLexer)
-{
-  register("whitespace/","whitespace/linebreak",
-      function(token) {return SieveLineBreak.isLineBreak(token)}, 
-      function(id) {return new SieveLineBreak(id)});
+
+SieveLexer.register2("whitespace/","whitespace/linebreak",SieveLineBreak);
       
-  register("whitespace/","whitespace/deadcode",
+SieveLexer.register("whitespace/","whitespace/deadcode",
       function(token) {return SieveDeadCode.isDeadCode(token)}, 
       function(id) {return new SieveDeadCode(id)});
       
-  register("whitespace/","whitespace/bracketcomment",
+SieveLexer.register("whitespace/","whitespace/bracketcomment",
       function(token) {return SieveBracketComment.isBracketComment(token)}, 
       function(id) {return new SieveBracketComment(id)});  
       
-  register("whitespace/","whitespace/hashcomment",
-      function(token) {return SieveHashComment.isHashComment(token)},
-      function(id) {return new SieveHashComment(id)});
+SieveLexer.register2("whitespace/","whitespace/hashcomment",SieveHashComment);
 
-  register("whitespace","whitespace",
-      function(token) {return SieveWhiteSpace.isWhiteSpace(token)},
-      function(id) {return new SieveWhiteSpace(id)});         
-}
+SieveLexer.register2("whitespace","whitespace",SieveWhiteSpace);         

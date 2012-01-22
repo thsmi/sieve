@@ -7,6 +7,50 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+
+function SieveAbstractElement(id)
+{
+  if (!id)
+    throw new "Invalid id";
+    
+  this.id = id;
+}
+
+SieveAbstractElement.prototype.init 
+    = function (data)
+{
+  throw "Implement init() for "+this.id;      
+}
+
+SieveAbstractElement.prototype.toScript
+    = function ()
+{
+  throw "Implement toScript() for "+this.id;
+}
+
+SieveAbstractElement.prototype.toWidget
+    = function ()
+{
+  return null;     
+}
+
+SieveAbstractElement.prototype.append
+    = function (parentId,elm,childId)
+{
+  return false;
+}
+
+SieveAbstractElement.prototype.remove
+    = function (childId)
+{
+  return null;
+}
+
+
+try {
+  
+
+  
 function SieveDom()
 {
   this.blkRequire = SieveLexer.createByName("import");
@@ -53,26 +97,23 @@ SieveDom.prototype.setScript
   return data;
 }
 
-SieveDom.prototype.toString
+SieveDom.prototype.toScript
     = function ()
-{  
-  return ""+this.blkRequire.toString() + this.blkBody.toString();
+{
+  return ""+this.blkRequire.toScript() + this.blkBody.toScript();
 }
 
-SieveDom.prototype.toXUL
+SieveDom.prototype.getWidget
     = function ()
 {  
-  var elm = document.createElement("vbox");
-  
-  // Imports are not rendered...
-  //elm.appendChild(this.blkRequire);
-  
-  elm.appendChild(this.blkBody.toElement());
+  return $(document.createElement("div"))
+            .append(this.blkBody.toWidget());  
+}
 
-  var that = this;
-  //elm.addEventListener("click",function(e){ that.boubleMessage('blur');},false );
-
-  return elm;  
+SieveDom.prototype.move
+    = function (id,parentId,siblingId)
+{
+  return this.append(parentId,this.remove(id),siblingId);
 }
 
 /**
@@ -82,45 +123,32 @@ SieveDom.prototype.toXUL
  * @param {} id
  *   insert before element with id, pass null to append at end.
  */
-SieveDom.prototype.addElement
-    = function (parentId,elm,id)
+SieveDom.prototype.append
+    = function (parentId,elm,siblingId)
 {
-  this.boubleMessage("addElement",{parent:parentId, elm:elm, child:id})
+  if (!elm)
+    throw "invalid element";
+    
+  if (this.blkBody.append(parentId,elm,siblingId))
+    return true;
+    
+  return this.blkRequire.append(parentId,elm,siblingId);
 }
 
-SieveDom.prototype.removeElement
+SieveDom.prototype.remove
     = function (id)
 {
-  return this.boubleMessage("removeElement",{child:id})[0];  
+  var elm = this.blkBody.remove(id);
+  
+  if (elm)
+    return elm;
+      
+  return this.blkRequire.remove(id);  
 }
 
-/*SieveDom.prototype.sendMessage
-    = function (id,message)
+
+}
+catch (ex)
 {
-  // convert the id into an array...
-  id = id.split("_");
-
-  for (var i=0; i<this.elements.length; i++)
-  {
-    if (this.elements[i].getID() != id[0])
-      continue;
-      
-    // remove the first id ...
-    id.shift(); 
-    this.elements[i].onMessage(id,data);
-  } 
-}*/
-
-// messages: 'blur', null;
-// messages: 'removeElement', id : element
-// messages: 'addElement', id : element
-SieveDom.prototype.boubleMessage
-    = function (type,message)
-{
-  var rv = [];
- 
-  rv = rv.concat(this.blkRequire.onBouble(type,message));
-  rv = rv.concat(this.blkBody.onBouble(type,message));
-
-  return rv;
+  alert(""+ex)
 }

@@ -11,7 +11,10 @@
  *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveResponse.js"
  *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveRequest.js"   
  */
- 
+
+// Enable Strict Mode
+"use strict";
+
 if (typeof(Cc) == 'undefined')
   { Cc = Components.classes; }
 
@@ -631,7 +634,7 @@ function onImport()
   var scriptableStream = Cc["@mozilla.org/scriptableinputstream;1"]
                              .createInstance(Ci.nsIScriptableInputStream);
 
-  inputStream.init(filePicker.file, 0x01, 0444, null);
+  inputStream.init(filePicker.file, 0x01, parseInt("0444", 8), null);
   scriptableStream.init(inputStream);
 
   // todo insert imported snipplet instead of replacing the whole script
@@ -675,12 +678,12 @@ function onExport()
 	var file = filePicker.file;
 
 	if (file.exists() == false)
-		file.create(Ci.nsIFile.NORMAL_FILE_TYPE, 0644);
+		file.create(Ci.nsIFile.NORMAL_FILE_TYPE, parseInt("0644", 8));
 
 	var outputStream = Cc["@mozilla.org/network/file-output-stream;1"]
 			.createInstance(Ci.nsIFileOutputStream);
 
-	outputStream.init(file, 0x04 | 0x08 | 0x20, 0644, null);
+	outputStream.init(file, 0x04 | 0x08 | 0x20, parseInt("0644", 8), null);
 
 	var data = document.getElementById("sivContentEditor").value;
 	outputStream.write(data, data.length);

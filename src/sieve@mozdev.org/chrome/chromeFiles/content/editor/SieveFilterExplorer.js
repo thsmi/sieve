@@ -16,6 +16,9 @@
  *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/editor/SieveFilterTreeView.js"
  */
 
+// Enable Strict Mode
+"use strict";
+
 if (typeof(Cc) == 'undefined')
   { Cc = Components.classes; }
 
@@ -154,7 +157,7 @@ var event =
       return;
     
     if (aData == "offline")
-      this.onOffline();
+      onOffline();
     
     if (aData == "online")
       sivConnect();    
@@ -437,7 +440,7 @@ function sivOpenEditor(scriptName,scriptBody)
     
   args["sieve"] = sid;
   args["uri"] = "x-sieve:"+sid+"/"+scriptName;
-  args["account"] = this.getSelectedAccount().imapKey;
+  args["account"] = getSelectedAccount().imapKey;
   
   // This is a hack from DEVMO
   args.wrappedJSObject = args;  

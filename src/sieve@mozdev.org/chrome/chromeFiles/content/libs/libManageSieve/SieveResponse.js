@@ -10,6 +10,9 @@
  *   Max Dittrich
  */
  
+ // Enable Strict Mode
+"use strict";
+
 /**
  * This class implements a generic response handler for simple sieve requests.
  * 

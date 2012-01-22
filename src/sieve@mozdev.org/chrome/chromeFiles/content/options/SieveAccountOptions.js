@@ -7,6 +7,9 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
+ // Enable Strict Mode
+"use strict";
+ 
 if (typeof(Cc) == 'undefined')
   { Cc = Components.classes; }
 

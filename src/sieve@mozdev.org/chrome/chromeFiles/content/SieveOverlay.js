@@ -6,16 +6,19 @@
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
+ 
+// Enable Strict Mode
+"use strict"; 
 
 var gSivExtUtils =
 {
   OpenFilters : function(server,parentWin)
   {
     if (typeof(Cc) == 'undefined')
-      { Cc = Components.classes; }
+      { var Cc = Components.classes; }
 
     if (typeof(Ci) == 'undefined')
-      { Ci = Components.interfaces; }  
+      { var Ci = Components.interfaces; }  
     
     if (server == null)
       server = this.GetActiveServer();    

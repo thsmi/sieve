@@ -7,12 +7,14 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+// Enable Strict Mode
+"use strict";
 
 if (typeof(Cc) == 'undefined')
-  { Cc = Components.classes; }
+  { var Cc = Components.classes; }
 
 if (typeof(Ci) == 'undefined')
-  { Ci = Components.interfaces; }
+  { var Ci = Components.interfaces; }
 
   
 function SieveAutoConfig()

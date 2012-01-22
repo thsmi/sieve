@@ -7,6 +7,9 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+// Enable Strict Mode
+"use strict";
+
 function SieveResponseCode(code)
 {
   this.code = code;    

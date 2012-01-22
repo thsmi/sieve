@@ -6,15 +6,18 @@
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
- 
+
+// Enable Strict Mode
+"use strict";
+
 if (typeof(Cc) == 'undefined')
-  { Cc = Components.classes; }
+  { var Cc = Components.classes; }
 
 if (typeof(Ci) == 'undefined')
-  { Ci = Components.interfaces; }  
+  { var Ci = Components.interfaces; }  
 
 if (typeof(Cr) == 'undefined')
-  { Cr = Components.results; }
+  { var Cr = Components.results; }
 
 Cc["@mozilla.org/moz/jssubscript-loader;1"]
     .getService(Ci.mozIJSSubScriptLoader) 

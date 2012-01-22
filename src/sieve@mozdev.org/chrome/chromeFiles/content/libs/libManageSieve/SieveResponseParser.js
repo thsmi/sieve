@@ -7,10 +7,25 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
+// Enable Strict Mode
+"use strict";
 
 /**
+ * The manage sieve protocol syntax uses a fixed gramar which is based on atomar tokens. 
+ * This class offers an interface to test for and extract these predefined tokens. It supports 
+ * Strings (Quoted and Literal), White Space (Line Break, Space ...) as well as arbitraty tokens.
+ * 
+ * This class expects as input a byte array using UTF-8 encoding. It's because the manage sieve 
+ * protocol is defined to uses UTF-8 encoding and Mozilla sockets return incomming messages streams.
+ * 
+ * The parser does not change or alter the byte array's content. So extracting data does not shrink 
+ * the array free any bytes. This parser is just somekind of a view to this array. 
+ * 
+ * Tokens are automatically converted from UTF-8 encoded byte arrays to JavaScript Unicode Strings
+ * during extraction.
  * 
  * @param {Byte[]} data
+ *   a byte array encoded in UTF-8
  */
 function SieveResponseParser(data)
 {
@@ -21,16 +36,32 @@ function SieveResponseParser(data)
   this.data = data;
 }
 
+/**
+ * Extracts the given number of bytes the buffer. 
+ * 
+ * @param {int} size
+ *   The number of bytes as integer which should be extracted
+ */
 SieveResponseParser.prototype.extract
     = function (size)
 {
   this.pos += size;
 }
 
+/**
+ * Tests if the array starts with a line break (#13#10)
+ * 
+ * @return {Boolean}
+ *   true if the buffer with a line break, otherwise false
+ */
 SieveResponseParser.prototype.isLineBreak
     = function ()
 {
-  // TODO test for array out of bounds...
+  // Are we out of bounds?
+  if (this.data.length < this.pos+1)
+    return false;
+    
+  // Test for a linebreak #13#10
   if (this.data[this.pos] != 13)
     return false;
     
@@ -40,6 +71,11 @@ SieveResponseParser.prototype.isLineBreak
   return true;
 }
 
+/**
+ * Extracts a line break (#13#10) for the buffer
+ * 
+ * If it does not start with a line break an exception is thrown.
+ */
 SieveResponseParser.prototype.extractLineBreak
     = function ()
 {
@@ -49,6 +85,11 @@ SieveResponseParser.prototype.extractLineBreak
   this.pos += 2;
 }
 
+/**
+ * Test if the buffer starts with a space character (#32)
+ * @return {Boolean}
+ *   true if buffer starts with a space character, otherwise false
+ */
 SieveResponseParser.prototype.isSpace
     = function ()
 { 
@@ -58,6 +99,11 @@ SieveResponseParser.prototype.isSpace
   return false;
 }
 
+/**
+ * Extracts a space character (#32) form the buffer
+ * 
+ * If it does not start with a space character an exception is thrown.
+ */
 SieveResponseParser.prototype.extractSpace
     = function ()
 {
@@ -183,6 +229,8 @@ SieveResponseParser.prototype.extractString
  * Extracts a token form a response. The token is beeing delimited by any 
  * separator. The extracted token does not include the separator. 
  * 
+ * Throws an exception if none of the separators is found.
+ * 
  * @param {byte[]} separators
  *   an array containing possible token separators. The first match always wins.
  * @return {String}
@@ -217,6 +265,18 @@ SieveResponseParser.prototype.extractToken
   return token;
 }
 
+/**
+ * Tests if the buffer starts with the specified bytes.
+ * 
+ * As the buffer is encoded in UTF-8, the specified bytes have to be 
+ * encoded in UTF-8, otherwise the result is unpredictable.
+ * 
+ * @param {Byte[]} bytes
+ *   the bytes to compare as byte array encoded in UTF-8
+ *   
+ * @return {Boolean}
+ *   true if bytes match the beginning of the buffer, otherwise false
+ */
 SieveResponseParser.prototype.startsWith
     = function ( array )
 {
@@ -238,23 +298,12 @@ SieveResponseParser.prototype.startsWith
   return true;
 }
 
-/*SieveResponseParser.prototype.startsWith
-    = function ( string )
-{
-  string = new String(string);
-  
-  var upper = string.toUpperCase();
-  var lower = string.toLowerCase();
-  
-  // TODO convert Strings to byte array...
-  
-  for (var i; i<string.length; i++)
-    if ((this.data[this.pos+i] != upper[i]) && (this.data[this.pos+i] != lower[i])) 
-      return false;
-      
-  return true;        
-}*/
-
+/**
+ * Returns a copy of the current buffer. 
+ *  
+ * @return {byte[]}
+ *   an a copy of the array's current view. It is encoded in UTF-8
+ */
 SieveResponseParser.prototype.getByteArray
     = function ()
 {
@@ -262,7 +311,7 @@ SieveResponseParser.prototype.getByteArray
 }
 
 /**
- * Returns a copy of the response parser's buffer as an UTF-8 encoded string. 
+ * Returns a copy of the response parser's buffer as JavaScript Unicode string. 
  * 
  * Manage Sieve encodes literals in UTF-8 while network sockets are usualy 
  * binary. So we can't use java scripts build in string functions as they expect 
@@ -293,6 +342,13 @@ SieveResponseParser.prototype.getData
 }
 
 
+/**
+ * Check if the buffer is empty. This means the buffer does not contain any 
+ * extractable bytes or tokens.
+ * 
+ * @return {Boolean}
+ *   true if the buffer is empty, otherwise false
+ */
 SieveResponseParser.prototype.isEmpty
     = function ()
 {

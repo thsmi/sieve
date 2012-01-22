@@ -9,14 +9,17 @@
  *  Inspired by ChatZilla code...
  */
 
+// Enable Strict Mode
+"use strict";
+
 if (typeof(Cc) == 'undefined')
-  { Cc = Components.classes; }
+  { var Cc = Components.classes; }
 
 if (typeof(Ci) == 'undefined')
-  { Ci = Components.interfaces; }  
+  { var Ci = Components.interfaces; }  
 
 if (typeof(Cr) == 'undefined')
-  { Cr = Components.results; }
+  { var Cr = Components.results; }
 
 /**
  * Implements an Protocol handler component for sieve. This is needed inorder

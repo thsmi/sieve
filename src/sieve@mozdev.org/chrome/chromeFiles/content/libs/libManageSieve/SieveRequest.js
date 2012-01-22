@@ -31,7 +31,8 @@
   
 */
 
-//****************************************************************************//
+// Enable Strict Mode
+"use strict";
 
 /**
  * Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy 
@@ -46,10 +47,10 @@
  */ 
 
 if (typeof(Cc) == 'undefined')
-  { Cc = Components.classes; }
+  { var Cc = Components.classes; }
 
 if (typeof(Ci) == 'undefined')
-  { Ci = Components.interfaces; }
+  { var Ci = Components.interfaces; }
 
 
 function JSStringToByteArray(str,charset) 

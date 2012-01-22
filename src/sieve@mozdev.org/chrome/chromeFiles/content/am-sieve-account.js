@@ -7,6 +7,8 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
+// Enable Strict Mode
+"use strict"; 
 
 var gSieveAccount = null;
 var gSivIncomingServer = null;

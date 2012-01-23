@@ -636,11 +636,23 @@ SieveSocks4Proxy.prototype.getPort
   return "1080"; 
 }
 
+/**
+ * Specifies on which TCP/IP Port the socks Proxy is listening. 
+ * @param {Int} port
+ *   the port as integer
+ */
 SieveSocks4Proxy.prototype.setPort
     = function(port)
 {
-  // TODO: Check If port is a valid integer
-  gPref.setCharPref(this.prefURI+".port",port);
+  port = parseInt(port,10);
+  
+  if (isNaN(port))
+    throw "Invalid Port Number";
+    
+  if ((port < 0) || (port > 65535))
+    throw "Ivalid Port Number";
+
+  gPref.setCharPref(this.prefURI+".port",""+port);
 }
 
 SieveSocks4Proxy.prototype.getProxyInfo

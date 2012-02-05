@@ -103,7 +103,7 @@ SieveMultiLineString.prototype.toScript
     = function ()
 {
   return "text:"
-    +this.whiteSpace
+    +this.whiteSpace.toScript()
     +((this.hashComment == null)?"":this.hashComment.toScript())
     +this.text+(this.text != "" ? "\r\n" : "" )
     +".\r\n";

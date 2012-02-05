@@ -73,6 +73,7 @@ var SieveLexer =
   /**
    * by class...
    * Parses the given Data and returns the result
+   * 
    * @param {} type
    * @param {} data
    * @return {}
@@ -82,19 +83,33 @@ var SieveLexer =
     var c = this.getConstructor(types,data);
 
     if (c==null)
-      throw " "+types+" "+data;
+      throw "No compatible Constructor for Class(es): "+types+" in "+data;
     
     return this.getConstructor(types,data)(++(this.maxId));    
   },
   
-  createByName : function(name)
+  /**
+   * Creates an element for a by name and returns the result
+   * 
+   * @param {} name
+   * @optional @param {String} initializer
+   *   A sieve token as string, used to initialize the created element.
+   *    
+   * @return {}
+   */
+  createByName : function(name, data)
   {   
     if (!this.names[name])
       throw "No Constructor for "+name+" found";
       
     try
     {
-      return this.names[name].onNew(++(this.maxId));
+      var item = this.names[name].onNew(++(this.maxId));
+      
+      if (data)
+        item.init(data);
+        
+      return item; 
     }
     catch (e)
     {
@@ -109,6 +124,10 @@ var SieveLexer =
   
   probeByName : function(name,data)
   {
+    // If there's no data then skip
+    if (!data.length)
+      return false;
+      
     if (this.names[name].onProbe(data))
       return true;
       
@@ -119,7 +138,6 @@ var SieveLexer =
    * Tests if the given Data is parsable
    * @param {} type
    * @param {} data
-   * @param {} hint
    * @return {Boolean}
    */
   probeByClass : function(types,data)

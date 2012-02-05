@@ -7,218 +7,89 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-//TODO  rename if to conditional action...
-
-
- 
-function SieveCondition(id)
-{  
-  SieveAbstractElement.call(this,id); 
-  this.test = null;
-  
-  this.block = SieveLexer.createByName("block/body");
-  
-  this.ws = [];
-  this.ws[0] = SieveLexer.createByName("whitespace");
-  this.ws[1] = SieveLexer.createByName("whitespace");
-  this.ws[2] = SieveLexer.createByName("whitespace");
-  
-  
-}
-
-SieveCondition.prototype.__proto__ = SieveAbstractElement.prototype;
-
-SieveCondition.prototype.hasCondition
-  = function (data)
+function SieveIf(id)
 {
-  if (this.test)
-    return true;
-    
-  return false;
+  SieveElse.call(this,id);
+  this.test = null;  
 }
 
-SieveCondition.prototype.init
-  = function (data)
-{  
-  // ... remove the deadcode ...
-  data = this.ws[0].init(data);  
-  
-  // else blocks don't have a test...
-  if ( SieveLexer.probeByName("operator",data))
-  {
-    this.test = SieveLexer.createByName("operator");
-    data = this.test.init(data);
-    
-    
-    // ... eat again the deadcode ...
-    if (SieveLexer.probeByName("whitespace",data))
-      data = this.ws[1].init(data);
-  }
-  
-  if (data.charAt(0) != "{")
-    throw "{ expected but found: \n"+data.substr(0,50)+"...";  
-  
-  data = data.slice(1);
-  
-  data = this.block.init(data);
+SieveIf.prototype.__proto__ = SieveElse.prototype;
 
-  if (data.charAt(0) != "}")
-    throw "} expected but found: \n"+data.substr(0,50)+"...";  
-
-  data = data.slice(1);
-
-  if (SieveLexer.probeByName("whitespace",data))
-    data = this.ws[2].init(data);  
-    
-  return data;  
-}
-
-SieveCondition.prototype.toScript
-  = function ()
+SieveIf.isElement
+    = function (token)
 {
-  var str = this.ws[0].toScript();
-  
-  if (this.test)  
-    str += this.test.toScript() + this.ws[1].toScript();      
-  
-  str += "{"+this.block.toScript()+"}";
-  
-  str += this.ws[2].toScript();  
- 
-  return str;  
+  return (token.substring(0,4).toLowerCase().indexOf("if") == 0)  
 }
-
-SieveCondition.prototype.toWidget
-  = function ()
-{              
-  var elm = $(document.createElement("div"));
-  
-  if (this.test)
-  {
-    // TODO this.test should be some kind of an array...
-    // ... allof anyof
-    // droptarget -> insert allofanyof
-    // test
-    // droptarget -> insertallofanyof
-    if (this.test.toWidget)
-      elm.append(this.test.toWidget());
-    else
-      elm.text(this.test.toScript())
-  }
-    
-  elm.append(this.block.toWidget());
-
-  return elm;
-}
-
-
-SieveCondition.prototype.append
-  = function (parentId,elm,childId)
-{
-  if (parentId == this.id)
-    throw "Impelemnt me";
-    
-  // XXX: remove me append should always exist
-  if (this.test.append)
-    if (this.test.append(parentId,elm,childId))
-      return true;
-  
-  return this.block.append(parentId,elm,childId)
-}
-
-SieveCondition.prototype.remove
-  = function (childId)
-{      
-  // It's most likely one of our block elements..
-  var elm = this.block.remove(childId);
-  
-  if (elm)
-    return elm;
-    
-  // ... obviously not, so try the test...
-  if (!this.test)
-    return null;
-    
-   // XXX: remove me "remove" should always exist
-  if (this.test.id == childId)
-  {
-    elm = this.test;
-    this.test = null;
-    return elm;    
-  }
-  
-  if (this.test.remove)
-    return this.test.remove(childId);
-  
-  return null;
-}
-
-
-function SieveIf(id) 
-{
-  SieveBlockBody.call(this,id);
-  
-  this.elms[0] = SieveLexer.createByName("conditions/condition"); 
-  this.elms[0].init(" false {\r\n}\r\n")
-}
-
-SieveIf.prototype.__proto__ = SieveBlockBody.prototype;
 
 SieveIf.prototype.init
     = function (data)
-{
-  // Syntax :
-  // <"if"> <test> <block>
-  // <"elsif"> <test> <block>  
-  // <"else"> <block>
-
-  this.elms = [];
-  // remove the "if"...
-  data = data.slice(2);
-    
-  var element = SieveLexer.createByName("conditions/condition");
-  data = element.init(data);
-  this.elms.push(element);
+{ 
+  data = data.slice("if".length);
   
-  // now read the elsif block...
-  while (data.substr(0,5).toLowerCase().indexOf("elsif") == 0)
-  {
-    // remove the elsif...
-    data = data.slice(5);
+  this.ws[0] = SieveLexer.createByName("whitespace");
+  data = this.ws[0].init(data);
     
-    element = SieveLexer.createByName("conditions/condition");
-    data = element.init(data);
-    this.elms.push(element);        
-  }
-   
-  if (data.substr(0,5).toLowerCase().indexOf("else") == 0)
-  {
-    data = data.slice(4);
-    
-    element = SieveLexer.createByName("conditions/condition");
-    data = element.init(data);
-    this.elms.push(element); 
-  }
+  this.test = SieveLexer.createByClass(["test"],data);
+  data = this.test.init(data);
+  
+  this.ws[1] = SieveLexer.createByName("whitespace");
+  data = this.ws[1].init(data);
+  
+  this.block = SieveLexer.createByName("block/block");
+  data = this.block.init(data);
+  
+  this.ws[2] = SieveLexer.createByName("whitespace");
+  data = this.ws[2].init(data);
   
   return data;
 }
 
-SieveIf.prototype.toScript
+SieveIf.prototype.getTest
     = function ()
-{  
-  var str = "if"+this.elms[0].toScript();
-   
-  for (var i=1; i<this.elms.length;i++)
-  {
-    if (this.elms[i].hasCondition())
-      str += "elsif"
-    else 
-      str += "else" 
-      
-    str += this.elms[i].toScript();
-  }
+{
+  return this.test;
+}
+
+SieveIf.prototype.findParent
+    = function(id)
+{ 
+  if (this.block.id == id)
+    return this.block;
+
+  if (this.test.id == id)
+    return this.test;
+     
+  var item = this.block.findParent(this,id);
   
-  return str;     
+  if (item)
+    return item;
+    
+  return this.test.findParent(id);
+}
+
+SieveIf.prototype.find
+    = function(id)
+{
+  if (this.id == id) 
+    return this;
+  
+  var item = this.block.find(id);
+  
+  if (item)
+    return item;
+    
+  return this.test.find(id);
+}
+
+SieveIf.prototype.toScript
+    = function()
+{
+  return "if"
+    + this.ws[0].toScript() 
+    + this.test.toScript() 
+    + this.ws[1].toScript()
+    + this.block.toScript() 
+    + this.ws[2].toScript();  
 }
 
 SieveIf.prototype.toWidget
@@ -227,14 +98,150 @@ SieveIf.prototype.toWidget
   return (new SieveIfUI(this)).getWidget();  
 }
 
+
+//****************************************************************************//
+
+function SieveElse(id)
+{
+  SieveAbstractElement.call(this,id);
+  this.ws = [];
+  this.block = SieveLexer.createByName("block/block");
+}
+
+SieveElse.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveElse.isElement
+    = function (token)
+{
+  return (token.substring(0,4).toLowerCase().indexOf("else") == 0)  
+}
+
+SieveElse.prototype.getBlock
+    = function ()
+{
+  return this.block;      
+}
+
+SieveElse.prototype.init
+    = function (data)
+{
+  data = data.slice("else".length);
+    
+  this.ws[0] = SieveLexer.createByName("whitespace");
+  data = this.ws[0].init(data);
+    
+  data = this.block.init(data);
+  
+  this.ws[1] = SieveLexer.createByName("whitespace");
+  data = this.ws[1].init(data); 
+  
+  return data;
+}
+
+SieveElse.prototype.findParent
+    = function(id)
+{
+  if (this.block.id == id)
+    return this.block;
+  
+  return this.block.findParent(id);
+}
+
+SieveElse.prototype.find
+    = function(id)
+{
+  if (this.id == id) 
+    return this;
+  
+  return this.block.find(id);
+}
+
+SieveElse.prototype.toScript
+    = function()
+{
+  return "else" 
+    + this.ws[0].toScript() 
+    + this.block.toScript() 
+    + this.ws[1].toScript();  
+}
+
+SieveElse.prototype.toWidget
+    = function ()
+{
+  return (new SieveElseUI(this)).getWidget();  
+}
+
+//****************************************************************************//
+
+function SieveCondition(id) 
+{
+  SieveBlockBody.call(this,id);
+  
+  this.elms[0] = SieveLexer.createByName("condition/if","if false {\r\n}\r\n"); 
+}
+
+SieveCondition.prototype.__proto__ = SieveBlockBody.prototype;
+
+SieveCondition.isElement
+    = function (token)
+{
+  return SieveIf.isElement(token);
+}
+
+SieveCondition.prototype.init
+    = function (data)
+{ 
+  this.elms[0] = SieveLexer.createByName("condition/if");    
+  data = this.elms[0].init(data);
+  
+  while (data.substring(0,5).toLowerCase().indexOf("elsif") == 0)
+  {
+    data = data.slice("els".length);
+    
+    var elm = SieveLexer.createByName("condition/if");
+    data = elm.init(data);
+    
+    this.elms.push(elm);
+    
+  }
+
+  if (SieveLexer.probeByName("condition/else",data))
+  {
+    var elm = SieveLexer.createByName("condition/else");
+    data = elm.init(data);
+
+    this.elms.push(elm)
+  }
+  
+  return data;
+}
+
+SieveCondition.prototype.toWidget
+    = function ()
+{
+  return (new SieveConditionUI(this)).getWidget();  
+}
+
+SieveCondition.prototype.toScript
+    = function ()
+{
+  var str ="";
+
+  for (var i=0; i<this.elms.length; i++)
+  {
+    if ((i > 0) && (this.elms[i].getTest))
+      str += "els"
+      
+    str += this.elms[i].toScript();
+  }
+    
+  return str;  
+}
+
+
 if (!SieveLexer)
   throw "Could not register Conditional Elements";
 
-SieveLexer.register("conditions/","conditions/condition",
-      function(token) {return true }, 
-      function(id) {return new SieveCondition(id)});
-      
-SieveLexer.register("conditions","conditions/if",
-      function(token) {
-        return (token.substring(0,2).toLowerCase().indexOf("if") == 0)}, 
-      function(id) {return new SieveIf(id)});
+SieveLexer.register2("condition/","condition/if", SieveIf);      
+SieveLexer.register2("condition/","condition/else", SieveElse);      
+SieveLexer.register2("condition","condition", SieveCondition);

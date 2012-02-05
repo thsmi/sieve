@@ -43,7 +43,7 @@ SieveLineBreak.prototype.toScript
 /******************************************************************************/
 
 
-SieveDeadCode.isDeadCode
+SieveDeadCode.isElement
   = function (data, index)
 {
   var ch = data.charAt(0);
@@ -91,7 +91,7 @@ SieveDeadCode.prototype.toScript
 
 /******************************************************************************/
 
-SieveBracketComment.isBracketComment
+SieveBracketComment.isElement
     = function (data)
 {
   if (data.charAt(0) != "/")
@@ -245,17 +245,9 @@ SieveWhiteSpace.prototype.toScript
 if (!SieveLexer)
   throw "Could not register DeadCode Elements";
 
-
 SieveLexer.register2("whitespace/","whitespace/linebreak",SieveLineBreak);
-      
-SieveLexer.register("whitespace/","whitespace/deadcode",
-      function(token) {return SieveDeadCode.isDeadCode(token)}, 
-      function(id) {return new SieveDeadCode(id)});
-      
-SieveLexer.register("whitespace/","whitespace/bracketcomment",
-      function(token) {return SieveBracketComment.isBracketComment(token)}, 
-      function(id) {return new SieveBracketComment(id)});  
-      
+SieveLexer.register2("whitespace/","whitespace/deadcode",SieveDeadCode);
+SieveLexer.register2("whitespace/","whitespace/bracketcomment",SieveBracketComment);  
 SieveLexer.register2("whitespace/","whitespace/hashcomment",SieveHashComment);
 
-SieveLexer.register2("whitespace","whitespace",SieveWhiteSpace);         
+SieveLexer.register2("whitespace","whitespace",SieveWhiteSpace);

@@ -7,9 +7,45 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-// TODO rename to SieveContentSection
+function SieveBlock(id)
+{
+  SieveBlockBody.call(this,id);
+}
 
- // Inherrit from DragBox
+SieveBlock.prototype.__proto__ = SieveBlockBody.prototype;
+
+SieveBlock.isElement
+    = function (data)
+{
+  return (data.charAt(0) == "{");  
+}
+
+SieveBlock.prototype.init
+  = function (data)
+{ 
+  if (data.charAt(0) != "{") 
+    throw " { expected but found:\n"+data.substr(0,50)+"..."
+    
+  data = data.slice(1);
+  
+  data = SieveBlockBody.prototype.init.call(this,data);
+
+  if (data.charAt(0) != "}") 
+    throw " } expected but found:\n"+data.substr(0,50)+"...";  
+
+  data = data.slice(1);
+  
+  return data;
+}
+
+SieveBlock.prototype.toScript
+  = function (data)
+{
+  return "{" +SieveBlockBody.prototype.toScript.call(this)+"}";
+}
+//****************************************************************************//
+// TODO rename to SieveCommands
+
 function SieveBlockBody(id)
 {
   SieveAbstractElement.call(this,id);
@@ -23,15 +59,15 @@ SieveBlockBody.prototype.__proto__ = SieveAbstractElement.prototype;
 SieveBlockBody.isElement
     = function (data)
 {
-  return SieveLexer.probeByClass(["action","conditions","whitespace"],data);  
+  return SieveLexer.probeByClass(["action","condition","whitespace"],data);  
 }
 
 SieveBlockBody.prototype.init
     = function (data)    
 {
-  while (SieveLexer.probeByClass(["action","conditions","whitespace"],data))
+  while (SieveLexer.probeByClass(["action","condition","whitespace"],data))
   {
-    var elm = SieveLexer.createByClass(["action","conditions","whitespace"],data);    
+    var elm = SieveLexer.createByClass(["action","condition","whitespace"],data);    
     data = elm.init(data);
     
     this.elms.push(elm);    
@@ -45,6 +81,9 @@ SieveBlockBody.prototype.children
 {
   if (typeof(idx) === "undefined")
     return this.elms;  
+    
+  if ((typeof(idx) === "string")  && (idx.toLowerCase() == ":last"))
+    idx = this.elms.length-1;    
     
   return this.elms[idx];
 }
@@ -66,24 +105,57 @@ SieveBlockBody.prototype.toWidget
   return (new SieveBlockUI(this)).getWidget();
 }
 
-SieveBlockBody.prototype.append
-    = function (parentId, elm, siblingId)
+SieveBlockBody.prototype.findParent
+    = function (id)
 {
-  // crawl throug all child elements
-  if (parentId != this.id)
-  {
-    for (var i=0; i<this.elms.length; i++)
-      if (this.elms[i].append(parentId,elm,siblingId))
-        return true;
-
-    return false;
+  // is it a direct hit?
+  for (var i=0; i<this.elms.length; i++)
+    if (this.elms[i].id == id)
+      return this;
+  
+  // no so we have to ask our child nodes
+  var item = null;
+  for (var i=0; i<this.elms.length; i++)
+  {     
+    item = this.elms[i].findParent(id);
+    
+    if (item)
+      break; 
   }
   
+  return item;     
+}
+
+SieveBlockBody.prototype.find
+    = function (id)
+{ 
+  if (this.id == id)
+    return this;
+
+    
+  var item = null;
+  
+  // crawl throug all child elements
+  for (var i=0; i<this.elms.length; i++)
+  {     
+    item = this.elms[i].find(id);
+    
+    if (item)
+      break;
+  }
+  
+  return item;
+}
+
+SieveBlockBody.prototype.append
+    = function (elm, siblingId)
+{
+
   // the id matches, so we have to do the work
   if ((!siblingId) || (siblingId < 0))
   {
     this.elms[this.elms.length] = elm; 
-    return true;
+    return this;
   }
  
   for (var i=0; i<this.elms.length; i++)
@@ -92,11 +164,11 @@ SieveBlockBody.prototype.append
       continue;
     
     this.elms.splice(i,0,elm);
-    return true;
+    return this;
   }
   
   // we did not manage to add the element...
-  return false;
+  return null;
 }
 
 SieveBlockBody.prototype.remove
@@ -112,24 +184,17 @@ SieveBlockBody.prototype.remove
     elm = this.elms[i];
     this.elms.splice(i,1);
     
-    return elm;
+    break;
   }
     
-  // ... ok we have to crawl through all child nodes.
-  elm = null;
-  
-  for (var i=0; i<this.elms.length; i++)
-  {
-    elm = this.elms[i].remove(childId);
-    
-    if (elm)
-      break;
-  }
-
   return elm;
 }
+
+
+
 
 if (!SieveLexer)
   throw "Could not register Block Elements";
 
 SieveLexer.register2("block/","block/body",SieveBlockBody);
+SieveLexer.register2("block/","block/block",SieveBlock);

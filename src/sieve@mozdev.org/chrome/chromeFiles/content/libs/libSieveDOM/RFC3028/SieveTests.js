@@ -7,8 +7,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-
-
+  
 /******************************************************************************/
 
 
@@ -20,10 +19,10 @@
 
 
     
-function SieveEnvelopeTest(id) 
+function SieveEnvelope(id) 
 {
   // first line with deadcode
-  this.id = id;
+  SieveAbstractElement.call(this,id);
   this.options = new Array(null,null,null);
   
   this.whiteSpace = [];
@@ -38,13 +37,15 @@ function SieveEnvelopeTest(id)
   this.keyList = SieveLexer.createByName("stringlist");
 }
 
-SieveEnvelopeTest.isElement
+SieveEnvelope.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveEnvelope.isElement
   = function(token)
 { 
   return (token.indexOf("envelope") == 0);
 }
 
-SieveEnvelopeTest.prototype.init
+SieveEnvelope.prototype.init
     = function (data)
 {
   data = data.slice("envelope".length);
@@ -76,7 +77,7 @@ SieveEnvelopeTest.prototype.init
   return data;
 }    
 
-SieveEnvelopeTest.prototype.toScript
+SieveEnvelope.prototype.toScript
     = function ()
 {
   return "envelope"
@@ -93,10 +94,10 @@ SieveEnvelopeTest.prototype.toScript
     + this.whiteSpace[5].toScript();
 }
 
-SieveEnvelopeTest.prototype.toWidget
+SieveEnvelope.prototype.toWidget
     = function ()
 {
-  return "envelope - to be implented";
+  return $("</div>").text("envelope:"+this.toScript());  
 }
 
 /******************************************************************************/
@@ -117,7 +118,8 @@ SieveEnvelopeTest.prototype.toWidget
  
 function SieveAddress(id)
 {
-  this.id = id;  
+  SieveAbstractElement.call(this,id); 
+  
   this.options = new Array(null,null,null);
   
   this.whiteSpace = []
@@ -130,6 +132,14 @@ function SieveAddress(id)
                 
   this.headerList = SieveLexer.createByName("stringlist");
   this.keyList = SieveLexer.createByName("stringlist");
+}
+
+SieveAddress.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveAddress.isElement
+    = function (token)
+{
+  return (token.substr(0,7).toLowerCase().indexOf("address") == 0);
 }
 
 SieveAddress.prototype.init
@@ -181,22 +191,25 @@ SieveAddress.prototype.toScript
     + this.whiteSpace[5].toScript();
 }
 
-/*SieveAddress.prototype.toWidget
+SieveAddress.prototype.toWidget
     = function ()
 {
-  return "address - to be implemented";
-}*/
+  return $("</div>").text("address:"+this.toScript());
+}
 
 /******************************************************************************/
 
 function SieveBoolean(id) 
 {
+  SieveAbstractElement.call(this,id);
+  
   // first line with deadcode
-  this.id = id;
   this.whiteSpace = SieveLexer.createByName("whitespace");  
   
   this.value = false;
 }
+
+SieveBoolean.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveBoolean.isElement
  = function(data)
@@ -229,9 +242,9 @@ SieveBoolean.prototype.init
   
   data = this.whiteSpace.init(data);
     
-  return data;
-    
+  return data;    
 }    
+
 
 SieveBoolean.prototype.toScript
     = function ()
@@ -245,10 +258,7 @@ SieveBoolean.prototype.toScript
 SieveBoolean.prototype.toWidget
     = function ()
 {
-  if (this.value)
-    return  " true ";
-
-  return " false ";
+  return (new SieveBooleanTestUI(this)).getWidget();
 }
 
 /******************************************************************************/    
@@ -257,9 +267,9 @@ function SieveSizeTest(id)
   SieveAbstractElement.call(this,id); 
   
   this.whiteSpace = [];
-  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[1] = SieveLexer.createByName("whitespace");  
-  this.whiteSpace[2] = SieveLexer.createByName("whitespace");  
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace", " ");
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace", " ");
+  this.whiteSpace[2] = SieveLexer.createByName("whitespace", " ");
   
   this.over = false;
   this.size = SieveLexer.createByName("atom/number");
@@ -341,22 +351,23 @@ SieveSizeTest.prototype.toScript
 SieveSizeTest.prototype.toWidget
     = function ()
 {
-  // TODO REMOVE THE GET(0)...
-  return (new SieveSizeTestUI(this)).getWidget().get(0);      
+  return (new SieveSizeTestUI(this)).getWidget();      
 }
 
 /******************************************************************************/
   
 function SieveExists(id)
 {
-  this.id = id;
+  SieveAbstractElement.call(this,id); 
   
   this.whiteSpace = [];
-  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[1] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace",' ' );
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace",' ');
   
-  this.headerNames = SieveLexer.createByName("stringlist");
+  this.headerNames = SieveLexer.createByName("stringlist",'"blubb"');
 }
+
+SieveExists.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveExists.isElement
   = function(token)
@@ -391,18 +402,17 @@ SieveExists.prototype.toScript
     + this.whiteSpace[1].toScript();
 }
 
-/*SieveExists.prototype.toWidget
+SieveExists.prototype.toWidget
     = function ()
 {
-  return " one of the following mailheader exists<html:br/>"
-    + this.headerNames.toWidget();
-}*/
+  return (new SieveExistsUI(this)).getWidget().get(0);  
+}
 
 /******************************************************************************/
     
 function SieveHeader(id) 
 {
-  this.id = id;
+  SieveAbstractElement.call(this,id); 
   
   this.whiteSpace = [];
   this.whiteSpace[0] = SieveLexer.createByName("whitespace");
@@ -415,6 +425,14 @@ function SieveHeader(id)
   this.headerNames = new SieveStringList(this.id+"_5");
   this.keyList = new SieveStringList(this.id+"_6");
 }
+
+SieveHeader.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveHeader.isElement
+    = function (token)
+{
+  return (token.substring(0,6).toLowerCase().indexOf("header") == 0);
+} 
 
 SieveHeader.prototype.init
     = function (data)
@@ -486,29 +504,18 @@ SieveHeader.prototype.toScript
 SieveHeader.prototype.toWidget
     = function ()
 {  
-  var elm = document.createElement("div");
-  elm.setAttribute("value",
-      "any of the following messageheaders "+this.headerNames.toWidget() 
+  return $("<div/>").text(
+      "any of the following messageheaders "+this.headerNames.toScript() 
       + "[casesensitive/insensitive] [matchtype e.g. contains]"
-      + " one of the following values "+ this.keyList.toWidget());
-      
-   return elm;
+      + " one of the following values "+ this.keyList.toScript());
 }
 
 if (!SieveLexer)
   throw "Could not register Conditional Elements";
 
-SieveLexer.register("test","test/address",
-      function(token) {
-        return (token.substr(0,7).toLowerCase().indexOf("address") == 0); }, 
-      function(id) {return new SieveAddress(id)});
-      
+SieveLexer.register2("test","test/address",SieveAddress);
 SieveLexer.register2("test","test/boolean",SieveBoolean);
-  
-SieveLexer.register2("test","test/envelope",SieveEnvelopeTest);
+SieveLexer.register2("test","test/envelope",SieveEnvelope);
 SieveLexer.register2("test","test/exists",SieveExists);  
-SieveLexer.register("test","test/header",
-      function(token) {
-        return (token.substring(0,6).toLowerCase().indexOf("header") == 0); }, 
-      function(id) {return new SieveHeader(id)});  
+SieveLexer.register2("test","test/header",SieveHeader);
 SieveLexer.register2("test","test/size",SieveSizeTest);     

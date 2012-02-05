@@ -233,6 +233,11 @@ SieveNumber.prototype.value
   if (typeof(number) === "undefined")
     return this._number;
 
+  number = parseInt(number,10);
+  
+  if (isNaN(number))
+    throw "Invalid Number";
+    
   // TODO Test if number is valid...
   this._number = number;   
   return this;
@@ -254,7 +259,7 @@ SieveNumber.prototype.unit
 SieveNumber.prototype.toScript
     = function ()
 {
-  return this._number+this._unit;
+  return ""+this._number+""+this._unit;
 }
 
 /******************************************************************************/

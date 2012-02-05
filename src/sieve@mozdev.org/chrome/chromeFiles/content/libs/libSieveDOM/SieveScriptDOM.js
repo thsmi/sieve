@@ -8,44 +8,6 @@
  */
 
 
-function SieveAbstractElement(id)
-{
-  if (!id)
-    throw new "Invalid id";
-    
-  this.id = id;
-}
-
-SieveAbstractElement.prototype.init 
-    = function (data)
-{
-  throw "Implement init() for "+this.id;      
-}
-
-SieveAbstractElement.prototype.toScript
-    = function ()
-{
-  throw "Implement toScript() for "+this.id;
-}
-
-SieveAbstractElement.prototype.toWidget
-    = function ()
-{
-  return null;     
-}
-
-SieveAbstractElement.prototype.append
-    = function (parentId,elm,childId)
-{
-  return false;
-}
-
-SieveAbstractElement.prototype.remove
-    = function (childId)
-{
-  return null;
-}
-
 
 try {
   
@@ -53,11 +15,15 @@ try {
   
 function SieveDom()
 {
-  this.blkRequire = SieveLexer.createByName("import");
-  this.blkBody = SieveLexer.createByName("block/body");
+  SieveBlockBody.call(this,-1);
+  
+  this.elms[0] = SieveLexer.createByName("import");
+  this.elms[1] = SieveLexer.createByName("block/body");
 }
 
-SieveDom.prototype.setScript
+SieveDom.prototype.__proto__ = SieveBlockBody.prototype;
+
+SieveDom.prototype.init
     = function (data)
 {
   // the sieve syntax prohibits single \n and \r
@@ -85,11 +51,11 @@ SieveDom.prototype.setScript
   // requires are only valid if they are
   // before any other sieve command!
   if (SieveLexer.probeByName("import",data))
-    data = this.blkRequire.init(data);
+    data = this.elms[0].init(data);
 
   // After the import section only deadcode and actions are valid    
   if (SieveLexer.probeByName("block/body",data))
-    data = this.blkBody.init(data);      
+    data = this.elms[1].init(data);      
   
   if (data.length != 0)
     alert("Parser error!"+data);
@@ -100,21 +66,22 @@ SieveDom.prototype.setScript
 SieveDom.prototype.toScript
     = function ()
 {
-  return ""+this.blkRequire.toScript() + this.blkBody.toScript();
+  return ""+this.elms[0].toScript() + this.elms[1].toScript();
 }
 
 SieveDom.prototype.getWidget
     = function ()
 {  
   return $(document.createElement("div"))
-            .append(this.blkBody.toWidget());  
+            .append(this.elms[1].toWidget());  
 }
 
+/*
 SieveDom.prototype.move
     = function (id,parentId,siblingId)
 {
   return this.append(parentId,this.remove(id),siblingId);
-}
+}*/
 
 /**
  * 
@@ -123,16 +90,16 @@ SieveDom.prototype.move
  * @param {} id
  *   insert before element with id, pass null to append at end.
  */
-SieveDom.prototype.append
-    = function (parentId,elm,siblingId)
+/*SieveDom.prototype.append
+    = function (elm,siblingId)
 {
   if (!elm)
     throw "invalid element";
     
-  if (this.blkBody.append(parentId,elm,siblingId))
+  if (this.blkBody.append(elm,siblingId))
     return true;
     
-  return this.blkRequire.append(parentId,elm,siblingId);
+  return this.blkRequire.append(elm,siblingId);
 }
 
 SieveDom.prototype.remove
@@ -144,7 +111,8 @@ SieveDom.prototype.remove
     return elm;
       
   return this.blkRequire.remove(id);  
-}
+}*/
+
 
 
 }

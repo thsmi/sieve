@@ -14,7 +14,7 @@ function SieveBlockUI(elm)
   SieveDragBoxUI.call(this,elm);
 }
 
-SieveBlockUI.prototype.__proto__ = SieveDragBoxUI.prototype;
+SieveBlockUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
 
 SieveBlockUI.prototype.init
     = function ()
@@ -37,12 +37,26 @@ SieveBlockUI.prototype.init
       
     elm
       .append((new SieveDropBoxUI(this.getId(),this.getSieve().elms[i]))
-        .flavours("sieve/action")
+        .drop(new SieveBlockDropHandler())
         .getWidget())
       .append(item);
   }
    
-  elm.append((new SieveDropBoxUI(this.getId())).flavours("sieve/action").getWidget());
+  elm.append((new SieveDropBoxUI(this.getId()))
+    .drop(new SieveBlockDropHandler())
+    .getWidget());
   
   return elm; 
+}
+
+SieveBlockUI.prototype.getWidget
+    = function ()
+{
+  if (this._domElm)
+    return this._domElm;
+    
+  this._domElm = this.init()
+    .addClass("SivElement");
+    
+  return this._domElm;
 }

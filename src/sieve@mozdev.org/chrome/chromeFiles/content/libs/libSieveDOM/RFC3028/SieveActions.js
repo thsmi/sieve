@@ -65,6 +65,12 @@ function SieveRedirect(id)
 
 SieveRedirect.prototype.__proto__ = SieveAbstractElement.prototype;
 
+SieveRedirect.isElement
+    = function (token)
+{
+  return (token.substring(0,8).toLowerCase().indexOf("redirect") == 0);
+}
+
 SieveRedirect.prototype.init
     = function (data)
 {
@@ -130,6 +136,13 @@ function SieveReject(id)
 
 SieveReject.prototype.__proto__ = SieveAbstractElement.prototype;
 
+SieveReject.isElement
+    = function (token)
+{
+  return (token.substring(0,6).toLowerCase().indexOf("reject") == 0);
+}
+
+
 SieveReject.prototype.init
     = function (data)
 { 
@@ -189,6 +202,12 @@ function SieveStop(id)
 }
 
 SieveStop.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveStop.isElement
+    = function(token)
+{
+  return (token.substring(0,4).toLowerCase().indexOf("stop") == 0);
+}
 
 SieveStop.prototype.init
     = function (data)
@@ -329,20 +348,11 @@ if (!SieveLexer)
   throw "Could not register Actions";
 
 SieveLexer.register2("action","action/discard", SieveDiscard);
-SieveLexer.register2("action","action/fileinto", SieveFileInto);     
 SieveLexer.register2("action","action/keep", SieveKeep);
+SieveLexer.register2("action","action/stop", SieveStop);
+
+SieveLexer.register2("action","action/fileinto", SieveFileInto);
+SieveLexer.register2("action","action/redirect",SieveRedirect);
+SieveLexer.register2("action","action/reject", SieveReject);
       
-SieveLexer.register("action","action/redirect",
-      function(token) {
-        return (token.substring(0,8).toLowerCase().indexOf("redirect") == 0); },
-      function(id) {return new SieveRedirect(id)});
-      
-SieveLexer.register("action","action/reject",
-      function(token) {
-        return (token.substring(0,6).toLowerCase().indexOf("reject") == 0); },
-      function(id) {return new SieveReject(id)});
-      
-SieveLexer.register("action","action/stop",
-      function(token) {
-        return (token.substring(0,4).toLowerCase().indexOf("stop") == 0); },
-      function(id) {return new SieveStop(id)});   
+   

@@ -620,7 +620,7 @@ SieveSession.prototype =
     if (aIID.equals(Ci.nsIInterfaceRequestor))
       return this;
       
-    // nsIBadCerListener ist deprectated since Gecko 1.8 (Thunderbird 2), ...
+    // nsIBadCerListener is deprecated since Gecko 1.8 (Thunderbird 2), ...
     // ... we just keep it for compatibility
     if (aIID.equals(Ci.nsIBadCertListener))
       return this;

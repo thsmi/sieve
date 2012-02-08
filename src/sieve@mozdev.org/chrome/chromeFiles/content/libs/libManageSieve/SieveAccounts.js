@@ -141,24 +141,16 @@ SieveImapAuth.prototype.getType
  * Incase the Sieve Account requires a different login than the IMAP Account,
  * use this Class. It stores the username and the password if desired.
  * 
- * 
- * As the password manager in Thunderbird 3 broke compatibility with older
- * releases, it is our job to maintain compatibility. 
- * 
- * 
- * Therefore SieveCustomAuth2 is compatible with Thunderbird 3 and up, while
- * the class SieveCustomAuth supports legacy Thunderbird releases.
+ * This class is named SieveCustomAuth2 because the new password manager in 
+ * Thunderbird 3 broke compatibility with older releases. The SieveCustomAuth
+ * class was compatible with the legacy password manager and was was removed 
+ * from code when the extension dropped support for pre Thunderbird 3 releases. 
  * 
  * Entries in the new Login-Manager are identified and enumerated by their 
  * original hostname. Furthermore the username is stored in the prefs and 
  * is used to find a matching account, as the original hostname is not 
  * garanteed to be unique.
  * 
- *  and their username. The latter one is storedsaved in the 
- * preferences.
- * 
- * @see SieveCustomAuth
- *
  * @param {String} host
  *   the original hostname for this account  
  * @param {String} uri
@@ -365,7 +357,7 @@ SieveCustomAuth2.prototype.getPassword
  * The username is stored in the user preferences not in the Login Manager!
  * 
  * @return {String}
- *   The username or an empty string in case of a failure
+ *   The username or an empty string in case of an error
  */
 SieveCustomAuth2.prototype.getUsername
     = function ()
@@ -389,168 +381,6 @@ SieveCustomAuth2.prototype.getType
 }
 
 
-/**
- * Incase the Sieve Account requires a different login than the IMAP Account,
- * use this Class. It stores the username and the password if desired.
- * 
- * As the password manager in Thunderbird 3 broke compatibility with older...
- * ... releases, it is our job to maintain compatibility. 
- * 
- * Therefore SieveCustomAuth2 is compatible with Thunderbird 3 and up, while...
- * ... the class SieveCustomAuth supports legacy Thunderbird releases
- * 
- * @see SieveCustomAuth
- * @deprecated Interface removed since Gecko 1.9.1 (Thunderbird 3)
- *  
- * @param {String} uri
- *   the unique URI of the associated sieve account
- */
-function SieveCustomAuth(uri)
-{
-  if (("@mozilla.org/passwordmanager;1" in Components.classes) == false)
-    throw "SieveCustomAuth: No Password Manager Component found";
-  
-  if (uri == null)
-    throw "SieveCustomAuth: URI can't be null"; 
-    
-  this.uri = uri;
-  this.prefURI = "extensions.sieve.account."+this.uri;
-}
-
-SieveCustomAuth.prototype.getDescription
-    = function ()
-{
-  return "Use a custom login";
-}
-
-/**
- * Updates the username and deletes all passworts which are associated ...
- * ... with htis account. This strange is behaviour is normal for builds ...
- * ... prior to Thunderbird3.
- * 
- * @param {String} username
- *    the username as string, has to be neither empty nor null. 
- */
-SieveCustomAuth.prototype.setUsername
-    = function (username)
-{
-  if ((username == null) || (username == ""))
-    throw "SieveCustomAuth: Username is empty or null";
-
-  // drop any existing password, if the username changed...
-  if (this.hasPassword())
-  {    	
-    var pwMgr = Components.classes["@mozilla.org/passwordmanager;1"]
-                  .getService(Components.interfaces.nsIPasswordManager);
-    try
-    {
-      pwMgr.removeUser(new String("sieve://"+this.uri) , this.getUsername());
-    }
-    catch (e)
-    { /* do nothing */ }
-	  
-    // make XPCOM happy...
-    pwMgr = null;
-  }    
-
-  // set new username...  
-  gPref.setBoolPref(this.prefURI+".login.hasPassword",false);
-  gPref.setCharPref(this.prefURI+".login.username",username);  
-}    
-
-SieveCustomAuth.prototype.getPassword
-    = function ()
-{
-  if (this.hasPassword() == true)
-  {
-    // the password is remembered...
-    var pwMgr = Components.classes["@mozilla.org/passwordmanager;1"]
-                  .getService(Components.interfaces.nsIPasswordManager);
-    var e = pwMgr.enumerator;
-    
-    var username = this.getUsername();    
-    while (e.hasMoreElements()) 
-    {        
-      var passwd = e.getNext().QueryInterface(Components.interfaces.nsIPassword);
-            
-      if (passwd.host != new String("sieve://"+this.uri))
-        continue;
-            
-      if (passwd.user != username)
-        continue;
-
-      return passwd.password;
-    }
-    // no password stored...
-  }
-  
-  // ... prompt for password
-  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-                  .getService(Components.interfaces.nsIPromptService);  
-                        
-  var input = {value:null};
-  var check = {value:false};
-     
-  var result = 
-    prompts.promptPassword(//window,
-        null,
-        "Password", 
-        "Please enter the password for your Sieve account", 
-        input, 
-        "Remember Password", 
-        check);
-  
-  // make XPCOM happy...
-  prompts = null;
-  
-  // user aborts password dialog...
-  if (result == false)
-    return null;
-    
-  // user wants the password to be remembered...
-  if (check.value == true)
-  {
-    var pwMgr = Components.classes["@mozilla.org/passwordmanager;1"]
-                  .getService(Components.interfaces.nsIPasswordManager);                
-
-    pwMgr.addUser(new String("sieve://"+this.uri),this.getUsername(), input.value);    
-    gPref.setBoolPref(this.prefURI+".login.hasPassword",true);
-    
-    pwMgr = null;
-  }
-    
-  return input.value;
-}
-
-SieveCustomAuth.prototype.getUsername
-    = function ()
-{
-  if (gPref.prefHasUserValue(this.prefURI+".login.username"))
-    return gPref.getCharPref(this.prefURI+".login.username");
-
-  return "";
-}
-
-SieveCustomAuth.prototype.hasPassword
-    = function ()
-{
-  if (gPref.prefHasUserValue(this.prefURI+".login.hasPassword"))
-    return gPref.getBoolPref(this.prefURI+".login.hasPassword");
-
-  return false;
-}
-
-SieveCustomAuth.prototype.hasUsername
-    = function ()
-{
-  return true;
-}
-
-SieveCustomAuth.prototype.getType
-    = function ()
-{
-  return 2;
-}
 
 /**
  * Maintains SOCKS proxy settings 
@@ -1189,9 +1019,9 @@ SieveAccount.prototype.getDescription
  * 
  * @param {Int} type 
  *   defines which Authentication Settings ({@link SieveNoAuth}, 
- *   {@link SieveCustomAuth}, {@link SieveImapAuth}) should be loaded. If this 
+ *   {@link SieveCustomAuth2}, {@link SieveImapAuth}) should be loaded. If this 
  *   parameter is skipped the default Authentication settings will be returned. 
- * @return {SieveImapAuth,SieveNoAuth,SieveCustomAuth}
+ * @return {SieveImapAuth,SieveNoAuth,SieveCustomAuth2}
  *   Returns the Authentication Settings for this SieveAccount
  */
 SieveAccount.prototype.getLogin
@@ -1206,8 +1036,6 @@ SieveAccount.prototype.getLogin
       return new SieveNoAuth();
       
     case 2:
-      if ("@mozilla.org/passwordmanager;1" in Components.classes)
-        return new SieveCustomAuth(this.Uri);
       return new SieveCustomAuth2(this.host,this.Uri);
     
     default:

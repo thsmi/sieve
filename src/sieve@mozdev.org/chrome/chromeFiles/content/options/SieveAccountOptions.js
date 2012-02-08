@@ -5,6 +5,9 @@
  * 
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
+ *
+ * Contributor(s):
+ *   Cyril Kluska <ckluska@easter-eggs.com>
  */
  
  // Enable Strict Mode
@@ -308,9 +311,18 @@ function onProxySelect(type)
 
 // === Advanced Sheet ==========================================================
 
+/**
+ * Populates the advanced property sheet with data.
+ * 
+ * @author Thomas Schmid <schmid-thomas@gmx.net>
+ * @author Cyril Kluska <ckluska@easter-eggs.com>
+ * 
+ * @param {SieveAccount} account
+ *   A SieveAccount which should be used to populate the property sheet
+ */
 function onAdvancedSheetLoad(account)
 {
-  element = document.getElementById('cbxAuthMechanism');
+  var element = document.getElementById('cbxAuthMechanism');
   element.checked = account.getSettings().hasForcedAuthMechanism();
   enableAuthMechanism(element.checked);
    
@@ -490,8 +502,9 @@ function onAuthMechanismSelect(sender)
   
   gAccount.getSettings().setForcedAuthMechanism(sender.selectedItem.value);
 }
+
 /**
- * Opens the password manager dialog of thunderbird.
+ * Opens thunderbird's the password manager dialog
  * 
  * The dialog call might me non modal.
  */
@@ -501,13 +514,6 @@ function onShowPassword()
   var winName = "Toolkit:PasswordManager"
   var uri = "chrome://passwordmgr/content/passwordManager.xul"
   
-  if ("@mozilla.org/passwordmanager;1" in Cc) 
-  {
-    // Password Manager exists so this is not Thunderbird 3 
-    winName = "Toolkit:PasswordManager"
-    uri = "chrome://messenger/content/preferences/viewpasswords.xul"
-  }
-
   var w = Cc["@mozilla.org/appshell/window-mediator;1"]
     .getService(Ci.nsIWindowMediator)
     .getMostRecentWindow(winName);

@@ -141,17 +141,17 @@ SieveBlockDropHandler.prototype.moveElement
      
   var dragElm = dom.findParent(event.dataTransfer.mozGetDataAt(sivFlavour,2));
   if(!dragElm)
-    throw "No Element found for "+event.dataTransfer.mozGetDataAt(sivFlavour,2);
+    throw "Block Drop Handler: No Element found for "+event.dataTransfer.mozGetDataAt(sivFlavour,2);
   
   dragElm = dragElm.remove(event.dataTransfer.mozGetDataAt(sivFlavour,2));
            
   if (!dragElm)
-    throw "No Element found for "+event.dataTransfer.mozGetDataAt(sivFlavour,2); 
+    throw "Block Drop Handler: No Element found for "+event.dataTransfer.mozGetDataAt(sivFlavour,2); 
   
   var item = dom.find(this.owner.parentId);
   
   if (!item)
-    throw "No Element found for "+this.owner.parentId;
+    throw "Block Drop Handler: No Element found for "+this.owner.parentId;
   
   //... lets update the sieve dom and move the node to his new position...
   item.append(dragElm,this.owner.getId());
@@ -235,12 +235,12 @@ SieveTrashBoxDropHandler.prototype.onDrop
   
   var item = dom.findParent(event.dataTransfer.mozGetDataAt(flavour,2));
   if(!item)
-    throw "No Element found for "+event.dataTransfer.mozGetDataAt(flavour,2);
+    throw "Trash Drop Handler: No Element found for "+event.dataTransfer.mozGetDataAt(flavour,2);
     
   var item = item.remove(event.dataTransfer.mozGetDataAt(flavour,2));
            
   if (!item)
-    throw "No Element found for "+event.dataTransfer.mozGetDataAt(flavour,2); 
+    throw "Trash Drop Handler: No Element found for "+event.dataTransfer.mozGetDataAt(flavour,2); 
   
   // delete node and the corresponding dropbox...
   $(event.dataTransfer.mozGetDataAt(flavour,0))

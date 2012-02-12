@@ -9,14 +9,17 @@
  
 // setflag <variablename: string> <list-of-flags: string-list>
 
+
 function SieveSetFlag(id) 
 {
-  this.id = id;
+  SieveAbstractElement.call(this,id); 
   
   this.whiteSpace = SieveLexer.createByName("whitespace");
   this.flaglist = SieveLexer.createByName("stringlist");
   this.semicolon = SieveLexer.createByName("atom/semicolon");
 }
+
+SieveSetFlag.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveSetFlag.prototype.init
     = function (data)
@@ -48,14 +51,16 @@ SieveSetFlag.prototype.toScript
 
 function SieveAddFlag(id) 
 {
-  this.id = id;
+  SieveAbstractElement.call(this,id); 
   
   this.whiteSpace = [];
   this.whiteSpace[0] = SieveLexer.createByName("whitespace");
   this.whiteSpace[1] = SieveLexer.createByName("whitespace");  
                 
-  this.flaglist = new SieveStringList(this.id);
+  this.flaglist =  SieveLexer.createByName("stringlist");
 }
+
+SieveAddFlag.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveAddFlag.prototype.init
     = function (data)
@@ -104,14 +109,16 @@ SieveRemoveFlag.isRemoveFlag
 
 function SieveRemoveFlag(id) 
 {
-  this.id = id;
+  SieveAbstractElement.call(this,id); 
   
   this.whiteSpace = [];
   this.whiteSpace[0] = SieveLexer.createByName("whitespace");
   this.whiteSpace[1] = SieveLexer.createByName("whitespace");  
                 
-  this.flaglist = new SieveStringList();
+  this.flaglist =  SieveLexer.createByName("stringlist");
 }
+
+SieveRemoveFlag.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveRemoveFlag.prototype.init
     = function (data)
@@ -163,7 +170,7 @@ SieveHasFlag.isHasFlag
  
 function SieveHasFlag(id)
 {
-  this.id = id;
+  SieveAbstractElement.call(this,id); 
 
   this.whiteSpace = [];
   this.whiteSpace[0] = SieveLexer.createByName("whitespace");
@@ -171,10 +178,12 @@ function SieveHasFlag(id)
   this.whiteSpace[2] = SieveLexer.createByName("whitespace");    
 
 
-  this.whiteSpace     = new Array();
+  this.whiteSpace     = [];
   this.matchType      = null;
-  this.flagList       = new SieveStringList();
+  this.flagList = SieveLexer.createByName("stringlist");
 }
+
+SieveHasFlag.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveHasFlag.prototype.init
     = function (data)
@@ -209,7 +218,7 @@ SieveHasFlag.prototype.toScript
 }
 
 /******************************************************************************/
-/*
+
 if (!SieveLexer)
   throw "Could not register IMAP Flags";
 
@@ -230,4 +239,4 @@ SieveLexer.register("action","action/setflag",
 SieveLexer.register("test","test/hasflag",
       function(token) {return SieveHasFlag.isHasFlag(token)},
       function(id) {return new SieveHasFlag(id)});
-*/  
+ 

@@ -207,15 +207,19 @@ SieveQuotedString.prototype.toScript
 
 
 // CONSTRUCTOR:
-function SieveStringList(size)
+function SieveStringList(id)
 {  
-  this.elements = new Array();
+  SieveAbstractElement.call(this,id); 
+  
+  this.elements = [];
   
   // if the list contains only one entry...
   // ... use the comact syntac, this means ...
   // ... don't use the "[...]" to encapsulate the string
   this.compact = true;
 }
+
+SieveStringList.prototype.__proto__ = SieveAbstractElement.prototype;
 
 // PUBLIC STATIC:
 SieveStringList.isElement
@@ -235,16 +239,23 @@ SieveStringList.isElement
 SieveStringList.prototype.init
     = function (data)
 {
+  this.elements = [];
   
   if (SieveLexer.probeByName("string/quoted",data))
   {
     this.compact = true;
+    var item = ["","",""];
+    item[1] = SieveLexer.createByName("string/quoted");
     
-    this.elements[0] = SieveLexer.createByName("string/quoted");
-    return this.elements[0].init(data);
+    this.elements[0] = item;
+    
+    return this.elements[0][1].init(data);
   }
   
   this.compact = false;
+  
+  if (data.charAt(0) !== "[")
+    throw " [ expceted ";
   // remove the [
   data = data.slice(1);
     
@@ -284,11 +295,53 @@ SieveStringList.prototype.init
   }
   
 }
+
+SieveStringList.prototype.item
+    = function (idx,value)
+{
+  if (typeof(value) !== "undefined")
+    this.elements[idx][1].setValue(value);
+    
+  return this.elements[idx][1].getValue();
+}
+
+SieveStringList.prototype.size
+    = function ()
+{  
+  return this.elements.length;
+}
+
+SieveStringList.prototype.append
+    = function(str)
+{
+  var elm = ["","",""]
+  elm[1] = SieveLexer.createByName("string/quoted",'""');
+  elm[1].setValue(str);
+  
+  this.elements.push(elm);
+}
+
+SieveStringList.prototype.remove
+    = function(str)
+{
+  for (var i =0; i<this.elements.length; i++)
+  {
+    if (this.elements[i][1].getValue() != str)
+      continue;
+      
+    this.elements.splice(i,1);
+  }  
+}
+
+
 SieveStringList.prototype.toScript
     = function ()
 {
-  if (this.compact)
-    return this.elements[0].toScript();
+  if (this.elements == 0)
+    return '""'; 
+    
+  if (this.compact && this.elements <= 1)
+    return this.elements[0][1].toScript();
     
   var result = "[";
   var separator = "";

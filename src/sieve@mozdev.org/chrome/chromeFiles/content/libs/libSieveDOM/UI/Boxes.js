@@ -189,24 +189,20 @@ SieveStackableDragBoxUI.prototype.initPanels
 {
 }
 
-SieveStackableDragBoxUI.prototype.getWidget
+SieveStackableDragBoxUI.prototype.init
     = function ()
 {
-  if (this._domElm)
-    return this._domElm;  
-  
   this.initPanels();
-  
-  $(SieveDragBoxUI.prototype.getWidget.call(this))
+
+  var item = $("<div/>");
   
   for (var i=0; i<this.panels.length; i++)
-    this._domElm.append(this.panels[i])
-    
+    item.append(this.panels[i])
+          
   this.showPanel(1);
   
-  return this._domElm;
+  return item;  
 }
-
 
 /******************************************************************************/
 
@@ -228,7 +224,9 @@ SieveEditableDragBoxUI.prototype.onValidate
 SieveEditableDragBoxUI.prototype.showEditor
     = function(e)
 {
+  
   this.showPanel(0);
+  this._domElm.attr("sivIsEditable",  "true");  
     
   return;
 }
@@ -238,8 +236,9 @@ SieveEditableDragBoxUI.prototype.showSummary
 {
   if (!this.onValidate())
     return;
-    
-  this.showPanel(1); 
+  
+  this.showPanel(1);
+  this._domElm.removeAttr("sivIsEditable");  
   
   return;
 }
@@ -258,17 +257,6 @@ SieveEditableDragBoxUI.prototype.initPanels
   this.panels[1] = this.initSummary()
       .click(function(e) { _this.showEditor(); e.preventDefault();return true; } );
 }    
-
-SieveEditableDragBoxUI.prototype.getWidget
-    = function ()
-{
-  if (this._domElm)
-    return this._domElm;
-    
-  // Invoke parent method, to get a drag Box 
-  return $(SieveStackableDragBoxUI.prototype.getWidget.call(this))
-    //.attr("sivElmType","editable")
-}
 
 /*****************************************************************************/
 
@@ -351,7 +339,7 @@ SieveDropBoxUI.prototype.getWidget
       .bind("dragover",function(e) { return _this.onDragOver(e)})
       .bind("dragexit",function(e) { return _this.onDragExit(e)})
       .bind("dragenter",function(e) { return _this.onDragEnter(e)})
-      .text(this.getId()+"@"+this.parentId+" ["+this.handler.flavours()+"]");           
+      /*.text(this.getId()+"@"+this.parentId+" ["+this.handler.flavours()+"]")*/;           
 
   return this.dropTarget
 }
@@ -399,3 +387,6 @@ SivDropTarget.prototype.getWidget
 {
   return SieveDropBoxUI.prototype.getWidget.call(this).get(0)  
 }
+
+
+

@@ -97,7 +97,7 @@ SieveEnvelope.prototype.toScript
 SieveEnvelope.prototype.toWidget
     = function ()
 {
-  return $("</div>").text("envelope:"+this.toScript());  
+  return $("<div/>").text("envelope:"+this.toScript());  
 }
 
 /******************************************************************************/
@@ -194,7 +194,7 @@ SieveAddress.prototype.toScript
 SieveAddress.prototype.toWidget
     = function ()
 {
-  return $("</div>").text("address:"+this.toScript());
+  return $("<div/>").text("address:"+this.toScript());
 }
 
 /******************************************************************************/
@@ -262,7 +262,7 @@ SieveBoolean.prototype.toWidget
 }
 
 /******************************************************************************/    
-function SieveSizeTest(id) 
+function SieveSize(id) 
 {
   SieveAbstractElement.call(this,id); 
   
@@ -275,15 +275,15 @@ function SieveSizeTest(id)
   this.size = SieveLexer.createByName("atom/number");
 }
 
-SieveSizeTest.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveSize.prototype.__proto__ = SieveAbstractElement.prototype;
 
-SieveSizeTest.isElement
+SieveSize.isElement
   = function(token)
 { 
   return (token.substr(0,4).toLowerCase().indexOf("size") == 0);
 }
 
-SieveSizeTest.prototype.init
+SieveSize.prototype.init
     = function (data)
 {
   // Syntax :
@@ -319,25 +319,27 @@ SieveSizeTest.prototype.init
  * @param @optional {BOOL} value
  * @return {}
  */
-SieveSizeTest.prototype.isOver
+SieveSize.prototype.isOver
     = function (value)
 {
   if (typeof(value) === "undefined")
     return this.over;
-   
+  
   if (typeof(value) === "string")
     value = ((""+value).toLowerCase() == "true")?  true: false;
-    
+  
+  this.over = value;
+  
   return this;
 }
 
-SieveSizeTest.prototype.getSize
+SieveSize.prototype.getSize
     = function ()
 {
   return this.size;  
 } 
 
-SieveSizeTest.prototype.toScript
+SieveSize.prototype.toScript
     = function ()
 {
   return "size"
@@ -348,7 +350,7 @@ SieveSizeTest.prototype.toScript
     + this.whiteSpace[2].toScript();
 }
 
-SieveSizeTest.prototype.toWidget
+SieveSize.prototype.toWidget
     = function ()
 {
   return (new SieveSizeTestUI(this)).getWidget();      
@@ -364,7 +366,7 @@ function SieveExists(id)
   this.whiteSpace[0] = SieveLexer.createByName("whitespace",' ' );
   this.whiteSpace[1] = SieveLexer.createByName("whitespace",' ');
   
-  this.headerNames = SieveLexer.createByName("stringlist",'"blubb"');
+  this.headerNames = SieveLexer.createByName("stringlist",'"From"');
 }
 
 SieveExists.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -380,7 +382,9 @@ SieveExists.prototype.init
 {
   // Syntax :
   // <"exists"> <header-names: string-list>
-  
+  if (!SieveExists.isElement(data))
+    throw "exists expected";
+    
   data = data.slice("exists".length);
   
   data = this.whiteSpace[0].init(data);
@@ -405,7 +409,7 @@ SieveExists.prototype.toScript
 SieveExists.prototype.toWidget
     = function ()
 {
-  return (new SieveExistsUI(this)).getWidget().get(0);  
+  return (new SieveExistsUI(this)).getWidget();  
 }
 
 /******************************************************************************/
@@ -422,8 +426,9 @@ function SieveHeader(id)
   this.whiteSpace[4] = SieveLexer.createByName("whitespace");
   
   this.options = new Array(null,null);
-  this.headerNames = new SieveStringList(this.id+"_5");
-  this.keyList = new SieveStringList(this.id+"_6");
+  
+  this.headerNames = SieveLexer.createByName("stringlist",'"To"');
+  this.keyList = SieveLexer.createByName("stringlist",'"me@example.com"');
 }
 
 SieveHeader.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -474,6 +479,7 @@ SieveHeader.prototype.init
       this.options[1] = element;
     }
   }
+  
   data = this.whiteSpace[2].init(data);  
   data = this.headerNames.init(data);
   
@@ -484,6 +490,24 @@ SieveHeader.prototype.init
   data = this.whiteSpace[4].init(data);
   
   return data;    
+}
+
+SieveHeader.prototype.keys
+    = function(idx)
+{
+  if (typeof(idx) === "undefined")
+    return this.keyList;  
+    
+  return this.keyList.item(idx);
+}
+
+SieveHeader.prototype.headers
+    = function(idx)
+{
+  if (typeof(idx) === "undefined")
+    return this.headerNames;    
+    
+  return this.headerNames.item(idx);
 }
 
 SieveHeader.prototype.toScript
@@ -504,11 +528,137 @@ SieveHeader.prototype.toScript
 SieveHeader.prototype.toWidget
     = function ()
 {  
-  return $("<div/>").text(
-      "any of the following messageheaders "+this.headerNames.toScript() 
-      + "[casesensitive/insensitive] [matchtype e.g. contains]"
-      + " one of the following values "+ this.keyList.toScript());
+  return (new SieveHeaderUI(this)).getWidget();
 }
+
+
+// TODO SHould inherrit from block...
+function SieveTestList(id)
+{
+  SieveAbstractElement.call(this,id);
+  this.tests = [];  
+}
+
+SieveTestList.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveTestList.isElement
+   = function (token)
+{
+  return (token.charAt(0) == "(")
+}
+
+SieveTestList.prototype.init
+    = function (data)
+{    
+  if (data.charAt(0) != "(")
+    throw "Test list expected but found:\n'"+data.substr(0,50)+"'...";
+    
+  data = data.slice(1);
+    
+  while (data.charAt(0) != ")")
+  {
+    if (data.charAt(0) == ",")
+      data = data.slice(1);
+            
+    var element = [];
+    
+    element[0] = SieveLexer.createByName("whitespace");  
+    if (SieveLexer.probeByName("whitespace",data))
+      data = element[0].init(data);
+    
+    if (SieveLexer.probeByClass(["test"],data))
+      element[1] = SieveLexer.createByClass(["test"],data)
+    else
+      throw "Test command expected but found:\n'"+data.substr(0,50)+"'...";        
+
+    data = element[1].init(data);
+    
+    element[2] = SieveLexer.createByName("whitespace");
+    if (SieveLexer.probeByName("whitespace",data))
+      data = element[2].init(data);
+        
+    this.tests.push(element);
+  }
+  
+  data = data.slice(1);
+   
+  return data;
+}
+
+
+SieveTestList.prototype.toScript
+    = function()
+{
+  var result = "("
+    
+  for (var i = 0;i<this.tests.length; i++)
+  {
+    result = result
+             + ((i>0)?",":"")
+             + this.tests[i][0].toScript()
+             + this.tests[i][1].toScript()
+             + this.tests[i][2].toScript();    
+  }
+  
+  result += ")";
+  
+  return result;  
+}
+
+//****************************************************************************/
+function SieveAnyOfAllOfTest(id)
+{
+  SieveTestList.call(this,id);  
+  this.whiteSpace = SieveLexer.createByName("whitespace");
+}
+
+// Inherrit TestList
+SieveAnyOfAllOfTest.prototype.__proto__ = SieveTestList.prototype;
+
+SieveAnyOfAllOfTest.isElement
+   = function (token)
+{
+  if ( token.substring(0,5).toLowerCase().indexOf("allof") == 0)
+    return true;
+    
+  if ( token.substring(0,5).toLowerCase().indexOf("anyof") == 0)
+    return true;
+    
+  return false;
+}
+
+SieveAnyOfAllOfTest.prototype.init
+    = function (data)
+{
+  if ("allof" == data.substring(0,5).toLowerCase())
+    this.isAllOf = true;
+  else if ("anyof" == data.substring(0,5).toLowerCase())
+    this.isAllOf = false;
+  else
+    throw "allof or anyof expected but found: \n"+data.substr(0,50)+"...";
+    
+  data = data.slice(5);  
+  data = this.whiteSpace.init(data);
+  
+  data = SieveTestList.prototype.init.call(this,data);
+  
+  return data;
+}
+
+SieveAnyOfAllOfTest.prototype.toScript
+    = function()
+{
+  return (this.isAllOf?"allof":"anyof")
+           + this.whiteSpace.toScript()
+           + SieveTestList.prototype.toScript.call(this);  
+}
+
+SieveAnyOfAllOfTest.prototype.toWidget
+    = function ()
+{
+  return (new SieveAnyOfAllOfUI(this)).getWidget();
+}
+
 
 if (!SieveLexer)
   throw "Could not register Conditional Elements";
@@ -518,4 +668,7 @@ SieveLexer.register2("test","test/boolean",SieveBoolean);
 SieveLexer.register2("test","test/envelope",SieveEnvelope);
 SieveLexer.register2("test","test/exists",SieveExists);  
 SieveLexer.register2("test","test/header",SieveHeader);
-SieveLexer.register2("test","test/size",SieveSizeTest);     
+SieveLexer.register2("test","test/size",SieveSize);
+
+SieveLexer.register2("test","test/anyof",SieveAnyOfAllOfTest);
+SieveLexer.register2("test/","test/anyof",SieveTestList);

@@ -7,6 +7,16 @@
 	
     <style type="text/css" >
 
+
+body {
+  font-family:verdana;
+  font-size: 12px;
+  background-color:gray;
+}
+	
+.SivMailAddress {
+  font-family:courier;
+}
     #trash 
     {
       height: 80px;
@@ -83,6 +93,8 @@
 
 div.floating-menu {
   position:fixed;
+  top: 10px;
+  left: 10px;
   background:#fff4c8;
   border:1px solid #ffcc00;
   width:150px;
@@ -122,7 +134,8 @@ div .floating-menu .SivElement {
   <script type="application/javascript" src="UI/Actions.js"></script>
   <script type="application/javascript" src="UI/Blocks.js"></script>  
   <script type="application/javascript" src="UI/Conditions.js"></script>  
-  <script type="application/javascript" src="UI/Tests.js"></script>  
+  <script type="application/javascript" src="UI/widgets/Tests.js"></script>  
+  <script type="application/javascript" src="UI/widgets/Strings.js"></script>  
   
   
 
@@ -134,7 +147,7 @@ div .floating-menu .SivElement {
 
   <script src="RFC3028/SieveWhiteSpaces.js" type="text/javascript"></script>
   <script src="RFC3028/SieveStrings.js" type="text/javascript"></script>
-  <script src="SieveImapFlags.js" type="text/javascript"></script>
+  <script src="logic/ImapFlags/SieveImapFlags.js" type="text/javascript"></script>
   <script src="RFC3028/SieveConditions.js" type="text/javascript"></script>
   <script src="RFC3028/SieveTests.js" type="text/javascript"></script>
 
@@ -192,19 +205,17 @@ function debug(obj)
 	
     var elm = $("#sivActions");
     
+	elm.append($("<div/>").text("Actions"))
+	  .text("Actions");
+	  
     for (var key in SieveLexer.types["action"])
       elm.append(createMenuItem(key,"sieve/action"));
 
-    elm.append($(document.createElement('div')));
+	elm.append($("<div/>").text("Tests"))
     
     for (var key in SieveLexer.types["test"])
       elm.append(createMenuItem(key,"sieve/test").get(0));
 
-    elm.append($(document.createElement('div')));
-
-    for (var key in SieveLexer.types["conditions"])
-      elm.append(createMenuItem(key,"sieve/action"));
-      
 	elm
 	  .append($(document.createElement('div'))
 	    .addClass("spacer"))
@@ -214,9 +225,9 @@ function debug(obj)
 //]]>
 </script>
 
-
+<div style="margin-left:200px;">
 <div>
-   <div style="overflow: hidden;width: 100%;">
+   <div style="overflow: hidden;width: 100%;">  
      <div style="float:left">
         <div>Input:</div>
         <textarea id="txtScript" cols="50" rows="10">
@@ -236,6 +247,7 @@ redirect "test";
     <button onclick="update()">
 	  Update Sieve Script
 	</button>
+</div>
 </div>
 
 <div>   

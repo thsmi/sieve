@@ -59,7 +59,7 @@ SieveIf.prototype.findParent
   if (this.test.id == id)
     return this.test;
      
-  var item = this.block.findParent(this,id);
+  var item = this.block.findParent(id);
   
   if (item)
     return item;
@@ -77,7 +77,7 @@ SieveIf.prototype.find
   
   if (item)
     return item;
-    
+      
   return this.test.find(id);
 }
 

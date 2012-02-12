@@ -55,6 +55,9 @@ SieveRedirectUI.prototype.__proto__ = SieveEditableDragBoxUI.prototype;
 SieveRedirectUI.prototype.onValidate
    = function ()
 {
+  if (! $("#txtRedirect"+this.getId()).get(0).checkValidity())
+    return false;
+    
   this.getSieve().setAddress($("#txtRedirect"+this.getId()).val());  
   $("#lblRedirect"+this.getId()).text(this.getSieve().getAddress());
   
@@ -66,21 +69,23 @@ SieveRedirectUI.prototype.initEditor
 {
   return $(document.createElement("div"))
            .text("Redirect messages to:")
-           .append($(document.createElement("textarea"))
-             .attr("id","txtRedirect"+this.getId())
-             .attr("type","autocomplete")
-             .attr("autocompletesearch","mydomain addrbook")
-             .attr("value",""+this.getSieve().getAddress()));
+           .append($("<div/>")
+             .append($("<input/>")
+               .attr("id","txtRedirect"+this.getId())
+               .attr("type","email")
+               .attr("x-moz-errormessage","Please specify a valid email address.")
+               .attr("value",""+this.getSieve().getAddress())));
+               
 }
 
 SieveRedirectUI.prototype.initSummary
     = function ()
 {
   return $(document.createElement("div"))
-           .text("Redirect messages to:")
-           .addClass("text")
-           .append($(document.createElement("div"))
+           .text("Redirect message to ")           
+           .append($(document.createElement("span"))
              .text(this.getSieve().getAddress())
+             .addClass("SivMailAddress")
              .attr("id","lblRedirect"+this.getId()));         
 }
 

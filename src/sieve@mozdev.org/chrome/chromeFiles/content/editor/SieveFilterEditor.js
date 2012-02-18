@@ -485,6 +485,53 @@ function onReconnectClick()
   sivManager.openChannel(gSid,gCid);   
 }
 
+function onDonate()
+{
+  var url = Cc["@mozilla.org/network/io-service;1"]
+              .getService(Ci.nsIIOService)
+              .newURI("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC", null, null)
+              
+  Cc["@mozilla.org/uriloader/external-protocol-service;1"]
+    .getService(Ci.nsIExternalProtocolService)
+    .loadUrl(url); 
+}
+
+function onToogleSource()
+{
+  var deck = document.getElementById('dkView');
+  
+  if (deck.selectedIndex == 0)
+  {
+    document.getElementById("btnUndo").setAttribute('disabled',"true");
+    document.getElementById("btnRedo").setAttribute('disabled',"true");
+    document.getElementById("btnCut").setAttribute('disabled',"true");
+    document.getElementById("btnCopy").setAttribute('disabled',"true");
+    document.getElementById("btnPaste").setAttribute('disabled',"true"); 
+    document.getElementById("btnCompile").setAttribute('disabled',"true");
+    document.getElementById("btnSearchBar").setAttribute('disabled',"true");
+  
+    onSearchBarHide();
+    
+    deck.selectedIndex = 1;
+  }
+  else
+  {
+    deck.selectedIndex = 0;
+    
+    document.getElementById("btnUndo").removeAttribute('disabled');
+    document.getElementById("btnRedo").removeAttribute('disabled');
+    document.getElementById("btnCut").removeAttribute('disabled');
+    document.getElementById("btnCopy").removeAttribute('disabled');
+    document.getElementById("btnPaste").removeAttribute('disabled'); 
+    document.getElementById("btnCompile").removeAttribute('disabled');
+    document.getElementById("btnSearchBar").removeAttribute('disabled');
+  }
+    
+
+  
+  
+}
+
 function onSideBarBrowserClick(event)
 {     
   var href = null;
@@ -1264,4 +1311,4 @@ function sivSetStatus(state, message)
   }
   
 }
-
+         

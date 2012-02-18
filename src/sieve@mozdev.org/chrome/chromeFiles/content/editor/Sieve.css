@@ -246,6 +246,14 @@
 	list-style-image: url(chrome://sieve/content/images/toolbar.tools.png);
 }
 
+#btnDonate
+{
+	cursor:pointer;
+	background: url(chrome://sieve/content/images/btn_donate_LG.gif) no-repeat center center;
+	width: 96px;
+    height: 26px;
+}
+
 #btnPrint
 {
 	list-style-image: url(chrome://sieve/content/images/toolbar.print.png);

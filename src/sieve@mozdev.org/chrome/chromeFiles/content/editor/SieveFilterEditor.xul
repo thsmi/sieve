@@ -16,6 +16,7 @@
 <!DOCTYPE window SYSTEM "chrome://sieve/locale/locale.dtd">
 
 <?xml-stylesheet href="chrome://sieve/content/editor/Sieve.css" type="text/css"?>
+<?xml-stylesheet href="chrome://messenger/skin/mailWindow1.css"?>
 
 <window 
   id="SieveFilterEditor"
@@ -51,8 +52,8 @@
           src="chrome://messenger/content/msgPrintEngine.js"/>
   
  
-<toolbox class="toolbox-top">
-  <toolbar class="toolbar-primary">
+<toolbox class="mail-toolbox">
+  <toolbar class="inline-toolbar chromeclass-toolbar">
     <toolbarbutton id="btnSave" 
                    label="&edit.toolbar.save;" class="toolbarbutton-1"
                    oncommand="onSave();" />  
@@ -93,8 +94,9 @@
         <menuitem label="&edit.toolbar.import;" oncommand="onImport();" />
         <menuitem label="&edit.toolbar.export;" oncommand="onExport();" />
       </menupopup>
-      
-    </toolbarbutton>                   
+    </toolbarbutton>
+   <toolbarsplitter flex="1"/>
+   <box id="btnDonate"  onclick="onDonate();"/>    
   </toolbar>
 </toolbox>
   <separator class="thin"/>
@@ -103,6 +105,7 @@
       <hbox align="center">
         <label value="&edit.scriptname;"/>
         <textbox flex="1" id="txtName" readonly="true" />
+        <button type="checkbox" label="View Source" oncommand="onToogleSource();" checked="checked"/>        
       </hbox>
       <separator class="thin"/>
       <deck id="dkView" flex="1" selectedIndex="0">
@@ -186,10 +189,9 @@
             </vbox>
           </vbox>
         </box>
-        <box flex="1" style="overflow:auto">
-          <html:div id="divContext" xmlns:html="http://www.w3.org/1999/xhtml">  
-            nothing there yet...      
-          </html:div>
+        <box id="sivWidgetEditor" flex="1" style="overflow:auto">
+          <iframe flex="1" src="chrome://sieve/content/libs/libSieveDOM/SieveGui.html" type="content">
+          </iframe>          
         </box>
       </deck>
     </vbox>

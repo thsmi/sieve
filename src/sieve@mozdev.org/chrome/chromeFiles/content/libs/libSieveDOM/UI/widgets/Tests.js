@@ -147,7 +147,7 @@ SieveExistsUI.prototype.initSummary
     = function()
 {
   return $("<div/>")
-           .text("all of the following header exist:"+this.getSieve().headerNames.toScript())
+           .text("the following header(s) exist:"+this.getSieve().headerNames.toScript())
 }
 
 //****************************************************************************//
@@ -159,53 +159,41 @@ function SieveHeaderUI(elm)
 
 SieveHeaderUI.prototype.__proto__ = SieveEditableDragBoxUI.prototype;
 
+SieveHeaderUI.prototype.onValidate
+    = function ()
+{
+     
+  $("#lblHeader"+this.getId())
+    .text(" header "+this.getSieve().headerNames.toScript()
+          +" [is|contains|matches] [case-sensitive] "
+          +this.getSieve().keyList.toScript());       
+  
+  return true;      
+}
+
 SieveHeaderUI.prototype.initEditor
     = function()
-{
- 
+{  
+  // 
+  //
+
+  
   return $("<div/>")
-    .append($("<div/>").text("Test if any of the following keyword(s) is contained ..."))
-    .append((new SieveStringListUI(this.getSieve().keyList)).getWidget())
     .append($("<div/>")
-      .append($("<input/>")
-        .attr("type","radio")
-        // TODO add Sieve ID here
-        .attr("name","rgMatchTypeid"))
-      .append($("<span/>")
-        .html('... as an absolute match...<br>e.g. "frobnitzm" contains "frob" and "nit", but not "fbm"')))
-    .append($("<div/>")
-      .append($("<input/>")
-        .attr("type","radio")
-        // TODO add Sieve ID here
-        .attr("name","rgMatchTypeid"))
-      .append($("<span/>")
-        .html('... as an absolute match...<br>e.g. "e.g. only "frobnitzm" is "frobnitzm"')))
-    .append($("<div/>")
-      .append($("<input/>")
-        .attr("type","radio")
-        // TODO add Sieve ID here
-        .attr("name","rgMatchTypeid"))
-      .append($("<span/>")
-        .html('... as an wildcard match ...<br>'
-          + '"*" matches zero or more characters, and "?" matches a single character <br>'
-          + 'e.g.: "frobnitzm" matches "frob*zm" or "frobnit?m" but not frob?m ')))
-    .append($("<div/>").text("... in any of the following Headers"))
+      .append($("<div/>").text(
+        "Use this test to compare Strings like a subject lines, spam score, etc."))
+      .append($("<div/>").text(
+         "But do not compare against headers containing mail addresses, like To, Bcc,"
+         + "From, Cc! They usually contain a display name. Instead of "
+         + "'roadrunner@acme.example.com\' the header can be something similar to " 
+         + "'\"roadrunner\" <roadrunner@acme.example.com>'. The \"address\" test "
+         + "is aware of display names and compares against the pure mail address.")))
+    .append($("<h1/>").text("Any of the following header ..."))
     .append((new SieveHeaderListUI(this.getSieve().headerNames)).getWidget())
-    .append($("<div/>")
-      .text("Compare")
-      .append($("<input/>")
-        .attr("type","radio")
-        // TODO add Sieve ID here
-        .attr("name","rgComparatorid"))
-      .append($("<span/>")
-        .html('Case insensitive ASCII String (default)')))
-    .append($("<div/>")
-      .append($("<input/>")
-        .attr("type","radio")
-        // TODO add Sieve ID here
-        .attr("name","rgMatchTypeid"))
-      .append($("<span/>")
-        .html('Case sensitive UTF-8 Octetts')));
+    .append((new SieveMatchTypeUI(this.getSieve().matchType)).getWidget())
+    .append($("<h1/>").text("... any of the keyword(s)"))
+    .append((new SieveStringListUI(this.getSieve().keyList)).getWidget())    
+    .append((new SieveComparatorUI(this.getSieve().comparator)).getWidget())
 }
   
 SieveHeaderUI.prototype.initSummary
@@ -213,7 +201,60 @@ SieveHeaderUI.prototype.initSummary
 {
   // case- insensitive is the default so skip it...
   return $("<div/>")
-      .text(" "+this.getSieve().headerNames.toScript()
+      .attr("id","lblHeader"+this.getId()) 
+      .text(" header "+this.getSieve().headerNames.toScript()
+              +" [is|contains|matches] [case-sensitive] "
+              +this.getSieve().keyList.toScript());
+}
+
+//****************************************************************************//
+
+function SieveAddressUI(elm)
+{
+  SieveEditableDragBoxUI.call(this,elm);
+  this.flavour("sieve/test");  
+}
+
+SieveAddressUI.prototype.__proto__ = SieveEditableDragBoxUI.prototype;
+
+SieveAddressUI.prototype.onValidate
+    = function ()
+{
+     
+  $("#lblAddress"+this.getId())
+    .text(" address "+this.getSieve().headerList.toScript()
+          +" [is|contains|matches] [case-sensitive] "
+          +this.getSieve().keyList.toScript());       
+  
+  return true;      
+}
+
+SieveAddressUI.prototype.initEditor
+    = function()
+{
+ 
+  /*From, To, Cc, Bcc, Sender, Resent-From, Resent-To*/
+  return $("<div/>")
+    .append($("<span/>").text(
+      'The address test is designed to match headers containing E-Mail addresses.' 
+      + 'It offers compared to the "header test" more sophisticated address matching'
+      + ' and is capable to cope with addres headers containing display names'))
+    .append($("<h1/>").text("Any of the following header ..."))
+    .append((new SieveHeaderListUI(this.getSieve().headerList)).getWidget())
+    .append((new SieveMatchTypeUI(this.getSieve().matchType)).getWidget())
+    .append((new SieveAddressPartUI(this.getSieve().addressPart)).getWidget())
+    .append($("<h1/>").text("... any of the keyword(s)"))
+    .append((new SieveStringListUI(this.getSieve().keyList)).getWidget())    
+    .append((new SieveComparatorUI(this.getSieve().comparator)).getWidget())
+}
+  
+SieveAddressUI.prototype.initSummary
+    = function()
+{
+  // case- insensitive is the default so skip it...
+  return $("<div/>")
+      .attr("id","lblAddress"+this.getId()) 
+      .text(" address "+this.getSieve().headerList.toScript()
               +" [is|contains|matches] [case-sensitive] "
               +this.getSieve().keyList.toScript());
 }
@@ -239,7 +280,7 @@ SieveAnyOfAllOfUI.prototype.onValidate
     this.getSieve().isAllOf = false;
     
   $("#lblAnyOfAllOf"+this.getId())
-    .text((this.getSieve().isAllOf)?"123All of the following:":"123Any of the following:");          
+    .text((this.getSieve().isAllOf)?"All of the following:":"Any of the following:");          
   
   return true;      
 }

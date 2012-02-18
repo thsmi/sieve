@@ -16,22 +16,23 @@
 
 //<envelope> [COMPARATOR] [ADDRESS-PART] [MATCH-TYPE] 
 //  <envelope-part: string-list> <key-list: string-list>
-
-
-    
+   
 function SieveEnvelope(id) 
 {
   // first line with deadcode
   SieveAbstractElement.call(this,id);
-  this.options = new Array(null,null,null);
   
   this.whiteSpace = [];
-  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[1] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[2] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[3] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[4] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[5] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace"," ");
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace"," ");
+  this.whiteSpace[2] = SieveLexer.createByName("whitespace"," ");
+  this.whiteSpace[3] = SieveLexer.createByName("whitespace"," ");
+  this.whiteSpace[4] = SieveLexer.createByName("whitespace"," ");
+  this.whiteSpace[5] = SieveLexer.createByName("whitespace"," ");
+  
+  this.addressPart = SieveLexer.createByName("address-part");
+  this.matchType = SieveLexer.createByName("match-type");
+  this.comparator = SieveLexer.createByName("comparator")  
   
   this.envelopeList = SieveLexer.createByName("stringlist");
   this.keyList = SieveLexer.createByName("stringlist");
@@ -51,19 +52,33 @@ SieveEnvelope.prototype.init
   data = data.slice("envelope".length);
   data = this.whiteSpace[0].init(data);
   
-  for (var i=0; i< 3; i++)
+  while (true)
   {
-    if (isSieveAddressPart(data))
-      this.options[i] = new SieveAddressPart();
-    else if (isSieveComparator(data))
-      this.options[i] = new SieveComparator();
-    else if (isSieveMatchType(data))
-      this.options[i] = new SieveMatchType();
-    else
-      break;
+    if (this.addressPart.isOptional() && SieveLexer.probeByName("address-part",data))
+    {
+      data = this.addressPart.init(data)
+      data = this.whiteSpace[1].init(data);
+      
+      continue;
+    }
     
-    data = this.options[i].init(data);
-    data = this.whiteSpace[i+1].init(data);
+    if (this.comparator.isOptional() && SieveLexer.probeByName("comparator",data))
+    {
+      data = this.compatator.init(data);
+      data = this.whiteSpace[2].init(data);
+      
+      continue;
+    }
+    
+    if (this.matchType.isOptional() && SieveLexer.probeByName("match-type",data))
+    {
+      data = this.matchType.init(data);      
+      data = this.whiteSpace[3].init(data);
+      
+      continue;
+    }
+    
+    break;    
   }
   
   data = this.envelopeList.init(data);
@@ -82,12 +97,12 @@ SieveEnvelope.prototype.toScript
 {
   return "envelope"
     + this.whiteSpace[0].toScript()
-    + ((this.options[0] != null)?this.options[0].toScript():"")
-    + ((this.options[0] != null)?this.whiteSpace[1].toScript():"")
-    + ((this.options[1] != null)?this.options[1].toScript():"")
-    + ((this.options[1] != null)?this.whiteSpace[2].toScript():"")
-    + ((this.options[2] != null)?this.options[2].toScript():"")
-    + ((this.options[2] != null)?this.whiteSpace[3].toScript():"")
+    + this.addressPart.toScript()
+    + (!this.addressPart.isOptional() ? this.whiteSpace[1].toScript() : "" )
+    + this.comparator.toScript()
+    + (!this.comparator.isOptional() ? this.whiteSpace[2].toScript() : "" )
+    + this.matchType.toScript()
+    + (!this.matchType.isOptional() ? this.whiteSpace[3].toScript(): "" )
     + this.envelopeList.toScript()
     + this.whiteSpace[4].toScript()
     + this.keyList.toScript()
@@ -123,15 +138,19 @@ function SieveAddress(id)
   this.options = new Array(null,null,null);
   
   this.whiteSpace = []
-  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[1] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[2] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[3] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[4] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[5] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace"," ");
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace"," ");
+  this.whiteSpace[2] = SieveLexer.createByName("whitespace"," ");
+  this.whiteSpace[3] = SieveLexer.createByName("whitespace"," ");
+  this.whiteSpace[4] = SieveLexer.createByName("whitespace"," ");
+  this.whiteSpace[5] = SieveLexer.createByName("whitespace"," ");
                 
-  this.headerList = SieveLexer.createByName("stringlist");
-  this.keyList = SieveLexer.createByName("stringlist");
+  this.addressPart = SieveLexer.createByName("address-part");
+  this.matchType = SieveLexer.createByName("match-type");
+  this.comparator = SieveLexer.createByName("comparator")
+  
+  this.headerList = SieveLexer.createByName("stringlist","\"To\"");
+  this.keyList = SieveLexer.createByName("stringlist","\"me@example.com\"");
 }
 
 SieveAddress.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -148,19 +167,33 @@ SieveAddress.prototype.init
   data = data.slice("address".length);
   data = this.whiteSpace[0].init(data);
   
-  for (var i=0; i< 3; i++)
+  while (true)
   {
-    if (isSieveAddressPart(data))
-      this.options[i] = new SieveAddressPart(this.id+"_"+i);
-    else if (isSieveComparator(data))
-      this.options[i] = new SieveComparator(this.id+"_"+i);
-    else if (isSieveMatchType(data))
-      this.options[i] = new SieveMatchType(this.id+"_"+i);
-    else
-      break;
+    if (this.addressPart.isOptional() && SieveLexer.probeByName("address-part",data))
+    {
+      data = this.addressPart.init(data)
+      data = this.whiteSpace[1].init(data);
+      
+      continue;
+    }
     
-    data = this.options[i].init(data);
-    data = this.whiteSpace[i+1].init(data);
+    if (this.comparator.isOptional() && SieveLexer.probeByName("comparator",data))
+    {
+      data = this.compatator.init(data);
+      data = this.whiteSpace[2].init(data);
+      
+      continue;
+    }
+    
+    if (this.matchType.isOptional() && SieveLexer.probeByName("match-type",data))
+    {
+      data = this.matchType.init(data);      
+      data = this.whiteSpace[3].init(data);
+      
+      continue;
+    }
+    
+    break;    
   }
   
   data = this.headerList.init(data);
@@ -177,14 +210,15 @@ SieveAddress.prototype.init
 SieveAddress.prototype.toScript
     = function ()
 {
+ 
   return "address"
     + this.whiteSpace[0].toScript()
-    + ((this.options[0] != null)?this.options[0].toScript():"")
-    + ((this.options[0] != null)?this.whiteSpace[1].toScript():"")
-    + ((this.options[1] != null)?this.options[1].toScript():"")
-    + ((this.options[1] != null)?this.whiteSpace[2].toScript():"")
-    + ((this.options[2] != null)?this.options[2].toScript():"")
-    + ((this.options[2] != null)?this.whiteSpace[3].toScript():"")
+    + this.addressPart.toScript()
+    + ((!this.addressPart.isOptional()) ? this.whiteSpace[1].toScript() : "" )
+    + this.comparator.toScript()
+    + ((!this.comparator.isOptional()) ? this.whiteSpace[2].toScript() : "" )
+    + this.matchType.toScript()
+    + ((!this.matchType.isOptional()) ? this.whiteSpace[3].toScript(): "" )
     + this.headerList.toScript()
     + this.whiteSpace[4].toScript()
     + this.keyList.toScript()
@@ -194,7 +228,7 @@ SieveAddress.prototype.toScript
 SieveAddress.prototype.toWidget
     = function ()
 {
-  return $("<div/>").text("address:"+this.toScript());
+  return (new SieveAddressUI(this)).getWidget();
 }
 
 /******************************************************************************/
@@ -419,16 +453,18 @@ function SieveHeader(id)
   SieveAbstractElement.call(this,id); 
   
   this.whiteSpace = [];
-  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[1] = SieveLexer.createByName("whitespace");  
-  this.whiteSpace[2] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[3] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[4] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[0] = SieveLexer.createByName("whitespace"," ");
+  this.whiteSpace[1] = SieveLexer.createByName("whitespace"," ");  
+  this.whiteSpace[2] = SieveLexer.createByName("whitespace"," ");
+  this.whiteSpace[3] = SieveLexer.createByName("whitespace"," ");
+  this.whiteSpace[4] = SieveLexer.createByName("whitespace"," ");
   
-  this.options = new Array(null,null);
+  this.headerNames = SieveLexer.createByName("stringlist",'"Subject"');
+  this.keyList = SieveLexer.createByName("stringlist",'"Example"');
+ 
+  this.matchType = SieveLexer.createByName("match-type");
+  this.comparator = SieveLexer.createByName("comparator");  
   
-  this.headerNames = SieveLexer.createByName("stringlist",'"To"');
-  this.keyList = SieveLexer.createByName("stringlist",'"me@example.com"');
 }
 
 SieveHeader.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -449,38 +485,29 @@ SieveHeader.prototype.init
   
   data = this.whiteSpace[0].init(data);
   
-  if (isSieveComparator(data))
+  // It can be [Comparator] [MATCH-TYPE] or [MATCH-TYPE] [COMPARATOR]  
+  while (true)
   {
-    var element = new SieveComparator();
-    data = element.init(data);
-    this.options[0] = element;
-    
-    data = this.whiteSpace[1].init(data)
-    
-    if (isSieveMatchType(data))
+    if (this.comparator.isOptional() && SieveLexer.probeByName("comparator",data))
     {
-      element = new SieveMatchType(this.id+"_8");
-      data = element.init(data);
-      this.options[1] = element;
+      data = this.comparator.init(data);
+      data = this.whiteSpace[1].init(data);
+      
+      continue;
     }
-  }  
-  else if (isSieveMatchType(data))
-  {
-    var element = new SieveMatchType(this.id+"_7");
-    data = element.init(data);
-    this.options[0] = element;
     
-    data = this.whiteSpace[1].init(data)
-
-    if (isSieveComparator(data))
+    if (this.matchType.isOptional() && SieveLexer.probeByName("match-type",data))
     {
-      element = new SieveComparator(this.id+"_8");
-      data = element.init(data);
-      this.options[1] = element;
+      data = this.matchType.init(data);      
+      data = this.whiteSpace[2].init(data);
+      
+      continue;
     }
+    
+    break;    
   }
+
   
-  data = this.whiteSpace[2].init(data);  
   data = this.headerNames.init(data);
   
   data = this.whiteSpace[3].init(data);
@@ -513,13 +540,16 @@ SieveHeader.prototype.headers
 SieveHeader.prototype.toScript
     = function ()
 {
+  
+  // Yes, we normalize match types...
+  // ... sorry about that 
   return "header"
     + this.whiteSpace[0].toScript()
-    + ((this.options[0] != null)?this.options[0].toScript():"")
-    + ((this.options[0] != null)?this.whiteSpace[1].toScript():"")    
-    + ((this.options[1] != null)?this.options[1].toScript():"")
-    + this.whiteSpace[2].toScript()
-    + this.headerNames.toScript()
+    + this.comparator.toScript()
+    + (!this.comparator.isOptional() ? this.whiteSpace[1].toScript() : "" ) 
+    + this.matchType.toScript()
+    + (!this.matchType.isOptional() ? this.whiteSpace[2].toScript(): "" )
+    + this.headerNames.toScript()    
     + this.whiteSpace[3].toScript()
     + this.keyList.toScript()
     + this.whiteSpace[4].toScript()
@@ -671,4 +701,4 @@ SieveLexer.register2("test","test/header",SieveHeader);
 SieveLexer.register2("test","test/size",SieveSize);
 
 SieveLexer.register2("test","test/anyof",SieveAnyOfAllOfTest);
-SieveLexer.register2("test/","test/anyof",SieveTestList);
+SieveLexer.register2("test/","test/testlist",SieveTestList);

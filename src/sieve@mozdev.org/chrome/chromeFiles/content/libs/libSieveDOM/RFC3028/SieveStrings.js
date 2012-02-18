@@ -28,13 +28,17 @@
 *******************************************************************************/
 
 // CONSTRUCTOR:
-function SieveMultiLineString()
+function SieveMultiLineString(id)
 {
+  SieveAbstractElement.call(this,id); 
+  
   this.text = "";
   
   this.whiteSpace = SieveLexer.createByName("whitespace");
   this.hashComment = null;
 }
+
+SieveMultiLineString.prototype.__proto__ = SieveAbstractElement.prototype;
 
 // PUBLIC STATIC:
 SieveMultiLineString.isElement
@@ -133,10 +137,13 @@ SieveMultiLineString.prototype.toScript
 
 
 // CONSTRUCTOR:
-function SieveQuotedString()
+function SieveQuotedString(id)
 {
+  SieveAbstractElement.call(this,id); 
   this.text = "";
 }
+
+SieveQuotedString.prototype.__proto__ = SieveAbstractElement.prototype;
 
 // PUBLIC STATIC:
 SieveQuotedString.isElement
@@ -174,6 +181,9 @@ SieveQuotedString.prototype.getValue
 SieveQuotedString.prototype.setValue
     = function (value)
 {
+  if (value.search(/(\r\n|\n|\r)/gm) != -1)
+    throw "Quoted string support only single line strings";
+
   this.text = value;
 } 
 
@@ -244,7 +254,7 @@ SieveStringList.prototype.init
   if (SieveLexer.probeByName("string/quoted",data))
   {
     this.compact = true;
-    var item = ["","",""];
+    var item = [];
     item[1] = SieveLexer.createByName("string/quoted");
     
     this.elements[0] = item;
@@ -255,7 +265,7 @@ SieveStringList.prototype.init
   this.compact = false;
   
   if (data.charAt(0) !== "[")
-    throw " [ expceted ";
+    throw " [ expected but found:\n"+data.substr(0,50);
   // remove the [
   data = data.slice(1);
     
@@ -270,7 +280,7 @@ SieveStringList.prototype.init
       continue;
     }
         
-    var element = new Array("","","");
+    var element = [];
 
     if (SieveLexer.probeByName("whitespace",data))
     {
@@ -314,7 +324,7 @@ SieveStringList.prototype.size
 SieveStringList.prototype.append
     = function(str)
 {
-  var elm = ["","",""]
+  var elm = [null,"",null]
   elm[1] = SieveLexer.createByName("string/quoted",'""');
   elm[1].setValue(str);
   
@@ -340,7 +350,7 @@ SieveStringList.prototype.toScript
   if (this.elements == 0)
     return '""'; 
     
-  if (this.compact && this.elements <= 1)
+  if (this.compact && this.elements.length <= 1)
     return this.elements[0][1].toScript();
     
   var result = "[";
@@ -348,11 +358,10 @@ SieveStringList.prototype.toScript
   
   for (var i = 0;i<this.elements.length; i++)
   {      
-    result = result
-             + separator
-             + this.elements[i][0].toString()
+    result = result + separator
+             + ((this.elements[i][0] != null)? this.elements[i][0].toScript() : "")
              + this.elements[i][1].toScript()
-             + this.elements[i][2].toString();
+             + ((this.elements[i][2] != null)? this.elements[i][2].toScript() : "");
              
     separator = ",";
   }
@@ -402,10 +411,13 @@ SieveStringList.prototype.toWidget
 
 
 // CONSTRUCTOR: 
-function SieveString()
+function SieveString(id)
 {
+  SieveAbstractElement.call(this,id); 
   this.string = SieveLexer.createByName("string/quoted");
 }
+
+SieveString.prototype.__proto__ = SieveAbstractElement.prototype;
 
 // PUBLIC STATIC:
 SieveString.isElement
@@ -444,6 +456,263 @@ SieveString.prototype.toScript
   return this.string.toScript();
 }
 
+//***************************************************************************//
+
+//Matchtypes
+
+/**
+ * Matchtypes are used to compare Strings
+ * @param {} id
+ */
+function SieveMatchType(id)
+{
+  SieveAbstractElement.call(this,id); 
+  this.type = "is";
+  this.optional = true;
+}
+
+SieveMatchType.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveMatchType.isElement
+    = function (data)
+{    
+  var token = data.substr(0,9).toLowerCase();
+  if (token.indexOf(":is") == 0)
+    return true;
+  if (token.indexOf(":matches") == 0)
+    return true;
+  if (token.indexOf(":contains") == 0)
+    return true;
+  
+  return false;
+}
+
+SieveMatchType.prototype.init
+    = function (data)
+{
+  var token = data.substr(0,9).toLowerCase();
+  if (token.indexOf(":is") == 0)
+    this.type = "is";
+  else if (token.indexOf(":matches") == 0)
+    this.type = "matches";
+  else if (token.indexOf(":contains") == 0)
+    this.type = "contains"
+  else 
+    throw "Syntaxerror, unknown match type";
+  
+  if (this.type == "is")
+    this.optional = false;
+  
+  return data.slice(this.type.length+1);
+}
+
+SieveMatchType.prototype.isOptional
+    = function (value)
+{
+  if (typeof(value) === "undefined")
+    return ((this.optional) && (this.type == "is"))
+    
+  this.optional = value; 
+}
+
+SieveMatchType.prototype.matchType
+    = function (value)
+{
+  if(typeof(value) === "undefined")
+    return this.type
+    
+  value = value.toLowerCase();
+  
+  if ((value == "is") || (value == "matches") || (value == "contains"))
+    this.type = value;
+  else  
+    throw "Unkonwn Match type >>"+value+"<<"; 
+  
+  return this;
+}
+
+SieveMatchType.prototype.toScript
+    = function ()
+{
+  if (this.isOptional())
+    return "";
+    
+  return ":"+this.type;
+}
+
+
+
+
+
+/**
+ * Addresses are one of the most frequent things represented as strings.
+ * These are structured, and allows comparison against the local-
+ * part or the domain of an address 
+ * 
+ *             email@example.com 
+ *          [local Part]@[Domain Part]
+ *   
+ * ist example.com der domain-part, email der local-part.
+ */
+//":localpart" / ":domain" / ":all"
+
+
+function SieveAddressPart(id)
+{
+  SieveAbstractElement.call(this,id); 
+  this.type = "all";
+  this.optional = true;
+}
+
+SieveAddressPart.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveAddressPart.isElement
+    = function (data,index)
+{   
+  var token = data.substr(0,11).toLowerCase();
+  if (token.indexOf(":localpart") == 0)
+    return true;
+  if (token.indexOf(":domain") == 0)
+    return true;
+  if (token.indexOf(":all") == 0)
+    return true;
+  
+  return false;
+}
+
+
+SieveAddressPart.prototype.init
+    = function (data)
+{
+  var token = data.substr(0,11).toLowerCase();
+  if (token.indexOf(":localpart") == 0)
+    this.type = "localpart";
+  else if (token.indexOf(":domain") == 0)
+    this.type = "domain";
+  else if (token.indexOf(":all") == 0)
+    this.type = "all"
+  else 
+    throw "Syntaxerror, unknown address part";
+    
+  if (this.type == "all")
+    this.optional = false;
+  
+  return data.slice(this.type.length+1);
+}
+
+SieveAddressPart.prototype.isOptional
+    = function (value)
+{
+  if (typeof(value) === "undefined")
+    return ((this.optional) && (this.type == "all"))
+    
+  this.optional = value; 
+}
+
+SieveAddressPart.prototype.addressPart
+    = function (value)
+{
+  if(typeof(value) === "undefined")
+    return this.type
+    
+  value = value.toLowerCase();
+  
+  if ((value == "all") || (value == "domain") || (value == "localpart"))
+    this.type = value;
+  else  
+    throw "Unkonwn Match type >>"+value+"<<"; 
+  
+  return this;
+}
+
+SieveAddressPart.prototype.toScript
+    = function ()
+{
+  if (this.isOptional())
+    return "";
+    
+  return ":"+this.type;
+}
+
+
+
+
+  // Comparators define the charset. All Sieve implementation have to support
+  //  which" is case sensitive and "i;ascii-codemap" which is case
+  // insensitive.
+
+/**
+ * Comparators sepcify the charset which should be used for string comparison
+ * By default two matchtypes are supported. 
+ * 
+ * "i;octet" compares strings based on UTF-8 octetts
+ * 
+ * "i;ascii-codemap" converts strings before comparison to ASCII 
+ */
+
+function SieveComparator(id)
+{
+  this.id = id;
+  this.whiteSpace = SieveLexer.createByName("whitespace"," ");
+  this._comparator = SieveLexer.createByName("string/quoted","\"i;ascii-casemap\"");
+  this.optional = true;
+}
+
+SieveComparator.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveComparator.isElement
+    = function(data)
+{   
+  return (data.substr(0,11).toLowerCase() == ":comparator")
+}
+
+SieveComparator.prototype.init
+    = function (data)
+{
+  // Syntax :
+  // <":comparator"> <comparator-name: string>
+  
+  data = data.slice(":comparator".length);
+  
+  data = this.whiteSpace.init(data);
+  
+  data = this._comparator.init(data);
+  
+  this.optional = false;
+  
+  return data;
+}
+
+SieveComparator.prototype.isOptional
+    = function (value)
+{
+  if (typeof(value) === "undefined")
+    return ((this.optional) && (this._comparator.getValue() == "i;ascii-casemap"))
+    
+  this.optional = value; 
+}
+
+SieveComparator.prototype.comparator
+    = function (value)
+{
+  if(typeof(value) === "undefined")
+    return this._comparator.getValue();
+    
+  this._comparator.setValue(value);
+  
+  return this;
+}
+
+SieveComparator.prototype.toScript
+    = function ()
+{
+  if (this.isOptional())
+    return "";
+      
+  return ":comparator"
+    +this.whiteSpace.toScript()
+    +this._comparator.toScript();
+}
 
 if (!SieveLexer)
   throw "Could not register Strings Elements";
@@ -452,3 +721,6 @@ SieveLexer.register2("stringlist","stringlist",SieveStringList);
 SieveLexer.register2("string","string", SieveString);
 SieveLexer.register2("string/","string/quoted",SieveQuotedString);
 SieveLexer.register2("string/","string/multiline",SieveMultiLineString);
+SieveLexer.register2("comparison","match-type",SieveMatchType)
+SieveLexer.register2("comparison","comparator",SieveComparator)
+SieveLexer.register2("comparison","address-part",SieveAddressPart)

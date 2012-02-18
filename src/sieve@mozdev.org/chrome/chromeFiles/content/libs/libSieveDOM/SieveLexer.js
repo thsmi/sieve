@@ -100,7 +100,7 @@ var SieveLexer =
   createByName : function(name, data)
   {   
     if (!this.names[name])
-      throw "No Constructor for "+name+" found";
+      throw "No Constructor for >>"+name+"<< found";
       
     try
     {
@@ -125,7 +125,7 @@ var SieveLexer =
   probeByName : function(name,data)
   {
     // If there's no data then skip
-    if (!data.length)
+    if ((typeof(data) === "undefined") || !data.length)
       return false;
       
     if (this.names[name].onProbe(data))

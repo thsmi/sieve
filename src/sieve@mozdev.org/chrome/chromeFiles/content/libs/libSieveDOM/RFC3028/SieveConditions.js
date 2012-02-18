@@ -78,6 +78,8 @@ SieveIf.prototype.find
   if (item)
     return item;
       
+  if (!this.test.find)
+    throw "Find missing for"+this.test.toSource();
   return this.test.find(id);
 }
 

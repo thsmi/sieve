@@ -251,7 +251,7 @@ SieveEditableDragBoxUI.prototype.initPanels
   this.panels[0] = this.initEditor()
     .append($(document.createElement("div"))
       .append($(document.createElement("button"))
-        .text("Apply")
+        .text("Ok")
         .click(function(e) {  _this.showSummary(); e.preventDefault();return true; } )));
         
   this.panels[1] = this.initSummary()

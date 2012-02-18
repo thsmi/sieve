@@ -267,9 +267,10 @@
     <!-- credits panel -->
     <vbox align="center">
        <label value="&options.credits;"/>
-        <hbox  flex="1" align="center">
+        <vbox  flex="1" align="center">
         <image src="chrome://sieve/content/images/contributors.png"/>
-        </hbox>
+        <image src="chrome://sieve/content/images/btn_donate_LG.gif" onclick="onDonate();"/>
+        </vbox>
     </vbox>   
   </tabpanels>
   </tabbox>

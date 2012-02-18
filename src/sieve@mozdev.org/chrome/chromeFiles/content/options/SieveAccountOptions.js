@@ -609,3 +609,14 @@ function onSocks4PortChange(sender)
   
   gAccount.getProxy(2).setPort(sender.value)
 }
+
+function onDonate()
+{
+  var url = Cc["@mozilla.org/network/io-service;1"]
+              .getService(Ci.nsIIOService)
+              .newURI("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC", null, null)
+              
+  Cc["@mozilla.org/uriloader/external-protocol-service;1"]
+    .getService(Ci.nsIExternalProtocolService)
+    .loadUrl(url); 
+}

@@ -54,11 +54,9 @@ function SieveRedirect(id)
 {
   SieveAbstractElement.call(this,id);
   
-  this.whiteSpace = SieveLexer.createByName("whitespace");
-  this.whiteSpace.init(" ");
+  this.whiteSpace = SieveLexer.createByName("whitespace"," ");
   
-  this.address = SieveLexer.createByName("string"); 
-  this.address.init("\"username@example.com\"");
+  this.address = SieveLexer.createByName("string","\"username@example.com\""); 
   
   this.semicolon = SieveLexer.createByName("atom/semicolon");
 }

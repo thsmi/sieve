@@ -9,10 +9,6 @@
 
 "use strict";
 
-try {
-  
-
-  
 function SieveDom()
 {
   SieveBlockBody.call(this,-1);
@@ -76,47 +72,4 @@ SieveDom.prototype.getWidget
             .append(this.elms[1].toWidget());  
 }
 
-/*
-SieveDom.prototype.move
-    = function (id,parentId,siblingId)
-{
-  return this.append(parentId,this.remove(id),siblingId);
-}*/
 
-/**
- * 
- * @param {} parentId
- * @param {} elm
- * @param {} id
- *   insert before element with id, pass null to append at end.
- */
-/*SieveDom.prototype.append
-    = function (elm,siblingId)
-{
-  if (!elm)
-    throw "invalid element";
-    
-  if (this.blkBody.append(elm,siblingId))
-    return true;
-    
-  return this.blkRequire.append(elm,siblingId);
-}
-
-SieveDom.prototype.remove
-    = function (id)
-{
-  var elm = this.blkBody.remove(id);
-  
-  if (elm)
-    return elm;
-      
-  return this.blkRequire.remove(id);  
-}*/
-
-
-
-}
-catch (ex)
-{
-  alert(""+ex)
-}

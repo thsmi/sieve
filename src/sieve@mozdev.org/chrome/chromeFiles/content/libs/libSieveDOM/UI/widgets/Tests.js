@@ -7,6 +7,8 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+ "use strict";
+
 //testunary .append() -> testunary in anyof wrapen  SieveTestUI einführen...
 //testmultary.append -> an entsprechender stelle einfügen SieveTestListUI...
 

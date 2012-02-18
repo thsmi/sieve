@@ -7,9 +7,9 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+ "use strict";
+ 
 // TODO HashComment seperated by linebreaks are equivalent to bracket Comments...
-
-
 
 function SieveLineBreak(id)
 {

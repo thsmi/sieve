@@ -7,6 +7,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+"use strict";
 
 // TODO rename to SieveContentSection
 function SieveBlockUI(elm)

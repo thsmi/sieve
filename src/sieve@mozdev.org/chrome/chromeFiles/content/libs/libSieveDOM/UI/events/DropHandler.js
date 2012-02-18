@@ -7,6 +7,8 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+ "use strict";
+
 //****************************************************************************//
 
 function SieveDropHandler()

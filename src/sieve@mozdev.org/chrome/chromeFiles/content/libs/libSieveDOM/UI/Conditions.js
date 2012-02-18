@@ -6,6 +6,9 @@
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
+ 
+"use strict";
+ 
 /*
  <drop: test>
  if <test>

@@ -7,9 +7,9 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
+ "use strict";
  
 // TODO Add button to show selection source...
-
 
 // //TODO move to own classfile...
 //  with flavour -> sieve/action, sieve/test etc...

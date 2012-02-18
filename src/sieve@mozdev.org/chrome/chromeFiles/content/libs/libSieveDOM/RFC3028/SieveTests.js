@@ -7,19 +7,15 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+ "use strict";
   
-/******************************************************************************/
-
-
-
-/******************************************************************************/
+//****************************************************************************//
 
 //<envelope> [COMPARATOR] [ADDRESS-PART] [MATCH-TYPE] 
 //  <envelope-part: string-list> <key-list: string-list>
    
 function SieveEnvelope(id) 
 {
-  // first line with deadcode
   SieveAbstractElement.call(this,id);
   
   this.whiteSpace = [];

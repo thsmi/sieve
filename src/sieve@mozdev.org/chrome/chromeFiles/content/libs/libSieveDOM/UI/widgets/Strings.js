@@ -1,3 +1,17 @@
+/*
+ * The content of this file is licenced. You may obtain a copy of the license
+ * at http://sieve.mozdev.org or request it via email from the author. 
+ *
+ * Do not remove or change this comment.
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ *   
+ */
+
+// Enable Strict Mode
+"use strict";
+
 function SieveMatchTypeUI(elm)
 {
   SieveAbstractBoxUI.call(this,elm);

@@ -124,22 +124,26 @@ SieveRejectUI.prototype.onValidate
 SieveRejectUI.prototype.initEditor
     = function ()
 {  
-  return $(document.createElement("div"))
-           .text("Reject incomming messages and reply the following reason:")
-           .append($(document.createElement("textarea"))
-             .attr("id","txtReason"+this.getId())
-             .attr("multiline","true")
-             .attr("value",""+this.getSieve().getReason()));
+  return $("<div/>")
+           .append($("<div/>")
+             .text("Reject incomming messages and reply the following reason:"))
+           .append($("<div/>")
+             .append($("<textarea/>")
+               .attr("id","txtReason"+this.getId())
+               .attr("multiline","true")
+               .attr("cols","60").attr("rows","5")
+               .attr("wrap","off")
+               .attr("value",""+this.getSieve().getReason())));
 }
 
 SieveRejectUI.prototype.initSummary
     = function ()
 {  
   return $(document.createElement("div"))
-           .text("Reject incomming messages and reply the following reason:")
-           .addClass("text")
+           .text("Reject incomming messages and reply the following reason:")           
            .append($(document.createElement("div"))
              .text(this.getSieve().getReason())
+             .addClass("SivText")
              .attr("id","lblReason"+this.getId()));         
 }
 

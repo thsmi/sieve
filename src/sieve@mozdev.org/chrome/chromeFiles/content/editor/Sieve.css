@@ -206,6 +206,11 @@
 	list-style-image: url(chrome://sieve/content/images/toolbar.save.png);
 }
 
+#btnViewSource
+{
+	list-style-image: url(chrome://sieve/content/images/toolbar.source.png);
+}
+
 #btnUndo
 {
 	list-style-image: url(chrome://sieve/content/images/toolbar.undo.png);

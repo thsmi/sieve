@@ -58,6 +58,10 @@
                    label="&edit.toolbar.save;" class="toolbarbutton-1"
                    oncommand="onSave();" />  
     <toolbarspacer /> 
+    <toolbarbutton id="btnViewSource" type="checkbox" 
+                   label="Source" class="toolbarbutton-1"
+                   oncommand="onViewSource();" checked="checked"/>
+    <toolbarspacer />      
     <toolbarbutton id="btnUndo"
                    label="&edit.toolbar.undo;" class="toolbarbutton-1"
                    oncommand="goDoCommand('cmd_undo');" />    
@@ -76,13 +80,14 @@
                    oncommand=" goDoCommand('cmd_paste');" />    
     <toolbarspacer />
     <toolbarbutton id="btnCompile" type="checkbox"
-                   label="&edit.toolbar.compile;" class="toolbarbutton-1" />  
-                   <!--oncommand="onErrorBar();" -->                   
+                   label="&edit.toolbar.compile;" class="toolbarbutton-1"   
+                   oncommand="onErrorBar();" />           
     <toolbarbutton id="btnReference" type="checkbox"  
-                   label="&edit.toolbar.reference;" class="toolbarbutton-1" />
-                   <!--oncommand="onSideBar();"-->
+                   label="&edit.toolbar.reference;" class="toolbarbutton-1" 
+                   oncommand="onSideBar();" />
     <toolbarbutton id="btnSearchBar" type="checkbox"  
-                   label="&edit.toolbar.search;" class="toolbarbutton-1" />                    
+                   label="&edit.toolbar.search;" class="toolbarbutton-1" 
+                    oncommand="onSearchBar();" />                    
     <toolbarspacer />               
     <!--<toolbarbutton id="btnPrint"  
                    label="&edit.toolbar.print;" class="toolbarbutton-1"                    
@@ -99,17 +104,8 @@
    <box id="btnDonate"  onclick="onDonate();"/>    
   </toolbar>
 </toolbox>
-  <separator class="thin"/>
   <hbox flex="1" >
-    <vbox flex ="1" >
-      <hbox align="center">
-        <label value="&edit.scriptname;"/>
-        <textbox flex="1" id="txtName" readonly="true" />
-        <button type="checkbox" label="View Source" oncommand="onToogleSource();" checked="checked"/>        
-      </hbox>
-      <separator class="thin"/>
       <deck id="dkView" flex="1" selectedIndex="0">
-        <box flex="1">
           <vbox flex="1">
             <!-- Sieve Show Warning message when in offine mode -->                
             <box id="sivEditorWarning" align="center" pack="center" flex="1" > 
@@ -166,9 +162,9 @@
               </vbox>
               <textbox id="sivContentEditor" flex="1" 
                        multiline="true" wrap="off" 
-                       autocomplete="off" />                
+                       autocomplete="off" />
             </hbox>
-            
+                        
             <!-- Error Bar (Showing Script errors) --> 
             <splitter id="spErrorBar" resizeafter="farthest" /> 
             <vbox id="vbErrorBar" class="sieveSideBar">
@@ -187,14 +183,17 @@
                 <!-- <textbox flex="1" id="lblErrorBar" multiline="true" rows="3" readonly="true" class="plain"/>-->
               </hbox>
             </vbox>
+                       
+            <hbox class="chromeclass-status">
+              <statusbarpanel width="100px" id="sbCursorPos" label=""/>
+              <statusbarpanel width="100px" id="sbChanged" label=""/>
+              <statusbarpanel flex="1" label=""/>
+            </hbox>
+
           </vbox>
-        </box>
-        <box id="sivWidgetEditor" flex="1" style="overflow:auto">
-          <iframe flex="1" src="chrome://sieve/content/libs/libSieveDOM/SieveGui.html" type="content">
-          </iframe>          
-        </box>
+          
+        <iframe id="sivWidgetEditor" flex="1" src="chrome://sieve/content/libs/libSieveDOM/SieveGui.html" type="content" />          
       </deck>
-    </vbox>
     <splitter id="splitter" resizeafter="farthest" />
   <vbox id="vbSidebar" class="sieveSideBar">
    <vbox id="vbSearchBar">
@@ -256,16 +255,10 @@
           <browser type="content" id="sideBarBrowser" flex="1" 
              src="about:blank" width="250px" /> -->
     <deck id="dkSideBarBrowser" flex="1" selectedIndex="1">
-      <iframe id="ifSideBar" width="250px" flex="1" src="about:blank" type="content">
-      </iframe>
+      <iframe id="ifSideBar" width="250px" flex="1" src="about:blank" type="content" />
       <image flex="1" />
     </deck> 
   </vbox>
   </vbox>
 </hbox>
-<statusbar>
-  <statusbarpanel width="100px" id="sbCursorPos" label=""/>
-  <statusbarpanel width="100px" id="sbChanged" label=""/>
-  <statusbarpanel flex="1" label=""/>
-</statusbar>
 </window>

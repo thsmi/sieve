@@ -65,7 +65,9 @@ var gEditorStatus =
   checkScriptDelay  : 200,
   checkScriptTimer  : null,
   
-  isClosing         : false
+  isClosing         : false,
+  
+  scriptName        : "unnamed"
 }
 
 var event = 
@@ -89,7 +91,8 @@ var event =
       return;
     }
       
-    var request = new SieveGetScriptRequest(document.getElementById("txtName").value);
+    
+    var request = new SieveGetScriptRequest(gEditorStatus.scriptName);
     request.addGetScriptListener(event);
     request.addErrorListener(event);
 
@@ -328,7 +331,7 @@ function onWindowPersist()
     args["contentChanged"] = gEditorStatus.contentChanged;
   }
     
-  args["scriptName"] = document.getElementById("txtName").value;
+  args["scriptName"] = gEditorStatus.scriptName;
   args["compile"] = document.getElementById('btnCompile').checked;
   args["account"] = gEditorStatus.account;  
   
@@ -342,7 +345,7 @@ function onWindowLoad()
   // ...Gecko 1.9 (Thunderbird 3).
   // We implement the workaround mentioned in Bug 382457.
 
-  document.getElementById("btnCompile").
+  /*document.getElementById("btnCompile").
     addEventListener(
       "command",
       function() {onErrorBar();},
@@ -358,7 +361,7 @@ function onWindowLoad()
     addEventListener(
       "command",
       function() {onSearchBar();},
-      false);
+      false);*/
  
   document.getElementById("sivLineNumbers").removeAttribute('hidden');
   document.getElementById("sivContentEditor")
@@ -395,7 +398,7 @@ function onWindowLoad()
   
   gEditorStatus.checkScriptDelay = account.getSettings().getCompileDelay();
   
-  document.getElementById("txtName").value = args["scriptName"];
+  gEditorStatus.scriptName = args["scriptName"];
   document.title = ""+args["scriptName"]+" - Sieve Filters";
 
   document.getElementById("lblErrorBar").firstChild.nodeValue
@@ -422,6 +425,7 @@ function onWindowLoad()
   onErrorBar(args["compile"]);
   onSideBar(true);
   onSearchBar(false);
+  onViewSource(true);
 
   Cc["@mozilla.org/observer-service;1"]
       .getService (Ci.nsIObserverService)
@@ -496,27 +500,18 @@ function onDonate()
     .loadUrl(url); 
 }
 
-function onToogleSource()
+function onViewSource(visible)
 {
+  if (typeof(visible) == "undefined")
+    visible = document.getElementById('btnViewSource').checked
+  
   var deck = document.getElementById('dkView');
-  
-  if (deck.selectedIndex == 0)
-  {
-    document.getElementById("btnUndo").setAttribute('disabled',"true");
-    document.getElementById("btnRedo").setAttribute('disabled',"true");
-    document.getElementById("btnCut").setAttribute('disabled',"true");
-    document.getElementById("btnCopy").setAttribute('disabled',"true");
-    document.getElementById("btnPaste").setAttribute('disabled',"true"); 
-    document.getElementById("btnCompile").setAttribute('disabled',"true");
-    document.getElementById("btnSearchBar").setAttribute('disabled',"true");
-  
-    onSearchBarHide();
     
-    deck.selectedIndex = 1;
-  }
-  else
+  if (visible)
   {
+    // show Source
     deck.selectedIndex = 0;
+    document.getElementById("btnViewSource").setAttribute('checked', 'true')
     
     document.getElementById("btnUndo").removeAttribute('disabled');
     document.getElementById("btnRedo").removeAttribute('disabled');
@@ -525,11 +520,40 @@ function onToogleSource()
     document.getElementById("btnPaste").removeAttribute('disabled'); 
     document.getElementById("btnCompile").removeAttribute('disabled');
     document.getElementById("btnSearchBar").removeAttribute('disabled');
-  }
     
+    
+    document.getElementById("sivContentEditor").focus();    
+    return;
+  }
+   
+  document.getElementById("btnViewSource").removeAttribute('checked')
+  
+  document.getElementById("btnUndo").setAttribute('disabled',"true");
+  document.getElementById("btnRedo").setAttribute('disabled',"true");
+  document.getElementById("btnCut").setAttribute('disabled',"true");
+  document.getElementById("btnCopy").setAttribute('disabled',"true");
+  document.getElementById("btnPaste").setAttribute('disabled',"true"); 
+  document.getElementById("btnCompile").setAttribute('disabled',"true");
+  document.getElementById("btnSearchBar").setAttribute('disabled',"true");
+  
+  onSearchBarHide();
+    
+  deck.selectedIndex = 1;
+  
+  // Make GUI seem to be more agile...
+  window.setTimeout( function() {updateWidgets()} ,0);    
+}
 
-  
-  
+function updateWidgets()
+{
+  try {
+    document.getElementById("sivWidgetEditor").contentWindow.setSieveScript(
+      document.getElementById("sivContentEditor").value)
+  }
+  catch (ex){
+    // TODO Display real error message....
+    alert(ex);
+  }
 }
 
 function onSideBarBrowserClick(event)
@@ -613,7 +637,7 @@ function onSideBarGo(uri)
 function onSave()
 {
   var request = new SievePutScriptRequest(
-                  new String(document.getElementById("txtName").value),
+                  new String(gEditorStatus.scriptName),
                   new String(document.getElementById("sivContentEditor").value));
   request.addPutScriptListener(event);
   request.addErrorListener(event);
@@ -709,8 +733,7 @@ function onExport()
 			.createInstance(Ci.nsIFilePicker);
 
 	filePicker.defaultExtension = ".siv";
-	filePicker.defaultString = document.getElementById("txtName").value
-			+ ".siv";
+	filePicker.defaultString = gEditorStatus.scriptName + ".siv";
 
 	filePicker.appendFilter("Sieve Scripts (*.siv)", "*.siv");
 	filePicker.appendFilter("Text Files (*.txt)", "*.txt");
@@ -1132,10 +1155,10 @@ function onPrint()
      + "<?xml-stylesheet type=\"text/css\" href=\"chrome://sieve/content/editor/print.css\"?>\r\n"
      + "<SieveScript>\r\n"
        + "<title xmlns=\"http://www.w3.org/1999/xhtml\">\r\n"
-         + document.getElementById("txtName").value
+         + gEditorStatus.scriptName
        + "</title>\r\n"
        + "<SieveScriptName>\r\n" 
-         + document.getElementById("txtName").value
+         + gEditorStatus.scriptName
        + "</SieveScriptName>\r\n"   
        + "<SieveScriptLine>\r\n"       
          + script

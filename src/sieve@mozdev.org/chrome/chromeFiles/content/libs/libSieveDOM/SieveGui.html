@@ -186,6 +186,11 @@ function update()
   $("#txtOutput").val(dom.toScript());
 }
 
+
+function require()
+{
+  dom.getRequires();
+}
 function debug(obj)
 {
   //var logger = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
@@ -258,6 +263,9 @@ redirect "test";
     <button onclick="update()">
 	  Update Sieve Script
 	</button>
+    <button onclick="require()">
+	  Collect Require
+	</button>	
 </div>
 </div>
 

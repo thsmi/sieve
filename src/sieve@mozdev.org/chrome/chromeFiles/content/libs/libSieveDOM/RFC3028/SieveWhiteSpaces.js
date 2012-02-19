@@ -13,8 +13,10 @@
 
 function SieveLineBreak(id)
 {
-  this.id = id;
+  SieveAbstractElement.call(this,id);
 }
+
+SieveLineBreak.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveLineBreak.isElement
   = function (data)
@@ -56,9 +58,11 @@ SieveDeadCode.isElement
 
 function SieveDeadCode(id)
 {
-  this.id = id;
+  SieveAbstractElement.call(this,id);
   this.whiteSpace = "";
 }
+
+SieveDeadCode.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveDeadCode.prototype.init
     = function (data)
@@ -103,10 +107,13 @@ SieveBracketComment.isElement
   return true;
 }
 
-function SieveBracketComment() 
+function SieveBracketComment(id) 
 {
+  SieveAbstractElement.call(this,id);
   this.text = "";
 }
+
+SieveBracketComment.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveBracketComment.prototype.init
     = function (data)

@@ -176,6 +176,12 @@ SieveReject.prototype.setReason
   return this.reason.setValue(reason);      
 }
 
+SieveReject.prototype.require
+    = function (requires)
+{
+  requires["reject"] = true;
+}
+
 SieveReject.prototype.toScript
     = function ()
 { 
@@ -313,6 +319,12 @@ SieveFileInto.prototype.init
   data = this.semicolon.init(data);
       
   return data;
+}
+
+SieveFileInto.prototype.require
+    = function (requires)
+{
+  requires["fileinto"] = true;
 }
 
 SieveFileInto.prototype.setPath

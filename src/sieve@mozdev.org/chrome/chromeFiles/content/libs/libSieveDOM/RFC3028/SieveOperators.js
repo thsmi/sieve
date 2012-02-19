@@ -13,13 +13,15 @@ SieveOperatorSingle.isElement
 function SieveOperatorSingle(id) 
 {
   // first line with deadcode
-  this.id = id;
+  SieveAbstractElement.call(this,id);
   
   this.whiteSpace = []
   this.whiteSpace[0] = SieveLexer.createByName("whitespace");
   this.whiteSpace[1] = SieveLexer.createByName("whitespace");
  // this.test = SieveLexer.createByName("operator");
 }
+
+SieveOperatorSingle.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveOperatorSingle.prototype.init
     = function (data)
@@ -70,6 +72,7 @@ SieveOperatorSingle.prototype.toWidget
   
   return elm;   
 }
+
 
 //****************************************************************************//
 

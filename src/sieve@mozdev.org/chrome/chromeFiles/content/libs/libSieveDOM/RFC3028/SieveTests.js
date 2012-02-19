@@ -88,6 +88,12 @@ SieveEnvelope.prototype.init
   return data;
 }    
 
+SieveEnvelope.prototype.require
+    = function (requires)
+{
+  requires["envelope"] = true;
+}
+
 SieveEnvelope.prototype.toScript
     = function ()
 {
@@ -629,6 +635,13 @@ SieveTestList.prototype.toScript
   result += ")";
   
   return result;  
+}
+
+SieveTestList.prototype.require
+    = function (imports)
+{
+  for (var i=0; i<this.tests.length; i++)
+    this.tests[i][1].require(imports)
 }
 
 //****************************************************************************/

@@ -192,8 +192,12 @@ SieveBlockBody.prototype.remove
   return elm;
 }
 
-
-
+SieveBlockBody.prototype.require
+    = function (imports)
+{
+  for (var i=0; i<this.elms.length; i++)
+    this.elms[i].require(imports)
+}
 
 if (!SieveLexer)
   throw "Could not register Block Elements";

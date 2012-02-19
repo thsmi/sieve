@@ -72,4 +72,16 @@ SieveDom.prototype.getWidget
             .append(this.elms[1].toWidget());  
 }
 
+SieveDom.prototype.getRequires
+    = function ()
+{
+  var requires = {};
+  
+  this.require(requires);
+  
+  for (var i in requires)
+    alert(i);  
+}
+    
+
 

@@ -85,6 +85,13 @@ SieveIf.prototype.find
   return this.test.find(id);
 }
 
+SieveIf.prototype.require
+    = function (imports)
+{
+  this.block.require(imports);
+  this.test.require(imports);
+}
+
 SieveIf.prototype.toScript
     = function()
 {
@@ -158,6 +165,12 @@ SieveElse.prototype.find
     return this;
   
   return this.block.find(id);
+}
+
+SieveElse.prototype.require
+    = function (imports)
+{
+  this.block.require(imports);
 }
 
 SieveElse.prototype.toScript

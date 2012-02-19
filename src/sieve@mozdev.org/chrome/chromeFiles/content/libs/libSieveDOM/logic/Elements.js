@@ -58,3 +58,8 @@ SieveAbstractElement.prototype.find
 {   
   return (this.id == id) ? this : null; 
 }
+
+SieveAbstractElement.prototype.require
+    = function (imports)
+{
+}

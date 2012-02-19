@@ -18,6 +18,10 @@ body {
   font-family:courier;
 }
 
+.SivText {
+  font-family:courier;
+}
+
   .SivElement h1 {
     font-size:1em;   
     padding:0px;
@@ -168,24 +172,23 @@ $(document).ready(function() {
   init();
 });
 
-function parse()
+function setSieveScript(script)
 {
     dom = new SieveDom();
-    dom.init($("#txtScript").val());
-        
+    dom.init(script);
+	
 	$("#txtOutput")
 	  .val(dom.toScript());
 	  
 	$("#divOutput")
 	  .empty()
-	  .append(dom.getWidget())
+	  .append(dom.getWidget())	
 }
 
-function update()
+function getSieveScript()
 {
-  $("#txtOutput").val(dom.toScript());
+  return dom.toScript();
 }
-
 
 function require()
 {
@@ -243,29 +246,32 @@ function debug(obj)
 
 <div style="margin-left:200px;">
 <div>
-   <div style="overflow: hidden;width: 100%;">  
-     <div style="float:left">
+   <div id="boxScript" style="display:none;overflow: hidden;width: 100%; ">  
+     <div style="float:left; padding:5px;">
         <div>Input:</div>
-        <textarea id="txtScript" cols="50" rows="10">
+        <textarea id="txtScript" cols="50" rows="10" wrap="off">
 redirect "test";
         </textarea>
       </div>
-      <div style="float: left;">
+      <div style="float:left; padding:5px;">
         <div>Result:</div>
-        <textarea id="txtOutput" cols="50" rows="10" readonly="readonly"></textarea>
+        <textarea id="txtOutput" cols="50" rows="10" readonly="readonly" wrap="off"></textarea>
       </div>
     </div>
 </div >
 <div>
-    <button onclick="parse()">
+    <button onclick="setSieveScript($('#txtScript').val())">
 	   Parse Sieve Script
 	 </button>
-    <button onclick="update()">
+    <button onclick="$('#txtOutput').val(getSieveScript());">
 	  Update Sieve Script
 	</button>
     <button onclick="require()">
 	  Collect Require
 	</button>	
+    <button onclick="$('#boxScript').slideToggle()">
+	  Show/Hide
+	</button>		
 </div>
 </div>
 

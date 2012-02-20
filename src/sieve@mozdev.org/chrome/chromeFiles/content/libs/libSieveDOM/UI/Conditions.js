@@ -89,13 +89,14 @@ SieveIfUI.prototype.getWidget
   if (this._domElm)
     return this._domElm;
     
-  this._domElm =  $(document.createElement("div"))
+  this._domElm =  $("<div/>")
+           .attr("id","sivElm"+this.getId())
            .append(
-              this.getSieve().getTest().toWidget())
+              this.getSieve().test().widget())
            .append($("<div/>")
               .text("# DO"))
            .append(
-              this.getSieve().getBlock().toWidget());
+              this.getSieve().getBlock().widget());
   
   return this._domElm;
 }
@@ -114,9 +115,10 @@ SieveElseUI.prototype.getWidget
   if (this._domElm)
     return this._domElm;
 
-  this._domElm =  $(document.createElement("div"))
+  this._domElm =  $("<div/>")
+           .attr("id","sivElm"+this.getId())
            .append(
-              this.getSieve().getBlock().toWidget());
+              this.getSieve().getBlock().widget());
   
   return this._domElm;
 }
@@ -125,7 +127,7 @@ SieveElseUI.prototype.getWidget
 function SieveConditionUI(elm)
 {
   SieveDragBoxUI.call(this,elm);
-  this.flavour("sieve/if");
+  this.flavour("sieve/action");
 }
 
 SieveConditionUI.prototype.__proto__ = SieveDragBoxUI.prototype;
@@ -236,13 +238,13 @@ dropC
    
     if (i==0)
       elm.append($("<div/>").text("# IF"))
-    else if (children[i].getTest)
+    else if (children[i].test)
       elm.append($("<div/>").text("# ELSE IF"))
     else
       elm.append($("<div/>").text("# ELSE"))
               
               
-    elm.append(children[i].toWidget());
+    elm.append(children[i].widget());
   }
   
   elm

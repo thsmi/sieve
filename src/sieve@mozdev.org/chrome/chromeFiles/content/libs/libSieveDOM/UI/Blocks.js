@@ -26,12 +26,8 @@ SieveBlockUI.prototype.init
   var item = null;
   
   for (var i=0; i<this.getSieve().elms.length;i++)
-  {
-    // XXX: remove me: backward compatibility
-    if (!this.getSieve().elms[i].toWidget)
-      continue;
-      
-    item = this.getSieve().elms[i].toWidget()
+  {      
+    item = this.getSieve().elms[i].widget()
       
     if (!item)
       continue;
@@ -57,7 +53,8 @@ SieveBlockUI.prototype.getWidget
     return this._domElm;
     
   this._domElm = this.init()
-    .addClass("SivElement");
+    .addClass("SivElement")
+    //.attr("id","sivElm"+this.getId());
     
   return this._domElm;
 }

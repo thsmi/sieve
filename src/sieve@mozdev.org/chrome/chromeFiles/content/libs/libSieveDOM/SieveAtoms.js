@@ -66,7 +66,6 @@ SieveNumber.prototype.value
   if (isNaN(number))
     throw "Invalid Number";
     
-  // TODO Test if number is valid...
   this._number = number;   
   return this;
 }
@@ -95,11 +94,11 @@ SieveNumber.prototype.toScript
 
 function SieveSemicolon(id) 
 {
-  this.id = id;
+  SieveAbstractElement.call(this,id);
   
   this.whiteSpace = [];
-  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[1] = SieveLexer.createByName("whitespace");
+  this.whiteSpace[0] = this._createByName("whitespace");
+  this.whiteSpace[1] = this._createByName("whitespace");
   
   // If this object is uninitalized it is better to return a "\r\n" after 
   // the semicolon. This generates a much more readable code.
@@ -108,12 +107,14 @@ function SieveSemicolon(id)
   this.whiteSpace[1].init("\r\n",true);
 }
 
+SieveSemicolon.prototype.__proto__ = SieveAbstractElement.prototype;
+
 SieveSemicolon.prototype.init
     = function (data)
 {
   // Syntax :
   // [whitespace] <";"> [whitespace]
-  if (SieveLexer.probeByName("whitespace",data))
+  if (this._probeByName("whitespace",data))
     data = this.whiteSpace[0].init(data,true);
 
   if (data.charAt(0) != ";")
@@ -121,7 +122,7 @@ SieveSemicolon.prototype.init
   
   data = data.slice(1);
 
-  //if (SieveLexer.probeByName("whitespace",data))
+  //if (this._probeByName("whitespace",data))
   data = this.whiteSpace[1].init(data,true);  
       
   return data;

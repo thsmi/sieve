@@ -318,7 +318,7 @@ SieveAnyOfAllOfUI.prototype.init
   for (var i=0; i<this.getSieve().tests.length; i++)
     item.append($("<div/>")
       .css("padding-left","30px")
-      .append(this.getSieve().tests[i][1].toWidget()))
+      .append(this.getSieve().tests[i][1].widget()))
       
   
   return item;

@@ -16,9 +16,9 @@ function SieveOperatorSingle(id)
   SieveAbstractElement.call(this,id);
   
   this.whiteSpace = []
-  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[1] = SieveLexer.createByName("whitespace");
- // this.test = SieveLexer.createByName("operator");
+  this.whiteSpace[0] = this._createByName("whitespace");
+  this.whiteSpace[1] = this._createByName("whitespace");
+ // this.test = this._createByName("operator");
 }
 
 SieveOperatorSingle.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -32,13 +32,13 @@ SieveOperatorSingle.prototype.init
   data = data.slice("not".length);  
   data = this.whiteSpace[0].init(data);  
     
-  if (SieveLexer.probeByClass(["test"],data) == false) 
+  if (this._probeByClass(["test"],data) == false) 
     throw "Test command expected but found:\n'"+data.substr(0,50)+"'...";                 
 
-  this.test = SieveLexer.createByClass(["test"],data)
+  this.test = this._createByClass(["test"],data)
   data = this.test.init(data);
     
-  if (SieveLexer.probeByName("whitespace",data))
+  if (this._probeByName("whitespace",data))
     data = this.whiteSpace[1].init(data);  
   
   return data;
@@ -65,7 +65,7 @@ SieveOperatorSingle.prototype.toWidget
     (new SieveDropBoxUI(this.id,this.test))/*.flavours("sieve/test")*/.getWidget());
     
 
-  elm.append(this.test.toWidget())
+  elm.append(this.test.widget())
   
   elm.append(
     (new SieveDropBoxUI(this.id))/*.flavours("sieve/test")*/.getWidget());

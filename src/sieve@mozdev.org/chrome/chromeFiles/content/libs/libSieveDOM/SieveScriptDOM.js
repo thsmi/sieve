@@ -13,8 +13,8 @@ function SieveDom()
 {
   SieveBlockBody.call(this,-1);
   
-  this.elms[0] = SieveLexer.createByName("import");
-  this.elms[1] = SieveLexer.createByName("block/body");
+  this.elms[0] = this._createByName("import");
+  this.elms[1] = this._createByName("block/body");
 }
 
 SieveDom.prototype.__proto__ = SieveBlockBody.prototype;
@@ -46,11 +46,11 @@ SieveDom.prototype.init
   
   // requires are only valid if they are
   // before any other sieve command!
-  if (SieveLexer.probeByName("import",data))
+  if (this._probeByName("import",data))
     data = this.elms[0].init(data);
 
   // After the import section only deadcode and actions are valid    
-  if (SieveLexer.probeByName("block/body",data))
+  if (this._probeByName("block/body",data))
     data = this.elms[1].init(data);      
   
   if (data.length != 0)
@@ -69,7 +69,7 @@ SieveDom.prototype.getWidget
     = function ()
 {  
   return $(document.createElement("div"))
-            .append(this.elms[1].toWidget());  
+            .append(this.elms[1].widget());  
 }
 
 SieveDom.prototype.getRequires

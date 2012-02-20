@@ -41,7 +41,30 @@ SieveDropHandler.prototype.bind
 SieveDropHandler.prototype.onDrop
     = function(flavour,event)
 {
-  return true;
+  var dt = event.originalEvent.dataTransfer;
+  
+  switch (dt.mozGetDataAt(flavour,3))
+  {
+    case "create" :
+      if (!this.createElement)
+        return true;
+        
+      this.createElement(
+        flavour,dt.mozGetDataAt(flavour,1),
+        dt.mozGetDataAt("application/sieve",2));
+      return false;
+
+    case "move" :
+      if (!this.moveElement)
+        return true;
+      
+      this.moveElement(
+        flavour,dt.mozGetDataAt(flavour,1),
+        dt.mozGetDataAt("application/sieve",2));
+      return false;
+  }
+
+  return true;  
 }
 
 SieveDropHandler.prototype.onCanDrop
@@ -118,67 +141,61 @@ SieveBlockDropHandler.prototype.onCanDrop
   return true;
 }
 
-
-SieveBlockDropHandler.prototype.onDrop
-    = function (flavour, event)
-{
-  switch (event.originalEvent.dataTransfer.mozGetDataAt(flavour,3))
-  {
-    case "create" :
-      this.createElement(flavour,event);
-      return false;
-
-    case "move" :
-      this.moveElement(flavour,event);
-      return false;
-  }
-
-  return true;  
-}
-
+ 
 SieveBlockDropHandler.prototype.moveElement
-    = function(sivFlavour,event)
+    = function(sivFlavour, id, script)
 {
-  event = event.originalEvent;
-     
-  var dragElm = dom.findParent(event.dataTransfer.mozGetDataAt(sivFlavour,2));
-  if(!dragElm)
-    throw "Block Drop Handler: No Element found for "+event.dataTransfer.mozGetDataAt(sivFlavour,2);
-  
-  dragElm = dragElm.remove(event.dataTransfer.mozGetDataAt(sivFlavour,2));
-           
+    
+  var dragElm = dom.find(id);  
   if (!dragElm)
-    throw "Block Drop Handler: No Element found for "+event.dataTransfer.mozGetDataAt(sivFlavour,2); 
-  
-  var item = dom.find(this.owner.parentId);
-  
+    throw "Block Drop Handler: No Element found for "+id;
+         
+  var item = dom.find(this.owner.parentId);  
   if (!item)
     throw "Block Drop Handler: No Element found for "+this.owner.parentId;
   
+  // We need to wrap test into a condition...
+  if (sivFlavour == "sieve/test")
+  {     
+    var parentElm = dragElm.parent();
+    // we have to release the old test tests...
+    parentElm.test(SieveLexer.createByName("test/boolean","false"));   
+    
+    
+    // new Element
+    var elm = SieveLexer.createByName("condition");
+    elm.children(0).test(dragElm); 
+    
+    alert(parentElm.test().widget().html());
+
+    // Update UI
+    dragElm.widget().before(parentElm.test().widget());    
+
+    dragElm = elm;
+  }
+
   //... lets update the sieve dom and move the node to his new position...
   item.append(dragElm,this.owner.getId());
 
-  // ... remove droptarget infront of the last object's last position ...
-  $(event.dataTransfer.mozGetDataAt(sivFlavour,0))
-    .prev()
-      .remove();
-  
+  // ... remove droptarget infront of the last object's last position ...  
+  if(sivFlavour == "sieve/action")
+    $("#sivElm"+id)
+      .prev()
+        .remove();
+      
   // ... and add a new one directly before it's new positon ...
   this.owner.dropTarget
     .before(
       (new SieveDropBoxUI(this.owner.parentId,dragElm))
         .drop(new SieveBlockDropHandler())
         .getWidget())
-    .before(event.dataTransfer.mozGetDataAt(sivFlavour,0));          
+    .before(dragElm.widget());          
 }
 
 SieveBlockDropHandler.prototype.createElement
-    = function(sivFlavour,event)
+    = function(sivFlavour, type , script)
 {  
-  event = event.originalEvent;
-  
-  var type = event.dataTransfer.mozGetDataAt(sivFlavour,1);
-    
+   
   var item = dom.find(this.owner.parentId);
   
   if(!item)
@@ -192,16 +209,14 @@ SieveBlockDropHandler.prototype.createElement
   else
     elm = SieveLexer.createByName(type);
   
-  item.append(elm,this.owner.getId());
-  
-
+  item.append(elm,this.owner.getId());  
   
   this.owner.dropTarget
     .before(
       (new SieveDropBoxUI(this.owner.parentId,elm))
         .drop(new SieveBlockDropHandler())
         .getWidget())
-    .before(elm.toWidget());  
+    .before(elm.widget())
 }
 
 //****************************************************************************//
@@ -227,37 +242,29 @@ SieveTrashBoxDropHandler.prototype.onCanDrop
   return true;      
 }
 
-SieveTrashBoxDropHandler.prototype.onDrop
-    = function (flavour, event)
+SieveTrashBoxDropHandler.prototype.moveElement
+    = function(sivFlavour, id, script)
 {
-  if (event.originalEvent.dataTransfer.mozGetDataAt(flavour,3) != "move")
-    return true;
-    
-  event = event.originalEvent;
-  
-  var item = dom.findParent(event.dataTransfer.mozGetDataAt(flavour,2));
+  var item = dom.find(id)
   if(!item)
-    throw "Trash Drop Handler: No Element found for "+event.dataTransfer.mozGetDataAt(flavour,2);
+    throw "Trash Drop Handler: No Element found for "+id;
     
-  var item = item.remove(event.dataTransfer.mozGetDataAt(flavour,2));
-           
-  if (!item)
-    throw "Trash Drop Handler: No Element found for "+event.dataTransfer.mozGetDataAt(flavour,2); 
+  if (!item.remove())
+    throw "Trash Drop Handler: No Element found for "+id; 
   
   // delete node and the corresponding dropbox...
-  $(event.dataTransfer.mozGetDataAt(flavour,0))
+  $("#sivElm"+id)
     .prev()
       .remove()
       .end()
     .remove();
-    
-  return false
 }
 
 //****************************************************************************//
 
-//****************************************************************************//
-
+/**
+ * Implements an handler for Sieve Test actions..
+ */
 function SieveConditionDropHandler()
 { 
   SieveDropHandler.call(this);
@@ -300,18 +307,20 @@ SieveConditionDropHandler.prototype.onCanDrop
       
       // ... ok, with the last element we have to do some extra work... 
        var item = dom.find(this.owner.parentId) 
-      
        if (!item)
          return false;
 
       // ... if the last element has no test, then it has to be an else...         
-      if (!item.children(":last").getTest)
+      if (!item.children(":last").test)
          return false;
       
       // ... if not we are safe to add elements to it
       return true;
     }
-            
+    
+    // TODO implement MOVE
+    return false
+    
     if (event.dataTransfer.mozGetDataAt(sivFlavour,3) != "move")
       return false; 
 
@@ -335,36 +344,16 @@ SieveConditionDropHandler.prototype.onCanDrop
 }
 
 
-SieveConditionDropHandler.prototype.onDrop
-    = function (flavour, event)
-{
-  switch (event.originalEvent.dataTransfer.mozGetDataAt(flavour,3))
-  {
-    case "create" :
-      this.createElement(flavour,event);
-      return false;
-
-    case "move" :
-      this.moveElement(flavour,event);
-      return false;
-  }
-
-  return true;  
-}
-
 SieveConditionDropHandler.prototype.moveElement
-    = function(sivFlavour,event)
+    = function (sivFlavour, id, script)
 {
-  event = event.originalEvent;
-     
-  var dragElm = dom.findParent(event.dataTransfer.mozGetDataAt(sivFlavour,2));
-  if(!dragElm)
-    throw "No Element found for "+event.dataTransfer.mozGetDataAt(sivFlavour,2);
   
-  dragElm = dragElm.remove(event.dataTransfer.mozGetDataAt(sivFlavour,2));
+  var dragElm = dom.find(id);
+  if(!dragElm)
+    throw "No Element found for "+id;
            
-  if (!dragElm)
-    throw "No Element found for "+event.dataTransfer.mozGetDataAt(sivFlavour,2); 
+  if (!drag.remove())
+    throw "No Element found for "+id; 
   
   var item = dom.find(this.owner.parentId);
   
@@ -375,7 +364,7 @@ SieveConditionDropHandler.prototype.moveElement
   item.append(dragElm,this.owner.getId());
 
   // ... remove droptarget infront of the last object's last position ...
-  $(event.dataTransfer.mozGetDataAt(sivFlavour,0))
+  $("#sivElm"+id)
     .prev()
       .remove();
   
@@ -385,16 +374,12 @@ SieveConditionDropHandler.prototype.moveElement
       (new SieveDropBoxUI(this.owner.parentId,dragElm))
         .drop(new SieveConditionDropHandler())
         .getWidget())
-    .before(event.dataTransfer.mozGetDataAt(sivFlavour,0));          
+    .before(dragElm.widget());          
 }
 
 SieveConditionDropHandler.prototype.createElement
-    = function(sivFlavour,event)
-{    
-  event = event.originalEvent;
-  
-  var type = event.dataTransfer.mozGetDataAt(sivFlavour,1);
-    
+    =  function(sivFlavour, type , script)
+{     
   // The new home for our element
   var item = dom.find(this.owner.parentId);
   
@@ -412,7 +397,7 @@ SieveConditionDropHandler.prototype.createElement
     
   if (sivFlavour == "sieve/test")
   {
-    elm = SieveLexer.createByName("condition/if",
+    var elm = SieveLexer.createByName("condition/if",
             "if "+SieveLexer.createByName(type).toScript()+"{\r\n}\r\n");
             
     item.append(elm,this.owner.getId());
@@ -426,7 +411,7 @@ SieveConditionDropHandler.prototype.createElement
 
     // ... now its getting a bit ugly, we can not always add an elsif ...
     // ... so we need two strategies. One is to...
-    if (this.owner.getSieve()  && this.owner.getSieve().getTest)
+    if (this.owner.getSieve()  && this.owner.getSieve().test)
       // ... reuse the existing if or elsif,
       this.owner.dropTarget
         .before(this.owner.dropTarget.next())
@@ -438,7 +423,7 @@ SieveConditionDropHandler.prototype.createElement
         
     // Finally we can insert our Element.        
     this.owner.dropTarget
-        .before(elm.toWidget())
+        .before(elm.widget())
   }
   else if (sivFlavour == "sieve/action")
   {
@@ -454,7 +439,7 @@ SieveConditionDropHandler.prototype.createElement
           .drop(new SieveBlockDropHandler())
           .getWidget())
       .before($("<div>").text("# ELSE"))          
-      .before(elm.toWidget());      
+      .before(elm.widget());      
   }
   else 
    throw "Incompatible drop";
@@ -468,5 +453,9 @@ SieveConditionDropHandler.prototype.createElement
       (new SieveDropBoxUI(this.owner.parentId,elm))
         .drop(new SieveConditionDropHandler())
         .getWidget())
-    .before(elm.toWidget());*/  
+    .before(elm.widget());*/  
 }
+
+//****************************************************************************//
+
+// SieveTestDropHandler -> convert test to any of

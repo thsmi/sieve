@@ -219,13 +219,13 @@ SieveWhiteSpace.prototype.init
   this.elements = [];
   
   // After the import section only deadcode and actions are valid
-  while (SieveLexer.probeByClass(["whitespace/"],data))
+  while (this._probeByClass(["whitespace/"],data))
   {
     // Check for CRLF...
-    if (crlf && SieveLexer.probeByName("whitespace/linebreak",data))
+    if (crlf && this._probeByName("whitespace/linebreak",data))
       isCrlf = true;
       
-    var elm = SieveLexer.createByClass(["whitespace/"],data);
+    var elm = this._createByClass(["whitespace/"],data);
       
     data = elm.init(data);
     

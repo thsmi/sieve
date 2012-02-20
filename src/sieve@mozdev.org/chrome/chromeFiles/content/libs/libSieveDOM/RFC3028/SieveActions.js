@@ -14,7 +14,7 @@
 function SieveDiscard(id) 
 {
   SieveAbstractElement.call(this,id); 
-  this.semicolon = SieveLexer.createByName("atom/semicolon");
+  this.semicolon = this._createByName("atom/semicolon");
 }
 
 SieveDiscard.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -56,11 +56,11 @@ function SieveRedirect(id)
 {
   SieveAbstractElement.call(this,id);
   
-  this.whiteSpace = SieveLexer.createByName("whitespace"," ");
+  this.whiteSpace = this._createByName("whitespace"," ");
   
-  this.address = SieveLexer.createByName("string","\"username@example.com\""); 
+  this.address = this._createByName("string","\"username@example.com\""); 
   
-  this.semicolon = SieveLexer.createByName("atom/semicolon");
+  this.semicolon = this._createByName("atom/semicolon");
 }
 
 SieveRedirect.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -125,13 +125,11 @@ function SieveReject(id)
 {
   SieveAbstractElement.call(this,id);
   
-  this.reason = SieveLexer.createByName("string");
-  this.reason.init("text:\r\n.\r\n");
+  this.reason = this._createByName("string", "text:\r\n.\r\n");  
   
-  this.whiteSpace = SieveLexer.createByName("whitespace");
-  this.whiteSpace.init(" ");
+  this.whiteSpace = this._createByName("whitespace"," ");
   
-  this.semicolon = SieveLexer.createByName("atom/semicolon");    
+  this.semicolon = this._createByName("atom/semicolon");    
 }
 
 SieveReject.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -204,7 +202,7 @@ SieveReject.prototype.toWidget
 function SieveStop(id) 
 {
   SieveAbstractElement.call(this,id);
-  this.semicolon = SieveLexer.createByName("atom/semicolon");
+  this.semicolon = this._createByName("atom/semicolon");
 }
 
 SieveStop.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -243,7 +241,7 @@ SieveStop.prototype.toWidget
 function SieveKeep(id)
 {
   SieveAbstractElement.call(this,id);
-  this.semicolon = SieveLexer.createByName("atom/semicolon");
+  this.semicolon = this._createByName("atom/semicolon");
 }
 
 SieveKeep.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -284,12 +282,11 @@ function SieveFileInto(id)
 {
   SieveAbstractElement.call(this,id);
 
-  this.whiteSpace = SieveLexer.createByName("whitespace");
-  this.whiteSpace.init(" ");
+  this.whiteSpace = this._createByName("whitespace", " ");
   
-  this.semicolon = SieveLexer.createByName("atom/semicolon");
+  this.semicolon = this._createByName("atom/semicolon");
       
-  this.string = SieveLexer.createByName("string");
+  this.string = this._createByName("string");
   this.string.init("\"INBOX\"");
 }
 

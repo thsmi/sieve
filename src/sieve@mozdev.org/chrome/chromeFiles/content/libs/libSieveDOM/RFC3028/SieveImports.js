@@ -13,10 +13,10 @@ function SieveRequire(id)
 {
   SieveAbstractElement.call(this,id);
   
-  this.whiteSpace = SieveLexer.createByName("whitespace");
-  this.semicolon = SieveLexer.createByName("atom/semicolon");
+  this.whiteSpace = this._createByName("whitespace");
+  this.semicolon = this._createByName("atom/semicolon");
   
-  this.strings = SieveLexer.createByName("stringlist");    
+  this.strings = this._createByName("stringlist");    
 }
 
 SieveRequire.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -78,9 +78,9 @@ SieveBlockImport.prototype.init
     = function (data)    
 {  
   // The import section consists of require and deadcode statments...
-  while (SieveLexer.probeByClass(["import/","whitespace"],data))
+  while (this._probeByClass(["import/","whitespace"],data))
   {
-    var elm = SieveLexer.createByClass(["import/","whitespace"],data);    
+    var elm = this._createByClass(["import/","whitespace"],data);    
     data = elm.init(data);
     
     this.elms.push(elm);    

@@ -14,9 +14,9 @@ function SieveSetFlag(id)
 {
   SieveAbstractElement.call(this,id); 
   
-  this.whiteSpace = SieveLexer.createByName("whitespace");
-  this.flaglist = SieveLexer.createByName("stringlist");
-  this.semicolon = SieveLexer.createByName("atom/semicolon");
+  this.whiteSpace = this._createByName("whitespace");
+  this.flaglist = this._createByName("stringlist");
+  this.semicolon = this._createByName("atom/semicolon");
 }
 
 SieveSetFlag.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -54,10 +54,10 @@ function SieveAddFlag(id)
   SieveAbstractElement.call(this,id); 
   
   this.whiteSpace = [];
-  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[1] = SieveLexer.createByName("whitespace");  
+  this.whiteSpace[0] = this._createByName("whitespace");
+  this.whiteSpace[1] = this._createByName("whitespace");  
                 
-  this.flaglist =  SieveLexer.createByName("stringlist");
+  this.flaglist =  this._createByName("stringlist");
 }
 
 SieveAddFlag.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -112,10 +112,10 @@ function SieveRemoveFlag(id)
   SieveAbstractElement.call(this,id); 
   
   this.whiteSpace = [];
-  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[1] = SieveLexer.createByName("whitespace");  
+  this.whiteSpace[0] = this._createByName("whitespace");
+  this.whiteSpace[1] = this._createByName("whitespace");  
                 
-  this.flaglist =  SieveLexer.createByName("stringlist");
+  this.flaglist =  this._createByName("stringlist");
 }
 
 SieveRemoveFlag.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -173,14 +173,14 @@ function SieveHasFlag(id)
   SieveAbstractElement.call(this,id); 
 
   this.whiteSpace = [];
-  this.whiteSpace[0] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[1] = SieveLexer.createByName("whitespace");
-  this.whiteSpace[2] = SieveLexer.createByName("whitespace");    
+  this.whiteSpace[0] = this._createByName("whitespace");
+  this.whiteSpace[1] = this._createByName("whitespace");
+  this.whiteSpace[2] = this._createByName("whitespace");    
 
 
   this.whiteSpace     = [];
   this.matchType      = null;
-  this.flagList = SieveLexer.createByName("stringlist");
+  this.flagList = this._createByName("stringlist");
 }
 
 SieveHasFlag.prototype.__proto__ = SieveAbstractElement.prototype;

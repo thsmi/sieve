@@ -57,8 +57,8 @@ SieveAbstractBoxUI.prototype.getWidget
 SieveAbstractBoxUI.prototype.toScript
     = function ()
 {
-  if (this._sieveElm)
-    return _sieveElm.toScript();
+  if (this.getSieve())
+    return this.getSieve().toScript();
     
   return "";
 }
@@ -103,19 +103,18 @@ SieveDragBoxUI.prototype.onDragGesture
    {
      case "move" :
        event.dataTransfer.mozSetDataAt(this.flavour(),this.getWidget().get(0),0);
-       event.dataTransfer.mozSetDataAt(this.flavour(),this.getWidget().get(0).previousSibling,1);
-       event.dataTransfer.mozSetDataAt(this.flavour(),this.getId(),2);
+       event.dataTransfer.mozSetDataAt(this.flavour(),this.getId(),1);
+       event.dataTransfer.mozSetDataAt("application/sieve",""+this.getSieve().toScript(),2)
        event.dataTransfer.mozSetDataAt(this.flavour(),"move",3);
-       event.dataTransfer.mozSetDataAt("application/sieve",this.toScript(),4)
+       
 
        break;
                
      case "create" :
        event.dataTransfer.mozSetDataAt(this.flavour(),this.getWidget().get(0),0);
        event.dataTransfer.mozSetDataAt(this.flavour(),this._elmType,1);
-       event.dataTransfer.mozSetDataAt(this.flavour(),"",2);
-       event.dataTransfer.mozSetDataAt(this.flavour(),"create",3);
-       event.dataTransfer.mozSetDataAt("application/sieve",this.toScript(),4)
+       event.dataTransfer.mozSetDataAt("application/sieve",this.toScript(),2);
+       event.dataTransfer.mozSetDataAt(this.flavour(),"create",3);       
                
        break;
              
@@ -134,7 +133,7 @@ SieveDragBoxUI.prototype.onDragGesture
 SieveDragBoxUI.prototype.init
     = function ()
 {
-  return $(document.createElement("div"))      
+  return $("<div/>");
 }
 
 SieveDragBoxUI.prototype.getWidget
@@ -147,6 +146,7 @@ SieveDragBoxUI.prototype.getWidget
     
   this._domElm = this.init()
     .addClass("SivElement")
+    .attr("id","sivElm"+this.getId())
     .attr("draggable","true")
     .bind("dragstart",function(e) {return _this.onDragGesture(e)});
          
@@ -206,6 +206,8 @@ SieveStackableDragBoxUI.prototype.init
 
 /******************************************************************************/
 
+
+// TODO Create Panel when needed, makes live easier espeically after changes and on validate
 function SieveEditableDragBoxUI(elm)
 {
   // Call parent constructor...
@@ -335,6 +337,7 @@ SieveDropBoxUI.prototype.getWidget
   this.dropTarget = 
     $(document.createElement("div"))
       .addClass("sivDropBox")
+      //.attr("id","SivElm"+this.getId())
       .bind("dragdrop",function(e) { return _this.onDragDrop(e)})
       .bind("dragover",function(e) { return _this.onDragOver(e)})
       .bind("dragexit",function(e) { return _this.onDragExit(e)})
@@ -372,21 +375,5 @@ function SieveTrashBoxUI()
 
 // Inherrit from DragBox
 SieveTrashBoxUI.prototype.__proto__ = SieveDropBoxUI.prototype;
-
-
-// TODO: DELETE ME just a Temporary object for backward kompatibility
-function SivDropTarget(parentId,elm)
-{
-  SieveDropBoxUI.call(this,parentId,elm);
-}
-
-SivDropTarget.prototype.__proto__ = SieveDropBoxUI.prototype;
-
-SivDropTarget.prototype.getWidget
-    = function ()
-{
-  return SieveDropBoxUI.prototype.getWidget.call(this).get(0)  
-}
-
 
 

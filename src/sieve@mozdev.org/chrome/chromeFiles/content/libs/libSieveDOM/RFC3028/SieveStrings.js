@@ -44,7 +44,7 @@ function SieveMultiLineString(id)
   
   this.text = "";
   
-  this.whiteSpace = SieveLexer.createByName("whitespace");
+  this.whiteSpace = this._createByName("whitespace");
   this.hashComment = null;
 }
 
@@ -66,7 +66,7 @@ SieveMultiLineString.prototype.init
     = function (data)    
 {
   //<"text:"> *(SP / HTAB) (hash-comment / CRLF)
-  if (SieveLexer.probeByName("string/multiline",data) == false)
+  if (this._probeByName("string/multiline",data) == false)
     throw "Multi-line String expected but found: \n"+data.substr(0,50)+"..."; 
   
   // remove the "text:"
@@ -74,9 +74,9 @@ SieveMultiLineString.prototype.init
   
   data = this.whiteSpace.init(data,true);
     
-  if (SieveLexer.probeByName("whitespace/hashcomment",data))
+  if (this._probeByName("whitespace/hashcomment",data))
   {
-    this.hashComment = SieveLexer.createByName("whitespace/hashcomment");
+    this.hashComment = this._createByName("whitespace/hashcomment");
     data = this.hashComment.init(data);
   }
      
@@ -261,11 +261,11 @@ SieveStringList.prototype.init
 {
   this.elements = [];
   
-  if (SieveLexer.probeByName("string/quoted",data))
+  if (this._probeByName("string/quoted",data))
   {
     this.compact = true;
     var item = [];
-    item[1] = SieveLexer.createByName("string/quoted");
+    item[1] = this._createByName("string/quoted");
     
     this.elements[0] = item;
     
@@ -292,22 +292,22 @@ SieveStringList.prototype.init
         
     var element = [];
 
-    if (SieveLexer.probeByName("whitespace",data))
+    if (this._probeByName("whitespace",data))
     {
-      element[0] = SieveLexer.createByName("whitespace",data);      
+      element[0] = this._createByName("whitespace",data);      
       data = element[0].init(data);
     }
       
-    if (SieveLexer.probeByName("string/quoted",data) == false)  
+    if (this._probeByName("string/quoted",data) == false)  
       throw "Quoted String expected but found: \n"+data.substr(0,50)+"...";
     
-    element[1] = SieveLexer.createByName("string/quoted");
+    element[1] = this._createByName("string/quoted");
     data = element[1].init(data);
          
       
-    if (SieveLexer.probeByName("whitespace",data))
+    if (this._probeByName("whitespace",data))
     {
-      element[2] = SieveLexer.createByName("whitespace",data); 
+      element[2] = this._createByName("whitespace",data); 
       data = element[2].init(data);
     }
     
@@ -335,7 +335,7 @@ SieveStringList.prototype.append
     = function(str)
 {
   var elm = [null,"",null]
-  elm[1] = SieveLexer.createByName("string/quoted",'""');
+  elm[1] = this._createByName("string/quoted",'""');
   elm[1].setValue(str);
   
   this.elements.push(elm);
@@ -424,7 +424,7 @@ SieveStringList.prototype.toWidget
 function SieveString(id)
 {
   SieveAbstractElement.call(this,id); 
-  this.string = SieveLexer.createByName("string/quoted");
+  this.string = this._createByName("string/quoted");
 }
 
 SieveString.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -439,7 +439,7 @@ SieveString.isElement
 SieveString.prototype.init
     = function (data)    
 {
-  this.string = SieveLexer.createByClass(["string/"],data);
+  this.string = this._createByClass(["string/"],data);
   
   if (this.string == null)
     throw "Syntaxerror: String expected"
@@ -663,8 +663,8 @@ SieveAddressPart.prototype.toScript
 function SieveComparator(id)
 {
   this.id = id;
-  this.whiteSpace = SieveLexer.createByName("whitespace"," ");
-  this._comparator = SieveLexer.createByName("string/quoted","\"i;ascii-casemap\"");
+  this.whiteSpace = this._createByName("whitespace"," ");
+  this._comparator = this._createByName("string/quoted","\"i;ascii-casemap\"");
   this.optional = true;
 }
 

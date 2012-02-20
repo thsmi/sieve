@@ -67,9 +67,9 @@ SieveBlockBody.isElement
 SieveBlockBody.prototype.init
     = function (data)    
 {
-  while (SieveLexer.probeByClass(["action","condition","whitespace"],data))
+  while (this._probeByClass(["action","condition","whitespace"],data))
   {
-    var elm = SieveLexer.createByClass(["action","condition","whitespace"],data);    
+    var elm = this._createByClass(["action","condition","whitespace"],data);    
     data = elm.init(data);
     
     this.elms.push(elm);    
@@ -107,27 +107,6 @@ SieveBlockBody.prototype.toWidget
   return (new SieveBlockUI(this)).getWidget();
 }
 
-SieveBlockBody.prototype.findParent
-    = function (id)
-{
-  // is it a direct hit?
-  for (var i=0; i<this.elms.length; i++)
-    if (this.elms[i].id == id)
-      return this;
-  
-  // no so we have to ask our child nodes
-  var item = null;
-  for (var i=0; i<this.elms.length; i++)
-  {     
-    item = this.elms[i].findParent(id);
-    
-    if (item)
-      break; 
-  }
-  
-  return item;     
-}
-
 SieveBlockBody.prototype.find
     = function (id)
 { 
@@ -149,33 +128,57 @@ SieveBlockBody.prototype.find
   return item;
 }
 
+/**
+ * Appends an Element to this Element. Inf the element is alread existant, it will be moved
+ * 
+ * @param {} elm
+ *   the element that should be appened
+ * @param @optional {int} siblingId
+ *   defines the sibling after which the new element should be inserted. 
+ *   In case no matching sibling is found, it will be appended at the end.
+ * @return {}
+ */
 SieveBlockBody.prototype.append
     = function (elm, siblingId)
 {
-
-  // the id matches, so we have to do the work
-  if ((!siblingId) || (siblingId < 0))
-  {
-    this.elms[this.elms.length] = elm; 
-    return this;
-  }
- 
-  for (var i=0; i<this.elms.length; i++)
-  {
-    if (this.elms[i].id != siblingId)
-      continue;
-    
-    this.elms.splice(i,0,elm);
-    return this;
-  }
+  // we have to do this fist as there is a good chance the the index
+  // might change after deleting...
+  if(elm.parent())
+    elm.remove();
   
-  // we did not manage to add the element...
-  return null;
+  var idx = this.elms.length;
+  
+  if ((typeof(siblingsId) === "undefined") || (siblingId < 0)) 
+    for (var idx = 0; idx<this.elms.length; idx++)
+      if (this.elms[idx].id == siblingId)
+        break;
+
+  this.elms.splice(idx,0,elm);
+  elm.parent(this);
+    
+  return this;
 }
 
-SieveBlockBody.prototype.remove
+// TODO Merge later when its workin as it should with remove
+/**
+ * Removes the node including all child elements.
+ * 
+ * To remove just a child node pass it's id as an argument
+ * 
+ *  @param @optional {int} childId
+ *  the child id which should be removed.
+ *    
+ * @return {}
+ */
+SieveBlockBody.prototype.removeChild
     = function (childId)
 {
+  // should we remove the whole node
+  if (typeof (childId) === "undefined")
+     throw "Child ID Missing";
+    //return SieveAbstractElement.prototype.remove.call(this);
+  
+  // ... or just a child item
   var elm = null;
   // Is it a direct match?
   for (var i=0; i<this.elms.length; i++)
@@ -184,6 +187,8 @@ SieveBlockBody.prototype.remove
       continue;
     
     elm = this.elms[i];
+    elm.parent(null);
+    
     this.elms.splice(i,1);
     
     break;

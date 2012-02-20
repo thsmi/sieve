@@ -231,7 +231,6 @@ function SieveStringListUI(elm)
   SieveAbstractBoxUI.call(this,elm);
 }
 
-// Inherrit from DragBox
 SieveStringListUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;  
 
 SieveStringListUI.prototype.onAddItem

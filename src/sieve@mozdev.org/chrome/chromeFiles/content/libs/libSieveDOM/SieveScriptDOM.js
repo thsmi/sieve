@@ -9,19 +9,108 @@
 
 "use strict";
 
-function SieveDom()
+function SieveRootNode(docshell)
 {
-  SieveBlockBody.call(this,-1);
+  SieveBlockBody.call(this,docshell,-1);
   
   this.elms[0] = this._createByName("import");
-  this.elms[1] = this._createByName("block/body");
+  this.elms[1] = this._createByName("block/body");  
 }
 
-SieveDom.prototype.__proto__ = SieveBlockBody.prototype;
+SieveRootNode.prototype.__proto__ = SieveBlockBody.prototype;
 
-SieveDom.prototype.init
+SieveRootNode.prototype.toWidget
+    = function ()
+{  
+  return $("<div/>")
+           .append(this.elms[1].widget());  
+}
+
+SieveRootNode.prototype.init
     = function (data)
 {
+  // requires are only valid if they are
+  // before any other sieve command!
+  if (this._probeByName("import",data))
+    data = this.elms[0].init(data);
+
+  // After the import section only deadcode and actions are valid    
+  if (this._probeByName("block/body",data))
+    data = this.elms[1].init(data);   
+    
+  return data;
+}
+
+
+function SieveDocument(lexer)
+{
+  this._lexer = lexer;  
+  this.rootNode = new SieveRootNode(this);
+}
+
+SieveDocument.prototype.root
+  = function ()
+{
+  return SieveBlockBody;
+}
+
+SieveDocument.prototype.widget
+    = function ()
+{  
+  return this.rootNode.widget();  
+}
+
+// A shorthand to create children bound to this Element...
+SieveDocument.prototype.createByName
+    = function(name, data, parent)
+{     
+  return this._lexer.createByName(this, name, data)
+           .parent((typeof(parent) === "undefined")?null:parent);
+}
+  
+SieveDocument.prototype.createByClass
+    = function(types, data, parent)
+{    
+  return this._lexer.createByClass(this, types, data)
+           .parent((typeof(parent) === "undefined")?null:parent);
+}
+  
+SieveDocument.prototype.probeByName
+    = function(name, data)
+{
+  return this._lexer.probeByName(name, data);
+}
+  
+SieveDocument.prototype.probeByClass
+    = function(types, data)
+{    
+  return this._lexer.probeByClass(types,data);
+}  
+
+SieveDocument.prototype.getRequires
+    = function ()
+{
+  var requires = {};
+  
+  this.rootNode.require(requires);
+  
+  for (var i in requires)
+    alert(i);  
+}
+    
+SieveDocument.prototype.id
+  = function (id)
+{
+  // TODO replace find...
+  return this.rootNode.find(id);    
+}
+
+SieveDocument.prototype.script
+  = function (data)
+{
+  if (typeof(data) === "undefined")
+    return this.rootNode.toScript();
+
   // the sieve syntax prohibits single \n and \r
   // they have to be converted to \r\n
   
@@ -42,46 +131,14 @@ SieveDom.prototype.init
       n++;
   }
   if (n != r)
-   alert("Something went terribly wrong. The linebreaks are mixed up...\n");
+    throw ("Something went terribly wrong. The linebreaks are mixed up...\n");
   
-  // requires are only valid if they are
-  // before any other sieve command!
-  if (this._probeByName("import",data))
-    data = this.elms[0].init(data);
-
-  // After the import section only deadcode and actions are valid    
-  if (this._probeByName("block/body",data))
-    data = this.elms[1].init(data);      
+  data = this.rootNode.init(data);
   
   if (data.length != 0)
-    alert("Parser error!"+data);
+    throw ("Parser error!"+data);
+    
   // data should be empty right here...
   return data;
 }
-
-SieveDom.prototype.toScript
-    = function ()
-{
-  return ""+this.elms[0].toScript() + this.elms[1].toScript();
-}
-
-SieveDom.prototype.getWidget
-    = function ()
-{  
-  return $(document.createElement("div"))
-            .append(this.elms[1].widget());  
-}
-
-SieveDom.prototype.getRequires
-    = function ()
-{
-  var requires = {};
-  
-  this.require(requires);
-  
-  for (var i in requires)
-    alert(i);  
-}
-    
-
 

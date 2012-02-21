@@ -11,9 +11,9 @@
  
 // TODO HashComment seperated by linebreaks are equivalent to bracket Comments...
 
-function SieveLineBreak(id)
+function SieveLineBreak(docshell,id)
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
 }
 
 SieveLineBreak.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -56,9 +56,9 @@ SieveDeadCode.isElement
   return false;
 }
 
-function SieveDeadCode(id)
+function SieveDeadCode(docshell,id)
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
   this.whiteSpace = "";
 }
 
@@ -107,9 +107,9 @@ SieveBracketComment.isElement
   return true;
 }
 
-function SieveBracketComment(id) 
+function SieveBracketComment(docshell,id) 
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
   this.text = "";
 }
 
@@ -143,9 +143,9 @@ SieveBracketComment.prototype.toScript
 
 /******************************************************************************/
 
-function SieveHashComment(id) 
+function SieveHashComment(docshell,id) 
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
   this.text = "";
 }
 
@@ -186,9 +186,9 @@ SieveHashComment.prototype.toScript
 
 /******************************************************************************/
 
-function SieveWhiteSpace(id) 
+function SieveWhiteSpace(docshell,id) 
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
   this.elements = [];
 }
 

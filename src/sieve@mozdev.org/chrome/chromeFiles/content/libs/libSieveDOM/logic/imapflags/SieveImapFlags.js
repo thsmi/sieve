@@ -10,9 +10,9 @@
 // setflag <variablename: string> <list-of-flags: string-list>
 
 
-function SieveSetFlag(id) 
+function SieveSetFlag(docshell,id) 
 {
-  SieveAbstractElement.call(this,id); 
+  SieveAbstractElement.call(this,docshell,id); 
   
   this.whiteSpace = this._createByName("whitespace");
   this.flaglist = this._createByName("stringlist");
@@ -49,9 +49,9 @@ SieveSetFlag.prototype.toScript
 
 //addflag <variablename: string> <list-of-flags: string-list>
 
-function SieveAddFlag(id) 
+function SieveAddFlag(docshell,id) 
 {
-  SieveAbstractElement.call(this,id); 
+  SieveAbstractElement.call(this,docshell,id); 
   
   this.whiteSpace = [];
   this.whiteSpace[0] = this._createByName("whitespace");
@@ -107,9 +107,9 @@ SieveRemoveFlag.isRemoveFlag
  return false;
 }
 
-function SieveRemoveFlag(id) 
+function SieveRemoveFlag(docshell,id) 
 {
-  SieveAbstractElement.call(this,id); 
+  SieveAbstractElement.call(this,docshell,id); 
   
   this.whiteSpace = [];
   this.whiteSpace[0] = this._createByName("whitespace");
@@ -168,9 +168,9 @@ SieveHasFlag.isHasFlag
  return false;
 }
  
-function SieveHasFlag(id)
+function SieveHasFlag(docshell,id)
 {
-  SieveAbstractElement.call(this,id); 
+  SieveAbstractElement.call(this,docshell,id); 
 
   this.whiteSpace = [];
   this.whiteSpace[0] = this._createByName("whitespace");

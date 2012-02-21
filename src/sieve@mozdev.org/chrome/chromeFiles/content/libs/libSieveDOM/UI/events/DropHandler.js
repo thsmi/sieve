@@ -35,7 +35,7 @@ SieveDropHandler.prototype.flavours
 SieveDropHandler.prototype.bind
     = function (owner)
 {
-  this.owner = owner;
+  this._owner = owner;
 }
 
 SieveDropHandler.prototype.onDrop
@@ -127,10 +127,10 @@ SieveBlockDropHandler.prototype.onCanDrop
     var elm = event.dataTransfer.mozGetDataAt(sivFlavour,0);
     
     
-    if ((elm.nextSibling) && (elm.nextSibling === this.owner.dropTarget.get(0)))
+    if ((elm.nextSibling) && (elm.nextSibling === this._owner.dropTarget.get(0)))
       return false;
     
-    if ((elm.previousSibling) && (elm.previousSibling === this.owner.dropTarget.get(0)))
+    if ((elm.previousSibling) && (elm.previousSibling === this._owner.dropTarget.get(0)))
       return false;
           
   // ... or onto a parent into his child block          
@@ -145,28 +145,27 @@ SieveBlockDropHandler.prototype.onCanDrop
 SieveBlockDropHandler.prototype.moveElement
     = function(sivFlavour, id, script)
 {
-    
-  var dragElm = dom.find(id);  
+
+  var dragElm = this._owner.parent().getSieve().id(id);  
   if (!dragElm)
     throw "Block Drop Handler: No Element found for "+id;
          
-  var item = dom.find(this.owner.parentId);  
+  var item = this._owner.parent().getSieve();  
   if (!item)
-    throw "Block Drop Handler: No Element found for "+this.owner.parentId;
+    throw "Block Drop Handler: No Element found for "+this._owner.parent().id();
   
   // We need to wrap test into a condition...
   if (sivFlavour == "sieve/test")
   {     
+    
     var parentElm = dragElm.parent();
     // we have to release the old test tests...
-    parentElm.test(SieveLexer.createByName("test/boolean","false"));   
+    parentElm.test(parentElm.document().createByName("test/boolean","false"));   
     
     
     // new Element
-    var elm = SieveLexer.createByName("condition");
+    var elm = parentElm.document().createByName("condition");
     elm.children(0).test(dragElm); 
-    
-    alert(parentElm.test().widget().html());
 
     // Update UI
     dragElm.widget().before(parentElm.test().widget());    
@@ -175,7 +174,7 @@ SieveBlockDropHandler.prototype.moveElement
   }
 
   //... lets update the sieve dom and move the node to his new position...
-  item.append(dragElm,this.owner.getId());
+  item.append(dragElm,this._owner.id());
 
   // ... remove droptarget infront of the last object's last position ...  
   if(sivFlavour == "sieve/action")
@@ -184,9 +183,9 @@ SieveBlockDropHandler.prototype.moveElement
         .remove();
       
   // ... and add a new one directly before it's new positon ...
-  this.owner.dropTarget
+  this._owner.dropTarget
     .before(
-      (new SieveDropBoxUI(this.owner.parentId,dragElm))
+      (new SieveDropBoxUI(this._owner.parent(),dragElm))
         .drop(new SieveBlockDropHandler())
         .getWidget())
     .before(dragElm.widget());          
@@ -196,24 +195,25 @@ SieveBlockDropHandler.prototype.createElement
     = function(sivFlavour, type , script)
 {  
    
-  var item = dom.find(this.owner.parentId);
+  var item = this._owner.parent().getSieve();
   
   if(!item)
-    throw "Element "+this.owner.parentId+" not found";
+    throw "Element "+this._owner.parent().getSieve().id()+" not found";
   
   var elm = null;
   
-  if (sivFlavour == "sieve/test")
-    elm = SieveLexer.createByName("condition",
-            "if "+SieveLexer.createByName(type).toScript()+"{\r\n}\r\n");
+  
+  if (sivFlavour == "sieve/test")  
+    elm = item.document().createByName("condition",
+            "if "+item.document().createByName(type).toScript()+"{\r\n}\r\n");
   else
-    elm = SieveLexer.createByName(type);
+    elm = item.document().createByName(type);
   
-  item.append(elm,this.owner.getId());  
+  item.append(elm,this._owner.id());  
   
-  this.owner.dropTarget
+  this._owner.dropTarget
     .before(
-      (new SieveDropBoxUI(this.owner.parentId,elm))
+      (new SieveDropBoxUI(this._owner.parent(),elm))
         .drop(new SieveBlockDropHandler())
         .getWidget())
     .before(elm.widget())
@@ -245,7 +245,8 @@ SieveTrashBoxDropHandler.prototype.onCanDrop
 SieveTrashBoxDropHandler.prototype.moveElement
     = function(sivFlavour, id, script)
 {
-  var item = dom.find(id)
+  
+  var item = this._owner.document().id(id);
   if(!item)
     throw "Trash Drop Handler: No Element found for "+id;
     
@@ -289,13 +290,13 @@ SieveConditionDropHandler.prototype.onCanDrop
       {
         case "sieve/action":
            // ... actions can only added as last element
-           if (this.owner.getId() != -1)
+           if (this._owner.id() != -1)
              return false;
            break;
            
         case "sieve/test":
            // ... for tests everything before the last elemen is ok
-           if (this.owner.getId() != -1)
+           if (this._owner.id() != -1)
              return true;
            break;
            
@@ -306,7 +307,7 @@ SieveConditionDropHandler.prototype.onCanDrop
       }
       
       // ... ok, with the last element we have to do some extra work... 
-       var item = dom.find(this.owner.parentId) 
+       var item = this._owner.parent().getSieve();
        if (!item)
          return false;
 
@@ -329,10 +330,10 @@ SieveConditionDropHandler.prototype.onCanDrop
     var elm = event.dataTransfer.mozGetDataAt(sivFlavour,0);
     
     
-    if ((elm.nextSibling) && (elm.nextSibling === this.owner.dropTarget.get(0)))
+    if ((elm.nextSibling) && (elm.nextSibling === this._owner.dropTarget.get(0)))
       return false;
     
-    if ((elm.previousSibling) && (elm.previousSibling === this.owner.dropTarget.get(0)))
+    if ((elm.previousSibling) && (elm.previousSibling === this._owner.dropTarget.get(0)))
       return false;
           
   // ... or onto a parent into his child block          
@@ -355,13 +356,13 @@ SieveConditionDropHandler.prototype.moveElement
   if (!drag.remove())
     throw "No Element found for "+id; 
   
-  var item = dom.find(this.owner.parentId);
+  var item = this._owner.parent().getSieve();
   
   if (!item)
-    throw "No Element found for "+this.owner.parentId;
+    throw "No Element found for "+this._owner.parent().id();
   
   //... lets update the sieve dom and move the node to his new position...
-  item.append(dragElm,this.owner.getId());
+  item.append(dragElm,this._owner.id());
 
   // ... remove droptarget infront of the last object's last position ...
   $("#sivElm"+id)
@@ -369,9 +370,9 @@ SieveConditionDropHandler.prototype.moveElement
       .remove();
   
   // ... and add a new one directly before it's new positon ...
-  this.owner.dropTarget
+  this._owner.dropTarget
     .before(
-      (new SieveDropBoxUI(this.owner.parentId,dragElm))
+      (new SieveDropBoxUI(this._owner.parent(),dragElm))
         .drop(new SieveConditionDropHandler())
         .getWidget())
     .before(dragElm.widget());          
@@ -381,18 +382,17 @@ SieveConditionDropHandler.prototype.createElement
     =  function(sivFlavour, type , script)
 {     
   // The new home for our element
-  var item = dom.find(this.owner.parentId);
+  var item = dom.find(this._owner.parent());
   
   if(!item)
-    throw "Element "+this.owner.parentId+" not found";
+    throw "Element "+this._owner.parent().id()+" not found";
         
   // TODO Should be moved to can drop, call can drop here...
-  
 
- /* if ((this.owner.getId() == -1) && (!item.children(":last").getTest))
+ /* if ((this._owner.id() == -1) && (!item.children(":last").getTest))
     return null;
   
-  if ((sivFlavour == "sieve/action") && (this.owner.getId() != -1))
+  if ((sivFlavour == "sieve/action") && (this._owner.id() != -1))
     return null;*/
     
   if (sivFlavour == "sieve/test")
@@ -400,29 +400,29 @@ SieveConditionDropHandler.prototype.createElement
     var elm = SieveLexer.createByName("condition/if",
             "if "+SieveLexer.createByName(type).toScript()+"{\r\n}\r\n");
             
-    item.append(elm,this.owner.getId());
+    item.append(elm,this._owner.id());
 
     //Step 1 insert new  droptarget
-    this.owner.dropTarget
+    this._owner.dropTarget
       .before(
-        (new SieveDropBoxUI(item.id,elm))
+        (new SieveDropBoxUI(item,elm))
           .drop(new SieveConditionDropHandler())
           .getWidget())
 
     // ... now its getting a bit ugly, we can not always add an elsif ...
     // ... so we need two strategies. One is to...
-    if (this.owner.getSieve()  && this.owner.getSieve().test)
+    if (this._owner.getSieve()  && this._owner.getSieve().test)
       // ... reuse the existing if or elsif,
-      this.owner.dropTarget
-        .before(this.owner.dropTarget.next())
+      this._owner.dropTarget
+        .before(this._owner.dropTarget.next())
         .after($("<div>").text("#ELSE IF "));
     else 
       // ... the otherone append new elsif
-      this.owner.dropTarget
+      this._owner.dropTarget
         .before($("<div>").text("#ELSE IF "))   
         
     // Finally we can insert our Element.        
-    this.owner.dropTarget
+    this._owner.dropTarget
         .before(elm.widget())
   }
   else if (sivFlavour == "sieve/action")
@@ -433,9 +433,9 @@ SieveConditionDropHandler.prototype.createElement
             
     item.append(elm);
     
-    this.owner.dropTarget
+    this._owner.dropTarget
       .before(
-        (new SieveDropBoxUI(this.owner.parentId,elm))
+        (new SieveDropBoxUI(this._owner.parent,elm))
           .drop(new SieveBlockDropHandler())
           .getWidget())
       .before($("<div>").text("# ELSE"))          
@@ -446,11 +446,11 @@ SieveConditionDropHandler.prototype.createElement
 
   // TODO HTML!
      
-  /*item.append(elm,this.owner.getId());
+  /*item.append(elm,this._owner.id());
   
-  this.owner.dropTarget
+  this._owner.dropTarget
     .before(
-      (new SieveDropBoxUI(this.owner.parentId,elm))
+      (new SieveDropBoxUI(this._owner.parent,elm))
         .drop(new SieveConditionDropHandler())
         .getWidget())
     .before(elm.widget());*/  

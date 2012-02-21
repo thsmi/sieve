@@ -33,13 +33,13 @@ SieveBlockUI.prototype.init
       continue;
       
     elm
-      .append((new SieveDropBoxUI(this.getId(),this.getSieve().elms[i]))
+      .append((new SieveDropBoxUI(this,this.getSieve().elms[i]))
         .drop(new SieveBlockDropHandler())
         .getWidget())
       .append(item);
   }
    
-  elm.append((new SieveDropBoxUI(this.getId()))
+  elm.append((new SieveDropBoxUI(this))
     .drop(new SieveBlockDropHandler())
     .getWidget());
   
@@ -54,7 +54,7 @@ SieveBlockUI.prototype.getWidget
     
   this._domElm = this.init()
     .addClass("SivElement")
-    //.attr("id","sivElm"+this.getId());
+    //.attr("id","sivElm"+this.id());
     
   return this._domElm;
 }

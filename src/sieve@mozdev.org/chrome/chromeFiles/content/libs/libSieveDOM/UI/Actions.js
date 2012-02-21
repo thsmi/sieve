@@ -68,11 +68,11 @@ SieveRedirectUI.prototype.__proto__ = SieveEditableDragBoxUI.prototype;
 SieveRedirectUI.prototype.onValidate
    = function ()
 {
-  if (! $("#txtRedirect"+this.getId()).get(0).checkValidity())
+  if (! $("#txtRedirect"+this.id()).get(0).checkValidity())
     return false;
     
-  this.getSieve().setAddress($("#txtRedirect"+this.getId()).val());  
-  $("#lblRedirect"+this.getId()).text(this.getSieve().getAddress());
+  this.getSieve().setAddress($("#txtRedirect"+this.id()).val());  
+  $("#lblRedirect"+this.id()).text(this.getSieve().getAddress());
   
   return true;
 }
@@ -84,7 +84,7 @@ SieveRedirectUI.prototype.initEditor
            .text("Redirect messages to:")
            .append($("<div/>")
              .append($("<input/>")
-               .attr("id","txtRedirect"+this.getId())
+               .attr("id","txtRedirect"+this.id())
                .attr("type","email")
                .attr("x-moz-errormessage","Please specify a valid email address.")
                .attr("value",""+this.getSieve().getAddress())));
@@ -99,7 +99,7 @@ SieveRedirectUI.prototype.initSummary
            .append($(document.createElement("span"))
              .text(this.getSieve().getAddress())
              .addClass("SivMailAddress")
-             .attr("id","lblRedirect"+this.getId()));         
+             .attr("id","lblRedirect"+this.id()));         
 }
 
 /******************************************************************************/
@@ -115,8 +115,8 @@ SieveRejectUI.prototype.__proto__ = SieveEditableDragBoxUI.prototype;
 SieveRejectUI.prototype.onValidate
    = function ()
 {
-  this.getSieve().setReason($("#txtReason"+this.getId()).val());
-  $("#lblReason"+this.getId()).text(this.getSieve().getReason());
+  this.getSieve().setReason($("#txtReason"+this.id()).val());
+  $("#lblReason"+this.id()).text(this.getSieve().getReason());
 
   return true;
 }
@@ -129,7 +129,7 @@ SieveRejectUI.prototype.initEditor
              .text("Reject incomming messages and reply the following reason:"))
            .append($("<div/>")
              .append($("<textarea/>")
-               .attr("id","txtReason"+this.getId())
+               .attr("id","txtReason"+this.id())
                .attr("multiline","true")
                .attr("cols","60").attr("rows","5")
                .attr("wrap","off")
@@ -144,7 +144,7 @@ SieveRejectUI.prototype.initSummary
            .append($(document.createElement("div"))
              .text(this.getSieve().getReason())
              .addClass("SivText")
-             .attr("id","lblReason"+this.getId()));         
+             .attr("id","lblReason"+this.id()));         
 }
 
 /******************************************************************************/
@@ -159,8 +159,8 @@ SieveFileIntoUI.prototype.__proto__ = SieveEditableDragBoxUI.prototype;
 SieveFileIntoUI.prototype.onValidate
    = function ()
 {
-  this.getSieve().setPath($("#txtPath"+this.getId()).val());
-  $("#lblPath"+this.getId()).text(this.getSieve().getPath());
+  this.getSieve().setPath($("#txtPath"+this.id()).val());
+  $("#lblPath"+this.id()).text(this.getSieve().getPath());
 
   return true;
 }
@@ -171,7 +171,7 @@ SieveFileIntoUI.prototype.initEditor
   return $(document.createElement("div"))
            .text("Copy the incomming message into:")
            .append($(document.createElement("textarea"))
-             .attr("id","txtPath"+this.getId())
+             .attr("id","txtPath"+this.id())
              .attr("multiline","true")
              .attr("value",""+this.getSieve().getPath()));
 }
@@ -184,5 +184,5 @@ SieveFileIntoUI.prototype.initSummary
            .addClass("text")
            .append($(document.createElement("div"))
              .text(this.getSieve().getPath())
-             .attr("id","lblPath"+this.getId()));         
+             .attr("id","lblPath"+this.id()));         
 }

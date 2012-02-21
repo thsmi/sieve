@@ -24,7 +24,7 @@ var SieveLexer =
       
     this.register(type,name,
       function(token) {return callback.isElement(token)}, 
-      function(id) {return new callback(id)});
+      function(docshell, id) {return new callback(docshell,id)});
   },
   
   /**
@@ -76,37 +76,39 @@ var SieveLexer =
    * by class...
    * Parses the given Data and returns the result
    * 
-   * @param {} type
-   * @param {} data
+   * @param {SieveDocument} docshell
+   * @param {String} type
+   * @param {String} data
    * @return {}
-   */
-  createByClass : function(types,data)
+   **/
+  createByClass : function(docshell, types, data)
   {
     var c = this.getConstructor(types,data);
 
     if (c==null)
       throw "No compatible Constructor for Class(es): "+types+" in "+data;
     
-    return this.getConstructor(types,data)(++(this.maxId));    
+    return this.getConstructor(types,data)(docshell, ++(this.maxId));    
   },
   
   /**
    * Creates an element for a by name and returns the result
-   * 
-   * @param {} name
+   *
+   * @param {SieveDocument} docshell
+   * @param {String} name
    * @optional @param {String} initializer
    *   A sieve token as string, used to initialize the created element.
    *    
    * @return {}
-   */
-  createByName : function(name, data)
+   **/
+  createByName : function(docshell, name, data)
   {   
     if (!this.names[name])
       throw "No Constructor for >>"+name+"<< found";
       
     try
     {
-      var item = this.names[name].onNew(++(this.maxId));
+      var item = this.names[name].onNew(docshell, ++(this.maxId));
       
       if (data)
         item.init(data);

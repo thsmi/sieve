@@ -9,9 +9,9 @@
  
  "use strict";
 
-function SieveRequire(id) 
+function SieveRequire(docshell,id) 
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
   
   this.whiteSpace = this._createByName("whitespace");
   this.semicolon = this._createByName("atom/semicolon");
@@ -58,9 +58,9 @@ SieveRequire.prototype.toScript
 
 
 // CONSTRUCTOR:
-function SieveBlockImport(id)
+function SieveBlockImport(docshell,id)
 {
-  SieveBlockBody.call(this,id);
+  SieveBlockBody.call(this,docshell,id);
   this.elms = [];  
 }
 

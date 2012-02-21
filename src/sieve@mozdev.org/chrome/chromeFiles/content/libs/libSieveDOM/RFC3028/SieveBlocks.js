@@ -9,9 +9,9 @@
  
  "use strict";
 
-function SieveBlock(id)
+function SieveBlock(docshell,id)
 {
-  SieveBlockBody.call(this,id);
+  SieveBlockBody.call(this,docshell,id);
 }
 
 SieveBlock.prototype.__proto__ = SieveBlockBody.prototype;
@@ -48,9 +48,9 @@ SieveBlock.prototype.toScript
 //****************************************************************************//
 // TODO rename to SieveCommands
 
-function SieveBlockBody(id)
+function SieveBlockBody(docshell,id)
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
   
   // Initialize Block Elements
   this.elms = [];
@@ -110,7 +110,7 @@ SieveBlockBody.prototype.toWidget
 SieveBlockBody.prototype.find
     = function (id)
 { 
-  if (this.id == id)
+  if (this.id() == id)
     return this;
 
     
@@ -150,7 +150,7 @@ SieveBlockBody.prototype.append
   
   if ((typeof(siblingsId) === "undefined") || (siblingId < 0)) 
     for (var idx = 0; idx<this.elms.length; idx++)
-      if (this.elms[idx].id == siblingId)
+      if (this.elms[idx].id() == siblingId)
         break;
 
   this.elms.splice(idx,0,elm);
@@ -159,7 +159,7 @@ SieveBlockBody.prototype.append
   return this;
 }
 
-// TODO Merge later when its workin as it should with remove
+// TODO Merge with "remove" when its working as it should
 /**
  * Removes the node including all child elements.
  * 
@@ -183,7 +183,7 @@ SieveBlockBody.prototype.removeChild
   // Is it a direct match?
   for (var i=0; i<this.elms.length; i++)
   {
-    if (this.elms[i].id != childId)
+    if (this.elms[i].id() != childId)
       continue;
     
     elm = this.elms[i];

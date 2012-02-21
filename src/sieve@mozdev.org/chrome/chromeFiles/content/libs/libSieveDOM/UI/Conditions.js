@@ -90,7 +90,7 @@ SieveIfUI.prototype.getWidget
     return this._domElm;
     
   this._domElm =  $("<div/>")
-           .attr("id","sivElm"+this.getId())
+           .attr("id","sivElm"+this.id())
            .append(
               this.getSieve().test().widget())
            .append($("<div/>")
@@ -116,7 +116,7 @@ SieveElseUI.prototype.getWidget
     return this._domElm;
 
   this._domElm =  $("<div/>")
-           .attr("id","sivElm"+this.getId())
+           .attr("id","sivElm"+this.id())
            .append(
               this.getSieve().getBlock().widget());
   
@@ -137,7 +137,7 @@ SieveConditionUI.prototype.onDragEnter
     = function (event)
 {   
   // Show Dropboxes
-  $("#SieveCondition"+this.getId()+" > .sivDropBox").show();
+  $("#SieveCondition"+this.id()+" > .sivDropBox").show();
   return true;
 }
 
@@ -145,7 +145,7 @@ SieveConditionUI.prototype.onDragExit
     = function (event)
 {
   // Hide Dropboxes
-  $("#SieveCondition"+this.getId()+" > .sivDropBox").hide();
+  $("#SieveCondition"+this.id()+" > .sivDropBox").hide();
   return true;
 }
 
@@ -220,10 +220,9 @@ dropC
  <//dropC//>
  */
      
-
   
   var elm = $("<div/>")
-              .attr("id","SieveCondition"+this.getId())
+              .attr("id","SieveCondition"+this.id())
              /* .bind("dragexit",function(e) { return _this.onDragExit(e)})
               .bind("dragenter",function(e) { return _this.onDragEnter(e)})     
               .bind("dragdrop",function(e) { return _this.onDragExit(e)})*/       
@@ -233,7 +232,7 @@ dropC
   for (var i=0; i<children.length;i++)
   {
     elm
-      .append((new SieveDropBoxUI(this.getId(),children[i]))      
+      .append((new SieveDropBoxUI(this,children[i]))      
         .drop(new SieveConditionDropHandler()).getWidget())
    
     if (i==0)
@@ -248,7 +247,7 @@ dropC
   }
   
   elm
-    .append((new SieveDropBoxUI(this.getId()))      
+    .append((new SieveDropBoxUI(this))      
       .drop(new SieveConditionDropHandler()).getWidget())  
    
   this.onDragExit();

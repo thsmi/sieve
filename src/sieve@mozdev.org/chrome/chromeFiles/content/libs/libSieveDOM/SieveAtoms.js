@@ -15,9 +15,9 @@
  
 // TODO Move To SieveNumbers
 
-function SieveNumber(id)
+function SieveNumber(docshell,id)
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
   
   this._number = "1";
   this._unit = "";
@@ -92,9 +92,9 @@ SieveNumber.prototype.toScript
 /******************************************************************************/
 
 
-function SieveSemicolon(id) 
+function SieveSemicolon(docshell,id) 
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
   
   this.whiteSpace = [];
   this.whiteSpace[0] = this._createByName("whitespace");
@@ -108,6 +108,12 @@ function SieveSemicolon(id)
 }
 
 SieveSemicolon.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveSemicolon.isElement
+    = function (data,index)
+{
+  return true;
+}
 
 SieveSemicolon.prototype.init
     = function (data)
@@ -140,6 +146,4 @@ if (!SieveLexer)
   throw "Could not register Atoms";
 
 SieveLexer.register2("atom/","atom/number",SieveNumber)
-SieveLexer.register("atom/","atom/semicolon",
-      function(token) {return true}, 
-      function(id) {return new SieveSemicolon(id)});
+SieveLexer.register2("atom/","atom/semicolon",SieveSemicolon);

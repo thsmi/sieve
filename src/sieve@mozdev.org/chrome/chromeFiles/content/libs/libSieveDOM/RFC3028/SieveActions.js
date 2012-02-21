@@ -11,9 +11,9 @@
 
 /******************************************************************************/
 
-function SieveDiscard(id) 
+function SieveDiscard(docshell,id) 
 {
-  SieveAbstractElement.call(this,id); 
+  SieveAbstractElement.call(this,docshell,id); 
   this.semicolon = this._createByName("atom/semicolon");
 }
 
@@ -52,9 +52,9 @@ SieveDiscard.prototype.toWidget
 
 //***************************************
 
-function SieveRedirect(id)
+function SieveRedirect(docshell,id)
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
   
   this.whiteSpace = this._createByName("whitespace"," ");
   
@@ -121,9 +121,9 @@ SieveRedirect.prototype.toWidget
  
 /******************************************************************************/
 
-function SieveReject(id)
+function SieveReject(docshell,id)
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
   
   this.reason = this._createByName("string", "text:\r\n.\r\n");  
   
@@ -199,9 +199,9 @@ SieveReject.prototype.toWidget
 
 /******************************************************************************/
 
-function SieveStop(id) 
+function SieveStop(docshell,id) 
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
   this.semicolon = this._createByName("atom/semicolon");
 }
 
@@ -238,9 +238,9 @@ SieveStop.prototype.toWidget
 
 /******************************************************************************/
 
-function SieveKeep(id)
+function SieveKeep(docshell,id)
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
   this.semicolon = this._createByName("atom/semicolon");
 }
 
@@ -278,9 +278,9 @@ SieveKeep.prototype.toWidget
 
 /******************************************************************************/
 
-function SieveFileInto(id) 
+function SieveFileInto(docshell,id) 
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
 
   this.whiteSpace = this._createByName("whitespace", " ");
   

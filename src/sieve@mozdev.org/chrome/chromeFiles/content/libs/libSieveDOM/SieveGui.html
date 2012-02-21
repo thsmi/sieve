@@ -174,25 +174,27 @@ $(document).ready(function() {
 
 function setSieveScript(script)
 {
-    dom = new SieveDom();
-    dom.init(script);
+    // reset environemnt
+	init();
+	
+    dom2.script(script);
 	
 	$("#txtOutput")
-	  .val(dom.toScript());
+	  .val(dom2.script());
 	  
 	$("#divOutput")
 	  .empty()
-	  .append(dom.getWidget())	
+	  .append(dom2.widget())	
 }
 
 function getSieveScript()
 {
-  return dom.toScript();
+  return dom2.script();
 }
 
 function require()
 {
-  dom.getRequires();
+  dom2.getRequires();
 }
 function debug(obj)
 {
@@ -206,9 +208,9 @@ function debug(obj)
   //logger.logStringMessage(str);
 }
 
-  function createMenuItem(action,flavour)
+  function createMenuItem(action,flavour, docShell)
   {    
-    var elm2 = (new SieveDragBoxUI());
+    var elm2 = (new SieveDragBoxUI(docShell));
     elm2._elmType = action;
     elm2._action = "create";
     elm2._flavour = flavour;
@@ -220,25 +222,27 @@ function debug(obj)
   function init()
   {
     // Yes it's a global object
-    dom  = new SieveDom();
+    dom2 = new SieveDocument(SieveLexer);
 	
-    var elm = $("#sivActions");
+	var docShell = dom2;
+	
+    var elm = $("#sivActions").empty();
     
 	elm.append($("<div/>").text("Actions"))
 	  .text("Actions");
 	  
     for (var key in SieveLexer.types["action"])
-      elm.append(createMenuItem(key,"sieve/action"));
+      elm.append(createMenuItem(key,"sieve/action",docShell));
 
 	elm.append($("<div/>").text("Tests"))
     
     for (var key in SieveLexer.types["test"])
-      elm.append(createMenuItem(key,"sieve/test").get(0));
+      elm.append(createMenuItem(key,"sieve/test",docShell).get(0));
 
 	elm
 	  .append($(document.createElement('div'))
 	    .addClass("spacer"))
-      .append($(new SieveTrashBoxUI().getWidget())
+      .append($(new SieveTrashBoxUI(docShell).getWidget())
 	    .attr('id','trash'));
   }
 //]]>

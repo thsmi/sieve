@@ -10,10 +10,10 @@ SieveOperatorSingle.isElement
   return false;
 }
 
-function SieveOperatorSingle(id) 
+function SieveOperatorSingle(docshell,id) 
 {
   // first line with deadcode
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
   
   this.whiteSpace = []
   this.whiteSpace[0] = this._createByName("whitespace");
@@ -62,13 +62,13 @@ SieveOperatorSingle.prototype.toWidget
   elm.text("does not match:");
           
   elm.append(
-    (new SieveDropBoxUI(this.id,this.test))/*.flavours("sieve/test")*/.getWidget());
+    (new SieveDropBoxUI(this,this.test))/*.flavours("sieve/test")*/.getWidget());
     
 
   elm.append(this.test.widget())
   
   elm.append(
-    (new SieveDropBoxUI(this.id))/*.flavours("sieve/test")*/.getWidget());
+    (new SieveDropBoxUI(this))/*.flavours("sieve/test")*/.getWidget());
   
   return elm;   
 }

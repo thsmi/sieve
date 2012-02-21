@@ -16,31 +16,32 @@
  * 
  * @param {} id
  */
-function SieveAbstractElement(id)
+function SieveAbstractElement(docshell, id)
 {
   if (!id)
-    throw new "Invalid id";
+    throw "Invalid id";
     
-  this.id = id;
+  this._id = id;
   
   this._parent = null;
+  this._docshell = docshell;
 }
 
 // A shorthand to create children bound to this Element...
 SieveAbstractElement.prototype._createByName = function(name, data) {    
-  return SieveLexer.createByName(name,data).parent(this);
+  return this._docshell.createByName(name, data, this);
 }
   
 SieveAbstractElement.prototype._createByClass = function(types, data) {    
-  return SieveLexer.createByClass(types,data).parent(this);
+  return this._docshell.createByClass(types, data, this);
 }
   
 SieveAbstractElement.prototype._probeByName = function(name, data) {    
-  return SieveLexer.probeByName(name, data);
+  return this._docshell.probeByName(name, data);
 }
   
 SieveAbstractElement.prototype._probeByClass = function(types, data) {    
-  return SieveLexer.probeByClass(types,data);
+  return this._docshell.probeByClass(types,data);
 }  
 
 
@@ -57,7 +58,7 @@ SieveAbstractElement.prototype.init
 SieveAbstractElement.prototype.toScript
     = function ()
 {
-  throw "Implement toScript() for "+this.id;
+  throw "Implement toScript() for "+this._id;
 }
 
 /**
@@ -83,10 +84,31 @@ SieveAbstractElement.prototype.toWidget
   return null;     
 }
 
+SieveAbstractElement.prototype.document
+    = function ()
+{  
+  return this._docshell;
+}
+
+/**
+ * Returns the unique identifier for this element.
+ * 
+ * In case the parameter "id" the default pehavioud is inverted. Instead of 
+ * returning a unique idetifier for this element, a reverse lookup is started
+ * and the SieveElement with a matchin id is returned.
+ *
+ * @param @optional {int} id
+ *   defines to use a reverse lookup 
+ * @return {}
+ *   
+ */
 SieveAbstractElement.prototype.id
     = function (id)
 {
-  return this.id;
+  if (typeof(id) === "undefined")
+    return this._id;
+    
+  return this._docshell.id(id);
 }
 
 SieveAbstractElement.prototype.parent
@@ -103,7 +125,7 @@ SieveAbstractElement.prototype.parent
 SieveAbstractElement.prototype.find
     = function (id)
 {   
-  return (this.id == id) ? this : null; 
+  return (this._id == id) ? this : null; 
 }
 
 SieveAbstractElement.prototype.require
@@ -131,8 +153,8 @@ SieveAbstractElement.prototype.remove
     throw "No parent Node";
     
   // ...and remove this node
-  var elm = this._parent.removeChild(this.id);
-  if (elm.id != this.id)
+  var elm = this._parent.removeChild(this._id);
+  if (elm.id() != this._id)
     throw "Could not remove Node";
     
   // ... finally cleanup all evidence to our parent Node;

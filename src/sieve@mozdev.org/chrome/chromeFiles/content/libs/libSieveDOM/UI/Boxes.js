@@ -16,14 +16,19 @@
 // TODO Implement "accepts" list
  
 /**
- * 
+ * can be an document or element...
  * @param {} elm
  *   Optional sieve element which should be bound to this box.
  */
 function SieveAbstractBoxUI(elm)
-{ 
-  if (elm)
-    this._sivElm = elm;
+{
+  if (!elm)
+   throw "Element expected";
+
+  if (!elm.document && !elm.root)
+    throw "Neiter a Sieve Element nor a Sieve Document";
+    
+  this._elm = elm;
 }
 
 /**
@@ -33,19 +38,38 @@ function SieveAbstractBoxUI(elm)
  * @return {int}
  *   An Integer as unique identifiert for the nested sieve element. 
  */
-SieveAbstractBoxUI.prototype.getId
+SieveAbstractBoxUI.prototype.id
     = function()
 {
-  if (this._sivElm)
-    return this._sivElm.id
+  if (this._elm.document)
+    return this._elm.id()
     
   return -1;
 }
 
+/**
+ * Returns the sieve Element bound to this box.
+ * In case no element is bound, an exception will be thrown
+ * 
+ * @return {}
+ *   the sieve object bound to this box
+ */
 SieveAbstractBoxUI.prototype.getSieve
     = function ()
 {
-  return this._sivElm;
+  if (!this._elm.document)
+    throw "No Sieve Element bound to this box";
+    
+  return this._elm;
+}
+
+SieveAbstractBoxUI.prototype.document
+    = function()
+{
+  if (this._elm.document)
+    return this._elm.document();
+    
+  return this._elm;
 }
 
 SieveAbstractBoxUI.prototype.getWidget
@@ -57,8 +81,8 @@ SieveAbstractBoxUI.prototype.getWidget
 SieveAbstractBoxUI.prototype.toScript
     = function ()
 {
-  if (this.getSieve())
-    return this.getSieve().toScript();
+  if (this._elm.document)
+    return this._elm.toScript();
     
   return "";
 }
@@ -103,7 +127,7 @@ SieveDragBoxUI.prototype.onDragGesture
    {
      case "move" :
        event.dataTransfer.mozSetDataAt(this.flavour(),this.getWidget().get(0),0);
-       event.dataTransfer.mozSetDataAt(this.flavour(),this.getId(),1);
+       event.dataTransfer.mozSetDataAt(this.flavour(),this.id(),1);
        event.dataTransfer.mozSetDataAt("application/sieve",""+this.getSieve().toScript(),2)
        event.dataTransfer.mozSetDataAt(this.flavour(),"move",3);
        
@@ -146,7 +170,7 @@ SieveDragBoxUI.prototype.getWidget
     
   this._domElm = this.init()
     .addClass("SivElement")
-    .attr("id","sivElm"+this.getId())
+    .attr("id","sivElm"+this.id())
     .attr("draggable","true")
     .bind("dragstart",function(e) {return _this.onDragGesture(e)});
          
@@ -264,23 +288,29 @@ SieveEditableDragBoxUI.prototype.initPanels
 
 /**
  * 
- * 
- * @param {} parentId
- *   Identifier of the parent Sieve Element, to which dropped
- *   Elemenents will be added.
- * @optional @param {SieveAbstractElement} elm
- *   Optional sieve element which should be bound to this box.  
+ * @param {SieveAbstractElement} elm
+ *   Either the Sieve element which should be bound to this box or the document.
+ * @param {SieveAbstractBoxUI} parent
+ *   The parent Sieve Element, to which dropped Elemenents will be added.  
  */
-function SieveDropBoxUI(parentId,elm)
+function SieveDropBoxUI(parent,elm)
 {
-  SieveAbstractBoxUI.call(this,elm);
+  if (!parent)
+    throw "Parent expected";
   
-  this.dropTarget = null;
-  
-  if (!parentId)
-    throw "Invalid parent ID:"+parentId;
+  if (elm && elm.document)
+    SieveAbstractBoxUI.call(this,elm);
+  else if (parent.document)
+    SieveAbstractBoxUI.call(this,parent.document());
+  else if (parent.root)
+    SieveAbstractBoxUI.call(this,parent);
+  else
+    throw ("Either a docshell or an elements expected")
     
-  this.parentId = parentId;
+  if (parent.document)
+    this._parent = parent;
+    
+  this.dropTarget = null;
   
   this.drop(new SieveDropHandler());
 }
@@ -337,12 +367,12 @@ SieveDropBoxUI.prototype.getWidget
   this.dropTarget = 
     $(document.createElement("div"))
       .addClass("sivDropBox")
-      //.attr("id","SivElm"+this.getId())
+      //.attr("id","SivElm"+this.id())
       .bind("dragdrop",function(e) { return _this.onDragDrop(e)})
       .bind("dragover",function(e) { return _this.onDragOver(e)})
       .bind("dragexit",function(e) { return _this.onDragExit(e)})
       .bind("dragenter",function(e) { return _this.onDragEnter(e)})
-      /*.text(this.getId()+"@"+this.parentId+" ["+this.handler.flavours()+"]")*/;           
+      /*.text(this.id()+"@"+this.parentId+" ["+this.handler.flavours()+"]")*/;           
 
   return this.dropTarget
 }
@@ -364,12 +394,19 @@ SieveDropBoxUI.prototype.drop
    return this;
 }
 
+SieveDropBoxUI.prototype.parent
+    = function ()
+{
+  return this._parent;
+}
+
 //****************************************************************************//
 
-function SieveTrashBoxUI()
+function SieveTrashBoxUI(docshell)
 {
   // Call parent constructor...
-  SieveDropBoxUI.call(this,-1);
+  SieveDropBoxUI.call(this,docshell);
+  
   this.drop(new SieveTrashBoxDropHandler());
 }
 

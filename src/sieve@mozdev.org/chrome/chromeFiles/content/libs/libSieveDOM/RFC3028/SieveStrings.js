@@ -38,9 +38,9 @@
 *******************************************************************************/
 
 // CONSTRUCTOR:
-function SieveMultiLineString(id)
+function SieveMultiLineString(docshell,id)
 {
-  SieveAbstractElement.call(this,id); 
+  SieveAbstractElement.call(this,docshell,id); 
   
   this.text = "";
   
@@ -147,9 +147,9 @@ SieveMultiLineString.prototype.toScript
 
 
 // CONSTRUCTOR:
-function SieveQuotedString(id)
+function SieveQuotedString(docshell,id)
 {
-  SieveAbstractElement.call(this,id); 
+  SieveAbstractElement.call(this,docshell,id); 
   this.text = "";
 }
 
@@ -227,9 +227,9 @@ SieveQuotedString.prototype.toScript
 
 
 // CONSTRUCTOR:
-function SieveStringList(id)
+function SieveStringList(docshell,id)
 {  
-  SieveAbstractElement.call(this,id); 
+  SieveAbstractElement.call(this,docshell,id); 
   
   this.elements = [];
   
@@ -421,9 +421,9 @@ SieveStringList.prototype.toWidget
 
 
 // CONSTRUCTOR: 
-function SieveString(id)
+function SieveString(docshell,id)
 {
-  SieveAbstractElement.call(this,id); 
+  SieveAbstractElement.call(this,docshell,id); 
   this.string = this._createByName("string/quoted");
 }
 
@@ -474,9 +474,9 @@ SieveString.prototype.toScript
  * Matchtypes are used to compare Strings
  * @param {} id
  */
-function SieveMatchType(id)
+function SieveMatchType(docshell,id)
 {
-  SieveAbstractElement.call(this,id); 
+  SieveAbstractElement.call(this,docshell,id); 
   this.type = "is";
   this.optional = true;
 }
@@ -567,9 +567,9 @@ SieveMatchType.prototype.toScript
 //":localpart" / ":domain" / ":all"
 
 
-function SieveAddressPart(id)
+function SieveAddressPart(docshell,id)
 {
-  SieveAbstractElement.call(this,id); 
+  SieveAbstractElement.call(this,docshell,id); 
   this.type = "all";
   this.optional = true;
 }
@@ -660,9 +660,9 @@ SieveAddressPart.prototype.toScript
  * "i;ascii-codemap" converts strings before comparison to ASCII 
  */
 
-function SieveComparator(id)
+function SieveComparator(docshell,id)
 {
-  this.id = id;
+  SieveAbstractElement.call(this,docshell,id); 
   this.whiteSpace = this._createByName("whitespace"," ");
   this._comparator = this._createByName("string/quoted","\"i;ascii-casemap\"");
   this.optional = true;

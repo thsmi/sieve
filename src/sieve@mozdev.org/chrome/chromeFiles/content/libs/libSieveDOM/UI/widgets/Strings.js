@@ -22,7 +22,7 @@ SieveMatchTypeUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
 SieveMatchTypeUI.prototype.onSelect
     = function ()
 {
-  var value = $("input[name='rgMatchType"+this.getId()+"']:checked").val(); 
+  var value = $("input[name='rgMatchType"+this.id()+"']:checked").val(); 
   this.getSieve().matchType(value);
 }
 
@@ -36,7 +36,7 @@ SieveMatchTypeUI.prototype.init
       .css("overflow","auto")
       .append($("<input/>")
         .attr("type","radio")
-        .attr("name","rgMatchType"+this.getId())
+        .attr("name","rgMatchType"+this.id())
         .css("float","left")
         .attr("value","contains")
         .change(function () {that.onSelect()}))
@@ -48,7 +48,7 @@ SieveMatchTypeUI.prototype.init
       .css("overflow","auto")
       .append($("<input/>")
         .attr("type","radio")
-        .attr("name","rgMatchType"+this.getId())
+        .attr("name","rgMatchType"+this.id())
         .css("float","left")
         .attr("value","is")
         .change(function () {that.onSelect()}))
@@ -60,7 +60,7 @@ SieveMatchTypeUI.prototype.init
       .css("overflow","auto")
       .append($("<input/>")
         .attr("type","radio")
-        .attr("name","rgMatchType"+this.getId())
+        .attr("name","rgMatchType"+this.id())
         .css("float","left")
         .attr("value","matches")
         .change(function () {that.onSelect()}))
@@ -70,7 +70,7 @@ SieveMatchTypeUI.prototype.init
         .append($("<span/>").html('... as an wildcard match ...<br>'
           + '"*" matches zero or more characters, and "?" matches a single character <br>'
           + 'e.g.: "frobnitzm" matches "frob*zm" or "frobnit?m" but not frob?m '))))
-    .find("input[name='rgMatchType"+this.getId()+"'][value='"+this.getSieve().matchType()+"']")
+    .find("input[name='rgMatchType"+this.id()+"'][value='"+this.getSieve().matchType()+"']")
       .attr("checked","checked")
     .end();          
           
@@ -100,7 +100,7 @@ SieveAddressPartUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
 SieveAddressPartUI.prototype.onSelect
     = function ()
 {
-  var value = $("input[name='rgAddressPart"+this.getId()+"']:checked").val(); 
+  var value = $("input[name='rgAddressPart"+this.id()+"']:checked").val(); 
   this.getSieve().addressPart(value);
 }
 
@@ -114,7 +114,7 @@ SieveAddressPartUI.prototype.init
       .css("overflow","auto")
       .append($("<input/>")
         .attr("type","radio")
-        .attr("name","rgAddressPart"+this.getId())
+        .attr("name","rgAddressPart"+this.id())
         .css("float","left")
         .attr("value","all")
         .change(function () {that.onSelect()}))
@@ -127,7 +127,7 @@ SieveAddressPartUI.prototype.init
       .css("overflow","auto")
       .append($("<input/>")
         .attr("type","radio")
-        .attr("name","rgAddressPart"+this.getId())
+        .attr("name","rgAddressPart"+this.id())
         .css("float","left")
         .attr("value","domain")
         .change(function () {that.onSelect()}))
@@ -140,7 +140,7 @@ SieveAddressPartUI.prototype.init
       .css("overflow","auto")
       .append($("<input/>")
         .attr("type","radio")
-        .attr("name","rgAddressPart"+this.getId())
+        .attr("name","rgAddressPart"+this.id())
         .css("float","left")
         .attr("value","localpart")
         .change(function () {that.onSelect()}))
@@ -149,7 +149,7 @@ SieveAddressPartUI.prototype.init
         .append($("<h1/>").text("... a local part with..."))
         .append($("<span/>").html('Everything before the @ sign. The local part is case sensistive.<br>'
           + 'e.g.: "me@example.com" is stripped to "me"'))))
-    .find("input[name='rgAddressPart"+this.getId()+"'][value='"+this.getSieve().addressPart()+"']")
+    .find("input[name='rgAddressPart"+this.id()+"'][value='"+this.getSieve().addressPart()+"']")
       .attr("checked","checked")
     .end();           
           
@@ -181,7 +181,7 @@ SieveComparatorUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
 SieveComparatorUI.prototype.onSelect
     = function ()
 {
-  var value = $("input[name='rgComparator"+this.getId()+"']:checked").val(); 
+  var value = $("input[name='rgComparator"+this.id()+"']:checked").val(); 
   this.getSieve().comparator(value);
 }
 
@@ -194,18 +194,18 @@ SieveComparatorUI.prototype.init
     .append($("<div/>")
       .append($("<input/>")
         .attr("type","radio")
-        .attr("name","rgComparator"+this.getId())
+        .attr("name","rgComparator"+this.id())
         .attr("value","i;ascii-casemap")
         .change(function () {that.onSelect()}))
       .append($("<span/>").text("Case insensitive ASCII String (default)")))
     .append($("<div/>")
       .append($("<input/>")
         .attr("type","radio")
-        .attr("name","rgComparator"+this.getId())
+        .attr("name","rgComparator"+this.id())
         .attr("value","i;octet")
         .change(function () {that.onSelect()}))
       .append($("<span/>").text("Case sensitive UTF-8 Octetts")))
-      .find("input[name='rgComparator"+this.getId()+"'][value='"+this.getSieve().comparator()+"']")
+      .find("input[name='rgComparator"+this.id()+"'][value='"+this.getSieve().comparator()+"']")
         .attr("checked","checked")
       .end();
 }
@@ -236,11 +236,11 @@ SieveStringListUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
 SieveStringListUI.prototype.onAddItem
     = function ()
 {
-  var val = $("#txtAddString"+this.getId()).val();  
+  var val = $("#txtAddString"+this.id()).val();  
   
   this.getSieve().append(val);
   
-  $("#divAddString"+this.getId())
+  $("#divAddString"+this.id())
     .before(this._createItemUI(val));    
 }
 
@@ -275,9 +275,9 @@ SieveStringListUI.prototype.init
     headers.append(this._createItemUI(this.getSieve().item(i)))
   
   headers.append($("<div/>")
-    .attr("id","divAddString"+this.getId())
+    .attr("id","divAddString"+this.id())
     .append($("<input/>")
-      .attr("id","txtAddString"+this.getId()))
+      .attr("id","txtAddString"+this.id()))
     .append($("<button/>").text("+")
       .click(function(){ that.onAddItem() } )));
     
@@ -311,12 +311,12 @@ SieveHeaderListUI.prototype.__proto__ = SieveStringListUI.prototype;
 SieveHeaderListUI.prototype.onSelect
     = function ()
 {   
-  var val = $("#cbHeaders"+this.getId()).val();
+  var val = $("#cbHeaders"+this.id()).val();
     
   if (val == "Customize...")
-    $("#txtAddString"+this.getId()).show()
+    $("#txtAddString"+this.id()).show()
   else
-    $("#txtAddString"+this.getId()).val(val).hide();
+    $("#txtAddString"+this.id()).val(val).hide();
 
 }
 
@@ -327,7 +327,7 @@ SieveHeaderListUI.prototype.init
   var header = SieveStringListUI.prototype.init.call(this)
     .children(":last")
     .prepend($("<select/>")
-      .attr("id","cbHeaders"+this.getId())
+      .attr("id","cbHeaders"+this.id())
       .change(function(){that.onSelect()})
       .append($("<option/>").text("Subject"))
       .append($("<option/>").text("Cc"))
@@ -338,7 +338,7 @@ SieveHeaderListUI.prototype.init
       .append($("<option/>").text("---"))
       .append($("<option/>").text("Customize...")))
     .end()
-    .find("#txtAddString"+this.getId())
+    .find("#txtAddString"+this.id())
       .hide()
       .val("Subject")
     .end();

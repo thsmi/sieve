@@ -27,12 +27,12 @@ SieveSizeTestUI.prototype.onValidate
 {
   
   this.getSieve()
-        .isOver($("#SizeTestOver"+this.getId()).val())
+        .isOver($("#SizeTestOver"+this.id()).val())
         .getSize()
-          .value($("#SizeTestValue"+this.getId()).val())
-          .unit($("#SizeTestUnit"+this.getId()).val());
+          .value($("#SizeTestValue"+this.id()).val())
+          .unit($("#SizeTestUnit"+this.id()).val());
 
-  $("#txtSizeText"+this.getId())
+  $("#txtSizeText"+this.id())
     .text("message is "+(this.getSieve().isOver()?"larger":"smaller")
                    +" than "+this.getSieve().getSize().toScript());          
   
@@ -46,7 +46,7 @@ SieveSizeTestUI.prototype.initEditor
            .append($("<span/>")
              .text("Message is"))
            .append($("<select/>")
-             .attr("id","SizeTestOver"+this.getId())           
+             .attr("id","SizeTestOver"+this.id())           
              .append($("<option/>")
                .text("bigger").val("true"))
              .append($("<option/>")
@@ -56,10 +56,10 @@ SieveSizeTestUI.prototype.initEditor
              .text("than"))
            .append($("<input/>")
              .attr("type","text")
-             .attr("id","SizeTestValue"+this.getId())
+             .attr("id","SizeTestValue"+this.id())
              .val(""+this.getSieve().getSize().value()) )           
            .append($("<select/>")
-             .attr("id","SizeTestUnit"+this.getId())
+             .attr("id","SizeTestUnit"+this.id())
              .append($("<option/>")
                 .text("Bytes").val(""))
              .append($("<option/>")
@@ -75,7 +75,7 @@ SieveSizeTestUI.prototype.initSummary
     = function ()
 {
   return $("<div/>")
-           .attr("id","txtSizeText"+this.getId())
+           .attr("id","txtSizeText"+this.id())
            .text("message is "+(this.getSieve().isOver()?"larger":"smaller")
                    +" than "+this.getSieve().getSize().toScript());  
 }
@@ -94,12 +94,12 @@ SieveBooleanTestUI.prototype.onValidate
     = function ()
 {
   
-  if ($("#BooleanTestValue"+this.getId()).val() == "true")
+  if ($("#BooleanTestValue"+this.id()).val() == "true")
     this.getSieve().value = true
   else
     this.getSieve().value = false;
     
-  $("#txtBooleanText"+this.getId())
+  $("#txtBooleanText"+this.id())
     .text("is "+this.getSieve().value);          
   
   return true;      
@@ -112,7 +112,7 @@ SieveBooleanTestUI.prototype.initEditor
            .append($("<span/>")
              .text("is"))
            .append($("<select/>")
-             .attr("id","BooleanTestValue"+this.getId())           
+             .attr("id","BooleanTestValue"+this.id())           
              .append($("<option/>")
                .text("true").val("true"))
              .append($("<option/>")
@@ -124,7 +124,7 @@ SieveBooleanTestUI.prototype.initSummary
     = function ()
 {
   return $("<div/>")
-           .attr("id","txtBooleanText"+this.getId())
+           .attr("id","txtBooleanText"+this.id())
            .text("is "+(this.getSieve().value));  
 }
     
@@ -165,7 +165,7 @@ SieveHeaderUI.prototype.onValidate
     = function ()
 {
      
-  $("#lblHeader"+this.getId())
+  $("#lblHeader"+this.id())
     .text(" header "+this.getSieve().headerNames.toScript()
           +" [is|contains|matches] [case-sensitive] "
           +this.getSieve().keyList.toScript());       
@@ -203,7 +203,7 @@ SieveHeaderUI.prototype.initSummary
 {
   // case- insensitive is the default so skip it...
   return $("<div/>")
-      .attr("id","lblHeader"+this.getId()) 
+      .attr("id","lblHeader"+this.id()) 
       .text(" header "+this.getSieve().headerNames.toScript()
               +" [is|contains|matches] [case-sensitive] "
               +this.getSieve().keyList.toScript());
@@ -223,7 +223,7 @@ SieveAddressUI.prototype.onValidate
     = function ()
 {
      
-  $("#lblAddress"+this.getId())
+  $("#lblAddress"+this.id())
     .text(" address "+this.getSieve().headerList.toScript()
           +" [is|contains|matches] [case-sensitive] "
           +this.getSieve().keyList.toScript());       
@@ -255,7 +255,7 @@ SieveAddressUI.prototype.initSummary
 {
   // case- insensitive is the default so skip it...
   return $("<div/>")
-      .attr("id","lblAddress"+this.getId()) 
+      .attr("id","lblAddress"+this.id()) 
       .text(" address "+this.getSieve().headerList.toScript()
               +" [is|contains|matches] [case-sensitive] "
               +this.getSieve().keyList.toScript());
@@ -276,12 +276,12 @@ SieveAnyOfAllOfUI.prototype.onValidate
     = function ()
 {
   
-  if ($("#AnyOfAllOfValue"+this.getId()).val() == "true")
+  if ($("#AnyOfAllOfValue"+this.id()).val() == "true")
     this.getSieve().isAllOf = true
   else
     this.getSieve().isAllOf = false;
     
-  $("#lblAnyOfAllOf"+this.getId())
+  $("#lblAnyOfAllOf"+this.id())
     .text((this.getSieve().isAllOf)?"All of the following:":"Any of the following:");          
   
   return true;      
@@ -292,7 +292,7 @@ SieveAnyOfAllOfUI.prototype.initEditor
 {
   return $(document.createElement("div"))
            .append($("<select/>")
-             .attr("id","AnyOfAllOfValue"+this.getId())           
+             .attr("id","AnyOfAllOfValue"+this.id())           
              .append($("<option/>")
                .text("All of the following").val("true"))
              .append($("<option/>")
@@ -304,7 +304,7 @@ SieveAnyOfAllOfUI.prototype.initSummary
     = function ()
 {
   return $("<div/>")
-           .attr("id","lblAnyOfAllOf"+this.getId())           
+           .attr("id","lblAnyOfAllOf"+this.id())           
            .text((this.getSieve().isAllOf)?"All of the following:":"Any of the following:");  
 }
 

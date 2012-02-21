@@ -14,9 +14,9 @@
 //<envelope> [COMPARATOR] [ADDRESS-PART] [MATCH-TYPE] 
 //  <envelope-part: string-list> <key-list: string-list>
    
-function SieveEnvelope(id) 
+function SieveEnvelope(docshell,id) 
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
   
   this.whiteSpace = [];
   this.whiteSpace[0] = this._createByName("whitespace"," ");
@@ -133,9 +133,9 @@ SieveEnvelope.prototype.toWidget
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
-function SieveAddress(id)
+function SieveAddress(docshell,id)
 {
-  SieveAbstractElement.call(this,id); 
+  SieveAbstractElement.call(this,docshell,id); 
   
   this.options = new Array(null,null,null);
   
@@ -235,9 +235,9 @@ SieveAddress.prototype.toWidget
 
 /******************************************************************************/
 
-function SieveBoolean(id) 
+function SieveBoolean(docshell,id) 
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
   
   // first line with deadcode
   this.whiteSpace = this._createByName("whitespace");  
@@ -298,9 +298,9 @@ SieveBoolean.prototype.toWidget
 }
 
 /******************************************************************************/    
-function SieveSize(id) 
+function SieveSize(docshell,id) 
 {
-  SieveAbstractElement.call(this,id); 
+  SieveAbstractElement.call(this,docshell,id); 
   
   this.whiteSpace = [];
   this.whiteSpace[0] = this._createByName("whitespace", " ");
@@ -394,9 +394,9 @@ SieveSize.prototype.toWidget
 
 /******************************************************************************/
   
-function SieveExists(id)
+function SieveExists(docshell,id)
 {
-  SieveAbstractElement.call(this,id); 
+  SieveAbstractElement.call(this,docshell,id); 
   
   this.whiteSpace = [];
   this.whiteSpace[0] = this._createByName("whitespace",' ' );
@@ -450,9 +450,9 @@ SieveExists.prototype.toWidget
 
 /******************************************************************************/
     
-function SieveHeader(id) 
+function SieveHeader(docshell,id) 
 {
-  SieveAbstractElement.call(this,id); 
+  SieveAbstractElement.call(this,docshell,id); 
   
   this.whiteSpace = [];
   this.whiteSpace[0] = this._createByName("whitespace"," ");
@@ -565,9 +565,9 @@ SieveHeader.prototype.toWidget
 
 
 // TODO SHould inherrit from block...
-function SieveTestList(id)
+function SieveTestList(docshell,id)
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
   this.tests = [];  
 }
 
@@ -645,9 +645,9 @@ SieveTestList.prototype.require
 }
 
 //****************************************************************************/
-function SieveAnyOfAllOfTest(id)
+function SieveAnyOfAllOfTest(docshell,id)
 {
-  SieveTestList.call(this,id);  
+  SieveTestList.call(this,docshell,id);  
   this.whiteSpace = this._createByName("whitespace");
 }
 

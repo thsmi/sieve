@@ -9,9 +9,9 @@
  
  "use strict";
 
-function SieveIf(id)
+function SieveIf(docshell,id)
 {
-  SieveElse.call(this,id);
+  SieveElse.call(this,docshell,id);
   this._test = null;  
 }
 
@@ -53,7 +53,7 @@ SieveIf.prototype.test
    return this._test;
   
    if (item.parent())
-     throw "test already bound to "+item.parent().id;
+     throw "test already bound to "+item.parent().id();
      
   // Release old test...
   this._test.parent(null);
@@ -68,7 +68,7 @@ SieveIf.prototype.test
 SieveIf.prototype.find
     = function(id)
 {
-  if (this.id == id) 
+  if (this.id() == id) 
     return this;
   
   var item = this.block.find(id);
@@ -106,9 +106,9 @@ SieveIf.prototype.toWidget
 
 //****************************************************************************//
 
-function SieveElse(id)
+function SieveElse(docshell,id)
 {
-  SieveAbstractElement.call(this,id);
+  SieveAbstractElement.call(this,docshell,id);
   this.ws = [];
   this.block = this._createByName("block/block");
 }
@@ -146,7 +146,7 @@ SieveElse.prototype.init
 SieveElse.prototype.find
     = function(id)
 {
-  if (this.id == id) 
+  if (this.id() == id) 
     return this;
   
   return this.block.find(id);
@@ -175,9 +175,9 @@ SieveElse.prototype.toWidget
 
 //****************************************************************************//
 
-function SieveCondition(id) 
+function SieveCondition(docshell,id) 
 {
-  SieveBlockBody.call(this,id);
+  SieveBlockBody.call(this,docshell,id);
   
   this.elms[0] = this._createByName("condition/if","if false {\r\n}\r\n"); 
 }

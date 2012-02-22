@@ -21,6 +21,12 @@ function SieveSetFlag(docshell,id)
 
 SieveSetFlag.prototype.__proto__ = SieveAbstractElement.prototype;
 
+SieveSetFlag.isElement
+    = function (token)
+{
+  return (token.substring(0,7).toLowerCase().indexOf("setflag") == 0);
+}
+    
 SieveSetFlag.prototype.init
     = function (data)
 {  
@@ -62,6 +68,12 @@ function SieveAddFlag(docshell,id)
 
 SieveAddFlag.prototype.__proto__ = SieveAbstractElement.prototype;
 
+SieveAddFlag.isElement
+    = function (token)
+{
+  return (token.substring(0,7).toLowerCase().indexOf("addflag") == 0)
+}
+
 SieveAddFlag.prototype.init
     = function (data)
 {
@@ -98,14 +110,7 @@ SieveAddFlag.prototype.toScript
 
 //removeflag <variablename: string> <list-of-flags: string-list>
 
-SieveRemoveFlag.isRemoveFlag
-  = function(token)
-{ 
- if (token.indexOf("removeflag") == 0)
-    return true;
- 
- return false;
-}
+
 
 function SieveRemoveFlag(docshell,id) 
 {
@@ -119,6 +124,15 @@ function SieveRemoveFlag(docshell,id)
 }
 
 SieveRemoveFlag.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveRemoveFlag.isElement
+  = function(token)
+{ 
+ if (token.indexOf("removeflag") == 0)
+    return true;
+ 
+ return false;
+}
 
 SieveRemoveFlag.prototype.init
     = function (data)
@@ -159,14 +173,7 @@ SieveRemoveFlag.prototype.toScript
 
 // REGISTER
 
-SieveHasFlag.isHasFlag
-  = function(token)
-{ 
- if (token.indexOf("hasflag") == 0)
-    return true;
- 
- return false;
-}
+
  
 function SieveHasFlag(docshell,id)
 {
@@ -184,6 +191,15 @@ function SieveHasFlag(docshell,id)
 }
 
 SieveHasFlag.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveHasFlag.isElement
+  = function(token)
+{ 
+ if (token.indexOf("hasflag") == 0)
+    return true;
+ 
+ return false;
+}
 
 SieveHasFlag.prototype.init
     = function (data)
@@ -222,21 +238,11 @@ SieveHasFlag.prototype.toScript
 if (!SieveLexer)
   throw "Could not register IMAP Flags";
 
-SieveLexer.register("action","action/addflag",
-      function(token) {
-        return (token.substring(0,7).toLowerCase().indexOf("addflag") == 0)}, 
-      function(id) {return new SieveAddFlag(id)});
+SieveLexer.register2("action","action/addflag",SieveAddFlag);
       
-SieveLexer.register("action","action/removeflag",
-      function(token) {return SieveRemoveFlag.isRemoveFlag(token)}, 
-      function(id) {return new SieveRemoveFlag(id)});  
+SieveLexer.register2("action","action/removeflag",SieveRemoveFlag);  
       
-SieveLexer.register("action","action/setflag",
-      function(token) {
-        return (token.substring(0,7).toLowerCase().indexOf("setflag") == 0)},
-      function(id) {return new SieveSetFlag(id)});
+SieveLexer.register2("action","action/setflag",SieveSetFlag);
       
-SieveLexer.register("test","test/hasflag",
-      function(token) {return SieveHasFlag.isHasFlag(token)},
-      function(id) {return new SieveHasFlag(id)});
+SieveLexer.register2("test","test/hasflag",SieveHasFlag);
  

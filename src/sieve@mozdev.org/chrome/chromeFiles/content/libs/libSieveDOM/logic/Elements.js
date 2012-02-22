@@ -154,5 +154,7 @@ SieveAbstractElement.prototype.remove
   // ... finally cleanup all evidence to our parent Node;
   this._parent = null;
   
+  this._docshell.compact();
+  
   return this;
 }

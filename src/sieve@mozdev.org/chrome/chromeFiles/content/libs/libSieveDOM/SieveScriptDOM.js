@@ -167,12 +167,31 @@ SieveDocument.prototype.script
 SieveDocument.prototype.compact
   = function ()
 {
-  var items = []
   
+  var items = [];
+  var cnt = 0;
+  
+  // scan for null nodes..
   for (var item in this._nodes)
     if (!this._nodes[item].parent())
       items.push(item);
-  
+
+  // ...cleanup these nodes...
   for (var i=0; i<items.length; i++)
     delete (this._nodes[items[i]]);
+    
+  // ... and remove all dependent nodes  
+  while (items.length)
+  {
+    var it = items.shift();
+    
+    for (var item in this._nodes)
+      if (this._nodes[item].parent().id() == it)
+        items.push(item) 
+        
+    delete(this._nodes[it]);
+    cnt++;
+  } 
+  
+  return cnt;
 }

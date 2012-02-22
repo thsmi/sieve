@@ -196,6 +196,11 @@ function require()
 {
   dom2.getRequires();
 }
+
+function compact()
+{
+  dom2.compact()
+}
 function debug(obj)
 {
   //var logger = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
@@ -273,6 +278,9 @@ redirect "test";
     <button onclick="require()">
 	  Collect Require
 	</button>	
+    <button onclick="compact()">
+	  Compact
+	</button>		
     <button onclick="$('#boxScript').slideToggle()">
 	  Show/Hide
 	</button>		

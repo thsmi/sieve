@@ -107,27 +107,6 @@ SieveBlockBody.prototype.toWidget
   return (new SieveBlockUI(this)).getWidget();
 }
 
-SieveBlockBody.prototype.find
-    = function (id)
-{ 
-  if (this.id() == id)
-    return this;
-
-    
-  var item = null;
-  
-  // crawl throug all child elements
-  for (var i=0; i<this.elms.length; i++)
-  {     
-    item = this.elms[i].find(id);
-    
-    if (item)
-      break;
-  }
-  
-  return item;
-}
-
 /**
  * Appends an Element to this Element. Inf the element is alread existant, it will be moved
  * 

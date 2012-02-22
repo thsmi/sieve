@@ -45,34 +45,49 @@ SieveRootNode.prototype.init
 function SieveDocument(lexer)
 {
   this._lexer = lexer;  
-  this.rootNode = new SieveRootNode(this);
+  this._nodes = {}
+  this._rootNode = new SieveRootNode(this);
 }
 
 SieveDocument.prototype.root
   = function ()
 {
-  return SieveBlockBody;
+  return this._rootNode;
 }
 
 SieveDocument.prototype.widget
     = function ()
 {  
-  return this.rootNode.widget();  
+  return this._rootNode.widget();  
 }
 
 // A shorthand to create children bound to this Element...
 SieveDocument.prototype.createByName
     = function(name, data, parent)
 {     
-  return this._lexer.createByName(this, name, data)
-           .parent((typeof(parent) === "undefined")?null:parent);
+  var item = this._lexer.createByName(this, name, data);
+  
+  if(typeof(parent) !== "undefined")
+    item.parent(parent);
+
+  // cache nodes...
+  this._nodes[item.id()] = item;
+  
+  return item; 
 }
   
 SieveDocument.prototype.createByClass
     = function(types, data, parent)
-{    
-  return this._lexer.createByClass(this, types, data)
-           .parent((typeof(parent) === "undefined")?null:parent);
+{  
+  var item = this._lexer.createByClass(this, types, data);
+  
+  if(typeof(parent) !== "undefined")
+    item.parent(parent);
+    
+  // cache nodes...
+  this._nodes[item.id()] = item;
+  
+  return item;
 }
   
 SieveDocument.prototype.probeByName
@@ -101,15 +116,14 @@ SieveDocument.prototype.getRequires
 SieveDocument.prototype.id
   = function (id)
 {
-  // TODO replace find...
-  return this.rootNode.find(id);    
+  return this._nodes[id];
 }
 
 SieveDocument.prototype.script
   = function (data)
 {
   if (typeof(data) === "undefined")
-    return this.rootNode.toScript();
+    return this._rootNode.toScript();
 
   // the sieve syntax prohibits single \n and \r
   // they have to be converted to \r\n
@@ -133,7 +147,7 @@ SieveDocument.prototype.script
   if (n != r)
     throw ("Something went terribly wrong. The linebreaks are mixed up...\n");
   
-  data = this.rootNode.init(data);
+  data = this._rootNode.init(data);
   
   if (data.length != 0)
     throw ("Parser error!"+data);
@@ -142,3 +156,23 @@ SieveDocument.prototype.script
   return data;
 }
 
+/**
+ * In oder to speedup mutation elements are cached. But this cache is lazy.
+ * So deleted objects will remain in memory until you call this cleanup
+ * Method.
+ * 
+ * It checks all cached elements for a valid parent pointer. If it's missing
+ * the document was obviously deleted...
+ */
+SieveDocument.prototype.compact
+  = function ()
+{
+  var items = []
+  
+  for (var item in this._nodes)
+    if (!this._nodes[item].parent())
+      items.push(item);
+  
+  for (var i=0; i<items.length; i++)
+    delete (this._nodes[items[i]]);
+}

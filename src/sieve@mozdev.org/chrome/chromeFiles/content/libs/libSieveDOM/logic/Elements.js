@@ -122,12 +122,6 @@ SieveAbstractElement.prototype.parent
   return this;
 }
 
-SieveAbstractElement.prototype.find
-    = function (id)
-{   
-  return (this._id == id) ? this : null; 
-}
-
 SieveAbstractElement.prototype.require
     = function (imports)
 {

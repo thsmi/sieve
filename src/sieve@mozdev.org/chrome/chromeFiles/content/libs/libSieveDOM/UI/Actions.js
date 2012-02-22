@@ -72,7 +72,6 @@ SieveRedirectUI.prototype.onValidate
     return false;
     
   this.getSieve().setAddress($("#txtRedirect"+this.id()).val());  
-  $("#lblRedirect"+this.id()).text(this.getSieve().getAddress());
   
   return true;
 }
@@ -98,8 +97,7 @@ SieveRedirectUI.prototype.initSummary
            .text("Redirect message to ")           
            .append($(document.createElement("span"))
              .text(this.getSieve().getAddress())
-             .addClass("SivMailAddress")
-             .attr("id","lblRedirect"+this.id()));         
+             .addClass("SivMailAddress"));         
 }
 
 /******************************************************************************/
@@ -116,7 +114,6 @@ SieveRejectUI.prototype.onValidate
    = function ()
 {
   this.getSieve().setReason($("#txtReason"+this.id()).val());
-  $("#lblReason"+this.id()).text(this.getSieve().getReason());
 
   return true;
 }
@@ -143,8 +140,7 @@ SieveRejectUI.prototype.initSummary
            .text("Reject incomming messages and reply the following reason:")           
            .append($(document.createElement("div"))
              .text(this.getSieve().getReason())
-             .addClass("SivText")
-             .attr("id","lblReason"+this.id()));         
+             .addClass("SivText"));         
 }
 
 /******************************************************************************/
@@ -160,7 +156,6 @@ SieveFileIntoUI.prototype.onValidate
    = function ()
 {
   this.getSieve().setPath($("#txtPath"+this.id()).val());
-  $("#lblPath"+this.id()).text(this.getSieve().getPath());
 
   return true;
 }
@@ -183,6 +178,5 @@ SieveFileIntoUI.prototype.initSummary
            .text("Copy the incomming message into:")
            .addClass("text")
            .append($(document.createElement("div"))
-             .text(this.getSieve().getPath())
-             .attr("id","lblPath"+this.id()));         
+             .text(this.getSieve().getPath()));         
 }

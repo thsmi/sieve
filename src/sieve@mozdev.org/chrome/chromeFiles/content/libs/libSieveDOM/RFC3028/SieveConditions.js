@@ -64,21 +64,6 @@ SieveIf.prototype.test
   return this;
 }
 
-
-SieveIf.prototype.find
-    = function(id)
-{
-  if (this.id() == id) 
-    return this;
-  
-  var item = this.block.find(id);
-  
-  if (item)
-    return item;
-      
-  return this._test.find(id);
-}
-
 SieveIf.prototype.require
     = function (imports)
 {
@@ -141,15 +126,6 @@ SieveElse.prototype.init
   data = this.ws[1].init(data); 
   
   return data;
-}
-
-SieveElse.prototype.find
-    = function(id)
-{
-  if (this.id() == id) 
-    return this;
-  
-  return this.block.find(id);
 }
 
 SieveElse.prototype.require

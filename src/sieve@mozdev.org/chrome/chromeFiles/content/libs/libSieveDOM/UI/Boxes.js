@@ -177,57 +177,6 @@ SieveDragBoxUI.prototype.getWidget
   return this._domElm;
 }
 
-//****************************************************************************//
-
-function SieveStackableDragBoxUI(elm)
-{
-  SieveDragBoxUI.call(this,elm);
-  this.panels = [];
-  this.selectedIndex = 0;
-}
-
-SieveStackableDragBoxUI.prototype.__proto__ = SieveDragBoxUI.prototype;
-
-SieveStackableDragBoxUI.prototype.getPanel
-    = function (idx)
-{
-  return this.panels[idx];
-}
-
-SieveStackableDragBoxUI.prototype.showPanel
-    = function (idx)
-{
-  if (idx == this.selectedIndex)
-    return;
-  
-  for (var i=0; i<this.panels.length; i++)
-    this.panels[i].hide();
-    
-  this.selectedIndex = idx;
-  
-  return this.panels[idx].show();  
-}
-
-SieveStackableDragBoxUI.prototype.initPanels
-    = function ()
-{
-}
-
-SieveStackableDragBoxUI.prototype.init
-    = function ()
-{
-  this.initPanels();
-
-  var item = $("<div/>");
-  
-  for (var i=0; i<this.panels.length; i++)
-    item.append(this.panels[i])
-          
-  this.showPanel(1);
-  
-  return item;  
-}
-
 /******************************************************************************/
 
 
@@ -235,11 +184,11 @@ SieveStackableDragBoxUI.prototype.init
 function SieveEditableDragBoxUI(elm)
 {
   // Call parent constructor...
-  SieveStackableDragBoxUI.call(this,elm);
+  SieveDragBoxUI.call(this,elm);
 }
 
 // Inherrit from DragBox
-SieveEditableDragBoxUI.prototype.__proto__ = SieveStackableDragBoxUI.prototype;
+SieveEditableDragBoxUI.prototype.__proto__ =  SieveDragBoxUI.prototype;
 
 SieveEditableDragBoxUI.prototype.onValidate
     = function(e)
@@ -249,12 +198,16 @@ SieveEditableDragBoxUI.prototype.onValidate
 
 SieveEditableDragBoxUI.prototype.showEditor
     = function(e)
-{
+{ 
+  var _this = this;
   
-  this.showPanel(0);
-  this._domElm.attr("sivIsEditable",  "true");  
-    
-  return;
+  this._domElm.empty()
+    .append(this.initEditor())
+    .append($("<div/>")
+      .append($(document.createElement("button"))
+        .text("Ok")
+        .click(function(e) { _this.showSummary();   e.preventDefault(); return true; } )))
+    .attr("sivIsEditable",  "true");
 }
 
 SieveEditableDragBoxUI.prototype.showSummary
@@ -263,26 +216,23 @@ SieveEditableDragBoxUI.prototype.showSummary
   if (!this.onValidate())
     return;
   
-  this.showPanel(1);
-  this._domElm.removeAttr("sivIsEditable");  
+  this._domElm
+    .empty()
+    .append(this.init())
+    .removeAttr("sivIsEditable");
   
   return;
-}
+} 
 
-SieveEditableDragBoxUI.prototype.initPanels
+SieveEditableDragBoxUI.prototype.init
     = function ()
 {
   var _this = this;
    
-  this.panels[0] = this.initEditor()
-    .append($(document.createElement("div"))
-      .append($(document.createElement("button"))
-        .text("Ok")
-        .click(function(e) {  _this.showSummary(); e.preventDefault();return true; } )));
-        
-  this.panels[1] = this.initSummary()
-      .click(function(e) { _this.showEditor(); e.preventDefault();return true; } );
-}    
+  return $("<div/>").
+      append(this.initSummary()
+        .click(function(e) { _this.showEditor();   e.preventDefault(); return true; } ));
+}
 
 /*****************************************************************************/
 

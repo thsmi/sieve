@@ -30,11 +30,7 @@ SieveSizeTestUI.prototype.onValidate
         .isOver($("#SizeTestOver"+this.id()).val())
         .getSize()
           .value($("#SizeTestValue"+this.id()).val())
-          .unit($("#SizeTestUnit"+this.id()).val());
-
-  $("#txtSizeText"+this.id())
-    .text("message is "+(this.getSieve().isOver()?"larger":"smaller")
-                   +" than "+this.getSieve().getSize().toScript());          
+          .unit($("#SizeTestUnit"+this.id()).val());         
   
   return true;      
 }
@@ -75,7 +71,6 @@ SieveSizeTestUI.prototype.initSummary
     = function ()
 {
   return $("<div/>")
-           .attr("id","txtSizeText"+this.id())
            .text("message is "+(this.getSieve().isOver()?"larger":"smaller")
                    +" than "+this.getSieve().getSize().toScript());  
 }
@@ -98,9 +93,6 @@ SieveBooleanTestUI.prototype.onValidate
     this.getSieve().value = true
   else
     this.getSieve().value = false;
-    
-  $("#txtBooleanText"+this.id())
-    .text("is "+this.getSieve().value);          
   
   return true;      
 }
@@ -124,7 +116,6 @@ SieveBooleanTestUI.prototype.initSummary
     = function ()
 {
   return $("<div/>")
-           .attr("id","txtBooleanText"+this.id())
            .text("is "+(this.getSieve().value));  
 }
     
@@ -163,13 +154,7 @@ SieveHeaderUI.prototype.__proto__ = SieveEditableDragBoxUI.prototype;
 
 SieveHeaderUI.prototype.onValidate
     = function ()
-{
-     
-  $("#lblHeader"+this.id())
-    .text(" header "+this.getSieve().headerNames.toScript()
-          +" [is|contains|matches] [case-sensitive] "
-          +this.getSieve().keyList.toScript());       
-  
+{ 
   return true;      
 }
 
@@ -203,7 +188,6 @@ SieveHeaderUI.prototype.initSummary
 {
   // case- insensitive is the default so skip it...
   return $("<div/>")
-      .attr("id","lblHeader"+this.id()) 
       .text(" header "+this.getSieve().headerNames.toScript()
               +" [is|contains|matches] [case-sensitive] "
               +this.getSieve().keyList.toScript());
@@ -222,12 +206,6 @@ SieveAddressUI.prototype.__proto__ = SieveEditableDragBoxUI.prototype;
 SieveAddressUI.prototype.onValidate
     = function ()
 {
-     
-  $("#lblAddress"+this.id())
-    .text(" address "+this.getSieve().headerList.toScript()
-          +" [is|contains|matches] [case-sensitive] "
-          +this.getSieve().keyList.toScript());       
-  
   return true;      
 }
 
@@ -255,7 +233,6 @@ SieveAddressUI.prototype.initSummary
 {
   // case- insensitive is the default so skip it...
   return $("<div/>")
-      .attr("id","lblAddress"+this.id()) 
       .text(" address "+this.getSieve().headerList.toScript()
               +" [is|contains|matches] [case-sensitive] "
               +this.getSieve().keyList.toScript());
@@ -279,10 +256,7 @@ SieveAnyOfAllOfUI.prototype.onValidate
   if ($("#AnyOfAllOfValue"+this.id()).val() == "true")
     this.getSieve().isAllOf = true
   else
-    this.getSieve().isAllOf = false;
-    
-  $("#lblAnyOfAllOf"+this.id())
-    .text((this.getSieve().isAllOf)?"All of the following:":"Any of the following:");          
+    this.getSieve().isAllOf = false;         
   
   return true;      
 }
@@ -303,8 +277,7 @@ SieveAnyOfAllOfUI.prototype.initEditor
 SieveAnyOfAllOfUI.prototype.initSummary
     = function ()
 {
-  return $("<div/>")
-           .attr("id","lblAnyOfAllOf"+this.id())           
+  return $("<div/>")        
            .text((this.getSieve().isAllOf)?"All of the following:":"Any of the following:");  
 }
 

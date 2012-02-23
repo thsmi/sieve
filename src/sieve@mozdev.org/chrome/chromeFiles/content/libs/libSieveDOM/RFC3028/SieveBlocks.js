@@ -127,7 +127,7 @@ SieveBlockBody.prototype.append
   
   var idx = this.elms.length;
   
-  if ((typeof(siblingsId) === "undefined") || (siblingId < 0)) 
+  if ((typeof(siblingId) !== "undefined") && (siblingId >= 0)) 
     for (var idx = 0; idx<this.elms.length; idx++)
       if (this.elms[idx].id() == siblingId)
         break;

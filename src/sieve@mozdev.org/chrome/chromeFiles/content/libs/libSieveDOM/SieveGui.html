@@ -177,6 +177,11 @@ function setSieveScript(script)
     // reset environemnt
 	init();
 	
+	if (!script)
+	  script =$('#txtScript').val();
+	 else
+	  $('#txtScript').val(script);
+	
     dom2.script(script);
 	
 	$("#txtOutput")
@@ -274,7 +279,7 @@ redirect "test";
     </div>
 </div >
 <div>
-    <button onclick="setSieveScript($('#txtScript').val())">
+    <button onclick="setSieveScript();">
 	   Parse Sieve Script
 	 </button>
     <button onclick="$('#txtOutput').val(getSieveScript());">

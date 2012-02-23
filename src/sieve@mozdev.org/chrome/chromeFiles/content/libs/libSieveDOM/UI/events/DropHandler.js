@@ -259,6 +259,9 @@ SieveTrashBoxDropHandler.prototype.moveElement
       .remove()
       .end()
     .remove();
+   
+  var that = this._owner.document();  
+  this.window.setTimeout(function() {that.compact(); },0)
 }
 
 //****************************************************************************//

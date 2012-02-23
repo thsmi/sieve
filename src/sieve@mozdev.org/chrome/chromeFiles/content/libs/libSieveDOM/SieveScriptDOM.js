@@ -41,6 +41,23 @@ SieveRootNode.prototype.init
   return data;
 }
 
+SieveRootNode.prototype.toScript
+    = function (data)
+{
+  var requires = [];
+  
+  // Step 1: collect requires
+  this.elms[1].require(requires);
+
+  // Step 2: Add require...
+  for (var item in requires)
+    this.elms[0].capability(item);
+
+  // TODO Remove unused requires...
+    
+  // return the script
+  return SieveBlockBody.prototype.toScript.call(this);
+}
 
 function SieveDocument(lexer)
 {
@@ -100,19 +117,8 @@ SieveDocument.prototype.probeByClass
     = function(types, data)
 {    
   return this._lexer.probeByClass(types,data);
-}  
-
-SieveDocument.prototype.getRequires
-    = function ()
-{
-  var requires = {};
-  
-  this.rootNode.require(requires);
-  
-  for (var i in requires)
-    alert(i);  
 }
-    
+
 SieveDocument.prototype.id
   = function (id)
 {

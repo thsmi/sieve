@@ -47,6 +47,18 @@ SieveRequire.prototype.init
   return data;
 }
 
+SieveRequire.prototype.capability
+    = function (require)
+{
+  if (typeof(require) === "undefined")
+    return this.strings;
+    
+  if (!this.strings.contains(require))
+    this.strings.append(require);
+    
+  return this;
+}
+
 SieveRequire.prototype.toScript
     = function ()
 {
@@ -60,8 +72,7 @@ SieveRequire.prototype.toScript
 // CONSTRUCTOR:
 function SieveBlockImport(docshell,id)
 {
-  SieveBlockBody.call(this,docshell,id);
-  this.elms = [];  
+  SieveBlockBody.call(this,docshell,id); 
 }
 
 SieveBlockImport.prototype.__proto__ = SieveBlockBody.prototype;
@@ -87,6 +98,32 @@ SieveBlockImport.prototype.init
   }
  
   return data;
+}
+
+SieveBlockImport.prototype.capability
+    = function (require)
+{
+ 
+  // We should try to insert new requires directly aftr the previous one...
+  // ... otherwise it looks strange.
+  var item = -1;
+  
+  for (var i=0; i<this.elms.length; i++)
+  {
+    if (!this.elms[i].capability)
+      continue;
+    
+    item = this.elms[i].id();
+     
+    if (this.elms[i].capability().contains(require))
+      return this;
+  }
+      
+  
+  this.append(
+    this.document().createByName("import/require").capability(require), item);
+        
+  return this;
 }
 
 SieveBlockImport.prototype.toWidget

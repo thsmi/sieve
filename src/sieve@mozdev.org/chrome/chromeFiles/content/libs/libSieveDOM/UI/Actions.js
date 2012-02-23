@@ -162,13 +162,13 @@ SieveFileIntoUI.prototype.onValidate
 
 SieveFileIntoUI.prototype.initEditor
     = function ()
-{  
-  return $(document.createElement("div"))
+{              
+  return $("<div/>")
            .text("Copy the incomming message into:")
-           .append($(document.createElement("textarea"))
-             .attr("id","txtPath"+this.id())
-             .attr("multiline","true")
-             .attr("value",""+this.getSieve().getPath()));
+           .append($("<div/>")
+             .append($("<input/>")
+               .attr("id","txtPath"+this.id())
+               .attr("value",""+this.getSieve().getPath())));
 }
 
 SieveFileIntoUI.prototype.initSummary

@@ -316,6 +316,28 @@ SieveStringList.prototype.init
   
 }
 
+SieveStringList.prototype.contains
+    = function (str,matchCase)
+{  
+  var item = "";
+  
+  if (typeof(matchCase) === "undefined")
+    str = str.toLowerCase();
+  
+  for (var i=0; i<this.elements.length; i++)
+  {
+    if (typeof(matchCase) === "undefined")
+      item = this.elements[i][1].getValue().toLowerCase();
+    else 
+      item = this.elements[i][1].getValue();
+      
+    if (item == str)
+      return true
+  }
+  
+  return false;
+}
+
 SieveStringList.prototype.item
     = function (idx,value)
 {

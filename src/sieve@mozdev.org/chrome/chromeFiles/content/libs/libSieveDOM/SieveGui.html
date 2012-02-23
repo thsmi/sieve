@@ -194,7 +194,12 @@ function getSieveScript()
 
 function require()
 {
-  dom2.getRequires();
+  var requires = {};
+  
+  dom2.root().require(requires);
+  
+  for (var i in requires)
+    alert(i);  
 }
 
 function compact()

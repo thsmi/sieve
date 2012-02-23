@@ -17,41 +17,21 @@ var SieveLexer =
   names : {},//[],
   maxId : 0,
   
-  register2: function (type,name,callback)
+  register: function (type,name,callback)
   {
     if (!callback.isElement)
       throw "Lexer Error: isElement function for "+name+" missing";
       
-    this.register(type,name,
-      function(token) {return callback.isElement(token)}, 
-      function(docshell, id) {return new callback(docshell,id)});
-  },
-  
-  /**
-   * @param {} type 
-   * @param {} id
-   * @param {} onProbe  // Callback to evaluete object
-   * @param {} onNew // Callback to get an object
-   */
-  register: function(type,name,onProbe,onCreate)
-  { 
-    if (onProbe == null)
-      throw "Lexer Error: Probe function for "+name+" missing";
-    if (onCreate == null)
-      throw "Lexer Error: Create function for "+name+" missing";
-      
     if (this.types[type] == null)
       this.types[type] = new Object();
-    
-    //alert("Registering"+type+"  "+name);
-    
+          
     var obj = new Object();
     obj.name = name;
-    obj.onProbe = onProbe;
-    obj.onNew = onCreate;
+    obj.onProbe =  function(token) {return callback.isElement(token)} 
+    obj.onNew = function(docshell, id) {return new callback(docshell,id)};
     
     this.names[name] = obj;
-    this.types[type][name] = obj;
+    this.types[type][name] = obj;      
   },
   
   getConstructor : function(selectors, token)

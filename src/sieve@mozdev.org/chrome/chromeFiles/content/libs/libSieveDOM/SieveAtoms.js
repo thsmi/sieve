@@ -145,5 +145,5 @@ SieveSemicolon.prototype.toScript
 if (!SieveLexer)
   throw "Could not register Atoms";
 
-SieveLexer.register2("atom/","atom/number",SieveNumber)
-SieveLexer.register2("atom/","atom/semicolon",SieveSemicolon);
+SieveLexer.register("atom/","atom/number",SieveNumber)
+SieveLexer.register("atom/","atom/semicolon",SieveSemicolon);

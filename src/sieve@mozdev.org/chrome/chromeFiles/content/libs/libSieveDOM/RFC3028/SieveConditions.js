@@ -220,6 +220,6 @@ SieveCondition.prototype.toScript
 if (!SieveLexer)
   throw "Could not register Conditional Elements";
 
-SieveLexer.register2("condition/","condition/if", SieveIf);      
-SieveLexer.register2("condition/","condition/else", SieveElse);      
-SieveLexer.register2("condition","condition", SieveCondition);
+SieveLexer.register("condition/","condition/if", SieveIf);      
+SieveLexer.register("condition/","condition/else", SieveElse);      
+SieveLexer.register("condition","condition", SieveCondition);

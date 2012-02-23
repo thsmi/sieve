@@ -702,12 +702,12 @@ SieveAnyOfAllOfTest.prototype.toWidget
 if (!SieveLexer)
   throw "Could not register Conditional Elements";
 
-SieveLexer.register2("test","test/address",SieveAddress);
-SieveLexer.register2("test","test/boolean",SieveBoolean);
-SieveLexer.register2("test","test/envelope",SieveEnvelope);
-SieveLexer.register2("test","test/exists",SieveExists);  
-SieveLexer.register2("test","test/header",SieveHeader);
-SieveLexer.register2("test","test/size",SieveSize);
+SieveLexer.register("test","test/address",SieveAddress);
+SieveLexer.register("test","test/boolean",SieveBoolean);
+SieveLexer.register("test","test/envelope",SieveEnvelope);
+SieveLexer.register("test","test/exists",SieveExists);  
+SieveLexer.register("test","test/header",SieveHeader);
+SieveLexer.register("test","test/size",SieveSize);
 
-SieveLexer.register2("test","test/anyof",SieveAnyOfAllOfTest);
-SieveLexer.register2("test/","test/testlist",SieveTestList);
+SieveLexer.register("test","test/anyof",SieveAnyOfAllOfTest);
+SieveLexer.register("test/","test/testlist",SieveTestList);

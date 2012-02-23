@@ -186,5 +186,5 @@ SieveBlockBody.prototype.require
 if (!SieveLexer)
   throw "Could not register Block Elements";
 
-SieveLexer.register2("block/","block/body",SieveBlockBody);
-SieveLexer.register2("block/","block/block",SieveBlock);
+SieveLexer.register("block/","block/body",SieveBlockBody);
+SieveLexer.register("block/","block/block",SieveBlock);

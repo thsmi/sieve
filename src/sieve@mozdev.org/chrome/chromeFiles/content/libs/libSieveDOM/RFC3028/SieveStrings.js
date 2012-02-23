@@ -727,10 +727,10 @@ SieveComparator.prototype.toScript
 if (!SieveLexer)
   throw "Could not register Strings Elements";
 
-SieveLexer.register2("stringlist","stringlist",SieveStringList); 
-SieveLexer.register2("string","string", SieveString);
-SieveLexer.register2("string/","string/quoted",SieveQuotedString);
-SieveLexer.register2("string/","string/multiline",SieveMultiLineString);
-SieveLexer.register2("comparison","match-type",SieveMatchType)
-SieveLexer.register2("comparison","comparator",SieveComparator)
-SieveLexer.register2("comparison","address-part",SieveAddressPart)
+SieveLexer.register("stringlist","stringlist",SieveStringList); 
+SieveLexer.register("string","string", SieveString);
+SieveLexer.register("string/","string/quoted",SieveQuotedString);
+SieveLexer.register("string/","string/multiline",SieveMultiLineString);
+SieveLexer.register("comparison","match-type",SieveMatchType)
+SieveLexer.register("comparison","comparator",SieveComparator)
+SieveLexer.register("comparison","address-part",SieveAddressPart)

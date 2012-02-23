@@ -100,6 +100,6 @@ if (!SieveLexer)
   throw "Could not register Import Elements";
 
 
-SieveLexer.register2("import","import",SieveBlockImport);
-SieveLexer.register2("import/","import/require",SieveRequire);
+SieveLexer.register("import","import",SieveBlockImport);
+SieveLexer.register("import/","import/require",SieveRequire);
       

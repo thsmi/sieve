@@ -252,9 +252,9 @@ SieveWhiteSpace.prototype.toScript
 if (!SieveLexer)
   throw "Could not register DeadCode Elements";
 
-SieveLexer.register2("whitespace/","whitespace/linebreak",SieveLineBreak);
-SieveLexer.register2("whitespace/","whitespace/deadcode",SieveDeadCode);
-SieveLexer.register2("whitespace/","whitespace/bracketcomment",SieveBracketComment);  
-SieveLexer.register2("whitespace/","whitespace/hashcomment",SieveHashComment);
+SieveLexer.register("whitespace/","whitespace/linebreak",SieveLineBreak);
+SieveLexer.register("whitespace/","whitespace/deadcode",SieveDeadCode);
+SieveLexer.register("whitespace/","whitespace/bracketcomment",SieveBracketComment);  
+SieveLexer.register("whitespace/","whitespace/hashcomment",SieveHashComment);
 
-SieveLexer.register2("whitespace","whitespace",SieveWhiteSpace);
+SieveLexer.register("whitespace","whitespace",SieveWhiteSpace);

@@ -238,11 +238,11 @@ SieveHasFlag.prototype.toScript
 if (!SieveLexer)
   throw "Could not register IMAP Flags";
 
-SieveLexer.register2("action","action/addflag",SieveAddFlag);
+SieveLexer.register("action","action/addflag",SieveAddFlag);
       
-SieveLexer.register2("action","action/removeflag",SieveRemoveFlag);  
+SieveLexer.register("action","action/removeflag",SieveRemoveFlag);  
       
-SieveLexer.register2("action","action/setflag",SieveSetFlag);
+SieveLexer.register("action","action/setflag",SieveSetFlag);
       
-SieveLexer.register2("test","test/hasflag",SieveHasFlag);
+SieveLexer.register("test","test/hasflag",SieveHasFlag);
  

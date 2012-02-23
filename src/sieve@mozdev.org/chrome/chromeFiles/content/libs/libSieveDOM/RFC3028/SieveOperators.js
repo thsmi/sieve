@@ -80,5 +80,5 @@ if (!SieveLexer)
   throw "Could not register Conditional Elements";
 
 
-SieveLexer.register2("test","test/not",SieveOperatorSingle);
+SieveLexer.register("test","test/not",SieveOperatorSingle);
             

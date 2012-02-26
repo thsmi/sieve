@@ -69,7 +69,7 @@ SieveRedirectUI.prototype.onValidate
    = function ()
 {
   if (! $("#txtRedirect"+this.id()).get(0).checkValidity())
-    return false;
+    throw "Invalid email address";
     
   this.getSieve().setAddress($("#txtRedirect"+this.id()).val());  
   
@@ -124,13 +124,12 @@ SieveRejectUI.prototype.initEditor
   return $("<div/>")
            .append($("<div/>")
              .text("Reject incomming messages and reply the following reason:"))
-           .append($("<div/>")
-             .append($("<textarea/>")
-               .attr("id","txtReason"+this.id())
-               .attr("multiline","true")
-               .attr("cols","60").attr("rows","5")
-               .attr("wrap","off")
-               .attr("value",""+this.getSieve().getReason())));
+           .append($("<textarea/>")
+             .attr("id","txtReason"+this.id())
+             .attr("multiline","true")
+             .attr("cols","60").attr("rows","5")
+             .attr("wrap","off")
+             .attr("value",""+this.getSieve().getReason()));
 }
 
 SieveRejectUI.prototype.initSummary
@@ -156,8 +155,6 @@ SieveFileIntoUI.prototype.onValidate
    = function ()
 {
   this.getSieve().setPath($("#txtPath"+this.id()).val());
-
-  return true;
 }
 
 SieveFileIntoUI.prototype.initEditor

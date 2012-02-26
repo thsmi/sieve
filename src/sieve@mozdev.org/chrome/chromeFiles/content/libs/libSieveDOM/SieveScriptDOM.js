@@ -130,7 +130,7 @@ SieveDocument.prototype.script
 {
   if (typeof(data) === "undefined")
     return this._rootNode.toScript();
-
+  
   // the sieve syntax prohibits single \n and \r
   // they have to be converted to \r\n
   

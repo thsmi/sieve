@@ -180,9 +180,9 @@ function SieveHasFlag(docshell,id)
   SieveAbstractElement.call(this,docshell,id); 
 
   this.whiteSpace = [];
-  this.whiteSpace[0] = this._createByName("whitespace");
-  this.whiteSpace[1] = this._createByName("whitespace");
-  this.whiteSpace[2] = this._createByName("whitespace");    
+  this.whiteSpace[0] = this._createByName("whitespace", " ");
+  this.whiteSpace[1] = this._createByName("whitespace", " ");
+  this.whiteSpace[2] = this._createByName("whitespace", " ");    
 
 
   this.whiteSpace     = [];

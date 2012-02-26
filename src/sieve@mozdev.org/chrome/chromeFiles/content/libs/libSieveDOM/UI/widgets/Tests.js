@@ -158,6 +158,19 @@ SieveHeaderUI.prototype.onValidate
   return true;      
 }
 
+SieveHeaderUI.prototype.initHelp
+    = function ()
+{
+  return $("<div/>")
+    .html('<h1>Header Test</h1>'
+      + 'Use this test to compare Strings like a subject lines, spam score, etc.<br/>' 
+      + "But do not compare against headers containing mail addresses, like To, Bcc,"
+      + "From, Cc! They usually contain a display name. Instead of "
+      + "'roadrunner@acme.example.com\' the header can be something similar to " 
+      + "'\"roadrunner\" &lt;roadrunner@acme.example.com&gt;'. The \"address\" test "
+      + "is aware of display names and compares against the pure mail address.")
+}
+
 SieveHeaderUI.prototype.initEditor
     = function()
 {  
@@ -166,21 +179,13 @@ SieveHeaderUI.prototype.initEditor
 
   
   return $("<div/>")
-    .append($("<div/>")
-      .append($("<div/>").text(
-        "Use this test to compare Strings like a subject lines, spam score, etc."))
-      .append($("<div/>").text(
-         "But do not compare against headers containing mail addresses, like To, Bcc,"
-         + "From, Cc! They usually contain a display name. Instead of "
-         + "'roadrunner@acme.example.com\' the header can be something similar to " 
-         + "'\"roadrunner\" <roadrunner@acme.example.com>'. The \"address\" test "
-         + "is aware of display names and compares against the pure mail address.")))
-    .append($("<h1/>").text("Any of the following header ..."))
-    .append((new SieveHeaderListUI(this.getSieve().headerNames)).getWidget())
-    .append((new SieveMatchTypeUI(this.getSieve().matchType)).getWidget())
-    .append($("<h1/>").text("... any of the keyword(s)"))
-    .append((new SieveStringListUI(this.getSieve().keyList)).getWidget())    
-    .append((new SieveComparatorUI(this.getSieve().comparator)).getWidget())
+      .append($("<h1/>").text("Any of the following header ..."))
+      .append((new SieveHeaderListUI(this.getSieve().headerNames)).getWidget())
+      .append((new SieveMatchTypeUI(this.getSieve().matchType)).getWidget())
+      .append($("<h1/>").text("... any of the keyword(s)"))
+      .append((new SieveStringListUI(this.getSieve().keyList)).getWidget())    
+      .append((new SieveComparatorUI(this.getSieve().comparator)).getWidget());
+
 }
   
 SieveHeaderUI.prototype.initSummary
@@ -209,23 +214,29 @@ SieveAddressUI.prototype.onValidate
   return true;      
 }
 
+SieveAddressUI.prototype.initHelp
+    = function ()
+{
+  return $("<div/>")
+      .html('<h1>Address Test</h1>'
+      +'The address test is designed to match headers containing E-Mail addresses.' 
+      + 'It offers compared to the "header test" more sophisticated address matching'
+      + ' and is capable to cope with addres headers containing display names');
+}
+
 SieveAddressUI.prototype.initEditor
     = function()
 {
  
   /*From, To, Cc, Bcc, Sender, Resent-From, Resent-To*/
   return $("<div/>")
-    .append($("<span/>").text(
-      'The address test is designed to match headers containing E-Mail addresses.' 
-      + 'It offers compared to the "header test" more sophisticated address matching'
-      + ' and is capable to cope with addres headers containing display names'))
-    .append($("<h1/>").text("Any of the following header ..."))
-    .append((new SieveHeaderListUI(this.getSieve().headerList)).getWidget())
-    .append((new SieveMatchTypeUI(this.getSieve().matchType)).getWidget())
-    .append((new SieveAddressPartUI(this.getSieve().addressPart)).getWidget())
-    .append($("<h1/>").text("... any of the keyword(s)"))
-    .append((new SieveStringListUI(this.getSieve().keyList)).getWidget())    
-    .append((new SieveComparatorUI(this.getSieve().comparator)).getWidget())
+      .append($("<h1/>").text("Any of the following header ..."))
+      .append((new SieveHeaderListUI(this.getSieve().headerList)).getWidget())
+      .append((new SieveMatchTypeUI(this.getSieve().matchType)).getWidget())
+      .append((new SieveAddressPartUI(this.getSieve().addressPart)).getWidget())
+      .append($("<h1/>").text("... any of the keyword(s)"))
+      .append((new SieveStringListUI(this.getSieve().keyList)).getWidget())    
+      .append((new SieveComparatorUI(this.getSieve().comparator)).getWidget());
 }
   
 SieveAddressUI.prototype.initSummary

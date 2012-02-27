@@ -45,6 +45,23 @@
 //<![CDATA[
 $(document).ready(function() {
   init();
+  
+  // editable and draggabel areas do not like eachother too much...
+  // ... so ensure that we are either editable or draggable but never both
+  $("#divOutput").mouseover(function(ev) {
+  
+     switch (ev.target.nodeName)
+	 {
+	   case "INPUT":
+       case	 "TEXTAREA" :
+	     $("[draggable=true]").attr("draggable","false");
+		 break;
+		 
+		default:
+		  $("[draggable=false]").attr("draggable","true"); 
+	 }	   
+	   
+    $("#draggable").val(ev.target.nodeName)});
 });
 
 function setSieveScript(script)
@@ -169,6 +186,7 @@ redirect "test";
     <button onclick="$('#boxScript').toggle()">
 	  Show/Hide
 	</button>		
+	<input id="draggable" />
 </div>
 </div>
 

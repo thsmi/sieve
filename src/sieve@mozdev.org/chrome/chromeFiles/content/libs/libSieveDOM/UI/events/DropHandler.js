@@ -47,33 +47,33 @@ SieveDropHandler.prototype.onDrop
   {
     case "create" :
       if (!this.createElement)
-        return true;
+        return false;
         
       this.createElement(
         flavour,
         dt.mozGetDataAt(flavour,0).type,
         dt.mozGetDataAt("application/sieve",0));
         
-      event.preventDefault();
-      event.stopPropagation();
-      return false;
+      //event.preventDefault();
+      //event.stopPropagation();
+      return true;
 
     case "move" :
       if (!this.moveElement)
-        return true;
+        return false;
 
       this.moveElement(
         flavour,
         dt.mozGetDataAt(flavour,0).id,
         dt.mozGetDataAt("application/sieve",0));
 
-      return false;
+      return true;
       
     default:
       throw "Invalid action..."+ dt.mozGetDataAt(flavour,0).action;
   }
 
-  return true;  
+  return false;  
 }
 
 SieveDropHandler.prototype.onCanDrop
@@ -84,7 +84,7 @@ SieveDropHandler.prototype.onCanDrop
 
 SieveDropHandler.prototype.drop
     = function(event)
-{
+{ 
   for (var i=0; i<this.flavours().length; i++)
   {
     if ( !this.onCanDrop(this.flavours()[i],event) )

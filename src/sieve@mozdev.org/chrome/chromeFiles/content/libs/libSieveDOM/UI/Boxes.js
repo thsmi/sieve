@@ -128,8 +128,7 @@ SieveDragBoxUI.prototype.onDragGesture
   switch (this._action)
   {
      case "move" :
-       // TODO: FixMe:
-       //event.dataTransfer.mozSetDataAt("text/plain",""+this.getSieve().toScript(),0);
+       event.dataTransfer.mozSetDataAt("text/plain",""+this.getSieve().toScript(),0);
        event.dataTransfer.mozSetDataAt("application/sieve",""+this.getSieve().toScript(),0);
        event.dataTransfer.mozSetDataAt(this.flavour(),
           { id: this.id(), action:"move"},0);        
@@ -153,7 +152,7 @@ SieveDragBoxUI.prototype.onDragGesture
    // TODO use mouse event and calculate real offset istead of using 5,5...
    event.dataTransfer.setDragImage(this.getWidget().get(0),5,5);
   // event.preventDefault();
-   event.stopPropagation();
+   //event.stopPropagation();
 
    return true;   
 }
@@ -175,7 +174,8 @@ SieveDragBoxUI.prototype.getWidget
   this._domElm = this.init()
     .addClass("SivElement")
     .attr("draggable","true")
-    .bind("dragstart",function(e) {return _this.onDragGesture(e)});
+    .bind("dragstart",function(e) { _this.onDragGesture(e); return true;})
+    .bind("dragend", function (e) { return false; });
     
   if (this.id() >= 0)
     this._domElm.attr("id","sivElm"+this.id());
@@ -303,14 +303,16 @@ SieveDropBoxUI.prototype.onDragEnter
     return true;
     
   this.dropTarget.attr("sivDragging", "true");
-  return true;
+  
+  return false;
 }
 
 SieveDropBoxUI.prototype.onDragExit
     = function (event)
 {
-  this.dropTarget.removeAttr("sivDragging");    
-  return true;
+  this.dropTarget.removeAttr("sivDragging");
+  
+  return false;
 }
       
 SieveDropBoxUI.prototype.onDragOver
@@ -320,9 +322,8 @@ SieveDropBoxUI.prototype.onDragOver
     return true;
     
   this.dropTarget.attr("sivDragging", "true");
-  event.preventDefault();
   
-  return true;         
+  return false;         
 }
 
 SieveDropBoxUI.prototype.onDragDrop
@@ -330,10 +331,10 @@ SieveDropBoxUI.prototype.onDragDrop
 {
   this.dropTarget.removeAttr("sivDragging");
   
-  if (this.handler.drop(event))
-    event.preventDefault();
-    
-  return true;
+  if (!this.handler.drop(event))
+    return true;
+
+  return false;
 }
 
 SieveDropBoxUI.prototype.getWidget
@@ -344,13 +345,13 @@ SieveDropBoxUI.prototype.getWidget
   
   var _this = this;
   this.dropTarget = 
-    $(document.createElement("div"))
+    $("<div/>")
       .addClass("sivDropBox")
       //.attr("id","SivElm"+this.id())
-      .bind("dragdrop",function(e) { return _this.onDragDrop(e)})
-      .bind("dragover",function(e) { return _this.onDragOver(e)})
-      .bind("dragexit",function(e) { return _this.onDragExit(e)})
-      .bind("dragenter",function(e) { return _this.onDragEnter(e)})
+      .bind("drop",function(e) { return _this.onDragDrop(e) })
+      .bind("dragover",function(e) { return _this.onDragOver(e) })
+      .bind("dragleave",function(e) { return _this.onDragExit(e) })
+      .bind("dragenter",function(e) { return _this.onDragEnter(e) })
       .text(this.id()+"@"+((this.parent())?this.parent().id():"-1")+" ["+this.handler.flavours()+"]");           
 
   return this.dropTarget

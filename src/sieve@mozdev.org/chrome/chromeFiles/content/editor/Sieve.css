@@ -136,7 +136,8 @@
 
 .sivWarning
 {
-	background-color: #FFFFCC;
+	background-image: -moz-linear-gradient(bottom, #ffdd66, #ffeb7d);
+	/*background-color: #FFFFCC;*/
 	border: 1px solid black; 
 	padding: 5px; 
 	margin-top : 5px;

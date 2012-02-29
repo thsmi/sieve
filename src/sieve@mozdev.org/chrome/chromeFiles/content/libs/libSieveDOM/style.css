@@ -154,7 +154,8 @@ div .floating-menu .SivElement {
   display:none;
   padding-bottom:20px;
   border-bottom: 1px solid gray;
-  background:#fff4c8;
+  background-image: -moz-linear-gradient(hsl(215,60%,92%), hsl(215,58%,88%));
+  /*background-image: -moz-linear-gradient(bottom, #ffdd66, #ffeb7d);*/
   cursor:pointer;
 }
 

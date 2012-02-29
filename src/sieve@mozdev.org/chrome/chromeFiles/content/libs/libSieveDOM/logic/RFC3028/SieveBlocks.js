@@ -104,7 +104,7 @@ SieveBlockBody.prototype.toScript
 SieveBlockBody.prototype.toWidget
     = function ()
 {
-  return (new SieveBlockUI(this)).getWidget();
+  return (new SieveBlockUI(this));
 }
 
 /**

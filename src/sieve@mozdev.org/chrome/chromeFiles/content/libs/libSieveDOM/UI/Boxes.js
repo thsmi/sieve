@@ -72,10 +72,21 @@ SieveAbstractBoxUI.prototype.document
   return this._elm;
 }
 
-SieveAbstractBoxUI.prototype.getWidget
+SieveAbstractBoxUI.prototype.html
     = function ()
 {
-  throw "Implement getWidget()";
+  throw "Implement html()";
+}
+
+SieveAbstractBoxUI.prototype.refresh
+    = function ()
+{
+  if (this.id() < 0)
+    throw "Invalid id";
+   
+  this._domElm = null;
+  
+  $("#sivElm"+this.id()).replaceWith(this.html());
 }
 
 SieveAbstractBoxUI.prototype.toScript
@@ -128,7 +139,7 @@ SieveDragBoxUI.prototype.onDragGesture
   switch (this._action)
   {
      case "move" :
-       event.dataTransfer.mozSetDataAt("text/plain",""+this.getSieve().toScript(),0);
+       //event.dataTransfer.mozSetDataAt("text/plain",""+this.getSieve().toScript(),0);
        event.dataTransfer.mozSetDataAt("application/sieve",""+this.getSieve().toScript(),0);
        event.dataTransfer.mozSetDataAt(this.flavour(),
           { id: this.id(), action:"move"},0);        
@@ -150,9 +161,9 @@ SieveDragBoxUI.prototype.onDragGesture
    }
          
    // TODO use mouse event and calculate real offset istead of using 5,5...
-   event.dataTransfer.setDragImage(this.getWidget().get(0),5,5);
-  // event.preventDefault();
-   //event.stopPropagation();
+   event.dataTransfer.setDragImage(this.html().get(0),5,5);
+   //event.preventDefault();
+   event.stopPropagation();
 
    return true;   
 }
@@ -163,7 +174,7 @@ SieveDragBoxUI.prototype.init
   return $("<div/>");
 }
 
-SieveDragBoxUI.prototype.getWidget
+SieveDragBoxUI.prototype.html
     = function ()
 {
   if (this._domElm)
@@ -182,6 +193,7 @@ SieveDragBoxUI.prototype.getWidget
          
   return this._domElm;
 }
+
 
 /******************************************************************************/
 
@@ -337,7 +349,7 @@ SieveDropBoxUI.prototype.onDragDrop
   return false;
 }
 
-SieveDropBoxUI.prototype.getWidget
+SieveDropBoxUI.prototype.html
     = function ()
 {
   if (this.dropTarget)
@@ -352,7 +364,7 @@ SieveDropBoxUI.prototype.getWidget
       .bind("dragover",function(e) { return _this.onDragOver(e) })
       .bind("dragleave",function(e) { return _this.onDragExit(e) })
       .bind("dragenter",function(e) { return _this.onDragEnter(e) })
-      .text(this.id()+"@"+((this.parent())?this.parent().id():"-1")+" ["+this.handler.flavours()+"]");           
+      //.text(this.id()+"@"+((this.parent())?this.parent().id():"-1")+" ["+this.handler.flavours()+"]");           
 
   return this.dropTarget
 }

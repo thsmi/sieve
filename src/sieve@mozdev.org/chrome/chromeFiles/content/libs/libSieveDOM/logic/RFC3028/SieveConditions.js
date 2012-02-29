@@ -85,7 +85,7 @@ SieveIf.prototype.toScript
 SieveIf.prototype.toWidget
     = function ()
 {
-  return (new SieveIfUI(this)).getWidget();  
+  return (new SieveIfUI(this));  
 }
 
 
@@ -146,7 +146,7 @@ SieveElse.prototype.toScript
 SieveElse.prototype.toWidget
     = function ()
 {
-  return (new SieveElseUI(this)).getWidget();  
+  return (new SieveElseUI(this));  
 }
 
 //****************************************************************************//
@@ -197,7 +197,7 @@ SieveCondition.prototype.init
 SieveCondition.prototype.toWidget
     = function ()
 {
-  return (new SieveConditionUI(this)).getWidget();  
+  return (new SieveConditionUI(this));  
 }
 
 SieveCondition.prototype.toScript

@@ -133,7 +133,7 @@ SieveExistsUI.prototype.initEditor
     = function()
 {
   return $("<div/>").text("all of the following header exist:")
-    .append((new SieveHeaderListUI(this.getSieve().headerNames)).getWidget())
+    .append((new SieveHeaderListUI(this.getSieve().headerNames)).html())
 }
   
 SieveExistsUI.prototype.initSummary
@@ -180,11 +180,11 @@ SieveHeaderUI.prototype.initEditor
   
   return $("<div/>")
       .append($("<h1/>").text("Any of the following header ..."))
-      .append((new SieveHeaderListUI(this.getSieve().headerNames)).getWidget())
-      .append((new SieveMatchTypeUI(this.getSieve().matchType)).getWidget())
+      .append((new SieveHeaderListUI(this.getSieve().headerNames)).html())
+      .append((new SieveMatchTypeUI(this.getSieve().matchType)).html())
       .append($("<h1/>").text("... any of the keyword(s)"))
-      .append((new SieveStringListUI(this.getSieve().keyList)).getWidget())    
-      .append((new SieveComparatorUI(this.getSieve().comparator)).getWidget());
+      .append((new SieveStringListUI(this.getSieve().keyList)).html())    
+      .append((new SieveComparatorUI(this.getSieve().comparator)).html());
 
 }
   
@@ -231,12 +231,12 @@ SieveAddressUI.prototype.initEditor
   /*From, To, Cc, Bcc, Sender, Resent-From, Resent-To*/
   return $("<div/>")
       .append($("<h1/>").text("Any of the following header ..."))
-      .append((new SieveHeaderListUI(this.getSieve().headerList)).getWidget())
-      .append((new SieveMatchTypeUI(this.getSieve().matchType)).getWidget())
-      .append((new SieveAddressPartUI(this.getSieve().addressPart)).getWidget())
+      .append((new SieveHeaderListUI(this.getSieve().headerList)).html())
+      .append((new SieveMatchTypeUI(this.getSieve().matchType)).html())
+      .append((new SieveAddressPartUI(this.getSieve().addressPart)).html())
       .append($("<h1/>").text("... any of the keyword(s)"))
-      .append((new SieveStringListUI(this.getSieve().keyList)).getWidget())    
-      .append((new SieveComparatorUI(this.getSieve().comparator)).getWidget());
+      .append((new SieveStringListUI(this.getSieve().keyList)).html())    
+      .append((new SieveComparatorUI(this.getSieve().comparator)).html());
 }
   
 SieveAddressUI.prototype.initSummary
@@ -302,7 +302,7 @@ SieveAnyOfAllOfUI.prototype.init
   for (var i=0; i<this.getSieve().tests.length; i++)
     item.append($("<div/>")
       .css("padding-left","30px")
-      .append(this.getSieve().tests[i][1].widget()))
+      .append(this.getSieve().tests[i][1].html()))
       
   
   return item;

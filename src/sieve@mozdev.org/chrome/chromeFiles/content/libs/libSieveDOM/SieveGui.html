@@ -46,8 +46,11 @@
 $(document).ready(function() {
   init();
   
-  // editable and draggabel areas do not like eachother too much...
-  // ... so ensure that we are either editable or draggable but never both
+    /*i += 1;
+    $(this).find("span").text( "mouse over x " + i );
+  }).mouseout(function(){
+    $(this).find("span").text("mouse out ");
+  })*/
   $("#divOutput").mouseover(function(ev) {
   
      switch (ev.target.nodeName)
@@ -81,7 +84,7 @@ function setSieveScript(script)
 	  
 	$("#divOutput")
 	  .empty()
-	  .append(dom2.widget())	
+	  .append(dom2.html())	
 }
 
 function getSieveScript()
@@ -122,7 +125,7 @@ function debug(obj)
     elm2._action = "create";
     elm2._flavour = flavour;
 	
-    return elm2.getWidget()
+    return elm2.html()
                     .append($(document.createTextNode(action.split('/')[1])))	
   }
 
@@ -144,12 +147,13 @@ function debug(obj)
 	elm.append($("<div/>").text("Tests"))
     
     for (var key in SieveLexer.types["test"])
-      elm.append(createMenuItem(key,"sieve/test",docShell).get(0));
+	  if (key != "test/boolean")
+        elm.append(createMenuItem(key,"sieve/test",docShell).get(0));
 
 	elm
 	  .append($(document.createElement('div'))
 	    .addClass("spacer"))
-      .append($(new SieveTrashBoxUI(docShell).getWidget())
+      .append($(new SieveTrashBoxUI(docShell).html())
 	    .attr('id','trash'));
   }
 //]]>

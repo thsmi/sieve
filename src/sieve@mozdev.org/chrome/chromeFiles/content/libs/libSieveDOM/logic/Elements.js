@@ -67,11 +67,24 @@ SieveAbstractElement.prototype.toScript
  */
 SieveAbstractElement.prototype.widget
     = function ()
-{
+{  
   if (!this._widget)
     this._widget = this.toWidget()
     
   return this._widget;       
+}
+
+SieveAbstractElement.prototype.html
+   = function (refresh)
+{
+  if (typeof(refresh) !== "undefined")
+    if (refresh)
+      this.widget().refresh();
+      
+  if (this.widget() == null)
+    return null;
+    
+  return this.widget().html();
 }
 
 /**

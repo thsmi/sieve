@@ -23,7 +23,7 @@ SieveRootNode.prototype.toWidget
     = function ()
 {  
   return $("<div/>")
-           .append(this.elms[1].widget());  
+           .append(this.elms[1].html());  
 }
 
 SieveRootNode.prototype.init
@@ -72,9 +72,10 @@ SieveDocument.prototype.root
   return this._rootNode;
 }
 
-SieveDocument.prototype.widget
+SieveDocument.prototype.html
     = function ()
 {  
+  // TODO fix me should be get HTML
   return this._rootNode.widget();  
 }
 

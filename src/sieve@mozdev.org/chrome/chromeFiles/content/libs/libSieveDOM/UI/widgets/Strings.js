@@ -76,7 +76,7 @@ SieveMatchTypeUI.prototype.init
           
 }
 
-SieveMatchTypeUI.prototype.getWidget
+SieveMatchTypeUI.prototype.html
     = function ()
 {
   if (this._domElm)
@@ -155,7 +155,7 @@ SieveAddressPartUI.prototype.init
           
 }
 
-SieveAddressPartUI.prototype.getWidget
+SieveAddressPartUI.prototype.html
     = function ()
 {
   if (this._domElm)
@@ -210,7 +210,7 @@ SieveComparatorUI.prototype.init
       .end();
 }
 
-SieveComparatorUI.prototype.getWidget
+SieveComparatorUI.prototype.html
     = function ()
 {
   if (this._domElm)
@@ -284,7 +284,7 @@ SieveStringListUI.prototype.init
   return headers; 
 }
 
-SieveStringListUI.prototype.getWidget
+SieveStringListUI.prototype.html
     = function ()
 {
   if (this._domElm)

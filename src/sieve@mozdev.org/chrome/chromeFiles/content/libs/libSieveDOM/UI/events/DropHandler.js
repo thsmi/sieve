@@ -135,10 +135,10 @@ SieveBlockDropHandler.prototype.onCanDrop
     
     var elm = this._owner.document().id(id);
             
-    if (elm.widget().prev().get(0) == this._owner.dropTarget.get(0))
+    if (elm.html().prev().get(0) == this._owner.dropTarget.get(0))
       return false;
                
-    if (elm.widget().next().get(0) == this._owner.dropTarget.get(0))
+    if (elm.html().next().get(0) == this._owner.dropTarget.get(0))
       return false;
                
     // in case the element is dragged onto the droptarget directly behind or ...
@@ -173,49 +173,63 @@ SieveBlockDropHandler.prototype.moveElement
   if (!item)
     throw "Block Drop Handler: No Element found for "+this._owner.parent().id();
   
-  // We need to wrap test into a condition...
-  if (sivFlavour == "sieve/test")
-  {     
-    // TODO Sieve Test behaviour is currently strange...
-    // It should work as follows:
-    // dragging a test should move the whole statement (test+block)
-    // and create a new conditional statement
-    //
-    // empty conditional statements shall be deleted.
-    // contitional statement with only an else block, shall add all elements 
-    // to the parent block and delete the else...
-   
-    var parentElm = dragElm.parent();
-    // we have to release the old test tests...
-    parentElm.test(parentElm.document().createByName("test/boolean","false"));   
+  switch (sivFlavour)
+  {
+    case "sieve/test":
+      // 1. We need to figure out the corresponding condition...
+      var oldCond = dragElm.parent().parent();
+      var oldOwner = oldCond.parent();
     
-    
-    // new Element
-    var elm = parentElm.document().createByName("condition");
-    elm.children(0).test(dragElm); 
-
-    // Update UI
-    dragElm.widget().before(parentElm.test().widget());    
-
-    dragElm = elm;
-  }
-
-  //... lets update the sieve dom and move the node to his new position...
-  item.append(dragElm,this._owner.id());
-
-  // ... remove droptarget infront of the last object's last position ...  
-  if(sivFlavour == "sieve/action")
-    $("#sivElm"+id)
-      .prev()
-        .remove();
+      // 2. create a new home for our test
+      var newCond = dragElm.document().createByName("condition");    
+      newCond.append(dragElm.parent());
+      newCond.children(0).remove();
       
-  // ... and add a new one directly before it's new positon ...
-  this._owner.dropTarget
-    .before(
-      (new SieveDropBoxUI(this._owner.parent(),dragElm))
-        .drop(new SieveBlockDropHandler())
-        .getWidget())
-    .before(dragElm.widget());          
+      // 4. finally insert our new condition 
+      item.append(newCond,this._owner.id());    
+      item.widget().refresh();      
+    
+      // 3. we might also endup with just an else statement   
+      if ((oldCond.children().length) && (!oldCond.children(0).test))
+      {      
+        // we copy all of our else statements into our parent...
+        while (oldCond.children(0).getBlock().children().length)
+          oldOwner.append(oldCond.children(0).getBlock().children(0), oldCond.id());
+        
+        oldCond.children(0).remove();
+      }
+    
+      // 4. the condition might now be empty
+      if (!oldCond.children().length)
+      {
+        oldCond.remove();      
+        oldOwner.widget().refresh();
+      }
+      else
+        oldCond.widget().refresh();
+    
+      return;
+      
+    case "sieve/action":
+      // remember owner
+      var oldOwner = dragElm.parent();  
+      // Move Item to new owner
+      item.append(dragElm,this._owner.id());
+      
+      // refresh old and new Owner
+      item.widget().refresh();
+      oldOwner.widget().refresh();
+      
+      // TODO Check if move would result in am empty else, if so drop it automagically
+      // if !oldOwner.parent().parent().test 
+      //   &&   !oldOwner.parent().parent().block().children().length();
+      //   oldOwner.parent().parent().parent().remove();
+      //   refresh oldOwner parent      
+      
+      return;
+  }
+  
+  throw "Incompatible Drop";
 }
 
 SieveBlockDropHandler.prototype.createElement
@@ -236,14 +250,8 @@ SieveBlockDropHandler.prototype.createElement
   else
     elm = item.document().createByName(type);
   
-  item.append(elm,this._owner.id());  
-  
-  this._owner.dropTarget
-    .before(
-      (new SieveDropBoxUI(this._owner.parent(),elm))
-        .drop(new SieveBlockDropHandler())
-        .getWidget())
-    .before(elm.widget())
+  item.append(elm,this._owner.id());
+  item.widget().refresh();
 }
 
 //****************************************************************************//
@@ -332,15 +340,15 @@ SieveConditionDropHandler.prototype.onCanDrop
           // this is a test, so we have to retrieve the conditonal
           var elm = this._owner.document().id(id).parent();
             
-          if (elm.widget().prev().prev().get(0) == this._owner.dropTarget.get(0))
+          if (elm.html().prev().prev().get(0) == this._owner.dropTarget.get(0))
             return false;
                
-          if (elm.widget().next().get(0) == this._owner.dropTarget.get(0))
+          if (elm.html().next().get(0) == this._owner.dropTarget.get(0))
             return false;
          }
  
          // ... for tests everything before the last element is ok
-         if (this._owner.id() == -1)
+         if (this._owner.id() != -1)
            return true;
              
         break;
@@ -367,7 +375,7 @@ SieveConditionDropHandler.prototype.onCanDrop
 SieveConditionDropHandler.prototype.moveElement
     = function (sivFlavour, id, script)
 {
-  throw "implement me";
+  throw "implement me move Element";
 /*  var dragElm = this._owner.parent().getSieve().id(id);  
   if(!dragElm)
     throw "No Element found for "+id;
@@ -393,7 +401,7 @@ SieveConditionDropHandler.prototype.moveElement
     .before(
       (new SieveDropBoxUI(this._owner.parent(),dragElm))
         .drop(new SieveConditionDropHandler())
-        .getWidget())
+        .html())
     .before(dragElm.widget());*/
 }
 
@@ -418,7 +426,7 @@ SieveConditionDropHandler.prototype.createElement
       .before(
         (new SieveDropBoxUI(this._owner.parent(),elm))
           .drop(new SieveConditionDropHandler())
-          .getWidget())
+          .html())
 
     
     // ... now its getting a bit ugly, we can not always add an elsif ...
@@ -435,7 +443,7 @@ SieveConditionDropHandler.prototype.createElement
         
     // Finally we can insert our Element.        
     this._owner.dropTarget
-        .before(elm.widget())
+        .before(elm.html())
   }
   else if (sivFlavour == "sieve/action")
   {
@@ -448,9 +456,9 @@ SieveConditionDropHandler.prototype.createElement
       .before(
         (new SieveDropBoxUI(this._owner.parent(),elm))
           .drop(new SieveBlockDropHandler())
-          .getWidget())
+          .html())
       .before($("<div>").text("# ELSE"))          
-      .before(elm.widget());      
+      .before(elm.html());      
   }
   else 
    throw "Incompatible drop";

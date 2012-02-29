@@ -62,13 +62,13 @@ SieveOperatorSingle.prototype.toWidget
   elm.text("does not match:");
           
   elm.append(
-    (new SieveDropBoxUI(this,this.test))/*.flavours("sieve/test")*/.getWidget());
+    (new SieveDropBoxUI(this,this.test))/*.flavours("sieve/test")*/.html());
     
 
-  elm.append(this.test.widget())
+  elm.append(this.test.html())
   
   elm.append(
-    (new SieveDropBoxUI(this))/*.flavours("sieve/test")*/.getWidget());
+    (new SieveDropBoxUI(this))/*.flavours("sieve/test")*/.html());
   
   return elm;   
 }

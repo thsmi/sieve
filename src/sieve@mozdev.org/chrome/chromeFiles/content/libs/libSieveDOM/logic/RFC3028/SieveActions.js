@@ -47,7 +47,7 @@ SieveDiscard.prototype.toScript
 SieveDiscard.prototype.toWidget
     = function ()
 {
-  return (new SieveDiscardUI(this)).getWidget();  
+  return (new SieveDiscardUI(this));  
 }
 
 //***************************************
@@ -116,7 +116,7 @@ SieveRedirect.prototype.toScript
 SieveRedirect.prototype.toWidget
     = function ()
 {  
-  return (new SieveRedirectUI(this)).getWidget();
+  return (new SieveRedirectUI(this));
 }
  
 /******************************************************************************/
@@ -193,7 +193,7 @@ SieveReject.prototype.toScript
 SieveReject.prototype.toWidget
     = function ()
 {
-  return (new SieveRejectUI(this)).getWidget();  
+  return (new SieveRejectUI(this));  
 }
 
 
@@ -233,7 +233,7 @@ SieveStop.prototype.toScript
 SieveStop.prototype.toWidget
     = function ()
 {
-  return (new SieveStopUI(this)).getWidget();
+  return (new SieveStopUI(this));
 }
 
 /******************************************************************************/
@@ -272,7 +272,7 @@ SieveKeep.prototype.toScript
 SieveKeep.prototype.toWidget
     = function ()
 {
-  return (new SieveKeepUI(this)).getWidget();
+  return (new SieveKeepUI(this));
 }
 
 
@@ -348,7 +348,7 @@ SieveFileInto.prototype.toScript
 SieveFileInto.prototype.toWidget
     = function ()
 {
-  return (new SieveFileIntoUI(this)).getWidget();
+  return (new SieveFileIntoUI(this));
 }
 
 /******************************************************************************/

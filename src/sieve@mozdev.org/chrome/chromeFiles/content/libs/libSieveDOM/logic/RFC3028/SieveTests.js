@@ -230,7 +230,7 @@ SieveAddress.prototype.toScript
 SieveAddress.prototype.toWidget
     = function ()
 {
-  return (new SieveAddressUI(this)).getWidget();
+  return (new SieveAddressUI(this));
 }
 
 /******************************************************************************/
@@ -294,7 +294,7 @@ SieveBoolean.prototype.toScript
 SieveBoolean.prototype.toWidget
     = function ()
 {
-  return (new SieveBooleanTestUI(this)).getWidget();
+  return (new SieveBooleanTestUI(this));
 }
 
 /******************************************************************************/    
@@ -389,7 +389,7 @@ SieveSize.prototype.toScript
 SieveSize.prototype.toWidget
     = function ()
 {
-  return (new SieveSizeTestUI(this)).getWidget();      
+  return (new SieveSizeTestUI(this));      
 }
 
 /******************************************************************************/
@@ -445,7 +445,7 @@ SieveExists.prototype.toScript
 SieveExists.prototype.toWidget
     = function ()
 {
-  return (new SieveExistsUI(this)).getWidget();  
+  return (new SieveExistsUI(this));  
 }
 
 /******************************************************************************/
@@ -560,7 +560,7 @@ SieveHeader.prototype.toScript
 SieveHeader.prototype.toWidget
     = function ()
 {  
-  return (new SieveHeaderUI(this)).getWidget();
+  return (new SieveHeaderUI(this));
 }
 
 
@@ -695,7 +695,7 @@ SieveAnyOfAllOfTest.prototype.toScript
 SieveAnyOfAllOfTest.prototype.toWidget
     = function ()
 {
-  return (new SieveAnyOfAllOfUI(this)).getWidget();
+  return (new SieveAnyOfAllOfUI(this));
 }
 
 

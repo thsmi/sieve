@@ -194,6 +194,32 @@ SieveCondition.prototype.init
   return data;
 }
 
+SieveCondition.prototype.removeChild
+    = function (childId)
+{
+  // should we remove the whole node
+  if (typeof (childId) === "undefined")
+     throw "Child ID Missing";
+  
+  var elm = SieveBlockBody.prototype.removeChild.call(this,childId);
+  
+  //  ... if we endup after delete with just an else, merge it into parent...   
+  if ((this.children().length) && (!this.children(0).test))
+  {
+    // we copy all of our else statements into our parent...
+    while (this.children(0).getBlock().children().length)
+      this.parent().append(this.children(0).getBlock().children(0), this.id());
+        
+    this.children(0).remove();
+  }
+  
+  // 4. the condition might now be empty
+  if (this.parent() && (!this.children().length))
+    this.remove();
+    
+  return elm;
+}
+  
 SieveCondition.prototype.toWidget
     = function ()
 {

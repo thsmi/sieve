@@ -173,18 +173,18 @@ SieveQuotedString.prototype.init
    // remove the "
    data = data.slice(1);
    
-   var size = -1;
+   var size = 0;
    
-   if ((data[0]== '"') && (data[1] ='"'))
-     size = 0;
-   else
+   if (data[0] != '"')
+   {
      size = data.search(/[^\\]"/);
    
-   if (size == -1)
-     throw "Closing string expected but found "+data.substr(0,50);
+     if (size == -1)
+       throw "Closing string expected but found "+data.substr(0,50);
+     
+     size += 1;
+   }
    
-   size += 1;
-
    this.text = data.slice(0,size);
    
    // Only double quotes and backslashes are escaped...

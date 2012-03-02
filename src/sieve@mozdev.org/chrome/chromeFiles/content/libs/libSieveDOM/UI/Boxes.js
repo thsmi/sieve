@@ -277,6 +277,20 @@ SieveEditableDragBoxUI.prototype.init
 
 /*****************************************************************************/
 
+function SieveTestBoxUI(elm)
+{
+  // Call parent constructor...
+  SieveEditableDragBoxUI.call(this,elm);
+}
+
+SieveTestBoxUI.prototype.__proto__ =  SieveEditableDragBoxUI.prototype;
+
+SieveTestBoxUI.prototype.init
+    = function ()
+{
+  return (new SieveDropBoxUI(this,this.getSieve())).wrap(this).html();
+}
+
 /**
  * 
  * @param {SieveAbstractElement} elm
@@ -357,7 +371,7 @@ SieveDropBoxUI.prototype.html
   
   var _this = this;
   this.dropTarget = 
-    $("<div/>")
+     $("<div/>")
       .addClass("sivDropBox")
       //.attr("id","SivElm"+this.id())
       .bind("drop",function(e) { return _this.onDragDrop(e) })
@@ -366,7 +380,24 @@ SieveDropBoxUI.prototype.html
       .bind("dragenter",function(e) { return _this.onDragEnter(e) })
       //.text(this.id()+"@"+((this.parent())?this.parent().id():"-1")+" ["+this.handler.flavours()+"]");           
 
+  if (this._contentBox)
+    this.dropTarget.append(this._contentBox.html());
+    
   return this.dropTarget
+}
+
+SieveDropBoxUI.prototype.wrap
+    = function (box)
+{
+  if (typeof(box) === "undefined")
+    return box;
+    
+  this._contentBox = box;
+  
+  if (this.dropTarget)
+    this.dropTarget.replaceWith(this._contentBox.html());
+    
+  return this;
 }
 
 

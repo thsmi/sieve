@@ -32,10 +32,10 @@ SieveOperatorSingle.prototype.init
   data = data.slice("not".length);  
   data = this.whiteSpace[0].init(data);  
     
-  if (this._probeByClass(["test"],data) == false) 
+  if (this._probeByClass(["test","operator"],data) == false) 
     throw "Test command expected but found:\n'"+data.substr(0,50)+"'...";                 
 
-  this.test = this._createByClass(["test"],data)
+  this.test = this._createByClass(["test","operator"],data)
   data = this.test.init(data);
     
   if (this._probeByName("whitespace",data))
@@ -73,12 +73,69 @@ SieveOperatorSingle.prototype.toWidget
   return elm;   
 }
 
-
 //****************************************************************************//
+
+//N-Ary Operator
+//****************************************************************************/
+function SieveAnyOfAllOfTest(docshell,id)
+{
+  SieveTestList.call(this,docshell,id);  
+  this.whiteSpace = this._createByName("whitespace");
+}
+
+// Inherrit TestList
+SieveAnyOfAllOfTest.prototype.__proto__ = SieveTestList.prototype;
+
+SieveAnyOfAllOfTest.isElement
+   = function (token)
+{
+  if ( token.substring(0,5).toLowerCase().indexOf("allof") == 0)
+    return true;
+    
+  if ( token.substring(0,5).toLowerCase().indexOf("anyof") == 0)
+    return true;
+    
+  return false;
+}
+
+SieveAnyOfAllOfTest.prototype.init
+    = function (data)
+{
+  if ("allof" == data.substring(0,5).toLowerCase())
+    this.isAllOf = true;
+  else if ("anyof" == data.substring(0,5).toLowerCase())
+    this.isAllOf = false;
+  else
+    throw "allof or anyof expected but found: \n"+data.substr(0,50)+"...";
+    
+  data = data.slice(5);  
+  data = this.whiteSpace.init(data);
+  
+  data = SieveTestList.prototype.init.call(this,data);
+  
+  return data;
+}
+
+SieveAnyOfAllOfTest.prototype.toScript
+    = function()
+{
+  return (this.isAllOf?"allof":"anyof")
+           + this.whiteSpace.toScript()
+           + SieveTestList.prototype.toScript.call(this);  
+}
+
+SieveAnyOfAllOfTest.prototype.toWidget
+    = function ()
+{
+  return (new SieveAnyOfAllOfUI(this));
+}
+
+
 
 if (!SieveLexer)
   throw "Could not register Conditional Elements";
 
 
-SieveLexer.register("test","test/not",SieveOperatorSingle);
+SieveLexer.register("operator","operator/not",SieveOperatorSingle);
+SieveLexer.register("operator","operator/anyof",SieveAnyOfAllOfTest);
             

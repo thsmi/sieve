@@ -173,11 +173,28 @@ SieveQuotedString.prototype.init
    // remove the "
    data = data.slice(1);
    
-   // TODO: Handle escaped characters...
+   var size = -1;
    
-   var size = data.indexOf("\"");
+   if ((data[0]== '"') && (data[1] ='"'))
+     size = 0;
+   else
+     size = data.search(/[^\\]"/);
+   
+   if (size == -1)
+     throw "Closing string expected but found "+data.substr(0,50);
+   
+   size += 1;
 
    this.text = data.slice(0,size);
+   
+   // Only double quotes and backslashes are escaped...
+   // ... so we convert \" into "
+   this.text = this.text.replace('\\"','"',"g")  
+   // ... and convert \\ to \
+   this.text = this.text.replace("\\\\","\\","g");
+   
+   // ... We should finally ignore an other backslash patterns...
+   // ... but as they are illegal anyway, we assume a perfect world. 
       
    return data = data.slice(size+1); 
 }
@@ -200,7 +217,7 @@ SieveQuotedString.prototype.setValue
 SieveQuotedString.prototype.toScript
     = function ()
 {
-  return "\""+this.text+"\"";
+  return "\""+this.text.replace("\\","\\\\","g").replace('"','\\"',"g")+"\"";
 }
 
 /*******************************************************************************

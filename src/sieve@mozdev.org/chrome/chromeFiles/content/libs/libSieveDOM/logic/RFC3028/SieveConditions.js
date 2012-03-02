@@ -31,7 +31,7 @@ SieveIf.prototype.init
   this.ws[0] = this._createByName("whitespace");
   data = this.ws[0].init(data);
     
-  this._test = this._createByClass(["test"],data);
+  this._test = this._createByClass(["test","operator"],data);
   data = this._test.init(data);
   
   this.ws[1] = this._createByName("whitespace");

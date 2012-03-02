@@ -598,8 +598,8 @@ SieveTestList.prototype.init
     if (this._probeByName("whitespace",data))
       data = element[0].init(data);
     
-    if (this._probeByClass(["test"],data))
-      element[1] = this._createByClass(["test"],data)
+    if (this._probeByClass(["test","operator"],data))
+      element[1] = this._createByClass(["test","operator"],data)
     else
       throw "Test command expected but found:\n'"+data.substr(0,50)+"'...";        
 
@@ -644,60 +644,6 @@ SieveTestList.prototype.require
     this.tests[i][1].require(imports)
 }
 
-//****************************************************************************/
-function SieveAnyOfAllOfTest(docshell,id)
-{
-  SieveTestList.call(this,docshell,id);  
-  this.whiteSpace = this._createByName("whitespace");
-}
-
-// Inherrit TestList
-SieveAnyOfAllOfTest.prototype.__proto__ = SieveTestList.prototype;
-
-SieveAnyOfAllOfTest.isElement
-   = function (token)
-{
-  if ( token.substring(0,5).toLowerCase().indexOf("allof") == 0)
-    return true;
-    
-  if ( token.substring(0,5).toLowerCase().indexOf("anyof") == 0)
-    return true;
-    
-  return false;
-}
-
-SieveAnyOfAllOfTest.prototype.init
-    = function (data)
-{
-  if ("allof" == data.substring(0,5).toLowerCase())
-    this.isAllOf = true;
-  else if ("anyof" == data.substring(0,5).toLowerCase())
-    this.isAllOf = false;
-  else
-    throw "allof or anyof expected but found: \n"+data.substr(0,50)+"...";
-    
-  data = data.slice(5);  
-  data = this.whiteSpace.init(data);
-  
-  data = SieveTestList.prototype.init.call(this,data);
-  
-  return data;
-}
-
-SieveAnyOfAllOfTest.prototype.toScript
-    = function()
-{
-  return (this.isAllOf?"allof":"anyof")
-           + this.whiteSpace.toScript()
-           + SieveTestList.prototype.toScript.call(this);  
-}
-
-SieveAnyOfAllOfTest.prototype.toWidget
-    = function ()
-{
-  return (new SieveAnyOfAllOfUI(this));
-}
-
 
 if (!SieveLexer)
   throw "Could not register Conditional Elements";
@@ -709,5 +655,4 @@ SieveLexer.register("test","test/exists",SieveExists);
 SieveLexer.register("test","test/header",SieveHeader);
 SieveLexer.register("test","test/size",SieveSize);
 
-SieveLexer.register("test","test/anyof",SieveAnyOfAllOfTest);
 SieveLexer.register("test/","test/testlist",SieveTestList);

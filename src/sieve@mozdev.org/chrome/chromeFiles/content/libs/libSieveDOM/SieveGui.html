@@ -29,17 +29,16 @@
   
   
 
-  <script src="logic/RFC3028/SieveOperators.js" type="text/javascript"></script>
-
   <script src="logic/RFC3028/SieveImports.js" type="text/javascript"></script>
   <script src="logic/RFC3028/SieveActions.js" type="text/javascript"></script>
   <script src="SieveAtoms.js" type="text/javascript"></script>
 
   <script src="logic/RFC3028/SieveWhiteSpaces.js" type="text/javascript"></script>
   <script src="logic/RFC3028/SieveStrings.js" type="text/javascript"></script>
-  <script src="logic/ImapFlags/SieveImapFlags.js" type="text/javascript"></script>
+  <script src="logic/imapflags/SieveImapFlags.js" type="text/javascript"></script>
   <script src="logic/RFC3028/SieveConditions.js" type="text/javascript"></script>
   <script type="text/javascript" src="logic/RFC3028/SieveTests.js"></script>
+  <script src="logic/RFC3028/SieveOperators.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 //<![CDATA[
@@ -150,6 +149,12 @@ function debug(obj)
 	  if (key != "test/boolean")
         elm.append(createMenuItem(key,"sieve/test",docShell).get(0));
 
+		
+	elm.append($("<div/>").text("Operators"))
+    
+    for (var key in SieveLexer.types["operator"])
+        elm.append(createMenuItem(key,"sieve/operator",docShell).get(0));
+		
 	elm
 	  .append($(document.createElement('div'))
 	    .addClass("spacer"))

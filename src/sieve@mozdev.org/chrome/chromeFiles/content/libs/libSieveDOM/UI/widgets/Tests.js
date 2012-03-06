@@ -16,11 +16,11 @@
 
 function SieveSizeTestUI(elm)
 {
-  SieveEditableDragBoxUI.call(this,elm);
+  SieveTestBoxUI.call(this,elm);
   this.flavour("sieve/test");
 }
 
-SieveSizeTestUI.prototype.__proto__ = SieveEditableDragBoxUI.prototype;
+SieveSizeTestUI.prototype.__proto__ = SieveTestBoxUI.prototype;
 
 SieveSizeTestUI.prototype.onValidate
     = function ()
@@ -79,11 +79,11 @@ SieveSizeTestUI.prototype.initSummary
 
 function SieveBooleanTestUI(elm)
 {
-  SieveEditableDragBoxUI.call(this,elm);
+  SieveTestBoxUI.call(this,elm);
   this.flavour("sieve/test");
 }
 
-SieveBooleanTestUI.prototype.__proto__ = SieveEditableDragBoxUI.prototype;
+SieveBooleanTestUI.prototype.__proto__ = SieveTestBoxUI.prototype;
 
 SieveBooleanTestUI.prototype.onValidate
     = function ()
@@ -123,11 +123,11 @@ SieveBooleanTestUI.prototype.initSummary
 
 function SieveExistsUI(elm)
 {
-  SieveEditableDragBoxUI.call(this,elm);
+  SieveTestBoxUI.call(this,elm);
   this.flavour("sieve/test");  
 }
 
-SieveExistsUI.prototype.__proto__ = SieveEditableDragBoxUI.prototype;
+SieveExistsUI.prototype.__proto__ = SieveTestBoxUI.prototype;
 
 SieveExistsUI.prototype.initEditor
     = function()
@@ -146,11 +146,11 @@ SieveExistsUI.prototype.initSummary
 //****************************************************************************//
 function SieveHeaderUI(elm)
 {
-  SieveEditableDragBoxUI.call(this,elm);
+  SieveTestBoxUI.call(this,elm);
   this.flavour("sieve/test");  
 }
 
-SieveHeaderUI.prototype.__proto__ = SieveEditableDragBoxUI.prototype;
+SieveHeaderUI.prototype.__proto__ = SieveTestBoxUI.prototype;
 
 SieveHeaderUI.prototype.onValidate
     = function ()
@@ -202,11 +202,11 @@ SieveHeaderUI.prototype.initSummary
 
 function SieveAddressUI(elm)
 {
-  SieveEditableDragBoxUI.call(this,elm);
+  SieveTestBoxUI.call(this,elm);
   this.flavour("sieve/test");  
 }
 
-SieveAddressUI.prototype.__proto__ = SieveEditableDragBoxUI.prototype;
+SieveAddressUI.prototype.__proto__ = SieveTestBoxUI.prototype;
 
 SieveAddressUI.prototype.onValidate
     = function ()
@@ -249,61 +249,3 @@ SieveAddressUI.prototype.initSummary
               +this.getSieve().keyList.toScript());
 }
 
-//****************************************************************************//
-
-function SieveAnyOfAllOfUI(elm)
-{
-  SieveEditableDragBoxUI.call(this,elm);
-  this.flavour("sieve/test");
-}
-
-SieveAnyOfAllOfUI.prototype.__proto__ = SieveEditableDragBoxUI.prototype;
-
-
-SieveAnyOfAllOfUI.prototype.onValidate
-    = function ()
-{
-  
-  if ($("#AnyOfAllOfValue"+this.id()).val() == "true")
-    this.getSieve().isAllOf = true
-  else
-    this.getSieve().isAllOf = false;         
-  
-  return true;      
-}
-
-SieveAnyOfAllOfUI.prototype.initEditor
-    = function ()
-{
-  return $(document.createElement("div"))
-           .append($("<select/>")
-             .attr("id","AnyOfAllOfValue"+this.id())           
-             .append($("<option/>")
-               .text("All of the following").val("true"))
-             .append($("<option/>")
-               .text("Any of the following").val("false")) 
-             .val(""+this.getSieve().isAllOf));
-}
-
-SieveAnyOfAllOfUI.prototype.initSummary
-    = function ()
-{
-  return $("<div/>")        
-           .text((this.getSieve().isAllOf)?"All of the following:":"Any of the following:");  
-}
-
-
-
-SieveAnyOfAllOfUI.prototype.init
-    = function()
-{
-  var item = SieveEditableDragBoxUI.prototype.init.call(this);
-  
-  for (var i=0; i<this.getSieve().tests.length; i++)
-    item.append($("<div/>")
-      .css("padding-left","30px")
-      .append(this.getSieve().tests[i][1].html()))
-      
-  
-  return item;
-}

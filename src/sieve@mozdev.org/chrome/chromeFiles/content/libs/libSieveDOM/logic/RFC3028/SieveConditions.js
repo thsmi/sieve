@@ -20,7 +20,7 @@ SieveIf.prototype.__proto__ = SieveElse.prototype;
 SieveIf.isElement
     = function (token)
 {
-  return (token.substring(0,4).toLowerCase().indexOf("if") == 0)  
+  return (token.substring(0,2).toLowerCase().indexOf("if") == 0)  
 }
 
 SieveIf.prototype.init
@@ -63,6 +63,7 @@ SieveIf.prototype.test
   
   return this;
 }
+
 
 SieveIf.prototype.require
     = function (imports)

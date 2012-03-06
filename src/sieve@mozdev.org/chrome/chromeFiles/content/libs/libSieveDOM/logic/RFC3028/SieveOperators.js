@@ -1,7 +1,7 @@
 /******************************************************************************/
 
 // Unary operators
-SieveOperatorSingle.isElement
+SieveNotOperator.isElement
   = function(token)
 { 
   if (token.substring(0,3).toLowerCase().indexOf("not") == 0)
@@ -10,24 +10,24 @@ SieveOperatorSingle.isElement
   return false;
 }
 
-function SieveOperatorSingle(docshell,id) 
+function SieveNotOperator(docshell,id) 
 {
   // first line with deadcode
   SieveAbstractElement.call(this,docshell,id);
   
   this.whiteSpace = []
-  this.whiteSpace[0] = this._createByName("whitespace");
+  this.whiteSpace[0] = this._createByName("whitespace", " ");
   this.whiteSpace[1] = this._createByName("whitespace");
  // this.test = this._createByName("operator");
 }
 
-SieveOperatorSingle.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveNotOperator.prototype.__proto__ = SieveAbstractElement.prototype;
 
-SieveOperatorSingle.prototype.init
+SieveNotOperator.prototype.init
     = function (data)
 {
   // Syntax :
-  // <"not"> <tests: test-list>
+  // <"not"> <test>
   
   data = data.slice("not".length);  
   data = this.whiteSpace[0].init(data);  
@@ -35,42 +35,48 @@ SieveOperatorSingle.prototype.init
   if (this._probeByClass(["test","operator"],data) == false) 
     throw "Test command expected but found:\n'"+data.substr(0,50)+"'...";                 
 
-  this.test = this._createByClass(["test","operator"],data)
-  data = this.test.init(data);
+  this._test = this._createByClass(["test","operator"],data)
+  data = this._test.init(data);
     
   if (this._probeByName("whitespace",data))
     data = this.whiteSpace[1].init(data);  
   
   return data;
     
-}    
+}
 
-SieveOperatorSingle.prototype.toScript
+SieveNotOperator.prototype.test
+    = function (item)
+{
+  if (typeof(item) === "undefined")
+   return this._test;
+  
+   if (item.parent())
+     throw "test already bound to "+item.parent().id();
+     
+  // Release old test...
+  if (this._test)
+    this._test.parent(null);
+    
+  // ... and bind new test to this node
+  this._test = item.parent(this);
+  
+  return this;
+}
+
+SieveNotOperator.prototype.toScript
     = function ()
 {
   return "not"
     + this.whiteSpace[0].toScript()
-    + this.test.toScript()
+    + this._test.toScript()
     + this.whiteSpace[1].toScript();
 }
 
-SieveOperatorSingle.prototype.toWidget
+SieveNotOperator.prototype.toWidget
     = function()
 {
-  var elm = $("<div/>");
-  
-  elm.text("does not match:");
-          
-  elm.append(
-    (new SieveDropBoxUI(this,this.test))/*.flavours("sieve/test")*/.html());
-    
-
-  elm.append(this.test.html())
-  
-  elm.append(
-    (new SieveDropBoxUI(this))/*.flavours("sieve/test")*/.html());
-  
-  return elm;   
+  return (new SieveNotUI(this));
 }
 
 //****************************************************************************//
@@ -116,6 +122,32 @@ SieveAnyOfAllOfTest.prototype.init
   return data;
 }
 
+SieveAnyOfAllOfTest.prototype.test
+    = function (item)
+{
+  if (typeof(item) === "undefined")
+  {
+    if (this.tests.length == 1)
+     return this.tests[0][1];
+    
+    throw ".test() has more than one element";
+  }
+  
+  if (item.parent())
+     throw "test already bound to "+item.parent().id();
+     
+  // Release old test...
+  this.append(item)
+  
+  /*if (this._test)
+    this._test.parent(null);
+    
+  // ... and bind new test to this node
+  this._test = ;*/
+  
+  return this;
+}
+
 SieveAnyOfAllOfTest.prototype.toScript
     = function()
 {
@@ -136,6 +168,6 @@ if (!SieveLexer)
   throw "Could not register Conditional Elements";
 
 
-SieveLexer.register("operator","operator/not",SieveOperatorSingle);
+SieveLexer.register("operator","operator/not",SieveNotOperator);
 SieveLexer.register("operator","operator/anyof",SieveAnyOfAllOfTest);
             

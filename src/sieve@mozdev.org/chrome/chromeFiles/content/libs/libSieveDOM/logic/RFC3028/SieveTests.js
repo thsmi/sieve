@@ -564,11 +564,11 @@ SieveHeader.prototype.toWidget
 }
 
 
-// TODO SHould inherrit from block...
+// TODO Stringlist and testslist are quite simmilar
 function SieveTestList(docshell,id)
 {
   SieveAbstractElement.call(this,docshell,id);
-  this.tests = [];  
+  this.tests = [];
 }
 
 SieveTestList.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -615,6 +615,72 @@ SieveTestList.prototype.init
   data = data.slice(1);
    
   return data;
+}
+
+SieveTestList.prototype.append
+    = function (elm, siblingId)
+{  
+  var element = [];
+
+  switch ([].concat(elm).length)
+  {
+    case 1 :
+      element[0] = this._createByName("whitespace");
+      element[1] = elm;
+      element[2] = this._createByName("whitespace");
+      break;
+      
+    case 3 :
+      element = elm;
+      break;
+      
+    default:
+      throw "Can not append element to list";
+  }
+        
+  // we have to do this fist as there is a good chance the the index
+  // might change after deleting...
+  if(elm.parent())
+    elm.remove();
+  
+  var idx = this.tests.length;
+  
+  if ((typeof(siblingId) !== "undefined") && (siblingId >= 0)) 
+    for (var idx = 0; idx<this.tests.length; idx++)
+      if (this.tests[idx][1].id() == siblingId)
+        break;
+  
+  this.tests.splice(idx,0,element);
+  elm.parent(this);
+    
+  return this;
+}
+
+SieveTestList.prototype.removeChild
+    = function (childId)
+{
+  // should we remove the whole node
+  if (typeof (childId) === "undefined")
+     throw "Child ID Missing";
+    //return SieveAbstractElement.prototype.remove.call(this);
+  
+  // ... or just a child item
+  var elm = null;
+  // Is it a direct match?
+  for (var i=0; i<this.tests.length; i++)
+  {
+    if (this.tests[i][1].id() != childId)
+      continue;
+    
+    elm = this.tests[i][1];
+    elm.parent(null);
+    
+    this.tests.splice(i,1);
+    
+    break;
+  }
+    
+  return elm;
 }
 
 

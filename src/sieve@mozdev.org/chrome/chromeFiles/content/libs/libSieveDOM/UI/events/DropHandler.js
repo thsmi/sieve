@@ -54,8 +54,8 @@ SieveDropHandler.prototype.onDrop
         dt.mozGetDataAt(flavour,0).type,
         dt.mozGetDataAt("application/sieve",0));
         
-      //event.preventDefault();
-      //event.stopPropagation();
+      event.preventDefault();
+      event.stopPropagation();
       return true;
 
     case "move" :
@@ -67,6 +67,8 @@ SieveDropHandler.prototype.onDrop
         dt.mozGetDataAt(flavour,0).id,
         dt.mozGetDataAt("application/sieve",0));
 
+      event.preventDefault();
+      event.stopPropagation();        
       return true;
       
     default:
@@ -101,7 +103,11 @@ SieveDropHandler.prototype.canDrop
 {
   for (var i=0; i<this.flavours().length; i++)
     if (this.onCanDrop(this.flavours()[i],event))
+    {
+       event.preventDefault();
+       event.stopPropagation(); 
        return true;
+    }
       
   return false;      
 }
@@ -284,8 +290,6 @@ SieveTrashBoxDropHandler.prototype.moveElement
   if (oldOwner)
     oldOwner.widget().refresh();
     
-
-   
   var that = this._owner.document();  
   window.setTimeout(function() {that.compact(); },0)
 }
@@ -442,4 +446,118 @@ SieveConditionDropHandler.prototype.createElement
 
 //****************************************************************************//
 
-// SieveTestDropHandler -> convert test to any of
+function SieveTestDropHandler()
+{ 
+  SieveDropHandler.call(this);
+  this.flavours(["sieve/operator"]);
+}
+
+SieveTestDropHandler.prototype.__proto__ = SieveDropHandler.prototype;
+
+SieveTestDropHandler.prototype.onCanDrop
+    = function(sivFlavour, event)
+{ 
+  
+    event = event.originalEvent;
+    
+    // accept only the registered drop flavour...
+    if ( ! event.dataTransfer.mozGetDataAt(sivFlavour,0))
+      return false;   
+ 
+    if (sivFlavour != "sieve/operator")    
+      return false;
+      
+    return true;
+}
+
+
+SieveTestDropHandler.prototype.createElement
+    =  function(sivFlavour, type , script)
+{
+  if (sivFlavour != "sieve/operator")
+    throw "invalid flavour "+sivFlavour;
+   
+  try {
+  // The new home for our element
+  var item = this._owner.parent().getSieve();
+  
+  if(!item)
+    throw "Element "+this._owner.parent().id()+" not found";
+  
+  var newOwner = item.parent();
+
+  
+  var outer = item.document().createByName(type)
+  // share the same source...
+  if (outer.parent())
+    throw "wrap already bound to "+outer.parent().id();
+    
+  var inner = newOwner.test().parent(null);
+  
+  // ...and bind test to the new container...
+  outer.test(inner);
+  // ... then add it to this container ...
+  newOwner.test(outer);
+  
+  // ... finally update all backrefs.
+  outer.parent(newOwner);
+  inner.parent(outer);
+  
+  //newOwner.wrap(item.document().createByName(type))
+    
+  newOwner.widget().refresh();
+  //item.widget().refresh();
+  
+  }
+  catch (ex)
+  {
+    alert(ex);
+  }
+}
+
+//****************************************************************************//
+
+// used in multary operators
+function SieveMultaryDropHandler()
+{ 
+  SieveDropHandler.call(this);
+  this.flavours(["sieve/operator","sieve/test"]);
+}
+
+SieveMultaryDropHandler.prototype.__proto__ = SieveDropHandler.prototype;
+
+SieveMultaryDropHandler.prototype.onCanDrop
+    = function(sivFlavour, event)
+{ 
+  
+    event = event.originalEvent;
+    
+    // accept only the registered drop flavour...
+    if ( ! event.dataTransfer.mozGetDataAt(sivFlavour,0))
+      return false;   
+ 
+    var action = event.dataTransfer.mozGetDataAt(sivFlavour,0).action;
+    
+    if ((action == "create") && (sivFlavour != "sieve/test"))    
+      return false;
+      
+    // TODO Fixme: 
+    if (action == "move")
+      return false;
+      
+    return true;
+}
+
+
+SieveMultaryDropHandler.prototype.moveElement
+    = function (sivFlavour, id, script)
+{
+  throw "implement me move Element for"+sivFlavour;
+}
+
+SieveMultaryDropHandler.prototype.createElement
+    =  function(sivFlavour, type , script)
+{
+  throw "implement me create Element for"+sivFlavour;
+}
+

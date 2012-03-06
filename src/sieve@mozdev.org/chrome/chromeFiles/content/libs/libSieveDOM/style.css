@@ -1,14 +1,14 @@
-.sivDropBox  {
-	height: 6px;
+.sivDropBox:empty {
+	height: 5px;
 	margin: 2px;
 }    
 
 .sivDropBox[sivDragging="true"] {
   background-color : red;
   background-image: -moz-linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
-  -moz-border-radius: 2px;	
+  -moz-border-radius: 2px;
+box-shadow: 0 0 5px red;
 }
-
 
 
 body {

@@ -174,12 +174,13 @@ SieveDragBoxUI.prototype.init
   return $("<div/>");
 }
 
-SieveDragBoxUI.prototype.html
-    = function ()
-{
-  if (this._domElm)
-    return this._domElm;
 
+SieveDragBoxUI.prototype.html
+    = function (invalidate)
+{ 
+  if (this._domElm && !invalidate) 
+    return this._domElm;
+  
   var _this = this;
     
   this._domElm = this.init()
@@ -190,7 +191,7 @@ SieveDragBoxUI.prototype.html
     
   if (this.id() >= 0)
     this._domElm.attr("id","sivElm"+this.id());
-         
+  
   return this._domElm;
 }
 
@@ -216,9 +217,12 @@ SieveEditableDragBoxUI.prototype.onValidate
 SieveEditableDragBoxUI.prototype.showEditor
     = function(e)
 { 
+  if (!this.initEditor)
+    return;
+    
   var _this = this;      
       
-  this._domElm.empty();
+  this._domElm.children(".sivSummaryContent").remove();
   
   if (this.initHelp)
     this._domElm
@@ -229,7 +233,8 @@ SieveEditableDragBoxUI.prototype.showEditor
         .click(function() { $(this).toggle()/*.next().toggle()*/;})
         .addClass("sivEditorHelpText"))    
       
-  this._domElm  
+  this._domElm    
+    .attr("sivIsEditable",  "true")
     .append(this.initEditor()
       .addClass("sivEditorContent"))
     .append($("<div/>")
@@ -237,8 +242,8 @@ SieveEditableDragBoxUI.prototype.showEditor
       .append($("<button/>")
         .text("Ok")
         .click(function(e) { _this.showSummary();   e.preventDefault(); return true; } ))
-      .append($("<div/>")))
-    .attr("sivIsEditable",  "true");
+      .append($("<div/>")));
+    
 }
 
 SieveEditableDragBoxUI.prototype.showSummary
@@ -254,13 +259,17 @@ SieveEditableDragBoxUI.prototype.showSummary
     return;
   }
     
-  
-  
+  var _this = this;
+    
   this._domElm
-    .empty()
-    .append(this.init())
-    .removeAttr("sivIsEditable");
-  
+    .removeAttr("sivIsEditable")
+      .children(".sivEditorContent,.sivControlBox,.sivEditorHelpText,.sivEditorHelpIcon")
+        .remove()
+      .end()
+      .append(this.initSummary()
+        .addClass("sivSummaryContent")
+        .click(function(e) { _this.showEditor();   e.preventDefault(); return true; } ));
+        
   return;
 } 
 
@@ -270,8 +279,9 @@ SieveEditableDragBoxUI.prototype.init
   var _this = this;
    
   return $("<div/>")
-      .addClass("sivEditableElement")
+      .addClass((this.initEditor)?"sivEditableElement":"")
       .append(this.initSummary()
+        .addClass("sivSummaryContent")
         .click(function(e) { _this.showEditor();   e.preventDefault(); return true; } ));
 }
 
@@ -281,14 +291,39 @@ function SieveTestBoxUI(elm)
 {
   // Call parent constructor...
   SieveEditableDragBoxUI.call(this,elm);
+  this._dropBox = (new SieveDropBoxUI(this,this.getSieve())).drop(new SieveTestDropHandler()); 
 }
 
 SieveTestBoxUI.prototype.__proto__ =  SieveEditableDragBoxUI.prototype;
 
-SieveTestBoxUI.prototype.init
+SieveTestBoxUI.prototype.refresh
     = function ()
 {
-  return (new SieveDropBoxUI(this,this.getSieve())).wrap(this).html();
+  if (this.id() < 0)
+    throw "Invalid id";
+    
+  this.html(true);
+}
+
+
+SieveTestBoxUI.prototype.html
+    = function (invalidate)
+{ 
+  if (this._dragBox && !invalidate) 
+    return this._dragBox;
+       
+  var box = this._dropBox.html(true)
+    .append(SieveEditableDragBoxUI.prototype.html.call(this,true));
+    
+  if (this._dragBox)
+  {
+    this._dragBox.before(box);    
+    this._dragBox.remove();
+  }
+    
+  this._dragBox = box;  
+  
+  return this._dragBox;
 }
 
 /**
@@ -364,9 +399,9 @@ SieveDropBoxUI.prototype.onDragDrop
 }
 
 SieveDropBoxUI.prototype.html
-    = function ()
+    = function (invalidate)
 {
-  if (this.dropTarget)
+  if (this.dropTarget && !invalidate)
     return this.dropTarget;
   
   var _this = this;
@@ -377,29 +412,11 @@ SieveDropBoxUI.prototype.html
       .bind("drop",function(e) { return _this.onDragDrop(e) })
       .bind("dragover",function(e) { return _this.onDragOver(e) })
       .bind("dragleave",function(e) { return _this.onDragExit(e) })
-      .bind("dragenter",function(e) { return _this.onDragEnter(e) })
+      .bind("dragenter",function(e) { return _this.onDragEnter(e) });
       //.text(this.id()+"@"+((this.parent())?this.parent().id():"-1")+" ["+this.handler.flavours()+"]");           
-
-  if (this._contentBox)
-    this.dropTarget.append(this._contentBox.html());
     
   return this.dropTarget
 }
-
-SieveDropBoxUI.prototype.wrap
-    = function (box)
-{
-  if (typeof(box) === "undefined")
-    return box;
-    
-  this._contentBox = box;
-  
-  if (this.dropTarget)
-    this.dropTarget.replaceWith(this._contentBox.html());
-    
-  return this;
-}
-
 
 SieveDropBoxUI.prototype.drop
     = function (handler)

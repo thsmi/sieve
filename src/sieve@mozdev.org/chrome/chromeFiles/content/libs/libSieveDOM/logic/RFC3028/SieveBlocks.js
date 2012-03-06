@@ -50,13 +50,13 @@ SieveBlock.prototype.toScript
 
 function SieveBlockBody(docshell,id)
 {
-  SieveAbstractElement.call(this,docshell,id);
+  SieveAbstractBlock.call(this,docshell,id);
   
   // Initialize Block Elements
   this.elms = [];
 }
 
-SieveBlockBody.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveBlockBody.prototype.__proto__ = SieveAbstractBlock.prototype;
 
 SieveBlockBody.isElement
     = function (data)
@@ -78,18 +78,6 @@ SieveBlockBody.prototype.init
   return data;
 }
 
-SieveBlockBody.prototype.children
-    = function (idx)
-{
-  if (typeof(idx) === "undefined")
-    return this.elms;  
-    
-  if ((typeof(idx) === "string")  && (idx.toLowerCase() == ":last"))
-    idx = this.elms.length-1;    
-    
-  return this.elms[idx];
-}
-
 SieveBlockBody.prototype.toScript
     = function ()
 {
@@ -105,82 +93,6 @@ SieveBlockBody.prototype.toWidget
     = function ()
 {
   return (new SieveBlockUI(this));
-}
-
-/**
- * Appends an Element to this Element. Inf the element is alread existant, it will be moved
- * 
- * @param {} elm
- *   the element that should be appened
- * @param @optional {int} siblingId
- *   defines the sibling after which the new element should be inserted. 
- *   In case no matching sibling is found, it will be appended at the end.
- * @return {}
- */
-SieveBlockBody.prototype.append
-    = function (elm, siblingId)
-{
-  // we have to do this fist as there is a good chance the the index
-  // might change after deleting...
-  if(elm.parent())
-    elm.remove();
-  
-  var idx = this.elms.length;
-  
-  if ((typeof(siblingId) !== "undefined") && (siblingId >= 0)) 
-    for (var idx = 0; idx<this.elms.length; idx++)
-      if (this.elms[idx].id() == siblingId)
-        break;
-
-  this.elms.splice(idx,0,elm);
-  elm.parent(this);
-    
-  return this;
-}
-
-// TODO Merge with "remove" when its working as it should
-/**
- * Removes the node including all child elements.
- * 
- * To remove just a child node pass it's id as an argument
- * 
- *  @param @optional {int} childId
- *  the child id which should be removed.
- *    
- * @return {}
- */
-SieveBlockBody.prototype.removeChild
-    = function (childId)
-{
-  // should we remove the whole node
-  if (typeof (childId) === "undefined")
-     throw "Child ID Missing";
-    //return SieveAbstractElement.prototype.remove.call(this);
-  
-  // ... or just a child item
-  var elm = null;
-  // Is it a direct match?
-  for (var i=0; i<this.elms.length; i++)
-  {
-    if (this.elms[i].id() != childId)
-      continue;
-    
-    elm = this.elms[i];
-    elm.parent(null);
-    
-    this.elms.splice(i,1);
-    
-    break;
-  }
-    
-  return elm;
-}
-
-SieveBlockBody.prototype.require
-    = function (imports)
-{
-  for (var i=0; i<this.elms.length; i++)
-    this.elms[i].require(imports)
 }
 
 if (!SieveLexer)

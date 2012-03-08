@@ -9,61 +9,16 @@
 
 "use strict";
 
-function SieveRootNode(docshell)
-{
-  SieveBlockBody.call(this,docshell,-1);
-  
-  this.elms[0] = this._createByName("import");
-  this.elms[1] = this._createByName("block/body");  
-}
-
-SieveRootNode.prototype.__proto__ = SieveBlockBody.prototype;
-
-SieveRootNode.prototype.toWidget
-    = function ()
-{  
-  return $("<div/>")
-           .append(this.elms[1].html());  
-}
-
-SieveRootNode.prototype.init
-    = function (data)
-{
-  // requires are only valid if they are
-  // before any other sieve command!
-  if (this._probeByName("import",data))
-    data = this.elms[0].init(data);
-
-  // After the import section only deadcode and actions are valid    
-  if (this._probeByName("block/body",data))
-    data = this.elms[1].init(data);   
-    
-  return data;
-}
-
-SieveRootNode.prototype.toScript
-    = function (data)
-{
-  var requires = [];
-  
-  // Step 1: collect requires
-  this.elms[1].require(requires);
-
-  // Step 2: Add require...
-  for (var item in requires)
-    this.elms[0].capability(item);
-
-  // TODO Remove unused requires...
-    
-  // return the script
-  return SieveBlockBody.prototype.toScript.call(this);
-}
-
 function SieveDocument(lexer)
 {
   this._lexer = lexer;  
   this._nodes = {}
-  this._rootNode = new SieveRootNode(this);
+    
+  // we cannot use this.createNode(). It would add a node without a parent...
+  // ... to this._nodes. All nodes without a vaild parent and their...
+  // ... descendants are removed when this.compact() is called. So that we... 
+  // ... would endup with an empty tree.
+  this._rootNode = this._lexer.createByName(this,"block/rootnode");  
 }
 
 SieveDocument.prototype.root
@@ -202,3 +157,6 @@ SieveDocument.prototype.compact
   
   return cnt;
 }
+
+if (!SieveLexer)
+  throw "Could not register Conditional Elements";

@@ -141,11 +141,11 @@ SieveAbstractElement.prototype.require
 }
 
 // TODO only temporary, should be merged into remove...
-SieveAbstractElement.prototype.removeChild
+/*SieveAbstractElement.prototype.removeChild
     = function ()
 {
   throw "Implement SieveAbstractElement.removeChild";
-}
+}*/
 
 /**
  * Removes this node from the parent Node.
@@ -153,14 +153,14 @@ SieveAbstractElement.prototype.removeChild
  * @return {}
  */
 SieveAbstractElement.prototype.remove
-    = function ()
+    = function (cascade)
 {
   // Locate our parent...
   if (!this._parent)
     throw "No parent Node";
     
   // ...and remove this node
-  var elm = this._parent.removeChild(this._id);
+  var elm = this._parent.removeChild(this._id,cascade);
   if (elm.id() != this._id)
     throw "Could not remove Node";
     
@@ -237,7 +237,7 @@ SieveAbstractBlock.prototype.append
  * @return {}
  */
 SieveAbstractBlock.prototype.removeChild
-    = function (childId)
+    = function (childId,cascade)
 {
   // should we remove the whole node
   if (typeof (childId) === "undefined")
@@ -259,8 +259,21 @@ SieveAbstractBlock.prototype.removeChild
     
     break;
   }
+   
+  if (cascade && this.empty())
+    return this.remove();
     
   return elm;
+}
+
+SieveAbstractBlock.prototype.empty
+    = function ()
+{
+  for (var i=0; i<this.elms.length; i++)
+    if (this.elms[i].widget())
+      return false;
+      
+  return true;
 }
 
 SieveAbstractBlock.prototype.require

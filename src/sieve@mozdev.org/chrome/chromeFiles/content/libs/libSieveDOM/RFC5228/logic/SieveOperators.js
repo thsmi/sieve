@@ -1,5 +1,14 @@
-/******************************************************************************/
-
+/* 
+ * The contents of this file is licenced. You may obtain a copy of
+ * the license at http://sieve.mozdev.org or request it via email 
+ * from the author. Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+ 
+ "use strict";
+ 
 // Unary operators
 SieveNotOperator.isElement
   = function(token)
@@ -123,7 +132,7 @@ SieveAnyOfAllOfTest.prototype.init
 }
 
 SieveAnyOfAllOfTest.prototype.test
-    = function (item)
+    = function (item, oldId)
 {
   if (typeof(item) === "undefined")
   {
@@ -136,9 +145,12 @@ SieveAnyOfAllOfTest.prototype.test
   if (item.parent())
      throw "test already bound to "+item.parent().id();
      
+   
   // Release old test...
-  this.append(item)
+  this.append(item,oldId);
   
+  if (typeof(oldId) !== "undefined") 
+    this.removeChild(oldId);
   /*if (this._test)
     this._test.parent(null);
     

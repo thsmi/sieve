@@ -308,7 +308,7 @@ function SieveSize(docshell,id)
   this.whiteSpace[2] = this._createByName("whitespace", " ");
   
   this.over = false;
-  this.size = this._createByName("atom/number");
+  this.size = this._createByName("number");
 }
 
 SieveSize.prototype.__proto__ = SieveAbstractElement.prototype;

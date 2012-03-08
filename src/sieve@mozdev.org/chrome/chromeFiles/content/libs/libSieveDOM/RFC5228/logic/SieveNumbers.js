@@ -8,14 +8,8 @@
  */
  
  "use strict";
-
-/******************************************************************************/
-
-
  
-// TODO Move To SieveNumbers
-
-function SieveNumber(docshell,id)
+ function SieveNumber(docshell,id)
 {
   SieveAbstractElement.call(this,docshell,id);
   
@@ -89,61 +83,7 @@ SieveNumber.prototype.toScript
   return ""+this._number+""+this._unit;
 }
 
-/******************************************************************************/
-
-
-function SieveSemicolon(docshell,id) 
-{
-  SieveAbstractElement.call(this,docshell,id);
-  
-  this.whiteSpace = [];
-  this.whiteSpace[0] = this._createByName("whitespace");
-  this.whiteSpace[1] = this._createByName("whitespace");
-  
-  // If this object is uninitalized it is better to return a "\r\n" after 
-  // the semicolon. This generates a much more readable code.
-  
-  // In case init() is called, this default settings will be overwritten...
-  this.whiteSpace[1].init("\r\n",true);
-}
-
-SieveSemicolon.prototype.__proto__ = SieveAbstractElement.prototype;
-
-SieveSemicolon.isElement
-    = function (data,index)
-{
-  return true;
-}
-
-SieveSemicolon.prototype.init
-    = function (data)
-{
-  // Syntax :
-  // [whitespace] <";"> [whitespace]
-  if (this._probeByName("whitespace",data))
-    data = this.whiteSpace[0].init(data,true);
-
-  if (data.charAt(0) != ";")
-    throw "Semicolon expected but found: \n"+data.substr(0,50)+"...";  
-  
-  data = data.slice(1);
-
-  //if (this._probeByName("whitespace",data))
-  data = this.whiteSpace[1].init(data,true);  
-      
-  return data;
-}
-
-SieveSemicolon.prototype.toScript
-    = function ()
-{
-  return this.whiteSpace[0].toScript()+ ";" + this.whiteSpace[1].toScript();
-}
-
-/******************************************************************************/
-
 if (!SieveLexer)
   throw "Could not register Atoms";
 
-SieveLexer.register("atom/","atom/number",SieveNumber)
-SieveLexer.register("atom/","atom/semicolon",SieveSemicolon);
+SieveLexer.register("number/","number",SieveNumber)

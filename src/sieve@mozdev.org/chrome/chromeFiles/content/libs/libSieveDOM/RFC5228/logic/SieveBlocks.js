@@ -46,7 +46,6 @@ SieveBlock.prototype.toScript
   return "{" +SieveBlockBody.prototype.toScript.call(this)+"}";
 }
 //****************************************************************************//
-// TODO rename to SieveCommands
 
 function SieveBlockBody(docshell,id)
 {
@@ -95,8 +94,67 @@ SieveBlockBody.prototype.toWidget
   return (new SieveBlockUI(this));
 }
 
+
+function SieveRootNode(docshell)
+{
+  SieveBlockBody.call(this,docshell,-1);
+  
+  this.elms[0] = this._createByName("import");
+  this.elms[1] = this._createByName("block/body");  
+}
+
+SieveRootNode.prototype.__proto__ = SieveBlockBody.prototype;
+
+SieveRootNode.isElement
+     = function (token)
+{
+  return false;  
+}
+
+SieveRootNode.prototype.toWidget
+    = function ()
+{  
+  return $("<div/>")
+           .append(this.elms[1].html());  
+}
+
+SieveRootNode.prototype.init
+    = function (data)
+{
+  // requires are only valid if they are
+  // before any other sieve command!
+  if (this._probeByName("import",data))
+    data = this.elms[0].init(data);
+
+  // After the import section only deadcode and actions are valid    
+  if (this._probeByName("block/body",data))
+    data = this.elms[1].init(data);   
+    
+  return data;
+}
+
+SieveRootNode.prototype.toScript
+    = function (data)
+{
+  var requires = [];
+  
+  // Step 1: collect requires
+  this.elms[1].require(requires);
+
+  // Step 2: Add require...
+  for (var item in requires)
+    this.elms[0].capability(item);
+
+  // TODO Remove unused requires...
+    
+  // return the script
+  return SieveBlockBody.prototype.toScript.call(this);
+}
+
+
 if (!SieveLexer)
   throw "Could not register Block Elements";
 
 SieveLexer.register("block/","block/body",SieveBlockBody);
 SieveLexer.register("block/","block/block",SieveBlock);
+SieveLexer.register("block/","block/rootnode",SieveRootNode);

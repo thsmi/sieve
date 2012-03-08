@@ -249,6 +249,58 @@ SieveWhiteSpace.prototype.toScript
   return result;
 }
 
+/******************************************************************************/
+
+function SieveSemicolon(docshell,id) 
+{
+  SieveAbstractElement.call(this,docshell,id);
+  
+  this.whiteSpace = [];
+  this.whiteSpace[0] = this._createByName("whitespace");
+  this.whiteSpace[1] = this._createByName("whitespace");
+  
+  // If this object is uninitalized it is better to return a "\r\n" after 
+  // the semicolon. This generates a much more readable code.
+  
+  // In case init() is called, this default settings will be overwritten...
+  this.whiteSpace[1].init("\r\n",true);
+}
+
+SieveSemicolon.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveSemicolon.isElement
+    = function (data,index)
+{
+  return true;
+}
+
+SieveSemicolon.prototype.init
+    = function (data)
+{
+  // Syntax :
+  // [whitespace] <";"> [whitespace]
+  if (this._probeByName("whitespace",data))
+    data = this.whiteSpace[0].init(data,true);
+
+  if (data.charAt(0) != ";")
+    throw "Semicolon expected but found: \n"+data.substr(0,50)+"...";  
+  
+  data = data.slice(1);
+
+  //if (this._probeByName("whitespace",data))
+  data = this.whiteSpace[1].init(data,true);  
+      
+  return data;
+}
+
+SieveSemicolon.prototype.toScript
+    = function ()
+{
+  return this.whiteSpace[0].toScript()+ ";" + this.whiteSpace[1].toScript();
+}
+
+/******************************************************************************/
+
 if (!SieveLexer)
   throw "Could not register DeadCode Elements";
 
@@ -258,3 +310,5 @@ SieveLexer.register("whitespace/","whitespace/bracketcomment",SieveBracketCommen
 SieveLexer.register("whitespace/","whitespace/hashcomment",SieveHashComment);
 
 SieveLexer.register("whitespace","whitespace",SieveWhiteSpace);
+
+SieveLexer.register("atom/","atom/semicolon",SieveSemicolon);

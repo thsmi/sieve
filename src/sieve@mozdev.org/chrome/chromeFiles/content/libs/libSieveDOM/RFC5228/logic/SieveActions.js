@@ -9,8 +9,6 @@
  
  "use strict";
 
-/******************************************************************************/
-
 function SieveDiscard(docshell,id) 
 {
   SieveAbstractElement.call(this,docshell,id); 
@@ -119,82 +117,6 @@ SieveRedirect.prototype.toWidget
   return (new SieveRedirectUI(this));
 }
  
-/******************************************************************************/
-
-function SieveReject(docshell,id)
-{
-  SieveAbstractElement.call(this,docshell,id);
-  
-  this.reason = this._createByName("string", "text:\r\n.\r\n");  
-  
-  this.whiteSpace = this._createByName("whitespace"," ");
-  
-  this.semicolon = this._createByName("atom/semicolon");    
-}
-
-SieveReject.prototype.__proto__ = SieveAbstractElement.prototype;
-
-SieveReject.isElement
-    = function (token)
-{
-  return (token.substring(0,6).toLowerCase().indexOf("reject") == 0);
-}
-
-
-SieveReject.prototype.init
-    = function (data)
-{ 
-  // Syntax :
-  // <"reject"> <reason: string> <";">
-  
-  // remove the "redirect" identifier ...
-  data = data.slice("reject".length);
-  
-  // ... eat the deadcode before the stringlist...
-  data = this.whiteSpace.init(data);
-  
-  // ... extract the reject reason...
-  data = this.reason.init(data);
-    
-  // ... drop the semicolon
-  data = this.semicolon.init(data);
-  
-  return data;
-}
-
-SieveReject.prototype.getReason
-    = function ()
-{
-  return this.reason.getValue();      
-}
-
-SieveReject.prototype.setReason
-    = function (reason)
-{
-  return this.reason.setValue(reason);      
-}
-
-SieveReject.prototype.require
-    = function (requires)
-{
-  requires["reject"] = true;
-}
-
-SieveReject.prototype.toScript
-    = function ()
-{ 
-  return "reject"
-    + this.whiteSpace.toScript()
-    + this.reason.toScript()
-    + this.semicolon.toScript();
-}
-
-
-SieveReject.prototype.toWidget
-    = function ()
-{
-  return (new SieveRejectUI(this));  
-}
 
 
 /******************************************************************************/
@@ -362,6 +284,5 @@ SieveLexer.register("action","action/stop", SieveStop);
 
 SieveLexer.register("action","action/fileinto", SieveFileInto);
 SieveLexer.register("action","action/redirect",SieveRedirect);
-SieveLexer.register("action","action/reject", SieveReject);
       
    

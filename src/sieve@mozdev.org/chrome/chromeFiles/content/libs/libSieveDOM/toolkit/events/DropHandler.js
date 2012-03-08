@@ -281,8 +281,26 @@ SieveTrashBoxDropHandler.prototype.moveElement
   var oldOwner = item.parent();
   var oldOwner2 = oldOwner.parent();
     
-  if (!item.remove())
-    throw "Trash Drop Handler: No Element found for "+id; 
+  /// TOdo implement removal of emtpy blocks
+  item = item.remove(/*true*/);
+  
+  if (!item)
+    throw "Trash Drop Handler: No Element found for "+id;
+   
+  //oldOwner = item.parent();
+  // Cleanup empty blocks
+  /*while (oldOwner2 && oldOwner.empty())
+  {
+    while (oldOwner && oldOwner2 && !oldOwner2.removeChild) {
+      oldOwner = oldOwner.parent();
+      oldOwner2 = oldOwner.parent();  
+    }
+ 
+    oldOwner.remove();
+    
+    oldOwner = oldOwner2;
+    oldOwner2 = oldOwner.parent();
+  }*/
 
   if ((oldOwner2) && (oldOwner2.widget().refresh))
     oldOwner2.widget().refresh();
@@ -477,42 +495,35 @@ SieveTestDropHandler.prototype.createElement
   if (sivFlavour != "sieve/operator")
     throw "invalid flavour "+sivFlavour;
    
-  try {
   // The new home for our element
-  var item = this._owner.parent().getSieve();
+  var inner = this._owner.parent().getSieve();
   
-  if(!item)
+  if(!inner)
     throw "Element "+this._owner.parent().id()+" not found";
   
-  var newOwner = item.parent();
+  var container = inner.parent();
 
   
-  var outer = item.document().createByName(type)
+  var outer = inner.document().createByName(type)
   // share the same source...
   if (outer.parent())
     throw "wrap already bound to "+outer.parent().id();
     
-  var inner = newOwner.test().parent(null);
+  inner.parent(null);
   
   // ...and bind test to the new container...
   outer.test(inner);
   // ... then add it to this container ...
-  newOwner.test(outer);
+  container.test(outer,inner.id());
   
   // ... finally update all backrefs.
-  outer.parent(newOwner);
+  outer.parent(container);
   inner.parent(outer);
   
   //newOwner.wrap(item.document().createByName(type))
-    
-  newOwner.widget().refresh();
   //item.widget().refresh();
   
-  }
-  catch (ex)
-  {
-    alert(ex);
-  }
+  container.widget().refresh();
 }
 
 //****************************************************************************//

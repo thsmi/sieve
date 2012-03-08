@@ -3,43 +3,53 @@
 <head>
   <title>Sieve DOM</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
-  <link rel="stylesheet" href="style.css" type="text/css" />
+  <link rel="stylesheet" href="toolkit/style/style.css" type="text/css" />
 </head>
 <body>
-
-  <script src="SieveLexer.js" type="text/javascript"></script>
- 
-  <script src="logic/Elements.js" type="text/javascript"></script>  
-  <script src="logic/RFC3028/SieveBlocks.js" type="text/javascript"></script>
+  <!-- Global Imports -->  
+  <script type="application/javascript" src="jquery.js"></script>
+  <!--<script type="application/javascript" src="UI/jquery-ui.js"></script>-->
   
-  <script src="SieveScriptDOM.js" type="text/javascript"></script>
-
+  <!-- Basic Sieve Elements -->
+  <script type="application/javascript" src="toolkit/SieveLexer.js"></script>
+  <script type="application/javascript" src="toolkit/SieveScriptDOM.js"></script>  
+  <script type="application/javascript" src="toolkit/logic/Elements.js"></script>
+  <script type="application/javascript" src="toolkit/widgets/Boxes.js"></script>
+  <script type="application/javascript" src="toolkit/events/DropHandler.js"></script>
   
-  <script type="application/javascript" src="UI/jquery.js"></script>
-  <script type="application/javascript" src="UI/jquery-ui.js"></script>
+  <!-- UI related Imports -->
+  <!-- RFC 5228 - Sieve -->
+  <script type="application/javascript" src="RFC5228/widgets/SieveStringsUI.js" ></script>
+  <script type="application/javascript" src="RFC5228/widgets/SieveNumbersUI.js" ></script>
+  <script type="application/javascript" src="RFC5228/widgets/SieveBlocksUI.js"></script>  
+  <script type="application/javascript" src="RFC5228/widgets/SieveTestsUI.js" ></script>    
+  <script type="application/javascript" src="RFC5228/widgets/SieveOperatorsUI.js"></script>
+  <script type="application/javascript" src="RFC5228/widgets/SieveConditionsUI.js"></script>  
+  <script type="application/javascript" src="RFC5228/widgets/SieveActionsUI.js"></script>
   
-  <script type="application/javascript" src="UI/events/DropHandler.js"></script> 
+  <!-- RFC 5429 - Reject -->
+  <script type="application/javascript" src="RFC5429/widgets/SieveRejectUI.js"></script> 
   
-  <script type="application/javascript" src="UI/Boxes.js"></script>
-  <script type="application/javascript" src="UI/Actions.js"></script>
-  <script type="application/javascript" src="UI/Blocks.js"></script>  
-  <script type="application/javascript" src="UI/Conditions.js"></script>  
-  <script type="application/javascript" src="UI/widgets/Tests.js"></script>  
-  <script type="application/javascript" src="UI/widgets/Strings.js"></script>  
-  <script type="application/javascript" src="UI/widgets/Operators.js"></script>  
+  <!-- RFC 5232 - ImapFlags-->
+  <script type="application/javascript" src="RFC5232/widgets/SieveImapFlagsUI.js"></script> 
   
+  <!-- logic related Imports -->
+  <!-- RFC 5228 - Sieve -->
+  <script type="application/javascript" src="RFC5228/logic/SieveWhiteSpaces.js" ></script>
+  <script type="application/javascript" src="RFC5228/logic/SieveStrings.js" ></script>
+  <script type="application/javascript" src="RFC5228/logic/SieveNumbers.js" ></script>
+  <script type="application/javascript" src="RFC5228/logic/SieveBlocks.js"></script>  
+  <script type="application/javascript" src="RFC5228/logic/SieveTests.js"></script>
+  <script type="application/javascript" src="RFC5228/logic/SieveOperators.js"></script>
+  <script type="application/javascript" src="RFC5228/logic/SieveConditions.js"></script>  
+  <script type="application/javascript" src="RFC5228/logic/SieveActions.js"></script>
+  <script type="application/javascript" src="RFC5228/logic/SieveImports.js"></script>
   
-
-  <script src="logic/RFC3028/SieveImports.js" type="text/javascript"></script>
-  <script src="logic/RFC3028/SieveActions.js" type="text/javascript"></script>
-  <script src="SieveAtoms.js" type="text/javascript"></script>
-
-  <script src="logic/RFC3028/SieveWhiteSpaces.js" type="text/javascript"></script>
-  <script src="logic/RFC3028/SieveStrings.js" type="text/javascript"></script>
-  <script src="logic/imapflags/SieveImapFlags.js" type="text/javascript"></script>
-  <script src="logic/RFC3028/SieveConditions.js" type="text/javascript"></script>
-  <script type="text/javascript" src="logic/RFC3028/SieveTests.js"></script>
-  <script src="logic/RFC3028/SieveOperators.js" type="text/javascript"></script>
+  <!-- RFC 5429 - Reject -->
+  <script type="application/javascript" src="RFC5429/logic/SieveReject.js"></script>  
+  
+  <!-- RFC 5232 - ImapFlags-->
+  <script type="application/javascript" src="RFC5232/logic/SieveImapFlags.js"></script>
 
 <script type="text/javascript">
 //<![CDATA[

@@ -220,7 +220,7 @@ SieveCondition.prototype.removeChild
     
   return elm;
 }
-  
+
 SieveCondition.prototype.toWidget
     = function ()
 {

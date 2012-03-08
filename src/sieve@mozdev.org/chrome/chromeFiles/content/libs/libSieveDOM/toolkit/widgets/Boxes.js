@@ -10,10 +10,6 @@
  "use strict";
  
 // TODO Add button to show selection source...
-
-// //TODO move to own classfile...
-//  with flavour -> sieve/action, sieve/test etc...
-// TODO Implement "accepts" list
  
 /**
  * can be an document or element...
@@ -139,6 +135,7 @@ SieveDragBoxUI.prototype.onDragGesture
   switch (this._action)
   {
      case "move" :
+       // FIXME: test/plain is interpreted as link if an exception occures during drag an drop
        //event.dataTransfer.mozSetDataAt("text/plain",""+this.getSieve().toScript(),0);
        event.dataTransfer.mozSetDataAt("application/sieve",""+this.getSieve().toScript(),0);
        event.dataTransfer.mozSetDataAt(this.flavour(),
@@ -224,6 +221,7 @@ SieveEditableDragBoxUI.prototype.showEditor
       
   this._domElm.children(".sivSummaryContent").remove();
   
+  // TODO Add close Button next to help button
   if (this.initHelp)
     this._domElm
       .append($("<div/>")

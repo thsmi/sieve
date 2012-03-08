@@ -7,6 +7,8 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
+ "use strict";
+ 
 // setflag <variablename: string> <list-of-flags: string-list>
 
 

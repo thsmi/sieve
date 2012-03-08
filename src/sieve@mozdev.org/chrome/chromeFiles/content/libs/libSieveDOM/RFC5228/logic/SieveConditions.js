@@ -37,8 +37,7 @@ SieveIf.prototype.init
   this.ws[1] = this._createByName("whitespace");
   data = this.ws[1].init(data);
   
-  this.block = this._createByName("block/block");
-  data = this.block.init(data);
+  data = SieveBlock.prototype.init.call(this,data);
   
   this.ws[2] = this._createByName("whitespace");
   data = this.ws[2].init(data);
@@ -46,14 +45,33 @@ SieveIf.prototype.init
   return data;
 }
 
+SieveIf.prototype.removeChild
+    = function (childId,cascade)
+{
+  if (!cascade)
+    throw "only cascade possible";
+    
+  if (this.test().id() != childId)
+  {
+    SieveBlock.prototype.removeChild.call(this,childId)
+    return this;
+  }
+
+  // We cannot survive without a test ...
+  this.test().parent(null);  
+  this._test = null;
+  
+  return this.remove(cascade);
+}
+
 SieveIf.prototype.test
     = function (item)
 {
   if (typeof(item) === "undefined")
    return this._test;
-  
-   if (item.parent())
-     throw "test already bound to "+item.parent().id();
+     
+  if (item.parent())
+    throw "test already bound to "+item.parent().id();
      
   // Release old test...
   this._test.parent(null);
@@ -68,7 +86,7 @@ SieveIf.prototype.test
 SieveIf.prototype.require
     = function (imports)
 {
-  this.block.require(imports);
+  SieveElse.prototype.require.call(this,imports);
   this._test.require(imports);
 }
 
@@ -79,7 +97,7 @@ SieveIf.prototype.toScript
     + this.ws[0].toScript() 
     + this._test.toScript() 
     + this.ws[1].toScript()
-    + this.block.toScript() 
+    + SieveBlock.prototype.toScript.call(this) 
     + this.ws[2].toScript();  
 }
 
@@ -94,23 +112,16 @@ SieveIf.prototype.toWidget
 
 function SieveElse(docshell,id)
 {
-  SieveAbstractElement.call(this,docshell,id);
+  SieveBlock.call(this,docshell,id);
   this.ws = [];
-  this.block = this._createByName("block/block");
 }
 
-SieveElse.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveElse.prototype.__proto__ = SieveBlock.prototype;
 
 SieveElse.isElement
     = function (token)
 {
   return (token.substring(0,4).toLowerCase().indexOf("else") == 0)  
-}
-
-SieveElse.prototype.getBlock
-    = function ()
-{
-  return this.block;      
 }
 
 SieveElse.prototype.init
@@ -120,8 +131,8 @@ SieveElse.prototype.init
     
   this.ws[0] = this._createByName("whitespace");
   data = this.ws[0].init(data);
-    
-  data = this.block.init(data);
+   
+  data = SieveBlock.prototype.init.call(this,data);
   
   this.ws[1] = this._createByName("whitespace");
   data = this.ws[1].init(data); 
@@ -129,18 +140,12 @@ SieveElse.prototype.init
   return data;
 }
 
-SieveElse.prototype.require
-    = function (imports)
-{
-  this.block.require(imports);
-}
-
 SieveElse.prototype.toScript
     = function()
 {
   return "else" 
     + this.ws[0].toScript() 
-    + this.block.toScript() 
+    + SieveBlock.prototype.toScript.call(this) 
     + this.ws[1].toScript();  
 }
 
@@ -196,27 +201,27 @@ SieveCondition.prototype.init
 }
 
 SieveCondition.prototype.removeChild
-    = function (childId)
+    = function (childId,cascade)
 {
   // should we remove the whole node
   if (typeof (childId) === "undefined")
      throw "Child ID Missing";
   
-  var elm = SieveBlockBody.prototype.removeChild.call(this,childId);
+  var elm = SieveBlockBody.prototype.removeChild.call(this,childId,cascade);
   
   //  ... if we endup after delete with just an else, merge it into parent...   
   if ((this.children().length) && (!this.children(0).test))
   {
     // we copy all of our else statements into our parent...
-    while (this.children(0).getBlock().children().length)
-      this.parent().append(this.children(0).getBlock().children(0), this.id());
+    while (this.children(0).children().length)
+      this.parent().append(this.children(0).children(0), this.id());
         
-    this.children(0).remove();
+    return this.children(0).remove(cascade);
   }
   
   // 4. the condition might now be empty
   if (this.parent() && (!this.children().length))
-    this.remove();
+    return this.remove(cascade);
     
   return elm;
 }

@@ -656,8 +656,23 @@ SieveTestList.prototype.append
   return this;
 }
 
+SieveTestList.prototype.empty
+    = function ()
+{
+  // The direct descendants of our root node are always considered as
+  // not empty. Otherwise cascaded remove would wipe them away.
+  if (this.document().root() == this.parent())
+    return false;
+  
+  for (var i=0; i<this.tests.length; i++)
+    if (this.tests[i][1].widget())
+      return false;
+      
+  return true;
+}
+
 SieveTestList.prototype.removeChild
-    = function (childId)
+    = function (childId,cascade)
 {
   // should we remove the whole node
   if (typeof (childId) === "undefined")
@@ -679,6 +694,12 @@ SieveTestList.prototype.removeChild
     
     break;
   }
+
+  if (cascade && this.empty())
+    return this.remove(cascade);
+    
+  if (cascade)
+    return this;
     
   return elm;
 }

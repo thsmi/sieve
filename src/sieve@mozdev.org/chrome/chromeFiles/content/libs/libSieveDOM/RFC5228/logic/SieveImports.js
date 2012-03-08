@@ -100,6 +100,7 @@ SieveBlockImport.prototype.init
   return data;
 }
 
+
 SieveBlockImport.prototype.capability
     = function (require)
 {

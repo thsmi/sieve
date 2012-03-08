@@ -46,15 +46,10 @@ SieveBlockUI.prototype.init
   return elm; 
 }
 
-SieveBlockUI.prototype.html
+SieveBlockUI.prototype.createHtml
     = function ()
 {
-  if (this._domElm)
-    return this._domElm;
-    
-  this._domElm = this.init()
+  return this.init()
     .addClass("SivElement")
     .attr("id","sivElm"+this.id());
-    
-  return this._domElm;
 }

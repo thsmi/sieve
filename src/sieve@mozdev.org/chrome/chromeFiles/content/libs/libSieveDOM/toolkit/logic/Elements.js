@@ -161,13 +161,13 @@ SieveAbstractElement.prototype.remove
     
   // ...and remove this node
   var elm = this._parent.removeChild(this._id,cascade);
-  if (elm.id() != this._id)
+  if ((!cascade) && (elm.id() != this._id))
     throw "Could not remove Node";
     
   // ... finally cleanup all evidence to our parent Node;
   this._parent = null;
   
-  return this;
+  return elm;
 }
 
 //****************************************************************************//
@@ -244,6 +244,7 @@ SieveAbstractBlock.prototype.removeChild
      throw "Child ID Missing";
     //return SieveAbstractElement.prototype.remove.call(this);
   
+    
   // ... or just a child item
   var elm = null;
   // Is it a direct match?
@@ -259,9 +260,12 @@ SieveAbstractBlock.prototype.removeChild
     
     break;
   }
-   
+  
   if (cascade && this.empty())
-    return this.remove();
+    return this.remove(cascade);
+    
+  if (cascade)
+    return this;
     
   return elm;
 }
@@ -269,6 +273,11 @@ SieveAbstractBlock.prototype.removeChild
 SieveAbstractBlock.prototype.empty
     = function ()
 {
+  // The direct descendants of our root node are always considered as
+  // not empty. Otherwise cascaded remove would wipe them away.
+  if (this.document().root() == this.parent())
+    return false;
+  
   for (var i=0; i<this.elms.length; i++)
     if (this.elms[i].widget())
       return false;

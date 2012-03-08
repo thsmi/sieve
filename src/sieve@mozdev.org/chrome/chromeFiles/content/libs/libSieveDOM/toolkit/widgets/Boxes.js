@@ -68,10 +68,22 @@ SieveAbstractBoxUI.prototype.document
   return this._elm;
 }
 
-SieveAbstractBoxUI.prototype.html
+SieveAbstractBoxUI.prototype.createHtml
     = function ()
 {
-  throw "Implement html()";
+  
+  throw "Implement html()";      
+}
+
+SieveAbstractBoxUI.prototype.html
+    = function ()
+{    
+  if (this._domElm)
+    return this._domElm;
+    
+  this._domElm = this.createHtml();
+  
+  return this._domElm;
 }
 
 SieveAbstractBoxUI.prototype.refresh

@@ -54,6 +54,22 @@ SieveNotOperator.prototype.init
     
 }
 
+SieveNotOperator.prototype.removeChild
+    = function (childId,cascade)
+{
+  if (!cascade)
+    throw "only cascade possible";
+    
+  if (this.test().id() != childId)
+    throw "Invalid Child id";
+
+  // We cannot survive without a test ...
+  this.test().parent(null);  
+  this._test = null;
+  
+  return this.remove(cascade);
+}
+
 SieveNotOperator.prototype.test
     = function (item)
 {

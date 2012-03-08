@@ -275,38 +275,12 @@ SieveTrashBoxDropHandler.prototype.moveElement
   if(!item)
     throw "Trash Drop Handler: No Element found for "+id;
   
-  if (sivFlavour == "sieve/test")
-    item = item.parent();
-    
-  var oldOwner = item.parent();
-  var oldOwner2 = oldOwner.parent();
-    
-  /// TOdo implement removal of emtpy blocks
-  item = item.remove(/*true*/);
+  item = item.remove(true);
   
   if (!item)
     throw "Trash Drop Handler: No Element found for "+id;
    
-  //oldOwner = item.parent();
-  // Cleanup empty blocks
-  /*while (oldOwner2 && oldOwner.empty())
-  {
-    while (oldOwner && oldOwner2 && !oldOwner2.removeChild) {
-      oldOwner = oldOwner.parent();
-      oldOwner2 = oldOwner.parent();  
-    }
- 
-    oldOwner.remove();
-    
-    oldOwner = oldOwner2;
-    oldOwner2 = oldOwner.parent();
-  }*/
-
-  if ((oldOwner2) && (oldOwner2.widget().refresh))
-    oldOwner2.widget().refresh();
-    
-  if (oldOwner)
-    oldOwner.widget().refresh();
+  item.widget().refresh();
     
   var that = this._owner.document();  
   window.setTimeout(function() {that.compact(); },0)
@@ -418,7 +392,7 @@ SieveConditionDropHandler.prototype.moveElement
       
       // we need to warp the action into an else statement
       var newItem = item.document().createByName("condition/else","else {\r\n}\r\n");
-      newItem.getBlock().append(dragElm);
+      newItem.append(dragElm);
       
       item.append(newItem);
       

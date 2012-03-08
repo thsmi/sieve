@@ -78,49 +78,39 @@
 
 function SieveIfUI(elm)
 {
-  SieveAbstractBoxUI.call(this,elm);
+  SieveBlockUI.call(this,elm);
 }
 
-SieveIfUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
+SieveIfUI.prototype.__proto__ = SieveBlockUI.prototype;
 
-SieveIfUI.prototype.html
+SieveIfUI.prototype.createHtml
     = function ()
 {
-  if (this._domElm)
-    return this._domElm;
-    
-  this._domElm =  $("<div/>")
-           .attr("id","sivElm"+this.id())
-           .append(
-              this.getSieve().test().html())
-           .append($("<div/>")
-              .text("# DO"))
-           .append(
-              this.getSieve().getBlock().html());
-  
-  return this._domElm;
+  return $("<div/>")
+    .attr("id","sivElm"+this.id())
+    .append(
+      this.getSieve().test().html())
+    .append($("<div/>")
+      .text("# DO"))
+    .append(
+      SieveBlockUI.prototype.createHtml.call(this));
 }
 
 
 function SieveElseUI(elm)
 {
-  SieveAbstractBoxUI.call(this,elm);  
+  SieveBlockUI.call(this,elm); 
 }
 
-SieveElseUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
+SieveElseUI.prototype.__proto__ = SieveBlockUI.prototype;
 
 SieveElseUI.prototype.html
     = function ()
 {
-  if (this._domElm)
-    return this._domElm;
-
-  this._domElm =  $("<div/>")
+  return $("<div/>")
            .attr("id","sivElm"+this.id())
            .append(
-              this.getSieve().getBlock().html());
-  
-  return this._domElm;
+              SieveBlockUI.prototype.createHtml.call(this));
 }
 
 
@@ -254,5 +244,3 @@ dropC
   
   return elm;
 }
-
-      

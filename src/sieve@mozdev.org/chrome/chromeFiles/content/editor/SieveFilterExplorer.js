@@ -157,7 +157,7 @@ var event =
       return;
     
     if (aData == "offline")
-      onOffline();
+      event.onOffline();
     
     if (aData == "online")
       sivConnect();    

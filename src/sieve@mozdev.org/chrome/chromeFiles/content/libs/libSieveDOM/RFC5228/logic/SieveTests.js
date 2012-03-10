@@ -625,7 +625,7 @@ SieveTestList.prototype.append
   switch ([].concat(elm).length)
   {
     case 1 :
-      element[0] = this._createByName("whitespace");
+      element[0] = this._createByName("whitespace","\r\n");
       element[1] = elm;
       element[2] = this._createByName("whitespace");
       break;
@@ -672,7 +672,7 @@ SieveTestList.prototype.empty
 }
 
 SieveTestList.prototype.removeChild
-    = function (childId,cascade)
+    = function (childId,cascade,stop)
 {
   // should we remove the whole node
   if (typeof (childId) === "undefined")
@@ -696,7 +696,8 @@ SieveTestList.prototype.removeChild
   }
 
   if (cascade && this.empty())
-    return this.remove(cascade);
+    if ((!stop) || (stop.id() != this.id()))
+      return this.remove(cascade,stop);
     
   if (cascade)
     return this;

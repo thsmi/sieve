@@ -23,7 +23,7 @@ SieveMatchTypeUI.prototype.onSelect
   this.getSieve().matchType(value);
 }
 
-SieveMatchTypeUI.prototype.init
+SieveMatchTypeUI.prototype.createHtml
     = function ()
 {
   var that = this;
@@ -69,21 +69,7 @@ SieveMatchTypeUI.prototype.init
           + 'e.g.: "frobnitzm" matches "frob*zm" or "frobnit?m" but not frob?m '))))
     .find("input[name='rgMatchType"+this.id()+"'][value='"+this.getSieve().matchType()+"']")
       .attr("checked","checked")
-    .end();          
-          
-}
-
-SieveMatchTypeUI.prototype.html
-    = function ()
-{
-  if (this._domElm)
-    return this._domElm;
-
-  var _this = this;
-    
-  this._domElm = this.init();
-         
-  return this._domElm;
+    .end();
 }
 //****************************************************************************//
 
@@ -101,7 +87,7 @@ SieveAddressPartUI.prototype.onSelect
   this.getSieve().addressPart(value);
 }
 
-SieveAddressPartUI.prototype.init
+SieveAddressPartUI.prototype.createHtml
     = function ()
 {
   var that = this;
@@ -152,20 +138,6 @@ SieveAddressPartUI.prototype.init
           
 }
 
-SieveAddressPartUI.prototype.html
-    = function ()
-{
-  if (this._domElm)
-    return this._domElm;
-
-  var _this = this;
-    
-  this._domElm = this.init();
-         
-  return this._domElm;
-}
-
-
 //****************************************************************************//
 
 function SieveComparatorUI(elm)
@@ -182,7 +154,7 @@ SieveComparatorUI.prototype.onSelect
   this.getSieve().comparator(value);
 }
 
-SieveComparatorUI.prototype.init
+SieveComparatorUI.prototype.createHtml
     = function ()
 {
   var that = this;
@@ -205,19 +177,6 @@ SieveComparatorUI.prototype.init
       .find("input[name='rgComparator"+this.id()+"'][value='"+this.getSieve().comparator()+"']")
         .attr("checked","checked")
       .end();
-}
-
-SieveComparatorUI.prototype.html
-    = function ()
-{
-  if (this._domElm)
-    return this._domElm;
-
-  var _this = this;
-    
-  this._domElm = this.init();
-         
-  return this._domElm;
 }
 
 //****************************************************************************//

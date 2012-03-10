@@ -153,14 +153,17 @@ SieveAbstractElement.prototype.require
  * @return {}
  */
 SieveAbstractElement.prototype.remove
-    = function (cascade)
+    = function (cascade,stop)
 {
   // Locate our parent...
   if (!this._parent)
     throw "No parent Node";
-    
+  
+  if ((stop) && (this.id() == stop.id()))
+    cascade = false;
   // ...and remove this node
-  var elm = this._parent.removeChild(this._id,cascade);
+  var elm = this._parent.removeChild(this._id,cascade,stop);
+  
   if ((!cascade) && (elm.id() != this._id))
     throw "Could not remove Node";
     
@@ -237,7 +240,7 @@ SieveAbstractBlock.prototype.append
  * @return {}
  */
 SieveAbstractBlock.prototype.removeChild
-    = function (childId,cascade)
+    = function (childId,cascade,stop)
 {
   // should we remove the whole node
   if (typeof (childId) === "undefined")
@@ -255,18 +258,18 @@ SieveAbstractBlock.prototype.removeChild
     
     elm = this.elms[i];
     elm.parent(null);
-    
     this.elms.splice(i,1);
     
     break;
   }
   
   if (cascade && this.empty())
-    return this.remove(cascade);
+    if ((!stop) || (stop.id() != this.id()))
+      return this.remove(cascade,stop);
     
   if (cascade)
     return this;
-    
+      
   return elm;
 }
 

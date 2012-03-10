@@ -46,7 +46,7 @@ SieveIf.prototype.init
 }
 
 SieveIf.prototype.removeChild
-    = function (childId,cascade)
+    = function (childId,cascade,stop)
 {
   if (!cascade)
     throw "only cascade possible";
@@ -56,12 +56,14 @@ SieveIf.prototype.removeChild
     SieveBlock.prototype.removeChild.call(this,childId)
     return this;
   }
-
-  // We cannot survive without a test ...
-  this.test().parent(null);  
+  
+  this.test().parent(null);
   this._test = null;
   
-  return this.remove(cascade);
+  if ((!stop) || (stop.id() != this.id()))
+    return this.remove(cascade,stop);
+    
+  return this;
 }
 
 SieveIf.prototype.test
@@ -74,7 +76,8 @@ SieveIf.prototype.test
     throw "test already bound to "+item.parent().id();
      
   // Release old test...
-  this._test.parent(null);
+  if(this._test)
+    this._test.parent(null);
     
   // ... and bind new test to this node
   this._test = item.parent(this);
@@ -201,13 +204,16 @@ SieveCondition.prototype.init
 }
 
 SieveCondition.prototype.removeChild
-    = function (childId,cascade)
+    = function (childId,cascade,stop)
 {
   // should we remove the whole node
   if (typeof (childId) === "undefined")
      throw "Child ID Missing";
   
-  var elm = SieveBlockBody.prototype.removeChild.call(this,childId,cascade);
+  if (stop && (stop.id() == this.id()))
+    cascade = false;
+    
+  var elm = SieveBlockBody.prototype.removeChild.call(this,childId,cascade,stop);
   
   //  ... if we endup after delete with just an else, merge it into parent...   
   if ((this.children().length) && (!this.children(0).test))
@@ -216,13 +222,21 @@ SieveCondition.prototype.removeChild
     while (this.children(0).children().length)
       this.parent().append(this.children(0).children(0), this.id());
         
-    return this.children(0).remove(cascade);
+    return this.children(0).remove(cascade,stop);
   }
+  
+
+  // If SieveBlockBody cascaded through our parent, it should be null...
+  // ... and we are done
   
   // 4. the condition might now be empty
   if (this.parent() && (!this.children().length))
-    return this.remove(cascade);
+    return this.remove(cascade,stop);
+
+  if (this.parent() && cascade)
+    return this;
     
+
   return elm;
 }
 

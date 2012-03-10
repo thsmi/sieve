@@ -32,6 +32,15 @@ SieveDropHandler.prototype.flavours
   return this;
 }
 
+SieveDropHandler.prototype.document
+    = function()
+{
+  if (!this._owner)
+    throw "Owner for this Drop Handler";
+    
+  return this._owner.document();
+}
+
 SieveDropHandler.prototype.bind
     = function (owner)
 {
@@ -78,12 +87,6 @@ SieveDropHandler.prototype.onDrop
   return false;  
 }
 
-SieveDropHandler.prototype.onCanDrop
-    = function(flavour,event)
-{
-  return true;
-}
-
 SieveDropHandler.prototype.drop
     = function(event)
 { 
@@ -98,16 +101,48 @@ SieveDropHandler.prototype.drop
   return true;
 }
 
+SieveDropHandler.prototype.onCanDrop
+    = function (flavour,event)
+{
+  var dt = event.originalEvent.dataTransfer;
+  // accept only the registered drop flavour...  
+  if (!dt.mozGetDataAt(flavour,0))
+    return false;
+  
+  switch (dt.mozGetDataAt(flavour,0).action)
+  {
+    case "create":
+      if (!this.canCreateElement)
+        return false;
+        
+      return this.canCreateElement(
+        flavour,
+        dt.mozGetDataAt(flavour,0).type,
+        dt.mozGetDataAt("application/sieve",0))
+    
+    case "move":
+      if (!this.canMoveElement)
+        return false;
+        
+      return this.canMoveElement(
+        flavour,
+        dt.mozGetDataAt(flavour,0).id,
+        dt.mozGetDataAt("application/sieve",0))
+  }
+}
+
 SieveDropHandler.prototype.canDrop
     = function(event)
 {
   for (var i=0; i<this.flavours().length; i++)
-    if (this.onCanDrop(this.flavours()[i],event))
-    {
-       event.preventDefault();
-       event.stopPropagation(); 
-       return true;
-    }
+  {  
+    if (!this.onCanDrop(this.flavours()[i],event))
+      continue;
+            
+    event.preventDefault();
+    event.stopPropagation(); 
+    return true;
+  }
       
   return false;      
 }
@@ -117,92 +152,82 @@ SieveDropHandler.prototype.canDrop
 function SieveBlockDropHandler()
 { 
   SieveDropHandler.call(this);
-  this.flavours(["sieve/action","sieve/test"]);
+  this.flavours(["sieve/action","sieve/test", "sieve/operator"]);
 }
 
 SieveBlockDropHandler.prototype.__proto__ = SieveDropHandler.prototype;
 
-SieveBlockDropHandler.prototype.onCanDrop
-    = function(sivFlavour, event)
-{ 
-    event = event.originalEvent;
-    
-    // accept only the registered drop flavour...
-    if ( ! event.dataTransfer.mozGetDataAt(sivFlavour,0))
-      return false;     
+SieveBlockDropHandler.prototype.canMoveElement
+    = function(sivFlavour, id, script)
+{
+  var source = this._owner.document().id(id);
             
-    if (event.dataTransfer.mozGetDataAt(sivFlavour,0).action == "create")
-      return true;
-            
-    if (event.dataTransfer.mozGetDataAt(sivFlavour,0).action != "move")
-      return false; 
-
-    var id = event.dataTransfer.mozGetDataAt(sivFlavour,0).id;
-    
-    var elm = this._owner.document().id(id);
-            
-    if (elm.html().prev().get(0) == this._owner.dropTarget.get(0))
-      return false;
+  if (source.html().prev().get(0) == this._owner.dropTarget.get(0))
+    return false;
                
-    if (elm.html().next().get(0) == this._owner.dropTarget.get(0))
-      return false;
-               
-    // in case the element is dragged onto the droptarget directly behind or ...
-    // ... in front we can just skip the request.    
- /*   var elm = event.dataTransfer.mozGetDataAt(sivFlavour,0).html;
-    
-    
-    if ((elm.nextSibling) && (elm.nextSibling === this._owner.dropTarget.get(0)))
-      return false;
-    
-    if ((elm.previousSibling) && (elm.previousSibling === this._owner.dropTarget.get(0)))
-      return false;*/
-          
-  // ... or onto a parent into his child block          
-/*  for (var node = this.dropTarget; node; node = node.parentNode)
-    if (node.isSameNode(event.dataTransfer.mozGetDataAt(sivFlavour,0)))
-      return false;*/
-          
+  if (source.html().next().get(0) == this._owner.dropTarget.get(0))
+    return false;
+                          
   return true;
+      
 }
 
- 
 SieveBlockDropHandler.prototype.moveElement
     = function(sivFlavour, id, script)
 {
-
-  var dragElm = this._owner.parent().getSieve().id(id);  
+  var dragElm = this.document().id(id);  
   if (!dragElm)
     throw "Block Drop Handler: No Element found for "+id;
          
   var item = this._owner.parent().getSieve();  
   if (!item)
     throw "Block Drop Handler: No Element found for "+this._owner.parent().id();
-  
+   
   switch (sivFlavour)
   {
     case "sieve/test":
-      // 1. We need to figure out the corresponding condition...
-      var oldCond = dragElm.parent().parent();
-      var oldOwner = oldCond.parent();
-    
-      // 2. create a new home for our test
-      var newCond = dragElm.document().createByName("condition");    
-      newCond.append(dragElm.parent());
-      newCond.children(0).remove();
+    case "sieve/operator":
+
+      var source = dragElm;
+      var target = item;
+
+      // Create a new Condition...      
+      var newCondition = this.document().createByName("condition");
       
-      // 4. finally insert our new condition 
-      item.append(newCond,this._owner.id());    
-      item.widget().refresh();      
-    
-      oldCond.widget().refresh();
-      oldOwner.widget().refresh();       
-    
+      // Find the if element which owns this test...
+      var conditional = source;      
+      while (conditional.parent().test)
+        conditional = conditional.parent();
+      
+      // ... remove everything between our test and the conditional...
+      var oldOwner = source.remove(true,conditional);
+      
+      // ... in case the conditional has no more a test...
+      // ... we need to transfer all block element...
+      if (!conditional.test())
+      {
+        oldOwner = conditional.remove(true,target);
+        
+        newCondition.append(conditional);
+        newCondition.children(1).test(source);
+        newCondition.children(0).remove(true);
+      }
+      else
+        newCondition.children(0).test(source);
+
+      target.append(newCondition,this._owner.id());
+        
+      target.widget().refresh();
+      if (conditional.parent())
+        conditional.widget().refresh();
+      source.widget().refresh();
+      oldOwner.widget().refresh();
+      
       return;
       
     case "sieve/action":
       // remember owner
-      var oldOwner = dragElm.parent();  
+      var oldOwner = dragElm.remove(true,item);  
       // Move Item to new owner
       item.append(dragElm,this._owner.id());
       
@@ -210,16 +235,19 @@ SieveBlockDropHandler.prototype.moveElement
       item.widget().refresh();
       oldOwner.widget().refresh();
       
-      // TODO Check if move would result in am empty else, if so drop it automagically
-      // if !oldOwner.parent().parent().test 
-      //   &&   !oldOwner.parent().parent().block().children().length();
-      //   oldOwner.parent().parent().parent().remove();
-      //   refresh oldOwner parent      
-      
       return;
   }
   
   throw "Incompatible Drop";
+}
+
+SieveBlockDropHandler.prototype.canCreateElement
+    = function(sivFlavour, type , script)
+{
+  if(sivFlavour == "sieve/operator")
+    return false;
+    
+  return true;      
 }
 
 SieveBlockDropHandler.prototype.createElement
@@ -232,7 +260,6 @@ SieveBlockDropHandler.prototype.createElement
     throw "Element "+this._owner.parent().getSieve().id()+" not found";
   
   var elm = null;
-  
   
   if (sivFlavour == "sieve/test")  
     elm = item.document().createByName("condition",
@@ -249,21 +276,14 @@ SieveBlockDropHandler.prototype.createElement
 function SieveTrashBoxDropHandler()
 {
   SieveDropHandler.call(this);
-  this.flavours(["sieve/action","sieve/test","sieve/if"]);
+  this.flavours(["sieve/action","sieve/test","sieve/if","sieve/operator"]);
 }
 
 SieveTrashBoxDropHandler.prototype.__proto__ = SieveDropHandler.prototype;
 
-SieveTrashBoxDropHandler.prototype.onCanDrop
-    = function (flavour, event)
-{
-  // accept only the registered drop flavour...
-  if ( ! event.originalEvent.dataTransfer.mozGetDataAt(flavour,0))
-    return false;
-            
-  if (event.originalEvent.dataTransfer.mozGetDataAt(flavour,0).action != "move")
-    return false;
-            
+SieveTrashBoxDropHandler.prototype.canMoveElement
+    = function(sivFlavour, id, script)
+{           
   return true;      
 }
 
@@ -271,7 +291,7 @@ SieveTrashBoxDropHandler.prototype.moveElement
     = function(sivFlavour, id, script)
 {
   
-  var item = this._owner.document().id(id);
+  var item = this.document().id(id);
   if(!item)
     throw "Trash Drop Handler: No Element found for "+id;
   
@@ -282,7 +302,7 @@ SieveTrashBoxDropHandler.prototype.moveElement
    
   item.widget().refresh();
     
-  var that = this._owner.document();  
+  var that = this.document();  
   window.setTimeout(function() {that.compact(); },0)
 }
 
@@ -294,6 +314,7 @@ SieveTrashBoxDropHandler.prototype.moveElement
 function SieveConditionDropHandler()
 { 
   SieveDropHandler.call(this);
+  //TODO it should be possible to move operators. Creating Operators does not make any sense
   this.flavours(["sieve/test","sieve/action"]);
 }
 
@@ -362,7 +383,7 @@ SieveConditionDropHandler.prototype.onCanDrop
 SieveConditionDropHandler.prototype.moveElement
     = function (sivFlavour, id, script)
 {
-  var dragElm = this._owner.parent().getSieve().id(id);  
+  var dragElm = this.document().id(id);  
   if (!dragElm)
     throw "Block Drop Handler: No Element found for "+id;
          
@@ -391,7 +412,7 @@ SieveConditionDropHandler.prototype.moveElement
       var oldOwner = dragElm.parent();
       
       // we need to warp the action into an else statement
-      var newItem = item.document().createByName("condition/else","else {\r\n}\r\n");
+      var newItem = this.document().createByName("condition/else","else {\r\n}\r\n");
       newItem.append(dragElm);
       
       item.append(newItem);
@@ -441,34 +462,52 @@ SieveConditionDropHandler.prototype.createElement
 function SieveTestDropHandler()
 { 
   SieveDropHandler.call(this);
-  this.flavours(["sieve/operator"]);
+  this.flavours(["sieve/operator","sieve/test"]);
 }
 
 SieveTestDropHandler.prototype.__proto__ = SieveDropHandler.prototype;
 
-SieveTestDropHandler.prototype.onCanDrop
-    = function(sivFlavour, event)
-{ 
-  
-    event = event.originalEvent;
+SieveTestDropHandler.prototype.canMoveElement
+    = function (sivFlavour, id , script)
+{
+  var target = this._owner.parent().getSieve();
+  if(!target)
+    return false;
     
-    // accept only the registered drop flavour...
-    if ( ! event.dataTransfer.mozGetDataAt(sivFlavour,0))
-      return false;   
- 
-    if (sivFlavour != "sieve/operator")    
+  var source = target.document().id(id)
+  if(!source)
+    return false;
+      
+  // As we nest the tests we get in troube if the test is a direct descendant 
+  // of the source, or of the target.
+  while (source)
+  {
+    if (source.id() == target.id())
       return false;
       
-    return true;
+    source = source.parent();
+  }
+  
+  var source = target.document().id(id)
+  while (target)
+  {
+    if (source.id() == target.id())
+      return false
+      
+    target = target.parent();
+  }
+    
+  return true;
 }
 
-
-SieveTestDropHandler.prototype.createElement
-    =  function(sivFlavour, type , script)
+SieveTestDropHandler.prototype.moveElement
+    = function (sivFlavour, id , script)
 {
-  if (sivFlavour != "sieve/operator")
-    throw "invalid flavour "+sivFlavour;
-   
+  
+  var dragElm = this.document().id(id);  
+  if (!dragElm)
+    throw "Test Drop Handler: No Element found for "+id;
+    
   // The new home for our element
   var inner = this._owner.parent().getSieve();
   
@@ -476,6 +515,53 @@ SieveTestDropHandler.prototype.createElement
     throw "Element "+this._owner.parent().id()+" not found";
   
   var container = inner.parent();
+  //var oldOwner = dragElm.parent();
+  
+  var outer = this.document().createByName("operator/anyof")
+  // share the same source...
+  if (outer.parent())
+    throw "wrap already bound to "+outer.parent().id();
+    
+  inner.parent(null);
+  
+  // ...and bind test to the new container...
+  outer.test(inner);
+  // ... then add it to this container ...
+  container.test(outer,inner.id());
+  
+  // ... finally update all backrefs.
+  outer.parent(container);
+  inner.parent(outer);
+  
+  var oldOwner = dragElm.remove(true,inner);
+  outer.append(dragElm);
+  
+  container.widget().refresh();
+  oldOwner.widget().refresh();
+}
+
+SieveTestDropHandler.prototype.canCreateElement
+    = function (sivFlavour, type , script)
+{     
+  return true;
+}
+
+SieveTestDropHandler.prototype.createElement
+    = function(sivFlavour, type , script)
+{  
+  // The new home for our element
+  var inner = this._owner.parent().getSieve();
+  
+  if(!inner)
+    throw "Element "+this._owner.parent().id()+" not found";
+  
+  var container = inner.parent();
+  
+  if (sivFlavour == "sieve/test")
+  {
+    var test = inner.document().createByName(type)
+    type = "operator/anyof";
+  }
 
   
   var outer = inner.document().createByName(type)
@@ -494,6 +580,9 @@ SieveTestDropHandler.prototype.createElement
   outer.parent(container);
   inner.parent(outer);
   
+  if (sivFlavour == "sieve/test")
+    outer.append(test);
+
   //newOwner.wrap(item.document().createByName(type))
   //item.widget().refresh();
   
@@ -511,38 +600,81 @@ function SieveMultaryDropHandler()
 
 SieveMultaryDropHandler.prototype.__proto__ = SieveDropHandler.prototype;
 
-SieveMultaryDropHandler.prototype.onCanDrop
-    = function(sivFlavour, event)
-{ 
+SieveMultaryDropHandler.prototype.canMoveElement
+    = function (sivFlavour, id, script)
+{
+  // We have to prevent that someone drops a parent onto a child...
+  //  ... this would generate a ring reference
+  var target = this._owner.parent().getSieve();
   
-    event = event.originalEvent;
+  if (!target)
+    return false;
     
-    // accept only the registered drop flavour...
-    if ( ! event.dataTransfer.mozGetDataAt(sivFlavour,0))
-      return false;   
- 
-    var action = event.dataTransfer.mozGetDataAt(sivFlavour,0).action;
+  var source = target.document().id(id)
+  if(!source)
+    return false;
     
-    if ((action == "create") && (sivFlavour != "sieve/test"))    
+  while (target)
+  {
+    if (source.id() == target.id())
       return false;
       
-    // TODO Fixme: 
-    if (action == "move")
-      return false;
-      
-    return true;
+    target = target.parent();
+  }
+  
+  // It makes no sense so drop the item directly before or after the element.
+  if (source.html().prev().get(0) == this._owner.dropTarget.get(0))
+    return false;
+               
+  if (source.html().next().get(0) == this._owner.dropTarget.get(0))
+    return false;  
+  
+  return true;
 }
-
 
 SieveMultaryDropHandler.prototype.moveElement
     = function (sivFlavour, id, script)
 {
-  throw "implement me move Element for"+sivFlavour;
+  var item = this._owner.parent().getSieve();
+  
+  if(!item)
+    throw "Element "+this._owner.parent().getSieve().id()+" not found";
+  
+  var elm = item.document().id(id);  
+  if (!elm)
+    throw "Block Drop Handler: No Element found for "+id;  
+  
+  // TODO: in case we have no other tests as siblings, remove cascade will swipe
+  // out our condition including all actions contained in the body. 
+  // In such a case we should migrate these actions too...
+    
+  var oldOwner = elm.remove(true,item);  
+  item.append(elm,this._owner.id());
+  
+  item.widget().refresh();
+  oldOwner.widget().refresh();
+}
+
+SieveMultaryDropHandler.prototype.canCreateElement
+    =  function(sivFlavour, type , script)
+{
+  if (sivFlavour != "sieve/test")
+    return false;
+    
+  return true;      
 }
 
 SieveMultaryDropHandler.prototype.createElement
     =  function(sivFlavour, type , script)
 {
-  throw "implement me create Element for"+sivFlavour;
+  var item = this._owner.parent().getSieve();
+  
+  if(!item)
+    throw "Element "+this._owner.parent().getSieve().id()+" not found";
+  
+  var elm = item.document().createByName(type);
+  
+  item.append(elm,this._owner.id());
+  item.widget().refresh();
 }
 

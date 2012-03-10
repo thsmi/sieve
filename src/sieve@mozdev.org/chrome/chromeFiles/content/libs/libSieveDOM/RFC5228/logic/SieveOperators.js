@@ -9,6 +9,11 @@
  
  "use strict";
  
+/*
+ * Currenlty we have only Unary Operators like not and Nary/Multary like anyof allof
+ * Sieve does not implement binary (2) or tenary operators (3)
+ */
+ 
 // Unary operators
 SieveNotOperator.isElement
   = function(token)
@@ -55,7 +60,7 @@ SieveNotOperator.prototype.init
 }
 
 SieveNotOperator.prototype.removeChild
-    = function (childId,cascade)
+    = function (childId,cascade,stop)
 {
   if (!cascade)
     throw "only cascade possible";
@@ -67,7 +72,10 @@ SieveNotOperator.prototype.removeChild
   this.test().parent(null);  
   this._test = null;
   
-  return this.remove(cascade);
+  if (stop && (stop.id() == this.id()))
+    return this.remove(cascade,stop);
+  
+  return this
 }
 
 SieveNotOperator.prototype.test
@@ -111,7 +119,8 @@ SieveNotOperator.prototype.toWidget
 function SieveAnyOfAllOfTest(docshell,id)
 {
   SieveTestList.call(this,docshell,id);  
-  this.whiteSpace = this._createByName("whitespace");
+  this.whiteSpace = this._createByName("whitespace");  
+  this.isAllOf = true;
 }
 
 // Inherrit TestList

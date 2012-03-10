@@ -9,73 +9,6 @@
  
 "use strict";
  
-/*
- <drop: test>
- if <test>
- <block>
- <drop: action -> else; test -> elsif>
- 
- <drop: test -> if>
- if <test>
- <block>
- <drop: test -> elsif>
- else [[<drop: test -> elsif>]] 
- <block>
- 
- <drop:test -> if>
- if <test>
-   <block>
- <drop:test -> elsif>
- elsif <test>
-   <block>
- <drop: test -> elsif>
- else [[<drop: test -> elsif>]] 
- <block>
-  
- */
-  /*  
-  // 1. Operator entfernen und in tests 
-  //  ary und unary tests umbauen
-  //
-  // 2. if<dropA><test><dropA>
-  // 3. wenn dropA dann test durch allof ersetzen
-  // 3a. wenn test anyof dann
- 
-
- oder besser (?)
- 
- Idee tests sind einerseits dragable aber auch droptargets...
- 
- unary test:
- <test : dropA>  // wenn dropa -> anyof einfügen, wenn not gedropt wird not <test:dropA>
- 
- multary bzw Polyadic test:
- anyof the following Arguments
-   <dropB>
-   <test :dropC>
-   <dropB>
-   <test :dropC>
-   <dropB>
-    
-  wenn unary test:
-  if <test :dropA>
-  
-  wenn nary test:
-   if anyof the following Agruments
-      <dropB>
-      <test:dropC>
-      <dropB>
-      <test:dropC>
-      <dropB>
-      <test:dropC>
-      <dropB>   
-   else [drop:actions/tests]
-
-       
-  binary (2) oder tenary (3) arguments existieren nicht
-  **/
-
-
 function SieveIfUI(elm)
 {
   SieveBlockUI.call(this,elm);
@@ -104,7 +37,7 @@ function SieveElseUI(elm)
 
 SieveElseUI.prototype.__proto__ = SieveBlockUI.prototype;
 
-SieveElseUI.prototype.html
+SieveElseUI.prototype.createHtml
     = function ()
 {
   return $("<div/>")

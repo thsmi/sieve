@@ -314,115 +314,146 @@ SieveTrashBoxDropHandler.prototype.moveElement
 function SieveConditionDropHandler()
 { 
   SieveDropHandler.call(this);
-  //TODO it should be possible to move operators. Creating Operators does not make any sense
-  this.flavours(["sieve/test","sieve/action"]);
+  this.flavours(["sieve/test","sieve/action","sieve/operator"]);
 }
 
 SieveConditionDropHandler.prototype.__proto__ = SieveDropHandler.prototype;
 
-SieveConditionDropHandler.prototype.onCanDrop
-    = function(sivFlavour, event)
-{ 
-    event = event.originalEvent;
+SieveConditionDropHandler.prototype.canMoveElement
+    = function(flavour, id, script)
+{     
     
-    // accept only the registered drop flavour...
-    if ( ! event.dataTransfer.mozGetDataAt(sivFlavour,0))
-      return false;
-            
-    var action = event.dataTransfer.mozGetDataAt(sivFlavour,0).action;
-    var id = event.dataTransfer.mozGetDataAt(sivFlavour,0).id;
+  // actions can only be added as last element...
+  if (flavour == "sieve/action")
+    if (this._owner.id() != -1)
+      return false;  
+
+  // if there is no source node we can skip right here...
+  var source = this._owner.document().id(id);
+  if (!source)
+    return false;
     
-    // We can not add any element after an else, so we have to filter that out...      
-    switch (sivFlavour)
-    {
-      case "sieve/action":
-        // ... actions can only added as last element
-        if (this._owner.id() != -1)
-          return false;
-             
-        break;
-           
-      case "sieve/test":
-        if (action == "move")
-        {
-          // this is a test, so we have to retrieve the conditonal
-          var elm = this._owner.document().id(id).parent();
-            
-          if (elm.html().prev().prev().get(0) == this._owner.dropTarget.get(0))
-            return false;
+  // nested test might be dropped directly in front of a test, in order to...
+  // ... remove an operator. But it does not make any sense to drop the ...
+  // ... source directly before or after the traget.
+  if (flavour != "sieve/action")
+  {
+    // we have to the check if the test's parent is a conditional   
+    source = source.parent();
+  
+    // if it's a conditional statement it's parent does not have a test method
+    if (!source.parent().test)
+    {          
+      if (source.html().prev().prev().get(0) == this._owner.dropTarget.get(0))
+        return false;
                
-          if (elm.html().next().get(0) == this._owner.dropTarget.get(0))
-            return false;
-         }
- 
-         // ... for tests everything before the last element is ok
-         if (this._owner.id() != -1)
-           return true;
-             
-        break;
-           
-      default :
-        // nothing Compatible was dropped to return false
+      if (source.html().next().get(0) == this._owner.dropTarget.get(0))
         return false;
     }
-      
-    // ... ok, with the last element we have to do some extra work... 
-    var item = this._owner.parent().getSieve();
-    if (!item)
-      return false;
-
-    // ... if the last element has no test, then it has to be an else...         
-    if (!item.children(":last").test)
-      return false;
-      
-    // ... if not we are safe to add elements to it
+  }
+    
+  // ... it's safe to add any other element everywhere except as...
+  // ... last element.
+  if (this._owner.id() != -1)
     return true;
+    
+  // ... if the last element has no test, it's an else statement...
+  // ... and it's not possible to add anything...      
+  var target = this._owner.parent().getSieve()
+  if (!target)
+    return false;
+      
+  if (!target.children(":last").test)
+    return false;
+ 
+  return true;      
 }
 
-
 SieveConditionDropHandler.prototype.moveElement
-    = function (sivFlavour, id, script)
+    = function (flavour, id, script)
 {
-  var dragElm = this.document().id(id);  
-  if (!dragElm)
+  var source = this.document().id(id);  
+  if (!source)
     throw "Block Drop Handler: No Element found for "+id;
          
-  var item = this._owner.parent().getSieve();  
-  if (!item)
+  var target = this._owner.parent().getSieve();  
+  if (!target)
     throw "Block Drop Handler: No Element found for "+this._owner.parent().id();
-    
-  switch(sivFlavour)
+  
+  if (flavour == "sieve/action")
   {
-    case "sieve/test":
-      var oldCond = dragElm.parent().parent();
-      var oldOwner = oldCond.parent();
+      var oldOwner = source.remove(true,target);
       
-      // Move element
-      item.append(dragElm.parent(),this._owner.id());
+      // we need to warp the action into an else statement      
+      target.append(
+        this.document().createByName("condition/else")
+          .append(source));
       
-      // Check if element is empty      
-      item.widget().refresh();
-      oldOwner.widget().refresh();
-      oldCond.widget().refresh();      
-
-      return;
-      
-    case "sieve/action":
-      
-      var oldOwner = dragElm.parent();
-      
-      // we need to warp the action into an else statement
-      var newItem = this.document().createByName("condition/else","else {\r\n}\r\n");
-      newItem.append(dragElm);
-      
-      item.append(newItem);
-      
-      item.widget().refresh();
+      target.widget().refresh();
       oldOwner.widget().refresh();
       
       return;
   }
-  throw "implement me move Element for"+sivFlavour;
+      
+  // "sieve/test" || "sieve/operator"
+    
+  // Find the if element which owns this test...
+  var conditional = source;      
+  while (conditional.parent().test)
+    conditional = conditional.parent();
+    
+  // ... remove everything between our test and the conditional...
+  var oldOwner = source.remove(true,conditional);
+      
+  // in case the conditional is empty we can reuse it ...
+  // ... this keep all block elements intact...      
+  if (conditional.test())
+  {
+    // we can't reuse it, create a new conditional
+    conditional = this.document().createByName("condition/if");
+    conditional.test(source);
+  }
+  else
+  {
+    conditional.test(source);
+    oldOwner = conditional.remove(true,target);
+  }
+           
+  target.append(conditional,this._owner.id());
+
+  target.widget().refresh();
+  oldOwner.widget().refresh();
+  conditional.widget().refresh();
+     
+  return;      
+}
+
+SieveConditionDropHandler.prototype.canCreateElement
+    = function(flavour, type , script)
+{
+  if(flavour == "sieve/operator")
+    return false;
+  
+  // actions can only be added as last element...
+  if (flavour == "sieve/action")
+    if (this._owner.id() != -1)
+      return false;  
+
+  // ... it's safe to add any other element everywhere except as...
+  // ... last element.
+  if (this._owner.id() != -1)
+    return true;
+    
+  // ... if the last element has no test, it's an else statement...
+  // ... and it's not possible to add anything...      
+  var target = this._owner.parent().getSieve()
+  if (!target)
+    return false;
+      
+  if (!target.children(":last").test)
+    return false;
+ 
+  return true;
 }
 
 SieveConditionDropHandler.prototype.createElement
@@ -500,44 +531,67 @@ SieveTestDropHandler.prototype.canMoveElement
   return true;
 }
 
+
+  
 SieveTestDropHandler.prototype.moveElement
     = function (sivFlavour, id , script)
-{
-  
-  var dragElm = this.document().id(id);  
-  if (!dragElm)
+{ 
+  var source = this.document().id(id);  
+  if (!source)
     throw "Test Drop Handler: No Element found for "+id;
     
   // The new home for our element
-  var inner = this._owner.parent().getSieve();
+  var target = this._owner.parent().getSieve();
   
-  if(!inner)
+  if(!target)
     throw "Element "+this._owner.parent().id()+" not found";
   
-  var container = inner.parent();
-  //var oldOwner = dragElm.parent();
-  
-  var outer = this.document().createByName("operator/anyof")
-  // share the same source...
-  if (outer.parent())
-    throw "wrap already bound to "+outer.parent().id();
+  // Find the if element which owns this test...
+  var conditional = source;      
+  while (conditional.parent().test)
+    conditional = conditional.parent();  
     
-  inner.parent(null);
+  // Wrap test into new test
+  var outer = target.parent();  
+  var inner = this.document().createByName("operator/anyof")
+    
+  target.parent(null);
   
   // ...and bind test to the new container...
-  outer.test(inner);
+  inner.test(target);
   // ... then add it to this container ...
-  container.test(outer,inner.id());
+  outer.test(inner,target.id());
   
   // ... finally update all backrefs.
-  outer.parent(container);
   inner.parent(outer);
+  target.parent(inner);
   
-  var oldOwner = dragElm.remove(true,inner);
-  outer.append(dragElm);
+  // cleanup but stop at the source's parent condition
+  var oldOwner = source.remove(true,conditional);
   
-  container.widget().refresh();
-  oldOwner.widget().refresh();
+  // in case the conditional is empty we should migrate all actions ...
+  // ... otherwise remove cascade will swipe them.
+  if (!conditional.test())
+  {
+    // find the new home for our actions
+    var newConditional = outer;
+    while (newConditional.parent().test)
+      newConditional = newConditional.parent();    
+
+    // migrate our children...      
+    while (conditional.children().length)
+      newConditional.append(conditional.children(0).remove())
+      
+    // do the remaining cleanup...
+    oldOwner = oldOwner.remove(true,target);      
+  }  
+  
+  inner.append(source);
+  
+  outer.widget().refresh();
+  if (newConditional)
+    newConditional.widget().refresh();
+  oldOwner.widget().refresh();  
 }
 
 SieveTestDropHandler.prototype.canCreateElement
@@ -635,24 +689,49 @@ SieveMultaryDropHandler.prototype.canMoveElement
 SieveMultaryDropHandler.prototype.moveElement
     = function (sivFlavour, id, script)
 {
-  var item = this._owner.parent().getSieve();
+  var target = this._owner.parent().getSieve();
   
-  if(!item)
+  if(!target)
     throw "Element "+this._owner.parent().getSieve().id()+" not found";
   
-  var elm = item.document().id(id);  
-  if (!elm)
+  var source = this.document().id(id);  
+  if (!source)
     throw "Block Drop Handler: No Element found for "+id;  
   
-  // TODO: in case we have no other tests as siblings, remove cascade will swipe
-  // out our condition including all actions contained in the body. 
-  // In such a case we should migrate these actions too...
     
-  var oldOwner = elm.remove(true,item);  
-  item.append(elm,this._owner.id());
+  // Find the if element which owns this test...
+  var conditional = source;      
+  while (conditional.parent().test)
+    conditional = conditional.parent();
+    
+  // ... remove everything between our test and the conditional...
+  var oldOwner = source.remove(true,conditional);
+      
+  // in case the conditional is empty we should migrate all actions ...
+  // ... otherwise remove cascade will swipe them.
+  if (!conditional.test())
+  {
+    // find the new home for our actions
+    var newConditional = target;
+    while (newConditional.parent().test)
+      newConditional = newConditional.parent();    
+
+    // migrate our children...      
+    while (conditional.children().length)
+      newConditional.append(conditional.children(0).remove())
+      
+    // continue cleanup
+    oldOwner = oldOwner.remove(true,target);        
+  }
+    
+  target.append(source,this._owner.id());
   
-  item.widget().refresh();
+  target.widget().refresh();
+  if (newConditional)
+    newConditional.widget().refresh();  
   oldOwner.widget().refresh();
+  
+
 }
 
 SieveMultaryDropHandler.prototype.canCreateElement

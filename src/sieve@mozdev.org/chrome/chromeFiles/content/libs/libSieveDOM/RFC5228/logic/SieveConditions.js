@@ -13,6 +13,8 @@ function SieveIf(docshell,id)
 {
   SieveElse.call(this,docshell,id);
   this._test = null;  
+  
+  this.ws[2] = this._createByName("whitespace","\r\n");  
 }
 
 SieveIf.prototype.__proto__ = SieveElse.prototype;
@@ -28,34 +30,36 @@ SieveIf.prototype.init
 { 
   data = data.slice("if".length);
   
-  this.ws[0] = this._createByName("whitespace");
-  data = this.ws[0].init(data);
+  
+  data = this.ws[2].init(data);
     
   this._test = this._createByClass(["test","operator"],data);
   data = this._test.init(data);
   
-  this.ws[1] = this._createByName("whitespace");
-  data = this.ws[1].init(data);
+  data = this.ws[0].init(data);
   
   data = SieveBlock.prototype.init.call(this,data);
   
-  this.ws[2] = this._createByName("whitespace");
-  data = this.ws[2].init(data);
+  data = this.ws[1].init(data);
   
   return data;
 }
 
 SieveIf.prototype.removeChild
     = function (childId,cascade,stop)
-{
-  if (!cascade)
-    throw "only cascade possible";
-    
-  if (this.test().id() != childId)
-  {
-    SieveBlock.prototype.removeChild.call(this,childId)
+{    
+  var elm = SieveBlock.prototype.removeChild.call(this,childId);  
+  if (cascade && elm)
     return this;
-  }
+    
+  if (elm)
+    return elm;
+  
+  if (this.test().id() != childId)
+    throw "Unknown ChildId";
+    
+  if (!cascade)
+    throw "Use cascade to delete conditions";  
   
   this.test().parent(null);
   this._test = null;
@@ -85,6 +89,12 @@ SieveIf.prototype.test
   return this;
 }
 
+SieveIf.prototype.empty 
+  = function ()
+{
+  return (!this._test) ? true : false;    
+}
+
 
 SieveIf.prototype.require
     = function (imports)
@@ -97,11 +107,11 @@ SieveIf.prototype.toScript
     = function()
 {
   return "if"
-    + this.ws[0].toScript() 
+    + this.ws[2].toScript() 
     + this._test.toScript() 
-    + this.ws[1].toScript()
+    + this.ws[0].toScript()
     + SieveBlock.prototype.toScript.call(this) 
-    + this.ws[2].toScript();  
+    + this.ws[1].toScript();  
 }
 
 SieveIf.prototype.toWidget
@@ -117,6 +127,8 @@ function SieveElse(docshell,id)
 {
   SieveBlock.call(this,docshell,id);
   this.ws = [];
+  this.ws[0] = this._createByName("whitespace","\r\n");
+  this.ws[1] = this._createByName("whitespace","\r\n");
 }
 
 SieveElse.prototype.__proto__ = SieveBlock.prototype;
@@ -132,12 +144,11 @@ SieveElse.prototype.init
 {
   data = data.slice("else".length);
     
-  this.ws[0] = this._createByName("whitespace");
+
   data = this.ws[0].init(data);
    
   data = SieveBlock.prototype.init.call(this,data);
   
-  this.ws[1] = this._createByName("whitespace");
   data = this.ws[1].init(data); 
   
   return data;

@@ -409,7 +409,7 @@ SieveDropBoxUI.prototype.onDragDrop
 }
 
 SieveDropBoxUI.prototype.html
-    = function (invalidate)
+    = function (invalidate,cascade)
 {
   if (this.dropTarget && !invalidate)
     return this.dropTarget;

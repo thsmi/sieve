@@ -60,7 +60,7 @@ SieveEnvelope.prototype.init
     
     if (this.comparator.isOptional() && this._probeByName("comparator",data))
     {
-      data = this.compatator.init(data);
+      data = this.comparator.init(data);
       data = this.whiteSpace[2].init(data);
       
       continue;
@@ -114,7 +114,7 @@ SieveEnvelope.prototype.toScript
 SieveEnvelope.prototype.toWidget
     = function ()
 {
-  return $("<div/>").text("envelope:"+this.toScript());  
+  return (new SieveEnvelopeUI(this));  
 }
 
 /******************************************************************************/
@@ -181,7 +181,7 @@ SieveAddress.prototype.init
     
     if (this.comparator.isOptional() && this._probeByName("comparator",data))
     {
-      data = this.compatator.init(data);
+      data = this.comparator.init(data);
       data = this.whiteSpace[2].init(data);
       
       continue;

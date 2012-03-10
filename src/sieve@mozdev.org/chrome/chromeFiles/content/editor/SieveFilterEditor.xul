@@ -25,9 +25,9 @@
   style="width: 45em; height: 31em;"
   persist="width height screenX screenY"
   onload="onWindowLoad();"
-  onclose="return onWindowClose();"
   windowtype="Sieve:FilterEditor" >
-
+  <!--onclose="return onWindowClose();"-->
+  
   <stringbundleset id="stringbundleset">
     <stringbundle id="strings" src="chrome://sieve/locale/locale.properties"/>
   </stringbundleset>

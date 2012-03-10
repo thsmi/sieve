@@ -16,7 +16,7 @@ function SieveSetFlag(docshell,id)
 {
   SieveAbstractElement.call(this,docshell,id); 
   
-  this.whiteSpace = this._createByName("whitespace");
+  this.whiteSpace = this._createByName("whitespace"," ");
   this.flaglist = this._createByName("stringlist");
   this.semicolon = this._createByName("atom/semicolon");
 }
@@ -44,6 +44,12 @@ SieveSetFlag.prototype.init
   return data;
 }
 
+SieveSetFlag.prototype.require
+    = function (requires)
+{
+  requires["imap4flags"] = true;
+}
+
 SieveSetFlag.prototype.toScript
     = function ()
 {
@@ -51,6 +57,12 @@ SieveSetFlag.prototype.toScript
     + this.whiteSpace.toScript()
     + this.flaglist.toScript()
     + this.semicolon.toScript();
+}
+
+SieveSetFlag.prototype.toWidget
+    = function ()
+{
+  return (new SieveSetFlagUI(this));  
 }
 
 /******************************************************************************/
@@ -62,10 +74,12 @@ function SieveAddFlag(docshell,id)
   SieveAbstractElement.call(this,docshell,id); 
   
   this.whiteSpace = [];
-  this.whiteSpace[0] = this._createByName("whitespace");
+  this.whiteSpace[0] = this._createByName("whitespace"," ");
   this.whiteSpace[1] = this._createByName("whitespace");  
                 
   this.flaglist =  this._createByName("stringlist");
+  
+  this.semicolon = this._createByName("atom/semicolon");
 }
 
 SieveAddFlag.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -91,11 +105,15 @@ SieveAddFlag.prototype.init
 
   data = this.whiteSpace[1].init(data);
     
-  // ... and finally remove the semicolon;
-  if (data.charAt(0) != ";")
-    throw "Syntaxerror: Semicolon expected";
+  data = this.semicolon.init(data);
     
-  return data.slice(1);
+  return data;
+}
+
+SieveAddFlag.prototype.require
+    = function (requires)
+{
+  requires["imap4flags"] = true;
 }
 
 SieveAddFlag.prototype.toScript
@@ -103,9 +121,15 @@ SieveAddFlag.prototype.toScript
 {
   return "addflag"
     + this.whiteSpace[0].toScript()
-    + this.flaglist
+    + this.flaglist.toScript()
     + this.whiteSpace[1].toScript()        
-    + ";";
+    + this.semicolon.toScript();
+}
+
+SieveAddFlag.prototype.toWidget
+    = function ()
+{
+  return (new SieveAddFlagUI(this));  
 }
 
 /******************************************************************************/
@@ -119,10 +143,12 @@ function SieveRemoveFlag(docshell,id)
   SieveAbstractElement.call(this,docshell,id); 
   
   this.whiteSpace = [];
-  this.whiteSpace[0] = this._createByName("whitespace");
+  this.whiteSpace[0] = this._createByName("whitespace", " ");
   this.whiteSpace[1] = this._createByName("whitespace");  
                 
   this.flaglist =  this._createByName("stringlist");
+  
+  this.semicolon = this._createByName("atom/semicolon");
 }
 
 SieveRemoveFlag.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -152,10 +178,15 @@ SieveRemoveFlag.prototype.init
   data = this.whiteSpace[1].init(data);
     
   // ... and finally remove the semicolon;
-  if (data.charAt(0) != ";")
-    throw "Syntaxerror: Semicolon expected";
+  data = this.semicolon.init(data);
     
-  return data.slice(1);
+  return data;
+}
+
+SieveRemoveFlag.prototype.require
+    = function (requires)
+{
+  requires["imap4flags"] = true;
 }
 
 SieveRemoveFlag.prototype.toScript
@@ -163,11 +194,16 @@ SieveRemoveFlag.prototype.toScript
 {
   return "removeflag"
     + this.whiteSpace[0].toScript()
-    + this.flaglist
+    + this.flaglist.toScript()
     + this.whiteSpace[1].toScript()        
-    + ";";
+    + this.semicolon.toScript();
 }
 
+SieveRemoveFlag.prototype.toWidget
+    = function ()
+{
+  return (new SieveRemoveFlagUI(this));  
+}
 
 /******************************************************************************/
 
@@ -186,8 +222,6 @@ function SieveHasFlag(docshell,id)
   this.whiteSpace[1] = this._createByName("whitespace", " ");
   this.whiteSpace[2] = this._createByName("whitespace", " ");    
 
-
-  this.whiteSpace     = [];
   this.matchType      = null;
   this.flagList = this._createByName("stringlist");
 }
@@ -208,14 +242,15 @@ SieveHasFlag.prototype.init
 {
   data = data.slice("hasflag".length);
   
-  this.whiteSpace[0].init(data)
+  data = this.whiteSpace[0].init(data)
   
-  if (isSieveMatchType(data))
+  
+  if (this._probeByName("match-type",data))
   {
-    this.matchType = new SieveMatchType();
+    this.matchType = this._createByName("match-type");
     data = this.matchType.init(data);
     
-    data = this.whiteSpace[1].init(data);    
+    data = this.whiteSpace[1].init(data);
   }
   
   data = this.flagList.init(data);
@@ -223,6 +258,12 @@ SieveHasFlag.prototype.init
       
   return data;
 }    
+
+SieveHasFlag.prototype.require
+    = function (requires)
+{
+  requires["imap4flags"] = true;
+}
 
 SieveHasFlag.prototype.toScript
     = function ()
@@ -233,6 +274,12 @@ SieveHasFlag.prototype.toScript
     + ((this.matchType != null)?this.whiteSpace[1].toScript():"")
     + this.flagList.toScript()
     + this.whiteSpace[2].toScript();
+}
+
+SieveHasFlag.prototype.toWidget
+    = function ()
+{
+  return (new SieveHasFlagUI(this));  
 }
 
 /******************************************************************************/

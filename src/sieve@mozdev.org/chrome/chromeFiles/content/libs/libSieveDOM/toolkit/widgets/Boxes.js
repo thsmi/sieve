@@ -301,6 +301,7 @@ function SieveTestBoxUI(elm)
 {
   // Call parent constructor...
   SieveEditableDragBoxUI.call(this,elm);
+  this.flavour("sieve/test");  
   this._dropBox = (new SieveDropBoxUI(this,this.getSieve())).drop(new SieveTestDropHandler()); 
 }
 

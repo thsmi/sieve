@@ -143,9 +143,15 @@ var event =
   onPutScriptResponse: function(response)
   {
     gEditorStatus.contentChanged = false;
+    
+    if (!gEditorStatus.isClosing)
+      return
 
-    if (gEditorStatus.isClosing && onWindowClose())
-      close();
+    if (!onWindowClose(true))
+      return
+            
+    // just calling close is for some reason broken, so we use our helper...
+    window.arguments[0].wrappedJSObject["close"]();   
   },
 
   /**
@@ -497,7 +503,7 @@ function onDonate()
               
   Cc["@mozilla.org/uriloader/external-protocol-service;1"]
     .getService(Ci.nsIExternalProtocolService)
-    .loadUrl(url); 
+    .loadUrl(url);
 }
 
 function onViewSource(visible)
@@ -521,8 +527,12 @@ function onViewSource(visible)
     document.getElementById("btnCompile").removeAttribute('disabled');
     document.getElementById("btnSearchBar").removeAttribute('disabled');
     
-    
+    document.getElementById("sivContentEditor").value =
+      document.getElementById("sivWidgetEditor").contentWindow.getSieveScript()
+      
     document.getElementById("sivContentEditor").focus();    
+    onInput();
+    
     return;
   }
    
@@ -634,11 +644,14 @@ function onSideBarGo(uri)
   document.getElementById("ifSideBar").setAttribute('src', uri);
 }
 
-function onSave()
+function onSave(script)
 {
+  if (typeof(script) === "undefined")
+    script = new String(document.getElementById("sivContentEditor").value);
+    
   var request = new SievePutScriptRequest(
                   new String(gEditorStatus.scriptName),
-                  new String(document.getElementById("sivContentEditor").value));
+                  script);
   request.addPutScriptListener(event);
   request.addErrorListener(event);
   
@@ -646,33 +659,43 @@ function onSave()
 }
 
 function onWindowClose()
-{
-  if (gEditorStatus.contentChanged == true)
+{   
+  if (!gEditorStatus.isClosing)
   {
-    var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
+    var script = document.getElementById("sivContentEditor").value;
+     
+    // Update the editor window when needed...
+    if (!document.getElementById('btnViewSource').checked)
+    {
+      script = document.getElementById("sivWidgetEditor").contentWindow.getSieveScript();
+      gEditorStatus.contentChanged = true;
+    }    
+  
+    if (gEditorStatus.contentChanged == true)
+    {
+      var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
                           .getService(Ci.nsIPromptService);
 
-    // The flags 393733 equals [Save] [Don't Save] [Cancel]
-    var result =
-      prompts.confirmEx(
-        window, "Save Sieve Script",
-        "Script has not been saved. Do you want to save changes?", 393733,
-        "", "", "", null, { value : false });
+      // The flags 393733 equals [Save] [Don't Save] [Cancel]
+      var result =
+        prompts.confirmEx(
+          window, "Save Sieve Script",
+          "Script has not been saved. Do you want to save changes?", 393733,
+          "", "", "", null, { value : false });
    
-    // Save the Script if the user descides to...
-    if (result == 0)
-    {
-      gEditorStatus.isClosing = true;
-      onSave();
+      // Save the Script if the user descides to...
+      if (result == 0)
+      {
+        gEditorStatus.isClosing = true;
+        onSave(script);
+      }
+   
+      // ... and abort quitting if the user clicked on "Save" or "Cancel"
+      if (result != 2)
+        return false;                          
     }
-   
-    // ... and abort quitting if the user clicked on "Save" or "Cancel"
-    if (result != 2)
-      return false;                          
   }
    
-  clearTimeout(gEditorStatus.checkScriptTimer);
-  
   try
   {
     Cc["@mozilla.org/observer-service;1"]
@@ -681,10 +704,10 @@ function onWindowClose()
   }
   catch (ex) {}
   
-  // either the script has not changed or the user did not want to save... 
-  // ... the script, so it's ok to exit.
-  sivDisconnect();
-                  
+  clearTimeout(gEditorStatus.checkScriptTimer);
+    
+  sivDisconnect();  
+               
   return true;  
 }
 
@@ -1093,17 +1116,6 @@ function onUpdateCursorPos(timeout)
   setTimeout(function() {UpdateCursorPos();	gEditorStatus.selectionChanged = false;}, 200);
 
   gEditorStatus.selectionChanged = true;
-}
-
-function onBtnChangeView()
-{
- /* var deck = document.getElementById("dkView");
-  
-  if (deck.selectedIndex == 0)
-    document.getElementById("dkView").selectedIndex = 1;
-  else
-    document.getElementById("dkView").selectedIndex = 0;*/
-  
 }
 
 function getPrintSettings()

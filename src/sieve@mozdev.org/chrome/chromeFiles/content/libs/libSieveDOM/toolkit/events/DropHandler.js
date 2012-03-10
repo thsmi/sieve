@@ -478,7 +478,7 @@ SieveConditionDropHandler.prototype.createElement
   else if (sivFlavour == "sieve/action")
   {
     elm = item.document().createByName("condition/else",
-            "else {\r\n"+item.document().createByName(type).toScript()+"\r\n}");
+            "else {\r\n"+item.document().createByName(type).toScript()+"}");
             
     item
       .append(elm)

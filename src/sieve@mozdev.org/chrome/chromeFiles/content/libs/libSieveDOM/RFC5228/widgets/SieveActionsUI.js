@@ -38,7 +38,7 @@ SieveDiscardUI.prototype.init
     = function ()
 {
   return $(document.createElement("div"))
-           .text("Discard incomming message silently");  
+           .text("Discard message silently");  
 }
 
 /******************************************************************************/
@@ -53,7 +53,7 @@ SieveKeepUI.prototype.init
     = function ()
 {
   return $(document.createElement("div"))
-           .text("Keep a message's copy in the main inbox");  
+           .text("Keep a copy in the main inbox");  
 }
 
 /******************************************************************************/
@@ -120,7 +120,7 @@ SieveFileIntoUI.prototype.initEditor
     = function ()
 {              
   return $("<div/>")
-           .text("Copy the incomming message into:")
+           .text("Copy the incomming message into folder:")
            .append($("<div/>")
              .append($("<input/>")
                .attr("id","txtPath"+this.id())
@@ -131,7 +131,7 @@ SieveFileIntoUI.prototype.initSummary
     = function ()
 {  
   return $(document.createElement("div"))
-           .text("Copy the incomming message into:")
+           .text("Copy message into:")
            .addClass("text")
            .append($(document.createElement("div"))
              .text(this.getSieve().getPath()));         

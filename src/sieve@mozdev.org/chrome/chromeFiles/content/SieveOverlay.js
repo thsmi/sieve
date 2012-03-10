@@ -274,6 +274,9 @@ var SieveTabType =
         if (aArgs["uri"])
           aTab.uri = aArgs["uri"];
         
+        var tabmail = document.getElementById("tabmail");
+        aArgs["close"] = function () { tabmail.closeTab(aTab); };
+        
         aArgs.wrappedJSObject = aArgs;
         aTab.panel.contentWindow.arguments = [aArgs];
                
@@ -339,7 +342,7 @@ var SieveTabType =
     aTab.titleListener = onDOMTitleChanged;
 
     function onDOMWindowClose(aEvent)
-    {
+    {     
       if (!aEvent.isTrusted)
         return;
  
@@ -353,17 +356,16 @@ var SieveTabType =
     
     function onLoad(aEvent)
     {
-      document.getElementById("tabmail").setTabTitle(aTab);
+      document.getElementById("tabmail").setTabTitle(aTab);      
     }    
-    aTab.loadListener = onLoad;
-    
+    aTab.loadListener = onLoad;    
+       
     // Add the listener.
     aTab.panel.contentWindow.addEventListener("DOMTitleChanged", aTab.titleListener, true);
-    
-    // Add the listener.
+       
     aTab.panel.contentWindow.addEventListener("DOMWindowClose", aTab.closeListener, true);
     
-    aTab.panel.contentWindow.addEventListener("load",aTab.loadListener,true);
+    aTab.panel.contentWindow.addEventListener("load",aTab.loadListener,true);      
   },
   
   _removeListeners: function(aTab)

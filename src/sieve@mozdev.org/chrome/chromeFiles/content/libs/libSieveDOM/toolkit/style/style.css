@@ -38,7 +38,7 @@ body {
     #trash 
     {
       height: 80px;
-      width:80px;
+      min-width:80px;
       background-color:transparent;   
       background-image:url('48px-User-trash.svg.png');
       background-repeat:no-repeat;

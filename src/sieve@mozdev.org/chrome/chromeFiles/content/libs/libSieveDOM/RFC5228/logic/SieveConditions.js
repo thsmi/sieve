@@ -14,7 +14,7 @@ function SieveIf(docshell,id)
   SieveElse.call(this,docshell,id);
   this._test = null;  
   
-  this.ws[2] = this._createByName("whitespace","\r\n");  
+  this.ws[2] = this._createByName("whitespace");  
 }
 
 SieveIf.prototype.__proto__ = SieveElse.prototype;
@@ -40,7 +40,7 @@ SieveIf.prototype.init
   
   data = SieveBlock.prototype.init.call(this,data);
   
-  data = this.ws[1].init(data);
+  data = this.ws[1].init(data,true);
   
   return data;
 }
@@ -149,7 +149,7 @@ SieveElse.prototype.init
    
   data = SieveBlock.prototype.init.call(this,data);
   
-  data = this.ws[1].init(data); 
+  data = this.ws[1].init(data,true); 
   
   return data;
 }

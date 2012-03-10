@@ -257,13 +257,7 @@ function SieveSemicolon(docshell,id)
   
   this.whiteSpace = [];
   this.whiteSpace[0] = this._createByName("whitespace");
-  this.whiteSpace[1] = this._createByName("whitespace");
-  
-  // If this object is uninitalized it is better to return a "\r\n" after 
-  // the semicolon. This generates a much more readable code.
-  
-  // In case init() is called, this default settings will be overwritten...
-  this.whiteSpace[1].init("\r\n",true);
+  this.whiteSpace[1] = this._createByName("whitespace","\r\n");
 }
 
 SieveSemicolon.prototype.__proto__ = SieveAbstractElement.prototype;

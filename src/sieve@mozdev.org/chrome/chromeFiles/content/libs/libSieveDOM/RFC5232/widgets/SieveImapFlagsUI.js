@@ -9,4 +9,65 @@
  
  "use strict";
  
- // TODO Implement me
+function SieveSetFlagUI(elm)
+{
+  SieveDragBoxUI.call(this,elm);
+}
+
+SieveSetFlagUI.prototype.__proto__ = SieveDragBoxUI.prototype;
+
+SieveSetFlagUI.prototype.init
+    = function ()
+{
+  return $(document.createElement("div"))
+           .text("Set IMAP flag");  
+}
+
+
+
+function SieveAddFlagUI(elm)
+{
+  SieveDragBoxUI.call(this,elm);
+}
+
+SieveAddFlagUI.prototype.__proto__ = SieveDragBoxUI.prototype;
+
+SieveAddFlagUI.prototype.init
+    = function ()
+{
+  return $(document.createElement("div"))
+           .text("Add IMAP flag");  
+}
+
+
+
+function SieveRemoveFlagUI(elm)
+{
+  SieveDragBoxUI.call(this,elm);
+}
+
+SieveRemoveFlagUI.prototype.__proto__ = SieveDragBoxUI.prototype;
+
+SieveRemoveFlagUI.prototype.init
+    = function ()
+{
+  return $(document.createElement("div"))
+           .text("Remove IMAP flag");  
+}
+
+
+
+function SieveHasFlagUI(elm)
+{
+  SieveTestBoxUI.call(this,elm);  
+}
+
+SieveHasFlagUI.prototype.__proto__ = SieveTestBoxUI.prototype;
+
+
+SieveHasFlagUI.prototype.initSummary
+    = function()
+{
+  return $(document.createElement("div"))
+           .text("Has IMAP flag");   
+}

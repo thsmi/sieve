@@ -17,7 +17,6 @@
 function SieveSizeTestUI(elm)
 {
   SieveTestBoxUI.call(this,elm);
-  this.flavour("sieve/test");
 }
 
 SieveSizeTestUI.prototype.__proto__ = SieveTestBoxUI.prototype;
@@ -80,7 +79,6 @@ SieveSizeTestUI.prototype.initSummary
 function SieveBooleanTestUI(elm)
 {
   SieveTestBoxUI.call(this,elm);
-  this.flavour("sieve/test");
 }
 
 SieveBooleanTestUI.prototype.__proto__ = SieveTestBoxUI.prototype;
@@ -123,8 +121,7 @@ SieveBooleanTestUI.prototype.initSummary
 
 function SieveExistsUI(elm)
 {
-  SieveTestBoxUI.call(this,elm);
-  this.flavour("sieve/test");  
+  SieveTestBoxUI.call(this,elm);  
 }
 
 SieveExistsUI.prototype.__proto__ = SieveTestBoxUI.prototype;
@@ -203,7 +200,6 @@ SieveHeaderUI.prototype.initSummary
 function SieveAddressUI(elm)
 {
   SieveTestBoxUI.call(this,elm);
-  this.flavour("sieve/test");  
 }
 
 SieveAddressUI.prototype.__proto__ = SieveTestBoxUI.prototype;
@@ -247,5 +243,23 @@ SieveAddressUI.prototype.initSummary
       .text(" address "+this.getSieve().headerList.toScript()
               +" [is|contains|matches] [case-sensitive] "
               +this.getSieve().keyList.toScript());
+}
+
+
+
+
+
+function SieveEnvelopeUI(elm)
+{
+  SieveTestBoxUI.call(this,elm);
+}
+
+SieveEnvelopeUI.prototype.__proto__ = SieveTestBoxUI.prototype;
+
+
+SieveEnvelopeUI.prototype.initSummary
+    = function()
+{
+  return $("<div/>").text("envelope:"+this.getSieve().toScript());
 }
 

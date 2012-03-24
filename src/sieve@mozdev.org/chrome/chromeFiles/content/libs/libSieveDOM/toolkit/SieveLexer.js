@@ -61,14 +61,19 @@ var SieveLexer =
    * @param {String} data
    * @return {}
    **/
-  createByClass : function(docshell, types, data)
+  createByClass : function(docshell, types, parser)
   {
-    var c = this.getConstructor(types,data);
+    var item = this.getConstructor(types,parser);
 
-    if (c==null)
-      throw "No compatible Constructor for Class(es): "+types+" in "+data;
+    if (item == null)
+      throw "No compatible Constructor for Class(es): "+types+" in "+parser.bytes();
     
-    return this.getConstructor(types,data)(docshell, ++(this.maxId));    
+    var item = item(docshell, ++(this.maxId));
+    
+    if (typeof(parser) != "undefined")
+      item.init(parser);
+      
+    return item;     
   },
   
   /**
@@ -81,7 +86,7 @@ var SieveLexer =
    *    
    * @return {}
    **/
-  createByName : function(docshell, name, data)
+  createByName : function(docshell, name, parser)
   {   
     if (!this.names[name])
       throw "No Constructor for >>"+name+"<< found";
@@ -90,8 +95,8 @@ var SieveLexer =
     {
       var item = this.names[name].onNew(docshell, ++(this.maxId));
       
-      if (data)
-        item.init(data);
+      if (parser)
+        item.init(parser);
         
       return item; 
     }
@@ -106,13 +111,13 @@ var SieveLexer =
     return this.maxId();
   },
   
-  probeByName : function(name,data)
+  probeByName : function(name,parser)
   {
     // If there's no data then skip
-    if ((typeof(data) === "undefined") || !data.length)
+    if ((typeof(parser) === "undefined") || parser.empty())
       return false;
       
-    if (this.names[name].onProbe(data))
+    if (this.names[name].onProbe(parser))
       return true;
       
     return false;
@@ -124,10 +129,14 @@ var SieveLexer =
    * @param {} data
    * @return {Boolean}
    */
-  probeByClass : function(types,data)
+  probeByClass : function(types,parser)
   {
+    // If there's no data then skip
+    if ((typeof(parser) === "undefined") || parser.empty())
+      return false;
+      
     // Check for an valid element constructor... 
-    if (this.getConstructor(types,data))
+    if (this.getConstructor(types,parser))
       return true;
       
     return false;      

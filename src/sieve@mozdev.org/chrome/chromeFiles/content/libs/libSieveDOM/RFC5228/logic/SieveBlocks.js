@@ -17,31 +17,25 @@ function SieveBlock(docshell,id)
 SieveBlock.prototype.__proto__ = SieveBlockBody.prototype;
 
 SieveBlock.isElement
-    = function (data)
+    = function (parser)
 {
-  return (data.charAt(0) == "{");  
+  return parser.isChar("{");  
 }
 
 SieveBlock.prototype.init
-  = function (data)
-{ 
-  if (data.charAt(0) != "{") 
-    throw " { expected but found:\n"+data.substr(0,50)+"..."
-    
-  data = data.slice(1);
+  = function (parser)
+{  
+  parser.extractChar("{");
   
-  data = SieveBlockBody.prototype.init.call(this,data);
+  SieveBlockBody.prototype.init.call(this,parser);
 
-  if (data.charAt(0) != "}") 
-    throw " } expected but found:\n"+data.substr(0,50)+"...";  
-
-  data = data.slice(1);
+  parser.extractChar("}");
   
-  return data;
+  return this; 
 }
 
 SieveBlock.prototype.toScript
-  = function (data)
+  = function ()
 {
   return "{" +SieveBlockBody.prototype.toScript.call(this)+"}";
 }
@@ -58,23 +52,19 @@ function SieveBlockBody(docshell,id)
 SieveBlockBody.prototype.__proto__ = SieveAbstractBlock.prototype;
 
 SieveBlockBody.isElement
-    = function (data)
+    = function (parser)
 {
-  return SieveLexer.probeByClass(["action","condition","whitespace"],data);  
+  return SieveLexer.probeByClass(["action","condition","whitespace"],parser);  
 }
 
 SieveBlockBody.prototype.init
-    = function (data)    
+    = function (parser)    
 {
-  while (this._probeByClass(["action","condition","whitespace"],data))
-  {
-    var elm = this._createByClass(["action","condition","whitespace"],data);    
-    data = elm.init(data);
-    
-    this.elms.push(elm);    
-  }
+  while (this._probeByClass(["action","condition","whitespace"],parser))    
+    this.elms.push(
+      this._createByClass(["action","condition","whitespace"],parser));
  
-  return data;
+  return this;
 }
 
 SieveBlockBody.prototype.toScript
@@ -119,22 +109,22 @@ SieveRootNode.prototype.toWidget
 }
 
 SieveRootNode.prototype.init
-    = function (data)
+    = function (parser)
 {
   // requires are only valid if they are
   // before any other sieve command!
-  if (this._probeByName("import",data))
-    data = this.elms[0].init(data);
+  if (this._probeByName("import",parser))
+    this.elms[0].init(parser);
 
   // After the import section only deadcode and actions are valid    
-  if (this._probeByName("block/body",data))
-    data = this.elms[1].init(data);   
+  if (this._probeByName("block/body",parser))
+    this.elms[1].init(parser);   
     
-  return data;
+  return this;
 }
 
 SieveRootNode.prototype.toScript
-    = function (data)
+    = function ()
 {
   var requires = [];
   

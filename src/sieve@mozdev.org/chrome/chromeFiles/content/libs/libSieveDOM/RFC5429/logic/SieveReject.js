@@ -25,31 +25,31 @@ function SieveReject(docshell,id)
 SieveReject.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveReject.isElement
-    = function (token)
+    = function (parser)
 {
-  return (token.substring(0,6).toLowerCase().indexOf("reject") == 0);
+  return parser.startsWith("reject");
 }
 
 
 SieveReject.prototype.init
-    = function (data)
+    = function (parser)
 { 
   // Syntax :
   // <"reject"> <reason: string> <";">
   
   // remove the "redirect" identifier ...
-  data = data.slice("reject".length);
+  parser.extract("reject");
   
   // ... eat the deadcode before the stringlist...
-  data = this.whiteSpace.init(data);
+  this.whiteSpace.init(parser);
   
   // ... extract the reject reason...
-  data = this.reason.init(data);
+  this.reason.init(parser);
     
   // ... drop the semicolon
-  data = this.semicolon.init(data);
+  this.semicolon.init(parser);
   
-  return data;
+  return this;
 }
 
 SieveReject.prototype.getReason

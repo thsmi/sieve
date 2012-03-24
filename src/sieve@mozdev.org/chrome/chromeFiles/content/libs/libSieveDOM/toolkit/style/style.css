@@ -1,40 +1,76 @@
-.sivDropBox:empty {
-	height: 5px;
-	margin: 2px;
-}    
-
-.sivDropBox[sivDragging="true"] {
-  background-color : red;
-  background-image: -moz-linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
-  -moz-border-radius: 2px;
-box-shadow: 0 0 5px red;
-}
-
-
 body {
   font-family:verdana;
   font-size: 12px;
   background: url('background.png') #333;
-}
-	
-.SivMailAddress {
-  font-family:courier;
+    cursor: default;    
 }
 
-.SivText {
-  font-family:courier;
+
+.sivConditionText,
+.sivConditionalText,
+div[sivtype]:not([siviseditable]) > .sivSummaryContent
+{
+  border: 1px #DDE4E9 solid;
+  background-color: #F3F6F7;
+  padding-left:3px;
+  
+  cursor: default;
 }
 
-  .SivElement h1 {
+/* Style all interactive Elements */
+.sivEditableElement[sivtype]:not([sivIsEditable=true]) > .sivSummaryContent {
+  background-image: url('edit.png');
+  background-repeat: no-repeat;
+  background-position: right center ;
+}
+
+.sivEditableElement[sivtype]:not([siviseditable]) > .sivSummaryContent:hover
+{
+  border: 1px red #EDEDED solid;
+  background-color: white;
+  box-shadow: 0 0 7px gray;
+}
+
+/* Editmode on */
+.sivEditableElement[sivtype][sivIsEditable=true]
+{
+  border: 1px solid #EDEDED;
+  background-color: white;
+  background-image: none;
+  box-shadow: 0 0 7px gray;
+}
+
+.sivEditableElement[sivtype][sivIsEditable=true] > div
+{
+  padding: 4px;
+}
+
+
+div[sivtype][sivDragging="true"] {
+  -moz-border-radius: 2px;
+  box-shadow: 0 0 5px red;
+}
+
+
+       
+  .SivMailAddress {
+  font-family:courier;
+  }
+
+  .SivText {
+  font-family:courier;
+  }
+
+  .sivEditableElement h1 {
     font-size:1em;   
     padding:0px;
-    margin:0px;
+    margin:0px;    
   }
 
   .SivStringListItem {
     padding:10px 0px 20px 20px;
   }
-  
+
     #trash 
     {
       height: 80px;
@@ -44,76 +80,13 @@ body {
       background-repeat:no-repeat;
       background-position:center center;   
     } 
- 
-#trash[sivDragging="true"] 
-{
+
+  #trash[sivDragging="true"] 
+  {
   background-image:url('trash-full.png');
-} 
-   
-.SivElementBlock {
-  padding-left: 20px;
-  padding-right: 5px;
-}
+  } 
 
-.SivElementTest {
-  padding-left: 20px;
-  padding-right: 5px;
-}
-  
-.SivElement {
-  background-color: -moz-dialog;
-  background-image: -moz-linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
-  color: -moz-dialogText;
-  margin: 1px;
-  -moz-border-radius: 3px;
-
-  margin-left: auto;
-  margin-right: auto;
-  width:600px;
-  border: 1px solid #000066;
- 
-/*  background-color: hsl(219,45%,60%);*/
-/*  background-color: hsl(92,45%,52%);*/
-}
-
-.SivElement[sivIsEditable=true]
-{
-  /*background-color: hsl(92,45%,52%);*/  
-  background-color: white;
-  background-image: none;
-  box-shadow: 0 0 5px gray;
-}
-
-
-/*sivDragBox : hoover
-.SivElement[sivIsEditable=true]
-{
-  background-color: hsl(92,45%,52%);
-}*/
-
-/*.SivElement[sivElmType=editable]
-{
-  background-image:url('edit');
-  background-repeat:no-repeat;
-  background-position:top left;   
-}*/
-
-.SivFocusedElement {
-  background-color: -moz-dialog;
-  background-image: -moz-linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
-  color: -moz-dialogText;
-  margin: 1px;
-  -moz-border-radius: 2px;
-
-  margin-left: auto;
-  margin-right: auto;
-  width:600px;
-  border: 1px solid #000066;
-
-  background-color: hsl(92,45%,52%);
-}
-
-div.floating-menu {
+  div.floating-menu {
   position:fixed;
   top: 10px;
   left: 10px;
@@ -122,61 +95,153 @@ div.floating-menu {
   width:150px;
   z-index:100;
   left: 20px;
-}
+  }
 
-div .floating-menu .SivElement {
+  div .floating-menu .SivElement {
    width:140px; 
-}
+  }
 
-.SivElement:hover {
-  /*background-image: -moz-linear-gradient(rgba(255,255,255,5), rgba(50%,50%,50%,.2), rgba(0,0,0,.15));*/
-  /* selected...
-  background-image: -moz-linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.1));*/
 
-}
+  /* Style for all editable elements */
 
-/* Style for all editable elements */
 
-.SivElement[sivIsEditable=true] > div
-{
-  padding: 7px;
-}
 
-.sivEditorHelpIcon {
+  .sivEditorHelpIcon {
   float:right;
   background:  url('help.png') no-repeat center center;
   cursor:pointer;
   padding:10px;
   margin:5px;
-}
+  }
 
-.sivEditorHelpText {
+  .sivEditorHelpText {
   display:none;
   padding-bottom:20px;
   border-bottom: 1px solid gray;
   background-image: -moz-linear-gradient(hsl(215,60%,92%), hsl(215,58%,88%));
   /*background-image: -moz-linear-gradient(bottom, #ffdd66, #ffeb7d);*/
   cursor:pointer;
-}
+  }
 
-.sivControlBox {
+  .sivControlBox {
   border-top: 1px solid gray;
   background-color:lightgray;
   background-image: -moz-linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
   overflow: hidden;
   vertical-align:middle;
-}
+  }
 
-/* Box for error messages */
-.sivControlBox > div {
+  /* Box for error messages */
+  .sivControlBox > div {
   color:red;
   font-weight: bold;
-}
+  }
 
-.sivControlBox > button {
+  .sivControlBox > button {
   float: right;
+  }
+
+
+
+  #divOutput {
+    margin-left:auto;
+    margin-right:auto;
+    padding: 5px 20px;
+    
+    background-color:white;
+    width:600px;
+    padding-right:90px;
+    padding-left:30px;
+
+    border-radius: 3px;
+    box-shadow: 0 0 3px lightgray;
+  }
+
+
+/* Blocks */
+
+.sivBlock > .sivBlockChild:nth-last-of-type(2),
+.sivOperator > .sivOperatorChild:nth-last-of-type(2)
+{
+  background-image: url('hline.png');
+  background-position: 2px top;
+  background-repeat: no-repeat;
 }
 
-.sivEditableElement:not([sivIsEditable=true]) > div{
-  background: url('edit.png') no-repeat right center ;
+
+.sivBlock > .sivBlockSpacer:nth-last-of-type(1),
+.sivOperator > .sivOperatorSpacer:nth-last-of-type(1)
+{
+  background-image: none;
+  padding-bottom: 0px;
+}
+
+.sivBlockChild,
+.sivOperatorChild
+{
+  background-image: url('vline.png'), url('hline.png');
+  background-position:  -7px center, 2px top;
+  background-repeat: repeat-y, no-repeat;
+}
+
+.sivConditionChild,
+.sivConditionSpacer:not(:first-of-type) {
+  background-image: url('vline2.png');
+  background-position:  -4px center;
+  background-repeat: repeat-y;
+}
+
+.sivBlockChild,
+.sivOperatorChild,
+.sivConditionChild {
+  padding-left:15px;
+}
+
+.sivConditionalChild {
+  padding:3px;
+  background-color: #E8EDF0;
+  border: 1px #DDE4E9 solid
+}
+
+/* Dropmarkers*/
+.sivBlockSpacer, 
+.sivOperatorSpacer
+{
+  background-image: url('vline.png');
+  background-position:  -7px top;
+  background-repeat: repeat-y;
+  
+  padding:2px 0px 2px 0px;
+}
+
+.sivConditionSpacer{
+  padding:0px;
+}
+
+
+.sivBlockSpacer > .sivDropBox,
+.sivOperatorSpacer > .sivDropBox,
+.sivConditionSpacer > .sivDropBox
+{
+  height: 3px;
+}    
+
+.sivBlockSpacer[sivDragging="true"] > .sivDropBox,
+.sivConditionSpacer[sivDragging="true"] > .sivDropBox,
+.sivOperatorSpacer[sivDragging="true"] > .sivDropBox 
+ {
+  background-color : red;
+  background-image: -moz-linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
+  box-shadow: 0 0 5px red;
+}
+
+
+
+#sivActions > div[sivtype]
+{
+  margin:2px 10px;  
+  padding:0px 3px;
+  background-color: lightgray;
+  border-radius:3px;
+  border: 1px solid gray;
 }

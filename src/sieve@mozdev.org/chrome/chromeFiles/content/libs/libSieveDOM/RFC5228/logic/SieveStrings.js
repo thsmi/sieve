@@ -13,29 +13,6 @@
 // TODO descide on update message weather it is a Multiline oder Quoted...
   
  
-/*******************************************************************************
-    CLASSNAME: 
-      SieveMultiLineString implements SieveObject
-    
-    CONSTUCTOR:
-      public SieveMultiLineString()
-
-    PUBLIC FUNCTIONS:
-      public static boolean isMultiLineString(String data)
-      public boolean parse(String data) throws Exception
-      public String getValue()
-      public String toScript()
-      public String toXUL()
-
-    MEMBER VARIABLES: 
-      private String text
-      private SieveWhiteSpace whiteSpace
-      private SieveHashComment hashComment
-
-    DESCRIPTION: 
-      Defines the atomar SieveMultiLineString.
-      
-*******************************************************************************/
 
 // CONSTRUCTOR:
 function SieveMultiLineString(docshell,id)
@@ -52,53 +29,38 @@ SieveMultiLineString.prototype.__proto__ = SieveAbstractElement.prototype;
 
 // PUBLIC STATIC:
 SieveMultiLineString.isElement
-    = function (data)
+    = function (parser)
 {
-  var token = data.substr(0,5).toLowerCase();
-  if (token == "text:")
-    return true;
-  
-  return false;
+  return parser.startsWith("text:");
 }
 
 // PUBLIC:
 SieveMultiLineString.prototype.init
-    = function (data)    
+    = function (parser)    
 {
   //<"text:"> *(SP / HTAB) (hash-comment / CRLF)
-  if (this._probeByName("string/multiline",data) == false)
-    throw "Multi-line String expected but found: \n"+data.substr(0,50)+"..."; 
+/*  if (this._probeByName("string/multiline",parser) == false)
+    throw "Multi-line String expected but found: \n"+parser.substr(0,50)+"...";*/ 
   
   // remove the "text:"
-  data = data.slice(5);
+  parser.extract("text:");
   
-  data = this.whiteSpace.init(data,true);
+  this.whiteSpace.init(parser,true);
     
-  if (this._probeByName("whitespace/hashcomment",data))
-  {
-    this.hashComment = this._createByName("whitespace/hashcomment");
-    data = this.hashComment.init(data);
-  }
+  if (this._probeByName("whitespace/hashcomment",parser))
+    this.hashComment = this._createByName("whitespace/hashcomment",parser);
      
-  while (true)
-  { 
-    var crlf = data.indexOf("\r\n")
+  // we include the previously extracted linebreak. this makes life way easier...
+  //  and allows us to match agains the unique "\r\n.\r\n" Pattern instead of
+  // ... just ".\r\n"
+  parser.rewind(2);
+  
+  this.text = parser.extractUntil("\r\n.\r\n");
     
-    if (crlf == -1)
-      throw "Syntaxerror: Multiline String not closed, \".\\r\\n missing" ;
+  // dump the first linebreak and remove dot stuffing
+  this.text = this.text.substr(2).replace(/^\.\./mg,".")
       
-    // Split at linebreaks
-    var line = data.slice(0,crlf);
-    data = data.slice(crlf+2);
-    
-    if (line == ".")
-      break;
-     
-    this.text += (this.text != "" ? "\r\n" : "" ) + line;
-  }
-  
-  //remove the \r\n
-  return data;
+  return this;
 }
 
 SieveMultiLineString.prototype.getValue
@@ -116,10 +78,18 @@ SieveMultiLineString.prototype.setValue
 SieveMultiLineString.prototype.toScript
     = function ()
 {
+  var text = this.text;
+  
+  if (text != "")
+    text += "\r\n";
+    
+  // Dot stuffing...
+  text = text.replace(/^\./mg,"..")
+  
   return "text:"
     +this.whiteSpace.toScript()
     +((this.hashComment == null)?"":this.hashComment.toScript())
-    +this.text+(this.text != "" ? "\r\n" : "" )
+    +text
     +".\r\n";
 }
 
@@ -157,46 +127,65 @@ SieveQuotedString.prototype.__proto__ = SieveAbstractElement.prototype;
 
 // PUBLIC STATIC:
 SieveQuotedString.isElement
-    = function (data)
+    = function (parser)
 {
-  if (data.charAt(0) == "\"")
-    return true;
-      
-  return false;
+  return parser.isChar("\"");
 }
 
 // PUBLIC:
 SieveQuotedString.prototype.init
-   = function (data)    
+   = function (parser)    
 {
+  this.text = "";
   
-   // remove the "
-   data = data.slice(1);
+  parser.extractChar("\"");
+  
+  if (parser.skipChar("\""))
+  {
+    this.text = "";
+    return this;
+  }
+  
+  // we should not be tricked by escaped quotes
+  
+  /*
+   * " blubber "
+   * " blub \" er" -> ignore
+   * " blubber \\"  -> blubber \ -> skip
+   * " blubber \\\""  -> blubber \" ->ignore
+   * " blubber \\\\"
+   * 
+   *  "\\"
+   */ 
+  
+  while(true)
+  {
+    this.text += parser.extractUntil("\"");
+    
+    // Skip if the quote is not escaped
+    if (this.text.charAt(this.text.length-1) != "\\")
+      break;
+    
+    // well it is obviously escaped, so we have to check if the escape 
+    // character is escaped
+    if (this.text.length >= 2)
+      if (this.text.charAt(this.text.length-2) == "\\")
+        break;
+    
+    // add the quote, it was escaped...
+    this.text += "\"";
+  }
    
-   var size = 0;
+  // Only double quotes and backslashes are escaped...
+  // ... so we convert \" into "
+  this.text = this.text.replace('\\"','"',"g")  
+  // ... and convert \\ to \
+  this.text = this.text.replace("\\\\","\\","g");
    
-   if (data[0] != '"')
-   {
-     size = data.search(/[^\\]"/);
-   
-     if (size == -1)
-       throw "Closing string expected but found "+data.substr(0,50);
-     
-     size += 1;
-   }
-   
-   this.text = data.slice(0,size);
-   
-   // Only double quotes and backslashes are escaped...
-   // ... so we convert \" into "
-   this.text = this.text.replace('\\"','"',"g")  
-   // ... and convert \\ to \
-   this.text = this.text.replace("\\\\","\\","g");
-   
-   // ... We should finally ignore an other backslash patterns...
-   // ... but as they are illegal anyway, we assume a perfect world. 
+  // ... We should finally ignore an other backslash patterns...
+  // ... but as they are illegal anyway, we assume a perfect world. 
       
-   return data = data.slice(size+1); 
+  return this; 
 }
 
 SieveQuotedString.prototype.getValue
@@ -260,13 +249,13 @@ SieveStringList.prototype.__proto__ = SieveAbstractElement.prototype;
 
 // PUBLIC STATIC:
 SieveStringList.isElement
-   = function (data)
+   = function (parser)
 {
   // the [ is not necessary if the list contains only one enty!
-  if (data.charAt(0) == "[")
+  if (parser.isChar("["))
     return true;
     
-  if (SieveLexer.probeByName("string/quoted",data))
+  if (SieveLexer.probeByName("string/quoted",parser))
     return true;  
 
   return false;
@@ -274,63 +263,47 @@ SieveStringList.isElement
 
 // PUBLIC:
 SieveStringList.prototype.init
-    = function (data)
-{
+    = function (parser)
+{ 
   this.elements = [];
   
-  if (this._probeByName("string/quoted",data))
+  if (this._probeByName("string/quoted",parser))
   {
     this.compact = true;
     var item = [];
-    item[1] = this._createByName("string/quoted");
-    
+    item[1] = this._createByName("string/quoted",parser);    
     this.elements[0] = item;
     
-    return this.elements[0][1].init(data);
+    return this;
   }
   
   this.compact = false;
   
-  if (data.charAt(0) !== "[")
-    throw " [ expected but found:\n"+data.substr(0,50);
-  // remove the [
-  data = data.slice(1);
+  parser.extractChar("[");
     
-  while (true)
-  {
-    if (data.charAt(0) == "]")
-      return data.slice(1);
-      
-    if (data.charAt(0) == ",")
-    {      
-      data = data.slice(1);
-      continue;
-    }
+  while ( ! parser.isChar("]"))
+  { 
+     if (this.elements.length)
+      parser.extractChar(",");
         
     var element = [];
 
-    if (this._probeByName("whitespace",data))
-    {
-      element[0] = this._createByName("whitespace",data);      
-      data = element[0].init(data);
-    }
-      
-    if (this._probeByName("string/quoted",data) == false)  
-      throw "Quoted String expected but found: \n"+data.substr(0,50)+"...";
+    if (this._probeByName("whitespace",parser))
+      element[0] = this._createByName("whitespace",parser);
     
-    element[1] = this._createByName("string/quoted");
-    data = element[1].init(data);
-         
-      
-    if (this._probeByName("whitespace",data))
-    {
-      element[2] = this._createByName("whitespace",data); 
-      data = element[2].init(data);
-    }
+    if (this._probeByName("string/quoted",parser) == false)  
+      throw "Quoted String expected but found: \n"+parser.bytes().substr(0,50)+"...";
     
+    element[1] = this._createByName("string/quoted",parser);
+      
+    if (this._probeByName("whitespace",parser))
+      element[2] = this._createByName("whitespace",parser);
+      
     this.elements.push(element);
   }
   
+  parser.extractChar("]");
+  return this;  
 }
 
 SieveStringList.prototype.contains
@@ -470,20 +443,17 @@ SieveString.prototype.__proto__ = SieveAbstractElement.prototype;
 
 // PUBLIC STATIC:
 SieveString.isElement
-  = function(data)
+  = function(parser)
 {
-  return SieveLexer.probeByClass(["string/"],data);
+  return SieveLexer.probeByClass(["string/"],parser);
 }
 // PUBLIC:
 SieveString.prototype.init
-    = function (data)    
+    = function (parser)    
 {
-  this.string = this._createByClass(["string/"],data);
-  
-  if (this.string == null)
-    throw "Syntaxerror: String expected"
-  
-  return this.string.init(data);
+  this.string = this._createByClass(["string/"],parser);
+
+  return this;
 }
 
 SieveString.prototype.getValue
@@ -523,36 +493,36 @@ function SieveMatchType(docshell,id)
 SieveMatchType.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveMatchType.isElement
-    = function (data)
+    = function (parser)
 {    
-  var token = data.substr(0,9).toLowerCase();
-  if (token.indexOf(":is") == 0)
+  if (parser.startsWith(":is"))
     return true;
-  if (token.indexOf(":matches") == 0)
+  if (parser.startsWith(":matches"))
     return true;
-  if (token.indexOf(":contains") == 0)
+  if (parser.startsWith(":contains"))
     return true;
   
   return false;
 }
 
 SieveMatchType.prototype.init
-    = function (data)
-{
-  var token = data.substr(0,9).toLowerCase();
-  if (token.indexOf(":is") == 0)
+    = function (parser)
+{  
+  if (parser.startsWith(":is"))
     this.type = "is";
-  else if (token.indexOf(":matches") == 0)
+  else if (parser.startsWith(":matches"))
     this.type = "matches";
-  else if (token.indexOf(":contains") == 0)
+  else if (parser.startsWith(":contains"))
     this.type = "contains"
   else 
     throw "Syntaxerror, unknown match type";
   
+  parser.extract(this.type.length+1);
+    
   if (this.type == "is")
     this.optional = false;
   
-  return data.slice(this.type.length+1);
+  return this;
 }
 
 SieveMatchType.prototype.isOptional
@@ -616,14 +586,13 @@ function SieveAddressPart(docshell,id)
 SieveAddressPart.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveAddressPart.isElement
-    = function (data,index)
+    = function (parser)
 {   
-  var token = data.substr(0,11).toLowerCase();
-  if (token.indexOf(":localpart") == 0)
+  if (parser.startsWith(":localpart"))
     return true;
-  if (token.indexOf(":domain") == 0)
+  if (parser.startsWith(":domain"))
     return true;
-  if (token.indexOf(":all") == 0)
+  if (parser.startsWith(":all"))
     return true;
   
   return false;
@@ -631,22 +600,23 @@ SieveAddressPart.isElement
 
 
 SieveAddressPart.prototype.init
-    = function (data)
+    = function (parser)
 {
-  var token = data.substr(0,11).toLowerCase();
-  if (token.indexOf(":localpart") == 0)
+  if (parser.startsWith(":localpart"))
     this.type = "localpart";
-  else if (token.indexOf(":domain") == 0)
+  else if (parser.startsWith(":domain"))
     this.type = "domain";
-  else if (token.indexOf(":all") == 0)
+  else if (parser.startsWith(":all"))
     this.type = "all"
   else 
     throw "Syntaxerror, unknown address part";
     
+  parser.extract(this.type.length+1);
+  
   if (this.type == "all")
     this.optional = false;
   
-  return data.slice(this.type.length+1);
+  return this; 
 }
 
 SieveAddressPart.prototype.isOptional
@@ -708,26 +678,25 @@ function SieveComparator(docshell,id)
 SieveComparator.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveComparator.isElement
-    = function(data)
+    = function(parser)
 {   
-  return (data.substr(0,11).toLowerCase() == ":comparator")
+  return (parser.startsWith(":comparator"))
 }
 
 SieveComparator.prototype.init
-    = function (data)
+    = function (parser)
 {
   // Syntax :
   // <":comparator"> <comparator-name: string>
+  parser.extract(":comparator");
   
-  data = data.slice(":comparator".length);
+  this.whiteSpace.init(parser);
   
-  data = this.whiteSpace.init(data);
-  
-  data = this._comparator.init(data);
+  this._comparator.init(parser);
   
   this.optional = false;
   
-  return data;
+  return this;
 }
 
 SieveComparator.prototype.isOptional

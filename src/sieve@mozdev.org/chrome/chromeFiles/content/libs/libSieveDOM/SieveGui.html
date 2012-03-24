@@ -11,11 +11,13 @@
   <!--<script type="application/javascript" src="UI/jquery-ui.js"></script>-->
   
   <!-- Basic Sieve Elements -->
+  <script type="application/javascript" src="toolkit/SieveParser.js"></script>
   <script type="application/javascript" src="toolkit/SieveLexer.js"></script>
   <script type="application/javascript" src="toolkit/SieveScriptDOM.js"></script>  
   <script type="application/javascript" src="toolkit/logic/Elements.js"></script>
   <script type="application/javascript" src="toolkit/widgets/Boxes.js"></script>
   <script type="application/javascript" src="toolkit/events/DropHandler.js"></script>
+  <script type="application/javascript" src="toolkit/events/DragHandler.js"></script>
   
   <!-- UI related Imports -->
   <!-- RFC 5228 - Sieve -->
@@ -130,12 +132,13 @@ function debug(obj)
 
   function createMenuItem(action,flavour, docShell)
   {    
-    var elm2 = (new SieveDragBoxUI(docShell));
+    var elm2 = (new SieveEditableBoxUI(docShell));
+	elm2.drag(new SieveCreateDragHandler());
+	elm2.drag().flavour(flavour);	
     elm2._elmType = action;
-    elm2._action = "create";
-    elm2._flavour = flavour;
 	
     return elm2.html()
+	                .addClass("sivMenuItem")
                     .append($(document.createTextNode(action.split('/')[1])))	
   }
 
@@ -148,8 +151,7 @@ function debug(obj)
 	
     var elm = $("#sivActions").empty();
     
-	elm.append($("<div/>").text("Actions"))
-	  .text("Actions");
+	elm.append($("<div/>").text("Actions"));
 	  
     for (var key in SieveLexer.types["action"])
       elm.append(createMenuItem(key,"sieve/action",docShell));

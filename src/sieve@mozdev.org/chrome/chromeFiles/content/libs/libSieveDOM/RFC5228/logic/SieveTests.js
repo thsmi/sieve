@@ -37,39 +37,39 @@ function SieveEnvelope(docshell,id)
 SieveEnvelope.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveEnvelope.isElement
-  = function(token)
+  = function(parser)
 { 
-  return (token.indexOf("envelope") == 0);
+  return parser.startsWith("envelope");
 }
 
 SieveEnvelope.prototype.init
-    = function (data)
+    = function (parser)
 {
-  data = data.slice("envelope".length);
-  data = this.whiteSpace[0].init(data);
+  parser.extract("envelope");
+  this.whiteSpace[0].init(parser);
   
   while (true)
   {
-    if (this.addressPart.isOptional() && this._probeByName("address-part",data))
+    if (this.addressPart.isOptional() && this._probeByName("address-part",parser))
     {
-      data = this.addressPart.init(data)
-      data = this.whiteSpace[1].init(data);
+      this.addressPart.init(parser)
+      this.whiteSpace[1].init(parser);
       
       continue;
     }
     
-    if (this.comparator.isOptional() && this._probeByName("comparator",data))
+    if (this.comparator.isOptional() && this._probeByName("comparator",parser))
     {
-      data = this.comparator.init(data);
-      data = this.whiteSpace[2].init(data);
+      this.comparator.init(parser);
+      this.whiteSpace[2].init(parser);
       
       continue;
     }
     
-    if (this.matchType.isOptional() && this._probeByName("match-type",data))
+    if (this.matchType.isOptional() && this._probeByName("match-type",parser))
     {
-      data = this.matchType.init(data);      
-      data = this.whiteSpace[3].init(data);
+      this.matchType.init(parser);      
+      this.whiteSpace[3].init(parser);
       
       continue;
     }
@@ -77,15 +77,15 @@ SieveEnvelope.prototype.init
     break;    
   }
   
-  data = this.envelopeList.init(data);
+  this.envelopeList.init(parser);
   
-  data = this.whiteSpace[4].init(data);
+  this.whiteSpace[4].init(parser);
   
-  data = this.keyList.init(data);
+  this.keyList.init(parser);
     
-  data = this.whiteSpace[5].init(data);
+  this.whiteSpace[5].init(parser);
   
-  return data;
+  return this;
 }    
 
 SieveEnvelope.prototype.require
@@ -158,39 +158,40 @@ function SieveAddress(docshell,id)
 SieveAddress.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveAddress.isElement
-    = function (token)
+    = function (parser)
 {
-  return (token.substr(0,7).toLowerCase().indexOf("address") == 0);
+  return parser.startsWith("address");
 }
 
 SieveAddress.prototype.init
-    = function (data)
+    = function (parser)
 {
-  data = data.slice("address".length);
-  data = this.whiteSpace[0].init(data);
+  parser.extract("address");
+  
+  this.whiteSpace[0].init(parser);
   
   while (true)
   {
-    if (this.addressPart.isOptional() && this._probeByName("address-part",data))
+    if (this.addressPart.isOptional() && this._probeByName("address-part",parser))
     {
-      data = this.addressPart.init(data)
-      data = this.whiteSpace[1].init(data);
+      this.addressPart.init(parser)
+      this.whiteSpace[1].init(parser);
       
       continue;
     }
     
-    if (this.comparator.isOptional() && this._probeByName("comparator",data))
+    if (this.comparator.isOptional() && this._probeByName("comparator",parser))
     {
-      data = this.comparator.init(data);
-      data = this.whiteSpace[2].init(data);
+      this.comparator.init(parser);
+      this.whiteSpace[2].init(parser);
       
       continue;
     }
     
-    if (this.matchType.isOptional() && this._probeByName("match-type",data))
+    if (this.matchType.isOptional() && this._probeByName("match-type",parser))
     {
-      data = this.matchType.init(data);      
-      data = this.whiteSpace[3].init(data);
+      this.matchType.init(parser);      
+      this.whiteSpace[3].init(parser);
       
       continue;
     }
@@ -198,15 +199,15 @@ SieveAddress.prototype.init
     break;    
   }
   
-  data = this.headerList.init(data);
+  this.headerList.init(parser);
   
-  data = this.whiteSpace[4].init(data);
+  this.whiteSpace[4].init(parser);
   
-  data = this.keyList.init(data);
+  this.keyList.init(parser);
     
-  data = this.whiteSpace[5].init(data);
+  this.whiteSpace[5].init(parser);
   
-  return data;
+  return this;
 }    
 
 SieveAddress.prototype.toScript
@@ -248,37 +249,35 @@ function SieveBoolean(docshell,id)
 SieveBoolean.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveBoolean.isElement
- = function(data)
-{
-  data = data.substr(0,5).toLowerCase();
-  if (data.indexOf("true") == 0)
+ = function(parser)
+{  
+  if (parser.startsWith("true"))
     return true;
-  if (data.indexOf("false") == 0)
+  if (parser.startsWith("false"))
     return true;
   
   return false;
 }
 
 SieveBoolean.prototype.init
-    = function (data)
+    = function (parser)
 {
-  var token = data.substr(0,5).toLowerCase();
   
-  if (token.indexOf("true") == 0)
+  if (parser.startsWith("true"))
   {
+    parser.extract("true");
     this.value = true
-    data = data.slice("true".length);
   }
   
-  if (token.indexOf("false") == 0)
+  if (parser.startsWith("false"))
   {
+    parser.extract("false");
     this.value = false;
-    data = data.slice("false".length);
   }
   
-  data = this.whiteSpace.init(data);
+  this.whiteSpace.init(parser);
     
-  return data;    
+  return this;    
 }    
 
 
@@ -314,40 +313,39 @@ function SieveSize(docshell,id)
 SieveSize.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveSize.isElement
-  = function(token)
+  = function(parser)
 { 
-  return (token.substr(0,4).toLowerCase().indexOf("size") == 0);
+  return parser.startsWith("size");
 }
 
 SieveSize.prototype.init
-    = function (data)
+    = function (parser)
 {
   // Syntax :
   // <"size"> <":over" / ":under"> <limit: number>
   
-  data = data.slice("size".length);
+  parser.extract("size");
   
-  data = this.whiteSpace[0].init(data);
+  this.whiteSpace[0].init(parser);
   
-  var token = data.substr(0,6).toLowerCase();
-  if (token.indexOf(":over") == 0) 
+  if (parser.startsWith(":over")) 
   {
-    data=data.slice(":over".length)
+    parser.extract(":over")
     this.isOver(true);
   }
-  else if (token.indexOf(":under") == 0)
+  else if (parser.startsWith(":under"))
   {
-    data=data.slice(":under".length)
+    parser.extract(":under")
     this.isOver(false);
   }
   else 
     throw "Syntaxerror, :under or :over expected";
     
-  data = this.whiteSpace[1].init(data);
-  data = this.size.init(data);
-  data = this.whiteSpace[2].init(data);
+  this.whiteSpace[1].init(parser);
+  this.size.init(parser);
+  this.whiteSpace[2].init(parser);
   
-  return data;
+  return this;
 }    
 
 /**
@@ -408,28 +406,25 @@ function SieveExists(docshell,id)
 SieveExists.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveExists.isElement
-  = function(token)
+  = function(parser)
 { 
-  return (token.indexOf("exists") == 0);
+  return parser.startsWith("exists");
 }
 
 SieveExists.prototype.init
-    = function (data)
+    = function (parser)
 {
   // Syntax :
   // <"exists"> <header-names: string-list>
-  if (!SieveExists.isElement(data))
-    throw "exists expected";
+  parser.extract("exists");
+  
+  this.whiteSpace[0].init(parser);
+  
+  this.headerNames.init(parser);
     
-  data = data.slice("exists".length);
+  this.whiteSpace[1].init(parser);
   
-  data = this.whiteSpace[0].init(data);
-  
-  data = this.headerNames.init(data);
-    
-  data = this.whiteSpace[1].init(data);
-  
-  return data;
+  return this;
     
 }    
 
@@ -472,53 +467,51 @@ function SieveHeader(docshell,id)
 SieveHeader.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveHeader.isElement
-    = function (token)
+    = function (parser)
 {
-  return (token.substring(0,6).toLowerCase().indexOf("header") == 0);
+  return parser.startsWith("header");
 } 
 
 SieveHeader.prototype.init
-    = function (data)
+    = function (parser)
 {
   // Syntax :
   // <"header"> [COMPARATOR] [MATCH-TYPE] <header-names: string-list> <key-list: string-list>         
+  parser.extract("header");
   
-  data = data.slice("header".length);
-  
-  data = this.whiteSpace[0].init(data);
+  this.whiteSpace[0].init(parser);
   
   // It can be [Comparator] [MATCH-TYPE] or [MATCH-TYPE] [COMPARATOR]  
   while (true)
   {
-    if (this.comparator.isOptional() && this._probeByName("comparator",data))
+    if (this.comparator.isOptional() && this._probeByName("comparator",parser))
     {
-      data = this.comparator.init(data);
-      data = this.whiteSpace[1].init(data);
+      this.comparator.init(parser);
+      this.whiteSpace[1].init(parser);
       
       continue;
     }
     
-    if (this.matchType.isOptional() && this._probeByName("match-type",data))
+    if (this.matchType.isOptional() && this._probeByName("match-type",parser))
     {
-      data = this.matchType.init(data);      
-      data = this.whiteSpace[2].init(data);
+      this.matchType.init(parser);      
+      this.whiteSpace[2].init(parser);
       
       continue;
     }
     
     break;    
   }
-
   
-  data = this.headerNames.init(data);
+  this.headerNames.init(parser);
   
-  data = this.whiteSpace[3].init(data);
+  this.whiteSpace[3].init(parser);
   
-  data = this.keyList.init(data);
+  this.keyList.init(parser);
   
-  data = this.whiteSpace[4].init(data);
+  this.whiteSpace[4].init(parser);
   
-  return data;    
+  return this;    
 }
 
 SieveHeader.prototype.keys
@@ -574,52 +567,46 @@ function SieveTestList(docshell,id)
 SieveTestList.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveTestList.isElement
-   = function (token)
+   = function (parser)
 {
-  return (token.charAt(0) == "(")
+  return parser.isChar("(");
 }
 
 SieveTestList.prototype.init
-    = function (data)
-{    
-  if (data.charAt(0) != "(")
-    throw "Test list expected but found:\n'"+data.substr(0,50)+"'...";
-    
-  data = data.slice(1);
-    
-  while (data.charAt(0) != ")")
+    = function (parser)
+{   
+  this.tests = [];
+  
+  parser.extractChar("(");
+  
+  while ( ! parser.isChar(")"))
   {
-    if (data.charAt(0) == ",")
-      data = data.slice(1);
+    if (this.tests.length > 0)
+     parser.extractChar(",");
             
     var element = [];
     
     element[0] = this._createByName("whitespace");  
-    if (this._probeByName("whitespace",data))
-      data = element[0].init(data);
+    if (this._probeByName("whitespace",parser))
+      element[0].init(parser);
     
-    if (this._probeByClass(["test","operator"],data))
-      element[1] = this._createByClass(["test","operator"],data)
-    else
-      throw "Test command expected but found:\n'"+data.substr(0,50)+"'...";        
+    element[1] = this._createByClass(["test","operator"],parser)
 
-    data = element[1].init(data);
-    
     element[2] = this._createByName("whitespace");
-    if (this._probeByName("whitespace",data))
-      data = element[2].init(data);
+    if (this._probeByName("whitespace",parser))
+      element[2].init(parser);
         
     this.tests.push(element);
   }
   
-  data = data.slice(1);
+  parser.extractChar(")");
    
-  return data;
+  return this;
 }
 
 SieveTestList.prototype.append
-    = function (elm, siblingId)
-{  
+    = function (elm, sibling)
+{      
   var element = [];
 
   switch ([].concat(elm).length)
@@ -645,9 +632,9 @@ SieveTestList.prototype.append
   
   var idx = this.tests.length;
   
-  if ((typeof(siblingId) !== "undefined") && (siblingId >= 0)) 
+  if (sibling && (sibling.id() >= 0)) 
     for (var idx = 0; idx<this.tests.length; idx++)
-      if (this.tests[idx][1].id() == siblingId)
+      if (this.tests[idx][1].id() == sibling.id())
         break;
   
   this.tests.splice(idx,0,element);

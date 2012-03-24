@@ -18,21 +18,20 @@ function SieveDiscard(docshell,id)
 SieveDiscard.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveDiscard.isElement
-     = function (token)
+     = function (parser)
 {
-  return (token.substring(0,7).toLowerCase().indexOf("discard") == 0);  
+  return parser.startsWith("discard");  
 }
 
 SieveDiscard.prototype.init
-    = function (data)
+    = function (parser)
 {
   // Syntax :
   // <"discard"> <";">
-  
-  data = data.slice("discard".length);  
-  data = this.semicolon.init(data);
+  parser.extract("discard");  
+  this.semicolon.init(parser);
     
-  return data;  
+  return this;  
 }
 
 SieveDiscard.prototype.toScript
@@ -64,30 +63,30 @@ function SieveRedirect(docshell,id)
 SieveRedirect.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveRedirect.isElement
-    = function (token)
+    = function (parser)
 {
-  return (token.substring(0,8).toLowerCase().indexOf("redirect") == 0);
+  return parser.startsWith("redirect");
 }
 
 SieveRedirect.prototype.init
-    = function (data)
+    = function (parser)
 {
   // Syntax :
   // <"redirect"> <address: string> <";">
   
   // remove the "redirect" identifier ...
-  data = data.slice("redirect".length);
+  parser.extract("redirect");
   
   // ... eat the deadcode before the stringlist...
-  data = this.whiteSpace.init(data);
+  this.whiteSpace.init(parser);
   
   // ... extract the redirect address...
-  data = this.address.init(data);
+  this.address.init(parser);
   
   // ... drop the semicolon
-  data = this.semicolon.init(data);
+  this.semicolon.init(parser);
     
-  return data;        
+  return this;        
 }
 
 SieveRedirect.prototype.setAddress
@@ -130,19 +129,19 @@ function SieveStop(docshell,id)
 SieveStop.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveStop.isElement
-    = function(token)
+    = function(parser)
 {
-  return (token.substring(0,4).toLowerCase().indexOf("stop") == 0);
+  return parser.startsWith("stop");
 }
 
 SieveStop.prototype.init
-    = function (data)
+    = function (parser)
 {
-  data = data.slice("stop".length);
+  parser.extract("stop");
   
-  data = this.semicolon.init(data);
+  this.semicolon.init(parser);
     
-  return data; 
+  return this; 
 }    
 
 SieveStop.prototype.toScript
@@ -169,19 +168,19 @@ function SieveKeep(docshell,id)
 SieveKeep.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveKeep.isElement
-    = function(token)
+    = function(parser)
 {
-  return (token.substring(0,4).toLowerCase().indexOf("keep") == 0);
+  return parser.startsWith("keep");
 }
 
 SieveKeep.prototype.init
-    = function (data)
+    = function (parser)
 {
-  data = data.slice("keep".length);
+  parser.extract("keep");
   
-  data = this.semicolon.init(data);
+  this.semicolon.init(parser);
     
-  return data;
+  return parser;
 }    
 
 SieveKeep.prototype.toScript
@@ -215,29 +214,29 @@ function SieveFileInto(docshell,id)
 SieveFileInto.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveFileInto.isElement
-    = function (token)
+    = function (parser)
 {
-  return (token.substring(0,8).toLowerCase().indexOf("fileinto") == 0);
+  return parser.startsWith("fileinto");
 }
 
 SieveFileInto.prototype.init
-    = function (data)
+    = function (parser)
 {
   // Syntax :
   // <"fileinto"> <string> <";">
   
-  data = data.slice("fileinto".length);
+  parser.extract("fileinto");
   
   // ... eat the deadcode before the string...
-  data = this.whiteSpace.init(data);
+  this.whiteSpace.init(parser);
   
   // read the string
-  data = this.string.init(data);
+  this.string.init(parser);
   
   // ... and finally remove the semicolon;
-  data = this.semicolon.init(data);
+  this.semicolon.init(parser);
       
-  return data;
+  return this;
 }
 
 SieveFileInto.prototype.require

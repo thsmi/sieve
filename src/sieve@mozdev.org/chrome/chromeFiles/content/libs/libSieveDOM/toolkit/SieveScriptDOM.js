@@ -21,6 +21,10 @@ function SieveDocument(lexer)
   this._rootNode = this._lexer.createByName(this,"block/rootnode");  
 }
 
+/**
+ * Returns the root node for this document
+ * @return {}
+ */
 SieveDocument.prototype.root
   = function ()
 {
@@ -31,14 +35,18 @@ SieveDocument.prototype.html
     = function ()
 {  
   // TODO fix me should be get HTML
-  return this._rootNode.widget();  
+  return this._rootNode.widget();
+  //return this._rootNode.html();  
 }
 
 // A shorthand to create children bound to this Element...
 SieveDocument.prototype.createByName
-    = function(name, data, parent)
+    = function(name, parser, parent)
 {     
-  var item = this._lexer.createByName(this, name, data);
+  if (typeof(parser) == "string")
+    parser = new SieveParser(parser); 
+    
+  var item = this._lexer.createByName(this, name, parser);
   
   if(typeof(parent) !== "undefined")
     item.parent(parent);
@@ -50,9 +58,12 @@ SieveDocument.prototype.createByName
 }
   
 SieveDocument.prototype.createByClass
-    = function(types, data, parent)
+    = function(types, parser, parent)
 {  
-  var item = this._lexer.createByClass(this, types, data);
+  if (typeof(parser) == "string")
+    parser = new SieveParser(parser);  
+  
+  var item = this._lexer.createByClass(this, types, parser);
   
   if(typeof(parent) !== "undefined")
     item.parent(parent);
@@ -64,15 +75,21 @@ SieveDocument.prototype.createByClass
 }
   
 SieveDocument.prototype.probeByName
-    = function(name, data)
+    = function(name, parser)
 {
-  return this._lexer.probeByName(name, data);
+  if (typeof(parser) == "string")
+    parser = new SieveParser(parser); 
+    
+  return this._lexer.probeByName(name, parser);
 }
   
 SieveDocument.prototype.probeByClass
-    = function(types, data)
-{    
-  return this._lexer.probeByClass(types,data);
+    = function(types, parser)
+{
+  if (typeof(parser) == "string")
+    parser = new SieveParser(parser);  
+  
+  return this._lexer.probeByClass(types,parser);
 }
 
 SieveDocument.prototype.id
@@ -109,13 +126,15 @@ SieveDocument.prototype.script
   if (n != r)
     throw ("Something went terribly wrong. The linebreaks are mixed up...\n");
   
-  data = this._rootNode.init(data);
+  var parser = new SieveParser(data);
   
-  if (data.length != 0)
-    throw ("Parser error!"+data);
+  this._rootNode.init(parser);
+  
+  if (!parser.empty())
+    throw ("Parser error at: "+parser.bytes());
     
   // data should be empty right here...
-  return data;
+  return parser.bytes();
 }
 
 /**

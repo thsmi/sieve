@@ -12,6 +12,7 @@
 //testunary .append() -> testunary in anyof wrapen  SieveTestUI einführen...
 //testmultary.append -> an entsprechender stelle einfügen SieveTestListUI...
 
+ 
 //****************************************************************************//
 
 function SieveSizeTestUI(elm)
@@ -143,8 +144,7 @@ SieveExistsUI.prototype.initSummary
 //****************************************************************************//
 function SieveHeaderUI(elm)
 {
-  SieveTestBoxUI.call(this,elm);
-  this.flavour("sieve/test");  
+  SieveTestBoxUI.call(this,elm);  
 }
 
 SieveHeaderUI.prototype.__proto__ = SieveTestBoxUI.prototype;

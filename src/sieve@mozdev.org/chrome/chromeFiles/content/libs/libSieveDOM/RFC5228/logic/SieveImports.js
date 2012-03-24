@@ -22,29 +22,29 @@ function SieveRequire(docshell,id)
 SieveRequire.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveRequire.isElement
-  = function (token)
+  = function (parser)
 {
-  return (token.substr(0,7).toLowerCase().indexOf("require") == 0); 
+  return parser.startsWith("require"); 
 }
 
 SieveRequire.prototype.init
-    = function (data)
+    = function (parser)
 {
   // Syntax :
   // <"require"> <stringlist> <";">
   
   // remove the "require" identifier ...
-  data = data.slice("require".length);
+  parser.extract("require");
 
   // ... eat the deadcode before the stringlist...
-  data = this.whiteSpace.init(data);
+  this.whiteSpace.init(parser);
     
   // ... extract the stringlist...
-  data = this.strings.init(data);
+  this.strings.init(parser);
   
-  data = this.semicolon.init(data);
+  this.semicolon.init(parser);
     
-  return data;
+  return this;
 }
 
 SieveRequire.prototype.capability
@@ -79,25 +79,21 @@ SieveBlockImport.prototype.__proto__ = SieveBlockBody.prototype;
 
 // PUBLIC STATIC:
 SieveBlockImport.isElement
-    = function (data)
+    = function (parser)
 {
-  return SieveLexer.probeByClass(["import/","whitespace"],data);  
+  return SieveLexer.probeByClass(["import/","whitespace"],parser);  
 }
 
 // PUBLIC:
 SieveBlockImport.prototype.init
-    = function (data)    
+    = function (parser)    
 {  
   // The import section consists of require and deadcode statments...
-  while (this._probeByClass(["import/","whitespace"],data))
-  {
-    var elm = this._createByClass(["import/","whitespace"],data);    
-    data = elm.init(data);
-    
-    this.elms.push(elm);    
-  }
+  while (this._probeByClass(["import/","whitespace"],parser))    
+    this.elms.push(
+      this._createByClass(["import/","whitespace"],parser));
  
-  return data;
+  return this;
 }
 
 

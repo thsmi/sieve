@@ -9,6 +9,9 @@
  
  "use strict";
  
+ 
+/// Flags an keywords are defined in http://tools.ietf.org/html/rfc5788
+ 
 // setflag <variablename: string> <list-of-flags: string-list>
 
 
@@ -24,24 +27,24 @@ function SieveSetFlag(docshell,id)
 SieveSetFlag.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveSetFlag.isElement
-    = function (token)
+    = function (parser)
 {
-  return (token.substring(0,7).toLowerCase().indexOf("setflag") == 0);
+  return parser.startsWith("setflag");
 }
     
 SieveSetFlag.prototype.init
-    = function (data)
+    = function (parser)
 {  
-  data = data.slice("setflag".length);
+  parser.extract("setflag");
   
   // ... eat the deadcode before the string...
-  data = this.whiteSpace.init(data);
+  this.whiteSpace.init(parser);
       
-  data = this.flaglist.init(data)
+  this.flaglist.init(parser)
 
-  data = this.semicolon.init(data);
+  this.semicolon.init(parser);
     
-  return data;
+  return this;
 }
 
 SieveSetFlag.prototype.require
@@ -85,29 +88,29 @@ function SieveAddFlag(docshell,id)
 SieveAddFlag.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveAddFlag.isElement
-    = function (token)
+    = function (parser)
 {
-  return (token.substring(0,7).toLowerCase().indexOf("addflag") == 0)
+  return parser.startsWith("addflag");
 }
 
 SieveAddFlag.prototype.init
-    = function (data)
+    = function (parser)
 {
   // Syntax :
   // <"fileinto"> <string> <";">
   
-  data = data.slice("addflag".length);
+  parser.extract("addflag");
   
   // ... eat the deadcode before the string...
-  data = this.whiteSpace[0].init(data);
+  this.whiteSpace[0].init(parser);
   
-  data = this.flaglist.init(data)
+  this.flaglist.init(parser)
 
-  data = this.whiteSpace[1].init(data);
+  this.whiteSpace[1].init(parser);
     
-  data = this.semicolon.init(data);
+  this.semicolon.init(parser);
     
-  return data;
+  return this;
 }
 
 SieveAddFlag.prototype.require
@@ -154,33 +157,30 @@ function SieveRemoveFlag(docshell,id)
 SieveRemoveFlag.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveRemoveFlag.isElement
-  = function(token)
+  = function(parser)
 { 
- if (token.indexOf("removeflag") == 0)
-    return true;
- 
- return false;
+  return parser.startsWith("removeflag");
 }
 
 SieveRemoveFlag.prototype.init
-    = function (data)
+    = function (parser)
 {
   // Syntax :
   // <"fileinto"> <string> <";">
   
-  data = data.slice("removeflag".length);
+  parser.extract("removeflag");
   
   // ... eat the deadcode before the string...
-  data = this.whiteSpace[0].init(data);
+  this.whiteSpace[0].init(parser);
       
-  data = this.flaglist.init(data)
+  this.flaglist.init(parser)
 
-  data = this.whiteSpace[1].init(data);
+  this.whiteSpace[1].init(parser);
     
   // ... and finally remove the semicolon;
-  data = this.semicolon.init(data);
+  this.semicolon.init(parser);
     
-  return data;
+  return this;
 }
 
 SieveRemoveFlag.prototype.require
@@ -229,12 +229,9 @@ function SieveHasFlag(docshell,id)
 SieveHasFlag.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveHasFlag.isElement
-  = function(token)
+  = function(parser)
 { 
- if (token.indexOf("hasflag") == 0)
-    return true;
- 
- return false;
+  return parser.startsWith("hasflag");
 }
 
 SieveHasFlag.prototype.init

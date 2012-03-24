@@ -17,16 +17,16 @@ function SieveIfUI(elm)
 SieveIfUI.prototype.__proto__ = SieveBlockUI.prototype;
 
 SieveIfUI.prototype.createHtml
-    = function ()
+    = function (parent)
 {
   return $("<div/>")
     .attr("id","sivElm"+this.id())
+    .addClass("sivConditional")
     .append(
-      this.getSieve().test().html())
-    .append($("<div/>")
-      .text("# DO"))
+       $("<div/>").append(this.getSieve().test().html())
+          .addClass("sivConditionalChild"))
     .append(
-      SieveBlockUI.prototype.createHtml.call(this));
+      SieveBlockUI.prototype.createHtml.call(this,parent));
 }
 
 
@@ -38,142 +38,60 @@ function SieveElseUI(elm)
 SieveElseUI.prototype.__proto__ = SieveBlockUI.prototype;
 
 SieveElseUI.prototype.createHtml
-    = function ()
+    = function (parent)
 {
   return $("<div/>")
            .attr("id","sivElm"+this.id())
+           .addClass("sivConditional")
            .append(
-              SieveBlockUI.prototype.createHtml.call(this));
+              SieveBlockUI.prototype.createHtml.call(this,parent));
+           
 }
 
 
 function SieveConditionUI(elm)
 {
-  SieveDragBoxUI.call(this,elm);
-  this.flavour("sieve/action");
+  SieveAbstractBoxUI.call(this,elm);
+  this.drag(new SieveMoveDragHandler());
 }
 
-SieveConditionUI.prototype.__proto__ = SieveDragBoxUI.prototype;
+SieveConditionUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
 
-
-SieveConditionUI.prototype.onDragEnter
-    = function (event)
-{   
-  // Show Dropboxes
-  $("#SieveCondition"+this.id()+" > .sivDropBox").show();
-  return true;
-}
-
-SieveConditionUI.prototype.onDragExit
-    = function (event)
-{
-  // Hide Dropboxes
-  $("#SieveCondition"+this.id()+" > .sivDropBox").hide();
-  return true;
-}
-
-SieveConditionUI.prototype.init
-    = function ()
-{
-  /*
-   <drop: test>
-   if <test>
-    <block>
-   <drop: test>   
-   else  if <test :dropA>
-     <block>
-   <drop: test>
-   else
-     <block>
-   */
- /* 
-dropA: wenn drop.owner == elm[0]
-  if = createIf(test);  
-  elsif = createElsIf(elms[0]);
-  
-  remove(elms[0]);
-    
-  append(0,elsif)
-  append(0,if)
-  
-  
-dropB: wenn drop.owner > elm[0] && drop.owner < length-1
-  createElsIf(test)
-  append(i,test)
-        
-dropC
-  !hasElse 
-  if (action)
-    createElse(action)
-  if (test)
-    createElsIf(test)
-  
-  apend(length,item)
-  */
- /*<dropA: test ->if,if->elsif>
- if <test>
- <block>
- <dropC: action -> else; test -> elsif>
- 
- <dropA: test -> if>
- if <test>
- <block>
- <dropB: test -> elsif>
- else [[<drop: test -> elsif>]] 
- <block>
- <//dropC//> 
- 
- <dropA>
- if <test>
-   block
- <dropB>
- elsif <test>
-   block
- <dropC>
- 
- <dropA:test -> if>
- if <test>
-   <block>
- <dropB:test -> elsif>
- elsif <test>
-   <block>
- <dropB: test -> elsif>
- else [[<drop: test -> elsif>]] 
- <block>
- <//dropC//>
- */
-     
-  
+SieveConditionUI.prototype.createHtml
+    = function (parent)
+{  
   var elm = $("<div/>")
-              .attr("id","SieveCondition"+this.id())
-             /* .bind("dragexit",function(e) { return _this.onDragExit(e)})
-              .bind("dragenter",function(e) { return _this.onDragEnter(e)})     
-              .bind("dragdrop",function(e) { return _this.onDragExit(e)})*/       
+              .attr("id","sivElm"+this.id())
+              .addClass("sivCondition");     
     
   var children = this.getSieve().children();
                   
   for (var i=0; i<children.length;i++)
   {
     elm
-      .append((new SieveDropBoxUI(this,children[i]))      
-        .drop(new SieveConditionDropHandler()).html())
+      .append((new SieveDropBoxUI(this))      
+        .drop(new SieveConditionDropHandler(),children[i])
+        .html()
+        .addClass("sivConditionSpacer"));
    
     if (i==0)
-      elm.append($("<div/>").text("# IF"))
+      elm.append($("<div/>").text("# IF").addClass("sivConditionText"))
     else if (children[i].test)
-      elm.append($("<div/>").text("# ELSE IF"))
+      elm.append($("<div/>").text("# ELSE IF").addClass("sivConditionText"))
     else
-      elm.append($("<div/>").text("# ELSE"))
+      elm.append($("<div/>").text("# ELSE").addClass("sivConditionText"))
               
               
-    elm.append(children[i].html());
+    elm.append(
+      $("<div/>").append(children[i].html())
+        .addClass("sivConditionChild"));
   }
   
   elm
     .append((new SieveDropBoxUI(this))      
-      .drop(new SieveConditionDropHandler()).html())  
-   
-  this.onDragExit();
+      .drop(new SieveConditionDropHandler())
+      .html()
+      .addClass("sivConditionSpacer"));  
   
   return elm;
 }

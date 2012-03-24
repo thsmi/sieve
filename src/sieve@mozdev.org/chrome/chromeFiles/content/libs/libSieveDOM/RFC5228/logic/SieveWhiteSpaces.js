@@ -19,21 +19,16 @@ function SieveLineBreak(docshell,id)
 SieveLineBreak.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveLineBreak.isElement
-  = function (data)
+  = function (parser)
 {
-  return ((data.charAt(0) == "\r") && (data.charAt(1) == "\n"))
+  return parser.startsWith("\r\n");
 }
 
 SieveLineBreak.prototype.init
-    = function (data)
+    = function (parser)
 {
-  if (data.charAt(0) != "\r")
-    throw "Linebreak expected \\r";
-    
-  if (data.charAt(1) != "\n")
-    throw "Linebreak expected \\n";
-      
-  return data.slice(2);  
+  parser.extract("\r\n");      
+  return this;  
 }
 
 SieveLineBreak.prototype.toScript
@@ -46,11 +41,9 @@ SieveLineBreak.prototype.toScript
 
 
 SieveDeadCode.isElement
-  = function (data, index)
-{
-  var ch = data.charAt(0);
-  
-  if ((ch == " ") || (ch == "\t")) 
+  = function (parser)
+{  
+  if (parser.isChar([" ","\t"])) 
     return true;    
     
   return false;
@@ -65,26 +58,11 @@ function SieveDeadCode(docshell,id)
 SieveDeadCode.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveDeadCode.prototype.init
-    = function (data)
+    = function (parser)
 {
-  var i;
+  this.whiteSpace = parser.extractToken([" ","\t"]);
   
-  for (i=0; i<data.length; i++)
-  {
-    var ch = data.charAt(i);
-    
-    if (ch == "\t")
-      continue;
-      
-    if (ch == " ")
-      continue;
-      
-    break;   
-  }
-
-  this.whiteSpace = data.slice(0,i);
-  
-  return data.slice(i);  
+  return this;
 }
 
 SieveDeadCode.prototype.toScript
@@ -96,15 +74,9 @@ SieveDeadCode.prototype.toScript
 /******************************************************************************/
 
 SieveBracketComment.isElement
-    = function (data)
+    = function (parser)
 {
-  if (data.charAt(0) != "/")
-    return false;
-    
-  if (data.charAt(1) != "*")
-    return false;
-  
-  return true;
+  return parser.startsWith("/*");
 }
 
 function SieveBracketComment(docshell,id) 
@@ -116,23 +88,13 @@ function SieveBracketComment(docshell,id)
 SieveBracketComment.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveBracketComment.prototype.init
-    = function (data)
-{
-  if (data.indexOf("/*") != 0)
-    throw "/* expected";
-    
-  // remove the "/*"
-  data = data.slice(2);
+    = function (parser)
+{  
+  parser.extract("/*")
 
-  var end = data.indexOf("*/"); 
-  if (end == -1)
-    throw "*/ expected";
-    
-    
-  this.text = data.slice(0,end);
+  this.text = parser.extractUntil("*/");
   
-  // remove the "*/"    
-  return data = data.slice(end+2);
+  return this;
 }
 
 SieveBracketComment.prototype.toScript
@@ -152,30 +114,20 @@ function SieveHashComment(docshell,id)
 SieveHashComment.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveHashComment.isElement
-    = function (data)
+    = function (parser)
 {
-  return (data.charAt(0) == "#");
+  return parser.isChar("#");
 }
 
 SieveHashComment.prototype.init
-    = function (data)
+    = function (parser)
 {  
-  // is this a valid HashComment...
-  if (data.charAt(0) != "#")
-    throw "# expected";
-  
-  // ... then remove the Hash # ...
-  data = data.slice(1);
-    
+  parser.extract("#");
+        
   // ... and find the end of the comment
-  var end = data.indexOf("\r\n");
-  if (end == -1)
-    end = data.length;
-  
-  this.text = data.slice(0,end);
-  
-  //remove the \r\n
-  return data = data.slice(end+2);
+  this.text = parser.extractUntil("\r\n");
+
+  return this;
 }
 
 SieveHashComment.prototype.toScript
@@ -195,9 +147,9 @@ function SieveWhiteSpace(docshell,id)
 SieveWhiteSpace.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveWhiteSpace.isElement
-    = function (data)
+    = function (parser)
 {
-  return SieveLexer.probeByClass(["whitespace/"],data); 
+  return SieveLexer.probeByClass(["whitespace/"],parser); 
 }
 
 /**
@@ -213,30 +165,26 @@ SieveWhiteSpace.isElement
  */
 
 SieveWhiteSpace.prototype.init
-    = function (data,crlf)
+    = function (parser,crlf)
 { 
   var isCrlf = false;
   this.elements = [];
   
   // After the import section only deadcode and actions are valid
-  while (this._probeByClass(["whitespace/"],data))
+  while (this._probeByClass(["whitespace/"],parser))
   {
     // Check for CRLF...
-    if (crlf && this._probeByName("whitespace/linebreak",data))
+    if (crlf && this._probeByName("whitespace/linebreak",parser))
       isCrlf = true;
-      
-    var elm = this._createByClass(["whitespace/"],data);
-      
-    data = elm.init(data);
     
-    this.elements.push(elm);
+    this.elements.push(this._createByClass(["whitespace/"],parser));
     
     // break if we found a CRLF
     if (isCrlf)
       break;
   }
 
-  return data
+  return this
 }
 
 SieveWhiteSpace.prototype.toScript
@@ -263,28 +211,24 @@ function SieveSemicolon(docshell,id)
 SieveSemicolon.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveSemicolon.isElement
-    = function (data,index)
+    = function (parser)
 {
   return true;
 }
 
 SieveSemicolon.prototype.init
-    = function (data)
+    = function (parser)
 {
   // Syntax :
   // [whitespace] <";"> [whitespace]
-  if (this._probeByName("whitespace",data))
-    data = this.whiteSpace[0].init(data,true);
+  if (this._probeByName("whitespace",parser))
+    this.whiteSpace[0].init(parser,true);
 
-  if (data.charAt(0) != ";")
-    throw "Semicolon expected but found: \n"+data.substr(0,50)+"...";  
-  
-  data = data.slice(1);
+  parser.extractChar(";");
 
-  //if (this._probeByName("whitespace",data))
-  data = this.whiteSpace[1].init(data,true);  
+  this.whiteSpace[1].init(parser,true);  
       
-  return data;
+  return this;
 }
 
 SieveSemicolon.prototype.toScript

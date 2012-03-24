@@ -11,14 +11,16 @@
 
 "use strict";
 
+/******************************************************************************/
+
 function SieveStopUI(elm)
 {
-  SieveDragBoxUI.call(this,elm);
+  SieveActionBoxUI.call(this,elm);
 }
 
-SieveStopUI.prototype.__proto__ = SieveDragBoxUI.prototype;
+SieveStopUI.prototype.__proto__ = SieveActionBoxUI.prototype;
 
-SieveStopUI.prototype.init
+SieveStopUI.prototype.initSummary
     = function ()
 {
   return $(document.createElement("div"))
@@ -29,12 +31,12 @@ SieveStopUI.prototype.init
 /******************************************************************************/
 function SieveDiscardUI(elm)
 {
-  SieveDragBoxUI.call(this,elm);
+  SieveActionBoxUI.call(this,elm);
 }
 
-SieveDiscardUI.prototype.__proto__ = SieveDragBoxUI.prototype;
+SieveDiscardUI.prototype.__proto__ = SieveActionBoxUI.prototype;
 
-SieveDiscardUI.prototype.init
+SieveDiscardUI.prototype.initSummary
     = function ()
 {
   return $(document.createElement("div"))
@@ -44,12 +46,12 @@ SieveDiscardUI.prototype.init
 /******************************************************************************/
 function SieveKeepUI(elm)
 {
-  SieveDragBoxUI.call(this,elm);
+  SieveActionBoxUI.call(this,elm);
 }
 
-SieveKeepUI.prototype.__proto__ = SieveDragBoxUI.prototype;
+SieveKeepUI.prototype.__proto__ = SieveActionBoxUI.prototype;
 
-SieveKeepUI.prototype.init
+SieveKeepUI.prototype.initSummary
     = function ()
 {
   return $(document.createElement("div"))
@@ -60,10 +62,10 @@ SieveKeepUI.prototype.init
 // extends sieve draggable box
 function SieveRedirectUI(elm)
 {
-  SieveEditableDragBoxUI.call(this,elm);
+  SieveActionBoxUI.call(this,elm);
 }
 
-SieveRedirectUI.prototype.__proto__ = SieveEditableDragBoxUI.prototype;
+SieveRedirectUI.prototype.__proto__ = SieveActionBoxUI.prototype;
 
 SieveRedirectUI.prototype.onValidate
    = function ()
@@ -105,10 +107,10 @@ SieveRedirectUI.prototype.initSummary
 
 function SieveFileIntoUI(elm)
 {
-  SieveEditableDragBoxUI.call(this,elm)
+  SieveActionBoxUI.call(this,elm)
 }
 
-SieveFileIntoUI.prototype.__proto__ = SieveEditableDragBoxUI.prototype;
+SieveFileIntoUI.prototype.__proto__ = SieveActionBoxUI.prototype;
 
 SieveFileIntoUI.prototype.onValidate
    = function ()

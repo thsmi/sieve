@@ -11,12 +11,12 @@
  
 function SieveSetFlagUI(elm)
 {
-  SieveDragBoxUI.call(this,elm);
+  SieveActionBoxUI.call(this,elm);
 }
 
-SieveSetFlagUI.prototype.__proto__ = SieveDragBoxUI.prototype;
+SieveSetFlagUI.prototype.__proto__ = SieveActionBoxUI.prototype;
 
-SieveSetFlagUI.prototype.init
+SieveSetFlagUI.prototype.initSummary
     = function ()
 {
   return $(document.createElement("div"))
@@ -27,12 +27,12 @@ SieveSetFlagUI.prototype.init
 
 function SieveAddFlagUI(elm)
 {
-  SieveDragBoxUI.call(this,elm);
+  SieveActionBoxUI.call(this,elm);
 }
 
-SieveAddFlagUI.prototype.__proto__ = SieveDragBoxUI.prototype;
+SieveAddFlagUI.prototype.__proto__ = SieveActionBoxUI.prototype;
 
-SieveAddFlagUI.prototype.init
+SieveAddFlagUI.prototype.initSummary
     = function ()
 {
   return $(document.createElement("div"))
@@ -43,12 +43,12 @@ SieveAddFlagUI.prototype.init
 
 function SieveRemoveFlagUI(elm)
 {
-  SieveDragBoxUI.call(this,elm);
+  SieveActionBoxUI.call(this,elm);
 }
 
-SieveRemoveFlagUI.prototype.__proto__ = SieveDragBoxUI.prototype;
+SieveRemoveFlagUI.prototype.__proto__ = SieveActionBoxUI.prototype;
 
-SieveRemoveFlagUI.prototype.init
+SieveRemoveFlagUI.prototype.initSummary
     = function ()
 {
   return $(document.createElement("div"))

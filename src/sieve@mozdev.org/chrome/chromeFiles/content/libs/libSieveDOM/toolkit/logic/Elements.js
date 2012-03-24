@@ -28,20 +28,20 @@ function SieveAbstractElement(docshell, id)
 }
 
 // A shorthand to create children bound to this Element...
-SieveAbstractElement.prototype._createByName = function(name, data) {    
-  return this._docshell.createByName(name, data, this);
+SieveAbstractElement.prototype._createByName = function(name, parser) {    
+  return this._docshell.createByName(name, parser, this);
 }
   
-SieveAbstractElement.prototype._createByClass = function(types, data) {    
-  return this._docshell.createByClass(types, data, this);
+SieveAbstractElement.prototype._createByClass = function(types, parser) {    
+  return this._docshell.createByClass(types, parser, this);
 }
   
-SieveAbstractElement.prototype._probeByName = function(name, data) {    
-  return this._docshell.probeByName(name, data);
+SieveAbstractElement.prototype._probeByName = function(name, parser) {    
+  return this._docshell.probeByName(name, parser);
 }
   
-SieveAbstractElement.prototype._probeByClass = function(types, data) {    
-  return this._docshell.probeByClass(types,data);
+SieveAbstractElement.prototype._probeByClass = function(types, parser) {    
+  return this._docshell.probeByClass(types,parser);
 }  
 
 
@@ -202,13 +202,13 @@ SieveAbstractBlock.prototype.children
  * 
  * @param {} elm
  *   the element that should be appened
- * @param @optional {int} siblingId
+ * @param @optional {} sibling
  *   defines the sibling after which the new element should be inserted. 
  *   In case no matching sibling is found, it will be appended at the end.
  * @return {}
  */
 SieveAbstractBlock.prototype.append
-    = function (elm, siblingId)
+    = function (elm, sibling)
 {
   // we have to do this fist as there is a good chance the the index
   // might change after deleting...
@@ -217,9 +217,9 @@ SieveAbstractBlock.prototype.append
   
   var idx = this.elms.length;
   
-  if ((typeof(siblingId) !== "undefined") && (siblingId >= 0)) 
+  if (sibling && (sibling.id() >= 0)) 
     for (var idx = 0; idx<this.elms.length; idx++)
-      if (this.elms[idx].id() == siblingId)
+      if (this.elms[idx].id() == sibling.id())
         break;
 
   this.elms.splice(idx,0,elm);

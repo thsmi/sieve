@@ -11,24 +11,17 @@
 
 function SieveNotUI(elm)
 {
-  SieveTestBoxUI.call(this,elm);
-  this.flavour("sieve/operator");
+  SieveOperatorBoxUI.call(this,elm); 
 }
 
-SieveNotUI.prototype.__proto__ = SieveTestBoxUI.prototype;
-
-
+SieveNotUI.prototype.__proto__ = SieveOperatorBoxUI.prototype;
 
 SieveNotUI.prototype.initSummary
     = function ()
 {
-  var elm = $("<div/>");
-  
-  elm.text("does not match:");    
-
-  elm.append(this.getSieve().test().html())
-    
-  return elm;     
+  return $("<div/>")
+      .text("does not match:")
+      .append(this.getSieve().test().html());  
 }
 
 
@@ -36,12 +29,10 @@ SieveNotUI.prototype.initSummary
 
 function SieveAnyOfAllOfUI(elm)
 {
-  SieveTestBoxUI.call(this,elm);
-  this.flavour("sieve/operator");
+  SieveOperatorBoxUI.call(this,elm); 
 }
 
-SieveAnyOfAllOfUI.prototype.__proto__ = SieveTestBoxUI.prototype;
-
+SieveAnyOfAllOfUI.prototype.__proto__ = SieveOperatorBoxUI.prototype;
 
 SieveAnyOfAllOfUI.prototype.onValidate
     = function ()
@@ -75,38 +66,47 @@ SieveAnyOfAllOfUI.prototype.initSummary
            .text((this.getSieve().isAllOf)?"All of the following:":"Any of the following:");  
 }
 
+SieveAnyOfAllOfUI.prototype.createHtml
+    = function (parent)
+{
+  
+  var item = $("<div/>")
+      .addClass("sivOperator");
+      
+  for (var i=0; i<this.getSieve().tests.length; i++)
+    item
+      .append((new SieveDropBoxUI(this))      
+        .drop(new SieveMultaryDropHandler(),this.getSieve().tests[i][1])
+        .html()
+        .addClass("sivOperatorSpacer"))
+      .append(
+        $("<div/>").append(this.getSieve().tests[i][1].html())        
+          .addClass("sivOperatorChild"));
+      
+  item
+    .append((new SieveDropBoxUI(this))      
+      .drop(new SieveMultaryDropHandler())
+      .html()
+      .addClass("sivOperatorSpacer"));
+    
+  return SieveEditableBoxUI.prototype.createHtml.call(this,parent)
+           .append(item);
+    
+}
+
 SieveAnyOfAllOfUI.prototype.showSummary
     = function ()
 {
-  SieveTestBoxUI.prototype.showSummary.call(this);
-  
-  this._domElm.children(".sivSummaryContent").after(this._domElm.children(".sivAnyOf"));
+  SieveEditableBoxUI.prototype.showSummary.call(this);  
+  this.html().children(".sivSummaryContent").after(this.html().children(".sivOperator"));
 }
 
 SieveAnyOfAllOfUI.prototype.showEditor
     = function ()
 {
-  SieveTestBoxUI.prototype.showEditor.call(this);  
-  this._domElm.children(".sivEditorContent").after(this._domElm.children(".sivAnyOf"));
+  SieveEditableBoxUI.prototype.showEditor.call(this);  
+  this.html().children(".sivEditorContent").after(this.html().children(".sivOperator"));
 }
 
-SieveAnyOfAllOfUI.prototype.init
-    = function()
-{
-  var item = $("<div/>")
-      .addClass("sivAnyOf")
-      .css("padding-left","30px");
-      
-  for (var i=0; i<this.getSieve().tests.length; i++)
-    item
-      .append((new SieveDropBoxUI(this,this.getSieve().tests[i][1]))      
-        .drop(new SieveMultaryDropHandler()).html())
-      .append(this.getSieve().tests[i][1].html())
-      
-  item
-    .append((new SieveDropBoxUI(this))      
-      .drop(new SieveMultaryDropHandler()).html());
-  
-  return SieveEditableDragBoxUI.prototype.init.call(this)
-    .append(item);
-}
+
+

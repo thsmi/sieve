@@ -16,12 +16,9 @@
  
 // Unary operators
 SieveNotOperator.isElement
-  = function(token)
+  = function(parser)
 { 
-  if (token.substring(0,3).toLowerCase().indexOf("not") == 0)
-    return true;
-
-  return false;
+  return parser.startsWith("not");
 }
 
 function SieveNotOperator(docshell,id) 
@@ -38,24 +35,23 @@ function SieveNotOperator(docshell,id)
 SieveNotOperator.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveNotOperator.prototype.init
-    = function (data)
+    = function (parser)
 {
   // Syntax :
-  // <"not"> <test>
+  // <"not"> <test>  
+  parser.extract("not");
   
-  data = data.slice("not".length);  
-  data = this.whiteSpace[0].init(data);  
-    
-  if (this._probeByClass(["test","operator"],data) == false) 
-    throw "Test command expected but found:\n'"+data.substr(0,50)+"'...";                 
+  this.whiteSpace[0].init(parser);  
+  
+  if ( ! this._probeByClass(["test","operator"],parser)) 
+    throw "Test command expected but found:\n'"+parser.bytes().substr(0,50)+"'...";                 
 
-  this._test = this._createByClass(["test","operator"],data)
-  data = this._test.init(data);
+  this._test = this._createByClass(["test","operator"],parser)
     
-  if (this._probeByName("whitespace",data))
-    data = this.whiteSpace[1].init(data);  
+  if (this._probeByName("whitespace",parser))
+    this.whiteSpace[1].init(parser);  
   
-  return data;
+  return this;
     
 }
 
@@ -127,37 +123,39 @@ function SieveAnyOfAllOfTest(docshell,id)
 SieveAnyOfAllOfTest.prototype.__proto__ = SieveTestList.prototype;
 
 SieveAnyOfAllOfTest.isElement
-   = function (token)
+   = function (parser)
 {
-  if ( token.substring(0,5).toLowerCase().indexOf("allof") == 0)
+  if (parser.startsWith("allof"))
     return true;
     
-  if ( token.substring(0,5).toLowerCase().indexOf("anyof") == 0)
+  if (parser.startsWith("anyof"))
     return true;
     
   return false;
 }
 
 SieveAnyOfAllOfTest.prototype.init
-    = function (data)
-{
-  if ("allof" == data.substring(0,5).toLowerCase())
+    = function (parser)
+{   
+  if (parser.startsWith("allof"))
     this.isAllOf = true;
-  else if ("anyof" == data.substring(0,5).toLowerCase())
+  else if (parser.startsWith("anyof"))
     this.isAllOf = false;
   else
-    throw "allof or anyof expected but found: \n"+data.substr(0,50)+"...";
+    throw "allof or anyof expected but found: \n"+parser.bytes().substr(0,50)+"...";
     
-  data = data.slice(5);  
-  data = this.whiteSpace.init(data);
+  // remove the allof or anyof
+  parser.extract(5);
   
-  data = SieveTestList.prototype.init.call(this,data);
+  this.whiteSpace.init(parser);
   
-  return data;
+  SieveTestList.prototype.init.call(this,parser);  
+  
+  return this;
 }
 
 SieveAnyOfAllOfTest.prototype.test
-    = function (item, oldId)
+    = function (item, old)
 {
   if (typeof(item) === "undefined")
   {
@@ -172,10 +170,10 @@ SieveAnyOfAllOfTest.prototype.test
      
    
   // Release old test...
-  this.append(item,oldId);
+  this.append(item,old);
   
-  if (typeof(oldId) !== "undefined") 
-    this.removeChild(oldId);
+  if (typeof(old) !== "undefined") 
+    this.removeChild(old.id());
   /*if (this._test)
     this._test.parent(null);
     

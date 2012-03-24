@@ -6,7 +6,7 @@
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
- 
+
  "use strict";
 
 function SieveMatchTypeUI(elm)
@@ -261,7 +261,6 @@ function SieveHeaderListUI(elm)
   SieveStringListUI.call(this,elm);
 }
 
-// Inherrit from DragBox
 SieveHeaderListUI.prototype.__proto__ = SieveStringListUI.prototype;  
 
 SieveHeaderListUI.prototype.onSelect

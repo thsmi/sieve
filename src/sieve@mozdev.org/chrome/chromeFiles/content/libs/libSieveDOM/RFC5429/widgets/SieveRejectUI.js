@@ -13,10 +13,10 @@
 
 function SieveRejectUI(elm)
 {
-  SieveEditableDragBoxUI.call(this,elm)
+  SieveActionBoxUI.call(this,elm)
 }
 
-SieveRejectUI.prototype.__proto__ = SieveEditableDragBoxUI.prototype;
+SieveRejectUI.prototype.__proto__ = SieveActionBoxUI.prototype;
 
 
 SieveRejectUI.prototype.onValidate
@@ -47,7 +47,8 @@ SieveRejectUI.prototype.initSummary
   return $(document.createElement("div"))
            .text("Reject incomming messages and reply the following reason:")           
            .append($(document.createElement("div"))
-             .text(this.getSieve().getReason())
+             .text(this.getSieve().getReason().substr(0,247)
+               +((this.getSieve().getReason().length > 247)?"...":""))
              .addClass("SivText"));         
 }
 

@@ -18,35 +18,22 @@
 }
 
 SieveNumber.isElement
-    = function (data,index)
+    = function (parser)
 {
-  if (isNaN(index))
-    index = 0;
-    
-  return isNaN(data.charAt(index));
+  return parser.isNumber(parser);
 }
 
 SieveNumber.prototype.__proto__ = SieveAbstractElement.prototype;
 
 SieveNumber.prototype.init
-    = function(data)
-{  
-  for (var i=0; i<data.length; i++)
-    if (isNaN(data.charAt(i)))
-      break;
+    = function(parser)
+{
+  this._number = parser.extractNumber();
 
-  this._number = data.slice(0,i)
-  data = data.slice(i);
+  if (parser.isChar(['K','M','G']))
+    this._unit = parser.extractChar();
   
-  var ch = data.charAt(0);
-
-  if ((ch == 'K') ||  (ch == 'M') || (ch == 'G'))
-  {
-    this._unit = data.slice(0,1);
-    data = data.slice(1);
-  }
-  
-  return data;
+  return this;
 }
 
 SieveNumber.prototype.value

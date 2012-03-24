@@ -42,10 +42,103 @@ SieveDropHandler.prototype.document
 }
 
 SieveDropHandler.prototype.bind
-    = function (owner)
+    = function (owner, sibling)
 {
   this._owner = owner;
+  this._sibling = sibling;
 }
+
+/**
+ * The owner on thich the drag event occured
+ * A Widget
+ * @return {}
+ */
+SieveDropHandler.prototype.owner 
+   = function ()
+{
+  return this._owner;    
+}
+
+/**
+ * The target/sibling, the element which consumes the drop 
+ * A Sieve Element
+ * @return {}
+ */
+SieveDropHandler.prototype.sibling
+   = function ()
+{
+  return this._sibling;    
+}
+
+/**
+ * The parent of this element.
+ * A SieveAbstractElement
+ * @return {}
+ */
+SieveDropHandler.prototype.parent
+    = function ()
+{
+  return this._owner.parent();      
+}
+
+SieveDropHandler.prototype.attach
+    = function (html)
+{
+  var _this = this;
+  
+  html
+    .bind("drop",function(e) { return _this.onDragDrop(e) })
+    .bind("dragover",function(e) { return _this.onDragOver(e) })
+    .bind("dragleave",function(e) { return _this.onDragExit(e) })
+    .bind("dragenter",function(e) { return _this.onDragEnter(e) });        
+}
+
+/* Official HTML5 Drag&Drop events... */
+
+SieveDropHandler.prototype.onDragEnter
+    = function (event)
+{
+  if (!this.canDrop(event))
+    return true;
+    
+  this.owner().html().attr("sivDragging", "true");
+  
+  return false;
+}
+
+SieveDropHandler.prototype.onDragExit
+    = function (event)
+{
+  this.owner().html().removeAttr("sivDragging");
+ 
+  // Exit is only used for UI cleanup, so we should never cancel this event.
+  // Our parent might want to do cleanup too.
+  return true;
+}
+      
+SieveDropHandler.prototype.onDragOver
+    = function (event)
+{   
+  if (!this.canDrop(event))
+    return true;
+    
+  this.owner().html().attr("sivDragging", "true");
+  
+  return false;         
+}
+
+SieveDropHandler.prototype.onDragDrop
+    = function (event)
+{
+  this.owner().html().removeAttr("sivDragging");
+  
+  if (!this.drop(event))
+    return true;
+
+  return false;
+}
+
+/* and the inofficial er implemnted around them, to make things easier*/
 
 SieveDropHandler.prototype.onDrop
     = function(flavour,event)
@@ -160,12 +253,12 @@ SieveBlockDropHandler.prototype.__proto__ = SieveDropHandler.prototype;
 SieveBlockDropHandler.prototype.canMoveElement
     = function(sivFlavour, id, script)
 {
-  var source = this._owner.document().id(id);
-            
-  if (source.html().prev().get(0) == this._owner.dropTarget.get(0))
+  var source = this.document().id(id);
+  
+  if (source.html().parent().prev().get(0) == this.owner().html().get(0))
     return false;
                
-  if (source.html().next().get(0) == this._owner.dropTarget.get(0))
+  if (source.html().parent().next().get(0) == this.owner().html().get(0))
     return false;
                           
   return true;
@@ -179,9 +272,9 @@ SieveBlockDropHandler.prototype.moveElement
   if (!dragElm)
     throw "Block Drop Handler: No Element found for "+id;
          
-  var item = this._owner.parent().getSieve();  
+  var item = this.parent().getSieve();  
   if (!item)
-    throw "Block Drop Handler: No Element found for "+this._owner.parent().id();
+    throw "Block Drop Handler: No Element found for "+this.parent().id();
    
   switch (sivFlavour)
   {
@@ -214,8 +307,8 @@ SieveBlockDropHandler.prototype.moveElement
       }
       else
         newCondition.children(0).test(source);
-
-      target.append(newCondition,this._owner.id());
+        
+      target.append(newCondition,this.sibling());
         
       target.widget().refresh();
       if (conditional.parent())
@@ -229,7 +322,7 @@ SieveBlockDropHandler.prototype.moveElement
       // remember owner
       var oldOwner = dragElm.remove(true,item);  
       // Move Item to new owner
-      item.append(dragElm,this._owner.id());
+      item.append(dragElm,this.sibling());
       
       // refresh old and new Owner
       item.widget().refresh();
@@ -254,10 +347,10 @@ SieveBlockDropHandler.prototype.createElement
     = function(sivFlavour, type , script)
 {  
    
-  var item = this._owner.parent().getSieve();
+  var item = this.parent().getSieve();
   
   if(!item)
-    throw "Element "+this._owner.parent().getSieve().id()+" not found";
+    throw "Element "+this.parent().getSieve().id()+" not found";
   
   var elm = null;
   
@@ -267,7 +360,7 @@ SieveBlockDropHandler.prototype.createElement
   else
     elm = item.document().createByName(type);
   
-  item.append(elm,this._owner.id());
+  item.append(elm,this.sibling());
   item.widget().refresh();
 }
 
@@ -325,11 +418,11 @@ SieveConditionDropHandler.prototype.canMoveElement
     
   // actions can only be added as last element...
   if (flavour == "sieve/action")
-    if (this._owner.id() != -1)
+    if (this.sibling())
       return false;  
 
   // if there is no source node we can skip right here...
-  var source = this._owner.document().id(id);
+  var source = this.document().id(id);
   if (!source)
     return false;
     
@@ -340,26 +433,30 @@ SieveConditionDropHandler.prototype.canMoveElement
   {
     // we have to the check if the test's parent is a conditional   
     source = source.parent();
+    
+    // if the node has no parent something is wrong...
+    if (!source || !source.parent())
+      return false;
   
     // if it's a conditional statement it's parent does not have a test method
     if (!source.parent().test)
-    {          
-      if (source.html().prev().prev().get(0) == this._owner.dropTarget.get(0))
+    {            
+      if (source.html().parent().prev().prev().get(0) == this.owner().html().get(0))
         return false;
                
-      if (source.html().next().get(0) == this._owner.dropTarget.get(0))
+      if (source.html().parent().next().get(0) == this.owner().html().get(0))
         return false;
     }
   }
     
   // ... it's safe to add any other element everywhere except as...
   // ... last element.
-  if (this._owner.id() != -1)
+  if (this.sibling())
     return true;
     
   // ... if the last element has no test, it's an else statement...
   // ... and it's not possible to add anything...      
-  var target = this._owner.parent().getSieve()
+  var target = this.parent().getSieve()
   if (!target)
     return false;
       
@@ -376,23 +473,23 @@ SieveConditionDropHandler.prototype.moveElement
   if (!source)
     throw "Block Drop Handler: No Element found for "+id;
          
-  var target = this._owner.parent().getSieve();  
+  var target = this.parent().getSieve();  
   if (!target)
-    throw "Block Drop Handler: No Element found for "+this._owner.parent().id();
+    throw "Block Drop Handler: No Element found for "+this.parent().id();
   
   if (flavour == "sieve/action")
   {
-      var oldOwner = source.remove(true,target);
+    var oldOwner = source.remove(true,target);
       
-      // we need to warp the action into an else statement      
-      target.append(
-        this.document().createByName("condition/else")
-          .append(source));
+    // we need to warp the action into an else statement      
+    target.append(
+      this.document().createByName("condition/else")
+        .append(source));
       
-      target.widget().refresh();
-      oldOwner.widget().refresh();
+    target.widget().refresh();
+    oldOwner.widget().refresh();
       
-      return;
+    return;
   }
       
   // "sieve/test" || "sieve/operator"
@@ -418,8 +515,8 @@ SieveConditionDropHandler.prototype.moveElement
     conditional.test(source);
     oldOwner = conditional.remove(true,target);
   }
-           
-  target.append(conditional,this._owner.id());
+  
+  target.append(conditional,this.sibling());
 
   target.widget().refresh();
   oldOwner.widget().refresh();
@@ -436,17 +533,17 @@ SieveConditionDropHandler.prototype.canCreateElement
   
   // actions can only be added as last element...
   if (flavour == "sieve/action")
-    if (this._owner.id() != -1)
+    if (this.sibling())
       return false;  
 
   // ... it's safe to add any other element everywhere except as...
   // ... last element.
-  if (this._owner.id() != -1)
+  if (this.sibling())
     return true;
     
   // ... if the last element has no test, it's an else statement...
   // ... and it's not possible to add anything...      
-  var target = this._owner.parent().getSieve()
+  var target = this.parent().getSieve()
   if (!target)
     return false;
       
@@ -460,17 +557,17 @@ SieveConditionDropHandler.prototype.createElement
     =  function(sivFlavour, type , script)
 {     
   // The new home for our element
-  var item = this._owner.parent().getSieve();
+  var item = this.parent().getSieve();
   
   if(!item)
-    throw "Element "+this._owner.parent().id()+" not found";
+    throw "Element "+this.parent().id()+" not found";
     
   if (sivFlavour == "sieve/test")
   {
     var elm = item.document().createByName("condition/if",
             "if "+item.document().createByName(type).toScript()+"{\r\n}\r\n");
             
-    item.append(elm,this._owner.id());
+    item.append(elm,this.sibling());
 
     item.widget().refresh();
     
@@ -501,7 +598,7 @@ SieveTestDropHandler.prototype.__proto__ = SieveDropHandler.prototype;
 SieveTestDropHandler.prototype.canMoveElement
     = function (sivFlavour, id , script)
 {
-  var target = this._owner.parent().getSieve();
+  var target = this.owner().getSieve();
   if(!target)
     return false;
     
@@ -541,10 +638,10 @@ SieveTestDropHandler.prototype.moveElement
     throw "Test Drop Handler: No Element found for "+id;
     
   // The new home for our element
-  var target = this._owner.parent().getSieve();
+  var target = this.owner().getSieve();
   
   if(!target)
-    throw "Element "+this._owner.parent().id()+" not found";
+    throw "Element "+this.owner().id()+" not found";
   
   // Find the if element which owns this test...
   var conditional = source;      
@@ -604,10 +701,10 @@ SieveTestDropHandler.prototype.createElement
     = function(sivFlavour, type , script)
 {  
   // The new home for our element
-  var inner = this._owner.parent().getSieve();
+  var inner = this.owner().getSieve();
   
   if(!inner)
-    throw "Element "+this._owner.parent().id()+" not found";
+    throw "Element "+this.owner().id()+" not found";
   
   var container = inner.parent();
   
@@ -659,7 +756,7 @@ SieveMultaryDropHandler.prototype.canMoveElement
 {
   // We have to prevent that someone drops a parent onto a child...
   //  ... this would generate a ring reference
-  var target = this._owner.parent().getSieve();
+  var target = this.parent().getSieve();
   
   if (!target)
     return false;
@@ -677,10 +774,10 @@ SieveMultaryDropHandler.prototype.canMoveElement
   }
   
   // It makes no sense so drop the item directly before or after the element.
-  if (source.html().prev().get(0) == this._owner.dropTarget.get(0))
+  if (source.html().parent().prev().get(0) == this.owner().html().get(0))
     return false;
                
-  if (source.html().next().get(0) == this._owner.dropTarget.get(0))
+  if (source.html().parent().next().get(0) == this.owner().html().get(0))
     return false;  
   
   return true;
@@ -689,10 +786,10 @@ SieveMultaryDropHandler.prototype.canMoveElement
 SieveMultaryDropHandler.prototype.moveElement
     = function (sivFlavour, id, script)
 {
-  var target = this._owner.parent().getSieve();
+  var target = this.parent().getSieve();
   
   if(!target)
-    throw "Element "+this._owner.parent().getSieve().id()+" not found";
+    throw "Element "+this.parent().getSieve().id()+" not found";
   
   var source = this.document().id(id);  
   if (!source)
@@ -724,7 +821,7 @@ SieveMultaryDropHandler.prototype.moveElement
     oldOwner = oldOwner.remove(true,target);        
   }
     
-  target.append(source,this._owner.id());
+  target.append(source,this.sibling());
   
   target.widget().refresh();
   if (newConditional)
@@ -746,14 +843,14 @@ SieveMultaryDropHandler.prototype.canCreateElement
 SieveMultaryDropHandler.prototype.createElement
     =  function(sivFlavour, type , script)
 {
-  var item = this._owner.parent().getSieve();
+  var item = this.parent().getSieve();
   
   if(!item)
-    throw "Element "+this._owner.parent().getSieve().id()+" not found";
+    throw "Element "+this.parent().getSieve().id()+" not found";
   
   var elm = item.document().createByName(type);
   
-  item.append(elm,this._owner.id());
+  item.append(elm,this.sibling());
   item.widget().refresh();
 }
 

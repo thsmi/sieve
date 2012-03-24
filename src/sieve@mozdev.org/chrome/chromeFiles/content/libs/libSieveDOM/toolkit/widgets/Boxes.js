@@ -17,7 +17,7 @@
  *   Optional sieve element which should be bound to this box.
  */
 function SieveAbstractBoxUI(elm)
-{
+{  
   if (!elm)
    throw "Element expected";
 
@@ -25,6 +25,7 @@ function SieveAbstractBoxUI(elm)
     throw "Neiter a Sieve Element nor a Sieve Document";
     
   this._elm = elm;
+  this._handler = {};
 }
 
 /**
@@ -69,19 +70,26 @@ SieveAbstractBoxUI.prototype.document
 }
 
 SieveAbstractBoxUI.prototype.createHtml
-    = function ()
+    = function (parent)
 {
-  
   throw "Implement html()";      
 }
 
 SieveAbstractBoxUI.prototype.html
-    = function ()
+    = function (invalidate)
 {    
-  if (this._domElm)
+  if (this._domElm && !invalidate)
     return this._domElm;
     
-  this._domElm = this.createHtml();
+  this._domElm = this.createHtml($("<div/>"));  
+  
+  if (this.id() > -1)
+    this._domElm.attr("id","sivElm"+this.id());
+  
+  // update all our event handlers
+  for (var topic in this._handler)
+    if (this._handler[topic].attach)
+      this._handler[topic].attach(this._domElm);
   
   return this._domElm;
 }
@@ -91,10 +99,15 @@ SieveAbstractBoxUI.prototype.refresh
 {
   if (this.id() < 0)
     throw "Invalid id";
+    
+  var item = $("#sivElm"+this.id());
+  
+  if ((!item.length) || (item.length >1))
+    throw ""+item.length+" Elements found for #sivElm"+this.id();
    
   this._domElm = null;
   
-  $("#sivElm"+this.id()).replaceWith(this.html());
+  item.replaceWith(this.html());
 }
 
 SieveAbstractBoxUI.prototype.toScript
@@ -106,124 +119,99 @@ SieveAbstractBoxUI.prototype.toScript
   return "";
 }
 
+SieveAbstractBoxUI.prototype.bind
+    = function (topic,handler)
+{
+  throw "Ok it seems to be needed"
+   this._handler[topic] = handler;   
+}
+
 /**
- * 
- * @param {} elm
+ * THe dop element
+ * @param {} handler
+ * @param {} target
+ * @return {}
  */
-function SieveDragBoxUI(elm)
+SieveAbstractBoxUI.prototype.drop
+    = function (handler,sibling)
+{
+  if (typeof(handler) == "undefined")
+    return this._handler["drop"];
+    
+   //release old handler
+   if (this._handler["drop"])
+     this._handler["drop"].bind(null);
+   
+   this._handler["drop"] = handler;
+   this._handler["drop"].bind(this,sibling);
+  
+   return this;
+}
+
+SieveAbstractBoxUI.prototype.drag
+    = function (handler)
+{
+  if (typeof(handler) === "undefined")
+    return this._handler["drag"];
+    
+   //release old handler
+   if (this._handler["drag"])
+     this._handler["drag"].bind(null);
+    
+   this._handler["drag"] = handler;
+   this._handler["drag"].bind(this);
+   
+   return this;
+}
+
+/*SieveAbstractBoxUI.prototype.addStyle(style)
+{  
+  this._styles.push(style);
+}
+
+html:
+{
+  foreach in _styles do
+    box = this._style.render(box)
+    
+  return box;
+}
+
+drop
+
+edit
+
+
+SieveAbstractStyle
+
+render(box)
+{
+  box.addClass(...)
+    . add Action
+}*/
+
+
+
+
+/******************************************************************************/
+
+
+function SieveEditableBoxUI(elm)
 {
   // Call parent constructor...
   SieveAbstractBoxUI.call(this,elm);
 }
 
 // Inherrit from DragBox
-SieveDragBoxUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;  
+SieveEditableBoxUI.prototype.__proto__ =  SieveAbstractBoxUI.prototype;
 
-SieveDragBoxUI.prototype._action = "move";
-SieveDragBoxUI.prototype._flavour = "sieve/action";
-
-SieveDragBoxUI.prototype.flavour
-    = function (flavour)
-{
-  if (typeof(flavour) === 'undefined' )
-    return this._flavour;
-  
-  this._flavour = flavour;
-  
-  return this;
-}
-
-SieveDragBoxUI.prototype.onDragGesture
-    = function(event)
-{
-  
-  if (!this._domElm)
-    throw "Freefloating DOM Element...";
-    
-  event = event.originalEvent;
-  
-  // keep in mind we can not pass javascript object through drag & drop
-  // just primitives are safe
-  switch (this._action)
-  {
-     case "move" :
-       // FIXME: test/plain is interpreted as link if an exception occures during drag an drop
-       //event.dataTransfer.mozSetDataAt("text/plain",""+this.getSieve().toScript(),0);
-       event.dataTransfer.mozSetDataAt("application/sieve",""+this.getSieve().toScript(),0);
-       event.dataTransfer.mozSetDataAt(this.flavour(),
-          { id: this.id(), action:"move"},0);        
-
-       break;
-               
-     case "create" :
-       // TODO: Fix me
-       //event.dataTransfer.mozSetDataAt("text/plain",""+this.getSieve().toScript(),0)
-       event.dataTransfer.mozSetDataAt("application/sieve",this.toScript(),0);
-       event.dataTransfer.mozSetDataAt(this.flavour(),
-          { type: this._elmType, action:"create"} ,0);
-       
-               
-       break;
-             
-     default :
-       throw "Unknown Action..."
-   }
-         
-   // TODO use mouse event and calculate real offset istead of using 5,5...
-   event.dataTransfer.setDragImage(this.html().get(0),5,5);
-   //event.preventDefault();
-   event.stopPropagation();
-
-   return true;   
-}
- 
-SieveDragBoxUI.prototype.init
-    = function ()
-{
-  return $("<div/>");
-}
-
-
-SieveDragBoxUI.prototype.html
-    = function (invalidate)
-{ 
-  if (this._domElm && !invalidate) 
-    return this._domElm;
-  
-  var _this = this;
-    
-  this._domElm = this.init()
-    .addClass("SivElement")
-    .attr("draggable","true")
-    .bind("dragstart",function(e) { _this.onDragGesture(e); return true;})
-    .bind("dragend", function (e) { return false; });
-    
-  if (this.id() >= 0)
-    this._domElm.attr("id","sivElm"+this.id());
-  
-  return this._domElm;
-}
-
-
-/******************************************************************************/
-
-
-function SieveEditableDragBoxUI(elm)
-{
-  // Call parent constructor...
-  SieveDragBoxUI.call(this,elm);
-}
-
-// Inherrit from DragBox
-SieveEditableDragBoxUI.prototype.__proto__ =  SieveDragBoxUI.prototype;
-
-SieveEditableDragBoxUI.prototype.onValidate
+SieveEditableBoxUI.prototype.onValidate
     = function(e)
 {
   return true;
 }
 
-SieveEditableDragBoxUI.prototype.showEditor
+SieveEditableBoxUI.prototype.showEditor
     = function(e)
 { 
   if (!this.initEditor)
@@ -256,7 +244,7 @@ SieveEditableDragBoxUI.prototype.showEditor
     
 }
 
-SieveEditableDragBoxUI.prototype.showSummary
+SieveEditableBoxUI.prototype.showSummary
     = function (e)
 {
   try
@@ -283,59 +271,87 @@ SieveEditableDragBoxUI.prototype.showSummary
   return;
 } 
 
-SieveEditableDragBoxUI.prototype.init
-    = function ()
+
+SieveEditableBoxUI.prototype.createHtml
+    = function (parent)
 {
+  if (typeof(parent) == "undefined")
+    throw "parent parameter is missing";
+    
   var _this = this;
+  
+  //parent =  SieveAbstractBoxUI.prototype.createHtml.call(this,parent);
+  
+  parent.addClass((this.initEditor)?"sivEditableElement":"");
+  
+  if(this.initSummary)
+    parent.append(this.initSummary()
+      .addClass("sivSummaryContent")
+      .click(function(e) { _this.showEditor();   e.preventDefault(); return true; } ));
    
-  return $("<div/>")
-      .addClass((this.initEditor)?"sivEditableElement":"")
-      .append(this.initSummary()
-        .addClass("sivSummaryContent")
-        .click(function(e) { _this.showEditor();   e.preventDefault(); return true; } ));
+  if (this.id() != -1)
+    parent.attr("id","sivElm"+this.id());
+    
+  return  parent;
 }
 
-/*****************************************************************************/
+/******************************************************************************/
 
 function SieveTestBoxUI(elm)
 {
   // Call parent constructor...
-  SieveEditableDragBoxUI.call(this,elm);
-  this.flavour("sieve/test");  
-  this._dropBox = (new SieveDropBoxUI(this,this.getSieve())).drop(new SieveTestDropHandler()); 
+  SieveEditableBoxUI.call(this,elm);  
+  this.drag(new SieveMoveDragHandler("sieve/test"));
+  this.drop(new SieveTestDropHandler()); 
 }
 
-SieveTestBoxUI.prototype.__proto__ =  SieveEditableDragBoxUI.prototype;
+SieveTestBoxUI.prototype.__proto__ =  SieveEditableBoxUI.prototype;
 
-SieveTestBoxUI.prototype.refresh
-    = function ()
+SieveTestBoxUI.prototype.createHtml
+    = function (parent)
 {
-  if (this.id() < 0)
-    throw "Invalid id";
-    
-  this.html(true);
+  return SieveEditableBoxUI.prototype.createHtml.call(this,parent)
+    .addClass("sivTest");
 }
 
+/******************************************************************************/
 
-SieveTestBoxUI.prototype.html
-    = function (invalidate)
-{ 
-  if (this._dragBox && !invalidate) 
-    return this._dragBox;
-       
-  var box = this._dropBox.html(true)
-    .append(SieveEditableDragBoxUI.prototype.html.call(this,true));
-    
-  if (this._dragBox)
-  {
-    this._dragBox.before(box);    
-    this._dragBox.remove();
-  }
-    
-  this._dragBox = box;  
-  
-  return this._dragBox;
+function SieveOperatorBoxUI(elm)
+{
+  // Call parent constructor...
+  SieveEditableBoxUI.call(this,elm);  
+  this.drag(new SieveMoveDragHandler("sieve/operator"));
+  this.drop(new SieveTestDropHandler()); 
 }
+
+SieveOperatorBoxUI.prototype.__proto__ =  SieveEditableBoxUI.prototype;
+
+SieveOperatorBoxUI.prototype.createHtml
+    = function (parent)
+{
+  return SieveEditableBoxUI.prototype.createHtml.call(this,parent)
+    .addClass("sivOperator");
+}
+
+/******************************************************************************/
+
+function SieveActionBoxUI(elm)
+{
+  // Call parent constructor...
+  SieveEditableBoxUI.call(this,elm);  
+  this.drag(new SieveMoveDragHandler());
+}
+
+SieveActionBoxUI.prototype.__proto__ =  SieveEditableBoxUI.prototype;
+
+SieveActionBoxUI.prototype.createHtml
+    = function (parent)
+{
+  return SieveEditableBoxUI.prototype.createHtml.call(this,parent)
+    .addClass("sivAction");
+}
+
+/******************************************************************************/
 
 /**
  * 
@@ -344,105 +360,30 @@ SieveTestBoxUI.prototype.html
  * @param {SieveAbstractBoxUI} parent
  *   The parent Sieve Element, to which dropped Elemenents will be added.  
  */
-function SieveDropBoxUI(parent,elm)
+function SieveDropBoxUI(parent)
 {
   if (!parent)
     throw "Parent expected";
   
-  if (elm && elm.document)
-    SieveAbstractBoxUI.call(this,elm);
-  else if (parent.document)
+  if (parent.document)
     SieveAbstractBoxUI.call(this,parent.document());
   else if (parent.root)
     SieveAbstractBoxUI.call(this,parent);
   else
     throw ("Either a docshell or an elements expected")
-    
+   
   if (parent.document)
     this._parent = parent;
-    
-  this.dropTarget = null;
   
   this.drop(new SieveDropHandler());
 }
 
 SieveDropBoxUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
 
-SieveDropBoxUI.prototype.onDragEnter
-    = function (event)
-{
-  if (!this.handler.canDrop(event))
-    return true;
-    
-  this.dropTarget.attr("sivDragging", "true");
-  
-  return false;
-}
-
-SieveDropBoxUI.prototype.onDragExit
-    = function (event)
-{
-  this.dropTarget.removeAttr("sivDragging");
-  
-  return false;
-}
-      
-SieveDropBoxUI.prototype.onDragOver
-    = function (event)
+SieveDropBoxUI.prototype.createHtml
+    = function (parent)
 {   
-  if (!this.handler.canDrop(event))
-    return true;
-    
-  this.dropTarget.attr("sivDragging", "true");
-  
-  return false;         
-}
-
-SieveDropBoxUI.prototype.onDragDrop
-    = function (event)
-{
-  this.dropTarget.removeAttr("sivDragging");
-  
-  if (!this.handler.drop(event))
-    return true;
-
-  return false;
-}
-
-SieveDropBoxUI.prototype.html
-    = function (invalidate,cascade)
-{
-  if (this.dropTarget && !invalidate)
-    return this.dropTarget;
-  
-  var _this = this;
-  this.dropTarget = 
-     $("<div/>")
-      .addClass("sivDropBox")
-      //.attr("id","SivElm"+this.id())
-      .bind("drop",function(e) { return _this.onDragDrop(e) })
-      .bind("dragover",function(e) { return _this.onDragOver(e) })
-      .bind("dragleave",function(e) { return _this.onDragExit(e) })
-      .bind("dragenter",function(e) { return _this.onDragEnter(e) });
-      //.text(this.id()+"@"+((this.parent())?this.parent().id():"-1")+" ["+this.handler.flavours()+"]");           
-    
-  return this.dropTarget
-}
-
-SieveDropBoxUI.prototype.drop
-    = function (handler)
-{
-  if (typeof(handler) === "undefined")
-    return this.handler;
-    
-   //release old handler
-   if (this.handler)
-     this.handler.bind(null);
-    
-   this.handler = handler;
-   this.handler.bind(this);
-   
-   return this;
+  return parent.append($("<div/>").addClass("sivDropBox"));    
 }
 
 SieveDropBoxUI.prototype.parent
@@ -456,8 +397,7 @@ SieveDropBoxUI.prototype.parent
 function SieveTrashBoxUI(docshell)
 {
   // Call parent constructor...
-  SieveDropBoxUI.call(this,docshell);
-  
+  SieveDropBoxUI.call(this,docshell);  
   this.drop(new SieveTrashBoxDropHandler());
 }
 

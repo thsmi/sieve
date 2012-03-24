@@ -20,29 +20,27 @@ function SieveIf(docshell,id)
 SieveIf.prototype.__proto__ = SieveElse.prototype;
 
 SieveIf.isElement
-    = function (token)
+    = function (parser)
 {
-  return (token.substring(0,2).toLowerCase().indexOf("if") == 0)  
+  return parser.startsWith("if");  
 }
 
 SieveIf.prototype.init
-    = function (data)
+    = function (parser)
 { 
-  data = data.slice("if".length);
+  parser.extract("if");
   
-  
-  data = this.ws[2].init(data);
+  this.ws[2].init(parser);
     
-  this._test = this._createByClass(["test","operator"],data);
-  data = this._test.init(data);
+  this._test = this._createByClass(["test","operator"],parser);
   
-  data = this.ws[0].init(data);
+  this.ws[0].init(parser);
   
-  data = SieveBlock.prototype.init.call(this,data);
+  SieveBlock.prototype.init.call(this,parser);
   
-  data = this.ws[1].init(data,true);
+  this.ws[1].init(parser);
   
-  return data;
+  return this;
 }
 
 SieveIf.prototype.removeChild
@@ -134,24 +132,23 @@ function SieveElse(docshell,id)
 SieveElse.prototype.__proto__ = SieveBlock.prototype;
 
 SieveElse.isElement
-    = function (token)
+    = function (parser)
 {
-  return (token.substring(0,4).toLowerCase().indexOf("else") == 0)  
+  return parser.startsWith("else");  
 }
 
 SieveElse.prototype.init
-    = function (data)
+    = function (parser)
 {
-  data = data.slice("else".length);
-    
-
-  data = this.ws[0].init(data);
+  parser.extract("else");
    
-  data = SieveBlock.prototype.init.call(this,data);
+  this.ws[0].init(parser);
+   
+  SieveBlock.prototype.init.call(this,parser);
   
-  data = this.ws[1].init(data,true); 
+  this.ws[1].init(parser); 
   
-  return data;
+  return this;
 }
 
 SieveElse.prototype.toScript
@@ -181,37 +178,29 @@ function SieveCondition(docshell,id)
 SieveCondition.prototype.__proto__ = SieveBlockBody.prototype;
 
 SieveCondition.isElement
-    = function (token)
+    = function (parser)
 {
-  return SieveIf.isElement(token);
+  return SieveIf.isElement(parser);
 }
 
 SieveCondition.prototype.init
-    = function (data)
+    = function (parser)
 { 
-  this.elms[0] = this._createByName("condition/if");    
-  data = this.elms[0].init(data);
+  this.elms[0] = this._createByName("condition/if",parser);    
   
-  while (data.substring(0,5).toLowerCase().indexOf("elsif") == 0)
+  while (parser.startsWith("elsif"))
   {
-    data = data.slice("els".length);
+    parser.extract("els");
     
-    var elm = this._createByName("condition/if");
-    data = elm.init(data);
-    
-    this.elms.push(elm);
+    this.elms.push(
+      this._createByName("condition/if",parser));
     
   }
 
-  if (this._probeByName("condition/else",data))
-  {
-    var elm = this._createByName("condition/else");
-    data = elm.init(data);
-
-    this.elms.push(elm)
-  }
+  if (this._probeByName("condition/else",parser))
+    this.elms.push(this._createByName("condition/else",parser))
   
-  return data;
+  return this;
 }
 
 SieveCondition.prototype.removeChild
@@ -231,7 +220,7 @@ SieveCondition.prototype.removeChild
   {
     // we copy all of our else statements into our parent...
     while (this.children(0).children().length)
-      this.parent().append(this.children(0).children(0), this.id());
+      this.parent().append(this.children(0).children(0), this);
         
     return this.children(0).remove(cascade,stop);
   }

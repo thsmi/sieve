@@ -164,34 +164,6 @@ SieveAbstractBoxUI.prototype.drag
    return this;
 }
 
-/*SieveAbstractBoxUI.prototype.addStyle(style)
-{  
-  this._styles.push(style);
-}
-
-html:
-{
-  foreach in _styles do
-    box = this._style.render(box)
-    
-  return box;
-}
-
-drop
-
-edit
-
-
-SieveAbstractStyle
-
-render(box)
-{
-  box.addClass(...)
-    . add Action
-}*/
-
-
-
 
 /******************************************************************************/
 
@@ -221,16 +193,22 @@ SieveEditableBoxUI.prototype.showEditor
       
   this._domElm.children(".sivSummaryContent").remove();
   
-  // TODO Add close Button next to help button
+  this._domElm
+    .append($("<div/>")
+      .text("X")
+      .addClass("sivEditorCloseIcon")
+      .click(function(e) { _this.showSummary();   e.preventDefault(); return true; }))
+        
   if (this.initHelp)
     this._domElm
       .append($("<div/>")
+        .text("?")
         .addClass("sivEditorHelpIcon")
         .click(function() { $(this)/*.toggle()*/.next().toggle();}))
       .append(this.initHelp()
         .click(function() { $(this).toggle()/*.next().toggle()*/;})
-        .addClass("sivEditorHelpText"))    
-      
+        .addClass("sivEditorHelpText"))
+        
   this._domElm    
     .attr("sivIsEditable",  "true")
     .append(this.initEditor()
@@ -261,7 +239,7 @@ SieveEditableBoxUI.prototype.showSummary
     
   this._domElm
     .removeAttr("sivIsEditable")
-      .children(".sivEditorContent,.sivControlBox,.sivEditorHelpText,.sivEditorHelpIcon")
+      .children(".sivEditorContent,.sivControlBox,.sivEditorHelpText,.sivEditorHelpIcon,.sivEditorCloseIcon")
         .remove()
       .end()
       .append(this.initSummary()

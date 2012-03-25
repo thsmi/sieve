@@ -75,11 +75,11 @@ SieveConditionUI.prototype.createHtml
         .addClass("sivConditionSpacer"));
    
     if (i==0)
-      elm.append($("<div/>").text("# IF").addClass("sivConditionText"))
+      elm.append($("<div/>").text("IF").addClass("sivConditionText"))
     else if (children[i].test)
-      elm.append($("<div/>").text("# ELSE IF").addClass("sivConditionText"))
+      elm.append($("<div/>").text("ELSE IF").addClass("sivConditionText"))
     else
-      elm.append($("<div/>").text("# ELSE").addClass("sivConditionText"))
+      elm.append($("<div/>").text("ELSE").addClass("sivConditionText"))
               
               
     elm.append(

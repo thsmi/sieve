@@ -43,12 +43,12 @@ SieveRejectUI.prototype.initEditor
 
 SieveRejectUI.prototype.initSummary
     = function ()
-{  
-  return $(document.createElement("div"))
-           .text("Reject incomming messages and reply the following reason:")           
-           .append($(document.createElement("div"))
-             .text(this.getSieve().getReason().substr(0,247)
-               +((this.getSieve().getReason().length > 247)?"...":""))
-             .addClass("SivText"));         
+{        
+  return $("<div/>")
+           .html("Reject incomming messages and reply the following reason:" +
+             "<div><em>"+ 
+               $('<div/>').text(this.getSieve().getReason().substr(0,240)).html() +
+               ((this.getSieve().getReason().length > 240)?"...":"") +
+             "</em></div>");
 }
 

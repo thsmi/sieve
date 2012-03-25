@@ -1,10 +1,9 @@
 body {
   font-family:verdana;
-  font-size: 12px;
+  font-size: 11px;
   background: url('background.png') #333;
-    cursor: default;    
+  cursor: default;    
 }
-
 
 .sivConditionText,
 .sivConditionalText,
@@ -53,13 +52,11 @@ div[sivtype][sivDragging="true"] {
 
 
        
-  .SivMailAddress {
+.sivSummaryContent em{
   font-family:courier;
-  }
+  font-style:normal;
+}
 
-  .SivText {
-  font-family:courier;
-  }
 
   .sivEditableElement h1 {
     font-size:1em;   
@@ -104,14 +101,23 @@ div[sivtype][sivDragging="true"] {
 
   /* Style for all editable elements */
 
-
+  .sivEditorCloseIcon {
+  float:right;
+  cursor:pointer;
+  height: 10px;
+  width: 9px;
+  margin-right:3px;
+  
+  color: gray;
+  }
 
   .sivEditorHelpIcon {
   float:right;
-  background:  url('help.png') no-repeat center center;
   cursor:pointer;
-  padding:10px;
-  margin:5px;
+  height: 10px;
+  width: 9px;
+  
+  color: gray;
   }
 
   .sivEditorHelpText {
@@ -245,3 +251,70 @@ div[sivtype][sivDragging="true"] {
   border-radius:3px;
   border: 1px solid gray;
 }
+
+.SivStringList {
+  padding-left: 20px;
+}
+
+.sivStringListItem
+{
+  padding-top:2px;
+  padding-bottom:2px;
+}
+
+/* We nest our text field*/
+.sivStringListItem > span {
+  -moz-appearance: textfield;
+   position:relative;
+}
+
+.sivStringListItem > span > input {
+  -moz-appearance: none !important;
+  border:none;
+  width:200px;
+}
+
+/* the containter for our icons */
+.sivStringListItem > span > span {
+ position:absolute;
+ top:0;
+ right:0;
+}
+
+.sivStringDrop,
+.sivStringAdd,
+.sivStringRemove {
+  width: 16px;
+  height:16px;
+  vertical-align: middle;
+  background-repeat:no-repeat;
+  background-position:center center; 
+  background-color: -moz-Field;
+}
+
+.SivStringList .sivStringListItem:hover:last-child .sivStringAdd {
+  background-image: url('listitem.add.png');
+  display:inline-block;
+}
+
+.SivStringList .sivStringListItem:hover:not(:only-of-type) .sivStringRemove {
+  background-image: url('listitem.delete.png');
+  display:inline-block;
+}
+
+.SivStringList .sivStringListItem:hover .sivStringDrop {
+  background-image: url('listitem.drop.png');
+  display:inline-block;
+}
+
+.sivStringListItem select {
+  z-index:500; 
+  position: absolute;
+  left: 1px;
+  top: 100%;
+  width: 100%;
+  border: 1px outset black !important;
+  border-left-width: 2px ! important;  
+  overflow:-moz-scrollbars-none !important;
+}
+

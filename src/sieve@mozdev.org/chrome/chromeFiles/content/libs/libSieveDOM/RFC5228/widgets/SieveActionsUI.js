@@ -95,11 +95,9 @@ SieveRedirectUI.prototype.initEditor
 SieveRedirectUI.prototype.initSummary
     = function ()
 {
-  return $(document.createElement("div"))
-           .text("Redirect message to ")           
-           .append($(document.createElement("span"))
-             .text(this.getSieve().getAddress())
-             .addClass("SivMailAddress"));         
+  return $("<div/>")
+           .html("Redirect message to " +
+             "<em>"+ $('<div/>').text(this.getSieve().getAddress()).html()+"</em>");
 }
 
 
@@ -131,10 +129,8 @@ SieveFileIntoUI.prototype.initEditor
 
 SieveFileIntoUI.prototype.initSummary
     = function ()
-{  
-  return $(document.createElement("div"))
-           .text("Copy message into:")
-           .addClass("text")
-           .append($(document.createElement("div"))
-             .text(this.getSieve().getPath()));         
+{              
+  return $("<div/>")
+           .html("Copy message into:" +
+             "<div><em>"+ $('<div/>').text(this.getSieve().getPath()).html()+"</em></div>");
 }

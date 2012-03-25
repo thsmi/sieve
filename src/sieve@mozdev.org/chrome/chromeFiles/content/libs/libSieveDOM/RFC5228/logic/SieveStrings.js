@@ -353,6 +353,12 @@ SieveStringList.prototype.append
   this.elements.push(elm);
 }
 
+SieveStringList.prototype.clear
+    = function()
+{
+  this.elements = [];
+}
+
 SieveStringList.prototype.remove
     = function(str)
 {

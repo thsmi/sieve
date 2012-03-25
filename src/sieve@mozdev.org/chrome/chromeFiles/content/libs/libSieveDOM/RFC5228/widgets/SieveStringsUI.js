@@ -190,35 +190,111 @@ function SieveStringListUI(elm)
 SieveStringListUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;  
 
 SieveStringListUI.prototype.onAddItem
-    = function ()
+    = function (owner)
 {
-  var val = $("#txtAddString"+this.id()).val();  
+  
+  
+  this._createListItemUI("")
+    .insertAfter(owner.parent().parent().parent())
+    .find("input")
+      .focus();
+
+/*  var val = $("#txtAddString"+this.id()).val();  
   
   this.getSieve().append(val);
   
   $("#divAddString"+this.id())
-    .before(this._createItemUI(val));    
+    .before(this._createItemUI(val));*/    
 }
 
 SieveStringListUI.prototype.onRemoveItem
     = function (elm)
 {
-  var text = elm.prev().text();  
-  this.getSieve().remove(text);
-
-  elm.parent().remove();
+  if (!elm.hasClass("sivStringListItem"))
+    throw "String List item expected";
+    
+  var owner = elm.parent();
+  
+  elm.remove();
+  
+  this.onUpdateItem(parent);
 }
 
-SieveStringListUI.prototype._createItemUI
+SieveStringListUI.prototype.onUpdateItem
+    = function (elm)
+{
+  /* we rebuild the whole string list at it's easier to do so */ 
+  
+  var inputs = elm.find("input");
+ 
+  if (!inputs.length)
+    return;  
+  
+  this.getSieve().clear();
+  
+  for (var i=0; i<inputs.length; i++ )
+    this.getSieve().append(inputs[i].value);
+}
+
+SieveStringListUI.prototype.defaults
+  = function ()
+{
+ return [] ;
+}
+
+
+SieveStringListUI.prototype.showDropDown
+    = function (parent)
+{ 
+  if (!this.defaults)  
+    return;
+    
+  var defaults = this.defaults();    
+
+  if (!defaults.length)
+    return;
+
+  var that = this;
+  
+  var item = $("<select/>")
+    .attr("size",defaults.length)
+    .change(function(ev){ 
+      $(this).parent().find("input").val(item.val()).change().focus(); } )
+    .blur(function() {$(this).remove()})
+    
+  for (var i=0; i<defaults.length; i++)
+    if (!this.getSieve().contains(defaults[i]))
+      item.append($("<option>").text(defaults[i]).val(defaults[i]) );
+
+  if (!item.find("option").length)
+    return;
+    
+  item.insertAfter(parent).focus();
+}
+
+
+SieveStringListUI.prototype._createListItemUI
     = function (text)
 {
   var that = this;
+  
   return $("<div/>")
-      .append($("<span/>")
-        .text(text))
-      .append($("<button/>")
-        .click(function(ev){ that.onRemoveItem($(this));} )
-        .text("-"));
+      .addClass("sivStringListItem")
+      .append($("<span/>") 
+        .append($("<input/>")
+          .change(function(ev){ that.onUpdateItem($(this).parent().parent().parent());})
+          .val(text))
+        .append($("<span/>")
+          .append($("<span/>")
+            .addClass("sivStringAdd")
+            .click(function(ev){ that.onAddItem($(this));} ))          
+          .append($("<span/>")
+            .addClass("sivStringRemove")
+            .click(function(ev){ that.onRemoveItem($(this).parents(".sivStringListItem"));} ))                
+          .append($("<span/>")
+            .addClass("sivStringDrop")
+            .click(function(ev){ that.showDropDown($(this).parent()) } ))));
+        
 }
 
 SieveStringListUI.prototype.init
@@ -228,14 +304,14 @@ SieveStringListUI.prototype.init
   var headers = $("<div/>").addClass("SivStringList");
   
   for (var i=0; i< this.getSieve().size(); i++)
-    headers.append(this._createItemUI(this.getSieve().item(i)))
+    headers.append(this._createListItemUI(this.getSieve().item(i)))
   
-  headers.append($("<div/>")
+ /* headers.append($("<div/>")
     .attr("id","divAddString"+this.id())
     .append($("<input/>")
       .attr("id","txtAddString"+this.id()))
     .append($("<button/>").text("+")
-      .click(function(){ that.onAddItem() } )));
+      .click(function(){ that.onAddItem() } )));*/
     
   return headers; 
 }
@@ -263,7 +339,7 @@ function SieveHeaderListUI(elm)
 
 SieveHeaderListUI.prototype.__proto__ = SieveStringListUI.prototype;  
 
-SieveHeaderListUI.prototype.onSelect
+/*SieveHeaderListUI.prototype.onSelect
     = function ()
 {   
   var val = $("#cbHeaders"+this.id()).val();
@@ -273,6 +349,12 @@ SieveHeaderListUI.prototype.onSelect
   else
     $("#txtAddString"+this.id()).val(val).hide();
 
+}*/
+
+SieveHeaderListUI.prototype.defaults
+  = function ()
+{
+ return ["Subject","Cc","From","To","Bcc","Date"];
 }
 
 SieveHeaderListUI.prototype.init
@@ -280,7 +362,7 @@ SieveHeaderListUI.prototype.init
 {  
   var that = this;
   var header = SieveStringListUI.prototype.init.call(this)
-    .children(":last")
+    /*.children(":last")
     .prepend($("<select/>")
       .attr("id","cbHeaders"+this.id())
       .change(function(){that.onSelect()})
@@ -296,7 +378,7 @@ SieveHeaderListUI.prototype.init
     .find("#txtAddString"+this.id())
       .hide()
       .val("Subject")
-    .end();
+    .end();*/
       
   
   return header;

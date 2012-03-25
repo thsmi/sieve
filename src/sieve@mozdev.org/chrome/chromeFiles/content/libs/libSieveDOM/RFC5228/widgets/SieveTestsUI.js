@@ -136,9 +136,10 @@ SieveExistsUI.prototype.initEditor
   
 SieveExistsUI.prototype.initSummary
     = function()
-{
+{ 
   return $("<div/>")
-           .text("the following header(s) exist:"+this.getSieve().headerNames.toScript())
+           .html("the following header(s) exist:"
+             +"<em>"+ $('<div/>').text(this.getSieve().headerNames.toScript()).html()+"</em>");
 }
 
 //****************************************************************************//
@@ -158,14 +159,14 @@ SieveHeaderUI.prototype.onValidate
 SieveHeaderUI.prototype.initHelp
     = function ()
 {
+      
   return $("<div/>")
-    .html('<h1>Header Test</h1>'
-      + 'Use this test to compare Strings like a subject lines, spam score, etc.<br/>' 
-      + "But do not compare against headers containing mail addresses, like To, Bcc,"
-      + "From, Cc! They usually contain a display name. Instead of "
-      + "'roadrunner@acme.example.com\' the header can be something similar to " 
-      + "'\"roadrunner\" &lt;roadrunner@acme.example.com&gt;'. The \"address\" test "
-      + "is aware of display names and compares against the pure mail address.")
+    .html('<h1>Compares header as strings</h1>'
+      + '<p>You typically use this test with headers containing subject line or' +
+          ' a spam score</p>' 
+      + "<p>Do not use this test, if the header should be matched against a " +
+          "mail addresses. The result will be unrealiable, as this test is" +
+          "not aware of display names. Use the address test instead")
 }
 
 SieveHeaderUI.prototype.initEditor
@@ -187,12 +188,11 @@ SieveHeaderUI.prototype.initEditor
   
 SieveHeaderUI.prototype.initSummary
     = function()
-{
-  // case- insensitive is the default so skip it...
+{  
   return $("<div/>")
-      .text(" header "+this.getSieve().headerNames.toScript()
-              +" [is|contains|matches] [case-sensitive] "
-              +this.getSieve().keyList.toScript());
+      .html(" header <em>"+ $('<div/>').text(this.getSieve().headerNames.toScript()).html()+"</em>"
+              + " " + this.getSieve().matchType.type
+              + " <em>" + $('<div/>').text(this.getSieve().keyList.toScript()).html()+"</em>");
 }
 
 //****************************************************************************//
@@ -214,10 +214,13 @@ SieveAddressUI.prototype.initHelp
     = function ()
 {
   return $("<div/>")
-      .html('<h1>Address Test</h1>'
-      +'The address test is designed to match headers containing E-Mail addresses.' 
-      + 'It offers compared to the "header test" more sophisticated address matching'
-      + ' and is capable to cope with addres headers containing display names');
+      .html('<h1>Compares headers against E-Mail addresses.</h1>'
+      + '<p>You typically use test with headers like "to", "from", "cc" etc. </p>'
+      + '<p>As this test is aware of e-mail addresses containing display names. '
+      + "A header containing  '\"roadrunner\" &lt;roadrunner@acme.example.com&gt;'"
+      + " is considered to be equivalent to \"'roadrunner@acme.example.com\"</p>"            
+      + '<p>If the header should be matched against a string use the header test.</p>'      
+);
 }
 
 SieveAddressUI.prototype.initEditor
@@ -240,9 +243,10 @@ SieveAddressUI.prototype.initSummary
 {
   // case- insensitive is the default so skip it...
   return $("<div/>")
-      .text(" address "+this.getSieve().headerList.toScript()
-              +" [is|contains|matches] [case-sensitive] "
-              +this.getSieve().keyList.toScript());
+      .html(" address <em>"+ $('<div/>').text(this.getSieve().headerList.toScript()).html()+"</em>"
+              + " " + this.getSieve().matchType.type
+              + " " + ((this.getSieve().addressPart.type != "all") ? this.getSieve().addressPart.type: "")
+              + " <em>" + $('<div/>').text(this.getSieve().keyList.toScript()).html()+"</em>");
 }
 
 
@@ -256,10 +260,45 @@ function SieveEnvelopeUI(elm)
 
 SieveEnvelopeUI.prototype.__proto__ = SieveTestBoxUI.prototype;
 
+SieveEnvelopeUI.prototype.initHelp
+    = function ()
+{
+      
+  return $("<div/>")
+    .html('<h1>Compares fields against the envelope</h1>'
+      + '<p>The envelop is equivalent to the mail delivery protocol. So it ' +
+          'does not test against a real header. Instead it tests the mail ' +
+          'delivery protocol for specific values.</p>' +
+          '<p>A "to" tests the SMTP sender field "RCPT TO" a "from" the recipient' +
+          ' "MAIL FROM". </p>' +
+          '<p>It\'s the most reliant way to test from which address a meessage ' +
+          'was send to or received.</p>');
+}
+
+SieveEnvelopeUI.prototype.initEditor
+    = function()
+{
+ 
+/*envelope [COMPARATOR] [ADDRESS-PART] [MATCH-TYPE]
+            <envelope-part: string-list> <key-list: string-list>*/  
+  /*From, To, Cc, Bcc, Sender, Resent-From, Resent-To*/
+  return $("<div/>")
+      .append($("<h1/>").text("Any of the following envelope fields ..."))
+      .append((new SieveHeaderListUI(this.getSieve().envelopeList)).html())
+      .append((new SieveMatchTypeUI(this.getSieve().matchType)).html())
+      .append((new SieveAddressPartUI(this.getSieve().addressPart)).html())
+      .append($("<h1/>").text("... any of the keyword(s)"))
+      .append((new SieveStringListUI(this.getSieve().keyList)).html())    
+      .append((new SieveComparatorUI(this.getSieve().comparator)).html());
+}
 
 SieveEnvelopeUI.prototype.initSummary
     = function()
 {
-  return $("<div/>").text("envelope:"+this.getSieve().toScript());
+  return $("<div/>")
+      .html(" envelope <em>"+ $('<div/>').text(this.getSieve().envelopeList.toScript()).html()+"</em>"
+              + " " + this.getSieve().matchType.type
+              + " " + ((this.getSieve().addressPart.type != "all") ? this.getSieve().addressPart.type: "")
+              + " <em>" + $('<div/>').text(this.getSieve().keyList.toScript()).html()+"</em>");
 }
 

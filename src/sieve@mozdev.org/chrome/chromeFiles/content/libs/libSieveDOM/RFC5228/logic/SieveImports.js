@@ -103,14 +103,14 @@ SieveBlockImport.prototype.capability
  
   // We should try to insert new requires directly aftr the previous one...
   // ... otherwise it looks strange.
-  var item = -1;
+  var item = null;
   
   for (var i=0; i<this.elms.length; i++)
   {
     if (!this.elms[i].capability)
       continue;
     
-    item = this.elms[i].id();
+    item = this.elms[i];
      
     if (this.elms[i].capability().contains(require))
       return this;

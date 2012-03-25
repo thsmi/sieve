@@ -236,7 +236,12 @@ function SieveCapabilitiesResponse(parser)
         this.sasl = value.split(" ");
         break;
       case "SIEVE":
-        this.extensions = value.split(" ");
+        var extensions = value.split(" ");
+        this.extensions = {} ;
+        
+        for (var i = 0; i < extensions.length; ++i)
+          this.extensions[""+extensions[i]] = true;
+
         break;
       case "VERSION":
         this.version = parseFloat(value);
@@ -287,7 +292,19 @@ SieveCapabilitiesResponse.prototype.getSasl
     = function () { return this.sasl; }
     
 SieveCapabilitiesResponse.prototype.getExtensions
-    = function () { return this.extensions; }
+    = function (asString)
+{
+  if (!asString)
+    return this.extensions;
+    
+  var result = "";
+  
+  for (var item in this.extensions)
+    result += item+" ";
+  
+  return result; 
+
+}
 
 /**
  * Indicates wether or not TLS is supported by this implementation.

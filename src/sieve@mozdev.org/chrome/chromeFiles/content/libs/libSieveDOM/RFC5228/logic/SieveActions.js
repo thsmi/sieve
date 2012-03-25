@@ -219,6 +219,12 @@ SieveFileInto.isElement
   return parser.startsWith("fileinto");
 }
 
+SieveFileInto.isCapable
+    = function (capabilities)
+{
+  return (capabilities["fileinto"] == true);      
+}
+
 SieveFileInto.prototype.init
     = function (parser)
 {

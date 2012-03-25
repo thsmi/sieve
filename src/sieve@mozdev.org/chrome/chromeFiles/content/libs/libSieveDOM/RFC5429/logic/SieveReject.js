@@ -30,6 +30,11 @@ SieveReject.isElement
   return parser.startsWith("reject");
 }
 
+SieveReject.isCapable
+    = function (capabilities)
+{
+  return (capabilities["reject"] == true);      
+}
 
 SieveReject.prototype.init
     = function (parser)

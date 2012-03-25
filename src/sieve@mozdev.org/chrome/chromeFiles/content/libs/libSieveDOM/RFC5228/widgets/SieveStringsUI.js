@@ -29,6 +29,7 @@ SieveMatchTypeUI.prototype.createHtml
   var that = this;
   
   return $("<div/>")
+    .addClass("sivMatchType")
     .append($("<div/>")
       .css("overflow","auto")
       .append($("<input/>")
@@ -93,6 +94,7 @@ SieveAddressPartUI.prototype.createHtml
   var that = this;
   
   return $("<div/>")
+    .addClass("sivAddressPart")
     .append($("<div/>")
       .css("overflow","auto")
       .append($("<input/>")
@@ -159,6 +161,7 @@ SieveComparatorUI.prototype.createHtml
 {
   var that = this;
   return $("<div/>")
+    .addClass("sivComparator")
     .append($("<h1/>").text("Compare"))
     .append($("<div/>")
       .append($("<input/>")
@@ -185,26 +188,21 @@ function SieveStringListUI(elm)
 {
   // Call parent constructor...
   SieveAbstractBoxUI.call(this,elm);
+  this._defaults = [];
 }
 
 SieveStringListUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;  
 
 SieveStringListUI.prototype.onAddItem
     = function (owner)
-{
-  
-  
+{    
   this._createListItemUI("")
     .insertAfter(owner.parent().parent().parent())
     .find("input")
       .focus();
-
-/*  var val = $("#txtAddString"+this.id()).val();  
-  
-  this.getSieve().append(val);
-  
-  $("#divAddString"+this.id())
-    .before(this._createItemUI(val));*/    
+      
+  // moving the focus impicitely triggest onUpdateItem, so we do not...
+  // have to call it here...
 }
 
 SieveStringListUI.prototype.onRemoveItem
@@ -212,17 +210,19 @@ SieveStringListUI.prototype.onRemoveItem
 {
   if (!elm.hasClass("sivStringListItem"))
     throw "String List item expected";
-    
-  var owner = elm.parent();
+   
+  var owner = elm.parents(".SivStringList");
   
   elm.remove();
   
-  this.onUpdateItem(parent);
+  this.onUpdateItem(owner);   
 }
 
 SieveStringListUI.prototype.onUpdateItem
     = function (elm)
 {
+  if (!elm.hasClass("SivStringList"))
+    throw "String List expected";  
   /* we rebuild the whole string list at it's easier to do so */ 
   
   var inputs = elm.find("input");
@@ -237,17 +237,19 @@ SieveStringListUI.prototype.onUpdateItem
 }
 
 SieveStringListUI.prototype.defaults
-  = function ()
+  = function (defaults)
 {
- return [] ;
+  if (typeof(defaults) === "undefined")
+    return this._defaults;
+  
+  this._defaults = defaults;
+  return this;   
 }
 
 
 SieveStringListUI.prototype.showDropDown
     = function (parent)
 { 
-  if (!this.defaults)  
-    return;
     
   var defaults = this.defaults();    
 
@@ -329,57 +331,3 @@ SieveStringListUI.prototype.html
   return this._domElm;
 }
 
-/*****************************************************************************/
-
-function SieveHeaderListUI(elm)
-{
-  // Call parent constructor...
-  SieveStringListUI.call(this,elm);
-}
-
-SieveHeaderListUI.prototype.__proto__ = SieveStringListUI.prototype;  
-
-/*SieveHeaderListUI.prototype.onSelect
-    = function ()
-{   
-  var val = $("#cbHeaders"+this.id()).val();
-    
-  if (val == "Customize...")
-    $("#txtAddString"+this.id()).show()
-  else
-    $("#txtAddString"+this.id()).val(val).hide();
-
-}*/
-
-SieveHeaderListUI.prototype.defaults
-  = function ()
-{
- return ["Subject","Cc","From","To","Bcc","Date"];
-}
-
-SieveHeaderListUI.prototype.init
-    = function ()
-{  
-  var that = this;
-  var header = SieveStringListUI.prototype.init.call(this)
-    /*.children(":last")
-    .prepend($("<select/>")
-      .attr("id","cbHeaders"+this.id())
-      .change(function(){that.onSelect()})
-      .append($("<option/>").text("Subject"))
-      .append($("<option/>").text("Cc"))
-      .append($("<option/>").text("From"))
-      .append($("<option/>").text("To"))
-      .append($("<option/>").text("Bcc"))
-      .append($("<option/>").text("Date"))
-      .append($("<option/>").text("---"))
-      .append($("<option/>").text("Customize...")))
-    .end()
-    .find("#txtAddString"+this.id())
-      .hide()
-      .val("Subject")
-    .end();*/
-      
-  
-  return header;
-}

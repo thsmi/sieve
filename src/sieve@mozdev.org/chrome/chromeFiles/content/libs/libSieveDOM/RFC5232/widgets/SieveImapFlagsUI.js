@@ -20,7 +20,7 @@ SieveSetFlagUI.prototype.initSummary
     = function ()
 {
   return $(document.createElement("div"))
-           .text("Set IMAP flag");  
+           .text("Set IMAP flag "+this.getSieve().flaglist.toScript());  
 }
 
 
@@ -36,7 +36,7 @@ SieveAddFlagUI.prototype.initSummary
     = function ()
 {
   return $(document.createElement("div"))
-           .text("Add IMAP flag");  
+           .text("Add IMAP flag(s) "+this.getSieve().flaglist.toScript());  
 }
 
 
@@ -52,7 +52,7 @@ SieveRemoveFlagUI.prototype.initSummary
     = function ()
 {
   return $(document.createElement("div"))
-           .text("Remove IMAP flag");  
+           .text("Remove IMAP flag(s) "+this.getSieve().flaglist.toScript());  
 }
 
 
@@ -69,5 +69,5 @@ SieveHasFlagUI.prototype.initSummary
     = function()
 {
   return $(document.createElement("div"))
-           .text("Has IMAP flag");   
+           .text("Has IMAP flag(s) "+this.getSieve().flaglist.toScript());   
 }

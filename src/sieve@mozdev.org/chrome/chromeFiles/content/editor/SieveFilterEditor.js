@@ -83,7 +83,7 @@ var event =
     // We observe only our channel...
     if (gCid != cid)
       return;
-      
+              
     if (gEditorStatus.defaultScript)
     {
       event.onScriptLoaded(gEditorStatus.defaultScript);
@@ -435,7 +435,7 @@ function onWindowLoad()
 
   Cc["@mozilla.org/observer-service;1"]
       .getService (Ci.nsIObserverService)
-      .addObserver(event,"quit-application-requested", false);           
+      .addObserver(event,"quit-application-requested", false);               
 }
 
 function onIgnoreOffline()
@@ -557,8 +557,13 @@ function onViewSource(visible)
 function updateWidgets()
 {
   try {
+    var capabilities = Cc["@sieve.mozdev.org/transport-service;1"]
+      .getService().wrappedJSObject
+      .getChannel(gSid,gCid).extensions;
+            
     document.getElementById("sivWidgetEditor").contentWindow.setSieveScript(
-      document.getElementById("sivContentEditor").value)
+      document.getElementById("sivContentEditor").value,
+      capabilities)
   }
   catch (ex){
     // TODO Display real error message....

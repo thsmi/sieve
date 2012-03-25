@@ -44,7 +44,7 @@ SieveNotOperator.prototype.init
   this.whiteSpace[0].init(parser);  
   
   if ( ! this._probeByClass(["test","operator"],parser)) 
-    throw "Test command expected but found:\n'"+parser.bytes().substr(0,50)+"'...";                 
+    throw "Test command expected but found:\n'"+parser.bytes(50)+"'...";                 
 
   this._test = this._createByClass(["test","operator"],parser)
     
@@ -142,7 +142,7 @@ SieveAnyOfAllOfTest.prototype.init
   else if (parser.startsWith("anyof"))
     this.isAllOf = false;
   else
-    throw "allof or anyof expected but found: \n"+parser.bytes().substr(0,50)+"...";
+    throw "allof or anyof expected but found: \n"+parser.bytes(50)+"...";
     
   // remove the allof or anyof
   parser.extract(5);

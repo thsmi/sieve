@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Sieve DOM</title>
-  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
   <link rel="stylesheet" href="toolkit/style/style.css" type="text/css" />
 </head>
 <body>
@@ -55,6 +55,7 @@
 
 <script type="text/javascript">
 //<![CDATA[
+
 $(document).ready(function() {
   init();
   
@@ -79,8 +80,10 @@ $(document).ready(function() {
     $("#draggable").val(ev.target.nodeName)});
 });
 
-function setSieveScript(script)
+function setSieveScript(script,capabilities)
 {
+  if (capabilities)
+    SieveLexer.capabilities(capabilities);
     // reset environemnt
 	init();
 	
@@ -88,7 +91,7 @@ function setSieveScript(script)
 	  script =$('#txtScript').val();
 	 else
 	  $('#txtScript').val(script);
-	
+	  
     dom2.script(script);
 	
 	$("#txtOutput")
@@ -112,6 +115,11 @@ function require()
   
   for (var i in requires)
     alert(i);  
+}
+
+function capabilities()
+{
+  SieveLexer.capabilities({"imap4flags":true,"fileinto":true});
 }
 
 function compact()
@@ -153,19 +161,23 @@ function debug(obj)
     
 	elm.append($("<div/>").text("Actions"));
 	  
+	//  alert(SieveLexer.capabilities());
     for (var key in SieveLexer.types["action"])
-      elm.append(createMenuItem(key,"sieve/action",docShell));
+	   if (SieveLexer.types["action"][key].onCapable(SieveLexer.capabilities()))
+         elm.append(createMenuItem(key,"sieve/action",docShell));
 
 	elm.append($("<div/>").text("Tests"))
     
     for (var key in SieveLexer.types["test"])
-	  if (key != "test/boolean")
-        elm.append(createMenuItem(key,"sieve/test",docShell).get(0));
+	  if (SieveLexer.types["test"][key].onCapable(SieveLexer.capabilities()))
+	    if (key != "test/boolean")
+          elm.append(createMenuItem(key,"sieve/test",docShell).get(0));
 
 		
 	elm.append($("<div/>").text("Operators"))
     
     for (var key in SieveLexer.types["operator"])
+	  if (SieveLexer.types["operator"][key].onCapable(SieveLexer.capabilities()))
         elm.append(createMenuItem(key,"sieve/operator",docShell).get(0));
 		
 	elm
@@ -174,9 +186,31 @@ function debug(obj)
       .append($(new SieveTrashBoxUI(docShell).html())
 	    .attr('id','trash'));
   }
+
+  function errorhandler(msg, url, line)
+  {
+    showInfoMessage(msg,"");
+  }
+  
+  window.onerror = errorhandler;
+  
+  function showInfoMessage(message, content)
+  {
+    $("#infobarsubject > span").text(message);
+	$("#infobarmessage > span").text(content);
+    $("#infobar").toggle();	
+  }
+  
 //]]>
 </script>
-
+<div id="infobar">
+  <div id="infobarsubject"  > 
+     <span>
+       Message Text
+	 </span>
+	 <button onclick='$("#infobar").toggle();'>Dismiss</button>
+  </div>
+</div>
 <div style="margin-left:200px;">
 <div>
    <div id="boxScript" style="display:none;overflow: hidden;width: 100%; ">  
@@ -191,7 +225,7 @@ function debug(obj)
       </div>
     </div>
 </div >
-<div>
+<div id="debug">
     <button onclick="setSieveScript();">
 	   Parse Sieve Script
 	 </button>
@@ -203,6 +237,9 @@ function debug(obj)
 	</button>	
     <button onclick="compact()">
 	  Compact
+	</button>
+    <button onclick="capabilities()">
+	  Set Capabilities
 	</button>		
     <button onclick="$('#boxScript').toggle()">
 	  Show/Hide

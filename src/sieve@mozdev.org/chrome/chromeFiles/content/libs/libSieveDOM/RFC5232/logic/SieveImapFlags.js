@@ -32,6 +32,12 @@ SieveSetFlag.isElement
   return parser.startsWith("setflag");
 }
     
+SieveSetFlag.isCapable
+    = function (capabilities)
+{
+  return (capabilities["imap4flags"] == true);      
+}
+
 SieveSetFlag.prototype.init
     = function (parser)
 {  
@@ -91,6 +97,12 @@ SieveAddFlag.isElement
     = function (parser)
 {
   return parser.startsWith("addflag");
+}
+
+SieveAddFlag.isCapable
+    = function (capabilities)
+{
+  return (capabilities["imap4flags"] == true);      
 }
 
 SieveAddFlag.prototype.init
@@ -162,6 +174,12 @@ SieveRemoveFlag.isElement
   return parser.startsWith("removeflag");
 }
 
+SieveRemoveFlag.isCapable
+    = function (capabilities)
+{
+  return (capabilities["imap4flags"] == true);      
+}
+
 SieveRemoveFlag.prototype.init
     = function (parser)
 {
@@ -223,7 +241,7 @@ function SieveHasFlag(docshell,id)
   this.whiteSpace[2] = this._createByName("whitespace", " ");    
 
   this.matchType      = null;
-  this.flagList = this._createByName("stringlist");
+  this.flaglist = this._createByName("stringlist");
 }
 
 SieveHasFlag.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -234,26 +252,30 @@ SieveHasFlag.isElement
   return parser.startsWith("hasflag");
 }
 
-SieveHasFlag.prototype.init
-    = function (data)
+SieveHasFlag.isCapable
+    = function (capabilities)
 {
-  data = data.slice("hasflag".length);
+  return (capabilities["imap4flags"] == true);      
+}
+
+SieveHasFlag.prototype.init
+    = function (parser)
+{
+  parser.extract("hasflag")
   
-  data = this.whiteSpace[0].init(data)
+  this.whiteSpace[0].init(parser)
   
   
-  if (this._probeByName("match-type",data))
+  if (this._probeByName("match-type",parser))
   {
-    this.matchType = this._createByName("match-type");
-    data = this.matchType.init(data);
-    
-    data = this.whiteSpace[1].init(data);
+    this.matchType = this._createByName("match-type",parser);    
+    this.whiteSpace[1].init(parser);
   }
   
-  data = this.flagList.init(data);
-  data = this.whiteSpace[2].init(data);
+  this.flaglist.init(parser);
+  this.whiteSpace[2].init(parser);
       
-  return data;
+  return this;
 }    
 
 SieveHasFlag.prototype.require
@@ -269,7 +291,7 @@ SieveHasFlag.prototype.toScript
     + this.whiteSpace[0].toScript()
     + ((this.matchType != null)?this.matchType[0].toScript():"")
     + ((this.matchType != null)?this.whiteSpace[1].toScript():"")
-    + this.flagList.toScript()
+    + this.flaglist.toScript()
     + this.whiteSpace[2].toScript();
 }
 

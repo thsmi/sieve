@@ -162,6 +162,7 @@ SieveSession.prototype =
 
     // Notify the listener to display capabilities. We simply pass the response... 
     // ... to the listener. So the listener can pick whatever he needs.
+    this.sieve.extensions = response.getExtensions();    
     this._invokeListeners("onChannelStatus",7,response);
 
     // We have to figure out which ist the best SASL Mechanism for the login ...

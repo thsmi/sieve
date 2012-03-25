@@ -131,7 +131,10 @@ SieveExistsUI.prototype.initEditor
     = function()
 {
   return $("<div/>").text("all of the following header exist:")
-    .append((new SieveHeaderListUI(this.getSieve().headerNames)).html())
+    .append(
+      (new SieveStringListUI(this.getSieve().headerNames))
+        .defaults(["To","From","Cc","Bcc","Reply-To","Subject","Date","Message-ID","Content-Type"])
+        .html());
 }
   
 SieveExistsUI.prototype.initSummary
@@ -178,7 +181,8 @@ SieveHeaderUI.prototype.initEditor
   
   return $("<div/>")
       .append($("<h1/>").text("Any of the following header ..."))
-      .append((new SieveHeaderListUI(this.getSieve().headerNames)).html())
+      .append((new SieveStringListUI(this.getSieve().headerNames))
+        .defaults(["Subject","Date","Message-ID","Content-Type"]).html())
       .append((new SieveMatchTypeUI(this.getSieve().matchType)).html())
       .append($("<h1/>").text("... any of the keyword(s)"))
       .append((new SieveStringListUI(this.getSieve().keyList)).html())    
@@ -230,7 +234,8 @@ SieveAddressUI.prototype.initEditor
   /*From, To, Cc, Bcc, Sender, Resent-From, Resent-To*/
   return $("<div/>")
       .append($("<h1/>").text("Any of the following header ..."))
-      .append((new SieveHeaderListUI(this.getSieve().headerList)).html())
+      .append((new SieveStringListUI(this.getSieve().headerList))
+        .defaults(["To","From","Cc","Bcc","Reply-To"]).html())
       .append((new SieveMatchTypeUI(this.getSieve().matchType)).html())
       .append((new SieveAddressPartUI(this.getSieve().addressPart)).html())
       .append($("<h1/>").text("... any of the keyword(s)"))
@@ -267,8 +272,8 @@ SieveEnvelopeUI.prototype.initHelp
   return $("<div/>")
     .html('<h1>Compares fields against the envelope</h1>'
       + '<p>The envelop is equivalent to the mail delivery protocol. So it ' +
-          'does not test against a real header. Instead it tests the mail ' +
-          'delivery protocol for specific values.</p>' +
+          'does not test against a real header. Instead uses trace information' +
+          'from the mail delivery protocol for specific values.</p>' +
           '<p>A "to" tests the SMTP sender field "RCPT TO" a "from" the recipient' +
           ' "MAIL FROM". </p>' +
           '<p>It\'s the most reliant way to test from which address a meessage ' +
@@ -284,7 +289,8 @@ SieveEnvelopeUI.prototype.initEditor
   /*From, To, Cc, Bcc, Sender, Resent-From, Resent-To*/
   return $("<div/>")
       .append($("<h1/>").text("Any of the following envelope fields ..."))
-      .append((new SieveHeaderListUI(this.getSieve().envelopeList)).html())
+      .append((new SieveStringListUI(this.getSieve().envelopeList))
+        .defaults(["From","To"]).html())
       .append((new SieveMatchTypeUI(this.getSieve().matchType)).html())
       .append((new SieveAddressPartUI(this.getSieve().addressPart)).html())
       .append($("<h1/>").text("... any of the keyword(s)"))

@@ -2,7 +2,8 @@ body {
   font-family:verdana;
   font-size: 11px;
   background: url('background.png') #333;
-  cursor: default;    
+  cursor: default;
+  margin-top:20px;
 }
 
 .sivConditionText,
@@ -84,19 +85,47 @@ div[sivtype][sivDragging="true"] {
   } 
 
   div.floating-menu {
-  position:fixed;
-  top: 10px;
-  left: 10px;
+  position:absolute;
   background:#fff4c8;
   border:1px solid #ffcc00;
   width:150px;
   z-index:100;
   left: 20px;
+  top: 20px;
   }
 
   div .floating-menu .SivElement {
    width:140px; 
   }
+
+
+#infobar {
+  background-image: -moz-linear-gradient(bottom, #ffdd66, #ffeb7d);
+
+  border: 1px solid black;
+  border-top: none;
+  position:absolute;
+  top: 0px;
+  
+  width: 800px;
+  left: 50%;
+  margin-left: -400px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  
+  display: none;
+}
+
+#infobarsubject
+{
+  line-height:20px;
+  padding: 10px;
+  font-weight:bold;
+}
+
+#infobar button {
+  float:right;
+}
 
 
   /* Style for all editable elements */
@@ -254,6 +283,7 @@ div[sivtype][sivDragging="true"] {
 
 .SivStringList {
   padding-left: 20px;
+  padding-bottom: 15px;
 }
 
 .sivStringListItem
@@ -316,5 +346,16 @@ div[sivtype][sivDragging="true"] {
   border: 1px outset black !important;
   border-left-width: 2px ! important;  
   overflow:-moz-scrollbars-none !important;
+}
+
+.sivMatchType,
+.sivAddressPart,
+.sivComparator
+{
+  padding-bottom: 15px;
+}
+
+#debug {
+  display:none;
 }
 

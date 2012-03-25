@@ -42,6 +42,12 @@ SieveEnvelope.isElement
   return parser.startsWith("envelope");
 }
 
+SieveEnvelope.isCapable
+    = function (capabilities)
+{
+  return (capabilities["envelope"] == true);      
+}
+
 SieveEnvelope.prototype.init
     = function (parser)
 {

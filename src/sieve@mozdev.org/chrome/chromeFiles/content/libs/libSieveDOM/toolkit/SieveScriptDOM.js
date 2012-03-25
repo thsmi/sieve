@@ -137,6 +137,15 @@ SieveDocument.prototype.script
   return parser.bytes();
 }
 
+SieveDocument.prototype.capabilities
+  = function (capabilities)
+{               
+  if (typeof(capabilities) == "undefined")
+    return this._lexer.capabilities();
+    
+  this._lexer.capabilities(capabilities);
+}
+
 /**
  * In oder to speedup mutation elements are cached. But this cache is lazy.
  * So deleted objects will remain in memory until you call this cleanup

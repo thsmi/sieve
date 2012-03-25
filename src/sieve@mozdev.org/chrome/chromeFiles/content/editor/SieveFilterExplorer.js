@@ -605,8 +605,8 @@ function sivSetStatus(state, message, statusbar)
     // Offline Mode
     case 6: document.getElementById('sivExplorerOffline').removeAttribute('hidden');
             break;
-    case 7: document.getElementById('txtSASL').value = message.getSasl();
-            document.getElementById('txtExtensions').value = message.getExtensions(); 
+    case 7: document.getElementById('txtSASL').value = message.getSasl();        
+            document.getElementById('txtExtensions').value = message.getExtensions(true); 
             document.getElementById('txtImplementation').value = message.getImplementation();
             document.getElementById('txtVersion').value = "v"+message.getVersion().toFixed(2);
             document.getElementById('sivExplorerWait').removeAttribute('hidden');

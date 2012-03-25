@@ -6,15 +6,15 @@ import java.net.ServerSocket;
 //
 // set path="c:\Program Files\Java\jre6\bin";%path%
 //
-// keytool –genkey –alias server –keyalg RSA –keystore keystore.jks
+// keytool ï¿½genkey ï¿½alias server ï¿½keyalg RSA ï¿½keystore keystore.jks
 // keytool -export -alias server -keystore keystore.jks -rfc -file server.cer 
-// keytool -import -alias ca -file server.cer -keystore truststore.jks –storepass secret
+// keytool -import -alias ca -file server.cer -keystore truststore.jks ï¿½storepass secret
 // keytool -importkeystore -srckeystore KEYSTORE.jks -destkeystore KEYSTORE.p12 -srcstoretype JKS -deststoretype PKCS12 -srcstorepass secret -deststorepass secret -srcalias myalias -destalias myalias -srckeypass keypass -destkeypass keypass -noprompt 
  
 public class ReplayServer
 {
   
-  static final tests test = tests.FRAGMENTATION;
+  static final tests test = tests.ANONYMOUS;
   
   static boolean cyrusBug = true;
   static boolean tls = true;
@@ -23,37 +23,41 @@ public class ReplayServer
   static boolean brokenServerSignature = false;
   static boolean inlineServerSignature = false;
   
-  static enum tests { FRAGMENTATION, REFERRAL, CRAMMD5, LOGIN, SCRAMSHA1 }
+  static enum tests { ANONYMOUS, FRAGMENTATION, REFERRAL, CRAMMD5, LOGIN, SCRAMSHA1 }
 
 
 
 	public static void main(String[] args) throws Exception
 	{	  
 
-     // create the server...
-    SieveSocket client = (new SieveServerSocket(2000,true)).accept();
+      // create the server...
+      SieveSocket client = (new SieveServerSocket(2000,true)).accept();
 	  
-  	switch (test)
-  	{
-  	  case FRAGMENTATION:
-  	    doFragmentationTest(client);
-  	    break;
-  	  case REFERRAL:
-  	    doReferralTest(client);
-  	    break;
-  	  case CRAMMD5:
-  	    doCramMd5Test(client);
-  	    break;
-      case SCRAMSHA1:
-        doScramSha1Test(client);
-        break;  	    
-  	  case LOGIN:
-  	    doLoginTest(client);
-  	    break;
-  	}
+      switch (test)
+      {
+  	    case ANONYMOUS:
+  		  doAnonymousTest(client);
+  		  break;
+  	    case FRAGMENTATION:
+  	      doFragmentationTest(client);
+  	      break;
+  	    case REFERRAL:
+  	      doReferralTest(client);
+  	      break;
+  	    case CRAMMD5:
+  	      doCramMd5Test(client);
+  	      break;
+        case SCRAMSHA1:
+          doScramSha1Test(client);
+          break;  	    
+  	    case LOGIN:
+          doLoginTest(client);
+  	      break;
+  	  }
 	}
 
-  private static void onInit(String sasl, SieveSocket sieve) throws Exception
+
+private static void onInit(String sasl, SieveSocket sieve) throws Exception
   {
     sieve.sendPacket(
         "\"IMPLEMENTATION\" \"Replay Server\"\r\n"
@@ -103,15 +107,20 @@ public class ReplayServer
     if (!in.startsWith(string))
       throw new Exception(string+" expected but got "+in);
   }
-
+ 
+  private static void createTimeout() throws InterruptedException
+  {
+	Thread.sleep(10000);
+  }
+  
   private static void onListScript(SieveSocket sieve) throws Exception
-	{
+  {
     assertTrue(sieve.readLine(),"LISTSCRIPTS");
   
     sieve.sendPacket(
         "\"SCRIPT\"\r\n"
         + "OK \"Listscript completed.\"\r\n");
-	}
+  }
 
   private static void onSaslScramSha1(SieveSocket sieve) throws Exception
   {
@@ -205,6 +214,16 @@ public class ReplayServer
   
     Thread.sleep(2000);
   }
+  
+  private static void doAnonymousTest(SieveSocket sieve) throws Exception
+  {
+	  onInit("LOGIN",sieve);
+	  	
+	  onListScript(sieve);
+	  
+	  createTimeout();
+  }
+  
   
   private static void doReferralTest(SieveSocket sieve) throws Exception
   {

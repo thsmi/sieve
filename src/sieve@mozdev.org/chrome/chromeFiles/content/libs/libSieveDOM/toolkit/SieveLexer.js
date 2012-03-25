@@ -16,6 +16,7 @@ var SieveLexer =
   types :  {},
   names : {},//[],
   maxId : 0,
+  _capabilities : {},
   
   register: function (type,name,callback)
   {
@@ -29,6 +30,11 @@ var SieveLexer =
     obj.name = name;
     obj.onProbe =  function(token) {return callback.isElement(token)} 
     obj.onNew = function(docshell, id) {return new callback(docshell,id)};
+    obj.onCapable = function(capabilities) {
+      if (!callback.isCapable)
+        return true;        
+      return callback.isCapable(capabilities);
+    }
     
     this.names[name] = obj;
     this.types[type][name] = obj;      
@@ -45,11 +51,26 @@ var SieveLexer =
       selector = selectors[selector];
     
       for (var key in this.types[selector])
-        if (this.types[selector][key].onProbe(token))
-          return this.types[selector][key].onNew;
+        if (this.types[selector][key].onCapable(this._capabilities))
+          if (this.types[selector][key].onProbe(token))
+            return this.types[selector][key];
     }
              
     return null;    
+  },
+  
+  createInstance : function(docshell,constructor,parser)
+  { 
+
+    if (!constructor.onCapable(this._capabilities))
+      throw "Capability not supported";    
+    
+    var item = constructor.onNew(docshell, ++(this.maxId));
+      
+    if ((typeof(parser) != "undefined") && (parser))
+      item.init(parser);
+        
+    return item; 
   },
   
   /**
@@ -66,14 +87,9 @@ var SieveLexer =
     var item = this.getConstructor(types,parser);
 
     if (item == null)
-      throw "No compatible Constructor for Class(es): "+types+" in "+parser.bytes();
+      throw "Unknown or incompatible Element: "+parser.bytes(50);
     
-    var item = item(docshell, ++(this.maxId));
-    
-    if (typeof(parser) != "undefined")
-      item.init(parser);
-      
-    return item;     
+    return this.createInstance(docshell,item,parser);
   },
   
   /**
@@ -90,20 +106,8 @@ var SieveLexer =
   {   
     if (!this.names[name])
       throw "No Constructor for >>"+name+"<< found";
-      
-    try
-    {
-      var item = this.names[name].onNew(docshell, ++(this.maxId));
-      
-      if (parser)
-        item.init(parser);
-        
-      return item; 
-    }
-    catch (e)
-    {
-      throw(" "+e+" \r\n"+name+"\r\n"+this.names)
-    }
+
+    return this.createInstance(docshell,this.names[name],parser)      
   },
   
   getMaxId : function ()
@@ -116,11 +120,14 @@ var SieveLexer =
     // If there's no data then skip
     if ((typeof(parser) === "undefined") || parser.empty())
       return false;
+
+    if (!this.names[name].onCapable(this._capabilities))
+      return false;
       
-    if (this.names[name].onProbe(parser))
-      return true;
+    if (!this.names[name].onProbe(parser))
+      return false;
       
-    return false;
+    return true;
   },
   
   /**
@@ -140,5 +147,15 @@ var SieveLexer =
       return true;
       
     return false;      
+  },
+  
+  capabilities : function(capabilities)
+  {
+    if (typeof(capabilities) == "undefined")
+      return this._capabilities;
+      
+    this._capabilities = capabilities;
+    
+    return this;
   }
 }

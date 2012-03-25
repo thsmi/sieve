@@ -292,7 +292,7 @@ SieveStringList.prototype.init
       element[0] = this._createByName("whitespace",parser);
     
     if (this._probeByName("string/quoted",parser) == false)  
-      throw "Quoted String expected but found: \n"+parser.bytes().substr(0,50)+"...";
+      throw "Quoted String expected but found: \n"+parser.bytes(50)+"...";
     
     element[1] = this._createByName("string/quoted",parser);
       

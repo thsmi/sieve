@@ -7,7 +7,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
- "use strict";
+"use strict";
 
 function SieveMatchTypeUI(elm)
 {
@@ -330,4 +330,20 @@ SieveStringListUI.prototype.html
          
   return this._domElm;
 }
+
+
+
+
+
+// FIXME: The Widgest should not be created via new,
+// instead the Sieve Designer should be invoked...
+
+/*if (!SieveDesigner)
+  throw "Could not register String Widgets";
+
+SieveDesigner.register("stringlist", SieveStringListUI);
+SieveDesigner.register("match-type", SieveElseUI);
+SieveDesigner.register("address-part", SieveAddressPartUI);
+SieveDesigner.register("comparator", SieveComparatorUI);*/
+
 

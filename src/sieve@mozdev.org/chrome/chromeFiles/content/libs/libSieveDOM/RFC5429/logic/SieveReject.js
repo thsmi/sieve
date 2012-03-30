@@ -7,7 +7,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
- "use strict";
+"use strict";
  
 // TODO Implement Extended Reject
   
@@ -34,6 +34,14 @@ SieveReject.isCapable
     = function (capabilities)
 {
   return (capabilities["reject"] == true);      
+}
+
+SieveReject.nodeName = function () {
+  return "action/reject";
+}
+
+SieveReject.nodeType  = function () {
+  return "action";
 }
 
 SieveReject.prototype.init
@@ -84,13 +92,8 @@ SieveReject.prototype.toScript
     + this.semicolon.toScript();
 }
 
-SieveReject.prototype.toWidget
-    = function ()
-{
-  return (new SieveRejectUI(this));  
-}
 
 if (!SieveLexer)
   throw "Could not register Actions";
   
-SieveLexer.register("action","action/reject", SieveReject);
+SieveLexer.register(SieveReject);

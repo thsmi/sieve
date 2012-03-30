@@ -7,7 +7,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
- "use strict";
+"use strict";
  
  
 /// Flags an keywords are defined in http://tools.ietf.org/html/rfc5788
@@ -36,6 +36,14 @@ SieveSetFlag.isCapable
     = function (capabilities)
 {
   return (capabilities["imap4flags"] == true);      
+}
+
+SieveSetFlag.nodeName = function () {
+  return "action/setflag";
+}
+
+SieveSetFlag.nodeType  = function () {
+  return "action";
 }
 
 SieveSetFlag.prototype.init
@@ -68,11 +76,7 @@ SieveSetFlag.prototype.toScript
     + this.semicolon.toScript();
 }
 
-SieveSetFlag.prototype.toWidget
-    = function ()
-{
-  return (new SieveSetFlagUI(this));  
-}
+
 
 /******************************************************************************/
 
@@ -104,6 +108,15 @@ SieveAddFlag.isCapable
 {
   return (capabilities["imap4flags"] == true);      
 }
+
+SieveAddFlag.nodeName = function () {
+  return "action/addflag";
+}
+
+SieveAddFlag.nodeType  = function () {
+  return "action";
+}
+
 
 SieveAddFlag.prototype.init
     = function (parser)
@@ -141,12 +154,6 @@ SieveAddFlag.prototype.toScript
     + this.semicolon.toScript();
 }
 
-SieveAddFlag.prototype.toWidget
-    = function ()
-{
-  return (new SieveAddFlagUI(this));  
-}
-
 /******************************************************************************/
 
 //removeflag <variablename: string> <list-of-flags: string-list>
@@ -178,6 +185,14 @@ SieveRemoveFlag.isCapable
     = function (capabilities)
 {
   return (capabilities["imap4flags"] == true);      
+}
+
+SieveRemoveFlag.nodeName = function () {
+  return "action/removeflag";
+}
+
+SieveRemoveFlag.nodeType  = function () {
+  return "action";
 }
 
 SieveRemoveFlag.prototype.init
@@ -217,11 +232,6 @@ SieveRemoveFlag.prototype.toScript
     + this.semicolon.toScript();
 }
 
-SieveRemoveFlag.prototype.toWidget
-    = function ()
-{
-  return (new SieveRemoveFlagUI(this));  
-}
 
 /******************************************************************************/
 
@@ -256,6 +266,14 @@ SieveHasFlag.isCapable
     = function (capabilities)
 {
   return (capabilities["imap4flags"] == true);      
+}
+
+SieveHasFlag.nodeName = function () {
+  return "test/hasflag";
+}
+
+SieveHasFlag.nodeType  = function () {
+  return "test";
 }
 
 SieveHasFlag.prototype.init
@@ -295,22 +313,17 @@ SieveHasFlag.prototype.toScript
     + this.whiteSpace[2].toScript();
 }
 
-SieveHasFlag.prototype.toWidget
-    = function ()
-{
-  return (new SieveHasFlagUI(this));  
-}
 
 /******************************************************************************/
 
 if (!SieveLexer)
   throw "Could not register IMAP Flags";
 
-SieveLexer.register("action","action/addflag",SieveAddFlag);
+SieveLexer.register(SieveAddFlag);
       
-SieveLexer.register("action","action/removeflag",SieveRemoveFlag);  
+SieveLexer.register(SieveRemoveFlag);  
       
-SieveLexer.register("action","action/setflag",SieveSetFlag);
+SieveLexer.register(SieveSetFlag);
       
-SieveLexer.register("test","test/hasflag",SieveHasFlag);
+SieveLexer.register(SieveHasFlag);
  

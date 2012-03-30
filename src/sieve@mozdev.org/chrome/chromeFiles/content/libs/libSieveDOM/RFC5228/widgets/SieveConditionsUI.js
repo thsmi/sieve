@@ -95,3 +95,10 @@ SieveConditionUI.prototype.createHtml
   
   return elm;
 }
+
+if (!SieveDesigner)
+  throw "Could not register Conditional Widgets";
+
+SieveDesigner.register("condition/if", SieveIfUI);
+SieveDesigner.register("condition/else", SieveElseUI);
+SieveDesigner.register("condition", SieveConditionUI);

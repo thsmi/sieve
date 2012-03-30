@@ -7,7 +7,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
- "use strict";
+"use strict";
  
  function SieveNumber(docshell,id)
 {
@@ -21,6 +21,14 @@ SieveNumber.isElement
     = function (parser)
 {
   return parser.isNumber(parser);
+}
+
+SieveNumber.nodeName = function () {
+  return "number";
+}
+
+SieveNumber.nodeType  = function () {
+  return "number/";
 }
 
 SieveNumber.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -73,4 +81,4 @@ SieveNumber.prototype.toScript
 if (!SieveLexer)
   throw "Could not register Atoms";
 
-SieveLexer.register("number/","number",SieveNumber)
+SieveLexer.register(SieveNumber);

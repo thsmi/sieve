@@ -8,7 +8,6 @@
 <body>
   <!-- Global Imports -->  
   <script type="application/javascript" src="jquery.js"></script>
-  <!--<script type="application/javascript" src="UI/jquery-ui.js"></script>-->
   
   <!-- Basic Sieve Elements -->
   <script type="application/javascript" src="toolkit/SieveParser.js"></script>
@@ -18,10 +17,7 @@
   <script type="application/javascript" src="toolkit/SieveScriptDOM.js"></script>  
   <script type="application/javascript" src="toolkit/logic/Elements.js"></script>
   <script type="application/javascript" src="toolkit/widgets/Boxes.js"></script>
-  <script type="application/javascript" src="toolkit/events/DropHandler.js"></script>
-  <script type="application/javascript" src="toolkit/events/DragHandler.js"></script>
-  
- 
+   
   <!-- logic related Imports -->
   <!-- RFC 5228 - Sieve -->
   <script type="application/javascript" src="RFC5228/logic/SieveWhiteSpaces.js" ></script>
@@ -42,45 +38,13 @@
 
     <!-- UI related Imports -->
   <!-- RFC 5228 - Sieve -->
-  <script type="application/javascript" src="RFC5228/widgets/SieveStringsUI.js" ></script>
-  <script type="application/javascript" src="RFC5228/widgets/SieveNumbersUI.js" ></script>
-  <script type="application/javascript" src="RFC5228/widgets/SieveBlocksUI.js"></script>  
-  <script type="application/javascript" src="RFC5228/widgets/SieveTestsUI.js" ></script>    
-  <script type="application/javascript" src="RFC5228/widgets/SieveOperatorsUI.js"></script>
-  <script type="application/javascript" src="RFC5228/widgets/SieveConditionsUI.js"></script>  
-  <script type="application/javascript" src="RFC5228/widgets/SieveActionsUI.js"></script>
-  
-  <!-- RFC 5429 - Reject -->
-  <script type="application/javascript" src="RFC5429/widgets/SieveRejectUI.js"></script> 
-  
-  <!-- RFC 5232 - ImapFlags-->
-  <script type="application/javascript" src="RFC5232/widgets/SieveImapFlagsUI.js"></script> 
-  
+  <script type="application/javascript" src="RFC5228/widgets/simple/SieveBlocksUI.js"></script>  
+    
 <script type="text/javascript">
 //<![CDATA[
 
 $(document).ready(function() {
   init();
-  
-    /*i += 1;
-    $(this).find("span").text( "mouse over x " + i );
-  }).mouseout(function(){
-    $(this).find("span").text("mouse out ");
-  })*/
-  $("#divOutput").mouseover(function(ev) {
-  
-     switch (ev.target.nodeName)
-	 {
-	   case "INPUT":
-       case	 "TEXTAREA" :
-	     $("[draggable=true]").attr("draggable","false");
-		 break;
-		 
-		default:
-		  $("[draggable=false]").attr("draggable","true"); 
-	 }	   
-	   
-    $("#draggable").val(ev.target.nodeName)});
 });
 
 function setSieveScript(script,capabilities)
@@ -141,53 +105,12 @@ function debug(obj)
   //logger.logStringMessage(str);
 }
 
-  function createMenuItem(action,flavour, docShell)
-  {    
-    var elm2 = (new SieveEditableBoxUI(docShell));
-	elm2.drag(new SieveCreateDragHandler());
-	elm2.drag().flavour(flavour);	
-    elm2._elmType = action;
-	
-    return elm2.html()
-	                .addClass("sivMenuItem")
-                    .append($(document.createTextNode(action.split('/')[1])))	
-  }
+
 
   function init()
   {
     // Yes it's a global object
     dom2 = new SieveDocument(SieveLexer,SieveDesigner);
-	
-	var docShell = dom2;
-	
-    var elm = $("#sivActions").empty();
-    
-	elm.append($("<div/>").text("Actions"));
-	  
-	//  alert(SieveLexer.capabilities());
-    for (var key in SieveLexer.types["action"])
-	   if (SieveLexer.types["action"][key].onCapable(SieveLexer.capabilities()))
-         elm.append(createMenuItem(key,"sieve/action",docShell));
-
-	elm.append($("<div/>").text("Tests"))
-    
-    for (var key in SieveLexer.types["test"])
-	  if (SieveLexer.types["test"][key].onCapable(SieveLexer.capabilities()))
-	    if (key != "test/boolean")
-          elm.append(createMenuItem(key,"sieve/test",docShell).get(0));
-
-		
-	elm.append($("<div/>").text("Operators"))
-    
-    for (var key in SieveLexer.types["operator"])
-	  if (SieveLexer.types["operator"][key].onCapable(SieveLexer.capabilities()))
-        elm.append(createMenuItem(key,"sieve/operator",docShell).get(0));
-		
-	elm
-	  .append($(document.createElement('div'))
-	    .addClass("spacer"))
-      .append($(new SieveTrashBoxUI(docShell).html())
-	    .attr('id','trash'));
   }
 
   function errorhandler(msg, url, line)
@@ -254,8 +177,6 @@ function debug(obj)
 <div>   
   <div>
     <!--<div id="sivActions" style="background-color:gray;overflow-y: scroll;width:150px;float: left;">  -->
-	<div id="sivActions" class="floating-menu">
-	 </div>
   </div>
   
   <div id="divOutput">

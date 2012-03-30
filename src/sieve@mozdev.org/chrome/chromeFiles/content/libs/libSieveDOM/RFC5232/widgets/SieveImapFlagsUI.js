@@ -71,3 +71,13 @@ SieveHasFlagUI.prototype.initSummary
   return $(document.createElement("div"))
            .text("Has IMAP flag(s) "+this.getSieve().flaglist.toScript());   
 }
+
+if (!SieveDesigner)
+  throw "Could not register IMAP Flags Widgets";
+
+  
+SieveDesigner.register(SieveSetFlag, SieveSetFlagUI);
+SieveDesigner.register(SieveAddFlag, SieveAddFlagUI);
+SieveDesigner.register(SieveRemoveFlag, SieveRemoveFlagUI);
+
+SieveDesigner.register(SieveHasFlag, SieveHasFlagUI);

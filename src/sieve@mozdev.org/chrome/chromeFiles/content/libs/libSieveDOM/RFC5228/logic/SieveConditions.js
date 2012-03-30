@@ -7,7 +7,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
- "use strict";
+"use strict";
 
 function SieveIf(docshell,id)
 {
@@ -23,6 +23,14 @@ SieveIf.isElement
     = function (parser)
 {
   return parser.startsWith("if");  
+}
+
+SieveIf.nodeName = function () {
+  return "condition/if";
+}
+
+SieveIf.nodeType  = function () {
+  return "condition/";
 }
 
 SieveIf.prototype.init
@@ -112,12 +120,6 @@ SieveIf.prototype.toScript
     + this.ws[1].toScript();  
 }
 
-SieveIf.prototype.toWidget
-    = function ()
-{
-  return (new SieveIfUI(this));  
-}
-
 
 //****************************************************************************//
 
@@ -135,6 +137,14 @@ SieveElse.isElement
     = function (parser)
 {
   return parser.startsWith("else");  
+}
+
+SieveElse.nodeName = function () {
+  return "condition/else";
+}
+
+SieveElse.nodeType  = function () {
+  return "condition/";
 }
 
 SieveElse.prototype.init
@@ -160,12 +170,6 @@ SieveElse.prototype.toScript
     + this.ws[1].toScript();  
 }
 
-SieveElse.prototype.toWidget
-    = function ()
-{
-  return (new SieveElseUI(this));  
-}
-
 //****************************************************************************//
 
 function SieveCondition(docshell,id) 
@@ -181,6 +185,14 @@ SieveCondition.isElement
     = function (parser)
 {
   return SieveIf.isElement(parser);
+}
+
+SieveCondition.nodeName = function () {
+  return "condition";
+}
+
+SieveCondition.nodeType  = function () {
+  return "condition";
 }
 
 SieveCondition.prototype.init
@@ -240,11 +252,6 @@ SieveCondition.prototype.removeChild
   return elm;
 }
 
-SieveCondition.prototype.toWidget
-    = function ()
-{
-  return (new SieveConditionUI(this));  
-}
 
 SieveCondition.prototype.toScript
     = function ()
@@ -266,6 +273,6 @@ SieveCondition.prototype.toScript
 if (!SieveLexer)
   throw "Could not register Conditional Elements";
 
-SieveLexer.register("condition/","condition/if", SieveIf);      
-SieveLexer.register("condition/","condition/else", SieveElse);      
-SieveLexer.register("condition","condition", SieveCondition);
+SieveLexer.register(SieveIf);      
+SieveLexer.register(SieveElse);      
+SieveLexer.register(SieveCondition);

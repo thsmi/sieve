@@ -7,7 +7,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
- "use strict";
+"use strict";
  
 // Sieve Lexer is a static class...
 
@@ -18,8 +18,18 @@ var SieveLexer =
   maxId : 0,
   _capabilities : {},
   
-  register: function (type,name,callback)
+  register: function (callback)
   {
+    if (!callback.nodeType)
+      throw "Lexer Error: Registration failed, element has no type";
+      
+    var type = callback.nodeType();
+
+    if (!callback.nodeName)
+      throw "Lexer Error: Registration failed, element has no name";
+      
+    var name = callback.nodeName();
+      
     if (!callback.isElement)
       throw "Lexer Error: isElement function for "+name+" missing";
       

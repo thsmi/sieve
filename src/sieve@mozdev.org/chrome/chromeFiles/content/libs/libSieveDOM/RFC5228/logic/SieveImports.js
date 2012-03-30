@@ -7,7 +7,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
- "use strict";
+"use strict";
 
 function SieveRequire(docshell,id) 
 {
@@ -25,6 +25,14 @@ SieveRequire.isElement
   = function (parser)
 {
   return parser.startsWith("require"); 
+}
+
+SieveRequire.nodeName = function () {
+  return "import/require";
+}
+
+SieveRequire.nodeType  = function () {
+  return "import/";
 }
 
 SieveRequire.prototype.init
@@ -84,6 +92,14 @@ SieveBlockImport.isElement
   return SieveLexer.probeByClass(["import/","whitespace"],parser);  
 }
 
+SieveBlockImport.nodeName = function () {
+  return "import";
+}
+
+SieveBlockImport.nodeType  = function () {
+  return "import";
+}
+
 // PUBLIC:
 SieveBlockImport.prototype.init
     = function (parser)    
@@ -123,17 +139,11 @@ SieveBlockImport.prototype.capability
   return this;
 }
 
-SieveBlockImport.prototype.toWidget
-    = function ()
-{
-  // override the inherited toWidget function...
-  return null;
-}
 
 if (!SieveLexer)
   throw "Could not register Import Elements";
 
 
-SieveLexer.register("import","import",SieveBlockImport);
-SieveLexer.register("import/","import/require",SieveRequire);
+SieveLexer.register(SieveBlockImport);
+SieveLexer.register(SieveRequire);
       

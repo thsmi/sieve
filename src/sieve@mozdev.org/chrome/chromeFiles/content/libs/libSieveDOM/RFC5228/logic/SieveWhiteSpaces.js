@@ -24,6 +24,14 @@ SieveLineBreak.isElement
   return parser.startsWith("\r\n");
 }
 
+SieveLineBreak.nodeName = function () {
+  return "whitespace/linebreak";
+}
+
+SieveLineBreak.nodeType  = function () {
+  return "whitespace/";
+}
+
 SieveLineBreak.prototype.init
     = function (parser)
 {
@@ -40,19 +48,22 @@ SieveLineBreak.prototype.toScript
 /******************************************************************************/
 
 
-SieveDeadCode.isElement
-  = function (parser)
-{  
-  if (parser.isChar([" ","\t"])) 
-    return true;    
-    
-  return false;
-}
-
 function SieveDeadCode(docshell,id)
 {
   SieveAbstractElement.call(this,docshell,id);
   this.whiteSpace = "";
+}
+
+SieveDeadCode.isElement  = function (parser) {  
+  return (parser.isChar([" ","\t"])) 
+}
+
+SieveDeadCode.nodeName = function () {
+  return "whitespace/deadcode";
+}
+
+SieveDeadCode.nodeType  = function () {
+  return "whitespace/";
 }
 
 SieveDeadCode.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -73,16 +84,22 @@ SieveDeadCode.prototype.toScript
 
 /******************************************************************************/
 
-SieveBracketComment.isElement
-    = function (parser)
-{
-  return parser.startsWith("/*");
-}
-
 function SieveBracketComment(docshell,id) 
 {
   SieveAbstractElement.call(this,docshell,id);
   this.text = "";
+}
+
+SieveBracketComment.isElement = function (parser) {
+  return parser.startsWith("/*");
+}
+
+SieveBracketComment.nodeName = function () {
+  return "whitespace/bracketcomment";
+}
+
+SieveBracketComment.nodeType  = function () {
+  return "whitespace/";
 }
 
 SieveBracketComment.prototype.__proto__ = SieveAbstractElement.prototype;
@@ -119,6 +136,14 @@ SieveHashComment.isElement
   return parser.isChar("#");
 }
 
+SieveHashComment.nodeName = function () {
+  return "whitespace/hashcomment";
+}
+
+SieveHashComment.nodeType  = function () {
+  return "whitespace/";
+}
+
 SieveHashComment.prototype.init
     = function (parser)
 {  
@@ -151,6 +176,15 @@ SieveWhiteSpace.isElement
 {
   return SieveLexer.probeByClass(["whitespace/"],parser); 
 }
+
+SieveWhiteSpace.nodeName = function () {
+  return "whitespace";
+}
+
+SieveWhiteSpace.nodeType  = function () {
+  return "whitespace";
+}
+
 
 /**
  * Parses a String for whitespace characters. It stops as soon as
@@ -216,6 +250,14 @@ SieveSemicolon.isElement
   return true;
 }
 
+SieveSemicolon.nodeName = function () {
+  return "atom/semicolon";
+}
+
+SieveSemicolon.nodeType  = function () {
+  return "atom/";
+}
+
 SieveSemicolon.prototype.init
     = function (parser)
 {
@@ -242,11 +284,11 @@ SieveSemicolon.prototype.toScript
 if (!SieveLexer)
   throw "Could not register DeadCode Elements";
 
-SieveLexer.register("whitespace/","whitespace/linebreak",SieveLineBreak);
-SieveLexer.register("whitespace/","whitespace/deadcode",SieveDeadCode);
-SieveLexer.register("whitespace/","whitespace/bracketcomment",SieveBracketComment);  
-SieveLexer.register("whitespace/","whitespace/hashcomment",SieveHashComment);
+SieveLexer.register(SieveLineBreak);
+SieveLexer.register(SieveDeadCode);
+SieveLexer.register(SieveBracketComment);  
+SieveLexer.register(SieveHashComment);
 
-SieveLexer.register("whitespace","whitespace",SieveWhiteSpace);
+SieveLexer.register(SieveWhiteSpace);
 
-SieveLexer.register("atom/","atom/semicolon",SieveSemicolon);
+SieveLexer.register(SieveSemicolon);

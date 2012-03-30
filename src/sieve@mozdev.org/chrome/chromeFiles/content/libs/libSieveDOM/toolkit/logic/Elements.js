@@ -12,6 +12,7 @@
 // Enable Strict Mode
 "use strict";
 
+// TODO: Should be renamed to SieveAbstractWidget
 /**
  * 
  * @param {} id
@@ -44,6 +45,17 @@ SieveAbstractElement.prototype._probeByClass = function(types, parser) {
   return this._docshell.probeByClass(types,parser);
 }  
 
+/**
+ * Calling static mathos is a bit akward in javascript, so we make..
+ * ...it simpler by using this helper
+ */
+SieveAbstractElement.prototype.nodeName = function () {
+  return this.__proto__.constructor.nodeName();
+}
+
+SieveAbstractElement.prototype.nodeType = function () {
+  return this.__proto__.constructor.nodeType()  
+}
 
 /**
  * 
@@ -69,7 +81,7 @@ SieveAbstractElement.prototype.widget
     = function ()
 {  
   if (!this._widget)
-    this._widget = this.toWidget()
+    this._widget = this.document().layout(this) 
     
   return this._widget;       
 }
@@ -87,15 +99,6 @@ SieveAbstractElement.prototype.html
   return this.widget().html();
 }
 
-/**
- * Creates
- * @return {}
- */
-SieveAbstractElement.prototype.toWidget
-    = function ()
-{
-  return null;     
-}
 
 SieveAbstractElement.prototype.document
     = function ()

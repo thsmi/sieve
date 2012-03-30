@@ -7,7 +7,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
- "use strict";
+"use strict";
 
 function SieveDiscard(docshell,id) 
 {
@@ -17,10 +17,16 @@ function SieveDiscard(docshell,id)
 
 SieveDiscard.prototype.__proto__ = SieveAbstractElement.prototype;
 
-SieveDiscard.isElement
-     = function (parser)
-{
+SieveDiscard.isElement = function (parser) {
   return parser.startsWith("discard");  
+}
+
+SieveDiscard.nodeName = function () {
+  return "action/discard";
+}
+
+SieveDiscard.nodeType  = function () {
+  return "action";
 }
 
 SieveDiscard.prototype.init
@@ -39,12 +45,6 @@ SieveDiscard.prototype.toScript
 {
   return "discard"
     + this.semicolon.toScript();  
-}
-
-SieveDiscard.prototype.toWidget
-    = function ()
-{
-  return (new SieveDiscardUI(this));  
 }
 
 //***************************************
@@ -66,6 +66,18 @@ SieveRedirect.isElement
     = function (parser)
 {
   return parser.startsWith("redirect");
+}
+
+SieveRedirect.nodeName
+    = function ()
+{
+  return "action/redirect";
+}
+
+SieveRedirect.nodeType
+    = function ()
+{
+  return "action";
 }
 
 SieveRedirect.prototype.init
@@ -110,14 +122,6 @@ SieveRedirect.prototype.toScript
     + this.semicolon.toScript();
 }
 
-SieveRedirect.prototype.toWidget
-    = function ()
-{  
-  return (new SieveRedirectUI(this));
-}
- 
-
-
 /******************************************************************************/
 
 function SieveStop(docshell,id) 
@@ -128,10 +132,16 @@ function SieveStop(docshell,id)
 
 SieveStop.prototype.__proto__ = SieveAbstractElement.prototype;
 
-SieveStop.isElement
-    = function(parser)
-{
-  return parser.startsWith("stop");
+SieveStop.isElement = function(parser) {
+  return parser.startsWith("stop"); 
+}
+
+SieveStop.nodeName = function () {
+  return "action/stop";     
+}
+
+SieveStop.nodeType = function () {
+  return "action";
 }
 
 SieveStop.prototype.init
@@ -151,11 +161,6 @@ SieveStop.prototype.toScript
     + this.semicolon.toScript();
 }
 
-SieveStop.prototype.toWidget
-    = function ()
-{
-  return (new SieveStopUI(this));
-}
 
 /******************************************************************************/
 
@@ -167,10 +172,16 @@ function SieveKeep(docshell,id)
 
 SieveKeep.prototype.__proto__ = SieveAbstractElement.prototype;
 
-SieveKeep.isElement
-    = function(parser)
-{
+SieveKeep.isElement = function(parser) {
   return parser.startsWith("keep");
+}
+
+SieveKeep.nodeName = function () {
+  return "action/keep";
+}
+
+SieveKeep.nodeType  = function () {
+  return "action";
 }
 
 SieveKeep.prototype.init
@@ -190,12 +201,6 @@ SieveKeep.prototype.toScript
     + this.semicolon.toScript();
 }
 
-SieveKeep.prototype.toWidget
-    = function ()
-{
-  return (new SieveKeepUI(this));
-}
-
 
 /******************************************************************************/
 
@@ -213,18 +218,24 @@ function SieveFileInto(docshell,id)
 
 SieveFileInto.prototype.__proto__ = SieveAbstractElement.prototype;
 
-SieveFileInto.isElement
-    = function (parser)
-{
+// Static methods needed for registration
+SieveFileInto.isElement = function (parser) {
   return parser.startsWith("fileinto");
 }
 
-SieveFileInto.isCapable
-    = function (capabilities)
-{
+SieveFileInto.isCapable = function (capabilities) {
   return (capabilities["fileinto"] == true);      
 }
 
+SieveFileInto.nodeName = function () {
+  return "action/fileinto";
+}
+
+SieveFileInto.nodeType  = function () {
+  return "action";
+}
+
+// Dynamic methods...
 SieveFileInto.prototype.init
     = function (parser)
 {
@@ -272,22 +283,16 @@ SieveFileInto.prototype.toScript
     + this.semicolon.toScript();
 }
 
-SieveFileInto.prototype.toWidget
-    = function ()
-{
-  return (new SieveFileIntoUI(this));
-}
 
 /******************************************************************************/
 
 if (!SieveLexer)
   throw "Could not register Actions";
 
-SieveLexer.register("action","action/discard", SieveDiscard);
-SieveLexer.register("action","action/keep", SieveKeep);
-SieveLexer.register("action","action/stop", SieveStop);
-
-SieveLexer.register("action","action/fileinto", SieveFileInto);
-SieveLexer.register("action","action/redirect",SieveRedirect);
+SieveLexer.register(SieveDiscard);
+SieveLexer.register(SieveKeep);
+SieveLexer.register(SieveStop);
+SieveLexer.register(SieveFileInto);
+SieveLexer.register(SieveRedirect);
       
    

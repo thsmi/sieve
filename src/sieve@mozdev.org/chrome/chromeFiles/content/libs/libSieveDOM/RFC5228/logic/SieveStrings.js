@@ -7,7 +7,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
- "use strict";
+"use strict";
  
 // TODO create an abstract class for get and set string...
 // TODO descide on update message weather it is a Multiline oder Quoted...
@@ -32,6 +32,14 @@ SieveMultiLineString.isElement
     = function (parser)
 {
   return parser.startsWith("text:");
+}
+
+SieveMultiLineString.nodeName = function () {
+  return "string/multiline";
+}
+
+SieveMultiLineString.nodeType  = function () {
+  return "string/";
 }
 
 // PUBLIC:
@@ -130,6 +138,14 @@ SieveQuotedString.isElement
     = function (parser)
 {
   return parser.isChar("\"");
+}
+
+SieveQuotedString.nodeName = function () {
+  return "string/quoted";
+}
+
+SieveQuotedString.nodeType  = function () {
+  return "string/";
 }
 
 // PUBLIC:
@@ -259,6 +275,14 @@ SieveStringList.isElement
     return true;  
 
   return false;
+}
+
+SieveStringList.nodeName = function () {
+  return "stringlist";
+}
+
+SieveStringList.nodeType  = function () {
+  return "stringlist";
 }
 
 // PUBLIC:
@@ -398,22 +422,6 @@ SieveStringList.prototype.toScript
   return result;
 }
 
-SieveStringList.prototype.toWidget
-    = function ()
-{
-  if (this.compact)
-    return this.elements[0].getValue();
-   
-  var result = "";   
-  for (var i = 0;i<this.elements.length; i++)
-  {
-    result += this.elements[i][1].getValue()+" | ";
-  }
-  
-  return result; 
-}
-
-
 /*******************************************************************************
     CLASSNAME: 
       SieveString implements SieveObject
@@ -453,6 +461,15 @@ SieveString.isElement
 {
   return SieveLexer.probeByClass(["string/"],parser);
 }
+
+SieveString.nodeName = function () {
+  return "string";
+}
+
+SieveString.nodeType  = function () {
+  return "string";
+}
+
 // PUBLIC:
 SieveString.prototype.init
     = function (parser)    
@@ -509,6 +526,14 @@ SieveMatchType.isElement
     return true;
   
   return false;
+}
+
+SieveMatchType.nodeName = function () {
+  return "match-type";
+}
+
+SieveMatchType.nodeType  = function () {
+  return "comparison";
 }
 
 SieveMatchType.prototype.init
@@ -604,6 +629,14 @@ SieveAddressPart.isElement
   return false;
 }
 
+SieveAddressPart.nodeName = function () {
+  return "address-part";
+}
+
+SieveAddressPart.nodeType  = function () {
+  return "comparison";
+}
+
 
 SieveAddressPart.prototype.init
     = function (parser)
@@ -689,6 +722,14 @@ SieveComparator.isElement
   return (parser.startsWith(":comparator"))
 }
 
+SieveComparator.nodeName = function () {
+  return "comparator";
+}
+
+SieveComparator.nodeType  = function () {
+  return "comparison";
+}
+
 SieveComparator.prototype.init
     = function (parser)
 {
@@ -739,10 +780,10 @@ SieveComparator.prototype.toScript
 if (!SieveLexer)
   throw "Could not register Strings Elements";
 
-SieveLexer.register("stringlist","stringlist",SieveStringList); 
-SieveLexer.register("string","string", SieveString);
-SieveLexer.register("string/","string/quoted",SieveQuotedString);
-SieveLexer.register("string/","string/multiline",SieveMultiLineString);
-SieveLexer.register("comparison","match-type",SieveMatchType);
-SieveLexer.register("comparison","comparator",SieveComparator);
-SieveLexer.register("comparison","address-part",SieveAddressPart);
+SieveLexer.register(SieveStringList); 
+SieveLexer.register(SieveString);
+SieveLexer.register(SieveQuotedString);
+SieveLexer.register(SieveMultiLineString);
+SieveLexer.register(SieveMatchType);
+SieveLexer.register(SieveComparator);
+SieveLexer.register(SieveAddressPart);

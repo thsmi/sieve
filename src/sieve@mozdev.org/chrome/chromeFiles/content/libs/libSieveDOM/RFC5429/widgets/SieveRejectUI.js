@@ -52,3 +52,8 @@ SieveRejectUI.prototype.initSummary
              "</em></div>");
 }
 
+if (!SieveDesigner)
+  throw "Could not register Reject Widgets";
+
+  
+SieveDesigner.register("action/reject", SieveRejectUI);

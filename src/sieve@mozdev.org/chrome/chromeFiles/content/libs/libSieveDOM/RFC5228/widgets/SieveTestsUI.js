@@ -308,3 +308,14 @@ SieveEnvelopeUI.prototype.initSummary
               + " <em>" + $('<div/>').text(this.getSieve().keyList.toScript()).html()+"</em>");
 }
 
+
+if (!SieveDesigner)
+  throw "Could not register Action Widgets";
+
+  
+SieveDesigner.register("test/address", SieveAddressUI);
+SieveDesigner.register("test/boolean", SieveBooleanTestUI);
+SieveDesigner.register("test/envelope", SieveEnvelopeUI);
+SieveDesigner.register("test/exists", SieveExistsUI);
+SieveDesigner.register("test/header", SieveHeaderUI);
+SieveDesigner.register("test/size", SieveSizeTestUI);

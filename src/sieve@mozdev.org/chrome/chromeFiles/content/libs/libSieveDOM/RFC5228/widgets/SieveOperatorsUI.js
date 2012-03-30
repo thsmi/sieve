@@ -7,7 +7,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
- "use strict";
+"use strict";
 
 function SieveNotUI(elm)
 {
@@ -108,5 +108,9 @@ SieveAnyOfAllOfUI.prototype.showEditor
   this.html().children(".sivEditorContent").after(this.html().children(".sivOperator"));
 }
 
+if (!SieveDesigner)
+  throw "Could not register operator Widgets";
 
+SieveDesigner.register("operator/not", SieveNotUI);
+SieveDesigner.register("operator/anyof", SieveAnyOfAllOfUI);
 

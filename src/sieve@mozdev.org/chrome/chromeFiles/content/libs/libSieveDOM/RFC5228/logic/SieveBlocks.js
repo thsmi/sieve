@@ -7,7 +7,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
- "use strict";
+"use strict";
 
 function SieveBlock(docshell,id)
 {
@@ -20,6 +20,14 @@ SieveBlock.isElement
     = function (parser)
 {
   return parser.isChar("{");  
+}
+
+SieveBlock.nodeName = function () {
+  return "block/block";
+}
+
+SieveBlock.nodeType  = function () {
+  return "block/";
 }
 
 SieveBlock.prototype.init
@@ -57,6 +65,14 @@ SieveBlockBody.isElement
   return SieveLexer.probeByClass(["action","condition","whitespace"],parser);  
 }
 
+SieveBlockBody.nodeName = function () {
+  return "block/body";
+}
+
+SieveBlockBody.nodeType  = function () {
+  return "block/";
+}
+
 SieveBlockBody.prototype.init
     = function (parser)    
 {
@@ -78,11 +94,6 @@ SieveBlockBody.prototype.toScript
   return str;
 }
 
-SieveBlockBody.prototype.toWidget
-    = function ()
-{
-  return (new SieveBlockUI(this));
-}
 
 
 function SieveRootNode(docshell)
@@ -101,12 +112,14 @@ SieveRootNode.isElement
   return false;  
 }
 
-SieveRootNode.prototype.toWidget
-    = function ()
-{  
-  return $("<div/>")
-           .append(this.elms[1].html());  
+SieveRootNode.nodeName = function () {
+  return "block/rootnode";
 }
+
+SieveRootNode.nodeType  = function () {
+  return "block/";
+}
+
 
 SieveRootNode.prototype.init
     = function (parser)
@@ -145,6 +158,6 @@ SieveRootNode.prototype.toScript
 if (!SieveLexer)
   throw "Could not register Block Elements";
 
-SieveLexer.register("block/","block/body",SieveBlockBody);
-SieveLexer.register("block/","block/block",SieveBlock);
-SieveLexer.register("block/","block/rootnode",SieveRootNode);
+SieveLexer.register(SieveBlockBody);
+SieveLexer.register(SieveBlock);
+SieveLexer.register(SieveRootNode);

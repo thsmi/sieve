@@ -9,6 +9,21 @@
 
 "use strict";
 
+function SieveRootNodeUI(elm)
+{
+  SieveAbstractBoxUI.call(this,elm);
+}
+
+SieveRootNodeUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
+
+
+SieveRootNodeUI.prototype.createHtml
+    = function (parent)
+{
+  return parent.append(this.getSieve().elms[1].html());
+}
+
+
 function SieveBlockUI(elm)
 {
   SieveAbstractBoxUI.call(this,elm);
@@ -55,3 +70,10 @@ SieveBlockUI.prototype.createHtml
   return parent.append(
       this.init());
 }
+
+if (!SieveDesigner)
+  throw "Could not register Block Widgets";
+
+  
+SieveDesigner.register(SieveBlockBody, SieveBlockUI);
+SieveDesigner.register(SieveRootNode, SieveRootNodeUI);

@@ -134,3 +134,16 @@ SieveFileIntoUI.prototype.initSummary
            .html("Copy message into:" +
              "<div><em>"+ $('<div/>').text(this.getSieve().getPath()).html()+"</em></div>");
 }
+
+/******************************************************************************/
+
+if (!SieveDesigner)
+  throw "Could not register Action Widgets";
+
+  
+SieveDesigner.register(SieveDiscard, SieveDiscardUI);
+SieveDesigner.register(SieveKeep, SieveKeepUI);
+SieveDesigner.register(SieveStop, SieveStopUI);
+
+SieveDesigner.register(SieveFileInto, SieveFileIntoUI);
+SieveDesigner.register(SieveRedirect,SieveRedirectUI);

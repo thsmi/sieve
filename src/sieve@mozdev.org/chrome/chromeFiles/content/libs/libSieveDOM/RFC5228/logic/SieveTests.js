@@ -48,6 +48,14 @@ SieveEnvelope.isCapable
   return (capabilities["envelope"] == true);      
 }
 
+SieveEnvelope.nodeName = function () {
+  return "test/envelope";
+}
+
+SieveEnvelope.nodeType  = function () {
+  return "test";
+}
+
 SieveEnvelope.prototype.init
     = function (parser)
 {
@@ -117,11 +125,7 @@ SieveEnvelope.prototype.toScript
     + this.whiteSpace[5].toScript();
 }
 
-SieveEnvelope.prototype.toWidget
-    = function ()
-{
-  return (new SieveEnvelopeUI(this));  
-}
+
 
 /******************************************************************************/
 
@@ -167,6 +171,14 @@ SieveAddress.isElement
     = function (parser)
 {
   return parser.startsWith("address");
+}
+
+SieveAddress.nodeName = function () {
+  return "test/address";
+}
+
+SieveAddress.nodeType  = function () {
+  return "test";
 }
 
 SieveAddress.prototype.init
@@ -234,11 +246,7 @@ SieveAddress.prototype.toScript
     + this.whiteSpace[5].toScript();
 }
 
-SieveAddress.prototype.toWidget
-    = function ()
-{
-  return (new SieveAddressUI(this));
-}
+
 
 /******************************************************************************/
 
@@ -263,6 +271,14 @@ SieveBoolean.isElement
     return true;
   
   return false;
+}
+
+SieveBoolean.nodeName = function () {
+  return "test/boolean";
+}
+
+SieveBoolean.nodeType  = function () {
+  return "test";
 }
 
 SieveBoolean.prototype.init
@@ -296,11 +312,7 @@ SieveBoolean.prototype.toScript
   return "false"+this.whiteSpace.toScript();    
 }
 
-SieveBoolean.prototype.toWidget
-    = function ()
-{
-  return (new SieveBooleanTestUI(this));
-}
+
 
 /******************************************************************************/    
 function SieveSize(docshell,id) 
@@ -322,6 +334,14 @@ SieveSize.isElement
   = function(parser)
 { 
   return parser.startsWith("size");
+}
+
+SieveSize.nodeName = function () {
+  return "test/size";
+}
+
+SieveSize.nodeType  = function () {
+  return "test";
 }
 
 SieveSize.prototype.init
@@ -390,11 +410,7 @@ SieveSize.prototype.toScript
     + this.whiteSpace[2].toScript();
 }
 
-SieveSize.prototype.toWidget
-    = function ()
-{
-  return (new SieveSizeTestUI(this));      
-}
+
 
 /******************************************************************************/
   
@@ -415,6 +431,14 @@ SieveExists.isElement
   = function(parser)
 { 
   return parser.startsWith("exists");
+}
+
+SieveExists.nodeName = function () {
+  return "test/exists";
+}
+
+SieveExists.nodeType  = function () {
+  return "test";
 }
 
 SieveExists.prototype.init
@@ -441,12 +465,6 @@ SieveExists.prototype.toScript
     + this.whiteSpace[0].toScript()
     + this.headerNames.toScript()
     + this.whiteSpace[1].toScript();
-}
-
-SieveExists.prototype.toWidget
-    = function ()
-{
-  return (new SieveExistsUI(this));  
 }
 
 /******************************************************************************/
@@ -477,6 +495,14 @@ SieveHeader.isElement
 {
   return parser.startsWith("header");
 } 
+
+SieveHeader.nodeName = function () {
+  return "test/header";
+}
+
+SieveHeader.nodeType  = function () {
+  return "test";
+}
 
 SieveHeader.prototype.init
     = function (parser)
@@ -556,12 +582,6 @@ SieveHeader.prototype.toScript
     + this.whiteSpace[4].toScript()
 }
 
-SieveHeader.prototype.toWidget
-    = function ()
-{  
-  return (new SieveHeaderUI(this));
-}
-
 
 // TODO Stringlist and testslist are quite simmilar
 function SieveTestList(docshell,id)
@@ -576,6 +596,14 @@ SieveTestList.isElement
    = function (parser)
 {
   return parser.isChar("(");
+}
+
+SieveTestList.nodeName = function () {
+  return "test/testlist";
+}
+
+SieveTestList.nodeType  = function () {
+  return "test/";
 }
 
 SieveTestList.prototype.init
@@ -729,11 +757,11 @@ SieveTestList.prototype.require
 if (!SieveLexer)
   throw "Could not register Conditional Elements";
 
-SieveLexer.register("test","test/address",SieveAddress);
-SieveLexer.register("test","test/boolean",SieveBoolean);
-SieveLexer.register("test","test/envelope",SieveEnvelope);
-SieveLexer.register("test","test/exists",SieveExists);  
-SieveLexer.register("test","test/header",SieveHeader);
-SieveLexer.register("test","test/size",SieveSize);
+SieveLexer.register(SieveAddress);
+SieveLexer.register(SieveBoolean);
+SieveLexer.register(SieveEnvelope);
+SieveLexer.register(SieveExists);  
+SieveLexer.register(SieveHeader);
+SieveLexer.register(SieveSize);
 
-SieveLexer.register("test/","test/testlist",SieveTestList);
+SieveLexer.register(SieveTestList);

@@ -15,11 +15,6 @@
  */
  
 // Unary operators
-SieveNotOperator.isElement
-  = function(parser)
-{ 
-  return parser.startsWith("not");
-}
 
 function SieveNotOperator(docshell,id) 
 {
@@ -33,6 +28,18 @@ function SieveNotOperator(docshell,id)
 }
 
 SieveNotOperator.prototype.__proto__ = SieveAbstractElement.prototype;
+
+SieveNotOperator.isElement = function(parser) { 
+  return parser.startsWith("not");
+}
+
+SieveNotOperator.nodeName = function () {
+  return "operator/not";
+}
+
+SieveNotOperator.nodeType  = function () {
+  return "operator";
+}
 
 SieveNotOperator.prototype.init
     = function (parser)
@@ -102,12 +109,6 @@ SieveNotOperator.prototype.toScript
     + this.whiteSpace[1].toScript();
 }
 
-SieveNotOperator.prototype.toWidget
-    = function()
-{
-  return (new SieveNotUI(this));
-}
-
 //****************************************************************************//
 
 //N-Ary Operator
@@ -132,6 +133,14 @@ SieveAnyOfAllOfTest.isElement
     return true;
     
   return false;
+}
+
+SieveAnyOfAllOfTest.nodeName = function () {
+  return "operator/anyof";
+}
+
+SieveAnyOfAllOfTest.nodeType  = function () {
+  return "operator";
 }
 
 SieveAnyOfAllOfTest.prototype.init
@@ -191,18 +200,12 @@ SieveAnyOfAllOfTest.prototype.toScript
            + SieveTestList.prototype.toScript.call(this);  
 }
 
-SieveAnyOfAllOfTest.prototype.toWidget
-    = function ()
-{
-  return (new SieveAnyOfAllOfUI(this));
-}
-
 
 
 if (!SieveLexer)
-  throw "Could not register Conditional Elements";
+  throw "Could not register Operators";
 
 
-SieveLexer.register("operator","operator/not",SieveNotOperator);
-SieveLexer.register("operator","operator/anyof",SieveAnyOfAllOfTest);
+SieveLexer.register(SieveNotOperator);
+SieveLexer.register(SieveAnyOfAllOfTest);
             

@@ -9,9 +9,10 @@
 
 "use strict";
 
-function SieveDocument(lexer)
+function SieveDocument(lexer,widgets)
 {
   this._lexer = lexer;  
+  this._widgets = widgets;
   this._nodes = {}
     
   // we cannot use this.createNode(). It would add a node without a parent...
@@ -35,8 +36,14 @@ SieveDocument.prototype.html
     = function ()
 {  
   // TODO fix me should be get HTML
-  return this._rootNode.widget();
-  //return this._rootNode.html();  
+  //return this._rootNode.widget();
+  return this._rootNode.widget().html();  
+}
+
+SieveDocument.prototype.layout 
+    = function (elm)
+{ 
+  return this._widgets.widget(elm);
 }
 
 // A shorthand to create children bound to this Element...

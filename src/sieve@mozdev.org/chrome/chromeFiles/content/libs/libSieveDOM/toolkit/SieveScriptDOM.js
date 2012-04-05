@@ -138,7 +138,7 @@ SieveDocument.prototype.script
   this._rootNode.init(parser);
   
   if (!parser.empty())
-    throw ("Parser error at: "+parser.bytes());
+    throw ("Unknown Element at: "+parser.bytes());
     
   // data should be empty right here...
   return parser.bytes();

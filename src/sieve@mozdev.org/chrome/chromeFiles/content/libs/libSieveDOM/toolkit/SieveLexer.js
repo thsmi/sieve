@@ -97,7 +97,7 @@ var SieveLexer =
     var item = this.getConstructor(types,parser);
 
     if (item == null)
-      throw "Unknown or incompatible Element: "+parser.bytes(50);
+      throw "Unknown or incompatible "+types+" expected but found: "+parser.bytes(50);
     
     return this.createInstance(docshell,item,parser);
   },

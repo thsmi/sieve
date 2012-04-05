@@ -75,9 +75,9 @@ SieveNotOperator.prototype.removeChild
   this.test().parent(null);  
   this._test = null;
   
-  if (stop && (stop.id() == this.id()))
-    return this.remove(cascade,stop);
-  
+  if (!stop || (stop.id() != this.id()))
+    return this.remove(cascade,stop);  
+    
   return this
 }
 

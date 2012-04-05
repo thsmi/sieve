@@ -9,6 +9,93 @@
 
 "use strict";
 
+function SieveRichList()
+{
+  
+}
+
+SieveRichList.prototype.item
+  = function (pos)
+{
+  if (typeof(pos) == "undefined")
+    return (this._items[this._items.length-1])
+    
+  return this._items[pos];
+}
+
+SieveRichList.prototype.append
+  = function (item)
+{  
+  var type = item.nodeType();
+  
+  if (type == "whitespace")
+    return this;
+    
+  if ((type == "action") && (!this.item().condition())) 
+  {
+    this.item().append(item);
+    return this;
+  }
+    
+  this._items.push(new SieveListItem(item));  
+  return this;
+}
+
+SieveRichList.prototype.html
+  = function ()
+{
+     
+}
+
+
+function SieveRichListItem(item)
+{
+  this.append(item)  
+}
+
+SieveRichListItem.prototype.append
+  = function (item)
+{
+  if (item.nodeType() == "action")
+   this._actions.push(item);
+  else
+    
+   
+}
+
+SieveRichListItem.prototype.appendCondition
+  = function (item)
+{
+  this._condition = item;
+}
+
+SieveRichListItem.prototype.html
+  = function (item)
+{
+  var elm = $("<div/>")  
+      .append($("<div/>").text("[+] Matches"))
+      
+  if (item.nodeType() == "action")
+  {
+    elm.append(this.createConditionList(null));
+    elm.append(this.createActionList(item));
+    
+    return elm;
+  }
+  
+  if (item.nodeName() != "condition")  
+    throw "Script too complex 2"+item.nodeType();
+     
+  if (item.children().length != 1)
+    throw "Script too complex use advanced mode";
+    
+  elm.append(this.createConditionList(item.children(0).test()))
+  elm.append(this.createActionList(item.children(0)))
+  
+  return elm;     
+}
+
+
 function SieveRootNodeUI(elm)
 {
   SieveAbstractBoxUI.call(this,elm);
@@ -24,21 +111,45 @@ SieveRootNodeUI.prototype.createHtml
               .addClass("sivBlock");
   
   var item = null;
-  var blockElms = this.getSieve().children(1).children()
+  var blockElms = this.getSieve().children(1).children();
+
+  var richlist = new SieveRichList();
   
+  
+  // actions
+  // condition
+  // actions
+  // actions
   for (var i=0; i<blockElms.length;i++)
-  {      
-    item = blockElms[i];
-
-    //new RichListItem(elm)
-
-    if (item.nodeType() == "whitespace")
-      continue;
-      
-    elm.append(this.createElm(blockElms[i]));    
-  }
+    richlist.append(blockElms[i])
      
-  return parent.append(elm);
+  return parent.append(richlist.html());
+}
+
+SieveRootNodeUI.prototype.createElm
+  = function  (item)
+{
+  var elm = $("<div/>")  
+      .append($("<div/>").text("[+] Matches"))
+      
+  if (item.nodeType() == "action")
+  {
+    elm.append(this.createConditionList(null));
+    elm.append(this.createActionList(item));
+    
+    return elm;
+  }
+  
+  if (item.nodeName() != "condition")  
+    throw "Script too complex 2"+item.nodeType();
+     
+  if (item.children().length != 1)
+    throw "Script too complex use advanced mode";
+    
+  elm.append(this.createConditionList(item.children(0).test()))
+  elm.append(this.createActionList(item.children(0)))
+  
+  return elm;
 }
 
 SieveRootNodeUI.prototype.createActionList
@@ -100,7 +211,10 @@ SieveRootNodeUI.prototype.createConditionList
       if (item.tests[i][1].nodeType() != "test")
         throw "Script to compex, nested Tests...";
       
-      elm.append($("<div/>").text(item.tests[i][1].toScript()));
+      if (item.tests[i][1].widget())
+        elm.append(item.tests[i][1].widget().html());
+      else
+        elm.append($("<div/>").text(item.tests[i][1].toScript()));
     }
     
     return elm;
@@ -109,31 +223,7 @@ SieveRootNodeUI.prototype.createConditionList
   throw "Script too complext, unsupported operator"+item.nodeType();
 }
 
-SieveRootNodeUI.prototype.createElm
-  = function  (item)
-{
-  var elm = $("<div/>")  
-      .append($("<div/>").text("[+] Matches"))
-      
-  if (item.nodeType() == "action")
-  {
-    elm.append(this.createConditionList(null));
-    elm.append(this.createActionList(item));
-    
-    return elm;
-  }
-  
-  if (item.nodeName() != "condition")  
-    throw "Script too complex 2"+item.nodeType();
-     
-  if (item.children().length != 1)
-    throw "Script too complex use advanced mode";
-    
-  elm.append(this.createConditionList(item.children(0).test()))
-  elm.append(this.createActionList(item.children(0)))
-  
-  return elm;
-}
+
 
 
 if (!SieveDesigner)

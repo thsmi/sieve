@@ -9,9 +9,11 @@
 
 "use strict";
 
-function SieveRichList()
+function SieveRichList(elms)
 {
-  
+  this._items = [];
+  for (var i=0; i<elms.length;i++)
+    this.append(elms[i])  
 }
 
 SieveRichList.prototype.item
@@ -28,162 +30,73 @@ SieveRichList.prototype.append
 {  
   var type = item.nodeType();
   
+  // ignore whitespaces
   if (type == "whitespace")
     return this;
-    
-  if ((type == "action") && (!this.item().condition())) 
+
+  if (type == "condition")
   {
-    this.item().append(item);
+    this._items.push(new SieveRichListItem(item));  
     return this;
   }
-    
-  this._items.push(new SieveListItem(item));  
-  return this;
+  
+  // TODO ensure that adjacent actions are grouped together
+  if (type == "action")
+  {
+    this._items.push(new SieveRichListItem(item)); 
+    return this;
+  }
+  
+  throw "Unexpected type: "+type;
 }
 
 SieveRichList.prototype.html
   = function ()
 {
+  var elm = $("<div/>");
+      
+  for (var i=0; i<this._items.length; i++)
+    elm.append(this._items[i].html())  
      
+  return elm;
 }
 
-
 function SieveRichListItem(item)
-{
-  this.append(item)  
+{  
+  this._condition = null;
+  
+  if (item.nodeName() == "condition")
+    this._condition = item;
+    
+  if (item.nodeType() == "action")
+    this._condition = item.document().createByName("condition","if false { "+item.toScript()+" }");
+    
+  
+  if (this._condition == null)
+    throw "Incompatible element";
+     
+  if (this._condition.children().length != 1)
+    throw "Script too complex use advanced mode";
 }
 
 SieveRichListItem.prototype.append
   = function (item)
 {
-  if (item.nodeType() == "action")
-   this._actions.push(item);
-  else
+  if (item.nodeType() != "action")
+    throw "Incompatible element";
     
-   
+  this._condition.children(0).append(item);      
 }
 
-SieveRichListItem.prototype.appendCondition
-  = function (item)
-{
-  this._condition = item;
-}
-
-SieveRichListItem.prototype.html
-  = function (item)
-{
-  var elm = $("<div/>")  
-      .append($("<div/>").text("[+] Matches"))
-      
-  if (item.nodeType() == "action")
-  {
-    elm.append(this.createConditionList(null));
-    elm.append(this.createActionList(item));
-    
-    return elm;
-  }
+SieveRichListItem.prototype.htmlConditions
+    = function ()
+{ 
+  var item = this._condition.children(0).test();
   
-  if (item.nodeName() != "condition")  
-    throw "Script too complex 2"+item.nodeType();
-     
-  if (item.children().length != 1)
-    throw "Script too complex use advanced mode";
-    
-  elm.append(this.createConditionList(item.children(0).test()))
-  elm.append(this.createActionList(item.children(0)))
+  if (item.nodeName() == "test/boolean")
+    if (item.value == false)
+      item = null;
   
-  return elm;     
-}
-
-
-function SieveRootNodeUI(elm)
-{
-  SieveAbstractBoxUI.call(this,elm);
-}
-
-SieveRootNodeUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
-
-
-SieveRootNodeUI.prototype.createHtml
-    = function (parent)
-{
-  var elm = $(document.createElement("div"))
-              .addClass("sivBlock");
-  
-  var item = null;
-  var blockElms = this.getSieve().children(1).children();
-
-  var richlist = new SieveRichList();
-  
-  
-  // actions
-  // condition
-  // actions
-  // actions
-  for (var i=0; i<blockElms.length;i++)
-    richlist.append(blockElms[i])
-     
-  return parent.append(richlist.html());
-}
-
-SieveRootNodeUI.prototype.createElm
-  = function  (item)
-{
-  var elm = $("<div/>")  
-      .append($("<div/>").text("[+] Matches"))
-      
-  if (item.nodeType() == "action")
-  {
-    elm.append(this.createConditionList(null));
-    elm.append(this.createActionList(item));
-    
-    return elm;
-  }
-  
-  if (item.nodeName() != "condition")  
-    throw "Script too complex 2"+item.nodeType();
-     
-  if (item.children().length != 1)
-    throw "Script too complex use advanced mode";
-    
-  elm.append(this.createConditionList(item.children(0).test()))
-  elm.append(this.createActionList(item.children(0)))
-  
-  return elm;
-}
-
-SieveRootNodeUI.prototype.createActionList
-  = function  (item)
-{
-  var elm = $("<div/>")
-    .append($("<div/>").text("Peform these Actions"))
-  
-  if (item.nodeType() == "action")
-    return elm.append(item.toScript());
-  
-  if (item.nodeName() != "condition/if")
-    throw "Script to complex [Ax11] "+item.nodeName();
-    
-  for (var i=0; i<item.children().length; i++)
-  {
-    if (item.children(i).nodeType() == "whitespace")
-      continue;
-      
-    if (item.children(i).nodeType() == "action")
-    {
-      elm.append($("<div/>").text(item.children(i).toScript()))
-      continue;
-    }
-    
-    throw "Script to complex [Ax12], test expected"+item.children(i).nodeType();
-  }
-
-  return elm;  
-}
-
-SieveRootNodeUI.prototype.createConditionList
-    = function (item)
-{  
   if (item == null)
   {
     return $("<div/>")
@@ -198,14 +111,14 @@ SieveRootNodeUI.prototype.createConditionList
   }
   
   var elm = $("<div/>");
-  
+ 
   if (item.nodeName() == "operator/anyof")
   {
     if (item.isAllOf)
       elm.append($("<div/>").text("all of the following"));
     else 
       elm.append($("<div/>").text("any of the following"));
-      
+ 
     for (var i=0; i<item.tests.length; i++)
     {
       if (item.tests[i][1].nodeType() != "test")
@@ -224,6 +137,68 @@ SieveRootNodeUI.prototype.createConditionList
 }
 
 
+SieveRichListItem.prototype.htmlActions
+  = function  ()
+{
+  var item = this._condition.children(0)
+  
+  var elm = $("<div/>")
+    .append($("<div/>").text("Peform these Actions"))
+  
+  if (!item.children())
+    throw "No Block statement";
+    
+  for (var i=0; i<item.children().length; i++)
+  {
+    if (item.children(i).nodeType() == "whitespace")
+      continue;
+      
+    if (item.children(i).nodeType() == "action")
+    {
+      elm.append($("<div/>").text(item.children(i).toScript()))
+      continue;
+    }
+    
+    throw "Script to complex [Ax12], test expected"+item.children(i).nodeType();
+  }
+
+  return elm;  
+}  
+
+
+SieveRichListItem.prototype.html
+  = function (item)
+{
+  var elm = $("<div/>")  
+      .append($("<div/>").text("[+] Matches"))
+
+  elm.append(this.htmlConditions())      
+  elm.append(this.htmlActions())
+  
+  return elm;     
+}
+
+
+function SieveRootNodeUI(elm)
+{
+  SieveAbstractBoxUI.call(this,elm);  
+  this.richlist = new SieveRichList(elm.children(1).children());
+}
+
+SieveRootNodeUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
+
+
+SieveRootNodeUI.prototype.createHtml
+    = function (parent)
+{
+  var elm = $(document.createElement("div"))
+              .addClass("sivBlock");
+  
+  var item = null;
+  var blockElms = this.getSieve();  
+     
+  return parent.append(this.richlist.html());
+}
 
 
 if (!SieveDesigner)

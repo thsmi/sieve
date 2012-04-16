@@ -8,7 +8,8 @@ SieveTestUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
 
 SieveTestUI.prototype.createHtml
     = function (parent)
-{
+{  
+  
   return parent.append($("<div/>")
     .append($("<div/>").text("address")))
     .append($("<div/>")
@@ -19,10 +20,27 @@ SieveTestUI.prototype.createHtml
           .defaults(["To","From","Cc","Bcc","Reply-To"]).html()))
       .append($("<div/>")
         .css({"display":"table-cell","vertical-align":"middle"})
-        .append("<div>[ Contains&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|V ]</div>"))
+        .append((new SieveMatchType2UI(this.getSieve().matchType)).html()))
       .append($("<div/>")
         .css({"display":"table-cell","vertical-align":"middle"})
         .append((new SieveStringListUI(this.getSieve().keyList)).html())));   
+}
+
+function SieveMatchType2UI(elm)
+{
+  SieveAbstractBoxUI.call(this,elm);
+}
+
+SieveMatchType2UI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
+
+
+SieveMatchType2UI.prototype.createHtml
+    = function (parent)
+{
+  return parent.append($("<select/>")
+    .append($("<option/>").text("is"))
+    .append($("<option/>").text("matches"))
+    .append($("<option/>").text("contains")));
 }
 
 /*<style type="text/css">

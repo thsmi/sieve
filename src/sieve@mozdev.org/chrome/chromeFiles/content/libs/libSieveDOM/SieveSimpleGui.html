@@ -3,7 +3,7 @@
 <head>
   <title>Sieve DOM</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-  <link rel="stylesheet" href="toolkit/style/style.css" type="text/css" />
+  <link rel="stylesheet" href="toolkit/style/simplicity/style.css" type="text/css" />
 </head>
 <body>
   <!-- Global Imports -->  
@@ -38,8 +38,8 @@
 
     <!-- UI related Imports -->
   <!-- RFC 5228 - Sieve -->
-  <script type="application/javascript" src="RFC5228/widgets/simple/SieveBlocksUI.js"></script>  
-  <script type="application/javascript" src="RFC5228/widgets/simple/SieveTestsUI.js"></script>  
+  <script type="application/javascript" src="RFC5228/widgets/simplicity/SieveBlocksUI.js"></script>  
+  <script type="application/javascript" src="RFC5228/widgets/simplicity/SieveTestsUI.js"></script>  
     <script type="application/javascript" src="RFC5228/widgets/SieveStringsUI.js"></script>  
     
 <script type="text/javascript">
@@ -115,12 +115,12 @@ function debug(obj)
     dom2 = new SieveDocument(SieveLexer,SieveDesigner);
   }
 
-  function errorhandler(msg, url, line)
+  /*function errorhandler(msg, url, line)
   {
     showInfoMessage(msg,"");
   }
   
-  window.onerror = errorhandler;
+  window.onerror = errorhandler;*/
   
   function showInfoMessage(message, content)
   {
@@ -141,7 +141,7 @@ function debug(obj)
 </div>
 <div style="margin-left:200px;">
 <div>
-   <div id="boxScript" style="display:none;overflow: hidden;width: 100%; ">  
+   <div id="boxScript" style="overflow: hidden;width: 100%; ">  
      <div style="float:left; padding:5px;">
         <div>Input:</div>
         <textarea id="txtScript" cols="50" rows="10" wrap="off">
@@ -163,9 +163,6 @@ function debug(obj)
     <button onclick="require()">
 	  Collect Require
 	</button>	
-    <button onclick="compact()">
-	  Compact
-	</button>
     <button onclick="capabilities()">
 	  Set Capabilities
 	</button>		

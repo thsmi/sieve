@@ -310,11 +310,11 @@ SieveBlockDropHandler.prototype.moveElement
         
       target.append(newCondition,this.sibling());
         
-      target.widget().refresh();
+      target.widget().reflow();
       if (conditional.parent())
-        conditional.widget().refresh();
-      source.widget().refresh();
-      oldOwner.widget().refresh();
+        conditional.widget().reflow();
+      source.widget().reflow();
+      oldOwner.widget().reflow();
       
       return;
       
@@ -325,8 +325,8 @@ SieveBlockDropHandler.prototype.moveElement
       item.append(dragElm,this.sibling());
       
       // refresh old and new Owner
-      item.widget().refresh();
-      oldOwner.widget().refresh();
+      item.widget().reflow();
+      oldOwner.widget().reflow();
       
       return;
   }
@@ -361,7 +361,7 @@ SieveBlockDropHandler.prototype.createElement
     elm = item.document().createByName(type);
   
   item.append(elm,this.sibling());
-  item.widget().refresh();
+  item.widget().reflow();
 }
 
 //****************************************************************************//
@@ -393,7 +393,7 @@ SieveTrashBoxDropHandler.prototype.moveElement
   if (!item)
     throw "Trash Drop Handler: No Element found for "+id;
    
-  item.widget().refresh();
+  item.widget().reflow();
     
   var that = this.document();  
   window.setTimeout(function() {that.compact(); },0)
@@ -486,8 +486,8 @@ SieveConditionDropHandler.prototype.moveElement
       this.document().createByName("condition/else")
         .append(source));
       
-    target.widget().refresh();
-    oldOwner.widget().refresh();
+    target.widget().reflow();
+    oldOwner.widget().reflow();
       
     return;
   }
@@ -518,9 +518,9 @@ SieveConditionDropHandler.prototype.moveElement
   
   target.append(conditional,this.sibling());
 
-  target.widget().refresh();
-  oldOwner.widget().refresh();
-  conditional.widget().refresh();
+  target.widget().reflow();
+  oldOwner.widget().reflow();
+  conditional.widget().reflow();
      
   return;      
 }
@@ -569,7 +569,7 @@ SieveConditionDropHandler.prototype.createElement
             
     item.append(elm,this.sibling());
 
-    item.widget().refresh();
+    item.widget().reflow();
     
   }
   else if (sivFlavour == "sieve/action")
@@ -579,7 +579,7 @@ SieveConditionDropHandler.prototype.createElement
             
     item
       .append(elm)
-      .widget().refresh();
+      .widget().reflow();
   }
   else 
    throw "Incompatible drop";
@@ -685,10 +685,10 @@ SieveTestDropHandler.prototype.moveElement
   
   inner.append(source);
   
-  outer.widget().refresh();
+  outer.widget().reflow();
   if (newConditional)
-    newConditional.widget().refresh();
-  oldOwner.widget().refresh();  
+    newConditional.widget().reflow();
+  oldOwner.widget().reflow();  
 }
 
 SieveTestDropHandler.prototype.canCreateElement
@@ -735,9 +735,9 @@ SieveTestDropHandler.prototype.createElement
     outer.append(test);
 
   //newOwner.wrap(item.document().createByName(type))
-  //item.widget().refresh();
+  //item.widget().reflow();
   
-  container.widget().refresh();
+  container.widget().reflow();
 }
 
 //****************************************************************************//
@@ -823,10 +823,10 @@ SieveMultaryDropHandler.prototype.moveElement
     
   target.append(source,this.sibling());
   
-  target.widget().refresh();
+  target.widget().reflow();
   if (newConditional)
-    newConditional.widget().refresh();  
-  oldOwner.widget().refresh();
+    newConditional.widget().reflow();  
+  oldOwner.widget().reflow();
   
 
 }
@@ -851,6 +851,6 @@ SieveMultaryDropHandler.prototype.createElement
   var elm = item.document().createByName(type);
   
   item.append(elm,this.sibling());
-  item.widget().refresh();
+  item.widget().reflow();
 }
 

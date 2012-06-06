@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+ <!--
+   The content of this file is licenced. You may obtain a copy of
+   the license at http://sieve.mozdev.org or request it via email 
+   from the author. Do not remove or change this comment. 
+  
+   The initial author of the code is:
+     Thomas Schmid <schmid-thomas@gmx.net>
+-->
+
+<!DOCTYPE window SYSTEM "chrome://sieve/locale/locale.dtd">
+
+<?xml-stylesheet href="chrome://sieve/content/editor/Sieve.css" type="text/css"?>
+
+<!--
+  Contiains commonly used dialogs during login etc... 
+-->
+
+<page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
+      onload="">
+  
+  <script type="application/javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveRequest.js"/>
+  <script type="application/javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveResponseCodes.js"/>
+  <script type="application/javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveResponse.js"/>
+
+  
+  <script type="application/javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveAutoConfig.js" />
+                
+  <script type="application/javascript"
+          src="chrome://sieve/content/editor/SieveStatus.js"/>
+
+  
+  <stringbundleset id="stringbundleset">
+    <stringbundle id="strings" src="chrome://sieve/locale/locale.properties"/>
+  </stringbundleset>  
+  
+  <!-- Bad Cert Warning Message -->      
+  <box id="sivExplorerBadCert" hidden="true" align="center" pack="center" flex="1">
+    <hbox align="center" class="sivWarning" >
+      <image pack="center" src="chrome://sieve/content/images/sslWarning.png"/>
+      <vbox>
+        <description style="font-weight:bold">&list.badcert;</description>
+        <description pack="center" style="white-space: pre-wrap;">&list.badcert.error;</description>
+        <checkbox id="cbBadCertRemember" label="&list.badcert.remember;" checked="true"/>
+        <hbox align="right">
+          <button id="btnIgnoreBadCert" label="&list.badcert.ignore;" />
+          <button id="btnAbortBadCert" label="&list.badcert.abort;" />
+        </hbox>
+      </vbox> 
+    </hbox>
+  </box>
+
+              
+  <!-- Error Message: Account not configured -->
+  <vbox id="sivExplorerDisabled" align="center" pack="center" flex="1">
+    <box>
+      <deck id="sivAutoConfig" selectedIndex="0">
+                
+        <!-- Welcome -->
+        <vbox id="sivAutoConfigInfo">
+          <label style="font-weight:bold">&list.autoconfig.welcome.caption;</label>
+          <description>&list.autoconfig.welcome.description1;</description>
+          <description>&list.autoconfig.welcome.description2;</description>
+          <separator flex="1"/>
+          <hbox align="right">
+            <button label="&list.autoconfig.advanced;" 
+                    oncommand="onSettingsClick();" />                      
+            <button label="&list.autoconfig.continue;" 
+                    oncommand="onAutoConfigRunClick();" />
+          </hbox>
+        </vbox>
+                  
+        <!-- Detecting -->
+        <vbox id="sivAutoConfigWait">
+          <label style="font-weight:bold">&list.autoconfig.detecting.caption;</label>
+          <label>&list.autoconfig.detecting.description;</label>
+          <separator flex="1"/>
+          <hbox align="right">
+            <button label="&list.autoconfig.cancel;" 
+                    oncommand="onAutoConfigCancelClick();" />
+          </hbox>
+        </vbox>
+                  
+        <!-- Success -->
+        <vbox id="sivAutoConfigInfo">
+          <label style="font-weight:bold">&list.autoconfig.success.caption;</label>
+          <description>&list.autoconfig.success.description;</description>
+          <separator flex="1"/>
+          <hbox align="right"  >
+            <button label="&list.autoconfig.advanced;" 
+                    oncommand="onSettingsClick();" />
+            <button label="&list.autoconfig.continue;"
+                    oncommand="onAutoConfigFinishedClick();" />
+          </hbox>
+        </vbox>                             
+                  
+                  <!-- Error -->
+                  <vbox id="sivAutoConfigError">
+                    <label style="font-weight:bold">&list.autoconfig.error.caption;</label>
+                    <description>&list.autoconfig.error.description;</description>
+                    <separator/>
+                    <hbox align="right">
+                      <button label="&list.autoconfig.retest;" 
+                              oncommand="onAutoConfigRunClick();" />
+                      <button label="&list.autoconfig.config;"
+                              oncommand="onSettingsClick();" />
+                    </hbox>                                                            
+                  </vbox>                                    
+                </deck>
+                </box>
+              </vbox>
+
+
+              <!-- Error Message: Connecton to server lost... -->              
+              <box id="sivExplorerConnectionLost" hidden="false" align="center" pack="center" flex="1">
+                <hbox align="center" class="sivError" >
+                  <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
+                  <vbox>                    
+                     <description pack="center"  flex="1">
+                       Server terminated unexpectedly the connection, click on reconnect to try again.
+                     </description>
+                     <hbox align="right">
+                      <button label="Reconnect" oncommand="onReconnectClick();" />
+                     </hbox>
+                  </vbox> 
+                </hbox>
+              </box>
+              
+                                          <!--  Error Message: Thunderbird in offline mode-->
+              <box id="sivExplorerOffline" hidden="true" align="center" pack="center" flex="1">
+                <hbox align="center" class="sivWarning" >
+                  <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
+                  <vbox>                    
+                     <description pack="center"  flex="1">
+                       You are currently offline. Click 'Go Online' and try again
+                     </description>
+                     <hbox align="right">
+                      <button label="Go Online" oncommand="onGoOnlineClick();" />
+                     </hbox>
+                  </vbox> 
+                </hbox>
+              </box>
+              
+              <box id="sivExplorerWarning" align="center" pack="center" flex="1" > 
+                <hbox align="center" class="sivWarning">
+                  <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
+                  <description id="sivExplorerWarningMsg" pack="center">&list.warning;</description>
+                </hbox>
+              </box>
+              
+              <box id="sivExplorerError" hidden="true" align="center" pack="center" flex="1">
+                <hbox align="center" class="sivError">
+                  <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
+                  <vbox>
+                    <description style="font-weight:bold">&list.error;</description>
+                    <description id="sivExplorerErrorMsg" pack="center" >                    
+                    </description>
+      </vbox> 
+    </hbox>
+  </box>
+              
+  <vbox id="sivExplorerWait" hidden="true" align="center" pack="center" flex="1" >
+    <image pack="center" src="chrome://sieve/content/images/load.gif"/>
+    <spacer/>
+    <description id="sivExplorerWaitMsg" pack="center">
+    </description>
+  </vbox>
+  
+</page>
+  

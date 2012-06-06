@@ -104,7 +104,7 @@ var event =
     // some other channel died we don't care about that...
   },
   
-  onChannelStatus : function(id,text,statusbar)
+  onChannelStatus : function(id,text)
   {
     //TODO Move First run wizard, badcert warning etc to a separate
     // xul file so that both files can share the same connection logic.

@@ -33,8 +33,6 @@ SieveDragHandler.prototype.onDragGesture
   event.dataTransfer.setDragImage(this.owner().html().get(0),
     event.pageX-this.owner().html().offset().left,
     event.pageY-this.owner().html().offset().top);
-  // TODO use mouse event and calculate real offset istead of using 5,5...
-  //event.dataTransfer.setDragImage(this.owner().html().get(0),5,5);
   //event.preventDefault();
   event.stopPropagation();
 

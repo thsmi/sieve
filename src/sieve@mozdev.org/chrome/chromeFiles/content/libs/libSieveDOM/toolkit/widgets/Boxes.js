@@ -94,7 +94,7 @@ SieveAbstractBoxUI.prototype.html
   return this._domElm;
 }
 
-SieveAbstractBoxUI.prototype.refresh
+SieveAbstractBoxUI.prototype.reflow
     = function ()
 {
   if (this.id() < 0)
@@ -122,6 +122,7 @@ SieveAbstractBoxUI.prototype.toScript
 SieveAbstractBoxUI.prototype.bind
     = function (topic,handler)
 {
+  // FIXME: seems as it could be removed
   throw "Ok it seems to be needed"
    this._handler[topic] = handler;   
 }

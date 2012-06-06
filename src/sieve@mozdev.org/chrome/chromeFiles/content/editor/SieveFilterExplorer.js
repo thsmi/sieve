@@ -37,8 +37,7 @@ var event =
 {	
   onListScriptResponse: function(response)
   {
-    // Show List View...
-    sivSetStatus(0);
+    // Show List View...    
     
     sieveTreeView.update(response.getScripts());
     
@@ -49,6 +48,7 @@ var event =
     if ((tree.currentIndex < 0) && (tree.view.rowCount > 0))
       tree.view.selection.select(0);
       
+    sivSetStatus(0);
     //TODO force repainting treeview...
   },
 
@@ -141,9 +141,9 @@ var event =
     sivSendRequest(sid,gCid,request);
   },
   
-  onChannelStatus : function(id,text,statusbar)
-  {
-    sivSetStatus(id,text,statusbar);
+  onChannelStatus : function(id,text)
+  {      
+    sivSetStatus(id,text);
   },
   
   onBadCert : function(targetSite)
@@ -161,6 +161,11 @@ var event =
     
     if (aData == "online")
       sivConnect();    
+  },
+  
+  onReconnect : function()
+  {
+    sivConnect();
   }
 }
 
@@ -217,12 +222,8 @@ function onWindowClose()
   Cc["@mozilla.org/observer-service;1"]
       .getService (Ci.nsIObserverService)
       .removeObserver(event,"network:offline-status-changed");  
- 
-  if (gAutoConfig)
-  {
-    gAutoConfig.cancel();
-    gAutoConfig = null;
-  }
+
+  document.getElementById("sivExplorerStatus").contentWindow.onDetach();
     
   return true;
 }
@@ -252,11 +253,6 @@ function onActivateClick()
   return;
 }
 
-function onReconnectClick()
-{
-  sivConnect();   
-}
-
 function onGoOnlineClick()
 {
   var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);  
@@ -271,7 +267,7 @@ function sivConnect(account)
   if (ioService.offline)
     return sivSetStatus(6); 
   
-  sivSetStatus(3,"progress.connecting","status.connecting");
+  sivSetStatus(3,"progress.connecting");
   
   // Ensure that Sieve Object is null...
   var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
@@ -338,11 +334,8 @@ function sivDisconnect(state,message)
 
 function onSelectAccount()
 {
-  if (gAutoConfig)
-  {
-    gAutoConfig.cancel();
-    gAutoConfig = null;
-  }
+  
+  document.getElementById("sivExplorerStatus").contentWindow.onDetach();  
     
   sivDisconnect();
   
@@ -355,6 +348,8 @@ function onSelectAccount()
   tree.view = sieveTreeView;
       
   var account = getSelectedAccount();
+  
+  document.getElementById("sivExplorerStatus").contentWindow.onAttach(account,event);
       
   if (account == null)
     return sivSetStatus(2,"error.noaccount");
@@ -551,73 +546,30 @@ function onEditClick()
 
 
 
-function sivSetStatus(state, message, statusbar)
-{
-  var strbundle = document.getElementById("strings");
-  
-  document.getElementById('sivExplorerWarning').setAttribute('hidden','true');
-  document.getElementById('sivExplorerError').setAttribute('hidden','true');
-  document.getElementById('sivExplorerWait').setAttribute('hidden','true');
-  document.getElementById('sivExplorerBadCert').setAttribute('hidden','true');
-  document.getElementById('sivExplorerOffline').setAttribute('hidden','true');
-  document.getElementById('sivExplorerDisabled').setAttribute('hidden','true');
-  document.getElementById('sivExplorerConnectionLost').setAttribute('hidden','true');
-  
-  document.getElementById('sivExplorerTree').setAttribute('collapsed','true');
-
-  if (statusbar)
-    document.getElementById('sbStatus').label = strbundle.getString(statusbar);  
-  
-  switch (state)
+function sivSetStatus(state, message)
+{    
+  // Script ready
+  if (state == 0)
   {
-    case 0: disableControls(false);            
-            document.getElementById('sbStatus').label = strbundle.getString("status.connected");
-            document.getElementById('sivExplorerTree').removeAttribute('collapsed');
-            break;    
-    case 1: document.getElementById('sivExplorerWarning').removeAttribute('hidden');
-            document.getElementById('sivExplorerWarningMsg')
-                .firstChild.nodeValue = strbundle.getString(message);
-            break;
-    // client error            
-    case 2: document.getElementById('sivExplorerError').removeAttribute('hidden');
-            document.getElementById('sivExplorerErrorMsg')
-                .firstChild.nodeValue = strbundle.getString(message);    
-            break;
-    case 3: document.getElementById('sivExplorerWait').removeAttribute('hidden');
-            document.getElementById('sivExplorerWaitMsg')
-                .firstChild.nodeValue = strbundle.getString(message);    
-            break;
-    // server error
-    case 4: document.getElementById('sivExplorerError').removeAttribute('hidden');
-            document.getElementById('sivExplorerErrorMsg')
-                .firstChild.nodeValue = message;    
-            break;            
-    case 5: document.getElementById('sivExplorerBadCert').removeAttribute('hidden');
-
-            document.getElementById("btnIgnoreBadCert").setAttribute("message", message);
-            document.getElementById("btnIgnoreBadCert").setAttribute("oncommand", 
-              "onBadCertOverride(this.getAttribute('message'),document.getElementById('cbBadCertRemember').checked);");
-              
-            document.getElementById("btnAbortBadCert").setAttribute("oncommand", 
-              "sivSetStatus(1,'warning.brokencert');");
-                            
-            break;
-    // Offline Mode
-    case 6: document.getElementById('sivExplorerOffline').removeAttribute('hidden');
-            break;
-    case 7: document.getElementById('txtSASL').value = message.getSasl();        
-            document.getElementById('txtExtensions').value = message.getExtensions(true); 
-            document.getElementById('txtImplementation').value = message.getImplementation();
-            document.getElementById('txtVersion').value = "v"+message.getVersion().toFixed(2);
-            document.getElementById('sivExplorerWait').removeAttribute('hidden');
-            break;
-    // account disabled
-    case 8: document.getElementById('sivExplorerDisabled').removeAttribute('hidden');
-            document.getElementById('sivAutoConfig').selectedIndex = message;
-            break;  
-    case 9: document.getElementById('sivExplorerConnectionLost').removeAttribute('hidden');
-            break;
+    disableControls(false);
+    document.getElementById("sivExplorerStatus").setAttribute('hidden','true');    
+    document.getElementById('sivExplorerTree').removeAttribute('collapsed');    
+    return;
   }
+  
+  // Capabilities...
+  if (state == 7)
+  {
+    document.getElementById('txtSASL').value = message.getSasl();        
+    document.getElementById('txtExtensions').value = message.getExtensions(true); 
+    document.getElementById('txtImplementation').value = message.getImplementation();
+    document.getElementById('txtVersion').value = "v"+message.getVersion().toFixed(2);
+  }
+    
+  // The rest has to be redirected to the status window...
+  document.getElementById('sivExplorerTree').setAttribute('collapsed','true');    
+  document.getElementById("sivExplorerStatus").contentWindow.onStatus(state,message)
+  document.getElementById("sivExplorerStatus").removeAttribute('hidden');
 }
 
 function disableControls(disabled)
@@ -824,102 +776,4 @@ function onSettingsClick()
 }
 
 
-function onBadCertOverride(targetSite,permanent)
-{
-  try
-  {
-    var overrideService = Cc["@mozilla.org/security/certoverride;1"]
-                            .getService(Ci.nsICertOverrideService);
 
-    var recentCertsSvc = Cc["@mozilla.org/security/recentbadcerts;1"]
-                             .getService(Ci.nsIRecentBadCertsService);
-                             
-    var status = recentCertsSvc.getRecentBadCert(targetSite);    
-    if (!status)
-      throw "No certificate stored for taget Site..."
-
-    var flags = ((status.isUntrusted)? overrideService.ERROR_UNTRUSTED : 0)
-                  | ((status.isDomainMismatch)? overrideService.ERROR_MISMATCH : 0)
-                  | ((status.isNotValidAtThisTime)? overrideService.ERROR_TIME : 0);      
-
-    var cert = status.QueryInterface(Ci.nsISSLStatus).serverCert;
-    if (!cert)
-      throw "Status does not contain a certificate..."
-                                                         
-    overrideService.rememberValidityOverride(
-      targetSite.split(":")[0], // Host Name with port (host:port)
-      targetSite.split(":")[1],
-      cert, 
-      flags,
-      !permanent);
-      
-    sivConnect();
-  }
-  catch (ex)
-  {
-    sivSetStatus(2,"error.brokencert");
-    gLogger.logStringMessage("onBadCertOverride:"+ex); 
-  }
- 
-}
-
-/*
- *  Auto Config
- */ 
-
-var gAutoConfig = null;
-
-var gAutoConfigEvent =
-{
-  onSuccess : function(host,port,proxy)
-  {
-    sivSetStatus(8,2);
-    
-    getSelectedAccount().setActiveHost(0);
-    getSelectedAccount().getHost().setPort(port);
-    getSelectedAccount().setEnabled(true);
-    
-    gAutoConfig = null;
-  },
-
-  onError : function()
-  {
-    sivSetStatus(8,3);
-    gAutoConfig = null;
-  }
-}
-
-function onAutoConfigRunClick()
-{
-  if (gAutoConfig)
-    gAutoConfig.cancel();
-        
-  gAutoConfig = new SieveAutoConfig();
-  
-  gAutoConfig.addHost(
-    getSelectedAccount().getHost(0).getHostname(),
-    4190,
-    getSelectedAccount().getProxy().getProxyInfo());
-    
-  gAutoConfig.addHost(
-    getSelectedAccount().getHost(0).getHostname(),
-    2000,
-    getSelectedAccount().getProxy().getProxyInfo());
-  
-  gAutoConfig.run(gAutoConfigEvent);
-  
-  sivSetStatus(8,1);
-}
-
-function onAutoConfigCancelClick()
-{
-  gAutoConfig.cancel();
-  gAutoConfig = null;
-  
-  sivSetStatus(8,3);
-}
-
-function onAutoConfigFinishedClick()
-{
-  sivConnect();
-}

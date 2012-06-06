@@ -1,0 +1,64 @@
+Server-Side Message Labels
+In addition to making it easy to share mailboxes, IMAP makes it easy to share message labels. Message labels are called flags in the IMAP specification and are divided into two types: system flags and user-defined flags. The current IMAP specification (RFC 3501) defines these six system flags:
+
+    \Seen
+    \Answered
+    \Flagged
+    \Deleted
+    \Draft
+    \Recent
+
+To learn about the \Deleted flag, see my blog item titled The IMAP Way of Deleting a Message.
+
+User-defined flags are also known as IMAP keywords and, as the name implies, are defined by IMAP users. There is a de facto standard that keywords that are in common use have names that begin with a dollar sign ($). Examples of common keywords are:
+
+    $Label1
+    $Label2
+    $Label3
+    $Label4
+    $Label5
+
+More examples of common keywords are in the IETF Internet Draft Registration of common IMAP keywords, but note that most of the keywords in this draft are at the proposal stage and are not currently in common use. If you define your own personal keyword, its name should not begin with dollar sign ($) or backslash (\) because otherwise it might collide with a flag that is used by current -- or future -- IMAP clients and servers.
+
+The Mozilla-based IMAP clients, SeaMonkey Suite and Thunderbird, have the above five $LabelN keywords hardwired in and do not currently [1] allow users to create custom personal keywords. Since my other desktop IMAP clients, Pine and Mulberry, let me specify custom personal keywords, I have set them up so they can use the above five $LabelN keywords. In Mozilla-based clients, the following are the default display names for these:
+
+    Important
+    Work
+    Personal
+    To Do
+    Later
+
+In Mozilla-based clients, it's easy for a user to change these display names and I'm currently using these display names:
+
+    Useful
+
+
+    To Do
+    To Do Maybe
+
+I chose these display names because they are similar to the defaults and, in general, I try to use defaults whenever possible. I'm still experimenting with $Label2 and $Label3, but I'm thinking that I will use them to help me manage my SMTP-level filters and my delivery-level filters [2] (including my server-side greenlist). If I do, I'll probably use display names like this:
+
+    To Train As Spam
+    To Train As Not Spam
+
+Or this:
+
+    To Block Filter
+    To Accept Filter
+
+Or this:
+
+    To SMTP Filter
+    To Sieve Filter
+
+I'm also experimenting with colors and I'm thinking that I'll make "Useful" messages blue, "To Do" messages yellow, and "To Do Maybe" messages pale yellow. I'm still mulling over what colors to use for my you-need-to-update-your-filter keywords.
+
+In any case, all five of these IMAP keywords, as well as the IMAP system flags, are available in all my desktop IMAP clients (Mulberry, Pine, and SeaMonkey Suite) and are helping me to organize and manage my messages and my filters. I am hopeful that they will someday (soon!) also be available in my web-based IMAP clients.
+
+To learn more about IMAP keywords, see the keywords section of my IMAP Service Providers page.
+
+Please post any thoughts you have about IMAP keywords. I'm especially interested in learning about IMAP clients (both desktop and web-based) that support IMAP keywords, and about the keywords and colors that you use to help you manage your messages.
+
+[1] Thanks to sphery for adding a comment to this blog item and pointing out wiki.mozilla.org/Thunderbird2:Tags, which describes the future of labels (aka tags) in the Mozilla-based IMAP clients.
+
+[2] Many IMAP systems use either Sieve or Procmail for delivery-level filtering and as the message delivery agent (MDA).

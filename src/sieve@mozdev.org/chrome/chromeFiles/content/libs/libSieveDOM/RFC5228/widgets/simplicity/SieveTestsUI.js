@@ -1,3 +1,6 @@
+
+/******************************************************************************/
+
 function SieveTestUI(elm)
 {
   SieveAbstractBoxUI.call(this,elm);
@@ -11,7 +14,7 @@ SieveTestUI.prototype.createHtml
 {  
   
   return parent.append($("<div/>")
-    .append($("<div/>").text("address")))
+    .append($("<div/>").text("address"))) 
     .append($("<div/>")
       .css("display","table")
       .append($("<div/>")

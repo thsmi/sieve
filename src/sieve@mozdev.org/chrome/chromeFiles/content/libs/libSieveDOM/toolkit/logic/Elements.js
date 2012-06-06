@@ -91,7 +91,7 @@ SieveAbstractElement.prototype.html
 {
   if (typeof(refresh) !== "undefined")
     if (refresh)
-      this.widget().refresh();
+      this.widget().reflow();
       
   if (this.widget() == null)
     return null;
@@ -99,7 +99,10 @@ SieveAbstractElement.prototype.html
   return this.widget().html();
 }
 
-
+/**
+ * Retuns the Document which "owns" this element
+ * @return {SieveDocument}
+ */
 SieveAbstractElement.prototype.document
     = function ()
 {  
@@ -152,8 +155,17 @@ SieveAbstractElement.prototype.require
 
 /**
  * Removes this node from the parent Node.
+ * The Node is not removed from the document.
  * 
- * @return {}
+ * If cascade is set to true, empty parents will be removed unless either the 
+ * root node or the specified stop marker is removed.
+ * 
+ * @param @optional {bool} cascade
+ *   set to true if you want to delete empty parents 
+ * @param @optional {SieveAbstractElement} stop
+ *   element which stops the cascade
+ * @return {SieveAbstractElement}
+ *   returns the node which is removed
  */
 SieveAbstractElement.prototype.remove
     = function (cascade,stop)

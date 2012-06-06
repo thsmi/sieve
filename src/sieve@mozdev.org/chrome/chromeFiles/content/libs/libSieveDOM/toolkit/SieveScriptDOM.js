@@ -162,16 +162,19 @@ SieveDocument.prototype.capabilities
  * the document was obviously deleted...
  */
 SieveDocument.prototype.compact
-  = function ()
+  = function (whitelist)
 {
   
   var items = [];
   var cnt = 0;
-  
+
+  whitelist = [].concat(whitelist);
+    
   // scan for null nodes..
   for (var item in this._nodes)
-    if (!this._nodes[item].parent())
-      items.push(item);
+    if (whitelist.indexOf(this._nodes[item]) == -1)
+      if (this._nodes[item].parent() == null)      
+        items.push(item);
 
   // ...cleanup these nodes...
   for (var i=0; i<items.length; i++)
@@ -183,9 +186,10 @@ SieveDocument.prototype.compact
     var it = items.shift();
     
     for (var item in this._nodes)
-      if (this._nodes[item].parent().id() == it)
-        items.push(item) 
-        
+      if (whitelist.indexOf(this._nodes[item]) == -1)
+        if (this._nodes[item].parent().id() == it)
+          items.push(item)    
+      
     delete(this._nodes[it]);
     cnt++;
   } 

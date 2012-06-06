@@ -1,7 +1,7 @@
 body {
   font-family:verdana;
   font-size: 11px;
-  background: url('background.png') #333;
+  background-color:lightgray;
   cursor: default;
   margin-top:20px;
 }
@@ -65,24 +65,7 @@ div[sivtype][sivDragging="true"] {
     margin:0px;    
   }
 
-  .SivStringListItem {
-    padding:10px 0px 20px 20px;
-  }
 
-    #trash 
-    {
-      height: 80px;
-      min-width:80px;
-      background-color:transparent;   
-      background-image:url('trash.png');
-      background-repeat:no-repeat;
-      background-position:center center;   
-    } 
-
-  #trash[sivDragging="true"] 
-  {
-  background-image:url('trash-full.png');
-  } 
 
   div.floating-menu {
   position:absolute;
@@ -187,103 +170,55 @@ div[sivtype][sivDragging="true"] {
     width:600px;
     padding-right:90px;
     padding-left:30px;
-
-    border-radius: 3px;
-    box-shadow: 0 0 3px lightgray;
+    
   }
 
-
-/* Blocks */
-
-.sivBlock > .sivBlockChild:nth-last-of-type(2),
-.sivOperator > .sivOperatorChild:nth-last-of-type(2)
-{
-  background-image: url('hline.png');
-  background-position: 2px top;
-  background-repeat: no-repeat;
+.sivRichList > .sivRichListItem {
+  padding: 5px 10px;
 }
 
-
-.sivBlock > .sivBlockSpacer:nth-last-of-type(1),
-.sivOperator > .sivOperatorSpacer:nth-last-of-type(1)
-{
-  background-image: none;
-  padding-bottom: 0px;
-}
-
-.sivBlockChild,
-.sivOperatorChild
-{
-  background-image: url('vline.png'), url('hline.png');
-  background-position:  -7px center, 2px top;
-  background-repeat: repeat-y, no-repeat;
-}
-
-.sivConditionChild,
-.sivConditionSpacer:not(:first-of-type) {
-  background-image: url('vline2.png');
-  background-position:  -4px center;
-  background-repeat: repeat-y;
-}
-
-.sivBlockChild,
-.sivOperatorChild,
-.sivConditionChild {
-  padding-left:15px;
-}
-
-.sivConditionalChild {
-  padding:3px;
-  background-color: #E8EDF0;
-  border: 1px #DDE4E9 solid
-}
-
-/* Dropmarkers*/
-.sivBlockSpacer, 
-.sivOperatorSpacer
-{
-  background-image: url('vline.png');
-  background-position:  -7px top;
-  background-repeat: repeat-y;
+.sivRichList > .sivRichListItem[sivEditable] {
+/*  background-color: -moz-cellhighlight;
+  color: -moz-cellhighlighttext;  */
+/*     background-color: hsla(216,45%,88%,.98);*/
+   background-color: Highlight;
+   /*opacity: 0.6;*/
+   color: HighlightText; 
+   
+/*     background-color: hsla(216,45%,88%,.98);
+     box-shadow: 0px 1px 2px rgb(204,214,234) inset;   */
+   -moz-outline-radius: 3px;   
+   outline: 1px #999 dotted;
+   /*outline-offset: -1px;*/
+   
+     border: 1px solid hsl(213,45%,65%);
+     box-shadow: 0 0 0 1px hsla(0,0%,100%,.5) inset,
+                 0 1px 0 hsla(0,0%,100%,.3) inset;
+     background-image: -moz-linear-gradient(hsl(212,86%,92%), hsl(212,91%,86%));
+     color: black;     
+     
+/*  */
   
-  padding:2px 0px 2px 0px;
 }
 
-.sivConditionSpacer{
-  padding:0px;
+.sivRichList > .sivRichListItem:not(:last-of-type) {
+  border-bottom: 1px solid gray;
 }
 
-
-.sivBlockSpacer > .sivDropBox,
-.sivOperatorSpacer > .sivDropBox,
-.sivConditionSpacer > .sivDropBox
-{
-  height: 3px;
-}    
-
-.sivBlockSpacer[sivDragging="true"] > .sivDropBox,
-.sivConditionSpacer[sivDragging="true"] > .sivDropBox,
-.sivOperatorSpacer[sivDragging="true"] > .sivDropBox 
- {
-  background-color : red;
-  background-image: -moz-linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
-  box-shadow: 0 0 5px red;
+.sivRichList {
+  -moz-appearance: textfield;
 }
 
-
-
-#sivActions > div[sivtype]
-{
-  margin:2px 10px;  
-  padding:0px 3px;
-  background-color: lightgray;
-  border-radius:3px;
-  border: 1px solid gray;
+.sivAction > div:not(:first-of-type),
+.sivCondition > div:not(:first-of-type) {
+  margin-left: 10px;
 }
+
+/* String list items */
 
 .SivStringList {
-  padding-left: 20px;
-  padding-bottom: 15px;
+  margin-left:10px;
+  margin-right:10px;  
 }
 
 .sivStringListItem
@@ -301,7 +236,8 @@ div[sivtype][sivDragging="true"] {
 .sivStringListItem > span > input {
   -moz-appearance: none !important;
   border:none;
-  width:200px;
+  width:100%;
+  min-width: 150px;
 }
 
 /* the containter for our icons */
@@ -348,14 +284,5 @@ div[sivtype][sivDragging="true"] {
   overflow:-moz-scrollbars-none !important;
 }
 
-.sivMatchType,
-.sivAddressPart,
-.sivComparator
-{
-  padding-bottom: 15px;
-}
 
-#debug {
- /* display:none;*/
-}
 

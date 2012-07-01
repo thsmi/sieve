@@ -46,10 +46,10 @@
           src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js" />
   <script type="application/javascript" 
           src="chrome://sieve/content/editor/SieveFilterEditor.js" />
-  <script type="application/javascript" 
+ <!-- <script type="application/javascript" 
           src="chrome://global/content/printUtils.js"/>
   <script type="application/javascript" 
-          src="chrome://messenger/content/msgPrintEngine.js"/>
+          src="chrome://messenger/content/msgPrintEngine.js"/> -->
   
  
 <toolbox class="mail-toolbox">
@@ -106,53 +106,15 @@
 </toolbox>
   <hbox flex="1" >
       <deck id="dkView" flex="1" selectedIndex="0">
+        <vbox flex="1">
           <vbox flex="1">
-            <!-- Sieve Show Warning message when in offine mode -->                
-            <box id="sivEditorWarning" align="center" pack="center" flex="1" > 
-              <hbox align="center" class="sivWarning">
-                <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
-                <vbox>
-                  <description id="sivExplorerWarningMsg" pack="center">
-                    Connection to the server was lost! 
-                    Click on ingore to continue, but you won't be able to store
-                    scripts on the server. 
-                  </description>
-                  <hbox align="right">
-                    <button id="btnWarningContinue" label="Ignore" 
-                            oncommand="onIgnoreOffline();" />
-                    <!--<button id="btnWarningContinue" label="Go Online" />-->
-                  </hbox>
-                </vbox>                
-              </hbox>
-            </box>
-
-            <!-- Loading animation -->
-            <vbox id="sivEditorWait" style="-moz-appearance: textfield;" 
-                  align="center" pack="center" flex="1" >
-              <image pack="center" src="chrome://sieve/content/images/load.gif"/>
-              <spacer/> 
-              <description id="sivEditorWaitMsg" pack="center">          
-              </description>
-            </vbox>
             
-              <!-- Error Message: Connecton to server lost... -->              
-              <box id="sivExplorerConnectionLost" hidden="true" align="center" pack="center" flex="1">
-                <hbox align="center" class="sivError" >
-                  <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
-                  <vbox>                    
-                     <description pack="center"  flex="1">
-                       Server terminated unexpectedly the connection, click on reconnect to try again.
-                     </description>
-                     <hbox align="right">
-                      <button label="Reconnect" oncommand="onReconnectClick();" />
-                     </hbox>
-                  </vbox> 
-                </hbox>
-              </box>            
+            <!-- Status messages -->
+            <iframe id="sivEditorStatus" flex="1" src="chrome://sieve/content/editor/SieveStatus.xul" />
                         
             <!-- Sieve Script editor -->                        
             <hbox id="sivEditor" collapsed="true" flex="1" class="sivEditor">
-              <vbox id="sivLineNumbers" hidden="true"> 
+              <vbox id="sivLineNumbers"> 
                 <textbox id="sivLineNumbersEditor" flex="1" 
                          disabled="true" multiline="true" 
                          wrap="off" value="1"
@@ -164,26 +126,20 @@
                        multiline="true" wrap="off" 
                        autocomplete="off" />
             </hbox>
-                        
+                                   
             <!-- Error Bar (Showing Script errors) --> 
             <splitter id="spErrorBar" resizeafter="farthest" /> 
-            <vbox id="vbErrorBar" class="sieveSideBar">
-              <stack class="outset">
-                <image flex="1"/> 
-                <hbox>
-                  <label flex="1" value="&edit.errorbar.title;" />
-                    <toolbarbutton class="sieveCloseButton"
-                                   oncommand="onErrorBarHide();"/>
-                </hbox>
-              </stack>             
-              <hbox align="center" min-height="50px" flex="1" style="overflow:auto;-moz-appearance: textfield;" class="box-inset">
+            
+            <vbox id="vbErrorBar">
+              <hbox align="center" min-height="50px" flex="1" style="overflow:auto;" >
                 <image id="imgErrorBar" pack="center"   src="chrome://sieve/content/images/syntax-ok.png"/>
                 <description flex="1" id="lblErrorBar" style="white-space: pre;" >
                 </description>             
                 <!-- <textbox flex="1" id="lblErrorBar" multiline="true" rows="3" readonly="true" class="plain"/>-->
               </hbox>
             </vbox>
-                       
+          </vbox>
+        
             <hbox class="chromeclass-status">
               <statusbarpanel width="100px" id="sbCursorPos" label=""/>
               <statusbarpanel width="100px" id="sbChanged" label=""/>
@@ -192,7 +148,7 @@
 
           </vbox>
           
-        <iframe id="sivWidgetEditor" flex="1" src="chrome://sieve/content/libs/libSieveDOM/SieveGui.html" type="content" />          
+        <iframe id="sivWidgetEditor" flex="1"  type="content" />          
       </deck>
     <splitter id="splitter" resizeafter="farthest" />
   <vbox id="vbSidebar" class="sieveSideBar">

@@ -149,39 +149,39 @@ function onAttach(account, callback)
 
 function onStatus(state, message)
 {
-  
+  try {
   var strbundle = document.getElementById("strings");
   
-  document.getElementById('sivExplorerWarning').setAttribute('hidden','true');
-  document.getElementById('sivExplorerError').setAttribute('hidden','true');
-  document.getElementById('sivExplorerWait').setAttribute('hidden','true');
-  document.getElementById('sivExplorerBadCert').setAttribute('hidden','true');
-  document.getElementById('sivExplorerOffline').setAttribute('hidden','true');
-  document.getElementById('sivExplorerDisabled').setAttribute('hidden','true');
-  document.getElementById('sivExplorerConnectionLost').setAttribute('hidden','true');
+  document.getElementById('StatusWarning').setAttribute('hidden','true');
+  document.getElementById('StatusError').setAttribute('hidden','true');
+  document.getElementById('StatusWait').setAttribute('hidden','true');
+  document.getElementById('StatusBadCert').setAttribute('hidden','true');
+  document.getElementById('StatusOffline').setAttribute('hidden','true');
+  document.getElementById('StatusDisabled').setAttribute('hidden','true');
+  document.getElementById('StatusConnectionLost').setAttribute('hidden','true');
   
   
   switch (state)
   {   
-    case 1: document.getElementById('sivExplorerWarning').removeAttribute('hidden');
-            document.getElementById('sivExplorerWarningMsg')
+    case 1: document.getElementById('StatusWarning').removeAttribute('hidden');
+            document.getElementById('StatusWarningMsg')
                 .firstChild.nodeValue = strbundle.getString(message);
             break;
     // client error            
-    case 2: document.getElementById('sivExplorerError').removeAttribute('hidden');
-            document.getElementById('sivExplorerErrorMsg')
+    case 2: document.getElementById('StatusError').removeAttribute('hidden');
+            document.getElementById('StatusErrorMsg')
                 .firstChild.nodeValue = strbundle.getString(message);    
             break;
-    case 3: document.getElementById('sivExplorerWait').removeAttribute('hidden');
-            document.getElementById('sivExplorerWaitMsg')
+    case 3: document.getElementById('StatusWait').removeAttribute('hidden');
+            document.getElementById('StatusWaitMsg')
                 .firstChild.nodeValue = strbundle.getString(message);    
             break;
     // server error
-    case 4: document.getElementById('sivExplorerError').removeAttribute('hidden');
-            document.getElementById('sivExplorerErrorMsg')
+    case 4: document.getElementById('StatusError').removeAttribute('hidden');
+            document.getElementById('StatusErrorMsg')
                 .firstChild.nodeValue = message;    
             break;            
-    case 5: document.getElementById('sivExplorerBadCert').removeAttribute('hidden');
+    case 5: document.getElementById('StatusBadCert').removeAttribute('hidden');
 
             document.getElementById("btnIgnoreBadCert").setAttribute("message", message);
             document.getElementById("btnIgnoreBadCert").setAttribute("oncommand", 
@@ -192,21 +192,26 @@ function onStatus(state, message)
                             
             break;
     // Offline Mode
-    case 6: document.getElementById('sivExplorerOffline').removeAttribute('hidden');
+    case 6: document.getElementById('StatusOffline').removeAttribute('hidden');
             break;
   /*  // Capabilities set...
-    case 7: document.getElementById('sivExplorerWait').removeAttribute('hidden');
+    case 7: document.getElementById('StatusWait').removeAttribute('hidden');
             break;*/
     // account disabled
-    case 8: document.getElementById('sivExplorerDisabled').removeAttribute('hidden');
+    case 8: document.getElementById('StatusDisabled').removeAttribute('hidden');
             document.getElementById('sivAutoConfig').selectedIndex = message;
             break;  
-    case 9: document.getElementById('sivExplorerConnectionLost').removeAttribute('hidden');
+    case 9: document.getElementById('StatusConnectionLost').removeAttribute('hidden');
             break;
       
     // Show the tobber as default...
     default:
-      document.getElementById('sivExplorerWait').removeAttribute('hidden');
+      document.getElementById('StatusWait').removeAttribute('hidden');
+  }
+  
+  } catch (ex)
+  {
+    alert(state+" || "+message +"||"+ex);
   }
 }
 

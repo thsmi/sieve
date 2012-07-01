@@ -39,7 +39,7 @@
   </stringbundleset>  
   
   <!-- Bad Cert Warning Message -->      
-  <box id="sivExplorerBadCert" hidden="true" align="center" pack="center" flex="1">
+  <box id="StatusBadCert" hidden="true" align="center" pack="center" flex="1">
     <hbox align="center" class="sivWarning" >
       <image pack="center" src="chrome://sieve/content/images/sslWarning.png"/>
       <vbox>
@@ -56,7 +56,7 @@
 
               
   <!-- Error Message: Account not configured -->
-  <vbox id="sivExplorerDisabled" hidden="true" align="center" pack="center" flex="1">
+  <vbox id="StatusDisabled" hidden="true" align="center" pack="center" flex="1">
     <box>
       <deck id="sivAutoConfig" selectedIndex="0">
                 
@@ -116,7 +116,7 @@
 
 
               <!-- Error Message: Connecton to server lost... -->              
-              <box id="sivExplorerConnectionLost" hidden="true" align="center" pack="center" flex="1">
+              <box id="StatusConnectionLost" hidden="true" align="center" pack="center" flex="1">
                 <hbox align="center" class="sivError" >
                   <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
                   <vbox>                    
@@ -130,43 +130,52 @@
                 </hbox>
               </box>
               
-                                          <!--  Error Message: Thunderbird in offline mode-->
-              <box id="sivExplorerOffline" hidden="true" align="center" pack="center" flex="1">
-                <hbox align="center" class="sivWarning" >
-                  <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
-                  <vbox>                    
-                     <description pack="center"  flex="1">
-                       You are currently offline. Click 'Go Online' and try again
-                     </description>
-                     <hbox align="right">
-                      <button label="Go Online" oncommand="onGoOnlineClick();" />
-                     </hbox>
-                  </vbox> 
-                </hbox>
-              </box>
+   <!--  Error Message: Thunderbird in offline mode-->
+   <box id="StatusOffline" hidden="true" align="center" pack="center" flex="1">
+     <hbox align="center" class="sivWarning" >
+       <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
+       <vbox>                    
+         <description pack="center"  flex="1">
+           You are currently offline. Click 'Go Online' and try again
+         </description>
+         <hbox align="right">
+           <button label="Go Online" oncommand="onGoOnlineClick();" />
+         </hbox>
+       </vbox> 
+     </hbox>
+   </box>
               
-              <box id="sivExplorerWarning" hidden="true" align="center" pack="center" flex="1" > 
-                <hbox align="center" class="sivWarning">
-                  <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
-                  <description id="sivExplorerWarningMsg" pack="center">&list.warning;</description>
-                </hbox>
-              </box>
+   <box id="StatusWarning" hidden="true" align="center" pack="center" flex="1" > 
+    <hbox align="center" class="sivWarning">
+      <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
+      <vbox>
+        <description id="StatusWarningMsg" pack="center">&list.warning;</description>
+        <hbox align="right">
+          <button id="btnWarningContinue" label="Ignore" 
+                  oncommand="onIgnoreOffline();" />
+          <button label="Reconnect" oncommand="onReconnectClick();" />
+        </hbox>
+      </vbox>      
+    </hbox>
+  </box>
               
-              <box id="sivExplorerError" hidden="true" align="center" pack="center" flex="1">
-                <hbox align="center" class="sivError">
-                  <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
-                  <vbox>
-                    <description style="font-weight:bold">&list.error;</description>
-                    <description id="sivExplorerErrorMsg" pack="center" >                    
-                    </description>
+  <box id="StatusError" hidden="true" align="center" pack="center" flex="1">
+    <hbox align="center" class="sivError">
+      <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
+      <vbox>
+        <description style="font-weight:bold">&list.error;</description>
+        <description id="StatusErrorMsg" pack="center" ></description>
+        <hbox align="right">
+          <button label="Reconnect" oncommand="onReconnectClick();" />
+        </hbox>                    
       </vbox> 
     </hbox>
   </box>
               
-  <vbox id="sivExplorerWait" align="center" pack="center" flex="1" >
+  <vbox id="StatusWait" align="center" pack="center" flex="1" >
     <image pack="center" src="chrome://sieve/content/images/load.gif"/>
     <spacer/>
-    <description id="sivExplorerWaitMsg" pack="center">
+    <description id="StatusWaitMsg" pack="center">
     </description>
   </vbox>
   

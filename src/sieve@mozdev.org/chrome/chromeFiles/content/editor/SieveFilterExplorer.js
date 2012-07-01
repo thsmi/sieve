@@ -180,7 +180,7 @@ SieveFilterExplorer.prototype.disconnect
   disableControls(true);
   
   if (state)
-    sivSetStatus(state,message,"status.disconnected");  
+    sivSetStatus(state,message);  
   
   if ((!this._sid) || (!this._cid))
     return;
@@ -441,9 +441,14 @@ function onWindowClose()
   // Don't forget to close this channel...
   gSFE.disconnect();
   
-  Cc["@mozilla.org/observer-service;1"]
+  try
+  {
+    Cc["@mozilla.org/observer-service;1"]
       .getService (Ci.nsIObserverService)
-      .removeObserver(gSFE,"network:offline-status-changed");  
+      .removeObserver(gSFE,"network:offline-status-changed");
+  } 
+  catch (ex)  {  }
+  
 
   document.getElementById("sivExplorerStatus").contentWindow.onDetach();
     

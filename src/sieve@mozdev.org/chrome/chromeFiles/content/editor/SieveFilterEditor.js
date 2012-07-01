@@ -106,8 +106,7 @@ var event =
   
   onChannelStatus : function(id,text)
   {
-    //TODO Move First run wizard, badcert warning etc to a separate
-    // xul file so that both files can share the same connection logic.
+     sivSetStatus(id,text);
   },
   
   /**
@@ -164,12 +163,12 @@ var event =
 
   onTimeout: function()
   {
-    sivSetStatus(2);
+    sivDisconnect(1,"warning.timeout");
   },
   
   onDisconnect:function(response)
   {
-    sivSetStatus(3);
+    sivSetStatus(9);
   },
   
   observe : function(aSubject, aTopic, aData)
@@ -347,29 +346,6 @@ function onWindowPersist()
 function onWindowLoad()
 { 
         
-  // checkbox buttons are buggy in Gecko 1.8, this has been fixed in ...
-  // ...Gecko 1.9 (Thunderbird 3).
-  // We implement the workaround mentioned in Bug 382457.
-
-  /*document.getElementById("btnCompile").
-    addEventListener(
-      "command",
-      function() {onErrorBar();},
-      false);
-  
-  document.getElementById("btnReference").
-    addEventListener(
-      "command",
-      function() {onSideBar(); },
-      false);
-  
-  document.getElementById("btnSearchBar").
-    addEventListener(
-      "command",
-      function() {onSearchBar();},
-      false);*/
- 
-  document.getElementById("sivLineNumbers").removeAttribute('hidden');
   document.getElementById("sivContentEditor")
       .addEventListener("scroll", function() {onEditorScroll();},false);
 
@@ -391,6 +367,12 @@ function onWindowLoad()
       "click",
       function(event) {onSideBarBrowserClick(event);},
       false);
+      
+  document.getElementById("sivWidgetEditor")
+    .setAttribute("src","chrome://sieve/content/libs/libSieveDOM/SieveGui.html")
+    
+  document.getElementById("sivEditorStatus").contentWindow
+    .onAttach(account,function() { onReconnectClick() });    
 
   var args = window.arguments[0].wrappedJSObject;
   
@@ -410,7 +392,7 @@ function onWindowLoad()
   document.getElementById("lblErrorBar").firstChild.nodeValue
       = document.getElementById("strings").getString("syntax.ok");
     
-  sivSetStatus(1,"status.loading");
+  sivSetStatus(3,"status.loading");
 
   // Connect to the Sieve Object...  
   var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
@@ -431,7 +413,7 @@ function onWindowLoad()
   onErrorBar(args["compile"]);
   onSideBar(true);
   onSearchBar(false);
-  onViewSource(true);
+  /*onViewSource(true);*/
 
   Cc["@mozilla.org/observer-service;1"]
       .getService (Ci.nsIObserverService)
@@ -457,7 +439,7 @@ function onIgnoreOffline()
     // TODO: this is code exists twice remove me...
     if (gEditorStatus.hasContent == false)
     {
-      sivSetStatus(1,"status.loading");
+      sivSetStatus(3,"status.loading");
       
       var args = window.arguments[0].wrappedJSObject;
       
@@ -478,11 +460,12 @@ function onIgnoreOffline()
 
 function onReconnectClick()
 {
+ 
   gEditorStatus.defaultScript = document.getElementById("sivContentEditor").value;
   
   var account = (new SieveAccounts()).getAccount(gEditorStatus.account);
   
-  sivSetStatus(1,"status.loading");
+  sivSetStatus(3,"status.loading");
 
   // Connect to the Sieve Object...  
   var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
@@ -1068,10 +1051,7 @@ function onEditorScroll()
 }
 
 function UpdateLines()
-{
-  if (document.getElementById("sivLineNumbers").hasAttribute('hidden'))
-    return;
-   
+{  
   // TODO do lazy update 100ms ...
   var first = document.getAnonymousElementByAttribute(document.getElementById("sivLineNumbersEditor"), 'anonid', 'input');
   var second = document.getAnonymousElementByAttribute(document.getElementById("sivContentEditor"), 'anonid', 'input');
@@ -1101,10 +1081,7 @@ function UpdateLines()
 }
 
 function UpdateLinesLazy()
-{
-  if (document.getElementById("sivLineNumbers").hasAttribute('hidden'))
-    return;
-    
+{   
   if (gEditorStatus.scrollChanged)
     return;
 
@@ -1291,7 +1268,7 @@ function sivSendRequest(sid,cid,request)
     
   if (ioService.offline)
   {        
-    sivDisconnect(2);
+    sivDisconnect(6);
     return;
   }
   
@@ -1311,15 +1288,15 @@ function sivSendRequest(sid,cid,request)
     // ... would accure, so let's display the timeout message directly.
     
     alert("SivFilerExplorer.sivSendRequest:"+e);
-    sivDisconnect(2);       
+    sivDisconnect(1);       
   }
 }
 
-function sivDisconnect(state)
+function sivDisconnect(state,message)
 {
   
   if (state)
-    sivSetStatus(state);
+    sivSetStatus(state,message);
     
   if ((!gSid) || (!gCid))
     return;
@@ -1331,24 +1308,17 @@ function sivDisconnect(state)
 
 function sivSetStatus(state, message)
 {
-  document.getElementById('sivEditorWarning').setAttribute('hidden','true');
-  document.getElementById('sivEditorWait').setAttribute('hidden','true');
-  document.getElementById('sivExplorerConnectionLost').setAttribute('hidden','true');
-  document.getElementById('sivEditor').setAttribute('collapsed','true');
-    
-  switch (state)
+  if (state == 0)
   {
-    case 3: document.getElementById('sivExplorerConnectionLost').removeAttribute('hidden');
-            break;    
-    case 2: document.getElementById('sivEditorWarning').removeAttribute('hidden');
-            break;    
-    case 1: document.getElementById('sivEditorWait').removeAttribute('hidden');
-            document.getElementById('sivEditorWaitMsg').firstChild.nodeValue 
-                = document.getElementById("strings").getString(message);
-            break;
-    case 0: document.getElementById('sivEditor').removeAttribute('collapsed');
-            break;
+    document.getElementById("sivEditorStatus").setAttribute('hidden','true');    
+    document.getElementById('sivEditor').removeAttribute('collapsed');    
+    return;
   }
+    
+  // The rest has to be redirected to the status window...
+  document.getElementById('sivEditor').setAttribute('collapsed','true');    
+  document.getElementById("sivEditorStatus").contentWindow.onStatus(state,message)
+  document.getElementById("sivEditorStatus").removeAttribute('hidden');    
   
 }
          

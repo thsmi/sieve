@@ -48,7 +48,8 @@
  .sivEditor #sivLineNumbers textbox
  { 
 	 width:50px;  
-	 background:-moz-dialog !important; 	 
+	 background: #f8f8f8 !important;
+	 /*background:-moz-dialog !important; 	 */
 	 overflow:hidden;
  }
  
@@ -63,6 +64,7 @@
 {
 	 visibility:hidden;
 	 width:50px;
+	background: #f8f8f8 !important;
 }
  
 
@@ -74,14 +76,14 @@
 }
 
 
-#sivExplorerWait
+#StatusWait
 {
   background: white;
   font-weight: bold;
   color: darkgray;	
 }
 
-#sivExplorerError
+#StatusError
 {
 	background-color: white	
 }
@@ -144,7 +146,7 @@
 	-moz-border-radius: 5px;	
 }
 
-#sivExplorerWarning description
+#StatusWarning description
 {
 	white-space: pre;
 }
@@ -303,3 +305,22 @@
 {
     background-image: url(chrome://sieve/content/images/closeActive.png);
 }
+
+#spErrorBar{
+  border: none;
+  border-bottom: 1px solid #A9B7C9;
+  min-height: 0;
+  height: 5px;
+  background-color: transparent;
+  margin-top: -5px;
+  position: relative;
+  z-index: 10;
+  -moz-transition: border-width .3s ease-in;
+}
+
+#vbErrorBar  {
+	background: #f8f8f8;
+	border-bottom: 1px solid #A9B7C9;
+	min-height: 50px;
+}
+

@@ -17,8 +17,7 @@
   Contiains commonly used dialogs during login etc... 
 -->
 
-<page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
-      onload="">
+<page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" >
   
   <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveRequest.js"/>
@@ -57,7 +56,7 @@
 
               
   <!-- Error Message: Account not configured -->
-  <vbox id="sivExplorerDisabled" align="center" pack="center" flex="1">
+  <vbox id="sivExplorerDisabled" hidden="true" align="center" pack="center" flex="1">
     <box>
       <deck id="sivAutoConfig" selectedIndex="0">
                 
@@ -117,7 +116,7 @@
 
 
               <!-- Error Message: Connecton to server lost... -->              
-              <box id="sivExplorerConnectionLost" hidden="false" align="center" pack="center" flex="1">
+              <box id="sivExplorerConnectionLost" hidden="true" align="center" pack="center" flex="1">
                 <hbox align="center" class="sivError" >
                   <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
                   <vbox>                    
@@ -146,7 +145,7 @@
                 </hbox>
               </box>
               
-              <box id="sivExplorerWarning" align="center" pack="center" flex="1" > 
+              <box id="sivExplorerWarning" hidden="true" align="center" pack="center" flex="1" > 
                 <hbox align="center" class="sivWarning">
                   <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
                   <description id="sivExplorerWarningMsg" pack="center">&list.warning;</description>
@@ -164,7 +163,7 @@
     </hbox>
   </box>
               
-  <vbox id="sivExplorerWait" hidden="true" align="center" pack="center" flex="1" >
+  <vbox id="sivExplorerWait" align="center" pack="center" flex="1" >
     <image pack="center" src="chrome://sieve/content/images/load.gif"/>
     <spacer/>
     <description id="sivExplorerWaitMsg" pack="center">

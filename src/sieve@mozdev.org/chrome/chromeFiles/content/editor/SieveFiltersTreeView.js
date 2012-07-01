@@ -89,6 +89,6 @@ SieveTreeView.prototype.cycleHeader
 SieveTreeView.prototype.cycleCell
     = function(row, col)
 {    
-  this.listener.onCycleCell(row,col,this.rules[row].script,this.rules[row].active);
+  this.listener(row,col,this.rules[row].script,this.rules[row].active);
   this.selection.select(row);
 }

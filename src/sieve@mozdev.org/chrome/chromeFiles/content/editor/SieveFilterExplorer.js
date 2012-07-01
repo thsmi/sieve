@@ -25,149 +25,371 @@ if (typeof(Cc) == 'undefined')
 if (typeof(Ci) == 'undefined')
   { Ci = Components.interfaces; } 
 
-var sid = null;
-var gCid = null;
-
 /** @type {{Components.interfaces.nsIConsoleService}}*/
 var gLogger = null;
- 
-var sieveTreeView = null;
 
-var event = 
-{	
-  onListScriptResponse: function(response)
-  {
-    // Show List View...    
-    
-    sieveTreeView.update(response.getScripts());
-    
-    var tree = document.getElementById('treeImapRules');
-    tree.view = sieveTreeView;
-    
-    // always select something
-    if ((tree.currentIndex < 0) && (tree.view.rowCount > 0))
-      tree.view.selection.select(0);
-      
-    sivSetStatus(0);
-    //TODO force repainting treeview...
-  },
+// We do it java style...
+function SieveFilterExplorer()
+{
+  this._sid = null;
+  this._cid = null;
+  this._view = null;
+}
 
-  onSetActiveResponse: function(response)
-  {
-    // Always refresh the table ...
-    var request = new SieveListScriptRequest();
-    request.addListScriptListener(event);
-    request.addErrorListener(event);
-     
-    sivSendRequest(sid,gCid,request);
-  },
+// TODO muss der error listener wirklich jedes mal gesetzet werden...
+// eigentlich müssete der default doch beim Objekt rauskommen...
 
-  onDeleteScriptResponse:  function(response)
-  {
-    // Always refresh the table ...
-    var request = new SieveListScriptRequest();
-    request.addListScriptListener(event);
-    request.addErrorListener(event);
-    
-    sivSendRequest(sid,gCid,request);
-  },
-
-  onOffline: function()
-  {
-    sivDisconnect(6);
-  },
+//-- Sieve Related Events
+SieveFilterExplorer.prototype.onListScriptResponse
+    = function(response)
+{
+  // Show List View...    
+  var tree = document.getElementById('treeImapRules');
   
-  onTimeout: function()
-  {
-    gLogger.logStringMessage("SivFilterExplorer.js\nOnTimeout");
+  this._view.update(response.getScripts());
+  tree.view = this._view;
     
-    
-    sivDisconnect(1,"warning.timeout");
-  },
+  // always select something
+  if ((tree.currentIndex < 0) && (tree.view.rowCount > 0))
+    tree.view.selection.select(0);
+      
+  sivSetStatus(0);
+  //TODO force repainting treeview...
+}
+
+SieveFilterExplorer.prototype.onSetActiveResponse
+    = function(response)
+{
+  // Always refresh the table ...  
+  this.listScript();
+}
+
+SieveFilterExplorer.prototype.onDeleteScriptResponse
+    = function(response)
+{
+  // Always refresh the table ...
+  this.listScript();
+}
+
+SieveFilterExplorer.prototype.onOffline
+    = function()
+{
+  this.disconnect(6);
+}
+  
+SieveFilterExplorer.prototype.onTimeout
+    = function()
+{
+  gLogger.logStringMessage("SivFilterExplorer.js\nOnTimeout");   
+  this.disconnect(1,"warning.timeout");
+}
 	
-  onError: function(response)
-  {
-    gLogger.logStringMessage("SivFilerExplorer.OnError: "+response.getMessage());
-    sivDisconnect(4,response.getMessage());
-  },
+SieveFilterExplorer.prototype.onError
+    = function(response)
+{
+  gLogger.logStringMessage("SivFilerExplorer.OnError: "+response.getMessage());
+  this.disconnect(4,response.getMessage());
+}
   
-  onDisconnect: function()
-  {
-    sivDisconnect(9);
-  },
-  
-  onCycleCell: function(row,col,script,active)
-  {
-  	var request = null;
-    if (active == true)
-      request = new SieveSetActiveRequest();
-    else
-      request = new SieveSetActiveRequest(script)
+SieveFilterExplorer.prototype.onDisconnect
+    = function()
+{
+  this.disconnect(9);
+}
       
-    request.addSetActiveListener(event);
-    request.addErrorListener(event);
-
-    sivSendRequest(sid,gCid,request);
-  },
+SieveFilterExplorer.prototype.onChannelClosed
+    = function()
+{
+  // a channel is usually closed when a child window is closed. Therefore
+  // it is a good idea to refresh the list...
+  this.listScript();
+}
+  
+SieveFilterExplorer.prototype.onChannelCreated
+    = function(sieve)
+{
+  this.onChannelReady(this._cid);
+}
+  
+SieveFilterExplorer.prototype.onChannelReady
+    = function(cid)
+{
+  // We observe only our channel...
+  if (cid != this._cid)
+    return;
       
-  onChannelClosed : function()
-  {
-    // a channel is usually closed when a child window is closed. Therefore
-    // it is a good idea to refresh the list...
-          
-    var request = new SieveListScriptRequest();
-    request.addListScriptListener(event);
-    request.addErrorListener(event);
-
-    sivSendRequest(sid,gCid,request);
-  },
+  // List all scripts as soon as we are connected
+  this.listScript();    
+}
   
-  onChannelCreated : function(sieve)
-  {
-    event.onChannelReady(gCid);
-  },
+SieveFilterExplorer.prototype.onChannelStatus
+    = function(id,text)
+{      
+  sivSetStatus(id,text);
+}
   
-  onChannelReady : function(cid)
-  {
-    // We observe only our channel...
-    if (gCid != cid)
-      return;
-      
-    // List all scripts as soon as we are connected
-    var request = new SieveListScriptRequest();
-    request.addListScriptListener(event);
-    request.addErrorListener(event);
-
-    sivSendRequest(sid,gCid,request);
-  },
+SieveFilterExplorer.prototype.onBadCert
+    = function(targetSite)
+{
+  this.disconnect(5,targetSite);
+}
   
-  onChannelStatus : function(id,text)
-  {      
-    sivSetStatus(id,text);
-  },
-  
-  onBadCert : function(targetSite)
-  {
-    sivDisconnect(5,targetSite);
-  },
-  
-  observe : function(aSubject, aTopic, aData)
+SieveFilterExplorer.prototype.observe
+    = function(aSubject, aTopic, aData)
   {
     if (aTopic != "network:offline-status-changed")
       return;
     
     if (aData == "offline")
-      event.onOffline();
+      this.onOffline();
     
     if (aData == "online")
-      sivConnect();    
-  },
+      this.connect();    
+  }
   
-  onReconnect : function()
+/******************************************************************************/
+
+SieveFilterExplorer.prototype.connect
+    = function (account)
+{
+  var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+  
+  if (ioService.offline)
+    return sivSetStatus(6); 
+  
+  sivSetStatus(3,"progress.connecting");
+  
+  // Ensure that Sieve Object is null...
+  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
+            .getService().wrappedJSObject;
+  
+  if (!account)
+    account = getSelectedAccount();
+ 
+  this._sid = sivManager.createSession(account.getKey());
+  sivManager.addSessionListener(this._sid,this);
+  
+  this._cid = sivManager.createChannel(this._sid);
+  
+  sivManager.openChannel(this._sid,this._cid);  
+}
+
+SieveFilterExplorer.prototype.disconnect
+    = function (state,message)
+{
+  disableControls(true);
+  
+  if (state)
+    sivSetStatus(state,message,"status.disconnected");  
+  
+  if ((!this._sid) || (!this._cid))
+    return;
+    
+  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
+                       .getService().wrappedJSObject;
+  sivManager.removeSessionListener(this._sid, this);
+  sivManager.closeChannel(this._sid,this._cid);    
+}
+
+SieveFilterExplorer.prototype.deleteScript
+    = function (script)
+{
+  // delete the script...
+  var request = new SieveDeleteScriptRequest(script);
+  request.addDeleteScriptListener(this);
+  request.addErrorListener(this);
+  
+  this.sendRequest(request);  
+}
+
+SieveFilterExplorer.prototype.setActiveScript
+    = function (script)
+{
+  var request = new SieveSetActiveRequest(script);      
+  request.addSetActiveListener(this);
+  request.addErrorListener(this);
+
+  this.sendRequest(request);
+}
+
+SieveFilterExplorer.prototype._renameScript2
+    = function (oldName, newName)
+{
+  var that = this;
+  
+  var lEvent = 
+  {    
+    onRenameScriptResponse: function(response)
+    {
+      that.listScript();
+    },
+    onTimeout: function()
+    {
+      that.onTimeout();
+    },
+    onError: function(response)
+    {
+      //TODO Display notification instead of an popup box.
+      alert(response.getMessage());
+    }
+  }
+  
+  var request = new SieveRenameScriptRequest(oldName, newName);
+  request.addRenameScriptListener(lEvent)
+  request.addErrorListener(lEvent);
+    
+  this.sendRequest(request);
+}
+
+SieveFilterExplorer.prototype._renameScript
+    = function (oldName, newName, isActive)
+{
+  var that = this;
+  
+  var lEvent = 
   {
-    sivConnect();
+    oldScriptName  : null,    
+    newScriptName  : null,
+    isActive       : null,
+    
+    onGetScriptResponse: function(response)
+    {
+      var request = new SievePutScriptRequest(
+                      new String(lEvent.newScriptName),
+                      new String(response.getScriptBody()));
+
+      request.addPutScriptListener(lEvent)
+      request.addErrorListener(lEvent)
+      
+      that.sendRequest(request);
+    },    
+    onPutScriptResponse: function(response)
+    {
+      
+      if (lEvent.isActive == true)
+      {
+        var request = new SieveSetActiveRequest(lEvent.newScriptName)
+      
+        request.addSetActiveListener(lEvent);
+        request.addErrorListener(that);
+    
+        that.sendRequest(request);
+      }
+      else
+        lEvent.onSetActiveResponse(null);
+    },
+    onSetActiveResponse: function(response)
+    {
+      // we redirect this request to event not lEvent!
+      // because event.onDeleteScript is doing exactly what we want!
+      var request = new SieveDeleteScriptRequest(lEvent.oldScriptName);
+      request.addDeleteScriptListener(that);
+      request.addErrorListener(that);
+      
+      that.sendRequest(request);
+    },
+    onTimeout: function()
+    {
+      that.onTimeout();
+    },
+    onError: function(response)
+    {
+      //TODO Display notification instead of an popup box.
+      alert("Renaming\r\n"+response.getMessage());
+    }    
+  }
+         
+  lEvent.oldScriptName  = oldName;
+  lEvent.newScriptName  = newName;
+  lEvent.isActive =  (isActive=="true"?true:false);
+      
+  // first get the script and redirect the event to a local event...
+  // ... in order to put it up under its new name an then finally delete it
+  var request = new SieveGetScriptRequest(lEvent.oldScriptName);
+
+  request.addGetScriptListener(lEvent);
+  request.addErrorListener(this);
+
+  this.sendRequest(request);
+  
+}
+
+
+SieveFilterExplorer.prototype.renameScript
+    = function (oldScriptName,newScriptName)
+{
+  
+  var canRename = Cc["@sieve.mozdev.org/transport-service;1"]
+                    .getService().wrappedJSObject
+                    .getChannel(this._sid,this._cid)
+                    .getCompatibility().renamescript;                    
+        
+  if (canRename)
+  {
+    this._renameScript2(oldScriptName, newScriptName);
+    return;
+  }
+  
+  // As we are emulating rename, the server does not check for scripts with...
+  // ... conflicting names. Instead it will overwrite such a script silently...
+  // ... So we try hard and double check our cached scriptnames for possible...
+  // ... conflicts inoder to prevent possible dataloss.
+  
+  var tree = document.getElementById('treeImapRules');  
+  for(var i = 0; i < this._view.rules.length; i++)    
+    if (this._view.rules[i].script == newName)
+      return alert("Script already exists");
+      
+  this._renameScript(oldScriptName, newScriptName, 
+     tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(1)));   
+}
+
+SieveFilterExplorer.prototype.listScript
+    = function ()
+{
+  var request = new SieveListScriptRequest();
+  request.addListScriptListener(this);
+  request.addErrorListener(this);
+  
+  this.sendRequest(request);
+}
+
+SieveFilterExplorer.prototype.sendRequest
+    = function (request)
+{
+  // we do not send requests while in offline mode...
+  var ioService = Cc["@mozilla.org/network/io-service;1"]
+                      .getService(Ci.nsIIOService);  
+    
+  if (ioService.offline)
+  {
+    this.disconnect(6);
+    return;
+  }
+  
+  // ... we are not so let's try. If the channel was closed...
+  // ... getChannel will throw an exception.
+  try
+  {
+    Cc["@sieve.mozdev.org/transport-service;1"]
+        .getService().wrappedJSObject
+        .getChannel(this._sid,this._cid)
+        .addRequest(request);  
+  }
+  catch (e)
+  {
+    // most likely getChannel caused this exception, but anyway we should ...
+    // ... display error message. If we do not catch the exception a timeout ...
+    // ... would accure, so let's display the timeout message directly.
+    
+    gLogger.logStringMessage("SivFilerExplorer.sivSendRequest:"+e.toSource());
+    this.disconnect(1,"warning.timeout");    
   }
 }
+
+
+
+var gSFE = new SieveFilterExplorer();
 
 function onWindowLoad()
 {
@@ -200,9 +422,9 @@ function onWindowLoad()
       
     menuImapAccounts.selectedIndex = i;      
   }
-	
-  sieveTreeView = new SieveTreeView(new Array(),event);	
-  document.getElementById('treeImapRules').view = sieveTreeView;
+  
+  gSFE._view = new SieveTreeView(new Array(), onCycleCell);
+  document.getElementById('treeImapRules').view = gSFE._view;
 	
 	if (menuImapAccounts.selectedIndex == -1)
     menuImapAccounts.selectedIndex = 0;
@@ -211,17 +433,17 @@ function onWindowLoad()
   
   Cc["@mozilla.org/observer-service;1"]
       .getService (Ci.nsIObserverService)
-      .addObserver(event,"network:offline-status-changed", false);  
+      .addObserver(gSFE,"network:offline-status-changed", false);  
 }
    
 function onWindowClose()
 {
   // Don't forget to close this channel...
-  sivDisconnect();
+  gSFE.disconnect();
   
   Cc["@mozilla.org/observer-service;1"]
       .getService (Ci.nsIObserverService)
-      .removeObserver(event,"network:offline-status-changed");  
+      .removeObserver(gSFE,"network:offline-status-changed");  
 
   document.getElementById("sivExplorerStatus").contentWindow.onDetach();
     
@@ -241,115 +463,25 @@ function getSelectedAccount()
   return (new SieveAccounts()).getAccount(selectedItem.value); 
 }
 
-function onActivateClick()
-{
-  var tree = document.getElementById('treeImapRules');  
-  if (tree.currentIndex < 0)
-    return;
-
-  // imitate click in the treeview
-  tree.view.cycleCell(tree.currentIndex,tree.columns.getColumnAt(1));
-    
-  return;
-}
-
-function onGoOnlineClick()
-{
-  var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);  
-  ioService.offline = false;  
- // sivConnect(null,true);
-}
-
-function sivConnect(account)
-{
-  var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-  
-  if (ioService.offline)
-    return sivSetStatus(6); 
-  
-  sivSetStatus(3,"progress.connecting");
-  
-  // Ensure that Sieve Object is null...
-  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
-            .getService().wrappedJSObject;
-  
-  if (!account)
-    account = getSelectedAccount();
- 
-  sid = sivManager.createSession(account.getKey());
-  sivManager.addSessionListener(sid,event);
-  
-  gCid = sivManager.createChannel(sid);
-  
-  sivManager.openChannel(sid,gCid);
-}
-
-function sivSendRequest(sid,cid,request)
-{
-  // we do not send requests while in offline mode...
-  var ioService = Cc["@mozilla.org/network/io-service;1"]
-                      .getService(Ci.nsIIOService);  
-    
-  if (ioService.offline)
-  {
-    sivDisconnect(6);
-    return;
-  }
-  
-  // ... we are not so let's try. If the channel was closed...
-  // ... getChannel will throw an exception.
-  try
-  {
-    Cc["@sieve.mozdev.org/transport-service;1"]
-        .getService().wrappedJSObject
-        .getChannel(sid,cid)
-        .addRequest(request);  
-  }
-  catch (e)
-  {
-    // most likely getChannel caused this exception, but anyway we should ...
-    // ... display error message. If we do not catch the exception a timeout ...
-    // ... would accure, so let's display the timeout message directly.
-    
-    gLogger.logStringMessage("SivFilerExplorer.sivSendRequest:");
-    sivDisconnect(1,"warning.timeout");    
-  }
-}
-
-function sivDisconnect(state,message)
-{
-  disableControls(true);
-  
-  if (state)
-    sivSetStatus(state,message,"status.disconnected");  
-  
-  if ((!sid) || (!gCid))
-    return;
-    
-  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
-                       .getService().wrappedJSObject;
-  sivManager.removeSessionListener(sid, event);
-  sivManager.closeChannel(sid,gCid);    
-}
 
 function onSelectAccount()
 {
-  
   document.getElementById("sivExplorerStatus").contentWindow.onDetach();  
     
-  sivDisconnect();
+  gSFE.disconnect();
   
   // update the TreeView...
   var tree = document.getElementById('treeImapRules');
       
   tree.view.selection.clearSelection();
-      
-  sieveTreeView.update(new Array());
-  tree.view = sieveTreeView;
+  
+  gSFE._view.update(new Array());
+  tree.view = gSFE._view;
       
   var account = getSelectedAccount();
   
-  document.getElementById("sivExplorerStatus").contentWindow.onAttach(account,event);
+  document.getElementById("sivExplorerStatus").contentWindow
+    .onAttach(account,function() { gSFE.connect() });
       
   if (account == null)
     return sivSetStatus(2,"error.noaccount");
@@ -368,7 +500,7 @@ function onSelectAccount()
 /*  if (isClosing)
   setTimeout(function(){sivDisconnect(force=true); sivConnect(account)}, 1000);*/
     
-  sivConnect(account);
+  gSFE.connect(account);
 }
 
 function onDeleteClick()
@@ -396,12 +528,7 @@ function onDeleteClick()
   
   var scriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));	
   
-  // delete the script...
-  var request = new SieveDeleteScriptRequest(scriptName);
-  request.addDeleteScriptListener(event);
-  request.addErrorListener(event);
-  
-  sivSendRequest(sid,gCid,request);
+  gSFE.deleteScript(scriptName)
 }
 /**
  * @param {String} scriptName
@@ -433,8 +560,8 @@ function sivOpenEditor(scriptName,scriptBody)
   if (scriptBody)
     args["scriptBody"] = scriptBody;
     
-  args["sieve"] = sid;
-  args["uri"] = "x-sieve:"+sid+"/"+scriptName;
+  args["sieve"] = gSFE._sid;
+  args["uri"] = "x-sieve:"+gSFE._sid+"/"+scriptName;
   args["account"] = getSelectedAccount().imapKey;
   
   // This is a hack from DEVMO
@@ -597,113 +724,7 @@ function disableControls(disabled)
   }
 }
 
-function sivRename2(oldName, newName)
-{
-  var lEvent = 
-  {    
-    onRenameScriptResponse: function(response)
-    {
-      var request = new SieveListScriptRequest();
-      request.addListScriptListener(event);
-      request.addErrorListener(event);
-  
-      sivSendRequest(sid,gCid,request);           
-    },
-    onTimeout: function()
-    {
-      event.onTimeout();
-    },
-    onError: function(response)
-    {
-      //TODO Display notification instead of an popup box.
-      alert(response.getMessage());
-    }
-  }
-  
-  var request = new SieveRenameScriptRequest(oldName, newName);
-  request.addRenameScriptListener(lEvent)
-  request.addErrorListener(lEvent);
-    
-  sivSendRequest(sid,gCid,request);
-}
 
-function sivRename(oldName, newName, isActive)
-{
-  var lEvent = 
-  {
-    oldScriptName  : null,    
-    newScriptName  : null,
-    isActive       : null,
-    
-    onGetScriptResponse: function(response)
-    {
-      var request = new SievePutScriptRequest(
-                      new String(lEvent.newScriptName),
-                      new String(response.getScriptBody()));
-
-      request.addPutScriptListener(lEvent)
-      request.addErrorListener(lEvent)
-      
-      sivSendRequest(sid,gCid,request);
-    },    
-    onPutScriptResponse: function(response)
-    {
-      
-      if (lEvent.isActive == true)
-      {
-        var request = new SieveSetActiveRequest(lEvent.newScriptName)
-      
-        request.addSetActiveListener(lEvent);
-        request.addErrorListener(event);
-    
-        sivSendRequest(sid,gCid,request);
-      }
-      else
-        lEvent.onSetActiveResponse(null);
-    },
-    onSetActiveResponse: function(response)
-    {
-      // we redirect this request to event not lEvent!
-      // because event.onDeleteScript is doing exactly what we want!
-      var request = new SieveDeleteScriptRequest(lEvent.oldScriptName);
-      request.addDeleteScriptListener(event);
-      request.addErrorListener(event);
-      
-      sivSendRequest(sid,gCid,request);
-    },
-    onTimeout: function()
-    {
-      event.onTimeout();
-    },
-    onError: function(response)
-    {
-      //TODO Display notification instead of an popup box.
-      alert("Renaming\r\n"+response.getMessage());
-    }    
-  }
-  
-  // As we are emulating rename, the server does not check for scripts with...
-  // ... conflicting names. Instead it will overwrite such a script silently...
-  // ... So we try hard and double check our cached scriptnames for possible...
-  // ... conflicts inoder to prevent possible dataloss. 
-  for(var i = 0; i < this.sieveTreeView.rules.length; i++)    
-    if (this.sieveTreeView.rules[i].script == newName)
-      return alert("Script already exists");
-  
-  lEvent.oldScriptName  = oldName;
-  lEvent.newScriptName  = newName;
-  lEvent.isActive =  (isActive=="true"?true:false);
-      
-  // first get the script and redirect the event to a local event...
-  // ... in order to put it up under its new name an then finally delete it
-  var request = new SieveGetScriptRequest(lEvent.oldScriptName);
-
-  request.addGetScriptListener(lEvent);
-  request.addErrorListener(event);
-
-  sivSendRequest(sid,gCid,request);
-  
-}
 
 function onRenameClick()
 {
@@ -734,19 +755,9 @@ function onRenameClick()
   
   // it the old name equals the new name, ignore the request.
   if (input.value.toLowerCase() == oldScriptName.toLowerCase())
-    return;   
-
-  var canRename = Cc["@sieve.mozdev.org/transport-service;1"]
-                    .getService().wrappedJSObject
-                    .getChannel(sid,gCid)
-                    .getCompatibility().renamescript  
+    return;
     
-    
-  if (canRename)
-   sivRename2(oldScriptName, input.value);
-  else
-   sivRename(oldScriptName, input.value, 
-     tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(1)));   
+  gSFE.renameScript(oldScriptName, input.value);
 }
 
 function onServerDetails()
@@ -775,5 +786,19 @@ function onSettingsClick()
   gSivExtUtils.OpenSettings(server);
 }
 
+function onActivateClick()
+{
+  var tree = document.getElementById('treeImapRules');  
+  if (tree.currentIndex < 0)
+    return;
 
+  // imitate click in the treeview
+  tree.view.cycleCell(tree.currentIndex,tree.columns.getColumnAt(1));
+    
+  return;
+}
 
+function onCycleCell(row,col,script,active)
+{
+  gSFE.setActiveScript((active?null:script))
+}

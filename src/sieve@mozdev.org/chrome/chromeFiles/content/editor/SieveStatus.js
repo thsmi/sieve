@@ -18,7 +18,7 @@
 
 var gAutoConfig = null;
 var gAccount = null;
-var gEvents = null;
+var gCallback = null;
 
 var gAutoConfigEvent =
 {
@@ -72,12 +72,12 @@ function onAutoConfigCancelClick()
 
 function onAutoConfigFinishedClick()
 {
-  gEvents.onReconnect();
+  gCallback();
 }
 
 function onReconnectClick()
 {
-  gEvents.onReconnect();   
+  gCallback();   
 }
 
 function onBadCertOverride(targetSite,permanent)
@@ -108,8 +108,8 @@ function onBadCertOverride(targetSite,permanent)
       cert, 
       flags,
       !permanent);
-      
-    gEvents.onReconnect();
+     
+    gCallback();
   }
   catch (ex)
   {
@@ -128,7 +128,14 @@ function onDetach()
   }    
 }
 
-function onAttach(account, handler)
+/**
+ * The callback is invoced inf the user wants to reconnect 
+ * 
+ * @param {} account
+ * @param {} callback
+ *   
+ */
+function onAttach(account, callback)
 {  
   if (gAutoConfig)
   {
@@ -137,7 +144,7 @@ function onAttach(account, handler)
   }
   
   gAccount = account;   
-  gEvents = handler;
+  gCallback = callback;
 }
 
 function onStatus(state, message)
@@ -212,6 +219,12 @@ function onSettingsClick()
   gSivExtUtils.OpenSettings(server);
 }
 
+
+function onGoOnlineClick()
+{
+  var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);  
+  ioService.offline = false; 
+}
 
 // ChannelCreated
 // ChannelClosed

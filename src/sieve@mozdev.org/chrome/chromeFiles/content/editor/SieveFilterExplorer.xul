@@ -81,7 +81,7 @@
               </treecols>
               
               <treechildren id="sivExplorerTree" collapsed="true" />
-              <iframe id="sivExplorerStatus" flex="1" src="chrome://sieve/content/editor/SieveStatus.xul" type="content" />
+              <iframe id="sivExplorerStatus" flex="1" src="chrome://sieve/content/editor/SieveStatus.xul" />
               
             </tree>
             <vbox>          

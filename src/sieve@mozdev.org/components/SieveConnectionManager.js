@@ -220,13 +220,7 @@ SieveConnectionManager.prototype =
     delete this.sessions[sid];
   },
   
- /* countChannels : function(sid)
-  {
-    if (!this.session[sid])
-      return 0;
-      
-    return this.session[sid].channels.length;
-  },*/
+
   /**
    * Retuns the Sieve Object associated to this session.
    * @param {} sid
@@ -260,55 +254,5 @@ SieveConnectionManager.prototype =
   _xpcom_factory: SieveConnectionManagerFactory
 };
 
-
-// Module
-/**
- * @deprecated since Gecko 2.0  
- */
-var SieveConnectionManagerModule = {
-  registerSelf: function(aCompMgr, aFileSpec, aLocation, aType)
-  {
-    aCompMgr = aCompMgr.QueryInterface(Ci.nsIComponentRegistrar);
-    aCompMgr.registerFactoryLocation(
-        SieveConnectionManager.prototype.classID,
-        SieveConnectionManager.prototype.classDescription,
-        SieveConnectionManager.prototype.contactID, 
-        aFileSpec, aLocation, aType);
-  },
-
-  unregisterSelf: function(aCompMgr, aLocation, aType)
-  {
-    aCompMgr = aCompMgr.QueryInterface(Ci.nsIComponentRegistrar);
-    aCompMgr.unregisterFactoryLocation(
-        SieveConnectionManager.prototype.classID, aLocation);        
-  },
-  
-  getClassObject: function(aCompMgr, aCID, aIID)
-  {
-    if (!aIID.equals(Ci.nsIFactory))
-      throw Cr.NS_ERROR_NOT_IMPLEMENTED;
-
-    if (aCID.equals(SieveConnectionManager.prototype.classID))
-      return SieveConnectionManagerFactory;
-
-    throw Cr.NS_ERROR_NO_INTERFACE;
-  },
-
-  canUnload: function(aCompMgr) { return true; }
-};
-
-
-try
-{
-  Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
-}
-catch (e) { }
-
-// Gecko 2.x uses NSGetFactory to register XPCOM Components...
-// ... while Gecko 1.x uses NSGetModule
-
-if ((typeof(XPCOMUtils) != "undefined") && (typeof(XPCOMUtils.generateNSGetFactory) != "undefined"))
-  var NSGetFactory = XPCOMUtils.generateNSGetFactory([SieveConnectionManager])
-else
-  var NSGetModule = function(compMgr, fileSpec) { return SieveConnectionManagerModule; }
-
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+const NSGetFactory = XPCOMUtils.generateNSGetFactory([SieveConnectionManager])

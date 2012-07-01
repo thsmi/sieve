@@ -756,65 +756,8 @@ Sieve.prototype._unlockMessageQueue
   this.queueLocked = false;
 }
 
-//=================================================
-// Factory
-/**
- * @deprecated since Gecko 2.0  
- */
-var SieveFactory = {
-  createInstance: function (aOuter, aIID)
-  {
-    if (aOuter != null)
-      throw Components.results.NS_ERROR_NO_AGGREGATION;
-    return (new Sieve()).QueryInterface(aIID);
-  }
-};
-
-// Module
-/**
- * @deprecated since Gecko 2.0  
- */
-var SieveModule = {
-  registerSelf: function(aCompMgr, aFileSpec, aLocation, aType)
-  {
-    aCompMgr = aCompMgr.QueryInterface(Ci.nsIComponentRegistrar);
-    aCompMgr.registerFactoryLocation(
-        Sieve.prototype.classID, 
-        Sieve.prototype.classDescription, 
-        Sieve.prototype.contactID, 
-        aFileSpec, aLocation, aType);
-  },
-
-  unregisterSelf: function(aCompMgr, aLocation, aType)
-  {
-    aCompMgr = aCompMgr.QueryInterface(Ci.nsIComponentRegistrar);
-    aCompMgr.unregisterFactoryLocation(Sieve.prototype.classID, aLocation);        
-  },
-  
-  getClassObject: function(aCompMgr, aCID, aIID)
-  {
-    if (!aIID.equals(Ci.nsIFactory))
-      throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
-
-    if (aCID.equals(Sieve.prototype.classID))
-      return SieveFactory;
-
-    throw Components.results.NS_ERROR_NO_INTERFACE;
-  },
-
-  canUnload: function(aCompMgr) { return true; }
-};
 
 
-try
-{
-  Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
-}
-catch (e) { }
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 
-// Gecko 2.x uses NSGetFactory to register XPCOM Components...
-// ... while Gecko 1.x uses NSGetModule
-if ((typeof(XPCOMUtils) != "undefined") && (typeof(XPCOMUtils.generateNSGetFactory) != "undefined"))
-  var NSGetFactory = XPCOMUtils.generateNSGetFactory([Sieve])
-else
-  var NSGetModule = function(compMgr, fileSpec) { return SieveModule; }
+const NSGetFactory = XPCOMUtils.generateNSGetFactory([Sieve])

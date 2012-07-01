@@ -52,7 +52,7 @@ SieveAccountManagerExtension.prototype =
       return true;
       
     if (server.type == "pop3")
-      return false;
+      return true;
       
     return false;
   },
@@ -68,99 +68,5 @@ SieveAccountManagerExtension.prototype =
 
 // ************************************************************************** //
 
-/***********************************************************
-class factory
-
-This object is a member of the global-scope Components.classes.
-It is keyed off of the contract ID. Eg:
-
-myHelloWorld = Components.classes["@dietrich.ganx4.com/helloworld;1"].
-                          createInstance(Components.interfaces.nsIHelloWorld);
-
-* @deprecated since Gecko 2.0 
-*/
-var SieveAccountManagerExtensionFactory = 
-{
-  createInstance : function (aOuter, aIID)
-  {
-    if (aOuter != null)
-      throw Components.results.NS_ERROR_NO_AGGREGATION;
-      
-    return (new SieveAccountManagerExtension()).QueryInterface(aIID);
-  }
-}
-
-/**
- * module definition (xpcom registration)
- *
- * @deprecated since Gecko 2.0 
- */
-var SieveAccountManagerExtensionModule = 
-{
-  registerSelf: function(compMgr, fileSpec, location, type)
-  {
-    compMgr = compMgr.QueryInterface(Ci.nsIComponentRegistrar);
-    compMgr.registerFactoryLocation(
-        SieveAccountManagerExtension.prototype.classID, 
-        SieveAccountManagerExtension.prototype.classDescription,
-        SieveAccountManagerExtension.prototype.contactID,
-        fileSpec, location, type);
-        
-    var catMgr = Components.classes["@mozilla.org/categorymanager;1"]
-                     .getService(Ci.nsICategoryManager);
-               
-    catMgr.addCategoryEntry(
-        "mailnews-accountmanager-extensions",
-        SieveAccountManagerExtension.prototype.classDescription,
-        SieveAccountManagerExtension.prototype.contactID,
-        true, true);    
-  },
-
-  unregisterSelf: function(compMgr, location, type)
-  {
-    compMgr = compMgr.QueryInterface(Ci.nsIComponentRegistrar);
-    compMgr.unregisterFactoryLocation(
-        SieveAccountManagerExtension.prototype.classID, location);
-    
-    var catMgr = Components.classes["@mozilla.org/categorymanager;1"]
-                     .getService(Ci.nsICategoryManager);
-    catMgr.deleteCategoryEntry(
-        "mailnews-accountmanager-extensions",
-        SieveAccountManagerExtension.prototype.contactID, true);    
-  },
-  
-  getClassObject: function(aCompMgr, aCID, aIID)
-  {
-    if (!aIID.equals(Ci.nsIFactory))
-      throw Cr.NS_ERROR_NOT_IMPLEMENTED;
-
-    if (aCID.equals(SieveAccountManagerExtension.prototype.classID))
-      return SieveAccountManagerExtensionFactory;
-
-    throw Cr.NS_ERROR_NO_INTERFACE;
-  },
-
-  canUnload: function(aCompMgr) { return true; }
-};
-
-/***********************************************************
-module initialization
-
-When the application registers the component, this function
-is called.
-***********************************************************/
-
-try
-{
-  Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
-}
-catch (e) { }
-
-// Gecko 2.x uses NSGetFactory to register XPCOM Components...
-// ... while Gecko 1.x uses NSGetModule
-
-
-if ((typeof(XPCOMUtils) != "undefined") && (typeof(XPCOMUtils.generateNSGetFactory) != "undefined"))
-  var NSGetFactory = XPCOMUtils.generateNSGetFactory([SieveAccountManagerExtension])
-else
-  var NSGetModule = function(compMgr, fileSpec) { return SieveAccountManagerExtensionModule; }
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+const NSGetFactory = XPCOMUtils.generateNSGetFactory([SieveAccountManagerExtension])

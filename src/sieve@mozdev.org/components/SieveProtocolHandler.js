@@ -31,7 +31,7 @@ function SieveProtocolHandler() {};
 SieveProtocolHandler.prototype = 
 {
   scheme : "x-sieve",    
-  defaultPort : 2000,
+  defaultPort : 4190,
   
   classID : Components.ID("{65f30660-14eb-11df-8351-0002a5d5c51b}"),
   contactID : "@mozilla.org/network/protocol;1?name="+SieveProtocolHandler.prototype.scheme,
@@ -82,74 +82,7 @@ SieveProtocolHandler.prototype =
   }    
 }
 
-// Factory
-/**
- * @deprecated since Gecko 2.0  
- */
-var SieveProtocolHandlerFactory = 
-{
-  createInstance : function(aOuter, aIID)
-  {
-    if (aOuter != null)
-        throw Cr.NS_ERROR_NO_AGGREGATION;
 
-    if (!aIID.equals(Ci.nsIProtocolHandler) && !aIID.equals(Ci.nsISupports))
-        throw Cr.NS_ERROR_INVALID_ARG;
-
-    return new SieveProtocolHandler();
-  }
-}
-
-// Module
-/**
- * @deprecated since Gecko 2.0  
- */
-var SieveProtocolHandlerModule = 
-{
-  registerSelf: function(aCompMgr, aFileSpec, aLocation, aType)
-  {
-    aCompMgr = aCompMgr.QueryInterface(Ci.nsIComponentRegistrar);
-    aCompMgr.registerFactoryLocation(
-        SieveProtocolHandler.prototype.classID, 
-        SieveProtocolHandler.prototype.classDescription,
-        SieveProtocolHandler.prototype.contactID, 
-        aFileSpec, aLocation, aType);   
-  },
-
-  unregisterSelf: function(aCompMgr, aLocation, aType)
-  {
-    aCompMgr = aCompMgr.QueryInterface(Ci.nsIComponentRegistrar);
-    aCompMgr.unregisterFactoryLocation(SieveProtocolHandler.prototype.classID, aLocation);
-  },
-  
-  getClassObject: function(aCompMgr, aCID, aIID)
-  {    
-    if (aCID.equals(SieveProtocolHandler.prototype.classID))
-      return SieveProtocolHandlerFactory;      
-        
-    if (!aIID.equals(Ci.nsIFactory))
-      throw Cr.NS_ERROR_NOT_IMPLEMENTED;
-
-    throw Cr.NS_ERROR_NO_INTERFACE;
-  },
-  
-  canUnload: function(aCompMgr)
-  { 
-    return true;
-  }
-}
-
-/* entrypoint */
-try
-{
-  Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
-}
-catch (e) { }
-
-// Gecko 2.x uses NSGetFactory to register XPCOM Components...
-// ... while Gecko 1.x uses NSGetModule
-
-if ((typeof(XPCOMUtils) != "undefined") && (typeof(XPCOMUtils.generateNSGetFactory) != "undefined"))
-  var NSGetFactory = XPCOMUtils.generateNSGetFactory([SieveProtocolHandler])
-else
-  var NSGetModule = function(compMgr, fileSpec) { return SieveProtocolHandlerModule; }
+// entrypoint 
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+const NSGetFactory = XPCOMUtils.generateNSGetFactory([SieveProtocolHandler])

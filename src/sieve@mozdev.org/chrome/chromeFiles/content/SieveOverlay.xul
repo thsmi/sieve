@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+ <!--
+   The content of this file is licenced. You may obtain a copy of
+   the license at http://sieve.mozdev.org or request it via email 
+   from the author. Do not remove or change this comment. 
+  
+   The initial author of the code is:
+     Thomas Schmid <schmid-thomas@gmx.net>
+   
+   Contributor(s):
+     
+-->
+
 <?xml-stylesheet href="chrome://sieve/skin/ToolBarButton.css" type="text/css"?>
 
 <!DOCTYPE overlay SYSTEM "chrome://sieve/locale/locale.dtd">
@@ -15,9 +28,6 @@
     <menuitem id="mnuSieveOptionsDialog" insertbefore="filtersCmd" label="&menu.options;"
   	  	oncommand='gSivExtUtils.OpenSettings();' 
   		  accesskey="&menu.options.key;" />
-<!--    <menuitem insertbefore="filtersCmd" label="Filter GUI"
-        oncommand='window.openDialog("chrome://sieve/content/libs/libSieveDOM/test.xul",
-                      "", "chrome,centerscreen,titlebar,resizable");' />-->
     <menuseparator id="mnuSieveSeparator" insertbefore="filtersCmd"/>  		
   </menupopup>
 
@@ -35,31 +45,4 @@
     class="toolbarbutton-1 chromeclass-toolbar-additional"/>
     <!--class="toolbarbutton-1  " />-->
 
-<!--
-// selectPage: the xul file name for the viewing page, 
-// null for the account main page, other pages are
-// 'am-server.xul', 'am-copies.xul', 'am-offline.xul', 
-// 'am-addressing.xul', 'am-smtp.xul'
-function MsgAccountManager(selectPage)
-{
-    var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].
-                            getService(Components.interfaces.nsIWindowMediator);
-
-    var existingAccountManager = windowManager.getMostRecentWindow("mailnews:accountmanager");
-
-    if (existingAccountManager)
-        existingAccountManager.focus();
-    else {
-        var server;
-        try {
-            var folderURI = GetSelectedFolderURI();
-            server = GetServer(folderURI);
-        } catch (ex) { /* functions might not be defined */}
-        
-        window.openDialog("chrome://messenger/content/AccountManager.xul",
-                          "AccountManager", "chrome,centerscreen,modal,titlebar",
-                          { server: server, selectPage: selectPage });
-    }
-}
--->
 </overlay>

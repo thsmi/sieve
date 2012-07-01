@@ -324,7 +324,7 @@ SieveSession.prototype =
     var iterator = [];
     for (var i=0; i< this.listeners.length; i++)
       if (this.listeners[i][callback])
-        iterator.push(this.listeners[i][callback]);
+        iterator.push(this.listeners[i]);
        
     if (!iterator.length)
     {
@@ -337,7 +337,10 @@ SieveSession.prototype =
       this.debug.logger.logStringMessage("Invoking Listeners for "+callback+"\n");
       
     while (iterator.length)
-      iterator.pop()(arg1,arg2);
+    {
+      var listener = iterator.pop();
+      listener[callback].call(listener,arg1,arg2);
+    }
       
   },
 
@@ -355,21 +358,33 @@ SieveSession.prototype =
   {
     // The server is going to disconnected our session nicely...
     var code = response.getResponseCode();
+        
+    // ... we most likely received a referal 
+    if (code.equalsCode("REFERRAL"))
+    {
+      // The referal should be fully transparent to the session, so we cannot...
+      // ... call this.disconnect(true) here as it flushes/closes all our channels...
+      if (this.sieve)
+        this.sieve.disconnect();
+
+      // we are disconnected...
+      this.sieve = null;
+      this.state = 0;
+      
+      if (this.debug.level & (1 << 4))
+      {
+        this.debug.logger.logStringMessage("Referred to Server: "+code.getHostname());
+        this.debug.logger.logStringMessage("Migrating Channel: ["+this.channels+"]");
+      }
+      
+      this.connect(code.getHostname(), code.getPort());      
+      return;
+    }
     
     // ... as the server must terminate the connection after sending a ...
     // ... bye response, we should also disconnect nicely which means in this...
     // ... case without a logout request.
-    this.disconnect(true);    
-    
-    // ... we most likely received a referal 
-    if (code.equalsCode("REFERRAL"))
-    {
-      if (this.debug.level & (1 << 4))
-        this.debug.logger.logStringMessage("Referred to Server: "+code.getHostname());
-      
-      this.connect(code.getHostname(), code.getPort());    
-      return;
-    }
+    this.disconnect(true)
     
     // ... it's either a timeout or we tried the wrong password...
     // ... the best we can do is to report an error.
@@ -620,12 +635,7 @@ SieveSession.prototype =
       
     if (aIID.equals(Ci.nsIInterfaceRequestor))
       return this;
-      
-    // nsIBadCerListener is deprecated since Gecko 1.8 (Thunderbird 2), ...
-    // ... we just keep it for compatibility
-    if (aIID.equals(Ci.nsIBadCertListener))
-      return this;
-      
+            
     throw Components.results.NS_ERROR_NO_INTERFACE;
   },
   
@@ -678,63 +688,6 @@ SieveSession.prototype =
     // otherwise call the listener and supress the default UI
     this._invokeListeners("onBadCert",targetSite,error);
     return true;      
-  },
-  
-  // Ci.nsIBadCertListener (Thunderbird 2 / Gecko 1.8.x compatibility)
-  /**
-   * @deprecated Interface removed in Gecko 1.9.1 (Thunderbird 3)
-   * @param {} socketInfo
-   * @param {} cert
-   * @return {Boolean}
-   */
-  confirmCertExpired : function(socketInfo, cert) 
-  {
-    if (this.debug.logger != null)
-      this.debug.logger.logStringMessage("Sieve BadCertHandler: Expired certificate");
-
-    return true;
-  },
-
-  /**
-   * @deprecated Interface removed in Gecko 1.9.1 (Thunderbird 3)
-   * @param {} socketInfo
-   * @param {} targetURL
-   * @param {} cert
-   * @return {Boolean}
-   */
-  confirmMismatchDomain : function(socketInfo, targetURL, cert) 
-  {
-    if (this.debug.logger != null)
-      this.debug.logger.logStringMessage("Sieve BadCertHandler: Mismatched domain");
-
-    return true;
-  },
- 
-  /**
-   * @deprecated Interface removed in Gecko 1.9.1 (Thunderbird 3)
-   * @param {} socketInfo
-   * @param {} cert
-   * @param {} certAddType
-   * @return {Boolean}
-   */
-  confirmUnknownIssuer : function(socketInfo, cert, certAddType) 
-  { 
-    if (this.debug.logger != null)
-      this.debug.logger.logStringMessage("Sieve BadCertHandler: Unknown issuer");
-      
-    return true;
-  },
-  
-  /**
-   * @deprecated Interface removed in Gecko 1.9.1 (Thunderbird 3)
-   * @param {} socketInfo
-   * @param {String} targetURL
-   * @param {} cert
-   */
-  notifyCrlNextupdate : function(socketInfo, targetURL, cert) 
-  {
-    if (this.debug.logger != null)
-      this.debug.logger.logStringMessage("Sieve BadCertHandler: notifyCrlNextupdate");
   }  
   
 }

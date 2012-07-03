@@ -158,12 +158,14 @@ SieveRichList.prototype.html
 {
   var elm = $("<div/>");
   
-  this.selectedItem().editable(true);
+  if (this.selectedItem())
+    this.selectedItem().editable(true);    
   
   for (var i=0; i<this._items.length; i++)
     elm.append(this._items[i].html())
   
-  elm.addClass("sivRichList");  
+  elm.addClass("sivRichList");
+  
   return elm;
 }
 

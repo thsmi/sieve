@@ -139,10 +139,18 @@ function debug(obj)
 	 <button onclick='$("#infobar").toggle();'>Dismiss</button>
   </div>
 </div>
+
+
+<div>   
+  <div id="divOutput">
+  </div>
+  <button> Add </button>
+</div>
+
 <div style="margin-left:200px;">
-<div>
-   <div id="boxScript" style="overflow: hidden;width: 100%; ">  
-     <div style="float:left; padding:5px;">
+  <div>
+    <div id="boxScript" style="overflow: hidden;width: 100%; ">  
+      <div style="float:left; padding:5px;">
         <div>Input:</div>
         <textarea id="txtScript" cols="50" rows="10" wrap="off">
         </textarea>
@@ -152,11 +160,11 @@ function debug(obj)
         <textarea id="txtOutput" cols="50" rows="10" readonly="readonly" wrap="off"></textarea>
       </div>
     </div>
-</div >
-<div id="debug">
+  </div >
+  <div id="debug">
     <button onclick="setSieveScript();">
-	   Parse Sieve Script
-	 </button>
+	  Parse Sieve Script
+	</button>
     <button onclick="$('#txtOutput').val(getSieveScript());">
 	  Update Sieve Script
 	</button>
@@ -170,15 +178,6 @@ function debug(obj)
 	  Show/Hide
 	</button>		
 	<input id="draggable" />
-</div>
-</div>
-
-<div>   
-  <div>
-    <!--<div id="sivActions" style="background-color:gray;overflow-y: scroll;width:150px;float: left;">  -->
-  </div>
-  
-  <div id="divOutput">
   </div>
 </div>  
 </body>

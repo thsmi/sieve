@@ -21,9 +21,6 @@ if (typeof(Cc) == 'undefined')
 if (typeof(Ci) == 'undefined')
   { Ci = Components.interfaces; } 
 
-var gSid = null;
-var gCid = null;
-
 var gBackHistory = new Array();
 var gForwardHistory = new Array();
 
@@ -70,220 +67,165 @@ var gEditorStatus =
   scriptName        : "unnamed"
 }
 
-var event = 
+var gSFE = new SieveFilterEditor();
+
+function SieveFilterEditor()
 {
-  
-  onChannelCreated : function(sieve)
-  { 
-    event.onChannelReady(gCid);
-  },
-  
-  onChannelReady : function(cid)
-  {
-    // We observe only our channel...
-    if (gCid != cid)
-      return;
+  SieveAbstractClient.call(this);
+}
+
+SieveFilterEditor.prototype.__proto__ = SieveAbstractClient.prototype;
+
+SieveFilterEditor.prototype.onChannelReady
+    = function(cid)
+{
+  // We observe only our channel...
+  if (cid != this._cid)
+    return;
               
-    if (gEditorStatus.defaultScript)
-    {
-      event.onScriptLoaded(gEditorStatus.defaultScript);
-      gEditorStatus.contentChanged = true;
-      return;
-    }
-      
-    
-    var request = new SieveGetScriptRequest(gEditorStatus.scriptName);
-    request.addGetScriptListener(event);
-    request.addErrorListener(event);
+  if (gEditorStatus.defaultScript)
+  {
+    this.onScriptLoaded(gEditorStatus.defaultScript);
+    gEditorStatus.contentChanged = true;
+    return;
+  }
+          
+  var request = new SieveGetScriptRequest(gEditorStatus.scriptName);
+  request.addGetScriptListener(this);
+  request.addErrorListener(this);
 
-    sivSendRequest(gSid,gCid,request);    
-  },
-  
-  onChannelClosed : function(cid)
-  {
-    // some other channel died we don't care about that...
-  },
-  
-  onChannelStatus : function(id,text)
-  {
-     sivSetStatus(id,text);
-  },
-  
-  /**
-   * @param {SieveGetScriptResponse} response
-   */
-  onGetScriptResponse: function(response)
-  {
-    event.onScriptLoaded(response.getScriptBody());    
-  },
-  
-  /**
-   * @param {String} script
-   */
-  onScriptLoaded: function(script)
-  {
-    
-    gEditorStatus.hasContent = true;
-    sivSetStatus(0);
-    document.getElementById("sivContentEditor").editor.enableUndo(false);
-    document.getElementById("sivContentEditor").value = script;
-    document.getElementById("sivContentEditor").setSelectionRange(0, 0);
-    document.getElementById("sivContentEditor").editor.enableUndo(true);
-  
-    UpdateCursorPos();
-    UpdateLines();
-    
-    document.getElementById("sivContentEditor").focus();    
-  },
+  this.sendRequest(request)    
+}
 
-  /**
-   * @param {SievePutScriptResponse} response
-   */
-  onPutScriptResponse: function(response)
-  {
-    gEditorStatus.contentChanged = false;
-    
-    if (!gEditorStatus.isClosing)
-      return
+SieveFilterEditor.prototype.onChannelClosed
+    = function(cid)
+{
+  // some other channel died we don't care about that...
+}
 
-    if (!onWindowClose(true))
-      return
+SieveFilterEditor.prototype.onGetScriptResponse
+    = function(response)
+{
+  this.onScriptLoaded(response.getScriptBody());    
+}
+
+SieveFilterEditor.prototype.onPutScriptResponse
+    = function(response)
+{
+  gEditorStatus.contentChanged = false;
+    
+  if (!gEditorStatus.isClosing)
+    return
+
+  if (!onWindowClose(true))
+    return
             
-    // just calling close is for some reason broken, so we use our helper...
-    window.arguments[0].wrappedJSObject["close"]();   
-  },
+  // just calling close is for some reason broken, so we use our helper...
+  window.arguments[0].wrappedJSObject["close"]();      
+}
 
-  /**
-   * @param {SieveSimpleResponse} response
-   */
-  onError: function(response)
+SieveFilterEditor.prototype.onCheckScriptResponse
+    = function(response)
+{
+  if (!response.hasError())
   {
-    alert("FATAL ERROR:"+response.getMessage());
-  },
+    // TODO: The response might contain warnings, parse them
+    document.getElementById("lblErrorBar").firstChild.nodeValue
+      = document.getElementById("strings").getString("syntax.ok");
 
-  onTimeout: function()
-  {
-    sivDisconnect(1,"warning.timeout");
-  },
-  
-  onDisconnect:function(response)
-  {
-    sivSetStatus(9);
-  },
-  
-  observe : function(aSubject, aTopic, aData)
-  {
-    if (aTopic != "quit-application-requested")
-      return;
-    
+    document.getElementById("imgErrorBar").src
+      = "chrome://sieve/content/images/syntax-ok.png";
       
+    return;
+  }
+
+  // CHECKSCRIPT or PUTSCRIPT failed and the server rejected the script...
+  // ... most likely because of syntax errors. 
+  //
+  // In case we used the PUTSCRIPT hack, we don't need to delete the...
+  // ... temporary script because it was never stored on the server, due...
+  // ... to this error...
+      
+  // we got an overquota warning, this means syntaxcheck can't be performed
+  if (response.getResponseCode().equalsCode("QUOTA"))
+  {
+        
+    document.getElementById("lblErrorBar").firstChild.nodeValue
+      = document.getElementById("strings").getString("syntax.quota");
+          
+    document.getElementById("imgErrorBar").src
+      = "chrome://sieve/content/images/syntax-warning.png";
+          
+    return;
+  }
+
+      
+  document.getElementById("lblErrorBar").firstChild.nodeValue
+    = response.getMessage();
+
+  document.getElementById("imgErrorBar").src
+    = "chrome://sieve/content/images/syntax-error.png";
+        
+  return;
+}
+
+//*********************
+// Custom Methods
+
+SieveFilterEditor.prototype.onScriptLoaded
+    = function(script)
+{
+  gEditorStatus.hasContent = true;
+  this.onStatusChange(0);
+  
+  document.getElementById("sivContentEditor").editor.enableUndo(false);
+  document.getElementById("sivContentEditor").value = script;
+  document.getElementById("sivContentEditor").setSelectionRange(0, 0);
+  document.getElementById("sivContentEditor").editor.enableUndo(true);
+  
+  UpdateCursorPos();
+  UpdateLines();
+    
+  document.getElementById("sivContentEditor").focus();      
+}
+
+SieveFilterEditor.prototype.observe
+    = function(aSubject, aTopic, aData)
+{
+  if (aTopic == "quit-application-requested")
+  {
     if (onWindowClose() == false)
       aSubject.QueryInterface(Ci.nsISupportsPRBool).data = true;
     else
       close();
+      
+    return;
   }
+  
+  SieveAbstractClient.prototype.observe.call(this,aSubject,aTopic,aData);
 }
 
-function onCompile()
+
+SieveFilterEditor.prototype.onStatusChange
+    = function (state, message)
 {
-  var lEvent =
+  if (state == 0)
   {
-    onPutScriptResponse: function(response)
-    {
-      // the script is syntactically correct. This means the server accepted...
-      // ... our temporary script. So we need to do some cleanup and remove...
-      // ... the script again.   
-
-      // Call delete, without response handlers, we don't care if the ...
-      // ... command succeeds or fails.
-      sivSendRequest(gSid,gCid,new SieveDeleteScriptRequest("TMP_FILE_DELETE_ME"));
-      
-      // Call CHECKSCRIPT's response handler to complete the hack...  
-      lEvent.onCheckScriptResponse(response);
-    },
-
-    onCheckScriptResponse: function(response)
-    {
-      // TODO: The response might contain warnings, parse them
-      document.getElementById("lblErrorBar").firstChild.nodeValue
-        = document.getElementById("strings").getString("syntax.ok");
-
-      document.getElementById("imgErrorBar").src
-        = "chrome://sieve/content/images/syntax-ok.png";      
-    },
-    
-    onError: function(response)
-    {
-      // CHECKSCRIPT or PUTSCRIPT failed and the server rejected the script...
-      // ... most likely because of syntax errors. 
-      //
-      // In case we used the PUTSCRIPT hack, we don't need to delete the...
-      // ... temporary script because it was never stored on the server, due...
-      // ... to this error...
-      
-      // we got an overquota warning, this means syntaxcheck can't be performed
-      if (response.getResponseCode().equalsCode("QUOTA"))
-      {
-        
-        document.getElementById("lblErrorBar").firstChild.nodeValue
-          = document.getElementById("strings").getString("syntax.quota");
-          
-        document.getElementById("imgErrorBar").src
-          = "chrome://sieve/content/images/syntax-warning.png";
-          
-        return;
-      }
-
-      
-      document.getElementById("lblErrorBar").firstChild.nodeValue
-        = response.getMessage();
-
-      document.getElementById("imgErrorBar").src
-        = "chrome://sieve/content/images/syntax-error.png";
-    },
-
-    onTimeout: function()
-    {
-      // Forward timeouts to the global listener...
-      event.onTimeout();
-    }
-  }
-  
-  var script = new String(document.getElementById("sivContentEditor").value);
-  
-  if (script.length == 0)
+    document.getElementById("sivEditorStatus").setAttribute('hidden','true');    
+    document.getElementById('sivEditor').removeAttribute('collapsed');    
     return;
-  
-  // Use the CHECKSCRIPT command when possible, otherwise we need to ...
-  // ... fallback to the PUTSCRIPT/DELETESCRIPT Hack...
+  }
     
-  var request = null;
-  
-  var canCheck = Cc["@sieve.mozdev.org/transport-service;1"]
-                   .getService().wrappedJSObject  
-                   .getChannel(gSid,gCid).getCompatibility()
-                   .checkscript;
+  // The rest has to be redirected to the status window...
+  document.getElementById('sivEditor').setAttribute('collapsed','true');    
+  document.getElementById("sivEditorStatus").contentWindow.onStatus(state,message)
+  document.getElementById("sivEditorStatus").removeAttribute('hidden');    
+}
 
-  if (canCheck)
-  {
-    // ... we use can the CHECKSCRIPT command
-    request = new SieveCheckScriptRequest(script);
-    request.addCheckScriptListener(lEvent);
-  }
-  else
-  {
-    // ... we have to use the PUTSCRIPT/DELETESCRIPT Hack...
-    
-    // First we use PUTSCRIPT to store a temporary script on the server...
-    // ... incase the command fails, it is most likely due to an syntax error...
-    // ... if it sucseeds the script is syntactically correct!
-    request = new SievePutScriptRequest("TMP_FILE_DELETE_ME",script);
-    request.addPutScriptListener(lEvent);
-  }
-  
-  request.addErrorListener(lEvent);
-  
-  sivSendRequest(gSid,gCid,request);
+
+function onCompile()
+{ 
+  gSFE.checkScript(document.getElementById("sivContentEditor").value);
 }
 
 function onInput()
@@ -370,20 +312,20 @@ function onWindowLoad()
       
   document.getElementById("sivWidgetEditor")
     .setAttribute("src","chrome://sieve/content/libs/libSieveDOM/SieveGui.html")
-    
-  document.getElementById("sivEditorStatus").contentWindow
-    .onAttach(account,function() { onReconnectClick() });    
 
   var args = window.arguments[0].wrappedJSObject;
+  gEditorStatus.account = args["account"];
+  
+  var account = (new SieveAccounts()).getAccount(gEditorStatus.account);
+  
+  document.getElementById("sivEditorStatus").contentWindow
+    .onAttach(account,function() { gSFE.connect(account) });    
   
   // There might be a default or persisted script...
   if (args["scriptBody"])
     gEditorStatus.defaultScript = args["scriptBody"];
   
-  
-  gEditorStatus.account = args["account"];
-  var account = (new SieveAccounts()).getAccount(gEditorStatus.account);
-  
+
   gEditorStatus.checkScriptDelay = account.getSettings().getCompileDelay();
   
   gEditorStatus.scriptName = args["scriptName"];
@@ -392,18 +334,10 @@ function onWindowLoad()
   document.getElementById("lblErrorBar").firstChild.nodeValue
       = document.getElementById("strings").getString("syntax.ok");
     
-  sivSetStatus(3,"status.loading");
+  gSFE.onStatusChange(3,"status.loading");
 
-  // Connect to the Sieve Object...  
-  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
-                     .getService().wrappedJSObject; 
-  
-  gSid = sivManager.createSession(account.getKey());
-  sivManager.addSessionListener(gSid,event);
-  
-  gCid = sivManager.createChannel(gSid);
-  sivManager.openChannel(gSid,gCid);
-    
+  gSFE.connect(account);
+      
   //preload sidebar...
   onSideBarHome();
   
@@ -439,7 +373,7 @@ function onIgnoreOffline()
     // TODO: this is code exists twice remove me...
     if (gEditorStatus.hasContent == false)
     {
-      sivSetStatus(3,"status.loading");
+      gSFE.onStatusChange(3,"status.loading");
       
       var args = window.arguments[0].wrappedJSObject;
       
@@ -447,35 +381,14 @@ function onIgnoreOffline()
       request.addGetScriptListener(event);
       request.addErrorListener(event);
 
-      sivSendRequest(gSid,gCid,request);
+      gSFE.sendRequest(request);
       
       return;
     }
   } 
   catch (ex) {}
   
-  sivSetStatus(0);
-}
-
-
-function onReconnectClick()
-{
- 
-  gEditorStatus.defaultScript = document.getElementById("sivContentEditor").value;
-  
-  var account = (new SieveAccounts()).getAccount(gEditorStatus.account);
-  
-  sivSetStatus(3,"status.loading");
-
-  // Connect to the Sieve Object...  
-  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
-                     .getService().wrappedJSObject; 
-  
-  gSid = sivManager.createSession(account.getKey());
-  sivManager.addSessionListener(gSid,event);
-  
-  gCid = sivManager.createChannel(gSid);
-  sivManager.openChannel(gSid,gCid);   
+  gSFE.onStatusChange(0);
 }
 
 function onDonate()
@@ -637,13 +550,7 @@ function onSave(script)
   if (typeof(script) === "undefined")
     script = new String(document.getElementById("sivContentEditor").value);
     
-  var request = new SievePutScriptRequest(
-                  new String(gEditorStatus.scriptName),
-                  script);
-  request.addPutScriptListener(event);
-  request.addErrorListener(event);
-  
-  sivSendRequest(gSid,gCid,request);
+  gSFE.putScript(gEditorStatus.scriptName,script)
 }
 
 function onWindowClose()
@@ -694,7 +601,7 @@ function onWindowClose()
   
   clearTimeout(gEditorStatus.checkScriptTimer);
     
-  sivDisconnect();  
+  gSFE.disconnect();
                
   return true;  
 }
@@ -819,7 +726,7 @@ function onErrorBar(visible)
 function onSideBarShow()
 {
   document.getElementById('btnReference').setAttribute('checked', 'true')
-  document.getElementById('splitter').removeAttribute('hidden');
+  document.getElementById('spSideBar').removeAttribute('hidden');
   document.getElementById('vbSidebar').removeAttribute('hidden');
   
   return;
@@ -831,7 +738,7 @@ function onSideBarShow()
 function onSideBarHide()
 {
   document.getElementById('btnReference').removeAttribute('checked');
-  document.getElementById('splitter').setAttribute('hidden', 'true');
+  document.getElementById('spSideBar').setAttribute('hidden', 'true');
   document.getElementById('vbSidebar').setAttribute('hidden', 'true')
   
   onSearchBarHide();
@@ -1260,65 +1167,7 @@ function onPrint()
   return;
 }*/
 
-function sivSendRequest(sid,cid,request)
-{
-  // we do not send requests while in offline mode...
-  var ioService = Cc["@mozilla.org/network/io-service;1"]
-                      .getService(Ci.nsIIOService);  
-    
-  if (ioService.offline)
-  {        
-    sivDisconnect(6);
-    return;
-  }
-  
-  // ... we are not so let's try. If the channel was closed...
-  // ... getChannel will throw an exception.
-  try
-  {
-    Cc["@sieve.mozdev.org/transport-service;1"]
-        .getService().wrappedJSObject
-        .getChannel(sid,cid)
-        .addRequest(request);  
-  }
-  catch (e)
-  {
-    // most likely getChannel caused this exception, but anyway we should ...
-    // ... display error message. If we do not catch the exception a timeout ...
-    // ... would accure, so let's display the timeout message directly.
-    
-    alert("SivFilerExplorer.sivSendRequest:"+e);
-    sivDisconnect(1);       
-  }
-}
 
-function sivDisconnect(state,message)
-{
-  
-  if (state)
-    sivSetStatus(state,message);
-    
-  if ((!gSid) || (!gCid))
-    return;
-    
-  Cc["@sieve.mozdev.org/transport-service;1"]
-      .getService().wrappedJSObject
-      .closeChannel(gSid,gCid); 
-}
 
-function sivSetStatus(state, message)
-{
-  if (state == 0)
-  {
-    document.getElementById("sivEditorStatus").setAttribute('hidden','true');    
-    document.getElementById('sivEditor').removeAttribute('collapsed');    
-    return;
-  }
-    
-  // The rest has to be redirected to the status window...
-  document.getElementById('sivEditor').setAttribute('collapsed','true');    
-  document.getElementById("sivEditorStatus").contentWindow.onStatus(state,message)
-  document.getElementById("sivEditorStatus").removeAttribute('hidden');    
-  
-}
+
          

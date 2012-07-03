@@ -1,7 +1,7 @@
 @import url("chrome://messenger/skin/");
 @import url("chrome://global/skin/toolbar.css");
  
- 
+
  /* the surrounding box */
  .sivEditor
  {
@@ -42,14 +42,14 @@
 	 
 	 border: none; 
 	 border-right: 1px groove; 
-	 background:-moz-dialog;
+	 
+	 background: #f8f8f8;
  }
  
  .sivEditor #sivLineNumbers textbox
  { 
 	 width:50px;  
 	 background: #f8f8f8 !important;
-	 /*background:-moz-dialog !important; 	 */
 	 overflow:hidden;
  }
  
@@ -64,7 +64,6 @@
 {
 	 visibility:hidden;
 	 width:50px;
-	background: #f8f8f8 !important;
 }
  
 
@@ -304,6 +303,18 @@
 .sieveCloseButton:hover:active 
 {
     background-image: url(chrome://sieve/content/images/closeActive.png);
+}
+
+#spSideBar {
+  border: none;
+  border-right: 1px solid #A9B7C9;
+  min-width: 0;
+  width: 5px;
+  background-color: transparent;
+  margin-left: -5px;
+  position: relative;
+  z-index: 10;
+  -moz-transition: border-width .3s ease-in;	
 }
 
 #spErrorBar{

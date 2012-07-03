@@ -3,7 +3,7 @@ body {
   font-size: 11px;
   background-color:lightgray;
   cursor: default;
-  margin-top:20px;
+  margin:0px;
 }
 
 .sivConditionText,
@@ -161,20 +161,13 @@ div[sivtype][sivDragging="true"] {
 
 
 
-  #divOutput {
-    margin-left:auto;
-    margin-right:auto;
-    padding: 5px 20px;
-    
-    background-color:white;
-    width:600px;
-    padding-right:90px;
-    padding-left:30px;
-    
+  #divOutput {  
+    background-color:white;    
   }
 
 .sivRichList > .sivRichListItem {
   padding: 5px 10px;
+  margin:1px;
 }
 
 .sivRichList > .sivRichListItem[sivEditable] {
@@ -203,11 +196,12 @@ div[sivtype][sivDragging="true"] {
 
 .sivRichList > .sivRichListItem:not(:last-of-type) {
   border-bottom: 1px solid gray;
+  margin-bottom: 2px;
 }
 
-.sivRichList {
+./*sivRichList {
   -moz-appearance: textfield;
-}
+}*/
 
 .sivAction > div:not(:first-of-type),
 .sivCondition > div:not(:first-of-type) {

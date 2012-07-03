@@ -14,7 +14,8 @@ SieveTestUI.prototype.createHtml
 {  
   
   return parent.append($("<div/>")
-    .append($("<div/>").text("address"))) 
+    .append($("<div/>").text("address"))
+    .append($("<button/>").text("Trash")))
     .append($("<div/>")
       .css("display","table")
       .append($("<div/>")

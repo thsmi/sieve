@@ -229,6 +229,8 @@ function onGoOnlineClick()
 {
   var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);  
   ioService.offline = false; 
+  
+  gCallback();
 }
 
 // ChannelCreated

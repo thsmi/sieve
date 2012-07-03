@@ -45,6 +45,8 @@
   <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js" />
   <script type="application/javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveAbstractClient.js"/>          
+  <script type="application/javascript" 
           src="chrome://sieve/content/editor/SieveFilterEditor.js" />
  <!-- <script type="application/javascript" 
           src="chrome://global/content/printUtils.js"/>
@@ -150,17 +152,12 @@
           
         <iframe id="sivWidgetEditor" flex="1"  type="content" />          
       </deck>
-    <splitter id="splitter" resizeafter="farthest" />
+    <splitter id="spSideBar" resizeafter="farthest" />
   <vbox id="vbSidebar" class="sieveSideBar">
    <vbox id="vbSearchBar">
     <stack class="outset">
       <image flex="1"/> 
-      <hbox>
-        <label flex="1" value="&edit.searchreplace.title;" />
-        <toolbarbutton 
-            class="sieveCloseButton"
-            oncommand="onSearchBarHide();"/>
-      </hbox>
+      <label flex="1" value="&edit.searchreplace.title;" />
     </stack>
 
       <hbox align="center">
@@ -189,12 +186,7 @@
    <vbox flex="1">    
     <stack class="outset">
       <image flex="1"/> 
-      <hbox>
-        <label flex="1" value="&edit.sidebar.title;" />
-        <toolbarbutton 
-            class="sieveCloseButton"
-            oncommand="onSideBarHide();"/>
-      </hbox>
+      <label flex="1" value="&edit.sidebar.title;" />
     </stack>
     <hbox >
         <toolbarbutton id="btnSideBarBack" 

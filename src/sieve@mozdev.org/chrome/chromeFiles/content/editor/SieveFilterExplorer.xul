@@ -45,7 +45,9 @@
   <script type="application/javascript" 
           src="chrome://sieve/content/SieveOverlay.js" />
   <script type="application/javascript" 
-          src="chrome://sieve/content/editor/SieveFiltersTreeView.js"/>          
+          src="chrome://sieve/content/editor/SieveFiltersTreeView.js"/>
+  <script type="application/javascript" 
+          src="chrome://sieve/content/libs/libManageSieve/SieveAbstractClient.js"/>
   <script type="application/javascript" 
           src="chrome://sieve/content/editor/SieveFilterExplorer.js"/>
               

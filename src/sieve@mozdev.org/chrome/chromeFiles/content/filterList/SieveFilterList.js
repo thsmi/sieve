@@ -18,11 +18,6 @@ function errorhandler(msg, url, line)
 window.onerror = errorhandler;
   
 
-
- 
-
-// TODO move code into separate class and override this class here, in the...
-// .. explorer and the editor. So that we do not need to maintain duplicate code
   
 // TODO möglichkeit bauen einen FilterList Dialog an die GUI zu binden bzw. 
 // davon zu befreien. Dadurch wird garantiert dass immer nur die aktuelle
@@ -31,10 +26,11 @@ window.onerror = errorhandler;
 
 function SieveFilterListDialog()
 {
-  this._sid = null;
-  this._cid = null;
+  SieveAbstractClient.call(this);
   this._script = "Thunderbird Mailfilters"
 }
+
+SieveFilterListDialog.prototype.__proto__ = SieveAbstractClient.prototype;
 
 SieveFilterListDialog.prototype.onListScriptResponse
     = function(response)
@@ -61,8 +57,8 @@ SieveFilterListDialog.prototype.onListScriptResponse
         
   document.getElementById("sivContent")
     .contentWindow.setSieveScript("",capabilities);
-    
-  sivSetStatus(0);
+ 
+  this.onStatusChange(0);
   }
   catch (ex) {
     alert(ex);
@@ -86,26 +82,10 @@ SieveFilterListDialog.prototype.onGetScriptResponse
     alert(ex);
   }
     
-  sivSetStatus(0); 
+  this.onStatusChange(0); 
 }
 
-SieveFilterListDialog.prototype.onTimeout
-    = function()
-{
-  this.disconnect(1,"warning.timeout");
-}
-  
-SieveFilterListDialog.prototype.onError
-    = function(response)
-{
-  this.disconnect(4,response.getMessage());
-}
 
-SieveFilterListDialog.prototype.onDisconnect
-    = function()
-{
-  this.disconnect(9);
-}
       
 SieveFilterListDialog.prototype.onChannelClosed
     = function()
@@ -114,11 +94,6 @@ SieveFilterListDialog.prototype.onChannelClosed
   // it might be a good idea to check if the script was changed.
 }
   
-SieveFilterListDialog.prototype.onChannelCreated
-    = function(sieve)
-{
-  this.onChannelReady(this._cid);
-}
   
 SieveFilterListDialog.prototype.onChannelReady
     = function(cid)
@@ -134,109 +109,26 @@ SieveFilterListDialog.prototype.onChannelReady
   // get active if any
 }
   
-SieveFilterListDialog.prototype.onChannelStatus
-    = function(id,text)
-{      
-  sivSetStatus(id,text);
-}
-  
-SieveFilterListDialog.prototype.onBadCert
-    = function(targetSite)
-{
-  this.disconnect(5,targetSite);
-}
-
-SieveFilterListDialog.prototype.connect
-    = function (account)
-{
-  var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-  
-  if (ioService.offline)
-    return sivSetStatus(6); 
-  
-  sivSetStatus(3,"progress.connecting");
-  
-  // Ensure that Sieve Object is null...
-  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
-            .getService().wrappedJSObject;
- 
-  this._sid = sivManager.createSession(account.getKey());
-  sivManager.addSessionListener(this._sid,this);
-  
-  this._cid = sivManager.createChannel(this._sid);
-  
-  sivManager.openChannel(this._sid,this._cid);  
-}
-
-SieveFilterListDialog.prototype.disconnect
-    = function (state,message)
-{ 
-  if (state)
-    sivSetStatus(state,message,"status.disconnected");  
-  
-  if ((!this._sid) || (!this._cid))
-    return;
-    
-  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
-                       .getService().wrappedJSObject;
-  sivManager.removeSessionListener(this._sid, this);
-  sivManager.closeChannel(this._sid,this._cid);
-  
-}
-
-SieveFilterListDialog.prototype.listScript
-    = function ()
-{
-  var request = new SieveListScriptRequest();
-  request.addListScriptListener(this);
-  request.addErrorListener(this);
-  
-  this.sendRequest(request);
-}
-
-SieveFilterListDialog.prototype.getScript
-    = function (script)
-{
-  var request = new SieveGetScriptRequest(script);
-  request.addGetScriptListener(this);
-  request.addErrorListener(this);
-  
-  this.sendRequest(request)
-}
-
-SieveFilterListDialog.prototype.sendRequest
-    = function (request)
-{
-  // we do not send requests while in offline mode...
-  var ioService = Cc["@mozilla.org/network/io-service;1"]
-                      .getService(Ci.nsIIOService);  
-    
-  if (ioService.offline)
+SieveFilterListDialog.prototype.onStatusChange
+    = function(state,message)
+{             
+  // Script ready
+  if (state == 0)
   {
-    this.disconnect(6);
+    document.getElementById("sivStatus").setAttribute('hidden','true');    
+    document.getElementById('sivContent').removeAttribute('hidden');
     return;
   }
   
-  // ... we are not so let's try. If the channel was closed...
-  // ... getChannel will throw an exception.
-  try
-  {
-    Cc["@sieve.mozdev.org/transport-service;1"]
-        .getService().wrappedJSObject
-        .getChannel(this._sid,this._cid)
-        .addRequest(request);  
-  }
-  catch (e)
-  {
-    // most likely getChannel caused this exception, but anyway we should ...
-    // ... display error message. If we do not catch the exception a timeout ...
-    // ... would accure, so let's display the timeout message directly.
-    this.disconnect(1,"warning.timeout");    
-  }
+  // The rest has to be redirected to the status window...
+  //document.getElementById('sivExplorerTree').setAttribute('collapsed','true');    
+  document.getElementById("sivStatus").contentWindow.onStatus(state,message)
+  document.getElementById("sivStatus").removeAttribute('hidden');
+  document.getElementById('sivContent').setAttribute('hidden','true');  
 }
 
 
-var gSFLD = null;
+var gSFLD = new SieveFilterListDialog();
 
 
 /*function onCanChangeAccount(key)
@@ -274,14 +166,12 @@ function onLoad()
   if ((!account.isEnabled()) || account.isFirstRun())
   {
     account.setFirstRun();
-    sivSetStatus(8);
+    gSFLD.onStatusChange(8);
     
     return;
   }
   
-  sivSetStatus(3,"progress.connecting");
-  
-  gSFLD = new SieveFilterListDialog();
+  gSFLD.onStatusChange(3,"progress.connecting");  
 
   gSFLD.connect(account);
    
@@ -294,22 +184,6 @@ window.onunload = function ()
 }
 
 
-function sivSetStatus(state, message)
-{        
-  // Script ready
-  if (state == 0)
-  {
-    document.getElementById("sivStatus").setAttribute('hidden','true');    
-    document.getElementById('sivContent').removeAttribute('hidden');
-    return;
-  }
-  
-  // The rest has to be redirected to the status window...
-  //document.getElementById('sivExplorerTree').setAttribute('collapsed','true');    
-  document.getElementById("sivStatus").contentWindow.onStatus(state,message)
-  document.getElementById("sivStatus").removeAttribute('hidden');
-  document.getElementById('sivContent').setAttribute('hidden','true');  
-}
 
 /*
  * StartUp...

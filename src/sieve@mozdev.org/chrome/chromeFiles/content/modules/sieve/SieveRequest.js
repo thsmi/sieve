@@ -34,6 +34,19 @@
 // Enable Strict Mode
 "use strict";
 
+var EXPORTED_SYMBOLS = [ "SieveGetScriptRequest","SievePutScriptRequest",
+      "SieveCheckScriptRequest","SieveSetActiveRequest","SieveCapabilitiesRequest",
+      "SieveDeleteScriptRequest","SieveNoopRequest","SieveRenameScriptRequest",
+      "SieveListScriptRequest","SieveStartTLSRequest","SieveLogoutRequest",
+      "SieveInitRequest","SieveSaslPlainRequest","SieveSaslLoginRequest",
+      "SieveSaslCramMd5Request","SieveSaslScramSha1Request"];
+      
+const Cc = Components.classes; 
+const Ci = Components.interfaces;   
+const Cu = Components.utils;      
+
+Cu.import("chrome://sieve/content/modules/sieve/SieveResponse.js");
+
 /**
  * Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy 
  * binary, and javascript is something inbetween. This means we have to convert
@@ -45,14 +58,6 @@
  * @author Thomas Schmid <schmid-thomas@gmx.net>
  * @author Max Dittrich
  */ 
-
-if (typeof(Cc) == 'undefined')
-  { var Cc = Components.classes; }
-
-if (typeof(Ci) == 'undefined')
-  { var Ci = Components.interfaces; }
-
-
 function JSStringToByteArray(str,charset) 
 {  
   // ... and convert to UTF-8

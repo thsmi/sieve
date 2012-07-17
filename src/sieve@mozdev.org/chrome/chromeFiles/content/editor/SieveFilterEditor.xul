@@ -35,17 +35,10 @@
   <!-- needed for copy and paste -->
   <script type="application/javascript"
           src="chrome://global/content/globalOverlay.js" />   
-  
   <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveRequest.js" />
+          src="chrome://sieve/content/libs/libManageSieve/SieveAbstractClient.js"/> 
   <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveResponseCodes.js" />                
-  <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveResponse.js" />    
-  <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js" />
-  <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveAbstractClient.js"/>          
+          src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js"/>           
   <script type="application/javascript" 
           src="chrome://sieve/content/editor/SieveFilterEditor.js" />
  <!-- <script type="application/javascript" 
@@ -124,6 +117,7 @@
                 <!-- We use this hidden elemen as dummy, otherwise the scrollbar of the content editor could have a line number-->
                 <scrollbar/>
               </vbox>
+              <splitter class="spVertical" resizeafter="farthest" /> 
               <textbox id="sivContentEditor" flex="1" 
                        multiline="true" wrap="off" 
                        autocomplete="off" />
@@ -152,7 +146,7 @@
           
         <iframe id="sivWidgetEditor" flex="1"  type="content" />          
       </deck>
-    <splitter id="spSideBar" resizeafter="farthest" />
+    <splitter id="spSideBar" class="spVertical" resizeafter="farthest" />
   <vbox id="vbSidebar" class="sieveSideBar">
    <vbox id="vbSearchBar">
     <stack class="outset">

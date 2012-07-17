@@ -13,6 +13,11 @@
  // Enable Strict Mode
 "use strict";
 
+var EXPORTED_SYMBOLS = [ "SieveSimpleResponse", "SieveCapabilitiesResponse", 
+        "SieveListScriptResponse", "SieveSaslLoginResponse", 
+        "SieveSaslCramMd5Response", "SieveGetScriptResponse",
+        "SieveSaslScramSha1Response"];
+
 /**
  * This class implements a generic response handler for simple sieve requests.
  * 

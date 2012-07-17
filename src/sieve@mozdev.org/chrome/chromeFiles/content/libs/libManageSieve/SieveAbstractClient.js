@@ -9,14 +9,18 @@
  *
  */
 
+
 // Enable Strict Mode
 "use strict";  
 
+Components.utils.import("chrome://sieve/content/modules/sieve/SieveConnectionManager.js"); 
+Components.utils.import("chrome://sieve/content/modules/sieve/SieveRequest.js"); 
+
+
 //TODO merge and or rename into SieveChannel
 
-
 function SieveAbstractClient()
-{
+{  
   this._sid = null;
   this._cid = null;
 }
@@ -148,17 +152,16 @@ SieveAbstractClient.prototype.connect
     return this.onStatusChange(6); 
   
   this.onStatusChange(3,"progress.connecting");
-  
+   
   // Ensure that Sieve Object is null...
-  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
-            .getService().wrappedJSObject;
+  var sivManager = SieveConnections;
  
   this._sid = sivManager.createSession(account.getKey());
   sivManager.addSessionListener(this._sid,this);
   
   this._cid = sivManager.createChannel(this._sid);
   
-  sivManager.openChannel(this._sid,this._cid);  
+  sivManager.openChannel(this._sid,this._cid);   
   
   Cc["@mozilla.org/observer-service;1"]
       .getService (Ci.nsIObserverService)
@@ -174,8 +177,7 @@ SieveAbstractClient.prototype.disconnect
   if ((!this._sid) || (!this._cid))
     return;
     
-  var sivManager = Cc["@sieve.mozdev.org/transport-service;1"]
-                       .getService().wrappedJSObject;
+  var sivManager = SieveConnections;
   sivManager.removeSessionListener(this._sid, this);
   sivManager.closeChannel(this._sid,this._cid);    
   
@@ -247,10 +249,9 @@ SieveAbstractClient.prototype.checkScript
     
   var request = null;
   
-  var canCheck = Cc["@sieve.mozdev.org/transport-service;1"]
-                   .getService().wrappedJSObject  
-                   .getChannel(this._sid,this._cid).getCompatibility()
-                   .checkscript;
+  
+  var canCheck = SieveConnections.getChannel(this._sid,this._cid)
+                   .getCompatibility().checkscript;
 
   if (canCheck)
   {
@@ -382,11 +383,10 @@ SieveAbstractClient.prototype.renameScript
     = function (oldScriptName,newScriptName)
 {
   
-  var canRename = Cc["@sieve.mozdev.org/transport-service;1"]
-                    .getService().wrappedJSObject
+  var canRename = SieveConnections
                     .getChannel(this._sid,this._cid)
                     .getCompatibility().renamescript;                    
-        
+                       
   if (canRename)
   {
     this._renameScript2(oldScriptName, newScriptName);
@@ -444,10 +444,9 @@ SieveAbstractClient.prototype.sendRequest
   // ... getChannel will throw an exception.
   try
   {
-    Cc["@sieve.mozdev.org/transport-service;1"]
-        .getService().wrappedJSObject
-        .getChannel(this._sid,this._cid)
-        .addRequest(request);  
+    SieveConnections
+      .getChannel(this._sid,this._cid)
+      .addRequest(request);  
   }
   catch (e)
   {

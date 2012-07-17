@@ -14,7 +14,7 @@ import java.net.ServerSocket;
 public class ReplayServer
 {
   
-  static final tests test = tests.ANONYMOUS;
+  static final tests test = tests.REFERRAL2;
   
   static boolean cyrusBug = true;
   static boolean tls = true;
@@ -23,7 +23,7 @@ public class ReplayServer
   static boolean brokenServerSignature = false;
   static boolean inlineServerSignature = false;
   
-  static enum tests { ANONYMOUS, FRAGMENTATION, REFERRAL, CRAMMD5, LOGIN, SCRAMSHA1 }
+  static enum tests { ANONYMOUS, FRAGMENTATION, REFERRAL, REFERRAL2, CRAMMD5, LOGIN, SCRAMSHA1 }
 
 
 
@@ -44,6 +44,9 @@ public class ReplayServer
   	    case REFERRAL:
   	      doReferralTest(client);
   	      break;
+  	    case REFERRAL2:
+  	      doReferalTest2(client);
+          break;  	      
   	    case CRAMMD5:
   	      doCramMd5Test(client);
   	      break;
@@ -255,6 +258,107 @@ private static void onInit(String sasl, SieveSocket sieve) throws Exception
     System.out.println("Referral Test passed");
   }
   
+  private static void doReferalTest2(SieveSocket sieve) throws Exception  
+  {
+    /* [22:54:02.842 server2] Server -> Client
+     * "IMPLEMENTATION" "Cyrus timsieved (Murder) v2.4.14-univie-1.1"
+     * "SASL" "PLAIN"
+     * "SIVE" "comparator-i;ascii-numeric fileinto reject vacation imapflags notify envelope relational regex subaddress copy"
+     * "STARTTLS"
+     * "UNAUTHENTICATE"
+     * OK
+	 */
+	  
+	onInit("PLAIN",sieve);
+
+	
+	/* [22:54:02.845 server2] Client -> Server:
+	 * AUTHENTICATE "PLAIN" "xxxxxxxxx"
+	 */	 
+	  
+    assertTrue(sieve.readLine(),"AUTHENTICATE \"PLAIN\"");
+	
+    
+	/* [22:54:02.990 server2] Server -> Client
+	 *  OK  
+	 */    
+	sieve.sendPacket("OK\r\n");
+	
+
+    /* [22:54:02.991 server2] Client -> Server:
+     * LISTSCRIPTS
+     */
+	assertTrue(sieve.readLine(),"LISTSCRIPTS");
+	
+	
+	/* [22:54:03.012 server2] Server -> Client
+	 * BYE (REFERRAL "sieve://lyle.univie.ac.at") "Try Remote." 
+	 */
+	sieve.sendPacket("BYE (REFERRAL \"sieve://localhost:2001\") \"Try Remote.\"\r\n");    		
+
+	/*
+	 * 	    		> [22:54:03.012 server2] Disconnected ...
+	    		> [22:54:03.012 server2] Referred to Server: lyle.univie.ac.at
+	    		> [22:54:03.013 server2] Connecting to lyle.univie.ac.at:4190 ...
+	    		> [22:54:03.013 server2] Using Proxy: Direct
+	    		> [22:54:03.013 server2] Stop request received ...
+	    		> [22:54:03.060 server2] Connected to lyle.univie.ac.at:4190 ...
+	    		
+
+	 */
+	
+	SieveSocket sieve2 = (new SieveServerSocket(2001,true)).accept();
+	sieve.close();
+	
+	/*
+	 * [22:54:03.061 server2] Server -> Client
+	 * 	    		> "IMPLEMENTATION" "Cyrus timsieved (Murder) v2.4.14-univie-1.1"
+	    		> "SASL" "PLAIN"
+	    		> "SIEVE" "comparator-i;ascii-numeric fileinto reject vacation imapflags
+	    		> notify envelope relational regex subaddress copy"
+	    		> "STARTTLS"
+	    		> "UNAUTHENTICATE"
+	    		> OK
+	 */
+	onInit("PLAIN",sieve2);
+	
+
+	/*
+	 * 	    		> [22:54:03.063 server2] Client -> Server:
+	    		> AUTHENTICATE "PLAIN" "xxxxxxxxxxx"
+	 */
+
+    assertTrue(sieve2.readLine(),"AUTHENTICATE \"PLAIN\"");
+	
+    
+	/* [22:54:03.198 server2] Server -> Client
+	 *  OK  
+	 */    
+	sieve2.sendPacket("OK\r\n");
+	
+	assertTrue(sieve2.readLine(),"LISTSCRIPT");
+	
+	//assertTrue(sieve2.readLine(),"LOGOUT");
+	
+	sieve2.sendPacket("OK\r\n");
+	
+	//Thread.sleep(2000);
+	sieve2.close();
+
+	System.out.println("Referral2 Test passed");
+	
+/*	    		> [22:54:03.198 server2] Invoking Listeners for onChannelCreated
+	    		> SivFilerExplorer.sivSendRequest:
+	    		> [22:54:03.199 server2] Client -> Server:
+	    		> LOGOUT
+	    		> [22:54:03.330 server2] Server -> Client
+	    		> OK "Logout Complete"
+	    		> [22:54:03.330 server2] Disconnected ...
+	    		> [22:54:03.330 server2] Stop request received ...*/	    
+
+  }
+    
+  
 
   private static void doScramSha1Test(SieveSocket sieve) throws Exception
   {
@@ -297,6 +401,7 @@ private static void onInit(String sasl, SieveSocket sieve) throws Exception
     
     System.out.println("Login Test passed...");
   }
+
 
   private static void doFragmentationTest(SieveSocket sieve) throws Exception
   {

@@ -10,36 +10,15 @@
 // Enable Strict Mode
 "use strict";
 
-if (typeof(Cc) == 'undefined')
-  { var Cc = Components.classes; }
+var EXPORTED_SYMBOLS = [ "SieveConnections" ];
 
-if (typeof(Ci) == 'undefined')
-  { var Ci = Components.interfaces; }  
+const Cc = Components.classes; 
+const Ci = Components.interfaces;   
+const Cr = Components.results;
+const Cu = Components.utils;
+     
+Cu.import("chrome://sieve/content/modules/sieve/SieveSession.js");
 
-if (typeof(Cr) == 'undefined')
-  { var Cr = Components.results; }
-
-Cc["@mozilla.org/moz/jssubscript-loader;1"]
-    .getService(Ci.mozIJSSubScriptLoader) 
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveSession.js"); 
-    
-// The connection manager is a service therefore we need to ensure it's... 
-// ... a singleton, so we implement our own nsIFactory
-
-const SieveConnectionManagerFactory = {
-  _singleton: null,
-  createInstance: function (aOuter, aIID)
-  {
-    if (aOuter != null)
-      throw Cr.NS_ERROR_NO_AGGREGATION;
-      
-    if (this._singleton == null)
-      this._singleton = new SieveConnectionManager();
-      
-    return this._singleton.QueryInterface(aIID);
-  }
-};
- 
 /**
  *  JavaScript Objects are usually create within the scope of a window. This 
  *  means it can't be shared between multiple windows. "The cleanest and most
@@ -57,10 +36,6 @@ const SieveConnectionManagerFactory = {
 
 function SieveConnectionManager() 
 { 
-  // with this hack we can access this component from javascript...
-  // ...without writing your own interface
-  this.wrappedJSObject = this;
-  
   this.sessions = new Array();
   
   /*var observerService = Components.classes["@mozilla.org/observer-service;1"]
@@ -92,11 +67,7 @@ function SieveConnectionManager()
 }
 
 SieveConnectionManager.prototype =
-{
-  classID : Components.ID("7ec95cc0-14eb-11df-b46e-0002a5d5c51b"),
-  contactID : "@sieve.mozdev.org/transport-service;1",
-  classDescription: "Sieve Connection Manager",
-    
+{    
   /**
    * Creates and opens a new Manage Sieve Session
    * @return {int} a handle to the open session 
@@ -218,6 +189,19 @@ SieveConnectionManager.prototype =
     this.sessions[sid].disconnect();
    
     delete this.sessions[sid];
+    
+    /*
+    // the session is gone. We can release all modules which depend on it
+    // this safes memory and enusres only needed modules are loaded...
+    if (this.sessions.length == 0)
+    {
+      Components.utils.unload("chrome://sieve/content/modules/sieve/Session.js");
+      Components.utils.unload("chrome://sieve/content/modules/sieve/Sieve.js");
+      Components.utils.unload("chrome://sieve/content/modules/sieve/SieveRequest.js");
+      Components.utils.unload("chrome://sieve/content/modules/sieve/SieveResponse.js");
+      Components.utils.unload("chrome://sieve/content/modules/sieve/SieveResponseCode.js");
+      Components.utils.unload("chrome://sieve/content/modules/sieve/SieveResponseParser.js");
+    }*/
   },
   
 
@@ -241,18 +225,7 @@ SieveConnectionManager.prototype =
       throw "getChannel: Session closed ("+sid+" / "+cid+")";
     
     return this.sessions[sid].sieve;
-  },
-
-  QueryInterface : function(aIID)
-  {
-    // add any other interfaces you support here
-    if (!aIID.equals(Ci.nsISupports))
-      throw Cr.NS_ERROR_NO_INTERFACE;
-    return this;
-  },
-
-  _xpcom_factory: SieveConnectionManagerFactory
+  }
 };
 
-Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
-const NSGetFactory = XPCOMUtils.generateNSGetFactory([SieveConnectionManager])
+var SieveConnections = new SieveConnectionManager();

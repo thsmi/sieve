@@ -13,9 +13,20 @@
 var gSieveAccount = null;
 var gSivIncomingServer = null;
 
+function onLoad() {
+  parent.onPanelLoaded('am-sieve-account.xul');
+}
+
+function onUnload() {
+  gSieveAccount = null;
+  gSivIncomingServer =null;
+}
+
+/*
 function onAcceptEditor() { }
 
 function onSave() { }
+*/
 
 function onPreInit(account, accountvalues)
 {
@@ -61,7 +72,10 @@ function onAccountStatusChange()
 
 function onFiltersClick()
 {
-  gSivExtUtils.OpenFilters(gSivIncomingServer);
+  Components.utils.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
+  SieveUtils.OpenFilter(window,gSivIncomingServer);
+  
+  parent.close();
 }
 
 function onSettingsClick()

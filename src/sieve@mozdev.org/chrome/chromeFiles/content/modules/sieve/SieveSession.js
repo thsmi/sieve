@@ -1,34 +1,25 @@
 // Enable Strict Mode
 "use strict";
 
-if (typeof(Cc) == 'undefined')
-  { var Cc = Components.classes; }
+var EXPORTED_SYMBOLS = [ "SieveSession" ];
 
-if (typeof(Ci) == 'undefined')
-  { var Ci = Components.interfaces; }  
+const Cc = Components.classes; 
+const Ci = Components.interfaces;   
+const Cr = Components.results; 
+const Cu = Components.utils
 
-if (typeof(Cr) == 'undefined')
-  { var Cr = Components.results; }
-
+  
 Cc["@mozilla.org/moz/jssubscript-loader;1"]
     .getService(Ci.mozIJSSubScriptLoader) 
     .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveAccounts.js");
     
-Cc["@mozilla.org/moz/jssubscript-loader;1"]
-    .getService(Ci.mozIJSSubScriptLoader) 
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveRequest.js");
-    
-Cc["@mozilla.org/moz/jssubscript-loader;1"]
-    .getService(Ci.mozIJSSubScriptLoader) 
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponseParser.js");
-    
-Cc["@mozilla.org/moz/jssubscript-loader;1"]
-    .getService(Ci.mozIJSSubScriptLoader) 
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponseCodes.js");
-
-Cc["@mozilla.org/moz/jssubscript-loader;1"]
-    .getService(Ci.mozIJSSubScriptLoader) 
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveResponse.js");
+// pre load modules .
+Cu.import("chrome://sieve/content/modules/sieve/Sieve.js");
+Cu.import("chrome://sieve/content/modules/sieve/SieveRequest.js");
+Cu.import("chrome://sieve/content/modules/sieve/SieveResponse.js");
+Cu.import("chrome://sieve/content/modules/sieve/SieveResponseParser.js");
+Cu.import("chrome://sieve/content/modules/sieve/SieveResponseCodes.js");
+ 
 
 /**
  * This class pools and caches concurrent connections (Channel) to an destinct 
@@ -47,10 +38,12 @@ Cc["@mozilla.org/moz/jssubscript-loader;1"]
  */
 function SieveSession(accountId,sid)
 {
+ 
+  
   this.idx = 0;
 
   // Load Account by ID
-  this.account = (new SieveAccounts()).getAccount(accountId);
+  this.account = (new SieveAccounts()).getAccountByName(accountId);
   
   this.debug = {};
   this.debug.level = this.account.getSettings().getDebugFlags();
@@ -148,6 +141,9 @@ SieveSession.prototype =
   
   onAuthenticate: function(response)
   { 
+    // update capabilites
+    this.sieve.setCompatibility(response.getCapabilities());
+    
     this._invokeListeners("onChannelStatus",3,"progress.authenticating");
       
     var account =  this.account;
@@ -446,8 +442,8 @@ SieveSession.prototype =
     // set state to connecting...
     this.state = 1;
     
-    this.sieve = Cc["@sieve.mozdev.org/transport;1"]
-                   .createInstance().wrappedJSObject;
+    
+    this.sieve = new Sieve();
     
     // Step 1: Setup configure settings
     this.sieve.setDebugLevel(

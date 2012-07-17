@@ -5,7 +5,8 @@
  /* the surrounding box */
  .sivEditor
  {
-	 -moz-appearance: textfield
+	 background-color: -moz-Field;
+	/* -moz-appearance: textfield*/
  }	 
  
  .sivEditor textbox
@@ -41,7 +42,7 @@
 	 padding:0px;  
 	 
 	 border: none; 
-	 border-right: 1px groove; 
+	 /*border-right: 1px groove;*/ 
 	 
 	 background: #f8f8f8;
  }
@@ -305,7 +306,7 @@
     background-image: url(chrome://sieve/content/images/closeActive.png);
 }
 
-#spSideBar {
+.spVertical{
   border: none;
   border-right: 1px solid #A9B7C9;
   min-width: 0;
@@ -317,7 +318,7 @@
   -moz-transition: border-width .3s ease-in;	
 }
 
-#spErrorBar{
+#spErrorBar {
   border: none;
   border-bottom: 1px solid #A9B7C9;
   min-height: 0;

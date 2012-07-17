@@ -160,13 +160,6 @@ use '127.0.0.1' instead.">
 <!ENTITY options.proxy.port "Port:"> 
 
 
-<!-- Menu entries -->
-<!ENTITY menu.filters "Sieve Message Filters...">
-<!ENTITY menu.filters.key "M">
-<!ENTITY menu.options "Sieve Filter Settings...">
-<!ENTITY menu.options.key "S">
-
-
 <!-- Locale for the List Filter Dialog -->
 <!ENTITY list.title "Sieve Filters">
 

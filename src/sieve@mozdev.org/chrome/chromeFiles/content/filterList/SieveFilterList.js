@@ -9,6 +9,11 @@
  *      
  */
 
+Components.utils.import("chrome://sieve/content/modules/SieveAbstractClient.js");
+
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+
 function errorhandler(msg, url, line)
   {
     alert(msg);

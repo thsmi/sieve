@@ -10,6 +10,8 @@
 // Enable Strict Mode
 "use strict";
 
+var EXPORTED_SYMBOLS = [ "SieveResponseCode","SieveResponseCodeSasl","SieveResponseCodeReferral" ];
+
 function SieveResponseCode(code)
 {
   this.code = code;    

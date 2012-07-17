@@ -41,6 +41,8 @@
         <em:description>Настраивает фильтры Sieve на почтовом сервере.</em:description>
       </Description>
     </em:localized>
+    
+    <em:bootstrap>true</em:bootstrap>
    
     <em:name>Sieve</em:name>
     <em:description>Configures serverside sieve email filters</em:description>

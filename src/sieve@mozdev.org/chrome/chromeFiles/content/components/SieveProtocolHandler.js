@@ -12,6 +12,8 @@
 // Enable Strict Mode
 "use strict";
 
+var EXPORTED_SYMBOLS = [ "SieveProtocolHandlerComponent"];
+
 if (typeof(Cc) == 'undefined')
   { var Cc = Components.classes; }
 
@@ -83,6 +85,41 @@ SieveProtocolHandler.prototype =
 }
 
 
-// entrypoint 
-Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
-const NSGetFactory = XPCOMUtils.generateNSGetFactory([SieveProtocolHandler])
+  var SieveProtocolHandlerFactory = 
+  {
+    createInstance: function (outer, iid)
+    {
+      if (outer != null)
+        throw Cr.NS_ERROR_NO_AGGREGATION;
+      
+      return new SieveProtocolHandler().QueryInterface(iid);
+    },
+     
+    QueryInterface: function (iid)
+    {
+      if (iid.equals(Ci.nsIFactory) ||  iid.equals(Ci.nsISupports))
+        return this;
+      
+      throw Cr.NS_ERROR_NO_INTERFACE;
+    }
+  };
+  
+var SieveProtocolHandlerComponent = {};
+  
+SieveProtocolHandlerComponent.load = function() 
+{  
+  var compMgr = Components.manager.QueryInterface(Ci.nsIComponentRegistrar);
+  compMgr.registerFactory(
+      SieveProtocolHandler.prototype.classID,
+      SieveProtocolHandler.prototype.classDescription,
+      SieveProtocolHandler.prototype.contactID,
+      SieveProtocolHandlerFactory);    
+}
+
+SieveProtocolHandlerComponent.unload = function()
+{
+  var compMgr = Components.manager.QueryInterface(Ci.nsIComponentRegistrar);
+  compMgr.unregisterFactory(
+    SieveProtocolHandler.prototype.classID,
+    SieveProtocolHandlerFactory);     
+}

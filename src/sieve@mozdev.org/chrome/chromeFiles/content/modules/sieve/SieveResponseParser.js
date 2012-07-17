@@ -10,6 +10,9 @@
 // Enable Strict Mode
 "use strict";
 
+// Expose to javascript modules
+var EXPORTED_SYMBOLS = [ "SieveResponseParser" ];
+
 /**
  * The manage sieve protocol syntax uses a fixed gramar which is based on atomar tokens. 
  * This class offers an interface to test for and extract these predefined tokens. It supports 

@@ -7,6 +7,8 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+// TODO convert into module and cache settings...
+
 // Enable Strict Mode
 "use strict";
 
@@ -1193,7 +1195,7 @@ function SieveAccounts()
  *   Array containing SieveAccounts
  */
 SieveAccounts.prototype.getAccounts
-    = function () 
+    = function ()
 {
   // as cache the array containting the account information...
   // ... we check if we already enumerated the accounts.
@@ -1219,6 +1221,12 @@ SieveAccounts.prototype.getAccounts
   return this.accounts;
 }
 
+SieveAccounts.prototype.getAccountByServer
+    = function (server)
+{
+  return new SieveAccount(server);      
+}
+
 /**
  * Loads a Sieve Account by its associated nsIMsgIncomingServer Account
  * @param {String} key
@@ -1226,7 +1234,7 @@ SieveAccounts.prototype.getAccounts
  * @return {SieveAccount}
  *   A corresponding SieveAccount
  */
-SieveAccounts.prototype.getAccount
+SieveAccounts.prototype.getAccountByName
     = function (key)
 {
   var accountManager = Components.classes['@mozilla.org/messenger/account-manager;1']

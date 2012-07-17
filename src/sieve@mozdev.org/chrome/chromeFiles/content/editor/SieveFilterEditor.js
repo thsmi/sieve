@@ -15,11 +15,14 @@
 // Enable Strict Mode
 "use strict";
 
-if (typeof(Cc) == 'undefined')
-  { Cc = Components.classes; }
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const Cu = Components.utils;
 
-if (typeof(Ci) == 'undefined')
-  { Ci = Components.interfaces; } 
+Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
+Cu.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
+
+SieveOverlayManager.require("/sieve/SieveConnectionManager.js",this,window);
 
 var gBackHistory = new Array();
 var gForwardHistory = new Array();
@@ -316,7 +319,7 @@ function onWindowLoad()
   var args = window.arguments[0].wrappedJSObject;
   gEditorStatus.account = args["account"];
   
-  var account = (new SieveAccounts()).getAccount(gEditorStatus.account);
+  var account = (new SieveAccounts()).getAccountByName(gEditorStatus.account);
   
   document.getElementById("sivEditorStatus").contentWindow
     .onAttach(account,function() { gSFE.connect(account) });    
@@ -452,10 +455,10 @@ function onViewSource(visible)
 
 function updateWidgets()
 {
+   
   try {
-    var capabilities = Cc["@sieve.mozdev.org/transport-service;1"]
-      .getService().wrappedJSObject
-      .getChannel(gSid,gCid).extensions;
+    var capabilities = SieveConnections
+      .getChannel(gSFE._sid,gSFE._cid).extensions;
             
     document.getElementById("sivWidgetEditor").contentWindow.setSieveScript(
       document.getElementById("sivContentEditor").value,
@@ -463,7 +466,7 @@ function updateWidgets()
   }
   catch (ex){
     // TODO Display real error message....
-    alert(ex);
+    alert("Widget :"+ex);
   }
 }
 

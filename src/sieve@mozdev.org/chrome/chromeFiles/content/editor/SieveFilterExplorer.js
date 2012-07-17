@@ -19,11 +19,13 @@
 // Enable Strict Mode
 "use strict";
 
-if (typeof(Cc) == 'undefined')
-  { Cc = Components.classes; }
+const Cc = Components.classes; 
+const Ci = Components.interfaces; 
 
-if (typeof(Ci) == 'undefined')
-  { Ci = Components.interfaces; } 
+Components.utils.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
+Components.utils.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
+
+SieveOverlayManager.require("/sieve/SieveConnectionManager.js",this,window);
 
 /** @type {{Components.interfaces.nsIConsoleService}}*/
 var gLogger = null;
@@ -109,7 +111,7 @@ SieveFilterExplorer.prototype._renameScript
   if (typeof(isActive) == "undefined")
     isActive == tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(1));
 
-  SieveAbstractClient.prototype._renameScript.call(this,oldScriptName, newScriptName, isActive);    
+  SieveAbstractClient.prototype._renameScript.call(this,oldName, newName, isActive);    
 }
 
 SieveFilterExplorer.prototype.connect
@@ -223,12 +225,12 @@ function getSelectedAccount()
   if (!selectedItem)
     return null;
     
-  return (new SieveAccounts()).getAccount(selectedItem.value); 
+  return (new SieveAccounts()).getAccountByName(selectedItem.value); 
 }
 
 
-function onSelectAccount()
-{
+function onSelectAccount(server)
+{  
   document.getElementById("sivExplorerStatus").contentWindow.onDetach();  
     
   gSFE.disconnect();
@@ -240,8 +242,13 @@ function onSelectAccount()
   
   gSFE._view.update(new Array());
   tree.view = gSFE._view;
-      
-  var account = getSelectedAccount();
+ 
+  var account = null;
+  
+  if (server)
+    account = (new SieveAccounts()).getAccountByServer(server);
+  else 
+    account = getSelectedAccount();
   
   document.getElementById("sivExplorerStatus").contentWindow
     .onAttach(account,function() { gSFE.connect() });
@@ -463,7 +470,6 @@ function disableControls(disabled)
 }
 
 
-
 function onRenameClick()
 {
   
@@ -520,8 +526,8 @@ function onSettingsClick()
   var server = Cc['@mozilla.org/messenger/account-manager;1']
                    .getService(Ci.nsIMsgAccountManager)
                    .getIncomingServer(getSelectedAccount().imapKey);
-  
-  gSivExtUtils.OpenSettings(server);
+        
+  SieveUtils.OpenSettings(window,server);
 }
 
 function onActivateClick()
@@ -532,11 +538,22 @@ function onActivateClick()
 
   // imitate click in the treeview
   tree.view.cycleCell(tree.currentIndex,tree.columns.getColumnAt(1));
-    
+  
   return;
 }
 
 function onCycleCell(row,col,script,active)
 {
   gSFE.setActiveScript((active?null:script))
+}
+
+function onDonate()
+{
+  var url = Cc["@mozilla.org/network/io-service;1"]
+              .getService(Ci.nsIIOService)
+              .newURI("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC", null, null)
+              
+  Cc["@mozilla.org/uriloader/external-protocol-service;1"]
+    .getService(Ci.nsIExternalProtocolService)
+    .loadUrl(url);
 }

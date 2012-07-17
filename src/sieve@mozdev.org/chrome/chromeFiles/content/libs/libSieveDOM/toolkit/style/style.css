@@ -4,6 +4,7 @@ body {
   background: url('background.png') #333;
   cursor: default;
   margin-top:20px;
+  margin-left: 180px;
 }
 
 .sivConditionText,
@@ -85,7 +86,7 @@ div[sivtype][sivDragging="true"] {
   } 
 
   div.floating-menu {
-  position:absolute;
+  position:fixed;
   background:#fff4c8;
   border:1px solid #ffcc00;
   width:150px;
@@ -179,8 +180,9 @@ div[sivtype][sivDragging="true"] {
 
 
   #divOutput {
-    margin-left:auto;
-    margin-right:auto;
+	margin-left: 40px;
+    /*margin-left:auto;
+    margin-right:auto;*/
     padding: 5px 20px;
     
     background-color:white;
@@ -356,6 +358,6 @@ div[sivtype][sivDragging="true"] {
 }
 
 #debug {
- /* display:none;*/
+ display:none;
 }
 

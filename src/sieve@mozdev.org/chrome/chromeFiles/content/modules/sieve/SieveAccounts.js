@@ -7,12 +7,16 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-// TODO convert into module and cache settings...
-
 // Enable Strict Mode
 "use strict";
 
-var gPref = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+var EXPORTED_SYMBOLS = [ "SieveAccountManager" ];
+
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const Cu = Components.utils;
+
+Cu.import("resource://gre/modules/Services.jsm");
 
 /**
  * The SieveNoAuth is used when no authentication is needed o access the sieve
@@ -27,10 +31,9 @@ function SieveNoAuth() {}
 SieveNoAuth.prototype.getDescription
     = function ()
 {
-  return Components.classes["@mozilla.org/intl/stringbundle;1"]
-           .getService(Components.interfaces.nsIStringBundleService)
-           .createBundle("chrome://sieve/locale/locale.properties")
-           .GetStringFromName("account.auth.none");
+  Services.strings
+    .createBundle("chrome://sieve/locale/locale.properties")
+    .GetStringFromName("account.auth.none");
 }
 
 SieveNoAuth.prototype.getPassword
@@ -76,10 +79,9 @@ function SieveImapAuth(imapKey)
 SieveImapAuth.prototype.getDescription
     = function ()
 {
-  return Components.classes["@mozilla.org/intl/stringbundle;1"]
-           .getService(Components.interfaces.nsIStringBundleService)
-           .createBundle("chrome://sieve/locale/locale.properties")
-           .GetStringFromName("account.auth.imap");
+  Services.strings
+    .createBundle("chrome://sieve/locale/locale.properties")
+    .GetStringFromName("account.auth.imap");
 }
 
 SieveImapAuth.prototype.getPassword
@@ -186,10 +188,9 @@ function SieveCustomAuth2(host, uri)
 SieveCustomAuth2.prototype.getDescription
     = function ()
 {
-  return Components.classes["@mozilla.org/intl/stringbundle;1"]
-           .getService(Components.interfaces.nsIStringBundleService)
-           .createBundle("chrome://sieve/locale/locale.properties")
-           .GetStringFromName("account.auth.custom");
+  Services.strings
+    .createBundle("chrome://sieve/locale/locale.properties")
+    .GetStringFromName("account.auth.custom");
 }
 
 /**
@@ -210,7 +211,7 @@ SieveCustomAuth2.prototype.setUsername
   var oldUserName = this.getUsername();
   
   // ... and update the new username.
-  gPref.setCharPref(this.sieveKey+".login.username",username);
+  Services.prefs.setCharPref(this.sieveKey+".login.username",username);
   
   
   // we should also update the LoginManager...
@@ -364,8 +365,8 @@ SieveCustomAuth2.prototype.getPassword
 SieveCustomAuth2.prototype.getUsername
     = function ()
 {
-  if (gPref.prefHasUserValue(this.sieveKey+".login.username"))
-    return gPref.getCharPref(this.sieveKey+".login.username");
+  if (Services.prefs.prefHasUserValue(this.sieveKey+".login.username"))
+    return Services.prefs.getCharPref(this.sieveKey+".login.username");
 
   return "";
 }
@@ -447,8 +448,8 @@ SieveSocks4Proxy.prototype.getType
 SieveSocks4Proxy.prototype.getHost
     = function()
 {
-  if (gPref.prefHasUserValue(this.prefURI+".host"))
-    return gPref.getCharPref(this.prefURI+".host");
+  if (Services.prefs.prefHasUserValue(this.prefURI+".host"))
+    return Services.prefs.getCharPref(this.prefURI+".host");
 
   return "localhost"; 
 }
@@ -456,14 +457,14 @@ SieveSocks4Proxy.prototype.getHost
 SieveSocks4Proxy.prototype.setHost
     = function(host)
 {
-  gPref.setCharPref(this.prefURI+".host",host);
+  Services.prefs.setCharPref(this.prefURI+".host",host);
 }
 
 SieveSocks4Proxy.prototype.getPort
     = function()
 {
-  if (gPref.prefHasUserValue(this.prefURI+".port"))
-    return gPref.getCharPref(this.prefURI+".port");
+  if (Services.prefs.prefHasUserValue(this.prefURI+".port"))
+    return Services.prefs.getCharPref(this.prefURI+".port");
 
   return "1080"; 
 }
@@ -484,7 +485,7 @@ SieveSocks4Proxy.prototype.setPort
   if ((port < 0) || (port > 65535))
     throw "Ivalid Port Number";
 
-  gPref.setCharPref(this.prefURI+".port",""+port);
+  Services.prefs.setCharPref(this.prefURI+".port",""+port);
 }
 
 SieveSocks4Proxy.prototype.getProxyInfo
@@ -517,8 +518,8 @@ SieveSocks5Proxy.prototype.getType
 SieveSocks5Proxy.prototype.usesRemoteDNS
     = function()
 {
-  if (gPref.prefHasUserValue(this.prefURI+".remote_dns"))
-    return gPref.getBoolPref(this.prefURI+".remote_dns");
+  if (Services.prefs.prefHasUserValue(this.prefURI+".remote_dns"))
+    return Services.prefs.getBoolPref(this.prefURI+".remote_dns");
 
   return true; 
 }
@@ -526,7 +527,7 @@ SieveSocks5Proxy.prototype.usesRemoteDNS
 SieveSocks5Proxy.prototype.setRemoteDNS
     = function(enabled)
 {
-  gPref.setBoolPref(this.prefURI+".remote_dns",enabled);
+  Services.prefs.setBoolPref(this.prefURI+".remote_dns",enabled);
 }
 
 SieveSocks5Proxy.prototype.getProxyInfo
@@ -555,11 +556,11 @@ SieveAbstractHost.prototype.getPort
 {    
   var port = 4190;
   
-  if ((type == null) && (gPref.prefHasUserValue(this.prefURI+".port.type"))) 
-    type = gPref.getIntPref(this.prefURI+".port.type");
+  if ((type == null) && (Services.prefs.prefHasUserValue(this.prefURI+".port.type"))) 
+    type = Services.prefs.getIntPref(this.prefURI+".port.type");
 
-  if ((type == 2) && gPref.prefHasUserValue(this.prefURI+".port"))
-    return gPref.getIntPref(this.prefURI+".port");
+  if ((type == 2) && Services.prefs.prefHasUserValue(this.prefURI+".port"))
+    return Services.prefs.getIntPref(this.prefURI+".port");
     
   if (type == 1)
     return 2000;
@@ -577,7 +578,7 @@ SieveAbstractHost.prototype.setPort
   else if (port == 2000)
     type = 1;
     
-  gPref.setIntPref(this.prefURI+".port.type",type);
+  Services.prefs.setIntPref(this.prefURI+".port.type",type);
   
   if (type != 2)
     return;
@@ -587,7 +588,7 @@ SieveAbstractHost.prototype.setPort
   if (isNaN(port))
     port = 4190;
     
-  gPref.setIntPref(this.prefURI+".port",port);
+  Services.prefs.setIntPref(this.prefURI+".port",port);
 }
 
 SieveAbstractHost.prototype.isTLSForced
@@ -596,8 +597,8 @@ SieveAbstractHost.prototype.isTLSForced
   if (!this.isTLSEnabled())
     return false;
     
-  if (gPref.prefHasUserValue(this.prefURI+".TLS"))
-    return gPref.getBoolPref(this.prefURI+".TLS");
+  if (Services.prefs.prefHasUserValue(this.prefURI+".TLS"))
+    return Services.prefs.getBoolPref(this.prefURI+".TLS");
 
   return true;      
 }
@@ -605,8 +606,8 @@ SieveAbstractHost.prototype.isTLSForced
 SieveAbstractHost.prototype.isTLSEnabled
     = function ()
 {
-   if (gPref.prefHasUserValue(this.prefURI+".TLS.forced"))
-    return gPref.getBoolPref(this.prefURI+".TLS.forced");
+   if (Services.prefs.prefHasUserValue(this.prefURI+".TLS.forced"))
+    return Services.prefs.getBoolPref(this.prefURI+".TLS.forced");
 
    return true;
 }
@@ -614,8 +615,8 @@ SieveAbstractHost.prototype.isTLSEnabled
 SieveAbstractHost.prototype.setTLS
     = function (enabled, forced)
 {
-  gPref.setBoolPref(this.prefURI+".TLS",!!enabled);
-  gPref.setBoolPref(this.prefURI+".TLS.forced",!!forced);
+  Services.prefs.setBoolPref(this.prefURI+".TLS",!!enabled);
+  Services.prefs.setBoolPref(this.prefURI+".TLS.forced",!!forced);
 }
 
 /***********/
@@ -679,8 +680,8 @@ SieveCustomHost.prototype.toString
 SieveCustomHost.prototype.getHostname
     = function ()
 {
-  if (gPref.prefHasUserValue(this.prefURI+".hostname"))
-    return gPref.getCharPref(this.prefURI+".hostname");
+  if (Services.prefs.prefHasUserValue(this.prefURI+".hostname"))
+    return Services.prefs.getCharPref(this.prefURI+".hostname");
 
   return "";
 }
@@ -691,7 +692,7 @@ SieveCustomHost.prototype.setHostname
   if (hostname == null)
     throw "Hostname can't be null";
 
-  gPref.setCharPref(this.prefURI+".hostname",hostname);
+  Services.prefs.setCharPref(this.prefURI+".hostname",hostname);
 }
 
 SieveCustomHost.prototype.getType
@@ -718,8 +719,8 @@ function SieveAccountSettings(sieveKey)
 SieveAccountSettings.prototype.isKeepAlive
     = function () 
 {
-  if (gPref.prefHasUserValue(this.sieveKey+".keepalive"))
-    return gPref.getBoolPref(this.sieveKey+".keepalive");
+  if (Services.prefs.prefHasUserValue(this.sieveKey+".keepalive"))
+    return Services.prefs.getBoolPref(this.sieveKey+".keepalive");
         
   return true;
 }
@@ -727,14 +728,14 @@ SieveAccountSettings.prototype.isKeepAlive
 SieveAccountSettings.prototype.enableKeepAlive
     = function (enabled) 
 {
-  gPref.setBoolPref(this.sieveKey+".keepalive",enabled);
+  Services.prefs.setBoolPref(this.sieveKey+".keepalive",enabled);
 }
 
 SieveAccountSettings.prototype.getKeepAliveInterval
     = function () 
 {
-  if (gPref.prefHasUserValue(this.sieveKey+".keepalive.interval"))
-    return gPref.getCharPref(this.sieveKey+".keepalive.interval");
+  if (Services.prefs.prefHasUserValue(this.sieveKey+".keepalive.interval"))
+    return Services.prefs.getCharPref(this.sieveKey+".keepalive.interval");
 
   return "300000"; //5*60*1000 = 5 Minutes
 }
@@ -751,14 +752,14 @@ SieveAccountSettings.prototype.setKeepAliveInterval
   if (ms < 60*1000)
     ms = 60*1000;
   
-  gPref.setCharPref(this.sieveKey+".keepalive.interval",ms);
+  Services.prefs.setCharPref(this.sieveKey+".keepalive.interval",ms);
 }
 
 SieveAccountSettings.prototype.hasCompileDelay
     = function ()
 {
-  if (gPref.prefHasUserValue(this.sieveKey+".compile"))
-    return gPref.getBoolPref(this.sieveKey+".compile");
+  if (Services.prefs.prefHasUserValue(this.sieveKey+".compile"))
+    return Services.prefs.getBoolPref(this.sieveKey+".compile");
   
   return true;
 }
@@ -766,7 +767,7 @@ SieveAccountSettings.prototype.hasCompileDelay
 SieveAccountSettings.prototype.enableCompileDelay
     = function (enabled)
 {
-  gPref.setBoolPref(this.sieveKey+".compile",enabled);
+  Services.prefs.setBoolPref(this.sieveKey+".compile",enabled);
 }
 
 /**
@@ -780,8 +781,8 @@ SieveAccountSettings.prototype.enableCompileDelay
 SieveAccountSettings.prototype.getCompileDelay
     = function () 
 {     
-  if (gPref.prefHasUserValue(this.sieveKey+".compile.delay"))
-    return gPref.getIntPref(this.sieveKey+".compile.delay");
+  if (Services.prefs.prefHasUserValue(this.sieveKey+".compile.delay"))
+    return Services.prefs.getIntPref(this.sieveKey+".compile.delay");
         
   return 500; // = 500 mSec
 }
@@ -794,14 +795,14 @@ SieveAccountSettings.prototype.setCompileDelay
   if (isNaN(ms))
     ms = 500;
     
-  gPref.setIntPref(this.sieveKey+".compile.delay",ms);
+  Services.prefs.setIntPref(this.sieveKey+".compile.delay",ms);
 }
 
 SieveAccountSettings.prototype.getDebugFlags
     = function ()
 {
-  if (gPref.prefHasUserValue(this.sieveKey+".debug.flags"))
-    return gPref.getIntPref(this.sieveKey+".debug.flags");
+  if (Services.prefs.prefHasUserValue(this.sieveKey+".debug.flags"))
+    return Services.prefs.getIntPref(this.sieveKey+".debug.flags");
         
   return 0;
 }
@@ -819,16 +820,16 @@ SieveAccountSettings.prototype.setDebugFlag
     = function (flag, value)
 {
   if (value)
-    gPref.setIntPref(this.sieveKey+".debug.flags",this.getDebugFlags()| (1 << flag)  );
+    Services.prefs.setIntPref(this.sieveKey+".debug.flags",this.getDebugFlags()| (1 << flag)  );
   else
-    gPref.setIntPref(this.sieveKey+".debug.flags",this.getDebugFlags() & ~(1 << flag) );
+    Services.prefs.setIntPref(this.sieveKey+".debug.flags",this.getDebugFlags() & ~(1 << flag) );
 }
 
 SieveAccountSettings.prototype.hasForcedAuthMechanism
     = function ()
 {
-  if (gPref.prefHasUserValue(this.sieveKey+".sasl.forced"))
-    return gPref.getBoolPref(this.sieveKey+".sasl.forced");
+  if (Services.prefs.prefHasUserValue(this.sieveKey+".sasl.forced"))
+    return Services.prefs.getBoolPref(this.sieveKey+".sasl.forced");
         
   return false;
 }
@@ -836,19 +837,19 @@ SieveAccountSettings.prototype.hasForcedAuthMechanism
 SieveAccountSettings.prototype.enableForcedAuthMechanism
     = function(enabled)
 {
-  gPref.setBoolPref(this.sieveKey+".sasl.forced",enabled);
+  Services.prefs.setBoolPref(this.sieveKey+".sasl.forced",enabled);
 }
 
 SieveAccountSettings.prototype.setForcedAuthMechanism
     = function(method)
 {
-  gPref.setCharPref(this.sieveKey+".sasl.mechanism",method);
+  Services.prefs.setCharPref(this.sieveKey+".sasl.mechanism",method);
 }
 SieveAccountSettings.prototype.getForcedAuthMechanism
     = function ()
 {
-  if (gPref.prefHasUserValue(this.sieveKey+".sasl.mechanism"))
-    return gPref.getCharPref(this.sieveKey+".sasl.mechanism");
+  if (Services.prefs.prefHasUserValue(this.sieveKey+".sasl.mechanism"))
+    return Services.prefs.getCharPref(this.sieveKey+".sasl.mechanism");
         
   return "plain";
 }
@@ -925,8 +926,8 @@ SieveCustomAuthorization.prototype.getType
 SieveCustomAuthorization.prototype.getAuthorization
     = function ()
 {
-  if (gPref.prefHasUserValue(this.prefURI+".sasl.authorization.username"))
-    return gPref.getCharPref(this.prefURI+".sasl.authorization.username");
+  if (Services.prefs.prefHasUserValue(this.prefURI+".sasl.authorization.username"))
+    return Services.prefs.getCharPref(this.prefURI+".sasl.authorization.username");
   
   return null;
 }
@@ -937,7 +938,7 @@ SieveCustomAuthorization.prototype.setAuthorization
   if ((authorization == null) || (authorization == ""))
     throw "Authorization can't be empty or null";
 
-  gPref.setCharPref(this.prefURI+".sasl.authorization.username",authorization);
+  Services.prefs.setCharPref(this.prefURI+".sasl.authorization.username",authorization);
 }
 
 
@@ -1029,8 +1030,8 @@ SieveAccount.prototype.getDescription
 SieveAccount.prototype.getLogin
     = function (type) 
 {
-  if ((type == null) && gPref.prefHasUserValue(this.sieveKey+".activeLogin")) 
-    type = gPref.getIntPref(this.sieveKey+".activeLogin");
+  if ((type == null) && Services.prefs.prefHasUserValue(this.sieveKey+".activeLogin")) 
+    type = Services.prefs.getIntPref(this.sieveKey+".activeLogin");
 
   switch (type)
   {
@@ -1053,14 +1054,14 @@ SieveAccount.prototype.setActiveLogin
   if ((type < 0) || (type > 2))
     throw "invalid login type";
 
-  gPref.setIntPref(this.sieveKey+".activeLogin",type);
+  Services.prefs.setIntPref(this.sieveKey+".activeLogin",type);
 }
 
 SieveAccount.prototype.getHost
     = function (type)
 {
-  if ((type == null ) && gPref.prefHasUserValue(this.sieveKey+".activeHost"))
-    type = gPref.getIntPref(this.sieveKey+".activeHost");
+  if ((type == null ) && Services.prefs.prefHasUserValue(this.sieveKey+".activeHost"))
+    type = Services.prefs.getIntPref(this.sieveKey+".activeHost");
 
   if (type == 1)
     return new SieveCustomHost(this.Uri)
@@ -1076,14 +1077,14 @@ SieveAccount.prototype.setActiveHost
   if ((type < 0) || (type > 1))
     throw "invalid host type";
 
-  gPref.setIntPref(this.sieveKey+".activeHost",type);
+  Services.prefs.setIntPref(this.sieveKey+".activeHost",type);
 }
 
 SieveAccount.prototype.getAuthorization
     = function (type)
 { 
-  if ((type == null) && gPref.prefHasUserValue(this.sieveKey+".activeAuthorization")) 
-    type = gPref.getIntPref(this.sieveKey+".activeAuthorization");
+  if ((type == null) && Services.prefs.prefHasUserValue(this.sieveKey+".activeAuthorization")) 
+    type = Services.prefs.getIntPref(this.sieveKey+".activeAuthorization");
 
   switch (type)
   {
@@ -1103,14 +1104,14 @@ SieveAccount.prototype.setActiveAuthorization
   if ((type < 0) || (type > 3))
     throw "invalid Authorization type";
 
-  gPref.setIntPref(this.sieveKey+".activeAuthorization",type);
+  Services.prefs.setIntPref(this.sieveKey+".activeAuthorization",type);
 }
 
 SieveAccount.prototype.isEnabled
     = function ()
 {
-  if (gPref.prefHasUserValue(this.sieveKey+".enabled"))        
-    return gPref.getBoolPref(this.sieveKey+".enabled");
+  if (Services.prefs.prefHasUserValue(this.sieveKey+".enabled"))        
+    return Services.prefs.getBoolPref(this.sieveKey+".enabled");
     
   return false;
 }
@@ -1118,7 +1119,7 @@ SieveAccount.prototype.isEnabled
 SieveAccount.prototype.setEnabled
     = function (enabled) 
 {
-  gPref.setBoolPref(this.sieveKey+".enabled",enabled);
+  Services.prefs.setBoolPref(this.sieveKey+".enabled",enabled);
 }
 
 SieveAccount.prototype.isFirstRun
@@ -1132,8 +1133,8 @@ SieveAccount.prototype.isFirstRun
     return false;
   }
 
-  if (gPref.prefHasUserValue(this.sieveKey+".firstRunDone"))
-    return !(gPref.getBoolPref(this.sieveKey+".firstRunDone"));
+  if (Services.prefs.prefHasUserValue(this.sieveKey+".firstRunDone"))
+    return !(Services.prefs.getBoolPref(this.sieveKey+".firstRunDone"));
   
   return true;
 }
@@ -1141,7 +1142,7 @@ SieveAccount.prototype.isFirstRun
 SieveAccount.prototype.setFirstRun
     = function()
 {
-  gPref.setBoolPref(this.sieveKey+".firstRunDone",true);      
+  Services.prefs.setBoolPref(this.sieveKey+".firstRunDone",true);      
 }
 
 /**
@@ -1157,8 +1158,8 @@ SieveAccount.prototype.getSettings
 SieveAccount.prototype.getProxy
     = function (type)
 {
-  if ((type == null) && gPref.prefHasUserValue(this.sieveKey+".proxy.type")) 
-    type = gPref.getIntPref(this.sieveKey+".proxy.type");
+  if ((type == null) && Services.prefs.prefHasUserValue(this.sieveKey+".proxy.type")) 
+    type = Services.prefs.getIntPref(this.sieveKey+".proxy.type");
 
   switch (type)
   {
@@ -1179,7 +1180,7 @@ SieveAccount.prototype.setProxy
   if ((type < 0) || (type > 3))
     throw "Invalid proxy type";
 
-  gPref.setIntPref(this.sieveKey+".proxy.type",type);
+  Services.prefs.setIntPref(this.sieveKey+".proxy.type",type);
 }
 
 //****************************************************************************//
@@ -1242,3 +1243,5 @@ SieveAccounts.prototype.getAccountByName
 
   return new SieveAccount(accountManager.getIncomingServer(key));                       
 }
+
+var SieveAccountManager = new SieveAccounts();

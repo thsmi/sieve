@@ -10,6 +10,9 @@
 // Enable Strict Mode
 "use strict"; 
 
+Components.utils.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
+SieveOverlayManager.require("/sieve/SieveAccounts.js",this,window);
+
 var gSieveAccount = null;
 var gSivIncomingServer = null;
 
@@ -35,7 +38,7 @@ function onPreInit(account, accountvalues)
 
 function onInit(pageId, serverId)
 {
-  gSieveAccount = new SieveAccount(gSivIncomingServer);  
+  gSieveAccount = SieveAccountManager.getAccountByServer(gSivIncomingServer);  
   UpdatePage();
 }
 
@@ -51,7 +54,7 @@ function UpdatePage()
   document.getElementById('txtPort').value
     = gSieveAccount.getHost().getPort();
   document.getElementById('txtTLS').value
-    = gSieveAccount.getHost().isTLSEnabled();
+    = gSieveAccount.getHost().isTLSForced();
    
   document.getElementById('txtAuth').value
     = gSieveAccount.getLogin().getDescription();

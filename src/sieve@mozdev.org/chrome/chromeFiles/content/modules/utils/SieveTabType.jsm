@@ -18,9 +18,7 @@ var SieveTabType =
       openTab: function(aTab, aArgs)
       {
         aTab.title = "Loading...";
-        aTab.busy = true
-//113         tabmail.setTabBusy(this.mTab, true);
-//114         tabmail.setTabTitle(this.mTab);        
+            
         aArgs.wrappedJSObject = aArgs;
         aTab.panel.contentWindow.arguments = [aArgs];
        
@@ -119,7 +117,7 @@ var SieveTabType =
     // we need a catch exceptions. Otherwise we could endup in case of with 
     // an unclosable tab...
     try {
-      if (! aTab.panel.contentWindow.onWindowClose())
+      if (! aTab.panel.contentWindow.onWindowClose())        
         return false;
     }
     catch (ex)  {

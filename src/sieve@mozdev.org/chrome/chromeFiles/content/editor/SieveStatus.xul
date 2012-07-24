@@ -158,6 +158,43 @@
       </vbox>      
     </hbox>
   </box>
+ 
+  <vbox id="StatusOutOfSync" hidden="true" flex="1" >
+    <vbox  class="sivWarningBar" align="center" pack="center" >
+      <description id="StatusWarningMsg">
+        The local an the server side scripts are different. 
+          
+         What would you like to do about it ?
+      </description>
+      <hbox align="right" pack="right">
+        <button label="Keep Local Script" 
+                oncommand="onKeepLocal()" />
+        <button label="Use Server Side Script"
+                oncommand="onUseRemote()" />
+      </hbox>
+   </vbox>
+
+    <hbox flex="1" style="margin:0px; padding:0px;" class="sivEditor">      
+    
+      <textbox id="sivClientSide" flex="1" 
+               readonly="true"
+               multiline="true" wrap="off" 
+               autocomplete="off"  />
+             
+      <splitter class="spVertical" resizeafter="farthest" />
+    
+      <textbox id="sivServerSide" flex="1"
+               readonly="true"
+               multiline="true" wrap="off" 
+               autocomplete="off"/>
+    </hbox>
+  </vbox>     
+    
+    
+  <!--  <hbox align="center" class="sivWarning">
+      <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
+    </hbox>
+  </box>-->
               
   <box id="StatusError" hidden="true" align="center" pack="center" flex="1">
     <hbox align="center" class="sivError">

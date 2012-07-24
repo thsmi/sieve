@@ -166,6 +166,29 @@ var SieveOverlayUtils =
   }   
 }
 
+// TODO scripts should pass an unique identifier like 
+// "Sieve.Accounts", "Sieve.Session", "Sieve.AutoConfig" instead
+// of an url
+//
+// SieveAccounts.js, SieveSessions.js and SieveAutoConfig need
+// to register at SieveOverlayManager and declare their imports
+// as chrome urls on which marschalling should work.
+//
+// SOM.manage("sieve.session",aUrl, ["chrome://...","chrome://...",...]);
+//
+// within ui code:
+// SOM.require("sieve.session",scope,window) 
+// java scrip scope is where to add the import, the global object is alys picked
+// window the object to wich this import is bound if the window is gone the import 
+// might be released. If null lifetime is boud to bootstrap and will be reasesed 
+// upon shutdown.
+//
+// within modules:
+// SOM.require(chrome://) 
+// checks if a window is registered or this url if not an exeption is thrown.
+// if yes the code is managed an imported into callers global object..
+// safe require, manage
+
 var SieveOverlayManager =
 {
   _overlays : [],
@@ -173,12 +196,11 @@ var SieveOverlayManager =
   _imports : {},
   
   require : function(aUrl,scope,aWindow)
-  {
-    
+  { 
     if (aUrl.substr(0,15) != "chrome://sieve/")
       aUrl = "chrome://sieve/content/modules" +aUrl;
       
-    Cu.reportError("Require aUrl "+aUrl);
+    Cu.reportError("Require aUrl "+aUrl+ " "+scope);
     if (scope)
       Cu.import(aUrl,Cu.getGlobalForObject(scope));  
     
@@ -189,20 +211,11 @@ var SieveOverlayManager =
       this._imports[aUrl] = {windows:[],callbacks:[]};
     
     if (this._imports[aUrl].windows.indexOf(aWindow) == -1)
-    {
-      Cu.reportError("adding Unload Listener to Window"+aWindow); 
-      
+    { 
       var callback = function _callback(ev) {
         
-        //Cu.reportError("EV target"+ev.target.ownerDocument.defaultView);
-        
         if (ev && (ev.target.defaultView != aWindow))
-        {
-          Cu.reportError(" Invalid On Unload recved for "+aUrl)
-          return;
-        }
-        
-        Cu.reportError(" Unload Url Requested"+aUrl); 
+          return; 
         
         aWindow.removeEventListener("unload", _callback,false);
         SieveOverlayManager.release(aWindow,aUrl);         
@@ -214,18 +227,36 @@ var SieveOverlayManager =
       // oberserver window...
       aWindow.addEventListener("unload", callback, false);
     }
-      
-    // resolve dependencies
+    
+    // Dendencies:
+    // The scope is null, as the might load these modules on demand. So we... 
+    // ... are just binding the url to this window. Releasing an unused...
+    // ... url is not an error, but fogetting to release one is a memory...
+    // ... hole
+    
+    // Sieve Connection Manager depends a Session
     if (aUrl == "chrome://sieve/content/modules/sieve/SieveConnectionManager.js")
+      SieveOverlayManager.require("/sieve/SieveSession.js",null,aWindow);
+      
+    // Session depend on Sieve
+    if (aUrl == "chrome://sieve/content/modules/sieve/SieveSession.js")
     {
-      Cu.reportError("resolve depencendies");
       SieveOverlayManager.require("/sieve/Sieve.js",null,aWindow);
+      SieveOverlayManager.require("/sieve/SieveAccounts.js",null,aWindow);
+    }
+    
+    // ... same applies to autoconfig
+    if (aUrl == "chrome://sieve/content/modules/sieve/SieveAutoConfig.js")
+      SieveOverlayManager.require("/sieve/Sieve.js",null,aWindow);
+    
+    // Sieve depends on request and responses 
+    if (aUrl == "chrome://sieve/content/modules/sieve/Sieve.js")
+    {
       SieveOverlayManager.require("/sieve/SieveRequest.js",null,aWindow);
       SieveOverlayManager.require("/sieve/SieveResponse.js",null,aWindow);
       SieveOverlayManager.require("/sieve/SieveResponseCodes.js",null,aWindow);
-      SieveOverlayManager.require("/sieve/SieveResponseParser.js",null,aWindow);
-      SieveOverlayManager.require("/sieve/SieveSession.js",null,aWindow);
-    }
+      SieveOverlayManager.require("/sieve/SieveResponseParser.js",null,aWindow);      
+    }      
   },
   
   release : function(window,url)
@@ -234,8 +265,6 @@ var SieveOverlayManager =
       return;
     
     let pos = this._imports[url].windows.indexOf(window);
-    
-    Cu.reportError("Release  "+url+" "+pos+" "+this._imports[url].windows.length);
     
     if (pos > -1)
     {
@@ -246,7 +275,7 @@ var SieveOverlayManager =
     if (this._imports[url].windows.length > 0)
       return;
    
-    Cu.reportError("Releaseing  url "+url);
+    Cu.reportError("Releasing  url "+url);
     // TODO unload dependent nodes. e.g. when the connection manager 
     // is gone there should be no more a request...
     Cu.unload(url);

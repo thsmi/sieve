@@ -85,9 +85,9 @@ var SieveUtils =
     if (!tabmail)
     {  
       // .. then we try the most recent 3pane window  
-      var mail3PaneWindow = Components.classes["@mozilla.org/appshell/window-mediator;1"]  
-                                  .getService(Components.interfaces.nsIWindowMediator)  
-                                  .getMostRecentWindow("mail:3pane");  
+      var mail3PaneWindow = Cc["@mozilla.org/appshell/window-mediator;1"]  
+                                .getService(Ci.nsIWindowMediator)  
+                                .getMostRecentWindow("mail:3pane");  
       if (mail3PaneWindow) 
       {  
         tabmail = mail3PaneWindow.document.getElementById("tabmail");  
@@ -122,8 +122,8 @@ var SieveUtils =
     if (window == null)
       throw "window missing, need an owner for Accountmanager..."
       
-    var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].
-                            getService(Components.interfaces.nsIWindowMediator);
+    var windowManager = Cc['@mozilla.org/appshell/window-mediator;1'].
+                            getService(Ci.nsIWindowMediator);
 
     var existingAccountManager = 
            windowManager.getMostRecentWindow("mailnews:accountmanager");

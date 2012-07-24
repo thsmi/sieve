@@ -9,10 +9,15 @@
  *      
  */
 
-Components.utils.import("chrome://sieve/content/modules/SieveAbstractClient.js");
-
 const Cc = Components.classes;
 const Ci = Components.interfaces;
+const Cu = Components.utils;
+
+Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
+
+SieveOverlayManager.require("/sieve/SieveConnectionManager.js",this,window);
+SieveOverlayManager.require("/sieve/SieveAccounts.js",this,window);
+
 
 function errorhandler(msg, url, line)
   {
@@ -55,10 +60,8 @@ SieveFilterListDialog.prototype.onListScriptResponse
   
   try {
    
-  
-  var capabilities = Cc["@sieve.mozdev.org/transport-service;1"]
-        .getService().wrappedJSObject
-        .getChannel(this._sid,this._cid).extensions;
+     var capabilities = SieveConnections
+      .getChannel(this._sid,this._cid).extensions;
         
   document.getElementById("sivContent")
     .contentWindow.setSieveScript("",capabilities);
@@ -76,10 +79,10 @@ SieveFilterListDialog.prototype.onGetScriptResponse
     = function(response)
 {
   try {
-  var capabilities = Cc["@sieve.mozdev.org/transport-service;1"]
-        .getService().wrappedJSObject
-        .getChannel(this._sid,this._cid).extensions;
-      
+
+     var capabilities = SieveConnections
+      .getChannel(this._sid,this._cid).extensions;
+            
   document.getElementById("sivContent")
     .contentWindow.setSieveScript(response.getScriptBody(),capabilities);
   }
@@ -149,13 +152,9 @@ var gSFLD = new SieveFilterListDialog();
   
 function onLoad()
 {
-  var key = window.frameElement.getAttribute("key");
-    
-  var account = Components.classes['@mozilla.org/messenger/account-manager;1']
-                  .getService(Components.interfaces.nsIMsgAccountManager)
-                  .getIncomingServer(key);
-                         
-  var account = new SieveAccount(account);
+  var key = window.frameElement.getAttribute("key");                         
+                  
+  var account = SieveAccountManager.getAccountByName(key);
     
   document.getElementById("sivStatus").contentWindow
     .onAttach(account,function() { onLoad() });

@@ -18,7 +18,7 @@
 <page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
       onload="onLoad()" onunload="onUnload()">
   
-  <script type="application/javascript" src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js"/>
+  
   <script type="application/javascript" src="chrome://sieve/content/am-sieve-account.js"/> 
   <dialogheader title="&options.title;"/>
 

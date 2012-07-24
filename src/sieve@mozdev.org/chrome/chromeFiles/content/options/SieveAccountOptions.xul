@@ -25,17 +25,6 @@
         style="width: 48em; height: 27em;"
         title="&options.title;">
     
-  <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveRequest.js" />
-  <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveResponseCodes.js" />                
-  <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveResponse.js" />
-  <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js" />
-  <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveAutoConfig.js" />          
-
   <script type="application/javascript" src="chrome://sieve/content/options/SieveAccountOptions.js"/>
   
   <tabbox  flex="1">

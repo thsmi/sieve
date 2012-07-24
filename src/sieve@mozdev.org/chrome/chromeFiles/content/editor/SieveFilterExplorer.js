@@ -21,11 +21,13 @@
 
 const Cc = Components.classes; 
 const Ci = Components.interfaces; 
+const Cu = Components.utils;
 
 Components.utils.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
 Components.utils.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
 
 SieveOverlayManager.require("/sieve/SieveConnectionManager.js",this,window);
+SieveOverlayManager.require("/sieve/SieveAccounts.js",this,window);
 
 /** @type {{Components.interfaces.nsIConsoleService}}*/
 var gLogger = null;
@@ -89,7 +91,7 @@ SieveFilterExplorer.prototype.onChannelReady
   // We observe only our channel...
   if (cid != this._cid)
     return;
-      
+
   // List all scripts as soon as we are connected
   this.listScript();    
 }
@@ -175,7 +177,7 @@ function onWindowLoad()
 
   var menuImapAccounts = document.getElementById("menuImapAccounts");
 
-  var accounts = (new SieveAccounts()).getAccounts();
+  var accounts = SieveAccountManager.getAccounts();
   
 
   for (var i = 0; i < accounts.length; i++)
@@ -201,9 +203,8 @@ function onWindowLoad()
     
   onSelectAccount();
   
-
 }
-   
+ 
 function onWindowClose()
 {
   // Don't forget to close this channel...
@@ -225,9 +226,8 @@ function getSelectedAccount()
   if (!selectedItem)
     return null;
     
-  return (new SieveAccounts()).getAccountByName(selectedItem.value); 
+  return SieveAccountManager.getAccountByName(selectedItem.value); 
 }
-
 
 function onSelectAccount(server)
 {  
@@ -246,7 +246,7 @@ function onSelectAccount(server)
   var account = null;
   
   if (server)
-    account = (new SieveAccounts()).getAccountByServer(server);
+    account = SieveAccountManager.getAccountByServer(server);
   else 
     account = getSelectedAccount();
   
@@ -327,8 +327,8 @@ function sivOpenEditor(scriptName,scriptBody)
   var args = new Array();
   
   args["scriptName"] = scriptName;
-  if (scriptBody)
-    args["scriptBody"] = scriptBody;
+  /*if (scriptBody)
+    args["scriptBody"] = scriptBody;*/
     
   args["sieve"] = gSFE._sid;
   args["uri"] = "x-sieve:"+gSFE._sid+"/"+scriptName;
@@ -423,9 +423,7 @@ function onNewClick()
   if (result != true)
     return;
 
-  var date = new Date();
-  var script = "#\r\n# "+date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()+"\r\n#\r\n";
-  sivOpenEditor(input.value,script);	
+  sivOpenEditor(input.value);	
 }
 
 function onEditClick()

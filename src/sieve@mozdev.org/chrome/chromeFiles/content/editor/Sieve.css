@@ -136,6 +136,15 @@
   background-color: white		
 }
 
+.sivWarningBar
+{
+	background-image: -moz-linear-gradient(bottom, #ffdd66, #ffeb7d);
+	border-bottom: 1px solid black;
+	
+	padding :5px;
+	margin: 0px;
+}
+
 .sivWarning
 {
 	background-image: -moz-linear-gradient(bottom, #ffdd66, #ffeb7d);
@@ -285,25 +294,6 @@
 #btnSideBarHome	
 {
   list-style-image: url(chrome://sieve/content/images/toolbar.home.png);
-}
-
-.sieveCloseButton 
-{
-  border: 1px solid transparent;
-  width: 17px;
-  height: 17px;
-  background: url(chrome://sieve/content/images/close.png) no-repeat 0 0;
-  margin-right: 5px;
-}
-
-.sieveCloseButton:hover 
-{
-    background-image: url(chrome://sieve/content/images/closeHover.png);
-}
-
-.sieveCloseButton:hover:active 
-{
-    background-image: url(chrome://sieve/content/images/closeActive.png);
 }
 
 .spVertical{

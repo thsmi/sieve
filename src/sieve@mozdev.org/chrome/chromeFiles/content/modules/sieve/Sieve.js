@@ -16,6 +16,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
 
+
 // Import needed scripts... 
 Cu.import("chrome://sieve/content/modules/sieve/SieveResponseParser.js");
 

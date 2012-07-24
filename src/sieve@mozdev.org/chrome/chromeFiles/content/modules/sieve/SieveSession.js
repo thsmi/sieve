@@ -8,18 +8,17 @@ const Ci = Components.interfaces;
 const Cr = Components.results; 
 const Cu = Components.utils
 
-  
-Cc["@mozilla.org/moz/jssubscript-loader;1"]
-    .getService(Ci.mozIJSSubScriptLoader) 
-    .loadSubScript("chrome://sieve/content/libs/libManageSieve/SieveAccounts.js");
-    
+      
 // pre load modules .
+Cu.import("chrome://sieve/content/modules/sieve/SieveAccounts.js");
 Cu.import("chrome://sieve/content/modules/sieve/Sieve.js");
 Cu.import("chrome://sieve/content/modules/sieve/SieveRequest.js");
 Cu.import("chrome://sieve/content/modules/sieve/SieveResponse.js");
 Cu.import("chrome://sieve/content/modules/sieve/SieveResponseParser.js");
 Cu.import("chrome://sieve/content/modules/sieve/SieveResponseCodes.js");
+
  
+Cu.reportError("loading Sieve Session");
 
 /**
  * This class pools and caches concurrent connections (Channel) to an destinct 
@@ -43,7 +42,7 @@ function SieveSession(accountId,sid)
   this.idx = 0;
 
   // Load Account by ID
-  this.account = (new SieveAccounts()).getAccountByName(accountId);
+  this.account = SieveAccountManager.getAccountByName(accountId);
   
   this.debug = {};
   this.debug.level = this.account.getSettings().getDebugFlags();
@@ -687,3 +686,5 @@ SieveSession.prototype =
   }  
   
 }
+
+Cu.reportError("finished loading Sieve Session");

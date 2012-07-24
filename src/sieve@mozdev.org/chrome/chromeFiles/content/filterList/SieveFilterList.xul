@@ -30,12 +30,12 @@
       onclose="return onClose();"
       onload="return onLoad();">
 
-  <script type="application/javascript" 
+ <!-- <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js"/>
   <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveRequest.js"/>
   <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveResponseCodes.js"/>
+          src="chrome://sieve/content/libs/libManageSieve/SieveResponseCodes.js"/>-->
           
   <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveAbstractClient.js"/>

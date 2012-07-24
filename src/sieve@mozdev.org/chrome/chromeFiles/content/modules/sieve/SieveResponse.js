@@ -18,6 +18,12 @@ var EXPORTED_SYMBOLS = [ "SieveSimpleResponse", "SieveCapabilitiesResponse",
         "SieveSaslCramMd5Response", "SieveGetScriptResponse",
         "SieveSaslScramSha1Response"];
 
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const Cu = Components.utils;        
+
+Cu.import("chrome://sieve/content/modules/sieve/SieveResponseCodes.js");        
+        
 /**
  * This class implements a generic response handler for simple sieve requests.
  * 

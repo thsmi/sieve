@@ -16,7 +16,9 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;   
 const Cr = Components.results;
 const Cu = Components.utils;
-     
+
+
+
 Cu.import("chrome://sieve/content/modules/sieve/SieveSession.js");
 
 /**

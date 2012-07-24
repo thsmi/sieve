@@ -10,15 +10,22 @@
 // Enable Strict Mode
 "use strict";
 
-if (typeof(Cc) == 'undefined')
-  { var Cc = Components.classes; }
+var EXPORTED_SYMBOLS = [ "SieveAutoConfig" ];
 
-if (typeof(Ci) == 'undefined')
-  { var Ci = Components.interfaces; }
+const Cc = Components.classes; 
+const Ci = Components.interfaces;
+const Cu = Components.utils;
 
-  
+
+
 function SieveAutoConfig()
 {
+  Cu.import("chrome://sieve/content/modules/sieve/Sieve.js");
+  Cu.import("chrome://sieve/content/modules/sieve/SieveRequest.js");
+  Cu.import("chrome://sieve/content/modules/sieve/SieveResponse.js");
+  Cu.import("chrome://sieve/content/modules/sieve/SieveResponseParser.js");
+  Cu.import("chrome://sieve/content/modules/sieve/SieveResponseCodes.js");  
+  
   this.hosts = [];
 }
 
@@ -86,9 +93,8 @@ function SieveAutoConfigHost(host,port,proxy, listener)
   this.host = host;
   this.proxy = proxy;
   this.listener = listener;
-  
-  this.sieve = Cc["@sieve.mozdev.org/transport;1"]
-                   .createInstance().wrappedJSObject;
+ 
+  this.sieve = new Sieve();
                    
   //this.logger = Cc["@mozilla.org/consoleservice;1"]
   //    .getService(Ci.nsIConsoleService);    

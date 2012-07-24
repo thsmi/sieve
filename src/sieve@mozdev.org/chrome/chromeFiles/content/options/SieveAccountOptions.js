@@ -13,14 +13,24 @@
  // Enable Strict Mode
 "use strict";
  
-if (typeof(Cc) == 'undefined')
-  { Cc = Components.classes; }
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const Cu = Components.utils;
 
-if (typeof(Ci) == 'undefined')
-  { Ci = Components.interfaces; }  
-
+Cu.import("resource://gre/modules/Services.jsm");
 //  @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
+try {
+Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
+SieveOverlayManager.require("/sieve/SieveAutoConfig.js",this,window);     
+}
+catch (Ex)
+{
   
+  Services.console.logStringMessage("ex"+Ex.toSource());
+   Services.console.logStringMessage("ex"+this);
+}    
+
+
 /** @type SieveAccount */
 var gAccount = null;
 
@@ -153,7 +163,8 @@ function onPortAutoSelect()
   try
   {
     document.getElementById("dkAutoSelect").selectedIndex = "1";
-    
+
+    //Load auoconfig only when we realy need it       
     gAutoConfig = new SieveAutoConfig();
     
     gAutoConfig.addHost(

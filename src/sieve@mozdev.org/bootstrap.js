@@ -23,7 +23,9 @@ function startup(data, reason)
   Components.utils.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
   Components.utils.import("chrome://sieve/content/modules/overlays/SieveOverlay.jsm");
   SieveOverlayManager.addOverlay(SieveMailWindowOverlay,"mail:3pane");
+  SieveOverlayManager.addOverlay(SieveFilterListOverlay,"mailnews:filterlist");
   SieveOverlayManager.load();
+  
   // TODO if reason ADDON_UPGRADE restore previously open tabs...
 }
 
@@ -33,6 +35,7 @@ function shutdown(data, reason)
   if (reason == APP_SHUTDOWN)
     return;    
 
+  // TODO close all open tabs!
   // TODO if reason ADDON_UPGRADE persist all open tabs...
     
   // Step 1: Unload XPCOM Componenets
@@ -44,9 +47,6 @@ function shutdown(data, reason)
   //delete SieveProtocolHandlerComponent;
   Components.utils.unload("chrome://sieve/content/components/SieveProtocolHandler.js");
 
-  
-  //Unload modules from memory...
-  //Components.utils.unload("chrome://sieve/content/modules/sieve/SieveConnectionManager.js");
 
   // Step 2: remove Code Injections
   SieveOverlayManager.unload();  

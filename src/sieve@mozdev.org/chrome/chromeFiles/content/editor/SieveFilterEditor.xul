@@ -36,9 +36,7 @@
   <script type="application/javascript"
           src="chrome://global/content/globalOverlay.js" />   
   <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveAbstractClient.js"/> 
-  <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js"/>           
+          src="chrome://sieve/content/libs/libManageSieve/SieveAbstractClient.js"/>           
   <script type="application/javascript" 
           src="chrome://sieve/content/editor/SieveFilterEditor.js" />
  <!-- <script type="application/javascript" 
@@ -121,6 +119,7 @@
               <textbox id="sivContentEditor" flex="1" 
                        multiline="true" wrap="off" 
                        autocomplete="off" />
+              <splitter class="spVertical" resizeafter="farthest" />
             </hbox>
                                    
             <!-- Error Bar (Showing Script errors) --> 
@@ -138,7 +137,8 @@
         
             <hbox class="chromeclass-status">
               <statusbarpanel width="100px" id="sbCursorPos" label=""/>
-              <statusbarpanel width="100px" id="sbChanged" label=""/>
+              <statusbarpanel width="100px" id="sbChanged" 
+                              hidden="true" label="Changed"/>
               <statusbarpanel flex="1" label=""/>
             </hbox>
 

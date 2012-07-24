@@ -23,11 +23,13 @@ Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
 Cu.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
 
 SieveOverlayManager.require("/sieve/SieveConnectionManager.js",this,window);
+SieveOverlayManager.require("/sieve/SieveAccounts.js",this,window);
 
 var gBackHistory = new Array();
 var gForwardHistory = new Array();
 
 var gPrintSettings = null;
+
 
 var gEditorStatus =
 {
@@ -56,7 +58,6 @@ var gEditorStatus =
   selectionEnd      : -1,
   selectionChanged  : false,
   
-  hasContent        : false,
   contentChanged    : false,
   
   scrollChanged     : false,
@@ -67,7 +68,17 @@ var gEditorStatus =
   
   isClosing         : false,
   
-  scriptName        : "unnamed"
+  defaultScript     : null,
+  
+  scriptName        : "unnamed",
+  persistedScript   : null,
+
+  checksum : {
+    // used to detect if the script was changed via a gui...
+    gui : null, 
+    // used to detect if the script changed upon a reconnect
+    server : null //the script's serverside checksum
+  }
 }
 
 var gSFE = new SieveFilterEditor();
@@ -85,17 +96,39 @@ SieveFilterEditor.prototype.onChannelReady
   // We observe only our channel...
   if (cid != this._cid)
     return;
-              
-  if (gEditorStatus.defaultScript)
-  {
-    this.onScriptLoaded(gEditorStatus.defaultScript);
-    gEditorStatus.contentChanged = true;
-    return;
+
+  var that = this;
+  var event = {
+    onError : function (reponse)
+    {
+      // Script does not exists, or was deleted
+      
+      // if we have a server checksum, we are reconnecting and our
+      // editor contains valid data. A typical szenario is having
+      // an unsaved script, losing the connection and then clicking 
+      // on reconnect.
+      if (gEditorStatus.checksum.server)
+      {
+        that.onScriptLoaded(that.getScript())
+        return;
+      }
+      
+      if (gEditorStatus.persistedScript) 
+      {
+        that.onScriptLoaded(gEditorStatus.persistedScript);
+        return;
+      }
+      
+       // if not use the default script  
+      var date = new Date();
+      var script = "#\r\n# "+date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()+"\r\n#\r\n";      
+      that.onScriptLoaded(script);
+    }
   }
-          
+    
   var request = new SieveGetScriptRequest(gEditorStatus.scriptName);
   request.addGetScriptListener(this);
-  request.addErrorListener(this);
+  request.addErrorListener(event);
 
   this.sendRequest(request)    
 }
@@ -106,16 +139,91 @@ SieveFilterEditor.prototype.onChannelClosed
   // some other channel died we don't care about that...
 }
 
+SieveFilterEditor.prototype._calcChecksum
+    = function(str)
+{
+  var converter =  Cc["@mozilla.org/intl/scriptableunicodeconverter"]
+                       .createInstance(Ci.nsIScriptableUnicodeConverter);  
+      
+  // we use UTF-8 here  
+  converter.charset = "UTF-8";  
+  
+  var result = {};  
+  // data is an array of bytes
+  var data = converter.convertToByteArray(str, result);  
+  
+  var ch = Cc["@mozilla.org/security/hash;1"]  
+               .createInstance(Ci.nsICryptoHash);
+               
+  ch.init(ch.SHA512);  
+  ch.update(data, data.length);
+  
+  var hash = ch.finish(false);  
+      
+  // return the two-digit hexadecimal code for a byte  
+  function toHexString(charCode)  
+  {  
+    return ("0" + charCode.toString(16)).slice(-2);  
+  }  
+      
+  // convert the binary hash data to a hex string.  
+  return [toHexString(hash.charCodeAt(i)) for (i in hash)].join("");  
+}
+
 SieveFilterEditor.prototype.onGetScriptResponse
     = function(response)
 {
-  this.onScriptLoaded(response.getScriptBody());    
+   
+  // The sercer checksum is empty, so we have nothing to compare, which means...
+  // ...the script was never loaded
+  if (!gEditorStatus.checksum.server)  
+  {
+    this.onScriptLoaded(response.getScriptBody());
+    return;
+  }
+   
+  var remoteScript = this._calcChecksum(response.getScriptBody());
+  
+  // The server side script is equal to out current script. We are perfectly
+  // in sync. And do not need to do anything... 
+  if (remoteScript == this._calcChecksum(this.getScript()))
+  {
+    this.onScriptLoaded(this.getScript()); 
+    return;
+  }
+  
+  // The server side script is equal to our last save. So no third party changed
+  // anything. We can be sure the local script is newer. 
+  if (remoteScript == gEditorStatus.checksum.server)
+  {
+    this.onScriptLoaded(this.getScript());
+    return;
+  }
+  
+  
+  // not so good. We got out of sync, we can't descide which one is newer...
+  alert("out Of sync");
+  this.onStatusChange(10,{local:this.getScript(),remote:response.getScriptBody()});  
 }
 
 SieveFilterEditor.prototype.onPutScriptResponse
     = function(response)
-{
+{  
+  // update the last save shadow copy
+  var script = this.getScript();
+  
+  // update the gui checksum & the editor script only when needed
+  if (!document.getElementById('btnViewSource').checked)
+  {
+    document.getElementById("sivContentEditor").value = script;
+    gEditorStatus.checksum.gui = this._calcChecksum(script);
+    UpdateLinesLazy(); 
+  }
+  
+  gEditorStatus.checksum.server =  this._calcChecksum(script);
+      
   gEditorStatus.contentChanged = false;
+  document.getElementById("sbChanged").setAttribute("hidden","true");
     
   if (!gEditorStatus.isClosing)
     return
@@ -177,14 +285,17 @@ SieveFilterEditor.prototype.onCheckScriptResponse
 
 SieveFilterEditor.prototype.onScriptLoaded
     = function(script)
-{
-  gEditorStatus.hasContent = true;
+{  
   this.onStatusChange(0);
+  gEditorStatus.persistedScript = null;
   
   document.getElementById("sivContentEditor").editor.enableUndo(false);
   document.getElementById("sivContentEditor").value = script;
   document.getElementById("sivContentEditor").setSelectionRange(0, 0);
   document.getElementById("sivContentEditor").editor.enableUndo(true);
+  
+  if (gEditorStatus.checksum.server == null)
+    gEditorStatus.checksum.server = this._calcChecksum(this.getScript());
   
   UpdateCursorPos();
   UpdateLines();
@@ -226,19 +337,73 @@ SieveFilterEditor.prototype.onStatusChange
 }
 
 
+SieveFilterEditor.prototype.getScript
+    = function ()
+{
+  if (gEditorStatus.persistedScript)
+    return gEditorStatus.persistedScript;
+    
+  // Thunderbird scrambles linebreaks to single \n so we have to fix that
+  var editor = document.getElementById("sivContentEditor").value
+                  .replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
+                  
+  if (document.getElementById('btnViewSource').checked)
+    return  editor;
+    
+  var widget =  document.getElementById("sivWidgetEditor")
+                    .contentWindow.getSieveScript();
+    
+  if (this._calcChecksum(widget) == gEditorStatus.checksum.gui)
+    return  editor;
+  
+  return widget;
+}
+
+SieveFilterEditor.prototype.hasChanged
+    = function()
+{
+  if (gEditorStatus.checksum.server == null)
+    return true;
+    
+  if (this._calcChecksum(this.getScript()) == gEditorStatus.checksum.server)
+    return false;
+ 
+  return true;
+}
+
+
+SieveFilterEditor.prototype.putScript
+    = function (script,content)
+{
+
+  var event = {
+    onError : function(response)
+    {
+      Cc["@mozilla.org/embedcomp/prompt-service;1"]  
+          .getService(Ci.nsIPromptService) 
+          .alert(window,"Error","The script could not be saved:\n\n"+response.getMessage())
+    }
+  }
+  
+  var request = new SievePutScriptRequest(script,content);
+  request.addPutScriptListener(this);
+  request.addErrorListener(event);
+  
+  this.sendRequest(request);
+}
+
 function onCompile()
 { 
-  gSFE.checkScript(document.getElementById("sivContentEditor").value);
+  gSFE.checkScript(gSFE.getScript());
 }
 
 function onInput()
 {
-  // TODO use show/hide instead of changing the label...
-  if (gEditorStatus.contentChanged == false)
-    document.getElementById("sbChanged").label = "Changed";
-  
-  gEditorStatus.contentChanged = true;
-  gEditorStatus.hasContent = true;
+  if ((gEditorStatus.contentChanged == false) && gSFE.hasChanged())
+  {
+    document.getElementById("sbChanged").removeAttribute("hidden");
+    gEditorStatus.contentChanged = true;
+  }
   
   // on every keypress we reset the timeout
   if (gEditorStatus.checkScriptTimer != null)
@@ -272,19 +437,20 @@ function onEditorKeyDown(event)
 
 function onWindowPersist()
 {
-  // we just mirror the open dialogs
   var args = {};
   
-  if (gEditorStatus.contentChanged)
-  {
-    args["scriptBody"] = document.getElementById("sivContentEditor").value;
-    args["contentChanged"] = gEditorStatus.contentChanged;
-  }
-    
   args["scriptName"] = gEditorStatus.scriptName;
   args["compile"] = document.getElementById('btnCompile').checked;
   args["account"] = gEditorStatus.account;  
   
+  // we do not persist upon shutdown, the user already descided wether we 
+  // wants to keep the script or not. We need this only in case of a crash
+  if (!gEditorStatus.isClosing)
+  {
+    args["scriptBody"] = gSFE.getScript();
+    args["checksumServer"] = gEditorStatus.checksum.server;
+  }
+      
   return args; 
 }
 
@@ -319,14 +485,20 @@ function onWindowLoad()
   var args = window.arguments[0].wrappedJSObject;
   gEditorStatus.account = args["account"];
   
-  var account = (new SieveAccounts()).getAccountByName(gEditorStatus.account);
+  var account = SieveAccountManager.getAccountByName(gEditorStatus.account);
   
   document.getElementById("sivEditorStatus").contentWindow
-    .onAttach(account,function() { gSFE.connect(account) });    
+    .onAttach(account,
+      function() { gSFE.connect(account) },
+      { onUseRemote : function (script) { onUseRemoteScript(script);  },
+        onKeepLocal : function (script) { onKeepLocalScript();} });    
   
   // There might be a default or persisted script...
   if (args["scriptBody"])
-    gEditorStatus.defaultScript = args["scriptBody"];
+    gEditorStatus.persistedScript = args["scriptBody"];
+    
+  if (args["checksumServer"])
+    gEditorStatus.checksum.server = args["checksumServer"];
   
 
   gEditorStatus.checkScriptDelay = account.getSettings().getCompileDelay();
@@ -357,7 +529,7 @@ function onWindowLoad()
       .addObserver(event,"quit-application-requested", false);               
 }
 
-function onIgnoreOffline()
+/*function onIgnoreOffline()
 {
   // try to go online again
   try 
@@ -392,7 +564,7 @@ function onIgnoreOffline()
   catch (ex) {}
   
   gSFE.onStatusChange(0);
-}
+}*/
 
 function onDonate()
 {
@@ -425,13 +597,18 @@ function onViewSource(visible)
     document.getElementById("btnPaste").removeAttribute('disabled'); 
     document.getElementById("btnCompile").removeAttribute('disabled');
     document.getElementById("btnSearchBar").removeAttribute('disabled');
+       
+    var script = document.getElementById("sivWidgetEditor")
+                    .contentWindow.getSieveScript();
     
-    document.getElementById("sivContentEditor").value =
-      document.getElementById("sivWidgetEditor").contentWindow.getSieveScript()
-      
-    document.getElementById("sivContentEditor").focus();    
+    document.getElementById("sivContentEditor").focus(); 
+    
+    // GUI did not change so se can skip...
+    if (gEditorStatus.checksum.gui == gSFE._calcChecksum(script))
+      return;
+    
+    document.getElementById("sivContentEditor").value = script;
     onInput();
-    
     return;
   }
    
@@ -459,10 +636,16 @@ function updateWidgets()
   try {
     var capabilities = SieveConnections
       .getChannel(gSFE._sid,gSFE._cid).extensions;
-            
-    document.getElementById("sivWidgetEditor").contentWindow.setSieveScript(
-      document.getElementById("sivContentEditor").value,
-      capabilities)
+       
+    var script = document.getElementById("sivContentEditor").value;
+
+    // set script content...
+    document.getElementById("sivWidgetEditor")
+      .contentWindow.setSieveScript(script,capabilities)
+    
+    // ... and create a shadow copy
+    gEditorStatus.checksum.gui = gSFE._calcChecksum(
+      document.getElementById("sivWidgetEditor").contentWindow.getSieveScript());
   }
   catch (ex){
     // TODO Display real error message....
@@ -548,52 +731,40 @@ function onSideBarGo(uri)
   document.getElementById("ifSideBar").setAttribute('src', uri);
 }
 
-function onSave(script)
-{
-  if (typeof(script) === "undefined")
-    script = new String(document.getElementById("sivContentEditor").value);
-    
-  gSFE.putScript(gEditorStatus.scriptName,script)
+function onSave()
+{    
+  gSFE.putScript(gEditorStatus.scriptName,gSFE.getScript())
 }
 
 function onWindowClose()
 {   
-  if (!gEditorStatus.isClosing)
+  if (!gEditorStatus.isClosing && gSFE.hasChanged())
   {
-    var script = document.getElementById("sivContentEditor").value;
-     
-    // Update the editor window when needed...
-    if (!document.getElementById('btnViewSource').checked)
-    {
-      script = document.getElementById("sivWidgetEditor").contentWindow.getSieveScript();
-      gEditorStatus.contentChanged = true;
-    }    
-  
-    if (gEditorStatus.contentChanged == true)
-    {
-      var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
+    var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
                           .getService(Ci.nsIPromptService);
 
-      // The flags 393733 equals [Save] [Don't Save] [Cancel]
-      var result =
+    // The flags 393733 equals [Save] [Don't Save] [Cancel]
+    var result =
         prompts.confirmEx(
           window, "Save Sieve Script",
           "Script has not been saved. Do you want to save changes?", 393733,
           "", "", "", null, { value : false });
    
-      // Save the Script if the user descides to...
-      if (result == 0)
-      {
-        gEditorStatus.isClosing = true;
-        onSave(script);
-      }
-   
-      // ... and abort quitting if the user clicked on "Save" or "Cancel"
-      if (result != 2)
-        return false;                          
+    // chancel clicked...
+    if (result == 1)
+      return false;     
+      
+    // closing
+    gEditorStatus.isClosing = true;
+    
+    // Save the Script if the user descides to...
+    if (result == 0)
+    {  
+      onSave();
+      return false;
     }
   }
-   
+     
   try
   {
     Cc["@mozilla.org/observer-service;1"]
@@ -676,7 +847,7 @@ function onExport()
 
 	outputStream.init(file, 0x04 | 0x08 | 0x20, parseInt("0644", 8), null);
 
-	var data = document.getElementById("sivContentEditor").value;
+	var data = gSFE.getScript();
 	outputStream.write(data, data.length);
 	outputStream.close();
 }
@@ -1170,6 +1341,15 @@ function onPrint()
   return;
 }*/
 
+function onKeepLocalScript()
+{
+  gSFE.onScriptLoaded(gSFE.getScript());
+}
+
+function onUseRemoteScript(script)
+{
+  gSFE.onScriptLoaded(script);
+}
 
 
 

@@ -12,6 +12,14 @@
 // Enable Strict Mode
 "use strict";
 
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const Cu = Components.utils;
+
+Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
+Cu.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
+SieveOverlayManager.require("/sieve/SieveAutoConfig.js",this,window);    
+
 /*
  *  Auto Config
  */ 
@@ -19,6 +27,8 @@
 var gAutoConfig = null;
 var gAccount = null;
 var gCallback = null;
+var gCallbacks = null;
+
 
 var gAutoConfigEvent =
 {
@@ -41,10 +51,10 @@ var gAutoConfigEvent =
 }
 
 function onAutoConfigRunClick()
-{
+{ 
   if (gAutoConfig)
     gAutoConfig.cancel();
-        
+  
   gAutoConfig = new SieveAutoConfig();
   
   gAutoConfig.addHost(
@@ -126,6 +136,9 @@ function onDetach()
     gAutoConfig.cancel();
     gAutoConfig = null;
   }    
+  
+  gCallback = null;
+  gCallbacks = null;
 }
 
 /**
@@ -135,7 +148,7 @@ function onDetach()
  * @param {} callback
  *   
  */
-function onAttach(account, callback)
+function onAttach(account, callback,callbacks)
 {  
   if (gAutoConfig)
   {
@@ -145,6 +158,8 @@ function onAttach(account, callback)
   
   gAccount = account;   
   gCallback = callback;
+  if (callbacks)
+    gCallbacks = callbacks;
 }
 
 function onStatus(state, message)
@@ -152,6 +167,7 @@ function onStatus(state, message)
   try {
   var strbundle = document.getElementById("strings");
   
+  // TODO use a for loop...
   document.getElementById('StatusWarning').setAttribute('hidden','true');
   document.getElementById('StatusError').setAttribute('hidden','true');
   document.getElementById('StatusWait').setAttribute('hidden','true');
@@ -159,6 +175,7 @@ function onStatus(state, message)
   document.getElementById('StatusOffline').setAttribute('hidden','true');
   document.getElementById('StatusDisabled').setAttribute('hidden','true');
   document.getElementById('StatusConnectionLost').setAttribute('hidden','true');
+  document.getElementById("StatusOutOfSync").setAttribute('hidden','true');
   
   
   switch (state)
@@ -178,8 +195,7 @@ function onStatus(state, message)
             break;
     // server error
     case 4: document.getElementById('StatusError').removeAttribute('hidden');
-            document.getElementById('StatusErrorMsg')
-                .firstChild.nodeValue = message;    
+            document.getElementById('StatusErrorMsg').textContent = message;    
             break;            
     case 5: document.getElementById('StatusBadCert').removeAttribute('hidden');
 
@@ -198,12 +214,19 @@ function onStatus(state, message)
     case 7: document.getElementById('StatusWait').removeAttribute('hidden');
             break;*/
     // account disabled
-    case 8: document.getElementById('StatusDisabled').removeAttribute('hidden');
-            document.getElementById('sivAutoConfig').selectedIndex = message;
-            break;  
-    case 9: document.getElementById('StatusConnectionLost').removeAttribute('hidden');
-            break;
-      
+    case 8:
+      document.getElementById('StatusDisabled').removeAttribute('hidden');
+      document.getElementById('sivAutoConfig').selectedIndex = message;
+      break;  
+    case 9:
+      document.getElementById('StatusConnectionLost').removeAttribute('hidden');
+      break;
+    case 10:
+      document.getElementById("StatusOutOfSync").removeAttribute('hidden');
+      document.getElementById("sivClientSide").value = message.local;
+      document.getElementById("sivServerSide").value = message.remote;
+      break;
+    
     // Show the tobber as default...
     default:
       document.getElementById('StatusWait').removeAttribute('hidden');
@@ -221,7 +244,7 @@ function onSettingsClick()
                    .getService(Ci.nsIMsgAccountManager)
                    .getIncomingServer(gAccount.imapKey);
   
-  gSivExtUtils.OpenSettings(server);
+  SieveUtils.OpenSettings(window,server); 
 }
 
 
@@ -231,6 +254,17 @@ function onGoOnlineClick()
   ioService.offline = false; 
   
   gCallback();
+}
+
+
+function onKeepLocal()
+{
+  gCallbacks.onKeepLocal();
+}
+
+function onUseRemote()
+{
+  gCallbacks.onUseRemote(document.getElementById("sivServerSide").value);
 }
 
 // ChannelCreated

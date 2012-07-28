@@ -789,11 +789,13 @@ function asyncCloseTab(callback)
   var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
                     .getService(Ci.nsIPromptService);
 
+  var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties")
+
   // The flags 393733 equals [Save] [Don't Save] [Cancel]
   var result =
       prompts.confirmEx(
-        window, "Save Sieve Script",
-        "Script has not been saved. Do you want to save changes?", 393733,
+        window, strings.GetStringFromName("edit.save.title") ,
+        strings.GetStringFromName("edit.save.description"), 393733,
         "", "", "", null, { value : false });
    
   // cancel clicked...

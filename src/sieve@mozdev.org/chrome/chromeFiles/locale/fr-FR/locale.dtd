@@ -163,20 +163,10 @@ utilisez '127.0.0.1' à la place.">
 <!ENTITY options.proxy.host "Hôte:">
 <!ENTITY options.proxy.port "Port:">
 
-
-<!-- Menu entries -->
-<!ENTITY menu.filters "Filtres Sieve...">
-<!ENTITY menu.filters.key "M">
-<!ENTITY menu.options "Paramètres Sieve...">
-<!ENTITY menu.options.key "S">
-
-
 <!-- Locale for the List Filter Dialog -->
 <!ENTITY list.title "Filtres Sieve">
 
 <!ENTITY list.accounts "Filtres pour:">
-
-<!ENTITY list.log "Journal d'évenements">
 
 <!ENTITY list.tree "Filtres Sieve côté serveur">
 <!ENTITY list.tree.active "Actif">
@@ -196,11 +186,7 @@ utilisez '127.0.0.1' à la place.">
 <!ENTITY list.details.capability.extensions "Extensions:">
 <!ENTITY list.details.capability.protocol "Version du protocole:">
 
-<!ENTITY list.wait.connect "Connexion...">
 
-<!ENTITY list.warning 
-  "Ce compte n'est pas configuré pour Sieve, aller dans 'Outils -> Filtres Sieve'">
-<!ENTITY list.error "La dernière commande a échouée:">
 <!ENTITY list.badcert 
   "Votre serveur de mails essai de s'identifier avec des informtions invalides.">
 <!ENTITY list.badcert.error 
@@ -260,12 +246,6 @@ essayez une configuration manuelle.">
 <!ENTITY edit.toolbar.print "Imprimer">
 <!ENTITY edit.toolbar.search "Rechercher">
 
-<!ENTITY edit.scriptname "Nom du script:">
-<!ENTITY edit.errorbar.title "Erreurs de syntaxe">
-
-<!ENTITY edit.cancel "Annuler">
-<!ENTITY edit.save "Sauver">
-
 <!ENTITY edit.sidebar.uri "http://sieve.mozdev.org/reference/en/index.html">
 <!ENTITY edit.sidebar.title "Base de référence du langage Sieve">
 
@@ -278,3 +258,29 @@ essayez une configuration manuelle.">
 <!ENTITY edit.searchreplace.find "Suivant">
 <!ENTITY edit.searchreplace.replace "Remplacer">
 <!ENTITY edit.searchreplace.error "Phrase non trouvée">
+
+
+<!-- Status messages -->
+<!ENTITY status.offline.description 
+"You are currently offline. Click 'Go Online' and try again">
+<!ENTITY status.offline.go "Go Online">
+
+
+<!ENTITY status.connectivity.loss.description
+"Server terminated unexpectedly the connection, click on reconnect to try again.">
+<!ENTITY status.connectivity.loss.reconnect "Reconnect">
+
+<!ENTITY status.warning.ignore "Ignore">
+<!ENTITY status.warning.reconnect "Reconnect">
+<!ENTITY status.warning 
+  "Ce compte n'est pas configuré pour Sieve, aller dans 'Outils -> Filtres Sieve'">
+  
+<!ENTITY status.error.reconnect "Reconnect">
+<!ENTITY status.error "La dernière commande a échouée:">
+
+<!ENTITY status.sync.description 
+"The local an the server side scripts are different. 
+
+What would you like to do about it ?">
+<!ENTITY status.sync.keep "Keep Local Script">
+<!ENTITY status.sync.replace "Use Server Side Script">

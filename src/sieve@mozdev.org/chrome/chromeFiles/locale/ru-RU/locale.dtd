@@ -164,19 +164,10 @@
 <!ENTITY options.proxy.port "Порт:"> 
 
 
-<!-- Menu entries -->
-<!ENTITY menu.filters "Sieve фильтры сообщений...">
-<!ENTITY menu.filters.key "M">
-<!ENTITY menu.options "Настройки Sieve...">
-<!ENTITY menu.options.key "S">
-
-
 <!-- Locale for the List Filter Dialog -->
 <!ENTITY list.title "Фильтры Sieve">
 
 <!ENTITY list.accounts "Фильтры для:">
-
-<!ENTITY list.log "Журнал">
 
 <!ENTITY list.tree "Почтовые фильтры Sieve на сервере">
 <!ENTITY list.tree.active "Активный">
@@ -195,11 +186,6 @@
 <!ENTITY list.details.capability.extensions "Дополнения:">
 <!ENTITY list.details.capability.protocol "Версия протокола:">
 
-<!ENTITY list.wait.connect "Подключение...">
-
-<!ENTITY list.warning 
-  "Эта учётная запись не настроена для работы с Sieve, перейдите 'Инструменты-> Sieve Фильтры Писем'">
-<!ENTITY list.error "Последняя команда не выполнена, так как сервер сообщил об ошибке:">
 <!ENTITY list.badcert
   "Ваш почтовый сервер использует недействительный сертификат.">
 <!ENTITY list.badcert.error 
@@ -260,12 +246,6 @@
 <!ENTITY edit.toolbar.print "Печать" >
 <!ENTITY edit.toolbar.search "Поиск">
 
-<!ENTITY edit.scriptname "Имя скрипта:">
-<!ENTITY edit.errorbar.title "Синтаксические ошибки">
-
-<!ENTITY edit.cancel "Отменить">
-<!ENTITY edit.save "Сохранить">
-
 <!ENTITY edit.sidebar.uri "http://sieve.mozdev.org/reference/en/index.html">
 <!ENTITY edit.sidebar.title "Справочник по языку Sieve">
 
@@ -278,3 +258,7 @@
 <!ENTITY edit.searchreplace.find "Найти">
 <!ENTITY edit.searchreplace.replace "Заменить">
 <!ENTITY edit.searchreplace.error "Фраза не найдена">
+
+<!ENTITY status.warning 
+  "Эта учётная запись не настроена для работы с Sieve, перейдите 'Инструменты-> Sieve Фильтры Писем'">
+<!ENTITY status.error "Последняя команда не выполнена, так как сервер сообщил об ошибке:">

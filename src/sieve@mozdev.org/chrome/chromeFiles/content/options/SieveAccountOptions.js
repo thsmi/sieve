@@ -19,16 +19,9 @@ const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/Services.jsm");
 //  @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
-try {
+
 Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
 SieveOverlayManager.require("/sieve/SieveAutoConfig.js",this,window);     
-}
-catch (Ex)
-{
-  
-  Services.console.logStringMessage("ex"+Ex.toSource());
-   Services.console.logStringMessage("ex"+this);
-}    
 
 
 /** @type SieveAccount */

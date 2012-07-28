@@ -102,13 +102,17 @@ SieveImapAuth.prototype.getPassword
   var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
                   .getService(Ci.nsIPromptService);
     
-  
+  var strings = Services.strings
+                    .createBundle("chrome://sieve/locale/locale.properties");
+
+    
   var input = {value:null};
   var check = {value:false}; 
   var result 
     = prompts.promptPassword(
-        null,"Password", 
-        "Please enter the password for your Sieve account",
+        null,
+        strings.GetStringFromName("account.password.title"), 
+        strings.GetStringFromName("account.password.description"),
         input, null, check);
   
   prompts = null;
@@ -319,13 +323,16 @@ SieveCustomAuth2.prototype.getPassword
   var input = {value:null};
   var check = {value:false};
      
+  var strings = Services.strings
+    .createBundle("chrome://sieve/locale/locale.properties");
+    
   var result = 
     prompts.promptPassword(//window,
         null,
-        "Password", 
-        "Please enter the password for your Sieve account", 
+        strings.GetStringFromName("account.password.title"), 
+        strings.GetStringFromName("account.password.description"), 
         input, 
-        "Remember Password", 
+        strings.GetStringFromName("account.password.remember"), 
         check);
   
   // no password, as the user canceled the dialog...
@@ -892,11 +899,14 @@ SievePromptAuthorization.prototype.getAuthorization
   var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
                   .getService(Components.interfaces.nsIPromptService);
   
+  var strings = Services.strings
+    .createBundle("chrome://sieve/locale/locale.properties");
+    
   var result = 
     prompts.prompt(
        null, 
-       "Authorization", 
-       "Please enter the username you want to be authorized as", 
+       strings.GetStringFromName("account.authorization.title"), 
+       strings.GetStringFromName("account.authorization.description"), 
        input, 
        null, 
        check);

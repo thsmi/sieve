@@ -165,21 +165,12 @@ als Workaround die Loopback IP '127.0.0.1' nutzen.">
 <!ENTITY options.proxy.port "Port:"> 
 
 
-<!-- Menu entries -->
-<!ENTITY menu.filters "Sieve Filter...">
-<!ENTITY menu.filters.key "N">
-<!ENTITY menu.options "Sieve Filter Einstellungen...">
-<!ENTITY menu.options.key "S">
-
-
 <!-- Locale for the List Filter Dialog -->
 <!ENTITY list.title "Sieve Filter">
 
 <!ENTITY list.accounts "Filter für:">
 
-<!ENTITY list.log "Log">
-
-<!ENTITY list.tree "Serverseitige Sieveskripte:">
+<!ENTITY list.tree "Serverseitige Skripte:">
 <!ENTITY list.tree.active "Aktiv">
 <!ENTITY list.tree.name "Name">
 
@@ -196,11 +187,6 @@ als Workaround die Loopback IP '127.0.0.1' nutzen.">
 <!ENTITY list.details.capability.extensions "Erweiterungen:">
 <!ENTITY list.details.capability.protocol "Protokoll:">
 
-<!ENTITY list.wait.connect  "Verbinden...">
-
-<!ENTITY list.warning 
-  "Dieses Konto ist nicht konfiguriert. Bitte rufen Sie 'Extras-> Sieve Filter Einstellungen' auf">
-<!ENTITY list.error "Aktion fehlgeschlagen, Server meldet einen schweren Fehler">
 <!ENTITY list.badcert 
 "Ihr Mailserver kann nicht Identifiziert werden und wird als nicht 
 vertrauenswürdig eingestuft.">
@@ -265,12 +251,6 @@ und konfiguriern Sie das Sieve Konto manuell.">
 <!ENTITY edit.toolbar.print "Drucken" >
 <!ENTITY edit.toolbar.search "Suchen">
 
-<!ENTITY edit.scriptname "Skriptname:">
-<!ENTITY edit.errorbar.title "Syntax Fehler">
-
-<!ENTITY edit.cancel "Abbrechen">
-<!ENTITY edit.save "Speichern">
-
 <!ENTITY edit.sidebar.uri "http://sieve.mozdev.org/reference/en/index.html">
 <!ENTITY edit.sidebar.title "Sieve Sprachreferenz">
 
@@ -283,3 +263,30 @@ und konfiguriern Sie das Sieve Konto manuell.">
 <!ENTITY edit.searchreplace.find "Suchen">
 <!ENTITY edit.searchreplace.replace "Ersetzen">
 <!ENTITY edit.searchreplace.error "Suchbegriff nicht gefunden">
+
+<!-- Status messages -->
+<!ENTITY status.offline.description 
+"You are currently offline. Click 'Go Online' and try again">
+<!ENTITY status.offline.go "Go Online">
+
+
+<!ENTITY status.connectivity.loss.description
+"Server terminated unexpectedly the connection, click on reconnect to try again.">
+<!ENTITY status.connectivity.loss.reconnect "Reconnect">
+
+<!ENTITY status.warning.ignore "Ignore">
+<!ENTITY status.warning.reconnect "Reconnect">
+<!ENTITY status.warning 
+  "Dieses Konto ist nicht konfiguriert. Bitte rufen Sie 'Extras-> Sieve Filter Einstellungen' auf">
+  
+<!ENTITY status.error.reconnect "Reconnect">
+<!ENTITY status.error "Aktion fehlgeschlagen, Server meldet einen schweren Fehler">
+
+<!ENTITY status.sync.description 
+"The local an the server side scripts are different. 
+
+What would you like to do about it ?">
+<!ENTITY status.sync.keep "Keep Local Script">
+<!ENTITY status.sync.replace "Use Server Side Script">
+
+  

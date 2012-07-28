@@ -23,8 +23,10 @@ const Cc = Components.classes;
 const Ci = Components.interfaces; 
 const Cu = Components.utils;
 
-Components.utils.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
-Components.utils.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
+Cu.import("resource://gre/modules/Services.jsm");
+
+Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
+Cu.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
 
 SieveOverlayManager.require("/sieve/SieveConnectionManager.js",this,window);
 SieveOverlayManager.require("/sieve/SieveAccounts.js",this,window);
@@ -287,11 +289,14 @@ function onDeleteClick()
   var flags = prompts.BUTTON_POS_0 * prompts.BUTTON_TITLE_YES +
               prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_NO;
 
+  var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties")
   // The checkbox will be hidden, and button will contain the index of the button pressed,
   // 0, 1, or 2.
 
-  var button = prompts.confirmEx(null, "Confirm Delete", "Do you want to delete the selected script?",
-                               flags, "", "", "", null, check);
+  var button = prompts.confirmEx(null, 
+                  strings.GetStringFromName("list.delete.title"), 
+                  strings.GetStringFromName("list.delete.description"),
+                  flags, "", "", "", null, check);
   
   if (button != 0)
     return;
@@ -420,11 +425,15 @@ function onNewClick()
   var input = {value:"unnamed"};
   var check = {value:false};
 
+  var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties")
+  // The checkbox will be hidden, and button will contain the index of the button pressed,
+  // 0, 1, or 2.
+                  
   var result
        = prompts.prompt(
            window,
-           "Create a new Script",
-           "Enter the name for your new Sieve script (existing scripts will be overwritten)",
+           strings.GetStringFromName("list.new.title"), 
+           strings.GetStringFromName("list.new.description"),
            input, null, check);
 
   // Did the User cancel the dialog?
@@ -492,11 +501,15 @@ function onRenameClick()
   var input = {value:oldScriptName};
   var check = {value:false};
 
+  var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties")
+  // The checkbox will be hidden, and button will contain the index of the button pressed,
+  // 0, 1, or 2.
+  
   var result
        = prompts.prompt(
            window,
-           "Rename Sieve Script",
-           "Enter the new name for your Sieve script ",
+           strings.GetStringFromName("list.rename.title"),
+           strings.GetStringFromName("list.rename.description"),
            input, null, check);
 
   // Did the User cancel the dialog?

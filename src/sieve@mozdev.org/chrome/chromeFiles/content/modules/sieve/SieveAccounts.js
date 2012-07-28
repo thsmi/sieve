@@ -31,7 +31,7 @@ function SieveNoAuth() {}
 SieveNoAuth.prototype.getDescription
     = function ()
 {
-  Services.strings
+  return Services.strings
     .createBundle("chrome://sieve/locale/locale.properties")
     .GetStringFromName("account.auth.none");
 }
@@ -79,7 +79,7 @@ function SieveImapAuth(imapKey)
 SieveImapAuth.prototype.getDescription
     = function ()
 {
-  Services.strings
+  return Services.strings
     .createBundle("chrome://sieve/locale/locale.properties")
     .GetStringFromName("account.auth.imap");
 }
@@ -88,8 +88,8 @@ SieveImapAuth.prototype.getPassword
     = function ()
 {
   // use the IMAP Key to load the Account...
-  var account = Components.classes['@mozilla.org/messenger/account-manager;1']
-	              .getService(Components.interfaces.nsIMsgAccountManager)
+  var account = Cc['@mozilla.org/messenger/account-manager;1']
+	              .getService(Ci.nsIMsgAccountManager)
 	              .getIncomingServer(this.imapKey);
   	
   // in case the passwordPromptRequired attribute is true...
@@ -99,9 +99,10 @@ SieveImapAuth.prototype.getPassword
     return account.password;
     
   // ... otherwise we it is our job...
-  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-                  .getService(Components.interfaces.nsIPromptService);
-                        
+  var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
+                  .getService(Ci.nsIPromptService);
+    
+  
   var input = {value:null};
   var check = {value:false}; 
   var result 
@@ -188,7 +189,7 @@ function SieveCustomAuth2(host, uri)
 SieveCustomAuth2.prototype.getDescription
     = function ()
 {
-  Services.strings
+  return Services.strings
     .createBundle("chrome://sieve/locale/locale.properties")
     .GetStringFromName("account.auth.custom");
 }

@@ -23,7 +23,6 @@
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         id="SieveFilterExplorer"
         onload="onWindowLoad();"
-        onclose="return onWindowClose();"
         persist="width height screenX screenY"
         style="width: 45em; height: 31em;"
         title="&list.title;"

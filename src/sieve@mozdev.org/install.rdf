@@ -5,7 +5,7 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>sieve@mozdev.org</em:id>
-    <em:version>0.2.0f</em:version>
+    <em:version>0.2.0g</em:version>
     <em:type>2</em:type>
 
     <em:targetApplication>
@@ -14,24 +14,6 @@
         <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
         <em:minVersion>3.1</em:minVersion>
       	<em:maxVersion>20.0</em:maxVersion>  
-      </Description>
-    </em:targetApplication>
-
-    <em:targetApplication>
-      <!-- Postbox -->
-      <Description>
-        <em:id>postbox@postbox-inc.com</em:id>
-        <em:minVersion>1.0b1</em:minVersion>
-        <em:maxVersion>20.0</em:maxVersion>
-      </Description>
-    </em:targetApplication>
-
-    <em:targetApplication>
-      <!-- Seamonkey -->
-      <Description>
-        <em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
-        <em:minVersion>2.0</em:minVersion>
-        <em:maxVersion>20.0</em:maxVersion>
       </Description>
     </em:targetApplication>
 

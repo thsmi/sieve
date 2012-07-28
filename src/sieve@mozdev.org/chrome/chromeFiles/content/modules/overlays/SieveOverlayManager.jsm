@@ -189,11 +189,82 @@ var SieveOverlayUtils =
 // if yes the code is managed an imported into callers global object..
 // safe require, manage
 
+function SieveDict() {
+  this.keys = [];
+  this.values = [];
+}
+
+SieveDict.prototype.hasKey
+  = function(object)
+{
+  if (this.keys.indexOf(object) != -1)
+    return true;
+  
+  return false;
+}
+
+SieveDict.prototype.getValue
+    = function(key)
+{
+  if (!this.hasKey(key))
+    throw "No value for key"
+    
+  return this.values[this.keys.indexOf(key)];
+}
+
+SieveDict.prototype.setValue
+    = function(key, value)
+{
+  if (this.hasKey(key))
+  {
+    this.values[this.keys.indexOf(key)] = value;
+    return this;
+  }
+    
+  this.keys.push(key);
+  this.values.push(value);
+}
+
+SieveDict.prototype.deleteKey
+    = function(key)
+{
+  var idx = this.keys.indexOf(key);
+  
+  if (idx == -1)
+    throw "Invalid index";
+   
+  this.keys.splice(idx,1);
+  this.values.splice(idx,1);
+}
+
+SieveDict.prototype.clear
+    = function()
+ {
+  this.keys = [];
+  this.values = [];
+ }
+ 
+SieveDict.prototype.hasKeys
+    = function()
+{
+  return (this.keys.length) 
+}
+
+SieveDict.prototype.first
+    = function()
+{
+  return this.keys[0]; 
+}
+
+      
+
 var SieveOverlayManager =
 {
   _overlays : [],
-  _windowTypes : {},
+  _overlayUrls : {},
   _imports : {},
+  
+  _unload : new SieveDict() /*<window,callback>*/ ,
   
   require : function(aUrl,scope,aWindow)
   { 
@@ -296,14 +367,14 @@ var SieveOverlayManager =
     domWindow.addEventListener("load", function listener() {
       domWindow.removeEventListener("load", listener, false);
 
-      SieveOverlayManager.applyOverlay(domWindow);
+      SieveOverlayManager.loadOverlay(domWindow);
     
     }, false);
   },
 
   onCloseWindow: function(window)
   {
-    Components.utils.reportError("onCloseWindow !...");
+/*    Components.utils.reportError("onCloseWindow !...");
     
     window = window.QueryInterface(Ci.nsIInterfaceRequestor)
                              .getInterface(Ci.nsIDOMWindowInternal)
@@ -324,36 +395,111 @@ var SieveOverlayManager =
     for (var url in this._imports)
       for (var i=0; i<this._imports[url].windows.length; i++)
         if (this._imports[url].windows[i] == window)
-          this._imports[url].callbacks[i]();
+          this._imports[url].callbacks[i]();*/
       
+  },
+  
+  onUnloadWindow: function(aWindow)
+  {
+
+    Cu.reportError("Unloading window"+aWindow.toSource());
+    
+    SieveOverlayManager.unloadWatcher(aWindow);
+    
+    // we mutate the array thus we interate backwards...
+    for (var i=SieveOverlayManager._overlays.length-1; i>=0; i--)
+    {
+      Components.utils.reportError("Comp Overlay...:"+SieveOverlayManager._overlays[i].window+" "+aWindow) 
+      if (SieveOverlayManager._overlays[i].window != aWindow)
+        continue;
+        
+      Components.utils.reportError("Clenup Overlay...") 
+      SieveOverlayManager._overlays[i].unload();
+      SieveOverlayManager._overlays.splice(i,1);
+    }
+ 
+    // cleanup imports...
+    for (var url in SieveOverlayManager._imports)
+      for (var i=0; i<SieveOverlayManager._imports[url].windows.length; i++)
+        if (SieveOverlayManager._imports[url].windows[i] == aWindow)
+          SieveOverlayManager._imports[url].callbacks[i]();    
   },
 
   onWindowTitleChange: function(window, newTitle) { },
   
-  // ...
-  addOverlay : function (overlay,type)
+  loadWatcher : function (window)
   {
-    if ( !this._windowTypes[type] ) 
-      this._windowTypes[type] = [];
-      
-    this._windowTypes[type].push(overlay);
+    Cu.reportError("Load Window watcher");
+    
+    if (SieveOverlayManager._unload.hasKey(window))
+    {
+      Cu.reportError("Window watcher already registered")
+      return;
+    }
+    
+    SieveOverlayManager._unload.setValue(window, function (aEvent) { 
+      let window = aEvent.currentTarget;
+      window = window.QueryInterface(Ci.nsIInterfaceRequestor)
+                       .getInterface(Ci.nsIDOMWindowInternal);
+      SieveOverlayManager.onUnloadWindow(window);
+    });
+        
+    window.addEventListener("unload", SieveOverlayManager._unload.getValue(window));
   },
   
-  applyOverlay : function (window)
-  { 
-    var windowtype = window.document.documentElement.getAttribute("windowtype");
-    
-    Components.utils.reportError("Windowtype:"+windowtype)
-    
-    if (!windowtype)
-      return;
-    
-    if (!this._windowTypes[windowtype])
-      return;
-    
-    for (var i=0; i<this._windowTypes[windowtype].length; i++)
+  unloadWatcher : function (window)
+  {
+    if (typeof(window) == "undefined")
     {
-      let overlay = new (this._windowTypes[windowtype][i])();
+      
+      Cu.reportError("Unregister all Window watchers");
+      
+      while (this._unload.hasKeys())
+        this.unloadWatcher(this._unload.first())
+
+      return;
+    } 
+    
+    Cu.reportError("Unregister Window watcher");
+      
+    if (!SieveOverlayManager._unload.hasKey(window))
+    {
+      Cu.reportError("No Window watcher registered");
+      return;
+    }
+        
+    Cu.reportError(window.toSource());
+      
+    /*window = window.QueryInterface(Ci.nsIInterfaceRequestor)
+                       .getInterface(Ci.nsIDOMWindowInternal);*/
+                       
+    window.removeEventListener("unload",SieveOverlayManager._unload.getValue(window));    
+    SieveOverlayManager._unload.deleteKey(window);
+  },
+  
+  // ...
+  addOverlay : function (overlay,url)
+  {
+    if ( !this._overlayUrls[url] ) 
+      this._overlayUrls[url] = [];
+      
+    this._overlayUrls[url].push(overlay);
+  },
+  
+  loadOverlay : function (window)
+  { 
+    var url = window.document.baseURI;
+    
+    Components.utils.reportError("Overlays for "+window.document.baseURI)
+    
+    if (!this._overlayUrls[url])
+      return;
+    
+    SieveOverlayManager.loadWatcher(window);
+    
+    for (var i=0; i<this._overlayUrls[url].length; i++)
+    {
+      let overlay = new (this._overlayUrls[url][i])();
       this._overlays.push(overlay);
       overlay.load(window);
       
@@ -372,7 +518,7 @@ var SieveOverlayManager =
     while (windows.hasMoreElements())
     {
       var domWindow = windows.getNext().QueryInterface(Ci.nsIDOMWindow);
-      SieveOverlayManager.applyOverlay(domWindow);
+      SieveOverlayManager.loadOverlay(domWindow);
     }
 
     // Wait for any new browser windows to open
@@ -389,13 +535,15 @@ var SieveOverlayManager =
       this._overlays.pop().unload();
    
     wm.removeListener(this);
+    
+    SieveOverlayManager.unloadWatcher();
 
     // invoke callbacks inorder to cleanup imports...
     for(var url in this._imports)
       while (this._imports[url])
         this._imports[url].callbacks[0]();
         
-    delete this._windowTypes;        
+    delete this._overlayUrls;        
   }
 }
 

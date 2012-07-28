@@ -19,6 +19,8 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
 
+Cu.import("resource://gre/modules/Services.jsm");
+
 Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
 Cu.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
 
@@ -67,6 +69,7 @@ var gEditorStatus =
   checkScriptTimer  : null,
   
   isClosing         : false,
+  isClosed          : false,
   
   defaultScript     : null,
   
@@ -202,7 +205,6 @@ SieveFilterEditor.prototype.onGetScriptResponse
   
   
   // not so good. We got out of sync, we can't descide which one is newer...
-  alert("out Of sync");
   this.onStatusChange(10,{local:this.getScript(),remote:response.getScriptBody()});  
 }
 
@@ -228,11 +230,11 @@ SieveFilterEditor.prototype.onPutScriptResponse
   if (!gEditorStatus.isClosing)
     return
 
-  if (!onWindowClose(true))
+  if (closeTab())
     return
             
   // just calling close is for some reason broken, so we use our helper...
-  window.arguments[0].wrappedJSObject["close"]();      
+  //window.arguments[0].wrappedJSObject["close"]();      
 }
 
 SieveFilterEditor.prototype.onCheckScriptResponse
@@ -308,10 +310,25 @@ SieveFilterEditor.prototype.observe
 {
   if (aTopic == "quit-application-requested")
   {
-    if (onWindowClose() == false)
-      aSubject.QueryInterface(Ci.nsISupportsPRBool).data = true;
-    else
-      close();
+    Cu.reportError("application Quit Request")
+    // we are asychnonous, so need to trigger the evet if we are done...
+    var callback = function () {
+      var cancelQuit = Cc["@mozilla.org/supports-PRBool;1"]
+                           .createInstance(Ci.nsISupportsPRBool);
+      Services.obs.notifyObservers(cancelQuit, "quit-application-requested", aData);
+
+      // Something aborted the quit process.
+      if (cancelQuit.data)
+        return;      
+            
+      // TODO if aData == restart add flag Ci.nsIAppStartup.eRestart
+      Cc["@mozilla.org/toolkit/app-startup;1"]
+          .getService(Ci.nsIAppStartup)
+          .quit(Ci.nsIAppStartup.eAttemptQuit);
+    }
+    
+    if (asyncCloseTab(callback) == false)
+      aSubject.QueryInterface(Ci.nsISupportsPRBool).data = true
       
     return;
   }
@@ -382,6 +399,10 @@ SieveFilterEditor.prototype.putScript
       Cc["@mozilla.org/embedcomp/prompt-service;1"]  
           .getService(Ci.nsIPromptService) 
           .alert(window,"Error","The script could not be saved:\n\n"+response.getMessage())
+      
+      // If save failes during shutdown we have to abort it...
+      if (gEditorStatus.isClosing)
+        gEditorStatus.isClosing = false;
     }
   }
   
@@ -445,7 +466,7 @@ function onWindowPersist()
   
   // we do not persist upon shutdown, the user already descided wether we 
   // wants to keep the script or not. We need this only in case of a crash
-  if (!gEditorStatus.isClosing)
+  if (gSFE && !gEditorStatus.isClosing)
   {
     args["scriptBody"] = gSFE.getScript();
     args["checksumServer"] = gEditorStatus.checksum.server;
@@ -526,8 +547,16 @@ function onWindowLoad()
 
   Cc["@mozilla.org/observer-service;1"]
       .getService (Ci.nsIObserverService)
-      .addObserver(event,"quit-application-requested", false);               
+      .addObserver(gSFE ,"quit-application-requested", false);   
+      
+/*  window.addEventListener("unload", function() {
+      Cc["@mozilla.org/observer-service;1"]
+        .getService (Ci.nsIObserverService)
+        .removeObserver(gSFE, "quit-application-requested");
+    }, false);*/  
 }
+
+
 
 /*function onIgnoreOffline()
 {
@@ -736,48 +765,88 @@ function onSave()
   gSFE.putScript(gEditorStatus.scriptName,gSFE.getScript())
 }
 
-function onWindowClose()
-{   
-  if (!gEditorStatus.isClosing && gSFE.hasChanged())
-  {
-    var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
-                          .getService(Ci.nsIPromptService);
+/**
+ * 
+ * @param {} callback
+ * @return {Boolean}
+ *   true if a synchonous shutdown was successfull
+ *   false if shutdown was canceled or asynchnous shutdown started and 
+ *   the callback will be invoked
+ */
+function asyncCloseTab(callback)
+{
+  // We are already closed...
+  if (!gSFE)
+    return true;
+  
+  if (!gSFE.hasChanged())
+    return closeTab();
 
-    // The flags 393733 equals [Save] [Don't Save] [Cancel]
-    var result =
-        prompts.confirmEx(
-          window, "Save Sieve Script",
-          "Script has not been saved. Do you want to save changes?", 393733,
-          "", "", "", null, { value : false });
+  if (gEditorStatus.isClosing)
+    return false;
    
-    // chancel clicked...
-    if (result == 1)
-      return false;     
-      
-    // closing
-    gEditorStatus.isClosing = true;
-    
-    // Save the Script if the user descides to...
-    if (result == 0)
-    {  
-      onSave();
-      return false;
-    }
-  }
-     
+  // we need to wait for user feedback...
+  var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
+                    .getService(Ci.nsIPromptService);
+
+  // The flags 393733 equals [Save] [Don't Save] [Cancel]
+  var result =
+      prompts.confirmEx(
+        window, "Save Sieve Script",
+        "Script has not been saved. Do you want to save changes?", 393733,
+        "", "", "", null, { value : false });
+   
+  // cancel clicked...
+  if (result == 1)
+    return false;     
+  
+  // don't save clicked...
+  if (result != 0)
+    return closeTab();
+  
+  gEditorStatus.isClosing = true;
+  gEditorStatus.closeListener = callback;
+  onSave();
+  
+  return false;
+}
+
+/**
+ * Closes the tab, does not prompt if it should be saved or not...
+ * @return {Boolean}
+ */
+function closeTab()
+{
   try
   {
     Cc["@mozilla.org/observer-service;1"]
         .getService (Ci.nsIObserverService)
-        .removeObserver(event,"quit-application-requested");
+        .removeObserver(gSFE,"quit-application-requested");
   }
   catch (ex) {}
   
   clearTimeout(gEditorStatus.checkScriptTimer);
-    
+ 
   gSFE.disconnect();
-               
-  return true;  
+  gSFE = null;
+ 
+  // we need to unlock the close function, otherwise we might endup in a 
+  // deadlock
+  if (gEditorStatus.isClosing)
+  {
+    if (gEditorStatus.closeListener)
+      gEditorStatus.closeListener();
+    // we need to null the listener before calling it otherwise we could
+    // enup in an endless loop...
+   /* var callback = gEditorStatus.closeListener;
+    gEditorStatus.closeListener = null;
+    
+    if (callback)
+       callback();*/    
+  }
+
+  gEditorStatus.closeListener = null;
+  return true;
 }
 
 function onImport()

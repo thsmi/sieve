@@ -1,7 +1,7 @@
 // Enable Strict Mode
 "use strict";  
 
-var EXPORTED_SYMBOLS = [ "SieveMailWindowOverlay" , "SieveFilterListOverlay"];
+var EXPORTED_SYMBOLS = [ "SieveMailWindowOverlay" , "SieveFilterListOverlay", "SieveToolbarOverlay"];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -174,6 +174,7 @@ SieveFilterListOverlay.prototype.load
   
     if (!folder.server)
     {
+      //FIXME
       alert("Incompatible folder");
       return;
     }
@@ -369,3 +370,30 @@ SieveMailWindowOverlay.prototype.load
 }
 
 // Filter window Overlay...Components
+
+//****************************************************************************//
+
+function SieveToolbarOverlay()
+{
+  SieveAbstractOverlay.call(this);   
+}
+
+SieveToolbarOverlay.prototype.__proto__ = SieveAbstractOverlay.prototype;
+
+
+SieveToolbarOverlay.prototype.load
+  = function(window)
+{   
+  if (this.window)
+    throw "already bound to window";
+    
+  var that = this;
+  this.window = window;
+  
+  var document = window.document;
+  
+  SieveOverlayUtils.addStyleSheet(document,"chrome://sieve/skin/ToolBarButton.css");    
+  
+  this.unloadCallback(
+    function() { SieveOverlayUtils.removeStyleSheet(document,"chrome://sieve/skin/ToolBarButton.css")}); 
+}

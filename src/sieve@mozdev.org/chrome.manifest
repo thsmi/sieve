@@ -4,9 +4,6 @@ locale		sieve	en-US	chrome/chromeFiles/locale/en-US/
 locale    sieve de-DE chrome/chromeFiles/locale/de-DE/
 locale    sieve fr-FR chrome/chromeFiles/locale/fr-FR/
 locale    sieve ru-RU chrome/chromeFiles/locale/ru-RU/
+locale    sieve es-ES chrome/chromeFiles/locale/es-ES/
 
 skin      sieve   classic chrome/chromeFiles/skin/
-
-#style chrome://global/content/customizeToolbar.xul chrome://sieve/skin/ToolBarButton.css
-
-#overlay   chrome://messenger/content/FilterListDialog.xul chrome://sieve/content/filterList/SieveFilterListOverlay.xul

@@ -26,8 +26,8 @@ var SieveTabType =
         
         // this is nasty, we don't have a document object in our scope...
         // ... we we have to retrive it manually... 
-        aTab.panel.contentWindow.tabmail 
-          = aTab.panel.ownerDocument.getElementById("tabmail");        
+  /*      aTab.panel.contentWindow.tabmail 
+          = aTab.panel.ownerDocument.getElementById("tabmail");*/        
         
         aTab.panel.setAttribute("src","chrome://sieve/content/editor/SieveFilterExplorer.xul");
       },
@@ -56,13 +56,10 @@ var SieveTabType =
       
       openTab: function(aTab, aArgs)
       {
+        aTab.title = "Loading...";
+        
         if (aArgs["uri"])
           aTab.uri = aArgs["uri"];
-        
-        // we don't have a document in our scope as we are a jsm...
-        // ... so we need an ugly hack...
-        var tabmail = aTab.panel.ownerDocument.getElementById("tabmail"); 
-        aArgs["close"] = function () { tabmail.closeTab(aTab); };
         
         aArgs.wrappedJSObject = aArgs;
         aTab.panel.contentWindow.arguments = [aArgs];
@@ -71,6 +68,11 @@ var SieveTabType =
         
         aTab.panel.setAttribute("src","chrome://sieve/content/editor/SieveFilterEditor.xul");
       },
+      
+      closeTab: function(aTab)
+      {
+        this._removeListeners(aTab);
+      },      
       
       persistTab: function(aTab)  
       {
@@ -81,7 +83,7 @@ var SieveTabType =
         
         if (aTab.uri)
           args["uri"] = aTab.uri;
-          
+         
         return args;
       },
       
@@ -91,11 +93,6 @@ var SieveTabType =
       }
     }
   }, 
-  
-  closeTab: function(aTab)
-  {          
-    this._removeListeners(aTab);
-  },
   
   showTab: function onShowTab(aTab)
   {
@@ -114,11 +111,18 @@ var SieveTabType =
   
   tryCloseTab: function(aTab)
   {
+    var callback = function()  {
+      aTab.panel.ownerDocument.getElementById("tabmail").closeTab(aTab);
+    }
+      
+    if ( aTab.panel.contentWindow.asyncCloseTab)
+      return aTab.panel.contentWindow.asyncCloseTab(callback);
+    
     // we need a catch exceptions. Otherwise we could endup in case of with 
     // an unclosable tab...
     try {
-      if (! aTab.panel.contentWindow.onWindowClose())        
-        return false;
+      if (! aTab.panel.contentWindow.closeTab())        
+        return false;         
     }
     catch (ex)  {
       Cu.reportError("Unclosable tab"+ex);
@@ -135,7 +139,7 @@ var SieveTabType =
     // Save the function we'll use as listener so we can remove it later.
     aTab.titleListener = onDOMTitleChanged;
 
-    function onDOMWindowClose(aEvent)
+   /* function onDOMWindowClose(aEvent)
     {     
       if (!aEvent.isTrusted)
         return;
@@ -145,37 +149,52 @@ var SieveTabType =
       aTab.panel.ownerDocument.getElementById("tabmail").closeTab(aTab);
       aEvent.preventDefault();
     }
-    // Save the function we'll use as listener so we can remove it later.
-    aTab.closeListener = onDOMWindowClose;        
     
-    function onLoad(aEvent)
+    aTab.closeDOMListener = onDOMWindowClose; */
+
+    function onWindowClose(aEvent)
     {
-      //document.getElementById("tabmail").setTabTitle(aTab);      
-    }    
-    aTab.loadListener = onLoad;    
+      if (!aTab.panel.contentWindow.asyncCloseTab)
+        return true;
+        
+      // We continue closing the window...
+      var callback = function()  {
+        aTab.panel.ownerDocument.defaultView.close();
+      }
+        
+      if (!aTab.panel.contentWindow.asyncCloseTab(callback))
+      {
+        aEvent.preventDefault();
+        return false;
+      }
+      
+      return true;
+    }
+    // Save the function we'll use as listener so we can remove it later.
+    aTab.closeListener = onWindowClose;        
+       
        
     // Add the listener.
     aTab.panel.contentWindow.addEventListener("DOMTitleChanged", aTab.titleListener, true);
-       
-    aTab.panel.contentWindow.addEventListener("DOMWindowClose", aTab.closeListener, true);
-    
-    aTab.panel.contentWindow.addEventListener("load",aTab.loadListener,true);      
+         
+    //aTab.panel.contentWindow.addEventListener("DOMWindowClose", aTab.closeDOMListener, true);
+    aTab.panel.ownerDocument.defaultView.addEventListener("close",aTab.closeListener);
   },
   
   _removeListeners: function(aTab)
   {
     if (aTab.titleListener)
       aTab.panel.contentWindow.removeEventListener("DOMTitleChanged", aTab.titleListener, true);
-    
+       
     if (aTab.closeListener)
-      aTab.panel.contentWindow.removeEventListener("DOMWindowClose", aTab.closeListener, true);
-    
-    if (aTab.loadListeners)
-      aTab.panel.contentWindow.removeEventListener("load",aTab.loadListener,true)
-    
+      aTab.panel.ownerDocument.defaultView.removeEventListener("close",aTab.closeListener);
+      
+   /* if (aTab.closeDOMListener)
+      aTab.panel.contentWindow.removeEventListener("DOMWindowClose", aTab.closeListener, true)*/;      
+      
+    aTab.closeDOMListener = null;
     aTab.titleListener = null;
     aTab.closeListener = null;
-    aTab.loadListener = null;
   }
     
 };

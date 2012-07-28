@@ -17,13 +17,20 @@ function startup(data, reason)
   Cu.import("chrome://sieve/content/components/SieveAccountManager.js");
   SieveAccountManagerComponent.load();
 
-  Components.utils.import("chrome://sieve/content/components/SieveProtocolHandler.js");
+  Cu.import("chrome://sieve/content/components/SieveProtocolHandler.js");
   SieveProtocolHandlerComponent.load();
   
-  Components.utils.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
-  Components.utils.import("chrome://sieve/content/modules/overlays/SieveOverlay.jsm");
-  SieveOverlayManager.addOverlay(SieveMailWindowOverlay,"mail:3pane");
-  SieveOverlayManager.addOverlay(SieveFilterListOverlay,"mailnews:filterlist");
+  Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
+  Cu.import("chrome://sieve/content/modules/overlays/SieveOverlay.jsm");
+  
+  SieveOverlayManager.addOverlay(
+      SieveMailWindowOverlay,"chrome://messenger/content/messenger.xul");
+  SieveOverlayManager.addOverlay(
+      SieveFilterListOverlay,"chrome://messenger/content/FilterListDialog.xul");
+
+  SieveOverlayManager.addOverlay(
+      SieveToolbarOverlay, "chrome://global/content/customizeToolbar.xul")
+  
   SieveOverlayManager.load();
   
   // TODO if reason ADDON_UPGRADE restore previously open tabs...
@@ -41,18 +48,18 @@ function shutdown(data, reason)
   // Step 1: Unload XPCOM Componenets
   SieveAccountManagerComponent.unload();
   //delete SieveAccountManagerComponent;  
-  Components.utils.unload("chrome://sieve/content/components/SieveAccountManager.js")
+  Cu.unload("chrome://sieve/content/components/SieveAccountManager.js")
   
   SieveProtocolHandlerComponent.unload();
   //delete SieveProtocolHandlerComponent;
-  Components.utils.unload("chrome://sieve/content/components/SieveProtocolHandler.js");
+  Cu.unload("chrome://sieve/content/components/SieveProtocolHandler.js");
 
 
   // Step 2: remove Code Injections
   SieveOverlayManager.unload();  
 
-  Components.utils.unload("chrome://sieve/content/modules/overlays/SieveOverlay.jsm");  
-  Components.utils.unload("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm"); 
+  Cu.unload("chrome://sieve/content/modules/overlays/SieveOverlay.jsm");  
+  Cu.unload("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm"); 
 
   Cu.unload("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");  
   

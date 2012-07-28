@@ -17,9 +17,6 @@ Cu.import("chrome://sieve/content/modules/sieve/SieveResponse.js");
 Cu.import("chrome://sieve/content/modules/sieve/SieveResponseParser.js");
 Cu.import("chrome://sieve/content/modules/sieve/SieveResponseCodes.js");
 
- 
-Cu.reportError("loading Sieve Session");
-
 /**
  * This class pools and caches concurrent connections (Channel) to an destinct 
  * remote server (Session).

@@ -259,6 +259,28 @@
 <!ENTITY edit.searchreplace.replace "Заменить">
 <!ENTITY edit.searchreplace.error "Фраза не найдена">
 
+<!-- Status messages -->
+<!ENTITY status.offline.description 
+"You are currently offline. Click 'Go Online' and try again">
+<!ENTITY status.offline.go "Go Online">
+
+
+<!ENTITY status.connectivity.loss.description
+"Server terminated unexpectedly the connection, click on reconnect to try again.">
+<!ENTITY status.connectivity.loss.reconnect "Reconnect">
+
+<!ENTITY status.warning.ignore "Ignore">
+<!ENTITY status.warning.reconnect "Reconnect">
 <!ENTITY status.warning 
   "Эта учётная запись не настроена для работы с Sieve, перейдите 'Инструменты-> Sieve Фильтры Писем'">
+
+<!ENTITY status.error.reconnect "Reconnect">
 <!ENTITY status.error "Последняя команда не выполнена, так как сервер сообщил об ошибке:">
+
+<!ENTITY status.sync.description 
+"The local an the server side scripts are different. 
+
+What would you like to do about it ?">
+<!ENTITY status.sync.keep "Keep Local Script">
+<!ENTITY status.sync.replace "Use Server Side Script">
+

@@ -53,7 +53,7 @@
     <toolbarspacer /> 
     <toolbarbutton id="btnViewSource" type="checkbox" 
                    label="Source" class="toolbarbutton-1"
-                   oncommand="onViewSource();" checked="checked"/>
+                   oncommand="onViewSource();" checked="true"/>
     <toolbarspacer />      
     <toolbarbutton id="btnUndo"
                    label="&edit.toolbar.undo;" class="toolbarbutton-1"

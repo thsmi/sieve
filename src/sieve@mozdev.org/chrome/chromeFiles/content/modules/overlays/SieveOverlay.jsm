@@ -279,6 +279,8 @@ SieveMailWindowOverlay.prototype.load
   var document = window.document;
   Cu.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");  
 
+  var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");  
+  
   Cu.reportError("load overlay 2");
   // Add Toolbar Overlay
   var onOpenFilterCmd = 
@@ -299,8 +301,8 @@ SieveMailWindowOverlay.prototype.load
         
   var toolbarbutton = document.createElement("toolbarbutton");
   toolbarbutton.setAttribute("id","btnSieveFilter");
-  toolbarbutton.setAttribute("label","Label"); //bundle.GetStringFromName("") //&list.title;
-  toolbarbutton.setAttribute("tooltiptext","Tooltop"); //&list.title;
+  toolbarbutton.setAttribute("label",strings.GetStringFromName("toolbar.filters.title")); 
+  toolbarbutton.setAttribute("tooltiptext",strings.GetStringFromName("toolbar.filters.tooltip"));
   toolbarbutton.addEventListener("command", onOpenFilterCmd );
   toolbarbutton.setAttribute("class","toolbarbutton-1 chromeclass-toolbar-additional");
  
@@ -324,14 +326,13 @@ SieveMailWindowOverlay.prototype.load
   
     
   // Add Menu Overlay
-  var bundle = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
   
   var menu = document.getElementById("filtersCmd");
   
   var mmuOpenFilters = document.createElement("menuitem");
   mmuOpenFilters.setAttribute("id","mnuSieveListDialog");
-  mmuOpenFilters.setAttribute("label", bundle.GetStringFromName("menu.filters")); //&menu.filters;
-  mmuOpenFilters.setAttribute("accesskey", bundle.GetStringFromName("menu.filters.key") ); //"&menu.filters.key;" 
+  mmuOpenFilters.setAttribute("label", strings.GetStringFromName("menu.filters")); 
+  mmuOpenFilters.setAttribute("accesskey", strings.GetStringFromName("menu.filters.key") );
   mmuOpenFilters.addEventListener("command", onOpenFilterCmd );
   
   this.unloadCallback(
@@ -345,8 +346,8 @@ SieveMailWindowOverlay.prototype.load
   
   var mnuOpenSettings = document.createElement("menuitem");
   mnuOpenSettings.setAttribute("id","mnuSieveOptionsDialog");
-  mnuOpenSettings.setAttribute("label",bundle.GetStringFromName("menu.options")); //&menu.options;
-  mnuOpenSettings.setAttribute("accesskey",bundle.GetStringFromName("menu.options.key"));  
+  mnuOpenSettings.setAttribute("label",strings.GetStringFromName("menu.options")); //&menu.options;
+  mnuOpenSettings.setAttribute("accesskey",strings.GetStringFromName("menu.options.key"));  
   mnuOpenSettings.addEventListener('command', onOpenSettingsCmd );
   
   this.unloadCallback(

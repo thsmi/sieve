@@ -27,7 +27,7 @@
 
 <!ENTITY options.host.caption "Nombre Servidor">
 <!ENTITY options.host.description
-"La mayoría de implementaciones Seieve se ejecutan directamente en un servidor de correo. 
+"La mayoría de implementaciones Sieve se ejecutan directamente en un servidor de correo. 
 Por lo tanto el nombre del servidor Sieve suele ser el mismo que el nombre de su servidor IMAP.">
 <!ENTITY options.host.imap "Servidor IMAP:">
 <!ENTITY options.host.custom "Otro Servidor:">
@@ -37,7 +37,7 @@ Por lo tanto el nombre del servidor Sieve suele ser el mismo que el nombre de su
 "El puerto del servidor cambió, cuando ManageSieve se transformó en un RFC estándar completo">
 <!ENTITY options.port.description2
 "Las implementaciones de servidor más antiguas continuan usando el puerto 2000, mientras que los nuevos ajustes 
-estándar del servidor sólo pueden acceder via puerto 4190.">
+estándar del servidor sólo pueden acceder vía puerto 4190.">
 <!ENTITY options.port.4190 "4190 (Por Defecto)" >
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Otro:">
@@ -51,7 +51,7 @@ estándar del servidor sólo pueden acceder via puerto 4190.">
 "Transport Layer Security (TLS) asegura la conexión con la administración del servidor Sieve.
 Cifra todos los datos y está diseñado para prevenir el espionaje y la manipulación.">
 <!ENTITY options.security.description2 
-"ManageSieve normalmente transfiere las contraseñas desencriptadas. Así que a menos que tengas una 
+"ManageSieve normalmente transfiere las contraseñas no encriptadas. Así que a menos que tengas una 
 buena razón (ej. Depuración), deberías siempre forzar TLS.">
 <!ENTITY options.security.tls.disabled "Sin TLS">
 <!ENTITY options.security.tls.available "TLS, cuando sea disponible">
@@ -67,7 +67,7 @@ buena razón (ej. Depuración), deberías siempre forzar TLS.">
 <!ENTITY options.login.show "Mostrar Contraseñas Guardadas...">
 
 <!ENTITY options.misc "Ajustes varios">
-<!ENTITY options.misc.keepalive "Habilitar conexionbes abiertas">
+<!ENTITY options.misc.keepalive "Habilitar conexiones abiertas">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.keepalive2 "Enviar todo">
 <!ENTITY options.misc.keepalive.description 
@@ -80,8 +80,8 @@ debe ser preservada.">
 
 <!ENTITY options.misc.compile.caption "Comprobación de sintaxis">
 <!ENTITY options.misc.compile.description
-"Mientras se editan los Scripts, pueden vomprobarse para validarlos. La comprobación 
-de sintaxis check es llevada a cabo por el servidor. is performed by the server. Con el fin de mantener bajo el tráfico en la 
+"Mientras se editan los Scripts, pueden comprobarse para validarlos. La comprobación 
+de sintaxis es llevada a cabo por el servidor. Con el fin de mantener bajo el tráfico en la 
 red, las peticiones de comprobación de sintaxis son agrupadas.">
 <!ENTITY options.misc.compile "Comprobar Scripts mientras se teclea">
 <!ENTITY options.misc.compile.key "c">
@@ -113,7 +113,7 @@ podría ser enviado en texto sin cifrar a la consola de error.">
 "En algunas situaciones ej. cuando se usa un proxy de Autenticación puede querer 
 forzar un Mecanismo de Autenticación específico." > 
 
-<!ENTITY options.proxyauth.caption "Authorización Proxy">
+<!ENTITY options.proxyauth.caption "Autorización Proxy">
 <!ENTITY options.proxyauth.desc 
 "Autorización Proxy, permite a un usuario autenticado actuar en nombre de otro usuario.
 Normalmente los servidores están configurados, para que ésta característica esté sólo disponible para administradores.">
@@ -149,9 +149,9 @@ Normalmente los servidores están configurados, para que ésta característica e
 "En lugar de una conexión directa puede usar un Proxy SOCKS de forma transparente y 
 atravesar con seguridad el firewall.">
 <!ENTITY options.proxy.description.nameresolution
-"Con nombres host SOCKSv4 siempre podrá resolver el la máquina local. SOCKSv5 también 
+"Con nombres host SOCKSv4 siempre podrá resolver en la máquina local. SOCKSv5 también 
 soporta resolver nombres host por el proxy SOCKS. Si puede confiar en el proxy 
- SOCKSv5, proxy, éste último se considera más seguro y debe preferirse.">
+SOCKSv5, éste último se considera más seguro y debe preferirse.">
 <!ENTITY options.proxy.description.localhost
 "En algunos sistemas usar 'localhost' como proxy no funciona correctamente, 
 use '127.0.0.1' en su lugar.">
@@ -199,12 +199,12 @@ No continue a menos que tenga una buena razón porque
 
 <!ENTITY list.autoconfig.welcome.caption "¡Bienvenido!">
 <!ENTITY list.autoconfig.welcome.description1 
-"Esta cuenta no está configurada para gestionar sieve.">
+"Esta cuenta no está configurada para gestionar Sieve.">
 <!ENTITY list.autoconfig.welcome.description2
 "Click en 'Continuar' para detectar la configuración automáticamente.
-O elija 'Advanzada' para configurar la cuenta manualmente.">
+O elija 'Avanzada' para configurar la cuenta manualmente.">
 
-<!ENTITY list.autoconfig.advanced "Advanzado">
+<!ENTITY list.autoconfig.advanced "Avanzado">
 <!ENTITY list.autoconfig.continue "Continuar">
 
 <!ENTITY list.autoconfig.detecting.caption "Autodetectar Configuración">
@@ -219,7 +219,7 @@ O elija 'Advanzada' para configurar la cuenta manualmente.">
 
 <!ENTITY list.autoconfig.error.caption "Lo siento">
 <!ENTITY list.autoconfig.error.description 
-"Parece que su servidor de correo no soporta gestión sieve o requiere
+"Parece que su servidor de correo no soporta gestión Sieve o requiere
 una configuración especial. Por favor, contacte con su proveedor de correo o intente
 hacer la configuración manualmente.">
 
@@ -261,25 +261,25 @@ hacer la configuración manualmente.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description 
-"You are currently offline. Click 'Go Online' and try again">
-<!ENTITY status.offline.go "Go Online">
+"Actualmente está offline. Haga click 'Ir Online' e intente de nuevo">
+<!ENTITY status.offline.go "Ir Online">
 
 
 <!ENTITY status.connectivity.loss.description
-"Server terminated unexpectedly the connection, click on reconnect to try again.">
-<!ENTITY status.connectivity.loss.reconnect "Reconnect">
+"El servidor ha termnado la conexión inesperadamente, haga click en reconectar para intentar de nuevo.">
+<!ENTITY status.connectivity.loss.reconnect "Reconectar">
 
-<!ENTITY status.warning.ignore "Ignore">
-<!ENTITY status.warning.reconnect "Reconnect">
+<!ENTITY status.warning.ignore "Ignorar">
+<!ENTITY status.warning.reconnect "Reconectar">
 <!ENTITY status.warning
   "Esta cuenta no está configurada para gestionar Sieve, vaya a 'Herramientas-->Filtros de mensaje Sieve'">
   
-<!ENTITY status.error.reconnect "Reconnect">
-<!ENTITY status.error "Ultimo comando falló, porque el servidor reportó un error:">
+<!ENTITY status.error.reconnect "Reconectar">
+<!ENTITY status.error "Ultimo comando falló porque el servidor reportó un error:">
 
 <!ENTITY status.sync.description 
-"The local an the server side scripts are different. 
+"Los scripts Locales y del lado servidor son diferentes. 
 
-What would you like to do about it ?">
-<!ENTITY status.sync.keep "Keep Local Script">
-<!ENTITY status.sync.replace "Use Server Side Script">
+¿Que quiere hacer al respecto?">
+<!ENTITY status.sync.keep "Mantener script Local">
+<!ENTITY status.sync.replace "Usar los scripts del lado servidor">

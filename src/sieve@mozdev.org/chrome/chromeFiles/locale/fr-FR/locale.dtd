@@ -10,6 +10,7 @@
  * Contributor(s):
  *   Marion DESNAULT <marion.desnault@free.fr>
  *   Cyril KLUSKA <ckluska@easter-eggs.com>
+ *   Dominique Couot <dcouot@solipym.com>
  */
  -->
 
@@ -262,25 +263,25 @@ essayez une configuration manuelle.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description 
-"You are currently offline. Click 'Go Online' and try again">
-<!ENTITY status.offline.go "Go Online">
+"Vous êtes actuellement hors ligne. Cliquez 'Aller En ligne' et reessayez">
+<!ENTITY status.offline.go "Aller En ligne">
 
 
 <!ENTITY status.connectivity.loss.description
-"Server terminated unexpectedly the connection, click on reconnect to try again.">
-<!ENTITY status.connectivity.loss.reconnect "Reconnect">
+"Le serveur a annulé soudainement la connection, cliquez sur Reconnectez pour reessayer.">
+<!ENTITY status.connectivity.loss.reconnect "Reconnecter">
 
-<!ENTITY status.warning.ignore "Ignore">
-<!ENTITY status.warning.reconnect "Reconnect">
+<!ENTITY status.warning.ignore "Ignorer">
+<!ENTITY status.warning.reconnect "Reconnecter">
 <!ENTITY status.warning 
   "Ce compte n'est pas configuré pour Sieve, aller dans 'Outils -> Filtres Sieve'">
   
-<!ENTITY status.error.reconnect "Reconnect">
+<!ENTITY status.error.reconnect "Reconnecter">
 <!ENTITY status.error "La dernière commande a échouée:">
 
 <!ENTITY status.sync.description 
-"The local an the server side scripts are different. 
+"Le script local et du serveur sont différents. 
 
-What would you like to do about it ?">
-<!ENTITY status.sync.keep "Keep Local Script">
-<!ENTITY status.sync.replace "Use Server Side Script">
+Que voulez vous faire ?">
+<!ENTITY status.sync.keep "Garder le script local">
+<!ENTITY status.sync.replace "Utiliser le script du serveur">

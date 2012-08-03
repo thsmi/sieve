@@ -232,7 +232,13 @@ SieveFilterListOverlay.prototype.load
   tabpanels.lastChild.setAttribute("type","chrome");
   tabpanels.lastChild.setAttribute("id","sivFilterListFrame");
   tabpanels.lastChild.setAttribute("style",
-        "overflow:auto; -moz-appearance: textfield;")
+        "overflow:auto; -moz-appearance: textfield;");
+        
+  this.unloadCallback (
+    function() { elm.parentNode.removeChild(elm); })   
+    
+  this.unloadCallback (
+    function() { elm.parentNode.insertBefore(grid,elm); }); 
 
   var menu = document.getElementById("serverMenu"); 
   menu.addEventListener("command",folderChangeListener,true);
@@ -281,7 +287,6 @@ SieveMailWindowOverlay.prototype.load
 
   var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");  
   
-  Cu.reportError("load overlay 2");
   // Add Toolbar Overlay
   var onOpenFilterCmd = 
     function() {  SieveUtils.OpenFilter(document.defaultView) };
@@ -295,7 +300,8 @@ SieveMailWindowOverlay.prototype.load
   
   
   SieveOverlayUtils.addTabType(SieveTabType,tabmail);
-// TODO ad afinnaly method when all windows are closed, ot unload components
+ // TODO add finaly method when all windows are closed, to unload unused components
+  
   this.unloadCallback( 
     function() { SieveOverlayUtils.removeTabType(SieveTabType,tabmail);})
         
@@ -366,8 +372,6 @@ SieveMailWindowOverlay.prototype.load
     function () { SieveOverlayUtils.removeMenuItem(mnuSeparator) } )
 
   SieveOverlayUtils.addMenuItem( document, mnuSeparator, menu);
-  
-  Cu.reportError("load overlay 3");
 }
 
 // Filter window Overlay...Components

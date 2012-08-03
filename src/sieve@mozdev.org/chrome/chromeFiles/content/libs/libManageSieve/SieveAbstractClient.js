@@ -84,6 +84,11 @@ SieveAbstractClient.prototype.onError
 SieveAbstractClient.prototype.onDisconnect
     = function()
 {
+  var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+  
+  if (ioService.offline)
+    this.onOffline()
+    
   this.disconnect(9);
 }
       
@@ -170,9 +175,9 @@ SieveAbstractClient.prototype.connect
 
 SieveAbstractClient.prototype.disconnect
     = function (state,message)
-{ 
+{    
   if (state)
-    this.onStatusChange(state,message);  
+    this.onStatusChange(state,message);
   
   if ((!this._sid) || (!this._cid))
     return;

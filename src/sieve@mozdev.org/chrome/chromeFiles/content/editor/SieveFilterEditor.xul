@@ -107,7 +107,7 @@
                         
             <!-- Sieve Script editor -->                        
             <hbox id="sivEditor" collapsed="true" flex="1" class="sivEditor">
-              <vbox id="sivLineNumbers"> 
+              <vbox id="sivLineNumbers" persist="width"> 
                 <textbox id="sivLineNumbersEditor" flex="1" 
                          disabled="true" multiline="true" 
                          wrap="off" value="1"
@@ -125,7 +125,7 @@
             <!-- Error Bar (Showing Script errors) --> 
             <splitter id="spErrorBar" resizeafter="farthest" /> 
             
-            <vbox id="vbErrorBar">
+            <vbox id="vbErrorBar" persist="height">
               <hbox align="center" min-height="50px" flex="1" style="overflow:auto;" >
                 <image id="imgErrorBar" pack="center"   src="chrome://sieve/content/images/syntax-ok.png"/>
                 <description flex="1" id="lblErrorBar" style="white-space: pre;" >
@@ -147,7 +147,7 @@
         <iframe id="sivWidgetEditor" flex="1"  type="content" />          
       </deck>
     <splitter id="spSideBar" class="spVertical" resizeafter="farthest" />
-  <vbox id="vbSidebar" class="sieveSideBar">
+  <vbox id="vbSidebar" persist="width" class="sieveSideBar">
    <vbox id="vbSearchBar">
     <stack class="outset">
       <image flex="1"/> 

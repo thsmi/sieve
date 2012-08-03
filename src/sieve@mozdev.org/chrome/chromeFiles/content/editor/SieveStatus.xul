@@ -32,91 +32,95 @@
                 
   <script type="application/javascript"
           src="chrome://sieve/content/editor/SieveStatus.js"/>
-
   
-  <stringbundleset id="stringbundleset">
-    <stringbundle id="strings" src="chrome://sieve/locale/locale.properties"/>
-  </stringbundleset>  
-  
-  <!-- Bad Cert Warning Message -->      
-  <box id="StatusBadCert" hidden="true" align="center" pack="center" flex="1">
-    <hbox align="center" class="sivWarning" >
-      <image pack="center" src="chrome://sieve/content/images/sslWarning.png"/>
-      <vbox>
-        <description style="font-weight:bold">&list.badcert;</description>
-        <description pack="center" style="white-space: pre-wrap;">&list.badcert.error;</description>
-        <checkbox id="cbBadCertRemember" label="&list.badcert.remember;" checked="true"/>
-        <hbox align="right">
-          <button id="btnIgnoreBadCert" label="&list.badcert.ignore;" />
-          <button id="btnAbortBadCert" label="&list.badcert.abort;" />
-        </hbox>
-      </vbox> 
-    </hbox>
-  </box>
+  <deck id="StatusDeck" flex="1">
+    
+    <!-- 0. Wait tobber -->
+    <vbox id="StatusWait" align="center" pack="center" flex="1" >
+      <image pack="center" src="chrome://sieve/content/images/load.gif"/>
+      <spacer/>
+      <description id="StatusWaitMsg" pack="center">
+      </description>
+    </vbox>
 
-              
-  <!-- Error Message: Account not configured -->
-  <vbox id="StatusDisabled" hidden="true" align="center" pack="center" flex="1">
-    <box>
-      <deck id="sivAutoConfig" selectedIndex="0">
+    <!-- 1. Bad Cert Warning Message -->      
+    <box id="StatusBadCert" align="center" pack="center" flex="1">
+      <hbox align="center" class="sivWarning" >
+        <image pack="center" src="chrome://sieve/content/images/sslWarning.png"/>
+        <vbox>
+          <description style="font-weight:bold">&list.badcert;</description>
+          <description pack="center" style="white-space: pre-wrap;">&list.badcert.error;</description>
+          <checkbox id="cbBadCertRemember" label="&list.badcert.remember;" checked="true"/>
+          <hbox align="right">
+            <button id="btnIgnoreBadCert" label="&list.badcert.ignore;" />
+            <button id="btnAbortBadCert" label="&list.badcert.abort;" />
+          </hbox>
+        </vbox> 
+      </hbox>
+    </box>
+
+    <!-- 2. Error Message: Account not configured -->
+    <vbox id="StatusDisabled" align="center" pack="center" flex="1">
+      <box>
+        <deck id="sivAutoConfig" selectedIndex="0">
                 
-        <!-- Welcome -->
-        <vbox id="sivAutoConfigInfo">
-          <label style="font-weight:bold">&list.autoconfig.welcome.caption;</label>
-          <description>&list.autoconfig.welcome.description1;</description>
-          <description>&list.autoconfig.welcome.description2;</description>
-          <separator flex="1"/>
-          <hbox align="right">
-            <button label="&list.autoconfig.advanced;" 
-                    oncommand="onSettingsClick();" />                      
-            <button label="&list.autoconfig.continue;" 
-                    oncommand="onAutoConfigRunClick();" />
-          </hbox>
-        </vbox>
+          <!-- Welcome -->
+          <vbox id="sivAutoConfigInfo">
+            <label style="font-weight:bold">&list.autoconfig.welcome.caption;</label>
+            <description>&list.autoconfig.welcome.description1;</description>
+            <description>&list.autoconfig.welcome.description2;</description>
+            <separator flex="1"/>
+            <hbox align="right">
+              <button label="&list.autoconfig.advanced;" 
+                      oncommand="onSettingsClick();" />                      
+              <button label="&list.autoconfig.continue;" 
+                      oncommand="onAutoConfigRunClick();" />
+            </hbox>
+          </vbox>
                   
-        <!-- Detecting -->
-        <vbox id="sivAutoConfigWait">
-          <label style="font-weight:bold">&list.autoconfig.detecting.caption;</label>
-          <label>&list.autoconfig.detecting.description;</label>
-          <separator flex="1"/>
-          <hbox align="right">
-            <button label="&list.autoconfig.cancel;" 
-                    oncommand="onAutoConfigCancelClick();" />
-          </hbox>
-        </vbox>
+          <!-- Detecting -->
+          <vbox id="sivAutoConfigWait">
+            <label style="font-weight:bold">&list.autoconfig.detecting.caption;</label>
+            <label>&list.autoconfig.detecting.description;</label>
+            <separator flex="1"/>
+            <hbox align="right">
+              <button label="&list.autoconfig.cancel;" 
+                      oncommand="onAutoConfigCancelClick();" />
+            </hbox>
+          </vbox>
                   
-        <!-- Success -->
-        <vbox id="sivAutoConfigInfo">
-          <label style="font-weight:bold">&list.autoconfig.success.caption;</label>
-          <description>&list.autoconfig.success.description;</description>
-          <separator flex="1"/>
-          <hbox align="right"  >
-            <button label="&list.autoconfig.advanced;" 
-                    oncommand="onSettingsClick();" />
-            <button label="&list.autoconfig.continue;"
-                    oncommand="onAutoConfigFinishedClick();" />
-          </hbox>
-        </vbox>                             
+          <!-- Success -->
+          <vbox id="sivAutoConfigInfo">
+            <label style="font-weight:bold">&list.autoconfig.success.caption;</label>
+            <description>&list.autoconfig.success.description;</description>
+            <separator flex="1"/>
+            <hbox align="right"  >
+              <button label="&list.autoconfig.advanced;" 
+                      oncommand="onSettingsClick();" />
+              <button label="&list.autoconfig.continue;"
+                      oncommand="onAutoConfigFinishedClick();" />
+            </hbox>
+          </vbox>                             
                   
-                  <!-- Error -->
-                  <vbox id="sivAutoConfigError">
-                    <label style="font-weight:bold">&list.autoconfig.error.caption;</label>
-                    <description>&list.autoconfig.error.description;</description>
-                    <separator/>
-                    <hbox align="right">
-                      <button label="&list.autoconfig.retest;" 
-                              oncommand="onAutoConfigRunClick();" />
-                      <button label="&list.autoconfig.config;"
-                              oncommand="onSettingsClick();" />
-                    </hbox>                                                            
-                  </vbox>                                    
-                </deck>
-                </box>
-              </vbox>
+          <!-- Error -->
+          <vbox id="sivAutoConfigError">
+            <label style="font-weight:bold">&list.autoconfig.error.caption;</label>
+            <description>&list.autoconfig.error.description;</description>
+            <separator/>
+            <hbox align="right">
+              <button label="&list.autoconfig.retest;" 
+                      oncommand="onAutoConfigRunClick();" />
+              <button label="&list.autoconfig.config;"
+                      oncommand="onSettingsClick();" />
+            </hbox>                                                            
+          </vbox>                                    
+        </deck>
+      </box>
+    </vbox>
 
 
-              <!-- Error Message: Connecton to server lost... -->              
-              <box id="StatusConnectionLost" hidden="true" align="center" pack="center" flex="1">
+    <!-- 3. Error Message: Connecton to server lost... -->              
+              <box id="StatusConnectionLost" align="center" pack="center" flex="1">
                 <hbox align="center" class="sivError" >
                   <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
                   <vbox>                    
@@ -130,8 +134,8 @@
                 </hbox>
               </box>
               
-   <!--  Error Message: Thunderbird in offline mode-->
-   <box id="StatusOffline" hidden="true" align="center" pack="center" flex="1">
+   <!--  4. Error Message: Thunderbird in offline mode-->
+   <box id="StatusOffline" align="center" pack="center" flex="1">
      <hbox align="center" class="sivWarning" >
        <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
        <vbox>                    
@@ -145,7 +149,7 @@
      </hbox>
    </box>
               
-   <box id="StatusWarning" hidden="true" align="center" pack="center" flex="1" > 
+   <box id="StatusWarning" align="center" pack="center" flex="1" > 
     <hbox align="center" class="sivWarning">
       <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
       <vbox>
@@ -159,7 +163,7 @@
     </hbox>
   </box>
  
-  <vbox id="StatusOutOfSync" hidden="true" flex="1" >
+  <vbox id="StatusOutOfSync" flex="1" >
     <vbox  class="sivWarningBar" align="center" pack="center" >
       <description id="StatusWarningMsg">&status.sync.description;</description>
       <hbox align="right" pack="right">
@@ -168,7 +172,7 @@
         <button label="&status.sync.replace;"
                 oncommand="onUseRemote()" />
       </hbox>
-   </vbox>
+    </vbox>
 
     <hbox flex="1" style="margin:0px; padding:0px;" class="sivEditor">      
     
@@ -185,32 +189,21 @@
                autocomplete="off"/>
     </hbox>
   </vbox>     
-    
-    
-  <!--  <hbox align="center" class="sivWarning">
-      <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
-    </hbox>
-  </box>-->
+     
+    <!-- Error Message -->          
+    <box id="StatusError" align="center" pack="center" flex="1">
+      <hbox align="center" class="sivError">
+        <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
+        <vbox>
+          <description style="font-weight:bold">&status.error;</description>
+          <description id="StatusErrorMsg" pack="center" ></description>
+          <hbox align="right">
+            <button label="&status.error.reconnect;" oncommand="onReconnectClick();" />
+          </hbox>                    
+        </vbox> 
+      </hbox>
+    </box>
               
-  <box id="StatusError" hidden="true" align="center" pack="center" flex="1">
-    <hbox align="center" class="sivError">
-      <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
-      <vbox>
-        <description style="font-weight:bold">&status.error;</description>
-        <description id="StatusErrorMsg" pack="center" ></description>
-        <hbox align="right">
-          <button label="&status.error.reconnect;" oncommand="onReconnectClick();" />
-        </hbox>                    
-      </vbox> 
-    </hbox>
-  </box>
-              
-  <vbox id="StatusWait" align="center" pack="center" flex="1" >
-    <image pack="center" src="chrome://sieve/content/images/load.gif"/>
-    <spacer/>
-    <description id="StatusWaitMsg" pack="center">
-    </description>
-  </vbox>
-  
+  </deck>
 </page>
   

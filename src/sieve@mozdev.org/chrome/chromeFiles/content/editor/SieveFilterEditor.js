@@ -310,7 +310,6 @@ SieveFilterEditor.prototype.observe
 {
   if (aTopic == "quit-application-requested")
   {
-    Cu.reportError("application Quit Request")
     // we are asychnonous, so need to trigger the evet if we are done...
     var callback = function () {
       var cancelQuit = Cc["@mozilla.org/supports-PRBool;1"]
@@ -556,44 +555,6 @@ function onWindowLoad()
     }, false);*/  
 }
 
-
-
-/*function onIgnoreOffline()
-{
-  // try to go online again
-  try 
-  {
-    var oldSid  = gSid;   
-               
-    // Cid is removed, but try to reconnect...
-    gCid = Cc["@sieve.mozdev.org/transport-service;1"]
-               .getService().wrappedJSObject
-               .createChannel(gSid);
-               
-    Cc["@sieve.mozdev.org/transport-service;1"]
-               .getService().wrappedJSObject
-               .closeChannel(oldSid);               
-    
-    // TODO: this is code exists twice remove me...
-    if (gEditorStatus.hasContent == false)
-    {
-      gSFE.onStatusChange(3,"status.loading");
-      
-      var args = window.arguments[0].wrappedJSObject;
-      
-      var request = new SieveGetScriptRequest(args["scriptName"]);
-      request.addGetScriptListener(event);
-      request.addErrorListener(event);
-
-      gSFE.sendRequest(request);
-      
-      return;
-    }
-  } 
-  catch (ex) {}
-  
-  gSFE.onStatusChange(0);
-}*/
 
 function onDonate()
 {

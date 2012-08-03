@@ -8,6 +8,10 @@ const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/Services.jsm");
 
+function install(data, reason)
+{
+}
+
 function startup(data, reason)
 {
   if (Services.vc.compare(Services.appinfo.platformVersion, "10.0") < 0)
@@ -25,11 +29,11 @@ function startup(data, reason)
   
   SieveOverlayManager.addOverlay(
       SieveMailWindowOverlay,"chrome://messenger/content/messenger.xul");
-  SieveOverlayManager.addOverlay(
-      SieveFilterListOverlay,"chrome://messenger/content/FilterListDialog.xul");
+  /*SieveOverlayManager.addOverlay(
+      SieveFilterListOverlay,"chrome://messenger/content/FilterListDialog.xul");*/
 
   SieveOverlayManager.addOverlay(
-      SieveToolbarOverlay, "chrome://global/content/customizeToolbar.xul")
+      SieveToolbarOverlay, "chrome://global/content/customizeToolbar.xul");
   
   SieveOverlayManager.load();
   
@@ -42,7 +46,6 @@ function shutdown(data, reason)
   if (reason == APP_SHUTDOWN)
     return;    
 
-  // TODO close all open tabs!
   // TODO if reason ADDON_UPGRADE persist all open tabs...
     
   // Step 1: Unload XPCOM Componenets
@@ -63,7 +66,6 @@ function shutdown(data, reason)
 
   Cu.unload("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");  
   
-  Cu.reportError("unload completed")
   // Remove Chrome Manifest
   Components.manager.removeBootstrappedManifestLocation(data.installPath);  
 };

@@ -19,7 +19,6 @@ var SieveOverlayUtils =
 
   removeTabType : function (aTabType,tabmail)
   {
-    Cu.reportError("Remove Tabtypes");
     
     if (!aTabType || !aTabType.name)
       throw "Invalid Tabtype"+aTabType.name;
@@ -29,9 +28,6 @@ var SieveOverlayUtils =
     
     if (!tabmail.tabTypes)
       throw "Invalid tabtypes"+tabmail.tabTypes;
-      
-    Cu.reportError("Tabtype Name"+aTabType.name);  
-    Cu.reportError("Tabtypes"+tabmail.tabTypes);  
       
     if ((aTabType.name in tabmail.tabTypes) == false)
       return;
@@ -46,7 +42,6 @@ var SieveOverlayUtils =
         // TODO we need a force close here....
         tabmail.closeTab(tabmail.tabModes[modeName].tabs[0],true)
         // Sleep -> Sync
-        Cu.reportError("tabs open3...");
         // TODO close tabs...
       }
         
@@ -98,13 +93,11 @@ var SieveOverlayUtils =
           case "spring":
           case "spacer":
             offset++;
-            Cu.reportError("OFFSET")
             continue;
         }
        
         // ... all other elements can be found.
         var sel = "#"+currentset[pos];
-        Cu.reportError("SEL: "+sel)
         
         sib = toolbars[i].querySelector(sel);
         
@@ -116,14 +109,10 @@ var SieveOverlayUtils =
       {
         sib = toolbars[i].lastChild;
         offset--;
-        Cu.reportError("AA "+sib.id);
       }
         
       while (sib && offset--)
-      {
         sib = sib.previousSibling;
-        Cu.reportError("BB "+sib.id);
-      }
         
       toolbars[i].insertItem(""+button.id,sib);
     }    
@@ -158,8 +147,6 @@ var SieveOverlayUtils =
     {
       if (document.styleSheets[i].href != url)
         continue;
-        
-      Cu.reportError(document.styleSheets[i].ownerNode);
       
       document.styleSheets[i].ownerNode.parentNode.removeChild(document.styleSheets[i].ownerNode)
     }    
@@ -271,7 +258,6 @@ var SieveOverlayManager =
     if (aUrl.substr(0,15) != "chrome://sieve/")
       aUrl = "chrome://sieve/content/modules" +aUrl;
       
-    Cu.reportError("Require aUrl "+aUrl+ " "+scope);
     if (scope)
       Cu.import(aUrl,Cu.getGlobalForObject(scope));  
     
@@ -346,7 +332,6 @@ var SieveOverlayManager =
     if (this._imports[url].windows.length > 0)
       return;
    
-    Cu.reportError("Releasing  url "+url);
     // TODO unload dependent nodes. e.g. when the connection manager 
     // is gone there should be no more a request...
     Cu.unload(url);
@@ -357,63 +342,38 @@ var SieveOverlayManager =
   },
   
   // nsIWindowMediatorListener functions
-  onOpenWindow: function(window)
-  {
+  onOpenWindow: function(aWindow)
+  {      
     // A new window has opened
-    var domWindow = window.QueryInterface(Ci.nsIInterfaceRequestor)
+    aWindow = aWindow.QueryInterface(Ci.nsIInterfaceRequestor)
                              .getInterface(Ci.nsIDOMWindowInternal);
 
+    var url = aWindow.document.baseURI;
+      
     // Wait for it to finish loading
-    domWindow.addEventListener("load", function listener() {
-      domWindow.removeEventListener("load", listener, false);
+    aWindow.addEventListener("load", function listener() {
+      aWindow.removeEventListener("load", listener, false);
 
-      SieveOverlayManager.loadOverlay(domWindow);
+      SieveOverlayManager.loadOverlay(aWindow);
     
     }, false);
   },
 
   onCloseWindow: function(window)
-  {
-/*    Components.utils.reportError("onCloseWindow !...");
-    
-    window = window.QueryInterface(Ci.nsIInterfaceRequestor)
-                             .getInterface(Ci.nsIDOMWindowInternal)
-    
-    // we mutate the array thus we interate backwards...
-    for (var i=this._overlays.length-1; i>=0; i--)
-    {
-      Components.utils.reportError("Comp Overlay...:"+this._overlays[i].window+" "+window) 
-      if (this._overlays[i].window != window)
-        continue;
-        
-      Components.utils.reportError("Clenup Overlay...") 
-      SieveOverlayManager._overlays[i].unload();
-      SieveOverlayManager._overlays.splice(i,1);
-    }
- 
-    // cleanup imports...
-    for (var url in this._imports)
-      for (var i=0; i<this._imports[url].windows.length; i++)
-        if (this._imports[url].windows[i] == window)
-          this._imports[url].callbacks[i]();*/
-      
+  {      
   },
   
   onUnloadWindow: function(aWindow)
   {
 
-    Cu.reportError("Unloading window"+aWindow.toSource());
-    
     SieveOverlayManager.unloadWatcher(aWindow);
     
     // we mutate the array thus we interate backwards...
     for (var i=SieveOverlayManager._overlays.length-1; i>=0; i--)
     {
-      Components.utils.reportError("Comp Overlay...:"+SieveOverlayManager._overlays[i].window+" "+aWindow) 
       if (SieveOverlayManager._overlays[i].window != aWindow)
         continue;
         
-      Components.utils.reportError("Clenup Overlay...") 
       SieveOverlayManager._overlays[i].unload();
       SieveOverlayManager._overlays.splice(i,1);
     }
@@ -429,13 +389,9 @@ var SieveOverlayManager =
   
   loadWatcher : function (window)
   {
-    Cu.reportError("Load Window watcher");
     
     if (SieveOverlayManager._unload.hasKey(window))
-    {
-      Cu.reportError("Window watcher already registered")
       return;
-    }
     
     SieveOverlayManager._unload.setValue(window, function (aEvent) { 
       let window = aEvent.currentTarget;
@@ -450,28 +406,15 @@ var SieveOverlayManager =
   unloadWatcher : function (window)
   {
     if (typeof(window) == "undefined")
-    {
-      
-      Cu.reportError("Unregister all Window watchers");
-      
+    {      
       while (this._unload.hasKeys())
         this.unloadWatcher(this._unload.first())
 
       return;
     } 
-    
-    Cu.reportError("Unregister Window watcher");
-      
+          
     if (!SieveOverlayManager._unload.hasKey(window))
-    {
-      Cu.reportError("No Window watcher registered");
       return;
-    }
-        
-    Cu.reportError(window.toSource());
-      
-    /*window = window.QueryInterface(Ci.nsIInterfaceRequestor)
-                       .getInterface(Ci.nsIDOMWindowInternal);*/
                        
     window.removeEventListener("unload",SieveOverlayManager._unload.getValue(window));    
     SieveOverlayManager._unload.deleteKey(window);
@@ -489,9 +432,7 @@ var SieveOverlayManager =
   loadOverlay : function (window)
   { 
     var url = window.document.baseURI;
-    
-    Components.utils.reportError("Overlays for "+window.document.baseURI)
-    
+        
     if (!this._overlayUrls[url])
       return;
     
@@ -501,15 +442,12 @@ var SieveOverlayManager =
     {
       let overlay = new (this._overlayUrls[url][i])();
       this._overlays.push(overlay);
-      overlay.load(window);
-      
-      Components.utils.reportError("Overlaying!...") 
+      overlay.load(window);      
     }    
   },
   
   load : function()
   {
-    Components.utils.reportError("Load called!...") 
     // Step 2: Inject code into UI
     var wm = Cc["@mozilla.org/appshell/window-mediator;1"].
                getService(Ci.nsIWindowMediator);
@@ -525,9 +463,8 @@ var SieveOverlayManager =
     wm.addListener(this);
   },
   
-  unload : function() {
-   Components.utils.reportError("Unloadcalleds!...") 
-   
+  unload : function()
+  { 
     var wm = Cc["@mozilla.org/appshell/window-mediator;1"].
                  getService(Ci.nsIWindowMediator);
                  

@@ -683,5 +683,3 @@ SieveSession.prototype =
   }  
   
 }
-
-Cu.reportError("finished loading Sieve Session");

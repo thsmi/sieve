@@ -262,7 +262,7 @@ function onSelectAccount(server)
   if ((!account.isEnabled()) || account.isFirstRun())
   {
     account.setFirstRun();
-    return gSFE.onStatusChange(8);
+    return gSFE.onStatusChange(8,0);
   }
     
  // TODO wait for timeout or session close before calling connect again

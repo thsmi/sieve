@@ -16,6 +16,8 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
 
+Cu.import("resource://gre/modules/Services.jsm");
+
 Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
 Cu.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
 SieveOverlayManager.require("/sieve/SieveAutoConfig.js",this,window);    
@@ -164,42 +166,32 @@ function onAttach(account, callback,callbacks)
 
 function onStatus(state, message)
 {
-  try {
-  var strbundle = document.getElementById("strings");
+  Cu.reportError(" "+state+" "+message);
+  // we need this array to corelate status ids and the deck's selectedIndex
+  // 0:StatusWait, 1:StatusBadCert, 2:StatusDisabled, 3:StatusConnectionLost,
+  // 4:StatusOffline, 5:StatusWarning, 6:StatusOutOfSync, 7:StatusError
+  var mapping = { 0:null,1:5,2:7,3:0,4:7,5:1,6:4,7:null,8:2,9:3,10:6};
   
-  // TODO use a for loop...
-  document.getElementById('StatusWarning').setAttribute('hidden','true');
-  document.getElementById('StatusError').setAttribute('hidden','true');
-  document.getElementById('StatusWait').setAttribute('hidden','true');
-  document.getElementById('StatusBadCert').setAttribute('hidden','true');
-  document.getElementById('StatusOffline').setAttribute('hidden','true');
-  document.getElementById('StatusDisabled').setAttribute('hidden','true');
-  document.getElementById('StatusConnectionLost').setAttribute('hidden','true');
-  document.getElementById("StatusOutOfSync").setAttribute('hidden','true');
+  try {
+  var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
   
   
   switch (state)
   {   
-    case 1: document.getElementById('StatusWarning').removeAttribute('hidden');
-            document.getElementById('StatusWarningMsg')
-                .firstChild.nodeValue = strbundle.getString(message);
+    case 1: document.getElementById('StatusWarningMsg')
+                .firstChild.nodeValue = strings.GetStringFromName(message);
             break;
     // client error            
-    case 2: document.getElementById('StatusError').removeAttribute('hidden');
-            document.getElementById('StatusErrorMsg')
-                .firstChild.nodeValue = strbundle.getString(message);    
+    case 2: document.getElementById('StatusErrorMsg')
+                .firstChild.nodeValue = strings.GetStringFromName(message);    
             break;
-    case 3: document.getElementById('StatusWait').removeAttribute('hidden');
-            document.getElementById('StatusWaitMsg')
-                .firstChild.nodeValue = strbundle.getString(message);    
+    case 3: document.getElementById('StatusWaitMsg')
+                .firstChild.nodeValue = strings.GetStringFromName(message);    
             break;
     // server error
-    case 4: document.getElementById('StatusError').removeAttribute('hidden');
-            document.getElementById('StatusErrorMsg').textContent = message;    
+    case 4: document.getElementById('StatusErrorMsg').textContent = message;    
             break;            
-    case 5: document.getElementById('StatusBadCert').removeAttribute('hidden');
-
-            document.getElementById("btnIgnoreBadCert").setAttribute("message", message);
+    case 5: document.getElementById("btnIgnoreBadCert").setAttribute("message", message);
             document.getElementById("btnIgnoreBadCert").setAttribute("oncommand", 
               "onBadCertOverride(this.getAttribute('message'),document.getElementById('cbBadCertRemember').checked);");
               
@@ -208,33 +200,37 @@ function onStatus(state, message)
                             
             break;
     // Offline Mode
-    case 6: document.getElementById('StatusOffline').removeAttribute('hidden');
-            break;
-  /*  // Capabilities set...
-    case 7: document.getElementById('StatusWait').removeAttribute('hidden');
-            break;*/
+    case 6:
+      break;
+    // Capabilities set...
+    case 7:
+      return;
     // account disabled
     case 8:
-      document.getElementById('StatusDisabled').removeAttribute('hidden');
-      document.getElementById('sivAutoConfig').selectedIndex = message;
-      break;  
-    case 9:
-      document.getElementById('StatusConnectionLost').removeAttribute('hidden');
+      document.getElementById('sivAutoConfig').setAttribute("selectedIndex",message);
       break;
+      
+    case 9:
+      break;
+      
     case 10:
-      document.getElementById("StatusOutOfSync").removeAttribute('hidden');
       document.getElementById("sivClientSide").value = message.local;
       document.getElementById("sivServerSide").value = message.remote;
       break;
     
     // Show the tobber as default...
     default:
-      document.getElementById('StatusWait').removeAttribute('hidden');
+      document.getElementById('StatusWaitMsg').firstChild.nodeValue = "";
+      state = 0;
   }
+  
+  Cu.reportError("New Status "+mapping[state]);
+  
+  document.getElementById('StatusDeck').setAttribute("selectedIndex",""+mapping[state]);
   
   } catch (ex)
   {
-    alert(state+" || "+message +"||"+ex);
+    Cu.reportError(state+" || "+message +"||"+ex.toSource());
   }
 }
 
@@ -267,6 +263,7 @@ function onUseRemote()
   gCallbacks.onUseRemote(document.getElementById("sivServerSide").value);
 }
 
+
 // ChannelCreated
 // ChannelClosed
 // ChannelReady
@@ -274,3 +271,4 @@ function onUseRemote()
 
 // Events Account Switch
 // Status Change
+

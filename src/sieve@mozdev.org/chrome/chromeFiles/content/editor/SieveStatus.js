@@ -166,7 +166,6 @@ function onAttach(account, callback,callbacks)
 
 function onStatus(state, message)
 {
-  Cu.reportError(" "+state+" "+message);
   // we need this array to corelate status ids and the deck's selectedIndex
   // 0:StatusWait, 1:StatusBadCert, 2:StatusDisabled, 3:StatusConnectionLost,
   // 4:StatusOffline, 5:StatusWarning, 6:StatusOutOfSync, 7:StatusError
@@ -223,8 +222,6 @@ function onStatus(state, message)
       document.getElementById('StatusWaitMsg').firstChild.nodeValue = "";
       state = 0;
   }
-  
-  Cu.reportError("New Status "+mapping[state]);
   
   document.getElementById('StatusDeck').setAttribute("selectedIndex",""+mapping[state]);
   

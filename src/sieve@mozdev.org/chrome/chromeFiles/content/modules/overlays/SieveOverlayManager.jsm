@@ -19,7 +19,16 @@ var SieveOverlayUtils =
 
   removeTabType : function (aTabType,tabmail)
   {
-    
+    /*if (tabmail.unregisterTabType)
+    {      
+      tabmail.unregisterTabType(aTabType);
+
+      if (aTabType.name in tabmail.tabTypes)
+        throw "error";
+        
+      return;
+    }*/
+     
     if (!aTabType || !aTabType.name)
       throw "Invalid Tabtype"+aTabType.name;
       

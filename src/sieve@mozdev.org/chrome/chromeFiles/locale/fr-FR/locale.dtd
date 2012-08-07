@@ -49,7 +49,7 @@ le plus récent impose d'utiliser le port 4190.">
 
 <!ENTITY options.security.caption "Securité">
 <!ENTITY options.security.description
-"Transport Layer Security (TLS) sécurise la connection au serveur sieve.
+"Transport Layer Security (TLS) sécurise la connexion au serveur sieve.
 Il encrypte toutes les données et est prévu pour empêcher les écoutes et les falsifications.">
 <!ENTITY options.security.description2 
 "Habituellement, ManageSieve envoie sur le réseau les mots de passe en clair. Alors, à moins que
@@ -75,7 +75,7 @@ vous n'ayez une bonne raison (ex: Déboguer), vous devriez toujours forcer TLS."
 "Si le client ne fait rien pendant trop longtemps (habituellement 30 minutes), le
 serveur conclut que le client est déconnecté et clôt la connexion.">
 <!ENTITY options.misc.keepalive.description2
-"Une requête keepalive indique que la connection est toujours active et
+"Une requête keepalive indique que la connexion est toujours active et
 doit être maintenue.">
 <!ENTITY options.misc.keepalive.min "min">
 
@@ -156,7 +156,7 @@ SOCKSv5, il vaut mieux résoudre les noms d'hôte sur celui-ci car c'est plus s�
 <!ENTITY options.proxy.description.localhost
 "Ne fonctionne pas correctement sur certains systèmes utilisant 'localhost',
 utilisez '127.0.0.1' à la place.">
-<!ENTITY options.proxy.direct "Connection Directe">
+<!ENTITY options.proxy.direct "Connexion Directe">
 <!ENTITY options.proxy.default "Configuration par défaut du Proxy">
 <!ENTITY options.proxy.socks4 "SOCKSv4">
 <!ENTITY options.proxy.socks5 "SOCKSv5">
@@ -268,7 +268,7 @@ essayez une configuration manuelle.">
 
 
 <!ENTITY status.connectivity.loss.description
-"Le serveur a annulé soudainement la connection, cliquez sur Reconnectez pour réessayer.">
+"Le serveur a annulé soudainement la connexion, cliquez sur Reconnectez pour réessayer.">
 <!ENTITY status.connectivity.loss.reconnect "Reconnecter">
 
 <!ENTITY status.warning.ignore "Ignorer">

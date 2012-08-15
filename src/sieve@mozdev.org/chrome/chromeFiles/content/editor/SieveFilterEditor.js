@@ -567,7 +567,7 @@ function onDonate()
     .loadUrl(url);
 }
 
-function onViewSource(visible)
+function onViewSource(visible,aNoUpdate)
 {
   if (typeof(visible) == "undefined")
     visible = document.getElementById('btnViewSource').checked
@@ -587,17 +587,18 @@ function onViewSource(visible)
     document.getElementById("btnPaste").removeAttribute('disabled'); 
     document.getElementById("btnCompile").removeAttribute('disabled');
     document.getElementById("btnSearchBar").removeAttribute('disabled');
-       
-    var script = document.getElementById("sivWidgetEditor")
-                    .contentWindow.getSieveScript();
-    
+
     document.getElementById("sivContentEditor").focus(); 
-    
+     
+    var script = document.getElementById("sivWidgetEditor")
+                      .contentWindow.getSieveScript();
+      
     // GUI did not change so se can skip...
-    if (gEditorStatus.checksum.gui == gSFE._calcChecksum(script))
+    if (aNoUpdate || (gEditorStatus.checksum.gui == gSFE._calcChecksum(script)))
       return;
     
     document.getElementById("sivContentEditor").value = script;
+    
     onInput();
     return;
   }
@@ -638,8 +639,9 @@ function updateWidgets()
       document.getElementById("sivWidgetEditor").contentWindow.getSieveScript());
   }
   catch (ex){
-    // TODO Display real error message....
-    alert("Widget :"+ex);
+    alert("Error while parsing script.\n\n"+ex);    
+    // switching to souce view failed
+    onViewSource(true,true);
   }
 }
 

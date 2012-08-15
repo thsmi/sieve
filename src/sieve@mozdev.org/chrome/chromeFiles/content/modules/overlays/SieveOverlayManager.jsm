@@ -60,7 +60,7 @@ var SieveOverlayUtils =
     delete tabmail.tabTypes[aTabType.name]; 
     
     if (aTabType.name in tabmail.tabTypes)
-      throw "error";
+      throw new Error("Removing Tabtypes failed");
   },
 
   addToolBarItem : function (document,toolbox, button)

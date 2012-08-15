@@ -4,8 +4,8 @@
   <title>Sieve DOM</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
   <link rel="stylesheet" href="toolkit/style/style.css" type="text/css" />
-</head>
-<body>
+  <link rel="stylesheet" href="toolkit/style/layout.css" type="text/css" />
+
   <!-- Global Imports -->  
   <script type="application/javascript" src="jquery.js"></script>
   <!--<script type="application/javascript" src="UI/jquery-ui.js"></script>-->
@@ -81,6 +81,12 @@ $(document).ready(function() {
 	 }	   
 	   
     $("#draggable").val(ev.target.nodeName)});
+	
+  var toolbarLeft = $('#toolbar').offset().left;
+  
+  $(window).scroll(function(){
+      $('#toolbar').css('left', toolbarLeft -$(window).scrollLeft());
+  }) ;	
 });
 
 function setSieveScript(script,capabilities)
@@ -206,15 +212,27 @@ function debug(obj)
   
 //]]>
 </script>
-<div id="infobar">
-  <div id="infobarsubject"  > 
-     <span>
-       Message Text
-	 </span>
-	 <button onclick='$("#infobar").toggle();'>Dismiss</button>
+</head>
+<body>
+
+  <!-- the toolvar -->
+  <div  id="toolbar" >
+    <div id="sivActions"></div>
   </div>
-</div>
-<div style="margin: 0px auto;">
+
+  <div id="content">
+ 
+    <!-- Infobar -->
+    <div id="infobar">
+      <div id="infobarsubject"  > 
+         <span>
+           Message Text
+	     </span>
+	     <button onclick='$("#infobar").toggle();'>Dismiss</button>
+      </div>
+    </div>
+	
+<div id="debug">
 <div>
    <div id="boxScript" style="display:none;overflow: hidden;width: 100%; ">  
      <div style="float:left; padding:5px;">
@@ -228,7 +246,7 @@ function debug(obj)
       </div>
     </div>
 </div >
-<div id="debug">
+<div>
     <button onclick="setSieveScript();">
 	   Parse Sieve Script
 	 </button>
@@ -250,16 +268,10 @@ function debug(obj)
 	<input id="draggable" />
 </div>
 </div>
-
-<div>   
-  <div>
-    <!--<div id="sivActions" style="background-color:gray;overflow-y: scroll;width:150px;float: left;">  -->
-	<div id="sivActions" class="floating-menu">
-	 </div>
-  </div>
   
-  <div id="divOutput">
-  </div>
-</div>  
+  
+	<div id="divOutput">
+    </div>
+</div>
 </body>
 </html>

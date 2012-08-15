@@ -274,7 +274,7 @@ und konfiguriern Sie das Sieve Konto manuell.">
 "Server terminated unexpectedly the connection, click on reconnect to try again.">
 <!ENTITY status.connectivity.loss.reconnect "Reconnect">
 
-<!ENTITY status.warning.ignore "Ignore">
+<!ENTITY status.warning.ignore "Ignorieren">
 <!ENTITY status.warning.reconnect "Reconnect">
 <!ENTITY status.warning 
   "Dieses Konto ist nicht konfiguriert. Bitte rufen Sie 'Extras-> Sieve Filter Einstellungen' auf">
@@ -290,3 +290,5 @@ What would you like to do about it ?">
 <!ENTITY status.sync.replace "Use Server Side Script">
 
   
+
+ 

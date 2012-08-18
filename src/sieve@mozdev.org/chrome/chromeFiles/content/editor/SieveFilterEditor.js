@@ -317,12 +317,12 @@ SieveFilterEditor.prototype.onStatusChange
   if (state == 0)
   {
     document.getElementById("sivEditorStatus").setAttribute('hidden','true');    
-    document.getElementById('sivEditor2').removeAttribute('collapsed');    
+    document.getElementById('dkView').removeAttribute('collapsed');    
     return;
   }
     
   // The rest has to be redirected to the status window...
-  document.getElementById('sivEditor2').setAttribute('collapsed','true');    
+  document.getElementById('dkView').setAttribute('collapsed','true');    
   document.getElementById("sivEditorStatus").contentWindow.onStatus(state,message)
   document.getElementById("sivEditorStatus").removeAttribute('hidden');    
 }
@@ -517,7 +517,9 @@ function onViewSource(visible,aNoUpdate)
   {
     // show Source
     deck.selectedIndex = 0;
-    document.getElementById("btnViewSource").setAttribute('checked', 'true')
+    onErrorBar(document.getElementById('btnCompile').hasAttribute("checked"));
+    
+    document.getElementById("btnViewSource").setAttribute('checked', 'true')    
     
     document.getElementById("btnUndo").removeAttribute('disabled');
     document.getElementById("btnRedo").removeAttribute('disabled');
@@ -538,6 +540,8 @@ function onViewSource(visible,aNoUpdate)
 
     document.getElementById("sivEditor2").contentWindow.editor.setValue(script);
     
+    
+    
     onInput();
     return;
   }
@@ -553,7 +557,8 @@ function onViewSource(visible,aNoUpdate)
   document.getElementById("btnSearchBar").setAttribute('disabled',"true");
   
   onSearchBar(false);
-    
+  onErrorBar(false,true);
+  
   deck.selectedIndex = 1;
   
   // Make GUI seem to be more agile...
@@ -820,14 +825,16 @@ function onExport()
 	outputStream.close();
 }
 
-function onErrorBar(visible)
+function onErrorBar(visible,aSilent)
 {
   if (visible == null)
     visible = document.getElementById('btnCompile').checked
 
   if (visible)
   {
-    document.getElementById("btnCompile").setAttribute('checked', 'true')
+    if (!aSilent)
+      document.getElementById("btnCompile").setAttribute('checked', 'true')
+    
     document.getElementById('spErrorBar').removeAttribute('hidden');
     document.getElementById('vbErrorBar').removeAttribute('hidden');
 
@@ -839,7 +846,9 @@ function onErrorBar(visible)
   clearTimeout(gEditorStatus.checkScriptTimer);
   gEditorStatus.checkScriptTimer = null;
   
-  document.getElementById("btnCompile").removeAttribute('checked');
+  if (!aSilent)
+    document.getElementById("btnCompile").removeAttribute('checked');
+  
   document.getElementById("vbErrorBar").setAttribute('hidden', 'true');
   document.getElementById('spErrorBar').setAttribute('hidden', 'true');
   return;

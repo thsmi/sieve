@@ -128,37 +128,37 @@
   </toolbar>
 </toolbox>
   <hbox flex="1" >
-      <deck id="dkView" flex="1" selectedIndex="0">
-        <vbox flex="1">
-            
-            <!-- Status messages -->
-            <iframe id="sivEditorStatus" flex="1"  type="content" 
-                    src="chrome://sieve/content/editor/SieveStatus.xul" />
-            
-            <!-- Sieve Script editor -->  
-            <iframe id="sivEditor2" flex="1" 
-                    src="chrome://sieve/content/editor/SieveFilterEditor.html" 
-                    contextmenu="ctxEditor" />           
-<!--                    contentcontextmenu="ctxEditor"  -->
-
-                                                                     
-            <!-- Error Bar (Showing Script errors) --> 
-            <splitter id="spErrorBar" resizeafter="farthest" /> 
-            
-            <vbox id="vbErrorBar" persist="height">
-              <hbox align="center" min-height="50px" flex="1" style="overflow:auto;" >
-                <image id="imgErrorBar" pack="center"   src="chrome://sieve/content/images/syntax-ok.png"/>
-                <description flex="1" id="lblErrorBar" style="white-space: pre;" >
-                </description>             
-                <!-- <textbox flex="1" id="lblErrorBar" multiline="true" rows="3" readonly="true" class="plain"/>-->
-              </hbox>
-            </vbox>
-  
-          </vbox>
-          
-        <iframe id="sivWidgetEditor" flex="1"  type="content" />          
+    <vbox flex="1">
+      <!-- Status messages -->
+      <iframe id="sivEditorStatus" flex="1"  type="content" 
+              src="chrome://sieve/content/editor/SieveStatus.xul" />
+      
+      <deck id="dkView" flex="1" selectedIndex="0">    
+        <!-- Sieve Script editor -->  
+        <iframe id="sivEditor2" flex="1" 
+                src="chrome://sieve/content/editor/SieveFilterEditor.html" 
+                contextmenu="ctxEditor" />
+                
+        <iframe id="sivWidgetEditor" flex="1"  type="content" 
+                src="about:blank" />          
       </deck>
+                           
+      <!-- Error Bar (Showing Script errors) --> 
+      <splitter id="spErrorBar" resizeafter="farthest" /> 
+            
+      <vbox id="vbErrorBar" persist="height">
+        
+        <hbox align="center" min-height="50px" flex="1" style="overflow:auto;" >
+          <image id="imgErrorBar" pack="center"   src="chrome://sieve/content/images/syntax-ok.png"/>
+          <description flex="1" id="lblErrorBar" style="white-space: pre;" >
+          </description>             
+        </hbox>
+      </vbox>
+  
+    </vbox>
+          
     <splitter id="spSideBar" class="spVertical" resizeafter="farthest" />
+    
   <vbox id="vbSidebar" persist="width" class="sieveSideBar">
    <vbox id="vbSearchBar">
     <stack class="outset">

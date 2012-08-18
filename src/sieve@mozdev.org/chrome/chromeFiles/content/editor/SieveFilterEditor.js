@@ -40,13 +40,13 @@ var gEditorStatus =
   checkScriptDelay  : 200,
   checkScriptTimer  : null,
   
-  isClosing         : false,
-  isClosed          : false,
-  
+
   defaultScript     : null,
   
   scriptName        : "unnamed",
   persistedScript   : null,
+  
+  closeListener     : null,
 
   checksum : {
     // used to detect if the script was changed via a gui...
@@ -197,11 +197,12 @@ SieveFilterEditor.prototype.onPutScriptResponse
       
   gEditorStatus.contentChanged = false;
     
-  if (!gEditorStatus.isClosing)
-    return
+  // check if tab is in the progress of closing
+  if (!gEditorStatus.closeListener)
+    return;
 
   if (closeTab())
-    return
+    return;
             
   // just calling close is for some reason broken, so we use our helper...
   //window.arguments[0].wrappedJSObject["close"]();      
@@ -312,6 +313,7 @@ SieveFilterEditor.prototype.observe
 SieveFilterEditor.prototype.onStatusChange
     = function (state, message)
 {
+
   if (state == 0)
   {
     document.getElementById("sivEditorStatus").setAttribute('hidden','true');    
@@ -373,8 +375,7 @@ SieveFilterEditor.prototype.putScript
           .alert(window,"Error","The script could not be saved:\n\n"+response.getMessage())
       
       // If save failes during shutdown we have to abort it...
-      if (gEditorStatus.isClosing)
-        gEditorStatus.isClosing = false;
+      gEditorStatus.closeListener = null;
     }
   }
   
@@ -416,7 +417,7 @@ function onWindowPersist()
   
   // we do not persist upon shutdown, the user already descided wether we 
   // wants to keep the script or not. We need this only in case of a crash
-  if (gSFE && !gEditorStatus.isClosing)
+  if (gSFE && !gEditorStatus.closeListener)
   {
     args["scriptBody"] = gSFE.getScript();
     args["checksumServer"] = gEditorStatus.checksum.server;
@@ -447,7 +448,7 @@ function onWindowLoad()
   
   document.getElementById("sivEditorStatus").contentWindow
     .onAttach(account,
-      function() { gSFE.connect(account) },
+      function() { gEditorStatus.closeListener = null;  gSFE.connect(account) },
       { onUseRemote : function (script) { onUseRemoteScript(script);  },
         onKeepLocal : function (script) { onKeepLocalScript();} });    
   
@@ -675,15 +676,18 @@ function onSave()
  *   the callback will be invoked
  */
 function asyncCloseTab(callback)
-{
+{ 
   // We are already closed...
   if (!gSFE)
     return true;
-  
+
   if (!gSFE.hasChanged())
     return closeTab();
 
-  if (gEditorStatus.isClosing)
+  if (!gSFE.isActive())
+    gEditorStatus.closeListener = null;
+  
+  if (gEditorStatus.closeListener)
     return false;
    
   // we need to wait for user feedback...
@@ -706,8 +710,7 @@ function asyncCloseTab(callback)
   // don't save clicked...
   if (result != 0)
     return closeTab();
-  
-  gEditorStatus.isClosing = true;
+
   gEditorStatus.closeListener = callback;
   onSave();
   
@@ -730,15 +733,17 @@ function closeTab()
   
   clearTimeout(gEditorStatus.checkScriptTimer);
  
-  gSFE.disconnect();
+  try {
+    gSFE.disconnect();
+  }
+  catch (ex) {}
+  
   gSFE = null;
  
-  // we need to unlock the close function, otherwise we might endup in a 
-  // deadlock
-  if (gEditorStatus.isClosing)
-  {
-    if (gEditorStatus.closeListener)
-      gEditorStatus.closeListener();
+    // we need to unlock the close function, otherwise we might endup in a 
+    // deadlock
+  if (gEditorStatus.closeListener)
+    gEditorStatus.closeListener();
     // we need to null the listener before calling it otherwise we could
     // enup in an endless loop...
    /* var callback = gEditorStatus.closeListener;
@@ -746,7 +751,6 @@ function closeTab()
     
     if (callback)
        callback();*/    
-  }
 
   gEditorStatus.closeListener = null;
   return true;

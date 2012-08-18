@@ -145,6 +145,7 @@ SieveAbstractClient.prototype.observe
       this.connect();    
   }
   
+  
 /******************************************************************************/
 
   // TODO it should accept an strings instead of an  account object
@@ -181,10 +182,16 @@ SieveAbstractClient.prototype.disconnect
   
   if ((!this._sid) || (!this._cid))
     return;
-    
-  var sivManager = SieveConnections;
-  sivManager.removeSessionListener(this._sid, this);
-  sivManager.closeChannel(this._sid,this._cid);    
+ 
+  try {
+    var sivManager = SieveConnections;
+    sivManager.removeSessionListener(this._sid, this);
+    sivManager.closeChannel(this._sid,this._cid);
+  }
+  catch (ex) 
+  {
+    Components.utils.reportError(ex);
+  }
   
   try
   {
@@ -460,4 +467,19 @@ SieveAbstractClient.prototype.sendRequest
     // ... would accure, so let's display the timeout message directly.    
     this.disconnect(1,"warning.timeout");    
   }
+}
+
+SieveAbstractClient.prototype.isActive
+    = function ()
+{
+  try {
+    SieveConnections
+      .getChannel(this._sid,this._cid) 
+  }
+  catch (ex)
+  {
+    return false;
+  }
+  
+  return true;
 }

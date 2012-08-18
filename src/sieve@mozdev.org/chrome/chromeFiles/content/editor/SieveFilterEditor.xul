@@ -132,7 +132,8 @@
         <vbox flex="1">
             
             <!-- Status messages -->
-            <iframe id="sivEditorStatus" flex="1"  type="content" src="chrome://sieve/content/editor/SieveStatus.xul" />
+            <iframe id="sivEditorStatus" flex="1"  type="content" 
+                    src="chrome://sieve/content/editor/SieveStatus.xul" />
             
             <!-- Sieve Script editor -->  
             <iframe id="sivEditor2" flex="1" 

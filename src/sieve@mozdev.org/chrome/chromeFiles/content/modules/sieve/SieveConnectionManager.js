@@ -206,7 +206,7 @@ SieveConnectionManager.prototype =
     }*/
   },
   
-
+  
   /**
    * Retuns the Sieve Object associated to this session.
    * @param {} sid

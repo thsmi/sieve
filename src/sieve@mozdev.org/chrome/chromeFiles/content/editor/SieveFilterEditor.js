@@ -35,35 +35,7 @@ var gPrintSettings = null;
 
 var gEditorStatus =
 {
-  insertString: function (text, select)
-  {
-    var txtScript = document.getElementById("sivContentEditor");
-    
-    var params = Cc["@mozilla.org/embedcomp/command-params;1"].createInstance(Ci.nsICommandParams);
-    params.setStringValue("state_data",text);  
-  
-    txtScript.controllers
-        .getControllerForCommand("cmd_insertText")
-        .QueryInterface(Ci.nsICommandController)
-        .doCommandWithParams("cmd_insertText",params);
-    
-    txtScript.focus();
-    
-    if (!select)
-      return;
-      
-    var selStart = txtScript.selectionStart;  
-    txtScript.setSelectionRange(selStart - text.length, selStart);
-  },
-
-  selectionStart    : -1,
-  selectionEnd      : -1,
-  selectionChanged  : false,
-  
   contentChanged    : false,
-  
-  scrollChanged     : false,
-  rowCount          : 1,
   
   checkScriptDelay  : 200,
   checkScriptTimer  : null,
@@ -217,15 +189,13 @@ SieveFilterEditor.prototype.onPutScriptResponse
   // update the gui checksum & the editor script only when needed
   if (!document.getElementById('btnViewSource').checked)
   {
-    document.getElementById("sivContentEditor").value = script;
+    document.getElementById("sivEditor2").contentWindow.editor.setValue(script);
     gEditorStatus.checksum.gui = this._calcChecksum(script);
-    UpdateLinesLazy(); 
   }
   
   gEditorStatus.checksum.server =  this._calcChecksum(script);
       
   gEditorStatus.contentChanged = false;
-  document.getElementById("sbChanged").setAttribute("hidden","true");
     
   if (!gEditorStatus.isClosing)
     return
@@ -290,19 +260,22 @@ SieveFilterEditor.prototype.onScriptLoaded
 {  
   this.onStatusChange(0);
   gEditorStatus.persistedScript = null;
+
+  var editor = document.getElementById("sivEditor2").contentWindow.editor;
   
-  document.getElementById("sivContentEditor").editor.enableUndo(false);
-  document.getElementById("sivContentEditor").value = script;
-  document.getElementById("sivContentEditor").setSelectionRange(0, 0);
-  document.getElementById("sivContentEditor").editor.enableUndo(true);
+  editor.setValue(script);
+  editor.setCursor({line:0,ch:0});
+  editor.clearHistory();
+  
+  // Ugly workaround...
+  editor.getOption("onCursorActivity")();  
+
   
   if (gEditorStatus.checksum.server == null)
     gEditorStatus.checksum.server = this._calcChecksum(this.getScript());
-  
-  UpdateCursorPos();
-  UpdateLines();
     
-  document.getElementById("sivContentEditor").focus();      
+  document.getElementById("sivEditor2").focus();  
+  editor.focus();
 }
 
 SieveFilterEditor.prototype.observe
@@ -342,12 +315,12 @@ SieveFilterEditor.prototype.onStatusChange
   if (state == 0)
   {
     document.getElementById("sivEditorStatus").setAttribute('hidden','true');    
-    document.getElementById('sivEditor').removeAttribute('collapsed');    
+    document.getElementById('sivEditor2').removeAttribute('collapsed');    
     return;
   }
     
   // The rest has to be redirected to the status window...
-  document.getElementById('sivEditor').setAttribute('collapsed','true');    
+  document.getElementById('sivEditor2').setAttribute('collapsed','true');    
   document.getElementById("sivEditorStatus").contentWindow.onStatus(state,message)
   document.getElementById("sivEditorStatus").removeAttribute('hidden');    
 }
@@ -360,7 +333,7 @@ SieveFilterEditor.prototype.getScript
     return gEditorStatus.persistedScript;
     
   // Thunderbird scrambles linebreaks to single \n so we have to fix that
-  var editor = document.getElementById("sivContentEditor").value
+  var editor = document.getElementById("sivEditor2").contentWindow.editor.getValue()
                   .replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
                   
   if (document.getElementById('btnViewSource').checked)
@@ -418,12 +391,9 @@ function onCompile()
 }
 
 function onInput()
-{
+{ 
   if ((gEditorStatus.contentChanged == false) && gSFE.hasChanged())
-  {
-    document.getElementById("sbChanged").removeAttribute("hidden");
     gEditorStatus.contentChanged = true;
-  }
   
   // on every keypress we reset the timeout
   if (gEditorStatus.checkScriptTimer != null)
@@ -434,25 +404,6 @@ function onInput()
   
   if (document.getElementById("btnCompile").checked)
     gEditorStatus.checkScriptTimer = setTimeout(function() {onCompile();}, gEditorStatus.checkScriptDelay);
-  
-  UpdateLinesLazy();
-}
-
-function onEditorKeyDown(event)
-{
-  // we need this bypass the default onKeyDown only for the tab key...
-  if (event.keyCode != 9)
-    return;
- 
-  if (event.shiftKey || event.ctrlKey || event.altKey || event.metaKey)
-    return;
-    
-  gEditorStatus.insertString(String.fromCharCode(9));
-           
-  event.preventDefault();
-  
-  onInput();
-  //event.stopPropagation();
 }
 
 function onWindowPersist()
@@ -475,23 +426,10 @@ function onWindowPersist()
 }
 
 function onWindowLoad()
-{ 
-        
-  document.getElementById("sivContentEditor")
-      .addEventListener("scroll", function() {onEditorScroll();},false);
-
-  // add event listeners to Editor
-  document.getElementById("sivContentEditor")
-      .addEventListener("input",function() {onInput();},false);   
-      
-  document.getElementById("sivContentEditor")
-      .addEventListener("mousemove",function() {onUpdateCursorPos(250);},false);
-      
-  document.getElementById("sivContentEditor")
-      .addEventListener("keypress",function() {onUpdateCursorPos(50);},false);
-
-  document.getElementById("sivContentEditor")
-       .addEventListener("keydown", function(ev) { onEditorKeyDown(ev)},true);
+{
+  document.getElementById("sivEditor2")
+    .contentWindow.editor.setOption("onChange",onInput);
+    
   // hack to prevent links to be opened in the default browser window...
   document.getElementById("ifSideBar").
     addEventListener(
@@ -588,7 +526,7 @@ function onViewSource(visible,aNoUpdate)
     document.getElementById("btnCompile").removeAttribute('disabled');
     document.getElementById("btnSearchBar").removeAttribute('disabled');
 
-    document.getElementById("sivContentEditor").focus(); 
+    document.getElementById("sivEditor2").focus(); 
      
     var script = document.getElementById("sivWidgetEditor")
                       .contentWindow.getSieveScript();
@@ -596,8 +534,8 @@ function onViewSource(visible,aNoUpdate)
     // GUI did not change so se can skip...
     if (aNoUpdate || (gEditorStatus.checksum.gui == gSFE._calcChecksum(script)))
       return;
-    
-    document.getElementById("sivContentEditor").value = script;
+
+    document.getElementById("sivEditor2").contentWindow.editor.setValue(script);
     
     onInput();
     return;
@@ -613,7 +551,7 @@ function onViewSource(visible,aNoUpdate)
   document.getElementById("btnCompile").setAttribute('disabled',"true");
   document.getElementById("btnSearchBar").setAttribute('disabled',"true");
   
-  onSearchBarHide();
+  onSearchBar(false);
     
   deck.selectedIndex = 1;
   
@@ -628,7 +566,7 @@ function updateWidgets()
     var capabilities = SieveConnections
       .getChannel(gSFE._sid,gSFE._cid).extensions;
        
-    var script = document.getElementById("sivContentEditor").value;
+    var script = document.getElementById("sivEditor2").contentWindow.editor.getValue();
 
     // set script content...
     document.getElementById("sivWidgetEditor")
@@ -840,15 +778,7 @@ function onImport()
   scriptableStream.close();
   inputStream.close();
 
-  // Find the Start and End Position
-  var el = document.getElementById("sivContentEditor");
-  var start = el.selectionStart;
-  var end = el.selectionEnd;
-
-  /* Remember obj is a textarea or input field */
-  el.value = el.value.substr(0, start)
-    + script
-    + el.value.substr(end, el.value.length);
+  document.getElementById("sivEditor2").contentWindow.editor.replaceSelection(script);
   
   onInput();
 }
@@ -886,45 +816,28 @@ function onExport()
 	outputStream.close();
 }
 
-/**
- * Shows the sidebar containing script errors
- */
-function onErrorBarShow()
-{
-  document.getElementById("btnCompile").setAttribute('checked', 'true')
-  document.getElementById('spErrorBar').removeAttribute('hidden');
-  document.getElementById('vbErrorBar').removeAttribute('hidden');
-
-  onCompile();
-
-  return;
-}
-
-/**
- * Hides the sidebar containing script errors...
- */
-function onErrorBarHide()
-{
-  clearTimeout(gEditorStatus.checkScriptTimer);
-  gEditorStatus.checkScriptTimer = null;
-  
-  document.getElementById("btnCompile").removeAttribute('checked');
-  document.getElementById("vbErrorBar").setAttribute('hidden', 'true');
-  document.getElementById('spErrorBar').setAttribute('hidden', 'true');
-  
-  return;
-}
-
 function onErrorBar(visible)
 {
   if (visible == null)
     visible = document.getElementById('btnCompile').checked
 
   if (visible)
-    onErrorBarShow();
-  else
-    onErrorBarHide();
+  {
+    document.getElementById("btnCompile").setAttribute('checked', 'true')
+    document.getElementById('spErrorBar').removeAttribute('hidden');
+    document.getElementById('vbErrorBar').removeAttribute('hidden');
 
+    onCompile();
+
+    return;    
+  }
+
+  clearTimeout(gEditorStatus.checkScriptTimer);
+  gEditorStatus.checkScriptTimer = null;
+  
+  document.getElementById("btnCompile").removeAttribute('checked');
+  document.getElementById("vbErrorBar").setAttribute('hidden', 'true');
+  document.getElementById('spErrorBar').setAttribute('hidden', 'true');
   return;
 }
 
@@ -949,7 +862,7 @@ function onSideBarHide()
   document.getElementById('spSideBar').setAttribute('hidden', 'true');
   document.getElementById('vbSidebar').setAttribute('hidden', 'true')
   
-  onSearchBarHide();
+  onSearchBar(false);
   
   return;
 }
@@ -967,253 +880,126 @@ function onSideBar(visible)
   return;
 }
 
-/**
- * Shows the SearchBar. As it is embedded in the SideBar, it will automatically
- * display the SideBar if it is not already visible
- */
-function onSearchBarShow()
-{
-  onSideBarShow();
-  
-  document.getElementById('btnSearchBar').setAttribute('checked', 'true')
-  document.getElementById('vbSearchBar').removeAttribute('hidden');
-  
-  return;
-}
-
-/**
- * Hides the in the SideBar embedded SearchBar...
- */
-function onSearchBarHide()
-{
-  
-  document.getElementById('vbSearchBar').setAttribute('hidden', 'true')
-  document.getElementById('btnSearchBar').removeAttribute('checked');
-  
-  return;
-}
-
 function onSearchBar(visible)
 {
   if (visible == null)
     visible = document.getElementById('btnSearchBar').checked
 
   if (visible)
-    onSearchBarShow();
-  else
-    onSearchBarHide();
+  {
+    onSideBar(true);
+  
+    document.getElementById('btnSearchBar').setAttribute('checked', 'true')
+    document.getElementById('vbSearchBar').removeAttribute('hidden');
+  
+    return;    
+  }
 
+  document.getElementById('vbSearchBar').setAttribute('hidden', 'true')
+  document.getElementById('btnSearchBar').removeAttribute('checked');  
   return;
 }
 
-function OnFindString()
-{
-  var txtScript = document.getElementById("sivContentEditor");
-  var script = new String(txtScript.value);
-  
-  if (script.length == 0)
-    return;
-  
-  // Get the cursor position...
-  var position = txtScript.selectionStart;
-  
-  if (txtScript.selectionStart != txtScript.selectionEnd)
-    position = txtScript.selectionEnd;
-  
-  // ... and prepare strings for search...
-  var token = new String(document.getElementById("txtToken").value);
-  
-  // ... convert to lowercase, if the search is not case sensitive...
-  if (document.getElementById('cbxCaseSensitive').checked == false)
-  {
-    script = script.toLowerCase();
-    token = token.toLowerCase();
-  }
-  
-  var result = -1;
-  
-  // ... the backward search is a bit tricky...
-  if (document.getElementById('cbxBackward').checked)
-  {
-    // The search result has to be before the current cursor...
-    // ... position, this means we can drop anything behind it.
-    script = script.substring(0, position - 1);
-    result = script.lastIndexOf(token);
-    
-    position = script.length - position;
-  }
-  else
-  {
-    result = script.indexOf(token, position);
-  }
-  
-  // start search from cursor pos...
-  if (result == -1)
-  {
-    document.getElementById("boxSearchError").removeAttribute('hidden');
-    return -1;
-  }
-
-  document.getElementById("boxSearchError").setAttribute('hidden','true');
-  txtScript.focus();
-
-  txtScript.setSelectionRange(result, result + token.length);
-  txtScript.editor.selectionController.scrollSelectionIntoView(1, 1, true);
-
-  return 0;
-}
-
-function OnReplaceString()
-{
-  var txtScript = document.getElementById("sivContentEditor");
-  var token = new String(document.getElementById("txtToken").value);
-  
-  var selectedToken =
-    txtScript.value.substring(txtScript.selectionStart,txtScript.selectionEnd);
-  
-  if (selectedToken != token)
-    this.OnFindString();
-  
-  selectedToken = 
-    txtScript.value.substring(txtScript.selectionStart,txtScript.selectionEnd);
-  
-  if (selectedToken != token)
-    return;
-  
-  var replace = document.getElementById("txtReplace").value;
-  gEditorStatus.insertString(replace,true);
-  
-  this.onInput();
-  
-}
-
-/*function onBlubb()
-{
-  
-  
-  var txtScript = document.getElementById("sivContentEditor");
-  
-  alert(txtScript.editor);
-  
-  if (txtScript.editor instanceof Components.interfaces.nsIHTMLEditor)
-    alert("HTML");
-    
-  if (txtScript.editor instanceof Components.interfaces.nsIPlaintextEditor)
-    alert("plain text");
-    
-  return;
-  
-  var myDocument = txtScript.editor.document;
-
-  
-  var neuB = myDocument.createElement("b");
-  var neuBText = myDocument.createTextNode("mit fettem Text ");
-  neuB.appendChild(neuBText);
-  
-  //document.getElementById("derText").insertBefore(neuB, document.getElementById("derKursiveText"));
- 
-  var root = txtScript.editor.rootElement;
-
-//106           const nsIDOMNSEditableElement = Components.interfaces.nsIDOMNSEditableElement;
-//107           return this.inputField.QueryInterface(nsIDOMNSEditableElement).editor;
-
-  root.appendChild(neuB);
-  //root.firstChild.insertBefore(neuB, document.getElementById("derKursiveText"));
-  
-  for (var item = root.firstChild; item; item = item.nextSibling) 
-    alert(item);
-}*/
-
-function UpdateCursorPos()
-{
-  
-  var el = document.getElementById("sivContentEditor");
-  
-  // We can skip if the cursor position did not change at all...
-  if ((gEditorStatus.selectionStart == el.selectionStart) 
-        && (gEditorStatus.selectionEnd == el.selectionEnd))
-    return;  
-  
-  var lines = el.value.substr(0, el.selectionStart).split("\n");
-
-  document.getElementById("sbCursorPos")
-          .label = lines.length+":"+(lines[lines.length - 1].length + 1);
-  
-  if (el.selectionEnd != el.selectionStart)
-  {
-    lines = el.value.substr(0, el.selectionEnd).split("\n");
-    document.getElementById("sbCursorPos")
-            .label += " - " + lines.length+ ":" + (lines[lines.length - 1].length + 1);
-  }
-  
-  gEditorStatus.selectionStart = el.selectionStart;
-  gEditorStatus.selectionEnd = el.selectionEnd;
-  
-  gEditorStatus.selectionChanged = false;
-  
-  return;
-}
-
-
-
-function onEditorScroll()
-{
-  var first = document.getAnonymousElementByAttribute(document.getElementById("sivLineNumbersEditor"), 'anonid', 'input');
-  var second = document.getAnonymousElementByAttribute(document.getElementById("sivContentEditor"), 'anonid', 'input');
-
-  if (first.scrollTop != second.scrollTop);
-      first.scrollTop= second.scrollTop;
-}
-
-function UpdateLines()
-{  
-  // TODO do lazy update 100ms ...
-  var first = document.getAnonymousElementByAttribute(document.getElementById("sivLineNumbersEditor"), 'anonid', 'input');
-  var second = document.getAnonymousElementByAttribute(document.getElementById("sivContentEditor"), 'anonid', 'input');
-
-  // the scroll height can be equal or bigger than clientHeight. If its bigger we can take a shortcut...
-  // ... to test if the linecount changed...
-  if ((second.scrollHeight > second.clientHeight) && (second.scrollHeight == first.scrollHeight))
-    return;
-  
-  // Count linebreaks...
-  var textRows = (second.value).split('\n');
-
-  // no line breaks changed?
-  if (gEditorStatus.rowCount == textRows.length)
-   return;
- 
-  gEditorStatus.rowCount = textRows.length;
-
- // TODO calculate how many lines changed instead of rebuilding all...
- var str= "1";
-  for (var i=1; i < gEditorStatus.rowCount; i++)
-    str+= "\n"+ (i+1);
-
-  first.value = str;
-
-  onEditorScroll();
-}
-
-function UpdateLinesLazy()
+function onFindString()
 {   
-  if (gEditorStatus.scrollChanged)
-    return;
+  document.getElementById("boxSearchError").removeAttribute('hidden');
+        
+  // ... convert to lowercase, if the search is not case sensitive...
+  var editor = document.getElementById("sivEditor2").contentWindow.editor;
+  var reverse = !!document.getElementById('cbxBackward').checked;
+  
+  
+  function maxCursor(start,end)
+  {
+    if (start.line > end.line)
+      return start
 
-  setTimeout(function () {gEditorStatus.scrollChanged=false;UpdateLines();},75);
+    if (start.line < end.line)
+      return end;
+    
+    // start.line == end.line
+    if (start.ch > end.ch)
+      return start;
+      
+    return end;
+  }
+  
+  function minCursor(start,end)
+  {
+    if (start.line <end.line)
+      return start
 
-  gEditorStatus.scrollChanged = true;
+    if (start.line > end.line)
+      return end;
+    
+    // start.line == end.line
+    if (start.ch > end.ch)
+      return end;
+      
+    return start;
+  }
+  
+  var start = editor.getCursor(true);
+  var end = editor.getCursor(false);
+  
+  var cursor = editor.getSearchCursor(
+    document.getElementById("txtToken").value,
+    reverse ? minCursor(start,end) : maxCursor(start,end),
+    !document.getElementById('cbxCaseSensitive').checked);
+  
+  if (!cursor.find(reverse))
+  { 
+    // warp search at top or bottom
+    cursor = editor.getSearchCursor(
+       document.getElementById("txtToken").value,
+       reverse ? {line: editor.lineCount() - 1} : {line: 0, ch: 0},
+       !document.getElementById('cbxCaseSensitive').checked);
+    
+    if (!cursor.find(reverse))
+      return;
+  }
+  
+  if (reverse)
+    editor.setSelection(cursor.from(), cursor.to());
+  else
+    editor.setSelection(cursor.to(), cursor.from());
+
+  document.getElementById("boxSearchError").setAttribute('hidden','true');  
+  return;
 }
 
-function onUpdateCursorPos(timeout)
+function onReplaceString()
 {
-  if (gEditorStatus.selectionChanged)
-    return;
+  var token = document.getElementById("txtToken").value;
+  var editor = document.getElementById("sivEditor2").contentWindow.editor;
+  var caseSensitive = document.getElementById('cbxCaseSensitive').checked;
+    
+  if (caseSensitive) 
+  {
+    if (editor.getSelection() != token)
+      onFindString();
+      
+    if (editor.getSelection() != token)
+      return;
+  }
+    
+  if (!caseSensitive)
+  {
+    if (editor.getSelection().toLowerCase() != token.toLowerCase())
+      onFindString();
+      
+    if (editor.getSelection().toLowerCase() != token.toLowerCase())
+      return;
+  }
 
-  setTimeout(function() {UpdateCursorPos();	gEditorStatus.selectionChanged = false;}, 200);
+  editor.replaceSelection(document.getElementById("txtReplace").value);
 
-  gEditorStatus.selectionChanged = true;
+  onInput();
+  
+  return;  
 }
+
+
 
 function getPrintSettings()
 {
@@ -1385,6 +1171,64 @@ function onUseRemoteScript(script)
   gSFE.onScriptLoaded(script);
 }
 
+function onUndo()
+{
+  document.getElementById("sivEditor2").contentWindow.editor.undo();
+}
+
+function onRedo()
+{
+  document.getElementById("sivEditor2").contentWindow.editor.redo();
+}
 
 
-         
+function onEditorShowMenu()
+{
+  // enxure editor is focused...
+  /*if (document.commandDispatcher.focusedElement != this.parentNode.firstChild)
+    this.parentNode.firstChild.focus();*/
+
+  // we can use the built in function to determin if cut, copy and paste is possible
+  var controller = document.commandDispatcher.getControllerForCommand("cmd_cut");
+  if (controller.isCommandEnabled("cmd_cut"))
+    document.getElementById("ctxCut").removeAttribute("disabled");
+  else
+    document.getElementById("ctxCut").setAttribute("disabled", "true");
+  
+  var controller = document.commandDispatcher.getControllerForCommand("cmd_copy");  
+  if (controller.isCommandEnabled("cmd_copy"))
+    document.getElementById("ctxCopy").removeAttribute("disabled");
+  else
+    document.getElementById("ctxCopy").setAttribute("disabled", "true");
+    
+  var controller = document.commandDispatcher.getControllerForCommand("cmd_paste");
+  if (controller.isCommandEnabled("cmd_paste"))
+    document.getElementById("ctxPaste").removeAttribute("disabled");
+  else
+    document.getElementById("ctxPaste").setAttribute("disabled", "true");  
+  // Undo : editor.history 
+  
+  var editor = document.getElementById("sivEditor2").contentWindow.editor;
+  
+  if (editor.somethingSelected())
+    document.getElementById("ctxDelete").removeAttribute("disabled");
+  else
+    document.getElementById("ctxDelete").setAttribute("disabled", "true"); 
+  
+  if (editor.historySize().undo > 0)
+    document.getElementById("ctxUndo").removeAttribute("disabled");
+  else
+    document.getElementById("ctxUndo").setAttribute("disabled", "true");   
+    // select all -> immer möglich 
+}
+
+function onDelete()
+{
+  document.getElementById("sivEditor2").contentWindow.editor.replaceSelection("");
+}
+
+function onSelectAll()
+{
+  var editor = document.getElementById("sivEditor2").contentWindow.editor;
+  editor.setSelection({line:0,ch:0},{line: editor.lineCount() - 1});
+}

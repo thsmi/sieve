@@ -322,7 +322,7 @@
 
 #vbErrorBar  {
 	background: #f8f8f8;
-	border-bottom: 1px solid #A9B7C9;
+    border-bottom: none;
 	min-height: 50px;
 }
 

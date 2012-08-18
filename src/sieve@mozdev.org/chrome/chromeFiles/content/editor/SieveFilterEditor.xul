@@ -13,7 +13,15 @@
 -->
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 
-<!DOCTYPE window SYSTEM "chrome://sieve/locale/locale.dtd">
+<!DOCTYPE window [
+ <!ENTITY % sieveDTD SYSTEM "chrome://sieve/locale/locale.dtd">
+ %sieveDTD;
+ <!ENTITY % textcontextDTD SYSTEM "chrome://global/locale/textcontext.dtd">
+ %textcontextDTD;
+]>
+
+<!--<!DOCTYPE window SYSTEM "chrome://sieve/locale/locale.dtd">
+ <!DOCTYPE window SYSTEM "chrome://global/locale/textcontext.dtd"> -->
 
 <?xml-stylesheet href="chrome://sieve/content/editor/Sieve.css" type="text/css"?>
 <?xml-stylesheet href="chrome://messenger/skin/mailWindow1.css"?>
@@ -44,7 +52,29 @@
   <script type="application/javascript" 
           src="chrome://messenger/content/msgPrintEngine.js"/> -->
   
- 
+
+  <menupopup id="ctxEditor" onpopupshowing="onEditorShowMenu();">
+    <menuitem id="ctxUndo"
+              label="&undoCmd.label;" accesskey="&undoCmd.accesskey;"
+              oncommand="onUndo();  event.stopPropagation();" />
+    <menuseparator/>
+    <menuitem id="ctxCut"
+              label="&cutCmd.label;" accesskey="&cutCmd.accesskey;"
+              oncommand="goDoCommand('cmd_cut');  event.stopPropagation();" />
+    <menuitem id="ctxCopy"
+              label="&copyCmd.label;" accesskey="&copyCmd.accesskey;" 
+              oncommand="goDoCommand('cmd_copy');  event.stopPropagation();" />
+    <menuitem id="ctxPaste"
+              label="&pasteCmd.label;" accesskey="&pasteCmd.accesskey;"
+              oncommand=" goDoCommand('cmd_paste');  event.stopPropagation();" />
+    <menuitem id="ctxDelete"
+              label="&deleteCmd.label;" accesskey="&deleteCmd.accesskey;"
+              oncommand="onDelete();  event.stopPropagation();" />
+    <menuseparator/>
+    <menuitem label="&selectAllCmd.label;" accesskey="&selectAllCmd.accesskey;"
+              oncommand="onSelectAll();  event.stopPropagation();" />
+  </menupopup>
+    
 <toolbox class="mail-toolbox">
   <toolbar class="inline-toolbar chromeclass-toolbar">
     <toolbarbutton id="btnSave" 
@@ -57,10 +87,10 @@
     <toolbarspacer />      
     <toolbarbutton id="btnUndo"
                    label="&edit.toolbar.undo;" class="toolbarbutton-1"
-                   oncommand="goDoCommand('cmd_undo');" />    
+                   oncommand="onUndo()/*goDoCommand('cmd_undo')*/;" />    
     <toolbarbutton id="btnRedo"
                    label="&edit.toolbar.redo;" class="toolbarbutton-1"
-                   oncommand="goDoCommand('cmd_redo');" />                    
+                   oncommand="onRedo()/*goDoCommand('cmd_redo');*/" />                    
     <toolbarspacer />
     <toolbarbutton id="btnCut"
                    label="&edit.toolbar.cut;" class="toolbarbutton-1"
@@ -100,28 +130,17 @@
   <hbox flex="1" >
       <deck id="dkView" flex="1" selectedIndex="0">
         <vbox flex="1">
-          <vbox flex="1">
             
             <!-- Status messages -->
-            <iframe id="sivEditorStatus" flex="1" src="chrome://sieve/content/editor/SieveStatus.xul" />
-                        
-            <!-- Sieve Script editor -->                        
-            <hbox id="sivEditor" collapsed="true" flex="1" class="sivEditor">
-              <vbox id="sivLineNumbers" persist="width"> 
-                <textbox id="sivLineNumbersEditor" flex="1" 
-                         disabled="true" multiline="true" 
-                         wrap="off" value="1"
-                         autocomplete="off" />
-                <!-- We use this hidden elemen as dummy, otherwise the scrollbar of the content editor could have a line number-->
-                <scrollbar/>
-              </vbox>
-              <splitter class="spVertical" resizeafter="farthest" /> 
-              <textbox id="sivContentEditor" flex="1" 
-                       multiline="true" wrap="off" 
-                       autocomplete="off" />
-              <splitter class="spVertical" resizeafter="farthest" />
-            </hbox>
-                                   
+            <iframe id="sivEditorStatus" flex="1"  type="content" src="chrome://sieve/content/editor/SieveStatus.xul" />
+            
+            <!-- Sieve Script editor -->  
+            <iframe id="sivEditor2" flex="1" 
+                    src="chrome://sieve/content/editor/SieveFilterEditor.html" 
+                    contextmenu="ctxEditor" />           
+<!--                    contentcontextmenu="ctxEditor"  -->
+
+                                                                     
             <!-- Error Bar (Showing Script errors) --> 
             <splitter id="spErrorBar" resizeafter="farthest" /> 
             
@@ -133,15 +152,7 @@
                 <!-- <textbox flex="1" id="lblErrorBar" multiline="true" rows="3" readonly="true" class="plain"/>-->
               </hbox>
             </vbox>
-          </vbox>
-        
-            <hbox class="chromeclass-status">
-              <statusbarpanel width="100px" id="sbCursorPos" label=""/>
-              <statusbarpanel width="100px" id="sbChanged" 
-                              hidden="true" label="Changed"/>
-              <statusbarpanel flex="1" label=""/>
-            </hbox>
-
+  
           </vbox>
           
         <iframe id="sivWidgetEditor" flex="1"  type="content" />          
@@ -172,8 +183,8 @@
         <label value="&edit.searchreplace.error;" />
       </hbox>
     <hbox pack="end">
-      <button id="btnFind" label="&edit.searchreplace.find;"  oncommand="OnFindString();"/>
-      <button  id="btnReplace" label="&edit.searchreplace.replace;" oncommand="OnReplaceString();"/>
+      <button id="btnFind" label="&edit.searchreplace.find;"  oncommand="onFindString();"/>
+      <button  id="btnReplace" label="&edit.searchreplace.replace;" oncommand="onReplaceString();"/>
     </hbox>
     <splitter resizeafter="farthest" disabled="true" />
    </vbox>
@@ -193,9 +204,6 @@
                        label="&edit.toolbar.home;" class="toolbarbutton-1" 
                        oncommand="onSideBarHome();" />
     </hbox>
-    <!--
-          <browser type="content" id="sideBarBrowser" flex="1" 
-             src="about:blank" width="250px" /> -->
     <deck id="dkSideBarBrowser" flex="1" selectedIndex="1">
       <iframe id="ifSideBar" width="250px" flex="1" src="about:blank" type="content" />
       <image flex="1" />

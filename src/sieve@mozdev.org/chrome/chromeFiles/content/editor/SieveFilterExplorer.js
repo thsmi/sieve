@@ -405,9 +405,6 @@ function sivOpenEditor(scriptName,scriptBody)
                             .getMostRecentWindow("mail:3pane");  
   
   tabmail = mail3PaneWindow.document.getElementById("tabmail");
-  
-  //TODO instead of accessing the owner window we should try toaccess the most recent 3pane
- // window.ownerDocument.getElementById("tabmail")
   tabmail.openTab("SieveEditorTab", args);
   return;  
 }

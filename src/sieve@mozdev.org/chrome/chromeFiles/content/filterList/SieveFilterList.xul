@@ -41,12 +41,7 @@
           src="chrome://sieve/content/libs/libManageSieve/SieveAbstractClient.js"/>
                     
   <script type="application/javascript"
-          src="chrome://sieve/content/filterList/SieveFilterList.js"/>          
-
-  
-  <stringbundleset id="stringbundleset">
-    <stringbundle id="strings" src="chrome://sieve/locale/locale.properties"/>
-  </stringbundleset>  
+          src="chrome://sieve/content/filterList/SieveFilterList.js"/>           
 
   <iframe src="chrome://sieve/content/editor/SieveStatus.xul" 
           id="sivStatus" flex="1" />

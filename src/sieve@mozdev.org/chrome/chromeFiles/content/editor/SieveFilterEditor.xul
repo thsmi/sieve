@@ -20,9 +20,6 @@
  %textcontextDTD;
 ]>
 
-<!--<!DOCTYPE window SYSTEM "chrome://sieve/locale/locale.dtd">
- <!DOCTYPE window SYSTEM "chrome://global/locale/textcontext.dtd"> -->
-
 <?xml-stylesheet href="chrome://sieve/content/editor/Sieve.css" type="text/css"?>
 <?xml-stylesheet href="chrome://messenger/skin/mailWindow1.css"?>
 
@@ -34,11 +31,6 @@
   persist="width height screenX screenY"
   onload="onWindowLoad();"
   windowtype="Sieve:FilterEditor" >
-  <!--onclose="return onWindowClose();"-->
-  
-  <stringbundleset id="stringbundleset">
-    <stringbundle id="strings" src="chrome://sieve/locale/locale.properties"/>
-  </stringbundleset>
   
   <!-- needed for copy and paste -->
   <script type="application/javascript"
@@ -127,6 +119,7 @@
    <box id="btnDonate"  onclick="onDonate();"/>    
   </toolbar>
 </toolbox>
+
   <hbox flex="1" >
     <vbox flex="1">
       <!-- Status messages -->

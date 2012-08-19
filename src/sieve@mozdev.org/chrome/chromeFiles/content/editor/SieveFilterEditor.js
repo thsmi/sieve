@@ -211,11 +211,13 @@ SieveFilterEditor.prototype.onPutScriptResponse
 SieveFilterEditor.prototype.onCheckScriptResponse
     = function(response)
 {
+  var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
+  
   if (!response.hasError())
   {
     // TODO: The response might contain warnings, parse them
     document.getElementById("lblErrorBar").firstChild.nodeValue
-      = document.getElementById("strings").getString("syntax.ok");
+      = strings.GetStringFromName("syntax.ok");
 
     document.getElementById("imgErrorBar").src
       = "chrome://sieve/content/images/syntax-ok.png";
@@ -235,7 +237,7 @@ SieveFilterEditor.prototype.onCheckScriptResponse
   {
         
     document.getElementById("lblErrorBar").firstChild.nodeValue
-      = document.getElementById("strings").getString("syntax.quota");
+      = strings.GetStringFromName("syntax.quota");
           
     document.getElementById("imgErrorBar").src
       = "chrome://sieve/content/images/syntax-warning.png";
@@ -466,7 +468,9 @@ function onWindowLoad()
   document.title = ""+args["scriptName"]+" - Sieve Filters";
 
   document.getElementById("lblErrorBar").firstChild.nodeValue
-      = document.getElementById("strings").getString("syntax.ok");
+      = Services.strings
+          .createBundle("chrome://sieve/locale/locale.properties")
+          .GetStringFromName("syntax.ok");
     
   gSFE.onStatusChange(3,"status.loading");
 

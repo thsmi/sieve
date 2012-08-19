@@ -28,11 +28,7 @@
         title="&list.title;"
         windowtype="Sieve:FilterExplorer">
 
-<stringbundleset id="stringbundleset">
-  <stringbundle id="strings" src="chrome://sieve/locale/locale.properties"/>
-</stringbundleset>
 
-          
   <script type="application/javascript" 
           src="chrome://sieve/content/libs/libManageSieve/SieveAbstractClient.js"/>  
   <script type="application/javascript" 

@@ -318,7 +318,7 @@ SieveMailWindowOverlay.prototype.load
     document,
     toolbox,
     toolbarbutton);
-
+    
   SieveOverlayUtils.addStyleSheet(document,"chrome://sieve/skin/ToolBarButton.css");    
   
   this.unloadCallback(
@@ -371,7 +371,57 @@ SieveMailWindowOverlay.prototype.load
   this.unloadCallback(
     function () { SieveOverlayUtils.removeMenuItem(mnuSeparator) } )
 
+  
   SieveOverlayUtils.addMenuItem( document, mnuSeparator, menu);
+  
+  // AppMenuOverlay
+  
+  var appMenu = document.getElementById("appmenu_FilterMenu")
+  
+  if (appMenu) {
+     
+    var appMenuSeparator = document.createElement("menuseparator");
+    appMenuSeparator.setAttribute("id","appMenuSieveSeparator");
+  
+    this.unloadCallback(
+      function () { SieveOverlayUtils.removeMenuItem(appMenuSeparator) } )
+
+    appMenu.appendChild(appMenuSeparator);
+
+    var appMenuOpenFilters = document.createElement("menuitem");
+    appMenuOpenFilters.setAttribute("id","appMenuSieveListDialog");
+    appMenuOpenFilters.setAttribute("label", strings.GetStringFromName("menu.filters")); 
+    appMenuOpenFilters.setAttribute("accesskey", strings.GetStringFromName("menu.filters.key") );
+    appMenuOpenFilters.addEventListener("command", onOpenFilterCmd );
+  
+    this.unloadCallback(
+      function() { appMenuOpenFilters.removeEventListener("command",onOpenFilterCmd)})  
+  
+    this.unloadCallback(
+      function() {SieveOverlayUtils.removeMenuItem(appMenuOpenFilters)} )  
+  
+    appMenu.appendChild(appMenuOpenFilters);  
+    
+    var appMenuOpenSettings = document.createElement("menuitem");
+    appMenuOpenSettings.setAttribute("id","appMenuSieveOptionsDialog");
+    appMenuOpenSettings.setAttribute("label",strings.GetStringFromName("menu.options")); //&menu.options;
+    appMenuOpenSettings.setAttribute("accesskey",strings.GetStringFromName("menu.options.key"));  
+    appMenuOpenSettings.addEventListener('command', onOpenSettingsCmd );
+  
+    this.unloadCallback(
+      function() { appMenuOpenSettings.removeEventListener("command",onOpenSettingsCmd)})  
+  
+    this.unloadCallback(
+      function() {SieveOverlayUtils.removeMenuItem(appMenuOpenSettings)} )  
+    
+    appMenu.appendChild(appMenuOpenSettings);    
+    
+  }
+  
+  
+
+  
+  
 }
 
 // Filter window Overlay...Components

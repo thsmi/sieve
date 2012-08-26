@@ -64,7 +64,7 @@ var SieveTabType =
         aArgs.wrappedJSObject = aArgs;
         aTab.panel.contentWindow.arguments = [aArgs];
                
-        this._addListeners(aTab);        
+        this._addListeners(aTab);
         
         aTab.panel.setAttribute("src","chrome://sieve/content/editor/SieveFilterEditor.xul");
       },
@@ -105,6 +105,7 @@ var SieveTabType =
       
   onTitleChanged: function(aTab, aTabNode)
   {
+    /*Cu.reportError("OnTitleChanged"+aTab.panel.contentWindow.document.title);*/
     aTab.title = aTab.panel.contentWindow.document.title;
     aTab.busy = false;
   },
@@ -134,23 +135,11 @@ var SieveTabType =
   {
     function onDOMTitleChanged(aEvent)
     {
+      aTab.title = aTab.panel.contentWindow.document.title;
       aTab.panel.ownerDocument.getElementById("tabmail").setTabTitle(aTab);
     }
     // Save the function we'll use as listener so we can remove it later.
     aTab.titleListener = onDOMTitleChanged;
-
-   /* function onDOMWindowClose(aEvent)
-    {     
-      if (!aEvent.isTrusted)
-        return;
- 
-      // Redirect any window.close events to closing the tab. As a 3-pane tab
-      // must be open, we don't need to worry about being the last tab open.
-      aTab.panel.ownerDocument.getElementById("tabmail").closeTab(aTab);
-      aEvent.preventDefault();
-    }
-    
-    aTab.closeDOMListener = onDOMWindowClose; */
 
     function onWindowClose(aEvent)
     {
@@ -174,25 +163,21 @@ var SieveTabType =
     aTab.closeListener = onWindowClose;        
        
        
-    // Add the listener.
-    aTab.panel.contentWindow.addEventListener("DOMTitleChanged", aTab.titleListener, true);
-         
-    //aTab.panel.contentWindow.addEventListener("DOMWindowClose", aTab.closeDOMListener, true);
+    // Add the listeners
+    aTab.panel.addEventListener("DOMTitleChanged", aTab.titleListener,true);
+    
     aTab.panel.ownerDocument.defaultView.addEventListener("close",aTab.closeListener);
   },
   
   _removeListeners: function(aTab)
   {
+    
     if (aTab.titleListener)
-      aTab.panel.contentWindow.removeEventListener("DOMTitleChanged", aTab.titleListener, true);
+      aTab.panel.removeEventListener("DOMTitleChanged", aTab.titleListener,true);
        
     if (aTab.closeListener)
       aTab.panel.ownerDocument.defaultView.removeEventListener("close",aTab.closeListener);
-      
-   /* if (aTab.closeDOMListener)
-      aTab.panel.contentWindow.removeEventListener("DOMWindowClose", aTab.closeListener, true)*/;      
-      
-    aTab.closeDOMListener = null;
+            
     aTab.titleListener = null;
     aTab.closeListener = null;
   }

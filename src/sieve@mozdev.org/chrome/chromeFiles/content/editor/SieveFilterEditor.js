@@ -33,17 +33,12 @@ var gForwardHistory = new Array();
 var gPrintSettings = null;
 
 
+
 var gEditorStatus =
 {
-  contentChanged    : false,
-  
   checkScriptDelay  : 200,
   checkScriptTimer  : null,
   
-
-  defaultScript     : null,
-  
-  scriptName        : "unnamed",
   persistedScript   : null,
   
   closeListener     : null,
@@ -59,7 +54,7 @@ var gEditorStatus =
 var gSFE = new SieveFilterEditor();
 
 function SieveFilterEditor()
-{
+{  
   SieveAbstractClient.call(this);
 }
 
@@ -101,7 +96,7 @@ SieveFilterEditor.prototype.onChannelReady
     }
   }
     
-  var request = new SieveGetScriptRequest(gEditorStatus.scriptName);
+  var request = new SieveGetScriptRequest(this.getScriptName());
   request.addGetScriptListener(this);
   request.addErrorListener(event);
 
@@ -195,8 +190,8 @@ SieveFilterEditor.prototype.onPutScriptResponse
   
   gEditorStatus.checksum.server =  this._calcChecksum(script);
       
-  gEditorStatus.contentChanged = false;
-    
+  this.setScriptName();
+  
   // check if tab is in the progress of closing
   if (!gEditorStatus.closeListener)
     return;
@@ -273,10 +268,11 @@ SieveFilterEditor.prototype.onScriptLoaded
   // Ugly workaround...
   editor.getOption("onCursorActivity")();  
 
-  
-  if (gEditorStatus.checksum.server == null)
+  if (gEditorStatus.checksum.server == null) {
     gEditorStatus.checksum.server = this._calcChecksum(this.getScript());
-    
+    this.setScriptName();
+  }
+  
   document.getElementById("sivEditor2").focus();  
   editor.focus();
 }
@@ -304,7 +300,7 @@ SieveFilterEditor.prototype.observe
     
     if (asyncCloseTab(callback) == false)
       aSubject.QueryInterface(Ci.nsISupportsPRBool).data = true
-      
+
     return;
   }
   
@@ -355,6 +351,7 @@ SieveFilterEditor.prototype.getScript
 SieveFilterEditor.prototype.hasChanged
     = function()
 {
+  
   if (gEditorStatus.checksum.server == null)
     return true;
     
@@ -366,9 +363,15 @@ SieveFilterEditor.prototype.hasChanged
 
 
 SieveFilterEditor.prototype.putScript
-    = function (script,content)
+    = function (scriptName, content)
 {
 
+  if (typeof(scriptName) == "undefined")
+    scriptName = this.getScriptName();
+    
+  if (typeof(content) == "undefined")
+    content = this.getScript();
+    
   var event = {
     onError : function(response)
     {
@@ -381,11 +384,33 @@ SieveFilterEditor.prototype.putScript
     }
   }
   
-  var request = new SievePutScriptRequest(script,content);
+  var request = new SievePutScriptRequest(scriptName,content);
   request.addPutScriptListener(this);
   request.addErrorListener(event);
   
   this.sendRequest(request);
+}
+
+SieveFilterEditor.prototype.setScriptName
+    = function (scriptName)
+{
+  if (typeof(scriptName) != "undefined")
+    this._scriptName = scriptName;
+    
+  var title = this.getScriptName() +" - Sieve Filters";
+  
+  
+  if (this.hasChanged())
+     title = "*"+title; 
+
+  if (document.title != title)
+    document.title = title;
+}
+
+SieveFilterEditor.prototype.getScriptName
+    = function()
+{
+  return this._scriptName;      
 }
 
 function onCompile()
@@ -394,9 +419,9 @@ function onCompile()
 }
 
 function onInput()
-{ 
-  if ((gEditorStatus.contentChanged == false) && gSFE.hasChanged())
-    gEditorStatus.contentChanged = true;
+{
+  // TODO update change status more lazilys
+  gSFE.setScriptName();
   
   // on every keypress we reset the timeout
   if (gEditorStatus.checkScriptTimer != null)
@@ -408,19 +433,21 @@ function onInput()
   if (document.getElementById("btnCompile").checked)
     gEditorStatus.checkScriptTimer = setTimeout(function() {onCompile();}, gEditorStatus.checkScriptDelay);
 }
-
+  
 function onWindowPersist()
 {
   var args = {};
   
-  args["scriptName"] = gEditorStatus.scriptName;
   args["compile"] = document.getElementById('btnCompile').checked;
-  args["account"] = gEditorStatus.account;  
+  args["account"] = gEditorStatus.account;
+  
+  // the script cannot be canged in the editor
+  args["scriptName"] = window.arguments[0].wrappedJSObject["scriptName"];
   
   // we do not persist upon shutdown, the user already descided wether we 
   // wants to keep the script or not. We need this only in case of a crash
   if (gSFE && !gEditorStatus.closeListener)
-  {
+  {    
     args["scriptBody"] = gSFE.getScript();
     args["checksumServer"] = gEditorStatus.checksum.server;
   }
@@ -464,8 +491,7 @@ function onWindowLoad()
 
   gEditorStatus.checkScriptDelay = account.getSettings().getCompileDelay();
   
-  gEditorStatus.scriptName = args["scriptName"];
-  document.title = ""+args["scriptName"]+" - Sieve Filters";
+  gSFE.setScriptName(args["scriptName"]);
 
   document.getElementById("lblErrorBar").firstChild.nodeValue
       = Services.strings
@@ -673,7 +699,7 @@ function onSideBarGo(uri)
 
 function onSave()
 {    
-  gSFE.putScript(gEditorStatus.scriptName,gSFE.getScript())
+  gSFE.putScript();
 }
 
 /**
@@ -802,7 +828,7 @@ function onExport()
 			.createInstance(Ci.nsIFilePicker);
 
 	filePicker.defaultExtension = ".siv";
-	filePicker.defaultString = gEditorStatus.scriptName + ".siv";
+	filePicker.defaultString = gSFE.getScriptName() + ".siv";
 
 	filePicker.appendFilter("Sieve Scripts (*.siv)", "*.siv");
 	filePicker.appendFilter("Text Files (*.txt)", "*.txt");
@@ -1067,10 +1093,10 @@ function onPrint()
      + "<?xml-stylesheet type=\"text/css\" href=\"chrome://sieve/content/editor/print.css\"?>\r\n"
      + "<SieveScript>\r\n"
        + "<title xmlns=\"http://www.w3.org/1999/xhtml\">\r\n"
-         + gEditorStatus.scriptName
+         + gSFE.getScriptName()
        + "</title>\r\n"
        + "<SieveScriptName>\r\n" 
-         + gEditorStatus.scriptName
+         + gSFE.getScriptName()
        + "</SieveScriptName>\r\n"   
        + "<SieveScriptLine>\r\n"       
          + script

@@ -26,7 +26,6 @@
 <window 
   id="SieveFilterEditor"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  title="&edit.title;"
   style="width: 45em; height: 31em;"
   persist="width height screenX screenY"
   onload="onWindowLoad();"

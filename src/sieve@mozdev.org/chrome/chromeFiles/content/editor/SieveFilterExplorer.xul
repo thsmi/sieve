@@ -59,7 +59,9 @@
     
       <row flex="1">        
           <vbox>
-            <tree id="treeImapRules" flex="1" hidecolumnpicker="true"  seltype="single" >
+            <tree id="treeImapRules" flex="1" 
+                  hidecolumnpicker="true"  seltype="single" 
+                  ondblclick="onTreeDblClick(event);">
               <treecols>
 			          <treecol id="namecol" label="&list.tree.name;" flex="1"/>
    			        <treecol id="active" label="&list.tree.active;" cycler="true"/> 			  

@@ -558,6 +558,28 @@ function onActivateClick()
   return;
 }
 
+function onTreeDblClick(ev)
+{
+  var tree = document.getElementById('treeImapRules');
+  // TODO test if tree is visible
+  var row = {}, column = {}, part = {};
+  
+  tree.treeBoxObject.getCellAt(ev.clientX, ev.clientY, row, column, part);
+                                       
+  if ((row.value == -1) || (column.value == -1)) 
+    return;
+
+  // ignore cycler cells, e.g. the one to (de)active scripts 
+  if (column.value.cycler)
+    return;
+  
+  var scriptName = tree.view.getCellText(row.value, tree.columns.getColumnAt(0));    
+   
+  sivOpenEditor(scriptName);
+    
+  return;                                       
+}
+
 function onCycleCell(row,col,script,active)
 {
   gSFE.setActiveScript((active?null:script))

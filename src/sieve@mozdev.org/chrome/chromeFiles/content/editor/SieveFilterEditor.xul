@@ -43,7 +43,12 @@
   <script type="application/javascript" 
           src="chrome://messenger/content/msgPrintEngine.js"/> -->
   
-
+  <keyset>
+    <key key="&shortcut.save.key;" 
+         oncommand="onSave();"
+         modifiers="accel"/>
+  </keyset>
+  
   <menupopup id="ctxEditor" onpopupshowing="onEditorShowMenu();">
     <menuitem id="ctxUndo"
               label="&undoCmd.label;" accesskey="&undoCmd.accesskey;"

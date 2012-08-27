@@ -227,8 +227,6 @@ hacer la configuración manualmente.">
 <!ENTITY list.autoconfig.config "Configuración Manual">
 
 <!-- Locale for the Edit Filter Dialog -->
-<!ENTITY edit.title "Editar Sievefilter">
-
 <!ENTITY edit.toolbar.save "Guardar">
 <!ENTITY edit.toolbar.undo "Deshacer">
 <!ENTITY edit.toolbar.redo "Rehacer">
@@ -283,3 +281,6 @@ hacer la configuración manualmente.">
 ¿Que quiere hacer al respecto?">
 <!ENTITY status.sync.keep "Mantener script Local">
 <!ENTITY status.sync.replace "Usar los scripts del lado servidor">
+
+<!-- Shortcut keys -->
+<!ENTITY shortcut.save.key "S">

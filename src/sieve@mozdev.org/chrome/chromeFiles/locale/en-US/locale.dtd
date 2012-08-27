@@ -225,8 +225,6 @@ to do a manual configuration.">
 <!ENTITY list.autoconfig.config "Manual Configuration">
 
 <!-- Locale for the Edit Filter Dialog -->
-<!ENTITY edit.title "Edit Sievefilter">
-
 <!ENTITY edit.toolbar.save "Save">
 <!ENTITY edit.toolbar.undo "Undo">
 <!ENTITY edit.toolbar.redo "Redo">
@@ -282,3 +280,6 @@ to do a manual configuration.">
 What would you like to do about it ?">
 <!ENTITY status.sync.keep "Keep Local Script">
 <!ENTITY status.sync.replace "Use Server Side Script">
+
+<!-- Shortcut keys -->
+<!ENTITY shortcut.save.key "S">

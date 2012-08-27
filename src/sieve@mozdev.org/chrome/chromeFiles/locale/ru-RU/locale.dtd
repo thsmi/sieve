@@ -227,8 +227,6 @@
 <!ENTITY list.autoconfig.config "Ручная настройка">
 
 <!-- Locale for the Edit Filter Dialog -->
-<!ENTITY edit.title "Редактировать фильтр Sieve">
-
 <!ENTITY edit.toolbar.save "Сохранить">
 <!ENTITY edit.toolbar.undo "Отменить">
 <!ENTITY edit.toolbar.redo "Повторить">
@@ -284,3 +282,5 @@ What would you like to do about it ?">
 <!ENTITY status.sync.keep "Keep Local Script">
 <!ENTITY status.sync.replace "Use Server Side Script">
 
+<!-- Shortcut keys -->
+<!ENTITY shortcut.save.key "S">

@@ -232,8 +232,6 @@ und konfiguriern Sie das Sieve Konto manuell.">
 
 
 <!-- Locale for the Edit Filter Dialog -->
-<!ENTITY edit.title "Sieveskript bearbeiten">
-
 <!ENTITY edit.toolbar.save "Speichern">
 <!ENTITY edit.toolbar.undo "Undo">
 <!ENTITY edit.toolbar.redo "Redo">
@@ -289,6 +287,5 @@ What would you like to do about it ?">
 <!ENTITY status.sync.keep "Keep Local Script">
 <!ENTITY status.sync.replace "Use Server Side Script">
 
-  
-
- 
+<!-- Shortcut keys -->
+<!ENTITY shortcut.save.key "S">

@@ -228,8 +228,6 @@ essayez une configuration manuelle.">
 <!ENTITY list.autoconfig.config "Configuration manuelle">
 
 <!-- Locale for the Edit Filter Dialog -->
-<!ENTITY edit.title "Modifier le filtre Sieve">
-
 <!ENTITY edit.toolbar.save "Sauver">
 <!ENTITY edit.toolbar.undo "Défaire">
 <!ENTITY edit.toolbar.redo "Refaire">
@@ -285,3 +283,6 @@ essayez une configuration manuelle.">
 Que voulez-vous faire ?">
 <!ENTITY status.sync.keep "Garder le script local">
 <!ENTITY status.sync.replace "Utiliser le script du serveur">
+
+<!-- Shortcut keys -->
+<!ENTITY shortcut.save.key "S">

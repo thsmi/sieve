@@ -25,7 +25,7 @@ CodeMirror.defineMode("sieve", function(config) {
   var indentUnit = config.indentUnit;
   
   function tokenBase(stream, state) {
-            
+
     var ch = stream.next();
 
     switch (ch) {
@@ -44,28 +44,18 @@ CodeMirror.defineMode("sieve", function(config) {
         state.tokenize = tokenString(ch);
         return state.tokenize(stream, state);      
       
+      case "(":
+       state._indent.push("("); 
       case "{" :
-        state._indent++;
+        state._indent.push("{");
         return null;
-        
-      case "}" :
-        state._indent--;
-        if (state._indent < 0)
-          state._indent = 0;
-          
-        return null;
-      
-      case "(" :
-        state._subindent ++;
-        return null;
-        
+       
       case ")" :
-        state._subindent --;
-        if (state._subindent < 0)
-          state._subindent = 0;
-          
+        state._indent.pop();
+      case "}" :
+        state._indent.pop();
         return null;
-      
+           
       case "," :
       case ";" :
         return null;
@@ -159,26 +149,38 @@ CodeMirror.defineMode("sieve", function(config) {
     };
   }
 
+    
   return {
     startState: function(base) {
+
       return {tokenize: tokenBase,
               baseIndent: base || 0,
-              _indent: 0,
-              _subindent:0 };
+              _indent: [],
+              };
     },
 
     token: function(stream, state) {
+            
       if (stream.eatSpace())
         return null;
-     
-      return (state.tokenize || tokenBase)(stream, state);;
+        
+      return (state.tokenize || tokenBase)(stream, state) 
+      
     },
 
-    indent: function(state, textAfter) {
-      return state.baseIndent + state._indent * indentUnit + state._subindent  * 2 * indentUnit;
+    indent: function(state, textAfter)
+    {
+      var length = state._indent.length;
+      if (textAfter && (textAfter[0] == "}"))
+        length--;
+      
+      if (length <0)
+        length = 0;
+      
+      return length * indentUnit;      
     },
 
-    electricChars: "}",
+    electricChars: "}"
   };
 });
 

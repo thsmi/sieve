@@ -27,7 +27,6 @@ function errorhandler(msg, url, line)
   
 window.onerror = errorhandler;
   
-
   
 // TODO möglichkeit bauen einen FilterList Dialog an die GUI zu binden bzw. 
 // davon zu befreien. Dadurch wird garantiert dass immer nur die aktuelle

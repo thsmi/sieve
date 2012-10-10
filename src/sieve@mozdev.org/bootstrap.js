@@ -45,7 +45,7 @@ function shutdown(data, reason)
   // Speedup shutdown, we don't need to cleanup if thunderbird closes
   if (reason == APP_SHUTDOWN)
     return;    
-
+    
   // TODO if reason ADDON_UPGRADE persist all open tabs...
     
   // Step 1: Unload XPCOM Componenets

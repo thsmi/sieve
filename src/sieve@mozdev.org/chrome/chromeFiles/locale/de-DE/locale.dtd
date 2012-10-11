@@ -249,7 +249,7 @@ und konfiguriern Sie das Sieve Konto manuell.">
 <!ENTITY edit.toolbar.print "Drucken" >
 <!ENTITY edit.toolbar.search "Suchen">
 
-<!ENTITY edit.sidebar.uri "http://sieve.mozdev.org/reference/en/index.html">
+<!ENTITY edit.sidebar.uri "http://thsmi.github.com/sieve-reference/en/index.html">
 <!ENTITY edit.sidebar.title "Sieve Sprachreferenz">
 
 <!ENTITY edit.searchreplace.title "Suchen und ersetzen">

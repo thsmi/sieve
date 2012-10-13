@@ -1,9 +1,9 @@
 # Thunderbird Sieve Extension
 
 Sieve is a powerful script language for server-side mail filtering. It is 
-intended to be used with IMAP and thus it is widely spread. Many IMAP Server 
-are capable of running sieve filters. Sieve stores and runs all script on the 
-server-side.
+intended to be used with [IMAP](http://tools.ietf.org/html/rfc3501) and thus 
+it is widely spread. Many IMAP Server are capable of running sieve filters. 
+Sieve stores and runs all script on the server-side.
 
 Now there is the dilemma - you have access to a server supporting sieve but, 
 how do you manage your scripts on this server?
@@ -16,10 +16,9 @@ convenient interface? That is exactly what the Sieve Extension offers...
 ## Status
 
 The extension is an implementation of the [sieve management protocol (RFC 5804)](https://wiki.tools.ietf.org/html/rfc5804).
-Currently only "SASL Plain", "SASL Login", "SASL CRAM MD5" and "SASL SCRAM SHA1" 
+Currently only "SASL Plain", "SASL Login", "SASL CRAM MD5" and "[SASL SCRAM SHA1](https://tools.ietf.org/html/rfc5802)" 
 Authentication mechanisms are supported, others may be implemented on request. 
-Since there have not been any major Bugs, the project can be considered as 
-rather stable.
+The project exists since 2006 and can be considered as stable.
 
 ## Bugs
 

@@ -13,7 +13,7 @@ applicable for a normal user and almost impossible with secure connections.
 Wouldn't it be great to activate, edit, delete and add sieve scripts with a 
 convenient interface? That is exactly what the Sieve Extension offers...
 
-# Project Status
+# Status
 
 The extension is an implementation of the [sieve management protocol (RFC 5804)](https://wiki.tools.ietf.org/html/rfc5804).
 Currently only "SASL Plain", "SASL Login", "SASL CRAM MD5" and "SASL SCRAM SHA1" 
@@ -31,22 +31,10 @@ might be a good idea to check your spam filter.
 
 # License
 
-Keep in mind, Sieve is a powerful mail filter, loss of data is likely when you 
-misconfigure a script. Furthermore is likely that this extension contains bugs. 
-As the source code is freely available, every one can check the correctness and 
-the quality of the software before using it. This means you use the extension at
-your own risk. There is absolutely no liability for loss of data or damage or 
-similar stuff caused by this extension.
-
 The extension is free and open source software, it is made available to you 
 under the terms of the [GNU Affero General Public License (AGPLv3)](http://www.fsf.org/licensing/licenses/agpl-3.0.html).
-This means you may use, copy and distribute it to others. You are also welcome to modify 
-the source code as you want to meet your needs.
 
-If you don't agree with this license, don't use the extension! As every country 
-has it's own jurisdiction, it could be that parts of the license or the whole 
-license itself is illegal, invalid or violates a law of your country. If so you 
-are not allowed to use the extension!
+Refer to [Licensing information] for details.
 
 # How to Install in Thunderbird
 

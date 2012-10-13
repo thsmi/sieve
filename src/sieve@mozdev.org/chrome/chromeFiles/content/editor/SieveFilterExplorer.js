@@ -168,10 +168,6 @@ var gSFE = new SieveFilterExplorer();
 function onWindowLoad()
 {
 
-//	var actList = document.getElementById("conImapAcct");
-//	var actpopup = document.createElement("menupopup");
-//	actList.appendChild(actpopup);
-
   // now create a logger session...
   if (gLogger == null)
     gLogger = Cc["@mozilla.org/consoleservice;1"]

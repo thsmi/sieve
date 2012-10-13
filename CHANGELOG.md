@@ -1,14 +1,14 @@
 # Changelog
 
-## Sieve 0.2.2 - (22.09.2012)
+### Sieve 0.2.2 - (22.09.2012)
 
 * [NEW] Syntax highlight in text editor. It is based on [CodeMirror](http://www.codemirror.net)
 * [NEW] Merge dialog if local script is newer than the remote.
 * [NEW] Support for thunderbird's upcoming AppMenu
 * [NEW] Changed indication in tab title
-* [BUGFIX]  Closing Tab in offline mode could fail
+* [FIXED]  Closing Tab in offline mode could fail
 
-## Sieve 0.2.1 - (15.08.2012)
+### Sieve 0.2.1 - (15.08.2012)
 
 * [NEW] Extension is [restartless / Bootstrapped](https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions)
 * [NEW] Spanish locale
@@ -20,32 +20,30 @@
 * [FIXED] Referrals broken, because session was lost after connect
 * [FIXED] Toolbar in graphical editor now scrolls in x-position but maintains it's y-position
 * [FIXED] Side and side and error bar dimensions should persist
-* [FIXEd] "Source View" button partly broken
+* [FIXED] "Source View" button partly broken
 
-## Sieve 0.2.0 - (02.04.2012)
+### Sieve 0.2.0 - (02.04.2012)
 
 * [NEW] Graphical Interface for editing scripts
 * [UPDATE] French locale
 
-## Sieve 0.1.14 - (16.12.2011)
+### Sieve 0.1.14 - (16.12.2011)
 
 * [NEW] [SCRAM-SHA1](https://tools.ietf.org/html/rfc5802) support
 * [NEW] Tabbed UI
 * [FIXED] CRAM-MD5 compatibility issues
 * [FIXED] Packet fragmentation caused starttls workaround to randomly fail
 
-
-  <h5>Sieve 0.1.13 - (19.07.2011)</h5>
-  <ul>
-    <li>Update: Switch default port to 4190 (see <a href="https://wiki.tools.ietf.org/html/rfc5804#section-1.8">RFC</a>)</li>
-    <li>Update: Hostname and Port configuration separated</li>
-    <li>Update: Improoved workaround for cyrus STARTTLS bug</li>
-    <li>BugFix: SASL CRAM-MD5 failed on Dovecot</li>
-    <li>New: Backend supports pipelining.</li>
-    <li>New: Support Tabulator Key in the Editor</li>
-    <li>New: Force TLS</li>
-    <li>New: Account Wizard</li>
-  </ul>
+### Sieve 0.1.13 - (19.07.2011)
+* [UPDATED] Change default port to 4190 (see [RFC5804](https://wiki.tools.ietf.org/html/rfc5804#section-1.8"))
+* [UPDATED] Hostname and Port configuration separated
+* [UPDATED] Improved workaround for cyrus STARTTLS bug
+* [FIXED] SASL CRAM-MD5 failed on Dovecot
+* [NEW] connection pipelining
+* [NEW] Support Tabulator Key in the Editor
+* [NEW] Option to Force TLS
+* [NEW] Account Wizard
+  
   <h5>Sieve 0.1.12 - (04.04.2011)</h5>
   <ul>
     <li>BugFix: Fix Referrals</li>
@@ -140,9 +138,7 @@
     <li>Sieve referrals are now properly handled</li>
     <li>Error handling improved</li>
     <li>Minor bugs in the settings dialog fixed</li>
-  </ul>  
-  <h5>Sieve 0.1.0 (01.05.2006)</h5>
-  <ul>
-    <li>Initial release</li>
-  </ul>  
-</div>
+  </ul> 
+  
+### Sieve 0.1.0 (01.05.2006)
+* [NEW] Initial release

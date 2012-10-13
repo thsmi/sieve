@@ -1,6 +1,6 @@
 # Thunderbird Sieve Extension
 
-Sieve is a powerful script language for server-side mail filtering. It is 
+[Sieve](http://en.wikipedia.org/wiki/Sieve_%28mail_filtering_language%29) is a powerful script language for server-side mail filtering. It is 
 intended to be used with [IMAP](http://tools.ietf.org/html/rfc3501) and thus 
 it is widely spread. Many IMAP Server are capable of running sieve filters. 
 Sieve stores and runs all script on the server-side.

@@ -1,3 +1,14 @@
+/*
+ * The content of this file is licenced. You may obtain a copy of the license
+ * at http://sieve.mozdev.org or request it via email from the author. 
+ *
+ * Do not remove or change this comment.
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ *      
+ */
+
 // Enable Strict Mode
 "use strict"; 
 
@@ -29,8 +40,8 @@ function startup(data, reason)
   
   SieveOverlayManager.addOverlay(
       SieveMailWindowOverlay,"chrome://messenger/content/messenger.xul");
-  /*SieveOverlayManager.addOverlay(
-      SieveFilterListOverlay,"chrome://messenger/content/FilterListDialog.xul");*/
+  SieveOverlayManager.addOverlay(
+      SieveFilterListOverlay,"chrome://messenger/content/FilterListDialog.xul");
 
   SieveOverlayManager.addOverlay(
       SieveToolbarOverlay, "chrome://global/content/customizeToolbar.xul");

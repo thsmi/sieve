@@ -155,7 +155,7 @@ CodeMirror.defineMode("sieve", function(config) {
 
       return {tokenize: tokenBase,
               baseIndent: base || 0,
-              _indent: [],
+              _indent: []
               };
     },
 

@@ -1,12 +1,17 @@
 <!doctype html>
 <html>
   <head>
-    <title>test</title>
+    <title>Sieve Editor</title>
+	
     <link rel="stylesheet" href="./../libs/CodeMirror/lib/codemirror.css">
+	<link rel="stylesheet" href="./../libs/CodeMirror/theme/eclipse.css">	
+	
     <script src="./../libs/CodeMirror/lib/codemirror.js"></script>
 	<script src="./../libs/CodeMirror/lib/util/searchcursor.js"></script>
-	<link rel="stylesheet" href="./../libs/CodeMirror/theme/eclipse.css">	
+	<script src="./../libs/CodeMirror/lib/util/matchbrackets.js"></script>
+	
     <script src="./../libs/CodeMirror/mode/sieve/sieve.js"></script>
+	
     <style>
 	    .CodeMirror-fullscreen {
 	      display: block;
@@ -21,31 +26,35 @@
 		  background-attachment: fixed;
 		  
 		  font-family: -moz-fixed;
-font-size: 12px;
-line-height: normal;
-
+          font-size: 12px;
+          line-height: normal;
 		}
+		
 		.CodeMirror-gutter {
           border: none;
           border-right: 1px solid #A9B7C9;
           -moz-transition: border-width .3s ease-in;	
-      background: #f8f8f8;
-	  min-width:40px;
-	}
+          background: #f8f8f8;
+	      min-width:40px;
+	    }
 
 	   body { margin:0px;}
 	   .activeline {background: #e8f2ff !important;}
+	   
 	 </style>
   </head>
+  
   <body>
     <textarea id="code" name="code"></textarea>
+  
     <script>	
     function winHeight() {
       return window.innerHeight || (document.documentElement || document.body).clientHeight;
     }
 	
     function setFullScreen(cm) {
-      var wrap = cm.getWrapperElement(), scroll = cm.getScrollerElement();
+      var wrap = cm.getWrapperElement()
+	  var scroll = cm.getScrollerElement();
      
       wrap.className += " CodeMirror-fullscreen";
       scroll.style.height = winHeight() + "px";
@@ -55,7 +64,8 @@ line-height: normal;
     }
 	
     CodeMirror.connect(window, "resize", function() {
-      var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
+      
+	  var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
       if (!showing) return;
       showing.CodeMirror.getScrollerElement().style.height = winHeight() + "px";
     });
@@ -70,9 +80,10 @@ line-height: normal;
 	  });
 	  
 	  var hlLine = editor.setLineClass(0, "activeline");	  	  
-	  setFullScreen(editor)
+	  setFullScreen(editor);
 
-	  
+	  editor.setOption("matchBrackets",true);
+	 
     </script>
   </body>
 </html>

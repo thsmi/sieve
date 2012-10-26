@@ -261,12 +261,14 @@ SieveFilterEditor.prototype.onScriptLoaded
 
   var editor = document.getElementById("sivEditor2").contentWindow.editor;
   
-  editor.setValue(script);
   editor.setCursor({line:0,ch:0});
+  editor.setValue(script);
   editor.clearHistory();
-  
+
+    
   // Ugly workaround...
-  editor.getOption("onCursorActivity")();  
+  document.getElementById("sivEditor2").contentWindow.onActiveLineChange();
+
 
   if (gEditorStatus.checksum.server == null) {
     gEditorStatus.checksum.server = this._calcChecksum(this.getScript());
@@ -458,8 +460,8 @@ function onWindowPersist()
 function onWindowLoad()
 {
   document.getElementById("sivEditor2")
-    .contentWindow.editor.setOption("onChange",onInput);
-    
+    .contentWindow.editor.on("change",onInput);
+  
   // hack to prevent links to be opened in the default browser window...
   document.getElementById("ifSideBar").
     addEventListener(
@@ -569,8 +571,6 @@ function onViewSource(visible,aNoUpdate)
       return;
 
     document.getElementById("sivEditor2").contentWindow.editor.setValue(script);
-    
-    
     
     onInput();
     return;
@@ -692,7 +692,7 @@ function onSideBarGo(uri)
       "DOMContentLoaded", function(event) { onSideBarLoading(false); }, false);*/
   if (document.getElementById("ifSideBar").addEventListener)
     document.getElementById("ifSideBar").addEventListener(
-      "DOMContentLoaded", function(event) {	onSideBarLoading(false); }, false);
+      "DOMContentLoaded", function(event) { onSideBarLoading(false); }, false);
   
   document.getElementById("ifSideBar").setAttribute('src', uri);
 }
@@ -825,34 +825,34 @@ function onImport()
 function onExport()
 {
   var filePicker = Cc["@mozilla.org/filepicker;1"]
-			.createInstance(Ci.nsIFilePicker);
+      .createInstance(Ci.nsIFilePicker);
 
-	filePicker.defaultExtension = ".siv";
-	filePicker.defaultString = gSFE.getScriptName() + ".siv";
+  filePicker.defaultExtension = ".siv";
+  filePicker.defaultString = gSFE.getScriptName() + ".siv";
 
-	filePicker.appendFilter("Sieve Scripts (*.siv)", "*.siv");
-	filePicker.appendFilter("Text Files (*.txt)", "*.txt");
-	filePicker.appendFilter("All Files (*.*)", "*.*");
-	filePicker.init(window, "Export Sieve Script", filePicker.modeSave);
+  filePicker.appendFilter("Sieve Scripts (*.siv)", "*.siv");
+  filePicker.appendFilter("Text Files (*.txt)", "*.txt");
+  filePicker.appendFilter("All Files (*.*)", "*.*");
+  filePicker.init(window, "Export Sieve Script", filePicker.modeSave);
 
-	var result = filePicker.show();
+  var result = filePicker.show();
 
-	if ((result != filePicker.returnOK) && (result != filePicker.returnReplace))
-		return;
+  if ((result != filePicker.returnOK) && (result != filePicker.returnReplace))
+    return;
 
-	var file = filePicker.file;
+  var file = filePicker.file;
 
-	if (file.exists() == false)
-		file.create(Ci.nsIFile.NORMAL_FILE_TYPE, parseInt("0644", 8));
+  if (file.exists() == false)
+    file.create(Ci.nsIFile.NORMAL_FILE_TYPE, parseInt("0644", 8));
 
-	var outputStream = Cc["@mozilla.org/network/file-output-stream;1"]
-			.createInstance(Ci.nsIFileOutputStream);
+  var outputStream = Cc["@mozilla.org/network/file-output-stream;1"]
+      .createInstance(Ci.nsIFileOutputStream);
 
-	outputStream.init(file, 0x04 | 0x08 | 0x20, parseInt("0644", 8), null);
+  outputStream.init(file, 0x04 | 0x08 | 0x20, parseInt("0644", 8), null);
 
-	var data = gSFE.getScript();
-	outputStream.write(data, data.length);
-	outputStream.close();
+  var data = gSFE.getScript();
+  outputStream.write(data, data.length);
+  outputStream.close();
 }
 
 function onErrorBar(visible,aSilent)

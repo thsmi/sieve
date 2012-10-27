@@ -62,7 +62,9 @@ SieveFilterExplorer.prototype.onListScriptResponse
     tree.view.selection.select(0);
       
   this.onStatusChange(0);
-  //TODO force repainting treeview...
+  
+  // force repainting treeview to speedup the ui...
+  tree.treeBoxObject.invalidate();
 }
 
 SieveFilterExplorer.prototype.onSetActiveResponse
@@ -106,7 +108,6 @@ SieveFilterExplorer.prototype._renameScript
   // ... So we try hard and double check our cached scriptnames for possible...
   // ... conflicts inoder to prevent possible dataloss.
   
-  // TODO throw an error instead of retuning null...
   var tree = document.getElementById('treeImapRules');  
     for(var i = 0; i < this._view.rules.length; i++)    
       if (this._view.rules[i].script == newName)

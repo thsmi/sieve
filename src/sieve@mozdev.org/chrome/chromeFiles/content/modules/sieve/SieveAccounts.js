@@ -488,10 +488,10 @@ SieveSocks4Proxy.prototype.setPort
   port = parseInt(port,10);
   
   if (isNaN(port))
-    throw "Invalid Port Number";
+    throw "Invalid port number";
     
   if ((port < 0) || (port > 65535))
-    throw "Ivalid Port Number";
+    throw "Invalid port number";
 
   Services.prefs.setCharPref(this.prefURI+".port",""+port);
 }

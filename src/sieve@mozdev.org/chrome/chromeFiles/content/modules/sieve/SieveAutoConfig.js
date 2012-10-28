@@ -34,7 +34,7 @@ SieveAutoConfig.prototype =
   addHost: function(host, port, proxy)
   {
     if (this.activeHosts > 0)
-      throw ("Auto config already running");
+      throw new Error("Auto config already running");
     
     this.hosts.push(new SieveAutoConfigHost(host,port,proxy,this));
   },
@@ -42,7 +42,7 @@ SieveAutoConfig.prototype =
   run: function(listener)
   { 
     if (this.activeHosts > 0)
-      throw ("Auto config already running");
+      throw new Error("Auto config already running");
     
     this.listener = listener;
     this.activeHosts = this.hosts.length;

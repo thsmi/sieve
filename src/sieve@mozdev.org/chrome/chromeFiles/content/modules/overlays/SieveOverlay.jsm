@@ -289,7 +289,7 @@ SieveMailWindowOverlay.prototype.load
 {   
   if (this.window)
     throw "already bound to window";
-    
+  
   var that = this;
   this.window = window;
   
@@ -428,10 +428,87 @@ SieveMailWindowOverlay.prototype.load
     appMenu.appendChild(appMenuOpenSettings);    
     
   }
-  
-  
 
+  // We don not have to unload this import. It is always loaded into the main window...
+  Components.utils.import("resource:///modules/gloda/mimemsg.js");
   
+  var hbox = document.createElement("vbox");
+  hbox.setAttribute("id","sivNotificationBar");
+  hbox.setAttribute("class","msgNotificationBar");
+  hbox.setAttribute("collapsed","true");
+  
+  hbox.appendChild(document.createElement("label"));
+  hbox.lastChild.setAttribute("flex","1");
+  hbox.lastChild.setAttribute("class","msgNotificationBarText");
+  hbox.lastChild.setAttribute("value","The Server reports filtering this mail failed, because:");
+ 
+  hbox.appendChild(document.createElement("label"));
+  hbox.lastChild.setAttribute("id","sivNotificationBarMessage");
+  hbox.lastChild.setAttribute("class","msgNotificaton-smallText text-link");
+  
+  var elm = document.getElementById("msgNotificationBar");  
+  elm.parentNode.insertBefore(hbox, elm.nextSibling);
+    
+  this.unloadCallback(
+    function() { elm.parentNode.removeChild(hbox);} );
+  
+/*  
+  // Does not return full headers...
+   
+  var hdrListener = {};
+  hdrListener.onStartHeaders = function () {}   
+  hdrListener.onEndHeaders = function () 
+  {
+    Services.prompt.alert(null, "Title of this Dialog",window.currentHeaderData.toSource());
+  }
+  window.gMessageListeners.push(hdrListener);*/
+    
+  // Add message display listener...
+  var msgDisplayObserver = {
+    observe : function(aSubject, aTopic, aData) 
+    {
+      
+      if (aTopic != "MsgMsgDisplayed")
+        return;
+            
+      try {
+     
+        var messenger =  Cc["@mozilla.org/messenger;1"]
+                             .createInstance()
+                             .QueryInterface(Ci.nsIMessenger);
+                           
+        var msgHdr = messenger.msgHdrFromURI(aData);      
+     
+        var mimeCallback = function (aMsgHdr, aMimeMsg) 
+        {        
+          if (!aMimeMsg.has("X-Nemesis-Sieve"))
+          {
+            document.getElementById("sivNotificationBar").setAttribute("collapsed","true")
+            return;
+          }
+                   
+          document.getElementById("sivNotificationBar").removeAttribute("collapsed");
+          document.getElementById("sivNotificationBarMessage").value = aMimeMsg.headers['x-nemesis-sieve']; 
+          
+          Services.console.logStringMessage(" Found "+ aMimeMsg.headers['x-nemesis-sieve']);
+        };
+                
+      
+        MsgHdrToMimeMessage(msgHdr, null, mimeCallback, true, { partsOnDemand: true});
+      }
+      catch (ex)
+      {
+        Services.console.logStringMessage(" Parsing Message Header failed "+ ex);
+      }
+    }      
+  }; 
+     
+  // We want a strong reference, we do not keep cache areference here, 
+  // so the garbagge collector could swipe it...
+  Services.obs.addObserver(msgDisplayObserver, "MsgMsgDisplayed", false);  
+  
+  this.unloadCallback(
+    function() { Services.obs.removeObserver(msgDisplayObserver, "MsgMsgDisplayed") })   
   
 }
 

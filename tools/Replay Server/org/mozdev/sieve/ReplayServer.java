@@ -1,3 +1,12 @@
+/* 
+ * The contents of this file is licenced. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via email 
+ * from the author. Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+
 package org.mozdev.sieve;
 import java.net.ServerSocket;
 
@@ -6,17 +15,19 @@ import java.net.ServerSocket;
 //
 // set path="c:\Program Files\Java\jre6\bin";%path%
 //
-// keytool �genkey �alias server �keyalg RSA �keystore keystore.jks
-// keytool -export -alias server -keystore keystore.jks -rfc -file server.cer 
-// keytool -import -alias ca -file server.cer -keystore truststore.jks �storepass secret
-// keytool -importkeystore -srckeystore KEYSTORE.jks -destkeystore KEYSTORE.p12 -srcstoretype JKS -deststoretype PKCS12 -srcstorepass secret -deststorepass secret -srcalias myalias -destalias myalias -srckeypass keypass -destkeypass keypass -noprompt 
- 
+// keytool -genkey -alias server -keyalg RSA -keystore keystore.jks -storepass secret -keypass secret
+// keytool -export -alias server -keystore keystore.jks -rfc -file server.cer -storepass secret
+// keytool -import -alias ca -file server.cer -keystore truststore.jks -storepass secret
+// keytool -importkeystore -srckeystore keystore.jks -destkeystore keystore.p12 -srcstoretype JKS -deststoretype PKCS12 -srcstorepass secret
+// 
+
+
 public class ReplayServer
 {
   
-  static final tests test = tests.REFERRAL2;
+  static final tests test = tests.LOGIN;
   
-  static boolean cyrusBug = true;
+  static boolean cyrusBug = false;
   static boolean tls = true;
   
   // Scram SHA1 specific

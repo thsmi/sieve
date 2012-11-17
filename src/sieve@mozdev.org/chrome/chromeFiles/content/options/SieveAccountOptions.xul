@@ -23,7 +23,8 @@
         ondialogaccept="return onDialogAccept();"
         persist="screenX screenY"
         style="width: 48em; height: 27em;"
-        title="&options.title;">
+        title="&options.title;"
+        id="SieveAccountOptions">
     
   <script type="application/javascript" src="chrome://sieve/content/options/SieveAccountOptions.js"/>
   

@@ -9,7 +9,7 @@ Michael Fladischer, Александр Моисеев, Cyril Kluska, Dominique C
 ## Donors
 John Fawcett, Simon Clarkstone, Janusz Wilk, Ralph Angenendt, Ralf Loeser,
 Lars Bahner, Alexander Brüning, Sebastian Bremicker, Christophe Sokol, Trent Payne,
-Chris J Kottaridis, Robert Fantini, Antonino Balsamo, Christopher Davies
+Chris J Kottaridis, Robert Fantini, Antonino Balsamo, Christopher Davies, Thomas Borrmann
 
 ## Resources
 jQuery, CodeMirror, Mozdev.org, sf.net, github

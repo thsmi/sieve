@@ -150,7 +150,10 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 }
 .CodeMirror-gutter {
   height: 100%;
-  float: left;
+  display: inline-block;
+  /* Hack to make IE7 behave */
+  *zoom:1;
+  *display:inline;
 }
 .CodeMirror-gutter-elt {
   position: absolute;
@@ -222,6 +225,9 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
   background: #ffa;
   background: rgba(255, 255, 0, .4);
 }
+
+/* IE7 hack to prevent it from returning funny offsetTops on the spans */
+.CodeMirror span { *vertical-align: text-bottom; }
 
 @media print {
   /* Hide the cursor when printing */

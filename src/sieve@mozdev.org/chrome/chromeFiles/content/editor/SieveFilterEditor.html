@@ -79,14 +79,19 @@
   
       setFullScreen(editor,true);
     
+      var hlLine = editor.addLineClass(0, "background", "activeline");
     
-      function onActiveLineChange()
+      // This function is called externaly upon reloading and updating scripts  
+      function onActiveLineChange() 
       {
-        editor.setLineClass(hlLine, null, null);
-        hlLine = editor.setLineClass(editor.getCursor().line, null, "activeline");    
+        var cur = editor.getLineHandle(editor.getCursor().line);
+        
+        if (cur != hlLine) {
+          editor.removeLineClass(hlLine, "background", "activeline");
+          hlLine = editor.addLineClass(cur, "background", "activeline");
+        }
       }
-    
-      var hlLine = editor.setLineClass(0, null, "activeline");
+      
       editor.on("cursorActivity", onActiveLineChange);    
     
     </script>

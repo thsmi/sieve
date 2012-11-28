@@ -1,6 +1,6 @@
 /* 
  * The contents of this file is licenced. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email 
+ * the license at https://github.com/thsmi/sieve/ or request it via email 
  * from the author. Do not remove or change this comment. 
  * 
  * The initial author of the code is:
@@ -12,6 +12,18 @@
 
 // Expose to javascript modules
 var EXPORTED_SYMBOLS = [ "SieveResponseParser" ];
+
+// It's save to declare constants within a module...
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+
+const CHAR_LF = 10
+const CHAR_CR = 13;
+const CHAR_SPACE = 32;
+const CHAR_QUOTE = 34;
+const CHAR_BACKSLASH = 92;
+const CHAR_LEFT_BRACES = 123;
+const CHAR_RIGHT_BRACES = 125;
 
 /**
  * The manage sieve protocol syntax uses a fixed gramar which is based on atomar tokens. 
@@ -40,7 +52,7 @@ function SieveResponseParser(data)
 }
 
 /**
- * Extracts the given number of bytes the buffer. 
+ * Extracts the given number of bytes from the buffer. 
  * 
  * @param {int} size
  *   The number of bytes as integer which should be extracted
@@ -65,10 +77,10 @@ SieveResponseParser.prototype.isLineBreak
     return false;
     
   // Test for a linebreak #13#10
-  if (this.data[this.pos] != 13)
+  if (this.data[this.pos] != CHAR_CR)
     return false;
     
-  if (this.data[this.pos+1] != 10)
+  if (this.data[this.pos+1] != CHAR_LF)
     return false;
 
   return true;
@@ -83,7 +95,7 @@ SieveResponseParser.prototype.extractLineBreak
     = function ()
 {
   if (this.isLineBreak() == false)
-    throw "Linebreak expected:\r\n"+this.getData();
+    throw "Linebreak expected but found:\n"+this.getData();
   
   this.pos += 2;
 }
@@ -96,7 +108,7 @@ SieveResponseParser.prototype.extractLineBreak
 SieveResponseParser.prototype.isSpace
     = function ()
 { 
-  if (this.data[this.pos] == 32)
+  if (this.data[this.pos] == CHAR_SPACE)
     return true;
     
   return false;
@@ -111,16 +123,16 @@ SieveResponseParser.prototype.extractSpace
     = function ()
 {
   if (this.isSpace() == false)
-    throw "Space expected in: "+this.getData();
+    throw "Space expected but found:\n"+this.getData();
     
   this.pos++;
 }
 
-//     literal               = "{" number  "+}" CRLF *OCTET
+// literal = "{" number  "+}" CRLF *OCTET
 SieveResponseParser.prototype.isLiteral
     = function ()
 {
-  if (this.data[this.pos] == 123)
+  if (this.data[this.pos] == CHAR_LEFT_BRACES)
     return true;
 
   return false;
@@ -132,7 +144,7 @@ SieveResponseParser.prototype.extractLiteral
     = function ()
 {
   if ( this.isLiteral() == false )
-    throw "Literal Expected in :\r\n"+this.getData();
+    throw "Literal Expected but found\n"+this.getData();
          
   // remove the "{"
   this.pos++;
@@ -140,17 +152,14 @@ SieveResponseParser.prototype.extractLiteral
   // some sieve implementations are broken, this means ....
   // ... we can get "{4+}\r\n1234" or "{4}\r\n1234"
   
-  var nextBracket = this.indexOf(125);
+  var nextBracket = this.indexOf(CHAR_RIGHT_BRACES);
   if (nextBracket == -1)
-    throw "Error unbalanced parathesis \"{\"";
+    throw "Error unbalanced parentheses \"{\" in\n"+parser.getData();
   
   // extract the size, and ignore "+"
   var size = parseInt(this.getData(this.pos, nextBracket).replace(/\+/,""),10);
     
-  this.pos = nextBracket+1;
-
-  if ( this.isLineBreak() == false)
-    throw "Linebreak Expected";        
+  this.pos = nextBracket+1;      
         
   this.extractLineBreak();
 
@@ -161,46 +170,77 @@ SieveResponseParser.prototype.extractLiteral
   return literal;
 }
 
+/**
+ * Searches the buffer for a character.
+ * 
+ * @param {byte} character
+ *   the chararcter which should be found
+ * @optional @param {int} offset
+ *   an absolut offset, from which to start seachring 
+ * @return {int} character
+ *   the characters absolute position within the buffer otherwise -1 if not found
+ */
 SieveResponseParser.prototype.indexOf
-    = function (character)
+    = function (character,offset)
 {     
-  for (var i=this.pos; i<this.data.length; i++)
-  {
+  if (typeof(offset) == "undefined")
+    offset = this.pos;
+
+  for (var i=offset; i<this.data.length; i++)
     if (this.data[i] == character)
       return i;
-  }
   
   return -1;
 }
 
+/**
+ * Test if the buffer starts with a quote character (#34)
+ * @return {Boolean}
+ *   true if buffer starts with a quote character, otherwise false
+ */
 SieveResponseParser.prototype.isQuoted
     = function ()
 { 
-  if (this.data[this.pos] == 34)
+  if (this.data[this.pos] == CHAR_QUOTE)
     return true;
 
   return false;
 }
 
+/**
+ * Extracts a quoted string form the buffer. It is aware of escape sequences.
+ * 
+ * If it does not start with a valid string an exception is thrown.
+ * 
+ * @return {string}
+ *   the quoted string extracted, it is garanteed to be free of escape sequences
+ */
 SieveResponseParser.prototype.extractQuoted
     = function ()
 {
   if (this.isQuoted() == false)
-    throw "Quoted expected";
-
-  // remove the Quote "
-  this.pos++;
+    throw "Quoted string expected but found \n"+this.getData();
+ 
+  // now search for the end. But we need to be aware of escape sequences.
+  var nextQuote = this.pos;
   
-  // save the position of the next "
-  var nextQuote = this.indexOf(34);
+  do
+  {
+    nextQuote = this.indexOf(CHAR_QUOTE, nextQuote+1);
+    
+    if (nextQuote == -1)
+      throw "Quoted string not properly closed\n"+this.getData();
+    
+  } while (this.data[nextQuote-1] == CHAR_BACKSLASH )
 
-  if (nextQuote == -1)
-    throw "Error unbalanced quotes";
-
-  var quoted = this.getData(this.pos,nextQuote);
+  var quoted = this.getData(this.pos+1,nextQuote);
 
   this.pos = nextQuote+1;
 
+  // Cleanup escape sequences
+  quoted = quoted.replace('\\"','"',"g")
+  quoted = quoted.replace("\\\\","\\","g");  
+  
   return quoted;
 }
 
@@ -225,7 +265,7 @@ SieveResponseParser.prototype.extractString
   if ( this.isLiteral() )
     return this.extractLiteral();
         
-  throw "Message String expected";        
+  throw "String expected but found\n"+this.getData();        
 }
 
 /**
@@ -335,8 +375,8 @@ SieveResponseParser.prototype.getData
   if (arguments.length < 1)
     startIndex = this.pos;
     
-  var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-                    .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+  var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
+                    .createInstance(Ci.nsIScriptableUnicodeConverter);
   converter.charset = "UTF-8" ;
   
   var byteArray = this.data.slice(startIndex,endIndex);

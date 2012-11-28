@@ -95,7 +95,7 @@ SieveResponseParser.prototype.extractLineBreak
     = function ()
 {
   if (this.isLineBreak() == false)
-    throw "Linebreak expected:\r\n"+this.getData();
+    throw "Linebreak expected but found:\n"+this.getData();
   
   this.pos += 2;
 }
@@ -123,7 +123,7 @@ SieveResponseParser.prototype.extractSpace
     = function ()
 {
   if (this.isSpace() == false)
-    throw "Space expected in: "+this.getData();
+    throw "Space expected but found:\n"+this.getData();
     
   this.pos++;
 }
@@ -144,7 +144,7 @@ SieveResponseParser.prototype.extractLiteral
     = function ()
 {
   if ( this.isLiteral() == false )
-    throw "Literal Expected in :\r\n"+this.getData();
+    throw "Literal Expected but found\n"+this.getData();
          
   // remove the "{"
   this.pos++;
@@ -154,15 +154,12 @@ SieveResponseParser.prototype.extractLiteral
   
   var nextBracket = this.indexOf(CHAR_RIGHT_BRACES);
   if (nextBracket == -1)
-    throw "Error unbalanced parentheses \"{\"";
+    throw "Error unbalanced parentheses \"{\" in\n"+parser.getData();
   
   // extract the size, and ignore "+"
   var size = parseInt(this.getData(this.pos, nextBracket).replace(/\+/,""),10);
     
-  this.pos = nextBracket+1;
-
-  if ( this.isLineBreak() == false)
-    throw "Linebreak Expected";        
+  this.pos = nextBracket+1;      
         
   this.extractLineBreak();
 
@@ -222,7 +219,7 @@ SieveResponseParser.prototype.extractQuoted
     = function ()
 {
   if (this.isQuoted() == false)
-    throw "Quoted expected";
+    throw "Quoted string expected but found \n"+this.getData();
  
   // now search for the end. But we need to be aware of escape sequences.
   var nextQuote = this.pos;
@@ -232,10 +229,9 @@ SieveResponseParser.prototype.extractQuoted
     nextQuote = this.indexOf(CHAR_QUOTE, nextQuote+1);
     
     if (nextQuote == -1)
-      throw "Error unbalanced quotes";
+      throw "Quoted string not properly closed\n"+this.getData();
     
   } while (this.data[nextQuote-1] == CHAR_BACKSLASH )
-
 
   var quoted = this.getData(this.pos+1,nextQuote);
 
@@ -269,7 +265,7 @@ SieveResponseParser.prototype.extractString
   if ( this.isLiteral() )
     return this.extractLiteral();
         
-  throw "Message String expected";        
+  throw "String expected but found\n"+this.getData();        
 }
 
 /**

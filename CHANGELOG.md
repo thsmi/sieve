@@ -1,5 +1,12 @@
 # Changelogs
 
+## Sieve 0.2.3 - (not yet release)
+Development builds can be found in the [Downloads section](downloaded at https://github.com/thsmi/sieve/download). 
+* [Fixed] Quoted Strings ignored escape characters
+* [Fixed] "Empty string passed to getElementById()" Warning
+* [UPDATED] Move to CodeMirror v3.x 
+
+
 ## Sieve 0.2.2 - (22.09.2012)
 * [NEW] Syntax highlight in text editor. It is based on [CodeMirror](http://www.codemirror.net)
 * [NEW] Merge dialog if local script is newer than the remote.

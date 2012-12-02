@@ -1,11 +1,21 @@
 <?xml version="1.0"?>
+<!--
+ 
+ The contents of this file is licenced. You may obtain a copy of
+ the license at https://github.com/thsmi/sieve/ or request it via email 
+ from the author. Do not remove or change this comment. 
+  
+ The initial author of the code is:
+   Thomas Schmid <schmid-thomas@gmx.net>
+
+-->
 
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
      xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>sieve@mozdev.org</em:id>
-    <em:version>0.2.3a</em:version>
+    <em:version>0.2.3b</em:version>
     <em:type>2</em:type>
 
     <em:targetApplication>

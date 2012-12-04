@@ -1,6 +1,7 @@
 # Thunderbird Sieve Extension
 
-[Sieve](http://en.wikipedia.org/wiki/Sieve_%28mail_filtering_language%29) is a powerful script language for server-side mail filtering. It is 
+[Sieve](http://en.wikipedia.org/wiki/Sieve_%28mail_filtering_language%29) is 
+a powerful script language for server-side mail filtering. It is 
 intended to be used with [IMAP](http://tools.ietf.org/html/rfc3501) and thus 
 it is widely spread. Many IMAP Server are capable of running sieve filters. 
 Sieve stores and runs all script on the server-side.
@@ -20,10 +21,15 @@ Currently only "SASL Plain", "SASL Login", "SASL CRAM MD5" and "[SASL SCRAM SHA1
 Authentication mechanisms are supported, others may be implemented on request. 
 The project exists since 2006 and can be considered as stable.
 
+It is translated into French, Spanish, Russian and German.  If you're interested 
+in translating or localizing the extension into your language, just sign up at 
+[crowdin](http://crowdin.net/project/sieve/invite) and start translating 
+(Crowdin is a free collaborative translation tool).
+
 ## Bugs
 
 Please report bugs via the [issue tracker](https://github.com/thsmi/sieve/issues) 
-or send an email to schmid-thomas at gmx.net
+or send an email to schmid-thomas at gmx.net 
 
 Give me 1-2 weeks time for a reply. If you did not receive a reply at all, it 
 might be a good idea to check your spam filter. 

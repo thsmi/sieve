@@ -1,7 +1,7 @@
 # Changelogs
 
 ## Sieve 0.2.3 - ([in Progress](https://github.com/thsmi/sieve/issues?milestone=2&state=open))
-Development builds can be found in the [Downloads section](downloaded at https://github.com/thsmi/sieve/download). 
+Development builds can be found in the [Downloads section](https://github.com/thsmi/sieve/download). 
 * [Fixed] Quoted Strings ignored escape characters
 * [Fixed] "Empty string passed to getElementById()" Warning
 * [UPDATED] Move to CodeMirror v3.x 

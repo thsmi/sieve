@@ -1,7 +1,9 @@
 /* 
- * The contents of this file is licenced. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email 
- * from the author. Do not remove or change this comment. 
+ * The contents of this file are licenced. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via 
+ * email from the author.
+ * 
+ * Do not remove or change this comment. 
  * 
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
@@ -99,9 +101,6 @@ SieveImapAuth.prototype.getPassword
     return account.password;
     
   // ... otherwise we it is our job...
-  var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
-                  .getService(Ci.nsIPromptService);
-    
   var strings = Services.strings
                     .createBundle("chrome://sieve/locale/locale.properties");
 
@@ -109,14 +108,12 @@ SieveImapAuth.prototype.getPassword
   var input = {value:null};
   var check = {value:false}; 
   var result 
-    = prompts.promptPassword(
+    = Services.prompt.promptPassword(
         null,
         strings.GetStringFromName("account.password.title"), 
         strings.GetStringFromName("account.password.description"),
         input, null, check);
-  
-  prompts = null;
-  
+
   if (result)
     return input.value;
 
@@ -127,8 +124,8 @@ SieveImapAuth.prototype.getUsername
     = function ()
 {
   // use the IMAP Key to load the Account...
-  var account = Components.classes['@mozilla.org/messenger/account-manager;1']
-	              .getService(Components.interfaces.nsIMsgAccountManager)
+  var account = Cc['@mozilla.org/messenger/account-manager;1']
+	              .getService(Ci.nsIMsgAccountManager)
 	              .getIncomingServer(this.imapKey);
 	                
   return account.realUsername;
@@ -166,10 +163,7 @@ SieveImapAuth.prototype.getType
  *   the unique URI of the associated sieve account
  */
 function SieveCustomAuth2(host, uri)
-{
-  if (("@mozilla.org/login-manager;1" in Components.classes) == false)
-    throw "SieveCustomAuth2: No login manager component found...";
-  
+{  
   if (uri == null)
     throw "SieveCustomAuth2: URI can't be null"; 
 
@@ -220,8 +214,7 @@ SieveCustomAuth2.prototype.setUsername
   
   
   // we should also update the LoginManager...
-  var loginManager = Components.classes["@mozilla.org/login-manager;1"]
-                        .getService(Components.interfaces.nsILoginManager);
+  var loginManager = Services.logins;
                         
   // ...first look for entries which meet the proposed naming...  
   var logins = 
@@ -287,39 +280,25 @@ SieveCustomAuth2.prototype.getPassword
 {
   var username = this.getUsername();
     
-  var loginManager = Components.classes["@mozilla.org/login-manager;1"]
-                        .getService(Components.interfaces.nsILoginManager);
-  
+
   // First look for entries which meet the proposed naming...  
   var logins = 
-        loginManager.findLogins(
+        Services.logins.findLogins(
             {},"sieve://"+this.host,null,"sieve://"+this.host);
 
   for (var i = 0; i < logins.length; i++)
-  {
-    if (logins[i].username != username)
-      continue;
-    
-    return logins[i].password;    
-  }
+    if (logins[i].username == username)
+      return logins[i].password;
   
   // but as Thunderbird fails to import the passwort and username properly...
   // ...there might be some slightly different entries...      
-  logins = 
-    loginManager.findLogins({},"sieve://"+this.uri,"",null);
+  logins = Services.logins.findLogins({},"sieve://"+this.uri,"",null);
   
   for (var i = 0; i < logins.length; i++)
-  {
-    if (logins[i].username != username)
-      continue;
-    
-    return logins[i].password;    
-  }
+    if (logins[i].username == username)
+      return logins[i].password;
   
-  // we found no password, so let's prompt for it
-  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-                  .getService(Components.interfaces.nsIPromptService);  
-                        
+  // we found no password, so let's prompt for it 
   var input = {value:null};
   var check = {value:false};
      
@@ -327,7 +306,7 @@ SieveCustomAuth2.prototype.getPassword
     .createBundle("chrome://sieve/locale/locale.properties");
     
   var result = 
-    prompts.promptPassword(//window,
+    Services.prompt.promptPassword(//window,
         null,
         strings.GetStringFromName("account.password.title"), 
         strings.GetStringFromName("account.password.description"), 
@@ -345,8 +324,8 @@ SieveCustomAuth2.prototype.getPassword
     // the password might be already added while the password prompt is displayed    
     try
     {      
-      var login = Components.classes["@mozilla.org/login-manager/loginInfo;1"]
-                            .createInstance(Components.interfaces.nsILoginInfo); 
+      var login = Cc["@mozilla.org/login-manager/loginInfo;1"]
+                            .createInstance(Ci.nsILoginInfo); 
 
       login.init("sieve://"+this.host,null,"sieve://"+this.host, 
                  ""+this.getUsername(),""+input.value,"", "");
@@ -500,8 +479,8 @@ SieveSocks4Proxy.prototype.getProxyInfo
     = function()
 {
   // generate proxy info
-  var pps = Components.classes["@mozilla.org/network/protocol-proxy-service;1"]
-                .getService(Components.interfaces.nsIProtocolProxyService);
+  var pps = Cc["@mozilla.org/network/protocol-proxy-service;1"]
+                .getService(Ci.nsIProtocolProxyService);
   return [pps.newProxyInfo("socks4",this.getHost(),this.getPort(),0,4294967295,null)]
 }
 
@@ -542,8 +521,8 @@ SieveSocks5Proxy.prototype.getProxyInfo
     = function()
 {
   // generate proxy info
-  var pps = Components.classes["@mozilla.org/network/protocol-proxy-service;1"]
-                .getService(Components.interfaces.nsIProtocolProxyService);
+  var pps = Cc["@mozilla.org/network/protocol-proxy-service;1"]
+                .getService(Ci.nsIProtocolProxyService);
                                 
   return [ pps.newProxyInfo("socks",this.getHost(),this.getPort(),(this.usesRemoteDNS()?(1<<0):0),4294967295,null)]; 
 }
@@ -652,8 +631,8 @@ SieveImapHost.prototype.getHostname
     = function ()
 {
   // use the IMAP Key to load the Account...
-  var account = Components.classes['@mozilla.org/messenger/account-manager;1']  
-                    .getService(Components.interfaces.nsIMsgAccountManager)
+  var account = Cc['@mozilla.org/messenger/account-manager;1']  
+                    .getService(Ci.nsIMsgAccountManager)
                     .getIncomingServer(this.imapKey);
 
   return account.realHostName;
@@ -896,14 +875,12 @@ SievePromptAuthorization.prototype.getAuthorization
 {
   var check = {value: false}; 
   var input = {value: ""};
-  var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-                  .getService(Components.interfaces.nsIPromptService);
   
   var strings = Services.strings
     .createBundle("chrome://sieve/locale/locale.properties");
     
   var result = 
-    prompts.prompt(
+    Services.prompt.prompt(
        null, 
        strings.GetStringFromName("account.authorization.title"), 
        strings.GetStringFromName("account.authorization.description"), 
@@ -1214,15 +1191,15 @@ SieveAccounts.prototype.getAccounts
   if (this.accounts)
     return this.accounts
     
-  var accountManager = Components.classes['@mozilla.org/messenger/account-manager;1']
-                           .getService(Components.interfaces.nsIMsgAccountManager);
+  var accountManager = Cc['@mozilla.org/messenger/account-manager;1']
+                           .getService(Ci.nsIMsgAccountManager);
                           
   this.accounts = new Array();
   
   for (var i = 0; i < accountManager.allServers.Count(); i++)
   {
     var account = accountManager.allServers.GetElementAt(i)
-                    .QueryInterface(Components.interfaces.nsIMsgIncomingServer);
+                    .QueryInterface(Ci.nsIMsgIncomingServer);
           
     if ((account.type != "imap") && (account.type != "pop3"))
       continue;
@@ -1249,8 +1226,8 @@ SieveAccounts.prototype.getAccountByServer
 SieveAccounts.prototype.getAccountByName
     = function (key)
 {
-  var accountManager = Components.classes['@mozilla.org/messenger/account-manager;1']
-                         .getService(Components.interfaces.nsIMsgAccountManager);
+  var accountManager = Cc['@mozilla.org/messenger/account-manager;1']
+                         .getService(Ci.nsIMsgAccountManager);
 
   return new SieveAccount(accountManager.getIncomingServer(key));                       
 }

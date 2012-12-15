@@ -1,6 +1,7 @@
 /*
- * The content of this file is licenced. You may obtain a copy of the license
- * at http://sieve.mozdev.org or request it via email from the author. 
+ * The contents of this file are licenced. You may obtain a copy of 
+ * the license at https://github.com/thsmi/sieve/ or request it via 
+ * email from the author.
  *
  * Do not remove or change this comment.
  * 
@@ -88,7 +89,7 @@ const SieveAccountManagerComponent = {
         SieveAccountManagerFactory);
     
     
-    var catMgr = Components.classes["@mozilla.org/categorymanager;1"]
+    var catMgr = Cc["@mozilla.org/categorymanager;1"]
                    .getService(Ci.nsICategoryManager);
                 
     catMgr.addCategoryEntry(
@@ -105,7 +106,7 @@ const SieveAccountManagerComponent = {
         SieveAccountManagerExtension.prototype.classID, 
         SieveAccountManagerFactory);
      
-    var catMgr = Components.classes["@mozilla.org/categorymanager;1"]
+    var catMgr = Cc["@mozilla.org/categorymanager;1"]
                    .getService(Ci.nsICategoryManager);
     catMgr.deleteCategoryEntry(
         "mailnews-accountmanager-extensions",

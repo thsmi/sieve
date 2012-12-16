@@ -15,9 +15,5 @@ Thomas Borrmann, Johannes Maybaum
 
 ## Resources
 [mozdev](http://www.mozdev.org), [SourceForge](http://sf.net),
-<<<<<<< HEAD
 [github](http://www.github.com), [crowdin](http://crowdin.net),
-=======
-[github](http://www.github.net), [crowdin](http://crowdin.net),
->>>>>>> branch 'master' of https://github.com/thsmi/sieve.git
 [jQuery](http://www.jquery.com), [CodeMirror](http://www.codemirror.net) 

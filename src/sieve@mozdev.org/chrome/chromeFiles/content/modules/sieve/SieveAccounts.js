@@ -1179,7 +1179,10 @@ function SieveAccounts()
 }
 
 /**
- * Returns all SieveAccounts of the currently active Thunderbrid profile.  
+ * Returns a list containing a SieveAccounts configured for every compatible 
+ * nsIMsgIncommingServer in Thunderbird's AccountManager. Compatible accounts 
+ * are POP3 and IMAP.
+ *  
  * @return {SieveAccount[]}
  *   Array containing SieveAccounts
  */
@@ -1191,25 +1194,54 @@ SieveAccounts.prototype.getAccounts
   if (this.accounts)
     return this.accounts
     
-  var accountManager = Cc['@mozilla.org/messenger/account-manager;1']
-                           .getService(Ci.nsIMsgAccountManager);
+  var servers = Cc['@mozilla.org/messenger/account-manager;1']
+                    .getService(Ci.nsIMsgAccountManager)
+                    .allServers;
                           
   this.accounts = new Array();
   
-  for (var i = 0; i < accountManager.allServers.Count(); i++)
+  // The new account manager's interface introduced in TB 20.0a1 uses nsIArray...
+  if (servers instanceof Ci.nsIArray)
+  {    
+    var enumerator = servers.enumerate();
+    
+    while (enumerator.hasMoreElements())
+    {
+      var account = enumerator.getNext().QueryInterface(Ci.nsIMsgIncomingServer);
+            
+      if ((account.type != "imap") && (account.type != "pop3"))
+        continue;
+      
+      this.accounts.push(new SieveAccount(account));
+    }
+  }
+  
+  // ... while the old one relies upon Ci.nsISupportsArray ...
+  if (servers instanceof Ci.nsISupportsArray)
   {
-    var account = accountManager.allServers.GetElementAt(i)
-                    .QueryInterface(Ci.nsIMsgIncomingServer);
+    for (var i = 0; i < servers.Count(); i++)
+    {
+      var account = servers.GetElementAt(i).QueryInterface(Ci.nsIMsgIncomingServer);
           
-    if ((account.type != "imap") && (account.type != "pop3"))
-      continue;
+      if ((account.type != "imap") && (account.type != "pop3"))
+        continue;
 
-    this.accounts.push(new SieveAccount(account));        
+      this.accounts.push(new SieveAccount(account));        
+    }
   }
       
   return this.accounts;
 }
 
+/**
+ * Loads and returns a SieveAccount for the specified nsIMsgIncommingServer.
+ * 
+ * @param {nsIMsgIncommingServer} server
+ *   the incomming server for which the sieve account should be returend
+ * 
+ * @return {SieveAccount}
+ *   a SieveAccount for the incomming server
+ */
 SieveAccounts.prototype.getAccountByServer
     = function (server)
 {
@@ -1217,11 +1249,12 @@ SieveAccounts.prototype.getAccountByServer
 }
 
 /**
- * Loads a Sieve Account by its associated nsIMsgIncomingServer Account
+ * Loads and returns a Sieve Account by a nsIMsgIncomingServer's unique id
+ * 
  * @param {String} key
- *   The Unique Identifier of the associated nsIMsgIncomingServer Account
+ *   The unique identifier of the associated nsIMsgIncomingServer account
  * @return {SieveAccount}
- *   A corresponding SieveAccount
+ *   a SieveAccount for the unique id 
  */
 SieveAccounts.prototype.getAccountByName
     = function (key)

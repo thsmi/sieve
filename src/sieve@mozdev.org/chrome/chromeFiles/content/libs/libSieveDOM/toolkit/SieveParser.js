@@ -24,7 +24,7 @@ SieveParser.prototype.isChar
   if (!Array.isArray(ch))
     return (this._data.charAt(this._pos+offset) == ch);
   
-  var ch = [].concat(ch)
+  ch = [].concat(ch)
   
   for (var i=0; i<ch.length; i++)
     if (this._data.charAt(this._pos+offset) == ch[i])

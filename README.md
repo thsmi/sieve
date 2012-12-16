@@ -14,6 +14,10 @@ applicable for a normal user and almost impossible with secure connections.
 Wouldn't it be great to activate, edit, delete and add sieve scripts with a 
 convenient interface? That is exactly what the Sieve Extension offers...
 
+## Screenshot
+
+![screenshot](https://f.cloud.github.com/assets/2531380/15876/a77f1c2a-47da-11e2-8721-ffca3284bc86.png)
+
 ## Status
 
 The extension is an implementation of the [sieve management protocol (RFC 5804)](https://wiki.tools.ietf.org/html/rfc5804).

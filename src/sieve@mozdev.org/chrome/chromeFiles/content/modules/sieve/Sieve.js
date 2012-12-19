@@ -1,7 +1,9 @@
 /* 
  * The content of this file is licensed. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email 
- * from the author(s). Do not remove or change this comment. 
+ * the license at https://github.com/thsmi/sieve/ or request it via 
+ * email from the author.
+ * 
+ * Do not remove or change this comment. 
  * 
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
@@ -220,7 +222,6 @@ Sieve.prototype.isAlive
   return this.socket.isAlive(); 
 }
 
-// if the parameter ignoreCertError is set, cert errors will be ignored
 /**
  * This method secures the connection to the sieve server. By activating 
  * Transport Layer Security all Data exchanged is crypted. 
@@ -294,6 +295,25 @@ Sieve.prototype.addListener
   this.listener = listener;
 }
 
+/**
+ * Adds a request to the send queue. 
+ * 
+ * Normal request runs to completion, so they are blocking the queue
+ * until they are fully processed. If the request failes, the error 
+ * handler is triggered and the request is dequeued.
+ * 
+ * A greedy request in constrast accepts whatever it can get. Upon an 
+ * error greedy request are not dequeued. They fail silently and the next 
+ * requests is processed. This continues until a request succeeds, a non 
+ * greedy request failes or the queue has no more requests. 
+ *  
+ * @param {SieveAbstractRequest} request
+ *   the request object which should be added to the queue
+ *   
+ * @optional @param {bool} greedy
+ *   if true requests fail silently
+ *      
+ */
 Sieve.prototype.addRequest 
     = function(request,greedy)
 {
@@ -568,7 +588,7 @@ Sieve.prototype._onStop
 }
 
 Sieve.prototype.onDataAvailable 
-    = function(request, context, inputStream, offset, count)
+    = function(aRequest, context, inputStream, offset, count)
 {
   var binaryInStream = Cc["@mozilla.org/binaryinputstream;1"]
       .createInstance(Ci.nsIBinaryInputStream)

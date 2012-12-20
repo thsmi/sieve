@@ -21,5 +21,5 @@ The addon is restartless, so there is no need to restart Thunderbird upon instal
 
 ## Builds
 
-* (sieve-0.2.3b.xpi)[https://github.com/thsmi/sieve/blob/master/nightly/0.2.3/sieve-0.2.3b.xpi?raw=true]
-* (sieve-0.2.3a.xpi)[https://github.com/thsmi/sieve/blob/master/nightly/0.2.3/sieve-0.2.3a.xpi?raw=true]
+* [sieve-0.2.3b.xpi](https://github.com/thsmi/sieve/blob/master/nightly/0.2.3/sieve-0.2.3b.xpi?raw=true)
+* [sieve-0.2.3a.xpi](https://github.com/thsmi/sieve/blob/master/nightly/0.2.3/sieve-0.2.3a.xpi?raw=true)

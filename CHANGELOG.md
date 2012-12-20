@@ -2,9 +2,10 @@
 
 ## Sieve 0.2.3 - ([in Progress](https://github.com/thsmi/sieve/issues?milestone=2&state=open))
 Development builds can be found in the [Downloads section](https://github.com/thsmi/sieve/downloads). 
-* [Fixed] Quoted Strings ignored escape characters
+* [Fixed] [Quoted Strings ignored escape characters](https://github.com/thsmi/sieve/issues/8)
 * [Fixed] "Empty string passed to getElementById()" Warning
-* [UPDATED] Move to CodeMirror v3.x 
+* [UPDATED] Move to [CodeMirror v3.x](http://codemirror.net/) 
+* [Fixed] AccountManager broken [because Mozilla changed nsISupportsArray's Interfaces](https://bugzilla.mozilla.org/show_bug.cgi?id=820377)
 
 
 ## Sieve 0.2.2 - (22.09.2012)

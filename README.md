@@ -58,4 +58,4 @@ You are looking for the latest "bleeding edge" features and willing to risk more
 Or you might even want to test out newly added code to help identify and debug problems?
 
 Just go to 
-https://github.com/thsmi/sieve/tree/master/nightly 
+[https://github.com/thsmi/sieve/blob/master/nightly](https://github.com/thsmi/sieve/blob/master/nightly/README.md)

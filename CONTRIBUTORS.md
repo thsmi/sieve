@@ -16,4 +16,6 @@ Thomas Borrmann, Johannes Maybaum
 ## Resources
 [mozdev](http://www.mozdev.org), [SourceForge](http://sf.net),
 [github](http://www.github.com), [crowdin](http://crowdin.net),
-[jQuery](http://www.jquery.com), [CodeMirror](http://www.codemirror.net) 
+[jQuery](http://www.jquery.com), [CodeMirror](http://www.codemirror.net) ,
+[ohloh](http://www.ohloh.net)
+

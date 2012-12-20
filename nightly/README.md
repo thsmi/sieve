@@ -4,9 +4,9 @@ Develompent builds are the bleeding-edge of the current development. They are re
 testing after any major change. I'll be more than happy if you send me feedback on
 those builds and report issues.
 
-Keep in mind that development builds might not update automatically upon releas of 
-the next version. And they are expermiental, so they most likely contain bugs. Thus
-you use these development builds at your own risk.
+Keep in mind development builds might not update automatically upon releas of 
+the next version. They are expermiental, so they most likely contain bugs and regressions. 
+Thus you are using these builds at your own risk.
 
 ## Installation
 
@@ -15,9 +15,11 @@ you use these development builds at your own risk.
 2. In Mozilla Thunderbird, open the addon manager (Tools Menu/Addons) 
 3. Click the Install button, and locate/select the file you downloaded and click "OK"
    Alternatively you can just drag and drop the downloaded file into Thunderbird'S
-   Addon Manager.
+   Addon Manager. 
+
+The addon is restartless, so there is no need to restart Thunderbird upon installation and deinstallion.
 
 ## Builds
 
-https://github.com/thsmi/sieve/blob/master/nightly/0.2.3/sieve-0.2.3b.xpi?raw=true
-https://github.com/thsmi/sieve/blob/master/nightly/0.2.3/sieve-0.2.3a.xpi?raw=true
+* (sieve-0.2.3b.xpi)[https://github.com/thsmi/sieve/blob/master/nightly/0.2.3/sieve-0.2.3b.xpi?raw=true]
+* (sieve-0.2.3a.xpi)[https://github.com/thsmi/sieve/blob/master/nightly/0.2.3/sieve-0.2.3a.xpi?raw=true]

@@ -65,7 +65,7 @@ SieveAutoConfig.prototype =
     this.activeHosts--;
     
     // the error listener is only invoked, when all tests failed... 
-    if (!this.activeHosts)
+    if (this.activeHosts > 0)
       return;
     
     this.cancel();

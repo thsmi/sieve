@@ -57,17 +57,5 @@ for what's new in the most recent and upcoming releases.
 You are looking for the latest "bleeding edge" features and willing to risk more instability?
 Or you might even want to test out newly added code to help identify and debug problems?
 
-Just go to the download section:
-
-https://github.com/thsmi/sieve/downloads
-
-1. Right-Click on the nightly build and choose "Save Link As..." to Download and 
-   save the file to your hard disk.
-2. In Mozilla Thunderbird, open the addon manager (Tools Menu/Addons) 
-3. Click the Install button, and locate/select the file you downloaded and click "OK"
-
-
-But keep in mind: You use these development builds at your own risk and please 
-report bugs! Don't be confused these builds don't use special version numbers, 
-but anyhow they should automatically upgrade to stable builds upon release of 
-the next version.
+Just go to 
+[https://github.com/thsmi/sieve/blob/master/nightly](https://github.com/thsmi/sieve/blob/master/nightly/README.md)

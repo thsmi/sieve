@@ -6,14 +6,14 @@ Development builds can be found in the [Downloads section](https://github.com/th
 * [Fixed] "Empty string passed to getElementById()" Warning
 * [UPDATED] Move to [CodeMirror v3.x](http://codemirror.net/) 
 * [Fixed] AccountManager broken [because Mozilla changed nsISupportsArray's Interfaces](https://bugzilla.mozilla.org/show_bug.cgi?id=820377)
-
+* [Fixed] Autoconfig failed randomly with centos servers
 
 ## Sieve 0.2.2 - (22.09.2012)
 * [NEW] Syntax highlight in text editor. It is based on [CodeMirror](http://www.codemirror.net)
 * [NEW] Merge dialog if local script is newer than the remote.
 * [NEW] Support for thunderbird's upcoming AppMenu
 * [NEW] Changed indication in tab title
-* [FIXED]  Closing Tab in offline mode could fail
+* [FIXED] Closing Tab in offline mode could fail
 
 ## Sieve 0.2.1 - (15.08.2012)
 * [NEW] Extension is [restartless / Bootstrapped](https://developer.mozilla.org/en-US/docs/Extensions/Bootstrapped_extensions)

@@ -30,10 +30,14 @@ in translating or localizing the extension into your language, just sign up at
 [crowdin](http://crowdin.net/project/sieve/invite) and start translating 
 (Crowdin is a free collaborative translation tool).
 
+For more details on contributing refer to the [Contributing Guideines](https://github.com/thsmi/sieve/blob/master/CONTRIBUTING.md)  
+
 ## Bugs
 
 Please report bugs via the [issue tracker](https://github.com/thsmi/sieve/issues) 
-or send an email to schmid-thomas at gmx.net 
+or send an email to schmid-thomas at gmx.net . You find more details on reporting bugs 
+in the [Contributing Guideines](https://github.com/thsmi/sieve/blob/master/CONTRIBUTING.md)
+
 
 Give me 1-2 weeks time for a reply. If you did not receive a reply at all, it 
 might be a good idea to check your spam filter. 

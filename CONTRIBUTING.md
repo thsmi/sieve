@@ -1,0 +1,49 @@
+# Submitting bug and feature request
+
+The preferred way to report bugs and feature request is to use the
+[GitHub issue tracker](http://github.com/thsmi/sieve/issues).
+
+But you can also send an email to schmid-thomas at gmx.net
+
+In order to process bugs faster consider the following:
+
+* Try if the most recent nightly build fixes your issue.
+
+* Include a debug log/trace with your issue. Just go to the extensions settings 
+  and enable debugging options in the Debug tab. Dumping Byte arrays is usually not 
+  neccessary. Keep in mind that the line starting with "AUTHENTICATE" contains 
+  your password. So scramble this line.
+
+* If possible check your server's logs for any related errors.
+
+* Include information about your system and server. This means which 
+  the operating System you are on. Which Thunderbird release you are using.
+
+* Mention very precisely what went wrong. "X is broken" is not a good bug
+  report. What did you expect to happen? What happened instead? If possible 
+  describe the exact steps how to reproduce the issue. 
+
+# Contribution 
+
+## Contributing translations via crowdin.net
+
+crowdin is an collaborative translation tool.  
+
+- Make sure you have a Crowding Account (It's free)
+- Join the project http://crowdin.net/project/sieve/invite 
+- Translate and vote for translations
+
+I'll copy all crowding translation prior to a release into the source tree.
+
+## Contributing via Github
+
+- Make sure you have a [GitHub Account](https://github.com/signup/free)
+- Fork [CodeMirror](https://github.com/thsmi/sieve/)
+  ([how to fork a repo](https://help.github.com/articles/fork-a-repo))
+- Make your changes
+- Submit a pull request
+([how to create a pull request](https://help.github.com/articles/fork-a-repo))
+
+## Contributing via eMail
+
+Just send me a patch or the changed files via email to schmid-thomas at gmx.net .

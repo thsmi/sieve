@@ -1,3 +1,5 @@
+@import url("./../stringlist/style.css");
+
 body {
   font-family:verdana;
   font-size: 11px;
@@ -47,7 +49,7 @@ div[sivtype]:not([siviseditable]) > .sivSummaryContent
 
 
 div[sivtype][sivDragging="true"] {
-  -moz-border-radius: 2px;
+  border-radius: 2px;
   box-shadow: 0 0 5px red;
 }
 
@@ -208,75 +210,7 @@ div[sivtype][sivDragging="true"] {
   margin-left: 10px;
 }
 
-/* String list items */
 
-.SivStringList {
-  margin-left:10px;
-  margin-right:10px;  
-}
-
-.sivStringListItem
-{
-  padding-top:3px;
-  padding-bottom:2px;
-}
-
-/* We nest our text field*/
-.sivStringListItem > span {
-  -moz-appearance: textfield;
-   position:relative;
-}
-
-.sivStringListItem > span > input {
-  -moz-appearance: none !important;
-  border:none;
-  width:100%;
-  min-width: 150px;
-}
-
-/* the containter for our icons */
-.sivStringListItem > span > span {
- position:absolute;
- top:0;
- right:0;
-}
-
-.sivStringDrop,
-.sivStringAdd,
-.sivStringRemove {
-  width: 16px;
-  height:16px;
-  vertical-align: middle;
-  background-repeat:no-repeat;
-  background-position:center center; 
-  background-color: -moz-Field;
-}
-
-.SivStringList .sivStringListItem:hover:last-child .sivStringAdd {
-  background-image: url('listitem.add.png');
-  display:inline-block;
-}
-
-.SivStringList .sivStringListItem:hover:not(:only-of-type) .sivStringRemove {
-  background-image: url('listitem.delete.png');
-  display:inline-block;
-}
-
-.SivStringList .sivStringListItem:hover .sivStringDrop {
-  background-image: url('listitem.drop.png');
-  display:inline-block;
-}
-
-.sivStringListItem select {
-  z-index:500; 
-  position: absolute;
-  left: 1px;
-  top: 100%;
-  width: 100%;
-  border: 1px outset black !important;
-  border-left-width: 2px ! important;  
-  overflow:-moz-scrollbars-none !important;
-}
 
 
 

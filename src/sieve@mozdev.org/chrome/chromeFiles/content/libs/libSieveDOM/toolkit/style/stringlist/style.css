@@ -1,0 +1,71 @@
+SivStringList {
+  padding-left: 20px;
+  padding-bottom: 15px;
+}
+
+.sivStringListItem
+{
+	/* Inputbox's borders and margin are 2px, we need to compenate that... */ 
+	margin-top:-2px;
+	/*  ... anyhow in sum the box must maintain it's height, so we need to add extra padding*/
+	padding:1px;
+}
+
+/* We nest our text field into a fake one, just  a look alike */
+.sivStringListItem > span {
+  -moz-appearance: textfield;
+   position:relative;
+	width:100%;
+}
+
+/* the original input has no styling at all */
+.sivStringListItem > span > input {
+  -moz-appearance: none !important;
+  background-color: transparent;
+  border: 0px none;
+}
+
+/* the containter for our icons */
+.sivStringListItem > span > span {
+ position:absolute;
+ top:0;
+ right:0;
+ margin-top: 2px;
+}
+
+.sivStringDrop,
+.sivStringAdd,
+.sivStringRemove {
+  width: 16px;
+  height:16px;
+  vertical-align: middle;
+  background-repeat:no-repeat;
+  background-position:center center; 
+  background-color: -moz-Field;
+}
+
+.SivStringList .sivStringListItem:hover:last-child .sivStringAdd {
+  background-image: url('listitem.add.png');
+  display:inline-block;
+}
+
+.SivStringList .sivStringListItem:hover:not(:only-of-type) .sivStringRemove {
+  background-image: url('listitem.delete.png');
+  display:inline-block;
+}
+
+.SivStringList .sivStringListItem:hover .sivStringDrop {
+  background-image: url('listitem.drop.png');
+  display:inline-block;
+}
+
+.sivStringListItem select {
+  z-index:500; 
+  position: absolute;
+  left: 1px;
+  top: 100%;
+  width: 100%;
+  border: 1px outset black !important;
+  border-left-width: 2px ! important;  
+  overflow:-moz-scrollbars-none !important;
+}

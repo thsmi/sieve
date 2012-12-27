@@ -94,7 +94,7 @@
 	border: 1px solid black; 
 	padding: 5px; 
 	margin-top : 5px;
-	-moz-border-radius: 5px;	
+	border-radius: 5px;	
 }
 
 /*#sivExplorerError description
@@ -110,7 +110,7 @@
   border: 1px solid ThreeDShadow;
   padding: 20px;
    
-  -moz-border-radius: 5px;  
+  border-radius: 5px;  
 }
 
 #sivAutoConfigInfo 
@@ -152,7 +152,7 @@
 	border: 1px solid black; 
 	padding: 5px; 
 	margin-top : 5px;
-	-moz-border-radius: 5px;	
+	border-radius: 5px;	
 }
 
 #StatusWarning description

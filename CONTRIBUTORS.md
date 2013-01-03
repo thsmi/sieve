@@ -11,11 +11,11 @@ Carlos Gomez Agun
 John Fawcett, Simon Clarkstone, Janusz Wilk, Ralph Angenendt, Ralf Loeser,
 Lars Bahner, Alexander Brüning, Sebastian Bremicker, Christophe Sokol, Trent Payne,
 Chris J Kottaridis, Robert Fantini, Antonino Balsamo, Christopher Davies, 
-Thomas Borrmann, Johannes Maybaum, Vladimir Elisseev
+Thomas Borrmann, Johannes Maybaum, Vladimir Elisseev, Musall Maik, Hanns Mattes
 
 ## Resources
 [mozdev](http://www.mozdev.org), [SourceForge](http://sf.net),
 [github](http://www.github.com), [crowdin](http://crowdin.net),
-[jQuery](http://www.jquery.com), [CodeMirror](http://www.codemirror.net) ,
+[jQuery](http://www.jquery.com), [CodeMirror](http://www.codemirror.net),
 [ohloh](http://www.ohloh.net)
 

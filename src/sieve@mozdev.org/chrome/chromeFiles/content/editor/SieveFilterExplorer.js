@@ -558,7 +558,16 @@ function onActivateClick()
 function onTreeDblClick(ev)
 {
   var tree = document.getElementById('treeImapRules');
-  // TODO test if tree is visible
+  
+  // test if tree element is visible 
+  var style = window.getComputedStyle(tree, "");
+  
+  if (style.display == 'none')
+    return;
+  
+  if (style.visibility == 'hidden')
+    return false  
+
   var row = {}, column = {}, part = {};
   
   tree.treeBoxObject.getCellAt(ev.clientX, ev.clientY, row, column, part);

@@ -393,11 +393,14 @@ Sieve.prototype.connect
     
   // If we know the proxy setting, we can do a shortcut...
   if (proxy)
-  {
+  { 
     this.onProxyAvailable(null,null,proxy[0],null);
     return;
   }
-  
+
+  if (this.debug.level & (1 << 2))
+    this.debug.logger.logStringMessage("Lookup Proxy Configuration for x-sieve://"+this.host+":"+this.port+" ...");
+    
   var ios = Cc["@mozilla.org/network/io-service;1"]
                 .getService(Ci.nsIIOService);
                     

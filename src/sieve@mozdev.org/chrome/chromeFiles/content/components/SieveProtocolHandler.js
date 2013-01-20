@@ -29,12 +29,16 @@ function SieveProtocolHandler() {};
 
 SieveProtocolHandler.prototype = 
 {
-  scheme : "x-sieve",    
-  defaultPort : 4190,
   
-  classID : Components.ID("{65f30660-14eb-11df-8351-0002a5d5c51b}"),
-  contactID : "@mozilla.org/network/protocol;1?name="+SieveProtocolHandler.prototype.scheme,
-  classDescription: SieveProtocolHandler.prototype.scheme+" protocol handler",  
+  classID : Components.ID("{65f30660-14eb-11da-8351-0002a5d5c51b}"),
+
+  classDescription: " x-sieve protocol handler",  
+  
+  // !IMPORTANT: the scheme and the name in the contact id have to be identical
+  contactID : "@mozilla.org/network/protocol;1?name=x-sieve",  
+  scheme : "x-sieve",
+  
+  defaultPort : 4190,  
   
   protocolFlags :
     Ci.nsIProtocolHandler.URI_NORELATIVE |
@@ -46,7 +50,7 @@ SieveProtocolHandler.prototype =
   
   allowPort : function(port, scheme)
   {
-    if (scheme==this.scheme)
+    if (scheme == this.scheme)
       return true;
     else
       return false;    

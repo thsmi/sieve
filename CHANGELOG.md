@@ -7,7 +7,7 @@ Development builds can be found in the [Downloads section](https://github.com/th
 * [UPDATED] Move to [CodeMirror v3.x](http://codemirror.net/) 
 * [Fixed] AccountManager broken [because Mozilla changed nsISupportsArray's Interfaces](https://bugzilla.mozilla.org/show_bug.cgi?id=820377)
 * [Fixed] Autoconfig failed randomly with centos servers
-* [Fixed] [Thunderbirds default proxy configuration was respected](https://github.com/thsmi/sieve/issues/15)
+* [Fixed] [Thunderbirds default proxy configuration wasn't respected](https://github.com/thsmi/sieve/issues/15)
 
 ## Sieve 0.2.2 - (22.09.2012)
 * [NEW] Syntax highlight in text editor. It is based on [CodeMirror](http://www.codemirror.net)

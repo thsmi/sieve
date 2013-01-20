@@ -20,6 +20,8 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cr = Components.results;
 
+const protocolScheme = "x-sieve";
+
 /**
  * Implements an Protocol handler component for sieve. This is needed inorder
  * to obtain proxy information. As it has basically a stub, without any function,
@@ -31,13 +33,10 @@ SieveProtocolHandler.prototype =
 {
   
   classID : Components.ID("{65f30660-14eb-11da-8351-0002a5d5c51b}"),
-
-  classDescription: " x-sieve protocol handler",  
+  classDescription: protocolScheme+" protocol handler",  
+  contactID : "@mozilla.org/network/protocol;1?name="+protocolScheme,
   
-  // !IMPORTANT: the scheme and the name in the contact id have to be identical
-  contactID : "@mozilla.org/network/protocol;1?name=x-sieve",  
-  scheme : "x-sieve",
-  
+  scheme : protocolScheme,
   defaultPort : 4190,  
   
   protocolFlags :

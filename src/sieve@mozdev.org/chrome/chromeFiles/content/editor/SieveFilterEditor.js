@@ -284,7 +284,7 @@ SieveFilterEditor.prototype.observe
 {
   if (aTopic == "quit-application-requested")
   {
-    // we are asychnonous, so need to trigger the evet if we are done...
+    // we are asychnonous, so need to trigger the event if we are done...
     var callback = function () {
       var cancelQuit = Cc["@mozilla.org/supports-PRBool;1"]
                            .createInstance(Ci.nsISupportsPRBool);

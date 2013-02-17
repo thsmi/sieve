@@ -188,7 +188,7 @@ SieveAbstractClient.prototype.disconnect
     sivManager.removeSessionListener(this._sid, this);
     sivManager.closeChannel(this._sid,this._cid);
   }
-  catch (ex) 
+  catch (ex)
   {
     Components.utils.reportError(ex);
   }

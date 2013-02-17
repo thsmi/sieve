@@ -20,10 +20,10 @@ SieveOverlayManager.require("/sieve/SieveAccounts.js",this,window);
 
 
 function errorhandler(msg, url, line)
-  {
-    alert(msg);
-    Components.utils.reportError(msg);
-  }
+{
+  alert(msg);
+  Cu.reportError(msg);
+}
   
 window.onerror = errorhandler;
   

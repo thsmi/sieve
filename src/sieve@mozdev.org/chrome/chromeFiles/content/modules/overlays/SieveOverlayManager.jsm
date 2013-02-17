@@ -450,20 +450,20 @@ var SieveOverlayManager =
   },
   
   loadOverlay : function (window)
-  { 
+  {
     var url = window.document.baseURI;
-        
+    
     if (!this._overlayUrls[url])
       return;
     
     SieveOverlayManager.loadWatcher(window);
     
-    for (var i=0; i<this._overlayUrls[url].length; i++)
+    for (var i=0; i < this._overlayUrls[url].length; i++)
     {
       let overlay = new (this._overlayUrls[url][i])();
       this._overlays.push(overlay);
       overlay.load(window);      
-    }    
+    }
   },
   
   load : function()

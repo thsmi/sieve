@@ -311,7 +311,7 @@ SieveMailWindowOverlay.prototype.load
   
   
   SieveOverlayUtils.addTabType(SieveTabType,tabmail);
- // TODO add finaly method when all windows are closed, to unload unused components
+  // TODO add finally method when all windows are closed, to unload unused components
   
   this.unloadCallback( 
     function() { SieveOverlayUtils.removeTabType(SieveTabType,tabmail);})

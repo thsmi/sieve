@@ -222,25 +222,40 @@ SieveResponseParser.prototype.extractQuoted
     throw "Quoted string expected but found \n"+this.getData();
  
   // now search for the end. But we need to be aware of escape sequences.
-  var nextQuote = this.pos;
-  
-  do
+  var nextQuote = this.pos+1;
+ 
+  while (this.data[nextQuote] != CHAR_QUOTE)
   {
-    nextQuote = this.indexOf(CHAR_QUOTE, nextQuote+1);
     
-    if (nextQuote == -1)
-      throw "Quoted string not properly closed\n"+this.getData();
-    
-  } while (this.data[nextQuote-1] == CHAR_BACKSLASH )
+    // Quoted stings can not contain linebreaks...
+    if (this.data[nextQuote] == CHAR_LF)
+      throw "Linebreak (LF) in Quoted String detected";
 
+    if (this.data[nextQuote] == CHAR_CR)
+      throw "Linebreak (CR) in Quoted String detected";
+      
+    // is it an escape sequence?
+    if (this.data[nextQuote] == CHAR_BACKSLASH)
+    {
+      // Yes, it's a backslash so get the next char...
+      nextQuote++;
+
+      // ... only \\ and \" are valid escape sequences
+      if ((this.data[nextQuote] != CHAR_BACKSLASH) && (this.data[nextQuote] != CHAR_QUOTE))
+        throw "Invalid Escape Sequence";    
+    }
+    
+    // move to the next character
+    nextQuote++
+    
+    if (this.nextQuote >= this.data.length)
+      throw "Unterminated Quoted string"; 
+  }
+  
   var quoted = this.getData(this.pos+1,nextQuote);
  
-
   this.pos = nextQuote+1;
-
-  if ((quoted.indexOf('\n') != -1) || (quoted.indexOf('\r') != -1))
-    throw "Quoted string contains linebreak";
-    
+   
   // Cleanup escape sequences
   quoted = quoted.replace('\\"','"',"g")
   quoted = quoted.replace("\\\\","\\","g");  

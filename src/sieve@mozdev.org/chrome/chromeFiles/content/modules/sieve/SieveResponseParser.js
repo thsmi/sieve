@@ -234,9 +234,13 @@ SieveResponseParser.prototype.extractQuoted
   } while (this.data[nextQuote-1] == CHAR_BACKSLASH )
 
   var quoted = this.getData(this.pos+1,nextQuote);
+ 
 
   this.pos = nextQuote+1;
 
+  if ((quoted.indexOf('\n') != -1) || (quoted.indexOf('\r') != -1))
+    throw "Quoted string contains linebreak";
+    
   // Cleanup escape sequences
   quoted = quoted.replace('\\"','"',"g")
   quoted = quoted.replace("\\\\","\\","g");  
@@ -244,7 +248,12 @@ SieveResponseParser.prototype.extractQuoted
   return quoted;
 }
 
-
+/**
+ * Tests if the a quoted or literal string starts at the current position.
+ * 
+ * @return {Boolean}
+ *   true if a strings starts, otherwise false 
+ */
 SieveResponseParser.prototype.isString
     = function ()
 {

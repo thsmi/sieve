@@ -49,10 +49,11 @@ Cu.import("chrome://sieve/content/modules/sieve/SieveResponse.js");
 
 /**
  * Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy 
- * binary, and javascript is something inbetween. This means we have to convert
+ * binary, and javascript is something in between. This means we have to convert
  * UTF-8 into a binary by our own...
  * 
- * @param {String} string The binary string which should be converted 
+ * @param {String} str The binary string which should be converted
+ * @param @optional {String} charset The charset as string. Optional, defaults to "UTF-8". 
  * @return {String} The converted string in UTF8 
  * 
  * @author Thomas Schmid <schmid-thomas@gmx.net>
@@ -70,6 +71,21 @@ function JSStringToByteArray(str,charset)
     converter.charset = charset;
  
   return converter.convertToByteArray(str, {});
+}
+
+
+/**
+ * Escapes a string. All Backslashes are converted to \\  while 
+ * all quotes are esacped as \"
+ *   
+ * @param {string} str
+ *   the string which should be escaped
+ * @return {string}
+ *   the escaped string.
+ */
+function escapeString(str)
+{
+  return str.replace(/\\/g,"\\\\").replace(/"/g,"\\\"");
 }
 
 //****************************************************************************//
@@ -228,7 +244,7 @@ SieveGetScriptRequest.prototype.addGetScriptListener
 SieveGetScriptRequest.prototype.getNextRequest
     = function ()
 {
-  return "GETSCRIPT \""+this.script+"\"\r\n";
+  return "GETSCRIPT \""+escapeString(this.script)+"\"\r\n";
 }
 
 SieveGetScriptRequest.prototype.onOk
@@ -256,7 +272,7 @@ SieveGetScriptRequest.prototype.addResponse
  */
 function SievePutScriptRequest(script, body) 
 {
-  this.script = script;
+  this.script = escapeString(script);
    
   // cleanup linebreaks...
   this.body = body.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
@@ -307,7 +323,8 @@ SievePutScriptRequest.prototype.getNextRequest
 //  converter.charset = "utf-8" ;
 //
   //return converter.ConvertFromUnicode(aStr);}
-  
+ 
+
   return "PUTSCRIPT \""+this.script+"\" {"+JSStringToByteArray(this.body).length+"+}\r\n"
         +this.body+"\r\n";
 }
@@ -421,7 +438,7 @@ function SieveSetActiveRequest(script)
   if (script == null)
     this.script = "";
   else
-    this.script = script;
+    this.script = escapeString(script);
 }
 
 // Inherrit prototypes from SieveAbstractRequest...
@@ -504,7 +521,7 @@ SieveCapabilitiesRequest.prototype.addResponse
  */
 function SieveDeleteScriptRequest(script) 
 {
-  this.script = script;
+  this.script = escapeString(script);
 }
 
 // Inherrit prototypes from SieveAbstractRequest...
@@ -599,8 +616,8 @@ SieveNoopRequest.prototype.addResponse
  */
 function SieveRenameScriptRequest(oldScript, newScript) 
 {
-  this.oldScript = oldScript;
-  this.newScript = newScript
+  this.oldScript = escapeString(oldScript);
+  this.newScript = escapeString(newScript);
 }
 
 // Inherrit prototypes from SieveAbstractRequest...

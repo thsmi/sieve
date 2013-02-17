@@ -32,6 +32,8 @@ in translating or localizing the extension into your language, just sign up at
 
 For more details on contributing refer to the [Contributing Guidelines](https://github.com/thsmi/sieve/blob/master/CONTRIBUTING.md)  
 
+A big thank you to every one who have [contibuted and supported](CONTRIBUTORS.md) this project
+
 ## Bugs
 
 Please report bugs via the [issue tracker](https://github.com/thsmi/sieve/issues) 

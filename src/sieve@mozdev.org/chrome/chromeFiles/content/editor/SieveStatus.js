@@ -98,11 +98,23 @@ function onBadCertOverride(targetSite,permanent)
   {
     var overrideService = Cc["@mozilla.org/security/certoverride;1"]
                             .getService(Ci.nsICertOverrideService);
-
-    var recentCertsSvc = Cc["@mozilla.org/security/recentbadcerts;1"]
-                             .getService(Ci.nsIRecentBadCertsService);
-                             
-    var status = recentCertsSvc.getRecentBadCert(targetSite);    
+ 
+    var status = null;
+    
+    if (Cc["@mozilla.org/security/recentbadcerts;1"])
+    {
+      status = Cc["@mozilla.org/security/recentbadcerts;1"]
+                   .getService(Ci.nsIRecentBadCertsService)
+                   .getRecentBadCert(targetSite); 
+    }
+    else
+    {
+      status = Cc["@mozilla.org/security/x509certdb;1"]
+                   .getService(Ci.nsIX509CertDB)
+                   .getRecentBadCerts(false)
+                   .getRecentBadCert(targetSite);
+    }
+    
     if (!status)
       throw "No certificate stored for taget Site..."
 
@@ -126,7 +138,7 @@ function onBadCertOverride(targetSite,permanent)
   catch (ex)
   {
     onStatus(2,"error.brokencert");
-    gLogger.logStringMessage("onBadCertOverride:"+ex); 
+    Cu.reportError(ex); 
   }
  
 }
@@ -144,7 +156,7 @@ function onDetach()
 }
 
 /**
- * The callback is invoced inf the user wants to reconnect 
+ * The callback is invoced when the user wants to reconnect 
  * 
  * @param {} account
  * @param {} callback

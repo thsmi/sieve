@@ -196,7 +196,7 @@
         <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
         <vbox>
           <description style="font-weight:bold">&status.error;</description>
-          <description id="StatusErrorMsg" pack="center" ></description>
+          <description id="StatusErrorMsg" pack="center"> </description>
           <hbox align="right">
             <button label="&status.error.reconnect;" oncommand="onReconnectClick();" />
           </hbox>                    

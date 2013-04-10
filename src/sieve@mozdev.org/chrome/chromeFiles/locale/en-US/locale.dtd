@@ -242,7 +242,7 @@ to do a manual configuration.">
 <!ENTITY edit.toolbar.print "Print">
 <!ENTITY edit.toolbar.search "Search">
 
-<!ENTITY edit.sidebar.uri "http://thsmi.github.com/sieve-reference/en/index.html">
+<!ENTITY edit.sidebar.uri "http://thsmi.github.io/sieve-reference/en/index.html">
 <!ENTITY edit.sidebar.title "Sieve Language Reference">
 
 <!-- Search and Replace Side bar -->

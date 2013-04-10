@@ -245,7 +245,7 @@ essayez une configuration manuelle.">
 <!ENTITY edit.toolbar.print "Imprimer">
 <!ENTITY edit.toolbar.search "Rechercher">
 
-<!ENTITY edit.sidebar.uri "http://thsmi.github.com/sieve-reference/en/index.html">
+<!ENTITY edit.sidebar.uri "http://thsmi.github.io/sieve-reference/en/index.html">
 <!ENTITY edit.sidebar.title "Base de référence du langage Sieve">
 
 <!ENTITY edit.searchreplace.title "Rechercher et Remplacer">

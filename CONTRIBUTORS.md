@@ -12,7 +12,8 @@ John Fawcett, Simon Clarkstone, Janusz Wilk, Ralph Angenendt, Ralf Loeser,
 Lars Bahner, Alexander Brüning, Sebastian Bremicker, Christophe Sokol, Trent Payne,
 Chris J Kottaridis, Robert Fantini, Antonino Balsamo, Christopher Davies, 
 Thomas Borrmann, Johannes Maybaum, Vladimir Elisseev, Musall Maik, Hanns Mattes, 
-Robert Schultz, Micha Gerstenberg, Markus Bordihn, Benjamin Bässler, Christian Boisjoli, Birger Blixt
+Robert Schultz, Micha Gerstenberg, Markus Bordihn, Benjamin Bässler, Christian Boisjoli, Birger Blixt,
+Johan Ekenberg, Eliane Beba Maranz, Martin Reisenhofer 
 
 ## Resources
 [mozdev](http://www.mozdev.org), [SourceForge](http://sf.net),

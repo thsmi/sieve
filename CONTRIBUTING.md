@@ -8,15 +8,18 @@ But you can also send an email to schmid-thomas at gmx.net
 In order to process bugs faster consider the following:
 
 * Try if the [most recent nightly build](https://github.com/thsmi/sieve/blob/master/nightly/README.md) fixes your issue.
+ 
+* Check if you issue is already reported. The list with open issues is small. 
+  Try to avoid to duplicate an issue. It slows down the development.
+
+* Include information about your system and server. This means which 
+  the operating System you are on. Which Thunderbird release you are using.
+  If possible check your server's logs for any related errors.
 
 * Include a debug log/trace with your issue. Just go to the extensions settings 
   and enable debugging options in the Debug tab. Dumping Byte arrays is usually not 
   neccessary. Keep in mind that the line starting with "AUTHENTICATE" contains 
   your password. So scramble this line.
-
-* Include information about your system and server. This means which 
-  the operating System you are on. Which Thunderbird release you are using.
-  If possible check your server's logs for any related errors.
 
 * Mention very precisely what went wrong. "X is broken" is not a good bug
   report. What did you expect to happen? What happened instead? If possible 

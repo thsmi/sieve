@@ -14,7 +14,8 @@ function SieveMatchTypeUI(elm)
   SieveAbstractBoxUI.call(this,elm);
 }
 
-SieveMatchTypeUI.prototype.__proto__ = SieveAbstractBoxUI.prototype; 
+SieveMatchTypeUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
+SieveMatchTypeUI.prototype.constructor = SieveMatchTypeUI;
 
 SieveMatchTypeUI.prototype.onSelect
     = function ()
@@ -79,7 +80,8 @@ function SieveAddressPartUI(elm)
   SieveAbstractBoxUI.call(this,elm);
 }
 
-SieveAddressPartUI.prototype.__proto__ = SieveAbstractBoxUI.prototype; 
+SieveAddressPartUI.prototype = Object.create(SieveAbstractBoxUI.prototype); 
+SieveAddressPartUI.prototype.constructor = SieveAddressPartUI;
 
 SieveAddressPartUI.prototype.onSelect
     = function ()
@@ -147,7 +149,8 @@ function SieveComparatorUI(elm)
   SieveAbstractBoxUI.call(this,elm);
 }
 
-SieveComparatorUI.prototype.__proto__ = SieveAbstractBoxUI.prototype; 
+SieveComparatorUI.prototype = Object.create(SieveAbstractBoxUI.prototype); 
+SieveComparatorUI.prototype.constructor = SieveComparatorUI;
 
 SieveComparatorUI.prototype.onSelect
     = function ()
@@ -191,7 +194,8 @@ function SieveStringListUI(elm)
   this._defaults = [];
 }
 
-SieveStringListUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;  
+SieveStringListUI.prototype = Object.create(SieveAbstractBoxUI.prototype);  
+SieveStringListUI.prototype.constructor = SieveStringListUI;
 
 SieveStringListUI.prototype.onAddItem
     = function (owner)

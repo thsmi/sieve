@@ -78,7 +78,8 @@ function SieveMoveDragHandler(flavour)
   SieveDragHandler.call(this,flavour);
 }
 
-SieveMoveDragHandler.prototype.__proto__ = SieveDragHandler.prototype;
+SieveMoveDragHandler.prototype = Object.create(SieveDragHandler.prototype);
+SieveMoveDragHandler.prototype.constructor = SieveMoveDragHandler;
 
 SieveMoveDragHandler.prototype.onDrag
     = function(event)
@@ -99,7 +100,8 @@ function SieveCreateDragHandler(flavour)
   SieveDragHandler.call(this,flavour);
 }
 
-SieveCreateDragHandler.prototype.__proto__ = SieveDragHandler.prototype;
+SieveCreateDragHandler.prototype = Object.create(SieveDragHandler.prototype);
+SieveCreateDragHandler.prototype.constructor = SieveCreateDragHandler;
 
 SieveCreateDragHandler.prototype.onDrag
     = function(event)

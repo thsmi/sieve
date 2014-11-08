@@ -17,7 +17,8 @@ function SieveVacation(docshell,id)
   // Optional Parameters
 }
 
-SieveVacation.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveVacation.prototype = Object.create(SieveAbstractElement.prototype);
+SieveVacation.prototype.constructor = SieveVacation;
 
 SieveVacation.isElement
      = function (token)

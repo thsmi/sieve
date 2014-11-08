@@ -6,7 +6,8 @@ function SieveTestUI(elm)
   SieveAbstractBoxUI.call(this,elm);
 }
 
-SieveTestUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
+SieveTestUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
+SieveTestUI.prototype.constructor = SieveTestUI;
 
 
 SieveTestUI.prototype.createHtml
@@ -35,7 +36,8 @@ function SieveMatchType2UI(elm)
   SieveAbstractBoxUI.call(this,elm);
 }
 
-SieveMatchType2UI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
+SieveMatchType2UI.prototype = Object.create(SieveAbstractBoxUI.prototype);
+SieveMatchType2UI.prototype.constructor = SieveMatchType2UI;
 
 
 SieveMatchType2UI.prototype.createHtml

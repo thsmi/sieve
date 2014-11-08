@@ -55,7 +55,9 @@ function SieveFilterListOverlay()
   SieveAbstractOverlay.call(this);
 }
 
-SieveFilterListOverlay.prototype.__proto__ = SieveAbstractOverlay.prototype;
+// Inherrit from SieveAbstractOverlay...
+SieveFilterListOverlay.prototype = Object.create(SieveAbstractOverlay.prototype);
+SieveFilterListOverlay.prototype.constructor = SieveFilterListOverlay;
 
 
 SieveFilterListOverlay.prototype.loadAccount
@@ -281,7 +283,8 @@ function SieveMailWindowOverlay()
   SieveAbstractOverlay.call(this);   
 }
 
-SieveMailWindowOverlay.prototype.__proto__ = SieveAbstractOverlay.prototype;
+SieveMailWindowOverlay.prototype = Object.create(SieveAbstractOverlay.prototype);
+SieveMailWindowOverlay.prototype.constructor = SieveMailWindowOverlay;
 
 
 SieveMailWindowOverlay.prototype.load
@@ -444,7 +447,8 @@ function SieveToolbarOverlay()
   SieveAbstractOverlay.call(this);   
 }
 
-SieveToolbarOverlay.prototype.__proto__ = SieveAbstractOverlay.prototype;
+SieveToolbarOverlay.prototype = Object.create(SieveAbstractOverlay.prototype);
+SieveToolbarOverlay.prototype.constructor = SieveToolbarOverlay;
 
 
 SieveToolbarOverlay.prototype.load

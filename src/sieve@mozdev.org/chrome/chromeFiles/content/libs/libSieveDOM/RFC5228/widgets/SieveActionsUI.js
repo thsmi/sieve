@@ -18,7 +18,8 @@ function SieveStopUI(elm)
   SieveActionBoxUI.call(this,elm);
 }
 
-SieveStopUI.prototype.__proto__ = SieveActionBoxUI.prototype;
+SieveStopUI.prototype = Object.create(SieveActionBoxUI.prototype);
+SieveStopUI.prototype.constructor = SieveStopUI;
 
 SieveStopUI.prototype.initSummary
     = function ()
@@ -34,7 +35,8 @@ function SieveDiscardUI(elm)
   SieveActionBoxUI.call(this,elm);
 }
 
-SieveDiscardUI.prototype.__proto__ = SieveActionBoxUI.prototype;
+SieveDiscardUI.prototype = Object.create(SieveActionBoxUI.prototype);
+SieveDiscardUI.prototype.constructor = SieveDiscardUI;
 
 SieveDiscardUI.prototype.initSummary
     = function ()
@@ -49,7 +51,8 @@ function SieveKeepUI(elm)
   SieveActionBoxUI.call(this,elm);
 }
 
-SieveKeepUI.prototype.__proto__ = SieveActionBoxUI.prototype;
+SieveKeepUI.prototype = Object.create(SieveActionBoxUI.prototype);
+SieveKeepUI.prototype.constructor = SieveKeepUI;
 
 SieveKeepUI.prototype.initSummary
     = function ()
@@ -65,7 +68,8 @@ function SieveRedirectUI(elm)
   SieveActionBoxUI.call(this,elm);
 }
 
-SieveRedirectUI.prototype.__proto__ = SieveActionBoxUI.prototype;
+SieveRedirectUI.prototype = Object.create(SieveActionBoxUI.prototype);
+SieveRedirectUI.prototype.constructor = SieveRedirectUI;
 
 SieveRedirectUI.prototype.onValidate
    = function ()
@@ -108,7 +112,8 @@ function SieveFileIntoUI(elm)
   SieveActionBoxUI.call(this,elm)
 }
 
-SieveFileIntoUI.prototype.__proto__ = SieveActionBoxUI.prototype;
+SieveFileIntoUI.prototype = Object.create(SieveActionBoxUI.prototype);
+SieveFileIntoUI.prototype.constructor = SieveFileIntoUI;
 
 SieveFileIntoUI.prototype.onValidate
    = function ()

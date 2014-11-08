@@ -14,7 +14,8 @@ function SieveIfUI(elm)
   SieveBlockUI.call(this,elm);
 }
 
-SieveIfUI.prototype.__proto__ = SieveBlockUI.prototype;
+SieveIfUI.prototype = Object.create(SieveBlockUI.prototype);
+SieveIfUI.prototype.constructor = SieveIfUI;
 
 SieveIfUI.prototype.createHtml
     = function (parent)
@@ -35,7 +36,8 @@ function SieveElseUI(elm)
   SieveBlockUI.call(this,elm); 
 }
 
-SieveElseUI.prototype.__proto__ = SieveBlockUI.prototype;
+SieveElseUI.prototype = Object.create(SieveBlockUI.prototype);
+SieveElseUI.prototype.constructor = SieveElseUI;
 
 SieveElseUI.prototype.createHtml
     = function (parent)
@@ -55,7 +57,8 @@ function SieveConditionUI(elm)
   this.drag(new SieveMoveDragHandler());
 }
 
-SieveConditionUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
+SieveConditionUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
+SieveConditionUI.prototype.constructor = SieveConditionUI;
 
 SieveConditionUI.prototype.createHtml
     = function (parent)

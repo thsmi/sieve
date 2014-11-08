@@ -34,7 +34,8 @@ function SieveEnvelope(docshell,id)
   this.keyList = this._createByName("stringlist");
 }
 
-SieveEnvelope.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveEnvelope.prototype = Object.create(SieveAbstractElement.prototype);
+SieveEnvelope.prototype.constructor = SieveEnvelope;
 
 SieveEnvelope.isElement
   = function(parser)
@@ -165,7 +166,8 @@ function SieveAddress(docshell,id)
   this.keyList = this._createByName("stringlist","\"me@example.com\"");
 }
 
-SieveAddress.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveAddress.prototype = Object.create(SieveAbstractElement.prototype);
+SieveAddress.prototype.constructor = SieveAddress;
 
 SieveAddress.isElement
     = function (parser)
@@ -260,7 +262,8 @@ function SieveBoolean(docshell,id)
   this.value = false;
 }
 
-SieveBoolean.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveBoolean.prototype = Object.create(SieveAbstractElement.prototype);
+SieveBoolean.prototype.constructor = SieveBoolean;
 
 SieveBoolean.isElement
  = function(parser)
@@ -328,7 +331,8 @@ function SieveSize(docshell,id)
   this.size = this._createByName("number");
 }
 
-SieveSize.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveSize.prototype = Object.create(SieveAbstractElement.prototype);
+SieveSize.prototype.constructor = SieveSize;
 
 SieveSize.isElement
   = function(parser)
@@ -425,7 +429,8 @@ function SieveExists(docshell,id)
   this.headerNames = this._createByName("stringlist",'"From"');
 }
 
-SieveExists.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveExists.prototype = Object.create(SieveAbstractElement.prototype);
+SieveExists.prototype.constructor = SieveExists;
 
 SieveExists.isElement
   = function(parser)
@@ -488,7 +493,8 @@ function SieveHeader(docshell,id)
   
 }
 
-SieveHeader.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveHeader.prototype = Object.create(SieveAbstractElement.prototype);
+SieveHeader.prototype.constructor = SieveHeader;
 
 SieveHeader.isElement
     = function (parser)
@@ -590,7 +596,8 @@ function SieveTestList(docshell,id)
   this.tests = [];
 }
 
-SieveTestList.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveTestList.prototype = Object.create(SieveAbstractElement.prototype);
+SieveTestList.prototype.constructor = SieveTestList;
 
 SieveTestList.isElement
    = function (parser)

@@ -21,8 +21,8 @@ SieveOverlayManager.require("/sieve/SieveAccounts.js",this,window);
 
 function errorhandler(msg, url, line)
 {
-  alert(msg);
-  Cu.reportError(msg);
+  alert(msg+"\n"+url+"\n"+line);
+  Cu.reportError(msg+"\n"+url+"\n"+line);
 }
   
 window.onerror = errorhandler;
@@ -39,7 +39,9 @@ function SieveFilterListDialog()
   this._script = "Thunderbird Mailfilters"
 }
 
-SieveFilterListDialog.prototype.__proto__ = SieveAbstractClient.prototype;
+SieveFilterListDialog.prototype = Object.create(SieveAbstractClient.prototype);
+SieveFilterListDialog.prototype.constructor = SieveFilterListDialog;
+
 
 SieveFilterListDialog.prototype.onListScriptResponse
     = function(response)

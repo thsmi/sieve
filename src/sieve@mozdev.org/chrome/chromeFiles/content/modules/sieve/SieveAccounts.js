@@ -424,7 +424,8 @@ function SieveSocks4Proxy(sieveKey)
 }
 
 // Inherrit prototypes from SieveSystemProxy...
-SieveSocks4Proxy.prototype.__proto__ = SieveSystemProxy.prototype;
+SieveSocks4Proxy.prototype = Object.create(SieveSystemProxy.prototype);
+SieveSocks4Proxy.prototype.constructor = SieveSocks4Proxy;
 
 SieveSocks4Proxy.prototype.getType
     = function()
@@ -494,7 +495,8 @@ function SieveSocks5Proxy(sieveKey)
 }
 
 // Inherrit prototypes from SieveSocksProxy...
-SieveSocks5Proxy.prototype.__proto__ = SieveSocks4Proxy.prototype;
+SieveSocks5Proxy.prototype = Object.create(SieveSocks4Proxy.prototype);
+SieveSocks5Proxy.prototype.constructor = SieveSocks5Proxy;
 
 SieveSocks5Proxy.prototype.getType
     = function()
@@ -625,7 +627,8 @@ function SieveImapHost(uri,imapKey)
   this.imapKey = imapKey;
 }
 
-SieveImapHost.prototype.__proto__ = SieveAbstractHost.prototype;
+SieveImapHost.prototype = Object.create(SieveAbstractHost.prototype);
+SieveImapHost.prototype.constructor = SieveImapHost;
 
 SieveImapHost.prototype.getHostname
     = function ()
@@ -656,7 +659,8 @@ function SieveCustomHost(uri)
   SieveAbstractHost.call(this,uri);
 }
 
-SieveCustomHost.prototype.__proto__ = SieveAbstractHost.prototype;
+SieveCustomHost.prototype = Object.create(SieveAbstractHost.prototype);
+SieveCustomHost.prototype.constructor = SieveCustomHost;
 
 SieveCustomHost.prototype.toString
     = function ()

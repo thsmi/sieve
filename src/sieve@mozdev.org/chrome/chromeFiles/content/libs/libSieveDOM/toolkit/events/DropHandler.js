@@ -248,7 +248,8 @@ function SieveBlockDropHandler()
   this.flavours(["sieve/action","sieve/test", "sieve/operator"]);
 }
 
-SieveBlockDropHandler.prototype.__proto__ = SieveDropHandler.prototype;
+SieveBlockDropHandler.prototype = Object.create(SieveDropHandler.prototype);
+SieveBlockDropHandler.prototype.constructor = SieveBlockDropHandler;
 
 SieveBlockDropHandler.prototype.canMoveElement
     = function(sivFlavour, id, script)
@@ -372,7 +373,8 @@ function SieveTrashBoxDropHandler()
   this.flavours(["sieve/action","sieve/test","sieve/if","sieve/operator"]);
 }
 
-SieveTrashBoxDropHandler.prototype.__proto__ = SieveDropHandler.prototype;
+SieveTrashBoxDropHandler.prototype = Object.create(SieveDropHandler.prototype);
+SieveTrashBoxDropHandler.prototype.constructor = SieveTrashBoxDropHandler;
 
 SieveTrashBoxDropHandler.prototype.canMoveElement
     = function(sivFlavour, id, script)
@@ -410,7 +412,8 @@ function SieveConditionDropHandler()
   this.flavours(["sieve/test","sieve/action","sieve/operator"]);
 }
 
-SieveConditionDropHandler.prototype.__proto__ = SieveDropHandler.prototype;
+SieveConditionDropHandler.prototype = Object.create(SieveDropHandler.prototype);
+SieveConditionDropHandler.prototype.constructor = SieveConditionDropHandler;
 
 SieveConditionDropHandler.prototype.canMoveElement
     = function(flavour, id, script)
@@ -593,7 +596,8 @@ function SieveTestDropHandler()
   this.flavours(["sieve/operator","sieve/test"]);
 }
 
-SieveTestDropHandler.prototype.__proto__ = SieveDropHandler.prototype;
+SieveTestDropHandler.prototype = Object.create(SieveDropHandler.prototype);
+SieveTestDropHandler.prototype.constructor = SieveTestDropHandler;
 
 SieveTestDropHandler.prototype.canMoveElement
     = function (sivFlavour, id , script)
@@ -749,7 +753,8 @@ function SieveMultaryDropHandler()
   this.flavours(["sieve/operator","sieve/test"]);
 }
 
-SieveMultaryDropHandler.prototype.__proto__ = SieveDropHandler.prototype;
+SieveMultaryDropHandler.prototype = Object.create(SieveDropHandler.prototype);
+SieveMultaryDropHandler.prototype.constructor = SieveMultaryDropHandler;
 
 SieveMultaryDropHandler.prototype.canMoveElement
     = function (sivFlavour, id, script)

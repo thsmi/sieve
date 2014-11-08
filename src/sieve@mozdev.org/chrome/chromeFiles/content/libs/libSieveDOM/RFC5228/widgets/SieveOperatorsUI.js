@@ -14,7 +14,8 @@ function SieveNotUI(elm)
   SieveOperatorBoxUI.call(this,elm); 
 }
 
-SieveNotUI.prototype.__proto__ = SieveOperatorBoxUI.prototype;
+SieveNotUI.prototype = Object.create(SieveOperatorBoxUI.prototype);
+SieveNotUI.prototype.constructor = SieveNotUI;
 
 SieveNotUI.prototype.initSummary
     = function ()
@@ -32,7 +33,8 @@ function SieveAnyOfAllOfUI(elm)
   SieveOperatorBoxUI.call(this,elm); 
 }
 
-SieveAnyOfAllOfUI.prototype.__proto__ = SieveOperatorBoxUI.prototype;
+SieveAnyOfAllOfUI.prototype = Object.create(SieveOperatorBoxUI.prototype);
+SieveAnyOfAllOfUI.prototype.constructor = SieveAnyOfAllOfUI;
 
 SieveAnyOfAllOfUI.prototype.onValidate
     = function ()

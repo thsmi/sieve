@@ -22,7 +22,8 @@ function SieveReject(docshell,id)
   this.semicolon = this._createByName("atom/semicolon");    
 }
 
-SieveReject.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveReject.prototype = Object.create(SieveAbstractElement.prototype);
+SieveReject.prototype.constructor = SieveReject;
 
 SieveReject.isElement
     = function (parser)

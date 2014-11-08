@@ -16,8 +16,8 @@ function SieveRejectUI(elm)
   SieveActionBoxUI.call(this,elm)
 }
 
-SieveRejectUI.prototype.__proto__ = SieveActionBoxUI.prototype;
-
+SieveRejectUI.prototype = Object.create(SieveActionBoxUI.prototype);
+SieveRejectUI.prototype.constructor = SieveRejectUI;
 
 SieveRejectUI.prototype.onValidate
    = function ()

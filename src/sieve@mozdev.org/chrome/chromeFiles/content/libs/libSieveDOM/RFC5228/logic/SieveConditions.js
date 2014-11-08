@@ -9,15 +9,70 @@
  
 "use strict";
 
+//****************************************************************************//
+
+function SieveElse(docshell,id)
+{
+  SieveBlock.call(this,docshell,id);
+  
+  this.ws = [];
+  
+  this.ws[0] = this._createByName("whitespace","\r\n");
+  this.ws[1] = this._createByName("whitespace","\r\n");  
+}
+
+SieveElse.prototype = Object.create(SieveBlock.prototype);
+SieveElse.prototype.constructor = SieveElse;
+
+SieveElse.isElement
+    = function (parser)
+{
+  return parser.startsWith("else");  
+}
+
+SieveElse.nodeName = function () {
+  return "condition/else";
+}
+
+SieveElse.nodeType  = function () {
+  return "condition/";
+}
+
+SieveElse.prototype.init
+    = function (parser)
+{
+  parser.extract("else");
+   
+  this.ws[0].init(parser);
+   
+  SieveBlock.prototype.init.call(this,parser);
+  
+  this.ws[1].init(parser); 
+  
+  return this;
+}
+
+SieveElse.prototype.toScript
+    = function()
+{
+  return "else" 
+    + this.ws[0].toScript() 
+    + SieveBlock.prototype.toScript.call(this) 
+    + this.ws[1].toScript();  
+}
+
+//****************************************************************************//
+
 function SieveIf(docshell,id)
 {
   SieveElse.call(this,docshell,id);
-  this._test = null;  
-  
-  this.ws[2] = this._createByName("whitespace");  
+
+  this._test = null;    
+  this.ws[2] = this._createByName("whitespace");    	
 }
 
-SieveIf.prototype.__proto__ = SieveElse.prototype;
+SieveIf.prototype = Object.create(SieveElse.prototype);
+SieveIf.prototype.constructor = SieveIf;
 
 SieveIf.isElement
     = function (parser)
@@ -32,6 +87,7 @@ SieveIf.nodeName = function () {
 SieveIf.nodeType  = function () {
   return "condition/";
 }
+
 
 SieveIf.prototype.init
     = function (parser)
@@ -121,54 +177,6 @@ SieveIf.prototype.toScript
 }
 
 
-//****************************************************************************//
-
-function SieveElse(docshell,id)
-{
-  SieveBlock.call(this,docshell,id);
-  this.ws = [];
-  this.ws[0] = this._createByName("whitespace","\r\n");
-  this.ws[1] = this._createByName("whitespace","\r\n");
-}
-
-SieveElse.prototype.__proto__ = SieveBlock.prototype;
-
-SieveElse.isElement
-    = function (parser)
-{
-  return parser.startsWith("else");  
-}
-
-SieveElse.nodeName = function () {
-  return "condition/else";
-}
-
-SieveElse.nodeType  = function () {
-  return "condition/";
-}
-
-SieveElse.prototype.init
-    = function (parser)
-{
-  parser.extract("else");
-   
-  this.ws[0].init(parser);
-   
-  SieveBlock.prototype.init.call(this,parser);
-  
-  this.ws[1].init(parser); 
-  
-  return this;
-}
-
-SieveElse.prototype.toScript
-    = function()
-{
-  return "else" 
-    + this.ws[0].toScript() 
-    + SieveBlock.prototype.toScript.call(this) 
-    + this.ws[1].toScript();  
-}
 
 //****************************************************************************//
 
@@ -179,7 +187,8 @@ function SieveCondition(docshell,id)
   this.elms[0] = this._createByName("condition/if","if false {\r\n}\r\n"); 
 }
 
-SieveCondition.prototype.__proto__ = SieveBlockBody.prototype;
+SieveCondition.prototype = Object.create(SieveBlockBody.prototype);
+SieveCondition.prototype.constructor = SieveCondition;
 
 SieveCondition.isElement
     = function (parser)
@@ -194,6 +203,7 @@ SieveCondition.nodeName = function () {
 SieveCondition.nodeType  = function () {
   return "condition";
 }
+
 
 SieveCondition.prototype.init
     = function (parser)

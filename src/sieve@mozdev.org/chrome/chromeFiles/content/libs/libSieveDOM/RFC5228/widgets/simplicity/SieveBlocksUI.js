@@ -413,7 +413,8 @@ function SieveRootNodeUI(elm)
   this.richlist = new SieveRichList(elm.children(1).children());
 }
 
-SieveRootNodeUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
+SieveRootNodeUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
+SieveRootNodeUI.prototype.constructor = SieveRootNodeUI;
 
 
 SieveRootNodeUI.prototype.createHtml

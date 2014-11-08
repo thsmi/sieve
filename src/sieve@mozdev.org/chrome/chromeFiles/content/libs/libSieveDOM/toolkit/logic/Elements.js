@@ -29,11 +29,11 @@ function SieveAbstractElement(docshell, id)
 }
 
 // A shorthand to create children bound to this Element...
-SieveAbstractElement.prototype._createByName = function(name, parser) {    
+SieveAbstractElement.prototype._createByName = function(name, parser) {  
   return this._docshell.createByName(name, parser, this);
 }
   
-SieveAbstractElement.prototype._createByClass = function(types, parser) {    
+SieveAbstractElement.prototype._createByClass = function(types, parser) {
   return this._docshell.createByClass(types, parser, this);
 }
   
@@ -50,12 +50,13 @@ SieveAbstractElement.prototype._probeByClass = function(types, parser) {
  * ...it simpler by using this helper
  */
 SieveAbstractElement.prototype.nodeName = function () {
-  return this.__proto__.constructor.nodeName();
+  return Object.getPrototypeOf(this).constructor.nodeName();
 }
 
 SieveAbstractElement.prototype.nodeType = function () {
-  return this.__proto__.constructor.nodeType()  
+  return Object.getPrototypeOf(this).constructor.nodeType()  
 }
+
 
 /**
  * 
@@ -198,7 +199,8 @@ function SieveAbstractBlock(docshell,id)
   this.elms = [];
 }
 
-SieveAbstractBlock.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveAbstractBlock.prototype = Object.create(SieveAbstractElement.prototype);
+SieveAbstractBlock.prototype.constructor = SieveAbstractBlock;
 
 SieveAbstractBlock.prototype.children
     = function (idx)

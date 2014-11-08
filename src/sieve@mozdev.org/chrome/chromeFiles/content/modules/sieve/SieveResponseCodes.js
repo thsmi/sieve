@@ -50,8 +50,9 @@ function SieveResponseCodeSasl(code)
     throw "Malformed SASL Response Code"; 
 }
 
-// Inherrit prototypes from SieveResponseCode...
-SieveResponseCodeSasl.prototype.__proto__ = SieveResponseCode.prototype;
+// Inherit prototypes from SieveResponseCode...
+SieveResponseCodeSasl.prototype = Object.create(SieveResponseCode.prototype);
+SieveResponseCodeSasl.prototype.constructor = SieveResponseCodeSasl;
 
 
 SieveResponseCodeSasl.prototype.getSasl
@@ -91,7 +92,8 @@ function SieveResponseCodeReferral(code)
 }
 
 // Inherrit prototypes from SieveResponseCode...
-SieveResponseCodeReferral.prototype.__proto__ = SieveResponseCode.prototype;
+SieveResponseCodeReferral.prototype = Object.create(SieveResponseCode.prototype);
+SieveResponseCodeReferral.prototype.constructor = SieveResponseCodeReferral;
 
 SieveResponseCodeReferral.prototype.getHostname
     = function ()

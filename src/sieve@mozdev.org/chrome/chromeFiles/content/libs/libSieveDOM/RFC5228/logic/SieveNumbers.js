@@ -31,7 +31,8 @@ SieveNumber.nodeType  = function () {
   return "number/";
 }
 
-SieveNumber.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveNumber.prototype = Object.create(SieveAbstractElement.prototype);
+SieveNumber.prototype.constructor = SieveNumber;
 
 SieveNumber.prototype.init
     = function(parser)

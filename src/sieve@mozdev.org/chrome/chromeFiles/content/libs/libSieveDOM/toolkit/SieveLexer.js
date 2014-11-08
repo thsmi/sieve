@@ -75,8 +75,8 @@ var SieveLexer =
     if (!constructor.onCapable(this._capabilities))
       throw "Capability not supported";    
     
-    var item = constructor.onNew(docshell, ++(this.maxId));
-      
+    var item = constructor.onNew(docshell, ++(this.maxId));         
+    
     if ((typeof(parser) != "undefined") && (parser))
       item.init(parser);
         
@@ -117,7 +117,7 @@ var SieveLexer =
     if (!this.names[name])
       throw "No Constructor for >>"+name+"<< found";
 
-    return this.createInstance(docshell,this.names[name],parser)      
+    return this.createInstance(docshell,this.names[name],parser)
   },
   
   getMaxId : function ()

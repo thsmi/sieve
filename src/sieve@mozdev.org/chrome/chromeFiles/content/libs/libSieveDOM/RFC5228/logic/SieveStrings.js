@@ -25,7 +25,8 @@ function SieveMultiLineString(docshell,id)
   this.hashComment = null;
 }
 
-SieveMultiLineString.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveMultiLineString.prototype = Object.create(SieveAbstractElement.prototype);
+SieveMultiLineString.prototype.constructor = SieveMultiLineString;
 
 // PUBLIC STATIC:
 SieveMultiLineString.isElement
@@ -131,7 +132,8 @@ function SieveQuotedString(docshell,id)
   this.text = "";
 }
 
-SieveQuotedString.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveQuotedString.prototype = Object.create(SieveAbstractElement.prototype);
+SieveQuotedString.prototype.constructor = SieveQuotedString;
 
 // PUBLIC STATIC:
 SieveQuotedString.isElement
@@ -261,7 +263,8 @@ function SieveStringList(docshell,id)
   this.compact = true;
 }
 
-SieveStringList.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveStringList.prototype = Object.create(SieveAbstractElement.prototype);
+SieveStringList.prototype.constructor = SieveStringList;
 
 // PUBLIC STATIC:
 SieveStringList.isElement
@@ -453,7 +456,8 @@ function SieveString(docshell,id)
   this.string = this._createByName("string/quoted");
 }
 
-SieveString.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveString.prototype = Object.create(SieveAbstractElement.prototype);
+SieveString.prototype.constructor = SieveString;
 
 // PUBLIC STATIC:
 SieveString.isElement
@@ -513,7 +517,8 @@ function SieveMatchType(docshell,id)
   this.optional = true;
 }
 
-SieveMatchType.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveMatchType.prototype = Object.create(SieveAbstractElement.prototype);
+SieveMatchType.prototype.constructor = SieveMatchType;
 
 SieveMatchType.isElement
     = function (parser)
@@ -614,7 +619,8 @@ function SieveAddressPart(docshell,id)
   this.optional = true;
 }
 
-SieveAddressPart.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveAddressPart.prototype = Object.create(SieveAbstractElement.prototype);
+SieveAddressPart.prototype.constructor = SieveAddressPart;
 
 SieveAddressPart.isElement
     = function (parser)
@@ -714,7 +720,8 @@ function SieveComparator(docshell,id)
   this.optional = true;
 }
 
-SieveComparator.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveComparator.prototype =Object.create(SieveAbstractElement.prototype);
+SieveComparator.prototype.constructor = SieveComparator;
 
 SieveComparator.isElement
     = function(parser)

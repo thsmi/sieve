@@ -9,55 +9,14 @@
  
 "use strict";
 
-function SieveBlock(docshell,id)
-{
-  SieveBlockBody.call(this,docshell,id);
-}
-
-SieveBlock.prototype.__proto__ = SieveBlockBody.prototype;
-
-SieveBlock.isElement
-    = function (parser)
-{
-  return parser.isChar("{");  
-}
-
-SieveBlock.nodeName = function () {
-  return "block/block";
-}
-
-SieveBlock.nodeType  = function () {
-  return "block/";
-}
-
-SieveBlock.prototype.init
-  = function (parser)
-{  
-  parser.extractChar("{");
-  
-  SieveBlockBody.prototype.init.call(this,parser);
-
-  parser.extractChar("}");
-  
-  return this; 
-}
-
-SieveBlock.prototype.toScript
-  = function ()
-{
-  return "{" +SieveBlockBody.prototype.toScript.call(this)+"}";
-}
-//****************************************************************************//
-
 function SieveBlockBody(docshell,id)
 {
   SieveAbstractBlock.call(this,docshell,id);
-  
-  // Initialize Block Elements
-  this.elms = [];
+  this.elms = [];  
 }
 
-SieveBlockBody.prototype.__proto__ = SieveAbstractBlock.prototype;
+SieveBlockBody.prototype = Object.create(SieveAbstractBlock.prototype);
+SieveBlockBody.prototype.constructor = SieveBlockBody;
 
 SieveBlockBody.isElement
     = function (parser)
@@ -94,6 +53,49 @@ SieveBlockBody.prototype.toScript
   return str;
 }
 
+//****************************************************************************//
+
+
+function SieveBlock(docshell,id)
+{
+  SieveBlockBody.call(this,docshell,id);
+}
+
+SieveBlock.prototype = Object.create(SieveBlockBody.prototype);
+SieveBlock.prototype.constructor = SieveBlock;
+
+SieveBlock.isElement
+    = function (parser)
+{
+  return parser.isChar("{");  
+}
+
+SieveBlock.nodeName = function () {
+  return "block/block";
+}
+
+SieveBlock.nodeType  = function () {
+  return "block/";
+}
+
+SieveBlock.prototype.init
+  = function (parser)
+{  
+  parser.extractChar("{");
+  
+  SieveBlockBody.prototype.init.call(this,parser);
+
+  parser.extractChar("}");
+  
+  return this; 
+}
+
+SieveBlock.prototype.toScript
+  = function ()
+{
+  return "{" +SieveBlockBody.prototype.toScript.call(this)+"}";
+}
+//****************************************************************************//
 
 
 function SieveRootNode(docshell)
@@ -101,10 +103,11 @@ function SieveRootNode(docshell)
   SieveBlockBody.call(this,docshell,-1);
   
   this.elms[0] = this._createByName("import");
-  this.elms[1] = this._createByName("block/body");  
+  this.elms[1] = this._createByName("block/body");
 }
 
-SieveRootNode.prototype.__proto__ = SieveBlockBody.prototype;
+SieveRootNode.prototype = Object.create(SieveBlockBody.prototype);
+SieveRootNode.prototype.constructor = SieveRootNode;
 
 SieveRootNode.isElement
      = function (token)

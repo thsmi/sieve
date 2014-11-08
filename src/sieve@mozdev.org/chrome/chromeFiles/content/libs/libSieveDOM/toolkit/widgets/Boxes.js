@@ -176,7 +176,8 @@ function SieveEditableBoxUI(elm)
 }
 
 // Inherrit from DragBox
-SieveEditableBoxUI.prototype.__proto__ =  SieveAbstractBoxUI.prototype;
+SieveEditableBoxUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
+SieveEditableBoxUI.prototype.constructor = SieveEditableBoxUI;
 
 SieveEditableBoxUI.prototype.onValidate
     = function(e)
@@ -284,7 +285,8 @@ function SieveTestBoxUI(elm)
   this.drop(new SieveTestDropHandler()); 
 }
 
-SieveTestBoxUI.prototype.__proto__ =  SieveEditableBoxUI.prototype;
+SieveTestBoxUI.prototype = Object.create(SieveEditableBoxUI.prototype);
+SieveTestBoxUI.prototype.constructor = SieveTestBoxUI;
 
 SieveTestBoxUI.prototype.createHtml
     = function (parent)
@@ -303,7 +305,8 @@ function SieveOperatorBoxUI(elm)
   this.drop(new SieveTestDropHandler()); 
 }
 
-SieveOperatorBoxUI.prototype.__proto__ =  SieveEditableBoxUI.prototype;
+SieveOperatorBoxUI.prototype = Object.create(SieveEditableBoxUI.prototype);
+SieveOperatorBoxUI.prototype.constructor = SieveOperatorBoxUI;
 
 SieveOperatorBoxUI.prototype.createHtml
     = function (parent)
@@ -321,7 +324,8 @@ function SieveActionBoxUI(elm)
   this.drag(new SieveMoveDragHandler());
 }
 
-SieveActionBoxUI.prototype.__proto__ =  SieveEditableBoxUI.prototype;
+SieveActionBoxUI.prototype = Object.create(SieveEditableBoxUI.prototype);
+SieveActionBoxUI.prototype.constructor = SieveActionBoxUI;
 
 SieveActionBoxUI.prototype.createHtml
     = function (parent)
@@ -357,7 +361,8 @@ function SieveDropBoxUI(parent)
   this.drop(new SieveDropHandler());
 }
 
-SieveDropBoxUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
+SieveDropBoxUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
+SieveDropBoxUI.prototype.constructor = SieveDropBoxUI;
 
 SieveDropBoxUI.prototype.createHtml
     = function (parent)
@@ -381,4 +386,5 @@ function SieveTrashBoxUI(docshell)
 }
 
 // Inherrit from DragBox
-SieveTrashBoxUI.prototype.__proto__ = SieveDropBoxUI.prototype;
+SieveTrashBoxUI.prototype = Object.create(SieveDropBoxUI.prototype);
+SieveTrashBoxUI.prototype.constructor = SieveTrashBoxUI;

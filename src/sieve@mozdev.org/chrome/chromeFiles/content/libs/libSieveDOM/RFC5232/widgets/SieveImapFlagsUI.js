@@ -14,7 +14,8 @@ function SieveSetFlagUI(elm)
   SieveActionBoxUI.call(this,elm);
 }
 
-SieveSetFlagUI.prototype.__proto__ = SieveActionBoxUI.prototype;
+SieveSetFlagUI.prototype = Object.create(SieveActionBoxUI.prototype);
+SieveSetFlagUI.prototype.constructor = SieveSetFlagUI;
 
 SieveSetFlagUI.prototype.initSummary
     = function ()
@@ -30,7 +31,8 @@ function SieveAddFlagUI(elm)
   SieveActionBoxUI.call(this,elm);
 }
 
-SieveAddFlagUI.prototype.__proto__ = SieveActionBoxUI.prototype;
+SieveAddFlagUI.prototype = Object.create(SieveActionBoxUI.prototype);
+SieveAddFlagUI.prototype.constructor = SieveAddFlagUI;
 
 SieveAddFlagUI.prototype.initSummary
     = function ()
@@ -46,7 +48,8 @@ function SieveRemoveFlagUI(elm)
   SieveActionBoxUI.call(this,elm);
 }
 
-SieveRemoveFlagUI.prototype.__proto__ = SieveActionBoxUI.prototype;
+SieveRemoveFlagUI.prototype = Object.create(SieveActionBoxUI.prototype);
+SieveRemoveFlagUI.prototype.constructor = SieveRemoveFlagUI;
 
 SieveRemoveFlagUI.prototype.initSummary
     = function ()
@@ -62,7 +65,8 @@ function SieveHasFlagUI(elm)
   SieveTestBoxUI.call(this,elm);  
 }
 
-SieveHasFlagUI.prototype.__proto__ = SieveTestBoxUI.prototype;
+SieveHasFlagUI.prototype = Object.create(SieveTestBoxUI.prototype);
+SieveHasFlagUI.prototype.constructor = SieveHasFlagUI;
 
 
 SieveHasFlagUI.prototype.initSummary

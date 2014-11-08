@@ -16,7 +16,8 @@ function SieveLineBreak(docshell,id)
   SieveAbstractElement.call(this,docshell,id);
 }
 
-SieveLineBreak.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveLineBreak.prototype = Object.create(SieveAbstractElement.prototype);
+SieveLineBreak.prototype.constructor = SieveLineBreak;
 
 SieveLineBreak.isElement
   = function (parser)
@@ -66,7 +67,8 @@ SieveDeadCode.nodeType  = function () {
   return "whitespace/";
 }
 
-SieveDeadCode.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveDeadCode.prototype = Object.create(SieveAbstractElement.prototype);
+SieveDeadCode.prototype.constructor = SieveDeadCode;
 
 SieveDeadCode.prototype.init
     = function (parser)
@@ -102,7 +104,8 @@ SieveBracketComment.nodeType  = function () {
   return "whitespace/";
 }
 
-SieveBracketComment.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveBracketComment.prototype = Object.create(SieveAbstractElement.prototype);
+SieveBracketComment.prototype.constructor = SieveBracketComment;
 
 SieveBracketComment.prototype.init
     = function (parser)
@@ -128,7 +131,8 @@ function SieveHashComment(docshell,id)
   this.text = "";
 }
 
-SieveHashComment.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveHashComment.prototype = Object.create(SieveAbstractElement.prototype);
+SieveHashComment.prototype.constructor = SieveHashComment;
 
 SieveHashComment.isElement
     = function (parser)
@@ -169,7 +173,8 @@ function SieveWhiteSpace(docshell,id)
   this.elements = [];
 }
 
-SieveWhiteSpace.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveWhiteSpace.prototype = Object.create(SieveAbstractElement.prototype);
+SieveWhiteSpace.prototype.constructor = SieveWhiteSpace;
 
 SieveWhiteSpace.isElement
     = function (parser)
@@ -242,7 +247,8 @@ function SieveSemicolon(docshell,id)
   this.whiteSpace[1] = this._createByName("whitespace","\r\n");
 }
 
-SieveSemicolon.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveSemicolon.prototype = Object.create(SieveAbstractElement.prototype);
+SieveSemicolon.prototype.constructor = SieveSemicolon;
 
 SieveSemicolon.isElement
     = function (parser)

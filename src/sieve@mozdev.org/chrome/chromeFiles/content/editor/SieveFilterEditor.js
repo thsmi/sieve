@@ -51,14 +51,15 @@ var gEditorStatus =
   }
 }
 
-var gSFE = new SieveFilterEditor();
+
 
 function SieveFilterEditor()
 {  
   SieveAbstractClient.call(this);
 }
 
-SieveFilterEditor.prototype.__proto__ = SieveAbstractClient.prototype;
+SieveFilterEditor.prototype = Object.create(SieveAbstractClient.prototype);
+SieveFilterEditor.prototype.constructor = SieveFilterEditor;
 
 SieveFilterEditor.prototype.onChannelReady
     = function(cid)
@@ -613,6 +614,8 @@ function updateWidgets()
       document.getElementById("sivWidgetEditor").contentWindow.getSieveScript());
   }
   catch (ex){
+  	//Cu.reportError(ex);
+  	//throw ex;
     alert("Error while parsing script.\n\n"+ex);    
     // switching to souce view failed
     onViewSource(true,true);
@@ -1275,3 +1278,6 @@ function onSelectAll()
   var editor = document.getElementById("sivEditor2").contentWindow.editor;
   editor.setSelection({line:0,ch:0},{line: editor.lineCount() - 1});
 }
+
+
+var gSFE = new SieveFilterEditor();

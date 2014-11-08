@@ -14,7 +14,8 @@ function SieveRootNodeUI(elm)
   SieveAbstractBoxUI.call(this,elm);
 }
 
-SieveRootNodeUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
+SieveRootNodeUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
+SieveRootNodeUI.prototype.constructor = SieveRootNodeUI;
 
 
 SieveRootNodeUI.prototype.createHtml
@@ -29,7 +30,8 @@ function SieveBlockUI(elm)
   SieveAbstractBoxUI.call(this,elm);
 }
 
-SieveBlockUI.prototype.__proto__ = SieveAbstractBoxUI.prototype;
+SieveBlockUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
+SieveBlockUI.prototype.constructor = SieveBlockUI;
 
 SieveBlockUI.prototype.init
     = function ()

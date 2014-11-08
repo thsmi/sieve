@@ -16,10 +16,11 @@ function SieveRequire(docshell,id)
   this.whiteSpace = this._createByName("whitespace");
   this.semicolon = this._createByName("atom/semicolon");
   
-  this.strings = this._createByName("stringlist");    
+  this.strings = this._createByName("stringlist");	  
 }
 
-SieveRequire.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveRequire.prototype = Object.create(SieveAbstractElement.prototype);
+SieveRequire.prototype.constructor = SieveRequire;
 
 SieveRequire.isElement
   = function (parser)
@@ -34,6 +35,7 @@ SieveRequire.nodeName = function () {
 SieveRequire.nodeType  = function () {
   return "import/";
 }
+
 
 SieveRequire.prototype.init
     = function (parser)
@@ -83,7 +85,8 @@ function SieveBlockImport(docshell,id)
   SieveBlockBody.call(this,docshell,id); 
 }
 
-SieveBlockImport.prototype.__proto__ = SieveBlockBody.prototype;
+SieveBlockImport.prototype = Object.create(SieveBlockBody.prototype);
+SieveBlockImport.prototype.constructor = SieveBlockImport;
 
 // PUBLIC STATIC:
 SieveBlockImport.isElement
@@ -100,7 +103,6 @@ SieveBlockImport.nodeType  = function () {
   return "import";
 }
 
-// PUBLIC:
 SieveBlockImport.prototype.init
     = function (parser)    
 {  

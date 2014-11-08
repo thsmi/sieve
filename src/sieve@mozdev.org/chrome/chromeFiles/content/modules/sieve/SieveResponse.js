@@ -294,7 +294,8 @@ function SieveCapabilitiesResponse(parser)
 }
 
 // Inherrit properties from SieveSimpleResponse
-SieveCapabilitiesResponse.prototype.__proto__ = SieveSimpleResponse.prototype;
+SieveCapabilitiesResponse.prototype = Object.create(SieveSimpleResponse.prototype);
+SieveCapabilitiesResponse.prototype.constructor = SieveCapabilitiesResponse;
 
 SieveCapabilitiesResponse.prototype.getImplementation
     = function () { return this.implementation; }
@@ -452,8 +453,9 @@ function SieveListScriptResponse(parser)
 }
 
 // Inherrit properties from SieveSimpleResponse
-SieveListScriptResponse.prototype.__proto__ = SieveSimpleResponse.prototype;    
-   
+SieveListScriptResponse.prototype = Object.create(SieveSimpleResponse.prototype);    
+SieveListScriptResponse.prototype.constructor = SieveListScriptResponse;
+
 SieveListScriptResponse.prototype.getScripts
     = function () { return this.scripts; }
 
@@ -464,7 +466,8 @@ function SieveSaslLoginResponse()
   this.state = 0;
 }
 
-SieveSaslLoginResponse.prototype.__proto__ = SieveSimpleResponse.prototype;
+SieveSaslLoginResponse.prototype = Object.create(SieveSimpleResponse.prototype);
+SieveSaslLoginResponse.prototype.constructor = SieveSaslLoginResponse;
 
 SieveSaslLoginResponse.prototype.add
   = function (parser) 
@@ -526,7 +529,8 @@ function SieveSaslCramMd5Response()
   this.state = 0;
 }
 
-SieveSaslCramMd5Response.prototype.__proto__ = SieveSimpleResponse.prototype;
+SieveSaslCramMd5Response.prototype = Object.create(SieveSimpleResponse.prototype);
+SieveSaslCramMd5Response.prototype.constructor = SieveSaslCramMd5Response;
 
 SieveSaslCramMd5Response.prototype.add
   = function (parser) 
@@ -591,7 +595,8 @@ function SieveGetScriptResponse(scriptName,parser)
 }
 
 // Inherrit properties from SieveSimpleResponse
-SieveGetScriptResponse.prototype.__proto__ = SieveSimpleResponse.prototype;    
+SieveGetScriptResponse.prototype = Object.create(SieveSimpleResponse.prototype);    
+SieveGetScriptResponse.prototype.constructor = SieveGetScriptResponse;
 
 /**
  * Contains the requested sieve script. 
@@ -624,8 +629,8 @@ function SieveSaslScramSha1Response()
   this.state = 0;
 }
 
-SieveSaslScramSha1Response.prototype.__proto__ = SieveSimpleResponse.prototype;
-
+SieveSaslScramSha1Response.prototype = Object.create(SieveSimpleResponse.prototype);
+SieveSaslScramSha1Response.prototype.constructor = SieveSaslScramSha1Response;
 
 /**
  * @private

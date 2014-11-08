@@ -27,7 +27,9 @@ function SieveNotOperator(docshell,id)
  // this.test = this._createByName("operator");
 }
 
-SieveNotOperator.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveNotOperator.prototype = Object.create(SieveAbstractElement.prototype);
+SieveNotOperator.prototype.constructor = SieveNotOperator;
+
 
 SieveNotOperator.isElement = function(parser) { 
   return parser.startsWith("not");
@@ -121,7 +123,8 @@ function SieveAnyOfAllOfTest(docshell,id)
 }
 
 // Inherrit TestList
-SieveAnyOfAllOfTest.prototype.__proto__ = SieveTestList.prototype;
+SieveAnyOfAllOfTest.prototype = Object.create(SieveTestList.prototype);
+SieveAnyOfAllOfTest.prototype.constructor = SieveAnyOfAllOfTest;
 
 SieveAnyOfAllOfTest.isElement
    = function (parser)

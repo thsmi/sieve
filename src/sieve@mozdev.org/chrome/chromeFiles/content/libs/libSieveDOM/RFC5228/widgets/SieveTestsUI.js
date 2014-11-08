@@ -20,7 +20,8 @@ function SieveSizeTestUI(elm)
   SieveTestBoxUI.call(this,elm);
 }
 
-SieveSizeTestUI.prototype.__proto__ = SieveTestBoxUI.prototype;
+SieveSizeTestUI.prototype = Object.create(SieveTestBoxUI.prototype);
+SieveSizeTestUI.prototype.constructor = SieveSizeTestUI;
 
 SieveSizeTestUI.prototype.onValidate
     = function ()
@@ -82,7 +83,8 @@ function SieveBooleanTestUI(elm)
   SieveTestBoxUI.call(this,elm);
 }
 
-SieveBooleanTestUI.prototype.__proto__ = SieveTestBoxUI.prototype;
+SieveBooleanTestUI.prototype = Object.create(SieveTestBoxUI.prototype);
+SieveBooleanTestUI.prototype.constructor = SieveBooleanTestUI;
 
 SieveBooleanTestUI.prototype.onValidate
     = function ()
@@ -125,7 +127,8 @@ function SieveExistsUI(elm)
   SieveTestBoxUI.call(this,elm);  
 }
 
-SieveExistsUI.prototype.__proto__ = SieveTestBoxUI.prototype;
+SieveExistsUI.prototype = Object.create(SieveTestBoxUI.prototype);
+SieveExistsUI.prototype.constructor = SieveExistsUI;
 
 SieveExistsUI.prototype.initEditor
     = function()
@@ -151,7 +154,8 @@ function SieveHeaderUI(elm)
   SieveTestBoxUI.call(this,elm);  
 }
 
-SieveHeaderUI.prototype.__proto__ = SieveTestBoxUI.prototype;
+SieveHeaderUI.prototype = Object.create(SieveTestBoxUI.prototype);
+SieveHeaderUI.prototype.constructor = SieveHeaderUI;
 
 SieveHeaderUI.prototype.onValidate
     = function ()
@@ -206,7 +210,8 @@ function SieveAddressUI(elm)
   SieveTestBoxUI.call(this,elm);
 }
 
-SieveAddressUI.prototype.__proto__ = SieveTestBoxUI.prototype;
+SieveAddressUI.prototype = Object.create(SieveTestBoxUI.prototype);
+SieveAddressUI.prototype.constructor = SieveAddressUI;
 
 SieveAddressUI.prototype.onValidate
     = function ()
@@ -263,7 +268,8 @@ function SieveEnvelopeUI(elm)
   SieveTestBoxUI.call(this,elm);
 }
 
-SieveEnvelopeUI.prototype.__proto__ = SieveTestBoxUI.prototype;
+SieveEnvelopeUI.prototype = Object.create(SieveTestBoxUI.prototype);
+SieveEnvelopeUI.prototype.constructor = SieveEnvelopeUI;
 
 SieveEnvelopeUI.prototype.initHelp
     = function ()

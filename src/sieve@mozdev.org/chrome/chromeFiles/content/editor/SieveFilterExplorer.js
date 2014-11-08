@@ -42,7 +42,8 @@ function SieveFilterExplorer()
   this._view = null;
 }
 
-SieveFilterExplorer.prototype.__proto__ = SieveAbstractClient.prototype;
+SieveFilterExplorer.prototype = Object.create(SieveAbstractClient.prototype);
+SieveFilterExplorer.prototype.constructor = SieveFilterExplorer;
 
 // TODO muss der error listener wirklich jedes mal gesetzet werden...
 // eigentlich müssete der default doch beim Objekt rauskommen...

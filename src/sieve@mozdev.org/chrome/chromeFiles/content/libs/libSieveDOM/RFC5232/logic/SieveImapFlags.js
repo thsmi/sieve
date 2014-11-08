@@ -24,7 +24,8 @@ function SieveSetFlag(docshell,id)
   this.semicolon = this._createByName("atom/semicolon");
 }
 
-SieveSetFlag.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveSetFlag.prototype = Object.create(SieveAbstractElement.prototype);
+SieveSetFlag.prototype.constructor = SieveSetFlag;
 
 SieveSetFlag.isElement
     = function (parser)
@@ -95,7 +96,8 @@ function SieveAddFlag(docshell,id)
   this.semicolon = this._createByName("atom/semicolon");
 }
 
-SieveAddFlag.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveAddFlag.prototype = Object.create(SieveAbstractElement.prototype);
+SieveAddFlag.prototype.constructor = SieveAddFlag;
 
 SieveAddFlag.isElement
     = function (parser)
@@ -173,7 +175,8 @@ function SieveRemoveFlag(docshell,id)
   this.semicolon = this._createByName("atom/semicolon");
 }
 
-SieveRemoveFlag.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveRemoveFlag.prototype = Object.create(SieveAbstractElement.prototype);
+SieveRemoveFlag.prototype.constructor = SieveRemoveFlag;
 
 SieveRemoveFlag.isElement
   = function(parser)
@@ -254,7 +257,8 @@ function SieveHasFlag(docshell,id)
   this.flaglist = this._createByName("stringlist");
 }
 
-SieveHasFlag.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveHasFlag.prototype = Object.create(SieveAbstractElement.prototype);
+SieveHasFlag.prototype.constructor = SieveHasFlag;
 
 SieveHasFlag.isElement
   = function(parser)

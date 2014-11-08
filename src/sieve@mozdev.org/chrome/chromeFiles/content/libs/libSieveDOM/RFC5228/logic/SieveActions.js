@@ -11,11 +11,12 @@
 
 function SieveDiscard(docshell,id) 
 {
-  SieveAbstractElement.call(this,docshell,id); 
+  SieveAbstractElement.call(this,docshell,id);
   this.semicolon = this._createByName("atom/semicolon");
 }
 
-SieveDiscard.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveDiscard.prototype = Object.create(SieveAbstractElement.prototype);
+SieveDiscard.prototype.constructor = SieveDiscard;
 
 SieveDiscard.isElement = function (parser) {
   return parser.startsWith("discard");  
@@ -54,13 +55,12 @@ function SieveRedirect(docshell,id)
   SieveAbstractElement.call(this,docshell,id);
   
   this.whiteSpace = this._createByName("whitespace"," ");
-  
   this.address = this._createByName("string","\"username@example.com\""); 
-  
-  this.semicolon = this._createByName("atom/semicolon");
+  this.semicolon = this._createByName("atom/semicolon");  
 }
 
-SieveRedirect.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveRedirect.prototype = Object.create(SieveAbstractElement.prototype);
+SieveRedirect.prototype.constructor = SieveRedirect;
 
 SieveRedirect.isElement
     = function (parser)
@@ -79,6 +79,7 @@ SieveRedirect.nodeType
 {
   return "action";
 }
+
 
 SieveRedirect.prototype.init
     = function (parser)
@@ -127,10 +128,12 @@ SieveRedirect.prototype.toScript
 function SieveStop(docshell,id) 
 {
   SieveAbstractElement.call(this,docshell,id);
-  this.semicolon = this._createByName("atom/semicolon");
+  
+  this.semicolon = this._createByName("atom/semicolon");	
 }
 
-SieveStop.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveStop.prototype = Object.create(SieveAbstractElement.prototype);
+SieveStop.prototype.constructor = SieveStop;
 
 SieveStop.isElement = function(parser) {
   return parser.startsWith("stop"); 
@@ -143,6 +146,7 @@ SieveStop.nodeName = function () {
 SieveStop.nodeType = function () {
   return "action";
 }
+
 
 SieveStop.prototype.init
     = function (parser)
@@ -167,10 +171,12 @@ SieveStop.prototype.toScript
 function SieveKeep(docshell,id)
 {
   SieveAbstractElement.call(this,docshell,id);
+  
   this.semicolon = this._createByName("atom/semicolon");
 }
 
-SieveKeep.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveKeep.prototype = Object.create(SieveAbstractElement.prototype);
+SieveKeep.prototype.constructor = SieveKeep;
 
 SieveKeep.isElement = function(parser) {
   return parser.startsWith("keep");
@@ -183,6 +189,7 @@ SieveKeep.nodeName = function () {
 SieveKeep.nodeType  = function () {
   return "action";
 }
+
 
 SieveKeep.prototype.init
     = function (parser)
@@ -216,7 +223,8 @@ function SieveFileInto(docshell,id)
   this.string.init("\"INBOX\"");
 }
 
-SieveFileInto.prototype.__proto__ = SieveAbstractElement.prototype;
+SieveFileInto.prototype = Object.create(SieveAbstractElement.prototype);
+SieveFileInto.prototype.constructor = SieveFileInto;
 
 // Static methods needed for registration
 SieveFileInto.isElement = function (parser) {
@@ -234,6 +242,7 @@ SieveFileInto.nodeName = function () {
 SieveFileInto.nodeType  = function () {
   return "action";
 }
+
 
 // Dynamic methods...
 SieveFileInto.prototype.init

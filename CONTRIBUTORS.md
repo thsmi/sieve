@@ -11,9 +11,11 @@ Carlos Gomez Agun
 John Fawcett, Simon Clarkstone, Janusz Wilk, Ralph Angenendt, Ralf Loeser,
 Lars Bahner, Alexander Brüning, Sebastian Bremicker, Christophe Sokol, Trent Payne,
 Chris J Kottaridis, Robert Fantini, Antonino Balsamo, Christopher Davies, 
-Thomas Borrmann, Johannes Maybaum, Vladimir Elisseev, Musall Maik, Hanns Mattes, 
-Robert Schultz, Micha Gerstenberg, Markus Bordihn, Benjamin Bässler, Christian Boisjoli, Birger Blixt,
-Johan Ekenberg, Eliane Beba Maranz, Martin Reisenhofer 
+Thomas Borrmann, Johannes Maybaum, Vladimir Elisseev, Maik Musall, Hanns Mattes, 
+Robert Schultz, Micha Gerstenberg, Markus Bordihn, Benjamin Bässler, Christian Boisjoli,
+Birger Blixt, Johan Ekenberg, Eliane Beba Maranz, Martin Reisenhofer, Ulf Buermeyer, 
+Olli Nevalainen, Daniel Gorodowienko, Michael Bittorf, Mike Gore, Jean-Yves Barthel,
+Sören Brunk, Andrew Howell
 
 ## Resources
 [mozdev](http://www.mozdev.org), [SourceForge](http://sf.net),

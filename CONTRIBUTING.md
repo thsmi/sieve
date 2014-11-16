@@ -18,7 +18,7 @@ In order to process bugs faster consider the following:
 
 * Include a debug log/trace with your issue. Just go to the extensions settings 
   and enable debugging options in the Debug tab. Dumping Byte arrays is usually not 
-  neccessary. Keep in mind that the line starting with "AUTHENTICATE" contains 
+  necessary. Keep in mind that the line starting with "AUTHENTICATE" contains 
   your password. So scramble this line.
 
 * Mention very precisely what went wrong. "X is broken" is not a good bug

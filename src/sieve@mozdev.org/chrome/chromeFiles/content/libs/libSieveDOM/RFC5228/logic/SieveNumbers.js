@@ -18,7 +18,7 @@
 }
 
 SieveNumber.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
   return parser.isNumber(parser);
 }

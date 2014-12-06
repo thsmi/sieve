@@ -23,9 +23,9 @@ SieveRequire.prototype = Object.create(SieveAbstractElement.prototype);
 SieveRequire.prototype.constructor = SieveRequire;
 
 SieveRequire.isElement
-  = function (parser)
+  = function (parser, lexer)
 {
-  return parser.startsWith("require"); 
+  return parser.startsWith("require", lexer); 
 }
 
 SieveRequire.nodeName = function () {
@@ -90,9 +90,9 @@ SieveBlockImport.prototype.constructor = SieveBlockImport;
 
 // PUBLIC STATIC:
 SieveBlockImport.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
-  return SieveLexer.probeByClass(["import/","whitespace"],parser);  
+  return lexer.probeByClass(["import/","whitespace"],parser);  
 }
 
 SieveBlockImport.nodeName = function () {

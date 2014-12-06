@@ -9,7 +9,16 @@
 
 "use strict";
 
-function SieveDocument(lexer,widgets)
+/**
+ * Creates a new document for sieve scripts it is used to parse 
+ * store and manupulate sieve scripts
+ * 
+ * @param {} lexer
+ * @param {} widgets
+ *   the widgets which should be used to render the document. 
+ *   It may be null.
+ */
+function SieveDocument(lexer, widgets)
 {
   this._lexer = lexer;  
   this._widgets = widgets;
@@ -89,7 +98,18 @@ SieveDocument.prototype.probeByName
     
   return this._lexer.probeByName(name, parser);
 }
-  
+
+/**
+ * Uses the Document's lexer to check if a parser object 
+ * or a string starts with the expected types
+ * 
+ * @param {} types
+ *   an array with acceptable types.
+ * @param {} parser
+ *   a parser object or a string which holds the data that should be evaluated.
+ * @return {boolean}
+ *   true in case the parser or string is of the given type otherwise false.
+ */
 SieveDocument.prototype.probeByClass
     = function(types, parser)
 {

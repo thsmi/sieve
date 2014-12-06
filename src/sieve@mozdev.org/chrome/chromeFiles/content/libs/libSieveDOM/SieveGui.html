@@ -27,6 +27,7 @@
   <script type="application/javascript" src="RFC5228/logic/SieveWhiteSpaces.js" ></script>
   <script type="application/javascript" src="RFC5228/logic/SieveStrings.js" ></script>
   <script type="application/javascript" src="RFC5228/logic/SieveNumbers.js" ></script>
+  <script type="application/javascript" src="RFC5228/logic/SieveMatchTypes.js" ></script>
   <script type="application/javascript" src="RFC5228/logic/SieveBlocks.js"></script>  
   <script type="application/javascript" src="RFC5228/logic/SieveTests.js"></script>
   <script type="application/javascript" src="RFC5228/logic/SieveOperators.js"></script>
@@ -39,12 +40,16 @@
   
   <!-- RFC 5232 - ImapFlags-->
   <script type="application/javascript" src="RFC5232/logic/SieveImapFlags.js"></script>
+  
+  <!-- RFC Draft for RegEx-->
+  <script type="application/javascript" src="regex/logic/SieveRegularExpression.js" ></script>
 
     <!-- UI related Imports -->
   <!-- RFC 5228 - Sieve -->
   <script type="application/javascript" src="RFC5228/widgets/SieveStringsUI.js" ></script>
   <script type="application/javascript" src="RFC5228/widgets/SieveNumbersUI.js" ></script>
   <script type="application/javascript" src="RFC5228/widgets/SieveBlocksUI.js"></script>  
+  <script type="application/javascript" src="RFC5228/widgets/SieveMatchTypesUI.js" ></script>  
   <script type="application/javascript" src="RFC5228/widgets/SieveTestsUI.js" ></script>    
   <script type="application/javascript" src="RFC5228/widgets/SieveOperatorsUI.js"></script>
   <script type="application/javascript" src="RFC5228/widgets/SieveConditionsUI.js"></script>  
@@ -55,9 +60,14 @@
   
   <!-- RFC 5232 - ImapFlags-->
   <script type="application/javascript" src="RFC5232/widgets/SieveImapFlagsUI.js"></script> 
+
+  <!-- RFC Draft for RegEx-->
+  <script type="application/javascript" src="regex/widgets/SieveRegularExpressionUI.js" ></script>
   
 <script type="text/javascript">
 //<![CDATA[
+
+var dom2;
 
 $(document).ready(function() {
   init();
@@ -128,7 +138,7 @@ function require()
 
 function capabilities()
 {
-  SieveLexer.capabilities({"imap4flags":true,"fileinto":true,"reject":true,"envelope":true});
+  SieveLexer.capabilities({"imap4flags":true,"fileinto":true,"reject":true,"envelope":true, "regex":true});
 }
 
 function compact()

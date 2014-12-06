@@ -28,7 +28,7 @@ SieveSetFlag.prototype = Object.create(SieveAbstractElement.prototype);
 SieveSetFlag.prototype.constructor = SieveSetFlag;
 
 SieveSetFlag.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
   return parser.startsWith("setflag");
 }
@@ -100,7 +100,7 @@ SieveAddFlag.prototype = Object.create(SieveAbstractElement.prototype);
 SieveAddFlag.prototype.constructor = SieveAddFlag;
 
 SieveAddFlag.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
   return parser.startsWith("addflag");
 }
@@ -179,7 +179,7 @@ SieveRemoveFlag.prototype = Object.create(SieveAbstractElement.prototype);
 SieveRemoveFlag.prototype.constructor = SieveRemoveFlag;
 
 SieveRemoveFlag.isElement
-  = function(parser)
+  = function(parser, lexer)
 { 
   return parser.startsWith("removeflag");
 }
@@ -261,7 +261,7 @@ SieveHasFlag.prototype = Object.create(SieveAbstractElement.prototype);
 SieveHasFlag.prototype.constructor = SieveHasFlag;
 
 SieveHasFlag.isElement
-  = function(parser)
+  = function(parser, lexer)
 { 
   return parser.startsWith("hasflag");
 }
@@ -301,9 +301,12 @@ SieveHasFlag.prototype.init
 }    
 
 SieveHasFlag.prototype.require
-    = function (requires)
+    = function (imports)
 {
-  requires["imap4flags"] = true;
+  imports["imap4flags"] = true;
+  
+  if (this.matchType)
+    this.matchType.require(imports);
 }
 
 SieveHasFlag.prototype.toScript

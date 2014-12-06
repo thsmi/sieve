@@ -30,7 +30,7 @@ SieveMultiLineString.prototype.constructor = SieveMultiLineString;
 
 // PUBLIC STATIC:
 SieveMultiLineString.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
   return parser.startsWith("text:");
 }
@@ -137,7 +137,7 @@ SieveQuotedString.prototype.constructor = SieveQuotedString;
 
 // PUBLIC STATIC:
 SieveQuotedString.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
   return parser.isChar("\"");
 }
@@ -268,13 +268,13 @@ SieveStringList.prototype.constructor = SieveStringList;
 
 // PUBLIC STATIC:
 SieveStringList.isElement
-   = function (parser)
+   = function (parser, lexer)
 {
   // the [ is not necessary if the list contains only one enty!
   if (parser.isChar("["))
     return true;
     
-  if (SieveLexer.probeByName("string/quoted",parser))
+  if (lexer.probeByName("string/quoted",parser))
     return true;  
 
   return false;
@@ -461,9 +461,9 @@ SieveString.prototype.constructor = SieveString;
 
 // PUBLIC STATIC:
 SieveString.isElement
-  = function(parser)
+  = function(parser, lexer)
 {
-  return SieveLexer.probeByClass(["string/"],parser);
+  return lexer.probeByClass(["string/"],parser);
 }
 
 SieveString.nodeName = function () {
@@ -502,101 +502,6 @@ SieveString.prototype.toScript
   return this.string.toScript();
 }
 
-//***************************************************************************//
-
-//Matchtypes
-
-/**
- * Matchtypes are used to compare Strings
- * @param {} id
- */
-function SieveMatchType(docshell,id)
-{
-  SieveAbstractElement.call(this,docshell,id); 
-  this.type = "is";
-  this.optional = true;
-}
-
-SieveMatchType.prototype = Object.create(SieveAbstractElement.prototype);
-SieveMatchType.prototype.constructor = SieveMatchType;
-
-SieveMatchType.isElement
-    = function (parser)
-{    
-  if (parser.startsWith(":is"))
-    return true;
-  if (parser.startsWith(":matches"))
-    return true;
-  if (parser.startsWith(":contains"))
-    return true;
-  
-  return false;
-}
-
-SieveMatchType.nodeName = function () {
-  return "match-type";
-}
-
-SieveMatchType.nodeType  = function () {
-  return "comparison";
-}
-
-SieveMatchType.prototype.init
-    = function (parser)
-{  
-  if (parser.startsWith(":is"))
-    this.type = "is";
-  else if (parser.startsWith(":matches"))
-    this.type = "matches";
-  else if (parser.startsWith(":contains"))
-    this.type = "contains"
-  else 
-    throw "Syntaxerror, unknown match type";
-  
-  parser.extract(this.type.length+1);
-    
-  if (this.type == "is")
-    this.optional = false;
-  
-  return this;
-}
-
-SieveMatchType.prototype.isOptional
-    = function (value)
-{
-  if (typeof(value) === "undefined")
-    return ((this.optional) && (this.type == "is"))
-    
-  this.optional = value; 
-  
-  return this;
-}
-
-SieveMatchType.prototype.matchType
-    = function (value)
-{
-  if(typeof(value) === "undefined")
-    return this.type
-    
-  value = value.toLowerCase();
-  
-  if ((value == "is") || (value == "matches") || (value == "contains"))
-    this.type = value;
-  else  
-    throw "Unkonwn Match type >>"+value+"<<"; 
-  
-  return this;
-}
-
-SieveMatchType.prototype.toScript
-    = function ()
-{
-  if (this.isOptional())
-    return "";
-    
-  return ":"+this.type;
-}
-
 
 
 /**
@@ -623,7 +528,7 @@ SieveAddressPart.prototype = Object.create(SieveAbstractElement.prototype);
 SieveAddressPart.prototype.constructor = SieveAddressPart;
 
 SieveAddressPart.isElement
-    = function (parser)
+    = function (parser, lexer)
 {   
   if (parser.startsWith(":localpart"))
     return true;
@@ -724,7 +629,7 @@ SieveComparator.prototype =Object.create(SieveAbstractElement.prototype);
 SieveComparator.prototype.constructor = SieveComparator;
 
 SieveComparator.isElement
-    = function(parser)
+    = function(parser, lexer)
 {   
   return (parser.startsWith(":comparator"))
 }
@@ -791,6 +696,5 @@ SieveLexer.register(SieveStringList);
 SieveLexer.register(SieveString);
 SieveLexer.register(SieveQuotedString);
 SieveLexer.register(SieveMultiLineString);
-SieveLexer.register(SieveMatchType);
 SieveLexer.register(SieveComparator);
 SieveLexer.register(SieveAddressPart);

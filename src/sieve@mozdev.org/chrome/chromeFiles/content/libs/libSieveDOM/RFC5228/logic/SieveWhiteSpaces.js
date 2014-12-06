@@ -20,7 +20,7 @@ SieveLineBreak.prototype = Object.create(SieveAbstractElement.prototype);
 SieveLineBreak.prototype.constructor = SieveLineBreak;
 
 SieveLineBreak.isElement
-  = function (parser)
+  = function (parser, lexer)
 {
   return parser.startsWith("\r\n");
 }
@@ -55,7 +55,7 @@ function SieveDeadCode(docshell,id)
   this.whiteSpace = "";
 }
 
-SieveDeadCode.isElement  = function (parser) {  
+SieveDeadCode.isElement = function (parser, lexer) {  
   return (parser.isChar([" ","\t"])) 
 }
 
@@ -92,7 +92,7 @@ function SieveBracketComment(docshell,id)
   this.text = "";
 }
 
-SieveBracketComment.isElement = function (parser) {
+SieveBracketComment.isElement = function (parser, lexer) {
   return parser.startsWith("/*");
 }
 
@@ -135,7 +135,7 @@ SieveHashComment.prototype = Object.create(SieveAbstractElement.prototype);
 SieveHashComment.prototype.constructor = SieveHashComment;
 
 SieveHashComment.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
   return parser.isChar("#");
 }
@@ -177,9 +177,9 @@ SieveWhiteSpace.prototype = Object.create(SieveAbstractElement.prototype);
 SieveWhiteSpace.prototype.constructor = SieveWhiteSpace;
 
 SieveWhiteSpace.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
-  return SieveLexer.probeByClass(["whitespace/"],parser); 
+  return lexer.probeByClass(["whitespace/"],parser); 
 }
 
 SieveWhiteSpace.nodeName = function () {
@@ -251,7 +251,7 @@ SieveSemicolon.prototype = Object.create(SieveAbstractElement.prototype);
 SieveSemicolon.prototype.constructor = SieveSemicolon;
 
 SieveSemicolon.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
   return true;
 }

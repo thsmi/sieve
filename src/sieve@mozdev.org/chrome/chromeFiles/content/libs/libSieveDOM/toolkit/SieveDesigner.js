@@ -19,6 +19,72 @@
 var SieveDesigner = 
 {
   names : {},
+  types : {},
+  
+  /**
+   * Registers a widget. A widget needs to be a prototype with a constructor 
+   * as well as a static nodeName() and nodeType() method.
+   *  
+   * @param {} callback
+   *   the constructor which should be called in case the widget needs 
+   *   to be constructed.   
+   */
+  register2 : function(callback) {
+  	
+  	
+    if (!callback.nodeType)
+      throw "Designer Error: Registration failed, element has no type";
+      
+    var type = callback.nodeType();
+
+    if (!callback.nodeName)
+      throw "Designer Error: Registration failed, element has no name";  	  
+    
+    var name = callback.nodeName();
+    
+    if (this.types[type] == null)
+      this.types[type] = new Object();
+    
+    var obj = new Object();
+    obj.onNew = function(id) { return new callback(id); }
+    obj.onCapable = function(capabilities) {
+      if (!callback.isCapable)
+        return true;        
+      return callback.isCapable(capabilities);
+    }    
+    
+    this.names[name] = obj;
+    this.types[type][name] = obj;
+    
+  },
+  
+  getWidgetsByClass : function(clazz, id) {
+  	  
+  	var widgets = [];
+
+  	var tmp = this.types[clazz];
+  	var capabilities = SieveLexer.capabilities();
+  	
+  	for (var item in tmp) {
+  		if (tmp[item].onCapable(capabilities))
+  		  widgets.push(tmp[item].onNew(id));
+  	}
+  	
+  	return widgets;
+  },
+  
+  getWidgetByElement : function(elm) {
+  	
+    if (!elm.nodeName || !elm.nodeName())
+      throw "Layout Engine Error: Element has no name";
+      
+    var name = elm.nodeName();
+            
+    if (!this.names[name])
+      return null;
+      
+    return this.names[name].onNew(elm);  	  	
+  },
   
   /**
    * Widgets can register a constructor in order to rendering element. 
@@ -54,13 +120,7 @@ var SieveDesigner =
    */
   widget: function (elm)
   {
-    if (!elm.nodeName())
-      throw "Layout Engine Error: Element has no name";
-            
-    if (!this.names[elm.nodeName()])
-      return null;
-      
-    return this.names[elm.nodeName()].onNew(elm);
+  	return this.getWidgetByElement(elm);
   }
  
   // TODO implement  method do toggle if element should be displayed or not  

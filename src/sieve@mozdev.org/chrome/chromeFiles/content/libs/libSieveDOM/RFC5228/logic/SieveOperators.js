@@ -31,7 +31,7 @@ SieveNotOperator.prototype = Object.create(SieveAbstractElement.prototype);
 SieveNotOperator.prototype.constructor = SieveNotOperator;
 
 
-SieveNotOperator.isElement = function(parser) { 
+SieveNotOperator.isElement = function(parser, lexer) { 
   return parser.startsWith("not");
 }
 
@@ -127,7 +127,7 @@ SieveAnyOfAllOfTest.prototype = Object.create(SieveTestList.prototype);
 SieveAnyOfAllOfTest.prototype.constructor = SieveAnyOfAllOfTest;
 
 SieveAnyOfAllOfTest.isElement
-   = function (parser)
+   = function (parser, lexer)
 {
   if (parser.startsWith("allof"))
     return true;

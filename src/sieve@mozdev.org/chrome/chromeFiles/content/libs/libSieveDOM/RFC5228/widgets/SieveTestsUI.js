@@ -199,7 +199,7 @@ SieveHeaderUI.prototype.initSummary
 {  
   return $("<div/>")
       .html(" header <em>"+ $('<div/>').text(this.getSieve().headerNames.toScript()).html()+"</em>"
-              + " " + this.getSieve().matchType.type
+              + " " + this.getSieve().matchType.matchType()
               + " <em>" + $('<div/>').text(this.getSieve().keyList.toScript()).html()+"</em>");
 }
 
@@ -254,7 +254,7 @@ SieveAddressUI.prototype.initSummary
   // case- insensitive is the default so skip it...
   return $("<div/>")
       .html(" address <em>"+ $('<div/>').text(this.getSieve().headerList.toScript()).html()+"</em>"
-              + " " + this.getSieve().matchType.type
+              + " " + this.getSieve().matchType.matchType()
               + " " + ((this.getSieve().addressPart.type != "all") ? this.getSieve().addressPart.type: "")
               + " <em>" + $('<div/>').text(this.getSieve().keyList.toScript()).html()+"</em>");
 }
@@ -282,7 +282,7 @@ SieveEnvelopeUI.prototype.initHelp
           'from the mail delivery protocol for specific values.</p>' +
           '<p>A "to" tests the SMTP sender field "RCPT TO" a "from" the recipient' +
           ' "MAIL FROM". </p>' +
-          '<p>It\'s the most reliant way to test from which address a meessage ' +
+          '<p>It\'s the most reliant way to test from which address a message ' +
           'was send to or received.</p>');
 }
 

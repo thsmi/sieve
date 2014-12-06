@@ -19,9 +19,9 @@ SieveBlockBody.prototype = Object.create(SieveAbstractBlock.prototype);
 SieveBlockBody.prototype.constructor = SieveBlockBody;
 
 SieveBlockBody.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
-  return SieveLexer.probeByClass(["action","condition","whitespace"],parser);  
+  return lexer.probeByClass(["action","condition","whitespace"],parser);  
 }
 
 SieveBlockBody.nodeName = function () {
@@ -65,7 +65,7 @@ SieveBlock.prototype = Object.create(SieveBlockBody.prototype);
 SieveBlock.prototype.constructor = SieveBlock;
 
 SieveBlock.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
   return parser.isChar("{");  
 }
@@ -110,7 +110,7 @@ SieveRootNode.prototype = Object.create(SieveBlockBody.prototype);
 SieveRootNode.prototype.constructor = SieveRootNode;
 
 SieveRootNode.isElement
-     = function (token)
+     = function (token, doc)
 {
   return false;  
 }

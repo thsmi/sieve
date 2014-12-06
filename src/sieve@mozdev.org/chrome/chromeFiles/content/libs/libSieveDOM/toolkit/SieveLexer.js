@@ -38,7 +38,7 @@ var SieveLexer =
           
     var obj = new Object();
     obj.name = name;
-    obj.onProbe =  function(token) {return callback.isElement(token)} 
+    obj.onProbe =  function(token, doc) {return callback.isElement(token, doc)} 
     obj.onNew = function(docshell, id) {return new callback(docshell,id)};
     obj.onCapable = function(capabilities) {
       if (!callback.isCapable)
@@ -62,7 +62,7 @@ var SieveLexer =
     
       for (var key in this.types[selector])
         if (this.types[selector][key].onCapable(this._capabilities))
-          if (this.types[selector][key].onProbe(token))
+          if (this.types[selector][key].onProbe(token, this))
             return this.types[selector][key];
     }
              
@@ -134,7 +134,7 @@ var SieveLexer =
     if (!this.names[name].onCapable(this._capabilities))
       return false;
       
-    if (!this.names[name].onProbe(parser))
+    if (!this.names[name].onProbe(parser, this))
       return false;
       
     return true;
@@ -157,6 +157,25 @@ var SieveLexer =
       return true;
       
     return false;      
+  },
+  
+  getNamesByClass : function(selector)
+  {
+    if (!selectors.length)
+      throw "Invalid Type list, not an array";
+      
+    var result = [];
+    // enumerate all selectors...
+    for (var selector in selectors)
+    {
+      selector = selectors[selector];
+    
+      for (var key in this.types[selector])
+        if (this.types[selector][key].onCapable(this._capabilities))
+          result.push(key);
+    }
+             
+    return result;
   },
   
   capabilities : function(capabilities)

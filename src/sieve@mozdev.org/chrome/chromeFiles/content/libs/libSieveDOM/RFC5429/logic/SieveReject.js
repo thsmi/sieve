@@ -26,7 +26,7 @@ SieveReject.prototype = Object.create(SieveAbstractElement.prototype);
 SieveReject.prototype.constructor = SieveReject;
 
 SieveReject.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
   return parser.startsWith("reject");
 }

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sieve MatchType Tests</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <link rel="stylesheet" href="toolkit/style/layout.css" type="text/css" />
+  <link rel="stylesheet" href="toolkit/style/style.css" type="text/css" />
+
+  <!-- Global Imports -->  
+  <script type="application/javascript" src="./../../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/jQuery/jquery-2.1.1.min.js"></script>
+  
+  <!-- Basic Sieve Elements -->
+  <script type="application/javascript" src="./../../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/toolkit/SieveParser.js"></script>
+  <script type="application/javascript" src="./../../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/toolkit/SieveLexer.js"></script>
+    
+  <script type="application/javascript" src="./../../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/toolkit/SieveScriptDOM.js"></script>  
+  <script type="application/javascript" src="./../../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/toolkit/logic/Elements.js"></script>
+ 
+  <!-- logic related Imports -->
+  <!-- RFC 5228 - Sieve -->
+  <script type="application/javascript" src="./../../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveWhiteSpaces.js" ></script>
+  <script type="application/javascript" src="./../../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveStrings.js" ></script>
+  <script type="application/javascript" src="./../../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveMatchTypes.js" ></script>
+  <script type="application/javascript" src="./../../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveNumbers.js" ></script>
+  <script type="application/javascript" src="./../../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveBlocks.js"></script>  
+  <script type="application/javascript" src="./../../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveTests.js"></script>
+  <script type="application/javascript" src="./../../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveOperators.js"></script>
+  <script type="application/javascript" src="./../../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveConditions.js"></script>  
+  <script type="application/javascript" src="./../../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveActions.js"></script>
+  <script type="application/javascript" src="./../../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveImports.js"></script>  
+  
+  <!-- Regual Expressions -->
+  <script type="application/javascript" src="./../../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/regex/logic/SieveRegularExpression.js" ></script>
+  
+  <script type="application/javascript" src="./SieveMatchtypeTest.js"></script>
+  
+  
+<script type="text/javascript">
+//<![CDATA[
+
+$(document).ready(function() { 
+  //runTests();
+  org.mozdev.sieve.test.run();
+});
+  
+//]]>
+</script>
+</head>
+<body>  
+	<ul id="divOutput" />
+</div>
+</body>
+</html>

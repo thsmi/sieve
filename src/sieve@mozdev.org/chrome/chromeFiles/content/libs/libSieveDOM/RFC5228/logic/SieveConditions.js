@@ -25,7 +25,7 @@ SieveElse.prototype = Object.create(SieveBlock.prototype);
 SieveElse.prototype.constructor = SieveElse;
 
 SieveElse.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
   return parser.startsWith("else");  
 }
@@ -75,7 +75,7 @@ SieveIf.prototype = Object.create(SieveElse.prototype);
 SieveIf.prototype.constructor = SieveIf;
 
 SieveIf.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
   return parser.startsWith("if");  
 }
@@ -191,9 +191,9 @@ SieveCondition.prototype = Object.create(SieveBlockBody.prototype);
 SieveCondition.prototype.constructor = SieveCondition;
 
 SieveCondition.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
-  return SieveIf.isElement(parser);
+  return SieveIf.isElement(parser, lexer);
 }
 
 SieveCondition.nodeName = function () {

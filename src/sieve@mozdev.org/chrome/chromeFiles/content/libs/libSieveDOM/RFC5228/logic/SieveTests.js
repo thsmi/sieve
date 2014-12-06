@@ -38,7 +38,7 @@ SieveEnvelope.prototype = Object.create(SieveAbstractElement.prototype);
 SieveEnvelope.prototype.constructor = SieveEnvelope;
 
 SieveEnvelope.isElement
-  = function(parser)
+  = function(parser, lexer)
 { 
   return parser.startsWith("envelope");
 }
@@ -55,6 +55,12 @@ SieveEnvelope.nodeName = function () {
 
 SieveEnvelope.nodeType  = function () {
   return "test";
+}
+
+SieveEnvelope.prototype.require
+    = function (imports)
+{
+  this.matchType.require(imports);
 }
 
 SieveEnvelope.prototype.init
@@ -170,7 +176,7 @@ SieveAddress.prototype = Object.create(SieveAbstractElement.prototype);
 SieveAddress.prototype.constructor = SieveAddress;
 
 SieveAddress.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
   return parser.startsWith("address");
 }
@@ -181,6 +187,12 @@ SieveAddress.nodeName = function () {
 
 SieveAddress.nodeType  = function () {
   return "test";
+}
+
+SieveAddress.prototype.require
+    = function (imports)
+{
+  this.matchType.require(imports);
 }
 
 SieveAddress.prototype.init
@@ -266,7 +278,7 @@ SieveBoolean.prototype = Object.create(SieveAbstractElement.prototype);
 SieveBoolean.prototype.constructor = SieveBoolean;
 
 SieveBoolean.isElement
- = function(parser)
+ = function(parser, lexer)
 {  
   if (parser.startsWith("true"))
     return true;
@@ -335,7 +347,7 @@ SieveSize.prototype = Object.create(SieveAbstractElement.prototype);
 SieveSize.prototype.constructor = SieveSize;
 
 SieveSize.isElement
-  = function(parser)
+  = function(parser, lexer)
 { 
   return parser.startsWith("size");
 }
@@ -433,7 +445,7 @@ SieveExists.prototype = Object.create(SieveAbstractElement.prototype);
 SieveExists.prototype.constructor = SieveExists;
 
 SieveExists.isElement
-  = function(parser)
+  = function(parser, lexer)
 { 
   return parser.startsWith("exists");
 }
@@ -497,7 +509,7 @@ SieveHeader.prototype = Object.create(SieveAbstractElement.prototype);
 SieveHeader.prototype.constructor = SieveHeader;
 
 SieveHeader.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
   return parser.startsWith("header");
 } 
@@ -508,6 +520,12 @@ SieveHeader.nodeName = function () {
 
 SieveHeader.nodeType  = function () {
   return "test";
+}
+
+SieveHeader.prototype.require
+    = function (imports)
+{
+  this.matchType.require(imports);
 }
 
 SieveHeader.prototype.init
@@ -600,7 +618,7 @@ SieveTestList.prototype = Object.create(SieveAbstractElement.prototype);
 SieveTestList.prototype.constructor = SieveTestList;
 
 SieveTestList.isElement
-   = function (parser)
+   = function (parser, lexer)
 {
   return parser.isChar("(");
 }

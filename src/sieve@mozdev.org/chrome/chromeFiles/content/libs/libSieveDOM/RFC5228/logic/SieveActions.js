@@ -18,7 +18,7 @@ function SieveDiscard(docshell,id)
 SieveDiscard.prototype = Object.create(SieveAbstractElement.prototype);
 SieveDiscard.prototype.constructor = SieveDiscard;
 
-SieveDiscard.isElement = function (parser) {
+SieveDiscard.isElement = function (parser, lexer) {
   return parser.startsWith("discard");  
 }
 
@@ -63,7 +63,7 @@ SieveRedirect.prototype = Object.create(SieveAbstractElement.prototype);
 SieveRedirect.prototype.constructor = SieveRedirect;
 
 SieveRedirect.isElement
-    = function (parser)
+    = function (parser, lexer)
 {
   return parser.startsWith("redirect");
 }
@@ -135,7 +135,7 @@ function SieveStop(docshell,id)
 SieveStop.prototype = Object.create(SieveAbstractElement.prototype);
 SieveStop.prototype.constructor = SieveStop;
 
-SieveStop.isElement = function(parser) {
+SieveStop.isElement = function(parser, lexer) {
   return parser.startsWith("stop"); 
 }
 
@@ -178,7 +178,7 @@ function SieveKeep(docshell,id)
 SieveKeep.prototype = Object.create(SieveAbstractElement.prototype);
 SieveKeep.prototype.constructor = SieveKeep;
 
-SieveKeep.isElement = function(parser) {
+SieveKeep.isElement = function(parser, lexer) {
   return parser.startsWith("keep");
 }
 
@@ -227,12 +227,12 @@ SieveFileInto.prototype = Object.create(SieveAbstractElement.prototype);
 SieveFileInto.prototype.constructor = SieveFileInto;
 
 // Static methods needed for registration
-SieveFileInto.isElement = function (parser) {
+SieveFileInto.isElement = function (parser, lexer) {
   return parser.startsWith("fileinto");
 }
 
 SieveFileInto.isCapable = function (capabilities) {
-  return (capabilities["fileinto"] == true);      
+  return !!(capabilities.fileinto);
 }
 
 SieveFileInto.nodeName = function () {

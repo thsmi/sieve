@@ -21,9 +21,9 @@ SieveVacation.prototype = Object.create(SieveAbstractElement.prototype);
 SieveVacation.prototype.constructor = SieveVacation;
 
 SieveVacation.isElement
-     = function (token)
+     = function (parser, lexer)
 {
-  return (token.substring(0,8).toLowerCase().indexOf("vacation") == 0);  
+  return parser.startsWith("vacation");  
 }
 
 SieveVacation.prototype.initTags

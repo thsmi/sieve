@@ -1,0 +1,49 @@
+var tests = {
+
+  // Generic definitions which are shared by multiple profiles...
+  "base" : {
+    require : [
+      // JQuery
+	  "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/jQuery/jquery-2.1.1.min.js",
+      // Basic Sieve Elements
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/toolkit/SieveParser.js",
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/toolkit/SieveLexer.js",
+    
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/toolkit/SieveScriptDOM.js",  
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/toolkit/logic/Elements.js" ]
+  },
+  
+  "rfc5228" : {
+    require : [
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveWhiteSpaces.js",
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveStrings.js",
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveMatchTypes.js",
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveNumbers.js",
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveBlocks.js",
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveTests.js", 
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveOperators.js",  
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveConditions.js",  
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveActions.js",
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveImports.js" ],
+    extend  : "base",
+  },
+	
+  // Specialized profiles which contain the tests...
+  "matchTypes" : {
+    script : "./MatchTypes/SieveMatchTypeTest.js",
+    extend : "rfc5228"
+  },
+  
+/*  "variables" : {
+    script : "./variables/SieveVariablesTest.js",
+	extend : "base" // TODO should be both an array and a string. As extending multipe templates should be possible
+  },*/
+  	
+  "regEx" : {
+    script  : "./regex/SieveRegExTest.js", //TODO Makeoptional if empty the object name+"Test.js" should be used
+    extend  : "rfc5228",
+    require : [
+       "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/regex/logic/SieveRegularExpression.js"]
+  }
+		
+}

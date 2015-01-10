@@ -1,0 +1,25 @@
+
+.logInfo {
+  white-space : pre;
+}
+
+.logTrace {
+  white-space : pre;
+  color : gray;
+  display: none; 
+}
+
+.logError {
+  white-space : pre;
+  color : red;
+}
+
+.logFail {
+  white-space : pre;
+  color : red;
+}
+
+.logSuccess {
+  white-space : pre;
+  color : green;	
+}

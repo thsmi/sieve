@@ -20,7 +20,8 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cr = Components.results;
 
-const protocolScheme = "x-sieve";
+const SIEVE_SCHEME = "x-sieve";
+const SIEVE_MIMETYPE = "application/x-sieve";
 
 /**
  * Implements an Protocol handler component for sieve. This is needed inorder
@@ -33,10 +34,10 @@ SieveProtocolHandler.prototype =
 {
   
   classID : Components.ID("{65f30660-14eb-11da-8351-0002a5d5c51b}"),
-  classDescription: protocolScheme+" protocol handler",  
-  contactID : "@mozilla.org/network/protocol;1?name="+protocolScheme,
+  classDescription: SIEVE_SCHEME+" protocol handler",  
+  contactID : "@mozilla.org/network/protocol;1?name="+SIEVE_SCHEME,
   
-  scheme : protocolScheme,
+  scheme : SIEVE_SCHEME,
   defaultPort : 4190,  
   
   protocolFlags :
@@ -64,12 +65,17 @@ SieveProtocolHandler.prototype =
 
     return url.QueryInterface(Ci.nsIURI);
   },
-
+   
   newChannel : function (URI)
   {
-    throw Cr.NS_ERROR_NOT_IMPLEMENTED;    
-  },
-  
+    var ios = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+    
+    if (!ios.allowPort(URI.port, URI.scheme))
+        throw Components.results.NS_ERROR_FAILURE;
+
+    return new BogusChannel(URI);
+  }, 
+    
   QueryInterface : function(aIID)
   {
     if (aIID.equals(Ci.nsISupports))
@@ -83,6 +89,74 @@ SieveProtocolHandler.prototype =
     throw Cr.NS_ERROR_NO_INTERFACE;
   }    
 }
+
+/* bogus channel implementation, based on chatzilla's IRCProtocolHandler */
+function BogusChannel(uri)
+{
+    this.URI = uri;
+    this.originalURI = uri;
+    this.contentType = SIEVE_SCHEME;
+}
+
+BogusChannel.prototype = {
+
+  /* nsIChannel */
+  loadAttributes : null,
+  contentLength : 0,
+  owner : null,
+  loadGroup : null,
+  notificationCallbacks : null,
+  securityInfo : null,
+
+  open : function(observer, ctxt) {
+  	Components.returnCode = NS_ERROR_NO_CONTENT;
+  },
+  
+  asyncOpen : function(observer, ctxt) {
+    // We don't throw this (a number, not a real 'resultcode') because it
+    // upsets xpconnect if we do (error in the js console).
+    Components.returnCode = NS_ERROR_NO_CONTENT;
+  },
+
+  asyncRead : function(listener, ctxt) {
+    throw Cr.NS_ERROR_NOT_IMPLEMENTED;
+  },
+
+  /* nsIRequest */
+  isPending : function()
+  {
+    return true;
+  },
+
+  status : Components.results.NS_OK,
+
+  cancel : function(status)
+  {
+    this.status = status;
+  },
+
+  suspend : function() {
+    throw Cr.NS_ERROR_NOT_IMPLEMENTED;
+  },
+  
+  resume : function() {
+    throw Cr.NS_ERROR_NOT_IMPLEMENTED;
+  },
+  
+  QueryInterface : function(iid) {
+  	
+  	if (iid.equals(Ci.nsIChannel))
+  	  return this;
+  	  
+  	if (iid.equals(Ci.nsIRequest))
+  	  return this;
+  	  
+  	if (iid.equals(Ci.nsISupports))
+  	  return this;
+
+    throw Cr.NS_ERROR_NO_INTERFACE;
+  }  
+}  
 
 
   var SieveProtocolHandlerFactory = 

@@ -219,8 +219,7 @@ function SieveFileInto(docshell,id)
   
   this.semicolon = this._createByName("atom/semicolon");
       
-  this.string = this._createByName("string");
-  this.string.init("\"INBOX\"");
+  this.string = this._createByName("string","\"INBOX\"");
 }
 
 SieveFileInto.prototype = Object.create(SieveAbstractElement.prototype);

@@ -52,7 +52,11 @@ var SieveLexer =
   
   getConstructor : function(selectors, token)
   {
-    if (!selectors.length)
+  	if (typeof(selectors) === "string")
+  	  selectors = [selectors];
+  	
+  	  
+    if (!Array.isArray(selectors))
       throw "Invalid Type list, not an array";
       
     // enumerate all selectors...
@@ -130,6 +134,9 @@ var SieveLexer =
     // If there's no data then skip
     if ((typeof(parser) === "undefined") || parser.empty())
       return false;
+      
+    if (typeof(this.names[name]) === "undefined")
+      throw "Unknown name " +name;
 
     if (!this.names[name].onCapable(this._capabilities))
       return false;
@@ -143,6 +150,7 @@ var SieveLexer =
   /**
    * Tests if the given Data is parsable
    * @param {} type
+   *   either a single type as string or a list of things containing all type to test.
    * @param {} data
    * @return {Boolean}
    */
@@ -159,24 +167,24 @@ var SieveLexer =
     return false;      
   },
   
-  getNamesByClass : function(selector)
-  {
-    if (!selectors.length)
-      throw "Invalid Type list, not an array";
-      
-    var result = [];
-    // enumerate all selectors...
-    for (var selector in selectors)
-    {
-      selector = selectors[selector];
-    
-      for (var key in this.types[selector])
-        if (this.types[selector][key].onCapable(this._capabilities))
-          result.push(key);
-    }
-             
-    return result;
-  },
+//  getNamesByClass : function(selectors)
+//  {
+//    if (!selectors.length)
+//      throw "Invalid Type list, not an array";
+//      
+//    var result = [];
+//    // enumerate all selectors...
+//    for (var selector in selectors)
+//    {
+//      selector = selectors[selector];
+//    
+//      for (var key in this.types[selector])
+//        if (this.types[selector][key].onCapable(this._capabilities))
+//          result.push(key);
+//    }
+//             
+//    return result;
+//  },
   
   capabilities : function(capabilities)
   {

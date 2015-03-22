@@ -9,7 +9,6 @@
  
  "use strict";
  
- // TODO Implement Extended Reject
 
 function SieveRejectUI(elm)
 {
@@ -32,6 +31,9 @@ SieveRejectUI.prototype.initEditor
 {  
   return $("<div/>")
            .append($("<div/>")
+             .text(" Reject is replaced by the ereject ans should not be used anymore. The ereject action is similar to reject,"
+                    +" but will always favor protocol-level message rejection."))
+           .append($("<div/>")
              .text("Reject incomming messages and reply the following reason:"))
            .append($("<textarea/>")
              .attr("id","txtReason"+this.id())
@@ -42,6 +44,49 @@ SieveRejectUI.prototype.initEditor
 }
 
 SieveRejectUI.prototype.initSummary
+    = function ()
+{        
+  return $("<div/>")         
+           .html("Reject incomming messages and reply the following reason:" +
+             "<div><em>"+ 
+               $('<div/>').text(this.getSieve().getReason().substr(0,240)).html() +
+               ((this.getSieve().getReason().length > 240)?"...":"") +
+             "</em></div>");
+}
+
+//*************************************************************************************//
+
+function SieveErejectUI(elm)
+{
+  SieveActionBoxUI.call(this,elm)
+}
+
+SieveErejectUI.prototype = Object.create(SieveActionBoxUI.prototype);
+SieveErejectUI.prototype.constructor = SieveErejectUI;
+
+SieveErejectUI.prototype.onValidate
+   = function ()
+{
+  this.getSieve().setReason($("#txtReason"+this.id()).val());
+
+  return true;
+}
+
+SieveErejectUI.prototype.initEditor
+    = function ()
+{  
+  return $("<div/>")
+           .append($("<div/>")
+             .text("Reject incomming messages and reply the following reason:"))
+           .append($("<textarea/>")
+             .attr("id","txtReason"+this.id())
+             .attr("multiline","true")
+             .attr("cols","60").attr("rows","5")
+             .attr("wrap","off")
+             .attr("value",""+this.getSieve().getReason()));
+}
+
+SieveErejectUI.prototype.initSummary
     = function ()
 {        
   return $("<div/>")
@@ -57,3 +102,4 @@ if (!SieveDesigner)
 
   
 SieveDesigner.register("action/reject", SieveRejectUI);
+SieveDesigner.register("action/ereject", SieveErejectUI);

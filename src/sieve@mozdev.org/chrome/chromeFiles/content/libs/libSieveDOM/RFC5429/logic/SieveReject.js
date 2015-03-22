@@ -8,9 +8,7 @@
  */
  
 "use strict";
- 
-// TODO Implement Extended Reject
-  
+
 function SieveReject(docshell,id)
 {
   SieveAbstractElement.call(this,docshell,id);
@@ -93,8 +91,92 @@ SieveReject.prototype.toScript
     + this.semicolon.toScript();
 }
 
+//*****************************************************************************//
+
+function SieveEreject(docshell,id)
+{
+  SieveAbstractElement.call(this,docshell,id);
+  
+  this.reason = this._createByName("string", "text:\r\n.\r\n");  
+  
+  this.whiteSpace = this._createByName("whitespace"," ");
+  
+  this.semicolon = this._createByName("atom/semicolon");    
+}
+
+SieveEreject.prototype = Object.create(SieveAbstractElement.prototype);
+SieveEreject.prototype.constructor = SieveEreject;
+
+SieveEreject.isElement
+    = function (parser, lexer)
+{
+  return parser.startsWith("ereject");
+}
+
+SieveEreject.isCapable
+    = function (capabilities)
+{
+  return (capabilities["ereject"] == true);      
+}
+
+SieveEreject.nodeName = function () {
+  return "action/ereject";
+}
+
+SieveEreject.nodeType  = function () {
+  return "action";
+}
+
+SieveEreject.prototype.init
+    = function (parser)
+{ 
+  // Syntax :
+  // <"ereject"> <reason: string> <";">
+  
+  // remove the "redirect" identifier ...
+  parser.extract("ereject");
+  
+  // ... eat the deadcode before the stringlist...
+  this.whiteSpace.init(parser);
+  
+  // ... extract the reject reason...
+  this.reason.init(parser);
+    
+  // ... drop the semicolon
+  this.semicolon.init(parser);
+  
+  return this;
+}
+
+SieveEreject.prototype.getReason
+    = function ()
+{
+  return this.reason.getValue();      
+}
+
+SieveEreject.prototype.setReason
+    = function (reason)
+{
+  return this.reason.setValue(reason);      
+}
+
+SieveEreject.prototype.require
+    = function (requires)
+{
+  requires["ereject"] = true;
+}
+
+SieveEreject.prototype.toScript
+    = function ()
+{ 
+  return "ereject"
+    + this.whiteSpace.toScript()
+    + this.reason.toScript()
+    + this.semicolon.toScript();
+}
 
 if (!SieveLexer)
   throw "Could not register Actions";
   
 SieveLexer.register(SieveReject);
+SieveLexer.register(SieveEreject);

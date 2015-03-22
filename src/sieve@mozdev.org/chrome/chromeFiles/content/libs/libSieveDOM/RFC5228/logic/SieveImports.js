@@ -13,7 +13,7 @@ function SieveRequire(docshell,id)
 {
   SieveAbstractElement.call(this,docshell,id);
   
-  this.whiteSpace = this._createByName("whitespace");
+  this.whiteSpace = this._createByName("whitespace", " ");
   this.semicolon = this._createByName("atom/semicolon");
   
   this.strings = this._createByName("stringlist");	  

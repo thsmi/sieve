@@ -36,11 +36,7 @@ SieveIsMatch.isElement
 SieveIsMatch.prototype.init
     = function (parser)
 {  
-  if (!parser.startsWith(":is"))
-    throw "Syntaxerror, no :is match type found";
-    
-  
-  parser.extract(3);    
+  parser.extract(":is");    
   return this;
 }
 
@@ -80,11 +76,7 @@ SieveMatchesMatch.isElement
 SieveMatchesMatch.prototype.init
     = function (parser)
 {	
-  if (!parser.startsWith(":matches"))
-    throw "Syntaxerror, no :matches match type found";
-    
-  
-  parser.extract(8);    
+  parser.extract(":matches");    
   return this;
 }
 
@@ -125,11 +117,7 @@ SieveContainsMatch.isElement
 SieveContainsMatch.prototype.init
     = function (parser)
 {	
-  if (!parser.startsWith(":contains"))
-    throw "Syntaxerror, no :contains match type found";
-    
-  
-  parser.extract(9);    
+  parser.extract(":contains");    
   return this;
 }
 

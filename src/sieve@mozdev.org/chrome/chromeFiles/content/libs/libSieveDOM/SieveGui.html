@@ -138,7 +138,8 @@ function require()
 
 function capabilities()
 {
-  SieveLexer.capabilities({"imap4flags":true,"fileinto":true,"reject":true,"envelope":true, "regex":true});
+  SieveLexer.capabilities({"imap4flags":true,"fileinto":true,"reject":true,"envelope":true, "regex":true, "ereject":true, "reject":true});  
+  setSieveScript();
 }
 
 function compact()
@@ -243,7 +244,7 @@ function debug(obj)
       </div>
     </div>
 	
-<div id="debug">
+<div id="debug2">
 <div>
    <div id="boxScript" style="display:none;overflow: hidden;width: 100%; ">  
      <div style="float:left; padding:5px;">

@@ -46,10 +46,7 @@ SieveRegExMatch.prototype.require
 SieveRegExMatch.prototype.init
     = function (parser)
 {	
-  if (!parser.startsWith(":regex"))
-    throw "Syntaxerror, :regex match type expected";
-    
-  parser.extract(6);    
+  parser.extract(":regex");    
   return this;
 }
 

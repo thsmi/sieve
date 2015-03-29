@@ -25,6 +25,7 @@ var tests = {
       "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveConditions.js",  
       "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveActions.js",
       "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveImports.js" ],
+    script : "./RFC5228/SieveRFC5228Test.js",
     extend  : "base",
   },
 	
@@ -34,10 +35,12 @@ var tests = {
     extend : "rfc5228"
   },
   
-/*  "variables" : {
+  "variables" : {
     script : "./variables/SieveVariablesTest.js",
-	extend : "base" // TODO should be both an array and a string. As extending multipe templates should be possible
-  },*/
+	extend : "rfc5228",
+    require : [
+       "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5229/logic/SieveVariables.js"]       	
+  },
   	
   "regEx" : {
     script  : "./regex/SieveRegExTest.js", //TODO Makeoptional if empty the object name+"Test.js" should be used

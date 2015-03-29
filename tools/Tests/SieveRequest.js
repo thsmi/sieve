@@ -123,12 +123,12 @@ function SieveAbstractSaslRequest()
   throw "Abstract Constructor, do not Invoke";
 }
 
+SieveAbstractSaslRequest.prototype = Object.create(SieveAbstractRequest.prototype);
+
 SieveAbstractSaslRequest.prototype._username = "";
 SieveAbstractSaslRequest.prototype._password = "";
 SieveAbstractSaslRequest.prototype._authorizable = false;
 SieveAbstractSaslRequest.prototype._authorization = "";
-
-SieveAbstractSaslRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
 
 
 /** @param {String} username */
@@ -172,7 +172,7 @@ function SieveGetScriptRequest(script)
 }
 
 // Inherrit prototypes from SieveAbstractRequest...
-SieveGetScriptRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+SieveGetScriptRequest.prototype = Object.create(SieveAbstractRequest.prototype);
 
 SieveGetScriptRequest.prototype.addGetScriptListener
     = function (listener)
@@ -216,7 +216,7 @@ function SievePutScriptRequest(script, body)
 }
 
 // Inherrit prototypes from SieveAbstractRequest...
-SievePutScriptRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+SievePutScriptRequest.prototype = Object.create(SieveAbstractRequest.prototype);
 
 /** @return {String} */
 SievePutScriptRequest.prototype.getNextRequest
@@ -321,7 +321,7 @@ function SieveCheckScriptRequest(body)
 }
 
 // Inherrit prototypes from SieveAbstractRequest...
-SieveCheckScriptRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+SieveCheckScriptRequest.prototype = Object.create(SieveAbstractRequest.prototype);
 
 /** @return {String} */
 SieveCheckScriptRequest.prototype.getNextRequest
@@ -374,7 +374,7 @@ function SieveSetActiveRequest(script)
 }
 
 // Inherrit prototypes from SieveAbstractRequest...
-SieveSetActiveRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+SieveSetActiveRequest.prototype = Object.create(SieveAbstractRequest.prototype);
 
 /** @return {String} */
 SieveSetActiveRequest.prototype.getNextRequest
@@ -412,7 +412,7 @@ function SieveCapabilitiesRequest()
 }
 
 // Inherrit prototypes from SieveAbstractRequest...
-SieveCapabilitiesRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+SieveCapabilitiesRequest.prototype = Object.create(SieveAbstractRequest.prototype);
 
 /** @return {String} */
 SieveCapabilitiesRequest.prototype.getNextRequest
@@ -452,7 +452,7 @@ function SieveDeleteScriptRequest(script)
 }
 
 // Inherrit prototypes from SieveAbstractRequest...
-SieveDeleteScriptRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+SieveDeleteScriptRequest.prototype = Object.create(SieveAbstractRequest.prototype);
 
 /** @return {String} */
 SieveDeleteScriptRequest.prototype.getNextRequest
@@ -494,7 +494,7 @@ function SieveNoopRequest()
 }
 
 // Inherrit prototypes from SieveAbstractRequest...
-SieveNoopRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+SieveNoopRequest.prototype = Object.create(SieveAbstractRequest.prototype);
 
 /** @return {String} */
 SieveNoopRequest.prototype.getNextRequest
@@ -542,7 +542,7 @@ function SieveRenameScriptRequest(oldScript, newScript)
 }
 
 // Inherrit prototypes from SieveAbstractRequest...
-SieveRenameScriptRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+SieveRenameScriptRequest.prototype = Object.create(SieveAbstractRequest.prototype);
 
 /** @return {String} */
 SieveRenameScriptRequest.prototype.getNextRequest
@@ -579,7 +579,7 @@ function SieveListScriptRequest()
 }
 
 // Inherrit prototypes from SieveAbstractRequest...
-SieveListScriptRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+SieveListScriptRequest.prototype = Object.create(SieveAbstractRequest.prototype);
 
 /** @return {String} */
 SieveListScriptRequest.prototype.getNextRequest
@@ -615,7 +615,7 @@ function SieveStartTLSRequest()
 }
 
 // Inherrit prototypes from SieveAbstractRequest...
-SieveStartTLSRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+SieveStartTLSRequest.prototype = Object.create(SieveAbstractRequest.prototype);
 
 /** @return {String} */
 SieveStartTLSRequest.prototype.getNextRequest
@@ -683,7 +683,7 @@ function SieveLogoutRequest()
 }
 
 // Inherrit prototypes from SieveAbstractRequest...
-SieveLogoutRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+SieveLogoutRequest.prototype = Object.create(SieveAbstractRequest.prototype);
 
 /** @return {String} */
 SieveLogoutRequest.prototype.getNextRequest
@@ -749,7 +749,7 @@ SieveLogoutRequest.prototype.addResponse
 function SieveInitRequest() {}
 
 // Inherrit prototypes from SieveAbstractRequest...
-SieveInitRequest.prototype.__proto__ = SieveAbstractRequest.prototype;
+SieveInitRequest.prototype = Object.create(SieveAbstractRequest.prototype);
 
 
 SieveInitRequest.prototype.addInitListener
@@ -835,7 +835,7 @@ function SieveSaslPlainRequest()
 }
 
 // Inherrit prototypes from SieveSASLAbstractRequest...
-SieveSaslPlainRequest.prototype.__proto__ = SieveAbstractSaslRequest.prototype;
+SieveSaslPlainRequest.prototype = Object.create(SieveAbstractSaslRequest.prototype);
 
 /** @return {String} */
 SieveSaslPlainRequest.prototype.getNextRequest 
@@ -954,7 +954,7 @@ function SieveSaslLoginRequest()
 }
 
 // Inherrit prototypes from SieveAbstractRequest...
-SieveSaslLoginRequest.prototype.__proto__ = SieveAbstractSaslRequest.prototype;
+SieveSaslLoginRequest.prototype = Object.create(SieveAbstractSaslRequest.prototype);
 
 /** @return {String} */
 SieveSaslLoginRequest.prototype.getNextRequest
@@ -1016,7 +1016,7 @@ function SieveSaslCramMd5Request()
 }
 
 // Inherrit prototypes from SieveAbstractRequest...
-SieveSaslCramMd5Request.prototype.__proto__ = SieveAbstractSaslRequest.prototype;
+SieveSaslCramMd5Request.prototype = Object.create(SieveAbstractSaslRequest.prototype);
 
 SieveSaslCramMd5Request.prototype.getNextRequest
     = function ()
@@ -1117,7 +1117,7 @@ function SieveSaslScramMd5Request()
 }
 
 // Inherrit prototypes from SieveAbstractRequest...
-SieveSaslScramMd5Request.prototype.__proto__ = SieveAbstractSaslRequest.prototype;
+SieveSaslScramMd5Request.prototype = Object.create(SieveAbstractSaslRequest.prototype);
 
 SieveSaslScramMd5Request.prototype.getNextRequest
     = function ()

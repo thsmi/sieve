@@ -39,7 +39,7 @@ SieveNumber.prototype.init
 {
   this._number = parser.extractNumber();
 
-  if (parser.isChar(['K','M','G']))
+  if (parser.isChar(['K','k','M','m','G','g']))
     this._unit = parser.extractChar();
   
   return this;
@@ -64,7 +64,7 @@ SieveNumber.prototype.unit
   = function (unit)
 {
   if (typeof(unit) === "undefined")
-    return this._unit;
+    return this._unit.toUpperCase();
 
   if ((unit != "") && (unit != "K") && (unit != "M") && (unit != "G"))
     throw "Invalid unit mut be either K, M or G";  

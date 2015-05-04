@@ -127,9 +127,13 @@ SieveAbstractClient.prototype.onStatusChange
 }
   
 SieveAbstractClient.prototype.onBadCert
-    = function(targetSite)
+    = function(targetSite, status )
 {
-  this.disconnect(5,targetSite);
+  var message = {};
+  message.status = status;
+  message.site = targetSite;
+  
+  this.disconnect(5,message);
 }
   
 SieveAbstractClient.prototype.observe

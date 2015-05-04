@@ -31,6 +31,7 @@ var gAccount = null;
 var gCallback = null;
 var gCallbacks = null;
 
+var gCertStatus = null;
 
 var gAutoConfigEvent =
 {
@@ -100,8 +101,10 @@ function onBadCertOverride(targetSite,permanent)
                             .getService(Ci.nsICertOverrideService);
  
     var status = null;
-    
-    if (Cc["@mozilla.org/security/recentbadcerts;1"])
+    if (gCertStatus) {
+      status = gCertStatus;
+    } 
+    else if (Cc["@mozilla.org/security/recentbadcerts;1"])
     {
       status = Cc["@mozilla.org/security/recentbadcerts;1"]
                    .getService(Ci.nsIRecentBadCertsService)
@@ -134,6 +137,8 @@ function onBadCertOverride(targetSite,permanent)
       !permanent);
      
     gCallback();
+    
+    gCertStatus = null;
   }
   catch (ex)
   {
@@ -202,7 +207,9 @@ function onStatus(state, message)
     // server error
     case 4: document.getElementById('StatusErrorMsg').textContent = message;    
             break;            
-    case 5: document.getElementById("btnIgnoreBadCert").setAttribute("message", message);
+    case 5: 
+            gCertStatus = message.status;
+            document.getElementById("btnIgnoreBadCert").setAttribute("message", message.site);
             document.getElementById("btnIgnoreBadCert").setAttribute("oncommand", 
               "onBadCertOverride(this.getAttribute('message'),document.getElementById('cbBadCertRemember').checked);");
               

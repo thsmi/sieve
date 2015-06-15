@@ -34,6 +34,8 @@ For more details on contributing refer to the [Contributing Guidelines](https://
 
 A big thank you to every one who have [contributed and supported](CONTRIBUTORS.md) this project.
 
+[![PayPayl donate button](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC "Donate to this project using Paypal")
+
 ## Bugs
 
 Please report bugs via the [issue tracker](https://github.com/thsmi/sieve/issues) 

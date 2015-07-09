@@ -21,7 +21,7 @@ Addon Manager.
 The addon is restartless, so there is no need to restart Thunderbird upon installation and deinstallation.
 
 ## Builds
-* [sieve-0.2.3g.xpi](https://github.com/thsmi/sieve/blob/master/nightly/0.2.3/sieve-0.2.3g.xpi)
+* [sieve-0.2.3g.xpi](https://github.com/thsmi/sieve/blob/master/nightly/0.2.3/sieve-0.2.3g.xpi?raw=true)
 * [sieve-0.2.3f.xpi](https://github.com/thsmi/sieve/blob/master/nightly/0.2.3/sieve-0.2.3f.xpi?raw=true)
 * [sieve-0.2.3e.xpi](https://github.com/thsmi/sieve/blob/master/nightly/0.2.3/sieve-0.2.3e.xpi?raw=true)
 * [sieve-0.2.3d.xpi](https://github.com/thsmi/sieve/blob/master/nightly/0.2.3/sieve-0.2.3d.xpi?raw=true)

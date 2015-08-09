@@ -836,6 +836,7 @@ SieveAccountSettings.prototype.setForcedAuthMechanism
 {
   Services.prefs.setCharPref(this.sieveKey+".sasl.mechanism",method);
 }
+
 SieveAccountSettings.prototype.getForcedAuthMechanism
     = function ()
 {
@@ -844,6 +845,123 @@ SieveAccountSettings.prototype.getForcedAuthMechanism
         
   return "plain";
 }
+
+
+/**
+ * Currently the UI supports two very different sieve editors. The plain text editor and the graphical editor. 
+ * 
+ * @param {int} editor
+ *   pass a 0 for the default editor or a 1 for the graphical editor.
+ */
+SieveAccountSettings.prototype.setDefaultEditor
+    = function(editor)
+{
+  Services.prefs.setIntPref(this.sieveKey+".editor.default",editor);
+}
+
+SieveAccountSettings.prototype.getDefaultEditor
+    = function ()
+{
+  if (Services.prefs.prefHasUserValue(this.sieveKey+".editor.default"))
+    return Services.prefs.getIntPref(this.sieveKey+".editor.default");
+        
+  return 0;
+}
+
+/**
+ * The plain text editor supports automatic indention. 
+ * The indention width can be configured and adopted to the needs.
+ * It it totally independent from the tab width parameter 
+ * 
+ * @param {int} width
+ *   the indention width, default to two.
+ */
+SieveAccountSettings.prototype.setIndentionWidth
+    = function(width)
+{
+  Services.prefs.setIntPref(this.sieveKey+".editor.indention.width",width);
+}
+
+SieveAccountSettings.prototype.getIndentionWidth
+    = function ()
+{
+  if (Services.prefs.prefHasUserValue(this.sieveKey+".editor.indention.width"))
+    return Services.prefs.getIntPref(this.sieveKey+".editor.indention.width");
+        
+  return 2;
+}
+
+/**
+ * Concerning automatic indention there are two strategies. One is to use tabs
+ * the other one is using spaces.
+ * 
+ * By default spaces are used for indention.
+ * 
+ * @param {int} policy
+ *   the indention policy. A zero means spaces, a one tabs
+ */
+SieveAccountSettings.prototype.setIndentionPolicy
+    = function(policy)
+{
+  Services.prefs.setIntPref(this.sieveKey+".editor.indention.policy", policy);
+}
+
+SieveAccountSettings.prototype.getIndentionPolicy
+    = function ()
+{
+  if (Services.prefs.prefHasUserValue(this.sieveKey+".editor.indention.policy"))
+    return Services.prefs.getIntPref(this.sieveKey+".editor.indention.policy");
+        
+  return 0;
+}
+
+/**
+ * With automatic indention, the need for a tab key is gone. Which means most
+ * editor replace the tab key with whitespaces. 
+ * 
+ * By default tabs are replaced with spaces
+ * 
+ * @param {int} policy
+ *   the tab policy. Pass zero replace tabs with spaces and one to force tabs.
+ */
+SieveAccountSettings.prototype.setTabPolicy
+    = function(policy)
+{
+  Services.prefs.setIntPref(this.sieveKey+".editor.tab.policy",policy);
+}
+
+SieveAccountSettings.prototype.getTabPolicy
+    = function ()
+{
+  if (Services.prefs.prefHasUserValue(this.sieveKey+".editor.tab.policy"))
+    return Services.prefs.getIntPref(this.sieveKey+".editor.tab.policy");
+        
+  return 0;
+}
+
+/**
+ * The tab width specifies over how many spaces the tap will span.
+ * 
+ * The default value is 2
+ * 
+ * @param {int} width
+ *   the tab width as integer. 
+ */
+SieveAccountSettings.prototype.setTabWidth
+    = function(width)
+{
+  Services.prefs.setIntPref(this.sieveKey+".editor.tab.width",width);
+}
+
+SieveAccountSettings.prototype.getTabWidth
+    = function ()
+{
+  if (Services.prefs.prefHasUserValue(this.sieveKey+".editor.tab.width"))
+    return Services.prefs.getIntPref(this.sieveKey+".editor.tab.width");
+        
+  return 2;
+}
+
 
 //** SieveNoAuthorization ****************************************************//
 function SieveNoAuthorization()

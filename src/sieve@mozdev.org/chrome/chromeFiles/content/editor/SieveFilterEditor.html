@@ -14,6 +14,9 @@
 	
     <script src="./../libs/CodeMirror/mode/sieve/sieve.js"></script>
 	
+	<script src="./sieve.broker.js"></script>
+	<script src="./sieve.editor.text.service.js"></script>
+	
     <style>
       .CodeMirror-fullscreen {
         display: block;
@@ -28,7 +31,7 @@
   	    background-position: 650px top;
         background-attachment: fixed;
 		  
-		    font-family: -moz-fixed;
+	    font-family: -moz-fixed;
         font-size: 12px;
         line-height: normal;
 		  }
@@ -51,49 +54,8 @@
     <form>
     <textarea id="code" name="code"></textarea>
     </form> 
-    
     <script>
- 
-      function winHeight() {
-        return window.innerHeight || (document.documentElement || document.body).clientHeight;
-      }
-  
-      function setFullScreen(cm) {
-        var wrap = cm.getWrapperElement();
-        wrap.className += " CodeMirror-fullscreen";
-        wrap.style.height = winHeight() + "px";
-        document.documentElement.style.overflow = "hidden";
-        cm.refresh();
-      }
-    
-      CodeMirror.on(window, "resize", function() {
-        document.body.getElementsByClassName("CodeMirror-fullscreen")[0]
-        .CodeMirror.getWrapperElement().style.height = winHeight() + "px";
-      });
-    
-      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-        lineNumbers: true,
-        theme: "eclipse",
-        matchBrackets: true
-      });
-  
-      setFullScreen(editor,true);
-    
-      var hlLine = editor.addLineClass(0, "background", "activeline");
-    
-      // This function is called externaly upon reloading and updating scripts  
-      function onActiveLineChange() 
-      {
-        var cur = editor.getLineHandle(editor.getCursor().line);
-        
-        if (cur != hlLine) {
-          editor.removeLineClass(hlLine, "background", "activeline");
-          hlLine = editor.addLineClass(cur, "background", "activeline");
-        }
-      }
-      
-      editor.on("cursorActivity", onActiveLineChange);    
-    
-    </script>
+      net.tschmid.sieve.editor.text.service.init();
+	</script>    
   </body>
 </html>

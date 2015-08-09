@@ -382,6 +382,77 @@ function onAuthorizationChange(value)
   gAccount.getAuthorization(3).setAuthorization(value);
 }
 
+// === Editor Sheet ==========================================================
+
+/**
+ * Populates the editor property sheet with data.
+ * 
+ * @param {SieveAccount} account
+ *   A SieveAccount which should be used to populate the property sheet
+ */
+function onEditorSheetLoad(account)
+{
+  try {
+    //var rgDefaultEditor = document.getElementById('rgDefaultEditor');
+    //rgDefaultEditor.selectedIndex = account.getSettings().getDefaultEditor();
+  
+    document.getElementById("txtIndentionWidth").value = account.getSettings().getIndentionWidth(); 	
+    document.getElementById("txtTabWidth").value = account.getSettings().getTabWidth();
+      
+    document.getElementById('mlIndentionPolicy').selectedIndex = account.getSettings().getIndentionPolicy();
+    document.getElementById('mlTabPolicy').selectedIndex = account.getSettings().getTabPolicy();
+  }
+  catch (e) {
+  	Components.utils.reportError(e);
+  }
+  
+}
+
+function onDefaultEditorSelect(type)
+{
+  if (gAccount == null)
+    return;
+    
+  if ((type == null) || (type > 1))
+    type = 0;
+
+  gAccount.getSettings().setDefaultEditor(type);
+}
+
+function onIndentionWidthChange(value)
+{
+  if (gAccount == null)
+    return;
+  
+  gAccount.getSettings().setIndentionWidth(value);
+}
+
+function onIndentionPolicySelect(value) 
+{
+  if (gAccount == null)
+    return;
+
+  gAccount.getSettings().setIndentionPolicy(value);
+}
+
+
+function onTabWidthChange(value)
+{
+  if (gAccount == null)
+    return;
+  
+  gAccount.getSettings().setTabWidth(value);
+}
+
+
+function onTabPolicySelect(value) 
+{
+  if (gAccount == null)
+    return;
+  
+  gAccount.getSettings().setTabPolicy(value);   
+}
+
 // === Debug Sheet =============================================================
 
 function onDebugSheetLoad(account)
@@ -415,12 +486,18 @@ function onDebugFlagCommand(sender,bit)
 function onDialogLoad()
 {
   gAccount = window.arguments[0]["SieveAccount"];
-  onServerSheetLoad(gAccount);
-  onSecuritySheetLoad(gAccount);
-  onProxySheetLoad(gAccount);
-  onGeneralSheetLoad(gAccount);
-  onAdvancedSheetLoad(gAccount);
-  onDebugSheetLoad(gAccount); 
+  try {
+    onServerSheetLoad(gAccount);
+    onSecuritySheetLoad(gAccount);
+    onProxySheetLoad(gAccount);
+    onGeneralSheetLoad(gAccount);
+    onAdvancedSheetLoad(gAccount);
+    onEditorSheetLoad(gAccount);
+    onDebugSheetLoad(gAccount);
+  }
+  catch (e) {
+    Components.utils.reportError(e);
+  }
 }
 
 function onDialogAccept()

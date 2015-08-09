@@ -30,10 +30,6 @@ SieveOverlayManager.require("/sieve/SieveAccounts.js",this,window);
 var gBackHistory = new Array();
 var gForwardHistory = new Array();
 
-var gPrintSettings = null;
-
-
-
 var gEditorStatus =
 {
   checkScriptDelay  : 200,
@@ -50,7 +46,6 @@ var gEditorStatus =
     server : null //the script's serverside checksum
   }
 }
-
 
 
 function SieveFilterEditor()
@@ -75,12 +70,13 @@ SieveFilterEditor.prototype.onChannelReady
       // Script does not exists, or was deleted
       
       // if we have a server checksum, we are reconnecting and our
-      // editor contains valid data. A typical szenario is having
+      // editor contains valid data. A typical scenario is having
       // an unsaved script, losing the connection and then clicking 
       // on reconnect.
       if (gEditorStatus.checksum.server)
       {
-        that.onScriptLoaded(that.getScript())
+      
+     	that.getScriptAsync( function(script) { that.onScriptLoaded(script) } );
         return;
       }
       
@@ -144,64 +140,71 @@ SieveFilterEditor.prototype._calcChecksum
 SieveFilterEditor.prototype.onGetScriptResponse
     = function(response)
 {
-   
-  // The sercer checksum is empty, so we have nothing to compare, which means...
-  // ...the script was never loaded
-  if (!gEditorStatus.checksum.server)  
-  {
-    this.onScriptLoaded(response.getScriptBody());
-    return;
-  }
-   
-  var remoteScript = this._calcChecksum(response.getScriptBody());
   
-  // The server side script is equal to out current script. We are perfectly
-  // in sync. And do not need to do anything... 
-  if (remoteScript == this._calcChecksum(this.getScript()))
-  {
-    this.onScriptLoaded(this.getScript()); 
-    return;
-  }
+  var that = this;
+  var remoteScript = response.getScriptBody();
+
+  this.getScriptAsync( function(localScript) {
+  	 
+    // The server checksum is empty, so we have nothing to compare, which means...
+    // ...the script was never loaded
+    if (!gEditorStatus.checksum.server)  
+    {
+      that.onScriptLoaded(remoteScript);
+      return;
+    }  
+
+    var remoteCheckSum = that._calcChecksum(remoteScript);
+    var localCheckSum  = that._calcChecksum(localScript);
   
-  // The server side script is equal to our last save. So no third party changed
-  // anything. We can be sure the local script is newer. 
-  if (remoteScript == gEditorStatus.checksum.server)
-  {
-    this.onScriptLoaded(this.getScript());
-    return;
-  }
+    // The server side script is equal to out current script. We are perfectly
+    // in sync. And do not need to do anything... 
+    if (remoteCheckSum == localCheckSum)
+    {
+      that.onScriptLoaded(localScript); 
+      return;
+    }
+    
+    // The server side script is equal to our last save. So no third party changed
+    // anything. We can be sure the local script is newer. 
+    if (remoteCheckSum == gEditorStatus.checksum.server)
+    {
+      that.onScriptLoaded(localScript);
+      return;
+    }  
   
-  
-  // not so good. We got out of sync, we can't descide which one is newer...
-  this.onStatusChange(10,{local:this.getScript(),remote:response.getScriptBody()});  
+    // not so good. We got out of sync, we can't descide which one is newer...
+    that.onStatusChange(10, {local: localScript, remote: remoteScript });    
+  });
 }
 
 SieveFilterEditor.prototype.onPutScriptResponse
     = function(response)
-{  
-  // update the last save shadow copy
-  var script = this.getScript();
-  
-  // update the gui checksum & the editor script only when needed
-  if (!document.getElementById('btnViewSource').checked)
-  {
-    document.getElementById("sivEditor2").contentWindow.editor.setValue(script);
-    gEditorStatus.checksum.gui = this._calcChecksum(script);
-  }
-  
-  gEditorStatus.checksum.server =  this._calcChecksum(script);
-      
-  this.setScriptName();
-  
-  // check if tab is in the progress of closing
-  if (!gEditorStatus.closeListener)
-    return;
+{
+  var that = this;
+	
+  // the script was updated, which means we need to update the checksum...
+  this.getScriptAsync( function(script) {
+  	
+  	if (!document.getElementById('btnViewSource').checked)
+    {
+      textEditor.setScript(script);
+      // Update the gui checksum...
+      gEditorStatus.checksum.gui = that._calcChecksum(script);
+    }
 
-  if (closeTab())
-    return;
-            
-  // just calling close is for some reason broken, so we use our helper...
-  //window.arguments[0].wrappedJSObject["close"]();      
+    // ... and the editor checksum  
+    gEditorStatus.checksum.server =  that._calcChecksum(script);
+      
+    that.setScriptName();
+  
+    // check if tab is in the progress of closing
+    if (!gEditorStatus.closeListener)
+      return;
+
+    if (closeTab())
+      return;
+  } );
 }
 
 SieveFilterEditor.prototype.onCheckScriptResponse
@@ -259,25 +262,33 @@ SieveFilterEditor.prototype.onScriptLoaded
 {  
   this.onStatusChange(0);
   gEditorStatus.persistedScript = null;
-
-  var editor = document.getElementById("sivEditor2").contentWindow.editor;
   
-  editor.setCursor({line:0,ch:0});
-  editor.setValue(script);
-  editor.clearHistory();
+  var that = this;  
+  
+  textEditor.loadScript(script, function() {
 
+  	if (gEditorStatus.checksum.server == null) {
+      gEditorStatus.checksum.server = that._calcChecksum(script);        
+      gSFE.setScriptName();
+    }
+  
+    textEditor.focus();
+  });
+  
+  
+  var account = SieveAccountManager.getAccountByName(gEditorStatus.account);
+  
+  var settings = {}
+  
+  settings.tab = {};  
+  settings.tab.width = account.getSettings().getTabWidth();
+  settings.tab.policy = account.getSettings().getTabPolicy(); 
+  
+  settings.indention = {};
+  settings.indention.width = account.getSettings().getIndentionWidth();
+  settings.indention.policy = account.getSettings().getIndentionPolicy();
     
-  // Ugly workaround...
-  document.getElementById("sivEditor2").contentWindow.onActiveLineChange();
-
-
-  if (gEditorStatus.checksum.server == null) {
-    gEditorStatus.checksum.server = this._calcChecksum(this.getScript());
-    this.setScriptName();
-  }
-  
-  document.getElementById("sivEditor2").focus();  
-  editor.focus();
+  textEditor.setOptions(settings);
 }
 
 SieveFilterEditor.prototype.observe
@@ -330,14 +341,17 @@ SieveFilterEditor.prototype.onStatusChange
 
 
 SieveFilterEditor.prototype.getScript
-    = function ()
+    = function (editor)
 {
   if (gEditorStatus.persistedScript)
     return gEditorStatus.persistedScript;
     
+  if (!editor)
+    editor = document.getElementById("sivEditor2").contentWindow.editor.getValue();
+  
   // Thunderbird scrambles linebreaks to single \n so we have to fix that
-  var editor = document.getElementById("sivEditor2").contentWindow.editor.getValue()
-                  .replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
+  if (editor)
+    editor = editor.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
                   
   if (document.getElementById('btnViewSource').checked)
     return  editor;
@@ -349,6 +363,35 @@ SieveFilterEditor.prototype.getScript
     return  editor;
   
   return widget;
+}
+
+SieveFilterEditor.prototype.getScriptAsync
+    = function (callback) {
+
+  if (!callback)
+    return;
+
+  if (gEditorStatus.persistedScript) {
+  	callback(gEditorStatus.persistedScript);
+  	return;
+  }
+  
+  // In case it's the source we return the plaintext editor...
+  if (document.getElementById('btnViewSource').checked) {
+  	
+  	textEditor.getScript( function(script) {
+      // Sanatize the line breaks to a single \n. Thunderbird scrambles them sometimes...
+      script = script.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
+      
+      callback(script);
+    } );
+    
+    return;
+  }
+
+  var widget =  document.getElementById("sivWidgetEditor")
+                    .contentWindow.getSieveScript(); 
+  callback(widget);
 }
 
 SieveFilterEditor.prototype.hasChanged
@@ -372,8 +415,14 @@ SieveFilterEditor.prototype.putScript
   if (typeof(scriptName) == "undefined")
     scriptName = this.getScriptName();
     
-  if (typeof(content) == "undefined")
-    content = this.getScript();
+  if (typeof(content) == "undefined") {
+  	
+  	// We postpone the call. First we get the script from the editor,
+  	// and then call the method again...
+  	var that = this;
+  	this.getScriptAsync( function(script) { that.putScript(scriptName, script) } );
+  	return;    
+  }
     
   var event = {
     onError : function(response)
@@ -418,7 +467,7 @@ SieveFilterEditor.prototype.getScriptName
 
 function onCompile()
 { 
-  gSFE.checkScript(gSFE.getScript());
+  gSFE.getScriptAsync( function(script) {gSFE.checkScript(script) } );
 }
 
 function onInput()
@@ -458,10 +507,52 @@ function onWindowPersist()
   return args; 
 }
 
+var textEditor = null;
+
+var sivEditorListener = {
+	onChange : function() {
+		onInput();
+	},
+		
+	onStringFound : function() {
+	  document.getElementById("boxSearchError").setAttribute('hidden','true');
+	}	
+}
+
+function onFindString()
+{   
+  document.getElementById("boxSearchError").removeAttribute('hidden');  
+
+  var token = document.getElementById("txtToken").value;
+  
+  var isReverse = !!document.getElementById('cbxBackward').checked;  
+  var isCaseSensitive = document.getElementById('cbxCaseSensitive').checked;  
+    
+  textEditor.findString(token, isCaseSensitive, isReverse);
+  
+  return;
+}
+
+function onReplaceString()
+{
+  document.getElementById("boxSearchError").removeAttribute('hidden');  
+  
+  var oldToken = document.getElementById("txtToken").value;
+  var newToken = document.getElementById("txtReplace").value;
+  
+  var isReverse = !!document.getElementById('cbxBackward').checked;
+  var isCaseSensitive = document.getElementById('cbxCaseSensitive').checked;
+	
+  textEditor.replaceString(oldToken, newToken, isCaseSensitive, isReverse);
+  
+  return;  
+}
+
+
 function onWindowLoad()
 {
-  document.getElementById("sivEditor2")
-    .contentWindow.editor.on("change",onInput);
+  textEditor = new net.tschmid.sieve.editor.text.Client("sivEditor2");  	
+  textEditor.setListener( sivEditorListener );	
   
   // hack to prevent links to be opened in the default browser window...
   document.getElementById("ifSideBar").
@@ -571,7 +662,7 @@ function onViewSource(visible,aNoUpdate)
     if (aNoUpdate || (gEditorStatus.checksum.gui == gSFE._calcChecksum(script)))
       return;
 
-    document.getElementById("sivEditor2").contentWindow.editor.setValue(script);
+    textEditor.setScript(script);
     
     onInput();
     return;
@@ -592,22 +683,20 @@ function onViewSource(visible,aNoUpdate)
   
   deck.selectedIndex = 1;
   
-  // Make GUI seem to be more agile...
-  window.setTimeout( function() {updateWidgets()} ,0);    
+  // Finally we need to transfer the current script from the editor into the gui...
+  textEditor.getScript( function(script) { updateWidgets(script) } );
 }
 
-function updateWidgets()
+function updateWidgets(script)
 {
    
   try {
     var capabilities = SieveConnections
       .getChannel(gSFE._sid,gSFE._cid).extensions;
-       
-    var script = document.getElementById("sivEditor2").contentWindow.editor.getValue();
 
     // set script content...
     document.getElementById("sivWidgetEditor")
-      .contentWindow.setSieveScript(script,capabilities)
+      .contentWindow.setSieveScript(script,capabilities);
     
     // ... and create a shadow copy
     gEditorStatus.checksum.gui = gSFE._calcChecksum(
@@ -820,7 +909,7 @@ function onImport()
   scriptableStream.close();
   inputStream.close();
 
-  document.getElementById("sivEditor2").contentWindow.editor.replaceSelection(script);
+  textEditor.replaceSelection(script);
   
   onInput();
 }
@@ -843,19 +932,21 @@ function onExport()
   if ((result != filePicker.returnOK) && (result != filePicker.returnReplace))
     return;
 
-  var file = filePicker.file;
+  gSFE.getScriptAsync( function(data) { 
+    var file = filePicker.file;
 
-  if (file.exists() == false)
-    file.create(Ci.nsIFile.NORMAL_FILE_TYPE, parseInt("0644", 8));
+    if (file.exists() == false)
+      file.create(Ci.nsIFile.NORMAL_FILE_TYPE, parseInt("0644", 8));  
+  
+    var outputStream = Cc["@mozilla.org/network/file-output-stream;1"]
+          .createInstance(Ci.nsIFileOutputStream);
 
-  var outputStream = Cc["@mozilla.org/network/file-output-stream;1"]
-      .createInstance(Ci.nsIFileOutputStream);
+    outputStream.init(file, 0x04 | 0x08 | 0x20, parseInt("0644", 8), null);
 
-  outputStream.init(file, 0x04 | 0x08 | 0x20, parseInt("0644", 8), null);
 
-  var data = gSFE.getScript();
-  outputStream.write(data, data.length);
-  outputStream.close();
+    outputStream.write(data, data.length);
+    outputStream.close();
+  } );
 }
 
 function onErrorBar(visible,aSilent)
@@ -946,267 +1037,6 @@ function onSearchBar(visible)
   return;
 }
 
-function onFindString()
-{   
-  document.getElementById("boxSearchError").removeAttribute('hidden');
-        
-  // ... convert to lowercase, if the search is not case sensitive...
-  var editor = document.getElementById("sivEditor2").contentWindow.editor;
-  var reverse = !!document.getElementById('cbxBackward').checked;
-  
-  
-  function maxCursor(start,end)
-  {
-    if (start.line > end.line)
-      return start
-
-    if (start.line < end.line)
-      return end;
-    
-    // start.line == end.line
-    if (start.ch > end.ch)
-      return start;
-      
-    return end;
-  }
-  
-  function minCursor(start,end)
-  {
-    if (start.line <end.line)
-      return start
-
-    if (start.line > end.line)
-      return end;
-    
-    // start.line == end.line
-    if (start.ch > end.ch)
-      return end;
-      
-    return start;
-  }
-  
-  var start = editor.getCursor(true);
-  var end = editor.getCursor(false);
-  
-  var cursor = editor.getSearchCursor(
-    document.getElementById("txtToken").value,
-    reverse ? minCursor(start,end) : maxCursor(start,end),
-    !document.getElementById('cbxCaseSensitive').checked);
-  
-  if (!cursor.find(reverse))
-  { 
-    // warp search at top or bottom
-    cursor = editor.getSearchCursor(
-       document.getElementById("txtToken").value,
-       reverse ? {line: editor.lineCount() - 1} : {line: 0, ch: 0},
-       !document.getElementById('cbxCaseSensitive').checked);
-    
-    if (!cursor.find(reverse))
-      return;
-  }
-  
-  if (reverse)
-    editor.setSelection(cursor.from(), cursor.to());
-  else
-    editor.setSelection(cursor.to(), cursor.from());
-
-  document.getElementById("boxSearchError").setAttribute('hidden','true');  
-  return;
-}
-
-function onReplaceString()
-{
-  var token = document.getElementById("txtToken").value;
-  var editor = document.getElementById("sivEditor2").contentWindow.editor;
-  var caseSensitive = document.getElementById('cbxCaseSensitive').checked;
-    
-  if (caseSensitive) 
-  {
-    if (editor.getSelection() != token)
-      onFindString();
-      
-    if (editor.getSelection() != token)
-      return;
-  }
-    
-  if (!caseSensitive)
-  {
-    if (editor.getSelection().toLowerCase() != token.toLowerCase())
-      onFindString();
-      
-    if (editor.getSelection().toLowerCase() != token.toLowerCase())
-      return;
-  }
-
-  editor.replaceSelection(document.getElementById("txtReplace").value);
-
-  onInput();
-  
-  return;  
-}
-
-
-
-function getPrintSettings()
-{
-  var pref = Components.classes["@mozilla.org/preferences-service;1"]
-               .getService(Components.interfaces.nsIPrefBranch);
-  if (pref) 
-  {
-    var gPrintSettingsAreGlobal = pref.getBoolPref("print.use_global_printsettings", false);
-    var gSavePrintSettings = pref.getBoolPref("print.save_print_settings", false);
-  }
- 
-  var printSettings;
-  try 
-  {
-    var PSSVC = Components.classes["@mozilla.org/gfx/printsettings-service;1"]
-                  .getService(Components.interfaces.nsIPrintSettingsService);
-    if (gPrintSettingsAreGlobal) 
-    {
-      printSettings = PSSVC.globalPrintSettings;
-      this.setPrinterDefaultsForSelectedPrinter(PSSVC, printSettings);
-    }
-    else
-    {
-      printSettings = PSSVC.newPrintSettings;
-    }
-  }
-  catch (e)
-  {
-    alert("getPrintSettings: "+e+"\n");
-  }
-  return printSettings;
-}
-
-
-function onPrint()
-{
-  // we print in xml this means any specail charaters have to be html entities...
-  // ... so we need a dirty hack to convert all entities...
-  alert("Print");
-  var script = document.getElementById("sivContentEditor").value;
-  script = (new XMLSerializer()).serializeToString(document.createTextNode(script));
-  
-  script = script.replace(/\r\n/g,"\r");
-  script = script.replace(/\n/g,"\r");
-  script = script.replace(/\r/g,"\r\n");
- 
-  var data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" 
-     + "<?xml-stylesheet type=\"text/css\" href=\"chrome://sieve/content/editor/print.css\"?>\r\n"
-     + "<SieveScript>\r\n"
-       + "<title xmlns=\"http://www.w3.org/1999/xhtml\">\r\n"
-         + gSFE.getScriptName()
-       + "</title>\r\n"
-       + "<SieveScriptName>\r\n" 
-         + gSFE.getScriptName()
-       + "</SieveScriptName>\r\n"   
-       + "<SieveScriptLine>\r\n"       
-         + script
-       + "</SieveScriptLine>\r\n"          
-     + "</SieveScript>\r\n";    
-  
-  data =  "data:application/xml;base64,"+btoa(data);  
-
-   /*// get URI and add to list for printing
-  var messageList =  new Array(1);
-  messageList[0] = data;
-     
-  var prevPS = gPrintSettings;
- 
-  var printSettingsService = 
-        Components.classes["@mozilla.org/gfx/printsettings-service;1"]
-          .getService(Components.interfaces.nsIPrintSettingsService);
-   
-  var printSettings = printSettingsService.CreatePrintSettings();
-  // var printSettings = printSettingsService.globalPrintSettings;
-
-  printEngineWindow = window.openDialog("chrome://messenger/content/msgPrintEngine.xul",
-                                        "",
-                                        "chrome,dialog=no,all,centerscreen",
-                                        messageList.length, messageList, statusFeedback, 
-                                        printSettings, false, 
-                                        Components.interfaces.nsIMsgPrintEngine.MNAB_PRINT_MSG,
-                                        window)*/
-                  
-
-   var printSettings;// = getPrintSettings();
-   /* get the print engine instance */
-   var printEngine = Components.classes["@mozilla.org/messenger/msgPrintEngine;1"].createInstance();
-   printEngine.QueryInterface(Components.interfaces.nsIMsgPrintEngine);
-
-   var printSettingsService = 
-        Components.classes["@mozilla.org/gfx/printsettings-service;1"]
-          .getService(Components.interfaces.nsIPrintSettingsService);
-   var printSettings = printSettingsService.newPrintSettings;
-   
-   printEngine.setWindow(window);
-   printEngine.doPrintPreview = false;
-   printEngine.showWindow(false);
-   printEngine.setMsgType(Components.interfaces.nsIMsgPrintEngine.MNAB_PRINT_MSG);
-   printEngine.setParentWindow(null);
-   //printEngine.setParentWindow(window);   
-
-   var messageList =  new Array(1);
-   messageList[0] = data;
- 
-   printEngine.setPrintURICount(messageList.length);
-   printEngine.addPrintURI(messageList);
-   
-   printEngine.startPrintOperation(printSettings);
- 
-//     printEngine.setStatusFeedback(statusFeedback);
-//     printEngine.setStartupPPObserver(gStartupPPObserver);
-                     
-  alert("End Print");
-}
-/*function onPrint()
-{  
-  var statusFeedback;
-  statusFeedback = Components.classes["@mozilla.org/messenger/statusfeedback;1"].createInstance();
-  statusFeedback = statusFeedback.QueryInterface(Components.interfaces.nsIMsgStatusFeedback);
-
-  // we print in xml this means any specail charaters have to be html entities...
-  // ... so we need a dirty hack to convert all entities...
-  
-  var script = document.getElementById("sivContentEditor").value;
-  script = (new XMLSerializer()).serializeToString(document.createTextNode(script));
-  
-  script = script.replace(/\r\n/g,"\r");
-  script = script.replace(/\n/g,"\r");
-  script = script.replace(/\r/g,"\r\n");
- 
-  var data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" 
-     + "<?xml-stylesheet type=\"text/css\" href=\"chrome://sieve/content/editor/print.css\"?>\r\n"
-     + "<SieveScript>\r\n"
-       + "<title xmlns=\"http://www.w3.org/1999/xhtml\">\r\n"
-         + document.getElementById("txtName").value
-       + "</title>\r\n"
-       + "<SieveScriptName>\r\n" 
-         + document.getElementById("txtName").value
-       + "</SieveScriptName>\r\n"   
-       + "<SieveScriptLine>\r\n"       
-         + script
-       + "</SieveScriptLine>\r\n"          
-     + "</SieveScript>\r\n";    
-  
-  data =  "data:application/xml;base64,"+btoa(data);  
-  
-
-  if (gPrintSettings == null) 
-    gPrintSettings = PrintUtils.getPrintSettings();    
-
-  printEngineWindow = window.openDialog("chrome://messenger/content/msgPrintEngine.xul",
-                                         "",
-                                         "chrome,dialog=no,all,centerscreen",
-                                          1, [data], statusFeedback,
-                                          gPrintSettings,false,
-                                          Components.interfaces.nsIMsgPrintEngine.MNAB_PRINT_MSG,
-                                          window);
-
-  return;
-}*/
-
 function onKeepLocalScript()
 {
   gSFE.onScriptLoaded(gSFE.getScript());
@@ -1217,67 +1047,48 @@ function onUseRemoteScript(script)
   gSFE.onScriptLoaded(script);
 }
 
-function onUndo()
-{
-  document.getElementById("sivEditor2").contentWindow.editor.undo();
-}
-
-function onRedo()
-{
-  document.getElementById("sivEditor2").contentWindow.editor.redo();
-}
-
 
 function onEditorShowMenu()
 {
-  // enxure editor is focused...
-  /*if (document.commandDispatcher.focusedElement != this.parentNode.firstChild)
-    this.parentNode.firstChild.focus();*/
-
-  // we can use the built in function to determin if cut, copy and paste is possible
-  var controller = document.commandDispatcher.getControllerForCommand("cmd_cut");
-  if (controller.isCommandEnabled("cmd_cut"))
-    document.getElementById("ctxCut").removeAttribute("disabled");
-  else
-    document.getElementById("ctxCut").setAttribute("disabled", "true");
-  
-  var controller = document.commandDispatcher.getControllerForCommand("cmd_copy");  
-  if (controller.isCommandEnabled("cmd_copy"))
-    document.getElementById("ctxCopy").removeAttribute("disabled");
-  else
-    document.getElementById("ctxCopy").setAttribute("disabled", "true");
-    
-  var controller = document.commandDispatcher.getControllerForCommand("cmd_paste");
-  if (controller.isCommandEnabled("cmd_paste"))
-    document.getElementById("ctxPaste").removeAttribute("disabled");
-  else
-    document.getElementById("ctxPaste").setAttribute("disabled", "true");  
-  // Undo : editor.history 
-  
-  var editor = document.getElementById("sivEditor2").contentWindow.editor;
-  
-  if (editor.somethingSelected())
-    document.getElementById("ctxDelete").removeAttribute("disabled");
-  else
-    document.getElementById("ctxDelete").setAttribute("disabled", "true"); 
-  
-  if (editor.historySize().undo > 0)
-    document.getElementById("ctxUndo").removeAttribute("disabled");
-  else
-    document.getElementById("ctxUndo").setAttribute("disabled", "true");   
-    // select all -> immer möglich 
+  var callback = function(status) {
+		
+    if (status.canCut)
+      document.getElementById("ctxCut").removeAttribute("disabled");
+    else
+      document.getElementById("ctxCut").setAttribute("disabled", "true");
+		
+    if(status.canCopy)
+      document.getElementById("ctxCopy").removeAttribute("disabled");
+    else
+      document.getElementById("ctxCopy").setAttribute("disabled", "true");
+        
+    if (status.canPaste)
+      document.getElementById("ctxPaste").removeAttribute("disabled");
+    else
+      document.getElementById("ctxPaste").setAttribute("disabled", "true");
+      
+    if (status.canDelete)
+      document.getElementById("ctxDelete").removeAttribute("disabled");
+    else
+      document.getElementById("ctxDelete").setAttribute("disabled", "true"); 
+     
+    if (status.canUndo)
+      document.getElementById("ctxUndo").removeAttribute("disabled");
+    else
+      document.getElementById("ctxUndo").setAttribute("disabled", "true");
+  }
+	
+  textEditor.getStatus(callback);
 }
 
 function onDelete()
 {
-  document.getElementById("sivEditor2").contentWindow.editor.replaceSelection("");
+  textEditor.replaceSelection();
 }
 
 function onSelectAll()
 {
-  var editor = document.getElementById("sivEditor2").contentWindow.editor;
-  editor.setSelection({line:0,ch:0},{line: editor.lineCount() - 1});
+  textEditor.selectAll();
 }
-
 
 var gSFE = new SieveFilterEditor();

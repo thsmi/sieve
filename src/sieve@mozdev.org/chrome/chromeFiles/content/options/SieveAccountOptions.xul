@@ -35,6 +35,7 @@
     <tab label="&options.tab.general;" />
     <tab label="&options.tab.proxy;" />
     <tab label="&options.tab.advanced;" />
+    <tab label="Editor" />
     <tab label="&options.tab.debug;" />
     <tab label="&options.tab.credits;" />
   </tabs>
@@ -225,6 +226,62 @@
       </groupbox>
       <hbox flex="1"/>
     </vbox>
+    
+    <!-- editor panel -->
+    <vbox>
+      <!--
+      <groupbox>
+        <caption label="Default Mode" />
+        <description>The sieve addon supports two editing modes, the plain text editor and the graphical editor. 
+          The graphical editor is still a bit experimental and supports only a limited set of sieve instructions.</description>
+        <description>You can switch between the editors by toggeling the source button in the toolbar</description>
+        <radiogroup id="rgDefaultEditor" onselect="onDefaultEditorSelect(this.selectedIndex);">
+          <radio label="Plain text editor"/>
+          <radio label="Graphical Editor"/>
+        </radiogroup>
+      </groupbox>
+      -->
+
+      <groupbox>
+        <caption label="Indention" /> 
+
+        <description>The plain text editor supports automatic indenting. </description>
+        <box align="center" >
+          <label value="Indention Width:" control="txtIndentionWidth"/>
+          <textbox id="txtIndentionWidth" size="4" 
+                          onchange="onIndentionWidthChange(this.value);"/>
+        </box>
+        <hbox align="center" >
+          <label control="mlIndentionPolicy" value="Indention Policy:" />
+          <menulist id="mlIndentionPolicy" oncommand="onIndentionPolicySelect(this.selectedIndex)">
+            <menupopup>
+              <menuitem label="Spaces Only" value="0"/>
+              <menuitem label="Tabs Only" value="1"/>
+            </menupopup>
+          </menulist>
+        </hbox> 
+      </groupbox>
+
+      <groupbox>
+        <caption label="Tab Handling" /> 
+        <description>Texteditor with automatic indenting replaced the need for a tab key, but there are many editors which default to tabs due to historic reasons.</description>
+        <box align="center" >
+          <label value="Tab Width" />
+          <textbox id="txtTabWidth" size="4" 
+                          onchange="onTabWidthChange(this.value);"/>
+        </box>
+        <hbox align="center" >
+          <label control="mlTabPolicy" value="Tab Policy" />
+          <menulist id="mlTabPolicy" oncommand="onTabPolicySelect(this.selectedIndex)">
+            <menupopup>
+              <menuitem label="Insert Spaces for Tabs" value="0"/>
+              <menuitem label="Insert Tabs" value="1"/>
+            </menupopup>
+          </menulist>
+        </hbox> 
+      </groupbox>
+      <hbox flex="1"/>
+    </vbox>    
 
     <!-- debug panel -->
     <vbox>

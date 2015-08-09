@@ -38,6 +38,11 @@
           src="chrome://sieve/content/libs/libManageSieve/SieveAbstractClient.js"/>           
   <script type="application/javascript" 
           src="chrome://sieve/content/editor/SieveFilterEditor.js" />
+          
+  <script type="application/javascript" 
+          src="chrome://sieve/content/editor/sieve.broker.js" />
+  <script type="application/javascript" 
+          src="chrome://sieve/content/editor/sieve.editor.text.client.js" />
  <!-- <script type="application/javascript" 
           src="chrome://global/content/printUtils.js"/>
   <script type="application/javascript" 
@@ -52,7 +57,7 @@
   <menupopup id="ctxEditor" onpopupshowing="onEditorShowMenu();">
     <menuitem id="ctxUndo"
               label="&undoCmd.label;" accesskey="&undoCmd.accesskey;"
-              oncommand="onUndo();  event.stopPropagation();" />
+              oncommand="textEditor.onUndo();  event.stopPropagation();" />
     <menuseparator/>
     <menuitem id="ctxCut"
               label="&cutCmd.label;" accesskey="&cutCmd.accesskey;"
@@ -83,10 +88,10 @@
     <toolbarspacer />      
     <toolbarbutton id="btnUndo"
                    label="&edit.toolbar.undo;" class="toolbarbutton-1"
-                   oncommand="onUndo()/*goDoCommand('cmd_undo')*/;" />    
+                   oncommand="textEditor.onUndo()/*goDoCommand('cmd_undo')*/;" />    
     <toolbarbutton id="btnRedo"
                    label="&edit.toolbar.redo;" class="toolbarbutton-1"
-                   oncommand="onRedo()/*goDoCommand('cmd_redo');*/" />                    
+                   oncommand="textEditor.onRedo()/*goDoCommand('cmd_redo');*/" />                    
     <toolbarspacer />
     <toolbarbutton id="btnCut"
                    label="&edit.toolbar.cut;" class="toolbarbutton-1"

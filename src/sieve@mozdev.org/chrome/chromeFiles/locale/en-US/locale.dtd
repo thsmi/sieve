@@ -242,7 +242,7 @@ to do a manual configuration.">
 <!ENTITY edit.toolbar.print "Print">
 <!ENTITY edit.toolbar.search "Search">
 
-<!ENTITY edit.sidebar.uri "http://thsmi.github.io/sieve-reference/en/index.html">
+<!ENTITY edit.sidebar.uri "http://thsmi.github.com/sieve-reference/en/index.html">
 <!ENTITY edit.sidebar.title "Sieve Language Reference">
 
 <!-- Search and Replace Side bar -->
@@ -269,7 +269,7 @@ to do a manual configuration.">
 <!ENTITY status.warning.ignore "Ignore">
 <!ENTITY status.warning.reconnect "Reconnect">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, goto 'Tools-> SieveMessage Filters'">
+  "This account is not configured for manage sieve, goto 'Tools-&gt; SieveMessage Filters'">
   
 <!ENTITY status.error.reconnect "Reconnect">
 <!ENTITY status.error "Last Command failed, because the server reported an error:">

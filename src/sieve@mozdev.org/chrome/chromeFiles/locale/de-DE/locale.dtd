@@ -1,13 +1,10 @@
 <!--
 /* 
- * The content of this file is licenced. You may obtain a copy of
+ * The contents of this file is licenced. You may obtain a copy of
  * the license at http://sieve.mozdev.org or request it via email 
  * from the author. Do not remove or change this comment. 
  * 
  * The initial author of the code is:
- *   Christian Rößner
- * 
- * Contributor(s):
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  -->
@@ -16,7 +13,7 @@
 <!ENTITY options.title "Sieve Einstellungen">
 
 <!ENTITY options.tab.server "Server">
-<!ENTITY options.tab.security "Security">
+<!ENTITY options.tab.security "Sicherheit">
 <!ENTITY options.tab.general "Allgemein">
 <!ENTITY options.tab.proxy "Proxy">
 <!ENTITY options.tab.advanced "Erweitert">
@@ -24,31 +21,30 @@
 <!ENTITY options.tab.debug "Debug">
 <!ENTITY options.tab.credits "Danksagung">
 
-<!ENTITY options.host.caption "Server Name">
+<!ENTITY options.host.caption "Servername">
 <!ENTITY options.host.description
-"Sieve ist üblicherweise direkt auf dem Mailserver installiert, daher ist
-meist der Sieve Servername mit dem des IMAP Servers identisch.">
+"Sieve Implementierungen sind üblicherweise direkt auf dem Mailserver installiert, daher ist meist der Sieve Server mit dem des IMAP Servers identisch.">
 <!ENTITY options.host.imap "IMAP Server:">
 <!ENTITY options.host.custom "Anderer Server:">
 
-<!ENTITY options.port.caption "Server Port">
+<!ENTITY options.port.caption "Serverport">
 <!ENTITY options.port.description
 "Seitdem Sieve in einen offiziellen RFC Standard übergegangen ist, hat sich der Port geändert.">
 <!ENTITY options.port.description2
 "Dementsprechend akzeptieren neuere Server nur Verbindungen
 über den Port 4190 während altere Versionen den Port 2000 bevorzugen.">
-<!ENTITY options.port.4190 "4190 (Default)" >
+<!ENTITY options.port.4190 "4190 (Standard)" >
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Anderer:">
 <!ENTITY options.port.autoselect "Port automatisch wählen">
 <!ENTITY options.port.autoselect.running "Porterkennung aktiv, bitte warten...">
 <!ENTITY options.port.autoselect.successful "Erkennung erfolgreich, Server Port:">
-<!ENTITY options.port.autoselect.error "Auswahlfehlgeschlagen...">
+<!ENTITY options.port.autoselect.error "Auswahl fehlgeschlagen...">
 
-<!ENTITY options.security.caption "Verbindungs Sicherheit">
+<!ENTITY options.security.caption "Verbindungssicherheit">
 <!ENTITY options.security.description
-"Transport Layer Security (TLS) verschlüsselt die Verbindung zum ManageSieve server,
-hierdruch werden Abhören der Zugangdaten sowie Manipulationen effektiv verhindert.">
+"Transport Layer Security (TLS) verschlüsselt die Verbindung zum ManageSieve Server,
+hierdurch werden Abhören der Zugangsdaten sowie Manipulationen effektiv verhindert.">
 <!ENTITY options.security.description2 
 "ManageSieve überträgt normalerweise Passwörter unverschlüsselt. Daher 
 sollten Sie TLS immer erzwingen.">
@@ -63,34 +59,30 @@ sollten Sie TLS immer erzwingen.">
 <!ENTITY options.login.customAuth "Benutzername und Passwort">
 <!ENTITY options.login.username "Benutzername">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "Passwörter anzeigen...">
+<!ENTITY options.login.show "Gespeicherte Passwörter anzeigen...">
 
 <!ENTITY options.misc "Sonstige Einstellungen">
-<!ENTITY options.misc.keepalive "Enable keepalives">
+<!ENTITY options.misc.keepalive "Keepalive Nachrichten aktivieren">
 <!ENTITY options.misc.keepalive.key "k">
-<!ENTITY options.misc.keepalive2 "Send every">
+<!ENTITY options.misc.keepalive2 "Keepalive nach">
 <!ENTITY options.misc.keepalive.description 
-"If the client was idle for too long (usually 30 minutes), the
-server assumes the client is disconnected and hangs up the connection.">
+"Server trennen die Verbindung automatisch, wenn der Client zu lange im Leerlauf ist (typischerweise 30 Minuten) und keine Anfragen stellt. ">
 <!ENTITY options.misc.keepalive.description2
-"A keepalive request indecates the connection is still active and
-should be preserved.">
+"Eine Keepalive Anfrage signalisiert dem Server vor Ablauf dieser Zeit, dass die Verbindung noch aktiv ist und nicht getrennt werden soll.">
 <!ENTITY options.misc.keepalive.min "min">
 
 <!ENTITY options.misc.compile.caption "Syntaxüberprüfung">
 <!ENTITY options.misc.compile.description
-"While editing Scripts, they can be checked for validity. The syntax 
-check is performed by the server. In oder to keep network traffic 
-low, syntax check requests are grouped.">
-<!ENTITY options.misc.compile "Check Scripts while typing">
+"Sieve Skripte können beim editieren auf Syntaxfehler überprüft werden. Der Syntaxcheck erfolgt durch den Server. Um den Netzwerkverkehr niedrig zu halten, findet die Syntax Überprüfung erst nach Ende der Eingabe statt.">
+<!ENTITY options.misc.compile "Skripte während der Eingabe auf Syntaxfehler überprüfen">
 <!ENTITY options.misc.compile.key "c">
-<!ENTITY options.misc.compile2 "Validate at least every"> 
+<!ENTITY options.misc.compile2 "Syntaxprüfung spätestens alle">
 <!ENTITY options.misc.compile.ms "ms"> 
 
 <!ENTITY options.debug.warning 
 "Bitte beachten Sie, dass Debugmeldungen von SASL Login und SASL Plain Ihr 
 Passwort im Klartext enthalten!">
-<!ENTITY options.debug.caption "Debug Einstellungen">
+<!ENTITY options.debug.caption "Debug-Einstellungen">
 <!ENTITY options.debug.request "Client zu Server Kommunikation (requests)">
 <!ENTITY options.debug.response "Server zu Client Kommunikation (responses)">
 <!ENTITY options.debug.exceptions "Ausnahmefehler und State Machine Informationen">
@@ -101,7 +93,7 @@ Passwort im Klartext enthalten!">
 <!ENTITY options.debug.console.open "Fehlerkonsole öffnen...">
 
 <!ENTITY options.authmechanism.caption "Authentifizierungsmechanismus">
-<!ENTITY options.authmechanism "Empfohlenen Mechanismus ignorieren">
+<!ENTITY options.authmechanism "Empfohlenen Authentifizierungsmechanismus übergehen">
 <!ENTITY options.authmechanism.default "Benutze immer:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
@@ -109,24 +101,24 @@ Passwort im Klartext enthalten!">
 <!ENTITY options.authmechanism.login "LOGIN">
 <!ENTITY options.authmechanism.plain "PLAIN">
 <!ENTITY options.authmechanism.description 
-"In Ausnahmefällen, z.B. wenn Sie Proxy Authenitifzierung nutzen, können Sie 
-hier einen Autentifizierungsmechanismus erzwingen." >
+"In Ausnahmefällen, z.B. wenn Sie die Proxy Autorisation nutzen, müssen Sie 
+einen Authentifizierungsmechanismus erzwingen." > 
 
-<!ENTITY options.proxyauth.caption "Proxy Authorisation">
+<!ENTITY options.proxyauth.caption "Proxy Autorisation">
 <!ENTITY options.proxyauth.desc 
-"Die Proxy Authorisation ermöglicht einem authentifiziertem Benuter, sich als  
+"Die Proxy Autorisation ermöglicht einem authentifiziertem Benutzer, sich als  
 ein anderer Benutzer auszugeben. 
-Diese Funktionalität setzt besondere Rechte auf dem Mailserver vorraus und steht
+Diese erfordert besondere Rechte auf dem Mailserver und steht
 daher meist nur Administratoren zur Verfügung.">
-<!ENTITY options.proxyauth.force 
-"Die Proxy Authorisation erfordert zwingend eine 'SASL PLAIN' Authentifizierung">
-<!ENTITY options.proxyauth.none "Keine Authorisation">
+<!ENTITY options.proxyauth.force
+"Die Proxy Autorisation erfordert zwingend eine 'SASL PLAIN' Authentifizierung.">
+<!ENTITY options.proxyauth.none "Keine Autorisation">
 <!ENTITY options.proxyauth.default "Sieve Benutzername">
 <!ENTITY options.proxyauth.prompt "Benutzername abfragen">
-<!ENTITY options.proxyauth.custom "Authorisierung als">
-<!ENTITY options.proxyauth.custom.username "Benutername:">
+<!ENTITY options.proxyauth.custom "Autorisation als">
+<!ENTITY options.proxyauth.custom.username "Benutzername:">
 
-<!ENTITY options.info.servername "Server Name:">
+<!ENTITY options.info.servername "Servername:">
 <!ENTITY options.info.port "Port:">
 <!ENTITY options.info.secure "Sichere Verbindung:">
 <!ENTITY options.info.username "Benutzername:">
@@ -136,13 +128,13 @@ daher meist nur Administratoren zur Verfügung.">
 "Sieve ist eine Skriptsprache um serverseitig E-Mails zu filtern und sortieren.">
 <!ENTITY options.account.activate
 "Möchten Sie Sieve Scripte für diesen Account verwalten?">
-<!ENTITY options.account.activate.yes "Ja, dieses Konto untersützt Sieve:">
+<!ENTITY options.account.activate.yes "Ja, dieses Konto unterstützt Sieve:">
 <!ENTITY options.account.activate.no "Nein, dieses Konto unterstützt kein Sieve">
 <!ENTITY options.account.filters "Filter bearbeiten...">
 <!ENTITY options.account.settings "Einstellungen ändern...">
 
 <!-- Credits -->
-<!ENTITY options.credits "Vielen Dank an alle die dieses Projekt unterstützen:">
+<!ENTITY options.credits "Vielen Dank an alle Mitwirkenden:">
 
 <!-- Proxy Settings -->
 <!ENTITY options.proxy "Proxy Einstellungen">
@@ -182,13 +174,14 @@ als Workaround die Loopback IP '127.0.0.1' nutzen.">
 <!ENTITY list.settings "Einstellungen...">
 
 <!ENTITY list.details.capability "Sieve Server Eigenschaften">
-<!ENTITY list.details.capability.implementation "Server Version:">
+<!ENTITY list.details.capability.implementation "Serverversion:">
 <!ENTITY list.details.capability.sasl "SASL Mechanismen:">
 <!ENTITY list.details.capability.extensions "Erweiterungen:">
 <!ENTITY list.details.capability.protocol "Protokoll:">
 
+
 <!ENTITY list.badcert 
-"Ihr Mailserver kann nicht Identifiziert werden und wird als nicht 
+  "Ihr Mailserver kann nicht Identifiziert werden und wird als nicht 
 vertrauenswürdig eingestuft.">
 <!ENTITY list.badcert.error 
 "Es könnte es sein, dass sich jemand als Ihr Mailserver ausgibt, um 
@@ -200,12 +193,12 @@ dass Sie tatsächlich mit dem gewünschten Server verbunden sind.">
 <!ENTITY list.badcert.ignore "Weiter">
 <!ENTITY list.badcert.abort "Abbrechen">
 
-<!ENTITY list.autoconfig.welcome.caption "Willkommen!">
+<!ENTITY list.autoconfig.welcome.caption "Herzlich Willkommen!">
 <!ENTITY list.autoconfig.welcome.description1 
 "Dieses Sieve Konto ist derzeit noch nicht konfiguriert">
 <!ENTITY list.autoconfig.welcome.description2
 "Klicken Sie auf 'Weiter' um die Konfiguration automatisch zu erkennen, oder
-auf 'Erweitert' um das Konto manuell zu konfigurieren">
+auf 'Erweitert' um das Konto manuell zu konfigurieren.">
 
 <!ENTITY list.autoconfig.advanced "Erweitert">
 <!ENTITY list.autoconfig.continue "Weiter">
@@ -222,41 +215,41 @@ auf 'Erweitert' um das Konto manuell zu konfigurieren">
 
 <!ENTITY list.autoconfig.error.caption "Erkennung fehlgeschlagen">
 <!ENTITY list.autoconfig.error.description 
-"Die Verbindungdaten konnten nicht automatisch erkannt werden. Entweder unterstützt
+"Die Verbindungsdaten konnten nicht automatisch erkannt werden. Entweder unterstützt
 Ihr Server das ManageSieve Protokoll nicht oder es ist eine spezielle 
-Konfiguration notwendig. Bitte erfagen Sie bei Ihren Mail die Verbindungsdaten
-und konfiguriern Sie das Sieve Konto manuell.">
+Konfiguration notwendig. Bitte erfragen Sie bei Ihren Mail die Verbindungsdaten
+und konfigurieren Sie das Sieve Konto manuell.">
 
 <!ENTITY list.autoconfig.retest "Nochmal erkennen">
-<!ENTITY list.autoconfig.config "Manuelle konfiguration">
-
+<!ENTITY list.autoconfig.config "Manuelle Konfiguration">
 
 <!-- Locale for the Edit Filter Dialog -->
 <!ENTITY edit.toolbar.save "Speichern">
-<!ENTITY edit.toolbar.undo "Undo">
-<!ENTITY edit.toolbar.redo "Redo">
+<!ENTITY edit.toolbar.undo "Rückgängig">
+<!ENTITY edit.toolbar.redo "Wiederherstellen">
 <!ENTITY edit.toolbar.cut "Ausschneiden">
 <!ENTITY edit.toolbar.copy "Kopieren">
 <!ENTITY edit.toolbar.paste "Einfügen">
 <!ENTITY edit.toolbar.compile "Syntaxprüfung">
 <!ENTITY edit.toolbar.reference "Sprachreferenz">
 <!ENTITY edit.toolbar.tools "Extras">
-<!ENTITY edit.toolbar.import "Skript Importieren">
-<!ENTITY edit.toolbar.export "Skript Exportieren">
-<!ENTITY edit.toolbar.back "Zurück" >
-<!ENTITY edit.toolbar.forward "Weiter" >
-<!ENTITY edit.toolbar.home "Inhalt" >
-<!ENTITY edit.toolbar.print "Drucken" >
+<!ENTITY edit.toolbar.import "Skript importieren">
+<!ENTITY edit.toolbar.export "Skript exportieren">
+<!ENTITY edit.toolbar.back "Zurück">
+<!ENTITY edit.toolbar.forward "Weiter">
+<!ENTITY edit.toolbar.home "Inhalt">
+<!ENTITY edit.toolbar.print "Drucken">
 <!ENTITY edit.toolbar.search "Suchen">
 
-<!ENTITY edit.sidebar.uri "http://thsmi.github.io/sieve-reference/en/index.html">
+<!ENTITY edit.sidebar.uri "http://thsmi.github.com/sieve-reference/en/index.html">
 <!ENTITY edit.sidebar.title "Sieve Sprachreferenz">
 
+<!-- Search and Replace Side bar -->
 <!ENTITY edit.searchreplace.title "Suchen und ersetzen">
 <!ENTITY edit.searchreplace.searchfor "Suchen nach:">
 <!ENTITY edit.searchreplace.replacewith "Ersetzen mit:">
 <!ENTITY edit.searchreplace.options "Optionen">
-<!ENTITY edit.searchreplace.case "Groß/Kleinschreibung">
+<!ENTITY edit.searchreplace.case "Groß-/Kleinschreibung">
 <!ENTITY edit.searchreplace.backward "Rückwärts">
 <!ENTITY edit.searchreplace.find "Suchen">
 <!ENTITY edit.searchreplace.replace "Ersetzen">
@@ -264,28 +257,28 @@ und konfiguriern Sie das Sieve Konto manuell.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description 
-"You are currently offline. Click 'Go Online' and try again">
-<!ENTITY status.offline.go "Go Online">
+"Sie sind derzeit im Offline-Modus. Möchten Sie diesen verlassen?">
+<!ENTITY status.offline.go "Verbindung herstellen">
 
 
 <!ENTITY status.connectivity.loss.description
-"Server terminated unexpectedly the connection, click on reconnect to try again.">
-<!ENTITY status.connectivity.loss.reconnect "Reconnect">
+"Die Verbindung zum Server wurde unterbrochen. Klicken sie auf &quot;Erneut verbinden&quot; um sie wiederherzustellen.">
+<!ENTITY status.connectivity.loss.reconnect "Erneut verbinden">
 
 <!ENTITY status.warning.ignore "Ignorieren">
-<!ENTITY status.warning.reconnect "Reconnect">
-<!ENTITY status.warning 
-  "Dieses Konto ist nicht konfiguriert. Bitte rufen Sie 'Extras-> Sieve Filter Einstellungen' auf">
+<!ENTITY status.warning.reconnect "Erneut verbinden">
+<!ENTITY status.warning
+  "Dieses Konto ist nicht konfiguriert. Bitte rufen Sie 'Extras-&gt; Sieve Filter Einstellungen' auf">
   
-<!ENTITY status.error.reconnect "Reconnect">
-<!ENTITY status.error "Aktion fehlgeschlagen, Server meldet einen schweren Fehler">
+<!ENTITY status.error.reconnect "Erneut verbinden">
+<!ENTITY status.error "Aktion fehlgeschlagen, Server meldet einen schweren Fehler:">
 
 <!ENTITY status.sync.description 
-"The local an the server side scripts are different. 
+"Das lokale Script und das auf dem Server sind unterschiedlich sich.
 
-What would you like to do about it ?">
-<!ENTITY status.sync.keep "Keep Local Script">
-<!ENTITY status.sync.replace "Use Server Side Script">
+Welches möchten Sie behalten?">
+<!ENTITY status.sync.keep "Lokales Skript beibehalten">
+<!ENTITY status.sync.replace "Serverseitiges Script verwenden">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

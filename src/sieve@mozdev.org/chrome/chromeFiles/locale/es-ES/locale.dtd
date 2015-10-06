@@ -1,15 +1,11 @@
 <!--
 /* 
- * The content of this file is licensed. You may obtain a copy of
+ * The contents of this file is licenced. You may obtain a copy of
  * the license at http://sieve.mozdev.org or request it via email 
  * from the author. Do not remove or change this comment. 
  * 
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- * 
- * Contributor(s):
- *   Dominique Couot <dcouot@solipym.com>
- *   Carlos Gomez Agun <cgaun@solipym.com>
  */
  -->
 
@@ -95,7 +91,7 @@ podría ser enviado en texto sin cifrar a la consola de error.">
 <!ENTITY options.debug.request "Cliente para comunicaciones al servidor (peticiones)">
 <!ENTITY options.debug.response "Servidor para la comunicación al cliente (respuestas)">
 <!ENTITY options.debug.exceptions "Excepciones e Información del Estado de la Máquina">
-<!ENTITY options.debug.stream "Raw Dump/ Dump Byte Stream">
+<!ENTITY options.debug.stream "Descarga Bruta/ Descarga de la secuencia de bytes">
 <!ENTITY options.debug.session "Sesión de Administración">
 <!ENTITY options.debug.output "Salida de Depuración">
 <!ENTITY options.debug.console "Información de Depuración enviada a la consola de error">
@@ -163,6 +159,7 @@ use '127.0.0.1' en su lugar.">
 <!ENTITY options.proxy.host "Host:">
 <!ENTITY options.proxy.port "Puerto:"> 
 
+
 <!-- Locale for the List Filter Dialog -->
 <!ENTITY list.title "Filtros Sieve">
 
@@ -184,6 +181,7 @@ use '127.0.0.1' en su lugar.">
 <!ENTITY list.details.capability.sasl "Mecanismos SASL:">
 <!ENTITY list.details.capability.extensions "Extensiones:">
 <!ENTITY list.details.capability.protocol "Versión Protocolo:">
+
 
 <!ENTITY list.badcert 
   "El servidor de correo intenta identificarse con información no válida.">
@@ -244,9 +242,10 @@ hacer la configuración manualmente.">
 <!ENTITY edit.toolbar.print "Imprimir">
 <!ENTITY edit.toolbar.search "Buscar">
 
-<!ENTITY edit.sidebar.uri "http://thsmi.github.io/sieve-reference/en/index.html">
+<!ENTITY edit.sidebar.uri "http://thsmi.github.com/sieve-reference/en/index.html">
 <!ENTITY edit.sidebar.title "Referencia de Lenguaje Sieve">
 
+<!-- Search and Replace Side bar -->
 <!ENTITY edit.searchreplace.title "Buscar y Reemplazar">
 <!ENTITY edit.searchreplace.searchfor "Buscar:">
 <!ENTITY edit.searchreplace.replacewith "Reemplazar con:">
@@ -270,7 +269,7 @@ hacer la configuración manualmente.">
 <!ENTITY status.warning.ignore "Ignorar">
 <!ENTITY status.warning.reconnect "Reconectar">
 <!ENTITY status.warning
-  "Esta cuenta no está configurada para gestionar Sieve, vaya a 'Herramientas-->Filtros de mensaje Sieve'">
+  "Esta cuenta no está configurada para gestionar Sieve, vaya a 'Herramientas--&gt;Filtros de mensaje Sieve'">
   
 <!ENTITY status.error.reconnect "Reconectar">
 <!ENTITY status.error "Ultimo comando falló porque el servidor reportó un error:">

@@ -1,14 +1,10 @@
 <!--
 /* 
- * The contents of this file is licensed. You may obtain a copy of
+ * The contents of this file is licenced. You may obtain a copy of
  * the license at http://sieve.mozdev.org or request it via email 
  * from the author. Do not remove or change this comment. 
  * 
  * The initial author of the code is:
- *   Виктор Букреев
- *
- * Contributor(s):
- *   Александр Моисеев <moiseev@mezonplus.ru>
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  -->
@@ -23,7 +19,7 @@
 <!ENTITY options.tab.advanced "Дополнительные">
 <!ENTITY options.tab.advanced.warning "Эти настройки предназначены для опытных пользователей...">
 <!ENTITY options.tab.debug "Отладка">
-<!ENTITY options.tab.credits "Credits">
+<!ENTITY options.tab.credits "Авторы">
 
 <!ENTITY options.host.caption "Имя сервера">
 <!ENTITY options.host.description
@@ -85,8 +81,8 @@
 запросы проверки синтаксиса группируются.">
 <!ENTITY options.misc.compile "Проверять скрипты во время набора">
 <!ENTITY options.misc.compile.key "c">
-<!ENTITY options.misc.compile2 "Проверять не реже, чем каждые"> 
-<!ENTITY options.misc.compile.ms "мс">
+<!ENTITY options.misc.compile2 "Проверять не реже, чем каждые">
+<!ENTITY options.misc.compile.ms "мс"> 
 
 <!ENTITY options.debug.warning 
 "Имейте в виду, что так как ни SASL Login ни SASL Plain не шифруют Ваш пароль, 
@@ -117,7 +113,7 @@
 <!ENTITY options.proxyauth.desc 
 "Прокси авторизация, позволяет аутентифицированному пользователю действовать от имени другого пользователя.
 Обычно серверы настраивают так, чтобы эта возможность была доступна только администраторам.">
-<!ENTITY options.proxyauth.force 
+<!ENTITY options.proxyauth.force
 "При использовании прокси авторизации следует принудительно установить &quot;SASL PLAIN&quot; аутентификацию.">
 <!ENTITY options.proxyauth.none "Без авторизации">
 <!ENTITY options.proxyauth.default "Имя пользователя Sieve">
@@ -131,9 +127,9 @@
 <!ENTITY options.info.username "Имя пользователя:">
 <!ENTITY options.info.auth "Аутентификация:">
 
-<!ENTITY options.account.sieve 
+<!ENTITY options.account.sieve
 "Sieve - это мощный язык для создания скриптов фильтрации почты на стороне сервера.">
-<!ENTITY options.account.activate 
+<!ENTITY options.account.activate
 "Хотите ли Вы активировать управление скриптами Sieve для этой учётной записи?">
 <!ENTITY options.account.activate.yes "Да, управлять скриптами Sieve для этой учётной записи:">
 <!ENTITY options.account.activate.no "Нет, эта учётная запись не поддерживает Sieve">
@@ -186,7 +182,8 @@
 <!ENTITY list.details.capability.extensions "Дополнения:">
 <!ENTITY list.details.capability.protocol "Версия протокола:">
 
-<!ENTITY list.badcert
+
+<!ENTITY list.badcert 
   "Ваш почтовый сервер использует недействительный сертификат.">
 <!ENTITY list.badcert.error 
 "Если обычно Вы соединяетесь с данным сервером без проблем, то эта ошибка может 
@@ -238,15 +235,16 @@
 <!ENTITY edit.toolbar.tools "Инструменты">
 <!ENTITY edit.toolbar.import "Импортировать скрипт">
 <!ENTITY edit.toolbar.export "Экспортировать скрипт">
-<!ENTITY edit.toolbar.back "Назад" >
-<!ENTITY edit.toolbar.forward "Вперёд" >
-<!ENTITY edit.toolbar.home "Домой" >
-<!ENTITY edit.toolbar.print "Печать" >
+<!ENTITY edit.toolbar.back "Назад">
+<!ENTITY edit.toolbar.forward "Вперёд">
+<!ENTITY edit.toolbar.home "Домой">
+<!ENTITY edit.toolbar.print "Печать">
 <!ENTITY edit.toolbar.search "Поиск">
 
-<!ENTITY edit.sidebar.uri "http://thsmi.github.io/sieve-reference/en/index.html">
+<!ENTITY edit.sidebar.uri "http://thsmi.github.com/sieve-reference/en/index.html">
 <!ENTITY edit.sidebar.title "Справочник по языку Sieve">
 
+<!-- Search and Replace Side bar -->
 <!ENTITY edit.searchreplace.title "Найти и заменить">
 <!ENTITY edit.searchreplace.searchfor "Найти:">
 <!ENTITY edit.searchreplace.replacewith "Заменить на:">
@@ -259,28 +257,28 @@
 
 <!-- Status messages -->
 <!ENTITY status.offline.description 
-"You are currently offline. Click 'Go Online' and try again">
-<!ENTITY status.offline.go "Go Online">
+"Вы работаете в автономном режиме. Нажмите 'Перейти в онлайн' и попробуйте снова">
+<!ENTITY status.offline.go "Перейти в онлайн">
 
 
 <!ENTITY status.connectivity.loss.description
-"Server terminated unexpectedly the connection, click on reconnect to try again.">
-<!ENTITY status.connectivity.loss.reconnect "Reconnect">
+"Сервер неожиданно закрыл соединение, нажмите переподключиться и попробуйте снова.">
+<!ENTITY status.connectivity.loss.reconnect "Переподключить">
 
-<!ENTITY status.warning.ignore "Ignore">
-<!ENTITY status.warning.reconnect "Reconnect">
-<!ENTITY status.warning 
-  "Эта учётная запись не настроена для работы с Sieve, перейдите 'Инструменты-> Sieve Фильтры Писем'">
-
-<!ENTITY status.error.reconnect "Reconnect">
+<!ENTITY status.warning.ignore "Игнорировать">
+<!ENTITY status.warning.reconnect "Переподключить">
+<!ENTITY status.warning
+  "Эта учётная запись не настроена для работы с Sieve, перейдите 'Инструменты-&gt; Sieve Фильтры Писем'">
+  
+<!ENTITY status.error.reconnect "Переподключить">
 <!ENTITY status.error "Последняя команда не выполнена, так как сервер сообщил об ошибке:">
 
 <!ENTITY status.sync.description 
-"The local an the server side scripts are different. 
+"Локальный и серверный скрипты отличаются. 
 
-What would you like to do about it ?">
-<!ENTITY status.sync.keep "Keep Local Script">
-<!ENTITY status.sync.replace "Use Server Side Script">
+Чтобы вы хотели сделать?">
+<!ENTITY status.sync.keep "Сохранить локальный скрипт">
+<!ENTITY status.sync.replace "Использовать серверный скрипт">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

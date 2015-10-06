@@ -28,7 +28,8 @@ are available at [ohloh](https://www.ohloh.net/p/tb-sieve)
 It is translated into French, Spanish, Russian and German.  If you're interested 
 in translating or localizing the extension into your language, just sign up at 
 [crowdin](http://crowdin.net/project/sieve/invite) and start translating 
-(Crowdin is a free collaborative translation tool).
+(Crowdin is a free collaborative translation tool). If you added a translation please
+deop a note via email or open a ticket, so that I can regenerate the localised files.
 
 For more details on contributing refer to the [Contributing Guidelines](https://github.com/thsmi/sieve/blob/master/CONTRIBUTING.md)  
 

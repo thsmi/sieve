@@ -25,16 +25,16 @@ import java.net.ServerSocket;
 public class ReplayServer
 {
   
-  static final tests test = tests.LOGIN;
+  static final tests test = tests.EXTERNAL;
   
   static boolean cyrusBug = false;
-  static boolean tls = true;
+  static boolean tls = false;
   
   // Scram SHA1 specific
   static boolean brokenServerSignature = false;
   static boolean inlineServerSignature = false;
   
-  static enum tests { ANONYMOUS, FRAGMENTATION, REFERRAL, REFERRAL2, CRAMMD5, LOGIN, SCRAMSHA1 }
+  static enum tests { ANONYMOUS, FRAGMENTATION, REFERRAL, REFERRAL2, CRAMMD5, LOGIN, SCRAMSHA1, EXTERNAL }
 
 
 
@@ -42,7 +42,7 @@ public class ReplayServer
 	{	  
 
       // create the server...
-      SieveSocket client = (new SieveServerSocket(2000,true)).accept();
+      SieveSocket client = (new SieveServerSocket(2000,false)).accept();
 	  
       switch (test)
       {
@@ -67,6 +67,8 @@ public class ReplayServer
   	    case LOGIN:
           doLoginTest(client);
   	      break;
+  	    case EXTERNAL:
+  	      doExternalTest(client);
   	  }
 	}
 
@@ -229,6 +231,7 @@ private static void onInit(String sasl, SieveSocket sieve) throws Exception
     Thread.sleep(2000);
   }
   
+  
   private static void doAnonymousTest(SieveSocket sieve) throws Exception
   {
 	  onInit("LOGIN",sieve);
@@ -267,6 +270,8 @@ private static void onInit(String sasl, SieveSocket sieve) throws Exception
     refServer.accept();
       
     System.out.println("Referral Test passed");
+    
+    refServer.close();
   }
   
   private static void doReferalTest2(SieveSocket sieve) throws Exception  
@@ -460,4 +465,24 @@ private static void onInit(String sasl, SieveSocket sieve) throws Exception
     
     sieve.readLine();    
   }
+  
+  private static void doExternalTest(SieveSocket sieve) throws Exception
+  {
+    onInit("EXTERNAL", sieve);
+    
+    if (tls)
+      onStartTLS("EXTRNAL",sieve);
+        
+    assertTrue(sieve.readLine(),"AUTHENTICATE \"EXTERNAL\" \"\"");  
+    
+    Thread.sleep(2000);
+    
+    sieve.sendPacket("OK \"Authentication completed.\"\r\n");
+  
+    Thread.sleep(2000);    
+    
+    onListScript(sieve);
+    
+    System.out.println("Login Test passed...");
+  }  
 }

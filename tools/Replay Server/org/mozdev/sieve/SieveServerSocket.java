@@ -27,11 +27,11 @@ public class SieveServerSocket
   protected ServerSocket server = null; 
   protected SSLContext sslContext = null;
   
-  protected boolean tls = true;
+  //protected boolean tls = true;
   
   public SieveServerSocket(int port, boolean tls) throws Exception
   {
-    this.tls = tls;
+    //this.tls = tls;
     
     if (tls)
     {

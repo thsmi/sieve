@@ -39,7 +39,7 @@ var EXPORTED_SYMBOLS = [ "SieveGetScriptRequest","SievePutScriptRequest",
       "SieveDeleteScriptRequest","SieveNoopRequest","SieveRenameScriptRequest",
       "SieveListScriptRequest","SieveStartTLSRequest","SieveLogoutRequest",
       "SieveInitRequest","SieveSaslPlainRequest","SieveSaslLoginRequest",
-      "SieveSaslCramMd5Request","SieveSaslScramSha1Request"];
+      "SieveSaslCramMd5Request","SieveSaslScramSha1Request", "SieveSaslExternalRequest"];
       
 const Cc = Components.classes; 
 const Ci = Components.interfaces;   
@@ -192,6 +192,19 @@ SieveAbstractSaslRequest.prototype.setUsername
   this._username = username;  
 }
 
+/**
+ * Most SASL mechanisms need a passwort or secret to authenticate. 
+ * But there are also mechanisms like SASL EXTERNAL which does not need any passwords.
+ * 
+ * @return {Boolean}
+ *   indicates if this SASL Mechanism needs a passwort
+ */
+SieveAbstractSaslRequest.prototype.hasPassword
+    = function ()
+{
+  return true;  
+}
+
 /** @param {String} password */
 SieveAbstractSaslRequest.prototype.setPassword
     = function (password)
@@ -213,6 +226,12 @@ SieveAbstractSaslRequest.prototype.setAuthorization
   if (this._authorizable)
     this._authorization = authorization;
 }
+
+SieveAbstractSaslRequest.prototype.addSaslListener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
 
 SieveAbstractSaslRequest.prototype.onOk
     = function (response)
@@ -947,11 +966,6 @@ SieveSaslPlainRequest.prototype.getNextRequest
   return "AUTHENTICATE \"PLAIN\" \""+logon+"\"\r\n";
 }
 
-SieveSaslPlainRequest.prototype.addSaslListener
-    = function (listener)
-{
-  this.responseListener = listener;
-} 
    
 SieveSaslPlainRequest.prototype.addResponse
     = function (parser)
@@ -1082,11 +1096,6 @@ SieveSaslLoginRequest.prototype.hasNextRequest
   return true;
 }
 
-SieveSaslLoginRequest.prototype.addSaslListener
-    = function (listener)
-{
-  this.responseListener = listener;
-} 
    
 /** @param {SieveResponseParser} parser */
 SieveSaslLoginRequest.prototype.addResponse 
@@ -1142,11 +1151,7 @@ SieveSaslCramMd5Request.prototype.hasNextRequest
   return true;
 }
 
-SieveSaslCramMd5Request.prototype.addSaslListener
-    = function (listener)
-{
-  this.responseListener = listener;
-} 
+
    
 SieveSaslCramMd5Request.prototype.addResponse 
     = function (parser)
@@ -1421,12 +1426,6 @@ SieveSaslScramSha1Request.prototype.hasNextRequest
   return true;
 }
 
-SieveSaslScramSha1Request.prototype.addSaslListener
-    = function (listener)
-{
-  this.responseListener = listener;
-} 
-   
 SieveSaslScramSha1Request.prototype.onOk
     = function (response)
 {
@@ -1497,3 +1496,49 @@ SieveSaslScramSha1Request.prototype.byteArrayToHexString
  
   return str;    
 }
+
+
+/**
+ * This request implements SASL External Mechanism (rfc4422 Appendix A). 
+ * It's a dumb-dumb implementation, and relies upon an established tls connection.
+ * It tells the server to use the cert provided during the TLS handshake.
+ *  
+ * @author Thomas Schmid
+ */
+
+function SieveSaslExternalRequest() 
+{
+  this._authorizable = false;
+}
+
+// Inherrit prototypes from SieveAbstractRequest...
+SieveSaslExternalRequest.prototype = Object.create(SieveAbstractSaslRequest.prototype);
+SieveSaslExternalRequest.prototype.constructor = SieveSaslExternalRequest;
+
+/** @return {String} */
+SieveSaslExternalRequest.prototype.getNextRequest 
+    = function ()
+{
+  return "AUTHENTICATE \"EXTERNAL\" \"\"\r\n";
+}
+
+/**
+ * SASL External uses the TLS Cert for authentication. 
+ * Thus it does not rely upon any password, so this mehtod retuns always false.
+ * 
+ * @return {Boolean}
+ *   returns always false
+ */
+SieveSaslExternalRequest.prototype.hasPassword
+    = function ()
+{
+  return false;  
+}
+ 
+SieveSaslExternalRequest.prototype.addResponse
+    = function (parser)
+{
+  SieveAbstractRequest.prototype.addResponse.call(this,
+      new SieveSimpleResponse(parser));
+}
+

@@ -186,6 +186,10 @@ SieveSession.prototype =
         case "SCRAM-SHA-1":
           request = new SieveSaslScramSha1Request();
           break;
+        
+        case "EXTERNAL":
+          request= new SieveSaslExternalRequest();
+          break;
           
         case "LOGIN":
           // we use SASL LOGIN only as last resort...
@@ -207,18 +211,25 @@ SieveSession.prototype =
     }
     
     request.addErrorListener(this);
+        
     request.setUsername(account.getLogin().getUsername())
     
-    var password = account.getLogin().getPassword();
+    // SASL External has no passwort it relies completely on SSL...
+    if (request.hasPassword()) {
+    	
+      var password = account.getLogin().getPassword();
     
-    if (password == null)
-    {
-      this.disconnect(false,2,"error.authentication")
-      return;
+      if (password == null)
+      {
+        this.disconnect(false,2,"error.authentication")
+        return;
+      }
+    
+      request.setPassword(password);
     }
-      
+    
     request.addSaslListener(this);
-    request.setPassword(password);
+    
     
     // check if the authentication method supports proxy authorization...
     if (request.isAuthorizable())
@@ -321,7 +332,7 @@ SieveSession.prototype =
     if (!iterator.length)
     {
       if (this.debug.level & (1 << 4))
-        this.debug.logger.logStringMessage("No Listener for "+callback+"\n"+this.listeners.toSource());
+        this.debug.logger.logStringMessage("No Listener for "+callback+"\n"+this.listeners.toString());
       return;
     }
     

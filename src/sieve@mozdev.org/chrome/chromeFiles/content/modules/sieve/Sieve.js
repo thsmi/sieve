@@ -237,7 +237,7 @@ Sieve.prototype.startTLS
     throw "TLS can't be started no secure socket";
     
   if (this.socket == null)
-    throw "Can't start TLS, your are not connected to "+host;
+    throw "Can't start TLS, your are not connected to "+this.host;
 
   var securityInfo = this.socket.securityInfo.QueryInterface(Ci.nsISSLSocketControl);
 

@@ -1,11 +1,12 @@
 eclipse.preferences.version=1
 encoding//src/sieve@mozdev.org/chrome/chromeFiles/locale/de-DE/am-sieve-account.properties=UTF-8
+encoding//src/sieve@mozdev.org/chrome/chromeFiles/locale/de-DE/locale.dtd=UTF-8
 encoding//src/sieve@mozdev.org/chrome/chromeFiles/locale/de-DE/locale.properties=UTF-8
-encoding//src/sieve@mozdev.org/chrome/chromeFiles/locale/en-US/am-sieve-account.properties=UTF-8
-encoding//src/sieve@mozdev.org/chrome/chromeFiles/locale/en-US/locale.properties=UTF-8
+encoding//src/sieve@mozdev.org/chrome/chromeFiles/locale/en-US/locale.dtd=UTF-8
 encoding//src/sieve@mozdev.org/chrome/chromeFiles/locale/es-ES/am-sieve-account.properties=UTF-8
 encoding//src/sieve@mozdev.org/chrome/chromeFiles/locale/es-ES/locale.properties=UTF-8
 encoding//src/sieve@mozdev.org/chrome/chromeFiles/locale/fr-FR/am-sieve-account.properties=UTF-8
 encoding//src/sieve@mozdev.org/chrome/chromeFiles/locale/fr-FR/locale.properties=UTF-8
 encoding//src/sieve@mozdev.org/chrome/chromeFiles/locale/ru-RU/am-sieve-account.properties=UTF-8
 encoding//src/sieve@mozdev.org/chrome/chromeFiles/locale/ru-RU/locale.properties=UTF-8
+encoding/<project>=UTF-8

@@ -209,6 +209,18 @@
     testScript(script);	
   });  
   
+  /*suite.add( function() {
+    suite.log("Example 12");
+    
+    var script = ""
+          + 'require "encoded-character";\r\n'
+          + 'if header :contains "Subject" "$${hex:24 24}" {\r\n'
+          + '   discard;\r\n'
+          + '} \r\n';
+          
+    testScript(script, {"encoded-character":true});	
+  });*/  
+  
   suite.add( function() {
     suite.log("Example Sieve Filter");
   

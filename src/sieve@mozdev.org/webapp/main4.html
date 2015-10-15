@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Text</title>
+  <!--<link href="css/app.css" rel="stylesheet">
+  <link href="css/theme-default.css" rel="stylesheet">-->
+  <link rel="stylesheet" href="materialicons.css">
+  <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons"  rel="stylesheet">-->
+  <link rel="stylesheet" href="style.css">
+  <script src="jquery.min.js"></script>
+</head>
+<body>
+
+
+<div class="mdl-layout__container" >
+  <div  class="mdl-layout">
+      <header class="mdl-layout__header">
+	    <div class="mdl-layout__drawer-button"><i class="material-icons">menu</i>
+		</div>
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">Home</span>
+		 <i class="material-icons">save</i>
+<i class="material-icons">code</i>
+<i class="material-icons">undo</i>
+<i class="material-icons">redo</i>
+<i class="material-icons">content_copy</i>
+<i class="material-icons">content_cut</i>
+<i class="material-icons">content_paste</i>
+<i class="material-icons">spellcheck</i>
+<i class="material-icons">help</i>
+<i class="material-icons">help_outline</i>
+<i class="material-icons">info</i>
+<i class="material-icons">info_outline</i>
+<i class="material-icons">explore</i>
+<i class="material-icons">find_replace</i>
+<i class="material-icons">search</i>
+<i class="material-icons">import_export</i>
+        </div>
+      </header>
+      <div class="mdl-layout__drawer">
+        <header class="demo-drawer-header">
+          <div class="demo-avatar-dropdown">
+            <i class="material-icons">menu</i>
+			<span>&nbsp;&nbsp;Sieve Scripts</span>
+            <div class="mdl-layout-spacer"></div>
+          </div>
+        </header>
+        <nav id="sidebar" class="mdl-navigation navigation">
+		  <section class="collapsed">
+		    <div class="account open">
+			     <span class="layout_spacer">schmid-thomas@gmx.net</span>
+			      <span class="icon_secondary"><i class="material-icons">more_vert</i></span> <!-- menu > Edit Account, Show Capabilities, Remove Account-->
+			</div>
+			
+			<div class="scripts">			
+              <div class="item script open">
+	  	        <span class="icon_primary"><i class="material-icons">edit</i></span>
+			    <span class="layout_spacer">Script 1</span>
+			    <span class="icon_secondary"><i class="material-icons">check_box_outline_blank</i><i class="material-icons">more_vert</i> <!-- delete, rename --></span>
+		      </div>
+		  
+		       <div class="item script modified">
+		        <span class="icon_primary"><i class="material-icons">edit</i></span>
+			    <span class="layout_spacer">Script 2 (Active)</span>
+			    <span class="icon_secondary"><i class="material-icons">check_box</i><i class="material-icons">more_vert</i> <!-- delete, rename --></span>
+		      </div>
+		  
+		       <div class="item script">
+		        <span class="icon_primary"><i class="material-icons">edit</i></span>
+			    <span class="layout_spacer">Script 3</span>
+			    <span class="icon_secondary"><i class="material-icons">check_box_outline_blank</i><i class="material-icons">more_vert</i> <!-- delete, rename --></span>
+		      </div>
+
+		       <div class="item script">
+		        <span class="icon_primary"><i class="material-icons">note_add</i></span>
+			    <span class="layout_spacer">Create Script</span>
+		      </div>
+			</div>
+		</section>
+		  
+		  <section>           
+		    <div class="account open">
+			   <span class="layout_spacer">mail@tschmid.net</span>
+			    <span class="icon_secondary"><i class="material-icons">more_vert</i></span>
+			</div>
+		  
+		    <div class="scripts">
+              <div class="item script open">
+		        <span class="icon_primary"><i class="material-icons">check_box_outline_blank</i></span>
+			    <span class="layout_spacer">Script 1</span>
+			    <span class="icon_secondary"><i class="material-icons">edit</i><i class="material-icons">more_vert</i> <!-- delete, rename, activate --></span>
+		      </div>
+		  
+		       <div class="item script modified">
+		        <span class="icon_primary"><i class="material-icons">check_box_outline_blank</i></span>
+			    <span class="layout_spacer">Script 2</span>
+			    <span class="icon_secondary"><i class="material-icons">edit</i><i class="material-icons">more_vert</i> <!-- delete, rename, activate --></span>
+		      </div>
+		  
+		       <div class="item script">
+		        <span class="icon_primary"><i class="material-icons">check_box</i></span>
+			    <span class="layout_spacer">Script 3</span>
+			    <span class="icon_secondary"><i class="material-icons">edit</i><i class="material-icons">more_vert</i> <!-- delete, rename , activate--></span>
+		      </div>
+
+		       <div class="item script">
+		        <span class="icon_primary"><i class="material-icons">note_add</i></span>
+			    <span class="layout_spacer">Create Script</span>
+		      </div>
+		    </div>
+		  </section>
+		  
+		  <section>		  
+		    <div class="account">
+			   <span class="layout_spacer">mail@tschmid.net</span>
+			   <span class="icon_secondary"><i class="material-icons">more_vert</i></span>
+		    </div>
+		  </section>
+		  
+		  <section>
+		    <div class="account">
+		       <span class="icon_primary"><i class="material-icons">note_add</i></span>
+   			   <span class="layout_spacer">Add Account</span>			
+		    </div>
+		  </section>
+		  
+
+          <div class="mdl-layout-spacer"></div>
+          <a class="item" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">help_outline</i><span class="visuallyhidden">Help</span></a>
+        </nav>
+      </div>
+	  
+      <main class="mdl-layout__content" >
+    <iframe  id="sivEditor" src="./editor/SieveFilterEditor.html"></iframe>
+      </main>
+</div></div>
+
+
+  <div id="dialog-container">
+    <div class="dialog-window">
+      <div class="dialog-text"></div>
+      <div class="dialog-buttons"></div>
+    </div>
+  </div>
+
+<script src="main4.js"></script>
+
+</body>
+</html>

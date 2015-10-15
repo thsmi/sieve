@@ -1,0 +1,49 @@
+body header {
+  background-color: #F5F5F5;
+}
+
+body .search-navigation-button {
+  background-color: #F5F5F5;
+}
+body .search-navigation-button:focus {
+  background-color: #FFF;
+}
+
+body #sidebar {
+  background-color: #333;
+  -webkit-box-shadow: inset -10px 0 7px -4px rgba(0,0,0,0.5);
+}
+
+body #settings-menu {
+  background-color: #333;
+}
+
+body #sidebar li:hover {
+  background-color: #3A3A3A;
+  border-left: 10px solid #868686;
+  -webkit-box-shadow: inset -10px 0 7px -4px rgba(0,0,0,0.5);
+  color: #FFF;
+  padding-left: 10px;
+}
+
+body #settings-list input[type="text"] {
+  color: #EBEBEB;
+}
+
+body #settings-list select {
+  color: #EBEBEB;
+}
+
+body #settings-list select option {
+  background-color: #333;
+}
+
+
+body div.CodeMirror span.CodeMirror-matchingbracket {
+  color: inherit !important;
+  border-bottom: 1px solid black;
+}
+
+body div.CodeMirror span.CodeMirror-nonmatchingbracket {
+  color: inherit !important;
+}

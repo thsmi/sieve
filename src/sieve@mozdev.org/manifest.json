@@ -1,0 +1,18 @@
+{
+  "name" : "Sieve",
+  "description" : "Configures serverside sieve email filters",
+  "version" : "0.1",
+  "manifest_version" : 2,
+  
+  "app" : {
+    "background" : {
+      "scripts" : ["webapp.js"]
+    }
+  },
+  
+  "sockets": {
+    "tcp": {
+      "connect": "*:*"
+    }
+  }
+}

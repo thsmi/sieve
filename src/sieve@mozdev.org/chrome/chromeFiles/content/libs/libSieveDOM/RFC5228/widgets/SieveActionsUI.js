@@ -125,7 +125,7 @@ SieveFileIntoUI.prototype.initEditor
     = function ()
 {              
   return $("<div/>")
-           .text("Copy the incomming message into folder:")
+           .text("Save the incomming message into folder:")
            .append($("<div/>")
              .append($("<input/>")
                .attr("id","txtPath"+this.id())
@@ -136,7 +136,7 @@ SieveFileIntoUI.prototype.initSummary
     = function ()
 {              
   return $("<div/>")
-           .html("Copy message into:" +
+           .html("Save message into:" +
              "<div><em>"+ $('<div/>').text(this.getSieve().getPath()).html()+"</em></div>");
 }
 

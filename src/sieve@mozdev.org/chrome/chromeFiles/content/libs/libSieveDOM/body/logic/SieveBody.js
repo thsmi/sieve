@@ -68,6 +68,7 @@ SieveBody.prototype.require
     = function (imports)
 {
   this.matchType.require(imports);
+  imports["body"] = true;
 }
 
 SieveBody.prototype.init
@@ -102,7 +103,7 @@ SieveBody.prototype.init
       continue;
     }
     
-    
+    // no more optional elements...
     break;    
   }   
   
@@ -291,7 +292,7 @@ SieveBodyTransform.nodeName = function () {
 }
 
 SieveBodyTransform.nodeType  = function () {
-  return "comparison";
+  return "body-tansform";
 }
 
 SieveBodyTransform.isElement

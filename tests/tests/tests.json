@@ -55,5 +55,12 @@ var tests = {
     require : [
       "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/body/logic/SieveBody.js"]
   },
+  
+  "vacation" : {
+    script : "./vacation/SieveVacationTest.js",
+    extend : "rfc5228",
+    require : [
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/vacation/logic/SieveVacation.js"]    
+  },
 		
 }

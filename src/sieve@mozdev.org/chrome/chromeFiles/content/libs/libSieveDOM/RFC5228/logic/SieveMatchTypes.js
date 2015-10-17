@@ -147,7 +147,7 @@ SieveMatchType.nodeName = function () {
 }
 
 SieveMatchType.nodeType  = function () {
-  return "comparison";
+  return "match-type";
 }
 
 SieveMatchType.isElement

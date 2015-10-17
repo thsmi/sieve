@@ -8,7 +8,7 @@
     throw "Could not initialize test suite";
 
   suite.add( function() {  	
-  	suite.log("Match-type unit tests...")
+  	suite.log("Reg Ex unit tests...")
   });    
 
   function testScript(script) {     

@@ -41,7 +41,7 @@
   <script type="application/javascript" src="RFC5232/logic/SieveImapFlags.js"></script>
   
   <!-- RFC Draft for RegEx-->
-  <script type="application/javascript" src="regex/logic/SieveRegularExpression.js" ></script>
+  
 
     <!-- UI related Imports -->
   <!-- RFC 5228 - Sieve -->
@@ -61,7 +61,12 @@
   <script type="application/javascript" src="RFC5232/widgets/SieveImapFlagsUI.js"></script> 
 
   <!-- RFC Draft for RegEx-->
+  <script type="application/javascript" src="regex/logic/SieveRegularExpression.js" ></script>
   <script type="application/javascript" src="regex/widgets/SieveRegularExpressionUI.js" ></script>
+    
+  <!-- RFC5173 - Body -->
+  <script type="application/javascript" src="body/logic/SieveBody.js" ></script>
+  <script type="application/javascript" src="body/widgets/SieveBodyUI.js" ></script>
   
 <script type="text/javascript">
 //<![CDATA[
@@ -135,9 +140,35 @@ function require()
     alert(i);  
 }
 
-function capabilities()
+function showCapabilities() {
+
+  $("#Capabilities input:checkbox").removeAttr('checked');
+  
+  var capabilities = SieveLexer.capabilities();  
+  $( "#Capabilities input:checkbox" ).each(function() {
+     if (capabilities[$(this).val()])
+	   $(this).prop("checked",true);
+  });
+   $('#Capabilities').show();
+}
+
+function selectAllCapabilities() {
+    $( "#Capabilities input:checkbox" ).each(function() {
+	   $(this).prop("checked",true);
+  });
+}
+
+function setCapabilities()
 {
-  SieveLexer.capabilities({"imap4flags":true,"fileinto":true,"reject":true,"envelope":true, "regex":true, "ereject":true, "reject":true});  
+  $('#Capabilities').hide();
+  
+  var capabilities = {};
+  
+  $( "#Capabilities input:checked" ).each(function() {
+    capabilities[$(this).val()] = true;
+  });
+  
+  SieveLexer.capabilities(capabilities);  
   setSieveScript();
 }
 
@@ -244,6 +275,7 @@ function debug(obj)
     </div>
 	
 <div id="debug2" style="display:none">
+<!--<div id="debug2">-->
 <div>
    <div id="boxScript" style="display:none;overflow: hidden;width: 100%; ">  
      <div style="float:left; padding:5px;">
@@ -257,6 +289,26 @@ function debug(obj)
       </div>
     </div>
 </div >
+
+<div id="Capabilities" style="display: none;">
+
+  <div id="CapabilityOverlay" onclick="$('#Capabilities').hide()"></div>
+  
+  <div id="CapabilitiesDialog">
+      <div><input type="checkbox" name="capabilities" value="imap4flags" checked>imap4flags</div>
+    
+       <div><input type="checkbox" name="capabilities" value="fileinto" checked>fileinto</div>
+       <div><input type="checkbox" name="capabilities" value="reject" checked>reject</div>
+ 
+       <div><input type="checkbox" name="capabilities" value="envelope" checked>envelope</div>
+       <div><input type="checkbox" name="capabilities" value="regex" checked>regex</div>
+  	   <div><input type="checkbox" name="capabilities" value="ereject" checked>ereject</div>
+  	   <div><input type="checkbox" name="capabilities" value="body" checked>body</div>
+	 
+	   <div><button onclick="setCapabilities()">Apply</button><button onclick="selectAllCapabilities()">select all</button><button onclick="$('#Capabilities').hide()">Cancel</button></div>
+  </div>
+</div>
+
 <div>
     <button onclick="setSieveScript();">
 	   Parse Sieve Script
@@ -270,7 +322,7 @@ function debug(obj)
     <button onclick="compact()">
 	  Compact
 	</button>
-    <button onclick="capabilities()">
+    <button onclick="showCapabilities()">
 	  Set Capabilities
 	</button>		
     <button onclick="$('#boxScript').toggle()">

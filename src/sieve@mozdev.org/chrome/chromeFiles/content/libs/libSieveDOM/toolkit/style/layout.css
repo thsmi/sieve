@@ -86,3 +86,46 @@ body {
     border-radius: 3px;
     box-shadow: 0 0 3px lightgray;
   }
+  
+ #Capabilities {
+    display: none;
+  }
+	  
+  #CapabilityOverlay {
+    /*display: none;*/
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width:100%;
+    height:100%;
+    /* z-index: 1000;*/
+	 
+    background:#000000;
+    filter:alpha(opacity=60);
+    opacity:.60;	 
+  }	  
+  
+#CapabilitiesDialog  {
+    /*display: none;*/
+	position: absolute;
+	 
+    font-size: 11px;	 
+	 
+	left:50%;
+    top:50%;
+	
+	width:500px;
+    margin-top:-250px;
+    margin-left:-250px;
+	
+
+     background-color: #fff;
+     border:1px solid gray;
+     padding:0px 15px 15px 15px;
+	 
+    -webkit-box-shadow: 4px 4px 5px 0px rgba(81, 81, 81, 0.75);
+    -moz-box-shadow:    4px 4px 5px 0px rgba(81, 81, 81, 0.75);
+    box-shadow:         4px 4px 5px 0px rgba(81, 81, 81, 0.75);	
+    
+	background-color:#eeeeee;	
+  }

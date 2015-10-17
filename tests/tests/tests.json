@@ -47,6 +47,13 @@ var tests = {
     extend  : "rfc5228",
     require : [
        "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/regex/logic/SieveRegularExpression.js"]
-  }
+  },
+  
+  "body" : {
+    script : "./body/SieveBodyTest.js",
+    extend : "rfc5228",
+    require : [
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/body/logic/SieveBody.js"]
+  },
 		
 }

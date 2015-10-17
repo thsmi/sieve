@@ -129,7 +129,7 @@ SieveParser.prototype.extractUntil
   var idx = this._data.indexOf(token,this._pos); 
   
   if (idx == -1)
-    throw "Token expected: "+token.toSource() ;
+    throw "Token expected: "+token.toString() ;
   
   var str = this._data.substring(this._pos,idx)
   

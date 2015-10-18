@@ -34,11 +34,13 @@ function SieveBody(docshell,id)
   this.whiteSpace[4] = this._createByName("whitespace"," ");
   this.whiteSpace[5] = this._createByName("whitespace"," ");
  
+  // Optional parameters
   this.matchType = this._createByName("match-type");
   this.comparator = this._createByName("comparator")
   this.bodyTransform = this._createByName("body-transform");
   
-  this.keyList = this._createByName("stringlist");
+  // Mandatory parameters
+  this.keyList = this._createByName("stringlist", '"Example"');
 }
 
 SieveBody.prototype = Object.create(SieveAbstractElement.prototype);

@@ -62,5 +62,14 @@ var tests = {
     require : [
       "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/vacation/logic/SieveVacation.js"]    
   },
-		
+  
+  "managesieve" : {
+    script : "./managesieve/ManageSieveTest.js",
+    require : [
+      "./managesieve/ManageSieveBootstap.js",
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/modules/sieve/SieveRequest.js",
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/modules/sieve/SieveResponse.js",
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/modules/sieve/SieveResponseParser.js",
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/modules/sieve/SieveResponseCodes.js"]
+  }
 }

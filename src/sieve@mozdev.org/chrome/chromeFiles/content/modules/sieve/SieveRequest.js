@@ -61,16 +61,26 @@ Cu.import("chrome://sieve/content/modules/sieve/SieveResponse.js");
  */ 
 function JSStringToByteArray(str,charset) 
 {  
-  // ... and convert to UTF-8
-  var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
-                    .createInstance(Ci.nsIScriptableUnicodeConverter); 
-  
+  // With mozilla we prefere the scriptable converter, because the code is tested...   
+  if ((typeof Cc !== 'undefined') && Cc["@mozilla.org/intl/scriptableunicodeconverter"]) {
+    // ... and convert to UTF-8
+    var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
+                      .createInstance(Ci.nsIScriptableUnicodeConverter); 
+    
+    if (charset == null)
+      converter.charset = "UTF-8";
+    else
+      converter.charset = charset;
+    
+    return converter.convertToByteArray(str, {});	
+  }
+	
+  // with chrome we have to use the TextEncoder.  
   if (charset == null)
-    converter.charset = "UTF-8";
-  else
-    converter.charset = charset;
- 
-  return converter.convertToByteArray(str, {});
+    cuarset = "UTF-8"
+  
+  var data = new Uint8Array(TextEncoder(charset).encode(string));    
+  return Array.prototype.slice.call(data);    
 }
 
 

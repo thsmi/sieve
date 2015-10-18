@@ -14,8 +14,18 @@
 var EXPORTED_SYMBOLS = [ "SieveResponseParser" ];
 
 // It's save to declare constants within a module...
-const Cc = Components.classes;
-const Ci = Components.interfaces;
+if (typeof Cc === 'undefined') {
+  const Cc = Components.classes;
+}
+
+if (typeof Ci === 'undefined') {
+  const Ci = Components.interfaces;
+}
+
+if (typeof Cu === 'undefined') {
+  const Cu = Components.utils;
+}
+
 
 const CHAR_LF = 10
 const CHAR_CR = 13;
@@ -399,13 +409,19 @@ SieveResponseParser.prototype.getData
   if (arguments.length < 1)
     startIndex = this.pos;
     
-  var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
-                    .createInstance(Ci.nsIScriptableUnicodeConverter);
-  converter.charset = "UTF-8" ;
+  if ((typeof Cc !== 'undefined') && (Cc["@mozilla.org/intl/scriptableunicodeconverter"])) {  
+    
+    var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
+                      .createInstance(Ci.nsIScriptableUnicodeConverter);
+    converter.charset = "UTF-8" ;
   
-  var byteArray = this.data.slice(startIndex,endIndex);
+    var byteArray = this.data.slice(startIndex,endIndex);
   
-  return converter.convertFromByteArray(byteArray, byteArray.length);
+    return converter.convertFromByteArray(byteArray, byteArray.length);
+  }
+  
+  var byteArray = new Uint8Array(this.data.slice(startIndex,endIndex));
+  return new TextDecoder("UTF-8").decode(byteArray);
 }
 
 

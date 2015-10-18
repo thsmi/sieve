@@ -10,8 +10,6 @@
 "use strict";
  
 // TODO create an abstract class for get and set string...
-// TODO descide on update message weather it is a Multiline oder Quoted...
-  
  
 
 // CONSTRUCTOR:
@@ -425,31 +423,15 @@ SieveStringList.prototype.toScript
   return result;
 }
 
-/*******************************************************************************
-    CLASSNAME: 
-      SieveString implements SieveObject
-    
-    CONSTUCTOR:
-      public SieveString()
-
-    PUBLIC FUNCTIONS:      
-      public static boolean isString(String data)
-      public boolean parse(String data) throws Exception
-      public String getValue()
-      public String toScript()
-      public String toXUL()
-
-    MEMBER VARIABLES: 
-      private String string;
-
-    DESCRIPTION: 
-      Defines the SieveString primitive by combinig the two atomar Stringtypes
-      SieveQuotedString and SieveMultiLineString.
-      
-*******************************************************************************/
-
-
-// CONSTRUCTOR: 
+/**
+ * Defines an abstracted SieveString primitive by combinig the two atomar String types
+ * SieveQuotedString and SieveMultiLineString.
+ * 
+ * It converts automatically between the two string types depending on the context.
+ * 
+ * @param {} docshell
+ * @param {} id
+ */
 function SieveString(docshell,id)
 {
   SieveAbstractElement.call(this,docshell,id); 
@@ -483,18 +465,75 @@ SieveString.prototype.init
   return this;
 }
 
+/**
+ * @deprecated use value method
+ * @return {}
+ */
 SieveString.prototype.getValue
     = function ()
 {
-  return this.string.getValue();
+  console.warn("Replace SieveString.getValue() is deprecated use SieveString.value() instead");
+  return this.value();
 }
 
+/**
+ * @deprecated use value method
+ * @param {} value
+ * @return {}
+ */
 SieveString.prototype.setValue
     = function (value)
 {
-  //TODO: convert from/to multiline and singleline
-  return this.string.setValue(value);
-} 
+  console.warn("Replace SieveString.setValue() is deprecated use SieveString.value() instead");
+  return this.value(value);
+}
+
+/**
+ * Gets or sets a string's value.
+ * 
+ * When setting a string it automatically adjusts 
+ * the type to a quoted string or a multiline string.
+ * 
+ * @optional @param {String} str
+ *   the strings new value in case it should be changed.
+ * @return {String}
+ *   the string stored in this object
+ */
+SieveString.prototype.value
+    = function (str) 
+{
+  if (typeof str === "undefined")  	
+    return this.string.getValue();
+   
+  // ensure it's a string;    
+  str = "" + str;
+    
+  // Create a dummy object. The conversion might fail 
+  // and we do not want to loose the original string.
+  var string = this.string;
+  
+  // Check if we need a type conversion. 
+  if (str.search(/(\r\n|\n|\r)/gm) != -1) {
+  	
+  	// The string has linebreaks so it has to be a multiline string!
+  	if (! (this.string instanceof SieveMultiLineString))
+  	  string =  this._createByName("string/multiline");
+  }
+  else {
+  	
+  	// No linebreaks, it's better to use a quoted string. Makes scripts more readable
+  	if (! (this.string instanceof SieveQuotedString))
+  	  string = this._createByName("string/quoted");
+  }
+  
+  // Add the new value...
+  string.setValue(str);
+  
+  // ...and rotate it back.
+  this.string = string;
+
+  return this.string.getValue();
+}
    
 SieveString.prototype.toScript
     = function ()

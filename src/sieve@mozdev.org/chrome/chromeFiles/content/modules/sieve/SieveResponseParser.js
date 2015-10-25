@@ -267,8 +267,8 @@ SieveResponseParser.prototype.extractQuoted
   this.pos = nextQuote+1;
    
   // Cleanup escape sequences
-  quoted = quoted.replace('\\"','"',"g")
-  quoted = quoted.replace("\\\\","\\","g");  
+  quoted = quoted.replace(/\\"/g,'"');
+  quoted = quoted.replace(/\\\\/g,'\\');
   
   return quoted;
 }

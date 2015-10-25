@@ -68,6 +68,10 @@
   <script type="application/javascript" src="body/logic/SieveBody.js" ></script>
   <script type="application/javascript" src="body/widgets/SieveBodyUI.js" ></script>
   
+  <!-- RFC5230 - Vacation -->
+  <script type="application/javascript" src="vacation/logic/SieveVacation.js" ></script>
+  <script type="application/javascript" src="vacation/widgets/SieveVacationUI.js" ></script>  
+  
 <script type="text/javascript">
 //<![CDATA[
 
@@ -275,7 +279,7 @@ function debug(obj)
     </div>
 	
 <div id="debug2" style="display:none">
-<!--<div id="debug2">-->
+<!-- <div id="debug2">-->
 <div>
    <div id="boxScript" style="display:none;overflow: hidden;width: 100%; ">  
      <div style="float:left; padding:5px;">
@@ -289,6 +293,18 @@ function debug(obj)
       </div>
     </div>
 </div >
+
+<div id="sivDialog" style="display: none;" >
+  <div id="sivDialogOverlay"></div>
+  <div id="sivDialogContent">
+    <div style="text-align:right; background-color: #455A64; height:24px;color: rgba(255,255,255,0.7)">
+      <div id="sivDialogClose" style="display: inline-block; line-height: 24px; margin-right:15px; font-size:12px; font-weight:900; ">X</div>
+    </div>  
+    <div id="sivDialogBody">
+    </div>
+  </div>
+</div>
+
 
 <div id="Capabilities" style="display: none;">
 
@@ -304,6 +320,7 @@ function debug(obj)
        <div><input type="checkbox" name="capabilities" value="regex" checked>regex</div>
   	   <div><input type="checkbox" name="capabilities" value="ereject" checked>ereject</div>
   	   <div><input type="checkbox" name="capabilities" value="body" checked>body</div>
+  	   <div><input type="checkbox" name="capabilities" value="vacation" checked>vacation</div>
 	 
 	   <div><button onclick="setCapabilities()">Apply</button><button onclick="selectAllCapabilities()">select all</button><button onclick="$('#Capabilities').hide()">Cancel</button></div>
   </div>

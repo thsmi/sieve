@@ -388,3 +388,97 @@ function SieveTrashBoxUI(docshell)
 // Inherrit from DragBox
 SieveTrashBoxUI.prototype = Object.create(SieveDropBoxUI.prototype);
 SieveTrashBoxUI.prototype.constructor = SieveTrashBoxUI;
+
+
+//****************************************************************************//
+
+function SieveDialogBoxUI(elm)
+{
+  // Call parent constructor...
+  SieveAbstractBoxUI.call(this,elm);
+}
+
+// Inherrit from DragBox
+SieveDialogBoxUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
+SieveDialogBoxUI.prototype.constructor = SieveDialogBoxUI;
+
+
+SieveDialogBoxUI.prototype.showEditor
+    = function(e)
+{ 
+  var that = this;      
+
+  var onSave = function() {
+  	
+  	// Check if on save was canceled...
+  	if (!that.onSave())
+  	  return;
+  	
+  	// Remove the event handlers...
+  	$('#sivDialog').hide();
+    $('#sivDialogOverlay').off('click');
+    //$('#sivDialogDiscard').off('click');
+    $('#sivDialogSave').off('click');
+    $('#sivDialogClose').off('click');
+    
+    // and clean the dialog content.
+    $('#sivDialogBody').empty(); 
+  }
+  
+  $('#sivDialog').show();
+  $('#sivDialogOverlay').click( function()  { onSave() } )
+  //$('#sivDialogDiscard').click( function()  { that.onDiscard() } )
+  $('#sivDialogSave').click( function()  { onSave() } )
+  $('#sivDialogClose').click( function()  { onSave() } )
+  
+  $('#sivDialogBody')
+    .empty()
+    .load(this.getTemplate(), function () { that.onLoad() });
+ 
+}
+
+
+SieveDialogBoxUI.prototype.createHtml
+    = function (parent)
+{
+  if (typeof(parent) == "undefined")
+    throw "parent parameter is missing";
+    
+  var that = this;
+  
+  //parent =  SieveAbstractBoxUI.prototype.createHtml.call(this,parent);
+  
+  parent.addClass((this.getTemplate)?"sivEditableElement":"");
+  
+  if(this.getSummary) {
+    parent.append(this.getSummary()
+      .addClass("sivSummaryContent")
+      .click(function(e) { that.showEditor();  e.preventDefault(); return true; } ));
+  }
+   
+  if (this.id() != -1)
+    parent.attr("id","sivElm"+this.id());
+    
+  return  parent;
+}
+
+//------------------------------------------------------/
+
+function SieveActionDialogBoxUI(elm)
+{
+  // Call parent constructor...
+  SieveDialogBoxUI.call(this,elm);  
+  this.drag(new SieveMoveDragHandler());
+}
+
+SieveActionDialogBoxUI.prototype = Object.create(SieveDialogBoxUI.prototype);
+SieveActionDialogBoxUI.prototype.constructor = SieveActionDialogBoxUI;
+
+SieveActionDialogBoxUI.prototype.createHtml
+    = function (parent)
+{
+  return SieveDialogBoxUI.prototype.createHtml.call(this,parent)
+    .addClass("sivAction");
+}
+
+//-------------------------------------------/

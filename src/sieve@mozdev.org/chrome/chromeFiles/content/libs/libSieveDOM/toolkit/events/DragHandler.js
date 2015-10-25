@@ -1,3 +1,17 @@
+/*
+ * The contents of this file are licenced. You may obtain a copy of 
+ * the license at https://github.com/thsmi/sieve/ or request it via 
+ * email from the author.
+ *
+ * Do not remove or change this comment.
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ *      
+ */
+ 
+"use strict";
+
 function SieveDragHandler(flavour)
 {
   if (typeof(flavour) != "undefined")
@@ -71,6 +85,38 @@ SieveDragHandler.prototype.attach
     .bind("dragend", function (e) {  return false; });    
 }
 
+SieveDragHandler.prototype.onDrag
+    = function(event)
+{
+  var dt = event.dataTransfer;   
+  	
+  dt.setData("application/sieve", this.getScript());
+  dt.setData(this.flavour(), this.getMetaInfo());
+}
+
+/**
+ * The Sieve script which should be transfered.
+ * 
+ * @return {String}
+ */
+SieveDragHandler.prototype.getScript
+    = function()
+{
+  throw new Exception("Implement me");    
+}
+
+/**
+ * The meta information for this sieve script.
+ * 
+ * @return {String}
+ */
+SieveDragHandler.prototype.getMetaInfo
+    = function()
+{
+  throw new Exception("Implement me");     
+}
+
+
 //****************************************************************************//
 
 function SieveMoveDragHandler(flavour)
@@ -81,17 +127,25 @@ function SieveMoveDragHandler(flavour)
 SieveMoveDragHandler.prototype = Object.create(SieveDragHandler.prototype);
 SieveMoveDragHandler.prototype.constructor = SieveMoveDragHandler;
 
-SieveMoveDragHandler.prototype.onDrag
-    = function(event)
-{  
-  // FIXME: test/plain is interpreted as link if an exception occures during drag an drop
-  //event.dataTransfer.mozSetDataAt("text/plain",""+this.getSieve().toScript(),0);
-  event.dataTransfer.mozSetDataAt("application/sieve",""+this.owner().getSieve().toScript(),0);
-  event.dataTransfer.mozSetDataAt(this.flavour(), 
-    { id: this.owner().id(), action:"move"},0);
-    
-  return true;
+/**
+ * @inheritdoc
+ */
+SieveMoveDragHandler.prototype.getScript
+    = function()
+{
+  return ""+this.owner().getSieve().toScript();    
 }
+
+/**
+ * @inheritdoc
+ */
+SieveMoveDragHandler.prototype.getMetaInfo
+    = function()
+{
+  return JSON.stringify({ id: this.owner().id(), action:"move"});     
+}
+
+
 
 //****************************************************************************//
 
@@ -103,17 +157,25 @@ function SieveCreateDragHandler(flavour)
 SieveCreateDragHandler.prototype = Object.create(SieveDragHandler.prototype);
 SieveCreateDragHandler.prototype.constructor = SieveCreateDragHandler;
 
-SieveCreateDragHandler.prototype.onDrag
-    = function(event)
+/**
+ * @inheritdoc
+ */
+SieveCreateDragHandler.prototype.getScript
+    = function()
 {
-  // TODO: Fix me
-  //event.dataTransfer.mozSetDataAt("text/plain",""+this.getSieve().toScript(),0)
-  event.dataTransfer.mozSetDataAt("application/sieve",this.owner().toScript(),0);
-  event.dataTransfer.mozSetDataAt(this.flavour(), 
-    { type: this.owner()._elmType, action:"create"} ,0);
-    
-  return true;
+  return ""+this.owner().toScript();  	
 }
+
+/**
+ * @inheritdoc
+ */
+SieveCreateDragHandler.prototype.getMetaInfo
+    = function()
+{
+  return  JSON.stringify( { type: this.owner()._elmType, action:"create"});   	
+}
+
+
 
 
 

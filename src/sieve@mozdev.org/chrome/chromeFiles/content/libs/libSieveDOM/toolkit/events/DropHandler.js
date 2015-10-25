@@ -1,15 +1,16 @@
-/* 
- * The contents of this file is licenced. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email 
- * from the author. Do not remove or change this comment. 
+/*
+ * The contents of this file are licenced. You may obtain a copy of 
+ * the license at https://github.com/thsmi/sieve/ or request it via 
+ * email from the author.
+ *
+ * Do not remove or change this comment.
  * 
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
+ *      
  */
-
- "use strict";
-
-//****************************************************************************//
+ 
+"use strict";
 
 function SieveDropHandler()
 {
@@ -138,23 +139,21 @@ SieveDropHandler.prototype.onDragDrop
   return false;
 }
 
-/* and the inofficial er implemnted around them, to make things easier*/
-
 SieveDropHandler.prototype.onDrop
     = function(flavour,event)
 {
   var dt = event.originalEvent.dataTransfer;
   
-  switch (dt.mozGetDataAt(flavour,0).action)
+  var script = dt.getData("application/sieve");  
+  var meta = JSON.parse(dt.getData(flavour));  
+  
+  switch (meta.action)
   {
     case "create" :
       if (!this.createElement)
         return false;
         
-      this.createElement(
-        flavour,
-        dt.mozGetDataAt(flavour,0).type,
-        dt.mozGetDataAt("application/sieve",0));
+      this.createElement(flavour, meta.type, script);
         
       event.preventDefault();
       event.stopPropagation();
@@ -164,17 +163,14 @@ SieveDropHandler.prototype.onDrop
       if (!this.moveElement)
         return false;
 
-      this.moveElement(
-        flavour,
-        dt.mozGetDataAt(flavour,0).id,
-        dt.mozGetDataAt("application/sieve",0));
+      this.moveElement(flavour, meta.id, script);
 
       event.preventDefault();
       event.stopPropagation();        
       return true;
       
     default:
-      throw "Invalid action..."+ dt.mozGetDataAt(flavour,0).action;
+      throw "Invalid action..."+ meta.action;
   }
 
   return false;  
@@ -197,30 +193,34 @@ SieveDropHandler.prototype.drop
 SieveDropHandler.prototype.onCanDrop
     = function (flavour,event)
 {
+
   var dt = event.originalEvent.dataTransfer;
+  
+  var script = dt.getData("application/sieve");
+  var meta = dt.getData(flavour);
+  
+  if (!meta || !meta.length)
+    return;
+    
+  meta = JSON.parse(meta);
+	  
   // accept only the registered drop flavour...  
-  if (!dt.mozGetDataAt(flavour,0))
+  if (!meta)
     return false;
   
-  switch (dt.mozGetDataAt(flavour,0).action)
+  switch (meta.action)
   {
     case "create":
       if (!this.canCreateElement)
         return false;
         
-      return this.canCreateElement(
-        flavour,
-        dt.mozGetDataAt(flavour,0).type,
-        dt.mozGetDataAt("application/sieve",0))
+      return this.canCreateElement(flavour, meta.type, script)
     
     case "move":
       if (!this.canMoveElement)
         return false;
         
-      return this.canMoveElement(
-        flavour,
-        dt.mozGetDataAt(flavour,0).id,
-        dt.mozGetDataAt("application/sieve",0))
+      return this.canMoveElement(flavour, meta.id, script)
   }
 }
 

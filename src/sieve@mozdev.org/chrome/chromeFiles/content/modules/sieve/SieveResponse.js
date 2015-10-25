@@ -19,15 +19,15 @@ var EXPORTED_SYMBOLS = [ "SieveSimpleResponse", "SieveCapabilitiesResponse",
         "SieveSaslScramSha1Response"];
 
 if (typeof Cc === 'undefined') {
-  const Cc = Components.classes;
+  var Cc = Components.classes;
 }
 
 if (typeof Ci === 'undefined') {
-  const Ci = Components.interfaces;
+  var Ci = Components.interfaces;
 }
 
 if (typeof Cu === 'undefined') {
-  const Cu = Components.utils;
+  var Cu = Components.utils;
 }
 
 Cu.import("chrome://sieve/content/modules/sieve/SieveResponseCodes.js");        

@@ -41,9 +41,17 @@ var EXPORTED_SYMBOLS = [ "SieveGetScriptRequest","SievePutScriptRequest",
       "SieveInitRequest","SieveSaslPlainRequest","SieveSaslLoginRequest",
       "SieveSaslCramMd5Request","SieveSaslScramSha1Request", "SieveSaslExternalRequest"];
       
-const Cc = Components.classes; 
-const Ci = Components.interfaces;   
-const Cu = Components.utils;      
+if (typeof Cc === 'undefined') {
+  var Cc = Components.classes;
+}
+
+if (typeof Ci === 'undefined') {
+  var Ci = Components.interfaces;
+}
+
+if (typeof Cu === 'undefined') {
+  var Cu = Components.utils;
+}     
 
 Cu.import("chrome://sieve/content/modules/sieve/SieveResponse.js");
 

@@ -21,50 +21,81 @@
  */
 function SieveBodyUI(elm)
 {
-  SieveTestBoxUI.call(this,elm);
+  SieveTestDialogBoxUI.call(this,elm);
 }
 
-SieveBodyUI.prototype = Object.create(SieveTestBoxUI.prototype);
+SieveBodyUI.prototype = Object.create(SieveTestDialogBoxUI.prototype);
 SieveBodyUI.prototype.constructor = SieveBodyUI;
 
-SieveBodyUI.prototype.onValidate
-    = function ()
-{
-  return true;      
-}
 
-SieveBodyUI.prototype.initHelp
-    = function ()
-{
-
-  return $("<div/>")
-      .html('The body test matches content in the body of an email message, that '
-   +'is, anything following the first empty line after the header.  (The '
-   +'empty line itself, if present, is not considered to be part of the '
-   +'body.)');      
-}
-
-SieveBodyUI.prototype.initEditor
+SieveBodyUI.prototype.onLoad
     = function()
 {
-  var comparator = new SieveComparatorUI(this.getSieve().comparator);
-  var matchType = new SieveMatchTypeUI(this.getSieve().matchType);
-  var bodyTransform = new SieveBodyTransformUI(this.getSieve().bodyTransform);
-  var keyList = new SieveStringListUI(this.getSieve().keyList);
-	
+
+  var that = this;
   
-  /*From, To, Cc, Bcc, Sender, Resent-From, Resent-To*/
-  return $("<div/>")
-      .append($("<h1/>").text("The email's message body... "))
-      .append(matchType.html())
-      .append($("<h1/>").text("... any of the keyword(s). "))
-      .append(keyList.html())   
-      .append(comparator.html())      
-      .append(bodyTransform.html());
-         
+  $('div.dialogTab > div').click(function(){
+    
+    $('div.dialogTab > div').removeClass('tab-active');
+    $('.tab-content > div').removeClass('tab-active');
+
+    $(this).addClass('tab-active');
+        
+    var id = $(this).attr('tab-content');
+    $("#"+id).addClass('tab-active');
+  })	
+	
+
+  var matchType = new SieveMatchTypeUI(this.getSieve().matchType);
+  $("#sivBodyMatchTypes")
+    .append(matchType.html()); 
+ 
+  var bodyTransform = new SieveBodyTransformUI(this.getSieve().bodyTransform);
+  var comparator = new SieveComparatorUI(this.getSieve().comparator);
+  $("#sivBodyAdvancedContent")
+    .append(comparator.html())      
+    .append(bodyTransform.html()); 
+    
+  function addItem(value) {       
+    var elm = $(".sivBodyKeyListTemplate").children().first().clone();
+      
+    $("#sivBodyKeyListAdd").before(elm);
+      
+    elm.find(":text").val(value).focus();
+    elm.find("button").click(function() { elm.remove() });
+  }
+    
+  $("#sivBodyKeyListAdd").click(function() { addItem(""); });
+    
+  var items = this.getSieve().keyList;
+    
+  for (var i=0; i<items.size(); i++) 
+    addItem(items.item(i));    
+}
+
+SieveBodyUI.prototype.onSave
+    = function ()
+{
+  var sieve = this.getSieve();
+  
+  sieve.keyList.clear();
+  
+  var keyList = $("#sivBodyKeyList input[type='text']");
+      
+  keyList.each(function( index ) {
+      sieve.keyList.append($(this).val());
+  }) 
+      
+  return true;    	
+}
+
+SieveBodyUI.prototype.getTemplate
+    = function () 
+{
+  return "./body/widgets/SieveBodyUI.html"      
 }
   
-SieveBodyUI.prototype.initSummary
+SieveBodyUI.prototype.getSummary
     = function()
 {
   // case- insensitive is the default so skip it...

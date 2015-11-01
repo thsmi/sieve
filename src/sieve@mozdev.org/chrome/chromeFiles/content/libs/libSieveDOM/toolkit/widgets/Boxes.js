@@ -423,6 +423,10 @@ SieveDialogBoxUI.prototype.showEditor
     
     // and clean the dialog content.
     $('#sivDialogBody').empty(); 
+    
+    // update the summary
+    that._domElm.children(".sivSummaryContent").remove();
+    that._domElm.append(that.getSummary().addClass("sivSummaryContent"))
   }
   
   $('#sivDialog').show();
@@ -452,8 +456,8 @@ SieveDialogBoxUI.prototype.createHtml
   
   if(this.getSummary) {
     parent.append(this.getSummary()
-      .addClass("sivSummaryContent")
-      .click(function(e) { that.showEditor();  e.preventDefault(); return true; } ));
+        .addClass("sivSummaryContent"))
+      .click(function(e) { that.showEditor();  e.preventDefault(); return true; } );
   }
    
   if (this.id() != -1)
@@ -482,3 +486,22 @@ SieveActionDialogBoxUI.prototype.createHtml
 }
 
 //-------------------------------------------/
+
+function SieveTestDialogBoxUI(elm)
+{
+  // Call parent constructor...
+  SieveDialogBoxUI.call(this,elm);  
+  this.drag(new SieveMoveDragHandler("sieve/test"));
+  this.drop(new SieveTestDropHandler()); 
+}
+
+SieveTestDialogBoxUI.prototype = Object.create(SieveDialogBoxUI.prototype);
+SieveTestDialogBoxUI.prototype.constructor = SieveTestDialogBoxUI;
+
+SieveTestDialogBoxUI.prototype.createHtml
+    = function (parent)
+{
+  return SieveDialogBoxUI.prototype.createHtml.call(this,parent)
+    .addClass("sivTest");
+}
+

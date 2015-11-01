@@ -121,7 +121,7 @@ SieveVacationUI.prototype.onLoad
       
     $("#sivAddressesClone").before(elm);
       
-    elm.find(":text").val(value);
+    elm.find(":text").val(value).focus();
     elm.find("button").click(function() { elm.remove() })         
   }
     
@@ -203,11 +203,12 @@ SieveVacationUI.prototype.getTemplate
 SieveVacationUI.prototype.getSummary
     = function()
 {
-  // case- insensitive is the default so skip it...
-  return $("<div/>")
-      .html(" vacation> "
-                 /*+ this.getSieve().matchType.matchType()+ " " 
-                 + $('<div/>').text(this.getSieve().keyList.toScript()).html()+"</em>"*/);
+  return $("<div/>")         
+           .html("Send a vacation/an out of office message:" +
+             "<div><em>"+ 
+               $('<div/>').text(this.getSieve().reason().substr(0,240)).html() +
+               ((this.getSieve().reason().length > 240)?"...":"") +
+             "</em></div>");
 }
 
 if (!SieveDesigner)

@@ -1,10 +1,13 @@
-/* 
- * The contents of this file is licenced. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email 
- * from the author. Do not remove or change this comment. 
+ /*
+ * The contents of this file are licenced. You may obtain a copy of 
+ * the license at https://github.com/thsmi/sieve/ or request it via 
+ * email from the author.
+ *
+ * Do not remove or change this comment.
  * 
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
+ *      
  */
  
 "use strict";
@@ -70,17 +73,24 @@ SieveMultiLineString.prototype.init
   return this;
 }
 
-SieveMultiLineString.prototype.getValue
-    = function ()
-{
-  return this.text;
-} 
-
-SieveMultiLineString.prototype.setValue
+/**
+ * Gets or Sets the string's value
+ * 
+ * @optional @param {String} value
+ *   the value which should be set
+ * @return {String}
+ *   the current value
+ */
+SieveMultiLineString.prototype.value
     = function (value)
 {
-  this.text = value;
-} 
+  if (typeof(value) === "undefined")
+    return this.text;
+    
+  this.text = value;     
+  return this.text;
+}
+
 
 SieveMultiLineString.prototype.toScript
     = function ()
@@ -110,7 +120,6 @@ SieveMultiLineString.prototype.toScript
     PUBLIC FUNCTIONS:      
       public static boolean isQuotedString(String data)
       public boolean parse(String data) throws Exception
-      public String getValue()
       public String toScript()
       public String toXUL()
 
@@ -194,9 +203,9 @@ SieveQuotedString.prototype.init
    
   // Only double quotes and backslashes are escaped...
   // ... so we convert \" into "
-  this.text = this.text.replace('\\"','"',"g")  
+  this.text = this.text.replace(/\\"/g,'"');  
   // ... and convert \\ to \
-  this.text = this.text.replace("\\\\","\\","g");
+  this.text = this.text.replace(/\\\\/g,'\\'); 
    
   // ... We should finally ignore an other backslash patterns...
   // ... but as they are illegal anyway, we assume a perfect world. 
@@ -204,24 +213,33 @@ SieveQuotedString.prototype.init
   return this; 
 }
 
-SieveQuotedString.prototype.getValue
-    = function ()
-{
-  return this.text;
-}
-
-SieveQuotedString.prototype.setValue
+/**
+ * Gets or Sets the string's value
+ * 
+ * @optional @param {String} value
+ *   the value which should be set
+ * @return {String}
+ *   the current value
+ */
+SieveQuotedString.prototype.value
     = function (value)
 {
+  if (typeof(value) === "undefined")
+    return this.text;
+  	
   if (value.search(/(\r\n|\n|\r)/gm) != -1)
     throw "Quoted string support only single line strings";
-
+    
   this.text = value;
-} 
+  
+  return this.text;	
+	
+}
+
 
 SieveQuotedString.prototype.toScript
     = function ()
-{
+{	
   return "\""+this.text.replace("\\","\\\\","g").replace('"','\\"',"g")+"\"";
 }
 
@@ -342,9 +360,9 @@ SieveStringList.prototype.contains
   for (var i=0; i<this.elements.length; i++)
   {
     if (typeof(matchCase) === "undefined")
-      item = this.elements[i][1].getValue().toLowerCase();
+      item = this.elements[i][1].value().toLowerCase();
     else 
-      item = this.elements[i][1].getValue();
+      item = this.elements[i][1].value();
       
     if (item == str)
       return true
@@ -357,9 +375,9 @@ SieveStringList.prototype.item
     = function (idx,value)
 {
   if (typeof(value) !== "undefined")
-    this.elements[idx][1].setValue(value);
+    this.elements[idx][1].value(value);
     
-  return this.elements[idx][1].getValue();
+  return this.elements[idx][1].value();
 }
 
 SieveStringList.prototype.size
@@ -368,20 +386,48 @@ SieveStringList.prototype.size
   return this.elements.length;
 }
 
+/**
+ * Adds one or more elements to the end of the string list.
+ * 
+ * @param {string | array of String } str
+ *   the a string or array like object with strings which should be added.
+ *   
+ * @return {SieveStringList}
+ *   a self recerene to build chains.
+ */
 SieveStringList.prototype.append
     = function(str)
 {
+  // Append multiple strings at once...
+  if (Array.isArray(str)) {
+  	
+  	var that = this;
+  	str.forEach( function (item) { that.append(item); } );
+  	
+  	return this;
+  }
+	
   var elm = [null,"",null]
   elm[1] = this._createByName("string/quoted",'""');
-  elm[1].setValue(str);
+  elm[1].value(str);
   
   this.elements.push(elm);
+  
+  return this;
 }
 
+/**
+ * Removes all string list entries.
+ * 
+ * @return {SieveStringList}
+ *   a self reference to build chains.
+ */
 SieveStringList.prototype.clear
     = function()
 {
   this.elements = [];
+  
+  return this;
 }
 
 SieveStringList.prototype.remove
@@ -389,7 +435,7 @@ SieveStringList.prototype.remove
 {
   for (var i =0; i<this.elements.length; i++)
   {
-    if (this.elements[i][1].getValue() != str)
+    if (this.elements[i][1].value() != str)
       continue;
       
     this.elements.splice(i,1);
@@ -465,28 +511,6 @@ SieveString.prototype.init
   return this;
 }
 
-/**
- * @deprecated use value method
- * @return {}
- */
-SieveString.prototype.getValue
-    = function ()
-{
-  console.warn("Replace SieveString.getValue() is deprecated use SieveString.value() instead");
-  return this.value();
-}
-
-/**
- * @deprecated use value method
- * @param {} value
- * @return {}
- */
-SieveString.prototype.setValue
-    = function (value)
-{
-  console.warn("Replace SieveString.setValue() is deprecated use SieveString.value() instead");
-  return this.value(value);
-}
 
 /**
  * Gets or sets a string's value.
@@ -503,7 +527,7 @@ SieveString.prototype.value
     = function (str) 
 {
   if (typeof str === "undefined")  	
-    return this.string.getValue();
+    return this.string.value();
    
   // ensure it's a string;    
   str = "" + str;
@@ -527,12 +551,12 @@ SieveString.prototype.value
   }
   
   // Add the new value...
-  string.setValue(str);
+  string.value(str);
   
   // ...and rotate it back.
   this.string = string;
 
-  return this.string.getValue();
+  return this.string.value();
 }
    
 SieveString.prototype.toScript
@@ -701,7 +725,7 @@ SieveComparator.prototype.isOptional
     = function (value)
 {
   if (typeof(value) === "undefined")
-    return ((this.optional) && (this._comparator.getValue() == "i;ascii-casemap"))
+    return ((this.optional) && (this._comparator.value() == "i;ascii-casemap"))
     
   this.optional = value; 
 }
@@ -710,9 +734,9 @@ SieveComparator.prototype.comparator
     = function (value)
 {
   if(typeof(value) === "undefined")
-    return this._comparator.getValue();
+    return this._comparator.value();
     
-  this._comparator.setValue(value);
+  this._comparator.value(value);
   
   return this;
 }

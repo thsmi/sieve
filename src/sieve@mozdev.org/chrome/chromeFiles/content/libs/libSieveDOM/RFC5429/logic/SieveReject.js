@@ -1,10 +1,13 @@
-/* 
- * The contents of this file is licenced. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email 
- * from the author. Do not remove or change this comment. 
+/*
+ * The contents of this file are licenced. You may obtain a copy of 
+ * the license at https://github.com/thsmi/sieve/ or request it via 
+ * email from the author.
+ *
+ * Do not remove or change this comment.
  * 
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
+ *      
  */
  
 "use strict";
@@ -67,13 +70,13 @@ SieveReject.prototype.init
 SieveReject.prototype.getReason
     = function ()
 {
-  return this.reason.getValue();      
+  return this.reason.value();      
 }
 
 SieveReject.prototype.setReason
     = function (reason)
 {
-  return this.reason.setValue(reason);      
+  return this.reason.value(reason);      
 }
 
 SieveReject.prototype.require
@@ -151,13 +154,13 @@ SieveEreject.prototype.init
 SieveEreject.prototype.getReason
     = function ()
 {
-  return this.reason.getValue();      
+  return this.reason.value();      
 }
 
 SieveEreject.prototype.setReason
     = function (reason)
 {
-  return this.reason.setValue(reason);      
+  return this.reason.value(reason);      
 }
 
 SieveEreject.prototype.require

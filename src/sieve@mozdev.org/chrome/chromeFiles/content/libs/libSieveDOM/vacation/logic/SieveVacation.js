@@ -1,10 +1,13 @@
-/* 
- * The contents of this file is licenced. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email 
- * from the author. Do not remove or change this comment. 
+ /*
+ * The contents of this file are licenced. You may obtain a copy of 
+ * the license at https://github.com/thsmi/sieve/ or request it via 
+ * email from the author.
+ *
+ * Do not remove or change this comment.
  * 
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
+ *      
  */
  
  "use strict";
@@ -29,17 +32,17 @@ function SieveVacation(docshell,id)
   this.whiteSpace[5] = this._createByName("whitespace"," ");
   this.whiteSpace[6] = this._createByName("whitespace"," ");
   
-  this.days = this._createByName("vacation-days");
-  this.subject = this._createByName("vacation-subject");
-  this.from = this._createByName("vacation-from");
-  this.addresses = this._createByName("vacation-addresses");
-  this.mime = this._createByName("vacation-mime");
-  this.handle = this._createByName("vacation-handle");
+  this._days = this._createByName("vacation-days");
+  this._subject = this._createByName("vacation-subject");
+  this._from = this._createByName("vacation-from");
+  this._addresses = this._createByName("vacation-addresses");
+  this._mime = this._createByName("vacation-mime");
+  this._handle = this._createByName("vacation-handle");
 
-  this.state = {};
+  this._state = {};
   
   // Required
-  this.reason = this._createByName("string");
+  this._reason = this._createByName("string");
   
   this.semicolon = this._createByName("atom/semicolon");
 }
@@ -80,61 +83,60 @@ SieveVacation.prototype.init
   parser.extract("vacation");
   this.whiteSpace[0].init(parser);
 
-  this.state = {};
-  // TODO add a set default Method
+  this._state = {};
   
   while (true) {
   	
   	if (this._probeByName("vacation-days", parser)) {
-  	  this.days.init(parser);
+  	  this._days.init(parser);
   	  this.whiteSpace[1].init(parser);
   	  
-  	  this.state["days"] = true;
+  	  this._state["days"] = true;
   	  
   	  continue;
   	}
   	
   	if (this._probeByName("vacation-subject", parser)) {
-      this.subject.init(parser);
+      this._subject.init(parser);
       this.whiteSpace[2].init(parser);
       
-      this.state["subject"] = true;
+      this._state["subject"] = true;
         
       continue;
     }
   	
   	if (this._probeByName("vacation-from", parser)) {
-      this.from.init(parser);
+      this._from.init(parser);
       this.whiteSpace[3].init(parser);
       
-      this.state["from"] = true;
+      this._state["from"] = true;
         
       continue;
     }
   	
   	if (this._probeByName("vacation-addresses", parser)) {
-      this.addresses.init(parser);
+      this._addresses.init(parser);
       this.whiteSpace[4].init(parser);
         
-      this.state["addresses"] = true;
+      this._state["addresses"] = true;
       
       continue;
     }
   	
   	if (this._probeByName("vacation-mime", parser)) {
-      this.mime.init(parser);
+      this._mime.init(parser);
       this.whiteSpace[5].init(parser);
       
-      this.state["mime"] = true;      
+      this._state["mime"] = true;      
       
       continue;
     }
   	
   	if ( this._probeByName("vacation-handle",parser)) {
-      this.handle.init(parser);
+      this._handle.init(parser);
       this.whiteSpace[6].init(parser);
         
-      this.state["handle"] = true; 
+      this._state["handle"] = true; 
         
       continue;
     }
@@ -144,11 +146,56 @@ SieveVacation.prototype.init
   	  	
   }
   
-  this.reason.init(parser);
+  this._reason.init(parser);
   
   this.semicolon.init(parser);
 
   return this;  
+}
+
+SieveVacation.prototype.state
+    = function(value)
+{
+  if (typeof(value) !== "undefined")
+    this._state = value;
+    
+  return this._state;
+}
+
+SieveVacation.prototype.reason
+    = function(value)
+{
+  return this._reason.value(value);	
+}
+
+SieveVacation.prototype.subject
+    = function(value)
+{  
+  return this._subject.subject.value(value);    	
+}
+
+SieveVacation.prototype.days
+    = function (value) 
+{
+  return this._days.days.value(value);
+}
+
+SieveVacation.prototype.from
+    = function (value) 
+{
+  return this._from.from.value(value);
+}
+
+SieveVacation.prototype.handle
+    = function (value) 
+{
+  return this._handle.handle.value(value);
+}
+
+SieveVacation.prototype.addresses
+    = function () 
+{
+  return this._addresses.addresses
 }
 
 SieveVacation.prototype.toScript
@@ -156,19 +203,19 @@ SieveVacation.prototype.toScript
 {
   return "vacation"
     + this.whiteSpace[0].toScript() 
-    + (this.state["days"] ? 
-        "" + this.days.toScript() + this.whiteSpace[1].toScript() : "")
-    + (this.state["subject"] ? 
-        "" + this.subject.toScript() + this.whiteSpace[2].toScript() : "" ) 
-    + (this.state["from"] ?
-        "" + this.from.toScript() + this.whiteSpace[3].toScript() : "" )
-    + (this.state["addresses"] ?
-        "" + this.addresses.toScript()  + this.whiteSpace[4].toScript() : "" )
-    + (this.state["mime"] ?
-        "" + this.mime.toScript() + this.whiteSpace[5].toScript() : "" )
-    + (this.state["handle"] ?
-        "" + this.handle.toScript() + this.whiteSpace[6].toScript() : "" )  
-    + this.reason.toScript()
+    + (this._state["days"] ? 
+        "" + this._days.toScript() + this.whiteSpace[1].toScript() : "")
+    + (this._state["subject"] ? 
+        "" + this._subject.toScript() + this.whiteSpace[2].toScript() : "" ) 
+    + (this._state["from"] ?
+        "" + this._from.toScript() + this.whiteSpace[3].toScript() : "" )
+    + (this._state["addresses"] ?
+        "" + this._addresses.toScript()  + this.whiteSpace[4].toScript() : "" )
+    + (this._state["mime"] ?
+        "" + this._mime.toScript() + this.whiteSpace[5].toScript() : "" )
+    + (this._state["handle"] ?
+        "" + this._handle.toScript() + this.whiteSpace[6].toScript() : "" )  
+    + this._reason.toScript()
     + this.semicolon.toScript();
 }
 

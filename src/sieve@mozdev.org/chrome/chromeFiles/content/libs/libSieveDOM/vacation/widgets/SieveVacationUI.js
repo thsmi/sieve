@@ -1,4 +1,16 @@
-
+ /*
+ * The contents of this file are licenced. You may obtain a copy of 
+ * the license at https://github.com/thsmi/sieve/ or request it via 
+ * email from the author.
+ *
+ * Do not remove or change this comment.
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ *      
+ */
+ 
+"use strict";
 
 function SieveVacationUI(elm)
 {
@@ -69,10 +81,9 @@ SieveVacationUI.prototype.onLoad
   	$("#sivEditMain").show();
     $("#vacationEnvelopePage").hide();
     
-           
   });
 	
-  var state = this.getSieve().state;
+  var state = this.getSieve().state();
 		
   $('input:radio[name="days"][value="'+!!state["days"]+'"]').prop('checked', true);
   $('input:radio[name="subject"][value="'+!!state["subject"]+'"]').prop('checked', true);
@@ -87,20 +98,20 @@ SieveVacationUI.prototype.onLoad
   $("#sivVacationDays").focus( function() { $('input:radio[name="days"][value="true"]').prop('checked', true) });
   $("#sivVacationHandle").focus( function() { $('input:radio[name="handle"][value="true"]').prop('checked', true) });
   
-  $("#sivVacationReason").val(this.getSieve().reason.value());
+  $("#sivVacationReason").val(this.getSieve().reason());
   
   
   if (state["subject"])
-    $("#sivVacationSubject").val(this.getSieve().subject.subject.value());
+    $("#sivVacationSubject").val(this.getSieve().subject());
  
   if (state["days"])
-    $("#sivVacationDays").val(this.getSieve().days.days.value());
+    $("#sivVacationDays").val(this.getSieve().days());
   
   if (state["from"])
-    $("#sivVacationFrom").val(this.getSieve().from.from.value());
+    $("#sivVacationFrom").val(this.getSieve().from());
 
   if (state["handle"])
-    $("#sivVacationHandle").val(this.getSieve().handle.handle.value());  
+    $("#sivVacationHandle").val(this.getSieve().handle());  
   
   // addresses need some special care
     
@@ -118,7 +129,7 @@ SieveVacationUI.prototype.onLoad
   
   if (state["addresses"]) {
   	
-  	var items = this.getSieve().addresses.addresses;
+  	var items = this.getSieve().addresses();
   	
   	for (var i=0; i<items.size(); i++) 
   	  addItem(items.item(i));
@@ -152,33 +163,33 @@ SieveVacationUI.prototype.onSave
   
   try {
     if (state["subject"])
-      sieve.subject.subject.value($("#sivVacationSubject").val());
+      sieve.subject($("#sivVacationSubject").val());
  
     if (state["days"])
-      sieve.days.days.value($("#sivVacationDays").val());
+      sieve.days($("#sivVacationDays").val());
   
     if (state["from"])
-      sieve.from.from.value($("#sivVacationFrom").val());
+      sieve.from($("#sivVacationFrom").val());
 
     if (state["handle"])
-      sieve.handle.handle.value($("#sivVacationHandle").val());
+      sieve.handle($("#sivVacationHandle").val());
 
     if (state["addresses"]) {
-      sieve.addresses.addresses.clear();
+      sieve.addresses().clear();
       
       addresses.each(function( index ) {
-      	sieve.addresses.addresses.append($(this).val());
+      	sieve.addresses().append($(this).val());
       }) 
     }
     
-    this.getSieve().reason.value($("#sivVacationReason").val());
+    this.getSieve().reason($("#sivVacationReason").val());
   }
   catch (ex) {
   	alert(ex);
   	return false;
   }
     
-  this.getSieve().state = state;
+  this.getSieve().state(state);
   return true;
 }
 

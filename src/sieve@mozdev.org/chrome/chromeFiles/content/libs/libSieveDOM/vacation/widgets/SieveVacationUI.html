@@ -68,6 +68,7 @@
 	 border:none; 
 	 border-bottom:1px solid black;
 	 background-color: #EEEEEE;
+	 min-width: 300px
 	 }
 	 
 	 #sivVacationDialog textarea {
@@ -87,9 +88,25 @@
 	     display:none;
 	  }	  
 	  
-	  #sivVacationServerDesc, #sivVacationFromDesc, #sivVacationCcDesc {
+	  #sivVacationServerDesc, #sivVacationFromDesc, #sivVacationAddressesDesc {
 	    color: rgba(0,0,0,0.53);
-	  }  	  
+	  }  
+	  
+	  #vacationEnvelopeEdit .sivContent div {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+     }
+     
+     #sivVacationDays {     
+       width: 50px;
+       min-width: 0px !important;
+     }
+     
+     .sivDescription{ 
+       color: rgba(0,0,0,0.53);
+       margin-bottom:8px;
+     }
+     
   </style>
     <div>
         <!-- System -->
@@ -129,8 +146,8 @@
 	   .sivMultiLineItem .sivContent div {
 	      flex:1 1 100%;
 		  overflow: hidden;  
-		  text-overflow: ellipsis;
-		  white-space: nowrap;
+		  /*text-overflow: ellipsis;
+		  white-space: nowrap;*/
 	   }
 
 	 </style>
@@ -138,12 +155,11 @@
                 <div class="sivMultiLineItem">
                     <div class="sivContent">
                         <h2>Subject</h2>
-                        <div style="color: rgba(0,0,0,0.53);">The subject is used for any vacation response</div>
-                        <label>
+                        <div  class="sivDescription">The subject is used for any vacation response</div>
+                        <div>
                             <input type="radio" name="subject" value="false"/>
-              Server's default Subject
-		     
-                        </label>
+                            Server's default Subject     
+                        </div>
                         <div>
                             <input type="radio" name="subject" value="true" />
                             <input type="text"  id ="sivVacationSubject" placeholder="Subject" />
@@ -153,7 +169,7 @@
                 <div class="sivMultiLineItem">
                     <div class="sivContent">
                         <h2>From</h2>
-                        <div style="color: rgba(0,0,0,0.53); ">Used to specify an alternate From address.</div>
+                        <div  class="sivDescription">Used to specify an alternate From address.</div>
                         <div>
                             <input type="radio" name="from" value="false" />
                             <span>Address of the sieve script owner</span>
@@ -166,17 +182,21 @@
                 </div>
                 <div class="sivMultiLineItem">
                     <div class="sivContent">
-                        <h2>Cc</h2>
-                        <div style="color: rgba(0,0,0,0.53);">A list with additional Receipients</div>
-                        <div class="sivCcTemplate" style="display:none">
+                        <h2>Addresses</h2>
+                        <div  class="sivDescription">
+                           By default a response message is only send, if it was addressed to the recipient user or sieve script owner.<br/>
+                           You can supply additional mail addresses. For Example if mails are forwarded or you have multiple aliases for
+                           a single mail address<br/> 
+                        </div>
+                        <div class="sivAddressesTemplate" style="display:none">
                             <div>
                                 <input type="text" />
                                 <button>remove</button>
                             </div>
                         </div>
-                        <div id="sivCcGroup">
+                        <div id="sivAddressesGroup">
                             <div>
-                                <button id="sivCcClone">add</button>
+                                <button id="sivAddressesClone">add</button>
                             </div>
                         </div>
                     </div>
@@ -220,8 +240,8 @@
                             <div>From: 
                                 <span id="vacationFromDesc" style="color: rgba(0,0,0,0.53);"></span>
                             </div>
-                            <div>Cc: 
-                                <span id="vacationCcDesc" style="color: rgba(0,0,0,0.53);">...</span>
+                            <div>Addresses: 
+                                <span id="vacationAddressesDesc" style="color: rgba(0,0,0,0.53);">...</span>
                             </div>
                         </div>
                         <div class="sivAction">
@@ -236,21 +256,21 @@
                     <div class="sivMultiLineItem">
                         <div class="sivContent">
                             <h2>Message Content Type</h2>
-                            <div style="color: rgba(0,0,0,0.53);">The subject is used for any vacation response</div>
+                            <div  class="sivDescription">Instead of plaintext, the message can be a specified as a MIME Message</div>
                             <div>
                                 <input type="radio" name="mime" value="false" />
                                 <span>Is plaintext Message (Default)</span>
                             </div>
                             <div>
                                 <input type="radio" name="mime" value="true" />
-                                <span>is mime Message</span>
+                                <span>is MIME Message</span>
                             </div>
                         </div>
                     </div>
                     <div class="sivMultiLineItem">
                         <div class="sivContent">
                             <h2> Response Tracking</h2>
-                            <div style="color: rgba(0,0,0,0.53);">The subject is used for any vacation response</div>
+                            <div class="sivDescription">A vacation message is sent at most every some days to the same sender</div>
                             <div>
                                 <input type="radio" name="days" value="false" />
                                 <span>Use Server's default policy</span>
@@ -259,21 +279,23 @@
                                 <input type="radio" name="days" value="true" />
                                 <span>Reply atmost every</span>
                                 <input type="text" id="sivVacationDays" />
-                                <span>days</span>
+                                <span>days to the same sender</span>
                             </div>
                         </div>
                     </div>
                     <div class="sivMultiLineItem">
                         <div class="sivContent">
                             <h2> Response Handles</h2>
-                            <div style="color: rgba(0,0,0,0.53);">The subject is used for any vacation response</div>
+                            <div  class="sivDescription">
+                              The response tracking considers all vacation statements that use the same  handle as the same response<br>
+                              The default handle considers subject, from, mime as well as the message. A custom handle can be any unique strings<br/>
+                            </div>							
                             <div>
                                 <input type="radio" name="handle" value="false" />
                                 <span>Use default handle</span>
                             </div>
                             <div>
                                 <input type="radio" name="handle" value="true" />
-                                <span>Use a custom handle:</span>
                                 <input type="text" id="sivVacationHandle" />
                             </div>
                         </div>

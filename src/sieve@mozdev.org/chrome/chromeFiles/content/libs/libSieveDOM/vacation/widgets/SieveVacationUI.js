@@ -12,15 +12,20 @@ SieveVacationUI.prototype.constructor = SieveVacationUI;
 SieveVacationUI.prototype.onEnvelopeChanged
    = function ()
 {
-    // Update the CC fields...
-    var addresses = $("#sivCcGroup input[type='text']");    
-    var cc = "";
+    // Update the Addresses fields...
+    var addresses = $("#sivAddressesGroup input[type='text']");    
+    var text = "";   
    
     addresses.each(function( index ) {
-      cc += (cc.length?", ": "" ) +$(this).val();
+      text += (text.length?", ": "" ) +$(this).val();
     })
       
-    $('#vacationCcDesc').text(cc);
+    $('#vacationAddressesDesc').text(text);
+    
+    if (text.length) 
+      $('#vacationAddressesDesc').parent().show();
+    else 
+      $('#vacationAddressesDesc').parent().hide();
       
     // Update the From Field
     if ( $("input[type='radio'][name='from']:checked").val() == "true")  
@@ -97,19 +102,19 @@ SieveVacationUI.prototype.onLoad
   if (state["handle"])
     $("#sivVacationHandle").val(this.getSieve().handle.handle.value());  
   
-  // addresses or cc need some special care
+  // addresses need some special care
     
   // we need this function because javascript uses block scope..
   function addItem(value) {       
-    var elm = $(".sivCcTemplate").children().first().clone();
+    var elm = $(".sivAddressesTemplate").children().first().clone();
       
-    $("#sivCcClone").before(elm);
+    $("#sivAddressesClone").before(elm);
       
     elm.find(":text").val(value);
     elm.find("button").click(function() { elm.remove() })         
   }
     
-  $("#sivCcClone").click(function() { addItem(""); });
+  $("#sivAddressesClone").click(function() { addItem(""); });
   
   if (state["addresses"]) {
   	
@@ -137,7 +142,7 @@ SieveVacationUI.prototype.onSave
   state["mime"] =  ( $("input[type='radio'][name='mime']:checked").val() == "true");
   state["handle"] = ( $("input[type='radio'][name='handle']:checked").val() == "true");
   
-  var addresses = $("#sivCcGroup input[type='text']");
+  var addresses = $("#sivAddressesGroup input[type='text']");
   state["addresses"] = !!addresses.length;
   
   // TODO Catch exceptions...

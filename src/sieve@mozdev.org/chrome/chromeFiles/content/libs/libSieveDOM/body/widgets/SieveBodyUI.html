@@ -209,17 +209,21 @@ The body test matches content in the body of an email message, that
                   <h1>The email's message body... </h1>   
                   <div id="sivBodyMatchTypes"> </div>
                   
-                  <h1>... any of the keyword(s).</h1>
-                  <div class="sivBodyKeyListTemplate" style="display:none">
-                    <div>
-                      <input type="text" />
-                      <button>remove</button>
+                  <h1>... any of the keyword(s):</h1>
+                  <div id="sivBodyKeyList"
+                       list-new="#sivBodyKeyListAdd" list-items="#sivBodyKeyListItems" list-template="#sivBodyKeyListTemplate">
+                       
+                    <div id="sivBodyKeyListTemplate" style="display:none">
+                      <div>
+                        <input type="text" />
+                        <button>remove</button>
+                      </div>
+                    </div>                    
+                    <div id="sivBodyKeyListItems">
+                      <div>
+                        <button id="sivBodyKeyListAdd">add</button>
+                       </div>
                     </div>
-                  </div>                    
-                  <div id="sivBodyKeyList">
-                    <div>
-                      <button id="sivBodyKeyListAdd">add</button>
-                     </div>
                   </div>                  
                 </div>
                 

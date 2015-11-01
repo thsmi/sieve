@@ -32,20 +32,8 @@ SieveBodyUI.prototype.onLoad
     = function()
 {
 
-  var that = this;
+  (new SieveTabWidget()).init();
   
-  $('div.dialogTab > div').click(function(){
-    
-    $('div.dialogTab > div').removeClass('tab-active');
-    $('.tab-content > div').removeClass('tab-active');
-
-    $(this).addClass('tab-active');
-        
-    var id = $(this).attr('tab-content');
-    $("#"+id).addClass('tab-active');
-  })	
-	
-
   var matchType = new SieveMatchTypeUI(this.getSieve().matchType);
   $("#sivBodyMatchTypes")
     .append(matchType.html()); 
@@ -55,22 +43,10 @@ SieveBodyUI.prototype.onLoad
   $("#sivBodyAdvancedContent")
     .append(comparator.html())      
     .append(bodyTransform.html()); 
-    
-  function addItem(value) {       
-    var elm = $(".sivBodyKeyListTemplate").children().first().clone();
-      
-    $("#sivBodyKeyListAdd").before(elm);
-      
-    elm.find(":text").val(value).focus();
-    elm.find("button").click(function() { elm.remove() });
-  }
-    
-  $("#sivBodyKeyListAdd").click(function() { addItem(""); });
-    
-  var items = this.getSieve().keyList;
-    
-  for (var i=0; i<items.size(); i++) 
-    addItem(items.item(i));    
+  
+  (new SieveStringListWidget("#sivBodyKeyList"))
+      .init()
+      .values(this.getSieve().keyList);    
 }
 
 SieveBodyUI.prototype.onSave
@@ -78,13 +54,9 @@ SieveBodyUI.prototype.onSave
 {
   var sieve = this.getSieve();
   
-  sieve.keyList.clear();
-  
-  var keyList = $("#sivBodyKeyList input[type='text']");
-      
-  keyList.each(function( index ) {
-      sieve.keyList.append($(this).val());
-  }) 
+  sieve.keyList
+    .clear()
+    .append((new SieveStringListWidget("#sivBodyKeyList")).values());
       
   return true;    	
 }

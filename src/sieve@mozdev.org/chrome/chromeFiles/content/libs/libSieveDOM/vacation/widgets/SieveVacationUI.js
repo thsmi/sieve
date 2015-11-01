@@ -24,31 +24,30 @@ SieveVacationUI.prototype.constructor = SieveVacationUI;
 SieveVacationUI.prototype.onEnvelopeChanged
    = function ()
 {
-    // Update the Addresses fields...
-    var addresses = $("#sivAddressesGroup input[type='text']");    
-    var text = "";   
+  var addresses = (new SieveStringListWidget("#sivAddresses")).items();	    
+  var text = "";   
    
-    addresses.each(function( index ) {
-      text += (text.length?", ": "" ) +$(this).val();
-    })
+  addresses.each(function( index ) {
+    text += (text.length?", ": "" ) +$(this).val();
+  })
       
-    $('#vacationAddressesDesc').text(text);
+  $('#vacationAddressesDesc').text(text);
     
-    if (text.length) 
-      $('#vacationAddressesDesc').parent().show();
-    else 
-      $('#vacationAddressesDesc').parent().hide();
+  if (text.length) 
+    $('#vacationAddressesDesc').parent().show();
+  else 
+    $('#vacationAddressesDesc').parent().hide();
       
-    // Update the From Field
-    if ( $("input[type='radio'][name='from']:checked").val() == "true")  
-      $('#vacationFromDesc').text($("#sivVacationFrom").val());
-    else
-      $('#vacationFromDesc').text("Address of the sieve script owner");
+  // Update the From Field
+  if ( $("input[type='radio'][name='from']:checked").val() == "true")  
+    $('#vacationFromDesc').text($("#sivVacationFrom").val());
+  else
+    $('#vacationFromDesc').text("Address of the sieve script owner");
       
-    if ( $("input[type='radio'][name='subject']:checked").val() == "true")
-       $('#vacationSubjectDesc').text($("#sivVacationSubject").val());
-    else
-      $('#vacationSubjectDesc').text("Server's default Subject");
+  if ( $("input[type='radio'][name='subject']:checked").val() == "true")
+     $('#vacationSubjectDesc').text($("#sivVacationSubject").val());
+  else
+    $('#vacationSubjectDesc').text("Server's default Subject");
    	
 }
 
@@ -57,17 +56,7 @@ SieveVacationUI.prototype.onLoad
 {
   var that = this;
   
-  $('div.dialogTab > div').click(function(){
-  	
-  	$('div.dialogTab > div').removeClass('tab-active');
-    $('.tab-content > div').removeClass('tab-active');
-
-    $(this).addClass('tab-active');
-        
-    var id = $(this).attr('tab-content');
-    $("#"+id).addClass('tab-active');
-  })
-    
+  (new SieveTabWidget()).init();
 	 
   $("#vacationEnvelopeEdit").click( function() { 
     $("#sivEditMain").hide();
@@ -113,27 +102,11 @@ SieveVacationUI.prototype.onLoad
   if (state["handle"])
     $("#sivVacationHandle").val(this.getSieve().handle());  
   
-  // addresses need some special care
     
-  // we need this function because javascript uses block scope..
-  function addItem(value) {       
-    var elm = $(".sivAddressesTemplate").children().first().clone();
-      
-    $("#sivAddressesClone").before(elm);
-      
-    elm.find(":text").val(value).focus();
-    elm.find("button").click(function() { elm.remove() })         
-  }
-    
-  $("#sivAddressesClone").click(function() { addItem(""); });
+  var addresses = (new SieveStringListWidget("#sivAddresses")).init();
   
-  if (state["addresses"]) {
-  	
-  	var items = this.getSieve().addresses();
-  	
-  	for (var i=0; i<items.size(); i++) 
-  	  addItem(items.item(i));
-  }
+  if (state["addresses"])  	
+  	addresses.values(this.getSieve().addresses());
   
   // trigger reloading the envelope fields...
   this.onEnvelopeChanged();  
@@ -153,7 +126,8 @@ SieveVacationUI.prototype.onSave
   state["mime"] =  ( $("input[type='radio'][name='mime']:checked").val() == "true");
   state["handle"] = ( $("input[type='radio'][name='handle']:checked").val() == "true");
   
-  var addresses = $("#sivAddressesGroup input[type='text']");
+  
+  var addresses = (new SieveStringListWidget("#sivAddresses")).values();
   state["addresses"] = !!addresses.length;
   
   // TODO Catch exceptions...
@@ -175,11 +149,9 @@ SieveVacationUI.prototype.onSave
       sieve.handle($("#sivVacationHandle").val());
 
     if (state["addresses"]) {
-      sieve.addresses().clear();
-      
-      addresses.each(function( index ) {
-      	sieve.addresses().append($(this).val());
-      }) 
+      sieve.addresses()
+         .clear()
+         .append(addresses);      
     }
     
     this.getSieve().reason($("#sivVacationReason").val());

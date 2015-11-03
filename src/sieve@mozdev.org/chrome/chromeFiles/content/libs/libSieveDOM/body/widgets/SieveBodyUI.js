@@ -38,11 +38,13 @@ SieveBodyUI.prototype.onLoad
   $("#sivBodyMatchTypes")
     .append(matchType.html()); 
  
-  var bodyTransform = new SieveBodyTransformUI(this.getSieve().bodyTransform);
   var comparator = new SieveComparatorUI(this.getSieve().comparator);
-  $("#sivBodyAdvancedContent")
+  $("#sivBodyComparator")
     .append(comparator.html())      
-    .append(bodyTransform.html()); 
+ 
+  var bodyTransform = new SieveBodyTransformUI(this.getSieve().bodyTransform);    
+  $("#sivBodyTransform")
+    .append(bodyTransform.html());
   
   (new SieveStringListWidget("#sivBodyKeyList"))
       .init()
@@ -118,7 +120,6 @@ SieveBodyTransformUI.prototype.createHtml
   
   var item =  $("<div/>")
     .addClass("sivBodyTransform")
-    .append($("<h1/>").text("Transform"))
   
   var widgets = SieveDesigner.getWidgetsByClass("body-transform/",this.id())
   

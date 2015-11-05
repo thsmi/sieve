@@ -469,6 +469,31 @@ SieveDialogBoxUI.prototype.createHtml
   return  parent;
 }
 
+SieveDialogBoxUI.prototype.getTemplate
+    = function () 
+{
+  throw "Implement me";     
+}
+
+  
+SieveDialogBoxUI.prototype.getSummary
+    = function()
+{
+  throw "Implement me";
+}
+
+SieveDialogBoxUI.prototype.onSave
+    = function () 
+{
+	return true;
+}
+
+SieveDialogBoxUI.prototype.onLoad
+    = function ()    
+{
+  throw "Implement me";  
+}
+
 //------------------------------------------------------/
 
 function SieveActionDialogBoxUI(elm)

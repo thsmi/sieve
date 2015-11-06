@@ -1,0 +1,263 @@
+<!--
+
+  The contents of this file are licenced. You may obtain a copy of 
+  the license at https://github.com/thsmi/sieve/ or request it via 
+  email from the author.
+ 
+  Do not remove or change this comment.
+  
+  The initial author of the code is:
+    Thomas Schmid <schmid-thomas@gmx.net>
+
+-->
+
+<div id="sivDialogVariables" style="background-color: #EEEEEE;">
+
+<style>
+  
+    .dialogTab  {
+      color:#757575; 
+      text-weight: 500; 
+      height:64px; 
+      padding:0px; 
+      margin:0px; 
+      display:flex; 
+      justify-content:center; 
+      width:100%;
+    }
+    
+    .dialogTab > div {
+      color: rgba(255,255,255,0.7);
+      min-width:160px;
+      max-width: 264px;
+      height:48px;
+      /*padding-left: 12px;
+      padding-right:12px;*/
+      text-align:center;
+      font-size: 15px;
+      vertical-align: middle;
+      /*display: inline-block;*/
+      line-height: 48px;
+      margin-top:16px;
+      flex:1;
+    }
+    
+     .dialogTab > div.tab-active {
+      color: #FFFFFF;
+       height:46px;  
+       border-bottom: 2px solid #FFFFFF;
+     }
+     
+     .tab-content {
+       max-height:400px;
+        overflow: auto;
+        padding-left:16px; 
+        padding-right:16px;
+     }
+     
+     .tab-content > div {
+       display: none;
+     }
+     
+     .tab-content  > div.tab-active {
+       display: inherit;     
+     }
+     
+     #sivDialogContent {
+       padding:0px;
+     }
+     
+     .sivGroup > div {
+       height:48px; line-height:48px;
+       font-size:15px;
+     }
+     
+     #sivVacationDialog input[type=text] {
+     height:13px; 
+     margin-top:8px; 
+     margin-bottom:4px; 
+     padding-bottom:4px; 
+     /*line-height:48px;*/
+     font-size:13px; 
+     border:none; 
+     border-bottom:1px solid black;
+     background-color: #EEEEEE;
+     min-width: 300px
+     }
+     
+     #sivVacationDialog textarea {
+       font-size:15px; border:none; border-bottom:1px solid black;background-color: #EEEEEE; width:100%; height:200px;;
+     }
+     
+      #sivVacationDialog h2 {
+        /*height:48px; line-height:48px; */
+        font-size: 13px;
+        color: rgba(0,0,0,0.53);
+        margin: 0;  
+        /*border-top: 1px solid lightgray;*/
+      }
+     
+      
+      .sivGroup.sivCollapsed > div {
+         display:none;
+      }   
+      
+      #sivVacationServerDesc, #sivVacationFromDesc, #sivVacationAddressesDesc {
+        color: rgba(0,0,0,0.53);
+      }  
+      
+      #vacationEnvelopeEdit .sivContent div {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+     }
+     
+     #sivVacationDays {     
+       width: 50px;
+       min-width: 0px !important;
+     }
+     
+     .sivDescription{ 
+       color: rgba(0,0,0,0.53);
+       margin-bottom:8px;
+     }
+     
+      .sivMultiLineItem {
+         padding-top:16px; 
+         padding-bottom:20px;
+         border-bottom:1px solid lightgray; 
+         display:flex;
+         
+         font-size:13px;
+      }  
+
+      .sivMultiLineItem  .sivAction {
+        padding-left:16px; 
+        padding-right:16px;
+        
+        min-width:24px;
+        font-size:24px;
+      }  
+      
+      .sivMultiLineItem .sivContent {
+         padding-bottom: 0px;
+         width:100%;
+         overflow: hidden;
+         font-size:13px
+      }
+      
+       .sivMultiLineItem .sivContent div {
+          flex:1 1 100%;
+          overflow: hidden;  
+          /*text-overflow: ellipsis;
+          white-space: nowrap;*/
+       }
+
+/* Style the existing elements */ 
+
+#sivVariablesAdvancedContent .sivModifiers h1 {
+  font-size: 13px;
+  margin: 0px;
+}
+
+#sivVariablesAdvancedContent > div  {
+  padding-top: 8px; 
+}
+
+#sivVariablesAdvancedContent .sivModifiers > div {
+  padding-bottom: 8px;
+  padding-top 8px;
+}
+
+#sivVariablesAdvancedContent .sivModifiers > div > div {
+  padding-left: 20px;
+}
+
+#sivVariablesGeneralContent  textarea {
+  width: 100%;
+  height: 100px;
+}
+
+#sivVariablesGeneralContent  input {
+  width: 100%;
+}
+
+.tab-content h1 {
+  font-size: 13px;
+  color: rgba(0,0,0,0.53);
+}
+
+.tab-content {
+  padding-bottom : 16px;
+  /*min-height: 300px;*/
+}
+
+</style>
+
+    <div>
+        <!-- System -->
+        <div id="sivEditMain">
+            <!-- Appbar -->
+            <div style="border-bottom: 1px solid #E3E3E3;  background-color: #607D8B;">
+                <div class="dialogTab">
+                    <div class="tab-active" tab-content="sivVariablesGeneralContent">BASIC</div>
+                    <div tab-content="sivVariablesAdvancedContent">ADVANCED</div>
+                    <div tab-content="sivVariablesHelpContent" >HELP</div>
+                </div>
+            </div>
+            <!-- content -->
+            <div class="tab-content">
+                <!-- content for help tab -->
+                <div id="sivVariablesHelpContent">
+                    <p>
+                    
+      </p>
+                </div>				
+                
+                <!-- content for general tab -->
+                <div id="sivVariablesGeneralContent" class="tab-active" >
+                  <h1>Store the value ... </h1>   
+				  <textarea type="text" id ="sivVariableValue" />
+				  
+				  <h1>... into variable</h1>
+				  <input type="text" id="sivVariableName" />
+				  
+                </div>
+                
+                <!-- content for advanced tab -->
+                <div  id="sivVariablesAdvancedContent">
+				  <div>Modifiers are used to change a variables' value, they are processed in the following order</div>
+				  
+				  <div class="sivModifiers">
+				  <div >				     
+				     <h1><input type="checkbox" name="40" />Modify Variable's case</h1>
+					<div>Only plain Latin (A-Z and a-z) are changed, no umlauts or similar characters..</div>
+					<div>
+					<div><input type="radio" name="40" value=":upper" checked="checked" />upper case</div>
+					<div><input type="radio" name="40" value=":lower" />lower case</div>				    
+					</div>
+				  </div>
+				  
+				  <div>
+				    <h1><input type="checkbox" name="30" />Modify Variable's first character</h1>
+					<div>Only the first character's case is changed, the rest of the string is unchanged</div>
+					<div>
+					<div><input type="radio" name="30"  value=":upperfirst" checked="checked"  />upper case</div>
+					<div><input type="radio" name="30" value=":lowerfirst" />lower case</div>	
+					</div>
+				  </div>
+				  
+				  <div>
+				    <h1> <input type="checkbox" name="20" value=":quotewildcard" />Escape Wildcards</h1>
+				    <div>Ensures that the expanded text will only match a literal occurrence if used as a parameter to :matches. Every character with special meaning ("*", "?",  and "\") is prefixed with "\" in the expansion</div>
+                  </div>
+				  
+				  <div>
+				    <h1><input type="checkbox"  name="10" value=":length"/>Count the number of characters</h1>
+				    <div>variables are expanded before determining the number of characters.</div>
+				  </div>
+                </div>
+				</div>
+            </div>
+        </div>
+    </div>
+</div>

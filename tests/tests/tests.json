@@ -39,7 +39,7 @@ var tests = {
     script : "./variables/SieveVariablesTest.js",
 	extend : "rfc5228",
     require : [
-       "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5229/logic/SieveVariables.js"]       	
+       "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/variables/logic/SieveVariables.js"]       	
   },
   	
   "regEx" : {

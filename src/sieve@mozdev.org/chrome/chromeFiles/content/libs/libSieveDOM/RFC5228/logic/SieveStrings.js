@@ -1,4 +1,4 @@
- /*
+/*
  * The contents of this file are licenced. You may obtain a copy of 
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.

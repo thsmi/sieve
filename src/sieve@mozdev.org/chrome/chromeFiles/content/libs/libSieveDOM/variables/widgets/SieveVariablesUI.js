@@ -195,8 +195,10 @@ SieveStringTestUI.prototype.onLoad
 SieveStringTestUI.prototype.getSummary
     = function()
 {
-  return $("<div/>")         
-           .html("test");  
+  return $("<div/>")
+      .html(" string "+ $('<em/>').text(this.getSieve().source().toScript()).html()
+              + " " + this.getSieve().matchType().matchType()
+              + " " + $('<em/>').text(this.getSieve().keyList().toScript()).html());
   
 }
 

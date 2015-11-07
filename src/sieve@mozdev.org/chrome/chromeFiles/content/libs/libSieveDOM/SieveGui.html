@@ -75,8 +75,12 @@
   
   <!-- RFC5229 - Variables -->
   <script type="application/javascript" src="variables/logic/SieveVariables.js" ></script>
-  <script type="application/javascript" src="variables/widgets/SieveVariablesUI.js" ></script>  
-  
+  <script type="application/javascript" src="variables/widgets/SieveVariablesUI.js" ></script>
+    
+  <!-- RFC6609 - Include -->
+  <script type="application/javascript" src="include/logic/SieveInclude.js" ></script>
+  <script type="application/javascript" src="include/widget/SieveIncludeUI.js" ></script>
+    
 <script type="text/javascript">
 //<![CDATA[
 
@@ -283,8 +287,8 @@ function debug(obj)
       </div>
     </div>
 	
-<!--<div id="debug2" style="display:none">-->
-<div id="debug2">
+<div id="debug2" style="display:none">
+<!-- <div id="debug2">-->
 <div>
    <div id="boxScript" style="display:none;overflow: hidden;width: 100%; ">  
      <div style="float:left; padding:5px;">
@@ -327,6 +331,7 @@ function debug(obj)
   	   <div><input type="checkbox" name="capabilities" value="body" checked>body</div>
   	   <div><input type="checkbox" name="capabilities" value="vacation" checked>vacation</div>
   	   <div><input type="checkbox" name="capabilities" value="variables" checked>variables</div>
+  	   <div><input type="checkbox" name="capabilities" value="include" checked>include</div>
 	 
 	   <div><button onclick="setCapabilities()">Apply</button><button onclick="selectAllCapabilities()">select all</button><button onclick="$('#Capabilities').hide()">Cancel</button></div>
   </div>

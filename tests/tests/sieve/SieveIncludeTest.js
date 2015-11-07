@@ -56,6 +56,27 @@
     return doc;
   }
  
+  function testScriptInvalid(script, exception, capabilities) {     
+    
+    if (capabilities)
+      SieveLexer.capabilities(capabilities);
+    
+    
+    var doc = new SieveDocument(SieveLexer,null);
+    
+    suite.logTrace("Start Parsing Script");
+    try {
+      doc.script(script);
+    }
+    catch(e) {
+    	suite.logTrace("Exception caught");
+    	suite.assertEquals(exception, e);
+    	
+    	return;
+    }
+    
+    throw "Exception expected"    
+  }
 
   suite.add( function() {
 
@@ -70,7 +91,22 @@
   
   suite.add( function() {
 
-    suite.log("include test");
+    suite.log("include ambigious location ");
+   
+    var script =
+      'require ["include"];\r\n'
+        + '\r\n'
+        + 'include :personal :global "always_allow";\r\n';
+    
+    var exception = "Location can be either personal or global but not both";
+      
+    testScriptInvalid(script, exception, {"include":true});
+  });   
+
+  
+  suite.add( function() {
+
+    suite.log("include multiple scripts");
    
     var script =
       'require ["include"];\r\n'
@@ -92,24 +128,24 @@
         + 'global "test";\r\n'
         + 'global "test_mailbox";\r\n'
         + '\r\n'
-        + 'set "test" "$$";\r\n'
+        + '#set "test" "$$";\r\n'
         + 'include "subject_tests";\r\n'
         + '\r\n'
-        + 'set "test" "Make money";\r\n'
+        + '#set "test" "Make money";\r\n'
         + 'include "subject_tests";\r\n'
         + '\r\n'
-        + 'if string :count "eq" "${test_mailbox}" "1"\r\n'
-        + '{\r\n'
-        + '    fileinto "${test_mailbox}";\r\n'
+        + '#if string :count "eq" "${test_mailbox}" "1"\r\n'
+        + '#{\r\n'
+        + '#    fileinto "${test_mailbox}";\r\n'
         + '    stop;\r\n'
-        + '}\r\n' 
+        + '#}\r\n' 
       
-    testScript(script, {"include":true});
+    testScript(script, {"include":true, "variables":true});
   });   
 
   suite.add( function() {
 
-    suite.log("include test2");
+    suite.log("multiple globals");
    
     var script =
       'require ["include", "variables"];\r\n'
@@ -117,7 +153,7 @@
         + '\r\n'
         + 'if header :contains "Subject" "${test}"\r\n'
         + '{\r\n'
-        + '    set "test_mailbox" "spam-${test}";\r\n'
+        + '#    set "test_mailbox" "spam-${test}";\r\n'
         + '}\r\n';
       
     testScript(script, {"include":true, "variables":true});
@@ -126,18 +162,18 @@
   
   suite.add( function() {
 
-    suite.log("include test2");
+    suite.log("single global");
    
     var script =
       'require ["variables", "include", "vacation"];\r\n'
         + 'global "i_am_on_vacation";\r\n'
         + '\r\n'
-        + 'set "global.i_am_on_vacation" "1";\r\n'
+        + '#set "global.i_am_on_vacation" "1";\r\n'
         + '\r\n'
-        + 'if string :is "${i_am_on_vacation}" "1"\r\n'
-        + '{\r\n'
-        + '    vacation "It\'s true, I am on vacation.";\r\n'
-        + '}\r\n';
+        + '#if string :is "${i_am_on_vacation}" "1"\r\n'
+        + '#{\r\n'
+        + ' #   vacation "It\'s true, I am on vacation.";\r\n'
+        + '#}\r\n';
       
     testScript(script, {"include":true, "variables":true});
   });   

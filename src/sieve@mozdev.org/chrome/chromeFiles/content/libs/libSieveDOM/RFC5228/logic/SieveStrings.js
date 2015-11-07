@@ -22,7 +22,7 @@ function SieveMultiLineString(docshell,id)
   
   this.text = "";
   
-  this.whiteSpace = this._createByName("whitespace");
+  this.whiteSpace = this._createByName("whitespace","\r\n");
   this.hashComment = null;
 }
 

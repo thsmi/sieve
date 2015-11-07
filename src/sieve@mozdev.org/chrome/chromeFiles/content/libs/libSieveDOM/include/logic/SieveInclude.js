@@ -165,11 +165,7 @@ function SieveInclude(docshell,id)
   // Optional parameters
   this._personal = true;
   this._once = false;
-  
-  // This is not the rfc default. But we need it as a workaround.
-  // The initial sript name is hard coded to 'Example'. Without
-  // the optional flag it would  most likely cause an error.
-  this._optional = true;
+  this._optional = false;
   
   // Required
   this._script = this._createByName("string", '"Example"');

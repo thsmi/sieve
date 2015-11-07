@@ -134,8 +134,12 @@ SieveVacationUI.prototype.onSave
   // ... then update the fields...
   
   var sieve = this.getSieve();
-  
+    
   try {
+  	if (state["from"] && (!$("#sivVacationFrom")[0].checkValidity()))
+  	    throw "From contains an invalid mail address";
+  	
+  	
     if (state["subject"])
       sieve.subject($("#sivVacationSubject").val());
  
@@ -148,7 +152,7 @@ SieveVacationUI.prototype.onSave
     if (state["handle"])
       sieve.handle($("#sivVacationHandle").val());
 
-    if (state["addresses"]) {
+    if (state["addresses"]) {	
       sieve.addresses()
          .clear()
          .append(addresses);      

@@ -62,7 +62,9 @@ SieveStringListWidget.prototype.template
 
 SieveStringListWidget.prototype.items
     = function () {
-  return $(($(this._selector).attr("list-items")) + " input[type='text']");
+  var id = 	($(this._selector).attr("list-items"))
+    
+  return $( id + " input[type='text'],"+ id + " input[type='email']"  );
 }
 
 SieveStringListWidget.prototype.values

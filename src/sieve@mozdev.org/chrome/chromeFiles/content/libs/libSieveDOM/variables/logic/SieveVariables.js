@@ -246,8 +246,7 @@ SieveStringTest.prototype.matchType
 SieveStringTest.prototype.source
     = function () 
 {
-	return this.items[5]
-	
+	return this.items[5]	
 }
 
 SieveStringTest.prototype.keyList

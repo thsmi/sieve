@@ -477,14 +477,14 @@ SieveDialogBoxUI.prototype.createHtml
 SieveDialogBoxUI.prototype.getTemplate
     = function () 
 {
-  throw "Implement me";     
+  throw "Implement getTemplate()";     
 }
 
   
 SieveDialogBoxUI.prototype.getSummary
     = function()
 {
-  throw "Implement me";
+  throw "Implement getSummary()";
 }
 
 SieveDialogBoxUI.prototype.onSave
@@ -496,7 +496,7 @@ SieveDialogBoxUI.prototype.onSave
 SieveDialogBoxUI.prototype.onLoad
     = function ()    
 {
-  throw "Implement me";  
+  throw "Implement onLoad()";  
 }
 
 //------------------------------------------------------/

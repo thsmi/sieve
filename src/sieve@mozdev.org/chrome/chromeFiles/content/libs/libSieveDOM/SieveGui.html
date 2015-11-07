@@ -33,17 +33,11 @@
   <script type="application/javascript" src="RFC5228/logic/SieveOperators.js"></script>
   <script type="application/javascript" src="RFC5228/logic/SieveConditions.js"></script>  
   <script type="application/javascript" src="RFC5228/logic/SieveActions.js"></script>
-  <script type="application/javascript" src="RFC5228/logic/SieveImports.js"></script>
-  
-  <!-- RFC 5429 - Reject -->
-  <script type="application/javascript" src="RFC5429/logic/SieveReject.js"></script>  
+  <script type="application/javascript" src="RFC5228/logic/SieveImports.js"></script>  
   
   <!-- RFC 5232 - ImapFlags-->
   <script type="application/javascript" src="RFC5232/logic/SieveImapFlags.js"></script>
-  
-  <!-- RFC Draft for RegEx-->
-  
-
+ 
     <!-- UI related Imports -->
   <!-- RFC 5228 - Sieve -->
   <script type="application/javascript" src="RFC5228/widgets/SieveStringsUI.js" ></script>
@@ -56,7 +50,8 @@
   <script type="application/javascript" src="RFC5228/widgets/SieveActionsUI.js"></script>
   
   <!-- RFC 5429 - Reject -->
-  <script type="application/javascript" src="RFC5429/widgets/SieveRejectUI.js"></script> 
+  <script type="application/javascript" src="reject/widgets/SieveRejectUI.js"></script>
+  <script type="application/javascript" src="reject/logic/SieveReject.js"></script>   
   
   <!-- RFC 5232 - ImapFlags-->
   <script type="application/javascript" src="RFC5232/widgets/SieveImapFlagsUI.js"></script> 
@@ -299,7 +294,7 @@ function debug(obj)
 </div>
 	
 <div id="debug2" style="display:none">
-<!-- <div id="debug2">-->
+<!--<div id="debug2">-->
 <div>
    <div id="boxScript" style="display:none;overflow: hidden;width: 100%; ">  
      <div style="float:left; padding:5px;">
@@ -325,15 +320,17 @@ function debug(obj)
       <div><input type="checkbox" name="capabilities" value="imap4flags" checked>imap4flags</div>
     
        <div><input type="checkbox" name="capabilities" value="fileinto" checked>fileinto</div>
-       <div><input type="checkbox" name="capabilities" value="reject" checked>reject</div>
+       
+       <div><input type="checkbox" name="capabilities" value="reject" checked>reject (RFC5429)</div>
+       <div><input type="checkbox" name="capabilities" value="ereject" checked>ereject (RFC5429)</div>
  
        <div><input type="checkbox" name="capabilities" value="envelope" checked>envelope</div>
        <div><input type="checkbox" name="capabilities" value="regex" checked>regex</div>
-  	   <div><input type="checkbox" name="capabilities" value="ereject" checked>ereject</div>
-  	   <div><input type="checkbox" name="capabilities" value="body" checked>body</div>
+  	   
+  	   <div><input type="checkbox" name="capabilities" value="body" checked>body (RFC5173)</div>
   	   <div><input type="checkbox" name="capabilities" value="vacation" checked>vacation</div>
-  	   <div><input type="checkbox" name="capabilities" value="variables" checked>variables</div>
-  	   <div><input type="checkbox" name="capabilities" value="include" checked>include</div>
+  	   <div><input type="checkbox" name="capabilities" value="variables" checked>variables (RFC5229)</div>
+  	   <div><input type="checkbox" name="capabilities" value="include" checked>include (RFC6609)</div>
 	 
 	   <div><button onclick="setCapabilities()">Apply</button><button onclick="selectAllCapabilities()">select all</button><button onclick="$('#Capabilities').hide()">Cancel</button></div>
   </div>

@@ -440,7 +440,12 @@ SieveDialogBoxUI.prototype.showEditor
   
   $('#sivDialogBody')
     .empty()
-    .load(this.getTemplate(), function () { that.onLoad() });
+    .load(this.getTemplate(), function (response, status, xhr) { 
+      if ( status == "error" )
+        alert( "" + xhr.status + " " + xhr.statusText );
+
+      that.onLoad();       
+    });
  
 }
 

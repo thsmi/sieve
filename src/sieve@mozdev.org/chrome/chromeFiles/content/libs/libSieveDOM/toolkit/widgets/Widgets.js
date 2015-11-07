@@ -14,11 +14,13 @@
   
 function SieveStringListWidget(selector) {
   this._selector = selector; 
+  this._min = 0;
 }
 
 SieveStringListWidget.prototype.addItem
     = function (value) {       
 
+  var that = this;    	
   if (typeof(value) == "undefined")
     value = "";
     
@@ -27,7 +29,11 @@ SieveStringListWidget.prototype.addItem
   $($(this._selector).attr("list-new")).before(elm);
      
   elm.find(":text").val(value).focus();
-  elm.find("button").click(function() { elm.remove() })
+  elm.find("button").click(function() {
+  	if (that._min >= that.items().length)
+  	  return;
+    elm.remove() }
+  )
   
   return this;
 }
@@ -41,6 +47,11 @@ SieveStringListWidget.prototype.init
   $($(this._selector).attr("list-new"))
     .click(function() { that.addItem(); });
   
+  this._min = parseInt($(this._selector).attr("list-min"),10);
+    
+  if (isNaN(this._min))
+    this._min = 0;
+    
   return this;
 }
 

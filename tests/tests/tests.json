@@ -36,7 +36,7 @@ var tests = {
   },
   
   "variables" : {
-    script : "./variables/SieveVariablesTest.js",
+    script : "./sieve/SieveVariablesTest.js",
 	extend : "rfc5228",
     require : [
        "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/variables/logic/SieveVariables.js"]       	
@@ -57,10 +57,17 @@ var tests = {
   },
   
   "vacation" : {
-    script : "./vacation/SieveVacationTest.js",
+    script : "./sieve/SieveVacationTest.js",
     extend : "rfc5228",
     require : [
       "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/vacation/logic/SieveVacation.js"]    
+  },
+  
+  "include" : {
+    script : "./sieve/SieveIncludeTest.js",
+    extend : "rfc5228",
+    require : [
+      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/include/logic/SieveInclude.js"]
   },
   
   "managesieve" : {

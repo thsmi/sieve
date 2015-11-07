@@ -39,7 +39,7 @@
 
     suite.log("Parse Vacation Example 1");
   
-    SieveLexer.capabilities({"vacation":true, "variables":true});
+    SieveLexer.capabilities({"vacation":true});
   
     var script = 
           'require "vacation";\r\n'

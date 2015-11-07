@@ -66,12 +66,7 @@ SieveBody.nodeType  = function () {
   return "test";
 }
 
-SieveBody.prototype.require
-    = function (imports)
-{
-  this.matchType.require(imports);
-  imports["body"] = true;
-}
+
 
 SieveBody.prototype.init
     = function (parser)
@@ -117,9 +112,10 @@ SieveBody.prototype.init
 }    
 
 SieveBody.prototype.require
-    = function (requires)
+    = function (imports)
 {
-  requires["body"] = true;
+  this.matchType.require(imports);
+  imports["body"] = true;
 }
 
 SieveBody.prototype.toScript

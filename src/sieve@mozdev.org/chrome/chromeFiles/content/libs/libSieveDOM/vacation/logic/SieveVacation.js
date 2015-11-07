@@ -42,7 +42,7 @@ function SieveVacation(docshell,id)
   this._state = {};
   
   // Required
-  this._reason = this._createByName("string");
+  this._reason = this._createByName("string",'""');
   
   this.semicolon = this._createByName("atom/semicolon");
 }

@@ -12,66 +12,16 @@
 -->
 
 <div id="sivVacationDialog" style="background-color: #EEEEEE;">
-    <style >
-  
-    .dialogTab  {
-	  color:#757575; 
-	  text-weight: 500; 
-	  height:64px; 
-	  padding:0px; 
-	  margin:0px; 
-	  display:flex; 
-	  justify-content:center; 
-	  width:100%;
-	}
+  <style >
+    @import url('./toolkit/widgets/tabDialog.css');
 	
-    .dialogTab > div {
-	  color: rgba(255,255,255,0.7);
-	  min-width:160px;
-	  max-width: 264px;
-	  height:48px;
-	  /*padding-left: 12px;
-	  padding-right:12px;*/
-	  text-align:center;
-	  font-size: 15px;
-	  vertical-align: middle;
-	  /*display: inline-block;*/
-	  line-height: 48px;
-	  margin-top:16px;
-	  flex:1;
-	}
-	
-	 .dialogTab > div.tab-active {
-	  color: #FFFFFF;
-       height:46px;	 
-	   border-bottom: 2px solid #FFFFFF;
-	 }
-	 
-	 .tab-content {
-	   max-height:400px;
-		overflow: auto;
-		padding-left:16px; 
-		padding-right:16px;
-	 }
-	 
-	 .tab-content > div {
-	   display: none;
-	 }
-	 
-	 .tab-content  > div.tab-active {
-	   display: inherit;	 
-	 }
-	 
-	 #sivDialogContent {
-	   padding:0px;
-	 }
 	 
 	 .sivGroup > div {
 	   height:48px; line-height:48px;
 	   font-size:15px;
 	 }
 	 
-	 #sivVacationDialog input[type=text] {
+	 #sivVacationDialog input[type=text], #sivVacationDialog input[type=email] {
 	 height:13px; 
 	 margin-top:8px; 
 	 margin-bottom:4px; 
@@ -119,19 +69,7 @@
        color: rgba(0,0,0,0.53);
        margin-bottom:8px;
      }
-     
-  </style>
-    <div>
-        <!-- System -->
-        <div id="vacationEnvelopePage" style="display:none">
-            <!-- Appbar -->
-            <div id="vacationEnvelopeBack" style="border-bottom: 1px solid #E3E3E3;  background-color: #607D8B;">
-                <div style="color: #FFFFFF; font-size:20px; line-height:60px; color:#757575; text-weight: 500; height:64px; padding:0px; margin:0px; display:flex; justify-content:left; width:100%;">
-                    <div  style="color: #FFFFFF; width:56px; padding-left:16px;">&lt;</div>
-                    <div style="color: #FFFFFF;">Edit Response Envelope</div>
-                </div>
-            </div>
-            <style>
+	 
 	  .sivMultiLineItem {
 	     padding-top:16px; 
 		 padding-bottom:20px;
@@ -161,9 +99,20 @@
 		  overflow: hidden;  
 		  /*text-overflow: ellipsis;
 		  white-space: nowrap;*/
-	   }
+	   }	 
+     
+  </style>
+    <div>
+        <!-- System -->
+        <div id="vacationEnvelopePage" style="display:none">
+            <!-- Appbar -->
+            <div id="vacationEnvelopeBack" style="border-bottom: 1px solid #E3E3E3;  background-color: #607D8B;">
+                <div style="color: #FFFFFF; font-size:20px; line-height:60px; color:#757575; text-weight: 500; height:64px; padding:0px; margin:0px; display:flex; justify-content:left; width:100%;">
+                    <div  style="color: #FFFFFF; width:56px; padding-left:16px;">&lt;</div>
+                    <div style="color: #FFFFFF;">Edit Response Envelope</div>
+                </div>
+            </div>
 
-	 </style>
             <div  style="padding-left:16px; padding-right:16px;max-height:400px;overflow: auto;">
                 <div class="sivMultiLineItem">
                     <div class="sivContent">

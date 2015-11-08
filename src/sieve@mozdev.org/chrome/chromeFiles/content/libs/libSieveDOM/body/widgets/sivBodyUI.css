@@ -1,0 +1,15 @@
+
+/* Style the existing elements */ 
+
+#sivBodyGeneralContent .sivMatchType h1 {
+  font-size: 13px;
+  margin: 0px;
+}
+
+#sivBodyGeneralContent .sivMatchType > div {
+  padding-bottom: 8px;
+}
+
+#sivBodyGeneralContent .sivMatchType {
+  padding-bottom : 0px;
+}

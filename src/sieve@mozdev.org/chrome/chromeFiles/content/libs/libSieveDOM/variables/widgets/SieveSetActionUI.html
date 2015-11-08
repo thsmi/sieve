@@ -14,164 +14,10 @@
 <div id="sivDialogVariables" style="background-color: #EEEEEE;">
 
 <style>
-  
-    .dialogTab  {
-      color:#757575; 
-      text-weight: 500; 
-      height:64px; 
-      padding:0px; 
-      margin:0px; 
-      display:flex; 
-      justify-content:center; 
-      width:100%;
-    }
-    
-    .dialogTab > div {
-      color: rgba(255,255,255,0.7);
-      min-width:160px;
-      max-width: 264px;
-      height:48px;
-      /*padding-left: 12px;
-      padding-right:12px;*/
-      text-align:center;
-      font-size: 15px;
-      vertical-align: middle;
-      /*display: inline-block;*/
-      line-height: 48px;
-      margin-top:16px;
-      flex:1;
-    }
-    
-     .dialogTab > div.tab-active {
-      color: #FFFFFF;
-       height:46px;  
-       border-bottom: 2px solid #FFFFFF;
-     }
-     
-     .tab-content {
-       max-height:400px;
-        overflow: auto;
-        padding-left:16px; 
-        padding-right:16px;
-     }
-     
-     .tab-content > div {
-       display: none;
-     }
-     
-     .tab-content  > div.tab-active {
-       display: inherit;     
-     }
-     
-     #sivDialogContent {
-       padding:0px;
-     }
-     
-     .sivGroup > div {
-       height:48px; line-height:48px;
-       font-size:15px;
-     }
-     
-     #sivVacationDialog input[type=text] {
-     height:13px; 
-     margin-top:8px; 
-     margin-bottom:4px; 
-     padding-bottom:4px; 
-     /*line-height:48px;*/
-     font-size:13px; 
-     border:none; 
-     border-bottom:1px solid black;
-     background-color: #EEEEEE;
-     min-width: 300px
-     }
-     
-     #sivVacationDialog textarea {
-       font-size:15px; border:none; border-bottom:1px solid black;background-color: #EEEEEE; width:100%; height:200px;;
-     }
-     
-      #sivVacationDialog h2 {
-        /*height:48px; line-height:48px; */
-        font-size: 13px;
-        color: rgba(0,0,0,0.53);
-        margin: 0;  
-        /*border-top: 1px solid lightgray;*/
-      }
-     
-      
-      .sivGroup.sivCollapsed > div {
-         display:none;
-      }   
-      
-      #sivVacationServerDesc, #sivVacationFromDesc, #sivVacationAddressesDesc {
-        color: rgba(0,0,0,0.53);
-      }  
-      
-      #vacationEnvelopeEdit .sivContent div {
-        text-overflow: ellipsis;
-        white-space: nowrap;
-     }
-     
-     #sivVacationDays {     
-       width: 50px;
-       min-width: 0px !important;
-     }
-     
-     .sivDescription{ 
-       color: rgba(0,0,0,0.53);
-       margin-bottom:8px;
-     }
-     
-      .sivMultiLineItem {
-         padding-top:16px; 
-         padding-bottom:20px;
-         border-bottom:1px solid lightgray; 
-         display:flex;
-         
-         font-size:13px;
-      }  
-
-      .sivMultiLineItem  .sivAction {
-        padding-left:16px; 
-        padding-right:16px;
-        
-        min-width:24px;
-        font-size:24px;
-      }  
-      
-      .sivMultiLineItem .sivContent {
-         padding-bottom: 0px;
-         width:100%;
-         overflow: hidden;
-         font-size:13px
-      }
-      
-       .sivMultiLineItem .sivContent div {
-          flex:1 1 100%;
-          overflow: hidden;  
-          /*text-overflow: ellipsis;
-          white-space: nowrap;*/
-       }
-
-/* Style the existing elements */ 
-
-#sivVariablesAdvancedContent .sivModifiers h1 {
-  font-size: 13px;
-  margin: 0px;
-}
-
-#sivVariablesAdvancedContent > div  {
-  padding-top: 8px; 
-}
-
-#sivVariablesAdvancedContent .sivModifiers > div {
-  padding-bottom: 8px;
-  padding-top 8px;
-}
-
-#sivVariablesAdvancedContent .sivModifiers > div > div {
-  padding-left: 20px;
-}
-
+    @import url('./toolkit/widgets/tabDialog.css');
+    @import url('./variables/widgets/SieveVariablesUI.css');
+	
+/* Inputs */
 #sivVariablesGeneralContent  textarea {
   width: 100%;
   height: 100px;
@@ -179,18 +25,7 @@
 
 #sivVariablesGeneralContent  input {
   width: 100%;
-}
-
-.tab-content h1 {
-  font-size: 13px;
-  color: rgba(0,0,0,0.53);
-}
-
-.tab-content {
-  padding-bottom : 16px;
-  /*min-height: 300px;*/
-}
-
+}	
 </style>
 
     <div>

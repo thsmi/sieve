@@ -10,6 +10,12 @@
     }
   },
   
+  "permissions": [
+    "clipboardRead",
+    "clipboardWrite",
+    "browser"
+  ],
+  
   "sockets": {
     "tcp": {
       "connect": "*:*"

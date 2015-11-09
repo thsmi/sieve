@@ -1,3 +1,5 @@
+"use strict";
+
 var dom2;
 
 $(document).ready(function() {
@@ -21,7 +23,8 @@ $(document).ready(function() {
       $("[draggable=false]").attr("draggable","true"); 
    }     
      
-    $("#draggable").val(ev.target.nodeName)});
+    $("#draggable").val(ev.target.nodeName)
+  });
   
   var toolbarLeft = $('#toolbar').offset().left;
   
@@ -31,7 +34,46 @@ $(document).ready(function() {
   
   $("#CapabilityOverlay")
       .click(function() { $('#Capabilities').hide(); }); 
+  $("#CapabilitiesHide")
+      .click(function() { $('#Capabilities').hide();} );
+
+  $("#CapabilitiesApply")
+      .click(function() { setCapabilities();} );
+  $("#CapabilitiesAll")
+      .click(function() { selectAllCapabilities();} );
+       
+  $("#DebugParse")
+      .click(function() { setSieveScript(); });
+  $("#DebugStringify")
+      .click(function() { $('#txtOutput').val(getSieveScript()); });
+  $("#DebugRequire")
+      .click(function() { require(); });
+  $("#DebugCompact")
+      .click(function() { compact(); });
+  $("#DebugCapabilities")
+      .click(function() { showCapabilities(); });
+  $("#DebugToggle")
+      .click(function() { $('#boxScript').toggle() });
       
+  $("#DebugDropTarget")
+      .on('dragover', function (e) {
+      	console.dir(e.originalEvent.dataTransfer.getData("sieve/action"));
+      	e.preventDefault();
+      	e.stopPropagation();
+      } )
+      .on('dragenter', function (e) {
+      	console.dir(e.originalEvent.dataTransfer.getData("sieve/action"));
+        e.preventDefault();
+        e.stopPropagation();
+      } )
+      .on('drop',function (e) {
+      	console.dir(e.originalEvent.dataTransfer.getData("sieve/action"));
+      	event.preventDefault();
+      	console.dir(e.dataTransfer);
+      } )
+      
+  
+    
 });
 
 function setSieveScript(script,capabilities)
@@ -182,3 +224,6 @@ function debug(obj)
   $("#infobarmessage > span").text(content);
     $("#infobar").toggle(); 
   }
+
+   
+  

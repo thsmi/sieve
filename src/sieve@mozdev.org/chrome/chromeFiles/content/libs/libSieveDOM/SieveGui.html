@@ -18,6 +18,8 @@
   <script type="application/javascript" src="toolkit/logic/Elements.js"></script>
   <script type="application/javascript" src="toolkit/widgets/Boxes.js"></script>
   <script type="application/javascript" src="toolkit/widgets/Widgets.js"></script>
+  
+  <script type="application/javascript" src="toolkit/events/DataTransfer.js"></script>
   <script type="application/javascript" src="toolkit/events/DropHandler.js"></script>
   <script type="application/javascript" src="toolkit/events/DragHandler.js"></script>
   
@@ -144,30 +146,35 @@
   	   <div><input type="checkbox" name="capabilities" value="variables" checked>variables (RFC5229)</div>
   	   <div><input type="checkbox" name="capabilities" value="include" checked>include (RFC6609)</div>
 	 
-	   <div><button onclick="setCapabilities()">Apply</button><button onclick="selectAllCapabilities()">select all</button><button onclick="$('#Capabilities').hide()">Cancel</button></div>
+	   <div>
+	     <button id="CapabilitiesApply">Apply</button>
+	     <button id="CapabilitiesAll">Select All</button>
+	     <button id="CapabilitiesHide">Cancel</button>
+	   </div>
   </div>
 </div>
 
-<div>
-    <button onclick="setSieveScript();">
+<div> 
+  <button id="DebugParse">
 	   Parse Sieve Script
 	 </button>
-    <button onclick="$('#txtOutput').val(getSieveScript());">
+  <button id="DebugStringify">
 	  Update Sieve Script
 	</button>
-    <button onclick="require()">
+  <button id="DebugRequire">
 	  Collect Require
 	</button>	
-    <button onclick="compact()">
+  <button id="DebugCompact">
 	  Compact
 	</button>
-    <button onclick="showCapabilities()">
+  <button id="DebugCapabilities"">
 	  Set Capabilities
 	</button>		
-    <button onclick="$('#boxScript').toggle()">
+  <button id="DebugToggle">
 	  Show/Hide
 	</button>		
 	<input id="draggable" />
+	<span id="DebugDropTarget">DROP TARGET</span>
 </div>
 </div>
   

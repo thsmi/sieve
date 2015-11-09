@@ -155,56 +155,67 @@ SieveExistsUI.prototype.initSummary
 //****************************************************************************//
 function SieveHeaderUI(elm)
 {
-  SieveTestBoxUI.call(this,elm);  
+  SieveTestDialogBoxUI.call(this,elm); 
 }
 
-SieveHeaderUI.prototype = Object.create(SieveTestBoxUI.prototype);
+SieveHeaderUI.prototype = Object.create(SieveTestDialogBoxUI.prototype);
 SieveHeaderUI.prototype.constructor = SieveHeaderUI;
 
-SieveHeaderUI.prototype.onValidate
+SieveHeaderUI.prototype.onSave
     = function ()
 { 
+  var sieve = this.getSieve();
+  
+  sieve.keyList
+    .clear()
+    .append((new SieveStringListWidget("#sivHeaderKeyList")).values());
+
+  sieve.headerNames
+    .clear()
+    .append((new SieveStringListWidget("#sivHeaderHeaderList")).values());    
+    
   return true;      
 }
 
-SieveHeaderUI.prototype.initHelp
-    = function ()
+SieveHeaderUI.prototype.getTemplate
+    = function () 
 {
+  return "./RFC5228/widgets/SieveHeaderTestUI.html"      
+}
+
+
+
+SieveHeaderUI.prototype.onLoad
+    = function()
+{  
+
+  (new SieveTabWidget()).init();
+  
+  (new SieveStringListWidget("#sivHeaderHeaderList"))
+      .init()
+      .values(this.getSieve().headerNames); 
+      //.defaults(["Subject","Date","Message-ID","Content-Type"]);
       
-  return $("<div/>")
-    .html('<h1>Compares header as strings</h1>'
-      + '<p>You typically use this test with headers containing subject line or' +
-          ' a spam score</p>' 
-      + "<p>Do not use this test, if the header should be matched against a " +
-          "mail addresses. The result will be unrealiable, as this test is" +
-          "not aware of display names. Use the address test instead")
-}
-
-SieveHeaderUI.prototype.initEditor
-    = function()
-{  
-  // 
-  //
-
-  
-  return $("<div/>")
-      .append($("<h1/>").text("Any of the following header ..."))
-      .append((new SieveStringListUI(this.getSieve().headerNames))
-        .defaults(["Subject","Date","Message-ID","Content-Type"]).html())
-      .append((new SieveMatchTypeUI(this.getSieve().matchType)).html())
-      .append($("<h1/>").text("... any of the keyword(s)"))
-      .append((new SieveStringListUI(this.getSieve().keyList)).html())    
-      .append((new SieveComparatorUI(this.getSieve().comparator)).html());
-
+  var matchType = new SieveMatchTypeUI(this.getSieve().matchType);
+  $("#sivHeaderMatchTypes")
+    .append(matchType.html());    
+    
+  var comparator = new SieveComparatorUI(this.getSieve().comparator);
+  $("#sivHeaderComparator")
+    .append(comparator.html());
+    
+  (new SieveStringListWidget("#sivHeaderKeyList"))
+      .init()
+      .values(this.getSieve().keyList);       
 }
   
-SieveHeaderUI.prototype.initSummary
+SieveHeaderUI.prototype.getSummary
     = function()
 {  
   return $("<div/>")
-      .html(" header <em>"+ $('<div/>').text(this.getSieve().headerNames.toScript()).html()+"</em>"
+      .html(" header "+ $('<em/>').text(this.getSieve().headerNames.toScript()).html()
               + " " + this.getSieve().matchType.matchType()
-              + " <em>" + $('<div/>').text(this.getSieve().keyList.toScript()).html()+"</em>");
+              + $('<em/>').text(this.getSieve().keyList.toScript()).html());
 }
 
 //****************************************************************************//

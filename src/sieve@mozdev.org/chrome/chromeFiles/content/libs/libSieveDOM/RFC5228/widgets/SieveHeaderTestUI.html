@@ -1,0 +1,105 @@
+<!--
+
+  The contents of this file are licenced. You may obtain a copy of 
+  the license at https://github.com/thsmi/sieve/ or request it via 
+  email from the author.
+ 
+  Do not remove or change this comment.
+  
+  The initial author of the code is:
+    Thomas Schmid <schmid-thomas@gmx.net>
+
+-->
+
+
+
+<div id="sivSieveDialog" style="background-color: #EEEEEE;">
+
+<style>
+  @import url('./toolkit/widgets/tabDialog.css');
+  @import url('./RFC5228/widgets/sivSieveUI.css');
+</style>
+
+    <div>
+        <!-- System -->
+        <div id="sivEditMain">
+            <!-- Appbar -->
+            <div style="border-bottom: 1px solid #E3E3E3;  background-color: #607D8B;">
+                <div class="dialogTab">
+                    <div class="tab-active" tab-content="sivHeaderGeneralContent">BASIC</div>
+                    <div tab-content="sivHeaderAdvancedContent">ADVANCED</div>
+                    <div tab-content="sivHeaderHelpContent" >HELP</div>
+                </div>
+            </div>
+            <!-- content -->
+            <div class="tab-content">
+                <!-- content for help tab -->
+                <div id="sivHeaderHelpContent">
+<h1>Compares header as strings</h1>
+      <p>You typically use this test with headers containing subject line or a spam score</p> 
+      <p>Do not use this test, if the header should be matched against a mail addresses. 
+      The result will be unrealiable, as this test is not aware of display names. 
+      Use the address test instead                   
+      </p>
+                </div>
+                
+                <!-- content for general tab -->
+                <div id="sivHeaderGeneralContent" class="tab-active" >
+                  <h1>Any of the following header ... </h1>   
+                  <div id="sivHeaderHeaderList"
+                       list-new="#sivHeaderHeaderListAdd" 
+                       list-items="#sivHeaderHeaderListItems" 
+                       list-template="#sivHeaderHeaderListTemplate" 
+                       list-min="1">
+                       
+                    
+                    <datalist id="sivHeaderDefaults">
+                      <option value="Subject" />
+                      <option value="Date" />
+                      <option value="Message-ID" />
+                      <option value="Content-Type" />
+                    </datalist>
+                      
+                    <div id="sivHeaderHeaderListTemplate" style="display:none">
+                      <div>
+                        <input type="text" list="sivHeaderDefaults"/>
+                        <button>remove</button>
+                      </div>
+                    </div>                    
+                    <div id="sivHeaderHeaderListItems">
+                      <div>
+                        <button id="sivHeaderHeaderListAdd">add</button>
+                       </div>
+                    </div>
+                  </div>
+                  
+                  <div id="sivHeaderMatchTypes"> </div>
+                  <h1>... any of the keyword(s):</h1>
+                  <div id="sivHeaderKeyList"
+                       list-new="#sivHeaderKeyListAdd" 
+                       list-items="#sivHeaderKeyListItems" 
+                       list-template="#sivHeaderKeyListTemplate" 
+                       list-min="1">
+                       
+                    <div id="sivHeaderKeyListTemplate" style="display:none">
+                      <div>
+                        <input type="text" />
+                        <button>remove</button>
+                      </div>
+                    </div>                    
+                    <div id="sivHeaderKeyListItems">
+                      <div>
+                        <button id="sivHeaderKeyListAdd">add</button>
+                       </div>
+                    </div>
+                  </div>                  
+                </div>
+                
+                <!-- content for advanced tab -->
+                <div  id="sivHeaderAdvancedContent">
+				  <div id="sivHeaderComparator"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

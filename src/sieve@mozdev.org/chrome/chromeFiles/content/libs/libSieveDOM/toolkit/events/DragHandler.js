@@ -18,6 +18,7 @@ function SieveDragHandler(flavour)
     this._flavour = flavour;
 }
 
+
 SieveDragHandler.prototype._owner = null;
 SieveDragHandler.prototype._flavour = "sieve/action";
 
@@ -88,7 +89,9 @@ SieveDragHandler.prototype.attach
 SieveDragHandler.prototype.onDrag
     = function(event)
 {
-  var dt = event.dataTransfer;   
+  var dt = new SieveDataTransfer(event.dataTransfer);
+  
+  dt.clear();
   	
   dt.setData("application/sieve", this.getScript());
   dt.setData(this.flavour(), this.getMetaInfo());

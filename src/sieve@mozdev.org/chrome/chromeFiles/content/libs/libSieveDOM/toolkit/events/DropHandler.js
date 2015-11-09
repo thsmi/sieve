@@ -98,7 +98,9 @@ SieveDropHandler.prototype.attach
 
 SieveDropHandler.prototype.onDragEnter
     = function (event)
-{
+{	
+	console.log("onDrag enter "+this.canDrop(event));
+	
   if (!this.canDrop(event))
     return true;
     
@@ -142,9 +144,8 @@ SieveDropHandler.prototype.onDragDrop
 SieveDropHandler.prototype.onDrop
     = function(flavour,event)
 {
-  var dt = event.originalEvent.dataTransfer;
-  
-  var script = dt.getData("application/sieve");  
+  var dt = new SieveDataTransfer(event.originalEvent.dataTransfer);
+   
   var meta = JSON.parse(dt.getData(flavour));  
   
   switch (meta.action)
@@ -153,20 +154,24 @@ SieveDropHandler.prototype.onDrop
       if (!this.createElement)
         return false;
         
-      this.createElement(flavour, meta.type, script);
+      this.createElement(flavour, meta.type);
         
       event.preventDefault();
       event.stopPropagation();
+      
+      dt.clear();
       return true;
 
     case "move" :
       if (!this.moveElement)
         return false;
 
-      this.moveElement(flavour, meta.id, script);
+      this.moveElement(flavour, meta.id);
 
       event.preventDefault();
-      event.stopPropagation();        
+      event.stopPropagation();
+      
+      dt.clear();
       return true;
       
     default:
@@ -193,10 +198,8 @@ SieveDropHandler.prototype.drop
 SieveDropHandler.prototype.onCanDrop
     = function (flavour,event)
 {
-
-  var dt = event.originalEvent.dataTransfer;
+  var dt = new SieveDataTransfer(event.originalEvent.dataTransfer);
   
-  var script = dt.getData("application/sieve");
   var meta = dt.getData(flavour);
   
   if (!meta || !meta.length)
@@ -214,22 +217,22 @@ SieveDropHandler.prototype.onCanDrop
       if (!this.canCreateElement)
         return false;
         
-      return this.canCreateElement(flavour, meta.type, script)
+      return this.canCreateElement(flavour, meta.type)
     
     case "move":
       if (!this.canMoveElement)
         return false;
         
-      return this.canMoveElement(flavour, meta.id, script)
+      return this.canMoveElement(flavour, meta.id)
   }
 }
 
 SieveDropHandler.prototype.canDrop
     = function(event)
 {
-  for (var i=0; i<this.flavours().length; i++)
+	for (var i=0; i<this.flavours().length; i++)
   {  
-    if (!this.onCanDrop(this.flavours()[i],event))
+    if (!this.onCanDrop(this.flavours()[i], event))
       continue;
             
     event.preventDefault();
@@ -252,7 +255,7 @@ SieveBlockDropHandler.prototype = Object.create(SieveDropHandler.prototype);
 SieveBlockDropHandler.prototype.constructor = SieveBlockDropHandler;
 
 SieveBlockDropHandler.prototype.canMoveElement
-    = function(sivFlavour, id, script)
+    = function(sivFlavour, id)
 {
   var source = this.document().id(id);
   
@@ -267,7 +270,7 @@ SieveBlockDropHandler.prototype.canMoveElement
 }
 
 SieveBlockDropHandler.prototype.moveElement
-    = function(sivFlavour, id, script)
+    = function(sivFlavour, id)
 {
   var dragElm = this.document().id(id);  
   if (!dragElm)
@@ -336,7 +339,7 @@ SieveBlockDropHandler.prototype.moveElement
 }
 
 SieveBlockDropHandler.prototype.canCreateElement
-    = function(sivFlavour, type , script)
+    = function(sivFlavour, type)
 {
   if(sivFlavour == "sieve/operator")
     return false;
@@ -345,7 +348,7 @@ SieveBlockDropHandler.prototype.canCreateElement
 }
 
 SieveBlockDropHandler.prototype.createElement
-    = function(sivFlavour, type , script)
+    = function(sivFlavour, type)
 {  
    
   var item = this.parent().getSieve();
@@ -377,13 +380,13 @@ SieveTrashBoxDropHandler.prototype = Object.create(SieveDropHandler.prototype);
 SieveTrashBoxDropHandler.prototype.constructor = SieveTrashBoxDropHandler;
 
 SieveTrashBoxDropHandler.prototype.canMoveElement
-    = function(sivFlavour, id, script)
+    = function(sivFlavour, id)
 {           
   return true;      
 }
 
 SieveTrashBoxDropHandler.prototype.moveElement
-    = function(sivFlavour, id, script)
+    = function(sivFlavour, id)
 {
   
   var item = this.document().id(id);
@@ -416,7 +419,7 @@ SieveConditionDropHandler.prototype = Object.create(SieveDropHandler.prototype);
 SieveConditionDropHandler.prototype.constructor = SieveConditionDropHandler;
 
 SieveConditionDropHandler.prototype.canMoveElement
-    = function(flavour, id, script)
+    = function(flavour, id)
 {     
     
   // actions can only be added as last element...
@@ -470,7 +473,7 @@ SieveConditionDropHandler.prototype.canMoveElement
 }
 
 SieveConditionDropHandler.prototype.moveElement
-    = function (flavour, id, script)
+    = function (flavour, id)
 {
   var source = this.document().id(id);  
   if (!source)
@@ -529,7 +532,7 @@ SieveConditionDropHandler.prototype.moveElement
 }
 
 SieveConditionDropHandler.prototype.canCreateElement
-    = function(flavour, type , script)
+    = function(flavour, type)
 {
   if(flavour == "sieve/operator")
     return false;
@@ -557,7 +560,7 @@ SieveConditionDropHandler.prototype.canCreateElement
 }
 
 SieveConditionDropHandler.prototype.createElement
-    =  function(sivFlavour, type , script)
+    =  function(sivFlavour, type)
 {     
   // The new home for our element
   var item = this.parent().getSieve();
@@ -600,7 +603,7 @@ SieveTestDropHandler.prototype = Object.create(SieveDropHandler.prototype);
 SieveTestDropHandler.prototype.constructor = SieveTestDropHandler;
 
 SieveTestDropHandler.prototype.canMoveElement
-    = function (sivFlavour, id , script)
+    = function (sivFlavour, id)
 {
   var target = this.owner().getSieve();
   if(!target)
@@ -635,7 +638,7 @@ SieveTestDropHandler.prototype.canMoveElement
 
   
 SieveTestDropHandler.prototype.moveElement
-    = function (sivFlavour, id , script)
+    = function (sivFlavour, id)
 { 
   var source = this.document().id(id);  
   if (!source)
@@ -696,13 +699,13 @@ SieveTestDropHandler.prototype.moveElement
 }
 
 SieveTestDropHandler.prototype.canCreateElement
-    = function (sivFlavour, type , script)
+    = function (sivFlavour, type)
 {     
   return true;
 }
 
 SieveTestDropHandler.prototype.createElement
-    = function(sivFlavour, type , script)
+    = function(sivFlavour, type)
 {  
   // The new home for our element
   var inner = this.owner().getSieve();
@@ -757,7 +760,7 @@ SieveMultaryDropHandler.prototype = Object.create(SieveDropHandler.prototype);
 SieveMultaryDropHandler.prototype.constructor = SieveMultaryDropHandler;
 
 SieveMultaryDropHandler.prototype.canMoveElement
-    = function (sivFlavour, id, script)
+    = function (sivFlavour, id)
 {
   // We have to prevent that someone drops a parent onto a child...
   //  ... this would generate a ring reference
@@ -789,7 +792,7 @@ SieveMultaryDropHandler.prototype.canMoveElement
 }
 
 SieveMultaryDropHandler.prototype.moveElement
-    = function (sivFlavour, id, script)
+    = function (sivFlavour, id)
 {
   var target = this.parent().getSieve();
   
@@ -837,7 +840,7 @@ SieveMultaryDropHandler.prototype.moveElement
 }
 
 SieveMultaryDropHandler.prototype.canCreateElement
-    =  function(sivFlavour, type , script)
+    =  function(sivFlavour, type)
 {
   if (sivFlavour != "sieve/test")
     return false;
@@ -846,7 +849,7 @@ SieveMultaryDropHandler.prototype.canCreateElement
 }
 
 SieveMultaryDropHandler.prototype.createElement
-    =  function(sivFlavour, type , script)
+    =  function(sivFlavour, type)
 {
   var item = this.parent().getSieve();
   

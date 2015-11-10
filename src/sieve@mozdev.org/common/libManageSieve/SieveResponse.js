@@ -13,9 +13,9 @@
  // Enable Strict Mode
 "use strict";
 
-       
-(function(exports) {	
 
+(function(exports) {
+        
 /**
  * This class implements a generic response handler for simple sieve requests.
  * 
@@ -511,320 +511,331 @@ SieveSaslLoginResponse.prototype.add
 SieveSaslLoginResponse.prototype.getState
   = function () { return this.state; }
 
-//*************************************
-/**
- * @author Thomas Schmid
- * @author Max Dittrich 
- */
-function SieveSaslCramMd5Response()
-{
-  this.state = 0;
-}
-
-SieveSaslCramMd5Response.prototype = Object.create(SieveSimpleResponse.prototype);
-SieveSaslCramMd5Response.prototype.constructor = SieveSaslCramMd5Response;
-
-SieveSaslCramMd5Response.prototype.add
-  = function (parser) 
-{
-  
-  if ((this.state == 0) && (parser.isString()))
+  //*************************************
+  /**
+   * @author Thomas Schmid
+   * @author Max Dittrich 
+   */
+  function SieveSaslCramMd5Response()
   {
-    // The challenge is contained within a string
-    this.challenge = parser.extractString();
-    parser.extractLineBreak();
-    
-    this.state++;
-    
-    return;
+    this.state = 0;
   }
   
-  if (this.state == 1)
+  SieveSaslCramMd5Response.prototype = Object.create(SieveSimpleResponse.prototype);
+  SieveSaslCramMd5Response.prototype.constructor = SieveSaslCramMd5Response;
+  
+  SieveSaslCramMd5Response.prototype.add
+    = function (parser) 
   {
-    // Should be either a NO, BYE or OK
-    this.state = 4;
     
-    // Invoke the interited constructor to parse the rest of the message
-    SieveSimpleResponse.call(this,parser);
-    return;
-  }
-    
-  throw 'Illegal State:'+this.state+' / '+parser.getData();
-}
-
-SieveSaslCramMd5Response.prototype.getState
-  = function () { return this.state; }
-
-SieveSaslCramMd5Response.prototype.getChallenge
-  = function ()
-{
-  if (this.state < 1)
-    throw "Illegal State, request not completed";
+    if ((this.state == 0) && (parser.isString()))
+    {
+      // The challenge is contained within a string
+      this.challenge = parser.extractString();
+      parser.extractLineBreak();
       
-  return this.challenge; 
-}
-
-/*********************************************************
-    literal               = "{" number  "+}" CRLF *OCTET
-    quoted                = <"> *1024QUOTED-CHAR <">
-    response-getscript    = [string CRLF] response-oknobye
-    string                = quoted / literal
-**********************************************************/
-
-function SieveGetScriptResponse(scriptName,parser)
-{
-  /** @private, @type {String} */ this.scriptName = scriptName;
-  /** @private, @type {String} */ this.scriptBody = "";
-  
-  if (parser.isString())
-  {
-    this.scriptBody = parser.extractString();
-    parser.extractLineBreak();
+      this.state++;
+      
+      return;
+    }
+    
+    if (this.state == 1)
+    {
+      // Should be either a NO, BYE or OK
+      this.state = 4;
+      
+      // Invoke the interited constructor to parse the rest of the message
+      SieveSimpleResponse.call(this,parser);
+      return;
+    }
+      
+    throw 'Illegal State:'+this.state+' / '+parser.getData();
   }
-	
-  // invoke inheritted Object constructor...
-  SieveSimpleResponse.call(this,parser);  
-}
-
-// Inherrit properties from SieveSimpleResponse
-SieveGetScriptResponse.prototype = Object.create(SieveSimpleResponse.prototype);    
-SieveGetScriptResponse.prototype.constructor = SieveGetScriptResponse;
-
-/**
- * Contains the requested sieve script. 
- * Keep in mind scripts can't be locked, so several clients may manipulate 
- * a script at the same time.
- * 
- * @return {String} returns the requested script's content
- */    
-SieveGetScriptResponse.prototype.getScriptBody
-    = function () { return this.scriptBody; }
-
-/**
- * @return {String} Containing the script's Name.
- */
-SieveGetScriptResponse.prototype.getScriptName
-    = function () { return this.scriptName; }
- 
-/**
- * Parses responses for SCRAM-SHA-1 authentication.
- * 
- * SCRAM is a secure client first authentication mechanism. The client
- * callanges the server and descides if the connection is trustworthy.
- * 
- * This requires a way mor logic on the client than with simple authentication
- * mechanisms. It also requires more communication, in total two roundtrips. 
- */
- 
-function SieveSaslScramSha1Response()
-{
-  this.state = 0;
-}
-
-SieveSaslScramSha1Response.prototype = Object.create(SieveSimpleResponse.prototype);
-SieveSaslScramSha1Response.prototype.constructor = SieveSaslScramSha1Response;
-
-/**
- * @private
- * 
- * Parses the server-first-message it is defined to be:
- *   [reserved-mext ","] nonce "," salt "," iteration-count ["," extensions]
- * 
- * Where 
- *  reserved-mext   : "m=" 1*(value-char)
- *  nonce           : "r=" c-nonce
- *  salt            : "s=" base64(salt)
- *  iteration-count : "i=" posit-number
- * 
- * Extensions are optional and for future use.
- * Neithe c-nonce nor salt can contain a "," character 
- * 
- * @param {} string
- */
-SieveSaslScramSha1Response.prototype._parseFirstMessage
-  = function (string)
-{
-  this._serverFirstMessage = atob(string);
   
-  var tokens = this._serverFirstMessage.split(',');
+  SieveSaslCramMd5Response.prototype.getState
+    = function () { return this.state; }
   
-  // Test for the reserved-mext token. If it is existant, we just skip it
-  if ((tokens[0].length <=2) || tokens[0][0] == "m")
-    tokens.shift();
-  
-  // Extract the nonce
-  if ((tokens[0].length <=2) || (tokens[0][0] != "r"))
-    throw "Nonce missing";
-    
-  this._nonce = tokens[0].substr(2);
-  
-  
-  if ((tokens[1].length <= 2) ||(tokens[1][0] != "s"))
-    throw "Salt missing";
-    
-  this._salt = atob(tokens[1].substr(2));
-  
-  
-  if ((tokens[2].length <= 2) || (tokens[2][0] != "i"))
-    throw "Iteration Count missing";
-    
-  this._iter = parseInt(tokens[2].substr(2),10);
-}
-
-/**
- * Parses the server-final-message. It is defined to be:
- *   (server-error / verifier) ["," extensions]
- * 
- * Where 
- *  server-error    : "e=" server-error-value
- *  verifier        : "v=" base64(ServerSignature)
- * 
- * Extensions are optional and for future use.
- * As suggested by the RFC they will be ignored 
- * 
- * @param {} string
- */
-SieveSaslScramSha1Response.prototype._parseFinalMessage
-  = function (string)
-{ 
-  // server-final-message = (server-error / verifier) ["," extensions]
-  var token = atob(string).split(",");
-  
-  if (token[0].length <= 2)
-    throw "Response expected but got : "+ string;
-    
-  // server-error = "e="
-  if (token[0][0] == "e")
+  SieveSaslCramMd5Response.prototype.getChallenge
+    = function ()
   {
-    this._serverError = token[0].substr(2);
-    return;
+    if (this.state < 1)
+      throw "Illegal State, request not completed";
+        
+    return this.challenge; 
   }
-
-  // verifier = "v=" base64
-  if (token[0][0] == "v")
+  
+  /*********************************************************
+      literal               = "{" number  "+}" CRLF *OCTET
+      quoted                = <"> *1024QUOTED-CHAR <">
+      response-getscript    = [string CRLF] response-oknobye
+      string                = quoted / literal
+  **********************************************************/
+  
+  function SieveGetScriptResponse(scriptName,parser)
   {
-    this._verifier = atob(token[0].substr(2));
-    return
+    /** @private, @type {String} */ this.scriptName = scriptName;
+    /** @private, @type {String} */ this.scriptBody = "";
+    
+    if (parser.isString())
+    {
+      this.scriptBody = parser.extractString();
+      parser.extractLineBreak();
+    }
+  	
+    // invoke inheritted Object constructor...
+    SieveSimpleResponse.call(this,parser);  
   }
+  
+  // Inherrit properties from SieveSimpleResponse
+  SieveGetScriptResponse.prototype = Object.create(SieveSimpleResponse.prototype);    
+  SieveGetScriptResponse.prototype.constructor = SieveGetScriptResponse;
+  
+  /**
+   * Contains the requested sieve script. 
+   * Keep in mind scripts can't be locked, so several clients may manipulate 
+   * a script at the same time.
+   * 
+   * @return {String} returns the requested script's content
+   */    
+  SieveGetScriptResponse.prototype.getScriptBody
+      = function () { return this.scriptBody; }
+  
+  /**
+   * @return {String} Containing the script's Name.
+   */
+  SieveGetScriptResponse.prototype.getScriptName
+      = function () { return this.scriptName; }
    
-  throw "Invalid Final message";
-}
-
-SieveSaslScramSha1Response.prototype.add
-  = function (parser) 
-{
-  
-  if ((this.state == 0) && (parser.isString()))
+  /**
+   * Parses responses for SCRAM-SHA-1 authentication.
+   * 
+   * SCRAM is a secure client first authentication mechanism. The client
+   * callanges the server and descides if the connection is trustworthy.
+   * 
+   * This requires a way mor logic on the client than with simple authentication
+   * mechanisms. It also requires more communication, in total two roundtrips. 
+   */
+   
+  function SieveSaslScramSha1Response()
   {
-    this._parseFirstMessage(parser.extractString());
-    parser.extractLineBreak();
-            
-    this.state++;
-    
-    return;
-  }
-
-
-  // There are two valid responses...  
-  // ... either the Server sends us something like that:
-  //
-  //   S: cnNwYXV0aD1lYTQwZjYwMzM1YzQyN2I1NTI3Yjg0ZGJhYmNkZmZmZA==
-  //   C: ""
-  //   S: OK
-  
-  if ((this.state == 1) && (parser.isString()))
-  {
-
-    this._parseFinalMessage(parser.extractString());
-    parser.extractLineBreak();
-      
-    this.state++;
-      
-    return;
+    this.state = 0;
   }
   
-  // Or the response is wrapped into the ResponseCode in order to save...
-  // ... roundtip time so we endup with the following
-  //
-  // S: OK (SASL "cnNwYXV0aD1lYTQwZjYwMzM1YzQyN2I1NTI3Yjg0ZGJhYmNkZmZmZA==")
+  SieveSaslScramSha1Response.prototype = Object.create(SieveSimpleResponse.prototype);
+  SieveSaslScramSha1Response.prototype.constructor = SieveSaslScramSha1Response;
   
-  if (this.state == 1)
+  /**
+   * @private
+   * 
+   * Parses the server-first-message it is defined to be:
+   *   [reserved-mext ","] nonce "," salt "," iteration-count ["," extensions]
+   * 
+   * Where 
+   *  reserved-mext   : "m=" 1*(value-char)
+   *  nonce           : "r=" c-nonce
+   *  salt            : "s=" base64(salt)
+   *  iteration-count : "i=" posit-number
+   * 
+   * Extensions are optional and for future use.
+   * Neithe c-nonce nor salt can contain a "," character 
+   * 
+   * @param {} string
+   */
+  SieveSaslScramSha1Response.prototype._parseFirstMessage
+    = function (string)
   {
-    SieveSimpleResponse.call(this,parser);
+    this._serverFirstMessage = atob(string);
     
-    this._parseFinalMessage(this.getResponseCode().getSasl())
+    var tokens = this._serverFirstMessage.split(',');
     
-    this.state = 4;
+    // Test for the reserved-mext token. If it is existant, we just skip it
+    if ((tokens[0].length <=2) || tokens[0][0] == "m")
+      tokens.shift();
+    
+    // Extract the nonce
+    if ((tokens[0].length <=2) || (tokens[0][0] != "r"))
+      throw "Nonce missing";
+      
+    this._nonce = tokens[0].substr(2);
+    
+    
+    if ((tokens[1].length <= 2) ||(tokens[1][0] != "s"))
+      throw "Salt missing";
+      
+    this._salt = atob(tokens[1].substr(2));
+    
+    
+    if ((tokens[2].length <= 2) || (tokens[2][0] != "i"))
+      throw "Iteration Count missing";
+      
+    this._iter = parseInt(tokens[2].substr(2),10);
+  }
+
+  /**
+   * Parses the server-final-message. It is defined to be:
+   *   (server-error / verifier) ["," extensions]
+   * 
+   * Where 
+   *  server-error    : "e=" server-error-value
+   *  verifier        : "v=" base64(ServerSignature)
+   * 
+   * Extensions are optional and for future use.
+   * As suggested by the RFC they will be ignored 
+   * 
+   * @param {} string
+   */
+  SieveSaslScramSha1Response.prototype._parseFinalMessage
+    = function (string)
+  { 
+    // server-final-message = (server-error / verifier) ["," extensions]
+    var token = atob(string).split(",");
+    
+    if (token[0].length <= 2)
+      throw "Response expected but got : "+ string;
+      
+    // server-error = "e="
+    if (token[0][0] == "e")
+    {
+      this._serverError = token[0].substr(2);
+      return;
+    }
+  
+    // verifier = "v=" base64
+    if (token[0][0] == "v")
+    {
+      this._verifier = atob(token[0].substr(2));
+      return
+    }
      
-    return;
+    throw "Invalid Final message";
   }
-    
-  if (this.state == 2)
+
+  SieveSaslScramSha1Response.prototype.add
+    = function (parser) 
   {
-    SieveSimpleResponse.call(this,parser);
-    this.state = 4;
-    return;
+    
+    if ((this.state == 0) && (parser.isString()))
+    {
+      this._parseFirstMessage(parser.extractString());
+      parser.extractLineBreak();
+              
+      this.state++;
+      
+      return;
+    }
+  
+  
+    // There are two valid responses...  
+    // ... either the Server sends us something like that:
+    //
+    //   S: cnNwYXV0aD1lYTQwZjYwMzM1YzQyN2I1NTI3Yjg0ZGJhYmNkZmZmZA==
+    //   C: ""
+    //   S: OK
+    
+    if ((this.state == 1) && (parser.isString()))
+    {
+  
+      this._parseFinalMessage(parser.extractString());
+      parser.extractLineBreak();
+        
+      this.state++;
+        
+      return;
+    }
+    
+    // Or the response is wrapped into the ResponseCode in order to save...
+    // ... roundtip time so we endup with the following
+    //
+    // S: OK (SASL "cnNwYXV0aD1lYTQwZjYwMzM1YzQyN2I1NTI3Yjg0ZGJhYmNkZmZmZA==")
+    
+    if (this.state == 1)
+    {
+      SieveSimpleResponse.call(this,parser);
+      
+      this._parseFinalMessage(this.getResponseCode().getSasl())
+      
+      this.state = 4;
+       
+      return;
+    }
+      
+    if (this.state == 2)
+    {
+      SieveSimpleResponse.call(this,parser);
+      this.state = 4;
+      return;
+    }
+       
+    throw 'Illegal State:'+this.state+' / '+parser.getData();
   }
-     
-  throw 'Illegal State:'+this.state+' / '+parser.getData();
-}
 
-SieveSaslScramSha1Response.prototype.getState
-  = function () { return this.state; }
+  SieveSaslScramSha1Response.prototype.getState
+    = function () { return this.state; }
+  
+  SieveSaslScramSha1Response.prototype.getSalt
+    = function ()
+  {
+    if (this.state < 1)
+      throw "Illegal State, request not completed";
+        
+    return this._salt; 
+  }
+  
+  SieveSaslScramSha1Response.prototype.getIterationCounter
+    = function ()
+  {
+    if (this.state < 1)
+      throw "Illegal State, request not completed";
+        
+    return this._iter; 
+  }
+  
+  SieveSaslScramSha1Response.prototype.getNonce
+    = function ()
+  {
+    if (this.state < 1)
+      throw "Illegal State, request not completed";
+        
+    return this._nonce; 
+  }
+  
+  SieveSaslScramSha1Response.prototype.getServerFirstMessage
+    = function ()
+  {
+    if (this.state < 1)
+      throw "Illegal State, request not completed";
+        
+    return this._serverFirstMessage;     
+  }
 
-SieveSaslScramSha1Response.prototype.getSalt
-  = function ()
-{
-  if (this.state < 1)
-    throw "Illegal State, request not completed";
-      
-  return this._salt; 
-}
+  SieveSaslScramSha1Response.prototype.getServerError
+    = function ()
+  {
+    if (this.state < 2)
+      throw "Illegal State, request not completed";
+        
+    return this._serverError;     
+  }
+  
+  SieveSaslScramSha1Response.prototype.getVerifier
+    = function ()
+  {
+    if (this.state < 2)
+      throw "Illegal State, request not completed";
+        
+    return this._verifier;     
+  }
 
-SieveSaslScramSha1Response.prototype.getIterationCounter
-  = function ()
-{
-  if (this.state < 1)
-    throw "Illegal State, request not completed";
-      
-  return this._iter; 
-}
-
-SieveSaslScramSha1Response.prototype.getNonce
-  = function ()
-{
-  if (this.state < 1)
-    throw "Illegal State, request not completed";
-      
-  return this._nonce; 
-}
-
-SieveSaslScramSha1Response.prototype.getServerFirstMessage
-  = function ()
-{
-  if (this.state < 1)
-    throw "Illegal State, request not completed";
-      
-  return this._serverFirstMessage;     
-}
-
-SieveSaslScramSha1Response.prototype.getServerError
-  = function ()
-{
-  if (this.state < 2)
-    throw "Illegal State, request not completed";
-      
-  return this._serverError;     
-}
-
-SieveSaslScramSha1Response.prototype.getVerifier
-  = function ()
-{
-  if (this.state < 2)
-    throw "Illegal State, request not completed";
-      
-  return this._verifier;     
-}
+  
+  if (exports.EXPORTED_SYMBOLS) {
+  	exports.EXPORTED_SYMBOLS.push("SieveSimpleResponse");       
+    exports.EXPORTED_SYMBOLS.push("SieveCapabilitiesResponse"); 
+    exports.EXPORTED_SYMBOLS.push("SieveListScriptResponse");   
+    exports.EXPORTED_SYMBOLS.push("SieveSaslLoginResponse");    
+    exports.EXPORTED_SYMBOLS.push("SieveSaslCramMd5Response");  
+    exports.EXPORTED_SYMBOLS.push("SieveGetScriptResponse");    
+    exports.EXPORTED_SYMBOLS.push("SieveSaslScramSha1Response");
+  }
 
   exports.SieveSimpleResponse = SieveSimpleResponse;
   exports.SieveCapabilitiesResponse = SieveCapabilitiesResponse;
@@ -834,4 +845,4 @@ SieveSaslScramSha1Response.prototype.getVerifier
   exports.SieveGetScriptResponse = SieveGetScriptResponse;
   exports.SieveSaslScramSha1Response = SieveSaslScramSha1Response;
 
-})(window);   
+})(this);

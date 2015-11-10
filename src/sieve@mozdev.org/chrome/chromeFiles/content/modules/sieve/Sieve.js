@@ -12,16 +12,32 @@
 // Enable Strict Mode
 "use strict";
 
-var EXPORTED_SYMBOLS = [ "Sieve" ];
+var EXPORTED_SYMBOLS = [ "Sieve"  ];
+
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 
+// Handle all imports...
+var loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
+               .getService(Ci.mozIJSSubScriptLoader);
+               
+loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveResponseCodes.js", this, "UTF-8" );
+loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveResponseParser.js", this, "UTF-8" );
+
+loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveRequest.js", this, "UTF-8" );
+loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveResponse.js", this, "UTF-8" );
+
+loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveAbstractClient.js", this, "UTF-8" );
+                                    
+                                    
 // Import needed scripts... 
-Cu.import("chrome://sieve/content/modules/sieve/SieveAbstractClient.js");
-Cu.import("chrome://sieve/content/modules/sieve/SieveResponseParser.js");
+
+/*Cc["@mozilla.org/consoleservice;1"]
+    .getService(Ci.nsIConsoleService)
+    .logStringMessage("this "+this.toSource());*/
 
 /*
  *  This class is a simple socket implementation for the manage sieve protocol. 

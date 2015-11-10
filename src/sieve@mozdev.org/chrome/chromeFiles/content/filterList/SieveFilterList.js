@@ -35,11 +35,11 @@ window.onerror = errorhandler;
 
 function SieveFilterListDialog()
 {
-  SieveAbstractClient.call(this);
+  SieveAbstractChannel.call(this);
   this._script = "Thunderbird Mailfilters"
 }
 
-SieveFilterListDialog.prototype = Object.create(SieveAbstractClient.prototype);
+SieveFilterListDialog.prototype = Object.create(SieveAbstractChannel.prototype);
 SieveFilterListDialog.prototype.constructor = SieveFilterListDialog;
 
 

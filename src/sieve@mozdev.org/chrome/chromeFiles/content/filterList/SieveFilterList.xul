@@ -38,7 +38,7 @@
           src="chrome://sieve/content/libs/libManageSieve/SieveResponseCodes.js"/>-->
           
   <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveAbstractClient.js"/>
+          src="chrome://sieve/content/libs/libManageSieve/SieveAbstractChannel.js"/>
                     
   <script type="application/javascript"
           src="chrome://sieve/content/filterList/SieveFilterList.js"/>           

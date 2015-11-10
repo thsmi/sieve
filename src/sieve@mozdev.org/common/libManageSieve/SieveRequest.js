@@ -33,35 +33,43 @@
 
 // Enable Strict Mode
 "use strict";
-      
+
 (function(exports) {
 
-/**
- * Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy 
- * binary, and javascript is something in between. This means we have to convert
- * UTF-8 into a binary by our own...
- * 
- * @param {String} str The binary string which should be converted
- * @param @optional {String} charset The charset as string. Optional, defaults to "UTF-8". 
- * @return {String} The converted string in UTF8 
- * 
- * @author Thomas Schmid <schmid-thomas@gmx.net>
- * @author Max Dittrich
- */ 
-function JSStringToByteArray(str,charset) 
-{  
-  // ... and convert to UTF-8
-  var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
-                    .createInstance(Ci.nsIScriptableUnicodeConverter); 
+  /**
+   * Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy 
+   * binary, and javascript is something in between. This means we have to convert
+   * UTF-8 into a binary by our own...
+   * 
+   * @param {String} str The binary string which should be converted
+   * @param @optional {String} charset The charset as string. Optional, defaults to "UTF-8". 
+   * @return {String} The converted string in UTF8 
+   * 
+   * @author Thomas Schmid <schmid-thomas@gmx.net>
+   * @author Max Dittrich
+   */ 
+  function JSStringToByteArray(str) 
+  {  
+  	// This is very old mozilla specific code, but it is robust, mature and works as expeced.
+    // It will be dropped as soon as the new code has proven to be stable.   
+    if ((typeof Components !== 'undefined') 
+            && (typeof Components.classes !== 'undefined') 
+            && (Components.classes["@mozilla.org/intl/scriptableunicodeconverter"])) {          	
   
-  if (charset == null)
-    converter.charset = "UTF-8";
-  else
-    converter.charset = charset;
- 
-  return converter.convertToByteArray(str, {});
-}
-
+       //... and convert to UTF-8
+      var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+                      .createInstance(Components.interfaces.nsIScriptableUnicodeConverter); 
+      
+      converter.charset = "UTF-8";
+      
+      return converter.convertToByteArray(str, {});	
+    }
+  	
+    // with chrome we have to use the TextEncoder.      
+    var data = new Uint8Array(TextEncoder("UTF-8").encode(string));    
+    return Array.prototype.slice.call(data);    
+  }
+  
 
 /**
  * Escapes a string. All Backslashes are converted to \\  while 
@@ -181,6 +189,19 @@ SieveAbstractSaslRequest.prototype.setUsername
   this._username = username;  
 }
 
+/**
+ * Most SASL mechanisms need a passwort or secret to authenticate. 
+ * But there are also mechanisms like SASL EXTERNAL which does not need any passwords.
+ * 
+ * @return {Boolean}
+ *   indicates if this SASL Mechanism needs a passwort
+ */
+SieveAbstractSaslRequest.prototype.hasPassword
+    = function ()
+{
+  return true;  
+}
+
 /** @param {String} password */
 SieveAbstractSaslRequest.prototype.setPassword
     = function (password)
@@ -202,6 +223,12 @@ SieveAbstractSaslRequest.prototype.setAuthorization
   if (this._authorizable)
     this._authorization = authorization;
 }
+
+SieveAbstractSaslRequest.prototype.addSaslListener
+    = function (listener)
+{
+  this.responseListener = listener;
+} 
 
 SieveAbstractSaslRequest.prototype.onOk
     = function (response)
@@ -936,11 +963,6 @@ SieveSaslPlainRequest.prototype.getNextRequest
   return "AUTHENTICATE \"PLAIN\" \""+logon+"\"\r\n";
 }
 
-SieveSaslPlainRequest.prototype.addSaslListener
-    = function (listener)
-{
-  this.responseListener = listener;
-} 
    
 SieveSaslPlainRequest.prototype.addResponse
     = function (parser)
@@ -1071,11 +1093,6 @@ SieveSaslLoginRequest.prototype.hasNextRequest
   return true;
 }
 
-SieveSaslLoginRequest.prototype.addSaslListener
-    = function (listener)
-{
-  this.responseListener = listener;
-} 
    
 /** @param {SieveResponseParser} parser */
 SieveSaslLoginRequest.prototype.addResponse 
@@ -1131,11 +1148,7 @@ SieveSaslCramMd5Request.prototype.hasNextRequest
   return true;
 }
 
-SieveSaslCramMd5Request.prototype.addSaslListener
-    = function (listener)
-{
-  this.responseListener = listener;
-} 
+
    
 SieveSaslCramMd5Request.prototype.addResponse 
     = function (parser)
@@ -1410,12 +1423,6 @@ SieveSaslScramSha1Request.prototype.hasNextRequest
   return true;
 }
 
-SieveSaslScramSha1Request.prototype.addSaslListener
-    = function (listener)
-{
-  this.responseListener = listener;
-} 
-   
 SieveSaslScramSha1Request.prototype.onOk
     = function (response)
 {
@@ -1487,6 +1494,72 @@ SieveSaslScramSha1Request.prototype.byteArrayToHexString
   return str;    
 }
 
+
+/**
+ * This request implements SASL External Mechanism (rfc4422 Appendix A). 
+ * It's a dumb-dumb implementation, and relies upon an established tls connection.
+ * It tells the server to use the cert provided during the TLS handshake.
+ *  
+ * @author Thomas Schmid
+ */
+
+function SieveSaslExternalRequest() 
+{
+  this._authorizable = false;
+}
+
+// Inherrit prototypes from SieveAbstractRequest...
+SieveSaslExternalRequest.prototype = Object.create(SieveAbstractSaslRequest.prototype);
+SieveSaslExternalRequest.prototype.constructor = SieveSaslExternalRequest;
+
+/** @return {String} */
+SieveSaslExternalRequest.prototype.getNextRequest 
+    = function ()
+{
+  return "AUTHENTICATE \"EXTERNAL\" \"\"\r\n";
+}
+
+/**
+ * SASL External uses the TLS Cert for authentication. 
+ * Thus it does not rely upon any password, so this mehtod retuns always false.
+ * 
+ * @return {Boolean}
+ *   returns always false
+ */
+SieveSaslExternalRequest.prototype.hasPassword
+    = function ()
+{
+  return false;  
+}
+ 
+  SieveSaslExternalRequest.prototype.addResponse
+      = function (parser)
+  {
+    SieveAbstractRequest.prototype.addResponse.call(this,
+        new SieveSimpleResponse(parser));
+  }
+  
+  
+  if (exports.EXPORTED_SYMBOLS) {
+    exports.EXPORTED_SYMBOLS.push("SieveGetScriptRequest");
+    exports.EXPORTED_SYMBOLS.push("SievePutScriptRequest"); 
+    exports.EXPORTED_SYMBOLS.push("SieveCheckScriptRequest");
+    exports.EXPORTED_SYMBOLS.push("SieveSetActiveRequest");
+    exports.EXPORTED_SYMBOLS.push("SieveCapabilitiesRequest");
+    exports.EXPORTED_SYMBOLS.push("SieveDeleteScriptRequest");
+    exports.EXPORTED_SYMBOLS.push("SieveNoopRequest");
+    exports.EXPORTED_SYMBOLS.push("SieveRenameScriptRequest");
+    exports.EXPORTED_SYMBOLS.push("SieveListScriptRequest");
+    exports.EXPORTED_SYMBOLS.push("SieveStartTLSRequest");
+    exports.EXPORTED_SYMBOLS.push("SieveLogoutRequest");
+    exports.EXPORTED_SYMBOLS.push("SieveInitRequest");
+    exports.EXPORTED_SYMBOLS.push("SieveSaslPlainRequest");
+    exports.EXPORTED_SYMBOLS.push("SieveSaslLoginRequest");
+    exports.EXPORTED_SYMBOLS.push("SieveSaslCramMd5Request");
+    exports.EXPORTED_SYMBOLS.push("SieveSaslScramSha1Request");
+    exports.EXPORTED_SYMBOLS.push("SieveSaslExternalRequest");
+  }
+ 
   exports.SieveGetScriptRequest = SieveGetScriptRequest;  
   exports.SievePutScriptRequest = SievePutScriptRequest;
   exports.SieveCheckScriptRequest = SieveCheckScriptRequest;
@@ -1502,6 +1575,9 @@ SieveSaslScramSha1Request.prototype.byteArrayToHexString
   exports.SieveSaslPlainRequest = SieveSaslPlainRequest;
   exports.SieveSaslLoginRequest = SieveSaslLoginRequest;
   exports.SieveSaslCramMd5Request = SieveSaslCramMd5Request;
-  exports.SieveSaslScramSha1Request = SieveSaslScramSha1Request;
+  exports.SieveSaslScramSha1Request = SieveSaslScramSha1Request; 
       
-})(window);      
+})(this);   
+
+
+

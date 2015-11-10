@@ -37,12 +37,12 @@ var gLogger = null;
 // We do it java style...
 function SieveFilterExplorer()
 {
-  SieveAbstractClient.call(this);
+  SieveAbstractChannel.call(this);
   
   this._view = null;
 }
 
-SieveFilterExplorer.prototype = Object.create(SieveAbstractClient.prototype);
+SieveFilterExplorer.prototype = Object.create(SieveAbstractChannel.prototype);
 SieveFilterExplorer.prototype.constructor = SieveFilterExplorer;
 
 // TODO muss der error listener wirklich jedes mal gesetzet werden...
@@ -117,7 +117,7 @@ SieveFilterExplorer.prototype._renameScript
   if (typeof(isActive) == "undefined")
     isActive == tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(1));
 
-  SieveAbstractClient.prototype._renameScript.call(this,oldName, newName, isActive);    
+  SieveAbstractChannel.prototype._renameScript.call(this,oldName, newName, isActive);    
 }
 
 SieveFilterExplorer.prototype.connect
@@ -126,7 +126,7 @@ SieveFilterExplorer.prototype.connect
   if (!account)
     account = getSelectedAccount();
  
-  SieveAbstractClient.prototype.connect.call(this,account);    
+  SieveAbstractChannel.prototype.connect.call(this,account);    
 }
 
 
@@ -134,7 +134,7 @@ SieveFilterExplorer.prototype.disconnect
     = function (state,message)
 {
   disableControls(true);  
-  SieveAbstractClient.prototype.disconnect.call(this,state,message);  
+  SieveAbstractChannel.prototype.disconnect.call(this,state,message);  
 }
 
 SieveFilterExplorer.prototype.onStatusChange

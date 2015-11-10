@@ -20,11 +20,7 @@ const Cu = Components.utils;
 
 function SieveAutoConfig()
 {
-  Cu.import("chrome://sieve/content/modules/sieve/Sieve.js");
-  Cu.import("chrome://sieve/content/modules/sieve/SieveRequest.js");
-  Cu.import("chrome://sieve/content/modules/sieve/SieveResponse.js");
-  Cu.import("chrome://sieve/content/modules/sieve/SieveResponseParser.js");
-  Cu.import("chrome://sieve/content/modules/sieve/SieveResponseCodes.js");  
+  Cu.import("chrome://sieve/content/modules/sieve/Sieve.js"); 
   
   this.hosts = [];
 }

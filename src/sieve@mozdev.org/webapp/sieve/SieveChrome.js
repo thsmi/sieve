@@ -4,24 +4,24 @@
 
   // Compatibility Shim for Google Chrome sockets ..
 	
-  function SieveChrome() {  	
+  function Sieve() {  	
   	// Call the parent constructor...
-  	Sieve.call(this);   
+  	SieveAbstractClient.call(this);   
   }
   
-  SieveChrome.prototype = Object.create(Sieve.prototype);
-  SieveChrome.prototype.constructor = SieveChrome;  
+  Sieve.prototype = Object.create(SieveAbstractClient.prototype);
+  Sieve.prototype.constructor = Sieve;  
     
-  SieveChrome.prototype.setPaused
+  Sieve.prototype.setPaused
     = function (value)
   {
   	chrome.sockets.tcp.setPaused(this.socket.socketId, value)
   }
   
-  SieveChrome.prototype.startTLS 
+  Sieve.prototype.startTLS 
     = function ( callback ) {
 
-    Sieve.prototype.startTLS.call(this);    	
+    SieveAbstractClient.prototype.startTLS.call(this);    	
     	
     chrome.sockets.tcp.secure(
         this.socket.socketId, {}, 
@@ -35,7 +35,7 @@
   
   // Method used to controll the timers...
   
-  SieveChrome.prototype._startTimeoutTimer
+  Sieve.prototype._startTimeoutTimer
     = function () {
     		
     var that = this;
@@ -43,7 +43,7 @@
        = window.setTimeout(function() { that.notify(that.timeout.timer) }, that.timeout.delay);        
   }
   
-  SieveChrome.prototype._stopTimeoutTimer
+  Sieve.prototype._stopTimeoutTimer
     = function () {
 
     if (!this.timeout.timer)
@@ -53,7 +53,7 @@
     this.timeout.timer = null;
   }  
 
-  SieveChrome.prototype._startIdleTimer
+  Sieve.prototype._startIdleTimer
     = function () {
             
     var that = this;    
@@ -61,7 +61,7 @@
        = window.setTimeout(function() { that.notify(that.idle.timer) }, that.idle.delay);
   }
   
-  SieveChrome.prototype._stopIdleTimer
+  Sieve.prototype._stopIdleTimer
     = function () {
 
     if (!this.idle.timer)
@@ -71,9 +71,15 @@
     this.idle.timer = null;
   }   
   
+Sieve.prototype.createParser
+    = function (data)
+{
+  return new SieveResponseParser(data);
+}   
+  
   // connect...
   
-  SieveChrome.prototype.connect
+  Sieve.prototype.connect
     = function (host, port, secure) {
     	
     if( this.socket != null)
@@ -87,7 +93,7 @@
     chrome.sockets.tcp.create( {}, function(socket) { that.onSocketCreated(socket) }); 	    	
   }
   
-  SieveChrome.prototype.onSocketCreated
+  Sieve.prototype.onSocketCreated
     = function (socket) {
     
     var that = this;
@@ -101,10 +107,10 @@
   }
   
   
-  SieveChrome.prototype.disconnect
+  Sieve.prototype.disconnect
     = function () {    
     
-    Sieve.prototype.disconnect.call(this);
+    SieveAbstractClient.prototype.disconnect.call(this);
     
     if (this.socket == null)
       return;
@@ -115,7 +121,7 @@
   
   // TODO detect server disconnects and communication errors...
   
-  SieveChrome.prototype.onReceive
+  Sieve.prototype.onReceive
     = function (info) {
     	
     if (info.socketId != this.socket.socketId)
@@ -131,10 +137,10 @@
     	data[i] = view[i]; 
     }    
     
-    Sieve.prototype.onDataReceived.call(this, data);      
+    SieveAbstractClient.prototype.onDataReceived.call(this, data);      
   }
   
-  SieveChrome.prototype.onReceiveError
+  Sieve.prototype.onReceiveError
     = function (info) {
     	
     if (info.socketId != this.socket.socketId)
@@ -145,14 +151,14 @@
     
   }
   
-  SieveChrome.prototype.onSocketConnected
+  Sieve.prototype.onSocketConnected
     = function (result) {
     
     // negative value is an error...
     console.log('socket connected');
   }
   
-  SieveChrome.prototype._send
+  Sieve.prototype.onSend
     = function (data) {   
     	
     chrome.sockets.tcp.send(
@@ -161,6 +167,6 @@
   }  
 
     
-  exports.SieveChrome = SieveChrome;
+  exports.Sieve = Sieve;
 
 })(window);

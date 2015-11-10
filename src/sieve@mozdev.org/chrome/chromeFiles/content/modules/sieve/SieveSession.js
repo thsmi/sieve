@@ -12,10 +12,6 @@ const Cu = Components.utils
 // pre load modules .
 Cu.import("chrome://sieve/content/modules/sieve/SieveAccounts.js");
 Cu.import("chrome://sieve/content/modules/sieve/Sieve.js");
-Cu.import("chrome://sieve/content/modules/sieve/SieveRequest.js");
-Cu.import("chrome://sieve/content/modules/sieve/SieveResponse.js");
-Cu.import("chrome://sieve/content/modules/sieve/SieveResponseParser.js");
-Cu.import("chrome://sieve/content/modules/sieve/SieveResponseCodes.js");
 
 /**
  * This class pools and caches concurrent connections (Channel) to an destinct 

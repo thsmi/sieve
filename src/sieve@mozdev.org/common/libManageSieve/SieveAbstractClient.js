@@ -12,7 +12,6 @@
 // Enable Strict Mode
 "use strict";
 
-var EXPORTED_SYMBOLS = [ "SieveAbstractClient" ];
 
 /*
  *  This class is a simple socket implementation for the manage sieve protocol. 
@@ -29,6 +28,8 @@ var EXPORTED_SYMBOLS = [ "SieveAbstractClient" ];
  *  <p>
  */
 
+(function(exports) {
+
 /**
  * This Code is used for a mozilla module as well as a Google chrome sandbox.
  *  
@@ -37,7 +38,8 @@ var EXPORTED_SYMBOLS = [ "SieveAbstractClient" ];
  * 
  * You should also avoid new as this makes imports difficult.
  */
- 
+
+
 function SieveAbstractClient() 
 { 
   this.host = null;
@@ -613,4 +615,6 @@ SieveAbstractClient.prototype._unlockMessageQueue
   this.requests = requests.concat(this.requests);
   this.queueLocked = false;
 }
- 
+
+  exports.SieveAbstractClient = SieveAbstractClient;
+})(this);

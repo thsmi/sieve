@@ -13,13 +13,11 @@
 // Enable Strict Mode
 "use strict";  
 
-Components.utils.import("chrome://sieve/content/modules/sieve/SieveConnectionManager.js"); 
-Components.utils.import("chrome://sieve/content/modules/sieve/SieveRequest.js"); 
+Components.utils.import("chrome://sieve/content/modules/sieve/SieveConnectionManager.js");
+Components.utils.import("chrome://sieve/content/modules/sieve/Sieve.js");
 
 
-//TODO merge and or rename into SieveChannel
-
-function SieveAbstractClient()
+function SieveAbstractChannel()
 {  
   this._sid = null;
   this._cid = null;
@@ -29,51 +27,51 @@ function SieveAbstractClient()
 // eigentlich müssete der default doch beim Objekt rauskommen...
 
 //-- Sieve Related Events
-SieveAbstractClient.prototype.onListScriptResponse
+SieveAbstractChannel.prototype.onListScriptResponse
     = function(response)
 {
   throw "implement onListScriptResponse";
 }
 
-SieveAbstractClient.prototype.onSetActiveResponse
+SieveAbstractChannel.prototype.onSetActiveResponse
     = function(response)
 {
   throw "implement onSetActiveResponse";
 }
 
-SieveAbstractClient.prototype.onDeleteScriptResponse
+SieveAbstractChannel.prototype.onDeleteScriptResponse
     = function(response)
 {
   throw "implement onDeleteScriptResponse";
 }
 
-SieveAbstractClient.prototype.onGetScriptResponse
+SieveAbstractChannel.prototype.onGetScriptResponse
     = function(response)
 {
   throw "implement onGetScriptResponse";
 }
 
-SieveAbstractClient.prototype.onCheckScriptResponse
+SieveAbstractChannel.prototype.onCheckScriptResponse
     = function(response)
 {
   throw "implement  onCheckScriptResponse";    
 }
 
-SieveAbstractClient.prototype.onOffline
+SieveAbstractChannel.prototype.onOffline
     = function()
 {
   this.disconnect(6);
 }
   
-SieveAbstractClient.prototype.onTimeout
+SieveAbstractChannel.prototype.onTimeout
     = function()
 {
   // TODO implement a loggin facility
-  //gLogger.logStringMessage("SieveAbstractClient.js\nOnTimeout");   
+  //gLogger.logStringMessage("SieveAbstractChannel.js\nOnTimeout");   
   this.disconnect(1,"warning.timeout");
 }
   
-SieveAbstractClient.prototype.onError
+SieveAbstractChannel.prototype.onError
     = function(response)
 {
   // TODO implement a loggin facility  
@@ -81,7 +79,7 @@ SieveAbstractClient.prototype.onError
   this.disconnect(4,response.getMessage());
 }
   
-SieveAbstractClient.prototype.onDisconnect
+SieveAbstractChannel.prototype.onDisconnect
     = function()
 {
   var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
@@ -92,19 +90,19 @@ SieveAbstractClient.prototype.onDisconnect
   this.disconnect(9);
 }
       
-SieveAbstractClient.prototype.onChannelClosed
+SieveAbstractChannel.prototype.onChannelClosed
     = function()
 {
   throw "implement onChannelClosed";
 }
   
-SieveAbstractClient.prototype.onChannelCreated
+SieveAbstractChannel.prototype.onChannelCreated
     = function(sieve)
 {
   this.onChannelReady(this._cid);
 }
   
-SieveAbstractClient.prototype.onChannelReady
+SieveAbstractChannel.prototype.onChannelReady
     = function(cid)
 {
   // We observe only our channel...
@@ -114,19 +112,19 @@ SieveAbstractClient.prototype.onChannelReady
   throw "implement onChannelReady";    
 }
   
-SieveAbstractClient.prototype.onChannelStatus
+SieveAbstractChannel.prototype.onChannelStatus
     = function(id,text)
 { 
   this.onStatusChange(id,text);
 }
 
-SieveAbstractClient.prototype.onStatusChange
+SieveAbstractChannel.prototype.onStatusChange
     = function (state, message)
 {
   throw "implement onStatusChange"
 }
   
-SieveAbstractClient.prototype.onBadCert
+SieveAbstractChannel.prototype.onBadCert
     = function(targetSite, status )
 {
   var message = {};
@@ -136,7 +134,7 @@ SieveAbstractClient.prototype.onBadCert
   this.disconnect(5,message);
 }
   
-SieveAbstractClient.prototype.observe
+SieveAbstractChannel.prototype.observe
     = function(aSubject, aTopic, aData)
   {
     if (aTopic != "network:offline-status-changed")
@@ -153,7 +151,7 @@ SieveAbstractClient.prototype.observe
 /******************************************************************************/
 
   // TODO it should accept an strings instead of an  account object
-SieveAbstractClient.prototype.connect
+SieveAbstractChannel.prototype.connect
     = function (account)
 {
   var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
@@ -178,7 +176,7 @@ SieveAbstractClient.prototype.connect
       .addObserver(this,"network:offline-status-changed", false);    
 }
 
-SieveAbstractClient.prototype.disconnect
+SieveAbstractChannel.prototype.disconnect
     = function (state,message)
 {    
   if (state)
@@ -207,7 +205,7 @@ SieveAbstractClient.prototype.disconnect
 }
 
 
-SieveAbstractClient.prototype.deleteScript
+SieveAbstractChannel.prototype.deleteScript
     = function (script)
 {
   // delete the script...
@@ -218,7 +216,7 @@ SieveAbstractClient.prototype.deleteScript
   this.sendRequest(request);  
 }
 
-SieveAbstractClient.prototype.setActiveScript
+SieveAbstractChannel.prototype.setActiveScript
     = function (script)
 {
   var request = new SieveSetActiveRequest(script);      
@@ -228,7 +226,7 @@ SieveAbstractClient.prototype.setActiveScript
   this.sendRequest(request);
 }
 
-SieveAbstractClient.prototype.checkScript
+SieveAbstractChannel.prototype.checkScript
     = function (script)
 {
   var that = this;
@@ -291,7 +289,7 @@ SieveAbstractClient.prototype.checkScript
   this.sendRequest(request);   
 }
 
-SieveAbstractClient.prototype._renameScript2
+SieveAbstractChannel.prototype._renameScript2
     = function (oldName, newName)
 {
   var that = this;
@@ -320,7 +318,7 @@ SieveAbstractClient.prototype._renameScript2
   this.sendRequest(request);
 }
 
-SieveAbstractClient.prototype._renameScript
+SieveAbstractChannel.prototype._renameScript
     = function (oldName, newName, isActive)
 {  
   var that = this;
@@ -395,7 +393,7 @@ SieveAbstractClient.prototype._renameScript
 }
 
 
-SieveAbstractClient.prototype.renameScript
+SieveAbstractChannel.prototype.renameScript
     = function (oldScriptName,newScriptName)
 {
   
@@ -412,7 +410,7 @@ SieveAbstractClient.prototype.renameScript
   this._renameScript(oldScriptName, newScriptName);   
 }
 
-SieveAbstractClient.prototype.listScript
+SieveAbstractChannel.prototype.listScript
     = function ()
 {
   var request = new SieveListScriptRequest();
@@ -422,7 +420,7 @@ SieveAbstractClient.prototype.listScript
   this.sendRequest(request);
 }
 
-SieveAbstractClient.prototype.getScript
+SieveAbstractChannel.prototype.getScript
     = function (script)
 {
   var request = new SieveGetScriptRequest(script);
@@ -432,7 +430,7 @@ SieveAbstractClient.prototype.getScript
   this.sendRequest(request)
 }
 
-SieveAbstractClient.prototype.putScript
+SieveAbstractChannel.prototype.putScript
     = function (script,content)
 {
 
@@ -443,7 +441,7 @@ SieveAbstractClient.prototype.putScript
   this.sendRequest(request);
 }
 
-SieveAbstractClient.prototype.sendRequest
+SieveAbstractChannel.prototype.sendRequest
     = function (request)
 {
   // we do not send requests while in offline mode...
@@ -473,7 +471,7 @@ SieveAbstractClient.prototype.sendRequest
   }
 }
 
-SieveAbstractClient.prototype.isActive
+SieveAbstractChannel.prototype.isActive
     = function ()
 {
   try {

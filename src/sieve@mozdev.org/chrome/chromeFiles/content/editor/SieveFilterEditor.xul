@@ -35,7 +35,7 @@
   <script type="application/javascript"
           src="chrome://global/content/globalOverlay.js" />   
   <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveAbstractClient.js"/>           
+          src="chrome://sieve/content/libs/libManageSieve/SieveAbstractChannel.js"/>           
   <script type="application/javascript" 
           src="chrome://sieve/content/editor/SieveFilterEditor.js" />
           

@@ -50,10 +50,10 @@ var gEditorStatus =
 
 function SieveFilterEditor()
 {  
-  SieveAbstractClient.call(this);
+  SieveAbstractChannel.call(this);
 }
 
-SieveFilterEditor.prototype = Object.create(SieveAbstractClient.prototype);
+SieveFilterEditor.prototype = Object.create(SieveAbstractChannel.prototype);
 SieveFilterEditor.prototype.constructor = SieveFilterEditor;
 
 SieveFilterEditor.prototype.onChannelReady
@@ -318,7 +318,7 @@ SieveFilterEditor.prototype.observe
     return;
   }
   
-  SieveAbstractClient.prototype.observe.call(this,aSubject,aTopic,aData);
+  SieveAbstractChannel.prototype.observe.call(this,aSubject,aTopic,aData);
 }
 
 

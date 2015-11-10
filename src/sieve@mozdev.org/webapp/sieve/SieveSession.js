@@ -27,7 +27,7 @@ function SieveSession(account, sid)
   this.account = account;
   
   this.debug = {};
-  this.debug.level = 255;
+  this.debug.level = this.account.getSettings().getDebugFlags();
   
   // Use an empty logger stub, it makes the logger easily exchangable...
   // ... this.logger.logString is garanteed to exist within this file.
@@ -97,8 +97,8 @@ SieveSession.prototype =
   {
     // establish a secure connection if TLS ist enabled and if the Server ...
     // ... is capable of handling TLS, otherwise simply skip it and ...
-    // ... use an insecure connection   
-  	
+    // ... use an insecure connection
+    
     if (!this.account.getHost().isTLSEnabled())
     {
       this.onAuthenticate(response);
@@ -431,7 +431,7 @@ SieveSession.prototype =
     this.state = 1;
     
     
-    this.sieve = new SieveChrome();
+    this.sieve = new Sieve();
     
     // Step 1: Setup configure settings
     this.sieve.setDebugLevel(

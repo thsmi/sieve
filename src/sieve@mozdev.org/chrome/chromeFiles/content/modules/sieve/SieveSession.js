@@ -474,7 +474,7 @@ SieveSession.prototype =
       hostname = this.account.getHost().getHostname();
       
     if (port == null)
-      port = this.account.getHost().getPort()
+      port = this.account.getHost().getPort();
       
     this.sieve.connect(
         hostname,port,

@@ -12,6 +12,8 @@
 // Enable Strict Mode
 "use strict";
 
+var EXPORTED_SYMBOLS = [ "SieveAbstractClient" ];
+
 /*
  *  This class is a simple socket implementation for the manage sieve protocol. 
  *  Due to the asymetric nature of the Mozilla sockets we need message queue.
@@ -26,8 +28,17 @@
  *  Mozilla will imediately switch to a cryped connection.
  *  <p>
  */
+
+/**
+ * This Code is used for a mozilla module as well as a Google chrome sandbox.
+ *  
+ * This means the javascript syntax is limited.  
+ * There is no window object and no toSource().
+ * 
+ * You should also avoid new as this makes imports difficult.
+ */
  
-function Sieve() 
+function SieveAbstractClient() 
 { 
   this.host = null;
   this.port = null;
@@ -88,7 +99,7 @@ function Sieve()
  *   sieve.setCompatibility({checkscript:true,rename:true,starttls:false});
  */
 
-Sieve.prototype.setCompatibility
+SieveAbstractClient.prototype.setCompatibility
   = function(capabilites) 
 {
   for (var capability in capabilites)
@@ -115,7 +126,7 @@ Sieve.prototype.setCompatibility
  *     // put script command supported... 
  *  
  */
-Sieve.prototype.getCompatibility
+SieveAbstractClient.prototype.getCompatibility
   = function()
 {
   return this.compatibility;
@@ -141,7 +152,7 @@ Sieve.prototype.getCompatibility
  *   posted to the logStringMessage(String) Method of this object.
  */
 
-Sieve.prototype.setDebugLevel 
+SieveAbstractClient.prototype.setDebugLevel 
    = function(level, logger)
 {
   // make sure that any existing logger is freed...
@@ -168,7 +179,7 @@ Sieve.prototype.setDebugLevel
 /**
  * @return {Boolean}
  */
-Sieve.prototype.isAlive 
+SieveAbstractClient.prototype.isAlive 
    = function()
 {
   if (this.socket == null)
@@ -185,7 +196,7 @@ Sieve.prototype.isAlive
  * sending a startTLSRequest. Invoke this method imediately after the server 
  * confirms switching to TLS.
  **/
-Sieve.prototype.startTLS 
+SieveAbstractClient.prototype.startTLS 
    = function ()
 {
   if (this.secure != true)
@@ -197,24 +208,24 @@ Sieve.prototype.startTLS
   // Need to be overwritten in a subclass....
 }
 
-  Sieve.prototype._startTimeoutTimer
+  SieveAbstractClient.prototype._startTimeoutTimer
     = function () {
-    throw "Implement me";
+    throw "Implement _startTimeoutTimer()";
   }
   
-  Sieve.prototype._stopTimeoutTimer
+  SieveAbstractClient.prototype._stopTimeoutTimer
     = function () {
-    throw "Implement me";
+    throw "Implement _stopTimeoutTimer()";
   }  
 
-  Sieve.prototype._startIdleTimer
+  SieveAbstractClient.prototype._startIdleTimer
     = function () {
-    throw "Implement me"; 
+    throw "Implement _startIdleTimer()"; 
   }
   
-  Sieve.prototype._stopIdleTimer
+  SieveAbstractClient.prototype._stopIdleTimer
     = function () {
-    throw "Implement me";
+    throw "Implement _stopIdleTimer()";
   }   
 
 
@@ -229,7 +240,7 @@ Sieve.prototype.startTLS
  *   the number of milliseconds before the timeout is triggered.
  *   Pass null to set the default timeout.
  */
-Sieve.prototype.setTimeoutInterval
+SieveAbstractClient.prototype.setTimeoutInterval
     = function (interval)
 {
   if (!interval)
@@ -247,7 +258,7 @@ Sieve.prototype.setTimeoutInterval
  *  the maximal number of milliseconds between a response and a request,
  *  pass null to deactivate.  
  */
-Sieve.prototype.setKeepAliveInterval
+SieveAbstractClient.prototype.setKeepAliveInterval
     = function (interval)
 {
   if (interval)
@@ -263,7 +274,7 @@ Sieve.prototype.setKeepAliveInterval
   return;      
 }
 
-Sieve.prototype.addListener
+SieveAbstractClient.prototype.addListener
    = function(listener)
 {
   this.listener = listener;
@@ -288,7 +299,7 @@ Sieve.prototype.addListener
  *   if true requests fail silently
  *      
  */
-Sieve.prototype.addRequest 
+SieveAbstractClient.prototype.addRequest 
     = function(request,greedy)
 {
   if (this.listener)
@@ -347,7 +358,7 @@ Sieve.prototype.addRequest
  *   Currently only the first array entry is evaluated.  
  */
 
-Sieve.prototype.connect
+SieveAbstractClient.prototype.connect
     = function (host, port, secure, badCertHandler, proxy) 
 {
 	throw "Implement me";
@@ -357,7 +368,7 @@ Sieve.prototype.connect
 /**
  * 
  */
-Sieve.prototype.disconnect
+SieveAbstractClient.prototype.disconnect
     = function () 
 { 
 
@@ -373,7 +384,7 @@ Sieve.prototype.disconnect
 }
 
 
-Sieve.prototype.notify
+SieveAbstractClient.prototype.notify
     = function (timer) 
 { 
       
@@ -420,13 +431,13 @@ Sieve.prototype.notify
     this.listener.onTimeout();
 }
 
-Sieve.prototype._onStart
+SieveAbstractClient.prototype._onStart
     = function ()
 {
   this._startTimeoutTimer();
 }
 
-Sieve.prototype._onStop
+SieveAbstractClient.prototype._onStop
     = function()
 {
 	
@@ -440,14 +451,20 @@ Sieve.prototype._onStop
   return;
 }
 
-Sieve.prototype.onDataReceived 
+SieveAbstractClient.prototype.createParser
+    = function (data)
+{
+	throw "Implement createParser";
+}
+
+SieveAbstractClient.prototype.onDataReceived 
     = function(data)
 {
   // responses packets could be fragmented...    
   if ((this.data == null) || (this.data.length == 0))
     this.data = data;
   else
-    this.data = this.data.concat(data);
+    this.data = this.data.concat(data); 
   
   // is a request handler waiting?
   if (this.requests.length == 0)
@@ -468,7 +485,7 @@ Sieve.prototype.onDataReceived
   while (idx+1 < requests.length)
   {
     idx++
-    var parser = new SieveResponseParser(this.data);
+    var parser = this.createParser(this.data);
           
     try
     { 
@@ -489,8 +506,9 @@ Sieve.prototype.onDataReceived
       // we don't care about any exception. We just log them in oder
       // to make debugging easier....
       if (this.debug.level & (1 << 2)) {
-      	console.error(ex);
+      	//console.error(ex);
         this.debug.logger.logStringMessage("Parsing Warning in libManageSieve/Sieve.js:\n"+ex.toString());
+        this.debug.logger.logStringMessage(ex.stack);
       }
         
       // a greedy request might or might not get an request, thus 
@@ -532,8 +550,13 @@ Sieve.prototype.onDataReceived
     var that = this;
 
     // Are there any other requests waiting in the queue.
-    window.setTimeout(function () {that._sendRequest()}, 0);
+    
+    // TODO FIX ME should always be dispatched, to relax the main thread.
+    // But in mozilla modules we don't have access to a window object and 
+    // timeouts are more compilcated.    
+    //window.setTimeout(function () {that._sendRequest()}, 0);
 
+    this._sendRequest()
      
     return;
   }
@@ -549,7 +572,7 @@ Sieve.prototype.onDataReceived
     this.debug.logger.logStringMessage("Skipping Event Queue");  
 }
 
-Sieve.prototype._sendRequest
+SieveAbstractClient.prototype._sendRequest
   = function()
 { 
   for (var idx = 0; idx<this.requests.length; idx++)    
@@ -568,12 +591,12 @@ Sieve.prototype._sendRequest
   if (this.debug.level & (1 << 0))
     this.debug.logger.logStringMessage("Client -> Server:\n"+output);    
 
-  this._send(output)
+  this.onSend(output)
     
   return;
 }
 
-Sieve.prototype._lockMessageQueue
+SieveAbstractClient.prototype._lockMessageQueue
   = function()
 {
   this.queueLocked = true;
@@ -584,7 +607,7 @@ Sieve.prototype._lockMessageQueue
   return requests;
 }
 
-Sieve.prototype._unlockMessageQueue
+SieveAbstractClient.prototype._unlockMessageQueue
   = function(requests)
 {
   this.requests = requests.concat(this.requests);

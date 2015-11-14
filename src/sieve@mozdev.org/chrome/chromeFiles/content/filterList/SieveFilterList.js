@@ -166,7 +166,7 @@ function onLoad()
   if (iframe.hasAttribute("src"))
     iframe.contentWindow.location.reload();
   else
-    iframe.setAttribute("src","chrome://sieve/content/libs/libSieveDOM/SieveSimpleGui.html");
+    iframe.setAttribute("src","chrome://sieve-common/libSieve/SieveSimpleGui.html");
         
   if ((!account.isEnabled()) || account.isFirstRun())
   {

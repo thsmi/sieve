@@ -20,7 +20,7 @@ const Cu = Components.utils;
 
 function SieveAutoConfig()
 {
-  Cu.import("chrome://sieve/content/modules/sieve/Sieve.js"); 
+  Cu.import("chrome://sieve/content/modules/sieve/SieveMozClient.js"); 
   
   this.hosts = [];
 }

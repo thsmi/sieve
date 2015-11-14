@@ -19,7 +19,7 @@ const Cu = Components.utils;
 
 
 
-Cu.import("chrome://sieve/content/modules/sieve/SieveSession.js");
+Cu.import("chrome://sieve/content/modules/sieve/SieveMozSession.js");
 
 /**
  *  JavaScript Objects are usually create within the scope of a window. This 
@@ -198,7 +198,7 @@ SieveConnectionManager.prototype =
     if (this.sessions.length == 0)
     {
       Components.utils.unload("chrome://sieve/content/modules/sieve/Session.js");
-      Components.utils.unload("chrome://sieve/content/modules/sieve/Sieve.js");
+      Components.utils.unload("chrome://sieve/content/modules/sieve/SieveMozClient.js");
       Components.utils.unload("chrome://sieve/content/modules/sieve/SieveRequest.js");
       Components.utils.unload("chrome://sieve/content/modules/sieve/SieveResponse.js");
       Components.utils.unload("chrome://sieve/content/modules/sieve/SieveResponseCode.js");

@@ -40,9 +40,9 @@
           src="chrome://sieve/content/editor/SieveFilterEditor.js" />
           
   <script type="application/javascript" 
-          src="chrome://sieve/content/editor/sieve.broker.js" />
+          src="chrome://sieve-common/content/editor/sieve.broker.js" />
   <script type="application/javascript" 
-          src="chrome://sieve/content/editor/sieve.editor.text.client.js" />
+          src="chrome://sieve-common/content/editor/sieve.editor.js" />
  <!-- <script type="application/javascript" 
           src="chrome://global/content/printUtils.js"/>
   <script type="application/javascript" 
@@ -138,7 +138,7 @@
       <deck id="dkView" flex="1" selectedIndex="0">    
         <!-- Sieve Script editor -->  
         <iframe id="sivEditor2" flex="1" 
-                src="chrome://sieve/content/editor/SieveFilterEditor.html" 
+                src="chrome://sieve-common/content/editor/sieve.editor.html" 
                 contextmenu="ctxEditor" />
                 
         <iframe id="sivWidgetEditor" flex="1"  type="content" 

@@ -1,6 +1,6 @@
 /* 
  * The contents of this file is licenced. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email 
+ * the license at https://github.com/thsmi/sieve/ or request it via email 
  * from the author. Do not remove or change this comment. 
  * 
  * The initial author of the code is:
@@ -8,6 +8,7 @@
  *   
  * Contibutors:
  *   Max Dittrich
+ *   
  */
  
  // Enable Strict Mode

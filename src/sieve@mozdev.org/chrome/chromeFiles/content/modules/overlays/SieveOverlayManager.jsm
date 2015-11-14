@@ -313,21 +313,21 @@ var SieveOverlayManager =
     
     // Sieve Connection Manager depends a Session
     if (aUrl == "chrome://sieve/content/modules/sieve/SieveConnectionManager.js")
-      SieveOverlayManager.require("/sieve/SieveSession.js",null,aWindow);
+      SieveOverlayManager.require("/sieve/SieveMozSession.js",null,aWindow);
       
     // Session depend on Sieve
-    if (aUrl == "chrome://sieve/content/modules/sieve/SieveSession.js")
+    if (aUrl == "chrome://sieve/content/modules/sieve/SieveMozSession.js")
     {
-      SieveOverlayManager.require("/sieve/Sieve.js",null,aWindow);
+      SieveOverlayManager.require("/sieve/SieveMozClient.js",null,aWindow);
       SieveOverlayManager.require("/sieve/SieveAccounts.js",null,aWindow);
     }
     
     // ... same applies to autoconfig
     if (aUrl == "chrome://sieve/content/modules/sieve/SieveAutoConfig.js")
-      SieveOverlayManager.require("/sieve/Sieve.js",null,aWindow);
+      SieveOverlayManager.require("/sieve/SieveMozClient.js",null,aWindow);
     
     // Sieve depends on request and responses 
-    if (aUrl == "chrome://sieve/content/modules/sieve/Sieve.js")
+    if (aUrl == "chrome://sieve/content/modules/sieve/SieveMozClient.js")
     {
       SieveOverlayManager.require("/sieve/SieveRequest.js",null,aWindow);
       SieveOverlayManager.require("/sieve/SieveResponse.js",null,aWindow);

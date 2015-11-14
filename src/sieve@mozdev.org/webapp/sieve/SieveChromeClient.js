@@ -1,12 +1,25 @@
+/* 
+ * The content of this file is licensed. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via 
+ * email from the author.
+ * 
+ * Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+
 "use strict";
 
 (function(exports) {
 
   // Compatibility Shim for Google Chrome sockets ..
 	
-  function Sieve() {  	
+  function Sieve(logger) {  	
   	// Call the parent constructor...
-  	SieveAbstractClient.call(this);   
+  	SieveAbstractClient.call(this);
+  	
+  	this._logger = logger;
   }
   
   Sieve.prototype = Object.create(SieveAbstractClient.prototype);
@@ -18,8 +31,17 @@
   	chrome.sockets.tcp.setPaused(this.socket.socketId, value)
   }
   
+  /**
+   * This method secures the connection to the sieve server. By activating 
+   * Transport Layer Security all Data exchanged is crypted. 
+   * 
+   * Before calling this method you need to request a crypted connection by
+   * sending a startTLSRequest. Invoke this method imediately after the server 
+   * confirms switching to TLS.
+   **/
   Sieve.prototype.startTLS 
-    = function ( callback ) {
+     = function ( callback )
+  {
 
     SieveAbstractClient.prototype.startTLS.call(this);    	
     	
@@ -71,12 +93,18 @@
     this.idle.timer = null;
   }   
   
-Sieve.prototype.createParser
-    = function (data)
-{
-  return new SieveResponseParser(data);
-}   
-  
+  Sieve.prototype.createParser
+      = function (data)
+  {
+    return new SieveResponseParser(data);
+  }   
+    
+  Sieve.prototype.getLogger
+      = function ()
+  {
+    return this._logger;
+  }
+
   // connect...
   
   Sieve.prototype.connect

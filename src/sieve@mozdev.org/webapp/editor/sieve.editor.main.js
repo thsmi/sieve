@@ -1,1 +1,0 @@
-      net.tschmid.sieve.editor.text.service.init();

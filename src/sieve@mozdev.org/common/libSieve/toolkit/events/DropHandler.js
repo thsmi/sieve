@@ -98,9 +98,7 @@ SieveDropHandler.prototype.attach
 
 SieveDropHandler.prototype.onDragEnter
     = function (event)
-{	
-	console.log("onDrag enter "+this.canDrop(event));
-	
+{		
   if (!this.canDrop(event))
     return true;
     

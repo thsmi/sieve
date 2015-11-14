@@ -40,14 +40,14 @@ SieveDragHandler.prototype.onDragGesture
   if (!this.onDrag)
     return false;
     
-  if (!this.onDrag(event.originalEvent))
-    return false;
+  this.onDrag(event.originalEvent);       
                         
   event = event.originalEvent;
   
   event.dataTransfer.setDragImage(this.owner().html().get(0),
     event.pageX-this.owner().html().offset().left,
     event.pageY-this.owner().html().offset().top);
+    
   //event.preventDefault();
   event.stopPropagation();
 

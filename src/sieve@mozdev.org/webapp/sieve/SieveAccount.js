@@ -30,10 +30,12 @@ SieveAccount.prototype = {
         return true;
       },
       getUsername : function() {
-        return "abc@tschmid.net"
+        //return $("#username").val();
+      	return "XXXX"
       },
       getPassword : function() {
-        return "abc";
+        //return $("#password").val();
+      	return "YYYY"
       }
     }
   },
@@ -44,6 +46,14 @@ SieveAccount.prototype = {
         return "";
       }
     }
+  },
+  
+  getProxy : function() {
+  	return {
+  	  getProxyInfo : function() {
+  	    return null;
+  	  }
+  	}
   },
     
   getSettings : function () {

@@ -51,12 +51,7 @@ function SieveAbstractClient()
   
   this.queueLocked = false;
   
-  this.requests = new Array();    
-  
-  this.debug = new Object();
-  this.debug.level  = 0x00;
-  this.debug.logger = null;  
-  
+  this.requests = new Array();      
   
   this.timeout = {};
   this.timeout.timer = null;
@@ -134,48 +129,14 @@ SieveAbstractClient.prototype.getCompatibility
   return this.compatibility;
 }
 
+
 /**
- *  The Method setDebugLevel specifies which Debuglevel which Logger should be
- *  used. 
- *  <p>
- *  The debug level specified is a bitmask. Setting all bits to zero disables 
- *  any logging. The first bit activates request, the second response logging. 
- *  If the third is set, status information and exceptions from the state engine 
- *  are logged. The fourth, fifth etc. Bits are unused and should be set to zero.
- *  <p>
- *  In order to activate request and response logging, you have to set the first
- *  and the second bit to high any other bit to low. In this case this bitmask 
- *  is equivalent to the numeric representation of the number 3.
- *  
- * @param {int} level
- *   specifies the debug settings as bit field.
- * @param {nsIConsoleService} logger
- *   an nsIConsoleService compatible Object. Any debug inforamtion will be 
- *   posted to the logStringMessage(String) Method of this object.
+ * Gets the logger 
  */
-
-SieveAbstractClient.prototype.setDebugLevel 
-   = function(level, logger)
+SieveAbstractClient.prototype.getLogger
+  = function ()
 {
-  // make sure that any existing logger is freed...
-  // ... this should prevent xpcom memory holes.  
-  this.debug.logger = null;
-   
-  // set the debuglevel...
-  if (level == null)  
-    this.debug.level = 0x00;    
-  else
-    this.debug.level = level;   
-
-  // a debug level of 0x00 means no debugging, ...
-  // ... therefore we can skip setting up the logger.
-  if (this.debug.level == 0x00)
-    return;
-  
-  // ... and bind the new login device
-  this.debug.logger = logger;
-  
-  return;
+	throw "Implement getLogger()";  	
 }
 
 /**
@@ -359,7 +320,6 @@ SieveAbstractClient.prototype.addRequest
  *   information on the connection status... 
  *   Currently only the first array entry is evaluated.  
  */
-
 SieveAbstractClient.prototype.connect
     = function (host, port, secure, badCertHandler, proxy) 
 {
@@ -374,8 +334,7 @@ SieveAbstractClient.prototype.disconnect
     = function () 
 { 
 
-  if (this.debug.level & (1 << 2))
-    this.debug.logger.logStringMessage("Disconnecting ...");
+  this.getLogger().log("Disconnecting ...", (1 << 2));
     
   // free requests...
   //this.requests = new Array();  
@@ -404,9 +363,8 @@ SieveAbstractClient.prototype.notify
     return;
     
   this._stopTimeoutTimer(timer);
-    
-  if (this.debug.level & (1 << 2))
-    this.debug.logger.logStringMessage("libManageSieve/Sieve.js:\nOnTimeout");
+
+  this.getLogger().log("libManageSieve/Sieve.js:\nOnTimeout", (1 << 2));
     
   // clear receive buffer and any pending request...
   this.data = null;
@@ -507,10 +465,10 @@ SieveAbstractClient.prototype.onDataReceived
       // request could be fragmented or something else, as it's greedy,
       // we don't care about any exception. We just log them in oder
       // to make debugging easier....
-      if (this.debug.level & (1 << 2)) {
+      if (this.getLogger().isLoggable(1 << 2)) {
       	//console.error(ex);
-        this.debug.logger.logStringMessage("Parsing Warning in libManageSieve/Sieve.js:\n"+ex.toString());
-        this.debug.logger.logStringMessage(ex.stack);
+        this.getLogger().log("Parsing Warning in libManageSieve/Sieve.js:\n"+ex.toString());
+        this.getLogger().log(ex.stack);
       }
         
       // a greedy request might or might not get an request, thus 
@@ -570,8 +528,7 @@ SieveAbstractClient.prototype.onDataReceived
   
   this._unlockMessageQueue(requests);
      
-  if (this.debug.level & (1 << 2))
-    this.debug.logger.logStringMessage("Skipping Event Queue");  
+  this.getLogger().log("Skipping Event Queue", (1 << 2));  
 }
 
 SieveAbstractClient.prototype._sendRequest
@@ -590,8 +547,7 @@ SieveAbstractClient.prototype._sendRequest
     
   var output = this.requests[idx].getNextRequest();
   
-  if (this.debug.level & (1 << 0))
-    this.debug.logger.logStringMessage("Client -> Server:\n"+output);    
+  this.getLogger().log("Client -> Server:\n"+output, (1 << 0))
 
   this.onSend(output)
     

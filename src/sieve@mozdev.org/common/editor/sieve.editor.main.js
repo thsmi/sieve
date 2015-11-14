@@ -1,41 +1,24 @@
-"use strict"
 
-if (!net)
-  var net = {}
-  
-if (!net.tschmid)
-  net.tschmid = {};
-  
-if (!net.tschmid.sieve)
-  net.tschmid.sieve = {};
+"use strict";
 
-if (!net.tschmid.sieve.editor)
-  net.tschmid.sieve.editor = {};
-
-if (!net.tschmid.sieve.editor.text)
-  net.tschmid.sieve.editor.text = {};  
-  
-if (!net.tschmid.sieve.editor.text.service)
-  net.tschmid.sieve.editor.text.service = {};  
-  
+ 
 // We need two global variables for backward compatiblity...
 // they may be removed as soon as the editor communication is migrated to post message
 var editor = null;
 var onActiveLineChange = null;
 
-
 /**
  * Glues two frame via html5 post message.
  **/
   
-(function() {
+(function(exports) {
 
   var hlLine = null;
   var listener = {}
   
-  var broker = new net.tschmid.sieve.Broker();  	
+  var broker = new net.tschmid.sieve.Broker();    
   broker.setListener(function(event, data) { listener.onMessage(event, data) });  
-		
+    
   
   function winHeight() {
     return window.innerHeight || (document.documentElement || document.body).clientHeight;
@@ -56,17 +39,17 @@ var onActiveLineChange = null;
         
     if (cur == hlLine)
       return;
-    	
+      
     editor.removeLineClass(hlLine, "background", "activeline");
     hlLine = editor.addLineClass(cur, "background", "activeline");
-  }    	  
+  }       
 
   function onChange() {
-  	broker.sendMessage("onChange");
+    broker.sendMessage("onChange");
   }
 
   function findString(token, isCaseSensitive, isReverse) { 
-  	
+    
     // ... convert to lowercase, if the search is not case sensitive...
   
     function maxCursor(start,end)
@@ -128,8 +111,8 @@ var onActiveLineChange = null;
     return;
   }
   
-  function replaceString(oldToken, newToken, isCaseSensitive, isReverse) {  	
-  	
+  function replaceString(oldToken, newToken, isCaseSensitive, isReverse) {    
+    
     if (isCaseSensitive) 
     {
       if (editor.getSelection() != oldToken)
@@ -154,19 +137,19 @@ var onActiveLineChange = null;
   }
   
   function getStatus() {
-	var status = {};
-	  
-	status.canDelete = editor.somethingSelected();
-	status.canUndo = (editor.historySize().undo > 0);
-	  
-	broker.sendMessage("onGetStatus", status);
-    return;  	
+  var status = {};
+    
+  status.canDelete = editor.somethingSelected();
+  status.canUndo = (editor.historySize().undo > 0);
+    
+  broker.sendMessage("onGetStatus", status);
+    return;   
   }
   
   function loadScript(data) {
-  	// Load a new script. It will discard the current script
-  	// the history and the cursorposition are reset to defaults.
-  	
+    // Load a new script. It will discard the current script
+    // the history and the cursorposition are reset to defaults.
+    
     editor.setValue(data);
     editor.setCursor({line:0,ch:0});
     editor.clearHistory();
@@ -182,33 +165,33 @@ var onActiveLineChange = null;
   }
   
   function getScript() {
-	  	
-	  // Get the current script...
-	  var script = editor.getValue();
-	  // ... and ensure the line endings are sanatized
-	  script = script.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
-	  	
-	  broker.sendMessage("onGetScript", script);  	
+      
+    // Get the current script...
+    var script = editor.getValue();
+    // ... and ensure the line endings are sanatized
+    script = script.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
+      
+    broker.sendMessage("onGetScript", script);    
   }
   
   function replaceSelection(data) {
     editor.replaceSelection(data);
-	return;
+  return;
   }
   
   function selectAll() {
-    editor.setSelection({line:0,ch:0},{line: editor.lineCount() - 1});  	
-  	return;
+    editor.setSelection({line:0,ch:0},{line: editor.lineCount() - 1});    
+    return;
   }
   
   function undo() {
-  	editor.undo();
-  	return;
+    editor.undo();
+    return;
   }
   
   function redo() {
-  	editor.redo();
-  	return;
+    editor.redo();
+    return;
   }
   
   function setOptions(options) {
@@ -216,16 +199,16 @@ var onActiveLineChange = null;
     if (options.indention && options.indention.width)
       editor.setOption("indentUnit", options.indention.width);
     
-  	if (options.indention && ("policy" in options.indention)) 
-  	  editor.setOption("indentWithTabs", (options.indention.policy == 1));
+    if (options.indention && ("policy" in options.indention)) 
+      editor.setOption("indentWithTabs", (options.indention.policy == 1));
 
-  	if (options.tab && options.tab.width)
+    if (options.tab && options.tab.width)
       editor.setOption("tabSize", options.tab.width);
     
     if (options.tab && ("policy" in options.tab)) {    
-    	
+      
       if (options.tab.policy == 1) {
-      	// Keep tabs as they are
+        // Keep tabs as they are
         editor.setOptions("extraKeys", null);
       } 
       else {
@@ -235,59 +218,59 @@ var onActiveLineChange = null;
             var spaces = Array(cm.getOption("tabSize") + 1).join(" ");
             cm.replaceSelection(spaces);
           }
-        });              	
+        });               
       }
     }       
   }
 
-  	 	 
+       
   listener.onMessage = function(event, data) {  
-  	
-  	if (event == "focus") {
+    
+    if (event == "focus") {
       editor.focus();
       return;
-  	}
+    }
 
-  	  	// Updates the current script. The history as well as 
-  	// the cursor position is maintained.
+        // Updates the current script. The history as well as 
+    // the cursor position is maintained.
 
-  	if (event == "loadScript")
-  	  return loadScript(data);
+    if (event == "loadScript")
+      return loadScript(data);
 
-	if (event == "setScript")
-	  return setScript(data);
-		
-	if (event == "getScript")	    
-	  return getScript();
-	  
-	if (event == "replaceSelection")
-	  return replaceSelection(data);
-	  
-	if (event == "selectAll")
-	  return selectAll();
-	  
-	if (event == "undo")
-	  return undo();
-	  
-	if (event == "redo")	  
-	  return redo();
-	  
-	if (event == "replaceString")	
-	  return replaceString(data.oldToken, data.newToken, data.isSensitive, data.isReverse);
-	  
-	if (event == "findString")
-	  return findString(data.token, data.isCaseSensitive, data.isReverse);
-	
-	if (event == "getStatus")
-	  return getStatus();
-	  
-	if (event == "setOptions")
-	  return setOptions(data);
+  if (event == "setScript")
+    return setScript(data);
+    
+  if (event == "getScript")     
+    return getScript();
+    
+  if (event == "replaceSelection")
+    return replaceSelection(data);
+    
+  if (event == "selectAll")
+    return selectAll();
+    
+  if (event == "undo")
+    return undo();
+    
+  if (event == "redo")    
+    return redo();
+    
+  if (event == "replaceString") 
+    return replaceString(data.oldToken, data.newToken, data.isSensitive, data.isReverse);
+    
+  if (event == "findString")
+    return findString(data.token, data.isCaseSensitive, data.isReverse);
+  
+  if (event == "getStatus")
+    return getStatus();
+    
+  if (event == "setOptions")
+    return setOptions(data);
   };
 
   // Export the constructor...
-  net.tschmid.sieve.editor.text.service.init = function() {
-  	
+  function init() {
+    
     CodeMirror.on(window, "resize", function() {
       document.body.getElementsByClassName("CodeMirror-fullscreen")[0]
         .CodeMirror.getWrapperElement().style.height = winHeight() + "px";
@@ -310,6 +293,29 @@ var onActiveLineChange = null;
     editor.on("change", function() { onChange(); });       
         
   };
+    
+  if (!exports.net)
+    exports.net = {}
   
-}());
+  if (!exports.net.tschmid)
+    exports.net.tschmid = {};
   
+  if (!exports.net.tschmid.sieve)
+    exports.net.tschmid.sieve = {};
+
+  if (!exports.net.tschmid.sieve.editor)
+    exports.net.tschmid.sieve.editor = {};
+
+  if (!exports.net.tschmid.sieve.editor.text)
+    exports.net.tschmid.sieve.editor.text = {};  
+  
+  if (!exports.net.tschmid.sieve.editor.text.service)
+    exports.net.tschmid.sieve.editor.text.service = {};    
+  
+  exports.net.tschmid.sieve.editor.text.service.init = init;
+  
+}(window));
+
+// A stub loader needed for google chrome, it does not support
+// inline scripts.
+net.tschmid.sieve.editor.text.service.init();

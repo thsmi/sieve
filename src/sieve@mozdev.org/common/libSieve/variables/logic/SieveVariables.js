@@ -76,7 +76,6 @@ SieveSetAction.nodeType  = function () {
 SieveSetAction.prototype.init
     = function (parser)
 {  
-  //debugger;	
   parser.extract("set");
     
   // ... eat the deadcode before the modifier...
@@ -104,8 +103,6 @@ SieveSetAction.prototype.init
 SieveSetAction.prototype.toScript
     = function ()
 {
- // debugger;
-  
   var result = "set"
   
   this.items.forEach( function(element, index, array) {

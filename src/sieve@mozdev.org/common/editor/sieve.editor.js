@@ -1,25 +1,6 @@
-"use strict"
-
-if (!net)
-  var net = {}
-  
-if (!net.tschmid)
-  net.tschmid = {};
-  
-if (!net.tschmid.sieve)
-  net.tschmid.sieve = {};
-
-if (!net.tschmid.sieve.editor)
-  net.tschmid.sieve.editor = {};
-
-if (!net.tschmid.sieve.editor.text)
-  net.tschmid.sieve.editor.text = {};  
-  
-if (!net.tschmid.sieve.editor.text.client)
-  net.tschmid.sieve.editor.text.client = {};  
-
-  
-(function() {
+"use strict";
+ 
+(function(exports) {
 
   function SieveTextEditorClient(id) {  
   	this.broker = new net.tschmid.sieve.Broker(id);
@@ -96,7 +77,8 @@ if (!net.tschmid.sieve.editor.text.client)
       this.callbacks[id].push(callback);
     },
   
-    loadScript : function(script, callback) {
+    loadScript : function(script, callback) {    	
+    	
       if (callback)
         this.addCallback("onScriptLoaded", callback);
     	
@@ -112,7 +94,7 @@ if (!net.tschmid.sieve.editor.text.client)
     },
   
     setScript : function(script) 
-    {
+    {    
   	  this.broker.sendMessage("setScript", script);
     },
     
@@ -191,8 +173,23 @@ if (!net.tschmid.sieve.editor.text.client)
     
   }    
   
-  // Export the constructor...
-  net.tschmid.sieve.editor.text.Client = SieveTextEditorClient;
+  if (!exports.net)
+    exports.net = {};
   
-}());
+  if (!exports.net.tschmid)
+    exports.net.tschmid = {};
+  
+  if (!exports.net.tschmid.sieve)
+    exports.net.tschmid.sieve = {};
+
+  if (!exports.net.tschmid.sieve.editor)
+    exports.net.tschmid.sieve.editor = {};
+
+  if (!exports.net.tschmid.sieve.editor.text)
+    exports.net.tschmid.sieve.editor.text = {};
+    
+  // Export the constructor...
+  exports.net.tschmid.sieve.editor.text.Client = SieveTextEditorClient;  
+  
+}(window));
   

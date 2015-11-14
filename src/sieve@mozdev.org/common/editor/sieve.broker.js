@@ -1,28 +1,11 @@
-"use strict"
-
-
-if (!net)
-  var net = {}
-  
-if (!net.tschmid)
-  net.tschmid = {};
-  
-if (!net.tschmid.sieve)
-  net.tschmid.sieve = {};
-
-if (!net.tschmid.sieve.broker)
-  net.tschmid.sieve.broker = {};
-  
-if (!net.tschmid.sieve.broker)
-  net.tschmid.sieve.broker = {};
-
+"use strict";
   
 /**
  * Interacts alike a broke between two iframes. Virtually glues the two frame via html5 
  * post message to gether. So that bidirectional messaging is possible
  **/
   
-(function() {
+(function(exports) {
 
   function SieveBroker(target) {
     this.target = target;
@@ -83,8 +66,20 @@ if (!net.tschmid.sieve.broker)
     }
   } 
     
-  // Export the constructor...
-  net.tschmid.sieve.Broker = SieveBroker;
+  if (!exports.net)
+    exports.net = {}
   
-}());
+  if (!exports.net.tschmid)
+    exports.net.tschmid = {};
+  
+  if (!exports.net.tschmid.sieve)
+    exports.net.tschmid.sieve = {};
+
+  if (!exports.net.tschmid.sieve.broker)
+    exports.net.tschmid.sieve.broker = {};
+  
+  // Export the constructor...
+  exports.net.tschmid.sieve.Broker = SieveBroker;
+  
+}(window));
   

@@ -14,7 +14,7 @@
 "use strict";  
 
 Components.utils.import("chrome://sieve/content/modules/sieve/SieveConnectionManager.js");
-Components.utils.import("chrome://sieve/content/modules/sieve/Sieve.js");
+Components.utils.import("chrome://sieve/content/modules/sieve/SieveMozClient.js");
 
 
 function SieveAbstractChannel()

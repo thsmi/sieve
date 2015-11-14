@@ -91,8 +91,8 @@ SieveFilterEditor.prototype.onChannelReady
       var script = "#\r\n# "+date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()+"\r\n#\r\n";      
       that.onScriptLoaded(script);
     }
-  }
-    
+  }  
+  
   var request = new SieveGetScriptRequest(this.getScriptName());
   request.addGetScriptListener(this);
   request.addErrorListener(event);
@@ -551,7 +551,7 @@ function onReplaceString()
 
 function onWindowLoad()
 {
-  textEditor = new net.tschmid.sieve.editor.text.Client("sivEditor2");  	
+  textEditor = new net.tschmid.sieve.editor.text.Client("sivEditor2"); 
   textEditor.setListener( sivEditorListener );	
   
   // hack to prevent links to be opened in the default browser window...
@@ -562,7 +562,7 @@ function onWindowLoad()
       false);
       
   document.getElementById("sivWidgetEditor")
-    .setAttribute("src","chrome://sieve/content/libs/libSieveDOM/SieveGui.html")
+    .setAttribute("src","chrome://sieve-common/content/libSieve/SieveGui.html")
 
   var args = window.arguments[0].wrappedJSObject;
   gEditorStatus.account = args["account"];
@@ -593,7 +593,7 @@ function onWindowLoad()
           .GetStringFromName("syntax.ok");
     
   gSFE.onStatusChange(3,"status.loading");
-
+  
   gSFE.connect(account);
       
   //preload sidebar...

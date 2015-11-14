@@ -4,27 +4,27 @@ var tests = {
   "base" : {
     require : [
       // JQuery
-	  "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/jQuery/jquery-2.1.1.min.js",
+	  "./../../src/sieve@mozdev.org/common/jQuery/jquery-2.1.1.min.js",
       // Basic Sieve Elements
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/toolkit/SieveParser.js",
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/toolkit/SieveLexer.js",
+      "./../../src/sieve@mozdev.org/common/libSieve/toolkit/SieveParser.js",
+      "./../../src/sieve@mozdev.org/common/libSieve/toolkit/SieveLexer.js",
     
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/toolkit/SieveScriptDOM.js",  
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/toolkit/logic/Elements.js" ]
+      "./../../src/sieve@mozdev.org/common/libSieve/toolkit/SieveScriptDOM.js",  
+      "./../../src/sieve@mozdev.org/common/libSieve/toolkit/logic/Elements.js" ]
   },
   
   "rfc5228" : {
     require : [
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveWhiteSpaces.js",
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveStrings.js",
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveMatchTypes.js",
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveNumbers.js",
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveBlocks.js",
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveTests.js", 
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveOperators.js",  
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveConditions.js",  
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveActions.js",
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/RFC5228/logic/SieveImports.js" ],
+      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveWhiteSpaces.js",
+      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveStrings.js",
+      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveMatchTypes.js",
+      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveNumbers.js",
+      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveBlocks.js",
+      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveTests.js", 
+      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveOperators.js",  
+      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveConditions.js",  
+      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveActions.js",
+      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveImports.js" ],
     script : "./RFC5228/SieveRFC5228Test.js",
     extend  : "base",
   },
@@ -39,44 +39,43 @@ var tests = {
     script : "./sieve/SieveVariablesTest.js",
 	extend : "rfc5228",
     require : [
-       "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/variables/logic/SieveVariables.js"]       	
+       "./../../src/sieve@mozdev.org/common/libSieve/variables/logic/SieveVariables.js"]       	
   },
   	
   "regEx" : {
     script  : "./regex/SieveRegExTest.js", //TODO Makeoptional if empty the object name+"Test.js" should be used
     extend  : "rfc5228",
     require : [
-       "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/regex/logic/SieveRegularExpression.js"]
+       "./../../src/sieve@mozdev.org/common/libSieve/regex/logic/SieveRegularExpression.js"]
   },
   
   "body" : {
     script : "./body/SieveBodyTest.js",
     extend : "rfc5228",
     require : [
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/body/logic/SieveBody.js"]
+      "./../../src/sieve@mozdev.org/common/libSieve/body/logic/SieveBody.js"]
   },
   
   "vacation" : {
     script : "./sieve/SieveVacationTest.js",
     extend : "rfc5228",
     require : [
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/vacation/logic/SieveVacation.js"]    
+      "./../../src/sieve@mozdev.org/common/libSieve/vacation/logic/SieveVacation.js"]    
   },
   
   "include" : {
     script : "./sieve/SieveIncludeTest.js",
     extend : "rfc5228",
     require : [
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libSieveDOM/include/logic/SieveInclude.js"]
+      "./../../src/sieve@mozdev.org/common/libSieve/include/logic/SieveInclude.js"]
   },
   
   "managesieve" : {
     script : "./managesieve/ManageSieveTest.js",
     require : [
-      "./managesieve/ManageSieveBootstap.js",
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/modules/sieve/SieveRequest.js",
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/modules/sieve/SieveResponse.js",
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/modules/sieve/SieveResponseParser.js",
-      "./../../src/sieve@mozdev.org/chrome/chromeFiles/content/modules/sieve/SieveResponseCodes.js"]
+      "./../../src/sieve@mozdev.org/common/libManageSieve/SieveRequest.js",
+      "./../../src/sieve@mozdev.org/common/libManageSieve/SieveResponse.js",
+      "./../../src/sieve@mozdev.org/common/libManageSieve/SieveResponseParser.js",
+      "./../../src/sieve@mozdev.org/common/libManageSieve/SieveResponseCodes.js"]
   }
 }

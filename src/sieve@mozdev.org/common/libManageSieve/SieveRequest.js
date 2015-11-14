@@ -1,7 +1,9 @@
 /* 
- * The contents of this file is licenced. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email 
- * from the author. Do not remove or change this comment. 
+ * The content of this file is licensed. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via 
+ * email from the author.
+ * 
+ * Do not remove or change this comment. 
  * 
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
@@ -1495,42 +1497,42 @@ SieveSaslScramSha1Request.prototype.byteArrayToHexString
 }
 
 
-/**
- * This request implements SASL External Mechanism (rfc4422 Appendix A). 
- * It's a dumb-dumb implementation, and relies upon an established tls connection.
- * It tells the server to use the cert provided during the TLS handshake.
- *  
- * @author Thomas Schmid
- */
-
-function SieveSaslExternalRequest() 
-{
-  this._authorizable = false;
-}
-
-// Inherrit prototypes from SieveAbstractRequest...
-SieveSaslExternalRequest.prototype = Object.create(SieveAbstractSaslRequest.prototype);
-SieveSaslExternalRequest.prototype.constructor = SieveSaslExternalRequest;
-
-/** @return {String} */
-SieveSaslExternalRequest.prototype.getNextRequest 
-    = function ()
-{
-  return "AUTHENTICATE \"EXTERNAL\" \"\"\r\n";
-}
-
-/**
- * SASL External uses the TLS Cert for authentication. 
- * Thus it does not rely upon any password, so this mehtod retuns always false.
- * 
- * @return {Boolean}
- *   returns always false
- */
-SieveSaslExternalRequest.prototype.hasPassword
-    = function ()
-{
-  return false;  
-}
+  /**
+   * This request implements SASL External Mechanism (rfc4422 Appendix A). 
+   * It's a dumb-dumb implementation, and relies upon an established tls connection.
+   * It tells the server to use the cert provided during the TLS handshake.
+   *  
+   * @author Thomas Schmid
+   */
+  
+  function SieveSaslExternalRequest() 
+  {
+    this._authorizable = false;
+  }
+  
+  // Inherrit prototypes from SieveAbstractRequest...
+  SieveSaslExternalRequest.prototype = Object.create(SieveAbstractSaslRequest.prototype);
+  SieveSaslExternalRequest.prototype.constructor = SieveSaslExternalRequest;
+  
+  /** @return {String} */
+  SieveSaslExternalRequest.prototype.getNextRequest 
+      = function ()
+  {
+    return "AUTHENTICATE \"EXTERNAL\" \"\"\r\n";
+  }
+  
+  /**
+   * SASL External uses the TLS Cert for authentication. 
+   * Thus it does not rely upon any password, so this mehtod retuns always false.
+   * 
+   * @return {Boolean}
+   *   returns always false
+   */
+  SieveSaslExternalRequest.prototype.hasPassword
+      = function ()
+  {
+    return false;  
+  }
  
   SieveSaslExternalRequest.prototype.addResponse
       = function (parser)
@@ -1576,6 +1578,7 @@ SieveSaslExternalRequest.prototype.hasPassword
   exports.SieveSaslLoginRequest = SieveSaslLoginRequest;
   exports.SieveSaslCramMd5Request = SieveSaslCramMd5Request;
   exports.SieveSaslScramSha1Request = SieveSaslScramSha1Request; 
+  exports.SieveSaslExternalRequest = SieveSaslExternalRequest;
       
 })(this);   
 

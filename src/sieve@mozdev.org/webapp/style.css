@@ -252,7 +252,9 @@ body {
 
 
 
-.scripts > div , .account {
+.scripts > div , 
+.account ,
+.blubb > div {
   display: flex !important;
           flex-direction: row;
           align-items: center;
@@ -300,7 +302,8 @@ font-size: 12px;
 }
 
 
-.collapsed .scripts {
+.collapsed .scripts,
+.collapsed .blubb {
   display: none;
 }
 

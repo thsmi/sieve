@@ -4,7 +4,7 @@ var tests = {
   "base" : {
     require : [
       // JQuery
-	  "./../../src/sieve@mozdev.org/common/jQuery/jquery-2.1.1.min.js",
+	    "./../../src/sieve@mozdev.org/common/jQuery/jquery-2.1.1.min.js",
       // Basic Sieve Elements
       "./../../src/sieve@mozdev.org/common/libSieve/toolkit/SieveParser.js",
       "./../../src/sieve@mozdev.org/common/libSieve/toolkit/SieveLexer.js",
@@ -37,22 +37,25 @@ var tests = {
   
   "variables" : {
     script : "./sieve/SieveVariablesTest.js",
-	extend : "rfc5228",
+    extend : "rfc5228",
     require : [
-       "./../../src/sieve@mozdev.org/common/libSieve/variables/logic/SieveVariables.js"]       	
+      "./validators/ScriptValidator.js",
+      "./../../src/sieve@mozdev.org/common/libSieve/variables/logic/SieveVariables.js"]       	
   },
   	
   "regEx" : {
-    script  : "./regex/SieveRegExTest.js", //TODO Makeoptional if empty the object name+"Test.js" should be used
+    script  : "./sieve/SieveRegExTest.js",
     extend  : "rfc5228",
     require : [
-       "./../../src/sieve@mozdev.org/common/libSieve/regex/logic/SieveRegularExpression.js"]
+      "./validators/ScriptValidator.js",
+      "./../../src/sieve@mozdev.org/common/libSieve/regex/logic/SieveRegularExpression.js"]
   },
   
   "body" : {
-    script : "./body/SieveBodyTest.js",
+    script : "./sieve/SieveBodyTest.js",
     extend : "rfc5228",
     require : [
+      "./validators/ScriptValidator.js",
       "./../../src/sieve@mozdev.org/common/libSieve/body/logic/SieveBody.js"]
   },
   
@@ -60,6 +63,7 @@ var tests = {
     script : "./sieve/SieveVacationTest.js",
     extend : "rfc5228",
     require : [
+      "./validators/ScriptValidator.js",
       "./../../src/sieve@mozdev.org/common/libSieve/vacation/logic/SieveVacation.js"]    
   },
   
@@ -67,7 +71,16 @@ var tests = {
     script : "./sieve/SieveIncludeTest.js",
     extend : "rfc5228",
     require : [
+      "./validators/ScriptValidator.js",
       "./../../src/sieve@mozdev.org/common/libSieve/include/logic/SieveInclude.js"]
+  },
+  
+  "relational" : {
+    script : "./sieve/SieveRelationalTest.js",
+    extend : "rfc5228",
+    require : [
+      "./validators/ScriptValidator.js",
+      "./../../src/sieve@mozdev.org/common/libSieve/relational/logic/SieveRelational.js"]
   },
   
   "managesieve" : {

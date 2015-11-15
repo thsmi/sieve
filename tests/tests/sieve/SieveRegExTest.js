@@ -1,3 +1,15 @@
+/*
+ * The contents of this file are licenced. You may obtain a copy of 
+ * the license at https://github.com/thsmi/sieve/ or request it via 
+ * email from the author.
+ *
+ * Do not remove or change this comment.
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ *      
+ */
+
 "use strict";
  
 (function() {
@@ -11,23 +23,9 @@
   	suite.log("Reg Ex unit tests...")
   });    
 
-  function testScript(script) {     
-    var doc = new SieveDocument(SieveLexer,null);
-    
-    doc.script(script);
-  
-    var rv = doc.script();
-  
-    suite.assertEquals(script, rv);
-  
-    return doc;
-  }
-
   
   suite.add( function() {	
    suite.log("Parse :regex match-type with single import");
-	
-   SieveLexer.capabilities({"regex":true});
  
     var script =
       'require "regex";\r\n'
@@ -36,21 +34,12 @@
         + '  keep; \r\n'
         + '}\r\n';
       
-    var doc = testScript(script);
-  
-    // Test if import requirement for regex was added..
-    var requires = {};
-  
-    doc.root().require(requires); 
-  
-    suite.assertEquals(true, requires['regex']);
+    suite.expectValidScript(script, {"regex":true} )    
   });
 
   suite.add( function() {
 
     suite.log("Parse :regex match-type with multiple import");
-  
-    SieveLexer.capabilities({"regex":true, "fileinto":true});
   
     var script =
       'require ["regex", "fileinto"];\r\n'
@@ -60,15 +49,7 @@
         + '  stop;\r\n'
         + '}\r\n';      
       
-    var doc = testScript(script);
-  
-    // Test if import requirement for regex was added correctly ..
-    var requires = {};
-  
-    doc.root().require(requires); 
-  
-    suite.assertEquals(true, requires['regex']);
-    suite.assertEquals(true, requires['fileinto']);
+    suite.expectValidScript(script, {"regex":true, "fileinto":true} )    
   });
 
 

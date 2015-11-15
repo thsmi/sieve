@@ -23,61 +23,6 @@
     suite.log("Sieve Include (RFC6609) unit tests...")
   });    
 
-  function testScript(script, capabilities) {     
-    
-    if (capabilities)
-      SieveLexer.capabilities(capabilities);
-    
-    
-    var doc = new SieveDocument(SieveLexer,null);
-    
-    suite.logTrace("Start Parsing Script");
-    doc.script(script);
-    suite.logTrace("End Parsing Script");
-    
-    suite.logTrace("Start Serializing Script");
-    var rv = doc.script();
-    suite.logTrace("End Serializing Script");
-  
-    suite.assertEquals(script, rv);
-
-    if (capabilities) {
-      var requires = {};      
-      doc.root().require(requires);
-      
-      suite.logTrace(rv);
-      
-      for (var capability in capabilities) {
-        suite.logTrace("Testing Capability: "+capability);
-        suite.assertEquals(true, requires[capability]);
-      }
-    }
-    
-    return doc;
-  }
- 
-  function testScriptInvalid(script, exception, capabilities) {     
-    
-    if (capabilities)
-      SieveLexer.capabilities(capabilities);
-    
-    
-    var doc = new SieveDocument(SieveLexer,null);
-    
-    suite.logTrace("Start Parsing Script");
-    try {
-      doc.script(script);
-    }
-    catch(e) {
-    	suite.logTrace("Exception caught");
-    	suite.assertEquals(exception, e);
-    	
-    	return;
-    }
-    
-    throw "Exception expected"    
-  }
-
   suite.add( function() {
 
     suite.log("return test");
@@ -86,7 +31,7 @@
       'require "include";\r\n'
         + 'return;\r\n';    
       
-    testScript(script, {"include":true});
+    suite.expectValidScript(script, {"include":true});
   });  
   
   suite.add( function() {
@@ -100,7 +45,7 @@
     
     var exception = "Location can be either personal or global but not both";
       
-    testScriptInvalid(script, exception, {"include":true});
+    suite.expectInvalidScript(script, exception, {"include":true});
   });   
 
   
@@ -115,8 +60,8 @@
         + 'include :global "spam_tests";\r\n'
         + 'include :personal "spam_tests";\r\n'
         + 'include :personal "mailing_lists";\r\n'; 
-      
-    testScript(script, {"include":true});
+
+    suite.expectValidScript(script, {"include":true});
   }); 
   
   suite.add( function() {
@@ -140,7 +85,7 @@
         + '    stop;\r\n'
         + '#}\r\n' 
       
-    testScript(script, {"include":true, "variables":true});
+    suite.expectValidScript(script, {"include":true, "variables":true});
   });   
 
   suite.add( function() {
@@ -156,7 +101,7 @@
         + '#    set "test_mailbox" "spam-${test}";\r\n'
         + '}\r\n';
       
-    testScript(script, {"include":true, "variables":true});
+    suite.expectValidScript(script, {"include":true, "variables":true});
   }); 
 
   
@@ -175,10 +120,8 @@
         + ' #   vacation "It\'s true, I am on vacation.";\r\n'
         + '#}\r\n';
       
-    testScript(script, {"include":true, "variables":true});
+    suite.expectValidScript(script, {"include":true, "variables":true});
   });   
-  
-
   
 }());
 

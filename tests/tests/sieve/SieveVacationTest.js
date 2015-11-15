@@ -23,23 +23,9 @@
   	suite.log("Vacation Unit Tests...")
   });    
   
-  function testScript(script) {     
-    var doc = new SieveDocument(SieveLexer,null);
-    
-    doc.script(script);
-  
-    var rv = doc.script();
-  
-    suite.assertEquals(script, rv);
-  
-    return doc;
-  }
-  
   suite.add( function() {
 
     suite.log("Parse Vacation Example 1");
-  
-    SieveLexer.capabilities({"vacation":true});
   
     var script = 
           'require "vacation";\r\n'
@@ -49,21 +35,12 @@
             + '    vacation "I\'m out -- call me at +1 304 555 0123";\r\n'
             + '}\r\n';
          
-    var doc = testScript(script);
-  
-    // Test if import requirement for regex was added correctly ..
-    var requires = {};
-  
-    doc.root().require(requires); 
-  
-    suite.assertEquals(true, requires['vacation']);
+    suite.expectValidScript(script,{"vacation":true} )
   });   
      
   suite.add( function() {
 
     suite.log("Parse Vacation Example 2");
-  
-    SieveLexer.capabilities({"vacation":true, "variables":true});
   
     var script = 
           'require ["vacation", "variables"];\r\n'
@@ -71,22 +48,13 @@
             + '  vacation :subject "Automatic response to: ${1}"\r\n'
             + '           "I\'m away -- send mail to foo in my absence";\r\n'
             + '}\r\n';
-         
-    var doc = testScript(script);
-  
-    // Test if import requirement for regex was added correctly ..
-    var requires = {};
-  
-    doc.root().require(requires); 
-  
-    suite.assertEquals(true, requires['vacation']);
+
+    suite.expectValidScript(script,{"vacation":true} )
   });   
      
   suite.add( function() {
 
     suite.log("Parse Vacation Example 3");
-  
-    SieveLexer.capabilities({"vacation":true, "variables":true});
   
     var script = 
           'require "vacation";\r\n'
@@ -96,22 +64,13 @@
             + '    vacation :handle "ran-away" "I\'m out";\r\n'
             + '}\r\n'
          
-    var doc = testScript(script);
-  
-    // Test if import requirement for regex was added correctly ..
-    var requires = {};
-  
-    doc.root().require(requires); 
-  
-    suite.assertEquals(true, requires['vacation']);
+    suite.expectValidScript(script,{"vacation":true} );
   });   
   
   
   suite.add( function() {
 
     suite.log("Parse Vacation Example 4");
-  
-    SieveLexer.capabilities({"vacation":true});
   
     var script = 
           'require "vacation";\r\n'
@@ -137,21 +96,12 @@
              + '\r\n.\r\n'
              + ';\r\n';
          
-    var doc = testScript(script);
-  
-    // Test if import requirement for regex was added correctly ..
-    var requires = {};
-  
-    doc.root().require(requires); 
-  
-    suite.assertEquals(true, requires['vacation']);
+    suite.expectValidScript(script,{"vacation":true} );
   });     
   
   suite.add( function() {
 
     suite.log("Parse Vacation Example 5");
-  
-    SieveLexer.capabilities({"vacation":true});
   
     var script = 
           'require "vacation";\r\n'
@@ -159,21 +109,12 @@
              + '                              "ts4z@landru.example.edu"]\r\n'
              + '"I\'m away until October 19.  If it\'s an emergency, call 911, I guess." ;\r\n'
          
-    var doc = testScript(script);
-  
-    // Test if import requirement for regex was added correctly ..
-    var requires = {};
-  
-    doc.root().require(requires); 
-  
-    suite.assertEquals(true, requires['vacation']);
+    suite.expectValidScript(script,{"vacation":true} );
   });  
 
   suite.add( function() {
 
     suite.log("Parse Vacation Example 6 ");
-  
-    SieveLexer.capabilities({"vacation":true});
   
     var script = 
           'require "vacation";\r\n'
@@ -184,22 +125,13 @@
              + 'message when I get around to it.";\r\n'
              + '}\r\n'
          
-    var doc = testScript(script);
-  
-    // Test if import requirement for regex was added correctly ..
-    var requires = {};
-  
-    doc.root().require(requires); 
-  
-    suite.assertEquals(true, requires['vacation']);
+    suite.expectValidScript(script,{"vacation":true} );
   });  
   
   suite.add( function() {
 
     suite.log("Parse Vacation Example 7");
-  
-    SieveLexer.capabilities({"vacation":true});
-  
+    
     var script = 
           'require "vacation";\r\n'
              + 'if header :contains ["accept-language", "content-language"] "en"\r\n'
@@ -209,22 +141,13 @@
              + '    vacation "Estoy ausente esta semana.";\r\n'
              + '} \r\n';
          
-    var doc = testScript(script);
-  
-    // Test if import requirement for regex was added correctly ..
-    var requires = {};
-  
-    doc.root().require(requires); 
-  
-    suite.assertEquals(true, requires['vacation']);
+    suite.expectValidScript(script,{"vacation":true} );
   });
   
   suite.add( function() {
 
     suite.log("Parse Vacation Example 8");
-  
-    SieveLexer.capabilities({"vacation":true});
-  
+    
     var script = 
           'require "vacation";\r\n'
              + 'if address :matches "from" "*@ourdivision.example.com"\r\n'
@@ -236,21 +159,12 @@
              + '             "Je lirai votre message quand je retourne.";\r\n'
              + '}\r\n';
          
-    var doc = testScript(script);
-  
-    // Test if import requirement for regex was added correctly ..
-    var requires = {};
-  
-    doc.root().require(requires); 
-  
-    suite.assertEquals(true, requires['vacation']);
+    suite.expectValidScript(script,{"vacation":true} );
   });  
   
   suite.add( function() {
 
     suite.log("Parse Vacation :from ");
-  
-    SieveLexer.capabilities({"vacation":true});
   
     var script = 
           'require "vacation";\r\n'
@@ -258,14 +172,7 @@
              + '         :from "myfallbackaddress@example.edu"\r\n'
              + '         "Having lots of fun! Back in a day or two!";\r\n'
          
-    var doc = testScript(script);
-  
-    // Test if import requirement for regex was added correctly ..
-    var requires = {};
-  
-    doc.root().require(requires); 
-  
-    suite.assertEquals(true, requires['vacation']);
+    suite.expectValidScript(script,{"vacation":true} );
   });  
   
 }());

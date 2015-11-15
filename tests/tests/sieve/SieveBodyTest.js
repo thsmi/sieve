@@ -22,24 +22,10 @@
   suite.add( function() {  	
   	suite.log("Body Unit Tests...")
   });    
-  
-  function testScript(script) {     
-    var doc = new SieveDocument(SieveLexer,null);
     
-    doc.script(script);
-  
-    var rv = doc.script();
-  
-    suite.assertEquals(script, rv);
-  
-    return doc;
-  }
-  
   suite.add( function() {
 
     suite.log("Parse body transform :raw");
-  
-    SieveLexer.capabilities({"body":true});
   
     var script =
       'require "body";\r\n'
@@ -52,22 +38,13 @@
         + 'if body :raw :contains "MAKE MONEY FAST" {\r\n'
         + '        discard;\r\n'
         + '}\r\n'
-      
-    var doc = testScript(script);
-  
-    // Test if import requirement for regex was added correctly ..
-    var requires = {};
-  
-    doc.root().require(requires); 
-  
-    suite.assertEquals(true, requires['body']);
+       
+    suite.expectValidScript(script,{"body":true} )  
   });    
   
   suite.add( function() {
 
     suite.log("Parse body transform :content");
-  
-    SieveLexer.capabilities({"body":true, "fileinto":true});
   
     var script =
       'require ["body", "fileinto"];\r\n'
@@ -84,23 +61,13 @@
         + '  fileinto "jukebox";\r\n'
         + '}\r\n';        
       
-    var doc = testScript(script);
-  
-    // Test if import requirement for regex was added correctly ..
-    var requires = {};
-  
-    doc.root().require(requires); 
-  
-    suite.assertEquals(true, requires['body']);
-    suite.assertEquals(true, requires['fileinto']);
+    suite.expectValidScript(script,{"body":true, "fileinto":true} )  
   });  
   
 
   suite.add( function() {
 
     suite.log("Parse body transform :text");
-  
-    SieveLexer.capabilities({"body":true, "fileinto":true});
   
     var script =
       'require ["body", "fileinto"];\r\n'
@@ -111,15 +78,7 @@
         + '  fileinto "project/schedule";'
         + '}\r\n';      
       
-    var doc = testScript(script);
-  
-    // Test if import requirement for regex was added correctly ..
-    var requires = {};
-  
-    doc.root().require(requires); 
-  
-    suite.assertEquals(true, requires['body']);
-    suite.assertEquals(true, requires['fileinto']);
+    suite.expectValidScript(script,{"body":true, "fileinto":true} )  
   });
 
 

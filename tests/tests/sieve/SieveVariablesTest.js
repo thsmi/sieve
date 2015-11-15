@@ -23,39 +23,6 @@
   	suite.log("Sieve Variables (RFC5229) unit tests...")
   });    
 
-  function testScript(script, capabilities) {     
-  	
-  	if (capabilities)
-  	  SieveLexer.capabilities(capabilities);
-  	
-  	
-    var doc = new SieveDocument(SieveLexer,null);
-    
-    suite.logTrace("Start Parsing Script");
-    doc.script(script);
-    suite.logTrace("End Parsing Script");
-    
-    suite.logTrace("Start Serializing Script");
-    var rv = doc.script();
-    suite.logTrace("End Serializing Script");
-  
-    suite.assertEquals(script, rv);
-
-    if (capabilities) {
-      var requires = {};      
-      doc.root().require(requires);
-      
-      suite.logTrace(rv);
-      
-      for (var capability in capabilities) {
-      	suite.logTrace("Teting Capability: "+capability);
-        suite.assertEquals(true, requires[capability]);
-      }
-    }
-    
-  
-    return doc;
-  }
 
   suite.add( function() {
   	
@@ -66,7 +33,7 @@
         + 'set "dollar" "$";\r\n'
         + 'set "text" "regarding ${dollar}{beep}";'
     
-    testScript(script, {"variables":true});   
+   suite.expectValidScript(script,{"variables":true} ) 
   });
 
   suite.add( function() {	
@@ -84,7 +51,7 @@
         + '.\r\n'
         + ';\r\n'
       
-    testScript(script, {"variables":true});
+    suite.expectValidScript(script, {"variables":true});
   });
   
   suite.add( function() {
@@ -101,7 +68,7 @@
         + 'set :upperfirst :lower "b" "${a}";\r\n'//     => "Jumbled letters"
         + 'set :quotewildcard "b" "Rock*";\r\n'   //     => "Rock\*"      
       
-    var doc = testScript(script, {"variables":true});
+    suite.expectValidScript(script, {"variables":true});
   });
 
   
@@ -122,8 +89,6 @@
   suite.add( function() {
     suite.log("Match Variables Example");
   
-    SieveLexer.capabilities({"variables":true, "fileinto":true});
-    
     var script = 
       'require ["fileinto", "variables"];\r\n'
         + '\r\n'
@@ -159,7 +124,7 @@
         + '    stop;\r\n'
         + '}\r\n'
         
-    testScript(script);        
+    suite.expectValidScript(script,{/*"variables":true,*/ "fileinto":true});        
   });
 
   
@@ -175,7 +140,7 @@
         + '    # the above test always succeeds\r\n'
         + '}\r\n';    
       
-    testScript(script, {"variables":true});
+    suite.expectValidScript(script, {"variables":true});
   });  
   
 

@@ -83,6 +83,7 @@ SieveAddressPartUI.prototype.createHtml
 
 //****************************************************************************//
 
+
 function SieveComparatorUI(elm)
 {
   SieveAbstractBoxUI.call(this,elm);

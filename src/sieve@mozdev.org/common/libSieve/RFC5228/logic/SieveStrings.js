@@ -667,18 +667,23 @@ SieveAddressPart.prototype.toScript
 }
 
 
-  // Comparators define the charset. All Sieve implementation have to support
-  //  which" is case sensitive and "i;ascii-codemap" which is case
-  // insensitive.
-
 /**
  * Comparators sepcify the charset which should be used for string comparison
  * By default two matchtypes are supported. 
  * 
- * "i;octet" compares strings based on UTF-8 octetts
+ * "i;octet"
+ *   Compares strings byte by byte (octet by octet) used typically with UTF-8 octetts
  * 
- * "i;ascii-codemap" converts strings before comparison to ASCII 
- */
+ * "i;ascii-codemap" 
+ *   Converts strings before comparison to US-ASCII. 
+ *   All US-ASCII letters are converted to upercase (0x61-0x7A to 0x41-0x5A)
+ *   "hello" equals "HELLO"
+ *   
+ * "i;ascii-numeric"
+ *   Interprets the string as decimal positive integer represented in US-ASCII digits (0x30 to 0x39).
+ *   The comparison starts from tbe beginning of the string and ends with the first non-digit or the 
+ *   end of string.
+ **/
 
 function SieveComparator(docshell,id)
 {

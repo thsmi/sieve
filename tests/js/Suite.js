@@ -141,32 +141,89 @@
   net.tschmid.yautt.test.server.run = function() {
   
     var that = this;
-    window.addEventListener("message", function(event) { that.onMessage(event); }, false);
-  
+    
+    this.queue = [];
+    
     $.each(tests, function (name, value) {
-      // Loop throug tests..
-	  if (typeof(value) == "undefined")
-	    return;		 
+      // Loop through tests..
+      if (typeof(value) == "undefined")
+	      return;		 
 
-	  if (!value.script)
-	    return;
+      if (value.disabled)
+	      return;
+	    
+	    if (!value.script)
+	      return;
 	  
-	  that.queue.push(name);
+	    that.queue.push(name);
     });
 	
     this.next();  
     // TODO add a timeout watchdog.
   };
-
+  
+  net.tschmid.yautt.test.server.init = function() {
+    var that = this;
+  	window.addEventListener("message", function(event) { that.onMessage(event); }, false);
+  };
   
   
   $(document).ready(function() {
+  	
+  	net.tschmid.yautt.test.server.init();
   	
     $("#toggleTrace").click(function(){
       $(".logTrace").toggle();
     });
   	
-    net.tschmid.yautt.test.server.run();
+    $("#start").click(function() {
+
+    	$.each(tests, function(name,value) {
+    	  if(value.disabled)
+    	    value.disabled = false;
+    	});
+    	
+    	var items = $("#tests input:checkbox:not(:checked)");    	
+    	items.each(function(idx, elm) { 
+    		var name = $(this).val();
+    		
+    		if (tests[name].script)
+    	    tests[name].disabled = true;
+    	});
+    	
+      net.tschmid.yautt.test.server.run();
+    });
+    
+    $("#tests-none").click(function () {
+      $( "#tests input:checkbox" ).each(function() {
+        $(this).prop("checked", false);
+      });
+    });
+
+    $("#tests-all").click(function () {
+      $( "#tests input:checkbox" ).each(function() {
+        $(this).prop("checked", true);
+      });
+    });
+    
+    $("#result-clear").click(function() {
+    	$("#divOutput").empty();
+    });
+    
+    
+    var elm = $("#tests");
+    
+    $.each(tests, function(name, value) {
+
+    	if (!tests[name].script)
+    	  return;
+    	
+    	elm.append(
+    	  $("<div />")
+    	    .append($("<input />", { type:"checkbox", "checked":"checked" }).val(name))
+    	    .append(name));
+    	    
+    });
   });
 
 }());

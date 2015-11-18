@@ -1,3 +1,29 @@
+html, body {
+  height: 100%; 
+  margin: 0px;
+  padding: 0px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#content {
+  flex: 1;
+	flex-grow: 1;
+	height:100%;
+	overflow: scroll;
+  padding-left: 10px;
+}
+
+#sidebar {
+  flex-grow : 0;
+  flex-basis: 250px;
+  background-color: #F5F5F5;
+  padding-left: 10px;
+}
+
+#container {
+  display: flex;
+  height:100%;
+}
 
 .logInfo {
   white-space : pre;
@@ -22,4 +48,5 @@
 .logSuccess {
   white-space : pre;
   color : green;	
+	padding-bottom: 15px;
 }

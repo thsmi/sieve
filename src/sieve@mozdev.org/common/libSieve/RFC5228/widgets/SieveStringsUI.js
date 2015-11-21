@@ -10,9 +10,7 @@
  *      
  */
 
-
 "use strict";
-
 
 function SieveAddressPartUI(elm)
 {
@@ -119,7 +117,7 @@ SieveComparatorUI.prototype.createHtml
         .attr("name","rgComparator"+this.id())
         .attr("value","i;octet")
         .change(function () {that.onSelect()}))
-      .append($("<span/>").text("Case sensitive UTF-8 Octetts")))
+      .append($("<span/>").text("Case sensitive byte by byte")))
       .find("input[name='rgComparator"+this.id()+"'][value='"+this.getSieve().comparator()+"']")
         .attr("checked","checked")
       .end();

@@ -25,7 +25,7 @@
 
   suite.add( function() {
 
-    suite.log("return test");
+    suite.log("Extended Example test");
    
     var script = 
       'require ["relational", "comparator-i;ascii-numeric", "fileinto"];\r\n'
@@ -63,6 +63,58 @@
     // FIXME:  reuire comparator...
     suite.expectValidScript(script, {"relational":true, "fileinto":true});
   });  
+  
+    suite.add( function() {
+
+    suite.log("Invalid operator");
+   
+    var script = 
+      'require ["relational"];\r\n'
+        + '\r\n'
+        + 'if address :all :comparator "i;ascii-casemap" :value "egt" \r\n'
+        + '           ["from"] ["M"]\r\n'
+        + '{\r\n'
+        + '   keep;\r\n'
+        + '}\r\n';
+      
+    suite.expectInvalidScript(script, "Relational operator expected", {"relational":true});
+  });  
+  
+  /*
+   *       address :count "ge" :comparator "i;ascii-numeric"
+                      ["to", "cc"] ["3"]
+
+
+
+----------
+
+
+      anyof ( address :count "ge" :comparator "i;ascii-numeric"
+                      ["to"] ["3"],
+              address :count "ge" :comparator "i;ascii-numeric"
+                      ["cc"] ["3"] )
+
+
+-------
+
+      header :count "ge" :comparator "i;ascii-numeric"
+                      ["received"] ["3"]
+
+------
+
+      header :count "ge" :comparator "i;ascii-numeric"
+                      ["received", "subject"] ["3"]
+
+
+------
+
+      header :count "ge" :comparator "i;ascii-numeric"
+                      ["to", "cc"] ["3"]
+
+------
+
+
+   */
     
 }());
 

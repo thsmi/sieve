@@ -43,7 +43,7 @@ var tests = {
       "./../../src/sieve@mozdev.org/common/libSieve/variables/logic/SieveVariables.js"]       	
   },
   	
-  "regEx" : {
+  "regex" : {
     script  : "./sieve/SieveRegExTest.js",
     extend  : "rfc5228",
     require : [
@@ -81,6 +81,14 @@ var tests = {
     require : [
       "./validators/ScriptValidator.js",
       "./../../src/sieve@mozdev.org/common/libSieve/relational/logic/SieveRelational.js"]
+  },
+  
+  "mailbox" : {
+    script : "./sieve/SieveMailboxTest.js",
+    extend : "rfc5228",
+    require : [
+      "./validators/ScriptValidator.js",
+      "./../../src/sieve@mozdev.org/common/libSieve/mailbox/logic/SieveMailbox.js"]
   },
   
   "managesieve" : {

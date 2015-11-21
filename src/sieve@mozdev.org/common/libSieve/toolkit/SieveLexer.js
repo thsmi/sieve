@@ -166,6 +166,41 @@ var SieveLexer =
       
     return false;      
   },
+
+  supportsByName : function(name)
+  {
+    if (typeof(this.names[name]) === "undefined")
+      return false;
+      
+    if (!this.names[name].onCapable(this._capabilities))
+      return false;
+      
+    return true;
+  },  
+  
+  supportsByClass : function(type)
+  {
+    if (typeof(selectors) === "string")
+      selectors = [selectors];
+    
+      
+    if (!Array.isArray(selectors))
+      throw "Invalid Type list, not an array";
+      
+    // enumerate all selectors...
+    for (var selector in selectors)
+    {
+      selector = selectors[selector];
+    
+      for (var key in this.types[selector])
+        if (this.types[selector][key].onCapable(this._capabilities))
+          return true;
+    }
+             
+    return false;
+  },
+  
+  
   
 //  getNamesByClass : function(selectors)
 //  {

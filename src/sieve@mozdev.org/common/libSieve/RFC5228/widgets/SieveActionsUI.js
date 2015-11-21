@@ -119,7 +119,7 @@ SieveFileIntoUI.prototype.constructor = SieveFileIntoUI;
 SieveFileIntoUI.prototype.onValidate
    = function ()
 {
-  this.getSieve().setPath($("#txtPath"+this.id()).val());
+  this.getSieve().path($("#txtPath"+this.id()).val());
 }
 
 SieveFileIntoUI.prototype.initEditor
@@ -130,7 +130,7 @@ SieveFileIntoUI.prototype.initEditor
            .append($("<div/>")
              .append($("<input/>")
                .attr("id","txtPath"+this.id())
-               .attr("value",""+this.getSieve().getPath())));
+               .attr("value",""+this.getSieve().path())));
 }
 
 SieveFileIntoUI.prototype.initSummary
@@ -138,7 +138,7 @@ SieveFileIntoUI.prototype.initSummary
 {              
   return $("<div/>")
            .html("Save message into:" +
-             "<div><em>"+ $('<div/>').text(this.getSieve().getPath()).html()+"</em></div>");
+             "<div><em>"+ $('<div/>').text(this.getSieve().path()).html()+"</em></div>");
 }
 
 /******************************************************************************/

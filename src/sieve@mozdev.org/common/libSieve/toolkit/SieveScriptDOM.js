@@ -119,6 +119,18 @@ SieveDocument.prototype.probeByClass
   return this._lexer.probeByClass(types,parser);
 }
 
+SieveDocument.prototype.supportsByName
+    = function(name)
+{
+  return this._lexer.supportsByName(name);    	
+}
+
+SieveDocument.prototype.supportsByClass
+    = function(type)
+{
+  return this._lexer.supportsByClass(type);    	
+}
+
 SieveDocument.prototype.id
   = function (id)
 {

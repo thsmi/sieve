@@ -218,11 +218,20 @@ function SieveFileInto(docshell,id)
 {
   SieveAbstractElement.call(this,docshell,id);
 
-  this.whiteSpace = this._createByName("whitespace", " ");
+  this._whiteSpace = []
+  this._whiteSpace[0] = this._createByName("whitespace", " ");
+  this._whiteSpace[1] = this._createByName("whitespace", " ");
   
   this.semicolon = this._createByName("atom/semicolon");
       
-  this.string = this._createByName("string","\"INBOX\"");
+  this._path = this._createByName("string","\"INBOX\"");
+
+  this._state = {}
+  this._create = null; 
+  
+  if (this.document().supportsByName("argument/create"))
+    this._create  = this.document().createByName("argument/create");
+
 }
 
 SieveFileInto.prototype = Object.create(SieveAbstractElement.prototype);
@@ -252,14 +261,25 @@ SieveFileInto.prototype.init
 {
   // Syntax :
   // <"fileinto"> <string> <";">
-  
   parser.extract("fileinto");
-  
+
   // ... eat the deadcode before the string...
-  this.whiteSpace.init(parser);
+  this._whiteSpace[0].init(parser);
+  
+  
+  this._state = {};
+  
+  if ( this.document().supportsByName("argument/create") ) {
+  	if (this._probeByName("argument/create", parser)) {
+      this._create.init(parser);
+      this._whiteSpace[1].init(parser)
+    
+      this._state["create"] = true;
+    } 
+  }
   
   // read the string
-  this.string.init(parser);
+  this._path.init(parser);
   
   // ... and finally remove the semicolon;
   this.semicolon.init(parser);
@@ -271,26 +291,42 @@ SieveFileInto.prototype.require
     = function (requires)
 {
   requires["fileinto"] = true;
+  
+  if (this._state["create"] && this.document().supportsByName("argument/create"))
+    this._create.require(requires);
 }
 
-SieveFileInto.prototype.setPath
+/**
+ * Gets or sets the mailbox into which the message should be saved.
+ * 
+ * @optional @param {String} path
+ *   the path as string in case it should be changed.
+ *   
+ * @return {String} the current path.
+ */
+SieveFileInto.prototype.path
     = function (path)
 {
-  this.string.value(path)
+  this._path.value(path)
 }
 
-SieveFileInto.prototype.getPath
-    = function ()
+SieveFileInto.prototype.state
+    = function(state)
 {
-  return this.string.value();
+  if (typeof(state) !== "undefined")
+    this._state = state;
+    
+  return this._state;
 }
 
 SieveFileInto.prototype.toScript
     = function ()
 {
-  return "fileinto"  
-    + this.whiteSpace.toScript()
-    + this.string.toScript()
+  return "fileinto" 
+    + this._whiteSpace[0].toScript()
+    + ((this._state["create"] && this.document().supportsByName("argument/create")) ? 
+         "" + this._create.toScript() + this._whiteSpace[1].toScript() : "" )
+    + this._path.toScript()
     + this.semicolon.toScript();
 }
 

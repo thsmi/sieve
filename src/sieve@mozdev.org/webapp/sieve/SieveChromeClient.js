@@ -11,8 +11,21 @@
 
 "use strict";
 
+/* global SieveAbstractClient */
+/* global SieveResponseParser */
+
+/* global DataView */
+/* global Uint8Array*/
+/* global TextDecoder */
+/* global TextEncoder */
+
+/* global chrome */
+/* global console */ 
+/* global window */
+
 (function(exports) {
 
+	
   // Compatibility Shim for Google Chrome sockets ..
 	
   function Sieve(logger) {  	
@@ -28,8 +41,8 @@
   Sieve.prototype.setPaused
     = function (value)
   {
-  	chrome.sockets.tcp.setPaused(this.socket.socketId, value)
-  }
+  	chrome.sockets.tcp.setPaused(this.socket.socketId, value);
+  };
   
   /**
    * This method secures the connection to the sieve server. By activating 
@@ -51,9 +64,9 @@
         	if (response < 0)
         	  console.error("Secure "+response+ " "+chrome.runtime.lastError);
         	  
-        	callback() 
+        	callback();
         });    
-  }  
+  };
   
   // Method used to controll the timers...
   
@@ -62,8 +75,8 @@
     		
     var that = this;
     this.timeout.timer
-       = window.setTimeout(function() { that.notify(that.timeout.timer) }, that.timeout.delay);        
-  }
+       = window.setTimeout(function() { that.notify(that.timeout.timer); }, that.timeout.delay);        
+  };
   
   Sieve.prototype._stopTimeoutTimer
     = function () {
@@ -73,15 +86,15 @@
     
     window.clearTimeout(this.timeout.timer);
     this.timeout.timer = null;
-  }  
+  }; 
 
   Sieve.prototype._startIdleTimer
     = function () {
             
     var that = this;    
     this.idle.timer 
-       = window.setTimeout(function() { that.notify(that.idle.timer) }, that.idle.delay);
-  }
+       = window.setTimeout(function() { that.notify(that.idle.timer); }, that.idle.delay);
+  };
   
   Sieve.prototype._stopIdleTimer
     = function () {
@@ -91,19 +104,19 @@
     
     window.clearTimeout(this.idle.timer);
     this.idle.timer = null;
-  }   
+  };
   
   Sieve.prototype.createParser
       = function (data)
   {
     return new SieveResponseParser(data);
-  }   
+  };  
     
   Sieve.prototype.getLogger
       = function ()
   {
     return this._logger;
-  }
+  };
 
   // connect...
   
@@ -118,8 +131,8 @@
     this.secure = secure;
     		
     var that = this;
-    chrome.sockets.tcp.create( {}, function(socket) { that.onSocketCreated(socket) }); 	    	
-  }
+    chrome.sockets.tcp.create( {}, function(socket) { that.onSocketCreated(socket); }); 	    	
+  };
   
   Sieve.prototype.onSocketCreated
     = function (socket) {
@@ -128,12 +141,11 @@
     
     this.socket = socket;
     	
-    chrome.sockets.tcp.connect(socket.socketId, this.host, this.port, function(result) { that.onSocketConnected(result) });
+    chrome.sockets.tcp.connect(socket.socketId, this.host, this.port, function(result) { that.onSocketConnected(result); });
     
     chrome.sockets.tcp.onReceive.addListener(function (receiveInfo) { that.onReceive(receiveInfo); } );
     chrome.sockets.tcp.onReceiveError.addListener(function(info) { that.onReceiveError(info); });    
-  }
-  
+  };
   
   Sieve.prototype.disconnect
     = function () {    
@@ -145,7 +157,7 @@
 
     chrome.sockets.tcp.disconnect(this.socket.socketId);  
     this.socket = null;
-  }  
+  };
   
   // TODO detect server disconnects and communication errors...
   
@@ -166,7 +178,7 @@
     }    
     
     SieveAbstractClient.prototype.onDataReceived.call(this, data);      
-  }
+  };
   
   Sieve.prototype.onReceiveError
     = function (info) {
@@ -176,15 +188,14 @@
       
     console.error('Unable to reveive data'+chrome.runtime.lastError);  
     
-    
-  }
+  };
   
   Sieve.prototype.onSocketConnected
     = function (result) {
     
     // negative value is an error...
     console.log('socket connected');
-  }
+  };
   
   Sieve.prototype.onSend
     = function (data) {   
@@ -192,7 +203,7 @@
     chrome.sockets.tcp.send(
       this.socket.socketId, 
       new TextEncoder("utf-8").encode(data).buffer, function() {/*called when sent*/} );
-  }  
+  };  
 
     
   exports.Sieve = Sieve;

@@ -7,6 +7,9 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+/* global Components */
+/* global SieveSession */
+
 // Enable Strict Mode
 "use strict";
 
@@ -38,7 +41,7 @@ Cu.import("chrome://sieve/content/modules/sieve/SieveMozSession.js");
 
 function SieveConnectionManager() 
 { 
-  this.sessions = new Array();
+  this.sessions = [];
   
   /*var observerService = Components.classes["@mozilla.org/observer-service;1"]
                       .getService(Components.interfaces.nsIObserverService);

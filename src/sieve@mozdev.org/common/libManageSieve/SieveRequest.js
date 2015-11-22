@@ -37,6 +37,20 @@
 "use strict";
 
 (function(exports) {
+	
+	/* global Components */
+	/* global atob */
+	/* global btoa */
+	/* global Uint8Array */
+	/* global TextEncoder */
+	
+	/* global SieveGetScriptResponse */
+	/* global SieveSimpleResponse */
+	/* global SieveCapabilitiesResponse */
+	/* global SieveListScriptResponse */
+	/* global SieveSaslLoginResponse */
+	/* global SieveSaslCramMd5Response */
+	/* global SieveSaslScramSha1Response */
 
   /**
    * Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy 
@@ -50,7 +64,7 @@
    * @author Thomas Schmid <schmid-thomas@gmx.net>
    * @author Max Dittrich
    */ 
-  function JSStringToByteArray(str) 
+  function jsStringToByteArray(str) 
   {  
   	// This is very old mozilla specific code, but it is robust, mature and works as expeced.
     // It will be dropped as soon as the new code has proven to be stable.   
@@ -68,7 +82,7 @@
     }
   	
     // with chrome we have to use the TextEncoder.      
-    var data = new Uint8Array(TextEncoder("UTF-8").encode(string));    
+    var data = new Uint8Array(new TextEncoder("UTF-8").encode(str));    
     return Array.prototype.slice.call(data);    
   }
   
@@ -105,46 +119,46 @@ SieveAbstractRequest.prototype.addErrorListener
     = function (listener)
 {
   this.errorListener = listener;
-}
+};
 
 SieveAbstractRequest.prototype.addByeListener
     = function (listener)
 {
   this.byeListener = listener;
-}
+};
 
 SieveAbstractRequest.prototype.hasNextRequest
     = function ()
 {
   return false;
-}
+};
 
 SieveAbstractRequest.prototype.cancel
     = function ()
 {
   if ((this.errorListener) && (this.errorListener.onTimeout))
     this.errorListener.onTimeout();  
-}
+};
 
 SieveAbstractRequest.prototype.onNo
     = function (response)
 {
-  if (this.errorListener != null)
+  if ((this.errorListener) && (this.errorListener.onError))
     this.errorListener.onError(response); 
-}
+};
 
 SieveAbstractRequest.prototype.onBye
     = function (response)
 {
-  if ((response.getResponse() == 1) && (this.byeListener != null))
+  if ((response.getResponse() == 1) && (this.byeListener))
     this.byeListener.onByeResponse(response);
-}
+};
 
 SieveAbstractRequest.prototype.onOk
     = function (response)
 {
   throw "Abstract Method override me";
-}
+};
 
 /**
  * An abstract helper, which calls the default message handlers.
@@ -153,15 +167,15 @@ SieveAbstractRequest.prototype.onOk
 SieveAbstractRequest.prototype.addResponse
     = function (response)
 {
-  if (response.getResponse() == 0)
+  if (response.getResponse() === 0)
     this.onOk(response);
-  else if (response.getResponse() == 1)
+  else if (response.getResponse() === 1)
     this.onBye(response);
-  else if (response.getResponse() == 2)
+  else if (response.getResponse() === 2)
     this.onNo(response);
   else
     throw "Invalid Response Code";
-}
+};
 
 //****************************************************************************//
 
@@ -189,7 +203,7 @@ SieveAbstractSaslRequest.prototype.setUsername
     = function (username)
 {
   this._username = username;  
-}
+};
 
 /**
  * Most SASL mechanisms need a passwort or secret to authenticate. 
@@ -202,21 +216,21 @@ SieveAbstractSaslRequest.prototype.hasPassword
     = function ()
 {
   return true;  
-}
+};
 
 /** @param {String} password */
 SieveAbstractSaslRequest.prototype.setPassword
     = function (password)
 {
   this._password = password;  
-}
+};
 
 /** @return {Boolean} */
 SieveAbstractSaslRequest.prototype.isAuthorizable
     = function () 
 {
   return this._authorizable;
-}
+};
 
 /** @param {String} authorization */
 SieveAbstractSaslRequest.prototype.setAuthorization
@@ -224,20 +238,20 @@ SieveAbstractSaslRequest.prototype.setAuthorization
 {
   if (this._authorizable)
     this._authorization = authorization;
-}
+};
 
 SieveAbstractSaslRequest.prototype.addSaslListener
     = function (listener)
 {
   this.responseListener = listener;
-} 
+};
 
 SieveAbstractSaslRequest.prototype.onOk
     = function (response)
 {
-  if (this.responseListener != null)
+  if (this.responseListener)
     this.responseListener.onSaslResponse(response);    
-}
+};
 
 //****************************************************************************//
 
@@ -258,21 +272,21 @@ SieveGetScriptRequest.prototype.addGetScriptListener
     = function (listener)
 {
   this.responseListener = listener;
-} 
+};
    
 /** @return {String} */
 SieveGetScriptRequest.prototype.getNextRequest
     = function ()
 {
   return "GETSCRIPT \""+escapeString(this.script)+"\"\r\n";
-}
+};
 
 SieveGetScriptRequest.prototype.onOk
     = function (response)
 {
-  if (this.responseListener != null)
+  if (this.responseListener)
     this.responseListener.onGetScriptResponse(response);
-}
+};
 
 /** @param {SieveResponseParser} parser */
 SieveGetScriptRequest.prototype.addResponse
@@ -280,7 +294,7 @@ SieveGetScriptRequest.prototype.addResponse
 {   
   SieveAbstractRequest.prototype.addResponse.call(this,
       new SieveGetScriptResponse(this.script,parser));
-}
+};
 
 //****************************************************************************//
 
@@ -346,22 +360,22 @@ SievePutScriptRequest.prototype.getNextRequest
   //return converter.ConvertFromUnicode(aStr);}
  
 
-  return "PUTSCRIPT \""+this.script+"\" {"+JSStringToByteArray(this.body).length+"+}\r\n"
+  return "PUTSCRIPT \""+this.script+"\" {"+jsStringToByteArray(this.body).length+"+}\r\n"
         +this.body+"\r\n";
-}
+};
 
 SievePutScriptRequest.prototype.addPutScriptListener
     = function (listener)
 {
   this.responseListener = listener;
-} 
+};
 
 SievePutScriptRequest.prototype.onOk
     = function (response)
 {
-  if (this.responseListener != null)
+  if (this.responseListener)
     this.responseListener.onPutScriptResponse(response);      
-}
+};
 
 /** @param {SieveResponseParser} parser */
 SievePutScriptRequest.prototype.addResponse
@@ -369,7 +383,7 @@ SievePutScriptRequest.prototype.addResponse
 {  
   SieveAbstractRequest.prototype.addResponse.call(this,
       new SieveSimpleResponse(parser));
-}
+};
 
 //****************************************************************************//
 
@@ -414,22 +428,22 @@ SieveCheckScriptRequest.prototype.constructor = SieveCheckScriptRequest;
 SieveCheckScriptRequest.prototype.getNextRequest
     = function ()
 {
-  return "CHECKSCRIPT {"+JSStringToByteArray(this.body).length+"+}\r\n"
-        +this.body+"\r\n"
-}
+  return "CHECKSCRIPT {"+jsStringToByteArray(this.body).length+"+}\r\n"
+        +this.body+"\r\n";
+};
 
 SieveCheckScriptRequest.prototype.addCheckScriptListener
     = function (listener)
 {
   this.responseListener = listener;
-} 
+};
 
 SieveCheckScriptRequest.prototype.onOk
     = function (response)
 {
-  if (this.responseListener != null)
+  if (this.responseListener)
     this.responseListener.onCheckScriptResponse(response);      
-}
+};
 
 /** @param {SieveResponseParser} parser */
 SieveCheckScriptRequest.prototype.addResponse
@@ -437,7 +451,7 @@ SieveCheckScriptRequest.prototype.addResponse
 {  
   SieveAbstractRequest.prototype.addResponse.call(this,
       new SieveSimpleResponse(parser));
-}
+};
 
 //****************************************************************************//
 
@@ -457,7 +471,7 @@ SieveCheckScriptRequest.prototype.addResponse
  */
 function SieveSetActiveRequest(script) 
 {
-  if (script == null)
+  if ((typeof(script) === 'undefined') || (script === null))
     this.script = "";
   else
     this.script = escapeString(script);
@@ -472,20 +486,20 @@ SieveSetActiveRequest.prototype.getNextRequest
     = function ()
 {
   return "SETACTIVE \""+this.script+"\"\r\n";
-}
+};
 
 SieveSetActiveRequest.prototype.addSetActiveListener
     = function (listener)
 {
   this.responseListener = listener;
-} 
+};
 
 SieveSetActiveRequest.prototype.onOk
     = function (response)
 {
-  if (this.responseListener != null)
+  if (this.responseListener)
     this.responseListener.onSetActiveResponse(response);     
-}
+};
 
 /** @param {SieveResponseParser} parser */
 SieveSetActiveRequest.prototype.addResponse
@@ -493,7 +507,7 @@ SieveSetActiveRequest.prototype.addResponse
 {  
   SieveAbstractRequest.prototype.addResponse.call(this,
       new SieveSimpleResponse(parser));
-}
+};
 
 //****************************************************************************//
 
@@ -514,20 +528,20 @@ SieveCapabilitiesRequest.prototype.getNextRequest
     = function ()
 {
   return "CAPABILITY\r\n";
-}
+};
 
 SieveCapabilitiesRequest.prototype.addCapabilitiesListener
     = function (listener)
 {
   this.responseListener = listener;
-} 
+};
 
 SieveCapabilitiesRequest.prototype.onOk
     = function (response)
 {
-  if (this.responseListener != null)
+  if (this.responseListener)
     this.responseListener.onCapabilitiesResponse(response);     
-}
+};
 
 /** @param {SieveResponseParser} parser */
 SieveCapabilitiesRequest.prototype.addResponse
@@ -535,7 +549,7 @@ SieveCapabilitiesRequest.prototype.addResponse
 {
   SieveAbstractRequest.prototype.addResponse.call(this,
       new SieveCapabilitiesResponse(parser));
-}
+};
 
 //****************************************************************************//
 
@@ -557,20 +571,20 @@ SieveDeleteScriptRequest.prototype.getNextRequest
     = function ()
 {
   return "DELETESCRIPT \""+this.script+"\"\r\n";
-}
+};
 
 SieveDeleteScriptRequest.prototype.addDeleteScriptListener
     = function (listener)
 {
   this.responseListener = listener;
-}
+};
 
 SieveDeleteScriptRequest.prototype.onOk
     = function (response)
 {
-  if (this.responseListener != null)
+  if (this.responseListener)
     this.responseListener.onDeleteScriptResponse(response);     
-}
+};
   
 /** @param {SieveResponseParser} parser */
 SieveDeleteScriptRequest.prototype.addResponse
@@ -578,7 +592,7 @@ SieveDeleteScriptRequest.prototype.addResponse
 {
   SieveAbstractRequest.prototype.addResponse.call(this,
       new SieveSimpleResponse(parser));
-}
+};
 
 //****************************************************************************//
 
@@ -603,20 +617,20 @@ SieveNoopRequest.prototype.getNextRequest
     = function ()
 {
   return "NOOP\r\n";
-}
+};
 
 SieveNoopRequest.prototype.addNoopListener
     = function (listener)
 {
   this.responseListener = listener;
-} 
+};
 
 SieveNoopRequest.prototype.onOk
     = function (response)
 {
-  if (this.responseListener != null)
+  if (this.responseListener)
     this.responseListener.onNoopResponse(response);     
-}
+};
 
 /** @param {SieveResponseParser} parser */
 SieveNoopRequest.prototype.addResponse
@@ -624,7 +638,7 @@ SieveNoopRequest.prototype.addResponse
 {        
   SieveAbstractRequest.prototype.addResponse.call(this,
       new SieveSimpleResponse(parser));
-}
+};
 
 //****************************************************************************//
 
@@ -655,20 +669,20 @@ SieveRenameScriptRequest.prototype.getNextRequest
     = function ()
 {
   return "RENAMESCRIPT \""+this.oldScript+"\" \""+this.newScript+"\"\r\n";
-}
+};
 
 SieveRenameScriptRequest.prototype.addRenameScriptListener
     = function (listener)
 {
   this.responseListener = listener;
-} 
+};
 
 SieveRenameScriptRequest.prototype.onOk
     = function (response)
 {
-  if (this.responseListener != null)
+  if (this.responseListener)
     this.responseListener.onRenameScriptResponse(response);     
-}
+};
 
 /** @param {SieveResponseParser} parser */
 SieveRenameScriptRequest.prototype.addResponse
@@ -676,7 +690,7 @@ SieveRenameScriptRequest.prototype.addResponse
 {        
   SieveAbstractRequest.prototype.addResponse.call(this,
       new SieveSimpleResponse(parser));
-}
+};
 
 //****************************************************************************//
 
@@ -696,20 +710,20 @@ SieveListScriptRequest.prototype.getNextRequest
     = function ()
 {
   return "LISTSCRIPTS\r\n";
-}
+};
 
 SieveListScriptRequest.prototype.addListScriptListener
     = function (listener)
 {
   this.responseListener = listener;
-} 
+};
 
 SieveListScriptRequest.prototype.onOk
     = function (response)
 {
-  if (this.responseListener != null)
+  if (this.responseListener)
     this.responseListener.onListScriptResponse(response);     
-}
+};
 
 /** @param {SieveResponseParser} parser */
 SieveListScriptRequest.prototype.addResponse 
@@ -717,7 +731,7 @@ SieveListScriptRequest.prototype.addResponse
 {	
   SieveAbstractRequest.prototype.addResponse.call(this,
       new SieveListScriptResponse(parser));
-}
+};
 
 //****************************************************************************//
 
@@ -734,20 +748,20 @@ SieveStartTLSRequest.prototype.getNextRequest
     = function ()
 {
   return "STARTTLS\r\n";
-}
+};
 
 SieveStartTLSRequest.prototype.addStartTLSListener
     = function (listener)
 {
   this.responseListener = listener;
-} 
+};
 
 SieveStartTLSRequest.prototype.onOk
     = function (response)
 {
-  if (this.responseListener != null)
+  if (this.responseListener)
     this.responseListener.onStartTLSResponse(response);     
-}
+};
 
 /** @param {SieveResponseParser} parser */
 SieveStartTLSRequest.prototype.addResponse 
@@ -755,7 +769,7 @@ SieveStartTLSRequest.prototype.addResponse
 {
   SieveAbstractRequest.prototype.addResponse.call(this,
       new SieveSimpleResponse(parser));
-}
+};
 
 //****************************************************************************//
 
@@ -804,20 +818,20 @@ SieveLogoutRequest.prototype.getNextRequest
     = function ()
 {
   return "LOGOUT\r\n";
-}
+};
 
 SieveLogoutRequest.prototype.addLogoutListener
     = function (listener)
 {
   this.responseListener = listener;
-} 
+};
 
 SieveLogoutRequest.prototype.onOk
     = function (response)
 {
-  if (this.responseListener != null)
+  if (this.responseListener)
     this.responseListener.onLogoutResponse(response);    
-}
+};
 
 SieveLogoutRequest.prototype.onBye
     = function (response)
@@ -825,7 +839,7 @@ SieveLogoutRequest.prototype.onBye
   // As issued a logout request thus onBye response is perfectly fine...
   // ... and equivalten to an ok in this case.
   this.onOk(response);
-}
+};
 
 /** @param {SieveResponseParser} parser */
 SieveLogoutRequest.prototype.addResponse 
@@ -833,7 +847,7 @@ SieveLogoutRequest.prototype.addResponse
 {
   SieveAbstractRequest.prototype.addResponse.call(this,
       new SieveSimpleResponse(parser));    
-}
+};
 
 //****************************************************************************//
 
@@ -873,14 +887,14 @@ SieveInitRequest.prototype.addInitListener
     = function (listener)
 {
   this.responseListener = listener;
-} 
+};
 
 SieveInitRequest.prototype.onOk
     = function (response)
 {
-  if (this.responseListener != null)
+  if (this.responseListener)
     this.responseListener.onInitResponse(response);    
-}
+};
 
 /** @param {SieveResponseParser} parser */
 SieveInitRequest.prototype.addResponse
@@ -888,7 +902,7 @@ SieveInitRequest.prototype.addResponse
 {  
   SieveAbstractRequest.prototype.addResponse.call(this,
       new SieveCapabilitiesResponse(parser));
-}
+};
 
 /*******************************************************************************
  
@@ -963,7 +977,7 @@ SieveSaslPlainRequest.prototype.getNextRequest
 {
   var logon = btoa(this._authorization+"\0"+this._username+"\0"+this._password);  
   return "AUTHENTICATE \"PLAIN\" \""+logon+"\"\r\n";
-}
+};
 
    
 SieveSaslPlainRequest.prototype.addResponse
@@ -971,7 +985,7 @@ SieveSaslPlainRequest.prototype.addResponse
 {
   SieveAbstractRequest.prototype.addResponse.call(this,
       new SieveSimpleResponse(parser));
-}
+};
 
 
 /*******************************************************************************
@@ -1083,7 +1097,7 @@ SieveSaslLoginRequest.prototype.getNextRequest
   }
   
   throw "Unkown state in sasl login";
-}
+};
 
 /** @return {Boolean} */
 SieveSaslLoginRequest.prototype.hasNextRequest
@@ -1093,7 +1107,7 @@ SieveSaslLoginRequest.prototype.hasNextRequest
     return false;
   
   return true;
-}
+};
 
    
 /** @param {SieveResponseParser} parser */
@@ -1106,7 +1120,7 @@ SieveSaslLoginRequest.prototype.addResponse
 	  return;
 
   SieveAbstractRequest.prototype.addResponse.call(this,this.response);
-}
+};
 
 //****************************************************************************//
 
@@ -1139,7 +1153,7 @@ SieveSaslCramMd5Request.prototype.getNextRequest
   }
   
   throw "Illegal state in SaslCram"; 
-}
+};
 
 SieveSaslCramMd5Request.prototype.hasNextRequest
     = function ()
@@ -1148,7 +1162,7 @@ SieveSaslCramMd5Request.prototype.hasNextRequest
     return false;
   
   return true;
-}
+};
 
 
    
@@ -1161,7 +1175,7 @@ SieveSaslCramMd5Request.prototype.addResponse
 	  return;
 
   SieveAbstractRequest.prototype.addResponse.call(this,this.response);
-}
+};
 
 
 SieveSaslCramMd5Request.prototype.hmacMD5
@@ -1171,30 +1185,30 @@ SieveSaslCramMd5Request.prototype.hmacMD5
   if ( !secret )
     secret = "";
 
-  var challengeBytes = JSStringToByteArray(challenge);
-  var crypto = Cc["@mozilla.org/security/hmac;1"]
-                   .createInstance( Ci.nsICryptoHMAC );
-  var keyObject = Cc["@mozilla.org/security/keyobjectfactory;1"]
-                    .getService( Ci.nsIKeyObjectFactory )
-                    .keyFromString( Ci.nsIKeyObject.HMAC, secret);
+  var challengeBytes = jsStringToByteArray(challenge);
+  var crypto = Components.classes["@mozilla.org/security/hmac;1"]
+                   .createInstance( Components.interfaces.nsICryptoHMAC );
+  var keyObject = Components.classes["@mozilla.org/security/keyobjectfactory;1"]
+                    .getService( Components.interfaces.nsIKeyObjectFactory )
+                    .keyFromString( Components.interfaces.nsIKeyObject.HMAC, secret);
 
-  crypto.init( Ci.nsICryptoHMAC.MD5, keyObject );
+  crypto.init( Components.interfaces.nsICryptoHMAC.MD5, keyObject );
   crypto.update( challengeBytes, challengeBytes.length );
         
   return this.byteArrayToHexString(
            this.strToByteArray(crypto.finish(false)));
-}
+};
 
 SieveSaslCramMd5Request.prototype.strToByteArray
      = function ( str )
 {
-  var bytes = new Array();
+  var bytes = [];
 
   for ( var i = 0; i < str.length; i++ ) 
     bytes[ i ] = str.charCodeAt( i );
 
   return bytes;
-}
+};
 
 SieveSaslCramMd5Request.prototype.byteArrayToHexString
     = function (tmp)
@@ -1204,7 +1218,7 @@ SieveSaslCramMd5Request.prototype.byteArrayToHexString
     str += ("0"+tmp[i].toString(16)).slice(-2);
  
   return str;    
-}
+};
 
 /**
  * This reqeustest implements the Salted Challenge Response Authentication 
@@ -1280,7 +1294,7 @@ SieveSaslScramSha1Request.prototype._Hi
   }
     
   return hi;  
-}
+};
 
 /**
  * Calculates the HMAC-SHA-1 keyed hash.
@@ -1301,17 +1315,17 @@ SieveSaslScramSha1Request.prototype._HMAC
   if ( !key )
     key = "";
 
-  var crypto = Cc["@mozilla.org/security/hmac;1"]
-                   .createInstance( Ci.nsICryptoHMAC );
-  var keyObject = Cc["@mozilla.org/security/keyobjectfactory;1"]
+  var crypto = Components.classes["@mozilla.org/security/hmac;1"]
+                   .createInstance( Components.interfaces.nsICryptoHMAC );
+  var keyObject = Components.classes["@mozilla.org/security/keyobjectfactory;1"]
                     .getService( Components.interfaces.nsIKeyObjectFactory )
-                    .keyFromString( Ci.nsIKeyObject.HMAC, key);
+                    .keyFromString( Components.interfaces.nsIKeyObject.HMAC, key);
 
-  crypto.init( Ci.nsICryptoHMAC.SHA1, keyObject );
+  crypto.init( Components.interfaces.nsICryptoHMAC.SHA1, keyObject );
   crypto.update( bytes, bytes.length );
         
   return this.strToByteArray(crypto.finish(false));
-}
+};
 
 /**
  * Calculates the SHA1 hash.
@@ -1325,14 +1339,14 @@ SieveSaslScramSha1Request.prototype._HMAC
 SieveSaslScramSha1Request.prototype._H
     = function (bytes)
 {
-  var crypto = Cc["@mozilla.org/security/hash;1"]  
-                 .createInstance(Ci.nsICryptoHash);
+  var crypto = Components.classes["@mozilla.org/security/hash;1"]  
+                 .createInstance(Components.interfaces.nsICryptoHash);
                
-  crypto.init(Ci.nsICryptoHash.SHA1);  
+  crypto.init(Components.interfaces.nsICryptoHash.SHA1);  
   crypto.update(bytes, bytes.length);
   
   return this.strToByteArray(crypto.finish(false));
-}
+};
 
 SieveSaslScramSha1Request.prototype.getNextRequest
     = function ()
@@ -1358,7 +1372,7 @@ SieveSaslScramSha1Request.prototype.getNextRequest
                  
       // Store client-first-message-bare 
       this._authMessage = "n="+this._username+",r="+this._cnonce;
-      this._g2Header = "n,"+(this._authorization != "" ? "a="+this._authorization: "" )+",";
+      this._g2Header = "n,"+(this._authorization !== "" ? "a="+this._authorization: "" )+",";
            
       return "AUTHENTICATE \"SCRAM-SHA-1\" " 
                 +"\""+btoa(this._g2Header+this._authMessage)+"\"\r\n";
@@ -1414,7 +1428,7 @@ SieveSaslScramSha1Request.prototype.getNextRequest
   }
   
   throw "Illegal state in SaslCram"; 
-}
+};
 
 SieveSaslScramSha1Request.prototype.hasNextRequest
     = function ()
@@ -1423,7 +1437,7 @@ SieveSaslScramSha1Request.prototype.hasNextRequest
     return false;
   
   return true;
-}
+};
 
 SieveSaslScramSha1Request.prototype.onOk
     = function (response)
@@ -1440,7 +1454,7 @@ SieveSaslScramSha1Request.prototype.onOk
   }
  
   SieveAbstractSaslRequest.prototype.onOk.call(this,response);
-}
+};
 
 SieveSaslScramSha1Request.prototype.addResponse 
     = function (parser)
@@ -1451,7 +1465,7 @@ SieveSaslScramSha1Request.prototype.addResponse
     return;
     
   SieveAbstractRequest.prototype.addResponse.call(this,this.response);
-}
+};
 
 SieveSaslScramSha1Request.prototype.strToByteArray
      = function ( str )
@@ -1464,11 +1478,11 @@ SieveSaslScramSha1Request.prototype.strToByteArray
     if (str.charCodeAt(i) > 255 )
       throw "Invalid Charaters for Binary String :"+str.charCodeAt(i);
       
-    result.push(str.charCodeAt(i))
+    result.push(str.charCodeAt(i));
   }
   
   return result;
-}
+};
 
 SieveSaslScramSha1Request.prototype.byteArrayToStr
     = function (bytes)
@@ -1484,7 +1498,7 @@ SieveSaslScramSha1Request.prototype.byteArrayToStr
   }
     
   return result;    
-}
+};
 
 SieveSaslScramSha1Request.prototype.byteArrayToHexString
     = function (tmp)
@@ -1494,7 +1508,7 @@ SieveSaslScramSha1Request.prototype.byteArrayToHexString
     str += ("0"+tmp[i].toString(16)).slice(-2);
  
   return str;    
-}
+};
 
 
   /**
@@ -1519,7 +1533,7 @@ SieveSaslScramSha1Request.prototype.byteArrayToHexString
       = function ()
   {
     return "AUTHENTICATE \"EXTERNAL\" \"\"\r\n";
-  }
+  };
   
   /**
    * SASL External uses the TLS Cert for authentication. 
@@ -1532,14 +1546,14 @@ SieveSaslScramSha1Request.prototype.byteArrayToHexString
       = function ()
   {
     return false;  
-  }
+  };
  
   SieveSaslExternalRequest.prototype.addResponse
       = function (parser)
   {
     SieveAbstractRequest.prototype.addResponse.call(this,
         new SieveSimpleResponse(parser));
-  }
+  };
   
   
   if (exports.EXPORTED_SYMBOLS) {
@@ -1581,6 +1595,3 @@ SieveSaslScramSha1Request.prototype.byteArrayToHexString
   exports.SieveSaslExternalRequest = SieveSaslExternalRequest;
       
 })(this);   
-
-
-

@@ -9,6 +9,9 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+/* global Components */
+/* global Services */
+
 // Enable Strict Mode
 "use strict";
 
@@ -36,31 +39,31 @@ SieveNoAuth.prototype.getDescription
   return Services.strings
     .createBundle("chrome://sieve/locale/locale.properties")
     .GetStringFromName("account.auth.none");
-}
+};
 
 SieveNoAuth.prototype.getPassword
     = function ()
 {
   return null;
-}
+};
 
 SieveNoAuth.prototype.getUsername
     = function ()
 {
   return null;
-}
+};
 
 SieveNoAuth.prototype.hasUsername
     = function ()
 {
   return false;
-}
+};
 
 SieveNoAuth.prototype.getType
     = function ()
 {
   return 0;
-}
+};
 
 /**
  * If you want to use the Authentication Settings of an existing IMAP account 
@@ -72,7 +75,7 @@ SieveNoAuth.prototype.getType
  */
 function SieveImapAuth(imapKey)
 {
-  if (imapKey == null)
+  if (!imapKey)
     throw "SieveImapAuth: IMAP account key can't be null"; 
 
   this.imapKey = imapKey;
@@ -84,7 +87,7 @@ SieveImapAuth.prototype.getDescription
   return Services.strings
     .createBundle("chrome://sieve/locale/locale.properties")
     .GetStringFromName("account.auth.imap");
-}
+};
 
 SieveImapAuth.prototype.getPassword
     = function ()
@@ -118,7 +121,7 @@ SieveImapAuth.prototype.getPassword
     return input.value;
 
   return null;
-}
+};
 
 SieveImapAuth.prototype.getUsername
     = function ()
@@ -129,19 +132,19 @@ SieveImapAuth.prototype.getUsername
 	              .getIncomingServer(this.imapKey);
 	                
   return account.realUsername;
-}
+};
 
 SieveImapAuth.prototype.hasUsername
     = function ()
 {
   return true;
-}
+};
 
 SieveImapAuth.prototype.getType
     = function ()
 {
   return 1;
-}
+};
 
 /**
  * Incase the Sieve Account requires a different login than the IMAP Account,
@@ -164,10 +167,10 @@ SieveImapAuth.prototype.getType
  */
 function SieveCustomAuth2(host, uri)
 {  
-  if (uri == null)
+  if (!uri)
     throw "SieveCustomAuth2: URI can't be null"; 
 
-  if (host == null || host == "")
+  if (!host || host === "")
     throw "SieveCustomAuth2: Host can't be empty or null";
     
   // the "original hostname"
@@ -190,7 +193,7 @@ SieveCustomAuth2.prototype.getDescription
   return Services.strings
     .createBundle("chrome://sieve/locale/locale.properties")
     .GetStringFromName("account.auth.custom");
-}
+};
 
 /**
  * Updates the username. 
@@ -261,7 +264,7 @@ SieveCustomAuth2.prototype.setUsername
   // ok we give up, there is no passwort entry, this might be because...
   // ... the user might never set one, or because it deleted it in the...
   // ... Login-Manager
-}    
+};
 
 
 /**
@@ -330,7 +333,7 @@ SieveCustomAuth2.prototype.getPassword
       login.init("sieve://"+this.host,null,"sieve://"+this.host, 
                  ""+this.getUsername(),""+input.value,"", "");
     
-      loginManager.addLogin(login);
+      login.addLogin(login);
     }
     catch (e)
     {
@@ -339,7 +342,7 @@ SieveCustomAuth2.prototype.getPassword
   }
     
   return input.value;
-}
+};
 
 /**
  * Returns the username for this login. 
@@ -356,19 +359,19 @@ SieveCustomAuth2.prototype.getUsername
     return Services.prefs.getCharPref(this.sieveKey+".login.username");
 
   return "";
-}
+};
 
 SieveCustomAuth2.prototype.hasUsername
     = function ()
 {
   return true;
-}
+};
 
 SieveCustomAuth2.prototype.getType
     = function ()
 {
   return 2;
-}
+};
 
 
 
@@ -385,13 +388,13 @@ SieveNoProxy.prototype.getType
     = function()
 {
   return 0;
-}
+};
 
 SieveNoProxy.prototype.getProxyInfo
     = function()
 {
   return [];
-}
+};
 
 /**
  * 
@@ -405,13 +408,13 @@ SieveSystemProxy.prototype.getType
     = function()
 {
   return 1;
-}
+};
 
 SieveSystemProxy.prototype.getProxyInfo
     = function()
 {
   return null;
-}
+};
 
 
 /**
@@ -431,7 +434,7 @@ SieveSocks4Proxy.prototype.getType
     = function()
 {
   return 2;
-}
+};
 
 SieveSocks4Proxy.prototype.getHost
     = function()
@@ -440,13 +443,13 @@ SieveSocks4Proxy.prototype.getHost
     return Services.prefs.getCharPref(this.prefURI+".host");
 
   return "localhost"; 
-}
+};
 
 SieveSocks4Proxy.prototype.setHost
     = function(host)
 {
   Services.prefs.setCharPref(this.prefURI+".host",host);
-}
+};
 
 SieveSocks4Proxy.prototype.getPort
     = function()
@@ -455,7 +458,7 @@ SieveSocks4Proxy.prototype.getPort
     return Services.prefs.getCharPref(this.prefURI+".port");
 
   return "1080"; 
-}
+};
 
 /**
  * Specifies on which TCP/IP Port the socks Proxy is listening. 
@@ -474,7 +477,7 @@ SieveSocks4Proxy.prototype.setPort
     throw "Invalid port number";
 
   Services.prefs.setCharPref(this.prefURI+".port",""+port);
-}
+};
 
 SieveSocks4Proxy.prototype.getProxyInfo
     = function()
@@ -482,8 +485,8 @@ SieveSocks4Proxy.prototype.getProxyInfo
   // generate proxy info
   var pps = Cc["@mozilla.org/network/protocol-proxy-service;1"]
                 .getService(Ci.nsIProtocolProxyService);
-  return [pps.newProxyInfo("socks4",this.getHost(),this.getPort(),0,4294967295,null)]
-}
+  return [pps.newProxyInfo("socks4",this.getHost(),this.getPort(),0,4294967295,null)];
+};
 
 /**
  * 
@@ -502,7 +505,7 @@ SieveSocks5Proxy.prototype.getType
     = function()
 {
   return 3;
-}
+};
 
 SieveSocks5Proxy.prototype.usesRemoteDNS
     = function()
@@ -511,13 +514,13 @@ SieveSocks5Proxy.prototype.usesRemoteDNS
     return Services.prefs.getBoolPref(this.prefURI+".remote_dns");
 
   return true; 
-}
+};
 
 SieveSocks5Proxy.prototype.setRemoteDNS
     = function(enabled)
 {
   Services.prefs.setBoolPref(this.prefURI+".remote_dns",enabled);
-}
+};
 
 SieveSocks5Proxy.prototype.getProxyInfo
     = function()
@@ -527,13 +530,13 @@ SieveSocks5Proxy.prototype.getProxyInfo
                 .getService(Ci.nsIProtocolProxyService);
                                 
   return [ pps.newProxyInfo("socks",this.getHost(),this.getPort(),(this.usesRemoteDNS()?(1<<0):0),4294967295,null)]; 
-}
+};
 
 /*********************************/
 
 function SieveAbstractHost(uri)
 {
-  if (uri == null)
+  if (!uri)
     throw "SieveCustomHost: URI can't be null";
     
   this.uri = uri;
@@ -548,14 +551,14 @@ SieveAbstractHost.prototype.getPort
   if ((type == null) && (Services.prefs.prefHasUserValue(this.prefURI+".port.type"))) 
     type = Services.prefs.getIntPref(this.prefURI+".port.type");
 
-  if ((type == 2) && Services.prefs.prefHasUserValue(this.prefURI+".port"))
+  if ((type === 2) && Services.prefs.prefHasUserValue(this.prefURI+".port"))
     return Services.prefs.getIntPref(this.prefURI+".port");
     
-  if (type == 1)
+  if (type === 1)
     return 2000;
 
   return 4190;
-}
+};
 
 SieveAbstractHost.prototype.setPort
     = function (port)
@@ -578,7 +581,7 @@ SieveAbstractHost.prototype.setPort
     port = 4190;
     
   Services.prefs.setIntPref(this.prefURI+".port",port);
-}
+};
 
 SieveAbstractHost.prototype.isTLSForced
     = function ()
@@ -590,7 +593,7 @@ SieveAbstractHost.prototype.isTLSForced
     return Services.prefs.getBoolPref(this.prefURI+".TLS");
 
   return true;      
-}
+};
 
 SieveAbstractHost.prototype.isTLSEnabled
     = function ()
@@ -599,14 +602,14 @@ SieveAbstractHost.prototype.isTLSEnabled
     return Services.prefs.getBoolPref(this.prefURI+".TLS.forced");
 
    return true;
-}
+};
 
 SieveAbstractHost.prototype.setTLS
     = function (enabled, forced)
 {
   Services.prefs.setBoolPref(this.prefURI+".TLS",!!enabled);
   Services.prefs.setBoolPref(this.prefURI+".TLS.forced",!!forced);
-}
+};
 
 /***********/
 
@@ -621,7 +624,7 @@ function SieveImapHost(uri,imapKey)
 {
   SieveAbstractHost.call(this,uri);
   
-  if (imapKey == null)
+  if (!imapKey)
     throw "SieveImapHost: IMAP account key can't be null"; 
   
   this.imapKey = imapKey;
@@ -639,13 +642,13 @@ SieveImapHost.prototype.getHostname
                     .getIncomingServer(this.imapKey);
 
   return account.realHostName;
-}
+};
 
 SieveImapHost.prototype.getType
     = function ()
 {
   return 0;
-}
+};
 
 /**
  * This Class manages a custom host setting for a Sieve Account. Sieve Accounts 
@@ -666,7 +669,7 @@ SieveCustomHost.prototype.toString
     = function ()
 {
   return "Custom Host";
-}
+};
 
 SieveCustomHost.prototype.getHostname
     = function ()
@@ -675,7 +678,7 @@ SieveCustomHost.prototype.getHostname
     return Services.prefs.getCharPref(this.prefURI+".hostname");
 
   return "";
-}
+};
 
 SieveCustomHost.prototype.setHostname
     = function (hostname)
@@ -684,13 +687,13 @@ SieveCustomHost.prototype.setHostname
     throw "Hostname can't be null";
 
   Services.prefs.setCharPref(this.prefURI+".hostname",hostname);
-}
+};
 
 SieveCustomHost.prototype.getType
     = function ()
 {
   return 1;
-}
+};
 
 //== SieveAccountSettings ====================================================//
 /**
@@ -701,7 +704,7 @@ SieveCustomHost.prototype.getType
  */
 function SieveAccountSettings(sieveKey)
 {
-  if (sieveKey == null)
+  if (!sieveKey)
     throw "SieveAccountSettings: Sieve Key can't be null"; 
     
   this.sieveKey = sieveKey;
@@ -714,13 +717,13 @@ SieveAccountSettings.prototype.isKeepAlive
     return Services.prefs.getBoolPref(this.sieveKey+".keepalive");
         
   return true;
-}
+};
 
 SieveAccountSettings.prototype.enableKeepAlive
     = function (enabled) 
 {
   Services.prefs.setBoolPref(this.sieveKey+".keepalive",enabled);
-}
+};
 
 SieveAccountSettings.prototype.getKeepAliveInterval
     = function () 
@@ -729,7 +732,7 @@ SieveAccountSettings.prototype.getKeepAliveInterval
     return Services.prefs.getCharPref(this.sieveKey+".keepalive.interval");
 
   return "300000"; //5*60*1000 = 5 Minutes
-}
+};
 
 SieveAccountSettings.prototype.setKeepAliveInterval
     = function (ms)
@@ -744,7 +747,7 @@ SieveAccountSettings.prototype.setKeepAliveInterval
     ms = 60*1000;
   
   Services.prefs.setCharPref(this.sieveKey+".keepalive.interval",ms);
-}
+};
 
 SieveAccountSettings.prototype.hasCompileDelay
     = function ()
@@ -753,13 +756,13 @@ SieveAccountSettings.prototype.hasCompileDelay
     return Services.prefs.getBoolPref(this.sieveKey+".compile");
   
   return true;
-}
+};
 
 SieveAccountSettings.prototype.enableCompileDelay
     = function (enabled)
 {
   Services.prefs.setBoolPref(this.sieveKey+".compile",enabled);
-}
+};
 
 /**
  * Returns the minimal delay between a keypress and a automatic syntax check. 
@@ -776,7 +779,7 @@ SieveAccountSettings.prototype.getCompileDelay
     return Services.prefs.getIntPref(this.sieveKey+".compile.delay");
         
   return 500; // = 500 mSec
-}
+};
     
 SieveAccountSettings.prototype.setCompileDelay
     = function (ms) 
@@ -787,7 +790,7 @@ SieveAccountSettings.prototype.setCompileDelay
     ms = 500;
     
   Services.prefs.setIntPref(this.sieveKey+".compile.delay",ms);
-}
+};
 
 SieveAccountSettings.prototype.getDebugFlags
     = function ()
@@ -796,7 +799,7 @@ SieveAccountSettings.prototype.getDebugFlags
     return Services.prefs.getIntPref(this.sieveKey+".debug.flags");
         
   return 0;
-}
+};
 
 SieveAccountSettings.prototype.hasDebugFlag
     = function (flag)
@@ -805,7 +808,7 @@ SieveAccountSettings.prototype.hasDebugFlag
     return true;
   
   return false;
-}
+};
 
 SieveAccountSettings.prototype.setDebugFlag
     = function (flag, value)
@@ -814,7 +817,7 @@ SieveAccountSettings.prototype.setDebugFlag
     Services.prefs.setIntPref(this.sieveKey+".debug.flags",this.getDebugFlags()| (1 << flag)  );
   else
     Services.prefs.setIntPref(this.sieveKey+".debug.flags",this.getDebugFlags() & ~(1 << flag) );
-}
+};
 
 SieveAccountSettings.prototype.hasForcedAuthMechanism
     = function ()
@@ -823,19 +826,19 @@ SieveAccountSettings.prototype.hasForcedAuthMechanism
     return Services.prefs.getBoolPref(this.sieveKey+".sasl.forced");
         
   return false;
-}
+};
 
 SieveAccountSettings.prototype.enableForcedAuthMechanism
     = function(enabled)
 {
   Services.prefs.setBoolPref(this.sieveKey+".sasl.forced",enabled);
-}
+};
 
 SieveAccountSettings.prototype.setForcedAuthMechanism
     = function(method)
 {
   Services.prefs.setCharPref(this.sieveKey+".sasl.mechanism",method);
-}
+};
 
 SieveAccountSettings.prototype.getForcedAuthMechanism
     = function ()
@@ -844,7 +847,7 @@ SieveAccountSettings.prototype.getForcedAuthMechanism
     return Services.prefs.getCharPref(this.sieveKey+".sasl.mechanism");
         
   return "plain";
-}
+};
 
 
 /**
@@ -857,7 +860,7 @@ SieveAccountSettings.prototype.setDefaultEditor
     = function(editor)
 {
   Services.prefs.setIntPref(this.sieveKey+".editor.default",editor);
-}
+};
 
 SieveAccountSettings.prototype.getDefaultEditor
     = function ()
@@ -866,7 +869,7 @@ SieveAccountSettings.prototype.getDefaultEditor
     return Services.prefs.getIntPref(this.sieveKey+".editor.default");
         
   return 0;
-}
+};
 
 /**
  * The plain text editor supports automatic indention. 
@@ -880,7 +883,7 @@ SieveAccountSettings.prototype.setIndentionWidth
     = function(width)
 {
   Services.prefs.setIntPref(this.sieveKey+".editor.indention.width",width);
-}
+};
 
 SieveAccountSettings.prototype.getIndentionWidth
     = function ()
@@ -889,7 +892,7 @@ SieveAccountSettings.prototype.getIndentionWidth
     return Services.prefs.getIntPref(this.sieveKey+".editor.indention.width");
         
   return 2;
-}
+};
 
 /**
  * Concerning automatic indention there are two strategies. One is to use tabs
@@ -904,7 +907,7 @@ SieveAccountSettings.prototype.setIndentionPolicy
     = function(policy)
 {
   Services.prefs.setIntPref(this.sieveKey+".editor.indention.policy", policy);
-}
+};
 
 SieveAccountSettings.prototype.getIndentionPolicy
     = function ()
@@ -913,7 +916,7 @@ SieveAccountSettings.prototype.getIndentionPolicy
     return Services.prefs.getIntPref(this.sieveKey+".editor.indention.policy");
         
   return 0;
-}
+};
 
 /**
  * With automatic indention, the need for a tab key is gone. Which means most
@@ -928,7 +931,7 @@ SieveAccountSettings.prototype.setTabPolicy
     = function(policy)
 {
   Services.prefs.setIntPref(this.sieveKey+".editor.tab.policy",policy);
-}
+};
 
 SieveAccountSettings.prototype.getTabPolicy
     = function ()
@@ -937,7 +940,7 @@ SieveAccountSettings.prototype.getTabPolicy
     return Services.prefs.getIntPref(this.sieveKey+".editor.tab.policy");
         
   return 0;
-}
+};
 
 /**
  * The tab width specifies over how many spaces the tap will span.
@@ -951,7 +954,7 @@ SieveAccountSettings.prototype.setTabWidth
     = function(width)
 {
   Services.prefs.setIntPref(this.sieveKey+".editor.tab.width",width);
-}
+};
 
 SieveAccountSettings.prototype.getTabWidth
     = function ()
@@ -960,7 +963,7 @@ SieveAccountSettings.prototype.getTabWidth
     return Services.prefs.getIntPref(this.sieveKey+".editor.tab.width");
         
   return 2;
-}
+};
 
 
 //** SieveNoAuthorization ****************************************************//
@@ -972,13 +975,13 @@ SieveNoAuthorization.prototype.getType
     = function ()
 {
   return 0;
-}
+};
 
 SieveNoAuthorization.prototype.getAuthorization
     = function ()
 {
   return "";
-}
+};
 
 //** SievePromptAuthorization ************************************************//
 
@@ -990,7 +993,7 @@ SievePromptAuthorization.prototype.getType
     = function ()
 {
   return 2;
-}
+};
 
 SievePromptAuthorization.prototype.getAuthorization
     = function ()
@@ -1014,13 +1017,13 @@ SievePromptAuthorization.prototype.getAuthorization
     return null;
   
   return input.value;
-}
+};
 
 //****************************************************************************//
 
 function SieveCustomAuthorization(uri)
 {
-  if (uri == null)
+  if (!uri)
     throw "SieveCustomAuthorization: URI can't be null"; 
     
   this.uri = uri;
@@ -1031,7 +1034,7 @@ SieveCustomAuthorization.prototype.getType
     = function ()
 {
   return 3;
-}
+};
 
 SieveCustomAuthorization.prototype.getAuthorization
     = function ()
@@ -1040,16 +1043,16 @@ SieveCustomAuthorization.prototype.getAuthorization
     return Services.prefs.getCharPref(this.prefURI+".sasl.authorization.username");
   
   return null;
-}
+};
 
 SieveCustomAuthorization.prototype.setAuthorization
     = function (authorization)
 {
-  if ((authorization == null) || (authorization == ""))
+  if ((authorization == null) || (authorization === ""))
     throw "Authorization can't be empty or null";
 
   Services.prefs.setCharPref(this.prefURI+".sasl.authorization.username",authorization);
-}
+};
 
 
 //****************************************************************************//
@@ -1063,13 +1066,13 @@ SieveDefaultAuthorization.prototype.getType
     = function ()
 {
   return 1;
-}
+};
 
 SieveDefaultAuthorization.prototype.getAuthorization
     = function ()
 {
   return this.authorization;
-}
+};
 
 //****************************************************************************//
 
@@ -1087,7 +1090,7 @@ SieveDefaultAuthorization.prototype.getAuthorization
 function SieveAccount(account)
 {   
 	// Check parameters...
-  if (account == null)
+  if (!account)
     throw "SieveAccount: Parameter missing...";
   
   /** @private */ this.Uri = account.rootMsgFolder.baseMessageURI.slice(15); 
@@ -1098,7 +1101,7 @@ function SieveAccount(account)
   /** @private */ this.description = account.prettyName;	
   
   // the "original" hostname...
-  /** @private */ this.host = account.hostName
+  /** @private */ this.host = account.hostName;
 }
 
 /**
@@ -1111,10 +1114,10 @@ function SieveAccount(account)
  *   Returns the unique IMAP Key of the IMAP Account bound to this SIEVE Account.
  */
 SieveAccount.prototype.getKey
-    = function () { return this.imapKey; }
+    = function () { return this.imapKey; };
 
 SieveAccount.prototype.getUri
-    = function () { return this.Uri; }
+    = function () { return this.Uri; };
 
 /**
  * As URIs are not very user friendly, Thunderbird uses for every IMAP account 
@@ -1125,7 +1128,7 @@ SieveAccount.prototype.getUri
  *   The description for this account.
  */
 SieveAccount.prototype.getDescription
-    = function () { return this.description; }
+    = function () { return this.description; };
 
 /**
  * Retrieves the Authentication Settings for this SieveAccount.
@@ -1154,7 +1157,7 @@ SieveAccount.prototype.getLogin
     default:
       return new SieveImapAuth(this.imapKey);
   }
-}
+};
 
 SieveAccount.prototype.setActiveLogin
     = function (type) 
@@ -1165,7 +1168,7 @@ SieveAccount.prototype.setActiveLogin
     throw "invalid login type";
 
   Services.prefs.setIntPref(this.sieveKey+".activeLogin",type);
-}
+};
 
 SieveAccount.prototype.getHost
     = function (type)
@@ -1174,10 +1177,10 @@ SieveAccount.prototype.getHost
     type = Services.prefs.getIntPref(this.sieveKey+".activeHost");
 
   if (type == 1)
-    return new SieveCustomHost(this.Uri)
+    return new SieveCustomHost(this.Uri);
   
-  return new SieveImapHost(this.Uri, this.imapKey)
-}
+  return new SieveImapHost(this.Uri, this.imapKey);
+};
 
 SieveAccount.prototype.setActiveHost
     = function (type)
@@ -1188,7 +1191,7 @@ SieveAccount.prototype.setActiveHost
     throw "invalid host type";
 
   Services.prefs.setIntPref(this.sieveKey+".activeHost",type);
-}
+};
 
 SieveAccount.prototype.getAuthorization
     = function (type)
@@ -1204,7 +1207,7 @@ SieveAccount.prototype.getAuthorization
     
     default : return new SieveDefaultAuthorization(this.getLogin().getUsername()); 
   }
-}
+};
 
 SieveAccount.prototype.setActiveAuthorization
     = function (type)
@@ -1215,7 +1218,7 @@ SieveAccount.prototype.setActiveAuthorization
     throw "invalid Authorization type";
 
   Services.prefs.setIntPref(this.sieveKey+".activeAuthorization",type);
-}
+};
 
 SieveAccount.prototype.isEnabled
     = function ()
@@ -1224,13 +1227,13 @@ SieveAccount.prototype.isEnabled
     return Services.prefs.getBoolPref(this.sieveKey+".enabled");
     
   return false;
-}
+};
 
 SieveAccount.prototype.setEnabled
     = function (enabled) 
 {
   Services.prefs.setBoolPref(this.sieveKey+".enabled",enabled);
-}
+};
 
 SieveAccount.prototype.isFirstRun
     = function ()
@@ -1247,13 +1250,13 @@ SieveAccount.prototype.isFirstRun
     return !(Services.prefs.getBoolPref(this.sieveKey+".firstRunDone"));
   
   return true;
-}
+};
 
 SieveAccount.prototype.setFirstRun
     = function()
 {
   Services.prefs.setBoolPref(this.sieveKey+".firstRunDone",true);      
-}
+};
 
 /**
  * XXX ...
@@ -1263,7 +1266,7 @@ SieveAccount.prototype.getSettings
     = function ()
 {
   return new SieveAccountSettings(this.sieveKey);
-}
+};
 
 SieveAccount.prototype.getProxy
     = function (type)
@@ -1280,7 +1283,7 @@ SieveAccount.prototype.getProxy
     default : return new SieveSystemProxy(); 
   }  
         
-}
+};
 
 SieveAccount.prototype.setProxy
     = function (type)
@@ -1291,7 +1294,7 @@ SieveAccount.prototype.setProxy
     throw "Invalid proxy type";
 
   Services.prefs.setIntPref(this.sieveKey+".proxy.type",type);
-}
+};
 
 //****************************************************************************//
 
@@ -1314,13 +1317,13 @@ SieveAccounts.prototype.getAccounts
   // as cache the array containting the account information...
   // ... we check if we already enumerated the accounts.
   if (this.accounts)
-    return this.accounts
+    return this.accounts;
     
   var servers = Cc['@mozilla.org/messenger/account-manager;1']
                     .getService(Ci.nsIMsgAccountManager)
                     .allServers;
                           
-  this.accounts = new Array();
+  this.accounts = [];
   
   // The new account manager's interface introduced in TB 20.0a1 uses nsIArray...
   if (servers instanceof Ci.nsIArray)
@@ -1353,7 +1356,7 @@ SieveAccounts.prototype.getAccounts
   }
       
   return this.accounts;
-}
+};
 
 /**
  * Loads and returns a SieveAccount for the specified nsIMsgIncommingServer.
@@ -1368,7 +1371,7 @@ SieveAccounts.prototype.getAccountByServer
     = function (server)
 {
   return new SieveAccount(server);      
-}
+};
 
 /**
  * Loads and returns a Sieve Account by a nsIMsgIncomingServer's unique id
@@ -1385,6 +1388,6 @@ SieveAccounts.prototype.getAccountByName
                          .getService(Ci.nsIMsgAccountManager);
 
   return new SieveAccount(accountManager.getIncomingServer(key));                       
-}
+};
 
 var SieveAccountManager = new SieveAccounts();

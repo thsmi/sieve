@@ -13,6 +13,8 @@
 "use strict";
  
 (function() {
+	
+	/* global net */
 
   var suite  = net.tschmid.yautt.test;
     
@@ -20,7 +22,7 @@
     throw "Could not initialize test suite";
 
   suite.add( function() {  	
-  	suite.log("Reg Ex unit tests...")
+  	suite.log("Reg Ex unit tests...");
   });    
 
   
@@ -34,7 +36,7 @@
         + '  keep; \r\n'
         + '}\r\n';
       
-    suite.expectValidScript(script, {"regex":true} )    
+    suite.expectValidScript(script, {"regex":true} );    
   });
 
   suite.add( function() {
@@ -49,7 +51,7 @@
         + '  stop;\r\n'
         + '}\r\n';      
       
-    suite.expectValidScript(script, {"regex":true, "fileinto":true} )    
+    suite.expectValidScript(script, {"regex":true, "fileinto":true} );    
   });
 
 

@@ -13,6 +13,10 @@
 "use strict";
   
 (function() {
+	
+	/* global net */
+	/* global SieveDocument */
+	/* global SieveLexer */
 
   var suite  = net.tschmid.yautt.test;
 
@@ -52,7 +56,7 @@
     }
     
     return doc;
-  }
+  };
  
   suite.expectInvalidScript
     = function (script, exception, capabilities) {     
@@ -74,8 +78,7 @@
       return;
     }
     
-    throw "Exception expected"    
-  }
+    throw "Exception expected";
+  };
   
 }());
-

@@ -12,6 +12,18 @@
  *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveRequest.js"   
  */
 
+/* global Components */
+/* global document */
+/* global window */
+/* global SieveOverlayManager */
+/* global SieveAbstractChannel */
+/* global SieveGetScriptRequest */
+/* global clearTimeout */
+/* global Services */
+/* global SieveAccountManager */
+/* global SievePutScriptRequest */
+/* global SieveConnections */
+
 // Enable Strict Mode
 "use strict";
 
@@ -27,8 +39,8 @@ Cu.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
 SieveOverlayManager.require("/sieve/SieveConnectionManager.js",this,window);
 SieveOverlayManager.require("/sieve/SieveAccounts.js",this,window);
 
-var gBackHistory = new Array();
-var gForwardHistory = new Array();
+var gBackHistory = [];
+var gForwardHistory = [];
 
 var gEditorStatus =
 {
@@ -45,7 +57,7 @@ var gEditorStatus =
     // used to detect if the script changed upon a reconnect
     server : null //the script's serverside checksum
   }
-}
+};
 
 
 function SieveFilterEditor()
@@ -76,7 +88,7 @@ SieveFilterEditor.prototype.onChannelReady
       if (gEditorStatus.checksum.server)
       {
       
-     	that.getScriptAsync( function(script) { that.onScriptLoaded(script) } );
+     	that.getScriptAsync( function(script) { that.onScriptLoaded(script); } );
         return;
       }
       
@@ -91,20 +103,20 @@ SieveFilterEditor.prototype.onChannelReady
       var script = "#\r\n# "+date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()+"\r\n#\r\n";      
       that.onScriptLoaded(script);
     }
-  }  
+  };
   
   var request = new SieveGetScriptRequest(this.getScriptName());
   request.addGetScriptListener(this);
   request.addErrorListener(event);
 
-  this.sendRequest(request)    
-}
+  this.sendRequest(request);  
+};
 
 SieveFilterEditor.prototype.onChannelClosed
     = function(cid)
 {
   // some other channel died we don't care about that...
-}
+};
 
 SieveFilterEditor.prototype._calcChecksum
     = function(str)
@@ -135,7 +147,7 @@ SieveFilterEditor.prototype._calcChecksum
       
   // convert the binary hash data to a hex string.  
   return [toHexString(hash.charCodeAt(i)) for (i in hash)].join("");  
-}
+};
 
 SieveFilterEditor.prototype.onGetScriptResponse
     = function(response)
@@ -176,7 +188,7 @@ SieveFilterEditor.prototype.onGetScriptResponse
     // not so good. We got out of sync, we can't descide which one is newer...
     that.onStatusChange(10, {local: localScript, remote: remoteScript });    
   });
-}
+};
 
 SieveFilterEditor.prototype.onPutScriptResponse
     = function(response)
@@ -205,7 +217,7 @@ SieveFilterEditor.prototype.onPutScriptResponse
     if (closeTab())
       return;
   } );
-}
+};
 
 SieveFilterEditor.prototype.onCheckScriptResponse
     = function(response)
@@ -252,7 +264,7 @@ SieveFilterEditor.prototype.onCheckScriptResponse
     = "chrome://sieve/content/images/syntax-error.png";
         
   return;
-}
+};
 
 //*********************
 // Custom Methods
@@ -278,7 +290,7 @@ SieveFilterEditor.prototype.onScriptLoaded
   
   var account = SieveAccountManager.getAccountByName(gEditorStatus.account);
   
-  var settings = {}
+  var settings = {};
   
   settings.tab = {};  
   settings.tab.width = account.getSettings().getTabWidth();
@@ -289,7 +301,7 @@ SieveFilterEditor.prototype.onScriptLoaded
   settings.indention.policy = account.getSettings().getIndentionPolicy();
     
   textEditor.setOptions(settings);
-}
+};
 
 SieveFilterEditor.prototype.observe
     = function(aSubject, aTopic, aData)
@@ -310,23 +322,23 @@ SieveFilterEditor.prototype.observe
       Cc["@mozilla.org/toolkit/app-startup;1"]
           .getService(Ci.nsIAppStartup)
           .quit(Ci.nsIAppStartup.eAttemptQuit);
-    }
+    };
     
-    if (asyncCloseTab(callback) == false)
-      aSubject.QueryInterface(Ci.nsISupportsPRBool).data = true
+    if (asyncCloseTab(callback) === false)
+      aSubject.QueryInterface(Ci.nsISupportsPRBool).data = true;
 
     return;
   }
   
   SieveAbstractChannel.prototype.observe.call(this,aSubject,aTopic,aData);
-}
+};
 
 
 SieveFilterEditor.prototype.onStatusChange
     = function (state, message)
 {
 
-  if (state == 0)
+  if (state === 0)
   {
     document.getElementById("sivEditorStatus").setAttribute('hidden','true');    
     document.getElementById('dkView').removeAttribute('collapsed');    
@@ -335,9 +347,9 @@ SieveFilterEditor.prototype.onStatusChange
     
   // The rest has to be redirected to the status window...
   document.getElementById('dkView').setAttribute('collapsed','true');    
-  document.getElementById("sivEditorStatus").contentWindow.onStatus(state,message)
+  document.getElementById("sivEditorStatus").contentWindow.onStatus(state,message);
   document.getElementById("sivEditorStatus").removeAttribute('hidden');    
-}
+};
 
 
 SieveFilterEditor.prototype.getScript
@@ -363,7 +375,7 @@ SieveFilterEditor.prototype.getScript
     return  editor;
   
   return widget;
-}
+};
 
 SieveFilterEditor.prototype.getScriptAsync
     = function (callback) {
@@ -392,7 +404,7 @@ SieveFilterEditor.prototype.getScriptAsync
   var widget =  document.getElementById("sivWidgetEditor")
                     .contentWindow.getSieveScript(); 
   callback(widget);
-}
+};
 
 SieveFilterEditor.prototype.hasChanged
     = function()
@@ -405,7 +417,7 @@ SieveFilterEditor.prototype.hasChanged
     return false;
  
   return true;
-}
+};
 
 
 SieveFilterEditor.prototype.putScript
@@ -420,7 +432,7 @@ SieveFilterEditor.prototype.putScript
   	// We postpone the call. First we get the script from the editor,
   	// and then call the method again...
   	var that = this;
-  	this.getScriptAsync( function(script) { that.putScript(scriptName, script) } );
+  	this.getScriptAsync( function(script) { that.putScript(scriptName, script); } );
   	return;    
   }
     
@@ -429,19 +441,19 @@ SieveFilterEditor.prototype.putScript
     {
       Cc["@mozilla.org/embedcomp/prompt-service;1"]  
           .getService(Ci.nsIPromptService) 
-          .alert(window,"Error","The script could not be saved:\n\n"+response.getMessage())
+          .alert(window,"Error","The script could not be saved:\n\n"+response.getMessage());
       
       // If save failes during shutdown we have to abort it...
       gEditorStatus.closeListener = null;
     }
-  }
+  };
   
   var request = new SievePutScriptRequest(scriptName,content);
   request.addPutScriptListener(this);
   request.addErrorListener(event);
   
   this.sendRequest(request);
-}
+};
 
 SieveFilterEditor.prototype.setScriptName
     = function (scriptName)
@@ -457,17 +469,17 @@ SieveFilterEditor.prototype.setScriptName
 
   if (document.title != title)
     document.title = title;
-}
+};
 
 SieveFilterEditor.prototype.getScriptName
     = function()
 {
   return this._scriptName;      
-}
+};
 
 function onCompile()
 { 
-  gSFE.getScriptAsync( function(script) {gSFE.checkScript(script) } );
+  gSFE.getScriptAsync( function(script) {gSFE.checkScript(script); } );
 }
 
 function onInput()
@@ -517,7 +529,7 @@ var sivEditorListener = {
 	onStringFound : function() {
 	  document.getElementById("boxSearchError").setAttribute('hidden','true');
 	}	
-}
+};
 
 function onFindString()
 {   
@@ -562,7 +574,7 @@ function onWindowLoad()
       false);
       
   document.getElementById("sivWidgetEditor")
-    .setAttribute("src","chrome://sieve-common/content/libSieve/SieveGui.html")
+    .setAttribute("src","chrome://sieve-common/content/libSieve/SieveGui.html");
 
   var args = window.arguments[0].wrappedJSObject;
   gEditorStatus.account = args["account"];
@@ -571,7 +583,7 @@ function onWindowLoad()
   
   document.getElementById("sivEditorStatus").contentWindow
     .onAttach(account,
-      function() { gEditorStatus.closeListener = null;  gSFE.connect(account) },
+      function() { gEditorStatus.closeListener = null;  gSFE.connect(account); },
       { onUseRemote : function (script) { onUseRemoteScript(script);  },
         onKeepLocal : function (script) { onKeepLocalScript();} });    
   
@@ -623,7 +635,7 @@ function onDonate()
 {
   var url = Cc["@mozilla.org/network/io-service;1"]
               .getService(Ci.nsIIOService)
-              .newURI("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC", null, null)
+              .newURI("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC", null, null);
               
   Cc["@mozilla.org/uriloader/external-protocol-service;1"]
     .getService(Ci.nsIExternalProtocolService)
@@ -633,7 +645,7 @@ function onDonate()
 function onViewSource(visible,aNoUpdate)
 {
   if (typeof(visible) == "undefined")
-    visible = document.getElementById('btnViewSource').checked
+    visible = document.getElementById('btnViewSource').checked;
   
   var deck = document.getElementById('dkView');
     
@@ -643,7 +655,7 @@ function onViewSource(visible,aNoUpdate)
     deck.selectedIndex = 0;
     onErrorBar(document.getElementById('btnCompile').hasAttribute("checked"));
     
-    document.getElementById("btnViewSource").setAttribute('checked', 'true')    
+    document.getElementById("btnViewSource").setAttribute('checked', 'true');    
     
     document.getElementById("btnUndo").removeAttribute('disabled');
     document.getElementById("btnRedo").removeAttribute('disabled');
@@ -668,7 +680,7 @@ function onViewSource(visible,aNoUpdate)
     return;
   }
    
-  document.getElementById("btnViewSource").removeAttribute('checked')
+  document.getElementById("btnViewSource").removeAttribute('checked');
   
   document.getElementById("btnUndo").setAttribute('disabled',"true");
   document.getElementById("btnRedo").setAttribute('disabled',"true");
@@ -684,7 +696,7 @@ function onViewSource(visible,aNoUpdate)
   deck.selectedIndex = 1;
   
   // Finally we need to transfer the current script from the editor into the gui...
-  textEditor.getScript( function(script) { updateWidgets(script) } );
+  textEditor.getScript( function(script) { updateWidgets(script); } );
 }
 
 function updateWidgets(script)
@@ -724,8 +736,8 @@ function onSideBarBrowserClick(event)
 
   event.preventDefault();
 
-  if (gForwardHistory.length != 0)
-    gForwardHistory = new Array();
+  if (gForwardHistory.length !== 0)
+    gForwardHistory = [];
 
   onSideBarGo(href);
 }
@@ -745,8 +757,8 @@ function onSideBarForward()
 
 function onSideBarHome()
 {
-  if (gForwardHistory.length != 0)
-    gForwardHistory = new Array();
+  if (gForwardHistory.length !== 0)
+    gForwardHistory = [];
 
   //document.getElementById("ifSideBar").setAttribute('src',uri);
   onSideBarGo("http://sieve.mozdev.org/reference/en/index.html");
@@ -769,12 +781,12 @@ function onSideBarGo(uri)
   if (gBackHistory.length > 20)
     gBackHistory.shift();
   
-  if (gBackHistory.length == 1)
+  if (gBackHistory.length === 1)
     document.getElementById("btnSideBarBack").setAttribute('disabled',"true");
   else
     document.getElementById("btnSideBarBack").removeAttribute('disabled');
 
-  if (gForwardHistory.length == 0)
+  if (gForwardHistory.length === 0)
     document.getElementById("btnSideBarForward").setAttribute('disabled',"true");
   else
     document.getElementById("btnSideBarForward").removeAttribute('disabled');
@@ -821,7 +833,7 @@ function asyncCloseTab(callback)
   var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
                     .getService(Ci.nsIPromptService);
 
-  var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties")
+  var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
 
   // The flags 393733 equals [Save] [Don't Save] [Cancel]
   var result =
@@ -935,7 +947,7 @@ function onExport()
   gSFE.getScriptAsync( function(data) { 
     var file = filePicker.file;
 
-    if (file.exists() == false)
+    if (file.exists() === false)
       file.create(Ci.nsIFile.NORMAL_FILE_TYPE, parseInt("0644", 8));  
   
     var outputStream = Cc["@mozilla.org/network/file-output-stream;1"]
@@ -952,12 +964,12 @@ function onExport()
 function onErrorBar(visible,aSilent)
 {
   if (visible == null)
-    visible = document.getElementById('btnCompile').checked
+    visible = document.getElementById('btnCompile').checked;
 
   if (visible)
   {
     if (!aSilent)
-      document.getElementById("btnCompile").setAttribute('checked', 'true')
+      document.getElementById("btnCompile").setAttribute('checked', 'true');
     
     document.getElementById('spErrorBar').removeAttribute('hidden');
     document.getElementById('vbErrorBar').removeAttribute('hidden');
@@ -983,7 +995,7 @@ function onErrorBar(visible,aSilent)
  */
 function onSideBarShow()
 {
-  document.getElementById('btnReference').setAttribute('checked', 'true')
+  document.getElementById('btnReference').setAttribute('checked', 'true');
   document.getElementById('spSideBar').removeAttribute('hidden');
   document.getElementById('vbSidebar').removeAttribute('hidden');
   
@@ -997,7 +1009,7 @@ function onSideBarHide()
 {
   document.getElementById('btnReference').removeAttribute('checked');
   document.getElementById('spSideBar').setAttribute('hidden', 'true');
-  document.getElementById('vbSidebar').setAttribute('hidden', 'true')
+  document.getElementById('vbSidebar').setAttribute('hidden', 'true');
   
   onSearchBar(false);
   
@@ -1007,7 +1019,7 @@ function onSideBarHide()
 function onSideBar(visible)
 {
   if (visible == null)
-    visible = document.getElementById('btnReference').checked
+    visible = document.getElementById('btnReference').checked;
   
   if (visible)
     onSideBarShow();
@@ -1020,19 +1032,19 @@ function onSideBar(visible)
 function onSearchBar(visible)
 {
   if (visible == null)
-    visible = document.getElementById('btnSearchBar').checked
+    visible = document.getElementById('btnSearchBar').checked;
 
   if (visible)
   {
     onSideBar(true);
   
-    document.getElementById('btnSearchBar').setAttribute('checked', 'true')
+    document.getElementById('btnSearchBar').setAttribute('checked', 'true');
     document.getElementById('vbSearchBar').removeAttribute('hidden');
   
     return;    
   }
 
-  document.getElementById('vbSearchBar').setAttribute('hidden', 'true')
+  document.getElementById('vbSearchBar').setAttribute('hidden', 'true');
   document.getElementById('btnSearchBar').removeAttribute('checked');  
   return;
 }
@@ -1076,7 +1088,7 @@ function onEditorShowMenu()
       document.getElementById("ctxUndo").removeAttribute("disabled");
     else
       document.getElementById("ctxUndo").setAttribute("disabled", "true");
-  }
+  };
 	
   textEditor.getStatus(callback);
 }

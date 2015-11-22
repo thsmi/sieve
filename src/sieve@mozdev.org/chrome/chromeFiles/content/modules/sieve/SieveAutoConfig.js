@@ -7,6 +7,10 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+/* global Components */
+/* global Sieve */
+/* global SieveInitRequest */
+
 // Enable Strict Mode
 "use strict";
 
@@ -80,7 +84,7 @@ SieveAutoConfig.prototype =
     // ... and invoke the callback
     this.listener.onSuccess(sender.host,sender.port,sender.proxy);   
   }
-}
+};
 
 
 function SieveAutoConfigHost(host,port,proxy, listener)
@@ -145,4 +149,4 @@ SieveAutoConfigHost.prototype =
   {
     this.sieve.connect(this.host,this.port,false,null,this.proxy);
   }
-}
+};

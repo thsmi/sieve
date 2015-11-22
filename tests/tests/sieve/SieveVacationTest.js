@@ -13,6 +13,8 @@
 "use strict";
  
 (function() {
+	
+	/* global net */
 
   var suite  = net.tschmid.yautt.test;
     
@@ -20,7 +22,7 @@
     throw "Could not initialize test suite";
 
   suite.add( function() {  	
-  	suite.log("Vacation Unit Tests...")
+  	suite.log("Vacation Unit Tests...");
   });    
   
   suite.add( function() {
@@ -35,7 +37,7 @@
             + '    vacation "I\'m out -- call me at +1 304 555 0123";\r\n'
             + '}\r\n';
          
-    suite.expectValidScript(script,{"vacation":true} )
+    suite.expectValidScript(script,{"vacation":true} );
   });   
      
   suite.add( function() {
@@ -49,7 +51,7 @@
             + '           "I\'m away -- send mail to foo in my absence";\r\n'
             + '}\r\n';
 
-    suite.expectValidScript(script,{"vacation":true} )
+    suite.expectValidScript(script,{"vacation":true} );
   });   
      
   suite.add( function() {
@@ -62,7 +64,7 @@
             + '    vacation :handle "ran-away" "I\'m out and can\'t meet for lunch";\r\n'
             + '} else {\r\n'
             + '    vacation :handle "ran-away" "I\'m out";\r\n'
-            + '}\r\n'
+            + '}\r\n';
          
     suite.expectValidScript(script,{"vacation":true} );
   });   
@@ -107,7 +109,7 @@
           'require "vacation";\r\n'
              + 'vacation :days 23 :addresses ["tjs@example.edu",\r\n'
              + '                              "ts4z@landru.example.edu"]\r\n'
-             + '"I\'m away until October 19.  If it\'s an emergency, call 911, I guess." ;\r\n'
+             + '"I\'m away until October 19.  If it\'s an emergency, call 911, I guess." ;\r\n';
          
     suite.expectValidScript(script,{"vacation":true} );
   });  
@@ -123,7 +125,7 @@
              + '} else {\r\n'
              + '    vacation "Sorry, I\'m away, I\'ll read your\r\n'
              + 'message when I get around to it.";\r\n'
-             + '}\r\n'
+             + '}\r\n';
          
     suite.expectValidScript(script,{"vacation":true} );
   });  
@@ -170,21 +172,9 @@
           'require "vacation";\r\n'
              + 'vacation :subject "Gone fishing"\r\n'
              + '         :from "myfallbackaddress@example.edu"\r\n'
-             + '         "Having lots of fun! Back in a day or two!";\r\n'
+             + '         "Having lots of fun! Back in a day or two!";\r\n';
          
     suite.expectValidScript(script,{"vacation":true} );
   });  
   
 }());
-
-
-
-
-
-
-
-
-
-
-
-

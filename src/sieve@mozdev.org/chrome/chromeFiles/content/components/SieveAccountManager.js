@@ -11,10 +11,11 @@
  */
  
 // Enable Strict Mode
-"use strict"
+"use strict";
 
 const EXPORTED_SYMBOLS = [ "SieveAccountManagerComponent"];
 
+/* global Components */
 
 const Cc = Components.classes;
 const Ci = Components.interfaces; 
@@ -22,7 +23,7 @@ const Cr = Components.results;
 
     
   //class constructor
-  function SieveAccountManagerExtension() {};
+  function SieveAccountManagerExtension() {}
  
   // class definition
   SieveAccountManagerExtension.prototype = 
@@ -113,4 +114,4 @@ const SieveAccountManagerComponent = {
         SieveAccountManagerExtension.prototype.classDescription,
         false);
   }
-}
+};

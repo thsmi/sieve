@@ -6,7 +6,9 @@
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
- 
+
+"use strict";
+
 // This is our custom view, based on the treeview interface
     
 function SieveTreeView(rules, listener)
@@ -27,7 +29,7 @@ SieveTreeView.prototype.update
       /*if (a.script.toLowerCase() > b.script.toLowerCase()) return 1; 
       if (a.script.toLowerCase() < b.script.toLowerCase()) return -1;
       return 0;*/});
-}
+};
 
 SieveTreeView.prototype.getCellValue
     = function(row,column)
@@ -36,7 +38,7 @@ SieveTreeView.prototype.getCellValue
     return this.rules[row].script;
   else
     return this.rules[row].active;
-}
+};
 
 SieveTreeView.prototype.getCellText 
     = function(row,column)
@@ -45,22 +47,22 @@ SieveTreeView.prototype.getCellText
     return this.rules[row].script;
   else 
     return "";
-}
+};
 
 SieveTreeView.prototype.setTree
-    = function(treebox){ this.treebox = treebox; }
+    = function(treebox){ this.treebox = treebox; };
 
 SieveTreeView.prototype.isContainer
-    = function(row){ return false; }
+    = function(row){ return false; };
 
 SieveTreeView.prototype.isSeparator
-    = function(row){ return false; }
+    = function(row){ return false; };
 
 SieveTreeView.prototype.isSorted
-    = function(row){ return false; }
+    = function(row){ return false; };
 
 SieveTreeView.prototype.getLevel
-    = function(row){ return 0; }
+    = function(row){ return 0; };
 
 SieveTreeView.prototype.getImageSrc
     = function(row,column)
@@ -69,26 +71,26 @@ SieveTreeView.prototype.getImageSrc
     return null;
   
   if (this.rules[row].active)
-    return "chrome://sieve/content/images/active.png"
+    return "chrome://sieve/content/images/active.png";
   
-  return "chrome://sieve/content/images/passive.png"
-}
+  return "chrome://sieve/content/images/passive.png";
+};
 
 SieveTreeView.prototype.getRowProperties
-    = function(row,props){}
+    = function(row,props){};
 
 SieveTreeView.prototype.getCellProperties
-    = function(row,col,props){}
+    = function(row,col,props){};
 
 SieveTreeView.prototype.getColumnProperties
-    = function(colid,col,props){}
+    = function(colid,col,props){};
 
 SieveTreeView.prototype.cycleHeader
-    = function(col){}
+    = function(col){};
 
 SieveTreeView.prototype.cycleCell
     = function(row, col)
 {    
   this.listener(row,col,this.rules[row].script,this.rules[row].active);
   this.selection.select(row);
-}
+};

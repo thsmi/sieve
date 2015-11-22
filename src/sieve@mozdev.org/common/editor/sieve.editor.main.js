@@ -12,7 +12,10 @@
  
 "use strict";
 
- 
+/* global CodeMirror */
+/* global document */
+/* global window */ 
+
 // We need two global variables for backward compatiblity...
 // they may be removed as soon as the editor communication is migrated to post message
 var editor = null;
@@ -24,11 +27,13 @@ var onActiveLineChange = null;
   
 (function(exports) {
 
+  /* global net */
+	
   var hlLine = null;
-  var listener = {}
+  var listener = {};
   
   var broker = new net.tschmid.sieve.Broker();    
-  broker.setListener(function(event, data) { listener.onMessage(event, data) });  
+  broker.setListener(function(event, data) { listener.onMessage(event, data); });  
     
   
   function winHeight() {
@@ -53,7 +58,7 @@ var onActiveLineChange = null;
       
     editor.removeLineClass(hlLine, "background", "activeline");
     hlLine = editor.addLineClass(cur, "background", "activeline");
-  }       
+  };
 
   function onChange() {
     broker.sendMessage("onChange");
@@ -66,7 +71,7 @@ var onActiveLineChange = null;
     function maxCursor(start,end)
     {
       if (start.line > end.line)
-        return start
+        return start;
 
       if (start.line < end.line)
         return end;
@@ -81,7 +86,7 @@ var onActiveLineChange = null;
     function minCursor(start,end)
     {
       if (start.line <end.line)
-        return start
+        return start;
 
       if (start.line > end.line)
         return end;
@@ -127,7 +132,7 @@ var onActiveLineChange = null;
     if (isCaseSensitive) 
     {
       if (editor.getSelection() != oldToken)
-        findString(oldToken, isSensitive, isReverse);
+        findString(oldToken, isCaseSensitive, isReverse);
       
       if (editor.getSelection() != oldToken)
         return;
@@ -303,10 +308,10 @@ var onActiveLineChange = null;
     editor.on("cursorActivity", function() { onActiveLineChange(); });        
     editor.on("change", function() { onChange(); });       
         
-  };
+  }
     
   if (!exports.net)
-    exports.net = {}
+    exports.net = {};
   
   if (!exports.net.tschmid)
     exports.net.tschmid = {};

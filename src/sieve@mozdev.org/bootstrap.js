@@ -10,6 +10,14 @@
  *      
  */
 
+/* global Components */
+/* global Services */
+/* global SieveOverlayManager */
+/* global SieveAccountManagerComponent */
+/* global SieveProtocolHandlerComponent */
+/* global SieveMailWindowOverlay */
+/* global SieveToolbarOverlay */
+
 // Enable Strict Mode
 "use strict"; 
 
@@ -41,8 +49,8 @@ function startup(data, reason)
   
   SieveOverlayManager.addOverlay(
       SieveMailWindowOverlay,"chrome://messenger/content/messenger.xul");
-  SieveOverlayManager.addOverlay(
-      SieveFilterListOverlay,"chrome://messenger/content/FilterListDialog.xul");
+  /*SieveOverlayManager.addOverlay(
+      SieveFilterListOverlay,"chrome://messenger/content/FilterListDialog.xul");*/
 
   SieveOverlayManager.addOverlay(
       SieveToolbarOverlay, "chrome://global/content/customizeToolbar.xul");
@@ -63,7 +71,7 @@ function shutdown(data, reason)
   // Step 1: Unload XPCOM Componenets
   SieveAccountManagerComponent.unload();
   //delete SieveAccountManagerComponent;  
-  Cu.unload("chrome://sieve/content/components/SieveAccountManager.js")
+  Cu.unload("chrome://sieve/content/components/SieveAccountManager.js");
   
   SieveProtocolHandlerComponent.unload();
   //delete SieveProtocolHandlerComponent;
@@ -80,5 +88,5 @@ function shutdown(data, reason)
   
   // Remove Chrome Manifest
   Components.manager.removeBootstrappedManifestLocation(data.installPath);  
-};
+}
 

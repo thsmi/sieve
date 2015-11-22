@@ -14,13 +14,15 @@
   
 (function() {
 
+	/* global net */
+	
   var suite  = net.tschmid.yautt.test;
     
   if (!suite)
     throw "Could not initialize test suite";
 
   suite.add( function() {  	
-  	suite.log("Sieve Variables (RFC5229) unit tests...")
+  	suite.log("Sieve Variables (RFC5229) unit tests...");
   });    
 
 
@@ -31,9 +33,9 @@
     var script =
       'require ["variables"];\r\n'
         + 'set "dollar" "$";\r\n'
-        + 'set "text" "regarding ${dollar}{beep}";'
+        + 'set "text" "regarding ${dollar}{beep}";';
     
-   suite.expectValidScript(script,{"variables":true} ) 
+   suite.expectValidScript(script,{"variables":true} ) ;
   });
 
   suite.add( function() {	
@@ -49,7 +51,7 @@
         + 'Dear ${HONORIFIC} ${last_name},\r\n'
         + 'I\'m out, please leave a message after the meep.\r\n'
         + '.\r\n'
-        + ';\r\n'
+        + ';\r\n';
       
     suite.expectValidScript(script, {"variables":true});
   });
@@ -66,7 +68,7 @@
         + 'set :lower "b" "${a}";\r\n'            //     => "jumbled letters"
         + 'set :upperfirst "b" "${a}";\r\n'       //     => "JuMBlEd lETteRS"
         + 'set :upperfirst :lower "b" "${a}";\r\n'//     => "Jumbled letters"
-        + 'set :quotewildcard "b" "Rock*";\r\n'   //     => "Rock\*"      
+        + 'set :quotewildcard "b" "Rock*";\r\n';  //     => "Rock\*"      
       
     suite.expectValidScript(script, {"variables":true});
   });
@@ -122,7 +124,7 @@
         + '    # The second test is never evaluated, so there are\r\n'
         + '    # still no match variables set.\r\n'
         + '    stop;\r\n'
-        + '}\r\n'
+        + '}\r\n';
         
     suite.expectValidScript(script,{/*"variables":true,*/ "fileinto":true});        
   });

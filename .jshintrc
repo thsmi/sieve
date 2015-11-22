@@ -1,0 +1,9 @@
+{
+  "laxbreak" : true,
+  "esversion" : 6,
+  "strict" : "global",
+  "sub":true,
+  /*"asi" : true,*/
+  "freeze":true,
+  "validthis": true
+}

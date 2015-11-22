@@ -10,10 +10,15 @@
  *      
  */
  
+/* global window */
+ 
 "use strict";
 
 (function(exports) {
- 
+
+	/* global SieveAbstractElement */
+	/* global SieveLexer */
+	
  /*   MATCH-TYPE =/ COUNT / VALUE
 
    relational-match = DQUOTE
@@ -41,7 +46,7 @@
       = function (imports)
   {
     imports["relational"] = true;
-  }
+  };
   
   SieveRelationalMatch.prototype.init
       = function (parser)
@@ -54,13 +59,13 @@
   	  throw "Relational operator expected";
   	  	 	
     return this;
-  }
+  };
   
   SieveRelationalMatch.prototype.toScript
       = function ()
   {    
     return ""+this._whitespace.toScript()+this._operator.toScript();
-  }
+  };
   	
  ///////////////////
 
@@ -79,11 +84,11 @@
   
   SieveValueMatch.nodeName = function () {
     return "match-type/value";
-  }
+  };
   
   SieveValueMatch.nodeType  = function () {
     return "match-type/";
-  }
+  };
   
   SieveValueMatch.isElement
       = function (parser, lexer)
@@ -92,13 +97,13 @@
       return true;
     
     return false;
-  }
+  };
   
   SieveValueMatch.isCapable
       = function (capabilities)
   {
-    return (capabilities["relational"] == true);      
-  }  
+    return (capabilities["relational"] === true);      
+  }; 
   
   SieveValueMatch.prototype.init
       = function (parser)
@@ -108,14 +113,14 @@
     SieveRelationalMatch.prototype.init.call(this, parser);
     
     return this;
-  }
+  };
 
   SieveValueMatch.prototype.toScript
       = function ()
   {    
     return ":value"
       + SieveRelationalMatch.prototype.toScript.call(this);
-  }  
+  }; 
 	
 
   /**
@@ -133,11 +138,11 @@
   
   SieveCountMatch.nodeName = function () {
     return "match-type/count";
-  }
+  };
   
   SieveCountMatch.nodeType  = function () {
     return "match-type/";
-  }
+  };
   
   SieveCountMatch.isElement
       = function (parser, lexer)
@@ -146,13 +151,13 @@
       return true;
     
     return false;
-  }
+  };
   
   SieveCountMatch.isCapable
       = function (capabilities)
   {
-    return (capabilities["relational"] == true);      
-  }
+    return (capabilities["relational"] === true);      
+  };
   
   SieveCountMatch.prototype.init
       = function (parser)
@@ -162,14 +167,14 @@
     SieveRelationalMatch.prototype.init.call(this, parser);
     
     return this;
-  }
+  };
   
   SieveCountMatch.prototype.toScript
       = function ()
   {    
     return ":count"
       + SieveRelationalMatch.prototype.toScript.call(this);
-  }  
+  }; 
 
 
   // extends RelationalMatch

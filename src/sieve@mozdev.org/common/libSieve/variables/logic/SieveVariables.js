@@ -10,7 +10,14 @@
  *      
  */
  
+/* global window */
+ 
 "use strict";
+ 
+(function(exports) {
+
+  /* global SieveLexer */
+  /* global SieveAbstractElement */
  
  
 //   Usage:  ":lower" / ":upper" / ":lowerfirst" / ":upperfirst" /
@@ -53,25 +60,25 @@ SieveSetAction.isElement
     = function (parser, lexer)
 {
   return parser.startsWith("set");
-}
+};
     
 SieveSetAction.isCapable = function (capabilities) {
-  return (capabilities["variables"] == true);      
-}
+  return (capabilities["variables"] === true);      
+};
 
 SieveSetAction.prototype.require
     = function (imports)
 {
   imports["variables"] = true;
-}
+};
 
 SieveSetAction.nodeName = function () {
   return "action/setvariable";
-}
+};
 
 SieveSetAction.nodeType  = function () {
   return "action";
-}
+};
 
 SieveSetAction.prototype.init
     = function (parser)
@@ -97,13 +104,13 @@ SieveSetAction.prototype.init
   this.items[5].init(parser);
     
   return this;
-}
+};
 
 
 SieveSetAction.prototype.toScript
     = function ()
 {
-  var result = "set"
+  var result = "set";
   
   this.items.forEach( function(element, index, array) {
   	if (element)
@@ -111,14 +118,14 @@ SieveSetAction.prototype.toScript
   });  
   
   return result;
-}
+};
 
 
 SieveSetAction.prototype.modifiers
     = function ()
 {
   return this.items[1];
-}
+};
 
 SieveSetAction.prototype.name
     = function (name)
@@ -127,7 +134,7 @@ SieveSetAction.prototype.name
 	  return this.items[2].value();
 	
   return this.items[2].value(name);
-}
+};
 
 SieveSetAction.prototype.value
     = function (value)
@@ -136,7 +143,7 @@ SieveSetAction.prototype.value
     return this.items[4].value();	
 	
   return this.items[4].value(value);
-}
+};
 
 
 
@@ -177,13 +184,13 @@ SieveStringTest.isElement
   = function(parser, lexer)
 { 
   return parser.startsWith("string");
-}
+};
 
 SieveStringTest.isCapable
     = function (capabilities)
 {
-  return (capabilities["variables"] == true);      
-}
+  return (capabilities["variables"] === true);      
+};
 
 SieveStringTest.prototype.require
     = function (imports)
@@ -192,15 +199,15 @@ SieveStringTest.prototype.require
   
   if (this.items[1])
     this.items[1].require(imports);
-}
+};
 
 SieveStringTest.nodeName = function () {
   return "test/string";
-}
+};
 
 SieveStringTest.nodeType  = function () {
   return "test";
-}
+};
 
 SieveStringTest.prototype.init
     = function (parser)
@@ -231,26 +238,26 @@ SieveStringTest.prototype.init
   this.items[7].init(parser);
   
   return this;
-}    
+};   
 
 
 SieveStringTest.prototype.matchType
     = function ()
 {
 	return this.items[1];	
-}
+};
 
 SieveStringTest.prototype.source
     = function () 
 {
-	return this.items[5]	
-}
+	return this.items[5];
+};
 
 SieveStringTest.prototype.keyList
     = function () 
 {
 	return this.items[7];  
-}
+};
 
 SieveStringTest.prototype.toScript
     = function ()
@@ -275,7 +282,7 @@ SieveStringTest.prototype.toScript
 	result += this.items[7].toScript();
 
 	return result;
-}
+};
 
 
 //*******************************************************************//
@@ -289,11 +296,11 @@ SieveLowerModifier.prototype.constructor = SieveLowerModifier;
 
 SieveLowerModifier.nodeName = function () {
   return "modifier/:lower";
-}
+};
 
 SieveLowerModifier.nodeType  = function () {
   return "modifier/";
-}
+};
 
 SieveLowerModifier.isElement
     = function (parser, lexer)
@@ -303,26 +310,26 @@ SieveLowerModifier.isElement
     return true;
   
   return false;
-}
+};
 
 SieveLowerModifier.prototype.getPrecedence
     = function ()
 {
   return 40;
-}
+};
 
 SieveLowerModifier.prototype.init
     = function (parser)
 {	
   parser.extract(":lower");    
   return this;
-}
+};
 
 SieveLowerModifier.prototype.toScript
     = function ()
 {    
   return ":lower";
-}
+};
 
 //*******************************************************************//
 
@@ -335,11 +342,11 @@ SieveUpperModifier.prototype.constructor = SieveUpperModifier;
 
 SieveUpperModifier.nodeName = function () {
   return "modifier/:upper";
-}
+};
 
 SieveUpperModifier.nodeType  = function () {
   return "modifier/";
-}
+};
 
 SieveUpperModifier.isElement
     = function (parser, lexer)
@@ -349,26 +356,26 @@ SieveUpperModifier.isElement
     return true;
   
   return false;
-}
+};
 
 SieveUpperModifier.prototype.getPrecedence
     = function ()
 {
   return 40;
-}
+};
 
 SieveUpperModifier.prototype.init
     = function (parser)
 {	
   parser.extract(":upper");    
   return this;
-}
+};
 
 SieveUpperModifier.prototype.toScript
     = function ()
 {    
   return ":upper";
-}
+};
 
 //*******************************************************************//
 
@@ -381,11 +388,11 @@ SieveLowerFirstModifier.prototype.constructor = SieveLowerFirstModifier;
 
 SieveLowerFirstModifier.nodeName = function () {
   return "modifier/:lowerfirst";
-}
+};
 
 SieveLowerFirstModifier.nodeType  = function () {
   return "modifier/";
-}
+};
 
 SieveLowerFirstModifier.isElement
     = function (parser, lexer)
@@ -395,26 +402,26 @@ SieveLowerFirstModifier.isElement
     return true;
   
   return false;
-}
+};
 
 SieveLowerFirstModifier.prototype.getPrecedence
     = function ()
 {
   return 30;
-}
+};
 
 SieveLowerFirstModifier.prototype.init
     = function (parser)
 {	
   parser.extract(":lowerfirst");    
   return this;
-}
+};
 
 SieveLowerFirstModifier.prototype.toScript
     = function ()
 {    
   return ":lowerfirst";
-}
+};
 
 //*******************************************************************//
 
@@ -427,11 +434,11 @@ SieveUpperFirstModifier.prototype.constructor = SieveUpperFirstModifier;
 
 SieveUpperFirstModifier.nodeName = function () {
   return "modifier/:upperfirst";
-}
+};
 
 SieveUpperFirstModifier.nodeType  = function () {
   return "modifier/";
-}
+};
 
 SieveUpperFirstModifier.isElement
     = function (parser, lexer)
@@ -441,13 +448,13 @@ SieveUpperFirstModifier.isElement
     return true;
   
   return false;
-}
+};
 
 SieveUpperFirstModifier.prototype.getPrecedence
     = function ()
 {
   return 30;
-}
+};
 
 
 SieveUpperFirstModifier.prototype.init
@@ -455,13 +462,13 @@ SieveUpperFirstModifier.prototype.init
 {	
   parser.extract(":upperfirst");    
   return this;
-}
+};
 
 SieveUpperFirstModifier.prototype.toScript
     = function ()
 {    
   return ":upperfirst";
-}
+};
 
 //*******************************************************************//
 
@@ -474,11 +481,11 @@ SieveQuoteWildcardModifier.prototype.constructor = SieveQuoteWildcardModifier;
 
 SieveQuoteWildcardModifier.nodeName = function () {
   return "modifier/:quotewildcard";
-}
+};
 
 SieveQuoteWildcardModifier.nodeType  = function () {
   return "modifier/";
-}
+};
 
 SieveQuoteWildcardModifier.isElement
     = function (parser, lexer)
@@ -488,26 +495,26 @@ SieveQuoteWildcardModifier.isElement
     return true;
   
   return false;
-}
+};
 
 SieveQuoteWildcardModifier.prototype.getPrecedence
     = function ()
 {
   return 20;
-}
+};
 
 SieveQuoteWildcardModifier.prototype.init
     = function (parser)
 {	
   parser.extract(":quotewildcard");    
   return this;
-}
+};
 
 SieveQuoteWildcardModifier.prototype.toScript
     = function ()
 {    
   return ":quotewildcard";
-}
+};
 
 
 
@@ -522,11 +529,11 @@ SieveLengthModifier.prototype.constructor = SieveLengthModifier;
 
 SieveLengthModifier.nodeName = function () {
   return "modifier/:length";
-}
+};
 
 SieveLengthModifier.nodeType  = function () {
   return "modifier/";
-}
+};
 
 SieveLengthModifier.isElement
     = function (parser, lexer)
@@ -536,26 +543,26 @@ SieveLengthModifier.isElement
     return true;
   
   return false;
-}
+};
 
 SieveLengthModifier.prototype.getPrecedence
     = function ()
 {
   return 10;
-}
+};
 
 SieveLengthModifier.prototype.init
     = function (parser)
 {	
   parser.extract(":length");    
   return this;
-}
+};
 
 SieveLengthModifier.prototype.toScript
     = function ()
 {    
   return ":length";
-}
+};
 
 /******************************************************************************/
 
@@ -572,15 +579,15 @@ SieveModifierList.isElement
    = function (parser, lexer)
 {
   return lexer.probeByClass(["modifier/"],parser);
-}
+};
 
 SieveModifierList.nodeName = function () {
   return "modifier";
-}
+};
 
 SieveModifierList.nodeType  = function () {
   return "modifier";
-}
+};
 
 SieveModifierList.prototype.init
     = function (parser)
@@ -594,7 +601,7 @@ SieveModifierList.prototype.init
   }
    
   return this;
-}
+};
 
 
 
@@ -616,7 +623,7 @@ SieveModifierList.prototype.removeItem
 	
   // oterhwise we get rid of it.
   delete this.modifiers[item];
-}
+};
 
 /**
  * Adds or replaces a modifier. In case a modifier with the same precedence 
@@ -631,7 +638,7 @@ SieveModifierList.prototype.getItem
       return this.modifiers[item].modifier;
     
     return null;    
-}
+};
 
 SieveModifierList.prototype.setItem
     = function (item, whitespace)
@@ -657,7 +664,7 @@ SieveModifierList.prototype.setItem
   if (whitespace)
     this.modifiers[pred].whitespace = whitespace;
 	
-}
+};
 
 
 SieveModifierList.prototype.toScript
@@ -671,7 +678,7 @@ SieveModifierList.prototype.toScript
   }
     
   return result;  
-}
+};
 
 SieveModifierList.prototype.require
     = function (imports)
@@ -679,25 +686,26 @@ SieveModifierList.prototype.require
   this.modifiers.forEach( function(element, index, array) {
   	element.modifier.require(imports);
   });
-}
+};
 
 
-
-if (!SieveLexer)
-  throw "Could not register variables extension";
-
-SieveLexer.register(SieveSetAction);
-
-SieveLexer.register(SieveStringTest);
-
-// The order matters here, first the longer strings then the shorter.
-// Otherwise Lower will match before lowerfirst.
-SieveLexer.register(SieveLowerFirstModifier);
-SieveLexer.register(SieveUpperFirstModifier);
-SieveLexer.register(SieveLowerModifier);
-SieveLexer.register(SieveUpperModifier);
-SieveLexer.register(SieveQuoteWildcardModifier);
-SieveLexer.register(SieveLengthModifier);
-
-SieveLexer.register(SieveModifierList);
- 
+  
+  if (!SieveLexer)
+    throw "Could not register variables extension";
+  
+  SieveLexer.register(SieveSetAction);
+  
+  SieveLexer.register(SieveStringTest);
+  
+  // The order matters here, first the longer strings then the shorter.
+  // Otherwise Lower will match before lowerfirst.
+  SieveLexer.register(SieveLowerFirstModifier);
+  SieveLexer.register(SieveUpperFirstModifier);
+  SieveLexer.register(SieveLowerModifier);
+  SieveLexer.register(SieveUpperModifier);
+  SieveLexer.register(SieveQuoteWildcardModifier);
+  SieveLexer.register(SieveLengthModifier);
+  
+  SieveLexer.register(SieveModifierList);
+   
+})(window);

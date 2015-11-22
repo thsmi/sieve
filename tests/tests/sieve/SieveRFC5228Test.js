@@ -1,6 +1,8 @@
 "use strict";
   
 (function() {
+	
+	/* global net */
 
   var suite  = net.tschmid.yautt.test;
     
@@ -8,42 +10,9 @@
     throw "Could not initialize test suite";
 
   suite.add( function() {  	
-  	suite.log("RFC5228 unit tests...")
+  	suite.log("RFC5228 unit tests...");
   });    
 
-  function testScript(script, capabilities) {     
-  	
-  	if (capabilities)
-  	  SieveLexer.capabilities(capabilities);
-  	
-  	
-    var doc = new SieveDocument(SieveLexer,null);
-    
-    suite.logTrace("Start Parsing Script");
-    doc.script(script);
-    suite.logTrace("End Parsing Script");
-    
-    suite.logTrace("Start Serializing Script");
-    var rv = doc.script();
-    suite.logTrace("End Serializing Script");
-  
-    suite.assertEquals(script, rv);
-
-    if (capabilities) {
-      var requires = {};      
-      doc.root().require(requires);
-      
-      suite.logTrace(rv);
-      
-      for (var capability in capabilities) {
-      	suite.logTrace("Testing Capability: "+capability);
-        suite.assertEquals(true, requires[capability]);
-      }
-    }
-    
-  
-    return doc;
-  }
 
   suite.add( function() {
     suite.log("Single line comment");
@@ -53,7 +22,7 @@
       + '    discard;\r\n'
       + '}\r\n';
                   
-    testScript(script); 
+    suite.expectValidScript(script); 
   });
 
 
@@ -66,7 +35,7 @@
       + '     */ ;\r\n'
       + '}\r\n';
       
-    testScript(script);
+    suite.expectValidScript(script);
   });
 
 
@@ -77,9 +46,9 @@
       + 'if anyof (not exists ["From", "Date"],\r\n'
       + '          header :contains "from" "fool@example.com") {\r\n'
       + '  discard;\r\n'
-      + '}\r\n'   
+      + '}\r\n'; 
       
-    testScript(script);	
+    suite.expectValidScript(script);	
   });
   
   suite.add( function() {
@@ -91,7 +60,7 @@
       + '          discard;\r\n'
       + '}\r\n';
       
-    testScript(script);	
+    suite.expectValidScript(script);	
   });  
 
   suite.add( function() {
@@ -100,7 +69,7 @@
     var script =  
       'if size :over 500K { discard; }';
       
-    testScript(script);	
+    suite.expectValidScript(script);	
   });  
   
   suite.add( function() {
@@ -115,7 +84,7 @@
           + '   redirect "field@example.com";\r\n'
           + '}\r\n';
       
-    testScript(script);	
+    suite.expectValidScript(script);	
   });  
   
   suite.add( function() {
@@ -129,9 +98,9 @@
           +  '   discard;\r\n'
           +  '} else {\r\n'
           +  '   fileinto "INBOX";\r\n'
-          +  '}\r\n'
+          +  '}\r\n';
       
-    testScript(script, {"fileinto":true});	
+    suite.expectValidScript(script, {"fileinto":true});	
   });   
   
   suite.add( function() {
@@ -143,7 +112,7 @@
           + '   fileinto "INBOX.harassment";\r\n'
           + '}\r\n';
       
-    testScript(script, {"fileinto":true});	
+    suite.expectValidScript(script, {"fileinto":true});	
   });   
   
   suite.add( function() {
@@ -152,7 +121,7 @@
     var script = ""
           + 'if size :under 1M { keep; } else { discard; }';
       
-    testScript(script);	
+    suite.expectValidScript(script);	
   });    
   
   suite.add( function() {
@@ -161,7 +130,7 @@
     var script = ""
           + 'if not size :under 1M { discard; }';
       
-    testScript(script);	
+    suite.expectValidScript(script);	
   }); 
   
   suite.add( function() {
@@ -172,7 +141,7 @@
           + '   discard;\r\n'
           + '}\r\n';
       
-    testScript(script);	
+    suite.expectValidScript(script);	
   });  
   
   suite.add( function() {
@@ -183,7 +152,7 @@
           + '   discard;\r\n'
           + '}\r\n';
           
-    testScript(script);	
+    suite.expectValidScript(script);	
   });  
   
   suite.add( function() {
@@ -195,7 +164,7 @@
           + '   discard;\r\n'
           + '}\r\n'; 
               
-    testScript(script,{"envelope":true});	
+    suite.expectValidScript(script,{"envelope":true});	
   }); 
   
   suite.add( function() {
@@ -206,7 +175,7 @@
           + '   discard;\r\n'
           + '}\r\n';
               
-    testScript(script);	
+    suite.expectValidScript(script);	
   });  
   
   /*suite.add( function() {
@@ -265,11 +234,8 @@
           + '        fileinto "personal";\r\n'
           + '        }\r\n';
               
-    testScript(script, {"fileinto":true});	
+    suite.expectValidScript(script, {"fileinto":true});	
   });    
   
-  
-
-
 }());
 

@@ -9,8 +9,13 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+/* global SieveAbstractSession */
+/* global SieveAccountManager */
+/* global SieveLogger */
+
 // Enable Strict Mode
 "use strict";
+
 
 // TODO Split logic into classes representing the atomar states
 // disconnected -> [connecting] -> connected -> [disconnecting] -> disconnected
@@ -20,6 +25,7 @@
 // disconnected.disconnect(onSuccess);
 // 
 
+/* global Components */
 
 var EXPORTED_SYMBOLS = [ "SieveSession" ];
 
@@ -70,7 +76,7 @@ Cu.import("chrome://sieve/content/modules/sieve/SieveMozClient.js");
     logger.level(account.getSettings().getDebugFlags());
     logger.prefix(sid);
     
-    SieveAbstractSession.call(this, account, logger)
+    SieveAbstractSession.call(this, account, logger);
   }
   
   SieveSession.prototype = Object.create(SieveAbstractSession.prototype);
@@ -89,8 +95,7 @@ Cu.import("chrome://sieve/content/modules/sieve/SieveMozClient.js");
     }
     
     this._invokeListeners("onTimeout",message);
-  }
-  
+  };
   
   // Needed for Bad Cert Listener....
   SieveSession.prototype.QueryInterface
@@ -108,14 +113,14 @@ Cu.import("chrome://sieve/content/modules/sieve/SieveMozClient.js");
       return this;
             
     throw Components.results.NS_ERROR_NO_INTERFACE;
-  },
+  };
   
   // Ci.nsIInterfaceRequestor
   SieveSession.prototype.getInterface
       = function (aIID)
   {
     return this.QueryInterface(aIID);
-  },  
+  };  
   
   // Ci.nsiBadCertListerner2
   // Implement nsIBadCertListener2 Interface to override
@@ -138,7 +143,7 @@ Cu.import("chrome://sieve/content/modules/sieve/SieveMozClient.js");
       
     this._invokeListeners("onBadCert",targetSite,sslStatus);
     return true;
-  },
+  };
   
   // Ci.nsISSLErrorListener
   /**
@@ -160,7 +165,7 @@ Cu.import("chrome://sieve/content/modules/sieve/SieveMozClient.js");
     // otherwise call the listener and supress the default UI
     this._invokeListeners("onBadCert",targetSite,error);
     return true;      
-  }  
+  };
   
   exports.SieveSession = SieveSession;
   

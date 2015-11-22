@@ -7,6 +7,12 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
+/* global Components */
+/* global document */
+/* global window */
+/* global SieveAccountManager */
+/* global SieveUtils */
+ 
 // Enable Strict Mode
 "use strict"; 
 

@@ -16,6 +16,18 @@
  *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/editor/SieveFilterTreeView.js"
  */
 
+/* global document */
+/* global window */
+/* global Components */
+
+/* global SieveOverlayManager */
+/* global SieveAbstractChannel */
+/* global SieveAccountManager */
+/* global SieveTreeView */
+/* global SieveUtils */
+/* global Services */
+
+
 // Enable Strict Mode
 "use strict";
 
@@ -66,21 +78,21 @@ SieveFilterExplorer.prototype.onListScriptResponse
   
   // force repainting treeview to speedup the ui...
   tree.treeBoxObject.invalidate();
-}
+};
 
 SieveFilterExplorer.prototype.onSetActiveResponse
     = function(response)
 {
   // Always refresh the table ...  
   this.listScript();
-}
+};
 
 SieveFilterExplorer.prototype.onDeleteScriptResponse
     = function(response)
 {
   // Always refresh the table ...
   this.listScript();
-}
+};
 
 SieveFilterExplorer.prototype.onChannelClosed
     = function()
@@ -88,7 +100,7 @@ SieveFilterExplorer.prototype.onChannelClosed
   // a channel is usually closed when a child window is closed. Therefore
   // it is a good idea to refresh the list...
   this.listScript();
-}
+};
   
 SieveFilterExplorer.prototype.onChannelReady
     = function(cid)
@@ -99,7 +111,7 @@ SieveFilterExplorer.prototype.onChannelReady
 
   // List all scripts as soon as we are connected
   this.listScript();    
-}
+};
      
 SieveFilterExplorer.prototype._renameScript
     = function (oldName, newName,isActive)
@@ -118,7 +130,7 @@ SieveFilterExplorer.prototype._renameScript
     isActive == tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(1));
 
   SieveAbstractChannel.prototype._renameScript.call(this,oldName, newName, isActive);    
-}
+};
 
 SieveFilterExplorer.prototype.connect
     = function (account)
@@ -127,7 +139,7 @@ SieveFilterExplorer.prototype.connect
     account = getSelectedAccount();
  
   SieveAbstractChannel.prototype.connect.call(this,account);    
-}
+};
 
 
 SieveFilterExplorer.prototype.disconnect
@@ -135,13 +147,13 @@ SieveFilterExplorer.prototype.disconnect
 {
   disableControls(true);  
   SieveAbstractChannel.prototype.disconnect.call(this,state,message);  
-}
+};
 
 SieveFilterExplorer.prototype.onStatusChange
     = function (state, message)
 {
   // Script ready
-  if (state == 0)
+  if (state === 0)
   {
     disableControls(false);
     document.getElementById("sivExplorerStatus").setAttribute('hidden','true');    
@@ -150,7 +162,7 @@ SieveFilterExplorer.prototype.onStatusChange
   }
   
   // Capabilities...
-  if (state == 7)
+  if (state === 7)
   {
     document.getElementById('txtSASL').value = message.getSasl();        
     document.getElementById('txtExtensions').value = message.getExtensions(true); 
@@ -160,9 +172,9 @@ SieveFilterExplorer.prototype.onStatusChange
     
   // The rest has to be redirected to the status window...
   document.getElementById('sivExplorerTree').setAttribute('collapsed','true');    
-  document.getElementById("sivExplorerStatus").contentWindow.onStatus(state,message)
+  document.getElementById("sivExplorerStatus").contentWindow.onStatus(state,message);
   document.getElementById("sivExplorerStatus").removeAttribute('hidden');    
-}
+};
 
 
 var gSFE = new SieveFilterExplorer();
@@ -186,7 +198,7 @@ function onWindowLoad()
       accounts[i].getDescription(),
       accounts[i].getKey(),"").disabled = false;
 
-    if (window.arguments.length == 0)
+    if (window.arguments.length === 0)
       continue;
     
     if (window.arguments[0].wrappedJSObject.server != accounts[i].getUri())
@@ -195,7 +207,7 @@ function onWindowLoad()
     menuImapAccounts.selectedIndex = i;      
   }
   
-  gSFE._view = new SieveTreeView(new Array(), onCycleCell);
+  gSFE._view = new SieveTreeView( [] , onCycleCell);
   document.getElementById('treeImapRules').view = gSFE._view;
 	
 	if (menuImapAccounts.selectedIndex == -1)
@@ -240,7 +252,7 @@ function onSelectAccount(server)
       
   tree.view.selection.clearSelection();
   
-  gSFE._view.update(new Array());
+  gSFE._view.update([]);
   tree.view = gSFE._view;
  
   var account = null;
@@ -251,7 +263,7 @@ function onSelectAccount(server)
     account = getSelectedAccount();
   
   document.getElementById("sivExplorerStatus").contentWindow
-    .onAttach(account,function() { gSFE.connect() });
+    .onAttach(account,function() { gSFE.connect(); });
       
   if (account == null)
     return gSFE.onStatusChange(2,"error.noaccount");
@@ -287,7 +299,7 @@ function onDeleteClick()
   var flags = prompts.BUTTON_POS_0 * prompts.BUTTON_TITLE_YES +
               prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_NO;
 
-  var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties")
+  var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
   // The checkbox will be hidden, and button will contain the index of the button pressed,
   // 0, 1, or 2.
 
@@ -296,12 +308,12 @@ function onDeleteClick()
                   strings.GetStringFromName("list.delete.description"),
                   flags, "", "", "", null, check);
   
-  if (button != 0)
+  if (button !== 0)
     return;
   
-  var scriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));	
+  var scriptName = "" + tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));	
   
-  gSFE.deleteScript(scriptName)
+  gSFE.deleteScript(scriptName);
 }
 /**
  * @param {String} scriptName
@@ -327,7 +339,7 @@ function sivOpenEditor(scriptName,scriptBody)
     return;
   }     */
 
-  var args = new Array();
+  var args = [];
   
   args["scriptName"] = scriptName;
   /*if (scriptBody)
@@ -420,7 +432,7 @@ function onNewClick()
   var input = {value:"unnamed"};
   var check = {value:false};
 
-  var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties")
+  var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
   // The checkbox will be hidden, and button will contain the index of the button pressed,
   // 0, 1, or 2.
                   
@@ -432,7 +444,7 @@ function onNewClick()
            input, null, check);
 
   // Did the User cancel the dialog?
-  if (result != true)
+  if (result !== true)
     return;
 
   sivOpenEditor(input.value);	
@@ -444,7 +456,7 @@ function onEditClick()
   if (tree.currentIndex < 0)
     return;
 
-  var scriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));
+  var scriptName = "" +tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
    
   sivOpenEditor(scriptName);
     
@@ -488,7 +500,7 @@ function onRenameClick()
   if (tree.currentIndex == -1)
     return;
    
-  var oldScriptName = new String(tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)));
+  var oldScriptName = "" +tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
   
   var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
                   .getService(Ci.nsIPromptService);
@@ -496,7 +508,7 @@ function onRenameClick()
   var input = {value:oldScriptName};
   var check = {value:false};
 
-  var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties")
+  var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
   // The checkbox will be hidden, and button will contain the index of the button pressed,
   // 0, 1, or 2.
   
@@ -567,7 +579,7 @@ function onTreeDblClick(ev)
     return;
   
   if (style.visibility == 'hidden')
-    return false  
+    return false;  
 
   var row = {}, column = {}, part = {};
   
@@ -589,14 +601,14 @@ function onTreeDblClick(ev)
 
 function onCycleCell(row,col,script,active)
 {
-  gSFE.setActiveScript((active?null:script))
+  gSFE.setActiveScript((active?null:script));
 }
 
 function onDonate()
 {
   var url = Cc["@mozilla.org/network/io-service;1"]
               .getService(Ci.nsIIOService)
-              .newURI("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC", null, null)
+              .newURI("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC", null, null);
               
   Cc["@mozilla.org/uriloader/external-protocol-service;1"]
     .getService(Ci.nsIExternalProtocolService)

@@ -1,14 +1,30 @@
+/* 
+ * The content of this file is licensed. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via 
+ * email from the author.
+ * 
+ * Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+
+/* globals SieveSaslLoginRequest */
+/* globals SieveResponseParser */
+/* globals SieveSaslExternalRequest */
+/* globals window */
+
 "use strict";
  
-(function() {
-
-  var suite  = net.tschmid.yautt.test;
+(function(exports) {
+	
+  var suite  = exports.net.tschmid.yautt.test;
     
   if (!suite)
     throw "Could not initialize test suite";
 
   suite.add( function() {   
-    suite.log("ManageSieve unit tests...")
+    suite.log("ManageSieve unit tests...");
   });    
   
   suite.add( function() {   
@@ -22,7 +38,7 @@
    var hasError = null;
    var hasSucceded = null;
    
-   var handler = {}
+   var handler = {};
    handler.onSaslResponse = function() { hasSucceded = true; };
    handler.onError = function() { hasError = true; };
    
@@ -34,7 +50,7 @@
    
    // CLIENT -> SERVER   
    // Client sends mechanism to server.
-   suite.assertEquals(true, request.hasNextRequest())
+   suite.assertEquals(true, request.hasNextRequest());
    suite.assertEquals('AUTHENTICATE "LOGIN"\r\n', request.getNextRequest());
    
    // SERVER -> CLIENT
@@ -43,8 +59,8 @@
    
    // CLIENT -> SERVER
    // Client sends the username, Ymx1YmI= equals blubb
-   suite.assertEquals(true, request.hasNextRequest())
-   suite.assertEquals('"Ymx1YmI="\r\n', request.getNextRequest())
+   suite.assertEquals(true, request.hasNextRequest());
+   suite.assertEquals('"Ymx1YmI="\r\n', request.getNextRequest());
    
    // SERVER -> CLIENT
    // Server responds with a "UGFzc3dvcmQ6" which is a "PASSWORD:"
@@ -52,8 +68,8 @@
    
    // CLIENT -> SERVER
    // Client sends the password, 
-   suite.assertEquals(true, request.hasNextRequest())
-   suite.assertEquals('"Ymxh"\r\n', request.getNextRequest())
+   suite.assertEquals(true, request.hasNextRequest());
+   suite.assertEquals('"Ymxh"\r\n', request.getNextRequest());
    
    // SERVER -> CLIENT
    // Server sends OK
@@ -62,7 +78,7 @@
    // Server sends NO
    //request.addResponse(new SieveResponseParser([0x4e,0x4f,0x0D,0x0A]));
    
-   suite.assertEquals(false, request.hasNextRequest())
+   suite.assertEquals(false, request.hasNextRequest());
    
    suite.assertEquals(true, hasSucceded);
    suite.assertEquals(null, hasError);
@@ -76,7 +92,7 @@
    var hasError = null;
    var hasSucceded = null;
    
-   var handler = {}
+   var handler = {};
    handler.onSaslResponse = function() { hasSucceded = true; };
    handler.onError = function() { hasError = true; };   
     
@@ -88,7 +104,7 @@
    // CLIENT -> SERVER   
    // Client sends mechanism to server.   
    suite.assertEquals('AUTHENTICATE "EXTERNAL" ""\r\n', request.getNextRequest());
-   suite.assertEquals(false, request.hasNextRequest())
+   suite.assertEquals(false, request.hasNextRequest());
    
    // SERVER -> CLIENT
    request.addResponse(new SieveResponseParser([0x4f,0x4b,0x0D,0x0A]));
@@ -106,7 +122,7 @@
    var hasError = null;
    var hasSucceded = null;
    
-   var handler = {}
+   var handler = {};
    handler.onSaslResponse = function() { hasSucceded = true; };
    handler.onError = function() { hasError = true; };
    
@@ -119,7 +135,7 @@
    // CLIENT -> SERVER   
    // Client sends mechanism to server.   
    suite.assertEquals('AUTHENTICATE "EXTERNAL" ""\r\n', request.getNextRequest());
-   suite.assertEquals(false, request.hasNextRequest())
+   suite.assertEquals(false, request.hasNextRequest());
    
    // SERVER -> CLIENT
    request.addResponse(new SieveResponseParser([0x4e,0x4f,0x0D,0x0A]));
@@ -130,5 +146,4 @@
   });  
 
 
-}());
-
+}(window));

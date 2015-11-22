@@ -2,13 +2,15 @@
   
 (function() {
 
+	/* global net */
+	
   var suite  = net.tschmid.yautt.test;
     
   if (!suite)
     throw "Could not initialize test suite";
 
   suite.add( function() {  	
-  	suite.log("Match-type unit tests...")
+  	suite.log("Match-type unit tests...");
   });    
 
   function testScript(script) {     

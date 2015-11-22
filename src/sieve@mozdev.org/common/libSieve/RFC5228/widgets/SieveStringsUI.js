@@ -10,6 +10,9 @@
  *      
  */
 
+/* global $: false */
+/* global SieveAbstractBoxUI */
+
 "use strict";
 
 function SieveAddressPartUI(elm)
@@ -25,7 +28,7 @@ SieveAddressPartUI.prototype.onSelect
 {
   var value = $("input[name='rgAddressPart"+this.id()+"']:checked").val(); 
   this.getSieve().addressPart(value);
-}
+};
 
 SieveAddressPartUI.prototype.createHtml
     = function ()
@@ -41,7 +44,7 @@ SieveAddressPartUI.prototype.createHtml
         .attr("name","rgAddressPart"+this.id())
         .css("float","left")
         .attr("value","all")
-        .change(function () {that.onSelect()}))
+        .change(function () {that.onSelect();}))
       .append($("<div/>")
         .css("float","left")
         .append($("<h1/>").text("... an email address with ..."))
@@ -54,7 +57,7 @@ SieveAddressPartUI.prototype.createHtml
         .attr("name","rgAddressPart"+this.id())
         .css("float","left")
         .attr("value","domain")
-        .change(function () {that.onSelect()}))
+        .change(function () {that.onSelect(); }))
       .append($("<div/>")
         .css("float","left")
         .append($("<h1/>").text("... a domain part with ..."))
@@ -67,7 +70,7 @@ SieveAddressPartUI.prototype.createHtml
         .attr("name","rgAddressPart"+this.id())
         .css("float","left")
         .attr("value","localpart")
-        .change(function () {that.onSelect()}))
+        .change(function () {that.onSelect();}))
       .append($("<div/>")
         .css("float","left")        
         .append($("<h1/>").text("... a local part with..."))
@@ -77,7 +80,7 @@ SieveAddressPartUI.prototype.createHtml
       .attr("checked","checked")
     .end();           
           
-}
+};
 
 //****************************************************************************//
 
@@ -95,7 +98,7 @@ SieveComparatorUI.prototype.onSelect
 {
   var value = $("input[name='rgComparator"+this.id()+"']:checked").val(); 
   this.getSieve().comparator(value);
-}
+};
 
 SieveComparatorUI.prototype.createHtml
     = function ()
@@ -109,19 +112,19 @@ SieveComparatorUI.prototype.createHtml
         .attr("type","radio")
         .attr("name","rgComparator"+this.id())
         .attr("value","i;ascii-casemap")
-        .change(function () {that.onSelect()}))
+        .change(function () {that.onSelect();}))
       .append($("<span/>").text("Case insensitive ASCII String (default)")))
     .append($("<div/>")
       .append($("<input/>")
         .attr("type","radio")
         .attr("name","rgComparator"+this.id())
         .attr("value","i;octet")
-        .change(function () {that.onSelect()}))
+        .change(function () {that.onSelect();}))
       .append($("<span/>").text("Case sensitive byte by byte")))
       .find("input[name='rgComparator"+this.id()+"'][value='"+this.getSieve().comparator()+"']")
         .attr("checked","checked")
       .end();
-}
+};
 
 //****************************************************************************//
 
@@ -145,7 +148,7 @@ SieveStringListUI.prototype.onAddItem
       
   // moving the focus impicitely triggest onUpdateItem, so we do not...
   // have to call it here...
-}
+};
 
 SieveStringListUI.prototype.onRemoveItem
     = function (elm)
@@ -158,7 +161,7 @@ SieveStringListUI.prototype.onRemoveItem
   elm.remove();
   
   this.onUpdateItem(owner);   
-}
+};
 
 SieveStringListUI.prototype.onUpdateItem
     = function (elm)
@@ -176,7 +179,7 @@ SieveStringListUI.prototype.onUpdateItem
   
   for (var i=0; i<inputs.length; i++ )
     this.getSieve().append(inputs[i].value);
-}
+};
 
 SieveStringListUI.prototype.defaults
   = function (defaults)
@@ -186,7 +189,7 @@ SieveStringListUI.prototype.defaults
   
   this._defaults = defaults;
   return this;   
-}
+};
 
 
 SieveStringListUI.prototype.showDropDown
@@ -204,7 +207,7 @@ SieveStringListUI.prototype.showDropDown
     .attr("size",defaults.length)
     .change(function(ev){ 
       $(this).parent().find("input").val(item.val()).change().focus(); } )
-    .blur(function() {$(this).remove()})
+    .blur(function() {$(this).remove();});
     
   for (var i=0; i<defaults.length; i++)
     if (!this.getSieve().contains(defaults[i]))
@@ -214,7 +217,7 @@ SieveStringListUI.prototype.showDropDown
     return;
     
   item.insertAfter(parent).focus();
-}
+};
 
 
 SieveStringListUI.prototype._createListItemUI
@@ -237,9 +240,9 @@ SieveStringListUI.prototype._createListItemUI
             .click(function(ev){ that.onRemoveItem($(this).parents(".sivStringListItem"));} ))                
           .append($("<span/>")
             .addClass("sivStringDrop")
-            .click(function(ev){ that.showDropDown($(this).parent()) } ))));
+            .click(function(ev){ that.showDropDown($(this).parent()); } ))));
         
-}
+};
 
 SieveStringListUI.prototype.init
     = function ()
@@ -248,7 +251,7 @@ SieveStringListUI.prototype.init
   var headers = $("<div/>").addClass("SivStringList");
   
   for (var i=0; i< this.getSieve().size(); i++)
-    headers.append(this._createListItemUI(this.getSieve().item(i)))
+    headers.append(this._createListItemUI(this.getSieve().item(i)));
   
  /* headers.append($("<div/>")
     .attr("id","divAddString"+this.id())
@@ -258,7 +261,7 @@ SieveStringListUI.prototype.init
       .click(function(){ that.onAddItem() } )));*/
     
   return headers; 
-}
+};
 
 SieveStringListUI.prototype.html
     = function ()
@@ -271,7 +274,7 @@ SieveStringListUI.prototype.html
   this._domElm = this.init();
          
   return this._domElm;
-}
+};
 
 
 

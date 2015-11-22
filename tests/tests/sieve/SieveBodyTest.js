@@ -14,13 +14,15 @@
  
 (function() {
 
+	/* global net */
+	
   var suite  = net.tschmid.yautt.test;
     
   if (!suite)
     throw "Could not initialize test suite";
 
   suite.add( function() {  	
-  	suite.log("Body Unit Tests...")
+  	suite.log("Body Unit Tests...");
   });    
     
   suite.add( function() {
@@ -37,9 +39,9 @@
         + '\r\n'
         + 'if body :raw :contains "MAKE MONEY FAST" {\r\n'
         + '        discard;\r\n'
-        + '}\r\n'
+        + '}\r\n';
        
-    suite.expectValidScript(script,{"body":true} )  
+    suite.expectValidScript(script,{"body":true} );  
   });    
   
   suite.add( function() {
@@ -61,7 +63,7 @@
         + '  fileinto "jukebox";\r\n'
         + '}\r\n';        
       
-    suite.expectValidScript(script,{"body":true, "fileinto":true} )  
+    suite.expectValidScript(script,{"body":true, "fileinto":true} );  
   });  
   
 
@@ -78,7 +80,7 @@
         + '  fileinto "project/schedule";'
         + '}\r\n';      
       
-    suite.expectValidScript(script,{"body":true, "fileinto":true} )  
+    suite.expectValidScript(script,{"body":true, "fileinto":true} ); 
   });
 
 

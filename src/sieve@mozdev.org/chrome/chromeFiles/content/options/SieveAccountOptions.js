@@ -9,6 +9,11 @@
  * Contributor(s):
  *   Cyril Kluska <ckluska@easter-eggs.com>
  */
+
+/* global document */
+/* global window */
+/* global SieveAutoConfig */
+/* global Components */
  
  // Enable Strict Mode
 "use strict";
@@ -106,9 +111,9 @@ function onPortSelect(idx)
   if (!gAccount)
     return;
     
-  if (idx == 0)
+  if (idx === 0)
     gAccount.getHost().setPort(4190);
-  else if (idx == 1) 
+  else if (idx === 1) 
     gAccount.getHost().setPort(2000);
   else
     onPortChange(document.getElementById('txtPort').value);
@@ -121,7 +126,7 @@ function onPortChange(value)
   if (!gAccount)
     return;
     
-  gAccount.getHost().setPort(value,true)
+  gAccount.getHost().setPort(value,true);
 }
 
 
@@ -149,7 +154,7 @@ var gAutoConfigCallback =
     gAutoConfig = null;
     document.getElementById("dkAutoSelect").selectedIndex = "3";  
   }
-} 
+}; 
 
 function onPortAutoSelect()
 {          
@@ -220,10 +225,10 @@ function onTLSSelect(idx)
   var isEnabled = true;
   var isForced = false;
   
-  if (idx == 0)
+  if (idx === 0)
     isEnabled = false;
     
-  if (idx == 2)
+  if (idx === 2)
     isForced = true;
     
   gAccount.getHost().setTLS(isForced,isEnabled);
@@ -303,7 +308,7 @@ function onProxySheetLoad(account)
 
 function onProxySelect(type)
 { 
-  if (gAccount == null)
+  if (!gAccount)
     return;
 
   if ((type == null) ||(type > 3))
@@ -355,7 +360,7 @@ function onAdvancedSheetLoad(account)
 
 function onAuthorizationSelect(type)
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
     
   if ((type == null) || (type > 3))
@@ -376,7 +381,7 @@ function enableAuthorization(type)
 
 function onAuthorizationChange(value)
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
   
   gAccount.getAuthorization(3).setAuthorization(value);
@@ -410,7 +415,7 @@ function onEditorSheetLoad(account)
 
 function onDefaultEditorSelect(type)
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
     
   if ((type == null) || (type > 1))
@@ -421,7 +426,7 @@ function onDefaultEditorSelect(type)
 
 function onIndentionWidthChange(value)
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
   
   gAccount.getSettings().setIndentionWidth(value);
@@ -429,7 +434,7 @@ function onIndentionWidthChange(value)
 
 function onIndentionPolicySelect(value) 
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
 
   gAccount.getSettings().setIndentionPolicy(value);
@@ -438,7 +443,7 @@ function onIndentionPolicySelect(value)
 
 function onTabWidthChange(value)
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
   
   gAccount.getSettings().setTabWidth(value);
@@ -447,7 +452,7 @@ function onTabWidthChange(value)
 
 function onTabPolicySelect(value) 
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
   
   gAccount.getSettings().setTabPolicy(value);   
@@ -475,7 +480,7 @@ function onDebugSheetLoad(account)
 
 function onDebugFlagCommand(sender,bit)
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
   
   gAccount.getSettings().setDebugFlag(bit,sender.checked);
@@ -509,7 +514,7 @@ function onDialogAccept()
 // Function for the general Settings...
 function onKeepAliveCommand(sender)
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
     
   gAccount.getSettings().enableKeepAlive(sender.checked);
@@ -526,15 +531,15 @@ function enableKeepAlive(enabled)
 
 function onKeepAliveChange(sender)
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
   
-  gAccount.getSettings().setKeepAliveInterval(sender.value*1000*60)    
+  gAccount.getSettings().setKeepAliveInterval(sender.value*1000*60);    
 }
 
 function onCompileCommand(sender)
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
      
   gAccount.getSettings().enableCompileDelay(sender.checked); 
@@ -551,17 +556,17 @@ function enableCompile(enabled)
 
 function onCompileChange(sender)
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
   
-  gAccount.getSettings().setCompileDelay(sender.value)    
+  gAccount.getSettings().setCompileDelay(sender.value);    
 }
 
 
 
 function onAuthMechanismCommand(sender)
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
   
   gAccount.getSettings().enableForcedAuthMechanism(sender.checked);
@@ -578,7 +583,7 @@ function enableAuthMechanism(enabled)
 
 function onAuthMechanismSelect(sender)
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
   
   gAccount.getSettings().setForcedAuthMechanism(sender.selectedItem.value);
@@ -592,8 +597,8 @@ function onAuthMechanismSelect(sender)
 function onShowPassword()
 {
   
-  var winName = "Toolkit:PasswordManager"
-  var uri = "chrome://passwordmgr/content/passwordManager.xul"
+  var winName = "Toolkit:PasswordManager";
+  var uri = "chrome://passwordmgr/content/passwordManager.xul";
   
   var w = Cc["@mozilla.org/appshell/window-mediator;1"]
     .getService(Ci.nsIWindowMediator)
@@ -612,8 +617,8 @@ function onShowPassword()
 
 function onShowErrorConsole()
 {
-  var name = "global:console"
-  var uri = "chrome://global/content/console.xul"
+  var name = "global:console";
+  var uri = "chrome://global/content/console.xul";
 
   var w = Cc["@mozilla.org/appshell/window-mediator;1"]
     .getService(Ci.nsIWindowMediator)
@@ -653,7 +658,7 @@ function enableProxy(type)
 
 function onSocks5RemoteDNSCommand(sender)
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
   
   gAccount.getProxy(3).setRemoteDNS(sender.checked);
@@ -661,7 +666,7 @@ function onSocks5RemoteDNSCommand(sender)
 
 function onSocks5HostChange(sender)
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
   
   gAccount.getProxy(3).setHost(sender.value);
@@ -669,15 +674,15 @@ function onSocks5HostChange(sender)
 
 function onSocks5PortChange(sender)
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
   
-  gAccount.getProxy(3).setPort(sender.value)
+  gAccount.getProxy(3).setPort(sender.value);
 }
 
 function onSocks4HostChange(sender)
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
   
   gAccount.getProxy(2).setHost(sender.value);
@@ -685,17 +690,17 @@ function onSocks4HostChange(sender)
 
 function onSocks4PortChange(sender)
 {
-  if (gAccount == null)
+  if (!gAccount)
     return;
   
-  gAccount.getProxy(2).setPort(sender.value)
+  gAccount.getProxy(2).setPort(sender.value);
 }
 
 function onDonate()
 {
   var url = Cc["@mozilla.org/network/io-service;1"]
               .getService(Ci.nsIIOService)
-              .newURI("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC", null, null)
+              .newURI("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC", null, null);
               
   Cc["@mozilla.org/uriloader/external-protocol-service;1"]
     .getService(Ci.nsIExternalProtocolService)

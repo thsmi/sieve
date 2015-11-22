@@ -10,282 +10,293 @@
  *      
  */
  
+/* global window */
+ 
 "use strict";
-
-//****************************************************************************//
-
-function SieveElse(docshell,id)
-{
-  SieveBlock.call(this,docshell,id);
+ 
+(function(exports) {
   
-  this.ws = [];
+  /* global SieveLexer */
+  /* global SieveAbstractElement */
+	/* global SieveBlock */
+	/* global SieveBlockBody */
+
+  //****************************************************************************//
   
-  this.ws[0] = this._createByName("whitespace","\r\n");
-  this.ws[1] = this._createByName("whitespace","\r\n");  
-}
-
-SieveElse.prototype = Object.create(SieveBlock.prototype);
-SieveElse.prototype.constructor = SieveElse;
-
-SieveElse.isElement
-    = function (parser, lexer)
-{
-  return parser.startsWith("else");  
-}
-
-SieveElse.nodeName = function () {
-  return "condition/else";
-}
-
-SieveElse.nodeType  = function () {
-  return "condition/";
-}
-
-SieveElse.prototype.init
-    = function (parser)
-{
-  parser.extract("else");
-   
-  this.ws[0].init(parser);
-   
-  SieveBlock.prototype.init.call(this,parser);
-  
-  this.ws[1].init(parser); 
-  
-  return this;
-}
-
-SieveElse.prototype.toScript
-    = function()
-{
-  return "else" 
-    + this.ws[0].toScript() 
-    + SieveBlock.prototype.toScript.call(this) 
-    + this.ws[1].toScript();  
-}
-
-//****************************************************************************//
-
-function SieveIf(docshell,id)
-{
-  SieveElse.call(this,docshell,id);
-
-  this._test = null;    
-  this.ws[2] = this._createByName("whitespace");    	
-}
-
-SieveIf.prototype = Object.create(SieveElse.prototype);
-SieveIf.prototype.constructor = SieveIf;
-
-SieveIf.isElement
-    = function (parser, lexer)
-{
-  return parser.startsWith("if");  
-}
-
-SieveIf.nodeName = function () {
-  return "condition/if";
-}
-
-SieveIf.nodeType  = function () {
-  return "condition/";
-}
-
-
-SieveIf.prototype.init
-    = function (parser)
-{ 
-  parser.extract("if");
-  
-  this.ws[2].init(parser);
-    
-  this._test = this._createByClass(["test","operator"],parser);
-  
-  this.ws[0].init(parser);
-  
-  SieveBlock.prototype.init.call(this,parser);
-  
-  this.ws[1].init(parser);
-  
-  return this;
-}
-
-SieveIf.prototype.removeChild
-    = function (childId,cascade,stop)
-{    
-  var elm = SieveBlock.prototype.removeChild.call(this,childId);  
-  if (cascade && elm)
-    return this;
-    
-  if (elm)
-    return elm;
-  
-  if (this.test().id() != childId)
-    throw "Unknown ChildId";
-    
-  if (!cascade)
-    throw "Use cascade to delete conditions";  
-  
-  this.test().parent(null);
-  this._test = null;
-  
-  if ((!stop) || (stop.id() != this.id()))
-    return this.remove(cascade,stop);
-    
-  return this;
-}
-
-SieveIf.prototype.test
-    = function (item)
-{
-  if (typeof(item) === "undefined")
-   return this._test;
-     
-  if (item.parent())
-    throw "test already bound to "+item.parent().id();
-     
-  // Release old test...
-  if(this._test)
-    this._test.parent(null);
-    
-  // ... and bind new test to this node
-  this._test = item.parent(this);
-  
-  return this;
-}
-
-SieveIf.prototype.empty 
-  = function ()
-{
-  return (!this._test) ? true : false;    
-}
-
-
-SieveIf.prototype.require
-    = function (imports)
-{
-  SieveElse.prototype.require.call(this,imports);
-  this._test.require(imports);
-}
-
-SieveIf.prototype.toScript
-    = function()
-{
-  return "if"
-    + this.ws[2].toScript() 
-    + this._test.toScript() 
-    + this.ws[0].toScript()
-    + SieveBlock.prototype.toScript.call(this) 
-    + this.ws[1].toScript();  
-}
-
-
-
-//****************************************************************************//
-
-function SieveCondition(docshell,id) 
-{
-  SieveBlockBody.call(this,docshell,id);
-  
-  this.elms[0] = this._createByName("condition/if","if false {\r\n}\r\n"); 
-}
-
-SieveCondition.prototype = Object.create(SieveBlockBody.prototype);
-SieveCondition.prototype.constructor = SieveCondition;
-
-SieveCondition.isElement
-    = function (parser, lexer)
-{
-  return SieveIf.isElement(parser, lexer);
-}
-
-SieveCondition.nodeName = function () {
-  return "condition";
-}
-
-SieveCondition.nodeType  = function () {
-  return "condition";
-}
-
-
-SieveCondition.prototype.init
-    = function (parser)
-{ 
-  this.elms[0] = this._createByName("condition/if",parser);    
-  
-  while (parser.startsWith("elsif"))
+  function SieveElse(docshell,id)
   {
-    parser.extract("els");
+    SieveBlock.call(this,docshell,id);
     
-    this.elms.push(
-      this._createByName("condition/if",parser));
+    this.ws = [];
     
-  }
-
-  if (this._probeByName("condition/else",parser))
-    this.elms.push(this._createByName("condition/else",parser))
-  
-  return this;
-}
-
-SieveCondition.prototype.removeChild
-    = function (childId,cascade,stop)
-{
-  // should we remove the whole node
-  if (typeof (childId) === "undefined")
-     throw "Child ID Missing";
-  
-  if (stop && (stop.id() == this.id()))
-    cascade = false;
-    
-  var elm = SieveBlockBody.prototype.removeChild.call(this,childId,cascade,stop);
-  
-  //  ... if we endup after delete with just an else, merge it into parent...   
-  if ((this.children().length) && (!this.children(0).test))
-  {
-    // we copy all of our else statements into our parent...
-    while (this.children(0).children().length)
-      this.parent().append(this.children(0).children(0), this);
-        
-    return this.children(0).remove(cascade,stop);
+    this.ws[0] = this._createByName("whitespace","\r\n");
+    this.ws[1] = this._createByName("whitespace","\r\n");  
   }
   
-
-  // If SieveBlockBody cascaded through our parent, it should be null...
-  // ... and we are done
+  SieveElse.prototype = Object.create(SieveBlock.prototype);
+  SieveElse.prototype.constructor = SieveElse;
   
-  // 4. the condition might now be empty
-  if (this.parent() && (!this.children().length))
-    return this.remove(cascade,stop);
-
-  if (this.parent() && cascade)
-    return this;
-    
-
-  return elm;
-}
-
-
-SieveCondition.prototype.toScript
-    = function ()
-{
-  var str ="";
-
-  for (var i=0; i<this.elms.length; i++)
+  SieveElse.isElement
+      = function (parser, lexer)
   {
-    if ((i > 0) && (this.elms[i].test))
-      str += "els"
+    return parser.startsWith("else");  
+  };
+  
+  SieveElse.nodeName = function () {
+    return "condition/else";
+  };
+  
+  SieveElse.nodeType  = function () {
+    return "condition/";
+  };
+  
+  SieveElse.prototype.init
+      = function (parser)
+  {
+    parser.extract("else");
+     
+    this.ws[0].init(parser);
+     
+    SieveBlock.prototype.init.call(this,parser);
+    
+    this.ws[1].init(parser); 
+    
+    return this;
+  };
+  
+  SieveElse.prototype.toScript
+      = function()
+  {
+    return "else" 
+      + this.ws[0].toScript() 
+      + SieveBlock.prototype.toScript.call(this) 
+      + this.ws[1].toScript();  
+  };
+  
+  //****************************************************************************//
+  
+  function SieveIf(docshell,id)
+  {
+    SieveElse.call(this,docshell,id);
+  
+    this._test = null;    
+    this.ws[2] = this._createByName("whitespace");    	
+  }
+  
+  SieveIf.prototype = Object.create(SieveElse.prototype);
+  SieveIf.prototype.constructor = SieveIf;
+  
+  SieveIf.isElement
+      = function (parser, lexer)
+  {
+    return parser.startsWith("if");  
+  };
+  
+  SieveIf.nodeName = function () {
+    return "condition/if";
+  };
+  
+  SieveIf.nodeType  = function () {
+    return "condition/";
+  };
+  
+  
+  SieveIf.prototype.init
+      = function (parser)
+  { 
+    parser.extract("if");
+    
+    this.ws[2].init(parser);
       
-    str += this.elms[i].toScript();
-  }
+    this._test = this._createByClass(["test","operator"],parser);
     
-  return str;  
-}
+    this.ws[0].init(parser);
+    
+    SieveBlock.prototype.init.call(this,parser);
+    
+    this.ws[1].init(parser);
+    
+    return this;
+  };
+  
+  SieveIf.prototype.removeChild
+      = function (childId,cascade,stop)
+  {    
+    var elm = SieveBlock.prototype.removeChild.call(this,childId);  
+    if (cascade && elm)
+      return this;
+      
+    if (elm)
+      return elm;
+    
+    if (this.test().id() != childId)
+      throw "Unknown ChildId";
+      
+    if (!cascade)
+      throw "Use cascade to delete conditions";  
+    
+    this.test().parent(null);
+    this._test = null;
+    
+    if ((!stop) || (stop.id() != this.id()))
+      return this.remove(cascade,stop);
+      
+    return this;
+  };
+  
+  SieveIf.prototype.test
+      = function (item)
+  {
+    if (typeof(item) === "undefined")
+     return this._test;
+       
+    if (item.parent())
+      throw "test already bound to "+item.parent().id();
+       
+    // Release old test...
+    if(this._test)
+      this._test.parent(null);
+      
+    // ... and bind new test to this node
+    this._test = item.parent(this);
+    
+    return this;
+  };
+  
+  SieveIf.prototype.empty 
+    = function ()
+  {
+    return (!this._test) ? true : false;    
+  };
+  
+  
+  SieveIf.prototype.require
+      = function (imports)
+  {
+    SieveElse.prototype.require.call(this,imports);
+    this._test.require(imports);
+  };
+  
+  SieveIf.prototype.toScript
+      = function()
+  {
+    return "if"
+      + this.ws[2].toScript() 
+      + this._test.toScript() 
+      + this.ws[0].toScript()
+      + SieveBlock.prototype.toScript.call(this) 
+      + this.ws[1].toScript();  
+  };
+  
+  
+  
+  //****************************************************************************//
+  
+  function SieveCondition(docshell,id) 
+  {
+    SieveBlockBody.call(this,docshell,id);
+    
+    this.elms[0] = this._createByName("condition/if","if false {\r\n}\r\n"); 
+  }
+  
+  SieveCondition.prototype = Object.create(SieveBlockBody.prototype);
+  SieveCondition.prototype.constructor = SieveCondition;
+  
+  SieveCondition.isElement
+      = function (parser, lexer)
+  {
+    return SieveIf.isElement(parser, lexer);
+  };
+  
+  SieveCondition.nodeName = function () {
+    return "condition";
+  };
+  
+  SieveCondition.nodeType  = function () {
+    return "condition";
+  };
+  
+  
+  SieveCondition.prototype.init
+      = function (parser)
+  { 
+    this.elms[0] = this._createByName("condition/if",parser);    
+    
+    while (parser.startsWith("elsif"))
+    {
+      parser.extract("els");
+      
+      this.elms.push(
+        this._createByName("condition/if",parser));
+      
+    }
+  
+    if (this._probeByName("condition/else",parser))
+      this.elms.push(this._createByName("condition/else",parser));
+    
+    return this;
+  };
+  
+  SieveCondition.prototype.removeChild
+      = function (childId,cascade,stop)
+  {
+    // should we remove the whole node
+    if (typeof (childId) === "undefined")
+       throw "Child ID Missing";
+    
+    if (stop && (stop.id() == this.id()))
+      cascade = false;
+      
+    var elm = SieveBlockBody.prototype.removeChild.call(this,childId,cascade,stop);
+    
+    //  ... if we endup after delete with just an else, merge it into parent...   
+    if ((this.children().length) && (!this.children(0).test))
+    {
+      // we copy all of our else statements into our parent...
+      while (this.children(0).children().length)
+        this.parent().append(this.children(0).children(0), this);
+          
+      return this.children(0).remove(cascade,stop);
+    }
+    
+  
+    // If SieveBlockBody cascaded through our parent, it should be null...
+    // ... and we are done
+    
+    // 4. the condition might now be empty
+    if (this.parent() && (!this.children().length))
+      return this.remove(cascade,stop);
+  
+    if (this.parent() && cascade)
+      return this;
+      
+  
+    return elm;
+  };
+  
+  
+  SieveCondition.prototype.toScript
+      = function ()
+  {
+    var str ="";
+  
+    for (var i=0; i<this.elms.length; i++)
+    {
+      if ((i > 0) && (this.elms[i].test))
+        str += "els";
+        
+      str += this.elms[i].toScript();
+    }
+      
+    return str;  
+  };
+  
+  
+  if (!SieveLexer)
+    throw "Could not register Conditional Elements";
+  
+  SieveLexer.register(SieveIf);      
+  SieveLexer.register(SieveElse);      
+  SieveLexer.register(SieveCondition);
 
-
-if (!SieveLexer)
-  throw "Could not register Conditional Elements";
-
-SieveLexer.register(SieveIf);      
-SieveLexer.register(SieveElse);      
-SieveLexer.register(SieveCondition);
+})(window);

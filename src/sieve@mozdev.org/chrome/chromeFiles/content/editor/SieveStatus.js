@@ -9,6 +9,14 @@
  *      
  */
 
+/* global document */
+/* global window */
+/* global Components */
+/* global Services */
+/* global SieveAutoConfig */
+/* global SieveOverlayManager */
+/* global SieveUtils */
+
 // Enable Strict Mode
 "use strict";
 
@@ -51,7 +59,7 @@ var gAutoConfigEvent =
     onStatus(8,3);
     gAutoConfig = null;
   }
-}
+};
 
 function onAutoConfigRunClick()
 { 
@@ -119,7 +127,7 @@ function onBadCertOverride(targetSite,permanent)
     }
     
     if (!status)
-      throw "No certificate stored for taget Site..."
+      throw "No certificate stored for taget Site...";
 
     var flags = ((status.isUntrusted)? overrideService.ERROR_UNTRUSTED : 0)
                   | ((status.isDomainMismatch)? overrideService.ERROR_MISMATCH : 0)
@@ -127,7 +135,7 @@ function onBadCertOverride(targetSite,permanent)
 
     var cert = status.QueryInterface(Ci.nsISSLStatus).serverCert;
     if (!cert)
-      throw "Status does not contain a certificate..."
+      throw "Status does not contain a certificate...";
                                                          
     overrideService.rememberValidityOverride(
       targetSite.split(":")[0], // Host Name with port (host:port)

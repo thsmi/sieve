@@ -10,75 +10,89 @@
  *      
  */
 
+/* global window */
+ 
 "use strict";
-
-function SieveRootNodeUI(elm)
-{
-  SieveAbstractBoxUI.call(this,elm);
-}
-
-SieveRootNodeUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
-SieveRootNodeUI.prototype.constructor = SieveRootNodeUI;
-
-
-SieveRootNodeUI.prototype.createHtml
-    = function (parent)
-{
-  return parent.append(this.getSieve().elms[1].html());
-}
-
-
-function SieveBlockUI(elm)
-{
-  SieveAbstractBoxUI.call(this,elm);
-}
-
-SieveBlockUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
-SieveBlockUI.prototype.constructor = SieveBlockUI;
-
-SieveBlockUI.prototype.init
-    = function ()
-{
-  var elm = $(document.createElement("div"))
-              .addClass("sivBlock");
+ 
+(function(exports) {
   
-  var item = null;
-  
-  for (var i=0; i<this.getSieve().elms.length;i++)
-  {      
-    item = this.getSieve().elms[i].html()
-      
-    if (!item)
-      continue;
-      
-    elm
-      .append((new SieveDropBoxUI(this))
-        .drop(new SieveBlockDropHandler(),this.getSieve().elms[i])
-        .html()
-        .addClass("sivBlockSpacer"))
-      .append(
-        $("<div/>").append(item)
-          .addClass("sivBlockChild"));
+  /* global $: false */
+	/* global SieveDesigner */
+	/* global SieveAbstractBoxUI */
+	
+	/* global SieveDropBoxUI */
+  /* global SieveBlockDropHandler */
+	
+  function SieveRootNodeUI(elm)
+  {
+    SieveAbstractBoxUI.call(this,elm);
   }
-   
-  elm.append((new SieveDropBoxUI(this))
-    .drop(new SieveBlockDropHandler())
-    .html()
-    .addClass("sivBlockSpacer"));
   
-  return elm; 
-}
-
-SieveBlockUI.prototype.createHtml
-    = function (parent)
-{
-  return parent.append(
-      this.init());
-}
-
-if (!SieveDesigner)
-  throw "Could not register Block Widgets";
-
+  SieveRootNodeUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
+  SieveRootNodeUI.prototype.constructor = SieveRootNodeUI;
   
-SieveDesigner.register(SieveBlockBody, SieveBlockUI);
-SieveDesigner.register(SieveRootNode, SieveRootNodeUI);
+  
+  SieveRootNodeUI.prototype.createHtml
+      = function (parent)
+  {
+    return parent.append(this.getSieve().elms[1].html());
+  };
+  
+  
+  function SieveBlockUI(elm)
+  {
+    SieveAbstractBoxUI.call(this,elm);
+  }
+  
+  SieveBlockUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
+  SieveBlockUI.prototype.constructor = SieveBlockUI;
+  
+  SieveBlockUI.prototype.init
+      = function ()
+  {
+    var elm = $("<div/>")
+                .addClass("sivBlock");
+    
+    var item = null;
+    
+    for (var i=0; i<this.getSieve().elms.length;i++)
+    {      
+      item = this.getSieve().elms[i].html();
+        
+      if (!item)
+        continue;
+        
+      elm
+        .append((new SieveDropBoxUI(this))
+          .drop(new SieveBlockDropHandler(),this.getSieve().elms[i])
+          .html()
+          .addClass("sivBlockSpacer"))
+        .append(
+          $("<div/>").append(item)
+            .addClass("sivBlockChild"));
+    }
+     
+    elm.append((new SieveDropBoxUI(this))
+      .drop(new SieveBlockDropHandler())
+      .html()
+      .addClass("sivBlockSpacer"));
+    
+    return elm; 
+  };
+  
+  SieveBlockUI.prototype.createHtml
+      = function (parent)
+  {
+    return parent.append(this.init());
+  };
+  
+  if (!SieveDesigner)
+    throw "Could not register Block Widgets";
+  
+  
+  SieveDesigner.register("block/body", SieveBlockUI);  
+  SieveDesigner.register("block/rootnode", SieveRootNodeUI);
+
+  exports.SieveBlockUI = SieveBlockUI;
+  
+})(window);

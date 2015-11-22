@@ -39,7 +39,7 @@
        return false;
        
      return true;
-   }
+   };
    
    
    function SieveResponseCodeSasl(code)
@@ -59,7 +59,7 @@
        = function ()
    {
      return this.code[1];
-   }
+   };
    
    
    function SieveResponseCodeReferral(code)
@@ -99,7 +99,7 @@
        = function ()
    {   
      return this.hostname;
-   }
+   };
    
    /**
     * Returns the port of the referred server. If the server did not specify 
@@ -112,7 +112,7 @@
        = function ()
    {
      return this.port;
-   }
+   };
    
   exports.SieveResponseCode = SieveResponseCode;
   exports.SieveResponseCodeSasl = SieveResponseCodeSasl;

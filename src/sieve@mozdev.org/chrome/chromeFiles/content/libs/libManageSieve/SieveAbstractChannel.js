@@ -13,6 +13,20 @@
 // Enable Strict Mode
 "use strict";  
 
+/* global Components */
+/* global SieveListScriptRequest */
+/* global SieveConnections */
+/* global SieveDeleteScriptRequest */
+/* global SievePutScriptRequest */
+/* global SieveSetActiveRequest */
+/* global SieveGetScriptRequest */
+/* global SieveCheckScriptRequest */
+/* global SieveRenameScriptRequest */
+
+/* global Ci */
+/* global Cc */
+/* global Cr */
+
 Components.utils.import("chrome://sieve/content/modules/sieve/SieveConnectionManager.js");
 Components.utils.import("chrome://sieve/content/modules/sieve/SieveMozClient.js");
 
@@ -31,37 +45,37 @@ SieveAbstractChannel.prototype.onListScriptResponse
     = function(response)
 {
   throw "implement onListScriptResponse";
-}
+};
 
 SieveAbstractChannel.prototype.onSetActiveResponse
     = function(response)
 {
   throw "implement onSetActiveResponse";
-}
+};
 
 SieveAbstractChannel.prototype.onDeleteScriptResponse
     = function(response)
 {
   throw "implement onDeleteScriptResponse";
-}
+};
 
 SieveAbstractChannel.prototype.onGetScriptResponse
     = function(response)
 {
   throw "implement onGetScriptResponse";
-}
+};
 
 SieveAbstractChannel.prototype.onCheckScriptResponse
     = function(response)
 {
-  throw "implement  onCheckScriptResponse";    
-}
+  throw "implement onCheckScriptResponse";    
+};
 
 SieveAbstractChannel.prototype.onOffline
     = function()
 {
   this.disconnect(6);
-}
+};
   
 SieveAbstractChannel.prototype.onTimeout
     = function()
@@ -69,7 +83,7 @@ SieveAbstractChannel.prototype.onTimeout
   // TODO implement a loggin facility
   //gLogger.logStringMessage("SieveAbstractChannel.js\nOnTimeout");   
   this.disconnect(1,"warning.timeout");
-}
+};
   
 SieveAbstractChannel.prototype.onError
     = function(response)
@@ -77,7 +91,7 @@ SieveAbstractChannel.prototype.onError
   // TODO implement a loggin facility  
   //gLogger.logStringMessage("SivFilerExplorer.OnError: "+response.getMessage());
   this.disconnect(4,response.getMessage());
-}
+};
   
 SieveAbstractChannel.prototype.onDisconnect
     = function()
@@ -85,22 +99,22 @@ SieveAbstractChannel.prototype.onDisconnect
   var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
   
   if (ioService.offline)
-    this.onOffline()
+    this.onOffline();
     
   this.disconnect(9);
-}
+};
       
 SieveAbstractChannel.prototype.onChannelClosed
     = function()
 {
   throw "implement onChannelClosed";
-}
+};
   
 SieveAbstractChannel.prototype.onChannelCreated
     = function(sieve)
 {
   this.onChannelReady(this._cid);
-}
+};
   
 SieveAbstractChannel.prototype.onChannelReady
     = function(cid)
@@ -110,19 +124,19 @@ SieveAbstractChannel.prototype.onChannelReady
     return;
       
   throw "implement onChannelReady";    
-}
+};
   
 SieveAbstractChannel.prototype.onChannelStatus
     = function(id,text)
 { 
   this.onStatusChange(id,text);
-}
+};
 
 SieveAbstractChannel.prototype.onStatusChange
     = function (state, message)
 {
-  throw "implement onStatusChange"
-}
+  throw "implement onStatusChange";
+};
   
 SieveAbstractChannel.prototype.onBadCert
     = function(targetSite, status )
@@ -132,7 +146,7 @@ SieveAbstractChannel.prototype.onBadCert
   message.site = targetSite;
   
   this.disconnect(5,message);
-}
+};
   
 SieveAbstractChannel.prototype.observe
     = function(aSubject, aTopic, aData)
@@ -145,7 +159,7 @@ SieveAbstractChannel.prototype.observe
     
     if (aData == "online")
       this.connect();    
-  }
+  };
   
   
 /******************************************************************************/
@@ -174,7 +188,7 @@ SieveAbstractChannel.prototype.connect
   Cc["@mozilla.org/observer-service;1"]
       .getService (Ci.nsIObserverService)
       .addObserver(this,"network:offline-status-changed", false);    
-}
+};
 
 SieveAbstractChannel.prototype.disconnect
     = function (state,message)
@@ -202,7 +216,7 @@ SieveAbstractChannel.prototype.disconnect
       .removeObserver(this,"network:offline-status-changed");
   } 
   catch (ex)  {  }  
-}
+};
 
 
 SieveAbstractChannel.prototype.deleteScript
@@ -214,7 +228,7 @@ SieveAbstractChannel.prototype.deleteScript
   request.addErrorListener(this);
   
   this.sendRequest(request);  
-}
+};
 
 SieveAbstractChannel.prototype.setActiveScript
     = function (script)
@@ -224,7 +238,7 @@ SieveAbstractChannel.prototype.setActiveScript
   request.addErrorListener(this);
 
   this.sendRequest(request);
-}
+};
 
 SieveAbstractChannel.prototype.checkScript
     = function (script)
@@ -251,11 +265,11 @@ SieveAbstractChannel.prototype.checkScript
     {
       that.onCheckScriptResponse(response);
     }
-  }
+  };
   
 
   
-  if (script.length == 0)
+  if (script.length === 0)
     return;
   
   // Use the CHECKSCRIPT command when possible, otherwise we need to ...
@@ -287,7 +301,7 @@ SieveAbstractChannel.prototype.checkScript
   request.addErrorListener(lEvent);
   
   this.sendRequest(request);   
-}
+};
 
 SieveAbstractChannel.prototype._renameScript2
     = function (oldName, newName)
@@ -309,14 +323,14 @@ SieveAbstractChannel.prototype._renameScript2
       //TODO Display notification instead of an popup box.
       alert(response.getMessage());
     }
-  }
+  };
   
   var request = new SieveRenameScriptRequest(oldName, newName);
-  request.addRenameScriptListener(lEvent)
+  request.addRenameScriptListener(lEvent);
   request.addErrorListener(lEvent);
     
   this.sendRequest(request);
-}
+};
 
 SieveAbstractChannel.prototype._renameScript
     = function (oldName, newName, isActive)
@@ -332,20 +346,20 @@ SieveAbstractChannel.prototype._renameScript
     onGetScriptResponse: function(response)
     {
       var request = new SievePutScriptRequest(
-                      new String(lEvent.newScriptName),
-                      new String(response.getScriptBody()));
+                      ""+lEvent.newScriptName,
+                      ""+response.getScriptBody());
 
-      request.addPutScriptListener(lEvent)
-      request.addErrorListener(lEvent)
+      request.addPutScriptListener(lEvent);
+      request.addErrorListener(lEvent);
       
       that.sendRequest(request);
     },    
     onPutScriptResponse: function(response)
     {
       
-      if (lEvent.isActive == true)
+      if (lEvent.isActive === true)
       {
-        var request = new SieveSetActiveRequest(lEvent.newScriptName)
+        var request = new SieveSetActiveRequest(lEvent.newScriptName);
       
         request.addSetActiveListener(lEvent);
         request.addErrorListener(that);
@@ -374,7 +388,7 @@ SieveAbstractChannel.prototype._renameScript
       //TODO Display notification instead of an popup box.
       alert("Renaming\r\n"+response.getMessage());
     }    
-  }
+  };
          
   lEvent.oldScriptName  = oldName;
   lEvent.newScriptName  = newName;
@@ -390,7 +404,7 @@ SieveAbstractChannel.prototype._renameScript
 
   this.sendRequest(request);
   
-}
+};
 
 
 SieveAbstractChannel.prototype.renameScript
@@ -408,7 +422,7 @@ SieveAbstractChannel.prototype.renameScript
   }  
       
   this._renameScript(oldScriptName, newScriptName);   
-}
+};
 
 SieveAbstractChannel.prototype.listScript
     = function ()
@@ -418,7 +432,7 @@ SieveAbstractChannel.prototype.listScript
   request.addErrorListener(this);
   
   this.sendRequest(request);
-}
+};
 
 SieveAbstractChannel.prototype.getScript
     = function (script)
@@ -427,8 +441,8 @@ SieveAbstractChannel.prototype.getScript
   request.addGetScriptListener(this);
   request.addErrorListener(this);
   
-  this.sendRequest(request)
-}
+  this.sendRequest(request);
+};
 
 SieveAbstractChannel.prototype.putScript
     = function (script,content)
@@ -439,7 +453,7 @@ SieveAbstractChannel.prototype.putScript
   request.addErrorListener(this);
   
   this.sendRequest(request);
-}
+};
 
 SieveAbstractChannel.prototype.sendRequest
     = function (request)
@@ -469,14 +483,14 @@ SieveAbstractChannel.prototype.sendRequest
     // ... would accure, so let's display the timeout message directly.    
     this.disconnect(1,"warning.timeout");    
   }
-}
+};
 
 SieveAbstractChannel.prototype.isActive
     = function ()
 {
   try {
     SieveConnections
-      .getChannel(this._sid,this._cid) 
+      .getChannel(this._sid,this._cid);
   }
   catch (ex)
   {
@@ -484,4 +498,4 @@ SieveAbstractChannel.prototype.isActive
   }
   
   return true;
-}
+};

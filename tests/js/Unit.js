@@ -1,4 +1,8 @@
 
+/* global window */
+/* global parent */
+/* global document */
+
 "use strict";
 
 if (!net)
@@ -18,7 +22,7 @@ net.tschmid.yautt.test.tests = [];
 net.tschmid.yautt.test.log = function(message, level) {
   
   if (typeof(level) !== "string")
-    level = "Info"
+    level = "Info";
     
   var msg = {};
   msg.type = "LOG";
@@ -26,15 +30,15 @@ net.tschmid.yautt.test.log = function(message, level) {
   msg.data = ""+message;
   
   parent.postMessage(""+JSON.stringify(msg), "*");
-}
+};
 
 net.tschmid.yautt.test.logError = function(message) {
   this.log(message,"Error");
-}
+};
 
 net.tschmid.yautt.test.logTrace = function(message) {
   this.log(message,"Trace");
-}
+};
 
 /**
  * Signals the test suit, tests succeeded.
@@ -44,7 +48,7 @@ net.tschmid.yautt.test.succeed = function() {
   msg.type = "SUCCEED";
   
   parent.postMessage(""+JSON.stringify(msg), "*");
-}
+};
 
 /**
  * Signals the test suit, test failed.
@@ -57,7 +61,7 @@ net.tschmid.yautt.test.fail = function(message) {
   msg.data = ""+message;
   
   parent.postMessage(""+JSON.stringify(msg), "*");
-}
+};
 
 net.tschmid.yautt.test.require = function(script) {
 	
@@ -68,7 +72,6 @@ net.tschmid.yautt.test.require = function(script) {
     elm.src = ""+script;
 
     elm.addEventListener('error', function(ev) {
-      debugger;
       that.fail("Failed to load script "+script );
     }, true);    
 //    elm.onerror = function(ev) {
@@ -81,7 +84,7 @@ net.tschmid.yautt.test.require = function(script) {
     this.logTrace("  + Injecting script "+script+" ...");
     
     document.head.appendChild(elm);              	
-}
+};
 
 net.tschmid.yautt.test.assertEquals = function assertEquals(expected, actual) {
 	
@@ -110,11 +113,11 @@ net.tschmid.yautt.test.run = function() {
   }
     
   try {
-    this.tests.forEach( function(test){  test(that)  });
+    this.tests.forEach( function(test){  test(that);  });
   }
   catch (e)
   {
-  	this.fail(e)
+  	this.fail(e);
     return;
   }	
 
@@ -153,7 +156,7 @@ net.tschmid.yautt.test.run = function() {
       return false;  
     
     return oldErrorHandler(message, url, line);
-  }
+  };
   
   
 } ());

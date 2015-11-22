@@ -10,6 +10,9 @@
  *      
  */
  
+/* global document */
+/* global window */
+ 
 "use strict";
   
 /**
@@ -18,7 +21,7 @@
  **/
   
 (function(exports) {
-
+	
   function SieveBroker(target) {
     this.target = target;
   }
@@ -45,7 +48,7 @@
     	
   	  var msg = {};
   	  msg.event = event;
-  	  msg.data = data  
+  	  msg.data = data;
   	
   	  var target = this.getTarget();
   	  target.postMessage(JSON.stringify(msg),'*');
@@ -73,13 +76,13 @@
       if (!this.listener)
         return;
               
-      var msg = JSON.parse(event.data)      
+      var msg = JSON.parse(event.data);      
       this.listener(msg.event, msg.data);
     }
-  } 
+  } ;
     
   if (!exports.net)
-    exports.net = {}
+    exports.net = {};
   
   if (!exports.net.tschmid)
     exports.net.tschmid = {};

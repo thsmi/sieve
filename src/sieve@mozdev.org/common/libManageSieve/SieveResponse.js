@@ -10,185 +10,191 @@
  *   Max Dittrich
  *   
  */
- 
- // Enable Strict Mode
+
+// Enable Strict Mode
 "use strict";
 
-
 (function(exports) {
-        
-/**
- * This class implements a generic response handler for simple sieve requests.
- * 
- * Simple requests just indicate, wether the command succeded or not. They 
- * return only status information, and do not contain any data relevant for 
- * the user.
- *  
- * @see SieveResponseParser
- *  
- * @param {SieveResponseParser} parser
- *  a SieveResponseParser object containing the response sent by the server
- */
 
-function SieveSimpleResponse(parser)
-{
-  /*
-   * Examples for simple responses
+	/* global atob */
+	/* global SieveResponseCodeReferral */
+	/* global SieveResponseCodeSasl */
+	/* global SieveResponseCode */
+	
+  /**
+   * This class implements a generic response handler for simple sieve requests.
    * 
-   * 'NO (0000) "Message"\r\n'
-   * 'BYE (0000) {4+}\r\n1234\r\n'
-   * 'NO \"Message\"\r\n'
-   * 'BYE {4+}\r\n1234\r\n'
-   * 'NO (0000)\r\n'
+   * Simple requests just indicate, wether the command succeded or not. They 
+   * return only status information, and do not contain any data relevant for 
+   * the user.
+   *  
+   * @see SieveResponseParser
+   *  
+   * @param {SieveResponseParser} parser
+   *  a SieveResponseParser object containing the response sent by the server
    */
-
-  this.message = "";
-  this.responseCode = [];
-    
-  // OK
-  if (parser.startsWith([[79,111],[75,107]]))
-  {
-    this.response = 0;
-    parser.extract(2);
-  }
-  // BYE
-  else if (parser.startsWith([[66,98],[89,121],[69,101]]))
-  {
-    this.response = 1;
-    parser.extract(3);
-  }
-  // NO
-  else if (parser.startsWith([[78,110],[79,111]]))
-  {
-    this.response = 2;
-    parser.extract(2);
-  }
-  else
-    throw "NO, OK or BYE expected in "+parser.getData();
-
-  // is there a Message?
-  if (parser.isLineBreak())
-  {
-    parser.extractLineBreak();
-    return;
-  }
-
-  // remove the space
-  parser.extractSpace();
-
-  // we found "(" so we got an responseCode, they are extremely ugly...    
-  if (parser.startsWith([[40]]))
-  {
-    // remove the opening bracket...
-    parser.extract(1);
-    // ... but remember it 
-    var nesting = 0;
   
-    // According to the RFC the first tag must be always an atom, but in...
-    // ... reality this is not true. Cyrus servers send it as a string
-    if (parser.isString())
-      this.responseCode.push(parser.extractString());
-    else
-      this.responseCode.push(parser.extractToken([32,41]));
-          
-    while (parser.isSpace())
-    {
-      parser.extractSpace();
-    
-      // We might stumbe upon opening brackets...
-      if (parser.startsWith([[40]]))
-      {
-        // ... oh we did, so increase our nesting counter.
-        parser.extract(1);
-        nesting++;
-      }
-    
-      // ok, more tokens, more fun...
-      // ... it could be either a string, a number, an atom or even a backet
-      if (parser.isString())
-        this.responseCode.push(parser.extractString());
-      else
-        this.responseCode.push(parser.extractToken([32,41]))
-
-      // is it a closing bracket
-      if (parser.startsWith([[41]]) && nesting)
-      {
-        parser.extract(1);
-        nesting--;
-      }
-    }
-    
-    if (!parser.startsWith([[41]]))
-      throw "Closing Backets expected in "+parser.getData();
+  function SieveSimpleResponse(parser)
+  {
+    /*
+     * Examples for simple responses
+     * 
+     * 'NO (0000) "Message"\r\n'
+     * 'BYE (0000) {4+}\r\n1234\r\n'
+     * 'NO \"Message\"\r\n'
+     * 'BYE {4+}\r\n1234\r\n'
+     * 'NO (0000)\r\n'
+     */
+  
+    this.message = "";
+    this.responseCode = [];
       
-    parser.extract(1);    
-        
+    // OK
+    if (parser.startsWith([[79,111],[75,107]]))
+    {
+      this.response = 0;
+      parser.extract(2);
+    }
+    // BYE
+    else if (parser.startsWith([[66,98],[89,121],[69,101]]))
+    {
+      this.response = 1;
+      parser.extract(3);
+    }
+    // NO
+    else if (parser.startsWith([[78,110],[79,111]]))
+    {
+      this.response = 2;
+      parser.extract(2);
+    }
+    else
+      throw "NO, OK or BYE expected in "+parser.getData();
+  
+    // is there a Message?
     if (parser.isLineBreak())
     {
       parser.extractLineBreak();
-      return
+      return;
     }
-             
+  
+    // remove the space
     parser.extractSpace();
-  }  
+  
+    // we found "(" so we got an responseCode, they are extremely ugly...    
+    if (parser.startsWith([[40]]))
+    {
+      // remove the opening bracket...
+      parser.extract(1);
+      // ... but remember it 
+      var nesting = 0;
     
-  this.message = parser.extractString();
-    
-  parser.extractLineBreak();
-}
-
-SieveSimpleResponse.prototype.message = null;
-SieveSimpleResponse.prototype.responseCode = null;
-SieveSimpleResponse.prototype.response = null;
-
-SieveSimpleResponse.prototype.getMessage
-    = function () 
-{ 
-  if (this.message == null)
-    throw "Message not Initialized";
-    
-  return this.message; 
-}
-
-SieveSimpleResponse.prototype.hasError
-    = function ()
-{
-  if (this.response == null)
-    throw "response not Initialized";
-    
-  if (this.response == 0)
-    return false;
-
-  return true;
-}
-
-SieveSimpleResponse.prototype.getResponse
-    = function () { return this.response; }
-
-SieveSimpleResponse.prototype.getResponseCode
-    = function ()
-{
-  if (this.responseCode == null)
-    throw "Response Code not Initialized";
-    
-  var code = "";  
-  if (this.responseCode.length)
-    code = this.responseCode[0].toUpperCase()
-    
-  switch (code)
-  {
-    case "REFERRAL":
-      return new SieveResponseCodeReferral(this.responseCode);
+      // According to the RFC the first tag must be always an atom, but in...
+      // ... reality this is not true. Cyrus servers send it as a string
+      if (parser.isString())
+        this.responseCode.push(parser.extractString());
+      else
+        this.responseCode.push(parser.extractToken([32,41]));
+            
+      while (parser.isSpace())
+      {
+        parser.extractSpace();
       
-    case "SASL":
-      return new SieveResponseCodeSasl(this.responseCode);          
+        // We might stumbe upon opening brackets...
+        if (parser.startsWith([[40]]))
+        {
+          // ... oh we did, so increase our nesting counter.
+          parser.extract(1);
+          nesting++;
+        }
+      
+        // ok, more tokens, more fun...
+        // ... it could be either a string, a number, an atom or even a backet
+        if (parser.isString())
+          this.responseCode.push(parser.extractString());
+        else
+          this.responseCode.push(parser.extractToken([32,41]));
+  
+        // is it a closing bracket
+        if (parser.startsWith([[41]]) && nesting)
+        {
+          parser.extract(1);
+          nesting--;
+        }
+      }
+      
+      if (!parser.startsWith([[41]]))
+        throw "Closing Backets expected in "+parser.getData();
+        
+      parser.extract(1);    
+          
+      if (parser.isLineBreak())
+      {
+        parser.extractLineBreak();
+        return;
+      }
+               
+      parser.extractSpace();
+    }  
+      
+    this.message = parser.extractString();
+      
+    parser.extractLineBreak();
   }
-
-  // TODO Implement these Response codes:
-  //"ACTIVE" / "NONEXISTENT" / "ALREADYEXISTS" / "WARNINGS"
-  return new SieveResponseCode(this.responseCode);
-}
-
+  
+  SieveSimpleResponse.prototype.message = null;
+  SieveSimpleResponse.prototype.responseCode = null;
+  SieveSimpleResponse.prototype.response = null;
+  
+  SieveSimpleResponse.prototype.getMessage
+      = function () 
+  { 
+    if ((typeof(this.message) == 'undefined') || (this.message === null))
+      throw "Message not Initialized";
+      
+    return this.message; 
+  };
+  
+  SieveSimpleResponse.prototype.hasError
+      = function ()
+  {
+    if ((typeof(this.response) === 'undefined') || (this.response === null))
+      throw "response not Initialized";
+      
+    if (this.response === 0)
+      return false;
+  
+    return true;
+  };
+  
+  SieveSimpleResponse.prototype.getResponse
+      = function () { 
+    return this.response;
+  };
+  
+  SieveSimpleResponse.prototype.getResponseCode
+      = function ()
+  {
+    if ((typeof(this.responseCode) === 'undefined') || (this.responseCode === null))
+      throw "Response Code not Initialized";
+      
+    var code = "";  
+    if (this.responseCode.length)
+      code = this.responseCode[0].toUpperCase();
+      
+    switch (code)
+    {
+      case "REFERRAL":
+        return new SieveResponseCodeReferral(this.responseCode);
+        
+      case "SASL":
+        return new SieveResponseCodeSasl(this.responseCode);          
+    }
+  
+    // TODO Implement these Response codes:
+    //"ACTIVE" / "NONEXISTENT" / "ALREADYEXISTS" / "WARNINGS"
+    return new SieveResponseCode(this.responseCode);
+  };
+  
 /**
  * Parses the capabilites posted by the ManageSieve server upon a client 
  * connection, after successful STARTTLS and AUTHENTICATE or by issuing the 
@@ -209,7 +215,7 @@ function SieveCapabilitiesResponse(parser)
   this.sasl = {};
   
   this.maxredirects = -1;
-  this.owner = ""
+  this.owner = "";
   this.notify = {};
   this.language = "";
   
@@ -220,11 +226,11 @@ function SieveCapabilitiesResponse(parser)
     var tag = parser.extractString();
     
     var value = "";
-    if ( parser.isLineBreak() == false)
+    if ( parser.isLineBreak() === false)
     {
       parser.extractSpace();      
       value = parser.extractString();       
-    };
+    }
      
     parser.extractLineBreak();
     
@@ -291,10 +297,10 @@ SieveCapabilitiesResponse.prototype = Object.create(SieveSimpleResponse.prototyp
 SieveCapabilitiesResponse.prototype.constructor = SieveCapabilitiesResponse;
 
 SieveCapabilitiesResponse.prototype.getImplementation
-    = function () { return this.implementation; }
+    = function () { return this.implementation; };
 
 SieveCapabilitiesResponse.prototype.getSasl
-    = function () { return this.sasl; }
+    = function () { return this.sasl; };
     
 SieveCapabilitiesResponse.prototype.getExtensions
     = function (asString)
@@ -309,7 +315,7 @@ SieveCapabilitiesResponse.prototype.getExtensions
   
   return result; 
 
-}
+};
 
 /**
  * Indicates wether or not TLS is supported by this implementation.
@@ -321,7 +327,7 @@ SieveCapabilitiesResponse.prototype.getExtensions
  *   true if TLS is supported, false if not.  
  */
 SieveCapabilitiesResponse.prototype.getTLS
-    = function () { return this.tls; }
+    = function () { return this.tls; };
     
 /**
  * Inorder to maintain compatibility to older implementations, the servers 
@@ -338,7 +344,7 @@ SieveCapabilitiesResponse.prototype.getTLS
  *   Positive Floating describing the compatibility level of the ManageSieve server.
  */
 SieveCapabilitiesResponse.prototype.getVersion
-    = function () { return this.version; }  
+    = function () { return this.version; }; 
 
 /**
  * Returns the limit on the number of Sieve "redirect" actions a script can 
@@ -351,7 +357,7 @@ SieveCapabilitiesResponse.prototype.getVersion
  *   a non-negative number of redirects, or -1 for infinite redirects 
  */
 SieveCapabilitiesResponse.prototype.getMaxRedirects
-    = function () { return this.maxredirects; } 
+    = function () { return this.maxredirects; }; 
 
 /**
  * Returns a string array of URI schema parts for supported notification
@@ -362,7 +368,7 @@ SieveCapabilitiesResponse.prototype.getMaxRedirects
  *    The schema parts as string array
  */    
 SieveCapabilitiesResponse.prototype.getNotify
-    = function () { return this.notify; }
+    = function () { return this.notify; };
 
 /**
  * Returns the language currently used for human readable error messages.  
@@ -376,7 +382,7 @@ SieveCapabilitiesResponse.prototype.getNotify
  *   a [RFC4646] conform language tag as string 
  */    
 SieveCapabilitiesResponse.prototype.getLanguage
-    = function () { return this.language; }
+    = function () { return this.language; };
 
 /**
  * Returns a list with sieve commands which are supported by this implementation
@@ -391,7 +397,7 @@ SieveCapabilitiesResponse.prototype.getLanguage
  *   an associative array containing additional sieve commands
  */
 SieveCapabilitiesResponse.prototype.getCapabilities
-    = function () { return this.capabilities; }        
+    = function () { return this.capabilities; };        
     
 /**
  * Gets the name of the logged in user.
@@ -402,7 +408,7 @@ SieveCapabilitiesResponse.prototype.getCapabilities
  *   a String containing the username
  */    
 SieveCapabilitiesResponse.prototype.getOwner
-    = function () { return this.owner; }    
+    = function () { return this.owner; };    
 
 
 //***************************************************************************//
@@ -413,14 +419,14 @@ function SieveListScriptResponse(parser)
   //    string        = quoted / literal
   //    (sieve-name [SP "ACTIVE"] CRLF) response-oknobye
   
-  this.scripts = new Array();
+  this.scripts = [];
   var i = -1;
     
   while ( parser.isString() )
   {   
         i++;
 
-        this.scripts[i] = new Object();        
+        this.scripts[i] = {};        
         this.scripts[i].script = parser.extractString();
         
         if ( parser.isLineBreak() )
@@ -450,7 +456,7 @@ SieveListScriptResponse.prototype = Object.create(SieveSimpleResponse.prototype)
 SieveListScriptResponse.prototype.constructor = SieveListScriptResponse;
 
 SieveListScriptResponse.prototype.getScripts
-    = function () { return this.scripts; }
+    = function () { return this.scripts; };
 
 
 //*************************************
@@ -466,7 +472,7 @@ SieveSaslLoginResponse.prototype.add
   = function (parser) 
 {
   
-  if ((this.state == 0) && (parser.isString()))
+  if ((this.state === 0) && (parser.isString()))
   {
     // String should be 'Username:' or something similar
     parser.extractString();
@@ -476,7 +482,7 @@ SieveSaslLoginResponse.prototype.add
     return;
   }
   
-  if ((this.state == 1) && (parser.isString()))
+  if ((this.state === 1) && (parser.isString()))
   {
     // String should be equivalten to 'Password:'
     parser.extractString();
@@ -486,7 +492,7 @@ SieveSaslLoginResponse.prototype.add
     return;
   }
   
-  if (this.state == 2)
+  if (this.state === 2)
   {
     // Should be either a NO, BYE or OK
     this.state = 4;
@@ -507,10 +513,10 @@ SieveSaslLoginResponse.prototype.add
   }
     
   throw 'Illegal State:'+this.state+' / '+parser.getData(0);
-}
+};
 
 SieveSaslLoginResponse.prototype.getState
-  = function () { return this.state; }
+  = function () { return this.state; };
 
   //*************************************
   /**
@@ -529,7 +535,7 @@ SieveSaslLoginResponse.prototype.getState
     = function (parser) 
   {
     
-    if ((this.state == 0) && (parser.isString()))
+    if ((this.state === 0) && (parser.isString()))
     {
       // The challenge is contained within a string
       this.challenge = parser.extractString();
@@ -540,7 +546,7 @@ SieveSaslLoginResponse.prototype.getState
       return;
     }
     
-    if (this.state == 1)
+    if (this.state === 1)
     {
       // Should be either a NO, BYE or OK
       this.state = 4;
@@ -551,10 +557,10 @@ SieveSaslLoginResponse.prototype.getState
     }
       
     throw 'Illegal State:'+this.state+' / '+parser.getData();
-  }
+  };
   
   SieveSaslCramMd5Response.prototype.getState
-    = function () { return this.state; }
+    = function () { return this.state; };
   
   SieveSaslCramMd5Response.prototype.getChallenge
     = function ()
@@ -563,7 +569,7 @@ SieveSaslLoginResponse.prototype.getState
       throw "Illegal State, request not completed";
         
     return this.challenge; 
-  }
+  };
   
   /*********************************************************
       literal               = "{" number  "+}" CRLF *OCTET
@@ -574,8 +580,10 @@ SieveSaslLoginResponse.prototype.getState
   
   function SieveGetScriptResponse(scriptName,parser)
   {
-    /** @private, @type {String} */ this.scriptName = scriptName;
-    /** @private, @type {String} */ this.scriptBody = "";
+    /** @private, @type {String} */ 
+    this.scriptName = scriptName;
+    /** @private, @type {String} */ 
+    this.scriptBody = "";
     
     if (parser.isString())
     {
@@ -599,13 +607,13 @@ SieveSaslLoginResponse.prototype.getState
    * @return {String} returns the requested script's content
    */    
   SieveGetScriptResponse.prototype.getScriptBody
-      = function () { return this.scriptBody; }
+      = function () { return this.scriptBody; };
   
   /**
    * @return {String} Containing the script's Name.
    */
   SieveGetScriptResponse.prototype.getScriptName
-      = function () { return this.scriptName; }
+      = function () { return this.scriptName; };
    
   /**
    * Parses responses for SCRAM-SHA-1 authentication.
@@ -670,7 +678,7 @@ SieveSaslLoginResponse.prototype.getState
       throw "Iteration Count missing";
       
     this._iter = parseInt(tokens[2].substr(2),10);
-  }
+  };
 
   /**
    * Parses the server-final-message. It is defined to be:
@@ -705,17 +713,17 @@ SieveSaslLoginResponse.prototype.getState
     if (token[0][0] == "v")
     {
       this._verifier = atob(token[0].substr(2));
-      return
+      return;
     }
      
     throw "Invalid Final message";
-  }
+  };
 
   SieveSaslScramSha1Response.prototype.add
     = function (parser) 
   {
     
-    if ((this.state == 0) && (parser.isString()))
+    if ((this.state === 0) && (parser.isString()))
     {
       this._parseFirstMessage(parser.extractString());
       parser.extractLineBreak();
@@ -733,7 +741,7 @@ SieveSaslLoginResponse.prototype.getState
     //   C: ""
     //   S: OK
     
-    if ((this.state == 1) && (parser.isString()))
+    if ((this.state === 1) && (parser.isString()))
     {
   
       this._parseFinalMessage(parser.extractString());
@@ -749,18 +757,18 @@ SieveSaslLoginResponse.prototype.getState
     //
     // S: OK (SASL "cnNwYXV0aD1lYTQwZjYwMzM1YzQyN2I1NTI3Yjg0ZGJhYmNkZmZmZA==")
     
-    if (this.state == 1)
+    if (this.state === 1)
     {
       SieveSimpleResponse.call(this,parser);
       
-      this._parseFinalMessage(this.getResponseCode().getSasl())
+      this._parseFinalMessage(this.getResponseCode().getSasl());
       
       this.state = 4;
        
       return;
     }
       
-    if (this.state == 2)
+    if (this.state === 2)
     {
       SieveSimpleResponse.call(this,parser);
       this.state = 4;
@@ -768,10 +776,10 @@ SieveSaslLoginResponse.prototype.getState
     }
        
     throw 'Illegal State:'+this.state+' / '+parser.getData();
-  }
+  };
 
   SieveSaslScramSha1Response.prototype.getState
-    = function () { return this.state; }
+    = function () { return this.state; };
   
   SieveSaslScramSha1Response.prototype.getSalt
     = function ()
@@ -780,7 +788,7 @@ SieveSaslLoginResponse.prototype.getState
       throw "Illegal State, request not completed";
         
     return this._salt; 
-  }
+  };
   
   SieveSaslScramSha1Response.prototype.getIterationCounter
     = function ()
@@ -789,7 +797,7 @@ SieveSaslLoginResponse.prototype.getState
       throw "Illegal State, request not completed";
         
     return this._iter; 
-  }
+  };
   
   SieveSaslScramSha1Response.prototype.getNonce
     = function ()
@@ -798,7 +806,7 @@ SieveSaslLoginResponse.prototype.getState
       throw "Illegal State, request not completed";
         
     return this._nonce; 
-  }
+  };
   
   SieveSaslScramSha1Response.prototype.getServerFirstMessage
     = function ()
@@ -807,7 +815,7 @@ SieveSaslLoginResponse.prototype.getState
       throw "Illegal State, request not completed";
         
     return this._serverFirstMessage;     
-  }
+  };
 
   SieveSaslScramSha1Response.prototype.getServerError
     = function ()
@@ -816,7 +824,7 @@ SieveSaslLoginResponse.prototype.getState
       throw "Illegal State, request not completed";
         
     return this._serverError;     
-  }
+  };
   
   SieveSaslScramSha1Response.prototype.getVerifier
     = function ()
@@ -825,7 +833,7 @@ SieveSaslLoginResponse.prototype.getState
       throw "Illegal State, request not completed";
         
     return this._verifier;     
-  }
+  };
 
   
   if (exports.EXPORTED_SYMBOLS) {

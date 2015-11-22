@@ -1,3 +1,15 @@
+/* 
+ * The content of this file is licensed. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via 
+ * email from the author.
+ * 
+ * Do not remove or change this comment. 
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+
+"use strict";
 
 function SieveAccount() {	
 }
@@ -21,7 +33,7 @@ SieveAccount.prototype = {
       getPort : function() {
         return 2000;
       }
-    }
+    };
   },
     
   getLogin : function() {
@@ -31,13 +43,13 @@ SieveAccount.prototype = {
       },
       getUsername : function() {
         //return $("#username").val();
-      	return "XXXX"
+      	return "XXXX";
       },
       getPassword : function() {
         //return $("#password").val();
-      	return "YYYY"
+      	return "YYYY";
       }
-    }
+    };
   },
     
   getAuthorization : function() {
@@ -45,7 +57,7 @@ SieveAccount.prototype = {
       getAuthorization : function() {
         return "";
       }
-    }
+    };
   },
   
   getProxy : function() {
@@ -53,7 +65,7 @@ SieveAccount.prototype = {
   	  getProxyInfo : function() {
   	    return null;
   	  }
-  	}
+  	};
   },
     
   getSettings : function () {
@@ -73,6 +85,6 @@ SieveAccount.prototype = {
       getKeepAliveInterval : function() {
         return 20*60*1000;
       }
-    }
+    };
    }
 };

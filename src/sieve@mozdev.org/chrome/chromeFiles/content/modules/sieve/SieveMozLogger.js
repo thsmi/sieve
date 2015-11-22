@@ -9,12 +9,14 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-"use strict"
-
+"use strict";
+  
 var EXPORTED_SYMBOLS = [ "SieveLogger" ];
 
-
 (function(exports) {
+
+	/* global Components */
+  /* global SieveAbstractLogger */
 	
 	var Cc = Components.classes;
 	var Ci = Components.interfaces;
@@ -24,6 +26,11 @@ var EXPORTED_SYMBOLS = [ "SieveLogger" ];
                
   loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveAbstractLogger.js", this, "UTF-8" );	
 	
+  /**
+   * @classdesc A mozilla specific logger
+   * @class
+   * @extends SieveAbstractLogger
+   */
   function SieveLogger()
   {
     SieveAbstractLogger.call(this);
@@ -33,6 +40,19 @@ var EXPORTED_SYMBOLS = [ "SieveLogger" ];
   SieveLogger.prototype.constructor = SieveLogger;  
   
   
+  /**
+   * @private
+   * 
+   * Padds the given string with leading zeros
+   * 
+   * @param {string} n
+   *   the string which should be padded 
+   * @param {int} m
+   *   the maximum padding.
+   *   
+   * @returns {string}
+   *   the padded string
+   */
   SieveLogger.prototype._pad
     = function(n, m) {
     	
@@ -43,7 +63,7 @@ var EXPORTED_SYMBOLS = [ "SieveLogger" ];
         str = '0'+str;
   
     return str; 
-  }
+  };
     
   SieveLogger.prototype.getTimestamp
     = function () {
@@ -53,13 +73,11 @@ var EXPORTED_SYMBOLS = [ "SieveLogger" ];
       + ":"+this._pad(date.getMinutes(),2)
       + ":"+this._pad(date.getSeconds(),2)
       + "."+this._pad(date.getMilliseconds(),3);
-  }  
+  }; 
   
   /**
-   * 
-   * @param {} message
-   * @optional @param {} level
-   */
+   * @override 
+   **/
   SieveLogger.prototype.log
     = function (message, level) {
     	
@@ -73,7 +91,7 @@ var EXPORTED_SYMBOLS = [ "SieveLogger" ];
     /*Cc["@mozilla.org/embedcomp/prompt-service;1"]
       .getService(Components.interfaces.nsIPromptService)
       .alert(null, "Alert", msg);*/      
-  }
+  };
 
   exports.SieveLogger = SieveLogger;  
   

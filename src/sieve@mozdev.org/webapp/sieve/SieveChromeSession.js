@@ -9,26 +9,31 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+/* global window */
+
 // Enable Strict Mode
 "use strict";
 
 (function(exports) {
+
+  /* global SieveLogger */
+  /* global SieveAbstractSession */
 	
-/**
- * This class pools and caches concurrent connections (Channel) to an destinct 
- * remote server (Session).
- * Furthermore it's a wrapper around the Sieve object. It implements
- * the login/logout process, a watchdog, an hartbeat an much more. 
- * 
- * A session can contain arbitary connections, but there will be only one 
- * "physical" link to the server. All channels share the session's link.
- * 
- * @param {SieveAccount} account
- *   an reference to a sieve account. this is needed to obtain login informations.
- * @param @optional {Object} sid
- *   a unique Identifier for this Session. Only needed to make debugging easier.
- *   
- */
+  /**
+   * This class pools and caches concurrent connections (Channel) to an destinct 
+   * remote server (Session).
+   * Furthermore it's a wrapper around the Sieve object. It implements
+   * the login/logout process, a watchdog, an hartbeat an much more. 
+   * 
+   * A session can contain arbitary connections, but there will be only one 
+   * "physical" link to the server. All channels share the session's link.
+   * 
+   * @param {SieveAccount} account
+   *   an reference to a sieve account. this is needed to obtain login informations.
+   * @param @optional {Object} sid
+   *   a unique Identifier for this Session. Only needed to make debugging easier.
+   *   
+   */
 
   function SieveSession(account, sid)
   {    
@@ -36,7 +41,7 @@
     logger.level(account.getSettings().getDebugFlags());
     logger.prefix(sid);
     
-    SieveAbstractSession.call(this, account, logger)
+    SieveAbstractSession.call(this, account, logger);
   }
 
   SieveSession.prototype = Object.create(SieveAbstractSession.prototype);

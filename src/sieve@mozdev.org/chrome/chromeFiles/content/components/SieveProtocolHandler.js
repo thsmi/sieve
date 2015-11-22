@@ -16,6 +16,8 @@
 
 var EXPORTED_SYMBOLS = [ "SieveProtocolHandlerComponent"];
 
+/* global Components */
+
 const Cc = Components.classes; 
 const Ci = Components.interfaces;
 const Cr = Components.results;
@@ -28,7 +30,7 @@ const SIEVE_MIMETYPE = "application/x-sieve";
  * to obtain proxy information. As it has basically a stub, without any function,
  * it uses "x-sieve" as scheme instead of "sieve". 
  */
-function SieveProtocolHandler() {};
+function SieveProtocolHandler() {}
 
 SieveProtocolHandler.prototype = 
 {
@@ -88,7 +90,7 @@ SieveProtocolHandler.prototype =
     
     throw Cr.NS_ERROR_NO_INTERFACE;
   }    
-}
+};
 
 /* bogus channel implementation, based on chatzilla's IRCProtocolHandler */
 function BogusChannel(uri)
@@ -156,7 +158,7 @@ BogusChannel.prototype = {
 
     throw Cr.NS_ERROR_NO_INTERFACE;
   }  
-}  
+};  
 
 
   var SieveProtocolHandlerFactory = 
@@ -188,7 +190,7 @@ SieveProtocolHandlerComponent.load = function()
       SieveProtocolHandler.prototype.classDescription,
       SieveProtocolHandler.prototype.contactID,
       SieveProtocolHandlerFactory);    
-}
+};
 
 SieveProtocolHandlerComponent.unload = function()
 {
@@ -196,4 +198,4 @@ SieveProtocolHandlerComponent.unload = function()
   compMgr.unregisterFactory(
     SieveProtocolHandler.prototype.classID,
     SieveProtocolHandlerFactory);     
-}
+};

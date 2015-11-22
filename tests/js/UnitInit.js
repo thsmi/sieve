@@ -1,5 +1,7 @@
 "use strict";
 
+/*global net */
+
 /**
  * Starts the unit test.
  * 

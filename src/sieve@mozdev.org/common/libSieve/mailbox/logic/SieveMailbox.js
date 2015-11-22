@@ -9,11 +9,16 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  *      
  */
- 
+
+/* global window */
+
 "use strict";
 
 (function(exports) {
- 
+
+  /* global SieveLexer */
+  /* global SieveAbstractElement */
+
   
   // fileinto [:create] <mailbox: string>
   function SieveCreateArgument(docshell,id) 
@@ -29,27 +34,27 @@
     = function(parser, lexer)
   { 
     return parser.startsWith(":create");
-  }
+  };
   
   SieveCreateArgument.nodeName = function () {
     return "argument/create";
-  }
+  };
   
   SieveCreateArgument.nodeType  = function () {
     return "argument/create";
-  }
+  };
   
   SieveCreateArgument.isCapable
       = function (capabilities)
   {
-    return (capabilities["mailbox"] == true);      
-  }
+    return (capabilities["mailbox"] === true);      
+  };
   
   SieveCreateArgument.prototype.require
       = function (imports)
   {
     imports["mailbox"] = true;
-  }  
+  };  
   
   SieveCreateArgument.prototype.init
       = function (parser)
@@ -58,14 +63,14 @@
     this.whitespace.init(parser);
     
     return this;
-  } 
+  };
 
   SieveCreateArgument.prototype.toScript
       = function ()
   {
     return ":create"
       + this.whitespace.toScript();
-  }
+  };
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -86,27 +91,27 @@
     = function(parser, lexer)
   { 
     return parser.startsWith("mailboxexists");
-  }
+  };
   
   SieveMailboxExistsTest.nodeName = function () {
     return "test/mailboxexists";
-  }
+  };
   
   SieveMailboxExistsTest.nodeType  = function () {
     return "test";
-  }
+  };
   
   SieveMailboxExistsTest.isCapable
       = function (capabilities)
   {
-    return (capabilities["mailbox"] == true);      
-  }
+    return (capabilities["mailbox"] === true);      
+  };
   
   SieveMailboxExistsTest.prototype.require
       = function (imports)
   {
     imports["mailbox"] = true;
-  }  
+  };  
   
   SieveMailboxExistsTest.prototype.init
       = function (parser)
@@ -117,7 +122,7 @@
     this._names.init(parser);
     
     return this;
-  } 
+  }; 
 
   SieveMailboxExistsTest.prototype.toScript
       = function ()
@@ -125,7 +130,7 @@
     return "mailboxexists"
       + this._whitespace.toScript()
       + this._names.toScript();
-  }
+  };
 
 ////////////////////////////////////////////////////////////////////////////////
   
@@ -145,7 +150,7 @@
   {
     SieveAbstractElement.call(this,docshell,id);
     
-    this._whitespace = []
+    this._whitespace = [];
     this._whitespace[0] = this._createByName("whitespace",' ');
     this._whitespace[1] = this._createByName("whitespace",' ');
     this._whitespace[2] = this._createByName("whitespace",' ');
@@ -169,27 +174,27 @@
     = function(parser, lexer)
   { 
     return parser.startsWith("metadata");
-  }
+  };
   
   SieveMetaDataTest.nodeName = function () {
     return "test/metadata";
-  }
+  };
   
   SieveMetaDataTest.nodeType  = function () {
     return "test";
-  }
+  };
   
   SieveMetaDataTest.isCapable
       = function (capabilities)
   {
-    return (capabilities["mboxmetadata"] == true);      
-  }
+    return (capabilities["mboxmetadata"] === true);      
+  };
   
   SieveMetaDataTest.prototype.require
       = function (imports)
   {
     imports["mboxmetadata"] = true;
-  }  
+  };
   
   SieveMetaDataTest.prototype.init
       = function (parser)
@@ -231,7 +236,7 @@
     this._whitespace[5].init(parser);
 
     return this;
-  } 
+  }; 
 
   SieveMetaDataTest.prototype.toScript
       = function ()
@@ -248,7 +253,7 @@
       + this._whitespace[4].toScript()
       + this._keyList.toScript()
       + this._whitespace[5].toScript();
-  }
+  };
   
   
 ////////////////////////////////////////////////////////////////////////////////
@@ -258,7 +263,7 @@
   {
     SieveAbstractElement.call(this,docshell,id);
     
-    this._whitespace = []
+    this._whitespace = [];
     this._whitespace[0] = this._createByName("whitespace",' ');
     this._whitespace[1] = this._createByName("whitespace",' ');
     
@@ -273,27 +278,27 @@
     = function(parser, lexer)
   { 
     return parser.startsWith("metadataexists");
-  }
+  };
   
   SieveMetaDataExistsTest.nodeName = function () {
     return "test/metadataexists";
-  }
+  };
   
   SieveMetaDataExistsTest.nodeType  = function () {
     return "test";
-  }
+  };
   
   SieveMetaDataExistsTest.isCapable
       = function (capabilities)
   {
-    return (capabilities["mboxmetadata"] == true);      
-  }
+    return (capabilities["mboxmetadata"] === true);      
+  };
   
   SieveMetaDataExistsTest.prototype.require
       = function (imports)
   {
     imports["mboxmetadata"] = true;
-  }  
+  };
   
   SieveMetaDataExistsTest.prototype.init
       = function (parser)
@@ -308,7 +313,7 @@
     this._annotations.init(parser);
     
     return this;
-  } 
+  };
 
   SieveMetaDataExistsTest.prototype.toScript
       = function ()
@@ -318,7 +323,7 @@
       + this._mailbox.toScript()
       + this._whitespace[1].toScript()
       + this._annotations.toScript();
-  }
+  };
 
 ////////////////////////////////////////////////////////////////////////////////
     
@@ -327,7 +332,7 @@
   {
     SieveAbstractElement.call(this,docshell,id);
     
-    this._whitespace = []
+    this._whitespace = [];
     this._whitespace[0] = this._createByName("whitespace",' ');
     this._whitespace[1] = this._createByName("whitespace",' ');
     this._whitespace[2] = this._createByName("whitespace",' ');
@@ -350,27 +355,27 @@
     = function(parser, lexer)
   { 
     return parser.startsWith("servermetadata");
-  }
+  };
   
   SieveServerMetaDataTest.nodeName = function () {
     return "test/servermetadata";
-  }
+  };
   
   SieveServerMetaDataTest.nodeType  = function () {
     return "test";
-  }
+  };
   
   SieveServerMetaDataTest.isCapable
       = function (capabilities)
   {
-    return (capabilities["servermetadata"] == true);      
-  }
+    return (capabilities["servermetadata"] === true);      
+  };
   
   SieveServerMetaDataTest.prototype.require
       = function (imports)
   {
     imports["servermetadata"] = true;
-  }  
+  };
   
   SieveServerMetaDataTest.prototype.init
       = function (parser)
@@ -409,7 +414,7 @@
     this._whitespace[4].init(parser);
     
     return this;
-  } 
+  };
 
   SieveServerMetaDataTest.prototype.toScript
       = function ()
@@ -424,7 +429,7 @@
       + this._whitespace[3].toScript()
       + this._keyList.toScript()
       + this._whitespace[4].toScript();
-  }
+  };
   
 ////////////////////////////////////////////////////////////////////////////////
   
@@ -444,27 +449,27 @@
     = function(parser, lexer)
   { 
     return parser.startsWith("servermetadataexists");
-  }
+  };
   
   SieveServerMetaDataExitsTest.nodeName = function () {
     return "test/servermetadataexists";
-  }
+  };
   
   SieveServerMetaDataExitsTest.nodeType  = function () {
     return "test";
-  }
+  };
   
   SieveServerMetaDataExitsTest.isCapable
       = function (capabilities)
   {
-    return (capabilities["servermetadata"] == true);      
-  }
+    return (capabilities["servermetadata"] === true);      
+  };
   
   SieveServerMetaDataExitsTest.prototype.require
       = function (imports)
   {
     imports["servermetadata"] = true;
-  }  
+  };
   
   SieveServerMetaDataExitsTest.prototype.init
       = function (parser)
@@ -475,7 +480,7 @@
     this._annotations.init(parser);
         
     return this;
-  } 
+  };
 
   SieveServerMetaDataExitsTest.prototype.toScript
       = function ()
@@ -483,7 +488,7 @@
     return "servermetadataexists"
       + this._whitespace.toScript()
       + this._annotations.toScript();
-  }
+  };
 
 ////////////////////////////////////////////////////////////////////////////////
   

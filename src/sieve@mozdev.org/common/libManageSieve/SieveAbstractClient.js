@@ -51,7 +51,7 @@ function SieveAbstractClient()
   
   this.queueLocked = false;
   
-  this.requests = new Array();      
+  this.requests = [];      
   
   this.timeout = {};
   this.timeout.timer = null;
@@ -101,7 +101,7 @@ SieveAbstractClient.prototype.setCompatibility
 {
   for (var capability in capabilites)
     this.compatibility[capability] = capabilites[capability];  
-}
+};
 
 /**
  * Returns a list of supported sieve commands. As the socket seeks 
@@ -127,7 +127,7 @@ SieveAbstractClient.prototype.getCompatibility
   = function()
 {
   return this.compatibility;
-}
+};
 
 
 /**
@@ -137,440 +137,440 @@ SieveAbstractClient.prototype.getLogger
   = function ()
 {
 	throw "Implement getLogger()";  	
-}
+};
 
-/**
- * @return {Boolean}
- */
-SieveAbstractClient.prototype.isAlive 
-   = function()
-{
-  if (this.socket == null)
-    return false;
-    
-  return true;
-}
-
-/**
- * This method secures the connection to the sieve server. By activating 
- * Transport Layer Security all Data exchanged is crypted. 
- * 
- * Before calling this method you need to request a crypted connection by
- * sending a startTLSRequest. Invoke this method imediately after the server 
- * confirms switching to TLS.
- **/
-SieveAbstractClient.prototype.startTLS 
-   = function ()
-{
-  if (this.secure != true)
-    throw "TLS can't be started no secure socket";
-    
-  if (this.socket == null)
-    throw "Can't start TLS, your are not connected to "+this.host;
-    
-  // Need to be overwritten in a subclass....
-}
+  /**
+   * @return {Boolean}
+   */
+  SieveAbstractClient.prototype.isAlive 
+     = function()
+  {
+    if (!this.socket)
+      return false;
+      
+    return true;
+  };
+  
+  /**
+   * This method secures the connection to the sieve server. By activating 
+   * Transport Layer Security all Data exchanged is crypted. 
+   * 
+   * Before calling this method you need to request a crypted connection by
+   * sending a startTLSRequest. Invoke this method imediately after the server 
+   * confirms switching to TLS.
+   **/
+  SieveAbstractClient.prototype.startTLS 
+     = function ()
+  {
+    if (this.secure !== true)
+      throw "TLS can't be started no secure socket";
+      
+    if (!this.socket)
+      throw "Can't start TLS, your are not connected to "+this.host;
+      
+    // Need to be overwritten in a subclass....
+  };
 
   SieveAbstractClient.prototype._startTimeoutTimer
     = function () {
     throw "Implement _startTimeoutTimer()";
-  }
+  };
   
   SieveAbstractClient.prototype._stopTimeoutTimer
     = function () {
     throw "Implement _stopTimeoutTimer()";
-  }  
+  };  
 
   SieveAbstractClient.prototype._startIdleTimer
     = function () {
     throw "Implement _startIdleTimer()"; 
-  }
+  };
   
   SieveAbstractClient.prototype._stopIdleTimer
     = function () {
     throw "Implement _stopIdleTimer()";
-  }   
+  };  
 
 
-/**
- * Specifies the maximal interval between a request and a response. If the
- * timeout elapsed, all pending request will be canceled and the event queue
- * will be cleared. Either the onTimeout() method of the most recend request 
- * will invoked or in case the request does not support onTimeout() the
- * default's listener will be called.
- *    
- * @param {int} interval
- *   the number of milliseconds before the timeout is triggered.
- *   Pass null to set the default timeout.
- */
-SieveAbstractClient.prototype.setTimeoutInterval
-    = function (interval)
-{
-  if (!interval)
-    this.timeout.delay = 20000;
-  else
-    this.timeout.delay = interval;
-}
-
-/**
- * Specifies the maximal interval between a response and a request. 
- * If the max time elapsed, the listener's OnIdle() event will be called. 
- * Thus it can be used for sending "Keep alive" packets. 
- *   
- * @param {int} interval
- *  the maximal number of milliseconds between a response and a request,
- *  pass null to deactivate.  
- */
-SieveAbstractClient.prototype.setKeepAliveInterval
-    = function (interval)
-{
-  if (interval)
+  /**
+   * Specifies the maximal interval between a request and a response. If the
+   * timeout elapsed, all pending request will be canceled and the event queue
+   * will be cleared. Either the onTimeout() method of the most recend request 
+   * will invoked or in case the request does not support onTimeout() the
+   * default's listener will be called.
+   *    
+   * @param {int} interval
+   *   the number of milliseconds before the timeout is triggered.
+   *   Pass null to set the default timeout.
+   */
+  SieveAbstractClient.prototype.setTimeoutInterval
+      = function (interval)
   {
-    this.idle.delay = interval;
-    return;
-  }
+    if (!interval)
+      this.timeout.delay = 20000;
+    else
+      this.timeout.delay = interval;
+  };
   
-  // No keep alive Packets should be sent, so null the timer and the delay.
-  this._stopIdleTimer();
-  this.idle.delay = null;
-
-  return;      
-}
-
-SieveAbstractClient.prototype.addListener
-   = function(listener)
-{
-  this.listener = listener;
-}
-
-/**
- * Adds a request to the send queue. 
- * 
- * Normal request runs to completion, so they are blocking the queue
- * until they are fully processed. If the request failes, the error 
- * handler is triggered and the request is dequeued.
- * 
- * A greedy request in constrast accepts whatever it can get. Upon an 
- * error greedy request are not dequeued. They fail silently and the next 
- * requests is processed. This continues until a request succeeds, a non 
- * greedy request failes or the queue has no more requests. 
- *  
- * @param {SieveAbstractRequest} request
- *   the request object which should be added to the queue
- *   
- * @optional @param {bool} greedy
- *   if true requests fail silently
- *      
- */
-SieveAbstractClient.prototype.addRequest 
-    = function(request,greedy)
-{
-  if (this.listener)
-    request.addByeListener(this.listener);
-    
-  // TODO: we should realy store this internally, instead of tagging objects
-  if (greedy)
-    request.isGreedy = true;
-     
-  // Add the request to the message queue
-  this.requests.push(request);
-
-  // If the message queue was empty, we might have to reinitalize the...
-  // ... request pump.
-  
-  // We can skip this if queue is locked...
-  if (this.queueLocked)
-    return;
-    
-  // ... or it contains more than one full request
-  for (var idx = 0 ; idx<this.requests.length; idx++)
-    if ( this.requests[idx].getNextRequest )
-      break;
-  
-  if (idx == this.requests.length)
-    return;
-
-  if (this.requests[idx] != request)
-    return;
-   
-  this._sendRequest();
-  
-  return;
-}
-
-
-/**
- * Connects to a ManageSieve server.  
- *    
- * @param {String} host 
- *   The target hostname or IP address as String
- * @param {Int} port
- *   The target port as Interger
- * @param {Boolean} secure
- *   If true, a secure socket will be created. This allows switching to a secure
- *   connection.
- * @param {Components.interfaces.nsIBadCertListener2} badCertHandler
- *   Listener to call incase of an SSL Error. Can be null. See startTLS for more 
- *   details. 
- * @param {Array[nsIProxyInfo]} proxy
- *   An Array of nsIProxyInfo Objects which specifies the proxy to use.
- *   Pass an empty array for no proxy. 
- *   Set to null if the default proxy should be resolved. Resolving proxy info is
- *   done asynchronous. The connect method returns imedately, without any 
- *   information on the connection status... 
- *   Currently only the first array entry is evaluated.  
- */
-SieveAbstractClient.prototype.connect
-    = function (host, port, secure, badCertHandler, proxy) 
-{
-	throw "Implement me";
-}
-
-
-/**
- * 
- */
-SieveAbstractClient.prototype.disconnect
-    = function () 
-{ 
-
-  this.getLogger().log("Disconnecting ...", (1 << 2));
-    
-  // free requests...
-  //this.requests = new Array();  
-  this._stopTimeoutTimer();
-  this.timeout.timer = null;
-  
-  this._stopIdleTimer();   
-}
-
-
-SieveAbstractClient.prototype.notify
-    = function (timer) 
-{ 
-      
-  if (this.idle.timer == timer)
+  /**
+   * Specifies the maximal interval between a response and a request. 
+   * If the max time elapsed, the listener's OnIdle() event will be called. 
+   * Thus it can be used for sending "Keep alive" packets. 
+   *   
+   * @param {int} interval
+   *  the maximal number of milliseconds between a response and a request,
+   *  pass null to deactivate.  
+   */
+  SieveAbstractClient.prototype.setKeepAliveInterval
+      = function (interval)
   {
-  	this._stopIdleTimer(timer);
-  	
-  	if (this.listener && this.listener.onIdle)
-      this.listener.onIdle();
-      
-    return;
-  }
-  
-  if (this.timeout.timer != timer)
-    return;
-    
-  this._stopTimeoutTimer(timer);
-
-  this.getLogger().log("libManageSieve/Sieve.js:\nOnTimeout", (1 << 2));
-    
-  // clear receive buffer and any pending request...
-  this.data = null;
- 
-  var idx = 0;
-  while ((idx < this.requests.length) && (this.requests[idx].isGreedy))
-    idx++;
-
-  // ... and cancel any active request. It will automatically invoke the ... 
-  // ... request's onTimeout() listener.    
-  if (idx < this.requests.length)
-  {
-    var request = this.requests[idx];
-    this.requests.splice(0,idx+1);
-    
-    request.cancel();
-    return;    
-  }
-  
-  // in case no request is active, we call the global listener
-  this.requests = [];
-   
-  if (this.listener && this.listener.onTimeout) 
-    this.listener.onTimeout();
-}
-
-SieveAbstractClient.prototype._onStart
-    = function ()
-{
-  this._startTimeoutTimer();
-}
-
-SieveAbstractClient.prototype._onStop
-    = function()
-{
-	
-  this._stopTimeoutTimer();
-  this._stopIdleTimer();
-  
-  if (this.idle.delay == null)
-    return;
-    
-  this._startIdleTimer();    
-  return;
-}
-
-SieveAbstractClient.prototype.createParser
-    = function (data)
-{
-	throw "Implement createParser";
-}
-
-SieveAbstractClient.prototype.onDataReceived 
-    = function(data)
-{
-  // responses packets could be fragmented...    
-  if ((this.data == null) || (this.data.length == 0))
-    this.data = data;
-  else
-    this.data = this.data.concat(data); 
-  
-  // is a request handler waiting?
-  if (this.requests.length == 0)
-    return;
-
-  // first clear the timeout, parsing starts...
-  this._onStop();
-  
-  // As we are callback driven, we need to lock the event queue. Otherwise our
-  // callbacks could manipulate the event queue while we are working on it.
-  var requests = this._lockMessageQueue();
-
-  // greedy request take might have an response but do not have to have one. 
-  // They munch what they get. If there's a request they are fine,
-  // if there's no matching request it's also ok.
-  var idx = -1;
-  
-  while (idx+1 < requests.length)
-  {
-    idx++
-    var parser = this.createParser(this.data);
-          
-    try
-    { 
-      requests[idx].addResponse(parser);
-      
-      // We do some cleanup as we don't need the parsed data anymore...
-      this.data = parser.getByteArray();
-      
-      // parsing was successfull, so drop every previous request...
-      // ... keep in mid previous greedy request continue on exceptions.
-      requests = requests.slice(idx);
-      
-      // we started to parse the request, so it can't be greedy anymore.
-    }
-    catch (ex)
-    { 
-      // request could be fragmented or something else, as it's greedy,
-      // we don't care about any exception. We just log them in oder
-      // to make debugging easier....
-      if (this.getLogger().isLoggable(1 << 2)) {
-      	//console.error(ex);
-        this.getLogger().log("Parsing Warning in libManageSieve/Sieve.js:\n"+ex.toString());
-        this.getLogger().log(ex.stack);
-      }
-        
-      // a greedy request might or might not get an request, thus 
-      // it's ok if it failes
-      if (requests[idx].isGreedy)
-        continue;
-        
-      // ... but a non greedy response must parse without an error. Otherwise...
-      // ... something is broken. this is most likely caused by a fragmented ... 
-      // ... packet, but could be also a broken response. So skip processing...
-      // ... and restart the timeout. Either way the next packet or the ...
-      // ... timeout will resolve this situation for us.
-        
-      this._unlockMessageQueue(requests);
-      this._onStart();
-      
+    if (interval)
+    {
+      this.idle.delay = interval;
       return;
     }
     
-    // Request is completed...
-    if (!requests[0].hasNextRequest())
-    {
-      // so remove it from the event queue.
-      var request = requests.shift();
-      // and update the index
-      idx--;
-      
-      // ... if it was greedy, we munched an unexpected packet...
-      // ... so there is still a valid request dangeling around.
-      if (request.isGreedy)
-        continue;
-    }
-      
-    if (!parser.isEmpty())
-      continue;      
-     
-    this._unlockMessageQueue(requests);
-     
-    var that = this;
-
-    // Are there any other requests waiting in the queue.
-    
-    // TODO FIX ME should always be dispatched, to relax the main thread.
-    // But in mozilla modules we don't have access to a window object and 
-    // timeouts are more compilcated.    
-    //window.setTimeout(function () {that._sendRequest()}, 0);
-
-    this._sendRequest()
-     
-    return;
-  }
-
+    // No keep alive Packets should be sent, so null the timer and the delay.
+    this._stopIdleTimer();
+    this.idle.delay = null;
   
-  // we endup here only if all responses where greedy or there were no...
-  // ... response parser at all. Thus all we can do is release the message...
-  // ... queue, cache the data and wait for a new response to be added.
+    return;      
+  };
   
-  this._unlockMessageQueue(requests);
-     
-  this.getLogger().log("Skipping Event Queue", (1 << 2));  
-}
+  SieveAbstractClient.prototype.addListener
+     = function(listener)
+  {
+    this.listener = listener;
+  };
 
-SieveAbstractClient.prototype._sendRequest
-  = function()
-{ 
-  for (var idx = 0; idx<this.requests.length; idx++)    
-    if ( this.requests[idx].getNextRequest )
-      break;
+  /**
+   * Adds a request to the send queue. 
+   * 
+   * Normal request runs to completion, so they are blocking the queue
+   * until they are fully processed. If the request failes, the error 
+   * handler is triggered and the request is dequeued.
+   * 
+   * A greedy request in constrast accepts whatever it can get. Upon an 
+   * error greedy request are not dequeued. They fail silently and the next 
+   * requests is processed. This continues until a request succeeds, a non 
+   * greedy request failes or the queue has no more requests. 
+   *  
+   * @param {SieveAbstractRequest} request
+   *   the request object which should be added to the queue
+   *   
+   * @optional @param {bool} greedy
+   *   if true requests fail silently
+   *      
+   */
+  SieveAbstractClient.prototype.addRequest 
+      = function(request,greedy)
+  {
+    if (this.listener)
+      request.addByeListener(this.listener);
+      
+    // TODO: we should realy store this internally, instead of tagging objects
+    if (greedy)
+      request.isGreedy = true;
        
-  if (idx >= this.requests.length)
+    // Add the request to the message queue
+    this.requests.push(request);
+  
+    // If the message queue was empty, we might have to reinitalize the...
+    // ... request pump.
+    
+    // We can skip this if queue is locked...
+    if (this.queueLocked)
+      return;
+      
+    // ... or it contains more than one full request
+    for (var idx = 0 ; idx<this.requests.length; idx++)
+      if ( this.requests[idx].getNextRequest )
+        break;
+    
+    if (idx == this.requests.length)
+      return;
+  
+    if (this.requests[idx] != request)
+      return;
+     
+    this._sendRequest();
+    
     return;
-    
-  // start the timout, before sending anything. Sothat we will timeout...
-  // ... in case the socket is jammed...
-  this._onStart();
-    
-  var output = this.requests[idx].getNextRequest();
+  };
   
-  this.getLogger().log("Client -> Server:\n"+output, (1 << 0))
-
-  this.onSend(output)
-    
-  return;
-}
-
-SieveAbstractClient.prototype._lockMessageQueue
-  = function()
-{
-  this.queueLocked = true;
-  var requests = this.requests.concat();
   
-  this.requests = [];
-
-  return requests;
-}
-
-SieveAbstractClient.prototype._unlockMessageQueue
-  = function(requests)
-{
-  this.requests = requests.concat(this.requests);
-  this.queueLocked = false;
-}
+  /**
+   * Connects to a ManageSieve server.  
+   *    
+   * @param {String} host 
+   *   The target hostname or IP address as String
+   * @param {Int} port
+   *   The target port as Interger
+   * @param {Boolean} secure
+   *   If true, a secure socket will be created. This allows switching to a secure
+   *   connection.
+   * @param {Components.interfaces.nsIBadCertListener2} badCertHandler
+   *   Listener to call incase of an SSL Error. Can be null. See startTLS for more 
+   *   details. 
+   * @param {Array[nsIProxyInfo]} proxy
+   *   An Array of nsIProxyInfo Objects which specifies the proxy to use.
+   *   Pass an empty array for no proxy. 
+   *   Set to null if the default proxy should be resolved. Resolving proxy info is
+   *   done asynchronous. The connect method returns imedately, without any 
+   *   information on the connection status... 
+   *   Currently only the first array entry is evaluated.  
+   */
+  SieveAbstractClient.prototype.connect
+      = function (host, port, secure, badCertHandler, proxy) 
+  {
+  	throw "Implement me";
+  };
+  
+  
+  /**
+   * 
+   */
+  SieveAbstractClient.prototype.disconnect
+      = function () 
+  { 
+  
+    this.getLogger().log("Disconnecting ...", (1 << 2));
+      
+    // free requests...
+    //this.requests = new Array();  
+    this._stopTimeoutTimer();
+    this.timeout.timer = null;
+    
+    this._stopIdleTimer();   
+  };
+  
+  
+  SieveAbstractClient.prototype.notify
+      = function (timer) 
+  { 
+        
+    if (this.idle.timer == timer)
+    {
+    	this._stopIdleTimer(timer);
+    	
+    	if (this.listener && this.listener.onIdle)
+        this.listener.onIdle();
+        
+      return;
+    }
+    
+    if (this.timeout.timer != timer)
+      return;
+      
+    this._stopTimeoutTimer(timer);
+  
+    this.getLogger().log("libManageSieve/Sieve.js:\nOnTimeout", (1 << 2));
+      
+    // clear receive buffer and any pending request...
+    this.data = null;
+   
+    var idx = 0;
+    while ((idx < this.requests.length) && (this.requests[idx].isGreedy))
+      idx++;
+  
+    // ... and cancel any active request. It will automatically invoke the ... 
+    // ... request's onTimeout() listener.    
+    if (idx < this.requests.length)
+    {
+      var request = this.requests[idx];
+      this.requests.splice(0,idx+1);
+      
+      request.cancel();
+      return;    
+    }
+    
+    // in case no request is active, we call the global listener
+    this.requests = [];
+     
+    if (this.listener && this.listener.onTimeout) 
+      this.listener.onTimeout();
+  };
+  
+  SieveAbstractClient.prototype._onStart
+      = function ()
+  {
+    this._startTimeoutTimer();
+  };
+  
+  SieveAbstractClient.prototype._onStop
+      = function()
+  {
+  	
+    this._stopTimeoutTimer();
+    this._stopIdleTimer();
+    
+    if (this.idle.delay == null)
+      return;
+      
+    this._startIdleTimer();    
+    return;
+  };
+  
+  SieveAbstractClient.prototype.createParser
+      = function (data)
+  {
+  	throw "Implement createParser";
+  };
+  
+  SieveAbstractClient.prototype.onDataReceived 
+      = function(data)
+  {
+    // responses packets could be fragmented...    
+    if ((this.data == null) || (this.data.length === 0))
+      this.data = data;
+    else
+      this.data = this.data.concat(data); 
+    
+    // is a request handler waiting?
+    if (this.requests.length === 0)
+      return;
+  
+    // first clear the timeout, parsing starts...
+    this._onStop();
+    
+    // As we are callback driven, we need to lock the event queue. Otherwise our
+    // callbacks could manipulate the event queue while we are working on it.
+    var requests = this._lockMessageQueue();
+  
+    // greedy request take might have an response but do not have to have one. 
+    // They munch what they get. If there's a request they are fine,
+    // if there's no matching request it's also ok.
+    var idx = -1;
+    
+    while (idx+1 < requests.length)
+    {
+      idx++;
+      var parser = this.createParser(this.data);
+            
+      try
+      { 
+        requests[idx].addResponse(parser);
+        
+        // We do some cleanup as we don't need the parsed data anymore...
+        this.data = parser.getByteArray();
+        
+        // parsing was successfull, so drop every previous request...
+        // ... keep in mid previous greedy request continue on exceptions.
+        requests = requests.slice(idx);
+        
+        // we started to parse the request, so it can't be greedy anymore.
+      }
+      catch (ex)
+      { 
+        // request could be fragmented or something else, as it's greedy,
+        // we don't care about any exception. We just log them in oder
+        // to make debugging easier....
+        if (this.getLogger().isLoggable(1 << 2)) {
+        	//console.error(ex);
+          this.getLogger().log("Parsing Warning in libManageSieve/Sieve.js:\n"+ex.toString());
+          this.getLogger().log(ex.stack);
+        }
+          
+        // a greedy request might or might not get an request, thus 
+        // it's ok if it failes
+        if (requests[idx].isGreedy)
+          continue;
+          
+        // ... but a non greedy response must parse without an error. Otherwise...
+        // ... something is broken. this is most likely caused by a fragmented ... 
+        // ... packet, but could be also a broken response. So skip processing...
+        // ... and restart the timeout. Either way the next packet or the ...
+        // ... timeout will resolve this situation for us.
+          
+        this._unlockMessageQueue(requests);
+        this._onStart();
+        
+        return;
+      }
+      
+      // Request is completed...
+      if (!requests[0].hasNextRequest())
+      {
+        // so remove it from the event queue.
+        var request = requests.shift();
+        // and update the index
+        idx--;
+        
+        // ... if it was greedy, we munched an unexpected packet...
+        // ... so there is still a valid request dangeling around.
+        if (request.isGreedy)
+          continue;
+      }
+        
+      if (!parser.isEmpty())
+        continue;      
+       
+      this._unlockMessageQueue(requests);
+       
+      var that = this;
+  
+      // Are there any other requests waiting in the queue.
+      
+      // TODO FIX ME should always be dispatched, to relax the main thread.
+      // But in mozilla modules we don't have access to a window object and 
+      // timeouts are more compilcated.    
+      //window.setTimeout(function () {that._sendRequest()}, 0);
+  
+      this._sendRequest();
+       
+      return;
+    }
+  
+    
+    // we endup here only if all responses where greedy or there were no...
+    // ... response parser at all. Thus all we can do is release the message...
+    // ... queue, cache the data and wait for a new response to be added.
+    
+    this._unlockMessageQueue(requests);
+       
+    this.getLogger().log("Skipping Event Queue", (1 << 2));  
+  };
+  
+  SieveAbstractClient.prototype._sendRequest
+    = function()
+  { 
+    for (var idx = 0; idx<this.requests.length; idx++)    
+      if ( this.requests[idx].getNextRequest )
+        break;
+         
+    if (idx >= this.requests.length)
+      return;
+      
+    // start the timout, before sending anything. Sothat we will timeout...
+    // ... in case the socket is jammed...
+    this._onStart();
+      
+    var output = this.requests[idx].getNextRequest();
+    
+    this.getLogger().log("Client -> Server:\n"+output, (1 << 0));
+  
+    this.onSend(output);
+      
+    return;
+  };
+  
+  SieveAbstractClient.prototype._lockMessageQueue
+    = function()
+  {
+    this.queueLocked = true;
+    var requests = this.requests.concat();
+    
+    this.requests = [];
+  
+    return requests;
+  };
+  
+  SieveAbstractClient.prototype._unlockMessageQueue
+    = function(requests)
+  {
+    this.requests = requests.concat(this.requests);
+    this.queueLocked = false;
+  };
 
   exports.SieveAbstractClient = SieveAbstractClient;
 })(this);

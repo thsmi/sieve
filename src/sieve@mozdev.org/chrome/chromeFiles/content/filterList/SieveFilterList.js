@@ -9,6 +9,15 @@
  *      
  */
 
+/* global Components */
+/* global document */
+/* global window */
+/* global SieveOverlayManager */
+/* global SieveAbstractChannel */
+/* global SieveConnections */
+
+"use strict";
+
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
@@ -36,7 +45,7 @@ window.onerror = errorhandler;
 function SieveFilterListDialog()
 {
   SieveAbstractChannel.call(this);
-  this._script = "Thunderbird Mailfilters"
+  this._script = "Thunderbird Mailfilters";
 }
 
 SieveFilterListDialog.prototype = Object.create(SieveAbstractChannel.prototype);
@@ -74,7 +83,7 @@ SieveFilterListDialog.prototype.onListScriptResponse
   }
   
   
-}
+};
 
 SieveFilterListDialog.prototype.onGetScriptResponse
     = function(response)
@@ -92,7 +101,7 @@ SieveFilterListDialog.prototype.onGetScriptResponse
   }
     
   this.onStatusChange(0); 
-}
+};
 
 
       
@@ -101,7 +110,7 @@ SieveFilterListDialog.prototype.onChannelClosed
 {
   // a channel is usually closed when a child window is closed. 
   // it might be a good idea to check if the script was changed.
-}
+};
   
   
 SieveFilterListDialog.prototype.onChannelReady
@@ -116,13 +125,13 @@ SieveFilterListDialog.prototype.onChannelReady
   // Step 1: List script
   
   // get active if any
-}
+};
   
 SieveFilterListDialog.prototype.onStatusChange
     = function(state,message)
 {             
   // Script ready
-  if (state == 0)
+  if (state === 0)
   {
     document.getElementById("sivStatus").setAttribute('hidden','true');    
     document.getElementById('sivContent').removeAttribute('hidden');
@@ -131,10 +140,10 @@ SieveFilterListDialog.prototype.onStatusChange
   
   // The rest has to be redirected to the status window...
   //document.getElementById('sivExplorerTree').setAttribute('collapsed','true');    
-  document.getElementById("sivStatus").contentWindow.onStatus(state,message)
+  document.getElementById("sivStatus").contentWindow.onStatus(state,message);
   document.getElementById("sivStatus").removeAttribute('hidden');
   document.getElementById('sivContent').setAttribute('hidden','true');  
-}
+};
 
 
 var gSFLD = new SieveFilterListDialog();
@@ -158,10 +167,10 @@ function onLoad()
   var account = SieveAccountManager.getAccountByName(key);
     
   document.getElementById("sivStatus").contentWindow
-    .onAttach(account,function() { onLoad() });
+    .onAttach(account,function() { onLoad(); });
     
   // the content is heavy weight javascript. So load it lazily
-  var iframe = document.getElementById("sivContent")
+  var iframe = document.getElementById("sivContent");
   
   if (iframe.hasAttribute("src"))
     iframe.contentWindow.location.reload();
@@ -186,7 +195,7 @@ window.onunload = function ()
 {
   if (gSFLD)
     gSFLD.disconnect();
-}
+};
 
 
 

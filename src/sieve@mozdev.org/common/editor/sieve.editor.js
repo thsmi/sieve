@@ -1,7 +1,12 @@
 "use strict";
  
+/* global document */
+/* global window */
+
 (function(exports) {
 
+  /* global net */
+	
   function SieveTextEditorClient(id) {  
   	this.broker = new net.tschmid.sieve.Broker(id);
   	this.id = id;
@@ -161,7 +166,7 @@
         msg.canPaste = controller.isCommandEnabled("cmd_paste");
         
         callback(msg);
-      }
+      };
       
       this.addCallback("onGetStatus", proxy);
       this.broker.sendMessage("getStatus");
@@ -171,7 +176,7 @@
       this.broker.sendMessage("setOptions", options);
     }
     
-  }    
+  };   
   
   if (!exports.net)
     exports.net = {};

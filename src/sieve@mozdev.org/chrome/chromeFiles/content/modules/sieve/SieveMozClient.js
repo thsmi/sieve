@@ -14,10 +14,15 @@
 var EXPORTED_SYMBOLS = [ "Sieve" ];
 
 (function(exports) {
+	
+	/* global Components */
+	/* global SieveAbstractClient */
+	/* global SieveResponseParser */
 
   var Cc = Components.classes;
   var Ci = Components.interfaces;
   var Cu = Components.utils;
+  var Cr = Components.results;
 
   // Handle all imports...
   var loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
@@ -75,7 +80,7 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
       converter.charset = "UTF-8"; 
    
       return converter.convertToByteArray(str, {});
-    }
+    };
   }
   
   Sieve.prototype = Object.create(SieveAbstractClient.prototype);
@@ -98,7 +103,7 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
       return this;
       
     throw Cr.NS_ERROR_NO_INTERFACE;
-  }
+  };
   
   /**
    * @return {Boolean}
@@ -110,13 +115,13 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
      return false;
      
     return this.socket.isAlive(); 
-  }
+  };
   
-    Sieve.prototype.setPaused
-      = function (value)
-    {
-    	// Do nothing, not needed in mozilla;
-    }
+  Sieve.prototype.setPaused
+    = function (value)
+  {
+  	// Do nothing, not needed in mozilla;
+  };
   
   /**
    * This method secures the connection to the sieve server. By activating 
@@ -136,7 +141,7 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
     
     if (callback)
       callback();
-  }
+  };
   
   Sieve.prototype._startTimeoutTimer
       = function () {
@@ -144,7 +149,7 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
     this.timeout.timer.initWithCallback(
         this, this.timeout.delay,
         Components.interfaces.nsITimer.TYPE_ONE_SHOT);
-  }  
+  }; 
   
   Sieve.prototype._stopTimeoutTimer
       = function () {
@@ -153,14 +158,14 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
       return;
       
     this.timeout.timer.cancel();
-  }  
+  }; 
   
   Sieve.prototype._startIdleTimer
       = function () {
   
     this.idle.timer.initWithCallback(this,this.idle.delay,
            Components.interfaces.nsITimer.TYPE_ONE_SHOT);
-  }  
+  }; 
   
   Sieve.prototype._stopIdleTimer
       = function () {
@@ -169,14 +174,14 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
       return;
       
     this.timeout.idle.cancel();
-  }  
+  }; 
   
   
   Sieve.prototype.getLogger
       = function ()
   {
   	return this._logger;
-  }
+  };
   
   /**
    * Connects to a ManageSieve server.  
@@ -203,7 +208,7 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
   Sieve.prototype.connect
       = function (host, port, secure, badCertHandler, proxy) 
   {  
-    if( this.socket != null)
+    if( this.socket )
       return;
   
     /*if ( (this.socket != null) && (this.socket.isAlive()) )
@@ -214,7 +219,7 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
     this.secure = secure;
     this.badCertHandler = badCertHandler;
   
-    this.getLogger().log("Connecting to "+this.host+":"+this.port+" ...", (1 << 2))
+    this.getLogger().log("Connecting to "+this.host+":"+this.port+" ...", (1 << 2));
       
     // If we know the proxy setting, we can do a shortcut...
     if (proxy)
@@ -233,7 +238,7 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
     var pps = Cc["@mozilla.org/network/protocol-proxy-service;1"]
                   .getService(Ci.nsIProtocolProxyService);
     pps.asyncResolve(uri,0,this);
-  }
+  };
   
   /**
    * @private
@@ -263,7 +268,7 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
     else
       this.socket = transportService.createTransport(null, 0,this.host, this.port,aProxyInfo);    
   
-    if (this.badCertHandler != null)
+    if (this.badCertHandler)
       this.socket.securityCallbacks = this.badCertHandler;  
       
     this.outstream = this.socket.openOutputStream(0,0,0);
@@ -281,7 +286,7 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
     pump.init(stream, -1, -1, 5000, 2, true);
     pump.asyncRead(this,null);
     
-  }
+  };
   
   /**
    * 
@@ -291,7 +296,7 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
   { 
     SieveAbstractClient.prototype.disconnect.call(this);
     
-    if (this.socket == null)
+    if (this.socket)
       return;
     
     this.binaryOutStream.close();
@@ -299,11 +304,11 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
     this.socket.close(0);
     
     this.binaryOutStream = null;
-    this.outstream = null
+    this.outstream = null;
     this.socket = null;
     
     this.getLogger().log("Disconnected ...", (1 << 2));    
-  }
+  };
   
   Sieve.prototype.onStopRequest 
       =  function(request, context, status)
@@ -313,7 +318,7 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
     this.getLogger().log("Stop request received ...", (1 << 2));
    
     // we can ignore this if we are already disconnected.
-    if (this.socket == null)
+    if (this.socket)
       return;
       
     // Stop timeout timer, the connection is gone, so... 
@@ -324,25 +329,25 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
     // we should call directly on timeout..
     if ((this.listener) && (this.listener.onDisconnect))
       this.listener.onDisconnect();
-  }
+  };
   
   Sieve.prototype.onStartRequest 
       = function(request, context)
   {
     this.getLogger().log("Connected to "+this.host+":"+this.port+" ...", (1 << 2));
-  }
+  };
   
   Sieve.prototype.createParser
       = function (data)
   {
     return new SieveResponseParser(data);
-  } 
+  }; 
   
   Sieve.prototype.onDataAvailable 
       = function(aRequest, context, inputStream, offset, count)
   {
     var binaryInStream = Cc["@mozilla.org/binaryinputstream;1"]
-        .createInstance(Ci.nsIBinaryInputStream)
+        .createInstance(Ci.nsIBinaryInputStream);
     
     binaryInStream.setInputStream(inputStream);
     
@@ -362,8 +367,8 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
       this.getLogger().log("Server -> Client\n"+converter.convertFromByteArray(byteArray, byteArray.length));
     }
     
-    SieveAbstractClient.prototype.onDataReceived.call(this, data)
-  }
+    SieveAbstractClient.prototype.onDataReceived.call(this, data);
+  };
   
   Sieve.prototype.onSend
     = function(data)
@@ -377,9 +382,8 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
     this.binaryOutStream.writeByteArray(output,output.length);
       
     return;
-  }
+  };
+  
   exports.Sieve = Sieve;  
   
 })(this);
-
- 

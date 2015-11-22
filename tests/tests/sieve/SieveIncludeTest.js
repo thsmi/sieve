@@ -13,6 +13,8 @@
 "use strict";
   
 (function() {
+	
+	/* global net */
 
   var suite  = net.tschmid.yautt.test;
     
@@ -20,7 +22,7 @@
     throw "Could not initialize test suite";
 
   suite.add( function() {   
-    suite.log("Sieve Include (RFC6609) unit tests...")
+    suite.log("Sieve Include (RFC6609) unit tests...");
   });    
 
   suite.add( function() {
@@ -83,7 +85,7 @@
         + '#{\r\n'
         + '#    fileinto "${test_mailbox}";\r\n'
         + '    stop;\r\n'
-        + '#}\r\n' 
+        + '#}\r\n'; 
       
     suite.expectValidScript(script, {"include":true, "variables":true});
   });   

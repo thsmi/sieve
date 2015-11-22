@@ -13,7 +13,19 @@
 "use strict";
 
 (function(exports) {
-  
+	
+	/* global SieveNoopRequest */
+	/* global SieveCapabilitiesRequest */
+  /* global SieveSaslPlainRequest */
+	/* global SieveSaslCramMd5Request */
+	/* global SieveSaslScramSha1Request */
+	/* global SieveSaslExternalRequest */
+	/* global SieveSaslLoginRequest */
+	/* global SieveInitRequest */
+	/* global Sieve */
+	/* global SieveLogoutRequest */
+	/* global SieveStartTLSRequest */
+	
   /**
    * This class pools and caches concurrent connections (Channel) to an destinct 
    * remote server (Session).
@@ -93,7 +105,7 @@
       var account =  this.account;
       
       // Without a username, we can skip the authentication 
-      if (account.getLogin().hasUsername() == false)
+      if (account.getLogin().hasUsername() === false)
       {
         this.onLoginResponse(null);
         return;
@@ -160,7 +172,7 @@
       
       request.addErrorListener(this);
           
-      request.setUsername(account.getLogin().getUsername())
+      request.setUsername(account.getLogin().getUsername());
       
       // SASL External has no passwort it relies completely on SSL...
       if (request.hasPassword()) {
@@ -169,7 +181,7 @@
       
         if (password == null)
         {
-          this.disconnect(false,2,"error.authentication")
+          this.disconnect(false,2,"error.authentication");
           return;
         }
       
@@ -190,7 +202,7 @@
           return;
         }
         
-        if (authorization != "")
+        if (authorization !== "")
           request.setAuthorization(authorization);
       }
        
@@ -209,7 +221,7 @@
         {        
           that.onAuthenticate(response); 
         }
-      }
+      };
       
       // explicitely request capabilites
       var request = new SieveCapabilitiesRequest();
@@ -341,7 +353,7 @@
       // ... as the server must terminate the connection after sending a ...
       // ... bye response, we should also disconnect nicely which means in this...
       // ... case without a logout request.
-      this.disconnect(true)
+      this.disconnect(true);
       
       // ... it's either a timeout or we tried the wrong password...
       // ... the best we can do is to report an error.
@@ -352,7 +364,7 @@
     onError: function(response)
     {
       this.logger.log("OnError: "+response.getMessage());
-      this.disconnect(false,4,response.getMessage())
+      this.disconnect(false,4,response.getMessage());
     },
   
     /** @private */
@@ -406,8 +418,8 @@
       
       // Step 2: Initialize Message Queue...
       var request = new SieveInitRequest();
-      request.addErrorListener(this)
-      request.addInitListener(this)
+      request.addErrorListener(this);
+      request.addInitListener(this);
       this.sieve.addRequest(request);   
   
       // Step 3: Connect...
@@ -438,7 +450,7 @@
       if (!this.sieve)
       {
         this.state = 0;
-        return
+        return;
       }
       
       // ... we always try to exit with an Logout request...      
@@ -466,22 +478,22 @@
   
     isConnecting : function()
     {
-      return (this.state == 1);
+      return (this.state === 1);
     },
   
     isConnected : function()
     {
-      return (this.state == 2);
+      return (this.state === 2);
     },
   
     isDisconnecting : function()
     {
-      return (this.state == 3);
+      return (this.state === 3);
     },
     
     isDisconnected : function()
     {
-      return (this.state == 0);
+      return (this.state === 0);
     },
       
     /**
@@ -495,7 +507,7 @@
     {
       
       if (!this.channels)
-        this.channels = new Array();
+        this.channels = [];
         
       var cid = "cid="+(this.idx++);
       
@@ -526,7 +538,7 @@
       if (!this.channels)
         return false;
         
-      var i = this.channels.indexOf(cid)
+      var i = this.channels.indexOf(cid);
       if (i == -1)
         return false;
         
@@ -563,7 +575,7 @@
       return (this.channels.indexOf(cid) == -1)?false:true;    
     }
 
-  }
+  };
 
   exports.SieveAbstractSession = SieveAbstractSession;
 })(this);

@@ -25,8 +25,14 @@ var tests = {
       "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveConditions.js",  
       "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveActions.js",
       "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveImports.js" ],
-    script : "./RFC5228/SieveRFC5228Test.js",
     extend  : "base",
+  },
+  
+  "sieve" : {
+    script : "./sieve/SieveRFC5228Test.js",
+    extend : "rfc5228",
+    require : [
+      "./validators/ScriptValidator.js" ]
   },
 	
   // Specialized profiles which contain the tests...

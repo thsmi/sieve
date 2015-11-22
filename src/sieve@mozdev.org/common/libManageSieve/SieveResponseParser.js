@@ -6,16 +6,17 @@
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
- 
+
 // Enable Strict Mode
 "use strict";
 
-
-
-
 (function(exports) {
-  
-  const CHAR_LF = 10
+
+  /* global Components */
+  /* global TextDecoder */
+  /* global Uint8Array */
+
+  const CHAR_LF = 10;
   const CHAR_CR = 13;
   const CHAR_SPACE = 32;
   const CHAR_QUOTE = 34;
@@ -42,7 +43,7 @@
    */
   function SieveResponseParser(data)
   {
-    if (data == null)
+    if ((typeof(data) === 'undefined') || (data === null))
       throw "Error Parsing Response...\nData is null";
   
     this.pos = 0;
@@ -59,7 +60,7 @@
       = function (size)
   {
     this.pos += size;
-  }
+  };
   
   /**
    * Tests if the array starts with a line break (#13#10)
@@ -82,7 +83,7 @@
       return false;
   
     return true;
-  }
+  };
   
   /**
    * Extracts a line break (#13#10) for the buffer
@@ -92,11 +93,11 @@
   SieveResponseParser.prototype.extractLineBreak
       = function ()
   {
-    if (this.isLineBreak() == false)
+    if (this.isLineBreak() === false)
       throw "Linebreak expected but found:\n"+this.getData();
     
     this.pos += 2;
-  }
+  };
   
   /**
    * Test if the buffer starts with a space character (#32)
@@ -110,7 +111,7 @@
       return true;
       
     return false;
-  }
+  };
   
   /**
    * Extracts a space character (#32) form the buffer
@@ -120,11 +121,11 @@
   SieveResponseParser.prototype.extractSpace
       = function ()
   {
-    if (this.isSpace() == false)
+    if (this.isSpace() === false)
       throw "Space expected but found:\n"+this.getData();
       
     this.pos++;
-  }
+  };
   
   // literal = "{" number  "+}" CRLF *OCTET
   SieveResponseParser.prototype.isLiteral
@@ -134,14 +135,14 @@
       return true;
   
     return false;
-  }
+  };
   
   // gibt einen string zurück, wenn keiner Existiert wird null übergeben
   // bei syntaxfehlern filegt eine exception;
   SieveResponseParser.prototype.extractLiteral
       = function ()
   {
-    if ( this.isLiteral() == false )
+    if ( this.isLiteral() === false )
       throw "Literal Expected but found\n"+this.getData();
            
     // remove the "{"
@@ -152,7 +153,7 @@
     
     var nextBracket = this.indexOf(CHAR_RIGHT_BRACES);
     if (nextBracket == -1)
-      throw "Error unbalanced parentheses \"{\" in\n"+parser.getData();
+      throw "Error unbalanced parentheses \"{\" in\n"+this.getData();
     
     // extract the size, and ignore "+"
     var size = parseInt(this.getData(this.pos, nextBracket).replace(/\+/,""),10);
@@ -166,7 +167,7 @@
     this.pos += size;
   
     return literal;
-  }
+  };
   
   /**
    * Searches the buffer for a character.
@@ -189,7 +190,7 @@
         return i;
     
     return -1;
-  }
+  };
   
   /**
    * Test if the buffer starts with a quote character (#34)
@@ -203,7 +204,7 @@
       return true;
   
     return false;
-  }
+  };
   
   /**
    * Extracts a quoted string form the buffer. It is aware of escape sequences.
@@ -216,7 +217,7 @@
   SieveResponseParser.prototype.extractQuoted
       = function ()
   {
-    if (this.isQuoted() == false)
+    if (this.isQuoted() === false)
       throw "Quoted string expected but found \n"+this.getData();
    
     // now search for the end. But we need to be aware of escape sequences.
@@ -244,7 +245,7 @@
       }
       
       // move to the next character
-      nextQuote++
+      nextQuote++;
       
       if (this.nextQuote >= this.data.length)
         throw "Unterminated Quoted string"; 
@@ -259,7 +260,7 @@
     quoted = quoted.replace(/\\\\/g,'\\');
     
     return quoted;
-  }
+  };
   
   /**
    * Tests if the a quoted or literal string starts at the current position.
@@ -277,7 +278,7 @@
       return true;
   
     return false;
-  }
+  };
   
   SieveResponseParser.prototype.extractString
       = function ()
@@ -288,7 +289,7 @@
       return this.extractLiteral();
           
     throw "String expected but found\n"+this.getData();        
-  }
+  };
   
   /**
    * Extracts a token form a response. The token is beeing delimited by any 
@@ -328,7 +329,7 @@
     this.pos = index;
       
     return token;
-  }
+  };
   
   /**
    * Tests if the buffer starts with the specified bytes.
@@ -345,7 +346,7 @@
   SieveResponseParser.prototype.startsWith
       = function ( array )
   {
-    if (array.length == 0)
+    if (array.length === 0)
       return false;
       
     for (var i=0; i<array.length; i++) 
@@ -356,12 +357,12 @@
         if (array[i][ii] == this.data[this.pos+i])
           result = true;
       
-      if (result == false)
-        return false     
+      if (result === false)
+        return false;     
     }
     
     return true;
-  }
+  };
   
   /**
    * Returns a copy of the current buffer. 
@@ -373,7 +374,7 @@
       = function ()
   {
     return this.data.slice(this.pos, this.data.length);
-  }
+  };
   
   /**
    * Returns a copy of the response parser's buffer as JavaScript Unicode string. 
@@ -413,10 +414,10 @@
     }
   
     // The new code should run with Google and Mozilla
-    var byteArray = new Uint8Array(byteArray);
-    return new TextDecoder("UTF-8").decode(byteArray);
-  }
-  
+    byteArray = new Uint8Array(byteArray);
+    return (new TextDecoder("UTF-8")).decode(byteArray);
+  };
+
   
   /**
    * Check if the buffer is empty. This means the buffer does not contain any 
@@ -432,7 +433,7 @@
       return true;
       
     return false;
-  }
+  };
 
   exports.SieveResponseParser = SieveResponseParser;
 
@@ -440,4 +441,4 @@
   if (exports.EXPORTED_SYMBOLS)
     exports.EXPORTED_SYMBOLS.push("SieveResponseParser");
 
-})(this);   
+})(this);

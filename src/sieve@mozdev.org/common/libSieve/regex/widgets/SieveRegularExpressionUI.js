@@ -10,41 +10,50 @@
  *      
  */
 
+/* global window */
+
 "use strict";
 
-function SieveRegExMatchUI(id)
-{
-  SieveAbstractMatchUI.call(this, id);
-}
+(function(exports) {
 
-SieveRegExMatchUI.prototype = Object.create(SieveAbstractMatchUI.prototype);
-SieveRegExMatchUI.prototype.constructor = SieveRegExMatchUI;
-
-SieveRegExMatchUI.nodeName = function () {
-  return "match-type/regex";
-}
-
-SieveRegExMatchUI.nodeType  = function () {
-  return "match-type/";
-}
-
-SieveRegExMatchUI.isCapable = function (capabilities) {
-  return !!capabilities["regex"];      
-}
-
-SieveRegExMatchUI.prototype.html 
-    = function(callback) {
-    	     
-  return SieveAbstractMatchUI.prototype.html.call(
-    this, ":regex", "... regex matches ...",
-          " Matches and compares using on a regular expression as defined in IEEE.1003-2.1992" , callback);  	
-}
-
-
-//************************************************************************************
-
-if (!SieveDesigner)
-  throw "Could not register String Widgets";
-
-SieveDesigner.register2(SieveRegExMatchUI);
-
+  /* global $: false */
+	/* global SieveAbstractMatchUI */
+	/* global SieveDesigner */
+  	
+  function SieveRegExMatchUI(id)
+  {
+    SieveAbstractMatchUI.call(this, id);
+  }
+  
+  SieveRegExMatchUI.prototype = Object.create(SieveAbstractMatchUI.prototype);
+  SieveRegExMatchUI.prototype.constructor = SieveRegExMatchUI;
+  
+  SieveRegExMatchUI.nodeName = function () {
+    return "match-type/regex";
+  };
+  
+  SieveRegExMatchUI.nodeType  = function () {
+    return "match-type/";
+  };
+  
+  SieveRegExMatchUI.isCapable = function (capabilities) {
+    return !!capabilities["regex"];      
+  };
+  
+  SieveRegExMatchUI.prototype.html 
+      = function(callback) {
+      	     
+    return SieveAbstractMatchUI.prototype.html.call(
+      this, ":regex", "... regex matches ...",
+            " Matches and compares using on a regular expression as defined in IEEE.1003-2.1992" , callback);  	
+  };
+  
+  
+  //************************************************************************************
+  
+  if (!SieveDesigner)
+    throw "Could not register Regex Widgets";
+  
+  SieveDesigner.register2(SieveRegExMatchUI);
+  
+})(window);

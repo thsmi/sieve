@@ -1,4 +1,17 @@
-    $('.account').click(function() {
+/* global $: false */
+/* global console */
+/* global window */
+/* global document */
+/* global net */
+/* global SieveAccount */
+/* global SieveSession */
+/* global SieveGetScriptRequest */
+/* global SieveListScriptRequest */
+
+
+"use strict";
+
+$('.account').click(function() {
        $( this ).parent().toggleClass("collapsed");
     });
     
@@ -8,7 +21,7 @@
       //$(".mdl-layout__header").css("margin-left:0px;").css("width:100%");
       $("body").addClass("sidebar-hidden");
       
-    });;
+    });
     
     $(".mdl-layout__drawer-button").click(function() {
       $("body").removeClass("sidebar-hidden");
@@ -39,8 +52,8 @@
     
     // Add actions...
     item.find(".script-edit").click(function () { 
-      getScript(script)}
-    );
+      getScript(script);
+    });
     
     $("#account-"+account)
       .find(".scripts")
@@ -79,7 +92,6 @@
         // TODO toggle between connected and disconnected...
       });
   	
-  	;
   }
    
     
@@ -93,7 +105,7 @@
       var items = "";
       
     $("#account-test")
-      .find(".scripts").empty()
+      .find(".scripts").empty();
       
       response.getScripts().forEach(
         function (item) { 
@@ -121,7 +133,7 @@
 	editor.setScript(response.getScriptBody());	
 }
     
-  }
+  };
   
 
 function getScript(script)
@@ -130,7 +142,7 @@ function getScript(script)
   request.addGetScriptListener(listener);
   request.addErrorListener(listener);
   
-  session.sieve.addRequest(request)
+  session.sieve.addRequest(request);
 }  
   
     

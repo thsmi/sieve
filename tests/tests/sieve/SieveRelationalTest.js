@@ -14,13 +14,15 @@
   
 (function() {
 
+	/* global net */
+	
   var suite  = net.tschmid.yautt.test;
     
   if (!suite)
     throw "Could not initialize test suite";
 
   suite.add( function() {   
-    suite.log("Sieve Relational (RFC5231) unit tests...")
+    suite.log("Sieve Relational (RFC5231) unit tests...");
   });    
 
   suite.add( function() {

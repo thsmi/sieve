@@ -9,10 +9,14 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+/* global window */
+
 "use strict";
 
 (function(exports) {
 	
+	/* global console */
+	/* global SieveAbstractLogger */
 	
   function SieveLogger()
   {
@@ -34,7 +38,7 @@
       return;
       
     console.log("["+this.prefix()+"] "+message);      
-  }
+  };
 
   exports.SieveLogger = SieveLogger;  
   

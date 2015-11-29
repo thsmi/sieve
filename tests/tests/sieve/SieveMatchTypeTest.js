@@ -1,3 +1,15 @@
+/*
+ * The contents of this file are licenced. You may obtain a copy of 
+ * the license at https://github.com/thsmi/sieve/ or request it via 
+ * email from the author.
+ *
+ * Do not remove or change this comment.
+ * 
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ *      
+ */
+
 "use strict";
   
 (function() {
@@ -11,19 +23,7 @@
 
   suite.add( function() {  	
   	suite.log("Match-type unit tests...");
-  });    
-
-  function testScript(script) {     
-    var doc = new SieveDocument(SieveLexer,null);
-    
-    doc.script(script);
-  
-    var rv = doc.script();
-  
-    suite.assertEquals(script, rv);
-  
-    return doc;
-  }
+  });
 
   suite.add( function() {
     suite.log("Parse :is match-type");
@@ -34,7 +34,7 @@
         + '  keep;\r\n'
         + '}\r\n';
       
-    testScript(script); 
+    suite.expectValidScript(script); 
   });
 
 
@@ -47,7 +47,7 @@
         + '  keep; \r\n'
         + '}\r\n';
       
-    testScript(script);
+    suite.expectValidScript(script);
   });
 
 
@@ -60,7 +60,7 @@
         + '  keep; \r\n'
         + '}\r\n';
       
-    testScript(script);	
+    suite.expectValidScript(script);	
   });
 
 }());

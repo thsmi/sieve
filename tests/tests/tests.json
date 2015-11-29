@@ -37,8 +37,10 @@ var tests = {
 	
   // Specialized profiles which contain the tests...
   "matchTypes" : {
-    script : "./MatchTypes/SieveMatchTypeTest.js",
-    extend : "rfc5228"
+    script : "./sieve/SieveMatchTypeTest.js",
+    extend : "rfc5228",
+    require : [
+      "./validators/ScriptValidator.js" ]
   },
   
   "variables" : {

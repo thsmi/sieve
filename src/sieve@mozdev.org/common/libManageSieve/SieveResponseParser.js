@@ -182,7 +182,7 @@
   SieveResponseParser.prototype.indexOf
       = function (character,offset)
   {     
-    if (typeof(offset) == "undefined")
+    if (typeof(offset) === "undefined")
       offset = this.pos;
   
     for (var i=offset; i<this.data.length; i++)

@@ -109,10 +109,10 @@
      */
     register: function (name,callback)
     {    
-      if (typeof(name) == "undefined" || !name)
+      if (typeof(name) === "undefined" || !name)
         throw "Layout Engine Error: Widget can't be registered without a name";
         
-      if (typeof(name) != "string")
+      if (typeof(name) !== "string")
         name = name.nodeName(); 
        
       this.names[name] = {};

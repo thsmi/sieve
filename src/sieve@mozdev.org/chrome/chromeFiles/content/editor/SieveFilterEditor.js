@@ -424,10 +424,10 @@ SieveFilterEditor.prototype.putScript
     = function (scriptName, content)
 {
 
-  if (typeof(scriptName) == "undefined")
+  if (typeof(scriptName) === "undefined")
     scriptName = this.getScriptName();
     
-  if (typeof(content) == "undefined") {
+  if (typeof(content) === "undefined") {
   	
   	// We postpone the call. First we get the script from the editor,
   	// and then call the method again...
@@ -458,7 +458,7 @@ SieveFilterEditor.prototype.putScript
 SieveFilterEditor.prototype.setScriptName
     = function (scriptName)
 {
-  if (typeof(scriptName) != "undefined")
+  if (typeof(scriptName) !== "undefined")
     this._scriptName = scriptName;
     
   var title = this.getScriptName() +" - Sieve Filters";
@@ -644,7 +644,7 @@ function onDonate()
 
 function onViewSource(visible,aNoUpdate)
 {
-  if (typeof(visible) == "undefined")
+  if (typeof(visible) === "undefined")
     visible = document.getElementById('btnViewSource').checked;
   
   var deck = document.getElementById('dkView');

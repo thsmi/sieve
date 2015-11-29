@@ -214,7 +214,7 @@
     if (typeof(idx) === "undefined")
       return this.elms;  
       
-    if ((typeof(idx) === "string")  && (idx.toLowerCase() == ":last"))
+    if ((typeof(idx) === "string")  && (idx.toLowerCase() === ":last"))
       idx = this.elms.length-1;    
       
     return this.elms[idx];

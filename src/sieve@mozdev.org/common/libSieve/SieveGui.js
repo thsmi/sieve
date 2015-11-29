@@ -240,6 +240,13 @@
       .attr('id','trash'));
   }
 
+  function showInfoMessage(message, content)
+  {
+    $("#infobarsubject > span").text(message);
+    $("#infobarmessage > span").text(content);
+    $("#infobar").toggle(); 
+  }
+  
   function errorhandler(msg, url, line)
   {
   //alert(msg+"\n"+url+"\n"+line);
@@ -248,12 +255,6 @@
   
   exports.onerror = errorhandler;
   
-  function showInfoMessage(message, content)
-  {
-    $("#infobarsubject > span").text(message);
-  $("#infobarmessage > span").text(content);
-    $("#infobar").toggle(); 
-  }
 
 })(window);   
   

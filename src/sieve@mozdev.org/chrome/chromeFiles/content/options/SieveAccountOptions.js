@@ -14,6 +14,7 @@
 /* global window */
 /* global SieveAutoConfig */
 /* global Components */
+/* global SieveOverlayManager */
  
  // Enable Strict Mode
 "use strict";
@@ -240,6 +241,14 @@ function onTLSSelect(idx)
           
 }
 
+function enableLogin(type)
+{
+  if (type == 2)
+    document.getElementById('txtUsername').removeAttribute('disabled');
+  else
+    document.getElementById('txtUsername').setAttribute('disabled','true');
+}
+
 function onLoginSelect(idx)
 {
   if (!gAccount)
@@ -247,14 +256,6 @@ function onLoginSelect(idx)
     
   gAccount.setActiveLogin(idx);        
   enableLogin(idx);
-}
-
-function enableLogin(type)
-{
-  if (type == 2)
-    document.getElementById('txtUsername').removeAttribute('disabled');
-  else
-    document.getElementById('txtUsername').setAttribute('disabled','true');
 }
 
 function onUsernameChange(value)

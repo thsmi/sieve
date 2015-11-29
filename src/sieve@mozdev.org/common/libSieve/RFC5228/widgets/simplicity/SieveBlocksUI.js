@@ -107,7 +107,7 @@
   SieveRichList.prototype.item
     = function (pos)
   {
-    if (typeof(pos) == "undefined")
+    if (typeof(pos) === "undefined")
       return (this._items[this._items.length-1]);
       
     return this._items[pos];
@@ -123,7 +123,7 @@
   SieveRichList.prototype.selectedIndex
     = function (idx)
   {
-    if (typeof(idx) == "undefined")
+    if (typeof(idx) === "undefined")
       return this._selectedIndex;
       
     if (this._selectedIndex == idx)
@@ -147,7 +147,7 @@
   SieveRichList.prototype.selectedItem
     = function (item)
   { 
-    if (typeof(item) == "undefined")
+    if (typeof(item) === "undefined")
       return this._items[this.selectedIndex()]; 
       
     var idx = this._items.indexOf(item);
@@ -353,7 +353,7 @@
   SieveRichListItem.prototype.editable
       = function (isEditable)
   {
-    if (typeof(isEditable) == "undefined")
+    if (typeof(isEditable) === "undefined")
       return this._isEditable;
   
     if (this._isEditable ==  isEditable)

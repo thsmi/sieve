@@ -12,6 +12,7 @@
 /* global window */
 /* global SieveAccountManager */
 /* global SieveUtils */
+/* global SieveOverlayManager */
  
 // Enable Strict Mode
 "use strict"; 
@@ -31,24 +32,7 @@ function onUnload() {
   gSivIncomingServer =null;
 }
 
-/*
-function onAcceptEditor() { }
-
-function onSave() { }
-*/
-
-function onPreInit(account, accountvalues)
-{
-  gSivIncomingServer = account.incomingServer;
-}
-
-function onInit(pageId, serverId)
-{
-  gSieveAccount = SieveAccountManager.getAccountByServer(gSivIncomingServer);  
-  UpdatePage();
-}
-
-function UpdatePage()
+function updatePage()
 {
   if (gSieveAccount.isEnabled())
     document.getElementById('rgAccount').selectedIndex = 1;
@@ -67,6 +51,24 @@ function UpdatePage()
     
   document.getElementById('txtUserName').value
     = gSieveAccount.getLogin().getUsername();  
+}
+
+
+/*
+function onAcceptEditor() { }
+
+function onSave() { }
+*/
+
+function onPreInit(account, accountvalues)
+{
+  gSivIncomingServer = account.incomingServer;
+}
+
+function onInit(pageId, serverId)
+{
+  gSieveAccount = SieveAccountManager.getAccountByServer(gSivIncomingServer);  
+  updatePage();
 }
 
 function onAccountStatusChange()
@@ -97,5 +99,5 @@ function onSettingsClick()
      "FilterAccountOptions", "chrome,modal,titlebar,centerscreen", 
       { SieveAccount: gSieveAccount});
       
-  UpdatePage();      
+  updatePage();      
 }

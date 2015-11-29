@@ -66,7 +66,7 @@
   SieveDocument.prototype.createByName
       = function(name, parser, parent)
   {     
-    if (typeof(parser) == "string")
+    if (typeof(parser) === "string")
       parser = new SieveParser(parser); 
       
     var item = this._lexer.createByName(this, name, parser);
@@ -83,7 +83,7 @@
   SieveDocument.prototype.createByClass
       = function(types, parser, parent)
   {  
-    if (typeof(parser) == "string")
+    if (typeof(parser) === "string")
       parser = new SieveParser(parser);  
     
     var item = this._lexer.createByClass(this, types, parser);
@@ -100,7 +100,7 @@
   SieveDocument.prototype.probeByName
       = function(name, parser)
   {
-    if (typeof(parser) == "string")
+    if (typeof(parser) === "string")
       parser = new SieveParser(parser); 
       
     return this._lexer.probeByName(name, parser);
@@ -120,7 +120,7 @@
   SieveDocument.prototype.probeByClass
       = function(types, parser)
   {
-    if (typeof(parser) == "string")
+    if (typeof(parser) === "string")
       parser = new SieveParser(parser);  
     
     return this._lexer.probeByClass(types,parser);
@@ -186,7 +186,7 @@
   SieveDocument.prototype.capabilities
     = function (capabilities)
   {               
-    if (typeof(capabilities) == "undefined")
+    if (typeof(capabilities) === "undefined")
       return this._lexer.capabilities();
       
     this._lexer.capabilities(capabilities);

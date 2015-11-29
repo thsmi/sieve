@@ -20,7 +20,7 @@
   
   function SieveDragHandler(flavour)
   {
-    if (typeof(flavour) != "undefined")
+    if (typeof(flavour) !== "undefined")
       this._flavour = flavour;
   }
   

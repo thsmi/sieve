@@ -109,7 +109,7 @@
   	
   	var name = this.queue.shift();
   	
-  	if (typeof(name) == "undefined")
+  	if (typeof(name) === "undefined")
   	  return;
   
     this.log("Starting test profile "+name);    
@@ -148,7 +148,7 @@
     
     $.each(tests, function (name, value) {
       // Loop through tests..
-      if (typeof(value) == "undefined")
+      if (typeof(value) === "undefined")
 	      return;		 
 
       if (value.disabled)

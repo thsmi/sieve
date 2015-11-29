@@ -27,7 +27,7 @@
       = function (value) {       
   
     var that = this;    	
-    if (typeof(value) == "undefined")
+    if (typeof(value) === "undefined")
       value = "";
       
     var elm = this.template().clone();

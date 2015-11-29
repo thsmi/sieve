@@ -88,7 +88,7 @@
       
       var item = constructor.onNew(docshell, ++(this.maxId));         
       
-      if ((typeof(parser) != "undefined") && (parser))
+      if ((typeof(parser) !== "undefined") && (parser))
         item.init(parser);
           
       return item; 
@@ -209,7 +209,7 @@
       
     capabilities : function(capabilities)
     {
-      if (typeof(capabilities) == "undefined")
+      if (typeof(capabilities) === "undefined")
         return this._capabilities;
         
       this._capabilities = capabilities;

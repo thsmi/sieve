@@ -148,7 +148,7 @@
   SieveSimpleResponse.prototype.getMessage
       = function () 
   { 
-    if ((typeof(this.message) == 'undefined') || (this.message === null))
+    if ((typeof(this.message) === 'undefined') || (this.message === null))
       throw "Message not Initialized";
       
     return this.message; 

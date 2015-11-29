@@ -25,7 +25,7 @@
   SieveParser.prototype.isChar
     = function (ch,offset)
   {  
-    if (typeof(offset) == "undefined")
+    if (typeof(offset) === "undefined")
       offset = 0;
       
     if (!Array.isArray(ch))
@@ -61,7 +61,7 @@
   SieveParser.prototype.extractChar
     = function (ch)
   {
-    if (typeof(ch) != "undefined")
+    if (typeof(ch) !== "undefined")
       if (!this.isChar(ch))
         throw " "+ch+" expected but found:\n"+this.bytes(50)+"...";
       
@@ -74,7 +74,7 @@
   SieveParser.prototype.skipChar
     = function (ch)
   {
-    if (typeof(ch) != "undefined")
+    if (typeof(ch) !== "undefined")
       if (!this.isChar(ch))
         return false;
         
@@ -109,7 +109,7 @@
   SieveParser.prototype.extract
     = function (length)
   {
-    if (typeof(length) == "string")
+    if (typeof(length) === "string")
     {
       var str = length;
       
@@ -148,7 +148,7 @@
   SieveParser.prototype.isNumber
     = function (offset)
   {
-    if (typeof(offset) != "number")
+    if (typeof(offset) !== "number")
       offset = 0;
       
     if (this._pos + offset > this._data.length)

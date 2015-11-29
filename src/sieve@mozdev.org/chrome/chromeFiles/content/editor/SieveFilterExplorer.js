@@ -126,7 +126,7 @@ SieveFilterExplorer.prototype._renameScript
       if (this._view.rules[i].script == newName)
         return alert("Script already exists");  
   
-  if (typeof(isActive) == "undefined")
+  if (typeof(isActive) === "undefined")
     isActive == tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(1));
 
   SieveAbstractChannel.prototype._renameScript.call(this,oldName, newName, isActive);    

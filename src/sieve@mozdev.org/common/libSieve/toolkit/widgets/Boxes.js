@@ -142,7 +142,7 @@
   SieveAbstractBoxUI.prototype.drop
       = function (handler,sibling)
   {
-    if (typeof(handler) == "undefined")
+    if (typeof(handler) === "undefined")
       return this._handler["drop"];
       
      //release old handler
@@ -261,7 +261,7 @@
   SieveEditableBoxUI.prototype.createHtml
       = function (parent)
   {
-    if (typeof(parent) == "undefined")
+    if (typeof(parent) === "undefined")
       throw "parent parameter is missing";
       
     var _this = this;
@@ -455,7 +455,7 @@
   SieveDialogBoxUI.prototype.createHtml
       = function (parent)
   {
-    if (typeof(parent) == "undefined")
+    if (typeof(parent) === "undefined")
       throw "parent parameter is missing";
       
     var that = this;

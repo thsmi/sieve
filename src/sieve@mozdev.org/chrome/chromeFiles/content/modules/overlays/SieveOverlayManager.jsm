@@ -9,6 +9,9 @@
  *      
  */
 
+/* global Components */
+/* global Iterator */
+
 // Enable Strict Mode
 "use strict";  
 
@@ -60,7 +63,7 @@ var SieveOverlayUtils =
       while (tabmail.tabModes[modeName].tabs.length)
       {
         // TODO we need a force close here....
-        tabmail.closeTab(tabmail.tabModes[modeName].tabs[0],true)
+        tabmail.closeTab(tabmail.tabModes[modeName].tabs[0],true);
         // Sleep -> Sync
         // TODO close tabs...
       }
@@ -168,10 +171,10 @@ var SieveOverlayUtils =
       if (document.styleSheets[i].href != url)
         continue;
       
-      document.styleSheets[i].ownerNode.parentNode.removeChild(document.styleSheets[i].ownerNode)
+      document.styleSheets[i].ownerNode.parentNode.removeChild(document.styleSheets[i].ownerNode);
     }    
   }   
-}
+};
 
 // TODO scripts should pass an unique identifier like 
 // "Sieve.Accounts", "Sieve.Session", "Sieve.AutoConfig" instead
@@ -208,16 +211,16 @@ SieveDict.prototype.hasKey
     return true;
   
   return false;
-}
+};
 
 SieveDict.prototype.getValue
     = function(key)
 {
   if (!this.hasKey(key))
-    throw "No value for key"
+    throw "No value for key";
     
   return this.values[this.keys.indexOf(key)];
-}
+};
 
 SieveDict.prototype.setValue
     = function(key, value)
@@ -230,7 +233,7 @@ SieveDict.prototype.setValue
     
   this.keys.push(key);
   this.values.push(value);
-}
+};
 
 SieveDict.prototype.deleteKey
     = function(key)
@@ -242,26 +245,26 @@ SieveDict.prototype.deleteKey
    
   this.keys.splice(idx,1);
   this.values.splice(idx,1);
-}
+};
 
 SieveDict.prototype.clear
     = function()
  {
   this.keys = [];
   this.values = [];
- }
+ };
  
 SieveDict.prototype.hasKeys
     = function()
 {
-  return (this.keys.length) 
-}
+  return (this.keys.length); 
+};
 
 SieveDict.prototype.first
     = function()
 {
   return this.keys[0]; 
-}
+};
 
       
 
@@ -281,7 +284,7 @@ var SieveOverlayManager =
     if (scope)
       Cu.import(aUrl,Cu.getGlobalForObject(scope));  
     
-    if(typeof(aWindow) == "undefined")
+    if(typeof(aWindow) === "undefined")
       return;
       
     if (!this._imports[aUrl])
@@ -296,7 +299,7 @@ var SieveOverlayManager =
         
         aWindow.removeEventListener("unload", _callback,false);
         SieveOverlayManager.release(aWindow,aUrl);         
-      }
+      };
       
       this._imports[aUrl].windows.push(aWindow);
       this._imports[aUrl].callbacks.push(callback);
@@ -389,7 +392,7 @@ var SieveOverlayManager =
     SieveOverlayManager.unloadWatcher(aWindow);
     
     // we mutate the array thus we interate backwards...
-    for (var i=SieveOverlayManager._overlays.length-1; i>=0; i--)
+    for (let i=SieveOverlayManager._overlays.length-1; i>=0; i--)
     {
       if (SieveOverlayManager._overlays[i].window != aWindow)
         continue;
@@ -400,7 +403,7 @@ var SieveOverlayManager =
  
     // cleanup imports...
     for (var url in SieveOverlayManager._imports)
-      for (var i=0; i<SieveOverlayManager._imports[url].windows.length; i++)
+      for (let i=0; i<SieveOverlayManager._imports[url].windows.length; i++)
         if (SieveOverlayManager._imports[url].windows[i] == aWindow)
           SieveOverlayManager._imports[url].callbacks[i]();    
   },
@@ -425,10 +428,10 @@ var SieveOverlayManager =
   
   unloadWatcher : function (window)
   {
-    if (typeof(window) == "undefined")
+    if (typeof(window) === "undefined")
     {      
       while (this._unload.hasKeys())
-        this.unloadWatcher(this._unload.first())
+        this.unloadWatcher(this._unload.first());
 
       return;
     } 
@@ -502,5 +505,5 @@ var SieveOverlayManager =
         
     delete this._overlayUrls;        
   }
-}
+};
 

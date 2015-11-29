@@ -7,6 +7,8 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
  
+ /* global Components */
+ 
 // Enable Strict Mode
 "use strict"; 
 
@@ -24,10 +26,10 @@ var SieveUtils =
     if (server == null)
       server = this.GetActiveServer(window);    
       
-    var options = {}
+    var options = {};
                      
     if (server != null)
-      options = { server: server.rootMsgFolder.baseMessageURI.slice(15) }
+      options = { server: server.rootMsgFolder.baseMessageURI.slice(15) };
       
     options.wrappedJSObject = options;
 
@@ -120,7 +122,7 @@ var SieveUtils =
   {    
     // the accountmanager is modal. We need a parent window!
     if (window == null)
-      throw "window missing, need an owner for Accountmanager..."
+      throw "window missing, need an owner for Accountmanager...";
       
     var windowManager = Cc['@mozilla.org/appshell/window-mediator;1'].
                             getService(Ci.nsIWindowMediator);
@@ -140,7 +142,7 @@ var SieveUtils =
       server = this.GetActiveServer(window);
       
     if (server != null)
-      options = { server: server, selectPage: 'am-sieve-account.xul' }
+      options = { server: server, selectPage: 'am-sieve-account.xul' };
       
     window.openDialog("chrome://messenger/content/AccountManager.xul",
                       "AccountManager", "chrome,centerscreen,titlebar,modal",
@@ -175,7 +177,7 @@ var SieveUtils =
         return null;
     
       // this function depends on funtions of the overlayed message window...
-      if (typeof(window.GetFirstSelectedMsgFolder) == "undefined")
+      if (typeof(window.GetFirstSelectedMsgFolder) === "undefined")
         return null;
   
       // As we can access message window functions, we can try to retrieve... 
@@ -198,5 +200,5 @@ var SieveUtils =
     
     return null;
   }
-}
+};
 

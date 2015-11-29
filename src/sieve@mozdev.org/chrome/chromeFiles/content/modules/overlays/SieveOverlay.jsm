@@ -8,6 +8,14 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  *      
  */
+ 
+/* global SieveOverlayUtils */
+/* global Components */
+/* global document */
+/* global Services */
+/* global SieveOverlayManager */
+/* global SieveTabType */
+/* global SieveUtils */
 
 // Enable Strict Mode
 "use strict";  
@@ -31,13 +39,13 @@ SieveAbstractOverlay.prototype.getWindow
   = function ()
 {
   return this.window;
-}
+};
 
 SieveAbstractOverlay.prototype.unloadCallback
   = function (callback)
 {
   this._callbacks.push(callback);   
-}
+};
 
 SieveAbstractOverlay.prototype.unload
   = function()
@@ -47,7 +55,7 @@ SieveAbstractOverlay.prototype.unload
     
   delete this._callbacks;
   delete this.window;
-}
+};
 
 // Sieve Filter window overlay...
 function SieveFilterListOverlay()
@@ -128,7 +136,7 @@ SieveFilterListOverlay.prototype.loadAccount
     .contentWindow.onAccountChange(server.key);*/
     
   return true;
-}
+};
 
 SieveFilterListOverlay.prototype.load
   = function(window)
@@ -173,10 +181,10 @@ SieveFilterListOverlay.prototype.load
     elm.lastChild.appendChild(document.createElement("description"));
     elm.lastChild.lastChild.setAttribute("value","Please report bug to schmid-thomas@gmx.net");
    
-    dialog.insertBefore(elm,dialog.firstChild)
+    dialog.insertBefore(elm,dialog.firstChild);
 
     this.unloadCallback(
-      function() { elm.parentNode.removeChild(elm)}) 
+      function() { elm.parentNode.removeChild(elm);});
       
     return;      
   }
@@ -192,16 +200,16 @@ SieveFilterListOverlay.prototype.load
       return;
     }
     that.loadAccount(folder.server);    
-  }
+  };
   
   var tabSelectListener = function() {
     that.loadAccount();
-  }
+  };
 
   var filterListListener = function(event) {
     if (that.loadAccount())
       event.currentTarget.removeEventListener('select', filterListListener, false);  
-  }
+  };
 
   
   // start modifiying the UI
@@ -222,7 +230,7 @@ SieveFilterListOverlay.prototype.load
   tabs.addEventListener("select",tabSelectListener,true);
 
   this.unloadCallback(
-      function() { tabs.removeEventListener("select",tabSelectListener,true)});
+      function() { tabs.removeEventListener("select",tabSelectListener,true);});
       
   tabs.appendChild(document.createElement("tab"));
   tabs.lastChild.setAttribute("label","Local Filters");
@@ -248,7 +256,7 @@ SieveFilterListOverlay.prototype.load
         "overflow:auto; -moz-appearance: textfield;");
         
   this.unloadCallback (
-    function() { elm.parentNode.removeChild(elm); })   
+    function() { elm.parentNode.removeChild(elm); });   
     
   this.unloadCallback (
     function() { elm.parentNode.insertBefore(grid,elm); }); 
@@ -257,7 +265,7 @@ SieveFilterListOverlay.prototype.load
   menu.addEventListener("command",folderChangeListener,true);
   
   this.unloadCallback(
-      function() { menu.removeEventListener("command",folderChangeListener,true)});
+      function() { menu.removeEventListener("command",folderChangeListener,true);});
   
   // When the server Menu gets populated the first time no command event is...
   // ... fired thus we need this hack. We listen to the filter list's selection...
@@ -267,12 +275,12 @@ SieveFilterListOverlay.prototype.load
   filterList.addEventListener("select",filterListListener, false);
 
   this.unloadCallback(
-      function() { filterList.removeEventListener("select",filterListListener,false)});      
+      function() { filterList.removeEventListener("select",filterListListener,false);});      
   // Ensure the first tab is selected...
   elm.selectedIndex = 0;
     
   Cu.reportError("load overlay filter list ");
-}
+};
 
 
 //****************************************************************************//
@@ -303,13 +311,13 @@ SieveMailWindowOverlay.prototype.load
   
   // Add Toolbar Overlay
   var onOpenFilterCmd = 
-    function() {  SieveUtils.OpenFilter(document.defaultView) };
+    function() {  SieveUtils.OpenFilter(document.defaultView); };
 
   var onOpenSettingsCmd =
-    function() { SieveUtils.OpenSettings(document.defaultView) };
+    function() { SieveUtils.OpenSettings(document.defaultView); };
   
   // Add Tabtypes Overlay
-  SieveOverlayManager.require("chrome://sieve/content/modules/utils/SieveTabType.jsm",this,window)
+  SieveOverlayManager.require("chrome://sieve/content/modules/utils/SieveTabType.jsm",this,window);
   var tabmail = document.getElementById('tabmail');
   
   
@@ -317,7 +325,7 @@ SieveMailWindowOverlay.prototype.load
   // TODO add finally method when all windows are closed, to unload unused components
   
   this.unloadCallback( 
-    function() { SieveOverlayUtils.removeTabType(SieveTabType,tabmail);})
+    function() { SieveOverlayUtils.removeTabType(SieveTabType,tabmail);});
         
   var toolbarbutton = document.createElement("toolbarbutton");
   toolbarbutton.setAttribute("id","btnSieveFilter");
@@ -336,13 +344,13 @@ SieveMailWindowOverlay.prototype.load
   SieveOverlayUtils.addStyleSheet(document,"chrome://sieve/skin/ToolBarButton.css");    
   
   this.unloadCallback(
-    function() { SieveOverlayUtils.removeStyleSheet(document,"chrome://sieve/skin/ToolBarButton.css")});
+    function() { SieveOverlayUtils.removeStyleSheet(document,"chrome://sieve/skin/ToolBarButton.css");});
   
   this.unloadCallback(
-    function() { toolbarbutton.removeEventListener("command",onOpenFilterCmd)})
+    function() { toolbarbutton.removeEventListener("command",onOpenFilterCmd);});
     
   this.unloadCallback( 
-    function() { SieveOverlayUtils.removeToolBarItem(toolbarbutton);})
+    function() { SieveOverlayUtils.removeToolBarItem(toolbarbutton);});
   
     
   // Add Menu Overlay
@@ -356,10 +364,10 @@ SieveMailWindowOverlay.prototype.load
   mmuOpenFilters.addEventListener("command", onOpenFilterCmd );
   
   this.unloadCallback(
-    function() { mmuOpenFilters.removeEventListener("command",onOpenFilterCmd)})  
+    function() { mmuOpenFilters.removeEventListener("command",onOpenFilterCmd);});  
   
   this.unloadCallback(
-    function() {SieveOverlayUtils.removeMenuItem(mmuOpenFilters)} )  
+    function() {SieveOverlayUtils.removeMenuItem(mmuOpenFilters);} );  
   
   SieveOverlayUtils.addMenuItem( document, mmuOpenFilters, menu);
  
@@ -371,10 +379,10 @@ SieveMailWindowOverlay.prototype.load
   mnuOpenSettings.addEventListener('command', onOpenSettingsCmd );
   
   this.unloadCallback(
-    function() { mnuOpenSettings.removeEventListener("command",onOpenSettingsCmd)})  
+    function() { mnuOpenSettings.removeEventListener("command",onOpenSettingsCmd);});  
   
   this.unloadCallback(
-    function() {SieveOverlayUtils.removeMenuItem(mnuOpenSettings)} )  
+    function() {SieveOverlayUtils.removeMenuItem(mnuOpenSettings);} );  
     
   SieveOverlayUtils.addMenuItem( document, mnuOpenSettings, menu);    
 
@@ -383,14 +391,14 @@ SieveMailWindowOverlay.prototype.load
   mnuSeparator.setAttribute("id","mnuSieveSeparator");
   
   this.unloadCallback(
-    function () { SieveOverlayUtils.removeMenuItem(mnuSeparator) } )
+    function () { SieveOverlayUtils.removeMenuItem(mnuSeparator); } );
 
   
   SieveOverlayUtils.addMenuItem( document, mnuSeparator, menu);
   
   // AppMenuOverlay
   
-  var appMenu = document.getElementById("appmenu_FilterMenu")
+  var appMenu = document.getElementById("appmenu_FilterMenu");
   
   if (appMenu) {
      
@@ -398,7 +406,7 @@ SieveMailWindowOverlay.prototype.load
     appMenuSeparator.setAttribute("id","appMenuSieveSeparator");
   
     this.unloadCallback(
-      function () { SieveOverlayUtils.removeMenuItem(appMenuSeparator) } )
+      function () { SieveOverlayUtils.removeMenuItem(appMenuSeparator); } );
 
     appMenu.appendChild(appMenuSeparator);
 
@@ -409,10 +417,10 @@ SieveMailWindowOverlay.prototype.load
     appMenuOpenFilters.addEventListener("command", onOpenFilterCmd );
   
     this.unloadCallback(
-      function() { appMenuOpenFilters.removeEventListener("command",onOpenFilterCmd)})  
+      function() { appMenuOpenFilters.removeEventListener("command",onOpenFilterCmd);});  
   
     this.unloadCallback(
-      function() {SieveOverlayUtils.removeMenuItem(appMenuOpenFilters)} )  
+      function() {SieveOverlayUtils.removeMenuItem(appMenuOpenFilters);} );  
   
     appMenu.appendChild(appMenuOpenFilters);  
     
@@ -423,10 +431,10 @@ SieveMailWindowOverlay.prototype.load
     appMenuOpenSettings.addEventListener('command', onOpenSettingsCmd );
   
     this.unloadCallback(
-      function() { appMenuOpenSettings.removeEventListener("command",onOpenSettingsCmd)})  
+      function() { appMenuOpenSettings.removeEventListener("command",onOpenSettingsCmd);});  
   
     this.unloadCallback(
-      function() {SieveOverlayUtils.removeMenuItem(appMenuOpenSettings)} )  
+      function() {SieveOverlayUtils.removeMenuItem(appMenuOpenSettings);} );  
     
     appMenu.appendChild(appMenuOpenSettings);    
     
@@ -436,7 +444,7 @@ SieveMailWindowOverlay.prototype.load
 
   
   
-}
+};
 
 // Filter window Overlay...Components
 
@@ -457,7 +465,6 @@ SieveToolbarOverlay.prototype.load
   if (this.window)
     throw "already bound to window";
     
-  var that = this;
   this.window = window;
   
   var document = window.document;
@@ -465,5 +472,5 @@ SieveToolbarOverlay.prototype.load
   SieveOverlayUtils.addStyleSheet(document,"chrome://sieve/skin/ToolBarButton.css");    
   
   this.unloadCallback(
-    function() { SieveOverlayUtils.removeStyleSheet(document,"chrome://sieve/skin/ToolBarButton.css")}); 
-}
+    function() { SieveOverlayUtils.removeStyleSheet(document,"chrome://sieve/skin/ToolBarButton.css");}); 
+};

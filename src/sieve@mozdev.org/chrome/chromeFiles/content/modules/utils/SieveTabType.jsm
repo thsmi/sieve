@@ -1,3 +1,5 @@
+/* globals Components */
+
 // Enable Strict Mode
 "use strict";
 
@@ -42,12 +44,12 @@ var SieveTabType =
       {
         return {
           account: aTab.panel.contentWindow.getSelectedAccount().getUri()
-        }
+        };
       },
       
       restoreTab: function(aTabmail, aPersistedState)
       {
-        aTabmail.openTab("SieveExplorerTab",{server:  aPersistedState.account})
+        aTabmail.openTab("SieveExplorerTab",{server:  aPersistedState.account});
       }      
     },
     
@@ -114,7 +116,7 @@ var SieveTabType =
   {
     var callback = function()  {
       aTab.panel.ownerDocument.getElementById("tabmail").closeTab(aTab);
-    }
+    };
       
     if ( aTab.panel.contentWindow.asyncCloseTab)
       return aTab.panel.contentWindow.asyncCloseTab(callback);
@@ -149,7 +151,7 @@ var SieveTabType =
       // We continue closing the window...
       var callback = function()  {
         aTab.panel.ownerDocument.defaultView.close();
-      }
+      };
         
       if (!aTab.panel.contentWindow.asyncCloseTab(callback))
       {

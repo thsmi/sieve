@@ -133,13 +133,15 @@
   
   SieveFileIntoUI.prototype.initEditor
       = function ()
-  {              
+  {
+    var path = this.getSieve().path();
+
     return $("<div/>")
              .text("Save the incomming message into folder:")
              .append($("<div/>")
                .append($("<input/>")
                  .attr("id","txtPath"+this.id())
-                 .attr("value",""+this.getSieve().path())));
+                 .attr("value",""+path)));
   };
   
   SieveFileIntoUI.prototype.initSummary

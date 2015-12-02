@@ -314,7 +314,7 @@
   SieveFileInto.prototype.path
       = function (path)
   {
-    this._path.value(path);
+    return this._path.value(path);
   };
   
   SieveFileInto.prototype.state

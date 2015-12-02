@@ -23,6 +23,7 @@
   /* global SieveTestDialogBoxUI */
   /* global SieveMatchTypeUI */
   /* global SieveDesigner */
+  /* global SieveComparatorUI */
 	
   function SieveSetActionUI(elm)
   {
@@ -201,7 +202,11 @@
       
     var matchType = new SieveMatchTypeUI(this.getSieve().matchType());
     $("#sivVariablesMatchTypes")
-      .append(matchType.html());     
+      .append(matchType.html());    
+      
+    var comparator = new SieveComparatorUI(this.getSieve().comparator());
+    $("#sivVariablesComparator")
+      .append(comparator.html());  
   };
 
   SieveStringTestUI.prototype.getSummary

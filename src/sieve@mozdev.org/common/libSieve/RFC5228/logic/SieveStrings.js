@@ -452,7 +452,7 @@
   SieveStringList.prototype.toScript
       = function ()
   {
-    if (this.elements == 0)
+    if (this.elements.length === 0)
       return '""'; 
       
     if (this.compact && this.elements.length <= 1)

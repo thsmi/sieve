@@ -63,6 +63,18 @@
     // ... extract the stringlist...
     this.strings.init(parser);
     
+    // Test if the 
+    var capabilities = this._docshell.capabilities();
+        
+    for (var idx = 0; idx < this.strings.size(); idx++) {
+    
+      var item = this.strings.item(idx);
+      
+      if (!capabilities[item])
+        throw new Error('Unknown capability string "'+item+'"');
+      
+    }
+    
     this.semicolon.init(parser);
       
     return this;

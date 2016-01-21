@@ -139,14 +139,9 @@ SieveFilterEditor.prototype._calcChecksum
   
   var hash = ch.finish(false);  
       
-  // return the two-digit hexadecimal code for a byte  
-  function toHexString(charCode)  
-  {  
-    return ("0" + charCode.toString(16)).slice(-2);  
-  }  
-      
   // convert the binary hash data to a hex string.  
-  return [toHexString(hash.charCodeAt(i)) for (i in hash)].join("");  
+  return Array.from(hash, 
+      function (cur, idx) { return ("0" + hash.charCodeAt(idx).toString(16)).slice(-2); } ).join(""); 
 };
 
 SieveFilterEditor.prototype.onGetScriptResponse

@@ -254,6 +254,8 @@
   }
   
   exports.onerror = errorhandler;
+  exports.setSieveScript = setSieveScript;
+  exports.getSieveScript = getSieveScript;
   
 
 })(window);   

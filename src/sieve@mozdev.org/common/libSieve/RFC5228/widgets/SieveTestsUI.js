@@ -38,61 +38,57 @@
     SieveTestBoxUI.call(this,elm);
   }
   
-  SieveSizeTestUI.prototype = Object.create(SieveTestBoxUI.prototype);
+  SieveSizeTestUI.prototype = Object.create(SieveTestDialogBoxUI.prototype);
   SieveSizeTestUI.prototype.constructor = SieveSizeTestUI;
-  
-  SieveSizeTestUI.prototype.onValidate
+
+    SieveSizeTestUI.prototype.onValidate
       = function ()
   {
-    
-    this.getSieve()
-          .isOver($("#SizeTestOver"+this.id()).val())
-          .getSize()
-            .value($("#SizeTestValue"+this.id()).val())
-            .unit($("#SizeTestUnit"+this.id()).val());         
+        
     
     return true;      
   };
   
-  SieveSizeTestUI.prototype.initEditor
+  SieveSizeTestUI.prototype.onSave
       = function ()
-  {
-    return $("<div/>")
-             .append($("<span/>")
-               .text("Message is"))
-             .append($("<select/>")
-               .attr("id","SizeTestOver"+this.id())           
-               .append($("<option/>")
-                 .text("bigger").val("true"))
-               .append($("<option/>")
-                 .text("smaler").val("false")) 
-               .val(""+this.getSieve().isOver()))          
-             .append($("<span/>")
-               .text("than"))
-             .append($("<input/>")
-               .attr("type","text")
-               .attr("id","SizeTestValue"+this.id())
-               .val(""+this.getSieve().getSize().value()) )           
-             .append($("<select/>")
-               .attr("id","SizeTestUnit"+this.id())
-               .append($("<option/>")
-                  .text("Bytes").val(""))
-               .append($("<option/>")
-                  .text("Kilobytes").val("K"))
-               .append($("<option/>")
-                  .text("Megabytes").val("M"))
-               .append($("<option/>")
-                  .text("Gigabytes").val("G"))
-               .val(this.getSieve().getSize().unit()));
+  { 
+    var sieve = this.getSieve();
+        
+    sieve
+      .isOver($("input[type='radio'][name='over']:checked").val() === "true")
+      .getSize()
+        .value($("#sivSizeTestValue").val())
+        .unit($("#sivSizeTestUnit").val()); 
+            
+    return true;      
   };
   
-  SieveSizeTestUI.prototype.initSummary
-      = function ()
+  SieveSizeTestUI.prototype.getTemplate
+      = function () 
   {
+    return "./RFC5228/widgets/SieveSizeTestUI.html";
+  };
+  
+  SieveSizeTestUI.prototype.onLoad
+      = function()
+  {  
+    (new SieveTabWidget()).init();
+    
+    $('input:radio[name="over"][value="'+this.getSieve().isOver()+'"]').prop('checked', true);
+
+    $("#sivSizeTestValue").val(""+this.getSieve().getSize().value());
+    $("#sivSizeTestUnit").val(""+this.getSieve().getSize().unit());
+  
+  };
+    
+  SieveSizeTestUI.prototype.getSummary
+      = function()
+  {  
     return $("<div/>")
              .text("message is "+(this.getSieve().isOver()?"larger":"smaller")
-                     +" than "+this.getSieve().getSize().toScript());  
+                     +" than "+this.getSieve().getSize().toScript());
   };
+
       
   //****************************************************************************//
   

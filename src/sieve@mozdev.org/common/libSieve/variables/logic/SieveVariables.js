@@ -241,6 +241,12 @@ SieveStringTest.prototype.init
 };   
 
 
+SieveStringTest.prototype.comparator
+    = function ()
+{
+  return this.items[3];
+};
+
 SieveStringTest.prototype.matchType
     = function ()
 {

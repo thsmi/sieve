@@ -48,6 +48,7 @@
   <script type="application/javascript" src="RFC5228/widgets/SieveNumbersUI.js" ></script>
   <script type="application/javascript" src="RFC5228/widgets/SieveBlocksUI.js"></script>  
   <script type="application/javascript" src="RFC5228/widgets/SieveMatchTypesUI.js" ></script>  
+  <script type="application/javascript" src="RFC5228/widgets/SieveAddressPartUI.js" ></script>  
   <script type="application/javascript" src="RFC5228/widgets/SieveTestsUI.js" ></script>    
   <script type="application/javascript" src="RFC5228/widgets/SieveOperatorsUI.js"></script>
   <script type="application/javascript" src="RFC5228/widgets/SieveConditionsUI.js"></script>  
@@ -79,7 +80,11 @@
   <!-- RFC6609 - Include -->
   <script type="application/javascript" src="include/logic/SieveInclude.js" ></script>
   <script type="application/javascript" src="include/widget/SieveIncludeUI.js" ></script>
-    
+
+  <!-- RFC5233 - Subaddress -->
+  <script type="application/javascript" src="subaddress/logic/SieveSubaddress.js" ></script>
+  <script type="application/javascript" src="subaddress/widgets/SieveSubaddressUI.js" ></script>
+   
 </head>
 <body>
 
@@ -148,6 +153,7 @@
   	   <div><input type="checkbox" name="capabilities" value="variables" checked>variables (RFC5229)</div>
   	   <div><input type="checkbox" name="capabilities" value="include" checked>include (RFC6609)</div>
 	 
+	     <div><input type="checkbox" name="capabilities" value="subaddress" checked>subaddress (RFC5233)</div>
 	   <div>
 	     <button id="CapabilitiesApply">Apply</button>
 	     <button id="CapabilitiesAll">Select All</button>

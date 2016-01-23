@@ -127,7 +127,3 @@
 
 //   :user "+" :detail "@" :domain
 // \----:local-part----/
-
-// user part
-
-// detail part

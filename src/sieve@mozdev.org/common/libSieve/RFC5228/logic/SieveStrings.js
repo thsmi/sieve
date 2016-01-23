@@ -572,107 +572,6 @@
   };
   
   
-  
-  /**
-   * Addresses are one of the most frequent things represented as strings.
-   * These are structured, and allows comparison against the local-
-   * part or the domain of an address 
-   * 
-   *             email@example.com 
-   *          [local Part]@[Domain Part]
-   *   
-   * ist example.com der domain-part, email der local-part.
-   */
-  //":localpart" / ":domain" / ":all"
-  
-  
-  function SieveAddressPart(docshell,id)
-  {
-    SieveAbstractElement.call(this,docshell,id); 
-    this.type = "all";
-    this.optional = true;
-  }
-  
-  SieveAddressPart.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveAddressPart.prototype.constructor = SieveAddressPart;
-  
-  SieveAddressPart.isElement
-      = function (parser, lexer)
-  {   
-    if (parser.startsWith(":localpart"))
-      return true;
-    if (parser.startsWith(":domain"))
-      return true;
-    if (parser.startsWith(":all"))
-      return true;
-    
-    return false;
-  };
-  
-  SieveAddressPart.nodeName = function () {
-    return "address-part";
-  };
-  
-  SieveAddressPart.nodeType  = function () {
-    return "comparison";
-  };
-  
-  
-  SieveAddressPart.prototype.init
-      = function (parser)
-  {
-    if (parser.startsWith(":localpart"))
-      this.type = "localpart";
-    else if (parser.startsWith(":domain"))
-      this.type = "domain";
-    else if (parser.startsWith(":all"))
-      this.type = "all";
-    else 
-      throw "Syntaxerror, unknown address part";
-      
-    parser.extract(this.type.length+1);
-    
-    if (this.type == "all")
-      this.optional = false;
-    
-    return this; 
-  };
-  
-  SieveAddressPart.prototype.isOptional
-      = function (value)
-  {
-    if (typeof(value) === "undefined")
-      return ((this.optional) && (this.type == "all"));
-      
-    this.optional = value; 
-  };
-  
-  SieveAddressPart.prototype.addressPart
-      = function (value)
-  {
-    if(typeof(value) === "undefined")
-      return this.type;
-      
-    value = value.toLowerCase();
-    
-    if ((value == "all") || (value == "domain") || (value == "localpart"))
-      this.type = value;
-    else  
-      throw "Unkonwn Match type >>"+value+"<<"; 
-    
-    return this;
-  };
-  
-  SieveAddressPart.prototype.toScript
-      = function ()
-  {
-    if (this.isOptional())
-      return "";
-      
-    return ":"+this.type;
-  };
-  
-  
   /**
    * Comparators sepcify the charset which should be used for string comparison
    * By default two matchtypes are supported. 
@@ -771,6 +670,5 @@
   SieveLexer.register(SieveQuotedString);
   SieveLexer.register(SieveMultiLineString);
   SieveLexer.register(SieveComparator);
-  SieveLexer.register(SieveAddressPart);
  
 })(window);

@@ -62,8 +62,8 @@
         + '   fileinto "Only me";\r\n'
         + '}\r\n';
       
-    // FIXME:  reuire comparator...
-    suite.expectValidScript(script, {"relational":true, "fileinto":true});
+    // FIXME:  require comparator...
+    suite.expectValidScript(script, {"relational":true, "fileinto":true, "comparator-i;ascii-numeric":true});
   });  
   
     suite.add( function() {

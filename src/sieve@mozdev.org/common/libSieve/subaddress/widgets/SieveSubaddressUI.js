@@ -42,14 +42,14 @@
   };
   
   SieveUserPartUI.isCapable = function (capabilities) {
-    return true;      
+    return !!capabilities["subaddress"];      
   };
   
   SieveUserPartUI.prototype.html 
       = function(callback) {
         
     return SieveAbstractAddressPartUI.prototype.html.call(
-      this, ":user","... a localpart with a user sub-part with ...",
+      this, ":user","... a user sub-part with ...",
       'Everything before the + sign or between the -- sequence and the @sign. <br>'
         + 'The localpart part is case sensitive.<br>' 
         + 'e.g.: "user+detail@example.com" or "detail--user@example.com" is stripped to "user"',
@@ -75,14 +75,14 @@
   };
   
   SieveDetailPartUI.isCapable = function (capabilities) {
-    return true;      
+    return !!capabilities["subaddress"];
   };
   
   SieveDetailPartUI.prototype.html 
       = function(callback) {
         
     return SieveAbstractAddressPartUI.prototype.html.call(
-      this, ":detail","... a local part with a detail sub-part with ...",
+      this, ":detail","... a detail sub-part with ...",
       'Everything between the + sign and the @ sign, or before a -- sequence.<br>'
         + 'The localpart part is case sensitive.<br>'
         + 'e.g.: "user+detail@example.com" or "detail--user@example.com" is stripped to "detail"',

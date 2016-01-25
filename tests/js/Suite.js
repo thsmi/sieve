@@ -32,6 +32,9 @@
   if (!exports.net.tschmid.yautt.test.server.queue)
     exports.net.tschmid.yautt.test.server.queue = [];
 	
+  if (!exports.net.tschmid.yautt.test.server.current)
+    exports.net.tschmid.yautt.test.server.current = null;
+    
   exports.net.tschmid.yautt.test.server.onMessage = function(event) {	
 
     var msg = JSON.parse(event.data);
@@ -44,9 +47,13 @@
     var that = this;
         
     if (msg.type == "FAIL") {
-      this.log("##### Test failed: " + msg.data, "Fail");
+    	
+    	this.log("##### Test failed: " + msg.data, "Fail");
       // The post event blocks both window. So defere processing...
       window.setTimeout(function() {that.next();}, 10);      
+      
+      $("#tests input[value='"+this.current+"']").parent("div").css("color", "red");
+      
       return;
     }
     
@@ -54,6 +61,8 @@
       this.log("##### Test succeeded.","Success");
       // The post event blocks both window. So defere processing...
       window.setTimeout(function() {that.next();}, 10);      
+      
+      $("#tests input[value='"+this.current+"']").parent("div").css("color", "green");
       return;
     }    
     
@@ -107,16 +116,16 @@
 
   net.tschmid.yautt.test.server.next = function() {
   	
-  	var name = this.queue.shift();
+  	this.current = this.queue.shift();
   	
-  	if (typeof(name) === "undefined")
+  	if (typeof(this.current) === "undefined") 
   	  return;
   
-    this.log("Starting test profile "+name);    
-    var scripts = this.extend(name);
+    this.log("Starting test profile "+this.current);    
+    var scripts = this.extend(this.current);
 	
     scripts.push("./../js/Unit.js");
-    scripts.push(tests[name].script);
+    scripts.push(tests[this.current].script);
     scripts.push("./../js/UnitInit.js");
 	
 
@@ -128,7 +137,7 @@
         .attr("id","testFrame")
         .load(function() {        	
           var iframe = document.getElementById("testFrame").contentWindow;
-          that.logTrace("Injecting Scripts for "+name+" ...");
+          that.logTrace("Injecting Scripts for "+that.current+" ...");
           
           $.each(scripts, function (idx,script) {
           	
@@ -210,6 +219,10 @@
     
     $("#result-clear").click(function() {
     	$("#divOutput").empty();
+    	
+    	$("#tests div").each( function() {
+    		$(this).css("color", "");
+    	});
     });
     
     

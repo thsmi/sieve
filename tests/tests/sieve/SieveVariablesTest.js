@@ -92,7 +92,7 @@
     suite.log("Match Variables Example");
   
     var script = 
-      'require ["fileinto", "variables"];\r\n'
+      'require ["fileinto" /*, "variables"*/];\r\n'
         + '\r\n'
         + 'if header :matches "List-ID" "*<*@*" {\r\n'
         + '    fileinto "INBOX.lists.${2}"; stop;\r\n'

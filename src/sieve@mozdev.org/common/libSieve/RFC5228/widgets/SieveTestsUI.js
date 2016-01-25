@@ -277,7 +277,7 @@
     return $("<div/>")
         .html(" address <em>"+ $('<div/>').text(this.getSieve().headerList.toScript()).html()+"</em>"
                 + " " + this.getSieve().matchType.matchType()
-                + " " + ((this.getSieve().addressPart.type != "all") ? this.getSieve().addressPart.type: "")
+                + " " + ((this.getSieve().addressPart.addressPart() != ":all") ? this.getSieve().addressPart.addressPart() : "")
                 + " <em>" + $('<div/>').text(this.getSieve().keyList.toScript()).html()+"</em>");
   };
   
@@ -331,8 +331,8 @@
   {
     return $("<div/>")
         .html(" envelope <em>"+ $('<div/>').text(this.getSieve().envelopeList.toScript()).html()+"</em>"
-                + " " + this.getSieve().matchType.type
-                + " " + ((this.getSieve().addressPart.type != "all") ? this.getSieve().addressPart.type: "")
+                + " " + this.getSieve().matchType.matchType()
+                + " " + ((this.getSieve().addressPart.addressPart() != ":all") ? this.getSieve().addressPart.addressPart() : "")
                 + " <em>" + $('<div/>').text(this.getSieve().keyList.toScript()).html()+"</em>");
   };
   

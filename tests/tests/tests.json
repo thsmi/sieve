@@ -18,6 +18,7 @@ var tests = {
       "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveWhiteSpaces.js",
       "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveStrings.js",
       "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveMatchTypes.js",
+      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveAddressParts.js",
       "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveNumbers.js",
       "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveBlocks.js",
       "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveTests.js", 
@@ -97,6 +98,14 @@ var tests = {
     require : [
       "./validators/ScriptValidator.js",
       "./../../src/sieve@mozdev.org/common/libSieve/mailbox/logic/SieveMailbox.js"]
+  },
+  
+  "subaddress" : {
+    script : "./sieve/SieveSubaddressTest.js",
+    extend : "rfc5228",
+    require : [
+      "./validators/ScriptValidator.js",
+      "./../../src/sieve@mozdev.org/common/libSieve/subaddress/logic/SieveSubaddress.js"]
   },
   
   "managesieve" : {

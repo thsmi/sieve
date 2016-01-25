@@ -1,0 +1,395 @@
+
+
+
+
+
+
+Network Working Group                                       K. Murchison
+Request for Comments: 5233                    Carnegie Mellon University
+Obsoletes: 3598                                             January 2008
+Category: Standards Track
+
+
+              Sieve Email Filtering: Subaddress Extension
+
+Status of This Memo
+
+   This document specifies an Internet standards track protocol for the
+   Internet community, and requests discussion and suggestions for
+   improvements.  Please refer to the current edition of the "Internet
+   Official Protocol Standards" (STD 1) for the standardization state
+   and status of this protocol.  Distribution of this memo is unlimited.
+
+Abstract
+
+   On email systems that allow for 'subaddressing' or 'detailed
+   addressing' (e.g., "ken+sieve@example.org"), it is sometimes
+   desirable to make comparisons against these sub-parts of addresses.
+   This document defines an extension to the Sieve Email Filtering
+   Language that allows users to compare against the user and detail
+   sub-parts of an address.
+
+Table of Contents
+
+   1. Introduction ....................................................2
+   2. Conventions Used in This Document ...............................2
+   3. Capability Identifier ...........................................2
+   4. Subaddress Comparisons ..........................................2
+   5. IANA Considerations .............................................5
+   6. Security Considerations .........................................5
+   7. Normative References ............................................5
+   Appendix A. Acknowledgments ........................................6
+   Appendix B. Changes since RFC 3598 .................................6
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Murchison                   Standards Track                     [Page 1]
+
+RFC 5233              Sieve: Subaddress Extension           January 2008
+
+
+1.  Introduction
+
+   Subaddressing is the practice of augmenting the local-part of an
+   [RFC2822] address with some 'detail' information in order to give
+   some extra meaning to that address.  One common way of encoding
+   'detail' information into the local-part is to add a 'separator
+   character sequence', such as "+", to form a boundary between the
+   'user' (original local-part) and 'detail' sub-parts of the address,
+   much like the "@" character forms the boundary between the local-part
+   and domain.
+
+   Typical uses of subaddressing might be:
+
+   o  A message addressed to "ken+sieve@example.org" is delivered into a
+      mailbox called "sieve" belonging to the user "ken".
+
+   o  A message addressed to "5551212#123@example.com" is delivered to
+      the voice mailbox number "123" at phone number "5551212".
+
+   This document describes an extension to the Sieve language defined by
+   [RFC5228] for comparing against the 'user' and 'detail' sub-parts of
+   an address.
+
+2.  Conventions Used in This Document
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in [RFC2119].
+
+3.  Capability Identifier
+
+   The capability string associated with the extension defined in this
+   document is "subaddress".
+
+4.  Subaddress Comparisons
+
+   Test commands that act exclusively on addresses may take the optional
+   tagged arguments ":user" and ":detail" to specify what sub-part of
+   the local-part of the address will be acted upon.
+
+      NOTE: In most cases, the envelope "to" address is the preferred
+      address to examine for subaddress information when the desire is
+      to sort messages based on how they were addressed so as to get to
+      a specific recipient.  The envelope address is, after all, the
+      reason a given message is being processed by a given sieve script
+      for a given user.  This is particularly true when mailing lists,
+
+
+
+
+
+Murchison                   Standards Track                     [Page 2]
+
+RFC 5233              Sieve: Subaddress Extension           January 2008
+
+
+      aliases, and 'virtual domains' are involved since the envelope may
+      be the only source of detail information for the specific
+      recipient.
+
+      NOTE: Because the encoding of detailed addresses are site and/or
+      implementation specific, using the subaddress extension on foreign
+      addresses (such as the envelope "from" address or originator
+      header fields) may lead to inconsistent or incorrect results.
+
+   The ":user" argument specifies the user sub-part of the local-part of
+   an address.  If the address is not encoded to contain a detail sub-
+   part, then ":user" specifies the entire left side of the address
+   (equivalent to ":localpart").
+
+   The ":detail" argument specifies the detail sub-part of the local-
+   part of an address.  If the address is not encoded to contain a
+   detail sub-part, then the address fails to match any of the specified
+   keys.  If a zero-length string is encoded as the detail sub-part,
+   then ":detail" resolves to the empty value ("").
+
+      NOTE: If the encoding method used for detailed addresses utilizes
+      a separator character sequence, and the separator character
+      sequence occurs more than once in the local-part, then the logic
+      used to split the address is implementation-defined and is usually
+      dependent on the format used by the encompassing mail system.
+
+   Implementations MUST make sure that the encoding method used for
+   detailed addresses matches that which is used and/or allowed by the
+   encompassing mail system, otherwise unexpected results might occur.
+   Note that the mechanisms used to define and/or query the encoding
+   method used by the mail system are outside the scope of this
+   document.
+
+   The ":user" and ":detail" address parts are subject to the same rules
+   and restrictions as the standard address parts defined in [RFC5228],
+   Section 2.7.4.
+
+   For convenience, the "ADDRESS-PART" syntax element defined in
+   [RFC5228], Section 2.7.4, is augmented here as follows:
+
+         ADDRESS-PART  =/  ":user" / ":detail"
+
+   A diagram showing the ADDRESS-PARTs of an email address where the
+   detail information follows a separator character sequence of "+" is
+   shown below:
+
+
+
+
+
+
+Murchison                   Standards Track                     [Page 3]
+
+RFC 5233              Sieve: Subaddress Extension           January 2008
+
+
+          :user "+" :detail  "@" :domain
+         \-----------------/
+             :local-part
+
+   A diagram showing the ADDRESS-PARTs of a email address where the
+   detail information precedes a separator character sequence of "--" is
+   shown below:
+
+          :detail "--" :user  "@" :domain
+         \------------------/
+             :local-part
+
+   Example (where the detail information follows "+"):
+
+      require ["envelope", "subaddress", "fileinto"];
+
+      # In this example the same user account receives mail for both
+      # "ken@example.com" and "postmaster@example.com"
+
+      # File all messages to postmaster into a single mailbox,
+      # ignoring the :detail part.
+      if envelope :user "to" "postmaster" {
+          fileinto "inbox.postmaster";
+          stop;
+      }
+
+      # File mailing list messages (subscribed as "ken+mta-filters").
+      if envelope :detail "to" "mta-filters" {
+          fileinto "inbox.ietf-mta-filters";
+      }
+
+      # Redirect all mail sent to "ken+foo".
+      if envelope :detail "to" "foo" {
+          redirect "ken@example.net";
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Murchison                   Standards Track                     [Page 4]
+
+RFC 5233              Sieve: Subaddress Extension           January 2008
+
+
+5.  IANA Considerations
+
+   The following template specifies the IANA registration of the
+   subaddress Sieve extension specified in this document.  This
+   registration replaces that from RFC 3598:
+
+   To: iana@iana.org
+   Subject: Registration of new Sieve extension
+
+   Capability name: subaddress
+   Description:     Adds the ':user' and ':detail' address parts
+                    for use with the address and envelope tests
+   RFC number:      RFC 5233
+   Contact address: The Sieve discussion list <ietf-mta-filters@imc.org>
+
+   This information has been added to the list of Sieve extensions given
+   on http://www.iana.org/assignments/sieve-extensions.
+
+6.  Security Considerations
+
+   Security considerations are discussed in [RFC5228].  It is believed
+   that this extension does not introduce any additional security
+   concerns.
+
+7.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119, March 1997.
+
+   [RFC2822]  Resnick, P., "Internet Message Format", RFC 2822, April
+              2001.
+
+   [RFC5228]  Guenther, P., Ed., and T. Showalter, Ed., "Sieve: An Email
+              Filtering Language", RFC 5228, January 2008.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Murchison                   Standards Track                     [Page 5]
+
+RFC 5233              Sieve: Subaddress Extension           January 2008
+
+
+Appendix A.  Acknowledgments
+
+   Thanks to Tim Showalter, Alexey Melnikov, Michael Salmon, Randall
+   Gellens, Philip Guenther, Jutta Degener, Michael Haardt, Ned Freed,
+   Mark Mallett, and Barry Leiba for their help with this document.
+
+Appendix B.  Changes since RFC 3598
+
+   o  Discussion of how the user and detail information is encoded now
+      uses generic language.
+
+   o  Added note detailing that this extension is most useful when used
+      on the envelope "to" address.
+
+   o  Added note detailing that this extension isn't very useful on
+      foreign addresses (envelope "from" or originator header fields).
+
+   o  Fixed envelope test example to only use "to" address.
+
+   o  Replaced ":user" example with one that doesn't produce unexpected
+      behavior.
+
+   o  Refer to the zero-length string ("") as "empty" instead of "null"
+      (per RFC 5228).
+
+   o  Use only RFC 2606 domains in examples.
+
+   o  Miscellaneous editorial changes.
+
+Author's Address
+
+   Kenneth Murchison
+   Carnegie Mellon University
+   5000 Forbes Avenue
+   Cyert Hall 285
+   Pittsburgh, PA  15213
+   USA
+
+   Phone: +1 412 268 2638
+   EMail: murch@andrew.cmu.edu
+
+
+
+
+
+
+
+
+
+
+
+Murchison                   Standards Track                     [Page 6]
+
+RFC 5233              Sieve: Subaddress Extension           January 2008
+
+
+Full Copyright Statement
+
+   Copyright (C) The IETF Trust (2008).
+
+   This document is subject to the rights, licenses and restrictions
+   contained in BCP 78, and except as set forth therein, the authors
+   retain all their rights.
+
+   This document and the information contained herein are provided on an
+   "AS IS" basis and THE CONTRIBUTOR, THE ORGANIZATION HE/SHE REPRESENTS
+   OR IS SPONSORED BY (IF ANY), THE INTERNET SOCIETY, THE IETF TRUST AND
+   THE INTERNET ENGINEERING TASK FORCE DISCLAIM ALL WARRANTIES, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF
+   THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED
+   WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+
+Intellectual Property
+
+   The IETF takes no position regarding the validity or scope of any
+   Intellectual Property Rights or other rights that might be claimed to
+   pertain to the implementation or use of the technology described in
+   this document or the extent to which any license under such rights
+   might or might not be available; nor does it represent that it has
+   made any independent effort to identify any such rights.  Information
+   on the procedures with respect to rights in RFC documents can be
+   found in BCP 78 and BCP 79.
+
+   Copies of IPR disclosures made to the IETF Secretariat and any
+   assurances of licenses to be made available, or the result of an
+   attempt made to obtain a general license or permission for the use of
+   such proprietary rights by implementers or users of this
+   specification can be obtained from the IETF on-line IPR repository at
+   http://www.ietf.org/ipr.
+
+   The IETF invites any interested party to bring to its attention any
+   copyrights, patents or patent applications, or other proprietary
+   rights that may cover technology that may be required to implement
+   this standard.  Please address the information to the IETF at
+   ietf-ipr@ietf.org.
+
+
+
+
+
+
+
+
+
+
+
+
+Murchison                   Standards Track                     [Page 7]
+

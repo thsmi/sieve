@@ -71,7 +71,7 @@
     suite.log("include test2");
    
     var script =
-      'require ["fileinto", "include", "variables", "relational"];\r\n'
+      'require [ "include", "variables" ];\r\n'
         + 'global "test";\r\n'
         + 'global "test_mailbox";\r\n'
         + '\r\n'
@@ -112,7 +112,7 @@
     suite.log("single global");
    
     var script =
-      'require ["variables", "include", "vacation"];\r\n'
+      'require ["variables", "include" /*, "vacation"*/];\r\n'
         + 'global "i_am_on_vacation";\r\n'
         + '\r\n'
         + '#set "global.i_am_on_vacation" "1";\r\n'

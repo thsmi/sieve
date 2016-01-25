@@ -70,7 +70,10 @@
   SieveEnvelope.prototype.require
       = function (imports)
   {
+  	this.addressPart.require(imports);
     this.matchType.require(imports);
+
+    imports["envelope"] = true;
   };
   
   SieveEnvelope.prototype.init
@@ -117,13 +120,7 @@
     this.whiteSpace[5].init(parser);
     
     return this;
-  };
-  
-  SieveEnvelope.prototype.require
-      = function (requires)
-  {
-    requires["envelope"] = true;
-  };
+  };  
   
   SieveEnvelope.prototype.toScript
       = function ()
@@ -202,6 +199,7 @@
   SieveAddress.prototype.require
       = function (imports)
   {
+  	this.addressPart.require(imports);
     this.matchType.require(imports);
   };
   

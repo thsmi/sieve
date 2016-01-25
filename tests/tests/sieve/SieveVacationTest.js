@@ -45,7 +45,7 @@
     suite.log("Parse Vacation Example 2");
   
     var script = 
-          'require ["vacation", "variables"];\r\n'
+          'require ["vacation"];\r\n'
             + 'if header :matches "subject" "*" {\r\n'
             + '  vacation :subject "Automatic response to: ${1}"\r\n'
             + '           "I\'m away -- send mail to foo in my absence";\r\n'

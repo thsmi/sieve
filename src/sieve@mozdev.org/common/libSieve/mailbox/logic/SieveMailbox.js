@@ -123,6 +123,11 @@
     
     return this;
   }; 
+  
+  SieveMailboxExistsTest.prototype.mailboxes
+    = function () {
+    return this._names;
+  };
 
   SieveMailboxExistsTest.prototype.toScript
       = function ()
@@ -163,8 +168,8 @@
     this._comparator = this._createByName("comparator");
   
     this._mailbox = this._createByName("string",'""');
-    this._annotations = this._createByName("string",'""');
-    this._keyList = this._createByName("stringlist",'""');
+    this._annotation = this._createByName("string",'""');
+    this._keys = this._createByName("stringlist",'""');
   }
   
   SieveMetaDataTest.prototype = Object.create(SieveAbstractElement.prototype);
@@ -229,14 +234,44 @@
     this._mailbox.init(parser);
     this._whitespace[3].init(parser);
     
-    this._annotations.init(parser);
+    this._annotation.init(parser);
     this._whitespace[4].init(parser);
     
-    this._keyList.init(parser);
+    this._keys.init(parser);
     this._whitespace[5].init(parser);
 
     return this;
-  }; 
+  };
+  
+  SieveMetaDataTest.prototype.mailbox
+      = function(value)
+  {
+    return this._mailbox.value(value);    
+  };
+  
+  SieveMetaDataTest.prototype.annotation
+      = function (value)
+  {
+    return this._annotation.value(value);    
+  };
+  
+  SieveMetaDataTest.prototype.keys
+      = function ()
+  {
+    return this._keys;    
+  };  
+  
+  SieveMetaDataTest.prototype.matchType
+      = function ()
+  {
+    return this._matchType;       
+  };
+  
+  SieveMetaDataTest.prototype.comparator
+      = function ()
+  {
+    return this._comparator;
+  };
 
   SieveMetaDataTest.prototype.toScript
       = function ()
@@ -249,9 +284,9 @@
            this._matchType.toScript()+this._whitespace[2].toScript() : "")
       + this._mailbox.toScript()
       + this._whitespace[3].toScript()
-      + this._annotations.toScript()
+      + this._annotation.toScript()
       + this._whitespace[4].toScript()
-      + this._keyList.toScript()
+      + this._keys.toScript()
       + this._whitespace[5].toScript();
   };
   
@@ -313,6 +348,18 @@
     this._annotations.init(parser);
     
     return this;
+  };
+  
+  SieveMetaDataExistsTest.prototype.mailbox
+      = function (value)
+  {
+    return this._mailbox.value(value);
+  };
+  
+  SieveMetaDataExistsTest.prototype.annotations
+      = function ()
+  {
+    return this._annotations;
   };
 
   SieveMetaDataExistsTest.prototype.toScript

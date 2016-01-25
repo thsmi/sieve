@@ -85,6 +85,10 @@
   <script type="application/javascript" src="subaddress/logic/SieveSubaddress.js" ></script>
   <script type="application/javascript" src="subaddress/widgets/SieveSubaddressUI.js" ></script>
    
+  <!-- RFC5490 - Mailbox -->
+  <script type="application/javascript" src="mailbox/logic/SieveMailbox.js" ></script>
+  <script type="application/javascript" src="mailbox/widgets/SieveMailboxUI.js" ></script>
+   
 </head>
 <body>
 
@@ -138,27 +142,31 @@
   <div id="CapabilityOverlay"></div>
   
   <div id="CapabilitiesDialog">
-      <div><input type="checkbox" name="capabilities" value="imap4flags" checked>imap4flags</div>
+    <div><input type="checkbox" name="capabilities" value="imap4flags" checked>imap4flags</div>
     
-       <div><input type="checkbox" name="capabilities" value="fileinto" checked>fileinto</div>
+    <div><input type="checkbox" name="capabilities" value="fileinto" checked>fileinto</div>
        
-       <div><input type="checkbox" name="capabilities" value="reject" checked>reject (RFC5429)</div>
-       <div><input type="checkbox" name="capabilities" value="ereject" checked>ereject (RFC5429)</div>
+    <div><input type="checkbox" name="capabilities" value="reject" checked>reject (RFC5429)</div>
+    <div><input type="checkbox" name="capabilities" value="ereject" checked>ereject (RFC5429)</div>
  
-       <div><input type="checkbox" name="capabilities" value="envelope" checked>envelope</div>
-       <div><input type="checkbox" name="capabilities" value="regex" checked>regex</div>
+    <div><input type="checkbox" name="capabilities" value="envelope" checked>envelope</div>
+    <div><input type="checkbox" name="capabilities" value="regex" checked>regex</div>
   	   
-  	   <div><input type="checkbox" name="capabilities" value="body" checked>body (RFC5173)</div>
-  	   <div><input type="checkbox" name="capabilities" value="vacation" checked>vacation</div>
-  	   <div><input type="checkbox" name="capabilities" value="variables" checked>variables (RFC5229)</div>
-  	   <div><input type="checkbox" name="capabilities" value="include" checked>include (RFC6609)</div>
-	 
-	     <div><input type="checkbox" name="capabilities" value="subaddress" checked>subaddress (RFC5233)</div>
-	   <div>
-	     <button id="CapabilitiesApply">Apply</button>
-	     <button id="CapabilitiesAll">Select All</button>
-	     <button id="CapabilitiesHide">Cancel</button>
-	   </div>
+  	<div><input type="checkbox" name="capabilities" value="body" checked>body (RFC5173)</div>
+  	<div><input type="checkbox" name="capabilities" value="vacation" checked>vacation</div>
+  	<div><input type="checkbox" name="capabilities" value="variables" checked>variables (RFC5229)</div>
+  	<div><input type="checkbox" name="capabilities" value="include" checked>include (RFC6609)</div>
+  	   
+    <div><input type="checkbox" name="capabilities" value="mailbox" checked>mailbox (RFC5490)</div>
+    <div><input type="checkbox" name="capabilities" value="mboxmetadata" checked>mboxmetadata (RFC5490)</div>
+       
+    <div><input type="checkbox" name="capabilities" value="subaddress" checked>subaddress (RFC5233)</div>
+	   
+	  <div>
+	    <button id="CapabilitiesApply">Apply</button>
+	    <button id="CapabilitiesAll">Select All</button>
+	    <button id="CapabilitiesHide">Cancel</button>
+	  </div>
   </div>
 </div>
 

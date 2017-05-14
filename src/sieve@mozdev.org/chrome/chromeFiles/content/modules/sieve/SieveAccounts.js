@@ -1340,20 +1340,6 @@ SieveAccounts.prototype.getAccounts
       this.accounts.push(new SieveAccount(account));
     }
   }
-  
-  // ... while the old one relies upon Ci.nsISupportsArray ...
-  if (servers instanceof Ci.nsISupportsArray)
-  {
-    for (var i = 0; i < servers.Count(); i++)
-    {
-      var account = servers.GetElementAt(i).QueryInterface(Ci.nsIMsgIncomingServer);
-          
-      if ((account.type != "imap") && (account.type != "pop3"))
-        continue;
-
-      this.accounts.push(new SieveAccount(account));        
-    }
-  }
       
   return this.accounts;
 };

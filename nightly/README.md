@@ -1,6 +1,6 @@
 # Development Builds
 
-Develompent builds are the bleeding-edge of the current development. They are released for 
+Development builds are the bleeding-edge of the current development. They are released for 
 testing after any major change. I'll be more than happy if you send me feedback on
 those builds and report issues.
 

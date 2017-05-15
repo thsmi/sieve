@@ -25,6 +25,12 @@
         <em:minVersion>10</em:minVersion>
       	<em:maxVersion>70.0</em:maxVersion>  
       </Description>
+      <!-- Seamonkey -->
+      <Description>
+        <em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
+        <em:minVersion>2.39</em:minVersion>
+      	<em:maxVersion>2.39</em:maxVersion>  
+      </Description>
     </em:targetApplication>
 
     <em:localized>

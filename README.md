@@ -22,20 +22,30 @@ The extension is an implementation of the [sieve management protocol (RFC 5804)]
 Currently only "SASL Plain", "SASL Login", "SASL CRAM MD5" and "[SASL SCRAM SHA1](https://tools.ietf.org/html/rfc5802)" 
 Authentication mechanisms are supported, others may be implemented on request. 
 
+*Currently you need to stick with the nighly builds, as there is an outstanding bug which prevents newer releases to be published. But be aware they do not update automatically.*
+
 The project exists since 2006 and can be considered as stable. Statistics
 are available at [ohloh](https://www.ohloh.net/p/tb-sieve)
 
-It is translated into French, Spanish, Russian and German.  If you're interested 
+It is translated into French, Spanish, Russian and German. If you're interested 
 in translating or localizing the extension into your language, just sign up at 
 [crowdin](http://crowdin.net/project/sieve/invite) and start translating 
 (Crowdin is a free collaborative translation tool). If you added a translation please
-deop a note via email or open a ticket, so that I can regenerate the localised files.
+drop a note via email or open a ticket, so that I can regenerate the localised files.
 
 For more details on contributing refer to the [Contributing Guidelines](https://github.com/thsmi/sieve/blob/master/CONTRIBUTING.md)  
 
 A big thank you to every one who have [contributed and supported](CONTRIBUTORS.md) this project.
 
-[![PayPayl donate button](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC "Donate to this project using Paypal")
+If you want to support this project consider donating
+
+  * Code, patches or localisations
+  * via Paypal 
+  
+  [![PayPayl donate button](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC "Donate to this project using Paypal")
+  
+  * via Bitcoin bitcoin:1EMCRg5j6AG2eWPP7KwVhj3fJ8pV7GMMYZ?label=Donation%20for%20Sieve%20Addon
+
 
 ## Bugs
 

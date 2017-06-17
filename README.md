@@ -42,7 +42,7 @@ If you want to support this project consider donating
   * Code, patches or localisations
   * via Paypal [![PayPayl donate button](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC "Donate to this project using Paypal")
   
-  * via Bitcoin [1EMCRg5j6AG2eWPP7KwVhj3fJ8pV7GMMYZ](bitcoin:1EMCRg5j6AG2eWPP7KwVhj3fJ8pV7GMMYZ?label=Donation%20for%20Sieve%20Addon)
+  * via Bitcoin [1EMCRg5j6AG2eWPP7KwVhj3fJ8pV7GMMYZ](bitcoin:1GEnrRVobFYuqYj2opdvRQNtG3Z8znvfKw?label=Donation%20for%20Sieve%20Addon)
 
 
 ## Bugs

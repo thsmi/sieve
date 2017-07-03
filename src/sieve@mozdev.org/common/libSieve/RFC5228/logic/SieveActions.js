@@ -64,9 +64,18 @@
   {
     SieveAbstractElement.call(this,docshell,id);
     
-    this.whiteSpace = this._createByName("whitespace"," ");
+    this._whiteSpace = [];
+    this._whiteSpace[0] = this._createByName("whitespace"," ");
+    this._whiteSpace[1] = this._createByName("whitespace"," ");
+
     this.address = this._createByName("string","\"username@example.com\""); 
     this.semicolon = this._createByName("atom/semicolon");  
+
+    this._state = {};
+    this._copy = null;
+
+    if (this.document().supportsByName("argument/copy"))
+      this._copy  = this.document().createByName("argument/copy");
   }
   
   SieveRedirect.prototype = Object.create(SieveAbstractElement.prototype);
@@ -101,7 +110,18 @@
     parser.extract("redirect");
     
     // ... eat the deadcode before the stringlist...
-    this.whiteSpace.init(parser);
+    this._whiteSpace[0].init(parser);
+
+    this._state = {};
+
+    if ( this.document().supportsByName("argument/copy") ) {
+        if (this._probeByName("argument/copy", parser)) {
+        this._copy.init(parser);
+        this._whiteSpace[1].init(parser);
+
+        this._state["copy"] = true;
+      }
+    }
     
     // ... extract the redirect address...
     this.address.init(parser);
@@ -128,7 +148,9 @@
       = function ()
   {
     return "redirect"
-      + this.whiteSpace.toScript()
+      + this._whiteSpace[0].toScript()
+      + ((this._state["copy"] && this.document().supportsByName("argument/copy")) ?
+         "" + this._copy.toScript() + this._whiteSpace[1].toScript() : "" )
       + this.address.toScript()
       + this.semicolon.toScript();
   };
@@ -228,13 +250,18 @@
     this._whiteSpace = [];
     this._whiteSpace[0] = this._createByName("whitespace", " ");
     this._whiteSpace[1] = this._createByName("whitespace", " ");
+    this._whiteSpace[2] = this._createByName("whitespace", " ");
     
     this.semicolon = this._createByName("atom/semicolon");
         
     this._path = this._createByName("string","\"INBOX\"");
   
     this._state = {};
+    this._copy = null;
     this._create = null; 
+
+    if (this.document().supportsByName("argument/copy"))
+      this._copy  = this.document().createByName("argument/copy");
     
     if (this.document().supportsByName("argument/create"))
       this._create  = this.document().createByName("argument/create");
@@ -275,11 +302,20 @@
     
     
     this._state = {};
+
+    if ( this.document().supportsByName("argument/copy") ) {
+        if (this._probeByName("argument/copy", parser)) {
+        this._copy.init(parser);
+        this._whiteSpace[1].init(parser);
+
+        this._state["copy"] = true;
+      }
+    }
     
     if ( this.document().supportsByName("argument/create") ) {
     	if (this._probeByName("argument/create", parser)) {
         this._create.init(parser);
-        this._whiteSpace[1].init(parser);
+        this._whiteSpace[2].init(parser);
       
         this._state["create"] = true;
       } 
@@ -299,6 +335,9 @@
   {
     requires["fileinto"] = true;
     
+    if (this._state["copy"] && this.document().supportsByName("argument/copy"))
+      this._copy.require(requires);
+
     if (this._state["create"] && this.document().supportsByName("argument/create"))
       this._create.require(requires);
   };
@@ -331,8 +370,10 @@
   {
     return "fileinto" 
       + this._whiteSpace[0].toScript()
+      + ((this._state["copy"] && this.document().supportsByName("argument/copy")) ?
+           "" + this._copy.toScript() + this._whiteSpace[1].toScript() : "" )
       + ((this._state["create"] && this.document().supportsByName("argument/create")) ? 
-           "" + this._create.toScript() + this._whiteSpace[1].toScript() : "" )
+           "" + this._create.toScript() + this._whiteSpace[2].toScript() : "" )
       + this._path.toScript()
       + this.semicolon.toScript();
   };

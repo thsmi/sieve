@@ -88,6 +88,9 @@
   <!-- RFC5490 - Mailbox -->
   <script type="application/javascript" src="mailbox/logic/SieveMailbox.js" ></script>
   <script type="application/javascript" src="mailbox/widgets/SieveMailboxUI.js" ></script>
+
+  <!-- RFC3894 - Copy -->
+  <script type="application/javascript" src="copy/logic/SieveCopy.js" ></script>
    
 </head>
 <body>
@@ -161,6 +164,8 @@
     <div><input type="checkbox" name="capabilities" value="mboxmetadata" checked>mboxmetadata (RFC5490)</div>
        
     <div><input type="checkbox" name="capabilities" value="subaddress" checked>subaddress (RFC5233)</div>
+
+    <div><input type="checkbox" name="capabilities" value="copy" checked>copy</div>
 	   
 	  <div>
 	    <button id="CapabilitiesApply">Apply</button>

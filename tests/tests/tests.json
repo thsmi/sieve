@@ -115,5 +115,13 @@ var tests = {
       "./../../src/sieve@mozdev.org/common/libManageSieve/SieveResponse.js",
       "./../../src/sieve@mozdev.org/common/libManageSieve/SieveResponseParser.js",
       "./../../src/sieve@mozdev.org/common/libManageSieve/SieveResponseCodes.js"]
+  },
+
+  "copy" : {
+    script : "./sieve/SieveCopyTest.js",
+    extend : "rfc5228",
+    require : [
+      "./validators/ScriptValidator.js",
+      "./../../src/sieve@mozdev.org/common/libSieve/copy/logic/SieveCopy.js"]
   }
 }

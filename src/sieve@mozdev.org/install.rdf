@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!--
- 
+
  The contents of this file is licenced. You may obtain a copy of
- the license at https://github.com/thsmi/sieve/ or request it via email 
- from the author. Do not remove or change this comment. 
-  
+ the license at https://github.com/thsmi/sieve/ or request it via email
+ from the author. Do not remove or change this comment.
+
  The initial author of the code is:
    Thomas Schmid <schmid-thomas@gmx.net>
 
@@ -23,8 +23,17 @@
       <Description>
         <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
         <em:minVersion>10</em:minVersion>
-      	<em:maxVersion>70.0</em:maxVersion>  
+        <em:maxVersion>90.0</em:maxVersion>
       </Description>
+    </em:targetApplication>
+
+    <em:targetApplication>
+      <!-- SeaMonkey -->
+      <em:Description>
+        <em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
+        <em:minVersion>2.0</em:minVersion>
+        <em:maxVersion>2.*</em:maxVersion>
+      </em:Description>
     </em:targetApplication>
 
     <em:localized>
@@ -33,15 +42,15 @@
         <em:description>Настраивает фильтры Sieve на почтовом сервере.</em:description>
       </Description>
     </em:localized>
-    
+
     <em:bootstrap>true</em:bootstrap>
-   
+
     <em:name>Sieve</em:name>
     <em:description>Configures serverside sieve email filters</em:description>
     <em:creator>Thomas Schmid</em:creator>
     <em:homepageURL>http://sieve.mozdev.org/</em:homepageURL>
-<!--    <em:iconURL>chrome://sieve/skin/icon.png</em:iconURL> -->
-<!--    <em:optionsURL>chrome://sieve/content/options/SieveOptions.xul</em:optionsURL> -->   
-<!--    <em:updateURL>https://www.mozdev.org/p/updates/sieve/sieve@mozdev.org/update.rdf</em:updateURL> -->
-  </Description>      
+    <!--    <em:iconURL>chrome://sieve/skin/icon.png</em:iconURL> -->
+    <!--    <em:optionsURL>chrome://sieve/content/options/SieveOptions.xul</em:optionsURL> -->
+    <!--    <em:updateURL>https://www.mozdev.org/p/updates/sieve/sieve@mozdev.org/update.rdf</em:updateURL> -->
+  </Description>
 </RDF>

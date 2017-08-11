@@ -20,6 +20,8 @@ Addon Manager.
 
 The addon is restartless, so there is no need to restart Thunderbird upon installation and deinstallation.
 
+Sometimes thunderbird fails to invalidate its cache when updating a restartless addon. The result is the new version is displayed in the addons dialog but the old cached code is still be used. In such a case uninstall the addon, then restart thunderbird, restart it again and finally install it again. This ensures the cache gets correctly invalidated. 
+
 ## Builds
 * [sieve-0.2.3k.xpi](https://github.com/thsmi/sieve/blob/master/nightly/0.2.3/sieve-0.2.3k.xpi?raw=true)
 * [sieve-0.2.3j.xpi](https://github.com/thsmi/sieve/blob/master/nightly/0.2.3/sieve-0.2.3j.xpi?raw=true)

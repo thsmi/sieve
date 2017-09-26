@@ -24,8 +24,10 @@ const Cu = Components.utils;
 
 function SieveAutoConfig()
 {
+  Cu.import("chrome://sieve/content/modules/sieve/SieveMozLogger.js");
   Cu.import("chrome://sieve/content/modules/sieve/SieveMozClient.js"); 
   
+  this.logger =  new SieveLogger();
   this.hosts = [];
 }
 
@@ -36,7 +38,7 @@ SieveAutoConfig.prototype =
     if (this.activeHosts > 0)
       throw new Error("Auto config already running");
     
-    this.hosts.push(new SieveAutoConfigHost(host,port,proxy,this));
+    this.hosts.push(new SieveAutoConfigHost(host,port,proxy,this, this.logger));
   },
   
   run: function(listener)
@@ -87,18 +89,14 @@ SieveAutoConfig.prototype =
 };
 
 
-function SieveAutoConfigHost(host,port,proxy, listener)
+function SieveAutoConfigHost(host, port, proxy, listener, logger)
 {
   this.port =  port;
   this.host = host;
   this.proxy = proxy;
   this.listener = listener;
  
-  this.sieve = new Sieve();
-                   
-  //this.logger = Cc["@mozilla.org/consoleservice;1"]
-  //    .getService(Ci.nsIConsoleService);    
-  //this.sieve.setDebugLevel(23,this.logger);
+  this.sieve = new Sieve(logger);
 
   this.sieve.addListener(this);
   

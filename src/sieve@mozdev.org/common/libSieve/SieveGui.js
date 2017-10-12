@@ -78,7 +78,7 @@
     $("#DebugStringify")
         .click(function() { $('#txtOutput').val(getSieveScript()); });
     $("#DebugRequire")
-        .click(function() { require(); });
+        .click(function() { require_(); });
     $("#DebugCompact")
         .click(function() { compact(); });
     $("#DebugCapabilities")
@@ -132,7 +132,7 @@
     return dom2.script();
   }
   
-  function require()
+  function require_()
   {
     var requires = {};
     

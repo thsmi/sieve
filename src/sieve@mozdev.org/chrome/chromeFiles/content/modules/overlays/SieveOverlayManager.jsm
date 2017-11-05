@@ -369,7 +369,7 @@ var SieveOverlayManager =
   {      
     // A new window has opened
     aWindow = aWindow.QueryInterface(Ci.nsIInterfaceRequestor)
-                             .getInterface(Ci.nsIDOMWindowInternal);
+                             .getInterface(Ci.nsIDOMWindow);
 
     var url = aWindow.document.baseURI;
       
@@ -419,7 +419,7 @@ var SieveOverlayManager =
     SieveOverlayManager._unload.setValue(window, function (aEvent) { 
       let window = aEvent.currentTarget;
       window = window.QueryInterface(Ci.nsIInterfaceRequestor)
-                       .getInterface(Ci.nsIDOMWindowInternal);
+                       .getInterface(Ci.nsIDOMWindow);
       SieveOverlayManager.onUnloadWindow(window);
     });
         

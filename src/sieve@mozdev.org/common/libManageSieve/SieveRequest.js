@@ -1521,7 +1521,7 @@ SieveSaslScramSha1Request.prototype.byteArrayToHexString
   
   function SieveSaslExternalRequest() 
   {
-    this._authorizable = false;
+    this._authorizable = true;
   }
   
   // Inherrit prototypes from SieveAbstractRequest...
@@ -1532,7 +1532,7 @@ SieveSaslScramSha1Request.prototype.byteArrayToHexString
   SieveSaslExternalRequest.prototype.getNextRequest 
       = function ()
   {
-    return "AUTHENTICATE \"EXTERNAL\" \"\"\r\n";
+    return 'AUTHENTICATE "EXTERNAL" "'+btoa(this._authorization)+'"\r\n';
   };
   
   /**

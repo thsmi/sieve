@@ -283,9 +283,25 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
     var pump = Cc["@mozilla.org/network/input-stream-pump;1"].
         createInstance(Ci.nsIInputStreamPump);
   
-    pump.init(stream, -1, -1, 5000, 2, true);
+    // the guys at mozilla canged their api without caring
+    // about backward compatibility. Which means we need 
+    // Some try catch magic here.
+    try {
+      // This we try the new api definition...
+      pump.init(stream,5000, 2, true);
+    } catch (ex) {
+
+      // ... in case we run into an not enoug args exception 
+      // we try the old api definition and in any other case
+      // we just rethrow the exception 
+      if (ex.name !== "NS_ERROR_XPC_NOT_ENOUGH_ARGS")
+        throw ex;
+
+      this.getLogger().log("Falling back to legacy stream pump initalization ...", (1 << 2));
+      pump.init(stream, -1, -1, 5000, 2, true);
+    }
+
     pump.asyncRead(this,null);
-    
   };
   
   /**

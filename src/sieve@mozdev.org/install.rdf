@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!--
- 
+
  The contents of this file is licenced. You may obtain a copy of
- the license at https://github.com/thsmi/sieve/ or request it via email 
- from the author. Do not remove or change this comment. 
-  
+ the license at https://github.com/thsmi/sieve/ or request it via email
+ from the author. Do not remove or change this comment.
+
  The initial author of the code is:
    Thomas Schmid <schmid-thomas@gmx.net>
 
@@ -15,15 +15,15 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>sieve@mozdev.org</em:id>
-    <em:version>0.2.3l</em:version>
+    <em:version>0.2.4-1</em:version>
     <em:type>2</em:type>
 
     <em:targetApplication>
       <!-- Thunderbird -->
       <Description>
         <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
-        <em:minVersion>10</em:minVersion>
-      	<em:maxVersion>70.0</em:maxVersion>  
+        <em:minVersion>10.*</em:minVersion>
+      	<em:maxVersion>70.0</em:maxVersion>
       </Description>
     </em:targetApplication>
 
@@ -33,15 +33,15 @@
         <em:description>Настраивает фильтры Sieve на почтовом сервере.</em:description>
       </Description>
     </em:localized>
-    
+
     <em:bootstrap>true</em:bootstrap>
-   
+
     <em:name>Sieve</em:name>
     <em:description>Configures serverside sieve email filters</em:description>
     <em:creator>Thomas Schmid</em:creator>
     <em:homepageURL>http://sieve.mozdev.org/</em:homepageURL>
 <!--    <em:iconURL>chrome://sieve/skin/icon.png</em:iconURL> -->
-<!--    <em:optionsURL>chrome://sieve/content/options/SieveOptions.xul</em:optionsURL> -->   
+<!--    <em:optionsURL>chrome://sieve/content/options/SieveOptions.xul</em:optionsURL> -->
 <!--    <em:updateURL>https://www.mozdev.org/p/updates/sieve/sieve@mozdev.org/update.rdf</em:updateURL> -->
-  </Description>      
+  </Description>
 </RDF>

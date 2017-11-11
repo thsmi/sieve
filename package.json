@@ -1,0 +1,31 @@
+{
+  "name": "sieve",
+  "version": "0.2.4-1",
+  "description": "Configures serverside sieve email filters",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "dependencies": {
+    "codemirror": "^5.31.0",
+    "jquery": "^3.2.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-bump": "^2.8.0",
+    "gulp-zip": "^4.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thsmi/sieve.git"
+  },
+  "author": "",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/thsmi/sieve/issues"
+  },
+  "homepage": "https://github.com/thsmi/sieve#readme"
+}

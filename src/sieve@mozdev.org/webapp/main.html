@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="materialicons.css">
   <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons"  rel="stylesheet">-->
   <link rel="stylesheet" href="style.css">
-  <script src="./../common/jQuery/jquery-2.1.1.min.js"></script>
+  <script src="./../common/jQuery/jquery.min.js"></script>
 </head>
 <body>
 
@@ -22,29 +22,29 @@
       <span class="icon_secondary"><i class="material-icons">check_box_outline_blank</i><i class="material-icons">more_vert</i> <!-- delete, rename --></span>
     </div>
   </div>
-  
+
   <!-- template for an account -->
   <div id="templates-account">
     <section class="collapsed">
-    
+
       <div class="account open">
         <span class="layout_spacer">schmid-thomas@gmx.net</span>
         <span class="icon_secondary"><i class="material-icons">more_vert</i></span> <!-- menu > Edit Account, Show Capabilities, Remove Account-->
       </div>
-      
-      <div class="scripts">     
+
+      <div class="scripts">
       </div>
 
       <div class="blubb">
         <div class="item script">
           <span class="icon_primary"><i class="material-icons">note_add</i></span>
           <span class="layout_spacer">Create Script</span>
-        </div>      
-      </div>      
-      
-    </section>  
+        </div>
+      </div>
+
+    </section>
   </div>
-    
+
 </div>
 
 <div class="mdl-layout__container" >
@@ -88,20 +88,20 @@
 			     <span class="layout_spacer">schmid-thomas@gmx.net</span>
 			      <span class="icon_secondary"><i class="material-icons">more_vert</i></span> <!-- menu > Edit Account, Show Capabilities, Remove Account-->
 			</div>
-			
-			<div class="scripts">			
+
+			<div class="scripts">
               <div class="item script open">
 	  	        <span class="icon_primary"><i class="material-icons">edit</i></span>
 			    <span class="layout_spacer">Script 1</span>
 			    <span class="icon_secondary"><i class="material-icons">check_box_outline_blank</i><i class="material-icons">more_vert</i> <!-- delete, rename --></span>
 		      </div>
-		  
+
 		       <div class="item script modified">
 		        <span class="icon_primary"><i class="material-icons">edit</i></span>
 			    <span class="layout_spacer">Script 2 (Active)</span>
 			    <span class="icon_secondary"><i class="material-icons">check_box</i><i class="material-icons">more_vert</i> <!-- delete, rename --></span>
 		      </div>
-		  
+
 		       <div class="item script">
 		        <span class="icon_primary"><i class="material-icons">edit</i></span>
 			    <span class="layout_spacer">Script 3</span>
@@ -114,26 +114,26 @@
 		      </div>
 			</div>
 		</section>
-		  
-		  <section>           
+
+		  <section>
 		    <div class="account open">
 			   <span class="layout_spacer">mail@tschmid.net</span>
 			    <span class="icon_secondary"><i class="material-icons">more_vert</i></span>
 			</div>
-		  
+
 		    <div class="scripts">
               <div class="item script open">
 		        <span class="icon_primary"><i class="material-icons">check_box_outline_blank</i></span>
 			    <span class="layout_spacer">Script 1</span>
 			    <span class="icon_secondary"><i class="material-icons">edit</i><i class="material-icons">more_vert</i> <!-- delete, rename, activate --></span>
 		      </div>
-		  
+
 		       <div class="item script modified">
 		        <span class="icon_primary"><i class="material-icons">check_box_outline_blank</i></span>
 			    <span class="layout_spacer">Script 2</span>
 			    <span class="icon_secondary"><i class="material-icons">edit</i><i class="material-icons">more_vert</i> <!-- delete, rename, activate --></span>
 		      </div>
-		  
+
 		       <div class="item script">
 		        <span class="icon_primary"><i class="material-icons">check_box</i></span>
 			    <span class="layout_spacer">Script 3</span>
@@ -146,28 +146,28 @@
 		      </div>
 		    </div>
 		  </section>
-		  
-		  <section>		  
+
+		  <section>
 		    <div class="account">
 			   <span class="layout_spacer">mail@tschmid.net</span>
 			   <span class="icon_secondary"><i class="material-icons">more_vert</i></span>
 		    </div>
 		  </section>
 		  </div>
-		  
+
 		  <section>
 		    <div class="account">
 		       <span class="icon_primary"><i class="material-icons">note_add</i></span>
-   			   <span class="layout_spacer">Add Account</span>			
+   			   <span class="layout_spacer">Add Account</span>
 		    </div>
 		  </section>
-		  
+
 
           <div class="mdl-layout-spacer"></div>
           <a class="item" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">help_outline</i><span class="visuallyhidden">Help</span></a>
         </nav>
       </div>
-	  
+
       <main class="mdl-layout__content" >
     <iframe  id="sivEditor" src="./../common/editor/sieve.editor.html"></iframe>
       </main>
@@ -181,28 +181,28 @@
     </div>
   </div>
 
-  <script src="./../common/jQuery/jquery-2.1.1.min.js"></script>    
-  
+  <script src="./../common/jQuery/jquery.min.js"></script>
+
   <script src="./../common/libManageSieve/SieveResponseCodes.js"></script>
   <script src="./../common/libManageSieve/SieveResponseParser.js"></script>
-    
+
   <script src="./../common/libManageSieve/SieveRequest.js"></script>
   <script src="./../common/libManageSieve/SieveResponse.js"></script>
-  
+
   <script src="./../common/libManageSieve/SieveAbstractLogger.js"></script>
   <script src="sieve/SieveChromeLogger.js"></script>
-  
+
   <script src="./../common/libManageSieve/SieveAbstractClient.js"></script>
   <script src="sieve/SieveChromeClient.js"></script>
-  
+
   <script src="sieve/SieveAccount.js"></script>
-  
+
   <script src="./../common/libManageSieve/SieveAbstractSession.js"></script>
   <script src="sieve/SieveChromeSession.js"></script>
-  
+
   <script src="./../common/editor/sieve.broker.js"></script>
   <script src="./../common/editor/sieve.editor.js"></script>
-  
+
   <script src="main.js"></script>
 
 </body>

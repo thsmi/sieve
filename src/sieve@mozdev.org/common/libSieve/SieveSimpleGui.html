@@ -6,42 +6,42 @@
   <link rel="stylesheet" href="toolkit/style/simplicity/style.css" type="text/css" />
 </head>
 <body>
-  <!-- Global Imports -->  
-  <script type="application/javascript" src="./../jQuery/jquery-2.1.1.min.js"></script>
-  
+  <!-- Global Imports -->
+  <script type="application/javascript" src="./../jQuery/jquery.min.js"></script>
+
   <!-- Basic Sieve Elements -->
   <script type="application/javascript" src="toolkit/SieveParser.js"></script>
   <script type="application/javascript" src="toolkit/SieveLexer.js"></script>
   <script type="application/javascript" src="toolkit/SieveDesigner.js"></script>
-  
-  <script type="application/javascript" src="toolkit/SieveScriptDOM.js"></script>  
+
+  <script type="application/javascript" src="toolkit/SieveScriptDOM.js"></script>
   <script type="application/javascript" src="toolkit/logic/Elements.js"></script>
   <script type="application/javascript" src="toolkit/widgets/Boxes.js"></script>
-   
+
   <!-- logic related Imports -->
   <!-- RFC 5228 - Sieve -->
   <script type="application/javascript" src="RFC5228/logic/SieveWhiteSpaces.js" ></script>
   <script type="application/javascript" src="RFC5228/logic/SieveStrings.js" ></script>
   <script type="application/javascript" src="RFC5228/logic/SieveNumbers.js" ></script>
-  <script type="application/javascript" src="RFC5228/logic/SieveBlocks.js"></script>  
+  <script type="application/javascript" src="RFC5228/logic/SieveBlocks.js"></script>
   <script type="application/javascript" src="RFC5228/logic/SieveTests.js"></script>
   <script type="application/javascript" src="RFC5228/logic/SieveOperators.js"></script>
-  <script type="application/javascript" src="RFC5228/logic/SieveConditions.js"></script>  
+  <script type="application/javascript" src="RFC5228/logic/SieveConditions.js"></script>
   <script type="application/javascript" src="RFC5228/logic/SieveActions.js"></script>
   <script type="application/javascript" src="RFC5228/logic/SieveImports.js"></script>
-  
+
   <!-- RFC 5429 - Reject -->
-  <script type="application/javascript" src="RFC5429/logic/SieveReject.js"></script>  
-  
+  <script type="application/javascript" src="RFC5429/logic/SieveReject.js"></script>
+
   <!-- RFC 5232 - ImapFlags-->
   <script type="application/javascript" src="RFC5232/logic/SieveImapFlags.js"></script>
 
     <!-- UI related Imports -->
   <!-- RFC 5228 - Sieve -->
-  <script type="application/javascript" src="RFC5228/widgets/simplicity/SieveBlocksUI.js"></script>  
-  <script type="application/javascript" src="RFC5228/widgets/simplicity/SieveTestsUI.js"></script>  
-    <script type="application/javascript" src="RFC5228/widgets/SieveStringsUI.js"></script>  
-    
+  <script type="application/javascript" src="RFC5228/widgets/simplicity/SieveBlocksUI.js"></script>
+  <script type="application/javascript" src="RFC5228/widgets/simplicity/SieveTestsUI.js"></script>
+    <script type="application/javascript" src="RFC5228/widgets/SieveStringsUI.js"></script>
+
 <script type="text/javascript">
 //<![CDATA[
 
@@ -55,20 +55,20 @@ function setSieveScript(script,capabilities)
     SieveLexer.capabilities(capabilities);
     // reset environemnt
 	init();
-	
+
 	if (!script)
 	  script =$('#txtScript').val();
 	 else
 	  $('#txtScript').val(script);
-	  
+
     dom2.script(script);
-	
+
 	$("#txtOutput")
 	  .val(dom2.script());
-	  
+
 	$("#divOutput")
 	  .empty()
-	  .append(dom2.html())	
+	  .append(dom2.html())
 }
 
 function getSieveScript()
@@ -79,11 +79,11 @@ function getSieveScript()
 function require()
 {
   var requires = {};
-  
+
   dom2.root().require(requires);
-  
+
   for (var i in requires)
-    alert(i);  
+    alert(i);
 }
 
 function capabilities()
@@ -102,7 +102,7 @@ function debug(obj)
   var str = "";
   for (tempVar in obj)
     str += tempVar+"\n";
-	
+
   alert(str);
   //logger.logStringMessage(str);
 }
@@ -119,20 +119,20 @@ function debug(obj)
   {
     showInfoMessage(msg,"");
   }
-  
+
   window.onerror = errorhandler;*/
-  
+
   function showInfoMessage(message, content)
   {
     $("#infobarsubject > span").text(message);
 	$("#infobarmessage > span").text(content);
-    $("#infobar").toggle();	
+    $("#infobar").toggle();
   }
-  
+
 //]]>
 </script>
 <div id="infobar">
-  <div id="infobarsubject"  > 
+  <div id="infobarsubject"  >
      <span>
        Message Text
 	 </span>
@@ -141,7 +141,7 @@ function debug(obj)
 </div>
 
 
-<div>   
+<div>
   <div id="divOutput">
   </div>
   <button> Add </button>
@@ -149,7 +149,7 @@ function debug(obj)
 
 <div style="margin-left:200px;">
   <div>
-    <div id="boxScript" style="overflow: hidden;width: 100%; ">  
+    <div id="boxScript" style="overflow: hidden;width: 100%; ">
       <div style="float:left; padding:5px;">
         <div>Input:</div>
         <textarea id="txtScript" cols="50" rows="10" wrap="off">
@@ -170,15 +170,15 @@ function debug(obj)
 	</button>
     <button onclick="require()">
 	  Collect Require
-	</button>	
+	</button>
     <button onclick="capabilities()">
 	  Set Capabilities
-	</button>		
+	</button>
     <button onclick="$('#boxScript').toggle()">
 	  Show/Hide
-	</button>		
+	</button>
 	<input id="draggable" />
   </div>
-</div>  
+</div>
 </body>
 </html>

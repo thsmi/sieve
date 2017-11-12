@@ -1,6 +1,14 @@
 # Build instructions
 
-Over the time building and releasing the addon got more and more complicated, so that gulp is now used to build and package the artifacts.
+Over the time building and releasing the addon got more and more complicated, so that yarn and gulp is now used to build and package the artifacts.
+
+# Getting started
+
+To get started clone the project for github.
+
+Then use either ``yarn`` or ``npm install`` to download the dependencies.
+This will download gulp as well as jquery and code mirror which are needed for this addon to work.
+
 
 # Developing
 

@@ -2,12 +2,12 @@
 
  <!--
    The content of this file is licenced. You may obtain a copy of
-   the license at http://sieve.mozdev.org or request it via email 
-   from the author. Do not remove or change this comment. 
-  
+   the license at http://sieve.mozdev.org or request it via email
+   from the author. Do not remove or change this comment.
+
    The initial author of the code is:
      Thomas Schmid <schmid-thomas@gmx.net>
-   
+
    Contributor(s):
      Marion Desnault
 -->
@@ -23,37 +23,37 @@
 <?xml-stylesheet href="chrome://sieve/content/editor/Sieve.css" type="text/css"?>
 <?xml-stylesheet href="chrome://messenger/skin/mailWindow1.css"?>
 
-<window 
+<window
   id="SieveFilterEditor"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   style="width: 45em; height: 31em;"
   persist="width height screenX screenY"
   onload="onWindowLoad();"
   windowtype="Sieve:FilterEditor" >
-  
+
   <!-- needed for copy and paste -->
   <script type="application/javascript"
-          src="chrome://global/content/globalOverlay.js" />   
-  <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveAbstractChannel.js"/>           
-  <script type="application/javascript" 
+          src="chrome://global/content/globalOverlay.js" />
+  <script type="application/javascript"
+          src="chrome://sieve/content/libs/libManageSieve/SieveAbstractChannel.js"/>
+  <script type="application/javascript"
           src="chrome://sieve/content/editor/SieveFilterEditor.js" />
-          
-  <script type="application/javascript" 
+
+  <script type="application/javascript"
           src="chrome://sieve-common/content/editor/sieve.broker.js" />
-  <script type="application/javascript" 
+  <script type="application/javascript"
           src="chrome://sieve-common/content/editor/sieve.editor.js" />
- <!-- <script type="application/javascript" 
+ <!-- <script type="application/javascript"
           src="chrome://global/content/printUtils.js"/>
-  <script type="application/javascript" 
+  <script type="application/javascript"
           src="chrome://messenger/content/msgPrintEngine.js"/> -->
-  
+
   <keyset>
-    <key key="&shortcut.save.key;" 
+    <key key="&shortcut.save.key;"
          oncommand="onSave();"
          modifiers="accel"/>
   </keyset>
-  
+
   <menupopup id="ctxEditor" onpopupshowing="onEditorShowMenu();">
     <menuitem id="ctxUndo"
               label="&undoCmd.label;" accesskey="&undoCmd.accesskey;"
@@ -63,7 +63,7 @@
               label="&cutCmd.label;" accesskey="&cutCmd.accesskey;"
               oncommand="goDoCommand('cmd_cut');  event.stopPropagation();" />
     <menuitem id="ctxCopy"
-              label="&copyCmd.label;" accesskey="&copyCmd.accesskey;" 
+              label="&copyCmd.label;" accesskey="&copyCmd.accesskey;"
               oncommand="goDoCommand('cmd_copy');  event.stopPropagation();" />
     <menuitem id="ctxPaste"
               label="&pasteCmd.label;" accesskey="&pasteCmd.accesskey;"
@@ -75,49 +75,49 @@
     <menuitem label="&selectAllCmd.label;" accesskey="&selectAllCmd.accesskey;"
               oncommand="onSelectAll();  event.stopPropagation();" />
   </menupopup>
-    
+
 <toolbox class="mail-toolbox">
   <toolbar class="inline-toolbar chromeclass-toolbar">
-    <toolbarbutton id="btnSave" 
+    <toolbarbutton id="btnSave"
                    label="&edit.toolbar.save;" class="toolbarbutton-1"
-                   oncommand="onSave();" />  
-    <toolbarspacer /> 
-    <toolbarbutton id="btnViewSource" type="checkbox" 
+                   oncommand="onSave();" />
+    <toolbarspacer />
+    <toolbarbutton id="btnViewSource" type="checkbox"
                    label="Source" class="toolbarbutton-1"
                    oncommand="onViewSource();" checked="true"/>
-    <toolbarspacer />      
+    <toolbarspacer />
     <toolbarbutton id="btnUndo"
                    label="&edit.toolbar.undo;" class="toolbarbutton-1"
-                   oncommand="textEditor.onUndo()/*goDoCommand('cmd_undo')*/;" />    
+                   oncommand="textEditor.onUndo()/*goDoCommand('cmd_undo')*/;" />
     <toolbarbutton id="btnRedo"
                    label="&edit.toolbar.redo;" class="toolbarbutton-1"
-                   oncommand="textEditor.onRedo()/*goDoCommand('cmd_redo');*/" />                    
+                   oncommand="textEditor.onRedo()/*goDoCommand('cmd_redo');*/" />
     <toolbarspacer />
     <toolbarbutton id="btnCut"
                    label="&edit.toolbar.cut;" class="toolbarbutton-1"
-                   oncommand="goDoCommand('cmd_cut');" />    
+                   oncommand="goDoCommand('cmd_cut');" />
     <toolbarbutton id="btnCopy"
                    label="&edit.toolbar.copy;" class="toolbarbutton-1"
-                   oncommand="goDoCommand('cmd_copy');" />    
+                   oncommand="goDoCommand('cmd_copy');" />
     <toolbarbutton id="btnPaste"
                    label="&edit.toolbar.paste;" class="toolbarbutton-1"
-                   oncommand=" goDoCommand('cmd_paste');" />    
+                   oncommand=" goDoCommand('cmd_paste');" />
     <toolbarspacer />
     <toolbarbutton id="btnCompile" type="checkbox"
-                   label="&edit.toolbar.compile;" class="toolbarbutton-1"   
-                   oncommand="onErrorBar();" />           
-    <toolbarbutton id="btnReference" type="checkbox"  
-                   label="&edit.toolbar.reference;" class="toolbarbutton-1" 
+                   label="&edit.toolbar.compile;" class="toolbarbutton-1"
+                   oncommand="onErrorBar();" />
+    <toolbarbutton id="btnReference" type="checkbox"
+                   label="&edit.toolbar.reference;" class="toolbarbutton-1"
                    oncommand="onSideBar();" />
-    <toolbarbutton id="btnSearchBar" type="checkbox"  
-                   label="&edit.toolbar.search;" class="toolbarbutton-1" 
-                    oncommand="onSearchBar();" />                    
-    <toolbarspacer />               
-    <!--<toolbarbutton id="btnPrint"  
-                   label="&edit.toolbar.print;" class="toolbarbutton-1"                    
-                   oncommand="onPrint();" />-->        
-    <toolbarbutton id="btnTools" 
-                   label="&edit.toolbar.tools;" 
+    <toolbarbutton id="btnSearchBar" type="checkbox"
+                   label="&edit.toolbar.search;" class="toolbarbutton-1"
+                    oncommand="onSearchBar();" />
+    <toolbarspacer />
+    <!--<toolbarbutton id="btnPrint"
+                   label="&edit.toolbar.print;" class="toolbarbutton-1"
+                   oncommand="onPrint();" />-->
+    <toolbarbutton id="btnTools"
+                   label="&edit.toolbar.tools;"
                    type="menu"  class="toolbarbutton-1" >
       <menupopup id="puTools">
         <menuitem label="&edit.toolbar.import;" oncommand="onImport();" />
@@ -125,46 +125,46 @@
       </menupopup>
     </toolbarbutton>
    <toolbarsplitter flex="1"/>
-   <box id="btnDonate"  onclick="onDonate();"/>    
+   <box id="btnDonate"  onclick="onDonate();"/>
   </toolbar>
 </toolbox>
 
   <hbox flex="1" >
     <vbox flex="1">
       <!-- Status messages -->
-      <iframe id="sivEditorStatus" flex="1"  type="content" 
+      <iframe id="sivEditorStatus" flex="1"  type="content"
               src="chrome://sieve/content/editor/SieveStatus.xul" />
-      
-      <deck id="dkView" flex="1" selectedIndex="0">    
-        <!-- Sieve Script editor -->  
-        <iframe id="sivEditor2" flex="1" 
-                src="chrome://sieve-common/content/editor/sieve.editor.html" 
+
+      <deck id="dkView" flex="1" selectedIndex="0">
+        <!-- Sieve Script editor -->
+        <iframe id="sivEditor2" flex="1"
+                src="chrome://sieve-common/content/editor/sieve.editor.html"
                 contextmenu="ctxEditor" />
-                
-        <iframe id="sivWidgetEditor" flex="1"  type="content" 
-                src="about:blank" />          
+
+        <iframe id="sivWidgetEditor" flex="1"  type="content"
+                src="about:blank" />
       </deck>
-                           
-      <!-- Error Bar (Showing Script errors) --> 
-      <splitter id="spErrorBar" resizeafter="farthest" /> 
-            
+
+      <!-- Error Bar (Showing Script errors) -->
+      <splitter id="spErrorBar" resizeafter="farthest" />
+
       <vbox id="vbErrorBar" persist="height">
-        
+
         <hbox align="center" min-height="50px" flex="1" style="overflow:auto;" >
           <image id="imgErrorBar" pack="center"   src="chrome://sieve/content/images/syntax-ok.png"/>
           <description flex="1" id="lblErrorBar" style="white-space: pre;" >
-          </description>             
+          </description>
         </hbox>
       </vbox>
-  
+
     </vbox>
-          
+
     <splitter id="spSideBar" class="spVertical" resizeafter="farthest" />
-    
+
   <vbox id="vbSidebar" persist="width" class="sieveSideBar">
    <vbox id="vbSearchBar">
     <stack class="outset">
-      <image flex="1"/> 
+      <image flex="1"/>
       <label flex="1" value="&edit.searchreplace.title;" />
     </stack>
 
@@ -181,7 +181,7 @@
           <checkbox id="cbxCaseSensitive" label="&edit.searchreplace.case;" />
           <checkbox id="cbxBackward" label="&edit.searchreplace.backward;"/>
         </groupbox>
-      <hbox align="center" id="boxSearchError" hidden="true">        
+      <hbox align="center" id="boxSearchError" hidden="true">
         <image src="chrome://sieve/content/images/info.png" />
         <label value="&edit.searchreplace.error;" />
       </hbox>
@@ -191,26 +191,26 @@
     </hbox>
     <splitter resizeafter="farthest" disabled="true" />
    </vbox>
-   <vbox flex="1">    
+   <vbox flex="1">
     <stack class="outset">
-      <image flex="1"/> 
+      <image flex="1"/>
       <label flex="1" value="&edit.sidebar.title;" />
     </stack>
     <hbox >
-        <toolbarbutton id="btnSideBarBack" 
-                       label="&edit.toolbar.back;" class="toolbarbutton-1" 
-                       oncommand="onSideBarBack();" />  
+        <toolbarbutton id="btnSideBarBack"
+                       label="&edit.toolbar.back;" class="toolbarbutton-1"
+                       oncommand="onSideBarBack();" />
         <toolbarbutton id="btnSideBarForward"
-                       label="&edit.toolbar.forward;" class="toolbarbutton-1" 
+                       label="&edit.toolbar.forward;" class="toolbarbutton-1"
                        oncommand="onSideBarForward();" />
         <toolbarbutton id="btnSideBarHome"
-                       label="&edit.toolbar.home;" class="toolbarbutton-1" 
+                       label="&edit.toolbar.home;" class="toolbarbutton-1"
                        oncommand="onSideBarHome();" />
     </hbox>
     <deck id="dkSideBarBrowser" flex="1" selectedIndex="1">
-      <iframe id="ifSideBar" width="250px" flex="1" src="about:blank" type="content" />
+      <iframe id="ifSideBar" width="250px" flex="1" src="about:blank" type="content" data-home="&edit.sidebar.uri;"/>
       <image flex="1" />
-    </deck> 
+    </deck>
   </vbox>
   </vbox>
 </hbox>

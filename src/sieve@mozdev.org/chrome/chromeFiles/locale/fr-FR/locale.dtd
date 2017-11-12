@@ -1,9 +1,9 @@
 <!--
-/* 
+/*
  * The contents of this file is licenced. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email 
- * from the author. Do not remove or change this comment. 
- * 
+ * the license at http://sieve.mozdev.org or request it via email
+ * from the author. Do not remove or change this comment.
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
@@ -46,7 +46,7 @@ le plus récent impose d'utiliser le port 4190.">
 <!ENTITY options.security.description
 "Transport Layer Security (TLS) sécurise la connexion au serveur sieve.
 Il encrypte toutes les données et est prévu pour empêcher les écoutes et les falsifications.">
-<!ENTITY options.security.description2 
+<!ENTITY options.security.description2
 "Habituellement, ManageSieve envoie sur le réseau les mots de passe en clair. Alors, à moins que
 vous n'ayez une bonne raison (ex: Déboguer), vous devriez toujours forcer TLS.">
 <!ENTITY options.security.tls.disabled "Pas de TLS">
@@ -66,7 +66,7 @@ vous n'ayez une bonne raison (ex: Déboguer), vous devriez toujours forcer TLS."
 <!ENTITY options.misc.keepalive "Activer keepalives">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.keepalive2 "Envoyer toutes les">
-<!ENTITY options.misc.keepalive.description 
+<!ENTITY options.misc.keepalive.description
 "Si le client ne fait rien pendant trop longtemps (habituellement 30 minutes), le
 serveur conclut que le client est déconnecté et clôt la connexion.">
 <!ENTITY options.misc.keepalive.description2
@@ -77,15 +77,15 @@ doit être maintenue.">
 <!ENTITY options.misc.compile.caption "Vérification syntaxique">
 <!ENTITY options.misc.compile.description
 "Pendant que vous écrivez les Scripts, il peuvent être vérifiés. La vérification
-syntaxique est exécutée par le serveur. De manière à limiter le traffic réseau, 
+syntaxique est exécutée par le serveur. De manière à limiter le traffic réseau,
 les requêtes de vérification syntaxiques sont groupées.">
 <!ENTITY options.misc.compile "Vérifier les Scripts pendant la frappe">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Vérifier au moins toutes les">
-<!ENTITY options.misc.compile.ms "ms"> 
+<!ENTITY options.misc.compile.ms "ms">
 
-<!ENTITY options.debug.warning 
-"Gardez à l'esprit que ni &quot;SASL LOGIN&quot; ni &quot;SASL PLAIN&quot; ne crypte votre mot de passe, 
+<!ENTITY options.debug.warning
+"Gardez à l'esprit que ni &quot;SASL LOGIN&quot; ni &quot;SASL PLAIN&quot; ne crypte votre mot de passe,
   il risque d'apparaître en clair dans la console d'erreur.">
 <!ENTITY options.debug.caption "Paramètres de debuggage">
 <!ENTITY options.debug.request "Communication du Client vers le Serveur (demandes)">
@@ -105,13 +105,13 @@ les requêtes de vérification syntaxiques sont groupées.">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "LOGIN">
 <!ENTITY options.authmechanism.plain "PLAIN">
-<!ENTITY options.authmechanism.description 
+<!ENTITY options.authmechanism.description
 "Dans certaines situations, par exemple quand vous utilisez un proxy d'authentification,
-vous pourriez vouloir forcer un méchanisme d'authentification spécifique." > 
+vous pourriez vouloir forcer un méchanisme d'authentification spécifique." >
 
 <!ENTITY options.proxyauth.caption "Proxy d'autorisation">
-<!ENTITY options.proxyauth.desc 
-"Le proxy d'autorisation permet à un utilisateur authentifié d'agir pour le compte 
+<!ENTITY options.proxyauth.desc
+"Le proxy d'autorisation permet à un utilisateur authentifié d'agir pour le compte
 d'un autre utilisateur. En général, les serveurs sont configurés de façon à ce que cette fonctionalité ne soit disponible que pour les administrateurs.">
 <!ENTITY options.proxyauth.force
 "Lorsque vous utilisez le proxy d'autorisation, vous devriez forcer le méchanisme d'authentification à &quot;SASL PLAIN&quot;.">
@@ -141,7 +141,7 @@ d'un autre utilisateur. En général, les serveurs sont configurés de façon à
 
 <!-- Proxy Settings -->
 <!ENTITY options.proxy "Configuration du Proxy">
-<!ENTITY options.proxy.description 
+<!ENTITY options.proxy.description
 "Au lieu d'une connexion directe vous pouvez utiliser un Proxy SOCKS pour passer
 un firewall de manière sécurisée et transparente.">
 <!ENTITY options.proxy.description.nameresolution
@@ -157,7 +157,7 @@ utilisez '127.0.0.1' à la place.">
 <!ENTITY options.proxy.socks5 "SOCKSv5">
 <!ENTITY options.proxy.nameresolution "Résoudre les noms d'hôte sur le proxy">
 <!ENTITY options.proxy.host "Hôte:">
-<!ENTITY options.proxy.port "Port:"> 
+<!ENTITY options.proxy.port "Port:">
 
 
 <!-- Locale for the List Filter Dialog -->
@@ -183,9 +183,9 @@ utilisez '127.0.0.1' à la place.">
 <!ENTITY list.details.capability.protocol "Version du protocole:">
 
 
-<!ENTITY list.badcert 
+<!ENTITY list.badcert
   "Votre serveur de mails essai de s'identifier avec des informtions invalides.">
-<!ENTITY list.badcert.error 
+<!ENTITY list.badcert.error
 "Si habituellement vous vous connectez sans problème, cette erreur pourrait signifier que quelqu'un tente d'usurper l'identité du serveur.
 
   Ne continuez pas à moins que vous sachiez qu'il y a une bonne raison pour laquelle le serveur n'utilise pas une identification de confiance.">
@@ -194,7 +194,7 @@ utilisez '127.0.0.1' à la place.">
 <!ENTITY list.badcert.abort "Annuler">
 
 <!ENTITY list.autoconfig.welcome.caption "Bienvenue!">
-<!ENTITY list.autoconfig.welcome.description1 
+<!ENTITY list.autoconfig.welcome.description1
 "Ce compte n'est pas configuré pour gérer Sieve.">
 <!ENTITY list.autoconfig.welcome.description2
 "Cliquez sur 'Continuer' pour détecter automatiquement la configuration.
@@ -204,17 +204,17 @@ Ou choisissez 'Avancé' pour configurer le compte manuellement.">
 <!ENTITY list.autoconfig.continue "Continuer">
 
 <!ENTITY list.autoconfig.detecting.caption "Détection automatique de la configuration">
-<!ENTITY list.autoconfig.detecting.description 
+<!ENTITY list.autoconfig.detecting.description
   "Cela peut prendre quelques minutes...">
 
 <!ENTITY list.autoconfig.cancel "Annuler">
 
 <!ENTITY list.autoconfig.success.caption "Félicitations!">
-<!ENTITY list.autoconfig.success.description 
+<!ENTITY list.autoconfig.success.description
   "Votre compte est configuré et prêt à être utilisé...">
 
 <!ENTITY list.autoconfig.error.caption "Désolé">
-<!ENTITY list.autoconfig.error.description 
+<!ENTITY list.autoconfig.error.description
 "Il semble que votre serveur mail ne supporte pas Sieve ou demande
 une configuration particulière. Veuillez contacter votre fournisseur de mail ou
 essayez une configuration manuelle.">
@@ -240,7 +240,7 @@ essayez une configuration manuelle.">
 <!ENTITY edit.toolbar.print "Imprimer">
 <!ENTITY edit.toolbar.search "Rechercher">
 
-<!ENTITY edit.sidebar.uri "http://thsmi.github.com/sieve-reference/en/index.html">
+<!ENTITY edit.sidebar.uri "https://thsmi.github.io/sieve-reference/en/index.html">
 <!ENTITY edit.sidebar.title "Base de référence du langage Sieve">
 
 <!-- Search and Replace Side bar -->
@@ -255,7 +255,7 @@ essayez une configuration manuelle.">
 <!ENTITY edit.searchreplace.error "Phrase non trouvée">
 
 <!-- Status messages -->
-<!ENTITY status.offline.description 
+<!ENTITY status.offline.description
 "Vous êtes actuellement hors ligne. Cliquez 'Se connecter' et réessayez">
 <!ENTITY status.offline.go "Se connecter">
 
@@ -268,11 +268,11 @@ essayez une configuration manuelle.">
 <!ENTITY status.warning.reconnect "Reconnecter">
 <!ENTITY status.warning
   "Ce compte n'est pas configuré pour Sieve, aller dans 'Outils -&gt; Filtres Sieve'">
-  
+
 <!ENTITY status.error.reconnect "Reconnecter">
 <!ENTITY status.error "La dernière commande a échoué car le serveur signale une erreur:">
 
-<!ENTITY status.sync.description 
+<!ENTITY status.sync.description
 "Le script local est différent de celui du serveur.
 
 Que voulez-vous faire ?">

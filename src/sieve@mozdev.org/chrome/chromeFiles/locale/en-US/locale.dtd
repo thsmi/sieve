@@ -1,9 +1,9 @@
 <!--
-/* 
+/*
  * The contents of this file is licenced. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email 
- * from the author. Do not remove or change this comment. 
- * 
+ * the license at http://sieve.mozdev.org or request it via email
+ * from the author. Do not remove or change this comment.
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
@@ -23,7 +23,7 @@
 
 <!ENTITY options.host.caption "Server Name">
 <!ENTITY options.host.description
-"Most Sieve implementations run directly on a mail server. 
+"Most Sieve implementations run directly on a mail server.
 Thus the Sieve server name is usually same as your IMAP server name.">
 <!ENTITY options.host.imap "IMAP Server:">
 <!ENTITY options.host.custom "Other Server:">
@@ -32,7 +32,7 @@ Thus the Sieve server name is usually same as your IMAP server name.">
 <!ENTITY options.port.description
 "The server port changed, when ManageSieve turned into a full RFC Standard">
 <!ENTITY options.port.description2
-"Older server implementations still use port 2000, while newer standard 
+"Older server implementations still use port 2000, while newer standard
 conform server can only be accessed via port 4190.">
 <!ENTITY options.port.4190 "4190 (Default)" >
 <!ENTITY options.port.2000 "2000" >
@@ -46,8 +46,8 @@ conform server can only be accessed via port 4190.">
 <!ENTITY options.security.description
 "Transport Layer Security (TLS) secures the connection to the manage sieve server.
 It cyphers all data and is designed to prevent eavesdropping and tampering.">
-<!ENTITY options.security.description2 
-"ManageSieve usually transfers passwords unencrypted. So unless you have a really 
+<!ENTITY options.security.description2
+"ManageSieve usually transfers passwords unencrypted. So unless you have a really
 good reason (e.g. Debugging), you should always force TLS.">
 <!ENTITY options.security.tls.disabled "No TLS">
 <!ENTITY options.security.tls.available "TLS, when available">
@@ -66,7 +66,7 @@ good reason (e.g. Debugging), you should always force TLS.">
 <!ENTITY options.misc.keepalive "Enable keepalives">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.keepalive2 "Send every">
-<!ENTITY options.misc.keepalive.description 
+<!ENTITY options.misc.keepalive.description
 "If the client was idle for too long (usually 30 minutes), the
 server assumes the client is disconnected and hangs up the connection.">
 <!ENTITY options.misc.keepalive.description2
@@ -76,16 +76,16 @@ should be preserved.">
 
 <!ENTITY options.misc.compile.caption "Syntax check">
 <!ENTITY options.misc.compile.description
-"While editing Scripts, they can be checked for validity. The syntax 
-check is performed by the server. In order to keep network traffic 
+"While editing Scripts, they can be checked for validity. The syntax
+check is performed by the server. In order to keep network traffic
 low, syntax check requests are grouped.">
 <!ENTITY options.misc.compile "Check Scripts while typing">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Validate at least every">
-<!ENTITY options.misc.compile.ms "ms"> 
+<!ENTITY options.misc.compile.ms "ms">
 
-<!ENTITY options.debug.warning 
-"Keep in mind that neither SASL Login nor SASL Plain cypher your password, 
+<!ENTITY options.debug.warning
+"Keep in mind that neither SASL Login nor SASL Plain cypher your password,
 it might be posted in clear text to the error console.">
 <!ENTITY options.debug.caption "Debug settings">
 <!ENTITY options.debug.request "Client to Server communication (requests)">
@@ -105,12 +105,12 @@ it might be posted in clear text to the error console.">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "Login">
 <!ENTITY options.authmechanism.plain "Plain">
-<!ENTITY options.authmechanism.description 
-"In certain situations e.g. when using Proxy Authentication you might want to 
-force a specific Authentication Mechanism." > 
+<!ENTITY options.authmechanism.description
+"In certain situations e.g. when using Proxy Authentication you might want to
+force a specific Authentication Mechanism." >
 
 <!ENTITY options.proxyauth.caption "Proxy Authorization">
-<!ENTITY options.proxyauth.desc 
+<!ENTITY options.proxyauth.desc
 "Proxy authorization, allows an authenticated user to act on behalf of another user.
 Usually servers are configured, that this feature is only available for administrators.">
 <!ENTITY options.proxyauth.force
@@ -141,15 +141,15 @@ Usually servers are configured, that this feature is only available for administ
 
 <!-- Proxy Settings -->
 <!ENTITY options.proxy "Proxy configuration">
-<!ENTITY options.proxy.description 
-"Instead of  a direct connection you may use a SOCKS Proxy to transparently and 
+<!ENTITY options.proxy.description
+"Instead of  a direct connection you may use a SOCKS Proxy to transparently and
 securely traverse a firewall.">
 <!ENTITY options.proxy.description.nameresolution
-"With SOCKSv4 hostnames are always resolved on the local machine. SOCKSv5 also 
-supports resolving hostnames by the SOCKS proxy. If you can trust the SOCKSv5 
+"With SOCKSv4 hostnames are always resolved on the local machine. SOCKSv5 also
+supports resolving hostnames by the SOCKS proxy. If you can trust the SOCKSv5
 proxy, the latter is considered to be more secure and should be preferred.">
 <!ENTITY options.proxy.description.localhost
-"On some system using 'localhost' as proxy host does not function properly, 
+"On some system using 'localhost' as proxy host does not function properly,
 use '127.0.0.1' instead.">
 <!ENTITY options.proxy.direct "Direct Connection">
 <!ENTITY options.proxy.default "Default Proxy configuration">
@@ -157,7 +157,7 @@ use '127.0.0.1' instead.">
 <!ENTITY options.proxy.socks5 "SOCKSv5">
 <!ENTITY options.proxy.nameresolution "Resolve hostnames on proxy">
 <!ENTITY options.proxy.host "Host:">
-<!ENTITY options.proxy.port "Port:"> 
+<!ENTITY options.proxy.port "Port:">
 
 
 <!-- Locale for the List Filter Dialog -->
@@ -183,20 +183,20 @@ use '127.0.0.1' instead.">
 <!ENTITY list.details.capability.protocol "Protocol Version:">
 
 
-<!ENTITY list.badcert 
+<!ENTITY list.badcert
   "Your mail server attempts to identify itself with invalid information.">
-<!ENTITY list.badcert.error 
-"If you usually connect to this server without problems, this error could 
+<!ENTITY list.badcert.error
+"If you usually connect to this server without problems, this error could
 mean that someone is trying to impersonate the server.
 
-Do not continue unless you know there's a good reason why 
+Do not continue unless you know there's a good reason why
 this server doesn't use trusted identification.">
 <!ENTITY list.badcert.remember "Remember my decision">
 <!ENTITY list.badcert.ignore "Continue">
 <!ENTITY list.badcert.abort "Abort">
 
 <!ENTITY list.autoconfig.welcome.caption "Welcome!">
-<!ENTITY list.autoconfig.welcome.description1 
+<!ENTITY list.autoconfig.welcome.description1
 "This account is not Configured for manage sieve.">
 <!ENTITY list.autoconfig.welcome.description2
 "Click on 'Continue' to detect the configuration automatically.
@@ -206,17 +206,17 @@ Or choose 'Advanced' to configure the account manually.">
 <!ENTITY list.autoconfig.continue "Continue">
 
 <!ENTITY list.autoconfig.detecting.caption "Autodetecting Configuration">
-<!ENTITY list.autoconfig.detecting.description 
+<!ENTITY list.autoconfig.detecting.description
   "Might take some minutes to complete...">
 
 <!ENTITY list.autoconfig.cancel "Cancel">
 
 <!ENTITY list.autoconfig.success.caption "Congratulations!">
-<!ENTITY list.autoconfig.success.description 
+<!ENTITY list.autoconfig.success.description
   "Your account is now configured and ready to use...">
 
 <!ENTITY list.autoconfig.error.caption "Sorry">
-<!ENTITY list.autoconfig.error.description 
+<!ENTITY list.autoconfig.error.description
 "It seems your mail server does not support manage sieve or requires
 a special configuration. Please contact your Mail provider or try
 to do a manual configuration.">
@@ -242,7 +242,7 @@ to do a manual configuration.">
 <!ENTITY edit.toolbar.print "Print">
 <!ENTITY edit.toolbar.search "Search">
 
-<!ENTITY edit.sidebar.uri "http://thsmi.github.com/sieve-reference/en/index.html">
+<!ENTITY edit.sidebar.uri "https://thsmi.github.io/sieve-reference/en/index.html">
 <!ENTITY edit.sidebar.title "Sieve Language Reference">
 
 <!-- Search and Replace Side bar -->
@@ -257,7 +257,7 @@ to do a manual configuration.">
 <!ENTITY edit.searchreplace.error "Phrase not found">
 
 <!-- Status messages -->
-<!ENTITY status.offline.description 
+<!ENTITY status.offline.description
 "You are currently offline. Click 'Go Online' and try again">
 <!ENTITY status.offline.go "Go Online">
 
@@ -270,12 +270,12 @@ to do a manual configuration.">
 <!ENTITY status.warning.reconnect "Reconnect">
 <!ENTITY status.warning
   "This account is not configured for manage sieve, goto 'Tools-&gt; SieveMessage Filters'">
-  
+
 <!ENTITY status.error.reconnect "Reconnect">
 <!ENTITY status.error "Last Command failed, because the server reported an error:">
 
-<!ENTITY status.sync.description 
-"The local an the server side scripts are different. 
+<!ENTITY status.sync.description
+"The local an the server side scripts are different.
 
 What would you like to do about it ?">
 <!ENTITY status.sync.keep "Keep Local Script">

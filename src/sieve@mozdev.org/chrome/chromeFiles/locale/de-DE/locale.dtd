@@ -1,9 +1,9 @@
 <!--
-/* 
+/*
  * The contents of this file is licenced. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email 
- * from the author. Do not remove or change this comment. 
- * 
+ * the license at http://sieve.mozdev.org or request it via email
+ * from the author. Do not remove or change this comment.
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
@@ -45,8 +45,8 @@
 <!ENTITY options.security.description
 "Transport Layer Security (TLS) verschlüsselt die Verbindung zum ManageSieve Server,
 hierdurch werden Abhören der Zugangsdaten sowie Manipulationen effektiv verhindert.">
-<!ENTITY options.security.description2 
-"ManageSieve überträgt normalerweise Passwörter unverschlüsselt. Daher 
+<!ENTITY options.security.description2
+"ManageSieve überträgt normalerweise Passwörter unverschlüsselt. Daher
 sollten Sie TLS immer erzwingen.">
 <!ENTITY options.security.tls.disabled "Kein TLS">
 <!ENTITY options.security.tls.available "TLS, wenn verfügbar">
@@ -65,7 +65,7 @@ sollten Sie TLS immer erzwingen.">
 <!ENTITY options.misc.keepalive "Keepalive Nachrichten aktivieren">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.keepalive2 "Keepalive nach">
-<!ENTITY options.misc.keepalive.description 
+<!ENTITY options.misc.keepalive.description
 "Server trennen die Verbindung automatisch, wenn der Client zu lange im Leerlauf ist (typischerweise 30 Minuten) und keine Anfragen stellt. ">
 <!ENTITY options.misc.keepalive.description2
 "Eine Keepalive Anfrage signalisiert dem Server vor Ablauf dieser Zeit, dass die Verbindung noch aktiv ist und nicht getrennt werden soll.">
@@ -77,10 +77,10 @@ sollten Sie TLS immer erzwingen.">
 <!ENTITY options.misc.compile "Skripte während der Eingabe auf Syntaxfehler überprüfen">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Syntaxprüfung spätestens alle">
-<!ENTITY options.misc.compile.ms "ms"> 
+<!ENTITY options.misc.compile.ms "ms">
 
-<!ENTITY options.debug.warning 
-"Bitte beachten Sie, dass Debugmeldungen von SASL Login und SASL Plain Ihr 
+<!ENTITY options.debug.warning
+"Bitte beachten Sie, dass Debugmeldungen von SASL Login und SASL Plain Ihr
 Passwort im Klartext enthalten!">
 <!ENTITY options.debug.caption "Debug-Einstellungen">
 <!ENTITY options.debug.request "Client zu Server Kommunikation (requests)">
@@ -100,14 +100,14 @@ Passwort im Klartext enthalten!">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "LOGIN">
 <!ENTITY options.authmechanism.plain "PLAIN">
-<!ENTITY options.authmechanism.description 
-"In Ausnahmefällen, z.B. wenn Sie die Proxy Autorisation nutzen, müssen Sie 
-einen Authentifizierungsmechanismus erzwingen." > 
+<!ENTITY options.authmechanism.description
+"In Ausnahmefällen, z.B. wenn Sie die Proxy Autorisation nutzen, müssen Sie
+einen Authentifizierungsmechanismus erzwingen." >
 
 <!ENTITY options.proxyauth.caption "Proxy Autorisation">
-<!ENTITY options.proxyauth.desc 
-"Die Proxy Autorisation ermöglicht einem authentifiziertem Benutzer, sich als  
-ein anderer Benutzer auszugeben. 
+<!ENTITY options.proxyauth.desc
+"Die Proxy Autorisation ermöglicht einem authentifiziertem Benutzer, sich als
+ein anderer Benutzer auszugeben.
 Diese erfordert besondere Rechte auf dem Mailserver und steht
 daher meist nur Administratoren zur Verfügung.">
 <!ENTITY options.proxyauth.force
@@ -138,8 +138,8 @@ daher meist nur Administratoren zur Verfügung.">
 
 <!-- Proxy Settings -->
 <!ENTITY options.proxy "Proxy Einstellungen">
-<!ENTITY options.proxy.description 
-"Um eine Firewall zu umgehen können Verbindungen zu einem Sieve Server durch 
+<!ENTITY options.proxy.description
+"Um eine Firewall zu umgehen können Verbindungen zu einem Sieve Server durch
 einen transparenten SOCKS Proxy geleitet werden. ">
 <!ENTITY options.proxy.description.nameresolution
 "SOCKSv4 löst Hostnamen über den lokalen Rechner auf. Bei SOCKSv5 können
@@ -154,7 +154,7 @@ als Workaround die Loopback IP '127.0.0.1' nutzen.">
 <!ENTITY options.proxy.socks5 "SOCKSv5">
 <!ENTITY options.proxy.nameresolution "Proxy ermittelt Hostnamen">
 <!ENTITY options.proxy.host "Hostname:">
-<!ENTITY options.proxy.port "Port:"> 
+<!ENTITY options.proxy.port "Port:">
 
 
 <!-- Locale for the List Filter Dialog -->
@@ -180,21 +180,21 @@ als Workaround die Loopback IP '127.0.0.1' nutzen.">
 <!ENTITY list.details.capability.protocol "Protokoll:">
 
 
-<!ENTITY list.badcert 
-  "Ihr Mailserver kann nicht Identifiziert werden und wird als nicht 
+<!ENTITY list.badcert
+  "Ihr Mailserver kann nicht Identifiziert werden und wird als nicht
 vertrauenswürdig eingestuft.">
-<!ENTITY list.badcert.error 
-"Es könnte es sein, dass sich jemand als Ihr Mailserver ausgibt, um 
+<!ENTITY list.badcert.error
+"Es könnte es sein, dass sich jemand als Ihr Mailserver ausgibt, um
 beispielsweise an Ihr Passwort zu gelangen.
 
-Ignorieren Sie diese Meldung nur, wenn Sie sich wirklich sicher sind, 
+Ignorieren Sie diese Meldung nur, wenn Sie sich wirklich sicher sind,
 dass Sie tatsächlich mit dem gewünschten Server verbunden sind.">
 <!ENTITY list.badcert.remember "Meldung nicht mehr anzeigen">
 <!ENTITY list.badcert.ignore "Weiter">
 <!ENTITY list.badcert.abort "Abbrechen">
 
 <!ENTITY list.autoconfig.welcome.caption "Herzlich Willkommen!">
-<!ENTITY list.autoconfig.welcome.description1 
+<!ENTITY list.autoconfig.welcome.description1
 "Dieses Sieve Konto ist derzeit noch nicht konfiguriert">
 <!ENTITY list.autoconfig.welcome.description2
 "Klicken Sie auf 'Weiter' um die Konfiguration automatisch zu erkennen, oder
@@ -204,19 +204,19 @@ auf 'Erweitert' um das Konto manuell zu konfigurieren.">
 <!ENTITY list.autoconfig.continue "Weiter">
 
 <!ENTITY list.autoconfig.detecting.caption "Analysiere Konfiguration">
-<!ENTITY list.autoconfig.detecting.description 
+<!ENTITY list.autoconfig.detecting.description
   "Dauert mitunter mehrere Minuten...">
 
 <!ENTITY list.autoconfig.cancel "Abbrechen">
 
 <!ENTITY list.autoconfig.success.caption "Erkennung erfolgreich">
-<!ENTITY list.autoconfig.success.description 
+<!ENTITY list.autoconfig.success.description
   "Ihr Sieve Konto ist nun konfiguriert...">
 
 <!ENTITY list.autoconfig.error.caption "Erkennung fehlgeschlagen">
-<!ENTITY list.autoconfig.error.description 
+<!ENTITY list.autoconfig.error.description
 "Die Verbindungsdaten konnten nicht automatisch erkannt werden. Entweder unterstützt
-Ihr Server das ManageSieve Protokoll nicht oder es ist eine spezielle 
+Ihr Server das ManageSieve Protokoll nicht oder es ist eine spezielle
 Konfiguration notwendig. Bitte erfragen Sie bei Ihren Mail die Verbindungsdaten
 und konfigurieren Sie das Sieve Konto manuell.">
 
@@ -241,7 +241,7 @@ und konfigurieren Sie das Sieve Konto manuell.">
 <!ENTITY edit.toolbar.print "Drucken">
 <!ENTITY edit.toolbar.search "Suchen">
 
-<!ENTITY edit.sidebar.uri "http://thsmi.github.com/sieve-reference/en/index.html">
+<!ENTITY edit.sidebar.uri "https://thsmi.github.io/sieve-reference/en/index.html">
 <!ENTITY edit.sidebar.title "Sieve Sprachreferenz">
 
 <!-- Search and Replace Side bar -->
@@ -256,7 +256,7 @@ und konfigurieren Sie das Sieve Konto manuell.">
 <!ENTITY edit.searchreplace.error "Suchbegriff nicht gefunden">
 
 <!-- Status messages -->
-<!ENTITY status.offline.description 
+<!ENTITY status.offline.description
 "Sie sind derzeit im Offline-Modus. Möchten Sie diesen verlassen?">
 <!ENTITY status.offline.go "Verbindung herstellen">
 
@@ -269,11 +269,11 @@ und konfigurieren Sie das Sieve Konto manuell.">
 <!ENTITY status.warning.reconnect "Erneut verbinden">
 <!ENTITY status.warning
   "Dieses Konto ist nicht konfiguriert. Bitte rufen Sie 'Extras-&gt; Sieve Filter Einstellungen' auf">
-  
+
 <!ENTITY status.error.reconnect "Erneut verbinden">
 <!ENTITY status.error "Aktion fehlgeschlagen, Server meldet einen schweren Fehler:">
 
-<!ENTITY status.sync.description 
+<!ENTITY status.sync.description
 "Das lokale Script und das auf dem Server sind unterschiedlich sich.
 
 Welches möchten Sie behalten?">

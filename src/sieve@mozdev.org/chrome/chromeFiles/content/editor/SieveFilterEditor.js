@@ -890,22 +890,15 @@ function closeTab()
   return true;
 }
 
-function onImport()
-{
-  var filePicker = Cc["@mozilla.org/filepicker;1"]
-                       .createInstance(Ci.nsIFilePicker);
+function onDoImport(filePicker, rv) {
 
-  filePicker.appendFilter("Sieve Scripts (*.siv)", "*.siv");
-  filePicker.appendFilter("All Files (*.*)", "*.*");
-  filePicker.init(window, "Import Sieve Script", filePicker.modeOpen);
-
-  if (filePicker.show() != filePicker.returnOK)
+  if (rv !== Ci.nsIFilePicker.returnOK)
     return;
 
   var inputStream = Cc["@mozilla.org/network/file-input-stream;1"]
-                        .createInstance(Ci.nsIFileInputStream);
+    .createInstance(Ci.nsIFileInputStream);
   var scriptableStream = Cc["@mozilla.org/scriptableinputstream;1"]
-                             .createInstance(Ci.nsIScriptableInputStream);
+    .createInstance(Ci.nsIScriptableInputStream);
 
   inputStream.init(filePicker.file, 0x01, parseInt("0444", 8), null);
   scriptableStream.init(inputStream);
@@ -919,6 +912,42 @@ function onImport()
   textEditor.replaceSelection(script);
 
   onInput();
+
+}
+
+function onImport() {
+
+  var filePicker = Cc["@mozilla.org/filepicker;1"]
+                       .createInstance(Ci.nsIFilePicker);
+
+  filePicker.appendFilter("Sieve Scripts (*.siv)", "*.siv");
+  filePicker.appendFilter("All Files (*.*)", "*.*");
+  filePicker.init(window, "Import Sieve Script", filePicker.modeOpen);
+
+  filePicker.open( function(rv) { onDoImport(filePicker, rv); });
+}
+
+function onDoExport(filePicker, rv) {
+
+  if ((rv !== filePicker.returnOK) && (rv !== filePicker.returnReplace))
+    return;
+
+  gSFE.getScriptAsync(function (data) {
+    var file = filePicker.file;
+
+    if (file.exists() === false)
+      file.create(Ci.nsIFile.NORMAL_FILE_TYPE, parseInt("0644", 8));
+
+    var outputStream = Cc["@mozilla.org/network/file-output-stream;1"]
+      .createInstance(Ci.nsIFileOutputStream);
+
+    outputStream.init(file, 0x04 | 0x08 | 0x20, parseInt("0644", 8), null);
+
+
+    outputStream.write(data, data.length);
+    outputStream.close();
+  });
+
 }
 
 function onExport()
@@ -934,26 +963,7 @@ function onExport()
   filePicker.appendFilter("All Files (*.*)", "*.*");
   filePicker.init(window, "Export Sieve Script", filePicker.modeSave);
 
-  var result = filePicker.show();
-
-  if ((result != filePicker.returnOK) && (result != filePicker.returnReplace))
-    return;
-
-  gSFE.getScriptAsync( function(data) {
-    var file = filePicker.file;
-
-    if (file.exists() === false)
-      file.create(Ci.nsIFile.NORMAL_FILE_TYPE, parseInt("0644", 8));
-
-    var outputStream = Cc["@mozilla.org/network/file-output-stream;1"]
-          .createInstance(Ci.nsIFileOutputStream);
-
-    outputStream.init(file, 0x04 | 0x08 | 0x20, parseInt("0644", 8), null);
-
-
-    outputStream.write(data, data.length);
-    outputStream.close();
-  } );
+  filePicker.open( function(rv) { onDoExport(filePicker, rv); });
 }
 
 function onErrorBar(visible,aSilent)

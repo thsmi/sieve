@@ -4,6 +4,32 @@ var gulp = require('gulp');
 var zip = require('gulp-zip');
 var bump = require('gulp-bump');
 
+const fs = require('fs');
+
+function deleteRecursive(path) {
+
+  if( !fs.existsSync(path) )
+    return;
+
+    fs.readdirSync(path).forEach(function(file,index) {
+
+      var curPath = path + "/" + file;
+      if(!fs.lstatSync(curPath).isDirectory()) {
+        fs.unlinkSync(curPath);
+        return;
+      }
+
+      deleteRecursive(curPath);
+      return;
+    });
+
+    fs.rmdirSync(path);
+    return;
+}
+
+gulp.task('clean-addon', function() {
+  deleteRecursive("./build");
+});
 
 gulp.task('package-addon-jquery', function() {
   const BASE_PATH = "./node_modules/jquery/dist";

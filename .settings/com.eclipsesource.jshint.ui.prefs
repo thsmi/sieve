@@ -1,4 +1,0 @@
-eclipse.preferences.version=1
-excluded=//*.min.js\:src/sieve@mozdev.org/common/CodeMirror//*
-included=//*.js\://*.jsm
-projectSpecificOptions=true

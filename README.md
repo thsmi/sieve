@@ -60,7 +60,7 @@ might be a good idea to check your spam filter.
 The extension is free and open source software, it is made available to you 
 under the terms of the [GNU Affero General Public License (AGPLv3)](http://www.fsf.org/licensing/licenses/agpl-3.0.html).
 
-Refer to [Licensing information](https://github.com/thsmi/sieve/blob/master/LICENSE.md) for details.
+Refer to [Licensing information](https://github.com/thsmi/sieve/blob/master/LICENSING_INFO.md) for details.
 
 ## Releases
 

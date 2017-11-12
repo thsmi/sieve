@@ -15,7 +15,7 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>sieve@mozdev.org</em:id>
-    <em:version>0.2.4-1</em:version>
+    <em:version>0.2.4</em:version>
     <em:type>2</em:type>
 
     <em:targetApplication>
@@ -23,7 +23,7 @@
       <Description>
         <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
         <em:minVersion>10.*</em:minVersion>
-      	<em:maxVersion>70.0</em:maxVersion>
+      	<em:maxVersion>59.0</em:maxVersion>
       </Description>
     </em:targetApplication>
 
@@ -39,9 +39,9 @@
     <em:name>Sieve</em:name>
     <em:description>Configures serverside sieve email filters</em:description>
     <em:creator>Thomas Schmid</em:creator>
-    <em:homepageURL>http://sieve.mozdev.org/</em:homepageURL>
+    <em:homepageURL>https://github.com/thsmi/sieve/</em:homepageURL>
 <!--    <em:iconURL>chrome://sieve/skin/icon.png</em:iconURL> -->
 <!--    <em:optionsURL>chrome://sieve/content/options/SieveOptions.xul</em:optionsURL> -->
-<!--    <em:updateURL>https://www.mozdev.org/p/updates/sieve/sieve@mozdev.org/update.rdf</em:updateURL> -->
+    <em:updateURL>https://thsmi.github.io/sieve/update.json</em:updateURL>
   </Description>
 </RDF>

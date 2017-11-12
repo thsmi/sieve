@@ -80,7 +80,7 @@ gulp.task('package-addon', ["package-addon-src", "package-addon-jquery", "packag
 /**
  * Packages the thunderbird addon.
  */
-gulp.task('zip-addon', ["package-addon"], function () {
+gulp.task('package-xpi', ["package-addon"], function () {
 
   const version = getVersion();
 
@@ -136,6 +136,9 @@ function bumpVersion(type) {
   .pipe(gulp.dest('./'));
 }
 
+// we can only use major, minor and patch. Everything else
+// clashes with mozilla's naming semantic.
+
 // major, premajor, minor, preminor, patch, prepatch, prerelease
 gulp.task('bump-major', function() {
   bumpVersion("major");
@@ -161,6 +164,3 @@ gulp.task('bump-prepatch', function() {
   bumpVersion("prepatch");
 });
 
-gulp.task('bump-prerelease', function() {
-  bumpVersion("prerelease");
-});

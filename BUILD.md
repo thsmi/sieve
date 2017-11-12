@@ -9,6 +9,7 @@ To get started clone the project for github.
 Then use either ``yarn`` or ``npm install`` to download the dependencies.
 This will download gulp as well as jquery and code mirror which are needed for this addon to work.
 
+As Editor I suggest [Visual Studio Code](https://code.visualstudio.com/) 
 
 # Developing
 

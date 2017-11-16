@@ -1,0 +1,77 @@
+{
+    "extends": "eslint:recommended",
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "node": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 8,
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
+    "rules": {
+        "no-const-assign": "warn",
+        "no-this-before-super": "warn",
+        "no-undef": "warn",
+        "no-unreachable": "warn",
+        "no-unused-vars": "warn",
+        "constructor-super": "warn",
+        "valid-typeof": "warn",
+        "valid-jsdoc": "warn",
+        "no-alert": "warn",
+        "no-magic-numbers": "warn",
+        "no-throw-literal": "warn",
+        "require-await": "warn",
+        "no-var": "warn",
+        "no-console": "off",
+        "no-caller": "error",
+        "no-eval": "error",
+        "no-extend-native": "error",
+        "no-implied-eval": "error",
+        "no-iterator": "error",
+        "no-proto": "error",
+        "no-return-assign": "error",
+        "no-self-compare": "error",
+        "no-unmodified-loop-condition": "error",
+        "no-useless-concat": "error",
+        "no-void": "error",
+        "no-with": "error",
+        "prefer-promise-reject-errors": "error",
+        "radix": "error",
+        "no-catch-shadow": "error",
+        "no-new-require": "error",
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "no-inline-comments": "error",
+        "no-multi-assign": "error",
+        "no-tabs": "error",
+        "semi": [
+            "error",
+            "always"
+        ],
+        "arrow-body-style": [
+            "error",
+            "always"
+        ],
+        "arrow-parens": [
+            "error",
+            "always"
+        ],
+        "require-jsdoc": [
+            "error",
+            {
+                "require": {
+                    "FunctionDeclaration": true,
+                    "MethodDefinition": true,
+                    "ClassDeclaration": true
+                }
+            }
+        ]
+    }
+}

@@ -11,13 +11,16 @@
 
 "use strict";
 
-var EXPORTED_SYMBOLS = [ "Sieve" ];
-
 (function(exports) {
 
-	/* global Components */
-	/* global SieveAbstractClient */
-	/* global SieveResponseParser */
+  // Expose as mozilla module...
+  if (!exports.EXPORTED_SYMBOLS)
+    exports.EXPORTED_SYMBOLS = [];
+
+  /* global Components */
+  /* global SieveAbstractClient */
+  /* global SieveMozResponseParser */
+  /* global SieveMozRequestBuilder */
 
   var Cc = Components.classes;
   var Ci = Components.interfaces;
@@ -39,23 +42,14 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
 
   loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveAbstractClient.js", this, "UTF-8" );
 
-
-  /*
-   *  This class is a simple socket implementation for the manage sieve protocol.
-   *  Due to the asymetric nature of the Mozilla sockets we need message queue.
-   *  <p>
-   *  New requests are added via the "addRequest" method. In case of a response,
-   *  the corresponding request will be automatically calledback via its
-   *  "addResponse" method.
-   *  <p>
-   *  If you need a secure connection, set the flag secure in the constructor.
-   *  Then connect to the host. And invoke the "startTLS" Method as soon as you
-   *  nagociated the switch to a crypted connection. After calling startTLS
-   *  Mozilla will imediately switch to a cryped connection.
-   *  <p>
+  /**
+   *  This realizes the abstract sieve implementation by using
+   *  the mozilla specific network implementation.
+   *
+   * @param {SieveAbstractLogger} logger
+   *   the logger which should be used.
+   * @constructor
    */
-
-  // A compatibility shim for Mozilla Sockets
   function Sieve(logger)
   {
     // Call the parent constructor...
@@ -78,7 +72,7 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
       str = str.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
 
       // ... and convert to UTF-8
-      var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
+      let converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
                         .createInstance(Ci.nsIScriptableUnicodeConverter);
       converter.charset = "UTF-8";
 
@@ -291,15 +285,15 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
     var pump = Cc["@mozilla.org/network/input-stream-pump;1"].
         createInstance(Ci.nsIInputStreamPump);
 
-    // the guys at mozilla canged their api without caring
+    // the guys at mozilla changed their api without caring
     // about backward compatibility. Which means we need
     // Some try catch magic here.
     try {
-      // This we try the new api definition...
-      pump.init(stream,5000, 2, true);
+      // first we try the new api definition...
+      pump.init(stream, 5000, 2, true);
     } catch (ex) {
 
-      // ... in case we run into an not enoug args exception
+      // ... in case we run into an not enough args exception
       // we try the old api definition and in any other case
       // we just rethrow the exception
       if (ex.name !== "NS_ERROR_XPC_NOT_ENOUGH_ARGS")
@@ -312,9 +306,6 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
     pump.asyncRead(this,null);
   };
 
-  /**
-   *
-   */
   Sieve.prototype.disconnect
       = function ()
   {
@@ -393,7 +384,7 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
   {
 
     // Force String to UTF-8...
-    var output = this.bytesFromJSString(data);
+    let output = this.bytesFromJSString(data);
 
     this.getLogger().log("Client -> Server [Byte Array]:\n"+output, (1 << 3));
 
@@ -403,5 +394,6 @@ var EXPORTED_SYMBOLS = [ "Sieve" ];
   };
 
   exports.Sieve = Sieve;
+  exports.EXPORTED_SYMBOLS.push("Sieve");
 
 })(this);

@@ -47,8 +47,6 @@
 
 /* global Components */
 
-var EXPORTED_SYMBOLS = ["SieveSession"];
-
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cr = Components.results;
@@ -62,6 +60,10 @@ Cu.import("chrome://sieve/content/modules/sieve/SieveAccounts.js");
 Cu.import("chrome://sieve/content/modules/sieve/SieveMozClient.js");
 
 (function (exports) {
+
+  // Expose as mozilla module...
+  if (!exports.EXPORTED_SYMBOLS)
+    exports.EXPORTED_SYMBOLS = [];
 
   let Cc = Components.classes;
   let Ci = Components.interfaces;
@@ -237,5 +239,6 @@ Cu.import("chrome://sieve/content/modules/sieve/SieveMozClient.js");
     };
 
   exports.SieveSession = SieveSession;
+  exports.EXPORTED_SYMBOLS.push("SieveSession");
 
 })(this);

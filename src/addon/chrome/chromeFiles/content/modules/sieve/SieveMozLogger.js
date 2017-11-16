@@ -11,11 +11,13 @@
 
 "use strict";
 
-var EXPORTED_SYMBOLS = [ "SieveLogger" ];
-
 (function(exports) {
 
-	/* global Components */
+  // Expose as mozilla module...
+  if (!exports.EXPORTED_SYMBOLS)
+    exports.EXPORTED_SYMBOLS = [];
+
+  /* global Components */
   /* global SieveAbstractLogger */
 
 	var Cc = Components.classes;
@@ -68,7 +70,7 @@ var EXPORTED_SYMBOLS = [ "SieveLogger" ];
   SieveLogger.prototype.getTimestamp
     = function () {
 
-    var date = new  Date();
+    let date = new  Date();
     return this._pad(date.getHours(),2)
       + ":"+this._pad(date.getMinutes(),2)
       + ":"+this._pad(date.getSeconds(),2)
@@ -95,6 +97,7 @@ var EXPORTED_SYMBOLS = [ "SieveLogger" ];
   };
 
   exports.SieveLogger = SieveLogger;
+  exports.EXPORTED_SYMBOLS.push("SieveLogger");
 
 })(this);
 

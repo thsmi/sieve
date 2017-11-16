@@ -7,10 +7,6 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-if (Components && Components.interfaces) {
-  var EXPORTED_SYMBOLS = ["SieveAbstractRequestBuilder"];
-}
-
 (function (exports) {
 
     // Enable Strict Mode

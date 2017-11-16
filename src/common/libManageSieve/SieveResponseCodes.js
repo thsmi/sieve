@@ -28,6 +28,8 @@
     * 
     * @param {String} code
     *   the response code which should be testet for equality
+    * @returns {boolean}
+    *   true in case the response code is equal otherwise false.
     */
    SieveResponseCode.prototype.equalsCode
        = function (code)
@@ -46,8 +48,8 @@
    {
      SieveResponseCode.call(this,code);
      
-     if (this.code[0].toUpperCase() != "SASL")
-       throw "Malformed SASL Response Code"; 
+     if (this.code[0].toUpperCase() !== "SASL")
+       throw new Error("Malformed SASL Response Code"); 
    }
    
    // Inherit prototypes from SieveResponseCode...

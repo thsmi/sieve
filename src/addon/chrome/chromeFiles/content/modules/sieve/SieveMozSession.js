@@ -1,10 +1,10 @@
-/* 
+/*
  * The content of this file is licensed. You may obtain a copy of
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
- * 
- * Do not remove or change this comment. 
- * 
+ *
+ * Do not remove or change this comment.
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
@@ -12,6 +12,26 @@
 /* global SieveAbstractSession */
 /* global SieveAccountManager */
 /* global SieveLogger */
+
+/* global SieveSetActiveRequest */
+/* global SievePutScriptRequest */
+/* global SieveGetScriptRequest */
+/* global SieveNoopRequest */
+/* global SieveCapabilitiesRequest */
+/* global SieveSaslPlainRequest */
+/* global SieveSaslCramMd5Request */
+/* global SieveSaslScramSha1Request */
+/* global SieveSaslExternalRequest */
+/* global SieveSaslLoginRequest */
+/* global SieveInitRequest */
+/* global SieveCheckScriptRequest*/
+/* global SieveLogoutRequest */
+/* global SieveStartTLSRequest */
+/* global SieveDeleteScriptRequest */
+/* global SieveRenameScriptRequest */
+/* global SieveListScriptRequest */
+
+/* global Sieve */
 
 // Enable Strict Mode
 "use strict";
@@ -23,150 +43,199 @@
 //
 // disconnected.connect(onSucces, onError);
 // disconnected.disconnect(onSuccess);
-// 
+//
 
 /* global Components */
 
-var EXPORTED_SYMBOLS = [ "SieveSession" ];
+var EXPORTED_SYMBOLS = ["SieveSession"];
 
-const Cc = Components.classes; 
-const Ci = Components.interfaces;   
-const Cr = Components.results; 
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const Cr = Components.results;
 const Cu = Components.utils;
 
-      
+
 // pre load modules .
 Cu.import("chrome://sieve/content/modules/sieve/SieveMozLogger.js");
 
 Cu.import("chrome://sieve/content/modules/sieve/SieveAccounts.js");
 Cu.import("chrome://sieve/content/modules/sieve/SieveMozClient.js");
 
-(function(exports) {
-	
-  var Cc = Components.classes;
-  var Ci = Components.interfaces;
+(function (exports) {
 
-  var loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
-                 .getService(Ci.mozIJSSubScriptLoader);
-               
-  loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveAbstractSession.js", this, "UTF-8" );  
-	
-	
+  let Cc = Components.classes;
+  let Ci = Components.interfaces;
+
+  let loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
+    .getService(Ci.mozIJSSubScriptLoader);
+
+  loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveAbstractSession.js", this, "UTF-8");
+
   /**
-   * This class pools and caches concurrent connections (Channel) to an destinct 
+   * This class pools and caches concurrent connections (Channel) to an destinct
    * remote server (Session).
    * Furthermore it's a wrapper around the Sieve object. It implements
-   * the login/logout process, a watchdog, an hartbeat an much more. 
-   * 
-   * A session can contain arbitary connections, but there will be only one 
+   * the login/logout process, a watchdog, an hartbeat an much more.
+   *
+   * A session can contain arbitary connections, but there will be only one
    * "physical" link to the server. All channels share the session's link.
-   * 
-   * @param {SieveAccount} account
+   *
+   * @param {String} accountId
    *   an reference to a sieve account. this is needed to obtain login informations.
-   * @param @optional {Object} sid
+   * @param {Object} [sid]
    *   a unique Identifier for this Session. Only needed to make debugging easier.
-   *   
+   *
+   * @constructor
    **/
+  function SieveSession(accountId, sid) {
+    let account = SieveAccountManager.getAccountByName(accountId);
 
-  function SieveSession(accountId, sid)
-  {
-    var account = SieveAccountManager.getAccountByName(accountId);
-    
-    var logger =  new SieveLogger(sid);
-    logger.level(account.getSettings().getDebugFlags());
-    logger.prefix(sid);
-    
-    SieveAbstractSession.call(this, account, logger);
+    this.logger = new SieveLogger(sid);
+    this.logger.level(account.getSettings().getDebugFlags());
+    this.logger.prefix(sid);
+
+    SieveAbstractSession.call(this, account);
   }
-  
+
   SieveSession.prototype = Object.create(SieveAbstractSession.prototype);
-  SieveSession.prototype.constructor = SieveSession;   
-  
+  SieveSession.prototype.constructor = SieveSession;
+
+  SieveSession.prototype.getLogger = function () {
+    return this.logger;
+  };
+
+  SieveSession.prototype.initClient = function () {
+    this.sieve = new Sieve(this.getLogger());
+  };
+
+  SieveSession.prototype.createGetScriptRequest = function (script) {
+    return new SieveGetScriptRequest(script);
+  };
+
+  SieveSession.prototype.createPutScriptRequest = function (script, body) {
+    return new SievePutScriptRequest(script, body);
+  };
+
+  SieveSession.prototype.createCheckScriptRequest = function (body) {
+    return new SieveCheckScriptRequest(body);
+  };
+
+  SieveSession.prototype.createSetActiveRequest = function (script) {
+    return new SieveSetActiveRequest(script);
+  };
+
+  SieveSession.prototype.createCapabilitiesRequest = function () {
+    return new SieveCapabilitiesRequest();
+  };
+
+  SieveSession.prototype.createDeleteScriptRequest = function (script) {
+    return new SieveDeleteScriptRequest(script);
+  };
+
+  SieveSession.prototype.createNoopRequest = function () {
+    return new SieveNoopRequest();
+  };
+
+  SieveSession.prototype.createRenameScriptRequest = function (oldScript, newScript) {
+    return new SieveRenameScriptRequest(oldScript, newScript);
+  };
+
+  SieveSession.prototype.createListScriptRequest = function () {
+    return new SieveListScriptRequest();
+  };
+
+  SieveSession.prototype.createStartTLSRequest = function () {
+    return new SieveStartTLSRequest();
+  };
+
+  SieveSession.prototype.createLogoutRequest = function () {
+    return new SieveLogoutRequest();
+  };
+
+  SieveSession.prototype.createInitRequest = function () {
+    return new SieveInitRequest();
+  };
+
+  SieveSession.prototype.createSaslPlainRequest = function () {
+    return new SieveSaslPlainRequest();
+  };
+
+  SieveSession.prototype.createSaslLoginRequest = function () {
+    return new SieveSaslLoginRequest();
+  };
+
+  SieveSession.prototype.createSaslCramMd5Request = function () {
+    return new SieveSaslCramMd5Request();
+  };
+
+  SieveSession.prototype.createSaslScramSha1Request = function () {
+    return new SieveSaslScramSha1Request();
+  };
+
+  SieveSession.prototype.createSaslExternalRequest = function () {
+    return new SieveSaslExternalRequest();
+  };
 
   SieveSession.prototype.onTimeout
-      = function(message)
-  {
-    var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);  
-    
-    if (ioService.offline)
-    {
-      this._invokeListeners("onOffline");
-      return;
-    }
-    
-    this._invokeListeners("onTimeout",message);
-  };
-  
+    = function (message) {
+      let ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+
+      if (ioService.offline) {
+        this._invokeListeners("onOffline");
+        return;
+      }
+
+      this._invokeListeners("onTimeout", message);
+    };
+
   // Needed for Bad Cert Listener....
   SieveSession.prototype.QueryInterface
-      = function badcert_queryinterface(aIID)
-  {
-    if (aIID.equals(Ci.nsISupports))
-      return this;
-      
-    if (aIID.equals(Ci.nsIBadCertListener2))
-      return this;
-    if (aIID.equals(Ci.nsISSLErrorListener))
-      return this;
-      
-    if (aIID.equals(Ci.nsIInterfaceRequestor))
-      return this;
-            
-    throw Components.results.NS_ERROR_NO_INTERFACE;
-  };
-  
+    = function badcert_queryinterface(aIID) {
+      if (aIID.equals(Ci.nsISupports))
+        return this;
+
+      if (aIID.equals(Ci.nsIBadCertListener2))
+        return this;
+
+      if (aIID.equals(Ci.nsIInterfaceRequestor))
+        return this;
+
+      throw Components.results.NS_ERROR_NO_INTERFACE;
+    };
+
   // Ci.nsIInterfaceRequestor
   SieveSession.prototype.getInterface
-      = function (aIID)
-  {
-    return this.QueryInterface(aIID);
-  };  
-  
-  // Ci.nsiBadCertListerner2
-  // Implement nsIBadCertListener2 Interface to override
-  // the "bad cert" dialog. The the connection will be closed
-  // after an Certificate error...
+    = function (aIID) {
+      return this.QueryInterface(aIID);
+    };
+
   /**
-   * @param {} socketInfo
-   * @param {} sslStatus
+   * Implements the nsIBadCertListener2 which is used to override the "bad cert" dialog.
+   *
+   * Thunderbird alway closes the connection after an certificate error. Which means
+   * in case we endup here we need to reconnect after resolving the cert error.
+   *
+   * @param {Object} socketInfo
+   *   the socket info object
+   * @param {Object} sslStatus
+   *   the ssl status
    * @param {String} targetSite
+   *   the traget site which cause the ssl error
    * @return {Boolean}
+   *   true in case we handled the notify otherwise false.
    */
   SieveSession.prototype.notifyCertProblem
-      = function (socketInfo, sslStatus, targetSite)
-  {
-    this.logger.log("Sieve BadCertHandler: notifyCertProblem");
-  
-    // no listener registert, show the default UI
-    if (!this._hasListeners("onBadCert"))
-      return false;
-      
-    this._invokeListeners("onBadCert",targetSite,sslStatus);
-    return true;
-  };
-  
-  // Ci.nsISSLErrorListener
-  /**
-   * 
-   * @param {} socketInfo
-   * @param {} error
-   * @param {} targetSite
-   * @return {Boolean}
-   */
-  SieveSession.prototype.notifySSLError
-      = function (socketInfo, error, targetSite)
-  {
-    this.logger.log("Sieve BadCertHandler: notifySSLError");
-    
-    // no listener registert, show the default UI 
-    if (!this._hasListeners("onBadCert"))
-      return false;
+    = function (socketInfo, sslStatus, targetSite) {
+      this.getLogger().log("Sieve BadCertHandler: notifyCertProblem");
 
-    // otherwise call the listener and supress the default UI
-    this._invokeListeners("onBadCert",targetSite,error);
-    return true;      
-  };
-  
+      // no listener registert, show the default UI
+      if (!this._hasListeners("onBadCert"))
+        return false;
+
+      this._invokeListeners("onBadCert", targetSite, sslStatus);
+      return true;
+    };
+
   exports.SieveSession = SieveSession;
-  
-})(this); 
+
+})(this);

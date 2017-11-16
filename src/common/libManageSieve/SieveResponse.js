@@ -16,7 +16,6 @@
 
 (function(exports) {
 
-	/* global atob */
 	/* global SieveResponseCodeReferral */
 	/* global SieveResponseCodeSasl */
 	/* global SieveResponseCode */
@@ -31,9 +30,10 @@
    * @see SieveResponseParser
    *  
    * @param {SieveResponseParser} parser
-   *  a SieveResponseParser object containing the response sent by the server
+   *  a SieveResponseParser object containing the response sent by the server.
+   * 
+   * @constructor
    */
-  
   function SieveSimpleResponse(parser)
   {
     /*
@@ -204,22 +204,26 @@
  * 
  * @param {SieveResponseParser} parser
  *   a parser containing the response sent by the server 
+ * 
+ * @constructor
  */
 function SieveCapabilitiesResponse(parser)
 {    
-  this.implementation = null;
-  this.version = 0;
+  this.details = {
+    implementation : null,
+    version : 0,
   
-  this.extensions = {};
-  this.tls = false;
-  this.sasl = {};
+    extensions : {},
+    tls : false,
+    sasl : {},
   
-  this.maxredirects = -1;
-  this.owner = "";
-  this.notify = {};
-  this.language = "";
+    maxredirects : -1,
+    owner : "",
+    notify : {},
+    language : "i-default",
   
-  this.capabilities = {};
+    compatibility : {}
+  };
   
   while (parser.isString() )
   {
@@ -237,56 +241,56 @@ function SieveCapabilitiesResponse(parser)
     switch (tag.toUpperCase())
     {
       case "STARTTLS":
-        this.tls = true;
+        this.details.tls = true;
         break;
       case "IMPLEMENTATION":
-        this.implementation = value;
+        this.details.implementation = value;
         break;
       case "SASL":
-        this.sasl = value.split(" ");
+        this.details.sasl = value.split(" ");
         break;
       case "SIEVE":
         var extensions = value.split(" ");
-        this.extensions = {} ;
+        this.details.extensions = {} ;
         
         for (var i = 0; i < extensions.length; ++i)
-          this.extensions[""+extensions[i]] = true;
+          this.details.extensions[""+extensions[i]] = true;
 
         break;
       case "VERSION":
-        this.version = parseFloat(value);
-        if (this.version < 1.0)
+        this.details.version = parseFloat(value);
+        if (this.details.version < 1.0)
           break;
         
         // Version 1.0 introduced rename, noop and checkscript
-        this.capabilities.renamescript = true;
-        this.capabilities.noop = true;
-        this.capabilities.checkscript = true;
+        this.details.compatibility.renamescript = true;
+        this.details.compatibility.noop = true;
+        this.details.compatibility.checkscript = true;
         
         break;
       case "MAXREDIRECTS":
-        this.maxredirects = parseInt(value,10);
+        this.details.maxredirects = parseInt(value,10);
         break;
       case "LANGUAGE":
-        this.language = value;
+        this.details.language = value;
         break;
       case "NOTIFY": 
-        this.notify = value.split(" ");
+        this.details.notify = value.split(" ");
         break;
       case "OWNER":
-        this.owner = value;
+        this.details.owner = value;
         break;
       case "RENAME":
-        this.capabilities.renamescript = true;
+        this.details.compatibility.renamescript = true;
         break;
       case "NOOP":
-        this.capabilities.noop = true;
+        this.details.compatibility.noop = true;
         break;
     }
   } 
 
-  if (this.implementation === null)
-    throw "Implementation expected";
+  if (this.details.implementation === null)
+    throw new Error("Server did not provide an Implementation string.");
     
   // invoke inheritted Object constructor...
   SieveSimpleResponse.call(this,parser);  
@@ -296,21 +300,47 @@ function SieveCapabilitiesResponse(parser)
 SieveCapabilitiesResponse.prototype = Object.create(SieveSimpleResponse.prototype);
 SieveCapabilitiesResponse.prototype.constructor = SieveCapabilitiesResponse;
 
-SieveCapabilitiesResponse.prototype.getImplementation
-    = function () { return this.implementation; };
+/**
+ * Returns a structure which contains all the details on the server's capabilities
+ * like the implementation, version, extension, sasl mechanisms etc.
+ * 
+ * @return {Object}
+ *   the object which the capabilities.
+ */
+SieveCapabilitiesResponse.prototype.getDetails
+    = function() { return this.details; };
 
+/**
+ * Returns the servers implementation details.
+ * 
+ * This is a custom string which typically identifies the server's implementation
+ * as well a the version. 
+ * 
+ * You should never attempt to parse this string.
+ * 
+ * @returns {String}
+ *   the servers implementation details
+ */
+SieveCapabilitiesResponse.prototype.getImplementation
+    = function () { return this.details.implementation; };
+
+/**
+ * Returns the list of supported sasl mechanisms.
+ * 
+ * They may change after a secure channel was established.
+ */
 SieveCapabilitiesResponse.prototype.getSasl
-    = function () { return this.sasl; };
+    = function () { return this.details.sasl; };
     
 SieveCapabilitiesResponse.prototype.getExtensions
     = function (asString)
 {
   if (!asString)
-    return this.extensions;
+    return this.details.extensions;
     
   var result = "";
   
-  for (var item in this.extensions)
+  for (var item in this.details.extensions)
     result += item+" ";
   
   return result; 
@@ -327,7 +357,7 @@ SieveCapabilitiesResponse.prototype.getExtensions
  *   true if TLS is supported, false if not.  
  */
 SieveCapabilitiesResponse.prototype.getTLS
-    = function () { return this.tls; };
+    = function () { return this.details.tls; };
     
 /**
  * Inorder to maintain compatibility to older implementations, the servers 
@@ -341,23 +371,23 @@ SieveCapabilitiesResponse.prototype.getTLS
  * RENAMESCRIPT, CHECKSCRIPT and NOOP.
  * 
  * @return {float}
- *   Positive Floating describing the compatibility level of the ManageSieve server.
+ *   a positive float describing the compatibility level of the ManageSieve server.
  */
 SieveCapabilitiesResponse.prototype.getVersion
-    = function () { return this.version; }; 
+    = function () { return this.details.version; }; 
 
 /**
  * Returns the limit on the number of Sieve "redirect" actions a script can 
  * perform during a single evaluation.
  * 
- * Note, that this is different from the total number of "redirect" actions a 
+ * Note, this is different from the total number of "redirect" actions a 
  * script can contain. 
  * 
  * @return {int}
  *   a non-negative number of redirects, or -1 for infinite redirects 
  */
 SieveCapabilitiesResponse.prototype.getMaxRedirects
-    = function () { return this.maxredirects; }; 
+    = function () { return this.details.maxredirects; }; 
 
 /**
  * Returns a string array of URI schema parts for supported notification
@@ -368,7 +398,7 @@ SieveCapabilitiesResponse.prototype.getMaxRedirects
  *    The schema parts as string array
  */    
 SieveCapabilitiesResponse.prototype.getNotify
-    = function () { return this.notify; };
+    = function () { return this.details.notify; };
 
 /**
  * Returns the language currently used for human readable error messages.  
@@ -382,7 +412,7 @@ SieveCapabilitiesResponse.prototype.getNotify
  *   a [RFC4646] conform language tag as string 
  */    
 SieveCapabilitiesResponse.prototype.getLanguage
-    = function () { return this.language; };
+    = function () { return this.details.language; };
 
 /**
  * Returns a list with sieve commands which are supported by this implementation
@@ -396,8 +426,8 @@ SieveCapabilitiesResponse.prototype.getLanguage
  * @return {Object}
  *   an associative array containing additional sieve commands
  */
-SieveCapabilitiesResponse.prototype.getCapabilities
-    = function () { return this.capabilities; };        
+SieveCapabilitiesResponse.prototype.getCompatibility
+    = function () { return this.details.compatibility; };        
     
 /**
  * Gets the name of the logged in user.
@@ -408,7 +438,7 @@ SieveCapabilitiesResponse.prototype.getCapabilities
  *   a String containing the username
  */    
 SieveCapabilitiesResponse.prototype.getOwner
-    = function () { return this.owner; };    
+    = function () { return this.details.owner; };    
 
 
 //***************************************************************************//
@@ -648,12 +678,12 @@ SieveSaslLoginResponse.prototype.getState
    * Extensions are optional and for future use.
    * Neithe c-nonce nor salt can contain a "," character 
    * 
-   * @param {} string
+   * @param {parser} SieveResponseParser
    */
   SieveSaslScramSha1Response.prototype._parseFirstMessage
-    = function (string)
+    = function (parser)
   {
-    this._serverFirstMessage = atob(string);
+    this._serverFirstMessage = parser.convertFomBase64(parser.extractString());
     
     var tokens = this._serverFirstMessage.split(',');
     
@@ -671,7 +701,7 @@ SieveSaslLoginResponse.prototype.getState
     if ((tokens[1].length <= 2) ||(tokens[1][0] != "s"))
       throw "Salt missing";
       
-    this._salt = atob(tokens[1].substr(2));
+    this._salt = parser.convertFomBase64(tokens[1].substr(2));
     
     
     if ((tokens[2].length <= 2) || (tokens[2][0] != "i"))
@@ -691,16 +721,17 @@ SieveSaslLoginResponse.prototype.getState
    * Extensions are optional and for future use.
    * As suggested by the RFC they will be ignored 
    * 
-   * @param {} string
+   * @param {SieveResponseParser} parser
    */
   SieveSaslScramSha1Response.prototype._parseFinalMessage
-    = function (string)
+    = function (data, parser)
   { 
+    
     // server-final-message = (server-error / verifier) ["," extensions]
-    var token = atob(string).split(",");
+    var token = parser.convertFomBase64(data).split(",");
     
     if (token[0].length <= 2)
-      throw "Response expected but got : "+ string;
+      throw "Response expected but got : "+ data;
       
     // server-error = "e="
     if (token[0][0] == "e")
@@ -712,7 +743,7 @@ SieveSaslLoginResponse.prototype.getState
     // verifier = "v=" base64
     if (token[0][0] == "v")
     {
-      this._verifier = atob(token[0].substr(2));
+      this._verifier = parser.convertFomBase64(token[0].substr(2));
       return;
     }
      
@@ -725,7 +756,7 @@ SieveSaslLoginResponse.prototype.getState
     
     if ((this.state === 0) && (parser.isString()))
     {
-      this._parseFirstMessage(parser.extractString());
+      this._parseFirstMessage(parser);
       parser.extractLineBreak();
               
       this.state++;
@@ -761,7 +792,7 @@ SieveSaslLoginResponse.prototype.getState
     {
       SieveSimpleResponse.call(this,parser);
       
-      this._parseFinalMessage(this.getResponseCode().getSasl());
+      this._parseFinalMessage(this.getResponseCode().getSasl(), parser);
       
       this.state = 4;
        

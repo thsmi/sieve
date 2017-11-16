@@ -27,11 +27,11 @@ function deleteRecursive(path) {
     return;
 }
 
-gulp.task('clean-addon', function() {
+gulp.task('clean', function() {
   deleteRecursive("./build");
 });
 
-gulp.task('package-addon-jquery', function() {
+gulp.task('addon:package-jquery', function() {
   const BASE_PATH = "./node_modules/jquery/dist";
 
   gulp.src([
@@ -39,7 +39,7 @@ gulp.task('package-addon-jquery', function() {
   ],{base: BASE_PATH}).pipe(gulp.dest('./build/thunderbird/common/jQuery'));
 });
 
-gulp.task('package-addon-codemirror', function() {
+gulp.task('addon:package-codemirror', function() {
   const BASE_PATH = "./node_modules/codemirror";
 
   gulp.src([
@@ -53,34 +53,33 @@ gulp.task('package-addon-codemirror', function() {
   ],{base: BASE_PATH}).pipe(gulp.dest('./build/thunderbird/common/CodeMirror'));
 });
 
-gulp.task('package-addon-src', function() {
-  const BASE_PATH = "./src/sieve@mozdev.org";
+gulp.task('addon:package-common', function() {
+  const BASE_PATH = "./src/common";
 
   return gulp.src([
     BASE_PATH+"/**",
-    "!"+BASE_PATH+"/manifest.json",
-    "!"+BASE_PATH+"/webapp/**",
-    "!"+BASE_PATH+"/webapp/",
-    "!"+BASE_PATH+"/webapp.js",
-
-    "!"+BASE_PATH+"/common/CodeMirror/**",
-    "!"+BASE_PATH+"/common/CodeMirror/",
-
-    "!"+BASE_PATH+"/common/jQuery/**",
-    "!"+BASE_PATH+"/common/jQuery/",
 
     // Filter out the rfc documents
-    "!"+BASE_PATH+"/common/libSieve/**/rfc*.txt"
+    "!"+BASE_PATH+"/libSieve/**/rfc*.txt"
+  ])
+    .pipe(gulp.dest('./build/thunderbird/common'));
+});
+
+gulp.task('addon:package-src', function() {
+  const BASE_PATH = "./src/addon";
+
+  return gulp.src([
+    BASE_PATH+"/**",
   ])
     .pipe(gulp.dest('./build/thunderbird/'));
 });
 
-gulp.task('package-addon', ["package-addon-src", "package-addon-jquery", "package-addon-codemirror"]);
+gulp.task('addon:package', ["addon:package-src", "addon:package-common", "addon:package-jquery", "addon:package-codemirror"]);
 
 /**
  * Packages the thunderbird addon.
  */
-gulp.task('package-xpi', ["package-addon"], function () {
+gulp.task('addon:package-xpi', ["addon:package"], function () {
 
   const version = getVersion();
 
@@ -93,16 +92,16 @@ gulp.task('package-xpi', ["package-addon"], function () {
 /**
  * watches for changed files and reruns the build task.
  */
-gulp.task('watch-addon', function() {
+gulp.task('addon:watch', function() {
   gulp.watch([
-    './src/sieve@mozdev.org/**/*.js',
-    './src/sieve@mozdev.org/**/*.jsm',
-    './src/sieve@mozdev.org/**/*.html',
-    './src/sieve@mozdev.org/**/*.css',
-    './src/sieve@mozdev.org/**/*.xul',
-    './src/sieve@mozdev.org/**/*.dtd',
-    './src/sieve@mozdev.org/**/*.properties'],
-     ['package-src']);
+    './src/**/*.js',
+    './src/**/*.jsm',
+    './src/**/*.html',
+    './src/**/*.css',
+    './src/**/*.xul',
+    './src/**/*.dtd',
+    './src/**/*.properties'],
+     ['addon:package-src',"addon:package-common"]);
 });
 
 function getVersion() {

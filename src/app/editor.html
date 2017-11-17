@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Manage Sieve Scripts</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
+    crossorigin="anonymous">
+
+
+
+  <link rel="stylesheet" href="./libs/CodeMirror/lib/codemirror.css">
+  <link rel="stylesheet" href="./libs/CodeMirror/theme/eclipse.css">
+
+  <script src="./libs/CodeMirror/lib/codemirror.js"></script>
+  <script src="./libs/CodeMirror/addon/search/searchcursor.js"></script>
+  <script src="./libs/CodeMirror/addon/edit/matchbrackets.js"></script>
+
+  <script src="./libs/CodeMirror/mode/sieve/sieve.js"></script>
+
+  <style>
+    .fixedsticky {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0px;
+      width: 100%;
+    }
+
+    body {
+      /* Margin bottom by footer height */
+      margin-bottom: 60px;
+    }
+
+    .CodeMirror {
+      border: 1px solid #eee;
+      height: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="card mt-4 mb-4">
+      <div class="card-header fixedsticky">
+
+        <div class="btn-toolbar" role="toolbar">
+          <div class="btn-group mr-2" role="group">
+            <button type="button" class="btn btn-outline-secondary">Save</button>
+          </div>
+
+          <div class="btn-group mr-2" role="group">
+            <button type="button" class="btn btn-outline-secondary">Source</button>
+          </div>
+
+          <div class="btn-group mr-2" role="group">
+            <button type="button" class="btn btn-outline-secondary">Undo</button>
+            <button type="button" class="btn btn-outline-secondary">Redo</button>
+          </div>
+          <div class="btn-group mr-2" role="group">
+            <button type="button" class="btn btn-outline-secondary">Cut</button>
+            <button type="button" class="btn btn-outline-secondary">Copy</button>
+            <button type="button" class="btn btn-outline-secondary">Paste</button>
+          </div>
+          <div class="btn-group mr-2" role="group">
+            <button type="button" class="btn btn-outline-secondary btn-sm">Syntax Check</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm">Quick Reference</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm">Search</button>
+          </div>
+          <div class="btn-group mr-2" role="group">
+            <button id="btnGroupDrop1" type="button" class="btn btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+                Tools
+              </button>
+            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+              <a class="dropdown-item" href="#">Import</a>
+              <a class="dropdown-item" href="#">Export</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-group list-group-flush siv-tpl-scripts">
+        <form>
+          <textarea id="code" name="code"></textarea>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer fixed-bottom">
+    <div class="container">
+      <div class="alert alert-warning fixedsticky" role="alert">
+        <h4 class="alert-heading">Well done!</h4>
+        <p>Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that
+          you can see how spacing within an alert works with this kind of content.</p>
+        <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
+    crossorigin="anonymous"></script>
+
+  <script src="editor.js"></script>
+
+
+</body>
+
+</html>

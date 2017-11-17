@@ -8,68 +8,155 @@ const fs = require('fs');
 
 function deleteRecursive(path) {
 
-  if( !fs.existsSync(path) )
+  if (!fs.existsSync(path))
     return;
 
-    fs.readdirSync(path).forEach(function(file,index) {
+  fs.readdirSync(path).forEach(function (file, index) {
 
-      var curPath = path + "/" + file;
-      if(!fs.lstatSync(curPath).isDirectory()) {
-        fs.unlinkSync(curPath);
-        return;
-      }
-
-      deleteRecursive(curPath);
+    var curPath = path + "/" + file;
+    if (!fs.lstatSync(curPath).isDirectory()) {
+      fs.unlinkSync(curPath);
       return;
-    });
+    }
 
-    fs.rmdirSync(path);
+    deleteRecursive(curPath);
     return;
+  });
+
+  fs.rmdirSync(path);
+  return;
 }
 
-gulp.task('clean', function() {
+gulp.task('clean', function () {
   deleteRecursive("./build");
 });
 
-gulp.task('addon:package-jquery', function() {
+gulp.task('app:package-jquery', function () {
   const BASE_PATH = "./node_modules/jquery/dist";
 
   gulp.src([
-    BASE_PATH+"/jquery.min.js"
-  ],{base: BASE_PATH}).pipe(gulp.dest('./build/thunderbird/common/jQuery'));
+    BASE_PATH + "/jquery.min.js"
+  ], { base: BASE_PATH }).pipe(gulp.dest('./build/electron/resources/app/libs/jquery'));
 });
 
-gulp.task('addon:package-codemirror', function() {
+
+gulp.task('app:package-codemirror', function () {
   const BASE_PATH = "./node_modules/codemirror";
 
   gulp.src([
-    BASE_PATH+"/addon/edit/**",
-    BASE_PATH+"/addon/search/**",
-    BASE_PATH+"/lib/**",
-    BASE_PATH+"/mode/sieve/**",
-    BASE_PATH+"/theme/eclipse.css",
-    BASE_PATH+"/LICENSE",
-    BASE_PATH+"/package.json"
-  ],{base: BASE_PATH}).pipe(gulp.dest('./build/thunderbird/common/CodeMirror'));
+    BASE_PATH + "/addon/edit/**",
+    BASE_PATH + "/addon/search/**",
+    BASE_PATH + "/lib/**",
+    BASE_PATH + "/mode/sieve/**",
+    BASE_PATH + "/theme/eclipse.css",
+    BASE_PATH + "/LICENSE",
+    BASE_PATH + "/package.json"
+  ], { base: BASE_PATH }).pipe(gulp.dest('./build/electron/resources/app/libs/CodeMirror'));
 });
 
-gulp.task('addon:package-common', function() {
+gulp.task('app:package-bootstrap', function () {
+  const BASE_PATH = "./node_modules/bootstrap/dist";
+
+  gulp.src([
+    BASE_PATH + "/css/*.min.css",
+    BASE_PATH + "/js/*.bundle.min.js",
+  ], { base: BASE_PATH }).pipe(gulp.dest('./build/electron/resources/app/libs/bootstrap'));
+});
+
+/**
+ * The source files need to go into the app/ directory...
+ */
+gulp.task('app:package-src', function () {
+
+  const BASE_PATH = "./src/app/";
+
+  return gulp.src([
+    BASE_PATH + "/**",
+  ])
+    .pipe(gulp.dest('./build/electron/resources/app/'));
+});
+
+/**
+ * The common files need to go into the app/lib directory...
+ */
+gulp.task('app:package-common', function () {
+
+  const BASE_PATH = "./src/common/";
+
+  return gulp.src([
+    BASE_PATH + "/**",
+
+    // Filter out the rfc documents
+    "!" + BASE_PATH + "/common/libSieve/**/rfc*.txt"
+  ])
+    .pipe(gulp.dest('./build/electron/resources/app/libs'));
+});
+
+
+gulp.task('app:package', ["app:package-src", "app:package-common", "app:package-jquery", "app:package-bootstrap", "app:package-codemirror"]);
+
+
+/**
+ * watches for changed files and reruns the build task.
+ */
+gulp.task('app:watch', function () {
+  gulp.watch([
+    './src/**/*.js',
+    './src/**/*.jsm',
+    './src/**/*.html',
+    './src/**/*.css',
+    './src/**/*.xul',
+    './src/**/*.dtd',
+    './src/**/*.properties'],
+    ['app:package-src', "app:package-common"]);
+});
+
+/*
+Use backager to build artifacts...
+var packager = require('electron-packager')
+packager(options, function done_callback (err, appPaths) { ... })
+*/
+
+
+gulp.task('addon:package-jquery', function () {
+  const BASE_PATH = "./node_modules/jquery/dist";
+
+  gulp.src([
+    BASE_PATH + "/jquery.min.js"
+  ], { base: BASE_PATH }).pipe(gulp.dest('./build/thunderbird/common/jQuery'));
+});
+
+gulp.task('addon:package-codemirror', function () {
+  const BASE_PATH = "./node_modules/codemirror";
+
+  gulp.src([
+    BASE_PATH + "/addon/edit/**",
+    BASE_PATH + "/addon/search/**",
+    BASE_PATH + "/lib/**",
+    BASE_PATH + "/mode/sieve/**",
+    BASE_PATH + "/theme/eclipse.css",
+    BASE_PATH + "/LICENSE",
+    BASE_PATH + "/package.json"
+  ], { base: BASE_PATH }).pipe(gulp.dest('./build/thunderbird/common/CodeMirror'));
+});
+
+gulp.task('addon:package-common', function () {
   const BASE_PATH = "./src/common";
 
   return gulp.src([
-    BASE_PATH+"/**",
+    BASE_PATH + "/**",
 
     // Filter out the rfc documents
-    "!"+BASE_PATH+"/libSieve/**/rfc*.txt"
+    "!" + BASE_PATH + "/libSieve/**/rfc*.txt"
   ])
     .pipe(gulp.dest('./build/thunderbird/common'));
 });
 
-gulp.task('addon:package-src', function() {
+gulp.task('addon:package-src', function () {
   const BASE_PATH = "./src/addon";
 
   return gulp.src([
-    BASE_PATH+"/**",
+    BASE_PATH + "/**",
   ])
     .pipe(gulp.dest('./build/thunderbird/'));
 });
@@ -84,7 +171,7 @@ gulp.task('addon:package-xpi', ["addon:package"], function () {
   const version = getVersion();
 
   return gulp.src(["./build/thunderbird/**"])
-    .pipe(zip('sieve-'+version+'.xpi'))
+    .pipe(zip('sieve-' + version + '.xpi'))
     .pipe(gulp.dest('./release/thunderbird'));
   // place code for your default task here
 });
@@ -92,7 +179,7 @@ gulp.task('addon:package-xpi', ["addon:package"], function () {
 /**
  * watches for changed files and reruns the build task.
  */
-gulp.task('addon:watch', function() {
+gulp.task('addon:watch', function () {
   gulp.watch([
     './src/**/*.js',
     './src/**/*.jsm',
@@ -101,7 +188,7 @@ gulp.task('addon:watch', function() {
     './src/**/*.xul',
     './src/**/*.dtd',
     './src/**/*.properties'],
-     ['addon:package-src',"addon:package-common"]);
+    ['addon:package-src', "addon:package-common"]);
 });
 
 function getVersion() {
@@ -118,48 +205,48 @@ function bumpVersion(type) {
 
   var pkgVersion = getVersion();
 
-  var version = semver.inc(""+pkgVersion, type);
+  var version = semver.inc("" + pkgVersion, type);
 
-  console.log("Bumping from "+pkgVersion+" to "+version);
+  console.log("Bumping from " + pkgVersion + " to " + version);
 
   gulp.src(
     ["./package.json"],
-    {base: './'})
-  .pipe(bump({"version": ""+version}))
-  .pipe(gulp.dest('./'));
+    { base: './' })
+    .pipe(bump({ "version": "" + version }))
+    .pipe(gulp.dest('./'));
 
   gulp.src(
     ['./src/sieve@mozdev.org/install.rdf'],
-    {base: './'})
-  .pipe(bump({key:"em:version", "version": ""+version}))
-  .pipe(gulp.dest('./'));
+    { base: './' })
+    .pipe(bump({ key: "em:version", "version": "" + version }))
+    .pipe(gulp.dest('./'));
 }
 
 // we can only use major, minor and patch. Everything else
 // clashes with mozilla's naming semantic.
 
 // major, premajor, minor, preminor, patch, prepatch, prerelease
-gulp.task('bump-major', function() {
+gulp.task('bump-major', function () {
   bumpVersion("major");
 });
 
-gulp.task('bump-premajor', function() {
+gulp.task('bump-premajor', function () {
   bumpVersion("premajor");
 });
 
-gulp.task('bump-minor', function() {
+gulp.task('bump-minor', function () {
   bumpVersion("minor");
 });
 
-gulp.task('bump-preminor', function() {
+gulp.task('bump-preminor', function () {
   bumpVersion("preminor");
 });
 
-gulp.task('bump-patch', function() {
+gulp.task('bump-patch', function () {
   bumpVersion("patch");
 });
 
-gulp.task('bump-prepatch', function() {
+gulp.task('bump-prepatch', function () {
   bumpVersion("prepatch");
 });
 

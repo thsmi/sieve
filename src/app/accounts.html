@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Manage Sieve Scripts</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
+    crossorigin="anonymous">
+
+</head>
+
+<body>
+  <div class="container">
+    <div class="siv-accounts">
+    </div>
+
+    <!-- Modal -->
+    <div id="sieve-delete-dialog" class="modal fade" id="deleteScript" tabindex="-1" role="dialog" aria-labelledby="deleteScriptLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteScriptLabel">Delete Script</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div>Are you really sure to delete the script
+              <em id="sieve-delete-dialog-name"></em>?</div>
+            <div> This can not be undone.</div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="sieve-delete-dialog-btn" class="btn btn-danger">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Remove Account Dialog -->
+    <div id="sieve-dialog-account-remove" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Delete Script</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div> Do you realy want to delete the configuration for
+              <em id="sieve-dialog-account-remove-name"></em>? </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="sieve-dialog-account-remove-btn" class="btn btn-danger">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="sieve-create-dialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Create Script</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div>Enter the new name for your script</div>
+            <input id="sieve-create-dialog-name" class="form-control" type="text" placeholder="Script name">
+          </div>
+          <div class="modal-footer">
+            <button id="sieve-create-dialog-btn" type="button" class="btn btn-primary">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rename Script Dialog -->
+    <div id="sieve-rename-dialog" class="modal fade" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Rename Script</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div>Enter the new name for your script</div>
+            <input id="sieve-rename-dialog-newname" class="form-control" type="text" placeholder="Script name">
+          </div>
+          <div class="modal-footer">
+            <button id="sieve-rename-dialog-btn" type="button" class="btn btn-primary">Rename</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- capabilities -->
+    <div id="sieve-dialog-capabilities" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Server Capabilities</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <th>Implementation</th>
+                  <td id="sieve-capabilities-server"></td>
+                </tr>
+                <tr>
+                  <th>Version</th>
+                  <td id="sieve-capabilities-version"></td>
+                </tr>
+                <tr>
+                  <th>SASL Mechanisms</th>
+                  <td id="sieve-capabilities-sasl"></td>
+                </tr>
+                <tr>
+                  <th>Sieve Extensions</th>
+                  <td id="sieve-capabilities-extensions"></td>
+                </tr>
+                <tr>
+                  <th>Language</th>
+                  <td id="sieve-capabilities-language"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Settings</button>
+
+    <div id="sieve-dialog-settings" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Settings for
+              <span>ACCOUNTNAME</span>
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group row">
+                <label for="sieve-dialog-settings-hostname" class="col-sm-3 col-form-label ">Hostname</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="sieve-dialog-settings-hostname" value="email@example.com">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="sieve-dialog-settings-port" class="col-sm-3 col-form-label">Port</label>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" id="sieve-dialog-settings-port" placeholder="Port">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="inputPassword" class="col-sm-3 col-form-label">Security</label>
+                <div class="col-sm-9">
+
+                  <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-outline-secondary btn-sm">
+                      <input type="radio" name="options" autocomplete="off">Use Encrypted Connection
+                    </label>
+                    <label class="btn btn-outline-secondary btn-sm">
+                      <input type="radio" name="options" autocomplete="off">None
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <hr/>
+              <div class="form-group row">
+                <label for="staticEmail" class="col-sm-3 col-form-label ">Authentication</label>
+                <div class="col-sm-8">
+                  <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                      aria-expanded="false">
+                      Dropdown button
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="#">Use suggested</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="#">Force Plain</a>
+                      <a class="dropdown-item" href="#">Force Login</a>
+                      <a class="dropdown-item" href="#">Force CRAM-MD5</a>
+                      <a class="dropdown-item" href="#">Force SCRAM-SHA-1</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="#">Force External</a>
+                      <a class="dropdown-item" href="#">No Authentication</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="inputPassword" class="col-sm-3 col-form-label">Username</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="inputPassword" placeholder="Username">
+                </div>
+              </div>
+              <hr/>
+              <!-- Authorization -->
+              <div class="form-group row">
+                <label for="staticEmail" class="col-sm-3 col-form-label ">Authorization</label>
+                <div class="col-sm-8">
+                  <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                      aria-expanded="false">
+                      Dropdown button
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" href="#">None</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="#">Sieve Username</a>
+                      <a class="dropdown-item" href="#">Authorization</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="inputPassword" class="col-sm-3 col-form-label">Username</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="inputPassword" placeholder="Username">
+                </div>
+              </div>
+            </form>
+
+            <hr />
+            <label class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">Client to Server communication (requests)</span>
+            </label>
+            <label class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">Server to Client communication (responses)</span>
+            </label>
+            <label class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">Exceptions and State Machine Information</span>
+            </label>
+            <label class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">Raw Dump/Dump Byte Stream</span>
+            </label>
+            <label class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">Session management</span>
+            </label>
+            <hr />
+            <div>Keep Alive: [Yes|No]</div>
+            <div>Send Keep Alive every [Interval] ms</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-primary" id="reload">
+      Reload
+    </button>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+      crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+      crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+      crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
+      crossorigin="anonymous"></script>
+
+    <script src="accounts.js"></script>
+
+    <div id="template" style="display:none">
+      <!-- template for the account -->
+      <div class="siv-tpl-account">
+        <div class="card mt-4 mb-4">
+          <div class="card-header">
+            <span class="siv-tpl-account-name">gmx@tschmid.net</span>
+
+            <div class="dropdown float-right">
+              <a class="btn btn-sm btn-outline-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                Settings
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item sieve-account-edit-server" href="#">Edit Server Settings</a>
+                <a class="dropdown-item sieve-account-delete-server" href="#">Delete Server</a>
+                <a class="dropdown-item sieve-account-reconnect-server" href="#">Reconnect</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item sieve-account-capabilities" href="#">Show Server Capabilities</a>
+              </div>
+            </div>
+            <a class="btn btn-sm btn-outline-secondary float-right mr-1 siv-account-create" href="#" role="button">Create new script</a>
+          </div>
+          <ul class="list-group list-group-flush siv-tpl-scripts">
+            <!--items go here -->
+          </ul>
+        </div>
+      </div>
+
+      <!-- template for items -->
+      <ul>
+        <li class="list-group-item siv-tpl-script">
+          <div>
+            <span class="sieve-list-script-name"></span>
+            <span class="sieve-list-script-active badge badge-success">active</span>
+          </div>
+          <div class="float-right">
+            <a class="btn btn-sm btn-outline-secondary mr-1 sieve-script-deactivate" href="#" role="button">Deactivate</a>
+            <a class="btn btn-sm btn-outline-secondary mr-1 sieve-script-activate" href="#" role="button">Activate</a>
+            <a class="btn btn-sm btn-outline-secondary mr-1 sieve-script-rename" href="#" role="button">Rename</a>
+            <a class="btn btn-sm btn-outline-secondary mr-1 sieve-script-delete" href="#" role="button">Delete</a>
+            <a class="btn btn-sm btn-outline-secondary mr-1 sieve-script-edit" href="#" role="button">Edit</a>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+
+</body>
+
+</html>

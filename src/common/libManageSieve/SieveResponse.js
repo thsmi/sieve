@@ -884,4 +884,4 @@ SieveSaslLoginResponse.prototype.getState
   exports.SieveGetScriptResponse = SieveGetScriptResponse;
   exports.SieveSaslScramSha1Response = SieveSaslScramSha1Response;
 
-})(this);
+})(exports);

@@ -651,7 +651,7 @@
 
   // Expose as mozilla module...
   /* global Components */
-  if (Components && Components.utils && Components.utils.import) {
+  if (typeof(Components) !== "undefined" && Components.utils && Components.utils.import) {
     if (!exports.EXPORTED_SYMBOLS)
       exports.EXPORTED_SYMBOLS = [];
 

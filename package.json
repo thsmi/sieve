@@ -11,6 +11,8 @@
     "jquery": "^3.2.1"
   },
   "devDependencies": {
+    "bootstrap": "4.0.0-beta.2",
+    "electron": "1.7.9",
     "eslint": "^4.11.0",
     "gulp": "^3.9.1",
     "gulp-bump": "^2.8.0",

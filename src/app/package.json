@@ -1,0 +1,11 @@
+{
+    "name": "sieve",
+    "version": "0.1.0",
+    "main": "main.js",
+    "dependencies": {
+        "bootstrap": "^4.0.0-alpha.6",
+        "electron": "^1.7.6",
+        "popper.js": "^1.12.5",
+        "tether": "^1.4.0"
+    }
+}

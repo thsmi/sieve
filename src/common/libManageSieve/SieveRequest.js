@@ -50,7 +50,8 @@
 	/* global SieveListScriptResponse */
 	/* global SieveSaslLoginResponse */
 	/* global SieveSaslCramMd5Response */
-	/* global SieveSaslScramSha1Response */
+  /* global SieveSaslScramSha1Response */
+
 
   /**
    * Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy
@@ -65,7 +66,7 @@
    */
   function jsStringToByteArray(str)
   {
-  	// This is very old mozilla specific code, but it is robust, mature and works as expeced.
+    // This is very old mozilla specific code, but it is robust, mature and works as expeced.
     // It will be dropped as soon as the new code has proven to be stable.
     if ((typeof Components !== 'undefined')
             && (typeof Components.classes !== 'undefined')
@@ -81,7 +82,7 @@
     }
 
     // with chrome we have to use the TextEncoder.
-    let data = new Uint8Array(new TextEncoder("UTF-8").encode(str));    
+    let data = new Uint8Array(new TextEncoder("UTF-8").encode(str));
     return Array.prototype.slice.call(data);
   }
 
@@ -453,7 +454,7 @@ SievePutScriptRequest.prototype.addResponse
  *
  * @param {String} body
  *   the script which should be check for syntactical validity
- * 
+ *
  * @constructor
  */
 function SieveCheckScriptRequest(body)
@@ -753,7 +754,7 @@ SieveRenameScriptRequest.prototype.addResponse
 /**
  * This command is used to list all sieve script of the current user.
  * In case there are no scripts the server responds with an empty list.
- * 
+ *
  * @author Thomas Schmid
  * @constructor
  */
@@ -971,11 +972,11 @@ SieveInitRequest.prototype.addResponse
 /*******************************************************************************
 
     This request implements the SALS Plain autentication method.
-    Please note, that the password is only base64 encoded. Therefore it can be 
+    Please note, that the password is only base64 encoded. Therefore it can be
     read or sniffed easily. A secure connection will solve this issue. So send
     whenever possible, a SieveStartTLSRequest before calling this request.
 
-    @example     
+    @example
     var event = {
       onSaslResponse: function(response)
       {
@@ -1017,7 +1018,7 @@ SieveSaslPlainRequest.prototype.isAuthorizable
   return true;
 }
 
-SieveSaslPlainRequest.prototype.getNextRequest 
+SieveSaslPlainRequest.prototype.getNextRequest
     = function (builder)
 {
   return builder
@@ -1141,7 +1142,7 @@ SieveSaslLoginRequest.prototype.getNextRequest
       .addLiteral("AUTHENTICATE")
       .addQuotedString("LOGIN");
     case 1:
-      return builder 
+      return builder
         .addQuotedBase64(this._username);
     case 2:
       return builder
@@ -1197,17 +1198,17 @@ SieveSaslCramMd5Request.prototype.getNextRequest
     case 0:
       return builder
         .addLiteral("AUTHENTICATE")
-        .addQuotedString("CRAM-MD5");  
+        .addQuotedString("CRAM-MD5");
     case 1:
       //decoding the base64-encoded challenge
       var challenge = builder.convertFromBase64(this.response.getChallenge());
       var hmac = this.hmacMD5( challenge, this._password );
 
       return builder
-        .addQuotedBase64(this._username + " " + hmac);    
+        .addQuotedBase64(this._username + " " + hmac);
   }
 
-  throw new Error("Illegal state in SaslCram"); 
+  throw new Error("Illegal state in SaslCram");
 };
 
 SieveSaslCramMd5Request.prototype.hasNextRequest
@@ -1357,7 +1358,7 @@ SieveSaslScramSha1Request.prototype._Hi
 
 /**
  * Calculates the HMAC-SHA-1 keyed hash.
- *  
+ *
  * @param {byte[]} key
  *   The key as octet string
  * @param {byte[]} bytes
@@ -1437,8 +1438,8 @@ SieveSaslScramSha1Request.prototype.getNextRequest
         .addLiteral("AUTHENTICATE")
         .addQuotedString("SCRAM-SHA-1")
         .addQuotedBase64("this._g2Header+this._authMessage");
-           
-      //return "AUTHENTICATE \"SCRAM-SHA-1\" " 
+
+      //return "AUTHENTICATE \"SCRAM-SHA-1\" "
       //          +"\""+btoa(this._g2Header+this._authMessage)+"\"\r\n";
     case 1:
 
@@ -1485,17 +1486,17 @@ SieveSaslScramSha1Request.prototype.getNextRequest
       //"c=" base64( (("" / "y") "," [ "a=" saslname ] "," ) "," "r=" c-nonce s-nonce ["," extensions] "," "p=" base64
       return builder
         .addQuotedBase64(msg+",p="+builder.convertToBase64(this.byteArrayToStr(clientProof)));
-//      return "\""+btoa(msg+",p="+btoa(this.byteArrayToStr(clientProof)))+"\"\r\n";  
+//      return "\""+btoa(msg+",p="+btoa(this.byteArrayToStr(clientProof)))+"\"\r\n";
 
     case 2:
       // obviously we have to send an empty response. The server did not wrap...
       // ... the verifier into the Response Code...
-      return builder 
+      return builder
         .addQuotedString();
       //return "\"\"\r\n";
   }
 
-  throw new Error("Illegal state in SaslCram"); 
+  throw new Error("Illegal state in SaslCram");
 };
 
 SieveSaslScramSha1Request.prototype.hasNextRequest
@@ -1601,8 +1602,8 @@ SieveSaslScramSha1Request.prototype.byteArrayToHexString
     // overwrite the default behaviour.
     return true;
   };
-  
-  SieveSaslExternalRequest.prototype.getNextRequest 
+
+  SieveSaslExternalRequest.prototype.getNextRequest
       = function (builder)
   {
     return builder
@@ -1670,4 +1671,4 @@ SieveSaslScramSha1Request.prototype.byteArrayToHexString
   exports.SieveSaslScramSha1Request = SieveSaslScramSha1Request;
   exports.SieveSaslExternalRequest = SieveSaslExternalRequest;
 
-})(this);
+})(exports);

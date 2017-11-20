@@ -1,19 +1,28 @@
 "use strict";
 
-var gulp = require('gulp');
-var zip = require('gulp-zip');
-var bump = require('gulp-bump');
+const gulp = require('gulp');
+const zip = require('gulp-zip');
+const bump = require('gulp-bump');
 
 const fs = require('fs');
 
+const BUILD_DIR_APP = "./build/electron/resources";
+const BUILD_DIR_ADDON = "";
+
+/**
+ * Delete all files from the given path.
+ * @param  {String} path
+ *   the base path which should be cleared.
+ * @returns {void}
+ */
 function deleteRecursive(path) {
 
   if (!fs.existsSync(path))
     return;
 
-  fs.readdirSync(path).forEach(function (file, index) {
+  fs.readdirSync(path).forEach(function (file) {
 
-    var curPath = path + "/" + file;
+    let curPath = path + "/" + file;
     if (!fs.lstatSync(curPath).isDirectory()) {
       fs.unlinkSync(curPath);
       return;
@@ -36,7 +45,7 @@ gulp.task('app:package-jquery', function () {
 
   gulp.src([
     BASE_PATH + "/jquery.min.js"
-  ], { base: BASE_PATH }).pipe(gulp.dest('./build/electron/resources/app/libs/jquery'));
+  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_APP+"/libs/jquery"));
 });
 
 
@@ -51,7 +60,7 @@ gulp.task('app:package-codemirror', function () {
     BASE_PATH + "/theme/eclipse.css",
     BASE_PATH + "/LICENSE",
     BASE_PATH + "/package.json"
-  ], { base: BASE_PATH }).pipe(gulp.dest('./build/electron/resources/app/libs/CodeMirror'));
+  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_APP+"/libs/CodeMirror"));
 });
 
 gulp.task('app:package-bootstrap', function () {
@@ -60,7 +69,7 @@ gulp.task('app:package-bootstrap', function () {
   gulp.src([
     BASE_PATH + "/css/*.min.css",
     BASE_PATH + "/js/*.bundle.min.js",
-  ], { base: BASE_PATH }).pipe(gulp.dest('./build/electron/resources/app/libs/bootstrap'));
+  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_APP+'/libs/bootstrap'));
 });
 
 /**
@@ -73,7 +82,7 @@ gulp.task('app:package-src', function () {
   return gulp.src([
     BASE_PATH + "/**",
   ])
-    .pipe(gulp.dest('./build/electron/resources/app/'));
+    .pipe(gulp.dest(BUILD_DIR_APP));
 });
 
 /**
@@ -89,12 +98,61 @@ gulp.task('app:package-common', function () {
     // Filter out the rfc documents
     "!" + BASE_PATH + "/common/libSieve/**/rfc*.txt"
   ])
-    .pipe(gulp.dest('./build/electron/resources/app/libs'));
+    .pipe(gulp.dest(BUILD_DIR_APP+'/libs'));
 });
 
 
 gulp.task('app:package', ["app:package-src", "app:package-common", "app:package-jquery", "app:package-bootstrap", "app:package-codemirror"]);
 
+gulp.task('app:package-win32', ["app:package"], function(cb) {
+
+  let options = {
+    dir : BUILD_DIR_APP,
+    arch : "ia32",
+    platform : "win32",
+    download : {
+      cache : "./build/electron/cache",
+    },
+    out : "./build/electron/out",
+    overwrite : true,
+    /*packageManager : "yarn",*/
+    //packageManager : false,
+    prune : true
+  };
+
+  let packager = require('electron-packager');
+  packager(options, function done_callback (err, appPaths) {
+    if (err)
+      return cb(err);
+
+    cb();
+  });
+} );
+
+gulp.task('app:package-linux', ["app:package"], function(cb) {
+
+    let options = {
+      dir : BUILD_DIR_APP,
+      arch : "x64",
+      platform : "linux",
+      download : {
+        cache : "./build/electron/cache",
+      },
+      out : "./build/electron/out",
+      overwrite : true,
+      /*packageManager : "yarn",*/
+      //packageManager : false,
+      prune : true
+    };
+
+    let packager = require('electron-packager');
+    packager(options, function done_callback (err, appPaths) {
+      if (err)
+        return cb(err);
+
+      cb();
+    });
+  } );
 
 /**
  * watches for changed files and reruns the build task.
@@ -192,20 +250,20 @@ gulp.task('addon:watch', function () {
 });
 
 function getVersion() {
-  var fs = require('fs');
+  let fs = require('fs');
   return JSON.parse(fs.readFileSync('./package.json', 'utf8')).version;
 }
 
 function bumpVersion(type) {
-  var semver = require('semver');
+  let semver = require('semver');
 
   if (type === "undefined") {
     type = "prerelease";
   }
 
-  var pkgVersion = getVersion();
+  let pkgVersion = getVersion();
 
-  var version = semver.inc("" + pkgVersion, type);
+  let version = semver.inc("" + pkgVersion, type);
 
   console.log("Bumping from " + pkgVersion + " to " + version);
 

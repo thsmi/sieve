@@ -117,7 +117,7 @@
     this.tlsSocket = tls.connect({ socket: this.socket });
 
     this.tlsSocket.on('secureConnect', () => {
-      console.log('Socket upgraded!');
+      this.getLogger().log('Socket upgraded!');
       callback();
     });
 
@@ -132,7 +132,7 @@
       if (this.socket === null)
         return;
 
-      console.log("Disconnecting...");
+      this.getLogger().log("Disconnecting...");
       this.socket.destroy();
       this.socket.unref();
       this.socket = null;
@@ -147,7 +147,7 @@
   Sieve.prototype.onReceive
     = function (buffer) {
 
-      console.log('onDataRead (' + buffer.length + ')\n' + buffer.toString("utf8"));
+      this.getLogger().log('onDataRead (' + buffer.length + ')\n' + buffer.toString("utf8"));
 
       let data = [];
 

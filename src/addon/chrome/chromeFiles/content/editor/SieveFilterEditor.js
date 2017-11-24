@@ -626,15 +626,20 @@ function onWindowLoad()
 }
 
 
+/**
+ * Click handler for the donate button.
+ * Opens a new browser window with the paypal donation website
+ * @return {void}
+ */
 function onDonate()
 {
-  var url = Cc["@mozilla.org/network/io-service;1"]
+  let uri = Cc["@mozilla.org/network/io-service;1"]
               .getService(Ci.nsIIOService)
               .newURI("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC", null, null);
 
   Cc["@mozilla.org/uriloader/external-protocol-service;1"]
     .getService(Ci.nsIExternalProtocolService)
-    .loadUrl(url);
+    .loadURI(uri);
 }
 
 function onViewSource(visible,aNoUpdate)

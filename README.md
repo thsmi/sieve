@@ -64,7 +64,7 @@ Refer to [Licensing information](https://github.com/thsmi/sieve/blob/master/LICE
 
 You are looking for the most recent release?
 
-Just go to [the releases page and download the latest stable xpi or view the release notes](https://github.com/thsmi/sieve/releases).
+Just go to [the releases page and download the latest stable xpi or view the release notes](https://github.com/thsmi/sieve/releases/latest).
 
 *Firefox user have to do a right click on the XPI download and select "Save link as" otherwise Firefox will steal the link and try to install the addon it into Firefox which will fail*
 

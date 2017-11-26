@@ -43,10 +43,12 @@ If you want to support this project consider donating
   * via Bitcoin [1GEnrRVobFYuqYj2opdvRQNtG3Z8znvfKw](bitcoin:1GEnrRVobFYuqYj2opdvRQNtG3Z8znvfKw?label=Donation%20for%20Sieve%20Addon)
 
 
-## Bugs
+## Questions and Bugs
 
-Please report bugs via the [issue tracker](https://github.com/thsmi/sieve/issues)
-or send an email to schmid-thomas at gmx.net . You find more details on reporting bugs
+The best for questions is the public mailing list at https://groups.google.com/forum/#!forum/sieve-app or via mail sieve-app@googlegroups.com . But you can also send a private mail to schmid-thomas at gmx.net.
+
+Concerning bugs please use the [issue tracker](https://github.com/thsmi/sieve/issues)
+or send a private email to schmid-thomas at gmx.net . You find more details on reporting bugs
 in the [Contributing Guidelines](https://github.com/thsmi/sieve/blob/master/CONTRIBUTING.md)
 
 

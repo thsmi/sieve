@@ -56,7 +56,41 @@
   class SieveReferralException extends Error {
   }
 
+  /**
+   * A base class for server side exception.
+   */
   class SieveServerException extends Error {
+
+    /**
+     * Creates a serverside exception
+     *
+     * @param {SieveSimpleResponse} response
+     *   the servers response which inidcated the error.
+     */
+    constructor(response) {
+      super();
+      this.response = response;
+    }
+
+    /**
+     * Indicates that this exception was caused by the server.
+     * @returns {boolean}
+     *   always true, as server exceptions are always caused by the server
+     */
+    isServerSide() {
+      return true;
+    }
+
+    /**
+     * Returns the server's response it typically contains the cause
+     * why the request failed.
+     *
+     * @returns {SieveSimpleResponse}
+     *   the server response objet
+     */
+    getResponse() {
+      return this.response;
+    }
   }
 
   class SieveTimeOutException extends Error {
@@ -175,7 +209,7 @@
         callback.reject = reject;
 
         if (!callback.onError)
-          callback["onError"] = () => { callback.reject(new SieveServerException()); };
+          callback["onError"] = (response) => { callback.reject(new SieveServerException(response)); };
 
         if (!callback.onTimeout)
           callback["onTimeout"] = () => { callback.reject(new SieveTimeOutException()); };
@@ -192,10 +226,11 @@
             }
 
             // ... everything else is definitely an error.
-            callback.reject(new SieveServerException());
+            callback.reject(new SieveServerException(response));
           };
         }
 
+        request.addByeListener(callback);
         request.addErrorListener(callback);
         this.sieve.addRequest(request);
 
@@ -205,7 +240,7 @@
       }, (reject) => {
         throw reject;
       });
-    };
+    }
 
     /**
      * Sends a noop or keep alive response.
@@ -359,7 +394,23 @@
       return;
     }
 
+    /**
+     * Checks the script for syntax errors.
+     *
+     * It uses the checkscript command. In case
+     * the command is not supported it fails.
+     *
+     * Throws an exception in case the script is not valid.
+     *
+     * @param {String} script
+     *   the script which should be checked.
+     * @returns {void}
+     */
     async checkScript2(script) {
+
+      if (script.length === 0)
+        return;
+
       let callback = {
         onCheckScriptResponse: function (response) {
           callback.resolve();
@@ -372,8 +423,23 @@
       await this.exec(request, callback);
 
       return;
-    };
+    }
 
+    /**
+     * Checks the script for syntax errors.
+     *
+     * It uses the checkscript command if present otherwise
+     * it emulates the checkscript by pushing a temporary script
+     * to the server.
+     *
+     * In you need a pure checkscript implementation use checkscript2
+     *
+     * Throws an exception in case the script is not valid.
+     *
+     * @param {String} script
+     *   the script which should be checked.
+     * @returns {void}
+     */
     async checkScript(script) {
 
       if (script.length === 0)
@@ -390,13 +456,13 @@
 
       // First we use PUTSCRIPT to store a temporary script on the server...
       // ... incase the command fails, it is most likely due to an syntax error...
-      // ... if it sucseeds the script is syntactically correct!
+      // ... if it succeeds the script is syntactically correct!
       await this.putScript("TMP_FILE_DELETE_ME", script);
       // then delete the temporary script.
       await this.deleteScript("TMP_FILE_DELETE_ME");
 
       return;
-    };
+    }
 
     async renameScript2(oldName, newName) {
 
@@ -473,7 +539,7 @@
       let init = () => {
         this.sieve.connect(
           hostname, port,
-          this.account.getHost().isTLSEnabled(),
+          this.account.getHost().isSecure(),
           this,
           this.account.getProxy().getProxyInfo());
       };
@@ -493,11 +559,11 @@
       // ... is capable of handling TLS, otherwise simply skip it and ...
       // ... use an insecure connection
 
-      if (!this.account.getHost().isTLSEnabled())
+      if (!this.account.getHost().isSecure())
         return;
 
-      if (!this.sieve.capabilities.tls && !this.account.getHost().isTLSForced())
-        return;
+      if (!this.sieve.capabilities.tls)
+        throw new SieveClientException("Server does not support a secure connection.");
 
       let callback = {
 
@@ -560,14 +626,17 @@
      */
     getSaslMechanism() {
 
-      let mechanism = [];
-      if (this.account.getSettings().hasForcedAuthMechanism())
-        mechanism = [this.account.getSettings().getForcedAuthMechanism()];
-      else
+      let mechanism = this.account.getLogin().getSaslMechanism();
+
+      if (mechanism === "none")
+        throw new SieveClientException("SASL Authentication disabled");
+
+      if (mechanism === "default")
         mechanism = [... this.sieve.capabilities.sasl];
+      else
+        mechanism = [mechanism];
 
       // ... translate the SASL Mechanism into an SieveSaslLogin Object ...
-
       while (mechanism.length > 0) {
         // remove and test the first element...
         switch (mechanism.shift().toUpperCase()) {
@@ -594,28 +663,30 @@
         }
       }
 
-      throw new SieveClientException("No SASL Mechanism (error.sasl)");
+      throw new SieveClientException("No compatible SASL Mechanism (error.sasl)");
     }
 
+    /**
+     * Authenticates the current session.
+     * @returns {void}
+     */
     async authenticate() {
       let account = this.account;
 
-      // We do not have a username in case it is sasl external...
-
-      // Without a username, we can skip the authentication
-      if (account.getLogin().hasUsername() === false)
+      if (account.getLogin().getSaslMechanism() === "none")
         return;
 
       let request = this.getSaslMechanism();
 
-      request.setUsername(account.getLogin().getUsername());
+      let username = account.getLogin().getUsername();
+      request.setUsername(username);
 
       // SASL External has no passwort it relies completely on SSL...
       if (request.hasPassword()) {
 
-        let password = account.getLogin().getPassword();
+        let password = await account.getLogin().getPassword();
 
-        if (password === null)
+        if (typeof(password) === undefined || password === null)
           throw new SieveClientException("error.authentication");
 
         request.setPassword(password);
@@ -641,7 +712,7 @@
 
       request.addSaslListener(callback);
       return await this.exec(request, callback);
-    };
+    }
 
 
     /**
@@ -662,7 +733,8 @@
       this.sieve = new Sieve(this.logger);
 
       //FIXME we need to add the onIdle and onTimeout methods
-      this.sieve.addListener(this);
+      //FIXME in case we set the listner here the byeListener does not work anymore
+      //this.sieve.addListener(this);
 
       // TODO Load Timeout interval from account settings...
       if (this.account.getSettings().isKeepAlive())

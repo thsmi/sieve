@@ -149,7 +149,7 @@
       = function ()
   {
     if ((typeof(this.message) === 'undefined') || (this.message === null))
-      throw "Message not Initialized";
+      throw new Error("Message not Initialized");
 
     return this.message;
   };

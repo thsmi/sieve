@@ -8,10 +8,7 @@
   <title>Manage Sieve Scripts</title>
 
   <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
-    crossorigin="anonymous">
-
-
+  <link rel="stylesheet" href="./libs/bootstrap/css/bootstrap.min.css">
 
   <link rel="stylesheet" href="./libs/CodeMirror/lib/codemirror.css">
   <link rel="stylesheet" href="./libs/CodeMirror/theme/eclipse.css">
@@ -26,8 +23,8 @@
     .fixedsticky {
       position: -webkit-sticky;
       position: sticky;
-      top: 0px;
-      width: 100%;
+      /*top: 0px;
+      width: 100%;*/
     }
 
     body {
@@ -67,19 +64,8 @@
             <button type="button" class="btn btn-outline-secondary">Paste</button>
           </div>
           <div class="btn-group mr-2" role="group">
-            <button type="button" class="btn btn-outline-secondary btn-sm">Syntax Check</button>
-            <button type="button" class="btn btn-outline-secondary btn-sm">Quick Reference</button>
-            <button type="button" class="btn btn-outline-secondary btn-sm">Search</button>
-          </div>
-          <div class="btn-group mr-2" role="group">
-            <button id="btnGroupDrop1" type="button" class="btn btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-              aria-expanded="false">
-                Tools
-              </button>
-            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-              <a class="dropdown-item" href="#">Import</a>
-              <a class="dropdown-item" href="#">Export</a>
-            </div>
+            <button type="button" class="btn btn-outline-secondary">Syntax Check</button>
+            <button type="button" class="btn btn-outline-secondary" id="sieve-editor-quickreference">Quick Reference</button>
           </div>
         </div>
       </div>
@@ -94,7 +80,7 @@
 
   <footer class="footer fixed-bottom">
     <div class="container">
-      <div class="alert alert-warning fixedsticky" role="alert">
+      <div class="alert alert-warning" role="alert">
         <h4 class="alert-heading">Well done!</h4>
         <p>Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that
           you can see how spacing within an alert works with this kind of content.</p>
@@ -106,17 +92,12 @@
   <!-- Bootstrap core JavaScript
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
-  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
-    crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
-    crossorigin="anonymous"></script>
+  <script src="./libs/jquery/jquery.min.js"></script>
+  <script src="./libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <script src="./utils/SieveIpcClient.js"></script>
 
   <script src="editor.js"></script>
-
 
 </body>
 

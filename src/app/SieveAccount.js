@@ -8,70 +8,139 @@
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
-
 (function (exports) {
 
   "use strict";
-  function SieveAccount() {
-  }
 
-  SieveAccount.prototype = {
+  const SievePrefManager = require('./utils/SievePrefManager.js');
+  //const SievePasswordManager = require('./utils/SievePasswordManager.js');
 
-    getHost: function () {
+  /**
+   * Manages the account specific settings
+   */
+  class SieveAccount {
+
+    /**
+     * Creates a new instance.
+     *
+     * @param {string} id
+     *   the account's unique id.
+     * @param {function} callback
+     *   the callback which is invoked to retrieve the password.
+     */
+    constructor(id, callback) {
+      this.callback = callback;
+      this.prefs = new SievePrefManager(id);
+    }
+
+    /**
+     * Provides access to all host related settings
+     * @returns {object}
+     *   the host object
+     */
+    getHost() {
+      let that = this;
       return {
-        isTLSEnabled: function () {
-          return true;
+
+        getDisplayName : function() {
+          return that.prefs.getString("host.displayName", "Unnamed Account");
         },
 
-        isTLSForced: function () {
-          return false;
+        setDisplayName : function(value) {
+          that.prefs.setString("host.displayName", value);
+          return this;
+        },
+
+        isSecure: function () {
+          return that.prefs.getBoolean("host.tls", true);
+        },
+
+        setSecure: function(secure) {
+          return that.prefs.setBoolean("host.tls", secure);
         },
 
         getHostname: function () {
-          //return "localhost";
-          return "imap.1und1.com";
+          return that.prefs.getString("host.hostname", "localhost");
+        },
+
+        setHostname: function (value) {
+          that.prefs.setString("host.hostname", value);
         },
 
         getPort: function () {
-          //return 4190;
-          return 2000;
+          return that.prefs.getInteger("host.port", 4190);
+        },
+
+        setPort:function (value) {
+          that.prefs.setInteger("host.port", value);
         }
       };
-    },
+    }
 
-    getLogin: function () {
+    /**
+     * Provides access to all login related settings
+     * @returns {object}
+     *   the login object
+     */
+    getLogin() {
+      let that = this;
       return {
-        hasUsername: function () {
-          return true;
+        getSaslMechanism: function () {
+          return that.prefs.getString("authentication.mechanism", "default");
         },
+
+        setSaslMechanism: function (value) {
+          that.prefs.setString("authentication.mechanism", value);
+        },
+        /**
+         * Gets the username for the given account
+         *
+         * It is async because it may be blocking in
+         * case it requires user input.
+         *
+         * @returns {Promise<string>}
+         *  the username
+         */
         getUsername: function () {
-          //return $("#username").val();
-          return "username";
+          return that.prefs.getString("authentication.username", "");
         },
-        getPassword: function () {
-          //return $("#password").val();
-          return "password";
+
+        setUsername: function(value) {
+          that.prefs.setString("authentication.username", value);
+        },
+
+        /**
+         * Gets the password for the given account.
+         *
+         * It is async because it may be blocking in
+         * case it requires user input.
+         *
+         * @returns {Promise<string>}
+         *   the password as string
+         */
+        getPassword: async function () {
+          return await that.callback(that);
         }
       };
-    },
+    }
 
-    getAuthorization: function () {
+    getAuthorization() {
       return {
         getAuthorization: function () {
           return "";
         }
       };
-    },
+    };
 
-    getProxy: function () {
+    getProxy() {
       return {
         getProxyInfo: function () {
           return null;
         }
       };
-    },
+    }
 
-    getSettings: function () {
+    getSettings() {
       return {
         getDebugFlags: function () {
           return 255;
@@ -90,8 +159,11 @@
         }
       };
     }
-  };
+  }
 
-  exports.SieveAccount = SieveAccount;
+  if (module.exports)
+    module.exports.SieveAccount = SieveAccount;
+  else
+    exports.SieveAccount = SieveAccount;
 
 })(this);

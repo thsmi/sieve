@@ -170,11 +170,11 @@
 
       <hbox align="center">
         <label value="&edit.searchreplace.searchfor;"/>
-        <textbox flex="1" id="txtToken"/>
+        <textbox flex="1" id="txtToken" onkeypress="onEnterKeyPress(event, onFindString)"/>
       </hbox>
       <hbox align="center">
         <label value="&edit.searchreplace.replacewith;"/>
-        <textbox flex="1" id="txtReplace" />
+        <textbox flex="1" id="txtReplace" onkeypress="onEnterKeyPress(event, onReplaceString)"/>
       </hbox>
         <groupbox orient="vertical" >
           <caption label="&edit.searchreplace.options;"/>

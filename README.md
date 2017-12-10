@@ -43,10 +43,12 @@ If you want to support this project consider donating
   * via Bitcoin [1GEnrRVobFYuqYj2opdvRQNtG3Z8znvfKw](bitcoin:1GEnrRVobFYuqYj2opdvRQNtG3Z8znvfKw?label=Donation%20for%20Sieve%20Addon)
 
 
-## Bugs
+## Questions and Bugs
 
-Please report bugs via the [issue tracker](https://github.com/thsmi/sieve/issues)
-or send an email to schmid-thomas at gmx.net . You find more details on reporting bugs
+The best for questions is the public mailing list at https://groups.google.com/forum/#!forum/sieve-app or via mail sieve-app@googlegroups.com . But you can also send a private mail to schmid-thomas at gmx.net.
+
+Concerning bugs please use the [issue tracker](https://github.com/thsmi/sieve/issues)
+or send a private email to schmid-thomas at gmx.net . You find more details on reporting bugs
 in the [Contributing Guidelines](https://github.com/thsmi/sieve/blob/master/CONTRIBUTING.md)
 
 
@@ -64,7 +66,7 @@ Refer to [Licensing information](https://github.com/thsmi/sieve/blob/master/LICE
 
 You are looking for the most recent release?
 
-Just go to [the releases page and download the latest xpi or view the release notes](https://github.com/thsmi/sieve/releases).
+Just go to [the releases page and download the latest stable xpi or view the release notes](https://github.com/thsmi/sieve/releases/latest).
 
 *Firefox user have to do a right click on the XPI download and select "Save link as" otherwise Firefox will steal the link and try to install the addon it into Firefox which will fail*
 
@@ -74,8 +76,9 @@ This is because of a design flaw in Thunderbirds APIs for loading and unloading 
 
 ## Developments Builds
 
+Development builds can also be found in the release section they are marked as a pre release
 You are looking for the latest "bleeding edge" features and willing to risk more instability?
 Or you might even want to test out newly added code to help identify and debug problems?
 
-Just go to
-[https://github.com/thsmi/sieve/blob/master/nightly](https://github.com/thsmi/sieve/blob/master/nightly/README.md)
+You can find the nightly builds also on the [release page](https://github.com/thsmi/sieve/releases). They are marked as prerelease.
+They will update to newer releases but not to newer prereleases.

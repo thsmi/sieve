@@ -238,7 +238,6 @@ und konfigurieren Sie das Sieve Konto manuell.">
 <!ENTITY edit.toolbar.back "Zurück">
 <!ENTITY edit.toolbar.forward "Weiter">
 <!ENTITY edit.toolbar.home "Inhalt">
-<!ENTITY edit.toolbar.print "Drucken">
 <!ENTITY edit.toolbar.search "Suchen">
 
 <!ENTITY edit.sidebar.uri "https://thsmi.github.io/sieve-reference/en/index.html">

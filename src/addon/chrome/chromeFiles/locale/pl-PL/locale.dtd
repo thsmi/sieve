@@ -231,7 +231,6 @@ Proszę skontaktować się z dostawcą poczty lub spróbować ręcznie stworzyć
 <!ENTITY edit.toolbar.back "Wstecz">
 <!ENTITY edit.toolbar.forward "Naprzód">
 <!ENTITY edit.toolbar.home "Strona główna">
-<!ENTITY edit.toolbar.print "Drukuj">
 <!ENTITY edit.toolbar.search "Szukaj">
 
 <!ENTITY edit.sidebar.uri "https://thsmi.github.io/sieve-reference/en/index.html">

@@ -238,7 +238,6 @@
 <!ENTITY edit.toolbar.back "Назад">
 <!ENTITY edit.toolbar.forward "Вперёд">
 <!ENTITY edit.toolbar.home "Домой">
-<!ENTITY edit.toolbar.print "Печать">
 <!ENTITY edit.toolbar.search "Поиск">
 
 <!ENTITY edit.sidebar.uri "https://thsmi.github.io/sieve-reference/en/index.html">

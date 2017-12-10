@@ -43,10 +43,6 @@
           src="chrome://sieve-common/content/editor/sieve.broker.js" />
   <script type="application/javascript"
           src="chrome://sieve-common/content/editor/sieve.editor.js" />
- <!-- <script type="application/javascript"
-          src="chrome://global/content/printUtils.js"/>
-  <script type="application/javascript"
-          src="chrome://messenger/content/msgPrintEngine.js"/> -->
 
   <keyset>
     <key key="&shortcut.save.key;"
@@ -113,9 +109,6 @@
                    label="&edit.toolbar.search;" class="toolbarbutton-1"
                     oncommand="onSearchBar();" />
     <toolbarspacer />
-    <!--<toolbarbutton id="btnPrint"
-                   label="&edit.toolbar.print;" class="toolbarbutton-1"
-                   oncommand="onPrint();" />-->
     <toolbarbutton id="btnTools"
                    label="&edit.toolbar.tools;"
                    type="menu"  class="toolbarbutton-1" >
@@ -170,11 +163,11 @@
 
       <hbox align="center">
         <label value="&edit.searchreplace.searchfor;"/>
-        <textbox flex="1" id="txtToken"/>
+        <textbox flex="1" id="txtToken" onkeypress="onEnterKeyPress(event, onFindString)"/>
       </hbox>
       <hbox align="center">
         <label value="&edit.searchreplace.replacewith;"/>
-        <textbox flex="1" id="txtReplace" />
+        <textbox flex="1" id="txtReplace" onkeypress="onEnterKeyPress(event, onReplaceString)"/>
       </hbox>
         <groupbox orient="vertical" >
           <caption label="&edit.searchreplace.options;"/>

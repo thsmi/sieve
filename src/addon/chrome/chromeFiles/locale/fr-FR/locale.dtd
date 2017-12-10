@@ -237,7 +237,6 @@ essayez une configuration manuelle.">
 <!ENTITY edit.toolbar.back "Précédent">
 <!ENTITY edit.toolbar.forward "Suivant">
 <!ENTITY edit.toolbar.home "Accueil">
-<!ENTITY edit.toolbar.print "Imprimer">
 <!ENTITY edit.toolbar.search "Rechercher">
 
 <!ENTITY edit.sidebar.uri "https://thsmi.github.io/sieve-reference/en/index.html">

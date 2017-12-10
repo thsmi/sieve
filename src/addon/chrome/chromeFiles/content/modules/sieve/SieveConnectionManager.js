@@ -131,7 +131,7 @@ SieveConnectionManager.prototype =
     // ... in case we are gracefully disconnecting, we...
     // ... need to speed it up and force the disconnect
     if (this.sessions[sid].isDisconnecting())
-      this.sessions[sid].disconnnect(true);
+      this.sessions[sid].disconnect(true);
 
     // ... we ensured we are disconnected so its safe to call connect
     this.sessions[sid].connect();

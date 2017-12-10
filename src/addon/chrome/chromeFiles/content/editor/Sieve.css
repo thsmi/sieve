@@ -1,78 +1,32 @@
 @import url("chrome://messenger/skin/");
 @import url("chrome://global/skin/toolbar.css");
- 
+
 
  /* the surrounding box */
  .sivEditor
  {
 	 background-color: -moz-Field;
 	/* -moz-appearance: textfield*/
- }	 
- 
+ }
+
  .sivEditor textbox
  {
      -moz-appearance: none !important;
      margin: 0px !important;
      border: none !important;
-     padding: 2px !important;	 	 
-	 
-	   font-family: monospace;   
-     color: -moz-fieldtext; 
-     font-size: 12px;	
+     padding: 2px !important;
+
+	   font-family: monospace;
+     color: -moz-fieldtext;
+     font-size: 12px;
  }
- 
- /* the editor */
- .sivEditor #sivContentEditor
- {
-    background: url(chrome://sieve/content/images/splitter.png) repeat-y 650px 0px;    
-	 
-	 overflow:hidden;
- }
- 
- .sivEditor #sivContentEditor textarea
- {	 
-	 overflow-y:scroll;
-	 overflow-x:scroll;
- }
- 
- /* style the line numbers column  */
- .sivEditor #sivLineNumbers
- {
-	 margin:0px;
-	 padding:0px;  
-	 
-	 border: none; 
-	 /*border-right: 1px groove;*/ 
-	 
-	 background: #f8f8f8;
- }
- 
- .sivEditor #sivLineNumbers textbox
- { 
-	 width:50px;  
-	 background: #f8f8f8 !important;
-	 overflow:hidden;
- }
- 
-/* the previous textbox contains an anonymous textarea... */
-.sivEditor  #sivLineNumbers textarea 
-{
-	 overflow:hidden; 
-	 text-align:right !important;  	 
-} 
- 
-.sivEditor #sivLineNumbers  scrollbar
-{
-	 visibility:hidden;
-	 width:50px;
-}
- 
+
 
 #sideBarTitle2
 {
 	height: 20px;
 	background: url(chrome://sieve/content/images/sidebarTitle.png) repeat;
-	-moz-appearance: none;	
+	-moz-appearance: none;
 }
 
 
@@ -80,21 +34,21 @@
 {
   background: white;
   font-weight: bold;
-  color: darkgray;	
+  color: darkgray;
 }
 
 #StatusError
 {
-	background-color: white	
+	background-color: white
 }
 
 .sivError
 {
-	background-color: #ffe6e6; 
-	border: 1px solid black; 
-	padding: 5px; 
+	background-color: #ffe6e6;
+	border: 1px solid black;
+	padding: 5px;
 	margin-top : 5px;
-	border-radius: 5px;	
+	border-radius: 5px;
 }
 
 /*#sivExplorerError description
@@ -103,22 +57,22 @@
 }*/
 
 
-#sivAutoConfig 
+#sivAutoConfig
 {
   max-width: 430px;
   background-color: white;
   border: 1px solid ThreeDShadow;
   padding: 20px;
-   
-  border-radius: 5px;  
+
+  border-radius: 5px;
 }
 
-#sivAutoConfigInfo 
+#sivAutoConfigInfo
 {
   padding-left: 40px;
   background: url(chrome://sieve/content/images/syntax-ok.png) no-repeat 0px 0px;
 }
-                    
+
 #sivAutoConfigWait
 {
   padding-left: 40px;
@@ -130,17 +84,17 @@
   padding-left: 40px;
   background: url(chrome://sieve/content/images/syntax-warning.png) no-repeat 0px 0px;
 }
-                    
+
 .sivExplorerWarning
 {
-  background-color: white		
+  background-color: white;
 }
 
 .sivWarningBar
 {
 	background-image: -moz-linear-gradient(bottom, #ffdd66, #ffeb7d);
 	border-bottom: 1px solid black;
-	
+
 	padding :5px;
 	margin: 0px;
 }
@@ -149,10 +103,10 @@
 {
 	background-image: -moz-linear-gradient(bottom, #ffdd66, #ffeb7d);
 	/*background-color: #FFFFCC;*/
-	border: 1px solid black; 
-	padding: 5px; 
+	border: 1px solid black;
+	padding: 5px;
 	margin-top : 5px;
-	border-radius: 5px;	
+	border-radius: 5px;
 }
 
 #StatusWarning description
@@ -174,7 +128,7 @@
 .sieveSideBar stack
 {
 	margin: 0px;
-	padding: 0px;	
+	padding: 0px;
   height: 20px;
 }
 
@@ -191,7 +145,7 @@
   background-color: transparent;
 }
 
-#btnServerDetails 
+#btnServerDetails
 {
 	border: 0px !important;
   background-color: transparent;
@@ -207,7 +161,7 @@
     -moz-binding: url("chrome://global/content/bindings/toolbarbutton.xml#menu-vertical") !important;
  }
 
-.toolbarbutton-1 
+.toolbarbutton-1
 {
    -moz-box-orient: vertical;
    min-width: 0px;
@@ -271,11 +225,6 @@
     height: 26px;
 }
 
-#btnPrint
-{
-	list-style-image: url(chrome://sieve/content/images/toolbar.print.png);
-}	
-
 #btnReference
 {
 	list-style-image: url(chrome://sieve/content/images/toolbar.reference.png);
@@ -289,9 +238,9 @@
 #btnSideBarForward
 {
   list-style-image: url(chrome://sieve/content/images/toolbar.forward.png);
-}	
-	
-#btnSideBarHome	
+}
+
+#btnSideBarHome
 {
   list-style-image: url(chrome://sieve/content/images/toolbar.home.png);
 }
@@ -305,7 +254,7 @@
   margin-left: -5px;
   position: relative;
   z-index: 10;
-  -moz-transition: border-width .3s ease-in;	
+  -moz-transition: border-width .3s ease-in;
 }
 
 #spErrorBar {

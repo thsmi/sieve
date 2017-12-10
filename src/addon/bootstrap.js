@@ -25,8 +25,32 @@ const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/Services.jsm");
 
+/**
+ * Called when the addon is installed.
+ * It will be also called in case of an update.
+ *
+ * @param {*} data
+ *   informations about the addon which should be installed
+ * @param {*} reason
+ *   the reason why the addon should be installed.
+ * @returns {void}
+ */
 function install(data, reason)
 {
+}
+
+/**
+ * Called when the addon is uninstalled.
+ * It can be used to remove preferences and passwords etc.
+ * It will be also called in case of an update.
+ *
+ * @param {*} data
+ *   informations about the addon which should be uninstalled
+ * @param {*} reason
+ *   the reason why the addon should be uninstalled.
+ * @returns {void}
+ */
+function uninstall(data, reason) {
 }
 
 /**

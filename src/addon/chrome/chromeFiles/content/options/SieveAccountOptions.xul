@@ -2,12 +2,12 @@
 
 <!--
    The content of this file is licenced. You may obtain a copy of
-   the license at http://sieve.mozdev.org or request it via email 
-   from the author. Do not remove or change this comment. 
-  
+   the license at http://sieve.mozdev.org or request it via email
+   from the author. Do not remove or change this comment.
+
    The initial author of the code is:
      Thomas Schmid <schmid-thomas@gmx.net>
-   
+
    Contributor(s):
      Marion Desnault <marion.desnault@free.fr>
 -->
@@ -25,9 +25,9 @@
         style="width: 48em; height: 27em;"
         title="&options.title;"
         id="SieveAccountOptions">
-    
+
   <script type="application/javascript" src="chrome://sieve/content/options/SieveAccountOptions.js"/>
-  
+
   <tabbox  flex="1">
   <tabs >
     <tab label="&options.tab.server;" />
@@ -41,11 +41,11 @@
   </tabs>
   <tabpanels flex="1" >
     <!-- Server Panel -->
-    <vbox>      
+    <vbox>
         <!-- Server Name Box -->
         <groupbox>
-          <caption label="&options.host.caption;" /> 
-          <description>&options.host.description;</description>    
+          <caption label="&options.host.caption;" />
+          <description>&options.host.description;</description>
           <radiogroup id="rgHost" onselect="onHostSelect(this.selectedIndex);">
             <box align="center">
               <radio id="rbImapHost" label="&options.host.imap;" />
@@ -57,12 +57,12 @@
             </box>
           </radiogroup>
         </groupbox>
-        <spacer />          
+        <spacer />
         <!-- Server Port Box -->
         <groupbox>
           <caption label="&options.port.caption;" />
           <description>&options.port.description;</description>
-          <description>&options.port.description2;</description>        
+          <description>&options.port.description2;</description>
           <radiogroup id="rgPort" onselect="onPortSelect(this.selectedIndex);">
             <radio id="rbPort4190" label="&options.port.4190;" />
             <radio id="rbPort2000" label="&options.port.2000;" />
@@ -85,9 +85,9 @@
                 </hbox>
                 <hbox align="center" pack="center">
                   <label value="&options.port.autoselect.error;" />
-                </hbox>                
-              </deck>    
-            </hbox>                           
+                </hbox>
+              </deck>
+            </hbox>
           </radiogroup>
         </groupbox>
         </vbox>
@@ -103,34 +103,34 @@
           <radio label="&options.security.tls.force;" />
         </radiogroup>
       </groupbox>
-        
+
       <!-- Server Authentication -->
       <groupbox>
-        <caption label="&options.login;" /> 
+        <caption label="&options.login;" />
         <radiogroup id="rgLogin" onselect="onLoginSelect(this.selectedIndex);">
           <radio label="&options.login.noAuth;"/>
           <radio label="&options.login.imapAuth;"/>
           <radio label="&options.login.customAuth;"/>
         </radiogroup>
-        
+
         <box class="indent" align="center">
           <label value="&options.login.username;" accesskey="&options.login.username.key;"
                  control="txtUsername"/>
-            
+
           <textbox id="txtUsername" size="20" onchange="onUsernameChange(this.value)"/>
          </box>
-          <hbox align="right"><button  id="btnShowPasswords" label="&options.login.show;" 
-                oncommand="onShowPassword()" /></hbox>                           
+          <hbox align="right"><button  id="btnShowPasswords" label="&options.login.show;"
+                oncommand="onShowPassword()" /></hbox>
       </groupbox>
     </vbox>
-    
+
     <vbox>
       <groupbox>
         <caption label="&options.misc.compile.caption;" />
         <description>&options.misc.compile.description;</description>
-        
+
         <checkbox id="cbxCompile" label="&options.misc.compile;"
-          accesskey="&options.misc.compile.key;" 
+          accesskey="&options.misc.compile.key;"
           oncommand="onCompileCommand(this)" />
         <box class="indent" align="center">
           <label value="&options.misc.compile2;" />
@@ -143,7 +143,7 @@
         <description>&options.misc.keepalive.description;</description>
         <description>&options.misc.keepalive.description2;</description>
         <checkbox id="cbxKeepAlive" label="&options.misc.keepalive;"
-                  accesskey="&options.misc.keepalive.key;" 
+                  accesskey="&options.misc.keepalive.key;"
                   oncommand="onKeepAliveCommand(this)" />
         <box class="indent" align="center">
           <label value="&options.misc.keepalive2;" />
@@ -157,10 +157,10 @@
   <!-- proxy panel -->
     <vbox>
       <groupbox>
-        <caption label="&options.proxy;" /> 
+        <caption label="&options.proxy;" />
         <description>&options.proxy.description;</description>
         <description>&options.proxy.description.nameresolution;</description>
-        <description>&options.proxy.description.localhost;</description>                 
+        <description>&options.proxy.description.localhost;</description>
         <radiogroup id="rgSocksProxy" onselect="onProxySelect(this.selectedIndex);">
           <radio label="&options.proxy.direct;"/>
           <radio label="&options.proxy.default;"/>
@@ -169,28 +169,28 @@
             <label value="&options.proxy.host;" control="txtSocks4Host" />
             <textbox id="txtSocks4Host" size="25" onchange="onSocks4HostChange(this)"/>
             <label value="&options.proxy.port;"  control="txtSocks4Port" />
-            <textbox id="txtSocks4Port" size="5" onchange="onSocks4PortChange(this)"/>                  
+            <textbox id="txtSocks4Port" size="5" onchange="onSocks4PortChange(this)"/>
           </box>
           <radio id="rbProxySocks5" label="&options.proxy.socks5;"/>
           <box class="indent" align="center">
               <label value="&options.proxy.host;" control="txtSocks5Host" />
               <textbox id="txtSocks5Host" size="25" onchange="onSocks5HostChange(this)"/>
               <label value="&options.proxy.port;"  control="txtSocks5Port" />
-              <textbox id="txtSocks5Port" size="5" onchange="onSocks5PortChange(this)"/>                  
+              <textbox id="txtSocks5Port" size="5" onchange="onSocks5PortChange(this)"/>
           </box>
-          <checkbox class="indent" id="cbxSocks5RemoteDNS" label="&options.proxy.nameresolution;" 
-                    oncommand="onSocks5RemoteDNSCommand(this)" />     
+          <checkbox class="indent" id="cbxSocks5RemoteDNS" label="&options.proxy.nameresolution;"
+                    oncommand="onSocks5RemoteDNSCommand(this)" />
         </radiogroup>
       </groupbox>
     </vbox>
- 
-    
+
+
     <!-- advanced panel -->
     <vbox>
       <hbox align="center" class="sivWarning" >
         <image id="imgErrorBar" pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
         <label pack="center" value="&options.tab.advanced.warning;" />
-      </hbox> 
+      </hbox>
       <groupbox>
         <caption label="&options.authmechanism.caption;" />
         <description>&options.authmechanism.description;</description>
@@ -207,10 +207,10 @@
               <menuitem label="EXTERNAL" value="EXTERNAL"/>
             </menupopup>
           </menulist>
-        </hbox>        
+        </hbox>
       </groupbox>
       <groupbox>
-        <caption label="&options.proxyauth.caption;" /> 
+        <caption label="&options.proxyauth.caption;" />
         <description>&options.proxyauth.desc;</description>
         <description>&options.proxyauth.force; </description>
         <radiogroup id="rgAuthorization" onselect="onAuthorizationSelect(this.selectedIndex);">
@@ -220,20 +220,20 @@
           <radio label="&options.proxyauth.custom;"/>
           <box class="indent" align="center">
             <label value="&options.proxyauth.custom.username;" control="txtAuthorization"/>
-            <textbox id="txtAuthorization" size="20" 
+            <textbox id="txtAuthorization" size="20"
                      onchange="onAuthorizationChange(this.value);"/>
           </box>
         </radiogroup>
       </groupbox>
       <hbox flex="1"/>
     </vbox>
-    
+
     <!-- editor panel -->
     <vbox>
       <!--
       <groupbox>
         <caption label="Default Mode" />
-        <description>The sieve addon supports two editing modes, the plain text editor and the graphical editor. 
+        <description>The sieve addon supports two editing modes, the plain text editor and the graphical editor.
           The graphical editor is still a bit experimental and supports only a limited set of sieve instructions.</description>
         <description>You can switch between the editors by toggeling the source button in the toolbar</description>
         <radiogroup id="rgDefaultEditor" onselect="onDefaultEditorSelect(this.selectedIndex);">
@@ -244,12 +244,12 @@
       -->
 
       <groupbox>
-        <caption label="Indention" /> 
+        <caption label="Indention" />
 
         <description>The plain text editor supports automatic indenting. </description>
         <box align="center" >
           <label value="Indention Width:" control="txtIndentionWidth"/>
-          <textbox id="txtIndentionWidth" size="4" 
+          <textbox id="txtIndentionWidth" size="4"
                           onchange="onIndentionWidthChange(this.value);"/>
         </box>
         <hbox align="center" >
@@ -260,15 +260,15 @@
               <menuitem label="Tabs Only" value="1"/>
             </menupopup>
           </menulist>
-        </hbox> 
+        </hbox>
       </groupbox>
 
       <groupbox>
-        <caption label="Tab Handling" /> 
+        <caption label="Tab Handling" />
         <description>Texteditor with automatic indenting replaced the need for a tab key, but there are many editors which default to tabs due to historic reasons.</description>
         <box align="center" >
           <label value="Tab Width" />
-          <textbox id="txtTabWidth" size="4" 
+          <textbox id="txtTabWidth" size="4"
                           onchange="onTabWidthChange(this.value);"/>
         </box>
         <hbox align="center" >
@@ -279,10 +279,10 @@
               <menuitem label="Insert Tabs" value="1"/>
             </menupopup>
           </menulist>
-        </hbox> 
+        </hbox>
       </groupbox>
       <hbox flex="1"/>
-    </vbox>    
+    </vbox>
 
     <!-- debug panel -->
     <vbox>
@@ -305,21 +305,21 @@
       <groupbox>
         <caption label="&options.debug.output;" />
         <hbox align="center">
-          <description control="btnShowErrorConsole" flex="1">&options.debug.console;</description>          
-          <button id="btnShowErrorConsole" label="&options.debug.console.open;" 
+          <description control="btnShowErrorConsole" flex="1">&options.debug.console;</description>
+          <button id="btnShowErrorConsole" label="&options.debug.console.open;"
                   oncommand="onShowErrorConsole()" />
          </hbox>
-      </groupbox>      
-    </vbox>   
-    
+      </groupbox>
+    </vbox>
+
     <!-- credits panel -->
     <vbox align="center">
        <label value="&options.credits;"/>
         <vbox  flex="1" align="center">
-        <image src="chrome://sieve/content/images/contributors.png"/>
+        <image src="chrome://sieve/content/images/contributors.png" width='500px' height='500px'/>
         <image src="chrome://sieve/content/images/btn_donate_LG.gif" onclick="onDonate();"/>
         </vbox>
-    </vbox>   
+    </vbox>
   </tabpanels>
   </tabbox>
 </dialog>

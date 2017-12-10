@@ -239,7 +239,6 @@ to do a manual configuration.">
 <!ENTITY edit.toolbar.back "Back">
 <!ENTITY edit.toolbar.forward "Forward">
 <!ENTITY edit.toolbar.home "Home">
-<!ENTITY edit.toolbar.print "Print">
 <!ENTITY edit.toolbar.search "Search">
 
 <!ENTITY edit.sidebar.uri "https://thsmi.github.io/sieve-reference/en/index.html">

@@ -43,10 +43,6 @@
           src="chrome://sieve-common/content/editor/sieve.broker.js" />
   <script type="application/javascript"
           src="chrome://sieve-common/content/editor/sieve.editor.js" />
- <!-- <script type="application/javascript"
-          src="chrome://global/content/printUtils.js"/>
-  <script type="application/javascript"
-          src="chrome://messenger/content/msgPrintEngine.js"/> -->
 
   <keyset>
     <key key="&shortcut.save.key;"
@@ -113,9 +109,6 @@
                    label="&edit.toolbar.search;" class="toolbarbutton-1"
                     oncommand="onSearchBar();" />
     <toolbarspacer />
-    <!--<toolbarbutton id="btnPrint"
-                   label="&edit.toolbar.print;" class="toolbarbutton-1"
-                   oncommand="onPrint();" />-->
     <toolbarbutton id="btnTools"
                    label="&edit.toolbar.tools;"
                    type="menu"  class="toolbarbutton-1" >

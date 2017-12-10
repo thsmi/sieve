@@ -2,6 +2,8 @@
   "addons": {
     "sieve@mozdev.org": {
       "updates": [
+        { "version": "0.2.5",
+          "update_link": "https://github.com/thsmi/sieve/releases/download/0.2.5/sieve-0.2.5.xpi" },        
         { "version": "0.2.4",
           "update_link": "https://github.com/thsmi/sieve/releases/download/0.2.4/sieve-0.2.4.xpi" }
       ]

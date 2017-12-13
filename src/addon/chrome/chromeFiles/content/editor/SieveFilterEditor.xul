@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
  <!--
-   The content of this file is licenced. You may obtain a copy of
-   the license at http://sieve.mozdev.org or request it via email
-   from the author. Do not remove or change this comment.
+   The content of this file is licensed. You may obtain a copy of
+   the license at https://github.com/thsmi/sieve/ or request it via
+   email from the author.
+
+   Do not remove or change this comment.
 
    The initial author of the code is:
      Thomas Schmid <schmid-thomas@gmx.net>
@@ -53,7 +55,7 @@
   <menupopup id="ctxEditor" onpopupshowing="onEditorShowMenu();">
     <menuitem id="ctxUndo"
               label="&undoCmd.label;" accesskey="&undoCmd.accesskey;"
-              oncommand="textEditor.onUndo();  event.stopPropagation();" />
+              oncommand="textEditor.undo();  event.stopPropagation();" />
     <menuseparator/>
     <menuitem id="ctxCut"
               label="&cutCmd.label;" accesskey="&cutCmd.accesskey;"
@@ -84,10 +86,10 @@
     <toolbarspacer />
     <toolbarbutton id="btnUndo"
                    label="&edit.toolbar.undo;" class="toolbarbutton-1"
-                   oncommand="textEditor.onUndo()/*goDoCommand('cmd_undo')*/;" />
+                   oncommand="textEditor.undo()/*goDoCommand('cmd_undo')*/;" />
     <toolbarbutton id="btnRedo"
                    label="&edit.toolbar.redo;" class="toolbarbutton-1"
-                   oncommand="textEditor.onRedo()/*goDoCommand('cmd_redo');*/" />
+                   oncommand="textEditor.redo()/*goDoCommand('cmd_redo');*/" />
     <toolbarspacer />
     <toolbarbutton id="btnCut"
                    label="&edit.toolbar.cut;" class="toolbarbutton-1"

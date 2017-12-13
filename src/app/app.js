@@ -19,7 +19,7 @@ require('./libs/bootstrap/js/bootstrap.bundle.min.js');
 
 const { SieveSession } = require("./libs/libManageSieve/SieveNodeSession.js");
 const { SieveAccounts } = require("./SieveAccounts.js");
-
+const { SieveTemplateLoader } = require("./utils/SieveTemplateLoader.js");
 
 let callback = async function (account) {
 
@@ -232,14 +232,47 @@ let actions = {
 
     m = JSON.stringify(m);
 
-    $("#script-editor").get(0).contentWindow.postMessage(m , "*");
+    let id = ""+account+"-"+name;
+
+    if ($("#"+id).length) {
+      $("#myTab .nav-link[href='#"+id+"']").tab('show');
+      return;
+    }
+
+    // create a new tab.
+    let content = await (new SieveTemplateLoader()).load("./ui/app/editor.content.tpl");
+    let tab = await (new SieveTemplateLoader()).load("./ui/app/editor.tab.tpl");
+
+    tab.find(".nav-link")
+      .attr("href", "#"+id)
+      .text(name);
+
+    content
+      .attr("id", id);
+
+    // Update the iframe's url.
+    let url = new URL(content.attr("src"), window.location);
+
+    url.searchParams.append("account", account);
+    //FIXME the script name should ne an id so that we survive a rename...
+    url.searchParams.append("script", name);
+
+    content.attr("src", url.toString());
+
+
+    $("#myTabContent").append(content);
+    $("#myTab").append(tab);
+
+    tab.find(".nav-link").tab('show');
+
+    // insert tab.
+    // insert content.
     // wait for message...
   },
 
   "script-get": async function (msg) {
     console.log("Get Script...");
-
-    return await sessions[msg.payload.account].getScript();
+    return await sessions[msg.payload.account].getScript(msg.payload.data);
   },
 
   "script-check" : async function(msg) {

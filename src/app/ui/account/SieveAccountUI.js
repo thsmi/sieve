@@ -226,11 +226,6 @@
       })();
     }
 
-    async getScript(name) {
-      return await this.send("script-get", name);
-    }
-
-
     /**
      * Prompts for the new script name an creates the script
      *

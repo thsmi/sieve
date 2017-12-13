@@ -127,10 +127,12 @@ class SieveEditorUI {
 
 
     // TODO show and errors in UI
-    if (!errors)
+    if (!errors) {
+      $("#sivServerError").hide();
       return;
+    }
 
-    alert(errors);
+    $("#sivServerError").empty().text(errors).show();
   }
 
   /**
@@ -141,19 +143,22 @@ class SieveEditorUI {
    *
    * @param {String} id
    *  the accounts unique id
-   * @param {String} script
+   * @param {String} name
    *   the script which should be loaded
    * @returns {void}
    */
-  loadScript(id, script) {
+  async loadScript(id, name) {
     // Load a new script. It will discard the current script
     // the history and the cursorposition are reset to defaults.
 
     this.id = id;
 
+    let script = await this.send("script-get", name);
+
     this.cm.setValue(script);
     this.cm.setCursor({ line: 0, ch: 0 });
     this.cm.clearHistory();
+    this.cm.refresh();
 
     // ensure the active line cursor changed...
     //    onActiveLineChange();
@@ -168,7 +173,16 @@ class SieveEditorUI {
  */
 async function main() {
 
+  // initialize the editor
   let editor = new SieveEditorUI();
+
+  // then load the script.
+  // The account and the script name is embedded into the url.
+  let url = new URL(window.location);
+
+  editor.loadScript(
+    url.searchParams.get("account"),
+    url.searchParams.get("script"));
 
   /**
    * The on message handler which receives the parent IPC messages.
@@ -177,6 +191,7 @@ async function main() {
    * @returns {void}
    */
   function onMessage(e) {
+
     if (e.source === window)
       return;
 
@@ -184,8 +199,6 @@ async function main() {
 
     if (m.action !== "editor-init")
       return;
-
-    editor.loadScript(m.account, m.script);
 
     console.log("On Callback");
   }

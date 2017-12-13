@@ -9,6 +9,11 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+// Require defines an exports object, while standard js does not
+// we ues this magic to glue both world together.
+if (typeof (exports) === "undefined" || exports === null)
+  exports = this;
+
 (function (exports) {
 
     "use strict";
@@ -48,9 +53,6 @@
       }
     }
 
-  if (typeof (module) !== "undefined" && module !== null && module.exports)
-    module.exports = SieveTemplateLoader;
-  else
     exports.SieveTemplateLoader = SieveTemplateLoader;
 
-})(this);
+})(exports);

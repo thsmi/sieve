@@ -7,7 +7,7 @@
 
   "use strict";
 
-  const { app, BrowserWindow } = require('electron');
+  const { app, Menu, BrowserWindow } = require('electron');
   const path = require('path');
   const url = require('url');
 
@@ -15,6 +15,10 @@
   // be closed automatically when the JavaScript object is garbage collected.
   let win;
 
+  /**
+   * Creates the main window
+   * @return {void}
+   */
   function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({ width: 1200, height: 600 });
@@ -36,6 +40,20 @@
       // in an array if your app supports multi windows, this is the time
       // when you should delete the corresponding element.
       win = null;
+    });
+
+    // As suggested in https://github.com/electron/electron/issues/4068
+    const inputMenu = Menu.buildFromTemplate([
+      {role: 'cut'},
+      {role: 'copy'},
+      {role: 'paste'},
+    ]);
+
+    win.webContents.on('context-menu', (e, props) => {
+      const { isEditable } = props;
+      if (isEditable) {
+        inputMenu.popup(win);
+      }
     });
   }
 

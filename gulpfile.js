@@ -72,7 +72,7 @@ gulp.task('addon:package-src', function() {
     BASE_PATH+"/**",
 
     "!"+BASE_PATH+"/chrome/chromeFiles/content/filterList",
-    "!"+BASE_PATH+"/chrome/chromeFiles/content/filterList/**S"
+    "!"+BASE_PATH+"/chrome/chromeFiles/content/filterList/**"
   ])
     .pipe(gulp.dest('./build/thunderbird/'));
 });

@@ -317,7 +317,17 @@
       return await this.exec(request, callback);
     }
 
-    async putScript(name) {
+    /**
+     * Saves the given script. In case the script exists
+     * it will be silently overwritten.
+     *
+     * @param {String} name
+     *   the script's name
+     * @param {String} script
+     *   the script which should be saved.
+     * @returns {void}
+     */
+    async putScript(name, script) {
 
       let callback = {
         onPutScriptResponse: function () {
@@ -325,11 +335,11 @@
         }
       };
 
-      let request = this.createPutScriptRequest(name, "#test\r\n");
+      let request = this.createPutScriptRequest(name, script);
       request.addPutScriptListener(callback);
 
       return await this.exec(request, callback);
-    };
+    }
 
     async listScripts() {
 

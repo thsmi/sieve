@@ -18,10 +18,19 @@
 class SieveEditorUI {
 
   /**
-   * Initializes the editor instance...
+   * Initializes the editor instance.
+   * It requires a textbox which will be converted into a code mirror input.
+   *
+   * @param {String} [id]
+   *   An optional id, which points to a the textboxe, which will be converted
+   *   into a code mirror input. In case it is ommited the id "code" will be used.
    */
-  constructor() {
-    this.cm = CodeMirror.fromTextArea(document.getElementById("code"), {
+  constructor(id) {
+
+    if (typeof(id) === "undefined" ||id === null)
+      id = "code";
+
+    this.cm = CodeMirror.fromTextArea(document.getElementById(id), {
       lineNumbers: true,
       lineWrapping: true,
 
@@ -37,9 +46,22 @@ class SieveEditorUI {
     this.cm.refresh();
 
     this.timeout = null;
-    $("#sieve-editor-quickreference").click(() => {
-      this.openReference();
-    });
+  }
+
+  /**
+   * Undos the last input
+   * @returns {void}
+   */
+  undo() {
+    this.cm.undo();
+  }
+
+  /**
+   * Redos the last input
+   * @returns {void}
+   */
+  redo() {
+    this.cm.redo();
   }
 
   /**
@@ -60,7 +82,7 @@ class SieveEditorUI {
     if (typeof (payload) !== "object")
       payload = { "data": payload };
 
-    payload["account"] = this.id;
+    payload["account"] = this.account;
 
     return await SieveIpcClient.sendMessage(action, payload);
   }
@@ -147,11 +169,12 @@ class SieveEditorUI {
    *   the script which should be loaded
    * @returns {void}
    */
-  async loadScript(id, name) {
+  async loadScript(account, name) {
     // Load a new script. It will discard the current script
     // the history and the cursorposition are reset to defaults.
 
-    this.id = id;
+    this.account = account;
+    this.name = name;
 
     let script = await this.send("script-get", name);
 
@@ -165,6 +188,23 @@ class SieveEditorUI {
   }
 
 
+  /**
+   * Saves the script.
+   * @returns {void}
+   */
+  async saveScript() {
+
+    if (this.name === undefined)
+      throw new Error("No script loaded");
+
+    // Get the current script...
+    let script = this.cm.getValue();
+    // ... and ensure the line endings are sanatized
+    script = script.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
+
+    await this.send("script-save", { "name" : this.name, "script" : script });
+  }
+
 }
 
 /**
@@ -174,7 +214,23 @@ class SieveEditorUI {
 async function main() {
 
   // initialize the editor
-  let editor = new SieveEditorUI();
+  let editor = new SieveEditorUI("code");
+
+  $("#sieve-editor-quickreference").click(() => {
+    editor.openReference();
+  });
+
+  $("#sieve-editor-save").click(()=> {
+    editor.saveScript();
+  });
+
+  $("#sieve-editor-undo").click(() => {
+    editor.undo();
+  });
+
+  $("#sieve-editor-redo").click(() => {
+    editor.redo();
+  });
 
   // then load the script.
   // The account and the script name is embedded into the url.

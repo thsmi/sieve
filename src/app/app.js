@@ -187,7 +187,7 @@ let actions = {
   "script-create": async function (msg) {
     console.log("Create Scripts " + msg.payload.data + " for account: " + msg.payload.account);
 
-    await sessions[msg.payload.account].putScript(msg.payload.data);
+    await sessions[msg.payload.account].putScript(msg.payload.data, "#test\r\n");
   },
 
   "script-rename": async function (msg) {
@@ -234,8 +234,11 @@ let actions = {
 
     let id = ""+account+"-"+name;
 
-    if ($("#"+id).length) {
-      $("#myTab .nav-link[href='#"+id+"']").tab('show');
+    let tabId = id+"-tab";
+    let contentId = id+"-content";
+
+    if ($("#"+tabId).length) {
+      $("#myTab .nav-link[href='#"+contentId+"']").tab('show');
       return;
     }
 
@@ -244,11 +247,22 @@ let actions = {
     let tab = await (new SieveTemplateLoader()).load("./ui/app/editor.tab.tpl");
 
     tab.find(".nav-link")
-      .attr("href", "#"+id)
+      .attr("href", "#"+contentId);
+
+    tab
+      .find(".siv-tab-name")
       .text(name);
 
-    content
-      .attr("id", id);
+    tab
+      .find(".close")
+      .click(() => {
+        $("#"+contentId).remove();
+        $("#"+tabId).remove();
+        $("#accounts-tab").find(".nav-link").tab('show');
+      });
+
+    content.attr("id", contentId);
+    tab.attr("id", tabId);
 
     // Update the iframe's url.
     let url = new URL(content.attr("src"), window.location);
@@ -258,7 +272,6 @@ let actions = {
     url.searchParams.append("script", name);
 
     content.attr("src", url.toString());
-
 
     $("#myTabContent").append(content);
     $("#myTab").append(tab);
@@ -294,7 +307,7 @@ let actions = {
   "script-save": async function (msg) {
     console.log("Save Script...");
 
-    await sessions[msg.payload.account].putScript(msg.payload.data);
+    await sessions[msg.payload.account].putScript(msg.payload.name, msg.payload.script);
   },
 
 };

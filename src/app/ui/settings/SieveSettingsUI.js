@@ -38,7 +38,7 @@
      *  a self reference
      */
     setDisplayName(name) {
-      this.getDialog().find(".sieve-settings-display").val(name);
+      this.getDialog().find(".sieve-settings-displayname").val(name);
       return this;
     }
 

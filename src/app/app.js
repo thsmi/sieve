@@ -222,15 +222,6 @@ let actions = {
     // create a new tab...
 
     console.log("Edit Script "+name);
-    let script = await sessions[msg.payload.account].getScript(name);
-
-    let m = {
-      "action" : "editor-init",
-      "script" : script,
-      "account" : account,
-    };
-
-    m = JSON.stringify(m);
 
     let id = ""+account+"-"+name;
 
@@ -309,6 +300,11 @@ let actions = {
 
     await sessions[msg.payload.account].putScript(msg.payload.name, msg.payload.script);
   },
+
+  "reference-open": function() {
+    require("electron").shell.openExternal('https://thsmi.github.io/sieve-reference/en/index.html');
+    //require("shell").openExternal("http://www.google.com")
+  }
 
 };
 

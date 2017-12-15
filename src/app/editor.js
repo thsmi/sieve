@@ -9,6 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+/* global $ */
 /* global CodeMirror */
 /* global SieveIpcClient */
 
@@ -27,7 +28,7 @@ class SieveEditorUI {
    */
   constructor(id) {
 
-    if (typeof(id) === "undefined" ||id === null)
+    if (typeof (id) === "undefined" || id === null)
       id = "code";
 
     this.cm = CodeMirror.fromTextArea(document.getElementById(id), {
@@ -46,6 +47,7 @@ class SieveEditorUI {
     this.cm.refresh();
 
     this.timeout = null;
+    this.disableSyntaxCheck();
   }
 
   /**
@@ -92,9 +94,7 @@ class SieveEditorUI {
    * @returns {void}
    */
   openReference() {
-    this.sendMessage("reference-open");
-    //Todo send a message to the parent windows iframe do not have a node integration.
-    //require("electron").shell.openExternal('https://thsmi.github.io/sieve-reference/en/index.html');
+    this.send("reference-open");
   }
 
 
@@ -124,6 +124,10 @@ class SieveEditorUI {
    * @returns {void}
    */
   onChange() {
+
+    if (this.syntaxCheckEnabled === false)
+      return;
+
     // reset the timer...
     if (this.timeout !== null) {
       clearTimeout(this.timeout);
@@ -132,6 +136,56 @@ class SieveEditorUI {
 
     // TODO check if compile is deactivated...
     this.timeout = setTimeout(() => { this.checkScript(); }, 500);
+  }
+
+  /**
+   * Enables checking for syntax errors
+   * @returns {void}
+   */
+  enableSyntaxCheck() {
+    this.syntaxCheckEnabled = true;
+    this.checkScript();
+
+    $("#sieve-editor-settings .sieve-editor-disable-syntaxcheck").hide();
+    $("#sieve-editor-settings .sieve-editor-enable-syntaxcheck").show();
+  }
+
+  /**
+   * Disables checking for syntax errors
+   * @returns {void}
+   */
+  disableSyntaxCheck() {
+    this.syntaxCheckEnabled = false;
+    this.hideSyntaxErrors();
+
+    $("#sieve-editor-settings .sieve-editor-disable-syntaxcheck").show();
+    $("#sieve-editor-settings .sieve-editor-enable-syntaxcheck").hide();
+
+    // reset the timer...
+    if (this.timeout === null)
+      return;
+
+    clearTimeout(this.timeout);
+    this.timeout = null;
+  }
+
+  /**
+   * Shows a message box with the given syntax errors
+   * @param {String} errors
+   *   the errors which should be displayed
+   * @returns {void}
+   */
+  showSyntaxErrors(errors) {
+    $("#sieve-editor-msg").show();
+    $("#sieve-editor-msg-details").empty().text(errors);
+  }
+
+  /**
+   * Hides the syntax errors.
+   * @returns {void}
+   */
+  hideSyntaxErrors() {
+    $("#sieve-editor-msg").hide();
   }
 
   /**
@@ -149,12 +203,10 @@ class SieveEditorUI {
 
 
     // TODO show and errors in UI
-    if (!errors) {
-      $("#sivServerError").hide();
-      return;
-    }
-
-    $("#sivServerError").empty().text(errors).show();
+    if (!errors)
+      this.hideSyntaxErrors();
+    else
+      this.showSyntaxErrors(errors);
   }
 
   /**
@@ -163,7 +215,7 @@ class SieveEditorUI {
    * It will discard the current script including
    * the history and the cursor position.
    *
-   * @param {String} id
+   * @param {String} account
    *  the accounts unique id
    * @param {String} name
    *   the script which should be loaded
@@ -200,9 +252,9 @@ class SieveEditorUI {
     // Get the current script...
     let script = this.cm.getValue();
     // ... and ensure the line endings are sanatized
-    script = script.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
+    script = script.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
 
-    await this.send("script-save", { "name" : this.name, "script" : script });
+    await this.send("script-save", { "name": this.name, "script": script });
   }
 
 }
@@ -220,7 +272,7 @@ async function main() {
     editor.openReference();
   });
 
-  $("#sieve-editor-save").click(()=> {
+  $("#sieve-editor-save").click(() => {
     editor.saveScript();
   });
 
@@ -231,6 +283,16 @@ async function main() {
   $("#sieve-editor-redo").click(() => {
     editor.redo();
   });
+
+  $("#sieve-editor-settings .sieve-editor-disable-syntaxcheck").click(() => {
+    editor.enableSyntaxCheck();
+  });
+
+  $("#sieve-editor-settings .sieve-editor-enable-syntaxcheck").click(() => {
+    editor.disableSyntaxCheck();
+  });
+
+  editor.enableSyntaxCheck();
 
   // then load the script.
   // The account and the script name is embedded into the url.

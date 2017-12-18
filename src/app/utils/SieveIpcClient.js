@@ -57,13 +57,19 @@
      * @return {Promise<Object>} the response from the IPC Server
      */
     static async receiveMessage(id) {
-      return await new Promise((resolve) => {
+      return await new Promise((resolve, reject) => {
 
         let listener = function (m) {
           if (id !== m.id)
             return;
 
           delete listeners[id];
+
+          if (m.error) {
+            reject(m.error);
+            return;
+          }
+
           resolve(m.payload);
         };
 

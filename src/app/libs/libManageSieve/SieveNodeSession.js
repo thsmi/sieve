@@ -68,7 +68,7 @@
      *   the servers response which inidcated the error.
      */
     constructor(response) {
-      super();
+      super(response.getMessage());
       this.response = response;
     }
 

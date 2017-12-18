@@ -5,5 +5,8 @@
     "**/node_modules":true,
     "build/**":true
   },
-  "eslint.enable": true
+  "eslint.enable": true,
+  "files.associations": {
+    "*.tpl": "html"
+  },
 }

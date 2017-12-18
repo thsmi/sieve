@@ -22,11 +22,13 @@ class SieveEditorUI {
    * Initializes the editor instance.
    * It requires a textbox which will be converted into a code mirror input.
    *
+   * @param {String} account
+   *   the unqiue sieve account id for this editor
    * @param {String} [id]
    *   An optional id, which points to a the textboxe, which will be converted
    *   into a code mirror input. In case it is ommited the id "code" will be used.
    */
-  constructor(id) {
+  constructor(account, id) {
 
     if (typeof (id) === "undefined" || id === null)
       id = "code";
@@ -44,10 +46,16 @@ class SieveEditorUI {
 
     this.cm.on("renderLine", (cm, line, elt) => { this.onRenderLine(cm, line, elt); });
     this.cm.on("change", () => { this.onChange(); });
+    this.cm.on("cursorActivity", () => { this.onActiveLineChange(); });
+
     this.cm.refresh();
 
     this.timeout = null;
     this.disableSyntaxCheck();
+
+    this.account = account;
+
+    this.activeLine = null;
   }
 
   /**
@@ -56,6 +64,7 @@ class SieveEditorUI {
    */
   undo() {
     this.cm.undo();
+    this.cm.focus();
   }
 
   /**
@@ -64,6 +73,7 @@ class SieveEditorUI {
    */
   redo() {
     this.cm.redo();
+    this.cm.focus();
   }
 
   /**
@@ -95,6 +105,7 @@ class SieveEditorUI {
    */
   openReference() {
     this.send("reference-open");
+    this.cm.focus();
   }
 
 
@@ -139,6 +150,24 @@ class SieveEditorUI {
   }
 
   /**
+   * On Active Line Change callback handler for codemirror.
+   * Do not invoke unless you know what you are doing.
+   *
+   * @returns {void}
+   */
+  onActiveLineChange() {
+    let currentLine = this.cm.getLineHandle(this.cm.getCursor().line);
+
+    if (currentLine === this.activeLine)
+      return;
+
+    if (this.activeLine)
+      this.cm.removeLineClass(this.activeLine, "background", "activeline");
+
+    this.activeLine = this.cm.addLineClass(currentLine, "background", "activeline");
+  }
+
+  /**
    * Enables checking for syntax errors
    * @returns {void}
    */
@@ -148,6 +177,8 @@ class SieveEditorUI {
 
     $("#sieve-editor-settings .sieve-editor-disable-syntaxcheck").hide();
     $("#sieve-editor-settings .sieve-editor-enable-syntaxcheck").show();
+
+    this.cm.focus();
   }
 
   /**
@@ -160,6 +191,8 @@ class SieveEditorUI {
 
     $("#sieve-editor-settings .sieve-editor-disable-syntaxcheck").show();
     $("#sieve-editor-settings .sieve-editor-enable-syntaxcheck").hide();
+
+    this.cm.focus();
 
     // reset the timer...
     if (this.timeout === null)
@@ -193,6 +226,11 @@ class SieveEditorUI {
    * @returns {void}
    */
   async checkScript() {
+
+    // In case the name is not set, no script is loaded.
+    if (this.name === undefined)
+      return;
+
     // Get the current script...
     let script = this.cm.getValue();
 
@@ -215,20 +253,16 @@ class SieveEditorUI {
    * It will discard the current script including
    * the history and the cursor position.
    *
-   * @param {String} account
-   *  the accounts unique id
    * @param {String} name
    *   the script which should be loaded
    * @returns {void}
    */
-  async loadScript(account, name) {
+  async loadScript(name) {
     // Load a new script. It will discard the current script
     // the history and the cursorposition are reset to defaults.
 
-    this.account = account;
-    this.name = name;
-
     let script = await this.send("script-get", name);
+    this.name = name;
 
     this.cm.setValue(script);
     this.cm.setCursor({ line: 0, ch: 0 });
@@ -249,12 +283,18 @@ class SieveEditorUI {
     if (this.name === undefined)
       throw new Error("No script loaded");
 
+    this.cm.focus();
+
     // Get the current script...
     let script = this.cm.getValue();
     // ... and ensure the line endings are sanatized
     script = script.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
 
+    try {
     await this.send("script-save", { "name": this.name, "script": script });
+    } catch (ex) {
+      alert(ex.toString());
+    }
   }
 
 }
@@ -265,8 +305,10 @@ class SieveEditorUI {
  */
 async function main() {
 
+  let url = new URL(window.location);
+
   // initialize the editor
-  let editor = new SieveEditorUI("code");
+  let editor = new SieveEditorUI(url.searchParams.get("account"), "code");
 
   $("#sieve-editor-quickreference").click(() => {
     editor.openReference();
@@ -296,11 +338,8 @@ async function main() {
 
   // then load the script.
   // The account and the script name is embedded into the url.
-  let url = new URL(window.location);
 
-  editor.loadScript(
-    url.searchParams.get("account"),
-    url.searchParams.get("script"));
+  editor.loadScript(url.searchParams.get("script"));
 
   /**
    * The on message handler which receives the parent IPC messages.
@@ -340,5 +379,4 @@ $(document).ready(function () {
 
 //hlLine = editor.addLineClass(0, "background", "activeline");
 
-//editor.on("cursorActivity", function() { onActiveLineChange(); });
 //editor.on("change", function() { onChange(); });

@@ -1,1 +1,1 @@
-<iframe class="tab-pane fade" seamless='seamless' role="tabpanel" aria-labelledby="home-tab" src="editor.html"></iframe>
+<iframe class="tab-pane fade" role="tabpanel" aria-labelledby="home-tab" src="editor.html"></iframe>

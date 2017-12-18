@@ -37,8 +37,8 @@ let callback = async function (account) {
       .text(username);
 
     dialog
-     .find(".sieve-displayname")
-     .text(displayName);
+      .find(".sieve-displayname")
+      .text(displayName);
 
     dialog.modal('show')
       .on('hidden.bs.modal', () => {
@@ -98,7 +98,7 @@ let actions = {
     return;
   },
 
-  "account-get-displayname" : function(msg) {
+  "account-get-displayname": function (msg) {
     return accounts.getAccountById(msg.payload.account).getHost().getDisplayName();
   },
 
@@ -106,7 +106,7 @@ let actions = {
     let account = accounts.getAccountById(msg.payload.account);
 
     return {
-      displayName : account.getHost().getDisplayName(),
+      displayName: account.getHost().getDisplayName(),
       hostname: account.getHost().getHostname(),
       secure: account.getHost().isSecure(),
       port: account.getHost().getPort()
@@ -214,22 +214,22 @@ let actions = {
     await sessions[msg.payload.account].setActiveScript();
   },
 
-  "script-edit" : async function(msg) {
+  "script-edit": async function (msg) {
 
     let name = msg.payload.data;
     let account = msg.payload.account;
 
     // create a new tab...
 
-    console.log("Edit Script "+name);
+    console.log("Edit Script " + name);
 
-    let id = ""+account+"-"+name;
+    let id = "" + account + "-" + name;
 
-    let tabId = id+"-tab";
-    let contentId = id+"-content";
+    let tabId = id + "-tab";
+    let contentId = id + "-content";
 
-    if ($("#"+tabId).length) {
-      $("#myTab .nav-link[href='#"+contentId+"']").tab('show');
+    if ($("#" + tabId).length) {
+      $("#myTab .nav-link[href='#" + contentId + "']").tab('show');
       return;
     }
 
@@ -238,7 +238,7 @@ let actions = {
     let tab = await (new SieveTemplateLoader()).load("./ui/app/editor.tab.tpl");
 
     tab.find(".nav-link")
-      .attr("href", "#"+contentId);
+      .attr("href", "#" + contentId);
 
     tab
       .find(".siv-tab-name")
@@ -247,8 +247,8 @@ let actions = {
     tab
       .find(".close")
       .click(() => {
-        $("#"+contentId).remove();
-        $("#"+tabId).remove();
+        $("#" + contentId).remove();
+        $("#" + tabId).remove();
         $("#accounts-tab").find(".nav-link").tab('show');
       });
 
@@ -279,8 +279,8 @@ let actions = {
     return await sessions[msg.payload.account].getScript(msg.payload.data);
   },
 
-  "script-check" : async function(msg) {
-    console.log("Check Script...");
+  "script-check": async function (msg) {
+    console.log("Check Script " + msg.payload.account + "... ");
 
     try {
       return await sessions[msg.payload.account].checkScript(msg.payload.data);
@@ -301,7 +301,7 @@ let actions = {
     await sessions[msg.payload.account].putScript(msg.payload.name, msg.payload.script);
   },
 
-  "reference-open": function() {
+  "reference-open": function () {
     require("electron").shell.openExternal('https://thsmi.github.io/sieve-reference/en/index.html');
     //require("shell").openExternal("http://www.google.com")
   }
@@ -318,7 +318,12 @@ window.addEventListener("message", function (e) {
     let msg = JSON.parse(e.data);
 
     if (actions[msg.action]) {
-      msg.payload = await (actions[msg.action])(msg);
+      try {
+        msg.payload = await (actions[msg.action])(msg);
+      } catch (ex) {
+        msg.error = ex.message;
+        console.log(ex);
+      }
 
       e.source.postMessage(JSON.stringify(msg), e.origin);
       return;

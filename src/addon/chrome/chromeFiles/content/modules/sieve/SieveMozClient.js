@@ -11,7 +11,7 @@
 
 "use strict";
 
-(function(exports) {
+(function (exports) {
 
   // Expose as mozilla module...
   if (!exports.EXPORTED_SYMBOLS)
@@ -32,15 +32,15 @@
   Cu.import("chrome://sieve/content/modules/sieve/SieveMozResponseParser.js");
 
   // Handle all imports...
-  var loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
-                 .getService(Ci.mozIJSSubScriptLoader);
+  const loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
+    .getService(Ci.mozIJSSubScriptLoader);
 
-  loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveResponseCodes.js", this, "UTF-8" );
+  loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveResponseCodes.js", this, "UTF-8");
 
-  loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveRequest.js", this, "UTF-8" );
-  loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveResponse.js", this, "UTF-8" );
+  loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveRequest.js", this, "UTF-8");
+  loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveResponse.js", this, "UTF-8");
 
-  loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveAbstractClient.js", this, "UTF-8" );
+  loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveAbstractClient.js", this, "UTF-8");
 
   /**
    *  This realizes the abstract sieve implementation by using
@@ -50,14 +50,13 @@
    *   the logger which should be used.
    * @constructor
    */
-  function Sieve(logger)
-  {
+  function Sieve(logger) {
     // Call the parent constructor...
     SieveAbstractClient.call(this);
 
 
-    this.timeout.timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-    this.idle.timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+    this.timeoutTimer = null;
+    this.idleTimer = null;
 
     this.outstream = null;
     this.binaryOutStream = null;
@@ -66,50 +65,47 @@
 
     // a private function to convert a JSString to an byte array---
     this.bytesFromJSString
-      = function (str)
-    {
-      // cleanup linebreaks...
-      str = str.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g,"\r\n");
+      = function (str) {
+        // cleanup linebreaks...
+        str = str.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
 
-      // ... and convert to UTF-8
-      let converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
-                        .createInstance(Ci.nsIScriptableUnicodeConverter);
-      converter.charset = "UTF-8";
+        // ... and convert to UTF-8
+        let converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
+          .createInstance(Ci.nsIScriptableUnicodeConverter);
+        converter.charset = "UTF-8";
 
-      return converter.convertToByteArray(str, {});
-    };
+        return converter.convertToByteArray(str, {});
+      };
   }
 
   Sieve.prototype = Object.create(SieveAbstractClient.prototype);
   Sieve.prototype.constructor = Sieve;
 
-   // Needed for the Gecko 2.0 Component Manager...
+  // Needed for the Gecko 2.0 Component Manager...
   Sieve.prototype.QueryInterface
-    = function(aIID)
-  {
-    if (aIID.equals(Ci.nsISupports))
-      return this;
-    // onProxyAvailable...
-    if (aIID.equals(Ci.nsIProtocolProxyCallback))
-      return this;
-    // onDataAvailable...
-    if (aIID.equals(Ci.nsIStreamListener))
-      return this;
-    // onStartRequest and onStopRequest...
-    if (aIID.equals(Ci.nsIRequestObserver))
-      return this;
+    = function (aIID) {
+      if (aIID.equals(Ci.nsISupports))
+        return this;
+      // onProxyAvailable...
+      if (aIID.equals(Ci.nsIProtocolProxyCallback))
+        return this;
+      // onDataAvailable...
+      if (aIID.equals(Ci.nsIStreamListener))
+        return this;
+      // onStartRequest and onStopRequest...
+      if (aIID.equals(Ci.nsIRequestObserver))
+        return this;
 
-    throw Cr.NS_ERROR_NO_INTERFACE;
-  };
+      throw Cr.NS_ERROR_NO_INTERFACE;
+    };
 
   Sieve.prototype.isAlive
-     = function()
-  {
-   if (!SieveAbstractClient.prototype.isAlive.call(this))
-     return false;
+    = function () {
+      if (!SieveAbstractClient.prototype.isAlive.call(this))
+        return false;
 
-    return this.socket.isAlive();
-  };
+      return this.socket.isAlive();
+    };
 
   /**
    * This method secures the connection to the sieve server. By activating
@@ -125,51 +121,115 @@
    *   a self reference.
    **/
   Sieve.prototype.startTLS
-     = function ( callback )
-  {
-    SieveAbstractClient.prototype.startTLS.call(this);
+    = function (callback) {
+      SieveAbstractClient.prototype.startTLS.call(this);
 
-    let securityInfo = this.socket.securityInfo.QueryInterface(Ci.nsISSLSocketControl);
-    securityInfo.StartTLS();
+      let securityInfo = this.socket.securityInfo.QueryInterface(Ci.nsISSLSocketControl);
+      securityInfo.StartTLS();
 
-    if (callback)
-      callback();
+      if (callback)
+        callback();
 
-    return this;
-  };
+      return this;
+    };
 
-  Sieve.prototype._startTimeoutTimer
-      = function () {
+  /**
+   * An internal callback which is triggered when the request timeout timer should be started.
+   * This is typically when a new request is about to be send to the server.
+   * @returns {void}
+   */
+  Sieve.prototype.onStartTimeout
+    = function () {
 
-    this.timeout.timer.initWithCallback(
-        this, this.timeout.delay,
+      // clear any existing timeouts
+      if (this.timeoutTimer)
+        this.timeoutTimer.cancel();
+
+      // ensure the idle timer is stoped
+      this.onStopIdle();
+
+      // the restart the timeout timer.
+      if (this.timeoutTimer)
+        this.timeoutTimer.initWithCallback(
+          this, this.getTimeoutWait(),
+          Components.interfaces.nsITimer.TYPE_ONE_SHOT);
+
+    };
+
+  /**
+   * An internal callback wich is triggered when the request timeout timer should be stopped.
+   * This is typically when a response was received and the request was completed.
+   * @returns {void}
+   */
+  Sieve.prototype.onStopTimeout
+    = function () {
+
+      // clear any existing timeouts.
+      if (this.timeoutTimer)
+        this.timeoutTimer.cancel();
+
+      // and start the idle timer
+      this.onStartIdle();
+    };
+
+  /**
+   * Called when the idle timer should be started or restarted
+   * @returns {void}
+   */
+  Sieve.prototype.onStartIdle
+    = function () {
+
+      // first ensure the timer is stopped..
+      this.onStopIdle();
+
+      // ... then configure the timer.
+      let delay = this.getIdleWait();
+
+      if (!delay)
+        return;
+
+      if (!this.idleTimer)
+        return;
+
+      this.idleTimer.initWithCallback(this, delay,
         Components.interfaces.nsITimer.TYPE_ONE_SHOT);
-  };
+    };
 
-  Sieve.prototype._stopTimeoutTimer
-      = function () {
+  /**
+   * Called when the idle timer should be stopped.
+   * @returns {void}
+   */
+  Sieve.prototype.onStopIdle
+    = function () {
 
-    if (!this.timeout.timer)
-      return;
+      if (!this.idleTimer)
+        return;
 
-    this.timeout.timer.cancel();
-  };
+      this.idleTimer.cancel();
+    };
 
-  Sieve.prototype._startIdleTimer
-      = function () {
+  /**
+   * When a mozilla timer triggers, it calls this
+   * well known method.
+   *
+   * @param {nsITimer} timer
+   *   the timer which caused this callback.
+   * @returns {void}
+   */
+  Sieve.prototype.notify
+    = function (timer) {
 
-    this.idle.timer.initWithCallback(this,this.idle.delay,
-           Components.interfaces.nsITimer.TYPE_ONE_SHOT);
-  };
+      if (this.idleTimer === timer) {
+        this.onIdle();
+        return;
+      }
 
-  Sieve.prototype._stopIdleTimer
-      = function () {
+      if (this.timeoutTimer === timer) {
+        this.onTimeout();
+        return;
+      }
+    };
 
-    if (!this.timeout.idle)
-      return;
-
-    this.timeout.idle.cancel();
-  };
 
   Sieve.prototype.createParser
     = function (data) {
@@ -208,190 +268,188 @@
    */
 
   Sieve.prototype.connect
-      = function (host, port, secure, badCertHandler, proxy)
-  {
-    if( this.socket )
-      return;
+    = function (host, port, secure, badCertHandler, proxy) {
+      if (this.socket)
+        return;
 
-    /*if ( (this.socket != null) && (this.socket.isAlive()) )
-      return;*/
+      /*if ( (this.socket != null) && (this.socket.isAlive()) )
+        return;*/
 
-    this.host = host;
-    this.port = port;
-    this.secure = secure;
-    this.badCertHandler = badCertHandler;
+      this.host = host;
+      this.port = port;
+      this.secure = secure;
+      this.badCertHandler = badCertHandler;
 
-    this.getLogger().log("Connecting to "+this.host+":"+this.port+" ...", (1 << 2));
+      this.idleTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+      this.timeoutTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
 
-    // If we know the proxy setting, we can do a shortcut...
-    if (proxy)
-    {
-      this.onProxyAvailable(null,null,proxy[0],null);
-      return;
-    }
+      this.getLogger().log("Connecting to " + this.host + ":" + this.port + " ...", (1 << 2));
 
-    this.getLogger().log("Lookup Proxy Configuration for x-sieve://"+this.host+":"+this.port+" ...", (1 << 2));
+      // If we know the proxy setting, we can do a shortcut...
+      if (proxy) {
+        this.onProxyAvailable(null, null, proxy[0], null);
+        return;
+      }
 
-    var ios = Cc["@mozilla.org/network/io-service;1"]
-                  .getService(Ci.nsIIOService);
+      this.getLogger().log("Lookup Proxy Configuration for x-sieve://" + this.host + ":" + this.port + " ...", (1 << 2));
 
-    var uri = ios.newURI("x-sieve://"+this.host+":"+this.port, null, null);
+      let ios = Cc["@mozilla.org/network/io-service;1"]
+        .getService(Ci.nsIIOService);
 
-    var pps = Cc["@mozilla.org/network/protocol-proxy-service;1"]
-                  .getService(Ci.nsIProtocolProxyService);
-    pps.asyncResolve(uri,0,this);
-  };
+      let uri = ios.newURI("x-sieve://" + this.host + ":" + this.port, null, null);
+
+      let pps = Cc["@mozilla.org/network/protocol-proxy-service;1"]
+        .getService(Ci.nsIProtocolProxyService);
+      pps.asyncResolve(uri, 0, this);
+    };
 
   /**
-   * @private
-   *
    * This is an closure for asyncronous Proxy
    * @param {} aRequest
    * @param {} aURI
    * @param {} aProxyInfo
    * @param {} aStatus
+   * @returns {void}
+   *
+   * @private
    */
   Sieve.prototype.onProxyAvailable
-      = function (aRequest, aURI,aProxyInfo,aStatus)
-  {
+    = function (aRequest, aURI, aProxyInfo, aStatus) {
 
-    if  (aProxyInfo)
-      this.getLogger().log("Using Proxy: ["+aProxyInfo.type+"] "+aProxyInfo.host+":"+aProxyInfo.port, (1 << 2));
-    else
-      this.getLogger().log("Using Proxy: Direct", (1 << 2));
+      if (aProxyInfo)
+        this.getLogger().log("Using Proxy: [" + aProxyInfo.type + "] " + aProxyInfo.host + ":" + aProxyInfo.port, (1 << 2));
+      else
+        this.getLogger().log("Using Proxy: Direct", (1 << 2));
 
 
-    var transportService =
+      var transportService =
         Cc["@mozilla.org/network/socket-transport-service;1"]
           .getService(Ci.nsISocketTransportService);
 
-    if (this.secure)
-      this.socket = transportService.createTransport(["starttls"], 1,this.host, this.port,aProxyInfo);
-    else
-      this.socket = transportService.createTransport(null, 0,this.host, this.port,aProxyInfo);
+      if (this.secure)
+        this.socket = transportService.createTransport(["starttls"], 1, this.host, this.port, aProxyInfo);
+      else
+        this.socket = transportService.createTransport(null, 0, this.host, this.port, aProxyInfo);
 
-    if (this.badCertHandler)
-      this.socket.securityCallbacks = this.badCertHandler;
+      if (this.badCertHandler)
+        this.socket.securityCallbacks = this.badCertHandler;
 
-    this.outstream = this.socket.openOutputStream(0,0,0);
+      this.outstream = this.socket.openOutputStream(0, 0, 0);
 
-    this.binaryOutStream =
+      this.binaryOutStream =
         Cc["@mozilla.org/binaryoutputstream;1"]
           .createInstance(Ci.nsIBinaryOutputStream);
 
-    this.binaryOutStream.setOutputStream(this.outstream);
+      this.binaryOutStream.setOutputStream(this.outstream);
 
-    var stream = this.socket.openInputStream(0,0,0);
-    var pump = Cc["@mozilla.org/network/input-stream-pump;1"].
+      var stream = this.socket.openInputStream(0, 0, 0);
+      var pump = Cc["@mozilla.org/network/input-stream-pump;1"].
         createInstance(Ci.nsIInputStreamPump);
 
-    // the guys at mozilla changed their api without caring
-    // about backward compatibility. Which means we need
-    // Some try catch magic here.
-    try {
-      // first we try the new api definition...
-      pump.init(stream, 5000, 2, true);
-    } catch (ex) {
+      // the guys at mozilla changed their api without caring
+      // about backward compatibility. Which means we need
+      // Some try catch magic here.
+      try {
+        // first we try the new api definition...
+        pump.init(stream, 5000, 2, true);
+      } catch (ex) {
 
-      // ... in case we run into an not enough args exception
-      // we try the old api definition and in any other case
-      // we just rethrow the exception
-      if (ex.name !== "NS_ERROR_XPC_NOT_ENOUGH_ARGS")
-        throw ex;
+        // ... in case we run into an not enough args exception
+        // we try the old api definition and in any other case
+        // we just rethrow the exception
+        if (ex.name !== "NS_ERROR_XPC_NOT_ENOUGH_ARGS")
+          throw ex;
 
-      this.getLogger().log("Falling back to legacy stream pump initalization ...", (1 << 2));
-      pump.init(stream, -1, -1, 5000, 2, true);
-    }
+        this.getLogger().log("Falling back to legacy stream pump initalization ...", (1 << 2));
+        pump.init(stream, -1, -1, 5000, 2, true);
+      }
 
-    pump.asyncRead(this,null);
-  };
+      pump.asyncRead(this, null);
+    };
 
   Sieve.prototype.disconnect
-      = function ()
-  {
-    SieveAbstractClient.prototype.disconnect.call(this);
+    = function () {
+      SieveAbstractClient.prototype.disconnect.call(this);
 
-    if (this.socket)
-      return;
+      if (!this.socket)
+        return;
 
-    this.binaryOutStream.close();
-    this.outstream.close();
-    this.socket.close(0);
+      this.binaryOutStream.close();
+      this.outstream.close();
+      this.socket.close(0);
 
-    this.binaryOutStream = null;
-    this.outstream = null;
-    this.socket = null;
+      this.binaryOutStream = null;
+      this.outstream = null;
+      this.socket = null;
 
-    this.getLogger().log("Disconnected ...", (1 << 2));
-  };
+      this.idleTimer = null;
+      this.timeoutTimer = null;
+
+      this.getLogger().log("Disconnected ...", (1 << 2));
+    };
 
   Sieve.prototype.onStopRequest
-      =  function(request, context, status)
-  {
-    // this method is invoked anytime when the socket connection is closed
-    // ... either by going to offlinemode or when the network cable is disconnected
-    this.getLogger().log("Stop request received ...", (1 << 2));
+    = function (request, context, status) {
+      // this method is invoked anytime when the socket connection is closed
+      // ... either by going to offlinemode or when the network cable is disconnected
+      this.getLogger().log("Stop request received ...", (1 << 2));
 
-    // we can ignore this if we are already disconnected.
-    if (this.socket)
-      return;
+      // we can ignore this if we are already disconnected.
+      if (!this.socket)
+        return;
 
-    // Stop timeout timer, the connection is gone, so...
-    // ... it won't help us anymore...
-    this.disconnect();
+      // Stop timeout timer, the connection is gone, so...
+      // ... it won't help us anymore...
+      this.disconnect();
 
-    // if the request queue is not empty,
-    // we should call directly on timeout..
-    if ((this.listener) && (this.listener.onDisconnect))
-      this.listener.onDisconnect();
-  };
+      // if the request queue is not empty,
+      // we should call directly on timeout..
+      if ((this.listener) && (this.listener.onDisconnect))
+        this.listener.onDisconnect();
+    };
 
   Sieve.prototype.onStartRequest
-      = function(request, context)
-  {
-    this.getLogger().log("Connected to "+this.host+":"+this.port+" ...", (1 << 2));
-  };
+    = function (request, context) {
+      this.getLogger().log("Connected to " + this.host + ":" + this.port + " ...", (1 << 2));
+    };
 
   Sieve.prototype.onDataAvailable
-      = function(aRequest, context, inputStream, offset, count)
-  {
-    let binaryInStream = Cc["@mozilla.org/binaryinputstream;1"]
+    = function (aRequest, context, inputStream, offset, count) {
+      let binaryInStream = Cc["@mozilla.org/binaryinputstream;1"]
         .createInstance(Ci.nsIBinaryInputStream);
 
-    binaryInStream.setInputStream(inputStream);
+      binaryInStream.setInputStream(inputStream);
 
-    let data = binaryInStream.readByteArray(count);
+      let data = binaryInStream.readByteArray(count);
 
-    this.getLogger().log("Server -> Client [Byte Array]\n"+data, (1 << 3));
+      this.getLogger().log("Server -> Client [Byte Array]\n" + data, (1 << 3));
 
-    if (this.getLogger().isLoggable(1 << 1))
-    {
-      var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
-                        .createInstance(Ci.nsIScriptableUnicodeConverter);
+      if (this.getLogger().isLoggable(1 << 1)) {
+        var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
+          .createInstance(Ci.nsIScriptableUnicodeConverter);
 
-      converter.charset = "UTF-8" ;
+        converter.charset = "UTF-8";
 
-      var byteArray = data.slice(0,data.length);
+        var byteArray = data.slice(0, data.length);
 
-      this.getLogger().log("Server -> Client\n"+converter.convertFromByteArray(byteArray, byteArray.length));
-    }
+        this.getLogger().log("Server -> Client\n" + converter.convertFromByteArray(byteArray, byteArray.length));
+      }
 
-    SieveAbstractClient.prototype.onDataReceived.call(this, data);
-  };
+      SieveAbstractClient.prototype.onDataReceived.call(this, data);
+    };
 
   Sieve.prototype.onSend
-    = function(data)
-  {
+    = function (data) {
 
-    // Force String to UTF-8...
-    let output = this.bytesFromJSString(data);
+      // Force String to UTF-8...
+      let output = this.bytesFromJSString(data);
 
-    this.getLogger().log("Client -> Server [Byte Array]:\n"+output, (1 << 3));
+      this.getLogger().log("Client -> Server [Byte Array]:\n" + output, (1 << 3));
 
-    this.binaryOutStream.writeByteArray(output,output.length);
+      this.binaryOutStream.writeByteArray(output, output.length);
 
-    return;
-  };
+      return;
+    };
 
   exports.Sieve = Sieve;
   exports.EXPORTED_SYMBOLS.push("Sieve");

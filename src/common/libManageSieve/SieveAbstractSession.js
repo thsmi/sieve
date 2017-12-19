@@ -471,6 +471,7 @@
      *   for referrals and similar stuff.
      * @param {int} port - optional
      *   overrides the default port supplied by the account.
+     * @returns {void}
      */
     connect : function(hostname,port)
     {
@@ -484,7 +485,7 @@
 
       // TODO Load Timeout interval from account settings...
       if (this.account.getSettings().isKeepAlive())
-        this.sieve.setKeepAliveInterval(this.account.getSettings().getKeepAliveInterval());
+        this.sieve.setIdleWait(this.account.getSettings().getKeepAliveInterval());
 
       // Step 2: Initialize Message Queue...
       var request = this.createInitRequest();

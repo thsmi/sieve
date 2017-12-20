@@ -36,7 +36,7 @@
       if (!this.isLoggable(level))
         return;
 
-      console.log("[" + this.prefix() + "] " + message);
+      console.log("["+this.getTimestamp()+" " + this.prefix() + "] " + message);
     };
 
   exports.SieveLogger = SieveLogger;

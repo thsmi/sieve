@@ -84,6 +84,42 @@
 
 
   /**
+   * @private
+   *
+   * Padds the given string with leading zeros
+   *
+   * @param {string} n
+   *   the string which should be padded
+   * @param {int} m
+   *   the maximum padding.
+   *
+   * @returns {string}
+   *   the padded string
+   */
+  SieveAbstractLogger.prototype._pad
+    = function(n, m) {
+
+    var str = n;
+
+    for (var i = 0; i < m; i++)
+      if (n < Math.pow(10,i))
+        str = '0'+str;
+
+    return str;
+  };
+
+  SieveAbstractLogger.prototype.getTimestamp
+    = function () {
+
+    let date = new  Date();
+    return this._pad(date.getHours(),2)
+      + ":"+this._pad(date.getMinutes(),2)
+      + ":"+this._pad(date.getSeconds(),2)
+      + "."+this._pad(date.getMilliseconds(),3);
+  };
+
+
+  /**
    * Gets and sets the loggers prefix. The prefix is appended to every logmessage
    *
    * @param {String} [prefix]

@@ -12,263 +12,156 @@
 
 /* global window */
  
-"use strict";
- 
 (function(exports) {
 	
-	/* global SieveLexer */
-	/* global SieveAbstractElement */
-    
-  //****************************************************************************//
-  
-  //<envelope> [COMPARATOR] [ADDRESS-PART] [MATCH-TYPE] 
-  //  <envelope-part: string-list> <key-list: string-list>
-     
-  function SieveEnvelope(docshell,id) 
-  {
-    SieveAbstractElement.call(this,docshell,id);
-    
-    this.whiteSpace = [];
-    this.whiteSpace[0] = this._createByName("whitespace"," ");
-    this.whiteSpace[1] = this._createByName("whitespace"," ");
-    this.whiteSpace[2] = this._createByName("whitespace"," ");
-    this.whiteSpace[3] = this._createByName("whitespace"," ");
-    this.whiteSpace[4] = this._createByName("whitespace"," ");
-    this.whiteSpace[5] = this._createByName("whitespace"," ");
-    
-    this.addressPart = this._createByName("address-part");
-    this.matchType = this._createByName("match-type");
-    this.comparator = this._createByName("comparator"); 
-    
-    this.envelopeList = this._createByName("stringlist");
-    this.keyList = this._createByName("stringlist");
-  }
-  
-  SieveEnvelope.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveEnvelope.prototype.constructor = SieveEnvelope;
-  
-  SieveEnvelope.isElement
-    = function(parser, lexer)
-  { 
-    return parser.startsWith("envelope");
-  };
-  
-  SieveEnvelope.isCapable
-      = function (capabilities)
-  {
-    return (capabilities["envelope"] === true);      
-  };
-  
-  SieveEnvelope.nodeName = function () {
-    return "test/envelope";
-  };
-  
-  SieveEnvelope.nodeType  = function () {
-    return "test";
-  };
-  
-  SieveEnvelope.prototype.require
-      = function (imports)
-  {
-  	this.addressPart.require(imports);
-    this.matchType.require(imports);
+  "use strict";
 
-    imports["envelope"] = true;
+  /* global SieveGrammar */
+  
+  if (!SieveGrammar)
+    throw new Error("Could not register Tests");
+    
+  var envelope = {
+
+    node: "test/envelope",
+    type: "test",
+
+    requires: "envelope",
+
+    token: "envelope",
+
+    properties: [{
+      id: "tags",
+      optional: true,
+
+      elements: [{
+        id: "address-part",
+        type: "address-part"
+      }, {
+        id: "match-type",
+        type: "match-type"
+      }, {
+        id: "comparator",
+        type: "comparator"
+      }],
+    }, {
+      id: "parameters",
+
+      elements: [{
+        id: "envelopes",
+        type: "stringlist",
+        value: '"To"'
+      }, {
+        id: "keys",
+        type: "stringlist",
+        value: '"me@example.com"'
+
+      }]
+    }]
   };
   
-  SieveEnvelope.prototype.init
-      = function (parser)
-  {
-    parser.extract("envelope");
-    this.whiteSpace[0].init(parser);
-    
-    while (true)
-    {
-      if (this.addressPart.isOptional() && this._probeByName("address-part",parser))
-      {
-        this.addressPart.init(parser);
-        this.whiteSpace[1].init(parser);
-        
-        continue;
-      }
-      
-      if (this.comparator.isOptional() && this._probeByName("comparator",parser))
-      {
-        this.comparator.init(parser);
-        this.whiteSpace[2].init(parser);
-        
-        continue;
-      }
-      
-      if (this.matchType.isOptional() && this._probeByName("match-type",parser))
-      {
-        this.matchType.init(parser);      
-        this.whiteSpace[3].init(parser);
-        
-        continue;
-      }
-      
-      break;    
-    }
-    
-    this.envelopeList.init(parser);
-    
-    this.whiteSpace[4].init(parser);
-    
-    this.keyList.init(parser);
-      
-    this.whiteSpace[5].init(parser);
-    
-    return this;
-  };  
-  
-  SieveEnvelope.prototype.toScript
-      = function ()
-  {
-    return "envelope"
-      + this.whiteSpace[0].toScript()
-      + this.addressPart.toScript()
-      + (!this.addressPart.isOptional() ? this.whiteSpace[1].toScript() : "" )
-      + this.comparator.toScript()
-      + (!this.comparator.isOptional() ? this.whiteSpace[2].toScript() : "" )
-      + this.matchType.toScript()
-      + (!this.matchType.isOptional() ? this.whiteSpace[3].toScript(): "" )
-      + this.envelopeList.toScript()
-      + this.whiteSpace[4].toScript()
-      + this.keyList.toScript()
-      + this.whiteSpace[5].toScript();
-  };
-  
-  
-  
-  /******************************************************************************/
-  
-  
+  SieveGrammar.addTest(envelope);
+
+
   //address [ADDRESS-PART] [COMPARATOR] [MATCH-TYPE]
   //             <header-list: string-list> <key-list: string-list>
-  
-               
-  /* 
-   * The contents of this file is licenced. You may obtain a copy of
-   * the license at http://sieve.mozdev.org or request it via email 
-   * from the author. Do not remove or change this comment. 
-   * 
-   * The initial author of the code is:
-   *   Thomas Schmid <schmid-thomas@gmx.net>
-   */
-   
-  function SieveAddress(docshell,id)
-  {
-    SieveAbstractElement.call(this,docshell,id); 
-    
-    this.options = new Array(null,null,null);
-    
-    this.whiteSpace = [];
-    this.whiteSpace[0] = this._createByName("whitespace"," ");
-    this.whiteSpace[1] = this._createByName("whitespace"," ");
-    this.whiteSpace[2] = this._createByName("whitespace"," ");
-    this.whiteSpace[3] = this._createByName("whitespace"," ");
-    this.whiteSpace[4] = this._createByName("whitespace"," ");
-    this.whiteSpace[5] = this._createByName("whitespace"," ");
-                  
-    this.addressPart = this._createByName("address-part");
-    this.matchType = this._createByName("match-type");
-    this.comparator = this._createByName("comparator");
-    
-    this.headerList = this._createByName("stringlist","\"To\"");
-    this.keyList = this._createByName("stringlist","\"me@example.com\"");
-  }
-  
-  SieveAddress.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveAddress.prototype.constructor = SieveAddress;
-  
-  SieveAddress.isElement
-      = function (parser, lexer)
-  {
-    return parser.startsWith("address");
+  var _address = {
+    node: "test/address",
+    type: "test",
+
+    token: "address",
+
+    properties: [{
+      id: "tags",
+      optional: true,
+
+      elements: [{
+        id: "address-part",
+        type: "address-part"
+      }, {
+        id: "comparator",
+        type: "comparator"
+      }, {
+        id: "match-type",
+        type: "match-type"
+
+      }],
+    }, {
+      id: "parameters",
+
+      elements: [{
+        id: "headers",
+        type: "stringlist",
+        value: '"To"'
+      }, {
+        id: "keys",
+        type: "stringlist",
+        value: '"me@example.com"'
+
+      }]
+    }]
   };
   
-  SieveAddress.nodeName = function () {
-    return "test/address";
+  SieveGrammar.addTest(_address);
+  
+  // <"exists"> <header-names: string-list>
+  var _exists = {
+    node: "test/exists",
+    type: "test",
+
+    token: "exists",
+
+    properties: [{
+      id: "parameters",
+
+      elements: [{
+        id: "headers",
+        type: "stringlist",
+        value: '"From"'
+      }]
+    }]
   };
   
-  SieveAddress.nodeType  = function () {
-    return "test";
+  SieveGrammar.addTest(_exists);
+
+  // <"header"> [COMPARATOR] [MATCH-TYPE] <header-names: string-list> <key-list: string-list>         
+  var _header = {
+    node: "test/header",
+    type: "test",
+
+    token: "header",
+
+    properties: [{
+      id: "tags",
+      optional: true,
+
+      elements: [{
+        id: "comparator",
+        type: "comparator"
+      }, {
+        id: "match-type",
+        type: "match-type"
+      }],
+    }, {
+      id: "parameters",
+
+      elements: [{
+        id: "headers",
+        type: "stringlist",
+        value: '"Subject"'
+      }, {
+        id: "keys",
+        type: "stringlist",
+        value: '"Example"'
+      }]
+    }]
   };
+
+  SieveGrammar.addTest(_header);
+
   
-  SieveAddress.prototype.require
-      = function (imports)
-  {
-  	this.addressPart.require(imports);
-    this.matchType.require(imports);
-  };
-  
-  SieveAddress.prototype.init
-      = function (parser)
-  {
-    parser.extract("address");
-    
-    this.whiteSpace[0].init(parser);
-    
-    while (true)
-    {
-      if (this.addressPart.isOptional() && this._probeByName("address-part",parser))
-      {
-        this.addressPart.init(parser);
-        this.whiteSpace[1].init(parser);
-        
-        continue;
-      }
-      
-      if (this.comparator.isOptional() && this._probeByName("comparator",parser))
-      {
-        this.comparator.init(parser);
-        this.whiteSpace[2].init(parser);
-        
-        continue;
-      }
-      
-      if (this.matchType.isOptional() && this._probeByName("match-type",parser))
-      {
-        this.matchType.init(parser);      
-        this.whiteSpace[3].init(parser);
-        
-        continue;
-      }
-      
-      break;    
-    }
-    
-    this.headerList.init(parser);
-    
-    this.whiteSpace[4].init(parser);
-    
-    this.keyList.init(parser);
-      
-    this.whiteSpace[5].init(parser);
-    
-    return this;
-  };
-  
-  SieveAddress.prototype.toScript
-      = function ()
-  {
-   
-    return "address"
-      + this.whiteSpace[0].toScript()
-      + this.addressPart.toScript()
-      + ((!this.addressPart.isOptional()) ? this.whiteSpace[1].toScript() : "" )
-      + this.comparator.toScript()
-      + ((!this.comparator.isOptional()) ? this.whiteSpace[2].toScript() : "" )
-      + this.matchType.toScript()
-      + ((!this.matchType.isOptional()) ? this.whiteSpace[3].toScript(): "" )
-      + this.headerList.toScript()
-      + this.whiteSpace[4].toScript()
-      + this.keyList.toScript()
-      + this.whiteSpace[5].toScript();
-  };
-  
-  
+	/* global SieveLexer */
+	/* global SieveAbstractElement */
   
   /******************************************************************************/
   
@@ -286,7 +179,7 @@
   SieveBoolean.prototype.constructor = SieveBoolean;
   
   SieveBoolean.isElement
-   = function(parser, lexer)
+   = function(parser/*, lexer*/)
   {  
     if (parser.startsWith("true"))
       return true;
@@ -335,8 +228,7 @@
     return "false"+this.whiteSpace.toScript();    
   };
   
-  
-  /******************************************************************************/    
+  //******************************************************************************
   function SieveSize(docshell,id) 
   {
     SieveAbstractElement.call(this,docshell,id); 
@@ -354,7 +246,7 @@
   SieveSize.prototype.constructor = SieveSize;
   
   SieveSize.isElement
-    = function(parser, lexer)
+    = function(parser/*, lexer*/)
   { 
     return parser.startsWith("size");
   };
@@ -388,7 +280,7 @@
       this.isOver(false);
     }
     else 
-      throw "Syntaxerror, :under or :over expected";
+      throw new Error("Syntaxerror, :under or :over expected");
       
     this.whiteSpace[1].init(parser);
     this.size.init(parser);
@@ -399,8 +291,8 @@
   
   /**
    * Gets and Sets the over operator
-   * @param @optional {BOOL} value
-   * @return {}
+   * @param  {boolean} [value]
+   * @return {SieveSize}
    */
   SieveSize.prototype.isOver
       = function (value)
@@ -409,7 +301,7 @@
       return this.over;
     
     if (typeof(value) === "string")
-      value = ((""+value).toLowerCase() == "true")?  true: false;
+      value = ((""+value).toLowerCase() === "true")?  true: false;
     
     this.over = value;
     
@@ -431,187 +323,8 @@
       + this.whiteSpace[1].toScript()
       + this.getSize().toScript()
       + this.whiteSpace[2].toScript();
-  };
-  
-  
-  
-  /******************************************************************************/
-    
-  function SieveExists(docshell,id)
-  {
-    SieveAbstractElement.call(this,docshell,id); 
-    
-    this.whiteSpace = [];
-    this.whiteSpace[0] = this._createByName("whitespace",' ' );
-    this.whiteSpace[1] = this._createByName("whitespace",' ');
-    
-    this.headerNames = this._createByName("stringlist",'"From"');
-  }
-  
-  SieveExists.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveExists.prototype.constructor = SieveExists;
-  
-  SieveExists.isElement
-    = function(parser, lexer)
-  { 
-    return parser.startsWith("exists");
-  };
-  
-  SieveExists.nodeName = function () {
-    return "test/exists";
-  };
-  
-  SieveExists.nodeType  = function () {
-    return "test";
-  };
-  
-  SieveExists.prototype.init
-      = function (parser)
-  {
-    // Syntax :
-    // <"exists"> <header-names: string-list>
-    parser.extract("exists");
-    
-    this.whiteSpace[0].init(parser);
-    
-    this.headerNames.init(parser);
-      
-    this.whiteSpace[1].init(parser);
-    
-    return this;  
   };   
-  
-  SieveExists.prototype.toScript
-      = function ()
-  {
-    return "exists"
-      + this.whiteSpace[0].toScript()
-      + this.headerNames.toScript()
-      + this.whiteSpace[1].toScript();
-  };
-  
-  /******************************************************************************/
-      
-  function SieveHeader(docshell,id) 
-  {
-    SieveAbstractElement.call(this,docshell,id); 
-    
-    this.whiteSpace = [];
-    this.whiteSpace[0] = this._createByName("whitespace"," ");
-    this.whiteSpace[1] = this._createByName("whitespace"," ");  
-    this.whiteSpace[2] = this._createByName("whitespace"," ");
-    this.whiteSpace[3] = this._createByName("whitespace"," ");
-    this.whiteSpace[4] = this._createByName("whitespace"," ");
-    
-    this.headerNames = this._createByName("stringlist",'"Subject"');
-    this.keyList = this._createByName("stringlist",'"Example"');
    
-    this.matchType = this._createByName("match-type");
-    this.comparator = this._createByName("comparator");  
-    
-  }
-  
-  SieveHeader.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveHeader.prototype.constructor = SieveHeader;
-  
-  SieveHeader.isElement
-      = function (parser, lexer)
-  {
-    return parser.startsWith("header");
-  };
-  
-  SieveHeader.nodeName = function () {
-    return "test/header";
-  };
-  
-  SieveHeader.nodeType  = function () {
-    return "test";
-  };
-  
-  SieveHeader.prototype.require
-      = function (imports)
-  {
-    this.matchType.require(imports);
-  };
-  
-  SieveHeader.prototype.init
-      = function (parser)
-  {
-    // Syntax :
-    // <"header"> [COMPARATOR] [MATCH-TYPE] <header-names: string-list> <key-list: string-list>         
-    parser.extract("header");
-    
-    this.whiteSpace[0].init(parser);
-    
-    // It can be [Comparator] [MATCH-TYPE] or [MATCH-TYPE] [COMPARATOR]  
-    while (true)
-    {
-      if (this.comparator.isOptional() && this._probeByName("comparator",parser))
-      {
-        this.comparator.init(parser);
-        this.whiteSpace[1].init(parser);
-        
-        continue;
-      }
-      
-      if (this.matchType.isOptional() && this._probeByName("match-type",parser))
-      {
-        this.matchType.init(parser);      
-        this.whiteSpace[2].init(parser);
-        
-        continue;
-      }
-      
-      break;    
-    }
-    
-    this.headerNames.init(parser);
-    
-    this.whiteSpace[3].init(parser);
-    
-    this.keyList.init(parser);
-    
-    this.whiteSpace[4].init(parser);
-    
-    return this;    
-  };
-  
-  SieveHeader.prototype.keys
-      = function(idx)
-  {
-    if (typeof(idx) === "undefined")
-      return this.keyList;  
-      
-    return this.keyList.item(idx);
-  };
-  
-  SieveHeader.prototype.headers
-      = function(idx)
-  {
-    if (typeof(idx) === "undefined")
-      return this.headerNames;    
-      
-    return this.headerNames.item(idx);
-  };
-  
-  SieveHeader.prototype.toScript
-      = function ()
-  {
-    
-    // Yes, we normalize match types...
-    // ... sorry about that 
-    return "header"
-      + this.whiteSpace[0].toScript()
-      + this.comparator.toScript()
-      + (!this.comparator.isOptional() ? this.whiteSpace[1].toScript() : "" ) 
-      + this.matchType.toScript()
-      + (!this.matchType.isOptional() ? this.whiteSpace[2].toScript(): "" )
-      + this.headerNames.toScript()    
-      + this.whiteSpace[3].toScript()
-      + this.keyList.toScript()
-      + this.whiteSpace[4].toScript();
-  };
-  
   
   // TODO Stringlist and testslist are quite simmilar
   function SieveTestList(docshell,id)
@@ -624,7 +337,7 @@
   SieveTestList.prototype.constructor = SieveTestList;
   
   SieveTestList.isElement
-     = function (parser, lexer)
+     = function (parser /*, lexer*/)
   {
     return parser.isChar("(");
   };
@@ -687,7 +400,7 @@
         break;
         
       default:
-        throw "Can not append element to list";
+        throw new Error("Can not append element to list");
     }
           
     // we have to do this first as there is a good chance the the index
@@ -699,7 +412,7 @@
     
     if (sibling && (sibling.id() >= 0)) 
       for (idx = 0; idx<this.tests.length; idx++)
-        if (this.tests[idx][1].id() == sibling.id())
+        if (this.tests[idx][1].id() === sibling.id())
           break;
     
     this.tests.splice(idx,0,element);
@@ -728,7 +441,7 @@
   {
     // should we remove the whole node
     if (typeof (childId) === "undefined")
-       throw "Child ID Missing";
+       throw new Error("Child ID Missing");
       //return SieveAbstractElement.prototype.remove.call(this);
     
     // ... or just a child item
@@ -736,7 +449,7 @@
     // Is it a direct match?
     for (var i=0; i<this.tests.length; i++)
     {
-      if (this.tests[i][1].id() != childId)
+      if (this.tests[i][1].id() !== childId)
         continue;
       
       elm = this.tests[i][1];
@@ -748,7 +461,7 @@
     }
   
     if (cascade && this.empty())
-      if ((!stop) || (stop.id() != this.id()))
+      if ((!stop) || (stop.id() !== this.id()))
         return this.remove(cascade,stop);
       
     if (cascade)
@@ -786,13 +499,9 @@
   
   
   if (!SieveLexer)
-    throw "Could not register Conditional Elements";
+    throw new Error("Could not register Conditional Elements");
   
-  SieveLexer.register(SieveAddress);
   SieveLexer.register(SieveBoolean);
-  SieveLexer.register(SieveEnvelope);
-  SieveLexer.register(SieveExists);  
-  SieveLexer.register(SieveHeader);
   SieveLexer.register(SieveSize);
   
   SieveLexer.register(SieveTestList);

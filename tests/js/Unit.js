@@ -1,25 +1,27 @@
-
 /* global window */
 /* global parent */
 /* global document */
 
+( function ( exports ) {
+
 "use strict";
 
-if (!net)
-  var net = {};
+  if ( !exports.net )
+    exports.net = {};
   
-if (!net.tschmid)
-  net.tschmid = {};
+  if ( !exports.net.tschmid )
+    exports.net.tschmid = {};
   
-if (!net.tschmid.yautt)
-  net.tschmid.yautt = {};  
+  if ( !exports.net.tschmid.yautt )
+    exports.net.tschmid.yautt = {};
 
-if (!net.tschmid.yautt.test)
-  net.tschmid.yautt.test = {};  
+  if ( !exports.net.tschmid.yautt.test )
+    exports.net.tschmid.yautt.test = {};
 
-net.tschmid.yautt.test.tests = [];
+  exports.net.tschmid.yautt.test.tests = [];
  
-net.tschmid.yautt.test.log = function(message, level) {
+
+  function log( message, level ) {
   
   if (typeof(level) !== "string")
     level = "Info";
@@ -30,49 +32,54 @@ net.tschmid.yautt.test.log = function(message, level) {
   msg.data = ""+message;
   
   parent.postMessage(""+JSON.stringify(msg), "*");
-};
+  }
 
-net.tschmid.yautt.test.logError = function(message) {
-  this.log(message,"Error");
-};
+  function logError( message ) {
+    log( message, "Error" );
+  }
 
-net.tschmid.yautt.test.logTrace = function(message) {
-  this.log(message,"Trace");
-};
+  function logTrace( message ) {
+    log( message, "Trace" );
+  }
 
 /**
  * Signals the test suit, tests succeeded.
+   * @return{undefined}
  */
-net.tschmid.yautt.test.succeed = function() {
+  function succeed() {
   var msg = {};
   msg.type = "SUCCEED";
   
   parent.postMessage(""+JSON.stringify(msg), "*");
-};
+  }
 
 /**
- * Signals the test suit, test failed.
- * @param {} message
- *   an option error message why tests failed.
+   * Signals the test suit, a test failed.
+   *
+   * @param {String|Error} [message]
+   *   an optional error or error why tests failed.
+   * @returns {undefined}
  */
-net.tschmid.yautt.test.fail = function(message) {
+  function fail( message ) {
+
   var msg = {};
   msg.type = "FAIL";
-  msg.data = ""+message;
+    msg.description = "" + message;
+
+    if ( ( message instanceof Error === true ) && ( message.stack ) )
+      msg.details = "" + message.stack;
   
   parent.postMessage(""+JSON.stringify(msg), "*");
-};
+  }
 
-net.tschmid.yautt.test.require = function(script) {
-	
-	var that = this;
+  function require( script ) {
 	
     var elm = document.createElement("script");
     elm.type = "text/javascript";
     elm.src = ""+script;
 
-    elm.addEventListener('error', function(ev) {
-      that.fail("Failed to load script "+script );
+    elm.addEventListener( 'error', function () {
+      fail( "Failed to load script " + script );
     }, true);    
 //    elm.onerror = function(ev) {
 //    	debugger;
@@ -81,53 +88,52 @@ net.tschmid.yautt.test.require = function(script) {
     // The order maters wich means we need to get async.
     elm.async = false;
     
-    this.logTrace("  + Injecting script "+script+" ...");
+    logTrace( "  + Injecting script " + script + " ..." );
     
     document.head.appendChild(elm);              	
-};
+  }
 
-net.tschmid.yautt.test.assertEquals = function assertEquals(expected, actual) {
+  function assertEquals( expected, actual, message ) {
 	
-  if (expected != actual)
-	throw "Test failed expected: \n"+expected+"\n\nBut got\n"+actual;
+    if ( expected === actual ) {
+      logTrace( "Assert successfull:\n" + expected );
+      return;
+    }
   
-  this.logTrace(" Assert Succeded "+expected);
-};
+    if ( typeof ( message ) === 'undefined' || message === null )
+      message = "Assert failed\nExpected: \n" + expected + "\n\nBut got\n" + actual;
 
-net.tschmid.yautt.test.add = function(test) {
+    throw new Error( "" + message );
+  }
 	
-  if (!this.tests)
-    this.tests = [];
+  function add( test ) {
 	
-  this.tests.push(test);
-};
+    if ( !exports.net.tschmid.yautt.test.tests )
+      exports.net.tschmid.yautt.test.tests = [];
 
+    exports.net.tschmid.yautt.test.tests.push( test );
+  }
 
-net.tschmid.yautt.test.run = function() {
+  function run() {
 	
-  var that = this;
+    var tests = exports.net.tschmid.yautt.test.tests;
   
-  if (!this.tests || !this.tests.length) {
-  	this.fail("Empty test configuration");
+    if ( !tests || !tests.length ) {
+      fail( "Empty test configuration" );
   	return;
   }
     
   try {
-    this.tests.forEach( function(test){  test(that);  });
+      tests.forEach( function ( test ) { test(); });
   }
-  catch (e)
-  {
-  	this.fail(e);
+    catch ( e ) {
+      fail( e );
     return;
   }	
 
-  this.succeed();
-};
+    succeed();
+  }
 
-
-// Hook up custom error and event handler. And wrap them into an anonymous function..
-(function() {
-  var that = this;
 
   // We communicate via postMessage command with our parent frame...
   window.addEventListener("message", function(event) { // net.tschmid.yautt.test.onMessage(event);
@@ -139,10 +145,10 @@ net.tschmid.yautt.test.run = function() {
 
     var msg = JSON.parse(event.data);
   
-    if (msg.type != "IMPORT")
+    if ( msg.type !== "IMPORT" )
       return;
 
-    net.tschmid.yautt.test.require(msg.data);  
+    require( msg.data );
   }, false);
   
   // ... we need to catch any errors...
@@ -150,7 +156,7 @@ net.tschmid.yautt.test.run = function() {
   
   window.onerror = function(message, url, line) {
   	
-    net.tschmid.yautt.test.fail("Script error "+message+"\n"+url+"\n"+line+"\n");
+    fail( "Script error " + message + "\n" + url + "\n" + line + "\n" );
     
     if (!oldErrorHandler)
       return false;  
@@ -158,5 +164,19 @@ net.tschmid.yautt.test.run = function() {
     return oldErrorHandler(message, url, line);
   };
   
+  exports.net.tschmid.yautt.test.log = log;
+  exports.net.tschmid.yautt.test.logTrace = logTrace;
+  exports.net.tschmid.yautt.test.logError = logError;
   
-} ());
+  exports.net.tschmid.yautt.test.require = require;
+  exports.net.tschmid.yautt.test.succeed = succeed;
+  exports.net.tschmid.yautt.test.fail = fail;
+
+  exports.net.tschmid.yautt.test.assertEquals = assertEquals;
+
+  exports.net.tschmid.yautt.test.add = add;
+
+  exports.net.tschmid.yautt.test.run = run;
+
+})( window );
+

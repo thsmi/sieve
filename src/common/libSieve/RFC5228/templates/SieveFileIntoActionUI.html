@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<!--
+
+  The contents of this file are licenced. You may obtain a copy of 
+  the license at https://github.com/thsmi/sieve/ or request it via 
+  email from the author.
+ 
+  Do not remove or change this comment.
+  
+  The initial author of the code is:
+    Thomas Schmid <schmid-thomas@gmx.net>
+
+-->
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Fileinto Action</title>
+</head>
+
+<body>
+
+    <div id="sivDialogFileInto" class="dialog">
+
+        <style>
+            /* Style the existing elements */
+            
+            #sivFileIntoGeneralContent .sivFlags h1 {
+                font-size: 13px;
+                margin: 0px;
+            }
+            
+            #sivFileIntoAdvancedContent > div,
+            #sivFileIntoGeneralContent > div {
+                padding-top: 8px;
+            }
+            
+            #sivFileIntoGeneralContent .sivFlags > div {
+                padding-bottom: 8px;
+                padding-top: 8px;
+            }
+            
+            #sivFileIntoGeneralContent .sivFlags > div > div {
+                padding-left: 20px;
+            }
+            
+            #sivFileIntoGeneralContent input[type=text] {
+                width: 100%;
+            }
+        </style>
+
+        <div>
+            <!-- System -->
+            <div id="sivEditMain">
+                <!-- Appbar -->
+                <div class="dialog-header">
+                    <div class="dialog-tab">
+                        <div class="tab-active" data-tab-content="sivFileIntoGeneralContent">BASIC</div>
+                        <div data-tab-content="sivFileIntoHelpContent">HELP</div>
+                    </div>
+                </div>
+                <!-- content -->
+                <div class="dialog-tab-content">
+                    <!-- content for help tab -->
+                    <div id="sivFileIntoHelpContent">
+                        <p>
+                            The mailbox name is typically a hierarchical name used to determin a folder on the server.
+                            So it is equivalent whith the folder structure you can see in your mail client.
+                        </p>
+                        <p>
+                            There is no precise definition how the hierarchical name is formed. It depends on your mailserver implementation.
+                            Only the case-insensitive mailbox name INBOX is a special name reserved to mean "the primary mailbox for this user on this server".
+                        </p>
+                        <p>
+                            But you should avoid using non-graphical characters, the list-wildcard cahracters ("%" and "*"), characters which are reserved
+                            by the server for the level of hierarchy (typically "/" or ".") as well as "#" as "&amp;" because
+                            they can have special meanings.
+                        </p>
+                    </div>
+
+                    <!-- content for general tab -->
+                    <div id="sivFileIntoGeneralContent" class="tab-active">
+                        <h1>Save the incoming message into folder:</h1>
+                        <input type="text" id="sivFileIntoPath"></input>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>

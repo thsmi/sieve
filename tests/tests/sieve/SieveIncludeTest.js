@@ -10,16 +10,15 @@
  *      
  */
 
-"use strict";
-  
 (function() {
 	
+  "use strict";
 	/* global net */
 
   var suite  = net.tschmid.yautt.test;
     
   if (!suite)
-    throw "Could not initialize test suite";
+    throw new Error( "Could not initialize test suite" );
 
   suite.add( function() {   
     suite.log("Sieve Include (RFC6609) unit tests...");
@@ -45,7 +44,7 @@
         + '\r\n'
         + 'include :personal :global "always_allow";\r\n';
     
-    var exception = "Location can be either personal or global but not both";
+    var exception = 'Error: Unknown or incompatible type >>string/<< at >>:global "always_allow';
       
     suite.expectInvalidScript(script, exception, {"include":true});
   });   

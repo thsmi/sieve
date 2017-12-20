@@ -2,15 +2,15 @@
 
 /* global window */
 
-"use strict";
 
 // Our server is implemented within an anonymous method...
 
 (function(exports) {
 
+  "use strict";
+
 	/* global $: false */
 	/* global net */
-	/* global tests */
 	/* global document */
 	
   // Create the namespace, even if we are inside an anonymous method...
@@ -39,16 +39,20 @@
 
     var msg = JSON.parse(event.data);
   
-    if (msg.type == "LOG") {
+    if ( msg.type === "LOG" ) {
       this.log(msg.data, msg.level);
       return;
     }
    
     var that = this;
         
-    if (msg.type == "FAIL") {
+    if ( msg.type === "FAIL" ) {
     	
-    	this.log("##### Test failed: " + msg.data, "Fail");
+      this.log( "##### Test failed: " + msg.description, "Fail" );
+
+      if ( msg.details )
+        this.log( "" + msg.details, "Trace" );
+
       // The post event blocks both window. So defere processing...
       window.setTimeout(function() {that.next();}, 10);      
       
@@ -57,7 +61,7 @@
       return;
     }
     
-    if (msg.type == "SUCCEED") {
+    if ( msg.type === "SUCCEED" ) {
       this.log("##### Test succeeded.","Success");
       // The post event blocks both window. So defere processing...
       window.setTimeout(function() {that.next();}, 10);      
@@ -79,7 +83,7 @@
     $("<div/>")
       .addClass(style)
       .text(message)
-      .appendTo("#divOutput");	
+      .appendTo( "#divOutput > div:last-child" );
   };
 
   net.tschmid.yautt.test.server.logTrace = function(message) {
@@ -90,10 +94,15 @@
   	this.log(message, "Error");
   };
   
+  net.tschmid.yautt.test.server.startLog = function ( test ) {
+    $( "<div/>" )
+      .attr( "testprofile", test )
+      .appendTo( "#divOutput" );
+  };
 
   net.tschmid.yautt.test.server.extend = function (name) {
   	
-    var base = tests[name];
+    var base = exports.net.tschmid.yautt.test.config[name];
     var scripts = [];
       
     if (!base)
@@ -106,7 +115,6 @@
       return scripts;
       
     // TODO Check/ensure if require is an array...
-    var that = this;
     $.each(base.require, function (idx, value) {
       scripts.push(value);
     });
@@ -121,8 +129,11 @@
   	if (typeof(this.current) === "undefined") 
   	  return;
   
-    this.log("Starting test profile "+this.current);    
+    this.startLog( this.current );
+    this.log( "Test profile '" + this.current + "'", "Header" );
     var scripts = this.extend(this.current);
+
+    var tests = exports.net.tschmid.yautt.test.config;
 	
     scripts.push("./../js/Unit.js");
     scripts.push(tests[this.current].script);
@@ -149,12 +160,39 @@
         .attr("src","./tests/tests.html"));   
   };
 
+  /**
+   * Adds the test configuration to this server.
+   * Existing items are replaced silently
+   *
+   * @param{object} tests
+   *   the tests which should be performed
+   * @returns{undefined}
+   */
+  net.tschmid.yautt.test.server.add = function ( tests ) {
+
+    var config = exports.net.tschmid.yautt.test.config;
+
+    if ( config === null || typeof ( config ) === "undefined" )
+      config = {};
+
+    $.each( tests, function ( name, value ) {
+      if ( typeof ( value ) === "undefined" )
+        return;
+      
+      config[name] = value;
+    });
+
+    exports.net.tschmid.yautt.test.config = config;
+  };
+
   net.tschmid.yautt.test.server.run = function() {
   
     var that = this;
     
     this.queue = [];
     
+    var tests = exports.net.tschmid.yautt.test.config;
+
     $.each(tests, function (name, value) {
       // Loop through tests..
       if (typeof(value) === "undefined")
@@ -173,6 +211,18 @@
     // TODO add a timeout watchdog.
   };
   
+  /**
+   * Clears all results...
+   * @returns{undefined}
+   */
+  net.tschmid.yautt.test.server.clear = function () {
+    $( "#divOutput" ).empty();
+
+    $( "#tests div" ).each( function () {
+      $( this ).css( "color", "" );
+    });
+  };
+
   net.tschmid.yautt.test.server.init = function() {
     var that = this;
   	window.addEventListener("message", function(event) { that.onMessage(event); }, false);
@@ -189,19 +239,22 @@
   	
     $("#start").click(function() {
 
+      var tests = exports.net.tschmid.yautt.test.config;
+
     	$.each(tests, function(name,value) {
     	  if(value.disabled)
     	    value.disabled = false;
     	});
     	
     	var items = $("#tests input:checkbox:not(:checked)");    	
-    	items.each(function(idx, elm) { 
+      items.each( function () {
     		var name = $(this).val();
     		
     		if (tests[name].script)
     	    tests[name].disabled = true;
     	});
     	
+      net.tschmid.yautt.test.server.clear();
       net.tschmid.yautt.test.server.run();
     });
     
@@ -218,25 +271,28 @@
     });
     
     $("#result-clear").click(function() {
-    	$("#divOutput").empty();
-    	
-    	$("#tests div").each( function() {
-    		$(this).css("color", "");
-    	});
+      net.tschmid.yautt.test.server.clear();
     });
     
     
     var elm = $("#tests");
+    var tests = exports.net.tschmid.yautt.test.config;
     
-    $.each(tests, function(name, value) {
+    $.each( tests, function ( name ) {
 
     	if (!tests[name].script)
     	  return;
+
+      function gotoTest( name ) {
+        var items = $( "#divOutput [testprofile='" + name + "']" );
+
+        items.last().get( 0 ).scrollIntoView();
+      }
     	
     	elm.append(
     	  $("<div />")
     	    .append($("<input />", { type:"checkbox", "checked":"checked" }).val(name))
-    	    .append(name));
+          .append( $( "<span />" ).text( name ).click( function () { gotoTest( name ); }) ) );
     	    
     });
   });

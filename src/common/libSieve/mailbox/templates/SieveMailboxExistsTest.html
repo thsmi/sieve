@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<!--
+
+  The contents of this file are licenced. You may obtain a copy of 
+  the license at https://github.com/thsmi/sieve/ or request it via 
+  email from the author.
+ 
+  Do not remove or change this comment.
+  
+  The initial author of the code is:
+    Thomas Schmid <schmid-thomas@gmx.net>
+
+-->
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mailbox exists test</title>
+</head>
+
+<body>
+
+    <div id="sivMailboxDialog" class="dialog">
+
+        <div>
+            <!-- System -->
+            <div id="sivEditMain">
+                <!-- Appbar -->
+                <div class="dialog-header">
+                    <div class="dialog-tab">
+                        <div class="tab-active" data-tab-content="sivMailboxGeneralContent">BASIC</div>
+                        <div data-tab-content="sivMailboxHelpContent">HELP</div>
+                    </div>
+                </div>
+                <!-- content -->
+                <div class="dialog-tab-content">
+                    <!-- content for help tab -->
+                    <div id="sivMailboxHelpContent">
+                        <h1>Verifies existence of mailboxes</h1>
+                        <p>
+                            Tests if all mailbox folders listed exist in the mailstore and if delivery is possible. Delivery is possible means the user
+                            has access right and the is allowed to read and write the folder.
+                        </p>
+                        <p>
+                            Note that a successful "mailboxexists" test doesn't necessarily mean that a "fileinto" action on this mailbox would succeed.
+                            For example, the "fileinto" action might put user over quota.
+                        </p>
+                    </div>
+
+                    <!-- content for general tab -->
+                    <div id="sivMailboxGeneralContent" class="tab-active">
+
+                        <h1>All of the following mailboxes (folders) exist:</h1>
+                        <div id="sivMailboxNamesList" data-list-new="#sivMailboxNamesListAdd" data-list-items="#sivMailboxNamesListItems" data-list-template="#sivMailboxNamesListTemplate"
+                            data-list-min="1">
+
+                            <div id="sivMailboxNamesListTemplate" style="display:none">
+                                <div>
+                                    <input type="text" />
+                                    <button>remove</button>
+                                </div>
+                            </div>
+                            <div id="sivMailboxNamesListItems">
+                                <div>
+                                    <button id="sivMailboxNamesListAdd">add</button>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+
+</body>
+
+</html>

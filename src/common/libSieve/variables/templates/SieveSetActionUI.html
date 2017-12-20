@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<!--
+
+  The contents of this file are licenced. You may obtain a copy of 
+  the license at https://github.com/thsmi/sieve/ or request it via 
+  email from the author.
+ 
+  Do not remove or change this comment.
+  
+  The initial author of the code is:
+    Thomas Schmid <schmid-thomas@gmx.net>
+
+-->
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vacation action</title>
+</head>
+
+<body>
+
+    <div id="sivDialogVariables" class="dialog">
+
+        <style>
+            @import url('./variables/templates/SieveVariablesUI.css');
+            /* Inputs */
+            
+            #sivVariablesGeneralContent textarea {
+                width: 100%;
+                height: 100px;
+            }
+            
+            #sivVariablesGeneralContent input {
+                width: 100%;
+            }
+        </style>
+
+        <div>
+            <!-- System -->
+            <div id="sivEditMain">
+                <!-- Appbar -->
+                <div class="dialog-header">
+                    <div class="dialog-tab">
+                        <div class="tab-active" data-tab-content="sivVariablesGeneralContent">BASIC</div>
+                        <div data-tab-content="sivVariablesAdvancedContent">ADVANCED</div>
+                        <div data-tab-content="sivVariablesHelpContent">HELP</div>
+                    </div>
+                </div>
+                <!-- content -->
+                <div class="dialog-tab-content">
+                    <!-- content for help tab -->
+                    <div id="sivVariablesHelpContent">
+                        <p></p>
+                    </div>
+
+                    <!-- content for general tab -->
+                    <div id="sivVariablesGeneralContent" class="tab-active">
+                        <h1>Store the value ... </h1>
+                        <textarea type="text" id="sivVariableValue" />
+
+                        <h1>... into variable</h1>
+                        <input type="text" id="sivVariableName" />
+
+                    </div>
+
+                    <!-- content for advanced tab -->
+                    <div id="sivVariablesAdvancedContent">
+                        <div>Modifiers are used to change a variables' value, they are processed in the following order</div>
+
+                        <div class="sivModifiers">
+                            <div>
+                                <h1><input type="checkbox" name="40" />Modify Variable's case</h1>
+                                <div>Only plain Latin (A-Z and a-z) are changed, no umlauts or similar characters..</div>
+                                <div>
+                                    <div><input type="radio" name="40" value=":upper" checked="checked" />upper case</div>
+                                    <div><input type="radio" name="40" value=":lower" />lower case</div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h1><input type="checkbox" name="30" />Modify Variable's first character</h1>
+                                <div>Only the first character's case is changed, the rest of the string is unchanged</div>
+                                <div>
+                                    <div><input type="radio" name="30" value=":upperfirst" checked="checked" />upper case</div>
+                                    <div><input type="radio" name="30" value=":lowerfirst" />lower case</div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h1> <input type="checkbox" name="20" value=":quotewildcard" />Escape Wildcards</h1>
+                                <div>Ensures that the expanded text will only match a literal occurrence if used as a parameter
+                                    to :matches. Every character with special meaning ("*", "?", and "\") is prefixed with
+                                    "\" in the expansion</div>
+                            </div>
+
+                            <div>
+                                <h1><input type="checkbox" name="10" value=":length" />Count the number of characters</h1>
+                                <div>variables are expanded before determining the number of characters.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>

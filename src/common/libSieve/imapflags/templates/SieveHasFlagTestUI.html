@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<!--
+
+  The contents of this file are licenced. You may obtain a copy of 
+  the license at https://github.com/thsmi/sieve/ or request it via 
+  email from the author.
+ 
+  Do not remove or change this comment.
+  
+  The initial author of the code is:
+    Thomas Schmid <schmid-thomas@gmx.net>
+
+-->
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Has Flag Test</title>
+</head>
+
+<body>
+
+    <div id="sivHasFlagDialog" class="dialog">
+
+        <style>
+            @import url('./body/templates/sivHasFlagTestUI.css');
+        </style>
+
+        <div>
+            <!-- System -->
+            <div id="sivEditMain">
+                <!-- Appbar -->
+                <div class="dialog-header">
+                    <div class="dialog-tab">
+                        <div class="tab-active" data-tab-content="sivHasFlagGeneralContent">BASIC</div>
+                        <div data-tab-content="sivHasFlagAdvancedContent">ADVANCED</div>
+                        <div data-tab-content="sivHasFlagHelpContent">HELP</div>
+                    </div>
+                </div>
+                <!-- content -->
+                <div class="dialog-tab-content">
+                    <!-- content for help tab -->
+                    <div id="sivHasFlagHelpContent">
+                        <p>
+                        </p>
+                    </div>
+
+                    <!-- content for general tab -->
+                    <div id="sivHasFlagGeneralContent" class="tab-active">
+                        <h1>An imap flag... </h1>
+                        <div id="sivHasFlagMatchTypes"> </div>
+
+                        <h1>... any of the keyword(s):</h1>
+                        <div id="sivHasFlagKeyList" data-list-new="#sivHasFlagKeyListAdd" data-list-items="#sivHasFlagKeyListItems" data-list-template="#sivHasFlagKeyListTemplate"
+                            data-list-min="1">
+                            <div id="sivHasFlagKeyListTemplate" style="display:none">
+                                <div>
+                                    <input type="text"  list="sivHasFlagList">
+                                    <button>remove</button>
+                                </div>
+                            </div>
+                            <div id="sivHasFlagKeyListItems">
+                                <div>
+                                    <button id="sivHasFlagKeyListAdd">add</button>
+                                </div>
+                            </div>
+                    </div>
+                    <datalist id="sivHasFlagList">
+                        <option value="\Seen" />
+                        <option value="\Answered" />
+                        <option value="\Flagged" />
+                        <option value="\Delete" />
+                        <option value="\Draft" />
+                        <option value="\Recent" />
+                        <option value="$Label1" />
+                        <option value="$Label2" />
+                        <option value="$Label3" />
+                        <option value="$Label4" />
+                        <option value="$Label5" />
+                    </datalist>
+                </div>
+
+                <!-- content for advanced tab -->
+                <div id="sivHasFlagAdvancedContent">
+                    <div id="sivHasFlagComparator"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>

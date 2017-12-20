@@ -1,13 +1,12 @@
 /* global window */
  
-"use strict";
  
-(function(exports) {
+(function(/*exports*/) {
 
+"use strict";  
   /* global $: false */
   /* global SieveDesigner */
-  /* global SieveLexer */
-	
+  
   /* global SieveAbstractBoxUI */
 	/* global SieveAddress */
 	/* global SieveStringListUI */

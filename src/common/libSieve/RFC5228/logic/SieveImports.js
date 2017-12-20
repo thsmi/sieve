@@ -12,10 +12,10 @@
  
 /* global window */
  
-"use strict";
- 
-(function(exports) {
+(function(/*exports*/) {
   
+  "use strict";
+
   /* global SieveLexer */
   /* global SieveAbstractElement */
 	/* global SieveBlockBody */
@@ -46,7 +46,6 @@
   SieveRequire.nodeType  = function () {
     return "import/";
   };
-  
   
   SieveRequire.prototype.init
       = function (parser)
@@ -166,7 +165,7 @@
   
   
   if (!SieveLexer)
-    throw "Could not register Import Elements";
+    throw new Error("Could not register Import Elements");
   
   
   SieveLexer.register(SieveBlockImport);

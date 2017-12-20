@@ -14,21 +14,21 @@
 /* globals SieveSaslExternalRequest */
 /* globals window */
 
-"use strict";
  
 (function(exports) {
 	
+  "use strict";
+
   var suite  = exports.net.tschmid.yautt.test;
     
   if (!suite)
-    throw "Could not initialize test suite";
+    throw new Error( "Could not initialize test suite" );
 
   suite.add( function() {   
     suite.log("ManageSieve unit tests...");
   });    
   
   suite.add( function() {   
-  	 	
   	
    suite.log("SASL Login - OK");
     

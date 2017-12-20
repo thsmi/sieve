@@ -12,14 +12,14 @@
 
 /* global window */
  
-"use strict";
- 
 (function(exports) {
+
+  "use strict";
   
   /* global $: false */
   /* global SieveDesigner */
   /* global SieveAbstractBoxUI */
-
+  
   function SieveAddressPartUI(elm)
   {
     SieveAbstractBoxUI.call(this,elm);
@@ -37,30 +37,32 @@
   };
   
   SieveAddressPartUI.prototype.onSelect
-      = function ()
-  {
-    var value = $("input[name='rgAddressPart"+this.id()+"']:checked").val(); 
-    this.getSieve().addressPart(value);
+    = function () {
+      
+      var value = $( "input[name='rgAddressPart" + this.id() + "']:checked" ).val();       
+      this.getSieve().setValue( value );
   };
   
   SieveAddressPartUI.prototype.createHtml
-      = function ()
-  {
-    var value = this.getSieve().addressPart();
-    
-    var widgets = SieveDesigner.getWidgetsByClass("address-part/",this.id());
-    
-    var item = $("<div/>").addClass("sivAddressPart");
-    var that = this;
-    
-    widgets.forEach(function(element) { 
-      item.append(element.html(function () {that.onSelect();})); 
-    });
+    = function () {
+        
+      var widgets = SieveDesigner.getWidgetsByClass( "address-part/", this.id() );
       
-    item.find("input[name='rgAddressPart"+this.id()+"'][value='"+value+"']")
-        .attr("checked","checked");
+      var item = $( "<div/>" ).addClass( "sivAddressPart" );
+      
+        
+      var that = this;  
+      widgets.forEach( function ( element ) { 
+        item.append( element.html( function () { that.onSelect(); }) );    
+      });
+      
+      var value = this.getSieve().getValue();
+             
+      item.find( "input[name='rgAddressPart" + this.id() + "'][value='" + value + "']" )   
+        .attr( "checked", "checked" );
+      
      
-    return item;
+      return item;  
   };
   
   //************************************************************************************
@@ -185,7 +187,7 @@
   //************************************************************************************
   
   if (!SieveDesigner)
-    throw "Could not register String Widgets";
+    throw new Error("Could not register String Widgets");
   
   SieveDesigner.register("address-part", "address-part", SieveAddressPartUI);
   SieveDesigner.register2(SieveAllPartUI);

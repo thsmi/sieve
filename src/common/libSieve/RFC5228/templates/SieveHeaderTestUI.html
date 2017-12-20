@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<!--
+
+  The contents of this file are licenced. You may obtain a copy of 
+  the license at https://github.com/thsmi/sieve/ or request it via 
+  email from the author.
+ 
+  Do not remove or change this comment.
+  
+  The initial author of the code is:
+    Thomas Schmid <schmid-thomas@gmx.net>
+
+-->
+
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Header Test</title>
+</head>
+
+<body>
+
+  <div id="sivSieveDialog" class="dialog">
+
+    <style>
+      @import url('./toolkit/widgets/tabDialog.css');
+      @import url('./RFC5228/widgets/sivSieveUI.css');
+    </style>
+
+    <div>
+      <!-- System -->
+      <div id="sivEditMain">
+        <!-- Appbar -->
+        <div class="dialog-header">
+          <div class="dialog-tab">
+            <div class="tab-active" data-tab-content="sivHeaderGeneralContent">BASIC</div>
+            <div data-tab-content="sivHeaderAdvancedContent">ADVANCED</div>
+            <div data-tab-content="sivHeaderHelpContent">HELP</div>
+          </div>
+        </div>
+        <!-- content -->
+        <div class="dialog-tab-content">
+          <!-- content for help tab -->
+          <div id="sivHeaderHelpContent">
+            <h1>Compares header as strings</h1>
+            <p>You typically use this test with headers containing subject line or a spam score</p>
+            <p>Do not use this test, if the header should be matched against a mail addresses. The result will be unrealiable,
+              as this test is not aware of display names. Use the address test instead
+            </p>
+          </div>
+
+          <!-- content for general tab -->
+          <div id="sivHeaderGeneralContent" class="tab-active">
+            <h1>Any of the following header ... </h1>
+            <div id="sivHeaderHeaderList" data-list-new="#sivHeaderHeaderListAdd" data-list-items="#sivHeaderHeaderListItems" data-list-template="#sivHeaderHeaderListTemplate"
+              data-list-min="1">
+
+
+              <datalist id="sivHeaderDefaults">
+                <option value="Subject" />
+                <option value="Date" />
+                <option value="Message-ID" />
+                <option value="Content-Type" />
+              </datalist>
+
+              <div id="sivHeaderHeaderListTemplate" style="display:none">
+                <div>
+                  <input type="text" list="sivHeaderDefaults" />
+                  <button>remove</button>
+                </div>
+              </div>
+              <div id="sivHeaderHeaderListItems">
+                <div>
+                  <button id="sivHeaderHeaderListAdd">add</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="sivHeaderMatchTypes"> </div>
+            <h1>... any of the keyword(s):</h1>
+            <div id="sivHeaderKeyList" data-list-new="#sivHeaderKeyListAdd" data-list-items="#sivHeaderKeyListItems" data-list-template="#sivHeaderKeyListTemplate"
+              data-list-min="1">
+
+              <div id="sivHeaderKeyListTemplate" style="display:none">
+                <div>
+                  <input type="text" />
+                  <button>remove</button>
+                </div>
+              </div>
+              <div id="sivHeaderKeyListItems">
+                <div>
+                  <button id="sivHeaderKeyListAdd">add</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- content for advanced tab -->
+          <div id="sivHeaderAdvancedContent">
+            <div id="sivHeaderComparator"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</body>
+
+</html>

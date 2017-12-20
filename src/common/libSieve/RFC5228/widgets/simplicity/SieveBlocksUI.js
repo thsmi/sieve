@@ -1,17 +1,20 @@
-/* 
- * The contents of this file is licenced. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email 
- * from the author. Do not remove or change this comment. 
+/*
+ * The contents of this file are licenced. You may obtain a copy of 
+ * the license at https://github.com/thsmi/sieve/ or request it via 
+ * email from the author.
+ *
+ * Do not remove or change this comment.
  * 
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
+ *      
  */
 
 /* global window */
  
 "use strict";
  
-(function(exports) {
+( function ( exports ) {
 
   /* global $: false */
   /* global SieveDesigner */
@@ -30,8 +33,7 @@
       
     var actions = null;
     
-    while (elms.length) 
-    {
+    while ( elms.length ) {
      
       if (elms[0].nodeType() == "action")
       {

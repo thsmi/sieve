@@ -1,6 +1,39 @@
-   .dialogTab  {
+  .dialog {
+     background-color: #EEEEEE;
+  }
+
+.dialog input[type=text],
+.dialog input[type=email],
+.dialog input[type=number] {
+  height: 13px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+  /*line-height:48px;*/
+  font-size: 13px;
+  border: none;
+  border-bottom: 1px solid black;
+  background-color: #EEEEEE;
+}
+
+.dialog input[type=number] {
+  width: 50px;
+  text-align: right;
+}     
+
+.dialog input[type=text],
+.dialog input[type=email] {  
+  min-width: 300px
+}
+
+  .dialog-header {
+    border-bottom: 1px solid #E3E3E3; 
+     background-color: #607D8B;
+  }
+
+   .dialog-tab  {
       color:#757575; 
-      text-weight: 500; 
+      font-weight: 500; 
       height:64px; 
       padding:0px; 
       margin:0px; 
@@ -9,7 +42,7 @@
       width:100%;
     }
     
-    .dialogTab > div {
+    .dialog-tab > div {
       color: rgba(255,255,255,0.7);
       min-width:160px;
       max-width: 264px;
@@ -25,24 +58,25 @@
       flex:1;
     }
     
-     .dialogTab > div.tab-active {
+     .dialog-tab > div.tab-active {
       color: #FFFFFF;
        height:46px;  
        border-bottom: 2px solid #FFFFFF;
      }
      
-     .tab-content {
+     .dialog-tab-content {
        max-height:400px;
         overflow: auto;
         padding-left:16px; 
         padding-right:16px;
      }
      
-     .tab-content > div {
+     .dialog-tab-content > div {
        display: none;
+       padding-bottom: 30px;
      }
      
-     .tab-content  > div.tab-active {
+     .dialog-tab-content  > div.tab-active {
        display: inherit;     
      }
      
@@ -50,12 +84,12 @@
        padding:0px;
      }
 	 
-.tab-content h1 {
+.dialog-tab-content h1 {
   font-size: 13px;
   color: rgba(0,0,0,0.53);
 }
 
-.tab-content {
+.dialog-tab-content {
   padding-bottom : 16px;
   /*min-height: 300px;*/
 }

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<!--
+
+  The contents of this file are licenced. You may obtain a copy of 
+  the license at https://github.com/thsmi/sieve/ or request it via 
+  email from the author.
+ 
+  Do not remove or change this comment.
+  
+  The initial author of the code is:
+    Thomas Schmid <schmid-thomas@gmx.net>
+
+-->
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Set Flag Action</title>
+</head>
+
+<body>
+
+    <div id="sivDialogSetFlag" class="dialog">
+
+        <div>
+            <!-- System -->
+            <div id="sivEditMain">
+                <!-- Appbar -->
+                <div class="dialog-header">
+                    <div class="dialog-tab">
+                        <div class="tab-active" data-tab-content="sivSetFlagGeneralContent">BASIC</div>
+                        <div data-tab-content="sivSetFlagHelpContent">HELP</div>
+                    </div>
+                </div>
+                <!-- content -->
+                <div class="dialog-tab-content">
+                    <!-- content for help tab -->
+                    <div id="sivSetFlagHelpContent">
+                        <p>
+                            Message labels are called flags in the IMAP specification and are divided into two types: system flags and user-defined flags.
+                        </p>
+                        <p>
+                            System flags are defined in the IMAP Specification. They start with a leading backslash (\). The current the following six
+                            system flags \Seen , \Answered, \Flagged, \Deleted, \Draft, \Recent are defined.
+                        </p>
+                        <p>
+                            User-defined flags are also known as IMAP keywords and, as the name implies, are defined by IMAP users. There is a de facto
+                            standard that keywords which are in common use have names that begin with a dollar sign ($).
+                        </p>
+                        <p>
+                            Examples of common keywords are: $Label1, $Label2, $Label3, $Label4, $Label5. These keywords are typically hardwired to Important,
+                            Work, Personal, To Do and Later.
+                        </p>
+                        <p>
+                            If you define your own personal keyword, its name should not begin with dollar sign ($) or backslash (\) because otherwise
+                            it might collide with a flag that is used by current or future IMAP clients and servers
+                        </p>
+                    </div>
+
+                    <!-- content for general tab -->
+                    <div id="sivSetFlagGeneralContent" class="tab-active">
+                        <h1> Set the Imap Flags and Keywords</h1>
+
+                        <div id="sivFlagKeywordList" data-list-new="#sivFlagKeywordListAdd" data-list-items="#sivFlagKeywordListItems" data-list-template="#sivFlagKeywordListTemplate"
+                            data-list-min="1">
+
+                            <div id="sivFlagKeywordListTemplate" style="display:none">
+                                <div>
+                                    <input type="text" list="sivFlagList" />
+                                    <button>remove</button>
+                                </div>
+                            </div>
+                            <div id="sivFlagKeywordListItems">
+
+                                <div>
+                                    <button id="sivFlagKeywordListAdd">add</button>
+                                </div>
+                            </div>
+                    </div>
+
+                    <datalist id="sivFlagList">
+                        <option value="\Seen" />
+                        <option value="\Answered" />
+                        <option value="\Flagged" />
+                        <option value="\Delete" />
+                        <option value="\Draft" />
+                        <option value="\Recent" />
+                        <option value="$Label1" />
+                        <option value="$Label2" />
+                        <option value="$Label3" />
+                        <option value="$Label4" />
+                        <option value="$Label5" />
+                    </datalist>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+</body>
+
+</html>

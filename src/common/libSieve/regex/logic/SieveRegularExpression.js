@@ -12,65 +12,23 @@
 
 /* global window */
 
-"use strict";
+( function ( /*exports*/ ) {
+  
+  "use strict";
+  /* global SieveGrammar */
+  
+  if ( !SieveGrammar )  
+    throw new Error("Could not register MatchTypes");
 
-(function(exports) {
-
-  /* global SieveLexer */
-  /* global SieveAbstractElement */
-
-  function SieveRegExMatch(docshell, id) {
-    SieveAbstractElement.call(this, docshell, id);	
-  }
-  
-  SieveRegExMatch.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveRegExMatch.prototype.constructor = SieveRegExMatch;
-  
-  SieveRegExMatch.nodeName = function () {
-    return "match-type/regex";
-  };
-  
-  SieveRegExMatch.nodeType  = function () {
-    return "match-type/";
-  };
-  
-  SieveRegExMatch.isElement
-      = function (parser, lexer)
-  {    
-    if (parser.startsWith(":regex"))
-      return true;
+  var regex = {
+    node : "match-type/regex",
+    type : "match-type/",
     
-    return false;
-  };
-  
-  SieveRegExMatch.isCapable = function (capabilities) {
-    return (capabilities["regex"] === true);      
-  };
-  
-  SieveRegExMatch.prototype.require
-      = function (imports)
-  {
-    imports["regex"] = true;
-  };
-  
-  SieveRegExMatch.prototype.init
-      = function (parser)
-  {	
-    parser.extract(":regex");    
-    return this;
-  };
-  
-  SieveRegExMatch.prototype.toScript
-      = function ()
-  {    
-    return ":regex";
-  };
-  
-  /******************************************************************************/
-  
-  if (!SieveLexer)
-    throw "Could not register MatchTypes";
+    requires : "regex",
     
-  SieveLexer.register(SieveRegExMatch);
+    token : ":regex"
+  };
+
+  SieveGrammar.addTag( regex ); 
   
-})(window);
+})( window );

@@ -10,16 +10,16 @@
  *      
  */
 
-"use strict";
- 
 (function() {
   
+  "use strict";
+
   /* global net */
 
   var suite  = net.tschmid.yautt.test;
     
   if (!suite)
-    throw "Could not initialize test suite";
+    throw new Error( "Could not initialize test suite" );
 
   suite.add( function() {   
     suite.log("Subaddress Unit Tests...");
@@ -56,5 +56,4 @@
     suite.expectValidScript(script,{"subaddress":true, "envelope" : true, "fileinto": true} );
   });   
      
-  
 }());

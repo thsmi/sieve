@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<!--
+
+  The contents of this file are licenced. You may obtain a copy of 
+  the license at https://github.com/thsmi/sieve/ or request it via 
+  email from the author.
+ 
+  Do not remove or change this comment.
+  
+  The initial author of the code is:
+    Thomas Schmid <schmid-thomas@gmx.net>
+
+-->
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Meta Data exists test</title>
+</head>
+
+<body>
+
+    <div id="sivMailboxDialog" class="dialog">
+
+        <style>
+            @import url('./toolkit/widgets/tabDialog.css');
+        </style>
+
+        <div>
+            <!-- System -->
+            <div id="sivEditMain">
+                <!-- Appbar -->
+                <div class="dialog-header">
+                    <div class="dialog-tab">
+                        <div class="tab-active" data-tab-content="sivMailboxGeneralContent">BASIC</div>
+                        <div data-tab-content="sivMailboxHelpContent">HELP</div>
+                    </div>
+                </div>
+                <!-- content -->
+                <div class="dialog-tab-content">
+                    <!-- content for help tab -->
+                    <div id="sivMailboxHelpContent">
+                        <h1>Checks a mailbox for annotations</h1>
+                        <p>
+                            The test return true if all of the annotations exist (i.e., have non-NIL values) for the specified mailbox.
+                        </p>
+                    </div>
+
+                    <!-- content for general tab -->
+                    <div id="sivMailboxGeneralContent" class="tab-active">
+                        <h1>The mailbox (folder) ...</h1>
+                        <input id="sivMailboxName" type="text"></input>
+
+                        <h1>... has all of the following annotations:</h1>
+                        <div id="sivMailboxAnnotationsList" data-list-new="#sivMailboxAnnotationsListAdd" data-list-items="#sivMailboxAnnotationsListItems"
+                            data-list-template="#sivMailboxAnnotationsListTemplate" data-list-min="1">
+
+                            <div id="sivMailboxAnnotationsListTemplate" style="display:none">
+                                <div>
+                                    <input type="text" />
+                                    <button>remove</button>
+                                </div>
+                            </div>
+                            <div id="sivMailboxAnnotationsListItems">
+                                <div>
+                                    <button id="sivMailboxAnnotationsListAdd">add</button>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

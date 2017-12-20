@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+<!--
+
+  The contents of this file are licenced. You may obtain a copy of 
+  the license at https://github.com/thsmi/sieve/ or request it via 
+  email from the author.
+ 
+  Do not remove or change this comment.
+  
+  The initial author of the code is:
+    Thomas Schmid <schmid-thomas@gmx.net>
+
+-->
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Header Action</title>
+</head>
+
+<body>
+
+    <div id="sivDeleteHeaderDialog" class="dialog">
+        <div>
+            <!-- System -->
+            <div id="sivEditMain">
+                <!-- Appbar -->
+                <div class="dialog-header">
+                    <div class="dialog-tab">
+                        <div class="tab-active" data-tab-content="sivGeneralContent">BASIC</div>
+                        <div data-tab-content="sivAdvancedContent">ADVANCED</div>
+                        <div data-tab-content="sivHelpContent">HELP</div>
+                    </div>
+                </div>
+                <!-- content -->
+                <div class="dialog-tab-content">
+                    <!-- content for help tab -->
+                    <div id="sivHelpContent">
+                        <p>
+                            By default, the deleteheader action deletes all occurrences of the named header field. The deleteheader action does not affect
+                            Sieve's implicit keep
+                        </p>
+                        <p>
+                            The field-name is case insensitive.
+                        </p>
+                        <p>
+                            Note: The deleteheader action does not affect Sieve's implicit keep.
+                        </p>
+                        <p>
+                            Note: the header name is by definition a case insensitive 7bit US-ASCII string. Leading and tailing whitespaces are ignored.
+                            Headers with invalid names are silently ignored.
+                        </p>
+                    </div>
+
+                    <!-- content for general tab -->
+                    <div id="sivGeneralContent" class="tab-active">
+                        <h1>Delete ...</h1>
+                        <label><input type="radio" name="last" value="false">... all ...</label><br/>
+                        <label><input type="radio" name="last" value="true" >... the first <input type="number" id="sivDeleteHeaderFirstIndex"></input></label><br/>
+                        <label><input type="radio" name="last" value="true" >... the last <input type="number" id="sivDeleteHeaderLastIndex"></input></label><br/>
+
+                        <h1>... headers named ...</h1>
+                        <input type="text" id="sivDeleteHeaderName"></input>
+                        <h1>... with ...</h1>
+                        <label><input type="radio" name="last" value="false">... any value</label><br/>
+                        <label><input type="radio" name="last" value="true">... one of the following values which ... </label>
+
+                        <div id="sivDeleteHeaderMatchTypes"> </div>
+
+                        <h1>... any of the keyword(s):</h1>
+                        <div id="sivHeaderKeyList" data-list-new="#sivHeaderKeyListAdd" data-list-items="#sivHeaderKeyListItems" data-list-template="#sivHeaderKeyListTemplate"
+                            data-list-min="1">
+
+                            <div id="sivHeaderKeyListTemplate" style="display:none">
+                                <div>
+                                    <input type="text" />
+                                    <button>remove</button>
+                                </div>
+                            </div>
+                            <div id="sivHeaderKeyListItems">
+                                <div>
+                                    <button id="sivHeaderKeyListAdd">add</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- content for advanced tab -->
+                <div id="sivAdvancedContent">
+                    <div id="sivDeleteHeaderComparator"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

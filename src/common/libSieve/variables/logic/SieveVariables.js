@@ -9,709 +9,202 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  *      
  */
- 
+
 /* global window */
- 
-"use strict";
- 
-(function(exports) {
-
-  /* global SieveLexer */
-  /* global SieveAbstractElement */
- 
- 
-//   Usage:  ":lower" / ":upper" / ":lowerfirst" / ":upperfirst" /
-//           ":quotewildcard" / ":length"
- 
-// set [MODIFIER] <name: string> <value: string>
-
-
-/**
- * The "set" action stores the specified value in the variable identified by name.  
- * The name MUST be a constant string and conform to the syntax of variable-name.  
- * Match variables cannot be set.  A namespace cannot be used unless an extension 
- * explicitly allows its use in "set". An invalid name MUST be detected as a syntax error.
- *
- * Variable names are case insensitive.
- * 
- * Syntax:  set [MODIFIER] <name: string> <value: string>
- * 
- * @param {} docshell
- * @param {} id
- */
-function SieveSetAction(docshell,id) 
-{
-  SieveAbstractElement.call(this,docshell,id); 
-  
-  this.items = [];
-  
-  this.items[0] = this._createByName("whitespace"," ");  
-  this.items[1] = this._createByName("modifier","");
-  this.items[2] = this._createByName("string","\"variable\"");
-  this.items[3] = this._createByName("whitespace"," ");
-  this.items[4] = this._createByName("string","\"\""); 
-  this.items[5] = this._createByName("atom/semicolon");
-}
-
-SieveSetAction.prototype = Object.create(SieveAbstractElement.prototype);
-SieveSetAction.prototype.constructor = SieveSetAction;
-
-SieveSetAction.isElement
-    = function (parser, lexer)
-{
-  return parser.startsWith("set");
-};
-    
-SieveSetAction.isCapable = function (capabilities) {
-  return (capabilities["variables"] === true);      
-};
-
-SieveSetAction.prototype.require
-    = function (imports)
-{
-  imports["variables"] = true;
-};
-
-SieveSetAction.nodeName = function () {
-  return "action/setvariable";
-};
-
-SieveSetAction.nodeType  = function () {
-  return "action";
-};
-
-SieveSetAction.prototype.init
-    = function (parser)
-{  
-  parser.extract("set");
-    
-  // ... eat the deadcode before the modifier...
-  this.items[0].init(parser);
-      
-  // the optional modifier
-  this.items[1].init(parser);
-    
-  // the name
-  this.items[2].init(parser);
-  
-  // the separating whitespace
-  this.items[3].init(parser);
-  
-  // the value
-  this.items[4].init(parser);
-  
-  // semicolon
-  this.items[5].init(parser);
-    
-  return this;
-};
-
-
-SieveSetAction.prototype.toScript
-    = function ()
-{
-  var result = "set";
-  
-  this.items.forEach( function(element, index, array) {
-  	if (element)
-  	  result += element.toScript();
-  });  
-  
-  return result;
-};
-
-
-SieveSetAction.prototype.modifiers
-    = function ()
-{
-  return this.items[1];
-};
-
-SieveSetAction.prototype.name
-    = function (name)
-{
-	if (typeof(name) === "undefined")
-	  return this.items[2].value();
-	
-  return this.items[2].value(name);
-};
-
-SieveSetAction.prototype.value
-    = function (value)
-{
-  if (typeof(value) === "undefined")
-    return this.items[4].value();	
-	
-  return this.items[4].value(value);
-};
-
-
-
-/******************************************************************************/
-
-
-
-/**
- *
- *    Usage:  string [MATCH-TYPE] [COMPARATOR]
-           <source: string-list> <key-list: string-list>
- */ 
-function SieveStringTest(docshell,id)
-{
-  SieveAbstractElement.call(this,docshell,id); 
-
-  this.items = [];
- 
-  this.items[0] = this._createByName("whitespace", " ");
-  // Matchtype
-  this.items[1] = this._createByName("match-type");
-  this.items[2] = this._createByName("whitespace", " ");
-  // Comparator
-  this.items[3] = this._createByName("comparator");    
-  this.items[4] = this._createByName("whitespace", " ");
-  // Source
-  this.items[5] = this._createByName("stringlist");
-  this.items[6] = this._createByName("whitespace", " ");
-  // key list
-  this.items[7] = this._createByName("stringlist");
-  
-}
-
-SieveStringTest.prototype = Object.create(SieveAbstractElement.prototype);
-SieveStringTest.prototype.constructor = SieveStringTest;
-
-SieveStringTest.isElement
-  = function(parser, lexer)
-{ 
-  return parser.startsWith("string");
-};
-
-SieveStringTest.isCapable
-    = function (capabilities)
-{
-  return (capabilities["variables"] === true);      
-};
-
-SieveStringTest.prototype.require
-    = function (imports)
-{
-  imports["variables"] = true;
-  
-  if (this.items[1])
-    this.items[1].require(imports);
-};
-
-SieveStringTest.nodeName = function () {
-  return "test/string";
-};
-
-SieveStringTest.nodeType  = function () {
-  return "test";
-};
-
-SieveStringTest.prototype.init
-    = function (parser)
-{
-  parser.extract("string");
-  
-  this.items[0].init(parser);
-  
-  // match-types
-  if (this._probeByName("match-type",parser))
-  {
-    this.items[1] = this._createByName("match-type",parser);    
-    this.items[2].init(parser);
-  }
-
-  // Comparator
-  if (this._probeByName("comparator",parser))
-  {
-    this.items[3] = this._createByName("comparator");    
-    this.items[4].init(parser);  	
-  }
-
-  // Source
-  this.items[5].init(parser);
-  this.items[6].init(parser);
-  
-  // Keylist
-  this.items[7].init(parser);
-  
-  return this;
-};   
-
-
-SieveStringTest.prototype.comparator
-    = function ()
-{
-  return this.items[3];
-};
-
-SieveStringTest.prototype.matchType
-    = function ()
-{
-	return this.items[1];	
-};
-
-SieveStringTest.prototype.source
-    = function () 
-{
-	return this.items[5];
-};
-
-SieveStringTest.prototype.keyList
-    = function () 
-{
-	return this.items[7];  
-};
-
-SieveStringTest.prototype.toScript
-    = function ()
-{
-	var result = "string";
-	
-	result += this.items[0].toScript();
-	
-	if (!this.items[1].isOptional()) {
-		result += this.items[1].toScript();
-		result += this.items[2].toScript();
-	}
-	
-	if (!this.items[3].isOptional()) {
-		result += this.items[3].toScript();
-		result += this.items[4].toScript();
-	}
-	
-	result += this.items[5].toScript();
-	result += this.items[6].toScript();
-	
-	result += this.items[7].toScript();
-
-	return result;
-};
-
-
-//*******************************************************************//
-
-function SieveLowerModifier(docshell, id) {
-  SieveAbstractElement.call(this, docshell, id);
-}
-
-SieveLowerModifier.prototype = Object.create(SieveAbstractElement.prototype);
-SieveLowerModifier.prototype.constructor = SieveLowerModifier;
-
-SieveLowerModifier.nodeName = function () {
-  return "modifier/:lower";
-};
-
-SieveLowerModifier.nodeType  = function () {
-  return "modifier/";
-};
-
-SieveLowerModifier.isElement
-    = function (parser, lexer)
-{    
-
-  if (parser.startsWith(":lower"))
-    return true;
-  
-  return false;
-};
-
-SieveLowerModifier.prototype.getPrecedence
-    = function ()
-{
-  return 40;
-};
-
-SieveLowerModifier.prototype.init
-    = function (parser)
-{	
-  parser.extract(":lower");    
-  return this;
-};
-
-SieveLowerModifier.prototype.toScript
-    = function ()
-{    
-  return ":lower";
-};
-
-//*******************************************************************//
-
-function SieveUpperModifier(docshell, id) {
-  SieveAbstractElement.call(this, docshell, id);
-}
-
-SieveUpperModifier.prototype = Object.create(SieveAbstractElement.prototype);
-SieveUpperModifier.prototype.constructor = SieveUpperModifier;
-
-SieveUpperModifier.nodeName = function () {
-  return "modifier/:upper";
-};
-
-SieveUpperModifier.nodeType  = function () {
-  return "modifier/";
-};
-
-SieveUpperModifier.isElement
-    = function (parser, lexer)
-{    
-
-  if (parser.startsWith(":upper"))
-    return true;
-  
-  return false;
-};
-
-SieveUpperModifier.prototype.getPrecedence
-    = function ()
-{
-  return 40;
-};
-
-SieveUpperModifier.prototype.init
-    = function (parser)
-{	
-  parser.extract(":upper");    
-  return this;
-};
-
-SieveUpperModifier.prototype.toScript
-    = function ()
-{    
-  return ":upper";
-};
-
-//*******************************************************************//
-
-function SieveLowerFirstModifier(docshell, id) {
-  SieveAbstractElement.call(this, docshell, id);
-}
-
-SieveLowerFirstModifier.prototype = Object.create(SieveAbstractElement.prototype);
-SieveLowerFirstModifier.prototype.constructor = SieveLowerFirstModifier;
-
-SieveLowerFirstModifier.nodeName = function () {
-  return "modifier/:lowerfirst";
-};
-
-SieveLowerFirstModifier.nodeType  = function () {
-  return "modifier/";
-};
-
-SieveLowerFirstModifier.isElement
-    = function (parser, lexer)
-{    
-
-  if (parser.startsWith(":lowerfirst"))
-    return true;
-  
-  return false;
-};
-
-SieveLowerFirstModifier.prototype.getPrecedence
-    = function ()
-{
-  return 30;
-};
-
-SieveLowerFirstModifier.prototype.init
-    = function (parser)
-{	
-  parser.extract(":lowerfirst");    
-  return this;
-};
-
-SieveLowerFirstModifier.prototype.toScript
-    = function ()
-{    
-  return ":lowerfirst";
-};
-
-//*******************************************************************//
-
-function SieveUpperFirstModifier(docshell, id) {
-  SieveAbstractElement.call(this, docshell, id);
-}
-
-SieveUpperFirstModifier.prototype = Object.create(SieveAbstractElement.prototype);
-SieveUpperFirstModifier.prototype.constructor = SieveUpperFirstModifier;
-
-SieveUpperFirstModifier.nodeName = function () {
-  return "modifier/:upperfirst";
-};
-
-SieveUpperFirstModifier.nodeType  = function () {
-  return "modifier/";
-};
-
-SieveUpperFirstModifier.isElement
-    = function (parser, lexer)
-{    
-
-  if (parser.startsWith(":upperfirst"))
-    return true;
-  
-  return false;
-};
-
-SieveUpperFirstModifier.prototype.getPrecedence
-    = function ()
-{
-  return 30;
-};
-
-
-SieveUpperFirstModifier.prototype.init
-    = function (parser)
-{	
-  parser.extract(":upperfirst");    
-  return this;
-};
-
-SieveUpperFirstModifier.prototype.toScript
-    = function ()
-{    
-  return ":upperfirst";
-};
-
-//*******************************************************************//
-
-function SieveQuoteWildcardModifier(docshell, id) {
-  SieveAbstractElement.call(this, docshell, id);
-}
-
-SieveQuoteWildcardModifier.prototype = Object.create(SieveAbstractElement.prototype);
-SieveQuoteWildcardModifier.prototype.constructor = SieveQuoteWildcardModifier;
-
-SieveQuoteWildcardModifier.nodeName = function () {
-  return "modifier/:quotewildcard";
-};
-
-SieveQuoteWildcardModifier.nodeType  = function () {
-  return "modifier/";
-};
-
-SieveQuoteWildcardModifier.isElement
-    = function (parser, lexer)
-{    
-
-  if (parser.startsWith(":quotewildcard"))
-    return true;
-  
-  return false;
-};
-
-SieveQuoteWildcardModifier.prototype.getPrecedence
-    = function ()
-{
-  return 20;
-};
-
-SieveQuoteWildcardModifier.prototype.init
-    = function (parser)
-{	
-  parser.extract(":quotewildcard");    
-  return this;
-};
-
-SieveQuoteWildcardModifier.prototype.toScript
-    = function ()
-{    
-  return ":quotewildcard";
-};
-
-
-
-//*******************************************************************//
-
-function SieveLengthModifier(docshell, id) {
-  SieveAbstractElement.call(this, docshell, id);
-}
-
-SieveLengthModifier.prototype = Object.create(SieveAbstractElement.prototype);
-SieveLengthModifier.prototype.constructor = SieveLengthModifier;
-
-SieveLengthModifier.nodeName = function () {
-  return "modifier/:length";
-};
-
-SieveLengthModifier.nodeType  = function () {
-  return "modifier/";
-};
-
-SieveLengthModifier.isElement
-    = function (parser, lexer)
-{    
-
-  if (parser.startsWith(":length"))
-    return true;
-  
-  return false;
-};
-
-SieveLengthModifier.prototype.getPrecedence
-    = function ()
-{
-  return 10;
-};
-
-SieveLengthModifier.prototype.init
-    = function (parser)
-{	
-  parser.extract(":length");    
-  return this;
-};
-
-SieveLengthModifier.prototype.toScript
-    = function ()
-{    
-  return ":length";
-};
-
-/******************************************************************************/
-
-function SieveModifierList(docshell,id)
-{
-  SieveAbstractElement.call(this,docshell,id);
-  this.modifiers = [];
-}
-
-SieveModifierList.prototype = Object.create(SieveAbstractElement.prototype);
-SieveModifierList.prototype.constructor = SieveModifierList;
-
-SieveModifierList.isElement
-   = function (parser, lexer)
-{
-  return lexer.probeByClass(["modifier/"],parser);
-};
-
-SieveModifierList.nodeName = function () {
-  return "modifier";
-};
-
-SieveModifierList.nodeType  = function () {
-  return "modifier";
-};
-
-SieveModifierList.prototype.init
-    = function (parser)
-{   
-  this.modifiers = {};
-  
-  while (this._probeByClass("modifier/", parser)) {
-  	this.setItem(
-  	        this._createByClass("modifier/", parser),
-  	        this._createByName("whitespace", parser));
-  }
-   
-  return this;
-};
-
-
-
-/**
- * Removes an item by the precedence...
- * @param {} precedence
- */
-SieveModifierList.prototype.removeItem 
-    = function (item)
-{
-    
-  // In case it's a modifier we need to get the precedence
-  if (item.getPrecedence)
-    item = item.getPrecedence();
-	
-  // In case no element exists we are fine
-  if (!this.modifiers[item])
-    return;
-	
-  // oterhwise we get rid of it.
-  delete this.modifiers[item];
-};
-
-/**
- * Adds or replaces a modifier. In case a modifier with the same precedence 
- * exists it will be overwritten otherwise it will be added
- */
-
-SieveModifierList.prototype.getItem
-    = function (item)
-{    
-	// the getter...
-    if (this.modifiers[item] && this.modifiers[item].modifier)
-      return this.modifiers[item].modifier;
-    
-    return null;    
-};
-
-SieveModifierList.prototype.setItem
-    = function (item, whitespace)
-{	
-	// the setter logic
-  if (typeof(item) === "string")
-    item = this._createByClass("modifier/", item);
-
-  // A modifier has to have a precedence...
-  if (!item.getPrecedence)
-    throw "Not a valid modifier";
-    
-  var pred = item.getPrecedence();
-  // Replace the existing modifier
-  if (!this.modifiers[pred])
-    this.modifiers[pred] = {};
-    
-  this.modifiers[pred].modifier = item;
-  
-  if (!whitespace && !this.modifiers[pred].whitespace)
-    whitespace = this._createByName("whitespace", " ");
-  
-  if (whitespace)
-    this.modifiers[pred].whitespace = whitespace;
-	
-};
-
-
-SieveModifierList.prototype.toScript
-    = function()
-{
-  var result = "";
-  
-  for (var item in this.modifiers) {
-  	  result += this.modifiers[item].modifier.toScript();
-  	  result += this.modifiers[item].whitespace.toScript();
-  }
-    
-  return result;  
-};
-
-SieveModifierList.prototype.require
-    = function (imports)
-{
-  this.modifiers.forEach( function(element, index, array) {
-  	element.modifier.require(imports);
-  });
-};
-
-
-  
-  if (!SieveLexer)
-    throw "Could not register variables extension";
-  
-  SieveLexer.register(SieveSetAction);
-  
-  SieveLexer.register(SieveStringTest);
-  
-  // The order matters here, first the longer strings then the shorter.
-  // Otherwise Lower will match before lowerfirst.
-  SieveLexer.register(SieveLowerFirstModifier);
-  SieveLexer.register(SieveUpperFirstModifier);
-  SieveLexer.register(SieveLowerModifier);
-  SieveLexer.register(SieveUpperModifier);
-  SieveLexer.register(SieveQuoteWildcardModifier);
-  SieveLexer.register(SieveLengthModifier);
-  
-  SieveLexer.register(SieveModifierList);
-   
-})(window);
+
+( function ( /*exports*/ ) {
+
+  "use strict";
+  /* global SieveGrammar */
+
+  if ( !SieveGrammar )
+    throw new Error( "Could not register Variables" );
+
+  // set [MODIFIER] <name: string> <value: string>
+  var _set = {
+    node: "action/set",
+    type: "action",
+
+    requires: "variables",
+
+    token: "set",
+
+    properties: [{
+      id: "tags",
+      optional: true,
+
+      elements: [{
+        id: "modifier/10",
+        type: "modifier/10"
+      }, {
+        id: "modifier/20",
+        type: "modifier/20"
+      }, {
+        id: "modifier/30",
+        type: "modifier/30"
+      }, {
+        id: "modifier/40",
+        type: "modifier/40"
+      }]
+    }, {
+      id: "parameters",
+
+      elements: [{
+        id: "name",
+        type: "string",
+        value: "\"variable\""
+      }, {
+        id: "value",
+        type: "string",
+        value: '""'
+      }]
+    }]
+
+  };
+
+  SieveGrammar.addAction( _set );
+
+  //    Usage:  string [MATCH-TYPE] [COMPARATOR]
+  //           <source: string-list> <key-list: string-list>  
+
+  var _string = {
+    node: "test/string",
+    type: "test",
+
+    requires: "variables",
+
+    token: "string",
+
+    properties: [{
+      id: "tags",
+      optional: true,
+
+      elements: [{
+        id: "match-type",
+        type: "match-type"
+      }, {
+        id: "comparator",
+        type: "comparator"
+      }],
+    }, {
+      id: "parameters",
+
+      elements: [{
+        id: "sources",
+        type: "stringlist"
+      }, {
+        id: "keys",
+        type: "stringlist"
+      }]
+    }]
+  };
+
+  SieveGrammar.addTest( _string );
+
+
+  var _lower = {
+    node: "modifier/40/lower",
+    type: "modifier/40/",
+
+    requires: "variables",
+
+    token: ":lower"
+  };
+  SieveGrammar.addTag( _lower );
+
+  var _upper = {
+    node: "modifier/40/upper",
+    type: "modifier/40/",
+
+    requires: "variables",
+
+    token: ":upper"
+  };
+  SieveGrammar.addTag( _upper );
+
+  var _modifier40 = {
+    node: "modifier/40",
+    type: "modifier/",
+
+    items: ["modifier/40/"]
+  };
+
+  SieveGrammar.addGroup( _modifier40 );
+
+
+  var _lowerfirst = {
+    node: "modifier/30/lowerfirst",
+    type: "modifier/30/",
+
+    requires: "variables",
+
+    token: ":lowerfirst"
+  };
+  SieveGrammar.addTag( _lowerfirst );
+
+  var _upperfirst = {
+    node: "modifier/30/upperfirst",
+    type: "modifier/30/",
+
+    requires: "variables",
+
+    token: ":upperfirst"
+  };
+  SieveGrammar.addTag( _upperfirst );
+
+  var _modifier30 = {
+    node: "modifier/30",
+    type: "modifier/",
+
+    items: ["modifier/30/"]
+  };
+
+  SieveGrammar.addGroup( _modifier30 );
+
+  var _quote = {
+    node: "modifier/20/quotewildcard",
+    type: "modifier/20/",
+
+    requires: "variables",
+
+    token: ":quotewildcard"
+  };
+  SieveGrammar.addTag( _quote );
+
+  var _modifier20 = {
+    node: "modifier/20",
+    type: "modifier/",
+
+    items: ["modifier/20/"]
+  };
+  SieveGrammar.addGroup( _modifier20 );
+
+
+  var _length = {
+    node: "modifier/10/length",
+    type: "modifier/10/",
+
+    requires: "variables",
+
+    token: ":length"
+  };
+  SieveGrammar.addTag( _length );
+
+  var _modifier10 = {
+    node: "modifier/10",
+    type: "modifier/",
+
+    items: ["modifier/10/"]
+  };
+  SieveGrammar.addGroup( _modifier10 );
+
+  var _modifier = {
+    node: "modifier",
+    type: "modifier",
+
+    items: ["modifier/"]
+  };
+  SieveGrammar.addGroup( _modifier );
+
+
+})( window );

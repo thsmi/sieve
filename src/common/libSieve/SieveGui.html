@@ -5,6 +5,7 @@
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
   <link rel="stylesheet" href="toolkit/style/layout.css" type="text/css" />
   <link rel="stylesheet" href="toolkit/style/style.css" type="text/css" />
+  <link rel="stylesheet" href="toolkit/widgets/tabDialog.css" type="text/css" />
 
   <!-- Global Imports -->
   <script type="application/javascript" src="./../jQuery/jquery.min.js"></script>
@@ -25,12 +26,14 @@
 
 
   <!-- logic related Imports -->
+  <script type="application/javascript" src="toolkit/logic/GenericElement.js"></script>
   <!-- RFC 5228 - Sieve -->
   <script type="application/javascript" src="RFC5228/logic/SieveWhiteSpaces.js" ></script>
   <script type="application/javascript" src="RFC5228/logic/SieveStrings.js" ></script>
   <script type="application/javascript" src="RFC5228/logic/SieveNumbers.js" ></script>
   <script type="application/javascript" src="RFC5228/logic/SieveMatchTypes.js" ></script>
   <script type="application/javascript" src="RFC5228/logic/SieveAddressParts.js" ></script>
+  <script type="application/javascript" src="RFC5228/logic/SieveComparators.js" ></script>
   <script type="application/javascript" src="RFC5228/logic/SieveBlocks.js"></script>
   <script type="application/javascript" src="RFC5228/logic/SieveTests.js"></script>
   <script type="application/javascript" src="RFC5228/logic/SieveOperators.js"></script>
@@ -40,7 +43,7 @@
   <script type="application/javascript" src="RFC5228/logic/SieveImports.js"></script>
 
   <!-- RFC 5232 - ImapFlags-->
-  <script type="application/javascript" src="RFC5232/logic/SieveImapFlags.js"></script>
+  <script type="application/javascript" src="imapflags/logic/SieveImapFlags.js"></script>
 
     <!-- UI related Imports -->
   <!-- RFC 5228 - Sieve -->
@@ -49,6 +52,7 @@
   <script type="application/javascript" src="RFC5228/widgets/SieveBlocksUI.js"></script>
   <script type="application/javascript" src="RFC5228/widgets/SieveMatchTypesUI.js" ></script>
   <script type="application/javascript" src="RFC5228/widgets/SieveAddressPartUI.js" ></script>
+  <script type="application/javascript" src="RFC5228/widgets/SieveComparatorsUI.js" ></script> 
   <script type="application/javascript" src="RFC5228/widgets/SieveTestsUI.js" ></script>
   <script type="application/javascript" src="RFC5228/widgets/SieveOperatorsUI.js"></script>
   <script type="application/javascript" src="RFC5228/widgets/SieveConditionsUI.js"></script>
@@ -59,7 +63,7 @@
   <script type="application/javascript" src="reject/logic/SieveReject.js"></script>
 
   <!-- RFC 5232 - ImapFlags-->
-  <script type="application/javascript" src="RFC5232/widgets/SieveImapFlagsUI.js"></script>
+  <script type="application/javascript" src="imapflags/widgets/SieveImapFlagsUI.js"></script> 
 
   <!-- RFC Draft for RegEx-->
   <script type="application/javascript" src="regex/logic/SieveRegularExpression.js" ></script>
@@ -88,6 +92,14 @@
   <!-- RFC5490 - Mailbox -->
   <script type="application/javascript" src="mailbox/logic/SieveMailbox.js" ></script>
   <script type="application/javascript" src="mailbox/widgets/SieveMailboxUI.js" ></script>
+   
+  <!-- RFC55293 - Editheader -->
+  <script type="application/javascript" src="editheader/logic/SieveEditheader.js" ></script>
+  <script type="application/javascript" src="editheader/widgets/SieveEditheaderUI.js" ></script>
+
+  <!-- RFC3894 - Copy -->
+  <script type="application/javascript" src="copy/logic/SieveCopy.js" ></script>
+  <script type="application/javascript" src="copy/widgets/SieveCopyUI.js" ></script>
 
 </head>
 <body>
@@ -142,26 +154,32 @@
   <div id="CapabilityOverlay"></div>
 
   <div id="CapabilitiesDialog">
-    <div><input type="checkbox" name="capabilities" value="imap4flags" checked>imap4flags</div>
+    <div><input type="checkbox" name="capabilities" value="comparator-i;ascii-numeric" checked>comparator-i;ascii-numeric (RFC5228)</div>
+    <div><input type="checkbox" name="capabilities" value="envelope" checked>envelope (RFC5228)</div>
+    <div><input type="checkbox" name="capabilities" value="fileinto" checked>fileinto (RFC 5228)</div>
 
-    <div><input type="checkbox" name="capabilities" value="fileinto" checked>fileinto</div>
+    <div><input type="checkbox" name="capabilities" value="imap4flags" checked>imap4flags (RFC 5232)</div>
 
     <div><input type="checkbox" name="capabilities" value="reject" checked>reject (RFC5429)</div>
     <div><input type="checkbox" name="capabilities" value="ereject" checked>ereject (RFC5429)</div>
 
-    <div><input type="checkbox" name="capabilities" value="envelope" checked>envelope</div>
     <div><input type="checkbox" name="capabilities" value="regex" checked>regex</div>
 
   	<div><input type="checkbox" name="capabilities" value="body" checked>body (RFC5173)</div>
-  	<div><input type="checkbox" name="capabilities" value="vacation" checked>vacation</div>
+  	<div><input type="checkbox" name="capabilities" value="vacation" checked>vacation (RFC5230)</div>
   	<div><input type="checkbox" name="capabilities" value="variables" checked>variables (RFC5229)</div>
   	<div><input type="checkbox" name="capabilities" value="include" checked>include (RFC6609)</div>
 
     <div><input type="checkbox" name="capabilities" value="mailbox" checked>mailbox (RFC5490)</div>
     <div><input type="checkbox" name="capabilities" value="mboxmetadata" checked>mboxmetadata (RFC5490)</div>
+    <div><input type="checkbox" name="capabilities" value="servermetadata" checked>servermetadata (RFC5490)</div>
 
     <div><input type="checkbox" name="capabilities" value="subaddress" checked>subaddress (RFC5233)</div>
 
+    <div><input type="checkbox" name="capabilities" value="copy" checked>copy (RFC3894)</div>
+
+    <div><input type="checkbox" name="capabilities" value="editheader" checked>editheader (RFC5293)</div>
+	   
 	  <div>
 	    <button id="CapabilitiesApply">Apply</button>
 	    <button id="CapabilitiesAll">Select All</button>
@@ -183,7 +201,7 @@
   <button id="DebugCompact">
 	  Compact
 	</button>
-  <button id="DebugCapabilities"">
+  <button id="DebugCapabilities">
 	  Set Capabilities
 	</button>
   <button id="DebugToggle">

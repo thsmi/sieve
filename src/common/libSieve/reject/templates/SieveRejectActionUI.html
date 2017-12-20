@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<!--
+
+  The contents of this file are licenced. You may obtain a copy of 
+  the license at https://github.com/thsmi/sieve/ or request it via 
+  email from the author.
+ 
+  Do not remove or change this comment.
+  
+  The initial author of the code is:
+    Thomas Schmid <schmid-thomas@gmx.net>
+
+-->
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Extended Reject Action</title>
+</head>
+
+<body>
+    <div id="sivDialogReject" class="dialog">
+        <style>
+            @import url('./toolkit/widgets/tabDialog.css');
+            /* Style the existing elements */
+            
+            #sivRejectGeneralContent textarea {
+                width: 100%;
+                height: 100px;
+            }
+        </style>
+
+        <div>
+            <!-- System -->
+            <div id="sivEditMain">
+                <!-- Appbar -->
+                <div class="dialog-header">
+                    <div class="dialog-tab">
+                        <div class="tab-active" data-tab-content="sivRejectGeneralContent">BASIC</div>
+                        <div data-tab-content="sivRejectHelpContent">HELP</div>
+                    </div>
+                </div>
+                <!-- content -->
+                <div class="dialog-tab-content">
+                    <!-- content for help tab -->
+                    <div id="sivRejectHelpContent">
+                        <p> </p>
+                    </div>
+
+                    <!-- content for general tab -->
+                    <div id="sivRejectGeneralContent" class="tab-active">
+                        <h1>Notice</h1>
+                        <div>
+                            Reject is replaced by the ereject and should not be used anymore, because it is unsafe. The ereject action is similar to
+                            reject, but will always favor protocol-level message rejection.
+                        </div>
+                        <h1>Reject incomming messages and reply the following reason:</h1>
+                        <textarea type="text" id="sivRejectReason"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

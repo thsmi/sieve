@@ -10,16 +10,15 @@
  *      
  */
 
-"use strict";
- 
 (function() {
 	
+  "use strict";
 	/* global net */
 
   var suite  = net.tschmid.yautt.test;
     
   if (!suite)
-    throw "Could not initialize test suite";
+    throw new Error( "Could not initialize test suite" );
 
   suite.add( function() {  	
   	suite.log("Vacation Unit Tests...");
@@ -177,4 +176,176 @@
     suite.expectValidScript(script,{"vacation":true} );
   });  
   
+  suite.add( function () {
+    suite.log( "Manipulate Vacation Element - No values set - Set all values" );
+
+    var script =
+      'require "vacation";\r\n'
+      + 'vacation\r\n'
+      + '         "Having lots of fun! Back in a day or two!";\r\n';
+
+    var doc = suite.parseScript( script, { "vacation": true });
+
+    var elms = doc.queryElements( "action/vacation" );
+
+    suite.assertEquals( 1, elms.length, "Invalid number of vacation elements" );
+
+    suite.assertEquals( 'Having lots of fun! Back in a day or two!', elms[0].getElement( "reason" ).value() );
+
+    suite.assertEquals( '', elms[0].getElement( "subject" ).getElement( "subject" ).value() );
+    suite.assertEquals( false, elms[0].enable( "subject" ) );
+
+    suite.assertEquals( '', elms[0].getElement( "from" ).getElement( "from" ).value() );
+    suite.assertEquals( false, elms[0].enable( "from" ) );
+
+    suite.assertEquals( "7", elms[0].getElement( "days" ).getElement( "days" ).value() );
+    suite.assertEquals( false, elms[0].enable( "days" ) );
+
+    suite.assertEquals( '', elms[0].getElement( "handle" ).getElement( "handle" ).value() );
+    suite.assertEquals( false, elms[0].enable( "handle" ) );
+
+    suite.assertEquals( false, elms[0].enable( "mime" ) );
+
+    //TODO Test and change the addresses
+    elms[0].getElement( "reason" ).value( "some reason" );
+
+    elms[0].getElement( "subject" ).getElement( "subject" ).value( "some subject" );
+    elms[0].enable( "subject", true );
+
+    elms[0].getElement( "from" ).getElement( "from" ).value( "some from" );
+    elms[0].enable( "from", true );
+
+    elms[0].getElement( "days" ).getElement( "days" ).value( 12 );
+    elms[0].enable( "days", true );
+
+    elms[0].getElement( "handle" ).getElement( "handle" ).value( "some handle" );
+    elms[0].enable( "handle", true );
+
+    elms[0].enable( "mime", true );
+
+
+    var rv =
+      'require "vacation";\r\n'
+      + 'vacation :subject "some subject" :from "some from" :days 12 :handle "some handle" :mime\r\n'
+      + '         "some reason";\r\n';
+
+    suite.validateDocument( doc, rv, { "vacation": true });
+
+    //elms[0].getElement( "addresses" ).getElement( "addresses" );
+  });
+
+
+  suite.add( function () {
+    suite.log( "Manipulate Vacation Element - All values set - Change all values" );
+
+    var script =
+      'require "vacation";\r\n'
+      + 'vacation :subject "Gone fishing"\r\n'
+      + '         :from "myfallbackaddress@example.edu"\r\n'
+      + '         :days 14\r\n'
+      + '         :handle "some handle"\r\n'
+      + '         :mime\r\n'
+      + '         "Having lots of fun! Back in a day or two!";\r\n';
+
+    var doc = suite.parseScript( script, { "vacation": true });
+
+    var elms = doc.queryElements( "action/vacation" );
+
+    suite.assertEquals( 1, elms.length, "Invalid number of vacation elements" );
+
+    suite.assertEquals( 'Having lots of fun! Back in a day or two!', elms[0].getElement( "reason" ).value() );
+
+    suite.assertEquals( 'Gone fishing', elms[0].getElement( "subject" ).getElement( "subject" ).value() );
+    suite.assertEquals( true, elms[0].enable( "subject" ) );
+
+    suite.assertEquals( 'myfallbackaddress@example.edu', elms[0].getElement( "from" ).getElement( "from" ).value() );
+    suite.assertEquals( true, elms[0].enable( "from" ) );
+
+    suite.assertEquals( "14", elms[0].getElement( "days" ).getElement( "days" ).value() );
+    suite.assertEquals( true, elms[0].enable( "days" ) );
+
+    suite.assertEquals( 'some handle', elms[0].getElement( "handle" ).getElement( "handle" ).value() );
+    suite.assertEquals( true, elms[0].enable( "handle" ) );
+
+    suite.assertEquals( true, elms[0].enable( "mime" ) );
+
+    //TODO Test and change the addresses
+    elms[0].getElement( "reason" ).value( "some other reason" );
+    elms[0].getElement( "subject" ).getElement( "subject" ).value( "some other subject" );
+    elms[0].getElement( "from" ).getElement( "from" ).value( "some other from" );
+    elms[0].getElement( "days" ).getElement( "days" ).value( 12 );
+    elms[0].getElement( "handle" ).getElement( "handle" ).value( "some other handle" );
+
+
+    var rv =
+      'require "vacation";\r\n'
+      + 'vacation :subject "some other subject"\r\n'
+      + '         :from "some other from"\r\n'
+      + '         :days 12\r\n'
+      + '         :handle "some other handle"\r\n'
+      + '         :mime\r\n'
+      + '         "some other reason";\r\n';
+    
+    suite.validateDocument( doc, rv, { "vacation": true });
+
+    //elms[0].getElement( "addresses" ).getElement( "addresses" );
+  });
+
+  suite.add( function () {
+    suite.log( "Manipulate Vacation Element - All values set - Remove all values" );
+
+    var script =
+      'require "vacation";\r\n'
+      + 'vacation :subject "Gone fishing"\r\n'
+      + '         :from "myfallbackaddress@example.edu"\r\n'
+      + '         :days 14\r\n'
+      + '         :handle "some handle"\r\n'
+      + '         :mime\r\n'
+      + '         "Having lots of fun! Back in a day or two!";\r\n';
+
+    var doc = suite.parseScript( script, { "vacation": true });
+
+    var elms = doc.queryElements( "action/vacation" );
+
+    suite.assertEquals( 1, elms.length, "Invalid number of vacation elements" );
+
+    suite.assertEquals( 'Having lots of fun! Back in a day or two!', elms[0].getElement( "reason" ).value() );
+
+    suite.assertEquals( 'Gone fishing', elms[0].getElement( "subject" ).getElement( "subject" ).value() );
+    suite.assertEquals( true, elms[0].enable( "subject" ) );
+
+    suite.assertEquals( 'myfallbackaddress@example.edu', elms[0].getElement( "from" ).getElement( "from" ).value() );
+    suite.assertEquals( true, elms[0].enable( "from" ) );
+
+    suite.assertEquals( "14", elms[0].getElement( "days" ).getElement( "days" ).value() );
+    suite.assertEquals( true, elms[0].enable( "days" ) );
+
+    suite.assertEquals( 'some handle', elms[0].getElement( "handle" ).getElement( "handle" ).value() );
+    suite.assertEquals( true, elms[0].enable( "handle" ) );
+
+    suite.assertEquals( true, elms[0].enable( "mime" ) );
+    
+    elms[0].enable( "subject", false );
+    elms[0].enable( "from", false );
+    elms[0].enable( "days", false );
+    elms[0].enable( "handle", false );
+    elms[0].enable( "mime", false );
+
+    var rv =
+      'require "vacation";\r\n'
+      + 'vacation\r\n'
+      + '         "Having lots of fun! Back in a day or two!";\r\n';
+    
+    suite.validateDocument( doc, rv, { "vacation": true });
+    
+  });
+
+  suite.add( function () {
+    suite.log( "Validate vacation action's constructor" );
+
+    var snipplet = 'vacation "";\r\n';
+    suite.expectValidSnipplet( "action/vacation", snipplet/*,{ "variables": true }*/);
+  });  
+
+
 }());

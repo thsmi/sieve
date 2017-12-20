@@ -10,16 +10,16 @@
  *      
  */
 
-"use strict";
-  
 (function() {
+
+  "use strict";
 
 	/* global net */
 	
   var suite  = net.tschmid.yautt.test;
     
   if (!suite)
-    throw "Could not initialize test suite";
+    throw new Error( "Could not initialize test suite" );
 
   suite.add( function() {  	
   	suite.log("Sieve Variables (RFC5229) unit tests...");
@@ -145,6 +145,154 @@
     suite.expectValidScript(script, {"variables":true});
   });  
   
+  suite.add( function () {
+
+    suite.log( "Manipulate SetVariable - No values set - Set all values (upper)" );
+
+    var script = ''
+      + 'require "variables";\r\n'
+      + 'set "b" "${a}";\r\n';
+
+    var doc = suite.parseScript( script, { "variables": true });
+
+    var elms = doc.queryElements( "action/set" );
+
+    suite.assertEquals( 1, elms.length, "Invalid number of set variable elements" );
+
+    elms[0].enable( "modifier/10", true );
+    elms[0].getElement( "modifier/10" ).setValue( ":length" );
+
+    elms[0].enable( "modifier/20", true );
+    elms[0].getElement( "modifier/20" ).setValue( ":quotewildcard" );
+
+    elms[0].enable( "modifier/30", true );
+    elms[0].getElement( "modifier/30" ).setValue( ":upperfirst" );
+
+    elms[0].enable( "modifier/40", true );
+    elms[0].getElement( "modifier/40" ).setValue( ":upper" );
+
+    var rv =
+      'require "variables";\r\n'
+      + 'set :length :quotewildcard :upperfirst :upper "b" "${a}";\r\n';
+
+    suite.validateDocument( doc, rv, { "variables": true });
+  });
+
+  suite.add( function () {
+
+    suite.log( "Manipulate SetVariable - No values set - Set all values (lower)" );
+
+    var script = ''
+      + 'require "variables";\r\n'
+      + 'set "b" "${a}";\r\n';
+
+    var doc = suite.parseScript( script, { "variables": true });
+
+    var elms = doc.queryElements( "action/set" );
+
+    suite.assertEquals( 1, elms.length, "Invalid number of set variable elements" );
+
+    elms[0].enable( "modifier/10", true );
+    elms[0].getElement( "modifier/10" ).setValue( ":length" );
+
+    elms[0].enable( "modifier/20", true );
+    elms[0].getElement( "modifier/20" ).setValue( ":quotewildcard" );
+
+    elms[0].enable( "modifier/30", true );
+    elms[0].getElement( "modifier/30" ).setValue( ":lowerfirst" );
+
+    elms[0].enable( "modifier/40", true );
+    elms[0].getElement( "modifier/40" ).setValue( ":lower" );
+
+    var rv =
+      'require "variables";\r\n'
+      + 'set :length :quotewildcard :lowerfirst :lower "b" "${a}";\r\n';
+
+    suite.validateDocument( doc, rv, { "variables": true });
+  });
+
+  suite.add( function () {
+
+    suite.log( "Manipulate SetVariable - All values set - Remove all values" );
+
+    var script = ''
+      + 'require "variables";\r\n'
+      + 'set :length :quotewildcard :lowerfirst :lower "b" "${a}";\r\n';
+
+    var doc = suite.parseScript( script, { "variables": true });
+
+    var elms = doc.queryElements( "action/set" );
+
+    suite.assertEquals( 1, elms.length, "Invalid number of set variable elements" );
+
+    elms[0].enable( "modifier/10", false );
+    elms[0].getElement( "modifier/10" ).setValue();
+
+    elms[0].enable( "modifier/20", false );
+    elms[0].getElement( "modifier/20" ).setValue();
+
+    elms[0].enable( "modifier/30", false );
+    elms[0].getElement( "modifier/30" ).setValue();
+
+    elms[0].enable( "modifier/40", false );
+    elms[0].getElement( "modifier/40" ).setValue();
+
+    elms[0].getElement( "name" ).value( "Name" );
+    elms[0].getElement( "value" ).value( "Value" );
+
+    var rv =
+      'require "variables";\r\n'
+      + 'set "Name" "Value";\r\n';
+
+    suite.validateDocument( doc, rv, { "variables": true });
+  });
+
+  /*suite.add( function () {
+
+    suite.log( "Manipulate SetVariable - All values set - Change all values" );
+
+    var script = ''
+      + 'require "variables";\r\n'
+      + 'set :upperfirst "b" "${a}";\r\n';
+    
+    var doc = suite.parseScript( script, { "variables": true });
+
+    var elms = doc.queryElements( "action/set" );
+
+    suite.assertEquals( 1, elms.length, "Invalid number of set variable elements" );
+
+    elms[0].enable( "modifier/10", true );
+    elms[0].getElement( "modifier/10" ).setValue( ":length" );
+
+    elms[0].enable( "modifier/20", true );
+    elms[0].getElement( "modifier/20" ).setValue( ":quotewildcard" );
+
+    elms[0].enable( "modifier/30", true );
+    elms[0].getElement( "modifier/30" ).setValue( ":upperfirst" );
+
+    elms[0].enable( "modifier/40", true );
+    elms[0].getElement( "modifier/40" ).setValue( ":upper" );
+    
+    var rv =
+      'require "variables";\r\n'
+      + 'set "b" "${a}";\r\n';
+    
+    suite.validateDocument( doc, rv, { "variables": true });
+  });*/
+
+  suite.add( function () {
+    suite.log( "Validate set action constructors" );
+
+    var snipplet = 'set "variable" "";\r\n';
+    suite.expectValidSnipplet( "action/set", snipplet /*,{ "variables": true }*/);
+  });
+
+  suite.add( function () {
+    suite.log( "Validate string test constructors" );
+
+    var snipplet = 'string "" ""';
+    suite.expectValidSnipplet( "test/string", snipplet/*,{ "variables": true }*/);
+  });
 
 }());
 

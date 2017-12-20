@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<!--
+
+  The contents of this file are licenced. You may obtain a copy of 
+  the license at https://github.com/thsmi/sieve/ or request it via 
+  email from the author.
+ 
+  Do not remove or change this comment.
+  
+  The initial author of the code is:
+    Thomas Schmid <schmid-thomas@gmx.net>
+
+-->
+
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Size Test</title>
+</head>
+
+<body>
+
+  <div id="sivSieveDialog" class="dialog">
+
+    <div>
+      <!-- System -->
+      <div id="sivEditMain">
+        <!-- Appbar -->
+        <div class="dialog-header">
+          <div class="dialog-tab">
+            <div class="tab-active" data-tab-content="sivSizeTestGeneralContent">BASIC</div>
+            <div data-tab-content="sivSizeTestHelpContent">HELP</div>
+          </div>
+        </div>
+        <!-- content -->
+        <div class="dialog-tab-content">
+          <!-- content for help tab -->
+          <div id="sivSizeTestHelpContent">
+            <h1>Compares the message size</h1>
+            <p>
+              Test the message size is greater or smaller than the given size. The size is measured in bytes, character encoding are ignored.
+            </p>
+            <p>
+              Note: There is only a larger or smaller, no equals. A message with exaclty 4000 octets it neither larger nor smaller than
+              4000 octets.
+            </p>
+          </div>
+
+          <!-- content for general tab -->
+          <div id="sivSizeTestGeneralContent" class="tab-active">
+            <h1>Check if message size is ... </h1>
+            <div><input type="radio" name="over" value="true" />larger</div>
+            <div><input type="radio" name="over" value="false" />smaller</div>
+
+            <h1>... than ... </h1>
+            <input id="sivSizeTestValue" type="number" min="0" step="1">
+            <select id="sivSizeTestUnit">
+				      <option value="">Bytes</option>
+              <option value="K">Kilobytes</option>
+              <option value="M">Megabytes</option>
+              <option value="G">Gigabytes</option>
+            </select>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</body>
+
+</html>

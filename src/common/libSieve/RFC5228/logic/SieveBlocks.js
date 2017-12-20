@@ -12,12 +12,11 @@
  
 /* global window */
  
-"use strict";
- 
 (function(exports) {
   
+  "use strict";
+
   /* global SieveLexer */
-  /* global SieveAbstractElement */
 	/* global SieveAbstractBlock */
 
   function SieveBlockBody(docshell,id)
@@ -121,7 +120,7 @@
   SieveRootNode.prototype.constructor = SieveRootNode;
   
   SieveRootNode.isElement
-       = function (token, doc)
+       = function (/*token, doc*/)
   {
     return false;  
   };
@@ -170,7 +169,7 @@
   
   
   if (!SieveLexer)
-    throw "Could not register Block Elements";
+    throw new Error("Could not register Block Elements");
   
   SieveLexer.register(SieveBlockBody);
   exports.SieveBlockBody = SieveBlockBody;

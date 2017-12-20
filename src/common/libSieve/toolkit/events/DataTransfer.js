@@ -11,13 +11,12 @@
  */
 
 /* global window */
+( function ( exports ) {
 
-"use strict";
+  "use strict";
 
-(function(exports) {
-    
   /* global chrome */
-	
+
   /**
    * A stupid wrapper around the data transfer used to bypass a google chrome bug.
    * The bug causes getData() to return always an empty string in dragenter and 
@@ -33,40 +32,40 @@
    * when realy needed.
    * 
    * The workaround has some limitation you can set at most one data object.
-   * 
+   *
+   * @constructor
    * @param {DataTransfer} dt
    *   the data transfer object which should be wrapped.
    */
-  function SieveDataTransfer(dt) {	
-  	this.dt = dt;	
+  function SieveDataTransfer( dt ) {
+    this.dt = dt;
   }
-  
+
   SieveDataTransfer._transfer = null;
   SieveDataTransfer._token = null;
-  
-  /**
+
+  /*
    * Calculates a random token, which is used to idenfiy the transfer.
    * It is just a precausion in for very unlikely cases, that an 
    * external drop uses the very same flavours.
    */
   SieveDataTransfer.prototype.generateToken
-    = function() 
-  {
-  	var token = [];
-  
-    for (var i=0; i<32; i++) {
-    	
-      var item = (Math.floor(Math.random() * (256))).toString(16);
-      
-      if (item.length < 2)
-        item = "0"+item;
-      
-      token.push(item);    
-    }
-    
-    return token.join("");
-  };
-  
+    = function () {
+      var token = [];
+
+      for ( var i = 0; i < 32; i++ ) {
+
+        var item = ( Math.floor( Math.random() * ( 256 ) ) ).toString( 16 );
+
+        if ( item.length < 2 )
+          item = "0" + item;
+
+        token.push( item );
+      }
+
+      return token.join( "" );
+    };
+
   /**
    * Checks if the DataTransfer contains the given flavour.
    * 
@@ -76,15 +75,14 @@
    *   true in case the flavour is contained otherwise false.
    */
   SieveDataTransfer.prototype.contains
-    = function(flavour)
-  {
-    for (var i=0; i<this.dt.items.length; i++)
-    	if (this.dt.items[i].type == flavour)
-    	  return true;
-    	  
-    return false;
-  };
-  
+    = function ( flavour ) {
+      for ( var i = 0; i < this.dt.items.length; i++ )
+        if ( this.dt.items[i].type == flavour )
+          return true;
+
+      return false;
+    };
+
   /**
    * Retunrs the data bound to the given flavour.
    * 
@@ -94,22 +92,22 @@
    *   the data stored in the dragtarget.
    */
   SieveDataTransfer.prototype.getData
-    = function(flavour) {
-    	
-    // In case it's not a web app we can a short cut ...
-    if ( !window.chrome || !chrome.runtime || !chrome.runtime.id) 
-      return this.dt.getData(flavour);
-  
-    // ... otherwise we need a workaround for a chrome web app bug.
-    if (!this.contains(flavour))
-      return "";
-         
-    if (!this.contains(SieveDataTransfer._token))
-      return "";
-      
-    return SieveDataTransfer._transfer;
-  };
-  
+    = function ( flavour ) {
+
+      // In case it's not a web app we can a short cut ...
+      if ( !window.chrome || !chrome.runtime/* || !chrome.runtime.id*/ )
+        return this.dt.getData( flavour );
+
+      // ... otherwise we need a workaround for a chrome web app bug.
+      if ( !this.contains( flavour ) )
+        return "";
+
+      if ( !this.contains( SieveDataTransfer._token ) )
+        return "";
+
+      return SieveDataTransfer._transfer;
+    };
+
   /**
    * Binds the data to the data transfer object
    * 
@@ -117,41 +115,42 @@
    *   the drag falvour as string
    * @param {Object} transfer
    *   the transfer object should be a string
+   * @returns {undefined}
    */
   SieveDataTransfer.prototype.setData
-    = function(flavour, transfer) {
-    	
-    this.dt.setData(flavour, transfer);
-    
-    if ( !window.chrome ||  !chrome.runtime || !chrome.runtime.id) 
-      return;  
-    
-    // ignore the "application/sieve" flavour
-    if (flavour == "application/sieve")
-      return;
-    
-    if (SieveDataTransfer._transfer || SieveDataTransfer._token)
-      throw "Transfer in progress, clear before starting new one.";
-      
-    SieveDataTransfer._transfer = transfer;
-      
-    // We generate a onetime token to ensure drag and drop integrity
-    SieveDataTransfer._token = this.generateToken(); 
-    this.dt.setData(SieveDataTransfer._token,"");
-  };
-  
-  /**
+    = function ( flavour, transfer ) {
+
+      this.dt.setData( flavour, transfer );
+
+      if ( !window.chrome || !chrome.runtime /*|| !chrome.runtime.id*/ )
+        return;
+
+      // ignore the "application/sieve" flavour
+      if ( flavour === "application/sieve" )
+        return;
+
+      if ( SieveDataTransfer._transfer || SieveDataTransfer._token )
+        throw new Error( "Transfer in progress, clear before starting new one." );
+
+      SieveDataTransfer._transfer = transfer;
+
+      // We generate a onetime token to ensure drag and drop integrity
+      SieveDataTransfer._token = this.generateToken();      
+      this.dt.setData( SieveDataTransfer._token, "" );
+    };
+
+  /*
    * Clear should be called before and after each drop.
    * 
    * It releases the drop target from the current context.
    */
   SieveDataTransfer.prototype.clear
-    = function() {
-    	
-    SieveDataTransfer._token = null;
-    SieveDataTransfer._transfer = null;  	
-  };
+    = function () {
+
+      SieveDataTransfer._token = null;
+      SieveDataTransfer._transfer = null;
+    };
 
   exports.SieveDataTransfer = SieveDataTransfer;
 
-})(window);
+})( window );

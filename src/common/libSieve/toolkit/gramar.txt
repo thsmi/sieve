@@ -1,0 +1,41 @@
+Sieve Gramar:
+
+Separators : Whitespace, Brackets, Comma and Semicolon.
+
+Tags are Optional, and have no fixed order
+Parameters are non optional an have a fixed order
+
+First tags then parameters
+
+
+Parameters:
+
+  "token"
+
+Tags
+  ""
+
+Testlists:
+  "("+WS?+element+WS?+","+WS?+element+WS?+"," ... ")"
+
+Action
+  token + WS + tags + WS + parameters + WS";"
+
+Test
+  token + tags parameters
+
+Operators:
+  "not" + WS + test
+  anyof +WS + testlist
+
+Conditional
+  
+  "if ("+test | operator+")" Block
+  "elsif ("+test | operator+")" Block
+  "else" Block
+
+Block
+  "{"+Block2+"}"
+
+Block2
+   (WS | Action | Conditional)

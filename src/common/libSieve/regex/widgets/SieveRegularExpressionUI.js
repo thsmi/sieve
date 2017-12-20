@@ -12,48 +12,46 @@
 
 /* global window */
 
-"use strict";
+( function ( /*exports*/ ) {
 
-(function(exports) {
+  "use strict";
 
-  /* global $: false */
-	/* global SieveAbstractMatchUI */
-	/* global SieveDesigner */
-  	
-  function SieveRegExMatchUI(id)
-  {
-    SieveAbstractMatchUI.call(this, id);
+  /* global SieveAbstractMatchUI */
+  /* global SieveDesigner */
+
+  function SieveRegExMatchUI( id ) {
+    SieveAbstractMatchUI.call( this, id );
   }
-  
-  SieveRegExMatchUI.prototype = Object.create(SieveAbstractMatchUI.prototype);
+
+  SieveRegExMatchUI.prototype = Object.create( SieveAbstractMatchUI.prototype );
   SieveRegExMatchUI.prototype.constructor = SieveRegExMatchUI;
-  
+
   SieveRegExMatchUI.nodeName = function () {
     return "match-type/regex";
   };
-  
-  SieveRegExMatchUI.nodeType  = function () {
+
+  SieveRegExMatchUI.nodeType = function () {
     return "match-type/";
   };
-  
-  SieveRegExMatchUI.isCapable = function (capabilities) {
-    return !!capabilities["regex"];      
+
+  SieveRegExMatchUI.isCapable = function ( capabilities ) {
+    return !!capabilities["regex"];
   };
-  
-  SieveRegExMatchUI.prototype.html 
-      = function(callback) {
-      	     
-    return SieveAbstractMatchUI.prototype.html.call(
-      this, ":regex", "... regex matches ...",
-            " Matches and compares using on a regular expression as defined in IEEE.1003-2.1992" , callback);  	
-  };
-  
-  
+
+  SieveRegExMatchUI.prototype.html
+    = function ( callback ) {
+
+      return SieveAbstractMatchUI.prototype.html.call(
+        this, ":regex", "... regex matches ...",
+        " Matches and compares using on a regular expression as defined in IEEE.1003-2.1992", callback );
+    };
+
+
   //************************************************************************************
-  
-  if (!SieveDesigner)
-    throw "Could not register Regex Widgets";
-  
-  SieveDesigner.register2(SieveRegExMatchUI);
-  
-})(window);
+
+  if ( !SieveDesigner )
+    throw new Error( "Could not register Regex Widgets" );
+
+  SieveDesigner.register2( SieveRegExMatchUI );
+
+})( window );

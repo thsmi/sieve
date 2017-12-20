@@ -10,16 +10,16 @@
  *      
  */
 
-"use strict";
-  
 (function() {
+
+  "use strict";
 
 	/* global net */
 	
   var suite  = net.tschmid.yautt.test;
     
   if (!suite)
-    throw "Could not initialize test suite";
+    throw new Error( "Could not initialize test suite" );
 
   suite.add( function() {   
     suite.log("Sieve Relational (RFC5231) unit tests...");
@@ -79,7 +79,7 @@
         + '   keep;\r\n'
         + '}\r\n';
       
-    suite.expectInvalidScript(script, "Relational operator expected", {"relational":true});
+    suite.expectInvalidScript( script, "Error: Relational operator e", { "relational": true });
   });  
   
   /*

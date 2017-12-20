@@ -12,10 +12,10 @@
 
 /* global window */
  
-"use strict";
- 
 (function(exports) {
   
+  "use strict";
+
   /* global $: false */
 	/* global SieveDesigner */
 	/* global SieveAbstractBoxUI */
@@ -87,7 +87,7 @@
   };
   
   if (!SieveDesigner)
-    throw "Could not register Block Widgets";
+    throw new Error("Could not register Block Widgets");
   
   
   SieveDesigner.register("block/body", SieveBlockUI);  

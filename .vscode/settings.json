@@ -9,4 +9,5 @@
   "files.associations": {
     "*.tpl": "html"
   },
+  "files.eol": "\n"
 }

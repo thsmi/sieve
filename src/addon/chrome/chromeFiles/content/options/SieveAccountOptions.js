@@ -1,7 +1,9 @@
 /*
- * The contents of this file is licenced. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email
- * from the author. Do not remove or change this comment.
+ * The contents of this file are licenced. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
+ * email from the author.
+ *
+ * Do not remove or change this comment.
  *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
@@ -16,7 +18,7 @@
 /* global Components */
 /* global SieveOverlayManager */
 
- // Enable Strict Mode
+// Enable Strict Mode
 "use strict";
 
 const Cc = Components.classes;
@@ -27,15 +29,14 @@ Cu.import("resource://gre/modules/Services.jsm");
 //  @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
 
 Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
-SieveOverlayManager.require("/sieve/SieveAutoConfig.js",this,window);
+SieveOverlayManager.require("/sieve/SieveAutoConfig.js", this, window);
 
 
 /** @type SieveAccount */
-var gAccount = null;
+let gAccount = null;
 
 // === Server Sheet ===========================================================
-function onServerSheetLoad(account)
-{
+function onServerSheetLoad(account) {
   var rbHost = document.getElementById('rgHost');
   rbHost.selectedIndex = account.getHost().getType();
   enableHost(rbHost.selectedIndex);
@@ -53,7 +54,7 @@ function onServerSheetLoad(account)
   // Load custom port settings
   var port = account.getHost().getPort(2);
 
-  if ((port==2000) || (port=4190))
+  if ((port == 2000) || (port = 4190))
     port = "";
 
   document.getElementById('txtPort').value = port;
@@ -65,8 +66,7 @@ function onServerSheetLoad(account)
     rbPort.selectedIndex = 0;
   else if (port == 2000)
     rbPort.selectedIndex = 1;
-  else
-  {
+  else {
     rbPort.selectedIndex = 2;
     document.getElementById('txtPort').value = port;
   }
@@ -74,16 +74,14 @@ function onServerSheetLoad(account)
   enablePort(rbPort.selectedIndex);
 }
 
-function enableHost(type)
-{
+function enableHost(type) {
   if (type == 1)
     document.getElementById('txtHostname').removeAttribute('disabled');
   else
-    document.getElementById('txtHostname').setAttribute('disabled','true');
+    document.getElementById('txtHostname').setAttribute('disabled', 'true');
 }
 
-function onHostSelect(idx)
-{
+function onHostSelect(idx) {
   if (!gAccount)
     return;
 
@@ -91,24 +89,21 @@ function onHostSelect(idx)
   enableHost(idx);
 }
 
-function onHostnameChange(value)
-{
+function onHostnameChange(value) {
   if (!gAccount)
     return;
 
   gAccount.getHost(1).setHostname(value);
 }
 
-function enablePort(type)
-{
+function enablePort(type) {
   if (type == 2)
     document.getElementById('txtPort').removeAttribute('disabled');
   else
-    document.getElementById('txtPort').setAttribute('disabled','true');
+    document.getElementById('txtPort').setAttribute('disabled', 'true');
 }
 
-function onPortSelect(idx)
-{
+function onPortSelect(idx) {
   if (!gAccount)
     return;
 
@@ -122,45 +117,40 @@ function onPortSelect(idx)
   enablePort(idx);
 }
 
-function onPortChange(value)
-{
+function onPortChange(value) {
   if (!gAccount)
     return;
 
-  gAccount.getHost().setPort(value,true);
+  gAccount.getHost().setPort(value, true);
 }
 
 
 var gAutoConfig = null;
 
 var gAutoConfigCallback =
-{
-  onSuccess : function(host,port,proxy)
   {
-    gAutoConfig = null;
+    onSuccess: function (host, port, proxy) {
+      gAutoConfig = null;
 
-    gAccount.getHost().setPort(port);
+      gAccount.getHost().setPort(port);
 
-    document.getElementById("dkAutoSelect").selectedIndex = "2";
-    document.getElementById("lblAutoSelectPort").value = port;
+      document.getElementById("dkAutoSelect").selectedIndex = "2";
+      document.getElementById("lblAutoSelectPort").value = port;
 
-    if (port == 4190)
-      document.getElementById("rgPort").selectedIndex = 0;
-    else if (port == 2000)
-      document.getElementById("rgPort").selectedIndex = 1;
-  },
+      if (port == 4190)
+        document.getElementById("rgPort").selectedIndex = 0;
+      else if (port == 2000)
+        document.getElementById("rgPort").selectedIndex = 1;
+    },
 
-  onError : function()
-  {
-    gAutoConfig = null;
-    document.getElementById("dkAutoSelect").selectedIndex = "3";
-  }
-};
+    onError: function () {
+      gAutoConfig = null;
+      document.getElementById("dkAutoSelect").selectedIndex = "3";
+    }
+  };
 
-function onPortAutoSelect()
-{
-  try
-  {
+function onPortAutoSelect() {
+  try {
     document.getElementById("dkAutoSelect").selectedIndex = "1";
 
     //Load auoconfig only when we realy need it
@@ -187,15 +177,13 @@ function onPortAutoSelect()
 
     gAutoConfig.run(gAutoConfigCallback);
   }
-  catch (ex)
-  {
-    window.alert("Exception\n"+ex.toSource());
+  catch (ex) {
+    window.alert("Exception\n" + ex.toSource());
   }
 }
 
 // === Security Sheet =========================================================
-function onSecuritySheetLoad(account)
-{
+function onSecuritySheetLoad(account) {
   // initalize login related elements...
   document.getElementById('txtUsername').value
     = account.getLogin(2).getUsername();
@@ -206,51 +194,46 @@ function onSecuritySheetLoad(account)
 
   var rbTLS = document.getElementById('rgTLS');
 
-  if (account.getHost().isTLSEnabled())
-  {
+  if (account.getHost().isTLSEnabled()) {
     if (account.getHost().isTLSForced())
-      rbTLS .selectedIndex = 2;
+      rbTLS.selectedIndex = 2;
     else
-      rbTLS .selectedIndex = 1;
+      rbTLS.selectedIndex = 1;
   }
   else
-    rbTLS .selectedIndex = 0;
+    rbTLS.selectedIndex = 0;
 }
 
-function onTLSSelect(idx)
-{
+function onTLSSelect(idx) {
   try {
-  if (!gAccount)
-    return;
+    if (!gAccount)
+      return;
 
-  var isEnabled = true;
-  var isForced = false;
+    var isEnabled = true;
+    var isForced = false;
 
-  if (idx === 0)
-    isEnabled = false;
+    if (idx === 0)
+      isEnabled = false;
 
-  if (idx === 2)
-    isForced = true;
+    if (idx === 2)
+      isForced = true;
 
-  gAccount.getHost().setTLS(isForced,isEnabled);
+    gAccount.getHost().setTLS(isForced, isEnabled);
   }
-  catch (ex)
-  {
+  catch (ex) {
     window.alert(ex);
   }
 
 }
 
-function enableLogin(type)
-{
+function enableLogin(type) {
   if (type == 2)
     document.getElementById('txtUsername').removeAttribute('disabled');
   else
-    document.getElementById('txtUsername').setAttribute('disabled','true');
+    document.getElementById('txtUsername').setAttribute('disabled', 'true');
 }
 
-function onLoginSelect(idx)
-{
+function onLoginSelect(idx) {
   if (!gAccount)
     return;
 
@@ -258,8 +241,7 @@ function onLoginSelect(idx)
   enableLogin(idx);
 }
 
-function onUsernameChange(value)
-{
+function onUsernameChange(value) {
   if (!gAccount)
     return;
 
@@ -267,10 +249,9 @@ function onUsernameChange(value)
 }
 
 // === General Sheet ==========================================================
-function onGeneralSheetLoad(account)
-{
+function onGeneralSheetLoad(account) {
   document.getElementById('txtKeepAlive').value
-    = account.getSettings().getKeepAliveInterval() / (1000*60);
+    = account.getSettings().getKeepAliveInterval() / (1000 * 60);
 
   var cbxKeepAlive = document.getElementById('cbxKeepAlive');
   cbxKeepAlive.checked = account.getSettings().isKeepAlive();
@@ -287,8 +268,7 @@ function onGeneralSheetLoad(account)
 }
 
 // === Proxy Sheet ============================================================
-function onProxySheetLoad(account)
-{
+function onProxySheetLoad(account) {
   // Proxy Configuration...
   document.getElementById('txtSocks4Host').value
     = account.getProxy(2).getHost();
@@ -307,12 +287,11 @@ function onProxySheetLoad(account)
   enableProxy(rgSocksProxy.selectedIndex);
 }
 
-function onProxySelect(type)
-{
+function onProxySelect(type) {
   if (!gAccount)
     return;
 
-  if ((type == null) ||(type > 3))
+  if ((type == null) || (type > 3))
     type = 1;
 
   gAccount.setProxy(type);
@@ -329,20 +308,19 @@ function onProxySelect(type)
  *
  * @param {SieveAccount} account
  *   A SieveAccount which should be used to populate the property sheet
+ * @returns {void}
  */
-function onAdvancedSheetLoad(account)
-{
-  var element = document.getElementById('cbxAuthMechanism');
+function onAdvancedSheetLoad(account) {
+  let element = document.getElementById('cbxAuthMechanism');
   element.checked = account.getSettings().hasForcedAuthMechanism();
   enableAuthMechanism(element.checked);
 
-  var list = document.getElementById('mlAuthMechanism');
-  var items = list.getElementsByTagName('menuitem');
+  let list = document.getElementById('mlAuthMechanism');
+  let items = list.getElementsByTagName('menuitem');
 
-  var mechanism = account.getSettings().getForcedAuthMechanism();
+  let mechanism = account.getSettings().getForcedAuthMechanism();
 
-  for (var i = 0; i < items.length; i++)
-  {
+  for (let i = 0; i < items.length; i++) {
     if (items[i].value != mechanism)
       continue;
 
@@ -354,13 +332,12 @@ function onAdvancedSheetLoad(account)
   document.getElementById('txtAuthorization').value
     = account.getAuthorization(3).getAuthorization();
 
-  var rgAuthorization = document.getElementById('rgAuthorization');
+  let rgAuthorization = document.getElementById('rgAuthorization');
   rgAuthorization.selectedIndex = account.getAuthorization().getType();
   enableAuthorization(rgAuthorization.selectedIndex);
 }
 
-function onAuthorizationSelect(type)
-{
+function onAuthorizationSelect(type) {
   if (!gAccount)
     return;
 
@@ -372,16 +349,14 @@ function onAuthorizationSelect(type)
 }
 
 // Function for the custom authentication
-function enableAuthorization(type)
-{
+function enableAuthorization(type) {
   if (type == 3)
     document.getElementById('txtAuthorization').removeAttribute('disabled');
   else
-    document.getElementById('txtAuthorization').setAttribute('disabled','true');
+    document.getElementById('txtAuthorization').setAttribute('disabled', 'true');
 }
 
-function onAuthorizationChange(value)
-{
+function onAuthorizationChange(value) {
   if (!gAccount)
     return;
 
@@ -395,9 +370,9 @@ function onAuthorizationChange(value)
  *
  * @param {SieveAccount} account
  *   A SieveAccount which should be used to populate the property sheet
+ * @returns {void}
  */
-function onEditorSheetLoad(account)
-{
+function onEditorSheetLoad(account) {
   try {
     //var rgDefaultEditor = document.getElementById('rgDefaultEditor');
     //rgDefaultEditor.selectedIndex = account.getSettings().getDefaultEditor();
@@ -409,13 +384,12 @@ function onEditorSheetLoad(account)
     document.getElementById('mlTabPolicy').selectedIndex = account.getSettings().getTabPolicy();
   }
   catch (e) {
-  	Components.utils.reportError(e);
+    Components.utils.reportError(e);
   }
 
 }
 
-function onDefaultEditorSelect(type)
-{
+function onDefaultEditorSelect(type) {
   if (!gAccount)
     return;
 
@@ -425,16 +399,14 @@ function onDefaultEditorSelect(type)
   gAccount.getSettings().setDefaultEditor(type);
 }
 
-function onIndentionWidthChange(value)
-{
+function onIndentionWidthChange(value) {
   if (!gAccount)
     return;
 
   gAccount.getSettings().setIndentionWidth(value);
 }
 
-function onIndentionPolicySelect(value)
-{
+function onIndentionPolicySelect(value) {
   if (!gAccount)
     return;
 
@@ -442,8 +414,7 @@ function onIndentionPolicySelect(value)
 }
 
 
-function onTabWidthChange(value)
-{
+function onTabWidthChange(value) {
   if (!gAccount)
     return;
 
@@ -451,8 +422,7 @@ function onTabWidthChange(value)
 }
 
 
-function onTabPolicySelect(value)
-{
+function onTabPolicySelect(value) {
   if (!gAccount)
     return;
 
@@ -461,36 +431,33 @@ function onTabPolicySelect(value)
 
 // === Debug Sheet =============================================================
 
-function onDebugSheetLoad(account)
-{
+function onDebugSheetLoad(account) {
   document.getElementById('cbxDebugRequest').checked
-      = account.getSettings().hasDebugFlag(0);
+    = account.getSettings().hasDebugFlag(0);
 
   document.getElementById('cbxDebugResponse').checked
-      = account.getSettings().hasDebugFlag(1);
+    = account.getSettings().hasDebugFlag(1);
 
   document.getElementById('cbxDebugExceptions').checked
-      = account.getSettings().hasDebugFlag(2);
+    = account.getSettings().hasDebugFlag(2);
 
   document.getElementById('cbxDebugStream').checked
-      = account.getSettings().hasDebugFlag(3);
+    = account.getSettings().hasDebugFlag(3);
 
   document.getElementById('cbxDebugSession').checked
-      = account.getSettings().hasDebugFlag(4);
+    = account.getSettings().hasDebugFlag(4);
 }
 
-function onDebugFlagCommand(sender,bit)
-{
+function onDebugFlagCommand(sender, bit) {
   if (!gAccount)
     return;
 
-  gAccount.getSettings().setDebugFlag(bit,sender.checked);
+  gAccount.getSettings().setDebugFlag(bit, sender.checked);
 }
 
 
 
-function onDialogLoad()
-{
+function onDialogLoad() {
   gAccount = window.arguments[0]["SieveAccount"];
   try {
     onServerSheetLoad(gAccount);
@@ -506,15 +473,13 @@ function onDialogLoad()
   }
 }
 
-function onDialogAccept()
-{
+function onDialogAccept() {
   return true;
   // Do nothing since there should be only valid entries...
 }
 
 // Function for the general Settings...
-function onKeepAliveCommand(sender)
-{
+function onKeepAliveCommand(sender) {
   if (!gAccount)
     return;
 
@@ -522,24 +487,21 @@ function onKeepAliveCommand(sender)
   enableKeepAlive(sender.checked);
 }
 
-function enableKeepAlive(enabled)
-{
+function enableKeepAlive(enabled) {
   if (enabled)
     document.getElementById('txtKeepAlive').removeAttribute('disabled');
   else
-    document.getElementById('txtKeepAlive').setAttribute('disabled','true');
+    document.getElementById('txtKeepAlive').setAttribute('disabled', 'true');
 }
 
-function onKeepAliveChange(sender)
-{
+function onKeepAliveChange(sender) {
   if (!gAccount)
     return;
 
-  gAccount.getSettings().setKeepAliveInterval(sender.value*1000*60);
+  gAccount.getSettings().setKeepAliveInterval(sender.value * 1000 * 60);
 }
 
-function onCompileCommand(sender)
-{
+function onCompileCommand(sender) {
   if (!gAccount)
     return;
 
@@ -547,16 +509,14 @@ function onCompileCommand(sender)
   enableCompile(sender.checked);
 }
 
-function enableCompile(enabled)
-{
+function enableCompile(enabled) {
   if (enabled)
     document.getElementById('txtCompile').removeAttribute('disabled');
   else
-    document.getElementById('txtCompile').setAttribute('disabled','true');
+    document.getElementById('txtCompile').setAttribute('disabled', 'true');
 }
 
-function onCompileChange(sender)
-{
+function onCompileChange(sender) {
   if (!gAccount)
     return;
 
@@ -565,8 +525,7 @@ function onCompileChange(sender)
 
 
 
-function onAuthMechanismCommand(sender)
-{
+function onAuthMechanismCommand(sender) {
   if (!gAccount)
     return;
 
@@ -574,16 +533,14 @@ function onAuthMechanismCommand(sender)
   enableAuthMechanism(sender.checked);
 }
 
-function enableAuthMechanism(enabled)
-{
+function enableAuthMechanism(enabled) {
   if (enabled)
     document.getElementById('mlAuthMechanism').removeAttribute('disabled');
   else
-    document.getElementById('mlAuthMechanism').setAttribute('disabled','true');
+    document.getElementById('mlAuthMechanism').setAttribute('disabled', 'true');
 }
 
-function onAuthMechanismSelect(sender)
-{
+function onAuthMechanismSelect(sender) {
   if (!gAccount)
     return;
 
@@ -593,22 +550,22 @@ function onAuthMechanismSelect(sender)
 /**
  * Opens thunderbird's the password manager dialog
  *
- * The dialog call might me non modal.
+ * The dialog call might be non modal.
+ * @returns {void}
  */
-function onShowPassword()
-{
+function onShowPassword() {
 
-  var winName = "Toolkit:PasswordManager";
-  var uri = "chrome://passwordmgr/content/passwordManager.xul";
+  let winName = "Toolkit:PasswordManager";
+  let uri = "chrome://passwordmgr/content/passwordManager.xul";
 
-  var w = Cc["@mozilla.org/appshell/window-mediator;1"]
+  let w = Cc["@mozilla.org/appshell/window-mediator;1"]
     .getService(Ci.nsIWindowMediator)
     .getMostRecentWindow(winName);
 
   if (w)
     w.focus();
   else
-    window.openDialog(uri,winName, "");
+    window.openDialog(uri, winName, "");
   /*else
     Components
       .classes["@mozilla.org/embedcomp/window-watcher;1"]
@@ -616,12 +573,15 @@ function onShowPassword()
       .openWindow(null, uri, name, "chrome,resizable", null);*/
 }
 
-function onShowErrorConsole()
-{
-  var name = "global:console";
-  var uri = "chrome://global/content/console.xul";
+/**
+ * Opens the error or browser console
+ * @returns {void}
+ */
+function onShowErrorConsole() {
+  let name = "global:console";
+  let uri = "chrome://global/content/console.xul";
 
-  var w = Cc["@mozilla.org/appshell/window-mediator;1"]
+  let w = Cc["@mozilla.org/appshell/window-mediator;1"]
     .getService(Ci.nsIWindowMediator)
     .getMostRecentWindow(name);
 
@@ -632,19 +592,17 @@ function onShowErrorConsole()
       .getService(Ci.nsIWindowWatcher)
       .openWindow(null, uri, name, "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar", null);
 
-    //window.open(uri, "_blank", "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar");
+  //window.open(uri, "_blank", "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar");
 }
 
-function enableProxy(type)
-{
-  document.getElementById('txtSocks4Port').setAttribute('disabled','true');
-  document.getElementById('txtSocks4Host').setAttribute('disabled','true');
-  document.getElementById('txtSocks5Port').setAttribute('disabled','true');
-  document.getElementById('txtSocks5Host').setAttribute('disabled','true');
-  document.getElementById('cbxSocks5RemoteDNS').setAttribute('disabled','true');
+function enableProxy(type) {
+  document.getElementById('txtSocks4Port').setAttribute('disabled', 'true');
+  document.getElementById('txtSocks4Host').setAttribute('disabled', 'true');
+  document.getElementById('txtSocks5Port').setAttribute('disabled', 'true');
+  document.getElementById('txtSocks5Host').setAttribute('disabled', 'true');
+  document.getElementById('cbxSocks5RemoteDNS').setAttribute('disabled', 'true');
 
-  switch (type)
-  {
+  switch (type) {
     case 2:
       document.getElementById('txtSocks4Port').removeAttribute('disabled');
       document.getElementById('txtSocks4Host').removeAttribute('disabled');
@@ -657,40 +615,35 @@ function enableProxy(type)
   }
 }
 
-function onSocks5RemoteDNSCommand(sender)
-{
+function onSocks5RemoteDNSCommand(sender) {
   if (!gAccount)
     return;
 
   gAccount.getProxy(3).setRemoteDNS(sender.checked);
 }
 
-function onSocks5HostChange(sender)
-{
+function onSocks5HostChange(sender) {
   if (!gAccount)
     return;
 
   gAccount.getProxy(3).setHost(sender.value);
 }
 
-function onSocks5PortChange(sender)
-{
+function onSocks5PortChange(sender) {
   if (!gAccount)
     return;
 
   gAccount.getProxy(3).setPort(sender.value);
 }
 
-function onSocks4HostChange(sender)
-{
+function onSocks4HostChange(sender) {
   if (!gAccount)
     return;
 
   gAccount.getProxy(2).setHost(sender.value);
 }
 
-function onSocks4PortChange(sender)
-{
+function onSocks4PortChange(sender) {
   if (!gAccount)
     return;
 
@@ -702,11 +655,10 @@ function onSocks4PortChange(sender)
  * Opens a new browser window with the paypal donation website
  * @return {void}
  */
-function onDonate()
-{
+function onDonate() {
   let uri = Cc["@mozilla.org/network/io-service;1"]
-              .getService(Ci.nsIIOService)
-              .newURI("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC", null, null);
+    .getService(Ci.nsIIOService)
+    .newURI("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC", null, null);
 
   Cc["@mozilla.org/uriloader/external-protocol-service;1"]
     .getService(Ci.nsIExternalProtocolService)

@@ -306,8 +306,11 @@
    */
   SieveAbstractClient.prototype.addRequest
     = function (request, greedy) {
-      if (this.listener)
-        request.addByeListener(this.listener);
+
+      // Attach the global bye listener only when needed.
+      if ( !request.byeListener || !request.byeListener.onByeResponse)
+        if (this.listener && this.listener.onByeResponse)
+          request.addByeListener(this.listener);
 
       // TODO: we should realy store this internally, instead of tagging objects
       if (greedy)
@@ -391,6 +394,8 @@
     = function () {
 
       this.onStopIdle();
+
+      this.getLogger().log("libManageSieve/Sieve.js:\nOnIdle", (1 << 2));
 
       if (this.listener && this.listener.onIdle)
         this.listener.onIdle();

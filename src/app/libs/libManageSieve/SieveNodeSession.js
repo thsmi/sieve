@@ -724,6 +724,14 @@
       return await this.exec(request, callback);
     }
 
+    /**
+     * The on idle handler...
+     * @returns {void}
+     */
+    onIdle() {
+      (async () => { await this.noop(); })();
+    }
+
 
     /**
      * Connects the session to the given port.
@@ -744,11 +752,11 @@
 
       //FIXME we need to add the onIdle and onTimeout methods
       //FIXME in case we set the listner here the byeListener does not work anymore
-      //this.sieve.addListener(this);
+      this.sieve.addListener(this);
 
       // TODO Load Timeout interval from account settings...
       if (this.account.getSettings().isKeepAlive())
-        this.sieve.setKeepAliveInterval(this.account.getSettings().getKeepAliveInterval());
+        this.sieve.setIdleWait(this.account.getSettings().getKeepAliveInterval());
 
 
       if (typeof (hostname) === "undefined")

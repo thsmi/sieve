@@ -42,37 +42,61 @@
   Sieve.prototype.constructor = Sieve;
 
   // Method used to controll the timers...
-  Sieve.prototype._startTimeoutTimer
+  Sieve.prototype.onStartTimeout
     = function () {
 
-      this.timeout.timer
-        = timers.setTimeout(() => { this.notify(this.timeout.timer); }, this.timeout.delay);
+      // Clear any existing timeouts
+      if (this.timeoutTimer) {
+        timers.clearTimeout(this.timeoutTimer);
+        this.timeoutTimer = null;
+      }
+
+      // ensure the idle timer is stopped
+      this.onStopIdle();
+
+      // then restart the timeout timer
+      this.timeoutTimer = timers.setTimeout(
+        () => { this.onTimeout(); },
+        this.getTimeoutWait());
     };
 
-  Sieve.prototype._stopTimeoutTimer = function () {
+  Sieve.prototype.onStopTimeout = function () {
 
-    if (!this.timeout.timer)
-      return;
+    // clear any existing timeout
+    if (this.timeoutTimer) {
+      timers.clearTimeout(this.timeoutTimer);
+      this.timeoutTimer = null;
+    }
 
-    timers.clearTimeout(this.timeout.timer);
-    this.timeout.timer = null;
+    // and start the idle timer.
+    this.onStartIdle();
+
+    return;
   };
 
-  Sieve.prototype._startIdleTimer
+  Sieve.prototype.onStartIdle
     = function () {
+      // first ensure the timer is stopped..
+      this.onStopIdle();
 
-      this.idle.timer
-        = timers.setTimeout(() => { this.notify(this.idle.timer); }, this.idle.delay);
-    };
+      // ... then configure the timer.
+      let delay = this.getIdleWait();
 
-  Sieve.prototype._stopIdleTimer
-    = function () {
-
-      if (!this.idle.timer)
+      if (!delay)
         return;
 
-      timers.clearTimeout(this.idle.timer);
-      this.idle.timer = null;
+      this.idleTimer
+        = timers.setTimeout(() => { this.onIdle(); }, delay);
+    };
+
+  Sieve.prototype.onStopIdle
+    = function () {
+
+      if (!this.idleTimer)
+        return;
+
+      timers.clearTimeout(this.idleTimer);
+      this.idleTimer = null;
     };
 
   Sieve.prototype.createParser
@@ -140,6 +164,11 @@
       this.tlsSocket.destroy();
       this.tlsSocket.unref();
       this.tlsSocket = null;
+
+      this.idleTimer = null;
+      this.timeoutTimer = null;
+
+      this.getLogger().log("Disconnected ...", (1 << 2));
     };
 
   // TODO detect server disconnects and communication errors...

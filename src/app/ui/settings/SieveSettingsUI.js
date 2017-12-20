@@ -158,6 +158,67 @@
     }
 
     /**
+     * Enabled or disables th keep alive button in the ui
+     *
+     * @param {boolean} enabled
+     *   set to true in case the keep alive is enabled otherwise set to false
+     * @returns {SieveSettingsUI}
+     *   a self reference
+     */
+    setKeepAliveEnabled(enabled) {
+      let parent = this.getDialog();
+
+      // reset the toggle button status...
+      parent.find(".sieve-settings-keepalive .active").removeClass("active");
+
+      if (enabled === false)
+        parent.find(".sieve-settings-keepalive-disabled").button('toggle');
+      else
+        parent.find(".sieve-settings-keepalive-enabled").button('toggle');
+
+      return this;
+    }
+
+    /**
+     * Returns the keep alive status
+     * @returns {boolean}
+     *   true in case keep alive is enabled otherwise false.
+     */
+    isKeepAliveEnabled() {
+      let active = this.getDialog().find(".sieve-settings-keepalive .active");
+
+      if (active.hasClass("sieve-settings-keepalive-disabled"))
+        return false;
+
+      return true;
+    }
+
+    /**
+     * Sets the keep alive interval
+     * @param {int} interval
+     *  the keep alive interval in ms
+     * @returns {SieveSettingsUI}
+     *   a self reference
+     */
+    setKeepAliveInterval(interval) {
+      // convert to seconds
+      interval = interval / (1000 * 60);
+      this.getDialog().find(".sieve-settings-keepalive-interval").val(interval);
+      return this;
+    }
+
+    /**
+     * Gets the keep alive interval
+     *
+     * @returns {int}
+     *   the keep alive interval
+     */
+    getKeepAliveInterval() {
+      let interval = this.getDialog().find(".sieve-settings-keepalive-interval").val();
+      return interval * 1000 * 60;
+    }
+
+    /**
      * Shows the advanced setting
      * @returns {void}
      */
@@ -214,6 +275,13 @@
       };
 
       await this.account.send("account-set-authentication", authentication);
+
+      let general = {
+        keepAliveEnabled : this.isKeepAliveEnabled(),
+        keepAliveInterval : this.getKeepAliveInterval(),
+      };
+
+      await this.account.send("account-set-general", general);
 
       // Validate and close
       $('#sieve-dialog-settings').modal('hide');
@@ -274,6 +342,10 @@
           .data("sieve-authentication", $(event.target).data("sieve-authentication"))
           .text($(event.target).text());
       });
+
+      let general = await this.account.send("account-get-general");
+      this.setKeepAliveEnabled(general.keepAliveEnabled);
+      this.setKeepAliveInterval(general.keepAliveInterval);
 
 
       parent.find(".sieve-settings-apply").off().click(() => { this.save(); });

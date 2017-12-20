@@ -39,40 +39,40 @@
      *   the host object
      */
     getHost() {
-      let that = this;
+
       return {
 
-        getDisplayName : function() {
-          return that.prefs.getString("host.displayName", "Unnamed Account");
+        getDisplayName: () => {
+          return this.prefs.getString("host.displayName", "Unnamed Account");
         },
 
-        setDisplayName : function(value) {
-          that.prefs.setString("host.displayName", value);
+        setDisplayName: (value) => {
+          this.prefs.setString("host.displayName", value);
           return this;
         },
 
-        isSecure: function () {
-          return that.prefs.getBoolean("host.tls", true);
+        isSecure: () => {
+          return this.prefs.getBoolean("host.tls", true);
         },
 
-        setSecure: function(secure) {
-          return that.prefs.setBoolean("host.tls", secure);
+        setSecure: (secure) => {
+          return this.prefs.setBoolean("host.tls", secure);
         },
 
-        getHostname: function () {
-          return that.prefs.getString("host.hostname", "localhost");
+        getHostname: () => {
+          return this.prefs.getString("host.hostname", "localhost");
         },
 
-        setHostname: function (value) {
-          that.prefs.setString("host.hostname", value);
+        setHostname: (value) => {
+          this.prefs.setString("host.hostname", value);
         },
 
-        getPort: function () {
-          return that.prefs.getInteger("host.port", 4190);
+        getPort: () => {
+          return this.prefs.getInteger("host.port", 4190);
         },
 
-        setPort:function (value) {
-          that.prefs.setInteger("host.port", value);
+        setPort: (value) => {
+          this.prefs.setInteger("host.port", value);
         }
       };
     }
@@ -83,14 +83,14 @@
      *   the login object
      */
     getLogin() {
-      let that = this;
+
       return {
-        getSaslMechanism: function () {
-          return that.prefs.getString("authentication.mechanism", "default");
+        getSaslMechanism: () => {
+          return this.prefs.getString("authentication.mechanism", "default");
         },
 
-        setSaslMechanism: function (value) {
-          that.prefs.setString("authentication.mechanism", value);
+        setSaslMechanism: (value) => {
+          this.prefs.setString("authentication.mechanism", value);
         },
         /**
          * Gets the username for the given account
@@ -101,12 +101,12 @@
          * @returns {Promise<string>}
          *  the username
          */
-        getUsername: function () {
-          return that.prefs.getString("authentication.username", "");
+        getUsername: () => {
+          return this.prefs.getString("authentication.username", "");
         },
 
-        setUsername: function(value) {
-          that.prefs.setString("authentication.username", value);
+        setUsername: (value) => {
+          this.prefs.setString("authentication.username", value);
         },
 
         /**
@@ -118,8 +118,8 @@
          * @returns {Promise<string>}
          *   the password as string
          */
-        getPassword: async function () {
-          return await that.callback(that);
+        getPassword: async () => {
+          return await this.callback(this);
         }
       };
     }
@@ -150,12 +150,21 @@
           return false;
         },
 
-        isKeepAlive: function () {
-          return true;
+        setKeepAlive: (value) => {
+          this.prefs.setBoolean("keepalive.enabled", value);
+          return this;
         },
 
-        getKeepAliveInterval: function () {
-          return 20 * 60 * 1000;
+        isKeepAlive: () => {
+          return this.prefs.getBoolean("keepalive.enabled");
+        },
+
+        setKeepAliveInterval: (value) => {
+          this.prefs.setInteger("keepalive.interval", value)
+        },
+
+        getKeepAliveInterval: () => {
+          return this.prefs.getInteger("keepalive.interval", 5 * 60 * 1000);
         }
       };
     }

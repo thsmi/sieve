@@ -122,6 +122,15 @@ let actions = {
     };
   },
 
+  "account-get-general" : function(msg) {
+    let account = accounts.getAccountById(msg.payload.account);
+
+    return {
+      keepAliveEnabled : account.getSettings().isKeepAlive(),
+      keepAliveInterval : account.getSettings().getKeepAliveInterval()
+    };
+  },
+
   "account-set-server": function (msg) {
     let account = accounts.getAccountById(msg.payload.account);
 
@@ -138,6 +147,12 @@ let actions = {
     account.getLogin().setUsername(msg.payload.username);
   },
 
+  "account-set-general" : function (msg) {
+    let account = accounts.getAccountById(msg.payload.account);
+
+    account.getSettings().setKeepAlive(msg.payload.keepAliveEnabled);
+    account.getSettings().setKeepAliveInterval(msg.payload.keepAliveInterval);
+  },
 
   "account-capabilities": async function (msg) {
     console.log("Get Capabilities");

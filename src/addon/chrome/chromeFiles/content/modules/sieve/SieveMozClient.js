@@ -145,10 +145,10 @@
       if (this.timeoutTimer)
         this.timeoutTimer.cancel();
 
-      // ensure the idle timer is stoped
+      // ensure the idle timer is stopped
       this.onStopIdle();
 
-      // the restart the timeout timer.
+      // then restart the timeout timer.
       if (this.timeoutTimer)
         this.timeoutTimer.initWithCallback(
           this, this.getTimeoutWait(),

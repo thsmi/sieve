@@ -574,25 +574,45 @@ function onShowPassword() {
 }
 
 /**
- * Opens the error or browser console
+ * Opens the error / browser console
  * @returns {void}
  */
 function onShowErrorConsole() {
-  let name = "global:console";
-  let uri = "chrome://global/content/console.xul";
 
-  let w = Cc["@mozilla.org/appshell/window-mediator;1"]
-    .getService(Ci.nsIWindowMediator)
-    .getMostRecentWindow(name);
+  // The error console was replaced with the HUD...
+  // ... so the new way to load the error console is this ridiculous piece of broken bloat...
+  try {
+    // 59 and up need this code
+    let { require } = Components.utils.import("resource://devtools/shared/Loader.jsm", {});
+    let { HUDService } = require("devtools/client/webconsole/hudservice");
+    HUDService.openBrowserConsoleOrFocus();
+  } catch (ex1) {
+    try {
+      // 52 and up needs this code
+      let { require } = Components.utils.import("resource://devtools/shared/Loader.jsm", {});
+      let HUDService = require("devtools/client/webconsole/hudservice");
+      HUDService.openBrowserConsoleOrFocus();
+    }
+    catch (ex2) {
+      // in case all of the previous failed, we know we are on an really older thunderbird version.
+      // so we try to open the classic error console.
 
-  if (w)
-    w.focus();
-  else
-    Cc["@mozilla.org/embedcomp/window-watcher;1"]
-      .getService(Ci.nsIWindowWatcher)
-      .openWindow(null, uri, name, "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar", null);
+      let name = "global:console";
+      let uri = "chrome://global/content/console.xul";
 
-  //window.open(uri, "_blank", "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar");
+      let w = Cc["@mozilla.org/appshell/window-mediator;1"]
+        .getService(Ci.nsIWindowMediator)
+        .getMostRecentWindow(name);
+
+      if (w) {
+        w.focus();
+      } else {
+        Cc["@mozilla.org/embedcomp/window-watcher;1"]
+          .getService(Ci.nsIWindowWatcher)
+          .openWindow(null, uri, name, "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar", null);
+      }
+    }
+  }
 }
 
 function enableProxy(type) {

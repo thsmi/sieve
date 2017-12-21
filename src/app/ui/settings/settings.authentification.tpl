@@ -5,7 +5,7 @@
       <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" data-sieve-authentication="default" href="#">Use suggested</a>
+        <a class="dropdown-item" data-sieve-authentication="default" href="#">Use suggested Mechanism</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" data-sieve-authentication="PLAIN" href="#">Force Plain</a>
         <a class="dropdown-item" data-sieve-authentication="LOGIN" href="#">Force Login (Deprecated)</a>

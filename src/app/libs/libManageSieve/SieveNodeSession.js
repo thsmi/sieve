@@ -127,27 +127,27 @@
 
     initClient() {
       this.sieve = new Sieve(this.logger);
-    };
+    }
 
     getLogger() {
       return this.logger;
-    };
+    }
 
     createGetScriptRequest(script) {
       return new SieveGetScriptRequest(script);
-    };
+    }
 
     createPutScriptRequest(script, body) {
       return new SievePutScriptRequest(script, body);
-    };
+    }
 
     createCheckScriptRequest(body) {
       return new SieveCheckScriptRequest(body);
-    };
+    }
 
     createSetActiveRequest(script) {
       return new SieveSetActiveRequest(script);
-    };
+    }
 
     createCapabilitiesRequest() {
       return new SieveCapabilitiesRequest();
@@ -187,7 +187,7 @@
 
     createSaslLoginRequest() {
       return new SieveSaslLoginRequest();
-    };
+    }
 
     createSaslCramMd5Request() {
       return new SieveSaslCramMd5Request();
@@ -253,14 +253,14 @@
      * fallback as described in the rfc.
      *
      * @return {void}
+     *   a promise
      */
     async noop() {
 
       // In case th server does not support noop we fallback
       // to a capability request as suggested in the rfc.
       if (!this.sieve.getCompatibility().noop) {
-        await this.capabilities();
-        return;
+        return await this.capabilities();
       }
 
       let callback = {
@@ -353,8 +353,17 @@
       request.addListScriptListener(callback);
 
       return await this.exec(request, callback);
-    };
+    }
 
+    /**
+     * Gets the script with the given name.
+     * In case the script does not exists the server will throw an error.
+     *
+     * @param {String} name
+     *   the scripts unique name
+     * @returns {String}
+     *   the scripts content.
+     */
     async getScript(name) {
 
       let callback = {
@@ -367,8 +376,19 @@
       request.addGetScriptListener(callback);
 
       return await this.exec(request, callback);
-    };
+    }
 
+    /**
+     * Activates the specified script and deactivated the current script.
+     * Sieve supports at most one active script.
+     *
+     * To deactivate all scripts just omit the script parameter
+     *
+     * @param {String} [script]
+     *   the script which should be activated.
+     *   If omitted all script will be deactivated.
+     * @returns {void}
+     */
     async setActiveScript(script) {
 
       let callback = {
@@ -381,7 +401,7 @@
       request.addSetActiveListener(callback);
 
       return await this.exec(request, callback);
-    };
+    }
 
     /**
      * Used to gracefully disconnect from the server.
@@ -400,8 +420,7 @@
       let request = this.createLogoutRequest();
       request.addLogoutListener(callback);
 
-      await this.exec(request, callback);
-      return;
+      return await this.exec(request, callback);
     }
 
     /**
@@ -418,7 +437,7 @@
      */
     async checkScript2(script) {
 
-      if (script.length === 0)
+      if (!script.length)
         return;
 
       let callback = {
@@ -452,6 +471,7 @@
      */
     async checkScript(script) {
 
+      // We do not need to check an empty script...
       if (script.length === 0)
         return;
 
@@ -459,7 +479,8 @@
       // ... fallback to the PUTSCRIPT/DELETESCRIPT Hack...
 
       if (this.sieve.getCompatibility().checkscript) {
-        return this.checkScript2(script);
+        await this.checkScript2(script);
+        return;
       }
 
       // ... we have to use the PUTSCRIPT/DELETESCRIPT Hack.
@@ -467,13 +488,30 @@
       // First we use PUTSCRIPT to store a temporary script on the server...
       // ... incase the command fails, it is most likely due to an syntax error...
       // ... if it succeeds the script is syntactically correct!
+
       await this.putScript("TMP_FILE_DELETE_ME", script);
-      // then delete the temporary script.
+
+      // then delete the temporary script. We need to do this only when
+      // put script succeeded and when it was stored.
       await this.deleteScript("TMP_FILE_DELETE_ME");
 
       return;
     }
 
+    /**
+     * Renames a script.
+     *
+     * It use the new "rename" command. In case the command is not supported it failes.
+     *
+     * It is an error if the new script name already existings.
+     *
+     * @param {String} oldName
+     *   the old script name
+     * @param {String} newName
+     *  the new script name
+     *
+     * @returns {void}
+     */
     async renameScript2(oldName, newName) {
 
       let callback = {
@@ -486,13 +524,29 @@
       request.addRenameScriptListener(callback);
 
       return await this.exec(request, callback);
-    };
+    }
 
 
+    /**
+     * Renames a script.
+     *
+     * It prefers the new rename command. In case it is not suppored it will
+     * use a get, put and delete sequence to emulate the rename command.
+     *
+     * So the result will be the very same, but there is one slight difference.
+     * Instead of throwing an error it will overwrite existing script with the
+     * same name silently.
+     *
+     * @param {String} oldName
+     *   the old name
+     * @param {String} newName
+     *   the new name
+     * @returns {void}
+     */
     async renameScript(oldName, newName) {
 
       if (this.sieve.getCompatibility().renameScript) {
-        return this.renameScript2(oldName, newName);
+        return await this.renameScript2(oldName, newName);
       }
 
       // Get the scripts activation state and check if the script name clashes
@@ -521,8 +575,8 @@
         await this.activateScript(newName);
 
       // Delete the old script
-      await this.deleteScript(oldName);
-    };
+      return await this.deleteScript(oldName);
+    }
 
     async connect2(hostname, port) {
 
@@ -555,7 +609,7 @@
       };
 
       return await this.exec(request, callback, init);
-    };
+    }
 
     /**
      * Starts a new TLS connections.
@@ -612,7 +666,8 @@
       let request = this.createStartTLSRequest();
       request.addStartTLSListener(callback);
 
-      return await this.exec(request, callback);
+      await this.exec(request, callback);
+      return;
     }
 
     /**
@@ -696,7 +751,7 @@
 
         let password = await account.getLogin().getPassword();
 
-        if (typeof(password) === undefined || password === null)
+        if (typeof (password) === undefined || password === null)
           throw new SieveClientException("error.authentication");
 
         request.setPassword(password);
@@ -721,7 +776,9 @@
       };
 
       request.addSaslListener(callback);
-      return await this.exec(request, callback);
+      await this.exec(request, callback);
+
+      return;
     }
 
     /**
@@ -782,10 +839,6 @@
       }
 
       return this;
-      // we are now connected....
-
-      //this.state = 2;
-      //this._invokeListeners("onChannelCreated", this.sieve);
     }
 
     /**
@@ -798,6 +851,18 @@
       return this.sieve.isAlive();
     }
 
+    /**
+     * Disconnects the current sieve session.
+     *
+     * The disconnect is by default graceful, which means the client send a
+     * logout command and waits for the server to terminate the connection.
+     *
+     * @param {boolean} [force]
+     *   if set to true the disconnect will be forced and not graceful.
+     *   This means the connection will be just disconnected.
+     * @returns {SieveSession}
+     *   a self reference.
+     */
     async disconnect(force) {
 
       if (this.sieve === null)
@@ -809,6 +874,8 @@
 
       await this.sieve.disconnect();
       this.sieve = null;
+
+      return this;
     }
   }
 

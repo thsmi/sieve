@@ -72,10 +72,10 @@
         return false;
 
       // Test for a linebreak #13#10
-      if (this.data[this.pos] != CHAR_CR)
+      if (this.data[this.pos] !== CHAR_CR)
         return false;
 
-      if (this.data[this.pos + 1] != CHAR_LF)
+      if (this.data[this.pos + 1] !== CHAR_LF)
         return false;
 
       return true;
@@ -106,7 +106,7 @@
    */
   SieveAbstractResponseParser.prototype.isSpace
     = function () {
-      if (this.data[this.pos] == CHAR_SPACE)
+      if (this.data[this.pos] === CHAR_SPACE)
         return true;
 
       return false;
@@ -116,6 +116,7 @@
    * Extracts a space character (#32) form the buffer
    *
    * If it does not start with a space character an exception is thrown.
+   * @returns {void}
    */
   SieveAbstractResponseParser.prototype.extractSpace
     = function () {
@@ -128,7 +129,7 @@
   // literal = "{" number  "+}" CRLF *OCTET
   SieveAbstractResponseParser.prototype.isLiteral
     = function () {
-      if (this.data[this.pos] == CHAR_LEFT_BRACES)
+      if (this.data[this.pos] === CHAR_LEFT_BRACES)
         return true;
 
       return false;
@@ -148,7 +149,7 @@
       // ... we can get "{4+}\r\n1234" or "{4}\r\n1234"
 
       let nextBracket = this.indexOf(CHAR_RIGHT_BRACES);
-      if (nextBracket == -1)
+      if (nextBracket === -1)
         throw new Error("Error unbalanced parentheses \"{\" in\n" + this.getData());
 
       // extract the size, and ignore "+"
@@ -170,8 +171,8 @@
    *
    * @param {byte} character
    *   the chararcter which should be found
-   * @optional @param {int} offset
-   *   an absolut offset, from which to start seachring
+   * @param {int} [offset]
+   *   an absolut offset, from which to start searching
    * @return {int} character
    *   the characters absolute position within the buffer otherwise -1 if not found
    */
@@ -181,7 +182,7 @@
         offset = this.pos;
 
       for (let i = offset; i < this.data.length; i++)
-        if (this.data[i] == character)
+        if (this.data[i] === character)
           return i;
 
       return -1;
@@ -194,7 +195,7 @@
    */
   SieveAbstractResponseParser.prototype.isQuoted
     = function () {
-      if (this.data[this.pos] == CHAR_QUOTE)
+      if (this.data[this.pos] === CHAR_QUOTE)
         return true;
 
       return false;
@@ -216,22 +217,22 @@
       // now search for the end. But we need to be aware of escape sequences.
       let nextQuote = this.pos + 1;
 
-      while (this.data[nextQuote] != CHAR_QUOTE) {
+      while (this.data[nextQuote] !== CHAR_QUOTE) {
 
         // Quoted stings can not contain linebreaks...
-        if (this.data[nextQuote] == CHAR_LF)
+        if (this.data[nextQuote] === CHAR_LF)
           throw new Error("Linebreak (LF) in Quoted String detected");
 
-        if (this.data[nextQuote] == CHAR_CR)
+        if (this.data[nextQuote] === CHAR_CR)
           throw new Error("Linebreak (CR) in Quoted String detected");
 
         // is it an escape sequence?
-        if (this.data[nextQuote] == CHAR_BACKSLASH) {
+        if (this.data[nextQuote] === CHAR_BACKSLASH) {
           // Yes, it's a backslash so get the next char...
           nextQuote++;
 
           // ... only \\ and \" are valid escape sequences
-          if ((this.data[nextQuote] != CHAR_BACKSLASH) && (this.data[nextQuote] != CHAR_QUOTE))
+          if ((this.data[nextQuote] !== CHAR_BACKSLASH) && (this.data[nextQuote] !== CHAR_QUOTE))
             throw new Error("Invalid Escape Sequence");
         }
 
@@ -277,7 +278,7 @@
       if (this.isLiteral())
         return this.extractLiteral();
 
-      throw "String expected but found\n" + this.getData();
+      throw new Error("String expected but found\n" + this.getData());
     };
 
   /**
@@ -295,24 +296,24 @@
     = function (separators) {
       // Search for the separators, the one with the lowest index which is not...
       // ... equal to -1 wins. The -2 indecates not initalized...
-      var index = -1;
+      let index = -1;
 
-      for (var i = 0; i < separators.length; i++) {
-        var idx = this.indexOf(separators[i], this.pos);
+      for (let i = 0; i < separators.length; i++) {
+        let idx = this.indexOf(separators[i], this.pos);
 
-        if (idx == -1)
+        if (idx === -1)
           continue;
 
-        if (index == -1)
+        if (index === -1)
           index = idx;
         else
           index = Math.min(index, idx);
       }
 
-      if (index == -1)
-        throw "Delimiter >>" + separators + "<< not found in: " + this.getData();
+      if (index === -1)
+        throw new Error("Delimiter >>" + separators + "<< not found in: " + this.getData());
 
-      var token = this.getData(this.pos, index);
+      let token = this.getData(this.pos, index);
       this.pos = index;
 
       return token;
@@ -331,15 +332,15 @@
    *   true if bytes match the beginning of the buffer, otherwise false
    */
   SieveAbstractResponseParser.prototype.startsWith
-    = function (array) {
-      if (array.length === 0)
+    = function (bytes) {
+      if (bytes.length === 0)
         return false;
 
-      for (var i = 0; i < array.length; i++) {
+      for (let i = 0; i < bytes.length; i++) {
         let result = false;
 
-        for (var ii = 0; ii < array[i].length; ii++)
-          if (array[i][ii] == this.data[this.pos + i])
+        for (let ii = 0; ii < bytes[i].length; ii++)
+          if (bytes[i][ii] === this.data[this.pos + i])
             result = true;
 
         if (result === false)

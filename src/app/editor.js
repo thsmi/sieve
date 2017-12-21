@@ -56,6 +56,8 @@ class SieveEditorUI {
     this.account = account;
 
     this.activeLine = null;
+
+    this.changed = false;
   }
 
   /**
@@ -135,6 +137,8 @@ class SieveEditorUI {
    * @returns {void}
    */
   onChange() {
+
+    this.changed = true;
 
     if (this.syntaxCheckEnabled === false)
       return;
@@ -269,6 +273,8 @@ class SieveEditorUI {
     this.cm.clearHistory();
     this.cm.refresh();
 
+    this.changed = false;
+
     // ensure the active line cursor changed...
     //    onActiveLineChange();
   }
@@ -280,10 +286,13 @@ class SieveEditorUI {
    */
   async saveScript() {
 
-    if (this.name === undefined)
-      throw new Error("No script loaded");
-
     this.cm.focus();
+
+    if (this.name === undefined)
+      return;
+
+    if (!this.changed)
+      return;
 
     // Get the current script...
     let script = this.cm.getValue();
@@ -291,9 +300,22 @@ class SieveEditorUI {
     script = script.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
 
     try {
-    await this.send("script-save", { "name": this.name, "script": script });
+      await this.send("script-save", { "name": this.name, "script": script });
+
+      this.changed = false;
+      $("#sieve-editor-error").remove();
     } catch (ex) {
-      alert(ex.toString());
+
+      let content = await (new SieveTemplateLoader()).load("./ui/editor/editor.save.error.tpl");
+
+      content
+        .find(".sieve-editor-error-msg")
+        .text(ex.toString());
+
+      $("#sieve-editor-error").remove();
+      $("#sieve-tab-content").prepend(content);
+
+      content.alert("#sieve-editor-error");
     }
   }
 

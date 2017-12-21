@@ -47,6 +47,9 @@
 
       this.accounts = {};
 
+      if (!ids)
+        return this;
+
       ids.forEach((id) => {
         this.accounts[id] = new SieveAccount(id, this.callback);
       });

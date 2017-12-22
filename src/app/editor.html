@@ -20,12 +20,6 @@
   <script src="./libs/CodeMirror/mode/sieve/sieve.js"></script>
 
   <style>
-    /*.fixedsticky {
-      position: -webkit-sticky;
-      position: sticky;
-      top: 0px;
-      width: 100%;
-    }*/
 
     body {
       /* Margin bottom by footer height */
@@ -33,12 +27,26 @@
     }
 
     .CodeMirror {
-      border: 1px solid #eee;
+      border-color: #eee;
+      border-width: 0px 1px 1px 1px;
+      border-style: solid;
       height: auto;
     }
 
     #sieve-widget-editor {
       border: 0;
+    }
+
+    .sticky {
+      position: sticky;
+      top: 0px;
+      z-index: 10;
+      background-color: inherit;
+      border-bottom: 1px solid #eee;
+    }
+
+    html {
+      overflow-y: scroll;
     }
 
     .activeline {background: #e8f2ff !important;}
@@ -74,7 +82,7 @@
         </div>
       </div>
 
-      <div class="card-body pl-2 pr-2 pt-2 pb-0">
+      <div class="card-body py-2 px-0 mx-2 sticky">
 
           <div class="btn-group mr-2" role="group" >
               <button id="sieve-editor-save" type="button" class="btn btn-sm btn-outline-secondary">Save</button>
@@ -94,7 +102,7 @@
         <button id="sieve-editor-quickreference" type="button" class="btn-group mr-2 btn btn-sm btn-outline-secondary">Reference</button>
       </div>
 
-      <div id="sieve-tab-content" class="list-group list-group-flush siv-tpl-scripts tab-content m-2">
+      <div id="sieve-tab-content" class="list-group list-group-flush siv-tpl-scripts tab-content mx-2 mb-2">
         <iframe id="sieve-widget-editor" class="tab-pane fade" role="tabpanel" src="./libs/libSieve/SieveGui.html" ></iframe>
         <form id="sieve-plaintext-editor" class="tab-pane fade show active" role="tabpanel">
           <textarea id="code" name="code" class="form-control"></textarea>

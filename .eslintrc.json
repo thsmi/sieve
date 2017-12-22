@@ -9,11 +9,17 @@
     "parserOptions": {
         "ecmaVersion": 8,
         "ecmaFeatures": {
-            "jsx": true
+            "jsx": false
         },
         "sourceType": "module"
     },
     "rules": {
+        "eqeqeq":"error",
+        "no-sequences": "error",
+        "no-labels": "error",
+        "consistent-return": "error",
+        "no-use-before-define": "error",
+        "no-else-return": "error",
         "no-const-assign": "warn",
         "no-this-before-super": "warn",
         "no-undef": "warn",
@@ -38,6 +44,7 @@
         "no-self-compare": "error",
         "no-unmodified-loop-condition": "error",
         "no-useless-concat": "error",
+        "no-useless-call" : "error",
         "no-void": "error",
         "no-with": "error",
         "prefer-promise-reject-errors": "error",

@@ -319,6 +319,39 @@ class SieveEditorUI {
     }
   }
 
+  /**
+   * Cuts the currently selected text.
+   * @returns {void}
+   */
+  async cut() {
+    await this.copy();
+    this.cm.replaceSelection("");
+
+    this.cm.focus();
+  }
+
+  /**
+   * Copies the currently selected text.
+   * @returns {void}
+   */
+  async copy() {
+    let data = this.cm.getSelection();
+    await this.send("copy",data);
+
+    this.cm.focus();
+  }
+
+  /**
+   * Pastes the clipboard content into the editor.
+   * @returns {void}
+   */
+  async paste() {
+    let data = await this.send("paste");
+    this.cm.replaceSelection(data);
+
+    this.cm.focus();
+  }
+
 }
 
 /**
@@ -346,6 +379,18 @@ async function main() {
 
   $("#sieve-editor-redo").click(() => {
     editor.redo();
+  });
+
+  $("#sieve-editor-cut").click(() => {
+    editor.cut();
+  });
+
+  $("#sieve-editor-copy").click(() => {
+    editor.copy();
+  });
+
+  $("#sieve-editor-paste").click(() => {
+    editor.paste();
   });
 
   $("#sieve-editor-settings .sieve-editor-disable-syntaxcheck").click(() => {

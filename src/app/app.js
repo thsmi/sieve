@@ -319,6 +319,14 @@ let actions = {
   "reference-open": function () {
     require("electron").shell.openExternal('https://thsmi.github.io/sieve-reference/en/index.html');
     //require("shell").openExternal("http://www.google.com")
+  },
+
+  "copy" : function(msg) {
+    require("electron").clipboard.writeText(msg.payload.data);
+  },
+
+  "paste" : function() {
+    return require("electron").clipboard.readText();
   }
 };
 

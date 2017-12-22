@@ -213,8 +213,10 @@ class SieveEditorUI {
    * @returns {void}
    */
   showSyntaxErrors(errors) {
-    $("#sieve-editor-msg").show();
-    $("#sieve-editor-msg-details").empty().text(errors);
+    $("#sieve-editor-msg")
+      .show();
+    $("#sieve-editor-msg .sieve-editor-msg-details")
+      .empty().text(errors);
   }
 
   /**

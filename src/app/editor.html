@@ -20,12 +20,6 @@
   <script src="./libs/CodeMirror/mode/sieve/sieve.js"></script>
 
   <style>
-
-    body {
-      /* Margin bottom by footer height */
-      margin-bottom: 60px;
-    }
-
     .CodeMirror {
       border-color: #eee;
       border-width: 0px 1px 1px 1px;
@@ -49,13 +43,15 @@
       overflow-y: scroll;
     }
 
-    .activeline {background: #e8f2ff !important;}
+    .activeline {
+      background: #e8f2ff !important;
+    }
   </style>
 </head>
 
-<body>
+<body class="mb-2">
   <div class="container">
-    <div class="card mt-4 mb-4">
+    <div class="card mt-4 mb-0">
       <div class="card-header d-flex justify-content-between py-0">
         <ul class="nav nav-tabs card-header-tabs my-0 pt-3" role="tablist">
           <li class="nav-item">
@@ -83,42 +79,56 @@
       </div>
 
       <div class="card-body py-2 px-0 mx-2 sticky">
+        <div>
+          <div class="btn-group mr-2" role="group">
+            <button id="sieve-editor-save" type="button" class="btn btn-sm btn-outline-secondary">Save</button>
+          </div>
 
-          <div class="btn-group mr-2" role="group" >
-              <button id="sieve-editor-save" type="button" class="btn btn-sm btn-outline-secondary">Save</button>
-            </div>
-
-          <div class="btn-group mr-2" role="group" >
-              <button id="sieve-editor-cut" type="button" class="btn btn-sm btn-outline-secondary">Cut</button>
-              <button id="sieve-editor-copy" type="button" class="btn btn-sm btn-outline-secondary">Copy</button>
-              <button id="sieve-editor-paste" type="button" class="btn btn-sm btn-outline-secondary">Paste</button>
+          <div class="btn-group mr-2" role="group">
+            <button id="sieve-editor-cut" type="button" class="btn btn-sm btn-outline-secondary">Cut</button>
+            <button id="sieve-editor-copy" type="button" class="btn btn-sm btn-outline-secondary">Copy</button>
+            <button id="sieve-editor-paste" type="button" class="btn btn-sm btn-outline-secondary">Paste</button>
           </div>
 
           <div class="btn-group mr-2 " role="group">
-              <button id="sieve-editor-undo" type="button" class="btn btn-sm btn-outline-secondary">Undo</button>
-              <button id="sieve-editor-redo" type="button" class="btn btn-sm btn-outline-secondary">Redo</button>
-            </div>
+            <button id="sieve-editor-undo" type="button" class="btn btn-sm btn-outline-secondary">Undo</button>
+            <button id="sieve-editor-redo" type="button" class="btn btn-sm btn-outline-secondary">Redo</button>
+          </div>
 
-        <button id="sieve-editor-quickreference" type="button" class="btn-group mr-2 btn btn-sm btn-outline-secondary">Reference</button>
+          <button id="sieve-editor-quickreference" type="button" class="btn-group mr-2 btn btn-sm btn-outline-secondary">Reference</button>
+        </div>
       </div>
 
       <div id="sieve-tab-content" class="list-group list-group-flush siv-tpl-scripts tab-content mx-2 mb-2">
-        <iframe id="sieve-widget-editor" class="tab-pane fade" role="tabpanel" src="./libs/libSieve/SieveGui.html" ></iframe>
+        <iframe id="sieve-widget-editor" class="tab-pane fade" role="tabpanel" src="./libs/libSieve/SieveGui.html"></iframe>
         <form id="sieve-plaintext-editor" class="tab-pane fade show active" role="tabpanel">
           <textarea id="code" name="code" class="form-control"></textarea>
         </form>
-      </div>
-    </div>
-  </div>
 
-  <footer id="sieve-editor-msg" class="footer fixed-bottom">
-    <div class="container">
-      <div class="alert alert-warning" role="alert">
-        <h4 class="alert-heading">Server reports script errors</h4>
-        <p id="sieve-editor-msg-details"></p>
+        <div id="sieve-editor-msg">
+          <!-- and this is the real content -->
+          <div class="footer fixed-bottom container">
+            <div style="margin-right: 1px">
+              <div class="alert alert-warning mx-2 mb-4" role="alert">
+                <h4 class="alert-heading">Server reports script errors</h4>
+                <p class="sieve-editor-msg-details"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- We need some CSS Magic this is just an dynamic spacer -->
+          <div class="footer" style="visibility:hidden">
+            <div class="alert alert-warning" role="alert">
+              <h4 class="alert-heading">Server reports script errors</h4>
+              <p class="sieve-editor-msg-details"></p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
-  </footer>
+
+  </div>
 
   <!-- Bootstrap core JavaScript
     ================================================== -->

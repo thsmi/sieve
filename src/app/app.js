@@ -320,7 +320,6 @@ let actions = {
     require("electron").shell.openExternal('https://thsmi.github.io/sieve-reference/en/index.html');
     //require("shell").openExternal("http://www.google.com")
   }
-
 };
 
 
@@ -375,10 +374,3 @@ $('#scrollleft').click(function () {
     $('.list').animate({ left: "+=100px" });
 });
 
-$('#tmp').click(function () {
-  $("#sieve-password-dialog").modal('show');
-});
-
-$('#debug').click(function () {
-  $('#test')[0].openDevTools();
-});

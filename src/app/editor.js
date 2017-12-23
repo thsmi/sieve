@@ -338,7 +338,7 @@ class SieveEditorUI {
    */
   async copy() {
     let data = this.cm.getSelection();
-    await this.send("copy",data);
+    await this.send("copy", data);
 
     this.cm.focus();
   }
@@ -352,6 +352,154 @@ class SieveEditorUI {
     this.cm.replaceSelection(data);
 
     this.cm.focus();
+  }
+
+  /**
+   * Gets the selection begin
+   *
+   * @param {boolean} isReverse
+   *   if true the selection is handled in reverse order.
+   *   which means the selection start gets the selections end and vice versa.
+   * @returns {int}
+   *   the current start position.
+   */
+  getSelectionStart(isReverse) {
+
+    let start = this.cm.getCursor(true);
+    let end = this.cm.getCursor(false);
+
+    if (isReverse) {
+      if (start.line < end.line)
+        return start;
+
+      if (start.line > end.line)
+        return end;
+
+      // start.line == end.line
+      if (start.ch > end.ch)
+        return end;
+
+      return start;
+    }
+
+
+    if (start.line > end.line)
+      return start;
+
+    if (start.line < end.line)
+      return end;
+
+    // start.line == end.line
+    if (start.ch > end.ch)
+      return start;
+
+    return end;
+
+  }
+
+  /**
+   * Finds the specified token within the editor.
+   *
+   * @param {String} token
+   *   the string to find.
+   * @param {boolean} [isCaseSensitive]
+   *   if true the search is case sensitive.
+   * @param {boolean} [isReverse]
+   *   if true the search will be in reverse direction.
+   * @returns {boolean}
+   *   true in case the the string was found otherwise false.
+   */
+  find(token, isCaseSensitive, isReverse) {
+
+    // Fix optional parameters...
+    if (typeof (isCaseSensitive) === "undefined" || isCaseSensitive === null)
+      isCaseSensitive = false;
+
+    if (typeof (isReverse) === "undefined" || isReverse === null)
+      isReverse = false;
+
+    let cursor = this.cm.getSearchCursor(
+      token,
+      this.getSelectionStart(isReverse),
+      !isCaseSensitive);
+
+    if (!cursor.find(isReverse)) {
+      // warp search at top or bottom
+      cursor = this.cm.getSearchCursor(
+        token,
+        isReverse ? { line: this.cm.lineCount() - 1 } : { line: 0, ch: 0 },
+        !isCaseSensitive);
+
+      if (!cursor.find(isReverse))
+        return false;
+    }
+
+    if (isReverse)
+      this.cm.setSelection(cursor.from(), cursor.to());
+    else
+      this.cm.setSelection(cursor.to(), cursor.from());
+
+    this.cm.scrollIntoView(cursor.to(), 200);
+
+    return true;
+  }
+
+  /**
+   * Checks if the specified token is selected.
+   *
+   * @param {String} token
+   *   the token
+   * @param {Boolean} isCaseSensitive
+   *   true in case the check should be case insensitive.
+   * @returns {boolean}
+   *   true in case the token was found otherwise false.
+   */
+  isSelected(token, isCaseSensitive) {
+    let selection = this.cm.getSelection();
+
+    if (isCaseSensitive) {
+      selection = selection.toLowerCase();
+      token = token.toLocaleLowerCase();
+    }
+
+    if (selection !== token)
+      return false;
+
+    return true;
+  }
+
+  /**
+   * Replaces the old token with the new token.
+   *
+   * @param {String} oldToken
+   *   the old token which should be replaced
+   * @param {String} newToken
+   *   the new token
+   * @param {boolean} [isCaseSensitive]
+   *   if true the search is case sensitive.
+   * @param {boolean} [isReverse]
+   *   if true the search will be in reverse direction.
+   * @returns {boolean}
+   *   true if the string was replaced, otherwise false.
+   */
+  replace(oldToken, newToken, isCaseSensitive, isReverse) {
+
+    // Fix optional parameters...
+    if (typeof (isCaseSensitive) === "undefined" || isCaseSensitive === null)
+      isCaseSensitive = false;
+
+    if (typeof (isReverse) === "undefined" || isReverse === null)
+      isReverse = false;
+
+    if (this.isSelected(oldToken, isCaseSensitive) === false) {
+      if (this.find(oldToken, isCaseSensitive, isReverse) === false)
+        return false;
+    }
+
+    this.cm.replaceSelection(newToken);
+    return true;
+
+    //onChange();
   }
 
 }
@@ -393,6 +541,33 @@ async function main() {
 
   $("#sieve-editor-paste").click(() => {
     editor.paste();
+  });
+
+  $("#sieve-editor-find").click(() => {
+    let token = $("#sieve-editor-txt-find").val();
+
+    let isReverse = $("#sieve-editor-backward").prop( "checked" );
+    let isCaseSensitive = $("#sieve-editor-casesensitive").prop( "checked" );
+
+    editor.find(token, isCaseSensitive, isReverse);
+  });
+
+  $("#sieve-editor-replace").click(() => {
+    let oldToken = $("#sieve-editor-txt-find").val();
+    let newToken = $("#sieve-editor-txt-replace").val();
+
+    let isReverse = $("#sieve-editor-backward").prop( "checked" );
+    let isCaseSensitive = $("#sieve-editor-casesensitive").prop( "checked" );
+
+    if (oldToken === "")
+      return;
+
+    editor.replace(oldToken, newToken, isCaseSensitive, isReverse);
+  });
+
+
+  $("#sieve-editor-replace-replace").click(() => {
+    $("#sieve-editor-find-toolbar").toggle();
   });
 
   $("#sieve-editor-settings .sieve-editor-disable-syntaxcheck").click(() => {

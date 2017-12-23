@@ -10,7 +10,6 @@
  */
 
 /* global Components */
-/* global Iterator */
 
 // Enable Strict Mode
 "use strict";

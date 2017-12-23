@@ -41,42 +41,6 @@
   SieveLogger.prototype = Object.create(SieveAbstractLogger.prototype);
   SieveLogger.prototype.constructor = SieveLogger;
 
-
-  /**
-   * @private
-   *
-   * Padds the given string with leading zeros
-   *
-   * @param {string} n
-   *   the string which should be padded
-   * @param {int} m
-   *   the maximum padding.
-   *
-   * @returns {string}
-   *   the padded string
-   */
-  SieveLogger.prototype._pad
-    = function(n, m) {
-
-    var str = n;
-
-    for (var i = 0; i < m; i++)
-      if (n < Math.pow(10,i))
-        str = '0'+str;
-
-    return str;
-  };
-
-  SieveLogger.prototype.getTimestamp
-    = function () {
-
-    let date = new  Date();
-    return this._pad(date.getHours(),2)
-      + ":"+this._pad(date.getMinutes(),2)
-      + ":"+this._pad(date.getSeconds(),2)
-      + "."+this._pad(date.getMilliseconds(),3);
-  };
-
   /**
    * @override
    **/

@@ -30,16 +30,27 @@
 
 (function (exports) {
 
+  const DEFAULT_TIMEOUT = 20000;
+
   /**
-   * This Code is used for a mozilla module as well as a Google chrome sandbox.
+   * An abstract implemenation for the manage sieve protocol.
    *
-   * This means the javascript syntax is limited.
-   * There is no window object and no toSource().
+   * It implements a message pump and parsing facility.
+   * Only the connections to the transport are needed to be implemented.
    *
-   * You should also avoid new as this makes imports difficult.
+   * The javascript syntax for this code is extremely limited.
+   * As this code is used for a mozilla module as well as in node js.
+   *
+   * Due to various limitation there is no window object and also no toSource().
+   * Same applies to timeouts. They need to be implemented with platform
+   * sepcific code.
+   *
+   * In general you should avoid the "new" operator as this makes imports difficult.
+   * Mozilla's Modules, Node's Require and the new ES imports are mostly
+   * incompatible to each other.
+   *
+   * @constructor
    */
-
-
   function SieveAbstractClient() {
     this.host = null;
     this.port = null;
@@ -185,6 +196,7 @@
 
   /**
    * Returns the maximal interval in ms between a request and a response.
+   * The default timeout is 20 seconds
    * @returns {int}
    *   the maximal number of milliseconds
    */
@@ -192,7 +204,7 @@
   = function() {
     // Apply some selfhealing magic...
     if (!this.timeoutDelay)
-      return 20000;
+      return DEFAULT_TIMEOUT;
 
     return this.timeoutDelay;
   };
@@ -306,8 +318,11 @@
    */
   SieveAbstractClient.prototype.addRequest
     = function (request, greedy) {
-      if (this.listener)
-        request.addByeListener(this.listener);
+
+      // Attach the global bye listener only when needed.
+      if ( !request.byeListener || !request.byeListener.onByeResponse)
+        if (this.listener && this.listener.onByeResponse)
+          request.addByeListener(this.listener);
 
       // TODO: we should realy store this internally, instead of tagging objects
       if (greedy)
@@ -329,10 +344,10 @@
         if (this.requests[idx].isUnsolicited())
           break;
 
-      if (idx == this.requests.length)
+      if (idx === this.requests.length)
         return this;
 
-      if (this.requests[idx] != request)
+      if (this.requests[idx] !== request)
         return this;
 
       this._sendRequest();
@@ -374,12 +389,19 @@
 
 
   /**
+   * Disconnets from the server.
+   *
+   * Need to be overwritten. The current implementation is a stub
+   * which take care about stopping the timeouts.
+   *
+   * @returns {void}
+   *
    * @abstract
    */
   SieveAbstractClient.prototype.disconnect
     = function () {
 
-      this.getLogger().log("Disconnecting ...", (1 << 2));
+      this.getLogger().log("Disconnecting "+this.host+":"+this.port+"...", (1 << 2));
 
       // free requests...
       //this.requests = new Array();
@@ -391,6 +413,8 @@
     = function () {
 
       this.onStopIdle();
+
+      this.getLogger().log("libManageSieve/Sieve.js:\nOnIdle", (1 << 2));
 
       if (this.listener && this.listener.onIdle)
         this.listener.onIdle();
@@ -429,7 +453,6 @@
     };
 
 
-
   SieveAbstractClient.prototype.createParser
     = function (data) {
       throw new Error("Implement SieveAbstractClient::createParser " + data);
@@ -443,7 +466,7 @@
   SieveAbstractClient.prototype.onDataReceived
     = function (data) {
       // responses packets could be fragmented...
-      if ((this.data == null) || (this.data.length === 0))
+      if ((this.data === null) || (this.data.length === 0))
         this.data = data;
       else
         this.data = this.data.concat(data);

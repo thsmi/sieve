@@ -95,7 +95,47 @@
             <button id="sieve-editor-redo" type="button" class="btn btn-sm btn-outline-secondary">Redo</button>
           </div>
 
+          <div class="btn-group mr-2 " role="group">
+            <button id="sieve-editor-replace-replace" type="button" class="btn btn-sm btn-outline-secondary">Find &amp; Replace</button>
+          </div>
+
           <button id="sieve-editor-quickreference" type="button" class="btn-group mr-2 btn btn-sm btn-outline-secondary">Reference</button>
+        </div>
+        <div id="sieve-editor-find-toolbar" style="display:none;">
+          <hr>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="input-group mb-2">
+                <input type="text" class="form-control form-control-sm" placeholder="Search for..."
+                  id="sieve-editor-txt-find">
+                <span class="input-group-btn">
+                  <button id="sieve-editor-find" class="btn btn-sm btn-outline-secondary" type="button">Find</button>
+                </span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group mb-2">
+                <input type="text" class="form-control form-control-sm" placeholder="Replace with..."
+                  id="sieve-editor-txt-replace">
+                <span class="input-group-btn">
+                  <button id="sieve-editor-replace" class="btn btn-sm btn-outline-secondary" type="button">Replace</button>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="custom-control custom-checkbox">
+              <input id="sieve-editor-casesensitive"type="checkbox" class="custom-control-input">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">Match Case</span>
+            </label>
+            <label class="custom-control custom-checkbox">
+              <input id="sieve-editor-backward" type="checkbox" class="custom-control-input">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">Search Backward</span>
+            </label>
+          </div>
+
         </div>
       </div>
 
@@ -112,7 +152,7 @@
   <div id="sieve-editor-msg">
     <!-- We do some magic here. First we render the real content-->
     <div class="footer fixed-bottom container">
-      <div >
+      <div>
         <div class="alert alert-warning mx-2" role="alert">
           <h4 class="alert-heading">Server reports script errors</h4>
           <p class="sieve-editor-msg-details"></p>
@@ -123,7 +163,7 @@
     <!-- Then an insible element which ensures there is alway enough -->
     <!-- so that the messeage never overlays the textbox -->
     <!-- it is like a dynamically sized space -->
-    <div class="footer container" style="visibility:hidden">
+    <div class="footer container invisible">
       <div style="margin: 1px;">
         <div class="alert alert-warning mx-2" role="alert">
           <h4 class="alert-heading">Server reports script errors</h4>

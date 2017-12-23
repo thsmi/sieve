@@ -7,7 +7,8 @@
   },
   "eslint.enable": true,
   "files.associations": {
-    "*.tpl": "html"
+    "*.tpl": "html",
+    ".jsm" : "javascript"
   },
   "files.eol": "\n"
 }

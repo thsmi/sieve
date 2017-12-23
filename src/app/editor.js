@@ -315,7 +315,7 @@ class SieveEditorUI {
         .text(ex.toString());
 
       $("#sieve-editor-error").remove();
-      $("#sieve-tab-content").prepend(content);
+      $("#sieve-editor-toolbar").append(content);
 
       content.alert("#sieve-editor-error");
     }

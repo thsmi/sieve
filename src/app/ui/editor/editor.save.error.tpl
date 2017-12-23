@@ -1,4 +1,4 @@
-<div id="sieve-editor-error" class="alert alert-danger alert-dismissible fade show" role="alert">
+<div id="sieve-editor-error" class="alert alert-danger alert-dismissible fade show mt-2 mb-0" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>

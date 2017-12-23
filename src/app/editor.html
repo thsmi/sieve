@@ -49,9 +49,9 @@
   </style>
 </head>
 
-<body class="mb-2">
+<body>
   <div class="container">
-    <div class="card mt-4 mb-0">
+    <div class="card mt-4 mb-2">
       <div class="card-header d-flex justify-content-between py-0">
         <ul class="nav nav-tabs card-header-tabs my-0 pt-3" role="tablist">
           <li class="nav-item">
@@ -78,7 +78,7 @@
         </div>
       </div>
 
-      <div class="card-body py-2 px-0 mx-2 sticky">
+      <div class="card-body py-2 px-0 mx-2 sticky" id="sieve-editor-toolbar">
         <div>
           <div class="btn-group mr-2" role="group">
             <button id="sieve-editor-save" type="button" class="btn btn-sm btn-outline-secondary">Save</button>
@@ -104,31 +104,35 @@
         <form id="sieve-plaintext-editor" class="tab-pane fade show active" role="tabpanel">
           <textarea id="code" name="code" class="form-control"></textarea>
         </form>
-
-        <div id="sieve-editor-msg">
-          <!-- and this is the real content -->
-          <div class="footer fixed-bottom container">
-            <div style="margin-right: 1px">
-              <div class="alert alert-warning mx-2 mb-4" role="alert">
-                <h4 class="alert-heading">Server reports script errors</h4>
-                <p class="sieve-editor-msg-details"></p>
-              </div>
-            </div>
-          </div>
-
-          <!-- We need some CSS Magic this is just an dynamic spacer -->
-          <div class="footer" style="visibility:hidden">
-            <div class="alert alert-warning" role="alert">
-              <h4 class="alert-heading">Server reports script errors</h4>
-              <p class="sieve-editor-msg-details"></p>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
 
   </div>
+
+  <div id="sieve-editor-msg">
+    <!-- We do some magic here. First we render the real content-->
+    <div class="footer fixed-bottom container">
+      <div >
+        <div class="alert alert-warning mx-2" role="alert">
+          <h4 class="alert-heading">Server reports script errors</h4>
+          <p class="sieve-editor-msg-details"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Then an insible element which ensures there is alway enough -->
+    <!-- so that the messeage never overlays the textbox -->
+    <!-- it is like a dynamically sized space -->
+    <div class="footer container" style="visibility:hidden">
+      <div style="margin: 1px;">
+        <div class="alert alert-warning mx-2" role="alert">
+          <h4 class="alert-heading">Server reports script errors</h4>
+          <p class="sieve-editor-msg-details"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Bootstrap core JavaScript
     ================================================== -->

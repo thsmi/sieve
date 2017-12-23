@@ -846,4 +846,4 @@
   exports.SieveGetScriptResponse = SieveGetScriptResponse;
   exports.SieveSaslScramSha1Response = SieveSaslScramSha1Response;
 
-})(exports);
+})(this);

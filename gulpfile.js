@@ -196,6 +196,13 @@ gulp.task('app:package-bootstrap', function () {
   ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_APP + '/libs/bootstrap'));
 });
 
+gulp.task('app:package-license', function() {
+
+  gulp.src([
+    "./LICENSE"
+  ]).pipe(gulp.dest(BUILD_DIR_APP));
+});
+
 /**
  * The source files need to go into the app/ directory...
  */
@@ -226,7 +233,17 @@ gulp.task('app:package-common', function () {
 });
 
 
-gulp.task('app:package', ["app:package-src", "app:package-common", "app:package-jquery", "app:package-bootstrap", "app:package-codemirror"]);
+gulp.task('addon:package-license', function() {
+
+  gulp.src([
+    "./LICENSE"
+  ]).pipe(gulp.dest(BUILD_DIR_ADDON));
+});
+
+gulp.task('app:package', [
+  "app:package-src", "app:package-common",
+  "app:package-jquery", "app:package-bootstrap",
+  "app:package-codemirror", "app:package-license"]);
 
 gulp.task('app:package-win32', ["app:package"], function (cb) {
 
@@ -347,7 +364,10 @@ gulp.task('addon:package-src', function () {
     .pipe(gulp.dest(BUILD_DIR_ADDON));
 });
 
-gulp.task('addon:package', ["addon:package-src", "addon:package-common", "addon:package-jquery", "addon:package-codemirror"]);
+gulp.task('addon:package', [
+  "addon:package-src", "addon:package-common",
+  "addon:package-jquery", "addon:package-codemirror",
+  "addon:package-license"]);
 
 /**
  * Packages the thunderbird addon.

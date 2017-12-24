@@ -110,7 +110,7 @@ function setRdfVersion(version, file) {
   let data = fs.readFileSync(file, 'utf8');
   data = data.replace(
     regexp,
-    "<em:version>" + version.join(".") + "</em_version>");
+    "<em:version>" + version.join(".") + "</em:version>");
 
   fs.writeFileSync(file, data, 'utf-8');
 

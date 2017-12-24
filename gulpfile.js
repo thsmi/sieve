@@ -199,7 +199,7 @@ gulp.task('app:package-bootstrap', function () {
 gulp.task('app:package-license', function() {
 
   gulp.src([
-    "./LICENSE"
+    "./LICENSE.md"
   ]).pipe(gulp.dest(BUILD_DIR_APP));
 });
 
@@ -236,7 +236,7 @@ gulp.task('app:package-common', function () {
 gulp.task('addon:package-license', function() {
 
   gulp.src([
-    "./LICENSE"
+    "./LICENSE.md"
   ]).pipe(gulp.dest(BUILD_DIR_ADDON));
 });
 

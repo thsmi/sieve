@@ -39,6 +39,7 @@ Finally start gulp in watch mode. This means when you change something within th
 
 `gulp addon:watch`
 
+In case you need to debug the addon use the Developer Toolbox which is build into Thunderbird you can find it `Tools -> Developer Tools -> Developer Toolbox`.
 
 # Developing the App
 

@@ -14,7 +14,6 @@
     "electron-packager": "^10.1.0",
     "eslint": "^4.13.1",
     "gulp": "^3.9.1",
-    "gulp-bump": "^2.9.0",
     "gulp-zip": "^4.0.0",
     "jquery": "^3.2.1"
   },

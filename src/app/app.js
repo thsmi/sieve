@@ -122,12 +122,12 @@ let actions = {
     };
   },
 
-  "account-get-general" : function(msg) {
+  "account-get-general": function (msg) {
     let account = accounts.getAccountById(msg.payload.account);
 
     return {
-      keepAliveEnabled : account.getSettings().isKeepAlive(),
-      keepAliveInterval : account.getSettings().getKeepAliveInterval()
+      keepAliveEnabled: account.getSettings().isKeepAlive(),
+      keepAliveInterval: account.getSettings().getKeepAliveInterval()
     };
   },
 
@@ -147,7 +147,7 @@ let actions = {
     account.getLogin().setUsername(msg.payload.username);
   },
 
-  "account-set-general" : function (msg) {
+  "account-set-general": function (msg) {
     let account = accounts.getAccountById(msg.payload.account);
 
     account.getSettings().setKeepAlive(msg.payload.keepAliveEnabled);
@@ -316,16 +316,27 @@ let actions = {
     await sessions[msg.payload.account].putScript(msg.payload.name, msg.payload.script);
   },
 
+  "script-changed": function (msg) {
+    console.log("Script changed...");
+
+    let tab = $("#" + msg.payload.account + "-" + msg.payload.name + "-tab .close");
+
+    if (msg.payload.changed)
+      tab.text("•");
+    else
+      tab.text("×");
+  },
+
   "reference-open": function () {
     require("electron").shell.openExternal('https://thsmi.github.io/sieve-reference/en/index.html');
     //require("shell").openExternal("http://www.google.com")
   },
 
-  "copy" : function(msg) {
+  "copy": function (msg) {
     require("electron").clipboard.writeText(msg.payload.data);
   },
 
-  "paste" : function() {
+  "paste": function () {
     return require("electron").clipboard.readText();
   }
 };
@@ -360,6 +371,9 @@ window.addEventListener("message", function (e) {
 }, false);
 
 
+$("#donate").click(() => {
+  require("electron").shell.openExternal("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC")
+});
 
 $('#scrollright').click(function () {
 

@@ -12,6 +12,9 @@
 /* global $ */
 /* global CodeMirror */
 /* global SieveIpcClient */
+/* global SieveTemplateLoader */
+
+const COMPILE_DELAY = 500;
 
 /**
  * Implemets an abstract wrapper around code mirror.
@@ -138,7 +141,7 @@ class SieveEditorUI {
    */
   onChange() {
 
-    this.changed = true;
+    this.setChanged(true);
 
     if (this.syntaxCheckEnabled === false)
       return;
@@ -150,7 +153,7 @@ class SieveEditorUI {
     }
 
     // TODO check if compile is deactivated...
-    this.timeout = setTimeout(() => { this.checkScript(); }, 500);
+    this.timeout = setTimeout(() => { this.checkScript(); }, COMPILE_DELAY);
   }
 
   /**
@@ -275,12 +278,36 @@ class SieveEditorUI {
     this.cm.clearHistory();
     this.cm.refresh();
 
-    this.changed = false;
+    this.setChanged(false);
 
     // ensure the active line cursor changed...
     //    onActiveLineChange();
   }
 
+
+  /**
+   * Returns the editor change status.
+   *
+   * @returns {boolean}
+   *   true in case the document was changed otherwise false.
+   */
+  hasChanged() {
+    return this.changed;
+  }
+
+  /**
+   * Sets the editors change status
+   * @param {boolean} value
+   *   if true the editor status is set to changed otherwise unchanged.
+   * @returns {undefined}
+   */
+  setChanged(value) {
+
+    if (this.changed !== value)
+      this.send("script-changed", { "name": this.name, "changed": value });
+
+    this.changed = value;
+  }
 
   /**
    * Saves the script.
@@ -293,7 +320,7 @@ class SieveEditorUI {
     if (this.name === undefined)
       return;
 
-    if (!this.changed)
+    if (!this.hasChanged())
       return;
 
     // Get the current script...
@@ -304,21 +331,41 @@ class SieveEditorUI {
     try {
       await this.send("script-save", { "name": this.name, "script": script });
 
-      this.changed = false;
-      $("#sieve-editor-error").remove();
+      this.setChanged(false);
+      this.hideErrorMessage();
     } catch (ex) {
-
-      let content = await (new SieveTemplateLoader()).load("./ui/editor/editor.save.error.tpl");
-
-      content
-        .find(".sieve-editor-error-msg")
-        .text(ex.toString());
-
-      $("#sieve-editor-error").remove();
-      $("#sieve-editor-toolbar").append(content);
-
-      content.alert("#sieve-editor-error");
+      this.showErrorMessage(ex.toString());
     }
+  }
+
+  /**
+   * Shows an error message.
+   *
+   * @param {String} message
+   *   the error message to show.
+   * @returns {void}
+   */
+  async showErrorMessage(message) {
+    let content = await (new SieveTemplateLoader()).load("./ui/editor/editor.save.error.tpl");
+
+    content
+      .find(".sieve-editor-error-msg")
+      .text(message);
+
+    this.hideErrorMessage();
+
+    $("#sieve-editor-toolbar").append(content);
+
+    content.alert();
+  }
+
+  /**
+   * Hides/Dismisses any error messages.
+   *
+   * @returns {void}
+   */
+  hideErrorMessage() {
+    $("#sieve-editor-error").remove();
   }
 
   /**
@@ -546,8 +593,8 @@ async function main() {
   $("#sieve-editor-find").click(() => {
     let token = $("#sieve-editor-txt-find").val();
 
-    let isReverse = $("#sieve-editor-backward").prop( "checked" );
-    let isCaseSensitive = $("#sieve-editor-casesensitive").prop( "checked" );
+    let isReverse = $("#sieve-editor-backward").prop("checked");
+    let isCaseSensitive = $("#sieve-editor-casesensitive").prop("checked");
 
     editor.find(token, isCaseSensitive, isReverse);
   });
@@ -556,8 +603,8 @@ async function main() {
     let oldToken = $("#sieve-editor-txt-find").val();
     let newToken = $("#sieve-editor-txt-replace").val();
 
-    let isReverse = $("#sieve-editor-backward").prop( "checked" );
-    let isCaseSensitive = $("#sieve-editor-casesensitive").prop( "checked" );
+    let isReverse = $("#sieve-editor-backward").prop("checked");
+    let isCaseSensitive = $("#sieve-editor-casesensitive").prop("checked");
 
     if (oldToken === "")
       return;

@@ -1,8 +1,10 @@
 <!--
 /*
- * The contents of this file is licenced. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email
- * from the author. Do not remove or change this comment.
+ * The contents of this file are licenced. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
+ * email from the author.
+ *
+ * Do not remove or change this comment.
  *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
@@ -18,6 +20,7 @@
 <!ENTITY options.tab.proxy "Proxy">
 <!ENTITY options.tab.advanced "Avancée">
 <!ENTITY options.tab.advanced.warning "Ces paramètres sont destinés aux utilisateurs avancés...">
+<!ENTITY options.tab.editor "Editor">
 <!ENTITY options.tab.debug "Débogage">
 <!ENTITY options.tab.credits "Remerciements">
 
@@ -77,15 +80,31 @@ doit être maintenue.">
 <!ENTITY options.misc.compile.caption "Vérification syntaxique">
 <!ENTITY options.misc.compile.description
 "Pendant que vous écrivez les Scripts, il peuvent être vérifiés. La vérification
-syntaxique est exécutée par le serveur. De manière à limiter le traffic réseau,
+syntaxique est exécutée par le serveur. De manière à limiter le traffic réseau, 
 les requêtes de vérification syntaxiques sont groupées.">
 <!ENTITY options.misc.compile "Vérifier les Scripts pendant la frappe">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Vérifier au moins toutes les">
 <!ENTITY options.misc.compile.ms "ms">
 
+<!ENTITY options.editor.indention.caption "Indention">
+<!ENTITY options.editor.indention.description "The plain text editor supports automatic indenting.">
+<!ENTITY options.editor.indention.width "Indention Width:">
+
+<!ENTITY options.editor.indention.policy.caption "Indention Policy:">
+<!ENTITY options.editor.indention.policy.spaces "Spaces Only">
+<!ENTITY options.editor.indention.policy.tabs "Tabs Only">
+
+<!ENTITY options.editor.tabs.caption "Tab Handling">
+<!ENTITY options.editor.tabs.description "Texteditor with automatic indenting replaced the need for a tab key, but there are many editors which default to tabs due to historic reasons.">
+<!ENTITY options.editor.tabs.width "Tab Width">
+
+<!ENTITY options.editor.tabs.policy.caption "Tab Policy">
+<!ENTITY options.editor.tabs.policy.spaces "Insert Spaces for Tabs">
+<!ENTITY options.editor.tabs.policy.tabs "Insert Tabs">
+
 <!ENTITY options.debug.warning
-"Gardez à l'esprit que ni &quot;SASL LOGIN&quot; ni &quot;SASL PLAIN&quot; ne crypte votre mot de passe,
+"Gardez à l'esprit que ni &quot;SASL LOGIN&quot; ni &quot;SASL PLAIN&quot; ne crypte votre mot de passe, 
   il risque d'apparaître en clair dans la console d'erreur.">
 <!ENTITY options.debug.caption "Paramètres de debuggage">
 <!ENTITY options.debug.request "Communication du Client vers le Serveur (demandes)">
@@ -105,13 +124,14 @@ les requêtes de vérification syntaxiques sont groupées.">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "LOGIN">
 <!ENTITY options.authmechanism.plain "PLAIN">
+<!ENTITY options.authmechanism.external "EXTERNAL">
 <!ENTITY options.authmechanism.description
 "Dans certaines situations, par exemple quand vous utilisez un proxy d'authentification,
 vous pourriez vouloir forcer un méchanisme d'authentification spécifique." >
 
 <!ENTITY options.proxyauth.caption "Proxy d'autorisation">
 <!ENTITY options.proxyauth.desc
-"Le proxy d'autorisation permet à un utilisateur authentifié d'agir pour le compte
+"Le proxy d'autorisation permet à un utilisateur authentifié d'agir pour le compte 
 d'un autre utilisateur. En général, les serveurs sont configurés de façon à ce que cette fonctionalité ne soit disponible que pour les administrateurs.">
 <!ENTITY options.proxyauth.force
 "Lorsque vous utilisez le proxy d'autorisation, vous devriez forcer le méchanisme d'authentification à &quot;SASL PLAIN&quot;.">

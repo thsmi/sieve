@@ -1,11 +1,13 @@
 content		sieve        chrome/chromeFiles/content/
 content   sieve-common common/
 
-locale    sieve	en-US chrome/chromeFiles/locale/en-US/
 locale    sieve de-DE chrome/chromeFiles/locale/de-DE/
-locale    sieve fr-FR chrome/chromeFiles/locale/fr-FR/
-locale    sieve ru-RU chrome/chromeFiles/locale/ru-RU/
+locale    sieve	en-US chrome/chromeFiles/locale/en-US/
 locale    sieve es-ES chrome/chromeFiles/locale/es-ES/
+locale    sieve fr-FR chrome/chromeFiles/locale/fr-FR/
+locale    sieve nl-NL chrome/chromeFiles/locale/nl-NL/
 locale    sieve pl-PL chrome/chromeFiles/locale/pl-PL/
+locale    sieve ru-RU chrome/chromeFiles/locale/ru-RU/
+locale    sieve zh-CN chrome/chromeFiles/locale/zh-CN/
 
 skin      sieve   classic chrome/chromeFiles/skin/

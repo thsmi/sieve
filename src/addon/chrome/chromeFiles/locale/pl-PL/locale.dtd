@@ -1,8 +1,10 @@
 <!--
 /*
- * The contents of this file is licenced. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email
- * from the author. Do not remove or change this comment.
+ * The contents of this file are licenced. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
+ * email from the author.
+ *
+ * Do not remove or change this comment.
  *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
@@ -18,6 +20,7 @@
 <!ENTITY options.tab.proxy "Proxy">
 <!ENTITY options.tab.advanced "Zaawansowane">
 <!ENTITY options.tab.advanced.warning "Ustawienia te są przeznaczone dla użytkowników zaawansowanych...">
+<!ENTITY options.tab.editor "Editor">
 <!ENTITY options.tab.debug "Debug">
 <!ENTITY options.tab.credits "Twórcy">
 
@@ -71,16 +74,32 @@ naprawdę dobrego powodu (np. debugowanie), zawsze wymuszaj TLS.">
 
 <!ENTITY options.misc.compile.caption "Sprawdzanie składni">
 <!ENTITY options.misc.compile.description
-"Podczas edycji skryptów, można sprawdzić ich poprawność. Sprawdzanie
-składni jest wykonywane przez serwer. Aby zachować ruch sieciowy na
+"Podczas edycji skryptów, można sprawdzić ich poprawność. Sprawdzanie 
+składni jest wykonywane przez serwer. Aby zachować ruch sieciowy na 
 niskim poziomie, żądania kontroli składni są grupowane.">
 <!ENTITY options.misc.compile "Sprawdź skrypty podczas pisania">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Sprawdź co najmniej raz">
 <!ENTITY options.misc.compile.ms "ms">
 
+<!ENTITY options.editor.indention.caption "Indention">
+<!ENTITY options.editor.indention.description "The plain text editor supports automatic indenting.">
+<!ENTITY options.editor.indention.width "Indention Width:">
+
+<!ENTITY options.editor.indention.policy.caption "Indention Policy:">
+<!ENTITY options.editor.indention.policy.spaces "Spaces Only">
+<!ENTITY options.editor.indention.policy.tabs "Tabs Only">
+
+<!ENTITY options.editor.tabs.caption "Tab Handling">
+<!ENTITY options.editor.tabs.description "Texteditor with automatic indenting replaced the need for a tab key, but there are many editors which default to tabs due to historic reasons.">
+<!ENTITY options.editor.tabs.width "Tab Width">
+
+<!ENTITY options.editor.tabs.policy.caption "Tab Policy">
+<!ENTITY options.editor.tabs.policy.spaces "Insert Spaces for Tabs">
+<!ENTITY options.editor.tabs.policy.tabs "Insert Tabs">
+
 <!ENTITY options.debug.warning
-"Należy pamiętać, że logowanie SASL w przeciwieństwie do szyfrowania SASL twojego hasła,
+"Należy pamiętać, że logowanie SASL w przeciwieństwie do szyfrowania SASL twojego hasła, 
 może wysyłać je na konsolę błędów w postaci zwykłego tekstu.">
 <!ENTITY options.debug.caption "Ustawienia debugowania">
 <!ENTITY options.debug.request "Komunikacja od klienta do serwera (zapytanie)">
@@ -100,8 +119,9 @@ może wysyłać je na konsolę błędów w postaci zwykłego tekstu.">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "Login">
 <!ENTITY options.authmechanism.plain "Plain">
+<!ENTITY options.authmechanism.external "EXTERNAL">
 <!ENTITY options.authmechanism.description
-"W pewnych sytuacjach np. gdy korzystasz z uwierzytelniania serwera Proxy, możesz
+"W pewnych sytuacjach np. gdy korzystasz z uwierzytelniania serwera Proxy, możesz 
 chcieć wymusić określony mechanizm uwierzytelniania." >
 
 <!ENTITY options.proxyauth.caption "Autoryzacja serwera proxy">
@@ -138,11 +158,11 @@ chcieć wymusić określony mechanizm uwierzytelniania." >
 <!ENTITY options.proxy.description
 "Zamiast bezpośredniego połączenia możesz użyć przejrzysty proxy SOCKS i bezpiecznie przejść przez zaporę.">
 <!ENTITY options.proxy.description.nameresolution
-"Z SOCKSv4 nazwy hostów są zawsze rozwiązane na komputerze lokalnym. SOCKSv5 obsługuje
+"Z SOCKSv4 nazwy hostów są zawsze rozwiązane na komputerze lokalnym. SOCKSv5 obsługuje 
 również rozwiązywanie nazw hostów przez serwer proxy SOCKS. Jeśli możesz zaufać serwerowi
 proxy SOCKSv5, ta ostatnia uważana jest za bardziej bezpieczne i powinny być preferowane.">
 <!ENTITY options.proxy.description.localhost
-"Na niektórych systemu użycie 'localhost' jako serwera proxy nie działa prawidłowo,
+"Na niektórych systemu użycie 'localhost' jako serwera proxy nie działa prawidłowo, 
 należy użyć '127.0.0.1'.">
 <!ENTITY options.proxy.direct "Połączenie bezpośrednie">
 <!ENTITY options.proxy.default "Domyślna konfiguracja serwera Proxy">
@@ -179,10 +199,10 @@ należy użyć '127.0.0.1'.">
 <!ENTITY list.badcert
   "Serwera poczty próbuje zidentyfikować się z błędnymi informacjami.">
 <!ENTITY list.badcert.error
-"Jeśli zwykle łączysz się do tego serwera bez problemów, ten błąd może
+"Jeśli zwykle łączysz się do tego serwera bez problemów, ten błąd może 
 oznaczać, że ktoś próbuje podszyć się pod serwer.
 
-Nie kontynuuj logowania, chyba że znasz dobry powód,
+Nie kontynuuj logowania, chyba że znasz dobry powód, 
 dlaczego ten serwer nie korzysta z zaufanych tożsamości.">
 <!ENTITY list.badcert.remember "Zapamiętaj mój wybór">
 <!ENTITY list.badcert.ignore "Dalej">

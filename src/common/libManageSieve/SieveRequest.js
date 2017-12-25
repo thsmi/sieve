@@ -70,7 +70,7 @@
       && (typeof Components.classes !== 'undefined')
       && (Components.classes["@mozilla.org/intl/scriptableunicodeconverter"])) {
 
-      //... and convert to UTF-8
+      // ... and convert to UTF-8
       let converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
         .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
 
@@ -423,7 +423,7 @@
     // ... string sometimes  contains mixed line breaks. Thus we convert ...
     // ... any \r\n, \r and \n to \r\n.
     this.body = body.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
-    //this.body = UTF8Encode(body).replace(/\r\n|\r|\n/g, "\r\n");
+    // this.body = UTF8Encode(body).replace(/\r\n|\r|\n/g, "\r\n");
   }
 
   // Inherrit prototypes from SieveAbstractRequest...
@@ -877,9 +877,9 @@
         new SieveCapabilitiesResponse(parser));
     };
 
-  /*******************************************************************************
+  /**
+      Implements the SASL Plain autentication method.
 
-      This request implements the SALS Plain autentication method.
       Please note, that the password is only base64 encoded. Therefore it can be
       read or sniffed easily. A secure connection will solve this issue. So send
       whenever possible, a SieveStartTLSRequest before calling this request.
@@ -911,7 +911,7 @@
       Server < OK                                      | OK
 
       @constructor
-   */
+   **/
   function SieveSaslPlainRequest() {
   }
 
@@ -1096,7 +1096,7 @@
             .addLiteral("AUTHENTICATE")
             .addQuotedString("CRAM-MD5");
         case 1:
-          //decoding the base64-encoded challenge
+          // decoding the base64-encoded challenge
           var challenge = builder.convertFromBase64(this.response.getChallenge());
           var hmac = this.hmacMD5(challenge, this._password);
 
@@ -1308,7 +1308,7 @@
             this._H(this.strToByteArray((Math.random() * 1234567890))));
 
           // TODO: SCRAM: Debug Only
-          //this._cnonce = "fyko+d2lbbFgONRv9qkxdawL";
+          // this._cnonce = "fyko+d2lbbFgONRv9qkxdawL";
 
           // TODO SCRAM: escape/normalize authorization and username
           // ;; UTF8-char except NUL, "=", and ","
@@ -1323,7 +1323,7 @@
             .addQuotedString("SCRAM-SHA-1")
             .addQuotedBase64("this._g2Header+this._authMessage");
 
-        //return "AUTHENTICATE \"SCRAM-SHA-1\" "
+        // return "AUTHENTICATE \"SCRAM-SHA-1\" "
         //          +"\""+btoa(this._g2Header+this._authMessage)+"\"\r\n";
         case 1:
 
@@ -1367,7 +1367,7 @@
             clientProof[k] ^= clientSignature[k];
 
           // Every thing done so let's send the message...
-          //"c=" base64( (("" / "y") "," [ "a=" saslname ] "," ) "," "r=" c-nonce s-nonce ["," extensions] "," "p=" base64
+          // "c=" base64( (("" / "y") "," [ "a=" saslname ] "," ) "," "r=" c-nonce s-nonce ["," extensions] "," "p=" base64
           return builder
             .addQuotedBase64(msg + ",p=" + builder.convertToBase64(this.byteArrayToStr(clientProof)));
         //      return "\""+btoa(msg+",p="+btoa(this.byteArrayToStr(clientProof)))+"\"\r\n";
@@ -1377,7 +1377,7 @@
           // ... the verifier into the Response Code...
           return builder
             .addQuotedString();
-        //return "\"\"\r\n";
+        // return "\"\"\r\n";
       }
 
       throw new Error("Illegal state in SaslCram");

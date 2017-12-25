@@ -47,9 +47,9 @@
             && (typeof Components.classes !== 'undefined')
             && (Components.classes["@mozilla.org/intl/scriptableunicodeconverter"])) {
 
-       //... and convert to UTF-8
+      // ...and convert to UTF-8
       let converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-                      .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+        .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
 
       converter.charset = "UTF-8";
 

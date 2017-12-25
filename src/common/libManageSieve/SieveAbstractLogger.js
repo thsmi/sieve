@@ -97,26 +97,26 @@
    *   the padded string
    */
   SieveAbstractLogger.prototype._pad
-    = function(n, m) {
+    = function (n, m) {
 
-    var str = n;
+      let str = n;
 
-    for (var i = 0; i < m; i++)
-      if (n < Math.pow(10,i))
-        str = '0'+str;
+      for (let i = 0; i < m; i++)
+        if (n < Math.pow(10, i))
+          str = '0' + str;
 
-    return str;
-  };
+      return str;
+    };
 
   SieveAbstractLogger.prototype.getTimestamp
     = function () {
 
-    let date = new  Date();
-    return this._pad(date.getHours(),2)
-      + ":"+this._pad(date.getMinutes(),2)
-      + ":"+this._pad(date.getSeconds(),2)
-      + "."+this._pad(date.getMilliseconds(),3);
-  };
+      let date = new Date();
+      return this._pad(date.getHours(), 2)
+        + ":" + this._pad(date.getMinutes(), 2)
+        + ":" + this._pad(date.getSeconds(), 2)
+        + "." + this._pad(date.getMilliseconds(), 3);
+    };
 
 
   /**

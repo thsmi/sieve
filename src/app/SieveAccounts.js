@@ -77,7 +77,7 @@
     create() {
 
       // create a unique id;
-      let id = "" + (new Date).getTime().toString(36) + "-" + Math.random().toString(36).substr(2, 16);
+      let id = "" + (new Date()).getTime().toString(36) + "-" + Math.random().toString(36).substr(2, 16);
 
       this.accounts[id] = new SieveAccount(id, this.callback);
 

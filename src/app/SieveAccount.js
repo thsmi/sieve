@@ -13,7 +13,7 @@
   "use strict";
 
   const SievePrefManager = require('./utils/SievePrefManager.js');
-  //const SievePasswordManager = require('./utils/SievePasswordManager.js');
+  // const SievePasswordManager = require('./utils/SievePasswordManager.js');
 
   /**
    * Manages the account specific settings

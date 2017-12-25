@@ -39,7 +39,7 @@
       if (locale === undefined)
         locale = "en-US";
 
-      if (this.locale == locale)
+      if (this.locale === locale)
         return this;
 
       return new Promise((resolve, reject) => {
@@ -55,7 +55,7 @@
             reject(new Error("Failed to load locale"));
           });
       });
-      //this.strings = require(`./i18n/${locale}.json`);
+      // this.strings = require(`./i18n/${locale}.json`);
     }
 
     /**

@@ -11,7 +11,7 @@
 
 "use strict";
 
-(function(exports) {
+(function (exports) {
 
   // Expose as mozilla module...
   if (!exports.EXPORTED_SYMBOLS)
@@ -20,21 +20,20 @@
   /* global Components */
   /* global SieveAbstractLogger */
 
-	var Cc = Components.classes;
-	var Ci = Components.interfaces;
+  var Cc = Components.classes;
+  var Ci = Components.interfaces;
 
   var loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
-                 .getService(Ci.mozIJSSubScriptLoader);
+    .getService(Ci.mozIJSSubScriptLoader);
 
-  loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveAbstractLogger.js", this, "UTF-8" );
+  loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveAbstractLogger.js", this, "UTF-8");
 
   /**
    * @classdesc A mozilla specific logger
    * @class
    * @extends SieveAbstractLogger
    */
-  function SieveLogger()
-  {
+  function SieveLogger() {
     SieveAbstractLogger.call(this);
   }
 
@@ -47,18 +46,18 @@
   SieveLogger.prototype.log
     = function (message, level) {
 
-    if (!this.isLoggable(level))
-      return;
+      if (!this.isLoggable(level))
+        return this;
 
-    Cc["@mozilla.org/consoleservice;1"]
-      .getService(Ci.nsIConsoleService)
-      .logStringMessage("["+this.getTimestamp()+" "+this.prefix()+"] "+message);
+      Cc["@mozilla.org/consoleservice;1"]
+        .getService(Ci.nsIConsoleService)
+        .logStringMessage("[" + this.getTimestamp() + " " + this.prefix() + "] " + message);
 
-    /*Cc["@mozilla.org/embedcomp/prompt-service;1"]
-      .getService(Components.interfaces.nsIPromptService)
-      .alert(null, "Alert", msg);*/
-    return this;
-  };
+      /* Cc["@mozilla.org/embedcomp/prompt-service;1"]
+        .getService(Components.interfaces.nsIPromptService)
+        .alert(null, "Alert", msg); */
+      return this;
+    };
 
   exports.SieveLogger = SieveLogger;
   exports.EXPORTED_SYMBOLS.push("SieveLogger");

@@ -16,43 +16,43 @@ if (typeof (exports) === "undefined" || exports === null)
 
 (function (exports) {
 
-    "use strict";
+  "use strict";
 
-    /* global $ */
+  /* global $ */
+
+  /**
+   * Loads an html fragment from a file or url.
+   */
+  class SieveTemplateLoader {
 
     /**
-     * Loads an html fragment from a file or url.
+     * Initializes the template loader
      */
-    class SieveTemplateLoader {
-
-      /**
-       * Initializes the template loader
-       */
-      constructor() {
-        this.templates = {};
-      }
-
-      /**
-       * Loads an html fragment from file or url
-       *
-       * @param {string} tpl
-       *   the path tho the template file
-       * @returns {Promise<HTMLElement>}
-       *   the template which should be loaded.
-       */
-      async load(tpl) {
-
-        return await new Promise((resolve) => {
-
-          // TODO add an error handler.
-
-          $("<template />").load(tpl, function () {
-            resolve($(this.content.children));
-          });
-        });
-      }
+    constructor() {
+      this.templates = {};
     }
 
-    exports.SieveTemplateLoader = SieveTemplateLoader;
+    /**
+     * Loads an html fragment from file or url
+     *
+     * @param {string} tpl
+     *   the path tho the template file
+     * @returns {Promise<HTMLElement>}
+     *   the template which should be loaded.
+     */
+    async load(tpl) {
+
+      return await new Promise((resolve) => {
+
+        // TODO add an error handler.
+
+        $("<template />").load(tpl, function () {
+          resolve($(this.content.children));
+        });
+      });
+    }
+  }
+
+  exports.SieveTemplateLoader = SieveTemplateLoader;
 
 })(exports);

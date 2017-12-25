@@ -27,9 +27,9 @@
   const CHAR_K = [75, 107];
   const CHAR_Y = [89, 121];
 
-  const OK = [CHAR_O, CHAR_K];
-  const BYE = [CHAR_B, CHAR_Y, CHAR_E];
-  const NO = [CHAR_N, CHAR_O];
+  const TOKEN_OK = [CHAR_O, CHAR_K];
+  const TOKEN_BYE = [CHAR_B, CHAR_Y, CHAR_E];
+  const TOKEN_NO = [CHAR_N, CHAR_O];
 
   /**
    * This class implements a generic response handler for simple sieve requests.
@@ -60,19 +60,19 @@
     this.responseCode = [];
 
     // OK
-    if (parser.startsWith(OK)) {
+    if (parser.startsWith(TOKEN_OK)) {
       this.response = 0;
-      parser.extract(2);
+      parser.extract(TOKEN_OK.length);
     }
     // BYE
-    else if (parser.startsWith(BYE)) {
+    else if (parser.startsWith(TOKEN_BYE)) {
       this.response = 1;
-      parser.extract(3);
+      parser.extract(TOKEN_BYE.length);
     }
     // NO
-    else if (parser.startsWith(NO)) {
+    else if (parser.startsWith(TOKEN_NO)) {
       this.response = 2;
-      parser.extract(2);
+      parser.extract(TOKEN_NO.length);
     }
     else
       throw new Error("NO, OK or BYE expected in " + parser.getData());
@@ -188,7 +188,7 @@
       }
 
       // TODO Implement these Response codes:
-      //"ACTIVE" / "NONEXISTENT" / "ALREADYEXISTS" / "WARNINGS"
+      // "ACTIVE" / "NONEXISTENT" / "ALREADYEXISTS" / "WARNINGS"
       return new SieveResponseCode(this.responseCode);
     };
 
@@ -529,7 +529,7 @@
   SieveSaslLoginResponse.prototype.getState
     = function () { return this.state; };
 
-  //*************************************
+
   /**
    * @author Thomas Schmid
    * @author Max Dittrich
@@ -697,6 +697,7 @@
    * As suggested by the RFC they will be ignored
    *
    * @param {SieveResponseParser} parser
+   * @returns {void}
    */
   SieveSaslScramSha1Response.prototype._parseFinalMessage
     = function (data, parser) {

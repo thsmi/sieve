@@ -37,7 +37,7 @@ let gAccount = null;
 
 // === Server Sheet ===========================================================
 function onServerSheetLoad(account) {
-  var rbHost = document.getElementById('rgHost');
+  let rbHost = document.getElementById('rgHost');
   rbHost.selectedIndex = account.getHost().getType();
   enableHost(rbHost.selectedIndex);
 
@@ -125,11 +125,11 @@ function onPortChange(value) {
 }
 
 
-var gAutoConfig = null;
+let gAutoConfig = null;
 
-var gAutoConfigCallback =
+let gAutoConfigCallback =
   {
-    onSuccess: function (host, port, proxy) {
+    onSuccess: function (host, port) {
       gAutoConfig = null;
 
       gAccount.getHost().setPort(port);
@@ -137,9 +137,9 @@ var gAutoConfigCallback =
       document.getElementById("dkAutoSelect").selectedIndex = "2";
       document.getElementById("lblAutoSelectPort").value = port;
 
-      if (port == 4190)
+      if (port === 4190)
         document.getElementById("rgPort").selectedIndex = 0;
-      else if (port == 2000)
+      else if (port === 2000)
         document.getElementById("rgPort").selectedIndex = 1;
     },
 
@@ -374,8 +374,8 @@ function onAuthorizationChange(value) {
  */
 function onEditorSheetLoad(account) {
   try {
-    //var rgDefaultEditor = document.getElementById('rgDefaultEditor');
-    //rgDefaultEditor.selectedIndex = account.getSettings().getDefaultEditor();
+    // var rgDefaultEditor = document.getElementById('rgDefaultEditor');
+    // rgDefaultEditor.selectedIndex = account.getSettings().getDefaultEditor();
 
     document.getElementById("txtIndentionWidth").value = account.getSettings().getIndentionWidth();
     document.getElementById("txtTabWidth").value = account.getSettings().getTabWidth();

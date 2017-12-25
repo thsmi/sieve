@@ -546,7 +546,7 @@ class SieveEditorUI {
     this.cm.replaceSelection(newToken);
     return true;
 
-    //onChange();
+    // onChange();
   }
 
 }
@@ -661,13 +661,15 @@ $(document).ready(function () {
 
 
 
-/*CodeMirror.on(window, "resize", function() {
+/*
+CodeMirror.on(window, "resize", function() {
   document.body.getElementsByClassName("CodeMirror-fullscreen")[0]
     .CodeMirror.getWrapperElement().style.height = winHeight() + "px";
-});*/
+});
+*/
 
 
 
-//hlLine = editor.addLineClass(0, "background", "activeline");
+// hlLine = editor.addLineClass(0, "background", "activeline");
 
-//editor.on("change", function() { onChange(); });
+// editor.on("change", function() { onChange(); });

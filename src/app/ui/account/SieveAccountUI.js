@@ -102,7 +102,6 @@
 
         item.find(".siv-account-name").text(await this.send("account-get-displayname"));
 
-        //item = $("#template .siv-tpl-account").children().first().clone();
         item.attr("id", "siv-account-" + this.id);
         item.find(".siv-account-create").click(() => { this.createScript(); });
 
@@ -126,10 +125,10 @@
 
         return;
 
-        //await this.send("account-connect");
+        // await this.send("account-connect");
 
         // in case of an error switc hto not connected
-        //return;
+        // return;
         // otherwise continue;
       }
 

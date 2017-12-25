@@ -22,7 +22,7 @@
   function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({ width: 1200, height: 600 });
-    //win.setMenu(null);
+    // win.setMenu(null);
 
     // and load the index.html of the app.
     win.loadURL(url.format({
@@ -46,7 +46,7 @@
     const inputMenu = Menu.buildFromTemplate([
       {role: 'cut'},
       {role: 'copy'},
-      {role: 'paste'},
+      {role: 'paste'}
     ]);
 
     win.webContents.on('context-menu', (e, props) => {

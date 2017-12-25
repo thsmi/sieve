@@ -47,7 +47,7 @@
     SieveSaslExternalRequest
   } = require("./SieveRequest.js");
 
-  /*Object.assign(this,
+  /* Object.assign(this,
       require("./SieveRequest.js"));*/
 
   class SieveClientException extends Error {
@@ -807,8 +807,8 @@
 
       this.sieve = new Sieve(this.logger);
 
-      //FIXME we need to add the onIdle and onTimeout methods
-      //FIXME in case we set the listner here the byeListener does not work anymore
+      // FIXME we need to add the onIdle and onTimeout methods
+      // FIXME in case we set the listner here the byeListener does not work anymore
       this.sieve.addListener(this);
 
       // TODO Load Timeout interval from account settings...

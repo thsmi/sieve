@@ -201,13 +201,13 @@
    *   the maximal number of milliseconds
    */
   SieveAbstractClient.prototype.getTimeoutWait
-  = function() {
-    // Apply some selfhealing magic...
-    if (!this.timeoutDelay)
-      return DEFAULT_TIMEOUT;
+    = function () {
+      // Apply some selfhealing magic...
+      if (!this.timeoutDelay)
+        return DEFAULT_TIMEOUT;
 
-    return this.timeoutDelay;
-  };
+      return this.timeoutDelay;
+    };
 
   /**
    * Specifies the maximal interval between a request and a response. If the
@@ -320,7 +320,7 @@
     = function (request, greedy) {
 
       // Attach the global bye listener only when needed.
-      if ( !request.byeListener || !request.byeListener.onByeResponse)
+      if (!request.byeListener || !request.byeListener.onByeResponse)
         if (this.listener && this.listener.onByeResponse)
           request.addByeListener(this.listener);
 
@@ -401,10 +401,10 @@
   SieveAbstractClient.prototype.disconnect
     = function () {
 
-      this.getLogger().log("Disconnecting "+this.host+":"+this.port+"...", (1 << 2));
+      this.getLogger().log("Disconnecting " + this.host + ":" + this.port + "...", (1 << 2));
 
       // free requests...
-      //this.requests = new Array();
+      // this.requests = new Array();
       this.onStopTimeout();
       this.onStopIdle();
     };
@@ -508,7 +508,7 @@
           // we don't care about any exception. We just log them in oder
           // to make debugging easier....
           if (this.getLogger().isLoggable(1 << 2)) {
-            //console.error(ex);
+            // console.error(ex);
             this.getLogger().log("Parsing Warning in libManageSieve/Sieve.js:\n" + ex.toString());
             this.getLogger().log(ex.stack);
           }
@@ -555,8 +555,8 @@
         // But in mozilla modules we don't have access to a window object and
         // timeouts are more compilcated.
 
-        //var that = this;
-        //window.setTimeout(function () {that._sendRequest()}, 0);
+        // var that = this;
+        // window.setTimeout(function () {that._sendRequest()}, 0);
 
         this._sendRequest();
 
@@ -575,9 +575,14 @@
 
   SieveAbstractClient.prototype._sendRequest
     = function () {
-      for (var idx = 0; idx < this.requests.length; idx++)
+
+      let idx = 0;
+      while (idx < this.requests.length) {
         if (this.requests[idx].isUnsolicited())
           break;
+
+        idx++;
+      }
 
       if (idx >= this.requests.length)
         return;

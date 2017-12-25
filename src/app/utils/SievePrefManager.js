@@ -69,7 +69,7 @@
       let prefs = this.getValues();
       prefs[key] = value;
 
-      localStorage.setItem(this.id,JSON.stringify(prefs) );
+      localStorage.setItem(this.id, JSON.stringify(prefs));
 
       return this;
     }
@@ -133,7 +133,7 @@
       if (typeof (value) === "undefined" || value === null)
         return fallback;
 
-      return ""+value;
+      return "" + value;
     }
 
     /**
@@ -148,9 +148,9 @@
      */
     setString(key, value) {
 
-      value = ""+value;
+      value = "" + value;
 
-      this.setValue(key,value);
+      this.setValue(key, value);
       return this;
     }
 
@@ -194,7 +194,7 @@
 
       value = Number.parseInt(value, 10);
 
-      this.setValue(key,value);
+      this.setValue(key, value);
 
       return this;
     }

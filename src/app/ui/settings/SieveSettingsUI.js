@@ -264,7 +264,7 @@
         displayName : this.getDisplayName(),
         hostname: this.getHostname(),
         port: this.getPort(),
-        secure: this.isEncrypted(),
+        secure: this.isEncrypted()
       };
 
       await this.account.send("account-set-server", server);
@@ -278,7 +278,7 @@
 
       let general = {
         keepAliveEnabled : this.isKeepAliveEnabled(),
-        keepAliveInterval : this.getKeepAliveInterval(),
+        keepAliveInterval : this.getKeepAliveInterval()
       };
 
       await this.account.send("account-set-general", general);

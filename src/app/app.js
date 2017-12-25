@@ -56,7 +56,8 @@ let callback = async function (account) {
 
 let accounts = new SieveAccounts(callback).load();
 
-/*let listener = {
+/*
+let listener = {
   onTimeout: function () {
     session.disconnect(true);
   },
@@ -274,7 +275,7 @@ let actions = {
     let url = new URL(content.attr("src"), window.location);
 
     url.searchParams.append("account", account);
-    //FIXME the script name should ne an id so that we survive a rename...
+    // FIXME: the script name should ne an id so that we survive a rename...
     url.searchParams.append("script", name);
 
     content.attr("src", url.toString());
@@ -329,7 +330,6 @@ let actions = {
 
   "reference-open": function () {
     require("electron").shell.openExternal('https://thsmi.github.io/sieve-reference/en/index.html');
-    //require("shell").openExternal("http://www.google.com")
   },
 
   "copy": function (msg) {
@@ -372,13 +372,13 @@ window.addEventListener("message", function (e) {
 
 
 $("#donate").click(() => {
-  require("electron").shell.openExternal("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC")
+  require("electron").shell.openExternal("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC");
 });
 
 $('#scrollright').click(function () {
 
-  //$('.scroller-left').fadeIn('slow');
-  //$('.scroller-right').fadeOut('slow');
+  // $('.scroller-left').fadeIn('slow');
+  // $('.scroller-right').fadeOut('slow');
 
   $('.list').animate({ left: "-=100px" }, function () {
 
@@ -387,12 +387,11 @@ $('#scrollright').click(function () {
 
 $('#scrollleft').click(function () {
 
-  //$('.scroller-right').fadeIn('slow');
-  //$('.scroller-left').fadeOut('slow');
+  // $('.scroller-right').fadeIn('slow');
+  // $('.scroller-left').fadeOut('slow');
 
   if ($('.list').position().left >= 0)
     $('.list').animate({ left: "0px" });
   else
     $('.list').animate({ left: "+=100px" });
 });
-

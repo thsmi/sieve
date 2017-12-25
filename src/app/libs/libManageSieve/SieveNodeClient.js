@@ -137,7 +137,7 @@
     SieveAbstractClient.prototype.startTLS.call(this);
 
     // Upgrade the current socket.
-    //this.tlsSocket = tls.TLSSocket(socket, options).connect();
+    // this.tlsSocket = tls.TLSSocket(socket, options).connect();
     this.tlsSocket = tls.connect({ socket: this.socket });
 
     this.tlsSocket.on('secureConnect', () => {

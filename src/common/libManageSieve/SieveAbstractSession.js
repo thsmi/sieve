@@ -239,7 +239,7 @@
 
           let password = account.getLogin().getPassword();
 
-          if (password === null) {
+          if (typeof(password) === "undefined" || password === null) {
             this.disconnect(false, 2, "error.authentication");
             return;
           }
@@ -254,7 +254,7 @@
         if (request.isAuthorizable()) {
           // ... if so retrieve the authorization identity
           let authorization = account.getAuthorization().getAuthorization();
-          if (authorization === null) {
+          if (typeof(authorization) === "undefined" || authorization === null) {
             this.disconnect(false, 2, "error.authentication");
             return;
           }
@@ -464,10 +464,10 @@
         this.sieve.addRequest(request);
 
         // Step 3: Connect...
-        if (hostname === null)
+        if (typeof(hostname) === "undefined" || hostname === null)
           hostname = this.account.getHost().getHostname();
 
-        if (port === null)
+        if (typeof(port) === "undefined" || port === null)
           port = this.account.getHost().getPort();
 
         this.sieve.connect(

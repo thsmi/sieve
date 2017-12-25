@@ -35,7 +35,7 @@
     <tab label="&options.tab.general;" />
     <tab label="&options.tab.proxy;" />
     <tab label="&options.tab.advanced;" />
-    <tab label="Editor" />
+    <tab label="&options.tab.editor;" />
     <tab label="&options.tab.debug;" />
     <tab label="&options.tab.credits;" />
   </tabs>
@@ -204,7 +204,7 @@
               <menuitem label="&options.authmechanism.login;" value="LOGIN"/>
               <menuitem label="&options.authmechanism.crammd5;" value="CRAM-MD5"/>
               <menuitem label="&options.authmechanism.scramsha1;" value="SCRAM-SHA-1"/>
-              <menuitem label="EXTERNAL" value="EXTERNAL"/>
+              <menuitem label="&options.authmechanism.external;" value="EXTERNAL"/>
             </menupopup>
           </menulist>
         </hbox>
@@ -244,39 +244,39 @@
       -->
 
       <groupbox>
-        <caption label="Indention" />
+        <caption label="&options.editor.indention.caption;" />
 
-        <description>The plain text editor supports automatic indenting. </description>
+        <description>&options.editor.indention.description;</description>
         <box align="center" >
-          <label value="Indention Width:" control="txtIndentionWidth"/>
+          <label value="&options.editor.indention.width;" control="txtIndentionWidth"/>
           <textbox id="txtIndentionWidth" size="4"
                           onchange="onIndentionWidthChange(this.value);"/>
         </box>
         <hbox align="center" >
-          <label control="mlIndentionPolicy" value="Indention Policy:" />
+          <label control="mlIndentionPolicy" value="&options.editor.indention.policy.caption;" />
           <menulist id="mlIndentionPolicy" oncommand="onIndentionPolicySelect(this.selectedIndex)">
             <menupopup>
-              <menuitem label="Spaces Only" value="0"/>
-              <menuitem label="Tabs Only" value="1"/>
+              <menuitem label="&options.editor.indention.policy.spaces;" value="0"/>
+              <menuitem label="&options.editor.indention.policy.tabs;" value="1"/>
             </menupopup>
           </menulist>
         </hbox>
       </groupbox>
 
       <groupbox>
-        <caption label="Tab Handling" />
-        <description>Texteditor with automatic indenting replaced the need for a tab key, but there are many editors which default to tabs due to historic reasons.</description>
+        <caption label="&options.editor.tabs.caption;" />
+        <description>&options.editor.tabs.description;</description>
         <box align="center" >
-          <label value="Tab Width" />
+          <label value="&options.editor.tabs.width;" />
           <textbox id="txtTabWidth" size="4"
                           onchange="onTabWidthChange(this.value);"/>
         </box>
         <hbox align="center" >
-          <label control="mlTabPolicy" value="Tab Policy" />
+          <label control="mlTabPolicy" value="&options.editor.tabs.policy.caption;" />
           <menulist id="mlTabPolicy" oncommand="onTabPolicySelect(this.selectedIndex)">
             <menupopup>
-              <menuitem label="Insert Spaces for Tabs" value="0"/>
-              <menuitem label="Insert Tabs" value="1"/>
+              <menuitem label="&options.editor.tabs.policy.spaces;" value="0"/>
+              <menuitem label="&options.editor.tabs.policy.tabs;" value="1"/>
             </menupopup>
           </menulist>
         </hbox>

@@ -1,546 +1,500 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * The contents of this file are licensed. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
 /* global window */
 
 "use strict";
 
-(function(exports) {
+(function (exports) {
 
   /* global SieveLexer */
   /* global SieveAbstractElement */
 
-  
+
   // fileinto [:create] <mailbox: string>
-  function SieveCreateArgument(docshell,id) 
-  {
-    SieveAbstractElement.call(this,docshell,id);    
-    this.whitespace = this._createByName("whitespace"," ");
+  function SieveCreateArgument(docshell, id) {
+    SieveAbstractElement.call(this, docshell, id);
+    this.whitespace = this._createByName("whitespace", " ");
   }
 
   SieveCreateArgument.prototype = Object.create(SieveAbstractElement.prototype);
   SieveCreateArgument.prototype.constructor = SieveCreateArgument;
-    
+
   SieveCreateArgument.isElement
-    = function(parser, lexer)
-  { 
-    return parser.startsWith(":create");
-  };
-  
+    = function (parser, lexer) {
+      return parser.startsWith(":create");
+    };
+
   SieveCreateArgument.nodeName = function () {
     return "argument/create";
   };
-  
-  SieveCreateArgument.nodeType  = function () {
+
+  SieveCreateArgument.nodeType = function () {
     return "argument/create";
   };
-  
+
   SieveCreateArgument.isCapable
-      = function (capabilities)
-  {
-    return (capabilities["mailbox"] === true);      
-  };
-  
+    = function (capabilities) {
+      return (capabilities["mailbox"] === true);
+    };
+
   SieveCreateArgument.prototype.require
-      = function (imports)
-  {
-    imports["mailbox"] = true;
-  };  
-  
+    = function (imports) {
+      imports["mailbox"] = true;
+    };
+
   SieveCreateArgument.prototype.init
-      = function (parser)
-  {
-    parser.extract(":create");
-    this.whitespace.init(parser);
-    
-    return this;
-  };
+    = function (parser) {
+      parser.extract(":create");
+      this.whitespace.init(parser);
+
+      return this;
+    };
 
   SieveCreateArgument.prototype.toScript
-      = function ()
-  {
-    return ":create"
-      + this.whitespace.toScript();
-  };
+    = function () {
+      return ":create"
+        + this.whitespace.toScript();
+    };
 
 
-////////////////////////////////////////////////////////////////////////////////
-	
-	//mailboxexists <mailbox-names: string-list>
-	function SieveMailboxExistsTest(docshell,id) 
-  {
-    SieveAbstractElement.call(this,docshell,id);
-    
-    this._whitespace = this._createByName("whitespace"," ");
-    this._names = this._createByName("stringlist",'""');
+  // //////////////////////////////////////////////////////////////////////////////
+
+  // mailboxexists <mailbox-names: string-list>
+  function SieveMailboxExistsTest(docshell, id) {
+    SieveAbstractElement.call(this, docshell, id);
+
+    this._whitespace = this._createByName("whitespace", " ");
+    this._names = this._createByName("stringlist", '""');
   }
-  
+
   SieveMailboxExistsTest.prototype = Object.create(SieveAbstractElement.prototype);
   SieveMailboxExistsTest.prototype.constructor = SieveMailboxExistsTest;
 
   SieveMailboxExistsTest.isElement
-    = function(parser, lexer)
-  { 
-    return parser.startsWith("mailboxexists");
-  };
-  
+    = function (parser, lexer) {
+      return parser.startsWith("mailboxexists");
+    };
+
   SieveMailboxExistsTest.nodeName = function () {
     return "test/mailboxexists";
   };
-  
-  SieveMailboxExistsTest.nodeType  = function () {
+
+  SieveMailboxExistsTest.nodeType = function () {
     return "test";
   };
-  
+
   SieveMailboxExistsTest.isCapable
-      = function (capabilities)
-  {
-    return (capabilities["mailbox"] === true);      
-  };
-  
+    = function (capabilities) {
+      return (capabilities["mailbox"] === true);
+    };
+
   SieveMailboxExistsTest.prototype.require
-      = function (imports)
-  {
-    imports["mailbox"] = true;
-  };  
-  
+    = function (imports) {
+      imports["mailbox"] = true;
+    };
+
   SieveMailboxExistsTest.prototype.init
-      = function (parser)
-  {
-    parser.extract("mailboxexists");
-    
-    this._whitespace.init(parser);
-    this._names.init(parser);
-    
-    return this;
-  }; 
-  
+    = function (parser) {
+      parser.extract("mailboxexists");
+
+      this._whitespace.init(parser);
+      this._names.init(parser);
+
+      return this;
+    };
+
   SieveMailboxExistsTest.prototype.mailboxes
     = function () {
-    return this._names;
-  };
+      return this._names;
+    };
 
   SieveMailboxExistsTest.prototype.toScript
-      = function ()
-  {
-    return "mailboxexists"
-      + this._whitespace.toScript()
-      + this._names.toScript();
-  };
+    = function () {
+      return "mailboxexists"
+        + this._whitespace.toScript()
+        + this._names.toScript();
+    };
 
-////////////////////////////////////////////////////////////////////////////////
-  
-	//metadata [MATCH-TYPE] [COMPARATOR]
+  // //////////////////////////////////////////////////////////////////////////////
+
+  // metadata [MATCH-TYPE] [COMPARATOR]
   //         <mailbox: string>
   //         <annotation-name: string> <key-list: string-list>
   /**
    * Retrives the vlaue of the mailbox annotation "annotation-name" for mailbox
    * "mailbox#". The retrived value is compared against the key-list.
-   * 
+   *
    * The test returns true if the annotation exits and its value matches and of
    * the keys.
-   * 
+   *
    * The default matchtype is :is and the default comparator is "i;ascii-casemap"
+   * @constructor
    */
-	function SieveMetaDataTest(docshell,id) 
-  {
-    SieveAbstractElement.call(this,docshell,id);
-    
+  function SieveMetaDataTest(docshell, id) {
+    SieveAbstractElement.call(this, docshell, id);
+
     this._whitespace = [];
-    this._whitespace[0] = this._createByName("whitespace",' ');
-    this._whitespace[1] = this._createByName("whitespace",' ');
-    this._whitespace[2] = this._createByName("whitespace",' ');
-    this._whitespace[3] = this._createByName("whitespace",' ');
-    this._whitespace[4] = this._createByName("whitespace",' ');
-    this._whitespace[5] = this._createByName("whitespace",' ');
-     
+    this._whitespace[0] = this._createByName("whitespace", ' ');
+    this._whitespace[1] = this._createByName("whitespace", ' ');
+    this._whitespace[2] = this._createByName("whitespace", ' ');
+    this._whitespace[3] = this._createByName("whitespace", ' ');
+    this._whitespace[4] = this._createByName("whitespace", ' ');
+    this._whitespace[5] = this._createByName("whitespace", ' ');
+
     this._matchType = this._createByName("match-type");
-    
+
     this._comparator = this._createByName("comparator");
-  
-    this._mailbox = this._createByName("string",'""');
-    this._annotation = this._createByName("string",'""');
-    this._keys = this._createByName("stringlist",'""');
+
+    this._mailbox = this._createByName("string", '""');
+    this._annotation = this._createByName("string", '""');
+    this._keys = this._createByName("stringlist", '""');
   }
-  
+
   SieveMetaDataTest.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveMetaDataTest.prototype.constructor = SieveMetaDataTest;  
+  SieveMetaDataTest.prototype.constructor = SieveMetaDataTest;
 
   SieveMetaDataTest.isElement
-    = function(parser, lexer)
-  { 
-    return parser.startsWith("metadata");
-  };
-  
+    = function (parser, lexer) {
+      return parser.startsWith("metadata");
+    };
+
   SieveMetaDataTest.nodeName = function () {
     return "test/metadata";
   };
-  
-  SieveMetaDataTest.nodeType  = function () {
+
+  SieveMetaDataTest.nodeType = function () {
     return "test";
   };
-  
+
   SieveMetaDataTest.isCapable
-      = function (capabilities)
-  {
-    return (capabilities["mboxmetadata"] === true);      
-  };
-  
+    = function (capabilities) {
+      return (capabilities["mboxmetadata"] === true);
+    };
+
   SieveMetaDataTest.prototype.require
-      = function (imports)
-  {
-    imports["mboxmetadata"] = true;
-  };
-  
+    = function (imports) {
+      imports["mboxmetadata"] = true;
+    };
+
   SieveMetaDataTest.prototype.init
-      = function (parser)
-  {
-    parser.extract("metadata");
-    this._whitespace[0].init(parser);
-    
-    // optional
-    while (true) {
+    = function (parser) {
+      parser.extract("metadata");
+      this._whitespace[0].init(parser);
 
-      if (this._comparator.isOptional() && this._probeByName("comparator",parser))
-      {
-        this._comparator.init(parser);  
-        this._whitespace[1].init(parser);
-      
-        continue;
-      }
-    
-      if (this._matchType.isOptional() && this._probeByName("match-type",parser))
-      {
-        this._matchType.init(parser);
-        this._whitespace[2].init(parser);
-        
-        continue;
-      }
-      
-      // no more optional elements
-      break;
-    }
-      
-    // mandatory    
-    this._mailbox.init(parser);
-    this._whitespace[3].init(parser);
-    
-    this._annotation.init(parser);
-    this._whitespace[4].init(parser);
-    
-    this._keys.init(parser);
-    this._whitespace[5].init(parser);
+      // optional
+      while (true) {
 
-    return this;
-  };
-  
+        if (this._comparator.isOptional() && this._probeByName("comparator", parser)) {
+          this._comparator.init(parser);
+          this._whitespace[1].init(parser);
+
+          continue;
+        }
+
+        if (this._matchType.isOptional() && this._probeByName("match-type", parser)) {
+          this._matchType.init(parser);
+          this._whitespace[2].init(parser);
+
+          continue;
+        }
+
+        // no more optional elements
+        break;
+      }
+
+      // mandatory
+      this._mailbox.init(parser);
+      this._whitespace[3].init(parser);
+
+      this._annotation.init(parser);
+      this._whitespace[4].init(parser);
+
+      this._keys.init(parser);
+      this._whitespace[5].init(parser);
+
+      return this;
+    };
+
   SieveMetaDataTest.prototype.mailbox
-      = function(value)
-  {
-    return this._mailbox.value(value);    
-  };
-  
+    = function (value) {
+      return this._mailbox.value(value);
+    };
+
   SieveMetaDataTest.prototype.annotation
-      = function (value)
-  {
-    return this._annotation.value(value);    
-  };
-  
+    = function (value) {
+      return this._annotation.value(value);
+    };
+
   SieveMetaDataTest.prototype.keys
-      = function ()
-  {
-    return this._keys;    
-  };  
-  
+    = function () {
+      return this._keys;
+    };
+
   SieveMetaDataTest.prototype.matchType
-      = function ()
-  {
-    return this._matchType;       
-  };
-  
+    = function () {
+      return this._matchType;
+    };
+
   SieveMetaDataTest.prototype.comparator
-      = function ()
-  {
-    return this._comparator;
-  };
+    = function () {
+      return this._comparator;
+    };
 
   SieveMetaDataTest.prototype.toScript
-      = function ()
-  {
-    return "metadata"
-      + this._whitespace[0].toScript()
-      + (!this._comparator.isOptional()? 
-           this._comparator.toScript()+this._whitespace[1].toScript() : "")
-      + (!this._matchType.isOptional()?
-           this._matchType.toScript()+this._whitespace[2].toScript() : "")
-      + this._mailbox.toScript()
-      + this._whitespace[3].toScript()
-      + this._annotation.toScript()
-      + this._whitespace[4].toScript()
-      + this._keys.toScript()
-      + this._whitespace[5].toScript();
-  };
-  
-  
-////////////////////////////////////////////////////////////////////////////////
+    = function () {
+      return "metadata"
+        + this._whitespace[0].toScript()
+        + (!this._comparator.isOptional() ?
+          this._comparator.toScript() + this._whitespace[1].toScript() : "")
+        + (!this._matchType.isOptional() ?
+          this._matchType.toScript() + this._whitespace[2].toScript() : "")
+        + this._mailbox.toScript()
+        + this._whitespace[3].toScript()
+        + this._annotation.toScript()
+        + this._whitespace[4].toScript()
+        + this._keys.toScript()
+        + this._whitespace[5].toScript();
+    };
 
-	// metadataexists <mailbox: string> <annotation-names: string-list>
-	function SieveMetaDataExistsTest(docshell,id) 
-  {
-    SieveAbstractElement.call(this,docshell,id);
-    
+
+  // //////////////////////////////////////////////////////////////////////////////
+
+  // metadataexists <mailbox: string> <annotation-names: string-list>
+  function SieveMetaDataExistsTest(docshell, id) {
+    SieveAbstractElement.call(this, docshell, id);
+
     this._whitespace = [];
-    this._whitespace[0] = this._createByName("whitespace",' ');
-    this._whitespace[1] = this._createByName("whitespace",' ');
-    
-    this._mailbox = this._createByName("string",'""');
-    this._annotations = this._createByName("stringlist",'""');
+    this._whitespace[0] = this._createByName("whitespace", ' ');
+    this._whitespace[1] = this._createByName("whitespace", ' ');
+
+    this._mailbox = this._createByName("string", '""');
+    this._annotations = this._createByName("stringlist", '""');
   }
-  
+
   SieveMetaDataExistsTest.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveMetaDataExistsTest.prototype.constructor = SieveMetaDataExistsTest;  
+  SieveMetaDataExistsTest.prototype.constructor = SieveMetaDataExistsTest;
 
   SieveMetaDataExistsTest.isElement
-    = function(parser, lexer)
-  { 
-    return parser.startsWith("metadataexists");
-  };
-  
+    = function (parser, lexer) {
+      return parser.startsWith("metadataexists");
+    };
+
   SieveMetaDataExistsTest.nodeName = function () {
     return "test/metadataexists";
   };
-  
-  SieveMetaDataExistsTest.nodeType  = function () {
+
+  SieveMetaDataExistsTest.nodeType = function () {
     return "test";
   };
-  
+
   SieveMetaDataExistsTest.isCapable
-      = function (capabilities)
-  {
-    return (capabilities["mboxmetadata"] === true);      
-  };
-  
+    = function (capabilities) {
+      return (capabilities["mboxmetadata"] === true);
+    };
+
   SieveMetaDataExistsTest.prototype.require
-      = function (imports)
-  {
-    imports["mboxmetadata"] = true;
-  };
-  
+    = function (imports) {
+      imports["mboxmetadata"] = true;
+    };
+
   SieveMetaDataExistsTest.prototype.init
-      = function (parser)
-  {
-    parser.extract("metadataexists");
-    
-    // optional
-    this._whitespace[0].init(parser);
-    this._mailbox.init(parser);
-    
-    this._whitespace[1].init(parser);
-    this._annotations.init(parser);
-    
-    return this;
-  };
-  
+    = function (parser) {
+      parser.extract("metadataexists");
+
+      // optional
+      this._whitespace[0].init(parser);
+      this._mailbox.init(parser);
+
+      this._whitespace[1].init(parser);
+      this._annotations.init(parser);
+
+      return this;
+    };
+
   SieveMetaDataExistsTest.prototype.mailbox
-      = function (value)
-  {
-    return this._mailbox.value(value);
-  };
-  
+    = function (value) {
+      return this._mailbox.value(value);
+    };
+
   SieveMetaDataExistsTest.prototype.annotations
-      = function ()
-  {
-    return this._annotations;
-  };
+    = function () {
+      return this._annotations;
+    };
 
   SieveMetaDataExistsTest.prototype.toScript
-      = function ()
-  {
-    return "metadataexists"
-      + this._whitespace[0].toScript()
-      + this._mailbox.toScript()
-      + this._whitespace[1].toScript()
-      + this._annotations.toScript();
-  };
+    = function () {
+      return "metadataexists"
+        + this._whitespace[0].toScript()
+        + this._mailbox.toScript()
+        + this._whitespace[1].toScript()
+        + this._annotations.toScript();
+    };
 
-////////////////////////////////////////////////////////////////////////////////
-    
-	// servermetadata [MATCH-TYPE] [COMPARATOR] <annotation-name: string> <key-list: string-list>
-	function SieveServerMetaDataTest(docshell,id) 
-  {
-    SieveAbstractElement.call(this,docshell,id);
-    
+  // //////////////////////////////////////////////////////////////////////////////
+
+  // servermetadata [MATCH-TYPE] [COMPARATOR] <annotation-name: string> <key-list: string-list>
+  function SieveServerMetaDataTest(docshell, id) {
+    SieveAbstractElement.call(this, docshell, id);
+
     this._whitespace = [];
-    this._whitespace[0] = this._createByName("whitespace",' ');
-    this._whitespace[1] = this._createByName("whitespace",' ');
-    this._whitespace[2] = this._createByName("whitespace",' ');
-    this._whitespace[3] = this._createByName("whitespace",' ');
-    this._whitespace[4] = this._createByName("whitespace",' ');
+    this._whitespace[0] = this._createByName("whitespace", ' ');
+    this._whitespace[1] = this._createByName("whitespace", ' ');
+    this._whitespace[2] = this._createByName("whitespace", ' ');
+    this._whitespace[3] = this._createByName("whitespace", ' ');
+    this._whitespace[4] = this._createByName("whitespace", ' ');
 
-    
+
     this._matchType = this._createByName("match-type");
-    
+
     this._comparator = this._createByName("comparator");
-  
-    this._annotation = this._createByName("string",'""');
-    this._keyList = this._createByName("stringlist",'""');
+
+    this._annotation = this._createByName("string", '""');
+    this._keyList = this._createByName("stringlist", '""');
   }
-  
+
   SieveServerMetaDataTest.prototype = Object.create(SieveAbstractElement.prototype);
   SieveServerMetaDataTest.prototype.constructor = SieveServerMetaDataTest;
 
   SieveServerMetaDataTest.isElement
-    = function(parser, lexer)
-  { 
-    return parser.startsWith("servermetadata");
-  };
-  
+    = function (parser, lexer) {
+      return parser.startsWith("servermetadata");
+    };
+
   SieveServerMetaDataTest.nodeName = function () {
     return "test/servermetadata";
   };
-  
-  SieveServerMetaDataTest.nodeType  = function () {
+
+  SieveServerMetaDataTest.nodeType = function () {
     return "test";
   };
-  
+
   SieveServerMetaDataTest.isCapable
-      = function (capabilities)
-  {
-    return (capabilities["servermetadata"] === true);      
-  };
-  
+    = function (capabilities) {
+      return (capabilities["servermetadata"] === true);
+    };
+
   SieveServerMetaDataTest.prototype.require
-      = function (imports)
-  {
-    imports["servermetadata"] = true;
-  };
-  
+    = function (imports) {
+      imports["servermetadata"] = true;
+    };
+
   SieveServerMetaDataTest.prototype.init
-      = function (parser)
-  {
-    parser.extract("servermetadata");
-    this._whitespace[0].init(parser);
+    = function (parser) {
+      parser.extract("servermetadata");
+      this._whitespace[0].init(parser);
 
-    // optional
-    while (true) {
+      // optional
+      while (true) {
 
-      if (this._comparator.isOptional() && this._probeByName("comparator",parser))
-      {
-        this._comparator.init(parser);  
-        this._whitespace[1].init(parser);
-      
-        continue;
+        if (this._comparator.isOptional() && this._probeByName("comparator", parser)) {
+          this._comparator.init(parser);
+          this._whitespace[1].init(parser);
+
+          continue;
+        }
+
+        if (this._matchType.isOptional() && this._probeByName("match-type", parser)) {
+          this._matchType.init(parser);
+          this._whitespace[2].init(parser);
+
+          continue;
+        }
+
+        // no more optional elements
+        break;
       }
-    
-      if (this._matchType.isOptional() && this._probeByName("match-type",parser))
-      {
-        this._matchType.init(parser);
-        this._whitespace[2].init(parser);
-        
-        continue;
-      }
-      
-      // no more optional elements
-      break;
-    }
-    
-    // mandatory        
-    this._annotation.init(parser);    
-    this._whitespace[3].init(parser);
-    
-    this._keyList.init(parser);
-    this._whitespace[4].init(parser);
-    
-    return this;
-  };
+
+      // mandatory
+      this._annotation.init(parser);
+      this._whitespace[3].init(parser);
+
+      this._keyList.init(parser);
+      this._whitespace[4].init(parser);
+
+      return this;
+    };
 
   SieveServerMetaDataTest.prototype.toScript
-      = function ()
-  {
-    return "servermetadata"
-      + this._whitespace[0].toScript()
-      + (!this._comparator.isOptional()? 
-           this._comparator.toScript()+this._whitespace[1].toScript() : "")
-      + (!this._matchType.isOptional()?
-           this._matchType.toScript()+this._whitespace[2].toScript() : "")
-      + this._annotation.toScript()
-      + this._whitespace[3].toScript()
-      + this._keyList.toScript()
-      + this._whitespace[4].toScript();
-  };
-  
-////////////////////////////////////////////////////////////////////////////////
-  
-	// servermetadataexists <annotation-names: string-list>
-	function SieveServerMetaDataExitsTest(docshell,id) 
-  {
-    SieveAbstractElement.call(this,docshell,id);
+    = function () {
+      return "servermetadata"
+        + this._whitespace[0].toScript()
+        + (!this._comparator.isOptional() ?
+          this._comparator.toScript() + this._whitespace[1].toScript() : "")
+        + (!this._matchType.isOptional() ?
+          this._matchType.toScript() + this._whitespace[2].toScript() : "")
+        + this._annotation.toScript()
+        + this._whitespace[3].toScript()
+        + this._keyList.toScript()
+        + this._whitespace[4].toScript();
+    };
 
-    this._whitespace = this._createByName("whitespace",' ');
-    this._annotations = this._createByName("stringlist",'""');
+  // //////////////////////////////////////////////////////////////////////////////
+
+  // servermetadataexists <annotation-names: string-list>
+  function SieveServerMetaDataExitsTest(docshell, id) {
+    SieveAbstractElement.call(this, docshell, id);
+
+    this._whitespace = this._createByName("whitespace", ' ');
+    this._annotations = this._createByName("stringlist", '""');
   }
-  
+
   SieveServerMetaDataExitsTest.prototype = Object.create(SieveAbstractElement.prototype);
   SieveServerMetaDataExitsTest.prototype.constructor = SieveServerMetaDataExitsTest;
 
   SieveServerMetaDataExitsTest.isElement
-    = function(parser, lexer)
-  { 
-    return parser.startsWith("servermetadataexists");
-  };
-  
+    = function (parser, lexer) {
+      return parser.startsWith("servermetadataexists");
+    };
+
   SieveServerMetaDataExitsTest.nodeName = function () {
     return "test/servermetadataexists";
   };
-  
-  SieveServerMetaDataExitsTest.nodeType  = function () {
+
+  SieveServerMetaDataExitsTest.nodeType = function () {
     return "test";
   };
-  
+
   SieveServerMetaDataExitsTest.isCapable
-      = function (capabilities)
-  {
-    return (capabilities["servermetadata"] === true);      
-  };
-  
+    = function (capabilities) {
+      return (capabilities["servermetadata"] === true);
+    };
+
   SieveServerMetaDataExitsTest.prototype.require
-      = function (imports)
-  {
-    imports["servermetadata"] = true;
-  };
-  
+    = function (imports) {
+      imports["servermetadata"] = true;
+    };
+
   SieveServerMetaDataExitsTest.prototype.init
-      = function (parser)
-  {
-    parser.extract("servermetadataexists");
-    
-    this._whitespace.init(parser);
-    this._annotations.init(parser);
-        
-    return this;
-  };
+    = function (parser) {
+      parser.extract("servermetadataexists");
+
+      this._whitespace.init(parser);
+      this._annotations.init(parser);
+
+      return this;
+    };
 
   SieveServerMetaDataExitsTest.prototype.toScript
-      = function ()
-  {
-    return "servermetadataexists"
-      + this._whitespace.toScript()
-      + this._annotations.toScript();
-  };
+    = function () {
+      return "servermetadataexists"
+        + this._whitespace.toScript()
+        + this._annotations.toScript();
+    };
 
-////////////////////////////////////////////////////////////////////////////////
-  
+  // //////////////////////////////////////////////////////////////////////////////
+
   if (!SieveLexer)
-    throw "Could not register MatchTypes";
+    throw new Error("Could not register MatchTypes");
 
   SieveLexer.register(SieveCreateArgument);
   SieveLexer.register(SieveMailboxExistsTest);
@@ -548,6 +502,5 @@
   SieveLexer.register(SieveMetaDataTest);
   SieveLexer.register(SieveServerMetaDataExitsTest);
   SieveLexer.register(SieveServerMetaDataTest);
-
 
 })(window);

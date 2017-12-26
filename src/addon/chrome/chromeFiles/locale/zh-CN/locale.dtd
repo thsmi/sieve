@@ -1,6 +1,6 @@
 <!--
 /*
- * The contents of this file are licenced. You may obtain a copy of
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
@@ -193,7 +193,7 @@
 <!ENTITY list.badcert
   "您的邮件服务器尝试用无效的信息标识自身。">
 <!ENTITY list.badcert.error
-"如果您通常没有问题地连接到此服务器，则此错误可能意味着有人正在尝试模仿此服务器。 
+"如果您通常没有问题地连接到此服务器，则此错误可能意味着有人正在尝试模仿此服务器。
 
 除非您很清楚为什么此服务器不使用可信标识，否则不要继续。">
 <!ENTITY list.badcert.remember "记住我的决定">

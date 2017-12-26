@@ -1,76 +1,72 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * The contents of this file are licensed. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
 /* global window */
 
 "use strict";
 
-(function(exports) {
+(function (exports) {
 
   /* global SieveLexer */
   /* global SieveAbstractElement */
 
   function SieveRegExMatch(docshell, id) {
-    SieveAbstractElement.call(this, docshell, id);	
+    SieveAbstractElement.call(this, docshell, id);
   }
-  
+
   SieveRegExMatch.prototype = Object.create(SieveAbstractElement.prototype);
   SieveRegExMatch.prototype.constructor = SieveRegExMatch;
-  
+
   SieveRegExMatch.nodeName = function () {
     return "match-type/regex";
   };
-  
-  SieveRegExMatch.nodeType  = function () {
+
+  SieveRegExMatch.nodeType = function () {
     return "match-type/";
   };
-  
+
   SieveRegExMatch.isElement
-      = function (parser, lexer)
-  {    
-    if (parser.startsWith(":regex"))
-      return true;
-    
-    return false;
-  };
-  
+    = function (parser, lexer) {
+      if (parser.startsWith(":regex"))
+        return true;
+
+      return false;
+    };
+
   SieveRegExMatch.isCapable = function (capabilities) {
-    return (capabilities["regex"] === true);      
+    return (capabilities["regex"] === true);
   };
-  
+
   SieveRegExMatch.prototype.require
-      = function (imports)
-  {
-    imports["regex"] = true;
-  };
-  
+    = function (imports) {
+      imports["regex"] = true;
+    };
+
   SieveRegExMatch.prototype.init
-      = function (parser)
-  {	
-    parser.extract(":regex");    
-    return this;
-  };
-  
+    = function (parser) {
+      parser.extract(":regex");
+      return this;
+    };
+
   SieveRegExMatch.prototype.toScript
-      = function ()
-  {    
-    return ":regex";
-  };
-  
-  /******************************************************************************/
-  
+    = function () {
+      return ":regex";
+    };
+
+  /* *****************************************************************************/
+
   if (!SieveLexer)
-    throw "Could not register MatchTypes";
-    
+    throw new Error("Could not register MatchTypes");
+
   SieveLexer.register(SieveRegExMatch);
-  
+
 })(window);

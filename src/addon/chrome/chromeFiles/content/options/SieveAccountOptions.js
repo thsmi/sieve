@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
@@ -26,7 +26,6 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/Services.jsm");
-//  @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
 
 Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
 SieveOverlayManager.require("/sieve/SieveAutoConfig.js", this, window);

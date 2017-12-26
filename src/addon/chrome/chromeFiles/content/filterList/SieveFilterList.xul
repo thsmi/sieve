@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
  <!--
-   The content of this file is licenced. You may obtain a copy of
-   the license at http://sieve.mozdev.org or request it via email 
-   from the author. Do not remove or change this comment. 
-  
-   The initial author of the code is:
-     Thomas Schmid <schmid-thomas@gmx.net>
+  The content of this file is licensed. You may obtain a copy of
+  the license at https://github.com/thsmi/sieve/ or request it via
+  email from the author.
+
+  Do not remove or change this comment.
+
+  The initial author of the code is:
+    Thomas Schmid <schmid-thomas@gmx.net>
 -->
 
 <!DOCTYPE window SYSTEM "chrome://sieve/locale/locale.dtd">
@@ -17,33 +19,26 @@
   As other extension may override thunderbird's filter dialog, we we use this
   warpper to isolate all sieve related code. As side effect we do not need to care
   about namespace pollution etc...
-  
-  An extra plus is the onload and onclose event,  
-  
-  
+
+  An extra plus is the onload and onclose event,
+
+
   all code into a separate compartment.
   It's just a wrapper to isolate all sieve related function from thunderbird's
-  default filter dialog.  
+  default filter dialog.
 -->
 
-<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
       onclose="return onClose();"
       onload="return onLoad();">
 
- <!-- <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveAccounts.js"/>
-  <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveRequest.js"/>
-  <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveResponseCodes.js"/>-->
-          
-  <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveAbstractChannel.js"/>
-                    
   <script type="application/javascript"
-          src="chrome://sieve/content/filterList/SieveFilterList.js"/>           
+          src="chrome://sieve/content/libs/libManageSieve/SieveAbstractChannel.js"/>
 
-  <iframe src="chrome://sieve/content/editor/SieveStatus.xul" 
+  <script type="application/javascript"
+          src="chrome://sieve/content/filterList/SieveFilterList.js"/>
+
+  <iframe src="chrome://sieve/content/editor/SieveStatus.xul"
           id="sivStatus" flex="1" />
   <iframe id="sivContent" flex="1" hidden="true" />
 

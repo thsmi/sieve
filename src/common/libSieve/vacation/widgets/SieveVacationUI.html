@@ -1,11 +1,11 @@
 <!--
 
-  The contents of this file are licenced. You may obtain a copy of 
-  the license at https://github.com/thsmi/sieve/ or request it via 
+  The contents of this file are licensed. You may obtain a copy of
+  the license at https://github.com/thsmi/sieve/ or request it via
   email from the author.
- 
+
   Do not remove or change this comment.
-  
+
   The initial author of the code is:
     Thomas Schmid <schmid-thomas@gmx.net>
 
@@ -14,93 +14,93 @@
 <div id="sivVacationDialog" style="background-color: #EEEEEE;">
   <style >
     @import url('./toolkit/widgets/tabDialog.css');
-	
-	 
+
+
 	 .sivGroup > div {
 	   height:48px; line-height:48px;
 	   font-size:15px;
 	 }
-	 
+
 	 #sivVacationDialog input[type=text], #sivVacationDialog input[type=email] {
-	 height:13px; 
-	 margin-top:8px; 
-	 margin-bottom:4px; 
-	 padding-bottom:4px; 
+	 height:13px;
+	 margin-top:8px;
+	 margin-bottom:4px;
+	 padding-bottom:4px;
 	 /*line-height:48px;*/
-	 font-size:13px; 
-	 border:none; 
+	 font-size:13px;
+	 border:none;
 	 border-bottom:1px solid black;
 	 background-color: #EEEEEE;
 	 min-width: 300px
 	 }
-	 
+
 	 #sivVacationDialog textarea {
 	   font-size:15px; border:none; border-bottom:1px solid black;background-color: #EEEEEE; width:100%; height:200px;;
 	 }
-	 
+
 	  #sivVacationDialog h2 {
 	    /*height:48px; line-height:48px; */
 		font-size: 13px;
 		color: rgba(0,0,0,0.53);
-		margin: 0;	
+		margin: 0;
 		/*border-top: 1px solid lightgray;*/
 	  }
-	 
-	  
+
+
 	  .sivGroup.sivCollapsed > div {
 	     display:none;
-	  }	  
-	  
+	  }
+
 	  #sivVacationServerDesc, #sivVacationFromDesc, #sivVacationAddressesDesc {
 	    color: rgba(0,0,0,0.53);
-	  }  
-	  
+	  }
+
 	  #vacationEnvelopeEdit .sivContent div {
         text-overflow: ellipsis;
         white-space: nowrap;
      }
-     
-     #sivVacationDays {     
+
+     #sivVacationDays {
        width: 50px;
        min-width: 0px !important;
      }
-     
-     .sivDescription{ 
+
+     .sivDescription{
        color: rgba(0,0,0,0.53);
        margin-bottom:8px;
      }
-	 
+
 	  .sivMultiLineItem {
-	     padding-top:16px; 
+	     padding-top:16px;
 		 padding-bottom:20px;
-		 border-bottom:1px solid lightgray; 
+		 border-bottom:1px solid lightgray;
 		 display:flex;
-		 
+
 		 font-size:13px;
-	  }	 
+	  }
 
       .sivMultiLineItem  .sivAction {
-	    padding-left:16px; 
+	    padding-left:16px;
 		padding-right:16px;
-		
+
 		min-width:24px;
 		font-size:24px;
-      }	 
-	  
+      }
+
 	  .sivMultiLineItem .sivContent {
-	     paddin-bottom: 0px;
+	     padding-bottom: 0px;
 		 width:100%;
 		 overflow: hidden;
 		 font-size:13px
 	  }
-	  
+
 	   .sivMultiLineItem .sivContent div {
 	      flex:1 1 100%;
-		  overflow: hidden;  
+		  overflow: hidden;
 		  /*text-overflow: ellipsis;
 		  white-space: nowrap;*/
-	   }	 
-     
+	   }
+
   </style>
     <div>
         <!-- System -->
@@ -120,7 +120,7 @@
                         <div  class="sivDescription">The subject is used for any vacation response</div>
                         <div>
                             <input type="radio" name="subject" value="false"/>
-                            Server's default Subject     
+                            Server's default Subject
                         </div>
                         <div>
                             <input type="radio" name="subject" value="true" />
@@ -143,14 +143,14 @@
                     </div>
                 </div>
                 <div class="sivMultiLineItem">
-                    <div class="sivContent" id="sivAddresses" 
+                    <div class="sivContent" id="sivAddresses"
                          list-new="#sivAddressesAdd" list-items="#sivAddressesGroup" list-template="#sivAddressesTemplate">
-                         
+
                         <h2>Addresses</h2>
                         <div  class="sivDescription">
                            By default a response message is only send, if it was addressed to the recipient user or sieve script owner.<br/>
                            You can supply additional mail addresses. For Example if mails are forwarded or you have multiple aliases for
-                           a single mail address 
+                           a single mail address
                         </div>
                         <div id="sivAddressesTemplate" style="display:none">
                             <div>
@@ -198,13 +198,13 @@
                     <!-- Envelope Controls -->
                     <div id="vacationEnvelopeEdit" class="sivMultiLineItem">
                         <div class="sivContent">
-                            <div>Subject: 
+                            <div>Subject:
                                 <span  id="vacationSubjectDesc" style="color: rgba(0,0,0,0.53);"></span>
                             </div>
-                            <div>From: 
+                            <div>From:
                                 <span id="vacationFromDesc" style="color: rgba(0,0,0,0.53);"></span>
                             </div>
-                            <div>Addresses: 
+                            <div>Addresses:
                                 <span id="vacationAddressesDesc" style="color: rgba(0,0,0,0.53);">...</span>
                             </div>
                         </div>
@@ -253,7 +253,7 @@
                             <div  class="sivDescription">
                               The response tracking considers all vacation statements that use the same  handle as the same response<br/>
                               The default handle considers subject, from, mime as well as the message. A custom handle can be any unique strings
-                            </div>							
+                            </div>
                             <div>
                                 <input type="radio" name="handle" value="false" />
                                 <span>Use default handle</span>

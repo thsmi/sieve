@@ -1,6 +1,6 @@
-/* Modifiers */ 
+/* Modifiers */
 #sivVariablesAdvancedContent > div  {
-  padding-top: 8px; 
+  padding-top: 8px;
 }
 
 #sivVariablesAdvancedContent .sivModifiers h1 {
@@ -10,14 +10,14 @@
 
 #sivVariablesAdvancedContent .sivModifiers > div {
   padding-bottom: 8px;
-  padding-top 8px;
+  padding-top: 8px;
 }
 
 #sivVariablesAdvancedContent .sivModifiers > div > div {
   padding-left: 20px;
 }
 
-/* Matchtypes */ 
+/* Matchtypes */
 #sivVariablesGeneralContent .sivMatchType h1 {
   font-size: 13px;
   margin: 0px;

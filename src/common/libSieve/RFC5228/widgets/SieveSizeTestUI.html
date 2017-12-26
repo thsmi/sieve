@@ -1,11 +1,11 @@
 <!--
 
-  The contents of this file are licenced. You may obtain a copy of 
-  the license at https://github.com/thsmi/sieve/ or request it via 
+  The contents of this file are licensed. You may obtain a copy of
+  the license at https://github.com/thsmi/sieve/ or request it via
   email from the author.
- 
+
   Do not remove or change this comment.
-  
+
   The initial author of the code is:
     Thomas Schmid <schmid-thomas@gmx.net>
 
@@ -39,16 +39,16 @@
  </p>
  <p>
    Note: There is only a larger or smaller, no equals. A message with exaclty 4000 octets it neither
-   larger nor smaller than 4000 octets. 
+   larger nor smaller than 4000 octets.
  </p>
    </div>
-                
+
                 <!-- content for general tab -->
                 <div id="sivSizeTestGeneralContent" class="tab-active" >
                   <h1>Check if message size is ... </h1>
 				  <div><input type="radio" name="over" value="true" />larger</div>
 				  <div><input type="radio" name="over" value="false" />smaller</div>
-				  
+
 				  <h1>... than ... </h1>
 				  <input id="sivSizeTestValue" type="number" min="0" step="1" />
 				  <select id="sivSizeTestUnit">
@@ -57,23 +57,23 @@
 					<option value="M">Megabytes</option>
 					<option value="G">Gigabytes</option>
                   </select>
-				  
+
 <!--    return $("<div/>")
              .append($("<span/>")
                .text("Message is"))
              .append($("<select/>")
-               .attr("id","SizeTestOver"+this.id())           
+               .attr("id","SizeTestOver"+this.id())
                .append($("<option/>")
                  .text("bigger").val("true"))
                .append($("<option/>")
-                 .text("smaler").val("false")) 
-               .val(""+this.getSieve().isOver()))          
+                 .text("smaler").val("false"))
+               .val(""+this.getSieve().isOver()))
              .append($("<span/>")
                .text("than"))
              .append($("<input/>")
                .attr("type","text")
                .attr("id","SizeTestValue"+this.id())
-               .val(""+this.getSieve().getSize().value()) )           
+               .val(""+this.getSieve().getSize().value()) )
              .append($("<select/>")
                .attr("id","SizeTestUnit"+this.id())
                .append($("<option/>")
@@ -87,7 +87,7 @@
                .val(this.getSieve().getSize().unit()));   -->
 
                 </div>
-                
+
             </div>
         </div>
     </div>

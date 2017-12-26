@@ -1,15 +1,12 @@
 /*
- * The content of this file is licenced. You may obtain a copy of the license
- * at http://sieve.mozdev.org or request it via email from the author.
+ * The content of this file is licensed. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
+ * email from the author.
  *
  * Do not remove or change this comment.
  *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *
- * Hints for Spekt IDE autocomplete, they have to be in the first comment...
- *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveResponse.js"
- *   @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveRequest.js"
  */
 
 /* global Components */
@@ -39,10 +36,12 @@ Cu.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
 SieveOverlayManager.require("/sieve/SieveConnectionManager.js", this, window);
 SieveOverlayManager.require("/sieve/SieveAccounts.js", this, window);
 
-var gBackHistory = [];
-var gForwardHistory = [];
 
-var gEditorStatus =
+let textEditor = null;
+let gBackHistory = [];
+let gForwardHistory = [];
+
+let gEditorStatus =
   {
     checkScriptDelay: 200,
     checkScriptTimer: null,
@@ -55,7 +54,7 @@ var gEditorStatus =
       // used to detect if the script was changed via a gui...
       gui: null,
       // used to detect if the script changed upon a reconnect
-      server: null //the script's serverside checksum
+      server: null // the script's serverside checksum
     }
   };
 
@@ -70,11 +69,11 @@ SieveFilterEditor.prototype.constructor = SieveFilterEditor;
 SieveFilterEditor.prototype.onChannelReady
   = function (cid) {
     // We observe only our channel...
-    if (cid != this._cid)
+    if (cid !== this._cid)
       return;
 
-    var that = this;
-    var event = {
+    let that = this;
+    let event = {
       onError: function (reponse) {
         // Script does not exists, or was deleted
 
@@ -94,13 +93,13 @@ SieveFilterEditor.prototype.onChannelReady
         }
 
         // if not use the default script
-        var date = new Date();
-        var script = "#\r\n# " + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "\r\n#\r\n";
+        let date = new Date();
+        let script = "#\r\n# " + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "\r\n#\r\n";
         that.onScriptLoaded(script);
       }
     };
 
-    var request = new SieveGetScriptRequest(this.getScriptName());
+    let request = new SieveGetScriptRequest(this.getScriptName());
     request.addGetScriptListener(this);
     request.addErrorListener(event);
 
@@ -114,23 +113,23 @@ SieveFilterEditor.prototype.onChannelClosed
 
 SieveFilterEditor.prototype._calcChecksum
   = function (str) {
-    var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
+    let converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
       .createInstance(Ci.nsIScriptableUnicodeConverter);
 
     // we use UTF-8 here
     converter.charset = "UTF-8";
 
-    var result = {};
+    let result = {};
     // data is an array of bytes
-    var data = converter.convertToByteArray(str, result);
+    let data = converter.convertToByteArray(str, result);
 
-    var ch = Cc["@mozilla.org/security/hash;1"]
+    let ch = Cc["@mozilla.org/security/hash;1"]
       .createInstance(Ci.nsICryptoHash);
 
     ch.init(ch.SHA512);
     ch.update(data, data.length);
 
-    var hash = ch.finish(false);
+    let hash = ch.finish(false);
 
     // convert the binary hash data to a hex string.
     return Array.from(hash,
@@ -140,8 +139,8 @@ SieveFilterEditor.prototype._calcChecksum
 SieveFilterEditor.prototype.onGetScriptResponse
   = function (response) {
 
-    var that = this;
-    var remoteScript = response.getScriptBody();
+    let that = this;
+    let remoteScript = response.getScriptBody();
 
     this.getScriptAsync(function (localScript) {
 
@@ -152,19 +151,19 @@ SieveFilterEditor.prototype.onGetScriptResponse
         return;
       }
 
-      var remoteCheckSum = that._calcChecksum(remoteScript);
-      var localCheckSum = that._calcChecksum(localScript);
+      let remoteCheckSum = that._calcChecksum(remoteScript);
+      let localCheckSum = that._calcChecksum(localScript);
 
       // The server side script is equal to out current script. We are perfectly
       // in sync. And do not need to do anything...
-      if (remoteCheckSum == localCheckSum) {
+      if (remoteCheckSum === localCheckSum) {
         that.onScriptLoaded(localScript);
         return;
       }
 
       // The server side script is equal to our last save. So no third party changed
       // anything. We can be sure the local script is newer.
-      if (remoteCheckSum == gEditorStatus.checksum.server) {
+      if (remoteCheckSum === gEditorStatus.checksum.server) {
         that.onScriptLoaded(localScript);
         return;
       }
@@ -176,7 +175,7 @@ SieveFilterEditor.prototype.onGetScriptResponse
 
 SieveFilterEditor.prototype.onPutScriptResponse
   = function (response) {
-    var that = this;
+    let that = this;
 
     // the script was updated, which means we need to update the checksum...
     this.getScriptAsync(function (script) {
@@ -203,7 +202,7 @@ SieveFilterEditor.prototype.onPutScriptResponse
 
 SieveFilterEditor.prototype.onCheckScriptResponse
   = function (response) {
-    var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
+    let strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
 
     if (!response.hasError()) {
       // TODO: The response might contain warnings, parse them
@@ -253,11 +252,11 @@ SieveFilterEditor.prototype.onScriptLoaded
     this.onStatusChange(0);
     gEditorStatus.persistedScript = null;
 
-    var that = this;
+    let that = this;
 
     textEditor.loadScript(script, function () {
 
-      if (gEditorStatus.checksum.server == null) {
+      if (gEditorStatus.checksum.server === null) {
         gEditorStatus.checksum.server = that._calcChecksum(script);
         gSFE.setScriptName();
       }
@@ -266,9 +265,9 @@ SieveFilterEditor.prototype.onScriptLoaded
     });
 
 
-    var account = SieveAccountManager.getAccountByName(gEditorStatus.account);
+    let account = SieveAccountManager.getAccountByName(gEditorStatus.account);
 
-    var settings = {};
+    let settings = {};
 
     settings.tab = {};
     settings.tab.width = account.getSettings().getTabWidth();
@@ -283,10 +282,10 @@ SieveFilterEditor.prototype.onScriptLoaded
 
 SieveFilterEditor.prototype.observe
   = function (aSubject, aTopic, aData) {
-    if (aTopic == "quit-application-requested") {
+    if (aTopic === "quit-application-requested") {
       // we are asychnonous, so need to trigger the event if we are done...
-      var callback = function () {
-        var cancelQuit = Cc["@mozilla.org/supports-PRBool;1"]
+      let callback = function () {
+        let cancelQuit = Cc["@mozilla.org/supports-PRBool;1"]
           .createInstance(Ci.nsISupportsPRBool);
         Services.obs.notifyObservers(cancelQuit, "quit-application-requested", aData);
 
@@ -341,10 +340,10 @@ SieveFilterEditor.prototype.getScript
     if (document.getElementById('btnViewSource').checked)
       return editor;
 
-    var widget = document.getElementById("sivWidgetEditor")
+    let widget = document.getElementById("sivWidgetEditor")
       .contentWindow.getSieveScript();
 
-    if (this._calcChecksum(widget) == gEditorStatus.checksum.gui)
+    if (this._calcChecksum(widget) === gEditorStatus.checksum.gui)
       return editor;
 
     return widget;
@@ -374,7 +373,7 @@ SieveFilterEditor.prototype.getScriptAsync
       return;
     }
 
-    var widget = document.getElementById("sivWidgetEditor")
+    let widget = document.getElementById("sivWidgetEditor")
       .contentWindow.getSieveScript();
     callback(widget);
   };
@@ -382,10 +381,10 @@ SieveFilterEditor.prototype.getScriptAsync
 SieveFilterEditor.prototype.hasChanged
   = function () {
 
-    if (gEditorStatus.checksum.server == null)
+    if (gEditorStatus.checksum.server === null)
       return true;
 
-    if (this._calcChecksum(this.getScript()) == gEditorStatus.checksum.server)
+    if (this._calcChecksum(this.getScript()) === gEditorStatus.checksum.server)
       return false;
 
     return true;
@@ -402,12 +401,11 @@ SieveFilterEditor.prototype.putScript
 
       // We postpone the call. First we get the script from the editor,
       // and then call the method again...
-      var that = this;
-      this.getScriptAsync(function (script) { that.putScript(scriptName, script); });
+      this.getScriptAsync((script) => { this.putScript(scriptName, script); });
       return;
     }
 
-    var event = {
+    let event = {
       onError: function (response) {
         Cc["@mozilla.org/embedcomp/prompt-service;1"]
           .getService(Ci.nsIPromptService)
@@ -418,7 +416,7 @@ SieveFilterEditor.prototype.putScript
       }
     };
 
-    var request = new SievePutScriptRequest(scriptName, content);
+    let request = new SievePutScriptRequest(scriptName, content);
     request.addPutScriptListener(this);
     request.addErrorListener(event);
 
@@ -430,13 +428,13 @@ SieveFilterEditor.prototype.setScriptName
     if (typeof (scriptName) !== "undefined")
       this._scriptName = scriptName;
 
-    var title = this.getScriptName() + " - Sieve Filters";
+    let title = this.getScriptName() + " - Sieve Filters";
 
 
     if (this.hasChanged())
       title = "*" + title;
 
-    if (document.title != title)
+    if (document.title !== title)
       document.title = title;
   };
 
@@ -454,7 +452,7 @@ function onInput() {
   gSFE.setScriptName();
 
   // on every keypress we reset the timeout
-  if (gEditorStatus.checkScriptTimer != null) {
+  if (gEditorStatus.checkScriptTimer !== null) {
     clearTimeout(gEditorStatus.checkScriptTimer);
     gEditorStatus.checkScriptTimer = null;
   }
@@ -464,7 +462,7 @@ function onInput() {
 }
 
 function onWindowPersist() {
-  var args = {};
+  let args = {};
 
   args["compile"] = document.getElementById('btnCompile').checked;
   args["account"] = gEditorStatus.account;
@@ -482,9 +480,8 @@ function onWindowPersist() {
   return args;
 }
 
-var textEditor = null;
 
-var sivEditorListener = {
+let sivEditorListener = {
   onChange: function () {
     onInput();
   },
@@ -562,18 +559,15 @@ function onWindowLoad() {
 
   // hack to prevent links to be opened in the default browser window...
   document.getElementById("ifSideBar").
-    addEventListener(
-    "click",
-    function (event) { onSideBarBrowserClick(event); },
-    false);
+    addEventListener( "click", (event) => { onSideBarBrowserClick(event); }, false);
 
   document.getElementById("sivWidgetEditor")
     .setAttribute("src", "chrome://sieve-common/content/libSieve/SieveGui.html");
 
-  var args = window.arguments[0].wrappedJSObject;
+  let args = window.arguments[0].wrappedJSObject;
   gEditorStatus.account = args["account"];
 
-  var account = SieveAccountManager.getAccountByName(gEditorStatus.account);
+  let account = SieveAccountManager.getAccountByName(gEditorStatus.account);
 
   document.getElementById("sivEditorStatus").contentWindow
     .onAttach(account,
@@ -604,7 +598,7 @@ function onWindowLoad() {
 
   gSFE.connect(account);
 
-  //preload sidebar...
+  // preload sidebar...
   onSideBarHome();
 
   if (!args["compile"])
@@ -613,13 +607,13 @@ function onWindowLoad() {
   onErrorBar(args["compile"]);
   onSideBar(true);
   onSearchBar(false);
-  /*onViewSource(true);*/
+  /* onViewSource(true);*/
 
   Cc["@mozilla.org/observer-service;1"]
     .getService(Ci.nsIObserverService)
     .addObserver(gSFE, "quit-application-requested", false);
 
-  /*  window.addEventListener("unload", function() {
+  /* window.addEventListener("unload", function() {
         Cc["@mozilla.org/observer-service;1"]
           .getService (Ci.nsIObserverService)
           .removeObserver(gSFE, "quit-application-requested");
@@ -646,7 +640,7 @@ function onViewSource(visible, aNoUpdate) {
   if (typeof (visible) === "undefined")
     visible = document.getElementById('btnViewSource').checked;
 
-  var deck = document.getElementById('dkView');
+  let deck = document.getElementById('dkView');
 
   if (visible) {
     // show Source
@@ -665,11 +659,11 @@ function onViewSource(visible, aNoUpdate) {
 
     document.getElementById("sivEditor2").focus();
 
-    var script = document.getElementById("sivWidgetEditor")
+    let script = document.getElementById("sivWidgetEditor")
       .contentWindow.getSieveScript();
 
     // GUI did not change so se can skip...
-    if (aNoUpdate || (gEditorStatus.checksum.gui == gSFE._calcChecksum(script)))
+    if (aNoUpdate || (gEditorStatus.checksum.gui === gSFE._calcChecksum(script)))
       return;
 
     textEditor.setScript(script);
@@ -700,7 +694,7 @@ function onViewSource(visible, aNoUpdate) {
 function updateWidgets(script) {
 
   try {
-    var capabilities = SieveConnections
+    let capabilities = SieveConnections
       .getChannel(gSFE._sid, gSFE._cid).extensions;
 
     // set script content...
@@ -712,8 +706,8 @@ function updateWidgets(script) {
       document.getElementById("sivWidgetEditor").contentWindow.getSieveScript());
   }
   catch (ex) {
-    //Cu.reportError(ex);
-    //throw ex;
+    // Cu.reportError(ex);
+    // throw ex;
     alert("Error while parsing script.\n\n" + ex);
     // switching to souce view failed
     onViewSource(true, true);
@@ -721,11 +715,11 @@ function updateWidgets(script) {
 }
 
 function onSideBarBrowserClick(event) {
-  var href = null;
+  let href = null;
 
-  if (event.target.nodeName == "A")
+  if (event.target.nodeName === "A")
     href = event.target.href;
-  else if (event.target.parentNode.nodeName == "A")
+  else if (event.target.parentNode.nodeName === "A")
     href = event.target.parentNode.href;
   else
     return;
@@ -782,7 +776,7 @@ function onSideBarGo(uri) {
   else
     document.getElementById("btnSideBarForward").removeAttribute('disabled');
 
-  /*if (document.getElementById("ifSideBar").addEventListener)
+  /* if (document.getElementById("ifSideBar").addEventListener)
     document.addEventListener(
       "DOMContentLoaded", function(event) { onSideBarLoading(false); }, false);*/
   if (document.getElementById("ifSideBar").addEventListener)
@@ -819,24 +813,24 @@ function asyncCloseTab(callback) {
     return false;
 
   // we need to wait for user feedback...
-  var prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
+  let prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
     .getService(Ci.nsIPromptService);
 
-  var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
+  let strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
 
   // The flags 393733 equals [Save] [Don't Save] [Cancel]
-  var result =
+  let result =
     prompts.confirmEx(
       window, strings.GetStringFromName("edit.save.title"),
       strings.GetStringFromName("edit.save.description"), 393733,
       "", "", "", null, { value: false });
 
   // cancel clicked...
-  if (result == 1)
+  if (result === 1)
     return false;
 
   // don't save clicked...
-  if (result != 0)
+  if (result !== 0)
     return closeTab();
 
   gEditorStatus.closeListener = callback;
@@ -848,6 +842,7 @@ function asyncCloseTab(callback) {
 /**
  * Closes the tab, does not prompt if it should be saved or not...
  * @return {Boolean}
+ *   true if the tab can be close otherwise false
  */
 function closeTab() {
   try {
@@ -887,16 +882,16 @@ function onDoImport(filePicker, rv) {
   if (rv !== Ci.nsIFilePicker.returnOK)
     return;
 
-  var inputStream = Cc["@mozilla.org/network/file-input-stream;1"]
+  let inputStream = Cc["@mozilla.org/network/file-input-stream;1"]
     .createInstance(Ci.nsIFileInputStream);
-  var scriptableStream = Cc["@mozilla.org/scriptableinputstream;1"]
+  let scriptableStream = Cc["@mozilla.org/scriptableinputstream;1"]
     .createInstance(Ci.nsIScriptableInputStream);
 
   inputStream.init(filePicker.file, 0x01, parseInt("0444", 8), null);
   scriptableStream.init(inputStream);
 
   // todo insert imported snipplet instead of replacing the whole script
-  var script = scriptableStream.read(scriptableStream.available());
+  let script = scriptableStream.read(scriptableStream.available());
 
   scriptableStream.close();
   inputStream.close();
@@ -909,7 +904,7 @@ function onDoImport(filePicker, rv) {
 
 function onImport() {
 
-  var filePicker = Cc["@mozilla.org/filepicker;1"]
+  let filePicker = Cc["@mozilla.org/filepicker;1"]
     .createInstance(Ci.nsIFilePicker);
 
   filePicker.appendFilter("Sieve Scripts (*.siv)", "*.siv");
@@ -925,12 +920,12 @@ function onDoExport(filePicker, rv) {
     return;
 
   gSFE.getScriptAsync(function (data) {
-    var file = filePicker.file;
+    let file = filePicker.file;
 
     if (file.exists() === false)
       file.create(Ci.nsIFile.NORMAL_FILE_TYPE, parseInt("0644", 8));
 
-    var outputStream = Cc["@mozilla.org/network/file-output-stream;1"]
+    let outputStream = Cc["@mozilla.org/network/file-output-stream;1"]
       .createInstance(Ci.nsIFileOutputStream);
 
     outputStream.init(file, 0x04 | 0x08 | 0x20, parseInt("0644", 8), null);
@@ -943,7 +938,7 @@ function onDoExport(filePicker, rv) {
 }
 
 function onExport() {
-  var filePicker = Cc["@mozilla.org/filepicker;1"]
+  let filePicker = Cc["@mozilla.org/filepicker;1"]
     .createInstance(Ci.nsIFilePicker);
 
   filePicker.defaultExtension = ".siv";
@@ -958,7 +953,7 @@ function onExport() {
 }
 
 function onErrorBar(visible, aSilent) {
-  if (visible == null)
+  if (typeof(visible) === "undefined" || visible === null)
     visible = document.getElementById('btnCompile').checked;
 
   if (visible) {
@@ -996,34 +991,8 @@ function onSideBarShow() {
   return;
 }
 
-/**
- * Shows the Sidebar containing the Sieve Reference
- * @returns {void}
- */
-function onSideBarHide() {
-  document.getElementById('btnReference').removeAttribute('checked');
-  document.getElementById('spSideBar').setAttribute('hidden', 'true');
-  document.getElementById('vbSidebar').setAttribute('hidden', 'true');
-
-  onSearchBar(false);
-
-  return;
-}
-
-function onSideBar(visible) {
-  if (visible == null)
-    visible = document.getElementById('btnReference').checked;
-
-  if (visible)
-    onSideBarShow();
-  else
-    onSideBarHide();
-
-  return;
-}
-
 function onSearchBar(visible) {
-  if (visible == null)
+  if (typeof(visible) === "undefined" || visible === null)
     visible = document.getElementById('btnSearchBar').checked;
 
   if (visible) {
@@ -1040,6 +1009,32 @@ function onSearchBar(visible) {
   return;
 }
 
+/**
+ * Shows the Sidebar containing the Sieve Reference
+ * @returns {void}
+ */
+function onSideBarHide() {
+  document.getElementById('btnReference').removeAttribute('checked');
+  document.getElementById('spSideBar').setAttribute('hidden', 'true');
+  document.getElementById('vbSidebar').setAttribute('hidden', 'true');
+
+  onSearchBar(false);
+
+  return;
+}
+
+function onSideBar(visible) {
+  if (typeof(visible) === "undefined" || visible === null)
+    visible = document.getElementById('btnReference').checked;
+
+  if (visible)
+    onSideBarShow();
+  else
+    onSideBarHide();
+
+  return;
+}
+
 function onKeepLocalScript() {
   gSFE.onScriptLoaded(gSFE.getScript());
 }
@@ -1050,7 +1045,7 @@ function onUseRemoteScript(script) {
 
 
 function onEditorShowMenu() {
-  var callback = function (status) {
+  let callback = function (status) {
 
     if (status.canCut)
       document.getElementById("ctxCut").removeAttribute("disabled");
@@ -1089,4 +1084,4 @@ function onSelectAll() {
   textEditor.selectAll();
 }
 
-var gSFE = new SieveFilterEditor();
+let gSFE = new SieveFilterEditor();

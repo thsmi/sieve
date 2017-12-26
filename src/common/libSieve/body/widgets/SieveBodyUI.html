@@ -1,11 +1,11 @@
 <!--
 
-  The contents of this file are licenced. You may obtain a copy of 
-  the license at https://github.com/thsmi/sieve/ or request it via 
+  The contents of this file are licensed. You may obtain a copy of
+  the license at https://github.com/thsmi/sieve/ or request it via
   email from the author.
- 
+
   Do not remove or change this comment.
-  
+
   The initial author of the code is:
     Thomas Schmid <schmid-thomas@gmx.net>
 
@@ -36,36 +36,36 @@
                 <!-- content for help tab -->
                 <div id="sivBodyHelpContent">
                     <p>
-The body test matches content in the body of an email message, that 
-   is, anything following the first empty line after the header.  (The 
-   empty line itself, if present, is not considered to be part of the 
-   body.                    
+The body test matches content in the body of an email message, that
+   is, anything following the first empty line after the header.  (The
+   empty line itself, if present, is not considered to be part of the
+   body.
       </p>
                 </div>
-                
+
                 <!-- content for general tab -->
                 <div id="sivBodyGeneralContent" class="tab-active" >
-                  <h1>The email's message body... </h1>   
+                  <h1>The email's message body... </h1>
                   <div id="sivBodyMatchTypes"> </div>
-                  
+
                   <h1>... any of the keyword(s):</h1>
                   <div id="sivBodyKeyList"
                        list-new="#sivBodyKeyListAdd" list-items="#sivBodyKeyListItems" list-template="#sivBodyKeyListTemplate" list-min="1">
-                       
+
                     <div id="sivBodyKeyListTemplate" style="display:none">
                       <div>
                         <input type="text" />
                         <button>remove</button>
                       </div>
-                    </div>                    
+                    </div>
                     <div id="sivBodyKeyListItems">
                       <div>
                         <button id="sivBodyKeyListAdd">add</button>
                        </div>
                     </div>
-                  </div>                  
+                  </div>
                 </div>
-                
+
                 <!-- content for advanced tab -->
                 <div  id="sivBodyAdvancedContent">
 				  <div id="sivBodyComparator"></div>

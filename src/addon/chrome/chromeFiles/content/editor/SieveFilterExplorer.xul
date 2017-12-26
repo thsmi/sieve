@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-   The content of this file is licenced. You may obtain a copy of
-   the license at http://sieve.mozdev.org or request it via email 
-   from the author. Do not remove or change this comment. 
-  
-   The initial author of the code is:
-     Thomas Schmid <schmid-thomas@gmx.net>
-   
+  The content of this file is licensed. You may obtain a copy of
+  the license at https://github.com/thsmi/sieve/ or request it via
+  email from the author.
+
+  Do not remove or change this comment.
+
+  The initial author of the code is:
+    Thomas Schmid <schmid-thomas@gmx.net>
+
    Contributor(s):
      Marion Desnault
 -->
@@ -29,19 +31,19 @@
         windowtype="Sieve:FilterExplorer">
 
 
-  <script type="application/javascript" 
-          src="chrome://sieve/content/libs/libManageSieve/SieveAbstractChannel.js"/>  
-  <script type="application/javascript" 
+  <script type="application/javascript"
+          src="chrome://sieve/content/libs/libManageSieve/SieveAbstractChannel.js"/>
+  <script type="application/javascript"
           src="chrome://sieve/content/editor/SieveFiltersTreeView.js"/>
-  <script type="application/javascript" 
+  <script type="application/javascript"
           src="chrome://sieve/content/editor/SieveFilterExplorer.js"/>
-              
+
   <hbox align="center">
     <label value="&list.accounts;"  control="serverMenu"/>
       <menulist id="menuImapAccounts" oncommand="onSelectAccount();">
-	  </menulist> 
-      <spacer flex="1"/> 
-      <box id="btnDonate"  onclick="onDonate();"/>   
+	  </menulist>
+      <spacer flex="1"/>
+      <box id="btnDonate"  onclick="onDonate();"/>
   </hbox>
 
   <grid flex="1" id="gridList" >
@@ -56,33 +58,33 @@
       <row>
         <description>&list.tree;</description>
       </row>
-    
-      <row flex="1">        
+
+      <row flex="1">
           <vbox>
-            <tree id="treeImapRules" flex="1" 
-                  hidecolumnpicker="true"  seltype="single" 
+            <tree id="treeImapRules" flex="1"
+                  hidecolumnpicker="true"  seltype="single"
                   ondblclick="onTreeDblClick(event);">
               <treecols>
 			          <treecol id="namecol" label="&list.tree.name;" flex="1"/>
-   			        <treecol id="active" label="&list.tree.active;" cycler="true"/> 			  
+   			        <treecol id="active" label="&list.tree.active;" cycler="true"/>
               </treecols>
-              
+
               <treechildren id="sivExplorerTree" collapsed="true" />
               <iframe id="sivExplorerStatus" flex="1" src="chrome://sieve/content/editor/SieveStatus.xul" />
-              
+
             </tree>
-            <vbox>          
+            <vbox>
               <button id="btnServerDetails" oncommand="onServerDetails();" flex="1">
                 <hbox flex="1"  align="center" >
-                  <image pack="center" id="imgServerDetails" height="9px" width="9px" 
+                  <image pack="center" id="imgServerDetails" height="9px" width="9px"
                          src="chrome://global/skin/tree/twisty-clsd.png" />
                   <label style="text-align:left" value="&list.details.capability;" flex="1" />
                 </hbox>
-              </button>                                  
-          
+              </button>
+
               <vbox id="vbServerDetails" >
-                <stack flex="1" class="inset">                
-                  <spacer/>                                          
+                <stack flex="1" class="inset">
+                  <spacer/>
                   <grid>
                     <columns>
                       <column />
@@ -91,28 +93,28 @@
                     <rows>
                       <row align="baseline">
                         <hbox pack="end"><label value="&list.details.capability.implementation;"/></hbox>
-                        <textbox id="txtImplementation" class="plain"/>                      
+                        <textbox id="txtImplementation" class="plain"/>
                       </row>
                       <row align="baseline">
                         <hbox pack="end"><label value="&list.details.capability.extensions;"/></hbox>
-                        <textbox id="txtExtensions" class="plain"/>                      
+                        <textbox id="txtExtensions" class="plain"/>
                       </row>
                       <row align="baseline">
-                        <hbox pack="end"><label value="&list.details.capability.sasl;"/></hbox>           
-                        <textbox id="txtSASL" class="plain"/>           
-                      </row>          
+                        <hbox pack="end"><label value="&list.details.capability.sasl;"/></hbox>
+                        <textbox id="txtSASL" class="plain"/>
+                      </row>
                       <row align="baseline">
-                        <hbox pack="end"><label value="&list.details.capability.protocol;"/></hbox>           
-                        <textbox id="txtVersion" class="plain"/>           
-                      </row>                         
+                        <hbox pack="end"><label value="&list.details.capability.protocol;"/></hbox>
+                        <textbox id="txtVersion" class="plain"/>
+                      </row>
                     </rows>
-                  </grid>                  
+                  </grid>
                 </stack>
               </vbox>
-            </vbox>          
+            </vbox>
           </vbox>
         <vbox>
-          <button id="newButton" label="&list.new;" 
+          <button id="newButton" label="&list.new;"
                   oncommand="onNewClick();"/>
           <button id="editButton" label="&list.edit;"
                   oncommand="onEditClick();"/>
@@ -123,7 +125,7 @@
           <button id="btnActivateScript" label="&list.activate;"
                   oncommand="onActivateClick();"/>
           <spacer flex="1"/>
-          <button id="settings" label="&list.settings;" 
+          <button id="settings" label="&list.settings;"
                    oncommand="onSettingsClick();"/>
           <spacer flex="1"/>
         </vbox>

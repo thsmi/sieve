@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
  <!--
-   The content of this file is licenced. You may obtain a copy of
-   the license at http://sieve.mozdev.org or request it via email 
-   from the author. Do not remove or change this comment. 
-  
-   The initial author of the code is:
-     Thomas Schmid <schmid-thomas@gmx.net>
+  The content of this file is licensed. You may obtain a copy of
+  the license at https://github.com/thsmi/sieve/ or request it via
+  email from the author.
+
+  Do not remove or change this comment.
+
+  The initial author of the code is:
+    Thomas Schmid <schmid-thomas@gmx.net>
 -->
 
 <!DOCTYPE window SYSTEM "chrome://sieve/locale/locale.dtd">
@@ -14,27 +16,27 @@
 <?xml-stylesheet href="chrome://sieve/content/editor/Sieve.css" type="text/css"?>
 
 <!--
-  Contiains commonly used dialogs during login etc... 
+  Contiains commonly used dialogs during login etc...
 -->
 
 <page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" >
-  
-  <script type="application/javascript" 
+
+  <script type="application/javascript"
           src="chrome://sieve/content/libs/libManageSieve/SieveRequest.js"/>
-  <script type="application/javascript" 
+  <script type="application/javascript"
           src="chrome://sieve/content/libs/libManageSieve/SieveResponseCodes.js"/>
-  <script type="application/javascript" 
+  <script type="application/javascript"
           src="chrome://sieve/content/libs/libManageSieve/SieveResponse.js"/>
 
-  
-  <script type="application/javascript" 
+
+  <script type="application/javascript"
           src="chrome://sieve/content/libs/libManageSieve/SieveAutoConfig.js" />
-                
+
   <script type="application/javascript"
           src="chrome://sieve/content/editor/SieveStatus.js"/>
-  
+
   <deck id="StatusDeck" flex="1">
-    
+
     <!-- 0. Wait tobber -->
     <vbox id="StatusWait" align="center" pack="center" flex="1" >
       <image pack="center" src="chrome://sieve/content/images/load.gif"/>
@@ -43,7 +45,7 @@
       </description>
     </vbox>
 
-    <!-- 1. Bad Cert Warning Message -->      
+    <!-- 1. Bad Cert Warning Message -->
     <box id="StatusBadCert" align="center" pack="center" flex="1">
       <hbox align="center" class="sivWarning" >
         <image pack="center" src="chrome://sieve/content/images/sslWarning.png"/>
@@ -55,7 +57,7 @@
             <button id="btnIgnoreBadCert" label="&list.badcert.ignore;" />
             <button id="btnAbortBadCert" label="&list.badcert.abort;" />
           </hbox>
-        </vbox> 
+        </vbox>
       </hbox>
     </box>
 
@@ -63,7 +65,7 @@
     <vbox id="StatusDisabled" align="center" pack="center" flex="1">
       <box>
         <deck id="sivAutoConfig" selectedIndex="0">
-                
+
           <!-- Welcome -->
           <vbox id="sivAutoConfigInfo">
             <label style="font-weight:bold">&list.autoconfig.welcome.caption;</label>
@@ -71,126 +73,126 @@
             <description>&list.autoconfig.welcome.description2;</description>
             <separator flex="1"/>
             <hbox align="right">
-              <button label="&list.autoconfig.advanced;" 
-                      oncommand="onSettingsClick();" />                      
-              <button label="&list.autoconfig.continue;" 
+              <button label="&list.autoconfig.advanced;"
+                      oncommand="onSettingsClick();" />
+              <button label="&list.autoconfig.continue;"
                       oncommand="onAutoConfigRunClick();" />
             </hbox>
           </vbox>
-                  
+
           <!-- Detecting -->
           <vbox id="sivAutoConfigWait">
             <label style="font-weight:bold">&list.autoconfig.detecting.caption;</label>
             <label>&list.autoconfig.detecting.description;</label>
             <separator flex="1"/>
             <hbox align="right">
-              <button label="&list.autoconfig.cancel;" 
+              <button label="&list.autoconfig.cancel;"
                       oncommand="onAutoConfigCancelClick();" />
             </hbox>
           </vbox>
-                  
+
           <!-- Success -->
           <vbox id="sivAutoConfigInfo">
             <label style="font-weight:bold">&list.autoconfig.success.caption;</label>
             <description>&list.autoconfig.success.description;</description>
             <separator flex="1"/>
             <hbox align="right"  >
-              <button label="&list.autoconfig.advanced;" 
+              <button label="&list.autoconfig.advanced;"
                       oncommand="onSettingsClick();" />
               <button label="&list.autoconfig.continue;"
                       oncommand="onAutoConfigFinishedClick();" />
             </hbox>
-          </vbox>                             
-                  
+          </vbox>
+
           <!-- Error -->
           <vbox id="sivAutoConfigError">
             <label style="font-weight:bold">&list.autoconfig.error.caption;</label>
             <description>&list.autoconfig.error.description;</description>
             <separator/>
             <hbox align="right">
-              <button label="&list.autoconfig.retest;" 
+              <button label="&list.autoconfig.retest;"
                       oncommand="onAutoConfigRunClick();" />
               <button label="&list.autoconfig.config;"
                       oncommand="onSettingsClick();" />
-            </hbox>                                                            
-          </vbox>                                    
+            </hbox>
+          </vbox>
         </deck>
       </box>
     </vbox>
 
 
-    <!-- 3. Error Message: Connecton to server lost... -->              
+    <!-- 3. Error Message: Connecton to server lost... -->
               <box id="StatusConnectionLost" align="center" pack="center" flex="1">
                 <hbox align="center" class="sivError" >
                   <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
-                  <vbox>                    
+                  <vbox>
                      <description pack="center"  flex="1">
                        &status.connectivity.loss.description;
                      </description>
                      <hbox align="right">
                       <button label="&status.connectivity.loss.reconnect;" oncommand="onReconnectClick();" />
                      </hbox>
-                  </vbox> 
+                  </vbox>
                 </hbox>
               </box>
-              
+
    <!--  4. Error Message: Thunderbird in offline mode-->
    <box id="StatusOffline" align="center" pack="center" flex="1">
      <hbox align="center" class="sivWarning" >
        <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
-       <vbox>                    
+       <vbox>
          <description pack="center" flex="1">
             &status.offline.description;
          </description>
          <hbox align="right">
            <button label="&status.offline.go;" oncommand="onGoOnlineClick();" />
          </hbox>
-       </vbox> 
+       </vbox>
      </hbox>
    </box>
-              
-   <box id="StatusWarning" align="center" pack="center" flex="1" > 
+
+   <box id="StatusWarning" align="center" pack="center" flex="1" >
     <hbox align="center" class="sivWarning">
       <image pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
       <vbox>
         <description id="StatusWarningMsg" pack="center">&status.warning;</description>
         <hbox align="right">
-          <button id="btnWarningContinue" label="&status.warning.ignore;" 
+          <button id="btnWarningContinue" label="&status.warning.ignore;"
                   oncommand="onIgnoreOffline();" />
           <button label="&status.warning.reconnect;" oncommand="onReconnectClick();" />
         </hbox>
-      </vbox>      
+      </vbox>
     </hbox>
   </box>
- 
+
   <vbox id="StatusOutOfSync" flex="1" >
     <vbox  class="sivWarningBar" align="center" pack="center" >
       <description id="StatusWarningMsg">&status.sync.description;</description>
       <hbox align="right" pack="right">
-        <button label="&status.sync.keep;" 
+        <button label="&status.sync.keep;"
                 oncommand="onKeepLocal()" />
         <button label="&status.sync.replace;"
                 oncommand="onUseRemote()" />
       </hbox>
     </vbox>
 
-    <hbox flex="1" style="margin:0px; padding:0px;" class="sivEditor">      
-    
-      <textbox id="sivClientSide" flex="1" 
+    <hbox flex="1" style="margin:0px; padding:0px;" class="sivEditor">
+
+      <textbox id="sivClientSide" flex="1"
                readonly="true"
-               multiline="true" wrap="off" 
+               multiline="true" wrap="off"
                autocomplete="off"  />
-             
+
       <splitter class="spVertical" resizeafter="farthest" />
-    
+
       <textbox id="sivServerSide" flex="1"
                readonly="true"
-               multiline="true" wrap="off" 
+               multiline="true" wrap="off"
                autocomplete="off"/>
     </hbox>
-  </vbox>     
-     
-    <!-- Error Message -->          
+  </vbox>
+
+    <!-- Error Message -->
     <box id="StatusError" align="center" pack="center" flex="1">
       <hbox align="center" class="sivError">
         <image pack="center" src="chrome://sieve/content/images/syntax-error.png"/>
@@ -199,11 +201,10 @@
           <description id="StatusErrorMsg" pack="center"> </description>
           <hbox align="right">
             <button label="&status.error.reconnect;" oncommand="onReconnectClick();" />
-          </hbox>                    
-        </vbox> 
+          </hbox>
+        </vbox>
       </hbox>
     </box>
-              
+
   </deck>
 </page>
-  

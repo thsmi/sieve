@@ -1,6 +1,6 @@
 <!--
 /*
- * The contents of this file are licenced. You may obtain a copy of
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
@@ -74,8 +74,8 @@ naprawdę dobrego powodu (np. debugowanie), zawsze wymuszaj TLS.">
 
 <!ENTITY options.misc.compile.caption "Sprawdzanie składni">
 <!ENTITY options.misc.compile.description
-"Podczas edycji skryptów, można sprawdzić ich poprawność. Sprawdzanie 
-składni jest wykonywane przez serwer. Aby zachować ruch sieciowy na 
+"Podczas edycji skryptów, można sprawdzić ich poprawność. Sprawdzanie
+składni jest wykonywane przez serwer. Aby zachować ruch sieciowy na
 niskim poziomie, żądania kontroli składni są grupowane.">
 <!ENTITY options.misc.compile "Sprawdź skrypty podczas pisania">
 <!ENTITY options.misc.compile.key "c">
@@ -99,7 +99,7 @@ niskim poziomie, żądania kontroli składni są grupowane.">
 <!ENTITY options.editor.tabs.policy.tabs "Insert Tabs">
 
 <!ENTITY options.debug.warning
-"Należy pamiętać, że logowanie SASL w przeciwieństwie do szyfrowania SASL twojego hasła, 
+"Należy pamiętać, że logowanie SASL w przeciwieństwie do szyfrowania SASL twojego hasła,
 może wysyłać je na konsolę błędów w postaci zwykłego tekstu.">
 <!ENTITY options.debug.caption "Ustawienia debugowania">
 <!ENTITY options.debug.request "Komunikacja od klienta do serwera (zapytanie)">
@@ -121,7 +121,7 @@ może wysyłać je na konsolę błędów w postaci zwykłego tekstu.">
 <!ENTITY options.authmechanism.plain "Plain">
 <!ENTITY options.authmechanism.external "EXTERNAL">
 <!ENTITY options.authmechanism.description
-"W pewnych sytuacjach np. gdy korzystasz z uwierzytelniania serwera Proxy, możesz 
+"W pewnych sytuacjach np. gdy korzystasz z uwierzytelniania serwera Proxy, możesz
 chcieć wymusić określony mechanizm uwierzytelniania." >
 
 <!ENTITY options.proxyauth.caption "Autoryzacja serwera proxy">
@@ -158,11 +158,11 @@ chcieć wymusić określony mechanizm uwierzytelniania." >
 <!ENTITY options.proxy.description
 "Zamiast bezpośredniego połączenia możesz użyć przejrzysty proxy SOCKS i bezpiecznie przejść przez zaporę.">
 <!ENTITY options.proxy.description.nameresolution
-"Z SOCKSv4 nazwy hostów są zawsze rozwiązane na komputerze lokalnym. SOCKSv5 obsługuje 
+"Z SOCKSv4 nazwy hostów są zawsze rozwiązane na komputerze lokalnym. SOCKSv5 obsługuje
 również rozwiązywanie nazw hostów przez serwer proxy SOCKS. Jeśli możesz zaufać serwerowi
 proxy SOCKSv5, ta ostatnia uważana jest za bardziej bezpieczne i powinny być preferowane.">
 <!ENTITY options.proxy.description.localhost
-"Na niektórych systemu użycie 'localhost' jako serwera proxy nie działa prawidłowo, 
+"Na niektórych systemu użycie 'localhost' jako serwera proxy nie działa prawidłowo,
 należy użyć '127.0.0.1'.">
 <!ENTITY options.proxy.direct "Połączenie bezpośrednie">
 <!ENTITY options.proxy.default "Domyślna konfiguracja serwera Proxy">
@@ -199,10 +199,10 @@ należy użyć '127.0.0.1'.">
 <!ENTITY list.badcert
   "Serwera poczty próbuje zidentyfikować się z błędnymi informacjami.">
 <!ENTITY list.badcert.error
-"Jeśli zwykle łączysz się do tego serwera bez problemów, ten błąd może 
+"Jeśli zwykle łączysz się do tego serwera bez problemów, ten błąd może
 oznaczać, że ktoś próbuje podszyć się pod serwer.
 
-Nie kontynuuj logowania, chyba że znasz dobry powód, 
+Nie kontynuuj logowania, chyba że znasz dobry powód,
 dlaczego ten serwer nie korzysta z zaufanych tożsamości.">
 <!ENTITY list.badcert.remember "Zapamiętaj mój wybór">
 <!ENTITY list.badcert.ignore "Dalej">

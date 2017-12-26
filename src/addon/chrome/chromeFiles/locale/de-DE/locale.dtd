@@ -1,6 +1,6 @@
 <!--
 /*
- * The contents of this file are licenced. You may obtain a copy of
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
@@ -49,7 +49,7 @@
 "Transport Layer Security (TLS) verschlüsselt die Verbindung zum ManageSieve Server,
 hierdurch werden Abhören der Zugangsdaten sowie Manipulationen effektiv verhindert.">
 <!ENTITY options.security.description2
-"ManageSieve überträgt normalerweise Passwörter unverschlüsselt. Daher 
+"ManageSieve überträgt normalerweise Passwörter unverschlüsselt. Daher
 sollten Sie TLS immer erzwingen.">
 <!ENTITY options.security.tls.disabled "Kein TLS">
 <!ENTITY options.security.tls.available "TLS, wenn verfügbar">
@@ -99,7 +99,7 @@ sollten Sie TLS immer erzwingen.">
 <!ENTITY options.editor.tabs.policy.tabs "Insert Tabs">
 
 <!ENTITY options.debug.warning
-"Bitte beachten Sie, dass Debugmeldungen von SASL Login und SASL Plain Ihr 
+"Bitte beachten Sie, dass Debugmeldungen von SASL Login und SASL Plain Ihr
 Passwort im Klartext enthalten!">
 <!ENTITY options.debug.caption "Debug Einstellungen">
 <!ENTITY options.debug.request "Client zu Server Kommunikation (requests)">
@@ -121,13 +121,13 @@ Passwort im Klartext enthalten!">
 <!ENTITY options.authmechanism.plain "PLAIN">
 <!ENTITY options.authmechanism.external "EXTERNAL">
 <!ENTITY options.authmechanism.description
-"In Ausnahmefällen, z.B. wenn Sie die Proxy Autorisation nutzen, müssen Sie 
+"In Ausnahmefällen, z.B. wenn Sie die Proxy Autorisation nutzen, müssen Sie
 einen bestimmten Authentifizierungsmechanismus erzwingen." >
 
 <!ENTITY options.proxyauth.caption "Proxy Autorisation">
 <!ENTITY options.proxyauth.desc
-"Die Proxy Autorisation ermöglicht einem authentifiziertem Benutzer, sich als  
-ein anderer Benutzer auszugeben. 
+"Die Proxy Autorisation ermöglicht einem authentifiziertem Benutzer, sich als
+ein anderer Benutzer auszugeben.
 Diese erfordert besondere Rechte auf dem Mailserver und steht
 daher meist nur Administratoren zur Verfügung.">
 <!ENTITY options.proxyauth.force
@@ -159,7 +159,7 @@ daher meist nur Administratoren zur Verfügung.">
 <!-- Proxy Settings -->
 <!ENTITY options.proxy "Proxy Einstellungen">
 <!ENTITY options.proxy.description
-"Um eine Firewall zu umgehen können Verbindungen zu einem Sieve Server durch 
+"Um eine Firewall zu umgehen können Verbindungen zu einem Sieve Server durch
 einen transparenten SOCKS Proxy geleitet werden. ">
 <!ENTITY options.proxy.description.nameresolution
 "SOCKSv4 löst Hostnamen über den lokalen Rechner auf. Bei SOCKSv5 können
@@ -201,13 +201,13 @@ als Workaround die Loopback IP '127.0.0.1' nutzen.">
 
 
 <!ENTITY list.badcert
-  "Ihr Mailserver kann nicht Identifiziert werden und wird als nicht 
+  "Ihr Mailserver kann nicht Identifiziert werden und wird als nicht
 vertrauenswürdig eingestuft.">
 <!ENTITY list.badcert.error
-"Es könnte es sein, dass sich jemand als Ihr Mailserver ausgibt, um 
+"Es könnte es sein, dass sich jemand als Ihr Mailserver ausgibt, um
 beispielsweise an Ihr Passwort zu gelangen.
 
-Ignorieren Sie diese Meldung nur, wenn Sie sich wirklich sicher sind, 
+Ignorieren Sie diese Meldung nur, wenn Sie sich wirklich sicher sind,
 dass Sie tatsächlich mit dem gewünschten Server verbunden sind.">
 <!ENTITY list.badcert.remember "Meldung nicht mehr anzeigen">
 <!ENTITY list.badcert.ignore "Weiter">
@@ -236,7 +236,7 @@ auf 'Erweitert' um das Konto manuell zu konfigurieren.">
 <!ENTITY list.autoconfig.error.caption "Erkennung fehlgeschlagen">
 <!ENTITY list.autoconfig.error.description
 "Die Verbindungsdaten konnten nicht automatisch erkannt werden. Entweder unterstützt
-Ihr Server das ManageSieve Protokoll nicht oder es ist eine spezielle 
+Ihr Server das ManageSieve Protokoll nicht oder es ist eine spezielle
 Konfiguration notwendig. Bitte erfragen Sie bei Ihren Mail die Verbindungsdaten
 und konfigurieren Sie das Sieve Konto manuell.">
 

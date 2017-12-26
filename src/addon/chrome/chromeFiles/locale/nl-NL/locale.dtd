@@ -1,6 +1,6 @@
 <!--
 /*
- * The contents of this file are licenced. You may obtain a copy of
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
@@ -193,7 +193,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
   "Uw e-mailserver probeert zichzelf te identificeren met ongeldige gegevens.">
 <!ENTITY list.badcert.error
 "Als u normaal gesproken zonder problemen met deze server kunt verbinden,
-kan deze fout betekenen dat iemand probeert de server na te bootsen. 
+kan deze fout betekenen dat iemand probeert de server na te bootsen.
 
 Ga alleen verder als u op de hoogte bent waarom deze server geen vertrouwde
 identificatie gebruikt.">

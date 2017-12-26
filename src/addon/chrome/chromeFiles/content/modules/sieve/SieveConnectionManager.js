@@ -1,7 +1,9 @@
 /*
- * The content of this file is licenced. You may obtain a copy of
- * the license at http://sieve.mozdev.org or request it via email
- * from the author. Do not remove or change this comment.
+ * The content of this file is licensed. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
+ * email from the author.
+ *
+ * Do not remove or change this comment.
  *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
@@ -13,7 +15,7 @@
 // Enable Strict Mode
 "use strict";
 
-var EXPORTED_SYMBOLS = [ "SieveConnections" ];
+var EXPORTED_SYMBOLS = ["SieveConnections"];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -39,11 +41,10 @@ Cu.import("chrome://sieve/content/modules/sieve/SieveMozSession.js");
  *  or windows.
  **/
 
-function SieveConnectionManager()
-{
+function SieveConnectionManager() {
   this.sessions = [];
 
-  /*var observerService = Components.classes["@mozilla.org/observer-service;1"]
+  /* var observerService = Components.classes["@mozilla.org/observer-service;1"]
                       .getService(Components.interfaces.nsIObserverService);
   observerService.addObserver(this,"network:offline-about-to-go-offline",false);
   observerService.addObserver(this,"network:offline-status-changed",false);
@@ -72,165 +73,156 @@ function SieveConnectionManager()
 }
 
 SieveConnectionManager.prototype =
-{
-  /**
-   * Creates and opens a new Manage Sieve Session
-   * @return {int} a handle to the open session
-   */
-  createSession : function (accountId)
   {
-    // The session id should be something unique. As Mozilla garantees, that...
-    // ...the account key is unique. So let's use it.
-    var sid = accountId;
+    /**
+     * Creates and opens a new Manage Sieve Session
+     * @return {int} a handle to the open session
+     */
+    createSession: function (accountId) {
+      // The session id should be something unique. As Mozilla garantees, that...
+      // ...the account key is unique. So let's use it.
+      let sid = accountId;
 
-    if (!this.sessions[sid])
+      if (!this.sessions[sid]) {
+        this.sessions[sid] = new SieveSession(accountId, sid);
+        this.sessions[sid].listeners = [];
+      }
+
+      return sid;
+    },
+
+    /**
+     * Creates a new channel for a given session. A channel needs to be closed
+     * afer creating it, otherwise the channel might get blocked
+     *
+     * @param {string} sid
+     * @return {}
+     */
+    createChannel: function (sid) {
+      if (!this.sessions[sid])
+        throw new Error("createChannel: Invalid Session (" + sid + ")");
+
+      return this.sessions[sid].addChannel();
+    },
+
+    openChannel: function (sid, cid) {
+      if (!this.sessions[sid])
+        throw new Error("Invalid Session Identifier");
+
+      if (!this.sessions[sid].hasChannel(cid))
+        throw new Error("Invalid Channel");
+
+      // skip if we are currently connecting...
+      // ... as onChannelCreated will be fired...
+      if (this.sessions[sid].isConnecting())
+        return;
+
+      // ... if we are connected notify the callee...
+      // ... we reused an existing channel.
+      if (this.sessions[sid].isConnected()) {
+        this.sessions[sid]._invokeListeners("onChannelReady", cid);
+        return;
+      }
+
+      // ... in case we are gracefully disconnecting, we...
+      // ... need to speed it up and force the disconnect
+      if (this.sessions[sid].isDisconnecting())
+        this.sessions[sid].disconnect(true);
+
+      // ... we ensured we are disconnected so its safe to call connect
+      this.sessions[sid].connect();
+    },
+
+    addSessionListener: function (sid, listener) {
+      if (!this.sessions[sid])
+        throw new Error("addSessionListener: Invalid Session (" + sid + ")");
+
+      this.sessions[sid].addListener(listener);
+    },
+
+    removeSessionListener: function (sid, listener) {
+      if (!this.sessions[sid])
+        return;
+
+      this.sessions[sid].removeListener(listener);
+    },
+
+    /**
+     * Closes and frees a Manage Sieve Session
+     * @param {int} id
+     *   handle identifing the session that should be terminated
+     */
+    /* closeSession : function (id)
     {
-      this.sessions[sid] = new SieveSession(accountId,sid);
-      this.sessions[sid].listeners = [];
+      // free resources if needed...
+      if (this.sessions[id] == null)
+        return;
+
+      this.sessions[id].sieve.disconnect();
+
+      // Inform all channels, that the Session is gone.
+
+      for (var i=0; i<this.sessions[id].channels.length; i++)
+        if (this.session[id].channels[i] && this.session[id].channels[i].onChannelClosed)
+          this.session[id].channels[i].onChannelClosed();
+
+      this.sessions[id] = null;
+    },*/
+
+
+
+    closeChannel: function (sid, cid) {
+      if (!this.sessions[sid])
+        return;
+
+      if (this.sessions[sid].removeChannel(cid))
+        this.sessions[sid]._invokeListeners("onChannelClosed", cid);
+
+      // In case the seesion has no active channels...
+      if (this.sessions[sid].hasChannels())
+        return;
+
+      this.sessions[sid].listeners = null;
+      // ... it's ok to close the session
+      this.sessions[sid].disconnect();
+
+      delete this.sessions[sid];
+
+      /*
+      // the session is gone. We can release all modules which depend on it
+      // this safes memory and enusres only needed modules are loaded...
+      if (this.sessions.length == 0)
+      {
+        Components.utils.unload("chrome://sieve/content/modules/sieve/Session.js");
+        Components.utils.unload("chrome://sieve/content/modules/sieve/SieveMozClient.js");
+        Components.utils.unload("chrome://sieve/content/modules/sieve/SieveRequest.js");
+        Components.utils.unload("chrome://sieve/content/modules/sieve/SieveResponse.js");
+        Components.utils.unload("chrome://sieve/content/modules/sieve/SieveResponseCode.js");
+        Components.utils.unload("chrome://sieve/content/modules/sieve/SieveResponseParser.js");
+      }*/
+    },
+
+
+    /**
+     * Retuns the Sieve Object associated to this session.
+     * @param {string} sid
+     *   The identifier identifing the session instance
+     * @param {string} cid
+     *   An Identifier the channel
+     * @return {Sieve}
+     */
+    getChannel: function (sid, cid) {
+      if (!this.sessions[sid])
+        throw new Error("getChannel: Invalid Session (" + sid + ")");
+
+      if (!this.sessions[sid].hasChannel(cid))
+        throw new Error("getChannel: Invalid Channel (" + cid + ")");
+
+      if (!(this.sessions[sid].sieve) || !(this.sessions[sid].sieve.isAlive()))
+        throw new Error("getChannel: Session closed (" + sid + " / " + cid + ")");
+
+      return this.sessions[sid].sieve;
     }
+  };
 
-    return sid;
-  },
-
-  /**
-   * Creates a new channel for a given session. A channel needs to be closed
-   * afer creating it, otherwise the channel might get blocked
-   *
-   * @param {} sid
-   * @return {}
-   */
-  createChannel : function(sid)
-  {
-    if (!this.sessions[sid])
-      throw "createChannel: Invalid Session ("+sid+")";
-
-    return this.sessions[sid].addChannel();
-  },
-
-  openChannel : function (sid,cid)
-  {
-    if (!this.sessions[sid])
-      throw "Invalid Session Identifier";
-
-    if (!this.sessions[sid].hasChannel(cid))
-      throw "Invalid Channel";
-
-    // skip if we are currently connecting...
-    // ... as onChannelCreated will be fired...
-    if (this.sessions[sid].isConnecting())
-      return;
-
-    // ... if we are connected notify the callee...
-    // ... we reused an existing channel.
-    if (this.sessions[sid].isConnected())
-    {
-      this.sessions[sid]._invokeListeners("onChannelReady",cid);
-      return;
-    }
-
-    // ... in case we are gracefully disconnecting, we...
-    // ... need to speed it up and force the disconnect
-    if (this.sessions[sid].isDisconnecting())
-      this.sessions[sid].disconnect(true);
-
-    // ... we ensured we are disconnected so its safe to call connect
-    this.sessions[sid].connect();
-  },
-
-  addSessionListener : function (sid,listener)
-  {
-    if (!this.sessions[sid])
-      throw "addSessionListener: Invalid Session ("+sid+")";
-
-    this.sessions[sid].addListener(listener);
-  },
-
-  removeSessionListener : function (sid,listener)
-  {
-    if (!this.sessions[sid])
-      return;
-
-    this.sessions[sid].removeListener(listener);
-  },
-
-  /**
-   * Closes and frees a Manage Sieve Session
-   * @param {int} id
-   *   handle identifing the session that should be terminated
-   */
-  /*closeSession : function (id)
-  {
-    // free resources if needed...
-    if (this.sessions[id] == null)
-      return;
-
-    this.sessions[id].sieve.disconnect();
-
-    // Inform all channels, that the Session is gone.
-
-    for (var i=0; i<this.sessions[id].channels.length; i++)
-      if (this.session[id].channels[i] && this.session[id].channels[i].onChannelClosed)
-        this.session[id].channels[i].onChannelClosed();
-
-    this.sessions[id] = null;
-  },*/
-
-
-
-  closeChannel : function(sid, cid)
-  {
-    if (!this.sessions[sid])
-      return;
-
-    if (this.sessions[sid].removeChannel(cid))
-      this.sessions[sid]._invokeListeners("onChannelClosed",cid);
-
-    // In case the seesion has no active channels...
-    if (this.sessions[sid].hasChannels())
-      return;
-
-    this.sessions[sid].listeners = null;
-    // ... it's ok to close the session
-    this.sessions[sid].disconnect();
-
-    delete this.sessions[sid];
-
-    /*
-    // the session is gone. We can release all modules which depend on it
-    // this safes memory and enusres only needed modules are loaded...
-    if (this.sessions.length == 0)
-    {
-      Components.utils.unload("chrome://sieve/content/modules/sieve/Session.js");
-      Components.utils.unload("chrome://sieve/content/modules/sieve/SieveMozClient.js");
-      Components.utils.unload("chrome://sieve/content/modules/sieve/SieveRequest.js");
-      Components.utils.unload("chrome://sieve/content/modules/sieve/SieveResponse.js");
-      Components.utils.unload("chrome://sieve/content/modules/sieve/SieveResponseCode.js");
-      Components.utils.unload("chrome://sieve/content/modules/sieve/SieveResponseParser.js");
-    }*/
-  },
-
-
-  /**
-   * Retuns the Sieve Object associated to this session.
-   * @param {} sid
-   *   The identifier identifing the session instance
-   * @param {} cid
-   *   An Identifier the channel
-   * @return {}
-   */
-  getChannel : function(sid,cid)
-  {
-    if (!this.sessions[sid])
-      throw "getChannel: Invalid Session ("+sid+")";
-
-    if (!this.sessions[sid].hasChannel(cid))
-      throw "getChannel: Invalid Channel ("+cid+")";
-
-    if (!(this.sessions[sid].sieve) || !(this.sessions[sid].sieve.isAlive()) )
-      throw "getChannel: Session closed ("+sid+" / "+cid+")";
-
-    return this.sessions[sid].sieve;
-  }
-};
-
-var SieveConnections = new SieveConnectionManager();
+let SieveConnections = new SieveConnectionManager();

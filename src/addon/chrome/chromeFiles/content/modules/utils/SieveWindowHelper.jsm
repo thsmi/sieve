@@ -22,7 +22,7 @@ var EXPORTED_SYMBOLS = ["SieveUtils"];
 let SieveUtils =
   {
     OpenFilter: function (window, server) {
-      if (server === null)
+      if (typeof(server) === "undefined" || server === null)
         server = this.GetActiveServer(window);
 
       let options = {};
@@ -136,7 +136,7 @@ let SieveUtils =
 
       let options = {};
 
-      if (server === null)
+      if (typeof(server) === "undefined" || server === null)
         server = this.GetActiveServer(window);
 
       if (server !== null)

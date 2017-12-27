@@ -206,6 +206,7 @@
               <menuitem label="&options.authmechanism.login;" value="LOGIN"/>
               <menuitem label="&options.authmechanism.crammd5;" value="CRAM-MD5"/>
               <menuitem label="&options.authmechanism.scramsha1;" value="SCRAM-SHA-1"/>
+              <menuitem label="&options.authmechanism.scramsha256;" value="SCRAM-SHA-256"/>
               <menuitem label="&options.authmechanism.external;" value="EXTERNAL"/>
             </menupopup>
           </menulist>

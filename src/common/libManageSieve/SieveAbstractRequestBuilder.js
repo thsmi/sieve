@@ -46,12 +46,16 @@
    * Do not use this for any sasl method. All sasl strings
    * have to be base 64 encoded. Refer to addQuotedBase64String instead.
    *
-   * @param {String} token
+   * @param {String} [token]
    *   the string which should be added to the request.
+   *   if omitted an empty string is sent.
    * @return {SieveAbstractRequestBuilder}
    *   a self reference
    */
   SieveAbstractRequestBuilder.prototype.addQuotedString = function (token) {
+    if (typeof(token) === undefined || token === null)
+      token = "";
+
     this.addLiteral('"' + this.escapeString(token) + '"');
     return this;
   };

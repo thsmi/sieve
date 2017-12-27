@@ -21,6 +21,7 @@
 /* global SieveSaslPlainRequest */
 /* global SieveSaslCramMd5Request */
 /* global SieveSaslScramSha1Request */
+/* global SieveSaslScramSha256Request */
 /* global SieveSaslExternalRequest */
 /* global SieveSaslLoginRequest */
 /* global SieveInitRequest */
@@ -172,6 +173,10 @@ Cu.import("chrome://sieve/content/modules/sieve/SieveMozClient.js");
 
   SieveSession.prototype.createSaslScramSha1Request = function () {
     return new SieveSaslScramSha1Request();
+  };
+
+  SieveSession.prototype.createSaslScramSha256Request = function () {
+    return new SieveSaslScramSha256Request();
   };
 
   SieveSession.prototype.createSaslExternalRequest = function () {

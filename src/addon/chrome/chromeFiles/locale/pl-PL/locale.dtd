@@ -115,6 +115,7 @@ może wysyłać je na konsolę błędów w postaci zwykłego tekstu.">
 <!ENTITY options.authmechanism "Zastąpić sugerowany mechanizm uwierzytelniania">
 <!ENTITY options.authmechanism.default "Zawsze używaj:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
+<!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "Login">

@@ -658,7 +658,7 @@
    */
   SieveSaslScramSha1Response.prototype._parseFirstMessage
     = function (parser) {
-      this._serverFirstMessage = parser.convertFomBase64(parser.extractString());
+      this._serverFirstMessage = parser.convertFromBase64(parser.extractString());
 
       let tokens = this._serverFirstMessage.split(',');
 
@@ -676,7 +676,7 @@
       if ((tokens[1].length <= 2) || (tokens[1][0] !== "s"))
         throw new Error("Salt missing");
 
-      this._salt = parser.convertFomBase64(tokens[1].substr(2));
+      this._salt = parser.convertFromBase64(tokens[1].substr(2));
 
 
       if ((tokens[2].length <= 2) || (tokens[2][0] !== "i"))
@@ -697,13 +697,15 @@
    * As suggested by the RFC they will be ignored
    *
    * @param {SieveResponseParser} parser
+   *   the parser which should be to process the message.
    * @returns {void}
    */
   SieveSaslScramSha1Response.prototype._parseFinalMessage
-    = function (data, parser) {
+    = function (parser) {
 
+      let data = parser.extractString();
       // server-final-message = (server-error / verifier) ["," extensions]
-      let token = parser.convertFomBase64(data).split(",");
+      let token = parser.convertFromBase64(data).split(",");
 
       if (token[0].length <= 2)
         throw new Error("Response expected but got : " + data);
@@ -716,7 +718,7 @@
 
       // verifier = "v=" base64
       if (token[0][0] === "v") {
-        this._verifier = parser.convertFomBase64(token[0].substr(2));
+        this._verifier = parser.convertFromBase64(token[0].substr(2));
         return;
       }
 
@@ -745,7 +747,7 @@
 
       if ((this.state === 1) && (parser.isString())) {
 
-        this._parseFinalMessage(parser.extractString());
+        this._parseFinalMessage(parser);
         parser.extractLineBreak();
 
         this.state++;

@@ -1191,24 +1191,36 @@
     };
 
   /**
-   * This reqeustest implements the Salted Challenge Response Authentication
-   * Mechanism (SCRAM). A SASL SCRAM-SHA-1 compatible implementation is mandatory
+   * This request implements an abstract base class for the "Salted Challenge Response Authentication
+   * Mechanism" (SCRAM). A SASL SCRAM-SHA-1 compatible implementation is mandatory
    * for every manage sieve server. SASL SCRAM-SHA-1 superseeds DIGEST-MD5.
    *
    * @author Thomas Schmid
    * @constructor
    */
-  function SieveSaslScramSha1Request() {
+  function SieveAbstractSaslScramRequest() {
     this.response = new SieveSaslScramSha1Response();
   }
 
   // Inherrit prototypes from SieveAbstractRequest...
-  SieveSaslScramSha1Request.prototype = Object.create(SieveAbstractSaslRequest.prototype);
-  SieveSaslScramSha1Request.prototype.constructor = SieveSaslScramSha1Request;
+  SieveAbstractSaslScramRequest.prototype = Object.create(SieveAbstractSaslRequest.prototype);
+  SieveAbstractSaslScramRequest.prototype.constructor = SieveAbstractSaslScramRequest;
 
-  SieveSaslScramSha1Request.prototype.isAuthorizable = function () {
+  SieveAbstractSaslScramRequest.prototype.isAuthorizable = function () {
     // overwrite the default as this mechanism support authorization
     return true;
+  };
+
+  SieveAbstractSaslScramRequest.prototype.getSaslName = function() {
+    throw new Error("Implement SASL Name");
+  };
+
+  SieveAbstractSaslScramRequest.prototype.getCryptoHMAC = function () {
+    throw new Error("Implement Crypto HMAC Method");
+  };
+
+  SieveAbstractSaslScramRequest.prototype.getCryptoHash = function () {
+    throw new Error("Implement Crypto Hash Method");
   };
 
   /**
@@ -1240,7 +1252,7 @@
    * @return {byte[]}
    *   the pseudorandom value as byte string
    */
-  SieveSaslScramSha1Request.prototype._Hi
+  SieveAbstractSaslScramRequest.prototype._Hi
     = function (str, salt, i) {
       if (salt.length < 2)
         throw new Error("Insufficient salt");
@@ -1278,7 +1290,7 @@
    *   the calculated hash for the given input string. HMAC-SHA-1 hashes are
    *   always always 20 octets long.
    */
-  SieveSaslScramSha1Request.prototype._HMAC
+  SieveAbstractSaslScramRequest.prototype._HMAC
     = function (key, bytes) {
       key = this.byteArrayToStr(key);
 
@@ -1291,7 +1303,7 @@
         .getService(Components.interfaces.nsIKeyObjectFactory)
         .keyFromString(Components.interfaces.nsIKeyObject.HMAC, key);
 
-      crypto.init(Components.interfaces.nsICryptoHMAC.SHA1, keyObject);
+      crypto.init(this.getCryptoHMAC(), keyObject);
       crypto.update(bytes, bytes.length);
 
       return this.strToByteArray(crypto.finish(false));
@@ -1306,18 +1318,95 @@
    *   the calculated hash for the given input string. SHA-1 hashes are
    *   always always 20 octets.
    */
-  SieveSaslScramSha1Request.prototype._H
-    = function (bytes) {
-      let crypto = Components.classes["@mozilla.org/security/hash;1"]
-        .createInstance(Components.interfaces.nsICryptoHash);
+  SieveAbstractSaslScramRequest.prototype._H = function (bytes) {
+    let crypto = Components.classes["@mozilla.org/security/hash;1"]
+      .createInstance(Components.interfaces.nsICryptoHash);
 
-      crypto.init(Components.interfaces.nsICryptoHash.SHA1);
-      crypto.update(bytes, bytes.length);
+    crypto.init(this.getCryptoHash());
+    crypto.update(bytes, bytes.length);
 
-      return this.strToByteArray(crypto.finish(false));
-    };
+    return this.strToByteArray(crypto.finish(false));
+  };
 
-  SieveSaslScramSha1Request.prototype.getNextRequest
+  SieveAbstractSaslScramRequest.prototype.onChallangeServer = function (builder) {
+    this._cnonce = this.byteArrayToHexString(
+      this._H(this.strToByteArray((Math.random() * 1234567890))));
+
+    // For integration tests, we need to fake the nonce...
+    // ... so we take the nonce from the rfc otherwise the verification fails.
+    //
+    // ### DEBUG SHA1 ###
+    // this._cnonce = "fyko+d2lbbFgONRv9qkxdawL";
+    // this._username = "user";
+    // this._password = "pencil";
+    //
+    // ### DEBUG SHA256 ###
+    // this._cnonce = "rOprNGfwEbeRWgbNEkqO";
+    // this._username = "user";
+    // this._password = "pencil";
+
+    // TODO SCRAM: escape/normalize authorization and username
+    // ;; UTF8-char except NUL, "=", and ","
+    // "=" is escaped by =2C and "," by =3D
+
+    // Store client-first-message-bare
+    this._authMessage = "n=" + this._username + ",r=" + this._cnonce;
+    this._g2Header = "n," + (this._authorization !== "" ? "a=" + this._authorization : "") + ",";
+
+    return builder
+      .addLiteral("AUTHENTICATE")
+      .addQuotedString(this.getSaslName())
+      .addQuotedBase64("" + this._g2Header + this._authMessage);
+  };
+
+  SieveAbstractSaslScramRequest.prototype.onValidateChallange = function (builder) {
+    // Check if the server returned our nonce. This should prevent...
+    // ... man in the middle attacks.
+    let nonce = this.response.getNonce();
+    if ((nonce.substr(0, this._cnonce.length) !== this._cnonce))
+      throw new Error("Nonce invalid");
+
+    // As first step we need to salt the password...
+    let salt = this.strToByteArray(this.response.getSalt());
+    let iter = this.response.getIterationCounter();
+
+    // TODO Normalize password; and convert it into a byte array...
+    // ... It might contain special charaters.
+
+    // ... this is done by applying a simplified PBKDF2 algorithm...
+    // ... so we endup by calling Hi(Normalize(password), salt, i)
+    this._saltedPassword = this._Hi(this.strToByteArray(this._password), salt, iter);
+
+    // the clientKey is defined as HMAC(SaltedPassword, "Client Key")
+    let clientKey = this._HMAC(this._saltedPassword, this.strToByteArray("Client Key"));
+
+    // create the client-final-message-without-proof, ...
+    let msg = "c=" + builder.convertToBase64(this._g2Header) + ",r=" + nonce;
+    // ... append it and the server-first-message to client-first-message-bare...
+    this._authMessage += "," + this.response.getServerFirstMessage() + "," + msg;
+    // ... and convert it into a byte array.
+    this._authMessage = this.strToByteArray(this._authMessage);
+
+    // As next Step sign out message, this is done by applying the client...
+    // ... key through a pseudorandom function to the message. It is defined...
+    // as HMAC(H(ClientKey), AuthMessage)
+    let clientSignature = this._HMAC(this._H(clientKey), this._authMessage);
+
+    // We now complete the cryptographic part an apply our clientkey to the...
+    // ... Signature, so that the server can be sure it is talking to us.
+    // The RFC defindes this step as ClientKey XOR ClientSignature
+    let clientProof = clientKey;
+    for (let k = 0; k < clientProof.length; k++)
+      clientProof[k] ^= clientSignature[k];
+
+    // Every thing done so let's send the message...
+    // "c=" base64( (("" / "y") "," [ "a=" saslname ] "," ) "," "r=" c-nonce s-nonce ["," extensions] "," "p=" base64
+    return builder
+      .addQuotedBase64(msg + ",p=" + builder.convertToBase64(this.byteArrayToStr(clientProof)));
+    //      return "\""+btoa(msg+",p="+btoa(this.byteArrayToStr(clientProof)))+"\"\r\n";
+  };
+
+  SieveAbstractSaslScramRequest.prototype.getNextRequest
     = function (builder) {
 
       // Step1: Client sends Message to server. See SASL Login how to integrate it
@@ -1327,86 +1416,21 @@
 
       switch (this.response.getState()) {
         case 0:
-          this._cnonce = this.byteArrayToHexString(
-            this._H(this.strToByteArray((Math.random() * 1234567890))));
-
-          // TODO: SCRAM: Debug Only
-          // this._cnonce = "fyko+d2lbbFgONRv9qkxdawL";
-
-          // TODO SCRAM: escape/normalize authorization and username
-          // ;; UTF8-char except NUL, "=", and ","
-          // "=" is escaped by =2C and "," by =3D
-
-          // Store client-first-message-bare
-          this._authMessage = "n=" + this._username + ",r=" + this._cnonce;
-          this._g2Header = "n," + (this._authorization !== "" ? "a=" + this._authorization : "") + ",";
-
-          return builder
-            .addLiteral("AUTHENTICATE")
-            .addQuotedString("SCRAM-SHA-1")
-            .addQuotedBase64("this._g2Header+this._authMessage");
-
-        // return "AUTHENTICATE \"SCRAM-SHA-1\" "
-        //          +"\""+btoa(this._g2Header+this._authMessage)+"\"\r\n";
+          return this.onChallangeServer(builder);
         case 1:
-
-          // Check if the server returned our nonce. This should prevent...
-          // ... man in the middle attacks.
-          var nonce = this.response.getNonce();
-          if ((nonce.substr(0, this._cnonce.length) !== this._cnonce))
-            throw "Nonce invalid";
-
-          // As first step we need to salt the password...
-          var salt = this.strToByteArray(this.response.getSalt());
-          var iter = this.response.getIterationCounter();
-
-          // TODO Normalize password; and convert it into a byte array...
-          // ... It might contain special charaters.
-
-          // ... this is done by applying a simplified PBKDF2 algorithm...
-          // ... so we endup by calling Hi(Normalize(password), salt, i)
-          this._saltedPassword = this._Hi(this.strToByteArray(this._password), salt, iter);
-
-          // the clientKey is defined as HMAC(SaltedPassword, "Client Key")
-          var clientKey = this._HMAC(this._saltedPassword, this.strToByteArray("Client Key"));
-
-          // create the client-final-message-without-proof, ...
-          var msg = "c=" + btoa(this._g2Header) + ",r=" + nonce;
-          // ... append it and the server-first-message to client-first-message-bare...
-          this._authMessage += "," + this.response.getServerFirstMessage() + "," + msg;
-          // ... and convert it into a byte array.
-          this._authMessage = this.strToByteArray(this._authMessage);
-
-          // As next Step sign out message, this is done by applying the client...
-          // ... key through a pseudorandom function to the message. It is defined...
-          // as HMAC(H(ClientKey), AuthMessage)
-          var clientSignature = this._HMAC(this._H(clientKey), this._authMessage);
-
-          // We now complete the cryptographic part an apply our clientkey to the...
-          // ... Signature, so that the server can be sure it is talking to us.
-          // The RFC defindes this step as ClientKey XOR ClientSignature
-          var clientProof = clientKey;
-          for (var k = 0; k < clientProof.length; k++)
-            clientProof[k] ^= clientSignature[k];
-
-          // Every thing done so let's send the message...
-          // "c=" base64( (("" / "y") "," [ "a=" saslname ] "," ) "," "r=" c-nonce s-nonce ["," extensions] "," "p=" base64
-          return builder
-            .addQuotedBase64(msg + ",p=" + builder.convertToBase64(this.byteArrayToStr(clientProof)));
-        //      return "\""+btoa(msg+",p="+btoa(this.byteArrayToStr(clientProof)))+"\"\r\n";
-
+          return this.onValidateChallange(builder);
         case 2:
           // obviously we have to send an empty response. The server did not wrap...
           // ... the verifier into the Response Code...
           return builder
-            .addQuotedString();
+            .addQuotedString("");
         // return "\"\"\r\n";
       }
 
       throw new Error("Illegal state in SaslCram");
     };
 
-  SieveSaslScramSha1Request.prototype.hasNextRequest
+  SieveAbstractSaslScramRequest.prototype.hasNextRequest
     = function () {
       if (this.response.getState() === 4)
         return false;
@@ -1414,7 +1438,7 @@
       return true;
     };
 
-  SieveSaslScramSha1Request.prototype.onOk
+  SieveAbstractSaslScramRequest.prototype.onOk
     = function (response) {
       let serverSignature = this._HMAC(
         this._HMAC(this._saltedPassword, this.strToByteArray("Server Key")), this._authMessage);
@@ -1429,7 +1453,7 @@
       SieveAbstractSaslRequest.prototype.onOk.call(this, response);
     };
 
-  SieveSaslScramSha1Request.prototype.addResponse
+  SieveAbstractSaslScramRequest.prototype.addResponse
     = function (parser) {
       this.response.add(parser);
 
@@ -1439,7 +1463,7 @@
       SieveAbstractRequest.prototype.addResponse.call(this, this.response);
     };
 
-  SieveSaslScramSha1Request.prototype.strToByteArray
+  SieveAbstractSaslScramRequest.prototype.strToByteArray
     = function (str) {
       let result = [];
 
@@ -1454,7 +1478,7 @@
       return result;
     };
 
-  SieveSaslScramSha1Request.prototype.byteArrayToStr
+  SieveAbstractSaslScramRequest.prototype.byteArrayToStr
     = function (bytes) {
       let result = "";
 
@@ -1468,7 +1492,7 @@
       return result;
     };
 
-  SieveSaslScramSha1Request.prototype.byteArrayToHexString
+  SieveAbstractSaslScramRequest.prototype.byteArrayToHexString
     = function (tmp) {
       let str = "";
       for (let i = 0; i < tmp.length; i++)
@@ -1477,6 +1501,77 @@
       return str;
     };
 
+
+  /**
+   * Implements the SCRAM-SHA-1 mechanism.
+   */
+  class SieveSaslScramSha1Request extends SieveAbstractSaslScramRequest {
+    /**
+     * Gets the SASL Mechanism name.
+     *
+     * @returns {string}
+     *   the SASL Mechanism's unique it as string.
+     */
+    getSaslName() {
+      return "SCRAM-SHA-1";
+    }
+
+    /**
+     * Returns the HMAC.
+     *
+     * @returns {nsICryptoHMAC}
+     *   the HMAC type which should be used.
+     */
+    getCryptoHMAC() {
+      return Components.interfaces.nsICryptoHMAC.SHA1;
+    }
+
+    /**
+     * Returns the crypto hash.
+     *
+     * @returns {nsICryptoHash}
+     *   the Hash type which should be used.
+     */
+    getCryptoHash() {
+      return Components.interfaces.nsICryptoHash.SHA1;
+    }
+  }
+
+  /**
+   * Implements the SCRAM-SHA-256 mechanism.
+   */
+  class SieveSaslScramSha256Request extends SieveAbstractSaslScramRequest {
+
+    /**
+     * Gets the SASL Mechanism name.
+     *
+     * @returns {string}
+     *   the SASL Mechanism's unique it as string.
+     */
+    getSaslName() {
+      return "SCRAM-SHA-256";
+    }
+
+    /**
+     * Returns the HMAC.
+     *
+     * @returns {nsICryptoHMAC}
+     *   the HMAC type which should be used.
+     */
+    getCryptoHMAC() {
+      return Components.interfaces.nsICryptoHMAC.SHA256;
+    }
+
+    /**
+     * Returns the crypto hash.
+     *
+     * @returns {nsICryptoHash}
+     *   the Hash type which should be used.
+     */
+    getCryptoHash() {
+      return Components.interfaces.nsICryptoHash.SHA256;
+    }
+  }
 
   /**
    * This request implements SASL External Mechanism (rfc4422 Appendix A).
@@ -1543,6 +1638,7 @@
     exports.EXPORTED_SYMBOLS.push("SieveSaslLoginRequest");
     exports.EXPORTED_SYMBOLS.push("SieveSaslCramMd5Request");
     exports.EXPORTED_SYMBOLS.push("SieveSaslScramSha1Request");
+    exports.EXPORTED_SYMBOLS.push("SieveSaslScramSha256Request");
     exports.EXPORTED_SYMBOLS.push("SieveSaslExternalRequest");
   }
 
@@ -1562,6 +1658,7 @@
   exports.SieveSaslLoginRequest = SieveSaslLoginRequest;
   exports.SieveSaslCramMd5Request = SieveSaslCramMd5Request;
   exports.SieveSaslScramSha1Request = SieveSaslScramSha1Request;
+  exports.SieveSaslScramSha256Request = SieveSaslScramSha256Request;
   exports.SieveSaslExternalRequest = SieveSaslExternalRequest;
 
 })(this);

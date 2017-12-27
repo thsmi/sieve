@@ -120,6 +120,10 @@
         throw new Error("Implement SieveAbstractSession::createSaslScramSha1Request()");
       },
 
+      createSaslScramSha256Request: function () {
+        throw new Error("Implement SieveAbstractSession::createSaslScramSha256Request()");
+      },
+
       createSaslExternalRequest: function () {
         throw new Error("Implement SieveAbstractSession::createSaslExternalRequest()");
       },
@@ -207,6 +211,10 @@
 
             case "SCRAM-SHA-1":
               request = this.createSaslScramSha1Request();
+              break;
+
+            case "SCRAM-SHA-256":
+              request = this.createSaslScramSha256Request();
               break;
 
             case "EXTERNAL":

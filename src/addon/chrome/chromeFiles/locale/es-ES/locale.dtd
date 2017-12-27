@@ -120,6 +120,7 @@ podría ser enviado en texto sin cifrar a la consola de error.">
 <!ENTITY options.authmechanism "Reemplazar mecanismo de autenticación sugerido">
 <!ENTITY options.authmechanism.default "Usar siempre:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
+<!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "Login">

@@ -714,6 +714,9 @@
           case "SCRAM-SHA-1":
             return this.createSaslScramSha1Request();
 
+          case "SCRAM-SHA-256":
+            return this.createSaslScramSha256Request();
+
           case "EXTERNAL":
             return this.createSaslExternalRequest();
 

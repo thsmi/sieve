@@ -244,7 +244,7 @@ SieveFilterEditor.prototype.onCheckScriptResponse
     return;
   };
 
-//*********************
+// *********************
 // Custom Methods
 
 SieveFilterEditor.prototype.onScriptLoaded
@@ -571,11 +571,11 @@ function onWindowLoad() {
 
   document.getElementById("sivEditorStatus").contentWindow
     .onAttach(account,
-    function () { gEditorStatus.closeListener = null; gSFE.connect(account); },
-    {
-      onUseRemote: function (script) { onUseRemoteScript(script); },
-      onKeepLocal: function (script) { onKeepLocalScript(); }
-    });
+      function () { gEditorStatus.closeListener = null; gSFE.connect(account); },
+      {
+        onUseRemote: function (script) { onUseRemoteScript(script); },
+        onKeepLocal: function (script) { onKeepLocalScript(); }
+      });
 
   // There might be a default or persisted script...
   if (args["scriptBody"])

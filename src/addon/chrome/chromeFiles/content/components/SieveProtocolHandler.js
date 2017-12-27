@@ -14,7 +14,7 @@
 // Enable Strict Mode
 "use strict";
 
-var EXPORTED_SYMBOLS = ["SieveProtocolHandlerComponent"];
+let EXPORTED_SYMBOLS = ["SieveProtocolHandlerComponent"];
 
 /* global Components */
 /* global NS_ERROR_NO_CONTENT */

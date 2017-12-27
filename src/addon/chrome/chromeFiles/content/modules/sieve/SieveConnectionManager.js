@@ -15,7 +15,7 @@
 // Enable Strict Mode
 "use strict";
 
-var EXPORTED_SYMBOLS = ["SieveConnections"];
+let EXPORTED_SYMBOLS = ["SieveConnections"];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;

@@ -15,7 +15,7 @@
 // Enable Strict Mode
 "use strict";
 
-var EXPORTED_SYMBOLS = ["SieveAccountManager"];
+let EXPORTED_SYMBOLS = ["SieveAccountManager"];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -41,6 +41,9 @@ const HOST_TYPE_CUSTOM = 1;
 
 const DEFAULT_TAB_WIDTH = 2;
 const DEFAULT_INDENTION_WIDTH = 2;
+
+const PORT_SIEVE_RFC = 4190;
+const PORT_SIEVE_OLD = 2000;
 
 /**
  * The SieveNoAuth is used when no authentication is needed o access the sieve
@@ -113,7 +116,7 @@ SieveImapAuth.prototype.getPassword
     // in case the passwordPromptRequired attribute is true...
     // ... thunderbird will take care on retrieving a valid password...
     //
-    if (account.passwordPromptRequired == false)
+    if (account.passwordPromptRequired === false)
       return account.password;
 
     // ... otherwise we it is our job...
@@ -215,7 +218,7 @@ SieveCustomAuth2.prototype.getDescription
  */
 SieveCustomAuth2.prototype.setUsername
   = function (username) {
-    if (username == null)
+    if (typeof(username) === "undefined" || username === null)
       username = "";
 
     // first we need to cache the old username...
@@ -234,7 +237,7 @@ SieveCustomAuth2.prototype.setUsername
         {}, "sieve://" + this.host, null, "sieve://" + this.host);
 
     for (let i = 0; i < logins.length; i++) {
-      if (logins[i].username != oldUserName)
+      if (logins[i].username !== oldUserName)
         continue;
 
       loginManager.removeLogin(logins[i]);
@@ -252,7 +255,7 @@ SieveCustomAuth2.prototype.setUsername
       loginManager.findLogins({}, "sieve://" + this.uri, "", null);
 
     for (let i = 0; i < logins.length; i++) {
-      if (logins[i].username != oldUserName)
+      if (logins[i].username !== oldUserName)
         continue;
 
       loginManager.removeLogin(logins[i]);
@@ -296,7 +299,7 @@ SieveCustomAuth2.prototype.getPassword
         {}, "sieve://" + this.host, null, "sieve://" + this.host);
 
     for (let i = 0; i < logins.length; i++)
-      if (logins[i].username == username)
+      if (logins[i].username === username)
         return logins[i].password;
 
     // but as Thunderbird fails to import the passwort and username properly...
@@ -304,7 +307,7 @@ SieveCustomAuth2.prototype.getPassword
     logins = Services.logins.findLogins({}, "sieve://" + this.uri, "", null);
 
     for (let i = 0; i < logins.length; i++)
-      if (logins[i].username == username)
+      if (logins[i].username === username)
         return logins[i].password;
 
     // we found no password, so let's prompt for it
@@ -324,11 +327,11 @@ SieveCustomAuth2.prototype.getPassword
         check);
 
     // no password, as the user canceled the dialog...
-    if (result == false)
+    if (result === false)
       return null;
 
     // user wants the password to be remembered...
-    if (check.value == true) {
+    if (check.value === true) {
       // the password might be already added while the password prompt is displayed
       try {
         let login = Cc["@mozilla.org/login-manager/loginInfo;1"]
@@ -520,7 +523,7 @@ SieveSocks5Proxy.prototype.getProxyInfo
     return [pps.newProxyInfo("socks", this.getHost(), this.getPort(), (this.usesRemoteDNS() ? (1 << 0) : 0), 4294967295, null)];
   };
 
-/*********************************/
+/* ********************************/
 
 function SieveAbstractHost(uri) {
   if (!uri)
@@ -540,29 +543,29 @@ SieveAbstractHost.prototype.getPort
       return Services.prefs.getIntPref(this.prefURI + ".port");
 
     if (type === 1)
-      return 2000;
+      return PORT_SIEVE_OLD;
 
-    return 4190;
+    return PORT_SIEVE_RFC;
   };
 
 SieveAbstractHost.prototype.setPort
   = function (port) {
     let type = 2;
 
-    if (port == 4190)
+    if (port === PORT_SIEVE_RFC)
       type = 0;
-    else if (port == 2000)
+    else if (port === PORT_SIEVE_OLD)
       type = 1;
 
     Services.prefs.setIntPref(this.prefURI + ".port.type", type);
 
-    if (type != 2)
+    if (type !== 2)
       return;
 
     port = parseInt(port, 10);
 
     if (isNaN(port))
-      port = 4190;
+      port = PORT_SIEVE_RFC;
 
     Services.prefs.setIntPref(this.prefURI + ".port", port);
   };
@@ -592,7 +595,7 @@ SieveAbstractHost.prototype.setTLS
     Services.prefs.setBoolPref(this.prefURI + ".TLS.forced", !!forced);
   };
 
-/***********/
+/* **********/
 
 /**
  * This class loads the hostname from an IMAP account. The hostname is not
@@ -672,7 +675,7 @@ SieveCustomHost.prototype.getType
     return HOST_TYPE_CUSTOM;
   };
 
-//== SieveAccountSettings ====================================================//
+// == SieveAccountSettings ====================================================//
 /**
  * This class manages general settings for the given sieve account.
  *
@@ -924,7 +927,7 @@ SieveAccountSettings.prototype.getTabWidth
   };
 
 
-//** SieveNoAuthorization ****************************************************//
+// ** SieveNoAuthorization ****************************************************//
 function SieveNoAuthorization() {
 }
 
@@ -938,7 +941,7 @@ SieveNoAuthorization.prototype.getAuthorization
     return "";
   };
 
-//** SievePromptAuthorization ************************************************//
+// ** SievePromptAuthorization ************************************************//
 
 function SievePromptAuthorization() {
 }
@@ -965,13 +968,13 @@ SievePromptAuthorization.prototype.getAuthorization
         null,
         check);
 
-    if (result == false)
+    if (result === false)
       return null;
 
     return input.value;
   };
 
-//****************************************************************************//
+// ****************************************************************************//
 
 function SieveCustomAuthorization(uri) {
   if (!uri)
@@ -996,14 +999,14 @@ SieveCustomAuthorization.prototype.getAuthorization
 
 SieveCustomAuthorization.prototype.setAuthorization
   = function (authorization) {
-    if ((authorization == null) || (authorization === ""))
+    if (typeof(authorization) === "undefined" || (authorization === null) || (authorization === ""))
       throw new Error("Authorization can't be empty or null");
 
     Services.prefs.setCharPref(this.prefURI + ".sasl.authorization.username", authorization);
   };
 
 
-//****************************************************************************//
+// ****************************************************************************//
 
 function SieveDefaultAuthorization(authorization) {
   this.authorization = authorization;
@@ -1018,8 +1021,6 @@ SieveDefaultAuthorization.prototype.getAuthorization
   = function () {
     return this.authorization;
   };
-
-//****************************************************************************//
 
 /**
  * Sieve depends on IMAP, so every Sieve Accounts is directly bound to an IMAP
@@ -1104,7 +1105,7 @@ SieveAccount.prototype.getLogin
 
 SieveAccount.prototype.setActiveLogin
   = function (type) {
-    if (type == null)
+    if (typeof(type) === "undefined" || type === null)
       throw new Error("login type is null");
     if ((type < AUTH_TYPE_NONE) || (type > AUTH_TYPE_CUSTOM))
       throw new Error("invalid login type");
@@ -1117,7 +1118,7 @@ SieveAccount.prototype.getHost
     if ((type == null) && Services.prefs.prefHasUserValue(this.sieveKey + ".activeHost"))
       type = Services.prefs.getIntPref(this.sieveKey + ".activeHost");
 
-    if (type == HOST_TYPE_CUSTOM)
+    if (type === HOST_TYPE_CUSTOM)
       return new SieveCustomHost(this.Uri);
 
     return new SieveImapHost(this.Uri, this.imapKey);
@@ -1125,7 +1126,7 @@ SieveAccount.prototype.getHost
 
 SieveAccount.prototype.setActiveHost
   = function (type) {
-    if (type == null)
+    if (typeof(type) === "undefined" || type === null)
       throw new Error("host type is null");
     if ((type < HOST_TYPE_IMAP) || (type > HOST_TYPE_CUSTOM))
       throw new Error("invalid host type");
@@ -1149,7 +1150,7 @@ SieveAccount.prototype.getAuthorization
 
 SieveAccount.prototype.setActiveAuthorization
   = function (type) {
-    if (type == null)
+    if (typeof(type) === "undefined" || type === null)
       throw new Error("Authorization type is null");
     if ((type < 0) || (type > 3))
       throw new Error("invalid Authorization type");
@@ -1216,7 +1217,7 @@ SieveAccount.prototype.getProxy
 
 SieveAccount.prototype.setProxy
   = function (type) {
-    if (type == null)
+    if (typeof(type) === "undefined" || type === null)
       throw new Error("Proxy type is null");
     if ((type < PROXY_TYPE_NONE) || (type > PROXY_TYPE_SOCKS5))
       throw new Error("Invalid proxy type");
@@ -1224,7 +1225,7 @@ SieveAccount.prototype.setProxy
     Services.prefs.setIntPref(this.sieveKey + ".proxy.type", type);
   };
 
-//****************************************************************************//
+// ****************************************************************************//
 
 function SieveAccounts() {
   this.accounts = null;
@@ -1258,7 +1259,7 @@ SieveAccounts.prototype.getAccounts
       while (enumerator.hasMoreElements()) {
         let account = enumerator.getNext().QueryInterface(Ci.nsIMsgIncomingServer);
 
-        if ((account.type != "imap") && (account.type != "pop3"))
+        if ((account.type !== "imap") && (account.type !== "pop3"))
           continue;
 
         this.accounts.push(new SieveAccount(account));

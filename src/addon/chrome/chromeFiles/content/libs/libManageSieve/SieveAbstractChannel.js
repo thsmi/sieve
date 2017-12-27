@@ -123,7 +123,7 @@ SieveAbstractChannel.prototype.onStatusChange
 
 SieveAbstractChannel.prototype.onBadCert
   = function (targetSite, status) {
-    var message = {};
+    let message = {};
     message.status = status;
     message.site = targetSite;
 
@@ -143,7 +143,7 @@ SieveAbstractChannel.prototype.observe
   };
 
 
-/******************************************************************************/
+/* *****************************************************************************/
 
 // TODO it should accept an strings instead of an  account object
 SieveAbstractChannel.prototype.connect
@@ -192,7 +192,9 @@ SieveAbstractChannel.prototype.disconnect
         .getService(Ci.nsIObserverService)
         .removeObserver(this, "network:offline-status-changed");
     }
-    catch (ex) { }
+    catch (ex) {
+      // do nothing
+    }
   };
 
 

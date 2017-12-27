@@ -16,6 +16,8 @@
 
 (function (exports) {
 
+  const QUOTE_LENGTH = 50;
+
   // Sieve Lexer is a static class...
 
   let SieveLexer =
@@ -103,7 +105,7 @@
         let item = this.getConstructor(types, parser);
 
         if ((typeof (item) === 'undefined') || (item === null))
-          throw new Error("Unknown or incompatible " + types + " expected but found: " + parser.bytes(50));
+          throw new Error("Unknown or incompatible " + types + " expected but found: " + parser.bytes(QUOTE_LENGTH));
 
         return this.createInstance(docshell, item, parser);
       },

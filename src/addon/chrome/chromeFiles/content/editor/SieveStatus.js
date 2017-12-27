@@ -34,154 +34,21 @@ SieveOverlayManager.require("/sieve/SieveAutoConfig.js", this, window);
  *  Auto Config
  */
 
-var gAutoConfig = null;
-var gAccount = null;
-var gCallback = null;
-var gCallbacks = null;
+let gAutoConfig = null;
+let gAccount = null;
+let gCallback = null;
+let gCallbacks = null;
 
-var gCertStatus = null;
-
-var gAutoConfigEvent =
-  {
-    onSuccess: function (host, port, proxy) {
-      onStatus(8, 2);
-
-      gAccount.setActiveHost(0);
-      gAccount.getHost().setPort(port);
-      gAccount.setEnabled(true);
-
-      gAutoConfig = null;
-    },
-
-    onError: function () {
-      onStatus(8, 3);
-      gAutoConfig = null;
-    }
-  };
-
-function onAutoConfigRunClick() {
-  if (gAutoConfig)
-    gAutoConfig.cancel();
-
-  gAutoConfig = new SieveAutoConfig();
-
-  gAutoConfig.addHost(
-    gAccount.getHost(0).getHostname(),
-    4190,
-    gAccount.getProxy().getProxyInfo());
-
-  gAutoConfig.addHost(
-    gAccount.getHost(0).getHostname(),
-    2000,
-    gAccount.getProxy().getProxyInfo());
-
-  gAutoConfig.run(gAutoConfigEvent);
-
-  onStatus(8, 1);
-}
-
-function onAutoConfigCancelClick() {
-  gAutoConfig.cancel();
-  gAutoConfig = null;
-
-  onStatus(8, 3);
-}
-
-function onAutoConfigFinishedClick() {
-  gCallback();
-}
-
-function onReconnectClick() {
-  gCallback();
-}
-
-function onBadCertOverride(targetSite, permanent) {
-  try {
-    var overrideService = Cc["@mozilla.org/security/certoverride;1"]
-      .getService(Ci.nsICertOverrideService);
-
-    var status = null;
-    if (gCertStatus) {
-      status = gCertStatus;
-    }
-    else if (Cc["@mozilla.org/security/recentbadcerts;1"]) {
-      status = Cc["@mozilla.org/security/recentbadcerts;1"]
-        .getService(Ci.nsIRecentBadCertsService)
-        .getRecentBadCert(targetSite);
-    }
-    else {
-      status = Cc["@mozilla.org/security/x509certdb;1"]
-        .getService(Ci.nsIX509CertDB)
-        .getRecentBadCerts(false)
-        .getRecentBadCert(targetSite);
-    }
-
-    if (!status)
-      throw "No certificate stored for taget Site...";
-
-    var flags = ((status.isUntrusted) ? overrideService.ERROR_UNTRUSTED : 0)
-      | ((status.isDomainMismatch) ? overrideService.ERROR_MISMATCH : 0)
-      | ((status.isNotValidAtThisTime) ? overrideService.ERROR_TIME : 0);
-
-    var cert = status.QueryInterface(Ci.nsISSLStatus).serverCert;
-    if (!cert)
-      throw "Status does not contain a certificate...";
-
-    overrideService.rememberValidityOverride(
-      targetSite.split(":")[0], // Host Name with port (host:port)
-      targetSite.split(":")[1],
-      cert,
-      flags,
-      !permanent);
-
-    gCallback();
-
-    gCertStatus = null;
-  }
-  catch (ex) {
-    onStatus(2, "error.brokencert");
-    Cu.reportError(ex);
-  }
-
-}
-
-function onDetach() {
-  if (gAutoConfig) {
-    gAutoConfig.cancel();
-    gAutoConfig = null;
-  }
-
-  gCallback = null;
-  gCallbacks = null;
-}
-
-/**
- * The callback is invoced when the user wants to reconnect
- *
- * @param {} account
- * @param {} callback
- *
- */
-function onAttach(account, callback, callbacks) {
-  if (gAutoConfig) {
-    gAutoConfig.cancel();
-    gAutoConfig = null;
-  }
-
-  gAccount = account;
-  gCallback = callback;
-  if (callbacks)
-    gCallbacks = callbacks;
-}
+let gCertStatus = null;
 
 function onStatus(state, message) {
   // we need this array to corelate status ids and the deck's selectedIndex
   // 0:StatusWait, 1:StatusBadCert, 2:StatusDisabled, 3:StatusConnectionLost,
   // 4:StatusOffline, 5:StatusWarning, 6:StatusOutOfSync, 7:StatusError
-  var mapping = { 0: null, 1: 5, 2: 7, 3: 0, 4: 7, 5: 1, 6: 4, 7: null, 8: 2, 9: 3, 10: 6 };
+  let mapping = { 0: null, 1: 5, 2: 7, 3: 0, 4: 7, 5: 1, 6: 4, 7: null, 8: 2, 9: 3, 10: 6 };
 
   try {
-    var strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
+    let strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
 
 
     switch (state) {
@@ -240,8 +107,142 @@ function onStatus(state, message) {
   }
 }
 
+
+let gAutoConfigEvent =
+  {
+    onSuccess: function (host, port, proxy) {
+      onStatus(8, 2);
+
+      gAccount.setActiveHost(0);
+      gAccount.getHost().setPort(port);
+      gAccount.setEnabled(true);
+
+      gAutoConfig = null;
+    },
+
+    onError: function () {
+      onStatus(8, 3);
+      gAutoConfig = null;
+    }
+  };
+
+function onAutoConfigRunClick() {
+  if (gAutoConfig)
+    gAutoConfig.cancel();
+
+  gAutoConfig = new SieveAutoConfig();
+
+  gAutoConfig.addHost(
+    gAccount.getHost(0).getHostname(),
+    4190,
+    gAccount.getProxy().getProxyInfo());
+
+  gAutoConfig.addHost(
+    gAccount.getHost(0).getHostname(),
+    2000,
+    gAccount.getProxy().getProxyInfo());
+
+  gAutoConfig.run(gAutoConfigEvent);
+
+  onStatus(8, 1);
+}
+
+function onAutoConfigCancelClick() {
+  gAutoConfig.cancel();
+  gAutoConfig = null;
+
+  onStatus(8, 3);
+}
+
+function onAutoConfigFinishedClick() {
+  gCallback();
+}
+
+function onReconnectClick() {
+  gCallback();
+}
+
+function onBadCertOverride(targetSite, permanent) {
+  try {
+    let overrideService = Cc["@mozilla.org/security/certoverride;1"]
+      .getService(Ci.nsICertOverrideService);
+
+    let status = null;
+    if (gCertStatus) {
+      status = gCertStatus;
+    }
+    else if (Cc["@mozilla.org/security/recentbadcerts;1"]) {
+      status = Cc["@mozilla.org/security/recentbadcerts;1"]
+        .getService(Ci.nsIRecentBadCertsService)
+        .getRecentBadCert(targetSite);
+    }
+    else {
+      status = Cc["@mozilla.org/security/x509certdb;1"]
+        .getService(Ci.nsIX509CertDB)
+        .getRecentBadCerts(false)
+        .getRecentBadCert(targetSite);
+    }
+
+    if (!status)
+      throw new Error("No certificate stored for taget Site...");
+
+    let flags = ((status.isUntrusted) ? overrideService.ERROR_UNTRUSTED : 0)
+      | ((status.isDomainMismatch) ? overrideService.ERROR_MISMATCH : 0)
+      | ((status.isNotValidAtThisTime) ? overrideService.ERROR_TIME : 0);
+
+    let cert = status.QueryInterface(Ci.nsISSLStatus).serverCert;
+    if (!cert)
+      throw new Error("Status does not contain a certificate...");
+
+    overrideService.rememberValidityOverride(
+      targetSite.split(":")[0], // Host Name with port (host:port)
+      targetSite.split(":")[1],
+      cert,
+      flags,
+      !permanent);
+
+    gCallback();
+
+    gCertStatus = null;
+  }
+  catch (ex) {
+    onStatus(2, "error.brokencert");
+    Cu.reportError(ex);
+  }
+
+}
+
+function onDetach() {
+  if (gAutoConfig) {
+    gAutoConfig.cancel();
+    gAutoConfig = null;
+  }
+
+  gCallback = null;
+  gCallbacks = null;
+}
+
+/**
+ * The callback is invoced when the user wants to reconnect
+ *
+ * @param {} account
+ * @param {} callback
+ *
+ */
+function onAttach(account, callback, callbacks) {
+  if (gAutoConfig) {
+    gAutoConfig.cancel();
+    gAutoConfig = null;
+  }
+
+  gAccount = account;
+  gCallback = callback;
+  if (callbacks)
+    gCallbacks = callbacks;
+}
+
 function onSettingsClick() {
-  var server = Cc['@mozilla.org/messenger/account-manager;1']
+  let server = Cc['@mozilla.org/messenger/account-manager;1']
     .getService(Ci.nsIMsgAccountManager)
     .getIncomingServer(gAccount.imapKey);
 
@@ -250,7 +251,7 @@ function onSettingsClick() {
 
 
 function onGoOnlineClick() {
-  var ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
+  let ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
   ioService.offline = false;
 
   gCallback();

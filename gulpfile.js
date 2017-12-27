@@ -132,7 +132,7 @@ function bumpVersion(type) {
 
   let pkgVersion = getPackageVersion('./package.json').split(".");
 
-  console.log("Bumping from " + pkgVersion.join(".") );
+  console.log("Bumping from " + pkgVersion.join("."));
 
   while (pkgVersion.length < 3)
     pkgVersion.push(0);
@@ -192,11 +192,11 @@ gulp.task('app:package-bootstrap', function () {
 
   gulp.src([
     BASE_PATH + "/css/*.min.css",
-    BASE_PATH + "/js/*.bundle.min.js",
+    BASE_PATH + "/js/*.bundle.min.js"
   ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_APP + '/libs/bootstrap'));
 });
 
-gulp.task('app:package-license', function() {
+gulp.task('app:package-license', function () {
 
   gulp.src([
     "./LICENSE.md"
@@ -211,7 +211,7 @@ gulp.task('app:package-src', function () {
   const BASE_PATH = "./src/app/";
 
   return gulp.src([
-    BASE_PATH + "/**",
+    BASE_PATH + "/**"
   ])
     .pipe(gulp.dest(BUILD_DIR_APP));
 });
@@ -233,7 +233,7 @@ gulp.task('app:package-common', function () {
 });
 
 
-gulp.task('addon:package-license', function() {
+gulp.task('addon:package-license', function () {
 
   gulp.src([
     "./LICENSE.md"
@@ -252,12 +252,12 @@ gulp.task('app:package-win32', ["app:package"], function (cb) {
     arch: "ia32",
     platform: "win32",
     download: {
-      cache: "./build/electron/cache",
+      cache: "./build/electron/cache"
     },
     out: "./build/electron/out",
     overwrite: true,
-    /*packageManager : "yarn",*/
-    //packageManager : false,
+    // packageManager : "yarn",
+    // packageManager : false,
     prune: true
   };
 
@@ -277,12 +277,12 @@ gulp.task('app:package-linux', ["app:package"], function (cb) {
     arch: "x64",
     platform: "linux",
     download: {
-      cache: "./build/electron/cache",
+      cache: "./build/electron/cache"
     },
     out: "./build/electron/out",
     overwrite: true,
-    /*packageManager : "yarn",*/
-    //packageManager : false,
+    // packageManager : "yarn"
+    // packageManager : false,
     prune: true
   };
 
@@ -323,7 +323,7 @@ gulp.task('addon:package-jquery', function () {
 
   gulp.src([
     BASE_PATH + "/jquery.min.js"
-  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_ADDON+"common/jQuery"));
+  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_ADDON + "common/jQuery"));
 });
 
 gulp.task('addon:package-codemirror', function () {
@@ -337,7 +337,7 @@ gulp.task('addon:package-codemirror', function () {
     BASE_PATH + "/theme/eclipse.css",
     BASE_PATH + "/LICENSE",
     BASE_PATH + "/package.json"
-  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_ADDON+'common/CodeMirror'));
+  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_ADDON + 'common/CodeMirror'));
 });
 
 gulp.task('addon:package-common', function () {
@@ -349,7 +349,7 @@ gulp.task('addon:package-common', function () {
     // Filter out the rfc documents
     "!" + BASE_PATH + "/libSieve/**/rfc*.txt"
   ])
-    .pipe(gulp.dest(BUILD_DIR_ADDON+'common'));
+    .pipe(gulp.dest(BUILD_DIR_ADDON + 'common'));
 });
 
 gulp.task('addon:package-src', function () {
@@ -376,7 +376,7 @@ gulp.task('addon:package-xpi', ["addon:package"], function () {
 
   const version = getPackageVersion();
 
-  return gulp.src([BUILD_DIR_ADDON+"**"])
+  return gulp.src([BUILD_DIR_ADDON + "**"])
     .pipe(zip('sieve-' + version + '.xpi'))
     .pipe(gulp.dest('./release/thunderbird'));
   // place code for your default task here
@@ -412,5 +412,4 @@ gulp.task('bump-minor', function () {
 gulp.task('bump-patch', function () {
   bumpVersion("patch");
 });
-
 

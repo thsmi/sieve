@@ -143,6 +143,7 @@
    *
    *    Usage:  string [MATCH-TYPE] [COMPARATOR]
              <source: string-list> <key-list: string-list>
+   * @constructor
    */
   function SieveStringTest(docshell, id) {
     SieveAbstractElement.call(this, docshell, id);
@@ -244,7 +245,7 @@
 
   SieveStringTest.prototype.toScript
     = function () {
-      var result = "string";
+      let result = "string";
 
       result += this.items[0].toScript();
 
@@ -267,7 +268,7 @@
     };
 
 
-  //*******************************************************************//
+  // *******************************************************************//
 
   function SieveLowerModifier(docshell, id) {
     SieveAbstractElement.call(this, docshell, id);
@@ -309,7 +310,7 @@
       return ":lower";
     };
 
-  //*******************************************************************//
+  // *******************************************************************//
 
   function SieveUpperModifier(docshell, id) {
     SieveAbstractElement.call(this, docshell, id);
@@ -351,7 +352,7 @@
       return ":upper";
     };
 
-  //*******************************************************************//
+  // *******************************************************************//
 
   function SieveLowerFirstModifier(docshell, id) {
     SieveAbstractElement.call(this, docshell, id);
@@ -393,7 +394,7 @@
       return ":lowerfirst";
     };
 
-  //*******************************************************************//
+  // *******************************************************************//
 
   function SieveUpperFirstModifier(docshell, id) {
     SieveAbstractElement.call(this, docshell, id);
@@ -436,7 +437,7 @@
       return ":upperfirst";
     };
 
-  //*******************************************************************//
+  // *******************************************************************//
 
   function SieveQuoteWildcardModifier(docshell, id) {
     SieveAbstractElement.call(this, docshell, id);
@@ -480,7 +481,7 @@
 
 
 
-  //*******************************************************************//
+  // *******************************************************************//
 
   function SieveLengthModifier(docshell, id) {
     SieveAbstractElement.call(this, docshell, id);
@@ -522,7 +523,7 @@
       return ":length";
     };
 
-  /******************************************************************************/
+  /* *****************************************************************************/
 
   function SieveModifierList(docshell, id) {
     SieveAbstractElement.call(this, docshell, id);

@@ -113,7 +113,7 @@
       throw new Error("Implement me");
     };
 
-  //****************************************************************************//
+  // ****************************************************************************//
 
   function SieveMoveDragHandler(flavour) {
     SieveDragHandler.call(this, flavour);
@@ -138,7 +138,7 @@
       return JSON.stringify({ id: this.owner().id(), action: "move" });
     };
 
-  //****************************************************************************//
+  // ****************************************************************************//
 
   function SieveCreateDragHandler(flavour) {
     SieveDragHandler.call(this, flavour);

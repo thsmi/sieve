@@ -56,7 +56,7 @@
     }
 
     getHostname() {
-      return this.getDialog().find(".sieve-settings-hostname").val()
+      return this.getDialog().find(".sieve-settings-hostname").val();
     }
 
     setPort(port) {
@@ -64,7 +64,7 @@
     }
 
     getPort() {
-      return this.getDialog().find(".sieve-settings-port").val()
+      return this.getDialog().find(".sieve-settings-port").val();
     }
 
     /**
@@ -154,7 +154,7 @@
     }
 
     getUsername() {
-      return this.getDialog().find(".sieve-settings-username").val()
+      return this.getDialog().find(".sieve-settings-username").val();
     }
 
     /**

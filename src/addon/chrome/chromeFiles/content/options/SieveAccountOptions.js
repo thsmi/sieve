@@ -48,12 +48,12 @@ function onServerSheetLoad(account) {
     = account.getHost(0).getHostname();
 
 
-  var rbPort = document.getElementById('rgPort');
+  let rbPort = document.getElementById('rgPort');
 
   // Load custom port settings
-  var port = account.getHost().getPort(2);
+  let port = account.getHost().getPort(2);
 
-  if ((port == 2000) || (port = 4190))
+  if ((port === 2000) || (port === 4190))
     port = "";
 
   document.getElementById('txtPort').value = port;
@@ -61,9 +61,9 @@ function onServerSheetLoad(account) {
   // Load port
   port = account.getHost().getPort();
 
-  if (port == 4190)
+  if (port === 4190)
     rbPort.selectedIndex = 0;
-  else if (port == 2000)
+  else if (port === 2000)
     rbPort.selectedIndex = 1;
   else {
     rbPort.selectedIndex = 2;
@@ -74,7 +74,7 @@ function onServerSheetLoad(account) {
 }
 
 function enableHost(type) {
-  if (type == 1)
+  if (type === 1)
     document.getElementById('txtHostname').removeAttribute('disabled');
   else
     document.getElementById('txtHostname').setAttribute('disabled', 'true');
@@ -96,7 +96,7 @@ function onHostnameChange(value) {
 }
 
 function enablePort(type) {
-  if (type == 2)
+  if (type === 2)
     document.getElementById('txtPort').removeAttribute('disabled');
   else
     document.getElementById('txtPort').setAttribute('disabled', 'true');
@@ -152,7 +152,7 @@ function onPortAutoSelect() {
   try {
     document.getElementById("dkAutoSelect").selectedIndex = "1";
 
-    //Load auoconfig only when we realy need it
+    // Load auoconfig only when we realy need it
     gAutoConfig = new SieveAutoConfig();
 
     gAutoConfig.addHost(
@@ -165,8 +165,8 @@ function onPortAutoSelect() {
       2000,
       gAccount.getProxy().getProxyInfo());
 
-    var port = document.getElementById("txtPort").value;
-    port = parseInt(port);
+    let port = document.getElementById("txtPort").value;
+    port = parseInt(port, 10);
 
     if (!isNaN(port))
       gAutoConfig.addHost(
@@ -187,11 +187,11 @@ function onSecuritySheetLoad(account) {
   document.getElementById('txtUsername').value
     = account.getLogin(2).getUsername();
 
-  var rgLogin = document.getElementById('rgLogin');
+  let rgLogin = document.getElementById('rgLogin');
   rgLogin.selectedIndex = account.getLogin().getType();
   enableLogin(rgLogin.selectedIndex);
 
-  var rbTLS = document.getElementById('rgTLS');
+  let rbTLS = document.getElementById('rgTLS');
 
   if (account.getHost().isTLSEnabled()) {
     if (account.getHost().isTLSForced())
@@ -208,8 +208,8 @@ function onTLSSelect(idx) {
     if (!gAccount)
       return;
 
-    var isEnabled = true;
-    var isForced = false;
+    let isEnabled = true;
+    let isForced = false;
 
     if (idx === 0)
       isEnabled = false;
@@ -226,7 +226,7 @@ function onTLSSelect(idx) {
 }
 
 function enableLogin(type) {
-  if (type == 2)
+  if (type === 2)
     document.getElementById('txtUsername').removeAttribute('disabled');
   else
     document.getElementById('txtUsername').setAttribute('disabled', 'true');
@@ -252,14 +252,14 @@ function onGeneralSheetLoad(account) {
   document.getElementById('txtKeepAlive').value
     = account.getSettings().getKeepAliveInterval() / (1000 * 60);
 
-  var cbxKeepAlive = document.getElementById('cbxKeepAlive');
+  let cbxKeepAlive = document.getElementById('cbxKeepAlive');
   cbxKeepAlive.checked = account.getSettings().isKeepAlive();
   enableKeepAlive(cbxKeepAlive.checked);
 
   document.getElementById('txtCompile').value
     = account.getSettings().getCompileDelay();
 
-  var element = null;
+  let element = null;
 
   element = document.getElementById('cbxCompile');
   element.checked = account.getSettings().hasCompileDelay();
@@ -281,7 +281,7 @@ function onProxySheetLoad(account) {
   document.getElementById('cbxSocks5RemoteDNS').checked
     = account.getProxy(3).usesRemoteDNS();
 
-  var rgSocksProxy = document.getElementById('rgSocksProxy');
+  let rgSocksProxy = document.getElementById('rgSocksProxy');
   rgSocksProxy.selectedIndex = account.getProxy().getType();
   enableProxy(rgSocksProxy.selectedIndex);
 }
@@ -290,7 +290,7 @@ function onProxySelect(type) {
   if (!gAccount)
     return;
 
-  if ((type == null) || (type > 3))
+  if (typeof(type) === "undefined" || (type === null) || (type > 3))
     type = 1;
 
   gAccount.setProxy(type);
@@ -320,7 +320,7 @@ function onAdvancedSheetLoad(account) {
   let mechanism = account.getSettings().getForcedAuthMechanism();
 
   for (let i = 0; i < items.length; i++) {
-    if (items[i].value != mechanism)
+    if (items[i].value !== mechanism)
       continue;
 
     list.selectedItem = items[i];
@@ -340,7 +340,7 @@ function onAuthorizationSelect(type) {
   if (!gAccount)
     return;
 
-  if ((type == null) || (type > 3))
+  if (typeof(type) === "undefined" || (type === null) || (type > 3))
     type = 1;
 
   gAccount.setActiveAuthorization(type);
@@ -565,7 +565,7 @@ function onShowPassword() {
     w.focus();
   else
     window.openDialog(uri, winName, "");
-  /*else
+  /* else
     Components
       .classes["@mozilla.org/embedcomp/window-watcher;1"]
       .getService(Components.interfaces.nsIWindowWatcher)

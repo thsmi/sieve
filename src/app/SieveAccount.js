@@ -130,7 +130,7 @@
           return "";
         }
       };
-    };
+    }
 
     getProxy() {
       return {
@@ -160,7 +160,7 @@
         },
 
         setKeepAliveInterval: (value) => {
-          this.prefs.setInteger("keepalive.interval", value)
+          this.prefs.setInteger("keepalive.interval", value);
         },
 
         getKeepAliveInterval: () => {

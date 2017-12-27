@@ -16,7 +16,7 @@
 // Enable Strict Mode
 "use strict";
 
-var EXPORTED_SYMBOLS = ["SieveAutoConfig"];
+let EXPORTED_SYMBOLS = ["SieveAutoConfig"];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;

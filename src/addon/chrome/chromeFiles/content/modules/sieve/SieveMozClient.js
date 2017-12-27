@@ -272,7 +272,7 @@
       if (this.socket)
         return;
 
-      /*if ( (this.socket != null) && (this.socket.isAlive()) )
+      /* if ( (this.socket != null) && (this.socket.isAlive()) )
         return;*/
 
       this.host = host;
@@ -322,7 +322,7 @@
         this.getLogger().log("Using Proxy: Direct", (1 << 2));
 
 
-      var transportService =
+      let transportService =
         Cc["@mozilla.org/network/socket-transport-service;1"]
           .getService(Ci.nsISocketTransportService);
 
@@ -342,8 +342,8 @@
 
       this.binaryOutStream.setOutputStream(this.outstream);
 
-      var stream = this.socket.openInputStream(0, 0, 0);
-      var pump = Cc["@mozilla.org/network/input-stream-pump;1"].
+      let stream = this.socket.openInputStream(0, 0, 0);
+      let pump = Cc["@mozilla.org/network/input-stream-pump;1"].
         createInstance(Ci.nsIInputStreamPump);
 
       // the guys at mozilla changed their api without caring
@@ -425,12 +425,12 @@
       this.getLogger().log("Server -> Client [Byte Array]\n" + data, (1 << 3));
 
       if (this.getLogger().isLoggable(1 << 1)) {
-        var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
+        let converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
           .createInstance(Ci.nsIScriptableUnicodeConverter);
 
         converter.charset = "UTF-8";
 
-        var byteArray = data.slice(0, data.length);
+        let byteArray = data.slice(0, data.length);
 
         this.getLogger().log("Server -> Client\n" + converter.convertFromByteArray(byteArray, byteArray.length));
       }

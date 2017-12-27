@@ -433,7 +433,7 @@
     = function () { return this.details.owner; };
 
 
-  //***************************************************************************//
+  //* **************************************************************************//
 
   function SieveListScriptResponse(parser) {
     //    sieve-name    = string
@@ -478,7 +478,7 @@
     = function () { return this.scripts; };
 
 
-  //*************************************
+  //* ************************************
   function SieveSaslLoginResponse() {
     this.state = 0;
   }
@@ -578,7 +578,7 @@
       return this.challenge;
     };
 
-  /*********************************************************
+  /* ********************************************************
       literal               = "{" number  "+}" CRLF *OCTET
       quoted                = <"> *1024QUOTED-CHAR <">
       response-getscript    = [string CRLF] response-oknobye

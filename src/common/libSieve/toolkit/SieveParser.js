@@ -16,6 +16,10 @@
 
 (function (exports) {
 
+  /** the number of bytes to quote in case of an error*/
+  const QUOTE_LENGTH = 50;
+  const NO_SUCH_TOKEN = -1;
+
   function SieveParser(data) {
     this._data = data;
     this._pos = 0;
@@ -59,7 +63,7 @@
     = function (ch) {
       if (typeof (ch) !== "undefined")
         if (!this.isChar(ch))
-          throw new Error(" " + ch + " expected but found:\n" + this.bytes(50) + "...");
+          throw new Error(" " + ch + " expected but found:\n" + this.bytes(QUOTE_LENGTH) + "...");
 
       this._pos++;
       return this._data.charAt(this._pos - 1);
@@ -106,7 +110,7 @@
         let str = length;
 
         if (!this.startsWith(str))
-          throw new Error(" " + str + " expected but found:\n" + this.bytes(50) + "...");
+          throw new Error(" " + str + " expected but found:\n" + this.bytes(QUOTE_LENGTH) + "...");
 
         this._pos += str.length;
 
@@ -126,7 +130,7 @@
     = function (token) {
       let idx = this._data.indexOf(token, this._pos);
 
-      if (idx === -1)
+      if (idx === NO_SUCH_TOKEN)
         throw new Error("Token expected: " + token.toString());
 
       let str = this._data.substring(this._pos, idx);

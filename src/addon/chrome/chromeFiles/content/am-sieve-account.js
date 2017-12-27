@@ -71,7 +71,7 @@ function onInit(pageId, serverId) {
 }
 
 function onAccountStatusChange() {
-  var rgAccount = document.getElementById('rgAccount');
+  let rgAccount = document.getElementById('rgAccount');
 
   if (rgAccount.selectedIndex > 0)
     gSieveAccount.setEnabled(true);

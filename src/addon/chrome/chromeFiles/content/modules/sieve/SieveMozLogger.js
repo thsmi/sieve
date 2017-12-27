@@ -23,7 +23,7 @@
   var Cc = Components.classes;
   var Ci = Components.interfaces;
 
-  var loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
+  let loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
     .getService(Ci.mozIJSSubScriptLoader);
 
   loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveAbstractLogger.js", this, "UTF-8");

@@ -32,7 +32,7 @@
    *   a self reference
    */
   SieveAbstractRequestBuilder.prototype.addQuotedBase64 = function (token) {
-    this.addLiteral('"' + this.convertStringToBase64(token) + '"');
+    this.addLiteral('"' + this.convertToBase64(token) + '"');
     return this;
   };
 
@@ -140,8 +140,8 @@
    *
    * @abstract
    */
-  SieveAbstractRequestBuilder.prototype.convertStringToBase64 = function (decoded) {
-    throw new Error("Implement SieveAbstractRequestBuilder::convertStringToBase64(" + decoded + ")");
+  SieveAbstractRequestBuilder.prototype.convertToBase64 = function (decoded) {
+    throw new Error("Implement SieveAbstractRequestBuilder::convertToBase64(" + decoded + ")");
   };
 
   /**
@@ -153,8 +153,8 @@
    *
    * @abstract
    */
-  SieveAbstractRequestBuilder.prototype.convertStringFromBase64 = function (encoded) {
-    throw new Error("Implement SieveAbstractRequestBuilder::convertStringFromBase64(" + encoded + ")");
+  SieveAbstractRequestBuilder.prototype.convertFromBase64 = function (encoded) {
+    throw new Error("Implement SieveAbstractRequestBuilder::convertFromBase64(" + encoded + ")");
   };
 
   exports.SieveAbstractRequestBuilder = SieveAbstractRequestBuilder;

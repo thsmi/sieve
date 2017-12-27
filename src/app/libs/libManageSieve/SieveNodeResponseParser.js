@@ -37,10 +37,26 @@
     return new StringDecoder('utf8').end(Buffer.from(byteArray)).toString();
   };
 
+  /**
+   * Encodes a clear text string to a base64 encoded string.
+   *
+   * @param {String} decoded
+   *   the clear text string which should be encoded.
+   * @returns {String}
+   *   the base64 encoded string.
+   */
   SieveNodeResponseParser.prototype.convertToBase64 = function(decoded) {
     return Buffer.from(decoded).toString('base64');
   };
 
+  /**
+   * Decodes an base64 encoded string into a cleat text string.
+   *
+   * @param {String} encoded
+   *   the base64 encoded string which should be decoded.
+   * @returns {string}
+   *   the decoded string.
+   */
   SieveNodeResponseParser.prototype.convertFromBase64 = function(encoded) {
     return Buffer.from(encoded, 'base64').toString();
   };

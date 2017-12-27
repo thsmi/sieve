@@ -32,11 +32,11 @@
     return Buffer.byteLength(data, 'utf8');
   };
 
-  SieveNodeRequestBuilder.prototype.convertStringToBase64 = function (decoded) {
+  SieveNodeRequestBuilder.prototype.convertToBase64 = function (decoded) {
     return Buffer.from(decoded).toString('base64');
   };
 
-  SieveNodeRequestBuilder.prototype.convertStringFromBase64 = function (encoded) {
+  SieveNodeRequestBuilder.prototype.convertFromBase64 = function (encoded) {
     return Buffer.from(encoded, 'base64').toString();
   };
 

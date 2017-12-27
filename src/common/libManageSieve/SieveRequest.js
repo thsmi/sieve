@@ -52,6 +52,9 @@
   /* global SieveSaslCramMd5Response */
   /* global SieveSaslScramSha1Response */
 
+  const STATE_CRAM_MD5_CHALLENGED = 1;
+  const STATE_CRAM_MD5_INIT = 0;
+
   /**
    * Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy
    * binary, and javascript is something in between. This means we have to convert
@@ -1076,6 +1079,10 @@
   // ****************************************************************************//
 
   /**
+   * Implements the CRAM-MD5 Challange-Response Mechanism as defined in RFC2195.
+   *
+   * It is considered to be weak and should only be used via encrypted connections.
+   *
    * @author Thomas Schmid
    * @author Max Dittrich
    * @constructor
@@ -1088,20 +1095,36 @@
   SieveSaslCramMd5Request.prototype = Object.create(SieveAbstractSaslRequest.prototype);
   SieveSaslCramMd5Request.prototype.constructor = SieveSaslCramMd5Request;
 
+  /**
+   * Called when the server challenges the client to calculate a secret.
+   *
+   * @param {SieveAbstractRequestBuilder} builder
+   *   the builder which should be used to build the response.   *
+   * @returns {SieveAbstractRequestBuilder}
+   *   the builder which contains the response for the challenge.
+   */
+  SieveSaslCramMd5Request.prototype.onChallenged
+    = function (builder) {
+
+      let challenge = this.response.getChallenge();
+      // decoding the base64-encoded challenge
+      challenge = builder.convertFromBase64(challenge);
+
+      let hmac = this.hmacMD5(challenge, this._password);
+
+      return builder
+        .addQuotedBase64(this._username + " " + hmac);
+    };
+
   SieveSaslCramMd5Request.prototype.getNextRequest
     = function (builder) {
       switch (this.response.getState()) {
-        case 0:
+        case STATE_CRAM_MD5_INIT:
           return builder
             .addLiteral("AUTHENTICATE")
             .addQuotedString("CRAM-MD5");
-        case 1:
-          // decoding the base64-encoded challenge
-          var challenge = builder.convertFromBase64(this.response.getChallenge());
-          var hmac = this.hmacMD5(challenge, this._password);
-
-          return builder
-            .addQuotedBase64(this._username + " " + hmac);
+        case STATE_CRAM_MD5_CHALLENGED:
+          return this.onChallenged(builder);
       }
 
       throw new Error("Illegal state in SaslCram");

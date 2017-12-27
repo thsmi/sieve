@@ -65,11 +65,11 @@
     return this.jsStringToByteArray(data).length;
   };
 
-  SieveMozRequestBuilder.prototype.convertStringToBase64 = function (decoded) {
+  SieveMozRequestBuilder.prototype.convertToBase64 = function (decoded) {
     return btoa(decoded);
   };
 
-  SieveMozRequestBuilder.prototype.convertStringFromBase64 = function (encoded) {
+  SieveMozRequestBuilder.prototype.convertFromBase64 = function (encoded) {
     return atob(encoded);
   };
 

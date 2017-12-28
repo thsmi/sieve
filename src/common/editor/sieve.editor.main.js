@@ -18,8 +18,8 @@
 
 // We need two global variables for backward compatiblity...
 // they may be removed as soon as the editor communication is migrated to post message
-let editor = null;
-let onActiveLineChange = null;
+var editor = null;
+var onActiveLineChange = null;
 
 /**
  * Glues two frame via html5 post message.

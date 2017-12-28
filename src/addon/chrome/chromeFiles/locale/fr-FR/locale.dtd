@@ -80,7 +80,7 @@ doit être maintenue.">
 <!ENTITY options.misc.compile.caption "Vérification syntaxique">
 <!ENTITY options.misc.compile.description
 "Pendant que vous écrivez les Scripts, il peuvent être vérifiés. La vérification
-syntaxique est exécutée par le serveur. De manière à limiter le traffic réseau,
+syntaxique est exécutée par le serveur. De manière à limiter le traffic réseau, 
 les requêtes de vérification syntaxiques sont groupées.">
 <!ENTITY options.misc.compile "Vérifier les Scripts pendant la frappe">
 <!ENTITY options.misc.compile.key "c">
@@ -104,7 +104,7 @@ les requêtes de vérification syntaxiques sont groupées.">
 <!ENTITY options.editor.tabs.policy.tabs "Insert Tabs">
 
 <!ENTITY options.debug.warning
-"Gardez à l'esprit que ni &quot;SASL LOGIN&quot; ni &quot;SASL PLAIN&quot; ne crypte votre mot de passe,
+"Gardez à l'esprit que ni &quot;SASL LOGIN&quot; ni &quot;SASL PLAIN&quot; ne crypte votre mot de passe, 
   il risque d'apparaître en clair dans la console d'erreur.">
 <!ENTITY options.debug.caption "Paramètres de debuggage">
 <!ENTITY options.debug.request "Communication du Client vers le Serveur (demandes)">
@@ -132,7 +132,7 @@ vous pourriez vouloir forcer un méchanisme d'authentification spécifique." >
 
 <!ENTITY options.proxyauth.caption "Proxy d'autorisation">
 <!ENTITY options.proxyauth.desc
-"Le proxy d'autorisation permet à un utilisateur authentifié d'agir pour le compte
+"Le proxy d'autorisation permet à un utilisateur authentifié d'agir pour le compte 
 d'un autre utilisateur. En général, les serveurs sont configurés de façon à ce que cette fonctionalité ne soit disponible que pour les administrateurs.">
 <!ENTITY options.proxyauth.force
 "Lorsque vous utilisez le proxy d'autorisation, vous devriez forcer le méchanisme d'authentification à &quot;SASL PLAIN&quot;.">

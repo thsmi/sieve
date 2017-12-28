@@ -80,21 +80,21 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.misc.compile2 "Ten minste elke">
 <!ENTITY options.misc.compile.ms "ms valideren">
 
-<!ENTITY options.editor.indention.caption "Indention">
-<!ENTITY options.editor.indention.description "The plain text editor supports automatic indenting.">
-<!ENTITY options.editor.indention.width "Indention Width:">
+<!ENTITY options.editor.indention.caption "Inspringing">
+<!ENTITY options.editor.indention.description "De teksteditor ondersteunt automatische inspringing.">
+<!ENTITY options.editor.indention.width "Inspringing-grootte:">
 
-<!ENTITY options.editor.indention.policy.caption "Indention Policy:">
-<!ENTITY options.editor.indention.policy.spaces "Spaces Only">
-<!ENTITY options.editor.indention.policy.tabs "Tabs Only">
+<!ENTITY options.editor.indention.policy.caption "Inspringing-beleid:">
+<!ENTITY options.editor.indention.policy.spaces "alleen spaties">
+<!ENTITY options.editor.indention.policy.tabs "alleen tabs">
 
-<!ENTITY options.editor.tabs.caption "Tab Handling">
-<!ENTITY options.editor.tabs.description "Texteditor with automatic indenting replaced the need for a tab key, but there are many editors which default to tabs due to historic reasons.">
-<!ENTITY options.editor.tabs.width "Tab Width">
+<!ENTITY options.editor.tabs.caption "Tab-afhandeling">
+<!ENTITY options.editor.tabs.description "Teksteditor met automatische inspringing heeft de noodzaak van een Tab-toets vervangen, maar er zijn veel editors die standaard tabs gebruiken vanwege historische redenen.">
+<!ENTITY options.editor.tabs.width "Tab-breedte">
 
-<!ENTITY options.editor.tabs.policy.caption "Tab Policy">
-<!ENTITY options.editor.tabs.policy.spaces "Insert Spaces for Tabs">
-<!ENTITY options.editor.tabs.policy.tabs "Insert Tabs">
+<!ENTITY options.editor.tabs.policy.caption "Tab-beleid">
+<!ENTITY options.editor.tabs.policy.spaces "spaties voor tabs invoegen">
+<!ENTITY options.editor.tabs.policy.tabs "tabs invoegen">
 
 <!ENTITY options.debug.warning
 "Onthoud dat met SASL-aanmelding noch met normale SASL uw wachtwoord wordt gecodeerd. Mogelijk wordt het als leesbare tekst naar de foutconsole verzonden.">
@@ -117,7 +117,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "Login">
 <!ENTITY options.authmechanism.plain "Plain">
-<!ENTITY options.authmechanism.external "EXTERNAL">
+<!ENTITY options.authmechanism.external "EXTERN">
 <!ENTITY options.authmechanism.description
 "In bepaalde situaties, bv. als u proxy-authenticatie gebruikt, wilt u misschien een bepaalde authenticatiemethode afdwingen." >
 
@@ -194,7 +194,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
   "Uw e-mailserver probeert zichzelf te identificeren met ongeldige gegevens.">
 <!ENTITY list.badcert.error
 "Als u normaal gesproken zonder problemen met deze server kunt verbinden,
-kan deze fout betekenen dat iemand probeert de server na te bootsen.
+kan deze fout betekenen dat iemand probeert de server na te bootsen. 
 
 Ga alleen verder als u op de hoogte bent waarom deze server geen vertrouwde
 identificatie gebruikt.">

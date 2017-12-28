@@ -49,8 +49,7 @@
 "Transport Layer Security (TLS) verschlüsselt die Verbindung zum ManageSieve Server,
 hierdurch werden Abhören der Zugangsdaten sowie Manipulationen effektiv verhindert.">
 <!ENTITY options.security.description2
-"ManageSieve überträgt normalerweise Passwörter unverschlüsselt. Daher
-sollten Sie TLS immer erzwingen.">
+"ManageSieve überträgt normalerweise Passwörter unverschlüsselt. Daher sollten Sie TLS immer erzwingen.">
 <!ENTITY options.security.tls.disabled "Kein TLS">
 <!ENTITY options.security.tls.available "TLS, wenn verfügbar">
 <!ENTITY options.security.tls.force "TLS erzwingen">
@@ -82,25 +81,24 @@ sollten Sie TLS immer erzwingen.">
 <!ENTITY options.misc.compile2 "Syntaxprüfung spätestens alle">
 <!ENTITY options.misc.compile.ms "ms">
 
-<!ENTITY options.editor.indention.caption "Indention">
-<!ENTITY options.editor.indention.description "The plain text editor supports automatic indenting.">
-<!ENTITY options.editor.indention.width "Indention Width:">
+<!ENTITY options.editor.indention.caption "Einrückung">
+<!ENTITY options.editor.indention.description "Der Text-Editor unterstützt automatisches einrücken.">
+<!ENTITY options.editor.indention.width "Einzugsbreite:">
 
-<!ENTITY options.editor.indention.policy.caption "Indention Policy:">
-<!ENTITY options.editor.indention.policy.spaces "Spaces Only">
-<!ENTITY options.editor.indention.policy.tabs "Tabs Only">
+<!ENTITY options.editor.indention.policy.caption "Strategie:">
+<!ENTITY options.editor.indention.policy.spaces "Nur Leerzeichen">
+<!ENTITY options.editor.indention.policy.tabs "Nur Tabulatoren">
 
-<!ENTITY options.editor.tabs.caption "Tab Handling">
-<!ENTITY options.editor.tabs.description "Texteditor with automatic indenting replaced the need for a tab key, but there are many editors which default to tabs due to historic reasons.">
-<!ENTITY options.editor.tabs.width "Tab Width">
+<!ENTITY options.editor.tabs.caption "Tabulator Einzug">
+<!ENTITY options.editor.tabs.description "Der Texteditor bietet automatisches Einrücken an und macht somit die Verwendung des Tabulator überflüssig. Früher wurden Tabulatoren zum dynamischen Einrücken des Textes verwendet.">
+<!ENTITY options.editor.tabs.width "Tabulatorbreite">
 
-<!ENTITY options.editor.tabs.policy.caption "Tab Policy">
-<!ENTITY options.editor.tabs.policy.spaces "Insert Spaces for Tabs">
-<!ENTITY options.editor.tabs.policy.tabs "Insert Tabs">
+<!ENTITY options.editor.tabs.policy.caption "Tabulatoren">
+<!ENTITY options.editor.tabs.policy.spaces "Tabulatoren durch Leerzeichen ersetzen">
+<!ENTITY options.editor.tabs.policy.tabs "Tabulatoren einfügen">
 
 <!ENTITY options.debug.warning
-"Bitte beachten Sie, dass Debugmeldungen von SASL Login und SASL Plain Ihr
-Passwort im Klartext enthalten!">
+"Bitte beachten Sie, dass Debugmeldungen von SASL Login und SASL Plain Ihr Passwort im Klartext enthalten!">
 <!ENTITY options.debug.caption "Debug Einstellungen">
 <!ENTITY options.debug.request "Client zu Server Kommunikation (requests)">
 <!ENTITY options.debug.response "Server zu Client Kommunikation (responses)">
@@ -122,15 +120,12 @@ Passwort im Klartext enthalten!">
 <!ENTITY options.authmechanism.plain "PLAIN">
 <!ENTITY options.authmechanism.external "EXTERNAL">
 <!ENTITY options.authmechanism.description
-"In Ausnahmefällen, z.B. wenn Sie die Proxy Autorisation nutzen, müssen Sie
-einen bestimmten Authentifizierungsmechanismus erzwingen." >
+"In Ausnahmefällen, z.B. wenn Sie die Proxy Autorisation nutzen, müssen Sie einen bestimmten Authentifizierungsmechanismus erzwingen." >
 
 <!ENTITY options.proxyauth.caption "Proxy Autorisation">
 <!ENTITY options.proxyauth.desc
-"Die Proxy Autorisation ermöglicht einem authentifiziertem Benutzer, sich als
-ein anderer Benutzer auszugeben.
-Diese erfordert besondere Rechte auf dem Mailserver und steht
-daher meist nur Administratoren zur Verfügung.">
+"Die Proxy Autorisation ermöglicht einem authentifiziertem Benutzer, sich als ein anderer Benutzer auszugeben. 
+Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Administratoren zur Verfügung.">
 <!ENTITY options.proxyauth.force
 "Die Proxy Autorisation erfordert zwingend eine 'SASL PLAIN' Authentifizierung.">
 <!ENTITY options.proxyauth.none "Keine Autorisation">
@@ -160,15 +155,11 @@ daher meist nur Administratoren zur Verfügung.">
 <!-- Proxy Settings -->
 <!ENTITY options.proxy "Proxy Einstellungen">
 <!ENTITY options.proxy.description
-"Um eine Firewall zu umgehen können Verbindungen zu einem Sieve Server durch
-einen transparenten SOCKS Proxy geleitet werden. ">
+"Um eine Firewall zu umgehen können Verbindungen zu einem Sieve Server durch einen transparenten SOCKS Proxy geleitet werden.">
 <!ENTITY options.proxy.description.nameresolution
-"SOCKSv4 löst Hostnamen über den lokalen Rechner auf. Bei SOCKSv5 können
-Hostnamen über den DNS des Proxy ermittelt werden. Falls der Proxy vertrauenswürdig
-ist sollte die letztere Variante nutzen.">
+"SOCKSv4 löst Hostnamen über den lokalen Rechner auf. Bei SOCKSv5 können Hostnamen über den DNS des Proxy ermittelt werden. Falls der Proxy vertrauenswürdig ist sollte die letztere Variante nutzen.">
 <!ENTITY options.proxy.description.localhost
-"Der Hostname 'localhost' wird auf manchen Systemen nicht richtig aufgelöst,
-als Workaround die Loopback IP '127.0.0.1' nutzen.">
+"Der Hostname 'localhost' wird auf manchen Systemen nicht richtig aufgelöst, als Workaround die Loopback IP '127.0.0.1' nutzen.">
 <!ENTITY options.proxy.direct "Direkte Verbindung">
 <!ENTITY options.proxy.default "Automatische Konfiguration">
 <!ENTITY options.proxy.socks4 "SOCKSv4">
@@ -202,14 +193,11 @@ als Workaround die Loopback IP '127.0.0.1' nutzen.">
 
 
 <!ENTITY list.badcert
-  "Ihr Mailserver kann nicht Identifiziert werden und wird als nicht
-vertrauenswürdig eingestuft.">
+  "Ihr Mailserver kann nicht Identifiziert werden und wird als nicht vertrauenswürdig eingestuft.">
 <!ENTITY list.badcert.error
-"Es könnte es sein, dass sich jemand als Ihr Mailserver ausgibt, um
-beispielsweise an Ihr Passwort zu gelangen.
+"Es könnte es sein, dass sich jemand als Ihr Mailserver ausgibt, um beispielsweise an Ihr Passwort zu gelangen.
 
-Ignorieren Sie diese Meldung nur, wenn Sie sich wirklich sicher sind,
-dass Sie tatsächlich mit dem gewünschten Server verbunden sind.">
+Ignorieren Sie diese Meldung nur, wenn Sie sich wirklich sicher sind, dass Sie tatsächlich mit dem gewünschten Server verbunden sind.">
 <!ENTITY list.badcert.remember "Meldung nicht mehr anzeigen">
 <!ENTITY list.badcert.ignore "Weiter">
 <!ENTITY list.badcert.abort "Abbrechen">
@@ -236,10 +224,7 @@ auf 'Erweitert' um das Konto manuell zu konfigurieren.">
 
 <!ENTITY list.autoconfig.error.caption "Erkennung fehlgeschlagen">
 <!ENTITY list.autoconfig.error.description
-"Die Verbindungsdaten konnten nicht automatisch erkannt werden. Entweder unterstützt
-Ihr Server das ManageSieve Protokoll nicht oder es ist eine spezielle
-Konfiguration notwendig. Bitte erfragen Sie bei Ihren Mail die Verbindungsdaten
-und konfigurieren Sie das Sieve Konto manuell.">
+"Die Verbindungsdaten konnten nicht automatisch erkannt werden. Entweder unterstützt Ihr Server das ManageSieve Protokoll nicht oder es ist eine spezielle Konfiguration notwendig. Bitte erfragen Sie bei Ihrem E-Mail-Provider die Verbindungsdaten und konfigurieren Sie das Sieve Konto manuell.">
 
 <!ENTITY list.autoconfig.retest "Nochmal erkennen">
 <!ENTITY list.autoconfig.config "Manuelle Konfiguration">
@@ -261,7 +246,7 @@ und konfigurieren Sie das Sieve Konto manuell.">
 <!ENTITY edit.toolbar.home "Inhalt">
 <!ENTITY edit.toolbar.search "Suchen">
 
-<!ENTITY edit.sidebar.uri "http://thsmi.github.io/sieve-reference/en/index.html">
+<!ENTITY edit.sidebar.uri "https://thsmi.github.io/sieve-reference/en/index.html">
 <!ENTITY edit.sidebar.title "Sieve Sprachreferenz">
 
 <!-- Search and Replace Side bar -->

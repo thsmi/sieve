@@ -1079,7 +1079,7 @@
   // ****************************************************************************//
 
   /**
-   * Implements the CRAM-MD5 Challange-Response Mechanism as defined in RFC2195.
+   * Implements the CRAM-MD5 Challenge-Response Mechanism as defined in RFC2195.
    *
    * It is considered to be weak and should only be used via encrypted connections.
    *
@@ -1328,7 +1328,7 @@
     return this.strToByteArray(crypto.finish(false));
   };
 
-  SieveAbstractSaslScramRequest.prototype.onChallangeServer = function (builder) {
+  SieveAbstractSaslScramRequest.prototype.onChallengeServer = function (builder) {
     this._cnonce = this.byteArrayToHexString(
       this._H(this.strToByteArray((Math.random() * 1234567890))));
 
@@ -1359,7 +1359,7 @@
       .addQuotedBase64("" + this._g2Header + this._authMessage);
   };
 
-  SieveAbstractSaslScramRequest.prototype.onValidateChallange = function (builder) {
+  SieveAbstractSaslScramRequest.prototype.onValidateChallenge = function (builder) {
     // Check if the server returned our nonce. This should prevent...
     // ... man in the middle attacks.
     let nonce = this.response.getNonce();
@@ -1416,9 +1416,9 @@
 
       switch (this.response.getState()) {
         case 0:
-          return this.onChallangeServer(builder);
+          return this.onChallengeServer(builder);
         case 1:
-          return this.onValidateChallange(builder);
+          return this.onValidateChallenge(builder);
         case 2:
           // obviously we have to send an empty response. The server did not wrap...
           // ... the verifier into the Response Code...

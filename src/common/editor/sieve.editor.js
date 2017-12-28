@@ -144,11 +144,11 @@
     getStatus: function (callback) {
 
       if (!callback)
-        throw "No valid callback for getStatus";
+        throw new Error("No valid callback for getStatus");
 
-      var proxy = function (msg) {
+      let proxy = function (msg) {
         // we use the built in function to determin if cut, copy and paste is possible
-        var controller = document.commandDispatcher.getControllerForCommand("cmd_cut");
+        let controller = document.commandDispatcher.getControllerForCommand("cmd_cut");
         msg.canCut = controller.isCommandEnabled("cmd_cut");
 
         controller = document.commandDispatcher.getControllerForCommand("cmd_copy");

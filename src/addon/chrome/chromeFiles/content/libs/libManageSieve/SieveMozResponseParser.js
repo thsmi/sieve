@@ -9,13 +9,12 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-"use strict";
-
 (function (exports) {
 
+  "use strict";
+
   /* global Components */
-  /* global SieveAbstractResponseParser */
-  Components.utils.import("chrome://sieve-common/content/libManageSieve/SieveAbstractResponseParser.js");
+  const {SieveAbstractResponseParser} = require("./SieveAbstractResponseParser.js");
 
   function SieveMozResponseParser(data) {
     SieveAbstractResponseParser.call(this, data);
@@ -53,9 +52,4 @@
 
   exports.SieveMozResponseParser = SieveMozResponseParser;
 
-  // Expose as mozilla module...
-  if (!exports.EXPORTED_SYMBOLS)
-    exports.EXPORTED_SYMBOLS = [];
-
-  exports.EXPORTED_SYMBOLS.push("SieveMozResponseParser");
-})(this);
+})(module.exports || this);

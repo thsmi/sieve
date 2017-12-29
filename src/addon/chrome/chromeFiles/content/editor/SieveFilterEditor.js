@@ -13,13 +13,8 @@
 /* global document */
 /* global window */
 /* global SieveOverlayManager */
-/* global SieveAbstractChannel */
-/* global SieveGetScriptRequest */
 /* global clearTimeout */
 /* global Services */
-/* global SieveAccountManager */
-/* global SievePutScriptRequest */
-/* global SieveConnections */
 
 // Enable Strict Mode
 "use strict";
@@ -31,11 +26,12 @@ const Cu = Components.utils;
 Cu.import("resource://gre/modules/Services.jsm");
 
 Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
-Cu.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
 
-SieveOverlayManager.require("/sieve/SieveConnectionManager.js", this, window);
-SieveOverlayManager.require("/sieve/SieveAccounts.js", this, window);
+let { SieveConnections } = SieveOverlayManager.requireModule("./sieve/SieveConnectionManager.jsm", window);
+let { SieveAccountManager } = SieveOverlayManager.requireModule("./sieve/SieveAccounts.jsm", window);
+let { require } = SieveOverlayManager.requireModule("./sieve/SieveRequire.jsm", window);
 
+let { SieveAbstractChannel } = require("./SieveAbstractChannel.js");
 
 let textEditor = null;
 let gBackHistory = [];
@@ -65,6 +61,11 @@ function SieveFilterEditor() {
 
 SieveFilterEditor.prototype = Object.create(SieveAbstractChannel.prototype);
 SieveFilterEditor.prototype.constructor = SieveFilterEditor;
+
+SieveFilterEditor.prototype.getConnection
+  = function () {
+    return SieveConnections;
+  };
 
 SieveFilterEditor.prototype.onChannelReady
   = function (cid) {
@@ -99,11 +100,9 @@ SieveFilterEditor.prototype.onChannelReady
       }
     };
 
-    let request = new SieveGetScriptRequest(this.getScriptName());
-    request.addGetScriptListener(this);
-    request.addErrorListener(event);
-
-    this.sendRequest(request);
+    this.trySendRequest((channel) => {
+      channel.getScript(this.getScriptName(), this, event);
+    });
   };
 
 SieveFilterEditor.prototype.onChannelClosed
@@ -391,7 +390,7 @@ SieveFilterEditor.prototype.hasChanged
   };
 
 
-SieveFilterEditor.prototype.putScript
+SieveFilterEditor.prototype.saveScript
   = function (scriptName, content) {
 
     if (typeof (scriptName) === "undefined")
@@ -401,7 +400,7 @@ SieveFilterEditor.prototype.putScript
 
       // We postpone the call. First we get the script from the editor,
       // and then call the method again...
-      this.getScriptAsync((script) => { this.putScript(scriptName, script); });
+      this.getScriptAsync((script) => { this.saveScript(scriptName, script); });
       return;
     }
 
@@ -416,11 +415,10 @@ SieveFilterEditor.prototype.putScript
       }
     };
 
-    let request = new SievePutScriptRequest(scriptName, content);
-    request.addPutScriptListener(this);
-    request.addErrorListener(event);
 
-    this.sendRequest(request);
+    this.trySendRequest((channel) => {
+      channel.putScript(scriptName, content, this, event);
+    });
   };
 
 SieveFilterEditor.prototype.setScriptName
@@ -562,7 +560,7 @@ function onWindowLoad() {
     addEventListener( "click", (event) => { onSideBarBrowserClick(event); }, false);
 
   document.getElementById("sivWidgetEditor")
-    .setAttribute("src", "chrome://sieve-common/content/libSieve/SieveGui.html");
+    .setAttribute("src", "chrome://sieve/content/libs/libSieve/SieveGui.html");
 
   let args = window.arguments[0].wrappedJSObject;
   gEditorStatus.account = args["account"];
@@ -695,7 +693,7 @@ function updateWidgets(script) {
 
   try {
     let capabilities = SieveConnections
-      .getChannel(gSFE._sid, gSFE._cid).extensions;
+      .getChannel(gSFE._sid, gSFE._cid).getExtensions();
 
     // set script content...
     document.getElementById("sivWidgetEditor")
@@ -787,7 +785,7 @@ function onSideBarGo(uri) {
 }
 
 function onSave() {
-  gSFE.putScript();
+  gSFE.saveScript();
 }
 
 /**

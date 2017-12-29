@@ -25,8 +25,8 @@ const Cu = Components.utils;
 
 Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
 
-SieveOverlayManager.require("/sieve/SieveConnectionManager.js", this, window);
-SieveOverlayManager.require("/sieve/SieveAccounts.js", this, window);
+SieveOverlayManager.requireModule("./sieve/SieveConnectionManager.jsm", window);
+SieveOverlayManager.requireModule("./sieve/SieveAccounts.jsm", window);
 
 
 function errorhandler(msg, url, line) {
@@ -68,7 +68,7 @@ SieveFilterListDialog.prototype.onListScriptResponse
     try {
 
       let capabilities = SieveConnections
-        .getChannel(this._sid, this._cid).extensions;
+        .getChannel(this._sid, this._cid).getExtensions();
 
       document.getElementById("sivContent")
         .contentWindow.setSieveScript("", capabilities);
@@ -85,7 +85,7 @@ SieveFilterListDialog.prototype.onGetScriptResponse
     try {
 
       let capabilities = SieveConnections
-        .getChannel(this._sid, this._cid).extensions;
+        .getChannel(this._sid, this._cid).getExtensions();
 
       document.getElementById("sivContent")
         .contentWindow.setSieveScript(response.getScriptBody(), capabilities);
@@ -164,7 +164,7 @@ function onLoad() {
   if (iframe.hasAttribute("src"))
     iframe.contentWindow.location.reload();
   else
-    iframe.setAttribute("src", "chrome://sieve-common/libSieve/SieveSimpleGui.html");
+    iframe.setAttribute("src", "chrome://sieve/content/libs/libSieve/SieveSimpleGui.html");
 
   if ((!account.isEnabled()) || account.isFirstRun()) {
     account.setFirstRun();

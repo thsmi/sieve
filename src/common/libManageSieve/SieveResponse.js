@@ -11,14 +11,16 @@
  *
  */
 
-// Enable Strict Mode
-"use strict";
-
 (function (exports) {
 
-  /* global SieveResponseCodeReferral */
-  /* global SieveResponseCodeSasl */
-  /* global SieveResponseCode */
+  // Enable Strict Mode
+  "use strict";
+
+  const {
+    SieveResponseCode,
+    SieveResponseCodeSasl,
+    SieveResponseCodeReferral
+  } = require("./SieveResponseCodes.js");
 
   const CHAR_B = [66, 98];
   const CHAR_E = [69, 101];
@@ -830,17 +832,6 @@
       return this._verifier;
     };
 
-
-  if (exports.EXPORTED_SYMBOLS) {
-    exports.EXPORTED_SYMBOLS.push("SieveSimpleResponse");
-    exports.EXPORTED_SYMBOLS.push("SieveCapabilitiesResponse");
-    exports.EXPORTED_SYMBOLS.push("SieveListScriptResponse");
-    exports.EXPORTED_SYMBOLS.push("SieveSaslLoginResponse");
-    exports.EXPORTED_SYMBOLS.push("SieveSaslCramMd5Response");
-    exports.EXPORTED_SYMBOLS.push("SieveGetScriptResponse");
-    exports.EXPORTED_SYMBOLS.push("SieveSaslScramSha1Response");
-  }
-
   exports.SieveSimpleResponse = SieveSimpleResponse;
   exports.SieveCapabilitiesResponse = SieveCapabilitiesResponse;
   exports.SieveListScriptResponse = SieveListScriptResponse;
@@ -849,4 +840,4 @@
   exports.SieveGetScriptResponse = SieveGetScriptResponse;
   exports.SieveSaslScramSha1Response = SieveSaslScramSha1Response;
 
-})(this);
+})(module.exports || this);

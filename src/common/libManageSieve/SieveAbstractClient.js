@@ -622,4 +622,4 @@
     };
 
   exports.SieveAbstractClient = SieveAbstractClient;
-})(this);
+})(module.exports || this);

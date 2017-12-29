@@ -18,7 +18,10 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
 
-var EXPORTED_SYMBOLS = ["SieveOverlayUtils", "SieveOverlayManager"];
+const CLEANUP_DELAY = 5000;
+const DEBUG = false;
+
+const EXPORTED_SYMBOLS = ["SieveOverlayUtils", "SieveOverlayManager"];
 
 let SieveOverlayUtils =
   {
@@ -160,179 +163,138 @@ let SieveOverlayUtils =
     }
   };
 
-// TODO scripts should pass an unique identifier like
-// "Sieve.Accounts", "Sieve.Session", "Sieve.AutoConfig" instead
-// of an url
-//
-// SieveAccounts.js, SieveSessions.js and SieveAutoConfig need
-// to register at SieveOverlayManager and declare their imports
-// as chrome urls on which marschalling should work.
-//
-// SOM.manage("sieve.session",aUrl, ["chrome://...","chrome://...",...]);
-//
-// within ui code:
-// SOM.require("sieve.session",scope,window)
-// java scrip scope is where to add the import, the global object is alys picked
-// window the object to wich this import is bound if the window is gone the import
-// might be released. If null lifetime is boud to bootstrap and will be reasesed
-// upon shutdown.
-//
-// within modules:
-// SOM.require(chrome://)
-// checks if a window is registered or this url if not an exeption is thrown.
-// if yes the code is managed an imported into callers global object..
-// safe require, manage
-
-function SieveDict() {
-  this.keys = [];
-  this.values = [];
-}
-
-SieveDict.prototype.hasKey
-  = function (object) {
-    if (this.keys.indexOf(object) !== -1)
-      return true;
-
-    return false;
-  };
-
-SieveDict.prototype.getValue
-  = function (key) {
-    if (!this.hasKey(key))
-      throw new Error("No value for key");
-
-    return this.values[this.keys.indexOf(key)];
-  };
-
-SieveDict.prototype.setValue
-  = function (key, value) {
-    if (this.hasKey(key)) {
-      this.values[this.keys.indexOf(key)] = value;
-      return this;
-    }
-
-    this.keys.push(key);
-    this.values.push(value);
-    return this;
-  };
-
-SieveDict.prototype.deleteKey
-  = function (key) {
-    let idx = this.keys.indexOf(key);
-
-    if (idx === -1)
-      throw new Error("Invalid index");
-
-    this.keys.splice(idx, 1);
-    this.values.splice(idx, 1);
-  };
-
-SieveDict.prototype.clear
-  = function () {
-    this.keys = [];
-    this.values = [];
-  };
-
-SieveDict.prototype.hasKeys
-  = function () {
-    return (this.keys.length);
-  };
-
-SieveDict.prototype.first
-  = function () {
-    return this.keys[0];
-  };
-
-
 
 let SieveOverlayManager =
   {
     _overlays: [],
     _overlayUrls: {},
-    _imports: {},
 
-    _unload: new SieveDict() /* <window,callback> */,
+    _unload: new Map(),
 
-    require: function (aUrl, scope, aWindow) {
-      if (aUrl.substr(0, 15) !== "chrome://sieve/")
-        aUrl = "chrome://sieve/content/modules" + aUrl;
+    scripts : new Map(),
+    listeners : new Set(),
 
-      if (scope)
-        Cu.import(aUrl, Cu.getGlobalForObject(scope));
+    cleanupTimer: Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer),
 
-      if (typeof (aWindow) === "undefined")
+    log: function (str) {
+      if (typeof(DEBUG) === "undefined" || DEBUG !== true)
         return;
 
-      if (!this._imports[aUrl])
-        this._imports[aUrl] = { windows: [], callbacks: [] };
-
-      if (this._imports[aUrl].windows.indexOf(aWindow) === -1) {
-        let callback = function _callback(ev) {
-
-          if (ev && (ev.target.defaultView !== aWindow))
-            return;
-
-          aWindow.removeEventListener("unload", _callback, false);
-          SieveOverlayManager.release(aWindow, aUrl);
-        };
-
-        this._imports[aUrl].windows.push(aWindow);
-        this._imports[aUrl].callbacks.push(callback);
-
-        // oberserver window...
-        aWindow.addEventListener("unload", callback, false);
-      }
-
-      // Dendencies:
-      // The scope is null, as the might load these modules on demand. So we...
-      // ... are just binding the url to this window. Releasing an unused...
-      // ... url is not an error, but fogetting to release one is a memory...
-      // ... hole
-
-      // Sieve Connection Manager depends a Session
-      if (aUrl === "chrome://sieve/content/modules/sieve/SieveConnectionManager.js")
-        SieveOverlayManager.require("/sieve/SieveMozSession.js", null, aWindow);
-
-      // Session depend on Sieve
-      if (aUrl === "chrome://sieve/content/modules/sieve/SieveMozSession.js") {
-        SieveOverlayManager.require("/sieve/SieveMozClient.js", null, aWindow);
-        SieveOverlayManager.require("/sieve/SieveAccounts.js", null, aWindow);
-      }
-
-      // ... same applies to autoconfig
-      if (aUrl === "chrome://sieve/content/modules/sieve/SieveAutoConfig.js")
-        SieveOverlayManager.require("/sieve/SieveMozClient.js", null, aWindow);
-
-      // Sieve depends on request and responses
-      if (aUrl === "chrome://sieve/content/modules/sieve/SieveMozClient.js") {
-        SieveOverlayManager.require("/sieve/SieveRequest.js", null, aWindow);
-        SieveOverlayManager.require("/sieve/SieveResponse.js", null, aWindow);
-        SieveOverlayManager.require("/sieve/SieveResponseCodes.js", null, aWindow);
-        SieveOverlayManager.require("/sieve/SieveResponseParser.js", null, aWindow);
-      }
+      Components.classes["@mozilla.org/consoleservice;1"]
+        .getService(Components.interfaces.nsIConsoleService)
+        .logStringMessage(str);
     },
 
-    release: function (window, url) {
-      if (!this._imports[url])
+    addUnloadHook: function(win, uri) {
+
+      // Conect the window with the script...
+      if (this.scripts.has(uri) === false)
+        this.scripts.set(uri, new Set());
+
+      this.scripts.get(uri).add(win);
+
+      // Next add an on close listener...
+      // ... but one listener per window is more than enough.
+      if (this.listeners.has(win))
         return;
 
-      let pos = this._imports[url].windows.indexOf(window);
+      let that = this;
 
-      if (pos > -1) {
-        this._imports[url].windows.splice(pos, 1);
-        this._imports[url].callbacks.splice(pos, 1);
+      win.addEventListener("unload", function _callback(ev) {
+
+        that.log(`On Unload Event`);
+        if (ev && (ev.target.defaultView !== win))
+          return;
+
+        win.removeEventListener("unload", _callback, false);
+
+        that.listeners.delete(win);
+        that.onUnload(win);
+      });
+
+      this.listeners.add(win);
+    },
+
+    /**
+     * Called when a window is unloaded.
+     * It removes the window from the watch and triggers a cleanup.
+     *
+     * The cleanup not instantanious instead it will be delayed by
+     * few seconds to give the sieve protocol some time to cleanup.
+     *
+     * @param {Window} win
+     *   the window which was unloaded.
+     * @returns {void}
+     */
+    onUnload: function (win) {
+
+      this.log(`Unloading ${win.location.href}`);
+      // Remove all reverence to the window
+      this.scripts.forEach((windows, uri) => {
+        if (!windows.has(win))
+          return;
+
+        this.log(`Removing ${uri} from ${win.location.href}`);
+        windows.delete(win);
+      });
+
+      this.log(`Resetting cleanup timer`);
+      // Tigger tigger timeout...
+      this.cleanupTimer.cancel();
+      // then restart the timeout timer with a 5 second delay.
+      this.cleanupTimer.initWithCallback(
+        this, CLEANUP_DELAY,
+        Ci.nsITimer.TYPE_ONE_SHOT);
+    },
+
+    /**
+     * Checks the refcounting if there are any unused script.
+     * And removes them if needed
+     * @returns {void}
+     */
+    cleanup: function() {
+      this.log(`Doing cleanup`);
+
+      this.scripts.forEach((windows, uri) => {
+        if (windows.size !== 0)
+          return;
+
+        this.log(`Unloading ${uri}, it is no more in use.`);
+        Cu.unload(uri);
+
+        this.scripts.delete(uri);
+      });
+    },
+
+    /**
+     * Callback handler needed by the timer implementation.
+     * Do not invoke it manually
+     * @param {nsITimer} timer
+     *   the timer instance which caused this notification.
+     * @returns {void}
+     */
+    notify: function (timer) {
+      if (this.cleanupTimer !== timer)
+        return;
+
+      this.cleanupTimer.cancel();
+      this.cleanup();
+    },
+
+    requireModule: function (uri, win) {
+      if (uri.startsWith(".")) {
+        uri = "chrome://sieve/content/modules" + uri.substring(1);
       }
 
-      if (this._imports[url].windows.length > 0)
-        return;
+      this.log(`Load ${uri} from ${win.location.href}`);
 
-      // TODO unload dependent nodes. e.g. when the connection manager
-      // is gone there should be no more a request...
-      Cu.unload(url);
+      let scope = {};
+      Cu.import(uri, scope);
 
-      delete this._imports[url].windows;
-      delete this._imports[url].callbacks;
-      delete this._imports[url];
+      if (typeof (win) !== "undefined" && win !== null)
+        this.addUnloadHook(win, uri);
+
+      return scope;
     },
 
     // nsIWindowMediatorListener functions
@@ -350,12 +312,14 @@ let SieveOverlayManager =
       }, false);
     },
 
-    onCloseWindow: function (window) {
+    onCloseWindow: function (aWindow) {
     },
 
     onUnloadWindow: function (aWindow) {
 
       SieveOverlayManager.unloadWatcher(aWindow);
+
+      this.log("OnUnloadWindow");
 
       // we mutate the array thus we interate backwards...
       for (let i = SieveOverlayManager._overlays.length - 1; i >= 0; i--) {
@@ -366,43 +330,45 @@ let SieveOverlayManager =
         SieveOverlayManager._overlays.splice(i, 1);
       }
 
-      // cleanup imports...
-      for (let url in SieveOverlayManager._imports)
-        for (let i = 0; i < SieveOverlayManager._imports[url].windows.length; i++)
-          if (SieveOverlayManager._imports[url].windows[i] === aWindow)
-            SieveOverlayManager._imports[url].callbacks[i]();
+      // Every time a window unloads we trigger this method...
+      // ... to ensure the window gets cleaned
+      this.onUnload(aWindow);
     },
 
     onWindowTitleChange: function (window, newTitle) { },
 
     loadWatcher: function (window) {
 
-      if (SieveOverlayManager._unload.hasKey(window))
+      if (SieveOverlayManager._unload.has(window))
         return;
 
-      SieveOverlayManager._unload.setValue(window, function (aEvent) {
+      SieveOverlayManager._unload.set(window, function (aEvent) {
         let window = aEvent.currentTarget;
         window = window.QueryInterface(Ci.nsIInterfaceRequestor)
           .getInterface(Ci.nsIDOMWindow);
         SieveOverlayManager.onUnloadWindow(window);
       });
 
-      window.addEventListener("unload", SieveOverlayManager._unload.getValue(window));
+      window.addEventListener("unload", SieveOverlayManager._unload.get(window));
     },
 
     unloadWatcher: function (window) {
-      if (typeof (window) === "undefined") {
-        while (this._unload.hasKeys())
-          this.unloadWatcher(this._unload.first());
 
+      if (typeof (window) === "undefined") {
+
+        // In case no window is specified we clean everything...
+        this._unload.forEach((value, key) => {
+          this.unloadWatcher(key);
+        });
+
+        this._unload.clear();
         return;
       }
 
-      if (!SieveOverlayManager._unload.hasKey(window))
-        return;
+      if (SieveOverlayManager._unload.has(window))
+        window.removeEventListener("unload", SieveOverlayManager._unload.get(window));
 
-      window.removeEventListener("unload", SieveOverlayManager._unload.getValue(window));
-      SieveOverlayManager._unload.deleteKey(window);
+      SieveOverlayManager._unload.delete(window);
     },
 
     // ...
@@ -443,6 +409,10 @@ let SieveOverlayManager =
       wm.addListener(this);
     },
 
+    /**
+     * Forces Unloading all loaded components.
+     * @returns {void}
+     */
     unload: function () {
       let wm = Cc["@mozilla.org/appshell/window-mediator;1"]
         .getService(Ci.nsIWindowMediator);
@@ -454,10 +424,14 @@ let SieveOverlayManager =
 
       SieveOverlayManager.unloadWatcher();
 
-      // invoke callbacks inorder to cleanup imports...
-      for (let url in this._imports)
-        while (this._imports[url])
-          this._imports[url].callbacks[0]();
+      this.cleanupTimer.cancel();
+
+      this.scripts.forEach((windows, uri) => {
+        Cu.unload(uri);
+
+        windows.clear();
+        this.scripts.delete(uri);
+      });
 
       delete this._overlayUrls;
     }

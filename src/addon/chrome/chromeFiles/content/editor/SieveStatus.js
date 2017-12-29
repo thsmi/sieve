@@ -13,9 +13,7 @@
 /* global window */
 /* global Components */
 /* global Services */
-/* global SieveAutoConfig */
 /* global SieveOverlayManager */
-/* global SieveUtils */
 
 // Enable Strict Mode
 "use strict";
@@ -28,7 +26,9 @@ Cu.import("resource://gre/modules/Services.jsm");
 
 Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
 Cu.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
-SieveOverlayManager.require("/sieve/SieveAutoConfig.js", this, window);
+
+let { SieveUtils } = SieveOverlayManager.requireModule("./utils/SieveWindowHelper.jsm", window);
+let { SieveAutoConfig } = SieveOverlayManager.requireModule("./sieve/SieveAutoConfig.jsm", window);
 
 /*
  *  Auto Config

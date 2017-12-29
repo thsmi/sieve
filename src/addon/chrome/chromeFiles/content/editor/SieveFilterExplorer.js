@@ -14,10 +14,7 @@
 /* global Components */
 
 /* global SieveOverlayManager */
-/* global SieveAbstractChannel */
-/* global SieveAccountManager */
 /* global SieveTreeView */
-/* global SieveUtils */
 /* global Services */
 
 
@@ -31,10 +28,14 @@ const Cu = Components.utils;
 Cu.import("resource://gre/modules/Services.jsm");
 
 Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
-Cu.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
 
-SieveOverlayManager.require("/sieve/SieveConnectionManager.js", this, window);
-SieveOverlayManager.require("/sieve/SieveAccounts.js", this, window);
+let { SieveUtils } = SieveOverlayManager.requireModule("./utils/SieveWindowHelper.jsm", window);
+
+let { SieveConnections } = SieveOverlayManager.requireModule("./sieve/SieveConnectionManager.jsm", window);
+let { SieveAccountManager } = SieveOverlayManager.requireModule("./sieve/SieveAccounts.jsm", window);
+let { require } = SieveOverlayManager.requireModule("./sieve/SieveRequire.jsm", window);
+
+let { SieveAbstractChannel } = require("./SieveAbstractChannel.js");
 
 /** @type {{Components.interfaces.nsIConsoleService}}*/
 var gLogger = null;
@@ -48,6 +49,11 @@ function SieveFilterExplorer() {
 
 SieveFilterExplorer.prototype = Object.create(SieveAbstractChannel.prototype);
 SieveFilterExplorer.prototype.constructor = SieveFilterExplorer;
+
+SieveFilterExplorer.prototype.getConnection
+  = function () {
+    return SieveConnections;
+  };
 
 // TODO muss der error listener wirklich jedes mal gesetzet werden...
 // eigentlich müssete der default doch beim Objekt rauskommen...

@@ -9,10 +9,9 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-"use strict";
-
 (function (exports) {
 
+  "use strict";
 
   /**
    * Implements a common and platform independent logging interface.
@@ -138,4 +137,4 @@
 
   exports.SieveAbstractLogger = SieveAbstractLogger;
 
-})(this);
+})(module.exports || this);

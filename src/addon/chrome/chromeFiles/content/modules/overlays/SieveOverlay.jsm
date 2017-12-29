@@ -14,13 +14,11 @@
 /* global document */
 /* global Services */
 /* global SieveOverlayManager */
-/* global SieveTabType */
-/* global SieveUtils */
 
 // Enable Strict Mode
 "use strict";
 
-var EXPORTED_SYMBOLS = ["SieveMailWindowOverlay" /* , "SieveFilterListOverlay"*/, "SieveToolbarOverlay"];
+var EXPORTED_SYMBOLS = ["SieveMailWindowOverlay", "SieveToolbarOverlay"];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -298,7 +296,7 @@ SieveMailWindowOverlay.prototype.load
     this.window = window;
 
     let document = window.document;
-    Cu.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
+    let { SieveUtils } = SieveOverlayManager.requireModule("./utils/SieveWindowHelper.jsm", window);
 
     let strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
 
@@ -310,7 +308,7 @@ SieveMailWindowOverlay.prototype.load
       function () { SieveUtils.OpenSettings(document.defaultView); };
 
     // Add Tabtypes Overlay
-    SieveOverlayManager.require("chrome://sieve/content/modules/utils/SieveTabType.jsm", this, window);
+    let {SieveTabType} = SieveOverlayManager.requireModule("./utils/SieveTabType.jsm", window);
     let tabmail = document.getElementById('tabmail');
 
 

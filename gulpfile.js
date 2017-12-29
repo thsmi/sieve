@@ -225,9 +225,11 @@ gulp.task('app:package-common', function () {
 
   return gulp.src([
     BASE_PATH + "/**",
-
+    // Filter out the editor wrapper
+    "!" + BASE_PATH + "editor",
+    "!" + BASE_PATH + "editor/**",
     // Filter out the rfc documents
-    "!" + BASE_PATH + "/common/libSieve/**/rfc*.txt"
+    "!" + BASE_PATH + "libSieve/**/rfc*.txt"
   ])
     .pipe(gulp.dest(BUILD_DIR_APP + '/libs'));
 });
@@ -323,7 +325,7 @@ gulp.task('addon:package-jquery', function () {
 
   gulp.src([
     BASE_PATH + "/jquery.min.js"
-  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_ADDON + "common/jQuery"));
+  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_ADDON + "/chrome/chromeFiles/content/libs/jQuery"));
 });
 
 gulp.task('addon:package-codemirror', function () {
@@ -337,7 +339,7 @@ gulp.task('addon:package-codemirror', function () {
     BASE_PATH + "/theme/eclipse.css",
     BASE_PATH + "/LICENSE",
     BASE_PATH + "/package.json"
-  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_ADDON + 'common/CodeMirror'));
+  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_ADDON + '/chrome/chromeFiles/content/libs/CodeMirror'));
 });
 
 gulp.task('addon:package-common', function () {
@@ -349,7 +351,7 @@ gulp.task('addon:package-common', function () {
     // Filter out the rfc documents
     "!" + BASE_PATH + "/libSieve/**/rfc*.txt"
   ])
-    .pipe(gulp.dest(BUILD_DIR_ADDON + 'common'));
+    .pipe(gulp.dest(BUILD_DIR_ADDON + '/chrome/chromeFiles/content/libs'));
 });
 
 gulp.task('addon:package-src', function () {

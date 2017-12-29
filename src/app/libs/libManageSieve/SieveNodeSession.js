@@ -22,11 +22,6 @@
 
   const { SieveLogger } = require("./SieveNodeLogger.js");
 
-  Object.assign(window,
-    require("./SieveResponseCodes.js"));
-  Object.assign(window,
-    require("./SieveResponse.js"));
-
   const {
     SieveGetScriptRequest,
     SievePutScriptRequest,

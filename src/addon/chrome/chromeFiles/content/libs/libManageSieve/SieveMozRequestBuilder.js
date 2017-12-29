@@ -9,13 +9,12 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-"use strict";
-
 (function (exports) {
 
+  "use strict";
+
   /* global Components */
-  /* global SieveAbstractRequestBuilder */
-  Components.utils.import("chrome://sieve-common/content/libManageSieve/SieveAbstractRequestBuilder.js");
+  const {SieveAbstractRequestBuilder} = require("./SieveAbstractRequestBuilder.js");
 
   /**
    * @inheritdoc
@@ -75,10 +74,4 @@
 
   exports.SieveMozRequestBuilder = SieveMozRequestBuilder;
 
-  // Expose as mozilla module...
-  if (!exports.EXPORTED_SYMBOLS)
-    exports.EXPORTED_SYMBOLS = [];
-
-  exports.EXPORTED_SYMBOLS.push("SieveMozRequestBuilder");
-
-})(this);
+})(module.exports || this);

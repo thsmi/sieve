@@ -14,7 +14,6 @@
 
 /* global document */
 /* global window */
-/* global SieveAutoConfig */
 /* global Components */
 /* global SieveOverlayManager */
 
@@ -28,7 +27,8 @@ const Cu = Components.utils;
 Cu.import("resource://gre/modules/Services.jsm");
 
 Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
-SieveOverlayManager.require("/sieve/SieveAutoConfig.js", this, window);
+let { SieveAutoConfig } = SieveOverlayManager.requireModule("./sieve/SieveAutoConfig.jsm", window);
+
 
 
 /** @type SieveAccount */

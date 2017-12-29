@@ -10,7 +10,7 @@
  */
 
 /* global Components */
-/* global SieveSession */
+/* global SieveAccountManager */
 
 // Enable Strict Mode
 "use strict";
@@ -22,9 +22,10 @@ const Ci = Components.interfaces;
 const Cr = Components.results;
 const Cu = Components.utils;
 
+Components.utils.import("chrome://sieve/content/modules/sieve/SieveRequire.jsm");
+Components.utils.import("chrome://sieve/content/modules/sieve/SieveAccounts.jsm");
 
-
-Cu.import("chrome://sieve/content/modules/sieve/SieveMozSession.js");
+const { SieveSession } = require("./SieveMozSession.js");
 
 /**
  *  JavaScript Objects are usually create within the scope of a window. This
@@ -83,8 +84,11 @@ SieveConnectionManager.prototype =
       // ...the account key is unique. So let's use it.
       let sid = accountId;
 
+
       if (!this.sessions[sid]) {
-        this.sessions[sid] = new SieveSession(accountId, sid);
+        let account = SieveAccountManager.getAccountByName(accountId);
+
+        this.sessions[sid] = new SieveSession(account, sid);
         this.sessions[sid].listeners = [];
       }
 
@@ -202,14 +206,13 @@ SieveConnectionManager.prototype =
       }*/
     },
 
-
     /**
      * Retuns the Sieve Object associated to this session.
      * @param {string} sid
      *   The identifier identifing the session instance
      * @param {string} cid
      *   An Identifier the channel
-     * @return {Sieve}
+     * @return {SieveMozSession}
      */
     getChannel: function (sid, cid) {
       if (!this.sessions[sid])
@@ -221,7 +224,7 @@ SieveConnectionManager.prototype =
       if (!(this.sessions[sid].sieve) || !(this.sessions[sid].sieve.isAlive()))
         throw new Error("getChannel: Session closed (" + sid + " / " + cid + ")");
 
-      return this.sessions[sid].sieve;
+      return this.sessions[sid];
     }
   };
 

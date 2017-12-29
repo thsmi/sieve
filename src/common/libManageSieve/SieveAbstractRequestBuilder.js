@@ -163,14 +163,4 @@
 
   exports.SieveAbstractRequestBuilder = SieveAbstractRequestBuilder;
 
-  // Expose as mozilla module...
-
-  /* global Components */
-  if (typeof (Components) !== "undefined" && Components.utils && Components.utils.import) {
-    if (!exports.EXPORTED_SYMBOLS)
-      exports.EXPORTED_SYMBOLS = [];
-
-    exports.EXPORTED_SYMBOLS.push("SieveAbstractRequestBuilder");
-  }
-
-})(this);
+})(module.exports || this);

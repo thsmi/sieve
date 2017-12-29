@@ -9,38 +9,21 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-"use strict";
-
 (function (exports) {
 
-  // Expose as mozilla module...
-  if (!exports.EXPORTED_SYMBOLS)
-    exports.EXPORTED_SYMBOLS = [];
+  "use strict";
 
   /* global Components */
-  /* global SieveAbstractClient */
-  /* global SieveMozResponseParser */
-  /* global SieveMozRequestBuilder */
 
-  var Cc = Components.classes;
-  var Ci = Components.interfaces;
-  var Cu = Components.utils;
-  var Cr = Components.results;
+  const Cc = Components.classes;
+  const Ci = Components.interfaces;
+  const Cu = Components.utils;
+  const Cr = Components.results;
 
-
-  Cu.import("chrome://sieve/content/modules/sieve/SieveMozRequestBuilder.js");
-  Cu.import("chrome://sieve/content/modules/sieve/SieveMozResponseParser.js");
-
-  // Handle all imports...
-  const loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
-    .getService(Ci.mozIJSSubScriptLoader);
-
-  loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveResponseCodes.js", this, "UTF-8");
-
-  loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveRequest.js", this, "UTF-8");
-  loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveResponse.js", this, "UTF-8");
-
-  loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveAbstractClient.js", this, "UTF-8");
+  // Handle all imports..
+  const { SieveAbstractClient } = require("./SieveAbstractClient.js");
+  const { SieveMozResponseParser } = require("./SieveMozResponseParser.js");
+  const { SieveMozRequestBuilder } = require("./SieveMozRequestBuilder.js");
 
   /**
    *  This realizes the abstract sieve implementation by using
@@ -452,6 +435,5 @@
     };
 
   exports.Sieve = Sieve;
-  exports.EXPORTED_SYMBOLS.push("Sieve");
 
-})(this);
+})(module.exports || this);

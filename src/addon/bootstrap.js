@@ -117,7 +117,6 @@ function shutdown(data, reason)
   // delete SieveProtocolHandlerComponent;
   Cu.unload("chrome://sieve/content/components/SieveProtocolHandler.js");
 
-
   // Step 2: remove Code Injections
   SieveOverlayManager.unload();
 

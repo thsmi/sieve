@@ -12,7 +12,6 @@
 /* global Components */
 /* global document */
 /* global window */
-/* global SieveAccountManager */
 /* global SieveUtils */
 /* global SieveOverlayManager */
 
@@ -20,7 +19,7 @@
 "use strict";
 
 Components.utils.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
-SieveOverlayManager.require("/sieve/SieveAccounts.js", this, window);
+let { SieveAccountManager } = SieveOverlayManager.requireModule("./sieve/SieveAccounts.jsm", window);
 
 let gSieveAccount = null;
 let gSivIncomingServer = null;

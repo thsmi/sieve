@@ -13,20 +13,9 @@
 
 (function (exports) {
 
-  // Expose as mozilla module...
-  if (!exports.EXPORTED_SYMBOLS)
-    exports.EXPORTED_SYMBOLS = [];
-
   /* global Components */
-  /* global SieveAbstractLogger */
 
-  var Cc = Components.classes;
-  var Ci = Components.interfaces;
-
-  let loader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
-    .getService(Ci.mozIJSSubScriptLoader);
-
-  loader.loadSubScript("chrome://sieve-common/content/libManageSieve/SieveAbstractLogger.js", this, "UTF-8");
+  const {SieveAbstractLogger} = require("./SieveAbstractLogger.js");
 
   /**
    * @classdesc A mozilla specific logger
@@ -49,8 +38,8 @@
       if (!this.isLoggable(level))
         return this;
 
-      Cc["@mozilla.org/consoleservice;1"]
-        .getService(Ci.nsIConsoleService)
+      Components.classes["@mozilla.org/consoleservice;1"]
+        .getService(Components.interfaces.nsIConsoleService)
         .logStringMessage("[" + this.getTimestamp() + " " + this.prefix() + "] " + message);
 
       /* Cc["@mozilla.org/embedcomp/prompt-service;1"]
@@ -60,7 +49,6 @@
     };
 
   exports.SieveLogger = SieveLogger;
-  exports.EXPORTED_SYMBOLS.push("SieveLogger");
 
-})(this);
+})(module.exports || this);
 

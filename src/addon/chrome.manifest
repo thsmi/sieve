@@ -1,5 +1,4 @@
 content		sieve        chrome/chromeFiles/content/
-content   sieve-common common/
 
 locale    sieve de-DE chrome/chromeFiles/locale/de-DE/
 locale    sieve	en-US chrome/chromeFiles/locale/en-US/

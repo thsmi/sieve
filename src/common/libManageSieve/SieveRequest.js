@@ -33,16 +33,25 @@
 
 */
 
-// Enable Strict Mode
-"use strict";
+if ( typeof(module) === "undefined" || !module.exports)
+  throw new Error("No exports");
 
 (function (exports) {
 
+  // Enable Strict Mode
+  "use strict";
+
+  const {
+    SieveSimpleResponse,
+    SieveCapabilitiesResponse,
+    SieveListScriptResponse,
+    SieveSaslLoginResponse,
+    SieveSaslCramMd5Response,
+    SieveGetScriptResponse,
+    SieveSaslScramSha1Response
+  } = require("./SieveResponse.js");
+
   /* global Components */
-  /* global atob */
-  /* global btoa */
-  /* global Uint8Array */
-  /* global TextEncoder */
 
   /* global SieveGetScriptResponse */
   /* global SieveSimpleResponse */
@@ -1620,28 +1629,6 @@
         new SieveSimpleResponse(parser));
     };
 
-
-  if (exports.EXPORTED_SYMBOLS) {
-    exports.EXPORTED_SYMBOLS.push("SieveGetScriptRequest");
-    exports.EXPORTED_SYMBOLS.push("SievePutScriptRequest");
-    exports.EXPORTED_SYMBOLS.push("SieveCheckScriptRequest");
-    exports.EXPORTED_SYMBOLS.push("SieveSetActiveRequest");
-    exports.EXPORTED_SYMBOLS.push("SieveCapabilitiesRequest");
-    exports.EXPORTED_SYMBOLS.push("SieveDeleteScriptRequest");
-    exports.EXPORTED_SYMBOLS.push("SieveNoopRequest");
-    exports.EXPORTED_SYMBOLS.push("SieveRenameScriptRequest");
-    exports.EXPORTED_SYMBOLS.push("SieveListScriptRequest");
-    exports.EXPORTED_SYMBOLS.push("SieveStartTLSRequest");
-    exports.EXPORTED_SYMBOLS.push("SieveLogoutRequest");
-    exports.EXPORTED_SYMBOLS.push("SieveInitRequest");
-    exports.EXPORTED_SYMBOLS.push("SieveSaslPlainRequest");
-    exports.EXPORTED_SYMBOLS.push("SieveSaslLoginRequest");
-    exports.EXPORTED_SYMBOLS.push("SieveSaslCramMd5Request");
-    exports.EXPORTED_SYMBOLS.push("SieveSaslScramSha1Request");
-    exports.EXPORTED_SYMBOLS.push("SieveSaslScramSha256Request");
-    exports.EXPORTED_SYMBOLS.push("SieveSaslExternalRequest");
-  }
-
   exports.SieveGetScriptRequest = SieveGetScriptRequest;
   exports.SievePutScriptRequest = SievePutScriptRequest;
   exports.SieveCheckScriptRequest = SieveCheckScriptRequest;
@@ -1661,4 +1648,6 @@
   exports.SieveSaslScramSha256Request = SieveSaslScramSha256Request;
   exports.SieveSaslExternalRequest = SieveSaslExternalRequest;
 
-})(this);
+})(module.exports || this);
+
+

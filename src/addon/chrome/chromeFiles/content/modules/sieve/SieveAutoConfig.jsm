@@ -10,7 +10,6 @@
  */
 
 /* global Components */
-/* global Sieve */
 /* global SieveInitRequest */
 
 // Enable Strict Mode
@@ -22,6 +21,11 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
 
+Components.utils.import("chrome://sieve/content/modules/sieve/SieveRequire.jsm");
+
+const { SieveLogger } = require("./SieveMozLogger.js");
+const { Sieve } = require("./SieveMozClient.js");
+const { SieveInitRequest } = require("./SieveRequest.js");
 
 function SieveAutoConfigHost(host, port, proxy, listener, logger) {
   this.port = port;
@@ -75,11 +79,7 @@ SieveAutoConfigHost.prototype =
     }
   };
 
-
 function SieveAutoConfig() {
-  Cu.import("chrome://sieve/content/modules/sieve/SieveMozLogger.js");
-  Cu.import("chrome://sieve/content/modules/sieve/SieveMozClient.js");
-
   this.logger = new SieveLogger();
   this.hosts = [];
 }
@@ -135,6 +135,3 @@ SieveAutoConfig.prototype =
       this.listener.onSuccess(sender.host, sender.port, sender.proxy);
     }
   };
-
-
-

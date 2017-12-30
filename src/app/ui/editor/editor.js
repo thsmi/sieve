@@ -284,6 +284,40 @@ class SieveEditorUI {
     //    onActiveLineChange();
   }
 
+  /**
+   * Imports a sieve script from a file
+   * @returns {void}
+   */
+  async importScript() {
+    let script = await this.send("script-import");
+
+    if (typeof(script) === "undefined")
+      return;
+
+    this.cm.setValue(script);
+    this.cm.setCursor({ line: 0, ch: 0 });
+    this.cm.refresh();
+    this.setChanged(true);
+
+    this.cm.focus();
+  }
+
+  /**
+   * Exports the script to a file
+   * @returns {void}
+   */
+  async exportScript() {
+
+    // Get the current script...
+    let script = this.cm.getValue();
+    // ... and ensure the line endings are sanatized
+    script = script.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
+
+    await this.send("script-export", { "name": this.name, "script": script });
+
+    this.cm.focus();
+  }
+
 
   /**
    * Returns the editor change status.
@@ -346,7 +380,7 @@ class SieveEditorUI {
    * @returns {void}
    */
   async showErrorMessage(message) {
-    let content = await (new SieveTemplateLoader()).load("./ui/editor/editor.save.error.tpl");
+    let content = await (new SieveTemplateLoader()).load("./editor.save.error.tpl");
 
     content
       .find(".sieve-editor-error-msg")
@@ -623,6 +657,14 @@ async function main() {
 
   $("#sieve-editor-settings .sieve-editor-enable-syntaxcheck").click(() => {
     editor.disableSyntaxCheck();
+  });
+
+  $("#sieve-editor-settings .sieve-editor-import").click(() => {
+    editor.importScript();
+  });
+
+  $("#sieve-editor-settings .sieve-editor-export").click(() => {
+    editor.exportScript();
   });
 
   editor.enableSyntaxCheck();

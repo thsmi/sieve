@@ -317,6 +317,52 @@ let actions = {
     await sessions[msg.payload.account].putScript(msg.payload.name, msg.payload.script);
   },
 
+  "script-import": async function (msg) {
+    console.log("Import Script...");
+
+    let options = {
+      title: "Import Script",
+      openFile: true,
+      openDirectory: false,
+      filters: [
+        { name: 'Sieve Scripts', extensions: ['siv', "sieve"] },
+        { name: 'All Files', extensions: ['*'] }]
+    };
+
+    let filenames = require("electron").remote.dialog.showOpenDialog(options);
+
+    if (!Array.isArray(filenames))
+      return undefined;
+
+    let fs = require('fs');
+
+    if (!fs.existsSync(filenames[0]))
+      return undefined;
+
+    let file = fs.readFileSync(filenames[0], "utf-8");
+    return file;
+  },
+
+  "script-export": async function (msg) {
+    console.log("Export Script...");
+
+    let options = {
+      title: "Export Script",
+      filters: [
+        { name: 'Sieve Scripts', extensions: ['siv', "sieve"] },
+        { name: 'All Files', extensions: ['*'] }]
+    };
+
+    let filename = require("electron").remote.dialog.showSaveDialog(options);
+
+    // Check if the dialog was chanceled...
+    if (typeof(filename) === "undefined")
+      return;
+
+    require('fs').writeFileSync(filename, msg.payload.script, "utf-8");
+    return;
+  },
+
   "script-changed": function (msg) {
     console.log("Script changed...");
 

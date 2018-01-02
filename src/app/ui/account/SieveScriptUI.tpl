@@ -1,6 +1,5 @@
 <li class="list-group-item siv-tpl-script">
   <div>
-    <basic-element></basic-element>
     <span class="sieve-list-script-name"></span>
     <span class="sieve-list-script-active badge badge-success">active</span>
   </div>

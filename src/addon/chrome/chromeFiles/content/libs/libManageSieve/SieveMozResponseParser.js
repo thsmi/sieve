@@ -52,4 +52,4 @@
 
   exports.SieveMozResponseParser = SieveMozResponseParser;
 
-})(module.exports || this);
+})(module.exports);

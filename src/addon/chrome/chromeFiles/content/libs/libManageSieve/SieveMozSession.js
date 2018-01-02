@@ -371,4 +371,4 @@ const Cu = Components.utils;
 
   exports.SieveSession = SieveSession;
 
-})(module.exports || this);
+})(module.exports);

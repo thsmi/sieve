@@ -201,9 +201,8 @@
 
   }
 
-
-  if (module.exports)
-    module.exports = SievePrefManager;
+  if (typeof(module) !== "undefined" && module && module.exports)
+    module.exports.SievePrefManager = SievePrefManager;
   else
     exports.SievePrefManager = SievePrefManager;
 

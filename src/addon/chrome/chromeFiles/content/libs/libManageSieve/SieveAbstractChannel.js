@@ -333,4 +333,4 @@
 
   exports.SieveAbstractChannel = SieveAbstractChannel;
 
-})(module.exports || this);
+})(module.exports);

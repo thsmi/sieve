@@ -50,5 +50,5 @@
 
   exports.SieveLogger = SieveLogger;
 
-})(module.exports || this);
+})(module.exports);
 

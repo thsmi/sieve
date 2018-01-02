@@ -74,4 +74,4 @@
 
   exports.SieveMozRequestBuilder = SieveMozRequestBuilder;
 
-})(module.exports || this);
+})(module.exports);

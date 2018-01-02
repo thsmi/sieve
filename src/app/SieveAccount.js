@@ -12,7 +12,7 @@
 
   "use strict";
 
-  const SievePrefManager = require('./utils/SievePrefManager.js');
+  const { SievePrefManager } = require('./utils/SievePrefManager.js');
   // const SievePasswordManager = require('./utils/SievePasswordManager.js');
 
   /**
@@ -170,7 +170,8 @@
     }
   }
 
-  if (module.exports)
+  // Require modules need to use export.module
+  if (typeof(module) !== "undefined" && module && module.exports)
     module.exports.SieveAccount = SieveAccount;
   else
     exports.SieveAccount = SieveAccount;

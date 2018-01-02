@@ -104,8 +104,8 @@
   }
 
   // Require modules need to use export.module
-  if (typeof (module) !== "undefined" && module !== null && module.exports)
-    module.exports = SieveIpcClient;
+  if (typeof(module) !== "undefined" && module && module.exports)
+    module.exports.SieveIpcClient = SieveIpcClient;
   else
     exports.SieveIpcClient = SieveIpcClient;
 

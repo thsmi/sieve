@@ -436,4 +436,4 @@
 
   exports.Sieve = Sieve;
 
-})(module.exports || this);
+})(module.exports);

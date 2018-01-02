@@ -77,9 +77,9 @@
 
   }
 
-  if (module.exports)
+  if (typeof(module) !== "undefined" && module && module.exports)
     module.exports.SieveI18n = SieveI18n;
   else
     exports.SieveI18n = SieveI18n;
 
-})();
+})(this);

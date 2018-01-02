@@ -160,14 +160,14 @@ function bumpVersion(type) {
 }
 
 
-gulp.task('clean', function () {
+gulp.task('clean', async () => {
   deleteRecursive("./build");
 });
 
 gulp.task('app:package-jquery', function () {
   const BASE_PATH = "./node_modules/jquery/dist";
 
-  gulp.src([
+  return gulp.src([
     BASE_PATH + "/jquery.min.js"
   ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_APP + "/libs/jquery"));
 });
@@ -176,7 +176,7 @@ gulp.task('app:package-jquery', function () {
 gulp.task('app:package-codemirror', function () {
   const BASE_PATH = "./node_modules/codemirror";
 
-  gulp.src([
+  return gulp.src([
     BASE_PATH + "/addon/edit/**",
     BASE_PATH + "/addon/search/**",
     BASE_PATH + "/lib/**",
@@ -190,7 +190,7 @@ gulp.task('app:package-codemirror', function () {
 gulp.task('app:package-bootstrap', function () {
   const BASE_PATH = "./node_modules/bootstrap/dist";
 
-  gulp.src([
+  return gulp.src([
     BASE_PATH + "/css/*.min.css",
     BASE_PATH + "/js/*.bundle.min.js"
   ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_APP + '/libs/bootstrap'));
@@ -198,7 +198,7 @@ gulp.task('app:package-bootstrap', function () {
 
 gulp.task('app:package-license', function () {
 
-  gulp.src([
+  return gulp.src([
     "./LICENSE.md"
   ]).pipe(gulp.dest(BUILD_DIR_APP));
 });
@@ -212,8 +212,7 @@ gulp.task('app:package-src', function () {
 
   return gulp.src([
     BASE_PATH + "/**"
-  ])
-    .pipe(gulp.dest(BUILD_DIR_APP));
+  ]).pipe(gulp.dest(BUILD_DIR_APP));
 });
 
 /**
@@ -230,88 +229,99 @@ gulp.task('app:package-common', function () {
     "!" + BASE_PATH + "editor/**",
     // Filter out the rfc documents
     "!" + BASE_PATH + "libSieve/**/rfc*.txt"
-  ])
-    .pipe(gulp.dest(BUILD_DIR_APP + '/libs'));
+  ]).pipe(gulp.dest(BUILD_DIR_APP + '/libs'));
 });
 
 
 gulp.task('addon:package-license', function () {
 
-  gulp.src([
+  return gulp.src([
     "./LICENSE.md"
   ]).pipe(gulp.dest(BUILD_DIR_ADDON));
 });
 
-gulp.task('app:package', [
+gulp.task('app:package', gulp.parallel([
   "app:package-src", "app:package-common",
   "app:package-jquery", "app:package-bootstrap",
-  "app:package-codemirror", "app:package-license"]);
+  "app:package-codemirror", "app:package-license"]));
 
-gulp.task('app:package-win32', ["app:package"], function (cb) {
+gulp.task(
+  'app:package-win32',
+  gulp.series(
+    "app:package",
+    function (done) {
 
-  let options = {
-    dir: BUILD_DIR_APP,
-    arch: "ia32",
-    platform: "win32",
-    download: {
-      cache: "./build/electron/cache"
-    },
-    out: "./build/electron/out",
-    overwrite: true,
-    // packageManager : "yarn",
-    // packageManager : false,
-    prune: true
-  };
+      let options = {
+        dir: BUILD_DIR_APP,
+        arch: "ia32",
+        platform: "win32",
+        download: {
+          cache: "./build/electron/cache"
+        },
+        out: "./build/electron/out",
+        overwrite: true,
+        // packageManager : "yarn",
+        // packageManager : false,
+        prune: true
+      };
 
-  let packager = require('electron-packager');
-  packager(options, (err, appPaths) => {
-    if (err)
-      return cb(err);
+      let packager = require('electron-packager');
+      packager(options, (err) => {
+        done(err);
+      });
+    }
+  )
+);
 
-    cb();
-  });
-});
+gulp.task(
+  'app:package-linux',
+  gulp.series(
+    "app:package",
+    function (done) {
 
-gulp.task('app:package-linux', ["app:package"], function (cb) {
+      let options = {
+        dir: BUILD_DIR_APP,
+        arch: "x64",
+        platform: "linux",
+        download: {
+          cache: "./build/electron/cache"
+        },
+        out: "./build/electron/out",
+        overwrite: true,
+        // packageManager : "yarn"
+        // packageManager : false,
+        prune: true
+      };
 
-  let options = {
-    dir: BUILD_DIR_APP,
-    arch: "x64",
-    platform: "linux",
-    download: {
-      cache: "./build/electron/cache"
-    },
-    out: "./build/electron/out",
-    overwrite: true,
-    // packageManager : "yarn"
-    // packageManager : false,
-    prune: true
-  };
-
-  let packager = require('electron-packager');
-  packager(options, (err, appPaths) => {
-    if (err)
-      return cb(err);
-
-    cb();
-  });
-});
+      let packager = require('electron-packager');
+      packager(options, (err) => {
+        done(err);
+      });
+    }
+  )
+);
 
 /**
  * watches for changed files and reruns the build task.
  */
-gulp.task('app:watch', function () {
-  gulp.watch([
-    './src/**/*.js',
-    './src/**/*.jsm',
-    './src/**/*.html',
-    './src/**/*.tpl',
-    './src/**/*.css',
-    './src/**/*.xul',
-    './src/**/*.dtd',
-    './src/**/*.properties'],
-    ['app:package-src', "app:package-common"]);
-});
+gulp.task(
+  'app:watch',
+  function () {
+    return gulp.watch(
+      ['./src/**/*.js',
+        './src/**/*.jsm',
+        './src/**/*.html',
+        './src/**/*.tpl',
+        './src/**/*.css',
+        './src/**/*.xul',
+        './src/**/*.dtd',
+        './src/**/*.properties'],
+      gulp.parallel(
+        'app:package-src',
+        "app:package-common")
+    );
+  }
+);
 
 /*
 Use backager to build artifacts...
@@ -323,72 +333,91 @@ packager(options, function done_callback (err, appPaths) { ... })
 gulp.task('addon:package-jquery', function () {
   const BASE_PATH = "./node_modules/jquery/dist";
 
-  gulp.src([
+  return gulp.src([
     BASE_PATH + "/jquery.min.js"
   ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_ADDON + "/chrome/chromeFiles/content/libs/jQuery"));
 });
 
-gulp.task('addon:package-codemirror', function () {
-  const BASE_PATH = "./node_modules/codemirror";
+gulp.task(
+  'addon:package-codemirror',
+  function () {
+    const BASE_PATH = "./node_modules/codemirror";
 
-  gulp.src([
-    BASE_PATH + "/addon/edit/**",
-    BASE_PATH + "/addon/search/**",
-    BASE_PATH + "/lib/**",
-    BASE_PATH + "/mode/sieve/**",
-    BASE_PATH + "/theme/eclipse.css",
-    BASE_PATH + "/LICENSE",
-    BASE_PATH + "/package.json"
-  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_ADDON + '/chrome/chromeFiles/content/libs/CodeMirror'));
-});
+    return gulp.src([
+      BASE_PATH + "/addon/edit/**",
+      BASE_PATH + "/addon/search/**",
+      BASE_PATH + "/lib/**",
+      BASE_PATH + "/mode/sieve/**",
+      BASE_PATH + "/theme/eclipse.css",
+      BASE_PATH + "/LICENSE",
+      BASE_PATH + "/package.json"
+    ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_ADDON + '/chrome/chromeFiles/content/libs/CodeMirror'));
+  }
+);
 
-gulp.task('addon:package-common', function () {
-  const BASE_PATH = "./src/common";
+gulp.task(
+  'addon:package-common',
+  function () {
+    const BASE_PATH = "./src/common";
 
-  return gulp.src([
-    BASE_PATH + "/**",
+    return gulp.src([
+      BASE_PATH + "/**",
 
-    // Filter out the rfc documents
-    "!" + BASE_PATH + "/libSieve/**/rfc*.txt"
-  ])
-    .pipe(gulp.dest(BUILD_DIR_ADDON + '/chrome/chromeFiles/content/libs'));
-});
+      // Filter out the rfc documents
+      "!" + BASE_PATH + "/libSieve/**/rfc*.txt"
+    ]).pipe(gulp.dest(BUILD_DIR_ADDON + '/chrome/chromeFiles/content/libs'));
+  }
+);
 
-gulp.task('addon:package-src', function () {
-  const BASE_PATH = "./src/addon";
+gulp.task(
+  'addon:package-src',
+  function () {
+    const BASE_PATH = "./src/addon";
 
-  return gulp.src([
-    BASE_PATH + "/**",
+    return gulp.src([
+      BASE_PATH + "/**",
 
-    "!" + BASE_PATH + "/chrome/chromeFiles/content/filterList",
-    "!" + BASE_PATH + "/chrome/chromeFiles/content/filterList/**"
-  ])
-    .pipe(gulp.dest(BUILD_DIR_ADDON));
-});
+      "!" + BASE_PATH + "/chrome/chromeFiles/content/filterList",
+      "!" + BASE_PATH + "/chrome/chromeFiles/content/filterList/**"
+    ]).pipe(gulp.dest(BUILD_DIR_ADDON));
+  }
+);
 
-gulp.task('addon:package', [
-  "addon:package-src", "addon:package-common",
-  "addon:package-jquery", "addon:package-codemirror",
-  "addon:package-license"]);
+gulp.task(
+  'addon:package',
+  gulp.parallel(
+    "addon:package-src",
+    "addon:package-common",
+    "addon:package-jquery",
+    "addon:package-codemirror",
+    "addon:package-license"
+  )
+);
 
 /**
  * Packages the thunderbird addon.
  */
-gulp.task('addon:package-xpi', ["addon:package"], function () {
+gulp.task(
+  'addon:package-xpi',
+  gulp.series(
+    "addon:package",
+    function () {
 
-  const version = getPackageVersion();
+      const version = getPackageVersion();
 
-  return gulp.src([BUILD_DIR_ADDON + "**"])
-    .pipe(zip('sieve-' + version + '.xpi'))
-    .pipe(gulp.dest('./release/thunderbird'));
-  // place code for your default task here
-});
+      return gulp.src([BUILD_DIR_ADDON + "**"])
+        .pipe(zip('sieve-' + version + '.xpi'))
+        .pipe(gulp.dest('./release/thunderbird'));
+      // place code for your default task here
+    }
+  )
+);
 
 /**
  * watches for changed files and reruns the build task.
  */
 gulp.task('addon:watch', function () {
-  gulp.watch([
+  return gulp.watch([
     './src/**/*.js',
     './src/**/*.jsm',
     './src/**/*.html',
@@ -396,22 +425,22 @@ gulp.task('addon:watch', function () {
     './src/**/*.xul',
     './src/**/*.dtd',
     './src/**/*.properties'],
-    ['addon:package-src', "addon:package-common"]);
+    gulp.parallel('addon:package-src', "addon:package-common"));
 });
 
 
 // we can only use major, minor and patch. Everything else
 // clashes with mozilla's naming semantic.
 
-gulp.task('bump-major', function () {
+gulp.task('bump-major', async () => {
   bumpVersion("major");
 });
 
-gulp.task('bump-minor', function () {
+gulp.task('bump-minor', async () => {
   bumpVersion("minor");
 });
 
-gulp.task('bump-patch', function () {
+gulp.task('bump-patch', async () => {
   bumpVersion("patch");
 });
 

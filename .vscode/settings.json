@@ -1,4 +1,5 @@
 {
+  "diffEditor.ignoreTrimWhitespace": true,
   "files.trimTrailingWhitespace": true,
   "files.exclude": {
     "**/.git": true,

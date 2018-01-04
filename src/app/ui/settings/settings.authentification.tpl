@@ -33,7 +33,7 @@
   <div class="form-group row">
     <label class="col-sm-3 col-form-label">Autologin</label>
     <div class="col-sm-8">
-      <div class="btn-group" data-toggle="buttons">
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
         <label class="btn btn-outline-secondary btn-sm">
           <input type="radio" name="autologin" autocomplete="off">Yes
         </label>

@@ -23,7 +23,7 @@
   <label class="col-sm-3 col-form-label">Security</label>
   <div class="col-sm-9">
 
-    <div class="sieve-settings-encryption btn-group" data-toggle="buttons">
+    <div class="sieve-settings-encryption btn-group btn-group-toggle" data-toggle="buttons">
       <label class="sieve-settings-encryption-enabled btn btn-outline-secondary btn-sm">
         <input type="radio" name="encrypted" autocomplete="off">Use Encrypted Connection
       </label>

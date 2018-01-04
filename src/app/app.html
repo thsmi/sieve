@@ -52,15 +52,11 @@
             </div>
             <div class="form-group row">
               <label class="col-sm-3 col-form-label">Account</label>
-              <div class="col-sm-8">
-                <p class="form-control-static sieve-displayname"></p>
-              </div>
+              <div class="col-sm-8 col-form-label sieve-displayname"></div>
             </div>
             <div class="form-group row">
               <label class="col-sm-3 col-form-label">Username</label>
-              <div class="col-sm-8">
-                <p class="form-control-static sieve-username"></p>
-              </div>
+              <div class="col-sm-8 col-form-label sieve-username"></div>
             </div>
             <div class="form-group row">
               <label class="col-sm-3 col-form-label">Password</label>
@@ -84,6 +80,14 @@
   <!-- Bootstrap core JavaScript
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
+  <!--<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+  <script src="./libs/jquery/jquery.min.js"></script>
+  <script src="./libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>if (typeof window.module === 'object') {module = window.module}</script>-->
+
+  <script>window.$ = window.jQuery = require('./libs/jquery/jquery.min.js');</script>
+  <script src="./libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
   <script src="./app.js"></script>
 </body>
 

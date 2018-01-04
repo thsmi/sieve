@@ -15,6 +15,7 @@
   /* global SieveTemplateLoader */
 
   "use strict";
+
   /**
      * An UI elements which handles displaying details for a sieve script.
      * It does not provied any support for editing the scripts content.

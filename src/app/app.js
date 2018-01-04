@@ -11,14 +11,11 @@
 
 "use strict";
 
-/* global require */
-const $ = require('./libs/jquery/jquery.min.js');
-require('./libs/bootstrap/js/bootstrap.bundle.min.js');
-
 // Import the node modules into our global namespace...
 
 const { SieveSession } = require("./libs/libManageSieve/SieveNodeSession.js");
 const { SieveAccounts } = require("./SieveAccounts.js");
+
 const { SieveTemplateLoader } = require("./utils/SieveTemplateLoader.js");
 
 let callback = async function (account) {
@@ -356,7 +353,7 @@ let actions = {
     let filename = require("electron").remote.dialog.showSaveDialog(options);
 
     // Check if the dialog was chanceled...
-    if (typeof(filename) === "undefined")
+    if (typeof (filename) === "undefined")
       return;
 
     require('fs').writeFileSync(filename, msg.payload.script, "utf-8");
@@ -384,7 +381,39 @@ let actions = {
 
   "paste": function () {
     return require("electron").clipboard.readText();
+  },
+
+  "get-preference": (msg) => {
+    const { SievePrefManager } = require('./utils/SievePrefManager.js');
+
+    let pref = new SievePrefManager("editor");
+
+    if (msg.payload.data === "tabulator-policy")
+      return pref.getBoolean("tabulator-policy", true);
+
+    if (msg.payload.data === "tabulator-width")
+      return pref.getInteger("tabulator-width", 2);
+
+    if (msg.payload.data === "indentation-policy")
+      return pref.getBoolean("indentation-policy", false);
+
+    if (msg.payload.data === "indentation-width")
+      return pref.getInteger("indentation-width", 2);
+
+    if (msg.payload.data === "syntax-check")
+      return pref.getBoolean("syntax-check", true);
+
+    throw new Error("Unknown settings");
+  },
+
+  "set-preference": (msg) => {
+    const { SievePrefManager } = require('./utils/SievePrefManager.js');
+
+    let pref = new SievePrefManager("editor");
+
+    pref.setValue(msg.payload.key, msg.payload.value);
   }
+
 };
 
 

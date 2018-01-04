@@ -323,13 +323,6 @@ gulp.task(
   }
 );
 
-/*
-Use backager to build artifacts...
-var packager = require('electron-packager')
-packager(options, function done_callback (err, appPaths) { ... })
-*/
-
-
 gulp.task('addon:package-jquery', function () {
   const BASE_PATH = "./node_modules/jquery/dist";
 
@@ -442,5 +435,44 @@ gulp.task('bump-minor', async () => {
 
 gulp.task('bump-patch', async () => {
   bumpVersion("patch");
+});
+
+/**
+ * Thunderbirds allows loading addons from outside of
+ * the extension directory. In our case this would be
+ * the build directory. To do so you need to create
+ * a file with the addons id which contains the path
+ * to the extension directory.
+ *
+ * The rational behind this is that a addon:watch
+ * automagically updates the addon.
+ */
+gulp.task('addon:deploy', async () => {
+  const path = require('path');
+  let { SieveThunderbirdImport } = require("./src/app/utils/SieveThunderbirdImport.js");
+
+  let target = (new SieveThunderbirdImport()).getDefaultUserProfile();
+
+  target = path.join(target, "extensions");
+
+  if (fs.existsSync(target) === false)
+    throw new Error("Failed to locate extension directory");
+
+  target = path.join(target, "sieve@mozdev.org");
+
+  let source = path.join(
+    path.resolve("./build/thunderbird/"),
+    path.sep);
+
+  // Bail out in case the directory already exists.
+  if (fs.existsSync(target)) {
+    if (fs.readFileSync(target, "utf-8").trim() === source) {
+      console.log("Skipping file already exists");
+      return;
+    }
+  }
+
+  // otherwise write or overwrite the existing file.
+  fs.writeFileSync(target, source, "utf-8");
 });
 

@@ -33,7 +33,7 @@
 
 */
 
-if ( typeof(module) === "undefined" || !module.exports)
+if (typeof (module) === "undefined" || !module.exports)
   throw new Error("No exports");
 
 (function (exports) {
@@ -51,50 +51,10 @@ if ( typeof(module) === "undefined" || !module.exports)
     SieveSaslScramSha1Response
   } = require("./SieveResponse.js");
 
-  /* global Components */
-
-  /* global SieveGetScriptResponse */
-  /* global SieveSimpleResponse */
-  /* global SieveCapabilitiesResponse */
-  /* global SieveListScriptResponse */
-  /* global SieveSaslLoginResponse */
-  /* global SieveSaslCramMd5Response */
-  /* global SieveSaslScramSha1Response */
+  const { SieveCrypto } = require("./SieveCrypto.js");
 
   const STATE_CRAM_MD5_CHALLENGED = 1;
   const STATE_CRAM_MD5_INIT = 0;
-
-  /**
-   * Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy
-   * binary, and javascript is something in between. This means we have to convert
-   * UTF-8 into a binary by our own...
-   *
-   * @param {String} str The binary string which should be converted
-   * @return {String} The converted string in UTF8
-   *
-   * @author Thomas Schmid <schmid-thomas@gmx.net>
-   * @author Max Dittrich
-   */
-  function jsStringToByteArray(str) {
-    // This is very old mozilla specific code, but it is robust, mature and works as expeced.
-    // It will be dropped as soon as the new code has proven to be stable.
-    if ((typeof Components !== 'undefined')
-      && (typeof Components.classes !== 'undefined')
-      && (Components.classes["@mozilla.org/intl/scriptableunicodeconverter"])) {
-
-      // ... and convert to UTF-8
-      let converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-        .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
-
-      converter.charset = "UTF-8";
-
-      return converter.convertToByteArray(str, {});
-    }
-
-    // with chrome we have to use the TextEncoder.
-    let data = new Uint8Array(new TextEncoder("UTF-8").encode(str));
-    return Array.prototype.slice.call(data);
-  }
 
   // ****************************************************************************//
 
@@ -1105,6 +1065,15 @@ if ( typeof(module) === "undefined" || !module.exports)
   SieveSaslCramMd5Request.prototype.constructor = SieveSaslCramMd5Request;
 
   /**
+   * Retruns the crypto engine which should be used for this request.
+   * @returns {SieveCrypto}
+   *   the crypto engine for sha1
+   */
+  SieveSaslCramMd5Request.prototype.getCrypto = function () {
+    return new SieveCrypto("MD5");
+  };
+
+  /**
    * Called when the server challenges the client to calculate a secret.
    *
    * @param {SieveAbstractRequestBuilder} builder
@@ -1119,7 +1088,10 @@ if ( typeof(module) === "undefined" || !module.exports)
       // decoding the base64-encoded challenge
       challenge = builder.convertFromBase64(challenge);
 
-      let hmac = this.hmacMD5(challenge, this._password);
+      let crypto = this.getCrypto();
+
+      challenge = builder.jsStringToByteArray(challenge);
+      let hmac = crypto.HMAC(this._password, challenge, "hex");
 
       return builder
         .addQuotedBase64(this._username + " " + hmac);
@@ -1159,46 +1131,6 @@ if ( typeof(module) === "undefined" || !module.exports)
       SieveAbstractRequest.prototype.addResponse.call(this, this.response);
     };
 
-
-  SieveSaslCramMd5Request.prototype.hmacMD5
-    = function (challenge, secret) {
-
-      if (!secret)
-        secret = "";
-
-      let challengeBytes = jsStringToByteArray(challenge);
-      let crypto = Components.classes["@mozilla.org/security/hmac;1"]
-        .createInstance(Components.interfaces.nsICryptoHMAC);
-      let keyObject = Components.classes["@mozilla.org/security/keyobjectfactory;1"]
-        .getService(Components.interfaces.nsIKeyObjectFactory)
-        .keyFromString(Components.interfaces.nsIKeyObject.HMAC, secret);
-
-      crypto.init(Components.interfaces.nsICryptoHMAC.MD5, keyObject);
-      crypto.update(challengeBytes, challengeBytes.length);
-
-      return this.byteArrayToHexString(
-        this.strToByteArray(crypto.finish(false)));
-    };
-
-  SieveSaslCramMd5Request.prototype.strToByteArray
-    = function (str) {
-      let bytes = [];
-
-      for (let i = 0; i < str.length; i++)
-        bytes[i] = str.charCodeAt(i);
-
-      return bytes;
-    };
-
-  SieveSaslCramMd5Request.prototype.byteArrayToHexString
-    = function (tmp) {
-      let str = "";
-      for (let i = 0; i < tmp.length; i++)
-        str += ("0" + tmp[i].toString(16)).slice(-2);
-
-      return str;
-    };
-
   /**
    * This request implements an abstract base class for the "Salted Challenge Response Authentication
    * Mechanism" (SCRAM). A SASL SCRAM-SHA-1 compatible implementation is mandatory
@@ -1220,126 +1152,19 @@ if ( typeof(module) === "undefined" || !module.exports)
     return true;
   };
 
-  SieveAbstractSaslScramRequest.prototype.getSaslName = function() {
+  SieveAbstractSaslScramRequest.prototype.getSaslName = function () {
     throw new Error("Implement SASL Name");
   };
 
-  SieveAbstractSaslScramRequest.prototype.getCryptoHMAC = function () {
-    throw new Error("Implement Crypto HMAC Method");
-  };
-
-  SieveAbstractSaslScramRequest.prototype.getCryptoHash = function () {
-    throw new Error("Implement Crypto Hash Method");
-  };
-
-  /**
-   * Hi(str, salt, i) is a PBKDF2 [RFC2898] implementation with HMAC() as the
-   * pseudorandom function (PRF) and with dkLen == output length of HMAC() == output
-   * length of H().
-   *
-   *  "str" is an octet input string while salt is a random octet string.
-   *  "i" is the iteration count, "+" is the string concatenation operator,
-   *  and INT(1) is a 4-octet encoding of the integer with the value 1.
-   *
-   * Hi(str, salt, i):
-   *
-   *   U1   := HMAC(str, salt + INT(1))
-   *   U2   := HMAC(str, U1)
-   *   ...
-   *   Ui-1 := HMAC(str, Ui-2)
-   *   Ui   := HMAC(str, Ui-1)
-   *
-   *   Hi := U1 XOR U2 XOR ... XOR Ui
-   *
-   * @param {byte[]} str
-   *   an octet input string
-   * @param {byte[]} salt
-   *   random octet string
-   * @param {int} i
-   *   iteration count a positiv number (>= 1), suggested to be at least 4096
-   *
-   * @return {byte[]}
-   *   the pseudorandom value as byte string
-   */
-  SieveAbstractSaslScramRequest.prototype._Hi
-    = function (str, salt, i) {
-      if (salt.length < 2)
-        throw new Error("Insufficient salt");
-
-      if (i <= 0)
-        throw new Error("Invalid Iteration counter");
-
-      if (!salt.push)
-        throw new Error("Salt needs to be a byte array");
-
-      salt.push(0, 0, 0, 1);
-
-      salt = this._HMAC(str, salt);
-
-      let hi = salt;
-
-      while (--i) {
-        salt = this._HMAC(str, salt);
-
-        for (let j = 0; j < hi.length; j++)
-          hi[j] ^= salt[j];
-      }
-
-      return hi;
-    };
-
-  /**
-   * Calculates the HMAC-SHA-1 keyed hash.
-   *
-   * @param {byte[]} key
-   *   The key as octet string
-   * @param {byte[]} bytes
-   *   The input string as byte array
-   * @return {byte[]}
-   *   the calculated hash for the given input string. HMAC-SHA-1 hashes are
-   *   always always 20 octets long.
-   */
-  SieveAbstractSaslScramRequest.prototype._HMAC
-    = function (key, bytes) {
-      key = this.byteArrayToStr(key);
-
-      if (!key)
-        key = "";
-
-      let crypto = Components.classes["@mozilla.org/security/hmac;1"]
-        .createInstance(Components.interfaces.nsICryptoHMAC);
-      let keyObject = Components.classes["@mozilla.org/security/keyobjectfactory;1"]
-        .getService(Components.interfaces.nsIKeyObjectFactory)
-        .keyFromString(Components.interfaces.nsIKeyObject.HMAC, key);
-
-      crypto.init(this.getCryptoHMAC(), keyObject);
-      crypto.update(bytes, bytes.length);
-
-      return this.strToByteArray(crypto.finish(false));
-    };
-
-  /**
-   * Calculates the SHA1 hash.
-   *
-   * @param {byte[]} bytes
-   *   The input string as byte array
-   * @return {string}
-   *   the calculated hash for the given input string. SHA-1 hashes are
-   *   always always 20 octets.
-   */
-  SieveAbstractSaslScramRequest.prototype._H = function (bytes) {
-    let crypto = Components.classes["@mozilla.org/security/hash;1"]
-      .createInstance(Components.interfaces.nsICryptoHash);
-
-    crypto.init(this.getCryptoHash());
-    crypto.update(bytes, bytes.length);
-
-    return this.strToByteArray(crypto.finish(false));
+  SieveAbstractSaslScramRequest.prototype.getCrypto = function () {
+    throw new Error("Implement Crypto Method which returns a crypto provider");
   };
 
   SieveAbstractSaslScramRequest.prototype.onChallengeServer = function (builder) {
-    this._cnonce = this.byteArrayToHexString(
-      this._H(this.strToByteArray((Math.random() * 1234567890))));
+
+    let crypto = this.getCrypto();
+
+    this._cnonce = crypto.H("" + (Math.random() * 1234567890), "hex");
 
     // For integration tests, we need to fake the nonce...
     // ... so we take the nonce from the rfc otherwise the verification fails.
@@ -1375,8 +1200,10 @@ if ( typeof(module) === "undefined" || !module.exports)
     if ((nonce.substr(0, this._cnonce.length) !== this._cnonce))
       throw new Error("Nonce invalid");
 
+    const crypto = this.getCrypto();
+
     // As first step we need to salt the password...
-    let salt = this.strToByteArray(this.response.getSalt());
+    let salt = this.response.getSalt();
     let iter = this.response.getIterationCounter();
 
     // TODO Normalize password; and convert it into a byte array...
@@ -1384,22 +1211,24 @@ if ( typeof(module) === "undefined" || !module.exports)
 
     // ... this is done by applying a simplified PBKDF2 algorithm...
     // ... so we endup by calling Hi(Normalize(password), salt, i)
-    this._saltedPassword = this._Hi(this.strToByteArray(this._password), salt, iter);
+    this._saltedPassword = crypto.Hi(this._password, salt, iter);
 
     // the clientKey is defined as HMAC(SaltedPassword, "Client Key")
-    let clientKey = this._HMAC(this._saltedPassword, this.strToByteArray("Client Key"));
+    let clientKey = crypto.HMAC(this._saltedPassword, "Client Key");
 
     // create the client-final-message-without-proof, ...
     let msg = "c=" + builder.convertToBase64(this._g2Header) + ",r=" + nonce;
     // ... append it and the server-first-message to client-first-message-bare...
     this._authMessage += "," + this.response.getServerFirstMessage() + "," + msg;
     // ... and convert it into a byte array.
-    this._authMessage = this.strToByteArray(this._authMessage);
+    this._authMessage = crypto.strToByteArray(this._authMessage);
 
     // As next Step sign out message, this is done by applying the client...
     // ... key through a pseudorandom function to the message. It is defined...
     // as HMAC(H(ClientKey), AuthMessage)
-    let clientSignature = this._HMAC(this._H(clientKey), this._authMessage);
+    let clientSignature = crypto.HMAC(
+      crypto.H(clientKey),
+      this._authMessage);
 
     // We now complete the cryptographic part an apply our clientkey to the...
     // ... Signature, so that the server can be sure it is talking to us.
@@ -1408,10 +1237,12 @@ if ( typeof(module) === "undefined" || !module.exports)
     for (let k = 0; k < clientProof.length; k++)
       clientProof[k] ^= clientSignature[k];
 
+    clientProof = crypto.byteArrayToStr(clientProof);
+
     // Every thing done so let's send the message...
     // "c=" base64( (("" / "y") "," [ "a=" saslname ] "," ) "," "r=" c-nonce s-nonce ["," extensions] "," "p=" base64
     return builder
-      .addQuotedBase64(msg + ",p=" + builder.convertToBase64(this.byteArrayToStr(clientProof)));
+      .addQuotedBase64(msg + ",p=" + builder.convertToBase64(clientProof));
     //      return "\""+btoa(msg+",p="+btoa(this.byteArrayToStr(clientProof)))+"\"\r\n";
   };
 
@@ -1449,10 +1280,17 @@ if ( typeof(module) === "undefined" || !module.exports)
 
   SieveAbstractSaslScramRequest.prototype.onOk
     = function (response) {
-      let serverSignature = this._HMAC(
-        this._HMAC(this._saltedPassword, this.strToByteArray("Server Key")), this._authMessage);
 
-      if (response.getVerifier() !== this.byteArrayToStr(serverSignature)) {
+      let crypto = this.getCrypto();
+
+      let serverSignature = crypto.HMAC(
+        crypto.HMAC(
+          this._saltedPassword,
+          "Server Key"),
+        this._authMessage
+      );
+
+      if (response.getVerifier() !== crypto.byteArrayToStr(serverSignature)) {
         response.message = "Server Signature not invalid ";
         response.response = 2;
         this.onNo(response);
@@ -1472,44 +1310,6 @@ if ( typeof(module) === "undefined" || !module.exports)
       SieveAbstractRequest.prototype.addResponse.call(this, this.response);
     };
 
-  SieveAbstractSaslScramRequest.prototype.strToByteArray
-    = function (str) {
-      let result = [];
-
-
-      for (let i = 0; i < str.length; i++) {
-        if (str.charCodeAt(i) > 255)
-          throw new Error("Invalid Charaters for Binary String :" + str.charCodeAt(i));
-
-        result.push(str.charCodeAt(i));
-      }
-
-      return result;
-    };
-
-  SieveAbstractSaslScramRequest.prototype.byteArrayToStr
-    = function (bytes) {
-      let result = "";
-
-      for (let i = 0; i < bytes.length; i++) {
-        if (String.fromCharCode(bytes[i]) > 255)
-          throw new Error("Byte Array Invalid: " + String.fromCharCode(bytes[i]));
-
-        result += String.fromCharCode(bytes[i]);
-      }
-
-      return result;
-    };
-
-  SieveAbstractSaslScramRequest.prototype.byteArrayToHexString
-    = function (tmp) {
-      let str = "";
-      for (let i = 0; i < tmp.length; i++)
-        str += ("0" + tmp[i].toString(16)).slice(-2);
-
-      return str;
-    };
-
 
   /**
    * Implements the SCRAM-SHA-1 mechanism.
@@ -1526,23 +1326,12 @@ if ( typeof(module) === "undefined" || !module.exports)
     }
 
     /**
-     * Returns the HMAC.
-     *
-     * @returns {nsICryptoHMAC}
-     *   the HMAC type which should be used.
+     * Retruns the crypto engine which should be used for this request.
+     * @returns {SieveCrypto}
+     *   the crypto engine for sha1
      */
-    getCryptoHMAC() {
-      return Components.interfaces.nsICryptoHMAC.SHA1;
-    }
-
-    /**
-     * Returns the crypto hash.
-     *
-     * @returns {nsICryptoHash}
-     *   the Hash type which should be used.
-     */
-    getCryptoHash() {
-      return Components.interfaces.nsICryptoHash.SHA1;
+    getCrypto() {
+      return new SieveCrypto("SHA1");
     }
   }
 
@@ -1562,23 +1351,12 @@ if ( typeof(module) === "undefined" || !module.exports)
     }
 
     /**
-     * Returns the HMAC.
-     *
-     * @returns {nsICryptoHMAC}
-     *   the HMAC type which should be used.
+     * Retruns the crypto engine which should be used for this request.
+     * @returns {SieveCrypto}
+     *   the crypto engine for sha265
      */
-    getCryptoHMAC() {
-      return Components.interfaces.nsICryptoHMAC.SHA256;
-    }
-
-    /**
-     * Returns the crypto hash.
-     *
-     * @returns {nsICryptoHash}
-     *   the Hash type which should be used.
-     */
-    getCryptoHash() {
-      return Components.interfaces.nsICryptoHash.SHA256;
+    getCrypto() {
+      return new SieveCrypto("SHA256");
     }
   }
 

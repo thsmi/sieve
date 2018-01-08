@@ -456,7 +456,7 @@ gulp.task('addon:deploy', async () => {
   target = path.join(target, "extensions");
 
   if (fs.existsSync(target) === false)
-    throw new Error("Failed to locate extension directory");
+    throw new Error("Failed to locate extension directory " + target);
 
   target = path.join(target, "sieve@mozdev.org");
 

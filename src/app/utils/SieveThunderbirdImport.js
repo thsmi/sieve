@@ -48,17 +48,14 @@
       for (let line of lines) {
         line = line.trim();
 
-        if (line === "Default=1")
+        if (line.toLocaleLowerCase() === "default=1")
           isDefault = true;
 
-        if (line.startsWith("Path="))
+        if (line.toLocaleLowerCase().startsWith("path="))
           path = line.split("=")[1];
 
-        if (line.startsWith("isRelative=")) {
-          isRelative = line.split("=")[1];
-
-          isRelative = (isRelative === 1) ? true : false;
-        }
+        if (line.toLocaleLowerCase() === "isrelative=1")
+          isRelative = true;
       }
 
       return {
@@ -96,7 +93,7 @@
           continue;
 
         if (section.isRelative)
-          return path.join(directory, "Thunderbird", section.path);
+          return path.join(directory, section.path);
 
         return section.path;
       }

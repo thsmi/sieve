@@ -20,7 +20,6 @@
  * @returns {void}
  */
 function updateSyntaxCheckUI(editor) {
-  debugger;
 
   if (editor.isSyntaxCheckEnabled()) {
     $("#sieve-editor-settings .sieve-editor-disable-syntaxcheck").show();

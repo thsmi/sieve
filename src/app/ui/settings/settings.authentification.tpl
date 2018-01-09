@@ -11,6 +11,7 @@
         <a class="dropdown-item" data-sieve-authentication="LOGIN" href="#">Force Login (Deprecated)</a>
         <a class="dropdown-item" data-sieve-authentication="SCRAM-MD-5" href="#">Force CRAM-MD5</a>
         <a class="dropdown-item" data-sieve-authentication="SCRAM-SHA-1" href="#">Force SCRAM-SHA-1</a>
+        <a class="dropdown-item" data-sieve-authentication="SCRAM-SHA-256" href="#">Force SCRAM-SHA-256</a>
         <a class="dropdown-item" data-sieve-authentication="EXTERNAL" href="#">Force External</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" data-sieve-authentication="none" href="#">No Authentication</a>

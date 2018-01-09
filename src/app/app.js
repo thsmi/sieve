@@ -107,7 +107,8 @@ let actions = {
       displayName: account.getHost().getDisplayName(),
       hostname: account.getHost().getHostname(),
       secure: account.getHost().isSecure(),
-      port: account.getHost().getPort()
+      port: account.getHost().getPort(),
+      fingerprint : account.getHost().getFingerprint()
     };
   },
 
@@ -136,6 +137,7 @@ let actions = {
     account.getHost().setHostname(msg.payload.hostname);
     account.getHost().setSecure(msg.payload.secure);
     account.getHost().setPort(msg.payload.port);
+    account.getHost().setFingerprint(msg.payload.fingerprint);
   },
 
   "account-set-authentication": function (msg) {

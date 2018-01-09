@@ -33,3 +33,10 @@
     </div>
   </div>
 </div>
+
+<div class="siv-settings-advanced form-group row">
+  <label class="col-sm-3 col-form-label">Fingerprint</label>
+  <div class="col-sm-8">
+    <input type="text" class="sieve-settings-fingerprint form-control" placeholder="The server's certificates fingerprint.">
+  </div>
+</div>

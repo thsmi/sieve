@@ -67,6 +67,14 @@
       return this.getDialog().find(".sieve-settings-port").val();
     }
 
+    setFingerprint(fingerprint) {
+      this.getDialog().find(".sieve-settings-fingerprint").val(fingerprint);
+    }
+
+    getFingerprint() {
+      return this.getDialog().find(".sieve-settings-fingerprint").val();
+    }
+
     /**
      * Gets the current dialog's encryption settings.
      *
@@ -264,7 +272,8 @@
         displayName : this.getDisplayName(),
         hostname: this.getHostname(),
         port: this.getPort(),
-        secure: this.isEncrypted()
+        secure: this.isEncrypted(),
+        fingerprint: this.getFingerprint()
       };
 
       await this.account.send("account-set-server", server);
@@ -330,6 +339,7 @@
       this.setHostname(server.hostname);
       this.setPort(server.port);
       this.setEncrypted(server.secure);
+      this.setFingerprint(server.fingerprint);
 
       let authentication = await this.account.send("account-get-authentication");
 

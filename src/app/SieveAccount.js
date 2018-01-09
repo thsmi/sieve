@@ -73,8 +73,17 @@
 
         setPort: (value) => {
           this.prefs.setInteger("host.port", value);
+        },
+
+        getFingerprint: () => {
+          return this.prefs.getString("host.fingerprint", "");
+        },
+
+        setFingerprint: (value) => {
+          this.prefs.setString("host.fingerprint", value);
         }
       };
+
     }
 
     /**
@@ -171,7 +180,7 @@
   }
 
   // Require modules need to use export.module
-  if (typeof(module) !== "undefined" && module && module.exports)
+  if (typeof (module) !== "undefined" && module && module.exports)
     module.exports.SieveAccount = SieveAccount;
   else
     exports.SieveAccount = SieveAccount;

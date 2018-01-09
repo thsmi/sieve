@@ -39,6 +39,7 @@
     SieveSaslLoginRequest,
     SieveSaslCramMd5Request,
     SieveSaslScramSha1Request,
+    SieveSaslScramSha256Request,
     SieveSaslExternalRequest
   } = require("./SieveRequest.js");
 
@@ -190,6 +191,10 @@
 
     createSaslScramSha1Request() {
       return new SieveSaslScramSha1Request();
+    }
+
+    createSaslScramSha256Request() {
+      return new SieveSaslScramSha256Request();
     }
 
     createSaslExternalRequest() {
@@ -626,20 +631,20 @@
 
       let callback = {
 
-        onStartTLSResponse: () => {
+        onStartTLSResponse: async () => {
 
-          this.sieve.startTLS(() => {
-            // we need some magic to avoid a nasty bug in some servers
-            // first we explicitely request the capabilites
-            let request = this.createCapabilitiesRequest();
-            request.addCapabilitiesListener(callback);
-            this.sieve.addRequest(request);
+          await this.sieve.startTLS(this.account.getHost().getFingerprint());
 
-            // With a bugfree server we endup with two capability request, one
-            // implicit after startTLS and one explicite from capbilites. So we have
-            // to consume one of them silently...
-            this.sieve.addRequest(this.createInitRequest(), true);
-          });
+          // we need some magic to avoid a nasty bug in some servers
+          // first we explicitely request the capabilites
+          let request = this.createCapabilitiesRequest();
+          request.addCapabilitiesListener(callback);
+          this.sieve.addRequest(request);
+
+          // With a bugfree server we endup with two capability request, one
+          // implicit after startTLS and one explicite from capbilites. So we have
+          // to consume one of them silently...
+          this.sieve.addRequest(this.createInitRequest(), true);
         },
 
         onCapabilitiesResponse: (response) => {

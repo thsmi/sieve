@@ -754,7 +754,7 @@
 
         let password = await account.getLogin().getPassword();
 
-        if (typeof (password) === undefined || password === null)
+        if (typeof (password) === "undefined" || password === null)
           throw new SieveClientException("error.authentication");
 
         request.setPassword(password);

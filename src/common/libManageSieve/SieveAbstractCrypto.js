@@ -11,14 +11,19 @@
 
 (function (exports) {
 
-    "use strict";
+  "use strict";
 
-/**
+  /**
    * Crypto implementations are very browser specific.
    * Which means we need a separate wrapper for each browser.
    */
   class SieveAbstractCrypto {
 
+    /**
+     * Creates a new crypto wraper.
+     * @param {String} name
+     *   the crypto algorithms name.
+     */
     constructor(name) {
       this.name = name;
     }
@@ -50,11 +55,15 @@
     byteArrayToStr(bytes) {
       let result = "";
 
-      for (let i = 0; i < bytes.length; i++) {
-        if (String.fromCharCode(bytes[i]) > 255)
-          throw new Error("Byte Array Invalid: " + String.fromCharCode(bytes[i]));
+      if (Array.isArray(bytes) === false)
+        throw new Error("Parameter bytes is not a byte array");
 
-        result += String.fromCharCode(bytes[i]);
+      for (let i = 0; i < bytes.length; i++) {
+        let byte = String.fromCharCode(bytes[i]);
+        if (byte > 255)
+          throw new Error("Byte Array Invalid: " + byte);
+
+        result += byte;
       }
 
       return result;
@@ -131,7 +140,33 @@
      *   the pseudorandom value as byte string
      */
     Hi(str, salt, i) {
-      throw new Error("Implement Hashing Iteration Algorithm for " + this.name + " with data " + str + " " + salt + " " + i);
+
+      if (Array.isArray(str) === false)
+        str = this.strToByteArray(str);
+
+      if (Array.isArray(salt) === false)
+        salt = this.strToByteArray(salt);
+
+      if (salt.length < 2)
+        throw new Error("Insufficient salt");
+
+      if (i <= 0)
+        throw new Error("Invalid Iteration counter");
+
+      salt.push(0, 0, 0, 1);
+
+      salt = this.HMAC(str, salt);
+
+      let hi = salt;
+
+      while (--i) {
+        salt = this.HMAC(str, salt);
+
+        for (let j = 0; j < hi.length; j++)
+          hi[j] ^= salt[j];
+      }
+
+      return hi;
     }
   }
 

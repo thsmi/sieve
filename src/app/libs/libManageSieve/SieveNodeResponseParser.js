@@ -58,7 +58,7 @@
    *   the decoded string.
    */
   SieveNodeResponseParser.prototype.convertFromBase64 = function(encoded) {
-    return Buffer.from(encoded, 'base64').toString();
+    return Buffer.from(encoded, 'base64').toString("latin1");
   };
 
   exports.SieveNodeResponseParser = SieveNodeResponseParser;

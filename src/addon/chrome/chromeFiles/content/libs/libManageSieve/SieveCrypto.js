@@ -23,13 +23,6 @@
   class SieveCrypto extends SieveAbstractCrypto {
 
     /**
-     * @inheritdoc
-     */
-    constructor(name) {
-      super(name);
-    }
-
-    /**
      * Returns the HMAC implementation for the given name.
      * In case the algorithm is unknown an exception is thrown.
      *
@@ -124,39 +117,6 @@
         return this.byteArrayToHexString(rv);
 
       return rv;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    Hi(str, salt, i) {
-
-      if (Array.isArray(str) === false)
-        str = this.strToByteArray(str);
-
-      if (Array.isArray(salt) === false)
-        salt = this.strToByteArray(salt);
-
-      if (salt.length < 2)
-        throw new Error("Insufficient salt");
-
-      if (i <= 0)
-        throw new Error("Invalid Iteration counter");
-
-      salt.push(0, 0, 0, 1);
-
-      salt = this.HMAC(str, salt);
-
-      let hi = salt;
-
-      while (--i) {
-        salt = this.HMAC(str, salt);
-
-        for (let j = 0; j < hi.length; j++)
-          hi[j] ^= salt[j];
-      }
-
-      return hi;
     }
 
   }

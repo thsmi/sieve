@@ -1088,10 +1088,8 @@ if (typeof (module) === "undefined" || !module.exports)
       // decoding the base64-encoded challenge
       challenge = builder.convertFromBase64(challenge);
 
-      let crypto = this.getCrypto();
-
-      challenge = builder.jsStringToByteArray(challenge);
-      let hmac = crypto.HMAC(this._password, challenge, "hex");
+      const crypto = this.getCrypto();
+      const hmac = crypto.HMAC(this._password, challenge, "hex");
 
       return builder
         .addQuotedBase64(this._username + " " + hmac);
@@ -1220,6 +1218,7 @@ if (typeof (module) === "undefined" || !module.exports)
     let msg = "c=" + builder.convertToBase64(this._g2Header) + ",r=" + nonce;
     // ... append it and the server-first-message to client-first-message-bare...
     this._authMessage += "," + this.response.getServerFirstMessage() + "," + msg;
+
     // ... and convert it into a byte array.
     this._authMessage = crypto.strToByteArray(this._authMessage);
 
@@ -1236,8 +1235,6 @@ if (typeof (module) === "undefined" || !module.exports)
     let clientProof = clientKey;
     for (let k = 0; k < clientProof.length; k++)
       clientProof[k] ^= clientSignature[k];
-
-    clientProof = crypto.byteArrayToStr(clientProof);
 
     // Every thing done so let's send the message...
     // "c=" base64( (("" / "y") "," [ "a=" saslname ] "," ) "," "r=" c-nonce s-nonce ["," extensions] "," "p=" base64

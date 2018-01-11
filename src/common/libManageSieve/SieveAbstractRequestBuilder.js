@@ -53,7 +53,7 @@
    *   a self reference
    */
   SieveAbstractRequestBuilder.prototype.addQuotedString = function (token) {
-    if (typeof(token) === undefined || token === null)
+    if (typeof(token) === "undefined" || token === null)
       token = "";
 
     this.addLiteral('"' + this.escapeString(token) + '"');
@@ -137,8 +137,8 @@
 
   /**
    * Encodes a string into base64
-   * @param  {String} decoded
-   *   the string which shall be converted to base64
+   * @param  {String|byte[]} decoded
+   *   the string or byte array which shall be converted to base64
    * @returns {String}
    *   the encoded string.
    *

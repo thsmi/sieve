@@ -22,14 +22,60 @@
    */
   class SieveCrypto extends SieveAbstractCrypto {
 
+    /*
+      constructor(name) {
+        super(name);
+      }*/
+
     /**
      * @inheritdoc
      */
-    constructor(name) {
-      super(name);
+    HMAC(key, bytes, output) {
+
+      if (typeof(key) === "undefined" || key === null)
+        throw new Error("Invalid key");
+
+      if (Array.isArray(key))
+        key = Buffer.from(key);
+
+      if (Array.isArray(bytes))
+        bytes = Buffer.from(bytes);
+
+      if (typeof(output) === "undefined" || output === null)
+        output = "latin1";
+
+      let rv = crypto
+        .createHmac(this.name, key)
+        .update(bytes)
+        .digest(output);
+
+      if (output === "hex")
+        return rv;
+
+      return this.strToByteArray(rv);
     }
 
-    //TODO implement HMAC, H, Hi
+    /**
+     * @inheritdoc
+     */
+    H(bytes, output) {
+
+      if (typeof(output) === "undefined" || output === null)
+        output = "latin1";
+
+      if (Array.isArray(bytes))
+        bytes = Buffer.from(bytes);
+
+      let rv = crypto.createHash(this.name)
+        .update(bytes)
+        .digest(output);
+
+      if (output === "hex")
+        return rv;
+
+      return this.strToByteArray(rv);
+    }
+
   }
 
   exports.SieveCrypto = SieveCrypto;

@@ -60,11 +60,36 @@
       return Array.prototype.slice.call(data);
     }
 
+    /**
+     * Converts an byte array into a string.
+     *
+     * @param {byte[]} byteArray
+     *   the byte array which should be converted.
+     * @param {String} [encoding]
+     *   the byte arrays encoding.
+     * @return {String} the converted string.
+     */
+    convertToString(byteArray, encoding) {
+      if (typeof(encoding) === "undefined" || encoding === null)
+        encoding = "utf8";
+
+      byteArray = new Uint8Array(byteArray);
+      return (new TextDecoder(encoding)).decode(byteArray);
+    }
+
     calculateByteLength(data) {
       return this.jsStringToByteArray(data).length;
     }
 
+    /**
+     * @inheritdoc
+     */
     convertToBase64(decoded) {
+
+      if (Array.isArray(decoded)) {
+        decoded = this.convertToString(decoded, "latin1");
+      }
+
       return btoa(decoded);
     }
 

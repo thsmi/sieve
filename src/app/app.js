@@ -18,37 +18,64 @@ const { SieveAccounts } = require("./SieveAccounts.js");
 
 const { SieveTemplateLoader } = require("./utils/SieveTemplateLoader.js");
 
+
+/**
+ * Displays a simple dialog with an action button.
+ */
+class SieveDialog {
+
+  /**
+   * Loads and shows the dialog
+   * @param {string} template
+   *   the dialog template to load
+   * @param {object<string,string>} token
+   *   key value pairs with replacement values
+   * @returns {boolean}
+   *   true in case the dialog was accepted, fals in case it was canceled
+   */
+  async show(template, onInit, onResolve, onReject) {
+    let dialog = await (new SieveTemplateLoader()).load(template);
+
+    onInit(dialog);
+
+    $("#ctx").append(dialog);
+
+    return await new Promise((resolve, reject) => {
+
+      dialog.modal('show')
+        .on('hidden.bs.modal', () => {
+          dialog.remove();
+          reject(onReject(dialog));
+        })
+        .find(".sieve-dialog-resolve").click(() => {
+          resolve(onResolve(dialog));
+          // ... now trigger the hidden listener it will cleanup
+          // it is afe to do so due to promise magics, the first
+          // alway resolve wins and all subsequent calls are ignored...
+          dialog.modal("hide");
+        });
+    });
+  }
+}
+
+
 let callback = async function (account) {
 
   let username = account.getLogin().getUsername();
   let displayName = account.getHost().getDisplayName();
 
-  // we show a password prompt which is async.
-  // In case the dialog is canceled we throw an exception
-  // Otherwise we return the given password.
-  return await new Promise((resolve, reject) => {
-    let dialog = $("#sieve-password-dialog");
-
-    dialog
-      .find(".sieve-username")
-      .text(username);
-
-    dialog
-      .find(".sieve-displayname")
-      .text(displayName);
-
-    dialog.modal('show')
-      .on('hidden.bs.modal', () => {
-        dialog.find(".sieve-password").val("");
-        reject(new Error("Dialog canceled"));
-      })
-      .find(".sieve-login").off().click(() => {
-        dialog.off('hidden.bs.modal').modal('hide');
-        let password = dialog.find(".sieve-password").val();
-        dialog.find(".sieve-password").val("");
-        resolve(password);
-      });
-  });
+  return await (new SieveDialog()).show("./ui/app/dialog.account.password.tpl",
+    (dialog) => {
+      dialog.find(".sieve-username").text(username);
+      dialog.find(".sieve-displayname").text(displayName);
+    },
+    (dialog) => {
+      return dialog.find(".sieve-password").val();
+    },
+    () => {
+      return new Error("Dialog canceled");
+    }
+  );
 };
 
 let accounts = new SieveAccounts(callback).load();
@@ -76,7 +103,6 @@ let listener = {
 let sessions = {};
 
 
-
 let actions = {
 
   // account endpoints...
@@ -90,10 +116,24 @@ let actions = {
     return accounts.create();
   },
 
-  "account-delete": function (msg) {
+  "account-delete": async function (msg) {
+
     console.log("Remove Account");
-    accounts.remove(msg.payload.account);
-    return;
+
+    let account = msg.payload.account;
+    let displayName = accounts.getAccountById(account).getHost().getDisplayName();
+
+    let rv = await new SieveDialog().show(
+      "./ui/app/dialog.account.delete.tpl",
+      (dialog) => { dialog.find("#sieve-dialog-account-remove-name").text(displayName); },
+      () => { return true; },
+      () => { return false; }
+    );
+
+    if (rv)
+      accounts.remove(account);
+
+    return rv;
   },
 
   "account-get-displayname": function (msg) {

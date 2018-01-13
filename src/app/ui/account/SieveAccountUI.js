@@ -162,30 +162,14 @@
     }
 
     /**
-     * Shows a dialog with the current accounts setting.
-     * @returns {void}
-     */
-    edit() {
-      alert("edit account");
-    }
-
-    /**
      * Asks the user if he is sure to delete the account.
      * If yes it triggers expurging the account settings.
      * This can not be undone.
      *
      * @returns {void}
      */
-    remove() {
-      $('#sieve-dialog-account-remove').modal('show');
-
-      $('#sieve-dialog-account-remove-name').text(this.id);
-
-      $('#sieve-dialog-account-remove-btn').off().one("click", async () => {
-
-        await this.accounts.remove(this);
-        $('#sieve-dialog-account-remove').modal('hide');
-      });
+    async remove() {
+      await this.accounts.remove(this);
     }
 
     /**

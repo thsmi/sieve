@@ -47,8 +47,11 @@
      * @returns {void}
      */
     async remove(account) {
-      await account.send("account-delete", account.id);
-      await this.render();
+
+      let rv = await account.send("account-delete", account.id);
+
+      if (rv)
+        await this.render();
     }
 
     /**

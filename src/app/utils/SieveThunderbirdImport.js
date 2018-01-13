@@ -18,6 +18,8 @@
   const PREF_KEY_SERVER_TYPE = '^.*user_pref\\(.*"mail.server.%server%.type".*,.*"(.*)"\\);.*$';
   const PREF_KEY_SERVER_USERNAME = '^.*user_pref\\(.*"mail.server.%server%.userName".*,.*"(.*)"\\);.*$';
   const PREF_KEY_SERVER_HOSTNAME = '^.*user_pref\\(.*"mail.server.%server%.hostname".*,.*"(.*)"\\);.*$';
+  const PREF_KEY_SERVER_NAME = '^.*user_pref\\(.*"mail.server.%server%.name".*,.*"(.*)"\\);.*$';
+
 
   /**
    * Imports Account settings from thunderbird's profile directory.
@@ -169,6 +171,7 @@
         let result = {};
         result["username"] = (new RegExp(PREF_KEY_SERVER_USERNAME.replace("%server%", server), "gm")).exec(profile)[1];
         result["hostname"] = (new RegExp(PREF_KEY_SERVER_HOSTNAME.replace("%server%", server), "gm")).exec(profile)[1];
+        result["name"] = (new RegExp(PREF_KEY_SERVER_NAME.replace("%server%", server), "gm")).exec(profile)[1];
 
         results.push(result);
       }

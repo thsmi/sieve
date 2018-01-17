@@ -137,7 +137,12 @@
 
       this.socket.on('connect', () => { this.onSocketConnected(); });
       this.socket.on('data', (data) => { this.onReceive(data); });
-      this.socket.on('close', () => { this.disconnect(); });
+      this.socket.on('close', () => {
+        this.disconnect();
+
+        if ((this.listener) && (this.listener.onDisconnect))
+          this.listener.onDisconnect();
+      });
     };
 
   Sieve.prototype.startTLS = async function (fingerprints) {
@@ -215,17 +220,18 @@
 
       SieveAbstractClient.prototype.disconnect.call(this);
 
-      if (this.socket === null)
-        return;
-
       this.getLogger().log("Disconnecting...");
-      this.socket.destroy();
-      this.socket.unref();
-      this.socket = null;
+      if (this.socket) {
+        this.socket.destroy();
+        this.socket.unref();
+        this.socket = null;
+      }
 
-      this.tlsSocket.destroy();
-      this.tlsSocket.unref();
-      this.tlsSocket = null;
+      if (this.tlsSocket) {
+        this.tlsSocket.destroy();
+        this.tlsSocket.unref();
+        this.tlsSocket = null;
+      }
 
       this.idleTimer = null;
       this.timeoutTimer = null;

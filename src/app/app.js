@@ -105,15 +105,31 @@ let sessions = {};
 
 let actions = {
 
+  "import-thunderbird" : function() {
+    console.log("Import Thunderbird accounts");
+
+    const {SieveThunderbirdImport} = require("./utils/SieveThunderbirdImport.js");
+    return (new SieveThunderbirdImport()).getAccounts();
+  },
+
   // account endpoints...
   "accounts-list": function () {
     console.log("List Accounts");
     return accounts.getAccounts();
   },
 
-  "account-create": function () {
-    console.log("Remove Account");
-    return accounts.create();
+  "account-probe" : async function(msg) {
+    console.log("probe Account");
+
+    const { SieveAutoConfig } = require("./libs/libManageSieve/SieveAutoConfig.js");
+    msg.payload["port"] = await (new SieveAutoConfig(msg.payload["hostname"])).detect();
+
+    return msg.payload;
+  },
+
+  "account-create": function (msg) {
+    console.log("create Account");
+    return accounts.create(msg.payload);
   },
 
   "account-delete": async function (msg) {

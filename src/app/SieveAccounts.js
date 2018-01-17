@@ -71,10 +71,13 @@
      * Creates a new account.
      * The new account will be initialized with default and then added to the list of accounts
      *
+     * @param {Object} [details]
+     *   the accounts details like the name, hostname, port and username as key value pairs.
+     *
      * @returns {SieveAccounts}
      *  a self reference.
      */
-    create() {
+    create(details) {
 
       // create a unique id;
       let id = "" + (new Date()).getTime().toString(36) + "-" + Math.random().toString(36).substr(2, 16);
@@ -84,6 +87,17 @@
       console.log(Object.keys(this.accounts));
 
       this.save();
+
+      if (typeof(details) !== "undefined" && details !== null) {
+        if (details.name)
+          this.accounts[id].getHost().setDisplayName(details.name);
+        if (details.hostname)
+          this.accounts[id].getHost().setHostname(details.hostname);
+        if (details.port)
+          this.accounts[id].getHost().setPort(details.port);
+        if (details.username)
+          this.accounts[id].getLogin().setUsername(details.username);
+      }
 
       return this;
     }

@@ -11,11 +11,10 @@
 
 /* global window */
 
-// Enable Strict Mode
-"use strict";
-
 (function (exports) {
 
+  // Enable Strict Mode
+  "use strict";
   /* global require */
 
   const { Sieve } = require("./SieveNodeClient.js");
@@ -791,7 +790,6 @@
     onIdle() {
       (async () => { await this.noop(); })();
     }
-
 
     /**
      * Connects the session to the given port.

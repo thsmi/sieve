@@ -18,7 +18,6 @@ const { SieveAccounts } = require("./SieveAccounts.js");
 
 const { SieveTemplateLoader } = require("./utils/SieveTemplateLoader.js");
 
-
 /**
  * Displays a simple dialog with an action button.
  */
@@ -68,6 +67,13 @@ let callback = async function (account) {
     (dialog) => {
       dialog.find(".sieve-username").text(username);
       dialog.find(".sieve-displayname").text(displayName);
+
+      dialog.find('.sieve-password').keypress((e) => {
+        console.log("onenter");
+        if (e.which === 13) {
+          dialog.find(".sieve-dialog-resolve").trigger('click');
+        }
+      });
     },
     (dialog) => {
       return dialog.find(".sieve-password").val();

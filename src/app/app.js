@@ -17,6 +17,7 @@ const { SieveSession } = require("./libs/libManageSieve/SieveNodeSession.js");
 const { SieveAccounts } = require("./SieveAccounts.js");
 
 const { SieveTemplateLoader } = require("./utils/SieveTemplateLoader.js");
+const { SieveUpdater } = require("./utils/SieveUpdater.js");
 
 /**
  * Displays a simple dialog with an action button.
@@ -86,11 +87,17 @@ let callback = async function (account) {
 
 let accounts = new SieveAccounts(callback).load();
 
-
 let sessions = {};
 
-
 let actions = {
+
+  "update-check" : async () => {
+    return await (new SieveUpdater()).check();
+  },
+
+  "update-goto-url" : async() => {
+    require("electron").shell.openExternal('https://github.com/thsmi/sieve/releases/latest');
+  },
 
   "import-thunderbird" : function() {
     console.log("Import Thunderbird accounts");

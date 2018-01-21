@@ -16,6 +16,7 @@
   /* global $ */
   /* global SieveAccountsUI */
   /* global SieveImportUI */
+  /* global SieveUpdaterUI */
 
 
   /**
@@ -36,12 +37,13 @@
       let id = accounts.create();
       // TODO show the settings dialog
     });
-
   }
 
   $(document).ready(function () {
     (async () => { await main(); })();
   });
+
+  (new SieveUpdaterUI()).check();
 
 })();
 

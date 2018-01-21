@@ -49,7 +49,7 @@
         if (version[MINOR_VERSION] < currentVersion[MINOR_VERSION])
           continue;
 
-        if (version[PATCH_VERSION] <= currentVersion[PATCH_VERSION]-2)
+        if (version[PATCH_VERSION] <= currentVersion[PATCH_VERSION])
           continue;
 
         return true;

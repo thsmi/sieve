@@ -69,7 +69,11 @@ You are looking for the most recent release?
 
 Just go to [the releases page and download the latest stable xpi or view the release notes](https://github.com/thsmi/sieve/releases/latest).
 
-*Firefox user have to do a right click on the XPI download and select "Save link as" otherwise Firefox will steal the link and try to install the addon it into Firefox which will fail*
+**Firefox user have to do a right click on the XPI download and select "Save link as" otherwise Firefox will steal the link and try to install the addon it into Firefox which will fail**
+
+The addon is restartless, so there is no need to restart Thunderbird upon installation and deinstallation.
+
+**Sometimes Thunderbird fails to invalidate its cache when updating a restartless addon. The result is the new version is displayed in the addons dialog but the old cached code is still be used. In such a case uninstall the addon, then restart thunderbird, restart it again and finally install it again. This ensures the cache gets correctly invalidated.** 
 
 Since 0.2.4 the addon is self hosted. This means it is will update automatically, but it is no more listed at addons.mozilla.org.
 

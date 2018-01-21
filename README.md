@@ -9,7 +9,7 @@ Sieve stores and runs all script on the server-side.
 Now there is the dilemma - you have access to a server supporting sieve but,
 how do you manage your scripts on this server?
 
-You can use telnet for this purpose, but that is fair to uncomfortable, not
+You can use telnet for this purpose, but that is far to uncomfortable, not
 applicable for a normal user and almost impossible with secure connections.
 Wouldn't it be great to activate, edit, delete and add sieve scripts with a
 convenient interface? That is exactly what the Sieve Extension offers...
@@ -77,9 +77,7 @@ This is because of a design flaw in Thunderbirds APIs for loading and unloading 
 
 ## Developments Builds
 
-Development builds can also be found in the release section they are marked as a pre release
 You are looking for the latest "bleeding edge" features and willing to risk more instability?
 Or you might even want to test out newly added code to help identify and debug problems?
 
-You can find the nightly builds also on the [release page](https://github.com/thsmi/sieve/releases). They are marked as prerelease.
-They will update to newer releases but not to newer prereleases.
+You can find the development builds also in the [release section](https://github.com/thsmi/sieve/releases). They are marked as prerelease. They will update to newer releases but not to newer prereleases.

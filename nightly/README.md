@@ -8,4 +8,4 @@ Keep in mind development builds might not update automatically upon release of
 the next version. They are experimental, so they most likely contain bugs and regressions. 
 Thus you are using these builds at your own risk.
 
-You find the development builds on the [release page](https://github.com/thsmi/sieve/releases) side by side with the normal releases but they are tagged as prerelease. This might sound confusing but it is the github way to do this.
+**You find the development builds on the [release page](https://github.com/thsmi/sieve/releases) side by side with the normal releases but they are tagged as prerelease. This might sound confusing but it is the github way to do this.**

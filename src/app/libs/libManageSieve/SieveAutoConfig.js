@@ -32,6 +32,15 @@
    * It is typically either 2000 or 4190.
    */
   class SieveAutoConfig {
+
+    /**
+     * Creates a new auto config instance. It tries to automagically detect
+     * the correct sieve settings.
+     *
+     * @param {String} hostname
+     *   the hostname or ip which should be tested
+     * @constructor
+     */
     constructor(hostname) {
       this.hostname = hostname;
       this.logger = new SieveLogger();
@@ -39,7 +48,7 @@
     }
 
     /**
-     * Autodetects the sieve port.
+     * Autodetects the sieve port for all well known sieve ports.
      * In case autodetect fails an exception is thrown.
      *
      * @returns {int}
@@ -94,7 +103,7 @@
 
         let request = new SieveInitRequest();
         request.addErrorListener(listener);
-        request.addInitListener(listener);
+        request.addResponseListener(listener);
         sieve.addRequest(request);
 
         sieve.addListener(listener);

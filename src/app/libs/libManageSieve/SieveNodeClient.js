@@ -29,6 +29,10 @@
       this.error = error;
       this.cert = cert;
     }
+
+    getType() {
+      return "SIEVE_CERT_VALIDATION_EXCEPTION"
+    }
   }
 
   /**

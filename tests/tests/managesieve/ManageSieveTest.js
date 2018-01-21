@@ -42,7 +42,7 @@
     handler.onSaslResponse = function () { hasSucceded = true; };
     handler.onError = function () { hasError = true; };
 
-    request.addSaslListener(handler);
+    request.addResponseListener(handler);
     request.addErrorListener(handler);
 
     request.setUsername("blubb");
@@ -98,7 +98,7 @@
 
 
     let request = new SieveSaslExternalRequest();
-    request.addSaslListener(handler);
+    request.addResponseListener(handler);
     request.addErrorListener(handler);
 
     // CLIENT -> SERVER
@@ -129,7 +129,7 @@
 
     let request = new SieveSaslExternalRequest();
 
-    request.addSaslListener(handler);
+    request.addResponseListener(handler);
     request.addErrorListener(handler);
 
     // CLIENT -> SERVER

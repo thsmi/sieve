@@ -234,7 +234,7 @@ const Cu = Components.utils;
     = function (script, success, error) {
       // delete the script...
       let request = new SieveDeleteScriptRequest(script);
-      request.addDeleteScriptListener(success);
+      request.addResponseListener(success);
       request.addErrorListener(error);
 
       this.sieve.addRequest(request);
@@ -244,7 +244,7 @@ const Cu = Components.utils;
     = function (script, success, error) {
 
       let request = new SieveSetActiveRequest(script);
-      request.addSetActiveListener(success);
+      request.addResponseListener(success);
       request.addErrorListener(error);
 
       this.sieve.addRequest(request);
@@ -281,7 +281,7 @@ const Cu = Components.utils;
     = function (script, success, error) {
 
       let request = new SieveCheckScriptRequest(script);
-      request.addCheckScriptListener(success);
+      request.addResponseListener(success);
       request.addErrorListener(error);
 
       this.sieve.addRequest(request);
@@ -291,7 +291,7 @@ const Cu = Components.utils;
     = function (oldName, newName, success, error) {
 
       let request = new SieveRenameScriptRequest(oldName, newName);
-      request.addRenameScriptListener(success);
+      request.addResponseListener(success);
       request.addErrorListener(error);
 
       this.sieve.addRequest(request);
@@ -317,7 +317,7 @@ const Cu = Components.utils;
 
           let request = new SieveSetActiveRequest(newName);
 
-          request.addSetActiveListener(lEvent);
+          request.addResponseListener(lEvent);
           request.addErrorListener(error);
 
           this.sieve.addRequest(request);
@@ -326,7 +326,7 @@ const Cu = Components.utils;
           // we redirect this request to event not lEvent!
           // because event.onDeleteScript is doing exactly what we want!
           let request = new SieveDeleteScriptRequest(oldName);
-          request.addDeleteScriptListener(lEvent);
+          request.addResponseListener(lEvent);
           request.addErrorListener(error);
 
           this.sieve.addRequest(request);
@@ -344,7 +344,7 @@ const Cu = Components.utils;
     = function (success, error) {
 
       let request = new SieveListScriptRequest();
-      request.addListScriptListener(success);
+      request.addResponseListener(success);
       request.addErrorListener(error);
 
       this.sieve.addRequest(request);
@@ -354,7 +354,7 @@ const Cu = Components.utils;
     = function (script, body, success, error) {
 
       let request = new SievePutScriptRequest(script, body);
-      request.addPutScriptListener(success);
+      request.addResponseListener(success);
       request.addErrorListener(error);
 
       this.sieve.addRequest(request);
@@ -363,7 +363,7 @@ const Cu = Components.utils;
   SieveSession.prototype.getScript
     = function (script, success, error) {
       let request = new SieveGetScriptRequest(script);
-      request.addGetScriptListener(success);
+      request.addResponseListener(success);
       request.addErrorListener(error);
 
       this.sieve.addRequest(request);

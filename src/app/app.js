@@ -86,25 +86,6 @@ let callback = async function (account) {
 
 let accounts = new SieveAccounts(callback).load();
 
-/*
-let listener = {
-  onTimeout: function () {
-    session.disconnect(true);
-  },
-  onChannelCreated: function () {
-
-    let request = new SieveListScriptRequest();
-    request.addListScriptListener(this);
-    request.addErrorListener(this);
-
-    session.sieve.addRequest(request);
-  },
-  onListScriptResponse: function (response) {
-    console.dir(response.getScripts());
-    // session.disconnect();
-  }
-};*/
-
 
 let sessions = {};
 
@@ -222,7 +203,41 @@ let actions = {
     return await sessions[msg.payload.account].capabilities();
   },
 
-  "account-connect": async function (msg) {
+  "account-cert-error" : async (msg) => {
+    let rv = await new SieveDialog().show(
+      "./ui/app/dialog.account.cert.tpl",
+      (dialog) => { dialog.find(".sieve-dialog-fingerprint").text(msg.payload.fingerprint); },
+      () => { return true; },
+      () => { return false; }
+    );
+
+    // save the fingerprint.
+    if (rv === true) {
+      accounts.getAccountById(msg.payload.account).getHost().setFingerprint(msg.payload.fingerprint);
+      // TODO we need to trigger this reconnect async...
+      actions["account-connecting"](msg);
+    }
+  },
+
+  "account-connecting" : async (msg) => {
+    try {
+      await sessions[msg.payload.account].connect();
+    } catch (e) {
+
+      if (e.getType && e.getType() === "SIEVE_CERT_VALIDATION_EXCEPTION") {
+        msg.payload.fingerprint = e.cert.fingerprint;
+        await actions["account-cert-error"](msg);
+        return;
+      }
+
+      // connecting failed for some reason, which means we
+      // need to handle the error.
+      alert(e);
+    }
+
+  },
+
+  "account-connect": async (msg) => {
 
     console.log("Connect");
 
@@ -233,7 +248,7 @@ let actions = {
 
     sessions[msg.payload.account] = new SieveSession(account, "sid2");
 
-    await sessions[msg.payload.account].connect();
+    await actions["account-connecting"](msg);
   },
 
   "account-connected": function (msg) {

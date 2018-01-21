@@ -39,7 +39,7 @@ function SieveAutoConfigHost(host, port, proxy, listener, logger) {
 
   let request = new SieveInitRequest();
   request.addErrorListener(this);
-  request.addInitListener(this);
+  request.addResponseListener(this);
   this.sieve.addRequest(request);
 }
 

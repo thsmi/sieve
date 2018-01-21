@@ -159,7 +159,7 @@
         }
 
         let request = this.createStartTLSRequest();
-        request.addStartTLSListener(this);
+        request.addResponseListener(this);
         request.addErrorListener(this);
 
         this.sieve.addRequest(request);
@@ -255,7 +255,7 @@
           request.setPassword(password);
         }
 
-        request.addSaslListener(this);
+        request.addResponseListener(this);
 
 
         // check if the authentication method supports proxy authorization...
@@ -286,7 +286,7 @@
 
         // explicitely request capabilites
         let request = this.createCapabilitiesRequest();
-        request.addCapabilitiesListener(lEvent);
+        request.addResponseListener(lEvent);
 
         this.sieve.addRequest(request);
 
@@ -468,7 +468,7 @@
         // Step 2: Initialize Message Queue...
         let request = this.createInitRequest();
         request.addErrorListener(this);
-        request.addInitListener(this);
+        request.addResponseListener(this);
         this.sieve.addRequest(request);
 
         // Step 3: Connect...
@@ -503,7 +503,7 @@
         // ... we always try to exit with an Logout request...
         if (!force && this.sieve.isAlive()) {
           let request = this.createLogoutRequest();
-          request.addLogoutListener(this);
+          request.addResponseListener(this);
           // request.addErrorListener(levent);
           this.sieve.addRequest(request);
 

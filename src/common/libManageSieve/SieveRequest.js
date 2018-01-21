@@ -81,6 +81,19 @@ if (typeof (module) === "undefined" || !module.exports)
     };
 
   /**
+   * Add a response listener to this request. The response listener will
+   * be triggered in case a successful server response was received
+   *
+   * @param {function} listener
+   *   the listener which should be invoked when the server response
+   * @returns {void}
+   */
+  SieveAbstractRequest.prototype.addResponseListener
+    = function (listener) {
+      this.responseListener = listener;
+    };
+
+  /**
    * In general Sieve uses an unsolicited communication.
    * The client sends messages to server and the server responds
    * to those.
@@ -253,11 +266,6 @@ if (typeof (module) === "undefined" || !module.exports)
       return this;
     };
 
-  SieveAbstractSaslRequest.prototype.addSaslListener
-    = function (listener) {
-      this.responseListener = listener;
-    };
-
   SieveAbstractSaslRequest.prototype.onOk
     = function (response) {
       if (this.responseListener)
@@ -282,12 +290,6 @@ if (typeof (module) === "undefined" || !module.exports)
   // Inherrit prototypes from SieveAbstractRequest...
   SieveGetScriptRequest.prototype = Object.create(SieveAbstractRequest.prototype);
   SieveGetScriptRequest.prototype.constructor = SieveGetScriptRequest;
-
-  SieveGetScriptRequest.prototype.addGetScriptListener
-    = function (listener) {
-      this.responseListener = listener;
-    };
-
 
   SieveGetScriptRequest.prototype.getNextRequest = function (builder) {
     return builder
@@ -342,11 +344,6 @@ if (typeof (module) === "undefined" || !module.exports)
         .addLiteral("PUTSCRIPT")
         .addQuotedString(this.script)
         .addMultiLineString(this.body);
-    };
-
-  SievePutScriptRequest.prototype.addPutScriptListener
-    = function (listener) {
-      this.responseListener = listener;
     };
 
   SievePutScriptRequest.prototype.onOk
@@ -408,11 +405,6 @@ if (typeof (module) === "undefined" || !module.exports)
         .addMultiLineString(this.body);
     };
 
-  SieveCheckScriptRequest.prototype.addCheckScriptListener
-    = function (listener) {
-      this.responseListener = listener;
-    };
-
   SieveCheckScriptRequest.prototype.onOk
     = function (response) {
       if (this.responseListener)
@@ -460,10 +452,6 @@ if (typeof (module) === "undefined" || !module.exports)
         .addQuotedString(this.script);
     };
 
-  SieveSetActiveRequest.prototype.addSetActiveListener
-    = function (listener) {
-      this.responseListener = listener;
-    };
 
   SieveSetActiveRequest.prototype.onOk
     = function (response) {
@@ -495,11 +483,6 @@ if (typeof (module) === "undefined" || !module.exports)
     = function (builder) {
       return builder
         .addLiteral("CAPABILITY");
-    };
-
-  SieveCapabilitiesRequest.prototype.addCapabilitiesListener
-    = function (listener) {
-      this.responseListener = listener;
     };
 
   SieveCapabilitiesRequest.prototype.onOk
@@ -537,10 +520,6 @@ if (typeof (module) === "undefined" || !module.exports)
         .addQuotedString(this.script);
     };
 
-  SieveDeleteScriptRequest.prototype.addDeleteScriptListener
-    = function (listener) {
-      this.responseListener = listener;
-    };
 
   SieveDeleteScriptRequest.prototype.onOk
     = function (response) {
@@ -580,10 +559,6 @@ if (typeof (module) === "undefined" || !module.exports)
         .addLiteral("NOOP");
     };
 
-  SieveNoopRequest.prototype.addNoopListener
-    = function (listener) {
-      this.responseListener = listener;
-    };
 
   SieveNoopRequest.prototype.onOk
     = function (response) {
@@ -630,11 +605,6 @@ if (typeof (module) === "undefined" || !module.exports)
         .addQuotedString(this.newScript);
     };
 
-  SieveRenameScriptRequest.prototype.addRenameScriptListener
-    = function (listener) {
-      this.responseListener = listener;
-    };
-
   SieveRenameScriptRequest.prototype.onOk
     = function (response) {
       if (this.responseListener)
@@ -670,11 +640,6 @@ if (typeof (module) === "undefined" || !module.exports)
         .addLiteral("LISTSCRIPTS");
     };
 
-  SieveListScriptRequest.prototype.addListScriptListener
-    = function (listener) {
-      this.responseListener = listener;
-    };
-
   SieveListScriptRequest.prototype.onOk
     = function (response) {
       if (this.responseListener)
@@ -701,11 +666,6 @@ if (typeof (module) === "undefined" || !module.exports)
     = function (builder) {
       return builder
         .addLiteral("STARTTLS");
-    };
-
-  SieveStartTLSRequest.prototype.addStartTLSListener
-    = function (listener) {
-      this.responseListener = listener;
     };
 
   SieveStartTLSRequest.prototype.onOk
@@ -768,11 +728,6 @@ if (typeof (module) === "undefined" || !module.exports)
       return builder.addLiteral("LOGOUT");
     };
 
-  SieveLogoutRequest.prototype.addLogoutListener
-    = function (listener) {
-      this.responseListener = listener;
-    };
-
   SieveLogoutRequest.prototype.onOk
     = function (response) {
       if (this.responseListener)
@@ -826,11 +781,6 @@ if (typeof (module) === "undefined" || !module.exports)
   // Inherrit prototypes from SieveAbstractRequest...
   SieveInitRequest.prototype = Object.create(SieveAbstractRequest.prototype);
   SieveInitRequest.prototype.constructor = SieveInitRequest;
-
-  SieveInitRequest.prototype.addInitListener
-    = function (listener) {
-      this.responseListener = listener;
-    };
 
   SieveInitRequest.prototype.onOk
     = function (response) {

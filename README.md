@@ -19,8 +19,9 @@ convenient interface? That is exactly what the Sieve Extension offers...
 ## Status
 
 The extension is an implementation of the [sieve management protocol (RFC 5804)](https://wiki.tools.ietf.org/html/rfc5804).
-Currently only "SASL Plain", "SASL Login", "SASL CRAM MD5" and "[SASL SCRAM SHA1](https://tools.ietf.org/html/rfc5802)"
-Authentication mechanisms are supported, others may be implemented on request.
+Currently only "SASL Plain", "SASL Login", "SASL CRAM MD5", "[SASL SCRAM SHA1](https://tools.ietf.org/html/rfc5802)" and "[SASL SCRAM SHA256](https://tools.ietf.org/html/rfc7677)" Authentication mechanisms are supported, others may be implemented on request.
+
+The graphical script editor supports the [Sieve Filter Language (RFC 5228)](https://tools.ietf.org/html/rfc5228).
 
 The project exists since 2006 and can be considered as stable. Statistics
 are available at [ohloh](https://www.ohloh.net/p/tb-sieve)

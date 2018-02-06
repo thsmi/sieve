@@ -132,10 +132,21 @@ SieveProtocolHandler.prototype =
     },
 
     newURI: function (spec, charset, baseURI) {
+
+      // Thunderbird 60 introduced standard-url-mutator and dropped standard-url
+      if (Components.classes['@mozilla.org/network/standard-url-mutator;1']) {
+        return Components.classes["@mozilla.org/network/standard-url-mutator;1"]
+          .createInstance(Components.interfaces.nsIStandardURLMutator)
+          .init(Components.interfaces.nsIStandardURL.URLTYPE_AUTHORITY, this.defaultPort, spec, charset, baseURI)
+          .finalize()
+          .QueryInterface(Components.interfaces.nsIStandardURL);
+      }
+
       let url = Cc["@mozilla.org/network/standard-url;1"].createInstance(Ci.nsIStandardURL);
 
       // Normalize URL to an standard URL
-      url.init(Ci.nsIStandardURL.URLTYPE_AUTHORITY/* URLTYPE_STANDARD */, this.defaultPort, spec, charset, baseURI);
+      url.init(Ci.nsIStandardURL.URLTYPE_AUTHORITY/* URLTYPE_STANDARD */, this.defaultPort,
+        spec, charset, baseURI);
 
       return url.QueryInterface(Ci.nsIURI);
     },

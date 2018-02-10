@@ -27,16 +27,21 @@ const SIEVE_SCHEME = "x-sieve";
 const SIEVE_MIMETYPE = "application/x-sieve";
 
 /**
- * bogus channel implementation, based on chatzilla's IRCProtocolHandler
+ * Bogus channel implementation, based on chatzilla's IRCProtocolHandler
  * @param {URI} uri
  *   the channel's uri
+ * @param {nsILoadInfo} [loadInfo]
+ *   Optional if returned via newChannel, mandatory if returned via newChannel2.
+ *   The LoadInfo object contains information about a network load, why it
+ *   was started, and what kind of response is expected.
  *
  * @constructor
  */
-function BogusChannel(uri) {
+function BogusChannel(uri, loadInfo) {
   this.URI = uri;
   this.originalURI = uri;
   this.contentType = SIEVE_SCHEME;
+  this.loadInfo = loadInfo;
 }
 
 BogusChannel.prototype = {
@@ -49,17 +54,31 @@ BogusChannel.prototype = {
   notificationCallbacks: null,
   securityInfo: null,
 
-  open: function (observer, ctxt) {
+  // contentCharset
+  isDocument: false,
+  // contentDispositionHeader
+  // contentDispositionFilename
+
+
+  open: function () {
     Components.returnCode = NS_ERROR_NO_CONTENT;
   },
 
-  asyncOpen: function (observer, ctxt) {
+  open2: function() {
+    Components.returnCode = NS_ERROR_NO_CONTENT;
+  },
+
+  asyncOpen: function () {
     // We don't throw this (a number, not a real 'resultcode') because it
     // upsets xpconnect if we do (error in the js console).
     Components.returnCode = NS_ERROR_NO_CONTENT;
   },
 
-  asyncRead: function (listener, ctxt) {
+  asyncOpen2: function() {
+    Components.returnCode = NS_ERROR_NO_CONTENT;
+  },
+
+  asyncRead: function () {
     throw Cr.NS_ERROR_NOT_IMPLEMENTED;
   },
 
@@ -145,19 +164,23 @@ SieveProtocolHandler.prototype =
       let url = Cc["@mozilla.org/network/standard-url;1"].createInstance(Ci.nsIStandardURL);
 
       // Normalize URL to an standard URL
-      url.init(Ci.nsIStandardURL.URLTYPE_AUTHORITY/* URLTYPE_STANDARD */, this.defaultPort,
+      url.init(Ci.nsIStandardURL.URLTYPE_AUTHORITY, this.defaultPort,
         spec, charset, baseURI);
 
       return url.QueryInterface(Ci.nsIURI);
     },
 
     newChannel: function (URI) {
+      return this.newChannel2(URI);
+    },
+
+    newChannel2: function(URI, loadInfo) {
       let ios = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
 
       if (!ios.allowPort(URI.port, URI.scheme))
         throw Components.results.NS_ERROR_FAILURE;
 
-      return new BogusChannel(URI);
+      return new BogusChannel(URI, loadInfo);
     },
 
     QueryInterface: function (aIID) {

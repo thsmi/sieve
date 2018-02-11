@@ -15,7 +15,7 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>sieve@mozdev.org</em:id>
-    <em:version>0.2.9</em:version>
+    <em:version>0.2.10</em:version>
     <em:type>2</em:type>
 
     <em:targetApplication>

@@ -13,6 +13,9 @@
 
   "use strict";
 
+  const MIN_SALT_LENGTH = 2;
+  const MIN_ITERATION_COUNT = 0;
+
   /**
    * Crypto implementations are very browser specific.
    * Which means we need a separate wrapper for each browser.
@@ -147,10 +150,10 @@
       if (Array.isArray(salt) === false)
         salt = this.strToByteArray(salt);
 
-      if (salt.length < 2)
+      if (salt.length < MIN_SALT_LENGTH)
         throw new Error("Insufficient salt");
 
-      if (i <= 0)
+      if (i <= MIN_ITERATION_COUNT)
         throw new Error("Invalid Iteration counter");
 
       salt.push(0, 0, 0, 1);

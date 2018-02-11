@@ -368,18 +368,19 @@
    * binary. So we can't use java scripts build in string functions as they expect
    * pure unicode.
    *
-   * @param {int} startIndex
+   * @param {int} [startIndex]
    *   Optional zero-based index at which to begin.
-   * @param {int} endIndex
+   * @param {int} [endIndex]
    *   Optional Zero-based index at which to end.
    * @return {String} the copy buffers content
    */
   SieveAbstractResponseParser.prototype.getData
     = function (startIndex, endIndex) {
-      if (arguments.length < 2)
+
+      if (typeof(endIndex) === "undefined" || endIndex === null)
         endIndex = this.data.length;
 
-      if (arguments.length < 1)
+      if (typeof(startIndex) === "undefined" || startIndex === null)
         startIndex = this.pos;
 
       let byteArray = this.data.slice(startIndex, endIndex);

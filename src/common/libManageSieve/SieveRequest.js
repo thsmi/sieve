@@ -56,6 +56,10 @@ if (typeof (module) === "undefined" || !module.exports)
   const STATE_CRAM_MD5_CHALLENGED = 1;
   const STATE_CRAM_MD5_INIT = 0;
 
+  const RESPONSE_OK = 0;
+  const RESPONSE_BYE = 1;
+  const RESPONSE_NO = 2;
+
   // ****************************************************************************//
 
   /**
@@ -129,9 +133,11 @@ if (typeof (module) === "undefined" || !module.exports)
    *   to form the request string.
    * @return {String}
    *   the data which should be send to the server
+   *
+   * @abstract
    */
   SieveAbstractRequest.prototype.getNextRequest = function (builder) {
-    throw new Error("Abstract Method implement me");
+    throw new Error("Abstract Method implement me " + builder);
   };
 
   SieveAbstractRequest.prototype.cancel
@@ -154,7 +160,7 @@ if (typeof (module) === "undefined" || !module.exports)
 
   SieveAbstractRequest.prototype.onOk
     = function (response) {
-      throw new Error("Abstract Method override me");
+      throw new Error("Abstract Method override me " + response);
     };
 
   /**
@@ -167,11 +173,11 @@ if (typeof (module) === "undefined" || !module.exports)
    */
   SieveAbstractRequest.prototype.addResponse
     = function (response) {
-      if (response.getResponse() === 0)
+      if (response.getResponse() === RESPONSE_OK)
         this.onOk(response);
-      else if (response.getResponse() === 1)
+      else if (response.getResponse() === RESPONSE_BYE)
         this.onBye(response);
-      else if (response.getResponse() === 2)
+      else if (response.getResponse() === RESPONSE_NO)
         this.onNo(response);
       else
         throw new Error("Invalid Response Code");
@@ -197,7 +203,10 @@ if (typeof (module) === "undefined" || !module.exports)
   SieveAbstractSaslRequest.prototype._authorization = "";
 
 
-  /** @param {String} username */
+  /**
+   * @param {String} username
+   * @return {void}
+   **/
   SieveAbstractSaslRequest.prototype.setUsername
     = function (username) {
       this._username = username;
@@ -471,6 +480,7 @@ if (typeof (module) === "undefined" || !module.exports)
   /**
    *
    * @author Thomas Schmid
+   * @constructor
    */
   function SieveCapabilitiesRequest() {
   }

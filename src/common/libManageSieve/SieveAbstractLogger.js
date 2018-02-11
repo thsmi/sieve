@@ -13,6 +13,8 @@
 
   "use strict";
 
+  const TWO_CHARS = 2;
+  const THREE_CHARS = 3;
   /**
    * Implements a common and platform independent logging interface.
    * The log level is interpreted as a bit filed with turns logging
@@ -111,10 +113,10 @@
     = function () {
 
       let date = new Date();
-      return this._pad(date.getHours(), 2)
-        + ":" + this._pad(date.getMinutes(), 2)
-        + ":" + this._pad(date.getSeconds(), 2)
-        + "." + this._pad(date.getMilliseconds(), 3);
+      return this._pad(date.getHours(), TWO_CHARS)
+        + ":" + this._pad(date.getMinutes(), TWO_CHARS)
+        + ":" + this._pad(date.getSeconds(), TWO_CHARS)
+        + "." + this._pad(date.getMilliseconds(), THREE_CHARS);
     };
 
 

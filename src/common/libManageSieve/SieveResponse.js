@@ -22,17 +22,42 @@
     SieveResponseCodeReferral
   } = require("./SieveResponseCodes.js");
 
-  const CHAR_B = [66, 98];
-  const CHAR_E = [69, 101];
-  const CHAR_N = [78, 110];
-  const CHAR_O = [79, 111];
-  const CHAR_K = [75, 107];
-  const CHAR_Y = [89, 121];
+  const CHAR_LOWERCASE_B = 66;
+  const CHAR_UPPERCASE_B = 98;
+  const CHAR_B = [CHAR_LOWERCASE_B, CHAR_UPPERCASE_B];
+
+  const CHAR_LOWERCASE_E = 69;
+  const CHAR_UPPERCASE_E = 101;
+  const CHAR_E = [CHAR_LOWERCASE_E, CHAR_UPPERCASE_E];
+
+  const CHAR_LOWERCASE_N = 78;
+  const CHAR_UPPERCASE_N = 110;
+  const CHAR_N = [CHAR_LOWERCASE_N, CHAR_UPPERCASE_N];
+
+  const CHAR_LOWERCASE_O = 79;
+  const CHAR_UPPERCASE_O = 111;
+  const CHAR_O = [CHAR_LOWERCASE_O, CHAR_UPPERCASE_O];
+
+  const CHAR_LOWERCASE_K = 75;
+  const CHAR_UPPERCASE_K = 107;
+  const CHAR_K = [CHAR_LOWERCASE_K, CHAR_UPPERCASE_K];
+
+  const CHAR_LOWERCASE_Y = 89;
+  const CHAR_UPPERCASE_Y = 121;
+  const CHAR_Y = [CHAR_LOWERCASE_Y, CHAR_UPPERCASE_Y];
+
+  const CHAR_BRACKET_OPEN = 40;
+  const CHAR_BRACKET_CLOSE = 41;
+  const CHAR_SPACE = 32;
+  const CHAR_CR = 13;
 
   const TOKEN_OK = [CHAR_O, CHAR_K];
   const TOKEN_BYE = [CHAR_B, CHAR_Y, CHAR_E];
   const TOKEN_NO = [CHAR_N, CHAR_O];
 
+  const SIEVE_VERSION_1 = 1.0;
+
+  const ONE_CHAR = 1;
   /**
    * This class implements a generic response handler for simple sieve requests.
    *
@@ -89,9 +114,9 @@
     parser.extractSpace();
 
     // we found "(" so we got an responseCode, they are extremely ugly...
-    if (parser.startsWith([[40]])) {
+    if (parser.startsWith([[CHAR_BRACKET_OPEN]])) {
       // remove the opening bracket...
-      parser.extract(1);
+      parser.extract(ONE_CHAR);
       // ... but remember it
       let nesting = 0;
 
@@ -100,15 +125,15 @@
       if (parser.isString())
         this.responseCode.push(parser.extractString());
       else
-        this.responseCode.push(parser.extractToken([32, 41]));
+        this.responseCode.push(parser.extractToken([CHAR_SPACE, CHAR_BRACKET_CLOSE]));
 
       while (parser.isSpace()) {
         parser.extractSpace();
 
         // We might stumbe upon opening brackets...
-        if (parser.startsWith([[40]])) {
+        if (parser.startsWith([[CHAR_BRACKET_OPEN]])) {
           // ... oh we did, so increase our nesting counter.
-          parser.extract(1);
+          parser.extract(ONE_CHAR);
           nesting++;
         }
 
@@ -117,19 +142,19 @@
         if (parser.isString())
           this.responseCode.push(parser.extractString());
         else
-          this.responseCode.push(parser.extractToken([32, 41]));
+          this.responseCode.push(parser.extractToken([CHAR_SPACE, CHAR_BRACKET_CLOSE]));
 
         // is it a closing bracket
-        if (parser.startsWith([[41]]) && nesting) {
-          parser.extract(1);
+        if (parser.startsWith([[CHAR_BRACKET_CLOSE]]) && nesting) {
+          parser.extract(ONE_CHAR);
           nesting--;
         }
       }
 
-      if (!parser.startsWith([[41]]))
+      if (!parser.startsWith([[CHAR_BRACKET_CLOSE]]))
         throw new Error("Closing Backets expected in " + parser.getData());
 
-      parser.extract(1);
+      parser.extract(ONE_CHAR);
 
       if (parser.isLineBreak()) {
         parser.extractLineBreak();
@@ -254,7 +279,7 @@
           break;
         case "VERSION":
           this.details.version = parseFloat(value);
-          if (this.details.version < 1.0)
+          if (this.details.version < SIEVE_VERSION_1)
             break;
 
           // Version 1.0 introduced rename, noop and checkscript
@@ -323,6 +348,8 @@
    * Returns the list of supported sasl mechanisms.
    *
    * They may change after a secure channel was established.
+   * @returns {String}
+   *   the sasl mechanism
    */
   SieveCapabilitiesResponse.prototype.getSasl
     = function () { return this.details.sasl; };
@@ -460,7 +487,7 @@
 
       parser.extractSpace();
 
-      if (parser.extractToken([13]).toUpperCase() !== "ACTIVE")
+      if (parser.extractToken([CHAR_CR]).toUpperCase() !== "ACTIVE")
         throw new Error("Error \"ACTIVE\" expected");
 
       this.scripts[i].active = true;
@@ -630,8 +657,9 @@
    *
    * This requires a way mor logic on the client than with simple authentication
    * mechanisms. It also requires more communication, in total two roundtrips.
+   *
+   * @constructor
    */
-
   function SieveSaslScramSha1Response() {
     this.state = 0;
   }

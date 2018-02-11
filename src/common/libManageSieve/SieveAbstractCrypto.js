@@ -16,6 +16,8 @@
   const MIN_SALT_LENGTH = 2;
   const MIN_ITERATION_COUNT = 0;
 
+  const MAX_CHAR_CODE = 255;
+
   /**
    * Crypto implementations are very browser specific.
    * Which means we need a separate wrapper for each browser.
@@ -63,7 +65,7 @@
 
       for (let i = 0; i < bytes.length; i++) {
         let byte = String.fromCharCode(bytes[i]);
-        if (byte > 255)
+        if (byte > MAX_CHAR_CODE)
           throw new Error("Byte Array Invalid: " + byte);
 
         result += byte;
@@ -84,7 +86,7 @@
       let result = [];
 
       for (let i = 0; i < str.length; i++) {
-        if (str.charCodeAt(i) > 255)
+        if (str.charCodeAt(i) > MAX_CHAR_CODE)
           throw new Error("Invalid Charaters for Binary String :" + str.charCodeAt(i));
 
         result.push(str.charCodeAt(i));
@@ -101,16 +103,24 @@
     * @param {byte[]|string} bytes
     *   The input string as byte array or string
     * @returns {byte[]}
-    *   the calculated hash for the given input string. E.g. HMAC-SHA-1 hashes are
+    *   the calculated HAMC keyed hash for the given input string. E.g. HMAC-SHA-1 hashes are
     *   always always 20 octets long.
     */
     HMAC(key, bytes) {
-      throw new Error("Implement HMAC Algorithm for " + this.name + " with data " + key + " " + bytes);
+      throw new Error("Implement HMAC Algorithm for " + this.name + " with key " + key + " and data " + bytes);
     }
 
 
+    /**
+     * Calculates the Hash for the given algorithm.
+     *
+     * @param {bytes[]|string} bytes
+     *   The input string as byte array or string
+     * @returns {byte[]}
+     *   the calculated hash value for the input string.s
+     */
     H(bytes) {
-      throw new Error("Implement Hashing Algorithm for " + this.name + " with data " + key + " " + bytes);
+      throw new Error("Implement Hashing Algorithm for " + this.name + " with data " + bytes);
     }
 
     /**

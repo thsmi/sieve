@@ -75,10 +75,6 @@ The addon is restartless, so there is no need to restart Thunderbird upon instal
 
 **Sometimes Thunderbird fails to invalidate its cache when updating a restartless addon. The result is the new version is displayed in the addons dialog but the old cached code is still be used. In such a case uninstall the addon, then restart thunderbird, restart it again and finally install it again. This ensures the cache gets correctly invalidated.** 
 
-Since 0.2.4 the addon is self hosted. This means it is will update automatically, but it is no more listed at addons.mozilla.org.
-
-This is because of a design flaw in Thunderbirds APIs for loading and unloading an extension. These are synchonous while the Networking API is asynchonous. So the async close of the networking and the synchonous unload are racing against eachother. Which is ugly but completely harmless. But it may trigger unhandled exception. The latter violates the review policies at addon.mozilla.org. Which makes the loop complete. It is not possible to fix this behaviour as it is native to thunderbird but it prevents a the addon to pass the review at addons.mozilla.org. This is why the this addon has to be self hosted...
-
 ## Developments Builds
 
 You are looking for the latest "bleeding edge" features and willing to risk more instability?

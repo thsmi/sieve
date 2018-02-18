@@ -20,6 +20,8 @@
   const CHAR_LEFT_BRACES = 123;
   const CHAR_RIGHT_BRACES = 125;
 
+  const NOT_FOUND = -1;
+  const CHAR_LEN = 1;
   /**
    * The manage sieve protocol syntax uses a fixed gramar which is based on atomar tokens.
    * This class offers an interface to test for and extract these predefined tokens. It supports
@@ -68,14 +70,14 @@
   SieveAbstractResponseParser.prototype.isLineBreak
     = function () {
       // Are we out of bounds?
-      if (this.data.length < this.pos + 1)
+      if (this.data.length < this.pos + CHAR_LEN)
         return false;
 
       // Test for a linebreak #13#10
       if (this.data[this.pos] !== CHAR_CR)
         return false;
 
-      if (this.data[this.pos + 1] !== CHAR_LF)
+      if (this.data[this.pos + CHAR_LEN] !== CHAR_LF)
         return false;
 
       return true;
@@ -149,13 +151,13 @@
       // ... we can get "{4+}\r\n1234" or "{4}\r\n1234"
 
       let nextBracket = this.indexOf(CHAR_RIGHT_BRACES);
-      if (nextBracket === -1)
+      if (nextBracket === NOT_FOUND)
         throw new Error("Error unbalanced parentheses \"{\" in\n" + this.getData());
 
       // extract the size, and ignore "+"
       let size = parseInt(this.getData(this.pos, nextBracket).replace(/\+/, ""), 10);
 
-      this.pos = nextBracket + 1;
+      this.pos = nextBracket + CHAR_LEN;
 
       this.extractLineBreak();
 
@@ -185,7 +187,7 @@
         if (this.data[i] === character)
           return i;
 
-      return -1;
+      return NOT_FOUND;
     };
 
   /**
@@ -215,7 +217,7 @@
         throw new Error("Quoted string expected but found \n" + this.getData());
 
       // now search for the end. But we need to be aware of escape sequences.
-      let nextQuote = this.pos + 1;
+      let nextQuote = this.pos + CHAR_LEN;
 
       while (this.data[nextQuote] !== CHAR_QUOTE) {
 
@@ -243,9 +245,9 @@
           throw new Error("Unterminated Quoted string");
       }
 
-      let quoted = this.getData(this.pos + 1, nextQuote);
+      let quoted = this.getData(this.pos + CHAR_LEN, nextQuote);
 
-      this.pos = nextQuote + 1;
+      this.pos = nextQuote + CHAR_LEN;
 
       // Cleanup escape sequences
       quoted = quoted.replace(/\\"/g, '"');
@@ -296,21 +298,21 @@
     = function (separators) {
       // Search for the separators, the one with the lowest index which is not...
       // ... equal to -1 wins. The -2 indecates not initalized...
-      let index = -1;
+      let index = NOT_FOUND;
 
       for (let i = 0; i < separators.length; i++) {
         let idx = this.indexOf(separators[i], this.pos);
 
-        if (idx === -1)
+        if (idx === NOT_FOUND)
           continue;
 
-        if (index === -1)
+        if (index === NOT_FOUND)
           index = idx;
         else
           index = Math.min(index, idx);
       }
 
-      if (index === -1)
+      if (index === NOT_FOUND)
         throw new Error("Delimiter >>" + separators + "<< not found in: " + this.getData());
 
       let token = this.getData(this.pos, index);
@@ -333,7 +335,7 @@
    */
   SieveAbstractResponseParser.prototype.startsWith
     = function (bytes) {
-      if (bytes.length === 0)
+      if (!bytes.length)
         return false;
 
       for (let i = 0; i < bytes.length; i++) {
@@ -377,10 +379,10 @@
   SieveAbstractResponseParser.prototype.getData
     = function (startIndex, endIndex) {
 
-      if (typeof(endIndex) === "undefined" || endIndex === null)
+      if (typeof (endIndex) === "undefined" || endIndex === null)
         endIndex = this.data.length;
 
-      if (typeof(startIndex) === "undefined" || startIndex === null)
+      if (typeof (startIndex) === "undefined" || startIndex === null)
         startIndex = this.pos;
 
       let byteArray = this.data.slice(startIndex, endIndex);
@@ -402,6 +404,51 @@
 
       return false;
     };
+
+  /**
+   * Converts a bytearray into an UTF8 encoded string
+   *
+   * @param {byte[]} byteArray
+   *   the byte array which should be converted.
+   *
+   * @returns {string}
+   *   the UT8 encoded string.
+   *
+   * @abstract
+   */
+  SieveAbstractResponseParser.prototype.convertToString
+    = function (byteArray) {
+      throw new Error("convertToString(" + byteArray + ")");
+    };
+
+  /**
+   * Encodes a clear text string to a base64 encoded string.
+   *
+   * @param {String} decoded
+   *   the clear text string which should be encoded.
+   * @returns {String}
+   *   the base64 encoded string.
+   *
+   * @abstract
+   */
+  SieveAbstractResponseParser.prototype.convertToBase64 = function (decoded) {
+    throw new Error("Implement convertToBase64(" + decoded + ")");
+  };
+
+
+  /**
+   * Decodes an base64 encoded string into a cleat text string.
+   *
+   * @param {String} encoded
+   *   the base64 encoded string which should be decoded.
+   * @returns {string}
+   *   the decoded string.
+   *
+   * @abstract
+   */
+  SieveAbstractResponseParser.prototype.convertFromBase64 = function (encoded) {
+    throw new Error("Implement convertFromBase64(" + encoded + ")");
+  };
 
   exports.SieveAbstractResponseParser = SieveAbstractResponseParser;
 

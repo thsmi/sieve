@@ -29,27 +29,27 @@
 
   SieveAbstractChannel.prototype.onListScriptResponse
     = function (response) {
-      throw new Error("Implement onListScriptResponse");
+      throw new Error("Implement onListScriptResponse(" + response + ")");
     };
 
   SieveAbstractChannel.prototype.onSetActiveResponse
     = function (response) {
-      throw new Error("Implement onSetActiveResponse");
+      throw new Error("Implement onSetActiveResponse(" + response + ")");
     };
 
   SieveAbstractChannel.prototype.onDeleteScriptResponse
     = function (response) {
-      throw new Error("Implement onDeleteScriptResponse");
+      throw new Error("Implement onDeleteScriptResponse(" + response + ")");
     };
 
   SieveAbstractChannel.prototype.onGetScriptResponse
     = function (response) {
-      throw new Error("Implement onGetScriptResponse");
+      throw new Error("Implement onGetScriptResponse(" + response + ")");
     };
 
   SieveAbstractChannel.prototype.onCheckScriptResponse
     = function (response) {
-      throw new Error("Implement onCheckScriptResponse");
+      throw new Error("Implement onCheckScriptResponse(" + response + ")");
     };
 
   SieveAbstractChannel.prototype.onOffline

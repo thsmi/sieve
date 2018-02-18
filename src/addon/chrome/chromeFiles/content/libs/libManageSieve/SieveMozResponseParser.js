@@ -14,41 +14,58 @@
   "use strict";
 
   /* global Components */
-  const {SieveAbstractResponseParser} = require("./SieveAbstractResponseParser.js");
+  /* global require */
 
-  function SieveMozResponseParser(data) {
-    SieveAbstractResponseParser.call(this, data);
-  }
+  const { SieveAbstractResponseParser } = require("./SieveAbstractResponseParser.js");
 
-  SieveMozResponseParser.prototype = Object.create(SieveAbstractResponseParser.prototype);
-  SieveMozResponseParser.prototype.constructor = SieveMozResponseParser;
+  /**
+   * Implements a mozilla specific response parser
+   **/
+  class SieveMozResponseParser extends SieveAbstractResponseParser {
 
-  SieveMozResponseParser.prototype.convertToString = function (byteArray) {
-    // This is very old mozilla specific code, but it is robust, mature and works as expeced.
-    // It will be dropped as soon as the new code has proven to be stable.
-    if ((typeof Components !== 'undefined')
-      && (typeof Components.classes !== 'undefined')
-      && (Components.classes["@mozilla.org/intl/scriptableunicodeconverter"])) {
-
-      let converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-        .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
-      converter.charset = "UTF-8";
-
-      return converter.convertFromByteArray(byteArray, byteArray.length);
+    /**
+     * @inheritDoc
+     */
+    constructor(data) {
+      super(data);
     }
 
-    // The new code should run with Google and Mozilla
-    byteArray = new Uint8Array(byteArray);
-    return (new TextDecoder("UTF-8")).decode(byteArray);
-  };
+    /**
+     * @inheritDoc
+     **/
+    convertToString(byteArray) {
+      // This is very old mozilla specific code, but it is robust, mature and works as expeced.
+      // It will be dropped as soon as the new code has proven to be stable.
+      if ((typeof Components !== 'undefined')
+        && (typeof Components.classes !== 'undefined')
+        && (Components.classes["@mozilla.org/intl/scriptableunicodeconverter"])) {
 
-  SieveMozResponseParser.prototype.convertToBase64 = function (decoded) {
-    return btoa(decoded);
-  };
+        let converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+          .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+        converter.charset = "UTF-8";
 
-  SieveMozResponseParser.prototype.convertFromBase64 = function (encoded) {
-    return atob(encoded);
-  };
+        return converter.convertFromByteArray(byteArray, byteArray.length);
+      }
+
+      // The new code should run with Google and Mozilla
+      byteArray = new Uint8Array(byteArray);
+      return (new TextDecoder("UTF-8")).decode(byteArray);
+    }
+
+    /**
+     * @inheritDoc
+     **/
+    convertToBase64(decoded) {
+      return btoa(decoded);
+    }
+
+    /**
+     * @inheritDoc
+     **/
+    convertFromBase64(encoded) {
+      return atob(encoded);
+    }
+  }
 
   exports.SieveMozResponseParser = SieveMozResponseParser;
 

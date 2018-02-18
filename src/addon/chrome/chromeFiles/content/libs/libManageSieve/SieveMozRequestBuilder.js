@@ -77,6 +77,9 @@
       return (new TextDecoder(encoding)).decode(byteArray);
     }
 
+    /**
+     * @inheritdoc
+     */
     calculateByteLength(data) {
       return this.jsStringToByteArray(data).length;
     }
@@ -93,6 +96,9 @@
       return btoa(decoded);
     }
 
+    /**
+     * @inheritDoc
+     **/
     convertFromBase64(encoded) {
       return atob(encoded);
     }

@@ -24,7 +24,6 @@ const Ci = Components.interfaces;
 const Cr = Components.results;
 
 const SIEVE_SCHEME = "x-sieve";
-const SIEVE_MIMETYPE = "application/x-sieve";
 
 /**
  * Bogus channel implementation, based on chatzilla's IRCProtocolHandler

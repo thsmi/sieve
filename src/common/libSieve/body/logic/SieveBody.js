@@ -1,29 +1,29 @@
 /*
  * The contents of this file are licensed. You may obtain a copy of
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
 /* global window */
 
-(function (exports) {
+(function () {
 
   "use strict";
-  
+
   /* global SieveGrammar */
 
-  if ( !SieveGrammar )
-    throw new Error( "Could not register Body" );
-  
+  if (!SieveGrammar)
+    throw new Error("Could not register Body");
+
   // "body" [COMPARATOR] [MATCH-TYPE] [BODY-TRANSFORM] <key-list: string-list>
 
-  var _body = {
+  let _body = {
     node: "test/body",
     type: "test",
 
@@ -45,7 +45,7 @@
         id: "comparator",
         type: "comparator"
 
-      }],
+      }]
     }, {
       id: "parameters",
       elements: [{
@@ -56,11 +56,11 @@
     }]
   };
 
-  SieveGrammar.addTest( _body );
+  SieveGrammar.addTest(_body);
 
-  //-------------------------------------------------------------------------//
+  // -------------------------------------------------------------------------//
 
-  var _raw = {
+  let _raw = {
     node: "body-transform/raw",
     type: "body-transform/",
 
@@ -69,9 +69,9 @@
     token: ":raw"
   };
 
-  SieveGrammar.addTag( _raw );
+  SieveGrammar.addTag(_raw);
 
-  var _content = {
+  let _content = {
     node: "body-transform/content",
     type: "body-transform/",
 
@@ -92,9 +92,9 @@
 
   };
 
-  SieveGrammar.addTag( _content );
+  SieveGrammar.addTag(_content);
 
-  var _text = {
+  let _text = {
     node: "body-transform/text",
     type: "body-transform/",
 
@@ -103,11 +103,11 @@
     token: ":text"
   };
 
-  SieveGrammar.addTag( _text );
+  SieveGrammar.addTag(_text);
 
-  //----------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------
 
-  var _bodytransform = {
+  let _bodytransform = {
     node: "body-transform",
     type: "body-transform",
 
@@ -116,6 +116,6 @@
     items: ["body-transform/"]
   };
 
-  SieveGrammar.addGroup( _bodytransform );
+  SieveGrammar.addGroup(_bodytransform);
 
-})( window );
+})(window);

@@ -1,28 +1,28 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * The contents of this file are licenced. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
 /* global window */
 
-( function ( /*exports*/ ) {
+(function () {
 
   "use strict";
 
   /* global SieveGrammar */
 
-  if ( !SieveGrammar )
-    throw new Error( "Could not register Mailbox" );
+  if (!SieveGrammar)
+    throw new Error("Could not register Mailbox");
 
   // fileinto [:create] <mailbox: string>
-  var create = {
+  let create = {
     node: "action/fileinto/create",
     type: "action/fileinto/",
 
@@ -31,9 +31,9 @@
     token: ":create"
   };
 
-  SieveGrammar.addTag( create );
+  SieveGrammar.addTag(create);
 
-  var fileinto = {
+  let fileinto = {
     extends: "action/fileinto",
 
     properties: [{
@@ -48,11 +48,11 @@
     }]
   };
 
-  SieveGrammar.extendAction( fileinto );
+  SieveGrammar.extendAction(fileinto);
 
 
-  //mailboxexists <mailbox-names: string-list>
-  var mailboxexists = {
+  // mailboxexists <mailbox-names: string-list>
+  let mailboxexists = {
     node: "test/mailboxexists",
     type: "test",
 
@@ -70,14 +70,11 @@
       }]
     }]
   };
-  
-  SieveGrammar.addTest( mailboxexists );
 
-  ////////////////////////////////////////////////////////////////////////////////
+  SieveGrammar.addTest(mailboxexists);
 
-
-  // metadataexists <mailbox: string> <annotation-names: string-list>  
-  var metadataexists = {
+  // metadataexists <mailbox: string> <annotation-names: string-list>
+  let metadataexists = {
     node: "test/metadataexists",
     type: "test",
 
@@ -99,24 +96,24 @@
       }]
     }]
   };
-  
-  SieveGrammar.addTest( metadataexists );
 
-  //metadata [MATCH-TYPE] [COMPARATOR]
+  SieveGrammar.addTest(metadataexists);
+
+  // metadata [MATCH-TYPE] [COMPARATOR]
   //         <mailbox: string>
   //         <annotation-name: string> <key-list: string-list>
 
   /**
    * Retrieves the value of the mailbox annotation "annotation-name" for mailbox
    * "mailbox#". The retrived value is compared against the key-list.
-   * 
+   *
    * The test returns true if the annotation exits and its value matches and of
    * the keys.
-   * 
+   *
    * The default matchtype is :is and the default comparator is "i;ascii-casemap"
    */
 
-  var metadata = {
+  let metadata = {
     node: "test/metadata",
     type: "test",
 
@@ -134,7 +131,7 @@
       }, {
         id: "comparator",
         type: "comparator"
-      }],
+      }]
     }, {
       id: "parameters",
 
@@ -158,12 +155,10 @@
 
   };
 
-  SieveGrammar.addTest( metadata );
-
-  ////////////////////////////////////////////////////////////////////////////////
+  SieveGrammar.addTest(metadata);
 
   // servermetadataexists <annotation-names: string-list>
-  var servermetadataexists = {
+  let servermetadataexists = {
     node: "test/servermetadataexists",
     type: "test",
 
@@ -183,10 +178,10 @@
     }]
   };
 
-  SieveGrammar.addTest( servermetadataexists );
+  SieveGrammar.addTest(servermetadataexists);
 
-  // servermetadata [MATCH-TYPE] [COMPARATOR] <annotation-name: string> <key-list: string-list>  
-  var servermetadata = {
+  // servermetadata [MATCH-TYPE] [COMPARATOR] <annotation-name: string> <key-list: string-list>
+  let servermetadata = {
     node: "test/servermetadata",
     type: "test",
 
@@ -204,7 +199,7 @@
       }, {
         id: "comparator",
         type: "comparator"
-      }],
+      }]
     }, {
       id: "parameters",
 
@@ -222,6 +217,6 @@
     }]
   };
 
-  SieveGrammar.addTest( servermetadata );  
-  
-})( window );
+  SieveGrammar.addTest(servermetadata);
+
+})(window);

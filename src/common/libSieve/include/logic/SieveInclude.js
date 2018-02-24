@@ -1,27 +1,27 @@
 /*
  * The contents of this file are licensed. You may obtain a copy of
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
 /* global window */
 
-( function ( /*exports*/ ) {
+(function () {
 
   "use strict";
-  
+
   /* global SieveGrammar */
 
-  if ( !SieveGrammar )
+  if (!SieveGrammar)
     throw new Error("Could not register Include Grammar");
 
-  var _return = {
+  let _return = {
     node: "action/return",
     type: "action",
     token: "return",
@@ -29,10 +29,10 @@
     requires: "include"
   };
 
-  SieveGrammar.addAction( _return );
+  SieveGrammar.addAction(_return);
 
-  
-  var _global = {
+
+  let _global = {
     node: "action/global",
     type: "action",
     token: "global",
@@ -51,10 +51,10 @@
     }]
   };
 
-  SieveGrammar.addAction( _global );
+  SieveGrammar.addAction(_global);
 
-  
-  var _once = {
+
+  let _once = {
     node: "action/include/once",
     type: "action/include/once",
 
@@ -63,10 +63,10 @@
     token: ":once"
   };
 
-  SieveGrammar.addTag( _once );
+  SieveGrammar.addTag(_once);
 
-  
-  var _optional = {
+
+  let _optional = {
     node: "action/include/optional",
     type: "action/include/optional",
 
@@ -75,30 +75,30 @@
     token: ":optional"
   };
 
-  SieveGrammar.addTag( _optional );
+  SieveGrammar.addTag(_optional);
 
-  
-  var globallocation = {
+
+  let globallocation = {
     node: "tag/location-type/global",
     type: "tag/location-type/",
 
     token: ":global"
   };
 
-  SieveGrammar.addTag( globallocation );
+  SieveGrammar.addTag(globallocation);
 
 
-  var personallocation = {
+  let personallocation = {
     node: "tag/location-type/personal",
     type: "tag/location-type/",
 
     token: ":personal"
   };
 
-  SieveGrammar.addTag( personallocation );
+  SieveGrammar.addTag(personallocation);
 
 
-  var _location = {
+  let _location = {
     node: "tag/location-type",
     type: "tag/location-type",
     value: ":personal",
@@ -106,10 +106,10 @@
     items: ["tag/location-type/"]
   };
 
-  SieveGrammar.addGroup( _location );
+  SieveGrammar.addGroup(_location);
 
 
-  var _include = {
+  let _include = {
     node: "action/include",
     type: "action",
 
@@ -143,6 +143,6 @@
     }]
   };
 
-  SieveGrammar.addAction( _include );
+  SieveGrammar.addAction(_include);
 
-})( window );
+})(window);

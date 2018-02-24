@@ -1,18 +1,18 @@
 /*
  * The contents of this file are licensed. You may obtain a copy of
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
 /* global window */
 
-( function (/*exports*/ ) {
+(function () {
 
   "use strict";
 
@@ -20,21 +20,21 @@
   /* global SieveBlock */
   /* global SieveBlockBody */
 
-  function SieveElse( docshell, id ) {
-    SieveBlock.call( this, docshell, id );
+  function SieveElse(docshell, id) {
+    SieveBlock.call(this, docshell, id);
 
     this.ws = [];
 
-    this.ws[0] = this._createByName( "whitespace", "\r\n" );
-    this.ws[1] = this._createByName( "whitespace", "\r\n" );
+    this.ws[0] = this._createByName("whitespace", "\r\n");
+    this.ws[1] = this._createByName("whitespace", "\r\n");
   }
 
-  SieveElse.prototype = Object.create( SieveBlock.prototype );
+  SieveElse.prototype = Object.create(SieveBlock.prototype);
   SieveElse.prototype.constructor = SieveElse;
 
   SieveElse.isElement
-    = function ( parser, lexer ) {
-      return parser.startsWith( "else" );
+    = function (parser, lexer) {
+      return parser.startsWith("else");
     };
 
   SieveElse.nodeName = function () {
@@ -46,14 +46,14 @@
   };
 
   SieveElse.prototype.init
-    = function ( parser ) {
-      parser.extract( "else" );
+    = function (parser) {
+      parser.extract("else");
 
-      this.ws[0].init( parser );
+      this.ws[0].init(parser);
 
-      SieveBlock.prototype.init.call( this, parser );
+      SieveBlock.prototype.init.call(this, parser);
 
-      this.ws[1].init( parser );
+      this.ws[1].init(parser);
 
       return this;
     };
@@ -62,25 +62,25 @@
     = function () {
       return "else"
         + this.ws[0].toScript()
-        + SieveBlock.prototype.toScript.call( this )
+        + SieveBlock.prototype.toScript.call(this)
         + this.ws[1].toScript();
     };
 
-  //****************************************************************************//
+  // ****************************************************************************//
 
-  function SieveIf( docshell, id ) {
-    SieveElse.call( this, docshell, id );
+  function SieveIf(docshell, id) {
+    SieveElse.call(this, docshell, id);
 
     this._test = null;
-    this.ws[2] = this._createByName( "whitespace" );
+    this.ws[2] = this._createByName("whitespace");
   }
 
-  SieveIf.prototype = Object.create( SieveElse.prototype );
+  SieveIf.prototype = Object.create(SieveElse.prototype);
   SieveIf.prototype.constructor = SieveIf;
 
   SieveIf.isElement
-    = function ( parser, lexer ) {
-      return parser.startsWith( "if" );
+    = function (parser, lexer) {
+      return parser.startsWith("if");
     };
 
   SieveIf.nodeName = function () {
@@ -93,74 +93,74 @@
 
 
   SieveIf.prototype.init
-    = function ( parser ) {
-      parser.extract( "if" );
+    = function (parser) {
+      parser.extract("if");
 
-      this.ws[2].init( parser );
+      this.ws[2].init(parser);
 
-      this._test = this._createByClass( ["test", "operator"], parser );
+      this._test = this._createByClass(["test", "operator"], parser);
 
-      this.ws[0].init( parser );
+      this.ws[0].init(parser);
 
-      SieveBlock.prototype.init.call( this, parser );
+      SieveBlock.prototype.init.call(this, parser);
 
-      this.ws[1].init( parser );
+      this.ws[1].init(parser);
 
       return this;
     };
 
   SieveIf.prototype.removeChild
-    = function ( childId, cascade, stop ) {
+    = function (childId, cascade, stop) {
       let elm = SieveBlock.prototype.removeChild.call(this, childId);
-      if ( cascade && elm )
+      if (cascade && elm)
         return this;
 
-      if ( elm )
+      if (elm)
         return elm;
 
-      if ( this.test().id() !== childId )
+      if (this.test().id() !== childId)
         throw new Error("Unknown ChildId");
 
-      if ( !cascade )
+      if (!cascade)
         throw new Error("Use cascade to delete conditions");
 
-      this.test().parent( null );
+      this.test().parent(null);
       this._test = null;
 
-      if ( ( !stop ) || ( stop.id() !== this.id() ) )
-        return this.remove( cascade, stop );
+      if ((!stop) || (stop.id() !== this.id()))
+        return this.remove(cascade, stop);
 
       return this;
     };
 
   SieveIf.prototype.test
-    = function ( item ) {
-      if ( typeof ( item ) === "undefined" )
+    = function (item) {
+      if (typeof (item) === "undefined")
         return this._test;
 
-      if ( item.parent() )
+      if (item.parent())
         throw new Error("Test already bound to " + item.parent().id());
 
       // Release old test...
-      if ( this._test )
-        this._test.parent( null );
+      if (this._test)
+        this._test.parent(null);
 
       // ... and bind new test to this node
-      this._test = item.parent( this );
+      this._test = item.parent(this);
 
       return this;
     };
 
   SieveIf.prototype.empty
     = function () {
-      return ( !this._test ) ? true : false;
+      return (!this._test) ? true : false;
     };
 
 
   SieveIf.prototype.require
-    = function ( imports ) {
-      SieveElse.prototype.require.call( this, imports );
-      this._test.require( imports );
+    = function (imports) {
+      SieveElse.prototype.require.call(this, imports);
+      this._test.require(imports);
     };
 
   SieveIf.prototype.toScript
@@ -169,24 +169,24 @@
         + this.ws[2].toScript()
         + this._test.toScript()
         + this.ws[0].toScript()
-        + SieveBlock.prototype.toScript.call( this )
+        + SieveBlock.prototype.toScript.call(this)
         + this.ws[1].toScript();
     };
 
-  //****************************************************************************//
+  // ****************************************************************************//
 
-  function SieveCondition( docshell, id ) {
-    SieveBlockBody.call( this, docshell, id );
+  function SieveCondition(docshell, id) {
+    SieveBlockBody.call(this, docshell, id);
 
-    this.elms[0] = this._createByName( "condition/if", "if false {\r\n}\r\n" );
+    this.elms[0] = this._createByName("condition/if", "if false {\r\n}\r\n");
   }
 
-  SieveCondition.prototype = Object.create( SieveBlockBody.prototype );
+  SieveCondition.prototype = Object.create(SieveBlockBody.prototype);
   SieveCondition.prototype.constructor = SieveCondition;
 
   SieveCondition.isElement
-    = function ( parser, lexer ) {
-      return SieveIf.isElement( parser, lexer );
+    = function (parser, lexer) {
+      return SieveIf.isElement(parser, lexer);
     };
 
   SieveCondition.nodeName = function () {
@@ -199,42 +199,42 @@
 
 
   SieveCondition.prototype.init
-    = function ( parser ) {
+    = function (parser) {
 
-      this.elms[0] = this._createByName( "condition/if", parser );
+      this.elms[0] = this._createByName("condition/if", parser);
 
-      while ( parser.startsWith( "elsif" ) ) {
-        parser.extract( "els" );
+      while (parser.startsWith("elsif")) {
+        parser.extract("els");
 
         this.elms.push(
-          this._createByName( "condition/if", parser ) );
+          this._createByName("condition/if", parser));
 
       }
 
-      if ( this._probeByName( "condition/else", parser ) )
-        this.elms.push( this._createByName( "condition/else", parser ) );
+      if (this._probeByName("condition/else", parser))
+        this.elms.push(this._createByName("condition/else", parser));
 
       return this;
     };
 
   SieveCondition.prototype.removeChild
-    = function ( childId, cascade, stop ) {
+    = function (childId, cascade, stop) {
       // should we remove the whole node
-      if ( typeof ( childId ) === "undefined" )
+      if (typeof (childId) === "undefined")
         throw new Error("Child ID Missing");
 
-      if ( stop && ( stop.id() === this.id() ) )
+      if (stop && (stop.id() === this.id()))
         cascade = false;
 
       let elm = SieveBlockBody.prototype.removeChild.call(this, childId, cascade, stop);
 
-      //  ... if we endup after delete with just an else, merge it into parent...   
-      if ( ( this.children().length ) && ( !this.children( 0 ).test ) ) {
+      //  ... if we endup after delete with just an else, merge it into parent...
+      if ((this.children().length) && (!this.children(0).test)) {
         // we copy all of our else statements into our parent...
-        while ( this.children( 0 ).children().length )
-          this.parent().append( this.children( 0 ).children( 0 ), this );
+        while (this.children(0).children().length)
+          this.parent().append(this.children(0).children(0), this);
 
-        return this.children( 0 ).remove( cascade, stop );
+        return this.children(0).remove(cascade, stop);
       }
 
 
@@ -242,10 +242,10 @@
       // ... and we are done
 
       // 4. the condition might now be empty
-      if ( this.parent() && ( !this.children().length ) )
-        return this.remove( cascade, stop );
+      if (this.parent() && (!this.children().length))
+        return this.remove(cascade, stop);
 
-      if ( this.parent() && cascade )
+      if (this.parent() && cascade)
         return this;
 
 
@@ -258,7 +258,7 @@
       let str = "";
 
       for (let i = 0; i < this.elms.length; i++) {
-        if ( ( i > 0 ) && ( this.elms[i].test ) )
+        if ((i > 0) && (this.elms[i].test))
           str += "els";
 
         str += this.elms[i].toScript();
@@ -268,11 +268,11 @@
     };
 
 
-  if ( !SieveLexer )
+  if (!SieveLexer)
     throw new Error("Could not register Conditional Elements");
 
-  SieveLexer.register( SieveIf );
-  SieveLexer.register( SieveElse );
-  SieveLexer.register( SieveCondition );
+  SieveLexer.register(SieveIf);
+  SieveLexer.register(SieveElse);
+  SieveLexer.register(SieveCondition);
 
-})( window );
+})(window);

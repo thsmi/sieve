@@ -1,34 +1,35 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * The contents of this file are licenced. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
 /* global window */
 
-( function ( /*exports*/ ) {
-  
+(function () {
+
   "use strict";
+
   /* global SieveGrammar */
-  
-  if ( !SieveGrammar )  
+
+  if (!SieveGrammar)
     throw new Error("Could not register MatchTypes");
 
-  var regex = {
-    node : "match-type/regex",
-    type : "match-type/",
-    
-    requires : "regex",
-    
-    token : ":regex"
+  let regex = {
+    node: "match-type/regex",
+    type: "match-type/",
+
+    requires: "regex",
+
+    token: ":regex"
   };
 
-  SieveGrammar.addTag( regex ); 
-  
-})( window );
+  SieveGrammar.addTag(regex);
+
+})(window);

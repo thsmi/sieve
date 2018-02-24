@@ -1,27 +1,27 @@
 /*
  * The contents of this file are licensed. You may obtain a copy of
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
 /* global window */
 
-(function (exports) {
+(function () {
 
   "use strict";
-  
+
   /* global SieveGrammar */
 
-  if ( !SieveGrammar )
-    throw new Error( "Could not register Vacation" );
+  if (!SieveGrammar)
+    throw new Error("Could not register Vacation");
 
-  var _vacation = {
+  let _vacation = {
     node: "action/vacation",
     type: "action",
 
@@ -56,7 +56,7 @@
       {
         id: "handle",
         type: "action/vacation/handle"
-      }],
+      }]
     }, {
       id: "parameters",
 
@@ -68,11 +68,11 @@
     }]
   };
 
-  SieveGrammar.addAction( _vacation );
+  SieveGrammar.addAction(_vacation);
 
-  //------------------------------------------------------------------------------------/
+  // ------------------------------------------------------------------------------------/
 
-  var _days = {
+  let _days = {
     node: "action/vacation/days",
     type: "action/vacation/days",
 
@@ -91,9 +91,9 @@
     }]
   };
 
-  SieveGrammar.addTag( _days );
+  SieveGrammar.addTag(_days);
 
-  var _subject = {
+  let _subject = {
     node: "action/vacation/subject",
     type: "action/vacation/subject",
 
@@ -112,9 +112,9 @@
 
   };
 
-  SieveGrammar.addTag( _subject );
+  SieveGrammar.addTag(_subject);
 
-  var _from = {
+  let _from = {
     node: "action/vacation/from",
     type: "action/vacation/from",
 
@@ -132,10 +132,10 @@
     }]
   };
 
-  SieveGrammar.addTag( _from );
+  SieveGrammar.addTag(_from);
 
 
-  var _addresses = {
+  let _addresses = {
     node: "action/vacation/addresses",
     type: "action/vacation/addresses",
 
@@ -154,10 +154,10 @@
 
   };
 
-  SieveGrammar.addTag( _addresses );
+  SieveGrammar.addTag(_addresses);
 
 
-  var _mime = {
+  let _mime = {
     node: "action/vacation/mime",
     type: "action/vacation/mime",
 
@@ -166,9 +166,9 @@
     token: ":mime"
   };
 
-  SieveGrammar.addTag( _mime );
+  SieveGrammar.addTag(_mime);
 
-  var _handle = {
+  let _handle = {
     node: "action/vacation/handle",
     type: "action/vacation/handle",
 
@@ -186,6 +186,6 @@
     }]
   };
 
-  SieveGrammar.addTag( _handle );
+  SieveGrammar.addTag(_handle);
 
-})( window );
+})(window);

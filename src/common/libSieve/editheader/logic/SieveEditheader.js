@@ -1,149 +1,147 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * The contents of this file are licenced. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
 /* global window */
 
-( function ( /*exports*/ ) {
+(function () {
 
-    "use strict";
-    /* global SieveGrammar */
+  "use strict";
+  /* global SieveGrammar */
 
-    if ( !SieveGrammar )
-        throw new Error( "Could not register EditHeaders" );
+  if (!SieveGrammar)
+    throw new Error("Could not register EditHeaders");
 
-    var lastflag = {
-        node: "action/addheader/last",
-        type: "action/addheader/",
+  let lastflag = {
+    node: "action/addheader/last",
+    type: "action/addheader/",
 
-        requires: "editheader",
+    requires: "editheader",
 
-        token: ":last"
-    };
+    token: ":last"
+  };
 
-    SieveGrammar.addTag( lastflag );
+  SieveGrammar.addTag(lastflag);
 
-    // "addheader"[":last"] < field - name: string > <value: string>
-    var addheader = {
-        node: "action/addheader",
-        type: "action",
+  // "addheader"[":last"] < field - name: string > <value: string>
+  let addheader = {
+    node: "action/addheader",
+    type: "action",
 
-        requires: "editheader",
+    requires: "editheader",
 
-        token: "addheader",
+    token: "addheader",
 
-        properties: [{
-            id: "tags",
-            optional: true,
+    properties: [{
+      id: "tags",
+      optional: true,
 
-            elements: [{
-                id: "last",
-                type: "action/addheader/last"
-            }]
-        }, {
-            id: "parameters",
+      elements: [{
+        id: "last",
+        type: "action/addheader/last"
+      }]
+    }, {
+      id: "parameters",
 
-            elements: [{
-                id: "name",
-                type: "string",
-                value: '"X-Header"'
-            }, {
-                id: "value",
-                type: "string",
-                value: '"Some Value"'
-            }]
-        }]
-    };
+      elements: [{
+        id: "name",
+        type: "string",
+        value: '"X-Header"'
+      }, {
+        id: "value",
+        type: "string",
+        value: '"Some Value"'
+      }]
+    }]
+  };
 
-    SieveGrammar.addAction( addheader );
+  SieveGrammar.addAction(addheader);
 
-    // ":index" <fieldno: number> [":last"]    
-    var indextag = {
-        node: "action/deleteheader/index",
-        type: "action/deleteheader/",
+  // ":index" <fieldno: number> [":last"]
+  let indextag = {
+    node: "action/deleteheader/index",
+    type: "action/deleteheader/",
 
-        requires: "editheader",
+    requires: "editheader",
 
-        token: ":index",
+    token: ":index",
 
-        properties: [{
-            id: "field",
+    properties: [{
+      id: "field",
 
-            elements: [{
-                id: "name",
-                type: "number",
-                value: '1'
-            }]
-        }, {
-            id: "last",
-            optional: true,
+      elements: [{
+        id: "name",
+        type: "number",
+        value: '1'
+      }]
+    }, {
+      id: "last",
+      optional: true,
 
-            elements: [{
-                id: "name",
-                type: "action/addheader/last",
-            }]
-        }]
-    };
+      elements: [{
+        id: "name",
+        type: "action/addheader/last"
+      }]
+    }]
+  };
 
-    SieveGrammar.addTag( indextag );
+  SieveGrammar.addTag(indextag);
 
-    //"deleteheader" [":index" <fieldno: number> [":last"]]
-    //                   [COMPARATOR] [MATCH-TYPE]
-    //                   <field-name: string>
-    //                   [<value-patterns: string-list>]
+  // "deleteheader" [":index" <fieldno: number> [":last"]]
+  //                   [COMPARATOR] [MATCH-TYPE]
+  //                   <field-name: string>
+  //                   [<value-patterns: string-list>]
 
-    var deleteheader = {
-        node: "action/deleteheader",
-        type: "action",
+  let deleteheader = {
+    node: "action/deleteheader",
+    type: "action",
 
-        requires: "editheader",
+    requires: "editheader",
 
-        token: "deleteheader",
+    token: "deleteheader",
 
-        properties: [{
-            id: "tags",
-            optional: true,
+    properties: [{
+      id: "tags",
+      optional: true,
 
-            elements: [{
-                id: "index",
-                type: "action/deleteheader/index"
-            }, {
-                id: "match-type",
-                type: "match-type",
-            }, {
-                id: "comparator",
-                type: "comparator",
-            }]
-        }, {
-            id: "parameter",
+      elements: [{
+        id: "index",
+        type: "action/deleteheader/index"
+      }, {
+        id: "match-type",
+        type: "match-type"
+      }, {
+        id: "comparator",
+        type: "comparator"
+      }]
+    }, {
+      id: "parameter",
 
-            elements: [{
-                id: "name",
-                type: "string",
-                value: '""'
-            }]
-        }, {
-            id: "parameter2",
-            optional: true,
-            elements: [{
-                id: "value",
-                type: "string",
-                value: '""'
-            }]
-        }]
-    };
+      elements: [{
+        id: "name",
+        type: "string",
+        value: '""'
+      }]
+    }, {
+      id: "parameter2",
+      optional: true,
+      elements: [{
+        id: "value",
+        type: "string",
+        value: '""'
+      }]
+    }]
+  };
 
-    SieveGrammar.addAction( deleteheader );
+  SieveGrammar.addAction(deleteheader);
 
-})( window );
-
-
+})(window);
 

@@ -1,27 +1,27 @@
 /*
  * The contents of this file are licensed. You may obtain a copy of
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
 /* global window */
 
-( function ( /*exports*/ ) {
+(function () {
 
   "use strict";
 
   /* global SieveGrammar */
 
-  if ( !SieveGrammar )
-    throw new Error( "Could not register Reject Grammar" );
+  if (!SieveGrammar)
+    throw new Error("Could not register Reject Grammar");
 
-  var reject = {
+  let reject = {
     node: "action/reject",
     type: "action",
     token: "reject",
@@ -39,10 +39,10 @@
     }]
   };
 
-  SieveGrammar.addAction( reject );
+  SieveGrammar.addAction(reject);
 
 
-  var ereject = {
+  let ereject = {
     node: "action/ereject",
     type: "action",
     token: "ereject",
@@ -60,6 +60,6 @@
     }]
   };
 
-  SieveGrammar.addAction( ereject );
+  SieveGrammar.addAction(ereject);
 
-})( window );
+})(window);

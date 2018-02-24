@@ -1,31 +1,29 @@
 /*
  * The contents of this file are licensed. You may obtain a copy of
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
 /* global window */
 
-
-
-( function ( exports ) {
+(function (exports) {
 
   "use strict";
   /* global $: false */
   /* global SieveDesigner */
   /* global SieveAbstractBoxUI */
 
-  function SieveMatchTypeUI( elm ) {
-    SieveAbstractBoxUI.call( this, elm );
+  function SieveMatchTypeUI(elm) {
+    SieveAbstractBoxUI.call(this, elm);
   }
 
-  SieveMatchTypeUI.prototype = Object.create( SieveAbstractBoxUI.prototype );
+  SieveMatchTypeUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
   SieveMatchTypeUI.prototype.constructor = SieveMatchTypeUI;
 
   SieveMatchTypeUI.nodeName = function () {
@@ -38,60 +36,60 @@
 
   SieveMatchTypeUI.prototype.onSelect
     = function () {
-      let value = $( "input[name='rgMatchType" + this.id() + "']:checked" ).val();
-      this.getSieve().setValue( value );
+      let value = $("input[name='rgMatchType" + this.id() + "']:checked").val();
+      this.getSieve().setValue(value);
     };
 
   SieveMatchTypeUI.prototype.createHtml
     = function () {
 
-      var widgets = SieveDesigner.getWidgetsByClass( "match-type/", this.id() );
+      let widgets = SieveDesigner.getWidgetsByClass("match-type/", this.id());
 
-      var item = $( "<div/>" )
-        .addClass( "sivMatchType" );
+      let item = $("<div/>")
+        .addClass("sivMatchType");
 
-      var that = this;
-      widgets.forEach( function ( element ) {
-        item.append( element.html( function () { that.onSelect(); }) );
-      }, this );
+      let that = this;
+      widgets.forEach(function (element) {
+        item.append(element.html(function () { that.onSelect(); }));
+      }, this);
 
-      var value = this.getSieve().getValue();
+      let value = this.getSieve().getValue();
 
-      item.find( "input[name='rgMatchType" + this.id() + "'][value='" + value + "']" )
-        .attr( "checked", "checked" );
+      item.find("input[name='rgMatchType" + this.id() + "'][value='" + value + "']")
+        .attr("checked", "checked");
 
       return item;
     };
 
-  //************************************************************************************
+  // ************************************************************************************
 
-  function SieveAbstractMatchUI( id ) {
+  function SieveAbstractMatchUI(id) {
     this.id = id;
   }
 
   SieveAbstractMatchUI.prototype.html
-    = function ( value, header, description, callback ) {
-      return $( "<div/>" )
-        .css( "overflow", "auto" )
-        .append( $( "<input/>" )
-          .attr( "type", "radio" )
-          .attr( "name", "rgMatchType" + this.id )
-          .css( "float", "left" )
-          .attr( "value", value )
-          .change( callback ) )
-        .append( $( "<div/>" )
-          .css( "float", "left" )
-          .append( $( "<h1/>" ).text( header ) )
-          .append( $( "<span/>" ).html( description ) ) );
+    = function (value, header, description, callback) {
+      return $("<div/>")
+        .css("overflow", "auto")
+        .append($("<input/>")
+          .attr("type", "radio")
+          .attr("name", "rgMatchType" + this.id)
+          .css("float", "left")
+          .attr("value", value)
+          .change(callback))
+        .append($("<div/>")
+          .css("float", "left")
+          .append($("<h1/>").text(header))
+          .append($("<span/>").html(description)));
     };
 
-  //************************************************************************************
+  // ************************************************************************************
 
-  function SieveContainsMatchUI( id ) {
-    SieveAbstractMatchUI.call( this, id );
+  function SieveContainsMatchUI(id) {
+    SieveAbstractMatchUI.call(this, id);
   }
 
-  SieveContainsMatchUI.prototype = Object.create( SieveAbstractMatchUI.prototype );
+  SieveContainsMatchUI.prototype = Object.create(SieveAbstractMatchUI.prototype);
   SieveContainsMatchUI.prototype.constructor = SieveContainsMatchUI;
 
   SieveContainsMatchUI.nodeName = function () {
@@ -102,28 +100,28 @@
     return "match-type/";
   };
 
-  SieveContainsMatchUI.isCapable = function (capabilities) {
+  SieveContainsMatchUI.isCapable = function () {
     return true;
   };
 
   SieveContainsMatchUI.prototype.html
-    = function ( callback ) {
+    = function (callback) {
 
       return SieveAbstractMatchUI.prototype.html.call(
         this,
         ":contains",
         "... contains ...",
         '"frobnitzm" contains "frob" and "nit", but not "fbm"',
-        callback );
+        callback);
     };
 
-  //************************************************************************************
+  // ************************************************************************************
 
-  function SieveIsMatchUI( id ) {
-    SieveAbstractMatchUI.call( this, id );
+  function SieveIsMatchUI(id) {
+    SieveAbstractMatchUI.call(this, id);
   }
 
-  SieveIsMatchUI.prototype = Object.create( SieveAbstractMatchUI.prototype );
+  SieveIsMatchUI.prototype = Object.create(SieveAbstractMatchUI.prototype);
   SieveIsMatchUI.prototype.constructor = SieveIsMatchUI;
 
   SieveIsMatchUI.nodeName = function () {
@@ -134,25 +132,25 @@
     return "match-type/";
   };
 
-  SieveIsMatchUI.isCapable = function ( /*capabilities*/ ) {
+  SieveIsMatchUI.isCapable = function () {
     return true;
   };
 
   SieveIsMatchUI.prototype.html
-    = function ( callback ) {
+    = function (callback) {
 
       return SieveAbstractMatchUI.prototype.html.call(
-        this, ":is", "... is ...", 'Only "frobnitzm" is "frobnitzm"', callback );
+        this, ":is", "... is ...", 'Only "frobnitzm" is "frobnitzm"', callback);
     };
 
 
-  //************************************************************************************
+  // ************************************************************************************
 
-  function SieveMatchesMatchUI( id ) {
-    SieveAbstractMatchUI.call( this, id );
+  function SieveMatchesMatchUI(id) {
+    SieveAbstractMatchUI.call(this, id);
   }
 
-  SieveMatchesMatchUI.prototype = Object.create( SieveAbstractMatchUI.prototype );
+  SieveMatchesMatchUI.prototype = Object.create(SieveAbstractMatchUI.prototype);
   SieveMatchesMatchUI.prototype.constructor = SieveMatchesMatchUI;
 
   SieveMatchesMatchUI.nodeName = function () {
@@ -163,31 +161,31 @@
     return "match-type/";
   };
 
-  SieveMatchesMatchUI.isCapable = function ( /*capabilities*/ ) {
+  SieveMatchesMatchUI.isCapable = function ( ) {
     return true;
   };
 
   SieveMatchesMatchUI.prototype.html
-    = function ( callback ) {
+    = function (callback) {
 
       return SieveAbstractMatchUI.prototype.html.call(
         this, ":matches", "... matches ...",
         '"*" matches zero or more characters, and "?" matches a single character <br>'
-        + '"frobnitzm" matches "frob*zm" or "frobnit?m" but not frob?m', callback );
+        + '"frobnitzm" matches "frob*zm" or "frobnit?m" but not frob?m', callback);
     };
 
 
-  //************************************************************************************
+  // ************************************************************************************
 
-  if ( !SieveDesigner )
-    throw new Error( "Could not register String Widgets" );
+  if (!SieveDesigner)
+    throw new Error("Could not register String Widgets");
 
-  SieveDesigner.register( "match-type", "comparison", SieveMatchTypeUI );
-  SieveDesigner.register2( SieveIsMatchUI );
-  SieveDesigner.register2( SieveContainsMatchUI );
-  SieveDesigner.register2( SieveMatchesMatchUI );
+  SieveDesigner.register("match-type", "comparison", SieveMatchTypeUI);
+  SieveDesigner.register2(SieveIsMatchUI);
+  SieveDesigner.register2(SieveContainsMatchUI);
+  SieveDesigner.register2(SieveMatchesMatchUI);
 
   exports.SieveAbstractMatchUI = SieveAbstractMatchUI;
   exports.SieveMatchTypeUI = SieveMatchTypeUI;
 
-})( window );
+})(window);

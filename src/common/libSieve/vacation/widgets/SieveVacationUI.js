@@ -1,5 +1,5 @@
 /*
-* The contents of this file are licenced. You may obtain a copy of 
+* The contents of this file are licenced. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
@@ -12,7 +12,7 @@
 
 /* global window */
 
-(function (exports) {
+(function () {
 
   "use strict";
 
@@ -21,6 +21,8 @@
   /* global SieveActionDialogBoxUI */
   /* global SieveTabWidget */
   /* global SieveDesigner */
+
+  const MAX_QUOTE_LEN = 240;
 
   function SieveVacationUI(elm) {
     SieveActionDialogBoxUI.call(this, elm);
@@ -225,8 +227,8 @@
       return $("<div/>")
         .html("Send a vacation/an out of office message:" +
         "<div><em>" +
-        $( '<div/>' ).text( this.reason().value().substr( 0, 240 ) ).html() +
-        ( ( this.reason().value().length > 240 ) ? "..." : "" ) +
+        $( '<div/>' ).text( this.reason().value().substr( 0, MAX_QUOTE_LEN ) ).html() +
+        ( ( this.reason().value().length > MAX_QUOTE_LEN ) ? "..." : "" ) +
         "</em></div>");
     };
 

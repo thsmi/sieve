@@ -1,19 +1,19 @@
 /*
  * The contents of this file are licensed. You may obtain a copy of
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
 /* global window */
 
 
-(function (exports) {
+(function () {
 
   "use strict";
 
@@ -22,16 +22,16 @@
 
   // TODO HashComment seperated by linebreaks are equivalent to bracket Comments...
 
-  function SieveLineBreak( docshell, id ) {
-    SieveAbstractElement.call( this, docshell, id );
+  function SieveLineBreak(docshell, id) {
+    SieveAbstractElement.call(this, docshell, id);
   }
 
-  SieveLineBreak.prototype = Object.create( SieveAbstractElement.prototype );
+  SieveLineBreak.prototype = Object.create(SieveAbstractElement.prototype);
   SieveLineBreak.prototype.constructor = SieveLineBreak;
 
   SieveLineBreak.isElement
-    = function ( parser, lexer ) {
-      return parser.startsWith( "\r\n" );
+    = function (parser, lexer) {
+      return parser.startsWith("\r\n");
     };
 
   SieveLineBreak.nodeName = function () {
@@ -43,8 +43,8 @@
   };
 
   SieveLineBreak.prototype.init
-    = function ( parser ) {
-      parser.extract( "\r\n" );
+    = function (parser) {
+      parser.extract("\r\n");
       return this;
     };
 
@@ -53,16 +53,16 @@
       return "\r\n";
     };
 
-  /******************************************************************************/
+  /* *****************************************************************************/
 
 
-  function SieveDeadCode( docshell, id ) {
-    SieveAbstractElement.call( this, docshell, id );
+  function SieveDeadCode(docshell, id) {
+    SieveAbstractElement.call(this, docshell, id);
     this.whiteSpace = "";
   }
 
-  SieveDeadCode.isElement = function ( parser, lexer ) {
-    return ( parser.isChar( [" ", "\t"] ) );
+  SieveDeadCode.isElement = function (parser, lexer) {
+    return (parser.isChar([" ", "\t"]));
   };
 
   SieveDeadCode.nodeName = function () {
@@ -73,12 +73,12 @@
     return "whitespace/";
   };
 
-  SieveDeadCode.prototype = Object.create( SieveAbstractElement.prototype );
+  SieveDeadCode.prototype = Object.create(SieveAbstractElement.prototype);
   SieveDeadCode.prototype.constructor = SieveDeadCode;
 
   SieveDeadCode.prototype.init
-    = function ( parser ) {
-      this.whiteSpace = parser.extractToken( [" ", "\t"] );
+    = function (parser) {
+      this.whiteSpace = parser.extractToken([" ", "\t"]);
 
       return this;
     };
@@ -88,15 +88,15 @@
       return this.whiteSpace;
     };
 
-  /******************************************************************************/
+  /* *****************************************************************************/
 
-  function SieveBracketComment( docshell, id ) {
-    SieveAbstractElement.call( this, docshell, id );
+  function SieveBracketComment(docshell, id) {
+    SieveAbstractElement.call(this, docshell, id);
     this.text = "";
   }
 
-  SieveBracketComment.isElement = function ( parser, lexer ) {
-    return parser.startsWith( "/*" );
+  SieveBracketComment.isElement = function (parser, lexer) {
+    return parser.startsWith("/*");
   };
 
   SieveBracketComment.nodeName = function () {
@@ -107,14 +107,14 @@
     return "comment";
   };
 
-  SieveBracketComment.prototype = Object.create( SieveAbstractElement.prototype );
+  SieveBracketComment.prototype = Object.create(SieveAbstractElement.prototype);
   SieveBracketComment.prototype.constructor = SieveBracketComment;
 
   SieveBracketComment.prototype.init
-    = function ( parser ) {
-      parser.extract( "/*" );
+    = function (parser) {
+      parser.extract("/*");
 
-      this.text = parser.extractUntil( "*/" );
+      this.text = parser.extractUntil("*/");
 
       return this;
     };
@@ -124,19 +124,19 @@
       return "/*" + this.text + "*/";
     };
 
-  /******************************************************************************/
+  /* *****************************************************************************/
 
-  function SieveHashComment( docshell, id ) {
-    SieveAbstractElement.call( this, docshell, id );
+  function SieveHashComment(docshell, id) {
+    SieveAbstractElement.call(this, docshell, id);
     this.text = "";
   }
 
-  SieveHashComment.prototype = Object.create( SieveAbstractElement.prototype );
+  SieveHashComment.prototype = Object.create(SieveAbstractElement.prototype);
   SieveHashComment.prototype.constructor = SieveHashComment;
 
   SieveHashComment.isElement
-    = function ( parser, lexer ) {
-      return parser.isChar( "#" );
+    = function (parser, lexer) {
+      return parser.isChar("#");
     };
 
   SieveHashComment.nodeName = function () {
@@ -148,11 +148,11 @@
   };
 
   SieveHashComment.prototype.init
-    = function ( parser ) {
-      parser.extract( "#" );
+    = function (parser) {
+      parser.extract("#");
 
       // ... and find the end of the comment
-      this.text = parser.extractUntil( "\r\n" );
+      this.text = parser.extractUntil("\r\n");
 
       return this;
     };
@@ -162,43 +162,43 @@
       return "#" + this.text + "\r\n";
     };
 
-  /******************************************************************************/
+  /* *****************************************************************************/
 
-  function SieveWhiteSpace( docshell, id ) {
-    SieveAbstractElement.call( this, docshell, id );
+  function SieveWhiteSpace(docshell, id) {
+    SieveAbstractElement.call(this, docshell, id);
     this.elements = [];
   }
 
-  SieveWhiteSpace.prototype = Object.create( SieveAbstractElement.prototype );
+  SieveWhiteSpace.prototype = Object.create(SieveAbstractElement.prototype);
   SieveWhiteSpace.prototype.constructor = SieveWhiteSpace;
 
   SieveWhiteSpace.isElement
-    = function ( parser, lexer ) {
-      return lexer.probeByClass( ["whitespace/", "comment"], parser );
+    = function (parser, lexer) {
+      return lexer.probeByClass(["whitespace/", "comment"], parser);
     };
 
 
   /**
-   * In Gerneral there are two kinds of whitespace. 
-   * 
-   * Dead code which is only used to separate tokens. This kind of 
+   * In Gerneral there are two kinds of whitespace.
+   *
+   * Dead code which is only used to separate tokens. This kind of
    * whitespace can be scrapped without any loss of information
-   * 
+   *
    * Whitespace with comments. In contrast to dead code, the comments
-   * carry meta information. We can not scrap them without loosing 
+   * carry meta information. We can not scrap them without loosing
    * information.
-   * 
+   *
    * This method determines if the whitespace is dead code only. Or
    * if it contains Meta information.
-   * 
+   *
    * @returns{boolean}
-   *   true in case the whitespace is dead code and does not contain 
+   *   true in case the whitespace is dead code and does not contain
    *   any meta information. Otherwise false
    */
   SieveWhiteSpace.prototype.isDeadCode
     = function () {
-      for ( var key in this.elements )
-        if ( this.elements[key].nodeType !== "whitespace/" )
+      for (let key in this.elements)
+        if (this.elements[key].nodeType !== "whitespace/")
           return false;
 
       return true;
@@ -215,33 +215,33 @@
 
   /**
    * Parses a String for whitespace characters. It stops as soon as
-   * it finds the first non whitespace. This means this method extracts   
+   * it finds the first non whitespace. This means this method extracts
    * zero or more whitespace characters
-   * 
+   *
    * @param {SieveParser} parser
    *  the parser element which contains the data
-   * @param {boolean} crlf 
+   * @param {boolean} crlf
    *   if true the parser will stop after the first linebreak (\r\n) (this means the linebreak will be extracted)
    *   or when it encounters a non whitespace character.
    * @return {SieveWhiteSpace}
-   *  a self reference 
+   *  a self reference
    */
 
   SieveWhiteSpace.prototype.init
-    = function ( parser, crlf ) {
+    = function (parser, crlf) {
       let isCrlf = false;
       this.elements = [];
 
       // After the import section only deadcode and actions are valid
-      while ( this._probeByClass( ["whitespace/", "comment"], parser ) ) {
+      while (this._probeByClass(["whitespace/", "comment"], parser)) {
         // Check for CRLF...
-        if ( crlf && this._probeByName( "whitespace/linebreak", parser ) )
+        if (crlf && this._probeByName("whitespace/linebreak", parser))
           isCrlf = true;
 
-        this.elements.push( this._createByClass( ["whitespace/", "comment"], parser ) );
+        this.elements.push(this._createByClass(["whitespace/", "comment"], parser));
 
         // break if we found a CRLF
-        if ( isCrlf )
+        if (isCrlf)
           break;
       }
 
@@ -257,21 +257,21 @@
       return result;
     };
 
-  /******************************************************************************/
+  /* *****************************************************************************/
 
-  function SieveSemicolon( docshell, id ) {
-    SieveAbstractElement.call( this, docshell, id );
+  function SieveSemicolon(docshell, id) {
+    SieveAbstractElement.call(this, docshell, id);
 
     this.whiteSpace = [];
-    this.whiteSpace[0] = this._createByName( "whitespace" );
-    this.whiteSpace[1] = this._createByName( "whitespace", "\r\n" );
+    this.whiteSpace[0] = this._createByName("whitespace");
+    this.whiteSpace[1] = this._createByName("whitespace", "\r\n");
   }
 
-  SieveSemicolon.prototype = Object.create( SieveAbstractElement.prototype );
+  SieveSemicolon.prototype = Object.create(SieveAbstractElement.prototype);
   SieveSemicolon.prototype.constructor = SieveSemicolon;
 
   SieveSemicolon.isElement
-    = function ( parser, lexer ) {
+    = function (parser, lexer) {
       return true;
     };
 
@@ -284,15 +284,15 @@
   };
 
   SieveSemicolon.prototype.init
-    = function ( parser ) {
+    = function (parser) {
       // Syntax :
       // [whitespace] <";"> [whitespace]
-      if ( this._probeByName( "whitespace", parser ) )
-        this.whiteSpace[0].init( parser, true );
+      if (this._probeByName("whitespace", parser))
+        this.whiteSpace[0].init(parser, true);
 
-      parser.extractChar( ";" );
+      parser.extractChar(";");
 
-      this.whiteSpace[1].init( parser, true );
+      this.whiteSpace[1].init(parser, true);
 
       return this;
     };
@@ -302,18 +302,18 @@
       return this.whiteSpace[0].toScript() + ";" + this.whiteSpace[1].toScript();
     };
 
-  /******************************************************************************/
+  /* *****************************************************************************/
 
-  if ( !SieveLexer )
+  if (!SieveLexer)
     throw new Error("Could not register DeadCode Elements");
 
-  SieveLexer.register( SieveLineBreak );
-  SieveLexer.register( SieveDeadCode );
-  SieveLexer.register( SieveBracketComment );
-  SieveLexer.register( SieveHashComment );
+  SieveLexer.register(SieveLineBreak);
+  SieveLexer.register(SieveDeadCode);
+  SieveLexer.register(SieveBracketComment);
+  SieveLexer.register(SieveHashComment);
 
-  SieveLexer.register( SieveWhiteSpace );
+  SieveLexer.register(SieveWhiteSpace);
 
-  SieveLexer.register( SieveSemicolon );
+  SieveLexer.register(SieveSemicolon);
 
-})( window );
+})(window);

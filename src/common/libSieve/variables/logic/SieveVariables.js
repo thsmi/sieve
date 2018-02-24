@@ -12,13 +12,13 @@
 
 /* global window */
 
-(function (exports) {
+(function () {
 
   "use strict";
   /* global SieveGrammar */
 
-  if ( !SieveGrammar )
-    throw new Error( "Could not register Variables" );
+  if (!SieveGrammar)
+    throw new Error("Could not register Variables");
 
   // set [MODIFIER] <name: string> <value: string>
   let _set = {
@@ -60,12 +60,12 @@
       }]
     }]
 
-    };
+  };
 
-  SieveGrammar.addAction( _set );
+  SieveGrammar.addAction(_set);
 
   //    Usage:  string [MATCH-TYPE] [COMPARATOR]
-  //           <source: string-list> <key-list: string-list>  
+  //           <source: string-list> <key-list: string-list>
 
   let _string = {
     node: "test/string",
@@ -85,7 +85,7 @@
       }, {
         id: "comparator",
         type: "comparator"
-      }],
+      }]
     }, {
       id: "parameters",
 
@@ -97,9 +97,9 @@
         type: "stringlist"
       }]
     }]
-    };
+  };
 
-  SieveGrammar.addTest( _string );
+  SieveGrammar.addTest(_string);
 
 
   let _lower = {
@@ -109,8 +109,8 @@
     requires: "variables",
 
     token: ":lower"
-    };
-  SieveGrammar.addTag( _lower );
+  };
+  SieveGrammar.addTag(_lower);
 
   let _upper = {
     node: "modifier/40/upper",
@@ -119,17 +119,17 @@
     requires: "variables",
 
     token: ":upper"
-    };
-  SieveGrammar.addTag( _upper );
+  };
+  SieveGrammar.addTag(_upper);
 
   let _modifier40 = {
     node: "modifier/40",
     type: "modifier/",
 
     items: ["modifier/40/"]
-    };
+  };
 
-  SieveGrammar.addGroup( _modifier40 );
+  SieveGrammar.addGroup(_modifier40);
 
 
   let _lowerfirst = {
@@ -140,7 +140,7 @@
 
     token: ":lowerfirst"
   };
-  SieveGrammar.addTag( _lowerfirst );
+  SieveGrammar.addTag(_lowerfirst);
 
   let _upperfirst = {
     node: "modifier/30/upperfirst",
@@ -149,17 +149,17 @@
     requires: "variables",
 
     token: ":upperfirst"
-    };
-  SieveGrammar.addTag( _upperfirst );
+  };
+  SieveGrammar.addTag(_upperfirst);
 
   let _modifier30 = {
     node: "modifier/30",
     type: "modifier/",
 
     items: ["modifier/30/"]
-    };
+  };
 
-  SieveGrammar.addGroup( _modifier30 );
+  SieveGrammar.addGroup(_modifier30);
 
   let _quote = {
     node: "modifier/20/quotewildcard",
@@ -168,8 +168,8 @@
     requires: "variables",
 
     token: ":quotewildcard"
-    };
-  SieveGrammar.addTag( _quote );
+  };
+  SieveGrammar.addTag(_quote);
 
   let _modifier20 = {
     node: "modifier/20",
@@ -177,7 +177,7 @@
 
     items: ["modifier/20/"]
   };
-  SieveGrammar.addGroup( _modifier20 );
+  SieveGrammar.addGroup(_modifier20);
 
 
   let _length = {
@@ -187,16 +187,16 @@
     requires: "variables",
 
     token: ":length"
-    };
-  SieveGrammar.addTag( _length );
+  };
+  SieveGrammar.addTag(_length);
 
   let _modifier10 = {
     node: "modifier/10",
     type: "modifier/",
 
     items: ["modifier/10/"]
-    };
-  SieveGrammar.addGroup( _modifier10 );
+  };
+  SieveGrammar.addGroup(_modifier10);
 
   let _modifier = {
     node: "modifier",
@@ -204,7 +204,7 @@
 
     items: ["modifier/"]
   };
-  SieveGrammar.addGroup( _modifier );
+  SieveGrammar.addGroup(_modifier);
 
 
 })(window);

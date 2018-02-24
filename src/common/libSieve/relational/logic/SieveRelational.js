@@ -1,32 +1,32 @@
 /*
  * The contents of this file are licensed. You may obtain a copy of
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
 /* global window */
 
 
-( function ( /*exports*/ ) {
+(function () {
 
 
   "use strict";
   /* global SieveGrammar */
 
-  if ( !SieveGrammar )
-    throw new Error( "Could not register Relational" );
+  if (!SieveGrammar)
+    throw new Error("Could not register Relational");
 
   /* global SieveAbstractElement */
   /* global SieveLexer */
 
   /*   MATCH-TYPE =/ COUNT / VALUE
- 
+
     relational-match = DQUOTE
             ("gt" / "ge" / "lt" / "le" / "eq" / "ne") DQUOTE
             ; "gt" means "greater than", the C operator ">".
@@ -37,18 +37,18 @@
             ; "ne" means "not equal to", the C operator "!=".
    */
 
-  function SieveRelationalMatch( docshell, id ) {
+  function SieveRelationalMatch(docshell, id) {
 
-    SieveAbstractElement.call( this, docshell, id );
+    SieveAbstractElement.call(this, docshell, id);
     this.operator = '"eq"';
   }
 
-  SieveRelationalMatch.prototype = Object.create( SieveAbstractElement.prototype );
+  SieveRelationalMatch.prototype = Object.create(SieveAbstractElement.prototype);
   SieveRelationalMatch.prototype.constructor = SieveRelationalMatch;
 
   SieveRelationalMatch.isElement
-    = function ( parser, lexer ) {
-      return parser.startsWith( ['"gt"', '"ge"', '"lt"', '"le"', '"eq"', '"ne"'] );
+    = function (parser) {
+      return parser.startsWith(['"gt"', '"ge"', '"lt"', '"le"', '"eq"', '"ne"']);
     };
 
   SieveRelationalMatch.nodeName = function () {
@@ -60,19 +60,19 @@
   };
 
   SieveRelationalMatch.prototype.require
-    = function ( imports ) {
+    = function (imports) {
       imports["relational"] = true;
     };
 
   SieveRelationalMatch.prototype.init
-    = function ( parser ) {
+    = function (parser) {
 
-      if ( !parser.startsWith( ['"gt"', '"ge"', '"lt"', '"le"', '"eq"', '"ne"'] ) )
-        throw new Error( "Relational operator expected" );
+      if (!parser.startsWith(['"gt"', '"ge"', '"lt"', '"le"', '"eq"', '"ne"']))
+        throw new Error("Relational operator expected");
 
-      this.operator = parser.bytes( 4 );
+      this.operator = parser.bytes(4);
 
-      parser.extract( 4 );
+      parser.extract(4);
 
       return this;
     };
@@ -82,13 +82,13 @@
       return "" + this.operator;
     };
 
-  if ( !SieveLexer )
+  if (!SieveLexer)
     throw new Error("Could not register Relational Elements");
 
-  SieveLexer.register( SieveRelationalMatch );
+  SieveLexer.register(SieveRelationalMatch);
 
 
-  ///////////////////  
+  // /////////////////
 
   /* VALUE = ":value" relational-match */
 
@@ -96,7 +96,7 @@
    * The value match type does a relational comparison between strings
    */
 
-  var value = {
+  let value = {
     node: "match-type/value",
     type: "match-type/",
 
@@ -117,16 +117,16 @@
 
   };
 
-  SieveGrammar.addTag( value );
+  SieveGrammar.addTag(value);
 
   /**
-   * The count match type determins the number of the specified entities in the 
-   * message and then does a relational comparison of numbers of entities 
-   * 
+   * The count match type determins the number of the specified entities in the
+   * message and then does a relational comparison of numbers of entities
+   *
    * Count should only be used with a numeric comparator.
    */
 
-  var count = {
+  let count = {
     node: "match-type/count",
     type: "match-type/",
 
@@ -146,6 +146,6 @@
     }]
   };
 
-  SieveGrammar.addTag( count );
+  SieveGrammar.addTag(count);
 
-})( window );
+})(window);

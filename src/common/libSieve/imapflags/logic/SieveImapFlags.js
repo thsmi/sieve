@@ -1,30 +1,30 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * The contents of this file are licenced. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
 /* global window */
 
-( function ( /*exports*/ ) {
+(function () {
 
   "use strict";
   /* global SieveGrammar */
 
   // Flags and keywords are defined in http://tools.ietf.org/html/rfc5788
 
-  if ( !SieveGrammar )
-    throw new Error( "Could not register ImapFlags" );
+  if (!SieveGrammar)
+    throw new Error("Could not register ImapFlags");
 
-  // Inject :flags into  fileinto 
-  // :flags" <list-of-flags: string-list> 
-  var fileintoflags = {
+  // Inject :flags into  fileinto
+  // :flags" <list-of-flags: string-list>
+  let fileintoflags = {
     node: "action/fileinto/flags",
     type: "action/fileinto/",
 
@@ -45,9 +45,9 @@
     }]
   };
 
-  SieveGrammar.addTag( fileintoflags );
+  SieveGrammar.addTag(fileintoflags);
 
-  var fileinto = {
+  let fileinto = {
     extends: "action/fileinto",
 
     properties: [{
@@ -62,11 +62,11 @@
     }]
   };
 
-  SieveGrammar.extendAction( fileinto );
+  SieveGrammar.extendAction(fileinto);
 
 
-  // Inject :flags into keep  
-  var keepflags = {
+  // Inject :flags into keep
+  let keepflags = {
     node: "action/keep/flags",
     type: "action/keep/",
 
@@ -86,9 +86,9 @@
     }]
   };
 
-  SieveGrammar.addTag( keepflags );
+  SieveGrammar.addTag(keepflags);
 
-  var keep = {
+  let keep = {
     extends: "action/keep",
 
     properties: [{
@@ -103,12 +103,12 @@
     }]
   };
 
-  SieveGrammar.extendAction( keep );
+  SieveGrammar.extendAction(keep);
 
 
-  //Usage:   setflag [<variablename: string>]  <list-of-flags: string-list>  
+  // Usage:   setflag [<variablename: string>]  <list-of-flags: string-list>
 
-  var setflag = {
+  let setflag = {
     node: "action/setflag",
     type: "action",
     token: "setflag",
@@ -129,18 +129,18 @@
         id: "flags",
 
         type: "stringlist",
-        value: '"\\\Flagged"'
+        value: '"\\\\Flagged"'
       }]
     }]
   };
 
-  SieveGrammar.addAction( setflag );
+  SieveGrammar.addAction(setflag);
 
 
   //     Usage:   addflag [<variablename: string>]
   //            <list-of-flags: string-list>
 
-  var addflag = {
+  let addflag = {
     node: "action/addflag",
     type: "action",
     token: "addflag",
@@ -161,18 +161,18 @@
         id: "flags",
 
         type: "stringlist",
-        value: '"\\\Flagged"'
+        value: '"\\\\Flagged"'
       }]
     }]
   };
 
-  SieveGrammar.addAction( addflag );
+  SieveGrammar.addAction(addflag);
 
 
   //  Usage:   removeflag [<variablename: string>]
   //         <list-of-flags: string-list>
 
-  var removeflag = {
+  let removeflag = {
 
     node: "action/removeflag",
     type: "action",
@@ -197,19 +197,19 @@
         id: "flags",
         type: "stringlist",
 
-        value: '"\\\Flagged"'
+        value: '"\\Flagged"'
       }]
     }]
   };
 
-  SieveGrammar.addAction( removeflag );
+  SieveGrammar.addAction(removeflag);
 
 
   //     Usage: hasflag [MATCH-TYPE] [COMPARATOR]
   //          [<variable-list: string-list>]
   //          <list-of-flags: string-list>
 
-  var hasflag = {
+  let hasflag = {
 
     node: "test/hasflag",
     type: "test",
@@ -224,10 +224,10 @@
 
       elements: [{
         id: "match-type",
-        type: "match-type",
+        type: "match-type"
       }, {
         id: "comparator",
-        type: "comparator",
+        type: "comparator"
       }]
 
     }, {
@@ -248,7 +248,7 @@
     }]
   };
 
-  SieveGrammar.addTest( hasflag );
+  SieveGrammar.addTest(hasflag);
 
 
-})( window );
+})(window);

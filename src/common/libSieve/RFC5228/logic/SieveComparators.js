@@ -1,60 +1,60 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * The contents of this file are licenced. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
 /* global window */
 
-( function (/*exports*/ ) {
+(function () {
 
   "use strict";
   /* global SieveGrammar */
 
-  if ( !SieveGrammar )
-    throw new Error( "Could not register Comparator" );
+  if (!SieveGrammar)
+    throw new Error("Could not register Comparator");
 
   /**
    * Comparators sepcify the charset which should be used for string comparison
-   * By default two matchtypes are supported. 
-   * 
+   * By default two matchtypes are supported.
+   *
    * "i;octet"
    *   Compares strings byte by byte (octet by octet) used typically with UTF-8 octetts
-   * 
-   * "i;ascii-codemap" 
-   *   Converts strings before comparison to US-ASCII. 
+   *
+   * "i;ascii-codemap"
+   *   Converts strings before comparison to US-ASCII.
    *   All US-ASCII letters are converted to upercase (0x61-0x7A to 0x41-0x5A)
    *   "hello" equals "HELLO"
-   *   
+   *
    * "i;ascii-numeric"
    *   Interprets the string as decimal positive integer represented in US-ASCII digits (0x30 to 0x39).
-   *   The comparison starts from tbe beginning of the string and ends with the first non-digit or the 
+   *   The comparison starts from tbe beginning of the string and ends with the first non-digit or the
    *   end of string.
    **/
 
-  var comparator_octett = {
+  let octett = {
     node: "comparator/i;octet",
     type: "comparator/",
 
     token: "\"i;octet\""
   };
 
-  SieveGrammar.addTag( comparator_octett );
+  SieveGrammar.addTag(octett);
 
-  var comparator_ascii_casemap = {
+  let asciiCasemap = {
     node: "comparator/i;ascii-casemap",
     type: "comparator/",
 
     token: "\"i;ascii-casemap\""
   };
 
-  SieveGrammar.addTag( comparator_ascii_casemap );
+  SieveGrammar.addTag(asciiCasemap);
 
   /**
    9.1.1.  ASCII Numeric Collation Description
@@ -84,7 +84,7 @@
    "4294967298". "4294967298", "04294967298", and "4294967298b" are all
    equal. "04294967298" is less than "". "", "x", and "y" are equal.
    */
-  var comparator_numeric = {
+  let numeric = {
     node: "comparator/i;ascii-numeric",
     type: "comparator/",
 
@@ -93,11 +93,11 @@
     token: "\"i;ascii-numeric\""
   };
 
-  SieveGrammar.addTag( comparator_numeric );
+  SieveGrammar.addTag(numeric);
 
-  //*******************************************************************
+  // *******************************************************************
 
-  var comparator = {
+  let comparator = {
     node: "comparator",
     type: "comparator",
 
@@ -108,6 +108,6 @@
     items: ["comparator/"]
   };
 
-  SieveGrammar.addGroup( comparator );
+  SieveGrammar.addGroup(comparator);
 
-})( window );   
+})(window);

@@ -1,28 +1,28 @@
 /*
  * The contents of this file are licensed. You may obtain a copy of
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
 /* global window */
 
 
-( function (/*exports*/ ) {
+(function () {
 
   "use strict";
 
   /* global SieveGrammar */
 
-  if ( !SieveGrammar )
-    throw new Error( "Could not register AddressParts" );
+  if (!SieveGrammar)
+    throw new Error("Could not register AddressParts");
 
-  var userpart = {
+  let userpart = {
     node: "address-part/user",
     type: "address-part/",
 
@@ -31,10 +31,10 @@
     token: ":user"
   };
 
-  SieveGrammar.addTag( userpart );
+  SieveGrammar.addTag(userpart);
 
 
-  var detailpart = {
+  let detailpart = {
     node: "address-part/detail",
     type: "address-part/",
 
@@ -43,9 +43,9 @@
     token: ":detail"
   };
 
-  SieveGrammar.addTag( detailpart );
+  SieveGrammar.addTag(detailpart);
 
-})( window );
+})(window);
 
 
 //   :user "+" :detail "@" :domain

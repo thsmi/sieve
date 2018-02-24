@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -95,7 +95,7 @@
       if ( typeof ( parser ) === "string" )
         parser = new SieveParser( parser );
 
-      var item = this._lexer.createByName( this, name, parser );
+      let item = this._lexer.createByName(this, name, parser);
 
       if ( typeof ( parent ) !== "undefined" )
         item.parent( parent );
@@ -111,7 +111,7 @@
       if ( typeof ( parser ) === "string" )
         parser = new SieveParser( parser );
 
-      var item = this._lexer.createByClass( this, types, parser );
+      let item = this._lexer.createByClass(this, types, parser);
 
       if ( typeof ( parent ) !== "undefined" )
         item.parent( parent );
@@ -179,9 +179,9 @@
       // ... finally convert all \r to \r\n
       data = data.replace( /\r/g, "\r\n" );
 
-      var r = 0;
-      var n = 0;
-      for ( var i = 0; i < data.length; i++ ) {
+      let r = 0;
+      let n = 0;
+      for (let i = 0; i < data.length; i++) {
         if ( data.charCodeAt( i ) === "\r".charCodeAt( 0 ) )
           r++;
         if ( data.charCodeAt( i ) === "\n".charCodeAt( 0 ) )
@@ -190,7 +190,7 @@
       if ( n !== r )
         throw new Error( "Something went terribly wrong. The linebreaks are mixed up...\n" );
 
-      var parser = new SieveParser( data );
+      let parser = new SieveParser(data);
 
       this._rootNode.init( parser );
 
@@ -209,7 +209,7 @@
       return this._lexer.capabilities( capabilities );
     };
 
-  /*
+  /**
    * In oder to speedup mutation elements are cached. But this cache is lazy.
    * So deleted objects will remain in memory until you call this cleanup
    * Method.
@@ -220,29 +220,29 @@
   SieveDocument.prototype.compact
     = function ( whitelist ) {
 
-      var items = [];
-      var cnt = 0;
-      var item;
+      let items = [];
+      let cnt = 0;
+      let item;
 
       whitelist = [].concat( whitelist );
 
       // scan for null nodes..
       for ( item in this._nodes )
         if ( whitelist.indexOf( this._nodes[item] ) === -1 )
-          if ( this._nodes[item].parent() == null )
+          if (this._nodes[item].parent() === null)
             items.push( item );
 
       // ...cleanup these nodes...
-      for ( var i = 0; i < items.length; i++ )
+      for (let i = 0; i < items.length; i++)
         delete ( this._nodes[items[i]] );
 
       // ... and remove all dependent nodes  
       while ( items.length ) {
-        var it = items.shift();
+        let it = items.shift();
 
         for ( item in this._nodes )
           if ( whitelist.indexOf( this._nodes[item] ) === -1 )
-            if ( this._nodes[item].parent().id() == it )
+            if (this._nodes[item].parent().id() === it)
               items.push( item );
 
         delete ( this._nodes[it] );

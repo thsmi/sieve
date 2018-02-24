@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -13,9 +13,10 @@
 (function() {
 	
   "use strict";
+
 	/* global net */
 
-  var suite  = net.tschmid.yautt.test;
+  let suite = net.tschmid.yautt.test;
     
   if (!suite)
     throw new Error( "Could not initialize test suite" );
@@ -28,7 +29,7 @@
 
     suite.log("return test");
    
-    var script =
+    let script =
       'require "include";\r\n'
         + 'return;\r\n';    
       
@@ -39,12 +40,12 @@
 
     suite.log("include ambigious location ");
    
-    var script =
+    let script =
       'require ["include"];\r\n'
         + '\r\n'
         + 'include :personal :global "always_allow";\r\n';
     
-    var exception = 'Error: Unknown or incompatible type >>string/<< at >>:global "always_allow';
+    let exception = "Location can be either personal or global but not both";
       
     suite.expectInvalidScript(script, exception, {"include":true});
   });   
@@ -54,7 +55,7 @@
 
     suite.log("include multiple scripts");
    
-    var script =
+    let script =
       'require ["include"];\r\n'
         + '\r\n'
         + 'include :personal "always_allow";\r\n'
@@ -69,7 +70,7 @@
 
     suite.log("include test2");
    
-    var script =
+    let script =
       'require [ "include", "variables" ];\r\n'
         + 'global "test";\r\n'
         + 'global "test_mailbox";\r\n'
@@ -93,7 +94,7 @@
 
     suite.log("multiple globals");
    
-    var script =
+    let script =
       'require ["include", "variables"];\r\n'
         + 'global ["test", "test_mailbox"];\r\n'
         + '\r\n'
@@ -110,7 +111,7 @@
 
     suite.log("single global");
    
-    var script =
+    let script =
       'require ["variables", "include" /*, "vacation"*/];\r\n'
         + 'global "i_am_on_vacation";\r\n'
         + '\r\n'
@@ -124,5 +125,5 @@
     suite.expectValidScript(script, {"include":true, "variables":true});
   });   
   
-}());
+})();
 

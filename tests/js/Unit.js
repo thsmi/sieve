@@ -26,7 +26,7 @@
   if (typeof(level) !== "string")
     level = "Info";
     
-  var msg = {};
+  let msg = {};
   msg.type = "LOG";
   msg.level = level;
   msg.data = ""+message;
@@ -44,7 +44,7 @@
 
 /**
  * Signals the test suit, tests succeeded.
-   * @return{undefined}
+ * @returns {void}
  */
   function succeed() {
   var msg = {};
@@ -58,7 +58,7 @@
    *
    * @param {String|Error} [message]
    *   an optional error or error why tests failed.
-   * @returns {undefined}
+   * @returns {void}
  */
   function fail( message ) {
 
@@ -143,7 +143,7 @@
  //   if (event.origin !== document.domain)
 //      return;
 
-    var msg = JSON.parse(event.data);
+    let msg = JSON.parse(event.data);
   
     if ( msg.type !== "IMPORT" )
       return;
@@ -152,7 +152,7 @@
   }, false);
   
   // ... we need to catch any errors...
-  var oldErrorHandler = window.onerror;
+  let oldErrorHandler = window.onerror;
   
   window.onerror = function(message, url, line) {
   	

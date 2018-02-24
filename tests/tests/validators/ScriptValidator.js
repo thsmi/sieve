@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -98,7 +98,7 @@
     if (capabilities)
       SieveLexer.capabilities(capabilities);
     
-    var doc = new SieveDocument(SieveLexer,null);
+      let doc = new SieveDocument(SieveLexer, null);
     
     suite.logTrace("Start Parsing Script");
     try {

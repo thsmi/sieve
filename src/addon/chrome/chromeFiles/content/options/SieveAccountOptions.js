@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
@@ -14,7 +14,6 @@
 
 /* global document */
 /* global window */
-/* global SieveAutoConfig */
 /* global Components */
 /* global SieveOverlayManager */
 
@@ -26,18 +25,20 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/Services.jsm");
-//  @include "/sieve/src/sieve@mozdev.org/chrome/chromeFiles/content/libs/libManageSieve/SieveAccounts.js"
 
 Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
-SieveOverlayManager.require("/sieve/SieveAutoConfig.js", this, window);
+let { SieveAutoConfig } = SieveOverlayManager.requireModule("./sieve/SieveAutoConfig.jsm", window);
+
 
 
 /** @type SieveAccount */
 let gAccount = null;
 
+const AUTH_TYPE_CUSTOM = 2;
+
 // === Server Sheet ===========================================================
 function onServerSheetLoad(account) {
-  var rbHost = document.getElementById('rgHost');
+  let rbHost = document.getElementById('rgHost');
   rbHost.selectedIndex = account.getHost().getType();
   enableHost(rbHost.selectedIndex);
 
@@ -49,12 +50,12 @@ function onServerSheetLoad(account) {
     = account.getHost(0).getHostname();
 
 
-  var rbPort = document.getElementById('rgPort');
+  let rbPort = document.getElementById('rgPort');
 
   // Load custom port settings
-  var port = account.getHost().getPort(2);
+  let port = account.getHost().getPort(2);
 
-  if ((port == 2000) || (port = 4190))
+  if ((port === 2000) || (port === 4190))
     port = "";
 
   document.getElementById('txtPort').value = port;
@@ -62,9 +63,9 @@ function onServerSheetLoad(account) {
   // Load port
   port = account.getHost().getPort();
 
-  if (port == 4190)
+  if (port === 4190)
     rbPort.selectedIndex = 0;
-  else if (port == 2000)
+  else if (port === 2000)
     rbPort.selectedIndex = 1;
   else {
     rbPort.selectedIndex = 2;
@@ -75,7 +76,7 @@ function onServerSheetLoad(account) {
 }
 
 function enableHost(type) {
-  if (type == 1)
+  if (type === 1)
     document.getElementById('txtHostname').removeAttribute('disabled');
   else
     document.getElementById('txtHostname').setAttribute('disabled', 'true');
@@ -97,7 +98,7 @@ function onHostnameChange(value) {
 }
 
 function enablePort(type) {
-  if (type == 2)
+  if (type === 2)
     document.getElementById('txtPort').removeAttribute('disabled');
   else
     document.getElementById('txtPort').setAttribute('disabled', 'true');
@@ -125,11 +126,11 @@ function onPortChange(value) {
 }
 
 
-var gAutoConfig = null;
+let gAutoConfig = null;
 
-var gAutoConfigCallback =
+let gAutoConfigCallback =
   {
-    onSuccess: function (host, port, proxy) {
+    onSuccess: function (host, port) {
       gAutoConfig = null;
 
       gAccount.getHost().setPort(port);
@@ -137,9 +138,9 @@ var gAutoConfigCallback =
       document.getElementById("dkAutoSelect").selectedIndex = "2";
       document.getElementById("lblAutoSelectPort").value = port;
 
-      if (port == 4190)
+      if (port === 4190)
         document.getElementById("rgPort").selectedIndex = 0;
-      else if (port == 2000)
+      else if (port === 2000)
         document.getElementById("rgPort").selectedIndex = 1;
     },
 
@@ -153,7 +154,7 @@ function onPortAutoSelect() {
   try {
     document.getElementById("dkAutoSelect").selectedIndex = "1";
 
-    //Load auoconfig only when we realy need it
+    // Load auoconfig only when we realy need it
     gAutoConfig = new SieveAutoConfig();
 
     gAutoConfig.addHost(
@@ -166,8 +167,8 @@ function onPortAutoSelect() {
       2000,
       gAccount.getProxy().getProxyInfo());
 
-    var port = document.getElementById("txtPort").value;
-    port = parseInt(port);
+    let port = document.getElementById("txtPort").value;
+    port = parseInt(port, 10);
 
     if (!isNaN(port))
       gAutoConfig.addHost(
@@ -183,69 +184,68 @@ function onPortAutoSelect() {
 }
 
 // === Security Sheet =========================================================
+/**
+ * Called when the security page should be populated.
+ * @param {SieveAccount} account
+ *   a reference to a sieve account which contains the settings.
+ * @returns {void}
+ */
 function onSecuritySheetLoad(account) {
+
+  let mechanism = document.getElementById("mlAuthMechanism");
+  mechanism.addEventListener("command", () => {
+    account.getSecurity().setMechanism(
+      document.getElementById("mlAuthMechanism").value);
+  });
+
+  mechanism.value = account.getSecurity().getMechanism();
+
   // initalize login related elements...
   document.getElementById('txtUsername').value
-    = account.getLogin(2).getUsername();
+    = account.getAuthentication(AUTH_TYPE_CUSTOM).getUsername();
 
-  var rgLogin = document.getElementById('rgLogin');
-  rgLogin.selectedIndex = account.getLogin().getType();
-  enableLogin(rgLogin.selectedIndex);
+  let rgLogin = document.getElementById('rgLogin');
+  rgLogin.addEventListener("select", () => {
 
-  var rbTLS = document.getElementById('rgTLS');
+    account.setActiveLogin(
+      document.getElementById('rgLogin').value);
 
-  if (account.getHost().isTLSEnabled()) {
-    if (account.getHost().isTLSForced())
-      rbTLS.selectedIndex = 2;
-    else
-      rbTLS.selectedIndex = 1;
-  }
-  else
+    enableLogin(account.getAuthentication().getType());
+  });
+
+  rgLogin.value = account.getAuthentication().getType();
+  enableLogin(rgLogin.value);
+
+  let rbTLS = document.getElementById('rgTLS');
+
+  if (!account.getSecurity().isSecure())
     rbTLS.selectedIndex = 0;
+  else
+    rbTLS.selectedIndex = 1;
+
 }
 
 function onTLSSelect(idx) {
-  try {
-    if (!gAccount)
-      return;
+  if (!gAccount)
+    return;
 
-    var isEnabled = true;
-    var isForced = false;
-
-    if (idx === 0)
-      isEnabled = false;
-
-    if (idx === 2)
-      isForced = true;
-
-    gAccount.getHost().setTLS(isForced, isEnabled);
-  }
-  catch (ex) {
-    window.alert(ex);
-  }
-
+  gAccount.getSecurity().setSecure(idx !== 0)
 }
 
 function enableLogin(type) {
-  if (type == 2)
+  if (type === AUTH_TYPE_CUSTOM)
     document.getElementById('txtUsername').removeAttribute('disabled');
   else
     document.getElementById('txtUsername').setAttribute('disabled', 'true');
 }
 
-function onLoginSelect(idx) {
-  if (!gAccount)
-    return;
 
-  gAccount.setActiveLogin(idx);
-  enableLogin(idx);
-}
 
 function onUsernameChange(value) {
   if (!gAccount)
     return;
 
-  gAccount.getLogin(2).setUsername(value);
+  gAccount.getAuthentication(2).setUsername(value);
 }
 
 // === General Sheet ==========================================================
@@ -253,14 +253,14 @@ function onGeneralSheetLoad(account) {
   document.getElementById('txtKeepAlive').value
     = account.getSettings().getKeepAliveInterval() / (1000 * 60);
 
-  var cbxKeepAlive = document.getElementById('cbxKeepAlive');
+  let cbxKeepAlive = document.getElementById('cbxKeepAlive');
   cbxKeepAlive.checked = account.getSettings().isKeepAlive();
   enableKeepAlive(cbxKeepAlive.checked);
 
   document.getElementById('txtCompile').value
     = account.getSettings().getCompileDelay();
 
-  var element = null;
+  let element = null;
 
   element = document.getElementById('cbxCompile');
   element.checked = account.getSettings().hasCompileDelay();
@@ -282,7 +282,7 @@ function onProxySheetLoad(account) {
   document.getElementById('cbxSocks5RemoteDNS').checked
     = account.getProxy(3).usesRemoteDNS();
 
-  var rgSocksProxy = document.getElementById('rgSocksProxy');
+  let rgSocksProxy = document.getElementById('rgSocksProxy');
   rgSocksProxy.selectedIndex = account.getProxy().getType();
   enableProxy(rgSocksProxy.selectedIndex);
 }
@@ -291,7 +291,7 @@ function onProxySelect(type) {
   if (!gAccount)
     return;
 
-  if ((type == null) || (type > 3))
+  if (typeof (type) === "undefined" || (type === null) || (type > 3))
     type = 1;
 
   gAccount.setProxy(type);
@@ -311,22 +311,6 @@ function onProxySelect(type) {
  * @returns {void}
  */
 function onAdvancedSheetLoad(account) {
-  let element = document.getElementById('cbxAuthMechanism');
-  element.checked = account.getSettings().hasForcedAuthMechanism();
-  enableAuthMechanism(element.checked);
-
-  let list = document.getElementById('mlAuthMechanism');
-  let items = list.getElementsByTagName('menuitem');
-
-  let mechanism = account.getSettings().getForcedAuthMechanism();
-
-  for (let i = 0; i < items.length; i++) {
-    if (items[i].value != mechanism)
-      continue;
-
-    list.selectedItem = items[i];
-    break;
-  }
 
   // initalize the authorization related elements...
   document.getElementById('txtAuthorization').value
@@ -341,7 +325,7 @@ function onAuthorizationSelect(type) {
   if (!gAccount)
     return;
 
-  if ((type == null) || (type > 3))
+  if (typeof (type) === "undefined" || (type === null) || (type > 3))
     type = 1;
 
   gAccount.setActiveAuthorization(type);
@@ -374,8 +358,8 @@ function onAuthorizationChange(value) {
  */
 function onEditorSheetLoad(account) {
   try {
-    //var rgDefaultEditor = document.getElementById('rgDefaultEditor');
-    //rgDefaultEditor.selectedIndex = account.getSettings().getDefaultEditor();
+    // var rgDefaultEditor = document.getElementById('rgDefaultEditor');
+    // rgDefaultEditor.selectedIndex = account.getSettings().getDefaultEditor();
 
     document.getElementById("txtIndentionWidth").value = account.getSettings().getIndentionWidth();
     document.getElementById("txtTabWidth").value = account.getSettings().getTabWidth();
@@ -524,29 +508,6 @@ function onCompileChange(sender) {
 }
 
 
-
-function onAuthMechanismCommand(sender) {
-  if (!gAccount)
-    return;
-
-  gAccount.getSettings().enableForcedAuthMechanism(sender.checked);
-  enableAuthMechanism(sender.checked);
-}
-
-function enableAuthMechanism(enabled) {
-  if (enabled)
-    document.getElementById('mlAuthMechanism').removeAttribute('disabled');
-  else
-    document.getElementById('mlAuthMechanism').setAttribute('disabled', 'true');
-}
-
-function onAuthMechanismSelect(sender) {
-  if (!gAccount)
-    return;
-
-  gAccount.getSettings().setForcedAuthMechanism(sender.selectedItem.value);
-}
-
 /**
  * Opens thunderbird's the password manager dialog
  *
@@ -566,7 +527,7 @@ function onShowPassword() {
     w.focus();
   else
     window.openDialog(uri, winName, "");
-  /*else
+  /* else
     Components
       .classes["@mozilla.org/embedcomp/window-watcher;1"]
       .getService(Components.interfaces.nsIWindowWatcher)
@@ -684,3 +645,7 @@ function onDonate() {
     .getService(Ci.nsIExternalProtocolService)
     .loadURI(uri);
 }
+
+window.addEventListener('error', function (event) {
+  Components.utils.reportError(event.error);
+});

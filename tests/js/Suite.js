@@ -11,6 +11,7 @@
 
 	/* global $: false */
 	/* global net */
+  /* global tests */
 	/* global document */
 	
   // Create the namespace, even if we are inside an anonymous method...
@@ -37,14 +38,14 @@
     
   exports.net.tschmid.yautt.test.server.onMessage = function(event) {	
 
-    var msg = JSON.parse(event.data);
+    let msg = JSON.parse(event.data);
   
     if ( msg.type === "LOG" ) {
       this.log(msg.data, msg.level);
       return;
     }
    
-    var that = this;
+    let that = this;
         
     if ( msg.type === "FAIL" ) {
     	
@@ -140,19 +141,19 @@
     scripts.push("./../js/UnitInit.js");
 	
 
-    var that = this;
+    let that = this;
     
     $("#divFrame")
       .empty()
       .append($("<iframe/>")
         .attr("id","testFrame")
         .load(function() {        	
-          var iframe = document.getElementById("testFrame").contentWindow;
+          let iframe = document.getElementById("testFrame").contentWindow;
           that.logTrace("Injecting Scripts for "+that.current+" ...");
           
           $.each(scripts, function (idx,script) {
           	
-          	var msg = {type : "IMPORT", data : script};
+            let msg = { type: "IMPORT", data: script };
           	
           	iframe.postMessage(""+JSON.stringify(msg) ,"*");           
           });
@@ -187,7 +188,7 @@
 
   net.tschmid.yautt.test.server.run = function() {
   
-    var that = this;
+    let that = this;
     
     this.queue = [];
     
@@ -224,7 +225,7 @@
   };
 
   net.tschmid.yautt.test.server.init = function() {
-    var that = this;
+    let that = this;
   	window.addEventListener("message", function(event) { that.onMessage(event); }, false);
   };
   
@@ -246,9 +247,9 @@
     	    value.disabled = false;
     	});
     	
-    	var items = $("#tests input:checkbox:not(:checked)");    	
-      items.each( function () {
-    		var name = $(this).val();
+      let items = $("#tests input:checkbox:not(:checked)");
+      items.each(function (idx, elm) {
+        let name = $(this).val();
     		
     		if (tests[name].script)
     	    tests[name].disabled = true;
@@ -271,7 +272,11 @@
     });
     
     $("#result-clear").click(function() {
-      net.tschmid.yautt.test.server.clear();
+      $("#divOutput").empty();
+
+      $("#tests div").each(function () {
+        $(this).css("color", "");
+      });
     });
     
     

@@ -1,21 +1,21 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * The contents of this file are licensed. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
 /* global window */
 
-( function ( /*exports*/ ) {
+
+(function (exports) {
 
   "use strict";
-
 
   /* global $: false */
   /* global SieveStringListWidget */
@@ -26,11 +26,11 @@
   /* global SieveDesigner */
   /* global SieveComparatorUI */
 
-  function SieveSetActionUI( elm ) {
-    SieveActionDialogBoxUI.call( this, elm );
+  function SieveSetActionUI(elm) {
+    SieveActionDialogBoxUI.call(this, elm);
   }
 
-  SieveSetActionUI.prototype = Object.create( SieveActionDialogBoxUI.prototype );
+  SieveSetActionUI.prototype = Object.create(SieveActionDialogBoxUI.prototype);
   SieveSetActionUI.prototype.constructor = SieveSetActionUI;
 
   SieveSetActionUI.prototype.getTemplate
@@ -50,19 +50,19 @@
 
   SieveSetActionUI.prototype.onSave
     = function () {
-      var item = null;
+      let item = null;
 
-      item = $( "#sivVariableName" ).val();
-      if ( !item.trim() ) {
-        window.alert( "Variable name can't be empty" );
+      item = $("#sivVariableName").val();
+      if (!item.trim()) {
+        alert("Variable name can't be empty");
         return false;
       }
 
       this.name( item );
       this.value( $( "#sivVariableValue" ).val() );
 
-      var status;
-      var value = null;
+      let status;
+      let value = null;
 
       status = $( "input[type='checkbox'][name='10']" ).is( ":checked" );
       if ( status )
@@ -104,7 +104,7 @@
   SieveSetActionUI.prototype.onLoad
     = function () {
 
-      ( new SieveTabWidget() ).init();
+      (new SieveTabWidget()).init();
 
       var state = null;
 
@@ -115,8 +115,8 @@
       $( 'input:checkbox[name="20"]' ).prop( 'checked', state );
 
       state = this.getSieve().enable( "modifier/30" );
-      $( 'input:checkbox[name="30"]' )
-        .change( function () { $( 'input:radio[name="30"]' ).prop( 'disabled', !( $( this ).prop( 'checked' ) ) ); })
+      $('input:checkbox[name="30"]')
+        .change(function () { $('input:radio[name="30"]').prop('disabled', !($(this).prop('checked'))); })
         .prop( 'checked', state )
         .change();
 
@@ -124,8 +124,8 @@
       //   $('input:radio[name="30"][value="'+ item.nodeName().substr(9)+'"]' ).prop('checked', true);  
 
       state = this.getSieve().enable( "modifier/40" );
-      $( 'input:checkbox[name="40"]' )
-        .change( function () { $( 'input:radio[name="40"]' ).prop( 'disabled', !( $( this ).prop( 'checked' ) ) ); })
+      $('input:checkbox[name="40"]')
+        .change(function () { $('input:radio[name="40"]').prop('disabled', !($(this).prop('checked'))); })
         .prop( 'checked', state )
         .change();
 
@@ -139,22 +139,22 @@
 
   SieveSetActionUI.prototype.getSummary
     = function () {
-      return $( "<div/>" )
+      return $("<div/>")
         .html( "Set variable <em>" + this.name() + "</em> to value " +
         "<div><em>" +
         $( '<div/>' ).text( this.value().substr( 0, 240 ) ).html() +
         ( ( this.value().substr().length > 240 ) ? "..." : "" ) +
-        "</em></div>" );
+        "</em></div>");
 
     };
 
-  //-----------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------
 
-  function SieveStringTestUI( elm ) {
-    SieveTestDialogBoxUI.call( this, elm );
+  function SieveStringTestUI(elm) {
+    SieveTestDialogBoxUI.call(this, elm);
   }
 
-  SieveStringTestUI.prototype = Object.create( SieveTestDialogBoxUI.prototype );
+  SieveStringTestUI.prototype = Object.create(SieveTestDialogBoxUI.prototype);
   SieveStringTestUI.prototype.constructor = SieveStringTestUI;
 
   SieveStringTestUI.prototype.getTemplate
@@ -186,19 +186,19 @@
     = function () {
       var values = null;
 
-      values = ( new SieveStringListWidget( "#sivVariablesSourceList" ) ).values();
+      values = (new SieveStringListWidget("#sivVariablesSourceList")).values();
 
-      if ( !values || !values.length ) {
+      if (!values || !values.length) {
         window.alert( "Source list is empty" );
         return false;
       }
 
       this.sources( values );
 
-      values = ( new SieveStringListWidget( "#sivVariablesKeyList" ) ).values();
+      values = (new SieveStringListWidget("#sivVariablesKeyList")).values();
 
-      if ( !values || !values.length ) {
-        window.alert( "Key list is empty" );
+      if (!values || !values.length) {
+        alert("Key list is empty");
         return false;
       }
 
@@ -210,26 +210,26 @@
 
   SieveStringTestUI.prototype.onLoad
     = function () {
-      ( new SieveTabWidget() ).init();
+      (new SieveTabWidget()).init();
 
-      ( new SieveStringListWidget( "#sivVariablesSourceList" ) )
+      (new SieveStringListWidget("#sivVariablesSourceList"))
         .init( this.sources() );
 
-      ( new SieveStringListWidget( "#sivVariablesKeyList" ) )
+      (new SieveStringListWidget("#sivVariablesKeyList"))
         .init( this.keys() );
 
       var matchtype = new SieveMatchTypeUI( this.matchtype() );
-      $( "#sivVariablesMatchTypes" )
+      $("#sivVariablesMatchTypes")
         .append( matchtype.html() );
 
       var comparator = new SieveComparatorUI( this.comparator() );
-      $( "#sivVariablesComparator" )
-        .append( comparator.html() );
+      $("#sivVariablesComparator")
+        .append(comparator.html());
     };
 
   SieveStringTestUI.prototype.getSummary
     = function () {
-      return $( "<div/>" )
+      return $("<div/>")
         .html( " string " + $( '<em/>' ).text( this.sources() ).html()
         + " " + this.matchtype().getValue()
         + " " + $( '<em/>' ).text( this.keys() ).html() );
@@ -237,10 +237,10 @@
     };
 
 
-  if ( !SieveDesigner )
-    throw new Error( "Could not register Body Extension" );
+  if (!SieveDesigner)
+    throw new Error("Could not register Body Extension");
 
   SieveDesigner.register( "action/set", SieveSetActionUI );
-  SieveDesigner.register( "test/string", SieveStringTestUI );
+  SieveDesigner.register("test/string", SieveStringTestUI);
 
-})( window );
+})(window);

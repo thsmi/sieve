@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -14,6 +14,7 @@
 
 
 ( function ( exports ) {
+
   "use strict";
   /* global SieveLexer */
 
@@ -24,7 +25,7 @@
    * 
    * Widgest can register on rendering Elements. 
    */
-  var SieveDesigner =
+  let SieveDesigner =
     {
       names: {},
       types: {},
@@ -37,7 +38,7 @@
        *   the constructor which should be called in case the widget needs 
        *   to be constructed.
        * @throws throws an exception in case the callback is invalid
-       * @returns {undefined}
+       * @returns {void}
        */
       register2: function ( callback ) {
 
@@ -45,17 +46,17 @@
         if ( !callback.nodeType )
           throw new Error("Designer Error: Registration failed, element has no type");
 
-        var type = callback.nodeType();
+        let type = callback.nodeType();
 
         if ( !callback.nodeName )
           throw new Error("Designer Error: Registration failed, element has no name");
 
-        var name = callback.nodeName();
+        let name = callback.nodeName();
 
         if ( typeof ( this.types[type] ) === 'undefined' )
           this.types[type] = {};
 
-        var obj = {};
+        let obj = {};
         obj.onNew = function ( id ) { return new callback( id ); };
         obj.onCapable = function ( capabilities ) {
           if ( !callback.isCapable )
@@ -70,12 +71,12 @@
 
       getWidgetsByClass: function ( clazz, id ) {
 
-        var widgets = [];
+        let widgets = [];
 
-        var tmp = this.types[clazz];
-        var capabilities = SieveLexer.capabilities();
+        let tmp = this.types[clazz];
+        let capabilities = SieveLexer.capabilities();
 
-        for ( var item in tmp ) {
+        for (let item in tmp) {
           if ( tmp[item].onCapable( capabilities ) )
             widgets.push( tmp[item].onNew( id ) );
         }
@@ -88,7 +89,7 @@
         if ( !elm.nodeName || !elm.nodeName() )
           throw new Error("Layout Engine Error: Element has no name");
 
-        var name = elm.nodeName();
+        let name = elm.nodeName();
 
         if ( !this.names[name] )
           return null;
@@ -107,9 +108,7 @@
        *   The name or the constructor of the element the widget can render.
        * @param {Constructor} callback
        *   Constructor which should be calls to render this element
-       * @throws an exception in case the element could not be registered.
-       *
-       * @returns {undefined}
+       * @returns {void}
        */
       register: function ( name, callback ) {
         if ( typeof ( name ) === "undefined" || !name )
@@ -128,7 +127,8 @@
        * In case no widget registered for the element null is returned, other
        * wise a new instance which can be used to display the element.
        * 
-       * @param {SieveAbstractElement} elm - the sieve element for which the widget should be returned.
+       * @param {SieveAbstractElement} elm
+       *   the sieve element for which the widget should be returned.
        * @returns {Object} the widget
        */
       widget: function ( elm ) {

@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The content of this file is licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -165,8 +165,7 @@
   
   /******************************************************************************/
   
-  function SieveBoolean(docshell,id) 
-  {
+  function SieveBoolean(docshell, id) {
     SieveAbstractElement.call(this,docshell,id);
     
     // first line with deadcode
@@ -179,8 +178,7 @@
   SieveBoolean.prototype.constructor = SieveBoolean;
   
   SieveBoolean.isElement
-   = function(parser/*, lexer*/)
-  {  
+    = function (parser, lexer) {
     if (parser.startsWith("true"))
       return true;
     if (parser.startsWith("false"))
@@ -198,17 +196,14 @@
   };
   
   SieveBoolean.prototype.init
-      = function (parser)
-  {
+    = function (parser) {
     
-    if (parser.startsWith("true"))
-    {
+      if (parser.startsWith("true")) {
       parser.extract("true");
       this.value = true;
     }
     
-    if (parser.startsWith("false"))
-    {
+      if (parser.startsWith("false")) {
       parser.extract("false");
       this.value = false;
     }
@@ -220,17 +215,16 @@
   
   
   SieveBoolean.prototype.toScript
-      = function ()
-  {
+    = function () {
     if (this.value)
       return "true"+this.whiteSpace.toScript();
   
     return "false"+this.whiteSpace.toScript();    
   };
   
-  //******************************************************************************
-  function SieveSize(docshell,id) 
-  {
+
+  /* *****************************************************************************/
+  function SieveSize(docshell, id) {
     SieveAbstractElement.call(this,docshell,id); 
     
     this.whiteSpace = [];
@@ -246,8 +240,7 @@
   SieveSize.prototype.constructor = SieveSize;
   
   SieveSize.isElement
-    = function(parser/*, lexer*/)
-  { 
+    = function (parser, lexer) {
     return parser.startsWith("size");
   };
   
@@ -260,8 +253,7 @@
   };
   
   SieveSize.prototype.init
-      = function (parser)
-  {
+    = function (parser) {
     // Syntax :
     // <"size"> <":over" / ":under"> <limit: number>
     
@@ -269,13 +261,11 @@
     
     this.whiteSpace[0].init(parser);
     
-    if (parser.startsWith(":over")) 
-    {
+      if (parser.startsWith(":over")) {
       parser.extract(":over");
       this.isOver(true);
     }
-    else if (parser.startsWith(":under"))
-    {
+      else if (parser.startsWith(":under")) {
       parser.extract(":under");
       this.isOver(false);
     }
@@ -295,8 +285,7 @@
    * @return {SieveSize}
    */
   SieveSize.prototype.isOver
-      = function (value)
-  {
+    = function (value) {
     if (typeof(value) === "undefined")
       return this.over;
     
@@ -309,14 +298,12 @@
   };
   
   SieveSize.prototype.getSize
-      = function ()
-  {
+    = function () {
     return this.size;  
   };
   
   SieveSize.prototype.toScript
-      = function ()
-  {
+    = function () {
     return "size"
       + this.whiteSpace[0].toScript()
       + ((this.isOver())?":over":":under")
@@ -327,8 +314,7 @@
    
   
   // TODO Stringlist and testslist are quite simmilar
-  function SieveTestList(docshell,id)
-  {
+  function SieveTestList(docshell, id) {
     SieveAbstractElement.call(this,docshell,id);
     this.tests = [];
   }
@@ -337,8 +323,7 @@
   SieveTestList.prototype.constructor = SieveTestList;
   
   SieveTestList.isElement
-     = function (parser /*, lexer*/)
-  {
+    = function (parser, lexer) {
     return parser.isChar("(");
   };
   
@@ -351,18 +336,16 @@
   };
   
   SieveTestList.prototype.init
-      = function (parser)
-  {   
+    = function (parser) {
     this.tests = [];
     
     parser.extractChar("(");
     
-    while ( ! parser.isChar(")"))
-    {
+      while (!parser.isChar(")")) {
       if (this.tests.length > 0)
        parser.extractChar(",");
               
-      var element = [];
+        let element = [];
       
       element[0] = this._createByName("whitespace");  
       if (this._probeByName("whitespace",parser))
@@ -383,12 +366,10 @@
   };
   
   SieveTestList.prototype.append
-      = function (elm, sibling)
-  {      
-    var element = [];
+    = function (elm, sibling) {
+      let element = [];
   
-    switch ([].concat(elm).length)
-    {
+      switch ([].concat(elm).length) {
       case 1 :
         element[0] = this._createByName("whitespace","\r\n");
         element[1] = elm;
@@ -408,7 +389,7 @@
     if(elm.parent())
       elm.remove();
     
-    var idx = this.tests.length;
+      let idx = this.tests.length;
     
     if (sibling && (sibling.id() >= 0)) 
       for (idx = 0; idx<this.tests.length; idx++)
@@ -422,14 +403,13 @@
   };
   
   SieveTestList.prototype.empty
-      = function ()
-  {
+    = function () {
     // The direct descendants of our root node are always considered as
     // not empty. Otherwise cascaded remove would wipe them away.
-    if (this.document().root() == this.parent())
+      if (this.document().root() === this.parent())
       return false;
     
-    for (var i=0; i<this.tests.length; i++)
+      for (let i = 0; i < this.tests.length; i++)
       if (this.tests[i][1].widget())
         return false;
         
@@ -437,18 +417,16 @@
   };
   
   SieveTestList.prototype.removeChild
-      = function (childId,cascade,stop)
-  {
+    = function (childId, cascade, stop) {
     // should we remove the whole node
     if (typeof (childId) === "undefined")
        throw new Error("Child ID Missing");
       //return SieveAbstractElement.prototype.remove.call(this);
     
     // ... or just a child item
-    var elm = null;
+      let elm = null;
     // Is it a direct match?
-    for (var i=0; i<this.tests.length; i++)
-    {
+      for (let i = 0; i < this.tests.length; i++) {
       if (this.tests[i][1].id() !== childId)
         continue;
       
@@ -472,12 +450,10 @@
   
   
   SieveTestList.prototype.toScript
-      = function()
-  {
-    var result = "(";
+    = function () {
+      let result = "(";
       
-    for (var i = 0;i<this.tests.length; i++)
-    {
+      for (let i = 0; i < this.tests.length; i++) {
       result = result
                + ((i>0)?",":"")
                + this.tests[i][0].toScript()
@@ -491,9 +467,8 @@
   };
   
   SieveTestList.prototype.require
-      = function (imports)
-  {
-    for (var i=0; i<this.tests.length; i++)
+    = function (imports) {
+      for (let i = 0; i < this.tests.length; i++)
       this.tests[i][1].require(imports);
   };
   

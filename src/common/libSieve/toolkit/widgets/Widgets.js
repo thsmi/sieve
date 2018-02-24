@@ -1,5 +1,5 @@
 /*
-* The contents of this file are licenced. You may obtain a copy of 
+* The contents of this file are licensed. You may obtain a copy of
 * the license at https://github.com/thsmi/sieve/ or request it via 
 * email from the author.
 *
@@ -100,7 +100,7 @@
       }
 
       // Convert the items into a string array...
-      var result = [];
+      let result = [];
 
       this.items().each( function ( ) {
         result.push( $( this ).val() );
@@ -115,12 +115,10 @@
   }
 
   SieveTabWidget.prototype.init
-    = function ( /*tabs, content*/) {
+    = function (tabs, content) {
 
-      var that = this;
-
-      $( this._tabs + ' > div' ).click( function () {
-        that.onTabChange( this );
+      $(this._tabs + ' > div').click(() => {
+        this.onTabChange(this);
       });
     };
 

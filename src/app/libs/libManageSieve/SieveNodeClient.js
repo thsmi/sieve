@@ -23,6 +23,18 @@
   const tls = require('tls');
   const timers = require('timers');
 
+  class SieveCertValidationException extends Error {
+    constructor(error, cert) {
+      super("Error while validating Cerificate " + error);
+      this.error = error;
+      this.cert = cert;
+    }
+
+    getType() {
+      return "SIEVE_CERT_VALIDATION_EXCEPTION"
+    }
+  }
+
   /**
    * Uses Node networking to realize a sieve client.
    *
@@ -129,23 +141,82 @@
 
       this.socket.on('connect', () => { this.onSocketConnected(); });
       this.socket.on('data', (data) => { this.onReceive(data); });
-      this.socket.on('close', () => { this.disconnect(); });
+      this.socket.on('close', () => {
+        this.disconnect();
+
+        if ((this.listener) && (this.listener.onDisconnect))
+          this.listener.onDisconnect();
+      });
     };
 
-  Sieve.prototype.startTLS = function (callback) {
+  Sieve.prototype.startTLS = async function (fingerprints) {
 
     SieveAbstractClient.prototype.startTLS.call(this);
 
-    // Upgrade the current socket.
-    //this.tlsSocket = tls.TLSSocket(socket, options).connect();
-    this.tlsSocket = tls.connect({ socket: this.socket });
+    if ((typeof (fingerprints) === "undefined") || fingerprints === null || fingerprints === "")
+      fingerprints = [];
 
-    this.tlsSocket.on('secureConnect', () => {
-      this.getLogger().log('Socket upgraded!');
-      callback();
+    if (Array.isArray(fingerprints) === false)
+      fingerprints = [fingerprints];
+
+    return new Promise((resolve, reject) => {
+      // Upgrade the current socket.
+      // this.tlsSocket = tls.TLSSocket(socket, options).connect();
+      this.tlsSocket = tls.connect({
+        socket: this.socket,
+        rejectUnauthorized: false
+      });
+
+      this.tlsSocket.on('secureConnect', () => {
+
+        let cert = this.tlsSocket.getPeerCertificate(true);
+
+        if (this.tlsSocket.authorized === true) {
+
+          // in case the fingerprint is not pinned we can skip right here.
+          if (!fingerprints.length) {
+            resolve();
+            this.getLogger().log('Socket upgraded! (Chain of Trust)');
+            return;
+          }
+
+          // so let's check the if the server's fingerpint matches the pinned one.
+          if (fingerprints.indexOf(cert.fingerprint) !== -1) {
+            resolve();
+            this.getLogger().log('Socket upgraded! (Chain of Trust and pinned fingerprint)');
+            return;
+          }
+
+          // If not we need to fail right here...
+          reject(new SieveCertValidationException(
+            new Error("Server fingerprint does not match pinned fingerprint"),
+            this.tlsSocket.getPeerCertificate(true) ));
+          return;
+        }
+
+        let error = this.tlsSocket.ssl.verifyError();
+
+        // dealing with self signed certificates
+        if (error.code === "DEPTH_ZERO_SELF_SIGNED_CERT") {
+
+          // Check if the fingerprint is well known...
+          if (fingerprints.indexOf(cert.fingerprint) !== -1) {
+            resolve();
+
+            this.getLogger().log('Socket upgraded! (Trusted Finger Print)');
+            return;
+          }
+        }
+
+        reject(new SieveCertValidationException(
+          this.tlsSocket.ssl.verifyError(),
+          this.tlsSocket.getPeerCertificate(true) ));
+
+        this.tlsSocket.destroy();
+      });
+
+      this.tlsSocket.on('data', (data) => { this.onReceive(data); });
     });
-
-    this.tlsSocket.on('data', (data) => { this.onReceive(data); });
   };
 
   Sieve.prototype.disconnect
@@ -153,17 +224,18 @@
 
       SieveAbstractClient.prototype.disconnect.call(this);
 
-      if (this.socket === null)
-        return;
-
       this.getLogger().log("Disconnecting...");
-      this.socket.destroy();
-      this.socket.unref();
-      this.socket = null;
+      if (this.socket) {
+        this.socket.destroy();
+        this.socket.unref();
+        this.socket = null;
+      }
 
-      this.tlsSocket.destroy();
-      this.tlsSocket.unref();
-      this.tlsSocket = null;
+      if (this.tlsSocket) {
+        this.tlsSocket.destroy();
+        this.tlsSocket.unref();
+        this.tlsSocket = null;
+      }
 
       this.idleTimer = null;
       this.timeoutTimer = null;

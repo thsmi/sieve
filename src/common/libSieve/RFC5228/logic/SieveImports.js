@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -12,7 +12,7 @@
  
 /* global window */
  
-(function(/*exports*/) {
+(function() {
   
   "use strict";
 
@@ -20,8 +20,7 @@
   /* global SieveAbstractElement */
 	/* global SieveBlockBody */
   
-  function SieveRequire(docshell,id) 
-  {
+  function SieveRequire(docshell, id) {
     SieveAbstractElement.call(this,docshell,id);
     
     this.whiteSpace = this._createByName("whitespace", " ");
@@ -34,8 +33,7 @@
   SieveRequire.prototype.constructor = SieveRequire;
   
   SieveRequire.isElement
-    = function (parser, lexer)
-  {
+    = function (parser, lexer) {
     return parser.startsWith("require", lexer); 
   };
   
@@ -48,8 +46,7 @@
   };
   
   SieveRequire.prototype.init
-      = function (parser)
-  {
+    = function (parser) {
     // Syntax :
     // <"require"> <stringlist> <";">
     
@@ -63,11 +60,11 @@
     this.strings.init(parser);
     
     // Test if the 
-    var capabilities = this._docshell.capabilities();
+      let capabilities = this._docshell.capabilities();
         
-    for (var idx = 0; idx < this.strings.size(); idx++) {
+      for (let idx = 0; idx < this.strings.size(); idx++) {
     
-      var item = this.strings.item(idx);
+        let item = this.strings.item(idx);
       
       if (!capabilities[item])
         throw new Error('Unknown capability string "'+item+'"');
@@ -80,8 +77,7 @@
   };
   
   SieveRequire.prototype.capability
-      = function (require)
-  {
+    = function (require) {
     if (typeof(require) === "undefined")
       return this.strings;
       
@@ -92,8 +88,7 @@
   };
   
   SieveRequire.prototype.toScript
-      = function ()
-  {
+    = function () {
     return "require"
       + this.whiteSpace.toScript()
       + this.strings.toScript()
@@ -102,8 +97,7 @@
   
   
   // CONSTRUCTOR:
-  function SieveBlockImport(docshell,id)
-  {
+  function SieveBlockImport(docshell, id) {
     SieveBlockBody.call(this,docshell,id); 
   }
   
@@ -112,8 +106,7 @@
   
   // PUBLIC STATIC:
   SieveBlockImport.isElement
-      = function (parser, lexer)
-  {
+    = function (parser, lexer) {
     return lexer.probeByClass(["import/","whitespace"],parser);  
   };
   
@@ -126,8 +119,7 @@
   };
   
   SieveBlockImport.prototype.init
-      = function (parser)    
-  {  
+    = function (parser) {
     // The import section consists of require and deadcode statments...
     while (this._probeByClass(["import/","whitespace"],parser))    
       this.elms.push(
@@ -138,15 +130,13 @@
   
   
   SieveBlockImport.prototype.capability
-      = function (require)
-  {
+    = function (require) {
    
     // We should try to insert new requires directly aftr the previous one...
     // ... otherwise it looks strange.
-    var item = null;
+      let item = null;
     
-    for (var i=0; i<this.elms.length; i++)
-    {
+      for (let i = 0; i < this.elms.length; i++) {
       if (!this.elms[i].capability)
         continue;
       

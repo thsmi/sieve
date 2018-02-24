@@ -1,5 +1,5 @@
 /*
- * The contents of this file is licenced. You may obtain a copy of
+ * The contents of this file is licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via email
  * from the author. Do not remove or change this comment.
  *
@@ -7,10 +7,10 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-// Enable Strict Mode
-"use strict";
-
 (function (exports) {
+
+  // Enable Strict Mode
+  "use strict";
 
   function SieveResponseCode(code) {
     this.code = code;
@@ -113,10 +113,4 @@
   exports.SieveResponseCodeSasl = SieveResponseCodeSasl;
   exports.SieveResponseCodeReferral = SieveResponseCodeReferral;
 
-  if (exports.EXPORTED_SYMBOLS) {
-    exports.EXPORTED_SYMBOLS.push("SieveResponseCode");
-    exports.EXPORTED_SYMBOLS.push("SieveResponseCodeSasl");
-    exports.EXPORTED_SYMBOLS.push("SieveResponseCodeReferral");
-  }
-
-})(this);
+})(module.exports || this);

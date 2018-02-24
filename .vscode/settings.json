@@ -1,4 +1,5 @@
 {
+  "diffEditor.ignoreTrimWhitespace": true,
   "files.trimTrailingWhitespace": true,
   "files.exclude": {
     "**/.git": true,
@@ -8,7 +9,9 @@
   "eslint.enable": true,
   "files.associations": {
     "*.tpl": "html",
-    ".jsm" : "javascript"
+    "*.jsm" : "javascript"
   },
-  "files.eol": "\n"
+  "files.eol": "\n",
+  "editor.tabSize": 2,
+  "editor.useTabStops": false
 }

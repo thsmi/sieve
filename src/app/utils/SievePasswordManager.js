@@ -134,10 +134,9 @@
   }
 
   // Require modules need to use export.module
-  if (module.exports)
+  if (typeof(module) !== "undefined" && module && module.exports)
     module.exports.SievePasswordManager = SievePasswordManager;
   else
     exports.SievePasswordManager = SievePasswordManager;
 
 })(this);
-

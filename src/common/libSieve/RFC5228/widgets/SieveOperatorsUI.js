@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -50,7 +50,7 @@
   SieveAnyOfAllOfUI.prototype.onValidate
     = function () {
 
-      if ( $( "#AnyOfAllOfValue" + this.id() ).val() == "true" )
+      if ($("#AnyOfAllOfValue" + this.id()).val() === "true")
         this.getSieve().isAllOf = true;
       else
         this.getSieve().isAllOf = false;
@@ -79,10 +79,10 @@
   SieveAnyOfAllOfUI.prototype.createHtml
     = function ( parent ) {
 
-      var item = $( "<div/>" )
+      let item = $("<div/>")
         .addClass( "sivOperator" );
 
-      for ( var i = 0; i < this.getSieve().tests.length; i++ )
+      for (let i = 0; i < this.getSieve().tests.length; i++)
         item
           .append(( new SieveDropBoxUI( this ) )
             .drop( new SieveMultaryDropHandler(), this.getSieve().tests[i][1] )

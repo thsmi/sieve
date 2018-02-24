@@ -32,6 +32,12 @@
 
   const DEFAULT_TIMEOUT = 20000;
 
+  const DEBUG_FLAG_STATUS = 2;
+  const DEBUG_FLAG_CLIENT_SERVER = 0;
+
+  const DEBUG_STATUS = (1 << DEBUG_FLAG_STATUS);
+  const DEBUG_CLIENT_SERVER = (1 << DEBUG_FLAG_CLIENT_SERVER);
+
   /**
    * An abstract implemenation for the manage sieve protocol.
    *
@@ -201,13 +207,13 @@
    *   the maximal number of milliseconds
    */
   SieveAbstractClient.prototype.getTimeoutWait
-  = function() {
-    // Apply some selfhealing magic...
-    if (!this.timeoutDelay)
-      return DEFAULT_TIMEOUT;
+    = function () {
+      // Apply some selfhealing magic...
+      if (!this.timeoutDelay)
+        return DEFAULT_TIMEOUT;
 
-    return this.timeoutDelay;
-  };
+      return this.timeoutDelay;
+    };
 
   /**
    * Specifies the maximal interval between a request and a response. If the
@@ -320,7 +326,7 @@
     = function (request, greedy) {
 
       // Attach the global bye listener only when needed.
-      if ( !request.byeListener || !request.byeListener.onByeResponse)
+      if (!request.byeListener || !request.byeListener.onByeResponse)
         if (this.listener && this.listener.onByeResponse)
           request.addByeListener(this.listener);
 
@@ -387,7 +393,6 @@
       throw new Error("Implement me SieveAbstractClient ");
     };
 
-
   /**
    * Disconnets from the server.
    *
@@ -401,10 +406,10 @@
   SieveAbstractClient.prototype.disconnect
     = function () {
 
-      this.getLogger().log("Disconnecting "+this.host+":"+this.port+"...", (1 << 2));
+      this.getLogger().log("Disconnecting " + this.host + ":" + this.port + "...", DEBUG_STATUS);
 
       // free requests...
-      //this.requests = new Array();
+      // this.requests = new Array();
       this.onStopTimeout();
       this.onStopIdle();
     };
@@ -414,7 +419,7 @@
 
       this.onStopIdle();
 
-      this.getLogger().log("libManageSieve/Sieve.js:\nOnIdle", (1 << 2));
+      this.getLogger().log("libManageSieve/Sieve.js:\nOnIdle", DEBUG_STATUS);
 
       if (this.listener && this.listener.onIdle)
         this.listener.onIdle();
@@ -425,7 +430,7 @@
 
       this.onStopTimeout();
 
-      this.getLogger().log("libManageSieve/Sieve.js:\nOnTimeout", (1 << 2));
+      this.getLogger().log("libManageSieve/Sieve.js:\nOnTimeout", DEBUG_STATUS);
 
       // clear receive buffer and any pending request...
       this.data = null;
@@ -507,8 +512,8 @@
           // request could be fragmented or something else, as it's greedy,
           // we don't care about any exception. We just log them in oder
           // to make debugging easier....
-          if (this.getLogger().isLoggable(1 << 2)) {
-            //console.error(ex);
+          if (this.getLogger().isLoggable(DEBUG_STATUS)) {
+            // console.error(ex);
             this.getLogger().log("Parsing Warning in libManageSieve/Sieve.js:\n" + ex.toString());
             this.getLogger().log(ex.stack);
           }
@@ -555,8 +560,8 @@
         // But in mozilla modules we don't have access to a window object and
         // timeouts are more compilcated.
 
-        //var that = this;
-        //window.setTimeout(function () {that._sendRequest()}, 0);
+        // var that = this;
+        // window.setTimeout(function () {that._sendRequest()}, 0);
 
         this._sendRequest();
 
@@ -570,14 +575,19 @@
 
       this._unlockMessageQueue(requests);
 
-      this.getLogger().log("Skipping Event Queue", (1 << 2));
+      this.getLogger().log("Skipping Event Queue", DEBUG_STATUS);
     };
 
   SieveAbstractClient.prototype._sendRequest
     = function () {
-      for (var idx = 0; idx < this.requests.length; idx++)
+
+      let idx = 0;
+      while (idx < this.requests.length) {
         if (this.requests[idx].isUnsolicited())
           break;
+
+        idx++;
+      }
 
       if (idx >= this.requests.length)
         return;
@@ -588,7 +598,7 @@
 
       let output = this.requests[idx].getNextRequest(this.createRequestBuilder()).getBytes();
 
-      this.getLogger().log("Client -> Server:\n" + output, (1 << 0));
+      this.getLogger().log("Client -> Server:\n" + output, DEBUG_CLIENT_SERVER);
 
       this.onSend(output);
 
@@ -612,4 +622,4 @@
     };
 
   exports.SieveAbstractClient = SieveAbstractClient;
-})(this);
+})(module.exports || this);

@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -15,9 +15,12 @@
 ( function ( exports ) {
 
   "use strict";
+
+  const QUOTE_LENGTH = 50;
+
   // Sieve Lexer is a static class...
 
-  var SieveLexer =
+  let SieveLexer =
     {
       types: {},
       names: {},
@@ -69,12 +72,12 @@
         if ( !callback.nodeType )
           throw new Error("Lexer Error: Registration failed, element has no type");
 
-        var type = callback.nodeType();
+        let type = callback.nodeType();
 
         if ( !callback.nodeName )
           throw new Error("Lexer Error: Registration failed, element has no name");
 
-        var name = callback.nodeName();
+        let name = callback.nodeName();
 
         if ( !callback.isElement )
           throw new Error("Lexer Error: isElement function for " + name + " missing");
@@ -82,7 +85,7 @@
         if ( typeof ( this.types[type] ) === 'undefined' )
           this.types[type] = {};
 
-        var obj = {};
+        let obj = {};
         obj.name = name;
         obj.onProbe = function ( token, doc ) { return callback.isElement( token, doc ); };
         obj.onNew = function ( docshell, id ) { return new callback( docshell, id ); };
@@ -150,7 +153,7 @@
         if ( !constructor.onCapable( this._capabilities ) )
           throw new Error( "Capability not supported" );
 
-        var item = constructor.onNew( docshell, ++( this.maxId ) );
+        let item = constructor.onNew(docshell, ++(this.maxId));
 
         if ( ( typeof ( parser ) !== "undefined" ) && ( parser ) )
           item.init( parser );
@@ -177,11 +180,10 @@
        *  in case the document could not be created.
        **/
       createByClass: function ( docshell, types, parser ) {
-        var item = this.getConstructor( types, parser );
+        let item = this.getConstructor(types, parser);
 
-        if ( ( typeof ( item ) === 'undefined' ) || ( item === null ) ) {
-          throw new Error( "Unknown or incompatible type >>" + types + "<< at >>" + parser.bytes( 50 ) + "<<" );
-        }
+        if ((typeof (item) === 'undefined') || (item === null))
+          throw new Error("Unknown or incompatible type >>" + types + "<< at >>" + parser.bytes(QUOTE_LENGTH) + "<<");
 
         return this.createInstance( docshell, item, parser );
       },
@@ -267,10 +269,10 @@
           throw new Error("Invalid Type list, not an array");
 
         // enumerate all selectors...
-        for ( var selector in selectors ) {
+        for (let selector in selectors) {
           selector = selectors[selector];
 
-          for ( var key in this.types[selector] )
+          for (let key in this.types[selector])
             if ( this.types[selector][key].onCapable( this._capabilities ) )
               return true;
         }

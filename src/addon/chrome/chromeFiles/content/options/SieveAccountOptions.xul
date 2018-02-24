@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-   The content of this file is licenced. You may obtain a copy of
-   the license at http://sieve.mozdev.org or request it via email
-   from the author. Do not remove or change this comment.
+  The content of this file is licensed. You may obtain a copy of
+  the license at https://github.com/thsmi/sieve/ or request it via
+  email from the author.
 
-   The initial author of the code is:
-     Thomas Schmid <schmid-thomas@gmx.net>
+  Do not remove or change this comment.
+
+  The initial author of the code is:
+    Thomas Schmid <schmid-thomas@gmx.net>
 
    Contributor(s):
      Marion Desnault <marion.desnault@free.fr>
@@ -35,7 +37,7 @@
     <tab label="&options.tab.general;" />
     <tab label="&options.tab.proxy;" />
     <tab label="&options.tab.advanced;" />
-    <tab label="Editor" />
+    <tab label="&options.tab.editor;" />
     <tab label="&options.tab.debug;" />
     <tab label="&options.tab.credits;" />
   </tabs>
@@ -99,18 +101,41 @@
         <description>&options.security.description2;</description>
         <radiogroup id="rgTLS" onselect="onTLSSelect(this.selectedIndex);">
           <radio label="&options.security.tls.disabled;" />
-          <radio label="&options.security.tls.available;" />
           <radio label="&options.security.tls.force;" />
         </radiogroup>
       </groupbox>
 
-      <!-- Server Authentication -->
       <groupbox>
         <caption label="&options.login;" />
-        <radiogroup id="rgLogin" onselect="onLoginSelect(this.selectedIndex);">
-          <radio label="&options.login.noAuth;"/>
-          <radio label="&options.login.imapAuth;"/>
-          <radio label="&options.login.customAuth;"/>
+        <description>The default mechanism is the best choice. But in certains situations
+        e.g. when using Proxy Authentication you many need to force a specific mechanism.</description>
+        <hbox align="center" >
+          <label>Mechanism:</label>
+          <menulist id="mlAuthMechanism">
+            <menupopup>
+              <menuitem label="Use suggested mechanism" value="default"/>
+              <menuseparator/>
+              <menuitem label="&options.authmechanism.plain;" value="PLAIN"/>
+              <menuitem label="&options.authmechanism.login;" value="LOGIN"/>
+              <menuitem label="&options.authmechanism.crammd5;" value="CRAM-MD5"/>
+              <menuitem label="&options.authmechanism.scramsha1;" value="SCRAM-SHA-1"/>
+              <menuitem label="&options.authmechanism.scramsha256;" value="SCRAM-SHA-256"/>
+              <menuitem label="&options.authmechanism.external;" value="EXTERNAL"/>
+              <menuseparator/>
+              <menuitem label="No authentication" value="none"/>
+            </menupopup>
+          </menulist>
+          </hbox>
+      </groupbox>
+
+      <groupbox>
+        <caption label="&options.login.username;" />
+        <description>Most authentication mechanism require a username and password.
+        The imap username is typically also used for sieve.</description>
+        <radiogroup id="rgLogin">
+          <!--<radio label="&options.login.noAuth;"/>-->
+          <radio label="&options.login.imapAuth;" value="1"/>
+          <radio label="&options.login.customAuth;" value="2"/>
         </radiogroup>
 
         <box class="indent" align="center">
@@ -192,24 +217,6 @@
         <label pack="center" value="&options.tab.advanced.warning;" />
       </hbox>
       <groupbox>
-        <caption label="&options.authmechanism.caption;" />
-        <description>&options.authmechanism.description;</description>
-        <checkbox id="cbxAuthMechanism" label="&options.authmechanism;"
-                  oncommand="onAuthMechanismCommand(this)" />
-        <hbox id="hbAuthMechanism" align="center" class="indent">
-          <label control="mlAuthMechanism" value="&options.authmechanism.default;" />
-          <menulist id="mlAuthMechanism" oncommand="onAuthMechanismSelect(this)">
-            <menupopup>
-              <menuitem label="&options.authmechanism.plain;" value="PLAIN"/>
-              <menuitem label="&options.authmechanism.login;" value="LOGIN"/>
-              <menuitem label="&options.authmechanism.crammd5;" value="CRAM-MD5"/>
-              <menuitem label="&options.authmechanism.scramsha1;" value="SCRAM-SHA-1"/>
-              <menuitem label="EXTERNAL" value="EXTERNAL"/>
-            </menupopup>
-          </menulist>
-        </hbox>
-      </groupbox>
-      <groupbox>
         <caption label="&options.proxyauth.caption;" />
         <description>&options.proxyauth.desc;</description>
         <description>&options.proxyauth.force; </description>
@@ -244,39 +251,39 @@
       -->
 
       <groupbox>
-        <caption label="Indention" />
+        <caption label="&options.editor.indention.caption;" />
 
-        <description>The plain text editor supports automatic indenting. </description>
+        <description>&options.editor.indention.description;</description>
         <box align="center" >
-          <label value="Indention Width:" control="txtIndentionWidth"/>
+          <label value="&options.editor.indention.width;" control="txtIndentionWidth"/>
           <textbox id="txtIndentionWidth" size="4"
                           onchange="onIndentionWidthChange(this.value);"/>
         </box>
         <hbox align="center" >
-          <label control="mlIndentionPolicy" value="Indention Policy:" />
+          <label control="mlIndentionPolicy" value="&options.editor.indention.policy.caption;" />
           <menulist id="mlIndentionPolicy" oncommand="onIndentionPolicySelect(this.selectedIndex)">
             <menupopup>
-              <menuitem label="Spaces Only" value="0"/>
-              <menuitem label="Tabs Only" value="1"/>
+              <menuitem label="&options.editor.indention.policy.spaces;" value="0"/>
+              <menuitem label="&options.editor.indention.policy.tabs;" value="1"/>
             </menupopup>
           </menulist>
         </hbox>
       </groupbox>
 
       <groupbox>
-        <caption label="Tab Handling" />
-        <description>Texteditor with automatic indenting replaced the need for a tab key, but there are many editors which default to tabs due to historic reasons.</description>
+        <caption label="&options.editor.tabs.caption;" />
+        <description>&options.editor.tabs.description;</description>
         <box align="center" >
-          <label value="Tab Width" />
+          <label value="&options.editor.tabs.width;" />
           <textbox id="txtTabWidth" size="4"
                           onchange="onTabWidthChange(this.value);"/>
         </box>
         <hbox align="center" >
-          <label control="mlTabPolicy" value="Tab Policy" />
+          <label control="mlTabPolicy" value="&options.editor.tabs.policy.caption;" />
           <menulist id="mlTabPolicy" oncommand="onTabPolicySelect(this.selectedIndex)">
             <menupopup>
-              <menuitem label="Insert Spaces for Tabs" value="0"/>
-              <menuitem label="Insert Tabs" value="1"/>
+              <menuitem label="&options.editor.tabs.policy.spaces;" value="0"/>
+              <menuitem label="&options.editor.tabs.policy.tabs;" value="1"/>
             </menupopup>
           </menulist>
         </hbox>

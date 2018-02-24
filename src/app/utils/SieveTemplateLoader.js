@@ -9,50 +9,51 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-// Require defines an exports object, while standard js does not
-// we ues this magic to glue both world together.
-if (typeof (exports) === "undefined" || exports === null)
-  exports = this;
-
 (function (exports) {
 
-    "use strict";
+  "use strict";
 
-    /* global $ */
+  /* global $ */
+
+  /**
+   * Loads an html fragment from a file or url.
+   */
+  class SieveTemplateLoader {
 
     /**
-     * Loads an html fragment from a file or url.
+     * Initializes the template loader
      */
-    class SieveTemplateLoader {
-
-      /**
-       * Initializes the template loader
-       */
-      constructor() {
-        this.templates = {};
-      }
-
-      /**
-       * Loads an html fragment from file or url
-       *
-       * @param {string} tpl
-       *   the path tho the template file
-       * @returns {Promise<HTMLElement>}
-       *   the template which should be loaded.
-       */
-      async load(tpl) {
-
-        return await new Promise((resolve) => {
-
-          // TODO add an error handler.
-
-          $("<template />").load(tpl, function () {
-            resolve($(this.content.children));
-          });
-        });
-      }
+    constructor() {
+      this.templates = {};
     }
 
+    /**
+     * Loads an html fragment from file or url
+     *
+     * @param {string} tpl
+     *   the path tho the template file
+     * @returns {Promise<HTMLElement>}
+     *   the template which should be loaded.
+     */
+    async load(tpl) {
+
+      // ensure we bypass any caching...
+      tpl += "?_=" + (new Date().getTime());
+
+      return await new Promise((resolve) => {
+
+        // TODO add an error handler.
+
+        $("<template />").load(tpl, function () {
+          resolve($(this.content.children));
+        });
+      });
+    }
+  }
+
+  if (typeof(module) !== "undefined" && module && module.exports)
+    module.exports.SieveTemplateLoader = SieveTemplateLoader;
+  else
     exports.SieveTemplateLoader = SieveTemplateLoader;
 
-})(exports);
+})(this);

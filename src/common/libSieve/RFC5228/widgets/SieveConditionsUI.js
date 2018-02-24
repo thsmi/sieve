@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -72,13 +72,13 @@
 
   SieveConditionUI.prototype.createHtml
     = function ( parent ) {
-      var elm = $( "<div/>" )
+      let elm = $("<div/>")
         .attr( "id", "sivElm" + this.id() )
         .addClass( "sivCondition" );
 
-      var children = this.getSieve().children();
+      let children = this.getSieve().children();
 
-      for ( var i = 0; i < children.length; i++ ) {
+      for (let i = 0; i < children.length; i++) {
         elm
           .append(( new SieveDropBoxUI( this ) )
             .drop( new SieveConditionDropHandler(), children[i] )

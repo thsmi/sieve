@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -33,9 +33,9 @@
    * 
    * The workaround has some limitation you can set at most one data object.
    *
-   * @constructor
    * @param {DataTransfer} dt
    *   the data transfer object which should be wrapped.
+   * @constructor
    */
   function SieveDataTransfer( dt ) {
     this.dt = dt;
@@ -44,18 +44,18 @@
   SieveDataTransfer._transfer = null;
   SieveDataTransfer._token = null;
 
-  /*
+  /**
    * Calculates a random token, which is used to idenfiy the transfer.
    * It is just a precausion in for very unlikely cases, that an 
    * external drop uses the very same flavours.
    */
   SieveDataTransfer.prototype.generateToken
     = function () {
-      var token = [];
+      let token = [];
 
-      for ( var i = 0; i < 32; i++ ) {
+      for (let i = 0; i < 32; i++) {
 
-        var item = ( Math.floor( Math.random() * ( 256 ) ) ).toString( 16 );
+        let item = (Math.floor(Math.random() * (256))).toString(16);
 
         if ( item.length < 2 )
           item = "0" + item;
@@ -76,8 +76,8 @@
    */
   SieveDataTransfer.prototype.contains
     = function ( flavour ) {
-      for ( var i = 0; i < this.dt.items.length; i++ )
-        if ( this.dt.items[i].type == flavour )
+      for (let i = 0; i < this.dt.items.length; i++)
+        if (this.dt.items[i].type === flavour)
           return true;
 
       return false;
@@ -95,7 +95,7 @@
     = function ( flavour ) {
 
       // In case it's not a web app we can a short cut ...
-      if ( !window.chrome || !chrome.runtime/* || !chrome.runtime.id*/ )
+      if ( !window.chrome || !chrome.runtime )
         return this.dt.getData( flavour );
 
       // ... otherwise we need a workaround for a chrome web app bug.
@@ -115,7 +115,7 @@
    *   the drag falvour as string
    * @param {Object} transfer
    *   the transfer object should be a string
-   * @returns {undefined}
+   * @returns {void}
    */
   SieveDataTransfer.prototype.setData
     = function ( flavour, transfer ) {
@@ -139,10 +139,11 @@
       this.dt.setData( SieveDataTransfer._token, "" );
     };
 
-  /*
+  /**
    * Clear should be called before and after each drop.
    * 
    * It releases the drop target from the current context.
+   * @returns {void}
    */
   SieveDataTransfer.prototype.clear
     = function () {

@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -42,12 +42,13 @@
   SieveSizeTestUI.prototype.onValidate
     = function () {
 
+
       return true;
     };
 
   SieveSizeTestUI.prototype.onSave
     = function () {
-      var sieve = this.getSieve();
+      let sieve = this.getSieve();
 
       sieve
         .isOver( $( "input[type='radio'][name='over']:checked" ).val() === "true" )
@@ -94,7 +95,7 @@
   SieveBooleanTestUI.prototype.onValidate
     = function () {
 
-      if ( $( "#BooleanTestValue" + this.id() ).val() == "true" )
+      if ($("#BooleanTestValue" + this.id()).val() === "true")
         this.getSieve().value = true;
       else
         this.getSieve().value = false;

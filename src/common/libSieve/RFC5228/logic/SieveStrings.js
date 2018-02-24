@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -12,7 +12,7 @@
 
 /* global window */
 
-( function ( /*exports*/ ) {
+(function (exports) {
 
   "use strict";
 
@@ -20,6 +20,7 @@
   /* global SieveAbstractElement */
 
   // TODO create an abstract class for get and set string...
+
 
   // CONSTRUCTOR:
   function SieveMultiLineString( docshell, id ) {
@@ -36,7 +37,7 @@
 
   // PUBLIC STATIC:
   SieveMultiLineString.isElement
-    = function ( parser/*, lexer */) {
+    = function (parser, lexer) {
       return parser.startsWith( "text:" );
     };
 
@@ -308,7 +309,7 @@
 
       if ( this._probeByName( "string/quoted", parser ) ) {
         this.compact = true;
-        var item = [];
+        let item = [];
         item[1] = this._createByName( "string/quoted", parser );
         this.elements[0] = item;
 
@@ -323,7 +324,7 @@
         if ( this.elements.length )
           parser.extractChar( "," );
 
-        var element = [];
+        let element = [];
 
         if ( this._probeByName( "whitespace", parser ) )
           element[0] = this._createByName( "whitespace", parser );
@@ -345,18 +346,18 @@
 
   SieveStringList.prototype.contains
     = function ( str, matchCase ) {
-      var item = "";
+      let item = "";
 
       if ( typeof ( matchCase ) === "undefined" )
         str = str.toLowerCase();
 
-      for ( var i = 0; i < this.elements.length; i++ ) {
+      for (let i = 0; i < this.elements.length; i++) {
         if ( typeof ( matchCase ) === "undefined" )
           item = this.elements[i][1].value().toLowerCase();
         else
           item = this.elements[i][1].value();
 
-        if ( item == str )
+        if (item === str)
           return true;
       }
 
@@ -390,12 +391,11 @@
       // Append multiple strings at once...
       if ( Array.isArray( str ) ) {
 
-        str.forEach( function ( item ) { this.append( item ); }, this );
-
+        str.forEach( (item) => { this.append(item); });
         return this;
       }
 
-      var elm = [null, "", null];
+      let elm = [null, "", null];
       elm[1] = this._createByName( "string/quoted", '""' );
       elm[1].value( str );
 
@@ -419,8 +419,8 @@
 
   SieveStringList.prototype.remove
     = function ( str ) {
-      for ( var i = 0; i < this.elements.length; i++ ) {
-        if ( this.elements[i][1].value() != str )
+      for (let i = 0; i < this.elements.length; i++) {
+        if (this.elements[i][1].value() !== str)
           continue;
 
         this.elements.splice( i, 1 );
@@ -449,10 +449,10 @@
       if ( this.compact && this.elements.length <= 1 )
         return this.elements[0][1].toScript();
 
-      var result = "[";
-      var separator = "";
+      let result = "[";
+      let separator = "";
 
-      for ( var i = 0; i < this.elements.length; i++ ) {
+      for ( let i = 0; i < this.elements.length; i++ ) {
         result += separator;
 
         if ( this.elements[i][0] !== null && ( typeof ( this.elements[i][0] ) !== "undefined" ) )
@@ -532,7 +532,7 @@
 
       // Create a dummy object. The conversion might fail 
       // and we do not want to loose the original string.
-      var string = this.string;
+      let string = this.string;
 
       // Check if we need a type conversion. 
       if ( str.search( /(\r\n|\n|\r)/gm ) !== -1 ) {

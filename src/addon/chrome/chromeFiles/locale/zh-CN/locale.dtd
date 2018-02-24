@@ -1,0 +1,288 @@
+<!--
+/*
+ * The contents of this file are licensed. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
+ * email from the author.
+ *
+ * Do not remove or change this comment.
+ *
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+ -->
+
+<!-- Options Dialog -->
+<!ENTITY options.title "Sieve 选项">
+
+<!ENTITY options.tab.server "服务器">
+<!ENTITY options.tab.security "安全">
+<!ENTITY options.tab.general "常规">
+<!ENTITY options.tab.proxy "代理">
+<!ENTITY options.tab.advanced "高级">
+<!ENTITY options.tab.advanced.warning "这些设置更适合高级用户...">
+<!ENTITY options.tab.editor "编辑器">
+<!ENTITY options.tab.debug "调试">
+<!ENTITY options.tab.credits "制作人员">
+
+<!ENTITY options.host.caption "服务器名称">
+<!ENTITY options.host.description
+"大多数 Sieve 实现直接在邮件服务器上运行。
+因此，Sieve 服务器的名称通常与 IMAP 服务器名称相同。">
+<!ENTITY options.host.imap "IMAP 服务器：">
+<!ENTITY options.host.custom "其他服务器：">
+
+<!ENTITY options.port.caption "服务器端口">
+<!ENTITY options.port.description
+"服务器端口已更改，在 ManageSieve 切换到完全 RFC 标准时">
+<!ENTITY options.port.description2
+"较旧的服务器实现仍然使用端口 2000，较新的标准确认服务器只能用端口 4190 访问。">
+<!ENTITY options.port.4190 "4190 (默认)" >
+<!ENTITY options.port.2000 "2000" >
+<!ENTITY options.port.custom "其他：">
+<!ENTITY options.port.autoselect "自动选择端口">
+<!ENTITY options.port.autoselect.running "正在选择端口，请稍候...">
+<!ENTITY options.port.autoselect.successful "Sieve 检测到，端口 ">
+<!ENTITY options.port.autoselect.error "选择端口失败...">
+
+<!ENTITY options.security.caption "连接安全">
+<!ENTITY options.security.description
+"TLS 可保护连接的安全性，即管理 Sieve 服务器的连接。
+它加密所有数据并能防止窃听和篡改。">
+<!ENTITY options.security.description2
+"ManageSieve 通常不加密的传输密码。所以，除非你很有必要（例如调试），否则应该始终强制 TLS。">
+<!ENTITY options.security.tls.disabled "无 TLS">
+<!ENTITY options.security.tls.available "可用时使用 TLS">
+<!ENTITY options.security.tls.force "强制 TLS">
+
+<!ENTITY options.login "身份验证">
+<!ENTITY options.login.key "A">
+<!ENTITY options.login.noAuth "无身份验证">
+<!ENTITY options.login.imapAuth "IMAP 用户名和密码">
+<!ENTITY options.login.customAuth "用户名和密码">
+<!ENTITY options.login.username "用户名">
+<!ENTITY options.login.username.key "u">
+<!ENTITY options.login.show "显示已保存的密码...">
+
+<!ENTITY options.misc "杂项设置">
+<!ENTITY options.misc.keepalive "启用保持活跃">
+<!ENTITY options.misc.keepalive.key "k">
+<!ENTITY options.misc.keepalive2 "发送每隔">
+<!ENTITY options.misc.keepalive.description
+"如果客户端闲置太久（通常30分钟），服务器会假定客户端已断开并挂断连接。">
+<!ENTITY options.misc.keepalive.description2
+"保持活跃请求用来表示连接仍然活跃并应该被保持。">
+<!ENTITY options.misc.keepalive.min "分钟">
+
+<!ENTITY options.misc.compile.caption "语法检查">
+<!ENTITY options.misc.compile.description
+"在编辑脚本时，它们会被检查有效性。语法检查是在服务器执行。为了降低网络流量消耗，语法检查请求非实时进行。">
+<!ENTITY options.misc.compile "输入时检查脚本">
+<!ENTITY options.misc.compile.key "c">
+<!ENTITY options.misc.compile2 "验证，至少每隔">
+<!ENTITY options.misc.compile.ms "毫秒">
+
+<!ENTITY options.editor.indention.caption "缩进">
+<!ENTITY options.editor.indention.description "纯文本编辑器支持自动缩进。">
+<!ENTITY options.editor.indention.width "缩进宽度：">
+
+<!ENTITY options.editor.indention.policy.caption "缩入政策:">
+<!ENTITY options.editor.indention.policy.spaces "仅限空格">
+<!ENTITY options.editor.indention.policy.tabs "仅限制表符">
+
+<!ENTITY options.editor.tabs.caption "标签处理">
+<!ENTITY options.editor.tabs.description "带自动缩入的编辑器代替了制表键的使用，但是有很多编辑器因为历史原因缺省为制表符。">
+<!ENTITY options.editor.tabs.width "制表符宽度">
+
+<!ENTITY options.editor.tabs.policy.caption "标签政策">
+<!ENTITY options.editor.tabs.policy.spaces "为制表符插入空格">
+<!ENTITY options.editor.tabs.policy.tabs "插入制表符">
+
+<!ENTITY options.debug.warning
+"请记住，SASL登录或SASL Plain都不会加密你的密码。密码可能会以明文形式张贴到错误控制台。">
+<!ENTITY options.debug.caption "调试设置">
+<!ENTITY options.debug.request "客户端至服务器的通信（请求）">
+<!ENTITY options.debug.response "服务器至客户端的通信（响应）">
+<!ENTITY options.debug.exceptions "异常和状态机器信息">
+<!ENTITY options.debug.stream "原始转储/转储字节流">
+<!ENTITY options.debug.session "会话管理">
+<!ENTITY options.debug.output "调试输出">
+<!ENTITY options.debug.console "调试信息已发到错误控制台">
+<!ENTITY options.debug.console.open "显示错误控制台...">
+
+<!ENTITY options.authmechanism.caption "身份验证机制">
+<!ENTITY options.authmechanism "覆盖建议的身份验证机制">
+<!ENTITY options.authmechanism.default "始终使用：">
+<!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
+<!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">
+<!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
+<!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
+<!ENTITY options.authmechanism.login "Login">
+<!ENTITY options.authmechanism.plain "Plain">
+<!ENTITY options.authmechanism.external "外部">
+<!ENTITY options.authmechanism.description
+"在某些情况下，例如使用代理身份验证时，可能希望强制特定的身份验证机制。" >
+
+<!ENTITY options.proxyauth.caption "代理身份验证">
+<!ENTITY options.proxyauth.desc
+"代理授权，允许经过身份验证的用户代表其他用户行事。通常服务器的设置只允许管理员使用此功能。">
+<!ENTITY options.proxyauth.force
+"在使用代理服务器身份验证时，您应该强制”SASL PLAIN“身份验证。">
+<!ENTITY options.proxyauth.none "无身份验证">
+<!ENTITY options.proxyauth.default "Sieve 用户名">
+<!ENTITY options.proxyauth.prompt "提示进行身份验证">
+<!ENTITY options.proxyauth.custom "授权为">
+<!ENTITY options.proxyauth.custom.username "用户名：">
+
+<!ENTITY options.info.servername "服务器名：">
+<!ENTITY options.info.port "端口：">
+<!ENTITY options.info.secure "安全连接：">
+<!ENTITY options.info.username "用户名：">
+<!ENTITY options.info.auth "身份验证：">
+
+<!ENTITY options.account.sieve
+"Sieve 是一个能力强大的脚本语言，管理服务器侧的邮件过滤。">
+<!ENTITY options.account.activate
+"您想为此账户激活管理 Sieve 脚本吗？">
+<!ENTITY options.account.activate.yes "是的，为此账户管理 Sieve 脚本：">
+<!ENTITY options.account.activate.no "不用，此账户不支持 Sieve">
+<!ENTITY options.account.filters "编辑过滤器...">
+<!ENTITY options.account.settings "更改设置...">
+
+<!-- Credits -->
+<!ENTITY options.credits "感谢众位贡献者：">
+
+<!-- Proxy Settings -->
+<!ENTITY options.proxy "代理配置">
+<!ENTITY options.proxy.description
+"您可以使用端口代理来透明和安全地通过防火墙，而不是直接连接。">
+<!ENTITY options.proxy.description.nameresolution
+"SOCKSv4主机名总是在本地计算机上解析。SOCKSv5也支持通过端口代理解析主机名。如果您可以信任 SOCKSv5代理，后者被认为更加安全，应该优先考虑。">
+<!ENTITY options.proxy.description.localhost
+"在某些使用 &quot;localhost&quot; 作为代理主机的系统上不能正常工作，请改用 &quot;127.0.0.1&quot;。">
+<!ENTITY options.proxy.direct "直接连接">
+<!ENTITY options.proxy.default "默认代理配置">
+<!ENTITY options.proxy.socks4 "SOCKSv4">
+<!ENTITY options.proxy.socks5 "SOCKSv5">
+<!ENTITY options.proxy.nameresolution "用代理服务器检索主机名">
+<!ENTITY options.proxy.host "主机：">
+<!ENTITY options.proxy.port "端口：">
+
+
+<!-- Locale for the List Filter Dialog -->
+<!ENTITY list.title "Sieve 过滤器">
+
+<!ENTITY list.accounts "过滤器：">
+
+<!ENTITY list.tree "服务器侧 Sieve 邮件过滤器">
+<!ENTITY list.tree.active "活动">
+<!ENTITY list.tree.name "名称">
+
+<!ENTITY list.new "新建...">
+<!ENTITY list.edit "编辑...">
+<!ENTITY list.delete "删除">
+<!ENTITY list.rename "更名">
+<!ENTITY list.activate "激活">
+<!ENTITY list.settings "设置...">
+
+<!ENTITY list.details.capability "服务器 Sieve 能力">
+<!ENTITY list.details.capability.implementation "服务器版本：">
+<!ENTITY list.details.capability.sasl "SASL 机制：">
+<!ENTITY list.details.capability.extensions "扩展：">
+<!ENTITY list.details.capability.protocol "协议版本：">
+
+
+<!ENTITY list.badcert
+  "您的邮件服务器尝试用无效的信息标识自身。">
+<!ENTITY list.badcert.error
+"如果您通常没有问题地连接到此服务器，则此错误可能意味着有人正在尝试模仿此服务器。 
+
+除非您很清楚为什么此服务器不使用可信标识，否则不要继续。">
+<!ENTITY list.badcert.remember "记住我的决定">
+<!ENTITY list.badcert.ignore "继续">
+<!ENTITY list.badcert.abort "放弃">
+
+<!ENTITY list.autoconfig.welcome.caption "欢迎使用！">
+<!ENTITY list.autoconfig.welcome.description1
+"此账户没有配置为管理 Sieve。">
+<!ENTITY list.autoconfig.welcome.description2
+"点击”继续“以自动检测配置。
+或选择”高级“，手动配置此账户。">
+
+<!ENTITY list.autoconfig.advanced "高级">
+<!ENTITY list.autoconfig.continue "继续">
+
+<!ENTITY list.autoconfig.detecting.caption "正在自动检测配置">
+<!ENTITY list.autoconfig.detecting.description
+  "可能需要几分钟才能完成...">
+
+<!ENTITY list.autoconfig.cancel "取消">
+
+<!ENTITY list.autoconfig.success.caption "恭喜！">
+<!ENTITY list.autoconfig.success.description
+  "您的账户已经配置并准备好开始使用...">
+
+<!ENTITY list.autoconfig.error.caption "抱歉">
+<!ENTITY list.autoconfig.error.description
+"您的邮件服务器不支持管理 Sieve，或者需要特别设置。请联系您的邮箱提供商，或者尝试手动配置。">
+
+<!ENTITY list.autoconfig.retest "重新测试">
+<!ENTITY list.autoconfig.config "手动配置">
+
+<!-- Locale for the Edit Filter Dialog -->
+<!ENTITY edit.toolbar.save "保存">
+<!ENTITY edit.toolbar.undo "撤销">
+<!ENTITY edit.toolbar.redo "重做">
+<!ENTITY edit.toolbar.cut "剪切">
+<!ENTITY edit.toolbar.copy "复制">
+<!ENTITY edit.toolbar.paste "粘贴">
+<!ENTITY edit.toolbar.compile "语法检查">
+<!ENTITY edit.toolbar.reference "快速参考">
+<!ENTITY edit.toolbar.tools "工具">
+<!ENTITY edit.toolbar.import "导入脚本">
+<!ENTITY edit.toolbar.export "导出脚本">
+<!ENTITY edit.toolbar.back "后退">
+<!ENTITY edit.toolbar.forward "前进">
+<!ENTITY edit.toolbar.home "主页">
+<!ENTITY edit.toolbar.search "搜索">
+
+<!ENTITY edit.sidebar.uri "https://thsmi.github.io/sieve-reference/en/index.html">
+<!ENTITY edit.sidebar.title "Sieve 语言参考">
+
+<!-- Search and Replace Side bar -->
+<!ENTITY edit.searchreplace.title "搜索和替换">
+<!ENTITY edit.searchreplace.searchfor "搜索：">
+<!ENTITY edit.searchreplace.replacewith "替换：">
+<!ENTITY edit.searchreplace.options "选项">
+<!ENTITY edit.searchreplace.case "匹配大小写">
+<!ENTITY edit.searchreplace.backward "后退">
+<!ENTITY edit.searchreplace.find "查找">
+<!ENTITY edit.searchreplace.replace "替换">
+<!ENTITY edit.searchreplace.error "未找到短语">
+
+<!-- Status messages -->
+<!ENTITY status.offline.description
+"您目前已离线。请点击”连线“并重试。">
+<!ENTITY status.offline.go "连线">
+
+
+<!ENTITY status.connectivity.loss.description
+"服务器意外终止连接，点击重新连接以重试。">
+<!ENTITY status.connectivity.loss.reconnect "重新连接">
+
+<!ENTITY status.warning.ignore "忽略">
+<!ENTITY status.warning.reconnect "重新连接">
+<!ENTITY status.warning
+  "此账户没有配置管理 Sieve，请转至 '工具-&gt; SieveMessage 过滤器'">
+
+<!ENTITY status.error.reconnect "重新连接">
+<!ENTITY status.error "最后的命令失败，服务器回报错误：">
+
+<!ENTITY status.sync.description
+"本地和服务器侧的脚本有差异。
+
+您想怎么办呢？">
+<!ENTITY status.sync.keep "保留本地脚本">
+<!ENTITY status.sync.replace "使用服务器侧脚本">
+
+<!-- Shortcut keys -->
+<!ENTITY shortcut.save.key "S">

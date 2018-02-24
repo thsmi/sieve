@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
@@ -78,12 +78,12 @@ function startup(data, reason)
   Cu.import("chrome://sieve/content/modules/overlays/SieveOverlay.jsm");
 
   SieveOverlayManager.addOverlay(
-      SieveMailWindowOverlay,"chrome://messenger/content/messenger.xul");
-  /*SieveOverlayManager.addOverlay(
+    SieveMailWindowOverlay, "chrome://messenger/content/messenger.xul");
+  /* SieveOverlayManager.addOverlay(
       SieveFilterListOverlay,"chrome://messenger/content/FilterListDialog.xul");*/
 
   SieveOverlayManager.addOverlay(
-      SieveToolbarOverlay, "chrome://global/content/customizeToolbar.xul");
+    SieveToolbarOverlay, "chrome://global/content/customizeToolbar.xul");
 
   SieveOverlayManager.load();
 
@@ -103,20 +103,19 @@ function startup(data, reason)
 function shutdown(data, reason)
 {
   // Speedup shutdown, we don't need to cleanup if thunderbird closes
-  if (reason == APP_SHUTDOWN)
+  if (reason === APP_SHUTDOWN)
     return;
 
   // TODO if reason ADDON_UPGRADE persist all open tabs...
 
   // Step 1: Unload XPCOM Componenets
   SieveAccountManagerComponent.unload();
-  //delete SieveAccountManagerComponent;
+  // delete SieveAccountManagerComponent;
   Cu.unload("chrome://sieve/content/components/SieveAccountManager.js");
 
   SieveProtocolHandlerComponent.unload();
-  //delete SieveProtocolHandlerComponent;
+  // delete SieveProtocolHandlerComponent;
   Cu.unload("chrome://sieve/content/components/SieveProtocolHandler.js");
-
 
   // Step 2: remove Code Injections
   SieveOverlayManager.unload();

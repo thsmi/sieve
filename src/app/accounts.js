@@ -15,6 +15,8 @@
 
   /* global $ */
   /* global SieveAccountsUI */
+  /* global SieveImportUI */
+  /* global SieveUpdaterUI */
 
   /**
    * The main entry point for the account view
@@ -25,16 +27,22 @@
 
     accounts.render();
 
+    $("#sieve-account-import").click(async () => {
+      await (new SieveImportUI()).show();
+      accounts.render();
+    });
+
     $("#sieve-account-create").click(() => {
       let id = accounts.create();
       // TODO show the settings dialog
     });
-
   }
 
   $(document).ready(function () {
     (async () => { await main(); })();
   });
+
+  (new SieveUpdaterUI()).check();
 
 })();
 

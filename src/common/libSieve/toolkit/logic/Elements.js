@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -15,6 +15,8 @@
 
 ( function ( exports ) {
   "use strict";
+
+  /* global SieveLexer */
 
   // TODO: Should be renamed to SieveAbstractWidget
   /**
@@ -51,7 +53,7 @@
     return this._docshell.probeByClass( types, parser );
   };
 
-  /*
+  /**
    * Calling static methods is a bit akward in javascript, so we make..
    * ...it simpler by using this helper
    */
@@ -84,7 +86,7 @@
   /**
    * Returns the new Widget bound to this element.
    * @return {SieveAbstractWidget}
-   *  te widget which is associated with this element.
+   *  the widget which is associated with this element.
    */
   SieveAbstractElement.prototype.widget
     = function () {
@@ -100,7 +102,7 @@
         if ( refresh )
           this.widget().reflow();
 
-      if ( this.widget() == null )
+      if (this.widget() === null)
         return null;
 
       return this.widget().html();
@@ -180,7 +182,7 @@
       if ( ( stop ) && ( this.id() === stop.id() ) )
         cascade = false;
       // ...and remove this node
-      var elm = this._parent.removeChild( this._id, cascade, stop );
+      let elm = this._parent.removeChild( this._id, cascade, stop );
 
       if ( ( !cascade ) && ( elm.id() !== this._id ) )
         throw new Error("Could not remove Node");
@@ -236,7 +238,7 @@
 
       if ( sibling && ( sibling.id() >= 0 ) )
         for ( idx = 0; idx < this.elms.length; idx++ )
-          if ( this.elms[idx].id() == sibling.id() )
+          if (this.elms[idx].id() === sibling.id())
             break;
 
       this.elms.splice( idx, 0, elm );
@@ -265,9 +267,9 @@
 
 
       // ... or just a child item
-      var elm = null;
+      let elm = null;
       // Is it a direct match?
-      for ( var i = 0; i < this.elms.length; i++ ) {
+      for (let i = 0; i < this.elms.length; i++) {
         if ( this.elms[i].id() !== childId )
           continue;
 
@@ -292,10 +294,10 @@
     = function () {
       // The direct descendants of our root node are always considered as
       // not empty. Otherwise cascaded remove would wipe them away.
-      if ( this.document().root() == this.parent() )
+      if (this.document().root() === this.parent())
         return false;
 
-      for ( var i = 0; i < this.elms.length; i++ )
+      for (let i = 0; i < this.elms.length; i++)
         if ( this.elms[i].widget() )
           return false;
 
@@ -304,7 +306,7 @@
 
   SieveAbstractBlock.prototype.require
     = function ( imports ) {
-      for ( var i = 0; i < this.elms.length; i++ )
+      for ( let i = 0; i < this.elms.length; i++ )
         if ( this.elms[i].require )
           this.elms[i].require( imports );
     };

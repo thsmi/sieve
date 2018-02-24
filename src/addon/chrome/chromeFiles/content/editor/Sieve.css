@@ -39,7 +39,8 @@
 
 #StatusError
 {
-	background-color: white
+  background-color: white;
+  color: black;
 }
 
 .sivError
@@ -60,10 +61,12 @@
 #sivAutoConfig
 {
   max-width: 430px;
+  color: black;
   background-color: white;
-  border: 1px solid ThreeDShadow;
+
   padding: 20px;
 
+  border: 1px solid ThreeDShadow;
   border-radius: 5px;
 }
 
@@ -88,6 +91,7 @@
 .sivExplorerWarning
 {
   background-color: white;
+  color:black;
 }
 
 .sivWarningBar
@@ -150,11 +154,6 @@
 	border: 0px !important;
   background-color: transparent;
   -moz-appearance: none;
-}
-
-#btnServerDetails description
-{
-	border:1px solid #0000ff;
 }
 
 .toolbarbutton-1[type="menu"] {
@@ -254,7 +253,7 @@
   margin-left: -5px;
   position: relative;
   z-index: 10;
-  -moz-transition: border-width .3s ease-in;
+  transition: border-width .3s ease-in;
 }
 
 #spErrorBar {
@@ -266,12 +265,12 @@
   margin-top: -5px;
   position: relative;
   z-index: 10;
-  -moz-transition: border-width .3s ease-in;
+  transition: border-width .3s ease-in;
 }
 
 #vbErrorBar  {
 	background: #f8f8f8;
-    border-bottom: none;
+  border-bottom: none;
 	min-height: 50px;
 }
 

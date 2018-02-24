@@ -15,6 +15,7 @@
   /* global SieveTemplateLoader */
 
   "use strict";
+
   /**
      * An UI elements which handles displaying details for a sieve script.
      * It does not provied any support for editing the scripts content.
@@ -42,6 +43,7 @@
      */
     async render() {
 
+      // FIXME toHex can be done with this.name.toString(16)
       let id = this.account.id + "-" + toHex(this.name);
 
       let item = $("#siv-script-" + id);
@@ -85,18 +87,12 @@
      *
      * @returns {void}
      */
-    rename() {
+    async rename() {
 
-      $('#sieve-rename-dialog').modal('show');
-      $('#sieve-rename-dialog-newname').val(this.name);
+      let rv = await this.account.send("script-rename", this.name);
 
-      $('#sieve-rename-dialog-btn').off().click(async () => {
-        let newname = $('#sieve-rename-dialog-newname').val();
-        await this.account.send("script-rename", { "old": this.name, "new": newname });
-
-        await this.account.render();
-        $('#sieve-rename-dialog').modal('hide');
-      });
+      if (rv === true)
+        this.account.render();
     }
 
     /**
@@ -105,18 +101,10 @@
      *
      * @returns {void}
      */
-    remove() {
-
-      $('#sieve-delete-dialog').modal('show');
-      $('#sieve-delete-dialog-name').text(this.name);
-
-      $('#sieve-delete-dialog-btn').off().click(async () => {
-
-        await this.account.send("script-delete", this.name);
-
+    async remove() {
+      let rv = await this.account.send("script-delete", this.name);
+      if (rv === true)
         await this.account.render();
-        $('#sieve-delete-dialog').modal('hide');
-      });
     }
 
     /**

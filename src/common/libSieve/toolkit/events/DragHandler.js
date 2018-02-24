@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -69,23 +69,22 @@
     };
 
   SieveDragHandler.prototype.owner
-    = function ( /*owner*/ ) {
+    = function (owner) {
       return this._owner;
     };
 
   SieveDragHandler.prototype.attach
     = function ( html ) {
-      var that = this;
 
       html.attr( "sivtype", this.flavour() )
         .attr( "draggable", "true" )
-        .on( "dragstart", function ( event ) { that.onDragStart( event ); return true; })
-        .on( "dragend", function () { return false; });
+        .bind("dragstart", (e) => { this.onDragGesture(e); return true; })
+        .bind("dragend", () => { return false; });
     };
 
   SieveDragHandler.prototype.onDrag
     = function ( event ) {
-      var dt = new SieveDataTransfer( event.dataTransfer );
+      let dt = new SieveDataTransfer(event.dataTransfer);
 
       dt.clear();
 

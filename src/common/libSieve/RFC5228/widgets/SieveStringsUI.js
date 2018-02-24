@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -43,7 +43,7 @@
       if ( !elm.hasClass( "sivStringListItem" ) )
         throw new Error( "String List item expected" );
 
-      var owner = elm.parents( ".SivStringList" );
+    let owner = elm.parents(".SivStringList");
 
       elm.remove();
 
@@ -56,14 +56,14 @@
         throw new Error( "String List expected" );
       /* we rebuild the whole string list at it's easier to do so */
 
-      var inputs = elm.find( "input" );
+    let inputs = elm.find("input");
 
       if ( !inputs.length )
         return;
 
       this.getSieve().clear();
 
-      for ( var i = 0; i < inputs.length; i++ )
+    for (let i = 0; i < inputs.length; i++)
         this.getSieve().append( inputs[i].value );
     };
 
@@ -80,19 +80,19 @@
   SieveStringListUI.prototype.showDropDown
     = function ( parent ) {
 
-      var defaults = this.defaults();
+    let defaults = this.defaults();
 
       if ( !defaults.length )
         return;
 
-      var item = $( "<select/>" )
+    let item = $("<select/>")
         .attr( "size", defaults.length )
-        .change( function () {
+      .change(function (ev) {
           $( this ).parent().find( "input" ).val( item.val() ).change().focus();
         })
         .blur( function () { $( this ).remove(); });
 
-      for ( var i = 0; i < defaults.length; i++ )
+    for (let i = 0; i < defaults.length; i++)
         if ( !this.getSieve().contains( defaults[i] ) )
           item.append( $( "<option>" ).text( defaults[i] ).val( defaults[i] ) );
 
@@ -105,32 +105,32 @@
 
   SieveStringListUI.prototype._createListItemUI
     = function ( text ) {
-      var that = this;
+    let that = this;
 
       return $( "<div/>" )
         .addClass( "sivStringListItem" )
         .append( $( "<span/>" )
           .append( $( "<input/>" )
-            .change( function () { that.onUpdateItem( $( this ).parent().parent().parent() ); })
+          .change(function (ev) { that.onUpdateItem($(this).parent().parent().parent()); })
             .val( text ) )
           .append( $( "<span/>" )
             .append( $( "<span/>" )
               .addClass( "sivStringAdd" )
-              .click( function () { that.onAddItem( $( this ) ); }) )
+            .click(function (ev) { that.onAddItem($(this)); }))
             .append( $( "<span/>" )
               .addClass( "sivStringRemove" )
-              .click( function () { that.onRemoveItem( $( this ).parents( ".sivStringListItem" ) ); }) )
+            .click(function (ev) { that.onRemoveItem($(this).parents(".sivStringListItem")); }))
             .append( $( "<span/>" )
               .addClass( "sivStringDrop" )
-              .click( function () { that.showDropDown( $( this ).parent() ); }) ) ) );
+            .click(function (ev) { that.showDropDown($(this).parent()); }))));
 
     };
 
   SieveStringListUI.prototype.init
     = function () {
-      var headers = $( "<div/>" ).addClass( "SivStringList" );
+    let headers = $("<div/>").addClass("SivStringList");
 
-      for ( var i = 0; i < this.getSieve().size(); i++ )
+    for (let i = 0; i < this.getSieve().size(); i++)
         headers.append( this._createListItemUI( this.getSieve().item( i ) ) );
 
       /* headers.append($("<div/>")

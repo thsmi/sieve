@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -23,8 +23,7 @@
 	/* global SieveDropBoxUI */
   /* global SieveBlockDropHandler */
 	
-  function SieveRootNodeUI(elm)
-  {
+  function SieveRootNodeUI(elm) {
     SieveAbstractBoxUI.call(this,elm);
   }
   
@@ -33,14 +32,12 @@
   
   
   SieveRootNodeUI.prototype.createHtml
-      = function (parent)
-  {
+    = function (parent) {
     return parent.append(this.getSieve().elms[1].html());
   };
   
   
-  function SieveBlockUI(elm)
-  {
+  function SieveBlockUI(elm) {
     SieveAbstractBoxUI.call(this,elm);
   }
   
@@ -48,15 +45,13 @@
   SieveBlockUI.prototype.constructor = SieveBlockUI;
   
   SieveBlockUI.prototype.init
-      = function ()
-  {
-    var elm = $("<div/>")
+    = function () {
+      let elm = $("<div/>")
                 .addClass("sivBlock");
     
-    var item = null;
+      let item = null;
     
-    for (var i=0; i<this.getSieve().elms.length;i++)
-    {      
+      for (let i = 0; i < this.getSieve().elms.length; i++) {
       item = this.getSieve().elms[i].html();
         
       if (!item)
@@ -81,8 +76,7 @@
   };
   
   SieveBlockUI.prototype.createHtml
-      = function (parent)
-  {
+    = function (parent) {
     return parent.append(this.init());
   };
   

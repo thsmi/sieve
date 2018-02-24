@@ -1,5 +1,5 @@
 /*
- * The contents of this file is licenced. You may obtain a copy of
+ * The contents of this file is licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via email
  * from the author. Do not remove or change this comment.
  *
@@ -7,10 +7,11 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-// Enable Strict Mode
-"use strict";
+(function (exports) {
 
-(function(exports) {
+
+  // Enable Strict Mode
+  "use strict";
 
   /* global require */
   /* global Buffer */
@@ -19,31 +20,38 @@
   const { StringDecoder } = require('string_decoder');
 
   /**
-   * Realizes a response parser which uses node components.
-   *
-   * @param {String} data
-   *   the response which should be parsed
-   * @constructor
+   * Implements a node specific response parser
    */
-  function SieveNodeResponseParser(data)
-  {
-    SieveAbstractResponseParser.call(this, data);
+  class SieveNodeResponseParser extends SieveAbstractResponseParser {
+
+    /**
+     * @inheritDoc
+     **/
+    constructor(data) {
+      super(data);
+    }
+
+    /**
+     * @inheritDoc
+     **/
+    convertToString(byteArray) {
+      return new StringDecoder('utf8').end(Buffer.from(byteArray)).toString();
+    }
+
+    /**
+     * @inheritDoc
+     **/
+    convertToBase64(decoded) {
+      return Buffer.from(decoded).toString('base64');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    convertFromBase64(encoded) {
+      return Buffer.from(encoded, 'base64').toString("latin1");
+    }
   }
-
-  SieveNodeResponseParser.prototype = Object.create(SieveAbstractResponseParser.prototype);
-  SieveNodeResponseParser.prototype.constructor = SieveNodeResponseParser;
-
-  SieveNodeResponseParser.prototype.convertToString = function(byteArray) {
-    return new StringDecoder('utf8').end(Buffer.from(byteArray)).toString();
-  };
-
-  SieveNodeResponseParser.prototype.convertToBase64 = function(decoded) {
-    return Buffer.from(decoded).toString('base64');
-  };
-
-  SieveNodeResponseParser.prototype.convertFromBase64 = function(encoded) {
-    return Buffer.from(encoded, 'base64').toString();
-  };
 
   exports.SieveNodeResponseParser = SieveNodeResponseParser;
 

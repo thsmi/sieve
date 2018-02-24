@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -16,7 +16,7 @@
 
 	/* global net */
 	
-  var suite  = net.tschmid.yautt.test;
+  let suite = net.tschmid.yautt.test;
     
   if (!suite)
     throw new Error( "Could not initialize test suite" );
@@ -30,7 +30,7 @@
   	
     suite.log("Simple Set Actions without modifiers");
       
-    var script =
+    let script =
       'require ["variables"];\r\n'
         + 'set "dollar" "$";\r\n'
         + 'set "text" "regarding ${dollar}{beep}";';
@@ -42,7 +42,7 @@
     
     suite.log("Complex Set Action without modifiers");
  
-    var script =
+    let script =
       'require "variables";\r\n\r\n'
         +'set "honorific"  "Mr";\r\n'
         + 'set "first_name" "Wile";\r\n'
@@ -60,7 +60,7 @@
 
     suite.log("Complex Set Action with modifiers");    
   
-    var script =
+    let script =
       'require "variables";\r\n\r\n'
         + '# The value assigned to the variable is printed after the arrow\r\n'
         + 'set "a" "juMBlEd lETteRS";\r\n'        //     => "juMBlEd lETteRS"
@@ -91,7 +91,7 @@
   suite.add( function() {
     suite.log("Match Variables Example");
   
-    var script = 
+    let script =
       'require ["fileinto" /*, "variables"*/];\r\n'
         + '\r\n'
         + 'if header :matches "List-ID" "*<*@*" {\r\n'
@@ -135,7 +135,7 @@
 
     suite.log("Test string");
    
-    var script =
+    let script =
       'require "variables";\r\n'
         + 'set "state" "${state} pending";\r\n'
         + 'if string :matches " ${state} " "* pending *" {\r\n'

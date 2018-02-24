@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -111,7 +111,7 @@
 
   SieveIf.prototype.removeChild
     = function ( childId, cascade, stop ) {
-      var elm = SieveBlock.prototype.removeChild.call( this, childId );
+      let elm = SieveBlock.prototype.removeChild.call(this, childId);
       if ( cascade && elm )
         return this;
 
@@ -139,7 +139,7 @@
         return this._test;
 
       if ( item.parent() )
-        throw new Error("test already bound to " + item.parent().id());
+        throw new Error("Test already bound to " + item.parent().id());
 
       // Release old test...
       if ( this._test )
@@ -226,7 +226,7 @@
       if ( stop && ( stop.id() === this.id() ) )
         cascade = false;
 
-      var elm = SieveBlockBody.prototype.removeChild.call( this, childId, cascade, stop );
+      let elm = SieveBlockBody.prototype.removeChild.call(this, childId, cascade, stop);
 
       //  ... if we endup after delete with just an else, merge it into parent...   
       if ( ( this.children().length ) && ( !this.children( 0 ).test ) ) {
@@ -255,9 +255,9 @@
 
   SieveCondition.prototype.toScript
     = function () {
-      var str = "";
+      let str = "";
 
-      for ( var i = 0; i < this.elms.length; i++ ) {
+      for (let i = 0; i < this.elms.length; i++) {
         if ( ( i > 0 ) && ( this.elms[i].test ) )
           str += "els";
 

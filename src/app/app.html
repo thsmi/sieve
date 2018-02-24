@@ -18,7 +18,7 @@
   <div id="ctx">
     <nav class="navbar navbar-expand-md navbar-dark static-top bg-dark" style="padding: 0px;">
       <div style="width:100%; height:50px; display:flex; flex-direction:row; flex-wrap: nowrap; justify-content:flex-end" class="bg-dark">
-        <div id="scrollleft" style="flex: auto 0;">//</div>
+        <div id="scrollleft" style="flex: auto 0;">◁</div>
         <div class="wrapper">
           <ul class="nav nav-tabs list" id="myTab" role="tablist">
             <li id="accounts-tab" class="nav-item">
@@ -26,8 +26,8 @@
             </li>
           </ul>
         </div>
-        <div id="scrollright" style="flex: auto 0;">\\</div>
-        <button class="btn btn-sm btn-outline-success mr-1">Donate</button>
+        <div id="scrollright" style="flex: auto 0;">▷</div>
+        <button id="donate" class="btn btn-sm btn-outline-success mr-1">Donate</button>
       </div>
     </nav>
 
@@ -35,46 +35,6 @@
       <iframe id="accounts" class="tab-pane fade show active" role="tabpanel" aria-labelledby="home-tab" src="accounts.html"></iframe>
     </div>
 
-    <!-- Modal -->
-    <div id="sieve-password-dialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="deleteScriptLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="deleteScriptLabel">Password Required</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-              <div class="form-group row">
-                <div class="col-sm-12">
-                  Please enter the password for your Sieve account.</div>
-              </div>
-              <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Account</label>
-                  <div class="col-sm-8">
-                    <p class="form-control-static sieve-displayname"></p>
-                  </div>
-                </div>
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Username</label>
-                <div class="col-sm-8">
-                  <p class="form-control-static sieve-username"></p>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-sm-3 col-form-label">Password</label>
-                <div class="col-sm-8">
-                  <input type="password" class="form-control sieve-password" placeholder="Password">
-                </div>
-              </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button"class="btn btn-primary sieve-login">Login</button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 
 
@@ -84,6 +44,14 @@
   <!-- Bootstrap core JavaScript
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
+  <!--<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+  <script src="./libs/jquery/jquery.min.js"></script>
+  <script src="./libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>if (typeof window.module === 'object') {module = window.module}</script>-->
+
+  <script>window.$ = window.jQuery = require('./libs/jquery/jquery.min.js');</script>
+  <script src="./libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
   <script src="./app.js"></script>
 </body>
 

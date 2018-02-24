@@ -1,5 +1,5 @@
  /*
- * The contents of this file are licenced. You may obtain a copy of 
+* The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -17,7 +17,7 @@
 
 	/* global net */
 	
-  var suite  = net.tschmid.yautt.test;
+  let suite = net.tschmid.yautt.test;
     
   if (!suite)
     throw new Error( "Could not initialize test suite" );
@@ -30,7 +30,7 @@
 
     suite.log("Parse body transform :raw");
   
-    var script =
+    let script =
       'require "body";\r\n'
         + '\r\n'
         + '# This will match a message containing the literal text\r\n'
@@ -49,7 +49,7 @@
 
     suite.log("Parse body transform :content");
   
-    var script =
+    let script =
       'require ["body", "fileinto"];\r\n'
         + '\r\n'
         + '# Save any message with any text MIME part that contains the\r\n'
@@ -72,7 +72,7 @@
 
     suite.log("Parse body transform :text");
   
-    var script =
+    let script =
       'require ["body", "fileinto"];\r\n'
         + '\r\n'
         + '# Save messages mentioning the project schedule in the\r\n'
@@ -85,5 +85,5 @@
   });
 
 
-}());
+})();
 

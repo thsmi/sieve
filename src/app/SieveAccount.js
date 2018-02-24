@@ -12,8 +12,14 @@
 
   "use strict";
 
-  const SievePrefManager = require('./utils/SievePrefManager.js');
-  //const SievePasswordManager = require('./utils/SievePasswordManager.js');
+  const { SievePrefManager } = require('./utils/SievePrefManager.js');
+  const { SieveAuthorization } = require("./libs/libManageSieve/settings/SieveAuthorizationSettings.js");
+  const { SieveAuthentication } = require("./libs/libManageSieve/settings/SieveAuthenticationSettings.js");
+  const { SieveSecurity } = require("./libs/libManageSieve/settings/SieveSecuritySettings.js");
+  const { SieveHost } = require("./libs/libManageSieve/settings/SieveHostSettings.js");
+
+  // const SievePasswordManager = require('./utils/SievePasswordManager.js');
+
 
   /**
    * Manages the account specific settings
@@ -31,106 +37,37 @@
     constructor(id, callback) {
       this.callback = callback;
       this.prefs = new SievePrefManager(id);
+
+      this.authorization = new SieveAuthorization(this);
+      this.authentication = new SieveAuthentication(this);
+      this.security = new SieveSecurity(this);
+      this.host = new SieveHost(this);
     }
 
-    /**
-     * Provides access to all host related settings
-     * @returns {object}
-     *   the host object
-     */
     getHost() {
-
-      return {
-
-        getDisplayName: () => {
-          return this.prefs.getString("host.displayName", "Unnamed Account");
-        },
-
-        setDisplayName: (value) => {
-          this.prefs.setString("host.displayName", value);
-          return this;
-        },
-
-        isSecure: () => {
-          return this.prefs.getBoolean("host.tls", true);
-        },
-
-        setSecure: (secure) => {
-          return this.prefs.setBoolean("host.tls", secure);
-        },
-
-        getHostname: () => {
-          return this.prefs.getString("host.hostname", "localhost");
-        },
-
-        setHostname: (value) => {
-          this.prefs.setString("host.hostname", value);
-        },
-
-        getPort: () => {
-          return this.prefs.getInteger("host.port", 4190);
-        },
-
-        setPort: (value) => {
-          this.prefs.setInteger("host.port", value);
-        }
-      };
+      return this.host.get();
     }
 
-    /**
-     * Provides access to all login related settings
-     * @returns {object}
-     *   the login object
-     */
-    getLogin() {
-
-      return {
-        getSaslMechanism: () => {
-          return this.prefs.getString("authentication.mechanism", "default");
-        },
-
-        setSaslMechanism: (value) => {
-          this.prefs.setString("authentication.mechanism", value);
-        },
-        /**
-         * Gets the username for the given account
-         *
-         * It is async because it may be blocking in
-         * case it requires user input.
-         *
-         * @returns {Promise<string>}
-         *  the username
-         */
-        getUsername: () => {
-          return this.prefs.getString("authentication.username", "");
-        },
-
-        setUsername: (value) => {
-          this.prefs.setString("authentication.username", value);
-        },
-
-        /**
-         * Gets the password for the given account.
-         *
-         * It is async because it may be blocking in
-         * case it requires user input.
-         *
-         * @returns {Promise<string>}
-         *   the password as string
-         */
-        getPassword: async () => {
-          return await this.callback(this);
-        }
-      };
+    getSecurity() {
+      return this.security;
     }
 
-    getAuthorization() {
-      return {
-        getAuthorization: function () {
-          return "";
-        }
-      };
-    };
+    setAuthentication(type) {
+      this.authentication.setMechanism(type);
+    }
+
+    getAuthentication(type) {
+      return this.authentication.get(type);
+    }
+
+
+    setAuthorization(type) {
+      this.authorization.setMechanism(type);
+    }
+
+    getAuthorization(type) {
+      return this.authorization.get(type);
+    }
 
     getProxy() {
       return {
@@ -146,10 +83,6 @@
           return 255;
         },
 
-        hasForcedAuthMechanism: function () {
-          return false;
-        },
-
         setKeepAlive: (value) => {
           this.prefs.setBoolean("keepalive.enabled", value);
           return this;
@@ -160,7 +93,7 @@
         },
 
         setKeepAliveInterval: (value) => {
-          this.prefs.setInteger("keepalive.interval", value)
+          this.prefs.setInteger("keepalive.interval", value);
         },
 
         getKeepAliveInterval: () => {
@@ -170,7 +103,8 @@
     }
   }
 
-  if (module.exports)
+  // Require modules need to use export.module
+  if (typeof (module) !== "undefined" && module && module.exports)
     module.exports.SieveAccount = SieveAccount;
   else
     exports.SieveAccount = SieveAccount;

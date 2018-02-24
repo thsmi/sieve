@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -38,7 +38,7 @@
 
   SieveMatchTypeUI.prototype.onSelect
     = function () {
-      var value = $( "input[name='rgMatchType" + this.id() + "']:checked" ).val();
+      let value = $( "input[name='rgMatchType" + this.id() + "']:checked" ).val();
       this.getSieve().setValue( value );
     };
 
@@ -102,7 +102,7 @@
     return "match-type/";
   };
 
-  SieveContainsMatchUI.isCapable = function ( /*capabilities*/ ) {
+  SieveContainsMatchUI.isCapable = function (capabilities) {
     return true;
   };
 

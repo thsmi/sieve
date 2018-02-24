@@ -1,5 +1,7 @@
 # Changelogs
 
+***The changelog for newer releases can be found here https://github.com/thsmi/sieve/releases***
+
 ## Sieve 0.2.3 - ([in Progress](https://github.com/thsmi/sieve/issues?milestone=2&state=open))
 Development builds can be found in the [Downloads section](https://github.com/thsmi/sieve/blob/master/nightly/README.md). 
 * [FIXED] [Quoted Strings ignored escape characters](https://github.com/thsmi/sieve/issues/8)

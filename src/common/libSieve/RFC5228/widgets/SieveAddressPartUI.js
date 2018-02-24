@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -20,8 +20,7 @@
   /* global SieveDesigner */
   /* global SieveAbstractBoxUI */
   
-  function SieveAddressPartUI(elm)
-  {
+  function SieveAddressPartUI(elm) {
     SieveAbstractBoxUI.call(this,elm);
   }
   
@@ -39,7 +38,7 @@
   SieveAddressPartUI.prototype.onSelect
     = function () {
       
-      var value = $( "input[name='rgAddressPart" + this.id() + "']:checked" ).val();       
+      let value = $( "input[name='rgAddressPart" + this.id() + "']:checked" ).val();       
       this.getSieve().setValue( value );
   };
   

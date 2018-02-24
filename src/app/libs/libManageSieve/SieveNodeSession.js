@@ -11,21 +11,15 @@
 
 /* global window */
 
-// Enable Strict Mode
-"use strict";
-
 (function (exports) {
 
+  // Enable Strict Mode
+  "use strict";
   /* global require */
 
   const { Sieve } = require("./SieveNodeClient.js");
 
   const { SieveLogger } = require("./SieveNodeLogger.js");
-
-  Object.assign(window,
-    require("./SieveResponseCodes.js"));
-  Object.assign(window,
-    require("./SieveResponse.js"));
 
   const {
     SieveGetScriptRequest,
@@ -44,10 +38,11 @@
     SieveSaslLoginRequest,
     SieveSaslCramMd5Request,
     SieveSaslScramSha1Request,
+    SieveSaslScramSha256Request,
     SieveSaslExternalRequest
   } = require("./SieveRequest.js");
 
-  /*Object.assign(this,
+  /* Object.assign(this,
       require("./SieveRequest.js"));*/
 
   class SieveClientException extends Error {
@@ -197,22 +192,47 @@
       return new SieveSaslScramSha1Request();
     }
 
+    createSaslScramSha256Request() {
+      return new SieveSaslScramSha256Request();
+    }
+
     createSaslExternalRequest() {
       return new SieveSaslExternalRequest();
     }
 
-    async exec(request, callback, init) {
+    /**
+     * Wraps the request into a promise and passes it to the sieve client for execution.
+     *
+     * @param {AbstractSieveRequest} request
+     *   the sieve request which should be executed.
+     * @param {Object<String,function>} handlers
+     *   the event handlers for this request as object with a string as key and a function as value.
+     * @param {function} [init]
+     *   an optional init function.
+     * @returns {void}
+     */
+    async exec(request, handlers, init) {
 
       return await new Promise((resolve, reject) => {
 
-        callback.resolve = resolve;
-        callback.reject = reject;
+        let callback = {};
+
+        // Wrap all handlers into a try catch so that we catch all exception..
+        for (let key in handlers) {
+          callback[key] = async (...args) => {
+            try {
+              await handlers[key](...args, resolve, reject);
+            } catch (ex) {
+              reject(ex);
+            }
+          };
+        }
 
         if (!callback.onError)
-          callback["onError"] = (response) => { callback.reject(new SieveServerException(response)); };
+          callback["onError"] = (response) => { reject(new SieveServerException(response)); };
 
         if (!callback.onTimeout)
-          callback["onTimeout"] = () => { callback.reject(new SieveTimeOutException()); };
+          callback["onTimeout"] = () => { reject(new SieveTimeOutException()); };
 
         if (!callback.onByeResponse) {
           callback["onByeResponse"] = (response) => {
@@ -221,15 +241,19 @@
 
             // ... we most likely received a referal
             if (code.equalsCode("REFERRAL")) {
-              callback.reject(new SieveReferralException(code.getHostname()));
+              reject(new SieveReferralException(code.getHostname()));
               return;
             }
 
             // ... everything else is definitely an error.
-            callback.reject(new SieveServerException(response));
+            reject(new SieveServerException(response));
           };
         }
 
+        if (request.responseListener !== null)
+          throw new Error("response listener already bound to object");
+
+        request.addResponseListener(callback);
         request.addByeListener(callback);
         request.addErrorListener(callback);
         this.sieve.addRequest(request);
@@ -237,8 +261,6 @@
         if (init)
           init();
 
-      }, (reject) => {
-        throw reject;
       });
     }
 
@@ -264,14 +286,12 @@
       }
 
       let callback = {
-        onNoopResponse: function () {
-          callback.resolve();
+        onNoopResponse: function (response, resolve) {
+          resolve();
         }
       };
 
       let request = this.createNoopRequest();
-      request.addNoopListener(callback);
-
       return await this.exec(request, callback);
     }
 
@@ -285,14 +305,12 @@
     async capabilities() {
 
       let callback = {
-        onCapabilitiesResponse: function (response) {
-          callback.resolve(
-            response.getDetails());
+        onCapabilitiesResponse: function (response, resolve) {
+          resolve(response.getDetails());
         }
       };
 
       let request = this.createCapabilitiesRequest();
-      request.addCapabilitiesListener(callback);
 
       return await this.exec(request, callback);
     }
@@ -306,14 +324,12 @@
     async deleteScript(name) {
 
       let callback = {
-        onDeleteScriptResponse: function () {
-          callback.resolve();
+        onDeleteScriptResponse: function (response, resolve) {
+          resolve();
         }
       };
 
       let request = this.createDeleteScriptRequest(name);
-      request.addDeleteScriptListener(callback);
-
       return await this.exec(request, callback);
     }
 
@@ -330,28 +346,24 @@
     async putScript(name, script) {
 
       let callback = {
-        onPutScriptResponse: function () {
-          callback.resolve();
+        onPutScriptResponse: function (response, resolve) {
+          resolve();
         }
       };
 
       let request = this.createPutScriptRequest(name, script);
-      request.addPutScriptListener(callback);
-
       return await this.exec(request, callback);
     }
 
     async listScripts() {
 
       let callback = {
-        onListScriptResponse: function (response) {
-          callback.resolve(response.getScripts());
+        onListScriptResponse: (response, resolve) => {
+          resolve(response.getScripts());
         }
       };
 
       let request = this.createListScriptRequest();
-      request.addListScriptListener(callback);
-
       return await this.exec(request, callback);
     }
 
@@ -367,14 +379,12 @@
     async getScript(name) {
 
       let callback = {
-        onGetScriptResponse: function (response) {
-          callback.resolve(response.getScriptBody());
+        onGetScriptResponse: function (response, resolve) {
+          resolve(response.getScriptBody());
         }
       };
 
       let request = this.createGetScriptRequest(name);
-      request.addGetScriptListener(callback);
-
       return await this.exec(request, callback);
     }
 
@@ -392,14 +402,12 @@
     async setActiveScript(script) {
 
       let callback = {
-        onSetActiveResponse: function (response) {
-          callback.resolve();
+        onSetActiveResponse: function (response, resolve) {
+          resolve();
         }
       };
 
       let request = this.createSetActiveRequest(script);
-      request.addSetActiveListener(callback);
-
       return await this.exec(request, callback);
     }
 
@@ -412,14 +420,12 @@
      */
     async logout() {
       let callback = {
-        onLogoutResponse: function () {
-          callback.resolve();
+        onLogoutResponse: function (response, resolve) {
+          resolve();
         }
       };
 
       let request = this.createLogoutRequest();
-      request.addLogoutListener(callback);
-
       return await this.exec(request, callback);
     }
 
@@ -441,14 +447,10 @@
         return;
 
       let callback = {
-        onCheckScriptResponse: function (response) {
-          callback.resolve();
-        }
+        onCheckScriptResponse: (response, resolve) => { resolve(); }
       };
 
       let request = this.createCheckScriptRequest(script);
-      request.addCheckScriptListener(callback);
-
       await this.exec(request, callback);
 
       return;
@@ -515,14 +517,12 @@
     async renameScript2(oldName, newName) {
 
       let callback = {
-        onRenameScriptResponse: function () {
-          callback.resolve();
+        onRenameScriptResponse: function (response, resolve) {
+          resolve();
         }
       };
 
       let request = this.createRenameScriptRequest(oldName, newName);
-      request.addRenameScriptListener(callback);
-
       return await this.exec(request, callback);
     }
 
@@ -582,7 +582,7 @@
 
       let callback = {
 
-        onInitResponse: (response) => {
+        onInitResponse: (response, resolve) => {
 
           this.sieve.capabilities = {};
           this.sieve.capabilities.tls = response.getTLS();
@@ -592,18 +592,17 @@
           this.sieve.setCompatibility(
             response.getCompatibility());
 
-          callback.resolve(
+          resolve(
             response.getDetails());
         }
       };
 
       let request = this.createInitRequest();
-      request.addInitListener(callback);
 
       let init = () => {
         this.sieve.connect(
           hostname, port,
-          this.account.getHost().isSecure(),
+          this.account.getSecurity().isSecure(),
           this,
           this.account.getProxy().getProxyInfo());
       };
@@ -619,11 +618,12 @@
      *   the new capabilites after the successfull connection
      */
     async startTLS() {
+
       // establish a secure connection if TLS ist enabled and if the Server ...
       // ... is capable of handling TLS, otherwise simply skip it and ...
       // ... use an insecure connection
 
-      if (!this.account.getHost().isSecure())
+      if (!this.account.getSecurity().isSecure())
         return;
 
       if (!this.sieve.capabilities.tls)
@@ -631,23 +631,24 @@
 
       let callback = {
 
-        onStartTLSResponse: () => {
+        onStartTLSResponse: async (response, resolve) => {
 
-          this.sieve.startTLS(() => {
-            // we need some magic to avoid a nasty bug in some servers
-            // first we explicitely request the capabilites
-            let request = this.createCapabilitiesRequest();
-            request.addCapabilitiesListener(callback);
-            this.sieve.addRequest(request);
+          await this.sieve.startTLS(this.account.getHost().getFingerprint());
 
-            // With a bugfree server we endup with two capability request, one
-            // implicit after startTLS and one explicite from capbilites. So we have
-            // to consume one of them silently...
-            this.sieve.addRequest(this.createInitRequest(), true);
-          });
+          // we need some magic to avoid a nasty bug in some servers
+          // first we explicitely request the capabilites
+          let request = this.createCapabilitiesRequest();
+          request.addResponseListener(
+            { "onCapabilitiesResponse" : (response) => { callback.onCapabilitiesResponse(response, resolve); }});
+          this.sieve.addRequest(request);
+
+          // With a bugfree server we endup with two capability request, one
+          // implicit after startTLS and one explicite from capbilites. So we have
+          // to consume one of them silently...
+          this.sieve.addRequest(this.createInitRequest(), true);
         },
 
-        onCapabilitiesResponse: (response) => {
+        onCapabilitiesResponse: (response, resolve) => {
 
           // Update the server's capabilities they may change after a successfull
           // starttls handshake.
@@ -658,15 +659,14 @@
           this.sieve.capabilities.extensions = response.getExtensions();
           this.sieve.capabilities.sasl = response.getSasl();
 
-          callback.resolve(response.getDetails());
+          resolve(response.getDetails());
           return;
         }
       };
 
       let request = this.createStartTLSRequest();
-      request.addStartTLSListener(callback);
-
       await this.exec(request, callback);
+
       return;
     }
 
@@ -686,12 +686,12 @@
      * Note: In case we do not support any of the server's advertised
      * mechanism an exception is thrown.
      *
+     * @param {String} mechanism
+     *   the sasl mechanism which shall be used.
      * @returns {SieveAbstractSaslRequest}
      *  the sasl request which implements the most prefered compatible mechanism.
      */
-    getSaslMechanism() {
-
-      let mechanism = this.account.getLogin().getSaslMechanism();
+    getSaslMechanism(mechanism) {
 
       if (mechanism === "none")
         throw new SieveClientException("SASL Authentication disabled");
@@ -713,6 +713,9 @@
 
           case "SCRAM-SHA-1":
             return this.createSaslScramSha1Request();
+
+          case "SCRAM-SHA-256":
+            return this.createSaslScramSha256Request();
 
           case "EXTERNAL":
             return this.createSaslExternalRequest();
@@ -737,21 +740,22 @@
      */
     async authenticate() {
       let account = this.account;
+      let mechanism = account.getSecurity().getMechanism();
 
-      if (account.getLogin().getSaslMechanism() === "none")
+      if (mechanism === "none")
         return;
 
-      let request = this.getSaslMechanism();
+      let request = this.getSaslMechanism(mechanism);
 
-      let username = account.getLogin().getUsername();
+      let username = account.getAuthentication().getUsername();
       request.setUsername(username);
 
       // SASL External has no passwort it relies completely on SSL...
       if (request.hasPassword()) {
 
-        let password = await account.getLogin().getPassword();
+        let password = await account.getAuthentication().getPassword();
 
-        if (typeof (password) === undefined || password === null)
+        if (typeof (password) === "undefined" || password === null)
           throw new SieveClientException("error.authentication");
 
         request.setPassword(password);
@@ -763,19 +767,18 @@
         let authorization = account.getAuthorization().getAuthorization();
 
         if (authorization === null)
-          throw new SieveClientException("error.authentication");
+          throw new SieveClientException("error.authorization");
 
         if (authorization !== "")
           request.setAuthorization(authorization);
       }
 
       let callback = {
-        onSaslResponse: function () {
-          callback.resolve();
+        onSaslResponse: function (response, resolve) {
+          resolve();
         }
       };
 
-      request.addSaslListener(callback);
       await this.exec(request, callback);
 
       return;
@@ -788,7 +791,6 @@
     onIdle() {
       (async () => { await this.noop(); })();
     }
-
 
     /**
      * Connects the session to the given port.
@@ -807,8 +809,8 @@
 
       this.sieve = new Sieve(this.logger);
 
-      //FIXME we need to add the onIdle and onTimeout methods
-      //FIXME in case we set the listner here the byeListener does not work anymore
+      // FIXME we need to add the onIdle and onTimeout methods
+      // FIXME in case we set the listner here the byeListener does not work anymore
       this.sieve.addListener(this);
 
       // TODO Load Timeout interval from account settings...
@@ -822,21 +824,11 @@
       if (typeof (port) === "undefined")
         port = this.account.getHost().getPort();
 
-      try {
         await this.connect2(hostname, port);
 
         await this.startTLS();
 
         await this.authenticate();
-      } catch (e) {
-
-        // connecting failed for some reason, which means we
-        // need to handle the error.
-
-        // TODO Detect a referal...
-
-        alert(e);
-      }
 
       return this;
     }

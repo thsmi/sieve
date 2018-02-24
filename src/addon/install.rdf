@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 
- The contents of this file is licenced. You may obtain a copy of
+ The contents of this file is licensed. You may obtain a copy of
  the license at https://github.com/thsmi/sieve/ or request it via email
  from the author. Do not remove or change this comment.
 
@@ -15,7 +15,7 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>sieve@mozdev.org</em:id>
-    <em:version>0.2.6</em:version>
+    <em:version>0.2.10</em:version>
     <em:type>2</em:type>
 
     <em:targetApplication>

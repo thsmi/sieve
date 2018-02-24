@@ -37,14 +37,12 @@
   <script type="application/javascript"
           src="chrome://global/content/globalOverlay.js" />
   <script type="application/javascript"
-          src="chrome://sieve/content/libs/libManageSieve/SieveAbstractChannel.js"/>
-  <script type="application/javascript"
           src="chrome://sieve/content/editor/SieveFilterEditor.js" />
 
   <script type="application/javascript"
-          src="chrome://sieve-common/content/editor/sieve.broker.js" />
+          src="chrome://sieve/content/libs/editor/sieve.broker.js" />
   <script type="application/javascript"
-          src="chrome://sieve-common/content/editor/sieve.editor.js" />
+          src="chrome://sieve/content/libs/editor/sieve.editor.js" />
 
   <keyset>
     <key key="&shortcut.save.key;"
@@ -133,7 +131,7 @@
       <deck id="dkView" flex="1" selectedIndex="0">
         <!-- Sieve Script editor -->
         <iframe id="sivEditor2" flex="1"
-                src="chrome://sieve-common/content/editor/sieve.editor.html"
+                src="chrome://sieve/content/libs/editor/sieve.editor.html"
                 contextmenu="ctxEditor" />
 
         <iframe id="sivWidgetEditor" flex="1"  type="content"

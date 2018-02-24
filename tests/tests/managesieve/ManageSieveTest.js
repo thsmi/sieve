@@ -29,20 +29,20 @@
   });    
   
   suite.add( function() {   
-  	
+
    suite.log("SASL Login - OK");
     
    
-   var request = new SieveSaslLoginRequest();
+    let request = new SieveSaslLoginRequest();
    
-   var hasError = null;
-   var hasSucceded = null;
+    let hasError = null;
+    let hasSucceded = null;
    
-   var handler = {};
+    let handler = {};
    handler.onSaslResponse = function() { hasSucceded = true; };
    handler.onError = function() { hasError = true; };
    
-   request.addSaslListener(handler);
+    request.addResponseListener(handler);
    request.addErrorListener(handler);
    
    request.setUsername("blubb");
@@ -89,16 +89,16 @@
    suite.log("SASL External - OK");
    
    // Single theaded javascript magic...
-   var hasError = null;
-   var hasSucceded = null;
+    let hasError = null;
+    let hasSucceded = null;
    
-   var handler = {};
+    let handler = {};
    handler.onSaslResponse = function() { hasSucceded = true; };
    handler.onError = function() { hasError = true; };   
     
    
-   var request = new SieveSaslExternalRequest();
-   request.addSaslListener(handler);
+    let request = new SieveSaslExternalRequest();
+    request.addResponseListener(handler);
    request.addErrorListener(handler);
    
    // CLIENT -> SERVER   
@@ -119,17 +119,17 @@
    suite.log("SASL External - NO");
 
    // Single theaded javascript magic...
-   var hasError = null;
-   var hasSucceded = null;
+    let hasError = null;
+    let hasSucceded = null;
    
-   var handler = {};
+    let handler = {};
    handler.onSaslResponse = function() { hasSucceded = true; };
    handler.onError = function() { hasError = true; };
    
    
-   var request = new SieveSaslExternalRequest();
+    let request = new SieveSaslExternalRequest();
    
-   request.addSaslListener(handler);
+    request.addResponseListener(handler);
    request.addErrorListener(handler);   
    
    // CLIENT -> SERVER   

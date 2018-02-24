@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
  <!--
-   The content of this file is licenced. You may obtain a copy of
-   the license at http://sieve.mozdev.org or request it via email 
-   from the author. Do not remove or change this comment. 
-  
-   The initial author of the code is:
-     Thomas Schmid <schmid-thomas@gmx.net>
-   
-   Contributor(s):
-     Marion Desnault
+  The content of this file is licensed. You may obtain a copy of
+  the license at https://github.com/thsmi/sieve/ or request it via
+  email from the author.
+
+  Do not remove or change this comment.
+
+  The initial author of the code is:
+    Thomas Schmid <schmid-thomas@gmx.net>
+
+  Contributor(s):
+    Marion Desnault
 -->
 
 <?xml-stylesheet href="chrome://messenger/skin/accountManage.css" type="text/css"?>
 <!DOCTYPE page SYSTEM "chrome://sieve/locale/locale.dtd">
 
-<page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
+<page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+      id="sivAccountPage"
       onload="onLoad()" onunload="onUnload()">
-  
-  
-  <script type="application/javascript" src="chrome://sieve/content/am-sieve-account.js"/> 
+
+  <script type="application/javascript" src="chrome://sieve/content/am-sieve-account.js"/>
   <dialogheader title="&options.title;"/>
 
   <description>&options.account.sieve;</description>
@@ -49,7 +51,7 @@
           <row align="center">
             <hbox pack="end"><label id="lblAuth" value="&options.info.auth;"/></hbox>
             <textbox id="txtAuth" class="plain"/>
-          </row>          
+          </row>
           <row align="center">
             <hbox pack="end"><label id="lblUserName" value="&options.info.username;"/></hbox>
             <textbox id="txtUserName" class="plain"/>
@@ -66,6 +68,6 @@
     <button label ="&options.account.filters;" oncommand="onFiltersClick();" />
     <button label ="&options.account.settings;" oncommand="onSettingsClick();"/>
   </hbox>
-               
+
   <vbox flex = "1"/>
 </page>

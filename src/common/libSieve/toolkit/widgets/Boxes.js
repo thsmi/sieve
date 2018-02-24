@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -80,7 +80,7 @@
     };
 
   SieveAbstractBoxUI.prototype.createHtml
-    = function ( /*parent*/ ) {
+    = function (parent) {
       throw new Error( "Implement html()" );
     };
 
@@ -95,7 +95,7 @@
         this._domElm.attr( "id", "sivElm" + this.id() );
 
       // update all our event handlers
-      for ( var topic in this._handler )
+      for (let topic in this._handler)
         if ( this._handler[topic].attach )
           this._handler[topic].attach( this._domElm );
 
@@ -107,7 +107,7 @@
       if ( this.id() < 0 )
         throw new Error( "Invalid id" );
 
-      var item = $( "#sivElm" + this.id() );
+      let item = $("#sivElm" + this.id());
 
       if ( ( !item.length ) || ( item.length > 1 ) )
         throw new Error( "" + item.length + " Elements found for #sivElm" + this.id() );
@@ -127,7 +127,7 @@
 
 
   /**
-   * THe dop element
+   * The dop element
    * @param {} handler
    * @param {} sibling
    * @return {}
@@ -163,9 +163,6 @@
     };
 
 
-  /******************************************************************************/
-
-
   function SieveEditableBoxUI( elm ) {
     // Call parent constructor...
     SieveAbstractBoxUI.call( this, elm );
@@ -185,7 +182,7 @@
       if ( !this.initEditor )
         return;
 
-      var that = this;
+      let _this = this;
 
       this._domElm.children( ".sivSummaryContent" ).remove();
 
@@ -193,7 +190,7 @@
         .append( $( "<div/>" )
           .text( "X" )
           .addClass( "sivEditorCloseIcon" )
-          .click( function ( e ) { that.showSummary(); e.preventDefault(); return true; }) );
+          .click(function (e) { _this.showSummary(); e.preventDefault(); return true; }));
 
       if ( this.initHelp )
         this._domElm
@@ -213,7 +210,7 @@
           .addClass( "sivControlBox" )
           .append( $( "<button/>" )
             .text( "Ok" )
-            .click( function ( e ) { that.showSummary(); e.preventDefault(); return true; }) )
+            .click(function (e) { _this.showSummary(); e.preventDefault(); return true; }))
           .append( $( "<div/>" ) ) );
 
     };
@@ -321,10 +318,10 @@
   /******************************************************************************/
 
   /**
-   * 
+   * @constructor
    * @param {SieveAbstractBoxUI} parent
    *   The parent Sieve Element, to which dropped Elemenents will be added.
-   * @returns {undefined}
+   * 
    */
   function SieveDropBoxUI( parent ) {
     if ( !parent )
@@ -385,7 +382,7 @@
     = function ( e ) {
       var that = this;
 
-      var onSave = function () {
+      let onSave = function () {
 
         // Check if on save was canceled...
         if ( !that.onSave() )
@@ -416,7 +413,7 @@
         .empty()
         .load( this.getTemplate(), function ( response, status, xhr ) {
           if ( status === "error" )
-            window.alert( "" + xhr.status + " " + xhr.statusText );
+            alert("" + xhr.status + " " + xhr.statusText);
 
           that.onLoad();
         });

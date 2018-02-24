@@ -1,5 +1,5 @@
 /*
- * The contents of this file is licenced. You may obtain a copy of
+ * The contents of this file is licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via email
  * from the author. Do not remove or change this comment.
  *
@@ -11,26 +11,53 @@
  *
  */
 
-// Enable Strict Mode
-"use strict";
-
 (function (exports) {
 
-  /* global SieveResponseCodeReferral */
-  /* global SieveResponseCodeSasl */
-  /* global SieveResponseCode */
+  // Enable Strict Mode
+  "use strict";
 
-  const CHAR_B = [66, 98];
-  const CHAR_E = [69, 101];
-  const CHAR_N = [78, 110];
-  const CHAR_O = [79, 111];
-  const CHAR_K = [75, 107];
-  const CHAR_Y = [89, 121];
+  const {
+    SieveResponseCode,
+    SieveResponseCodeSasl,
+    SieveResponseCodeReferral
+  } = require("./SieveResponseCodes.js");
 
-  const OK = [CHAR_O, CHAR_K];
-  const BYE = [CHAR_B, CHAR_Y, CHAR_E];
-  const NO = [CHAR_N, CHAR_O];
+  const CHAR_LOWERCASE_B = 66;
+  const CHAR_UPPERCASE_B = 98;
+  const CHAR_B = [CHAR_LOWERCASE_B, CHAR_UPPERCASE_B];
 
+  const CHAR_LOWERCASE_E = 69;
+  const CHAR_UPPERCASE_E = 101;
+  const CHAR_E = [CHAR_LOWERCASE_E, CHAR_UPPERCASE_E];
+
+  const CHAR_LOWERCASE_N = 78;
+  const CHAR_UPPERCASE_N = 110;
+  const CHAR_N = [CHAR_LOWERCASE_N, CHAR_UPPERCASE_N];
+
+  const CHAR_LOWERCASE_O = 79;
+  const CHAR_UPPERCASE_O = 111;
+  const CHAR_O = [CHAR_LOWERCASE_O, CHAR_UPPERCASE_O];
+
+  const CHAR_LOWERCASE_K = 75;
+  const CHAR_UPPERCASE_K = 107;
+  const CHAR_K = [CHAR_LOWERCASE_K, CHAR_UPPERCASE_K];
+
+  const CHAR_LOWERCASE_Y = 89;
+  const CHAR_UPPERCASE_Y = 121;
+  const CHAR_Y = [CHAR_LOWERCASE_Y, CHAR_UPPERCASE_Y];
+
+  const CHAR_BRACKET_OPEN = 40;
+  const CHAR_BRACKET_CLOSE = 41;
+  const CHAR_SPACE = 32;
+  const CHAR_CR = 13;
+
+  const TOKEN_OK = [CHAR_O, CHAR_K];
+  const TOKEN_BYE = [CHAR_B, CHAR_Y, CHAR_E];
+  const TOKEN_NO = [CHAR_N, CHAR_O];
+
+  const SIEVE_VERSION_1 = 1.0;
+
+  const ONE_CHAR = 1;
   /**
    * This class implements a generic response handler for simple sieve requests.
    *
@@ -60,19 +87,19 @@
     this.responseCode = [];
 
     // OK
-    if (parser.startsWith(OK)) {
+    if (parser.startsWith(TOKEN_OK)) {
       this.response = 0;
-      parser.extract(2);
+      parser.extract(TOKEN_OK.length);
     }
     // BYE
-    else if (parser.startsWith(BYE)) {
+    else if (parser.startsWith(TOKEN_BYE)) {
       this.response = 1;
-      parser.extract(3);
+      parser.extract(TOKEN_BYE.length);
     }
     // NO
-    else if (parser.startsWith(NO)) {
+    else if (parser.startsWith(TOKEN_NO)) {
       this.response = 2;
-      parser.extract(2);
+      parser.extract(TOKEN_NO.length);
     }
     else
       throw new Error("NO, OK or BYE expected in " + parser.getData());
@@ -87,9 +114,9 @@
     parser.extractSpace();
 
     // we found "(" so we got an responseCode, they are extremely ugly...
-    if (parser.startsWith([[40]])) {
+    if (parser.startsWith([[CHAR_BRACKET_OPEN]])) {
       // remove the opening bracket...
-      parser.extract(1);
+      parser.extract(ONE_CHAR);
       // ... but remember it
       let nesting = 0;
 
@@ -98,15 +125,15 @@
       if (parser.isString())
         this.responseCode.push(parser.extractString());
       else
-        this.responseCode.push(parser.extractToken([32, 41]));
+        this.responseCode.push(parser.extractToken([CHAR_SPACE, CHAR_BRACKET_CLOSE]));
 
       while (parser.isSpace()) {
         parser.extractSpace();
 
         // We might stumbe upon opening brackets...
-        if (parser.startsWith([[40]])) {
+        if (parser.startsWith([[CHAR_BRACKET_OPEN]])) {
           // ... oh we did, so increase our nesting counter.
-          parser.extract(1);
+          parser.extract(ONE_CHAR);
           nesting++;
         }
 
@@ -115,19 +142,19 @@
         if (parser.isString())
           this.responseCode.push(parser.extractString());
         else
-          this.responseCode.push(parser.extractToken([32, 41]));
+          this.responseCode.push(parser.extractToken([CHAR_SPACE, CHAR_BRACKET_CLOSE]));
 
         // is it a closing bracket
-        if (parser.startsWith([[41]]) && nesting) {
-          parser.extract(1);
+        if (parser.startsWith([[CHAR_BRACKET_CLOSE]]) && nesting) {
+          parser.extract(ONE_CHAR);
           nesting--;
         }
       }
 
-      if (!parser.startsWith([[41]]))
+      if (!parser.startsWith([[CHAR_BRACKET_CLOSE]]))
         throw new Error("Closing Backets expected in " + parser.getData());
 
-      parser.extract(1);
+      parser.extract(ONE_CHAR);
 
       if (parser.isLineBreak()) {
         parser.extractLineBreak();
@@ -188,7 +215,7 @@
       }
 
       // TODO Implement these Response codes:
-      //"ACTIVE" / "NONEXISTENT" / "ALREADYEXISTS" / "WARNINGS"
+      // "ACTIVE" / "NONEXISTENT" / "ALREADYEXISTS" / "WARNINGS"
       return new SieveResponseCode(this.responseCode);
     };
 
@@ -252,7 +279,7 @@
           break;
         case "VERSION":
           this.details.version = parseFloat(value);
-          if (this.details.version < 1.0)
+          if (this.details.version < SIEVE_VERSION_1)
             break;
 
           // Version 1.0 introduced rename, noop and checkscript
@@ -321,6 +348,8 @@
    * Returns the list of supported sasl mechanisms.
    *
    * They may change after a secure channel was established.
+   * @returns {String}
+   *   the sasl mechanism
    */
   SieveCapabilitiesResponse.prototype.getSasl
     = function () { return this.details.sasl; };
@@ -433,7 +462,7 @@
     = function () { return this.details.owner; };
 
 
-  //***************************************************************************//
+  //* **************************************************************************//
 
   function SieveListScriptResponse(parser) {
     //    sieve-name    = string
@@ -458,7 +487,7 @@
 
       parser.extractSpace();
 
-      if (parser.extractToken([13]).toUpperCase() !== "ACTIVE")
+      if (parser.extractToken([CHAR_CR]).toUpperCase() !== "ACTIVE")
         throw new Error("Error \"ACTIVE\" expected");
 
       this.scripts[i].active = true;
@@ -478,7 +507,7 @@
     = function () { return this.scripts; };
 
 
-  //*************************************
+  //* ************************************
   function SieveSaslLoginResponse() {
     this.state = 0;
   }
@@ -529,7 +558,7 @@
   SieveSaslLoginResponse.prototype.getState
     = function () { return this.state; };
 
-  //*************************************
+
   /**
    * @author Thomas Schmid
    * @author Max Dittrich
@@ -578,7 +607,7 @@
       return this.challenge;
     };
 
-  /*********************************************************
+  /* ********************************************************
       literal               = "{" number  "+}" CRLF *OCTET
       quoted                = <"> *1024QUOTED-CHAR <">
       response-getscript    = [string CRLF] response-oknobye
@@ -628,8 +657,9 @@
    *
    * This requires a way mor logic on the client than with simple authentication
    * mechanisms. It also requires more communication, in total two roundtrips.
+   *
+   * @constructor
    */
-
   function SieveSaslScramSha1Response() {
     this.state = 0;
   }
@@ -658,7 +688,7 @@
    */
   SieveSaslScramSha1Response.prototype._parseFirstMessage
     = function (parser) {
-      this._serverFirstMessage = parser.convertFomBase64(parser.extractString());
+      this._serverFirstMessage = parser.convertFromBase64(parser.extractString());
 
       let tokens = this._serverFirstMessage.split(',');
 
@@ -676,7 +706,7 @@
       if ((tokens[1].length <= 2) || (tokens[1][0] !== "s"))
         throw new Error("Salt missing");
 
-      this._salt = parser.convertFomBase64(tokens[1].substr(2));
+      this._salt = parser.convertFromBase64(tokens[1].substr(2));
 
 
       if ((tokens[2].length <= 2) || (tokens[2][0] !== "i"))
@@ -697,12 +727,15 @@
    * As suggested by the RFC they will be ignored
    *
    * @param {SieveResponseParser} parser
+   *   the parser which should be to process the message.
+   * @returns {void}
    */
   SieveSaslScramSha1Response.prototype._parseFinalMessage
-    = function (data, parser) {
+    = function (parser) {
 
+      let data = parser.extractString();
       // server-final-message = (server-error / verifier) ["," extensions]
-      let token = parser.convertFomBase64(data).split(",");
+      let token = parser.convertFromBase64(data).split(",");
 
       if (token[0].length <= 2)
         throw new Error("Response expected but got : " + data);
@@ -715,7 +748,7 @@
 
       // verifier = "v=" base64
       if (token[0][0] === "v") {
-        this._verifier = parser.convertFomBase64(token[0].substr(2));
+        this._verifier = parser.convertFromBase64(token[0].substr(2));
         return;
       }
 
@@ -744,7 +777,7 @@
 
       if ((this.state === 1) && (parser.isString())) {
 
-        this._parseFinalMessage(parser.extractString());
+        this._parseFinalMessage(parser);
         parser.extractLineBreak();
 
         this.state++;
@@ -827,17 +860,6 @@
       return this._verifier;
     };
 
-
-  if (exports.EXPORTED_SYMBOLS) {
-    exports.EXPORTED_SYMBOLS.push("SieveSimpleResponse");
-    exports.EXPORTED_SYMBOLS.push("SieveCapabilitiesResponse");
-    exports.EXPORTED_SYMBOLS.push("SieveListScriptResponse");
-    exports.EXPORTED_SYMBOLS.push("SieveSaslLoginResponse");
-    exports.EXPORTED_SYMBOLS.push("SieveSaslCramMd5Response");
-    exports.EXPORTED_SYMBOLS.push("SieveGetScriptResponse");
-    exports.EXPORTED_SYMBOLS.push("SieveSaslScramSha1Response");
-  }
-
   exports.SieveSimpleResponse = SieveSimpleResponse;
   exports.SieveCapabilitiesResponse = SieveCapabilitiesResponse;
   exports.SieveListScriptResponse = SieveListScriptResponse;
@@ -846,4 +868,4 @@
   exports.SieveGetScriptResponse = SieveGetScriptResponse;
   exports.SieveSaslScramSha1Response = SieveSaslScramSha1Response;
 
-})(this);
+})(module.exports || this);

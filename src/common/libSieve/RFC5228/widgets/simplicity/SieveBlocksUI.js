@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The content of this file is licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -7,7 +7,6 @@
  * 
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
  */
 
 /* global window */
@@ -22,8 +21,7 @@
 	/* global SieveAbstractBoxUI */
 	/* global SieveRootNode */
 	
-  function SieveRichList(elms)
-  {
+  function SieveRichList(elms) {
     this._items = [];
     this._selectedIndex = 0;
     
@@ -31,12 +29,11 @@
     // with our user interface, so we do not care about comments, whitespace etc.
     // and rip the script appart. On save we have to do the opposit...
       
-    var actions = null;
+    let actions = null;
     
     while ( elms.length ) {
      
-      if (elms[0].nodeType() == "action")
-      {
+      if (elms[0].nodeType() === "action") {
         if (!actions)
           actions = [];
         
@@ -47,24 +44,22 @@
         continue;
       }
       
-      if (elms[0].nodeType() == "condition")
-      {
+      if (elms[0].nodeType() === "condition") {
         if (actions)
           this.append(new SieveRichListItem(this,actions));
           
         if (elms[0].children().length > 1)
-          throw " Script too complex, elsif or else not supported"; 
+          throw new Error("Script too complex, elsif or else not supported");
           
         // extract all actions...
         actions = [];
-        var children = elms[0].children(0).children(); 
+        let children = elms[0].children(0).children();
          
-        while (children.length)
-        {       
-          if (children[0].nodeType() == "condition")
-            throw "Script to complex nested if statement not supported";
+        while (children.length) {
+          if (children[0].nodeType() === "condition")
+            throw new Error("Script to complex nested if statement not supported");
           
-          if (children[0].nodeType() == "action")
+          if (children[0].nodeType() === "action")
             actions.push(children[0]);
             
             
@@ -72,7 +67,7 @@
         }
         
         // then all tests...
-        var test = elms[0].children(0).test();      
+        let test = elms[0].children(0).test();
         
         this.append(new SieveRichListItem(this, actions, test));
         
@@ -93,9 +88,8 @@
     // as we ripped the elements out of the sieve script we should remove them...    
     // ... so that our document contains just our actions and conditions plus...
     // ... the root node.
-    var whitelist = [];
-    for (var i=0; i<this._items.length; i++)
-    {
+    let whitelist = [];
+    for (let i = 0; i < this._items.length; i++) {
       whitelist = whitelist.concat(this._items[i]._actions); 
       if (this._items[i]._condition)
         whitelist = whitelist.concat(this._items[i]._condition);
@@ -107,8 +101,7 @@
   }
   
   SieveRichList.prototype.item
-    = function (pos)
-  {
+    = function (pos) {
     if (typeof(pos) === "undefined")
       return (this._items[this._items.length-1]);
       
@@ -116,19 +109,17 @@
   };
   
   SieveRichList.prototype.append
-    = function (item)
-  {  
+    = function (item) {
     this._items.push(item);  
     return this;
   };
   
   SieveRichList.prototype.selectedIndex
-    = function (idx)
-  {
+    = function (idx) {
     if (typeof(idx) === "undefined")
       return this._selectedIndex;
       
-    if (this._selectedIndex == idx)
+      if (this._selectedIndex === idx)
       return this._selectedIndex;
     
     // we can move the only to the next item when the element validates
@@ -147,33 +138,31 @@
   };
   
   SieveRichList.prototype.selectedItem
-    = function (item)
-  { 
+    = function (item) {
     if (typeof(item) === "undefined")
       return this._items[this.selectedIndex()]; 
       
-    var idx = this._items.indexOf(item);
+      let idx = this._items.indexOf(item);
     
     // in case we can not find the item, we return null...
-    if (idx == -1)
+      if (idx === -1)
       return null;
     
     // ... we do the same in case we can not select the item.
-    if (idx != this.selectedIndex(idx))
+      if (idx !== this.selectedIndex(idx))
       return null;
       
     return this._items[idx];  
   };
   
   SieveRichList.prototype.html
-    = function ()
-  {
-    var elm = $("<div/>");
+    = function () {
+      let elm = $("<div/>");
     
     if (this.selectedItem())
       this.selectedItem().editable(true);    
     
-    for (var i=0; i<this._items.length; i++)
+      for (let i = 0; i < this._items.length; i++)
       elm.append(this._items[i].html());
     
     elm.addClass("sivRichList");
@@ -184,14 +173,12 @@
   // Selected element is always editable...
   // Wenn switching to an other editable element then then call on editable..
   
-  /******************************************************************************/
-  
   /**
    * 
    * @param {} item
+   * @constructor
    */
-  function SieveRichListItem(parent, actions, condition)
-  {    
+  function SieveRichListItem(parent, actions, condition) {
     this._isEditable = false;
     this._parent = parent;
     
@@ -211,36 +198,31 @@
   }*/
   
   SieveRichListItem.prototype.validate
-    = function ()
-  {
+    = function () {
     return true;    
   };
   
   SieveRichListItem.prototype.htmlConditional
-     = function (html,type,tests)
-  {
-    var elm = $("<div/>");
+    = function (html, type, tests) {
+      let elm = $("<div/>");
     
     if (html)
       elm = html;
       
-    if (!this.editable())
-    {    
-      if (type == 2)
+      if (!this.editable()) {
+        if (type === 2)
         elm.append($("<div/>").text("Match any of the following"));
-      else if (type == 1)
+        else if (type === 1)
         elm.append($("<div/>").text("Match all of the following"));
       else
         elm.append($("<div/>").text("Match all Messages"));
         
      // test [0,test,0]
      // test [[0,test,0],[0,test,0],[0,test,0]]
-      if (tests && tests.length)
-      {
-        for (var i=0; i<tests.length; i++)
-        {
-          if (tests[i][1].nodeType() != "test")
-            throw "Script to compex, nested Tests...";
+        if (tests && tests.length) {
+          for (let i = 0; i < tests.length; i++) {
+            if (tests[i][1].nodeType() !== "test")
+              throw new Error("Script to compex, nested Tests...");
             
           elm.append($("<div/>").text(tests[i][1].toScript()));
         }
@@ -259,12 +241,10 @@
           .append($("<input type='radio'/>"))
           .append($("<span/>").text("all Messages")));
   
-      if (tests && tests.length)
-      {
-        for (var i=0; i<tests.length; i++)
-        {
-          if (tests[i][1].nodeType() != "test")
-            throw "Script to compex, nested Tests...";
+      if (tests && tests.length) {
+        for (let i = 0; i < tests.length; i++) {
+          if (tests[i][1].nodeType() !== "test")
+            throw new Error("Script to compex, nested Tests...");
         
           if (tests[i][1].widget())
             elm.append(tests[i][1].widget().html(true));
@@ -274,12 +254,12 @@
       }
        
      
-     var elm2 = $("<select/>");
+      let elm2 = $("<select/>");
      
      elm2.append($("<option/>").text("..."));
      
-     for (var key in SieveLexer.types["test"])
-       if (key != "test/boolean")
+      for (let key in SieveLexer.types["test"])
+        if (key !== "test/boolean")
          if (SieveLexer.types["test"][key].onCapable(SieveLexer.capabilities()))
            elm2.append($("<option/>").text(key));        
         
@@ -287,62 +267,56 @@
   };
   
   SieveRichListItem.prototype.htmlConditions
-      = function ()
-  { 
-    var elm = $("<div/>").addClass("sivCondition");
+    = function () {
+      let elm = $("<div/>").addClass("sivCondition");
     
-    var item = this._condition;
+      let item = this._condition;
     
     if (!item)
       return this.htmlConditional(elm,0);
     
-    if (item.nodeType() == "test")
+      if (item.nodeType() === "test")
       return this.htmlConditional(elm,1,[[null,item,null]]);
    
-    if (item.nodeName() == "operator/anyof")
-    {
+      if (item.nodeName() === "operator/anyof") {
       if (item.isAllOf)
         return this.htmlConditional(elm,1,item.tests);
       
       return this.htmlConditional(elm,2,item.tests);
     }
     
-    throw "Script too complext, unsupported operator"+item.nodeType();
+      throw new Error("Script too complext, unsupported operator" + item.nodeType());
   };
   
   
   SieveRichListItem.prototype.htmlActions
-    = function  ()
-  {
+    = function () {
     
-    var elm = $("<div/>")
+      let elm = $("<div/>")
       .append($("<div/>").text("Peform these Actions"))
       .addClass("sivAction");
     
-    var actions = this._actions;
+      let actions = this._actions;
       
-    for (var i=0; i<this._actions.length; i++)
-    {
-      if (actions[i].nodeType() == "whitespace")
+      for (let i = 0; i < this._actions.length; i++) {
+        if (actions[i].nodeType() === "whitespace")
         continue;
         
-      if (actions[i].nodeType() == "action")
-      {      
+        if (actions[i].nodeType() === "action") {
         elm.append($("<div/>").text(actions[i].toScript()));
         continue;
       }
       
-      throw "Script to complex [Ax12], test expected"+actions[i].nodeType();
+        throw new Error("Script to complex [Ax12], test expected" + actions[i].nodeType());
     }
     
-    if (this.editable())
-    {
-      var elm2 = $("<select/>");
+      if (this.editable()) {
+        let elm2 = $("<select/>");
       
       elm2.append($("<option/>").text("..."));
       
-      for (var key in SieveLexer.types["action"])
-        if (key != "test/boolean")
+        for (let key in SieveLexer.types["action"])
+          if (key !== "test/boolean")
           if (SieveLexer.types["action"][key].onCapable(SieveLexer.capabilities()))
             elm2.append($("<option/>").text(key));
             
@@ -353,23 +327,22 @@
   };
   
   SieveRichListItem.prototype.editable
-      = function (isEditable)
-  {
+    = function (isEditable) {
     if (typeof(isEditable) === "undefined")
       return this._isEditable;
   
-    if (this._isEditable ==  isEditable)
+      if (this._isEditable === isEditable)
       return this;
       
     this._isEditable = isEditable;
       
     // update the inner HTML
     this.reflowInner();
+      return this;
   };
   
   SieveRichListItem.prototype.reflowInner
-    = function ()
-  {
+    = function () {
     // we can skip if the element is not bound to a DOM
     if (!this._html)
       return;
@@ -381,19 +354,17 @@
       .append(this.htmlConditions())
       .append(this.htmlActions());
     
-    var that = this;
+      let that = this;
     
-    if (this.editable())
-    {
+      if (this.editable()) {
       this._html.attr("sivEditable","true");
       return;
     }
       
     this._html.removeAttr("sivEditable");
     
-    this._html.click(function(e) 
-    { 
-      if (that._parent.selectedItem(that) == null)
+      this._html.click(function (e) {
+        if (that._parent.selectedItem(that) === null)
         return false;
           
       $(this).unbind('click'); 
@@ -404,8 +375,7 @@
   
   
   SieveRichListItem.prototype.html
-    = function ()
-  {
+    = function () {
     if (this._html)
       return this._html;
       
@@ -419,8 +389,7 @@
   };
   
   
-  function SieveRootNodeUI(elm)
-  {
+  function SieveRootNodeUI(elm) {
     SieveAbstractBoxUI.call(this,elm);  
     this.richlist = new SieveRichList(elm.children(1).children());
   }
@@ -430,20 +399,19 @@
   
   
   SieveRootNodeUI.prototype.createHtml
-      = function (parent)
-  {
-    var elm = $("<div/>")
+    = function (parent) {
+      let elm = $("<div/>")
                 .addClass("sivBlock");
     
-    var item = null;
-    var blockElms = this.getSieve();  
+      let item = null;
+      let blockElms = this.getSieve();
        
     return parent.append(this.richlist.html());
   };
   
   
   if (!SieveDesigner)
-    throw "Could not register Block Widgets";
+    throw new Error("Could not register Block Widgets");
   
   SieveDesigner.register(SieveRootNode, SieveRootNodeUI);
   

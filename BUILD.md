@@ -39,6 +39,9 @@ Finally start gulp in watch mode. This means when you change something within th
 
 `gulp addon:watch`
 
+In case you need to debug the addon use the Developer Toolbox which is build into Thunderbird you can find it `Tools -> Developer Tools -> Developer Toolbox`.
+
+In order to [test the localisation](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Internationalization#Testing_out_your_extension), just go about:config or edit prefs.js. Then add the following line `user_pref("general.useragent.locale", "fr-FR");` to change the locale to French. Search for `intl.locale.matchOS` and double click the preference so that it is set to false .
 
 # Developing the App
 

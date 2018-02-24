@@ -9,7 +9,7 @@ Sieve stores and runs all script on the server-side.
 Now there is the dilemma - you have access to a server supporting sieve but,
 how do you manage your scripts on this server?
 
-You can use telnet for this purpose, but that is fair to uncomfortable, not
+You can use telnet for this purpose, but that is far to uncomfortable, not
 applicable for a normal user and almost impossible with secure connections.
 Wouldn't it be great to activate, edit, delete and add sieve scripts with a
 convenient interface? That is exactly what the Sieve Extension offers...
@@ -19,8 +19,9 @@ convenient interface? That is exactly what the Sieve Extension offers...
 ## Status
 
 The extension is an implementation of the [sieve management protocol (RFC 5804)](https://wiki.tools.ietf.org/html/rfc5804).
-Currently only "SASL Plain", "SASL Login", "SASL CRAM MD5" and "[SASL SCRAM SHA1](https://tools.ietf.org/html/rfc5802)"
-Authentication mechanisms are supported, others may be implemented on request.
+Currently only "SASL Plain", "SASL Login", "SASL CRAM MD5", "[SASL SCRAM SHA1](https://tools.ietf.org/html/rfc5802)" and "[SASL SCRAM SHA256](https://tools.ietf.org/html/rfc7677)" Authentication mechanisms are supported, others may be implemented on request.
+
+The graphical script editor supports the [Sieve Filter Language (RFC 5228)](https://tools.ietf.org/html/rfc5228).
 
 The project exists since 2006 and can be considered as stable. Statistics
 are available at [ohloh](https://www.ohloh.net/p/tb-sieve)
@@ -68,17 +69,15 @@ You are looking for the most recent release?
 
 Just go to [the releases page and download the latest stable xpi or view the release notes](https://github.com/thsmi/sieve/releases/latest).
 
-*Firefox user have to do a right click on the XPI download and select "Save link as" otherwise Firefox will steal the link and try to install the addon it into Firefox which will fail*
+**Firefox user have to do a right click on the XPI download and select "Save link as" otherwise Firefox will steal the link and try to install the addon it into Firefox which will fail**
 
-Since 0.2.4 the addon is self hosted. This means it is will update automatically, but it is no more listed at addons.mozilla.org.
+The addon is restartless, so there is no need to restart Thunderbird upon installation and deinstallation.
 
-This is because of a design flaw in Thunderbirds APIs for loading and unloading an extension. These are synchonous while the Networking API is asynchonous. So the async close of the networking and the synchonous unload are racing against eachother. Which is ugly but completely harmless. But it may trigger unhandled exception. The latter violates the review policies at addon.mozilla.org. Which makes the loop complete. It is not possible to fix this behaviour as it is native to thunderbird but it prevents a the addon to pass the review at addons.mozilla.org. This is why the this addon has to be self hosted...
+**Sometimes Thunderbird fails to invalidate its cache when updating a restartless addon. The result is the new version is displayed in the addons dialog but the old cached code is still be used. In such a case uninstall the addon, then restart thunderbird, restart it again and finally install it again. This ensures the cache gets correctly invalidated.** 
 
 ## Developments Builds
 
-Development builds can also be found in the release section they are marked as a pre release
 You are looking for the latest "bleeding edge" features and willing to risk more instability?
 Or you might even want to test out newly added code to help identify and debug problems?
 
-You can find the nightly builds also on the [release page](https://github.com/thsmi/sieve/releases). They are marked as prerelease.
-They will update to newer releases but not to newer prereleases.
+You can find the development builds also in the [release section](https://github.com/thsmi/sieve/releases). They are marked as prerelease. They will update to newer releases but not to newer prereleases.

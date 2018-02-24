@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -75,14 +75,12 @@
 
   SieveBodyTransformUI.prototype.update
     = function ( value ) {
-      debugger;
       this.getSieve().tagValue( value );
     };
 
   SieveBodyTransformUI.prototype.createHtml
     = function () {
 
-      debugger;
       var widgets = SieveDesigner.getWidgetsByClass( "body-transform/", this.id() );
 
       var item = $( "<div/>" )
@@ -94,7 +92,6 @@
         item.append( element.html( function () { that.onSelect(); }) );
       }, this );
 
-      debugger;
       var value = this.getSieve().getValue();
 
       item.find( "input[name='rgBodyTransform" + this.id() + "'][value='" + value + "']" )
@@ -234,30 +231,30 @@
       = function(type, callback) {
       
     // Create the elements
-    var radio = 
+      let radio =
       $("<input/>")
         .attr("type","radio")
         .attr("name","rgBodyTransform"+this.id)
         .attr("value",":content")
         .css("float","left");
      
-    var text = 
+      let text =
       $("<input/>");      
       
     // in case the current element is equivalent with this element
     // we need to update the values.
-    if (type.nodeName() == SieveContentTransformUI.nodeName()) {
+      if (type.nodeName() === SieveContentTransformUI.nodeName()) {
       radio.prop('checked', true); 
       text.val(type.contentTypes.toScript());
     }
       
     // Add the changed handler. In this case it will fire when the radio button is selected and
     //  when the text was changes but only if the radio button is activated
-    var handler = function() {
+      let handler = function () {
       if (!radio.prop("checked"))
         return;
         
-     var value = text.val();
+        let value = text.val();
      
   
      if (value === "")
@@ -314,7 +311,7 @@
   /*SieveTextTransformUI.prototype.html 
       = function(type, callback) {
   
-    var radio = 
+      let radio =
       $("<input/>")
         .attr("type","radio")
         .attr("name","rgBodyTransform"+this.id)

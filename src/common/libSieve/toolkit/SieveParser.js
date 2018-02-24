@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -12,11 +12,13 @@
 
 /* global window */
 
-
-
 ( function ( exports ) {
 
   "use strict";
+
+  /** the number of bytes to quote in case of an error*/
+  const QUOTE_LENGTH = 50;
+  const NO_SUCH_TOKEN = -1;
 
   function SieveParser( data ) {
     this._data = data;
@@ -33,7 +35,7 @@
 
       ch = [].concat( ch );
 
-      for ( var i = 0; i < ch.length; i++ )
+      for (let i = 0; i < ch.length; i++)
         if ( this._data.charAt( this._pos + offset ) === ch[i] )
           return true;
 
@@ -42,7 +44,7 @@
 
   SieveParser.prototype.extractToken
     = function ( delimiter ) {
-      var offset = 0;
+      let offset = 0;
 
       while ( this.isChar( delimiter, offset ) )
         offset++;
@@ -50,7 +52,7 @@
       if ( offset === 0 )
         throw new Error( "Delimiter >>" + delimiter + "<< expected but found\n" + this.bytes( 50 ) + "..." );
 
-      var str = this._data.substr( this._pos, offset );
+      let str = this._data.substr(this._pos, offset);
 
       this._pos += str.length;
 
@@ -125,10 +127,10 @@
    */
   SieveParser.prototype.extract
     = function ( length ) {
-      var result = null;
+      let result = null;
 
       if ( typeof ( length ) === "string" ) {
-        var str = length;
+        let str = length;
 
         if ( !this.startsWith( str ) )
           throw new Error( "" + str + " expected but found:\n" + this.bytes( 50 ) + "..." );
@@ -151,12 +153,12 @@
   // Delimiter
   SieveParser.prototype.extractUntil
     = function ( token ) {
-      var idx = this._data.indexOf( token, this._pos );
+      let idx = this._data.indexOf(token, this._pos);
 
-      if ( idx === -1 )
+      if (idx === NO_SUCH_TOKEN)
         throw new Error("Token expected: " + token.toString());
 
-      var str = this._data.substring( this._pos, idx );
+      let str = this._data.substring(this._pos, idx);
 
       this._pos += str.length + token.length;
 
@@ -176,11 +178,11 @@
 
   SieveParser.prototype.extractNumber
     = function () {
-      var i = 0;
+      let i = 0;
       while ( this.isNumber( i ) )
         i++;
 
-      var number = this._data.substr( this._pos, i );
+      let number = this._data.substr(this._pos, i);
 
       this._pos += i;
 

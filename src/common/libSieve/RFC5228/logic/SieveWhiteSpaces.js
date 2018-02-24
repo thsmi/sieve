@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -13,7 +13,7 @@
 /* global window */
 
 
-( function (/*exports*/ ) {
+(function (exports) {
 
   "use strict";
 
@@ -212,6 +212,7 @@
     return "whitespace";
   };
 
+
   /**
    * Parses a String for whitespace characters. It stops as soon as
    * it finds the first non whitespace. This means this method extracts   
@@ -228,7 +229,7 @@
 
   SieveWhiteSpace.prototype.init
     = function ( parser, crlf ) {
-      var isCrlf = false;
+      let isCrlf = false;
       this.elements = [];
 
       // After the import section only deadcode and actions are valid
@@ -249,8 +250,8 @@
 
   SieveWhiteSpace.prototype.toScript
     = function () {
-      var result = "";
-      for ( var key in this.elements )
+      let result = "";
+      for (let key in this.elements)
         result += this.elements[key].toScript();
 
       return result;

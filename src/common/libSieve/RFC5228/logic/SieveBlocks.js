@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via 
  * email from the author.
  *
@@ -17,10 +17,10 @@
   "use strict";
 
   /* global SieveLexer */
-	/* global SieveAbstractBlock */
+  /* global SieveAbstractElement */
+  /* global SieveAbstractBlock */
 
-  function SieveBlockBody(docshell,id)
-  {
+  function SieveBlockBody(docshell, id) {
     SieveAbstractBlock.call(this,docshell,id);
     this.elms = [];  
   }
@@ -29,8 +29,7 @@
   SieveBlockBody.prototype.constructor = SieveBlockBody;
   
   SieveBlockBody.isElement
-      = function (parser, lexer)
-  {
+    = function (parser, lexer) {
     return lexer.probeByClass(["action","condition","whitespace"],parser);  
   };
   
@@ -43,8 +42,7 @@
   };
   
   SieveBlockBody.prototype.init
-      = function (parser)    
-  {
+    = function (parser) {
     while (this._probeByClass(["action","condition","whitespace"],parser))    
       this.elms.push(
         this._createByClass(["action","condition","whitespace"],parser));
@@ -53,11 +51,10 @@
   };
   
   SieveBlockBody.prototype.toScript
-      = function ()
-  {
-    var str ="";
+    = function () {
+      let str = "";
   
-    for (var key in this.elms)
+      for (let key in this.elms)
       str += this.elms[key].toScript();
       
     return str;
@@ -66,8 +63,7 @@
   //****************************************************************************//
   
   
-  function SieveBlock(docshell,id)
-  {
+  function SieveBlock(docshell, id) {
     SieveBlockBody.call(this,docshell,id);
   }
   
@@ -75,8 +71,7 @@
   SieveBlock.prototype.constructor = SieveBlock;
   
   SieveBlock.isElement
-      = function (parser, lexer)
-  {
+    = function (parser, lexer) {
     return parser.isChar("{");  
   };
   
@@ -89,8 +84,7 @@
   };
   
   SieveBlock.prototype.init
-    = function (parser)
-  {  
+    = function (parser) {
     parser.extractChar("{");
     
     SieveBlockBody.prototype.init.call(this,parser);
@@ -101,15 +95,13 @@
   };
   
   SieveBlock.prototype.toScript
-    = function ()
-  {
+    = function () {
     return "{" +SieveBlockBody.prototype.toScript.call(this)+"}";
   };
   //****************************************************************************//
 
 
-  function SieveRootNode(docshell)
-  {
+  function SieveRootNode(docshell) {
     SieveBlockBody.call(this,docshell,-1);
     
     this.elms[0] = this._createByName("import");
@@ -120,8 +112,7 @@
   SieveRootNode.prototype.constructor = SieveRootNode;
   
   SieveRootNode.isElement
-       = function (/*token, doc*/)
-  {
+    = function (token, doc) {
     return false;  
   };
   
@@ -135,8 +126,7 @@
   
   
   SieveRootNode.prototype.init
-      = function (parser)
-  {
+    = function (parser) {
     // requires are only valid if they are
     // before any other sieve command!
     if (this._probeByName("import",parser))
@@ -150,15 +140,14 @@
   };
 
   SieveRootNode.prototype.toScript
-      = function ()
-  {
-    var requires = [];
+    = function () {
+      let requires = [];
     
     // Step 1: collect requires
     this.elms[1].require(requires);
   
     // Step 2: Add require...
-    for (var item in requires)
+      for (let item in requires)
       this.elms[0].capability(item);
   
     // TODO Remove unused requires...

@@ -12,7 +12,7 @@
 
 /* global window */
 
-( function (/*exports*/ ) {
+(function (exports) {
 
   "use strict";
 
@@ -27,7 +27,7 @@
   }
 
   SieveNumber.isElement
-    = function ( parser/*, lexer*/ ) {
+    = function (parser, lexer) {
       return parser.isNumber( parser );
     };
 

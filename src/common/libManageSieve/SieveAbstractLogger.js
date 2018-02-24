@@ -9,11 +9,12 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-"use strict";
-
 (function (exports) {
 
+  "use strict";
 
+  const TWO_CHARS = 2;
+  const THREE_CHARS = 3;
   /**
    * Implements a common and platform independent logging interface.
    * The log level is interpreted as a bit filed with turns logging
@@ -97,26 +98,26 @@
    *   the padded string
    */
   SieveAbstractLogger.prototype._pad
-    = function(n, m) {
+    = function (n, m) {
 
-    var str = n;
+      let str = n;
 
-    for (var i = 0; i < m; i++)
-      if (n < Math.pow(10,i))
-        str = '0'+str;
+      for (let i = 0; i < m; i++)
+        if (n < Math.pow(10, i))
+          str = '0' + str;
 
-    return str;
-  };
+      return str;
+    };
 
   SieveAbstractLogger.prototype.getTimestamp
     = function () {
 
-    let date = new  Date();
-    return this._pad(date.getHours(),2)
-      + ":"+this._pad(date.getMinutes(),2)
-      + ":"+this._pad(date.getSeconds(),2)
-      + "."+this._pad(date.getMilliseconds(),3);
-  };
+      let date = new Date();
+      return this._pad(date.getHours(), TWO_CHARS)
+        + ":" + this._pad(date.getMinutes(), TWO_CHARS)
+        + ":" + this._pad(date.getSeconds(), TWO_CHARS)
+        + "." + this._pad(date.getMilliseconds(), THREE_CHARS);
+    };
 
 
   /**
@@ -138,4 +139,4 @@
 
   exports.SieveAbstractLogger = SieveAbstractLogger;
 
-})(this);
+})(module.exports || this);

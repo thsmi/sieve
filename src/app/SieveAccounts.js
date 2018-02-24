@@ -71,19 +71,34 @@
      * Creates a new account.
      * The new account will be initialized with default and then added to the list of accounts
      *
+     * @param {Object} [details]
+     *   the accounts details like the name, hostname, port and username as key value pairs.
+     *
      * @returns {SieveAccounts}
      *  a self reference.
      */
-    create() {
+    create(details) {
 
       // create a unique id;
-      let id = "" + (new Date).getTime().toString(36) + "-" + Math.random().toString(36).substr(2, 16);
+      let id = "" + (new Date()).getTime().toString(36) + "-" + Math.random().toString(36).substr(2, 16);
 
       this.accounts[id] = new SieveAccount(id, this.callback);
 
       console.log(Object.keys(this.accounts));
 
       this.save();
+
+      if (typeof(details) !== "undefined" && details !== null) {
+        if (details.name)
+          this.accounts[id].getHost().setDisplayName(details.name);
+        if (details.hostname)
+          this.accounts[id].getHost().setHostname(details.hostname);
+        if (details.port)
+          this.accounts[id].getHost().setPort(details.port);
+
+        if (details.username)
+          this.accounts[id].getAuthentication(1).setUsername(details.username);
+      }
 
       return this;
     }
@@ -115,6 +130,7 @@
      *   a list with sieve account.
      */
     getAccounts() {
+      this.load();
       return Object.keys(this.accounts);
     }
 
@@ -126,6 +142,7 @@
      *   the sieve account or undefined.
      */
     getAccountById(id) {
+      this.load();
       return this.accounts[id];
     }
   }

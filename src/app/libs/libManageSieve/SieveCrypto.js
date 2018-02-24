@@ -22,11 +22,6 @@
    */
   class SieveCrypto extends SieveAbstractCrypto {
 
-    /*
-      constructor(name) {
-        super(name);
-      }*/
-
     /**
      * @inheritdoc
      */

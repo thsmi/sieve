@@ -18,7 +18,6 @@
   /* global SieveImportUI */
   /* global SieveUpdaterUI */
 
-
   /**
    * The main entry point for the account view
    * @returns {void}

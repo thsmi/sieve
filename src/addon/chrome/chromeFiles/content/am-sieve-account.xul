@@ -18,8 +18,8 @@
 <!DOCTYPE page SYSTEM "chrome://sieve/locale/locale.dtd">
 
 <page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+      id="sivAccountPage"
       onload="onLoad()" onunload="onUnload()">
-
 
   <script type="application/javascript" src="chrome://sieve/content/am-sieve-account.js"/>
   <dialogheader title="&options.title;"/>

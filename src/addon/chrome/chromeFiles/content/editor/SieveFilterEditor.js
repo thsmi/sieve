@@ -28,9 +28,9 @@ Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
 
 let { SieveConnections } = SieveOverlayManager.requireModule("./sieve/SieveConnectionManager.jsm", window);
-let { SieveAccountManager } = SieveOverlayManager.requireModule("./sieve/SieveAccounts.jsm", window);
 let { require } = SieveOverlayManager.requireModule("./sieve/SieveRequire.jsm", window);
 
+let { SieveAccountManager } = require("./settings/SieveMozAccounts.js");
 let { SieveAbstractChannel } = require("./SieveAbstractChannel.js");
 
 let textEditor = null;

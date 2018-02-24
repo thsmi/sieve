@@ -101,18 +101,41 @@
         <description>&options.security.description2;</description>
         <radiogroup id="rgTLS" onselect="onTLSSelect(this.selectedIndex);">
           <radio label="&options.security.tls.disabled;" />
-          <radio label="&options.security.tls.available;" />
           <radio label="&options.security.tls.force;" />
         </radiogroup>
       </groupbox>
 
-      <!-- Server Authentication -->
       <groupbox>
         <caption label="&options.login;" />
-        <radiogroup id="rgLogin" onselect="onLoginSelect(this.selectedIndex);">
-          <radio label="&options.login.noAuth;"/>
-          <radio label="&options.login.imapAuth;"/>
-          <radio label="&options.login.customAuth;"/>
+        <description>The default mechanism is the best choice. But in certains situations
+        e.g. when using Proxy Authentication you many need to force a specific mechanism.</description>
+        <hbox align="center" >
+          <label>Mechanism:</label>
+          <menulist id="mlAuthMechanism">
+            <menupopup>
+              <menuitem label="Use suggested mechanism" value="default"/>
+              <menuseparator/>
+              <menuitem label="&options.authmechanism.plain;" value="PLAIN"/>
+              <menuitem label="&options.authmechanism.login;" value="LOGIN"/>
+              <menuitem label="&options.authmechanism.crammd5;" value="CRAM-MD5"/>
+              <menuitem label="&options.authmechanism.scramsha1;" value="SCRAM-SHA-1"/>
+              <menuitem label="&options.authmechanism.scramsha256;" value="SCRAM-SHA-256"/>
+              <menuitem label="&options.authmechanism.external;" value="EXTERNAL"/>
+              <menuseparator/>
+              <menuitem label="No authentication" value="none"/>
+            </menupopup>
+          </menulist>
+          </hbox>
+      </groupbox>
+
+      <groupbox>
+        <caption label="&options.login.username;" />
+        <description>Most authentication mechanism require a username and password.
+        The imap username is typically also used for sieve.</description>
+        <radiogroup id="rgLogin">
+          <!--<radio label="&options.login.noAuth;"/>-->
+          <radio label="&options.login.imapAuth;" value="1"/>
+          <radio label="&options.login.customAuth;" value="2"/>
         </radiogroup>
 
         <box class="indent" align="center">
@@ -193,25 +216,6 @@
         <image id="imgErrorBar" pack="center" src="chrome://sieve/content/images/syntax-ok.png"/>
         <label pack="center" value="&options.tab.advanced.warning;" />
       </hbox>
-      <groupbox>
-        <caption label="&options.authmechanism.caption;" />
-        <description>&options.authmechanism.description;</description>
-        <checkbox id="cbxAuthMechanism" label="&options.authmechanism;"
-                  oncommand="onAuthMechanismCommand(this)" />
-        <hbox id="hbAuthMechanism" align="center" class="indent">
-          <label control="mlAuthMechanism" value="&options.authmechanism.default;" />
-          <menulist id="mlAuthMechanism" oncommand="onAuthMechanismSelect(this)">
-            <menupopup>
-              <menuitem label="&options.authmechanism.plain;" value="PLAIN"/>
-              <menuitem label="&options.authmechanism.login;" value="LOGIN"/>
-              <menuitem label="&options.authmechanism.crammd5;" value="CRAM-MD5"/>
-              <menuitem label="&options.authmechanism.scramsha1;" value="SCRAM-SHA-1"/>
-              <menuitem label="&options.authmechanism.scramsha256;" value="SCRAM-SHA-256"/>
-              <menuitem label="&options.authmechanism.external;" value="EXTERNAL"/>
-            </menupopup>
-          </menulist>
-        </hbox>
-      </groupbox>
       <groupbox>
         <caption label="&options.proxyauth.caption;" />
         <description>&options.proxyauth.desc;</description>

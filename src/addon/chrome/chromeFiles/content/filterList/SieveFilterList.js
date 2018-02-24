@@ -26,7 +26,7 @@ const Cu = Components.utils;
 Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
 
 SieveOverlayManager.requireModule("./sieve/SieveConnectionManager.jsm", window);
-SieveOverlayManager.requireModule("./sieve/SieveAccounts.jsm", window);
+const { SieveAccountManager } = require("./settings/SieveMozAccounts.js");
 
 
 function errorhandler(msg, url, line) {

@@ -23,9 +23,10 @@ const Cr = Components.results;
 const Cu = Components.utils;
 
 Components.utils.import("chrome://sieve/content/modules/sieve/SieveRequire.jsm");
-Components.utils.import("chrome://sieve/content/modules/sieve/SieveAccounts.jsm");
+const { SieveAccountManager } = require("./settings/SieveMozAccounts.js");
 
 const { SieveSession } = require("./SieveMozSession.js");
+
 
 /**
  *  JavaScript Objects are usually create within the scope of a window. This

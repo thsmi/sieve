@@ -14,15 +14,25 @@
 /* global window */
 /* global SieveUtils */
 /* global SieveOverlayManager */
+/* global Services */
 
 // Enable Strict Mode
 "use strict";
 
+// This function is wraped into an iframe.
+// It is guaranteed we have a completely separated namespace.
+// So no need to wrap this into an anonymous function
+
+Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
-let { SieveAccountManager } = SieveOverlayManager.requireModule("./sieve/SieveAccounts.jsm", window);
+
+let { require } = SieveOverlayManager.requireModule("./sieve/SieveRequire.jsm", window);
+let { SieveAccountManager } = require("./settings/SieveMozAccounts.js");
 
 let gSieveAccount = null;
 let gSivIncomingServer = null;
+let gLogger = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
+
 
 function onLoad() {
   parent.onPanelLoaded('am-sieve-account.xul');
@@ -33,6 +43,10 @@ function onUnload() {
   gSivIncomingServer = null;
 }
 
+/**
+ * Called everytime we need to refresh the page's content.
+ * @returns{void}
+ */
 function updatePage() {
   if (gSieveAccount.isEnabled())
     document.getElementById('rgAccount').selectedIndex = 1;
@@ -43,14 +57,18 @@ function updatePage() {
     = gSieveAccount.getHost().getHostname();
   document.getElementById('txtPort').value
     = gSieveAccount.getHost().getPort();
+
   document.getElementById('txtTLS').value
-    = gSieveAccount.getHost().isTLSForced();
+    = gSieveAccount.getSecurity().isSecure();
+
+  let description = Services.strings.createBundle("chrome://sieve/locale/locale.properties")
+    .GetStringFromName(gSieveAccount.getAuthentication().getDescription());
 
   document.getElementById('txtAuth').value
-    = gSieveAccount.getLogin().getDescription();
+    = description;
 
   document.getElementById('txtUserName').value
-    = gSieveAccount.getLogin().getUsername();
+    = gSieveAccount.getAuthentication().getUsername();
 }
 
 
@@ -65,8 +83,13 @@ function onPreInit(account, accountvalues) {
 }
 
 function onInit(pageId, serverId) {
-  gSieveAccount = SieveAccountManager.getAccountByServer(gSivIncomingServer);
-  updatePage();
+  // we need to wrap this into a try catch otherwise the error will get discarded silently...
+  try {
+    gSieveAccount = SieveAccountManager.getAccountByServer(gSivIncomingServer);
+    updatePage();
+  } catch (ex) {
+    gLogger.logMessage(ex);
+  }
 }
 
 function onAccountStatusChange() {
@@ -85,14 +108,21 @@ function onFiltersClick() {
   parent.close();
 }
 
+/**
+ * Clickhandler which opens the settings dialog.
+ * @returns {void}
+ **/
 function onSettingsClick() {
-  // We don't need a mediator right here as long as we open a modal window ...
-  // ... Because Thunderbird ensures, that the parent account settings can ...
-  // ... be opened exactly one time!
+  try {
+    // We don't need a mediator right here as long as we open a modal window ...
+    // ... Because Thunderbird ensures, that the parent account settings can ...
+    // ... be opened exactly one time!
+    window.openDialog("chrome://sieve/content/options/SieveAccountOptions.xul",
+      "FilterAccountOptions", "chrome,modal,titlebar,centerscreen",
+      { SieveAccount: gSieveAccount });
 
-  window.openDialog("chrome://sieve/content/options/SieveAccountOptions.xul",
-    "FilterAccountOptions", "chrome,modal,titlebar,centerscreen",
-    { SieveAccount: gSieveAccount });
-
-  updatePage();
+    updatePage();
+  } catch (ex) {
+    gLogger.logMessage(ex);
+  }
 }

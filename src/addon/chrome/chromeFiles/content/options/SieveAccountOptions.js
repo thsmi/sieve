@@ -34,6 +34,8 @@ let { SieveAutoConfig } = SieveOverlayManager.requireModule("./sieve/SieveAutoCo
 /** @type SieveAccount */
 let gAccount = null;
 
+const AUTH_TYPE_CUSTOM = 2;
+
 // === Server Sheet ===========================================================
 function onServerSheetLoad(account) {
   let rbHost = document.getElementById('rgHost');
@@ -182,69 +184,68 @@ function onPortAutoSelect() {
 }
 
 // === Security Sheet =========================================================
+/**
+ * Called when the security page should be populated.
+ * @param {SieveAccount} account
+ *   a reference to a sieve account which contains the settings.
+ * @returns {void}
+ */
 function onSecuritySheetLoad(account) {
+
+  let mechanism = document.getElementById("mlAuthMechanism");
+  mechanism.addEventListener("command", () => {
+    account.getSecurity().setMechanism(
+      document.getElementById("mlAuthMechanism").value);
+  });
+
+  mechanism.value = account.getSecurity().getMechanism();
+
   // initalize login related elements...
   document.getElementById('txtUsername').value
-    = account.getLogin(2).getUsername();
+    = account.getAuthentication(AUTH_TYPE_CUSTOM).getUsername();
 
   let rgLogin = document.getElementById('rgLogin');
-  rgLogin.selectedIndex = account.getLogin().getType();
-  enableLogin(rgLogin.selectedIndex);
+  rgLogin.addEventListener("select", () => {
+
+    account.setActiveLogin(
+      document.getElementById('rgLogin').value);
+
+    enableLogin(account.getAuthentication().getType());
+  });
+
+  rgLogin.value = account.getAuthentication().getType();
+  enableLogin(rgLogin.value);
 
   let rbTLS = document.getElementById('rgTLS');
 
-  if (account.getHost().isTLSEnabled()) {
-    if (account.getHost().isTLSForced())
-      rbTLS.selectedIndex = 2;
-    else
-      rbTLS.selectedIndex = 1;
-  }
-  else
+  if (!account.getSecurity().isSecure())
     rbTLS.selectedIndex = 0;
+  else
+    rbTLS.selectedIndex = 1;
+
 }
 
 function onTLSSelect(idx) {
-  try {
-    if (!gAccount)
-      return;
+  if (!gAccount)
+    return;
 
-    let isEnabled = true;
-    let isForced = false;
-
-    if (idx === 0)
-      isEnabled = false;
-
-    if (idx === 2)
-      isForced = true;
-
-    gAccount.getHost().setTLS(isForced, isEnabled);
-  }
-  catch (ex) {
-    window.alert(ex);
-  }
-
+  gAccount.getSecurity().setSecure(idx !== 0)
 }
 
 function enableLogin(type) {
-  if (type === 2)
+  if (type === AUTH_TYPE_CUSTOM)
     document.getElementById('txtUsername').removeAttribute('disabled');
   else
     document.getElementById('txtUsername').setAttribute('disabled', 'true');
 }
 
-function onLoginSelect(idx) {
-  if (!gAccount)
-    return;
 
-  gAccount.setActiveLogin(idx);
-  enableLogin(idx);
-}
 
 function onUsernameChange(value) {
   if (!gAccount)
     return;
 
-  gAccount.getLogin(2).setUsername(value);
+  gAccount.getAuthentication(2).setUsername(value);
 }
 
 // === General Sheet ==========================================================
@@ -290,7 +291,7 @@ function onProxySelect(type) {
   if (!gAccount)
     return;
 
-  if (typeof(type) === "undefined" || (type === null) || (type > 3))
+  if (typeof (type) === "undefined" || (type === null) || (type > 3))
     type = 1;
 
   gAccount.setProxy(type);
@@ -310,22 +311,6 @@ function onProxySelect(type) {
  * @returns {void}
  */
 function onAdvancedSheetLoad(account) {
-  let element = document.getElementById('cbxAuthMechanism');
-  element.checked = account.getSettings().hasForcedAuthMechanism();
-  enableAuthMechanism(element.checked);
-
-  let list = document.getElementById('mlAuthMechanism');
-  let items = list.getElementsByTagName('menuitem');
-
-  let mechanism = account.getSettings().getForcedAuthMechanism();
-
-  for (let i = 0; i < items.length; i++) {
-    if (items[i].value !== mechanism)
-      continue;
-
-    list.selectedItem = items[i];
-    break;
-  }
 
   // initalize the authorization related elements...
   document.getElementById('txtAuthorization').value
@@ -340,7 +325,7 @@ function onAuthorizationSelect(type) {
   if (!gAccount)
     return;
 
-  if (typeof(type) === "undefined" || (type === null) || (type > 3))
+  if (typeof (type) === "undefined" || (type === null) || (type > 3))
     type = 1;
 
   gAccount.setActiveAuthorization(type);
@@ -523,29 +508,6 @@ function onCompileChange(sender) {
 }
 
 
-
-function onAuthMechanismCommand(sender) {
-  if (!gAccount)
-    return;
-
-  gAccount.getSettings().enableForcedAuthMechanism(sender.checked);
-  enableAuthMechanism(sender.checked);
-}
-
-function enableAuthMechanism(enabled) {
-  if (enabled)
-    document.getElementById('mlAuthMechanism').removeAttribute('disabled');
-  else
-    document.getElementById('mlAuthMechanism').setAttribute('disabled', 'true');
-}
-
-function onAuthMechanismSelect(sender) {
-  if (!gAccount)
-    return;
-
-  gAccount.getSettings().setForcedAuthMechanism(sender.selectedItem.value);
-}
-
 /**
  * Opens thunderbird's the password manager dialog
  *
@@ -683,3 +645,7 @@ function onDonate() {
     .getService(Ci.nsIExternalProtocolService)
     .loadURI(uri);
 }
+
+window.addEventListener('error', function (event) {
+  Components.utils.reportError(event.error);
+});

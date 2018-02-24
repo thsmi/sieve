@@ -148,13 +148,21 @@
         // ... is capable of handling TLS, otherwise simply skip it and ...
         // ... use an insecure connection
 
-        if (!this.account.getHost().isTLSEnabled()) {
+        this.sieve.capabilities = {};
+        this.sieve.capabilities.tls = response.getTLS();
+        this.sieve.capabilities.extensions = response.getExtensions();
+        this.sieve.capabilities.sasl = response.getSasl();
+
+        this.sieve.setCompatibility(response.getCompatibility());
+
+        if (!this.account.getSecurity().isSecure()) {
           this.onAuthenticate(response);
           return;
         }
 
-        if (!response.getTLS() && !this.account.getHost().isTLSForced()) {
-          this.onAuthenticate(response);
+        // FIX ME: We should throw an error here...
+        if (!response.getTLS()) {
+          this.disconnect(false, 2, "error.sasl");
           return;
         }
 
@@ -165,6 +173,46 @@
         this.sieve.addRequest(request);
       },
 
+      getSaslMechanism: function (mechanism) {
+
+        if (mechanism === "default")
+          mechanism = [... this.sieve.capabilities.sasl];
+        else
+          mechanism = [mechanism];
+
+        // ... translate the SASL Mechanism into an SieveSaslLogin Object ...
+        while (mechanism.length > 0) {
+          // remove and test the first element...
+          switch (mechanism.shift().toUpperCase()) {
+            case "PLAIN":
+              return this.createSaslPlainRequest();
+
+            case "CRAM-MD5":
+              return this.createSaslCramMd5Request();
+
+            case "SCRAM-SHA-1":
+              return this.createSaslScramSha1Request();
+
+            case "SCRAM-SHA-256":
+              return this.createSaslScramSha256Request();
+
+            case "EXTERNAL":
+              return this.createSaslExternalRequest();
+
+            case "LOGIN":
+              // we use SASL LOGIN only as last resort...
+              // ... as suggested in the RFC.
+              if (mechanism.length === 0)
+                return this.createSaslLoginRequest();
+
+              mechanism.push("LOGIN");
+              break;
+          }
+        }
+
+        return null;
+      },
+
       onAuthenticate: function (response) {
         // update capabilites
         this.sieve.setCompatibility(response.getCompatibility());
@@ -172,66 +220,25 @@
         this._invokeListeners("onChannelStatus", 3, "progress.authenticating");
 
         let account = this.account;
+        let mechanism = account.getSecurity().getMechanism();
 
-        // Without a username, we can skip the authentication
-        if (account.getLogin().hasUsername() === false) {
+        if (mechanism === "none") {
           this.onLoginResponse(null);
           return;
         }
 
+        // Without a username, we can skip the authentication
+        if (account.getAuthentication().hasUsername() === false) {
+          this.onLoginResponse(null);
+          return;
+        }
 
         // Notify the listener to display capabilities. We simply pass the response...
         // ... to the listener. So the listener can pick whatever he needs.
         this.sieve.extensions = response.getExtensions();
         this._invokeListeners("onChannelStatus", 7, response);
 
-        // We have to figure out which ist the best SASL Mechanism for the login ...
-        // ... therefore we check first whether a mechanism is forced by the user ...
-        // ... if no one is specified, we follow the rfc advice and use the first
-        // .... mechanism listed in the capability response we support.
-
-        let mechanism = [];
-        if (account.getSettings().hasForcedAuthMechanism())
-          mechanism = [account.getSettings().getForcedAuthMechanism()];
-        else
-          mechanism = response.getSasl();
-
-        // ... translate the SASL Mechanism into an SieveSaslLogin Object ...
-        let request = null;
-        while ((mechanism.length > 0) && (request === null)) {
-          // remove and test the first element...
-          switch (mechanism.shift().toUpperCase()) {
-            case "PLAIN":
-              request = this.createSaslPlainRequest();
-              break;
-
-            case "CRAM-MD5":
-              request = this.createSaslCramMd5Request();
-              break;
-
-            case "SCRAM-SHA-1":
-              request = this.createSaslScramSha1Request();
-              break;
-
-            case "SCRAM-SHA-256":
-              request = this.createSaslScramSha256Request();
-              break;
-
-            case "EXTERNAL":
-              request = this.createSaslExternalRequest();
-              break;
-
-            case "LOGIN":
-              // we use SASL LOGIN only as last resort...
-              // ... as suggested in the RFC.
-              if (mechanism.length > 0) {
-                mechanism.push("LOGIN");
-                break;
-              }
-              request = this.createSaslLoginRequest();
-              break;
-          }
-        }
+        let request = this.getSaslMechanism(mechanism);
 
         if (!request) {
           this.disconnect(false, 2, "error.sasl");
@@ -239,13 +246,12 @@
         }
 
         request.addErrorListener(this);
-
-        request.setUsername(account.getLogin().getUsername());
+        request.setUsername(account.getAuthentication().getUsername());
 
         // SASL External has no passwort it relies completely on SSL...
         if (request.hasPassword()) {
 
-          let password = account.getLogin().getPassword();
+          let password = account.getAuthentication().getPassword();
 
           if (typeof(password) === "undefined" || password === null) {
             this.disconnect(false, 2, "error.authentication");
@@ -480,7 +486,7 @@
 
         this.sieve.connect(
           hostname, port,
-          this.account.getHost().isTLSEnabled(),
+          this.account.getSecurity().isSecure(),
           this,
           this.account.getProxy().getProxyInfo());
       },

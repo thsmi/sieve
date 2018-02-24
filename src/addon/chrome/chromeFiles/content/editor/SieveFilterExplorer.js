@@ -32,9 +32,10 @@ Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
 let { SieveUtils } = SieveOverlayManager.requireModule("./utils/SieveWindowHelper.jsm", window);
 
 let { SieveConnections } = SieveOverlayManager.requireModule("./sieve/SieveConnectionManager.jsm", window);
-let { SieveAccountManager } = SieveOverlayManager.requireModule("./sieve/SieveAccounts.jsm", window);
+
 let { require } = SieveOverlayManager.requireModule("./sieve/SieveRequire.jsm", window);
 
+let { SieveAccountManager } = require("./settings/SieveMozAccounts.js");
 let { SieveAbstractChannel } = require("./SieveAbstractChannel.js");
 
 /** @type {{Components.interfaces.nsIConsoleService}}*/

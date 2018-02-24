@@ -602,7 +602,7 @@
       let init = () => {
         this.sieve.connect(
           hostname, port,
-          this.account.getHost().isSecure(),
+          this.account.getSecurity().isSecure(),
           this,
           this.account.getProxy().getProxyInfo());
       };
@@ -623,7 +623,7 @@
       // ... is capable of handling TLS, otherwise simply skip it and ...
       // ... use an insecure connection
 
-      if (!this.account.getHost().isSecure())
+      if (!this.account.getSecurity().isSecure())
         return;
 
       if (!this.sieve.capabilities.tls)
@@ -686,12 +686,12 @@
      * Note: In case we do not support any of the server's advertised
      * mechanism an exception is thrown.
      *
+     * @param {String} mechanism
+     *   the sasl mechanism which shall be used.
      * @returns {SieveAbstractSaslRequest}
      *  the sasl request which implements the most prefered compatible mechanism.
      */
-    getSaslMechanism() {
-
-      let mechanism = this.account.getLogin().getSaslMechanism();
+    getSaslMechanism(mechanism) {
 
       if (mechanism === "none")
         throw new SieveClientException("SASL Authentication disabled");
@@ -740,19 +740,20 @@
      */
     async authenticate() {
       let account = this.account;
+      let mechanism = account.getSecurity().getMechanism();
 
-      if (account.getLogin().getSaslMechanism() === "none")
+      if (mechanism === "none")
         return;
 
-      let request = this.getSaslMechanism();
+      let request = this.getSaslMechanism(mechanism);
 
-      let username = account.getLogin().getUsername();
+      let username = account.getAuthentication().getUsername();
       request.setUsername(username);
 
       // SASL External has no passwort it relies completely on SSL...
       if (request.hasPassword()) {
 
-        let password = await account.getLogin().getPassword();
+        let password = await account.getAuthentication().getPassword();
 
         if (typeof (password) === "undefined" || password === null)
           throw new SieveClientException("error.authentication");

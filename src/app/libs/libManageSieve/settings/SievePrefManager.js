@@ -13,21 +13,13 @@
 
   "use strict";
 
+  let { SieveAbstractPrefManager } = require("./SieveAbstractPrefManager.js");
+
   /**
    * Manages preferences.
    * It uses the DOM's local storage interface
    */
-  class SievePrefManager {
-
-    /**
-     * Initializes the preference manager.
-     *
-     * @param {String} id
-     *   the preferences unique id.
-     */
-    constructor(id) {
-      this.id = id;
-    }
+  class SievePrefManager extends SieveAbstractPrefManager {
 
     /**
      * Reads and returns all preference values.
@@ -42,17 +34,6 @@
         prefs = "{}";
 
       return JSON.parse(prefs);
-    }
-
-    /**
-     * Reads and returns the given preference for the given key as object.
-     * @param {String} key
-     *   the preference key which should be read.
-     * @return {Object}
-     *   the key's value.
-     */
-    getValue(key) {
-      return this.getValues()[key];
     }
 
     /**
@@ -75,14 +56,7 @@
     }
 
     /**
-     * Returns the boolean value for the preference.
-     *
-     * @param {String} key
-     *   the preference's key
-     * @param {Boolean} [fallback]
-     *   the fallback value in case the key does not exist.
-     * @return {Boolean}
-     *   the key's value as boolean
+     * @inheritdoc
      */
     getBoolean(key, fallback) {
       let value = this.getValue(key);
@@ -100,14 +74,7 @@
     }
 
     /**
-     * Sets a boolean value for the given key.
-     *
-     * @param {String} key
-     *   the preference's key
-     * @param {Boolean} value
-     *   the value which should be set
-     * @returns {SievePrefManager}
-     *   a self reference
+     * @inheritdoc
      */
     setBoolean(key, value) {
       // ensure it is an boolean...
@@ -118,14 +85,7 @@
     }
 
     /**
-     * Returns the string value for the preference.
-     *
-     * @param {String} key
-     *   the preference key
-     * @param {String} [fallback]
-     *   the fallback value in case the key does not exist.
-     * @return {String}
-     *   the key's value as string
+     * @inheritdoc
      */
     getString(key, fallback) {
       let value = this.getValue(key);
@@ -137,14 +97,7 @@
     }
 
     /**
-     * The string which should be set for th preference
-     *
-     * @param {String} key
-     *   the preference key
-     * @param {String} value
-     *   the key's value as string
-     * @returns {SievePrefManager}
-     *   a self reference
+     * @inheritdoc
      */
     setString(key, value) {
 
@@ -155,14 +108,7 @@
     }
 
     /**
-     * Returns the integer value for the preference.
-     *
-     * @param {String} key
-     *   the preference's key
-     * @param {Integer} [fallback]
-     *   the fallback value in case the key does not exist.
-     * @return {String}
-     *   the key's value as integer
+     * @inheritdoc
      */
     getInteger(key, fallback) {
       let value = this.getValue(key);
@@ -181,14 +127,7 @@
     }
 
     /**
-     * Sets an integer value for the given key.
-     *
-     * @param {String} key
-     *   the preference's key
-     * @param {Integer} value
-     *   the integer value which should be set.
-     * @return {SievePrefManager}
-     *   a self reference.
+     * @inheritdoc
      */
     setInteger(key, value) {
 
@@ -198,7 +137,6 @@
 
       return this;
     }
-
   }
 
   if (typeof(module) !== "undefined" && module && module.exports)

@@ -19,7 +19,7 @@
   /**
      * A UI renderer for the sieve settings dialog
      */
-  class SieveSettingsUI {
+  class SieveServerSettingsUI {
 
     /**
      * Initializes the settings
@@ -34,7 +34,7 @@
      * Sets the account's human readable display name
      * @param {String} name
      *   the name which should be set.
-     * @returns {SieveSettingsUI}
+     * @returns {SieveServerSettingsUI}
      *  a self reference
      */
     setDisplayName(name) {
@@ -44,7 +44,7 @@
 
     /**
      * Gets the account'S human readable display name
-     * @returns {SieveSettingsUI}
+     * @returns {SieveServerSettingsUI}
      *   a self reference
      */
     getDisplayName() {
@@ -76,101 +76,11 @@
     }
 
     /**
-     * Gets the current dialog's encryption settings.
-     *
-     * @returns {boolean}
-     *   true in case an encrypted connection should be used otherwise false.
-     */
-    isEncrypted() {
-      let active = this.getDialog().find(".sieve-settings-encryption .active");
-
-      if (active.hasClass("sieve-settings-encryption-disabled"))
-        return false;
-
-      return true;
-    }
-
-    /**
-     * Sets the encryption settings in the current dialog.
-     * @param {boolean} encrypted
-     *   the encryption status to set. False in case encryption is disabled
-     *   otherwise it will be enabled
-     * @returns {SieveSettingsUI}
-     *   a self reference
-     */
-    setEncrypted(encrypted) {
-      let parent = this.getDialog();
-
-      // reset the toggle button status...
-      parent.find(".sieve-settings-encryption .active").removeClass("active");
-
-      if (encrypted === false)
-        parent.find(".sieve-settings-encryption-disabled").button('toggle');
-      else
-        parent.find(".sieve-settings-encryption-enabled").button('toggle');
-
-      return this;
-    }
-
-    /**
-     * Sets the authentication type
-     * @param {String} type
-     *   the authentication type which should be used
-     * @returns {SieveSettingsUI}
-     *   a self reference
-     */
-    setAuthentication(type) {
-
-      let parent = this.getDialog();
-
-      let text = parent
-        .find(".sieve-settings-authentication")
-        .find(".dropdown-item[data-sieve-authentication=" + type + "]")
-        .text();
-
-      parent
-        .find(".sieve-settings-authentication button")
-        .data("sieve-authentication", type)
-        .text(text);
-
-      return this;
-    }
-
-    /**
-     * The authentication type which was selected
-     *
-     * @returns {String}
-     *  authentication type
-     */
-    getAuthentication() {
-      return this.getDialog()
-        .find(".sieve-settings-authentication button")
-        .data("sieve-authentication");
-    }
-
-    /**
-     * Sets the username in the ui
-     *
-     * @param {String} username
-     *   the username which should be set
-     * @returns {SieveSettingsUI}
-     *   a self reference
-     */
-    setUsername(username) {
-      this.getDialog().find(".sieve-settings-username").val(username);
-      return this;
-    }
-
-    getUsername() {
-      return this.getDialog().find(".sieve-settings-username").val();
-    }
-
-    /**
      * Enabled or disables th keep alive button in the ui
      *
      * @param {boolean} enabled
      *   set to true in case the keep alive is enabled otherwise set to false
-     * @returns {SieveSettingsUI}
+     * @returns {SieveServerSettingsUI}
      *   a self reference
      */
     setKeepAliveEnabled(enabled) {
@@ -205,7 +115,7 @@
      * Sets the keep alive interval
      * @param {int} interval
      *  the keep alive interval in ms
-     * @returns {SieveSettingsUI}
+     * @returns {SieveServerSettingsUI}
      *   a self reference
      */
     setKeepAliveInterval(interval) {
@@ -250,15 +160,33 @@
       parent.find(".siv-settings-hide-advanced").hide();
     }
 
+
     /**
      * Shows the settings dialog
-     * @returns {void}
+     * @returns {Promise<boolean>}
+     *   false in case the dialog was dismissed otherwise true.
      */
-    show() {
-      // TODO show should marked as async so that we can
-      // wait for it and trigger
+    async show() {
+
       this.render();
-      this.getDialog().modal('show');
+      return await new Promise((resolve) => {
+
+        let dialog = this.getDialog();
+
+        dialog.modal('show')
+          .on('hidden.bs.modal', () => {
+            // dialog.remove();
+            resolve(false);
+          })
+          .find(".sieve-settings-apply").off().click(async () => {
+            await this.save();
+            resolve(true);
+            // ... now trigger the hidden listener it will cleanup
+            // it is afe to do so due to promise magics, the first
+            // alway resolve wins and all subsequent calls are ignored...
+            dialog.modal("hide");
+          });
+      });
     }
 
     /**
@@ -269,33 +197,21 @@
     async save() {
 
       let server = {
-        displayName : this.getDisplayName(),
+        displayName: this.getDisplayName(),
         hostname: this.getHostname(),
         port: this.getPort(),
-        secure: this.isEncrypted(),
         fingerprint: this.getFingerprint()
       };
 
       await this.account.send("account-set-server", server);
 
-      let authentication = {
-        username: this.getUsername(),
-        mechanism: this.getAuthentication()
-      };
-
-      await this.account.send("account-set-authentication", authentication);
-
       let general = {
-        keepAliveEnabled : this.isKeepAliveEnabled(),
-        keepAliveInterval : this.getKeepAliveInterval()
+        keepAliveEnabled: this.isKeepAliveEnabled(),
+        keepAliveInterval: this.getKeepAliveInterval()
       };
 
       await this.account.send("account-set-general", general);
 
-      // Validate and close
-      $('#sieve-dialog-settings').modal('hide');
-
-      await this.account.connect();
     }
 
     /**
@@ -317,48 +233,20 @@
 
       let loader = new SieveTemplateLoader();
 
-      let item = await loader.load("./ui/settings/settings.tpl");
-
       // Load all subsectionss...
-      item.find(".siv-settings-server-tpl").append(
-        await loader.load("./ui/settings/settings.server.tpl"));
-      item.find(".siv-settings-authentification-tpl").append(
-        await loader.load("./ui/settings/settings.authentification.tpl"));
-      item.find(".siv-settings-authorization-tpl").append(
-        await loader.load("./ui/settings/settings.authorization.tpl"));
-      item.find(".siv-settings-general-tpl").append(
-        await loader.load("./ui/settings/settings.general.tpl"));
-      item.find(".siv-settings-debug-tpl").append(
-        await loader.load("./ui/settings/settings.debug.tpl"));
-
-      parent.find(".modal-body").empty().append(item);
+      parent.find(".modal-body").empty()
+        .append(await loader.load("./ui/settings/settings.server.tpl"));
 
       let server = await this.account.send("account-get-server");
 
       this.setDisplayName(server.displayName);
       this.setHostname(server.hostname);
       this.setPort(server.port);
-      this.setEncrypted(server.secure);
       this.setFingerprint(server.fingerprint);
-
-      let authentication = await this.account.send("account-get-authentication");
-
-      this.setAuthentication(authentication.mechanism);
-      this.setUsername(authentication.username);
-
-      parent.find(".sieve-settings-authentication .dropdown-item").click((event) => {
-        this.getDialog()
-          .find(".sieve-settings-authentication button")
-          .data("sieve-authentication", $(event.target).data("sieve-authentication"))
-          .text($(event.target).text());
-      });
 
       let general = await this.account.send("account-get-general");
       this.setKeepAliveEnabled(general.keepAliveEnabled);
       this.setKeepAliveInterval(general.keepAliveInterval);
-
-
-      parent.find(".sieve-settings-apply").off().click(() => { this.save(); });
 
       parent.find(".siv-settings-show-advanced").off().click(() => { this.showAdvanced(); });
       parent.find(".siv-settings-hide-advanced").off().click(() => { this.hideAdvanced(); });
@@ -367,8 +255,8 @@
     }
   }
   if (typeof (module) !== "undefined" && module !== null && module.exports)
-    module.exports = SieveSettingsUI;
+    module.exports = SieveServerSettingsUI;
   else
-    exports.SieveSettingsUI = SieveSettingsUI;
+    exports.SieveServerSettingsUI = SieveServerSettingsUI;
 
 })(this);

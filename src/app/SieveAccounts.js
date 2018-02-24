@@ -95,8 +95,9 @@
           this.accounts[id].getHost().setHostname(details.hostname);
         if (details.port)
           this.accounts[id].getHost().setPort(details.port);
+
         if (details.username)
-          this.accounts[id].getLogin().setUsername(details.username);
+          this.accounts[id].getAuthentication(1).setUsername(details.username);
       }
 
       return this;
@@ -129,6 +130,7 @@
      *   a list with sieve account.
      */
     getAccounts() {
+      this.load();
       return Object.keys(this.accounts);
     }
 
@@ -140,6 +142,7 @@
      *   the sieve account or undefined.
      */
     getAccountById(id) {
+      this.load();
       return this.accounts[id];
     }
   }

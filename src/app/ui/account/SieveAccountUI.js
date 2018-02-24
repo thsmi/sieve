@@ -16,7 +16,10 @@
   /* global $ */
   /* global SieveTemplateLoader */
   /* global SieveScriptUI */
-  /* global SieveSettingsUI */
+  /* global SieveIpcClient */
+  /* global SieveServerSettingsUI */
+  /* global SieveCredentialsSettingsUI */
+  /* global SieveAdvancedSettingsUI */
 
   /**
    * A UI renderer for a sieve account
@@ -48,11 +51,11 @@
      */
     async send(action, payload) {
 
-      if (typeof(payload) === "undefined" || payload === null)
+      if (typeof (payload) === "undefined" || payload === null)
         payload = {};
 
       if (typeof (payload) !== "object")
-        payload = {"data": payload};
+        payload = { "data": payload };
 
       payload["account"] = this.id;
 
@@ -89,50 +92,69 @@
     }
 
     /**
-    * Renders the UI for this component.
-    * @returns {void}
-    */
-    async render() {
-      console.log("Rendering Account " + this.id);
+     * Renders the settings pane
+     * @returns {void}
+     */
+    async renderSettings() {
 
-      let item = $("#siv-account-" + this.id);
-      // Check if the element exists...
-      if (item.length === 0) {
-        item = await (new SieveTemplateLoader()).load("./ui/account/account.tpl");
+      let settings = $("#siv-account-" + this.id).find(".sieve-settings-content");
 
-        item.find(".siv-account-name").text(await this.send("account-get-displayname"));
+      let item = await (new SieveTemplateLoader()).load("./ui/account/account.settings.tpl");
 
-        item.attr("id", "siv-account-" + this.id);
-        item.find(".siv-account-create").click(() => { this.createScript(); });
+      let account = await this.send("account-get-settings");
 
-        item.find(".sieve-account-edit-server").click(() => { this.showSettings(); });
-        item.find(".sieve-account-delete-server").click(() => { this.remove(); });
-        item.find(".sieve-account-capabilities").click(() => { this.showCapabilities(); });
-        item.find(".sieve-account-reconnect-server").click(() => { this.connect(); });
-        item.find(".sieve-account-disconnect-server").click(() => { this.disconnect(); });
-        $(".siv-accounts").append(item);
-      }
+      item.find(".sieve-settings-hostname").text(account.hostname);
+      item.find(".sieve-settings-port").text(account.port);
 
-      let status = await this.isConnected();
+      if (!account.secure)
+        item.find(".sieve-settings-secure").hide();
 
-      if (status === false) {
-        let item2 = await (new SieveTemplateLoader()).load("./ui/account/account.disconnected.tpl");
-        $("#siv-account-" + this.id + " .siv-tpl-scripts")
-          .empty()
-          .append(item2);
+      item.find(".sieve-settings-username").text(account.username);
+      item.find(".sieve-settings-mechanism").text(account.mechanism);
+      item.find(".sieve-settings-fingerprint").text(account.fingerprint);
 
-        item2.find(".sieve-script-connect").click(() => { this.connect(); });
+      if (account.fingerprint === "")
+        item.find(".sieve-settings-fingerprint-item").hide();
 
-        return;
+      item.find(".sieve-account-delete-server").click(() => { this.remove(); });
+      item.find(".sieve-account-edit-server").click(() => { this.showServerSettings(); });
+      item.find(".sieve-account-edit-credentials").click(() => { this.showCredentialSettings(); });
+      item.find(".sieve-account-edit-advanced").click(() => { this.showAdvancedSettings(); });
 
-        // await this.send("account-connect");
+      settings.empty().append(item);
+    }
 
-        // in case of an error switc hto not connected
-        // return;
-        // otherwise continue;
-      }
+    /**
+     * Renders the accounts outer ui
+     * @returns {void}
+     */
+    async renderAccount() {
+      let item = await (new SieveTemplateLoader()).load("./ui/account/account.tpl");
 
+      item.find(".sieve-accounts-content").attr("id", "sieve-accounts-content-" + this.id);
+      item.find(".sieve-accounts-tab").attr("href", "#sieve-accounts-content-" + this.id);
 
+      item.find(".sieve-settings-content").attr("id", "sieve-settings-content-" + this.id);
+      item.find(".sieve-settings-tab").attr("href", "#sieve-settings-content-" + this.id);
+      item.find(".sieve-settings-tab").on('shown.bs.tab', () => { this.renderSettings(); });
+
+      item.find(".siv-account-name").text(await this.send("account-get-displayname"));
+
+      item.attr("id", "siv-account-" + this.id);
+      item.find(".siv-account-create").click(() => { this.createScript(); });
+
+      item.find(".sieve-account-edit-settings").click(() => { this.showSettings(); });
+      item.find(".sieve-account-capabilities").click(() => { this.showCapabilities(); });
+      item.find(".sieve-account-reconnect-server").click(() => { this.connect(); });
+      item.find(".sieve-account-disconnect-server").click(() => { this.disconnect(); });
+      $(".siv-accounts").append(item);
+    }
+
+    /**
+     * Renders the account ui's script pane
+     * @returns {void}
+     */
+    async renderScripts() {
       let data = await this.send("account-list");
 
       console.log("Data received " + JSON.stringify(data));
@@ -162,6 +184,41 @@
     }
 
     /**
+    * Renders the UI for this component.
+    * @returns {void}
+    */
+    async render() {
+      console.log("Rendering Account " + this.id);
+
+      // Check if the element exists...
+      if ($("#siv-account-" + this.id).length === 0) {
+        await this.renderAccount();
+        this.renderSettings();
+      }
+
+      let status = await this.isConnected();
+
+      if (status === false) {
+        let item2 = await (new SieveTemplateLoader()).load("./ui/account/account.disconnected.tpl");
+        $("#siv-account-" + this.id + " .siv-tpl-scripts")
+          .empty()
+          .append(item2);
+
+        item2.find(".sieve-script-connect").click(() => { this.connect(); });
+
+        return;
+
+        // await this.send("account-connect");
+
+        // in case of an error switc hto not connected
+        // return;
+        // otherwise continue;
+      }
+
+      this.renderScripts();
+    }
+
+    /**
      * Asks the user if he is sure to delete the account.
      * If yes it triggers expurging the account settings.
      * This can not be undone.
@@ -177,8 +234,45 @@
      * @returns {void}
      */
     showSettings() {
-      (new SieveSettingsUI(this)).show();
+      $("#siv-account-" + this.id + " .sieve-settings-tab").tab('show');
     }
+
+    /**
+     * Shows the server settings dialog.
+     * @returns {Promise<Boolean>}
+     *   false in case the dialog was dismissed, otherwise true.
+     */
+    async showServerSettings() {
+
+      let rv = await (new SieveServerSettingsUI(this)).show();
+
+      // rerender settings in case they got changed.
+      if (rv === true)
+        this.renderSettings();
+
+      return rv;
+    }
+
+    /**
+     * Shows the credential settings dialog.
+     * @returns {Promise<Boolean>}
+     *   false in case the dialog was dismissed otherwise true.
+     **/
+    async showCredentialSettings() {
+
+      let rv = await (new SieveCredentialsSettingsUI(this)).show();
+
+      if ( rv === true )
+        this.renderSettings();
+
+      return rv;
+    }
+
+    showAdvancedSettings() {
+      (new SieveAdvancedSettingsUI(this)).show();
+      this.renderSettings();
+    }
+
 
 
     /**
@@ -214,17 +308,11 @@
      *
      * @returns {void}
      */
-    createScript() {
-      $("#sieve-create-dialog").modal('show');
+    async createScript() {
+      let name = await this.send("script-create");
 
-      $('#sieve-create-dialog-btn').off().one("click", async () => {
-        let name = $('#sieve-create-dialog-name').val();
-
-        await this.send("script-create", name);
-
+      if (name !== "")
         await this.render();
-        $('#sieve-create-dialog').modal('hide');
-      });
     }
   }
 

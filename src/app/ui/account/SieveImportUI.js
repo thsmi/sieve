@@ -62,7 +62,6 @@
             }
 
             // fix me remove modal2 from dom.
-
             await SieveIpcClient.sendMessage("account-create", account);
             dialog.modal('hide');
 

@@ -16,72 +16,10 @@
     <div class="siv-accounts"></div>
 
     <!-- Modal -->
-    <div id="sieve-delete-dialog" class="modal fade" id="deleteScript" tabindex="-1" role="dialog" aria-labelledby="deleteScriptLabel"
-      aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="deleteScriptLabel">Delete Script</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div>Are you really sure to delete the script
-              <em id="sieve-delete-dialog-name"></em>?</div>
-            <div> This can not be undone.</div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" id="sieve-delete-dialog-btn" class="btn btn-danger">Delete</button>
-          </div>
-        </div>
-      </div>
-    </div>
 
 
 
     <!-- Modal -->
-    <div id="sieve-create-dialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Create Script</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div>Enter the new name for your script</div>
-            <input id="sieve-create-dialog-name" class="form-control" type="text" placeholder="Script name">
-          </div>
-          <div class="modal-footer">
-            <button id="sieve-create-dialog-btn" type="button" class="btn btn-primary">Create</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Rename Script Dialog -->
-    <div id="sieve-rename-dialog" class="modal fade" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Rename Script</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div>Enter the new name for your script</div>
-            <input id="sieve-rename-dialog-newname" class="form-control" type="text" placeholder="Script name">
-          </div>
-          <div class="modal-footer">
-            <button id="sieve-rename-dialog-btn" type="button" class="btn btn-primary">Rename</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
 
 
     <!-- capabilities -->
@@ -95,7 +33,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <table class="table">
+            <table class="table table-striped">
               <tbody>
                 <tr>
                   <th>Implementation</th>
@@ -106,11 +44,11 @@
                   <td id="sieve-capabilities-version"></td>
                 </tr>
                 <tr>
-                  <th>SASL Mechanisms</th>
+                  <th>SASL&nbsp;Mechanisms</th>
                   <td id="sieve-capabilities-sasl"></td>
                 </tr>
                 <tr>
-                  <th>Sieve Extensions</th>
+                  <th>Sieve&nbsp;Extensions</th>
                   <td id="sieve-capabilities-extensions"></td>
                 </tr>
                 <tr>
@@ -124,8 +62,16 @@
       </div>
     </div>
 
-    <button class="btn btn-primary" id="sieve-account-create">Add Server</button>
-    <button class="btn btn-primary" id="sieve-account-import">Import Server</button>
+        <div class="card mt-4 mb-4">
+            <div class="card-body">
+                <h4 class="card-title">Add or Import Account</h4>
+                <p class="card-text">Add a new account to the sieve app or import an existing configuration from thunderbrid</p>
+                <button class="btn btn-sm btn-outline-primary" id="sieve-account-create">Add Server</button>
+                <button class="btn btn-sm btn-outline-primary" id="sieve-account-import">Import Server</button>
+              </div>
+        </div>
+
+
 
     <!-- The settings dialog-->
     <div id="sieve-dialog-settings" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
@@ -162,7 +108,11 @@
     <script src="./utils/SieveTemplateLoader.js"></script>
     <script src="./utils/SieveThunderbirdImport.js"></script>
 
-    <script src="./ui/settings/SieveSettingsUI.js"></script>
+    <script src="./ui/settings/SieveServerSettingsUI.js"></script>
+    <script src="./ui/settings/SieveCredentialSettingsUI.js"></script>
+    <script src="./ui/settings/SieveAdvancedSettingsUI.js"></script>
+
+
     <script src="./ui/account/SieveScriptUI.js"></script>
     <script src="./ui/account/SieveAccountUI.js"></script>
     <script src="./ui/account/SieveAccountsUI.js"></script>

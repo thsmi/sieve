@@ -11,6 +11,8 @@
 
 "use strict";
 
+/* global $ */
+
 // Import the node modules into our global namespace...
 
 const { SieveSession } = require("./libs/libManageSieve/SieveNodeSession.js");
@@ -19,90 +21,32 @@ const { SieveAccounts } = require("./SieveAccounts.js");
 const { SieveTemplateLoader } = require("./utils/SieveTemplateLoader.js");
 const { SieveUpdater } = require("./utils/SieveUpdater.js");
 
-/**
- * Displays a simple dialog with an action button.
- */
-class SieveDialog {
+const {
+  SieveRenameScriptDialog,
+  SieveCreateScriptDialog,
+  SieveDeleteScriptDialog,
+  SieveFingerprintDialog,
+  SieveDeleteAccountDialog
+} = require("./ui/dialogs/SieveDialogUI.js");
 
-  /**
-   * Loads and shows the dialog
-   * @param {string} template
-   *   the dialog template to load
-   * @param {object<string,string>} token
-   *   key value pairs with replacement values
-   * @returns {boolean}
-   *   true in case the dialog was accepted, fals in case it was canceled
-   */
-  async show(template, onInit, onResolve, onReject) {
-    let dialog = await (new SieveTemplateLoader()).load(template);
-
-    onInit(dialog);
-
-    $("#ctx").append(dialog);
-
-    return await new Promise((resolve, reject) => {
-
-      dialog.modal('show')
-        .on('hidden.bs.modal', () => {
-          dialog.remove();
-          reject(onReject(dialog));
-        })
-        .find(".sieve-dialog-resolve").click(() => {
-          resolve(onResolve(dialog));
-          // ... now trigger the hidden listener it will cleanup
-          // it is afe to do so due to promise magics, the first
-          // alway resolve wins and all subsequent calls are ignored...
-          dialog.modal("hide");
-        });
-    });
-  }
-}
-
-
-let callback = async function (account) {
-
-  let username = account.getLogin().getUsername();
-  let displayName = account.getHost().getDisplayName();
-
-  return await (new SieveDialog()).show("./ui/app/dialog.account.password.tpl",
-    (dialog) => {
-      dialog.find(".sieve-username").text(username);
-      dialog.find(".sieve-displayname").text(displayName);
-
-      dialog.find('.sieve-password').keypress((e) => {
-        console.log("onenter");
-        if (e.which === 13) {
-          dialog.find(".sieve-dialog-resolve").trigger('click');
-        }
-      });
-    },
-    (dialog) => {
-      return dialog.find(".sieve-password").val();
-    },
-    () => {
-      return new Error("Dialog canceled");
-    }
-  );
-};
-
-let accounts = new SieveAccounts(callback).load();
+let accounts = new SieveAccounts().load();
 
 let sessions = {};
 
 let actions = {
 
-  "update-check" : async () => {
+  "update-check": async () => {
     return await (new SieveUpdater()).check();
   },
 
-  "update-goto-url" : async() => {
+  "update-goto-url": () => {
     require("electron").shell.openExternal('https://github.com/thsmi/sieve/releases/latest');
   },
 
-  "import-thunderbird" : function() {
+  "import-thunderbird": function () {
     console.log("Import Thunderbird accounts");
 
-    const {SieveThunderbirdImport} = require("./utils/SieveThunderbirdImport.js");
+    const { SieveThunderbirdImport } = require("./utils/SieveThunderbirdImport.js");
     return (new SieveThunderbirdImport()).getAccounts();
   },
 
@@ -112,7 +56,7 @@ let actions = {
     return accounts.getAccounts();
   },
 
-  "account-probe" : async function(msg) {
+  "account-probe": async function (msg) {
     console.log("probe Account");
 
     const { SieveAutoConfig } = require("./libs/libManageSieve/SieveAutoConfig.js");
@@ -123,7 +67,9 @@ let actions = {
 
   "account-create": function (msg) {
     console.log("create Account");
-    return accounts.create(msg.payload);
+    accounts.create(msg.payload);
+
+    return msg.payload;
   },
 
   "account-delete": async function (msg) {
@@ -133,12 +79,7 @@ let actions = {
     let account = msg.payload.account;
     let displayName = accounts.getAccountById(account).getHost().getDisplayName();
 
-    let rv = await new SieveDialog().show(
-      "./ui/app/dialog.account.delete.tpl",
-      (dialog) => { dialog.find("#sieve-dialog-account-remove-name").text(displayName); },
-      () => { return true; },
-      () => { return false; }
-    );
+    let rv = await (new SieveDeleteAccountDialog(displayName)).show();
 
     if (rv)
       accounts.remove(account);
@@ -153,22 +94,66 @@ let actions = {
   "account-get-server": function (msg) {
     let account = accounts.getAccountById(msg.payload.account);
 
+    let host = account.getHost();
+
     return {
-      displayName: account.getHost().getDisplayName(),
-      hostname: account.getHost().getHostname(),
-      secure: account.getHost().isSecure(),
-      port: account.getHost().getPort(),
-      fingerprint : account.getHost().getFingerprint()
+      displayName: host.getDisplayName(),
+      hostname: host.getHostname(),
+      port: host.getPort(),
+      fingerprint: host.getFingerprint()
     };
   },
 
-  "account-get-authentication": function (msg) {
+  "account-get-settings" : function(msg) {
+    // for the settings menu
+    let account = accounts.getAccountById(msg.payload.account);
+
+    let host = account.getHost();
+    return {
+      displayName: host.getDisplayName(),
+      hostname: host.getHostname(),
+      port: host.getPort(),
+      fingerprint: host.getFingerprint(),
+
+      secure: account.getSecurity().isSecure(),
+
+      mechanism: account.getSecurity().getMechanism(),
+      username : account.getAuthentication().getUsername()
+    };
+  },
+
+  "account-setting-get-credentials": function (msg) {
     let account = accounts.getAccountById(msg.payload.account);
 
     return {
-      mechanism: account.getLogin().getSaslMechanism(),
-      username: account.getLogin().getUsername()
+      "general" : {
+        secure: account.getSecurity().isSecure(),
+        sasl : account.getSecurity().getMechanism()
+      },
+      "authentication" : {
+        type : account.getAuthentication().getType(),
+        username: account.getAuthentication(0).getUsername()
+      },
+
+      "authorization" : {
+        type : account.getAuthorization().getType(),
+        username : account.getAuthorization(3).getAuthorization()
+      }
     };
+  },
+
+  "account-settings-set-credentials": function (msg) {
+
+    let account = accounts.getAccountById(msg.payload.account);
+
+    account.getSecurity().setSecure(msg.payload.general.secure);
+    account.getSecurity().setMechanism(msg.payload.general.sasl);
+
+    account.setAuthentication(msg.payload.authentication.mechanism);
+    account.getAuthentication(0).setUsername(msg.payload.authentication.username);
+
+    account.setAuthorization(msg.payload.authorization.mechanism);
+    account.getAuthorization(3).setAuthorization(msg.payload.authorization.username);
   },
 
   "account-get-general": function (msg) {
@@ -185,17 +170,10 @@ let actions = {
 
     account.getHost().setDisplayName(msg.payload.displayName);
     account.getHost().setHostname(msg.payload.hostname);
-    account.getHost().setSecure(msg.payload.secure);
     account.getHost().setPort(msg.payload.port);
     account.getHost().setFingerprint(msg.payload.fingerprint);
   },
 
-  "account-set-authentication": function (msg) {
-    let account = accounts.getAccountById(msg.payload.account);
-
-    account.getLogin().setSaslMechanism(msg.payload.mechanism);
-    account.getLogin().setUsername(msg.payload.username);
-  },
 
   "account-set-general": function (msg) {
     let account = accounts.getAccountById(msg.payload.account);
@@ -210,13 +188,8 @@ let actions = {
     return await sessions[msg.payload.account].capabilities();
   },
 
-  "account-cert-error" : async (msg) => {
-    let rv = await new SieveDialog().show(
-      "./ui/app/dialog.account.cert.tpl",
-      (dialog) => { dialog.find(".sieve-dialog-fingerprint").text(msg.payload.fingerprint); },
-      () => { return true; },
-      () => { return false; }
-    );
+  "account-cert-error": async (msg) => {
+    let rv = await new SieveFingerprintDialog(msg.payload.fingerprint).show();
 
     // save the fingerprint.
     if (rv === true) {
@@ -226,7 +199,7 @@ let actions = {
     }
   },
 
-  "account-connecting" : async (msg) => {
+  "account-connecting": async (msg) => {
     try {
       await sessions[msg.payload.account].connect();
     } catch (e) {
@@ -284,21 +257,38 @@ let actions = {
 
   // Script endpoint...
   "script-create": async function (msg) {
-    console.log("Create Scripts " + msg.payload.data + " for account: " + msg.payload.account);
+    console.log("Create Scripts for account: " + msg.payload.account);
 
-    await sessions[msg.payload.account].putScript(msg.payload.data, "#test\r\n");
+    let name = await(new SieveCreateScriptDialog()).show();
+
+    if (name.trim() !== "")
+      await sessions[msg.payload.account].putScript(name, "#test\r\n");
+
+    return name;
   },
 
   "script-rename": async function (msg) {
     console.log("Rename Script " + msg.payload.data + " for account: " + msg.payload.account);
 
-    await sessions[msg.payload.account].renameScript(msg.payload.old, msg.payload.new);
+    let account = msg.payload.account;
+    let newName = await (new SieveRenameScriptDialog(msg.payload.data)).show();
+
+    if (newName === msg.payload.data)
+      return false;
+
+    await sessions[account].renameScript(msg.payload.data, newName);
+    return true;
   },
 
   "script-delete": async function (msg) {
     console.log("Delete Scripts " + msg.payload.data + " for account: " + msg.payload.account);
 
-    await sessions[msg.payload.account].deleteScript(msg.payload.data);
+    let rv = await (new SieveDeleteScriptDialog(msg.payload.data)).show();
+
+    if (rv === true)
+      await sessions[msg.payload.account].deleteScript(msg.payload.data);
+
+    return rv;
   },
 
   "script-activate": async function (msg) {

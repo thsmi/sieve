@@ -164,6 +164,14 @@ gulp.task('clean', async () => {
   deleteRecursive("./build");
 });
 
+gulp.task('app:package-definition', function() {
+  const BASE_PATH = ".";
+
+  return gulp.src([
+    BASE_PATH + "/package.json"
+  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_APP));
+});
+
 gulp.task('app:package-jquery', function () {
   const BASE_PATH = "./node_modules/jquery/dist";
 
@@ -241,6 +249,7 @@ gulp.task('addon:package-license', function () {
 });
 
 gulp.task('app:package', gulp.parallel([
+  "app:package-definition",
   "app:package-src", "app:package-common",
   "app:package-jquery", "app:package-bootstrap",
   "app:package-codemirror", "app:package-license"]));
@@ -260,9 +269,10 @@ gulp.task(
         },
         out: "./build/electron/out",
         overwrite: true,
-        // packageManager : "yarn",
+        packageManager : "yarn",
         // packageManager : false,
-        prune: true
+        prune: true,
+        icon: "./../test.ico"
       };
 
       let packager = require('electron-packager');
@@ -292,7 +302,6 @@ gulp.task(
         // packageManager : false,
         prune: true
       };
-
       let packager = require('electron-packager');
       packager(options, (err) => {
         done(err);

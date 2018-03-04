@@ -90,7 +90,7 @@ net.tschmid.yautt.test.require = function (script) {
 
 net.tschmid.yautt.test.assertEquals = function assertEquals(expected, actual) {
 
-  if (expected !== actual)
+  if ("" + expected !== "" + actual)
     throw new Error("Test failed expected: \n" + expected + "\n\nBut got\n" + actual);
 
   this.logTrace(" Assert Succeded " + expected);

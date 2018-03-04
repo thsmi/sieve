@@ -3,6 +3,14 @@
     "sieve@mozdev.org": {
       "updates": [
         {
+          "version": "0.2.10",
+          "update_link": "https://github.com/thsmi/sieve/releases/download/0.2.10/sieve-0.2.10.xpi"
+        },
+        {
+          "version": "0.2.9",
+          "update_link": "https://github.com/thsmi/sieve/releases/download/0.2.9/sieve-0.2.9.xpi"
+        },
+        {
           "version": "0.2.8",
           "update_link": "https://github.com/thsmi/sieve/releases/download/0.2.8/sieve-0.2.8.xpi"
         },

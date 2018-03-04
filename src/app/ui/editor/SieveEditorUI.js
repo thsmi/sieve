@@ -686,7 +686,7 @@
 
       if (replaceTabs === false) {
         this.cm.setOption("extraKeys", null);
-        /*this.cm.setOption("extraKeys", {
+        /* this.cm.setOption("extraKeys", {
           Tab: (cm) => {
             cm.execCommand("insertTab");
           }

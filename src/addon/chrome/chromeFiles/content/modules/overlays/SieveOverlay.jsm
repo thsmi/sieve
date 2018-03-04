@@ -18,10 +18,10 @@
 // Enable Strict Mode
 "use strict";
 
-var EXPORTED_SYMBOLS = ["SieveMailWindowOverlay", "SieveToolbarOverlay"];
+let EXPORTED_SYMBOLS = ["SieveMailWindowOverlay", "SieveToolbarOverlay"];
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
+// const Cc = Components.classes;
+// const Ci = Components.interfaces;
 const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/Services.jsm");

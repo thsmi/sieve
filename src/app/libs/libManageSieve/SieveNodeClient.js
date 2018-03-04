@@ -23,6 +23,8 @@
   const tls = require('tls');
   const timers = require('timers');
 
+  const NOT_FOUND = -1;
+
   class SieveCertValidationException extends Error {
     constructor(error, cert) {
       super("Error while validating Cerificate " + error);
@@ -181,7 +183,7 @@
           }
 
           // so let's check the if the server's fingerpint matches the pinned one.
-          if (fingerprints.indexOf(cert.fingerprint) !== -1) {
+          if (fingerprints.indexOf(cert.fingerprint) !== NOT_FOUND) {
             resolve();
             this.getLogger().log('Socket upgraded! (Chain of Trust and pinned fingerprint)');
             return;
@@ -200,7 +202,7 @@
         if (error.code === "DEPTH_ZERO_SELF_SIGNED_CERT") {
 
           // Check if the fingerprint is well known...
-          if (fingerprints.indexOf(cert.fingerprint) !== -1) {
+          if (fingerprints.indexOf(cert.fingerprint) !== NOT_FOUND) {
             resolve();
 
             this.getLogger().log('Socket upgraded! (Trusted Finger Print)');

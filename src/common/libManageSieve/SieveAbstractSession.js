@@ -368,7 +368,7 @@
         this.getLogger().log("Invoking Listeners for " + callback + "\n", (1 << 4));
 
         while (iterator.length) {
-          var listener = iterator.pop();
+          let listener = iterator.pop();
           listener[callback].call(listener, arg1, arg2);
         }
 

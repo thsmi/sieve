@@ -50,7 +50,8 @@ let gEditorStatus =
       // used to detect if the script was changed via a gui...
       gui: null,
       // used to detect if the script changed upon a reconnect
-      server: null // the script's serverside checksum
+      // the script's serverside checksum
+      server: null
     }
   };
 

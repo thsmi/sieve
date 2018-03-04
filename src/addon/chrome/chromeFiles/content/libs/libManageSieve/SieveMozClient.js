@@ -17,7 +17,7 @@
 
   const Cc = Components.classes;
   const Ci = Components.interfaces;
-  const Cu = Components.utils;
+  // const Cu = Components.utils;
   const Cr = Components.results;
 
   // Handle all imports..

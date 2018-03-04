@@ -49,16 +49,16 @@ SieveTreeView.prototype.setTree
   = function (treebox) { this.treebox = treebox; };
 
 SieveTreeView.prototype.isContainer
-  = function (row) { return false; };
+  = function () { return false; };
 
 SieveTreeView.prototype.isSeparator
-  = function (row) { return false; };
+  = function () { return false; };
 
 SieveTreeView.prototype.isSorted
-  = function (row) { return false; };
+  = function () { return false; };
 
 SieveTreeView.prototype.getLevel
-  = function (row) { return 0; };
+  = function () { return 0; };
 
 SieveTreeView.prototype.getImageSrc
   = function (row, column) {
@@ -72,16 +72,16 @@ SieveTreeView.prototype.getImageSrc
   };
 
 SieveTreeView.prototype.getRowProperties
-  = function (row, props) { };
+  = function () { };
 
 SieveTreeView.prototype.getCellProperties
-  = function (row, col, props) { };
+  = function () { };
 
 SieveTreeView.prototype.getColumnProperties
-  = function (colid, col, props) { };
+  = function () { };
 
 SieveTreeView.prototype.cycleHeader
-  = function (col) { };
+  = function () { };
 
 SieveTreeView.prototype.cycleCell
   = function (row, col) {

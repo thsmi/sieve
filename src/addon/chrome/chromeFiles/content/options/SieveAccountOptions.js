@@ -36,6 +36,9 @@ let gAccount = null;
 
 const AUTH_TYPE_CUSTOM = 2;
 
+const SIEVE_RFC_PORT = 4190;
+const SIEVE_OLD_PORT = 2000;
+
 // === Server Sheet ===========================================================
 function onServerSheetLoad(account) {
   let rbHost = document.getElementById('rgHost');
@@ -55,7 +58,7 @@ function onServerSheetLoad(account) {
   // Load custom port settings
   let port = account.getHost().getPort(2);
 
-  if ((port === 2000) || (port === 4190))
+  if ((port === SIEVE_OLD_PORT) || (port === SIEVE_RFC_PORT))
     port = "";
 
   document.getElementById('txtPort').value = port;
@@ -63,9 +66,9 @@ function onServerSheetLoad(account) {
   // Load port
   port = account.getHost().getPort();
 
-  if (port === 4190)
+  if (port === SIEVE_RFC_PORT)
     rbPort.selectedIndex = 0;
-  else if (port === 2000)
+  else if (port === SIEVE_OLD_PORT)
     rbPort.selectedIndex = 1;
   else {
     rbPort.selectedIndex = 2;
@@ -109,9 +112,9 @@ function onPortSelect(idx) {
     return;
 
   if (idx === 0)
-    gAccount.getHost().setPort(4190);
+    gAccount.getHost().setPort(SIEVE_RFC_PORT);
   else if (idx === 1)
-    gAccount.getHost().setPort(2000);
+    gAccount.getHost().setPort(SIEVE_OLD_PORT);
   else
     onPortChange(document.getElementById('txtPort').value);
 
@@ -138,9 +141,9 @@ let gAutoConfigCallback =
       document.getElementById("dkAutoSelect").selectedIndex = "2";
       document.getElementById("lblAutoSelectPort").value = port;
 
-      if (port === 4190)
+      if (port === SIEVE_RFC_PORT)
         document.getElementById("rgPort").selectedIndex = 0;
-      else if (port === 2000)
+      else if (port === SIEVE_OLD_PORT)
         document.getElementById("rgPort").selectedIndex = 1;
     },
 
@@ -159,12 +162,12 @@ function onPortAutoSelect() {
 
     gAutoConfig.addHost(
       gAccount.getHost().getHostname(),
-      4190,
+      SIEVE_RFC_PORT,
       gAccount.getProxy().getProxyInfo());
 
     gAutoConfig.addHost(
       gAccount.getHost().getHostname(),
-      2000,
+      SIEVE_OLD_PORT,
       gAccount.getProxy().getProxyInfo());
 
     let port = document.getElementById("txtPort").value;
@@ -229,7 +232,7 @@ function onTLSSelect(idx) {
   if (!gAccount)
     return;
 
-  gAccount.getSecurity().setSecure(idx !== 0)
+  gAccount.getSecurity().setSecure(idx !== 0);
 }
 
 function enableLogin(type) {

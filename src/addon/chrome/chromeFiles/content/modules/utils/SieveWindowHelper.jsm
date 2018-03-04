@@ -12,12 +12,15 @@
 // Enable Strict Mode
 "use strict";
 
+/* global Components */
+/* global accountManager */
+
 const Cu = Components.utils;
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
-//525: gSivExtUtils.OpenSettings(server);
-var EXPORTED_SYMBOLS = ["SieveUtils"];
+// 525: gSivExtUtils.OpenSettings(server);
+let EXPORTED_SYMBOLS = ["SieveUtils"];
 
 let SieveUtils =
   {
@@ -123,8 +126,8 @@ let SieveUtils =
       if (typeof(window) === "undefined" || window === null)
         throw new Error("Window missing, need an owner for Accountmanager...");
 
-      let windowManager = Cc['@mozilla.org/appshell/window-mediator;1'].
-        getService(Ci.nsIWindowMediator);
+      let windowManager =
+        Cc['@mozilla.org/appshell/window-mediator;1'].getService(Ci.nsIWindowMediator);
 
       let existingAccountManager =
         windowManager.getMostRecentWindow("mailnews:accountmanager");
@@ -152,6 +155,8 @@ let SieveUtils =
      * has not focused an server, it returns the default. In case no Server is
      * configured, null is returned.
      *
+     * @param {window} window
+     *   reference to a dom window.
      * @return {nsIMsgIncomingServer}
      *   the active server or null
      */
@@ -159,7 +164,7 @@ let SieveUtils =
       try {
         // check if we got a 3pane window. If not we discard it.
         if (window && (window.document.documentElement))
-          if (window.document.documentElement.getAttribute("windowtype") != "mail:3pane")
+          if (window.document.documentElement.getAttribute("windowtype") !== "mail:3pane")
             window = null;
 
         // so let's try to get the most recent 3Pane Window

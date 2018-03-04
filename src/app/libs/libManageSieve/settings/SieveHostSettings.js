@@ -20,21 +20,47 @@
   const { SieveAbstractMechanism } = require("./SieveAbstractMechanism.js");
   const { SieveCustomHost } = require("./SieveAbstractHost.js");
 
-  class SieveCustomHost2 extends SieveCustomHost {
+  /**
+   * Extends the CustomHost implementation by a display name and fingerprint setting
+   **/
+  class SieveCustomHostEx extends SieveCustomHost {
 
+    /**
+     * @returns {string}
+     *   the display name
+     **/
     getDisplayName() {
       return this.account.prefs.getString("host.displayName", "Unnamed Account");
     }
 
+    /**
+     * Sets the account display name.
+     * @param {string} value
+     *   sets the account's display name
+     * @returns {SieveCustomHostEx}
+     *   a self reference
+     */
     setDisplayName(value) {
       this.account.prefs.setString("host.displayName", value);
       return this;
     }
 
+    /**
+     * @returns {string}
+     *   the accounts fingerprint or an empty string
+     **/
     getFingerprint() {
       return this.account.prefs.getString("host.fingerprint", "");
     }
 
+    /**
+     * Sets the account's fingerprint.
+     *
+     * @param {string} value
+     *   the accounts fingerprint
+     * @returns {SieveCustomHostEx}
+     *   a self reference
+     */
     setFingerprint(value) {
       this.account.prefs.setString("host.fingerprint", value);
       return this;
@@ -81,10 +107,9 @@
 
       switch (type) {
         default:
-          return new SieveCustomHost2(HOST_TYPE_CUSTOM, this.account);
+          return new SieveCustomHostEx(HOST_TYPE_CUSTOM, this.account);
       }
     }
-
   }
 
   exports.SieveHost = SieveHost;

@@ -16,8 +16,6 @@
 
 (function (exports) {
 
-  // hints for jshint
-
   /* global $: false */
 
   /* global SieveLexer:false */

@@ -18,6 +18,7 @@ const fs = require('fs');
 
 const BUILD_DIR_APP = "./build/electron/resources";
 const BUILD_DIR_ADDON = "./build/thunderbird/";
+const BUILD_DIR_TEST = "./build/test/";
 
 /**
  * Delete all files from the given path.
@@ -164,7 +165,7 @@ gulp.task('clean', async () => {
   deleteRecursive("./build");
 });
 
-gulp.task('app:package-definition', function() {
+gulp.task('app:package-definition', function () {
   const BASE_PATH = ".";
 
   return gulp.src([
@@ -269,7 +270,7 @@ gulp.task(
         },
         out: "./build/electron/out",
         overwrite: true,
-        packageManager : "yarn",
+        packageManager: "yarn",
         // packageManager : false,
         prune: true,
         icon: "./../test.ico"
@@ -485,3 +486,70 @@ gulp.task('addon:deploy', async () => {
   fs.writeFileSync(target, source, "utf-8");
 });
 
+
+
+gulp.task('test:package-jquery', function () {
+  const BASE_PATH = "./node_modules/jquery/dist";
+
+  return gulp.src([
+    BASE_PATH + "/jquery.min.js"
+  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_TEST + "/common/jQuery/"));
+});
+
+gulp.task(
+  'test:package-common',
+  function () {
+    const BASE_PATH = "./src/common";
+
+    return gulp.src([
+      BASE_PATH + "/**",
+
+      // Filter out the rfc documents
+      "!" + BASE_PATH + "/libSieve/**/rfc*.txt"
+    ]).pipe(gulp.dest(BUILD_DIR_TEST + '/common/'));
+  }
+);
+
+gulp.task(
+  'test:package-test-suite',
+  function () {
+    const BASE_PATH = "./tests";
+
+    return gulp.src([
+      BASE_PATH + "/**"
+    ]).pipe(gulp.dest(BUILD_DIR_TEST + '/'));
+  }
+);
+
+gulp.task(
+  'test:package-addon-src',
+  function () {
+    const BASE_PATH = "./src/addon/chrome/chromeFiles/content";
+
+    return gulp.src([
+      BASE_PATH + "/**",
+
+      "!" + BASE_PATH + "/filterList",
+      "!" + BASE_PATH + "/filterList/**"
+    ]).pipe(gulp.dest(BUILD_DIR_TEST + "/addon/"));
+  }
+);
+
+gulp.task(
+  'test:package',
+  gulp.parallel(
+    "test:package-common",
+    "test:package-addon-src",
+    "test:package-jquery",
+    "test:package-test-suite"
+  )
+);
+
+gulp.task('test:watch', async () => {
+  return gulp.watch([
+    './src/**/*.js',
+    './src/**/*.jsm',
+    './tests/**/*.json',
+    './tests/**/*.js'],
+    gulp.parallel("test:package-common", "test:package-test-suite"));
+});

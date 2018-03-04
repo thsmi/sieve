@@ -45,7 +45,7 @@
       + '\r\n'
       + 'include :personal :global "always_allow";\r\n';
 
-    let exception = "Location can be either personal or global but not both";
+    let exception = "Error: Location can be either personal or global but not both";
 
     suite.expectInvalidScript(script, exception, { "include": true });
   });

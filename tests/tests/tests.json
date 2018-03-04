@@ -1,119 +1,122 @@
 let tests = {
-
   // Generic definitions which are shared by multiple profiles...
-  "base" : {
+  "base": {
     require : [
       // JQuery
-	    "./../../src/sieve@mozdev.org/common/jQuery/jquery-2.1.1.min.js",
+      "./../common/jQuery/jquery.min.js",
       // Basic Sieve Elements
-      "./../../src/sieve@mozdev.org/common/libSieve/toolkit/SieveParser.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/toolkit/SieveLexer.js",
-
-      "./../../src/sieve@mozdev.org/common/libSieve/toolkit/SieveScriptDOM.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/toolkit/logic/Elements.js" ]
+      "./../common/libSieve/toolkit/SieveParser.js",
+      "./../common/libSieve/toolkit/SieveLexer.js",
+      "./../common/libSieve/toolkit/SieveScriptDOM.js",
+      "./../common/libSieve/toolkit/logic/Elements.js"
+    ]
   },
-
-  "rfc5228" : {
+  "rfc5228": {
     require : [
-      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveWhiteSpaces.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveStrings.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveMatchTypes.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveAddressParts.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveNumbers.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveBlocks.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveTests.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveOperators.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveConditions.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveActions.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/RFC5228/logic/SieveImports.js" ],
+      "./../common/libSieve/RFC5228/logic/SieveWhiteSpaces.js",
+      "./../common/libSieve/RFC5228/logic/SieveStrings.js",
+      "./../common/libSieve/RFC5228/logic/SieveMatchTypes.js",
+      "./../common/libSieve/RFC5228/logic/SieveAddressParts.js",
+      "./../common/libSieve/RFC5228/logic/SieveNumbers.js",
+      "./../common/libSieve/RFC5228/logic/SieveBlocks.js",
+      "./../common/libSieve/RFC5228/logic/SieveTests.js",
+      "./../common/libSieve/RFC5228/logic/SieveOperators.js",
+      "./../common/libSieve/RFC5228/logic/SieveConditions.js",
+      "./../common/libSieve/RFC5228/logic/SieveActions.js",
+      "./../common/libSieve/RFC5228/logic/SieveImports.js"
+    ],
     extend  : "base",
   },
-
-  "sieve" : {
+  "sieve": {
     script : "./sieve/SieveRFC5228Test.js",
     extend : "rfc5228",
     require : [
-      "./validators/ScriptValidator.js" ]
+      "./validators/ScriptValidator.js"
+    ]
   },
-
   // Specialized profiles which contain the tests...
-  "matchTypes" : {
+  "matchTypes": {
     script : "./sieve/SieveMatchTypeTest.js",
     extend : "rfc5228",
     require : [
-      "./validators/ScriptValidator.js" ]
+      "./validators/ScriptValidator.js"
+    ]
   },
-
-  "variables" : {
+  "variables": {
     script : "./sieve/SieveVariablesTest.js",
     extend : "rfc5228",
     require : [
       "./validators/ScriptValidator.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/variables/logic/SieveVariables.js"]
+      "./../common/libSieve/variables/logic/SieveVariables.js"
+    ]
   },
-
-  "regex" : {
+  "regex": {
     script  : "./sieve/SieveRegExTest.js",
     extend  : "rfc5228",
     require : [
       "./validators/ScriptValidator.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/regex/logic/SieveRegularExpression.js"]
+      "./../common/libSieve/regex/logic/SieveRegularExpression.js"
+    ]
   },
-
-  "body" : {
+  "body": {
     script : "./sieve/SieveBodyTest.js",
     extend : "rfc5228",
     require : [
       "./validators/ScriptValidator.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/body/logic/SieveBody.js"]
+      "./../common/libSieve/body/logic/SieveBody.js"
+    ]
   },
-
-  "vacation" : {
+  "vacation": {
     script : "./sieve/SieveVacationTest.js",
     extend : "rfc5228",
     require : [
       "./validators/ScriptValidator.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/vacation/logic/SieveVacation.js"]
+      "./../common/libSieve/vacation/logic/SieveVacation.js"
+    ]
   },
-
-  "include" : {
+  "include": {
     script : "./sieve/SieveIncludeTest.js",
     extend : "rfc5228",
     require : [
       "./validators/ScriptValidator.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/include/logic/SieveInclude.js"]
+      "./../common/libSieve/include/logic/SieveInclude.js"
+    ]
   },
-
-  "relational" : {
+  "relational": {
     script : "./sieve/SieveRelationalTest.js",
     extend : "rfc5228",
     require : [
       "./validators/ScriptValidator.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/relational/logic/SieveRelational.js"]
+      "./../common/libSieve/relational/logic/SieveRelational.js"
+    ]
   },
-
-  "mailbox" : {
+  "mailbox": {
     script : "./sieve/SieveMailboxTest.js",
     extend : "rfc5228",
     require : [
       "./validators/ScriptValidator.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/mailbox/logic/SieveMailbox.js"]
+      "./../common/libSieve/mailbox/logic/SieveMailbox.js"
+    ]
   },
-
-  "subaddress" : {
+  "subaddress": {
     script : "./sieve/SieveSubaddressTest.js",
     extend : "rfc5228",
     require : [
       "./validators/ScriptValidator.js",
-      "./../../src/sieve@mozdev.org/common/libSieve/subaddress/logic/SieveSubaddress.js"]
+      "./../common/libSieve/subaddress/logic/SieveSubaddress.js"
+    ]
   },
-
-  "managesieve" : {
+  "managesieve": {
     script : "./managesieve/ManageSieveTest.js",
     require : [
-      "./../../src/sieve@mozdev.org/common/libManageSieve/SieveRequest.js",
-      "./../../src/sieve@mozdev.org/common/libManageSieve/SieveResponse.js",
-      "./../../src/sieve@mozdev.org/common/libManageSieve/SieveResponseParser.js",
-      "./../../src/sieve@mozdev.org/common/libManageSieve/SieveResponseCodes.js"]
+      "./managesieve/Require.js",
+      "./../common/libManageSieve/SieveResponseCodes.js",
+      "./../common/libManageSieve/SieveResponse.js",
+      "./../common/libManageSieve/SieveRequest.js",
+      "./../common/libManageSieve/SieveAbstractResponseParser.js",
+      "./../common/libManageSieve/SieveAbstractRequestBuilder.js",
+      "./../addon/libs/libManageSieve/SieveMozRequestBuilder.js",
+      "./../addon/libs/libManageSieve/SieveMozResponseParser.js"
+    ]
   }
 }

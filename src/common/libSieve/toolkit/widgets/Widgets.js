@@ -99,8 +99,8 @@
   SieveTabWidget.prototype.init
     = function (tabs, content) {
 
-      $(this._tabs + ' > div').click(() => {
-        this.onTabChange(this);
+      $(this._tabs + ' > div').click((ev) => {
+        this.onTabChange(ev.target);
       });
     };
 

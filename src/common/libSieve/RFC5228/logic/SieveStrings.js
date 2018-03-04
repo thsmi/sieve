@@ -318,7 +318,7 @@
         if (this.elements.length)
           parser.extractChar(",");
 
-        let element = [];
+        let element = [null, null, null];
 
         if (this._probeByName("whitespace", parser))
           element[0] = this._createByName("whitespace", parser);

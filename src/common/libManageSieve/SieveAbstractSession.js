@@ -214,8 +214,11 @@
       },
 
       onAuthenticate: function (response) {
+
         // update capabilites
         this.sieve.setCompatibility(response.getCompatibility());
+        // update the sasl mechanism
+        this.sieve.capabilities.sasl = response.getSasl();
 
         this._invokeListeners("onChannelStatus", 3, "progress.authenticating");
 

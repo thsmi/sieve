@@ -63,7 +63,7 @@ BogusChannel.prototype = {
     Components.returnCode = NS_ERROR_NO_CONTENT;
   },
 
-  open2: function() {
+  open2: function () {
     Components.returnCode = NS_ERROR_NO_CONTENT;
   },
 
@@ -73,7 +73,7 @@ BogusChannel.prototype = {
     Components.returnCode = NS_ERROR_NO_CONTENT;
   },
 
-  asyncOpen2: function() {
+  asyncOpen2: function () {
     Components.returnCode = NS_ERROR_NO_CONTENT;
   },
 
@@ -151,13 +151,22 @@ SieveProtocolHandler.prototype =
 
     newURI: function (spec, charset, baseURI) {
 
-      // Thunderbird 60 introduced standard-url-mutator and dropped standard-url
+      // Thunderbird 60 dropped standard-url, the successor is standard-url-mutator
       if (Components.classes['@mozilla.org/network/standard-url-mutator;1']) {
-        return Components.classes["@mozilla.org/network/standard-url-mutator;1"]
-          .createInstance(Components.interfaces.nsIStandardURLMutator)
-          .init(Components.interfaces.nsIStandardURL.URLTYPE_AUTHORITY, this.defaultPort, spec, charset, baseURI)
-          .finalize()
-          .QueryInterface(Components.interfaces.nsIStandardURL);
+
+        // Thunderbird 59 has a standard-url-mutator but it is broken.
+        // in this case we fail here with an NS_ERROR_XPC_BAD_IID exception.
+        try {
+          return Components.classes["@mozilla.org/network/standard-url-mutator;1"]
+            .createInstance(Components.interfaces.nsIStandardURLMutator)
+            .init(Components.interfaces.nsIStandardURL.URLTYPE_AUTHORITY, this.defaultPort, spec, charset, baseURI)
+            .finalize()
+            .QueryInterface(Components.interfaces.nsIStandardURL);
+        }
+        catch (ex) {
+          if (ex.name !== "NS_ERROR_XPC_BAD_IID")
+            throw ex;
+        }
       }
 
       let url = Cc["@mozilla.org/network/standard-url;1"].createInstance(Ci.nsIStandardURL);
@@ -173,7 +182,7 @@ SieveProtocolHandler.prototype =
       return this.newChannel2(URI);
     },
 
-    newChannel2: function(URI, loadInfo) {
+    newChannel2: function (URI, loadInfo) {
       let ios = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
 
       if (!ios.allowPort(URI.port, URI.scheme))

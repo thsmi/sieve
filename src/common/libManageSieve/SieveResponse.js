@@ -716,7 +716,9 @@
     };
 
   /**
-   * Parses the server-final-message. It is defined to be:
+   * Parses the server-final-message.
+   *
+   *  It is defined to be:
    *   (server-error / verifier) ["," extensions]
    *
    * Where
@@ -728,12 +730,17 @@
    *
    * @param {SieveResponseParser} parser
    *   the parser which should be to process the message.
+   * @param {String} [data]
+   *   optional, the server's final message. It omitted it
+   *   will be parsed from the response.
    * @returns {void}
    */
   SieveSaslScramSha1Response.prototype._parseFinalMessage
-    = function (parser) {
+    = function (parser, data) {
 
-      let data = parser.extractString();
+      if (typeof (data) === "undefined" || data === null)
+        data = parser.extractString();
+
       // server-final-message = (server-error / verifier) ["," extensions]
       let token = parser.convertFromBase64(data).split(",");
 
@@ -793,7 +800,7 @@
       if (this.state === 1) {
         SieveSimpleResponse.call(this, parser);
 
-        this._parseFinalMessage(this.getResponseCode().getSasl(), parser);
+        this._parseFinalMessage(parser, this.getResponseCode().getSasl(), parser);
 
         this.state = 4;
 

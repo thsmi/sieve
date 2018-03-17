@@ -204,7 +204,10 @@ if (typeof (module) === "undefined" || !module.exports)
 
 
   /**
+   * Sets the sasl mechanisms username. Not all SASL Mechanisms require an username.
+   *
    * @param {String} username
+   *   the username
    * @return {void}
    **/
   SieveAbstractSaslRequest.prototype.setUsername
@@ -665,6 +668,10 @@ if (typeof (module) === "undefined" || !module.exports)
 
   // ****************************************************************************//
 
+  /**
+   * Initializes switching to tls via start tls
+   * @constructor
+   */
   function SieveStartTLSRequest() {
   }
 
@@ -684,7 +691,10 @@ if (typeof (module) === "undefined" || !module.exports)
         this.responseListener.onStartTLSResponse(response);
     };
 
-  /** @param {SieveResponseParser} parser */
+  /**
+   *  @param {SieveResponseParser} parser
+   *  @returns {void}
+  */
   SieveStartTLSRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,

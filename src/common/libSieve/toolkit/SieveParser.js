@@ -97,7 +97,7 @@
    *
    * In case the length parameter is neiter a string nor a parameter and exception is thrown.
    *
-   * @param {} length
+   * @param {int|string} length
    *   Can be an integer which defines an absolute number of bytes which should be skipped.
    *   Or a string, which will be matched case sensitive and extracted.
    *

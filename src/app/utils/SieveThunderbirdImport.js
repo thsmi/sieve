@@ -20,6 +20,8 @@
   const PREF_KEY_SERVER_HOSTNAME = '^.*user_pref\\(.*"mail.server.%server%.hostname".*,.*"(.*)"\\);.*$';
   const PREF_KEY_SERVER_NAME = '^.*user_pref\\(.*"mail.server.%server%.name".*,.*"(.*)"\\);.*$';
 
+  const FIRST_MATCH = 1;
+
 
   /**
    * Imports Account settings from thunderbird's profile directory.
@@ -54,7 +56,7 @@
           isDefault = true;
 
         if (line.toLocaleLowerCase().startsWith("path="))
-          path = line.split("=")[1];
+          path = line.split("=")[FIRST_MATCH];
 
         if (line.toLocaleLowerCase() === "isrelative=1")
           isRelative = true;
@@ -158,20 +160,20 @@
       let results = [];
       let profile = this.getProfile();
 
-      let accounts = (new RegExp(PREF_KEY_ACCOUNTS, "gm")).exec(profile)[1].split(",");
+      let accounts = (new RegExp(PREF_KEY_ACCOUNTS, "gm")).exec(profile)[FIRST_MATCH].split(",");
 
       for (let account of accounts) {
 
-        let server = (new RegExp(PREF_KEY_SERVER.replace("%account%", account), "gm")).exec(profile)[1];
-        let type = (new RegExp(PREF_KEY_SERVER_TYPE.replace("%server%", server), "gm")).exec(profile)[1];
+        let server = (new RegExp(PREF_KEY_SERVER.replace("%account%", account), "gm")).exec(profile)[FIRST_MATCH];
+        let type = (new RegExp(PREF_KEY_SERVER_TYPE.replace("%server%", server), "gm")).exec(profile)[FIRST_MATCH];
 
         if (type !== "imap")
           continue;
 
         let result = {};
-        result["username"] = (new RegExp(PREF_KEY_SERVER_USERNAME.replace("%server%", server), "gm")).exec(profile)[1];
-        result["hostname"] = (new RegExp(PREF_KEY_SERVER_HOSTNAME.replace("%server%", server), "gm")).exec(profile)[1];
-        result["name"] = (new RegExp(PREF_KEY_SERVER_NAME.replace("%server%", server), "gm")).exec(profile)[1];
+        result["username"] = (new RegExp(PREF_KEY_SERVER_USERNAME.replace("%server%", server), "gm")).exec(profile)[FIRST_MATCH];
+        result["hostname"] = (new RegExp(PREF_KEY_SERVER_HOSTNAME.replace("%server%", server), "gm")).exec(profile)[FIRST_MATCH];
+        result["name"] = (new RegExp(PREF_KEY_SERVER_NAME.replace("%server%", server), "gm")).exec(profile)[FIRST_MATCH];
 
         results.push(result);
       }

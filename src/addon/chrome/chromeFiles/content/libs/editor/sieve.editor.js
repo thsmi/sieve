@@ -22,7 +22,7 @@
     setListener: function (listener) {
       this.listener = listener;
 
-      var that = this;
+      let that = this;
       this.broker.setListener(function (event, data) { that.onMessage(event, data); });
     },
 
@@ -118,7 +118,7 @@
     },
 
     findString: function (token, isCaseSensitive, isReverse) {
-      var data = {};
+      let data = {};
       data.token = token;
       data.isCaseSensitive = isCaseSensitive;
       data.isReverse = isReverse;
@@ -127,7 +127,7 @@
     },
 
     replaceString: function (oldToken, newToken, isCaseSensitive, isReverse) {
-      var data = {};
+      let data = {};
       data.oldToken = oldToken;
       data.newToken = newToken;
       data.isCaseSensitive = isCaseSensitive;

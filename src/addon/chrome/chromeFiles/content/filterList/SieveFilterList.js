@@ -15,7 +15,6 @@
 /* global SieveOverlayManager */
 /* global SieveAbstractChannel */
 /* global SieveConnections */
-/* global SieveAccountManager */
 
 "use strict";
 

@@ -44,10 +44,18 @@
       this.host = new SieveHost(this);
     }
 
+    /**
+     * @returns {SieveHost}
+     *   the current host settings
+     **/
     getHost() {
       return this.host.get();
     }
 
+    /**
+     *  @returns {SieveSecurity}
+     *   the current security settings
+     */
     getSecurity() {
       return this.security;
     }

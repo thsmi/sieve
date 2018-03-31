@@ -433,7 +433,7 @@
 
   /**
    * Returns a list containing a SieveAccounts configured for every compatible
-   * nsIMsgIncommingServer in Thunderbird's AccountManager. Compatible accounts
+   * nsIMsgIncomingServer in Thunderbird's AccountManager. Compatible accounts
    * are POP3 and IMAP.
    *
    * @return {SieveAccount[]}
@@ -470,13 +470,13 @@
     };
 
   /**
-   * Loads and returns a SieveAccount for the specified nsIMsgIncommingServer.
+   * Loads and returns a SieveAccount for the specified nsIMsgIncomingServer.
    *
-   * @param {nsIMsgIncommingServer} server
-   *   the incomming server for which the sieve account should be returend
+   * @param {nsIMsgIncomingServer} server
+   *   the incoming server for which the sieve account should be returend
    *
    * @return {SieveAccount}
-   *   a SieveAccount for the incomming server
+   *   a SieveAccount for the incoming server
    */
   SieveAccounts.prototype.getAccountByServer
     = function (server) {

@@ -74,7 +74,7 @@ let SieveTabType =
           if (!aTab.panel.contentWindow.onWindowPersist)
             return null;
 
-          var args = aTab.panel.contentWindow.onWindowPersist();
+          let args = aTab.panel.contentWindow.onWindowPersist();
 
           if (aTab.uri)
             args["uri"] = aTab.uri;
@@ -89,20 +89,20 @@ let SieveTabType =
     },
 
     showTab: function onShowTab(aTab) {
-      //aTab.panel.setAttribute("type", "content-primary");
+      // aTab.panel.setAttribute("type", "content-primary");
     },
 
     saveTabState: function onSaveTabState(aTab) {
     },
 
     onTitleChanged: function (aTab, aTabNode) {
-      /*Cu.reportError("OnTitleChanged"+aTab.panel.contentWindow.document.title);*/
+      /* Cu.reportError("OnTitleChanged"+aTab.panel.contentWindow.document.title); */
       aTab.title = aTab.panel.contentWindow.document.title;
       aTab.busy = false;
     },
 
     tryCloseTab: function (aTab) {
-      var callback = function () {
+      let callback = function () {
         aTab.panel.ownerDocument.getElementById("tabmail").closeTab(aTab);
       };
 
@@ -134,7 +134,7 @@ let SieveTabType =
           return true;
 
         // We continue closing the window...
-        var callback = function () {
+        let callback = function () {
           aTab.panel.ownerDocument.defaultView.close();
         };
 

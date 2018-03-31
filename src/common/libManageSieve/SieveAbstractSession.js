@@ -214,8 +214,11 @@
       },
 
       onAuthenticate: function (response) {
+
         // update capabilites
         this.sieve.setCompatibility(response.getCompatibility());
+        // update the sasl mechanism
+        this.sieve.capabilities.sasl = response.getSasl();
 
         this._invokeListeners("onChannelStatus", 3, "progress.authenticating");
 
@@ -368,7 +371,7 @@
         this.getLogger().log("Invoking Listeners for " + callback + "\n", (1 << 4));
 
         while (iterator.length) {
-          var listener = iterator.pop();
+          let listener = iterator.pop();
           listener[callback].call(listener, arg1, arg2);
         }
 

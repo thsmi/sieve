@@ -10,17 +10,16 @@
  */
 
 /* global Components */
-/* global SieveAccountManager */
 
 // Enable Strict Mode
 "use strict";
 
 let EXPORTED_SYMBOLS = ["SieveConnections"];
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cr = Components.results;
-const Cu = Components.utils;
+// const Cc = Components.classes;
+// const Ci = Components.interfaces;
+// const Cr = Components.results;
+// const Cu = Components.utils;
 
 Components.utils.import("chrome://sieve/content/modules/sieve/SieveRequire.jsm");
 const { SieveAccountManager } = require("./settings/SieveMozAccounts.js");
@@ -78,7 +77,10 @@ SieveConnectionManager.prototype =
   {
     /**
      * Creates and opens a new Manage Sieve Session
-     * @return {int} a handle to the open session
+     * @param {string} accountId
+     *   the accounts unique id
+     * @return {int}
+     *   a handle to the open session
      */
     createSession: function (accountId) {
       // The session id should be something unique. As Mozilla garantees, that...
@@ -101,6 +103,7 @@ SieveConnectionManager.prototype =
      * afer creating it, otherwise the channel might get blocked
      *
      * @param {string} sid
+     *   the unique session id
      * @return {}
      */
     createChannel: function (sid) {
@@ -214,6 +217,7 @@ SieveConnectionManager.prototype =
      * @param {string} cid
      *   An Identifier the channel
      * @return {SieveMozSession}
+     *   a reference to the session object
      */
     getChannel: function (sid, cid) {
       if (!this.sessions[sid])

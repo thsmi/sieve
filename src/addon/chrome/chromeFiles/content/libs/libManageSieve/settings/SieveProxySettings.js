@@ -103,6 +103,10 @@
    **/
   class SieveSocks4Proxy extends SieveAbstractProxy {
 
+    /**
+     * @returns {string}
+     *   returns the configuration key
+     */
     getPrefKey() {
       return CONFIG_SOCKS4;
     }

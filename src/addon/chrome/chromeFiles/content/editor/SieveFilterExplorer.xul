@@ -40,7 +40,7 @@
       <menulist id="menuImapAccounts" oncommand="onSelectAccount();">
 	  </menulist>
       <spacer flex="1"/>
-      <box id="btnDonate"  onclick="onDonate();"/>
+      <box id="btnDonate"/>
   </hbox>
 
   <grid flex="1" id="gridList" >
@@ -71,7 +71,7 @@
 
             </tree>
             <vbox>
-              <button id="btnServerDetails" oncommand="onServerDetails();" flex="1">
+              <button id="btnServerDetails" flex="1">
                 <hbox flex="1"  align="center" >
                   <image pack="center" id="imgServerDetails" height="9px" width="9px"
                          src="chrome://global/skin/tree/twisty-clsd.png" />
@@ -111,19 +111,13 @@
             </vbox>
           </vbox>
         <vbox>
-          <button id="newButton" label="&list.new;"
-                  oncommand="onNewClick();"/>
-          <button id="editButton" label="&list.edit;"
-                  oncommand="onEditClick();"/>
-          <button id="deleteButton" label="&list.delete;"
-                  oncommand="onDeleteClick();"/>
-          <button id="renameButton" label="&list.rename;"
-                  oncommand="onRenameClick();"/>
-          <button id="btnActivateScript" label="&list.activate;"
-                  oncommand="onActivateClick();"/>
+          <button id="btnNewButton" label="&list.new;"/>
+          <button id="btnEditButton" label="&list.edit;"/>
+          <button id="btnDeleteButton" label="&list.delete;"/>
+          <button id="btnRenameButton" label="&list.rename;"/>
+          <button id="btnActivateScript" label="&list.activate;"/>
           <spacer flex="1"/>
-          <button id="settings" label="&list.settings;"
-                   oncommand="onSettingsClick();"/>
+          <button id="btnSettings" label="&list.settings;"/>
           <spacer flex="1"/>
         </vbox>
       </row>

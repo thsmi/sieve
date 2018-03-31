@@ -17,7 +17,7 @@
 
   const Cc = Components.classes;
   const Ci = Components.interfaces;
-  const Cu = Components.utils;
+  // const Cu = Components.utils;
   const Cr = Components.results;
 
   // Handle all imports..
@@ -326,8 +326,8 @@
       this.binaryOutStream.setOutputStream(this.outstream);
 
       let stream = this.socket.openInputStream(0, 0, 0);
-      let pump = Cc["@mozilla.org/network/input-stream-pump;1"].
-        createInstance(Ci.nsIInputStreamPump);
+      let pump = Cc["@mozilla.org/network/input-stream-pump;1"]
+        .createInstance(Ci.nsIInputStreamPump);
 
       // the guys at mozilla changed their api without caring
       // about backward compatibility. Which means we need

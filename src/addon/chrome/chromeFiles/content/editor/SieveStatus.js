@@ -195,7 +195,8 @@ function onBadCertOverride(targetSite, permanent) {
       throw new Error("Status does not contain a certificate...");
 
     overrideService.rememberValidityOverride(
-      targetSite.split(":")[0], // Host Name with port (host:port)
+      // Host Name with port (host:port)
+      targetSite.split(":")[0],
       targetSite.split(":")[1],
       cert,
       flags,

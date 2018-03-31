@@ -61,23 +61,6 @@
     }
 
     /**
-     * Converts an byte array into a string.
-     *
-     * @param {byte[]} byteArray
-     *   the byte array which should be converted.
-     * @param {String} [encoding]
-     *   the byte arrays encoding.
-     * @return {String} the converted string.
-     */
-    convertToString(byteArray, encoding) {
-      if (typeof(encoding) === "undefined" || encoding === null)
-        encoding = "utf8";
-
-      byteArray = new Uint8Array(byteArray);
-      return (new TextDecoder(encoding)).decode(byteArray);
-    }
-
-    /**
      * @inheritdoc
      */
     calculateByteLength(data) {
@@ -89,9 +72,11 @@
      */
     convertToBase64(decoded) {
 
-      if (Array.isArray(decoded)) {
-        decoded = this.convertToString(decoded, "latin1");
-      }
+      // btoa is a bit strange it requires a javascript (unicode) string
+      // which contains only latin1 codepoint.
+
+      if (Array.isArray(decoded))
+        decoded = String.fromCharCode(...new Uint8Array(decoded));
 
       return btoa(decoded);
     }

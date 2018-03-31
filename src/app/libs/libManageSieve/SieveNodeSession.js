@@ -639,7 +639,7 @@
           // first we explicitely request the capabilites
           let request = this.createCapabilitiesRequest();
           request.addResponseListener(
-            { "onCapabilitiesResponse" : (response) => { callback.onCapabilitiesResponse(response, resolve); }});
+            { "onCapabilitiesResponse": (response) => { callback.onCapabilitiesResponse(response, resolve); } });
           this.sieve.addRequest(request);
 
           // With a bugfree server we endup with two capability request, one
@@ -824,11 +824,11 @@
       if (typeof (port) === "undefined")
         port = this.account.getHost().getPort();
 
-        await this.connect2(hostname, port);
+      await this.connect2(hostname, port);
 
-        await this.startTLS();
+      await this.startTLS();
 
-        await this.authenticate();
+      await this.authenticate();
 
       return this;
     }

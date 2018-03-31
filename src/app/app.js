@@ -460,7 +460,7 @@ let actions = {
   },
 
   "get-preference": (msg) => {
-    const { SievePrefManager } = require('./utils/SievePrefManager.js');
+    const { SievePrefManager } = require('./lib/libManageSieve/settings/SievePrefManager.js');
 
     let pref = new SievePrefManager("editor");
 
@@ -483,10 +483,9 @@ let actions = {
   },
 
   "set-preference": (msg) => {
-    const { SievePrefManager } = require('./utils/SievePrefManager.js');
+    const { SievePrefManager } = require('./lib/libManageSieve/settings/SievePrefManager.js');
 
     let pref = new SievePrefManager("editor");
-
     pref.setValue(msg.payload.key, msg.payload.value);
   }
 

@@ -37,6 +37,18 @@
     }
 
     /**
+     * Returns a specific value.
+     * @param {String} key
+     *   the key which should be returned.
+     * @returns {Object}
+     *   the value or undefined in case it does not exist.
+     */
+    getValue(key) {
+      let values = this.getValues();
+      return values[key];
+    }
+
+    /**
      * Sets and persists the given preference.
      *
      * @param {String} key

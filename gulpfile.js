@@ -164,7 +164,7 @@ gulp.task('clean', async () => {
   deleteRecursive("./build");
 });
 
-gulp.task('app:package-definition', function() {
+gulp.task('app:package-definition', function () {
   const BASE_PATH = ".";
 
   return gulp.src([
@@ -202,6 +202,16 @@ gulp.task('app:package-bootstrap', function () {
     BASE_PATH + "/css/*.min.css",
     BASE_PATH + "/js/*.bundle.min.js"
   ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_APP + '/libs/bootstrap'));
+});
+
+gulp.task('app:package-fontawesome', function () {
+  const BASE_PATH = "./node_modules/@fortawesome/fontawesome-free-webfonts";
+
+  return gulp.src([
+    BASE_PATH + "/css/fa-regular.css",
+    BASE_PATH + "/webfonts/fa-regular-400.woff2",
+    BASE_PATH + "/LICENSE.txt"
+  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_APP + '/libs/fontawesome'));
 });
 
 gulp.task('app:package-license', function () {
@@ -252,7 +262,8 @@ gulp.task('app:package', gulp.parallel([
   "app:package-definition",
   "app:package-src", "app:package-common",
   "app:package-jquery", "app:package-bootstrap",
-  "app:package-codemirror", "app:package-license"]));
+  "app:package-fontawesome", "app:package-codemirror",
+  "app:package-license"]));
 
 gulp.task(
   'app:package-win32',
@@ -269,7 +280,7 @@ gulp.task(
         },
         out: "./build/electron/out",
         overwrite: true,
-        packageManager : "yarn",
+        packageManager: "yarn",
         // packageManager : false,
         prune: true,
         icon: "./../test.ico"

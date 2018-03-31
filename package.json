@@ -6,16 +6,16 @@
     "doc": "docs",
     "test": "tests"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@fortawesome/fontawesome-free-webfonts": "^1.0.5",
     "bootstrap": "^4.0.0",
-    "codemirror": "^5.33.0",
-    "electron": "^1.8.2",
-    "electron-packager": "^10.1.0",
-    "eslint": "^4.14.0",
+    "codemirror": "^5.36.0",
+    "electron": "^2.0.0-beta.6",
+    "electron-packager": "^11.2.0",
+    "eslint": "^4.19.0",
     "gulp": "^4.0.0",
     "gulp-zip": "^4.1.0",
-    "jquery": "^3.2.1"
+    "jquery": "^3.3.1"
   },
   "scripts": {
     "start": "./node_modules/.bin/electron ./build/electron/resources/",

@@ -12,7 +12,7 @@
 
   "use strict";
 
-  const { SievePrefManager } = require('./utils/SievePrefManager.js');
+  const { SievePrefManager } = require('./libs/libManageSieve/settings/SievePrefManager.js');
   const { SieveAuthorization } = require("./libs/libManageSieve/settings/SieveAuthorizationSettings.js");
   const { SieveAuthentication } = require("./libs/libManageSieve/settings/SieveAuthenticationSettings.js");
   const { SieveSecurity } = require("./libs/libManageSieve/settings/SieveSecuritySettings.js");

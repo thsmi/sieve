@@ -53,7 +53,7 @@
             try {
               account = await SieveIpcClient.sendMessage("account-probe", account);
             } catch (ex) {
-              alert("Failed to import"+ ex);
+              alert("Failed to import" + ex);
               resolve(false);
 
               dialog.find(".sieve-import-items").show();

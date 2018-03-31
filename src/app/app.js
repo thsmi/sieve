@@ -18,6 +18,8 @@
 const { SieveSession } = require("./libs/libManageSieve/SieveNodeSession.js");
 const { SieveAccounts } = require("./SieveAccounts.js");
 
+const { SievePrefManager } = require('./libs/libManageSieve/settings/SievePrefManager.js');
+
 const { SieveTemplateLoader } = require("./utils/SieveTemplateLoader.js");
 const { SieveUpdater } = require("./utils/SieveUpdater.js");
 
@@ -460,7 +462,6 @@ let actions = {
   },
 
   "get-preference": (msg) => {
-    const { SievePrefManager } = require('./utils/SievePrefManager.js');
 
     let pref = new SievePrefManager("editor");
 
@@ -483,8 +484,6 @@ let actions = {
   },
 
   "set-preference": (msg) => {
-    const { SievePrefManager } = require('./utils/SievePrefManager.js');
-
     let pref = new SievePrefManager("editor");
 
     pref.setValue(msg.payload.key, msg.payload.value);

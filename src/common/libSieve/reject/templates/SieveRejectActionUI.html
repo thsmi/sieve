@@ -1,69 +1,34 @@
-<!DOCTYPE html>
+<div>
+    <ul id="template-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-redirect" role="tab">Reject</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+        </li>
+    </ul>
 
-<!--
+    <div id="template-content">
+        <div class="tab-content m-2">
+            <div class="tab-pane fade show active" id="sieve-widget-redirect" role="tabpanel">
 
-  The contents of this file are licenced. You may obtain a copy of 
-  the license at https://github.com/thsmi/sieve/ or request it via 
-  email from the author.
- 
-  Do not remove or change this comment.
-  
-  The initial author of the code is:
-    Thomas Schmid <schmid-thomas@gmx.net>
-
--->
-
-<html>
-
-<head>
-    <meta charset="UTF-8">
-    <title>Extended Reject Action</title>
-</head>
-
-<body>
-    <div id="sivDialogReject" class="dialog">
-        <style>
-            @import url('./toolkit/widgets/tabDialog.css');
-            /* Style the existing elements */
-            
-            #sivRejectGeneralContent textarea {
-                width: 100%;
-                height: 100px;
-            }
-        </style>
-
-        <div>
-            <!-- System -->
-            <div id="sivEditMain">
-                <!-- Appbar -->
-                <div class="dialog-header">
-                    <div class="dialog-tab">
-                        <div class="tab-active" data-tab-content="sivRejectGeneralContent">BASIC</div>
-                        <div data-tab-content="sivRejectHelpContent">HELP</div>
-                    </div>
+                <div class="alert alert-warning" role="alert">
+                    Reject is unsafe and was replaced by the ereject.
                 </div>
-                <!-- content -->
-                <div class="dialog-tab-content">
-                    <!-- content for help tab -->
-                    <div id="sivRejectHelpContent">
-                        <p> </p>
-                    </div>
 
-                    <!-- content for general tab -->
-                    <div id="sivRejectGeneralContent" class="tab-active">
-                        <h1>Notice</h1>
-                        <div>
-                            Reject is replaced by the ereject and should not be used anymore, because it is unsafe. The ereject action is similar to
-                            reject, but will always favor protocol-level message rejection.
-                        </div>
-                        <h1>Reject incomming messages and reply the following reason:</h1>
-                        <textarea type="text" id="sivRejectReason"></textarea>
-                    </div>
+                <div class="form-group">
+                    <label>Reject incoming messages and reply the following reason:</label>
+                    <textarea class="form-control" id="sivRejectReason" rows="7"></textarea>
                 </div>
+
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+                    Reject is replaced by the ereject and should not be used anymore, because it is unsafe. The ereject action is similar to
+                    reject, but will always favor protocol-level message rejection.
             </div>
         </div>
     </div>
+</div>
 
-</body>
-
-</html>
+<h1>Reject incoming messages and reply the following reason:</h1>
+<textarea type="text" id=""></textarea>

@@ -20,169 +20,173 @@
   /* global SieveActionBoxUI */
   /* global SieveDesigner */
   /* global SieveActionDialogBoxUI */
-  /* global SieveTabWidget */
 
   // ******************************************************************************/
-
-  function SieveStopUI(elm) {
-    SieveActionBoxUI.call(this, elm);
-  }
-
-  SieveStopUI.prototype = Object.create(SieveActionBoxUI.prototype);
-  SieveStopUI.prototype.constructor = SieveStopUI;
-
-  SieveStopUI.prototype.initSummary
-    = function () {
-      return $("<div/>")
-        .text("End Script (Stop processing)");
-    };
-
-
-  // ******************************************************************************/
-  function SieveDiscardUI(elm) {
-    SieveActionBoxUI.call(this, elm);
-  }
-
-  SieveDiscardUI.prototype = Object.create(SieveActionBoxUI.prototype);
-  SieveDiscardUI.prototype.constructor = SieveDiscardUI;
-
-  SieveDiscardUI.prototype.initSummary
-    = function () {
-      return $("<div/>")
-        .text("Discard message silently");
-    };
-
-  // ******************************************************************************/
-  function SieveKeepUI(elm) {
-    SieveActionBoxUI.call(this, elm);
-  }
-
-  SieveKeepUI.prototype = Object.create(SieveActionBoxUI.prototype);
-  SieveKeepUI.prototype.constructor = SieveKeepUI;
-
-  SieveKeepUI.prototype.initSummary
-    = function () {
-      return $("<div/>")
-        .text("Keep a copy in the main inbox");
-    };
-
-  // ******************************************************************************/
-
-  function SieveRedirectUI(elm) {
-    SieveActionDialogBoxUI.call(this, elm);
-  }
-
-  SieveRedirectUI.prototype = Object.create(SieveActionDialogBoxUI.prototype);
-  SieveRedirectUI.prototype.constructor = SieveRedirectUI;
 
   /**
-   *  Gets and/or sets the redirect address
-   *
-   *  @param  {string} [address]
-   *    optional the new address which should be set.
-   *
-   *  @returns {string} the current address
+   * Provides a UI for the stop action
    */
-  SieveRedirectUI.prototype.address
-    = function (address) {
+  class SieveStopUI extends SieveActionBoxUI {
 
+    /**
+     * @inheritDoc
+     */
+    initSummary() {
+      return $("<div/>")
+        .text("End Script (Stop processing)");
+    }
+  }
+
+  /**
+   * Provides a UI for the discard action
+   */
+  class SieveDiscardUI extends SieveActionBoxUI {
+
+    /**
+     * @inheritDoc
+     */
+    initSummary() {
+      return $("<div/>")
+        .text("Discard message silently");
+    }
+  }
+
+  /**
+   * Provides a UI for the keep action
+   */
+  class SieveKeepUI extends SieveActionBoxUI {
+
+    /**
+     * @inheritDoc
+     */
+    initSummary() {
+      return $("<div/>")
+        .text("Keep a copy in the main inbox");
+    }
+  }
+
+
+  /**
+   * Provides an UI for the redirect action
+   */
+  class SieveRedirectUI extends SieveActionDialogBoxUI {
+
+    /**
+     *  Gets and/or sets the redirect address
+     *
+     *  @param  {string} [address]
+     *    optional the new address which should be set.
+     *
+     *  @returns {string} the current address
+     */
+    address(address) {
       return this.getSieve().getElement("address").value(address);
-    };
+    }
 
-  SieveRedirectUI.prototype.getTemplate
-    = function () {
-      return "./RFC5228/templates/SieveRedirectActionUI.html #sivDialogRedirect";
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveRedirectActionUI.html";
+    }
 
-  SieveRedirectUI.prototype.onSave
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    onSave() {
 
       let address = $("#sivRedirectAddress");
 
       if (address[0].checkValidity() === false) {
-        window.altert("Invalid redirect address");
+        address.addClass("is-invalid");
         return false;
       }
 
-      address = address.val();
+      let value = address.val();
 
-      if (address.trim() === "") {
-        window.alert("Invalid redirect address");
+      if (value.trim() === "") {
+        address.addClass("is-invalid");
         return false;
       }
 
-      this.address(address);
+      this.address(value);
       return true;
-    };
+    }
 
-  SieveRedirectUI.prototype.onLoad
-    = function () {
-      (new SieveTabWidget()).init();
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
       $("#sivRedirectAddress").val(this.address());
-    };
+    }
 
-  SieveRedirectUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
         .html("Redirect message to " +
           "<em>" + $('<div/>').text(this.address()).html() + "</em>");
-    };
-
-
-  // ******************************************************************************/
-
-  function SieveFileIntoUI(elm) {
-    SieveActionDialogBoxUI.call(this, elm);
+    }
   }
 
-  SieveFileIntoUI.prototype = Object.create(SieveActionDialogBoxUI.prototype);
-  SieveFileIntoUI.prototype.constructor = SieveFileIntoUI;
-
   /**
-   *  Gets and/or Sets the FileInto's paths
-   *
-   *  @param  {string} [value]
-   *    optional the new path which should be set.
-   *
-   *  @returns {string} the current file into path
+   * A UI for the fileinto action
    */
-  SieveFileIntoUI.prototype.path
-    = function (value) {
+  class SieveFileIntoUI extends SieveActionDialogBoxUI {
 
+    /**
+     *  Gets and/or Sets the FileInto's paths
+     *
+     *  @param  {string} [value]
+     *    optional the new path which should be set.
+     *
+     *  @returns {string} the current file into path
+     */
+    path(value) {
       return this.getSieve().getElement("path").value(value);
-    };
+    }
 
-  SieveFileIntoUI.prototype.getTemplate
-    = function () {
-      return "./RFC5228/templates/SieveFileIntoActionUI.html #sivDialogFileInto";
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveFileIntoActionUI.html";
+    }
 
-  SieveFileIntoUI.prototype.onSave
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    onSave() {
 
-      let path = $("#sivFileIntoPath").val();
+      let path = $("#sivFileIntoPath");
 
-      if (path.trim() === "") {
-        window.alert("Invalid folder");
+      let value = path.val();
+      if (value.trim() === "") {
+        path.addClass("is-invalid");
         return false;
       }
 
-      this.path(path);
+      this.path(value);
       return true;
-    };
+    }
 
-  SieveFileIntoUI.prototype.onLoad
-    = function () {
-      (new SieveTabWidget()).init();
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
       $("#sivFileIntoPath").val(this.path());
-    };
+    }
 
-  SieveFileIntoUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
         .html("Save message into:" +
           "<div><em>" + $('<div/>').text(this.path()).html() + "</em></div>");
-    };
+    }
+  }
 
 
   // ******************************************************************************/

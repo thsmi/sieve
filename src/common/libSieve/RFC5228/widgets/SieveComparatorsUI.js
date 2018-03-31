@@ -16,62 +16,122 @@
 
   "use strict";
 
-  /* global $: false */
-  /* global SieveAbstractBoxUI */
+  /* global SieveDesigner */
+  /* global SieveAbstractRadioGroupWidget */
+  /* global SieveRadioGroupWidget */
 
-  // ****************************************************************************//
+  /**
+   *
+   */
+  class SieveComparatorWidget extends SieveRadioGroupWidget{
 
-  // split into object like matchtypes
-  function SieveComparatorUI(elm) {
-    SieveAbstractBoxUI.call(this, elm);
+    /**
+     * @inheritDoc
+     */
+    constructor(selector) {
+      super("comparator/", selector);
+    }
   }
 
-  SieveComparatorUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
-  SieveComparatorUI.prototype.constructor = SieveComparatorUI;
 
-  SieveComparatorUI.prototype.onSelect
-    = function () {
+  /**
+   * An Abstract Comparator UI implementation.
+   */
+  class SieveAbstractComparatorUI extends SieveAbstractRadioGroupWidget{
 
-      let value = $("input[name='rgComparator" + this.id() + "']:checked").val();
-      this.getSieve().setValue(value);
-    };
+    /**
+     * @inheritDoc
+     */
+    static nodeType() {
+      return "comparator/";
+    }
 
-  SieveComparatorUI.prototype.createHtml
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getName() {
+      return "sieve-comparator";
+    }
+  }
 
-      let value = this.getSieve().getValue();
+  /**
+   * Provides an UI for the contains match type
+   */
+  class SieveOctetComparatorUI extends SieveAbstractComparatorUI {
 
-      let that = this;
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "comparator/i;octet";
+    }
 
-      return $("<div/>")
-        .addClass("sivComparator")
-        .append($("<h1/>").text("Compare"))
-        .append($("<div/>")
-          .append($("<input/>")
-            .attr("type", "radio")
-            .attr("name", "rgComparator" + this.id())
-            .attr("value", '"i;ascii-casemap"')
-            .change(function () { that.onSelect(); }))
-          .append($("<span/>").text("Case insensitive ASCII String (default)")))
-        .append($("<div/>")
-          .append($("<input/>")
-            .attr("type", "radio")
-            .attr("name", "rgComparator" + this.id())
-            .attr("value", '"i;octet"')
-            .change(function () { that.onSelect(); }))
-          .append($("<span/>").text("Case sensitive byte by byte")))
-        .append($("<div/>")
-          .append($("<input/>")
-            .attr("type", "radio")
-            .attr("name", "rgComparator" + this.id())
-            .attr("value", '"i;ascii-numeric"')
-            .change(function () { that.onSelect(); }))
-          .append($("<span/>").text("Convert the ascii string to an integer and do a numeric compare")))
-        .find("input[name='rgComparator" + this.id() + "'][value='" + value + "']")
-        .attr("checked", "checked")
-        .end();
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveComparatorOctet.html";
+    }
+  }
 
-  exports.SieveComparatorUI = SieveComparatorUI;
+  /**
+   * Provides an UI for the contains match type
+   */
+  class SieveAsciiCasemapComparatorUI extends SieveAbstractComparatorUI {
+
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "comparator/i;ascii-casemap";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveComparatorAsciiCasemap.html";
+    }
+  }
+
+
+  /**
+   * Provides an UI for the contains match type
+   */
+  class SieveAsciiNumericComparatorUI extends SieveAbstractComparatorUI {
+
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "comparator/i;ascii-numeric";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    static isCapable(capabilities) {
+      if (!capabilities["comparator-i;ascii-numeric"])
+        return false;
+
+      return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveComparatorAsciiNumeric.html";
+    }
+  }
+
+  if (!SieveDesigner)
+    throw new Error("Could not register String Widgets");
+
+  SieveDesigner.register2(SieveOctetComparatorUI);
+  SieveDesigner.register2(SieveAsciiCasemapComparatorUI);
+  SieveDesigner.register2(SieveAsciiNumericComparatorUI);
+
+  exports.SieveComparatorWidget = SieveComparatorWidget;
 
 })(window);

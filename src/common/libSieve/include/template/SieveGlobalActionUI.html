@@ -1,73 +1,37 @@
-<!DOCTYPE html>
-
-<!--
-
-  The contents of this file are licenced. You may obtain a copy of 
-  the license at https://github.com/thsmi/sieve/ or request it via 
-  email from the author.
- 
-  Do not remove or change this comment.
-  
-  The initial author of the code is:
-    Thomas Schmid <schmid-thomas@gmx.net>
-
--->
-
-<html>
-
-<head>
-    <meta charset="UTF-8">
-    <title>Global Action</title>
-</head>
-
-<body>
-
-    <div id="sivDialogInclude" class="dialog">
-
-        <div>
-            <!-- System -->
-            <div id="sivEditMain">
-                <!-- Appbar -->
-                <div class="dialog-header">
-                    <div class="dialog-tab">
-                        <div class="tab-active" data-tab-content="sivGlobalGeneralContent">BASIC</div>
-                        <div data-tab-content="sivGlobalHelpContent">HELP</div>
-                    </div>
-                </div>
-                <!-- content -->
-                <div class="dialog-tab-content">
-                    <!-- content for help tab -->
-                    <div id="sivGlobalHelpContent">
-                        <p>
-
-                        </p>
+<div>
+    <ul id="template-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-global" role="tab">Global</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+        </li>
+    </ul>
+    <div id="template-content">
+        <div class="tab-content m-2">
+            <div class="tab-pane fade show active" id="sieve-widget-global" role="tabpanel">
+                <div class="form-group">
+                    <label>Export variables into the global namespace:</label>
+                    <div id="sivIncludeGlobalListTemplate" style="display:none">
+                        <div class="input-group input-group-sm mb-1">
+                            <input type="text" class="form-control form-control col-lg-8">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary far sieve-stringlist-delete">
+                                    &#xf2ed;
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- content for general tab -->
-                    <div id="sivGlobalGeneralContent" class="tab-active">
-                        <h1>Export variables into the global namespace: </h1>
-
-                        <div id="sivIncludeGlobalList" data-list-new="#sivIncludeGlobalListAdd" data-list-items="#sivIncludeGlobalListItems" data-list-template="#sivIncludeGlobalListTemplate"
-                            data-list-min="1">
-
-                            <div id="sivIncludeGlobalListTemplate" style="display:none">
-                                <div>
-                                    <input type="text" />
-                                    <button>remove</button>
-                                </div>
-                            </div>
-                            <div id="sivIncludeGlobalListItems">
-
-                                <div>
-                                    <button id="sivIncludeGlobalListAdd">add</button>
-                                </div>
-                            </div>
+                    <div id="sivIncludeGlobalList" data-list-new="#sivIncludeGlobalListAdd" data-list-template="#sivIncludeGlobalListTemplate"
+                        data-list-min="1"></div>
+                    <div>
+                        <button id="sivIncludeGlobalListAdd" class="btn btn-outline-secondary">add</button>
                     </div>
                 </div>
             </div>
+            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+            </div>
         </div>
     </div>
-    </div>
-</body>
-
-</html>
+</div>

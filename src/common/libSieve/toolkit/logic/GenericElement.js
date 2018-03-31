@@ -893,31 +893,38 @@
       throw new Error("No element with id " + id);
     };
 
-  /* **************************************************************/
 
-  function SieveGenericUnion(docshell, id) {
-    SieveAbstractElement.call(this, docshell, id);
+  /**
+   *
+   */
+  class SieveGenericUnion extends SieveAbstractElement {
 
-    this._element = {
-      current: null,
-      default: null
-    };
-    this._items = [];
+    constructor(docshell, id) {
+      super(docshell, id);
 
-    this._prefix = {};
-  }
+      this._element = {
+        current: null,
+        default: null
+      };
+      this._items = [];
 
-  SieveGenericUnion.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveGenericUnion.prototype.constructor = SieveGenericUnion;
+      this._prefix = {};
+    }
 
-  SieveGenericUnion.prototype.nodeName
-    = function () {
+    /**
+     * return the current elements unique nodename
+     * @returns {string}
+     *   the nodename
+     */
+    nodeName() {
 
-      return this._element.node;
-    };
+      if (this._element.current !== null)
+        return this._element.current.nodeName();
 
-  SieveGenericUnion.prototype.require
-    = function (imports) {
+      return this._element.default.nodeName();
+    }
+
+    require(imports) {
 
       if (this._element.current !== null) {
         this._element.current.require(imports);
@@ -930,10 +937,9 @@
       }
 
       return this;
-    };
+    }
 
-  SieveGenericUnion.prototype.setToken
-    = function (token) {
+    setToken(token) {
 
       if (token === null || typeof (token) === "undefined") {
         this._prefix = {};
@@ -946,17 +952,15 @@
       this._prefix.element = new SieveGenericLiteral(this).init(token);
       this._prefix.whitespace = this._createByName("whitespace", " ");
       return this;
-    };
+    }
 
-  SieveGenericUnion.prototype.addItems
-    = function (items) {
+    addItems(items) {
       this._items = this._items.concat(items);
 
       return this;
-    };
+    }
 
-  SieveGenericUnion.prototype.hasDefaultValue
-    = function () {
+    hasDefaultValue() {
 
       if (this._element.default === null)
         return false;
@@ -965,15 +969,13 @@
         return false;
 
       return true;
-    };
+    }
 
-  SieveGenericUnion.prototype.getDefaultValue
-    = function () {
+    getDefaultValue() {
       return this._element.default.toScript();
-    };
+    }
 
-  SieveGenericUnion.prototype.setDefaultValue
-    = function (value) {
+    setDefaultValue(value) {
 
       if (value === null || typeof (value) === "undefined")
         return this;
@@ -981,10 +983,9 @@
       this._element.default = this._createByClass(this._items, value);
 
       return this;
-    };
+    }
 
-  SieveGenericUnion.prototype.isDefaultValue
-    = function () {
+    isDefaultValue() {
 
       if (this.hasDefaultValue() === false)
         return false;
@@ -993,16 +994,15 @@
         return true;
 
       return false;
-    };
+    }
 
-  /**
-   * Check if a current value was set.
-   *
-   * @returns {boolean}
-   *  true in case the element has a current value set otherwise false
-   */
-  SieveGenericUnion.prototype.hasCurrentValue
-    = function () {
+    /**
+     * Check if a current value was set.
+     *
+     * @returns {boolean}
+     *  true in case the element has a current value set otherwise false
+     */
+    hasCurrentValue() {
       if (this._element.current === null)
         return false;
 
@@ -1010,29 +1010,27 @@
         return false;
 
       return true;
-    };
+    }
 
-  SieveGenericUnion.prototype.getCurrentValue
-    = function () {
+    getCurrentValue() {
 
       if (this.isDefaultValue())
         return null;
 
       return this._element.current.toScript();
-    };
+    }
 
 
-  /**
-   * Sets the unions current value.
-   *
-   * @param {String|SieveParser} [value]
-   *  optional the new value which should be set. In case it is omitted it will
-   *  fallback to the default value if present.
-   * @returns {SieveGenericUnion}
-   *  a self reference
-   */
-  SieveGenericUnion.prototype.setCurrentValue
-    = function (value) {
+    /**
+     * Sets the unions current value.
+     *
+     * @param {String|SieveParser} [value]
+     *  optional the new value which should be set. In case it is omitted it will
+     *  fallback to the default value if present.
+     * @returns {SieveGenericUnion}
+     *  a self reference
+     */
+    setCurrentValue(value) {
 
       if (this.hasCurrentValue()) {
         // We delete elements by making them an orphan
@@ -1045,18 +1043,17 @@
 
       this._element.current = this._createByClass(this._items, value);
       return this;
-    };
+    }
 
-  /**
-   * Sets the elements value. It is aware of the default and current value.
-   *
-   * @param{String} value
-   *  the value which should be set.
-   * @returns{SieveGenericUnion}
-   *  a self reference. To create chains.
-   **/
-  SieveGenericUnion.prototype.setValue
-    = function (value) {
+    /**
+     * Sets the elements value. It is aware of the default and current value.
+     *
+     * @param{String} value
+     *  the value which should be set.
+     * @returns{SieveGenericUnion}
+     *  a self reference. To create chains.
+     **/
+    setValue(value) {
 
       // Skip if the value has not changed ...
       if (this.hasCurrentValue() && (this.getCurrentValue() === value))
@@ -1071,25 +1068,23 @@
 
       this.setCurrentValue(value);
       return this;
-    };
+    }
 
-  /**
-   * Gets the value. In case no current value is set it falls back to the default value.
-   *
-   * @returns{String}
-   *  the currently set value as string.
-   **/
-  SieveGenericUnion.prototype.getValue
-    = function () {
+    /**
+     * Gets the value. In case no current value is set it falls back to the default value.
+     *
+     * @returns{String}
+     *  the currently set value as string.
+     **/
+    getValue() {
 
       if (this.isDefaultValue() === false)
         return this.getCurrentValue();
 
       return this.getDefaultValue();
-    };
+    }
 
-  SieveGenericUnion.prototype.value
-    = function (value) {
+    value(value) {
 
       console.warn("SieveGenericUnion.value is deprecated use getValue and setValue");
 
@@ -1098,10 +1093,9 @@
       }
 
       return this.getValue();
-    };
+    }
 
-  SieveGenericUnion.prototype.init
-    = function (parser) {
+    init(parser) {
 
       if (this._prefix.element) {
         this._prefix.element.parse(parser);
@@ -1114,10 +1108,9 @@
       this.setCurrentValue(parser);
 
       return this;
-    };
+    }
 
-  SieveGenericUnion.prototype.toScript
-    = function () {
+    toScript() {
 
       let result = "";
 
@@ -1134,7 +1127,8 @@
       result += this._element.current.toScript();
 
       return result;
-    };
+    }
+  }
 
 
   let actions = new Map();

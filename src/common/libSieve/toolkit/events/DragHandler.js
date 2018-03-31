@@ -78,7 +78,7 @@
 
       html.attr("sivtype", this.flavour())
         .attr("draggable", "true")
-        .bind("dragstart", (e) => { this.onDragGesture(e); return true; })
+        .bind("dragstart", (e) => { this.onDragStart(e); return true; })
         .bind("dragend", () => { return false; });
     };
 

@@ -22,72 +22,59 @@
   //   :user "+" :detail "@" :domain
   // \----:local-part----/
 
-  // ************************************************************************************
+  /**
+   * Provides an UI for the user part
+   */
+  class SieveUserPartUI extends SieveAbstractAddressPartUI {
 
-  function SieveUserPartUI(id) {
-    SieveAbstractAddressPartUI.call(this, id);
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "address-part/user";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    static isCapable(capabilities) {
+      return !!capabilities["subaddress"];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./subaddress/templates/SieveAddressPartUser.html";
+    }
   }
 
-  SieveUserPartUI.prototype = Object.create(SieveAbstractAddressPartUI.prototype);
-  SieveUserPartUI.prototype.constructor = SieveUserPartUI;
+  /**
+   * Provides and UI for the detail part
+   */
+  class SieveDetailPartUI extends SieveAbstractAddressPartUI {
 
-  SieveUserPartUI.nodeName = function () {
-    return "address-part/user";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "address-part/detail";
+    }
 
-  SieveUserPartUI.nodeType = function () {
-    return "address-part/";
-  };
+    /**
+     * @inheritDoc
+     */
+    static isCapable(capabilities) {
+      return !!capabilities["subaddress"];
+    }
 
-  SieveUserPartUI.isCapable = function (capabilities) {
-    return !!capabilities["subaddress"];
-  };
-
-  SieveUserPartUI.prototype.html
-    = function (callback) {
-
-      return SieveAbstractAddressPartUI.prototype.html.call(
-        this, ":user", "... a user sub-part with ...",
-        'Everything before the + sign or between the -- sequence and the @sign. <br>'
-        + 'The localpart part is case sensitive.<br>'
-        + 'e.g.: "user+detail@example.com" or "detail--user@example.com" is stripped to "user"',
-        callback);
-    };
-
-  // ************************************************************************************
-
-  function SieveDetailPartUI(id) {
-    SieveAbstractAddressPartUI.call(this, id);
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./subaddress/templates/SieveAddressPartDetail.html";
+    }
   }
-
-  SieveDetailPartUI.prototype = Object.create(SieveAbstractAddressPartUI.prototype);
-  SieveDetailPartUI.prototype.constructor = SieveDetailPartUI;
-
-  SieveDetailPartUI.nodeName = function () {
-    return "address-part/detail";
-  };
-
-  SieveDetailPartUI.nodeType = function () {
-    return "address-part/";
-  };
-
-  SieveDetailPartUI.isCapable = function (capabilities) {
-    return !!capabilities["subaddress"];
-  };
-
-  SieveDetailPartUI.prototype.html
-    = function (callback) {
-
-      return SieveAbstractAddressPartUI.prototype.html.call(
-        this, ":detail", "... a detail sub-part with ...",
-        'Everything between the + sign and the @ sign, or before a -- sequence.<br>'
-        + 'The localpart part is case sensitive.<br>'
-        + 'e.g.: "user+detail@example.com" or "detail--user@example.com" is stripped to "detail"',
-        callback);
-    };
-
-
-  // ************************************************************************************
 
   if (!SieveDesigner)
     throw new Error("Could not register String Widgets");

@@ -1,106 +1,72 @@
-<!DOCTYPE html>
+<div>
+    <ul id="template-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-stringtest" role="tab">String</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+        </li>
+    </ul>
 
-<!--
+    <div id="template-content">
+        <div class="tab-content m-2">
+            <div class="tab-pane fade show active" id="sieve-widget-stringtest" role="tabpanel">
 
-  The contents of this file are licenced. You may obtain a copy of 
-  the license at https://github.com/thsmi/sieve/ or request it via 
-  email from the author.
- 
-  Do not remove or change this comment.
-  
-  The initial author of the code is:
-    Thomas Schmid <schmid-thomas@gmx.net>
+                <div class="form-group">
+                    <h5>Any of the following strings ... </h5>
 
--->
-
-<html>
-
-<head>
-    <meta charset="UTF-8">
-    <title>String test</title>
-</head>
-
-<body>
-
-<div id="sivDialogVariables" class="dialog">
-
-    <style>
-        @import url('./variables/templates/SieveVariablesUI.css');
-    </style>
-
-    <div>
-        <!-- System -->
-        <div id="sivEditMain">
-            <!-- Appbar -->
-            <div class="dialog-header">
-                <div class="dialog-tab">
-                    <div class="tab-active" data-tab-content="sivVariablesGeneralContent">BASIC</div>
-                    <div data-tab-content="sivVariablesAdvancedContent">ADVANCED</div>
-                    <div data-tab-content="sivVariablesHelpContent">HELP</div>
-                </div>
-            </div>
-            <!-- content -->
-            <div class="dialog-tab-content">
-                <!-- content for help tab -->
-                <div id="sivVariablesHelpContent">
-                    <p>
-
-                    </p>
-                </div>
-
-                <!-- content for advanced tab -->
-                <div id="sivVariablesAdvancedContent">
-                    <div id="sivVariablesComparator"></div>
-                </div>
-
-                <!-- content for general tab -->
-                <div id="sivVariablesGeneralContent" class="tab-active">
-
-                    <h1>Any of the following strings...</h1>
-
-
-                    <div id="sivVariablesSourceList" data-list-new="#sivVariablesSourceListAdd" data-list-items="#sivVariablesSourceListItems" data-list-template="#sivVariablesSourceListTemplate"
+                    <div id="sivVariablesSourceList" data-list-new="#sivVariablesSourceListAdd" data-list-template="#sivVariablesSourceListTemplate"
                         data-list-min="1">
+                    </div>
 
-                        <div id="sivVariablesSourceListTemplate" style="display:none">
-                            <div>
-                                <input type="text" />
-                                <button>remove</button>
+                    <div id="sivVariablesSourceListTemplate" style="display:none">
+                        <div class="input-group input-group-sm mb-1">
+                            <input type="text" class="form-control col-lg-8">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary far sieve-stringlist-delete">
+                                    &#xf2ed;
+                                </button>
                             </div>
                         </div>
-                        <div id="sivVariablesSourceListItems">
-                            <div>
-                                <button id="sivVariablesSourceListAdd">add</button>
-                            </div>
-                        </div>
-                </div>
+                    </div>
 
-                <div id="sivVariablesMatchTypes"> </div>
 
-                <h1>... any of the keywords</h1>
-                <div id="sivVariablesKeyList" data-list-new="#sivVariablesKeyListAdd" data-list-items="#sivVariablesKeyListItems" data-list-template="#sivVariablesKeyListTemplate"
-                    data-list-min="1">
+                    <div>
+                        <button id="sivVariablesSourceListAdd" class="btn btn-sm btn-outline-secondary">Add</button>
+                    </div>
+
+                    <hr/>
+                    <div id="sivVariablesMatchTypes"> </div>
+                    <hr/>
+
+                    <h5>... any of the keyword(s):</h5>
+                    <div id="sivVariablesKeyList" data-list-new="#sivVariablesKeyListAdd" data-list-template="#sivVariablesKeyListTemplate" data-list-min="1">
+                    </div>
 
                     <div id="sivVariablesKeyListTemplate" style="display:none">
-                        <div>
-                            <input type="text" />
-                            <button>remove</button>
+                        <div class="input-group input-group-sm mb-1">
+                            <input type="text" class="form-control col-lg-8">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary far sieve-stringlist-delete">
+                                    &#xf2ed;
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div id="sivVariablesKeyListItems">
-                        <div>
-                            <button id="sivVariablesKeyListAdd">add</button>
-                        </div>
+                    <div>
+                        <button id="sivVariablesKeyListAdd" class="btn btn-sm btn-outline-secondary">Add</button>
                     </div>
+                </div>
             </div>
-            <!-- content for advanced tab -->
+            <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+                <div id="sivVariablesComparator"></div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+            </div>
         </div>
     </div>
 </div>
-</div>
-</div>
 
-
-</body>
-
-</html>

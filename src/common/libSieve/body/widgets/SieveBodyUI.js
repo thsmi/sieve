@@ -18,312 +18,148 @@
 
   /* global $: false */
   /* global SieveTestDialogBoxUI */
-  /* global SieveTabWidget */
-  /* global SieveMatchTypeUI */
-  /* global SieveComparatorUI */
+  /* global SieveMatchTypeWidget */
+  /* global SieveComparatorWidget */
   /* global SieveStringListWidget */
-  /* global SieveAbstractBoxUI */
+  /* global SieveRadioGroupWidget */
+  /* global SieveAbstractRadioGroupWidget */
   /* global SieveDesigner */
 
+  /**
+   * Provides a widget for the body transform element
+   */
+  class SieveBodyTransformWidget extends SieveRadioGroupWidget {
+
+    /**
+     * @inheritDoc
+     */
+    constructor(selector) {
+      super("body-transform/", selector);
+    }
+  }
 
   /**
-   * A UI Element wrapper which collets all possbile transforms and renders them
-   * It keeps treck of the currently selected transform.
-   *
-   * @param {} elm
-   * @constructor
+   * An Abstract Body Transform UI implementation.
    */
+  class SieveAbstractBodyTransformUI extends SieveAbstractRadioGroupWidget {
 
-  function SieveBodyTransformUI(elm) {
-    SieveAbstractBoxUI.call(this, elm);
-
-    // TODO chekc if the element is a body transform..
-  }
-
-  SieveBodyTransformUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
-  SieveBodyTransformUI.prototype.constructor = SieveBodyTransformUI;
-
-  SieveBodyTransformUI.nodeName = function () {
-    return "body-transform";
-  };
-
-  SieveBodyTransformUI.nodeType = function () {
-    return "comparison";
-  };
-
-  SieveBodyTransformUI.prototype.onSelect
-    = function () {
-      debugger;
-      let value = $("input[name='rgBodyTransform" + this.id() + "']:checked").val();
-      this.getSieve().setValue(value);
-    };
-
-  /**
-   * Gets and sets the bodytransfrom
-   *
-   * @param {String} [transform]
-   *   the body transform which should be set.
-   *
-   * @return {String}
-   *   the body transform's value
-   */
-  SieveBodyTransformUI.prototype.bodyTransform
-    = function (transform) {
-      debugger;
-      return this.getSieve().tagValue(transform);
-    };
-
-  SieveBodyTransformUI.prototype.update
-    = function (value) {
-      this.getSieve().tagValue(value);
-    };
-
-  SieveBodyTransformUI.prototype.createHtml
-    = function () {
-
-      let widgets = SieveDesigner.getWidgetsByClass("body-transform/", this.id());
-
-      let item = $("<div/>")
-        .addClass("sivBodyTransform");
-
-      let that = this;
-
-      widgets.forEach(function (element) {
-        item.append(element.html(function () { that.onSelect(); }));
-      }, this);
-
-      let value = this.getSieve().getValue();
-
-      item.find("input[name='rgBodyTransform" + this.id() + "'][value='" + value + "']")
-        .attr("checked", "checked");
-
-      return item;
-    };
-
-
-  // ----------------------------------------------------------------------------------------------------//
-
-  function SieveAbstractTransformUI(id) {
-    this.id = id;
-  }
-
-  SieveAbstractTransformUI.prototype.html
-    = function (value, description, callback) {
-
-      let radio =
-        $("<input/>")
-          .attr("type", "radio")
-          .attr("name", "rgBodyTransform" + this.id)
-          .attr("value", value)
-          .css("float", "left");
-
-      radio.change(callback);
-
-      return $("<div/>")
-        .css("overflow", "auto")
-        .append(radio)
-        .append($("<span/>")
-          .css("float", "left")
-          .text(description));
-    };
-
-  // -----------------------------
-
-  function SieveRawTransformUI(id) {
-    SieveAbstractTransformUI.call(this, id);
-  }
-
-  SieveRawTransformUI.prototype = Object.create(SieveAbstractTransformUI.prototype);
-  SieveRawTransformUI.prototype.constructor = SieveRawTransformUI;
-
-  SieveRawTransformUI.nodeName = function () {
-    return "body-transform/raw";
-  };
-
-  SieveRawTransformUI.nodeType = function () {
-    return "body-transform/";
-  };
-
-  SieveRawTransformUI.isCapable = function () {
-    // TODO support capabilities...
-    return true;
-  };
-
-  SieveRawTransformUI.prototype.html
-    = function (callback) {
-
-      return SieveAbstractTransformUI.prototype.html.call(
-        this,
-        ":raw",
-        "Match against the entire undecoded message body",
-        callback);
-    };
-
-  /* SieveRawTransformUI.prototype.html
-      = function(type, description, callback) {
-
-    var radio =
-      $("<input/>")
-        .attr("type","radio")
-        .attr("name","rgBodyTransform"+this.id)
-        .attr("value",":content")
-        .css("float","left");
-
-    if (type.nodeName() == SieveRawTransformUI.nodeName())
-      radio.prop('checked', true);
-
-    radio.change( function() { callback(":raw"); } );
-
-    return $("<div/>")
-       .css("overflow","auto")
-       .append(radio)
-       .append($("<span/>").text("Match against the entire undecoded message body").css("float","left"));
-  };*/
-
-  // ---------------------------------------------/
-
-  function SieveContentTransformUI(id) {
-    SieveAbstractTransformUI.call(this, id);
-  }
-
-  SieveContentTransformUI.prototype = Object.create(SieveAbstractTransformUI.prototype);
-  SieveContentTransformUI.prototype.constructor = SieveContentTransformUI;
-
-  SieveContentTransformUI.nodeName = function () {
-    return "body-transform/content";
-  };
-
-  SieveContentTransformUI.nodeType = function () {
-    return "body-transform/";
-  };
-
-  SieveContentTransformUI.isCapable = function () {
-    return true;
-  };
-
-  SieveContentTransformUI.prototype.html
-    = function (callback) {
-
-      // TODO content has a /stringfield, this needs to be implemented.
-
-      let html = SieveAbstractTransformUI.prototype.html.call(
-        this,
-        ":content",
-        "Match against the MIME parts that have the specified content types:",
-        callback);
-
-      let text =
-        $("<input/>");
-      text.val("hello world");
-
-      return ($("<div/>")
-        .css("overflow", "auto")
-        .append(html)
-        .append(text))[0];
-
-    };
-
-  /* SieveContentTransformUI.prototype.html
-      = function(type, callback) {
-
-    // Create the elements
-      let radio =
-      $("<input/>")
-        .attr("type","radio")
-        .attr("name","rgBodyTransform"+this.id)
-        .attr("value",":content")
-        .css("float","left");
-
-      let text =
-      $("<input/>");
-
-    // in case the current element is equivalent with this element
-    // we need to update the values.
-      if (type.nodeName() === SieveContentTransformUI.nodeName()) {
-      radio.prop('checked', true);
-      text.val(type.contentTypes.toScript());
+    /**
+     * @inheritDoc
+     */
+    static nodeType() {
+      return "body-transform/";
     }
 
-    // Add the changed handler. In this case it will fire when the radio button is selected and
-    //  when the text was changes but only if the radio button is activated
-      let handler = function () {
-      if (!radio.prop("checked"))
-        return;
-
-        let value = text.val();
-
-
-     if (value === "")
-       value = '[""]';
-
-      callback(":content "+value);
-    };
-
-    radio.change( handler );
-    text.change(handler);
-
-    return $("<div/>")
-        .css("overflow","auto")
-        .append(radio)
-        .append($("<div/>")
-          .append($("<span/>").text("Match against the MIME parts that have the specified content types:"))
-          .append("<br/>")
-          .append(text));
-
-  };*/
-
-
-
-  function SieveTextTransformUI(id) {
-    SieveAbstractTransformUI.call(this, id);
+    /**
+     * @inheritDoc
+     */
+    getName() {
+      return "sieve-bodytransform";
+    }
   }
 
-  SieveTextTransformUI.prototype = Object.create(SieveAbstractTransformUI.prototype);
-  SieveTextTransformUI.prototype.constructor = SieveTextTransformUI;
+  /**
+   * Provides a UI for the raw body transform.
+   */
+  class SieveRawBodyTransformUI extends SieveAbstractBodyTransformUI {
 
-  SieveTextTransformUI.nodeName = function () {
-    return "body-transform/text";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "body-transform/raw";
+    }
 
-  SieveTextTransformUI.nodeType = function () {
-    return "body-transform/";
-  };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./body/templates/SieveBodyTransformRaw.html";
+    }
+  }
 
-  SieveTextTransformUI.isCapable = function () {
-    // TODO support capabilities...
-    return true;
-  };
+  /**
+   * Provides a UI for the text body transform.
+   */
+  class SieveTextBodyTransformUI extends SieveAbstractBodyTransformUI {
 
-  SieveTextTransformUI.prototype.html
-    = function (callback) {
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "body-transform/text";
+    }
 
-      return SieveAbstractTransformUI.prototype.html.call(
-        this,
-        ":text",
-        "Match against the decoded message body. (Default)",
-        callback);
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./body/templates/SieveBodyTransformText.html";
+    }
+  }
 
-  /* SieveTextTransformUI.prototype.html
-      = function(type, callback) {
+  /**
+   * Provides a UI for the content body transform.
+   */
+  class SieveContentBodyTransformUI extends SieveAbstractBodyTransformUI {
 
-      let radio =
-      $("<input/>")
-        .attr("type","radio")
-        .attr("name","rgBodyTransform"+this.id)
-        .attr("value",":text")
-        .css("float","left");
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "body-transform/content";
+    }
 
-    if (type.nodeName() == SieveTextTransformUI.nodeName())
-      radio.prop("checked",true);
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./body/templates/SieveBodyTransformContent.html";
+    }
 
-    radio.change( function() { callback(":text"); } );
+    /**
+     * @inheritDoc
+     */
+    load(sivElement) {
+      (new SieveStringListWidget("#sivBodyTransformContenType"))
+        .init([""]);
 
-    return $("<div/>")
-       .css("overflow","auto")
-       .append(radio)
-       .append($("<span/>").text("Match against the decoded message body. (Default)").css("float","left"));
-  };*/
+      super.load(sivElement);
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    onLoad(sivElement, item) {
+
+      super.onLoad(sivElement, item);
+
+      // update the string list...
+      (new SieveStringListWidget("#sivBodyTransformContenType"))
+        .init(sivElement._element.current.getElement("contentType"));
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    onSave(sivElement, item) {
+
+      // We update the content type with a fake element.
+      // This makes updating the strings easier.
+      // we can skip this in case the current element is already a content body transform element.
+
+      if (!sivElement._element.current || sivElement._element.current.nodeName() !== this.constructor.nodeName()) {
+        sivElement.setValue(
+          "" + item.find("input[name='" + this.getName() + "']").val() + ' ""');
+      }
+
+      (new SieveStringListWidget("#sivBodyTransformContenType"))
+        .save(sivElement._element.current.getElement("contentType"));
+    }
+
+  }
 
 
   /**
@@ -334,75 +170,94 @@
    * @constructor
    * @param {Object} elm - The sieve element which should be rendered.
    */
-  function SieveBodyUI(elm) {
-    SieveTestDialogBoxUI.call(this, elm);
-  }
+  class SieveBodyUI extends SieveTestDialogBoxUI {
 
-  SieveBodyUI.prototype = Object.create(SieveTestDialogBoxUI.prototype);
-  SieveBodyUI.prototype.constructor = SieveBodyUI;
-
-  SieveBodyUI.prototype.matchtype
-    = function () {
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's matchtype field
+     */
+    matchtype() {
       return this.getSieve().getElement("match-type");
-    };
+    }
 
-  SieveBodyUI.prototype.comparator
-    = function () {
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's comparator field
+     */
+    comparator() {
       return this.getSieve().getElement("comparator");
-    };
+    }
 
-  SieveBodyUI.prototype.bodyTransform
-    = function () {
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's bodytransform field
+     */
+    bodyTransform() {
       return this.getSieve().getElement("body-transform");
-    };
+    }
 
-  SieveBodyUI.prototype.keys
-    = function (values) {
-      return this.getSieve().getElement("keys").values(values);
-    };
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's keys field
+     */
+    keys() {
+      return this.getSieve().getElement("keys");
+    }
 
-  SieveBodyUI.prototype.onLoad
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
 
-      (new SieveTabWidget()).init();
+      (new SieveMatchTypeWidget("#sivBodyMatchTypes"))
+        .init(this.matchtype());
+      (new SieveComparatorWidget("#sivBodyComparator"))
+        .init(this.comparator());
+      (new SieveBodyTransformWidget("#sivBodyTransform"))
+        .init(this.bodyTransform());
 
-      let matchtype = new SieveMatchTypeUI(this.matchtype());
-      $("#sivBodyMatchTypes")
-        .append(matchtype.html());
+      (new SieveStringListWidget("#sivBodyKeyList"))
+        .init(this.keys());
+    }
 
-      let comparator = new SieveComparatorUI(this.comparator());
-      $("#sivBodyComparator")
-        .append(comparator.html());
+    /**
+     * @inheritDoc
+     */
+    onSave() {
 
-      let bodyTransform = new SieveBodyTransformUI(this.bodyTransform());
-      $("#sivBodyTransform")
-        .append(bodyTransform.html());
+      (new SieveMatchTypeWidget("#sivBodyMatchTypes"))
+        .save(this.matchtype());
+      (new SieveComparatorWidget("#sivBodyComparator"))
+        .save(this.comparator());
+      (new SieveBodyTransformWidget("#sivBodyTransform"))
+        .save(this.bodyTransform());
 
-      (new SieveStringListWidget("#sivBodyKeyList")).init(this.keys());
 
-    };
+      (new SieveStringListWidget("#sivBodyKeyList"))
+        .save(this.keys());
 
-  SieveBodyUI.prototype.onSave
-    = function () {
-
-      this.keys((new SieveStringListWidget("#sivBodyKeyList")).values());
       return true;
-    };
+    }
 
-  SieveBodyUI.prototype.getTemplate
-    = function () {
-      return "./body/templates/SieveBodyTestUI.html #sivBodyDialog";
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./body/templates/SieveBodyTestUI.html";
+    }
 
-  SieveBodyUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
 
       // case- insensitive is the default so skip it...
       return $("<div/>")
         .html(" message body <em> "
           + this.matchtype().getValue() + " "
-          + $('<div/>').text(this.keys()).html() + "</em>");
-    };
+          + $('<div/>').text(this.keys().values()).html() + "</em>");
+    }
+  }
 
 
   // ************************************************************************************
@@ -410,12 +265,9 @@
   if (!SieveDesigner)
     throw new Error("Could not register Body Extension");
 
-  SieveDesigner.register("body-transform", "comparison", SieveBodyTransformUI);
-
-  SieveDesigner.register2(SieveTextTransformUI);
-  SieveDesigner.register2(SieveRawTransformUI);
-  SieveDesigner.register2(SieveContentTransformUI);
-
+  SieveDesigner.register2(SieveRawBodyTransformUI);
+  SieveDesigner.register2(SieveTextBodyTransformUI);
+  SieveDesigner.register2(SieveContentBodyTransformUI);
 
   SieveDesigner.register("test/body", SieveBodyUI);
 

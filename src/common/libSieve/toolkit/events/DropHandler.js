@@ -52,8 +52,7 @@
 
   /**
    * The owner on thich the drag event occured
-   * A Widget
-   * @return {}
+   * @return {SieveAbstractWidget}
    */
   SieveDropHandler.prototype.owner
     = function () {
@@ -62,8 +61,8 @@
 
   /**
    * The target/sibling, the element which consumes the drop
-   * A Sieve Element
-   * @return {}
+   * @return {SieveAbstractElement}
+   *   the sibling element
    */
   SieveDropHandler.prototype.sibling
     = function () {
@@ -72,8 +71,8 @@
 
   /**
    * The parent of this element.
-   * A SieveAbstractElement
-   * @return {}
+   * @return {SieveAbstractElement}
+   *   the parent element
    */
   SieveDropHandler.prototype.parent
     = function () {
@@ -105,6 +104,7 @@
 
   SieveDropHandler.prototype.onDragExit
     = function (event) {
+
       this.owner().html().removeAttr("sivDragging");
 
       // Exit is only used for UI cleanup, so we should never cancel this event.
@@ -125,6 +125,7 @@
 
   SieveDropHandler.prototype.onDragDrop
     = function (event) {
+
       this.owner().html().removeAttr("sivDragging");
 
       if (!this.drop(event))
@@ -243,76 +244,85 @@
     = function (sivFlavour, id) {
       let source = this.document().id(id);
 
-      if (source.html().parent().prev().get(0) === this.owner().html().get(0))
+      if (source.html().parent().prev().get(0) == this.owner().html().get(0))
         return false;
 
-      if (source.html().parent().next().get(0) === this.owner().html().get(0))
+      if (source.html().parent().next().get(0) == this.owner().html().get(0))
         return false;
 
       return true;
 
     };
 
+  SieveBlockDropHandler.prototype.moveTest
+    = function (source, target) {
+
+      // Create a new Condition...
+      let newCondition = this.document().createByName("condition");
+
+      // Find the if element which owns this test...
+      let conditional = source;
+      while (conditional.parent().test)
+        conditional = conditional.parent();
+
+      // ... remove everything between our test and the conditional...
+      let oldOwner = source.remove(true, conditional);
+
+      // ... in case the conditional has no more a test...
+      // ... we need to transfer all block element...
+      if (!conditional.test()) {
+        oldOwner = conditional.remove(true, target);
+
+        newCondition.append(conditional);
+        newCondition.children(1).test(source);
+        newCondition.children(0).remove(true);
+      }
+      else
+        newCondition.children(0).test(source);
+
+      target.append(newCondition, this.sibling());
+
+      target.widget().reflow();
+      if (conditional.parent())
+        conditional.widget().reflow();
+      source.widget().reflow();
+      oldOwner.widget().reflow();
+
+    };
+
+  SieveBlockDropHandler.prototype.moveAction
+    = function (source, target) {
+
+      // remember owner
+      let oldOwner = source.remove(true, target);
+      // Move Item to new owner
+      target.append(source, this.sibling());
+
+      // refresh old and new Owner
+      target.widget().reflow();
+      oldOwner.widget().reflow();
+    };
+
+
+
   SieveBlockDropHandler.prototype.moveElement
     = function (sivFlavour, id) {
-      var dragElm = this.document().id(id);
-      if (!dragElm)
-        throw "Block Drop Handler: No Element found for " + id;
+      let source = this.document().id(id);
+      if (!source)
+        throw new Error("Block Drop Handler: No Element found for " + id);
 
-      var item = this.parent().getSieve();
-      if (!item)
-        throw "Block Drop Handler: No Element found for " + this.parent().id();
+      let target = this.parent().getSieve();
+      if (!target)
+        throw new Error("Block Drop Handler: No Element found for " + this.parent().id());
 
       switch (sivFlavour) {
         case "sieve/test":
         case "sieve/operator":
-
-          var source = dragElm;
-          var target = item;
-
-          // Create a new Condition...
-          var newCondition = this.document().createByName("condition");
-
-          // Find the if element which owns this test...
-          var conditional = source;
-          while (conditional.parent().test)
-            conditional = conditional.parent();
-
-          // ... remove everything between our test and the conditional...
-          var oldOwner = source.remove(true, conditional);
-
-          // ... in case the conditional has no more a test...
-          // ... we need to transfer all block element...
-          if (!conditional.test()) {
-            oldOwner = conditional.remove(true, target);
-
-            newCondition.append(conditional);
-            newCondition.children(1).test(source);
-            newCondition.children(0).remove(true);
-          }
-          else
-            newCondition.children(0).test(source);
-
-          target.append(newCondition, this.sibling());
-
-          target.widget().reflow();
-          if (conditional.parent())
-            conditional.widget().reflow();
-          source.widget().reflow();
-          oldOwner.widget().reflow();
-
+          this.moveTest(source, target);
           return;
 
         case "sieve/action":
-          // remember owner
-          var oldOwner = dragElm.remove(true, item);
-          // Move Item to new owner
-          item.append(dragElm, this.sibling());
-
-          // refresh old and new Owner
-          item.widget().reflow();
-          oldOwner.widget().reflow();
-
+          this.moveAction(source, target);
           return;
       }
 
@@ -709,7 +719,7 @@
       outer.parent(container);
       inner.parent(outer);
 
-      if (sivFlavour == "sieve/test")
+      if (sivFlavour === "sieve/test")
         outer.append(test);
 
       // newOwner.wrap(item.document().createByName(type))
@@ -750,10 +760,10 @@
       }
 
       // It makes no sense so drop the item directly before or after the element.
-      if (source.html().parent().prev().get(0) === this.owner().html().get(0))
+      if (source.html().parent().prev().get(0) == this.owner().html().get(0))
         return false;
 
-      if (source.html().parent().next().get(0) === this.owner().html().get(0))
+      if (source.html().parent().next().get(0) == this.owner().html().get(0))
         return false;
 
       return true;

@@ -23,18 +23,18 @@
   /* global SieveDropBoxUI */
   /* global SieveBlockDropHandler */
 
-  function SieveRootNodeUI(elm) {
-    SieveAbstractBoxUI.call(this, elm);
-  }
+  /**
+   * The UI Element which renders the root node.
+   */
+  class SieveRootNodeUI extends SieveAbstractBoxUI {
 
-  SieveRootNodeUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
-  SieveRootNodeUI.prototype.constructor = SieveRootNodeUI;
-
-
-  SieveRootNodeUI.prototype.createHtml
-    = function (parent) {
+    /**
+     * @inheritDoc
+     */
+    createHtml(parent) {
       return parent.append(this.getSieve().elms[1].html());
-    };
+    }
+  }
 
 
   function SieveBlockUI(elm) {

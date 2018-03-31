@@ -18,36 +18,35 @@
 
   /* global $: false */
   /* global SieveDesigner */
-  /* global SieveStringListUI */
   /* global SieveTestBoxUI */
   /* global SieveTestDialogBoxUI */
-  /* global SieveMatchTypeUI */
-  /* global SieveAddressPartUI */
-  /* global SieveComparatorUI */
+
   /* global SieveStringListWidget */
-  /* global SieveTabWidget */
+  /* global SieveMatchTypeWidget */
+  /* global SieveAddressPartWidget */
+  /* global SieveComparatorWidget */
 
   // testunary .append() -> testunary in anyof wrapen  SieveTestUI einführen...
   // testmultary.append -> an entsprechender stelle einfügen SieveTestListUI...
 
   // ****************************************************************************//
 
-  function SieveSizeTestUI(elm) {
-    SieveTestBoxUI.call(this, elm);
-  }
+  /**
+   * Implements an UI for the size test
+   */
+  class SieveSizeTestUI extends SieveTestDialogBoxUI {
 
-  SieveSizeTestUI.prototype = Object.create(SieveTestDialogBoxUI.prototype);
-  SieveSizeTestUI.prototype.constructor = SieveSizeTestUI;
-
-  SieveSizeTestUI.prototype.onValidate
-    = function () {
-
-
+    /**
+     * @inheritDoc
+     **/
+    onValidate() {
       return true;
-    };
+    }
 
-  SieveSizeTestUI.prototype.onSave
-    = function () {
+    /**
+     * @inheritDoc
+     **/
+    onSave() {
       let sieve = this.getSieve();
 
       sieve
@@ -57,31 +56,35 @@
         .unit($("#sivSizeTestUnit").val());
 
       return true;
-    };
+    }
 
-  SieveSizeTestUI.prototype.getTemplate
-    = function () {
-      return "./RFC5228/templates/SieveSizeTestUI.html #sivSieveDialog";
-    };
+    /**
+     * @inheritDoc
+     **/
+    getTemplate() {
+      return "./RFC5228/templates/SieveSizeTestUI.html";
+    }
 
-  SieveSizeTestUI.prototype.onLoad
-    = function () {
-      (new SieveTabWidget()).init();
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
 
       $('input:radio[name="over"][value="' + this.getSieve().isOver() + '"]').prop('checked', true);
 
       $("#sivSizeTestValue").val("" + this.getSieve().getSize().value());
       $("#sivSizeTestUnit").val("" + this.getSieve().getSize().unit());
+    }
 
-    };
-
-  SieveSizeTestUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
         .text("message is " + (this.getSieve().isOver() ? "larger" : "smaller")
           + " than " + this.getSieve().getSize().toScript());
-    };
-
+    }
+  }
 
   // ****************************************************************************//
 
@@ -123,270 +126,343 @@
         .text("is " + (this.getSieve().value));
     };
 
-  // ****************************************************************************//
 
-  function SieveExistsUI(elm) {
-    SieveTestBoxUI.call(this, elm);
-  }
+  /**
+   * A UI Widget for the sieve exists element
+   *
+   */
+  class SieveExistsUI extends SieveTestDialogBoxUI {
 
-  SieveExistsUI.prototype = Object.create(SieveTestBoxUI.prototype);
-  SieveExistsUI.prototype.constructor = SieveExistsUI;
-
-  SieveExistsUI.prototype.headers
-    = function () {
-
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's headers
+     */
+    headers() {
       return this.getSieve().getElement("headers");
-    };
+    }
 
-  SieveExistsUI.prototype.initEditor
-    = function () {
-      return $("<div/>").text("all of the following header exist:")
-        .append(
-          (new SieveStringListUI(this.headers()))
-            .defaults(["To", "From", "Cc", "Bcc", "Reply-To", "Subject", "Date", "Message-ID", "Content-Type"])
-            .html());
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveExistsTestUI.html";
+    }
 
-  SieveExistsUI.prototype.initSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
+      (new SieveStringListWidget("#sivExistsHeaderList"))
+        .init(this.headers());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onSave() {
+      (new SieveStringListWidget("#sivExistsHeaderList")).save(this.headers());
+
+      return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
         .html("the following header(s) exist:"
           + "<em>" + $('<div/>').text(this.headers().toScript()).html() + "</em>");
-    };
-
-  // ****************************************************************************//
-  function SieveHeaderUI(elm) {
-    SieveTestDialogBoxUI.call(this, elm);
+    }
   }
 
-  SieveHeaderUI.prototype = Object.create(SieveTestDialogBoxUI.prototype);
-  SieveHeaderUI.prototype.constructor = SieveHeaderUI;
+  /**
+   * A UI Widget for the sieve header element
+   */
+  class SieveHeaderUI extends SieveTestDialogBoxUI {
 
-  SieveHeaderUI.prototype.keys
-    = function (values) {
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's keys
+     */
+    keys() {
+      return this.getSieve().getElement("keys");
+    }
 
-      return this.getSieve().getElement("keys").values(values);
-    };
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's headers
+     */
+    headers() {
+      return this.getSieve().getElement("headers");
+    }
 
-  SieveHeaderUI.prototype.headers
-    = function (values) {
-
-      return this.getSieve().getElement("headers").values(values);
-    };
-
-  SieveHeaderUI.prototype.matchtype
-    = function () {
-
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's match type
+     */
+    matchtype() {
       return this.getSieve().getElement("match-type");
-    };
+    }
 
-  SieveHeaderUI.prototype.comparator
-    = function () {
-
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's comparator
+     */
+    comparator() {
       return this.getSieve().getElement("comparator");
-    };
+    }
 
-  SieveHeaderUI.prototype.onSave
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveHeaderTestUI.html";
+    }
 
-      this.keys((new SieveStringListWidget("#sivHeaderKeyList")).values());
-      this.headers((new SieveStringListWidget("#sivHeaderHeaderList")).values());
-
-      return true;
-    };
-
-  SieveHeaderUI.prototype.getTemplate
-    = function () {
-
-      return "./RFC5228/templates/SieveHeaderTestUI.html #sivSieveDialog";
-    };
-
-  SieveHeaderUI.prototype.onLoad
-    = function () {
-
-      (new SieveTabWidget()).init();
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
 
       (new SieveStringListWidget("#sivHeaderHeaderList"))
         .init(this.headers());
-      // .defaults(["Subject","Date","Message-ID","Content-Type"]);
 
-      let matchtype = new SieveMatchTypeUI(this.matchtype());
-      $("#sivHeaderMatchTypes")
-        .append(matchtype.html());
+      (new SieveMatchTypeWidget("#sivHeaderMatchTypes"))
+        .init(this.matchtype());
 
-      let comparator = new SieveComparatorUI(this.comparator());
-      $("#sivHeaderComparator")
-        .append(comparator.html());
+      (new SieveComparatorWidget("#sivHeaderComparator"))
+        .init(this.comparator());
 
       (new SieveStringListWidget("#sivHeaderKeyList"))
         .init(this.keys());
-    };
+    }
 
-  SieveHeaderUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    onSave() {
+      (new SieveStringListWidget("#sivHeaderKeyList")).save(this.keys());
+      (new SieveStringListWidget("#sivHeaderHeaderList")).save(this.headers());
+
+      (new SieveComparatorWidget("#sivHeaderComparator"))
+        .save(this.comparator());
+
+      (new SieveMatchTypeWidget("#sivHeaderMatchTypes"))
+        .save(this.matchtype());
+
+      return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
-        .html(" header " + $('<em/>').text(this.headers()).html()
+        .html(" header " + $('<em/>').text(this.headers().values()).html()
           + " " + this.matchtype().getValue() + " "
-          + $('<em/>').text(this.keys()).html());
-    };
-
-  // ****************************************************************************//
-
-  function SieveAddressUI(elm) {
-    SieveTestBoxUI.call(this, elm);
+          + $('<em/>').text(this.keys().values()).html());
+    }
   }
 
-  SieveAddressUI.prototype = Object.create(SieveTestBoxUI.prototype);
-  SieveAddressUI.prototype.constructor = SieveAddressUI;
+  /**
+   * A UI Widget for the sieve address element
+   */
+  class SieveAddressUI extends SieveTestDialogBoxUI {
 
-  SieveAddressUI.prototype.addresspart
-    = function () {
-
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's address part
+     */
+    addresspart() {
       return this.getSieve().getElement("address-part");
-    };
+    }
 
-  SieveAddressUI.prototype.comparator
-    = function () {
-
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's comparator
+     */
+    comparator() {
       return this.getSieve().getElement("comparator");
-    };
+    }
 
-  SieveAddressUI.prototype.matchtype
-    = function () {
-
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's match type
+     */
+    matchtype() {
       return this.getSieve().getElement("match-type");
-    };
+    }
 
-  SieveAddressUI.prototype.headers
-    = function () {
-
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's headers
+     */
+    headers() {
       return this.getSieve().getElement("headers");
-    };
+    }
 
-  SieveAddressUI.prototype.keys
-    = function () {
-
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's keys
+     */
+    keys() {
       return this.getSieve().getElement("keys");
-    };
+    }
 
-  SieveAddressUI.prototype.onValidate
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveAddressTestUI.html";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
+      (new SieveStringListWidget("#sivAddressKeyList"))
+        .init(this.keys());
+      (new SieveStringListWidget("#sivAddressHeaderList"))
+        .init(this.headers());
+
+      (new SieveComparatorWidget("#sivAddressComparator"))
+        .init(this.comparator());
+      (new SieveMatchTypeWidget("#sivAddressMatchTypes"))
+        .init(this.matchtype());
+      (new SieveAddressPartWidget("#sivAddressAddressPart"))
+        .init(this.addresspart());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onSave() {
+
+      (new SieveStringListWidget("#sivAddressKeyList"))
+        .save(this.keys());
+      (new SieveStringListWidget("#sivAddressHeaderList"))
+        .save(this.headers());
+
+      (new SieveComparatorWidget("#sivAddressComparator"))
+        .save(this.comparator());
+      (new SieveMatchTypeWidget("#sivAddressMatchTypes"))
+        .save(this.matchtype());
+      (new SieveAddressPartWidget("#sivAddressAddressPart"))
+        .save(this.addresspart());
+
       return true;
-    };
+    }
 
-  SieveAddressUI.prototype.initHelp
-    = function () {
-      return $("<div/>")
-        .html('<h1>Compares headers against E-Mail addresses.</h1>'
-          + '<p>You typically use test with headers like "to", "from", "cc" etc. </p>'
-          + '<p>As this test is aware of e-mail addresses containing display names. '
-          + "A header containing  '\"roadrunner\" &lt;roadrunner@acme.example.com&gt;'"
-          + " is considered to be equivalent to \"'roadrunner@acme.example.com\"</p>"
-          + '<p>If the header should be matched against a string use the header test.</p>');
-    };
-
-  SieveAddressUI.prototype.initEditor
-    = function () {
-
-      /* ´From, To, Cc, Bcc, Sender, Resent-From, Resent-To*/
-      return $("<div/>")
-        .append($("<h1/>").text("Any of the following header ..."))
-        .append((new SieveStringListUI(this.headers()))
-          .defaults(["To", "From", "Cc", "Bcc", "Reply-To"]).html())
-        .append((new SieveMatchTypeUI(this.matchtype())).html())
-        .append((new SieveAddressPartUI(this.addresspart())).html())
-        .append($("<h1/>").text("... any of the keyword(s)"))
-        .append((new SieveStringListUI(this.keys())).html())
-        .append((new SieveComparatorUI(this.comparator())).html());
-    };
-
-  SieveAddressUI.prototype.initSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       // case- insensitive is the default so skip it...
       return $("<div/>")
         .html(" address <em>" + $('<div/>').text(this.headers().toScript()).html() + "</em>"
           + " " + this.matchtype().getValue()
           + " " + ((this.addresspart().getValue() !== ":all") ? this.addresspart().getValue() : "")
           + " <em>" + $('<div/>').text(this.keys().toScript()).html() + "</em>");
-    };
-
-
-  function SieveEnvelopeUI(elm) {
-    SieveTestBoxUI.call(this, elm);
+    }
   }
 
-  SieveEnvelopeUI.prototype = Object.create(SieveTestBoxUI.prototype);
-  SieveEnvelopeUI.prototype.constructor = SieveEnvelopeUI;
+  /**
+   * A UI Widget for the sieve envelope element
+   */
+  class SieveEnvelopeUI extends SieveTestDialogBoxUI {
 
-  SieveEnvelopeUI.prototype.addresspart
-    = function () {
-
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's address part
+     */
+    addresspart() {
       return this.getSieve().getElement("address-part");
-    };
+    }
 
-  SieveEnvelopeUI.prototype.comparator
-    = function () {
-
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's comparator
+     */
+    comparator() {
       return this.getSieve().getElement("comparator");
-    };
+    }
 
-  SieveEnvelopeUI.prototype.matchtype
-    = function () {
-
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's match type
+     */
+    matchtype() {
       return this.getSieve().getElement("match-type");
-    };
+    }
 
-  SieveEnvelopeUI.prototype.envelopes
-    = function () {
-
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's envelopes
+     */
+    envelopes() {
       return this.getSieve().getElement("envelopes");
-    };
+    }
 
-  SieveEnvelopeUI.prototype.keys
-    = function () {
-
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's keys
+     */
+    keys() {
       return this.getSieve().getElement("keys");
-    };
+    }
 
-  SieveEnvelopeUI.prototype.initHelp
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveEnvelopeTestUI.html";
+    }
 
-      return $("<div/>")
-        .html('<h1>Compares fields against the envelope</h1>'
-          + '<p>The envelop is equivalent to the mail delivery protocol. So it ' +
-          'does not test against a real header. Instead uses trace information' +
-          'from the mail delivery protocol for specific values.</p>' +
-          '<p>A "to" tests the SMTP sender field "RCPT TO" a "from" the recipient' +
-          ' "MAIL FROM". </p>' +
-          '<p>It\'s the most reliant way to test from which address a message ' +
-          'was send to or received.</p>');
-    };
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
+      (new SieveStringListWidget("#sivEnvelopeKeyList"))
+        .init(this.keys());
+      (new SieveStringListWidget("#sivEnvelopeList"))
+        .init(this.envelopes());
 
-  SieveEnvelopeUI.prototype.initEditor
-    = function () {
+      (new SieveComparatorWidget("#sivEnvelopeComparator"))
+        .init(this.comparator());
+      (new SieveAddressPartWidget("#sivEnvelopeAddressPart"))
+        .init(this.addresspart());
+      (new SieveMatchTypeWidget("#sivEnvelopeMatchTypes"))
+        .init(this.matchtype());
+    }
 
-      /* envelope [COMPARATOR] [ADDRESS-PART] [MATCH-TYPE]
-                <envelope-part: string-list> <key-list: string-list>*/
-      /* From, To, Cc, Bcc, Sender, Resent-From, Resent-To*/
-      return $("<div/>")
-        .append($("<h1/>").text("Any of the following envelope fields ..."))
-        .append((new SieveStringListUI(this.envelopes()))
-          .defaults(["From", "To"]).html())
-        .append((new SieveMatchTypeUI(this.matchtype())).html())
-        .append((new SieveAddressPartUI(this.addresspart())).html())
-        .append($("<h1/>").text("... any of the keyword(s)"))
-        .append((new SieveStringListUI(this.keys())).html())
-        .append((new SieveComparatorUI(this.comparator())).html());
-    };
+    /**
+     * @inheritDoc
+     */
+    onSave() {
 
-  SieveEnvelopeUI.prototype.initSummary
-    = function () {
+      (new SieveStringListWidget("#sivEnvelopeKeyList")).save(this.keys());
+      (new SieveStringListWidget("#sivEnvelopeList")).save(this.envelopes());
+
+      (new SieveComparatorWidget("#sivEnvelopeComparator"))
+        .save(this.comparator());
+      (new SieveMatchTypeWidget("#sivEnvelopeMatchTypes"))
+        .save(this.matchtype());
+      (new SieveAddressPartWidget("#sivEnvelopeAddressPart"))
+        .save(this.addresspart());
+
+      return true;
+    }
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
         .html(" envelope " + $('<em/>').text(this.envelopes().toScript()).html()
           + " " + this.matchtype().getValue()
           + " " + ((this.addresspart().getValue() !== ":all") ? this.addresspart().getValue() : "")
           + " " + $('<em/>').text(this.keys().toScript()).html() + "");
-    };
+    }
+  }
 
 
   if (!SieveDesigner)

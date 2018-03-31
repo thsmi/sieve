@@ -1,0 +1,36 @@
+<div>
+  <div id="test42">
+    <div>
+      <div class="form-row align-items-center mt-2">
+        <div class="col-auto">
+          <div class="custom-control custom-radio mr-sm-2">
+            <input type="radio"
+            class="custom-control-input sieve-matchtype-radio"
+            data-matchtype="match-type/value"
+            name="sieve-matchtype" id="sieve-matchtype-value">
+            <label class="custom-control-label" for="sieve-matchtype-value">
+              <h5>... is</h5>
+            </label>
+          </div>
+        </div>
+        <div class="col-auto">
+          <select class="form-control form-control-sm sieve-matchtype-value-relational">
+            <option value=':value "gt"'>greater than</option>
+            <option value=':value "ge"'>greater than or equal</option>
+            <option value=':value "lt"'>less than</option>
+            <option value=':value "le"'>less than or equal</option>
+            <option value=':value "eq"'>equal to</option>
+            <option value=':value "ne"'>not equal to</option>
+          </select>
+        </div>
+        <div class="col-auto">
+          <h5>...</h5>
+        </div>
+      </div>
+      <div class="form-row">
+        <small class="ml-4">Compares the relation between strings. The test
+            is considered true if any pair is true</small>
+      </div>
+    </div>
+  </div>
+</div>

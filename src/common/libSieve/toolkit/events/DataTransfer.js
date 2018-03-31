@@ -15,42 +15,59 @@
 
   "use strict";
 
-  /* global chrome */
+  const NO_SUCH_TOKEN = -1;
+
+  // We need these global object to bypass the bug
+  let _transfer = null;
+  let _token = null;
 
   /**
-   * A stupid wrapper around the data transfer used to bypass a google chrome bug.
-   * The bug causes getData() to return always an empty string in dragenter and
-   * dragover events.
+   * A stupid wrapper around the data transfer used to bypass a google chrome/
+   * electron bug. The bug causes getData() to return always an empty string in
+   * dragenter and dragover events.
    *
-   * Strangely this happens only in a chrome web app. "Normal" Chrome does not
-   * suffer from this bug.
+   * Strangely this happens only in a chrome web app or in electron. "Normal"
+   * Chrome does not suffer from this bug.
    *
    * The workaround is to store the transfer element locally and just add
    * a token to the drag's datatransfer element.
    *
-   * A chrome webapp detection is build in so that the workaround is only used
-   * when realy needed.
+   * This wrapper automatically detects buggy runtimes so that the workaround
+   * is only used when realy needed.
    *
    * The workaround has some limitation you can set at most one data object.
-   *
-   * @param {DataTransfer} dt
-   *   the data transfer object which should be wrapped.
-   * @constructor
    */
-  function SieveDataTransfer(dt) {
-    this.dt = dt;
-  }
+  class SieveDataTransfer {
 
-  SieveDataTransfer._transfer = null;
-  SieveDataTransfer._token = null;
+    /**
+     *  Creates a new data transfer instance.
+     *
+     *  @param {DataTransfer} dt
+     *    the data transfer object which should be wrapped.
+     */
+    constructor(dt) {
+      this.dt = dt;
+    }
 
-  /**
-   * Calculates a random token, which is used to idenfiy the transfer.
-   * It is just a precausion in for very unlikely cases, that an
-   * external drop uses the very same flavours.
-   */
-  SieveDataTransfer.prototype.generateToken
-    = function () {
+    /**
+     * Checks if the current runtime is affected by the drag and drop bug.
+     * @returns {boolean}
+     *   returns true in case it is bug free otherwise false
+    */
+    isBugFree() {
+      // Check if we are running in electron...
+      return (window.navigator.userAgent.toLowerCase().indexOf(" electron/") === NO_SUCH_TOKEN);
+    }
+
+    /**
+     * Calculates a random token, which is used to idenfiy the transfer.
+     * It is just a precausion in for very unlikely cases, that an
+     * external drop uses the very same flavours.
+     *
+     * @returns {string}
+     *   a unique token
+     */
+    generateToken() {
       let token = [];
 
       for (let i = 0; i < 32; i++) {
@@ -64,93 +81,90 @@
       }
 
       return token.join("");
-    };
+    }
 
-  /**
-   * Checks if the DataTransfer contains the given flavour.
-   *
-   * @param {string} flavour
-   *   the flavour which should be checked
-   * @return {Boolean}
-   *   true in case the flavour is contained otherwise false.
-   */
-  SieveDataTransfer.prototype.contains
-    = function (flavour) {
+    /**
+     * Checks if the DataTransfer contains the given flavour.
+     *
+     * @param {string} flavour
+     *   the flavour which should be checked
+     * @return {Boolean}
+     *   true in case the flavour is contained otherwise false.
+     */
+    contains(flavour) {
       for (let i = 0; i < this.dt.items.length; i++)
         if (this.dt.items[i].type === flavour)
           return true;
 
       return false;
-    };
+    }
 
-  /**
-   * Retunrs the data bound to the given flavour.
-   *
-   * @param {String} flavour
-   *   the flavour as string
-   * @return {String}
-   *   the data stored in the dragtarget.
-   */
-  SieveDataTransfer.prototype.getData
-    = function (flavour) {
+    /**
+     * Retunrs the data bound to the given flavour.
+     *
+     * @param {String} flavour
+     *   the flavour as string
+     * @return {String}
+     *   the data stored in the dragtarget.
+     */
+    getData(flavour) {
 
-      // In case it's not a web app we can a short cut ...
-      if (!window.chrome || !chrome.runtime)
+      // in case we are bug free we can take a short cut...
+      if (this.isBugFree())
         return this.dt.getData(flavour);
 
-      // ... otherwise we need a workaround for a chrome web app bug.
+      // ... otherwise we need a workaround to recover.
       if (!this.contains(flavour))
         return "";
 
-      if (!this.contains(SieveDataTransfer._token))
+      if (!this.contains(_token))
         return "";
 
-      return SieveDataTransfer._transfer;
-    };
+      return _transfer;
+    }
 
-  /**
-   * Binds the data to the data transfer object
-   *
-   * @param {String} flavour
-   *   the drag falvour as string
-   * @param {Object} transfer
-   *   the transfer object should be a string
-   * @returns {void}
-   */
-  SieveDataTransfer.prototype.setData
-    = function (flavour, transfer) {
+    /**
+     * Binds the data to the data transfer object
+     *
+     * @param {String} flavour
+     *   the drag falvour as string
+     * @param {Object} transfer
+     *   the transfer object should be a string
+     * @returns {void}
+     */
+    setData(flavour, transfer) {
 
       this.dt.setData(flavour, transfer);
 
-      if (!window.chrome || !chrome.runtime)
+      if (this.isBugFree())
         return;
 
       // ignore the "application/sieve" flavour
       if (flavour === "application/sieve")
         return;
 
-      if (SieveDataTransfer._transfer || SieveDataTransfer._token)
+      if (_transfer || _token)
         throw new Error("Transfer in progress, clear before starting new one.");
 
-      SieveDataTransfer._transfer = transfer;
+      _transfer = transfer;
 
       // We generate a onetime token to ensure drag and drop integrity
-      SieveDataTransfer._token = this.generateToken();
-      this.dt.setData(SieveDataTransfer._token, "");
-    };
+      _token = this.generateToken();
+      this.dt.setData(_token, "");
+    }
 
-  /**
-   * Clear should be called before and after each drop.
-   *
-   * It releases the drop target from the current context.
-   * @returns {void}
-   */
-  SieveDataTransfer.prototype.clear
-    = function () {
-
-      SieveDataTransfer._token = null;
-      SieveDataTransfer._transfer = null;
-    };
+    /**
+     * Clear needs to be called before and after each drop.
+     * Otherwise you may leak.
+     *
+     * It releases the drop target from the current context.
+     * @returns {void}
+     */
+    clear() {
+      _token = null;
+      _transfer = null;
+    }
+  }
 
   exports.SieveDataTransfer = SieveDataTransfer;
 

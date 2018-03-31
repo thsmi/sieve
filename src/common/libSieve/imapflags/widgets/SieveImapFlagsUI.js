@@ -20,182 +20,195 @@
   /* global SieveDesigner */
   /* global SieveActionDialogBoxUI */
 
-  /* global SieveTabWidget */
   /* global SieveStringListWidget */
 
   /* global SieveActionDialogBoxUI */
   /* global SieveTestDialogBoxUI */
 
-  /* global SieveComparatorUI */
-  /* global SieveMatchTypeUI */
+  /* global SieveComparatorWidget */
+  /* global SieveMatchTypeWidget */
 
-  function SieveAbstractFlagUI(elm) {
-    SieveActionDialogBoxUI.call(this, elm);
-  }
+  /**
+   * Provides an abstract UI for the flags actions.
+   */
+  class SieveAbstractFlagUI extends SieveActionDialogBoxUI {
 
-  SieveAbstractFlagUI.prototype = Object.create(SieveActionDialogBoxUI.prototype);
-  SieveAbstractFlagUI.prototype.constructor = SieveAbstractFlagUI;
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's flags
+     */
+    flags() {
+      return this.getSieve().getElement("flags");
+    }
 
-  SieveAbstractFlagUI.prototype.getFlags = function () {
-    return this.getSieve().getElement("flags").values();
-  };
-
-  SieveAbstractFlagUI.prototype.setFlags = function (values) {
-    this.getSieve().getElement("flags").values(values);
-  };
-
-  SieveAbstractFlagUI.prototype.onSave
-    = function () {
-
-      let values = (new SieveStringListWidget("#sivFlagKeywordList")).values();
-
-      if (!values || !values.length) {
-        window.alert("Flag keyword list is empty");
-        return false;
-      }
-
-      this.setFlags(values);
-
-      return true;
-    };
-
-  SieveAbstractFlagUI.prototype.onLoad
-    = function () {
-
-      (new SieveTabWidget()).init();
+    /**
+     * @inheritDoc
+     */
+    onSave() {
 
       (new SieveStringListWidget("#sivFlagKeywordList"))
-        .init(this.getFlags());
-    };
+        .save(this.flags());
+      return true;
+    }
 
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
 
-  function SieveSetFlagUI(elm) {
-    SieveAbstractFlagUI.call(this, elm);
+      (new SieveStringListWidget("#sivFlagKeywordList"))
+        .init(this.flags());
+    }
   }
 
-  SieveSetFlagUI.prototype = Object.create(SieveAbstractFlagUI.prototype);
-  SieveSetFlagUI.prototype.constructor = SieveSetFlagUI;
+  /**
+   * Provides an UI for the set flag action
+   */
+  class SieveSetFlagUI extends SieveAbstractFlagUI {
 
-  SieveSetFlagUI.prototype.getTemplate
-    = function () {
-      return "./imapflags/templates/SieveSetFlagActionUI.html #sivDialogSetFlag";
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./imapflags/templates/SieveSetFlagActionUI.html";
+    }
 
-  SieveSetFlagUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
-        .text("Set IMAP flag(s) " + this.getFlags().join(", "));
-    };
-
-
-  function SieveAddFlagUI(elm) {
-    SieveAbstractFlagUI.call(this, elm);
+        .html("Set IMAP flag(s) "
+          + $('<em/>').text(" " + this.flags().values().join(", ")).prop('outerHTML'));
+    }
   }
 
-  SieveAddFlagUI.prototype = Object.create(SieveAbstractFlagUI.prototype);
-  SieveAddFlagUI.prototype.constructor = SieveAddFlagUI;
+  /**
+   * Provides an UI for the add flag action
+   */
+  class SieveAddFlagUI extends SieveAbstractFlagUI {
 
-  SieveAddFlagUI.prototype.getTemplate
-    = function () {
-      return "./imapflags/templates/SieveAddFlagActionUI.html #sivDialogAddFlag";
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./imapflags/templates/SieveAddFlagActionUI.html";
+    }
 
-  SieveAddFlagUI.prototype.getSummary
-    = function () {
-
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
-        .text("Add IMAP flag(s) " + this.getFlags().join(", "));
-    };
-
-
-  function SieveRemoveFlagUI(elm) {
-    SieveAbstractFlagUI.call(this, elm);
+        .html("Add IMAP flag(s) "
+          + $('<em/>').text(" " + this.flags().values().join(", ")).prop('outerHTML'));
+    }
   }
-
-  SieveRemoveFlagUI.prototype = Object.create(SieveAbstractFlagUI.prototype);
-  SieveRemoveFlagUI.prototype.constructor = SieveRemoveFlagUI;
-
-  SieveRemoveFlagUI.prototype.getTemplate
-    = function () {
-      return "./imapflags/templates/SieveRemoveFlagActionUI.html #sivDialogRemoveFlag";
-    };
-
-  SieveRemoveFlagUI.prototype.getSummary
-    = function () {
-      return $("<div/>")
-        .text("Remove IMAP flag(s) " + this.getFlags().join(", "));
-    };
 
 
   /**
-   * Implements controls to edit a sieve body test
-   *
-   * "body" [COMPARATOR] [MATCH-TYPE] [BODY-TRANSFORM]  <key-list: string-list>
-   *
-   * @constructor
-   * @param {Object} elm - The sieve element which should be rendered.
+   * Provides an UI for the remove flag action
    */
-  function SieveHasFlagUI(elm) {
-    SieveTestDialogBoxUI.call(this, elm);
+  class SieveRemoveFlagUI extends SieveAbstractFlagUI {
+
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./imapflags/templates/SieveRemoveFlagActionUI.html";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
+      return $("<div/>")
+        .html("Remove IMAP flag(s) "
+          + $('<em/>').text(" " + this.flags().values().join(", ")).prop('outerHTML'));
+    }
   }
 
-  SieveHasFlagUI.prototype = Object.create(SieveTestDialogBoxUI.prototype);
-  SieveHasFlagUI.prototype.constructor = SieveHasFlagUI;
 
-  SieveHasFlagUI.prototype.matchtype
-    = function () {
+  /**
+   * Provides a UI for the has flag test
+   **/
+  class SieveHasFlagUI extends SieveTestDialogBoxUI {
+
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's match type
+     */
+    matchtype() {
       return this.getSieve().getElement("match-type");
-    };
+    }
 
-  SieveHasFlagUI.prototype.comparator
-    = function () {
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's comparator
+     */
+    comparator() {
       return this.getSieve().getElement("comparator");
-    };
+    }
 
-  SieveHasFlagUI.prototype.flags
-    = function (values) {
-      return this.getSieve().getElement("flags").values(values);
-    };
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's flags
+     */
+    flags() {
+      return this.getSieve().getElement("flags");
+    }
 
-  SieveHasFlagUI.prototype.onLoad
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
 
-      (new SieveTabWidget()).init();
+      (new SieveMatchTypeWidget("#sivHasFlagMatchTypes"))
+        .init(this.matchtype());
 
-      let matchtype = new SieveMatchTypeUI(this.matchtype());
-      $("#sivHasFlagMatchTypes")
-        .append(matchtype.html());
+      (new SieveComparatorWidget("#sivHasFlagComparator"))
+        .init(this.comparator());
 
-      let comparator = new SieveComparatorUI(this.comparator());
-      $("#sivHasFlagComparator")
-        .append(comparator.html());
+      (new SieveStringListWidget("#sivHasFlagKeyList"))
+        .init(this.flags());
 
-      (new SieveStringListWidget("#sivHasFlagKeyList")).init(this.flags());
+    }
 
-    };
+    /**
+     * @inheritDoc
+     */
+    onSave() {
 
-  SieveHasFlagUI.prototype.onSave
-    = function () {
+      (new SieveMatchTypeWidget("#sivHasFlagMatchTypes"))
+        .save(this.matchtype());
 
-      this.flags((new SieveStringListWidget("#sivHasFlagKeyList")).values());
+      (new SieveComparatorWidget("#sivHasFlagComparator"))
+        .save(this.comparator());
+
+      (new SieveStringListWidget("#sivHasFlagKeyList"))
+        .save(this.flags());
       return true;
-    };
+    }
 
-  SieveHasFlagUI.prototype.getTemplate
-    = function () {
-      return "./imapflags/templates/SieveHasFlagTestUI.html #sivHasFlagDialog";
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./imapflags/templates/SieveHasFlagTestUI.html";
+    }
 
-  SieveHasFlagUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
 
       // case- insensitive is the default so skip it...
       return $("<div/>")
-        .html(" has IMAP flags(s) <em> "
+        .html("An IMAP flags(s) <em> "
           + this.matchtype().getValue() + " "
-          + $('<div/>').text(this.flags()).html() + "</em>");
-    };
-
+          + $('<div/>').text(this.flags().values()).html() + "</em>");
+    }
+  }
 
   if (!SieveDesigner)
     throw new Error("Could not register IMAP Flags Widgets");

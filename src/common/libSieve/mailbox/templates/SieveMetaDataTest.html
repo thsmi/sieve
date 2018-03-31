@@ -1,85 +1,58 @@
-<!DOCTYPE html>
+<div>
+    <ul id="template-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-stringtest" role="tab">Meta Data</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+        </li>
+    </ul>
 
-<!--
+    <div id="template-content">
+        <div class="tab-content m-2">
+            <div class="tab-pane fade show active" id="sieve-widget-stringtest" role="tabpanel">
 
-  The contents of this file are licenced. You may obtain a copy of 
-  the license at https://github.com/thsmi/sieve/ or request it via 
-  email from the author.
- 
-  Do not remove or change this comment.
-  
-  The initial author of the code is:
-    Thomas Schmid <schmid-thomas@gmx.net>
+                <div class="form-group">
+                    <h5>The annotation ... </h5>
+                    <input id="sivAnnotationName" type="text" class="form-control form-control-sm col-lg-8"></input>
 
--->
+                    <h5>... in mailbox/folder ...</h5>
+                    <input id="sivMailboxName" type="text" class="form-control form-control-sm col-lg-8"></input>
 
-<html>
+                    <h5>... has a value which ...</h5>
+                    <div id="sivMailboxMatchTypes"> </div>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Meta Data test</title>
-</head>
+                    <h5>... any of the following keys:</h5>
 
-<body>
-
-    <div id="sivMailboxDialog" class="dialog">
-
-        <div>
-            <!-- System -->
-            <div id="sivEditMain">
-                <!-- Appbar -->
-                <div class="dialog-header">
-                    <div class="dialog-tab">
-                        <div class="tab-active" data-tab-content="sivMailboxGeneralContent">BASIC</div>
-                        <div data-tab-content="sivMailboxAdvancedContent">ADVANCED</div>
-                        <div data-tab-content="sivMailboxHelpContent">HELP</div>
-                    </div>
-                </div>
-                <!-- content -->
-                <div class="dialog-tab-content">
-                    <!-- content for help tab -->
-                    <div id="sivMailboxHelpContent">
+                    <div id="sivMailboxKeys" data-list-new="#sivMailboxKeysAdd" data-list-template="#sivMailboxKeysTemplate" data-list-min="1">
                     </div>
 
-                    <!-- content for advanced tab -->
-                    <div id="sivMailboxAdvancedContent">
-                        <div id="sivMailboxComparator"></div>
-                    </div>
-
-                    <!-- content for general tab -->
-                    <div id="sivMailboxGeneralContent" class="tab-active">
-                        <h1>The annotation ...</h1>
-                        <input id="sivAnnotationName" type="text">
-
-                        <h1>... in mailbox/folder ...</h1>
-                        <input id="sivMailboxName" type="text">
-
-                        <h1>... has a value which ...</h1>
-
-                        <div id="sivMailboxMatchTypes"> </div>
-
-                        <h1>... any of the following keys:</h1>
-                        <div id="sivMailboxKeys" data-list-new="#sivMailboxKeysAdd" data-list-items="#sivMailboxKeysItems" data-list-template="#sivMailboxKeysTemplate"
-                            data-list-min="1">
-
-                            <div id="sivMailboxKeysTemplate" style="display:none">
-                                <div>
-                                    <input type="text">
-                                    <button>remove</button>
-                                </div>
+                    <div id="sivMailboxKeysTemplate" style="display:none">
+                        <div class="input-group input-group-sm mb-1">
+                            <input type="text" class="form-control col-lg-8">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary far sieve-stringlist-delete">
+                                    &#xf2ed;
+                                </button>
                             </div>
-                            <div id="sivMailboxKeysItems">
-                                <div>
-                                    <button id="sivMailboxKeysAdd">add</button>
-                                </div>
-                            </div>
+                        </div>
                     </div>
-                </div>
 
+
+                    <div>
+                        <button id="sivMailboxKeysAdd" class="btn btn-sm btn-outline-secondary">Add</button>
+                    </div>
+
+                </div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+                <div id="sivMailboxComparator"></div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
             </div>
         </div>
     </div>
 </div>
-</body>
-
-</html>

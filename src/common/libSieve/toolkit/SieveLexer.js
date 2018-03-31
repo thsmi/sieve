@@ -90,6 +90,8 @@
         obj.onProbe = function (token, doc) { return callback.isElement(token, doc); };
         obj.onNew = function (docshell, id) { return new callback(docshell, id); };
         obj.onCapable = function (capabilities) {
+
+          // FIXME: does not work with ES5 static... needs a callback.constructor.isCapable
           if (!callback.isCapable)
             return true;
           return callback.isCapable(capabilities);

@@ -20,6 +20,9 @@
   /* global SieveDesigner */
   /* global SieveActionDialogBoxUI */
   /* global SieveTabWidget */
+  /* global SieveStringListWidget */
+  /* global SieveMatchTypeWidget */
+  /* global SieveComparatorWidget */
 
   function SieveAddHeaderUI(elm) {
     SieveActionDialogBoxUI.call(this, elm);
@@ -127,6 +130,14 @@
   SieveDeleteHeaderUI.prototype.onSave
     = function () {
 
+      (new SieveMatchTypeWidget("#sivDeleteHeaderMatchTypes"))
+        .save(this.matchtype());
+      (new SieveComparatorWidget("#sivDeleteHeaderComparator"))
+        .save(this.comparator());
+
+      (new SieveStringListWidget("#sivHeaderKeyList"))
+        .init(this.save());
+
       /* var name = $( "#sivNewHeaderName" ).val();
 
       if ( name.trim() === "" ) {
@@ -159,13 +170,10 @@
       //    .init( this.headers() );
       // .defaults(["Subject","Date","Message-ID","Content-Type"]);
 
-      let matchtype = new SieveMatchTypeUI(this.matchtype());
-      $("#sivDeleteHeaderMatchTypes")
-        .append(matchtype.html());
-
-      let comparator = new SieveComparatorUI(this.comparator());
-      $("#sivDeleteHeaderComparator")
-        .append(comparator.html());
+      (new SieveMatchTypeWidget("#sivDeleteHeaderMatchTypes"))
+        .init(this.matchtype());
+      (new SieveComparatorWidget("#sivDeleteHeaderComparator"))
+        .init(this.comparator());
 
       (new SieveStringListWidget("#sivHeaderKeyList"))
         .init(this.keys());

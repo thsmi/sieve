@@ -91,10 +91,12 @@
 
       elements: [{
         id: "sources",
-        type: "stringlist"
+        type: "stringlist",
+        value: '"${somevariable}"'
       }, {
         id: "keys",
-        type: "stringlist"
+        type: "stringlist",
+        value: '"some value"'
       }]
     }]
   };

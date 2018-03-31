@@ -12,7 +12,6 @@
 
 /* global window */
 
-
 (function () {
 
   "use strict";
@@ -20,38 +19,37 @@
   /* global $: false */
   /* global SieveStringListWidget */
   /* global SieveActionDialogBoxUI */
-  /* global SieveTabWidget */
   /* global SieveTestDialogBoxUI */
-  /* global SieveMatchTypeUI */
+  /* global SieveMatchTypeWidget */
   /* global SieveDesigner */
-  /* global SieveComparatorUI */
+  /* global SieveComparatorWidget */
 
   const MAX_QUOTE_LEN = 240;
 
-  function SieveSetActionUI(elm) {
-    SieveActionDialogBoxUI.call(this, elm);
-  }
+  /**
+   * Provides a ui for the set action
+   */
+  class SieveSetActionUI extends SieveActionDialogBoxUI {
 
-  SieveSetActionUI.prototype = Object.create(SieveActionDialogBoxUI.prototype);
-  SieveSetActionUI.prototype.constructor = SieveSetActionUI;
-
-  SieveSetActionUI.prototype.getTemplate
-    = function () {
-      return "./variables/templates/SieveSetActionUI.html #sivDialogVariables";
-    };
-
-  SieveSetActionUI.prototype.name
-    = function (value) {
+    name(value) {
       return this.getSieve().getElement("name").value(value);
-    };
+    }
 
-  SieveSetActionUI.prototype.value
-    = function (value) {
+    value(value) {
       return this.getSieve().getElement("value").value(value);
-    };
+    }
 
-  SieveSetActionUI.prototype.onSave
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./variables/templates/SieveSetActionUI.html";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onSave() {
       let item = null;
 
       item = $("#sivVariableName").val();
@@ -100,13 +98,12 @@
       this.getSieve().toScript();
 
       return true;
-    };
+    }
 
-
-  SieveSetActionUI.prototype.onLoad
-    = function () {
-
-      (new SieveTabWidget()).init();
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
 
       let state = null;
 
@@ -136,11 +133,12 @@
 
       $("#sivVariableName").val(this.name());
       $("#sivVariableValue").val(this.value());
-    };
+    }
 
-
-  SieveSetActionUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
         .html("Set variable <em>" + this.name() + "</em> to value " +
           "<div><em>" +
@@ -148,96 +146,99 @@
           ((this.value().substr().length > MAX_QUOTE_LEN) ? "..." : "") +
           "</em></div>");
 
-    };
-
-  // -----------------------------------------------------------------------------
-
-  function SieveStringTestUI(elm) {
-    SieveTestDialogBoxUI.call(this, elm);
+    }
   }
 
-  SieveStringTestUI.prototype = Object.create(SieveTestDialogBoxUI.prototype);
-  SieveStringTestUI.prototype.constructor = SieveStringTestUI;
 
-  SieveStringTestUI.prototype.getTemplate
-    = function () {
-      return "./variables/templates/SieveStringTestUI.html #sivDialogVariables";
-    };
+  /**
+   * Provides a ui for the sieve string test
+   */
+  class SieveStringTestUI extends SieveTestDialogBoxUI {
 
-  SieveStringTestUI.prototype.keys
-    = function (values) {
-      return this.getSieve().getElement("keys").values(values);
-    };
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's keys
+     */
+    keys() {
+      return this.getSieve().getElement("keys");
+    }
 
-  SieveStringTestUI.prototype.sources
-    = function (values) {
-      return this.getSieve().getElement("sources").values(values);
-    };
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's sources
+     */
+    sources() {
+      return this.getSieve().getElement("sources");
+    }
 
-  SieveStringTestUI.prototype.matchtype
-    = function () {
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's matchtype
+     */
+    matchtype() {
       return this.getSieve().getElement("match-type");
-    };
+    }
 
-  SieveStringTestUI.prototype.comparator
-    = function () {
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's comparator
+     */
+    comparator() {
       return this.getSieve().getElement("comparator");
-    };
+    }
 
-  SieveStringTestUI.prototype.onSave
-    = function () {
-      let values = null;
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./variables/templates/SieveStringTestUI.html";
+    }
 
-      values = (new SieveStringListWidget("#sivVariablesSourceList")).values();
+    /**
+     * @inheritDoc
+     */
+    onSave() {
 
-      if (!values || !values.length) {
-        window.alert("Source list is empty");
-        return false;
-      }
+      (new SieveStringListWidget("#sivVariablesSourceList"))
+        .save(this.sources());
+      (new SieveStringListWidget("#sivVariablesKeyList"))
+        .save(this.keys());
 
-      this.sources(values);
-
-      values = (new SieveStringListWidget("#sivVariablesKeyList")).values();
-
-      if (!values || !values.length) {
-        alert("Key list is empty");
-        return false;
-      }
-
-      this.keys(values);
+      (new SieveMatchTypeWidget("#sivVariablesMatchTypes"))
+        .save(this.matchtype());
+      (new SieveComparatorWidget("#sivVariablesComparator"))
+        .save(this.comparator());
 
       return true;
-    };
+    }
 
-
-  SieveStringTestUI.prototype.onLoad
-    = function () {
-      (new SieveTabWidget()).init();
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
 
       (new SieveStringListWidget("#sivVariablesSourceList"))
         .init(this.sources());
-
       (new SieveStringListWidget("#sivVariablesKeyList"))
         .init(this.keys());
 
-      let matchtype = new SieveMatchTypeUI(this.matchtype());
-      $("#sivVariablesMatchTypes")
-        .append(matchtype.html());
+      (new SieveMatchTypeWidget("#sivVariablesMatchTypes"))
+        .init(this.matchtype());
+      (new SieveComparatorWidget("#sivVariablesComparator"))
+        .init(this.comparator());
+    }
 
-      let comparator = new SieveComparatorUI(this.comparator());
-      $("#sivVariablesComparator")
-        .append(comparator.html());
-    };
-
-  SieveStringTestUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
-        .html(" string " + $('<em/>').text(this.sources()).html()
+        .html(" string " + $('<em/>').text(this.sources().values()).html()
           + " " + this.matchtype().getValue()
-          + " " + $('<em/>').text(this.keys()).html());
+          + " " + $('<em/>').text(this.keys().values()).html());
 
-    };
-
+    }
+  }
 
   if (!SieveDesigner)
     throw new Error("Could not register Body Extension");

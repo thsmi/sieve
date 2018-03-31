@@ -216,6 +216,11 @@
    *
    * It checks all cached elements for a valid parent pointer. If it's missing
    * the document was obviously deleted...
+   *
+   * @param {String[]} whitelist
+   *   an optional whitelist list, with elements which should not be released
+   * @returns {int}
+   *   the number of deleted elements
    */
   SieveDocument.prototype.compact
     = function (whitelist) {

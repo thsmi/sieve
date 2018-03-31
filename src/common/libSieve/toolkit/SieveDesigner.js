@@ -42,7 +42,6 @@
        */
       register2: function (callback) {
 
-
         if (!callback.nodeType)
           throw new Error("Designer Error: Registration failed, element has no type");
 
@@ -58,10 +57,11 @@
 
         let obj = {};
         obj.onNew = function (id) { return new callback(id); };
-        obj.onCapable = function (capabilities) {
-          if (!callback.isCapable)
-            return true;
-          return callback.isCapable(capabilities);
+        obj.onCapable = (capabilities) => {
+          if (callback.isCapable)
+            return callback.isCapable(capabilities);
+
+          return true;
         };
 
         this.names[name] = obj;

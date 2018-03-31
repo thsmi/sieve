@@ -13,3 +13,6 @@ variable's defered elements should be added via extend...
 
  - Add UI for copy
  - Add UI for create
+
+ - Stringlist should use a default template to avoid duplicated boilderplate html
+ - Create A Sieve DropdownGroupWidget

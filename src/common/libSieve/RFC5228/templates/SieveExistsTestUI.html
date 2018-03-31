@@ -1,0 +1,51 @@
+<div>
+  <ul id="template-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#sieve-widget-exists-test" role="tab">Exists</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+    </li>
+  </ul>
+
+  <div id="template-content">
+    <div class="tab-content m-2">
+      <div class="tab-pane fade show active" id="sieve-widget-exists-test" role="tabpanel">
+        <p>All of the following header exist:</p>
+        <div class="form-group">
+          <div id="sivExistsHeaderList" data-list-new="#sivExistsHeaderListAdd" data-list-template="#sivExistsHeaderListTemplate" data-list-min="1">
+          </div>
+
+          <div id="sivExistsHeaderListTemplate" style="display:none">
+            <div class="input-group input-group-sm mb-1">
+              <input type="text" class="form-control col-lg-8">
+              <div class="input-group-append">
+                <div class="dropdown-menu dropdown-menu-right">
+                  <a class="dropdown-item" href="#">To</a>
+                  <a class="dropdown-item" href="#">From</a>
+                  <a class="dropdown-item" href="#">Cc</a>
+                  <a class="dropdown-item" href="#">Bcc</a>
+                  <a class="dropdown-item" href="#">Reply-To</a>
+                </div>
+                <button type="button" class="btn btn-outline-secondary far sieve-stringlist-delete">
+                  &#xf2ed;
+                </button>
+                <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="false">
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+
+          <div>
+            <button id="sivExistsHeaderListAdd" class="btn btn-sm btn-outline-secondary">Add</button>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+      </div>
+    </div>
+  </div>
+</div>

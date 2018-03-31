@@ -1,14 +1,22 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Sieve DOM</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
   <link rel="stylesheet" href="toolkit/style/layout.css" type="text/css" />
+
+  <link rel="stylesheet" href="toolkit/style/fontawesome/css/fa-regular.css" type="text/css" />
+
   <link rel="stylesheet" href="toolkit/style/style.css" type="text/css" />
   <link rel="stylesheet" href="toolkit/widgets/tabDialog.css" type="text/css" />
 
+  <link rel="stylesheet" href="./../../libs/bootstrap/css/bootstrap.min.css">
+  <script src="./../../libs/jquery/jquery.min.js"></script>
+  <script src="./../../libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
   <!-- Global Imports -->
-  <script type="application/javascript" src="./../jQuery/jquery.min.js"></script>
+  <!-- <script type="application/javascript" src="./../jQuery/jquery.min.js"></script> -->
 
   <!-- Basic Sieve Elements -->
   <script type="application/javascript" src="toolkit/SieveParser.js"></script>
@@ -28,12 +36,13 @@
   <!-- logic related Imports -->
   <script type="application/javascript" src="toolkit/logic/GenericElement.js"></script>
   <!-- RFC 5228 - Sieve -->
-  <script type="application/javascript" src="RFC5228/logic/SieveWhiteSpaces.js" ></script>
-  <script type="application/javascript" src="RFC5228/logic/SieveStrings.js" ></script>
-  <script type="application/javascript" src="RFC5228/logic/SieveNumbers.js" ></script>
-  <script type="application/javascript" src="RFC5228/logic/SieveMatchTypes.js" ></script>
-  <script type="application/javascript" src="RFC5228/logic/SieveAddressParts.js" ></script>
-  <script type="application/javascript" src="RFC5228/logic/SieveComparators.js" ></script>
+  <script type="application/javascript" src="RFC5228/logic/SieveWhiteSpaces.js"></script>
+  <script type="application/javascript" src="RFC5228/logic/SieveStrings.js"></script>
+  <script type="application/javascript" src="RFC5228/logic/SieveNumbers.js"></script>
+  <script type="application/javascript" src="RFC5228/logic/SieveMatchTypes.js"></script>
+  <script type="application/javascript" src="RFC5228/logic/SieveAddressParts.js"></script>
+  <script type="application/javascript" src="RFC5228/logic/SieveComparators.js"></script>
+
   <script type="application/javascript" src="RFC5228/logic/SieveBlocks.js"></script>
   <script type="application/javascript" src="RFC5228/logic/SieveTests.js"></script>
   <script type="application/javascript" src="RFC5228/logic/SieveOperators.js"></script>
@@ -45,15 +54,14 @@
   <!-- RFC 5232 - ImapFlags-->
   <script type="application/javascript" src="imapflags/logic/SieveImapFlags.js"></script>
 
-    <!-- UI related Imports -->
+  <!-- UI related Imports -->
   <!-- RFC 5228 - Sieve -->
-  <script type="application/javascript" src="RFC5228/widgets/SieveStringsUI.js" ></script>
-  <script type="application/javascript" src="RFC5228/widgets/SieveNumbersUI.js" ></script>
+  <script type="application/javascript" src="RFC5228/widgets/SieveNumbersUI.js"></script>
   <script type="application/javascript" src="RFC5228/widgets/SieveBlocksUI.js"></script>
-  <script type="application/javascript" src="RFC5228/widgets/SieveMatchTypesUI.js" ></script>
-  <script type="application/javascript" src="RFC5228/widgets/SieveAddressPartUI.js" ></script>
-  <script type="application/javascript" src="RFC5228/widgets/SieveComparatorsUI.js" ></script> 
-  <script type="application/javascript" src="RFC5228/widgets/SieveTestsUI.js" ></script>
+  <script type="application/javascript" src="RFC5228/widgets/SieveMatchTypesUI.js"></script>
+  <script type="application/javascript" src="RFC5228/widgets/SieveAddressPartUI.js"></script>
+  <script type="application/javascript" src="RFC5228/widgets/SieveComparatorsUI.js"></script>
+  <script type="application/javascript" src="RFC5228/widgets/SieveTestsUI.js"></script>
   <script type="application/javascript" src="RFC5228/widgets/SieveOperatorsUI.js"></script>
   <script type="application/javascript" src="RFC5228/widgets/SieveConditionsUI.js"></script>
   <script type="application/javascript" src="RFC5228/widgets/SieveActionsUI.js"></script>
@@ -63,49 +71,59 @@
   <script type="application/javascript" src="reject/logic/SieveReject.js"></script>
 
   <!-- RFC 5232 - ImapFlags-->
-  <script type="application/javascript" src="imapflags/widgets/SieveImapFlagsUI.js"></script> 
+  <script type="application/javascript" src="imapflags/widgets/SieveImapFlagsUI.js"></script>
 
   <!-- RFC Draft for RegEx-->
-  <script type="application/javascript" src="regex/logic/SieveRegularExpression.js" ></script>
-  <script type="application/javascript" src="regex/widgets/SieveRegularExpressionUI.js" ></script>
+  <script type="application/javascript" src="regex/logic/SieveRegularExpression.js"></script>
+  <script type="application/javascript" src="regex/widgets/SieveRegularExpressionUI.js"></script>
 
   <!-- RFC5173 - Body -->
-  <script type="application/javascript" src="body/logic/SieveBody.js" ></script>
-  <script type="application/javascript" src="body/widgets/SieveBodyUI.js" ></script>
+  <script type="application/javascript" src="body/logic/SieveBody.js"></script>
+  <script type="application/javascript" src="body/widgets/SieveBodyUI.js"></script>
 
   <!-- RFC5230 - Vacation -->
-  <script type="application/javascript" src="vacation/logic/SieveVacation.js" ></script>
-  <script type="application/javascript" src="vacation/widgets/SieveVacationUI.js" ></script>
+  <script type="application/javascript" src="vacation/logic/SieveVacation.js"></script>
+  <script type="application/javascript" src="vacation/widgets/SieveVacationUI.js"></script>
 
   <!-- RFC5229 - Variables -->
-  <script type="application/javascript" src="variables/logic/SieveVariables.js" ></script>
-  <script type="application/javascript" src="variables/widgets/SieveVariablesUI.js" ></script>
+  <script type="application/javascript" src="variables/logic/SieveVariables.js"></script>
+  <script type="application/javascript" src="variables/widgets/SieveVariablesUI.js"></script>
 
   <!-- RFC6609 - Include -->
-  <script type="application/javascript" src="include/logic/SieveInclude.js" ></script>
-  <script type="application/javascript" src="include/widget/SieveIncludeUI.js" ></script>
+  <script type="application/javascript" src="include/logic/SieveInclude.js"></script>
+  <script type="application/javascript" src="include/widget/SieveIncludeUI.js"></script>
 
   <!-- RFC5233 - Subaddress -->
-  <script type="application/javascript" src="subaddress/logic/SieveSubaddress.js" ></script>
-  <script type="application/javascript" src="subaddress/widgets/SieveSubaddressUI.js" ></script>
+  <script type="application/javascript" src="subaddress/logic/SieveSubaddress.js"></script>
+  <script type="application/javascript" src="subaddress/widgets/SieveSubaddressUI.js"></script>
 
   <!-- RFC5490 - Mailbox -->
-  <script type="application/javascript" src="mailbox/logic/SieveMailbox.js" ></script>
-  <script type="application/javascript" src="mailbox/widgets/SieveMailboxUI.js" ></script>
-   
+  <script type="application/javascript" src="mailbox/logic/SieveMailbox.js"></script>
+  <script type="application/javascript" src="mailbox/widgets/SieveMailboxUI.js"></script>
+
   <!-- RFC55293 - Editheader -->
-  <script type="application/javascript" src="editheader/logic/SieveEditheader.js" ></script>
-  <script type="application/javascript" src="editheader/widgets/SieveEditheaderUI.js" ></script>
+  <script type="application/javascript" src="editheader/logic/SieveEditheader.js"></script>
+  <script type="application/javascript" src="editheader/widgets/SieveEditheaderUI.js"></script>
 
   <!-- RFC3894 - Copy -->
-  <script type="application/javascript" src="copy/logic/SieveCopy.js" ></script>
-  <script type="application/javascript" src="copy/widgets/SieveCopyUI.js" ></script>
+  <script type="application/javascript" src="copy/logic/SieveCopy.js"></script>
+  <script type="application/javascript" src="copy/widgets/SieveCopyUI.js"></script>
 
+  <!-- RFC5231 - Relational -->
+  <script type="application/javascript" src="relational/logic/SieveRelational.js"></script>
+  <script type="application/javascript" src="relational/widgets/SieveRelationalUI.js"></script>
+
+<style>
+    .sivMenuItem {
+      font-size: 0.7em;
+    }
+  </style>
 </head>
+
 <body>
 
   <!-- the toolvar -->
-  <div  id="toolbar" >
+  <div id="toolbar">
     <div id="sivActions"></div>
   </div>
 
@@ -113,110 +131,206 @@
 
     <!-- Infobar -->
     <div id="infobar">
-      <div id="infobarsubject"  >
-         <span>
-           Message Text
-	     </span>
-	     <button onclick='$("#infobar").toggle();'>Dismiss</button>
+      <div id="infobarsubject">
+        <span>
+          Message Text
+        </span>
+        <button onclick='$("#infobar").toggle();'>Dismiss</button>
       </div>
     </div>
 
-<div id="sivDialog" style="display: none;" >
-  <div id="sivDialogOverlay"></div>
-  <div id="sivDialogContent">
-    <div style="text-align:right; background-color: #455A64; height:24px;color: rgba(255,255,255,0.7)">
-      <div id="sivDialogClose" style="display: inline-block; line-height: 24px; margin-right:15px; font-size:12px; font-weight:900; ">X</div>
-    </div>
-    <div id="sivDialogBody">
+<!-- Modal dialog -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
+
+<div id="sivDialog2" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header card-header d-flex justify-content-between py-0">
+            <ul id="sivDialogTabs" class="nav nav-tabs card-header-tabs my-0 pt-3" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" data-toggle="tab" href="#sieve-widget-editor" role="tab">Basic</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-toggle="tab" href="#sieve-plaintext-editor" role="tab">Advanced</a>
+                </li>
+                <li class="nav-item">
+                  <a id="sieve-tab-settings" class="nav-link" data-toggle="tab" href="#sieve-content-settings" role="tab">Help</a>
+                </li>
+              </ul>
+              <div class="align-self-center">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+              </div>
+          </div>
+          <div class="modal-body">
+              <div id="sivDialogBody">
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button id="sivDialogSave" type="button" class="btn btn-primary">Apply</button>
+          </div>
     </div>
   </div>
 </div>
 
-<!--<div id="debug2" style="display:none">-->
-<div id="debug2">
-<div>
-   <div id="boxScript" style="display:none;overflow: hidden;width: 100%; ">
-     <div style="float:left; padding:5px;">
-        <div>Input:</div>
-        <textarea id="txtScript" cols="50" rows="10" wrap="off">
-        </textarea>
+
+    <div class="btn-group">
+        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          ... is ...
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="#">
+                <h5>... is ...</h5>
+              <small>Only "frobnitzm" is "frobnitzm"</small>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">
+                <h5>... contains ...</h5>
+                <small>"frobnitzm" contains "frob" and "nit", but not "fbm"</small>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">
+                <h5>... matches ...</h5>
+                <small>"*" matches zero or more characters and "?" matches a single character<br/>
+                "frobnitzm" matches "frob*zm" or "frobnit?m" but not frob?m</small>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">
+                <h5>... regex matches ...</h5>
+                <small>Matches and compares using on a regular expression as defined in IEEE.1003-2.1992</small>
+            </a>
+        </div>
       </div>
-      <div style="float:left; padding:5px;">
-        <div>Result:</div>
-        <textarea id="txtOutput" cols="50" rows="10" readonly="readonly" wrap="off"></textarea>
+
+
+    <!--<div id="debug2" style="display:none">-->
+    <div id="debug2">
+
+      <div class="card mt-2 mb-2 mr-4" id="boxScript" style="display:none;">
+        <div class="card-header d-flex justify-content-between py-0">
+          <ul class="nav nav-tabs card-header-tabs my-0 pt-3" role="tablist">
+            <li class="nav-item">
+              <a class="sieve-accounts-tab nav-link active" data-toggle="tab" role="tab" href="#debugscript">Script</a>
+            </li>
+            <li class="nav-item">
+              <a class="sieve-settings-tab nav-link" data-toggle="tab" role="tab" href="#debugcapabilities">Capabilities</a>
+            </li>
+            <li class="nav-item">
+              <a class="sieve-settings-tab nav-link" data-toggle="tab" role="tab" href="#debugadvanced">Advanced</a>
+            </li>
+          </ul>
+        </div>
+        <div class="tab-content m-3">
+          <div class="tab-pane fade show active" id="debugscript" role="tabpanel">
+            <div class="row">
+              <div class="col-sm-6 form-group">
+                <div>Input:</div>
+                <textarea id="txtScript" rows="5" wrap="off" class="form-control"></textarea>
+                <div>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" id="DebugParse">
+                    Parse Sieve Script
+                  </button>
+                </div>
+              </div>
+              <div class="col-sm-6 form-group">
+                <div>Result:</div>
+                <textarea id="txtOutput" rows="5" readonly="readonly" wrap="off" class="form-control"></textarea>
+                <div>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" id="DebugStringify">
+                    Update Sieve Script
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="debugadvanced" role="tabpanel">
+            <input id="draggable" />
+            <span id="DebugDropTarget">DROP TARGET</span>
+            <hr/>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="DebugCompact">
+              Compact
+            </button>
+          </div>
+
+          <div class="tab-pane fade" id="debugcapabilities" role="tabpanel">
+            <div>
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="DebugRequire">Collect Require</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="CapabilitiesReset">Load from Script</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="CapabilitiesNone">Select None</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="CapabilitiesAll">Select All</button>
+            </div>
+            <hr/>
+            <div class="row">
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="comparator-i;ascii-numeric" checked>comparator-i;ascii-numeric (RFC5228)</div>
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="envelope" checked>envelope (RFC5228)</div>
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="fileinto" checked>fileinto (RFC 5228)</div>
+
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="imap4flags" checked>imap4flags (RFC 5232)</div>
+
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="reject" checked>reject (RFC5429)</div>
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="ereject" checked>ereject (RFC5429)</div>
+
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="regex" checked>regex</div>
+
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="body" checked>body (RFC5173)</div>
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="vacation" checked>vacation (RFC5230)</div>
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="variables" checked>variables (RFC5229)</div>
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="include" checked>include (RFC6609)</div>
+
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="mailbox" checked>mailbox (RFC5490)</div>
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="mboxmetadata" checked>mboxmetadata (RFC5490)</div>
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="servermetadata" checked>servermetadata (RFC5490)</div>
+
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="subaddress" checked>subaddress (RFC5233)</div>
+
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="copy" checked>copy (RFC3894)</div>
+
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="editheader" checked>editheader (RFC5293)</div>
+
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="relational" checked>relational (RFC5231)</div>
+
+            </div>
+
+            <div>
+              <button type="button" class="btn btn-sm btn-primary" id="CapabilitiesApply">Apply</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <button  type="button" class="btn btn-sm btn-outline-secondary" id="DebugToggle">
+          Show/Hide
+        </button>
       </div>
     </div>
-</div >
 
 
-<div id="Capabilities" style="display: none;">
+    <div id="divOutput">
+    </div>
 
-  <div id="CapabilityOverlay"></div>
-
-  <div id="CapabilitiesDialog">
-    <div><input type="checkbox" name="capabilities" value="comparator-i;ascii-numeric" checked>comparator-i;ascii-numeric (RFC5228)</div>
-    <div><input type="checkbox" name="capabilities" value="envelope" checked>envelope (RFC5228)</div>
-    <div><input type="checkbox" name="capabilities" value="fileinto" checked>fileinto (RFC 5228)</div>
-
-    <div><input type="checkbox" name="capabilities" value="imap4flags" checked>imap4flags (RFC 5232)</div>
-
-    <div><input type="checkbox" name="capabilities" value="reject" checked>reject (RFC5429)</div>
-    <div><input type="checkbox" name="capabilities" value="ereject" checked>ereject (RFC5429)</div>
-
-    <div><input type="checkbox" name="capabilities" value="regex" checked>regex</div>
-
-  	<div><input type="checkbox" name="capabilities" value="body" checked>body (RFC5173)</div>
-  	<div><input type="checkbox" name="capabilities" value="vacation" checked>vacation (RFC5230)</div>
-  	<div><input type="checkbox" name="capabilities" value="variables" checked>variables (RFC5229)</div>
-  	<div><input type="checkbox" name="capabilities" value="include" checked>include (RFC6609)</div>
-
-    <div><input type="checkbox" name="capabilities" value="mailbox" checked>mailbox (RFC5490)</div>
-    <div><input type="checkbox" name="capabilities" value="mboxmetadata" checked>mboxmetadata (RFC5490)</div>
-    <div><input type="checkbox" name="capabilities" value="servermetadata" checked>servermetadata (RFC5490)</div>
-
-    <div><input type="checkbox" name="capabilities" value="subaddress" checked>subaddress (RFC5233)</div>
-
-    <div><input type="checkbox" name="capabilities" value="copy" checked>copy (RFC3894)</div>
-
-    <div><input type="checkbox" name="capabilities" value="editheader" checked>editheader (RFC5293)</div>
-	   
-	  <div>
-	    <button id="CapabilitiesApply">Apply</button>
-	    <button id="CapabilitiesAll">Select All</button>
-	    <button id="CapabilitiesHide">Cancel</button>
-	  </div>
+    <script type="application/javascript" src="SieveGui.js"></script>
   </div>
-</div>
-
-<div>
-  <button id="DebugParse">
-	   Parse Sieve Script
-	 </button>
-  <button id="DebugStringify">
-	  Update Sieve Script
-	</button>
-  <button id="DebugRequire">
-	  Collect Require
-	</button>
-  <button id="DebugCompact">
-	  Compact
-	</button>
-  <button id="DebugCapabilities">
-	  Set Capabilities
-	</button>
-  <button id="DebugToggle">
-	  Show/Hide
-	</button>
-	<input id="draggable" />
-	<span id="DebugDropTarget">DROP TARGET</span>
-</div>
-</div>
-
-
-	<div id="divOutput">
-  </div>
-
-  <script type="application/javascript" src="SieveGui.js"></script>
-</div>
 </body>
+
 </html>

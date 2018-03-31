@@ -10,13 +10,11 @@
  *
  */
 
-
 /* global window:false */
 
 (function (exports) {
 
   "use strict";
-  // hints for jshint
 
   /* global $: false */
 
@@ -31,183 +29,20 @@
   /* global console:false */
   /* global document:false */
 
+  /* global SieveGrammar */
+
   let dom2;
 
-  $(document).ready(function () {
-    init();
-
-    /* i += 1;
-    $(this).find("span").text( "mouse over x " + i );
-  }).mouseout(function(){
-    $(this).find("span").text("mouse out ");
-  })*/
-    $("#divOutput").mouseover(function (ev) {
-
-      switch (ev.target.nodeName) {
-        case "INPUT":
-        case "TEXTAREA":
-          $("[draggable=true]").attr("draggable", "false");
-          break;
-
-        default:
-          $("[draggable=false]").attr("draggable", "true");
-      }
-
-      $("#draggable").val(ev.target.nodeName);
-    });
-
-    let toolbarLeft = $('#toolbar').offset().left;
-
-    $(window).scroll(function () {
-      $('#toolbar').css('left', toolbarLeft - $(window).scrollLeft());
-    });
-
-    $("#CapabilityOverlay")
-      .click(function () { $('#Capabilities').hide(); });
-    $("#CapabilitiesHide")
-      .click(function () { $('#Capabilities').hide(); });
-
-    $("#CapabilitiesApply")
-      .click(function () { setCapabilities(); });
-    $("#CapabilitiesAll")
-      .click(function () { selectAllCapabilities(); });
-
-    $("#DebugParse")
-      .click(function () { setSieveScript(); });
-    $("#DebugStringify")
-      .click(function () { $('#txtOutput').val(getSieveScript()); });
-    $("#DebugRequire")
-      .click(function () { collectRequires(); });
-    $("#DebugCompact")
-      .click(function () { compact(); });
-    $("#DebugCapabilities")
-      .click(function () { showCapabilities(); });
-    $("#DebugToggle")
-      .click(function () { $('#boxScript').toggle(); });
-
-    $("#DebugDropTarget")
-      .on('dragover', function (e) {
-        console.dir(e.originalEvent.dataTransfer.getData("sieve/action"));
-        e.preventDefault();
-        e.stopPropagation();
-      })
-      .on('dragenter', function (e) {
-        console.dir(e.originalEvent.dataTransfer.getData("sieve/action"));
-        e.preventDefault();
-        e.stopPropagation();
-      })
-      .on('drop', function (e) {
-        console.dir(e.originalEvent.dataTransfer.getData("sieve/action"));
-        e.preventDefault();
-        console.dir(e.dataTransfer);
-      });
-
-  });
-
-  function setSieveScript(script, capabilities) {
-    if (capabilities)
-      SieveLexer.capabilities(capabilities);
-    // reset environemnt
-    init();
-
-    if (!script)
-      script = $('#txtScript').val();
-    else
-      $('#txtScript').val(script);
-
-    dom2.script(script);
-
-    $("#txtOutput")
-      .val(dom2.script());
-
-    $("#divOutput")
-      .empty()
-      .append(dom2.html());
-  }
-
-  function getSieveScript() {
-    return dom2.script();
-  }
-
-  function collectRequires() {
-    let requires = {};
-
-    dom2.root().require(requires);
-
-    for (let i in requires)
-      alert(i);
-  }
-
-  function showCapabilities() {
-
-    $("#Capabilities input:checkbox").removeAttr('checked');
-
-    let capabilities = SieveLexer.capabilities();
-    $("#Capabilities input:checkbox").each(function () {
-      if (capabilities[$(this).val()])
-        $(this).prop("checked", true);
-    });
-    $('#Capabilities').show();
-  }
-
-  function selectAllCapabilities() {
-    $("#Capabilities input:checkbox").each(function () {
-      $(this).prop("checked", true);
-    });
-  }
-
-  /* global SieveGrammar */
-  function setSieveScript(script, capabilities) {
-    if (capabilities)
-      SieveLexer.capabilities(capabilities);
-
-    SieveGrammar.create();
-    // reset environemnt
-    init();
-
-    if (!script)
-      script = $('#txtScript').val();
-    else
-      $('#txtScript').val(script);
-
-    dom2.script(script);
-
-    $("#txtOutput")
-      .val(dom2.script());
-
-    $("#divOutput")
-      .empty()
-      .append(dom2.html());
-  }
-
-
-  function setCapabilities() {
-    $('#Capabilities').hide();
-
-    let capabilities = {};
-
-    $("#Capabilities input:checked").each(function () {
-      capabilities[$(this).val()] = true;
-    });
-
-    SieveLexer.capabilities(capabilities);
-    setSieveScript();
-  }
-
-  function compact() {
-    alert(dom2.compact());
-  }
-  function debug(obj) {
-    //var logger = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
-
-    let str = "";
-    for (let tempVar in obj)
-      str += tempVar + "\n";
-
-    alert(str);
-    //logger.logStringMessage(str);
-  }
-
+  /**
+   * Creates a new menu item
+   *
+   * @param {String} action
+   * @param {String} flavour
+   * @param {*} docShell
+   *
+   * @returns {*}
+   *   the newly created sieve element
+   */
   function createMenuItem(action, flavour, docShell) {
 
     let elm2 = (new SieveEditableBoxUI(docShell));
@@ -220,6 +55,19 @@
       .append($(document.createTextNode(action.split('/')[1])));
   }
 
+  /**
+   * Compacts the sieve dom
+   * @returns {void}
+   **/
+  function compact() {
+    alert(dom2.compact());
+  }
+
+
+  /**
+   * Initializes the sieve rendering ui and script parser
+   * @returns {void}
+   **/
   function init() {
     // Yes it's a global object
     dom2 = new SieveDocument(SieveLexer, SieveDesigner);
@@ -257,20 +105,211 @@
         .attr('id', 'trash'));
   }
 
+  /**
+   * Exports the current sieve script from the dom.
+   * @returns {string}
+   *   the current sieve script as string
+   **/
+  function getSieveScript() {
+    return dom2.script();
+  }
+
+  /**
+   * Renders the given script
+   *
+   * @param {String} script
+   *   the sieve script which should be rendered
+   * @param {Object} [capabilities]
+   *   the capabilities which should be enabled
+   * @returns {void}
+   */
+  function setSieveScript(script, capabilities) {
+    if (capabilities)
+      SieveLexer.capabilities(capabilities);
+
+    SieveGrammar.create();
+    // reset environemnt
+    init();
+
+    if (!script)
+      script = $('#txtScript').val();
+    else
+      $('#txtScript').val(script);
+
+    dom2.script(script);
+
+    $("#txtOutput")
+      .val(dom2.script());
+
+    $("#divOutput")
+      .empty()
+      .append(dom2.html());
+  }
+
+  /**
+   * Collects and shows al require statements
+   * @returns {void}
+   **/
+  function collectRequires() {
+    let requires = {};
+
+    dom2.root().require(requires);
+
+    for (let i in requires)
+      alert(i);
+  }
+
+  /**
+   * Sets the capabilities as defined in the capabilies dialog
+   * @returns {void}
+   **/
+  function setCapabilities() {
+
+    let capabilities = {};
+
+    $("#debugcapabilities input:checked").each(function () {
+      capabilities[$(this).val()] = true;
+    });
+
+    setSieveScript(
+      getSieveScript(), capabilities);
+  }
+
+
+
+  /**
+   * Selects or deselects all capabilities in the dialog
+   * @param {boolean} [value]
+   *   if omitted the current capabilities are set
+   *   if true all capabilities are be selected
+   *   if false all capabilities are be deselected
+   * @returns {void}
+   */
+  function loadCapabilities(value) {
+
+    if (value === true || value === false) {
+      $("#debugcapabilities input:checkbox").prop("checked", value);
+
+      return;
+    }
+
+    $("#debugcapabilities input:checkbox").prop('checked', false);
+
+    let capabilities = SieveLexer.capabilities();
+    $("#debugcapabilities input:checkbox").each(function () {
+      if (capabilities[$(this).val()])
+        $(this).prop("checked", true);
+    });
+
+  }
+
+
+  /**
+   * Shows an info box
+   * @param {String} message
+   *   the message's subject
+   * @param {String} content
+   *   the message's details
+   * @returns {void}
+   */
   function showInfoMessage(message, content) {
     $("#infobarsubject > span").text(message);
     $("#infobarmessage > span").text(content);
     $("#infobar").toggle();
   }
 
+
+  $(document).ready(function () {
+    init();
+
+    /* i += 1;
+    $(this).find("span").text( "mouse over x " + i );
+  }).mouseout(function(){
+    $(this).find("span").text("mouse out ");
+  })*/
+    $("#divOutput").mouseover(function (ev) {
+
+      switch (ev.target.nodeName) {
+        case "INPUT":
+        case "TEXTAREA":
+          $("[draggable=true]").attr("draggable", "false");
+          break;
+
+        default:
+          $("[draggable=false]").attr("draggable", "true");
+      }
+
+      $("#draggable").val(ev.target.nodeName);
+    });
+
+    let toolbarLeft = $('#toolbar').offset().left;
+
+    $(window).scroll(function () {
+      $('#toolbar').css('left', toolbarLeft - $(window).scrollLeft());
+    });
+
+
+    $("#CapabilitiesApply")
+      .click(function () { setCapabilities(); });
+    $("#CapabilitiesAll")
+      .click(function () { loadCapabilities(true); });
+    $("#CapabilitiesNone")
+      .click(function () { loadCapabilities(false); });
+    $("#CapabilitiesReset")
+      .click(function () { loadCapabilities(); });
+
+    $('a[data-toggle="tab"][href="#debugcapabilities"]')
+      .on('show.bs.tab', function () { loadCapabilities(); });
+
+
+    $("#DebugParse")
+      .click(function () { setSieveScript(); });
+    $("#DebugStringify")
+      .click(function () { $('#txtOutput').val(getSieveScript()); });
+    $("#DebugRequire")
+      .click(function () { collectRequires(); });
+    $("#DebugCompact")
+      .click(function () { compact(); });
+    $("#DebugToggle")
+      .click(function () { $('#boxScript').toggle(); });
+
+    $("#DebugDropTarget")
+      .on('dragover', function (e) {
+        console.log("on drag over");
+        console.dir(e.originalEvent.dataTransfer.getData("sieve/action"));
+        e.preventDefault();
+        e.stopPropagation();
+      })
+      .on('dragenter', function (e) {
+        console.log("on drag enter");
+        console.dir(e.originalEvent.dataTransfer.getData("sieve/action"));
+        e.preventDefault();
+        e.stopPropagation();
+      })
+      .on('drop', function (e) {
+        console.log("on drop");
+        console.dir(e.originalEvent.dataTransfer.getData("sieve/action"));
+        e.preventDefault();
+        console.dir(e.dataTransfer);
+      });
+
+  });
+
+  /**
+   * The windows default error handler
+   * @param {String} msg
+   *   the error message
+   * @param {String} url
+   * @param {String} [line]
+   * @returns {void}
+   */
   function errorhandler(msg, url, line) {
-    //alert(msg+"\n"+url+"\n"+line);
+    // alert(msg+"\n"+url+"\n"+line);
     showInfoMessage(msg, "");
   }
 
   exports.onerror = errorhandler;
   exports.setSieveScript = setSieveScript;
   exports.getSieveScript = getSieveScript;
-
 
 })(window);

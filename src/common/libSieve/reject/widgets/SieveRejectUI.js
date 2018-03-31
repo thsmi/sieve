@@ -18,111 +18,78 @@
 
   /* global $: false */
   /* global SieveActionDialogBoxUI */
-  /* global SieveTabWidget */
   /* global SieveDesigner */
 
   const MAX_QUOTE_LEN = 240;
 
-  function SieveRejectActionUI(elm) {
-    SieveActionDialogBoxUI.call(this, elm);
-  }
-
-  SieveRejectActionUI.prototype = Object.create(SieveActionDialogBoxUI.prototype);
-  SieveRejectActionUI.prototype.constructor = SieveRejectActionUI;
-
-  SieveRejectActionUI.prototype.getTemplate
-    = function () {
-      return "./reject/templates/SieveRejectActionUI.html #sivDialogReject";
-    };
-
   /**
-   *  Gets and/or Sets the reason why the mail should be rejected
-   *
-   *  @param  {string} [reason]
-   *    optional the new reason which should be set.
-   *
-   *  @returns {string} the current reason
+   * Provides a UI for the reject action
    */
-  SieveRejectActionUI.prototype.reason
-    = function (reason) {
+  class SieveRejectActionUI extends SieveActionDialogBoxUI {
+
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./reject/templates/SieveRejectActionUI.html";
+    }
+
+    /**
+     *  Gets and/or Sets the reason why the mail should be rejected
+     *
+     *  @param  {string} [reason]
+     *    optional the new reason which should be set.
+     *
+     *  @returns {string} the current reason
+     */
+    reason(reason) {
 
       return this.getSieve().getElement("reason").value(reason);
-    };
+    }
 
-  SieveRejectActionUI.prototype.onSave
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    onSave() {
       this.reason($("#sivRejectReason").val());
 
       return true;
-    };
+    }
 
-  SieveRejectActionUI.prototype.onLoad
-    = function () {
-      (new SieveTabWidget()).init();
-
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
       $("#sivRejectReason").val(this.reason());
-    };
+    }
 
-  SieveRejectActionUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
-        .html("Reject incomming messages and reply the following reason:" +
+        .html("Reject incoming messages and reply the following reason:" +
           "<div>" +
           $('<em/>').text(this.reason().substr(0, MAX_QUOTE_LEN)).html() +
           ((this.reason().length > MAX_QUOTE_LEN) ? "..." : "") +
           "</div>");
-    };
-
-  // *************************************************************************************//
-
-  function SieveExtendedRejectActionUI(elm) {
-    SieveActionDialogBoxUI.call(this, elm);
+    }
   }
 
-  SieveExtendedRejectActionUI.prototype = Object.create(SieveActionDialogBoxUI.prototype);
-  SieveExtendedRejectActionUI.prototype.constructor = SieveExtendedRejectActionUI;
-
-  SieveExtendedRejectActionUI.prototype.getTemplate
-    = function () {
-      return "./reject/templates/SieveExtendedRejectActionUI.html #sivDialogExtendedReject";
-    };
-
   /**
-   *  Gets and/or Sets the reason why the mail should be rejected
-   *
-   *  @param  {string} [reason]
-   *    optional the new reason which should be set.
-   *
-   *  @returns {string} the current reason
+   * Provides an UI for the extended reject action.
+   * The extended reject replaces reject and has the same syntax.
    */
-  SieveExtendedRejectActionUI.prototype.reason
-    = function (reason) {
+  class SieveExtendedRejectActionUI extends SieveRejectActionUI {
 
-      return this.getSieve().getElement("reason").value(reason);
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./reject/templates/SieveExtendedRejectActionUI.html";
+    }
 
-  SieveExtendedRejectActionUI.prototype.onSave
-    = function () {
-      this.reason($("#sivExtendedRejectReason").val());
-      return true;
-    };
-
-  SieveExtendedRejectActionUI.prototype.onLoad
-    = function () {
-      (new SieveTabWidget()).init();
-
-      $("#sivExtendedRejectReason").val(this.reason());
-    };
-
-  SieveExtendedRejectActionUI.prototype.getSummary
-    = function () {
-      return $("<div/>")
-        .html("Reject incomming messages and reply the following reason:" +
-          "<div>" +
-          $('<em/>').text(this.reason().substr(0, MAX_QUOTE_LEN)).html() +
-          ((this.reason().length > MAX_QUOTE_LEN) ? "..." : "") +
-          "</div>");
-    };
+  }
 
   if (!SieveDesigner)
     throw new Error("Could not register Reject Widgets");

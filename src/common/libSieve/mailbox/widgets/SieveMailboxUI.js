@@ -18,148 +18,164 @@
 
   /* global $: false */
   /* global SieveTestDialogBoxUI */
-  /* global SieveTabWidget */
   /* global SieveStringListWidget */
   /* global SieveDesigner */
-  /* global SieveMatchTypeUI */
-  /* global SieveComparatorUI */
+  /* global SieveMatchTypeWidget */
+  /* global SieveComparatorWidget */
 
-  function SieveMailboxExistsTestUI(elm) {
-    SieveTestDialogBoxUI.call(this, elm);
-  }
+  /**
+   * Provides a UI for the Mailbox exists test
+   */
+  class SieveMailboxExistsTestUI extends SieveTestDialogBoxUI {
 
-  SieveMailboxExistsTestUI.prototype = Object.create(SieveTestDialogBoxUI.prototype);
-  SieveMailboxExistsTestUI.prototype.constructor = SieveMailboxExistsTestUI;
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's mailbox field
+     */
+    mailboxes() {
+      return this.getSieve().getElement("mailboxes");
+    }
 
-  SieveMailboxExistsTestUI.prototype.mailboxes
-    = function (values) {
-      return this.getSieve().getElement("mailboxes").values(values);
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./mailbox/templates/SieveMailboxExistsTest.html";
+    }
 
-
-  SieveMailboxExistsTestUI.prototype.onLoad
-    = function () {
-
-      (new SieveTabWidget()).init();
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
 
       (new SieveStringListWidget("#sivMailboxNamesList"))
         .init(this.mailboxes());
-    };
+    }
 
-  SieveMailboxExistsTestUI.prototype.onSave
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    onSave() {
+      (new SieveStringListWidget("#sivMailboxNamesList"))
+        .save(this.mailboxes());
 
-      this.mailboxes((new SieveStringListWidget("#sivMailboxNamesList")).values());
       return true;
-    };
+    }
 
-  SieveMailboxExistsTestUI.prototype.getTemplate
-    = function () {
-      return "./mailbox/templates/SieveMailboxExistsTest.html #sivMailboxDialog";
-    };
-
-  SieveMailboxExistsTestUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       // case- insensitive is the default so skip it...
       return $("<div/>")
         .html(" Mailbox(es) "
-          + $('<em/>').text(this.mailboxes()).html() + " exist");
-    };
-
-  // ****************************************************************************
-
-  function SieveMetaDataExistsTestUI(elm) {
-    SieveTestDialogBoxUI.call(this, elm);
+          + $('<em/>').text(this.mailboxes().values()).html() + " exist");
+    }
   }
 
-  SieveMetaDataExistsTestUI.prototype = Object.create(SieveTestDialogBoxUI.prototype);
-  SieveMetaDataExistsTestUI.prototype.constructor = SieveMetaDataExistsTestUI;
 
+  /**
+   * Provides a UI for the SieveMetaDataExistsUI
+   */
+  class SieveMetaDataExistsTestUI extends SieveTestDialogBoxUI {
 
-  SieveMetaDataExistsTestUI.prototype.mailbox
-    = function (value) {
+    mailbox(value) {
       return this.getSieve().getElement("mailbox").value(value);
-    };
+    }
 
-  SieveMetaDataExistsTestUI.prototype.annotations
-    = function (values) {
-      return this.getSieve().getElement("annotations").values(values);
-    };
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's annotations field
+     */
+    annotations() {
+      return this.getSieve().getElement("annotations");
+    }
 
-  SieveMetaDataExistsTestUI.prototype.onLoad
-    = function () {
-
-      (new SieveTabWidget()).init();
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
 
       $("#sivMailboxName").val(this.mailbox());
 
       (new SieveStringListWidget("#sivMailboxAnnotationsList"))
         .init(this.annotations());
-    };
+    }
 
-  SieveMetaDataExistsTestUI.prototype.onSave
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    onSave() {
 
       this.mailbox($("#sivMailboxName").val());
-      this.annotations((new SieveStringListWidget("#sivMailboxAnnotationsList")).values());
+      (new SieveStringListWidget("#sivMailboxAnnotationsList"))
+        .save(this.annotations());
 
 
       return true;
-    };
+    }
 
-  SieveMetaDataExistsTestUI.prototype.getTemplate
-    = function () {
-      return "./mailbox/templates/SieveMetaDataExistsTest.html #sivMailboxDialog";
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./mailbox/templates/SieveMetaDataExistsTest.html";
+    }
 
-  SieveMetaDataExistsTestUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
 
       // case- insensitive is the default so skip it...
       return $("<div/>")
         .html(" Mailbox " + $('<em/>').text(this.mailbox()).html()
           + " has all annotations "
-          + $('<em/>').text(this.annotations()).html());
-    };
-
-  // ****************************************************************************
-
-  function SieveMetaDataTestUI(elm) {
-    SieveTestDialogBoxUI.call(this, elm);
+          + $('<em/>').text(this.annotations().values()).html());
+    }
   }
 
-  SieveMetaDataTestUI.prototype = Object.create(SieveTestDialogBoxUI.prototype);
-  SieveMetaDataTestUI.prototype.constructor = SieveMetaDataTestUI;
+  /**
+   * Provides a UI for the ServerMetaData Test
+   */
+  class SieveMetaDataTestUI extends SieveTestDialogBoxUI {
 
-  SieveMetaDataTestUI.prototype.mailbox
-    = function (value) {
+    mailbox(value) {
       return this.getSieve().getElement("mailbox").value(value);
-    };
+    }
 
-  SieveMetaDataTestUI.prototype.annotation
-    = function (value) {
+    annotation(value) {
       return this.getSieve().getElement("annotation").value(value);
-    };
+    }
 
-  SieveMetaDataTestUI.prototype.keys
-    = function (values) {
-      return this.getSieve().getElement("keys").values(values);
-    };
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's key fields
+     */
+    keys() {
+      return this.getSieve().getElement("keys");
+    }
 
-  SieveMetaDataTestUI.prototype.matchtype
-    = function () {
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's matchtype field
+     */
+    matchtype() {
       return this.getSieve().getElement("match-type");
-    };
+    }
 
-  SieveMetaDataTestUI.prototype.comparator
-    = function () {
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's comparator field
+     */
+    comparator() {
       return this.getSieve().getElement("comparator");
-    };
+    }
 
-  SieveMetaDataTestUI.prototype.onLoad
-    = function () {
-
-      (new SieveTabWidget()).init();
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
 
       $("#sivMailboxName").val(this.mailbox());
       $("#sivAnnotationName").val(this.annotation());
@@ -167,157 +183,187 @@
       (new SieveStringListWidget("#sivMailboxKeys"))
         .init(this.keys());
 
-      let matchtype = new SieveMatchTypeUI(this.matchtype());
-      $("#sivMailboxMatchTypes")
-        .append(matchtype.html());
+      (new SieveMatchTypeWidget("#sivMailboxMatchTypes"))
+        .init(this.matchtype());
+      (new SieveComparatorWidget("#sivMailboxComparator"))
+        .init(this.comparator());
+    }
 
-      let comparator = new SieveComparatorUI(this.comparator());
-      $("#sivMailboxComparator")
-        .append(comparator.html());
-    };
-
-  SieveMetaDataTestUI.prototype.onSave
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    onSave() {
 
       this.mailbox($("#sivMailboxName").val());
 
       this.annotation($("#sivAnnotationName").val());
 
-      this.keys((new SieveStringListWidget("#sivMailboxKeys")).values());
+      (new SieveStringListWidget("#sivMailboxKeys"))
+        .save(this.keys());
+
+      (new SieveMatchTypeWidget("#sivMailboxMatchTypes"))
+        .save(this.matchtype());
+      (new SieveComparatorWidget("#sivMailboxComparator"))
+        .save(this.comparator());
 
       return true;
-    };
+    }
 
-  SieveMetaDataTestUI.prototype.getTemplate
-    = function () {
-      return "./mailbox/templates/SieveMetaDataTest.html #sivMailboxDialog";
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./mailbox/templates/SieveMetaDataTest.html";
+    }
 
-  SieveMetaDataTestUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       // case- insensitive is the default so skip it...
       return $("<div/>")
         .html("Annotation " + this.annotation()
           + " in folder " + this.mailbox()
           + " has a value which " + this.matchtype().getValue()
-          + " any of " + this.keys());
-    };
-
-  // ****************************************************************************
-
-  function SieveServerMetaDataExistsTestUI(elm) {
-    SieveTestDialogBoxUI.call(this, elm);
+          + " any of " + this.keys().values());
+    }
   }
 
-  SieveServerMetaDataExistsTestUI.prototype = Object.create(SieveTestDialogBoxUI.prototype);
-  SieveServerMetaDataExistsTestUI.prototype.constructor = SieveServerMetaDataExistsTestUI;
+  /**
+   * Provides a UI for the ServerMetaDataExists Test
+   */
+  class SieveServerMetaDataExistsTestUI extends SieveTestDialogBoxUI {
 
-  SieveServerMetaDataExistsTestUI.prototype.annotations
-    = function (values) {
-      return this.getSieve().getElement("annotations").values(values);
-    };
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's annotations
+     */
+    annotations() {
+      return this.getSieve().getElement("annotations");
+    }
 
-  SieveServerMetaDataExistsTestUI.prototype.onLoad
-    = function () {
-
-      (new SieveTabWidget()).init();
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
 
       (new SieveStringListWidget("#sivMailboxAnnotationsList"))
         .init(this.annotations());
-    };
+    }
 
-  SieveServerMetaDataExistsTestUI.prototype.onSave
-    = function () {
-      this.annotations(new SieveStringListWidget("#sivMailboxAnnotationsList").values());
+    /**
+     * @inheritDoc
+     */
+    onSave() {
+      (new SieveStringListWidget("#sivMailboxAnnotationsList"))
+        .save(this.annotations());
       return true;
-    };
+    }
 
-  SieveServerMetaDataExistsTestUI.prototype.getTemplate
-    = function () {
-      return "./mailbox/templates/SieveServerMetaDataExistsTest.html #sivMailboxDialog";
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./mailbox/templates/SieveServerMetaDataExistsTest.html";
+    }
 
-  SieveServerMetaDataExistsTestUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       // case- insensitive is the default so skip it...
       return $("<div/>")
         .html(" The server supports all annotations "
-          + $('<em/>').text(this.annotations()).html());
-    };
-
-  // ****************************************************************************
-
-  function SieveServerMetaDataTestUI(elm) {
-    SieveTestDialogBoxUI.call(this, elm);
+          + $('<em/>').text(this.annotations().values()).html());
+    }
   }
 
-  SieveServerMetaDataTestUI.prototype = Object.create(SieveTestDialogBoxUI.prototype);
-  SieveServerMetaDataTestUI.prototype.constructor = SieveServerMetaDataTestUI;
+  /**
+   * Provides an UI for the ServerMetaData test
+   */
+  class SieveServerMetaDataTestUI extends SieveTestDialogBoxUI {
 
-  SieveServerMetaDataTestUI.prototype.annotation
-    = function (value) {
+    annotation(value) {
       return this.getSieve().getElement("annotation").value(value);
-    };
+    }
 
-  SieveServerMetaDataTestUI.prototype.keys
-    = function (values) {
-      return this.getSieve().getElement("keys").values(values);
-    };
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's key fields
+     */
+    keys() {
+      return this.getSieve().getElement("keys");
+    }
 
-  SieveServerMetaDataTestUI.prototype.matchtype
-    = function () {
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's matchtype fields
+     */
+    matchtype() {
       return this.getSieve().getElement("match-type");
-    };
+    }
 
-  SieveServerMetaDataTestUI.prototype.comparator
-    = function () {
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's comparator fields
+     */
+    comparator() {
       return this.getSieve().getElement("comparator");
-    };
+    }
 
-  SieveServerMetaDataTestUI.prototype.onLoad
-    = function () {
-
-      (new SieveTabWidget()).init();
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
 
       $("#sivAnnotationName").val(this.annotation());
 
       (new SieveStringListWidget("#sivMailboxKeys"))
         .init(this.keys());
 
-      let matchtype = new SieveMatchTypeUI(this.matchtype());
-      $("#sivMailboxMatchTypes")
-        .append(matchtype.html());
+      (new SieveMatchTypeWidget("#sivMailboxMatchTypes"))
+        .init(this.matchtype());
+      (new SieveComparatorWidget("#sivMailboxComparator"))
+        .init(this.comparator());
+    }
 
-      let comparator = new SieveComparatorUI(this.comparator());
-      $("#sivMailboxComparator")
-        .append(comparator.html());
-    };
-
-  SieveServerMetaDataTestUI.prototype.onSave
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    onSave() {
 
       this.annotation($("#sivAnnotationName").val());
 
-      this.keys((new SieveStringListWidget("#sivMailboxKeys")).values());
+      (new SieveStringListWidget("#sivMailboxKeys"))
+        .save(this.keys());
+
+      (new SieveMatchTypeWidget("#sivMailboxMatchTypes"))
+        .save(this.matchtype());
+      (new SieveComparatorWidget("#sivMailboxComparator"))
+        .save(this.comparator());
 
       return true;
-    };
+    }
 
-  SieveServerMetaDataTestUI.prototype.getTemplate
-    = function () {
-      return "./mailbox/templates/SieveServerMetaDataTest.html #sivMailboxDialog";
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./mailbox/templates/SieveServerMetaDataTest.html";
+    }
 
-  SieveServerMetaDataTestUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       // case- insensitive is the default so skip it...
       return $("<div/>")
         .html("Server annotation " + this.annotation()
           + " has a value which " + this.matchtype().getValue()
-          + " any of " + this.keys());
-    };
+          + " any of " + this.keys().values());
+    }
+  }
 
-  // ************************************************************************************
 
   if (!SieveDesigner)
     throw new Error("Could not register Mailbox Extension");

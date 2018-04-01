@@ -163,8 +163,13 @@
   /* global SieveLexer */
   /* global SieveAbstractElement */
 
-  /* *****************************************************************************/
-
+  /**
+   *
+   * @param {*} docshell
+   * @param {*} id
+   *
+   * @constructor
+   */
   function SieveBoolean(docshell, id) {
     SieveAbstractElement.call(this, docshell, id);
 

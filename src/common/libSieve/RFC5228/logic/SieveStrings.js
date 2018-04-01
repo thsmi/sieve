@@ -317,7 +317,7 @@
         this.compact = true;
         let item = [];
         item[STRING_VALUE] = this._createByName("string/quoted", parser);
-        this.elements = [ item ];
+        this.elements = [item];
 
         return this;
       }

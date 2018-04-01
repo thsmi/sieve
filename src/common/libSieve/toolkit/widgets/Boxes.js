@@ -127,7 +127,7 @@
 
 
   /**
-   * The dop element
+   * The dorp element handler
    * @param {} handler
    * @param {} sibling
    * @return {}
@@ -179,6 +179,8 @@
 
   SieveEditableBoxUI.prototype.showEditor
     = function (e) {
+
+      // FIXME: this is deprecated
       if (!this.initEditor)
         return;
 
@@ -191,16 +193,6 @@
           .text("X")
           .addClass("sivEditorCloseIcon")
           .click(function (e) { that.showSummary(); e.preventDefault(); return true; }));
-
-      if (this.initHelp)
-        this._domElm
-          .append($("<div/>")
-            .text("?")
-            .addClass("sivEditorHelpIcon")
-            .click(function () { $(this)/* .toggle() */.next().toggle(); }))
-          .append(this.initHelp()
-            .click(function () { $(this).toggle()/* .next().toggle() */; })
-            .addClass("sivEditorHelpText"));
 
       this._domElm
         .attr("sivIsEditable", "true")
@@ -318,43 +310,47 @@
     }
   }
 
-  /* ****************************************************************************/
-
   /**
-   * @constructor
-   * @param {SieveAbstractBoxUI} parent
-   *   The parent Sieve Element, to which dropped Elemenents will be added.
    *
    */
-  function SieveDropBoxUI(parent) {
-    if (!parent)
-      throw new Error("Parent expected");
+  class SieveDropBoxUI extends SieveAbstractBoxUI {
+    /**
+     * @param {SieveAbstractBoxUI} parent
+     *   The parent Sieve Element, to which dropped Elemenents will be added.
+     *
+     */
+    constructor(parent) {
+      if (!parent)
+        throw new Error("Parent expected");
 
-    if (parent.document)
-      SieveAbstractBoxUI.call(this, parent.document());
-    else if (parent.root)
-      SieveAbstractBoxUI.call(this, parent);
-    else
-      throw new Error("Either a docshell or an elements expected");
+      if (parent.document)
+        super(parent.document());
+      else if (parent.root)
+        super(parent);
+      else
+        throw new Error("Either a docshell or an elements expected");
 
-    if (parent.document)
-      this._parent = parent;
+      if (parent.document)
+        this._parent = parent;
 
-    this.drop(new SieveDropHandler());
-  }
+      this.drop(new SieveDropHandler());
+    }
 
-  SieveDropBoxUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
-  SieveDropBoxUI.prototype.constructor = SieveDropBoxUI;
-
-  SieveDropBoxUI.prototype.createHtml
-    = function (parent) {
+    /**
+     * @inheritDoc
+     */
+    createHtml(parent) {
       return parent.append($("<div/>").addClass("sivDropBox"));
-    };
+    }
 
-  SieveDropBoxUI.prototype.parent
-    = function () {
+    /**
+     * @returns {SieveAbstractBoxUI}
+     *   the parent ui element.
+     */
+    parent() {
       return this._parent;
-    };
+    }
+  }
 
   // ****************************************************************************//
 
@@ -377,6 +373,7 @@
 
   /**
    * A modal dialog box with tabs.
+   * @constructor
    **/
   function SieveDialogBoxUI(elm) {
     // Call parent constructor...
@@ -500,23 +497,29 @@
         .addClass("sivAction");
     };
 
-  // -------------------------------------------/
+  /**
+   * Provides an UI for an abstract test dialog
+   */
+  class SieveTestDialogBoxUI extends SieveDialogBoxUI {
 
-  function SieveTestDialogBoxUI(elm) {
-    // Call parent constructor...
-    SieveDialogBoxUI.call(this, elm);
-    this.drag(new SieveMoveDragHandler("sieve/test"));
-    this.drop(new SieveTestDropHandler());
-  }
+    /**
+     * @inheritDoc
+     */
+    constructor(elm) {
+      super(elm);
 
-  SieveTestDialogBoxUI.prototype = Object.create(SieveDialogBoxUI.prototype);
-  SieveTestDialogBoxUI.prototype.constructor = SieveTestDialogBoxUI;
+      this.drag(new SieveMoveDragHandler("sieve/test"));
+      this.drop(new SieveTestDropHandler());
+    }
 
-  SieveTestDialogBoxUI.prototype.createHtml
-    = function (parent) {
-      return SieveDialogBoxUI.prototype.createHtml.call(this, parent)
+    /**
+     * @inheritDoc
+     */
+    createHtml(parent) {
+      return super.createHtml(parent)
         .addClass("sivTest");
-    };
+    }
+  }
 
   exports.SieveAbstractBoxUI = SieveAbstractBoxUI;
   exports.SieveEditableBoxUI = SieveEditableBoxUI;

@@ -37,29 +37,30 @@
   }
 
 
-  function SieveBlockUI(elm) {
-    SieveAbstractBoxUI.call(this, elm);
-  }
+  /**
+   * Provides an UI which realizes a block.
+   * It is used tho host tests and actions.
+   */
+  class SieveBlockUI extends SieveAbstractBoxUI {
 
-  SieveBlockUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
-  SieveBlockUI.prototype.constructor = SieveBlockUI;
-
-  SieveBlockUI.prototype.init
-    = function () {
+    /**
+     * Initializes the Block element.
+     * @returns {jQuery}
+     *   the newly create Element
+     */
+    init() {
       let elm = $("<div/>")
         .addClass("sivBlock");
 
-      let item = null;
-
-      for (let i = 0; i < this.getSieve().elms.length; i++) {
-        item = this.getSieve().elms[i].html();
+      for (let sivElm of this.getSieve().elms) {
+        let item = sivElm.html();
 
         if (!item)
           continue;
 
         elm
           .append((new SieveDropBoxUI(this))
-            .drop(new SieveBlockDropHandler(), this.getSieve().elms[i])
+            .drop(new SieveBlockDropHandler(), sivElm)
             .html()
             .addClass("sivBlockSpacer"))
           .append(
@@ -73,12 +74,15 @@
         .addClass("sivBlockSpacer"));
 
       return elm;
-    };
+    }
 
-  SieveBlockUI.prototype.createHtml
-    = function (parent) {
+    /**
+     * @inheritDoc
+     */
+    createHtml(parent) {
       return parent.append(this.init());
-    };
+    }
+  }
 
   if (!SieveDesigner)
     throw new Error("Could not register Block Widgets");

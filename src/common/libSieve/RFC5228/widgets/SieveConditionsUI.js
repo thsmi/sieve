@@ -24,15 +24,15 @@
   /* global SieveDropBoxUI */
   /* global SieveConditionDropHandler */
 
-  function SieveIfUI(elm) {
-    SieveBlockUI.call(this, elm);
-  }
+  /**
+   * Provides a UI for the if statement
+   */
+  class SieveIfUI extends SieveBlockUI {
 
-  SieveIfUI.prototype = Object.create(SieveBlockUI.prototype);
-  SieveIfUI.prototype.constructor = SieveIfUI;
-
-  SieveIfUI.prototype.createHtml
-    = function (parent) {
+    /**
+     * @inheritDoc
+     */
+    createHtml(parent) {
       return $("<div/>")
         .attr("id", "sivElm" + this.id())
         .addClass("sivConditional")
@@ -40,38 +40,44 @@
           $("<div/>").append(this.getSieve().test().html())
             .addClass("sivConditionalChild"))
         .append(
-          SieveBlockUI.prototype.createHtml.call(this, parent));
-    };
-
-
-  function SieveElseUI(elm) {
-    SieveBlockUI.call(this, elm);
+          super.createHtml(parent));
+    }
   }
 
-  SieveElseUI.prototype = Object.create(SieveBlockUI.prototype);
-  SieveElseUI.prototype.constructor = SieveElseUI;
 
-  SieveElseUI.prototype.createHtml
-    = function (parent) {
+  /**
+   * Provides an UI for the Else statement
+   */
+  class SieveElseUI extends SieveBlockUI {
+
+    /**
+     * @inheritDoc
+     */
+    createHtml(parent) {
       return $("<div/>")
         .attr("id", "sivElm" + this.id())
         .addClass("sivConditional")
-        .append(
-          SieveBlockUI.prototype.createHtml.call(this, parent));
-
-    };
-
-
-  function SieveConditionUI(elm) {
-    SieveAbstractBoxUI.call(this, elm);
-    this.drag(new SieveMoveDragHandler());
+        .append(super.createHtml(parent));
+    }
   }
 
-  SieveConditionUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
-  SieveConditionUI.prototype.constructor = SieveConditionUI;
+  /**
+   * Provides an UI for Sieve conditions
+   */
+  class SieveConditionUI extends SieveAbstractBoxUI {
 
-  SieveConditionUI.prototype.createHtml
-    = function (parent) {
+    /**
+     * @inheritDoc
+     */
+    constructor(elm) {
+      super(elm);
+      this.drag(new SieveMoveDragHandler());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    createHtml(parent) {
       let elm = $("<div/>")
         .attr("id", "sivElm" + this.id())
         .addClass("sivCondition");
@@ -105,7 +111,8 @@
           .addClass("sivConditionSpacer"));
 
       return elm;
-    };
+    }
+  }
 
   if (!SieveDesigner)
     throw new Error("Could not register Conditional Widgets");

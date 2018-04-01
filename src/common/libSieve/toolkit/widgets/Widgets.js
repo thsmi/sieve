@@ -16,16 +16,19 @@
 
   "use strict";
   /* global $: false */
+  /* global SieveDesigner */
 
 
   /**
-   *
+   * Provides a string list UI.
    */
   class SieveStringListWidget {
 
     /**
-     *
-     * @param {*} selector
+     * Initializes the list widget
+     * @param {String} selector
+     *   the selector which points to the dom element which
+     *   should host the string list.
      */
     constructor(selector) {
       this._selector = selector;
@@ -106,10 +109,22 @@
       elm.values(this.values());
     }
 
+    /**
+     * Returns the template element which is used for new string list item.
+     * Before using the template you need to clone the element.
+     *
+     * @returns {jQuery}
+     *   the template element
+     */
     template() {
       return $($(this._selector).attr("data-list-template")).children().first();
     }
 
+    /**
+     * Returns all input elements which are associated with this string list.
+     * @returns {jQuery}
+     *   the input elements.
+     */
     items() {
       let id = this._selector;
 
@@ -186,6 +201,8 @@
 
     /**
      * Creates a new instance
+     * @param {String} nodeType
+     *   the widgets node type
      * @param {String} selector
      *   an selector which identifies the parent dom element
      */
@@ -246,6 +263,10 @@
       throw new Error("Implement a nodeType()");
     }
 
+    /**
+     * @returns {String}
+     *   the elements node name as string
+     */
     static nodeName() {
       throw new Error("Implement a nodeName()");
     }
@@ -258,6 +279,11 @@
       return true;
     }
 
+    /**
+     * The radio groups unique name
+     * @returns {String}
+     *   the name as string
+     */
     getName() {
       throw new Error("Implement getName()");
     }

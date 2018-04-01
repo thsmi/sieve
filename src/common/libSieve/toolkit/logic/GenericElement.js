@@ -44,13 +44,16 @@
   /**
    * Initializes the literal
    *
-   * @param{String} token
+   * @param {String} token
    *  the literal as string
-   * @param{String} pre
+   * @param {String} pre
    *  the default whitespace before the literal
-   * @param{String} [post]
+   * @param {String} [post]
    *  the optional default whitespace after the literal
    *  It is used to make the code more readable.
+   *
+   * @returns {SieveGenericLiteral}
+   *   a self reference
    **/
   SieveGenericLiteral.prototype.init
     = function (token, pre, post) {
@@ -75,6 +78,8 @@
    *  the parser which should be used
    * @throws
    *   throws an exception in case the literal could not be parsed or initialized.
+   *
+   * @returns {void}
    */
   SieveGenericLiteral.prototype.parse
     = function (parser) {
@@ -120,9 +125,13 @@
     = function () {
       return true;
     };
+
   /**
    * Checks if the current element has a value and thus needs
    * to be rendered into a sieve script.
+   *
+   * @returns {boolean}
+   *   true or false
    */
   SieveGenericLiteral.prototype.isDefaultValue
     = function () {
@@ -166,6 +175,9 @@
    *
    * @param  {Array} parameters
    *  the parameters which should be set.
+   *
+   * @returns {SieveGenericMandatoryItem}
+   *   a self reference
    */
   SieveGenericMandatoryItem.prototype.init
     = function (parameters) {
@@ -290,6 +302,9 @@
    * Whitespaces.
    *
    * @param  {SieveGenericStructure} parent
+   *   the parent element
+   *
+   * @constructor
    */
   function SieveGenericOptionalItem(parent) {
 
@@ -546,41 +561,6 @@
       return result;
     };
 
-  // -------------
-
-  function BiDiIterator(items) {
-    this.items = items;
-    this.index = 0;
-  }
-
-  BiDiIterator.prototype.next = function () {
-    if (this.hasNext())
-      return null;
-
-    this.index++;
-
-    return this.items[this.index];
-  };
-
-  BiDiIterator.prototype.prev = function () {
-    if (this.hasPrev())
-      return null;
-
-    this.index--;
-
-    return this.items[this.index];
-  };
-
-  BiDiIterator.prototype.hasNext = function () {
-    return (this.index < this.index.length);
-  };
-
-  BiDiIterator.prototype.hasPrev = function () {
-    return (this.index >= 0);
-  };
-
-  // ---------
-
 
   /* global SieveLexer */
   /* global SieveAbstractElement */
@@ -815,9 +795,9 @@
    * A dependent element fixes this. The "variable" element is
    * non greedy. So that in the first case the "flags".
    *
-   * @param {Array.<object>|object} parameters
+   * @param {Array.<object>|object} parameter
    *  the configuration and parameters for the dependent item
-   * @returns{SieveGenericStructure}
+   * @returns {SieveGenericStructure}
    *  a self reference
    */
   SieveGenericStructure.prototype.addDependentItems
@@ -1133,6 +1113,11 @@
 
   let actions = new Map();
 
+  /**
+   *
+   * @param {*} action
+   * @param {*} item
+   */
   function extendProperty(action, item) {
 
     let property = null;
@@ -1158,6 +1143,10 @@
     return property;
   }
 
+  /**
+   *
+   * @param {*} item
+   */
   function extendAction(item) {
 
     if (!actions.has(item.extends))
@@ -1170,7 +1159,10 @@
     });
   }
 
-
+  /**
+   *
+   * @param {*} item
+   */
   function addAction(item) {
 
     // Ensure the item has a valid structure...
@@ -1196,6 +1188,9 @@
   // gen.addGroup( new SieveGenericMandatoryItem(parameters) );
   // gen.addLiteral(";")
 
+  /**
+   *
+   */
   function initActions() {
 
     actions.forEach(function (item) {
@@ -1215,7 +1210,7 @@
         return false;
       };
 
-      var onNew = function (docshell, id) {
+      let onNew = function (docshell, id) {
 
         let element = new SieveGenericStructure(docshell, id, item.node);
 
@@ -1274,26 +1269,29 @@
     });
   }
 
-
+  /**
+   *
+   * @param {*} item
+   */
   function addTest(item) {
 
-    var onProbe = function (parser, lexer) {
+    let onProbe = function (parser, lexer) {
 
-      var tokens = item.token;
+      let tokens = item.token;
 
       if (!Array.isArray(tokens))
         tokens = [tokens];
 
-      for (var i in tokens)
+      for (let i in tokens)
         if (parser.startsWith(tokens[i]))
           return true;
 
       return false;
     };
 
-    var onNew = function (docshell, id) {
+    let onNew = function (docshell, id) {
 
-      var element = new SieveGenericStructure(docshell, id, item.node);
+      let element = new SieveGenericStructure(docshell, id, item.node);
 
       element
         .addLiteral(item.token)
@@ -1316,27 +1314,27 @@
       return element;
     };
 
-    var onCapable = function (capabilities) {
+    let onCapable = function (capabilities) {
 
       if ((item.requires === null) || (typeof (item.requires) === 'undefined'))
         return true;
 
-      var requires = item.requires;
+      let requires = item.requires;
 
       if (!Array.isArray(requires))
         requires = [requires];
 
-      for (var i in requires)
+      for (let i in requires)
         if (capabilities[requires[i]] !== true)
           return false;
 
       return true;
     };
 
-    var name = item.node;
-    var type = item.type;
+    let name = item.node;
+    let type = item.type;
 
-    var obj = {};
+    let obj = {};
     obj.onProbe = onProbe;
     obj.onNew = onNew;
     obj.onCapable = onCapable;
@@ -1345,7 +1343,10 @@
   }
 
 
-
+  /**
+   *
+   * @param {*} tag
+   */
   function addGroup(tag) {
 
     if (tag.node === null || typeof (tag.node) === 'undefined')
@@ -1354,43 +1355,43 @@
     // if ( tag.value === null || typeof ( tag.value ) === 'undefined' )
     //  throw new Error( "Default value for tag group " + tag.node + " not found" );
 
-    var onProbe = function (parser, lexer) {
+    let onProbe = function (parser, lexer) {
       if (tag.token !== null && typeof (tag.token) !== "undefined")
         return parser.startsWith(tag.token);
 
       return lexer.probeByClass(tag.items, parser);
     };
 
-    var onNew = function (docshell, id) {
+    let onNew = function (docshell, id) {
 
-      var element = new SieveGenericUnion(docshell, id);
+      let element = new SieveGenericUnion(docshell, id);
       element.setToken(tag.token);
       element.addItems(tag.items);
       element.setDefaultValue(tag.value);
       return element;
     };
 
-    var onCapable = function (capabilities) {
+    let onCapable = function (capabilities) {
 
       if ((tag.requires === null) || (typeof (tag.requires) === 'undefined'))
         return true;
 
-      var requires = tag.requires;
+      let requires = tag.requires;
 
       if (!Array.isArray(requires))
         requires = [requires];
 
-      for (var i in requires)
+      for (let i in requires)
         if (capabilities[requires[i]] !== true)
           return false;
 
       return true;
     };
 
-    var name = tag.node;
-    var type = tag.type;
+    let name = tag.node;
+    let type = tag.type;
 
-    var obj = {};
+    let obj = {};
     obj.onProbe = onProbe;
     obj.onNew = onNew;
     obj.onCapable = onCapable;
@@ -1398,11 +1399,14 @@
     SieveLexer.registerGeneric(name, type, obj);
   }
 
-  // -------------------------------------------------------
 
+  /**
+   *
+   * @param {*} item
+   */
   function addTag(item) {
 
-    var token = item.token;
+    let token = item.token;
 
     if (!Array.isArray(token))
       token = [token];
@@ -1410,12 +1414,12 @@
     if (!token.length)
       throw new Error("Adding Tag failed, no parser token defined");
 
-    var onProbe = function (parser, lexer) {
+    let onProbe = function (parser, lexer) {
       return parser.startsWith(item.token);
     };
 
-    var onNew = function (docshell, id) {
-      var element = new SieveGenericStructure(docshell, id, item.node);
+    let onNew = function (docshell, id) {
+      let element = new SieveGenericStructure(docshell, id, item.node);
 
       element
         .addLiteral(item.token)

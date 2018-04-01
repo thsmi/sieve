@@ -16,6 +16,8 @@
 
   "use strict";
 
+  const TOKEN_NOT_FOUND = -1;
+
   /* global SieveLexer */
   /* global SieveAbstractElement */
 
@@ -67,12 +69,12 @@
       // we include the previously extracted linebreak. this makes life way easier...
       //  and allows us to match agains the unique "\r\n.\r\n" Pattern instead of
       // ... just ".\r\n"
-      parser.rewind(2);
+      parser.rewind("\r\n".length);
 
       this.text = parser.extractUntil("\r\n.\r\n");
 
       // dump the first linebreak and remove dot stuffing
-      this.text = this.text.substr(2).replace(/^\.\./mg, ".");
+      this.text = this.text.substr("\r\n".length).replace(/^\.\./mg, ".");
 
       return this;
     };
@@ -227,7 +229,7 @@
       if (typeof (value) === "undefined")
         return this.text;
 
-      if (value.search(/(\r\n|\n|\r)/gm) !== -1)
+      if (value.search(/(\r\n|\n|\r)/gm) !== TOKEN_NOT_FOUND)
         throw new Error("Quoted string support only single line strings");
 
       this.text = value;
@@ -263,6 +265,10 @@
         A Stringlist is an Array of Quotedstring
 
   *******************************************************************************/
+
+  const LEADING_WHITESPACE = 0;
+  const STRING_VALUE = 1;
+  const TAILING_WHITESPACE = 2;
 
 
   // CONSTRUCTOR:
@@ -310,8 +316,8 @@
       if (this._probeByName("string/quoted", parser)) {
         this.compact = true;
         let item = [];
-        item[1] = this._createByName("string/quoted", parser);
-        this.elements[0] = item;
+        item[STRING_VALUE] = this._createByName("string/quoted", parser);
+        this.elements = [ item ];
 
         return this;
       }
@@ -327,15 +333,15 @@
         let element = [null, null, null];
 
         if (this._probeByName("whitespace", parser))
-          element[0] = this._createByName("whitespace", parser);
+          element[LEADING_WHITESPACE] = this._createByName("whitespace", parser);
 
         if (this._probeByName("string/quoted", parser) === false)
           throw new Error("Quoted String expected but found: \n" + parser.bytes(50) + "...");
 
-        element[1] = this._createByName("string/quoted", parser);
+        element[STRING_VALUE] = this._createByName("string/quoted", parser);
 
         if (this._probeByName("whitespace", parser))
-          element[2] = this._createByName("whitespace", parser);
+          element[TAILING_WHITESPACE] = this._createByName("whitespace", parser);
 
         this.elements.push(element);
       }
@@ -353,9 +359,9 @@
 
       for (let i = 0; i < this.elements.length; i++) {
         if (typeof (matchCase) === "undefined")
-          item = this.elements[i][1].value().toLowerCase();
+          item = this.elements[i][STRING_VALUE].value().toLowerCase();
         else
-          item = this.elements[i][1].value();
+          item = this.elements[i][STRING_VALUE].value();
 
         if (item === str)
           return true;
@@ -367,9 +373,9 @@
   SieveStringList.prototype.item
     = function (idx, value) {
       if (typeof (value) !== "undefined")
-        this.elements[idx][1].value(value);
+        this.elements[idx][STRING_VALUE].value(value);
 
-      return this.elements[idx][1].value();
+      return this.elements[idx][STRING_VALUE].value();
     };
 
   SieveStringList.prototype.size
@@ -396,8 +402,8 @@
       }
 
       let elm = [null, "", null];
-      elm[1] = this._createByName("string/quoted", '""');
-      elm[1].value(str);
+      elm[STRING_VALUE] = this._createByName("string/quoted", '""');
+      elm[STRING_VALUE].value(str);
 
       this.elements.push(elm);
 
@@ -420,7 +426,7 @@
   SieveStringList.prototype.remove
     = function (str) {
       for (let i = 0; i < this.elements.length; i++) {
-        if (this.elements[i][1].value() !== str)
+        if (this.elements[i][STRING_VALUE].value() !== str)
           continue;
 
         this.elements.splice(i, 1);
@@ -435,7 +441,7 @@
 
       let result = [];
       this.elements.forEach(function (element) {
-        result.push(element[1].value());
+        result.push(element[STRING_VALUE].value());
       }, this);
 
       return result;
@@ -447,7 +453,7 @@
         return '""';
 
       if (this.compact && this.elements.length <= 1)
-        return this.elements[0][1].toScript();
+        return this.elements[0][STRING_VALUE].toScript();
 
       let result = "[";
       let separator = "";
@@ -455,13 +461,13 @@
       for (let i = 0; i < this.elements.length; i++) {
         result += separator;
 
-        if (this.elements[i][0] !== null && (typeof (this.elements[i][0]) !== "undefined"))
-          result += this.elements[i][0].toScript();
+        if (this.elements[i][LEADING_WHITESPACE] !== null && (typeof (this.elements[i][LEADING_WHITESPACE]) !== "undefined"))
+          result += this.elements[i][LEADING_WHITESPACE].toScript();
 
-        result += this.elements[i][1].toScript();
+        result += this.elements[i][STRING_VALUE].toScript();
 
-        if (this.elements[i][2] !== null && (typeof (this.elements[i][2]) !== "undefined"))
-          result += this.elements[i][2].toScript();
+        if (this.elements[i][TAILING_WHITESPACE] !== null && (typeof (this.elements[i][TAILING_WHITESPACE]) !== "undefined"))
+          result += this.elements[i][TAILING_WHITESPACE].toScript();
 
         separator = ",";
       }
@@ -535,7 +541,7 @@
       let string = this.string;
 
       // Check if we need a type conversion.
-      if (str.search(/(\r\n|\n|\r)/gm) !== -1) {
+      if (str.search(/(\r\n|\n|\r)/gm) !== TOKEN_NOT_FOUND) {
 
         // The string has linebreaks so it has to be a multiline string!
         if (!(this.string instanceof SieveMultiLineString))

@@ -1,68 +1,41 @@
-<!DOCTYPE html>
+<div>
+    <ul id="template-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-addheader" role="tab">Add Header</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+        </li>
+    </ul>
 
-<!--
+    <div id="template-content">
+        <div class="tab-content m-2">
+            <div class="tab-pane fade show active" id="sieve-widget-addheader" role="tabpanel">
 
-  The contents of this file are licenced. You may obtain a copy of 
-  the license at https://github.com/thsmi/sieve/ or request it via 
-  email from the author.
- 
-  Do not remove or change this comment.
-  
-  The initial author of the code is:
-    Thomas Schmid <schmid-thomas@gmx.net>
+                <div class="form-group">
+                    <h5>Create a new header ...</h5>
+                    <input type="text" id="sivNewHeaderName" class="form-control form-control-sm col-lg-8" />
+                    <h5>... with a value of ...</h5>
+                    <input type="text" id="sivNewHeaderValue" class="form-control form-control-sm col-lg-8" />
+                    <h5>... and ...</h5>
+                    <label>
+                        <input type="radio" name="last" value="false" />... prepend as first header</label>
+                    <br/>
+                    <label>
+                        <input type="radio" name="last" value="true" />... append as last header</label>
 
--->
-
-<html>
-
-<head>
-    <meta charset="UTF-8">
-    <title>Add Header Action</title>
-</head>
-
-<body>
-
-    <div id="sivAddHeaderDialog" class="dialog">
-        <div>
-            <!-- System -->
-            <div id="sivEditMain">
-                <!-- Appbar -->
-                <div class="dialog-header">
-                    <div class="dialog-tab">
-                        <div class="tab-active" data-tab-content="sivGeneralContent">BASIC</div>
-                        <div data-tab-content="sivHelpContent">HELP</div>
-                    </div>
                 </div>
-                <!-- content -->
-                <div class="dialog-tab-content">
-                    <!-- content for help tab -->
-                    <div id="sivHelpContent">
-                        <p>
-                            Adds a new header to the meassage. The existing message header are untouched. By default, the header field is inserted at
-                            the beginning of the existing message header.
-                        </p>
-                        <p>
-                            Note: the header name is by definition a case insensitive 7bit US-ASCII string. Leading and tailing whitespaces are ignored.
-                            Headers with invalid names are silently ignored.
-                        </p>
-                    </div>
-
-                    <!-- content for general tab -->
-                    <div id="sivGeneralContent" class="tab-active">
-                        <h1>Create a new header ...</h1>
-                        <input type="text" id="sivNewHeaderName"></input>
-                        <h1>... with a value of ...</h1>
-                        <input type="text" id="sivNewHeaderValue"></input>
-                        <h1>... and ...</h1>
-                        <label><input type="radio" name="last" value="false">... prepend as first header</label><br/>
-                        <label><input type="radio" name="last" value="true">... append as last header</label>
-                        <br/>
-                    </div>
-                </div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+                <p>
+                    Adds a new header to the meassage. The existing message header are untouched. By default, the header field is inserted at
+                    the beginning of the existing message header.
+                </p>
+                <p>
+                    Note: the header name is by definition a case insensitive 7bit US-ASCII string. Leading and tailing whitespaces are ignored.
+                    Headers with invalid names are silently ignored.
+                </p>
             </div>
         </div>
     </div>
-
-</body>
-
-</html>
+</div>

@@ -19,44 +19,38 @@
   /* global $: false */
   /* global SieveDesigner */
   /* global SieveActionDialogBoxUI */
-  /* global SieveTabWidget */
   /* global SieveStringListWidget */
   /* global SieveMatchTypeWidget */
   /* global SieveComparatorWidget */
 
-  function SieveAddHeaderUI(elm) {
-    SieveActionDialogBoxUI.call(this, elm);
-  }
+  /**
+   * Provides a UI for th add header action
+   */
+  class SieveAddHeaderUI extends SieveActionDialogBoxUI {
 
-  SieveAddHeaderUI.prototype = Object.create(SieveActionDialogBoxUI.prototype);
-  SieveAddHeaderUI.prototype.constructor = SieveAddHeaderUI;
-
-
-  SieveAddHeaderUI.prototype.name
-    = function (value) {
-
+    name(value) {
       return this.getSieve().getElement("name").value(value);
-    };
+    }
 
-  SieveAddHeaderUI.prototype.value
-    = function (value) {
-
+    value(value) {
       return this.getSieve().getElement("value").value(value);
-    };
+    }
 
-  SieveAddHeaderUI.prototype.enable
-    = function (id, status) {
+    enable(id, status) {
       return this.getSieve().enable(id, status);
-    };
+    }
 
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./editheader/templates/SieveAddHeaderActionUI.html";
+    }
 
-  SieveAddHeaderUI.prototype.getTemplate
-    = function () {
-      return "./editheader/templates/SieveAddHeaderActionUI.html #sivAddHeaderDialog";
-    };
-
-  SieveAddHeaderUI.prototype.onSave
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    onSave() {
 
       let name = $("#sivNewHeaderName").val();
 
@@ -79,56 +73,56 @@
 
       this.enable("last", last);
       return true;
-    };
+    }
 
-  SieveAddHeaderUI.prototype.onLoad
-    = function () {
-      (new SieveTabWidget()).init();
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
+
       $("#sivNewHeaderName").val(this.name());
       $("#sivNewHeaderValue").val(this.value());
 
       $('input:radio[name="last"][value="' + this.enable("last") + '"]').prop('checked', true);
-    };
+    }
 
-  SieveAddHeaderUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
         .html("Add a header "
           + $('<em/>').text(this.name()).html()
           + " with a value "
           + $('<em/>').text(this.value()).html());
-    };
-
-
-
-  function SieveDeleteHeaderUI(elm) {
-    SieveActionDialogBoxUI.call(this, elm);
+    }
   }
 
-  SieveDeleteHeaderUI.prototype = Object.create(SieveActionDialogBoxUI.prototype);
-  SieveDeleteHeaderUI.prototype.constructor = SieveDeleteHeaderUI;
 
+  /**
+   * Provides an UI for thee Delete Header action
+   */
+  class SieveDeleteHeaderUI extends SieveActionDialogBoxUI {
 
-
-  SieveDeleteHeaderUI.prototype.matchtype
-    = function () {
-
+    matchtype() {
       return this.getSieve().getElement("match-type");
-    };
+    }
 
-  SieveDeleteHeaderUI.prototype.comparator
-    = function () {
-
+    comparator() {
       return this.getSieve().getElement("comparator");
-    };
+    }
 
-  SieveDeleteHeaderUI.prototype.getTemplate
-    = function () {
-      return "./editheader/templates/SieveDeleteHeaderActionUI.html #sivDeleteHeaderDialog";
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./editheader/templates/SieveDeleteHeaderActionUI.html";
+    }
 
-  SieveDeleteHeaderUI.prototype.onSave
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    onSave() {
 
       (new SieveMatchTypeWidget("#sivDeleteHeaderMatchTypes"))
         .save(this.matchtype());
@@ -159,11 +153,12 @@
 
       this.enable( "last", last );*/
       return true;
-    };
+    }
 
-  SieveDeleteHeaderUI.prototype.onLoad
-    = function () {
-      (new SieveTabWidget()).init();
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
 
       debugger;
       // ( new SieveStringListWidget( "#sivHeaderHeaderList" ) )
@@ -182,17 +177,20 @@
       $( "#sivNewHeaderValue" ).val( this.value() );
 
       $( 'input:radio[name="last"][value="' + this.enable( "last" ) + '"]' ).prop( 'checked', true );*/
-    };
+    }
 
-  SieveDeleteHeaderUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
-        .html("Add a header "
+        .html("Remove a header "
           // + $( '<em/>' ).text( this.name() ).html()
           + " with a value "
           // + $( '<em/>' ).text( this.value() ).html()
         );
-    };
+    }
+  }
 
 
   if (!SieveDesigner)

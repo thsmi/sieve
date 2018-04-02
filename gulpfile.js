@@ -20,6 +20,10 @@ const BUILD_DIR_APP = "./build/electron/resources";
 const BUILD_DIR_ADDON = "./build/thunderbird/";
 const BUILD_DIR_TEST = "./build/test/";
 
+const BASE_DIR_BOOTSTRAP = "./node_modules/bootstrap/dist";
+const BASE_DIR_FONTAWESOME = "./node_modules/@fortawesome/fontawesome-free-webfonts";
+const BASE_DIR_JQUERY = "./node_modules/jquery/dist";
+
 /**
  * Delete all files from the given path.
  *
@@ -174,11 +178,11 @@ gulp.task('app:package-definition', function () {
 });
 
 gulp.task('app:package-jquery', function () {
-  const BASE_PATH = "./node_modules/jquery/dist";
+  "use strict";
 
   return gulp.src([
-    BASE_PATH + "/jquery.min.js"
-  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_APP + "/libs/jquery"));
+    BASE_DIR_JQUERY + "/jquery.min.js"
+  ], { base: BASE_DIR_JQUERY }).pipe(gulp.dest(BUILD_DIR_APP + "/libs/jquery"));
 });
 
 
@@ -196,23 +200,23 @@ gulp.task('app:package-codemirror', function () {
   ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_APP + "/libs/CodeMirror"));
 });
 
-gulp.task('app:package-bootstrap', function () {
-  const BASE_PATH = "./node_modules/bootstrap/dist";
+gulp.task('app:package-bootstrap', () => {
+  "use strict";
 
   return gulp.src([
-    BASE_PATH + "/css/*.min.css",
-    BASE_PATH + "/js/*.bundle.min.js"
-  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_APP + '/libs/bootstrap'));
+    BASE_DIR_BOOTSTRAP + "/css/*.min.css",
+    BASE_DIR_BOOTSTRAP + "/js/*.bundle.min.js"
+  ], { base: BASE_DIR_BOOTSTRAP }).pipe(gulp.dest(BUILD_DIR_APP + '/libs/bootstrap'));
 });
 
-gulp.task('app:package-fontawesome', function () {
-  const BASE_PATH = "./node_modules/@fortawesome/fontawesome-free-webfonts";
+gulp.task('app:package-fontawesome', () => {
+  "use strict";
 
   return gulp.src([
-    BASE_PATH + "/css/fa-regular.css",
-    BASE_PATH + "/webfonts/fa-regular-400.woff2",
-    BASE_PATH + "/LICENSE.txt"
-  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_APP + '/libs/fontawesome'));
+    BASE_DIR_FONTAWESOME + "/css/fa-regular.css",
+    BASE_DIR_FONTAWESOME + "/webfonts/fa-regular-400.woff2",
+    BASE_DIR_FONTAWESOME + "/LICENSE.txt"
+  ], { base: BASE_DIR_FONTAWESOME }).pipe(gulp.dest(BUILD_DIR_APP + '/libs/fontawesome'));
 });
 
 gulp.task('app:package-license', function () {
@@ -345,11 +349,11 @@ gulp.task(
 );
 
 gulp.task('addon:package-jquery', function () {
-  const BASE_PATH = "./node_modules/jquery/dist";
+  "use strict";
 
   return gulp.src([
-    BASE_PATH + "/jquery.min.js"
-  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_ADDON + "/chrome/chromeFiles/content/libs/jQuery"));
+    BASE_DIR_JQUERY + "/jquery.min.js"
+  ], { base: BASE_DIR_JQUERY }).pipe(gulp.dest(BUILD_DIR_ADDON + "/chrome/chromeFiles/content/libs/jQuery"));
 });
 
 gulp.task(
@@ -368,6 +372,26 @@ gulp.task(
     ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_ADDON + '/chrome/chromeFiles/content/libs/CodeMirror'));
   }
 );
+
+
+gulp.task('addon:package-bootstrap', () => {
+  "use strict";
+
+  return gulp.src([
+    BASE_DIR_BOOTSTRAP + "/css/*.min.css",
+    BASE_DIR_BOOTSTRAP + "/js/*.bundle.min.js"
+  ], { base: BASE_DIR_BOOTSTRAP }).pipe(gulp.dest(BUILD_DIR_ADDON + '/chrome/chromeFiles/content/libs/bootstrap'));
+});
+
+gulp.task('addon:package-fontawesome', () => {
+  "use strict";
+
+  return gulp.src([
+    BASE_DIR_FONTAWESOME + "/css/fa-regular.css",
+    BASE_DIR_FONTAWESOME + "/webfonts/fa-regular-400.woff2",
+    BASE_DIR_FONTAWESOME + "/LICENSE.txt"
+  ], { base: BASE_DIR_FONTAWESOME }).pipe(gulp.dest(BUILD_DIR_ADDON + '/libs/fontawesome'));
+});
 
 gulp.task(
   'addon:package-common',
@@ -403,6 +427,8 @@ gulp.task(
     "addon:package-src",
     "addon:package-common",
     "addon:package-jquery",
+    "addon:package-bootstrap",
+    "addon:package-fontawesome",
     "addon:package-codemirror",
     "addon:package-license"
   )
@@ -498,13 +524,12 @@ gulp.task('addon:deploy', async () => {
 });
 
 
-
 gulp.task('test:package-jquery', function () {
-  const BASE_PATH = "./node_modules/jquery/dist";
+  "use strict";
 
   return gulp.src([
-    BASE_PATH + "/jquery.min.js"
-  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_TEST + "/common/jQuery/"));
+    BASE_DIR_JQUERY + "/jquery.min.js"
+  ], { base: BASE_DIR_JQUERY }).pipe(gulp.dest(BUILD_DIR_TEST + "/common/jQuery/"));
 });
 
 gulp.task(

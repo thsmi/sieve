@@ -18,7 +18,6 @@
 
   /* global $: false */
   /* global SieveDesigner */
-  /* global SieveTestBoxUI */
   /* global SieveTestDialogBoxUI */
 
   /* global SieveStringListWidget */
@@ -29,19 +28,11 @@
   // testunary .append() -> testunary in anyof wrapen  SieveTestUI einführen...
   // testmultary.append -> an entsprechender stelle einfügen SieveTestListUI...
 
-  // ****************************************************************************//
 
   /**
    * Implements an UI for the size test
    */
   class SieveSizeTestUI extends SieveTestDialogBoxUI {
-
-    /**
-     * @inheritDoc
-     **/
-    onValidate() {
-      return true;
-    }
 
     /**
      * @inheritDoc
@@ -86,50 +77,56 @@
     }
   }
 
-  // ****************************************************************************//
+  /**
+   * Provides an UI for the Sieve Boolean tests, which have no
+   * practival use as a true always succeed and a false always fails.
+   */
+  class SieveBooleanTestUI extends SieveTestDialogBoxUI {
 
-  function SieveBooleanTestUI(elm) {
-    SieveTestBoxUI.call(this, elm);
-  }
+    /**
+     * @inheritDoc
+     **/
+    getTemplate() {
+      return "./RFC5228/templates/SieveBooleanTest.html";
+    }
 
-  SieveBooleanTestUI.prototype = Object.create(SieveTestBoxUI.prototype);
-  SieveBooleanTestUI.prototype.constructor = SieveBooleanTestUI;
+    /**
+     * @inheritDoc
+     **/
+    onSave() {
 
-  SieveBooleanTestUI.prototype.onValidate
-    = function () {
+      let value = $("#sieve-widget-test")
+        .find("input[name='booleanValue']:checked").val();
 
-      if ($("#BooleanTestValue" + this.id()).val() === "true")
+      if (value === "true")
         this.getSieve().value = true;
       else
         this.getSieve().value = false;
 
       return true;
-    };
+    }
 
-  SieveBooleanTestUI.prototype.initEditor
-    = function () {
-      return $("<div/>")
-        .append($("<span/>")
-          .text("is"))
-        .append($("<select/>")
-          .attr("id", "BooleanTestValue" + this.id())
-          .append($("<option/>")
-            .text("true").val("true"))
-          .append($("<option/>")
-            .text("false").val("false"))
-          .val("" + this.getSieve().value));
-    };
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
+      $("#sieve-widget-test")
+        .find("input[name='booleanValue']")
+        .val(["" + this.getSieve().value]);
+    }
 
-  SieveBooleanTestUI.prototype.initSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
         .text("is " + (this.getSieve().value));
-    };
+    }
+  }
 
 
   /**
    * A UI Widget for the sieve exists element
-   *
    */
   class SieveExistsUI extends SieveTestDialogBoxUI {
 
@@ -223,30 +220,28 @@
      * @inheritDoc
      */
     onLoad() {
-
+      (new SieveStringListWidget("#sivHeaderKeyList"))
+        .init(this.keys());
       (new SieveStringListWidget("#sivHeaderHeaderList"))
         .init(this.headers());
 
       (new SieveMatchTypeWidget("#sivHeaderMatchTypes"))
         .init(this.matchtype());
-
       (new SieveComparatorWidget("#sivHeaderComparator"))
         .init(this.comparator());
-
-      (new SieveStringListWidget("#sivHeaderKeyList"))
-        .init(this.keys());
     }
 
     /**
      * @inheritDoc
      */
     onSave() {
-      (new SieveStringListWidget("#sivHeaderKeyList")).save(this.keys());
-      (new SieveStringListWidget("#sivHeaderHeaderList")).save(this.headers());
+      (new SieveStringListWidget("#sivHeaderKeyList"))
+        .save(this.keys());
+      (new SieveStringListWidget("#sivHeaderHeaderList"))
+        .save(this.headers());
 
       (new SieveComparatorWidget("#sivHeaderComparator"))
         .save(this.comparator());
-
       (new SieveMatchTypeWidget("#sivHeaderMatchTypes"))
         .save(this.matchtype());
 

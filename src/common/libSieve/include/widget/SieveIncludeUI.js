@@ -30,7 +30,7 @@
     /**
      * @inheritDoc
      */
-    initSummary() {
+    getSummary() {
       return $("<div/>")
         .text("End current script and return to the parent script");
     }

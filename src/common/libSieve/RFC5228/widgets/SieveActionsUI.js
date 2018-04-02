@@ -21,8 +21,6 @@
   /* global SieveDesigner */
   /* global SieveActionDialogBoxUI */
 
-  // ******************************************************************************/
-
   /**
    * Provides a UI for the stop action
    */
@@ -31,7 +29,7 @@
     /**
      * @inheritDoc
      */
-    initSummary() {
+    getSummary() {
       return $("<div/>")
         .text("End Script (Stop processing)");
     }
@@ -45,7 +43,7 @@
     /**
      * @inheritDoc
      */
-    initSummary() {
+    getSummary() {
       return $("<div/>")
         .text("Discard message silently");
     }
@@ -59,7 +57,7 @@
     /**
      * @inheritDoc
      */
-    initSummary() {
+    getSummary() {
       return $("<div/>")
         .text("Keep a copy in the main inbox");
     }
@@ -188,8 +186,6 @@
     }
   }
 
-
-  // ******************************************************************************/
 
   if (!SieveDesigner)
     throw new Error("Could not register Action Widgets");

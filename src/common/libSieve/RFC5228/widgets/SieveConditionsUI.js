@@ -24,6 +24,8 @@
   /* global SieveDropBoxUI */
   /* global SieveConditionDropHandler */
 
+  const IS_FIRST_ITEM = 0;
+
   /**
    * Provides a UI for the if statement
    */
@@ -91,7 +93,7 @@
             .html()
             .addClass("sivConditionSpacer"));
 
-        if (i === 0)
+        if (i === IS_FIRST_ITEM)
           elm.append($("<div/>").text("IF").addClass("sivConditionText"));
         else if (children[i].test)
           elm.append($("<div/>").text("ELSE IF").addClass("sivConditionText"));

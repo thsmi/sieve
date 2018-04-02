@@ -61,7 +61,7 @@
         elm.remove();
       });
 
-      // TODO Connect the dropdown buttons
+      // TODO Connect the bootstrap dropdown buttons
 
       return this;
     }
@@ -163,35 +163,6 @@
       return result;
     }
   }
-
-  /**
-   * @constructor
-   * @deprecated
-   */
-  function SieveTabWidget() {
-    this._tabs = "div.dialog-tab";
-    this._content = ".dialog-tab-content";
-  }
-
-  SieveTabWidget.prototype.init
-    = function (tabs, content) {
-
-      $(this._tabs + ' > div').click((ev) => {
-        this.onTabChange(ev.target);
-      });
-    };
-
-  SieveTabWidget.prototype.onTabChange
-    = function (elm) {
-
-      $(this._tabs + ' > div').removeClass('tab-active');
-      $(this._content + ' > div').removeClass('tab-active');
-
-      $(elm).addClass('tab-active');
-
-      let id = $(elm).attr('data-tab-content');
-      $("#" + id).addClass('tab-active');
-    };
 
 
   /**
@@ -376,26 +347,41 @@
     init(sivElement) {
       let that = this;
 
-      $("<template />")
-        .load(this.getTemplate(), function (response, status, xhr) {
-          if (status === "error")
-            alert("" + xhr.status + " " + xhr.statusText);
+      // We need here some to make mozilla happy.
+      // In theory the Iframe is marked as non priviledged code but
+      // this is obviously not working. Which forces us to use the
+      // unsafeSetInnerHTML method.
 
-          let item = $($(this.content.children).find("#test42").html());
+      let xhr = new XMLHttpRequest();
+      xhr.onload = function () {
 
-          $("" + that.id).append(item);
+        let item = this.responseXML.querySelector("#test42");
 
-          item.attr("data-nodename", that.constructor.nodeName());
-          that.load(sivElement);
-        });
+        let div = document.createElement("div");
+        if (div.unsafeSetInnerHTML)
+          div.unsafeSetInnerHTML(item.innerHTML);
+        else
+          div.innerHTML = item.innerHTML;
+
+        div.setAttribute("data-nodename", that.constructor.nodeName());
+
+        $("" + that.id)
+          .append(div);
+
+        that.load(sivElement);
+      };
+      xhr.open("GET", this.getTemplate());
+      xhr.responseType = "document";
+      xhr.setRequestHeader('cache-control', 'no-cache, must-revalidate, post-check=0, pre-check=0');
+      xhr.setRequestHeader('cache-control', 'max-age=0');
+      xhr.setRequestHeader('expires', '0');
+      xhr.setRequestHeader('expires', 'Tue, 01 Jan 1980 1:00:00 GMT');
+      xhr.setRequestHeader('pragma', 'no-cache');
+      xhr.send();
+
     }
 
   }
-
-
-
-
-  exports.SieveTabWidget = SieveTabWidget;
 
   exports.SieveRadioGroupWidget = SieveRadioGroupWidget;
   exports.SieveAbstractRadioGroupWidget = SieveAbstractRadioGroupWidget;

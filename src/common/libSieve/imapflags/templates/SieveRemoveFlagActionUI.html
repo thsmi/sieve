@@ -1,196 +1,88 @@
 <div>
-        <ul id="template-tabs">
-            <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" href="#sieve-widget-removeflag" role="tab">Remove Flag</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
-            </li>
-        </ul>
+    <ul id="template-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-removeflag" role="tab">Remove Flag</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+        </li>
+    </ul>
 
-        <div id="template-content">
-            <div class="tab-content m-2">
-                <div class="tab-pane fade show active" id="sieve-widget-removeflag" role="tabpanel">
+    <div id="template-content">
+        <div class="tab-content m-2">
+            <div class="tab-pane fade show active" id="sieve-widget-removeflag" role="tabpanel">
 
-                    <div class="form-group">
-                        <h5>Remove the following IMAP Flags ... </h5>
-                        <small class="form-text text-muted">
-                            Removeflag clears flags previously set by setflag or addflag                        </small>
-                        <div id="sivFlagKeywordList" data-list-new="#sivFlagKeywordListAdd" data-list-template="#sivFlagKeywordListTemplate" data-list-min="1">
-                        </div>
+                <div class="form-group">
+                    <h5>Remove the following IMAP Flags ... </h5>
+                    <small class="form-text text-muted">
+                        Removeflag clears flags previously set by setflag or addflag </small>
+                    <div id="sivFlagKeywordList" data-list-new="#sivFlagKeywordListAdd" data-list-template="#sivFlagKeywordListTemplate" data-list-min="1">
+                    </div>
 
-                        <div id="sivFlagKeywordListTemplate" style="display:none">
-                            <div class="input-group input-group-sm mb-1">
-                                <input type="text" class="form-control col-lg-8">
-                                <div class="input-group-append">
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="#">\Seen</a>
-                                        <a class="dropdown-item" href="#">\Answered</a>
-                                        <a class="dropdown-item" href="#">\Flagged</a>
-                                        <a class="dropdown-item" href="#">\Delete</a>
-                                        <a class="dropdown-item" href="#">\Draft</a>
-                                        <a class="dropdown-item" href="#">\Recent</a>
-                                        <a class="dropdown-item" href="#">\$Label1</a>
-                                        <a class="dropdown-item" href="#">\$Label2</a>
-                                        <a class="dropdown-item" href="#">\$Label3</a>
-                                        <a class="dropdown-item" href="#">\$Label4</a>
-                                        <a class="dropdown-item" href="#">\$Label5</a>
+                    <div id="sivFlagKeywordListTemplate" style="display:none">
+                        <div class="input-group input-group-sm mb-1">
+                            <input type="text" class="form-control col-lg-8" />
+                            <div class="input-group-append">
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#">\Seen</a>
+                                    <a class="dropdown-item" href="#">\Answered</a>
+                                    <a class="dropdown-item" href="#">\Flagged</a>
+                                    <a class="dropdown-item" href="#">\Delete</a>
+                                    <a class="dropdown-item" href="#">\Draft</a>
+                                    <a class="dropdown-item" href="#">\Recent</a>
+                                    <a class="dropdown-item" href="#">\$Label1</a>
+                                    <a class="dropdown-item" href="#">\$Label2</a>
+                                    <a class="dropdown-item" href="#">\$Label3</a>
+                                    <a class="dropdown-item" href="#">\$Label4</a>
+                                    <a class="dropdown-item" href="#">\$Label5</a>
 
-                                    </div>
-                                    <button type="button" class="btn btn-outline-secondary far sieve-stringlist-delete">
-                                        &#xf2ed;
-                                    </button>
-                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false">
-                                        <span class="sr-only">Toggle Dropdown</span>
-                                    </button>
                                 </div>
+                                <button type="button" class="btn btn-outline-secondary far sieve-stringlist-delete">
+                                    &#xf2ed;
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
                             </div>
                         </div>
-
-
-                        <div>
-                            <button id="sivFlagKeywordListAdd" class="btn btn-sm btn-outline-secondary">Add</button>
-                        </div>
-
-
                     </div>
-                </div>
-                <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
-                    <p> Removeflag clears flags previously set by "setflag" or "addflag".  Calling
-                        removeflag with a flag that wasn't set before is not an error and is
-                        ignored. </p>
-                    <p>
-                        Add flags to a message. It doesn't replace any previously set flags. This means that multiple occurrences of addflag are
-                        treated additively.
-                    </p>
-                    <p>
-                        Message labels are called flags in the IMAP specification and are divided into two types: system flags and user-defined flags.
-                    </p>
-                    <p>
-                        System flags are defined in the IMAP Specification. They start with a leading backslash (\). The current the following six
-                        system flags \Seen , \Answered, \Flagged, \Deleted, \Draft, \Recent are defined.
-                    </p>
-                    <p>
-                        User-defined flags are also known as IMAP keywords and, as the name implies, are defined by IMAP users. There is a de facto
-                        standard that keywords which are in common use have names that begin with a dollar sign ($).
-                    </p>
-                    <p>
-                        Examples of common keywords are: $Label1, $Label2, $Label3, $Label4, $Label5. These keywords are typically hardwired to Important,
-                        Work, Personal, To Do and Later.
-                    </p>
-                    <p>
-                        If you define your own personal keyword, its name should not begin with dollar sign ($) or backslash (\) because otherwise
-                        it might collide with a flag that is used by current or future IMAP clients and servers
-                    </p>
+
+
+                    <div>
+                        <button id="sivFlagKeywordListAdd" class="btn btn-sm btn-outline-secondary">Add</button>
+                    </div>
 
                 </div>
             </div>
-        </div>
-    </div>
+            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+                <p> Removeflag clears flags previously set by "setflag" or "addflag". Calling removeflag with a flag that wasn't
+                    set before is not an error and is ignored. </p>
+                <p>
+                    Add flags to a message. It doesn't replace any previously set flags. This means that multiple occurrences of addflag are
+                    treated additively.
+                </p>
+                <p>
+                    Message labels are called flags in the IMAP specification and are divided into two types: system flags and user-defined flags.
+                </p>
+                <p>
+                    System flags are defined in the IMAP Specification. They start with a leading backslash (\). The current the following six
+                    system flags \Seen , \Answered, \Flagged, \Deleted, \Draft, \Recent are defined.
+                </p>
+                <p>
+                    User-defined flags are also known as IMAP keywords and, as the name implies, are defined by IMAP users. There is a de facto
+                    standard that keywords which are in common use have names that begin with a dollar sign ($).
+                </p>
+                <p>
+                    Examples of common keywords are: $Label1, $Label2, $Label3, $Label4, $Label5. These keywords are typically hardwired to Important,
+                    Work, Personal, To Do and Later.
+                </p>
+                <p>
+                    If you define your own personal keyword, its name should not begin with dollar sign ($) or backslash (\) because otherwise
+                    it might collide with a flag that is used by current or future IMAP clients and servers
+                </p>
 
-<!DOCTYPE html>
-
-<!--
-
-  The contents of this file are licenced. You may obtain a copy of
-  the license at https://github.com/thsmi/sieve/ or request it via
-  email from the author.
-
-  Do not remove or change this comment.
-
-  The initial author of the code is:
-    Thomas Schmid <schmid-thomas@gmx.net>
-
--->
-
-<html>
-
-<head>
-    <meta charset="UTF-8">
-    <title>Remove Flag Action</title>
-</head>
-
-<body>
-
-    <div id="sivDialogRemoveFlag" class="dialog">
-
-        <div>
-            <!-- System -->
-            <div id="sivEditMain">
-                <!-- Appbar -->
-                <div class="dialog-header">
-                    <div class="dialog-tab">
-                        <div class="tab-active" data-tab-content="sivRemoveFlagGeneralContent">BASIC</div>
-                        <div data-tab-content="sivRemoveFlagHelpContent">HELP</div>
-                    </div>
-                </div>
-                <!-- content -->
-                <div class="dialog-tab-content">
-                    <!-- content for help tab -->
-                    <div id="sivRemoveFlagHelpContent">
-                        <p>
-                            Message labels are called flags in the IMAP specification and are divided into two types: system flags and user-defined flags.
-                        </p>
-                        <p>
-                            System flags are defined in the IMAP Specification. They start with a leading backslash (\). The current the following six
-                            system flags \Seen , \Answered, \Flagged, \Deleted, \Draft, \Recent are defined.
-                        </p>
-                        <p>
-                            User-defined flags are also known as IMAP keywords and, as the name implies, are defined by IMAP users. There is a de facto
-                            standard that keywords which are in common use have names that begin with a dollar sign ($).
-                        </p>
-                        <p>
-                            Examples of common keywords are: $Label1, $Label2, $Label3, $Label4, $Label5. These keywords are typically hardwired to Important,
-                            Work, Personal, To Do and Later.
-                        </p>
-                        <p>
-                            If you define your own personal keyword, its name should not begin with dollar sign ($) or backslash (\) because otherwise
-                            it might collide with a flag that is used by current or future IMAP clients and servers
-                        </p>
-                    </div>
-
-                    <!-- content for general tab -->
-                    <div id="sivRemoveFlagGeneralContent" class="tab-active">
-                        <h1> Set Imap Flags and Keywords</h1>
-
-                        <div id="sivFlagKeywordList" data-list-new="#sivFlagKeywordListAdd" data-list-items="#sivFlagKeywordListItems" data-list-template="#sivFlagKeywordListTemplate"
-                            data-list-min="1">
-
-                            <div id="sivFlagKeywordListTemplate" style="display:none">
-                                <div>
-                                    <input type="text" list="sivFlagList" />
-                                    <button>remove</button>
-                                </div>
-                            </div>
-                            <div id="sivFlagKeywordListItems">
-
-                                <div>
-                                    <button id="sivFlagKeywordListAdd">add</button>
-                                </div>
-                            </div>
-                    </div>
-
-                    <datalist id="sivFlagList">
-                        <option value="\Seen" />
-                        <option value="\Answered" />
-                        <option value="\Flagged" />
-                        <option value="\Delete" />
-                        <option value="\Draft" />
-                        <option value="\Recent" />
-                        <option value="$Label1" />
-                        <option value="$Label2" />
-                        <option value="$Label3" />
-                        <option value="$Label4" />
-                        <option value="$Label5" />
-                    </datalist>
-
-                </div>
             </div>
         </div>
     </div>
-    </div>
-
-</body>
-
-</html>
+</div>

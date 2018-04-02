@@ -1,36 +1,29 @@
-<div>
-  <div id="test42">
-    <div>
-      <div class="form-row align-items-center mt-2">
-        <div class="col-auto">
-          <div class="custom-control custom-radio mr-sm-2">
-            <input type="radio"
-            class="custom-control-input sieve-matchtype-radio"
-            name="sieve-matchtype"
-            data-matchtype="match-type/count"
-            id="sieve-matchtype-count">
-            <label class="custom-control-label" for="sieve-matchtype-count">
-              <h5>... has</h5>
-            </label>
-          </div>
-        </div>
-        <div class="col-auto">
-          <select class="form-control form-control-sm sieve-matchtype-count-relational">
-            <option value=':count "gt"'>more than</option>
-            <option value=':count "ge"'>more than or equal</option>
-            <option value=':count "lt"'>less than</option>
-            <option value=':count "le"'>less than or equal</option>
-            <option value=':count "eq"'>equal to</option>
-            <option value=':count "ne"'>not equal to</option>
-          </select>
-        </div>
-        <div class="col-auto">
-          <h5>items ...</h5>
-        </div>
-      </div>
-      <div class="form-row">
-        <small class="ml-4">Counts the number of entities and compares them to the given value</small>
+<template id="test42">
+  <div class="form-row align-items-center mt-2">
+    <div class="col-auto">
+      <div class="custom-control custom-radio mr-sm-2">
+        <input type="radio" class="custom-control-input sieve-matchtype-radio" name="sieve-matchtype" data-matchtype="match-type/count"
+          id="sieve-matchtype-count" />
+        <label class="custom-control-label" for="sieve-matchtype-count">
+          <h5>... has</h5>
+        </label>
       </div>
     </div>
+    <div class="col-auto">
+      <select class="form-control form-control-sm sieve-matchtype-count-relational">
+        <option value=':count "gt"'>more than</option>
+        <option value=':count "ge"'>more than or equal</option>
+        <option value=':count "lt"'>less than</option>
+        <option value=':count "le"'>less than or equal</option>
+        <option value=':count "eq"'>equal to</option>
+        <option value=':count "ne"'>not equal to</option>
+      </select>
+    </div>
+    <div class="col-auto">
+      <h5>items ...</h5>
+    </div>
   </div>
-</div>
+  <div class="form-row">
+    <small class="ml-4">Counts the number of entities and compares them to the given value</small>
+  </div>
+</template>

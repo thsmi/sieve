@@ -24,68 +24,69 @@
 
   // TODO Add button to show selection source...
 
-  /**
-   * can be an document or element...
-   * @constructor
-   * @param {SieveAbstractElement} elm
-   *   sieve element is bound to this box.
-   */
-  function SieveAbstractBoxUI(elm) {
-    if (!elm)
-      throw new Error("Element expected");
-
-    if (!elm.document && !elm.root)
-      throw new Error("Neiter a Sieve Element nor a Sieve Document");
-
-    this._elm = elm;
-    this._handler = {};
-  }
 
   /**
-   * Return the nesteds unique id. In case no sieve element is bound to
-   * this element it return -1
-   *
-   * @return {int}
-   *   An Integer as unique identifiert for the nested sieve element.
+   * An abstract base class to render sieve elements as html.
    */
-  SieveAbstractBoxUI.prototype.id
-    = function () {
+  class SieveAbstractBoxUI {
+
+    /**
+     * Creates a new instance
+     *
+     * @param {SieveAbstractElement|SieveDocument} elm
+     *   sieve element is bound to this box.
+     */
+    constructor(elm) {
+      if (!elm)
+        throw new Error("Element expected");
+
+      if (!elm.document && !elm.root)
+        throw new Error("Neiter a Sieve Element nor a Sieve Document");
+
+      this._elm = elm;
+      this._handler = {};
+    }
+
+    /**
+     * Return the nesteds unique id. In case no sieve element is bound to
+     * this element it return -1
+     *
+     * @return {int}
+     *   An Integer as unique identifiert for the nested sieve element.
+     */
+    id() {
       if (this._elm.document)
         return this._elm.id();
 
       return -1;
-    };
+    }
 
-  /**
-   * Returns the sieve Element bound to this box.
-   * In case no element is bound, an exception will be thrown
-   *
-   * @return {SieveAbstractElement}
-   *   the sieve object bound to this box
-   */
-  SieveAbstractBoxUI.prototype.getSieve
-    = function () {
+    /**
+     * Returns the sieve Element bound to this box.
+     * In case no element is bound, an exception will be thrown
+     *
+     * @return {SieveAbstractElement}
+     *   the sieve object bound to this box
+     */
+    getSieve() {
       if (!this._elm.document)
         throw new Error("No Sieve Element bound to this box");
 
       return this._elm;
-    };
+    }
 
-  SieveAbstractBoxUI.prototype.document
-    = function () {
+    document() {
       if (this._elm.document)
         return this._elm.document();
 
       return this._elm;
-    };
+    }
 
-  SieveAbstractBoxUI.prototype.createHtml
-    = function (parent) {
+    createHtml(parent) {
       throw new Error("Implement html()");
-    };
+    }
 
-  SieveAbstractBoxUI.prototype.html
-    = function (invalidate) {
+    html(invalidate) {
       if (this._domElm && !invalidate)
         return this._domElm;
 
@@ -100,10 +101,9 @@
           this._handler[topic].attach(this._domElm);
 
       return this._domElm;
-    };
+    }
 
-  SieveAbstractBoxUI.prototype.reflow
-    = function () {
+    reflow() {
       if (this.id() < 0)
         throw new Error("Invalid id");
 
@@ -117,23 +117,21 @@
       item.replaceWith(this.html());
     };
 
-  SieveAbstractBoxUI.prototype.toScript
-    = function () {
+    toScript() {
       if (this._elm.document)
         return this._elm.toScript();
 
       return "";
-    };
+    }
 
 
-  /**
-   * The dorp element handler
-   * @param {} handler
-   * @param {} sibling
-   * @return {}
-   */
-  SieveAbstractBoxUI.prototype.drop
-    = function (handler, sibling) {
+    /**
+     * The dorp element handler
+     * @param {} handler
+     * @param {} sibling
+     * @return {}
+     */
+    drop(handler, sibling) {
       if (typeof (handler) === "undefined")
         return this._handler["drop"];
 
@@ -145,10 +143,9 @@
       this._handler["drop"].bind(this, sibling);
 
       return this;
-    };
+    }
 
-  SieveAbstractBoxUI.prototype.drag
-    = function (handler) {
+    drag(handler) {
       if (typeof (handler) === "undefined")
         return this._handler["drag"];
 
@@ -160,7 +157,8 @@
       this._handler["drag"].bind(this);
 
       return this;
-    };
+    }
+  }
 
 
   // FIXME: Rename this, it is definietly not editable
@@ -264,41 +262,40 @@
 
 
   /**
-   * A modal dialog box with tabs.
-   * @constructor
+   * Provides a UI with a tabbed modal dialog.
    **/
-  function SieveDialogBoxUI(elm) {
-    // Call parent constructor...
-    SieveAbstractBoxUI.call(this, elm);
+  class SieveDialogBoxUI extends SieveAbstractBoxUI {
 
-    // create a unique id, which makes identifing the dom object easier.
-    this.uniqueId = "" + Math.floor(Math.random() * 10000000).toString(16) + Date.now().toString(16);
-  }
+    /**
+     * @inheritDoc
+     */
+    constructor(elm) {
+      // Call parent constructor...
+      super(elm);
 
-  // Inherrit from DragBox
-  SieveDialogBoxUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
-  SieveDialogBoxUI.prototype.constructor = SieveDialogBoxUI;
+      // create a unique id, which makes identifing the dom object easier.
+      this.uniqueId = "" + Math.floor(Math.random() * 10000000).toString(16) + Date.now().toString(16);
+    }
 
-  SieveDialogBoxUI.prototype.save = function () {
+    save() {
 
-    // Check if on save was canceled...
-    if (!this.onSave())
-      return;
+      // Check if on save was canceled...
+      if (!this.onSave())
+        return;
 
-    $('#sivDialogBody').empty();
+      $('#sivDialogBody').empty();
 
-    // Remove the event handlers...
-    $('#sivDialog2').modal("hide");
-    // $('#sivDialogDiscard').off('click');
+      // Remove the event handlers...
+      $('#sivDialog2').modal("hide");
+      // $('#sivDialogDiscard').off('click');
 
-    // update the summary
-    $("#" + this.uniqueId + "-summary")
-      .empty()
-      .append(this.getSummary());
-  };
+      // update the summary
+      $("#" + this.uniqueId + "-summary")
+        .empty()
+        .append(this.getSummary());
+    }
 
-  SieveDialogBoxUI.prototype.showEditor
-    = function (e) {
+    showEditor(e) {
 
       $('#sivDialog2').modal("show");
       $("#sivDialogSave").off("click").click(() => { this.save(); });
@@ -346,11 +343,12 @@
       xhr.setRequestHeader('expires', 'Tue, 01 Jan 1980 1:00:00 GMT');
       xhr.setRequestHeader('pragma', 'no-cache');
       xhr.send();
+    }
 
-    };
-
-  SieveDialogBoxUI.prototype.createHtml
-    = function (parent) {
+    /**
+     * @inheritDoc
+     */
+    createHtml(parent) {
 
       if (typeof (parent) === "undefined")
         throw new Error("parent parameter is missing");
@@ -371,47 +369,48 @@
       }
 
       return parent;
-    };
+    }
 
-  SieveDialogBoxUI.prototype.getTemplate
-    = function () {
+    getTemplate() {
       throw new Error("Implement getTemplate()");
-    };
+    }
 
-  SieveDialogBoxUI.prototype.getSummary
-    = function () {
-
+    getSummary() {
       throw new Error("Implement getSummary()");
-    };
+    }
 
-  SieveDialogBoxUI.prototype.onSave
-    = function () {
-
+    onSave() {
       return true;
-    };
+    }
 
-  SieveDialogBoxUI.prototype.onLoad
-    = function () {
-
+    onLoad() {
       throw new Error("Implement onLoad()");
-    };
-
-  // ------------------------------------------------------/
-
-  function SieveActionDialogBoxUI(elm) {
-    // Call parent constructor...
-    SieveDialogBoxUI.call(this, elm);
-    this.drag(new SieveMoveDragHandler());
+    }
   }
 
-  SieveActionDialogBoxUI.prototype = Object.create(SieveDialogBoxUI.prototype);
-  SieveActionDialogBoxUI.prototype.constructor = SieveActionDialogBoxUI;
 
-  SieveActionDialogBoxUI.prototype.createHtml
-    = function (parent) {
-      return SieveDialogBoxUI.prototype.createHtml.call(this, parent)
+  /**
+   * Provides a basic UI for a sieve test
+   */
+  class SieveActionDialogBoxUI extends SieveDialogBoxUI {
+
+    /**
+     * @inheritDoc
+     */
+    constructor(elm) {
+      // Call parent constructor...
+      super(elm);
+      this.drag(new SieveMoveDragHandler());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    createHtml(parent) {
+      return super.createHtml(parent)
         .addClass("sivAction");
-    };
+    }
+  }
 
 
   /**
@@ -486,7 +485,6 @@
         .addClass("sivTest");
     }
   }
-
 
 
   exports.SieveAbstractBoxUI = SieveAbstractBoxUI;

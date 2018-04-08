@@ -9,8 +9,6 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-"use strict";
-
 const gulp = require('gulp');
 const zip = require('gulp-zip');
 
@@ -23,6 +21,14 @@ const BUILD_DIR_TEST = "./build/test/";
 const BASE_DIR_BOOTSTRAP = "./node_modules/bootstrap/dist";
 const BASE_DIR_FONTAWESOME = "./node_modules/@fortawesome/fontawesome-free-webfonts";
 const BASE_DIR_JQUERY = "./node_modules/jquery/dist";
+const BASE_DIR_CODEMIRROR = "./node_modules/codemirror";
+const BASE_DIR_COMMON = "./src/common";
+const BASE_DIR_ADDON = "./src/addon";
+const BASE_DIR_APP = "./src/app/";
+
+const INDEX_MAJOR = 0;
+const INDEX_MINOR = 1;
+const INDEX_PATCH = 2;
 
 /**
  * Delete all files from the given path.
@@ -32,6 +38,7 @@ const BASE_DIR_JQUERY = "./node_modules/jquery/dist";
  * @returns {void}
  */
 function deleteRecursive(path) {
+  "use strict";
 
   if (!fs.existsSync(path))
     return;
@@ -61,11 +68,11 @@ function deleteRecursive(path) {
  *   the version as string
  */
 function getPackageVersion(file) {
+  "use strict";
 
   if ((typeof (file) === "undefined") || file === null)
     file = "./package.json";
 
-  let fs = require('fs');
   return JSON.parse(fs.readFileSync(file, 'utf8')).version;
 }
 
@@ -79,13 +86,13 @@ function getPackageVersion(file) {
  * @returns {void}
  */
 function setPackageVersion(version, file) {
+  "use strict";
 
   if ((typeof (file) === "undefined") || file === null)
     file = "./package.json";
 
   console.log("Bumping " + file);
 
-  let fs = require('fs');
   let data = JSON.parse(fs.readFileSync(file, 'utf8'));
 
   data.version = version.join(".");
@@ -105,10 +112,9 @@ function setPackageVersion(version, file) {
  * @returns {void}
  */
 function setRdfVersion(version, file) {
+  "use strict";
 
   console.log("Bumping " + file);
-
-  let fs = require('fs');
 
   let regexp = new RegExp("<em:version>(\\d)*\\.(\\d)*\\.(\\d)*<\\/em:version>", "g");
 
@@ -122,7 +128,6 @@ function setRdfVersion(version, file) {
   return;
 }
 
-
 /**
  * Increase the release version.
  * It reads the version from the package.json bumps it and
@@ -134,6 +139,7 @@ function setRdfVersion(version, file) {
  * @returns {void}
  */
 function bumpVersion(type) {
+  "use strict";
 
   let pkgVersion = getPackageVersion('./package.json').split(".");
 
@@ -144,18 +150,18 @@ function bumpVersion(type) {
 
   // bump the version.
   if (type === "major") {
-    pkgVersion[0] = parseInt(pkgVersion[0], 10) + 1;
-    pkgVersion[1] = 0;
-    pkgVersion[2] = 0;
+    pkgVersion[INDEX_MAJOR] = parseInt(pkgVersion[INDEX_MAJOR], 10) + 1;
+    pkgVersion[INDEX_MINOR] = 0;
+    pkgVersion[INDEX_PATCH] = 0;
   }
 
   if (type === "minor") {
-    pkgVersion[1] = parseInt(pkgVersion[1], 10) + 1;
-    pkgVersion[2] = 0;
+    pkgVersion[INDEX_MINOR] = parseInt(pkgVersion[INDEX_MINOR], 10) + 1;
+    pkgVersion[INDEX_PATCH] = 0;
   }
 
   if (type === "patch") {
-    pkgVersion[2] = parseInt(pkgVersion[2], 10) + 1;
+    pkgVersion[INDEX_PATCH] = parseInt(pkgVersion[INDEX_PATCH], 10) + 1;
   }
 
   console.log("... to " + pkgVersion.join("."));
@@ -166,10 +172,14 @@ function bumpVersion(type) {
 
 
 gulp.task('clean', async () => {
+  "use strict";
+
   deleteRecursive("./build");
 });
 
-gulp.task('app:package-definition', function () {
+gulp.task('app:package-definition', () => {
+  "use strict";
+
   const BASE_PATH = ".";
 
   return gulp.src([
@@ -177,7 +187,7 @@ gulp.task('app:package-definition', function () {
   ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_APP));
 });
 
-gulp.task('app:package-jquery', function () {
+gulp.task('app:package-jquery', () => {
   "use strict";
 
   return gulp.src([
@@ -186,18 +196,18 @@ gulp.task('app:package-jquery', function () {
 });
 
 
-gulp.task('app:package-codemirror', function () {
-  const BASE_PATH = "./node_modules/codemirror";
+gulp.task('app:package-codemirror', () => {
+  "use strict";
 
   return gulp.src([
-    BASE_PATH + "/addon/edit/**",
-    BASE_PATH + "/addon/search/**",
-    BASE_PATH + "/lib/**",
-    BASE_PATH + "/mode/sieve/**",
-    BASE_PATH + "/theme/eclipse.css",
-    BASE_PATH + "/LICENSE",
-    BASE_PATH + "/package.json"
-  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_APP + "/libs/CodeMirror"));
+    BASE_DIR_CODEMIRROR + "/addon/edit/**",
+    BASE_DIR_CODEMIRROR + "/addon/search/**",
+    BASE_DIR_CODEMIRROR + "/lib/**",
+    BASE_DIR_CODEMIRROR + "/mode/sieve/**",
+    BASE_DIR_CODEMIRROR + "/theme/eclipse.css",
+    BASE_DIR_CODEMIRROR + "/LICENSE",
+    BASE_DIR_CODEMIRROR + "/package.json"
+  ], { base: BASE_DIR_CODEMIRROR }).pipe(gulp.dest(BUILD_DIR_APP + "/libs/CodeMirror"));
 });
 
 gulp.task('app:package-bootstrap', () => {
@@ -219,7 +229,8 @@ gulp.task('app:package-fontawesome', () => {
   ], { base: BASE_DIR_FONTAWESOME }).pipe(gulp.dest(BUILD_DIR_APP + '/libs/fontawesome'));
 });
 
-gulp.task('app:package-license', function () {
+gulp.task('app:package-license', () => {
+  "use strict";
 
   return gulp.src([
     "./LICENSE.md"
@@ -229,29 +240,27 @@ gulp.task('app:package-license', function () {
 /**
  * The source files need to go into the app/ directory...
  */
-gulp.task('app:package-src', function () {
-
-  const BASE_PATH = "./src/app/";
+gulp.task('app:package-src', () => {
+  "use strict";
 
   return gulp.src([
-    BASE_PATH + "/**"
+    BASE_DIR_APP + "/**"
   ]).pipe(gulp.dest(BUILD_DIR_APP));
 });
 
 /**
  * The common files need to go into the app/lib directory...
  */
-gulp.task('app:package-common', function () {
-
-  const BASE_PATH = "./src/common/";
+gulp.task('app:package-common', () => {
+  "use strict";
 
   return gulp.src([
-    BASE_PATH + "/**",
+    BASE_DIR_COMMON + "/**",
     // Filter out the editor wrapper
-    "!" + BASE_PATH + "editor",
-    "!" + BASE_PATH + "editor/**",
+    "!" + BASE_DIR_COMMON + "editor",
+    "!" + BASE_DIR_COMMON + "editor/**",
     // Filter out the rfc documents
-    "!" + BASE_PATH + "libSieve/**/rfc*.txt"
+    "!" + BASE_DIR_COMMON + "libSieve/**/rfc*.txt"
   ]).pipe(gulp.dest(BUILD_DIR_APP + '/libs'));
 });
 
@@ -329,26 +338,25 @@ gulp.task(
 /**
  * watches for changed files and reruns the build task.
  */
-gulp.task(
-  'app:watch',
-  function () {
-    return gulp.watch(
-      ['./src/**/*.js',
-        './src/**/*.jsm',
-        './src/**/*.html',
-        './src/**/*.tpl',
-        './src/**/*.css',
-        './src/**/*.xul',
-        './src/**/*.dtd',
-        './src/**/*.properties'],
-      gulp.parallel(
-        'app:package-src',
-        "app:package-common")
-    );
-  }
-);
+gulp.task('app:watch', () => {
+  "use strict";
 
-gulp.task('addon:package-jquery', function () {
+  return gulp.watch(
+    ['./src/**/*.js',
+      './src/**/*.jsm',
+      './src/**/*.html',
+      './src/**/*.tpl',
+      './src/**/*.css',
+      './src/**/*.xul',
+      './src/**/*.dtd',
+      './src/**/*.properties'],
+    gulp.parallel(
+      'app:package-src',
+      "app:package-common")
+  );
+});
+
+gulp.task('addon:package-jquery', () => {
   "use strict";
 
   return gulp.src([
@@ -356,22 +364,19 @@ gulp.task('addon:package-jquery', function () {
   ], { base: BASE_DIR_JQUERY }).pipe(gulp.dest(BUILD_DIR_ADDON + "/chrome/chromeFiles/content/libs/jQuery"));
 });
 
-gulp.task(
-  'addon:package-codemirror',
-  function () {
-    const BASE_PATH = "./node_modules/codemirror";
+gulp.task('addon:package-codemirror', () => {
+  "use strict";
 
-    return gulp.src([
-      BASE_PATH + "/addon/edit/**",
-      BASE_PATH + "/addon/search/**",
-      BASE_PATH + "/lib/**",
-      BASE_PATH + "/mode/sieve/**",
-      BASE_PATH + "/theme/eclipse.css",
-      BASE_PATH + "/LICENSE",
-      BASE_PATH + "/package.json"
-    ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_ADDON + '/chrome/chromeFiles/content/libs/CodeMirror'));
-  }
-);
+  return gulp.src([
+    BASE_DIR_CODEMIRROR + "/addon/edit/**",
+    BASE_DIR_CODEMIRROR + "/addon/search/**",
+    BASE_DIR_CODEMIRROR + "/lib/**",
+    BASE_DIR_CODEMIRROR + "/mode/sieve/**",
+    BASE_DIR_CODEMIRROR + "/theme/eclipse.css",
+    BASE_DIR_CODEMIRROR + "/LICENSE",
+    BASE_DIR_CODEMIRROR + "/package.json"
+  ], { base: BASE_DIR_CODEMIRROR }).pipe(gulp.dest(BUILD_DIR_ADDON + '/chrome/chromeFiles/content/libs/CodeMirror'));
+});
 
 
 gulp.task('addon:package-bootstrap', () => {
@@ -393,30 +398,26 @@ gulp.task('addon:package-fontawesome', () => {
   ], { base: BASE_DIR_FONTAWESOME }).pipe(gulp.dest(BUILD_DIR_ADDON + '/libs/fontawesome'));
 });
 
-gulp.task(
-  'addon:package-common',
-  function () {
-    const BASE_PATH = "./src/common";
+gulp.task('addon:package-common', () => {
+  "use strict";
 
-    return gulp.src([
-      BASE_PATH + "/**",
+  return gulp.src([
+    BASE_DIR_COMMON + "/**",
 
-      // Filter out the rfc documents
-      "!" + BASE_PATH + "/libSieve/**/rfc*.txt"
-    ]).pipe(gulp.dest(BUILD_DIR_ADDON + '/chrome/chromeFiles/content/libs'));
-  }
-);
+    // Filter out the rfc documents
+    "!" + BASE_DIR_COMMON + "/libSieve/**/rfc*.txt"
+  ]).pipe(gulp.dest(BUILD_DIR_ADDON + '/chrome/chromeFiles/content/libs'));
+});
 
 gulp.task(
   'addon:package-src',
   function () {
-    const BASE_PATH = "./src/addon";
 
     return gulp.src([
-      BASE_PATH + "/**",
+      BASE_DIR_ADDON + "/**",
 
-      "!" + BASE_PATH + "/chrome/chromeFiles/content/filterList",
-      "!" + BASE_PATH + "/chrome/chromeFiles/content/filterList/**"
+      "!" + BASE_DIR_ADDON + "/chrome/chromeFiles/content/filterList",
+      "!" + BASE_DIR_ADDON + "/chrome/chromeFiles/content/filterList/**"
     ]).pipe(gulp.dest(BUILD_DIR_ADDON));
   }
 );
@@ -456,7 +457,9 @@ gulp.task(
 /**
  * watches for changed files and reruns the build task.
  */
-gulp.task('addon:watch', function () {
+gulp.task('addon:watch', () => {
+  "use strict";
+
   return gulp.watch([
     './src/**/*.js',
     './src/**/*.jsm',
@@ -473,14 +476,20 @@ gulp.task('addon:watch', function () {
 // clashes with mozilla's naming semantic.
 
 gulp.task('bump-major', async () => {
+  "use strict";
+
   bumpVersion("major");
 });
 
 gulp.task('bump-minor', async () => {
+  "use strict";
+
   bumpVersion("minor");
 });
 
 gulp.task('bump-patch', async () => {
+  "use strict";
+
   bumpVersion("patch");
 });
 
@@ -495,6 +504,8 @@ gulp.task('bump-patch', async () => {
  * automagically updates the addon.
  */
 gulp.task('addon:deploy', async () => {
+  "use strict";
+
   const path = require('path');
   let { SieveThunderbirdImport } = require("./src/app/utils/SieveThunderbirdImport.js");
 
@@ -532,19 +543,16 @@ gulp.task('test:package-jquery', function () {
   ], { base: BASE_DIR_JQUERY }).pipe(gulp.dest(BUILD_DIR_TEST + "/common/jQuery/"));
 });
 
-gulp.task(
-  'test:package-common',
-  function () {
-    const BASE_PATH = "./src/common";
+gulp.task('test:package-common', () => {
+  "use strict";
 
-    return gulp.src([
-      BASE_PATH + "/**",
+  return gulp.src([
+    BASE_DIR_COMMON + "/**",
 
-      // Filter out the rfc documents
-      "!" + BASE_PATH + "/libSieve/**/rfc*.txt"
-    ]).pipe(gulp.dest(BUILD_DIR_TEST + '/common/'));
-  }
-);
+    // Filter out the rfc documents
+    "!" + BASE_DIR_COMMON + "/libSieve/**/rfc*.txt"
+  ]).pipe(gulp.dest(BUILD_DIR_TEST + '/common/'));
+});
 
 gulp.task(
   'test:package-test-suite',
@@ -557,19 +565,16 @@ gulp.task(
   }
 );
 
-gulp.task(
-  'test:package-addon-src',
-  function () {
-    const BASE_PATH = "./src/addon/chrome/chromeFiles/content";
+gulp.task('test:package-addon-src', () => {
+  const BASE_PATH = "./src/addon/chrome/chromeFiles/content";
 
-    return gulp.src([
-      BASE_PATH + "/**",
+  return gulp.src([
+    BASE_PATH + "/**",
 
-      "!" + BASE_PATH + "/filterList",
-      "!" + BASE_PATH + "/filterList/**"
-    ]).pipe(gulp.dest(BUILD_DIR_TEST + "/addon/"));
-  }
-);
+    "!" + BASE_PATH + "/filterList",
+    "!" + BASE_PATH + "/filterList/**"
+  ]).pipe(gulp.dest(BUILD_DIR_TEST + "/addon/"));
+});
 
 gulp.task(
   'test:package',

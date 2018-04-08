@@ -37,10 +37,13 @@
    * Creates a new menu item
    *
    * @param {String} action
+   *   the items unique type
    * @param {String} flavour
+   *   the drop flavour
    * @param {*} docShell
+   *   the sieve documents shell
    *
-   * @returns {*}
+   * @returns {jQuery}
    *   the newly created sieve element
    */
   function createMenuItem(action, flavour, docShell) {
@@ -300,7 +303,9 @@
    * @param {String} msg
    *   the error message
    * @param {String} url
+   *   the file which caused the error
    * @param {String} [line]
+   *   the line which caused the error
    * @returns {void}
    */
   function errorhandler(msg, url, line) {

@@ -115,7 +115,7 @@
       this._domElm = null;
 
       item.replaceWith(this.html());
-    };
+    }
 
     toScript() {
       if (this._elm.document)
@@ -371,6 +371,10 @@
       return parent;
     }
 
+    /**
+     * @returns {string}
+     *   an url which points to an html fragment and contains the template.
+     */
     getTemplate() {
       throw new Error("Implement getTemplate()");
     }

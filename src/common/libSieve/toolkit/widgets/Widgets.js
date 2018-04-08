@@ -36,6 +36,34 @@
     }
 
     /**
+     * Checks if the strings contained in the list are unique.
+     *
+     * @returns {boolean}
+     *   true in case all strings are unique otherwise flase
+     */
+    isUnique() {
+      return (new Set(this.values()).size !== this.values().length);
+    }
+
+    /**
+     * Checks if the list contains only empty elements.
+     *
+     * @returns {boolean}
+     *   true in case the list contains a only empty element.
+     */
+    isEmpty() {
+
+      for (let item of this.values()) {
+        if (item.trim() !== "")
+          continue;
+
+        return false;
+      }
+
+      return true;
+    }
+
+    /**
      * Adds a textbox with the give value to the UI
      *
      * @param {String} [value]

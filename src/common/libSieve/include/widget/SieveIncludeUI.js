@@ -41,8 +41,12 @@
    */
   class SieveGlobalActionUI extends SieveActionDialogBoxUI {
 
-    variables(values) {
-      return this.getSieve().getElement("variables").values(values);
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's variables field
+     */
+    variables() {
+      return this.getSieve().getElement("variables");
     }
 
     /**
@@ -56,18 +60,19 @@
      * @inheritDoc
      */
     onSave() {
-      let values = (new SieveStringListWidget("#sivIncludeGlobalList")).values();
+      let variables = (new SieveStringListWidget("#sivIncludeGlobalList"));
 
-      // FIXME: variable names have to be unique
-      for (let item of values) {
-        if (item.trim() !== "")
-          continue;
-
-        window.alert("Source list is empty");
+      if (!variables.isUnique()) {
+        alert("Variable list items have to be unique");
         return false;
       }
 
-      this.variables(values);
+      if (variables.isEmpty()) {
+        alert("Variable list has to be non empty");
+        return false;
+      }
+
+      variables.save(this.variables());
       return true;
     }
 

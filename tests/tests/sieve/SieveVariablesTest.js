@@ -293,14 +293,14 @@
     suite.log("Validate set action constructors");
 
     let snipplet = 'set "variable" "";\r\n';
-    suite.expectValidSnipplet("action/set", snipplet /* ,{ "variables": true } */);
+    suite.expectValidSnipplet("action/set", snipplet, { "variables": true });
   });
 
   suite.add(function () {
     suite.log("Validate string test constructors");
 
     let snipplet = 'string "${somevariable}" "some value"';
-    suite.expectValidSnipplet("test/string", snipplet/* ,{ "variables": true } */);
+    suite.expectValidSnipplet("test/string", snipplet, { "variables": true });
   });
 
 })();

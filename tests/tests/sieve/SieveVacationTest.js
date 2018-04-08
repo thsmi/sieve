@@ -350,7 +350,7 @@
     suite.log("Validate vacation action's constructor");
 
     let snipplet = 'vacation "";\r\n';
-    suite.expectValidSnipplet("action/vacation", snipplet /* ,{ "variables": true } */);
+    suite.expectValidSnipplet("action/vacation", snipplet, { "vacation": true } );
   });
 
 

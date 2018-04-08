@@ -16,8 +16,6 @@
 (function (exports) {
   "use strict";
 
-  /* global SieveLexer */
-
   // TODO: Should be renamed to SieveAbstractWidget
   /**
    * @constructor
@@ -35,6 +33,10 @@
     this._parent = null;
     this._docshell = docshell;
   }
+
+  SieveAbstractElement.prototype.createByName = function (name, parser) {
+    return this._docshell.createByName(name, parser, this);
+  };
 
   // A shorthand to create children bound to this Element...
   SieveAbstractElement.prototype._createByName = function (name, parser) {
@@ -54,8 +56,11 @@
   };
 
   /**
-   * Calling static methods is a bit akward in javascript, so we make..
-   * ...it simpler by using this helper
+   * Returns the current element's unique nodename.
+   * It is just a helper which calls the static methods
+   *
+   * @returns {string}
+   *   the nodename
    */
   SieveAbstractElement.prototype.nodeName = function () {
     return Object.getPrototypeOf(this).constructor.nodeName();
@@ -75,7 +80,7 @@
    */
   SieveAbstractElement.prototype.init
     = function (data) {
-      throw new Error("Implement me to parse" + data);
+      throw new Error("Implement SieveAbstractElement::init" + data);
     };
 
   SieveAbstractElement.prototype.toScript
@@ -304,6 +309,9 @@
       return true;
     };
 
+  /**
+   * @inheritDoc
+   */
   SieveAbstractBlock.prototype.require
     = function (imports) {
       for (let i = 0; i < this.elms.length; i++)

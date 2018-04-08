@@ -23,8 +23,13 @@
   <script type="application/javascript" src="toolkit/SieveLexer.js"></script>
   <script type="application/javascript" src="toolkit/SieveDesigner.js"></script>
 
+  <!-- logic related Imports -->
   <script type="application/javascript" src="toolkit/SieveScriptDOM.js"></script>
-  <script type="application/javascript" src="toolkit/logic/Elements.js"></script>
+  <script type="application/javascript" src="toolkit/logic/AbstractElements.js"></script>
+  <script type="application/javascript" src="toolkit/logic/GenericAtoms.js"></script>
+  <script type="application/javascript" src="toolkit/logic/GenericElements.js"></script>
+
+
   <script type="application/javascript" src="toolkit/widgets/Boxes.js"></script>
   <script type="application/javascript" src="toolkit/widgets/Widgets.js"></script>
 
@@ -33,8 +38,6 @@
   <script type="application/javascript" src="toolkit/events/DragHandler.js"></script>
 
 
-  <!-- logic related Imports -->
-  <script type="application/javascript" src="toolkit/logic/GenericElement.js"></script>
   <!-- RFC 5228 - Sieve -->
   <script type="application/javascript" src="RFC5228/logic/SieveWhiteSpaces.js"></script>
   <script type="application/javascript" src="RFC5228/logic/SieveStrings.js"></script>
@@ -113,7 +116,7 @@
   <script type="application/javascript" src="relational/logic/SieveRelational.js"></script>
   <script type="application/javascript" src="relational/widgets/SieveRelationalUI.js"></script>
 
-<style>
+  <style>
     .sivMenuItem {
       font-size: 0.7em;
     }
@@ -139,70 +142,63 @@
       </div>
     </div>
 
-<!-- Modal dialog -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
+    <!-- Modal dialog -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
 
-<div id="sivDialog2" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-        <div class="modal-header card-header d-flex justify-content-between py-0">
+    <div id="sivDialog2" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header card-header d-flex justify-content-between py-0">
             <ul id="sivDialogTabs" class="nav nav-tabs card-header-tabs my-0 pt-3" role="tablist">
-                <li class="nav-item">
-                  <a class="nav-link active" data-toggle="tab" href="#sieve-widget-editor" role="tab">Basic</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" data-toggle="tab" href="#sieve-plaintext-editor" role="tab">Advanced</a>
-                </li>
-                <li class="nav-item">
-                  <a id="sieve-tab-settings" class="nav-link" data-toggle="tab" href="#sieve-content-settings" role="tab">Help</a>
-                </li>
-              </ul>
-              <div class="align-self-center">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-              </div>
+            </ul>
+            <div class="align-self-center">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
           </div>
           <div class="modal-body">
-              <div id="sivDialogBody">
-              </div>
+            <div id="sivDialogBody">
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             <button id="sivDialogSave" type="button" class="btn btn-primary">Apply</button>
           </div>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
 
     <div class="btn-group">
-        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          ... is ...
-        </button>
-        <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">
-                <h5>... is ...</h5>
-              <small>Only "frobnitzm" is "frobnitzm"</small>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">
-                <h5>... contains ...</h5>
-                <small>"frobnitzm" contains "frob" and "nit", but not "fbm"</small>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">
-                <h5>... matches ...</h5>
-                <small>"*" matches zero or more characters and "?" matches a single character<br/>
-                "frobnitzm" matches "frob*zm" or "frobnit?m" but not frob?m</small>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">
-                <h5>... regex matches ...</h5>
-                <small>Matches and compares using on a regular expression as defined in IEEE.1003-2.1992</small>
-            </a>
-        </div>
+      <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false">
+        ... is ...
+      </button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="#">
+          <h5>... is ...</h5>
+          <small>Only "frobnitzm" is "frobnitzm"</small>
+        </a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">
+          <h5>... contains ...</h5>
+          <small>"frobnitzm" contains "frob" and "nit", but not "fbm"</small>
+        </a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">
+          <h5>... matches ...</h5>
+          <small>"*" matches zero or more characters and "?" matches a single character
+            <br/> "frobnitzm" matches "frob*zm" or "frobnit?m" but not frob?m</small>
+        </a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">
+          <h5>... regex matches ...</h5>
+          <small>Matches and compares using on a regular expression as defined in IEEE.1003-2.1992</small>
+        </a>
       </div>
+    </div>
 
 
     <!--<div id="debug2" style="display:none">-->
@@ -319,7 +315,7 @@
       </div>
 
       <div>
-        <button  type="button" class="btn btn-sm btn-outline-secondary" id="DebugToggle">
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="DebugToggle">
           Show/Hide
         </button>
       </div>

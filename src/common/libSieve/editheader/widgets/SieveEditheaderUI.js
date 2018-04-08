@@ -28,6 +28,14 @@
    */
   class SieveAddHeaderUI extends SieveActionDialogBoxUI {
 
+    /**
+     * Gets and sets the header name
+     * @param {String} [value]
+     *   the new headername. If omitted the header will not changed
+     *
+     * @returns {String}
+     *   the header name as string
+     */
     name(value) {
       return this.getSieve().getElement("name").value(value);
     }
@@ -104,10 +112,18 @@
    */
   class SieveDeleteHeaderUI extends SieveActionDialogBoxUI {
 
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's match type
+     */
     matchtype() {
       return this.getSieve().getElement("match-type");
     }
 
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's comparator type
+     */
     comparator() {
       return this.getSieve().getElement("comparator");
     }

@@ -18,7 +18,6 @@
 
   /* global $: false */
   /* global SieveDesigner */
-  /* global SieveActionDialogBoxUI */
 
   /* global SieveStringListWidget */
 

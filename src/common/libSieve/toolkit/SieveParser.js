@@ -20,36 +20,67 @@
   const QUOTE_LENGTH = 50;
   const NO_SUCH_TOKEN = -1;
 
-  function SieveParser(data) {
-    this._data = data;
-    this._pos = 0;
-  }
+  const IDX_BEGIN = 0;
+  const ONE_CHARACTER = 1;
+  /**
+   * A linear string parser used to tokeizes and extract a string into atoms.
+   */
+  class SieveParser {
 
-  SieveParser.prototype.isChar
-    = function (ch, offset) {
-      if (typeof (offset) === "undefined")
-        offset = 0;
+    /**
+     * Initalizes the instance.
+     *
+     * @param {String} data
+     *   the data which shall be parsed
+     */
+    constructor(data) {
+      this._data = data;
+      this._pos = IDX_BEGIN;
+    }
+
+    /**
+     * Checks it the character at the given position matches the given whitelist.
+     *
+     * @param {char | char[]} ch
+     *   a character or an array or characters which should matches the current position.
+     * @param {int} [offset]
+     *   an optional offset. Relative to the current position.
+     *   if omitted no offset is used.
+     * @returns {boolean}
+     *   true in case the current character matches otherwise false
+     */
+    isChar(ch, offset) {
+      if (typeof (offset) === "undefined" || offset === null)
+        offset = IDX_BEGIN;
 
       if (!Array.isArray(ch))
         return (this._data.charAt(this._pos + offset) === ch);
 
       ch = [].concat(ch);
 
-      for (let i = 0; i < ch.length; i++)
-        if (this._data.charAt(this._pos + offset) === ch[i])
+      for (let item of ch)
+        if (this._data.charAt(this._pos + offset) === item)
           return true;
 
       return false;
-    };
+    }
 
-  SieveParser.prototype.extractToken
-    = function (delimiter) {
-      let offset = 0;
+    /**
+     * Extracts a token terminated by and of the given delimiters.
+     * In case the delimiter is not found an exception is thrown.
+     *
+     * @param {char |char []} delimiter
+     *   the delimiters which terminate the token.
+     * @returns {string}
+     *   the token as string.
+     */
+    extractToken(delimiter) {
+      let offset = IDX_BEGIN;
 
       while (this.isChar(delimiter, offset))
         offset++;
 
-      if (offset === 0)
+      if (offset === IDX_BEGIN)
         throw new Error("Delimiter >>" + delimiter + "<< expected but found\n" + this.bytes(QUOTE_LENGTH) + "...");
 
       let str = this._data.substr(this._pos, offset);
@@ -57,42 +88,58 @@
       this._pos += str.length;
 
       return str;
-    };
+    }
 
-  SieveParser.prototype.extractChar
-    = function (ch) {
-      if (typeof (ch) !== "undefined")
+    /**
+     * Extracts a single character
+     *
+     * @param {char|char[]} [ch]
+     *   the extracted character has to be one of the given characters
+     *   otherwise an exception is thrown.
+     *   If omittes any character will match.
+     *
+     * @return {char}
+     *   the extracted character.
+     */
+    extractChar(ch) {
+      if (typeof (ch) !== "undefined" && ch !== null)
         if (!this.isChar(ch))
           throw new Error("" + ch + " expected but found:\n" + this.bytes(QUOTE_LENGTH) + "...");
 
       this._pos++;
-      return this._data.charAt(this._pos - 1);
-    };
+      return this._data.charAt(this._pos - ONE_CHARACTER);
+    }
 
-  // TODO better naming
-  // Skip tries to skip Char, if possible returns true if not false
-  SieveParser.prototype.skipChar
-    = function (ch) {
-      if (typeof (ch) !== "undefined")
+    /**
+     * Skips a single character.
+     *
+     * @param {char|char[]} [ch]
+     *   The chars which are expected.
+     *   If omitted any char will match.
+     *
+     * @returns {boolean}
+     *   true in case the char was skipped otherwise false.
+     */
+    skipChar(ch) {
+      if (typeof (ch) !== "undefined" || ch !== null)
         if (!this.isChar(ch))
           return false;
 
       this._pos++;
       return true;
-    };
+    }
 
-  /**
-   *  Checks if the current puffer starts with the given token(s)
-   *
-   *  @param {String|String[]} tokens
-   *    the tokens which should be checked
-   *
-   *  @return {boolean}
-   *    true in case the string starts with one of the tokens
-   *    otherwise false
-   */
-  SieveParser.prototype.startsWith
-    = function (tokens) {
+    /**
+     *  Checks if the current puffer starts with the given token(s)
+     *
+     *  @param {String|String[]} tokens
+     *    the tokens which should be checked
+     *
+     *  @return {boolean}
+     *    true in case the string starts with one of the tokens
+     *    otherwise false
+     */
+    startsWith(tokens) {
 
       if (!Array.isArray(tokens))
         tokens = [tokens];
@@ -105,28 +152,26 @@
       }
 
       return false;
-    };
+    }
 
-  // TODO rename to skip
-  /**
-   * Extracts and/or skips the given number of bytes.
-   *
-   * You can either pass an integer with the absolute number of bytes or a string.
-   *
-   * In case you pass a string, the string length will be skipped. But only in case
-   * it matches case insensitive. Othewise an exception is thrown.
-   *
-   * In case the length parameter is neiter a string nor a parameter and exception is thrown.
-   *
-   * @param {int|string} length
-   *   Can be an integer which defines an absolute number of bytes which should be skipped.
-   *   Or a string, which will be matched case sensitive and extracted.
-   *
-   * @return {String}
-   *   a self reference
-   */
-  SieveParser.prototype.extract
-    = function (length) {
+    /**
+     * Extracts and/or skips the given number of bytes.
+     *
+     * You can either pass an integer with the absolute number of bytes or a string.
+     *
+     * In case you pass a string, the string length will be skipped. But only in case
+     * it matches case insensitive. Othewise an exception is thrown.
+     *
+     * In case the length parameter is neiter a string nor a parameter and exception is thrown.
+     *
+     * @param {int|string} length
+     *   Can be an integer which defines an absolute number of bytes which should be skipped.
+     *   Or a string, which will be matched case sensitive and extracted.
+     *
+     * @return {String}
+     *   the extracted string
+     */
+    extract(length) {
       let result = null;
 
       if (typeof (length) === "string") {
@@ -148,11 +193,22 @@
       this._pos += length;
 
       return result;
-    };
+    }
 
-  // Delimiter
-  SieveParser.prototype.extractUntil
-    = function (token) {
+    /**
+     * Searches for the given token.
+     * If found all data before the token is returend and
+     * the buffer is advanced to the end of the token.
+     *
+     * In case the token is not found in the buffer an
+     * exception will be thrown
+     *
+     * @param {String} token
+     *   the token which is used as delimiter
+     * @returns {String}
+     *   the data between the token an the delimter
+     */
+    extractUntil(token) {
       let idx = this._data.indexOf(token, this._pos);
 
       if (idx === NO_SUCH_TOKEN)
@@ -163,66 +219,104 @@
       this._pos += str.length + token.length;
 
       return str;
-    };
+    }
 
-  SieveParser.prototype.isNumber
-    = function (offset) {
+    /**
+     * Checks if the current character is numeric.
+     *
+     * @param {int} [offset]
+     *   defaults to zero if omitted
+     *
+     * @returns {boolean}
+     *   true in case the current character is numeric otherwise false.
+     */
+    isNumber(offset) {
       if (typeof (offset) !== "number")
-        offset = 0;
+        offset = IDX_BEGIN;
 
       if (this._pos + offset > this._data.length)
         throw new Error("Parser out of bounds");
 
       return !isNaN(parseInt(this._data.charAt(this._pos + offset), 10));
-    };
+    }
 
-  SieveParser.prototype.extractNumber
-    = function () {
-      let i = 0;
-      while (this.isNumber(i))
-        i++;
+    /**
+     * Extracts an integer value starting from the current postion.
+     *
+     * @returns {int}
+     *  the extracted number.
+     */
+    extractNumber() {
+      let offset = IDX_BEGIN;
+      while (this.isNumber(offset))
+        offset++;
 
-      let number = this._data.substr(this._pos, i);
+      if (offset === IDX_BEGIN)
+        throw new Error("Number expected but found:\n" + this.bytes(QUOTE_LENGTH) + "...");
 
-      this._pos += i;
+      let number = this._data.substr(this._pos, offset);
+
+      this._pos += offset;
 
       return number;
-    };
+    }
 
-  SieveParser.prototype.bytes
-    = function (length) {
+    /**
+     * Returns the remainig buffer.
+     * @param {int} [length]
+     *   optional returns at lost length bytes.
+     *   if omitted the complete buffer is returned
+     * @returns {void}
+     */
+    bytes(length) {
       return this._data.substr(this._pos, length);
-    };
+    }
 
-
-  SieveParser.prototype.empty
-    = function () {
+    /**
+     * Checks if the internal string buffer is depleted.
+     * Which means it reached the end of the string.
+     *
+     * @returns {boolean}
+     *   true in case the buffer is empty. Otherwise false.
+     */
+    empty() {
       return (this._pos >= this._data.length);
-    };
+    }
 
-  SieveParser.prototype.rewind
-    = function (offset) {
+    /**
+     * Rewindes the internal buffer by the given number of bytes
+     * @param {int} offset
+     *   the number of bytes to rewind.
+     * @return {void}
+     */
+    rewind(offset) {
       this._pos -= offset;
-    };
 
-  /**
-   * Gets or sets te current position.
-   *
-   * @param {int} position
-   *   the new position which should be set. You can't exceed the buffer length.
-   * @return {int}
-   *   the current position.
-   */
-  SieveParser.prototype.pos
-    = function (position) {
+      if (this._pos < IDX_BEGIN)
+        this._pos = IDX_BEGIN;
+    }
+
+    /**
+     * Gets or sets te current position.
+     *
+     * @param {int} position
+     *   the new position which should be set. You can't exceed the buffer length.
+     * @return {int}
+     *   the current position.
+     */
+    pos(position) {
       if (typeof (position) === "number")
         this._pos = position;
 
       if (this._pos > this._data.length)
         this._pos = this._data.length;
 
+      if (this._pos < IDX_BEGIN)
+        this._pos = IDX_BEGIN;
+
       return this._pos;
-    };
+    }
+  }
 
   exports.SieveParser = SieveParser;
 

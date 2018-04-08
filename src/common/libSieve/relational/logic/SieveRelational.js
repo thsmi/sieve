@@ -15,18 +15,13 @@
 
 (function () {
 
-
   "use strict";
   /* global SieveGrammar */
 
   if (!SieveGrammar)
     throw new Error("Could not register Relational");
 
-  /* global SieveAbstractElement */
-  /* global SieveLexer */
-
-  /*   MATCH-TYPE =/ COUNT / VALUE
-
+  /*
     relational-match = DQUOTE
             ("gt" / "ge" / "lt" / "le" / "eq" / "ne") DQUOTE
             ; "gt" means "greater than", the C operator ">".
@@ -37,66 +32,62 @@
             ; "ne" means "not equal to", the C operator "!=".
    */
 
-  function SieveRelationalMatch(docshell, id) {
+  SieveGrammar.addTag({
+    node: "relational-match/gt",
+    type: "relational-match/",
 
-    SieveAbstractElement.call(this, docshell, id);
-    this.operator = '"eq"';
-  }
+    token: '"gt"'
+  });
 
-  SieveRelationalMatch.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveRelationalMatch.prototype.constructor = SieveRelationalMatch;
+  SieveGrammar.addTag({
+    node: "relational-match/ge",
+    type: "relational-match/",
 
-  SieveRelationalMatch.isElement
-    = function (parser) {
-      return parser.startsWith(['"gt"', '"ge"', '"lt"', '"le"', '"eq"', '"ne"']);
-    };
+    token: '"ge"'
+  });
 
-  SieveRelationalMatch.nodeName = function () {
-    return "relational-match";
-  };
+  SieveGrammar.addTag({
+    node: "relational-match/lt",
+    type: "relational-match/",
 
-  SieveRelationalMatch.nodeType = function () {
-    return "relational-match";
-  };
+    token: '"lt"'
+  });
 
-  SieveRelationalMatch.prototype.require
-    = function (imports) {
-      imports["relational"] = true;
-    };
+  SieveGrammar.addTag({
+    node: "relational-match/le",
+    type: "relational-match/",
 
-  SieveRelationalMatch.prototype.init
-    = function (parser) {
+    token: '"le"'
+  });
 
-      if (!parser.startsWith(['"gt"', '"ge"', '"lt"', '"le"', '"eq"', '"ne"']))
-        throw new Error("Relational operator expected");
+  SieveGrammar.addTag({
+    node: "relational-match/eq",
+    type: "relational-match/",
 
-      this.operator = parser.bytes(4);
+    token: '"eq"'
+  });
 
-      parser.extract(4);
+  SieveGrammar.addTag({
+    node: "relational-match/ne",
+    type: "relational-match/",
 
-      return this;
-    };
+    token: '"ne"'
+  });
 
-  SieveRelationalMatch.prototype.toScript
-    = function () {
-      return "" + this.operator;
-    };
+  SieveGrammar.addGroup({
+    node: "relational-match",
+    type: "relational-match",
+    value: '"eq"',
 
-  if (!SieveLexer)
-    throw new Error("Could not register Relational Elements");
-
-  SieveLexer.register(SieveRelationalMatch);
-
-
-  // /////////////////
-
-  /* VALUE = ":value" relational-match */
+    items: ["relational-match/"]
+  });
 
   /**
    * The value match type does a relational comparison between strings
+   *
+   *  VALUE = ":value" relational-match
    */
-
-  let value = {
+  SieveGrammar.addTag({
     node: "match-type/value",
     type: "match-type/",
 
@@ -114,10 +105,7 @@
         value: '"eq"'
       }]
     }]
-
-  };
-
-  SieveGrammar.addTag(value);
+  });
 
   /**
    * The count match type determins the number of the specified entities in the
@@ -125,8 +113,7 @@
    *
    * Count should only be used with a numeric comparator.
    */
-
-  let count = {
+  SieveGrammar.addTag({
     node: "match-type/count",
     type: "match-type/",
 
@@ -144,8 +131,6 @@
         value: '"eq"'
       }]
     }]
-  };
-
-  SieveGrammar.addTag(count);
+  });
 
 })(window);

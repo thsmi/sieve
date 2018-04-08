@@ -62,8 +62,7 @@
       + '   fileinto "Only me";\r\n'
       + '}\r\n';
 
-    // FIXME:  require comparator...
-    // suite.expectValidScript(script, { "relational": true, "fileinto": true, "comparator-i;ascii-numeric": true });
+    suite.expectValidScript(script, { "relational": true, "fileinto": true, "comparator-i;ascii-numeric": true });
   });
 
   suite.add(function () {
@@ -79,7 +78,38 @@
       + '   keep;\r\n'
       + '}\r\n';
 
-    suite.expectInvalidScript(script, "Error: Relational operator expected", { "relational": true });
+    suite.expectInvalidScript(script, "Error: Unknown or incompatible type", { "relational": true });
+  });
+
+  suite.add(function () {
+
+    suite.log("Missing operator");
+
+    let script =
+      'require ["relational"];\r\n'
+      + '\r\n'
+      + 'if address :all :comparator "i;ascii-casemap" :value \r\n'
+      + '           ["from"] ["M"]\r\n'
+      + '{\r\n'
+      + '   keep;\r\n'
+      + '}\r\n';
+
+    suite.expectInvalidScript(script, "Error: Unknown or incompatible type", { "relational": true });
+  });
+
+
+  suite.add(function () {
+    suite.log("Validate :value constructors");
+
+    let snipplet = ':value "eq"';
+    suite.expectValidSnipplet("match-type/value", snipplet, { "relational": true });
+  });
+
+  suite.add(function () {
+    suite.log("Validate :count constructors");
+
+    let snipplet = ':count "eq"';
+    suite.expectValidSnipplet("match-type/count", snipplet, { "relational": true });
   });
 
   /*

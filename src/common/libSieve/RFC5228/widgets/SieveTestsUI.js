@@ -41,10 +41,11 @@
       let sieve = this.getSieve();
 
       sieve
-        .isOver($("input[type='radio'][name='over']:checked").val() === "true")
-        .getSize()
-        .value($("#sivSizeTestValue").val())
-        .unit($("#sivSizeTestUnit").val());
+        .isOver($("input[type='radio'][name='over']:checked").val() === "true");
+
+      sieve.getSize()
+        .setValue($("#sivSizeTestValue").val())
+        .setUnit($("#sivSizeTestUnit").val());
 
       return true;
     }
@@ -63,8 +64,8 @@
 
       $('input:radio[name="over"][value="' + this.getSieve().isOver() + '"]').prop('checked', true);
 
-      $("#sivSizeTestValue").val("" + this.getSieve().getSize().value());
-      $("#sivSizeTestUnit").val("" + this.getSieve().getSize().unit());
+      $("#sivSizeTestValue").val("" + this.getSieve().getSize().getValue());
+      $("#sivSizeTestUnit").val("" + this.getSieve().getSize().getUnit());
     }
 
     /**

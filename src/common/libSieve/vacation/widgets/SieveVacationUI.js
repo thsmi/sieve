@@ -159,7 +159,7 @@
         $("#sivVacationSubject").val(this.subject().value());
 
       if (this.enable("days"))
-        $("#sivVacationDays").val(this.days().value());
+        $("#sivVacationDays").val(this.days().getValue());
 
       if (this.enable("from"))
         $("#sivVacationFrom").val(this.from().value());
@@ -208,8 +208,9 @@
         if (state["subject"])
           this.subject().value($("#sivVacationSubject").val());
 
+        // FIXME: we currently ignore unit...
         if (state["days"])
-          this.days().value($("#sivVacationDays").val());
+          this.days().setValue($("#sivVacationDays").val());
 
         if (state["from"])
           this.from().value($("#sivVacationFrom").val());

@@ -19,43 +19,76 @@
   /* global SieveLexer */
   /* global SieveAbstractElement */
 
-  function SieveNumber(docshell, id) {
-    SieveAbstractElement.call(this, docshell, id);
+  /**
+   * Implements a sieve numeric atom as defined in the rfc.
+   *
+   * A numeric value is an integer plus an optional unit
+   * The unit may any of the following postfixes:
+   * K for kilo, M for Mega and G for Giga
+   */
+  class SieveNumber extends SieveAbstractElement {
 
-    this._number = "1";
-    this._unit = "";
-  }
+    /**
+     * @inheritDoc
+     */
+    constructor(docshell, id) {
+      super(docshell, id);
+      this._number = "1";
+      this._unit = "";
+    }
 
-  SieveNumber.isElement
-    = function (parser, lexer) {
+    /**
+     * @inheritDoc
+     */
+    static isElement(parser) {
       return parser.isNumber(parser);
-    };
+    }
 
-  SieveNumber.nodeName = function () {
-    return "number";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "number";
+    }
 
-  SieveNumber.nodeType = function () {
-    return "number/";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeType() {
+      return "number/";
+    }
 
-  SieveNumber.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveNumber.prototype.constructor = SieveNumber;
-
-  SieveNumber.prototype.init
-    = function (parser) {
+    /**
+     * @inheritDoc
+     */
+    init(parser) {
       this._number = parser.extractNumber();
 
       if (parser.isChar(['K', 'k', 'M', 'm', 'G', 'g']))
         this._unit = parser.extractChar();
 
       return this;
-    };
+    }
 
-  SieveNumber.prototype.value
-    = function (number) {
-      if (typeof (number) === "undefined")
-        return this._number;
+    /**
+     * Get or sets the number's value.
+     * @returns {Integer}
+     *   the current numeric value.
+     **/
+    getValue() {
+      return this._number;
+    }
+
+    /**
+     * Get or sets the number's value.
+     * @param {String|Integer} number
+     *   the number which should be set.
+     * @returns {SieveNumber}
+     *   a self refernece.
+     */
+    setValue(number) {
+      if (typeof (number) === "undefined" || number === null)
+        throw new Error("Invalid Number");
 
       number = parseInt(number, 10);
 
@@ -64,24 +97,45 @@
 
       this._number = number;
       return this;
-    };
+    }
 
-  SieveNumber.prototype.unit
-    = function (unit) {
-      if (unit === null || typeof (unit) === "undefined")
-        return this._unit.toUpperCase();
+    /**
+     * Gets or sets the number's unit.
+     *
+     * @returns {string}
+     *   the current unit
+     */
+    getUnit() {
+      return this._unit.toUpperCase();
+    }
+
+    /**
+     * Sets the number's unit.
+     * Valid units are an empty string, K for Kilo, M for Mega or G for Giga.
+     *
+     * @param {string} unit
+     *   the unit which shall be set. If omitted the unit remains unchanged.
+     * @returns {SieveNumber}
+     *   a self reference.
+     */
+    setUnit(unit) {
+      if (typeof (unit) === "undefined" || unit === null)
+        throw new Error("No unit specified");
 
       if ((unit !== "") && (unit !== "K") && (unit !== "M") && (unit !== "G"))
         throw new Error("Invalid unit must be either K, M or G");
 
       this._unit = unit;
       return this;
-    };
+    }
 
-  SieveNumber.prototype.toScript
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    toScript() {
       return "" + this._number + "" + this._unit;
-    };
+    }
+  }
 
   if (!SieveLexer)
     throw new Error("Could not register Atoms");

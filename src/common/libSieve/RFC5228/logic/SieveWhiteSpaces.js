@@ -19,6 +19,7 @@
 
   /* global SieveLexer */
   /* global SieveAbstractElement */
+  /* global SieveParser */
 
   // TODO HashComment seperated by linebreaks are equivalent to bracket Comments...
 
@@ -218,7 +219,7 @@
    * it finds the first non whitespace. This means this method extracts
    * zero or more whitespace characters
    *
-   * @param {SieveParser} parser
+   * @param {SieveParser|String} parser
    *  the parser element which contains the data
    * @param {boolean} crlf
    *   if true the parser will stop after the first linebreak (\r\n) (this means the linebreak will be extracted)
@@ -229,6 +230,10 @@
 
   SieveWhiteSpace.prototype.init
     = function (parser, crlf) {
+
+      if (typeof (parser) === "string")
+        parser = new SieveParser(parser);
+
       let isCrlf = false;
       this.elements = [];
 

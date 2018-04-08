@@ -1,93 +1,118 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of 
- * the license at https://github.com/thsmi/sieve/ or request it via 
+ * The contents of this file are licenced. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
  * Do not remove or change this comment.
- * 
+ *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *      
+ *
  */
 
-( function () {
+(function () {
 
   "use strict";
 
   /* global net */
 
-  var suite = net.tschmid.yautt.test;
+  let suite = net.tschmid.yautt.test;
 
-  if ( !suite )
+  if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add( function () {
-    suite.log( "RFC5228 unit tests..." );
+  suite.add(function () {
+    suite.log("RFC5228 unit tests...");
   });
 
 
-  suite.add( function () {
-    suite.log( "Single line comment" );
+  suite.add(function () {
+    suite.log("Single line comment");
 
-    var script = ""
+    let script = ""
       + 'if size :over 100k { # this is a comment\r\n'
       + '    discard;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript( script );
+    suite.expectValidScript(script);
   });
 
 
-  suite.add( function () {
-    suite.log( "Multiline comment" );
+  suite.add(function () {
+    suite.log("Multiline comment");
 
-    var script = ""
+    let script = ""
       + 'if size :over 100K { /* this is a comment\r\n'
       + '    this is still a comment */ discard /* this is a comment\r\n'
       + '     */ ;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript( script );
+    suite.expectValidScript(script);
   });
 
 
-  suite.add( function () {
-    suite.log( "Example 1" );
+  suite.add(function () {
+    suite.log("Example 1");
 
-    var script = ""
+    let script = ""
       + 'if anyof (not exists ["From", "Date"],\r\n'
       + '          header :contains "from" "fool@example.com") {\r\n'
       + '  discard;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript( script );
+    suite.expectValidScript(script);
   });
 
-  suite.add( function () {
-    suite.log( "Example 2" );
+  suite.add(function () {
+    suite.log("Example 2");
 
-    var script = ""
+    let script = ""
       + 'if header :comparator "i;octet" :contains "Subject"\r\n'
       + '             "MAKE MONEY FAST" {\r\n'
       + '          discard;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript( script );
+    suite.expectValidScript(script);
   });
 
-  suite.add( function () {
-    suite.log( "Example 3" );
+  suite.add(function () {
+    suite.log("Example 2a (with linebreaks in comparator)");
 
-    var script =
+    let script = ""
+      + 'if header :comparator \r\n"i;octet" :contains "Subject"\r\n'
+      + '             "MAKE MONEY FAST" {\r\n'
+      + '          discard;\r\n'
+      + '}\r\n';
+
+    suite.expectValidScript(script);
+  });
+
+  suite.add(function () {
+    suite.log("Example 2b (with linebreaks in comparator)");
+
+    let script = ""
+      + 'if header :comparator\r\n "i;octet" :contains "Subject"\r\n'
+      + '             "MAKE MONEY FAST" {\r\n'
+      + '          discard;\r\n'
+      + '}\r\n';
+
+    suite.expectValidScript(script);
+  });
+
+
+  suite.add(function () {
+    suite.log("Example 3");
+
+    let script =
       'if size :over 500K { discard; }';
 
-    suite.expectValidScript( script );
+    suite.expectValidScript(script);
   });
 
-  suite.add( function () {
-    suite.log( "Example 4" );
+  suite.add(function () {
+    suite.log("Example 4");
 
-    var script = ""
+    let script = ""
       + 'if header :contains ["From"] ["coyote"] {\r\n'
       + '   redirect "acm@example.com";\r\n'
       + '} elsif header :contains "Subject" "$$$" {\r\n'
@@ -96,13 +121,13 @@
       + '   redirect "field@example.com";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript( script );
+    suite.expectValidScript(script);
   });
 
-  suite.add( function () {
-    suite.log( "Example 5" );
+  suite.add(function () {
+    suite.log("Example 5");
 
-    var script = ""
+    let script = ""
       + 'require "fileinto";\r\n'
       + 'if header :contains "from" "coyote" {\r\n'
       + '   discard;\r\n'
@@ -112,100 +137,100 @@
       + '   fileinto "INBOX";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript( script, { "fileinto": true });
+    suite.expectValidScript(script, { "fileinto": true });
   });
 
-  suite.add( function () {
-    suite.log( "Example 6" );
+  suite.add(function () {
+    suite.log("Example 6");
 
-    var script = ""
+    let script = ""
       + 'require "fileinto";\r\n'
       + 'if header :contains ["from"] "coyote" {\r\n'
       + '   fileinto "INBOX.harassment";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript( script, { "fileinto": true });
+    suite.expectValidScript(script, { "fileinto": true });
   });
 
-  suite.add( function () {
-    suite.log( "Example 7" );
+  suite.add(function () {
+    suite.log("Example 7");
 
-    var script = ""
+    let script = ""
       + 'if size :under 1M { keep; } else { discard; }';
 
-    suite.expectValidScript( script );
+    suite.expectValidScript(script);
   });
 
-  suite.add( function () {
-    suite.log( "Example 8" );
+  suite.add(function () {
+    suite.log("Example 8");
 
-    var script = ""
+    let script = ""
       + 'if not size :under 1M { discard; }';
 
-    suite.expectValidScript( script );
+    suite.expectValidScript(script);
   });
 
-  suite.add( function () {
-    suite.log( "Example 9" );
+  suite.add(function () {
+    suite.log("Example 9");
 
-    var script = ""
+    let script = ""
       + 'if header :contains ["from"] ["idiot@example.com"] {\r\n'
       + '   discard;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript( script );
+    suite.expectValidScript(script);
   });
 
-  suite.add( function () {
-    suite.log( "Example 10" );
+  suite.add(function () {
+    suite.log("Example 10");
 
-    var script = ""
+    let script = ""
       + 'if address :all :is "from" "tim@example.com" {\r\n'
       + '   discard;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript( script );
+    suite.expectValidScript(script);
   });
 
-  suite.add( function () {
-    suite.log( "Example 11" );
+  suite.add(function () {
+    suite.log("Example 11");
 
-    var script = ""
+    let script = ""
       + 'require "envelope";\r\n'
       + 'if envelope :all :is "from" "tim@example.com" {\r\n'
       + '   discard;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript( script, { "envelope": true });
+    suite.expectValidScript(script, { "envelope": true });
   });
 
-  suite.add( function () {
-    suite.log( "Example 12" );
+  suite.add(function () {
+    suite.log("Example 12");
 
-    var script = ""
+    let script = ""
       + 'if not exists ["From","Date"] {\r\n'
       + '   discard;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript( script );
+    suite.expectValidScript(script);
   });
 
-  /*suite.add( function() {
+  /* suite.add( function() {
     suite.log("Example 12");
-    
+
     var script = ""
           + 'require "encoded-character";\r\n'
           + 'if header :contains "Subject" "$${hex:24 24}" {\r\n'
           + '   discard;\r\n'
           + '} \r\n';
-          
-    testScript(script, {"encoded-character":true});	
+
+    testScript(script, {"encoded-character":true});
   });*/
 
-  suite.add( function () {
-    suite.log( "Example Sieve Filter" );
+  suite.add(function () {
+    suite.log("Example Sieve Filter");
 
-    var script = ""
+    let script = ""
       + '#\r\n'
       + '# Example Sieve Filter\r\n'
       + '# Declare any optional features or extension used by the script\r\n'
@@ -246,9 +271,9 @@
       + '        fileinto "personal";\r\n'
       + '        }\r\n';
 
-    suite.expectValidScript( script, { "fileinto": true });
+    suite.expectValidScript(script, { "fileinto": true });
   });
 
 
-}() );
+})();
 

@@ -262,53 +262,6 @@
       return result;
     };
 
-  /* *****************************************************************************/
-
-  function SieveSemicolon(docshell, id) {
-    SieveAbstractElement.call(this, docshell, id);
-
-    this.whiteSpace = [];
-    this.whiteSpace[0] = this._createByName("whitespace");
-    this.whiteSpace[1] = this._createByName("whitespace", "\r\n");
-  }
-
-  SieveSemicolon.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveSemicolon.prototype.constructor = SieveSemicolon;
-
-  SieveSemicolon.isElement
-    = function (parser, lexer) {
-      return true;
-    };
-
-  SieveSemicolon.nodeName = function () {
-    return "atom/semicolon";
-  };
-
-  SieveSemicolon.nodeType = function () {
-    return "atom/";
-  };
-
-  SieveSemicolon.prototype.init
-    = function (parser) {
-      // Syntax :
-      // [whitespace] <";"> [whitespace]
-      if (this._probeByName("whitespace", parser))
-        this.whiteSpace[0].init(parser, true);
-
-      parser.extractChar(";");
-
-      this.whiteSpace[1].init(parser, true);
-
-      return this;
-    };
-
-  SieveSemicolon.prototype.toScript
-    = function () {
-      return this.whiteSpace[0].toScript() + ";" + this.whiteSpace[1].toScript();
-    };
-
-  /* *****************************************************************************/
-
   if (!SieveLexer)
     throw new Error("Could not register DeadCode Elements");
 
@@ -318,7 +271,5 @@
   SieveLexer.register(SieveHashComment);
 
   SieveLexer.register(SieveWhiteSpace);
-
-  SieveLexer.register(SieveSemicolon);
 
 })(window);

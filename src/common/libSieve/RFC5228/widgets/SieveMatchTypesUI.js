@@ -117,7 +117,6 @@
 
   }
 
-  // ************************************************************************************
 
   if (!SieveDesigner)
     throw new Error("Could not register String Widgets");

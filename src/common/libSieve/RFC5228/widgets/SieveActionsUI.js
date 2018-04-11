@@ -21,6 +21,8 @@
   /* global SieveDesigner */
   /* global SieveActionDialogBoxUI */
 
+  const DOM_ELEMENT = 0;
+
   /**
    * Provides a UI for the stop action
    */
@@ -95,7 +97,7 @@
 
       let address = $("#sivRedirectAddress");
 
-      if (address[0].checkValidity() === false) {
+      if (address.get(DOM_ELEMENT).checkValidity() === false) {
         address.addClass("is-invalid");
         return false;
       }

@@ -11,11 +11,13 @@
     <div id="template-content">
         <div class="tab-content m-2">
             <div class="tab-pane fade show active" id="sieve-widget-redirect" role="tabpanel">
-                <div class="form-group">
-                    <label>Forward email to:</label>
-                    <input id="sivRedirectAddress" type="email" class="form-control col-lg-8" placeholder="Enter email" />
-                    <div class="invalid-feedback">Invalid redirect address</div>
-                </div>
+                <form class="was-validated" novalidate>
+                    <div class="form-group">
+                        <label>Forward email to:</label>
+                        <input id="sivRedirectAddress" type="email" class="form-control col-lg-8" placeholder="Enter email" />
+                        <div class="invalid-feedback">Invalid redirect address</div>
+                    </div>
+                </form>
             </div>
             <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
                 <p>

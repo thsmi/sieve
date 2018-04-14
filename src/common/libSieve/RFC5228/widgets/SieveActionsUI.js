@@ -97,10 +97,8 @@
 
       let address = $("#sivRedirectAddress");
 
-      if (address.get(DOM_ELEMENT).checkValidity() === false) {
-        address.addClass("is-invalid");
+      if (address.get(DOM_ELEMENT).checkValidity() === false)
         return false;
-      }
 
       let value = address.val();
 

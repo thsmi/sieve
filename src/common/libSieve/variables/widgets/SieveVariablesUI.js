@@ -25,18 +25,27 @@
   /* global SieveComparatorWidget */
 
   const MAX_QUOTE_LEN = 240;
+  const DOM_ELEMENT = 0;
 
   /**
    * Provides a ui for the set action
    */
   class SieveSetActionUI extends SieveActionDialogBoxUI {
 
-    name(value) {
-      return this.getSieve().getElement("name").value(value);
+    /**
+     * @returns {SieveString}
+     *   the element's name
+     */
+    name() {
+      return this.getSieve().getElement("name");
     }
 
-    value(value) {
-      return this.getSieve().getElement("value").value(value);
+    /**
+     * @returns {SieveString}
+     *   the element's value
+     */
+    value() {
+      return this.getSieve().getElement("value");
     }
 
     /**
@@ -50,16 +59,14 @@
      * @inheritDoc
      */
     onSave() {
-      let item = null;
+      let item = $("#sivVariableName");
 
-      item = $("#sivVariableName").val();
-      if (!item.trim()) {
-        alert("Variable name can't be empty");
+      if (! item.get(DOM_ELEMENT).checkValidity()) {
         return false;
       }
 
-      this.name(item);
-      this.value($("#sivVariableValue").val());
+      this.name().value(item.val());
+      this.value().value($("#sivVariableValue").val());
 
       let status;
       let value = null;
@@ -131,8 +138,8 @@
       // if (item)
       //  $('input:radio[name="40"][value="'+ item.nodeName().substr(9)+'"]' ).prop('checked', true);
 
-      $("#sivVariableName").val(this.name());
-      $("#sivVariableValue").val(this.value());
+      $("#sivVariableName").val(this.name().value());
+      $("#sivVariableValue").val(this.value().value());
     }
 
     /**
@@ -156,7 +163,7 @@
   class SieveStringTestUI extends SieveTestDialogBoxUI {
 
     /**
-     * @returns {SieveAbstractElement}
+     * @returns {SieveStringList}
      *   the element's keys
      */
     keys() {
@@ -164,7 +171,7 @@
     }
 
     /**
-     * @returns {SieveAbstractElement}
+     * @returns {SieveStringList}
      *   the element's sources
      */
     sources() {

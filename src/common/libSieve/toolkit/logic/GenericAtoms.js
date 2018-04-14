@@ -853,7 +853,10 @@
 
       for (let item of this._elements) {
 
-        if (!item.enable)
+        if (!item.enable || !item.hasElement)
+          continue;
+
+        if (!item.hasElement(id))
           continue;
 
         return item.enable(id, status);

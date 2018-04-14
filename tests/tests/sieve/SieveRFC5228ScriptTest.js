@@ -274,6 +274,27 @@
     suite.expectValidScript(script, { "fileinto": true });
   });
 
+  suite.add(function () {
+    suite.log("true");
+
+    let script = ""
+      + 'if true {\r\n'
+      + '   discard;\r\n'
+      + '}\r\n';
+
+    suite.expectValidScript(script);
+  });
+
+  suite.add(function () {
+    suite.log("false");
+
+    let script = ""
+      + 'if false {\r\n'
+      + '   discard;\r\n'
+      + '}\r\n';
+
+    suite.expectValidScript(script);
+  });
 
 })();
 

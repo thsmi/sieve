@@ -22,9 +22,6 @@
   /* global SieveDropHandler */
   /* global SieveTrashBoxDropHandler */
 
-  // TODO Add button to show selection source...
-
-
   /**
    * An abstract base class to render sieve elements as html.
    */
@@ -161,11 +158,10 @@
   }
 
 
-  // FIXME: Rename this, it is definietly not editable
   /**
-   * Implements an abstract box fir elements wihtout a ui
+   * Implements an abstract box for elements wihtout a ui
    */
-  class SieveEditableBoxUI extends SieveAbstractBoxUI {
+  class SieveSimpleBoxUI extends SieveAbstractBoxUI {
 
     /**
      * @inheritDoc
@@ -185,7 +181,7 @@
   /**
    * An abstract UI widget used for simple actions which do not need an UI
    */
-  class SieveActionBoxUI extends SieveEditableBoxUI {
+  class SieveActionBoxUI extends SieveSimpleBoxUI {
 
     /**
      * @inheritDoc
@@ -312,10 +308,7 @@
 
         if (tabs) {
           let div = document.createElement("div");
-          if (div.unsafeSetInnerHTML)
-            div.unsafeSetInnerHTML(tabs.innerHTML);
-          else
-            div.innerHTML = tabs.innerHTML;
+          div.innerHTML = tabs.innerHTML;
 
           $("#sivDialogTabs").append(div.children);
         }
@@ -325,10 +318,7 @@
 
         if (content) {
           let div = document.createElement("div");
-          if (div.unsafeSetInnerHTML)
-            div.unsafeSetInnerHTML(content.innerHTML);
-          else
-            div.innerHTML = content.innerHTML;
+          div.innerHTML = content.innerHTML;
 
           $("#sivDialogBody").append(div.children);
         }
@@ -420,7 +410,7 @@
   /**
    * Provides an UI for a simple operator without any settings.
    */
-  class SieveOperatorBoxUI extends SieveEditableBoxUI {
+  class SieveOperatorBoxUI extends SieveSimpleBoxUI {
 
     /**
      * @inheritDoc
@@ -492,7 +482,7 @@
 
 
   exports.SieveAbstractBoxUI = SieveAbstractBoxUI;
-  exports.SieveEditableBoxUI = SieveEditableBoxUI;
+  exports.SieveSimpleBoxUI = SieveSimpleBoxUI;
   exports.SieveOperatorBoxUI = SieveOperatorBoxUI;
   exports.SieveActionBoxUI = SieveActionBoxUI;
   exports.SieveDropBoxUI = SieveDropBoxUI;

@@ -10,8 +10,6 @@
 *
 */
 
-/* global window */
-
 (function (exports) {
 
   "use strict";
@@ -376,9 +374,7 @@
       let that = this;
 
       // We need here some to make mozilla happy.
-      // In theory the Iframe is marked as non priviledged code but
-      // this is obviously not working. Which forces us to use the
-      // unsafeSetInnerHTML method.
+      // it is no more possible to load fragments from chrome urls
 
       let xhr = new XMLHttpRequest();
       xhr.onload = function () {
@@ -386,10 +382,7 @@
         let item = this.responseXML.querySelector("#test42");
 
         let div = document.createElement("div");
-        if (div.unsafeSetInnerHTML)
-          div.unsafeSetInnerHTML(item.innerHTML);
-        else
-          div.innerHTML = item.innerHTML;
+        div.innerHTML = item.innerHTML;
 
         div.setAttribute("data-nodename", that.constructor.nodeName());
 

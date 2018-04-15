@@ -31,8 +31,8 @@
       types: {},
 
       /**
-       * Registers a widget. A widget needs to be a prototype with a constructor
-       * as well as a static nodeName() and nodeType() method.
+       * Registers a widget. A widget needs to be a prototype/class
+       * with a static nodeName() and nodeType() method.
        *
        * @param {Object} callback
        *   the constructor which should be called in case the widget needs

@@ -21,15 +21,13 @@
   if (!SieveGrammar)
     throw new Error("Could not register MatchTypes");
 
-  let regex = {
+  SieveGrammar.addTag({
     node: "match-type/regex",
     type: "match-type/",
 
     requires: "regex",
 
     token: ":regex"
-  };
-
-  SieveGrammar.addTag(regex);
+  });
 
 })(window);

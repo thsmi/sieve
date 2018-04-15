@@ -46,8 +46,6 @@
     }
   }
 
-  // ************************************************************************************
-
   if (!SieveDesigner)
     throw new Error("Could not register Regex Widgets");
 

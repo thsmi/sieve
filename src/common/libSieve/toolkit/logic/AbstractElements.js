@@ -133,7 +133,7 @@
    * @param {int} [id]
    *   defines to use a reverse lookup by the Id
    * @return {int|SieveElement}
-   *
+   *   the id in case the id was omitted otherwise the element.
    */
   SieveAbstractElement.prototype.id
     = function (id) {

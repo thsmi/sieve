@@ -1,48 +1,48 @@
 /*
-* The contents of this file are licenced. You may obtain a copy of 
-* the license at https://github.com/thsmi/sieve/ or request it via 
+* The contents of this file are licenced. You may obtain a copy of
+* the license at https://github.com/thsmi/sieve/ or request it via
 * email from the author.
 *
 * Do not remove or change this comment.
-* 
+*
 * The initial author of the code is:
 *   Thomas Schmid <schmid-thomas@gmx.net>
-*      
+*
 */
 
-( function () {
+(function () {
 
   "use strict";
 
   /* global net */
 
-  var suite = net.tschmid.yautt.test;
+  let suite = net.tschmid.yautt.test;
 
-  if ( !suite )
-    throw new Error( "Could not initialize test suite" );
+  if (!suite)
+    throw new Error("Could not initialize test suite");
 
-  suite.add( function () {
-    suite.log( "imap4flags Unit Tests..." );
+  suite.add(function () {
+    suite.log("imap4flags Unit Tests...");
   });
 
-  suite.add( function () {
+  suite.add(function () {
 
-    suite.log( "RFC5232 Sniplet I" );
+    suite.log("RFC5232 Sniplet I");
 
-    var script = ''
+    let script = ''
       + 'require "imap4flags";\r\n'
       + 'if size :over 500K {\r\n'
       + '    setflag "\\\\Deleted";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript( script, { "imap4flags": true });
+    suite.expectValidScript(script, { "imap4flags": true });
   });
 
-  suite.add( function () {
+  suite.add(function () {
 
-    suite.log( "RFC5232 Sniplet II" );
+    suite.log("RFC5232 Sniplet II");
 
-    var script = ''
+    let script = ''
       + 'require "imap4flags";\r\n'
       + 'require "fileinto";\r\n'
       + '\r\n'
@@ -52,14 +52,14 @@
       + '}\r\n'
       ;
 
-    suite.expectValidScript( script, { "fileinto": true, "imap4flags": true });
+    suite.expectValidScript(script, { "fileinto": true, "imap4flags": true });
   });
 
-  suite.add( function () {
+  suite.add(function () {
 
-    suite.log( "RFC5232 Sniplet III" );
+    suite.log("RFC5232 Sniplet III");
 
-    var script = ''
+    let script = ''
       + 'require "imap4flags";\r\n'
       + '\r\n'
       + 'addflag "flagvar" "\\\\Deleted";\r\n'
@@ -71,14 +71,14 @@
       + '\r\n'
       + 'addflag "flagvar" "\\\\Answered \\\\Deleted";\r\n';
 
-    suite.expectValidScript( script, { "imap4flags": true });
+    suite.expectValidScript(script, { "imap4flags": true });
   });
 
-  suite.add( function () {
+  suite.add(function () {
 
-    suite.log( "RFC5232 Sniplet IV" );
+    suite.log("RFC5232 Sniplet IV");
 
-    var script = ''
+    let script = ''
       + 'require "imap4flags";\r\n'
       + 'require "fileinto";\r\n'
       + '\r\n'
@@ -92,27 +92,27 @@
       + '}\r\n';
 
 
-    suite.expectValidScript( script, { "imap4flags": true, "fileinto": true });
+    suite.expectValidScript(script, { "imap4flags": true, "fileinto": true });
   });
 
-  suite.add( function () {
+  suite.add(function () {
 
-    suite.log( "RFC5232 Sniplet V" );
+    suite.log("RFC5232 Sniplet V");
 
-    var script = ''
+    let script = ''
       + 'require "imap4flags";\r\n'
       + '\r\n'
       + 'if hasflag :is "b A" {}\r\n'
       + 'if hasflag ["b","A"] {}\r\n';
 
-    suite.expectValidScript( script, { "imap4flags": true });
+    suite.expectValidScript(script, { "imap4flags": true });
   });
 
-  suite.add( function () {
+  suite.add(function () {
 
-    suite.log( "RFC5232 Sniplet VI" );
+    suite.log("RFC5232 Sniplet VI");
 
-    var script = ''
+    let script = ''
       + 'require "imap4flags";\r\n'
       + '\r\n'
       + 'if hasflag :contains "MyVar" "Junk" {}\r\n'
@@ -127,31 +127,31 @@
       + '\r\n'
       + 'if hasflag :contains "MyVar" ["label1", "label2"] {}\r\n';
 
-    suite.expectValidScript( script, { "imap4flags": true });
+    suite.expectValidScript(script, { "imap4flags": true });
 
   });
 
   //             'hasflag :count "ge" :comparator "i;ascii-numeric" "MyFlags" "2"
 
-  suite.add( function () {
+  suite.add(function () {
 
-    suite.log( "RFC5232 Sniplet VII" );
+    suite.log("RFC5232 Sniplet VII");
 
-    var script = ''
+    let script = ''
       + 'require "imap4flags";\r\n'
       + 'require "fileinto";\r\n'
       + '\r\n'
       + 'fileinto :flags "\\\\Deleted" "INBOX.From Boss";\r\n'
       + 'keep :flags "${MyFlags}";\r\n';
 
-    suite.expectValidScript( script, { "imap4flags": true, "fileinto": true });
+    suite.expectValidScript(script, { "imap4flags": true, "fileinto": true });
   });
 
-  suite.add( function () {
+  suite.add(function () {
 
-    suite.log( "Extended Example" );
+    suite.log("Extended Example");
 
-    var script = ''
+    let script = ''
       + '#\r\n'
       + '# Example Sieve Filter\r\n'
       + '# Declare any optional features or extension used by the script\r\n'
@@ -221,6 +221,6 @@
       + '        fileinto :flags "${MyFlags}" "personal";\r\n'
       + '        }\r\n';
 
-    suite.expectValidScript( script, { "imap4flags": true, "fileinto": true, "variables": true });
+    suite.expectValidScript(script, { "imap4flags": true, "fileinto": true, "variables": true });
   });
-}() );
+})();

@@ -29,19 +29,19 @@
   class SieveAddHeaderUI extends SieveActionDialogBoxUI {
 
     /**
-     * Gets and sets the header name
-     * @param {String} [value]
-     *   the new headername. If omitted the header will not changed
-     *
-     * @returns {String}
-     *   the header name as string
+     * @returns {SieveAbstractString}
+     *   the element's header field name
      */
-    name(value) {
-      return this.getSieve().getElement("name").value(value);
+    name() {
+      return this.getSieve().getElement("name");
     }
 
-    value(value) {
-      return this.getSieve().getElement("value").value(value);
+    /**
+     * @returns {SieveAbstractString}
+     *   the element's header value field
+     */
+    value() {
+      return this.getSieve().getElement("value");
     }
 
     enable(id, status) {
@@ -74,8 +74,8 @@
         return false;
       }
 
-      this.name(name);
-      this.value(value);
+      this.name().value(name);
+      this.value().value(value);
 
       let last = ($("input[type='radio'][name='last']:checked").val() === "true");
 
@@ -88,8 +88,8 @@
      */
     onLoad() {
 
-      $("#sivNewHeaderName").val(this.name());
-      $("#sivNewHeaderValue").val(this.value());
+      $("#sivNewHeaderName").val(this.name().value());
+      $("#sivNewHeaderValue").val(this.value().value());
 
       $('input:radio[name="last"][value="' + this.enable("last") + '"]').prop('checked', true);
     }
@@ -100,9 +100,9 @@
     getSummary() {
       return $("<div/>")
         .html("Add a header "
-          + $('<em/>').text(this.name()).html()
+          + $('<em/>').text(this.name().value()).html()
           + " with a value "
-          + $('<em/>').text(this.value()).html());
+          + $('<em/>').text(this.value().value()).html());
     }
   }
 
@@ -129,10 +129,79 @@
     }
 
     /**
+     * @returns {SieveAbstractString}
+     *   the element's header field name
+     */
+    name() {
+      return this.getSieve().getElement("name");
+    }
+
+    /**
+     * The optional value patterns
+     * @returns {SieveStringList}
+     *   a string list containing the patterns.
+     */
+    values() {
+      return this.getSieve().getElement("values");
+    }
+
+    /**
      * @inheritDoc
      */
     getTemplate() {
       return "./editheader/templates/SieveDeleteHeaderActionUI.html";
+    }
+
+    /**
+     * Saves the current header index.
+     * @returns {void}
+     */
+    saveHeaderIndex() {
+      let indexType = $('input:radio[name="header-index"]:checked').val();
+
+      switch (indexType) {
+        case "first":
+          this.getSieve().enable("index", true);
+          this.getSieve().getElement("index").enable("last", false);
+
+
+          this.getSieve().getElement("index").getElement("name")
+            .setValue($("#sivDeleteHeaderFirstIndex").val());
+
+          break;
+
+        case "last":
+          this.getSieve().enable("index", true);
+          this.getSieve().getElement("index").enable("last", true);
+
+          this.getSieve().getElement("index").getElement("name")
+            .setValue($("#sivDeleteHeaderLastIndex").val());
+          break;
+
+        default:
+          this.getSieve().enable("index", false);
+          this.getSieve().getElement("index").enable("last", false);
+          break;
+      }
+    }
+
+    /**
+     * Saves the current header values
+     * @returns {void}
+     */
+    saveHeaderValues() {
+      let value = $("input:radio[name='header-value']:checked").val();
+
+      switch (value) {
+        case "some":
+          this.getSieve().enable("values", true);
+          break;
+
+        case "any":
+        default:
+          this.getSieve().enable("values", false);
+          break;
+      }
     }
 
     /**
@@ -145,30 +214,85 @@
       (new SieveComparatorWidget("#sivDeleteHeaderComparator"))
         .save(this.comparator());
 
-      (new SieveStringListWidget("#sivHeaderKeyList"))
-        .init(this.save());
+      (new SieveStringListWidget("#sivValuePatternsList"))
+        .save(this.values());
 
-      /* var name = $( "#sivNewHeaderName" ).val();
+      this.getSieve().getElement("name")
+        .value($("#sivDeleteHeaderName").val());
 
-      if ( name.trim() === "" ) {
-          window.alert( "Header name is empty" );
-          return false;
-      }
+      this.saveHeaderIndex();
+      this.saveHeaderValues();
 
-      var value = $( "#sivNewHeaderValue" ).val();
 
-      if ( value.trim() === "" ) {
-          window.alert( "Header value is empty" );
-          return false;
-      }
-
-      this.name( name );
-      this.value( value );
-
-      var last = ( $( "input[type='radio'][name='last']:checked" ).val() === "true" );
-
-      this.enable( "last", last );*/
       return true;
+    }
+
+    /**
+     * Initializes the header index elements
+     * @returns {void}
+     */
+    loadHeaderIndex() {
+
+      $('input:radio[name="header-index"][value="all"]').change(() => {
+        $("#sivDeleteHeaderFirstIndex").prop("disabled", true);
+        $("#sivDeleteHeaderLastIndex").prop("disabled", true);
+      });
+
+      $('input:radio[name="header-index"][value="first"]').change(() => {
+        $("#sivDeleteHeaderFirstIndex").prop("disabled", false);
+        $("#sivDeleteHeaderLastIndex").prop("disabled", true);
+      });
+
+      $('input:radio[name="header-index"][value="last"]').change(() => {
+        $("#sivDeleteHeaderFirstIndex").prop("disabled", true);
+        $("#sivDeleteHeaderLastIndex").prop("disabled", false);
+      });
+
+      let indexType = "all";
+      let indexValue = this.getSieve().getElement("index").getElement("name").getValue();
+
+      if (!this.getSieve().enable("index")) {
+        indexType = "all";
+      }
+      else if (!this.getSieve().getElement("index").enable("last")) {
+        indexType = "first";
+        $("#sivDeleteHeaderFirstIndex").val(indexValue);
+      }
+      else {
+        indexType = "last";
+        $("#sivDeleteHeaderLastIndex").val(indexValue);
+      }
+
+      $('input:radio[name="header-index"][value="' + indexType + '"]')
+        .prop('checked', true)
+        .change();
+
+    }
+
+    /**
+     * Initializes the ui for the header values
+     * @returns {void}
+     */
+    loadHeaderValues() {
+      $('input:radio[name="header-value"][value="any"]').change(() => {
+        $('#sivSomeValues').hide();
+      });
+
+      $('input:radio[name="header-value"][value="some"]').change(() => {
+        $('#sivSomeValues').show();
+      });
+
+
+      let headerType = "any";
+      if (!this.getSieve().enable("values")) {
+        headerType = "any";
+      } else {
+        headerType = "some";
+      }
+
+      $('input:radio[name="header-value"][value="' + headerType + '"]')
+        .prop('checked', true)
+        .change();
     }
 
     /**
@@ -176,23 +300,21 @@
      */
     onLoad() {
 
-      debugger;
-      // ( new SieveStringListWidget( "#sivHeaderHeaderList" ) )
-      //    .init( this.headers() );
-      // .defaults(["Subject","Date","Message-ID","Content-Type"]);
-
       (new SieveMatchTypeWidget("#sivDeleteHeaderMatchTypes"))
         .init(this.matchtype());
       (new SieveComparatorWidget("#sivDeleteHeaderComparator"))
         .init(this.comparator());
 
-      (new SieveStringListWidget("#sivHeaderKeyList"))
-        .init(this.keys());
+      (new SieveStringListWidget("#sivValuePatternsList"))
+        .init(this.values());
 
-      /* $( "#sivNewHeaderName" ).val( this.name() );
-      $( "#sivNewHeaderValue" ).val( this.value() );
 
-      $( 'input:radio[name="last"][value="' + this.enable( "last" ) + '"]' ).prop( 'checked', true );*/
+      $("#sivDeleteHeaderName")
+        .val(this.getSieve().getElement("name").value());
+
+
+      this.loadHeaderValues();
+      this.loadHeaderIndex();
     }
 
     /**

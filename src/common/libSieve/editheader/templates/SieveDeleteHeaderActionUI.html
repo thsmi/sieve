@@ -1,86 +1,117 @@
-<div id="template-content" class="dialog">
-    <div>
-        <!-- System -->
-        <div id="sivEditMain">
-            <!-- Appbar -->
-            <div class="dialog-header">
-                <div class="dialog-tab">
-                    <div class="tab-active" data-tab-content="sivGeneralContent">BASIC</div>
-                    <div data-tab-content="sivAdvancedContent">ADVANCED</div>
-                    <div data-tab-content="sivHelpContent">HELP</div>
-                </div>
-            </div>
-            <!-- content -->
-            <div class="dialog-tab-content">
-                <!-- content for help tab -->
-                <div id="sivHelpContent">
-                    <p>
-                        By default, the deleteheader action deletes all occurrences of the named header field. The deleteheader action does not affect
-                        Sieve's implicit keep
-                    </p>
-                    <p>
-                        The field-name is case insensitive.
-                    </p>
-                    <p>
-                        Note: The deleteheader action does not affect Sieve's implicit keep.
-                    </p>
-                    <p>
-                        Note: the header name is by definition a case insensitive 7bit US-ASCII string. Leading and tailing whitespaces are ignored.
-                        Headers with invalid names are silently ignored.
-                    </p>
-                </div>
+<div>
+    <ul id="template-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-deleteheader" role="tab">Delete Header</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+        </li>
+    </ul>
 
-                <!-- content for general tab -->
-                <div id="sivGeneralContent" class="tab-active">
-                    <h1>Delete ...</h1>
-                    <label>
-                        <input type="radio" name="last" value="false">... all ...</label>
-                    <br/>
-                    <label>
-                        <input type="radio" name="last" value="true">... the first
-                        <input type="number" id="sivDeleteHeaderFirstIndex"></input>
-                    </label>
-                    <br/>
-                    <label>
-                        <input type="radio" name="last" value="true">... the last
-                        <input type="number" id="sivDeleteHeaderLastIndex"></input>
-                    </label>
-                    <br/>
+    <div id="template-content">
+        <div class="tab-content m-2">
+            <div class="tab-pane fade show active" id="sieve-widget-deleteheader" role="tabpanel">
 
-                    <h1>... headers named ...</h1>
-                    <input type="text" id="sivDeleteHeaderName"></input>
-                    <h1>... with ...</h1>
-                    <label>
-                        <input type="radio" name="last" value="false">... any value</label>
-                    <br/>
-                    <label>
-                        <input type="radio" name="last" value="true">... one of the following values which ... </label>
+                <div class="form-group">
+                    <h5>Delete ... </h5>
+                    <div class="custom-control custom-radio mr-sm-2">
+                        <input type="radio" class="custom-control-input" name="header-index" value="all" id="sieve-header-all" />
+                        <label class="custom-control-label" for="sieve-header-all">
+                            ... all ...
+                        </label>
+                    </div>
 
-                    <div id="sivDeleteHeaderMatchTypes"> </div>
-
-                    <h1>... any of the keyword(s):</h1>
-                    <div id="sivHeaderKeyList" data-list-new="#sivHeaderKeyListAdd" data-list-items="#sivHeaderKeyListItems" data-list-template="#sivHeaderKeyListTemplate"
-                        data-list-min="1">
-
-                        <div id="sivHeaderKeyListTemplate" style="display:none">
-                            <div>
-                                <input type="text" />
-                                <button>remove</button>
+                    <div class="form-row align-items-center mt-2">
+                        <div class="col-auto">
+                            <div class="custom-control custom-radio mr-sm-2">
+                                <input type="radio" class="custom-control-input" name="header-index" value="first" id="sieve-header-first" />
+                                <label class="custom-control-label" for="sieve-header-first">
+                                    ... the first
+                                </label>
                             </div>
                         </div>
-                        <div id="sivHeaderKeyListItems">
-                            <div>
-                                <button id="sivHeaderKeyListAdd">add</button>
-                            </div>
+                        <div class="col-auto">
+                            <input type="number" id="sivDeleteHeaderFirstIndex" class="form-control form-control-sm col-lg-1" value="1"></input>
                         </div>
                     </div>
 
+                    <div class="form-row align-items-center mt-2">
+                        <div class="col-auto">
+                            <div class="custom-control custom-radio mr-sm-2">
+                                <input type="radio" class="custom-control-input" name="header-index" value="last" id="sieve-header-last" />
+                                <label class="custom-control-label" for="sieve-header-last">
+                                    ... the last
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <input type="number" id="sivDeleteHeaderLastIndex" class="form-control form-control-sm col-lg-1" value="1"></input>
+                        </div>
+                    </div>
+
+                    <br/>
+
+                    <h5>... header named ...</h5>
+                    <input type="text" id="sivDeleteHeaderName" class="form-control form-control-sm col-lg-8" />
+
+                    <h5>... with ...</h5>
+                    <div class="custom-control custom-radio mr-sm-2">
+                        <input type="radio" class="custom-control-input" name="header-value" value="any" id="sieve-header-value-any" />
+                        <label class="custom-control-label" for="sieve-header-value-any">
+                            ... any value
+                        </label>
+                    </div>
+
+                    <div class="custom-control custom-radio mr-sm-2">
+                        <input type="radio" class="custom-control-input" name="header-value" value="some" id="sieve-header-value-some" />
+                        <label class="custom-control-label" for="sieve-header-value-some">
+                            ... one of the following values ...
+                        </label>
+                    </div>
+
+                    <div id="sivSomeValues">
+                            <h5>... which ...</h5>
+
+                        <div id="sivDeleteHeaderMatchTypes"> </div>
+
+                        <h5>... any of the keyword(s):</h5>
+
+                        <div id="sivValuePatternsList" data-list-new="#sivValuePatternsListAdd" data-list-template="#sivValuePatternsListTemplate"
+                            data-list-min="1">
+                        </div>
+
+                        <div id="sivValuePatternsListTemplate" style="display:none">
+                            <div class="input-group input-group-sm mb-1">
+                                <input type="text" class="form-control col-lg-8" />
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-secondary far sieve-stringlist-delete">
+                                        &#xf2ed;
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <button id="sivValuePatternsListAdd" class="btn btn-sm btn-outline-secondary">Add</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <!-- content for advanced tab -->
-            <div id="sivAdvancedContent">
+            <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
                 <div id="sivDeleteHeaderComparator"></div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+                <p>
+                    By default, the deleteheader action deletes all occurrences of the named header field. The deleteheader action does not affect
+                    Sieve's implicit keep
+                </p>
+                <p class="alert alert-info" role="alert">
+                    The header name is by definition a case insensitive 7bit US-ASCII string. Leading and tailing whitespaces are ignored. Headers
+                    with invalid names are silently ignored.
+                </p>
             </div>
         </div>
     </div>

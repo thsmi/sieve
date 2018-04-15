@@ -20,19 +20,17 @@
   if (!SieveGrammar)
     throw new Error("Could not register EditHeaders");
 
-  let lastflag = {
+  SieveGrammar.addTag({
     node: "action/addheader/last",
     type: "action/addheader/",
 
     requires: "editheader",
 
     token: ":last"
-  };
-
-  SieveGrammar.addTag(lastflag);
+  });
 
   // "addheader"[":last"] < field - name: string > <value: string>
-  let addheader = {
+  SieveGrammar.addAction({
     node: "action/addheader",
     type: "action",
 
@@ -61,12 +59,10 @@
         value: '"Some Value"'
       }]
     }]
-  };
-
-  SieveGrammar.addAction(addheader);
+  });
 
   // ":index" <fieldno: number> [":last"]
-  let indextag = {
+  SieveGrammar.addTag({
     node: "action/deleteheader/index",
     type: "action/deleteheader/",
 
@@ -87,20 +83,18 @@
       optional: true,
 
       elements: [{
-        id: "name",
+        id: "last",
         type: "action/addheader/last"
       }]
     }]
-  };
-
-  SieveGrammar.addTag(indextag);
+  });
 
   // "deleteheader" [":index" <fieldno: number> [":last"]]
   //                   [COMPARATOR] [MATCH-TYPE]
   //                   <field-name: string>
   //                   [<value-patterns: string-list>]
 
-  let deleteheader = {
+  SieveGrammar.addAction({
     node: "action/deleteheader",
     type: "action",
 
@@ -134,14 +128,11 @@
       id: "parameter2",
       optional: true,
       elements: [{
-        id: "value",
-        type: "string",
+        id: "values",
+        type: "stringlist",
         value: '""'
       }]
     }]
-  };
-
-  SieveGrammar.addAction(deleteheader);
+  });
 
 })(window);
-

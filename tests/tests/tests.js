@@ -193,6 +193,20 @@
   });
 
   suite.add({
+    "date": {
+      script: "./sieve/SieveDateTest.js",
+      extend: "rfc5228",
+      require: [
+        "./../common/libSieve/variables/logic/SieveVariables.js",
+        "./../common/libSieve/vacation/logic/SieveVacation.js",
+        "./../common/libSieve/relational/logic/SieveRelational.js",
+        "./../common/libSieve/editheader/logic/SieveEditheader.js",
+        "./../common/libSieve/date/logic/SieveDate.js"
+      ]
+    }
+  });
+
+  suite.add({
     "managesieve": {
       script: "./managesieve/ManageSieveTest.js",
       require: [

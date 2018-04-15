@@ -25,13 +25,6 @@
 
     /**
      * @inheritDoc
-     */
-    constructor(data) {
-      super(data);
-    }
-
-    /**
-     * @inheritDoc
      **/
     convertToString(byteArray) {
       // This is very old mozilla specific code, but it is robust, mature and works as expeced.

@@ -9,10 +9,6 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-// Enable Strict Mode
-"use strict";
-
-
 /*
  *  This class is a simple socket implementation for the manage sieve protocol.
  *  Due to the asymetric nature of the Mozilla sockets we need message queue.
@@ -29,6 +25,8 @@
  */
 
 (function (exports) {
+
+  "use strict";
 
   const DEFAULT_TIMEOUT = 20000;
 

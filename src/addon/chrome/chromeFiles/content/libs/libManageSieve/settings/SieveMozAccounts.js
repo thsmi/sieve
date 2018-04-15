@@ -16,9 +16,6 @@
   /* global Components */
   /* global Services */
 
-  // Enable Strict Mode
-  "use strict";
-
   const Cc = Components.classes;
   const Ci = Components.interfaces;
   const Cu = Components.utils;

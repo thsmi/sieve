@@ -10,8 +10,6 @@
  *
  */
 
-"use strict";
-
 /* global CodeMirror */
 /* global document */
 /* global window */
@@ -26,6 +24,8 @@ var onActiveLineChange = null;
  **/
 
 (function (exports) {
+
+  "use strict";
 
   /* global net */
 

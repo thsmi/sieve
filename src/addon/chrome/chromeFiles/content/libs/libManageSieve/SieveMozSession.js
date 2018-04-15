@@ -9,17 +9,14 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-// Enable Strict Mode
-"use strict";
-
-/* global Components */
-
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cr = Components.results;
-const Cu = Components.utils;
-
 (function (exports) {
+
+  "use strict";
+
+  /* global Components */
+
+  const Cc = Components.classes;
+  const Ci = Components.interfaces;
 
   const { SieveLogger } = require("./SieveMozLogger.js");
 
@@ -48,6 +45,7 @@ const Cu = Components.utils;
   const { SieveAbstractSession } = require("./SieveAbstractSession.js");
 
   /**
+   * @constructor
    * This class pools and caches concurrent connections (Channel) to an destinct
    * remote server (Session).
    * Furthermore it's a wrapper around the Sieve object. It implements
@@ -58,10 +56,8 @@ const Cu = Components.utils;
    *
    * @param {SieveAccount} account
    *   a sieve account. this is needed to obtain login informations.
-   * @param {Object} [sid]
+   * @param {object} [sid]
    *   a unique Identifier for this Session. Only needed to make debugging easier.
-   *
-   * @constructor
    **/
   function SieveSession(account, sid) {
 

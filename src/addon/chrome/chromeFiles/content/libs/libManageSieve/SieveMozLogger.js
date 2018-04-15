@@ -9,9 +9,9 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-"use strict";
-
 (function (exports) {
+
+  "use strict";
 
   /* global Components */
 

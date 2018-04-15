@@ -22,13 +22,6 @@
   class SieveMozRequestBuilder extends SieveAbstractRequestBuilder {
 
     /**
-     * @inheritdoc
-     **/
-    constructor() {
-      super();
-    }
-
-    /**
      * Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy
      * binary, and javascript is something in between. This means we have to convert
      * UTF-8 into a binary by our own...

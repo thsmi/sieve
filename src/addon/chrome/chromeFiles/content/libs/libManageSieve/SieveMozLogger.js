@@ -15,25 +15,17 @@
 
   /* global Components */
 
-  const {SieveAbstractLogger} = require("./SieveAbstractLogger.js");
+  const { SieveAbstractLogger } = require("./SieveAbstractLogger.js");
 
   /**
-   * @classdesc A mozilla specific logger
-   * @class
-   * @extends SieveAbstractLogger
+   * A mozilla specific logger
    */
-  function SieveLogger() {
-    SieveAbstractLogger.call(this);
-  }
+  class SieveLogger extends SieveAbstractLogger {
 
-  SieveLogger.prototype = Object.create(SieveAbstractLogger.prototype);
-  SieveLogger.prototype.constructor = SieveLogger;
-
-  /**
-   * @override
-   **/
-  SieveLogger.prototype.log
-    = function (message, level) {
+    /**
+     * @inheritDoc
+     **/
+    log(message, level) {
 
       if (!this.isLoggable(level))
         return this;
@@ -46,7 +38,8 @@
         .getService(Components.interfaces.nsIPromptService)
         .alert(null, "Alert", msg); */
       return this;
-    };
+    }
+  }
 
   exports.SieveLogger = SieveLogger;
 

@@ -1,42 +1,27 @@
-@import url("./stringlist/style.css");
 
 .sivConditionText,
 .sivConditionalText,
-div[sivtype]:not([siviseditable]) > .sivSummaryContent
+div[sivtype] > .sivSummaryContent
 {
   border: 1px #DDE4E9 solid;
   background-color: #F3F6F7;
   padding-left:3px;
-  
+
   cursor: default;
 }
 
 /* Style all interactive Elements */
-.sivEditableElement[sivtype]:not([sivIsEditable=true]) > .sivSummaryContent {
+.sivEditableElement[sivtype] > .sivSummaryContent {
   background-image: url('edit.png');
   background-repeat: no-repeat;
   background-position: right center ;
 }
 
-.sivEditableElement[sivtype]:not([siviseditable]) > .sivSummaryContent:hover
+.sivEditableElement[sivtype] > .sivSummaryContent:hover
 {
   border: 1px red #EDEDED solid;
   background-color: white;
   box-shadow: 0 0 7px gray;
-}
-
-/* Editmode on */
-.sivEditableElement[sivtype][sivIsEditable=true]
-{
-  border: 1px solid #EDEDED;
-  background-color: white;
-  background-image: none;
-  box-shadow: 0 0 7px gray;
-}
-
-.sivEditableElement[sivtype][sivIsEditable=true] > div
-{
-  padding: 4px;
 }
 
 
@@ -45,8 +30,6 @@ div[sivtype][sivDragging="true"] {
   box-shadow: 0 0 5px red;
 }
 
-
-       
 .sivSummaryContent em{
   font-family:courier;
   font-style:normal;
@@ -54,66 +37,11 @@ div[sivtype][sivDragging="true"] {
 
 
   .sivEditableElement h1 {
-    font-size:1em;   
+    font-size:1em;
     padding:0px;
-    margin:0px;    
+    margin:0px;
   }
 
-  .SivStringListItem {
-    padding:10px 0px 20px 20px;
-  }
-
-
-
-
-  /* Style for all editable elements */
-
-  .sivEditorCloseIcon {
-  float:right;
-  cursor:pointer;
-  height: 10px;
-  width: 9px;
-  margin-right:3px;
-  
-  color: gray;
-  }
-
-  .sivEditorHelpIcon {
-  float:right;
-  cursor:pointer;
-  height: 10px;
-  width: 9px;
-  
-  color: gray;
-  }
-
-  .sivEditorHelpText {
-  display:none;
-  padding-bottom:20px;
-  border-bottom: 1px solid gray;
-  background-image: -moz-linear-gradient(hsl(215,60%,92%), hsl(215,58%,88%));
-  /*background-image: -moz-linear-gradient(bottom, #ffdd66, #ffeb7d);*/
-  cursor:pointer;
-  }
-
-  .sivControlBox {
-  border-top: 1px solid gray;
-  background-color:lightgray;
-  background-image: -moz-linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
-  overflow: hidden;
-  vertical-align:middle;
-  }
-
-  /* Box for error messages */
-  .sivControlBox > div {
-  color:red;
-  font-weight: bold;
-  }
-
-  .sivControlBox > button {
-  float: right;
-  }
-  
 
 /* Blocks */
 
@@ -161,13 +89,13 @@ div[sivtype][sivDragging="true"] {
 }
 
 /* Dropmarkers*/
-.sivBlockSpacer, 
+.sivBlockSpacer,
 .sivOperatorSpacer
 {
   background-image: url('vline.png');
   background-position:  -7px top;
   background-repeat: repeat-y;
-  
+
   padding:2px 0px 2px 0px;
 }
 
@@ -181,11 +109,11 @@ div[sivtype][sivDragging="true"] {
 .sivConditionSpacer > .sivDropBox
 {
   height: 3px;
-}    
+}
 
 .sivBlockSpacer[sivDragging="true"] > .sivDropBox,
 .sivConditionSpacer[sivDragging="true"] > .sivDropBox,
-.sivOperatorSpacer[sivDragging="true"] > .sivDropBox 
+.sivOperatorSpacer[sivDragging="true"] > .sivDropBox
  {
   background-color : red;
   background-image: -moz-linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
@@ -194,18 +122,12 @@ div[sivtype][sivDragging="true"] {
 
 #sivActions > div[sivtype]
 {
-  margin:2px 10px;  
+  margin:2px 10px;
   padding:0px 3px;
   background-color: lightgray;
   border-radius:3px;
   border: 1px solid gray;
 }
 
-.sivMatchType,
-.sivAddressPart,
-.sivComparator
-{
-  padding-bottom: 15px;
-}
 
 

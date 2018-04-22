@@ -102,8 +102,6 @@
       this.getSieve().getElement("modifier/40").setValue(value);
       this.getSieve().enable("modifier/40", status);
 
-      this.getSieve().toScript();
-
       return true;
     }
 
@@ -147,10 +145,10 @@
      */
     getSummary() {
       return $("<div/>")
-        .html("Set variable <em>" + this.name() + "</em> to value " +
+        .html("Set variable <em>" + this.name().value() + "</em> to value " +
           "<div><em>" +
-          $('<div/>').text(this.value().substr(0, MAX_QUOTE_LEN)).html() +
-          ((this.value().substr().length > MAX_QUOTE_LEN) ? "..." : "") +
+          $('<div/>').text(this.value().value().substr(0, MAX_QUOTE_LEN)).html() +
+          ((this.value().value().substr().length > MAX_QUOTE_LEN) ? "..." : "") +
           "</em></div>");
 
     }

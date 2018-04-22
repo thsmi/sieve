@@ -1,0 +1,132 @@
+<div>
+    <ul id="template-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-date" role="tab">Date</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+        </li>
+    </ul>
+
+    <div id="template-content">
+        <div class="tab-content m-2">
+            <div class="tab-pane fade show active" id="sieve-widget-date" role="tabpanel">
+
+                <div class="form-group">
+                    <h5>Has a Header ... </h5>
+                    <input type="text" id="sivDateHeader" class="form-control form-control-sm col-lg-8" />
+
+                    <h5>... where the ... </h5>
+
+                    <div class="input-group input-group-sm mb-1">
+                        <input type="text" class="form-control col-lg-8" id="sivDateDatepart" />
+                        <div class="input-group-append">
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="#">year
+                                    <small>- "0000" ... "9999"</small>
+                                </a>
+                                <a class="dropdown-item" href="#">month
+                                    <small>- "01" ... "12"</small>
+                                </a>
+                                <a class="dropdown-item" href="#">day
+                                    <small>- "01" ... "31"</small>
+                                </a>
+                                <a class="dropdown-item" href="#">date
+                                    <small>- "yyyy-mm-dd"</small>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">hour
+                                    <small>- "00" ... "23"</small>
+                                </a>
+                                <a class="dropdown-item" href="#">minute
+                                    <small>- "00" ... "59"</small>
+                                </a>
+                                <a class="dropdown-item" href="#">second
+                                    <small>- "00" ... "60"</small>
+                                </a>
+                                <a class="dropdown-item" href="#">time
+                                    <small>- "hh:mm:ss"</small>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">iso8601
+                                    <small>- Restricted ISO 8601 Format (RFC3339)</small>
+                                </a>
+                                <a class="dropdown-item" href="#">std11
+                                    <small>- Internet Message Format (RFC2822)</small>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">zone
+                                    <small>- Time zone ("+hhmm" or "-hhmm")</small>
+                                </a>
+                                <a class="dropdown-item" href="#">weekday
+                                    <small>- "0" (Sunday) ... "6" (Saturday)</small>
+                                </a>
+                                <a class="dropdown-item" href="#">julian
+                                    <small>- days since 1858-11-17 0:00 UTC</small>
+                                </a>
+                            </div>
+                            <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <br/>
+
+                    <div id="sivDateMatchTypes"> </div>
+                    <br/>
+
+                    <h5>... any of the keyword(s):</h5>
+
+                    <div id="sivDateKeyList" data-list-new="#sivDateKeyListAdd" data-list-template="#sivDateKeyListTemplate" data-list-min="1">
+                    </div>
+
+                    <div id="sivDateKeyListTemplate" style="display:none">
+                        <div class="input-group input-group-sm mb-1">
+                            <input type="text" class="form-control col-lg-8" />
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary far sieve-stringlist-delete">
+                                    &#xf2ed;
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button id="sivDateKeyListAdd" class="btn btn-sm btn-outline-secondary">Add</button>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+                <h5>Timezone</h5>
+                <div id="sivDateZone"></div>
+                <br/>
+                <h5>Comparator</h5>
+                <div id="sivDateComparator"></div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+                <p>
+                    The date/time information is extracted from the header, shifted to the specified time zone, and the value of the given date-part
+                    is determined.
+                </p>
+                <p>
+                    The test returns true if the resulting string matches any of the strings specified in the key-list.
+                </p>
+                <p>
+                    The date test returns false if the specified header field does not exist, the field exists but does not contain a syntactically
+                    valid date-time specification, the date-time isn't valid according to the rules of the calendar system
+                    (e.g., January 32nd, February 29 in a non-leap year), or the resulting string fails to match any key-list
+                    value.
+                </p>
+                <p>
+                    Unlike the header and address tests, the date test can only be applied to a single header field at a time. If multiple header
+                    fields with the same name are present, only the first field that is found is used.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

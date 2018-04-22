@@ -21,45 +21,37 @@
   if (!SieveGrammar)
     throw new Error("Could not register MatchTypes");
 
-  let _is = {
+  // TODO match-type items (matchtype/) should not eat tailing whitespaces...
+  // they this should be done my the match-type goup
+
+  SieveGrammar.addTag({
     node: "match-type/is",
     type: "match-type/",
 
     token: ":is"
-  };
+  });
 
-  // TODO match-type items (matchtype/) should not eat tailing whitespaces...
-  // they this should be done my the match-type goup
-
-  SieveGrammar.addTag(_is);
-
-  let _matches = {
+  SieveGrammar.addTag({
     node: "match-type/matches",
     type: "match-type/",
 
     token: ":matches"
-  };
+  });
 
-  SieveGrammar.addTag(_matches);
-
-  let _contains = {
+  SieveGrammar.addTag({
     node: "match-type/contains",
     type: "match-type/",
 
     token: ":contains"
-  };
+  });
 
-  SieveGrammar.addTag(_contains);
-
-  let matchtype = {
+  SieveGrammar.addGroup({
     node: "match-type",
     type: "match-type",
 
     value: ":is",
 
     items: ["match-type/"]
-  };
-
-  SieveGrammar.addGroup(matchtype);
+  });
 
 })(window);

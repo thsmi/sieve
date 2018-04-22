@@ -16,11 +16,16 @@
 (function (exports) {
 
   "use strict";
+
   /* global $: false */
   /* global SieveMoveDragHandler */
   /* global SieveTestDropHandler */
   /* global SieveDropHandler */
   /* global SieveTrashBoxDropHandler */
+
+  const UNKNOWN_ID = -1;
+  const RANDOM_SEED_SIZE = 10000000;
+  const HEX_STRING = 16;
 
   /**
    * An abstract base class to render sieve elements as html.
@@ -55,7 +60,7 @@
       if (this._elm.document)
         return this._elm.id();
 
-      return -1;
+      return UNKNOWN_ID;
     }
 
     /**
@@ -114,6 +119,11 @@
       item.replaceWith(this.html());
     }
 
+    /**
+     * Converts the element to a sieve script
+     * @returns {string}
+     *   the script as string.
+     */
     toScript() {
       if (this._elm.document)
         return this._elm.toScript();
@@ -123,7 +133,7 @@
 
 
     /**
-     * The dorp element handler
+     * The drop element handler
      * @param {} handler
      * @param {} sibling
      * @return {}
@@ -270,7 +280,7 @@
       super(elm);
 
       // create a unique id, which makes identifing the dom object easier.
-      this.uniqueId = "" + Math.floor(Math.random() * 10000000).toString(16) + Date.now().toString(16);
+      this.uniqueId = "" + Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING) + Date.now().toString(HEX_STRING);
     }
 
     save() {

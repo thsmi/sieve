@@ -21,7 +21,7 @@
   if (!SieveGrammar)
     throw new Error("Could not register Vacation");
 
-  let _vacation = {
+  SieveGrammar.addAction({
     node: "action/vacation",
     type: "action",
 
@@ -66,13 +66,9 @@
         value: '""'
       }]
     }]
-  };
+  });
 
-  SieveGrammar.addAction(_vacation);
-
-  // ------------------------------------------------------------------------------------/
-
-  let _days = {
+  SieveGrammar.addTag({
     node: "action/vacation/days",
     type: "action/vacation/days",
 
@@ -89,11 +85,9 @@
         value: '7'
       }]
     }]
-  };
+  });
 
-  SieveGrammar.addTag(_days);
-
-  let _subject = {
+  SieveGrammar.addTag({
     node: "action/vacation/subject",
     type: "action/vacation/subject",
 
@@ -109,12 +103,9 @@
         type: "string"
       }]
     }]
+  });
 
-  };
-
-  SieveGrammar.addTag(_subject);
-
-  let _from = {
+  SieveGrammar.addTag({
     node: "action/vacation/from",
     type: "action/vacation/from",
 
@@ -130,12 +121,9 @@
         type: "string"
       }]
     }]
-  };
+  });
 
-  SieveGrammar.addTag(_from);
-
-
-  let _addresses = {
+  SieveGrammar.addTag({
     node: "action/vacation/addresses",
     type: "action/vacation/addresses",
 
@@ -151,24 +139,18 @@
         type: "stringlist"
       }]
     }]
+  });
 
-  };
-
-  SieveGrammar.addTag(_addresses);
-
-
-  let _mime = {
+  SieveGrammar.addTag({
     node: "action/vacation/mime",
     type: "action/vacation/mime",
 
     requires: "vacation",
 
     token: ":mime"
-  };
+  });
 
-  SieveGrammar.addTag(_mime);
-
-  let _handle = {
+  SieveGrammar.addTag({
     node: "action/vacation/handle",
     type: "action/vacation/handle",
 
@@ -184,8 +166,6 @@
         type: "string"
       }]
     }]
-  };
-
-  SieveGrammar.addTag(_handle);
+  });
 
 })(window);

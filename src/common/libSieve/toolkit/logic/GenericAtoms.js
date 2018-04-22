@@ -90,6 +90,28 @@
     toScript() {
       throw new Error("Implement SieveAbstractGeneric::toScript");
     }
+
+    /**
+     * Checks if the current element is the default value.
+     * Optional elements with the default value are typically not rendered.
+     *
+     * @returns {boolean}
+     *   true in case the element is the default value otherwise false.
+     */
+    hasDefaultValue() {
+      return true;
+    }
+
+    /**
+     * Checks if the current element has a value and thus needs
+     * to be rendered into a sieve script.
+     *
+     * @returns {boolean}
+     *   true or false
+     */
+    isDefaultValue() {
+      return true;
+    }
   }
 
   /**
@@ -218,20 +240,7 @@
       return result;
     }
 
-    hasDefaultValue() {
-      return true;
-    }
 
-    /**
-     * Checks if the current element has a value and thus needs
-     * to be rendered into a sieve script.
-     *
-     * @returns {boolean}
-     *   true or false
-     */
-    isDefaultValue() {
-      return true;
-    }
   }
 
   /**
@@ -247,10 +256,20 @@
       this._elements = new Map();
     }
 
+    /**
+     *
+     * @param {} id
+     * @returns {boolean}
+     *   true in case the element exists otherwise false
+     */
     hasElement(id) {
       return this._elements.has(id);
     }
 
+    /**
+     *
+     * @param {*} id
+     */
     getElement(id) {
 
       if (!this.hasElement(id))
@@ -342,15 +361,6 @@
 
       return result;
     }
-
-    hasDefaultValue() {
-      return true;
-    }
-
-    isDefaultValue() {
-      // TODO do we need to evaluate our children?
-      return true;
-    }
   }
 
 
@@ -359,6 +369,9 @@
    */
   class SieveGenericDependentItem extends SieveGenericMandatoryItem {
 
+    /**
+     * @returns {boolean}
+     */
     isDependent() {
       return true;
     }
@@ -446,7 +459,12 @@
       return this._optionals.get(id).element;
     }
 
-    // enabled means set explicit while disabled means set implicit.
+    /**
+     * Enables the given id. In case the element is disabled the implicit fallback is used
+     * @param {*} id
+     * @param {*} status
+     * @returns {boolean}
+     */
     enable(id, status) {
 
       if (!this.hasElement(id))
@@ -602,6 +620,9 @@
       return this;
     }
 
+    /**
+     * @inheritDoc
+     */
     hasDefaultValue() {
 
       if (this._elements.size > 0)
@@ -618,6 +639,9 @@
       return true;
     }
 
+    /**
+     *@inheritDoc
+     */
     isDefaultValue() {
 
       // in case we have an element we can skip right here
@@ -687,6 +711,12 @@
    */
   class SieveGenericStructure extends SieveAbstractElement {
 
+    /**
+     *
+     * @param {*} docshell
+     * @param {*} id
+     * @param {*} type
+     */
     constructor(docshell, id, type) {
       super(docshell, id);
 
@@ -802,6 +832,9 @@
       return result;
     }
 
+    /**
+     * @returns {boolean}
+     */
     hasDefaultValue() {
       for (let item of this._elements) {
         if (item.hasDefaultValue())
@@ -813,6 +846,9 @@
       return true;
     }
 
+    /**
+     * @returns {boolean}
+     */
     isDefaultValue() {
 
       for (let item of this._elements) {
@@ -845,10 +881,19 @@
       return this;
     }
 
-    setNodeName(nodeName) {
-      this._nodeName = nodeName;
-    }
-
+    /**
+     * Enables the given element.
+     * Disabling means using the implicit allback.
+     *
+     * In case the given element is non existant an exception is thrown
+     *
+     * @param {String} id
+     *   the unique element's id
+     * @param {boolean} [status]
+     *   the new status in case it should be changed.
+     * @returns {boolean}
+     *   the elements status
+     */
     enable(id, status) {
 
       for (let item of this._elements) {
@@ -971,6 +1016,11 @@
       return this;
     }
 
+    /**
+     *
+     * @param {*} id
+     * @returns {boolean}
+     */
     hasElement(id) {
 
       for (let item of this._elements) {
@@ -984,6 +1034,10 @@
       return false;
     }
 
+    /**
+     *
+     * @param {*} id
+     */
     getElement(id) {
 
       for (let item of this._elements) {
@@ -1000,10 +1054,15 @@
 
 
   /**
-   * Used for matctype, comparators, addressppart or bd
+   * Used for matchtype, comparators, addressppart or body transforms
    */
   class SieveGenericUnion extends SieveAbstractElement {
 
+    /**
+     *
+     * @param {*} docshell
+     * @param {*} id
+     */
     constructor(docshell, id) {
       super(docshell, id);
 
@@ -1045,6 +1104,12 @@
       return this;
     }
 
+    /**
+     *
+     * @param {String} token
+     * @returns {SieveGenericUnion}
+     *   a self reference
+     */
     setToken(token) {
 
       if (token === null || typeof (token) === "undefined") {
@@ -1053,16 +1118,24 @@
       }
 
       this._prefix = new SieveGenericLiteral(token, this).setPostfix(" ", false, false);
-      //this._prefix.whitespace = this.document().createByName("whitespace", " ");
       return this;
     }
 
+    /**
+     *
+     * @param {*} items
+     * @returns {SieveGenericUnion}
+     *   a self reference
+     */
     addItems(items) {
       this._items = this._items.concat(items);
 
       return this;
     }
 
+    /**
+     * @returns {boolean}
+     */
     hasDefaultValue() {
 
       if (this._element.default === null)
@@ -1074,10 +1147,19 @@
       return true;
     }
 
+    /**
+     * @returns {string}
+     */
     getDefaultValue() {
       return this._element.default.toScript();
     }
 
+    /**
+     *
+     * @param {*} value
+     * @returns {SieveGenericUnion}
+     *   a self reference
+     */
     setDefaultValue(value) {
 
       if (value === null || typeof (value) === "undefined")
@@ -1088,6 +1170,9 @@
       return this;
     }
 
+    /**
+     * @returns {boolean}
+     */
     isDefaultValue() {
 
       if (this.hasDefaultValue() === false)
@@ -1115,6 +1200,9 @@
       return true;
     }
 
+    /**
+     *
+     */
     getCurrentValue() {
 
       if (this.isDefaultValue())
@@ -1187,6 +1275,10 @@
       return this.getDefaultValue();
     }
 
+    /**
+     * @param {*} value
+     * @returns {}
+     */
     value(value) {
 
       console.warn("SieveGenericUnion.value is deprecated use getValue and setValue");
@@ -1237,12 +1329,5 @@
 
   exports.SieveGenericStructure = SieveGenericStructure;
   exports.SieveGenericUnion = SieveGenericUnion;
-
-  // gen = new GenericElement()
-  // gen.addLiteral( action.token )
-  // gen.addWhiteSpace()
-  // gen.addGroup( new SieveGenericOptionalItem(this_action )
-  // gen.addGroup( new SieveGenericMandatoryItem(parameters) );
-  // gen.addLiteral(";")
 
 })(window);

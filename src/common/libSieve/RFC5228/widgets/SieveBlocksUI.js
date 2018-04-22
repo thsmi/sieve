@@ -23,6 +23,8 @@
   /* global SieveDropBoxUI */
   /* global SieveBlockDropHandler */
 
+  const FIRST_ELEMENT = 1;
+
   /**
    * The UI Element which renders the root node.
    */
@@ -32,7 +34,7 @@
      * @inheritDoc
      */
     createHtml(parent) {
-      return parent.append(this.getSieve().elms[1].html());
+      return parent.append(this.getSieve().elms[FIRST_ELEMENT].html());
     }
   }
 

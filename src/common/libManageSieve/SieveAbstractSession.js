@@ -9,11 +9,10 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-// Enable Strict Mode
-"use strict";
-
 (function (exports) {
 
+  // Enable Strict Mode
+  "use strict";
 
   /**
    * This class pools and caches concurrent connections (Channel) to an destinct

@@ -18,45 +18,61 @@
 
   const TOKEN_NOT_FOUND = -1;
 
+  const LEADING_WHITESPACE = 0;
+  const STRING_VALUE = 1;
+  const TAILING_WHITESPACE = 2;
+
+  const ONE_CHAR = 1;
+  const TWO_CHARS = 2;
+
+  const MAX_QUOTE_LEN = 50;
+
   /* global SieveLexer */
   /* global SieveAbstractElement */
 
-  // TODO create an abstract class for get and set string...
+  /**
+   * Implements as sieve multiline element.
+   */
+  class SieveMultiLineString extends SieveAbstractElement {
 
+    /**
+     * @inheritDoc
+     */
+    constructor(docshell, id) {
+      super(docshell, id);
 
-  // CONSTRUCTOR:
-  function SieveMultiLineString(docshell, id) {
-    SieveAbstractElement.call(this, docshell, id);
+      this.text = "";
 
-    this.text = "";
+      this.whiteSpace = this._createByName("whitespace", "\r\n");
+      this.hashComment = null;
+    }
 
-    this.whiteSpace = this._createByName("whitespace", "\r\n");
-    this.hashComment = null;
-  }
-
-  SieveMultiLineString.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveMultiLineString.prototype.constructor = SieveMultiLineString;
-
-  // PUBLIC STATIC:
-  SieveMultiLineString.isElement
-    = function (parser, lexer) {
+    /**
+     * @inheritDoc
+     */
+    static isElement(parser, lexer) {
       return parser.startsWith("text:");
-    };
+    }
 
-  SieveMultiLineString.nodeName = function () {
-    return "string/multiline";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "string/multiline";
+    }
 
-  SieveMultiLineString.nodeType = function () {
-    return "string/";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeType() {
+      return "string/";
+    }
 
-  // PUBLIC:
-  SieveMultiLineString.prototype.init
-    = function (parser) {
+    /**
+     * @inheritDoc
+     */
+    init(parser) {
       // <"text:"> *(SP / HTAB) (hash-comment / CRLF)
-      /*  if (this._probeByName("string/multiline",parser) == false)
-          throw "Multi-line String expected but found: \n"+parser.substr(0,50)+"...";*/
 
       // remove the "text:"
       parser.extract("text:");
@@ -77,28 +93,28 @@
       this.text = this.text.substr("\r\n".length).replace(/^\.\./mg, ".");
 
       return this;
-    };
+    }
 
-  /**
-   * Gets or Sets the string's value
-   *
-   * @param {String} [value]
-   *   the value which should be set
-   * @return {String}
-   *   the current value
-   */
-  SieveMultiLineString.prototype.value
-    = function (value) {
+    /**
+     * Gets or Sets the string's value
+     *
+     * @param {String} [value]
+     *   the value which should be set
+     * @return {String}
+     *   the current value
+     */
+    value(value) {
       if (typeof (value) === "undefined")
         return this.text;
 
       this.text = value;
       return this.text;
-    };
+    }
 
-
-  SieveMultiLineString.prototype.toScript
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    toScript() {
       let text = this.text;
 
       if (text !== "")
@@ -112,59 +128,48 @@
         + ((this.hashComment) ? this.hashComment.toScript() : "")
         + text
         + ".\r\n";
-    };
-
-  /* ******************************************************************************
-      CLASSNAME:
-        SieveQuotedString implements SieveObject
-
-      CONSTUCTOR:
-        public SieveQuotedString()
-
-      PUBLIC FUNCTIONS:
-        public static boolean isQuotedString(String data)
-        public boolean parse(String data) throws Exception
-        public String toScript()
-        public String toXUL()
-
-      MEMBER VARIABLES:
-        private String text;
-
-      DESCRIPTION:
-        Defines the atomar String which in encapsulated in Quotes (")
-
-  *******************************************************************************/
-
-
-  // CONSTRUCTOR:
-  function SieveQuotedString(docshell, id) {
-    SieveAbstractElement.call(this, docshell, id);
-    this.text = "";
+    }
   }
 
-  SieveQuotedString.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveQuotedString.prototype.constructor = SieveQuotedString;
-
-  // PUBLIC STATIC:
-  SieveQuotedString.isElement
-    = function (parser) {
-      return parser.isChar("\"");
-    };
-
-  SieveQuotedString.nodeName = function () {
-    return "string/quoted";
-  };
-
-  SieveQuotedString.nodeType = function () {
-    return "string/";
-  };
-
-  // PUBLIC:
   /**
-   * @inheritdoc
+   * Defines the atomar String which in encapsulated in Quotes (")
    */
-  SieveQuotedString.prototype.init
-    = function (parser) {
+  class SieveQuotedString extends SieveAbstractElement {
+
+    /**
+     * @inheritDoc
+     */
+    constructor(docshell, id) {
+
+      super(docshell, id);
+      this.text = "";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    static isElement(parser) {
+      return parser.isChar("\"");
+    }
+
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "string/quoted";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    static nodeType() {
+      return "string/";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    init(parser) {
       this.text = "";
 
       parser.extractChar("\"");
@@ -191,13 +196,13 @@
         this.text += parser.extractUntil("\"");
 
         // Skip if the quote is not escaped
-        if (this.text.charAt(this.text.length - 1) !== "\\")
+        if (this.text.charAt(this.text.length - ONE_CHAR) !== "\\")
           break;
 
         // well it is obviously escaped, so we have to check if the escape
         // character is escaped
-        if (this.text.length >= 2)
-          if (this.text.charAt(this.text.length - 2) === "\\")
+        if (this.text.length >= TWO_CHARS)
+          if (this.text.charAt(this.text.length - TWO_CHARS) === "\\")
             break;
 
         // add the quote, it was escaped...
@@ -214,18 +219,17 @@
       // ... but as they are illegal anyway, we assume a perfect world.
 
       return this;
-    };
+    }
 
-  /**
-   * Gets or Sets the string's value
-   *
-   * @param {String} [value]
-   *   the value which should be set
-   * @return {String}
-   *   the current value
-   */
-  SieveQuotedString.prototype.value
-    = function (value) {
+    /**
+     * Gets or Sets the string's value
+     *
+     * @param {String} [value]
+     *   the value which should be set
+     * @return {String}
+     *   the current value
+     */
+    value(value) {
       if (typeof (value) === "undefined")
         return this.text;
 
@@ -235,60 +239,41 @@
       this.text = value;
 
       return this.text;
-    };
+    }
 
-
-  SieveQuotedString.prototype.toScript
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    toScript() {
       // we need to make sure all backslashes and all quotes are escaped.
       return "\"" + this.text.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + "\"";
-    };
-
-  /* ******************************************************************************
-      CLASSNAME:
-        SieveStringList implements SieveObject
-
-      CONSTUCTOR:
-        public SieveStringList()
-
-      PUBLIC FUNCTIONS:
-        public static boolean isStringList(String data)
-        public boolean parse(String data) throws Exception
-        public String toScript()
-        public String toXUL()
-
-      MEMBER VARIABLES:
-        private Array[] elements;
-        private boolean compact;
-
-      DESCRIPTION:
-        A Stringlist is an Array of Quotedstring
-
-  *******************************************************************************/
-
-  const LEADING_WHITESPACE = 0;
-  const STRING_VALUE = 1;
-  const TAILING_WHITESPACE = 2;
-
-
-  // CONSTRUCTOR:
-  function SieveStringList(docshell, id) {
-    SieveAbstractElement.call(this, docshell, id);
-
-    this.elements = [];
-
-    // if the list contains only one entry...
-    // ... use the comact syntac, this means ...
-    // ... don't use the "[...]" to encapsulate the string
-    this.compact = true;
+    }
   }
 
-  SieveStringList.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveStringList.prototype.constructor = SieveStringList;
 
-  // PUBLIC STATIC:
-  SieveStringList.isElement
-    = function (parser, lexer) {
+  /**
+   * A Stringlist is an Array of Quotedstring
+   */
+  class SieveStringList extends SieveAbstractElement {
+
+    /**
+     * @inheritdoc
+     */
+    constructor(docshell, id) {
+      super(docshell, id);
+
+      this.elements = [];
+
+      // if the list contains only one entry...
+      // ... use the comact syntac, this means ...
+      // ... don't use the "[...]" to encapsulate the string
+      this.compact = true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    static isElement(parser, lexer) {
       // the [ is not necessary if the list contains only one enty!
       if (parser.isChar("["))
         return true;
@@ -297,19 +282,26 @@
         return true;
 
       return false;
-    };
+    }
 
-  SieveStringList.nodeName = function () {
-    return "stringlist";
-  };
+    /**
+     * @inheritdoc
+     */
+    static nodeName() {
+      return "stringlist";
+    }
 
-  SieveStringList.nodeType = function () {
-    return "stringlist";
-  };
+    /**
+     * @inheritdoc
+     */
+    static nodeType() {
+      return "stringlist";
+    }
 
-  // PUBLIC:
-  SieveStringList.prototype.init
-    = function (parser) {
+    /**
+     * @inheritdoc
+     */
+    init(parser) {
 
       this.elements = [];
 
@@ -336,7 +328,7 @@
           element[LEADING_WHITESPACE] = this._createByName("whitespace", parser);
 
         if (this._probeByName("string/quoted", parser) === false)
-          throw new Error("Quoted String expected but found: \n" + parser.bytes(50) + "...");
+          throw new Error("Quoted String expected but found: \n" + parser.bytes(MAX_QUOTE_LEN) + "...");
 
         element[STRING_VALUE] = this._createByName("string/quoted", parser);
 
@@ -348,10 +340,22 @@
 
       parser.extractChar("]");
       return this;
-    };
+    }
 
-  SieveStringList.prototype.contains
-    = function (str, matchCase) {
+    /**
+     * Checks if the given string is contained in the stringlist.
+     *
+     * @param {String} str
+     *   the string which should be checked
+     * @param {boolean} [matchCase]
+     *   if true the comparison will be case sensitive.
+     *   Otherwise the comparison is case insensitive.
+     *   if omitted the comparison default to case sensitive.
+     *
+     * @returns {boolean}
+     *   true in case the string is contained otherwise false
+     */
+    contains(str, matchCase) {
       let item = "";
 
       if (typeof (matchCase) === "undefined")
@@ -368,32 +372,43 @@
       }
 
       return false;
-    };
+    }
 
-  SieveStringList.prototype.item
-    = function (idx, value) {
+    /**
+     * Gets or sets the item at the given index.
+     *
+     * @param {int} idx
+     *   the index which should be set
+     * @param {String} [value]
+     *   the string value to set
+     * @returns {string}
+     *   the current value at the index
+     */
+    item(idx, value) {
       if (typeof (value) !== "undefined")
         this.elements[idx][STRING_VALUE].value(value);
 
       return this.elements[idx][STRING_VALUE].value();
-    };
+    }
 
-  SieveStringList.prototype.size
-    = function () {
+    /**
+     * @returns {int}
+     *   the number of elements contained in the list.
+     */
+    size() {
       return this.elements.length;
-    };
+    }
 
-  /**
-   * Adds one or more elements to the end of the string list.
-   *
-   * @param {string|string[]} str
-   *   the a string or array like object with strings which should be added.
-   *
-   * @return {SieveStringList}
-   *   a self recerene to build chains.
-   */
-  SieveStringList.prototype.append
-    = function (str) {
+    /**
+     * Adds one or more elements to the end of the string list.
+     *
+     * @param {string|string[]} str
+     *   the a string or array like object with strings which should be added.
+     *
+     * @return {SieveStringList}
+     *   a self recerene to build chains.
+     */
+    append(str) {
       // Append multiple strings at once...
       if (Array.isArray(str)) {
 
@@ -408,47 +423,65 @@
       this.elements.push(elm);
 
       return this;
-    };
+    }
 
-  /**
-   * Removes all string list entries.
-   *
-   * @return {SieveStringList}
-   *   a self reference to build chains.
-   */
-  SieveStringList.prototype.clear
-    = function () {
+    /**
+     * Removes all string list entries.
+     *
+     * @return {SieveStringList}
+     *   a self reference to build chains.
+     */
+    clear() {
       this.elements = [];
 
       return this;
-    };
+    }
 
-  SieveStringList.prototype.remove
-    = function (str) {
+    /**
+     * Removes the given string from the string list
+     *
+     * @param {string} str
+     *   the string to remove
+     * @return {SieveStringList}
+     *   a self reference to build chains.
+     */
+    remove(str) {
       for (let i = 0; i < this.elements.length; i++) {
         if (this.elements[i][STRING_VALUE].value() !== str)
           continue;
 
         this.elements.splice(i, 1);
       }
-    };
 
-  SieveStringList.prototype.values
-    = function (values) {
+      return this;
+    }
+
+    /**
+     * Get or set the string lists values.
+     *
+     * @param {Strings|String[]} [values]
+     *   optional, the values to set
+     *
+     * @returns {string[]}
+     *   the currently set values.
+     */
+    values(values) {
 
       if (values !== null && typeof (values) !== "undefined")
         this.clear().append(values);
 
       let result = [];
-      this.elements.forEach(function (element) {
+      this.elements.forEach( (element) => {
         result.push(element[STRING_VALUE].value());
-      }, this);
+      });
 
       return result;
-    };
+    }
 
-  SieveStringList.prototype.toScript
-    = function () {
+    /**
+     * @inheritdoc
+     */
+    toScript() {
       if (this.elements.length === 0)
         return '""';
 
@@ -474,62 +507,67 @@
       result += "]";
 
       return result;
-    };
+    }
+  }
 
   /**
    * Defines an abstracted SieveString primitive by combinig the two atomar String types
    * SieveQuotedString and SieveMultiLineString.
    *
    * It converts automatically between the two string types depending on the context.
-   *
-   * @constructor
-   * @param {SieveDocument} docshell - the sieve document which owns this element
-   * @param {String} id - a unique id for this element
    */
-  function SieveString(docshell, id) {
-    SieveAbstractElement.call(this, docshell, id);
-    this.string = this._createByName("string/quoted");
-  }
+  class SieveString extends SieveAbstractElement {
 
-  SieveString.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveString.prototype.constructor = SieveString;
+    /**
+     * @inheritDoc
+     */
+    constructor(docshell, id) {
+      super(docshell, id);
+      this.string = this._createByName("string/quoted");
+    }
 
-  // PUBLIC STATIC:
-  SieveString.isElement
-    = function (parser, lexer) {
+    /**
+     * @inheritDoc
+     */
+    static isElement(parser, lexer) {
       return lexer.probeByClass(["string/"], parser);
-    };
+    }
 
-  SieveString.nodeName = function () {
-    return "string";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "string";
+    }
 
-  SieveString.nodeType = function () {
-    return "string";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeType() {
+      return "string";
+    }
 
-  // PUBLIC:
-  SieveString.prototype.init
-    = function (parser) {
+    /**
+     * @inheritDoc
+     */
+    init(parser) {
       this.string = this._createByClass(["string/"], parser);
 
       return this;
-    };
+    }
 
-
-  /**
-   * Gets or sets a string's value.
-   *
-   * When setting a string it automatically adjusts
-   * the type to a quoted string or a multiline string.
-   *
-   * @param {String} [str]
-   *   the strings new value in case it should be changed.
-   * @return {String}
-   *   the string stored in this object
-   */
-  SieveString.prototype.value
-    = function (str) {
+    /**
+     * Gets or sets a string's value.
+     *
+     * When setting a string it automatically adjusts
+     * the type to a quoted string or a multiline string.
+     *
+     * @param {String} [str]
+     *   the strings new value in case it should be changed.
+     * @return {String}
+     *   the string stored in this object
+     */
+    value(str) {
       if (typeof str === "undefined")
         return this.string.value();
 
@@ -561,12 +599,15 @@
       this.string = string;
 
       return this.string.value();
-    };
+    }
 
-  SieveString.prototype.toScript
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    toScript() {
       return this.string.toScript();
-    };
+    }
+  }
 
 
   if (!SieveLexer)

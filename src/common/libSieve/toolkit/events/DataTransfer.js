@@ -17,6 +17,9 @@
 
   const NO_SUCH_TOKEN = -1;
 
+  const RANDOM_SEED_SIZE = 10000000;
+  const HEX_STRING = 16;
+
   // We need these global object to bypass the bug
   let _transfer = null;
   let _token = null;
@@ -68,19 +71,7 @@
      *   a unique token
      */
     generateToken() {
-      let token = [];
-
-      for (let i = 0; i < 32; i++) {
-
-        let item = (Math.floor(Math.random() * (256))).toString(16);
-
-        if (item.length < 2)
-          item = "0" + item;
-
-        token.push(item);
-      }
-
-      return token.join("");
+      return Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING) + Date.now().toString(HEX_STRING);
     }
 
     /**

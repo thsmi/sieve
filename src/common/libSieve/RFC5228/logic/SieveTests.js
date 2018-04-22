@@ -16,12 +16,19 @@
 
   "use strict";
 
+  const LEADING_WHITESPACE = 0;
+  const TEST = 1;
+  const TAILING_WHITESPACE = 2;
+
   /* global SieveGrammar */
+
+  /* global SieveLexer */
+  /* global SieveAbstractElement */
 
   if (!SieveGrammar)
     throw new Error("Could not register Tests");
 
-  let envelope = {
+  SieveGrammar.addTest({
 
     node: "test/envelope",
     type: "test",
@@ -58,14 +65,12 @@
 
       }]
     }]
-  };
-
-  SieveGrammar.addTest(envelope);
+  });
 
 
   // address [ADDRESS-PART] [COMPARATOR] [MATCH-TYPE]
   //             <header-list: string-list> <key-list: string-list>
-  let _address = {
+  SieveGrammar.addTest({
     node: "test/address",
     type: "test",
 
@@ -100,12 +105,10 @@
 
       }]
     }]
-  };
-
-  SieveGrammar.addTest(_address);
+  });
 
   // <"exists"> <header-names: string-list>
-  let _exists = {
+  SieveGrammar.addTest({
     node: "test/exists",
     type: "test",
 
@@ -120,12 +123,10 @@
         value: '"From"'
       }]
     }]
-  };
-
-  SieveGrammar.addTest(_exists);
+  });
 
   // <"header"> [COMPARATOR] [MATCH-TYPE] <header-names: string-list> <key-list: string-list>
-  let _header = {
+  SieveGrammar.addTest({
     node: "test/header",
     type: "test",
 
@@ -155,13 +156,9 @@
         value: '"Example"'
       }]
     }]
-  };
-
-  SieveGrammar.addTest(_header);
+  });
 
 
-  /* global SieveLexer */
-  /* global SieveAbstractElement */
 
   /**
    *
@@ -317,7 +314,6 @@
         + this.whiteSpace[2].toScript();
     };
 
-
   // TODO Stringlist and testslist are quite simmilar
   function SieveTestList(docshell, id) {
     SieveAbstractElement.call(this, docshell, id);
@@ -352,15 +348,15 @@
 
         let element = [];
 
-        element[0] = this._createByName("whitespace");
+        element[LEADING_WHITESPACE] = this._createByName("whitespace");
         if (this._probeByName("whitespace", parser))
-          element[0].init(parser);
+          element[LEADING_WHITESPACE].init(parser);
 
-        element[1] = this._createByClass(["test", "operator"], parser);
+        element[TEST] = this._createByClass(["test", "operator"], parser);
 
-        element[2] = this._createByName("whitespace");
+        element[TAILING_WHITESPACE] = this._createByName("whitespace");
         if (this._probeByName("whitespace", parser))
-          element[2].init(parser);
+          element[TAILING_WHITESPACE].init(parser);
 
         this.tests.push(element);
       }
@@ -376,9 +372,9 @@
 
       switch ([].concat(elm).length) {
         case 1:
-          element[0] = this._createByName("whitespace", "\r\n");
-          element[1] = elm;
-          element[2] = this._createByName("whitespace");
+          element[LEADING_WHITESPACE] = this._createByName("whitespace", "\r\n");
+          element[TEST] = elm;
+          element[TAILING_WHITESPACE] = this._createByName("whitespace");
           break;
 
         case 3:
@@ -398,7 +394,7 @@
 
       if (sibling && (sibling.id() >= 0))
         for (idx = 0; idx < this.tests.length; idx++)
-          if (this.tests[idx][1].id() === sibling.id())
+          if (this.tests[idx][TEST].id() === sibling.id())
             break;
 
       this.tests.splice(idx, 0, element);
@@ -415,7 +411,7 @@
         return false;
 
       for (let i = 0; i < this.tests.length; i++)
-        if (this.tests[i][1].widget())
+        if (this.tests[i][TEST].widget())
           return false;
 
       return true;
@@ -432,10 +428,10 @@
       let elm = null;
       // Is it a direct match?
       for (let i = 0; i < this.tests.length; i++) {
-        if (this.tests[i][1].id() !== childId)
+        if (this.tests[i][TEST].id() !== childId)
           continue;
 
-        elm = this.tests[i][1];
+        elm = this.tests[i][TEST];
         elm.parent(null);
 
         this.tests.splice(i, 1);
@@ -461,9 +457,9 @@
       for (let i = 0; i < this.tests.length; i++) {
         result = result
           + ((i > 0) ? "," : "")
-          + this.tests[i][0].toScript()
-          + this.tests[i][1].toScript()
-          + this.tests[i][2].toScript();
+          + this.tests[i][LEADING_WHITESPACE].toScript()
+          + this.tests[i][TEST].toScript()
+          + this.tests[i][TAILING_WHITESPACE].toScript();
       }
 
       result += ")";
@@ -474,7 +470,7 @@
   SieveTestList.prototype.require
     = function (imports) {
       for (let i = 0; i < this.tests.length; i++)
-        this.tests[i][1].require(imports);
+        this.tests[i][TEST].require(imports);
     };
 
 
@@ -485,6 +481,7 @@
   SieveLexer.register(SieveSize);
 
   SieveLexer.register(SieveTestList);
+
   exports.SieveTestList = SieveTestList;
 
 })(window);

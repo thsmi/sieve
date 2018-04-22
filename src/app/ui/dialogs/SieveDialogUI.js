@@ -11,6 +11,8 @@
 
 (function (exports) {
 
+  "use strict";
+
   const KEY_RETURN = 13;
 
   /* global $ */

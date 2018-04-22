@@ -1,244 +1,163 @@
-<div id="template-content" class="dialog">
-    <style>
-        .sivGroup>div {
-            height: 48px;
-            line-height: 48px;
-            font-size: 15px;
-        }
+<div>
+    <ul id="template-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-vacation" role="tab">Vacation</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-envelope" role="tab">Envelope</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+        </li>
+    </ul>
 
-        #sivVacationDialog textarea {
-            font-size: 15px;
-            border: none;
-            border-bottom: 1px solid black;
-            background-color: #EEEEEE;
-            width: 100%;
-            height: 200px;
-            ;
-        }
+    <div id="template-content">
+        <div class="tab-content m-2">
+            <div class="tab-pane fade show active" id="sieve-widget-vacation" role="tabpanel">
+                <style>
+                    #sivVacationServerDesc,
+                    #sivVacationFromDesc,
+                    #sivVacationAddressesDesc {
+                        color: rgba(0, 0, 0, 0.53);
+                    }
 
-        #sivVacationDialog h2 {
-            /*height:48px; line-height:48px; */
-            font-size: 13px;
-            color: rgba(0, 0, 0, 0.53);
-            margin: 0;
-            /*border-top: 1px solid lightgray;*/
-        }
+                    #vacationEnvelopeEdit div {
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
 
-        .sivGroup.sivCollapsed>div {
-            display: none;
-        }
+                    #sivVacationDays {
+                        width: 50px;
+                        min-width: 0px !important;
+                    }
 
-        #sivVacationServerDesc,
-        #sivVacationFromDesc,
-        #sivVacationAddressesDesc {
-            color: rgba(0, 0, 0, 0.53);
-        }
-
-        #vacationEnvelopeEdit .sivContent div {
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        #sivVacationDays {
-            width: 50px;
-            min-width: 0px !important;
-        }
-
-        .sivDescription {
-            color: rgba(0, 0, 0, 0.53);
-            margin-bottom: 8px;
-        }
-
-        .sivMultiLineItem {
-            padding-top: 16px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid lightgray;
-            display: flex;
-            font-size: 13px;
-        }
-
-        .sivMultiLineItem .sivAction {
-            padding-left: 16px;
-            padding-right: 16px;
-            min-width: 24px;
-            font-size: 24px;
-        }
-
-        .sivMultiLineItem .sivContent {
-            padding-bottom: 0px;
-            width: 100%;
-            overflow: hidden;
-            font-size: 13px
-        }
-
-        .sivMultiLineItem .sivContent div {
-            flex: 1 1 100%;
-            overflow: hidden;
-            /*text-overflow: ellipsis;
-		  white-space: nowrap;*/
-        }
-    </style>
-    <div>
-        <!-- System -->
-        <div id="vacationEnvelopePage" style="display:none">
-            <!-- Appbar -->
-            <div id="vacationEnvelopeBack" class="dialog-header">
-                <div style="color: #FFFFFF; font-size:20px; line-height:60px; color:#757575; font-weight: 500; height:64px; padding:0px; margin:0px; display:flex; justify-content:left; width:100%;">
-                    <div style="color: #FFFFFF; width:56px; padding-left:16px;">&lt;</div>
-                    <div style="color: #FFFFFF;">Edit Response Envelope</div>
-                </div>
-            </div>
-
-            <div style="padding-left:16px; padding-right:16px;max-height:400px;overflow: auto;">
-                <div class="sivMultiLineItem">
-                    <div class="sivContent">
-                        <h2>Subject</h2>
-                        <div class="sivDescription">The subject is used for any vacation response</div>
-                        <div>
-                            <input type="radio" name="subject" value="false" /> Server's default Subject
-                        </div>
-                        <div>
-                            <input type="radio" name="subject" value="true" />
-                            <input type="text" id="sivVacationSubject" placeholder="Custom Subject" />
-                        </div>
-                    </div>
-                </div>
-                <div class="sivMultiLineItem">
-                    <div class="sivContent">
-                        <h2>From</h2>
-                        <div class="sivDescription">Used to specify an alternate From address.</div>
-                        <div>
-                            <input type="radio" name="from" value="false" />
-                            <span>Address of the sieve script owner</span>
-                        </div>
-                        <div>
-                            <input type="radio" name="from" value="true" />
-                            <input type="email" id="sivVacationFrom" placeholder="Custom From Address" />
-                        </div>
-                    </div>
-                </div>
-                <div class="sivMultiLineItem">
-                    <div class="sivContent">
-
-                        <h2>Addresses</h2>
-                        <div class="sivDescription">
-                            By default a response message is only send, if it was addressed to the recipient user or sieve script owner.
-                            <br/> You can supply additional mail addresses. For Example if mails are forwarded or you have multiple
-                            aliases for a single mail address
-                        </div>
-
-                        <div id="sivAddresses" data-list-new="#sivAddressesAdd" data-list-items="#sivAddressesGroup" data-list-template="#sivAddressesTemplate" > </div>
-                        <div id="sivAddressesTemplate" style="display:none">
-                            <div>
-                                <input type="email" placeholder="Additional recipient address" />
-                                <button>remove</button>
-                            </div>
-                        </div>
-                        <div id="sivAddressesGroup">
-                            <div>
-                                <button id="sivAddressesAdd">add</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="sivEditMain">
-            <!-- Appbar -->
-            <div class="dialog-header">
-                <div class="dialog-tab">
-                    <div class="tab-active" data-tab-content="sivVacationGeneralContent">BASIC</div>
-                    <div data-tab-content="sivVacationAdvancedContent">ADVANCED</div>
-                    <div data-tab-content="sivVacationHelpContent">HELP</div>
-                </div>
-            </div>
-            <!-- content -->
-            <div class="dialog-tab-content">
-                <!-- content for help tab -->
-                <div id="sivVacationHelpContent">
-                    <p>
-                        The "vacation" action implements a vacation autoresponder similar to the vacation command available under many versions of
-                        Unix. Its purpose is to provide correspondents with notification that the user is away for an extended
-                        period of time and that they should not expect quick responses.
-                    </p>
-                    <p>
-                        "Vacation" is used to respond to a message with another message. Vacation's messages are always addressed to the Return-Path
-                        address (that is, the envelope from address) of the message being responded to.
-                    </p>
-                </div>
-                <!-- content for general tab -->
-                <div id="sivVacationGeneralContent" class="tab-active">
+                    .sivDescription {
+                        color: rgba(0, 0, 0, 0.53);
+                        margin-bottom: 8px;
+                    }
+                </style>
+                <div>
                     <!-- Envelope Controls -->
-                    <div id="vacationEnvelopeEdit" class="sivMultiLineItem">
-                        <div class="sivContent">
-                            <div>Subject:
-                                <span id="vacationSubjectDesc" style="color: rgba(0,0,0,0.53);"></span>
-                            </div>
-                            <div>From:
-                                <span id="vacationFromDesc" style="color: rgba(0,0,0,0.53);"></span>
-                            </div>
-                            <div>Addresses:
-                                <span id="vacationAddressesDesc" style="color: rgba(0,0,0,0.53);">...</span>
-                            </div>
+                    <div id="vacationEnvelopeEdit">
+                        <div>Subject:
+                            <span id="vacationSubjectDesc" style="color: rgba(0,0,0,0.53);"></span>
                         </div>
-                        <div class="sivAction">
-                            <img src="./vacation/template/edit_24px.svg" />
+                        <div>From:
+                            <span id="vacationFromDesc" style="color: rgba(0,0,0,0.53);"></span>
+                        </div>
+                        <div>Addresses:
+                            <span id="vacationAddressesDesc" style="color: rgba(0,0,0,0.53);">...</span>
                         </div>
                     </div>
+                    <br/>
                     <!-- Reason textarea -->
-                    <textarea style="padding-top:16px;border:0;" id="sivVacationReason" placeholder="Enter your message"></textarea>
+                    <textarea class="form-control" rows="10" id="sivVacationReason" placeholder="Enter your message"></textarea>
+
                 </div>
-                <!-- content for advanced tab -->
-                <div id="sivVacationAdvancedContent">
-                    <div class="sivMultiLineItem">
-                        <div class="sivContent">
-                            <h2>Message Content Type</h2>
-                            <div class="sivDescription">Instead of plaintext, the message can be a specified as a MIME Message</div>
-                            <div>
-                                <input type="radio" name="mime" value="false" />
-                                <span>Is plaintext Message (Default)</span>
-                            </div>
-                            <div>
-                                <input type="radio" name="mime" value="true" />
-                                <span>Is MIME Message</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sivMultiLineItem">
-                        <div class="sivContent">
-                            <h2> Response Tracking</h2>
-                            <div class="sivDescription">A vacation message is sent at most every some days to the same sender</div>
-                            <div>
-                                <input type="radio" name="days" value="false" />
-                                <span>Use Server's default policy</span>
-                            </div>
-                            <div>
-                                <input type="radio" name="days" value="true" />
-                                <span>Reply atmost every</span>
-                                <input type="number" min="0" id="sivVacationDays" />
-                                <span>days to the same sender</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sivMultiLineItem">
-                        <div class="sivContent">
-                            <h2> Response Handles</h2>
-                            <div class="sivDescription">
-                                The response tracking considers all vacation statements that use the same handle as the same response
-                                <br/> The default handle considers subject, from, mime as well as the message. A custom handle
-                                can be any unique strings
-                            </div>
-                            <div>
-                                <input type="radio" name="handle" value="false" />
-                                <span>Use default handle</span>
-                            </div>
-                            <div>
-                                <input type="radio" name="handle" value="true" />
-                                <input type="text" id="sivVacationHandle" placeholder="Custom Handle" />
-                            </div>
-                        </div>
+            </div>
+
+            <div class="tab-pane fade" id="sieve-widget-envelope" role="tabpanel">
+                <h5>Subject</h5>
+                <div class="sivDescription">The subject is used for any vacation response</div>
+                <div>
+                    <input type="radio" name="subject" value="false" /> Server's default Subject
+                </div>
+                <div>
+                    <input type="radio" name="subject" value="true" />
+                    <input type="text" class="form-control" id="sivVacationSubject" placeholder="Custom Subject" />
+                </div>
+
+                <br/>
+                <h5>From</h5>
+                <div class="sivDescription">Used to specify an alternate From address.</div>
+                <div>
+                    <input type="radio" name="from" value="false" />
+                    <span>Address of the sieve script owner</span>
+                </div>
+                <div>
+                    <input type="radio" name="from" value="true" />
+                    <input type="email" class="form-control" id="sivVacationFrom" placeholder="Custom From Address" />
+                </div>
+                <br/>
+                <h5>Addresses</h5>
+                <div>
+                    <small  class="form-text text-muted">
+                        By default a response message is only send, if it was addressed to the recipient user or sieve script owner.
+                        <br/> You can supply additional mail addresses. For Example if mails are forwarded or you have multiple
+                        aliases for a single mail address
+                    </small>
+                </div>
+
+                <div id="sivAddresses" data-list-new="#sivAddressesAdd" data-list-items="#sivAddressesGroup" data-list-template="#sivAddressesTemplate">
+                </div>
+                <div id="sivAddressesTemplate" style="display:none">
+                    <div>
+                        <input type="email" placeholder="Additional recipient address" />
+                        <button>remove</button>
                     </div>
                 </div>
+                <div id="sivAddressesGroup">
+                    <div>
+                        <button id="sivAddressesAdd">add</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+
+                <h5>Message Content Type</h5>
+                <div class="sivDescription">Instead of plaintext, the message can be a specified as a MIME Message</div>
+                <div>
+                    <input type="radio" name="mime" value="false" />
+                    <span>Is plaintext Message (Default)</span>
+                </div>
+                <div>
+                    <input type="radio" name="mime" value="true" />
+                    <span>Is MIME Message</span>
+                </div>
+                <br/>
+                <h5> Response Tracking</h5>
+                <div class="sivDescription">A vacation message is sent at most every some days to the same sender</div>
+                <div>
+                    <input type="radio" name="days" value="false" />
+                    <span>Use Server's default policy</span>
+                </div>
+                <div>
+                    <input type="radio" name="days" value="true" />
+                    <span>Reply atmost every</span>
+                    <input type="number" min="0" id="sivVacationDays" />
+                    <span>days to the same sender</span>
+                </div>
+                <br/>
+                <h5> Response Handles</h5>
+                <div class="sivDescription">
+                    The response tracking considers all vacation statements that use the same handle as the same response
+                    <br/> The default handle considers subject, from, mime as well as the message. A custom handle can be any
+                    unique strings
+                </div>
+                <div>
+                    <input type="radio" name="handle" value="false" />
+                    <span>Use default handle</span>
+                </div>
+                <div>
+                    <input type="radio" name="handle" value="true" />
+                    <input type="text" id="sivVacationHandle" placeholder="Custom Handle" />
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+                <p>
+                    The "vacation" action implements a vacation autoresponder similar to the vacation command available under many versions of
+                    Unix. Its purpose is to provide correspondents with notification that the user is away for an extended
+                    period of time and that they should not expect quick responses.
+                </p>
+                <p>
+                    "Vacation" is used to respond to a message with another message. Vacation's messages are always addressed to the Return-Path
+                    address (that is, the envelope from address) of the message being responded to.
+                </p>
             </div>
         </div>
     </div>

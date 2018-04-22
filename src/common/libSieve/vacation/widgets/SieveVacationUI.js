@@ -24,36 +24,6 @@
   const MAX_QUOTE_LEN = 240;
 
   /**
-   * @constructor
-   * @deprecated
-   */
-  function SieveTabWidget() {
-    this._tabs = "div.dialog-tab";
-    this._content = ".dialog-tab-content";
-  }
-
-  SieveTabWidget.prototype.init
-    = function () {
-
-      $(this._tabs + ' > div').click((ev) => {
-        this.onTabChange(ev.target);
-      });
-    };
-
-  SieveTabWidget.prototype.onTabChange
-    = function (elm) {
-
-      $(this._tabs + ' > div').removeClass('tab-active');
-      $(this._content + ' > div').removeClass('tab-active');
-
-      $(elm).addClass('tab-active');
-
-      let id = $(elm).attr('data-tab-content');
-      $("#" + id).addClass('tab-active');
-    };
-
-
-  /**
    * Provides an UI for the vacation action
    */
   class SieveVacationUI extends SieveActionDialogBoxUI {
@@ -122,22 +92,14 @@
      */
     onLoad() {
 
-      (new SieveTabWidget()).init();
-
-      $("#vacationEnvelopeEdit").click( () => {
-        $("#sivEditMain").hide();
-        $("#vacationEnvelopePage").show();
-      });
-
-      $("#vacationEnvelopeBack").click( () => {
-
+      $('a[data-toggle="tab"][href="#sieve-widget-envelope"]').on('hide.bs.tab', () => {
         this.onEnvelopeChanged();
-
-        $("#sivEditMain").show();
-        $("#vacationEnvelopePage").hide();
-
       });
 
+      $("#vacationEnvelopeEdit").click(() => {
+        $('a[data-toggle="tab"][href="#sieve-widget-envelope"]')
+          .tab('show');
+      });
 
       $('input:radio[name="days"][value="' + this.enable("days") + '"]').prop('checked', true);
       $('input:radio[name="subject"][value="' + this.enable("subject") + '"]').prop('checked', true);

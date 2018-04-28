@@ -26,9 +26,6 @@
   Cu.import("resource://gre/modules/Services.jsm");
   Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
 
-  const { SieveUtils } = SieveOverlayManager.requireModule("./utils/SieveWindowHelper.jsm", window);
-  const { SieveTabType } = SieveOverlayManager.requireModule("./utils/SieveTabType.jsm", window);
-
 
   function SieveAbstractOverlay() {
     this._callbacks = [];
@@ -296,12 +293,15 @@
       if (this.window)
         throw new Error("Already bound to window");
 
+      // We have to import the methods there because they need a valid window reference...
+      const { SieveUtils } = SieveOverlayManager.requireModule("./utils/SieveWindowHelper.jsm", window);
+      const { SieveTabType } = SieveOverlayManager.requireModule("./utils/SieveTabType.jsm", window);
+
       this.window = window;
 
       let document = window.document;
 
       let strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
-
       // Add Toolbar Overlay
       let onOpenFilterCmd =
         function () { SieveUtils.OpenFilter(document.defaultView); };

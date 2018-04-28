@@ -22,7 +22,7 @@
   /* global SieveDesigner */
   /* global SieveDocument */
 
-  /* global SieveEditableBoxUI */
+  /* global SieveSimpleBoxUI */
   /* global SieveCreateDragHandler */
   /* global SieveTrashBoxUI*/
 
@@ -48,7 +48,7 @@
    */
   function createMenuItem(action, flavour, docShell) {
 
-    let elm2 = (new SieveEditableBoxUI(docShell));
+    let elm2 = (new SieveSimpleBoxUI(docShell));
     elm2.drag(new SieveCreateDragHandler());
     elm2.drag().flavour(flavour);
     elm2._elmType = action;

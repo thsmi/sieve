@@ -4,12 +4,13 @@
 <head>
   <title>Sieve DOM</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <META HTTP-EQUIV="Access-Control-Allow-Origin" CONTENT="*">
+
   <link rel="stylesheet" href="./toolkit/style/layout.css" type="text/css" />
 
-  <link rel="stylesheet" href="./../fontawesome/css/fa-regular.css" type="text/css" />
+  <link rel="stylesheet" href="./../material-icons/material-icons.css" type="text/css" />
 
   <link rel="stylesheet" href="toolkit/style/style.css" type="text/css" />
-  <link rel="stylesheet" href="toolkit/widgets/tabDialog.css" type="text/css" />
 
   <link rel="stylesheet" href="./../bootstrap/css/bootstrap.min.css">
   <script src="./../jQuery/jquery.min.js"></script>
@@ -115,6 +116,9 @@
   <!-- RFC5231 - Relational -->
   <script type="application/javascript" src="relational/logic/SieveRelational.js"></script>
   <script type="application/javascript" src="relational/widgets/SieveRelationalUI.js"></script>
+
+  <script type="application/javascript" src="date/logic/SieveDate.js"></script>
+  <script type="application/javascript" src="date/widgets/SieveDateUI.js"></script>
 
   <style>
     .sivMenuItem {
@@ -313,6 +317,8 @@
               <div class="col-md-4 col-lg-3">
                 <input type="checkbox" name="capabilities" value="relational" checked>relational (RFC5231)</div>
 
+              <div class="col-md-4 col-lg-3">
+                <input type="checkbox" name="capabilities" value="date" checked>date (RFC5260)</div>
             </div>
 
             <div>

@@ -19,7 +19,7 @@ const BUILD_DIR_ADDON = "./build/thunderbird/";
 const BUILD_DIR_TEST = "./build/test/";
 
 const BASE_DIR_BOOTSTRAP = "./node_modules/bootstrap/dist";
-const BASE_DIR_FONTAWESOME = "./node_modules/@fortawesome/fontawesome-free-webfonts";
+const BASE_DIR_MATERIALICONS = "./node_modules/material-design-icons/iconfont";
 const BASE_DIR_JQUERY = "./node_modules/jquery/dist";
 const BASE_DIR_CODEMIRROR = "./node_modules/codemirror";
 const BASE_DIR_COMMON = "./src/common";
@@ -219,14 +219,13 @@ gulp.task('app:package-bootstrap', () => {
   ], { base: BASE_DIR_BOOTSTRAP }).pipe(gulp.dest(BUILD_DIR_APP + '/libs/bootstrap'));
 });
 
-gulp.task('app:package-fontawesome', () => {
+gulp.task('app:package-material-icons', () => {
   "use strict";
 
   return gulp.src([
-    BASE_DIR_FONTAWESOME + "/css/fa-regular.css",
-    BASE_DIR_FONTAWESOME + "/webfonts/fa-regular-400.woff2",
-    BASE_DIR_FONTAWESOME + "/LICENSE.txt"
-  ], { base: BASE_DIR_FONTAWESOME }).pipe(gulp.dest(BUILD_DIR_APP + '/libs/fontawesome'));
+    BASE_DIR_MATERIALICONS + "/material-icons.css",
+    BASE_DIR_MATERIALICONS + "/MaterialIcons-Regular.woff2"
+  ], { base: BASE_DIR_MATERIALICONS }).pipe(gulp.dest(BUILD_DIR_APP + '/libs/material-icons'));
 });
 
 gulp.task('app:package-license', () => {
@@ -276,7 +275,7 @@ gulp.task('app:package', gulp.parallel([
   "app:package-definition",
   "app:package-src", "app:package-common",
   "app:package-jquery", "app:package-bootstrap",
-  "app:package-fontawesome", "app:package-codemirror",
+  "app:package-material-icons", "app:package-codemirror",
   "app:package-license"]));
 
 gulp.task(
@@ -388,14 +387,13 @@ gulp.task('addon:package-bootstrap', () => {
   ], { base: BASE_DIR_BOOTSTRAP }).pipe(gulp.dest(BUILD_DIR_ADDON + '/chrome/chromeFiles/content/libs/bootstrap'));
 });
 
-gulp.task('addon:package-fontawesome', () => {
+gulp.task('addon:package-material-icons', () => {
   "use strict";
 
   return gulp.src([
-    BASE_DIR_FONTAWESOME + "/css/fa-regular.css",
-    BASE_DIR_FONTAWESOME + "/webfonts/fa-regular-400.woff2",
-    BASE_DIR_FONTAWESOME + "/LICENSE.txt"
-  ], { base: BASE_DIR_FONTAWESOME }).pipe(gulp.dest(BUILD_DIR_ADDON + '/libs/fontawesome'));
+    BASE_DIR_MATERIALICONS + "/material-icons.css",
+    BASE_DIR_MATERIALICONS + "/MaterialIcons-Regular.woff2"
+  ], { base: BASE_DIR_MATERIALICONS }).pipe(gulp.dest(BUILD_DIR_ADDON + '/libs/material-icons'));
 });
 
 gulp.task('addon:package-common', () => {
@@ -429,7 +427,7 @@ gulp.task(
     "addon:package-common",
     "addon:package-jquery",
     "addon:package-bootstrap",
-    "addon:package-fontawesome",
+    "addon:package-material-icons",
     "addon:package-codemirror",
     "addon:package-license"
   )

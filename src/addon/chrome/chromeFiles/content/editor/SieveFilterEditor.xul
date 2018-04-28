@@ -134,7 +134,7 @@
                 src="chrome://sieve/content/libs/editor/sieve.editor.html"
                 contextmenu="ctxEditor" />
 
-        <iframe id="sivWidgetEditor" flex="1"  type="content"
+        <browser id="sivWidgetEditor" flex="1"  type="content-primary"
                 src="about:blank" />
       </deck>
 

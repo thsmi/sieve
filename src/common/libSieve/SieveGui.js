@@ -80,27 +80,25 @@
 
     let elm = $("#sivActions").empty();
 
-    elm.append($("<div/>").text("Actions"));
-
     //  alert(SieveLexer.capabilities());
     for (key in SieveLexer.types["action"])
       if (SieveLexer.types["action"][key].onCapable(SieveLexer.capabilities()))
         elm.append(createMenuItem(key, "sieve/action", docShell));
 
-    elm.append($("<div/>").text("Tests"));
+    elm = $("#sivTests").empty();
 
     for (key in SieveLexer.types["test"])
       if (SieveLexer.types["test"][key].onCapable(SieveLexer.capabilities()))
         if (key !== "test/boolean")
           elm.append(createMenuItem(key, "sieve/test", docShell).get(0));
 
-
-    elm.append($("<div/>").text("Operators"));
+    elm = $("#sivOperators").empty();
 
     for (key in SieveLexer.types["operator"])
       if (SieveLexer.types["operator"][key].onCapable(SieveLexer.capabilities()))
         elm.append(createMenuItem(key, "sieve/operator", docShell).get(0));
 
+    elm = $("#sivTrash").empty();
     elm
       .append($(document.createElement('div'))
         .addClass("spacer"))
@@ -127,8 +125,14 @@
    * @returns {void}
    */
   function setSieveScript(script, capabilities) {
-    if (capabilities)
+
+    if (capabilities) {
+
+      if (typeof capabilities === 'string' || capabilities instanceof String)
+        capabilities = JSON.parse(capabilities);
+
       SieveLexer.capabilities(capabilities);
+    }
 
     SieveGrammar.create();
     // reset environemnt

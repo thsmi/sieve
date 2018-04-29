@@ -4,8 +4,6 @@
 <head>
   <title>Sieve DOM</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-  <META HTTP-EQUIV="Access-Control-Allow-Origin" CONTENT="*">
-
   <link rel="stylesheet" href="./toolkit/style/layout.css" type="text/css" />
 
   <link rel="stylesheet" href="./../material-icons/material-icons.css" type="text/css" />
@@ -15,9 +13,6 @@
   <link rel="stylesheet" href="./../bootstrap/css/bootstrap.min.css">
   <script src="./../jQuery/jquery.min.js"></script>
   <script src="./../bootstrap/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Global Imports -->
-  <!-- <script type="application/javascript" src="./../jQuery/jquery.min.js"></script> -->
 
   <!-- Basic Sieve Elements -->
   <script type="application/javascript" src="./toolkit/SieveParser.js"></script>
@@ -125,13 +120,13 @@
       font-size: 0.7em;
     }
 
-.was-validated .form-control:valid {
-  border: 1px solid #ced4da
-}
+    .was-validated .form-control:valid {
+      border: 1px solid #ced4da
+    }
 
-.was-validated .form-control:focus {
-  border: 1px solid #28a745
-}
+    .was-validated .form-control:focus {
+      border: 1px solid #28a745
+    }
   </style>
 </head>
 
@@ -139,7 +134,39 @@
 
   <!-- the toolvar -->
   <div id="toolbar">
-    <div id="sivActions"></div>
+    <div id="accordion">
+      <div class="card">
+        <div class="card-header" data-toggle="collapse" data-target="#collapseOne">
+          Actions
+        </div>
+        <div class="collapse show" data-parent="#accordion" id="collapseOne">
+          <div class="card-body p-2" id="sivActions"></div>
+        </div>
+        <div class="card-header" data-toggle="collapse" data-target="#collapseTwo">
+          Tests
+        </div>
+        <div class="collapse" data-parent="#accordion" id="collapseTwo">
+          <div class="card-body p-2" id="sivTests"></div>
+        </div>
+        <div class="card-header" data-toggle="collapse" data-target="#collapseThree">
+          Operators
+        </div>
+        <div class="collapse" data-parent="#accordion" id="collapseThree">
+          <div class="card-body p-2" id="sivOperators"></div>
+        </div>
+        <div class="card-header" data-toggle="collapse" data-target="#collapseDebugging">
+          Debugging
+        </div>
+        <div class="collapse" data-parent="#accordion" id="collapseDebugging">
+          <div class="card-body p-2" id="sivDebugging"></div>
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="DebugToggle">
+            Show/Hide
+          </button>
+        </div>
+      </div>
+
+      <div id="sivTrash"></div>
+    </div>
   </div>
 
   <div id="content">
@@ -155,8 +182,6 @@
     </div>
 
     <!-- Modal dialog -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>
-
     <div id="sivDialog2" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
       aria-hidden="true">
       <div class="modal-dialog modal-lg">
@@ -179,36 +204,6 @@
             <button id="sivDialogSave" type="button" class="btn btn-primary">Apply</button>
           </div>
         </div>
-      </div>
-    </div>
-
-
-    <div class="btn-group">
-      <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
-        aria-expanded="false">
-        ... is ...
-      </button>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">
-          <h5>... is ...</h5>
-          <small>Only "frobnitzm" is "frobnitzm"</small>
-        </a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#">
-          <h5>... contains ...</h5>
-          <small>"frobnitzm" contains "frob" and "nit", but not "fbm"</small>
-        </a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#">
-          <h5>... matches ...</h5>
-          <small>"*" matches zero or more characters and "?" matches a single character
-            <br/> "frobnitzm" matches "frob*zm" or "frobnit?m" but not frob?m</small>
-        </a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#">
-          <h5>... regex matches ...</h5>
-          <small>Matches and compares using on a regular expression as defined in IEEE.1003-2.1992</small>
-        </a>
       </div>
     </div>
 
@@ -328,11 +323,6 @@
         </div>
       </div>
 
-      <div>
-        <button type="button" class="btn btn-sm btn-outline-secondary" id="DebugToggle">
-          Show/Hide
-        </button>
-      </div>
     </div>
 
     <div id="divOutput">

@@ -47,6 +47,8 @@
 
     closeListener: null,
 
+    sidebar: true,
+
     checksum: {
       // used to detect if the script was changed via a gui...
       gui: null,
@@ -600,6 +602,7 @@
     if (visible) {
       // show Source
       deck.selectedIndex = 0;
+      onSideBar(gEditorStatus.sidebar);
       onErrorBar(document.getElementById('btnCompile').hasAttribute("checked"));
 
       document.getElementById("btnViewSource").setAttribute('checked', 'true');
@@ -611,6 +614,7 @@
       document.getElementById("btnPaste").removeAttribute('disabled');
       document.getElementById("btnCompile").removeAttribute('disabled');
       document.getElementById("btnSearchBar").removeAttribute('disabled');
+      document.getElementById('btnReference').removeAttribute('disabled');
 
       document.getElementById("sivEditor2").focus();
 
@@ -637,9 +641,13 @@
     document.getElementById("btnPaste").setAttribute('disabled', "true");
     document.getElementById("btnCompile").setAttribute('disabled', "true");
     document.getElementById("btnSearchBar").setAttribute('disabled', "true");
+    document.getElementById('btnReference').setAttribute('disabled', "true");
 
     onSearchBar(false);
     onErrorBar(false, true);
+
+    gEditorStatus.sidebar = document.getElementById('btnReference').checked;
+    onSideBar(false);
 
     deck.selectedIndex = 1;
 
@@ -660,7 +668,7 @@
       // set script content...
       Components.utils
         .waiveXrays(document.getElementById("sivWidgetEditor").contentWindow)
-        .setSieveScript(script, capabilities);
+        .setSieveScript(script, JSON.stringify(capabilities));
 
       // ... and create a shadow copy
       gEditorStatus.checksum.gui = gSFE._calcChecksum(

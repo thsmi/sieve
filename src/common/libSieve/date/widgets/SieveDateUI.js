@@ -23,7 +23,7 @@
   /* global SieveDesigner */
   /* global SieveComparatorWidget */
   /* global SieveRadioGroupWidget*/
-  /* global SieveAbstractRadioGroupWidget */
+  /* global SieveRadioGroupItemWidget */
 
   /**
    * Provides a widget for the zone element
@@ -41,7 +41,7 @@
   /**
    * An Abstract zone UI implementation.
    */
-  class SieveAbstractZoneUI extends SieveAbstractRadioGroupWidget {
+  class SieveAbstractZoneUI extends SieveRadioGroupItemWidget {
 
     /**
      * @inheritDoc
@@ -100,8 +100,8 @@
     /**
      * @inheritDoc
      */
-    onLoad(sivElement, item) {
-      super.onLoad(sivElement, item);
+    onLoad(sivElement) {
+      super.onLoad(sivElement);
 
       // update the string list...
       $("#sivDateZoneOffset").val(
@@ -111,14 +111,14 @@
     /**
      * @inheritDoc
      */
-    onSave(sivElement, item) {
+    onSave(sivElement) {
 
       // We update the content type with a fake element.
       // This makes updating the strings easier.
       // we can skip this in case the current element is already a zone element.
       if (!sivElement._element.current || sivElement._element.current.nodeName() !== this.constructor.nodeName()) {
         sivElement.setValue(
-          "" + item.find("input[name='" + this.getName() + "']").val() + ' ""');
+          "" + this.getRadioItem().find("input[name='" + this.getName() + "']").val() + ' ""');
       }
 
       sivElement._element.current.getElement("time-zone").value($("#sivDateZoneOffset").val());

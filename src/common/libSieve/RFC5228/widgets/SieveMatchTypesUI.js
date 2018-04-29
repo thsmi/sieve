@@ -17,13 +17,13 @@
   "use strict";
 
   /* global SieveDesigner */
-  /* global SieveAbstractRadioGroupWidget */
-  /* global SieveRadioGroupWidget */
+  /* global SieveDropDownItemWidget */
+  /* global SieveDropDownWidget */
 
   /**
    * Provides a widget for the matchtype element
    */
-  class SieveMatchTypeWidget extends SieveRadioGroupWidget{
+  class SieveMatchTypeWidget extends SieveDropDownWidget {
 
     /**
      * @inheritDoc
@@ -36,7 +36,7 @@
   /**
    * An Abstract Matchtype UI implementation.
    */
-  class SieveAbstractMatchTypeUI extends SieveAbstractRadioGroupWidget {
+  class SieveAbstractMatchTypeUI extends SieveDropDownItemWidget {
 
     /**
      * @inheritDoc

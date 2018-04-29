@@ -44,19 +44,19 @@
     /**
      * @inheritDoc
      */
-    onLoad(sivElement, item) {
-      super.onLoad(sivElement, item);
+    onLoad(sivElement) {
+      super.onLoad(sivElement);
 
-      item.find(".sieve-matchtype-count-relational").val(
-        ":count " + sivElement._element.current.getElement("relational-match").operator);
+      this.getActiveItem().find(".sieve-matchtype-count-relational").val(
+        ":count " + sivElement._element.current.getElement("relational-match").getValue());
     }
 
     /**
      * @inheritDoc
      */
-    onSave(sivElement, item) {
+    onSave(sivElement) {
       sivElement.setValue(
-        item.find(".sieve-matchtype-count-relational").val());
+        this.getActiveItem().find(".sieve-matchtype-count-relational").val());
     }
 
 
@@ -95,10 +95,11 @@
      * @inheritDoc
      */
     onLoad(sivElement, item) {
+
       super.onLoad(sivElement, item);
 
-      item.find(".sieve-matchtype-value-relational").val(
-        ":value " + sivElement._element.current.getElement("relational-match").operator);
+      this.getActiveItem().find(".sieve-matchtype-value-relational").val(
+        ":value " + sivElement._element.current.getElement("relational-match").getValue());
     }
 
     /**
@@ -106,7 +107,7 @@
      */
     onSave(sivElement, item) {
       sivElement.setValue(
-        item.find(".sieve-matchtype-value-relational").val());
+        this.getActiveItem().find(".sieve-matchtype-value-relational").val());
     }
 
     /**

@@ -21,8 +21,10 @@
   /* global SieveMatchTypeWidget */
   /* global SieveComparatorWidget */
   /* global SieveStringListWidget */
+
   /* global SieveRadioGroupWidget */
-  /* global SieveAbstractRadioGroupWidget */
+  /* global SieveRadioGroupItemWidget */
+
   /* global SieveDesigner */
 
   /**
@@ -41,7 +43,7 @@
   /**
    * An Abstract Body Transform UI implementation.
    */
-  class SieveAbstractBodyTransformUI extends SieveAbstractRadioGroupWidget {
+  class SieveAbstractBodyTransformUI extends SieveRadioGroupItemWidget {
 
     /**
      * @inheritDoc
@@ -131,9 +133,9 @@
     /**
      * @inheritDoc
      */
-    onLoad(sivElement, item) {
+    onLoad(sivElement) {
 
-      super.onLoad(sivElement, item);
+      super.onLoad(sivElement);
 
       // update the string list...
       (new SieveStringListWidget("#sivBodyTransformContenType"))
@@ -144,7 +146,7 @@
     /**
      * @inheritDoc
      */
-    onSave(sivElement, item) {
+    onSave(sivElement) {
 
       // We update the content type with a fake element.
       // This makes updating the strings easier.
@@ -152,7 +154,7 @@
 
       if (!sivElement._element.current || sivElement._element.current.nodeName() !== this.constructor.nodeName()) {
         sivElement.setValue(
-          "" + item.find("input[name='" + this.getName() + "']").val() + ' ""');
+          "" + this.getRadioItem().find("input[name='" + this.getName() + "']").val() + ' ""');
       }
 
       (new SieveStringListWidget("#sivBodyTransformContenType"))

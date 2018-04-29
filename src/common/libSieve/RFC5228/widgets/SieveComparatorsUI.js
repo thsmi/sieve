@@ -17,13 +17,13 @@
   "use strict";
 
   /* global SieveDesigner */
-  /* global SieveAbstractRadioGroupWidget */
+  /* global SieveRadioGroupItemWidget */
   /* global SieveRadioGroupWidget */
 
   /**
    *
    */
-  class SieveComparatorWidget extends SieveRadioGroupWidget{
+  class SieveComparatorWidget extends SieveRadioGroupWidget {
 
     /**
      * @inheritDoc
@@ -37,7 +37,7 @@
   /**
    * An Abstract Comparator UI implementation.
    */
-  class SieveAbstractComparatorUI extends SieveAbstractRadioGroupWidget{
+  class SieveAbstractComparatorUI extends SieveRadioGroupItemWidget {
 
     /**
      * @inheritDoc

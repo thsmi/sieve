@@ -17,13 +17,13 @@
   "use strict";
 
   /* global SieveDesigner */
-  /* global SieveRadioGroupWidget */
-  /* global SieveAbstractRadioGroupWidget */
+  /* global SieveDropDownWidget */
+  /* global SieveDropDownItemWidget */
 
   /**
    * Provides a widget for the address part widget
    */
-  class SieveAddressPartWidget extends SieveRadioGroupWidget {
+  class SieveAddressPartWidget extends SieveDropDownWidget {
 
     /**
      * @inheritDoc
@@ -36,7 +36,7 @@
   /**
    * An Abstract Address Part UI.
    */
-  class SieveAbstractAddressPartUI extends SieveAbstractRadioGroupWidget {
+  class SieveAbstractAddressPartUI extends SieveDropDownItemWidget {
 
     /**
      * @inheritDoc

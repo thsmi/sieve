@@ -1,29 +1,23 @@
-<template id="test42">
-  <div class="form-row align-items-center mt-2">
-    <div class="col-auto">
-      <div class="custom-control custom-radio mr-sm-2">
-        <input type="radio" class="custom-control-input sieve-matchtype-radio" name="sieve-matchtype" data-matchtype="match-type/count"
-          id="sieve-matchtype-count" />
-        <label class="custom-control-label" for="sieve-matchtype-count">
-          <h5>... has</h5>
-        </label>
+<div id="test42">
+  <div class="dropdown-item" href="#">
+    <div class="form-row">
+      <h5 class="col-auto">... has</h5>
+      <div class="col-auto">
+        <select class="form-control form-control-sm sieve-matchtype-count-relational">
+          <option value=':value "gt"'>greater than</option>
+          <option value=':value "ge"'>greater than or equal</option>
+          <option value=':value "lt"'>less than</option>
+          <option value=':value "le"'>less than or equal</option>
+          <option value=':value "eq"'>equal to</option>
+          <option value=':value "ne"'>not equal to</option>
+        </select>
       </div>
+      <h5 class="col-auto">items ...</h5>
     </div>
-    <div class="col-auto">
-      <select class="form-control form-control-sm sieve-matchtype-count-relational">
-        <option value=':count "gt"'>more than</option>
-        <option value=':count "ge"'>more than or equal</option>
-        <option value=':count "lt"'>less than</option>
-        <option value=':count "le"'>less than or equal</option>
-        <option value=':count "eq"'>equal to</option>
-        <option value=':count "ne"'>not equal to</option>
-      </select>
-    </div>
-    <div class="col-auto">
-      <h5>items ...</h5>
-    </div>
+
+
+    <small class="form-text text-muted">
+      Counts the number of entities and compares them to the given value
+    </small>
   </div>
-  <div class="form-row">
-    <small class="ml-4">Counts the number of entities and compares them to the given value</small>
-  </div>
-</template>
+</div>

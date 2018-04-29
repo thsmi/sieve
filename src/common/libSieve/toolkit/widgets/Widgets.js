@@ -13,9 +13,9 @@
 (function (exports) {
 
   "use strict";
+
   /* global $: false */
   /* global SieveDesigner */
-
 
   /**
    * Provides a string list UI.
@@ -143,6 +143,7 @@
      *   the template element
      */
     template() {
+      // todo load templates in case no template is defined...
       return $($(this._selector).attr("data-list-template")).children().first();
     }
 
@@ -190,11 +191,11 @@
     }
   }
 
-
   /**
-   * Provides a widget for the radio groups
+   * Provides a widget for dropdown
+   * e.g. the addres part uses it
    */
-  class SieveRadioGroupWidget {
+  class SieveDropDownWidget {
 
     /**
      * Creates a new instance
@@ -204,23 +205,36 @@
      *   an selector which identifies the parent dom element
      */
     constructor(nodeType, selector) {
-      this.id = selector;
+      this.selector = selector;
       this.nodeType = nodeType;
     }
 
     /**
-     * Initializes and renders the matchtype widget.
+     * Initializes the widget's dropdown items.
+     * @param {SieveAbstractElement} sivElement
+     *   the sieve element which should
+     * @returns {void}
+     */
+    initWidgets(sivElement) {
+      let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+
+      for (let widget of widgets)
+        widget.init(sivElement);
+    }
+
+    /**
+     * Initializes and renders the dropdown widget.
      *
      * @param {SieveAbstractElement} sivElement
      *   the sieve element which should be rendered.
      * @returns {void}
      */
     init(sivElement) {
-      // fix me we need to address this.id sivElement.id
-      let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.id);
 
-      for (let widget of widgets)
-        widget.init(sivElement);
+      $(this.selector)
+        .load("./toolkit/templates/SieveDropDownWidget.html #template", () => {
+          this.initWidgets(sivElement);
+        });
     }
 
     /**
@@ -231,25 +245,23 @@
      */
     save(sivElement) {
 
-      let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.id);
+      let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
       for (let widget of widgets)
         widget.save(sivElement);
     }
   }
 
-
   /**
-   * An abstract radio group widget
+   * An abstract item for radiobuttons and dropdowns.
    */
-  class SieveAbstractRadioGroupWidget {
-
+  class SieveAbstractItemWidget {
     /**
      * Creates a new instance.
      * @param {String} selector
      *   a selector which identifies the parent element.
      */
     constructor(selector) {
-      this.id = selector;
+      this.selector = selector;
     }
 
     /**
@@ -285,71 +297,6 @@
       throw new Error("Implement getName()");
     }
 
-    /**
-     * @returns {JQuery}
-     *   the current element
-     */
-    getElement() {
-      return $("" + this.id + " [data-nodename='" + this.constructor.nodeName() + "']");
-    }
-
-    /**
-     * Called upon loading the UI element.
-     *
-     * @param {SieveElement} sivElement
-     *   the parent sieve element
-     * @param {JQuery} item
-     *   the ui elements which was loaded
-     * @returns {void}
-     */
-    onLoad(sivElement, item) {
-      item.find("input[name='" + this.getName() + "']").attr("checked", "checked");
-    }
-
-    /**
-     * Called wehn the UI element should be persisted to a sieve script.
-     *
-     * @param {SieveElement} sivElement
-     *   the parent sieve element
-     * @param {JQuery} item
-     *   the ui elements which renders this element
-     * @returns {void}
-     */
-    onSave(sivElement, item) {
-      sivElement.setValue(
-        item.find("input[name='" + this.getName() + "']").val());
-    }
-
-    /**
-     * Called when the UI Element is loaded.
-     *
-     * @param {SieveAbstractElement} sivElement
-     *   the parent sieve element
-     * @returns {void}
-     */
-    load(sivElement) {
-
-      if (this.constructor.nodeName() !== sivElement.nodeName())
-        return;
-
-      this.onLoad(sivElement, this.getElement());
-    }
-
-    /**
-     * Called when the UI Element is saved.
-     *
-     * @param {SieveElement} sivElement
-     *   the parent sieve element
-     * @returns {void}
-     */
-    save(sivElement) {
-      let item = this.getElement();
-
-      if (item.find("input[name='" + this.getName() + "']:checked").length !== 1)
-        return;
-
-      this.onSave(sivElement, this.getElement());
-    }
 
     /**
      * Returns the URL to the html template.
@@ -358,7 +305,14 @@
      * @abstract
      */
     getTemplate() {
-      throw new Error("Implement getTemplate");
+      throw new Error("Implement getTemplate()");
+    }
+
+    /**
+     * @inheritDoc
+     */
+    getElement() {
+      throw new Error("Implement getElement()");
     }
 
     /**
@@ -386,8 +340,7 @@
 
         div.setAttribute("data-nodename", that.constructor.nodeName());
 
-        $("" + that.id)
-          .append(div);
+        that.getElement().append(div);
 
         that.load(sivElement);
       };
@@ -399,13 +352,242 @@
       xhr.setRequestHeader('expires', 'Tue, 01 Jan 1980 1:00:00 GMT');
       xhr.setRequestHeader('pragma', 'no-cache');
       xhr.send();
-
     }
 
+    /**
+     * Called when the UI Element is loaded.
+     *
+     * @param {SieveAbstractElement} sivElement
+     *   the parent sieve element
+     * @returns {void}
+     */
+    load(sivElement) {
+      throw new Error("Implement load " + sivElement);
+    }
+
+    /**
+     * Called when the UI Element is saved.
+     *
+     * @param {SieveElement} sivElement
+     *   the parent sieve element
+     * @returns {void}
+     */
+    save(sivElement) {
+      throw new Error("Implement load " + sivElement);
+    }
   }
 
+  /**
+   * An abstract radio group widget
+   */
+  class SieveDropDownItemWidget extends SieveAbstractItemWidget {
+
+    /**
+     * Called upon loading the UI element.
+     *
+     * @param {SieveElement} sivElement
+     *   the parent sieve element
+     * @returns {void}
+     */
+    onLoad(sivElement) {
+      this.select();
+    }
+
+    /**
+     * Called wehn the UI element should be persisted to a sieve script.
+     *
+     * @param {SieveElement} sivElement
+     *   the parent sieve element
+     * @returns {void}
+     */
+    onSave(sivElement) {
+      sivElement.setValue(
+        this.getActiveItem().attr("data-value"));
+    }
+
+    /**
+     * Selects the this item and sets is as active item
+     * @returns {void}
+     */
+    select() {
+      let menuElement = this.getMenuItem();
+      let activeElement = this.getActiveItem();
+
+      activeElement
+        .html(menuElement.html())
+        .attr("data-nodename", this.constructor.nodeName())
+        .attr("data-value", menuElement.attr("data-value"));
+    }
+
+    /**
+     * Gets the currently active item. It does not nessearily be this item.
+     * @returns {void}
+     */
+    getActiveItem() {
+      return $("" + this.selector + " .sivDropDownWidget-active");
+    }
+
+    /**
+     * Gets the menu item for this item.
+     * @returns {void}
+     */
+    getMenuItem() {
+      return $('' + this.selector + ' .sivDropDownWidget-menu div[data-nodename="' + this.constructor.nodeName() + '"] .dropdown-item');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    load(sivElement) {
+
+      let element = this.getMenuItem();
+      element.click(() => { this.select(); });
+
+      if (this.constructor.nodeName() !== sivElement.nodeName())
+        return;
+
+      this.onLoad(sivElement, element);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    save(sivElement) {
+      let item = this.getActiveItem();
+
+      if (item.attr("data-nodename") !== this.constructor.nodeName())
+        return;
+
+      this.onSave(sivElement);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    getElement() {
+      return $("" + this.selector + " .sivDropDownWidget-menu");
+    }
+  }
+
+
+  /**
+   * Provides a widget for the radio groups
+   */
+  class SieveRadioGroupWidget {
+
+    /**
+     * Creates a new instance
+     * @param {String} nodeType
+     *   the widgets node type
+     * @param {String} selector
+     *   an selector which identifies the parent dom element
+     */
+    constructor(nodeType, selector) {
+      this.selector = selector;
+      this.nodeType = nodeType;
+    }
+
+    /**
+     * Initializes and renders the matchtype widget.
+     *
+     * @param {SieveAbstractElement} sivElement
+     *   the sieve element which should be rendered.
+     * @returns {void}
+     */
+    init(sivElement) {
+      let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+
+      for (let widget of widgets)
+        widget.init(sivElement);
+    }
+
+    /**
+     * Persist the sieve settings into the given sieve element
+     * @param {SieveAbstractElement} sivElement
+     *   the parent sieve element
+     * @returns {void}
+     */
+    save(sivElement) {
+
+      let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+      for (let widget of widgets)
+        widget.save(sivElement);
+    }
+  }
+
+
+  /**
+   * An abstract radio group widget
+   */
+  class SieveRadioGroupItemWidget extends SieveAbstractItemWidget {
+
+    /**
+     * @returns {JQuery}
+     *   the current element
+     */
+    getRadioItem() {
+      return $("" + this.selector + " [data-nodename='" + this.constructor.nodeName() + "']");
+    }
+
+    /**
+     * Called upon loading the UI element.
+     *
+     * @param {SieveElement} sivElement
+     *   the parent sieve element
+     * @returns {void}
+     */
+    onLoad(sivElement) {
+      this.getRadioItem().find("input[name='" + this.getName() + "']").attr("checked", "checked");
+    }
+
+    /**
+     * Called wehn the UI element should be persisted to a sieve script.
+     *
+     * @param {SieveElement} sivElement
+     *   the parent sieve element
+     * @returns {void}
+     */
+    onSave(sivElement) {
+      sivElement.setValue(
+        this.getRadioItem().find("input[name='" + this.getName() + "']").val());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    load(sivElement) {
+
+      if (this.constructor.nodeName() !== sivElement.nodeName())
+        return;
+
+      this.onLoad(sivElement);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    save(sivElement) {
+      let item = this.getRadioItem();
+
+      if (item.find("input[name='" + this.getName() + "']:checked").length !== 1)
+        return;
+
+      this.onSave(sivElement);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    getElement() {
+      return $("" + this.selector);
+    }
+  }
+
+  exports.SieveDropDownWidget = SieveDropDownWidget;
+  exports.SieveDropDownItemWidget = SieveDropDownItemWidget;
+
   exports.SieveRadioGroupWidget = SieveRadioGroupWidget;
-  exports.SieveAbstractRadioGroupWidget = SieveAbstractRadioGroupWidget;
+  exports.SieveRadioGroupItemWidget = SieveRadioGroupItemWidget;
 
   exports.SieveStringListWidget = SieveStringListWidget;
 

@@ -27,13 +27,6 @@
     /**
      * @inheritDoc
      **/
-    constructor(data) {
-      super(data);
-    }
-
-    /**
-     * @inheritDoc
-     **/
     convertToString(byteArray) {
       return new StringDecoder('utf8').end(Buffer.from(byteArray)).toString();
     }

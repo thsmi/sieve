@@ -38,12 +38,22 @@
     /**
      * @returns {string}
      *   the hostname for this account.
-    */
+     */
     getHostname() {
       throw new Error("Implement getHostname");
     }
 
-    /** */
+    /**
+     * Returns the port for this configuration.
+     *
+     * @param {int} [type]
+     *   Use zero to get the standard port 4190.
+     *   One returns the old port 2000.
+     *   And two the currently configured port.
+     *   if omitted the port for the current type is returned
+     * @returns {int}
+     *   the port as integer for this account.s
+     */
     getPort(type) {
 
       if (typeof (type) === "undefined" || type === null)

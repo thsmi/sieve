@@ -33,7 +33,7 @@
     }
 
     getType() {
-      return "SIEVE_CERT_VALIDATION_EXCEPTION"
+      return "SIEVE_CERT_VALIDATION_EXCEPTION";
     }
   }
 

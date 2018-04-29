@@ -789,4 +789,20 @@
   else
     exports.SieveEditorUI = SieveEditorUI;
 
+  $('.nav-item > a[href="#sieve-widget-editor"]').on('shown.bs.tab', function (e) {
+    $("#sieve-widget-editor").height(
+      $(window).height() - $("#sieve-widget-editor").offset().top - 40);
+  });
+
+  $(window).on("resize", () => {
+    let offset = $("#sieve-widget-editor").offset().top;
+
+    if (offset === 0) {
+      return;
+    }
+
+    $("#sieve-widget-editor").height(
+      $(window).height() - offset - 40);
+  });
+
 })(this);

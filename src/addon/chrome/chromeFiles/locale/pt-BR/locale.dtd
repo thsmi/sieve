@@ -1,0 +1,284 @@
+<!--
+/*
+ * The contents of this file are licensed. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
+ * email from the author.
+ *
+ * Do not remove or change this comment.
+ *
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+ -->
+
+<!-- Options Dialog -->
+<!ENTITY options.title "Opções Sieve">
+
+<!ENTITY options.tab.server "Servidor">
+<!ENTITY options.tab.security "Segurança">
+<!ENTITY options.tab.general "Geral">
+<!ENTITY options.tab.proxy "Proxy">
+<!ENTITY options.tab.advanced "Avançado">
+<!ENTITY options.tab.advanced.warning "Essas configurações são destinadas a usuários avançados...">
+<!ENTITY options.tab.editor "Editor">
+<!ENTITY options.tab.debug "Depurar/Debug">
+<!ENTITY options.tab.credits "Créditos">
+
+<!ENTITY options.host.caption "Nome do Servidor">
+<!ENTITY options.host.description
+"A maioria das implementações de peneira executar diretamente em um servidor de correio.  Assim, o nome do servidor de peneira é geralmente o mesmo que o nome do seu servidor IMAP.">
+<!ENTITY options.host.imap "Servidor IMAP:">
+<!ENTITY options.host.custom "Outro Servidor:">
+
+<!ENTITY options.port.caption "Porta do Servidor">
+<!ENTITY options.port.description
+"A porta do servidor mudou, quando o ManageSieve transformou-se em um Padrão RFC completo">
+<!ENTITY options.port.description2
+"As implementações mais antigas do servidor ainda usam a porta 2000, enquanto o  
+servidor compatível padrão mais recente só pode ser acessado pela porta 4190.">
+<!ENTITY options.port.4190 "4190 (padrão)" >
+<!ENTITY options.port.2000 "2000" >
+<!ENTITY options.port.custom "Outros:">
+<!ENTITY options.port.autoselect "Selecionar Porta Automaticamente.">
+<!ENTITY options.port.autoselect.running "Selecionando a porta, aguarde ...">
+<!ENTITY options.port.autoselect.successful "Sieve detectada na porta ">
+<!ENTITY options.port.autoselect.error "Falha ao selecionar a porta...">
+
+<!ENTITY options.security.caption "Segurança de Conexão">
+<!ENTITY options.security.description
+"O Transport Layer Security (TLS) assegura a conexão com o servidor de gerenciamento de peneiras. Ele limpa todos os dados e é projetado para evitar espionagem e adulteração.">
+<!ENTITY options.security.description2
+"ManageSieve geralmente transfere senhas não criptografadas. Então, a menos que você tenha uma razão muito boa (por exemplo, Depuração), você deve sempre forçar o TLS.">
+<!ENTITY options.security.tls.disabled "Sem TLS">
+<!ENTITY options.security.tls.available "TLS, quando disponível">
+<!ENTITY options.security.tls.force "Forçar TLS">
+
+<!ENTITY options.login "Autenticação">
+<!ENTITY options.login.key "A">
+<!ENTITY options.login.noAuth "Sem Autenticação">
+<!ENTITY options.login.imapAuth "Nome de usuário e senha do IMAP">
+<!ENTITY options.login.customAuth "Usuário e senha">
+<!ENTITY options.login.username "Nome do usuário">
+<!ENTITY options.login.username.key "u">
+<!ENTITY options.login.show "Mostre senhas salvas ...">
+
+<!ENTITY options.misc "Configurações diversas">
+<!ENTITY options.misc.keepalive "Habilitar keepalives">
+<!ENTITY options.misc.keepalive.key "k">
+<!ENTITY options.misc.keepalive2 "Enviar todas as">
+<!ENTITY options.misc.keepalive.description
+"Se o cliente estava ocioso por muito tempo (geralmente 30 minutos), o servidor assume que o cliente está desconectado e desliga a conexão.">
+<!ENTITY options.misc.keepalive.description2
+"Uma solicitação keepalive indica que a conexão ainda está ativa e deve ser preservada.">
+<!ENTITY options.misc.keepalive.min "min">
+
+<!ENTITY options.misc.compile.caption "Verificação de sintaxe">
+<!ENTITY options.misc.compile.description
+"Ao editar Scripts, eles podem ser verificados quanto à validade. A  
+verificação de sintaxe é realizada pelo servidor. Para manter o tráfego de rede  
+baixo, os pedidos de verificação de sintaxe são agrupados.">
+<!ENTITY options.misc.compile "Verificar ortografia enquanto Digita">
+<!ENTITY options.misc.compile.key "c">
+<!ENTITY options.misc.compile2 "Validar a pelo menos a cada">
+<!ENTITY options.misc.compile.ms "Senhora">
+
+<!ENTITY options.editor.indention.caption "Identação">
+<!ENTITY options.editor.indention.description "O editor de texto simples suporta recuo automático.">
+<!ENTITY options.editor.indention.width "Largura de indenção:">
+
+<!ENTITY options.editor.indention.policy.caption "Política de indentação:">
+<!ENTITY options.editor.indention.policy.spaces "Espaços Somente">
+<!ENTITY options.editor.indention.policy.tabs "Apenas guias">
+
+<!ENTITY options.editor.tabs.caption "Manipulação de tabulações">
+<!ENTITY options.editor.tabs.description "O Texteditor com recuo automático substituiu a necessidade de uma chave de tabulação, mas há muitos editores que padrão para abas por motivos históricos.">
+<!ENTITY options.editor.tabs.width "Tamanho do tab">
+
+<!ENTITY options.editor.tabs.policy.caption "Política de tabs">
+<!ENTITY options.editor.tabs.policy.spaces "Inserir espaços para tabulações">
+<!ENTITY options.editor.tabs.policy.tabs "Inserir tabulações">
+
+<!ENTITY options.debug.warning
+"Mantenha em mente que os métodos de autenticação LOGIN e PLAIN não cifram sua senha, ela pode acabar aparecendo na console de erro sem ser criptografada.">
+<!ENTITY options.debug.caption "Configurações de debug">
+<!ENTITY options.debug.request "Comunicação do cliente para o servidor (requisições)">
+<!ENTITY options.debug.response "Comunicação do servidor para o cliente (respostas)">
+<!ENTITY options.debug.exceptions "Exceções e informações da máquina de estado">
+<!ENTITY options.debug.stream "Despejo bruto do fluxo de bytes">
+<!ENTITY options.debug.session "Gerenciamento de sessão">
+<!ENTITY options.debug.output "Saída de Debug">
+<!ENTITY options.debug.console "Informações de debug são enviadas para a console de erro">
+<!ENTITY options.debug.console.open "Mostrar console de erros...">
+
+<!ENTITY options.authmechanism.caption "Mecanismo de autenticação">
+<!ENTITY options.authmechanism "Substituir o mecanismo de autenticação sugerida">
+<!ENTITY options.authmechanism.default "Use sempre:">
+<!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
+<!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">
+<!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
+<!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
+<!ENTITY options.authmechanism.login "Login">
+<!ENTITY options.authmechanism.plain "Plain">
+<!ENTITY options.authmechanism.external "EXTERNAL">
+<!ENTITY options.authmechanism.description
+"Em determinadas situações, por exemplo, ao usar a autenticação por proxy, você pode querer forçar um mecanismo de autenticação específico." >
+
+<!ENTITY options.proxyauth.caption "Autorização de proxy">
+<!ENTITY options.proxyauth.desc
+"Autorização por proxy permite que um usuário autenticado agir em nome de outro usuário. Geralmente servidores são configurados com este recurso disponível apenas para administradores.">
+<!ENTITY options.proxyauth.force
+"Quando usando autenticação por proxy você deve forçar autenticação &quot;SASL PLAIN&quot;.">
+<!ENTITY options.proxyauth.none "Sem autorização">
+<!ENTITY options.proxyauth.default "Usuário sieve">
+<!ENTITY options.proxyauth.prompt "Solicitar autorização">
+<!ENTITY options.proxyauth.custom "Autorizar como">
+<!ENTITY options.proxyauth.custom.username "Usuário:">
+
+<!ENTITY options.info.servername "Nome do servidor:">
+<!ENTITY options.info.port "Porta:">
+<!ENTITY options.info.secure "Conexão Segura:">
+<!ENTITY options.info.username "Usuário:">
+<!ENTITY options.info.auth "Autenticação:">
+
+<!ENTITY options.account.sieve
+"Sieve é uma poderosa linguagem de script para filtragem de email no servidor.">
+<!ENTITY options.account.activate
+"Você quer ativar o gerenciamento de scripts sieve para esta conta?">
+<!ENTITY options.account.activate.yes "Sim, gerencie scripts sieve para esta conta:">
+<!ENTITY options.account.activate.no "Não, esta conta não oferece suporte sieve">
+<!ENTITY options.account.filters "Editar Filtros...">
+<!ENTITY options.account.settings "Alterar as configurações...">
+
+<!-- Credits -->
+<!ENTITY options.credits "Muito obrigado a todos os colaboradores:">
+
+<!-- Proxy Settings -->
+<!ENTITY options.proxy "Configuração de proxy">
+<!ENTITY options.proxy.description
+"Em vez de uma conexão direta, você pode usar um Proxy SOCKS de forma transparente e segura para atravessar um firewall.">
+<!ENTITY options.proxy.description.nameresolution
+"Com SOCKSv4 a resolução de nomes é sempre local, SOCKSv5 suporta resolução de nomes pelo próprio proxy. Se você pode confiar num proxy SOCKSv5, este é considerado mais seguro e devem ser escolhido preferencialmente.">
+<!ENTITY options.proxy.description.localhost
+"Em alguns sistemas usar 'localhost' como host proxy não funciona adequadamente, use '127.0.0.1'.">
+<!ENTITY options.proxy.direct "Conexão direta">
+<!ENTITY options.proxy.default "Configuração padrão de proxy">
+<!ENTITY options.proxy.socks4 "SOCKSv4">
+<!ENTITY options.proxy.socks5 "SOCKSv5">
+<!ENTITY options.proxy.nameresolution "Resolver nomes no proxy">
+<!ENTITY options.proxy.host "Servidor:">
+<!ENTITY options.proxy.port "Porta:">
+
+
+<!-- Locale for the List Filter Dialog -->
+<!ENTITY list.title "Filtros Sieve">
+
+<!ENTITY list.accounts "Filtros para:">
+
+<!ENTITY list.tree "Filtros sieve do lado do servidor">
+<!ENTITY list.tree.active "Ativo">
+<!ENTITY list.tree.name "Nome">
+
+<!ENTITY list.new "Novo...">
+<!ENTITY list.edit "Editar...">
+<!ENTITY list.delete "Apagar">
+<!ENTITY list.rename "Renomear">
+<!ENTITY list.activate "Ativar">
+<!ENTITY list.settings "Configurações...">
+
+<!ENTITY list.details.capability "Capacidades do servidor sieve">
+<!ENTITY list.details.capability.implementation "Versão do servidor:">
+<!ENTITY list.details.capability.sasl "Mecanismos SASL:">
+<!ENTITY list.details.capability.extensions "Extensões:">
+<!ENTITY list.details.capability.protocol "Versão do Protocolo:">
+
+
+<!ENTITY list.badcert
+  "Seu servidor de email tenta identificar-se com informações inválidas.">
+<!ENTITY list.badcert.error
+"Se você costuma se conectar a esse servidor sem problemas, este erro pode significar que alguém está tentando forjar credenciais. Não continue a menos que você saiba que há uma boa razão para a qual este servidor não esteja usando identificação confiável.">
+<!ENTITY list.badcert.remember "Lembrar da minha decisão">
+<!ENTITY list.badcert.ignore "Continuar">
+<!ENTITY list.badcert.abort "Cancelar">
+
+<!ENTITY list.autoconfig.welcome.caption "Bem-vindo!">
+<!ENTITY list.autoconfig.welcome.description1
+"Essa conta não está configurada para o protocolo managesieve.">
+<!ENTITY list.autoconfig.welcome.description2
+"Clique em 'Continuar' para detectar a configuração automaticamente. Ou escolha 'Avançado' para configurar a conta manualmente.">
+
+<!ENTITY list.autoconfig.advanced "Avançado">
+<!ENTITY list.autoconfig.continue "Continuar">
+
+<!ENTITY list.autoconfig.detecting.caption "Autodetectando configuração">
+<!ENTITY list.autoconfig.detecting.description
+  "Pode levar alguns minutos para concluir...">
+
+<!ENTITY list.autoconfig.cancel "Cancelar">
+
+<!ENTITY list.autoconfig.success.caption "Parabéns!">
+<!ENTITY list.autoconfig.success.description
+  "Sua conta está configurada e pronta para uso...">
+
+<!ENTITY list.autoconfig.error.caption "Desculpe">
+<!ENTITY list.autoconfig.error.description
+"Parece que seu servidor de email não suporta o protocolo managesieve ou talvez requeira uma configuração especial. Por favor entre em contato com seu provedor de email ou faça uma configuração manual.">
+
+<!ENTITY list.autoconfig.retest "Re-testar">
+<!ENTITY list.autoconfig.config "Configuração manual">
+
+<!-- Locale for the Edit Filter Dialog -->
+<!ENTITY edit.toolbar.save "Salvar">
+<!ENTITY edit.toolbar.undo "Desfazer">
+<!ENTITY edit.toolbar.redo "Refazer">
+<!ENTITY edit.toolbar.cut "Recortar">
+<!ENTITY edit.toolbar.copy "Copiar">
+<!ENTITY edit.toolbar.paste "Colar">
+<!ENTITY edit.toolbar.compile "Conferência sintática">
+<!ENTITY edit.toolbar.reference "Referência rápida">
+<!ENTITY edit.toolbar.tools "Ferramentas">
+<!ENTITY edit.toolbar.import "Importar Script">
+<!ENTITY edit.toolbar.export "Exportar Script">
+<!ENTITY edit.toolbar.back "Voltar">
+<!ENTITY edit.toolbar.forward "Avançar">
+<!ENTITY edit.toolbar.home "Página inicial">
+<!ENTITY edit.toolbar.search "Pesquisar">
+
+<!ENTITY edit.sidebar.uri "https://thsmi.github.io/sieve-reference/en/index.html">
+<!ENTITY edit.sidebar.title "Referência da Linguagem Sieve">
+
+<!-- Search and Replace Side bar -->
+<!ENTITY edit.searchreplace.title "Localizar e Substituir">
+<!ENTITY edit.searchreplace.searchfor "Pesquisar por:">
+<!ENTITY edit.searchreplace.replacewith "Substituir por:">
+<!ENTITY edit.searchreplace.options "Opções">
+<!ENTITY edit.searchreplace.case "Diferenciar maiúsculas de minúsculas">
+<!ENTITY edit.searchreplace.backward "Voltar">
+<!ENTITY edit.searchreplace.find "Procurar">
+<!ENTITY edit.searchreplace.replace "Substituir">
+<!ENTITY edit.searchreplace.error "Frase não encontrada">
+
+<!-- Status messages -->
+<!ENTITY status.offline.description
+"Você está offline agora. Clique em 'Conectar' e tente outra vez">
+<!ENTITY status.offline.go "Conectar">
+
+
+<!ENTITY status.connectivity.loss.description
+"Servidor desligou inesperadamente a conexão, clique em reconectar para tentar de novo.">
+<!ENTITY status.connectivity.loss.reconnect "Reconectar">
+
+<!ENTITY status.warning.ignore "Ignorar">
+<!ENTITY status.warning.reconnect "Reconectar">
+<!ENTITY status.warning
+  "Essa conta não está configurada para o protocolo Managesieve, vá em 'Ferramentas-&gt; Filtros Sieve'">
+
+<!ENTITY status.error.reconnect "Reconectar">
+<!ENTITY status.error "Último comando falhou, o servidor detectou um erro:">
+
+<!ENTITY status.sync.description
+"O script local e o do servidor são diferentes. O que você quer fazer a respeito?">
+<!ENTITY status.sync.keep "Manter o Script Local">
+<!ENTITY status.sync.replace "Use o script no servidor">
+
+<!-- Shortcut keys -->
+<!ENTITY shortcut.save.key "S">

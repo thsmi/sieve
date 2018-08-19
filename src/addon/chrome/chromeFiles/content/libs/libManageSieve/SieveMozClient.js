@@ -46,23 +46,37 @@
 
     this._logger = logger;
 
-    // a private function to convert a JSString to an byte array---
-    this.bytesFromJSString
-      = function (str) {
-        // cleanup linebreaks...
-        str = str.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
 
-        // ... and convert to UTF-8
-        let converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
-          .createInstance(Ci.nsIScriptableUnicodeConverter);
-        converter.charset = "UTF-8";
-
-        return converter.convertToByteArray(str, {});
-      };
   }
 
   Sieve.prototype = Object.create(SieveAbstractClient.prototype);
   Sieve.prototype.constructor = Sieve;
+
+  /**
+   * Converts an UTF16 encoded Javascript string to an UTF8 encoded
+   * byte aray.
+   *
+   * It also normalizes all linebreaks. In sieve all linebreaks have
+   * to be \r\n
+   *
+   * @param {String} str
+   *   the string to convert.
+   *
+   * @returns {byte[]}
+   *   an utf8 encoded byte array.
+   */
+  Sieve.prototype.jsStringToByteArray = function (str) {
+    // cleanup linebreaks...
+    str = str.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
+
+    return Array.prototype.slice.call(
+      new Uint8Array(new TextEncoder("UTF-8").encode(str)));
+  };
+
+  Sieve.prototype.convertToString = function (byteArray) {
+    byteArray = new Uint8Array(byteArray);
+    return (new TextDecoder("UTF-8")).decode(byteArray);
+  };
 
   // Needed for the Gecko 2.0 Component Manager...
   Sieve.prototype.QueryInterface
@@ -408,14 +422,10 @@
       this.getLogger().log("Server -> Client [Byte Array]\n" + data, (1 << 3));
 
       if (this.getLogger().isLoggable(1 << 1)) {
-        let converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
-          .createInstance(Ci.nsIScriptableUnicodeConverter);
-
-        converter.charset = "UTF-8";
 
         let byteArray = data.slice(0, data.length);
 
-        this.getLogger().log("Server -> Client\n" + converter.convertFromByteArray(byteArray, byteArray.length));
+        this.getLogger().log("Server -> Client\n", this.convertToString(byteArray));
       }
 
       SieveAbstractClient.prototype.onDataReceived.call(this, data);
@@ -425,7 +435,7 @@
     = function (data) {
 
       // Force String to UTF-8...
-      let output = this.bytesFromJSString(data);
+      let output = this.jsStringToByteArray(data);
 
       this.getLogger().log("Client -> Server [Byte Array]:\n" + output, (1 << 3));
 

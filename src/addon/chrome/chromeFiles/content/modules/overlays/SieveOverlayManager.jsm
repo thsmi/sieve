@@ -176,6 +176,27 @@ let SieveOverlayManager =
 
     cleanupTimer: Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer),
 
+    /**
+     * Converts a XUL Window into a DOMWindow
+     *
+     * @param {nsIXULWindow} xulWindow
+     *   the xul window which should be converted.
+     *
+     * @returns {nsIDOMWindow}
+     *   the dom window
+     */
+    _getWindow: function(xulWindow) {
+
+      // Starting TB63 a xul window does not implement the nsIDOMWindow/nsIInterfaceRequestor.
+      // The new way is to use the new docShell.domWindow member. But this is not available
+      // on older TB Versions, so that we need both implementations.
+
+      if (xulWindow.docShell && xulWindow.docShell.domWindow)
+        return xulWindow.docShell.domWindow;
+
+      return xulWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindow);
+    },
+
     log: function (str) {
       if (typeof(DEBUG) === "undefined" || DEBUG !== true)
         return;
@@ -298,21 +319,35 @@ let SieveOverlayManager =
     },
 
     // nsIWindowMediatorListener functions
-    onOpenWindow: function (aWindow) {
-      // A new window has opened
-      aWindow = aWindow.QueryInterface(Ci.nsIInterfaceRequestor)
-        .getInterface(Ci.nsIDOMWindow);
+
+    /**
+     * Called when a new window is opened
+     * @param {nsIXULWindow} xulWindow
+     *   the new xul window which was opened
+     *
+     * @returns {undefined}
+     */
+    onOpenWindow: function (xulWindow) {
+
+      let domWindow = SieveOverlayManager._getWindow(xulWindow);
 
       // Wait for it to finish loading
-      aWindow.addEventListener("load", function listener() {
-        aWindow.removeEventListener("load", listener, false);
+      domWindow.addEventListener("load", function listener() {
+        domWindow.removeEventListener("load", listener, false);
 
-        SieveOverlayManager.loadOverlay(aWindow);
+        SieveOverlayManager.loadOverlay(domWindow);
 
       }, false);
     },
 
-    onCloseWindow: function (aWindow) {
+    /**
+     * Called when a window is closed
+     * @param {nsIXULWindow} xulWindow
+     *   the xul window which was closed
+     *
+     * @returns {undefined}
+     */
+    onCloseWindow: function (xulWindow) {
     },
 
     onUnloadWindow: function (aWindow) {
@@ -337,24 +372,40 @@ let SieveOverlayManager =
 
     onWindowTitleChange: function (window, newTitle) { },
 
-    loadWatcher: function (window) {
+    /**
+     * Add a load watcher to the given xul window.
+     *
+     * @param {nsIXULWindow} xulWindow
+     *   the xul window which should be monitored
+     *
+     * @returns {void}
+     */
+    loadWatcher: function (xulWindow) {
 
-      if (SieveOverlayManager._unload.has(window))
+      if (SieveOverlayManager._unload.has(xulWindow))
         return;
 
-      SieveOverlayManager._unload.set(window, function (aEvent) {
-        let window = aEvent.currentTarget;
-        window = window.QueryInterface(Ci.nsIInterfaceRequestor)
-          .getInterface(Ci.nsIDOMWindow);
-        SieveOverlayManager.onUnloadWindow(window);
+      SieveOverlayManager._unload.set(xulWindow, function (aEvent) {
+        let xulWindow = aEvent.currentTarget;
+
+        SieveOverlayManager.onUnloadWindow(
+          SieveOverlayManager._getWindow(xulWindow));
       });
 
-      window.addEventListener("unload", SieveOverlayManager._unload.get(window));
+      xulWindow.addEventListener("unload", SieveOverlayManager._unload.get(xulWindow));
     },
 
-    unloadWatcher: function (window) {
+    /**
+     * Removes the unload wtach from the given xul window.
+     *
+     * @param {nsIXULWindow} xulWindow
+     *   the xul for which the monitoring should be stopped
+     *
+     * @returns {void}
+     */
+    unloadWatcher: function (xulWindow) {
 
-      if (typeof (window) === "undefined") {
+      if (typeof (xulWindow) === "undefined") {
 
         // In case no window is specified we clean everything...
         this._unload.forEach((value, key) => {
@@ -365,10 +416,10 @@ let SieveOverlayManager =
         return;
       }
 
-      if (SieveOverlayManager._unload.has(window))
-        window.removeEventListener("unload", SieveOverlayManager._unload.get(window));
+      if (SieveOverlayManager._unload.has(xulWindow))
+        xulWindow.removeEventListener("unload", SieveOverlayManager._unload.get(xulWindow));
 
-      SieveOverlayManager._unload.delete(window);
+      SieveOverlayManager._unload.delete(xulWindow);
     },
 
     // ...
@@ -401,7 +452,7 @@ let SieveOverlayManager =
 
       let windows = wm.getEnumerator(null);
       while (windows.hasMoreElements()) {
-        let domWindow = windows.getNext().QueryInterface(Ci.nsIDOMWindow);
+        let domWindow = windows.getNext();
         SieveOverlayManager.loadOverlay(domWindow);
       }
 

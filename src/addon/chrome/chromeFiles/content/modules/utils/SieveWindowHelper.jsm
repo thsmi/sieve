@@ -68,7 +68,6 @@ let SieveUtils =
             continue;
 
           tabmail.switchToTab(tabmail.tabModes.SieveExplorerTab.tabs[0]);
-          // childDoc.defaultView.QueryInterface(Ci.nsIDOMWindow).focus();
 
           let view = tabmail.tabModes.SieveExplorerTab.tabs[0].panel.contentWindow;
           view.onSelectAccount(server);

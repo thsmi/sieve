@@ -5,6 +5,7 @@ Please drop me a note if I forgot to mention you here.
 
 ## German (de-DE)
   Tobias Gennant
+  YellowGarbageBag
 
 ## Spanish (es-ES)
   * Dominique Couot <dcouot@solipym.com>
@@ -17,7 +18,7 @@ Please drop me a note if I forgot to mention you here.
   * Dominique Couot <dcouot@solipym.com> (dcouot)
 
 ## Dutch (nl-NL)
-  * Onno Ekker
+  * Onno Ekker (oeekker)
   * IvoryScout
   * Marjin Pool
 
@@ -33,3 +34,22 @@ Please drop me a note if I forgot to mention you here.
 ## Chinese (zh-CN)
   * YFdh000
   * rmbrmb
+
+## Portuguese (pt-BR)
+  * Israel Faria
+  * Rodrigo (rodrigomatos)
+
+## Arabic (ar-SA)
+  * khaled-dz
+
+## Indonesian (id-ID)
+  * joelsteem (salman.alfasyimy)
+
+## Turkish (tr-TR)
+  * sirlacrymosa
+  * Mustafa Bayram (mustafabayram)
+  * curtaintwitcher
+  * meertcevik
+
+## Romanian (ro-RO)
+  * Andra (sarmizegetusa)

@@ -34,7 +34,7 @@
 <!ENTITY options.port.description
 "De serverpoort is gewijzigd toen Sieve een volledige RFC standaard werd">
 <!ENTITY options.port.description2
-"Ouder serverimplementaties gebruiken nog steeds poort 2000, terwijl nieuwe standaard-conforme servers alleen via poort 4190 kunnen worden benaderd.">
+"Oudere serverimplementaties gebruiken nog steeds poort 2000, terwijl nieuwe standaard-conforme servers alleen via poort 4190 kunnen worden benaderd.">
 <!ENTITY options.port.4190 "4190 (Standaard)" >
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Anders:">
@@ -105,7 +105,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.debug.stream "Onbewerkte dump / bytestroomdump">
 <!ENTITY options.debug.session "Sessiebeheer">
 <!ENTITY options.debug.output "Debug-uitvoer">
-<!ENTITY options.debug.console "Debuginformatie wordt in de errorconsole geplaatst">
+<!ENTITY options.debug.console "Debuginformatie wordt in de foutconsole geplaatst">
 <!ENTITY options.debug.console.open "Foutconsole tonen…">
 
 <!ENTITY options.authmechanism.caption "Authenticatiemethode">
@@ -128,7 +128,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 "Als u proxy-authenticatie gebruikt, dan moet u Standaard SASL-authenticatie forceren.">
 <!ENTITY options.proxyauth.none "Geen autorisatie">
 <!ENTITY options.proxyauth.default "Sieve-gebruikersnaam">
-<!ENTITY options.proxyauth.prompt "Vraag om autorisatie">
+<!ENTITY options.proxyauth.prompt "Om autorisatie vragen">
 <!ENTITY options.proxyauth.custom "Autoriseren als">
 <!ENTITY options.proxyauth.custom.username "Gebruikersnaam:">
 
@@ -177,7 +177,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY list.tree.name "Naam">
 
 <!ENTITY list.new "Nieuw…">
-<!ENTITY list.edit "Bewerken...">
+<!ENTITY list.edit "Bewerken…">
 <!ENTITY list.delete "Verwijderen">
 <!ENTITY list.rename "Hernoemen">
 <!ENTITY list.activate "Activeren">
@@ -204,7 +204,7 @@ identificatie gebruikt.">
 
 <!ENTITY list.autoconfig.welcome.caption "Welkom!">
 <!ENTITY list.autoconfig.welcome.description1
-"Dit account is niet voor manage sieve geconfigureerd.">
+"Dit account is niet voor ManageSieve geconfigureerd.">
 <!ENTITY list.autoconfig.welcome.description2
 "Klik op ‘Doorgaan’ om de configuratie automatisch te detecteren.
 Kies ‘Geavanceerd’ om het account handmatig te configureren.">
@@ -224,7 +224,7 @@ Kies ‘Geavanceerd’ om het account handmatig te configureren.">
 
 <!ENTITY list.autoconfig.error.caption "Sorry">
 <!ENTITY list.autoconfig.error.description
-"Het lijkt er op dat uw e-mailserver geen manage sieve ondersteunt of een speciale configuratie nodig heeft. Neem contact op met uw e-mailprovider of probeer een handmatige configuratie uit te voeren.">
+"Het lijkt er op dat uw e-mailserver geen ManageSieve ondersteunt of een speciale configuratie nodig heeft. Neem contact op met uw e-mailprovider of probeer een handmatige configuratie uit te voeren.">
 
 <!ENTITY list.autoconfig.retest "Opnieuw testen">
 <!ENTITY list.autoconfig.config "Handmatige configuratie">
@@ -252,7 +252,7 @@ Kies ‘Geavanceerd’ om het account handmatig te configureren.">
 <!-- Search and Replace Side bar -->
 <!ENTITY edit.searchreplace.title "Zoeken en Vervangen">
 <!ENTITY edit.searchreplace.searchfor "Zoeken naar:">
-<!ENTITY edit.searchreplace.replacewith "Vervang door:">
+<!ENTITY edit.searchreplace.replacewith "Vervangen door:">
 <!ENTITY edit.searchreplace.options "Opties">
 <!ENTITY edit.searchreplace.case "Hoofdlettergevoelig">
 <!ENTITY edit.searchreplace.backward "Terug">
@@ -273,7 +273,7 @@ Kies ‘Geavanceerd’ om het account handmatig te configureren.">
 <!ENTITY status.warning.ignore "Negeren">
 <!ENTITY status.warning.reconnect "Opnieuw verbinden">
 <!ENTITY status.warning
-  "Dit account is niet voor manage sieve geconfigureerd. Ga naar ‘Extra -&gt; Sieve-berichtfilters’">
+  "Dit account is niet voor ManageSieve geconfigureerd. Ga naar ‘Extra -&gt; Sieve-berichtfilters’">
 
 <!ENTITY status.error.reconnect "Opnieuw verbinden">
 <!ENTITY status.error "De laatste opdracht is mislukt, omdat de server een fout meldde:">

@@ -1,0 +1,288 @@
+<!--
+/*
+ * The contents of this file are licensed. You may obtain a copy of
+ * the license at https://github.com/thsmi/sieve/ or request it via
+ * email from the author.
+ *
+ * Do not remove or change this comment.
+ *
+ * The initial author of the code is:
+ *   Thomas Schmid <schmid-thomas@gmx.net>
+ */
+ -->
+
+<!-- Options Dialog -->
+<!ENTITY options.title "خيارت الغربال">
+
+<!ENTITY options.tab.server "السيرفر">
+<!ENTITY options.tab.security "الحماية">
+<!ENTITY options.tab.general "عام">
+<!ENTITY options.tab.proxy "البروكسي">
+<!ENTITY options.tab.advanced "مُتقدم">
+<!ENTITY options.tab.advanced.warning "هذه الإعدادات معدة لأجل المستخدمين المتقدمين...">
+<!ENTITY options.tab.editor "محرر">
+<!ENTITY options.tab.debug "التصحيح">
+<!ENTITY options.tab.credits "أرصدة">
+
+<!ENTITY options.host.caption "اسم السيرفر">
+<!ENTITY options.host.description
+"أغلب غرابيل التطبقيات تشتغل مباشرة على سيرفر البريد الالكتروني.
+وبالتالي فإن اسم غربال السيرفر عادة هو نفس اسم سيرفر IMAP الخاص بك.">
+<!ENTITY options.host.imap "سيرفر IMAP:">
+<!ENTITY options.host.custom "سيرفر آخر:">
+
+<!ENTITY options.port.caption "منفذ السيرفر">
+<!ENTITY options.port.description
+"لقد تغير منفذ السيرفر، عندما تحول تسير الغربال إلى معيار RCF التام">
+<!ENTITY options.port.description2
+"غربال التطبيقات القديمة لازال يستعمل المنفذ 2000، بينما المعيار الجديد المطابق للسيرفر يمكنه الوصول فقط عبر المنفذ 4190.">
+<!ENTITY options.port.4190 "4190 (افتراضي)" >
+<!ENTITY options.port.2000 "2000" >
+<!ENTITY options.port.custom "الأخرى:">
+<!ENTITY options.port.autoselect "منفذ اختيار تلقاءي">
+<!ENTITY options.port.autoselect.running "اختيار المنفذ، الرجاء الانتظار...">
+<!ENTITY options.port.autoselect.successful "تم كشف الغربال على المنفذ ">
+<!ENTITY options.port.autoselect.error "فشل اختيار المنفذ...">
+
+<!ENTITY options.security.caption "أمان الاتصال">
+<!ENTITY options.security.description
+"نقل طبقة الحماية TLS)) يؤمن الاتصال بمسير سيرفر الغربال.
+هو يحصي جميع البيانات و مصمم لمنع التنصت و التلاعب.">
+<!ENTITY options.security.description2
+"مسير الغربال عادة يحول الكلمات السرية غير مشفرة. اذا لم يكن لديك سبب وجيه (مثلا.التصليح)، عليك دائما فرض TLS.">
+<!ENTITY options.security.tls.disabled "لا يوجد TLS">
+<!ENTITY options.security.tls.available "TLS، عندما يكون متاح">
+<!ENTITY options.security.tls.force "افرض TLS">
+
+<!ENTITY options.login "المصادقة">
+<!ENTITY options.login.key "A">
+<!ENTITY options.login.noAuth "لا يوجد مصادقة ">
+<!ENTITY options.login.imapAuth "اسم المستخدم و كلمة سر IMAP">
+<!ENTITY options.login.customAuth "اسم المستخدم و كلمة السر">
+<!ENTITY options.login.username "اسم المستخدم">
+<!ENTITY options.login.username.key "u">
+<!ENTITY options.login.show "اظهر كلمة السر المحفوظة...">
+
+<!ENTITY options.misc "إعدادات متنوعة">
+<!ENTITY options.misc.keepalive "تمكين keepalives">
+<!ENTITY options.misc.keepalive.key "k">
+<!ENTITY options.misc.keepalive2 "ارسل الكل">
+<!ENTITY options.misc.keepalive.description
+"إذا كان المستخدم غير نشط لفترة طويلة جدا (عادة 30 دقيقة)، الخادم يفترض أن المستخدم غير متصل و يقوم بتعليق الاتصال.">
+<!ENTITY options.misc.keepalive.description2
+"طلب keepalive يشير إلى أن الاتصال لازال نشط و يجب الحفاظ عليه.">
+<!ENTITY options.misc.keepalive.min "دقيقية">
+
+<!ENTITY options.misc.compile.caption "التحقق من بناء الجملة">
+<!ENTITY options.misc.compile.description
+"أثناء تحرير النصوص، يمكن التحقق من صحتها. التحقق من بناء الجملة يتم تنفيذه من قبل السيرفر. من أجل تخفيف الزحام على الشبكة، يتم تجميع طلبات معالجة النصوص.">
+<!ENTITY options.misc.compile "دقق في الإملاء أثناء الكتابة">
+<!ENTITY options.misc.compile.key "c">
+<!ENTITY options.misc.compile2 "التحقق على الاقل من كل واحد">
+<!ENTITY options.misc.compile.ms "ميلي ثانية">
+
+<!ENTITY options.editor.indention.caption "المسافة البادئة">
+<!ENTITY options.editor.indention.description "محرر النص العادي يدعم وضع المسافة البادئة تلقائيا.">
+<!ENTITY options.editor.indention.width "عرض المسافة البادئة:">
+
+<!ENTITY options.editor.indention.policy.caption "سياسة المسافة البادئة:">
+<!ENTITY options.editor.indention.policy.spaces "المسافات فقط">
+<!ENTITY options.editor.indention.policy.tabs "التبويبات فقط">
+
+<!ENTITY options.editor.tabs.caption "التعامل مع التبويب">
+<!ENTITY options.editor.tabs.description "محرر النصوص تلقائي المسافة البادئة استبدل بالحاجة إلى مفتاح التبويب، ولكن هناك العديد من المحررين يهمل التبويبات بسبب التأريح.">
+<!ENTITY options.editor.tabs.width "عرض التبويب">
+
+<!ENTITY options.editor.tabs.policy.caption "سياسة التبويب">
+<!ENTITY options.editor.tabs.policy.spaces "ادرج مسافات لتبويبات">
+<!ENTITY options.editor.tabs.policy.tabs "ادرج تبويبات">
+
+<!ENTITY options.debug.warning
+"يجب اعتبار أن الولوج إلى SASL او SASL العادي لن يشفروا كلمة السر الخاصة بك،
+قد يتم نشرها على شكل نص واضح في خطاء وحدة التحكم.">
+<!ENTITY options.debug.caption "اعدادات التصحيح">
+<!ENTITY options.debug.request "(طلبات) اتصال العميل بالسيرفر">
+<!ENTITY options.debug.response "(اجابات) اتصال العميل بالسيرفر">
+<!ENTITY options.debug.exceptions "الاستثناءات و حالة آلة المعلومات">
+<!ENTITY options.debug.stream "اسقاط عام/اسقاط مجرى بايت">
+<!ENTITY options.debug.session "إدارة الجلسة">
+<!ENTITY options.debug.output "اخراج التصحيح">
+<!ENTITY options.debug.console "معلومات التصحيح تم نشرها في خطئ وحدة التحكم">
+<!ENTITY options.debug.console.open "اظهر خطئ وحدة التحكم...">
+
+<!ENTITY options.authmechanism.caption "آلية المصادقة">
+<!ENTITY options.authmechanism "تجاوز آلية المصادقة المقترحة">
+<!ENTITY options.authmechanism.default "إستخدم دائما:">
+<!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
+<!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">
+<!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
+<!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
+<!ENTITY options.authmechanism.login "Login">
+<!ENTITY options.authmechanism.plain "Plain">
+<!ENTITY options.authmechanism.external "EXTERNAL">
+<!ENTITY options.authmechanism.description
+"في حالات معينة مثلا. عند استخدام مصادقة البروكسي قد ترغب في فرض ألية مصادقة محددة." >
+
+<!ENTITY options.proxyauth.caption "تفويض البروكسي">
+<!ENTITY options.proxyauth.desc
+"تفويض البروكسي، يسمح للمستخدم الموثوق بالتصرف نيابة عن مستخدم آخر.
+عادة السيرفرات تكون مهيئة، هذه الميزة متاحة فقط للمشرفين.">
+<!ENTITY options.proxyauth.force
+"عند استخدام تفويض البروكسي عليك فرض مصادقة &quot;SASL العادي&quot;.">
+<!ENTITY options.proxyauth.none "لا يوجد تفويض">
+<!ENTITY options.proxyauth.default "اسم مستخدم الغربال">
+<!ENTITY options.proxyauth.prompt "موجه لتفويض">
+<!ENTITY options.proxyauth.custom "تفويض باسم">
+<!ENTITY options.proxyauth.custom.username "اسم المستخدم:">
+
+<!ENTITY options.info.servername "اسم السيرفر:">
+<!ENTITY options.info.port "المنفذ:">
+<!ENTITY options.info.secure "اتصال آمن:">
+<!ENTITY options.info.username "اسم المستخدم:">
+<!ENTITY options.info.auth "المصادقة:">
+
+<!ENTITY options.account.sieve
+"الغربال هو كاتب لغة برمجة قوي لجانب السيرفر المخصص لتصفية البريد.">
+<!ENTITY options.account.activate
+"هل تريد تفعيل خاصية إدارة غربال النصوص لهذا الحساب؟">
+<!ENTITY options.account.activate.yes "نعم، أدر غربال النصوص لهذا الحساب:">
+<!ENTITY options.account.activate.no "لا، هذا الحساب لا يدعم الغربال">
+<!ENTITY options.account.filters "تعديل الفلاتر...">
+<!ENTITY options.account.settings "تغيير الاعدادات...">
+
+<!-- Credits -->
+<!ENTITY options.credits "شكرا جزيلا لجميع المساهمين:">
+
+<!-- Proxy Settings -->
+<!ENTITY options.proxy "تهيئة البروكسي">
+<!ENTITY options.proxy.description
+"بدلا من الاتصال المباشر يمكنك استخدام بروكسي SOCKS للشفافية و لتأمين تجاوز جدار الحماية.">
+<!ENTITY options.proxy.description.nameresolution
+"مع SOCKSv4 دائما يتم إعادة حل اسماء المصيفين على آلة المحلية. SOCKSv5 أيضا يدعم إعادة حل أسماء المضيفين بواسطة بروكسي SOCKS. اذا كنت تستطيع الوثوق في بروكسي SOCKSv5، هذا الاخير يعتبر أكثر آمنا و ينبغي أن يكون المفضل.">
+<!ENTITY options.proxy.description.localhost
+"على بعض الانظمة استخدام 'localhost' كبروكسي استظافة لا يعمل جيدا، استخدم '127.0.0.1' بدلا عن ذالك.">
+<!ENTITY options.proxy.direct "اتصال مباشر">
+<!ENTITY options.proxy.default "تهيئة البروكسي الافتراضي">
+<!ENTITY options.proxy.socks4 "SOCKSv4">
+<!ENTITY options.proxy.socks5 "SOCKSv5">
+<!ENTITY options.proxy.nameresolution "اعد حل اسماء المضيفين على البروكسي">
+<!ENTITY options.proxy.host "استضافة:">
+<!ENTITY options.proxy.port "المنفذ:">
+
+
+<!-- Locale for the List Filter Dialog -->
+<!ENTITY list.title "غربال الفلاتر">
+
+<!ENTITY list.accounts "الفلاتر لأجل:">
+
+<!ENTITY list.tree "سيرفر غربال تصفية الإيميل">
+<!ENTITY list.tree.active "مفعل">
+<!ENTITY list.tree.name "اسم">
+
+<!ENTITY list.new "جديد...">
+<!ENTITY list.edit "تعديل...">
+<!ENTITY list.delete "حذف">
+<!ENTITY list.rename "إعادة التسمية">
+<!ENTITY list.activate "تفعيل">
+<!ENTITY list.settings "إعدادات...">
+
+<!ENTITY list.details.capability "قدرات سيرفر الغربال">
+<!ENTITY list.details.capability.implementation "نسخة السيرفر:">
+<!ENTITY list.details.capability.sasl "آلية SASL:">
+<!ENTITY list.details.capability.extensions "ملحقات:">
+<!ENTITY list.details.capability.protocol "نسخة البروتوكول:">
+
+
+<!ENTITY list.badcert
+  "سيرفر الايميل الخاص بك يحاول التعريف بنفسه بمعلومات غير صحيحة.">
+<!ENTITY list.badcert.error
+"إذا كنت في الغالب تتصل بهذا السيرفر بدون مشاكل، هذا الخطء يعني أن شخص ما حاول انتحال هوية السيرفر.
+لا تستمر إلا إذا كنت تعرف أنه يوجد سبب وجيه يبين لماذا هذا السيرفر لا يستخدم هوية موثوقة.">
+<!ENTITY list.badcert.remember "تذكر خياري">
+<!ENTITY list.badcert.ignore "واصل">
+<!ENTITY list.badcert.abort "ألغي">
+
+<!ENTITY list.autoconfig.welcome.caption "مرحبا!">
+<!ENTITY list.autoconfig.welcome.description1
+"هذا الحساب ليس مهيئ لإدارة الغربال.">
+<!ENTITY list.autoconfig.welcome.description2
+"انقر على 'واصل' لتكشف عن التهيئة تلقائياً.
+أو أختر 'مُتقدم' لتهيئة الحساب يدوياً.">
+
+<!ENTITY list.autoconfig.advanced "مُتقدم">
+<!ENTITY list.autoconfig.continue "واصل">
+
+<!ENTITY list.autoconfig.detecting.caption "الكشف عن التهيئة ألياً">
+<!ENTITY list.autoconfig.detecting.description
+  "قد يستغرق بضع دقائق لإكمال...">
+
+<!ENTITY list.autoconfig.cancel "ألغي">
+
+<!ENTITY list.autoconfig.success.caption "مبروك!">
+<!ENTITY list.autoconfig.success.description
+  "حسابك الآن مهيئ و جاهز للاستخدام...">
+
+<!ENTITY list.autoconfig.error.caption "عذراً">
+<!ENTITY list.autoconfig.error.description
+"يبدو أن سيرفر إيميلك لا يدعم إدارة الغربال او يتطلب تهيئة خاصة. الرجاء الاتصال بالذي منحك الايميل أو حاول القيام بالتهيئة اليدوية.">
+
+<!ENTITY list.autoconfig.retest "اعد الاختبار">
+<!ENTITY list.autoconfig.config "التهيئة اليدوية">
+
+<!-- Locale for the Edit Filter Dialog -->
+<!ENTITY edit.toolbar.save "احفظ">
+<!ENTITY edit.toolbar.undo "تراجع">
+<!ENTITY edit.toolbar.redo "أعد">
+<!ENTITY edit.toolbar.cut "قص">
+<!ENTITY edit.toolbar.copy "انسخ">
+<!ENTITY edit.toolbar.paste "ألصق">
+<!ENTITY edit.toolbar.compile "تحقق من بناء الجملة">
+<!ENTITY edit.toolbar.reference "مرجع سريع">
+<!ENTITY edit.toolbar.tools "أدوات">
+<!ENTITY edit.toolbar.import "استورد برمجة">
+<!ENTITY edit.toolbar.export "أصدر برمجة">
+<!ENTITY edit.toolbar.back "رجوع">
+<!ENTITY edit.toolbar.forward "إلى الأمام">
+<!ENTITY edit.toolbar.home "الصفحة الرئيسية">
+<!ENTITY edit.toolbar.search "ابحث">
+
+<!ENTITY edit.sidebar.uri "https://thsmi.github.io/sieve-reference/en/index.html">
+<!ENTITY edit.sidebar.title "مرجع لغة الغربال">
+
+<!-- Search and Replace Side bar -->
+<!ENTITY edit.searchreplace.title "ابحث و إستبدل">
+<!ENTITY edit.searchreplace.searchfor "البحث عن:">
+<!ENTITY edit.searchreplace.replacewith "استبدل مع:">
+<!ENTITY edit.searchreplace.options "الخيارات">
+<!ENTITY edit.searchreplace.case "حالة حساسة/وضع حرج">
+<!ENTITY edit.searchreplace.backward "الى الخلف">
+<!ENTITY edit.searchreplace.find "ابحث">
+<!ENTITY edit.searchreplace.replace "استبدل">
+<!ENTITY edit.searchreplace.error "لم يتم العثور على الجملة">
+
+<!-- Status messages -->
+<!ENTITY status.offline.description
+"أنت الآن غير متصل. انقر على' اتصل' و حاول مرة أخرى">
+<!ENTITY status.offline.go "اتصل">
+
+
+<!ENTITY status.connectivity.loss.description
+"انهى السيرفر الاتصال بشكل غير متوقع، انقر على إعادة الاتصال و حاول مرة آخرى.">
+<!ENTITY status.connectivity.loss.reconnect "اعد الاتصال">
+
+<!ENTITY status.warning.ignore "تجاهل">
+<!ENTITY status.warning.reconnect "اعد الاتصال">
+<!ENTITY status.warning
+  "هذا الحساب غير مهيأ لإدارة الغربال، اذهب إلى 'أدوات-&gt; غربال تصفية الرسائل'">
+
+<!ENTITY status.error.reconnect "اعد الاتصال">
+<!ENTITY status.error "فشل الأمر الأخير، لأن السيرفر أبلغ عن خطأ:">
+
+<!ENTITY status.sync.description
+"البرمجة المحلية مختلفة عن السيرفر.
+ماذا تريد ان تفعل حيال ذالك؟">
+<!ENTITY status.sync.keep "ابقي البرمجة المحلية">
+<!ENTITY status.sync.replace "استخدم برمجة السيرفر">
+
+<!-- Shortcut keys -->
+<!ENTITY shortcut.save.key "S">

@@ -113,15 +113,10 @@ SieveFilterEditor.prototype.onChannelClosed
 
 SieveFilterEditor.prototype._calcChecksum
   = function (str) {
-    let converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"]
-      .createInstance(Ci.nsIScriptableUnicodeConverter);
 
-    // we use UTF-8 here
-    converter.charset = "UTF-8";
-
-    let result = {};
-    // data is an array of bytes
-    let data = converter.convertToByteArray(str, result);
+    // Convert to byte Array
+    let data = new Uint8Array(new TextEncoder("UTF-8").encode(str));
+    data = Array.prototype.slice.call(data);
 
     let ch = Cc["@mozilla.org/security/hash;1"]
       .createInstance(Ci.nsICryptoHash);

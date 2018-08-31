@@ -13,7 +13,6 @@
 
   "use strict";
 
-  /* global Components */
   const { SieveAbstractRequestBuilder } = require("./SieveAbstractRequestBuilder.js");
 
   /**
@@ -30,24 +29,8 @@
      * @return {String} The converted string in UTF8
      *
      * @author Thomas Schmid <schmid-thomas@gmx.net>
-     * @author Max Dittrich
      */
     jsStringToByteArray(str) {
-      // This is very old mozilla specific code, but it is robust, mature and works as expeced.
-      // It will be dropped as soon as the new code has proven to be stable.
-      if ((typeof Components !== 'undefined')
-        && (typeof Components.classes !== 'undefined')
-        && (Components.classes["@mozilla.org/intl/scriptableunicodeconverter"])) {
-
-        // ...and convert to UTF-8
-        let converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-          .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
-
-        converter.charset = "UTF-8";
-
-        return converter.convertToByteArray(str, {});
-      }
-
       // with chrome we have to use the TextEncoder.
       let data = new Uint8Array(new TextEncoder("UTF-8").encode(str));
       return Array.prototype.slice.call(data);

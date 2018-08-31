@@ -195,7 +195,7 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 <!ENTITY list.badcert
   "Ihr Mailserver kann nicht Identifiziert werden und wird als nicht vertrauenswürdig eingestuft.">
 <!ENTITY list.badcert.error
-"Es könnte es sein, dass sich jemand als Ihr Mailserver ausgibt, um beispielsweise an Ihr Passwort zu gelangen.
+"Es könnte sein, dass sich jemand als Ihr Mailserver ausgibt, um beispielsweise an Ihr Passwort zu gelangen.
 
 Ignorieren Sie diese Meldung nur, wenn Sie sich wirklich sicher sind, dass Sie tatsächlich mit dem gewünschten Server verbunden sind.">
 <!ENTITY list.badcert.remember "Meldung nicht mehr anzeigen">

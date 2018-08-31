@@ -13,7 +13,6 @@
 
   "use strict";
 
-  /* global Components */
   /* global require */
 
   const { SieveAbstractResponseParser } = require("./SieveAbstractResponseParser.js");
@@ -27,19 +26,6 @@
      * @inheritDoc
      **/
     convertToString(byteArray) {
-      // This is very old mozilla specific code, but it is robust, mature and works as expeced.
-      // It will be dropped as soon as the new code has proven to be stable.
-      if ((typeof Components !== 'undefined')
-        && (typeof Components.classes !== 'undefined')
-        && (Components.classes["@mozilla.org/intl/scriptableunicodeconverter"])) {
-
-        let converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
-          .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
-        converter.charset = "UTF-8";
-
-        return converter.convertFromByteArray(byteArray, byteArray.length);
-      }
-
       // The new code should run with Google and Mozilla
       byteArray = new Uint8Array(byteArray);
       return (new TextDecoder("UTF-8")).decode(byteArray);

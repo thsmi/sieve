@@ -304,7 +304,7 @@ function sivOpenEditor(scriptName, scriptBody) {
           continue;
 
         tabmail.switchToTab(tabmail.tabModes.SieveEditorTab.tabs[i]);
-        childDoc.defaultView.QueryInterface(Ci.nsIDOMWindow).focus();
+        tabmail.tabModes.SieveEditorTab.tabs[i].panel.contentWindow.focus();
 
         return;
       }

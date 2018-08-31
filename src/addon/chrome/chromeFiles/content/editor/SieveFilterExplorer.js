@@ -216,143 +216,6 @@ function onCycleCell(row, col, script, active) {
   gSFE.setActiveScript((active ? null : script));
 }
 
-/**
- * Called when the window is loaded
- * @returns {void}
- **/
-function onWindowLoad() {
-
-  // initialize the click handlers
-  document.getElementById("btnDonate").addEventListener("click", function() { onDonate(); });
-  document.getElementById("btnActivateScript").addEventListener("command", function() { onActivateClick(); });
-  document.getElementById("btnSettings").addEventListener("command", function() { onSettingsClick(); });
-  document.getElementById("btnRenameButton").addEventListener("command", function() { onRenameClick(); });
-  document.getElementById("btnDeleteButton").addEventListener("command", function() { onDeleteClick(); });
-  document.getElementById("btnEditButton").addEventListener("command", function() { onEditClick(); });
-  document.getElementById("btnNewButton").addEventListener("command", function() { onNewClick(); });
-  document.getElementById("btnServerDetails").addEventListener("command", function() { onServerDetails(); });
-
-
-  // now create a logger session...
-  if (gLogger === null)
-    gLogger = Cc["@mozilla.org/consoleservice;1"]
-      .getService(Ci.nsIConsoleService);
-
-  let menuImapAccounts = document.getElementById("menuImapAccounts");
-
-  let accounts = SieveAccountManager.getAccounts();
-
-
-  for (let i = 0; i < accounts.length; i++) {
-    menuImapAccounts.appendItem(
-      accounts[i].getDescription(),
-      accounts[i].getKey(), "").disabled = false;
-
-    if (window.arguments.length === 0)
-      continue;
-
-    if (window.arguments[0].wrappedJSObject.server !== accounts[i].getUri())
-      continue;
-
-    menuImapAccounts.selectedIndex = i;
-  }
-
-  gSFE._view = new SieveTreeView([], onCycleCell);
-  document.getElementById('treeImapRules').view = gSFE._view;
-
-  if (menuImapAccounts.selectedIndex === -1)
-    menuImapAccounts.selectedIndex = 0;
-
-  onSelectAccount();
-}
-
-function closeTab() {
-  // Don't forget to close this channel...
-  if (gSFE)
-    gSFE.disconnect();
-
-  document.getElementById("sivExplorerStatus").contentWindow.onDetach();
-
-  return true;
-}
-
-
-function onSelectAccount(server) {
-  document.getElementById("sivExplorerStatus").contentWindow.onDetach();
-
-  gSFE.disconnect();
-
-  // update the TreeView...
-  let tree = document.getElementById('treeImapRules');
-
-  tree.view.selection.clearSelection();
-
-  gSFE._view.update([]);
-  tree.view = gSFE._view;
-
-  let account = null;
-
-  if (server)
-    account = SieveAccountManager.getAccountByServer(server);
-  else
-    account = getSelectedAccount();
-
-  document.getElementById("sivExplorerStatus").contentWindow
-    .onAttach(account, function () { gSFE.connect(); });
-
-  if (account === null)
-    return gSFE.onStatusChange(2, "error.noaccount");
-
-  // Disable and cancel if account is not enabled
-  if ((!account.isEnabled()) || account.isFirstRun()) {
-    account.setFirstRun();
-    return gSFE.onStatusChange(8, 0);
-  }
-
-  // TODO wait for timeout or session close before calling connect again
-  // otherwise we might endup using a closing channel. An isClosing function
-  // and the follwoing code migh help to detect this...
-
-  /* if (isClosing)
-    setTimeout(function(){sivDisconnect(force=true); sivConnect(account)}, 1000);*/
-
-  gSFE.connect(account);
-}
-
-/**
- * Click handler for the delete button
- * @returns {void}
- **/
-function onDeleteClick() {
-  let tree = document.getElementById('treeImapRules');
-  if (tree.currentIndex < 0)
-    return;
-
-  let prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
-    .getService(Ci.nsIPromptService);
-
-  // default the checkbox to false
-  let check = { value: false };
-
-  let flags = prompts.BUTTON_POS_0 * prompts.BUTTON_TITLE_YES +
-    prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_NO;
-
-  let strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
-  // The checkbox will be hidden, and button will contain the index of the button pressed,
-  // 0, 1, or 2.
-
-  let button = prompts.confirmEx(null,
-    strings.GetStringFromName("list.delete.title"),
-    strings.GetStringFromName("list.delete.description"),
-    flags, "", "", "", null, check);
-
-  if (button !== 0)
-    return;
-
-  let scriptName = "" + tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-
-  gSFE.deleteScript(scriptName);
-}
 
 /**
  * @param {String} scriptName
@@ -360,6 +223,8 @@ function onDeleteClick() {
  * @return {void}
  */
 function sivOpenEditor(scriptName, scriptBody) {
+  "use strict";
+
   /* var wm = Cc["@mozilla.org/appshell/window-mediator;1"]
              .getService(Ci.nsIWindowMediator);
 
@@ -455,53 +320,53 @@ function sivOpenEditor(scriptName, scriptBody) {
   return;
 }
 
+
 /**
- * Click handler for the new button
- * @returns {void}
- **/
-function onNewClick() {
-  // Instead of prompting for the scriptname, setting the scriptname to an
-  // unused scriptname (eg. unnamed+000]) would offer a better workflow...
-  // Also put a template script would be good...
+ * Click handler for the donate button.
+ * Opens a new browser window with the paypal donation website
+ * @return {void}
+ */
+function onDonate() {
+  "use strict";
 
-  let prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
-    .getService(Ci.nsIPromptService);
+  let uri = Cc["@mozilla.org/network/io-service;1"]
+    .getService(Ci.nsIIOService)
+    .newURI("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC", null, null);
 
-  let input = { value: "unnamed" };
-  let check = { value: false };
-
-  let strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
-  // The checkbox will be hidden, and button will contain the index of the button pressed,
-  // 0, 1, or 2.
-
-  let result
-    = prompts.prompt(
-      window,
-      strings.GetStringFromName("list.new.title"),
-      strings.GetStringFromName("list.new.description"),
-      input, null, check);
-
-  // Did the User cancel the dialog?
-  if (result !== true)
-    return;
-
-  sivOpenEditor(input.value);
+  Cc["@mozilla.org/uriloader/external-protocol-service;1"]
+    .getService(Ci.nsIExternalProtocolService)
+    .loadURI(uri);
 }
 
 /**
- * Click handler for the edit button
+ * Click handler for the activate button.
  * @returns {void}
  **/
-function onEditClick() {
+function onActivateClick() {
+  "use strict";
+
   let tree = document.getElementById('treeImapRules');
   if (tree.currentIndex < 0)
     return;
 
-  let scriptName = "" + tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-
-  sivOpenEditor(scriptName);
+  // imitate click in the treeview
+  tree.view.cycleCell(tree.currentIndex, tree.columns.getColumnAt(1));
 
   return;
+}
+
+/**
+ * Click hander for the settings button.
+ * @returns {void}
+ **/
+function onSettingsClick() {
+  "use strict";
+
+  let server = Cc['@mozilla.org/messenger/account-manager;1']
+    .getService(Ci.nsIMsgAccountManager)
+    .getIncomingServer(getSelectedAccount().imapKey);
+
+  SieveUtils.OpenSettings(window, server);
 }
 
 /**
@@ -509,6 +374,7 @@ function onEditClick() {
  * @returns {void}
 */
 function onRenameClick() {
+  "use strict";
 
   let tree = document.getElementById('treeImapRules');
 
@@ -546,6 +412,96 @@ function onRenameClick() {
 }
 
 /**
+ * Click handler for the delete button
+ * @returns {void}
+ **/
+function onDeleteClick() {
+  "use strict";
+
+  let tree = document.getElementById('treeImapRules');
+  if (tree.currentIndex < 0)
+    return;
+
+  let prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
+    .getService(Ci.nsIPromptService);
+
+  // default the checkbox to false
+  let check = { value: false };
+
+  let flags = prompts.BUTTON_POS_0 * prompts.BUTTON_TITLE_YES +
+    prompts.BUTTON_POS_1 * prompts.BUTTON_TITLE_NO;
+
+  let strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
+  // The checkbox will be hidden, and button will contain the index of the button pressed,
+  // 0, 1, or 2.
+
+  let button = prompts.confirmEx(null,
+    strings.GetStringFromName("list.delete.title"),
+    strings.GetStringFromName("list.delete.description"),
+    flags, "", "", "", null, check);
+
+  if (button !== 0)
+    return;
+
+  let scriptName = "" + tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+
+  gSFE.deleteScript(scriptName);
+}
+
+/**
+ * Click handler for the edit button
+ * @returns {void}
+ **/
+function onEditClick() {
+  "use strict";
+
+  let tree = document.getElementById('treeImapRules');
+  if (tree.currentIndex < 0)
+    return;
+
+  let scriptName = "" + tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+
+  sivOpenEditor(scriptName);
+
+  return;
+}
+
+/**
+ * Click handler for the new button
+ * @returns {void}
+ **/
+function onNewClick() {
+  "use strict";
+
+  // Instead of prompting for the scriptname, setting the scriptname to an
+  // unused scriptname (eg. unnamed+000]) would offer a better workflow...
+  // Also put a template script would be good...
+
+  let prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
+    .getService(Ci.nsIPromptService);
+
+  let input = { value: "unnamed" };
+  let check = { value: false };
+
+  let strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
+  // The checkbox will be hidden, and button will contain the index of the button pressed,
+  // 0, 1, or 2.
+
+  let result
+    = prompts.prompt(
+      window,
+      strings.GetStringFromName("list.new.title"),
+      strings.GetStringFromName("list.new.description"),
+      input, null, check);
+
+  // Did the User cancel the dialog?
+  if (result !== true)
+    return;
+
+  sivOpenEditor(input.value);
+}
+
+/**
  * Click handler for the server details button.
  * @returns {void}
  **/
@@ -563,32 +519,113 @@ function onServerDetails() {
   }
 }
 
-/**
- * Click hander for the settings button.
- * @returns {void}
- **/
-function onSettingsClick() {
-  let server = Cc['@mozilla.org/messenger/account-manager;1']
-    .getService(Ci.nsIMsgAccountManager)
-    .getIncomingServer(getSelectedAccount().imapKey);
+function onSelectAccount(server) {
+  document.getElementById("sivExplorerStatus").contentWindow.onDetach();
 
-  SieveUtils.OpenSettings(window, server);
-}
+  gSFE.disconnect();
 
-/**
- * Click handler for the activate button.
- * @returns {void}
- **/
-function onActivateClick() {
+  // update the TreeView...
   let tree = document.getElementById('treeImapRules');
-  if (tree.currentIndex < 0)
+
+  tree.view.selection.clearSelection();
+
+  gSFE._view.update([]);
+  tree.view = gSFE._view;
+
+  let account = null;
+
+  if (server)
+    account = SieveAccountManager.getAccountByServer(server);
+  else
+    account = getSelectedAccount();
+
+  document.getElementById("sivExplorerStatus").contentWindow
+    .onAttach(account, function () { gSFE.connect(); });
+
+  if (account === null) {
+    gSFE.onStatusChange(2, "error.noaccount");
     return;
+  }
 
-  // imitate click in the treeview
-  tree.view.cycleCell(tree.currentIndex, tree.columns.getColumnAt(1));
+  // Disable and cancel if account is not enabled
+  if ((!account.isEnabled()) || account.isFirstRun()) {
+    account.setFirstRun();
+    gSFE.onStatusChange(8, 0);
+    return;
+  }
 
-  return;
+  // TODO wait for timeout or session close before calling connect again
+  // otherwise we might endup using a closing channel. An isClosing function
+  // and the follwoing code migh help to detect this...
+
+  /* if (isClosing)
+    setTimeout(function(){sivDisconnect(force=true); sivConnect(account)}, 1000);*/
+
+  gSFE.connect(account);
 }
+
+
+/**
+ * Called when the window is loaded
+ * @returns {void}
+ **/
+function onWindowLoad() {
+  "use strict";
+
+  // initialize the click handlers
+  document.getElementById("btnDonate").addEventListener("click", function() { onDonate(); });
+  document.getElementById("btnActivateScript").addEventListener("command", function() { onActivateClick(); });
+  document.getElementById("btnSettings").addEventListener("command", function() { onSettingsClick(); });
+  document.getElementById("btnRenameButton").addEventListener("command", function() { onRenameClick(); });
+  document.getElementById("btnDeleteButton").addEventListener("command", function() { onDeleteClick(); });
+  document.getElementById("btnEditButton").addEventListener("command", function() { onEditClick(); });
+  document.getElementById("btnNewButton").addEventListener("command", function() { onNewClick(); });
+  document.getElementById("btnServerDetails").addEventListener("command", function() { onServerDetails(); });
+
+
+  // now create a logger session...
+  if (gLogger === null)
+    gLogger = Cc["@mozilla.org/consoleservice;1"]
+      .getService(Ci.nsIConsoleService);
+
+  let menuImapAccounts = document.getElementById("menuImapAccounts");
+
+  let accounts = SieveAccountManager.getAccounts();
+
+
+  for (let i = 0; i < accounts.length; i++) {
+    menuImapAccounts.appendItem(
+      accounts[i].getDescription(),
+      accounts[i].getKey(), "").disabled = false;
+
+    if (window.arguments.length === 0)
+      continue;
+
+    if (window.arguments[0].wrappedJSObject.server !== accounts[i].getUri())
+      continue;
+
+    menuImapAccounts.selectedIndex = i;
+  }
+
+  gSFE._view = new SieveTreeView([], onCycleCell);
+  document.getElementById('treeImapRules').view = gSFE._view;
+
+  if (menuImapAccounts.selectedIndex === -1)
+    menuImapAccounts.selectedIndex = 0;
+
+  onSelectAccount();
+}
+
+function closeTab() {
+  // Don't forget to close this channel...
+  if (gSFE)
+    gSFE.disconnect();
+
+  document.getElementById("sivExplorerStatus").contentWindow.onDetach();
+
+  return true;
+}
+
 
 function onTreeDblClick(ev) {
   let tree = document.getElementById('treeImapRules');
@@ -622,18 +659,5 @@ function onTreeDblClick(ev) {
   return;
 }
 
-/**
- * Click handler for the donate button.
- * Opens a new browser window with the paypal donation website
- * @return {void}
- */
-function onDonate() {
-  let uri = Cc["@mozilla.org/network/io-service;1"]
-    .getService(Ci.nsIIOService)
-    .newURI("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC", null, null);
 
-  Cc["@mozilla.org/uriloader/external-protocol-service;1"]
-    .getService(Ci.nsIExternalProtocolService)
-    .loadURI(uri);
-}
 

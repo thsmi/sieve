@@ -428,7 +428,8 @@
 
       while (iterator.length) {
         let listener = iterator.pop();
-        listener[subject](listener, arg1, arg2);
+        // we call this with the listener as scope...
+        listener[subject].call(listener, arg1, arg2);
       }
     }
 

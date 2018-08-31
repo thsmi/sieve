@@ -14,7 +14,7 @@ window.require = function (path) {
       "SieveSaslLoginResponse": module.exports.SieveSaslLoginResponse,
       "SieveSaslCramMd5Response": module.exports.SieveSaslCramMd5Response,
       "SieveGetScriptResponse": module.exports.SieveGetScriptResponse,
-      "SieveSaslScramSha1Response": module.exports.SieveSaslScramSha1Response
+      "SieveSaslScramShaResponse": module.exports.SieveSaslScramShaResponse
     };
 
   if (path === "./SieveResponseCodes.js")

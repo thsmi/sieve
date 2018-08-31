@@ -48,7 +48,7 @@ if (typeof (module) === "undefined" || !module.exports)
     SieveSaslLoginResponse,
     SieveSaslCramMd5Response,
     SieveGetScriptResponse,
-    SieveSaslScramSha1Response
+    SieveSaslScramShaResponse
   } = require("./SieveResponse.js");
 
   const { SieveCrypto } = require("./SieveCrypto.js");
@@ -319,7 +319,7 @@ if (typeof (module) === "undefined" || !module.exports)
   SieveGetScriptRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
-        new SieveGetScriptResponse(this.script, parser));
+        (new SieveGetScriptResponse(this.script)).parse(parser));
     };
 
   // ****************************************************************************//
@@ -368,7 +368,7 @@ if (typeof (module) === "undefined" || !module.exports)
   SievePutScriptRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
-        new SieveSimpleResponse(parser));
+        (new SieveSimpleResponse()).parse(parser));
     };
 
   // ****************************************************************************//
@@ -426,7 +426,7 @@ if (typeof (module) === "undefined" || !module.exports)
   SieveCheckScriptRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
-        new SieveSimpleResponse(parser));
+        (new SieveSimpleResponse()).parse(parser));
     };
 
   // ****************************************************************************//
@@ -475,7 +475,7 @@ if (typeof (module) === "undefined" || !module.exports)
   SieveSetActiveRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
-        new SieveSimpleResponse(parser));
+        (new SieveSimpleResponse()).parse(parser));
     };
 
   // ****************************************************************************//
@@ -508,7 +508,7 @@ if (typeof (module) === "undefined" || !module.exports)
   SieveCapabilitiesRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
-        new SieveCapabilitiesResponse(parser));
+        (new SieveCapabilitiesResponse()).parse(parser));
     };
 
   // ****************************************************************************//
@@ -544,7 +544,7 @@ if (typeof (module) === "undefined" || !module.exports)
   SieveDeleteScriptRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
-        new SieveSimpleResponse(parser));
+        (new SieveSimpleResponse()).parse(parser));
     };
 
   // ****************************************************************************//
@@ -583,7 +583,7 @@ if (typeof (module) === "undefined" || !module.exports)
   SieveNoopRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
-        new SieveSimpleResponse(parser));
+        (new SieveSimpleResponse()).parse(parser));
     };
 
   // ****************************************************************************//
@@ -628,7 +628,7 @@ if (typeof (module) === "undefined" || !module.exports)
   SieveRenameScriptRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
-        new SieveSimpleResponse(parser));
+        (new SieveSimpleResponse()).parse(parser));
     };
 
   // ****************************************************************************//
@@ -663,7 +663,7 @@ if (typeof (module) === "undefined" || !module.exports)
   SieveListScriptRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
-        new SieveListScriptResponse(parser));
+        new SieveListScriptResponse().parse(parser));
     };
 
   // ****************************************************************************//
@@ -698,7 +698,8 @@ if (typeof (module) === "undefined" || !module.exports)
   SieveStartTLSRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
-        new SieveSimpleResponse(parser));
+        (new SieveSimpleResponse()).parse(parser));
+
     };
 
   // ****************************************************************************//
@@ -765,7 +766,7 @@ if (typeof (module) === "undefined" || !module.exports)
   SieveLogoutRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
-        new SieveSimpleResponse(parser));
+        (new SieveSimpleResponse()).parse(parser));
     };
 
   // ****************************************************************************//
@@ -816,7 +817,7 @@ if (typeof (module) === "undefined" || !module.exports)
   SieveInitRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
-        new SieveCapabilitiesResponse(parser));
+        (new SieveCapabilitiesResponse()).parse(parser));
     };
 
   /**
@@ -878,7 +879,7 @@ if (typeof (module) === "undefined" || !module.exports)
   SieveSaslPlainRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
-        new SieveSimpleResponse(parser));
+        (new SieveSimpleResponse()).parse(parser));
     };
 
 
@@ -1007,9 +1008,9 @@ if (typeof (module) === "undefined" || !module.exports)
   /** @param {SieveResponseParser} parser */
   SieveSaslLoginRequest.prototype.addResponse
     = function (parser) {
-      this.response.add(parser);
+      this.response.parse(parser);
 
-      if (this.response.getState() !== 4)
+      if (this.hasNextRequest())
         return;
 
       SieveAbstractRequest.prototype.addResponse.call(this, this.response);
@@ -1091,9 +1092,9 @@ if (typeof (module) === "undefined" || !module.exports)
 
   SieveSaslCramMd5Request.prototype.addResponse
     = function (parser) {
-      this.response.add(parser);
+      this.response.parse(parser);
 
-      if (this.response.getState() !== 4)
+      if (this.hasNextRequest())
         return;
 
       SieveAbstractRequest.prototype.addResponse.call(this, this.response);
@@ -1108,7 +1109,7 @@ if (typeof (module) === "undefined" || !module.exports)
    * @constructor
    */
   function SieveAbstractSaslScramRequest() {
-    this.response = new SieveSaslScramSha1Response();
+    this.response = new SieveSaslScramShaResponse();
   }
 
   // Inherrit prototypes from SieveAbstractRequest...
@@ -1269,9 +1270,10 @@ if (typeof (module) === "undefined" || !module.exports)
 
   SieveAbstractSaslScramRequest.prototype.addResponse
     = function (parser) {
-      this.response.add(parser);
 
-      if (this.response.getState() !== 4)
+      this.response.parse(parser);
+
+      if (this.hasNextRequest())
         return;
 
       SieveAbstractRequest.prototype.addResponse.call(this, this.response);
@@ -1371,7 +1373,7 @@ if (typeof (module) === "undefined" || !module.exports)
   SieveSaslExternalRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
-        new SieveSimpleResponse(parser));
+        (new SieveSimpleResponse()).parse(parser));
     };
 
   exports.SieveGetScriptRequest = SieveGetScriptRequest;

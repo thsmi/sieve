@@ -79,6 +79,15 @@
    */
   class SieveMetaDataExistsTestUI extends SieveTestDialogBoxUI {
 
+    /**
+     * Gets and sets the mailbox name
+     *
+     * @param {String} [value]
+     *   the mailbox name, if omitted the name is unchanges.
+     *
+     * @return {String}
+     *   the mailbox name.
+     */
     mailbox(value) {
       return this.getSieve().getElement("mailbox").value(value);
     }
@@ -140,6 +149,15 @@
    */
   class SieveMetaDataTestUI extends SieveTestDialogBoxUI {
 
+    /**
+     * Gets and sets the mailbox name
+     *
+     * @param {String} [value]
+     *   the mailbox name, if omitted the name is unchanges.
+     *
+     * @return {String}
+     *   the mailbox name.
+     */
     mailbox(value) {
       return this.getSieve().getElement("mailbox").value(value);
     }

@@ -21,7 +21,10 @@
   const Cr = Components.results;
 
 
-  // class constructor
+  /**
+   * Creates a new AccountManagerExtension for the sieve addon.
+   * @constructor
+   */
   function SieveAccountManagerExtension() { }
 
   // class definition

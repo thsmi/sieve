@@ -224,8 +224,11 @@
       return "false" + this.whiteSpace.toScript();
     };
 
-
-  /* *****************************************************************************/
+  /**
+   *
+   * @param {*} docshell
+   * @param {*} id
+   */
   function SieveSize(docshell, id) {
     SieveAbstractElement.call(this, docshell, id);
 
@@ -315,6 +318,12 @@
     };
 
   // TODO Stringlist and testslist are quite simmilar
+
+  /**
+   *
+   * @param {*} docshell
+   * @param {*} id
+   */
   function SieveTestList(docshell, id) {
     SieveAbstractElement.call(this, docshell, id);
     this.tests = [];

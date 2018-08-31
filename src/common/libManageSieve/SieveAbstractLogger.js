@@ -27,8 +27,13 @@
 
     /**
      * Creates a new instance
+     * @param {String} [prefix]
+     *   an optional prefix for this logger.
      */
-    constructor() {
+    constructor(prefix) {
+      if (typeof (prefix) === "undefined")
+        prefix = "";
+
       this._level = 0x00;
       this._prefix = "";
     }
@@ -132,7 +137,7 @@
      */
     prefix(prefix) {
 
-      if (typeof (level) !== "undefined")
+      if (typeof (prefix) !== "undefined")
         this._prefix = prefix;
 
       return this._prefix;

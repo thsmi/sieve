@@ -275,7 +275,9 @@ Continuați numai în cazul în care există un motiv bine întemeiat pentru car
 <!ENTITY status.error "Ultima comandă a eșuat deoarece serverul a raportat o eroare:">
 
 <!ENTITY status.sync.description
-"Scripturile serverului local și al celui lateral sunt diferite. Ce ați vrea să faceți?">
+"The local and the server side scripts are different.
+
+What would you like to do about it ?">
 <!ENTITY status.sync.keep "Păstrează scriptul local">
 <!ENTITY status.sync.replace "Utilizați scriptul lateral al serverului">
 

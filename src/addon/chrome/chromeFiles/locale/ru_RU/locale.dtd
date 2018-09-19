@@ -294,9 +294,9 @@
 <!ENTITY status.error "Последняя команда не выполнена, так как сервер сообщил об ошибке:">
 
 <!ENTITY status.sync.description
-"Локальный и серверный скрипты отличаются. 
+"The local and the server side scripts are different.
 
-Чтобы вы хотели сделать?">
+What would you like to do about it ?">
 <!ENTITY status.sync.keep "Сохранить локальный скрипт">
 <!ENTITY status.sync.replace "Использовать серверный скрипт">
 

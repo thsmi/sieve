@@ -287,9 +287,7 @@ Proszę skontaktować się z dostawcą poczty lub spróbować ręcznie stworzyć
 <!ENTITY status.error "Ostatnie polecenie nie powiodło się, ponieważ serwer zwrócił błąd:">
 
 <!ENTITY status.sync.description
-"The local and the server side scripts are different.
-
-What would you like to do about it ?">
+"Skrypty wykonywane lokalnie i po stronie serwera się różnia. Co chcesz zrobić?">
 <!ENTITY status.sync.keep "Pozostaw skrypt lokalny">
 <!ENTITY status.sync.replace "Użycie skryptu po stronie serwera">
 

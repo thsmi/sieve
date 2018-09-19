@@ -279,7 +279,7 @@ auf 'Erweitert' um das Konto manuell zu konfigurieren.">
 <!ENTITY status.error "Aktion fehlgeschlagen, Server meldet einen schweren Fehler:">
 
 <!ENTITY status.sync.description
-"Das lokale Script und das auf dem Server sind unterschiedlich sich.
+"Das lokale und das serverseitige Skript sind unterschiedlich.
 
 Welches möchten Sie behalten?">
 <!ENTITY status.sync.keep "Lokales Skript beibehalten">

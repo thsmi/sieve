@@ -277,9 +277,9 @@ Or choose 'Advanced' to configure the account manually.">
 <!ENTITY status.error "Збій останньої команди — сервер повідомив про помилку:">
 
 <!ENTITY status.sync.description
-"Сценарій на сервері відрізняється від локального.
+"The local and the server side scripts are different.
 
-Як ви хочете це виправити?">
+What would you like to do about it ?">
 <!ENTITY status.sync.keep "Зберегти локальний сценарій">
 <!ENTITY status.sync.replace "Використати сценарій на сервері">
 

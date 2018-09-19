@@ -12,275 +12,275 @@
  -->
 
 <!-- Options Dialog -->
-<!ENTITY options.title "Sieve Options">
+<!ENTITY options.title "Sieve Seçenekler">
 
-<!ENTITY options.tab.server "Server">
-<!ENTITY options.tab.security "Security">
-<!ENTITY options.tab.general "General">
+<!ENTITY options.tab.server "Sunucu">
+<!ENTITY options.tab.security "Güvenlik">
+<!ENTITY options.tab.general "Genel">
 <!ENTITY options.tab.proxy "Proxy">
-<!ENTITY options.tab.advanced "Advanced">
-<!ENTITY options.tab.advanced.warning "These settings are intended for advanced users...">
-<!ENTITY options.tab.editor "Editor">
-<!ENTITY options.tab.debug "Debug">
-<!ENTITY options.tab.credits "Credits">
+<!ENTITY options.tab.advanced "Gelişmiş">
+<!ENTITY options.tab.advanced.warning "Bu ayarlar gelişmiş kullanıcılar için tasarlanmıştır...">
+<!ENTITY options.tab.editor "Editör">
+<!ENTITY options.tab.debug "Hata Ayıklama">
+<!ENTITY options.tab.credits "Tanıtım">
 
-<!ENTITY options.host.caption "Server Name">
+<!ENTITY options.host.caption "Sunucu Adı">
 <!ENTITY options.host.description
-"Most Sieve implementations run directly on a mail server. Thus the Sieve server name is usually same as your IMAP server name.">
-<!ENTITY options.host.imap "IMAP Server:">
-<!ENTITY options.host.custom "Other Server:">
+"Sieve uygulamalarının pek çoğu bir mail sunucusunda çalışır.
+Bu sebeple, Sieve sunucu adı sizin IMAP sunucu adınızla aynıdır.">
+<!ENTITY options.host.imap "IMAP Sunucu:">
+<!ENTITY options.host.custom "Diğer Sunucu:">
 
-<!ENTITY options.port.caption "Server Port">
+<!ENTITY options.port.caption "Sunucu Portu">
 <!ENTITY options.port.description
-"The server port changed, when ManageSieve turned into a full RFC Standard">
+"ManageSieve tam bir RFC standartına dönüştüğünde sunucu portu değişti">
 <!ENTITY options.port.description2
-"Older server implementations still use port 2000, while newer standard conform server can only be accessed via port 4190.">
-<!ENTITY options.port.4190 "4190 (Default)" >
+"Daha eski sunucu uygulamaları halen daha port 2000'ini kullanırken, yeni standarlara uyumlu sunucuya sadece port 4190 aracılığı ile erişilebilir.">
+<!ENTITY options.port.4190 "4190 (Varsayılan)" >
 <!ENTITY options.port.2000 "2000" >
-<!ENTITY options.port.custom "Other:">
-<!ENTITY options.port.autoselect "Auto Select Port">
-<!ENTITY options.port.autoselect.running "Selecting Port, please wait...">
-<!ENTITY options.port.autoselect.successful "Sieve detected on Port ">
-<!ENTITY options.port.autoselect.error "Selecting Port failed...">
+<!ENTITY options.port.custom "Diğer:">
+<!ENTITY options.port.autoselect "Otomatik Port Seç">
+<!ENTITY options.port.autoselect.running "Port seçiliyor, lütfen bekleyiniz...">
+<!ENTITY options.port.autoselect.successful "Sieve Port'u algıladı ">
+<!ENTITY options.port.autoselect.error "Seçilmiş Port başarısız oldu...">
 
-<!ENTITY options.security.caption "Connection Security">
+<!ENTITY options.security.caption "Bağlantı Güvenliği">
 <!ENTITY options.security.description
-"Transport Layer Security (TLS) secures the connection to the manage sieve server. It cyphers all data and is designed to prevent eavesdropping and tampering.">
+"Aktarım Katmanı Güvenliği (AKG) yönetme elek sunucusuna bağlantıyı güvenceye alır.
+Bütün veriyi sıfıra indirir ve gizlice dinleme ile kurcalamayı önleme amacıyla dizayn edilmiştir.">
 <!ENTITY options.security.description2
-"ManageSieve usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
-<!ENTITY options.security.tls.disabled "No TLS">
-<!ENTITY options.security.tls.available "TLS, when available">
-<!ENTITY options.security.tls.force "Force TLS">
+"ManageSieve genellikle kriptosuz şifreleri transfer eder. Eğer geçerli bir sebibiniz yok ise (örneğin hata ayıklamak), her zaman TLS'yi zorlamalısınız.">
+<!ENTITY options.security.tls.disabled "TLS Yok">
+<!ENTITY options.security.tls.available "TLS, kullanılabilir olduğu zaman">
+<!ENTITY options.security.tls.force "TLS Zorla">
 
-<!ENTITY options.login "Authentication">
+<!ENTITY options.login "Kimlik Doğrulama">
 <!ENTITY options.login.key "A">
-<!ENTITY options.login.noAuth "No Authentication">
-<!ENTITY options.login.imapAuth "IMAP Username and Password">
-<!ENTITY options.login.customAuth "Username and Password">
-<!ENTITY options.login.username "Username">
+<!ENTITY options.login.noAuth "Kimlik Doğrulama Yok">
+<!ENTITY options.login.imapAuth "IMAP Kullanıcı Adı ve Şifresi">
+<!ENTITY options.login.customAuth "Kullanıcı Adı ve Şifre">
+<!ENTITY options.login.username "Kullanıcı Adı">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "Show Saved Passwords...">
+<!ENTITY options.login.show "Kayıtlı şifreleri göster...">
 
-<!ENTITY options.misc "Miscellaneous Settings">
-<!ENTITY options.misc.keepalive "Enable keepalives">
+<!ENTITY options.misc "Diğer Seçenekler">
+<!ENTITY options.misc.keepalive "Keepalives'ları devreye sok">
 <!ENTITY options.misc.keepalive.key "k">
-<!ENTITY options.misc.keepalive2 "Send every">
+<!ENTITY options.misc.keepalive2 "Gönder her">
 <!ENTITY options.misc.keepalive.description
-"If the client was idle for too long (usually 30 minutes), the server assumes the client is disconnected and hangs up the connection.">
+"Eğer müşteri uzun süre etkin olmazsa (genellikle 30 dakika), sunucu müşterinin bağlantısının koptuğunu ve bağlantısını kestiğini varsayar.">
 <!ENTITY options.misc.keepalive.description2
-"A keepalive request indicates the connection is still active and should be preserved.">
-<!ENTITY options.misc.keepalive.min "min">
+"Bir keepalive talebi bağlantının hala daha aktif olduğunu ve aktif tutulması gerektiğini gösterir.">
+<!ENTITY options.misc.keepalive.min "dakika">
 
-<!ENTITY options.misc.compile.caption "Syntax check">
+<!ENTITY options.misc.compile.caption "Syntax kontrolü">
 <!ENTITY options.misc.compile.description
-"While editing Scripts, they can be checked for validity. The syntax check is performed by the server. In order to keep network traffic low, syntax check requests are grouped.">
-<!ENTITY options.misc.compile "Check Scripts while typing">
+"Scriptleri düzenlerken, doğrulukları kontrol edilebilir. Söz dizimi kuralları sunucu tarafından kontrol edilir. Ağ trafiğini düşükte tutmak için söz dizimi kural kontrol talepleri gruplanmıştır.">
+<!ENTITY options.misc.compile "Yazarken Scriptleri kontrol et">
 <!ENTITY options.misc.compile.key "c">
-<!ENTITY options.misc.compile2 "Validate at least every">
-<!ENTITY options.misc.compile.ms "ms">
+<!ENTITY options.misc.compile2 "Doğrula en azından">
+<!ENTITY options.misc.compile.ms "milisaniye">
 
-<!ENTITY options.editor.indention.caption "Indention">
-<!ENTITY options.editor.indention.description "The plain text editor supports automatic indenting.">
-<!ENTITY options.editor.indention.width "Indention Width:">
+<!ENTITY options.editor.indention.caption "Satır Başı">
+<!ENTITY options.editor.indention.description "Standart metin düzenleyici otomatik satır başı yapmayı desteklemektedir.">
+<!ENTITY options.editor.indention.width "Satır Başı Genişliği:">
 
-<!ENTITY options.editor.indention.policy.caption "Indention Policy:">
-<!ENTITY options.editor.indention.policy.spaces "Spaces Only">
-<!ENTITY options.editor.indention.policy.tabs "Tabs Only">
+<!ENTITY options.editor.indention.policy.caption "Satış Başı Politikası:">
+<!ENTITY options.editor.indention.policy.spaces "Sadece boşluk tuşu">
+<!ENTITY options.editor.indention.policy.tabs "Sadece TAB tuşu">
 
-<!ENTITY options.editor.tabs.caption "Tab Handling">
-<!ENTITY options.editor.tabs.description "Texteditor with automatic indenting replaced the need for a tab key, but there are many editors which default to tabs due to historic reasons.">
-<!ENTITY options.editor.tabs.width "Tab Width">
+<!ENTITY options.editor.tabs.caption "Sekme Kontrolü">
+<!ENTITY options.editor.tabs.description "Otomatik girintilemeli Texteditor, sekme tuşu ihtiyacını kaldırmıştır, ancak tarihi sebeplerden ötürü sekmeleri varsayılan olarak kullanan birçok editör vardır.">
+<!ENTITY options.editor.tabs.width "Sekme genişliği">
 
-<!ENTITY options.editor.tabs.policy.caption "Tab Policy">
-<!ENTITY options.editor.tabs.policy.spaces "Insert Spaces for Tabs">
-<!ENTITY options.editor.tabs.policy.tabs "Insert Tabs">
+<!ENTITY options.editor.tabs.policy.caption "Sekme Politikası">
+<!ENTITY options.editor.tabs.policy.spaces "Tab tuşları yerine Space tuşlarını yerleştir">
+<!ENTITY options.editor.tabs.policy.tabs "Tab tuşlarını yerleştir">
 
 <!ENTITY options.debug.warning
-"Keep in mind that neither SASL Login nor SASL Plain cypher your password, it might be posted in clear text to the error console.">
-<!ENTITY options.debug.caption "Debug settings">
-<!ENTITY options.debug.request "Client to Server communication (requests)">
-<!ENTITY options.debug.response "Server to Client communication (responses)">
-<!ENTITY options.debug.exceptions "Exceptions and State Machine Information">
-<!ENTITY options.debug.stream "Raw Dump/ Dump Byte Stream">
-<!ENTITY options.debug.session "Session management">
-<!ENTITY options.debug.output "Debug Output">
-<!ENTITY options.debug.console "Debug information is posted to the error console">
-<!ENTITY options.debug.console.open "Show Error Console...">
+"Aklınızda bulunsun, ne SASL Login ne de SASL Plain parolanızı sıfırlamaz, temiz metin olarak hata konsoluna gönderilebilir.">
+<!ENTITY options.debug.caption "Hata Ayıklama Ayarları">
+<!ENTITY options.debug.request "Müşteri için sunucu iletişimi (talepler)">
+<!ENTITY options.debug.response "Sunucu için müşteri iletişimi (cevaplar)">
+<!ENTITY options.debug.exceptions "İstisnalar ve Ana Makine Bilgisi">
+<!ENTITY options.debug.stream "Ham Döküm/ Döküm Bayt Akışı">
+<!ENTITY options.debug.session "Oturum Yönetimi">
+<!ENTITY options.debug.output "Hata Ayıklama Çıktısı">
+<!ENTITY options.debug.console "Hata ayıklama bilgisi hata konsoluna gönderildi">
+<!ENTITY options.debug.console.open "Hata Konsolunu Göster...">
 
-<!ENTITY options.authmechanism.caption "Authentication Mechanism">
-<!ENTITY options.authmechanism "Override suggested Authentication Mechanism">
-<!ENTITY options.authmechanism.default "Use always:">
+<!ENTITY options.authmechanism.caption "Kimlik Doğrulama Mekanizması">
+<!ENTITY options.authmechanism "Önerilen Kimlik Doğrulama Mekanizmasını geçersiz kıl">
+<!ENTITY options.authmechanism.default "Her zaman kullan:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
 <!ENTITY options.authmechanism.login "Login">
 <!ENTITY options.authmechanism.plain "Plain">
-<!ENTITY options.authmechanism.external "EXTERNAL">
+<!ENTITY options.authmechanism.external "Harici">
 <!ENTITY options.authmechanism.description
-"In certain situations e.g. when using Proxy Authentication you might want to force a specific Authentication Mechanism." >
+"Bazı durumlarda, örn. Proxy Kimlik Doğrulama özelliğini kullanırken belirli bir Kimlik Doğrulama Mekanizmasını zorlamak isteyebilirsiniz." >
 
-<!ENTITY options.proxyauth.caption "Proxy Authorization">
+<!ENTITY options.proxyauth.caption "Proxy Yetkilendirme">
 <!ENTITY options.proxyauth.desc
-"Proxy authorization, allows an authenticated user to act on behalf of another user. Usually servers are configured, that this feature is only available for administrators.">
+"Proxy yetkilendirme, kimliği doğrulanmış bir kullanıcının başka bir kullanıcı adına hareket etmesini sağlar. Genellikle sunucular yapılandırılmıştır, bu özellik yalnızca yöneticiler tarafından kullanılabilir.">
 <!ENTITY options.proxyauth.force
-"When using proxy authorization you should force &quot;SASL PLAIN&quot; Authentication.">
-<!ENTITY options.proxyauth.none "No Authorization">
-<!ENTITY options.proxyauth.default "Sieve Username">
-<!ENTITY options.proxyauth.prompt "Prompt for Authorization">
-<!ENTITY options.proxyauth.custom "Authorize as">
-<!ENTITY options.proxyauth.custom.username "Username:">
+"Proxy yetkilendirmesini kullanırken, &quot;SASL PLAIN&quot; Kimlik Doğrulamayı zorlamalısınız.">
+<!ENTITY options.proxyauth.none "Yetkilendirme yok">
+<!ENTITY options.proxyauth.default "Sieve Kullanıcı Adı">
+<!ENTITY options.proxyauth.prompt "Yetkilendirme İstemi">
+<!ENTITY options.proxyauth.custom "Yetkilendir">
+<!ENTITY options.proxyauth.custom.username "Kullanıcı Adı:">
 
-<!ENTITY options.info.servername "Server Name:">
+<!ENTITY options.info.servername "Sunucu Adı:">
 <!ENTITY options.info.port "Port:">
-<!ENTITY options.info.secure "Secure Connection:">
-<!ENTITY options.info.username "User Name:">
-<!ENTITY options.info.auth "Authentication:">
+<!ENTITY options.info.secure "Güvenli Bağlantı:">
+<!ENTITY options.info.username "Kullanıcı Adı:">
+<!ENTITY options.info.auth "Kimlik doğrulama:">
 
 <!ENTITY options.account.sieve
-"Sieve is a powerful script language for server-side mail filtering.">
+"Sieve sunucu tarafında posta filtrelemesi için güçlü bir betik dilidir.">
 <!ENTITY options.account.activate
-"Do you want to activate managing Sieve Scripts for this account?">
-<!ENTITY options.account.activate.yes "Yes, manage Sieve scripts for this account:">
-<!ENTITY options.account.activate.no "No, this account does not support Sieve">
-<!ENTITY options.account.filters "Edit Filters...">
-<!ENTITY options.account.settings "Change Settings...">
+"Sieve Komut dizisini bu hesap için aktifleştirmek istiyor musunuz?">
+<!ENTITY options.account.activate.yes "Evet, Sieve komut dizisini bu hesap için aktifleştir:">
+<!ENTITY options.account.activate.no "Hayır, bu hesap Sieve'yi desteklemiyor">
+<!ENTITY options.account.filters "Filtreleri düzenle...">
+<!ENTITY options.account.settings "Ayarları Değiştir...">
 
 <!-- Credits -->
-<!ENTITY options.credits "Many thanks to all contributors:">
+<!ENTITY options.credits "Tüm katılımcılara çok teşekkürler:">
 
 <!-- Proxy Settings -->
-<!ENTITY options.proxy "Proxy configuration">
+<!ENTITY options.proxy "Proxy yapılandırması">
 <!ENTITY options.proxy.description
-"Instead of  a direct connection you may use a SOCKS Proxy to transparently and securely traverse a firewall.">
+"Doğrudan bağlantı yerine, bir güvenlik duvarını şeffaf ve güvenli bir şekilde geçmek için SOCKS Proxy kullanabilirsiniz.">
 <!ENTITY options.proxy.description.nameresolution
-"With SOCKSv4 hostnames are always resolved on the local machine. SOCKSv5 also supports resolving hostnames by the SOCKS proxy. If you can trust the SOCKSv5 proxy, the latter is considered to be more secure and should be preferred.">
+"SOCKSv4 ile konak isimleri her zaman yerel makinede çözülür. SOCKSv5 ayrıca, SOCKS proxy'si tarafından ana bilgisayar adlarının çözümlenmesini de desteklemektedir. SOCKSv5 proxy'sine güvenebilirsiniz, ikincisi daha güvenli olarak kabul edilir ve tercih edilmelidir.">
 <!ENTITY options.proxy.description.localhost
-"On some system using 'localhost' as proxy host does not function properly, use '127.0.0.1' instead.">
-<!ENTITY options.proxy.direct "Direct Connection">
-<!ENTITY options.proxy.default "Default Proxy configuration">
+"Proxy host düzgün çalışmadığı zaman 'localhost' kullanan bazı sistemlerde bunun yerine, '127.0.0.1' kullanınız.">
+<!ENTITY options.proxy.direct "Doğrudan Bağlantı">
+<!ENTITY options.proxy.default "Varsayılan Poxy yapılandırması">
 <!ENTITY options.proxy.socks4 "SOCKSv4">
 <!ENTITY options.proxy.socks5 "SOCKSv5">
-<!ENTITY options.proxy.nameresolution "Resolve hostnames on proxy">
+<!ENTITY options.proxy.nameresolution "Vekil üzerindeki ana makine adlarını çözme">
 <!ENTITY options.proxy.host "Host:">
 <!ENTITY options.proxy.port "Port:">
 
 
 <!-- Locale for the List Filter Dialog -->
-<!ENTITY list.title "Sieve Filters">
+<!ENTITY list.title "Sieve Filtreleri">
 
-<!ENTITY list.accounts "Filters for:">
+<!ENTITY list.accounts "İçin filtreler:">
 
-<!ENTITY list.tree "Serverside Sieve mailfilters">
-<!ENTITY list.tree.active "Active">
-<!ENTITY list.tree.name "Name">
+<!ENTITY list.tree "Sunucu Tarafı Sieve posta filtresi">
+<!ENTITY list.tree.active "Aktif">
+<!ENTITY list.tree.name "Ad">
 
-<!ENTITY list.new "New...">
-<!ENTITY list.edit "Edit...">
-<!ENTITY list.delete "Delete">
-<!ENTITY list.rename "Rename">
-<!ENTITY list.activate "Activate">
-<!ENTITY list.settings "Settings...">
+<!ENTITY list.new "Yeni...">
+<!ENTITY list.edit "Düzenle...">
+<!ENTITY list.delete "Sil">
+<!ENTITY list.rename "Yeniden Adlandır">
+<!ENTITY list.activate "Aktif">
+<!ENTITY list.settings "Ayarlar...">
 
-<!ENTITY list.details.capability "Server Sieve Capabilities">
-<!ENTITY list.details.capability.implementation "Server Version:">
-<!ENTITY list.details.capability.sasl "SASL Mechanisms:">
-<!ENTITY list.details.capability.extensions "Extensions:">
-<!ENTITY list.details.capability.protocol "Protocol Version:">
+<!ENTITY list.details.capability "Sunucu Sieve Özellikleri">
+<!ENTITY list.details.capability.implementation "Sunucu Versiyonu:">
+<!ENTITY list.details.capability.sasl "SASL Mekanızmaları:">
+<!ENTITY list.details.capability.extensions "Uzantılar:">
+<!ENTITY list.details.capability.protocol "Protokol Versiyonu:">
 
 
 <!ENTITY list.badcert
-  "Your mail server attempts to identify itself with invalid information.">
+  "Mail sunucunuz kendini geçerli olmayan bilgiyle tanımlamaya çalıştı.">
 <!ENTITY list.badcert.error
-"If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server.
+"Bu sunucuya genellikle sorunsuz bağlanırsanız, bu hata birinin sunucuyu taklit etmeye çalıştığı anlamına gelebilir. Bu sunucunun, güvenilir tanımlamayı kullanmamasının iyi bir nedeni olduğunu bilmiyorsanız, devam etmeyin.">
+<!ENTITY list.badcert.remember "Tercihimi hatırla">
+<!ENTITY list.badcert.ignore "Devam Et">
+<!ENTITY list.badcert.abort "İptal Et">
 
-Do not continue unless you know there's a good reason why this server doesn't use trusted identification.">
-<!ENTITY list.badcert.remember "Remember my decision">
-<!ENTITY list.badcert.ignore "Continue">
-<!ENTITY list.badcert.abort "Abort">
-
-<!ENTITY list.autoconfig.welcome.caption "Welcome!">
+<!ENTITY list.autoconfig.welcome.caption "Hoşgeldiniz!">
 <!ENTITY list.autoconfig.welcome.description1
-"This account is not Configured for manage sieve.">
+"Bu hesap, sieve yönetmek için yapılandırılmış değil.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click on 'Continue' to detect the configuration automatically.
-Or choose 'Advanced' to configure the account manually.">
+"Otomatik yapılandırma için 'Devam Et'e tıklayınız.
+Ya da elle yapılandırma için 'Gelişmiş'e tıklayınız.">
 
-<!ENTITY list.autoconfig.advanced "Advanced">
-<!ENTITY list.autoconfig.continue "Continue">
+<!ENTITY list.autoconfig.advanced "Gelişmiş">
+<!ENTITY list.autoconfig.continue "Devam Et">
 
-<!ENTITY list.autoconfig.detecting.caption "Autodetecting Configuration">
+<!ENTITY list.autoconfig.detecting.caption "Otomatik Algılama Yapılandırması">
 <!ENTITY list.autoconfig.detecting.description
-  "Might take some minutes to complete...">
+  "Tamamlanması bir kaç dakika sürebilir...">
 
-<!ENTITY list.autoconfig.cancel "Cancel">
+<!ENTITY list.autoconfig.cancel "İptal">
 
-<!ENTITY list.autoconfig.success.caption "Congratulations!">
+<!ENTITY list.autoconfig.success.caption "Tebrikler!">
 <!ENTITY list.autoconfig.success.description
-  "Your account is now configured and ready to use...">
+  "Hesabınız şu an yapılandırıldı ve kullanıma hazır...">
 
-<!ENTITY list.autoconfig.error.caption "Sorry">
+<!ENTITY list.autoconfig.error.caption "Özür Dileriz">
 <!ENTITY list.autoconfig.error.description
-"It seems your mail server does not support manage sieve or requires a special configuration. Please contact your Mail provider or try to do a manual configuration.">
+"Görünen o ki mail sunucunuz Manage Sieve'yi desteklemiyor ya da elle yapılandırma talep ediyor. Lütfen Mail sağlayıcınız ile iletişime geçiniz ya da elle yapılandırmayı deneyiniz.">
 
-<!ENTITY list.autoconfig.retest "Re-test">
-<!ENTITY list.autoconfig.config "Manual Configuration">
+<!ENTITY list.autoconfig.retest "Yeniden test et">
+<!ENTITY list.autoconfig.config "El ile yapılandırma">
 
 <!-- Locale for the Edit Filter Dialog -->
-<!ENTITY edit.toolbar.save "Save">
-<!ENTITY edit.toolbar.undo "Undo">
-<!ENTITY edit.toolbar.redo "Redo">
-<!ENTITY edit.toolbar.cut "Cut">
-<!ENTITY edit.toolbar.copy "Copy">
-<!ENTITY edit.toolbar.paste "Paste">
-<!ENTITY edit.toolbar.compile "Syntaxcheck">
-<!ENTITY edit.toolbar.reference "Quick Reference">
-<!ENTITY edit.toolbar.tools "Tools">
-<!ENTITY edit.toolbar.import "Import Script">
-<!ENTITY edit.toolbar.export "Export Script">
-<!ENTITY edit.toolbar.back "Back">
-<!ENTITY edit.toolbar.forward "Forward">
-<!ENTITY edit.toolbar.home "Home">
-<!ENTITY edit.toolbar.search "Search">
+<!ENTITY edit.toolbar.save "Kaydet">
+<!ENTITY edit.toolbar.undo "Geri Al">
+<!ENTITY edit.toolbar.redo "Yinele">
+<!ENTITY edit.toolbar.cut "Kes">
+<!ENTITY edit.toolbar.copy "Yapıştır">
+<!ENTITY edit.toolbar.paste "Yapıştır">
+<!ENTITY edit.toolbar.compile "Sözdizimi Kontrolü">
+<!ENTITY edit.toolbar.reference "Hızlı referans">
+<!ENTITY edit.toolbar.tools "Araçlar">
+<!ENTITY edit.toolbar.import "Komutu içe aktar">
+<!ENTITY edit.toolbar.export "Komutu dışa aktar">
+<!ENTITY edit.toolbar.back "Geri">
+<!ENTITY edit.toolbar.forward "İleri">
+<!ENTITY edit.toolbar.home "Ana Sayfa">
+<!ENTITY edit.toolbar.search "Ara">
 
 <!ENTITY edit.sidebar.uri "https://thsmi.github.io/sieve-reference/en/index.html">
-<!ENTITY edit.sidebar.title "Sieve Language Reference">
+<!ENTITY edit.sidebar.title "Sieve Dil Tercihi">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Search and Replace">
-<!ENTITY edit.searchreplace.searchfor "Search for:">
-<!ENTITY edit.searchreplace.replacewith "Replace with:">
-<!ENTITY edit.searchreplace.options "Options">
-<!ENTITY edit.searchreplace.case "Case Sensitive">
-<!ENTITY edit.searchreplace.backward "Backward">
-<!ENTITY edit.searchreplace.find "Find">
-<!ENTITY edit.searchreplace.replace "Replace">
-<!ENTITY edit.searchreplace.error "Phrase not found">
+<!ENTITY edit.searchreplace.title "Ara ve Değiştir">
+<!ENTITY edit.searchreplace.searchfor "Arama Sonuçları:">
+<!ENTITY edit.searchreplace.replacewith "İle Değiştir:">
+<!ENTITY edit.searchreplace.options "Seçenekler">
+<!ENTITY edit.searchreplace.case "Büyük/Küçük Harf Duyarlılığı">
+<!ENTITY edit.searchreplace.backward "Geri">
+<!ENTITY edit.searchreplace.find "Bul">
+<!ENTITY edit.searchreplace.replace "Değiştir">
+<!ENTITY edit.searchreplace.error "Kelime bulunamadı">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Click 'Go Online' and try again">
-<!ENTITY status.offline.go "Go Online">
+"Şu anda çevrimdışısın. 'Çevrimiçi Ol'a tıklayıp tekrar deneyin">
+<!ENTITY status.offline.go "Çevrimiçi Ol">
 
 
 <!ENTITY status.connectivity.loss.description
-"Server terminated unexpectedly the connection, click on reconnect to try again.">
-<!ENTITY status.connectivity.loss.reconnect "Reconnect">
+"Sunucu beklenmedik bir şekilde bağlantıyı kesti, tekrar denemek için 'Tekrar Bağlan'a tıklayın.">
+<!ENTITY status.connectivity.loss.reconnect "Yeniden Bağlan">
 
-<!ENTITY status.warning.ignore "Ignore">
-<!ENTITY status.warning.reconnect "Reconnect">
+<!ENTITY status.warning.ignore "Yoksay">
+<!ENTITY status.warning.reconnect "Yeniden Bağlan">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, goto 'Tools-&gt; SieveMessage Filters'">
+  "Bu hesap Manage Sieve için yapılandırılmamış. &quot;Araçlar-&gt; Sieve Mesaj Filtreler&quot; ine gidin">
 
-<!ENTITY status.error.reconnect "Reconnect">
-<!ENTITY status.error "Last Command failed, because the server reported an error:">
+<!ENTITY status.error.reconnect "Yeniden Bağlan">
+<!ENTITY status.error "Sunucu bir hata bildirdiği için son komut başarısız oldu:">
 
 <!ENTITY status.sync.description
-"The local an the server side scripts are different.
+"Yerel ve Sunucu kodları farklı.
 
-What would you like to do about it ?">
-<!ENTITY status.sync.keep "Keep Local Script">
-<!ENTITY status.sync.replace "Use Server Side Script">
+Bu konuda ne yapmak istersiniz ?">
+<!ENTITY status.sync.keep "Yerel Kodu Sakla">
+<!ENTITY status.sync.replace "Sunucu Kodunu Kullan">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

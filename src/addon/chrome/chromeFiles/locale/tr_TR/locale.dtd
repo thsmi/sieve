@@ -276,9 +276,9 @@ Ya da elle yapılandırma için 'Gelişmiş'e tıklayınız.">
 <!ENTITY status.error "Sunucu bir hata bildirdiği için son komut başarısız oldu:">
 
 <!ENTITY status.sync.description
-"Yerel ve Sunucu kodları farklı.
+"The local and the server side scripts are different.
 
-Bu konuda ne yapmak istersiniz ?">
+What would you like to do about it ?">
 <!ENTITY status.sync.keep "Yerel Kodu Sakla">
 <!ENTITY status.sync.replace "Sunucu Kodunu Kullan">
 

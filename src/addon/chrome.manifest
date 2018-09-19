@@ -1,17 +1,17 @@
 content		sieve        chrome/chromeFiles/content/
 
-locale    sieve ar-SA chrome/chromeFiles/locale/ar-SA/
-locale    sieve de-DE chrome/chromeFiles/locale/de-DE/
-locale    sieve	en-US chrome/chromeFiles/locale/en-US/
-locale    sieve es-ES chrome/chromeFiles/locale/es-ES/
-locale    sieve fr-FR chrome/chromeFiles/locale/fr-FR/
-locale    sieve id-ID chrome/chromeFiles/locale/id-ID/
-locale    sieve nl-NL chrome/chromeFiles/locale/nl-NL/
-locale    sieve pl-PL chrome/chromeFiles/locale/pl-PL/
-locale    sieve pt-BR chrome/chromeFiles/locale/pt-BR/
-locale    sieve ro-RO chrome/chromeFiles/locale/ro-RO/
-locale    sieve ru-RU chrome/chromeFiles/locale/ru-RU/
-locale    sieve tk-TR chrome/chromeFiles/locale/tk-TK/
-locale    sieve zh-CN chrome/chromeFiles/locale/zh-CN/
+locale    sieve ar-SA chrome/chromeFiles/locale/ar_SA/
+locale    sieve de-DE chrome/chromeFiles/locale/de_DE/
+locale    sieve	en-US chrome/chromeFiles/locale/en_US/
+locale    sieve es-ES chrome/chromeFiles/locale/es_ES/
+locale    sieve fr-FR chrome/chromeFiles/locale/fr_FR/
+locale    sieve id-ID chrome/chromeFiles/locale/id_ID/
+locale    sieve nl-NL chrome/chromeFiles/locale/nl_NL/
+locale    sieve pl-PL chrome/chromeFiles/locale/pl_PL/
+locale    sieve pt-BR chrome/chromeFiles/locale/pt_BR/
+locale    sieve ro-RO chrome/chromeFiles/locale/ro_RO/
+locale    sieve ru-RU chrome/chromeFiles/locale/ru_RU/
+locale    sieve tk-TR chrome/chromeFiles/locale/tk_TR/
+locale    sieve zh-CN chrome/chromeFiles/locale/zh_CN/
 
 skin      sieve   classic chrome/chromeFiles/skin/

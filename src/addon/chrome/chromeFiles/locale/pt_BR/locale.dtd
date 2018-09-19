@@ -276,7 +276,9 @@ baixo, os pedidos de verificação de sintaxe são agrupados.">
 <!ENTITY status.error "Último comando falhou, o servidor detectou um erro:">
 
 <!ENTITY status.sync.description
-"O script local e o do servidor são diferentes. O que você quer fazer a respeito?">
+"The local and the server side scripts are different.
+
+What would you like to do about it ?">
 <!ENTITY status.sync.keep "Manter o Script Local">
 <!ENTITY status.sync.replace "Use o script no servidor">
 

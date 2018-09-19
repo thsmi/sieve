@@ -2,7 +2,7 @@ content		sieve        chrome/chromeFiles/content/
 
 locale    sieve ar-SA chrome/chromeFiles/locale/ar_SA/
 locale    sieve de-DE chrome/chromeFiles/locale/de_DE/
-locale    sieve	en-US chrome/chromeFiles/locale/en_US/
+locale    sieve en-US chrome/chromeFiles/locale/en_US/
 locale    sieve es-ES chrome/chromeFiles/locale/es_ES/
 locale    sieve fr-FR chrome/chromeFiles/locale/fr_FR/
 locale    sieve id-ID chrome/chromeFiles/locale/id_ID/

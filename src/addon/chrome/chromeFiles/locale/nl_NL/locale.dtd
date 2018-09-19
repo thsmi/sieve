@@ -279,9 +279,9 @@ Kies ‘Geavanceerd’ om het account handmatig te configureren.">
 <!ENTITY status.error "De laatste opdracht is mislukt, omdat de server een fout meldde:">
 
 <!ENTITY status.sync.description
-"The local and the server side scripts are different.
+"De lokale en de server-side-scripts verschillen.
 
-What would you like to do about it ?">
+Wat wilt u daaraan doen?">
 <!ENTITY status.sync.keep "Lokale script behouden">
 <!ENTITY status.sync.replace "Server-side script gebruiken">
 

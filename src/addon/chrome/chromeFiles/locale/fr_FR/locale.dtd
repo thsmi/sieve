@@ -293,9 +293,9 @@ essayez une configuration manuelle.">
 <!ENTITY status.error "La dernière commande a échoué car le serveur signale une erreur:">
 
 <!ENTITY status.sync.description
-"The local and the server side scripts are different.
+"Le script local est différent de celui du serveur.
 
-What would you like to do about it ?">
+Que voulez-vous faire ?">
 <!ENTITY status.sync.keep "Garder le script local">
 <!ENTITY status.sync.replace "Utiliser le script du serveur">
 

@@ -1,0 +1,4 @@
+files:
+  - source: /src/addon/chrome/chromeFiles/locale/en_US/*.*
+    translation: >-
+      /src/addon/chrome/chromeFiles/locale/%locale_with_underscore%/%original_file_name%

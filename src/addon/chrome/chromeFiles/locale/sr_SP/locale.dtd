@@ -276,7 +276,7 @@ Or choose 'Advanced' to configure the account manually.">
 <!ENTITY status.error "Last Command failed, because the server reported an error:">
 
 <!ENTITY status.sync.description
-"The local an the server side scripts are different.
+"The local and the server side scripts are different.
 
 What would you like to do about it ?">
 <!ENTITY status.sync.keep "Keep Local Script">

@@ -279,9 +279,8 @@
 <!ENTITY status.error "فشل الأمر الأخير، لأن السيرفر أبلغ عن خطأ:">
 
 <!ENTITY status.sync.description
-"The local and the server side scripts are different.
-
-What would you like to do about it ?">
+"البرمجة المحلية مختلفة عن السيرفر.
+ماذا تريد ان تفعل حيال ذالك؟">
 <!ENTITY status.sync.keep "ابقي البرمجة المحلية">
 <!ENTITY status.sync.replace "استخدم برمجة السيرفر">
 

@@ -278,9 +278,9 @@
 <!ENTITY status.error "最后的命令失败，服务器回报错误：">
 
 <!ENTITY status.sync.description
-"本地和服务器侧的脚本有差异。
+"The local and the server side scripts are different.
 
-您想怎么办呢？">
+What would you like to do about it ?">
 <!ENTITY status.sync.keep "保留本地脚本">
 <!ENTITY status.sync.replace "使用服务器侧脚本">
 

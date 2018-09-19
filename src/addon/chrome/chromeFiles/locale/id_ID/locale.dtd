@@ -295,9 +295,9 @@ untuk melakukan konfigurasi manual.">
 <!ENTITY status.error "Perintah terakhir gagal, karena server melaporkan kesalahan:">
 
 <!ENTITY status.sync.description
-"Lokal server Skrip sisi berbeda. 
+"The local and the server side scripts are different.
 
-Apa yang ingin kamu lakukan ?">
+What would you like to do about it ?">
 <!ENTITY status.sync.keep "Menjaga Lokal Skrip">
 <!ENTITY status.sync.replace "Gunakan Server Side Script">
 

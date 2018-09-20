@@ -14,7 +14,7 @@
     <div id="template-content">
         <div class="tab-content m-2">
             <div class="tab-pane fade show active" id="sieve-widget-setaction" role="tabpanel">
-                <form class="was-validated" novalidate>
+                <form class="was-validated" novalidate="novalidate">
                 <div class="form-group">
                     <label>Store the value ...</label>
                     <textarea class="form-control" id="sivVariableValue" rows="6"> </textarea>
@@ -23,7 +23,7 @@
                     <label>... into variable</label>
                     <input type="text" class="form-control" id="sivVariableName"
                     pattern="((([A-Za-z_][A-Za-z0-9_]*))\.((([0-9]+)|([A-Za-z_][A-Za-z0-9_]*))\.)*)?(([0-9]+)|([A-Za-z_][A-Za-z0-9_]*))"
-                    required/>
+                    required="required" />
                     <div class="invalid-feedback">Invalid variable name</div>
                 </div>
             </form>

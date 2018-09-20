@@ -14,7 +14,6 @@
     <div id="template-content">
         <div class="tab-content m-2">
             <div class="tab-pane fade show active" id="sieve-widget-date" role="tabpanel">
-
                 <div class="form-group">
                     <h5>The current date's ... </h5>
 
@@ -34,7 +33,7 @@
                                 <a class="dropdown-item" href="#">date
                                     <small class="text-muted">- "yyyy-mm-dd"</small>
                                 </a>
-                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-divider"> </div>
                                 <a class="dropdown-item" href="#">hour
                                     <small class="text-muted">- "00" ... "23"</small>
                                 </a>
@@ -47,14 +46,14 @@
                                 <a class="dropdown-item" href="#">time
                                     <small class="text-muted">- "hh:mm:ss"</small>
                                 </a>
-                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-divider"> </div>
                                 <a class="dropdown-item" href="#">iso8601
                                     <small class="text-muted">- Restricted ISO 8601 Format (RFC3339)</small>
                                 </a>
                                 <a class="dropdown-item" href="#">std11
                                     <small class="text-muted">- Internet Message Format (RFC2822)</small>
                                 </a>
-                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-divider"> </div>
                                 <a class="dropdown-item" href="#">zone
                                     <small class="text-muted">- Time zone ("+hhmm" or "-hhmm")</small>
                                 </a>
@@ -72,10 +71,7 @@
                         </div>
                     </div>
 
-                    <br/>
-
                     <div id="sivDateMatchTypes"> </div>
-                    <br/>
 
                     <h5>... any of the keyword(s):</h5>
 
@@ -98,13 +94,15 @@
                     </div>
                 </div>
             </div>
+
             <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
                 <h5>Timezone</h5>
-                <div id="sivDateZone"></div>
-                <br />
+                <div id="sivDateZone"> </div>
+
                 <h5>Comparator</h5>
-                <div id="sivDateComparator"></div>
+                <div id="sivDateComparator"> </div>
             </div>
+
             <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
                 <p>
                     The currentdate test is similar to the date test, except that it operates on the current date/time rather than a value extracted

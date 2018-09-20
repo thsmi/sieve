@@ -42,6 +42,15 @@
   class SieveImapAuth extends SieveAbstractAuthentication {
 
     /**
+     * The accounts original hostname
+     * @returns {String}
+     *   return the hostname as string
+     */
+    getHostname() {
+      return this.account.getHost().getHostname();
+    }
+
+    /**
      * @inheritDoc
      */
     getDescription() {
@@ -79,6 +88,12 @@
       let strings = Services.strings
         .createBundle("chrome://sieve/locale/locale.properties");
 
+      let description = strings.GetStringFromName("account.password.description") + "\r\n";
+      description += "\r\n";
+      description += strings.GetStringFromName("account.password.username") + ": " + this.getUsername() + "\r\n";
+      description += strings.GetStringFromName("account.password.hostname") + ": " + this.getHostname() + "\r\n";
+      description += "\r\n";
+
 
       let input = { value: null };
       let check = { value: false };
@@ -86,7 +101,7 @@
         = Services.prompt.promptPassword(
           null,
           strings.GetStringFromName("account.password.title"),
-          strings.GetStringFromName("account.password.description"),
+          description,
           input, null, check);
 
       if (result)
@@ -132,8 +147,8 @@
      * @returns {String}
      *   return the hostname as string
      */
-    getHost() {
-      return this.account.host;
+    getHostname() {
+      return this.account.getHost().getHostname();
     }
 
     /**
@@ -142,6 +157,91 @@
     getDescription() {
       return "account.auth.custom";
     }
+
+    /**
+     * Updates the account's username in the login manager
+     * It uses the hostname to discover the username.
+     *
+     * @param {String} oldUserName
+     *   the account's old username
+     * @param {String} newUserName
+     *   the account's new username
+     *
+     * @returns {boolean}
+     *  true in case the username could be updated otherwise false.
+     */
+    _setUsernameByHost(oldUserName, newUserName) {
+      let loginManager = Services.logins;
+      let host = this.getHostname();
+
+      // ...first look for entries which meet the proposed naming...
+      let logins =
+        loginManager.findLogins(
+          {}, "sieve://" + host, null, "sieve://" + host);
+
+      for (let i = 0; i < logins.length; i++) {
+        if (logins[i].username !== oldUserName)
+          continue;
+
+        loginManager.removeLogin(logins[i]);
+
+        logins[i].username = newUserName;
+
+        loginManager.addLogin(logins[i]);
+        return true;
+      }
+
+      return false;
+    }
+
+    /**
+     * Updates the account's username in the login manager
+     * It uses the sieve account uri to discover the username
+     *
+     * This is deprecated, as described in bug 474277 the original
+     * hostname is a better option. But we still need it for backward
+     * compatibility when Thunderbird fails to import the password and
+     * username properly. There might be entries which want to be repaired
+     *
+     * @deprecated
+     *
+     * @param {String} oldUserName
+     *   the account's old username
+     * @param {String} newUserName
+     *   the account's new username
+     *
+     * @returns {boolean}
+     *   true in case the account was updated otherwise false
+     */
+    _setUsernameByUri(oldUserName, newUserName) {
+
+      let loginManager = Services.logins;
+      let host = this.getHostname();
+      let uri = this.account.uri;
+
+      let logins =
+        loginManager.findLogins({}, "sieve://" + uri, "", null);
+
+      for (let i = 0; i < logins.length; i++) {
+        if (logins[i].username !== oldUserName)
+          continue;
+
+        loginManager.removeLogin(logins[i]);
+
+        logins[i].hostname = "sieve://" + host;
+        logins[i].httpRealm = "sieve://" + host;
+        logins[i].formSubmitURL = null;
+        logins[i].username = newUserName;
+        logins[i].usernameField = "";
+        logins[i].passwordField = "";
+
+        loginManager.addLogin(logins[i]);
+        return true;
+      }
+
+      return false;
+    }
+
 
     /**
      * Updates the username.
@@ -163,102 +263,50 @@
       this.account.prefs.setString("login.username", username);
 
       // we should also update the LoginManager...
-      let loginManager = Services.logins;
 
-      let host = this.getHost();
-      // ...first look for entries which meet the proposed naming...
-      let logins =
-        loginManager.findLogins(
-          {}, "sieve://" + host, null, "sieve://" + host);
-
-      for (let i = 0; i < logins.length; i++) {
-        if (logins[i].username !== oldUserName)
-          continue;
-
-        loginManager.removeLogin(logins[i]);
-
-        logins[i].username = username;
-
-        loginManager.addLogin(logins[i]);
+      // ... first try updating by the hostname...
+      if (this._setUsernameByHost(oldUserName, username))
         return;
-      }
 
-      // We actually don't use the uri anymore. As described in bug 474277
-      // the original hostname is a better option. But we still need it
-      // for backward compatibility when Thunderbird fails to import the
-      // password and username properly. There might be entries which
-      // want to be repaired
+      // ... an then try to migrate deprected login entries
+      // which are addressed by the account uri.
 
-      logins =
-        loginManager.findLogins({}, "sieve://" + this.account.Uri, "", null);
-
-      for (let i = 0; i < logins.length; i++) {
-        if (logins[i].username !== oldUserName)
-          continue;
-
-        loginManager.removeLogin(logins[i]);
-
-        logins[i].hostname = "sieve://" + host;
-        logins[i].httpRealm = "sieve://" + host;
-        logins[i].formSubmitURL = null;
-        logins[i].username = username;
-        logins[i].usernameField = "";
-        logins[i].passwordField = "";
-
-        loginManager.addLogin(logins[i]);
+      if (this._setUsernameByUri(oldUserName, username))
         return;
-      }
 
       // ok we give up, there is no passwort entry, this might be because...
-      // ... the user might never set one, or because it deleted it in the...
+      // ... the user might never set one, or it was deleted in the...
       // ... Login-Manager
+      return;
     }
 
-
     /**
-     * Retrieves the password for the given account.
+     * Shows a prompt which asks the user for a password.
      *
-     * If no suitable login information is stored in the password manager, a ...
-     * ... dialog requesting the user for his password will be automatically ...
-     * ... displayed, if needed.
-     *
-     * @return {String}
-     *   The password as string or null in case the password could not be retrived.
+     * @param {String} username
+     *   the account's username
+     * @returns {String}
+     *   the password or null in case the user dismissed the password prompt.
      */
-    getPassword() {
-      let username = this.getUsername();
-      let host = this.getHost();
+    _promptPassword(username) {
 
-
-      // First look for entries which meet the proposed naming...
-      let logins =
-        Services.logins.findLogins(
-          {}, "sieve://" + host, null, "sieve://" + host);
-
-      for (let i = 0; i < logins.length; i++)
-        if (logins[i].username === username)
-          return logins[i].password;
-
-      // but as Thunderbird fails to import the password and username properly...
-      // ...there might be some slightly different entries...
-      logins = Services.logins.findLogins({}, "sieve://" + this.account.Uri, "", null);
-
-      for (let i = 0; i < logins.length; i++)
-        if (logins[i].username === username)
-          return logins[i].password;
-
-      // we found no password, so let's prompt for it
       let input = { value: null };
       let check = { value: false };
 
       let strings = Services.strings
         .createBundle("chrome://sieve/locale/locale.properties");
 
+      let description = strings.GetStringFromName("account.password.description") + "\r\n";
+      description += "\r\n";
+      description += strings.GetStringFromName("account.password.username") + ": " + username + "\r\n";
+      description += strings.GetStringFromName("account.password.hostname") + ": " + this.getHostname() + "\r\n";
+      description += "\r\n";
+
       let result =
         Services.prompt.promptPassword(
           null,
           strings.GetStringFromName("account.password.title"),
-          strings.GetStringFromName("account.password.description"),
+          description,
           input,
           strings.GetStringFromName("account.password.remember"),
           check);
@@ -274,8 +322,8 @@
           let login = Cc["@mozilla.org/login-manager/loginInfo;1"]
             .createInstance(Ci.nsILoginInfo);
 
-          login.init("sieve://" + host, null, "sieve://" + host,
-            "" + username, "" + input.value, "", "");
+          login.init("sieve://" + this.getHostname(), null, "sieve://" + this.getHostname(),
+            "" + this.username, "" + input.value, "", "");
 
           login.addLogin(login);
         }
@@ -285,6 +333,83 @@
       }
 
       return input.value;
+    }
+
+    /**
+     * Tries to obtain the password from the login manager by the account's hostname
+     *
+     * @param {String} username
+     *   the username as string
+     *
+     * @returns {String}
+     *   the password or null in case it could not be loaded e.g. the login manager was locked.
+     **/
+    _getPasswordByHost(username) {
+      let host = this.getHostname();
+      // First look for entries which meet the proposed naming...
+      let logins =
+        Services.logins.findLogins(
+          {}, "sieve://" + host, null, "sieve://" + host);
+
+      for (let i = 0; i < logins.length; i++)
+        if (logins[i].username === username)
+          return logins[i].password;
+
+      return null;
+    }
+
+    /**
+     * Tries to obtain the password from the login manager by the account's uri.
+     * This is depreacted and just for backward compatibility.
+     *
+     * @deprecated
+     *
+     * @param {String} username
+     *   the username as string
+     *
+     * @returns {String}
+     *   the password or null in case it could not be loaded e.g. the login manager was locked.
+     **/
+    _getPasswordByUri(username) {
+
+      // but as Thunderbird fails to import the password and username properly...
+      // ...there might be some slightly different entries...
+      let logins = Services.logins.findLogins({}, "sieve://" + this.account.Uri, "", null);
+
+      for (let i = 0; i < logins.length; i++)
+        if (logins[i].username === username)
+          return logins[i].password;
+
+      return null;
+    }
+
+    /**
+     * Retrieves the password for the given account.
+     *
+     * If no suitable login information is stored in the password manager, a ...
+     * ... dialog requesting the user for his password will be automatically ...
+     * ... displayed, if needed.
+     *
+     * @return {String}
+     *   The password as string or null in case the password could not be retrived.
+     */
+    getPassword() {
+      let username = this.getUsername();
+
+      let password = null;
+
+      // first try to look it up by hostname
+      password = this._getPasswordByHost(username);
+      if (password !== null)
+        return password;
+
+      // then try the deprecated lookup by uri.
+      password = this._getPasswordByUri(username);
+      if (password !== null)
+        return password;
+
+      // ok prompt for the password.
+      return this._promptPassword(username);
     }
 
     /**
@@ -350,7 +475,7 @@
           return new SieveCustomAuth(AUTH_TYPE_CUSTOM, this.account);
 
         case AUTH_TYPE_IMAP:
-          // fall through
+        // fall through
         default:
           return new SieveImapAuth(AUTH_TYPE_IMAP, this.account);
       }

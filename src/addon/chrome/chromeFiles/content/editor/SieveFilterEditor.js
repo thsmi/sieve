@@ -269,7 +269,6 @@
 
       settings.tab = {};
       settings.tab.width = account.getSettings().getTabWidth();
-      settings.tab.policy = account.getSettings().getTabPolicy();
 
       settings.indention = {};
       settings.indention.width = account.getSettings().getIndentionWidth();

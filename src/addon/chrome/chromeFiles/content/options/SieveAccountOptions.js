@@ -410,7 +410,6 @@ let gAccount = null;
       document.getElementById("txtTabWidth").value = account.getSettings().getTabWidth();
 
       document.getElementById('mlIndentionPolicy').selectedIndex = account.getSettings().getIndentionPolicy();
-      document.getElementById('mlTabPolicy').selectedIndex = account.getSettings().getTabPolicy();
     }
     catch (e) {
       Components.utils.reportError(e);
@@ -448,14 +447,6 @@ let gAccount = null;
       return;
 
     gAccount.getSettings().setTabWidth(value);
-  }
-
-
-  function onTabPolicySelect(value) {
-    if (!gAccount)
-      return;
-
-    gAccount.getSettings().setTabPolicy(value);
   }
 
   // === Debug Sheet =============================================================
@@ -683,7 +674,6 @@ let gAccount = null;
   exports.onIndentionWidthChange = onIndentionWidthChange;
   exports.onIndentionPolicySelect = onIndentionPolicySelect;
   exports.onTabWidthChange = onTabWidthChange;
-  exports.onTabPolicySelect = onTabPolicySelect;
   exports.onDebugSheetLoad = onDebugSheetLoad;
   exports.onDebugFlagCommand = onDebugFlagCommand;
   exports.onDialogLoad = onDialogLoad;

@@ -220,28 +220,6 @@
       return 0;
     };
 
-  /**
-   * With automatic indention, the need for a tab key is gone. Which means most
-   * editor replace the tab key with whitespaces.
-   *
-   * By default tabs are replaced with spaces
-   *
-   * @param {int} policy
-   *   the tab policy. Pass zero replace tabs with spaces and one to force tabs.
-   * @returns {void}
-   */
-  SieveAccountSettings.prototype.setTabPolicy
-    = function (policy) {
-      Services.prefs.setIntPref(this.sieveKey + ".editor.tab.policy", policy);
-    };
-
-  SieveAccountSettings.prototype.getTabPolicy
-    = function () {
-      if (Services.prefs.prefHasUserValue(this.sieveKey + ".editor.tab.policy"))
-        return Services.prefs.getIntPref(this.sieveKey + ".editor.tab.policy");
-
-      return 0;
-    };
 
   /**
    * The tab width specifies over how many spaces the tap will span.

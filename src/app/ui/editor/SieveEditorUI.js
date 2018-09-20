@@ -57,6 +57,29 @@
 
       this.cm.refresh();
 
+      // Configure tab handling...
+      this.cm.setOption("extraKeys", {
+        "Tab": function (cm) {
+
+          if (cm.somethingSelected()) {
+            let sel = cm.getSelection("\n");
+            // Indent only if there are multiple lines selected, or if the selection spans a full line
+            if (sel.length > 0 && (sel.indexOf("\n") > -1 || sel.length === cm.getLine(cm.getCursor().line).length)) {
+              cm.indentSelection("add");
+              return;
+            }
+          }
+
+          if (cm.options.indentWithTabs)
+            cm.execCommand("insertTab");
+          else
+            cm.execCommand("insertSoftTab");
+        },
+        "Shift-Tab": function (cm) {
+          cm.indentSelection("subtract");
+        }
+      });
+
       this.timeout = null;
       this.disableSyntaxCheck();
 
@@ -648,7 +671,7 @@
     }
 
     /**
-     * Sets the editorss tabulator width.
+     * Sets the editor's tabulator width.
      *
      * @param {int} tabSize
      *   the tabulator width in characters
@@ -672,51 +695,6 @@
      */
     getTabWidth() {
       return this.cm.getOption("tabSize");
-    }
-
-    /**
-     * Defines if and how tabs sould be replaced.
-     *
-     * @param {boolean} replaceTabs
-     *   if true tabs are replaced by spaces, if false tabs are kept as they are.
-     * @returns {SieveEditorUI}
-     *  a self reference
-     */
-    setTabPolicy(replaceTabs) {
-
-      if (replaceTabs === false) {
-        this.cm.setOption("extraKeys", null);
-        /* this.cm.setOption("extraKeys", {
-          Tab: (cm) => {
-            cm.execCommand("insertTab");
-          }
-        });*/
-        return this;
-      }
-
-      // insert spaces instead of tabs
-      this.cm.setOption("extraKeys", {
-        Tab: (cm) => {
-          cm.replaceSelection(
-            Array(this.getTabWidth() + 1).join(" "));
-        }
-      });
-
-      return this;
-    }
-
-    /**
-     * Retruns the tab replacement policy
-     * @returns {boolean}
-     *   true in case tabs are replaces with spaces otherwise false.
-     */
-    getTabPolicy() {
-      let policy = this.cm.getOption("extraKeys");
-
-      if (policy === null)
-        return false;
-
-      return true;
     }
 
     /**
@@ -750,9 +728,6 @@
      */
     async loadDefaultSettings() {
 
-      let tabPolicy = await this.getPreference("tabulator-policy");
-      this.setTabPolicy(tabPolicy);
-
       let tabWidth = await this.getPreference("tabulator-width");
       this.setTabWidth(tabWidth);
 
@@ -774,7 +749,6 @@
      * @returns {void}
      */
     async saveDefaultSettings() {
-      await this.setPreference("tabulator-policy", this.getTabPolicy());
       await this.setPreference("tabulator-width", this.getTabWidth());
 
       await this.setPreference("indentation-policy", this.getIndentWithTabs());

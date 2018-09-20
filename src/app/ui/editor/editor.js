@@ -51,11 +51,6 @@ function populateEditorSettings(editor) {
 
   $("#editor-settings-tabulator-width").val(editor.getTabWidth());
 
-  if (editor.getTabPolicy())
-    $("#editor-settings-tabulator-policy-spaces").button('toggle');
-  else
-    $("#editor-settings-tabulator-policy-tabs").button('toggle');
-
   if (editor.isSyntaxCheckEnabled())
     updateSyntaxCheckUI(editor);
   else
@@ -82,14 +77,6 @@ async function initEditorSettings(editor) {
 
   $("#editor-settings-indentation-policy-tabs").on('click', () => {
     editor.setIndentWithTabs(true);
-  });
-
-  $("#editor-settings-tabulator-policy-spaces").on('click', () => {
-    editor.setTabPolicy(true);
-  });
-
-  $("#editor-settings-tabulator-policy-tabs").on('click', () => {
-    editor.setTabPolicy(false);
   });
 
   $("#editor-settings-tabulator-width").change(() => {

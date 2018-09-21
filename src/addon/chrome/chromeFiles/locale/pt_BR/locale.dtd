@@ -26,7 +26,7 @@
 
 <!ENTITY options.host.caption "Nome do Servidor">
 <!ENTITY options.host.description
-"A maioria das implementações de peneira executar diretamente em um servidor de correio.  Assim, o nome do servidor de peneira é geralmente o mesmo que o nome do seu servidor IMAP.">
+"A maioria das implementações do Sieve é ​​executada diretamente em um servidor de e-mail. Assim, o nome do servidor Sieve é ​​geralmente igual ao nome do seu servidor IMAP.">
 <!ENTITY options.host.imap "Servidor IMAP:">
 <!ENTITY options.host.custom "Outro Servidor:">
 
@@ -34,8 +34,7 @@
 <!ENTITY options.port.description
 "A porta do servidor mudou, quando o ManageSieve transformou-se em um Padrão RFC completo">
 <!ENTITY options.port.description2
-"As implementações mais antigas do servidor ainda usam a porta 2000, enquanto o  
-servidor compatível padrão mais recente só pode ser acessado pela porta 4190.">
+"As implementações de servidor mais antigas ainda usam a porta 2000, enquanto o servidor de conformidade mais recente só pode ser acessado pela porta 4190.">
 <!ENTITY options.port.4190 "4190 (padrão)" >
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Outros:">

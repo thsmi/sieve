@@ -21,40 +21,24 @@
 
                     <h5>... any of the keyword(s):</h5>
 
-                    <div id="sivHasFlagKeyList" data-list-new="#sivHasFlagKeyListAdd" data-list-template="#sivHasFlagKeyListTemplate" data-list-min="1">
+                    <div id="sivHasFlagKeyList"
+                         data-list-dropdown="#sivHasFlagKeyListTemplate">
                     </div>
 
-                    <div id="sivHasFlagKeyListTemplate" style="display:none">
-                        <div class="input-group input-group-sm mb-1">
-                            <input type="text" class="form-control col-lg-8" />
-                            <div class="input-group-append">
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="#">\Seen</a>
-                                    <a class="dropdown-item" href="#">\Answered</a>
-                                    <a class="dropdown-item" href="#">\Flagged</a>
-                                    <a class="dropdown-item" href="#">\Delete</a>
-                                    <a class="dropdown-item" href="#">\Draft</a>
-                                    <a class="dropdown-item" href="#">\Recent</a>
-                                    <a class="dropdown-item" href="#">\$Label1</a>
-                                    <a class="dropdown-item" href="#">\$Label2</a>
-                                    <a class="dropdown-item" href="#">\$Label3</a>
-                                    <a class="dropdown-item" href="#">\$Label4</a>
-                                    <a class="dropdown-item" href="#">\$Label5</a>
-
-                                </div>
-                                <button type="button" class="btn btn-outline-secondary far sieve-stringlist-delete">
-                                    &#xf2ed;
-                                </button>
-                                <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                            </div>
+                    <div id="sivHasFlagKeyListTemplate" class="d-none">
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <button class="dropdown-item" type="button">\Seen</button>
+                            <button class="dropdown-item" type="button">\Answered</button>
+                            <button class="dropdown-item" type="button">\Flagged</button>
+                            <button class="dropdown-item" type="button">\Delete</button>
+                            <button class="dropdown-item" type="button">\Draft</button>
+                            <button class="dropdown-item" type="button">\Recent</button>
+                            <button class="dropdown-item" type="button">\$Label1</button>
+                            <button class="dropdown-item" type="button">\$Label2</button>
+                            <button class="dropdown-item" type="button">\$Label3</button>
+                            <button class="dropdown-item" type="button">\$Label4</button>
+                            <button class="dropdown-item" type="button">\$Label5</button>
                         </div>
-                    </div>
-
-                    <div>
-                        <button id="sivHasFlagKeyListAdd" class="btn btn-sm btn-outline-secondary">Add</button>
                     </div>
 
                 </div>
@@ -64,22 +48,27 @@
             </div>
             <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
                 <p>
-                    Message labels are called flags in the IMAP specification and are divided into two types: system flags and user-defined flags.
+                    Message labels are called flags in the IMAP specification and are divided into two types: system
+                    flags and user-defined flags.
                 </p>
                 <p>
-                    System flags are defined in the IMAP Specification. They start with a leading backslash (\). The current the following six
+                    System flags are defined in the IMAP Specification. They start with a leading backslash (\). The
+                    current the following six
                     system flags \Seen, \Answered, \Flagged, \Deleted, \Draft, \Recent are defined.
                 </p>
                 <p>
-                    User-defined flags are also known as IMAP keywords and, as the name implies, are defined by IMAP users. There is a de facto
+                    User-defined flags are also known as IMAP keywords and, as the name implies, are defined by IMAP
+                    users. There is a de facto
                     standard that keywords which are in common use have names that begin with a dollar sign ($).
                 </p>
                 <p>
-                    Examples of common keywords are: $Label1, $Label2, $Label3, $Label4, $Label5. These keywords are typically hardwired to Important,
+                    Examples of common keywords are: $Label1, $Label2, $Label3, $Label4, $Label5. These keywords are
+                    typically hardwired to Important,
                     Work, Personal, To Do and Later.
                 </p>
                 <p>
-                    If you define your own personal keyword, its name should not begin with dollar sign ($) or backslash (\) because otherwise
+                    If you define your own personal keyword, its name should not begin with dollar sign ($) or
+                    backslash (\) because otherwise
                     it might collide with a flag that is used by current or future IMAP clients and servers
                 </p>
 

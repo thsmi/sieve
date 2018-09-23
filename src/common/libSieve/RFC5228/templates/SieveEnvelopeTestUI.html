@@ -17,31 +17,15 @@
         <div class="form-group">
           <h5>Any of the following envelope fields ...</h5>
 
-          <div id="sivEnvelopeList" data-list-new="#sivEnvelopeListAdd" data-list-template="#sivEnvelopeListTemplate" data-list-min="1">
+          <div id="sivEnvelopeList"
+               data-list-dropdown="#sivEnvelopeListTemplate">
           </div>
 
-          <div id="sivEnvelopeListTemplate" style="display:none">
-            <div class="input-group input-group-sm mb-1">
-              <input type="text" class="form-control col-lg-8" />
-              <div class="input-group-append">
-                <div class="dropdown-menu dropdown-menu-right">
-                  <a class="dropdown-item" href="#">From</a>
-                  <a class="dropdown-item" href="#">To</a>
-                </div>
-                <button type="button" class="btn btn-outline-secondary far sieve-stringlist-delete">
-                  &#xf2ed;
-                </button>
-                <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true"
-                  aria-expanded="false">
-                  <span class="sr-only">Toggle Dropdown</span>
-                </button>
-              </div>
+          <div id="sivEnvelopeListTemplate" class="d-none">
+            <div class="dropdown-menu dropdown-menu-right">
+              <button class="dropdown-item" type="button">From</button>
+              <button class="dropdown-item" type="button">To</button>
             </div>
-          </div>
-
-
-          <div>
-            <button id="sivEnvelopeListAdd" class="btn btn-sm btn-outline-secondary">Add</button>
           </div>
 
           <hr />
@@ -51,23 +35,9 @@
           <hr />
 
           <h5>... any of the keyword(s):</h5>
-          <div id="sivEnvelopeKeyList" data-list-new="#sivEnvelopeKeyListAdd" data-list-items="#sivEnvelopeKeyListItems" data-list-template="#sivEnvelopeKeyListTemplate"
-            data-list-min="1">
+          <div id="sivEnvelopeKeyList">
           </div>
 
-          <div id="sivEnvelopeKeyListTemplate" style="display:none">
-            <div class="input-group input-group-sm mb-1">
-              <input type="text" class="form-control col-lg-8" />
-              <div class="input-group-append">
-                <button type="button" class="btn btn-outline-secondary far sieve-stringlist-delete">
-                  &#xf2ed;
-                </button>
-              </div>
-            </div>
-          </div>
-          <div>
-            <button id="sivEnvelopeKeyListAdd" class="btn btn-sm btn-outline-secondary">Add</button>
-          </div>
         </div>
       </div>
       <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">

@@ -30,7 +30,7 @@
      */
     constructor(selector) {
       this._selector = selector;
-      this._min = 0;
+      this._min = 1;
     }
 
     /**
@@ -62,6 +62,64 @@
     }
 
     /**
+     * @returns {boolean}
+     *   true in case the widget as a drop down otherwise false
+     */
+    _hasDropDown() {
+      return $(this._selector)[0].hasAttribute("data-list-dropdown");
+    }
+
+    /**
+     * Called when a new item was added.
+     *
+     * @param {DomElement} item
+     *   the item's dom element
+     * @param {String} value
+     *   the default value to set
+     * @returns {void}
+     */
+    onItemAdded(item, value) {
+
+      item.find("input[type=text], input[type=email]").val(value).focus();
+
+      // Connect the delete button
+      item.find(".sieve-stringlist-delete").click(() => {
+        if (this._min >= this.items().length)
+          return;
+
+        item.remove();
+      });
+
+      // connect the drop down menu...
+      if (this._hasDropDown()) {
+        let elm = $($(this._selector).attr("data-list-dropdown")).children().first().clone();
+
+        item.find(".sieve-stringlist-dropdown").removeClass("d-none");
+        item.find(".sieve-stringlist-dropdown").before(elm);
+
+        elm.find("button").on("click", (event) => {
+          this.onItemSelected(item, $(event.currentTarget));
+        });
+      }
+    }
+
+    /**
+     * Called when a dropdown item is selected
+     *
+     * @param {JQuery} item
+     *   the string list widget.
+     * @param {JQuery} menuItem
+     *   the menu item which was clicked
+     *
+     * @returns {void}
+     */
+    onItemSelected(item, menuItem) {
+      item.find("input[type=text], input[type=email]")
+        .val(menuItem.text())
+        .focus();
+    }
+
+    /**
      * Adds a textbox with the give value to the UI
      *
      * @param {String} [value]
@@ -73,21 +131,20 @@
       if (typeof (value) === "undefined" || value === null)
         value = "";
 
-      let elm = this.template().clone();
+      let item = $("<div/>");
+      $(this._selector).append(item);
 
-      $(this._selector).append(elm);
+      if ($(this._selector)[0].hasAttribute("data-list-template")) {
+        let elm = $($(this._selector).attr("data-list-template")).children().first();
+        item.append(elm.clone());
 
-      elm.find("input[type=text], input[type=email]").val(value).focus();
+        this.onItemAdded(item, value);
+        return this;
+      }
 
-      // Connect the delete button
-      elm.find(".sieve-stringlist-delete").click(() => {
-        if (this._min >= this.items().length)
-          return;
-
-        elm.remove();
+      $(item).load("./toolkit/templates/SieveStringListWidget.html #template .string-list-item-template", () => {
+        this.onItemAdded(item, value);
       });
-
-      // TODO Connect the bootstrap dropdown buttons
 
       return this;
     }
@@ -104,9 +161,20 @@
 
       $(this._selector).empty();
 
-      $($(this._selector).attr("data-list-new"))
-        .off()
-        .click(() => { this.addItem(); });
+      if ($(this._selector)[0].hasAttribute("data-list-new")) {
+
+        $($(this._selector).attr("data-list-new"))
+          .off()
+          .click(() => { this.addItem(); });
+      } else {
+        let item = $("<div/>");
+        $(this._selector).after(item);
+
+        $(item).load("./toolkit/templates/SieveStringListWidget.html #template .sieve-stringlist-add", () => {
+          item.click(() => { this.addItem(); });
+        });
+      }
+
 
       this._min = parseInt($(this._selector).attr("data-list-min"), 10);
 
@@ -133,18 +201,6 @@
      */
     save(elm) {
       elm.values(this.values());
-    }
-
-    /**
-     * Returns the template element which is used for new string list item.
-     * Before using the template you need to clone the element.
-     *
-     * @returns {jQuery}
-     *   the template element
-     */
-    template() {
-      // todo load templates in case no template is defined...
-      return $($(this._selector).attr("data-list-template")).children().first();
     }
 
     /**

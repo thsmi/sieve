@@ -17,35 +17,18 @@
         <div class="form-group">
           <h5>Any of the following header ... </h5>
 
-          <div id="sivAddressHeaderList" data-list-new="#sivAddressHeaderListAdd" data-list-template="#sivAddressHeaderListTemplate"
-            data-list-min="1">
-          </div>
+          <div id="sivAddressHeaderList"
+               data-list-dropdown="#sivAddressHeaderListTemplate">
+         </div>
 
-          <div id="sivAddressHeaderListTemplate" style="display:none">
-            <div class="input-group input-group-sm mb-1">
-              <input type="text" class="form-control col-lg-8" />
-              <div class="input-group-append">
-                <div class="dropdown-menu dropdown-menu-right">
-                  <a class="dropdown-item" href="#">To</a>
-                  <a class="dropdown-item" href="#">From</a>
-                  <a class="dropdown-item" href="#">Cc</a>
-                  <a class="dropdown-item" href="#">Bcc</a>
-                  <a class="dropdown-item" href="#">Reply-To</a>
-                </div>
-                <button type="button" class="btn btn-outline-secondary far sieve-stringlist-delete">
-                  &#xf2ed;
-                </button>
-                <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true"
-                  aria-expanded="false">
-                  <span class="sr-only">Toggle Dropdown</span>
-                </button>
-              </div>
+          <div id="sivAddressHeaderListTemplate" class="d-none">
+            <div class="dropdown-menu dropdown-menu-right">
+              <button class="dropdown-item" type="button">To</button>
+              <button class="dropdown-item" type="button">From</button>
+              <button class="dropdown-item" type="button">Cc</button>
+              <button class="dropdown-item" type="button">Bcc</button>
+              <button class="dropdown-item" type="button">Reply-To</button>
             </div>
-          </div>
-
-
-          <div>
-            <button id="sivAddressHeaderListAdd" class="btn btn-sm btn-outline-secondary">Add</button>
           </div>
 
           <hr />
@@ -55,22 +38,9 @@
           <hr />
 
           <h5>... any of the keyword(s):</h5>
-          <div id="sivAddressKeyList" data-list-new="#sivAddressKeyListAdd" data-list-template="#sivAddressKeyListTemplate" data-list-min="1">
+          <div id="sivAddressKeyList">
           </div>
 
-          <div id="sivAddressKeyListTemplate" style="display:none">
-            <div class="input-group input-group-sm mb-1">
-              <input type="text" class="form-control col-lg-8" />
-              <div class="input-group-append">
-                <button type="button" class="btn btn-outline-secondary far sieve-stringlist-delete">
-                  &#xf2ed;
-                </button>
-              </div>
-            </div>
-          </div>
-          <div>
-            <button id="sivAddressKeyListAdd" class="btn btn-sm btn-outline-secondary">Add</button>
-          </div>
         </div>
       </div>
       <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">

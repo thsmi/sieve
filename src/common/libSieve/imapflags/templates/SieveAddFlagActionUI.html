@@ -17,42 +17,26 @@
                     <small class="form-text text-muted">
                         It doesn't replace any previously set flags. This means that multiple occurrences of addflag are treated additively.
                     </small>
-                    <div id="sivFlagKeywordList" data-list-new="#sivFlagKeywordListAdd" data-list-template="#sivFlagKeywordListTemplate" data-list-min="1">
+
+                    <div id="sivFlagKeywordList"
+                         data-list-dropdown="#sivFlagKeywordListTemplate">
                     </div>
 
-                    <div id="sivFlagKeywordListTemplate" style="display:none">
-                        <div class="input-group input-group-sm mb-1">
-                            <input type="text" class="form-control col-lg-8" />
-                            <div class="input-group-append">
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="#">\Seen</a>
-                                    <a class="dropdown-item" href="#">\Answered</a>
-                                    <a class="dropdown-item" href="#">\Flagged</a>
-                                    <a class="dropdown-item" href="#">\Delete</a>
-                                    <a class="dropdown-item" href="#">\Draft</a>
-                                    <a class="dropdown-item" href="#">\Recent</a>
-                                    <a class="dropdown-item" href="#">\$Label1</a>
-                                    <a class="dropdown-item" href="#">\$Label2</a>
-                                    <a class="dropdown-item" href="#">\$Label3</a>
-                                    <a class="dropdown-item" href="#">\$Label4</a>
-                                    <a class="dropdown-item" href="#">\$Label5</a>
-                                </div>
-                                <button type="button" class="btn btn-outline-secondary far sieve-stringlist-delete">
-                                    &#xf2ed;
-                                </button>
-                                <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                            </div>
+                    <div id="sivFlagKeywordListTemplate" class="d-none">
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <button class="dropdown-item" type="button">\Seen</button>
+                            <button class="dropdown-item" type="button">\Answered</button>
+                            <button class="dropdown-item" type="button">\Flagged</button>
+                            <button class="dropdown-item" type="button">\Delete</button>
+                            <button class="dropdown-item" type="button">\Draft</button>
+                            <button class="dropdown-item" type="button">\Recent</button>
+                            <button class="dropdown-item" type="button">\$Label1</button>
+                            <button class="dropdown-item" type="button">\$Label2</button>
+                            <button class="dropdown-item" type="button">\$Label3</button>
+                            <button class="dropdown-item" type="button">\$Label4</button>
+                            <button class="dropdown-item" type="button">\$Label5</button>
                         </div>
                     </div>
-
-
-                    <div>
-                        <button id="sivFlagKeywordListAdd" class="btn btn-sm btn-outline-secondary">Add</button>
-                    </div>
-
 
                 </div>
             </div>

@@ -393,7 +393,7 @@ gulp.task('addon:package-material-icons', () => {
   return gulp.src([
     BASE_DIR_MATERIALICONS + "/material-icons.css",
     BASE_DIR_MATERIALICONS + "/MaterialIcons-Regular.woff2"
-  ], { base: BASE_DIR_MATERIALICONS }).pipe(gulp.dest(BUILD_DIR_ADDON + '/libs/material-icons'));
+  ], { base: BASE_DIR_MATERIALICONS }).pipe(gulp.dest(BUILD_DIR_ADDON + '/chrome/chromeFiles/content/libs/material-icons'));
 });
 
 gulp.task('addon:package-common', () => {

@@ -132,15 +132,10 @@
         value = "";
 
       let item = $("<div/>");
-      $(this._selector).append(item);
 
-      if ($(this._selector)[0].hasAttribute("data-list-template")) {
-        let elm = $($(this._selector).attr("data-list-template")).children().first();
-        item.append(elm.clone());
-
-        this.onItemAdded(item, value);
-        return this;
-      }
+      $(this._selector)
+        .find(".sieve-stringlist-items")
+        .append(item);
 
       $(item).load("./toolkit/templates/SieveStringListWidget.html #template .string-list-item-template", () => {
         this.onItemAdded(item, value);
@@ -161,20 +156,19 @@
 
       $(this._selector).empty();
 
-      if ($(this._selector)[0].hasAttribute("data-list-new")) {
+      let items = $("<div/>")
+        .addClass("sieve-stringlist-items");
 
-        $($(this._selector).attr("data-list-new"))
-          .off()
-          .click(() => { this.addItem(); });
-      } else {
-        let item = $("<div/>");
-        $(this._selector).after(item);
+      let controls = $("<div/>")
+        .addClass("sieve-stringlist-control");
 
-        $(item).load("./toolkit/templates/SieveStringListWidget.html #template .sieve-stringlist-add", () => {
-          item.click(() => { this.addItem(); });
-        });
-      }
+      $(this._selector)
+        .append(items)
+        .append(controls);
 
+      $(controls).load("./toolkit/templates/SieveStringListWidget.html #template .sieve-stringlist-add", () => {
+        controls.click(() => { this.addItem(); });
+      });
 
       this._min = parseInt($(this._selector).attr("data-list-min"), 10);
 
@@ -597,7 +591,7 @@
     }
 
     /**
-     * Called wehn the UI element should be persisted to a sieve script.
+     * Called when the UI element should be persisted to a sieve script.
      *
      * @param {SieveElement} sivElement
      *   the parent sieve element

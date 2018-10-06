@@ -55,6 +55,13 @@
     return "operator";
   };
 
+  /**
+   * @inheritdoc
+   */
+  SieveNotOperator.prototype.require = function(imports) {
+    return this._test.require(imports);
+  };
+
   SieveNotOperator.prototype.init
     = function (parser) {
       // Syntax :

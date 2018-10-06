@@ -35,7 +35,7 @@
     node: "address-part/local",
     type: "address-part/",
 
-    token: ":local"
+    token: ":localpart"
   };
 
   SieveGrammar.addTag(localpart);

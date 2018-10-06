@@ -207,6 +207,18 @@
   });
 
   suite.add({
+    "examples-fastmail": {
+      script: "./sieve/SieveFastMailTest.js",
+      extend: "rfc5228",
+      require: [
+        "./../common/libSieve/imapflags/logic/SieveImapFlags.js",
+        "./../common/libSieve/relational/logic/SieveRelational.js",
+        "./../common/libSieve/regex/logic/SieveRegularExpression.js"
+      ]
+    }
+  });
+
+  suite.add({
     "managesieve": {
       script: "./managesieve/ManageSieveTest.js",
       require: [

@@ -169,7 +169,7 @@
     = function (callback) {
 
       return SieveAbstractAddressPartUI.prototype.html.call(
-        this, ":local", "... a local part with...",
+        this, ":localpart", "... a local part with...",
         'Everything before the @ sign. The local part is case sensitive.<br>'
         + 'e.g.: "me@example.com" is stripped to "me"', callback);
     };

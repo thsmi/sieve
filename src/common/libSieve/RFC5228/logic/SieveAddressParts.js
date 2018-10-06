@@ -36,7 +36,7 @@
 
   SieveLocalPart.isElement
     = function (parser, lexer) {
-      if (parser.startsWith(":local"))
+      if (parser.startsWith(":localpart"))
         return true;
 
       return false;
@@ -44,13 +44,13 @@
 
   SieveLocalPart.prototype.init
     = function (parser) {
-      parser.extract(":local");
+      parser.extract(":localpart");
       return this;
     };
 
   SieveLocalPart.prototype.toScript
     = function () {
-      return ":local";
+      return ":localpart";
     };
 
 

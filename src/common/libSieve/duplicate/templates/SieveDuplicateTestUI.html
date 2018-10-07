@@ -1,0 +1,115 @@
+<div>
+    <ul id="template-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-duplicatetest" role="tab">Duplicate</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+        </li>
+    </ul>
+
+    <div id="template-content">
+        <div class="tab-content m-2">
+            <div class="tab-pane fade show active" id="sieve-widget-duplicatetest" role="tabpanel">
+
+                <div class="form-group">
+                    <h5>The unique id is...</h5>
+                    <div id="sivUnique"> </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+                    <h5>Tracking Handles</h5>
+                    <small class="form-text text-muted">
+                        Duplicate tracking considers only messages which are tagged with the same handle.
+                        The rational is to have multiple tracking policies. In case no handle
+                        it provided the server will use a default one.
+                        A custom handle can be any unique strings.
+                    </small>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="sivDuplicateDefaultHandle" name="sieve-duplicate-handle" class="custom-control-input" value="false" />
+                        <label class="custom-control-label" for="sivDuplicateDefaultHandle">
+                                Use default handle
+                        </label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="sivDuplicateCustomHandle" name="sieve-duplicate-handle" class="custom-control-input" value="true" />
+                        <label class="custom-control-label" for="sivDuplicateCustomHandle">
+                                <input type="text" id="sivDuplicateHandle" placeholder="Custom Handle" />
+                        </label>
+                    </div>
+
+                    <br />
+
+                    <h5>Expiration</h5>
+
+                        <small class="form-text text-muted">
+                        The server uses a duplicate message list to track duplicates.
+                        To keep this list small and fast, the list entries expire.
+                        After a list entry is expired it is no more considered as a Duplicate
+                        </small>
+
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="sivDuplicateDefaultExpiration" name="sieve-duplicate-seconds" class="custom-control-input" value="false" />
+                            <label class="custom-control-label" for="sivDuplicateDefaultExpiration">
+                                Use server's default policy (usually 7 days)
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="sivDuplicateCustomExpiration" name="sieve-duplicate-seconds" class="custom-control-input" value="true" />
+                            <label class="custom-control-label" for="sivDuplicateCustomExpiration">
+                                <span>Expire after</span>
+                                <input type="number" min="0" id="sivDuplicateSeconds" />
+                                <span>seconds</span>
+                            </label>
+                        </div>
+
+                    <br />
+
+                    <small class="form-text text-muted">
+                        Expiration time uses either the point in time when
+                        the entry in the duplicate message list was created or
+                        the point in time when the duplicate message entry was
+                        last accessed.
+                    </small>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="sivDuplicateEntryCreated" name="sieve-duplicate-last" class="custom-control-input" value="false" />
+                        <label class="custom-control-label" for="sivDuplicateEntryCreated">
+                            The moment the entry was created
+                        </label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="sivDuplicateEntryAccessed" name="sieve-duplicate-last" class="custom-control-input" value="true" />
+                        <label class="custom-control-label" for="sivDuplicateEntryAccessed">
+                            The timestamp of the most recent access
+                        </label>
+                    </div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+                <p>
+                    The main application for this test is handling
+                    duplicate deliveries commonly caused by mailing list subscriptions or
+                    redirected mail addresses.
+                </p>
+                <p>
+                    The detection is normally performed by matching the message ID to
+                    an internal list of message IDs from previously delivered messages.
+                </p>
+                <p>
+                    For more complex applications, the "duplicate" test can also use the
+                    content of a specific header field or other parts of the message.
+                </p>
+                <p>
+                    Duplicate deliveries are a common side effect of being subscribed to
+                    a mailing list. For example, if a member of the list decides to
+                    reply to both the user and the mailing list itself, the user will
+                    often get one copy of the message directly and another through the
+                    mailing list.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+

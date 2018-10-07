@@ -115,6 +115,10 @@
   <script type="application/javascript" src="date/logic/SieveDate.js"></script>
   <script type="application/javascript" src="date/widgets/SieveDateUI.js"></script>
 
+  <!-- RCF5435 - Duplicate -->
+  <script type="application/javascript" src="duplicate/logic/SieveDuplicate.js"></script>
+  <script type="application/javascript" src="duplicate/widgets/SieveDuplicateUI.js"></script>
+
   <style>
     .sivMenuItem {
       font-size: 0.7em;
@@ -314,7 +318,11 @@
 
               <div class="col-md-4 col-lg-3">
                 <input type="checkbox" name="capabilities" value="date" checked>date (RFC5260)</div>
-            </div>
+
+                <div class="col-md-4 col-lg-3">
+                  <input type="checkbox" name="capabilities" value="duplicate" checked>duplicate (RFC5435)</div>
+
+             </div>
 
             <div>
               <button type="button" class="btn btn-sm btn-primary" id="CapabilitiesApply">Apply</button>

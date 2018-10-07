@@ -124,8 +124,8 @@
         .prop('checked', state)
         .change();
 
-      // if (item)
-      //   $('input:radio[name="30"][value="'+ item.nodeName().substr(9)+'"]' ).prop('checked', true);
+      if (state)
+        $('input:radio[name="30"][value="' + this.getSieve().getElement("modifier/30").getValue() + '"]').prop('checked', true);
 
       state = this.getSieve().enable("modifier/40");
       $('input:checkbox[name="40"]')
@@ -133,8 +133,8 @@
         .prop('checked', state)
         .change();
 
-      // if (item)
-      //  $('input:radio[name="40"][value="'+ item.nodeName().substr(9)+'"]' ).prop('checked', true);
+      if (state)
+        $('input:radio[name="40"][value="' + this.getSieve().getElement("modifier/40").getValue() + '"]').prop('checked', true);
 
       $("#sivVariableName").val(this.name().value());
       $("#sivVariableValue").val(this.value().value());

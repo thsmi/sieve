@@ -173,7 +173,7 @@
       this._min = parseInt($(this._selector).attr("data-list-min"), 10);
 
       if (isNaN(this._min))
-        this._min = 0;
+        this._min = 1;
 
       // init values if possible
       if (values === null || typeof (values) === "undefined")

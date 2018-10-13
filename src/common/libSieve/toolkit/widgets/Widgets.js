@@ -633,6 +633,65 @@
     }
   }
 
+
+  /**
+   * Provides support for defered elements like :copy or :create
+   */
+  class SieveOverlayWidget {
+
+    /**
+     * Creates a new instance
+     * @param {String} nodeType
+     *   the widgets node type
+     * @param {String} selector
+     *   an selector which identifies the parent dom element
+     */
+    constructor(nodeType, selector) {
+      this.selector = selector;
+      this.nodeType = nodeType;
+    }
+
+    /**
+     * Initializes and renders the widget.
+     *
+     * @param {SieveAbstractElement} sivElement
+     *   the sieve element which should be rendered.
+     * @returns {void}
+     */
+    init(sivElement) {
+      let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+
+      for (let widget of widgets)
+        widget.init(sivElement);
+    }
+
+    /**
+     * Persist the sieve settings into the given sieve element
+     * @param {SieveAbstractElement} sivElement
+     *   the parent sieve element
+     * @returns {void}
+     */
+    save(sivElement) {
+      let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+
+      for (let widget of widgets)
+        widget.save(sivElement);
+    }
+  }
+
+  /**
+   * Implements the create overlay for the fileinto action.
+   */
+  class SieveOverlayItemWidget extends SieveAbstractItemWidget {
+
+    /**
+     * @inheritDoc
+     */
+    getElement() {
+      return $("" + this.selector);
+    }
+  }
+
   exports.SieveDropDownWidget = SieveDropDownWidget;
   exports.SieveDropDownItemWidget = SieveDropDownItemWidget;
 
@@ -641,4 +700,6 @@
 
   exports.SieveStringListWidget = SieveStringListWidget;
 
+  exports.SieveOverlayWidget = SieveOverlayWidget;
+  exports.SieveOverlayItemWidget = SieveOverlayItemWidget;
 })(window);

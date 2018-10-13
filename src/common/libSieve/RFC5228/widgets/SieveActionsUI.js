@@ -17,9 +17,11 @@
   "use strict";
 
   /* global $: false */
+
   /* global SieveActionBoxUI */
   /* global SieveDesigner */
   /* global SieveActionDialogBoxUI */
+  /* global SieveOverlayWidget */
 
   const DOM_ELEMENT = 0;
 
@@ -107,6 +109,10 @@
         return false;
       }
 
+
+      (new SieveOverlayWidget("action/redirect/", "#sivRedirectOverlay"))
+        .save(this.getSieve());
+
       this.address(value);
       return true;
     }
@@ -116,6 +122,9 @@
      */
     onLoad() {
       $("#sivRedirectAddress").val(this.address());
+
+      (new SieveOverlayWidget("action/redirect/", "#sivRedirectOverlay"))
+        .init(this.getSieve());
     }
 
     /**
@@ -165,6 +174,9 @@
         return false;
       }
 
+      (new SieveOverlayWidget("action/fileinto/", "#sivFileIntoOverlay"))
+        .save(this.getSieve());
+
       this.path(value);
       return true;
     }
@@ -174,6 +186,9 @@
      */
     onLoad() {
       $("#sivFileIntoPath").val(this.path());
+
+      (new SieveOverlayWidget("action/fileinto/", "#sivFileIntoOverlay"))
+        .init(this.getSieve());
     }
 
     /**

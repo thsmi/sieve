@@ -22,6 +22,7 @@
   /* global SieveDesigner */
   /* global SieveMatchTypeWidget */
   /* global SieveComparatorWidget */
+  /* global SieveOverlayItemWidget */
 
   /**
    * Provides a UI for the Mailbox exists test
@@ -162,6 +163,15 @@
       return this.getSieve().getElement("mailbox").value(value);
     }
 
+    /**
+     * Gets and/or sets the annotation name
+     *
+     * @param {String} [value]
+     *   if set updates the anntotation name.
+     *
+     * @return {String}
+     *   the currently set annotation name.
+     */
     annotation(value) {
       return this.getSieve().getElement("annotation").value(value);
     }
@@ -301,6 +311,15 @@
    */
   class SieveServerMetaDataTestUI extends SieveTestDialogBoxUI {
 
+    /**
+     * Gets and/or sets the annotation name
+     *
+     * @param {String} [value]
+     *   if set updates the anntotation name.
+     *
+     * @return {String}
+     *   the currently set annotation name.
+     */
     annotation(value) {
       return this.getSieve().getElement("annotation").value(value);
     }
@@ -382,6 +401,60 @@
     }
   }
 
+  /**
+   * Implements the create overlay for the fileinto action.
+   */
+  class SieveMailboxCreateWidget extends SieveOverlayItemWidget {
+
+    /**
+     * @inheritDoc
+     */
+    static nodeType() {
+      return "action/fileinto/";
+    }
+    /**
+     * @inheritdoc
+     */
+    static nodeName() {
+      return "action/fileinto/create";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    static isCapable(capabilities) {
+      if (!capabilities.mailbox)
+        return false;
+
+      return true;
+    }
+
+    /**
+     * @inheritdoc
+     **/
+    getTemplate() {
+      return "./mailbox/templates/SieveCreateTag.html";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    load(sivElement) {
+      if (sivElement.enable("create"))
+        $("#sivMailboxCreateCheckbox").attr("checked", "checked");
+    }
+
+    /**
+     * @inheritDoc
+     */
+    save(sivElement) {
+      if ($("#sivMailboxCreateCheckbox")[0].checked)
+        sivElement.enable("create", true);
+      else
+        sivElement.enable("create", false);
+    }
+
+  }
 
   if (!SieveDesigner)
     throw new Error("Could not register Mailbox Extension");
@@ -391,5 +464,7 @@
   SieveDesigner.register("test/metadata", SieveMetaDataTestUI);
   SieveDesigner.register("test/servermetadataexists", SieveServerMetaDataExistsTestUI);
   SieveDesigner.register("test/servermetadata", SieveServerMetaDataTestUI);
+
+  SieveDesigner.register2(SieveMailboxCreateWidget);
 
 })(window);

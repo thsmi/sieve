@@ -27,6 +27,10 @@
   /* global SieveComparatorWidget */
   /* global SieveMatchTypeWidget */
 
+  /* global SieveOverlayItemWidget */
+
+  const DOM_ELEMENT = 0;
+
   /**
    * Provides an abstract UI for the flags actions.
    */
@@ -209,6 +213,67 @@
     }
   }
 
+  /**
+   * Implements the create overlay for the fileinto action.
+   */
+  class SieveFlagsTagWidget extends SieveOverlayItemWidget {
+
+    /**
+     * @inheritDoc
+     */
+    static nodeType() {
+      return "action/fileinto/";
+    }
+    /**
+     * @inheritdoc
+     */
+    static nodeName() {
+      return "action/fileinto/flags";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    static isCapable(capabilities) {
+      if (!capabilities.imap4flags)
+        return false;
+
+      return true;
+    }
+
+    /**
+     * @inheritdoc
+     **/
+    getTemplate() {
+      return "./imapflags/templates/SieveFlagsTag.html";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    load(sivElement) {
+
+      if (sivElement.enable("flags"))
+        $("#sivFlagsCheckbox").attr("checked", "checked");
+
+      (new SieveStringListWidget("#sivFlagKeyList"))
+        .init(sivElement.getElement("flags").getElement("flags"));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    save(sivElement) {
+      if ($("#sivFlagsCheckbox")[DOM_ELEMENT].checked) {
+        sivElement.enable("flags", true);
+        (new SieveStringListWidget("#sivFlagKeyList"))
+          .save(sivElement.getElement("flags").getElement("flags"));
+      } else
+        sivElement.enable("flags", false);
+    }
+
+  }
+
   if (!SieveDesigner)
     throw new Error("Could not register IMAP Flags Widgets");
 
@@ -217,5 +282,7 @@
   SieveDesigner.register("action/removeflag", SieveRemoveFlagUI);
 
   SieveDesigner.register("test/hasflag", SieveHasFlagUI);
+
+  SieveDesigner.register2(SieveFlagsTagWidget);
 
 })(window);

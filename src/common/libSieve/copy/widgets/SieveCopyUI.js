@@ -1,0 +1,117 @@
+/*
+* The contents of this file are licensed. You may obtain a copy of
+* the license at https://github.com/thsmi/sieve/ or request it via
+* email from the author.
+*
+* Do not remove or change this comment.
+*
+* The initial author of the code is:
+*   Thomas Schmid <schmid-thomas@gmx.net>
+*
+*/
+
+(function (exports) {
+
+  "use strict";
+
+  /* global $: false */
+  /* global SieveDesigner */
+  /* global SieveOverlayItemWidget */
+
+  if (!SieveDesigner)
+    throw new Error("Could not register Body Extension");
+
+  /**
+   * Implements an abstract overlay widget which is used by
+   * the copy overlay for the fileinto action as well as the
+   * redirect action.
+   */
+  class SieveAbstractCopyWidget extends SieveOverlayItemWidget {
+
+    /**
+     * @inheritdoc
+     **/
+    getTemplate() {
+      return "./copy/templates/SieveCopyTag.html";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    static isCapable(capabilities) {
+      if (!capabilities.copy)
+        return false;
+
+      return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    load(sivElement) {
+      if (sivElement.enable("copy"))
+        $("#sivCopyCheckbox").attr("checked", "checked");
+    }
+
+    /**
+     * @inheritDoc
+     */
+    save(sivElement) {
+      if ($("#sivCopyCheckbox")[0].checked)
+        sivElement.enable("copy", true);
+      else
+        sivElement.enable("copy", false);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    getElement() {
+      return $("" + this.selector);
+    }
+  }
+
+  /**
+   * Implements an overlay for the copy fileinto overlay.
+   */
+  class SieveCopyFileIntoWidget extends SieveAbstractCopyWidget {
+
+    /**
+     * @inheritDoc
+     */
+    static nodeType() {
+      return "action/fileinto/";
+    }
+    /**
+     * @inheritdoc
+     */
+    static nodeName() {
+      return "action/fileinto/copy";
+    }
+  }
+
+
+  /**
+   * Implements an overlay for the copy redirect overlay
+   */
+  class SieveCopyRedirectWidget extends SieveAbstractCopyWidget {
+
+    /**
+     * @inheritDoc
+     */
+    static nodeType() {
+      return "action/redirect/";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    static nodeName() {
+      return "action/redirect/copy";
+    }
+  }
+
+  SieveDesigner.register2(SieveCopyFileIntoWidget);
+  SieveDesigner.register2(SieveCopyRedirectWidget);
+
+})(window);

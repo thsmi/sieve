@@ -119,6 +119,11 @@
   <script type="application/javascript" src="duplicate/logic/SieveDuplicate.js"></script>
   <script type="application/javascript" src="duplicate/widgets/SieveDuplicateUI.js"></script>
 
+  <!-- RCF5235 - Duplicate -->
+  <script type="application/javascript" src="spamtest/logic/SieveSpamtest.js"></script>
+  <script type="application/javascript" src="spamtest/widgets/SieveSpamtestUI.js"></script>
+
+
   <style>
     .sivMenuItem {
       font-size: 0.7em;
@@ -255,7 +260,7 @@
           <div class="tab-pane fade" id="debugadvanced" role="tabpanel">
             <input id="draggable" />
             <span id="DebugDropTarget">DROP TARGET</span>
-            <hr/>
+            <hr />
             <button type="button" class="btn btn-sm btn-outline-secondary" id="DebugCompact">
               Compact
             </button>
@@ -268,10 +273,11 @@
               <button type="button" class="btn btn-sm btn-outline-secondary" id="CapabilitiesNone">Select None</button>
               <button type="button" class="btn btn-sm btn-outline-secondary" id="CapabilitiesAll">Select All</button>
             </div>
-            <hr/>
+            <hr />
             <div class="row">
               <div class="col-md-4 col-lg-3">
-                <input type="checkbox" name="capabilities" value="comparator-i;ascii-numeric" checked>comparator-i;ascii-numeric (RFC5228)</div>
+                <input type="checkbox" name="capabilities" value="comparator-i;ascii-numeric" checked>comparator-i;ascii-numeric
+                (RFC5228)</div>
               <div class="col-md-4 col-lg-3">
                 <input type="checkbox" name="capabilities" value="envelope" checked>envelope (RFC5228)</div>
               <div class="col-md-4 col-lg-3">
@@ -292,37 +298,106 @@
                 <input type="checkbox" name="capabilities" value="body" checked>body (RFC5173)</div>
               <div class="col-md-4 col-lg-3">
                 <input type="checkbox" name="capabilities" value="vacation" checked>vacation (RFC5230)</div>
-              <div class="col-md-4 col-lg-3">
-                <input type="checkbox" name="capabilities" value="variables" checked>variables (RFC5229)</div>
-              <div class="col-md-4 col-lg-3">
-                <input type="checkbox" name="capabilities" value="include" checked>include (RFC6609)</div>
 
-              <div class="col-md-4 col-lg-3">
-                <input type="checkbox" name="capabilities" value="mailbox" checked>mailbox (RFC5490)</div>
-              <div class="col-md-4 col-lg-3">
-                <input type="checkbox" name="capabilities" value="mboxmetadata" checked>mboxmetadata (RFC5490)</div>
-              <div class="col-md-4 col-lg-3">
-                <input type="checkbox" name="capabilities" value="servermetadata" checked>servermetadata (RFC5490)</div>
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesVariables" name="capabilities" value="variables" class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesVariables">
+                  variables (RFC5229)
+                </label>
+              </div>
 
-              <div class="col-md-4 col-lg-3">
-                <input type="checkbox" name="capabilities" value="subaddress" checked>subaddress (RFC5233)</div>
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesInclude" name="capabilities" value="include" class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesInclude">
+                  include (RFC6609)
+                </label>
+              </div>
 
-              <div class="col-md-4 col-lg-3">
-                <input type="checkbox" name="capabilities" value="copy" checked>copy (RFC3894)</div>
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesMailbox" name="capabilities" value="mailbox" class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesMailbox">
+                  mailbox (RFC5490)
+                </label>
+              </div>
 
-              <div class="col-md-4 col-lg-3">
-                <input type="checkbox" name="capabilities" value="editheader" checked>editheader (RFC5293)</div>
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesMboxmetadata" name="capabilities" value="mboxmetadata" class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesMboxmetadata">
+                  mboxmetadata (RFC5490)
+                </label>
+              </div>
 
-              <div class="col-md-4 col-lg-3">
-                <input type="checkbox" name="capabilities" value="relational" checked>relational (RFC5231)</div>
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesServermetadata" name="capabilities" value="servermetadata"
+                  class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesServermetadata">
+                  servermetadata (RFC5490)
+                </label>
+              </div>
 
-              <div class="col-md-4 col-lg-3">
-                <input type="checkbox" name="capabilities" value="date" checked>date (RFC5260)</div>
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesSubaddress" name="capabilities" value="subaddress" class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesSubaddress">
+                  subaddress (RFC5233)
+                </label>
+              </div>
 
-                <div class="col-md-4 col-lg-3">
-                  <input type="checkbox" name="capabilities" value="duplicate" checked>duplicate (RFC5435)</div>
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesCopy" name="capabilities" value="copy" class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesCopy">
+                  copy (RFC3894)
+                </label>
+              </div>
 
-             </div>
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesEditheader" name="capabilities" value="editheader" class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesEditheader">
+                  editheader (RFC5293)
+                </label>
+              </div>
+
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesRelational" name="capabilities" value="relational" class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesRelational">
+                  relational (RFC5231)
+                </label>
+              </div>
+
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesDate" name="capabilities" value="date" class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesDate">
+                  date (RFC5260)
+                </label>
+              </div>
+
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesDuplicate" name="capabilities" value="duplicate" class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesDuplicate">
+                  duplicate (RFC5435)
+                </label>
+              </div>
+
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesSpamtest" name="capabilities" value="spamtest" class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesSpamtest">
+                  spamtest (RFC5235)
+                </label>
+              </div>
+
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesSpamtestplus" name="capabilities" value="spamtestplus" class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesSpamtestplus">
+                  spamtestplus (RFC5235)
+                </label>
+              </div>
+
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesVirustest" name="capabilities" value="virustest" class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesVirustest">
+                  virustest (RFC5235)
+                </label>
+              </div>
+            </div>
 
             <div>
               <button type="button" class="btn btn-sm btn-primary" id="CapabilitiesApply">Apply</button>

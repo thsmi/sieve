@@ -24,17 +24,27 @@
   /**
    *
    */
-  class SieveGenericAction {
+  class SieveAbstractGeneric {
 
     /**
-     * @inheritDoc
+     *
+     * @param {*} item
      */
     constructor(item) {
       this.item = item;
     }
 
     /**
-     * @inheritDoc
+     * Checks if this element can parse the given script.
+     *
+     * @param {SieveParser} parser
+     *   the parser which contains the current script.
+     * @param {SieveLexer} lexer
+     *   the lexer which contains the grammar.
+     *
+     * @returns {Boolean}
+     *   true in case the generic is capable of parsing
+     *   otherwise false.
      */
     onProbe(parser, lexer) {
       let tokens = this.item.token;
@@ -50,10 +60,13 @@
     }
 
     /**
-     * @inheritDoc
+     *
+     * @param {*} docshell
+     * @param {*} id
+     *
+     * @returns {SieveAbstractElement}
      */
     onNew(docshell, id) {
-
       let element = new SieveGenericStructure(docshell, id, this.item.node);
 
       element
@@ -73,32 +86,51 @@
         });
 
       }
-      element
-        .addLiteral(";", "\r\n");
+
+      return element;
+    }
+
+    /**
+     *
+     * @param {*} capabilities
+     *
+     * @returns {Boolean}
+     *   true in case the action is capable
+     */
+    onCapable(capabilities) {
+
+      if ((this.item.requires === null) || (typeof (this.item.requires) === 'undefined'))
+        return true;
+
+      let requires = this.item.requires;
+
+      if (!Array.isArray(requires))
+        requires = [requires];
+
+      for (let i in requires)
+        if (capabilities[requires[i]] !== true)
+          return false;
+
+      return true;
+    }
+  }
+
+  /**
+   *
+   */
+  class SieveGenericAction extends SieveAbstractGeneric {
+
+    /**
+     * @inheritdoc
+     */
+    onNew(docshell, id) {
+
+      let element = super.onNew(docshell, id);
+
+      element.addLiteral(";", "\r\n");
 
       // add something optional which eats whitespaces but stops a comments or linebreaks.
-
       return element;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    onCapable(capabilities) {
-
-      if ((this.item.requires === null) || (typeof (this.item.requires) === 'undefined'))
-        return true;
-
-      let requires = this.item.requires;
-
-      if (!Array.isArray(requires))
-        requires = [requires];
-
-      for (let i in requires)
-        if (capabilities[requires[i]] !== true)
-          return false;
-
-      return true;
     }
 
   }
@@ -107,102 +139,44 @@
   /**
    *
    */
-  class SieveGenericTest {
-
-    /**
-     * @inheritDoc
-     */
-    constructor(item) {
-      this.item = item;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    onProbe(parser, lexer) {
-
-      let tokens = this.item.token;
-
-      if (!Array.isArray(tokens))
-        tokens = [tokens];
-
-      for (let i in tokens)
-        if (parser.startsWith(tokens[i]))
-          return true;
-
-      return false;
-    }
+  class SieveGenericTest extends SieveAbstractGeneric {
 
     /**
      * @inheritDoc
      */
     onNew(docshell, id) {
 
-      let element = new SieveGenericStructure(docshell, id, this.item.node);
-
-      element
-        .addLiteral(this.item.token)
-        .addRequirements(this.item.requires);
-
-      if (Array.isArray(this.item.properties)) {
-
-        this.item.properties.forEach(function (elm) {
-
-          if (elm.optional)
-            element.addOptionalItems(elm.elements);
-          else if (elm.dependent)
-            element.addDependentItems(elm);
-          else
-            element.addMandatoryItems(elm.elements);
-        });
-
-      }
-
-      return element;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    onCapable(capabilities) {
-
-      if ((this.item.requires === null) || (typeof (this.item.requires) === 'undefined'))
-        return true;
-
-      let requires = this.item.requires;
-
-      if (!Array.isArray(requires))
-        requires = [requires];
-
-      for (let i in requires)
-        if (capabilities[requires[i]] !== true)
-          return false;
-
-      return true;
+      return super.onNew(docshell, id);
     }
   }
-
 
   /**
    *
    */
-  class SieveGenericGroup {
+  class SieveGenericTag extends SieveAbstractGeneric {
 
     /**
      * @inheritDoc
      */
-    constructor(tag) {
-      this.tag = tag;
+    onNew(docshell, id) {
+
+      return super.onNew(docshell, id);
     }
+  }
+
+  /**
+   *
+   */
+  class SieveGenericGroup extends SieveAbstractGeneric {
 
     /**
      * @inheritDoc
      */
     onProbe(parser, lexer) {
-      if (this.tag.token !== null && typeof (this.tag.token) !== "undefined")
-        return parser.startsWith(this.tag.token);
+      if (this.item.token !== null && typeof (this.item.token) !== "undefined")
+        return super.onProbe(parser, lexer);
 
-      return lexer.probeByClass(this.tag.items, parser);
+      return lexer.probeByClass(this.item.items, parser);
     }
 
     /**
@@ -211,102 +185,16 @@
     onNew(docshell, id) {
 
       let element = new SieveGenericUnion(docshell, id);
-      element.setToken(this.tag.token);
-      element.addItems(this.tag.items);
-      element.setDefaultValue(this.tag.value);
+      element.setToken(this.item.token);
+      element.addItems(this.item.items);
+      element.setDefaultValue(this.item.value);
       return element;
     }
-
-    /**
-     * @inheritDoc
-     */
-    onCapable(capabilities) {
-
-      if ((this.tag.requires === null) || (typeof (this.tag.requires) === 'undefined'))
-        return true;
-
-      let requires = this.tag.requires;
-
-      if (!Array.isArray(requires))
-        requires = [requires];
-
-      for (let i in requires)
-        if (capabilities[requires[i]] !== true)
-          return false;
-
-      return true;
-    }
   }
-
-  /**
-   *
-   */
-  class SieveGenericTag {
-
-    /**
-     * @inheritDoc
-     */
-    constructor(item) {
-      this.item = item;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    onProbe(parser, lexer) {
-      return parser.startsWith(this.item.token);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    onNew(docshell, id) {
-      let element = new SieveGenericStructure(docshell, id, this.item.node);
-
-      element
-        .addLiteral(this.item.token)
-        .addRequirements(this.item.requires);
-
-      if (Array.isArray(this.item.properties)) {
-
-        this.item.properties.forEach(function (elm) {
-
-          if (elm.optional)
-            element.addOptionalItems(elm.elements);
-          else
-            element.addMandatoryItems(elm.elements);
-        });
-
-      }
-
-      return element;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    onCapable(capabilities) {
-
-      if ((this.item.requires === null) || (typeof (this.item.requires) === 'undefined'))
-        return true;
-
-      let requires = this.item.requires;
-
-      if (!Array.isArray(requires))
-        requires = [requires];
-
-      for (let i in requires)
-        if (capabilities[requires[i]] !== true)
-          return false;
-
-      return true;
-    }
-  }
-
 
 
   let actions = new Map();
-
+  let tests = new Map();
 
   /**
    *
@@ -334,12 +222,19 @@
    * @param {*} item
    */
   function addTest(item) {
+    // Ensure the item has a valid structure...
 
-    let name = item.node;
-    let type = item.type;
+    // ... there has to be a token ...
+    if (item.token === null || typeof (item.token) === 'undefined')
+      throw new Error("Token expected but not found");
 
-    let obj = new SieveGenericTest(item);
-    SieveLexer.registerGeneric(name, type, obj);
+    if (item.node === null || typeof (item.node) === 'undefined')
+      throw new Error("Node expected but not found");
+
+    if (tests[item] !== null && typeof (item.node) === 'undefined')
+      throw new Error("Test already registered");
+
+    tests.set(item.node, item);
   }
 
   /**
@@ -401,8 +296,26 @@
     });
   }
 
+  /**
+   *
+   */
+  function initTests() {
+    tests.forEach((item) => {
+      let name = item.node;
+      let type = item.type;
+
+      let obj = new SieveGenericTest(item);
+      SieveLexer.registerGeneric(name, type, obj);
+    });
+  }
+
+  /**
+   *
+   * @param {*} capabilites
+   */
   function createGrammar(capabilites) {
     initActions();
+    initTests();
 
     // todo we should retrun a lexxer so that the gramar is scoped.
     // but this is fare future
@@ -414,7 +327,7 @@
    * @param {*} action
    * @param {*} item
    */
-  function extendProperty(action, item) {
+  function extendGenericProperty(action, item) {
 
     let property = null;
 
@@ -436,7 +349,24 @@
       property.elements.unshift(cur);
     });
 
-    return property;
+    return;
+  }
+
+  /**
+   *
+   * @param {*} generics
+   * @param {*} item
+   */
+  function extendGeneric(generics, item) {
+
+    if (!generics.has(item.extends))
+      return;
+
+    let x = generics.get(item.extends);
+
+    item.properties.forEach(function (property) {
+      extendGenericProperty(x, property);
+    });
   }
 
   /**
@@ -444,15 +374,15 @@
    * @param {*} item
    */
   function extendAction(item) {
+    extendGeneric(actions, item);
+  }
 
-    if (!actions.has(item.extends))
-      return;
-
-    let action = actions.get(item.extends);
-
-    item.properties.forEach(function (property) {
-      extendProperty(action, property);
-    });
+  /**
+   *
+   * @param {*} item
+   */
+  function extendTest(item) {
+    extendGeneric(tests, item);
   }
 
   exports.SieveGrammar = {};
@@ -461,6 +391,7 @@
   exports.SieveGrammar.addGroup = addGroup;
   exports.SieveGrammar.addTag = addTag;
   exports.SieveGrammar.addTest = addTest;
+  exports.SieveGrammar.extendTest = extendTest;
 
   exports.SieveGrammar.create = createGrammar;
 

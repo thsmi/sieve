@@ -10,7 +10,7 @@
 *
 */
 
-(function (exports) {
+(function () {
 
   "use strict";
 
@@ -19,7 +19,9 @@
   /* global SieveOverlayItemWidget */
 
   if (!SieveDesigner)
-    throw new Error("Could not register Body Extension");
+    throw new Error("Could not register Copy Extension");
+
+  const DOM_ELEMENT = 0;
 
   /**
    * Implements an abstract overlay widget which is used by
@@ -57,7 +59,7 @@
      * @inheritDoc
      */
     save(sivElement) {
-      if ($("#sivCopyCheckbox")[0].checked)
+      if ($("#sivCopyCheckbox")[DOM_ELEMENT].checked)
         sivElement.enable("copy", true);
       else
         sivElement.enable("copy", false);

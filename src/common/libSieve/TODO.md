@@ -9,10 +9,14 @@
 
 variable's defered elements should be added via extend...
 
- - Add UI for deleteheader
 
- - Add UI for copy
- - Add UI for create
-
- - Stringlist should use a default template to avoid duplicated boilderplate html
  - Create A Sieve DropdownGroupWidget
+
+ - Convert date selector to real dropdown
+
+- globals beschreibung fehlt
+ - set variable -> advanced -> radio buttons ot working
+
+dependen (varlist) in imapflags needs to be implemented
+
+- Fixme spamtestplus shoudl be used when :precent is specified otherwise spamtest should be used.

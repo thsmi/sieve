@@ -102,7 +102,7 @@
       + '  fileinto "Alerts";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "duplicate": true, /*"variables": true,*/ "imap4flags": true, "fileinto":true});
+    suite.expectValidScript(script, { "duplicate": true, "imap4flags": true, "fileinto":true});
   });
 
 

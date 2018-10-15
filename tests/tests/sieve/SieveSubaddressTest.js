@@ -29,8 +29,8 @@
 
     suite.log("Parse Subaddress Example 1");
 
-    let script =
-      'require ["envelope", "subaddress", "fileinto"];\r\n'
+    let script = ''
+      + 'require ["envelope", "subaddress", "fileinto"];\r\n'
       + '\r\n'
       + '\r\n'
       + '# In this example the same user account receives mail for both\r\n'

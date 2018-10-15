@@ -450,7 +450,7 @@
 
       let windows = wm.getEnumerator(null);
       while (windows.hasMoreElements()) {
-        let domWindow = windows.getNext()
+        let domWindow = windows.getNext();
         SieveOverlayManager.loadOverlay(domWindow);
       }
 

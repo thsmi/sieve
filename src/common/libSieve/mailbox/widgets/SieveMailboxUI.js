@@ -24,6 +24,8 @@
   /* global SieveComparatorWidget */
   /* global SieveOverlayItemWidget */
 
+  const DOM_ELEMENT = 0;
+
   /**
    * Provides a UI for the Mailbox exists test
    */
@@ -448,7 +450,7 @@
      * @inheritDoc
      */
     save(sivElement) {
-      if ($("#sivMailboxCreateCheckbox")[0].checked)
+      if ($("#sivMailboxCreateCheckbox")[DOM_ELEMENT].checked)
         sivElement.enable("create", true);
       else
         sivElement.enable("create", false);

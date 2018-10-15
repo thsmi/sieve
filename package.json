@@ -20,7 +20,8 @@
   "scripts": {
     "start": "./node_modules/.bin/electron ./build/electron/resources/",
     "debug": "./node_modules/.bin/electron ./build/electron/resources/ --debug",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node ./tools/Server/Server.js"
   },
   "repository": {
     "type": "git",

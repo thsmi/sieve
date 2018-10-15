@@ -1,0 +1,46 @@
+"domain"
+The primary DNS domain of the machine where the Sieve script is executing
+
+"host"
+The fully-qualified domain name of the host where the Sieve script is executing.
+
+"location"
+=> Sieve evaluation can be performed at various
+different points as messages are processed.  This item
+provides additional information about the type of
+service that is evaluating the script.  Possible values
+are "MTA", meaning the Sieve is being evaluated by a
+Message Transfer Agent, "MDA", meaning evaluation is
+being performed by a Mail Delivery Agent, "MUA",
+meaning evaluation is being performed by a Mail User
+Agent, and "MS", meaning evaluation is being performed
+by a Message Store.  Additional information and
+background on these terms can be found in
+[EMAIL-ARCH].
+
+"name"
+the Sieve interpreter's name.
+
+"phase"
+The current delivery phase. Possible values are
+"pre", "during", and "post", referring respectively to
+processing before, during, and after final delivery
+has taken place.
+
+"remote-host"
+=> Host name of remote SMTP/LMTP/Submission client
+expressed as a Fully Qualified Domain Name (FQDN),
+if applicable and available.  The empty string will be
+returned if for some reason this information cannot be
+obtained for the current client.
+
+"remote-ip"
+=> IP address of remote SMTP/LMTP/Submission client, if
+applicable and available.  IPv4, IPv6, and other types
+of addresses are respectively represented in the
+formats defined by the IPv4-address-literal,
+IPv6-address-literal, and General-address-literal
+productions defined in Section 4.1.3 of [RFC2821].
+
+"version"
+The Sieve interpreter's version number.

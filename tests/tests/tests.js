@@ -220,6 +220,17 @@
   });
 
   suite.add({
+    "spamtest": {
+      script : "./../common/libSieve/spamtest/tests/SpamtestTests.js",
+      extend: "rfc5228",
+      require: [
+        "./../common/libSieve/spamtest/logic/SieveSpamtest.js",
+        "./../common/libSieve/relational/logic/SieveRelational.js"
+      ]
+    }
+  });
+
+  suite.add({
     "examples-fastmail": {
       script: "./sieve/SieveFastMailTest.js",
       extend: "rfc5228",

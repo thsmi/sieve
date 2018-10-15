@@ -15,8 +15,6 @@
 
   "use strict";
 
-  const NO_SUCH_TOKEN = -1;
-
   const RANDOM_SEED_SIZE = 10000000;
   const HEX_STRING = 16;
 
@@ -58,8 +56,15 @@
      *   returns true in case it is bug free otherwise false
     */
     isBugFree() {
+
       // Check if we are running in electron...
-      return (window.navigator.userAgent.toLowerCase().indexOf(" electron/") === NO_SUCH_TOKEN);
+      if (window.navigator.userAgent.toLowerCase().indexOf(" electron/"))
+        return false;
+
+      if (window.navigator.userAgent.toLowerCase().indexOf(" chrome/"))
+        return false;
+
+      return true;
     }
 
     /**

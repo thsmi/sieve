@@ -17,82 +17,83 @@
   "use strict";
   /* global SieveDataTransfer */
 
-  function SieveDropHandler() {
-  }
+  /**
+   *
+   */
+  class SieveDropHandler {
 
-  SieveDropHandler.prototype._flavours = [];
-  SieveDropHandler.prototype._owner = null;
+    /**
+     *
+     */
+    constructor(flavours) {
 
-  SieveDropHandler.prototype.flavours
-    = function (flavours, append) {
-      if (typeof (flavours) === "undefined")
-        return this._flavours;
+      this._flavours = [];
 
-      if (append)
-        this._flavours.concat(flavours);
-      else
+      if (typeof (flavours) !== "undefined" && flavours !== null)
         this._flavours = [].concat(flavours);
 
-      return this;
-    };
+      this._owner = null;
+    }
 
-  SieveDropHandler.prototype.document
-    = function () {
+    /**
+     * Gets the flavour for this drop type
+     * @returns {String[]}
+     *   a string array containing all supported drop flavours.
+     */
+    flavours() {
+      return this._flavours;
+    }
+
+    document() {
       if (!this._owner)
         throw new Error("Owner for this Drop Handler");
 
       return this._owner.document();
-    };
+    }
 
-  SieveDropHandler.prototype.bind
-    = function (owner, sibling) {
+    bind(owner, sibling) {
       this._owner = owner;
       this._sibling = sibling;
-    };
+    }
 
-  /**
-   * The owner on thich the drag event occured
-   * @return {SieveAbstractWidget}
-   */
-  SieveDropHandler.prototype.owner
-    = function () {
+    /**
+     * @return {SieveAbstractWidget}
+     *   The owner on thich the drag event occured
+     */
+    owner() {
       return this._owner;
-    };
+    }
 
-  /**
-   * The target/sibling, the element which consumes the drop
-   * @return {SieveAbstractElement}
-   *   the sibling element
-   */
-  SieveDropHandler.prototype.sibling
-    = function () {
+    /**
+     * The target/sibling, the element which consumes the drop
+     * @return {SieveAbstractElement}
+     *   the sibling element
+     */
+    sibling() {
       return this._sibling;
-    };
+    }
 
-  /**
-   * The parent of this element.
-   * @return {SieveAbstractElement}
-   *   the parent element
-   */
-  SieveDropHandler.prototype.parent
-    = function () {
+    /**
+     * The parent of this element.
+     * @return {SieveAbstractElement}
+     *   the parent element
+     */
+    parent() {
       return this._owner.parent();
-    };
+    }
 
-  SieveDropHandler.prototype.attach
-    = function (html) {
+    attach(html) {
 
       html
         .bind("drop", (e) => { return this.onDragDrop(e); })
         .bind("dragover", (e) => { return this.onDragOver(e); })
         .bind("dragleave", (e) => { return this.onDragExit(e); })
         .bind("dragenter", (e) => { return this.onDragEnter(e); });
-    };
+    }
 
-  /* Official HTML5 Drag&Drop events... */
+    /* Official HTML5 Drag&Drop events... */
 
-  SieveDropHandler.prototype.onDragEnter
-    = function (event) {
+    onDragEnter(event) {
 
       if (!this.canDrop(event))
         return true;
@@ -100,20 +101,18 @@
       this.owner().html().attr("sivDragging", "true");
 
       return false;
-    };
+    }
 
-  SieveDropHandler.prototype.onDragExit
-    = function (event) {
+    onDragExit(event) {
 
       this.owner().html().removeAttr("sivDragging");
 
       // Exit is only used for UI cleanup, so we should never cancel this event.
       // Our parent might want to do cleanup too.
       return true;
-    };
+    }
 
-  SieveDropHandler.prototype.onDragOver
-    = function (event) {
+    onDragOver(event) {
 
       if (!this.canDrop(event))
         return true;
@@ -121,10 +120,9 @@
       this.owner().html().attr("sivDragging", "true");
 
       return false;
-    };
+    }
 
-  SieveDropHandler.prototype.onDragDrop
-    = function (event) {
+    onDragDrop(event) {
 
       this.owner().html().removeAttr("sivDragging");
 
@@ -132,10 +130,9 @@
         return true;
 
       return false;
-    };
+    }
 
-  SieveDropHandler.prototype.onDrop
-    = function (flavour, event) {
+    onDrop(flavour, event) {
       let dt = new SieveDataTransfer(event.originalEvent.dataTransfer);
 
       let meta = JSON.parse(dt.getData(flavour));
@@ -164,16 +161,12 @@
 
           dt.clear();
           return true;
-
-        default:
-          throw new Error("Invalid action..." + meta.action);
       }
 
-      return false;
-    };
+      throw new Error("Invalid action..." + meta.action);
+    }
 
-  SieveDropHandler.prototype.drop
-    = function (event) {
+    drop(event) {
       for (let i = 0; i < this.flavours().length; i++) {
         if (!this.onCanDrop(this.flavours()[i], event))
           continue;
@@ -182,10 +175,9 @@
       }
 
       return true;
-    };
+    }
 
-  SieveDropHandler.prototype.onCanDrop
-    = function (flavour, event) {
+    onCanDrop(flavour, event) {
       let dt = new SieveDataTransfer(event.originalEvent.dataTransfer);
 
       let meta = dt.getData(flavour);
@@ -201,23 +193,36 @@
 
       switch (meta.action) {
         case "create":
-          if (!this.canCreateElement)
-            return false;
-
           return this.canCreateElement(flavour, meta.type);
 
         case "move":
-          if (!this.canMoveElement)
-            return false;
-
           return this.canMoveElement(flavour, meta.id);
       }
 
       return false;
-    };
+    }
 
-  SieveDropHandler.prototype.canDrop
-    = function (event) {
+    /**
+     *
+     * @param {*} sivFlavour
+     * @param {*} type
+     * @returns {Boolean}
+     */
+    canCreateElement(sivFlavour, type) {
+      return false;
+    }
+
+    /**
+     *
+     * @param {*} sivFlavour
+     * @param {*} id
+     * @returns {Boolean}
+     */
+    canMoveElement(sivFlavour, id) {
+      return false;
+    }
+
+    canDrop(event) {
       for (let i = 0; i < this.flavours().length; i++) {
         if (!this.onCanDrop(this.flavours()[i], event))
           continue;
@@ -228,20 +233,26 @@
       }
 
       return false;
-    };
+    }
+  }
 
   // ****************************************************************************//
 
-  function SieveBlockDropHandler() {
-    SieveDropHandler.call(this);
-    this.flavours(["sieve/action", "sieve/test", "sieve/operator"]);
-  }
+  /**
+   *
+   */
+  class SieveBlockDropHandler extends SieveDropHandler {
 
-  SieveBlockDropHandler.prototype = Object.create(SieveDropHandler.prototype);
-  SieveBlockDropHandler.prototype.constructor = SieveBlockDropHandler;
+    constructor() {
+      super(
+        ["sieve/action", "sieve/test", "sieve/operator"]);
+    }
 
-  SieveBlockDropHandler.prototype.canMoveElement
-    = function (sivFlavour, id) {
+
+    /**
+     * @inheritdoc
+     */
+    canMoveElement(sivFlavour, id) {
       let source = this.document().id(id);
 
       if (source.html().parent().prev().get(0) == this.owner().html().get(0))
@@ -251,11 +262,9 @@
         return false;
 
       return true;
+    }
 
-    };
-
-  SieveBlockDropHandler.prototype.moveTest
-    = function (source, target) {
+    moveTest(source, target) {
 
       // Create a new Condition...
       let newCondition = this.document().createByName("condition");
@@ -288,10 +297,9 @@
       source.widget().reflow();
       oldOwner.widget().reflow();
 
-    };
+    }
 
-  SieveBlockDropHandler.prototype.moveAction
-    = function (source, target) {
+    moveAction(source, target) {
 
       // remember owner
       let oldOwner = source.remove(true, target);
@@ -301,12 +309,9 @@
       // refresh old and new Owner
       target.widget().reflow();
       oldOwner.widget().reflow();
-    };
+    }
 
-
-
-  SieveBlockDropHandler.prototype.moveElement
-    = function (sivFlavour, id) {
+    moveElement(sivFlavour, id) {
       let source = this.document().id(id);
       if (!source)
         throw new Error("Block Drop Handler: No Element found for " + id);
@@ -327,18 +332,19 @@
       }
 
       throw new Error("Incompatible Drop");
-    };
+    }
 
-  SieveBlockDropHandler.prototype.canCreateElement
-    = function (sivFlavour, type) {
+    /**
+     * @inheritdoc
+     */
+    canCreateElement(sivFlavour, type) {
       if (sivFlavour === "sieve/operator")
         return false;
 
       return true;
-    };
+    }
 
-  SieveBlockDropHandler.prototype.createElement
-    = function (sivFlavour, type) {
+    createElement(sivFlavour, type) {
 
       let item = this.parent().getSieve();
 
@@ -363,25 +369,26 @@
       }
 
       item.widget().reflow();
-    };
-
-  // ****************************************************************************//
-
-  function SieveTrashBoxDropHandler() {
-    SieveDropHandler.call(this);
-    this.flavours(["sieve/action", "sieve/test", "sieve/if", "sieve/operator"]);
+    }
   }
 
-  SieveTrashBoxDropHandler.prototype = Object.create(SieveDropHandler.prototype);
-  SieveTrashBoxDropHandler.prototype.constructor = SieveTrashBoxDropHandler;
+  /**
+   *
+   */
+  class SieveTrashBoxDropHandler extends SieveDropHandler {
 
-  SieveTrashBoxDropHandler.prototype.canMoveElement
-    = function (sivFlavour, id) {
+    constructor() {
+      super(["sieve/action", "sieve/test", "sieve/if", "sieve/operator"]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    canMoveElement(sivFlavour, id) {
       return true;
-    };
+    }
 
-  SieveTrashBoxDropHandler.prototype.moveElement
-    = function (sivFlavour, id) {
+    moveElement(sivFlavour, id) {
 
       let item = this.document().id(id);
       if (!item)
@@ -395,24 +402,24 @@
       item.widget().reflow();
 
       window.setTimeout(() => { this.document().compact(); }, 0);
-    };
+    }
+  }
 
   // ****************************************************************************//
 
   /**
    * Implements an handler for Sieve Test actions..
-   * @constructor
    */
-  function SieveConditionDropHandler() {
-    SieveDropHandler.call(this);
-    this.flavours(["sieve/test", "sieve/action", "sieve/operator"]);
-  }
+  class SieveConditionDropHandler extends SieveDropHandler {
 
-  SieveConditionDropHandler.prototype = Object.create(SieveDropHandler.prototype);
-  SieveConditionDropHandler.prototype.constructor = SieveConditionDropHandler;
+    constructor() {
+      super(["sieve/test", "sieve/action", "sieve/operator"]);
+    }
 
-  SieveConditionDropHandler.prototype.canMoveElement
-    = function (flavour, id) {
+    /**
+     * @inheritdoc
+     */
+    canMoveElement(flavour, id) {
 
       // actions can only be added as last element...
       if (flavour === "sieve/action")
@@ -460,10 +467,9 @@
         return false;
 
       return true;
-    };
+    }
 
-  SieveConditionDropHandler.prototype.moveElement
-    = function (flavour, id) {
+    moveElement(flavour, id) {
       let oldOwner;
 
       let source = this.document().id(id);
@@ -517,10 +523,12 @@
       conditional.widget().reflow();
 
       return;
-    };
+    }
 
-  SieveConditionDropHandler.prototype.canCreateElement
-    = function (flavour, type) {
+    /**
+     * @inheritdoc
+     */
+    canCreateElement(flavour, type) {
       if (flavour === "sieve/operator")
         return false;
 
@@ -544,10 +552,9 @@
         return false;
 
       return true;
-    };
+    }
 
-  SieveConditionDropHandler.prototype.createElement
-    = function (sivFlavour, type) {
+    createElement(sivFlavour, type) {
       // The new home for our element
       let item = this.parent().getSieve();
       let elm = null;
@@ -579,20 +586,22 @@
       }
 
       throw new Error("Incompatible drop");
-    };
-
-  // ****************************************************************************//
-
-  function SieveTestDropHandler() {
-    SieveDropHandler.call(this);
-    this.flavours(["sieve/operator", "sieve/test"]);
+    }
   }
 
-  SieveTestDropHandler.prototype = Object.create(SieveDropHandler.prototype);
-  SieveTestDropHandler.prototype.constructor = SieveTestDropHandler;
+  /**
+   *
+   */
+  class SieveTestDropHandler extends SieveDropHandler {
 
-  SieveTestDropHandler.prototype.canMoveElement
-    = function (sivFlavour, id) {
+    constructor() {
+      super(["sieve/operator", "sieve/test"]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    canMoveElement(sivFlavour, id) {
       let target = this.owner().getSieve();
       if (!target)
         return false;
@@ -619,10 +628,9 @@
       }
 
       return true;
-    };
+    }
 
-  SieveTestDropHandler.prototype.moveElement
-    = function (sivFlavour, id) {
+    moveElement(sivFlavour, id) {
       let source = this.document().id(id);
       if (!source)
         throw new Error("Test Drop Handler: No Element found for " + id);
@@ -679,15 +687,16 @@
       if (newConditional)
         newConditional.widget().reflow();
       oldOwner.widget().reflow();
-    };
+    }
 
-  SieveTestDropHandler.prototype.canCreateElement
-    = function (sivFlavour, type) {
+    /**
+     * @inheritdoc
+     */
+    canCreateElement() {
       return true;
-    };
+    }
 
-  SieveTestDropHandler.prototype.createElement
-    = function (sivFlavour, type) {
+    createElement(sivFlavour, type) {
       // The new home for our element
       let inner = this.owner().getSieve();
 
@@ -726,21 +735,24 @@
       // item.widget().reflow();
 
       container.widget().reflow();
-    };
-
-  // ****************************************************************************//
-
-  // used in multary operators
-  function SieveMultaryDropHandler() {
-    SieveDropHandler.call(this);
-    this.flavours(["sieve/operator", "sieve/test"]);
+    }
   }
 
-  SieveMultaryDropHandler.prototype = Object.create(SieveDropHandler.prototype);
-  SieveMultaryDropHandler.prototype.constructor = SieveMultaryDropHandler;
 
-  SieveMultaryDropHandler.prototype.canMoveElement
-    = function (sivFlavour, id) {
+  // used in multary operators
+  /**
+   *
+   */
+  class SieveMultaryDropHandler extends SieveDropHandler {
+
+    constructor() {
+      super(["sieve/operator", "sieve/test"]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    canMoveElement(sivFlavour, id) {
       // We have to prevent that someone drops a parent onto a child...
       //  ... this would generate a ring reference
       let target = this.parent().getSieve();
@@ -767,10 +779,9 @@
         return false;
 
       return true;
-    };
+    }
 
-  SieveMultaryDropHandler.prototype.moveElement
-    = function (sivFlavour, id) {
+    moveElement(sivFlavour, id) {
       let target = this.parent().getSieve();
 
       if (!target)
@@ -813,18 +824,19 @@
         newConditional.widget().reflow();
       oldOwner.widget().reflow();
 
-    };
+    }
 
-  SieveMultaryDropHandler.prototype.canCreateElement
-    = function (sivFlavour, type) {
+    /**
+     * @inheritdoc
+     */
+    canCreateElement(sivFlavour, type) {
       if (sivFlavour !== "sieve/test")
         return false;
 
       return true;
-    };
+    }
 
-  SieveMultaryDropHandler.prototype.createElement
-    = function (sivFlavour, type) {
+    createElement(sivFlavour, type) {
       let item = this.parent().getSieve();
 
       if (!item)
@@ -834,7 +846,8 @@
 
       item.append(elm, this.sibling());
       item.widget().reflow();
-    };
+    }
+  }
 
   exports.SieveDropHandler = SieveDropHandler;
   exports.SieveMultaryDropHandler = SieveMultaryDropHandler;

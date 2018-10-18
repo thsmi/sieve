@@ -132,7 +132,6 @@
         "no-with": "error",
         "prefer-promise-reject-errors": "error",
         "radix": "error",
-        "no-catch-shadow": "error",
         "no-new-require": "error",
         "linebreak-style": [
             "error",

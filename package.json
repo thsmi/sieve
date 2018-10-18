@@ -9,9 +9,9 @@
   "devDependencies": {
     "bootstrap": "^4.0.0",
     "codemirror": "^5.36.0",
-    "electron": "^2.0.0-beta.6",
-    "electron-packager": "^11.2.0",
-    "eslint": "^4.19.0",
+    "electron": "^3.0.4",
+    "electron-packager": "^12.2.0",
+    "eslint": "^5.7.0",
     "gulp": "^4.0.0",
     "gulp-zip": "^4.1.0",
     "jquery": "^3.3.1",

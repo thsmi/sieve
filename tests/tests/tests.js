@@ -231,6 +231,16 @@
   });
 
   suite.add({
+    "environment": {
+      script: "./../common/libSieve/environment/tests/SieveEnvironmentTest.js",
+      extend: "rfc5228",
+      require: [
+        "./../common/libSieve/environment/logic/SieveEnvironment.js"
+      ]
+    }
+  });
+
+  suite.add({
     "examples-fastmail": {
       script: "./sieve/SieveFastMailTest.js",
       extend: "rfc5228",

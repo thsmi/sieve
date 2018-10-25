@@ -48,11 +48,11 @@
       elements: [{
         id: "name",
         type: "string",
-        value: '"Example"'
+        value: '"domain"'
       }, {
         id: "keys",
         type: "stringlist",
-        value: '"Example"'
+        value: '"imap.example.com"'
       }]
     }]
   };

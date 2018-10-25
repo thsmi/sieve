@@ -1,46 +1,98 @@
-"domain"
-The primary DNS domain of the machine where the Sieve script is executing
+<div>
+  <ul id="template-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#sieve-widget-environment" role="tab">Environment</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+    </li>
+  </ul>
 
-"host"
-The fully-qualified domain name of the host where the Sieve script is executing.
+  <div id="template-content">
+    <div class="tab-content m-2">
+      <div class="tab-pane fade show active" id="sieve-widget-environment" role="tabpanel">
 
-"location"
-=> Sieve evaluation can be performed at various
-different points as messages are processed.  This item
-provides additional information about the type of
-service that is evaluating the script.  Possible values
-are "MTA", meaning the Sieve is being evaluated by a
-Message Transfer Agent, "MDA", meaning evaluation is
-being performed by a Mail Delivery Agent, "MUA",
-meaning evaluation is being performed by a Mail User
-Agent, and "MS", meaning evaluation is being performed
-by a Message Store.  Additional information and
-background on these terms can be found in
-[EMAIL-ARCH].
+        <div class="form-group">
+          <h5>The environment info named...</h5>
+          <div id="sivEnvironmentName"
+               data-list-dropdown="#sivEnvironmentNameTemplate">
+          </div>
 
-"name"
-the Sieve interpreter's name.
+          <div id="sivEnvironmentNameTemplate" class="d-none">
+              <div class="dropdown-menu dropdown-menu-right">
+                  <button class="dropdown-item" type="button" data-value="domain">
+                    <div>domain</div>
+                    <small class="text-muted">Primary DNS domain of the machine where the Sieve script is executing</small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="host">
+                    <div>host</div>
+                    <small class="text-muted">Fully-qualified domain name of the host where the Sieve script is
+                      executing</small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="location">
+                    <div>location</div>
+                    <small class="text-muted">
+                      Provides additional information about the type of
+                      service that is evaluating the script. <br />
+                      Well known services are "MTA" (Message Transfer Agent), "MDA" (Mail Delivery Agent), <br />
+                      "MUA" (Mail User Agent) and "MS" (Message Store).
+                    </small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="name">
+                    <div>name</div>
+                    <small class="text-muted">Sieve interpreter's name.</small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="phase">
+                    <div>phase</div>
+                    <small class="text-muted">Current delivery phase.<br />
+                      Can be before ("pre"), during ("during"), and after final delivery ("post")</small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="remote-host">
+                    <div>remote-host</div>
+                    <small class="text-muted">Host name of remote client as a Fully Qualified Domain Name (FQDN)<br />
+                      An empty string means, sieve failed to obtain this information</small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="remote-ip">
+                    <div>remote-ip</div>
+                    <small class="form-text text-muted">
+                      IP address of remote client in standard notation</small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="version">
+                    <div>version</div>
+                    <small class="text-muted">The Sieve interpreter's version number.</small>
+                  </button>
+                </div>
 
-"phase"
-The current delivery phase. Possible values are
-"pre", "during", and "post", referring respectively to
-processing before, during, and after final delivery
-has taken place.
+          </div>
 
-"remote-host"
-=> Host name of remote SMTP/LMTP/Submission client
-expressed as a Fully Qualified Domain Name (FQDN),
-if applicable and available.  The empty string will be
-returned if for some reason this information cannot be
-obtained for the current client.
+          <hr />
+          <div id="sivEnvironmentMatchTypes"> </div>
 
-"remote-ip"
-=> IP address of remote SMTP/LMTP/Submission client, if
-applicable and available.  IPv4, IPv6, and other types
-of addresses are respectively represented in the
-formats defined by the IPv4-address-literal,
-IPv6-address-literal, and General-address-literal
-productions defined in Section 4.1.3 of [RFC2821].
+          <hr />
+          <h5>... any of the following keys...</h5>
+          <div id="sivEnvironmentKeyList"> </div>
 
-"version"
-The Sieve interpreter's version number.
+        </div>
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+        <div id="sivEnvironmentComparator"> </div>
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+        <p>
+          The environment test retrieves the item of environment information
+          specified by the name string and matches it to the values specified
+          in the key-list argument. The test succeeds if a match occurs.
+        </p>
+        <p>
+          The current message is not a direct source of information for the
+          environment test; the item of information specified by the name
+          string is extracted from the script's operating environment and the
+          key-list argument comes from the script.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

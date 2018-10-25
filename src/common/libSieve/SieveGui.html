@@ -123,6 +123,9 @@
   <script type="application/javascript" src="spamtest/logic/SieveSpamtest.js"></script>
   <script type="application/javascript" src="spamtest/widgets/SieveSpamtestUI.js"></script>
 
+  <!-- RCF5183 - Logic -->
+  <script type="application/javascript" src="environment/logic/SieveEnvironment.js"></script>
+  <script type="application/javascript" src="environment/widgets/SieveEnvironmentUI.js"></script>
 
   <style>
     .sivMenuItem {
@@ -442,6 +445,14 @@
                   virustest (RFC5235)
                 </label>
               </div>
+
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                  <input type="checkbox" id="sivCapabilitiesEnvironment" name="capabilities" value="environment" class="custom-control-input" />
+                  <label class="custom-control-label" for="sivCapabilitiesEnvironment">
+                      environment (RFC5183)
+                  </label>
+                </div>
+
             </div>
 
             <div>

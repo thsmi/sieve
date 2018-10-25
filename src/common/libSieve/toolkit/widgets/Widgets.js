@@ -14,6 +14,8 @@
 
   "use strict";
 
+  const DOM_ELEMENT = 0;
+
   /* global $: false */
   /* global SieveDesigner */
 
@@ -66,7 +68,7 @@
      *   true in case the widget as a drop down otherwise false
      */
     _hasDropDown() {
-      return $(this._selector)[0].hasAttribute("data-list-dropdown");
+      return $(this._selector)[DOM_ELEMENT].hasAttribute("data-list-dropdown");
     }
 
     /**
@@ -692,6 +694,99 @@
     }
   }
 
+  /**
+   *
+   */
+  class SieveStringWidget {
+
+    /**
+     * @param {String} selector
+     *   the selector which identifies where the input dom element
+     */
+    constructor(selector) {
+      this._selector = selector;
+    }
+
+    /**
+     * @returns {boolean}
+     *   true in case the widget as a drop down otherwise false
+     */
+    _hasDropDown() {
+      return $(this._selector)[DOM_ELEMENT].hasAttribute("data-list-dropdown");
+    }
+
+    /**
+     * Set the input item's current value.
+     *
+     * @param {String} value
+     *   the value to set.
+     *
+     * @returns {undefined}
+     */
+    setValue(value) {
+      $(this._selector)
+        .find(".sieve-string-item")
+        .val(value);
+    }
+
+    /**
+     * Called as soon as the element is loaded.
+     * @param {String} value
+     *   the string value to set
+     *
+     * @returns {undefined}
+     */
+    onInitialized(value) {
+      let that = this;
+
+      this.setValue(value);
+
+      if (!this._hasDropDown())
+        return;
+
+      let elm = $($(this._selector).attr("data-list-dropdown")).children().first().clone();
+
+      $(this._selector)
+        .find(".sieve-string-dropdown")
+        .removeClass("d-none")
+        .before(elm);
+
+      $(this._selector)
+        .find(".dropdown-item")
+        .click(function () {
+          that.setValue($(this).attr("data-value"));
+        });
+    }
+
+    /**
+     * Initializes the current element
+     *
+     * @param {SieveString} sivElement
+     *   the string element which should be rendered.
+     * @returns {undefined}
+     */
+    init(sivElement) {
+      $(this._selector).load("./toolkit/templates/SieveStringWidget.html", () => {
+        this.onInitialized(sivElement.value());
+      });
+
+    }
+
+    /**
+     * Saves the current element.
+     *
+     * @param {SieveString} sivElement
+     *   the string element which was rendered and should be saved.
+     * @returns {undefined}
+     */
+    save(sivElement) {
+
+      sivElement.value(
+        $(this._selector).find(".sieve-string-item").val());
+    }
+
+  }
+
   exports.SieveDropDownWidget = SieveDropDownWidget;
   exports.SieveDropDownItemWidget = SieveDropDownItemWidget;
 
@@ -702,4 +797,7 @@
 
   exports.SieveOverlayWidget = SieveOverlayWidget;
   exports.SieveOverlayItemWidget = SieveOverlayItemWidget;
+
+  exports.SieveStringWidget = SieveStringWidget;
+
 })(window);

@@ -129,11 +129,12 @@ time-zone
       }, {
         id: "datepart",
         type: "string",
-        value: '"some value"'
+        value: '"date"'
       }, {
         id: "keys",
         type: "stringlist",
-        value: '""'
+        // the easiest way to get th current date in yyyy-mm-dd format
+        value: '"' + new Date().toJSON().substring(0, 10) + '"'
       }]
     }]
   });
@@ -173,11 +174,11 @@ time-zone
       elements: [{
         id: "datepart",
         type: "string",
-        value: '"some value"'
+        value: '"date"'
       }, {
         id: "keys",
         type: "stringlist",
-        value: '""'
+        value: '"' + new Date().toJSON().substring(0, 10) + '"'
       }]
     }]
   });

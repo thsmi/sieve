@@ -337,7 +337,7 @@
      */
     getSummary() {
       return $("<div/>")
-        .html("The current date's " + this.datepart().value() + " " +
+        .html("The current " + this.datepart().value() + " " +
           this.matchtype().getValue() + " any of " + $('<div/>').text(this.keys().toScript()).html());
     }
   }

@@ -122,14 +122,14 @@
   suite.add(function () {
     suite.log("Validate date test constructor");
 
-    let snipplet = 'date "date" "some value" ""';
+    let snipplet = 'date "date" "date" "' + new Date().toJSON().substring(0, 10) + '"';
     suite.expectValidSnipplet("test/date", snipplet, { "date": true } );
   });
 
   suite.add(function () {
     suite.log("Validate currentdate test constructor");
 
-    let snipplet = 'currentdate "some value" ""';
+    let snipplet = 'currentdate "date" "' + new Date().toJSON().substring(0, 10) + '"';
     suite.expectValidSnipplet("test/currentdate", snipplet, { "date": true } );
   });
 

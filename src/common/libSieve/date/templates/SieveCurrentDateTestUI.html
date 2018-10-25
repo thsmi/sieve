@@ -17,56 +17,53 @@
                 <div class="form-group">
                     <h5>The current...</h5>
 
-                    <div class="input-group input-group-sm mb-1">
-                        <input type="text" class="form-control col-lg-8" id="sivDateDatepart" />
-                        <div class="input-group-append">
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="#">year
-                                    <small class="text-muted">- "0000" ... "9999"</small>
-                                </a>
-                                <a class="dropdown-item" href="#">month
-                                    <small class="text-muted">- "01" ... "12"</small>
-                                </a>
-                                <a class="dropdown-item" href="#">day
-                                    <small class="text-muted">- "01" ... "31"</small>
-                                </a>
-                                <a class="dropdown-item" href="#">date
-                                    <small class="text-muted">- "yyyy-mm-dd"</small>
-                                </a>
-                                <div class="dropdown-divider"> </div>
-                                <a class="dropdown-item" href="#">hour
-                                    <small class="text-muted">- "00" ... "23"</small>
-                                </a>
-                                <a class="dropdown-item" href="#">minute
-                                    <small class="text-muted">- "00" ... "59"</small>
-                                </a>
-                                <a class="dropdown-item" href="#">second
-                                    <small class="text-muted">- "00" ... "60"</small>
-                                </a>
-                                <a class="dropdown-item" href="#">time
-                                    <small class="text-muted">- "hh:mm:ss"</small>
-                                </a>
-                                <div class="dropdown-divider"> </div>
-                                <a class="dropdown-item" href="#">iso8601
-                                    <small class="text-muted">- Restricted ISO 8601 Format (RFC3339)</small>
-                                </a>
-                                <a class="dropdown-item" href="#">std11
-                                    <small class="text-muted">- Internet Message Format (RFC2822)</small>
-                                </a>
-                                <div class="dropdown-divider"> </div>
-                                <a class="dropdown-item" href="#">zone
-                                    <small class="text-muted">- Time zone ("+hhmm" or "-hhmm")</small>
-                                </a>
-                                <a class="dropdown-item" href="#">weekday
-                                    <small class="text-muted">- "0" (Sunday) ... "6" (Saturday)</small>
-                                </a>
-                                <a class="dropdown-item" href="#">julian
-                                    <small class="text-muted">- days since 1858-11-17 0:00 UTC</small>
-                                </a>
-                            </div>
-                            <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true"
-                                aria-expanded="false">
-                                <span class="sr-only">Toggle Dropdown</span>
+                    <div id="sivDateDatepart"
+                         data-list-dropdown="#sivDateDatepartTemplate">
+                    </div>
+
+                    <div id="sivDateDatepartTemplate" class="d-none">
+                        <div class="dropdown-menu dropdown-menu-right" style="min-width:100%">
+                            <button class="dropdown-item" type="button" data-value="year">year
+                                <small class="text-muted">- "0000" ... "9999"</small>
+                            </button>
+                            <button class="dropdown-item" type="button" data-value="month">month
+                                <small class="text-muted">- "01" ... "12"</small>
+                            </button>
+                            <button class="dropdown-item" type="button" data-value="day">day
+                                <small class="text-muted">- "01" ... "31"</small>
+                            </button>
+                            <button class="dropdown-item" type="button" data-value="date">date
+                                <small class="text-muted">- "yyyy-mm-dd"</small>
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item" type="button" data-value="hour">hour
+                                <small class="text-muted">- "00" ... "23"</small>
+                            </button>
+                            <button class="dropdown-item" type="button" data-value="minute">minute
+                                <small class="text-muted">- "00" ... "59"</small>
+                            </button>
+                            <button class="dropdown-item" type="button" data-value="second">second
+                                <small class="text-muted">- "00" ... "60"</small>
+                            </button>
+                            <button class="dropdown-item" type="button" data-value="time">time
+                                <small class="text-muted">- "hh:mm:ss"</small>
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item" type="button" data-value="iso8601">iso8601
+                                <small class="text-muted">- Restricted ISO 8601 Format (RFC3339)</small>
+                            </button>
+                            <button class="dropdown-item" type="button" data-value="std11">std11
+                                <small class="text-muted">- Internet Message Format (RFC2822)</small>
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item" type="button" data-value="zone">zone
+                                <small class="text-muted">- Time zone ("+hhmm" or "-hhmm")</small>
+                            </button>
+                            <button class="dropdown-item" type="button" data-value="weekday">weekday
+                                <small class="text-muted">- "0" (Sunday) ... "6" (Saturday)</small>
+                            </button>
+                            <button class="dropdown-item" type="button" data-value="julian">julian
+                                <small class="text-muted">- days since 1858-11-17 0:00 UTC</small>
                             </button>
                         </div>
                     </div>
@@ -90,11 +87,13 @@
 
             <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
                 <p>
-                    The currentdate test is similar to the date test, except that it operates on the current date/time rather than a value extracted
+                    The currentdate test is similar to the date test, except that it operates on the current date/time
+                    rather than a value extracted
                     from the message header.
                 </p>
                 <p>
-                    The test returns true if the current date matches any of the strings specified in the key-list. It returns false if the resulting
+                    The test returns true if the current date matches any of the strings specified in the key-list. It
+                    returns false if the resulting
                     string fails to match any key-list value.
                 </p>
             </div>

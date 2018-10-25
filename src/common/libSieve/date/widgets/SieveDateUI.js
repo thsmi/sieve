@@ -17,6 +17,7 @@
   "use strict";
 
   /* global $: false */
+  /* global SieveStringWidget */
   /* global SieveStringListWidget */
   /* global SieveTestDialogBoxUI */
   /* global SieveMatchTypeWidget */
@@ -202,8 +203,9 @@
         .save(this.zone());
 
       this.header().value($("#sivDateHeader").val());
-      this.datepart().value($("#sivDateDatepart").val());
 
+      (new SieveStringWidget("#sivDateDatepart"))
+        .save(this.datepart());
       return true;
     }
 
@@ -223,7 +225,8 @@
         .init(this.zone());
 
       $("#sivDateHeader").val(this.header().value());
-      $("#sivDateDatepart").val(this.datepart().value());
+      (new SieveStringWidget("#sivDateDatepart"))
+        .init(this.datepart());
     }
 
     /**
@@ -303,7 +306,8 @@
       (new SieveZoneWidget("#sivDateZone"))
         .save(this.zone());
 
-      this.datepart().value($("#sivDateDatepart").val());
+      (new SieveStringWidget("#sivDateDatepart"))
+        .save(this.datepart());
 
       return true;
     }
@@ -324,7 +328,8 @@
       (new SieveZoneWidget("#sivDateZone"))
         .init(this.zone());
 
-      $("#sivDateDatepart").val(this.datepart().value());
+      (new SieveStringWidget("#sivDateDatepart"))
+        .init(this.datepart());
     }
 
     /**

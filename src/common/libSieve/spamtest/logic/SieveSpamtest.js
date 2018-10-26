@@ -21,7 +21,7 @@
   if (!SieveGrammar)
     throw new Error("Could not register Spamtest");
 
-  // spamtest [":percent"] [COMPARATOR] [MATCH-TYPE]  <value: string>
+  // spamtest [":percent"] [COMPARATOR] [MATCH-TYPE] <value: string>
   SieveGrammar.addTest({
     node: "test/spamtest",
     type: "test",
@@ -47,7 +47,7 @@
       elements: [{
         id: "value",
         type: "string",
-        value: '"Subject"'
+        value: '"1"'
       }]
     }]
   });
@@ -103,7 +103,7 @@
       elements: [{
         id: "value",
         type: "string",
-        value: '"Subject"'
+        value: '"1"'
       }]
     }]
   });

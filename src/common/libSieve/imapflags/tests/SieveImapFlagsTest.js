@@ -223,4 +223,5 @@
 
     suite.expectValidScript(script, { "imap4flags": true, "fileinto": true, "variables": true });
   });
+
 })();

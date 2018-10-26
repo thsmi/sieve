@@ -51,14 +51,14 @@
 
   suite.add({
     "sieve-scripts": {
-      script: "./sieve/SieveRFC5228ScriptTest.js",
+      script: "./../common/libSieve/RFC5228/tests/SieveRFC5228ScriptTest.js",
       extend: "rfc5228"
     }
   });
 
   suite.add({
     "sieve-elements": {
-      script: "./sieve/SieveRFC5228SnippletTest.js",
+      script: "./../common/libSieve/RFC5228/tests/SieveRFC5228SnippletTest.js",
       extend: "rfc5228"
     }
   });
@@ -66,14 +66,14 @@
   suite.add({
     // Specialized profiles which contain the tests...
     "matchTypes": {
-      script: "./sieve/SieveMatchTypeTest.js",
+      script: "./../common/libSieve/RFC5228/tests/SieveMatchTypeTest.js",
       extend: "rfc5228"
     }
   });
 
   suite.add({
     "variables": {
-      script: "./sieve/SieveVariablesTest.js",
+      script: "./../common/libSieve/variables/tests/SieveVariablesTest.js",
       extend: "rfc5228",
       require: [
         "./../common/libSieve/variables/logic/SieveVariables.js"
@@ -83,7 +83,7 @@
 
   suite.add({
     "regex": {
-      script: "./sieve/SieveRegExTest.js",
+      script: "./../common/libSieve/regex/tests/SieveRegExTest.js",
       extend: "rfc5228",
       require: [
         "./../common/libSieve/regex/logic/SieveRegularExpression.js"
@@ -93,7 +93,7 @@
 
   suite.add({
     "reject": {
-      script: "./sieve/SieveRejectTest.js",
+      script: "./../common/libSieve/reject/tests/SieveRejectTest.js",
       extend: "rfc5228",
       require: [
         "./../common/libSieve/reject/logic/SieveReject.js"
@@ -103,7 +103,7 @@
 
   suite.add({
     "body": {
-      script: "./sieve/SieveBodyTest.js",
+      script: "./../common/libSieve/body/tests/SieveBodyTest.js",
       extend: "rfc5228",
       require: [
         "./../common/libSieve/body/logic/SieveBody.js"
@@ -113,7 +113,7 @@
 
   suite.add({
     "vacation": {
-      script: "./sieve/SieveVacationTest.js",
+      script: "./../common/libSieve/vacation/tests/SieveVacationTest.js",
       extend: "rfc5228",
       require: [
         "./../common/libSieve/vacation/logic/SieveVacation.js"
@@ -123,7 +123,7 @@
 
   suite.add({
     "include": {
-      script: "./sieve/SieveIncludeTest.js",
+      script: "./../common/libSieve/include/tests/SieveIncludeTest.js",
       extend: "rfc5228",
       require: [
         "./../common/libSieve/include/logic/SieveInclude.js"
@@ -133,7 +133,7 @@
 
   suite.add({
     "relational": {
-      script: "./sieve/SieveRelationalTest.js",
+      script: "./../common/libSieve/relational/tests/SieveRelationalTest.js",
       extend: "rfc5228",
       require: [
         "./../common/libSieve/relational/logic/SieveRelational.js"
@@ -143,7 +143,7 @@
 
   suite.add({
     "mailbox": {
-      script: "./sieve/SieveMailboxTest.js",
+      script: "./../common/libSieve/mailbox/tests/SieveMailboxTest.js",
       extend: "rfc5228",
       require: [
         "./../common/libSieve/mailbox/logic/SieveMailbox.js"
@@ -153,7 +153,7 @@
 
   suite.add({
     "subaddress": {
-      script: "./sieve/SieveSubaddressTest.js",
+      script: "./../common/libSieve/subaddress/tests/SieveSubaddressTest.js",
       extend: "rfc5228",
       require: [
         "./../common/libSieve/subaddress/logic/SieveSubaddress.js"
@@ -163,7 +163,7 @@
 
   suite.add({
     "copy": {
-      script: "./sieve/SieveCopyTest.js",
+      script: "./../common/libSieve/copy/tests/SieveCopyTest.js",
       extend: "rfc5228",
       require: [
         "./../common/libSieve/copy/logic/SieveCopy.js"
@@ -173,7 +173,7 @@
 
   suite.add({
     "imapflags": {
-      script: "./sieve/SieveImapFlagsTest.js",
+      script: "./../common/libSieve/imapflags/tests/SieveImapFlagsTest.js",
       extend: "rfc5228",
       require: [
         "./../common/libSieve/imapflags/logic/SieveImapFlags.js",
@@ -184,7 +184,7 @@
 
   suite.add({
     "editheader": {
-      script: "./sieve/SieveEditheaderTest.js",
+      script: "./../common/libSieve/editheader/tests/SieveEditheaderTest.js",
       extend: "rfc5228",
       require: [
         "./../common/libSieve/editheader/logic/SieveEditheader.js"
@@ -194,7 +194,7 @@
 
   suite.add({
     "date": {
-      script: "./sieve/SieveDateTest.js",
+      script: "./../common/libSieve/date/tests/SieveDateTest.js",
       extend: "rfc5228",
       require: [
         "./../common/libSieve/variables/logic/SieveVariables.js",

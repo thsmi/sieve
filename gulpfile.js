@@ -256,15 +256,18 @@ gulp.task('app:package-common', () => {
   return gulp.src([
     BASE_DIR_COMMON + "/**",
     // Filter out the editor wrapper
-    "!" + BASE_DIR_COMMON + "editor",
-    "!" + BASE_DIR_COMMON + "editor/**",
+    "!" + BASE_DIR_COMMON + "/editor",
+    "!" + BASE_DIR_COMMON + "/editor/**",
     // Filter out the rfc documents
-    "!" + BASE_DIR_COMMON + "libSieve/**/rfc*.txt"
+    "!" + BASE_DIR_COMMON + "/libSieve/**/rfc*.txt",
+    "!" + BASE_DIR_COMMON + "/libSieve/**/tests/",
+    "!" + BASE_DIR_COMMON + "/libSieve/**/tests/**"
   ]).pipe(gulp.dest(BUILD_DIR_APP + '/libs'));
 });
 
 
 gulp.task('addon:package-license', function () {
+  "use strict";
 
   return gulp.src([
     "./LICENSE.md"
@@ -283,6 +286,8 @@ gulp.task(
   gulp.series(
     "app:package",
     function (done) {
+
+      "use strict";
 
       let options = {
         dir: BUILD_DIR_APP,
@@ -312,6 +317,8 @@ gulp.task(
   gulp.series(
     "app:package",
     function (done) {
+
+      "use strict";
 
       let options = {
         dir: BUILD_DIR_APP,
@@ -403,13 +410,16 @@ gulp.task('addon:package-common', () => {
     BASE_DIR_COMMON + "/**",
 
     // Filter out the rfc documents
-    "!" + BASE_DIR_COMMON + "/libSieve/**/rfc*.txt"
+    "!" + BASE_DIR_COMMON + "/libSieve/**/rfc*.txt",
+    "!" + BASE_DIR_COMMON + "/libSieve/**/tests/",
+    "!" + BASE_DIR_COMMON + "/libSieve/**/tests/**"
   ]).pipe(gulp.dest(BUILD_DIR_ADDON + '/chrome/chromeFiles/content/libs'));
 });
 
 gulp.task(
   'addon:package-src',
   function () {
+    "use strict";
 
     return gulp.src([
       BASE_DIR_ADDON + "/**",
@@ -555,6 +565,9 @@ gulp.task('test:package-common', () => {
 gulp.task(
   'test:package-test-suite',
   function () {
+
+    "use strict";
+
     const BASE_PATH = "./tests";
 
     return gulp.src([
@@ -564,6 +577,8 @@ gulp.task(
 );
 
 gulp.task('test:package-addon-src', () => {
+  "use strict";
+
   const BASE_PATH = "./src/addon/chrome/chromeFiles/content";
 
   return gulp.src([
@@ -585,6 +600,8 @@ gulp.task(
 );
 
 gulp.task('test:watch', async () => {
+  "use strict";
+
   return gulp.watch([
     './src/**/*.js',
     './src/**/*.jsm',

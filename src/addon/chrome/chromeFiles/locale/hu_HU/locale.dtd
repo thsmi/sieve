@@ -125,10 +125,10 @@
 "Proxy authorization, allows an authenticated user to act on behalf of another user. Usually servers are configured, that this feature is only available for administrators.">
 <!ENTITY options.proxyauth.force
 "When using proxy authorization you should force &quot;SASL PLAIN&quot; Authentication.">
-<!ENTITY options.proxyauth.none "No Authorization">
+<!ENTITY options.proxyauth.none "Nincs engedélye">
 <!ENTITY options.proxyauth.default "Sieve Username">
 <!ENTITY options.proxyauth.prompt "Prompt for Authorization">
-<!ENTITY options.proxyauth.custom "Authorize as">
+<!ENTITY options.proxyauth.custom "Engedélyezze a(z)">
 <!ENTITY options.proxyauth.custom.username "Felhasználónév:">
 
 <!ENTITY options.info.servername "Server Name:">

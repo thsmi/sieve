@@ -1,55 +1,55 @@
-Crowding does not support adding contributors to the translated files.
+[Crowdin](https://crowdin.com/project/sieve) does not support adding contributors to the translated files.
 So they are tracked here.
 
-Please drop me a note if I forgot to mention you here.
+Please drop me a note (`schmid-thomas at gmx.net`) if I forgot to mention you below.
 
-## German (de-DE)
-  Tobias Gennant
-  YellowGarbageBag
+## Arabic (ar)
+* khaled-dz
+
+## German (de)
+* Tobias Gennant
+* YellowGarbageBag
 
 ## Spanish (es-ES)
-  * Dominique Couot <dcouot@solipym.com>
-  * Carlos Gomez Agun <cgaun@solipym.com>
+* Dominique Couot <dcouot@solipym.com>
+* Carlos Gomez Agun <cgaun@solipym.com>
 
-## French (fr-FR)
-  * Sébastien
-  * Marion DESNAULT <marion.desnault@free.fr>
-  * Cyril KLUSKA <ckluska@easter-eggs.com> (ckluska)
-  * Dominique Couot <dcouot@solipym.com> (dcouot)
+## French (fr)
+* Sébastien
+* Marion DESNAULT <marion.desnault@free.fr>
+* Cyril KLUSKA <ckluska@easter-eggs.com> (ckluska)
+* Dominique Couot <dcouot@solipym.com> (dcouot)
 
-## Dutch (nl-NL)
-  * Onno Ekker (oeekker)
-  * IvoryScout
-  * Marjin Pool
+## Indonesian (id)
+* joelsteem (salman.alfasyimy)
 
-## Polish (pl-PL)
-  * divo
-  * elek
+## Dutch (nl)
+* Onno Ekker (oeekker)
+* IvoryScout
+* Marjin Pool
 
-## Russian (ru-RU)
-  * Александр Моисеев <moiseev@mezonplus.ru>
-  * Виктор Букреев
-  * Konstantin Shalygin (k0ste)
-
-## Chinese (zh-CN)
-  * YFdh000
-  * rmbrmb
+## Polish (pl)
+* divo
+* elek
 
 ## Portuguese (pt-BR)
-  * Israel Faria
-  * Rodrigo (rodrigomatos)
+* Israel Faria
+* Rodrigo (rodrigomatos)
 
-## Arabic (ar-SA)
-  * khaled-dz
+## Romanian (ro)
+* Andra (sarmizegetusa)
 
-## Indonesian (id-ID)
-  * joelsteem (salman.alfasyimy)
+## Russian (ru)
+* Александр Моисеев <moiseev@mezonplus.ru>
+* Виктор Букреев
+* Konstantin Shalygin (k0ste)
 
-## Turkish (tr-TR)
-  * sirlacrymosa
-  * Mustafa Bayram (mustafabayram)
-  * curtaintwitcher
-  * meertcevik
+## Turkish (tr)
+* sirlacrymosa
+* Mustafa Bayram (mustafabayram)
+* curtaintwitcher
+* meertcevik
 
-## Romanian (ro-RO)
-  * Andra (sarmizegetusa)
+## Chinese (zh-CN)
+* YFdh000
+* rmbrmb

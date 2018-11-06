@@ -100,7 +100,7 @@
 <!ENTITY options.debug.caption "Hibakeresési beállítások">
 <!ENTITY options.debug.request "Ügyféltől kiszolgálónak közlés (kérések)">
 <!ENTITY options.debug.response "Kiszolgálótól ügyfélnek közlés (válaszok)">
-<!ENTITY options.debug.exceptions "Exceptions and State Machine Information">
+<!ENTITY options.debug.exceptions "Kivételek és gépállapot információk">
 <!ENTITY options.debug.stream "Nyers lerakóhely/bájt-patak lerakóhely">
 <!ENTITY options.debug.session "Munkamenet-kezelés">
 <!ENTITY options.debug.output "Kimenet hibakeresése">
@@ -150,7 +150,7 @@
 <!ENTITY options.credits "Many thanks to all contributors:">
 
 <!-- Proxy Settings -->
-<!ENTITY options.proxy "Proxy configuration">
+<!ENTITY options.proxy "Meghatalmazás beállítása">
 <!ENTITY options.proxy.description
 "Instead of  a direct connection you may use a SOCKS Proxy to transparently and securely traverse a firewall.">
 <!ENTITY options.proxy.description.nameresolution
@@ -180,7 +180,7 @@
 <!ENTITY list.delete "Delete">
 <!ENTITY list.rename "Rename">
 <!ENTITY list.activate "Activate">
-<!ENTITY list.settings "Settings...">
+<!ENTITY list.settings "Beállítások…">
 
 <!ENTITY list.details.capability "Server Sieve Capabilities">
 <!ENTITY list.details.capability.implementation "Server Version:">

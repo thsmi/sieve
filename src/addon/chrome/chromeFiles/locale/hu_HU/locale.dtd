@@ -35,7 +35,7 @@
 "The server port changed, when ManageSieve turned into a full RFC Standard">
 <!ENTITY options.port.description2
 "Older server implementations still use port 2000, while newer standard conform server can only be accessed via port 4190.">
-<!ENTITY options.port.4190 "4190 (Default)" >
+<!ENTITY options.port.4190 "4190 (alapértelmezett)" >
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Egyéb:">
 <!ENTITY options.port.autoselect "Auto Select Port">
@@ -56,7 +56,7 @@
 <!ENTITY options.login.key "A">
 <!ENTITY options.login.noAuth "Nincs hitelesítés">
 <!ENTITY options.login.imapAuth "IMAP Username and Password">
-<!ENTITY options.login.customAuth "Username and Password">
+<!ENTITY options.login.customAuth "Felhasználónév és jelszó">
 <!ENTITY options.login.username "Felhasználónév">
 <!ENTITY options.login.username.key "u">
 <!ENTITY options.login.show "Show Saved Passwords...">

@@ -52,12 +52,12 @@
 <!ENTITY options.security.tls.available "TLS, ha lehetséges">
 <!ENTITY options.security.tls.force "Force TLS">
 
-<!ENTITY options.login "Authentication">
+<!ENTITY options.login "Hitelesítés">
 <!ENTITY options.login.key "A">
-<!ENTITY options.login.noAuth "No Authentication">
+<!ENTITY options.login.noAuth "Nincs hitelesítés">
 <!ENTITY options.login.imapAuth "IMAP Username and Password">
 <!ENTITY options.login.customAuth "Username and Password">
-<!ENTITY options.login.username "Username">
+<!ENTITY options.login.username "Felhasználónév">
 <!ENTITY options.login.username.key "u">
 <!ENTITY options.login.show "Show Saved Passwords...">
 
@@ -69,7 +69,7 @@
 "If the client was idle for too long (usually 30 minutes), the server assumes the client is disconnected and hangs up the connection.">
 <!ENTITY options.misc.keepalive.description2
 "A keepalive request indicates the connection is still active and should be preserved.">
-<!ENTITY options.misc.keepalive.min "min">
+<!ENTITY options.misc.keepalive.min "perc">
 
 <!ENTITY options.misc.compile.caption "Syntax check">
 <!ENTITY options.misc.compile.description
@@ -107,7 +107,7 @@
 <!ENTITY options.debug.console "Debug information is posted to the error console">
 <!ENTITY options.debug.console.open "Show Error Console...">
 
-<!ENTITY options.authmechanism.caption "Authentication Mechanism">
+<!ENTITY options.authmechanism.caption "Hitelesítési mechanizmus">
 <!ENTITY options.authmechanism "Override suggested Authentication Mechanism">
 <!ENTITY options.authmechanism.default "Use always:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
@@ -129,13 +129,13 @@
 <!ENTITY options.proxyauth.default "Sieve Username">
 <!ENTITY options.proxyauth.prompt "Prompt for Authorization">
 <!ENTITY options.proxyauth.custom "Authorize as">
-<!ENTITY options.proxyauth.custom.username "Username:">
+<!ENTITY options.proxyauth.custom.username "Felhasználónév:">
 
 <!ENTITY options.info.servername "Server Name:">
 <!ENTITY options.info.port "Port:">
 <!ENTITY options.info.secure "Secure Connection:">
-<!ENTITY options.info.username "User Name:">
-<!ENTITY options.info.auth "Authentication:">
+<!ENTITY options.info.username "Felhasználói név:">
+<!ENTITY options.info.auth "Hitelesítés:">
 
 <!ENTITY options.account.sieve
 "Sieve is a powerful script language for server-side mail filtering.">

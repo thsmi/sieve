@@ -50,7 +50,7 @@
 "ManageSieve usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
 <!ENTITY options.security.tls.disabled "Nincs TLS">
 <!ENTITY options.security.tls.available "TLS, ha lehetséges">
-<!ENTITY options.security.tls.force "Force TLS">
+<!ENTITY options.security.tls.force "TLS kényszerítve">
 
 <!ENTITY options.login "Hitelesítés">
 <!ENTITY options.login.key "A">
@@ -61,10 +61,10 @@
 <!ENTITY options.login.username.key "u">
 <!ENTITY options.login.show "Mentett jelszavak megtekintése…">
 
-<!ENTITY options.misc "Miscellaneous Settings">
+<!ENTITY options.misc "Egyéb beállítások">
 <!ENTITY options.misc.keepalive "Enable keepalives">
 <!ENTITY options.misc.keepalive.key "k">
-<!ENTITY options.misc.keepalive2 "Send every">
+<!ENTITY options.misc.keepalive2 "Küldjön minden">
 <!ENTITY options.misc.keepalive.description
 "If the client was idle for too long (usually 30 minutes), the server assumes the client is disconnected and hangs up the connection.">
 <!ENTITY options.misc.keepalive.description2
@@ -84,10 +84,10 @@
 <!ENTITY options.editor.indention.width "Indention Width:">
 
 <!ENTITY options.editor.indention.policy.caption "Indention Policy:">
-<!ENTITY options.editor.indention.policy.spaces "Spaces Only">
-<!ENTITY options.editor.indention.policy.tabs "Tabs Only">
+<!ENTITY options.editor.indention.policy.spaces "Csak szóközök">
+<!ENTITY options.editor.indention.policy.tabs "Csak fülek">
 
-<!ENTITY options.editor.tabs.caption "Tab Handling">
+<!ENTITY options.editor.tabs.caption "Fül kezelése">
 <!ENTITY options.editor.tabs.description "Texteditor with automatic indenting replaced the need for a tab key, but there are many editors which default to tabs due to historic reasons.">
 <!ENTITY options.editor.tabs.width "Tab Width">
 

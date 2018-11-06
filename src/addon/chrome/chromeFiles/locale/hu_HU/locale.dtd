@@ -43,7 +43,7 @@
 <!ENTITY options.port.autoselect.successful "Sieve detected on Port ">
 <!ENTITY options.port.autoselect.error "Selecting Port failed...">
 
-<!ENTITY options.security.caption "Connection Security">
+<!ENTITY options.security.caption "Kapcsolat biztonsága">
 <!ENTITY options.security.description
 "Transport Layer Security (TLS) secures the connection to the manage sieve server. It cyphers all data and is designed to prevent eavesdropping and tampering.">
 <!ENTITY options.security.description2
@@ -77,7 +77,7 @@
 <!ENTITY options.misc.compile "Check Scripts while typing">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Validate at least every">
-<!ENTITY options.misc.compile.ms "ms">
+<!ENTITY options.misc.compile.ms "ezredmásodperc">
 
 <!ENTITY options.editor.indention.caption "Indention">
 <!ENTITY options.editor.indention.description "The plain text editor supports automatic indenting.">
@@ -133,7 +133,7 @@
 
 <!ENTITY options.info.servername "Server Name:">
 <!ENTITY options.info.port "Port:">
-<!ENTITY options.info.secure "Secure Connection:">
+<!ENTITY options.info.secure "Biztonságos kapcsolat:">
 <!ENTITY options.info.username "Felhasználói név:">
 <!ENTITY options.info.auth "Hitelesítés:">
 
@@ -144,7 +144,7 @@
 <!ENTITY options.account.activate.yes "Yes, manage Sieve scripts for this account:">
 <!ENTITY options.account.activate.no "No, this account does not support Sieve">
 <!ENTITY options.account.filters "Edit Filters...">
-<!ENTITY options.account.settings "Change Settings...">
+<!ENTITY options.account.settings "Beállítások módosítása…">
 
 <!-- Credits -->
 <!ENTITY options.credits "Many thanks to all contributors:">
@@ -157,12 +157,12 @@
 "With SOCKSv4 hostnames are always resolved on the local machine. SOCKSv5 also supports resolving hostnames by the SOCKS proxy. If you can trust the SOCKSv5 proxy, the latter is considered to be more secure and should be preferred.">
 <!ENTITY options.proxy.description.localhost
 "On some system using 'localhost' as proxy host does not function properly, use '127.0.0.1' instead.">
-<!ENTITY options.proxy.direct "Direct Connection">
+<!ENTITY options.proxy.direct "Közvetlen kapcsolat">
 <!ENTITY options.proxy.default "Default Proxy configuration">
 <!ENTITY options.proxy.socks4 "SOCKSv4">
 <!ENTITY options.proxy.socks5 "SOCKSv5">
 <!ENTITY options.proxy.nameresolution "Resolve hostnames on proxy">
-<!ENTITY options.proxy.host "Host:">
+<!ENTITY options.proxy.host "Gépnév:">
 <!ENTITY options.proxy.port "Port:">
 
 

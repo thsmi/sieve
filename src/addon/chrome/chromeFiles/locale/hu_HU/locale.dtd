@@ -55,11 +55,11 @@
 <!ENTITY options.login "Hitelesítés">
 <!ENTITY options.login.key "A">
 <!ENTITY options.login.noAuth "Nincs hitelesítés">
-<!ENTITY options.login.imapAuth "IMAP Username and Password">
+<!ENTITY options.login.imapAuth "IMAP felhasználónév és jelszó">
 <!ENTITY options.login.customAuth "Felhasználónév és jelszó">
 <!ENTITY options.login.username "Felhasználónév">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "Show Saved Passwords...">
+<!ENTITY options.login.show "Mentett jelszavak megtekintése…">
 
 <!ENTITY options.misc "Miscellaneous Settings">
 <!ENTITY options.misc.keepalive "Enable keepalives">
@@ -105,7 +105,7 @@
 <!ENTITY options.debug.session "Session management">
 <!ENTITY options.debug.output "Debug Output">
 <!ENTITY options.debug.console "Debug information is posted to the error console">
-<!ENTITY options.debug.console.open "Show Error Console...">
+<!ENTITY options.debug.console.open "Hibakijelző megtekintése…">
 
 <!ENTITY options.authmechanism.caption "Hitelesítési mechanizmus">
 <!ENTITY options.authmechanism "Override suggested Authentication Mechanism">

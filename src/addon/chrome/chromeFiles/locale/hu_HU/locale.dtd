@@ -85,15 +85,15 @@
 
 <!ENTITY options.editor.indention.policy.caption "Behúzás házirend:">
 <!ENTITY options.editor.indention.policy.spaces "Csak szóközök">
-<!ENTITY options.editor.indention.policy.tabs "Csak fülek">
+<!ENTITY options.editor.indention.policy.tabs "Csak tabulátorok">
 
 <!ENTITY options.editor.tabs.caption "Fül kezelése">
 <!ENTITY options.editor.tabs.description "Texteditor with automatic indenting replaced the need for a tab key, but there are many editors which default to tabs due to historic reasons.">
 <!ENTITY options.editor.tabs.width "Fül szélessége">
 
-<!ENTITY options.editor.tabs.policy.caption "Fül házirend">
-<!ENTITY options.editor.tabs.policy.spaces "Insert Spaces for Tabs">
-<!ENTITY options.editor.tabs.policy.tabs "Fülek beillesztése">
+<!ENTITY options.editor.tabs.policy.caption "Tabulátor házirend">
+<!ENTITY options.editor.tabs.policy.spaces "Helyezze be a tabulátorok szóközeit">
+<!ENTITY options.editor.tabs.policy.tabs "Tabulátorok beszúrása">
 
 <!ENTITY options.debug.warning
 "Keep in mind that neither SASL Login nor SASL Plain cypher your password, it might be posted in clear text to the error console.">

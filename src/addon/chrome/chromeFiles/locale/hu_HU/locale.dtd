@@ -14,21 +14,21 @@
 <!-- Options Dialog -->
 <!ENTITY options.title "Sieve Options">
 
-<!ENTITY options.tab.server "Server">
-<!ENTITY options.tab.security "Security">
-<!ENTITY options.tab.general "General">
-<!ENTITY options.tab.proxy "Proxy">
-<!ENTITY options.tab.advanced "Advanced">
+<!ENTITY options.tab.server "Kiszolgáló">
+<!ENTITY options.tab.security "Biztonság">
+<!ENTITY options.tab.general "Általános">
+<!ENTITY options.tab.proxy "Meghatalmazott">
+<!ENTITY options.tab.advanced "Haladó">
 <!ENTITY options.tab.advanced.warning "These settings are intended for advanced users...">
-<!ENTITY options.tab.editor "Editor">
-<!ENTITY options.tab.debug "Debug">
-<!ENTITY options.tab.credits "Credits">
+<!ENTITY options.tab.editor "Szerkesztő">
+<!ENTITY options.tab.debug "Hibakeresés">
+<!ENTITY options.tab.credits "Közreműködők">
 
-<!ENTITY options.host.caption "Server Name">
+<!ENTITY options.host.caption "Kiszolgáló neve">
 <!ENTITY options.host.description
 "Most Sieve implementations run directly on a mail server. Thus the Sieve server name is usually same as your IMAP server name.">
-<!ENTITY options.host.imap "IMAP Server:">
-<!ENTITY options.host.custom "Other Server:">
+<!ENTITY options.host.imap "IMAP-kiszolgáló:">
+<!ENTITY options.host.custom "Más kiszolgáló:">
 
 <!ENTITY options.port.caption "Server Port">
 <!ENTITY options.port.description
@@ -37,7 +37,7 @@
 "Older server implementations still use port 2000, while newer standard conform server can only be accessed via port 4190.">
 <!ENTITY options.port.4190 "4190 (Default)" >
 <!ENTITY options.port.2000 "2000" >
-<!ENTITY options.port.custom "Other:">
+<!ENTITY options.port.custom "Egyéb:">
 <!ENTITY options.port.autoselect "Auto Select Port">
 <!ENTITY options.port.autoselect.running "Selecting Port, please wait...">
 <!ENTITY options.port.autoselect.successful "Sieve detected on Port ">
@@ -48,8 +48,8 @@
 "Transport Layer Security (TLS) secures the connection to the manage sieve server. It cyphers all data and is designed to prevent eavesdropping and tampering.">
 <!ENTITY options.security.description2
 "ManageSieve usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
-<!ENTITY options.security.tls.disabled "No TLS">
-<!ENTITY options.security.tls.available "TLS, when available">
+<!ENTITY options.security.tls.disabled "Nincs TLS">
+<!ENTITY options.security.tls.available "TLS, ha lehetséges">
 <!ENTITY options.security.tls.force "Force TLS">
 
 <!ENTITY options.login "Authentication">

@@ -79,11 +79,11 @@
 <!ENTITY options.misc.compile2 "Validate at least every">
 <!ENTITY options.misc.compile.ms "ezredmásodperc">
 
-<!ENTITY options.editor.indention.caption "Indention">
+<!ENTITY options.editor.indention.caption "Behúzás">
 <!ENTITY options.editor.indention.description "The plain text editor supports automatic indenting.">
-<!ENTITY options.editor.indention.width "Indention Width:">
+<!ENTITY options.editor.indention.width "Behúzási szélesség:">
 
-<!ENTITY options.editor.indention.policy.caption "Indention Policy:">
+<!ENTITY options.editor.indention.policy.caption "Behúzás irányelv:">
 <!ENTITY options.editor.indention.policy.spaces "Csak szóközök">
 <!ENTITY options.editor.indention.policy.tabs "Csak fülek">
 

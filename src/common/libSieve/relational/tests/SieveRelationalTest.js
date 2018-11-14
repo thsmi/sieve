@@ -62,7 +62,7 @@
       + '   fileinto "Only me";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "relational": true, "fileinto": true, "comparator-i;ascii-numeric": true });
+    suite.expectValidScript(script, ["relational", "comparator-i;ascii-numeric", "fileinto"]);
   });
 
   suite.add(function () {
@@ -78,7 +78,7 @@
       + '   keep;\r\n'
       + '}\r\n';
 
-    suite.expectInvalidScript(script, "Error: Unknown or incompatible type", { "relational": true });
+    suite.expectInvalidScript(script, "Error: Unknown or incompatible type", ["relational"]);
   });
 
   suite.add(function () {
@@ -94,7 +94,7 @@
       + '   keep;\r\n'
       + '}\r\n';
 
-    suite.expectInvalidScript(script, "Error: Unknown or incompatible type", { "relational": true });
+    suite.expectInvalidScript(script, "Error: Unknown or incompatible type", ["relational"]);
   });
 
 
@@ -102,14 +102,14 @@
     suite.log("Validate :value constructors");
 
     let snipplet = ':value "eq"';
-    suite.expectValidSnipplet("match-type/value", snipplet, { "relational": true });
+    suite.expectValidSnipplet("match-type/value", snipplet, ["relational"]);
   });
 
   suite.add(function () {
     suite.log("Validate :count constructors");
 
     let snipplet = ':count "eq"';
-    suite.expectValidSnipplet("match-type/count", snipplet, { "relational": true });
+    suite.expectValidSnipplet("match-type/count", snipplet, ["relational"]);
   });
 
   /*

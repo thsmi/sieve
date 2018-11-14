@@ -38,7 +38,7 @@
       + 'set "dollar" "$";\r\n'
       + 'set "text" "regarding ${dollar}{beep}";';
 
-    suite.expectValidScript(script, { "variables": true });
+    suite.expectValidScript(script, ["variables"]);
   });
 
   suite.add(function () {
@@ -56,7 +56,7 @@
       + '.\r\n'
       + ';\r\n';
 
-    suite.expectValidScript(script, { "variables": true });
+    suite.expectValidScript(script, ["variables"]);
   });
 
   suite.add(function () {
@@ -79,7 +79,7 @@
       // b = "Rock\*"
       + 'set :quotewildcard "b" "Rock*";\r\n';
 
-    suite.expectValidScript(script, { "variables": true });
+    suite.expectValidScript(script, ["variables"]);
   });
 
 
@@ -135,7 +135,7 @@
       + '    stop;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, {/* "variables":true, */ "fileinto": true });
+    suite.expectValidScript(script, [/* "variables":true, */ "fileinto"]);
   });
 
 
@@ -151,7 +151,7 @@
       + '    # the above test always succeeds\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "variables": true });
+    suite.expectValidScript(script, ["variables"]);
   });
 
   suite.add(function () {
@@ -162,7 +162,7 @@
       + 'require "variables";\r\n'
       + 'set "b" "${a}";\r\n';
 
-    let doc = suite.parseScript(script, { "variables": true });
+    let doc = suite.parseScript(script, ["variables"]);
 
     let elms = doc.queryElements("action/set");
 
@@ -184,7 +184,7 @@
       'require "variables";\r\n'
       + 'set :length :quotewildcard :upperfirst :upper "b" "${a}";\r\n';
 
-    suite.validateDocument(doc, rv, { "variables": true });
+    suite.validateDocument(doc, rv, ["variables"]);
   });
 
   suite.add(function () {
@@ -195,7 +195,7 @@
       + 'require "variables";\r\n'
       + 'set "b" "${a}";\r\n';
 
-    let doc = suite.parseScript(script, { "variables": true });
+    let doc = suite.parseScript(script, ["variables"]);
 
     let elms = doc.queryElements("action/set");
 
@@ -217,7 +217,7 @@
       'require "variables";\r\n'
       + 'set :length :quotewildcard :lowerfirst :lower "b" "${a}";\r\n';
 
-    suite.validateDocument(doc, rv, { "variables": true });
+    suite.validateDocument(doc, rv, ["variables"]);
   });
 
   suite.add(function () {
@@ -228,7 +228,7 @@
       + 'require "variables";\r\n'
       + 'set :length :quotewildcard :lowerfirst :lower "b" "${a}";\r\n';
 
-    let doc = suite.parseScript(script, { "variables": true });
+    let doc = suite.parseScript(script, ["variables"]);
 
     let elms = doc.queryElements("action/set");
 
@@ -253,7 +253,7 @@
       'require "variables";\r\n'
       + 'set "Name" "Value";\r\n';
 
-    suite.validateDocument(doc, rv, { "variables": true });
+    suite.validateDocument(doc, rv, ["variables"]);
   });
 
   /* suite.add( function () {
@@ -286,21 +286,21 @@
       'require "variables";\r\n'
       + 'set "b" "${a}";\r\n';
 
-    suite.validateDocument( doc, rv, { "variables": true });
+    suite.validateDocument( doc, rv, [ "variables"]);
   });*/
 
   suite.add(function () {
     suite.log("Validate set action constructors");
 
     let snipplet = 'set "variable" "";\r\n';
-    suite.expectValidSnipplet("action/set", snipplet, { "variables": true });
+    suite.expectValidSnipplet("action/set", snipplet, ["variables"]);
   });
 
   suite.add(function () {
     suite.log("Validate string test constructors");
 
     let snipplet = 'string "${somevariable}" "some value"';
-    suite.expectValidSnipplet("test/string", snipplet, { "variables": true });
+    suite.expectValidSnipplet("test/string", snipplet, ["variables"]);
   });
 
 })();

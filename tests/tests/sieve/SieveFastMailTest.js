@@ -38,7 +38,7 @@
       + '  stop;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "fileinto": true });
+    suite.expectValidScript(script, ["fileinto"]);
   });
 
 
@@ -54,7 +54,7 @@
       + '  stop;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "fileinto": true });
+    suite.expectValidScript(script, ["fileinto"]);
   });
 
 
@@ -73,7 +73,7 @@
       + '  stop;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "fileinto": true });
+    suite.expectValidScript(script, ["fileinto"]);
   });
 
 
@@ -99,7 +99,7 @@
       + 'redirect "another@account.net";\r\n'
       + '\r\n';
 
-    suite.expectValidScript(script, { "fileinto": true, "imap4flags" : true });
+    suite.expectValidScript(script, ["fileinto", "imap4flags"]);
   });
 
   suite.add(function () {
@@ -122,7 +122,7 @@
       + '  stop;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "fileinto": true, "relational":true, "comparator-i;ascii-numeric": true });
+    suite.expectValidScript(script, ["fileinto", "relational", "comparator-i;ascii-numeric"]);
   });
 
   suite.add(function () {
@@ -138,7 +138,7 @@
       + '  stop;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "fileinto": true });
+    suite.expectValidScript(script, ["fileinto"]);
   });
 
   suite.add(function () {
@@ -153,7 +153,7 @@
       + '  fileinto "INBOX.Sent Items";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "fileinto": true, "imap4flags": true });
+    suite.expectValidScript(script, ["fileinto", "imap4flags"]);
   });
 
   suite.add(function () {
@@ -194,7 +194,7 @@
       // + '  keep;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "regex": true });
+    suite.expectValidScript(script, ["regex"]);
   });
 
 })();

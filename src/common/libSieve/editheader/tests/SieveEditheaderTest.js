@@ -40,7 +40,7 @@
       + '        redirect "kim@home.example.com";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "editheader": true });
+    suite.expectValidScript(script, ["editheader"]);
   });
 
   suite.add(function () {
@@ -52,7 +52,7 @@
       + 'addheader "X-Hello" "World";\r\n'
       + 'deleteheader :index 1 "X-Hello";\r\n';
 
-    suite.expectValidScript(script, { "editheader": true });
+    suite.expectValidScript(script, ["editheader"]);
   });
 
   suite.add(function () {
@@ -64,7 +64,7 @@
       + 'deleteheader :index 1 "X-Hello";\r\n'
       + 'deleteheader :index 2 "X-Hello";\r\n';
 
-    suite.expectValidScript(script, { "editheader": true });
+    suite.expectValidScript(script, ["editheader"]);
   });
 
   suite.add(function () {
@@ -79,7 +79,7 @@
       + '        fileinto "international";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "editheader": true, "fileinto": true });
+    suite.expectValidScript(script, ["editheader", "fileinto"]);
   });
 
   suite.add(function () {
@@ -92,7 +92,7 @@
       + 'addheader "X-Flavor" "vanilla";\r\n'
       + 'keep;\r\n';
 
-    suite.expectValidScript(script, { "editheader": true });
+    suite.expectValidScript(script, ["editheader"]);
   });
 
   suite.add(function () {
@@ -104,7 +104,7 @@
       + 'deleteheader :index 1 :contains "Delivered-To"\r\n'
       + '                        "bob@example.com";\r\n';
 
-    suite.expectValidScript(script, { "editheader": true });
+    suite.expectValidScript(script, ["editheader"]);
   });
 
 })();

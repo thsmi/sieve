@@ -92,19 +92,18 @@
      * Checks if the given import are supported by the sieve implementation.
      * In case an incompatible require is found an exception will be thrown.
      *
-     * @param {String[]} requires
+     * @param {String[]} dependencies
      *   the require strings to check as string array
      * @returns {void}
      *
      */
-    check(requires) {
+    check(dependencies) {
 
       let capabilities = this.document().capabilities();
 
-      for (let item of requires) {
-        if (!capabilities[item])
+      for (let item of dependencies)
+        if (!capabilities.hasCapability(item))
           throw new Error('Unknown capability string "' + item + '"');
-      }
     }
 
     /**

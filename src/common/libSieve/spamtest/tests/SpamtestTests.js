@@ -27,7 +27,7 @@
 
   suite.add(function () {
 
-    suite.log("Example 0");
+    suite.log("Example 0 (Spamtest)");
 
     let script = ''
       + 'require ["spamtest", "fileinto"];\r\n'
@@ -41,9 +41,26 @@
       + '    discard;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, {
-      "spamtest": true, "fileinto": true
-    });
+    suite.expectValidScript(script, ["spamtest", "fileinto"]);
+  });
+
+  suite.add(function () {
+
+    suite.log("Example 0 (Spamtestplus)");
+
+    let script = ''
+      + 'require ["spamtestplus", "fileinto"];\r\n'
+      + '\r\n'
+      + 'if spamtest  "0"\r\n'
+      + '{\r\n'
+      + '    fileinto "INBOX.unclassified";\r\n'
+      + '}\r\n'
+      + 'else\r\n'
+      + '{\r\n'
+      + '    discard;\r\n'
+      + '}\r\n';
+
+    suite.expectValidScript(script, ["spamtestplus", "fileinto"]);
   });
 
 
@@ -52,7 +69,7 @@
     suite.log("Example 1");
 
     let script = ''
-      + 'require ["spamtest", "spamtestplus", "fileinto", "relational", "comparator-i;ascii-numeric"];\r\n'
+      + 'require ["spamtestplus", "fileinto", "relational", "comparator-i;ascii-numeric"];\r\n'
       + '\r\n'
       + 'if spamtest :value "eq" :comparator "i;ascii-numeric" "0"\r\n'
       //      + 'if spamtest :value "eq"\r\n'
@@ -75,10 +92,9 @@
       + '    discard;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, {
-      "spamtest": true, "spamtestplus": true, "fileinto": true,
-      "relational": true, "comparator-i;ascii-numeric": true
-    });
+    suite.expectValidScript(script, [
+      "spamtestplus", "fileinto", "relational", "comparator-i;ascii-numeric"]
+    );
   });
 
   suite.add(function () {
@@ -97,10 +113,8 @@
       + '    fileinto "INBOX.spam-trap";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, {
-      "spamtest": true, "fileinto": true,
-      "relational": true, "comparator-i;ascii-numeric": true
-    });
+    suite.expectValidScript(script, [
+      "spamtest", "fileinto", "relational", "comparator-i;ascii-numeric"]);
   });
 
   suite.add(function () {
@@ -108,7 +122,7 @@
     suite.log("Example 3");
 
     let script = ''
-      + 'require ["spamtest", "spamtestplus", "fileinto", "relational", "comparator-i;ascii-numeric"];\r\n'
+      + 'require ["spamtestplus", "fileinto", "relational", "comparator-i;ascii-numeric"];\r\n'
       + 'if spamtest :percent :count "eq"\r\n'
       + '            :comparator "i;ascii-numeric" "0"\r\n'
       + '{\r\n'
@@ -129,10 +143,8 @@
       + '    discard;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, {
-      "spamtest": true, "spamtestplus": true, "fileinto": true,
-      "relational": true, "comparator-i;ascii-numeric": true
-    });
+    suite.expectValidScript(script, [
+      "spamtestplus", "fileinto", "relational", "comparator-i;ascii-numeric"]);
   });
 
   suite.add(function () {
@@ -155,10 +167,8 @@
       + '    discard;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, {
-      "virustest": true, "fileinto": true,
-      "relational": true, "comparator-i;ascii-numeric": true
-    });
+    suite.expectValidScript(script, [
+      "virustest", "fileinto", "relational", "comparator-i;ascii-numeric"]);
   });
 
 })();

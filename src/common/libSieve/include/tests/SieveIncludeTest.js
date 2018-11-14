@@ -33,7 +33,7 @@
       'require "include";\r\n'
       + 'return;\r\n';
 
-    suite.expectValidScript(script, { "include": true });
+    suite.expectValidScript(script, ["include"]);
   });
 
   suite.add(function () {
@@ -47,7 +47,7 @@
 
     let exception = "Error: Unknown or incompatible type >>string/<< at >>:global";
 
-    suite.expectInvalidScript(script, exception, { "include": true });
+    suite.expectInvalidScript(script, exception, ["include"]);
   });
 
 
@@ -63,7 +63,7 @@
       + 'include :personal "spam_tests";\r\n'
       + 'include :personal "mailing_lists";\r\n';
 
-    suite.expectValidScript(script, { "include": true });
+    suite.expectValidScript(script, ["include"]);
   });
 
   suite.add(function () {
@@ -87,7 +87,7 @@
       + '    stop;\r\n'
       + '#}\r\n';
 
-    suite.expectValidScript(script, { "include": true, "variables": true });
+    suite.expectValidScript(script, ["include", "variables"]);
   });
 
   suite.add(function () {
@@ -103,7 +103,7 @@
       + '#    set "test_mailbox" "spam-${test}";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "include": true, "variables": true });
+    suite.expectValidScript(script, ["include", "variables"]);
   });
 
 
@@ -122,8 +122,7 @@
       + ' #   vacation "It\'s true, I am on vacation.";\r\n'
       + '#}\r\n';
 
-    suite.expectValidScript(script, { "include": true, "variables": true });
+    suite.expectValidScript(script, ["include", "variables"]);
   });
 
 })();
-

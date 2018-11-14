@@ -137,7 +137,7 @@
       + '   fileinto "INBOX";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "fileinto": true });
+    suite.expectValidScript(script, ["fileinto"]);
   });
 
   suite.add(function () {
@@ -149,7 +149,7 @@
       + '   fileinto "INBOX.harassment";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "fileinto": true });
+    suite.expectValidScript(script, ["fileinto"]);
   });
 
   suite.add(function () {
@@ -201,7 +201,7 @@
       + '   discard;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "envelope": true });
+    suite.expectValidScript(script, ["envelope"]);
   });
 
   suite.add(function () {
@@ -271,7 +271,7 @@
       + '        fileinto "personal";\r\n'
       + '        }\r\n';
 
-    suite.expectValidScript(script, { "fileinto": true });
+    suite.expectValidScript(script, ["fileinto"]);
   });
 
   suite.add(function () {
@@ -297,4 +297,3 @@
   });
 
 })();
-

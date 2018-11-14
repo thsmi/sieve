@@ -11,6 +11,7 @@
  */
 
 /* global window */
+/* global SieveCapabilities */
 
 (function (exports) {
 
@@ -25,7 +26,7 @@
       types: {},
       names: {},
       maxId: 0,
-      _capabilities: {},
+      _capabilities: new SieveCapabilities(),
 
       /**
        * Registers a generic element
@@ -94,6 +95,7 @@
           // FIXME: does not work with ES5 static... needs a callback.constructor.isCapable
           if (!callback.isCapable)
             return true;
+
           return callback.isCapable(capabilities);
         };
 
@@ -286,7 +288,7 @@
         if (typeof (capabilities) === "undefined")
           return this._capabilities;
 
-        this._capabilities = capabilities;
+        this._capabilities = new SieveCapabilities(capabilities);
 
         return this;
       }

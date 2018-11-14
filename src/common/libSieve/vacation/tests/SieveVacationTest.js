@@ -42,7 +42,7 @@
       + '    vacation "I\'m out -- call me at +1 304 555 0123";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "vacation": true });
+    suite.expectValidScript(script, ["vacation"]);
   });
 
   suite.add(function () {
@@ -56,7 +56,7 @@
       + '           "I\'m away -- send mail to foo in my absence";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "vacation": true });
+    suite.expectValidScript(script, ["vacation"]);
   });
 
   suite.add(function () {
@@ -71,7 +71,7 @@
       + '    vacation :handle "ran-away" "I\'m out";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "vacation": true });
+    suite.expectValidScript(script, ["vacation"]);
   });
 
 
@@ -103,7 +103,7 @@
       + '\r\n.\r\n'
       + ';\r\n';
 
-    suite.expectValidScript(script, { "vacation": true });
+    suite.expectValidScript(script, ["vacation"]);
   });
 
   suite.add(function () {
@@ -116,7 +116,7 @@
       + '                              "ts4z@landru.example.edu"]\r\n'
       + '"I\'m away until October 19.  If it\'s an emergency, call 911, I guess." ;\r\n';
 
-    suite.expectValidScript(script, { "vacation": true });
+    suite.expectValidScript(script, ["vacation"]);
   });
 
   suite.add(function () {
@@ -132,7 +132,7 @@
       + 'message when I get around to it.";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "vacation": true });
+    suite.expectValidScript(script, ["vacation"]);
   });
 
   suite.add(function () {
@@ -148,7 +148,7 @@
       + '    vacation "Estoy ausente esta semana.";\r\n'
       + '} \r\n';
 
-    suite.expectValidScript(script, { "vacation": true });
+    suite.expectValidScript(script, ["vacation"]);
   });
 
   suite.add(function () {
@@ -166,7 +166,7 @@
       + '             "Je lirai votre message quand je retourne.";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "vacation": true });
+    suite.expectValidScript(script, ["vacation"]);
   });
 
   suite.add(function () {
@@ -179,7 +179,7 @@
       + '         :from "myfallbackaddress@example.edu"\r\n'
       + '         "Having lots of fun! Back in a day or two!";\r\n';
 
-    suite.expectValidScript(script, { "vacation": true });
+    suite.expectValidScript(script, ["vacation"]);
   });
 
   suite.add(function () {
@@ -190,7 +190,7 @@
       + 'vacation\r\n'
       + '         "Having lots of fun! Back in a day or two!";\r\n';
 
-    let doc = suite.parseScript(script, { "vacation": true });
+    let doc = suite.parseScript(script, ["vacation"]);
 
     let elms = doc.queryElements("action/vacation");
 
@@ -235,7 +235,7 @@
       + 'vacation :subject "some subject" :from "some from" :days 12 :handle "some handle" :mime\r\n'
       + '         "some reason";\r\n';
 
-    suite.validateDocument(doc, rv, { "vacation": true });
+    suite.validateDocument(doc, rv, ["vacation"]);
 
     // elms[FIRST_ELEMENT].getElement( "addresses" ).getElement( "addresses" );
   });
@@ -253,7 +253,7 @@
       + '         :mime\r\n'
       + '         "Having lots of fun! Back in a day or two!";\r\n';
 
-    let doc = suite.parseScript(script, { "vacation": true });
+    let doc = suite.parseScript(script, ["vacation"]);
 
     let elms = doc.queryElements("action/vacation");
 
@@ -292,7 +292,7 @@
       + '         :mime\r\n'
       + '         "some other reason";\r\n';
 
-    suite.validateDocument(doc, rv, { "vacation": true });
+    suite.validateDocument(doc, rv, ["vacation"]);
 
     // elms[FIRST_ELEMENT].getElement( "addresses" ).getElement( "addresses" );
   });
@@ -309,7 +309,7 @@
       + '         :mime\r\n'
       + '         "Having lots of fun! Back in a day or two!";\r\n';
 
-    let doc = suite.parseScript(script, { "vacation": true });
+    let doc = suite.parseScript(script, ["vacation"]);
 
     let elms = doc.queryElements("action/vacation");
 
@@ -342,7 +342,7 @@
       + 'vacation\r\n'
       + '         "Having lots of fun! Back in a day or two!";\r\n';
 
-    suite.validateDocument(doc, rv, { "vacation": true });
+    suite.validateDocument(doc, rv, ["vacation"]);
 
   });
 
@@ -350,8 +350,7 @@
     suite.log("Validate vacation action's constructor");
 
     let snipplet = 'vacation "";\r\n';
-    suite.expectValidSnipplet("action/vacation", snipplet, { "vacation": true } );
+    suite.expectValidSnipplet("action/vacation", snipplet, ["vacation"]);
   });
-
 
 })();

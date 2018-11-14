@@ -33,7 +33,7 @@
       + 'require ["copy", "fileinto"];\r\n'
       + 'fileinto :copy "incoming";\r\n';
 
-    suite.expectValidScript(script, { "copy": true, "fileinto": true });
+    suite.expectValidScript(script, ["copy", "fileinto"]);
   });
 
   suite.add(function () {
@@ -44,7 +44,7 @@
       + 'require ["fileinto"];\r\n'
       + 'fileinto :copy "incoming";\r\n';
 
-    suite.expectInvalidScript(script, 'Error: Unknown or incompatible type >>string/<< at >>:copy "inc', { "fileinto": true });
+    suite.expectInvalidScript(script, 'Error: Unknown or incompatible type >>string/<< at >>:copy "inc', ["fileinto"]);
   });
 
 })();

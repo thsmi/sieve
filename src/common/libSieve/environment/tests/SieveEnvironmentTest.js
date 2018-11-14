@@ -30,12 +30,10 @@
     suite.log("Example 1");
 
     let script = ''
-    + 'require "environment";\r\n'
-    + 'if environment :contains "item" "" { keep; }';
+      + 'require "environment";\r\n'
+      + 'if environment :contains "item" "" { keep; }';
 
-    suite.expectValidScript(script, {
-      "environment": true
-    });
+    suite.expectValidScript(script, ["environment"]);
   });
 
   suite.add(function () {
@@ -43,18 +41,16 @@
     suite.log("Example 2");
 
     let script = ''
-    + 'require "environment";\r\n'
-    + 'if environment :matches "remote-host" "*.example.com" { keep; }';
+      + 'require "environment";\r\n'
+      + 'if environment :matches "remote-host" "*.example.com" { keep; }';
 
-    suite.expectValidScript(script, {
-      "environment": true
-    });
+    suite.expectValidScript(script, ["environment"]);
   });
 
   suite.add(function () {
     suite.log("Validate environment test constructor");
 
     let snipplet = 'environment "domain" "imap.example.com"';
-    suite.expectValidSnipplet("test/environment", snipplet, { "environment": true } );
+    suite.expectValidSnipplet("test/environment", snipplet, ["environment"]);
   });
 })();

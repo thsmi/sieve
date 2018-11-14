@@ -53,7 +53,7 @@
       + '    redirect "ken@example.net";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "subaddress": true, "envelope": true, "fileinto": true });
+    suite.expectValidScript(script, [ "subaddress", "envelope", "fileinto"]);
   });
 
 

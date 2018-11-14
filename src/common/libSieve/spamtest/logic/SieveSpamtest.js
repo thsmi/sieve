@@ -26,7 +26,11 @@
     node: "test/spamtest",
     type: "test",
 
-    requires: "spamtest",
+    // spamtestplus implies spamtest...
+    // ... this means we prefer spamtestplus, but
+    // if we endup with spamtest it is also ok.
+
+    requires: { any: ["spamtestplus", "spamtest"] },
 
     token: "spamtest",
 

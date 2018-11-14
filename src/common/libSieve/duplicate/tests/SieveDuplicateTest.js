@@ -36,7 +36,7 @@
       + '  discard;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "duplicate": true });
+    suite.expectValidScript(script, ["duplicate"]);
   });
 
 
@@ -50,7 +50,7 @@
       + '  discard;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "duplicate": true });
+    suite.expectValidScript(script, ["duplicate"]);
   });
 
 
@@ -67,7 +67,7 @@
       + '  }\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "duplicate": true });
+    suite.expectValidScript(script, ["duplicate"]);
   });
 
 
@@ -82,7 +82,7 @@
       + '  fileinto :create "Trash/Duplicate";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "fileinto": true, "duplicate": true, "mailbox": true });
+    suite.expectValidScript(script, ["fileinto", "duplicate", "mailbox"]);
   });
 
 
@@ -102,7 +102,7 @@
       + '  fileinto "Alerts";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "duplicate": true, "imap4flags": true, "fileinto":true});
+    suite.expectValidScript(script, ["duplicate", "imap4flags", "fileinto"]);
   });
 
 
@@ -123,7 +123,7 @@
       // + '    "xmpp:user@im.example.com";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "variables": true, "envelope": true, "duplicate": true });
+    suite.expectValidScript(script, ["variables", "envelope", "duplicate"]);
   });
 
 
@@ -151,7 +151,7 @@
       // + '    "xmpp:user@im.example.com";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "variables": true, "envelope": true, "duplicate": true });
+    suite.expectValidScript(script, ["variables", "envelope", "duplicate"]);
   });
 
 
@@ -173,7 +173,7 @@
       + '  setflag "\\\\seen";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "duplicate": true, "imap4flags": true });
+    suite.expectValidScript(script, ["duplicate", "imap4flags"]);
   });
 
 })();

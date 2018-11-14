@@ -42,7 +42,7 @@
       + '        discard;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "body": true });
+    suite.expectValidScript(script, ["body"]);
   });
 
   suite.add(function () {
@@ -64,7 +64,7 @@
       + '  fileinto "jukebox";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "body": true, "fileinto": true });
+    suite.expectValidScript(script, ["body", "fileinto"]);
   });
 
 
@@ -81,7 +81,7 @@
       + '  fileinto "project/schedule";'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "body": true, "fileinto": true });
+    suite.expectValidScript(script, [ "body", "fileinto"]);
   });
 
 

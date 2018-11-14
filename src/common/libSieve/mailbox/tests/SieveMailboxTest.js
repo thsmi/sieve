@@ -37,7 +37,7 @@
       + '   fileinto :create "INBOX.harassment";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "fileinto": true, "mailbox": true });
+    suite.expectValidScript(script, ["fileinto", "mailbox"]);
   });
 
   suite.add(function () {
@@ -51,7 +51,7 @@
       + '   keep;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "fileinto": true, "mailbox": true });
+    suite.expectValidScript(script, ["fileinto", "mailbox"]);
   });
 
   suite.add(function () {
@@ -63,7 +63,7 @@
       + 'if metadataexists "mailbox" "annotations" {\r\n'
       + '    keep;\r\n'
       + '}\r\n';
-    suite.expectValidScript(script, { "mboxmetadata": true });
+    suite.expectValidScript(script, ["mboxmetadata"]);
   });
 
 
@@ -84,7 +84,7 @@
       + '#.\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "mboxmetadata": true });
+    suite.expectValidScript(script, ["mboxmetadata"]);
   });
 
   suite.add(function () {
@@ -96,7 +96,7 @@
       + 'if servermetadataexists "test" {\r\n'
       + '    keep;\r\n'
       + '}\r\n';
-    suite.expectValidScript(script, { "servermetadata": true });
+    suite.expectValidScript(script, ["servermetadata"]);
   });
 
   suite.add(function () {
@@ -109,8 +109,7 @@
       + '   "/private/vendor/vendor.isode/notification-uri" "*" {\r\n'
       + '    #set "notif_uri" "${0}";\r\n'
       + '}\r\n';
-    suite.expectValidScript(script, { "servermetadata": true });
+    suite.expectValidScript(script, ["servermetadata"]);
   });
 
 })();
-

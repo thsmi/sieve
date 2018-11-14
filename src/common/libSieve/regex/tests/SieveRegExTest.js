@@ -36,7 +36,7 @@
       + '  keep; \r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "regex": true });
+    suite.expectValidScript(script, ["regex"]);
   });
 
   suite.add(function () {
@@ -51,7 +51,7 @@
       + '  stop;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "regex": true, "fileinto": true });
+    suite.expectValidScript(script, ["regex", "fileinto"]);
   });
 
 })();

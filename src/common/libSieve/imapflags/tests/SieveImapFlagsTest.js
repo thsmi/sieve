@@ -35,7 +35,7 @@
       + '    setflag "\\\\Deleted";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "imap4flags": true });
+    suite.expectValidScript(script, ["imap4flags"]);
   });
 
   suite.add(function () {
@@ -52,7 +52,7 @@
       + '}\r\n'
       ;
 
-    suite.expectValidScript(script, { "fileinto": true, "imap4flags": true });
+    suite.expectValidScript(script, ["fileinto", "imap4flags"]);
   });
 
   suite.add(function () {
@@ -71,7 +71,7 @@
       + '\r\n'
       + 'addflag "flagvar" "\\\\Answered \\\\Deleted";\r\n';
 
-    suite.expectValidScript(script, { "imap4flags": true });
+    suite.expectValidScript(script, ["imap4flags"]);
   });
 
   suite.add(function () {
@@ -92,7 +92,7 @@
       + '}\r\n';
 
 
-    suite.expectValidScript(script, { "imap4flags": true, "fileinto": true });
+    suite.expectValidScript(script, ["imap4flags", "fileinto"]);
   });
 
   suite.add(function () {
@@ -105,7 +105,7 @@
       + 'if hasflag :is "b A" {}\r\n'
       + 'if hasflag ["b","A"] {}\r\n';
 
-    suite.expectValidScript(script, { "imap4flags": true });
+    suite.expectValidScript(script, ["imap4flags"]);
   });
 
   suite.add(function () {
@@ -127,11 +127,12 @@
       + '\r\n'
       + 'if hasflag :contains "MyVar" ["label1", "label2"] {}\r\n';
 
-    suite.expectValidScript(script, { "imap4flags": true });
+    suite.expectValidScript(script, ["imap4flags"]);
 
   });
 
-  //             'hasflag :count "ge" :comparator "i;ascii-numeric" "MyFlags" "2"
+  // TODO add a test for :
+  // 'hasflag :count "ge" :comparator "i;ascii-numeric" "MyFlags" "2"
 
   suite.add(function () {
 
@@ -144,7 +145,7 @@
       + 'fileinto :flags "\\\\Deleted" "INBOX.From Boss";\r\n'
       + 'keep :flags "${MyFlags}";\r\n';
 
-    suite.expectValidScript(script, { "imap4flags": true, "fileinto": true });
+    suite.expectValidScript(script, ["imap4flags", "fileinto"]);
   });
 
   suite.add(function () {
@@ -221,7 +222,7 @@
       + '        fileinto :flags "${MyFlags}" "personal";\r\n'
       + '        }\r\n';
 
-    suite.expectValidScript(script, { "imap4flags": true, "fileinto": true, "variables": true });
+    suite.expectValidScript(script, ["imap4flags", "fileinto", "variables"]);
   });
 
 })();

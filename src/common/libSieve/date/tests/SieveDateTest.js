@@ -36,7 +36,7 @@
       + '         date :value "lt" :originalzone "date" "hour" "17")\r\n'
       + '{ fileinto "urgent"; }\r\n';
 
-    suite.expectValidScript(script, { "date": true, "relational": true, "fileinto": true });
+    suite.expectValidScript(script, ["date", "relational", "fileinto"]);
   });
 
   suite.add(function () {
@@ -49,7 +49,7 @@
       + '         date :is "received" "weekday" "6")\r\n'
       + '{ fileinto "weekend"; }\r\n';
 
-    suite.expectValidScript(script, { "date": true, "fileinto": true });
+    suite.expectValidScript(script, ["date", "fileinto"]);
   });
 
   suite.add(function () {
@@ -64,7 +64,7 @@
       + '         currentdate :value "ge" "hour" "17")\r\n'
       + '{ redirect "pager@example.com"; }\r\n';
 
-    suite.expectValidScript(script, { "date": true, "relational": true });
+    suite.expectValidScript(script, ["date", "relational"]);
   });
 
   suite.add(function () {
@@ -77,7 +77,7 @@
       + '         currentdate :value "le" "date" "2007-07-07")\r\n'
       + '{ vacation :days 7  "I\'m away during the first week in July."; }\r\n';
 
-    suite.expectValidScript(script, { "date": true, "relational": true, "vacation": true });
+    suite.expectValidScript(script, ["date", "relational", "vacation"]);
   });
 
   suite.add(function () {
@@ -90,7 +90,7 @@
       + 'if currentdate :matches "year"  "*" { set "year"  "${1}"; }\r\n'
       + 'fileinto "${month}-${year}";\r\n';
 
-    suite.expectValidScript(script, { "date": true, "variables": true, "fileinto": true });
+    suite.expectValidScript(script, ["date", "variables", "fileinto"]);
   });
 
   suite.add(function () {
@@ -102,35 +102,36 @@
       + 'if currentdate :matches "std11" "*"\r\n'
       + '  {keep;}\r\n';
 
-    suite.expectValidScript(script, { "date": true });
+    suite.expectValidScript(script, ["date"]);
   });
 
-  // FIXME: Variables import is dropped silently
-  /* suite.add(function () {
+  suite.add(function () {
 
     suite.log("RFC5260 Sniplet VI");
 
+    // FIXME: Variables import is dropped silently
     let script = ""
-      + 'require ["variables", "date", "editheader"];\r\n'
+      // + 'require ["variables", "date", "editheader"];\r\n'
+      + 'require ["date", "editheader"];\r\n'
       + 'if currentdate :matches "std11" "*"\r\n'
       + '  {addheader "Processing-date" "${0}";}\r\n';
 
-    suite.expectValidScript(script, { "date": true, "variables": true, "editheader": true });
-  });*/
+    suite.expectValidScript(script, ["date", "editheader"]);
+  });
 
 
   suite.add(function () {
     suite.log("Validate date test constructor");
 
     let snipplet = 'date "date" "date" "' + new Date().toJSON().substring(0, 10) + '"';
-    suite.expectValidSnipplet("test/date", snipplet, { "date": true } );
+    suite.expectValidSnipplet("test/date", snipplet, ["date"]);
   });
 
   suite.add(function () {
     suite.log("Validate currentdate test constructor");
 
     let snipplet = 'currentdate "date" "' + new Date().toJSON().substring(0, 10) + '"';
-    suite.expectValidSnipplet("test/currentdate", snipplet, { "date": true } );
+    suite.expectValidSnipplet("test/currentdate", snipplet, ["date"]);
   });
 
 })();

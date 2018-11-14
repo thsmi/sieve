@@ -26,6 +26,7 @@
 
   // TODO we need a list of items to emulate blocks...
 
+
   /**
    * An Abstract implementation for all Generic elements
    */
@@ -75,9 +76,14 @@
     }
 
     /**
+     * Matches the capabilities with the server's capability list.
      *
+     * @param {SieveCapabilities} capabilities
+     *   the capabilities provided by the server
+     * @returns {SieveAbstractGeneric}
+     *   a self reference
      */
-    require(imports) {
+    require(capabilities) {
       return this;
     }
 
@@ -325,10 +331,10 @@
     /**
      * @inheritDoc
      */
-    require(imports) {
+    require(capabilities) {
 
       this._elements.forEach((item) => {
-        item.element.require(imports);
+        item.element.require(capabilities);
       });
 
       return this;
@@ -721,7 +727,7 @@
       super(docshell, id);
 
       this._elements = [];
-      this._requirements = new Set();
+      this._requirements = null;
       this._nodeName = type;
     }
 
@@ -738,14 +744,14 @@
     /**
      * @inheritDoc
      */
-    require(imports) {
+    require(capabilities) {
 
-      this._requirements.forEach((requirement) => {
-        imports[requirement] = true;
-      });
+
+      capabilities
+        .require(this._requirements);
 
       this._elements.forEach((element) => {
-        element.require(imports);
+        element.require(capabilities);
       });
 
       return this;
@@ -864,20 +870,20 @@
 
 
     /**
-     * @param  {} requirements
+     * Adds the dependencies to this generic element.
+     * The dependencies can be a plain string or a
+     * object with an "any" or "all" key. Either key needs
+     * to point to an array of strings.
+     *
+     * @param  {any} requirements
+     *   the required capabilities.
+     *
+     * @returns {SieveGenericStructure}
+     *   a self reference
      */
     addRequirements(requirements) {
 
-      if (requirements === null || typeof (requirements) === "undefined")
-        return this;
-
-      if (!Array.isArray(requirements))
-        requirements = [requirements];
-
-      requirements.forEach((requirement) => {
-        this._requirements.add(requirement);
-      });
-
+      this._requirements = requirements;
       return this;
     }
 

@@ -18,6 +18,7 @@
         // JQuery
         "./../common/jQuery/jquery.min.js",
         // Basic Sieve Elements
+        "./../common/libSieve/toolkit/logic/GenericCapabilities.js",
         "./../common/libSieve/toolkit/SieveParser.js",
         "./../common/libSieve/toolkit/SieveLexer.js",
         "./../common/libSieve/toolkit/SieveScriptDOM.js",

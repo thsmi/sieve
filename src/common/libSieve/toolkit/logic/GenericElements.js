@@ -91,27 +91,21 @@
     }
 
     /**
+     * Checks if the current element is supported by the server implementation.
      *
-     * @param {*} capabilities
+     * @param {SieveCapabilities} capabilities
+     *   the capabilities supported by the server
      *
      * @returns {Boolean}
      *   true in case the action is capable
      */
     onCapable(capabilities) {
 
+      // in case no capabilities are defined we are compatible...
       if ((this.item.requires === null) || (typeof (this.item.requires) === 'undefined'))
         return true;
 
-      let requires = this.item.requires;
-
-      if (!Array.isArray(requires))
-        requires = [requires];
-
-      for (let i in requires)
-        if (capabilities[requires[i]] !== true)
-          return false;
-
-      return true;
+      return capabilities.isCapable(this.item.requires);
     }
   }
 

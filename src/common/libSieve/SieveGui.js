@@ -172,10 +172,10 @@
    **/
   function setCapabilities() {
 
-    let capabilities = {};
+    let capabilities = [];
 
     $("#debugcapabilities input:checked").each(function () {
-      capabilities[$(this).val()] = true;
+      capabilities.push($(this).val());
     });
 
     setSieveScript(
@@ -203,8 +203,9 @@
     $("#debugcapabilities input:checkbox").prop('checked', false);
 
     let capabilities = SieveLexer.capabilities();
+
     $("#debugcapabilities input:checkbox").each(function () {
-      if (capabilities[$(this).val()])
+      if (capabilities.hasCapability($(this).val()))
         $(this).prop("checked", true);
     });
 

@@ -37,7 +37,7 @@
     type: "action",
     token: "global",
 
-    requires: ["include", "variables"],
+    requires: { all : ["include", "variables"] },
 
     properties: [{
       id: "parameters",

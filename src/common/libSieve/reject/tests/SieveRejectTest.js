@@ -36,7 +36,7 @@
       + '    ereject "I no longer accept mail from this address";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, { "ereject": true });
+    suite.expectValidScript(script, ["ereject"]);
   });
 
   suite.add(function () {
@@ -55,7 +55,7 @@
       + '}\r\n';
 
 
-    suite.expectValidScript(script, { "reject": true });
+    suite.expectValidScript(script, ["reject"]);
   });
 
 
@@ -75,7 +75,7 @@
       + '}\r\n';
 
 
-    suite.expectValidScript(script, { "reject": true });
+    suite.expectValidScript(script, ["reject"]);
   });
 
 })();

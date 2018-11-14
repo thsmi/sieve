@@ -93,6 +93,43 @@
     document.head.appendChild(elm);
   }
 
+  /**
+   * Checks if the actual value is a equals to true.
+   *
+   * @param {Boolean} actual
+   *   the actual value which should be tested
+   * @param {String} [message]
+   *   the message to display in case of a failure.
+   * @returns {undefined}
+   */
+  function assertTrue(actual, message) {
+    this.assertEquals(true, actual, message);
+  }
+
+  /**
+   * Checks if the actual value is a equals to false.
+   *
+   * @param {Boolean} actual
+   *   the actual value which should be tested
+   * @param {String} [message]
+   *   the message to display in case of a failure.
+   * @returns {undefined}
+   */
+  function assertFalse(actual, message) {
+    this.assertEquals(false, actual, message);
+  }
+
+  /**
+   * Checks if the actual value matches the expectation.
+   *
+   * @param {any} expected
+   *   the expected value
+   * @param {any} actual
+   *   the actual value which should be tested
+   * @param {String} [message]
+   *   the message to display in case of a failure
+   * @returns {undefined}
+   */
   function assertEquals(expected, actual, message) {
 
     if (expected === actual) {
@@ -173,6 +210,8 @@
   exports.net.tschmid.yautt.test.fail = fail;
 
   exports.net.tschmid.yautt.test.assertEquals = assertEquals;
+  exports.net.tschmid.yautt.test.assertTrue = assertTrue;
+  exports.net.tschmid.yautt.test.assertFalse = assertFalse;
 
   exports.net.tschmid.yautt.test.add = add;
 

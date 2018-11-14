@@ -731,8 +731,10 @@
 
     /**
      * Called as soon as the element is loaded.
+     * It initializes the dropdowns handlers if applicable.
+     *
      * @param {String} value
-     *   the string value to set
+     *   the initial value to set
      *
      * @returns {undefined}
      */
@@ -751,23 +753,52 @@
         .removeClass("d-none")
         .before(elm);
 
-      $(this._selector)
-        .find(".dropdown-item")
+      let items = $(this._selector)
+        .find(".dropdown-item");
+
+      items
         .click(function () {
           that.setValue($(this).attr("data-value"));
         });
+
+      $.each(items, (index, menuitem) => {
+
+        let updatables = $(menuitem).find(".sieve-string-dropdown-updateable");
+
+        if (!updatables.length)
+          return;
+
+        updatables.on("input change", (event) => {
+
+          let somevalue = event.target.value;
+
+          if (event.target.hasAttribute("data-update-element"))
+            $(menuitem).find(event.target.getAttribute("data-update-element")).text(somevalue);
+
+          menuitem.setAttribute("data-value", somevalue);
+        });
+
+      });
     }
 
     /**
      * Initializes the current element
      *
-     * @param {SieveString} sivElement
+     * @param {String|SieveString} sivElement
      *   the string element which should be rendered.
      * @returns {undefined}
      */
     init(sivElement) {
-      $(this._selector).load("./toolkit/templates/SieveStringWidget.html", () => {
-        this.onInitialized(sivElement.value());
+      let value = "";
+
+      if (typeof (sivElement) === "string")
+        value = sivElement;
+      else
+        value = sivElement.value();
+
+
+      $(this._selector).load("./toolkit/templates/SieveStringWidget.html #template", () => {
+        this.onInitialized(value);
       });
 
     }

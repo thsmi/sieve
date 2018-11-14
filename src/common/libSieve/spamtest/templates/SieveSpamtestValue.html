@@ -1,0 +1,25 @@
+<div>
+  <div id="sivSpamtestValue" data-list-dropdown="#sivSpamtestTemplate">
+  </div>
+
+  <div id="sivSpamtestTemplate" class="d-none">
+    <div class="dropdown-menu dropdown-menu-right">
+      <button class="dropdown-item" type="button" data-value="0">0
+        <small class="text-muted">Message was not tested for spam</small>
+      </button>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item" type="button" data-value="1">1
+        <small class="text-muted">Message is clear of spam</small>
+      </button>
+      <div class="dropdown-item" data-value="5">
+        <div><span class="sivSpamtestRangeValue">5</span> <small class="text-muted">Message's
+            spam likelihood</small></div>
+        <input type="range" class="custom-range sieve-string-dropdown-updateable" min="2" max="9" value="5"
+          data-update-element=".sivSpamtestRangeValue">
+      </div>
+      <button class="dropdown-item" type="button" data-value="10">10
+        <small class="text-muted">Message definitely contains spam</small>
+      </button>
+    </div>
+  </div>
+</div>

@@ -11,7 +11,18 @@
 
   http.createServer(function (request, response) {
 
-    let filePath = "./build/electron/resources/libs" + request.url;
+    let filePath = "";
+
+    if (request.url.startsWith("/gui/")) {
+      filePath = "./build/electron/resources/libs" + request.url.substr(4);
+    } else if (request.url.startsWith("/test/")) {
+      filePath = "./build/test" + request.url.substr(5);
+    } else {
+      response.writeHead(404);
+      response.end('Sorry, file not found ...' + request.url + '\n');
+      response.end();
+      return;
+    }
 
     console.log('request for ' + filePath);
 
@@ -48,7 +59,7 @@
         }
         else {
           response.writeHead(500);
-          response.end('Sorry, check with the site admin for error: ' + error.code + ' ..\n');
+          response.end('Sorry, check with the site admin for error: ' + error.code + " " + filePath + ' ..\n');
           response.end();
         }
       }
@@ -59,6 +70,6 @@
     });
 
   }).listen(8125);
-  console.log('Server running at http://127.0.0.1:8125/libSieve/SieveGui.html');
+  console.log('Server running at http://127.0.0.1:8125/gui/libSieve/SieveGui.html or ');
 
 })();

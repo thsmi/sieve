@@ -131,6 +131,16 @@
       if (typeof capabilities === 'string' || capabilities instanceof String)
         capabilities = JSON.parse(capabilities);
 
+      // we need some magic here, the addon returns hashmap while
+      // the new parser expects an iterable.
+      if (!Array.isArray(capabilities)) {
+        let tmp = [];
+        for (let item in capabilities)
+          tmp.push(item);
+
+        capabilities = tmp;
+      }
+
       SieveLexer.capabilities(capabilities);
     }
 

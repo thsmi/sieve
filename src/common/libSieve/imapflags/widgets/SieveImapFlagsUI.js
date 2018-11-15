@@ -235,10 +235,7 @@
      * @inheritDoc
      */
     static isCapable(capabilities) {
-      if (!capabilities.imap4flags)
-        return false;
-
-      return true;
+      return capabilities.hasCapability("imap4flags");
     }
 
     /**

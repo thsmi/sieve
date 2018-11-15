@@ -38,7 +38,7 @@
      * @inheritDoc
      */
     static isCapable(capabilities) {
-      return !!capabilities["subaddress"];
+      return capabilities.hasCapability("subaddress");
     }
 
     /**
@@ -65,7 +65,7 @@
      * @inheritDoc
      */
     static isCapable(capabilities) {
-      return !!capabilities["subaddress"];
+      return capabilities.hasCapability("subaddress");
     }
 
     /**

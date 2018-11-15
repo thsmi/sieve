@@ -425,10 +425,7 @@
      * @inheritDoc
      */
     static isCapable(capabilities) {
-      if (!capabilities.mailbox)
-        return false;
-
-      return true;
+      return capabilities.hasCapability("mailbox");
     }
 
     /**

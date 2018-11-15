@@ -35,7 +35,7 @@
      * @inheritDoc
      */
     static isCapable(capabilities) {
-      return !!capabilities["regex"];
+      return capabilities.hasCapability("regex");
     }
 
     /**

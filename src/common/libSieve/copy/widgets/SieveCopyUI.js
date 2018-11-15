@@ -41,10 +41,7 @@
      * @inheritDoc
      */
     static isCapable(capabilities) {
-      if (!capabilities.copy)
-        return false;
-
-      return true;
+      return capabilities.hasCapability("copy");
     }
 
     /**

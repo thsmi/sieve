@@ -35,10 +35,7 @@
      * @inheritDoc
      */
     static isCapable(capabilities) {
-      if (!capabilities.relational)
-        return false;
-
-      return true;
+      return capabilities.hasCapability("relational");
     }
 
     /**
@@ -85,10 +82,7 @@
      * @inheritDoc
      */
     static isCapable(capabilities) {
-      if (!capabilities.relational)
-        return false;
-
-      return true;
+      return capabilities.hasCapability("relational");
     }
 
     /**

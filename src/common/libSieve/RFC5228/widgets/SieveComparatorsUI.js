@@ -111,10 +111,7 @@
      * @inheritDoc
      */
     static isCapable(capabilities) {
-      if (!capabilities["comparator-i;ascii-numeric"])
-        return false;
-
-      return true;
+      return capabilities.hasCapability("comparator-i;ascii-numeric");
     }
 
     /**

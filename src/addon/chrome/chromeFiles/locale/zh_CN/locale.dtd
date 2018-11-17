@@ -93,10 +93,6 @@
 <!ENTITY options.editor.tabs.description "带自动缩入的编辑器代替了制表键的使用，但是有很多编辑器因为历史原因缺省为制表符。">
 <!ENTITY options.editor.tabs.width "制表符宽度">
 
-<!ENTITY options.editor.tabs.policy.caption "标签政策">
-<!ENTITY options.editor.tabs.policy.spaces "为制表符插入空格">
-<!ENTITY options.editor.tabs.policy.tabs "插入制表符">
-
 <!ENTITY options.debug.warning
 "请记住，SASL登录或SASL Plain都不会加密你的密码。密码可能会以明文形式张贴到错误控制台。">
 <!ENTITY options.debug.caption "调试设置">

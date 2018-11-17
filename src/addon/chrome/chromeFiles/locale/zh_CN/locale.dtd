@@ -19,7 +19,7 @@
 <!ENTITY options.tab.general "常规">
 <!ENTITY options.tab.proxy "代理">
 <!ENTITY options.tab.advanced "高级">
-<!ENTITY options.tab.advanced.warning "这些设置更适合高级用户...">
+<!ENTITY options.tab.advanced.warning "These settings are intended for advanced users…">
 <!ENTITY options.tab.editor "编辑器">
 <!ENTITY options.tab.debug "调试">
 <!ENTITY options.tab.credits "制作人员">
@@ -40,9 +40,9 @@
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "其他：">
 <!ENTITY options.port.autoselect "自动选择端口">
-<!ENTITY options.port.autoselect.running "正在选择端口，请稍候...">
+<!ENTITY options.port.autoselect.running "Selecting Port, please wait…">
 <!ENTITY options.port.autoselect.successful "Sieve 检测到，端口 ">
-<!ENTITY options.port.autoselect.error "选择端口失败...">
+<!ENTITY options.port.autoselect.error "Selecting Port failed…">
 
 <!ENTITY options.security.caption "连接安全">
 <!ENTITY options.security.description
@@ -61,7 +61,7 @@
 <!ENTITY options.login.customAuth "用户名和密码">
 <!ENTITY options.login.username "用户名">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "显示已保存的密码...">
+<!ENTITY options.login.show "View Saved Passwords…">
 
 <!ENTITY options.misc "杂项设置">
 <!ENTITY options.misc.keepalive "启用保持活跃">
@@ -73,7 +73,7 @@
 "保持活跃请求用来表示连接仍然活跃并应该被保持。">
 <!ENTITY options.misc.keepalive.min "分钟">
 
-<!ENTITY options.misc.compile.caption "语法检查">
+<!ENTITY options.misc.compile.caption "Syntax Check">
 <!ENTITY options.misc.compile.description
 "在编辑脚本时，它们会被检查有效性。语法检查是在服务器执行。为了降低网络流量消耗，语法检查请求非实时进行。">
 <!ENTITY options.misc.compile "输入时检查脚本">
@@ -95,15 +95,15 @@
 
 <!ENTITY options.debug.warning
 "请记住，SASL登录或SASL Plain都不会加密你的密码。密码可能会以明文形式张贴到错误控制台。">
-<!ENTITY options.debug.caption "调试设置">
+<!ENTITY options.debug.caption "Debug Settings">
 <!ENTITY options.debug.request "客户端至服务器的通信（请求）">
 <!ENTITY options.debug.response "服务器至客户端的通信（响应）">
 <!ENTITY options.debug.exceptions "异常和状态机器信息">
 <!ENTITY options.debug.stream "原始转储/转储字节流">
-<!ENTITY options.debug.session "会话管理">
+<!ENTITY options.debug.session "Session Management">
 <!ENTITY options.debug.output "调试输出">
 <!ENTITY options.debug.console "调试信息已发到错误控制台">
-<!ENTITY options.debug.console.open "显示错误控制台...">
+<!ENTITY options.debug.console.open "Show Error Console…">
 
 <!ENTITY options.authmechanism.caption "身份验证机制">
 <!ENTITY options.authmechanism "覆盖建议的身份验证机制">
@@ -125,14 +125,14 @@
 "在使用代理服务器身份验证时，您应该强制”SASL PLAIN“身份验证。">
 <!ENTITY options.proxyauth.none "无身份验证">
 <!ENTITY options.proxyauth.default "Sieve 用户名">
-<!ENTITY options.proxyauth.prompt "提示进行身份验证">
+<!ENTITY options.proxyauth.prompt "Request Authorization">
 <!ENTITY options.proxyauth.custom "授权为">
 <!ENTITY options.proxyauth.custom.username "用户名：">
 
 <!ENTITY options.info.servername "服务器名：">
 <!ENTITY options.info.port "端口：">
 <!ENTITY options.info.secure "安全连接：">
-<!ENTITY options.info.username "用户名：">
+<!ENTITY options.info.username "Username:">
 <!ENTITY options.info.auth "身份验证：">
 
 <!ENTITY options.account.sieve
@@ -141,8 +141,8 @@
 "您想为此账户激活管理 Sieve 脚本吗？">
 <!ENTITY options.account.activate.yes "是的，为此账户管理 Sieve 脚本：">
 <!ENTITY options.account.activate.no "不用，此账户不支持 Sieve">
-<!ENTITY options.account.filters "编辑过滤器...">
-<!ENTITY options.account.settings "更改设置...">
+<!ENTITY options.account.filters "Edit Filters…">
+<!ENTITY options.account.settings "Change Settings…">
 
 <!-- Credits -->
 <!ENTITY options.credits "感谢众位贡献者：">
@@ -173,12 +173,12 @@
 <!ENTITY list.tree.active "活动">
 <!ENTITY list.tree.name "名称">
 
-<!ENTITY list.new "新建...">
-<!ENTITY list.edit "编辑...">
+<!ENTITY list.new "New…">
+<!ENTITY list.edit "Edit…">
 <!ENTITY list.delete "删除">
 <!ENTITY list.rename "更名">
 <!ENTITY list.activate "激活">
-<!ENTITY list.settings "设置...">
+<!ENTITY list.settings "Settings…">
 
 <!ENTITY list.details.capability "服务器 Sieve 能力">
 <!ENTITY list.details.capability.implementation "服务器版本：">
@@ -209,13 +209,13 @@
 
 <!ENTITY list.autoconfig.detecting.caption "正在自动检测配置">
 <!ENTITY list.autoconfig.detecting.description
-  "可能需要几分钟才能完成...">
+  "Might take some minutes to complete…">
 
 <!ENTITY list.autoconfig.cancel "取消">
 
 <!ENTITY list.autoconfig.success.caption "恭喜！">
 <!ENTITY list.autoconfig.success.description
-  "您的账户已经配置并准备好开始使用...">
+  "Your account is now configured and ready to use…">
 
 <!ENTITY list.autoconfig.error.caption "抱歉">
 <!ENTITY list.autoconfig.error.description
@@ -231,7 +231,7 @@
 <!ENTITY edit.toolbar.cut "剪切">
 <!ENTITY edit.toolbar.copy "复制">
 <!ENTITY edit.toolbar.paste "粘贴">
-<!ENTITY edit.toolbar.compile "语法检查">
+<!ENTITY edit.toolbar.compile "Syntax Check">
 <!ENTITY edit.toolbar.reference "快速参考">
 <!ENTITY edit.toolbar.tools "工具">
 <!ENTITY edit.toolbar.import "导入脚本">
@@ -268,7 +268,7 @@
 <!ENTITY status.warning.ignore "忽略">
 <!ENTITY status.warning.reconnect "重新连接">
 <!ENTITY status.warning
-  "此账户没有配置管理 Sieve，请转至 '工具-&gt; SieveMessage 过滤器'">
+  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
 
 <!ENTITY status.error.reconnect "重新连接">
 <!ENTITY status.error "最后的命令失败，服务器回报错误：">

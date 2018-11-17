@@ -99,10 +99,6 @@ red, las peticiones de comprobación de sintaxis son agrupadas.">
 <!ENTITY options.editor.tabs.description "Texteditor with automatic indenting replaced the need for a tab key, but there are many editors which default to tabs due to historic reasons.">
 <!ENTITY options.editor.tabs.width "Tab Width">
 
-<!ENTITY options.editor.tabs.policy.caption "Tab Policy">
-<!ENTITY options.editor.tabs.policy.spaces "Insert Spaces for Tabs">
-<!ENTITY options.editor.tabs.policy.tabs "Insert Tabs">
-
 <!ENTITY options.debug.warning
 "Tenga en cuenta que ni el Login SASL ni SASL Plain cifran su contraseña, 
 podría ser enviado en texto sin cifrar a la consola de error.">

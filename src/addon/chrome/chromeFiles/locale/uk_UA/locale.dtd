@@ -92,10 +92,6 @@
 <!ENTITY options.editor.tabs.description "Texteditor with automatic indenting replaced the need for a tab key, but there are many editors which default to tabs due to historic reasons.">
 <!ENTITY options.editor.tabs.width "Ширина табуляції">
 
-<!ENTITY options.editor.tabs.policy.caption "Політика табуляції">
-<!ENTITY options.editor.tabs.policy.spaces "Вставляти пробіли замість табуляції">
-<!ENTITY options.editor.tabs.policy.tabs "Вставляти табуляцію">
-
 <!ENTITY options.debug.warning
 "Keep in mind that neither SASL Login nor SASL Plain cypher your password, it might be posted in clear text to the error console.">
 <!ENTITY options.debug.caption "Налаштування зневадження">

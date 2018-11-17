@@ -94,10 +94,6 @@ niskim poziomie, żądania kontroli składni są grupowane.">
 <!ENTITY options.editor.tabs.description "Edytor tekstu z automatycznym wcięciem zastąpił potrzebę wciskania klawisza tabulacji, ale istnieje wiele edytorów, które z przyczyn historycznych domyślnie korzystają z tabulatorów.">
 <!ENTITY options.editor.tabs.width "Szerokość tabulatora">
 
-<!ENTITY options.editor.tabs.policy.caption "Zasady tabulatora">
-<!ENTITY options.editor.tabs.policy.spaces "Wstaw odstęp dla tabulatora">
-<!ENTITY options.editor.tabs.policy.tabs "Wstaw tabulator">
-
 <!ENTITY options.debug.warning
 "Należy pamiętać, że logowanie SASL w przeciwieństwie do szyfrowania SASL twojego hasła, 
 może wysyłać je na konsolę błędów w postaci zwykłego tekstu.">

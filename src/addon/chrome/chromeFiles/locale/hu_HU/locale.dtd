@@ -255,8 +255,8 @@ Or choose 'Advanced' to configure the account manually.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Click 'Go Online' and try again">
-<!ENTITY status.offline.go "Go Online">
+"Jelenleg kapcsolat nélküli üzemmódban van. Ellenőrizze, hogy kapcsolódik-e az internethez, kattints a „Csatlakozás a hálózathoz” és próbálja újra.">
+<!ENTITY status.offline.go "Csatlakozás a hálózathoz">
 
 
 <!ENTITY status.connectivity.loss.description

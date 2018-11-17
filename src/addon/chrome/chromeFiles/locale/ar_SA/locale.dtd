@@ -93,10 +93,6 @@
 <!ENTITY options.editor.tabs.description "محرر النصوص تلقائي المسافة البادئة استبدل بالحاجة إلى مفتاح التبويب، ولكن هناك العديد من المحررين يهمل التبويبات بسبب التأريح.">
 <!ENTITY options.editor.tabs.width "عرض التبويب">
 
-<!ENTITY options.editor.tabs.policy.caption "سياسة التبويب">
-<!ENTITY options.editor.tabs.policy.spaces "ادرج مسافات لتبويبات">
-<!ENTITY options.editor.tabs.policy.tabs "ادرج تبويبات">
-
 <!ENTITY options.debug.warning
 "يجب اعتبار أن الولوج إلى SASL او SASL العادي لن يشفروا كلمة السر الخاصة بك،
 قد يتم نشرها على شكل نص واضح في خطاء وحدة التحكم.">

@@ -14,100 +14,100 @@
 <!-- Options Dialog -->
 <!ENTITY options.title "Sieve Options">
 
-<!ENTITY options.tab.server "Server">
-<!ENTITY options.tab.security "Security">
-<!ENTITY options.tab.general "General">
-<!ENTITY options.tab.proxy "Proxy">
-<!ENTITY options.tab.advanced "Advanced">
+<!ENTITY options.tab.server "Kiszolgáló">
+<!ENTITY options.tab.security "Biztonság">
+<!ENTITY options.tab.general "Általános">
+<!ENTITY options.tab.proxy "Meghatalmazott">
+<!ENTITY options.tab.advanced "Haladó">
 <!ENTITY options.tab.advanced.warning "These settings are intended for advanced users...">
-<!ENTITY options.tab.editor "Editor">
-<!ENTITY options.tab.debug "Debug">
-<!ENTITY options.tab.credits "Credits">
+<!ENTITY options.tab.editor "Szerkesztő">
+<!ENTITY options.tab.debug "Hibakeresés">
+<!ENTITY options.tab.credits "Közreműködők">
 
-<!ENTITY options.host.caption "Server Name">
+<!ENTITY options.host.caption "Kiszolgáló neve">
 <!ENTITY options.host.description
 "Most Sieve implementations run directly on a mail server. Thus the Sieve server name is usually same as your IMAP server name.">
-<!ENTITY options.host.imap "IMAP Server:">
-<!ENTITY options.host.custom "Other Server:">
+<!ENTITY options.host.imap "IMAP-kiszolgáló:">
+<!ENTITY options.host.custom "Más kiszolgáló:">
 
 <!ENTITY options.port.caption "Server Port">
 <!ENTITY options.port.description
 "The server port changed, when ManageSieve turned into a full RFC Standard">
 <!ENTITY options.port.description2
 "Older server implementations still use port 2000, while newer standard conform server can only be accessed via port 4190.">
-<!ENTITY options.port.4190 "4190 (Default)" >
+<!ENTITY options.port.4190 "4190 (alapértelmezett)" >
 <!ENTITY options.port.2000 "2000" >
-<!ENTITY options.port.custom "Other:">
+<!ENTITY options.port.custom "Egyéb:">
 <!ENTITY options.port.autoselect "Auto Select Port">
 <!ENTITY options.port.autoselect.running "Selecting Port, please wait...">
 <!ENTITY options.port.autoselect.successful "Sieve detected on Port ">
 <!ENTITY options.port.autoselect.error "Selecting Port failed...">
 
-<!ENTITY options.security.caption "Connection Security">
+<!ENTITY options.security.caption "Kapcsolat biztonsága">
 <!ENTITY options.security.description
 "Transport Layer Security (TLS) secures the connection to the manage sieve server. It cyphers all data and is designed to prevent eavesdropping and tampering.">
 <!ENTITY options.security.description2
 "ManageSieve usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
-<!ENTITY options.security.tls.disabled "No TLS">
-<!ENTITY options.security.tls.available "TLS, when available">
-<!ENTITY options.security.tls.force "Force TLS">
+<!ENTITY options.security.tls.disabled "Nincs TLS">
+<!ENTITY options.security.tls.available "TLS, ha lehetséges">
+<!ENTITY options.security.tls.force "TLS kényszerítve">
 
-<!ENTITY options.login "Authentication">
+<!ENTITY options.login "Hitelesítés">
 <!ENTITY options.login.key "A">
-<!ENTITY options.login.noAuth "No Authentication">
-<!ENTITY options.login.imapAuth "IMAP Username and Password">
-<!ENTITY options.login.customAuth "Username and Password">
-<!ENTITY options.login.username "Username">
+<!ENTITY options.login.noAuth "Nincs hitelesítés">
+<!ENTITY options.login.imapAuth "IMAP felhasználónév és jelszó">
+<!ENTITY options.login.customAuth "Felhasználónév és jelszó">
+<!ENTITY options.login.username "Felhasználónév">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "Show Saved Passwords...">
+<!ENTITY options.login.show "Mentett jelszavak megtekintése…">
 
-<!ENTITY options.misc "Miscellaneous Settings">
+<!ENTITY options.misc "Egyéb beállítások">
 <!ENTITY options.misc.keepalive "Enable keepalives">
 <!ENTITY options.misc.keepalive.key "k">
-<!ENTITY options.misc.keepalive2 "Send every">
+<!ENTITY options.misc.keepalive2 "Küldjön minden">
 <!ENTITY options.misc.keepalive.description
 "If the client was idle for too long (usually 30 minutes), the server assumes the client is disconnected and hangs up the connection.">
 <!ENTITY options.misc.keepalive.description2
 "A keepalive request indicates the connection is still active and should be preserved.">
-<!ENTITY options.misc.keepalive.min "min">
+<!ENTITY options.misc.keepalive.min "perc">
 
-<!ENTITY options.misc.compile.caption "Syntax check">
+<!ENTITY options.misc.compile.caption "Mondattan ellenőrzés">
 <!ENTITY options.misc.compile.description
 "While editing Scripts, they can be checked for validity. The syntax check is performed by the server. In order to keep network traffic low, syntax check requests are grouped.">
 <!ENTITY options.misc.compile "Check Scripts while typing">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Validate at least every">
-<!ENTITY options.misc.compile.ms "ms">
+<!ENTITY options.misc.compile.ms "ezredmásodperc">
 
-<!ENTITY options.editor.indention.caption "Indention">
+<!ENTITY options.editor.indention.caption "Behúzás">
 <!ENTITY options.editor.indention.description "The plain text editor supports automatic indenting.">
-<!ENTITY options.editor.indention.width "Indention Width:">
+<!ENTITY options.editor.indention.width "Behúzási szélesség:">
 
-<!ENTITY options.editor.indention.policy.caption "Indention Policy:">
-<!ENTITY options.editor.indention.policy.spaces "Spaces Only">
-<!ENTITY options.editor.indention.policy.tabs "Tabs Only">
+<!ENTITY options.editor.indention.policy.caption "Behúzás házirend:">
+<!ENTITY options.editor.indention.policy.spaces "Csak szóközök">
+<!ENTITY options.editor.indention.policy.tabs "Csak tabulátorok">
 
-<!ENTITY options.editor.tabs.caption "Tab Handling">
+<!ENTITY options.editor.tabs.caption "Fül kezelése">
 <!ENTITY options.editor.tabs.description "Texteditor with automatic indenting replaced the need for a tab key, but there are many editors which default to tabs due to historic reasons.">
-<!ENTITY options.editor.tabs.width "Tab Width">
+<!ENTITY options.editor.tabs.width "Fül szélessége">
 
-<!ENTITY options.editor.tabs.policy.caption "Tab Policy">
-<!ENTITY options.editor.tabs.policy.spaces "Insert Spaces for Tabs">
-<!ENTITY options.editor.tabs.policy.tabs "Insert Tabs">
+<!ENTITY options.editor.tabs.policy.caption "Tabulátor házirend">
+<!ENTITY options.editor.tabs.policy.spaces "Helyezze be a tabulátorok szóközeit">
+<!ENTITY options.editor.tabs.policy.tabs "Tabulátorok beszúrása">
 
 <!ENTITY options.debug.warning
 "Keep in mind that neither SASL Login nor SASL Plain cypher your password, it might be posted in clear text to the error console.">
-<!ENTITY options.debug.caption "Debug settings">
-<!ENTITY options.debug.request "Client to Server communication (requests)">
-<!ENTITY options.debug.response "Server to Client communication (responses)">
-<!ENTITY options.debug.exceptions "Exceptions and State Machine Information">
-<!ENTITY options.debug.stream "Raw Dump/ Dump Byte Stream">
-<!ENTITY options.debug.session "Session management">
-<!ENTITY options.debug.output "Debug Output">
+<!ENTITY options.debug.caption "Hibakeresési beállítások">
+<!ENTITY options.debug.request "Ügyféltől kiszolgálónak közlés (kérések)">
+<!ENTITY options.debug.response "Kiszolgálótól ügyfélnek közlés (válaszok)">
+<!ENTITY options.debug.exceptions "Kivételek és gépállapot információk">
+<!ENTITY options.debug.stream "Nyers lerakóhely/bájt-patak lerakóhely">
+<!ENTITY options.debug.session "Munkamenet-kezelés">
+<!ENTITY options.debug.output "Kimenet hibakeresése">
 <!ENTITY options.debug.console "Debug information is posted to the error console">
-<!ENTITY options.debug.console.open "Show Error Console...">
+<!ENTITY options.debug.console.open "Hibakijelző megtekintése…">
 
-<!ENTITY options.authmechanism.caption "Authentication Mechanism">
+<!ENTITY options.authmechanism.caption "Hitelesítési mechanizmus">
 <!ENTITY options.authmechanism "Override suggested Authentication Mechanism">
 <!ENTITY options.authmechanism.default "Use always:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
@@ -120,22 +120,22 @@
 <!ENTITY options.authmechanism.description
 "In certain situations e.g. when using Proxy Authentication you might want to force a specific Authentication Mechanism." >
 
-<!ENTITY options.proxyauth.caption "Proxy Authorization">
+<!ENTITY options.proxyauth.caption "Meghatalmazott engedélye">
 <!ENTITY options.proxyauth.desc
 "Proxy authorization, allows an authenticated user to act on behalf of another user. Usually servers are configured, that this feature is only available for administrators.">
 <!ENTITY options.proxyauth.force
 "When using proxy authorization you should force &quot;SASL PLAIN&quot; Authentication.">
-<!ENTITY options.proxyauth.none "No Authorization">
+<!ENTITY options.proxyauth.none "Nincs engedélye">
 <!ENTITY options.proxyauth.default "Sieve Username">
-<!ENTITY options.proxyauth.prompt "Prompt for Authorization">
-<!ENTITY options.proxyauth.custom "Authorize as">
-<!ENTITY options.proxyauth.custom.username "Username:">
+<!ENTITY options.proxyauth.prompt "Kérjen engedélye">
+<!ENTITY options.proxyauth.custom "Engedélyezze a(z)">
+<!ENTITY options.proxyauth.custom.username "Felhasználónév:">
 
 <!ENTITY options.info.servername "Server Name:">
 <!ENTITY options.info.port "Port:">
-<!ENTITY options.info.secure "Secure Connection:">
-<!ENTITY options.info.username "User Name:">
-<!ENTITY options.info.auth "Authentication:">
+<!ENTITY options.info.secure "Biztonságos kapcsolat:">
+<!ENTITY options.info.username "Felhasználói név:">
+<!ENTITY options.info.auth "Hitelesítés:">
 
 <!ENTITY options.account.sieve
 "Sieve is a powerful script language for server-side mail filtering.">
@@ -144,25 +144,25 @@
 <!ENTITY options.account.activate.yes "Yes, manage Sieve scripts for this account:">
 <!ENTITY options.account.activate.no "No, this account does not support Sieve">
 <!ENTITY options.account.filters "Edit Filters...">
-<!ENTITY options.account.settings "Change Settings...">
+<!ENTITY options.account.settings "Beállítások módosítása…">
 
 <!-- Credits -->
 <!ENTITY options.credits "Many thanks to all contributors:">
 
 <!-- Proxy Settings -->
-<!ENTITY options.proxy "Proxy configuration">
+<!ENTITY options.proxy "Meghatalmazás beállítása">
 <!ENTITY options.proxy.description
 "Instead of  a direct connection you may use a SOCKS Proxy to transparently and securely traverse a firewall.">
 <!ENTITY options.proxy.description.nameresolution
 "With SOCKSv4 hostnames are always resolved on the local machine. SOCKSv5 also supports resolving hostnames by the SOCKS proxy. If you can trust the SOCKSv5 proxy, the latter is considered to be more secure and should be preferred.">
 <!ENTITY options.proxy.description.localhost
 "On some system using 'localhost' as proxy host does not function properly, use '127.0.0.1' instead.">
-<!ENTITY options.proxy.direct "Direct Connection">
+<!ENTITY options.proxy.direct "Közvetlen kapcsolat">
 <!ENTITY options.proxy.default "Default Proxy configuration">
 <!ENTITY options.proxy.socks4 "SOCKSv4">
 <!ENTITY options.proxy.socks5 "SOCKSv5">
 <!ENTITY options.proxy.nameresolution "Resolve hostnames on proxy">
-<!ENTITY options.proxy.host "Host:">
+<!ENTITY options.proxy.host "Gépnév:">
 <!ENTITY options.proxy.port "Port:">
 
 
@@ -180,12 +180,12 @@
 <!ENTITY list.delete "Delete">
 <!ENTITY list.rename "Rename">
 <!ENTITY list.activate "Activate">
-<!ENTITY list.settings "Settings...">
+<!ENTITY list.settings "Beállítások…">
 
 <!ENTITY list.details.capability "Server Sieve Capabilities">
-<!ENTITY list.details.capability.implementation "Server Version:">
+<!ENTITY list.details.capability.implementation "Kiszolgálóverzió:">
 <!ENTITY list.details.capability.sasl "SASL Mechanisms:">
-<!ENTITY list.details.capability.extensions "Extensions:">
+<!ENTITY list.details.capability.extensions "Bővítmények:">
 <!ENTITY list.details.capability.protocol "Protocol Version:">
 
 
@@ -233,7 +233,7 @@ Or choose 'Advanced' to configure the account manually.">
 <!ENTITY edit.toolbar.cut "Cut">
 <!ENTITY edit.toolbar.copy "Copy">
 <!ENTITY edit.toolbar.paste "Paste">
-<!ENTITY edit.toolbar.compile "Syntaxcheck">
+<!ENTITY edit.toolbar.compile "Mondattan ellenőrzés">
 <!ENTITY edit.toolbar.reference "Quick Reference">
 <!ENTITY edit.toolbar.tools "Tools">
 <!ENTITY edit.toolbar.import "Import Script">

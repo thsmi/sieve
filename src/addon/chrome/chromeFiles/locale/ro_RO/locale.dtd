@@ -92,10 +92,6 @@ conform serverului pot fi accesate numai prin portul 4190.">
 <!ENTITY options.editor.tabs.description "Texteditor cu indentare automată a înlocuit necesitatea unei taste pentru filă, dar există mai multe editoare care au filele implicite datorită istoricului.">
 <!ENTITY options.editor.tabs.width "Lățimea filei">
 
-<!ENTITY options.editor.tabs.policy.caption "Politica filei">
-<!ENTITY options.editor.tabs.policy.spaces "Introduceți spații pentru file">
-<!ENTITY options.editor.tabs.policy.tabs "Intruduceți file">
-
 <!ENTITY options.debug.warning
 "Rețineți că SASL Login și SASL Plain nu criptează parolele, și ar putea apărea în erorile din consolă.">
 <!ENTITY options.debug.caption "Reparare erori setări">

@@ -19,7 +19,7 @@
 <!ENTITY options.tab.general "عام">
 <!ENTITY options.tab.proxy "البروكسي">
 <!ENTITY options.tab.advanced "مُتقدم">
-<!ENTITY options.tab.advanced.warning "هذه الإعدادات معدة لأجل المستخدمين المتقدمين...">
+<!ENTITY options.tab.advanced.warning "These settings are intended for advanced users…">
 <!ENTITY options.tab.editor "محرر">
 <!ENTITY options.tab.debug "التصحيح">
 <!ENTITY options.tab.credits "أرصدة">
@@ -40,9 +40,9 @@
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "الأخرى:">
 <!ENTITY options.port.autoselect "منفذ اختيار تلقاءي">
-<!ENTITY options.port.autoselect.running "اختيار المنفذ، الرجاء الانتظار...">
+<!ENTITY options.port.autoselect.running "Selecting Port, please wait…">
 <!ENTITY options.port.autoselect.successful "تم كشف الغربال على المنفذ ">
-<!ENTITY options.port.autoselect.error "فشل اختيار المنفذ...">
+<!ENTITY options.port.autoselect.error "Selecting Port failed…">
 
 <!ENTITY options.security.caption "أمان الاتصال">
 <!ENTITY options.security.description
@@ -61,7 +61,7 @@
 <!ENTITY options.login.customAuth "اسم المستخدم و كلمة السر">
 <!ENTITY options.login.username "اسم المستخدم">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "اظهر كلمة السر المحفوظة...">
+<!ENTITY options.login.show "View Saved Passwords…">
 
 <!ENTITY options.misc "إعدادات متنوعة">
 <!ENTITY options.misc.keepalive "تمكين keepalives">
@@ -73,7 +73,7 @@
 "طلب keepalive يشير إلى أن الاتصال لازال نشط و يجب الحفاظ عليه.">
 <!ENTITY options.misc.keepalive.min "دقيقية">
 
-<!ENTITY options.misc.compile.caption "التحقق من بناء الجملة">
+<!ENTITY options.misc.compile.caption "Syntax Check">
 <!ENTITY options.misc.compile.description
 "أثناء تحرير النصوص، يمكن التحقق من صحتها. التحقق من بناء الجملة يتم تنفيذه من قبل السيرفر. من أجل تخفيف الزحام على الشبكة، يتم تجميع طلبات معالجة النصوص.">
 <!ENTITY options.misc.compile "دقق في الإملاء أثناء الكتابة">
@@ -96,15 +96,15 @@
 <!ENTITY options.debug.warning
 "يجب اعتبار أن الولوج إلى SASL او SASL العادي لن يشفروا كلمة السر الخاصة بك،
 قد يتم نشرها على شكل نص واضح في خطاء وحدة التحكم.">
-<!ENTITY options.debug.caption "اعدادات التصحيح">
+<!ENTITY options.debug.caption "Debug Settings">
 <!ENTITY options.debug.request "(طلبات) اتصال العميل بالسيرفر">
 <!ENTITY options.debug.response "(اجابات) اتصال العميل بالسيرفر">
 <!ENTITY options.debug.exceptions "الاستثناءات و حالة آلة المعلومات">
 <!ENTITY options.debug.stream "اسقاط عام/اسقاط مجرى بايت">
-<!ENTITY options.debug.session "إدارة الجلسة">
+<!ENTITY options.debug.session "Session Management">
 <!ENTITY options.debug.output "اخراج التصحيح">
 <!ENTITY options.debug.console "معلومات التصحيح تم نشرها في خطئ وحدة التحكم">
-<!ENTITY options.debug.console.open "اظهر خطئ وحدة التحكم...">
+<!ENTITY options.debug.console.open "Show Error Console…">
 
 <!ENTITY options.authmechanism.caption "آلية المصادقة">
 <!ENTITY options.authmechanism "تجاوز آلية المصادقة المقترحة">
@@ -127,14 +127,14 @@
 "عند استخدام تفويض البروكسي عليك فرض مصادقة &quot;SASL العادي&quot;.">
 <!ENTITY options.proxyauth.none "لا يوجد تفويض">
 <!ENTITY options.proxyauth.default "اسم مستخدم الغربال">
-<!ENTITY options.proxyauth.prompt "موجه لتفويض">
+<!ENTITY options.proxyauth.prompt "Request Authorization">
 <!ENTITY options.proxyauth.custom "تفويض باسم">
 <!ENTITY options.proxyauth.custom.username "اسم المستخدم:">
 
 <!ENTITY options.info.servername "اسم السيرفر:">
 <!ENTITY options.info.port "المنفذ:">
 <!ENTITY options.info.secure "اتصال آمن:">
-<!ENTITY options.info.username "اسم المستخدم:">
+<!ENTITY options.info.username "Username:">
 <!ENTITY options.info.auth "المصادقة:">
 
 <!ENTITY options.account.sieve
@@ -143,8 +143,8 @@
 "هل تريد تفعيل خاصية إدارة غربال النصوص لهذا الحساب؟">
 <!ENTITY options.account.activate.yes "نعم، أدر غربال النصوص لهذا الحساب:">
 <!ENTITY options.account.activate.no "لا، هذا الحساب لا يدعم الغربال">
-<!ENTITY options.account.filters "تعديل الفلاتر...">
-<!ENTITY options.account.settings "تغيير الاعدادات...">
+<!ENTITY options.account.filters "Edit Filters…">
+<!ENTITY options.account.settings "Change Settings…">
 
 <!-- Credits -->
 <!ENTITY options.credits "شكرا جزيلا لجميع المساهمين:">
@@ -175,12 +175,12 @@
 <!ENTITY list.tree.active "مفعل">
 <!ENTITY list.tree.name "اسم">
 
-<!ENTITY list.new "جديد...">
-<!ENTITY list.edit "تعديل...">
+<!ENTITY list.new "New…">
+<!ENTITY list.edit "Edit…">
 <!ENTITY list.delete "حذف">
 <!ENTITY list.rename "إعادة التسمية">
 <!ENTITY list.activate "تفعيل">
-<!ENTITY list.settings "إعدادات...">
+<!ENTITY list.settings "Settings…">
 
 <!ENTITY list.details.capability "قدرات سيرفر الغربال">
 <!ENTITY list.details.capability.implementation "نسخة السيرفر:">
@@ -210,13 +210,13 @@
 
 <!ENTITY list.autoconfig.detecting.caption "الكشف عن التهيئة ألياً">
 <!ENTITY list.autoconfig.detecting.description
-  "قد يستغرق بضع دقائق لإكمال...">
+  "Might take some minutes to complete…">
 
 <!ENTITY list.autoconfig.cancel "ألغي">
 
 <!ENTITY list.autoconfig.success.caption "مبروك!">
 <!ENTITY list.autoconfig.success.description
-  "حسابك الآن مهيئ و جاهز للاستخدام...">
+  "Your account is now configured and ready to use…">
 
 <!ENTITY list.autoconfig.error.caption "عذراً">
 <!ENTITY list.autoconfig.error.description
@@ -232,7 +232,7 @@
 <!ENTITY edit.toolbar.cut "قص">
 <!ENTITY edit.toolbar.copy "انسخ">
 <!ENTITY edit.toolbar.paste "ألصق">
-<!ENTITY edit.toolbar.compile "تحقق من بناء الجملة">
+<!ENTITY edit.toolbar.compile "Syntax Check">
 <!ENTITY edit.toolbar.reference "مرجع سريع">
 <!ENTITY edit.toolbar.tools "أدوات">
 <!ENTITY edit.toolbar.import "استورد برمجة">
@@ -269,7 +269,7 @@
 <!ENTITY status.warning.ignore "تجاهل">
 <!ENTITY status.warning.reconnect "اعد الاتصال">
 <!ENTITY status.warning
-  "هذا الحساب غير مهيأ لإدارة الغربال، اذهب إلى 'أدوات-&gt; غربال تصفية الرسائل'">
+  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
 
 <!ENTITY status.error.reconnect "اعد الاتصال">
 <!ENTITY status.error "فشل الأمر الأخير، لأن السيرفر أبلغ عن خطأ:">

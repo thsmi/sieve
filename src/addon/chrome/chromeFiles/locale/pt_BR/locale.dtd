@@ -93,10 +93,6 @@ baixo, os pedidos de verificação de sintaxe são agrupados.">
 <!ENTITY options.editor.tabs.description "O Texteditor com recuo automático substituiu a necessidade de uma chave de tabulação, mas há muitos editores que padrão para abas por motivos históricos.">
 <!ENTITY options.editor.tabs.width "Tamanho do tab">
 
-<!ENTITY options.editor.tabs.policy.caption "Política de tabs">
-<!ENTITY options.editor.tabs.policy.spaces "Inserir espaços para tabulações">
-<!ENTITY options.editor.tabs.policy.tabs "Inserir tabulações">
-
 <!ENTITY options.debug.warning
 "Mantenha em mente que os métodos de autenticação LOGIN e PLAIN não cifram sua senha, ela pode acabar aparecendo na console de erro sem ser criptografada.">
 <!ENTITY options.debug.caption "Configurações de debug">

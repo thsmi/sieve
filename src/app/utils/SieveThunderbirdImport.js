@@ -29,12 +29,6 @@
   class SieveThunderbirdImport {
 
     /**
-     * Initializes the template loader
-     */
-    constructor() {
-    }
-
-    /**
      * Parses a section from thunderbird's profile.ini
      * @param {String} section
      *   the section which should be parsed.

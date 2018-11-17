@@ -18,6 +18,8 @@
 
   const MAX_CHAR_CODE = 255;
 
+  const HEX_STRING = 16;
+
   /**
    * Crypto implementations are very browser specific.
    * Which means we need a separate wrapper for each browser.
@@ -44,7 +46,7 @@
     byteArrayToHexString(tmp) {
       let str = "";
       for (let i = 0; i < tmp.length; i++)
-        str += ("0" + tmp[i].toString(16)).slice(-2);
+        str += ("0" + tmp[i].toString(HEX_STRING)).slice(-2);
 
       return str;
     }

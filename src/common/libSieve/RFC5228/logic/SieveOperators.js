@@ -12,16 +12,18 @@
 
 /* global window */
 
-"use strict";
+(function () {
 
-(function (exports) {
+  "use strict";
+
+  const MAX_QUOTE_LEN = 50;
 
   /* global SieveLexer */
   /* global SieveAbstractElement */
   /* global SieveTestList */
 
   /*
-   * Currenlty we have only Unary Operators like not and Nary/Multary like anyof allof
+   * Currently we have only Unary Operators like not and Nary/Multary like anyof allof
    * Sieve does not implement binary (2) or tenary operators (3)
    */
 
@@ -53,6 +55,13 @@
     return "operator";
   };
 
+  /**
+   * @inheritdoc
+   */
+  SieveNotOperator.prototype.require = function(imports) {
+    return this._test.require(imports);
+  };
+
   SieveNotOperator.prototype.init
     = function (parser) {
       // Syntax :
@@ -62,7 +71,7 @@
       this.whiteSpace[0].init(parser);
 
       if (!this._probeByClass(["test", "operator"], parser))
-        throw new Error("Test command expected but found:\n'" + parser.bytes(50) + "'...");
+        throw new Error("Test command expected but found:\n'" + parser.bytes(MAX_QUOTE_LEN) + "'...");
 
       this._test = this._createByClass(["test", "operator"], parser);
 
@@ -156,7 +165,7 @@
       else if (parser.startsWith("anyof"))
         this.isAllOf = false;
       else
-        throw new Error("allof or anyof expected but found: \n" + parser.bytes(50) + "...");
+        throw new Error("allof or anyof expected but found: \n" + parser.bytes(MAX_QUOTE_LEN) + "...");
 
       // remove the allof or anyof
       parser.extract(5);

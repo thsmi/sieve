@@ -12,12 +12,11 @@
 
 /* global window */
 
-"use strict";
-
 (function (exports) {
 
+  "use strict";
+
   /* global SieveLexer */
-  /* global SieveAbstractElement */
   /* global SieveAbstractBlock */
 
   function SieveBlockBody(docshell, id) {
@@ -98,8 +97,8 @@
     = function () {
       return "{" + SieveBlockBody.prototype.toScript.call(this) + "}";
     };
-  // ****************************************************************************//
 
+  // ****************************************************************************//
 
   function SieveRootNode(docshell) {
     SieveBlockBody.call(this, docshell, -1);
@@ -141,13 +140,16 @@
 
   SieveRootNode.prototype.toScript
     = function () {
-      let requires = [];
+
+      let capabilities = this.document().capabilities();
+
+      capabilities.clear();
 
       // Step 1: collect requires
-      this.elms[1].require(requires);
+      this.elms[1].require(capabilities);
 
       // Step 2: Add require...
-      for (let item in requires)
+      for (let item of capabilities.dependencies)
         this.elms[0].capability(item);
 
       // TODO Remove unused requires...

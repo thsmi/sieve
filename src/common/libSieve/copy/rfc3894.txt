@@ -1,0 +1,283 @@
+
+
+
+
+
+
+Network Working Group                                         J. Degener
+Request for Comments: 3894                                Sendmail, Inc.
+Category: Standards Track                                   October 2004
+
+
+             Sieve Extension: Copying Without Side Effects
+
+Status of this Memo
+
+   This document specifies an Internet standards track protocol for the
+   Internet community, and requests discussion and suggestions for
+   improvements.  Please refer to the current edition of the "Internet
+   Official Protocol Standards" (STD 1) for the standardization state
+   and status of this protocol.  Distribution of this memo is unlimited.
+
+Copyright Notice
+
+   Copyright (C) The Internet Society (2004).
+
+Abstract
+
+   The Sieve scripting language allows users to control handling and
+   disposal of their incoming e-mail.  By default, an e-mail message
+   that is processed by a Sieve script is saved in the owner's "inbox".
+   Actions such as "fileinto" and "redirect" cancel this default
+   behavior.
+
+   This document defines a new keyword parameter, ":copy", to be used
+   with the Sieve "fileinto" and "redirect" actions.  Adding ":copy" to
+   an action suppresses cancellation of the default "inbox" save.  It
+   allows users to add commands to an existing script without changing
+   the meaning of the rest of the script.
+
+1.  Introduction
+
+   The Sieve scripting language [SIEVE] allows users to control handling
+   and disposal of their incoming e-mail.  Two frequently used Sieve
+   commands are "fileinto" (saving into a local message store, such as
+   an IMAP server) and "redirect" (forwarding to another e-mail
+   address).  Both of these cancel the Sieve default behavior of saving
+   into the user's "inbox".
+
+   But some users have the notion of forwarding an extra copy of a
+   message for safekeeping to another e-mail address, or of saving a
+   copy in a folder - in addition to the regular message delivery, which
+   shouldn't be affected by the copy.
+
+
+
+
+
+Degener                     Standards Track                     [Page 1]
+
+RFC 3894      Sieve Extension - Copy Without Side Effects   October 2004
+
+
+   If saving an extra copy is all the user wanted to do,
+
+      fileinto "unfiltered";
+      keep;
+
+   would do the job.  The "keep" command does explicitly what the
+   cancelled default behavior did.  But the explicit "keep" is a poor
+   substitute for the implicit "keep" when more processing follows:
+
+      fileinto "unfiltered";
+      keep;
+
+      if header "Subject" "MAKE MONEY FAST!!!"
+      {
+              discard;
+      }
+
+   In this example, the "discard" is ineffective against the explicit
+   "keep"; the discarded message still ends up in the user's inbox.
+
+   It is possible to generate Sieve code that perfectly expresses a
+   user's wishes, but such code quickly grows unwieldy because it needs
+   to keep track of the state that the implicit "keep" would have had
+   without the "fileinto" or "redirect" command.
+
+   This extension tries to make life easier for user interface designers
+   and script writers by allowing them to express the "copy" semantics
+   directly.
+
+2.  Conventions used
+
+   Conventions for notations are as in [SIEVE] section 1.1, including
+   use of [KEYWORDS] and "Syntax:" label for the definition of action
+   and tagged arguments syntax.
+
+   The capability string associated with extension defined in this
+   document is "copy".
+
+3.  ":copy" extension to the "fileinto" and "redirect" commands
+
+   Syntax:
+        "fileinto" [":copy"] <folder: string>
+        "redirect" [":copy"] <address: string>
+
+   If the optional ":copy" keyword is specified with "fileinto" or
+   "redirect", the tagged command does not cancel the implicit "keep".
+   Instead, it merely files or redirects a copy in addition to whatever
+   else is happening to the message.
+
+
+
+Degener                     Standards Track                     [Page 2]
+
+RFC 3894      Sieve Extension - Copy Without Side Effects   October 2004
+
+
+   Example:
+
+      require ["copy", "fileinto"];
+      fileinto :copy "incoming";
+
+      # ... more processing follows ...
+
+4.  Security Considerations
+
+   The "copy" extension makes it easier to eavesdrop on a user's message
+   stream without the user noticing.  This was technically possible
+   before if an attacker gained read/write access to a user's Sieve
+   scripts, but now an attacker no longer needs to parse a script in
+   order to modify it.  Write access to Sieve scripts must be protected
+   as strongly as read/write access to e-mail, for example by using
+   secure directory protocols such as correctly parameterized LDAP over
+   TLS [LDAP].
+
+   Organizations that wish to monitor their users' e-mail traffic must
+   familiarize themselves with local data protection laws before
+   creating stores of old e-mail traffic without control, or perhaps
+   even knowledge, of the sender or intended recipients.
+
+   Organizations that legally use "redirect :copy" to eavesdrop on
+   correspondence (for example, by keeping a log to answer questions
+   about insider trading at a later time) can avoid future problems by
+   setting users' privacy expectations correctly.
+
+5.  IANA Considerations
+
+   The following template specifies the IANA registration of the "copy"
+   Sieve extension specified in this document.
+
+   To: iana@iana.org
+   Subject: Registration of new Sieve extension
+
+   Capability name: copy
+   Capability keyword: copy
+   Capability arguments: N/A
+   Standards Track: RFC 3894
+   Person and email address to contact for further information:
+
+      Jutta Degener
+      Sendmail, Inc.
+      6425 Christie Ave, 4th Floor
+      Emeryville, CA 94608
+
+      Email: jutta@sendmail.com
+
+
+
+Degener                     Standards Track                     [Page 3]
+
+RFC 3894      Sieve Extension - Copy Without Side Effects   October 2004
+
+
+   This information has been added to the list of Sieve extensions given
+   on http://www.iana.org/assignments/sieve-extensions.
+
+6.  Acknowledgments
+
+   Thanks to Eric Allman, Ned Freed, Will Lee, Nigel Swinson, and Rand
+   Wacker for corrections and comments.
+
+7.  References
+
+7.1.  Normative References
+
+   [KEYWORDS] Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119, March 1997.
+
+   [SIEVE]    Showalter, T., "Sieve: A Mail Filtering Language", RFC
+              3028, January 2001.
+
+7.2.  Informative References
+
+   [LDAP]     Wahl, M., Alvestrand, H., Hodges, J., and R. Morgan,
+              "Authentication Methods for LDAP", RFC 2829, May 2000.
+
+Author's Address
+
+   Jutta Degener
+   Sendmail, Inc.
+   6425 Christie Ave, 4th Floor
+   Emeryville, CA 94608
+
+   EMail: jutta@sendmail.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Degener                     Standards Track                     [Page 4]
+
+RFC 3894      Sieve Extension - Copy Without Side Effects   October 2004
+
+
+Full Copyright Statement
+
+   Copyright (C) The Internet Society (2004).
+
+   This document is subject to the rights, licenses and restrictions
+   contained in BCP 78, and except as set forth therein, the authors
+   retain all their rights.
+
+   This document and the information contained herein are provided on an
+   "AS IS" basis and THE CONTRIBUTOR, THE ORGANIZATION HE/S HE
+   REPRESENTS OR IS SPONSORED BY (IF ANY), THE INTERNET SOCIETY AND THE
+   INTERNET ENGINEERING TASK FORCE DISCLAIM ALL WARRANTIES, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF
+   THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED
+   WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+
+Intellectual Property
+
+   The IETF takes no position regarding the validity or scope of any
+   Intellectual Property Rights or other rights that might be claimed to
+   pertain to the implementation or use of the technology described in
+   this document or the extent to which any license under such rights
+   might or might not be available; nor does it represent that it has
+   made any independent effort to identify any such rights.  Information
+   on the IETF's procedures with respect to rights in IETF Documents can
+   be found in BCP 78 and BCP 79.
+
+   Copies of IPR disclosures made to the IETF Secretariat and any
+   assurances of licenses to be made available, or the result of an
+   attempt made to obtain a general license or permission for the use of
+   such proprietary rights by implementers or users of this
+   specification can be obtained from the IETF on-line IPR repository at
+   http://www.ietf.org/ipr.
+
+   The IETF invites any interested party to bring to its attention any
+   copyrights, patents or patent applications, or other proprietary
+   rights that may cover technology that may be required to implement
+   this standard.  Please address the information to the IETF at ietf-
+   ipr@ietf.org.
+
+Acknowledgement
+
+   Funding for the RFC Editor function is currently provided by the
+   Internet Society.
+
+
+
+
+
+
+
+Degener                     Standards Track                     [Page 5]
+

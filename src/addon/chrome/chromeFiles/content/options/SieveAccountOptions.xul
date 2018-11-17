@@ -268,26 +268,13 @@
             </menupopup>
           </menulist>
         </hbox>
-      </groupbox>
-
-      <groupbox>
-        <caption label="&options.editor.tabs.caption;" />
-        <description>&options.editor.tabs.description;</description>
         <box align="center" >
           <label value="&options.editor.tabs.width;" />
           <textbox id="txtTabWidth" size="4"
                           onchange="onTabWidthChange(this.value);"/>
         </box>
-        <hbox align="center" >
-          <label control="mlTabPolicy" value="&options.editor.tabs.policy.caption;" />
-          <menulist id="mlTabPolicy" oncommand="onTabPolicySelect(this.selectedIndex)">
-            <menupopup>
-              <menuitem label="&options.editor.tabs.policy.spaces;" value="0"/>
-              <menuitem label="&options.editor.tabs.policy.tabs;" value="1"/>
-            </menupopup>
-          </menulist>
-        </hbox>
       </groupbox>
+
       <hbox flex="1"/>
     </vbox>
 

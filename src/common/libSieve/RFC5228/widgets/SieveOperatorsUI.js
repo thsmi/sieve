@@ -12,85 +12,99 @@
 
 /* global window */
 
-"use strict";
+(function () {
 
-(function (exports) {
+  "use strict";
 
   /* global $: false */
   /* global SieveDesigner */
   /* global SieveOperatorBoxUI */
+  /* global SieveOperatorDialogBoxUI */
+
   /* global SieveMultaryDropHandler */
   /* global SieveDropBoxUI */
-  /* global SieveEditableBoxUI */
 
-  function SieveNotUI(elm) {
-    SieveOperatorBoxUI.call(this, elm);
-  }
+  const TEST_ELEMENT = 1;
 
-  SieveNotUI.prototype = Object.create(SieveOperatorBoxUI.prototype);
-  SieveNotUI.prototype.constructor = SieveNotUI;
+  /**
+   * Provides an ui for the not operator
+   */
+  class SieveNotUI extends SieveOperatorBoxUI {
 
-  SieveNotUI.prototype.initSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
         .text("does not match:")
         .append(this.getSieve().test().html());
-    };
-
-
-  // ****************************************************************************//
-
-  function SieveAnyOfAllOfUI(elm) {
-    SieveOperatorBoxUI.call(this, elm);
+    }
   }
 
-  SieveAnyOfAllOfUI.prototype = Object.create(SieveOperatorBoxUI.prototype);
-  SieveAnyOfAllOfUI.prototype.constructor = SieveAnyOfAllOfUI;
 
-  SieveAnyOfAllOfUI.prototype.onValidate
-    = function () {
+  /**
+   * Provides an ui for the anyof and allof operator
+   */
+  class SieveAnyOfAllOfUI extends SieveOperatorDialogBoxUI {
 
-      if ($("#AnyOfAllOfValue" + this.id()).val() === "true")
+    /**
+     * @inheritDoc
+     **/
+    getTemplate() {
+      return "./RFC5228/templates/SieveAllOfAnyOfOperator.html";
+    }
+
+    /**
+     * @inheritDoc
+     **/
+    onSave() {
+
+      let value = $("#sieve-widget-allofanyof")
+        .find("input[name='allofanyof']:checked").val();
+
+      if (value === "true")
         this.getSieve().isAllOf = true;
       else
         this.getSieve().isAllOf = false;
 
       return true;
-    };
+    }
 
-  SieveAnyOfAllOfUI.prototype.initEditor
-    = function () {
-      return $("<div/>")
-        .append($("<select/>")
-          .attr("id", "AnyOfAllOfValue" + this.id())
-          .append($("<option/>")
-            .text("All of the following").val("true"))
-          .append($("<option/>")
-            .text("Any of the following").val("false"))
-          .val("" + this.getSieve().isAllOf));
-    };
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
+      $("#sieve-widget-allofanyof")
+        .find("input[name='allofanyof']")
+        .val(["" + this.getSieve().isAllOf]);
+    }
 
-  SieveAnyOfAllOfUI.prototype.initSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
         .text((this.getSieve().isAllOf) ? "All of the following:" : "Any of the following:");
-    };
+    }
 
-  SieveAnyOfAllOfUI.prototype.createHtml
-    = function (parent) {
+    /**
+     * @inheritDoc
+     */
+    createHtml(parent) {
 
       let item = $("<div/>")
         .addClass("sivOperator");
 
-      for (let i = 0; i < this.getSieve().tests.length; i++)
+      for (let test of this.getSieve().tests) {
         item
           .append((new SieveDropBoxUI(this))
-            .drop(new SieveMultaryDropHandler(), this.getSieve().tests[i][1])
+            .drop(new SieveMultaryDropHandler(), test[TEST_ELEMENT])
             .html()
             .addClass("sivOperatorSpacer"))
           .append(
-            $("<div/>").append(this.getSieve().tests[i][1].html())
+            $("<div/>").append(test[TEST_ELEMENT].html())
               .addClass("sivOperatorChild"));
+      }
 
       item
         .append((new SieveDropBoxUI(this))
@@ -98,22 +112,13 @@
           .html()
           .addClass("sivOperatorSpacer"));
 
-      return SieveEditableBoxUI.prototype.createHtml.call(this, parent)
+      return super.createHtml(parent)
         .append(item);
 
-    };
+    }
 
-  SieveAnyOfAllOfUI.prototype.showSummary
-    = function () {
-      SieveEditableBoxUI.prototype.showSummary.call(this);
-      this.html().children(".sivSummaryContent").after(this.html().children(".sivOperator"));
-    };
+  }
 
-  SieveAnyOfAllOfUI.prototype.showEditor
-    = function () {
-      SieveEditableBoxUI.prototype.showEditor.call(this);
-      this.html().children(".sivEditorContent").after(this.html().children(".sivOperator"));
-    };
 
   if (!SieveDesigner)
     throw new Error("Could not register operator Widgets");

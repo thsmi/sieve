@@ -12,154 +12,139 @@
 
 /* global window */
 
-"use strict";
+(function () {
 
-(function (exports) {
+  "use strict";
 
+  /* global SieveGrammar */
   /* global SieveLexer */
-  /* global SieveAbstractElement */
   /* global SieveBlockBody */
 
-  function SieveRequire(docshell, id) {
-    SieveAbstractElement.call(this, docshell, id);
+  if (!SieveGrammar)
+    throw new Error("Could not register default Actions");
 
-    this.whiteSpace = this._createByName("whitespace", " ");
-    this.semicolon = this._createByName("atom/semicolon");
+  SieveGrammar.addAction({
+    node: "import/require",
+    type: "import/",
+    token: "require",
 
-    this.strings = this._createByName("stringlist");
-  }
+    properties: [{
+      id: "parameters",
 
-  SieveRequire.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveRequire.prototype.constructor = SieveRequire;
+      elements: [{
+        id: "capabilities",
 
-  SieveRequire.isElement
-    = function (parser, lexer) {
-      return parser.startsWith("require", lexer);
-    };
-
-  SieveRequire.nodeName = function () {
-    return "import/require";
-  };
-
-  SieveRequire.nodeType = function () {
-    return "import/";
-  };
+        type: "stringlist"
+      }]
+    }]
+  });
 
 
-  SieveRequire.prototype.init
-    = function (parser) {
-      // Syntax :
-      // <"require"> <stringlist> <";">
+  /**
+   *
+   */
+  class SieveBlockImport extends SieveBlockBody {
 
-      // remove the "require" identifier ...
-      parser.extract("require");
-
-      // ... eat the deadcode before the stringlist...
-      this.whiteSpace.init(parser);
-
-      // ... extract the stringlist...
-      this.strings.init(parser);
-
-      // Test if the
-      let capabilities = this._docshell.capabilities();
-
-      for (let idx = 0; idx < this.strings.size(); idx++) {
-
-        let item = this.strings.item(idx);
-
-        if (!capabilities[item])
-          throw new Error('Unknown capability string "' + item + '"');
-
-      }
-
-      this.semicolon.init(parser);
-
-      return this;
-    };
-
-  SieveRequire.prototype.capability
-    = function (require) {
-      if (typeof (require) === "undefined")
-        return this.strings;
-
-      if (!this.strings.contains(require))
-        this.strings.append(require);
-
-      return this;
-    };
-
-  SieveRequire.prototype.toScript
-    = function () {
-      return "require"
-        + this.whiteSpace.toScript()
-        + this.strings.toScript()
-        + this.semicolon.toScript();
-    };
-
-
-  // CONSTRUCTOR:
-  function SieveBlockImport(docshell, id) {
-    SieveBlockBody.call(this, docshell, id);
-  }
-
-  SieveBlockImport.prototype = Object.create(SieveBlockBody.prototype);
-  SieveBlockImport.prototype.constructor = SieveBlockImport;
-
-  // PUBLIC STATIC:
-  SieveBlockImport.isElement
-    = function (parser, lexer) {
+    /**
+     * @inheritDoc
+     */
+    static isElement(parser, lexer) {
       return lexer.probeByClass(["import/", "whitespace"], parser);
-    };
+    }
 
-  SieveBlockImport.nodeName = function () {
-    return "import";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "import";
+    }
 
-  SieveBlockImport.nodeType = function () {
-    return "import";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeType() {
+      return "import";
+    }
 
-  SieveBlockImport.prototype.init
-    = function (parser) {
+    /**
+     * @inheritDoc
+     */
+    init(parser) {
       // The import section consists of require and deadcode statments...
       while (this._probeByClass(["import/", "whitespace"], parser))
         this.elms.push(
           this._createByClass(["import/", "whitespace"], parser));
 
-      return this;
-    };
+      // check if the imports are valid
+      for (let item of this.elms) {
 
-
-  SieveBlockImport.prototype.capability
-    = function (require) {
-
-      // We should try to insert new requires directly aftr the previous one...
-      // ... otherwise it looks strange.
-      let item = null;
-
-      for (let i = 0; i < this.elms.length; i++) {
-        if (!this.elms[i].capability)
+        if (item.nodeName() !== "import/require")
           continue;
 
-        item = this.elms[i];
-
-        if (this.elms[i].capability().contains(require))
-          return this;
+        this.check(
+          item.getElement("capabilities").values());
       }
 
+      return this;
+    }
 
-      this.append(
-        this.document().createByName("import/require").capability(require), item);
+    /**
+     * Checks if the given import are supported by the sieve implementation.
+     * In case an incompatible require is found an exception will be thrown.
+     *
+     * @param {String[]} dependencies
+     *   the require strings to check as string array
+     * @returns {void}
+     *
+     */
+    check(dependencies) {
+
+      let capabilities = this.document().capabilities();
+
+      for (let item of dependencies)
+        if (!capabilities.hasCapability(item))
+          throw new Error('Unknown capability string "' + item + '"');
+    }
+
+    /**
+     * Add a require to the require statements.
+     * In the require is already present, it will be silently skipped.
+     *
+     * @param {String} require
+     *   the require to add.
+     * @return {SieveBlockImport}
+     *   a self reference.
+     */
+    capability(require) {
+
+      // We should try to insert new requires directly after the last require
+      // statement otherwise it looks strange. So we just keep track of the
+      // last require we found.
+      let last = null;
+
+      for (let item of this.elms) {
+        if (item.nodeName() !== "import/require")
+          continue;
+
+        if (item.getElement("capabilities").contains(require))
+          return this;
+
+        last = item;
+      }
+
+      let elm = this.document().createByName("import/require");
+      elm.getElement("capabilities").values(require);
+
+      this.append(elm, last);
 
       return this;
-    };
+    }
+  }
 
 
   if (!SieveLexer)
     throw new Error("Could not register Import Elements");
 
-
   SieveLexer.register(SieveBlockImport);
-  SieveLexer.register(SieveRequire);
 
 })(window);

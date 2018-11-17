@@ -1,0 +1,32 @@
+<div>
+  <ul id="template-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#sieve-widget-servermetadataexiststest" role="tab">Server Meta Data exists</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+    </li>
+  </ul>
+
+  <div id="template-content">
+    <div class="tab-content m-2">
+      <div class="tab-pane fade show active" id="sieve-widget-servermetadataexiststest" role="tabpanel">
+
+        <div class="form-group">
+          <label>The server has all of the following annotations:</label>
+
+          <div id="sivMailboxAnnotationsList">
+          </div>
+
+        </div>
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+        <p>Checks a mailbox for annotations</p>
+        <p>
+          The test is true if all of the server annotations listed in the annotations exist (i.e., have non-NIL values).
+        </p>
+
+      </div>
+    </div>
+  </div>
+</div>

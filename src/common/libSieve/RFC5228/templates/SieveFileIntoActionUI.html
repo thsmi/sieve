@@ -1,0 +1,40 @@
+<div>
+    <ul id="template-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-fileinto" role="tab">Fileinto</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+        </li>
+    </ul>
+
+    <div id="template-content">
+        <div class="tab-content m-2">
+            <div class="tab-pane fade show active" id="sieve-widget-fileinto" role="tabpanel">
+                <div class="form-group">
+                    <label>Save the incoming message into folder:</label>
+                    <input id="sivFileIntoPath" type="text" class="form-control col-lg-8" placeholder="Enter folder" />
+                    <div class="invalid-feedback">Invalid folder name</div>
+
+                    <div id="sivFileIntoOverlay"> </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+                <p>
+                    The mailbox name is typically a hierarchical name used to determin a folder on the server. So it is equivalent whith the
+                    folder structure you can see in your mail client.
+                </p>
+                <p>
+                    There is no precise definition how the hierarchical name is formed. It depends on your mailserver implementation. Only the
+                    case-insensitive mailbox name INBOX is a special name reserved to mean "the primary mailbox for this
+                    user on this server".
+                </p>
+                <p>
+                    But you should avoid using non-graphical characters, the list-wildcard cahracters ("%" and "*"), characters which are reserved
+                    by the server for the level of hierarchy (typically "/" or ".") as well as "#" as "&amp;" because they
+                    can have special meanings.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

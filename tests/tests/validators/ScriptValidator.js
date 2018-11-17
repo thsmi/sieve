@@ -10,74 +10,173 @@
  *
  */
 
-"use strict";
+/* global window */
 
-(function () {
+(function (exports) {
 
-  /* global net */
+  "use strict";
+
   /* global SieveDocument */
   /* global SieveLexer */
+  /* global SieveGrammar */
+  /* global SieveCapabilities */
 
-  let suite = net.tschmid.yautt.test;
+  var suite = exports.net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not append script test tools to test suite");
 
+  /**
+   * Parses the given script and returns a SieveDocument.
+   * It honors the server's capabilities.
+   *
+   * @param {string} script
+   *   the script to parse
+   * @param {Object.<string, boolean>} [capabilities]
+   *   optional parameter which simulates the the server's capabilities
+   *
+   * @return {SieveDocument}
+   *  the parsed sieve document
+   */
+  function parseScript(script, capabilities) {
 
-  suite.expectValidScript
-    = function (script, capabilities) {
+    SieveGrammar.create(capabilities);
 
-      if (capabilities)
-        SieveLexer.capabilities(capabilities);
+    if (capabilities)
+      SieveLexer.capabilities(capabilities);
 
+    let doc = new SieveDocument(SieveLexer, null);
 
-      let doc = new SieveDocument(SieveLexer, null);
+    doc.script(script);
 
-      suite.logTrace("Start Parsing Script");
+    return doc;
+  }
+
+  suite.parseScript = parseScript;
+
+  /**
+   *
+   * @param {*} doc
+   * @param {*} script
+   * @param {*} capabilities
+   */
+  function validateDocument(doc, script, capabilities) {
+
+    suite.logTrace("Start Serializing Script");
+    let rv = doc.script();
+    suite.logTrace("End Serializing Script");
+
+    suite.assertEquals(script, rv);
+
+    if (capabilities) {
+      let dependencies = new SieveCapabilities(capabilities);
+      doc.root().require(dependencies);
+
+      suite.logTrace(rv);
+
+      for (let capability of capabilities) {
+        suite.logTrace("Testing Capability: " + capability);
+        suite.assertTrue(dependencies.hasCapability(capability), "Did not find capability '" + capability + "'");
+      }
+    }
+  }
+  suite.validateDocument = validateDocument;
+
+  /**
+   *
+   * @param {*} script
+   * @param {*} capabilities
+   */
+  function expectValidScript(script, capabilities) {
+
+    suite.logTrace("Start Parsing Script");
+    let doc = suite.parseScript(script, capabilities);
+    suite.logTrace("End Parsing Script");
+
+    suite.logTrace("Start Serializing Script");
+    validateDocument(doc, script, capabilities);
+    suite.logTrace("End Serializing Script");
+
+    return doc;
+  }
+
+  suite.expectValidScript = expectValidScript;
+
+  /**
+   *
+   * @param {*} script
+   * @param {*} exception
+   * @param {*} capabilities
+   */
+  function expectInvalidScript(script, exception, capabilities) {
+
+    SieveGrammar.create(capabilities);
+
+    if (capabilities)
+      SieveLexer.capabilities(capabilities);
+
+    let doc = new SieveDocument(SieveLexer, null);
+
+    suite.logTrace("Start Parsing Script");
+    try {
       doc.script(script);
-      suite.logTrace("End Parsing Script");
+    }
+    catch (e) {
+      suite.logTrace("Exception caught");
+      suite.assertEquals(exception, e.toString().substr(0, exception.length));
 
-      suite.logTrace("Start Serializing Script");
-      let rv = doc.script();
-      suite.logTrace("End Serializing Script");
+      return;
+    }
 
-      suite.assertEquals(script, rv);
+    throw new Error("Exception expected");
+  }
 
-      if (capabilities) {
-        let requires = {};
-        doc.root().require(requires);
+  suite.expectInvalidScript = expectInvalidScript;
 
-        suite.logTrace(rv);
+  /**
+   *
+   * @param {*} type
+   * @param {*} snipplet
+   * @param {*} capabilities
+   */
+  function expectValidSnipplet(type, snipplet, capabilities) {
 
-        for (let capability in capabilities) {
-          suite.logTrace("Testing Capability: " + capability);
-          suite.assertEquals(true, requires[capability]);
-        }
+    SieveGrammar.create(capabilities);
+
+    if (capabilities)
+      SieveLexer.capabilities(capabilities);
+
+    let doc = new SieveDocument(SieveLexer, null);
+
+    // Create element with defaults and convert it to a script sniplet...
+    let element = doc.createByName(type);
+    let rv1 = element.toScript();
+
+    // ... and should match our expectation.
+    suite.assertEquals(snipplet, rv1);
+
+    // ... then try to parse these script sniplet
+    let rv2 = doc.createByName(type, rv1).toScript();
+
+    // and ensure both snipplets should be identical...
+    suite.assertEquals(rv1, rv2);
+
+    if (capabilities) {
+
+      let dependencies = new SieveCapabilities(capabilities);
+      element.require(dependencies);
+
+      suite.logTrace(rv1);
+
+      for (let capability of capabilities) {
+        suite.logTrace("Testing Capability: " + capability);
+        suite.assertTrue(dependencies.hasCapability(capability), "Did not find capability '" + capability + "'");
       }
+    }
 
-      return doc;
-    };
+    return doc;
+  }
 
-  suite.expectInvalidScript
-    = function (script, exception, capabilities) {
+  suite.expectValidSnipplet = expectValidSnipplet;
 
-      if (capabilities)
-        SieveLexer.capabilities(capabilities);
-
-      let doc = new SieveDocument(SieveLexer, null);
-
-      suite.logTrace("Start Parsing Script");
-      try {
-        doc.script(script);
-      }
-      catch (e) {
-        suite.logTrace("Exception caught");
-        suite.assertEquals(exception, e);
-
-        return;
-      }
-
-      throw new Error("Exception expected");
-    };
-
-})();
+})(window);

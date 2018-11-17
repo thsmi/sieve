@@ -1,0 +1,36 @@
+<div>
+  <ul id="template-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#sieve-widget-exists-test" role="tab">Exists</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+    </li>
+  </ul>
+
+  <div id="template-content">
+    <div class="tab-content m-2">
+      <div class="tab-pane fade show active" id="sieve-widget-exists-test" role="tabpanel">
+        <p>All of the following header exist:</p>
+        <div class="form-group">
+          <div id="sivExistsHeaderList"
+               data-list-dropdown="#sivExistsHeaderListTemplate">
+          </div>
+
+          <div id="sivExistsHeaderListTemplate" class="d-none">
+            <div class="dropdown-menu dropdown-menu-right">
+              <button class="dropdown-item" type="button">To</button>
+              <button class="dropdown-item" type="button">From</button>
+              <button class="dropdown-item" type="button">Cc</button>
+              <button class="dropdown-item" type="button">Bcc</button>
+              <button class="dropdown-item" type="button">Reply-To</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+      </div>
+    </div>
+  </div>
+</div>

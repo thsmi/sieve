@@ -106,7 +106,7 @@ let actions = {
     };
   },
 
-  "account-get-settings" : function(msg) {
+  "account-get-settings": function (msg) {
     // for the settings menu
     let account = accounts.getAccountById(msg.payload.account);
 
@@ -120,7 +120,7 @@ let actions = {
       secure: account.getSecurity().isSecure(),
 
       mechanism: account.getSecurity().getMechanism(),
-      username : account.getAuthentication().getUsername()
+      username: account.getAuthentication().getUsername()
     };
   },
 
@@ -128,18 +128,18 @@ let actions = {
     let account = accounts.getAccountById(msg.payload.account);
 
     return {
-      "general" : {
+      "general": {
         secure: account.getSecurity().isSecure(),
-        sasl : account.getSecurity().getMechanism()
+        sasl: account.getSecurity().getMechanism()
       },
-      "authentication" : {
-        type : account.getAuthentication().getType(),
+      "authentication": {
+        type: account.getAuthentication().getType(),
         username: account.getAuthentication(0).getUsername()
       },
 
-      "authorization" : {
-        type : account.getAuthorization().getType(),
-        username : account.getAuthorization(3).getAuthorization()
+      "authorization": {
+        type: account.getAuthorization().getType(),
+        username: account.getAuthorization(3).getAuthorization()
       }
     };
   },
@@ -261,7 +261,7 @@ let actions = {
   "script-create": async function (msg) {
     console.log("Create Scripts for account: " + msg.payload.account);
 
-    let name = await(new SieveCreateScriptDialog()).show();
+    let name = await (new SieveCreateScriptDialog()).show();
 
     if (name.trim() !== "")
       await sessions[msg.payload.account].putScript(name, "#test\r\n");
@@ -485,7 +485,6 @@ let actions = {
 
   "set-preference": (msg) => {
     let pref = new SievePrefManager("editor");
-
     pref.setValue(msg.payload.key, msg.payload.value);
   }
 

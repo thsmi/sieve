@@ -113,17 +113,16 @@
      *   a unique Identifier for this Session. Only needed to make debugging easier.
      */
     constructor(account, sid) {
-      this.logger = new SieveLogger();
+      this.logger = new SieveLogger(sid);
       this.logger.level(account.getSettings().getDebugFlags());
-      this.logger.prefix(sid);
 
       this.account = account;
     }
 
-    initClient() {
-      this.sieve = new Sieve(this.logger);
-    }
-
+    /**
+     * @returns {SieveLogger}
+     *   a reference to the current logger
+     */
     getLogger() {
       return this.logger;
     }
@@ -196,9 +195,6 @@
       return new SieveSaslScramSha256Request();
     }
 
-    createSaslExternalRequest() {
-      return new SieveSaslExternalRequest();
-    }
 
     /**
      * Wraps the request into a promise and passes it to the sieve client for execution.
@@ -341,7 +337,7 @@
      *   the script's name
      * @param {String} script
      *   the script which should be saved.
-     * @returns {void}
+     * @returns {Promise}
      */
     async putScript(name, script) {
 
@@ -355,6 +351,11 @@
       return await this.exec(request, callback);
     }
 
+    /**
+     * Lists all scripts available on the server.
+     * @returns {Promise<Object>}
+     *   the current scripts.
+     */
     async listScripts() {
 
       let callback = {
@@ -373,8 +374,8 @@
      *
      * @param {String} name
      *   the scripts unique name
-     * @returns {String}
-     *   the scripts content.
+     * @returns {Promise<String>}
+     *   the scripts content as string
      */
     async getScript(name) {
 
@@ -718,7 +719,7 @@
             return this.createSaslScramSha256Request();
 
           case "EXTERNAL":
-            return this.createSaslExternalRequest();
+            return new SieveSaslExternalRequest();
 
           case "LOGIN":
             // we use SASL LOGIN only as last resort...
@@ -790,6 +791,10 @@
      */
     onIdle() {
       (async () => { await this.noop(); })();
+    }
+
+    onError() {
+      alert("server reported an error...")
     }
 
     /**

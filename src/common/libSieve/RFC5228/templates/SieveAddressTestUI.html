@@ -1,0 +1,58 @@
+<div>
+  <ul id="template-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#sieve-widget-addresstest" role="tab">Address</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+    </li>
+  </ul>
+
+  <div id="template-content">
+    <div class="tab-content m-2">
+      <div class="tab-pane fade show active" id="sieve-widget-addresstest" role="tabpanel">
+        <div class="form-group">
+          <h5>Any of the following header ... </h5>
+
+          <div id="sivAddressHeaderList"
+               data-list-dropdown="#sivAddressHeaderListTemplate">
+         </div>
+
+          <div id="sivAddressHeaderListTemplate" class="d-none">
+            <div class="dropdown-menu dropdown-menu-right">
+              <button class="dropdown-item" type="button">To</button>
+              <button class="dropdown-item" type="button">From</button>
+              <button class="dropdown-item" type="button">Cc</button>
+              <button class="dropdown-item" type="button">Bcc</button>
+              <button class="dropdown-item" type="button">Reply-To</button>
+            </div>
+          </div>
+
+          <hr />
+          <div id="sivAddressMatchTypes"> </div>
+          <hr />
+          <div id="sivAddressAddressPart"> </div>
+          <hr />
+
+          <h5>... any of the keyword(s):</h5>
+          <div id="sivAddressKeyList">
+          </div>
+
+        </div>
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+        <div id="sivAddressComparator"> </div>
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+        <p>Compares headers against E-Mail addresses.</p>
+        <p>You typically use test with headers like "to", "from", "cc" etc. </p>
+        <p>As this test is aware of e-mail addresses containing display names. A header containing '"roadrunner" &lt;roadrunner@acme.example.com&gt;'
+          is considered to be equivalent to "'roadrunner@acme.example.com"</p>
+        <p>If the header should be matched against a string use the header test.</p>
+      </div>
+    </div>
+  </div>
+</div>

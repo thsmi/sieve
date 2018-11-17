@@ -1,0 +1,39 @@
+<div>
+    <ul id="template-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-stringtest" role="tab">Server Meta Data</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+        </li>
+    </ul>
+
+    <div id="template-content">
+        <div class="tab-content m-2">
+            <div class="tab-pane fade show active" id="sieve-widget-stringtest" role="tabpanel">
+
+                <div class="form-group">
+                    <h5>The server annotation ... </h5>
+                    <input id="sivAnnotationName" type="text" class="form-control form-control-sm col-lg-8" />
+                    <h5>... has a value which ...</h5>
+
+                    <div id="sivMailboxMatchTypes"> </div>
+
+                    <h5>... any of the following keys:</h5>
+
+                    <div id="sivMailboxKeys">
+                    </div>
+
+                </div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+                <div id="sivMailboxComparator"> </div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+            </div>
+        </div>
+    </div>
+</div>

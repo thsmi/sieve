@@ -9,21 +9,20 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-/* global Components */
+(function (exports) {
 
-// Enable Strict Mode
-"use strict";
+  "use strict";
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cu = Components.utils;
+  /* global Components */
 
-const CLEANUP_DELAY = 5000;
-const DEBUG = false;
+  const Cc = Components.classes;
+  const Ci = Components.interfaces;
+  const Cu = Components.utils;
 
-const EXPORTED_SYMBOLS = ["SieveOverlayUtils", "SieveOverlayManager"];
+  const CLEANUP_DELAY = 5000;
+  const DEBUG = false;
 
-let SieveOverlayUtils =
+  let SieveOverlayUtils =
   {
     addTabType: function (aTabType, tabmail) {
       if (!tabmail)
@@ -154,25 +153,25 @@ let SieveOverlayUtils =
     },
 
     removeStyleSheet: function (document, url) {
-      for (let i = document.styleSheets.length - 1; i >= 0; i--) {
-        if (document.styleSheets[i].href !== url)
+      for (let stylesheet of document.styleSheets.length) {
+        if (stylesheet.href !== url)
           continue;
 
-        document.styleSheets[i].ownerNode.parentNode.removeChild(document.styleSheets[i].ownerNode);
+        stylesheet.ownerNode.parentNode.removeChild(stylesheet.ownerNode);
       }
     }
   };
 
 
-let SieveOverlayManager =
+  let SieveOverlayManager =
   {
     _overlays: [],
     _overlayUrls: {},
 
     _unload: new Map(),
 
-    scripts : new Map(),
-    listeners : new Set(),
+    scripts: new Map(),
+    listeners: new Set(),
 
     cleanupTimer: Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer),
 
@@ -185,20 +184,18 @@ let SieveOverlayManager =
      * @returns {nsIDOMWindow}
      *   the dom window
      */
-    _getWindow: function(xulWindow) {
-
+    _getWindow: function (xulWindow) {
       // Starting TB63 a xul window does not implement the nsIDOMWindow/nsIInterfaceRequestor.
       // The new way is to use the new docShell.domWindow member. But this is not available
       // on older TB Versions, so that we need both implementations.
-
       if (xulWindow.docShell && xulWindow.docShell.domWindow)
         return xulWindow.docShell.domWindow;
-
       return xulWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindow);
     },
 
+
     log: function (str) {
-      if (typeof(DEBUG) === "undefined" || DEBUG !== true)
+      if (typeof (DEBUG) === "undefined" || DEBUG !== true)
         return;
 
       Components.classes["@mozilla.org/consoleservice;1"]
@@ -206,11 +203,12 @@ let SieveOverlayManager =
         .logStringMessage(str);
     },
 
-    addUnloadHook: function(win, uri) {
+    addUnloadHook: function (win, uri) {
 
       // Conect the window with the script...
       if (this.scripts.has(uri) === false)
         this.scripts.set(uri, new Set());
+
 
       this.scripts.get(uri).add(win);
 
@@ -273,7 +271,7 @@ let SieveOverlayManager =
      * And removes them if needed
      * @returns {void}
      */
-    cleanup: function() {
+    cleanup: function () {
       this.log(`Doing cleanup`);
 
       this.scripts.forEach((windows, uri) => {
@@ -460,6 +458,7 @@ let SieveOverlayManager =
       wm.addListener(this);
     },
 
+
     /**
      * Forces Unloading all loaded components.
      * @returns {void}
@@ -487,3 +486,15 @@ let SieveOverlayManager =
       delete this._overlayUrls;
     }
   };
+
+  exports.SieveOverlayUtils = SieveOverlayUtils;
+  exports.SieveOverlayManager = SieveOverlayManager;
+
+  // Expose as mozilla module...
+  if (!exports.EXPORTED_SYMBOLS)
+    exports.EXPORTED_SYMBOLS = [];
+
+  exports.EXPORTED_SYMBOLS.push("SieveOverlayUtils");
+  exports.EXPORTED_SYMBOLS.push("SieveOverlayManager");
+
+})(this);

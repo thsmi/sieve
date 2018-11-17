@@ -12,15 +12,13 @@
 
 /* global window */
 
-"use strict";
+(function () {
 
-(function (exports) {
+  "use strict";
 
   /* global SieveLexer */
   /* global SieveBlock */
   /* global SieveBlockBody */
-
-  // ****************************************************************************//
 
   function SieveElse(docshell, id) {
     SieveBlock.call(this, docshell, id);
@@ -175,35 +173,46 @@
         + this.ws[1].toScript();
     };
 
+  /**
+   *
+   */
+  class SieveCondition extends SieveBlockBody {
 
+    /**
+     * @inheritDoc
+     */
+    constructor(docshell, id) {
+      super(docshell, id);
 
-  // ****************************************************************************//
+      this.elms[0] = this._createByName("condition/if", "if false {\r\n}\r\n");
+    }
 
-  function SieveCondition(docshell, id) {
-    SieveBlockBody.call(this, docshell, id);
-
-    this.elms[0] = this._createByName("condition/if", "if false {\r\n}\r\n");
-  }
-
-  SieveCondition.prototype = Object.create(SieveBlockBody.prototype);
-  SieveCondition.prototype.constructor = SieveCondition;
-
-  SieveCondition.isElement
-    = function (parser, lexer) {
+    /**
+     * @inheritDoc
+     */
+    static isElement(parser, lexer) {
       return SieveIf.isElement(parser, lexer);
-    };
+    }
 
-  SieveCondition.nodeName = function () {
-    return "condition";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "condition";
+    }
 
-  SieveCondition.nodeType = function () {
-    return "condition";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeType() {
+      return "condition";
+    }
 
+    /**
+     * @inheritDoc
+     */
+    init(parser) {
 
-  SieveCondition.prototype.init
-    = function (parser) {
       this.elms[0] = this._createByName("condition/if", parser);
 
       while (parser.startsWith("elsif")) {
@@ -218,10 +227,9 @@
         this.elms.push(this._createByName("condition/else", parser));
 
       return this;
-    };
+    }
 
-  SieveCondition.prototype.removeChild
-    = function (childId, cascade, stop) {
+    removeChild(childId, cascade, stop) {
       // should we remove the whole node
       if (typeof (childId) === "undefined")
         throw new Error("Child ID Missing");
@@ -253,11 +261,12 @@
 
 
       return elm;
-    };
+    }
 
-
-  SieveCondition.prototype.toScript
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    toScript() {
       let str = "";
 
       for (let i = 0; i < this.elms.length; i++) {
@@ -268,7 +277,8 @@
       }
 
       return str;
-    };
+    }
+  }
 
 
   if (!SieveLexer)

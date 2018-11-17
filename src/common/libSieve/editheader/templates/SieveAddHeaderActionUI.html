@@ -1,0 +1,49 @@
+<div>
+    <ul id="template-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-addheader" role="tab">Add Header</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+        </li>
+    </ul>
+
+    <div id="template-content">
+        <div class="tab-content m-2">
+            <div class="tab-pane fade show active" id="sieve-widget-addheader" role="tabpanel">
+
+                <div class="form-group">
+                    <h5>Create a new header ...</h5>
+                    <input type="text" id="sivNewHeaderName" class="form-control form-control-sm col-lg-8" />
+                    <h5>... with a value of ...</h5>
+                    <input type="text" id="sivNewHeaderValue" class="form-control form-control-sm col-lg-8" />
+                    <h5>... and add as ...</h5>
+
+                    <div class="custom-control custom-radio mr-sm-2">
+                        <input type="radio" class="custom-control-input" name="last" value="false" id="sieve-header-first" />
+                        <label class="custom-control-label" for="sieve-header-first">
+                            ... first header
+                        </label>
+                    </div>
+
+                    <div class="custom-control custom-radio mr-sm-2">
+                        <input type="radio" class="custom-control-input" name="last" value="true" id="sieve-header-last" />
+                        <label class="custom-control-label" for="sieve-header-last">
+                            ... last header
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+                <p>
+                    Adds a new header to the meassage. The existing message header are untouched. By default, the header field is inserted at
+                    the beginning of the existing message header.
+                </p>
+                <p class="alert alert-info" role="alert">
+                    The header name is by definition a case insensitive 7bit US-ASCII string. Leading and tailing whitespaces are ignored. Headers
+                    with invalid names are silently ignored.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

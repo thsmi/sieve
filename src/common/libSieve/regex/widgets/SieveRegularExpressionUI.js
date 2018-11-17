@@ -12,42 +12,39 @@
 
 /* global window */
 
-"use strict";
+(function () {
 
-(function (exports) {
+  "use strict";
 
-  /* global SieveAbstractMatchUI */
+  /* global SieveAbstractMatchTypeUI */
   /* global SieveDesigner */
 
-  function SieveRegExMatchUI(id) {
-    SieveAbstractMatchUI.call(this, id);
+  /**
+   * Provides an UI for the RegEx match type.
+   */
+  class SieveRegExMatchUI extends SieveAbstractMatchTypeUI {
+
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "match-type/regex";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    static isCapable(capabilities) {
+      return capabilities.hasCapability("regex");
+    }
+
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./regex/templates/SieveMatchTypeRegExUI.html";
+    }
   }
-
-  SieveRegExMatchUI.prototype = Object.create(SieveAbstractMatchUI.prototype);
-  SieveRegExMatchUI.prototype.constructor = SieveRegExMatchUI;
-
-  SieveRegExMatchUI.nodeName = function () {
-    return "match-type/regex";
-  };
-
-  SieveRegExMatchUI.nodeType = function () {
-    return "match-type/";
-  };
-
-  SieveRegExMatchUI.isCapable = function (capabilities) {
-    return !!capabilities["regex"];
-  };
-
-  SieveRegExMatchUI.prototype.html
-    = function (callback) {
-
-      return SieveAbstractMatchUI.prototype.html.call(
-        this, ":regex", "... regex matches ...",
-        " Matches and compares using on a regular expression as defined in IEEE.1003-2.1992", callback);
-    };
-
-
-  //* ***********************************************************************************
 
   if (!SieveDesigner)
     throw new Error("Could not register Regex Widgets");

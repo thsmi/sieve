@@ -33,7 +33,7 @@
     }
 
     getType() {
-      return "SIEVE_CERT_VALIDATION_EXCEPTION"
+      return "SIEVE_CERT_VALIDATION_EXCEPTION";
     }
   }
 
@@ -143,6 +143,11 @@
 
       this.socket.on('connect', () => { this.onSocketConnected(); });
       this.socket.on('data', (data) => { this.onReceive(data); });
+      this.socket.on('error', (error) => {
+        // Node guarantees that close is called after error.
+        if ((this.listener) && (this.listener.onError))
+          this.listener.onError(error);
+      });
       this.socket.on('close', () => {
         this.disconnect();
 

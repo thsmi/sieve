@@ -1,0 +1,106 @@
+<div>
+    <ul id="template-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-virustest" role="tab">Virustest</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+        </li>
+    </ul>
+
+    <div id="template-content">
+        <div class="tab-content m-2">
+            <div class="tab-pane fade show active" id="sieve-widget-virustest" role="tabpanel">
+
+                <div class="form-group">
+                    <h5>The virus scan result...</h5>
+                    <br />
+                    <div id="sivVirustestMatchTypes"> </div>
+                    <br />
+                    <div id="sivVirustestValue"
+                         data-list-dropdown="#sivVirustestTemplate">
+                    </div>
+
+                    <div id="sivVirustestTemplate" class="d-none">
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <button class="dropdown-item" type="button" data-value="0">0
+                                <small class="text-muted">Message was not tested for viruses</small>
+                            </button>
+                            <div class="dropdown-divider"> </div>
+                            <button class="dropdown-item" type="button" data-value="1">1
+                                <small class="text-muted">Message was tested and contains no known viruses</small>
+                            </button>
+                            <button class="dropdown-item" type="button" data-value="2">2
+                                <small class="text-muted">Message contained a known virus that was replaced with
+                                    harmless content</small>
+                            </button>
+                            <button class="dropdown-item" type="button" data-value="3">3
+                                <small class="text-muted">Message contained a known virus that was "cured" such
+                                    that it is now harmless</small>
+                            </button>
+                            <div class="dropdown-divider"> </div>
+                            <button class="dropdown-item" type="button" data-value="4">4
+                                <small class="text-muted">Message possibly contains a known virus</small>
+                            </button>
+                            <button class="dropdown-item" type="button" data-value="5">5
+                                <small class="text-muted">Message was tested and definitely contains a known virus</small>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+                <div id="sivVirustestComparator"> </div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+                <p>
+                    The "virustest" test evaluates to true if the normalized result
+                    string matches the value.
+                </p>
+                <p>
+                    The normalized result string starts with a numeric value in the
+                    range "0" (zero) through "5", with meanings summarized below:
+                </p>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Value</th>
+                            <th scope="col">Interpretation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">0</th>
+                            <td>message was not tested for virustest</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>message contains no known viruses</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>message contained a known virus that was replaced with harmless content</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>message contained a known virus that was "cured"</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">4</th>
+                            <td>message possibly contains a known virus</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">5</th>
+                            <td>message definitely contains a known virus</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>

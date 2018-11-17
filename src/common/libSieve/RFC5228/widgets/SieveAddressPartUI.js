@@ -12,179 +12,121 @@
 
 /* global window */
 
-"use strict";
-
 (function (exports) {
 
-  /* global $: false */
+  "use strict";
+
   /* global SieveDesigner */
-  /* global SieveAbstractBoxUI */
+  /* global SieveDropDownWidget */
+  /* global SieveDropDownItemWidget */
 
-  function SieveAddressPartUI(elm) {
-    SieveAbstractBoxUI.call(this, elm);
+  /**
+   * Provides a widget for the address part widget
+   */
+  class SieveAddressPartWidget extends SieveDropDownWidget {
+
+    /**
+     * @inheritDoc
+     */
+    constructor(selector) {
+      super("address-part/", selector);
+    }
   }
 
-  SieveAddressPartUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
-  SieveAddressPartUI.prototype.constructor = SieveAddressPartUI;
+  /**
+   * An Abstract Address Part UI.
+   */
+  class SieveAbstractAddressPartUI extends SieveDropDownItemWidget {
 
-  SieveAddressPartUI.nodeName = function () {
-    return "address-part";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeType() {
+      return "address-part/";
+    }
 
-  SieveAddressPartUI.nodeType = function () {
-    return "address-part";
-  };
-
-  SieveAddressPartUI.prototype.onSelect
-    = function () {
-      let value = $("input[name='rgAddressPart" + this.id() + "']:checked").val();
-      this.getSieve().addressPart(value);
-    };
-
-  SieveAddressPartUI.prototype.createHtml
-    = function () {
-      let value = this.getSieve().addressPart();
-
-      let widgets = SieveDesigner.getWidgetsByClass("address-part/", this.id());
-
-      let item = $("<div/>").addClass("sivAddressPart");
-      let that = this;
-
-      widgets.forEach(function (element) {
-        item.append(element.html(function () { that.onSelect(); }));
-      });
-
-      item.find("input[name='rgAddressPart" + this.id() + "'][value='" + value + "']")
-        .attr("checked", "checked");
-
-      return item;
-    };
-
-  // ************************************************************************************
-
-  function SieveAbstractAddressPartUI(id) {
-    this.id = id;
+    /**
+     * @inheritDoc
+     */
+    getName() {
+      return "sieve-addresspart";
+    }
   }
 
-  SieveAbstractAddressPartUI.prototype.html
-    = function (value, header, description, callback) {
-      return $("<div/>")
-        .css("overflow", "auto")
-        .append($("<input/>")
-          .attr("type", "radio")
-          .attr("name", "rgAddressPart" + this.id)
-          .css("float", "left")
-          .attr("value", value)
-          .change(callback))
-        .append($("<div/>")
-          .css("float", "left")
-          .append($("<h1/>").text(header))
-          .append($("<span/>").html(description)));
-    };
 
-  // ************************************************************************************
+  /**
+   * Provides an UI for the all address part
+   */
+  class SieveAllPartUI extends SieveAbstractAddressPartUI {
 
-  function SieveAllPartUI(id) {
-    SieveAbstractAddressPartUI.call(this, id);
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "address-part/all";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveAddressPartAll.html";
+    }
   }
 
-  SieveAllPartUI.prototype = Object.create(SieveAbstractAddressPartUI.prototype);
-  SieveAllPartUI.prototype.constructor = SieveAllPartUI;
 
-  SieveAllPartUI.nodeName = function () {
-    return "address-part/all";
-  };
+  /**
+   * Provides an UI for the domain part
+   */
+  class SieveDomainPartUI extends SieveAbstractAddressPartUI {
 
-  SieveAllPartUI.nodeType = function () {
-    return "address-part/";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "address-part/domain";
+    }
 
-  SieveAllPartUI.isCapable = function (capabilities) {
-    return true;
-  };
-
-  SieveAllPartUI.prototype.html
-    = function (callback) {
-
-      return SieveAbstractAddressPartUI.prototype.html.call(
-        this, ":all", "... an email address with ...",
-        'An email address consists of a domain an a local part split by the "@" sign.<br>'
-        + 'The local part is case sensitive while the domain part is not', callback);
-    };
-
-  // ************************************************************************************
-
-  function SieveDomainPartUI(id) {
-    SieveAbstractAddressPartUI.call(this, id);
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveAddressPartDomain.html";
+    }
   }
 
-  SieveDomainPartUI.prototype = Object.create(SieveAbstractAddressPartUI.prototype);
-  SieveDomainPartUI.prototype.constructor = SieveDomainPartUI;
 
-  SieveDomainPartUI.nodeName = function () {
-    return "address-part/domain";
-  };
+  /**
+   * Provides an UI for the local part
+   */
+  class SieveLocalPartUI extends SieveAbstractAddressPartUI {
 
-  SieveDomainPartUI.nodeType = function () {
-    return "address-part/";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "address-part/local";
+    }
 
-  SieveDomainPartUI.isCapable = function (capabilities) {
-    return true;
-  };
-
-  SieveDomainPartUI.prototype.html
-    = function (callback) {
-
-      return SieveAbstractAddressPartUI.prototype.html.call(
-        this, ":domain", "... a domain part with ...",
-        'Everything after the @ sign. The domain part is not case sensitive.<br>'
-        + 'e.g.: "me@example.com" is stripped to "example.com"',
-        callback);
-    };
-
-
-  // ************************************************************************************
-
-  function SieveLocalPartUI(id) {
-    SieveAbstractAddressPartUI.call(this, id);
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveAddressPartLocal.html";
+    }
   }
 
-  SieveLocalPartUI.prototype = Object.create(SieveAbstractAddressPartUI.prototype);
-  SieveLocalPartUI.prototype.constructor = SieveLocalPartUI;
-
-  SieveLocalPartUI.nodeName = function () {
-    return "address-part/local";
-  };
-
-  SieveLocalPartUI.nodeType = function () {
-    return "address-part/";
-  };
-
-  SieveLocalPartUI.isCapable = function (capabilities) {
-    return true;
-  };
-
-  SieveLocalPartUI.prototype.html
-    = function (callback) {
-
-      return SieveAbstractAddressPartUI.prototype.html.call(
-        this, ":localpart", "... a local part with...",
-        'Everything before the @ sign. The local part is case sensitive.<br>'
-        + 'e.g.: "me@example.com" is stripped to "me"', callback);
-    };
 
   // ************************************************************************************
 
   if (!SieveDesigner)
-    throw new Error("Could not register String Widgets");
+    throw new Error("Could not register address part Widgets");
 
-  SieveDesigner.register("address-part", "address-part", SieveAddressPartUI);
   SieveDesigner.register2(SieveAllPartUI);
   SieveDesigner.register2(SieveDomainPartUI);
   SieveDesigner.register2(SieveLocalPartUI);
 
   exports.SieveAbstractAddressPartUI = SieveAbstractAddressPartUI;
-  exports.SieveAddressPartUI = SieveAddressPartUI;
+  exports.SieveAddressPartWidget = SieveAddressPartWidget;
 
 })(window);

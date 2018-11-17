@@ -6,21 +6,22 @@
     "doc": "docs",
     "test": "tests"
   },
-  "dependencies": {},
   "devDependencies": {
     "bootstrap": "^4.0.0",
-    "codemirror": "^5.33.0",
-    "electron": "^1.8.2",
-    "electron-packager": "^10.1.0",
-    "eslint": "^4.14.0",
+    "codemirror": "^5.36.0",
+    "electron": "^3.0.4",
+    "electron-packager": "^12.2.0",
+    "eslint": "^5.7.0",
     "gulp": "^4.0.0",
     "gulp-zip": "^4.1.0",
-    "jquery": "^3.2.1"
+    "jquery": "^3.3.1",
+    "material-design-icons": "^3.0.1"
   },
   "scripts": {
     "start": "./node_modules/.bin/electron ./build/electron/resources/",
     "debug": "./node_modules/.bin/electron ./build/electron/resources/ --debug",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node ./tools/Server/Server.js"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,55 @@
+<div>
+  <ul id="template-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#sieve-widget-headertest" role="tab">Header</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+    </li>
+  </ul>
+
+  <div id="template-content">
+    <div class="tab-content m-2">
+      <div class="tab-pane fade show active" id="sieve-widget-headertest" role="tabpanel">
+        <div class="form-group">
+          <h5>Any of the following header ... </h5>
+
+          <div id="sivHeaderHeaderList"
+               data-list-dropdown="#sivHeaderHeaderListTemplate">
+          </div>
+
+          <div id="sivHeaderHeaderListTemplate" class="d-none">
+            <div class="dropdown-menu dropdown-menu-right">
+              <button class="dropdown-item" type="button">Subject</button>
+              <button class="dropdown-item" type="button">Date</button>
+              <button class="dropdown-item" type="button">Message-ID</button>
+              <button class="dropdown-item" type="button">Content-Type</button>
+            </div>
+          </div>
+
+          <hr/>
+          <div id="sivHeaderMatchTypes"> </div>
+          <hr/>
+
+          <h5>... any of the keyword(s):</h5>
+          <div id="sivHeaderKeyList">
+          </div>
+
+        </div>
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+        <div id="sivHeaderComparator"> </div>
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+        <p>Compares headers against constant strings.</p>
+        <p>You typically use this test with headers containing subject line or a spam score.</p>
+        <p>Do not use this test, if the header should be matched against a mail addresses. The result will be unrealiable, as
+          this test is not aware of display names. Use the address test instead.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

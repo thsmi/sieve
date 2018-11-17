@@ -1,0 +1,61 @@
+
+                    <div class="custom-control custom-radio">
+                      <input type="radio" id="sivSpamtestRadio" name="customRadio" class="custom-control-input">
+                      <label class="custom-control-label" for="sivSpamtestRadio">... absolute value ...</label>
+
+                      <small class="form-text text-muted">By default sieve uses a spam score ranging from zero to ten describing the likelihood to be spam. Where zero means untested, one clear of spam and ten definitive spam </small>
+                      <div id="sivSpamtestValue" data-list-dropdown="#sivSpamtestTemplate">
+                      </div>
+                  </div>
+
+                  <div id="sivSpamtestTemplate" class="d-none">
+                      <div class="dropdown-menu dropdown-menu-right">
+                          <button class="dropdown-item" type="button" data-value="0">0
+                              <small class="text-muted">Message was not tested for spam</small>
+                          </button>
+                          <div class="dropdown-divider"></div>
+                          <button class="dropdown-item" type="button" data-value="1">1
+                              <small class="text-muted">Message is clear of spam</small>
+                          </button>
+                          <div class="dropdown-item" data-value="5">
+                              <div><span class="sivSpamtestRangeValue">5</span> <small class="text-muted">Message's
+                                      spam likelihood</small></div>
+                              <input type="range" class="custom-range sieve-string-dropdown-updateable" min="2" max="9"
+                                  value="5" data-update-element=".sivSpamtestRangeValue">
+                          </div>
+                          <button class="dropdown-item" type="button" data-value="10">10
+                              <small class="text-muted">Message definitely contains spam</small>
+                          </button>
+                      </div>
+
+                  </div>
+
+                  <div class="custom-control custom-radio">
+                      <input type="radio" id="sivSpamtestPercentRadio" name="customRadio" class="custom-control-input">
+                      <label class="custom-control-label" for="sivSpamtestPercentRadio">... percentual value ...</label>
+
+                      <small class="form-text text-muted">The spam score can also be a likelihood ranging from zero to 100. Where zero means no spam or untested and 100 definitive spam</small>
+
+                      <div id="sivSpamtestPercentValue" data-list-dropdown="#sivSpamtestPercentTemplate">
+                      </div>
+                  </div>
+
+                  <div id="sivSpamtestPercentTemplate" class="d-none">
+                      <div class="dropdown-menu dropdown-menu-right">
+                          <button class="dropdown-item" type="button" data-value="0">0%
+                              <small class="text-muted">Message was not tested for spam or is clear of spam</small>
+                          </button>
+                          <div class="dropdown-divider"> </div>
+                          <div class="dropdown-item" data-value="50">
+                              <div><span class="sivSpamtestRangeValuePercent">50</span>% <small class="text-muted">Message's
+                                      spam likelihood in percent</small></div>
+                              <input type="range" class="custom-range sieve-string-dropdown-updateable" min="1" max="99"
+                                  value="50" data-update-element=".sivSpamtestRangeValuePercent">
+                          </div>
+                          <div class="dropdown-divider"> </div>
+                          <button class="dropdown-item" type="button" data-value="100">100%
+                              <small class="text-muted">Message definitely contains spam</small>
+                          </button>
+                      </div>
+
+                  </div>

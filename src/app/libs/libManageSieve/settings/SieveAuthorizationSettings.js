@@ -11,6 +11,8 @@
 
 (function (exports) {
 
+  "use strict";
+
   const CONFIG_AUTHORIZATION_TYPE_NONE = 0;
   const CONFIG_AUTHORIZATION_TYPE_SIEVE = 1;
   const CONFIG_AUTHORIZATION_TYPE_PROMPT = 2;
@@ -19,8 +21,6 @@
   const DEFAULT_AUTHORIZATION_TYPE = CONFIG_AUTHORIZATION_TYPE_SIEVE;
 
   const CONFIG_AUTHORIZATION_TYPE = "authorization.type";
-
-  "use strict";
 
   const {
     SieveNoAuthorization,

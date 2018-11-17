@@ -1,0 +1,98 @@
+<div>
+  <ul id="template-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#sieve-widget-environment" role="tab">Environment</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+    </li>
+  </ul>
+
+  <div id="template-content">
+    <div class="tab-content m-2">
+      <div class="tab-pane fade show active" id="sieve-widget-environment" role="tabpanel">
+
+        <div class="form-group">
+          <h5>The environment info named...</h5>
+          <div id="sivEnvironmentName"
+               data-list-dropdown="#sivEnvironmentNameTemplate">
+          </div>
+
+          <div id="sivEnvironmentNameTemplate" class="d-none">
+              <div class="dropdown-menu dropdown-menu-right">
+                  <button class="dropdown-item" type="button" data-value="domain">
+                    <div>domain</div>
+                    <small class="text-muted">Primary DNS domain of the machine where the Sieve script is executing</small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="host">
+                    <div>host</div>
+                    <small class="text-muted">Fully-qualified domain name of the host where the Sieve script is
+                      executing</small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="location">
+                    <div>location</div>
+                    <small class="text-muted">
+                      Provides additional information about the type of
+                      service that is evaluating the script. <br />
+                      Well known services are "MTA" (Message Transfer Agent), "MDA" (Mail Delivery Agent), <br />
+                      "MUA" (Mail User Agent) and "MS" (Message Store).
+                    </small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="name">
+                    <div>name</div>
+                    <small class="text-muted">Sieve interpreter's name.</small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="phase">
+                    <div>phase</div>
+                    <small class="text-muted">Current delivery phase.<br />
+                      Can be before ("pre"), during ("during"), and after final delivery ("post")</small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="remote-host">
+                    <div>remote-host</div>
+                    <small class="text-muted">Host name of remote client as a Fully Qualified Domain Name (FQDN)<br />
+                      An empty string means, sieve failed to obtain this information</small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="remote-ip">
+                    <div>remote-ip</div>
+                    <small class="form-text text-muted">
+                      IP address of remote client in standard notation</small>
+                  </button>
+                  <button class="dropdown-item" type="button" data-value="version">
+                    <div>version</div>
+                    <small class="text-muted">The Sieve interpreter's version number.</small>
+                  </button>
+                </div>
+
+          </div>
+
+          <hr />
+          <div id="sivEnvironmentMatchTypes"> </div>
+
+          <hr />
+          <h5>... any of the following keys...</h5>
+          <div id="sivEnvironmentKeyList"> </div>
+
+        </div>
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+        <div id="sivEnvironmentComparator"> </div>
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+        <p>
+          The environment test retrieves the item of environment information
+          specified by the name string and matches it to the values specified
+          in the key-list argument. The test succeeds if a match occurs.
+        </p>
+        <p>
+          The current message is not a direct source of information for the
+          environment test; the item of information specified by the name
+          string is extracted from the script's operating environment and the
+          key-list argument comes from the script.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

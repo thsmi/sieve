@@ -1,0 +1,36 @@
+<div>
+    <div id="test42">
+        <br />
+
+        <div class="form-group">
+
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="sivFlagsCheckbox" />
+                <label class="custom-control-label" for="sivFlagsCheckbox">Add imap flag</label>
+
+                <small class="form-text text-muted">
+                    Adds flags to a message. It doesn't replace any previously set flags.
+                </small>
+
+                <div id="sivFlagKeyList" data-list-dropdown="#sivFlagKeyListTemplate">
+                </div>
+
+                <div id="sivFlagKeyListTemplate" class="d-none">
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <button class="dropdown-item" type="button">\Seen</button>
+                        <button class="dropdown-item" type="button">\Answered</button>
+                        <button class="dropdown-item" type="button">\Flagged</button>
+                        <button class="dropdown-item" type="button">\Delete</button>
+                        <button class="dropdown-item" type="button">\Draft</button>
+                        <button class="dropdown-item" type="button">\Recent</button>
+                        <button class="dropdown-item" type="button">\$Label1</button>
+                        <button class="dropdown-item" type="button">\$Label2</button>
+                        <button class="dropdown-item" type="button">\$Label3</button>
+                        <button class="dropdown-item" type="button">\$Label4</button>
+                        <button class="dropdown-item" type="button">\$Label5</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

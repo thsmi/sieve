@@ -49,13 +49,6 @@
       </div>
     </div>
   </div>
-
-  <hr>
-  <h5>Tabulator</h5>
-  <p>
-    Text editors with automatic indenting replacted the need for the tab key, but there are still many editor which default to
-    tabs due to historic reason.
-  </p>
   <div class="form-group row">
     <label class="col-sm-3 col-form-label">Tab width</label>
     <div class="col-sm-2">
@@ -70,19 +63,6 @@
         <option value="7">7</option>
         <option value="8">8</option>
       </select>
-    </div>
-  </div>
-  <div class="form-group row">
-    <label class="col-sm-3 col-form-label">Tab Policy</label>
-    <div class="col-sm-9">
-      <div id="editor-settings-tabulator-policy" class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label id="editor-settings-tabulator-policy-spaces" class="btn btn-outline-secondary btn-sm">
-          <input type="radio" name="tabulator-policy" autocomplete="off">Insert Spaces
-        </label>
-        <label id="editor-settings-tabulator-policy-tabs" class="btn btn-outline-secondary btn-sm">
-          <input type="radio" name="tabulator-policy" autocomplete="off">Insert Tabs
-        </label>
-      </div>
     </div>
   </div>
 

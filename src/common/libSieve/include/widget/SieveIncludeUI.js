@@ -12,142 +12,179 @@
 
 /* global window */
 
-"use strict";
+(function () {
 
-(function (exports) {
+  "use strict";
 
   /* global $: false */
   /* global SieveActionBoxUI */
   /* global SieveActionDialogBoxUI */
   /* global SieveDesigner */
-  /* global SieveTabWidget */
   /* global SieveStringListWidget */
 
-  /* *****************************************************************************/
+  /**
+   * Provides an UI for the Return Action
+   */
+  class SieveReturnUI extends SieveActionBoxUI {
 
-  function SieveReturnUI(elm) {
-    SieveActionBoxUI.call(this, elm);
-  }
-
-  SieveReturnUI.prototype = Object.create(SieveActionBoxUI.prototype);
-  SieveReturnUI.prototype.constructor = SieveReturnUI;
-
-  SieveReturnUI.prototype.initSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
         .text("End current script and return to the parent script");
-    };
-
-  /* *****************************************************************************/
-
-
-  function SieveGlobalActionUI(elm) {
-    SieveActionDialogBoxUI.call(this, elm);
+    }
   }
 
-  SieveGlobalActionUI.prototype = Object.create(SieveActionDialogBoxUI.prototype);
-  SieveGlobalActionUI.prototype.constructor = SieveGlobalActionUI;
+  /**
+   * Provides an UI for the global action
+   */
+  class SieveGlobalActionUI extends SieveActionDialogBoxUI {
 
-  SieveGlobalActionUI.prototype.getTemplate
-    = function () {
-      return "./include/widget/SieveGlobalActionUI.html";
-    };
+    /**
+     * @returns {SieveAbstractElement}
+     *   the element's variables field
+     */
+    variables() {
+      return this.getSieve().getElement("variables");
+    }
 
-  SieveGlobalActionUI.prototype.onSave
-    = function () {
-      let values = (new SieveStringListWidget("#sivIncludeGlobalList")).values();
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./include/template/SieveGlobalActionUI.html";
+    }
 
-      if (!values || !values.length) {
-        alert("Source list is empty");
+    /**
+     * @inheritDoc
+     */
+    onSave() {
+      let variables = (new SieveStringListWidget("#sivIncludeGlobalList"));
+
+      if (!variables.isUnique()) {
+        alert("Variable list items have to be unique");
         return false;
       }
 
-      this.getSieve().values()
-        .clear()
-        .append(values);
+      if (variables.isEmpty()) {
+        alert("Variable list has to be non empty");
+        return false;
+      }
 
+      variables.save(this.variables());
       return true;
-    };
+    }
 
-  SieveGlobalActionUI.prototype.onLoad
-    = function () {
-      (new SieveTabWidget()).init();
-
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
       (new SieveStringListWidget("#sivIncludeGlobalList"))
-        .init()
-        .values(this.getSieve().values());
-    };
+        .init(this.variables());
+    }
 
-  SieveGlobalActionUI.prototype.getSummary
-    = function () {
-
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
-        .html("Define as global variable(s) " + $('<em/>').text(this.getSieve().values().toScript()).html());
-
-    };
-
-
-  /* *****************************************************************************/
-
-
-  function SieveIncludeActionUI(elm) {
-    SieveActionDialogBoxUI.call(this, elm);
+        .html("Define as global variable(s) " + $('<em/>').text(this.variables()).html());
+    }
   }
 
-  SieveIncludeActionUI.prototype = Object.create(SieveActionDialogBoxUI.prototype);
-  SieveIncludeActionUI.prototype.constructor = SieveIncludeActionUI;
 
-  SieveIncludeActionUI.prototype.getTemplate
-    = function () {
-      return "./include/widget/SieveIncludeActionUI.html";
-    };
+  /**
+   * A UI for the include action
+   */
+  class SieveIncludeActionUI extends SieveActionDialogBoxUI {
 
-  SieveIncludeActionUI.prototype.onSave
-    = function () {
-      let sieve = this.getSieve();
 
-      let script = $("#sivIncludeScriptName").val();
+    once(value) {
+      return this.getSieve().enable("once", value);
+    }
 
-      if (script.trim() === "") {
-        alert("Invalid Script name");
+    optional(value) {
+      return this.getSieve().enable("optional", value);
+    }
+
+    personal(value) {
+
+      let elm = this.getSieve().getElement("location");
+
+      if (value === true)
+        elm.setValue(":personal");
+
+      if (value === false)
+        elm.setValue(":global");
+
+      return (elm.getValue() === ":personal");
+    }
+
+    script(value) {
+
+      let elm = this.getSieve().getElement("script");
+
+      if (value !== null && typeof (value) !== "undefined")
+        elm.value(value);
+
+      return elm.value();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./include/template/SieveIncludeActionUI.html";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
+      $('input:radio[name="personal"][value="' + !!this.personal() + '"]').prop('checked', true);
+
+      $('input:checkbox[name="optional"]').prop('checked', !!this.optional());
+      $('input:checkbox[name="once"]').prop('checked', !!this.once());
+
+      $("#sivIncludeScriptName").val(this.script());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    onSave() {
+
+      let script = $("#sivIncludeScriptName");
+
+      let value = script.val();
+      if (value.trim() === "") {
+        script.addClass("is-invalid");
         return false;
       }
 
-      sieve.script($("#sivIncludeScriptName").val());
+      this.script(value);
 
-      sieve.personal($("input[type='radio'][name='personal']:checked").val() === "true");
-      sieve.optional($("input:checkbox[name='optional']:checked").length);
-      sieve.once($("input:checkbox[name='once']:checked").length);
+      this.personal($("input[type='radio'][name='personal']:checked").val() === "true");
+      this.optional(($("input:checkbox[name='optional']:checked").length > 0));
+      this.once(($("input:checkbox[name='once']:checked").length > 0));
 
       return true;
-    };
+    }
 
-  SieveIncludeActionUI.prototype.onLoad
-    = function () {
-      (new SieveTabWidget()).init();
-
-      let sieve = this.getSieve();
-
-
-      $('input:radio[name="personal"][value="' + !!sieve.personal() + '"]').prop('checked', true);
-
-      $('input:checkbox[name="optional"]').prop('checked', !!sieve.optional());
-      $('input:checkbox[name="once"]').prop('checked', !!sieve.once());
-
-      $("#sivIncludeScriptName").val(sieve.script());
-    };
-
-  SieveIncludeActionUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       let str =
         "Include "
-        + (this.getSieve().personal() ? "personal" : "global")
-        + " script " + $('<em/>').text(this.getSieve().script()).html();
+        + (this.personal() ? "personal" : "global")
+        + " script " + $('<em/>').text(this.script()).html();
 
       return $("<div/>")
         .html(str);
-
-    };
+    }
+  }
 
 
   if (!SieveDesigner)

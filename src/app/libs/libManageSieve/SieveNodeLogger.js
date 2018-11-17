@@ -11,9 +11,9 @@
 
 /* global window */
 
-"use strict";
-
 (function (exports) {
+
+  "use strict";
 
   const { SieveAbstractLogger } = require("./SieveAbstractLogger.js");
 
@@ -23,21 +23,19 @@
    * Implements a sieve compatilbe logger instance for node
    * @constructor
    */
-  function SieveLogger() {
-    SieveAbstractLogger.call(this);
-  }
+  class SieveLogger extends SieveAbstractLogger {
 
-  SieveLogger.prototype = Object.create(SieveAbstractLogger.prototype);
-  SieveLogger.prototype.constructor = SieveLogger;
-
-  SieveLogger.prototype.log
-    = function (message, level) {
+    /**
+     * @inheritDoc
+     */
+    log(message, level) {
 
       if (!this.isLoggable(level))
         return;
 
       console.log("[" + this.getTimestamp() + " " + this.prefix() + "] " + message);
-    };
+    }
+  }
 
   exports.SieveLogger = SieveLogger;
 

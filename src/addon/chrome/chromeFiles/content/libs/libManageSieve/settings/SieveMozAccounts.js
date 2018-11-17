@@ -16,9 +16,6 @@
   /* global Components */
   /* global Services */
 
-  // Enable Strict Mode
-  "use strict";
-
   const Cc = Components.classes;
   const Ci = Components.interfaces;
   const Cu = Components.utils;
@@ -223,28 +220,6 @@
       return 0;
     };
 
-  /**
-   * With automatic indention, the need for a tab key is gone. Which means most
-   * editor replace the tab key with whitespaces.
-   *
-   * By default tabs are replaced with spaces
-   *
-   * @param {int} policy
-   *   the tab policy. Pass zero replace tabs with spaces and one to force tabs.
-   * @returns {void}
-   */
-  SieveAccountSettings.prototype.setTabPolicy
-    = function (policy) {
-      Services.prefs.setIntPref(this.sieveKey + ".editor.tab.policy", policy);
-    };
-
-  SieveAccountSettings.prototype.getTabPolicy
-    = function () {
-      if (Services.prefs.prefHasUserValue(this.sieveKey + ".editor.tab.policy"))
-        return Services.prefs.getIntPref(this.sieveKey + ".editor.tab.policy");
-
-      return 0;
-    };
 
   /**
    * The tab width specifies over how many spaces the tap will span.
@@ -433,7 +408,7 @@
 
   /**
    * Returns a list containing a SieveAccounts configured for every compatible
-   * nsIMsgIncommingServer in Thunderbird's AccountManager. Compatible accounts
+   * nsIMsgIncomingServer in Thunderbird's AccountManager. Compatible accounts
    * are POP3 and IMAP.
    *
    * @return {SieveAccount[]}
@@ -470,13 +445,13 @@
     };
 
   /**
-   * Loads and returns a SieveAccount for the specified nsIMsgIncommingServer.
+   * Loads and returns a SieveAccount for the specified nsIMsgIncomingServer.
    *
-   * @param {nsIMsgIncommingServer} server
-   *   the incomming server for which the sieve account should be returend
+   * @param {nsIMsgIncomingServer} server
+   *   the incoming server for which the sieve account should be returend
    *
    * @return {SieveAccount}
-   *   a SieveAccount for the incomming server
+   *   a SieveAccount for the incoming server
    */
   SieveAccounts.prototype.getAccountByServer
     = function (server) {

@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licensed. You may obtain a copy of
+* The contents of this file are licenced. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
@@ -12,30 +12,58 @@
 
 /* global window */
 
-"use strict";
+(function () {
 
-(function (exports) {
+  "use strict";
 
   /* global $: false */
   /* global SieveStringListWidget */
   /* global SieveActionDialogBoxUI */
-  /* global SieveTabWidget */
   /* global SieveDesigner */
 
-  function SieveVacationUI(elm) {
-    SieveActionDialogBoxUI.call(this, elm);
-  }
+  const MAX_QUOTE_LEN = 240;
 
-  SieveVacationUI.prototype = Object.create(SieveActionDialogBoxUI.prototype);
-  SieveVacationUI.prototype.constructor = SieveVacationUI;
+  /**
+   * Provides an UI for the vacation action
+   */
+  class SieveVacationUI extends SieveActionDialogBoxUI {
+
+    reason() {
+      return this.getSieve().getElement("reason");
+    }
+
+    subject() {
+      return this.getSieve().getElement("subject").getElement("subject");
+    }
+
+    days() {
+      return this.getSieve().getElement("days").getElement("days");
+    }
+
+    from() {
+      return this.getSieve().getElement("from").getElement("from");
+    }
+
+    handle() {
+      return this.getSieve().getElement("handle").getElement("handle");
+    }
+
+    addresses() {
+      return this.getSieve().getElement("addresses").getElement("addresses");
+    }
 
 
-  SieveVacationUI.prototype.onEnvelopeChanged
-    = function () {
+    enable(id, status) {
+      return this.getSieve().enable(id, status);
+    }
+
+
+    onEnvelopeChanged() {
+
       let addresses = (new SieveStringListWidget("#sivAddresses")).items();
       let text = "";
 
-      addresses.each(function (index) {
+      addresses.each(function () {
         text += (text.length ? ", " : "") + $(this).val();
       });
 
@@ -57,36 +85,28 @@
       else
         $('#vacationSubjectDesc').text("Server's default Subject");
 
-    };
+    }
 
-  SieveVacationUI.prototype.onLoad
-    = function () {
-      let that = this;
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
 
-      (new SieveTabWidget()).init();
-
-      $("#vacationEnvelopeEdit").click(function () {
-        $("#sivEditMain").hide();
-        $("#vacationEnvelopePage").show();
+      $('a[data-toggle="tab"][href="#sieve-widget-envelope"]').on('hide.bs.tab', () => {
+        this.onEnvelopeChanged();
       });
 
-      $("#vacationEnvelopeBack").click(function () {
-
-        that.onEnvelopeChanged();
-
-        $("#sivEditMain").show();
-        $("#vacationEnvelopePage").hide();
-
+      $("#vacationEnvelopeEdit").click(() => {
+        $('a[data-toggle="tab"][href="#sieve-widget-envelope"]')
+          .tab('show');
       });
 
-      let state = this.getSieve().state();
-
-      $('input:radio[name="days"][value="' + !!state["days"] + '"]').prop('checked', true);
-      $('input:radio[name="subject"][value="' + !!state["subject"] + '"]').prop('checked', true);
-      $('input:radio[name="from"][value="' + !!state["from"] + '"]').prop('checked', true);
-      $('input:radio[name="addresses"][value="' + !!state["addresses"] + '"]').prop('checked', true);
-      $('input:radio[name="mime"][value="' + !!state["mime"] + '"]').prop('checked', true);
-      $('input:radio[name="handle"][value="' + !!state["handle"] + '"]').prop('checked', true);
+      $('input:radio[name="days"][value="' + this.enable("days") + '"]').prop('checked', true);
+      $('input:radio[name="subject"][value="' + this.enable("subject") + '"]').prop('checked', true);
+      $('input:radio[name="from"][value="' + this.enable("from") + '"]').prop('checked', true);
+      $('input:radio[name="addresses"][value="' + this.enable("addresses") + '"]').prop('checked', true);
+      $('input:radio[name="mime"][value="' + this.enable("mime") + '"]').prop('checked', true);
+      $('input:radio[name="handle"][value="' + this.enable("handle") + '"]').prop('checked', true);
 
       // In case the user focuses into a textfield the radio button should be changed...
       $("#sivVacationFrom").focus(function () { $('input:radio[name="from"][value="true"]').prop('checked', true); });
@@ -94,33 +114,37 @@
       $("#sivVacationDays").focus(function () { $('input:radio[name="days"][value="true"]').prop('checked', true); });
       $("#sivVacationHandle").focus(function () { $('input:radio[name="handle"][value="true"]').prop('checked', true); });
 
-      $("#sivVacationReason").val(this.getSieve().reason());
+      $("#sivVacationReason").val(this.reason().value());
 
 
-      if (state["subject"])
-        $("#sivVacationSubject").val(this.getSieve().subject());
+      if (this.enable("subject"))
+        $("#sivVacationSubject").val(this.subject().value());
 
-      if (state["days"])
-        $("#sivVacationDays").val(this.getSieve().days());
+      if (this.enable("days"))
+        $("#sivVacationDays").val(this.days().getValue());
 
-      if (state["from"])
-        $("#sivVacationFrom").val(this.getSieve().from());
+      if (this.enable("from"))
+        $("#sivVacationFrom").val(this.from().value());
 
-      if (state["handle"])
-        $("#sivVacationHandle").val(this.getSieve().handle());
+      if (this.enable("handle"))
+        $("#sivVacationHandle").val(this.handle().value());
 
 
-      let addresses = (new SieveStringListWidget("#sivAddresses")).init();
+      let addresses = (new SieveStringListWidget("#sivAddresses"))
+        .init();
 
-      if (state["addresses"])
-        addresses.values(this.getSieve().addresses());
+      if (this.enable("addresses")) {
+        addresses.values(this.addresses().values());
+      }
 
       // trigger reloading the envelope fields...
       this.onEnvelopeChanged();
-    };
+    }
 
-  SieveVacationUI.prototype.onSave
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    onSave() {
 
       let state = {};
 
@@ -133,67 +157,72 @@
       state["mime"] = ($("input[type='radio'][name='mime']:checked").val() === "true");
       state["handle"] = ($("input[type='radio'][name='handle']:checked").val() === "true");
 
-
       let addresses = (new SieveStringListWidget("#sivAddresses")).values();
       state["addresses"] = !!addresses.length;
 
       // TODO Catch exceptions...
       // ... then update the fields...
 
-      let sieve = this.getSieve();
-
       try {
         if (state["from"] && (!$("#sivVacationFrom")[0].checkValidity()))
           throw new Error("From contains an invalid mail address");
 
-
         if (state["subject"])
-          sieve.subject($("#sivVacationSubject").val());
+          this.subject().value($("#sivVacationSubject").val());
 
+        // FIXME: we currently ignore unit...
         if (state["days"])
-          sieve.days($("#sivVacationDays").val());
+          this.days().setValue($("#sivVacationDays").val());
 
         if (state["from"])
-          sieve.from($("#sivVacationFrom").val());
+          this.from().value($("#sivVacationFrom").val());
 
         if (state["handle"])
-          sieve.handle($("#sivVacationHandle").val());
+          this.handle().value($("#sivVacationHandle").val());
 
-        if (state["addresses"]) {
-          sieve.addresses()
-            .clear()
-            .append(addresses);
-        }
+        if (state["addresses"])
+          this.addresses().values(addresses);
 
-        this.getSieve().reason($("#sivVacationReason").val());
+        this.reason().value($("#sivVacationReason").val());
       }
       catch (ex) {
         alert(ex);
         return false;
       }
 
-      this.getSieve().state(state);
+
+      this.enable("days", state["days"]);
+      this.enable("subject", state["subject"]);
+      this.enable("from", state["from"]);
+      this.enable("addresses", state["addresses"]);
+      this.enable("mime", state["mime"]);
+      this.enable("handle", state["handle"]);
+
       return true;
-    };
+    }
 
-  SieveVacationUI.prototype.getTemplate
-    = function () {
-      return "./vacation/widgets/SieveVacationUI.html";
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./vacation/template/SieveVacationUI.html";
+    }
 
-
-  SieveVacationUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
         .html("Send a vacation/an out of office message:" +
-        "<div><em>" +
-        $('<div/>').text(this.getSieve().reason().substr(0, 240)).html() +
-        ((this.getSieve().reason().length > 240) ? "..." : "") +
-        "</em></div>");
-    };
+          "<div><em>" +
+          $('<div/>').text(this.reason().value().substr(0, MAX_QUOTE_LEN)).html() +
+          ((this.reason().value().length > MAX_QUOTE_LEN) ? "..." : "") +
+          "</em></div>");
+    }
+  }
 
   if (!SieveDesigner)
-    throw new Error("Could not register Body Extension");
+    throw new Error("Could not register Vacation Extension");
 
   SieveDesigner.register("action/vacation", SieveVacationUI);
 

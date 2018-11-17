@@ -7,10 +7,11 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-// Enable Strict Mode
-"use strict";
 
 (function (exports) {
+
+  // Enable Strict Mode
+  "use strict";
 
   const CHAR_LF = 10;
   const CHAR_CR = 13;
@@ -22,13 +23,14 @@
 
   const NOT_FOUND = -1;
   const CHAR_LEN = 1;
+
   /**
    * The manage sieve protocol syntax uses a fixed gramar which is based on atomar tokens.
    * This class offers an interface to test for and extract these predefined tokens. It supports
    * Strings (Quoted and Literal), White Space (Line Break, Space ...) as well as arbitraty tokens.
    *
    * This class expects as input a byte array using UTF-8 encoding. It's because the manage sieve
-   * protocol is defined to uses UTF-8 encoding and Mozilla sockets return incomming messages streams.
+   * protocol is defined to uses UTF-8 encoding and Mozilla sockets return incoming messages streams.
    *
    * The parser does not change or alter the byte array's content. So extracting data does not shrink
    * the array free any bytes. This parser is just somekind of a view to this array.

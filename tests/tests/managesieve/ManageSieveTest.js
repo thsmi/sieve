@@ -11,11 +11,12 @@
 
 /* globals window */
 
-"use strict";
 
 (function (exports) {
 
-  let suite = exports.net.tschmid.yautt.test;
+  "use strict";
+
+  var suite = exports.net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");

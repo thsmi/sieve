@@ -1,0 +1,103 @@
+<div>
+    <ul id="template-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-deleteheader" role="tab">Delete Header</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+        </li>
+    </ul>
+
+    <div id="template-content">
+        <div class="tab-content m-2">
+            <div class="tab-pane fade show active" id="sieve-widget-deleteheader" role="tabpanel">
+
+                <div class="form-group">
+                    <h5>Delete ... </h5>
+                    <div class="custom-control custom-radio mr-sm-2">
+                        <input type="radio" class="custom-control-input" name="header-index" value="all" id="sieve-header-all" />
+                        <label class="custom-control-label" for="sieve-header-all">
+                            ... all ...
+                        </label>
+                    </div>
+
+                    <div class="form-row align-items-center mt-2">
+                        <div class="col-auto">
+                            <div class="custom-control custom-radio mr-sm-2">
+                                <input type="radio" class="custom-control-input" name="header-index" value="first" id="sieve-header-first" />
+                                <label class="custom-control-label" for="sieve-header-first">
+                                    ... the first
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <input type="number" id="sivDeleteHeaderFirstIndex" class="form-control form-control-sm col-lg-5" value="1"> </input>
+                        </div>
+                    </div>
+
+                    <div class="form-row align-items-center mt-2">
+                        <div class="col-auto">
+                            <div class="custom-control custom-radio mr-sm-2">
+                                <input type="radio" class="custom-control-input" name="header-index" value="last" id="sieve-header-last" />
+                                <label class="custom-control-label" for="sieve-header-last">
+                                    ... the last
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <input type="number" id="sivDeleteHeaderLastIndex" class="form-control form-control-sm col-lg-5" value="1" />
+                        </div>
+                    </div>
+
+                    <br/>
+
+                    <h5>... header named ...</h5>
+                    <input type="text" id="sivDeleteHeaderName" class="form-control form-control-sm col-lg-8" />
+
+                    <h5>... with ...</h5>
+                    <div class="custom-control custom-radio mr-sm-2">
+                        <input type="radio" class="custom-control-input" name="header-value" value="any" id="sieve-header-value-any" />
+                        <label class="custom-control-label" for="sieve-header-value-any">
+                            ... any value
+                        </label>
+                    </div>
+
+                    <div class="custom-control custom-radio mr-sm-2">
+                        <input type="radio" class="custom-control-input" name="header-value" value="some" id="sieve-header-value-some" />
+                        <label class="custom-control-label" for="sieve-header-value-some">
+                            ... one of the following values ...
+                        </label>
+                    </div>
+
+                    <div id="sivSomeValues">
+                            <h5>... which ...</h5>
+
+                        <div id="sivDeleteHeaderMatchTypes"> </div>
+
+                        <h5>... any of the keyword(s):</h5>
+
+                        <div id="sivValuePatternsList">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+                <div id="sivDeleteHeaderComparator"> </div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+                <p>
+                    By default, the deleteheader action deletes all occurrences of the named header field. The deleteheader action does not affect
+                    Sieve's implicit keep
+                </p>
+                <p class="alert alert-info" role="alert">
+                    The header name is by definition a case insensitive 7bit US-ASCII string. Leading and tailing whitespaces are ignored. Headers
+                    with invalid names are silently ignored.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

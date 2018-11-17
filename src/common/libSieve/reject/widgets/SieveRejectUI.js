@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licensed. You may obtain a copy of
+ * The contents of this file are licenced. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
@@ -12,88 +12,84 @@
 
 /* global window */
 
-"use strict";
+(function () {
 
-(function (exports) {
+  "use strict";
 
   /* global $: false */
   /* global SieveActionDialogBoxUI */
-  /* global SieveTabWidget */
   /* global SieveDesigner */
 
-  function SieveRejectActionUI(elm) {
-    SieveActionDialogBoxUI.call(this, elm);
-  }
+  const MAX_QUOTE_LEN = 240;
 
-  SieveRejectActionUI.prototype = Object.create(SieveActionDialogBoxUI.prototype);
-  SieveRejectActionUI.prototype.constructor = SieveRejectActionUI;
+  /**
+   * Provides a UI for the reject action
+   */
+  class SieveRejectActionUI extends SieveActionDialogBoxUI {
 
-  SieveRejectActionUI.prototype.getTemplate
-    = function () {
-      return "./reject/widgets/SieveRejectActionUI.html";
-    };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./reject/templates/SieveRejectActionUI.html";
+    }
 
-  SieveRejectActionUI.prototype.onSave
-    = function () {
-      this.getSieve().setReason($("#sivRejectReason").val());
+    /**
+     *  Gets and/or Sets the reason why the mail should be rejected
+     *
+     *  @param  {string} [reason]
+     *    optional the new reason which should be set.
+     *
+     *  @returns {string} the current reason
+     */
+    reason(reason) {
 
-      return true;
-    };
+      return this.getSieve().getElement("reason").value(reason);
+    }
 
-  SieveRejectActionUI.prototype.onLoad
-    = function () {
-      (new SieveTabWidget()).init();
-
-      $("#sivRejectReason").val(this.getSieve().getReason());
-    };
-
-  SieveRejectActionUI.prototype.getSummary
-    = function () {
-      return $("<div/>")
-        .html("Reject incomming messages and reply the following reason:" +
-        "<div>" +
-        $('<em/>').text(this.getSieve().getReason().substr(0, 240)).html() +
-        ((this.getSieve().getReason().length > 240) ? "..." : "") +
-        "</div>");
-    };
-
-  // *************************************************************************************//
-
-  function SieveExtendedRejectActionUI(elm) {
-    SieveActionDialogBoxUI.call(this, elm);
-  }
-
-  SieveExtendedRejectActionUI.prototype = Object.create(SieveActionDialogBoxUI.prototype);
-  SieveExtendedRejectActionUI.prototype.constructor = SieveExtendedRejectActionUI;
-
-  SieveExtendedRejectActionUI.prototype.getTemplate
-    = function () {
-      return "./reject/widgets/SieveExtendedRejectActionUI.html";
-    };
-
-  SieveExtendedRejectActionUI.prototype.onSave
-    = function () {
-      this.getSieve().setReason($("#sivExtendedRejectReason").val());
+    /**
+     * @inheritDoc
+     */
+    onSave() {
+      this.reason($("#sivRejectReason").val());
 
       return true;
-    };
+    }
 
-  SieveExtendedRejectActionUI.prototype.onLoad
-    = function () {
-      (new SieveTabWidget()).init();
+    /**
+     * @inheritDoc
+     */
+    onLoad() {
+      $("#sivRejectReason").val(this.reason());
+    }
 
-      $("#sivExtendedRejectReason").val(this.getSieve().getReason());
-    };
-
-  SieveExtendedRejectActionUI.prototype.getSummary
-    = function () {
+    /**
+     * @inheritDoc
+     */
+    getSummary() {
       return $("<div/>")
-        .html("Reject incomming messages and reply the following reason:" +
-        "<div>" +
-        $('<em/>').text(this.getSieve().getReason().substr(0, 240)).html() +
-        ((this.getSieve().getReason().length > 240) ? "..." : "") +
-        "</div>");
-    };
+        .html("Reject incoming messages and reply the following reason:" +
+          "<div>" +
+          $('<em/>').text(this.reason().substr(0, MAX_QUOTE_LEN)).html() +
+          ((this.reason().length > MAX_QUOTE_LEN) ? "..." : "") +
+          "</div>");
+    }
+  }
+
+  /**
+   * Provides an UI for the extended reject action.
+   * The extended reject replaces reject and has the same syntax.
+   */
+  class SieveExtendedRejectActionUI extends SieveRejectActionUI {
+
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./reject/templates/SieveExtendedRejectActionUI.html";
+    }
+
+  }
 
   if (!SieveDesigner)
     throw new Error("Could not register Reject Widgets");

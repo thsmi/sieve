@@ -10,8 +10,6 @@
  *
  */
 
-"use strict";
-
 /* global CodeMirror */
 /* global document */
 /* global window */
@@ -26,6 +24,8 @@ var onActiveLineChange = null;
  **/
 
 (function (exports) {
+
+  "use strict";
 
   /* global net */
 
@@ -214,23 +214,6 @@ var onActiveLineChange = null;
 
     if (options.tab && options.tab.width)
       editor.setOption("tabSize", options.tab.width);
-
-    if (options.tab && ("policy" in options.tab)) {
-
-      if (options.tab.policy === 1) {
-        // Keep tabs as they are
-        editor.setOptions("extraKeys", null);
-      }
-      else {
-        // insert spaces instead of tabs
-        editor.setOption("extraKeys", {
-          Tab: function (cm) {
-            let spaces = Array(cm.getOption("tabSize") + 1).join(" ");
-            cm.replaceSelection(spaces);
-          }
-        });
-      }
-    }
   }
 
 
@@ -303,6 +286,28 @@ var onActiveLineChange = null;
 
     editor.on("cursorActivity", function () { onActiveLineChange(); });
     editor.on("change", function () { onChange(); });
+
+    // Wrapper for tab handling...
+    editor.setOption("extraKeys", {
+      "Tab": function (cm) {
+        if (cm.somethingSelected()) {
+          let sel = editor.getSelection("\n");
+          // Indent only if there are multiple lines selected, or if the selection spans a full line
+          if (sel.length > 0 && (sel.indexOf("\n") > -1 || sel.length === cm.getLine(cm.getCursor().line).length)) {
+            cm.indentSelection("add");
+            return;
+          }
+        }
+
+        if (cm.options.indentWithTabs)
+          cm.execCommand("insertTab");
+        else
+          cm.execCommand("insertSoftTab");
+      },
+      "Shift-Tab": function (cm) {
+        cm.indentSelection("subtract");
+      }
+    });
 
   }
 

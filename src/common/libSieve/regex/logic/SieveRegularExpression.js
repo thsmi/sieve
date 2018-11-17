@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licensed. You may obtain a copy of
+ * The contents of this file are licenced. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
@@ -12,61 +12,22 @@
 
 /* global window */
 
-"use strict";
+(function () {
 
-(function (exports) {
+  "use strict";
 
-  /* global SieveLexer */
-  /* global SieveAbstractElement */
+  /* global SieveGrammar */
 
-  function SieveRegExMatch(docshell, id) {
-    SieveAbstractElement.call(this, docshell, id);
-  }
-
-  SieveRegExMatch.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveRegExMatch.prototype.constructor = SieveRegExMatch;
-
-  SieveRegExMatch.nodeName = function () {
-    return "match-type/regex";
-  };
-
-  SieveRegExMatch.nodeType = function () {
-    return "match-type/";
-  };
-
-  SieveRegExMatch.isElement
-    = function (parser, lexer) {
-      if (parser.startsWith(":regex"))
-        return true;
-
-      return false;
-    };
-
-  SieveRegExMatch.isCapable = function (capabilities) {
-    return (capabilities["regex"] === true);
-  };
-
-  SieveRegExMatch.prototype.require
-    = function (imports) {
-      imports["regex"] = true;
-    };
-
-  SieveRegExMatch.prototype.init
-    = function (parser) {
-      parser.extract(":regex");
-      return this;
-    };
-
-  SieveRegExMatch.prototype.toScript
-    = function () {
-      return ":regex";
-    };
-
-  /* *****************************************************************************/
-
-  if (!SieveLexer)
+  if (!SieveGrammar)
     throw new Error("Could not register MatchTypes");
 
-  SieveLexer.register(SieveRegExMatch);
+  SieveGrammar.addTag({
+    node: "match-type/regex",
+    type: "match-type/",
+
+    requires: "regex",
+
+    token: ":regex"
+  });
 
 })(window);

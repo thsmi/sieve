@@ -12,107 +12,38 @@
 
 /* global window */
 
-"use strict";
 
-(function (exports) {
+(function () {
 
-  /* global SieveLexer */
-  /* global SieveAbstractElement */
+  "use strict";
 
-  function SieveUserPart(docshell, id) {
-    SieveAbstractElement.call(this, docshell, id);
-  }
+  /* global SieveGrammar */
 
-  SieveUserPart.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveUserPart.prototype.constructor = SieveUserPart;
+  if (!SieveGrammar)
+    throw new Error("Could not register AddressParts");
 
-  SieveUserPart.nodeName = function () {
-    return "address-part/user";
+  let userpart = {
+    node: "address-part/user",
+    type: "address-part/",
+
+    requires: "subaddress",
+
+    token: ":user"
   };
 
-  SieveUserPart.nodeType = function () {
-    return "address-part/";
+  SieveGrammar.addTag(userpart);
+
+
+  let detailpart = {
+    node: "address-part/detail",
+    type: "address-part/",
+
+    requires: "subaddress",
+
+    token: ":detail"
   };
 
-  SieveUserPart.isCapable = function (capabilities) {
-    return (capabilities["subaddress"] === true);
-  };
-
-  SieveUserPart.prototype.require
-    = function (imports) {
-      imports["subaddress"] = true;
-    };
-
-  SieveUserPart.isElement
-    = function (parser, lexer) {
-      if (parser.startsWith(":user"))
-        return true;
-
-      return false;
-    };
-
-  SieveUserPart.prototype.init
-    = function (parser) {
-      parser.extract(":user");
-      return this;
-    };
-
-  SieveUserPart.prototype.toScript
-    = function () {
-      return ":user";
-    };
-
-  // *************************************************************************//
-
-  function SieveDetailPart(docshell, id) {
-    SieveAbstractElement.call(this, docshell, id);
-  }
-
-  SieveDetailPart.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveDetailPart.prototype.constructor = SieveDetailPart;
-
-  SieveDetailPart.nodeName = function () {
-    return "address-part/detail";
-  };
-
-  SieveDetailPart.nodeType = function () {
-    return "address-part/";
-  };
-
-  SieveDetailPart.isCapable = function (capabilities) {
-    return (capabilities["subaddress"] === true);
-  };
-
-  SieveDetailPart.prototype.require
-    = function (imports) {
-      imports["subaddress"] = true;
-    };
-
-  SieveDetailPart.isElement
-    = function (parser, lexer) {
-      if (parser.startsWith(":detail"))
-        return true;
-
-      return false;
-    };
-
-  SieveDetailPart.prototype.init
-    = function (parser) {
-      parser.extract(":detail");
-      return this;
-    };
-
-  SieveDetailPart.prototype.toScript
-    = function () {
-      return ":detail";
-    };
-
-
-  if (!SieveLexer)
-    throw new Error("Could not register Subaddress");
-
-  SieveLexer.register(SieveUserPart);
-  SieveLexer.register(SieveDetailPart);
+  SieveGrammar.addTag(detailpart);
 
 })(window);
 

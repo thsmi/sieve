@@ -12,176 +12,120 @@
 
 /* global window */
 
-"use strict";
-
 (function (exports) {
 
-  /* global $: false */
+  "use strict";
+
   /* global SieveDesigner */
-  /* global SieveAbstractBoxUI */
+  /* global SieveDropDownItemWidget */
+  /* global SieveDropDownWidget */
 
-  function SieveMatchTypeUI(elm) {
-    SieveAbstractBoxUI.call(this, elm);
+  /**
+   * Provides a widget for the matchtype element
+   */
+  class SieveMatchTypeWidget extends SieveDropDownWidget {
+
+    /**
+     * @inheritDoc
+     */
+    constructor(selector) {
+      super("match-type/", selector);
+    }
   }
 
-  SieveMatchTypeUI.prototype = Object.create(SieveAbstractBoxUI.prototype);
-  SieveMatchTypeUI.prototype.constructor = SieveMatchTypeUI;
+  /**
+   * An Abstract Matchtype UI implementation.
+   */
+  class SieveAbstractMatchTypeUI extends SieveDropDownItemWidget {
 
-  SieveMatchTypeUI.nodeName = function () {
-    return "match-type";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeType() {
+      return "match-type/";
+    }
 
-  SieveMatchTypeUI.nodeType = function () {
-    return "comparison";
-  };
-
-  SieveMatchTypeUI.prototype.onSelect
-    = function () {
-      let value = $("input[name='rgMatchType" + this.id() + "']:checked").val();
-      this.getSieve().matchType(value);
-    };
-
-  SieveMatchTypeUI.prototype.createHtml
-    = function () {
-      let value = this.getSieve().matchType();
-
-      let widgets = SieveDesigner.getWidgetsByClass("match-type/", this.id());
-
-      let item = $("<div/>").addClass("sivMatchType");
-      let that = this;
-
-      widgets.forEach(function (element) {
-        item.append(element.html(function () { that.onSelect(); }));
-      });
-
-      item.find("input[name='rgMatchType" + this.id() + "'][value='" + value + "']")
-        .attr("checked", "checked");
-
-      return item;
-    };
-
-  // ************************************************************************************
-
-  function SieveAbstractMatchUI(id) {
-    this.id = id;
+    /**
+     * @inheritDoc
+     */
+    getName() {
+      return "sieve-matchtype";
+    }
   }
 
-  SieveAbstractMatchUI.prototype.html
-    = function (value, header, description, callback) {
-      return $("<div/>")
-        .css("overflow", "auto")
-        .append($("<input/>")
-          .attr("type", "radio")
-          .attr("name", "rgMatchType" + this.id)
-          .css("float", "left")
-          .attr("value", value)
-          .change(callback))
-        .append($("<div/>")
-          .css("float", "left")
-          .append($("<h1/>").text(header))
-          .append($("<span/>").html(description)));
-    };
 
-  // ************************************************************************************
+  /**
+   * Provides an UI for the contains match type
+   */
+  class SieveContainsMatchUI extends SieveAbstractMatchTypeUI {
 
-  function SieveContainsMatchUI(id) {
-    SieveAbstractMatchUI.call(this, id);
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "match-type/contains";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveMatchTypeContainsUI.html";
+    }
   }
 
-  SieveContainsMatchUI.prototype = Object.create(SieveAbstractMatchUI.prototype);
-  SieveContainsMatchUI.prototype.constructor = SieveContainsMatchUI;
 
-  SieveContainsMatchUI.nodeName = function () {
-    return "match-type/contains";
-  };
+  /**
+   * Provides a UI for the is match type.
+   */
+  class SieveIsMatchUI extends SieveAbstractMatchTypeUI {
 
-  SieveContainsMatchUI.nodeType = function () {
-    return "match-type/";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "match-type/is";
+    }
 
-  SieveContainsMatchUI.isCapable = function (capabilities) {
-    return true;
-  };
-
-  SieveContainsMatchUI.prototype.html
-    = function (callback) {
-
-      return SieveAbstractMatchUI.prototype.html.call(
-        this, ":contains", "... contains ...",
-        '"frobnitzm" contains "frob" and "nit", but not "fbm"', callback);
-    };
-
-  // ************************************************************************************
-
-  function SieveIsMatchUI(id) {
-    SieveAbstractMatchUI.call(this, id);
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveMatchTypeIsUI.html";
+    }
   }
 
-  SieveIsMatchUI.prototype = Object.create(SieveAbstractMatchUI.prototype);
-  SieveIsMatchUI.prototype.constructor = SieveIsMatchUI;
 
-  SieveIsMatchUI.nodeName = function () {
-    return "match-type/is";
-  };
+  /**
+   * Provides a UI for the matches match type
+   */
+  class SieveMatchesMatchUI extends SieveAbstractMatchTypeUI {
 
-  SieveIsMatchUI.nodeType = function () {
-    return "match-type/";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "match-type/matches";
+    }
 
-  SieveIsMatchUI.isCapable = function (capabilities) {
-    return true;
-  };
+    /**
+     * @inheritDoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveMatchTypeMatchesUI.html";
+    }
 
-  SieveIsMatchUI.prototype.html
-    = function (callback) {
-
-      return SieveAbstractMatchUI.prototype.html.call(
-        this, ":is", "... is ...", 'Only "frobnitzm" is "frobnitzm"', callback);
-    };
-
-
-  // ************************************************************************************
-
-  function SieveMatchesMatchUI(id) {
-    SieveAbstractMatchUI.call(this, id);
   }
 
-  SieveMatchesMatchUI.prototype = Object.create(SieveAbstractMatchUI.prototype);
-  SieveMatchesMatchUI.prototype.constructor = SieveMatchesMatchUI;
-
-  SieveMatchesMatchUI.nodeName = function () {
-    return "match-type/matches";
-  };
-
-  SieveMatchesMatchUI.nodeType = function () {
-    return "match-type/";
-  };
-
-  SieveMatchesMatchUI.isCapable = function (capabilities) {
-    return true;
-  };
-
-  SieveMatchesMatchUI.prototype.html
-    = function (callback) {
-
-      return SieveAbstractMatchUI.prototype.html.call(
-        this, ":matches", "... matches ...",
-        '"*" matches zero or more characters, and "?" matches a single character <br>'
-        + '"frobnitzm" matches "frob*zm" or "frobnit?m" but not frob?m', callback);
-    };
-
-
-  // ************************************************************************************
 
   if (!SieveDesigner)
     throw new Error("Could not register String Widgets");
 
-  SieveDesigner.register("match-type", "comparison", SieveMatchTypeUI);
   SieveDesigner.register2(SieveIsMatchUI);
   SieveDesigner.register2(SieveContainsMatchUI);
   SieveDesigner.register2(SieveMatchesMatchUI);
 
-  exports.SieveAbstractMatchUI = SieveAbstractMatchUI;
-  exports.SieveMatchTypeUI = SieveMatchTypeUI;
+  exports.SieveAbstractMatchTypeUI = SieveAbstractMatchTypeUI;
+  exports.SieveMatchTypeWidget = SieveMatchTypeWidget;
 
 })(window);

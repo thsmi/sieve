@@ -7,10 +7,10 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-// Enable Strict Mode
-"use strict";
-
 (function (exports) {
+
+  // Enable Strict Mode
+  "use strict";
 
   /* global require */
   /* global Buffer */
@@ -19,26 +19,30 @@
 
   /**
    * Realizes a Request builder which uses native node commands
-   * @constructor
    */
-  function SieveNodeRequestBuilder() {
-    this.data = "";
+  class SieveNodeRequestBuilder extends SieveAbstractRequestBuilder {
+
+    /**
+     * @inheritDoc
+     */
+    calculateByteLength(data) {
+      return Buffer.byteLength(data, 'utf8');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    convertToBase64(decoded) {
+      return Buffer.from(decoded).toString('base64');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    convertFromBase64(encoded) {
+      return Buffer.from(encoded, 'base64').toString("latin1");
+    }
   }
-
-  SieveNodeRequestBuilder.prototype = Object.create(SieveAbstractRequestBuilder.prototype);
-  SieveNodeRequestBuilder.prototype.constructor = SieveNodeRequestBuilder;
-
-  SieveNodeRequestBuilder.prototype.calculateByteLength = function (data) {
-    return Buffer.byteLength(data, 'utf8');
-  };
-
-  SieveNodeRequestBuilder.prototype.convertToBase64 = function (decoded) {
-    return Buffer.from(decoded).toString('base64');
-  };
-
-  SieveNodeRequestBuilder.prototype.convertFromBase64 = function (encoded) {
-    return Buffer.from(encoded, 'base64').toString("latin1");
-  };
 
   exports.SieveNodeRequestBuilder = SieveNodeRequestBuilder;
 

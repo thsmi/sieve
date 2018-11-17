@@ -9,13 +9,9 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-"use strict";
-
 (function (exports) {
 
-  // Expose as mozilla module...
-  if (!exports.EXPORTED_SYMBOLS)
-    exports.EXPORTED_SYMBOLS = [];
+  "use strict";
 
   /* global Components */
 
@@ -68,6 +64,11 @@
   }
 
   exports.require = require;
+
+  // Expose as mozilla module...
+  if (!exports.EXPORTED_SYMBOLS)
+    exports.EXPORTED_SYMBOLS = [];
+
   exports.EXPORTED_SYMBOLS.push("require");
 
 })(this);

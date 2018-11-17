@@ -50,10 +50,13 @@
             "error",
             "always"
         ],
+        "no-octal-escape": "error",
+        "no-new-wrappers": "error",
         "no-whitespace-before-property": "error",
         "no-useless-rename": "error",
         "no-useless-computed-key": "error",
         "no-trailing-spaces": "error",
+        "strict": ["warn", "function"],
         "no-shadow-restricted-names": "error",
         "no-new-object": "error",
         "no-new-func": "error",
@@ -91,6 +94,7 @@
         "eqeqeq": "error",
         "no-sequences": "error",
         "no-labels": "error",
+        "no-label-var": "error",
         "consistent-return": "error",
         "no-use-before-define": "error",
         "no-else-return": "error",
@@ -119,6 +123,8 @@
         "no-proto": "error",
         "no-return-assign": "error",
         "no-self-compare": "error",
+        "no-script-url": "error",
+        "no-shadow":"warn",
         "no-unmodified-loop-condition": "error",
         "no-useless-concat": "error",
         "no-useless-call": "error",
@@ -126,7 +132,6 @@
         "no-with": "error",
         "prefer-promise-reject-errors": "error",
         "radix": "error",
-        "no-catch-shadow": "error",
         "no-new-require": "error",
         "linebreak-style": [
             "error",
@@ -135,10 +140,12 @@
         "no-inline-comments": "error",
         "no-multi-assign": "error",
         "no-tabs": "error",
+        "no-useless-constructor": "error",
         "semi": [
             "error",
             "always"
         ],
+        "no-warning-comments" : "warn",
         "arrow-body-style": [
             "error",
             "always"

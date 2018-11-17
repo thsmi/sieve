@@ -12,10 +12,10 @@
 
 /* global window */
 
-"use strict";
 
 (function (exports) {
 
+  "use strict";
   /* global SieveLexer */
 
   // Sieve Layout Engine is a static class...
@@ -31,15 +31,16 @@
       types: {},
 
       /**
-       * Registers a widget. A widget needs to be a prototype with a constructor
-       * as well as a static nodeName() and nodeType() method.
+       * Registers a widget. A widget needs to be a prototype/class
+       * with a static nodeName() and nodeType() method.
        *
-       * @param {} callback
+       * @param {Object} callback
        *   the constructor which should be called in case the widget needs
        *   to be constructed.
+       * @throws throws an exception in case the callback is invalid
+       * @returns {void}
        */
       register2: function (callback) {
-
 
         if (!callback.nodeType)
           throw new Error("Designer Error: Registration failed, element has no type");
@@ -56,10 +57,11 @@
 
         let obj = {};
         obj.onNew = function (id) { return new callback(id); };
-        obj.onCapable = function (capabilities) {
-          if (!callback.isCapable)
-            return true;
-          return callback.isCapable(capabilities);
+        obj.onCapable = (capabilities) => {
+          if (callback.isCapable)
+            return callback.isCapable(capabilities);
+
+          return true;
         };
 
         this.names[name] = obj;
@@ -125,7 +127,9 @@
        * In case no widget registered for the element null is returned, other
        * wise a new instance which can be used to display the element.
        *
-       * @param {SieveAbstractElement} element
+       * @param {SieveAbstractElement} elm
+       *   the sieve element for which the widget should be returned.
+       * @returns {Object} the widget
        */
       widget: function (elm) {
         return this.getWidgetByElement(elm);

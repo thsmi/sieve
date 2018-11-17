@@ -22,7 +22,6 @@
    **/
   class SieveMozResponseParser extends SieveAbstractResponseParser {
 
-
     /**
      * @inheritDoc
      **/

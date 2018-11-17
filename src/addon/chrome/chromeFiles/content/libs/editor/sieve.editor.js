@@ -1,9 +1,9 @@
-"use strict";
-
 /* global document */
 /* global window */
 
 (function (exports) {
+
+  "use strict";
 
   /* global net */
 

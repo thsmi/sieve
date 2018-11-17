@@ -12,9 +12,10 @@
 
 /* global window */
 
-"use strict";
-
 (function (exports) {
+
+
+  "use strict";
 
   /* global SieveParser */
 
@@ -22,11 +23,13 @@
    * Creates a new document for sieve scripts it is used to parse
    * store and manupulate sieve scripts
    *
-   * @param {} lexer
-   * @param {} widgets
-   *   the widgets which should be used to render the document.
-   *   It may be null.
    * @constructor
+   * @param {SieveLexer} lexer
+   *   the lexer which should be associated with this document.
+   *   It will be used to create new objects.
+   * @param {SieveDesigner} [widgets]
+   *   the layout engine which should be used to render the document.
+   *   Can be ommited in case the document should not be rendered.
    */
   function SieveDocument(lexer, widgets) {
     this._lexer = lexer;
@@ -42,12 +45,39 @@
 
   /**
    * Returns the root node for this document
-   * @return {}
+   * @return {SieveElement} the documents root node.
    */
   SieveDocument.prototype.root
     = function () {
       return this._rootNode;
     };
+
+  SieveDocument.prototype._walk
+    = function (elms, name, result) {
+
+      elms.forEach(function (item) {
+
+        if (item.nodeName() === name) {
+          result.push(item);
+          return;
+        }
+
+        if (!item.elms) {
+          return;
+        }
+
+        this._walk(item.elms, name, result);
+      }, this);
+    };
+
+  SieveDocument.prototype.queryElements = function (name) {
+
+    let result = [];
+
+    this._walk(this.root().elms, name, result);
+
+    return result;
+  };
 
   SieveDocument.prototype.html
     = function () {
@@ -104,9 +134,9 @@
    * Uses the Document's lexer to check if a parser object
    * or a string starts with the expected types
    *
-   * @param {} types
+   * @param {string|string[]} types
    *   an array with acceptable types.
-   * @param {} parser
+   * @param {string|SieveParser} parser
    *   a parser object or a string which holds the data that should be evaluated.
    * @return {boolean}
    *   true in case the parser or string is of the given type otherwise false.
@@ -176,7 +206,7 @@
       if (typeof (capabilities) === "undefined")
         return this._lexer.capabilities();
 
-      this._lexer.capabilities(capabilities);
+      return this._lexer.capabilities(capabilities);
     };
 
   /**
@@ -186,6 +216,11 @@
    *
    * It checks all cached elements for a valid parent pointer. If it's missing
    * the document was obviously deleted...
+   *
+   * @param {String[]} whitelist
+   *   an optional whitelist list, with elements which should not be released
+   * @returns {int}
+   *   the number of deleted elements
    */
   SieveDocument.prototype.compact
     = function (whitelist) {

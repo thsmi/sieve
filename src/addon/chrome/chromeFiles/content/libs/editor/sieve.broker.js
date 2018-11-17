@@ -13,7 +13,6 @@
 /* global document */
 /* global window */
 
-"use strict";
 
 /**
  * Interacts alike a broke between two iframes. Virtually glues the two frame via html5
@@ -21,6 +20,8 @@
  **/
 
 (function (exports) {
+
+  "use strict";
 
   function SieveBroker(target) {
     this.target = target;

@@ -1,0 +1,35 @@
+<div>
+  <ul id="template-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#sieve-widget-test" role="tab">Boolean</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+    </li>
+  </ul>
+
+  <div id="template-content">
+    <div class="tab-content m-2">
+      <div class="tab-pane fade show active" id="sieve-widget-test" role="tabpanel">
+
+        <div class="form-group">
+          <label>Make this test always </label>
+
+          <div class="custom-control custom-radio">
+            <input type="radio" id="SieveBooleanTrue" name="booleanValue" value="true" class="custom-control-input" />
+            <label class="custom-control-label" for="SieveBooleanTrue">succeed (true)</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input type="radio" id="SieveBooleanFalse" name="booleanValue" value="false" class="custom-control-input" />
+            <label class="custom-control-label" for="SieveBooleanFalse">fail (false)</label>
+          </div>
+        </div>
+
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+        <p>The boolean test is of limited practical use.
+          If it is set to true it will always succeed. If set to false it will always fail</p>
+      </div>
+    </div>
+  </div>
+</div>

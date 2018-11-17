@@ -93,10 +93,6 @@ hierdurch werden Abhören der Zugangsdaten sowie Manipulationen effektiv verhind
 <!ENTITY options.editor.tabs.description "Der Texteditor bietet automatisches Einrücken an und macht somit die Verwendung des Tabulator überflüssig. Früher wurden Tabulatoren zum dynamischen Einrücken des Textes verwendet.">
 <!ENTITY options.editor.tabs.width "Tabulatorbreite">
 
-<!ENTITY options.editor.tabs.policy.caption "Tabulatoren">
-<!ENTITY options.editor.tabs.policy.spaces "Tabulatoren durch Leerzeichen ersetzen">
-<!ENTITY options.editor.tabs.policy.tabs "Tabulatoren einfügen">
-
 <!ENTITY options.debug.warning
 "Bitte beachten Sie, dass Debugmeldungen von SASL Login und SASL Plain Ihr Passwort im Klartext enthalten!">
 <!ENTITY options.debug.caption "Debug Einstellungen">

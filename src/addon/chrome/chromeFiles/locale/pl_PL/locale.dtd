@@ -19,7 +19,7 @@
 <!ENTITY options.tab.general "Ogólne">
 <!ENTITY options.tab.proxy "Proxy">
 <!ENTITY options.tab.advanced "Zaawansowane">
-<!ENTITY options.tab.advanced.warning "Ustawienia te są przeznaczone dla użytkowników zaawansowanych...">
+<!ENTITY options.tab.advanced.warning "These settings are intended for advanced users…">
 <!ENTITY options.tab.editor "Edytor">
 <!ENTITY options.tab.debug "Debug">
 <!ENTITY options.tab.credits "Twórcy">
@@ -39,9 +39,9 @@
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Inne:">
 <!ENTITY options.port.autoselect "Automatyczny wybór portu">
-<!ENTITY options.port.autoselect.running "Wybieranie portu, proszę czekać...">
+<!ENTITY options.port.autoselect.running "Selecting Port, please wait…">
 <!ENTITY options.port.autoselect.successful "Sieve wykryty na porcie ">
-<!ENTITY options.port.autoselect.error "Błąd wybierania portu...">
+<!ENTITY options.port.autoselect.error "Selecting Port failed…">
 
 <!ENTITY options.security.caption "Połączenie bezpieczne">
 <!ENTITY options.security.description
@@ -60,7 +60,7 @@ naprawdę dobrego powodu (np. debugowanie), zawsze wymuszaj TLS.">
 <!ENTITY options.login.customAuth "Nazwa użytkownika oraz hasło">
 <!ENTITY options.login.username "Nazwa użytkownika">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "Pokaż zapisane hasła...">
+<!ENTITY options.login.show "View Saved Passwords…">
 
 <!ENTITY options.misc "Inne ustawienia">
 <!ENTITY options.misc.keepalive "Włącz utrzymanie aktywności">
@@ -72,7 +72,7 @@ naprawdę dobrego powodu (np. debugowanie), zawsze wymuszaj TLS.">
 "Żądanie utrzymania aktywności wskazuje, że połączenie jest ciągle aktywne i powinno zostać utrzymane.">
 <!ENTITY options.misc.keepalive.min "min">
 
-<!ENTITY options.misc.compile.caption "Sprawdzanie składni">
+<!ENTITY options.misc.compile.caption "Syntax Check">
 <!ENTITY options.misc.compile.description
 "Podczas edycji skryptów, można sprawdzić ich poprawność. Sprawdzanie 
 składni jest wykonywane przez serwer. Aby zachować ruch sieciowy na 
@@ -97,15 +97,15 @@ niskim poziomie, żądania kontroli składni są grupowane.">
 <!ENTITY options.debug.warning
 "Należy pamiętać, że logowanie SASL w przeciwieństwie do szyfrowania SASL twojego hasła, 
 może wysyłać je na konsolę błędów w postaci zwykłego tekstu.">
-<!ENTITY options.debug.caption "Ustawienia debugowania">
+<!ENTITY options.debug.caption "Debug Settings">
 <!ENTITY options.debug.request "Komunikacja od klienta do serwera (zapytanie)">
 <!ENTITY options.debug.response "Komunikacja od serwera do klienta (odpowiedzi)">
 <!ENTITY options.debug.exceptions "Informacje i wyjątkach i stanie maszyny">
 <!ENTITY options.debug.stream "Zrzut surowy/ zrzut strumienia bajtów">
-<!ENTITY options.debug.session "Zarządzanie sesją">
+<!ENTITY options.debug.session "Session Management">
 <!ENTITY options.debug.output "Wyjście debuggowania">
 <!ENTITY options.debug.console "Informacje z debugowania są kierowane na konsolę błędów">
-<!ENTITY options.debug.console.open "Pokaż konsolę błędów...">
+<!ENTITY options.debug.console.open "Show Error Console…">
 
 <!ENTITY options.authmechanism.caption "Mechanizm uwierzytelniania">
 <!ENTITY options.authmechanism "Zastąpić sugerowany mechanizm uwierzytelniania">
@@ -128,14 +128,14 @@ chcieć wymusić określony mechanizm uwierzytelniania." >
 "Gdy używasz autoryzacji serwera proxy, powinieneś wymusić uwierzytelnianie &quot;SASL PLAIN&quot;.">
 <!ENTITY options.proxyauth.none "Brak autoryzacji">
 <!ENTITY options.proxyauth.default "Nazwa użytkownika Sieve">
-<!ENTITY options.proxyauth.prompt "Pytanie o autoryzację">
+<!ENTITY options.proxyauth.prompt "Request Authorization">
 <!ENTITY options.proxyauth.custom "Autoryzacja jako">
 <!ENTITY options.proxyauth.custom.username "Nazwa użytkownika:">
 
 <!ENTITY options.info.servername "Nazwa serwera:">
 <!ENTITY options.info.port "Port:">
 <!ENTITY options.info.secure "Bezpieczne połączenie:">
-<!ENTITY options.info.username "Nazwa użytkownika:">
+<!ENTITY options.info.username "Username:">
 <!ENTITY options.info.auth "Uwierzytelnianie:">
 
 <!ENTITY options.account.sieve
@@ -144,8 +144,8 @@ chcieć wymusić określony mechanizm uwierzytelniania." >
 "Chcesz włączyć zarządzanie skryptami dla tego konta?">
 <!ENTITY options.account.activate.yes "Tak, zarządzanie skryptami Sieve dla tego konta:">
 <!ENTITY options.account.activate.no "Nie, to konto nie obsługuje Sieve">
-<!ENTITY options.account.filters "Edytuj filtry...">
-<!ENTITY options.account.settings "Zmień ustawienia...">
+<!ENTITY options.account.filters "Edit Filters…">
+<!ENTITY options.account.settings "Change Settings…">
 
 <!-- Credits -->
 <!ENTITY options.credits "Podziękowania dla wszystkich uczestników:">
@@ -179,12 +179,12 @@ należy użyć '127.0.0.1'.">
 <!ENTITY list.tree.active "Aktywne">
 <!ENTITY list.tree.name "Nazwa">
 
-<!ENTITY list.new "Nowy...">
-<!ENTITY list.edit "Edytuj...">
+<!ENTITY list.new "New…">
+<!ENTITY list.edit "Edit…">
 <!ENTITY list.delete "Skasuj">
 <!ENTITY list.rename "Zmień Nazwę">
 <!ENTITY list.activate "Aktywacja">
-<!ENTITY list.settings "Ustawienia...">
+<!ENTITY list.settings "Settings…">
 
 <!ENTITY list.details.capability "Funkcje serwera Sieve">
 <!ENTITY list.details.capability.implementation "Wersja serwera:">
@@ -217,13 +217,13 @@ lub wybierz &quot;Zaawansowane&quot;, aby skonfigurować konto ręcznie.">
 
 <!ENTITY list.autoconfig.detecting.caption "Automatyczne wykrywanie konfiguracji">
 <!ENTITY list.autoconfig.detecting.description
-  "Może potrwać kilka minut...">
+  "Might take some minutes to complete…">
 
 <!ENTITY list.autoconfig.cancel "Anuluj">
 
 <!ENTITY list.autoconfig.success.caption "Gratulacje!">
 <!ENTITY list.autoconfig.success.description
-  "Twoje konto jest obecnie skonfigurowane i gotowe do użytku...">
+  "Your account is now configured and ready to use…">
 
 <!ENTITY list.autoconfig.error.caption "Przepraszamy">
 <!ENTITY list.autoconfig.error.description
@@ -240,7 +240,7 @@ Proszę skontaktować się z dostawcą poczty lub spróbować ręcznie stworzyć
 <!ENTITY edit.toolbar.cut "Wytnij">
 <!ENTITY edit.toolbar.copy "Skopiuj">
 <!ENTITY edit.toolbar.paste "Wklej">
-<!ENTITY edit.toolbar.compile "Kontrola składni">
+<!ENTITY edit.toolbar.compile "Syntax Check">
 <!ENTITY edit.toolbar.reference "Podręczny wykaz">
 <!ENTITY edit.toolbar.tools "Narzędzia">
 <!ENTITY edit.toolbar.import "Importuj skrypt">
@@ -277,7 +277,7 @@ Proszę skontaktować się z dostawcą poczty lub spróbować ręcznie stworzyć
 <!ENTITY status.warning.ignore "Ignoruj">
 <!ENTITY status.warning.reconnect "Połącz ponownie">
 <!ENTITY status.warning
-  "To konto nie jest skonfigurowane do zarządzania Sieve, przejdź do 'Narzędzia-&gt; Filtry Sieve&quot;">
+  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
 
 <!ENTITY status.error.reconnect "Połącz ponownie">
 <!ENTITY status.error "Ostatnie polecenie nie powiodło się, ponieważ serwer zwrócił błąd:">

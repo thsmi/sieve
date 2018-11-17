@@ -19,7 +19,7 @@
 <!ENTITY options.tab.general "Geral">
 <!ENTITY options.tab.proxy "Proxy">
 <!ENTITY options.tab.advanced "Avançado">
-<!ENTITY options.tab.advanced.warning "Essas configurações são destinadas a usuários avançados...">
+<!ENTITY options.tab.advanced.warning "These settings are intended for advanced users…">
 <!ENTITY options.tab.editor "Editor">
 <!ENTITY options.tab.debug "Depurar/Debug">
 <!ENTITY options.tab.credits "Créditos">
@@ -39,9 +39,9 @@
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Outros:">
 <!ENTITY options.port.autoselect "Selecionar Porta Automaticamente.">
-<!ENTITY options.port.autoselect.running "Selecionando a porta, aguarde ...">
+<!ENTITY options.port.autoselect.running "Selecting Port, please wait…">
 <!ENTITY options.port.autoselect.successful "Sieve detectada na porta ">
-<!ENTITY options.port.autoselect.error "Falha ao selecionar a porta...">
+<!ENTITY options.port.autoselect.error "Selecting Port failed…">
 
 <!ENTITY options.security.caption "Segurança de Conexão">
 <!ENTITY options.security.description
@@ -59,7 +59,7 @@
 <!ENTITY options.login.customAuth "Usuário e senha">
 <!ENTITY options.login.username "Nome do usuário">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "Mostre senhas salvas ...">
+<!ENTITY options.login.show "View Saved Passwords…">
 
 <!ENTITY options.misc "Configurações diversas">
 <!ENTITY options.misc.keepalive "Habilitar keepalives">
@@ -71,7 +71,7 @@
 "Uma solicitação keepalive indica que a conexão ainda está ativa e deve ser preservada.">
 <!ENTITY options.misc.keepalive.min "min">
 
-<!ENTITY options.misc.compile.caption "Verificação de sintaxe">
+<!ENTITY options.misc.compile.caption "Syntax Check">
 <!ENTITY options.misc.compile.description
 "Ao editar Scripts, eles podem ser verificados quanto à validade. A  
 verificação de sintaxe é realizada pelo servidor. Para manter o tráfego de rede  
@@ -95,15 +95,15 @@ baixo, os pedidos de verificação de sintaxe são agrupados.">
 
 <!ENTITY options.debug.warning
 "Mantenha em mente que os métodos de autenticação LOGIN e PLAIN não cifram sua senha, ela pode acabar aparecendo na console de erro sem ser criptografada.">
-<!ENTITY options.debug.caption "Configurações de debug">
+<!ENTITY options.debug.caption "Debug Settings">
 <!ENTITY options.debug.request "Comunicação do cliente para o servidor (requisições)">
 <!ENTITY options.debug.response "Comunicação do servidor para o cliente (respostas)">
 <!ENTITY options.debug.exceptions "Exceções e informações da máquina de estado">
 <!ENTITY options.debug.stream "Despejo bruto do fluxo de bytes">
-<!ENTITY options.debug.session "Gerenciamento de sessão">
+<!ENTITY options.debug.session "Session Management">
 <!ENTITY options.debug.output "Saída de Debug">
 <!ENTITY options.debug.console "Informações de debug são enviadas para a console de erro">
-<!ENTITY options.debug.console.open "Mostrar console de erros...">
+<!ENTITY options.debug.console.open "Show Error Console…">
 
 <!ENTITY options.authmechanism.caption "Mecanismo de autenticação">
 <!ENTITY options.authmechanism "Substituir o mecanismo de autenticação sugerida">
@@ -125,14 +125,14 @@ baixo, os pedidos de verificação de sintaxe são agrupados.">
 "Quando usando autenticação por proxy você deve forçar autenticação &quot;SASL PLAIN&quot;.">
 <!ENTITY options.proxyauth.none "Sem autorização">
 <!ENTITY options.proxyauth.default "Usuário sieve">
-<!ENTITY options.proxyauth.prompt "Solicitar autorização">
+<!ENTITY options.proxyauth.prompt "Request Authorization">
 <!ENTITY options.proxyauth.custom "Autorizar como">
 <!ENTITY options.proxyauth.custom.username "Usuário:">
 
 <!ENTITY options.info.servername "Nome do servidor:">
 <!ENTITY options.info.port "Porta:">
 <!ENTITY options.info.secure "Conexão Segura:">
-<!ENTITY options.info.username "Usuário:">
+<!ENTITY options.info.username "Username:">
 <!ENTITY options.info.auth "Autenticação:">
 
 <!ENTITY options.account.sieve
@@ -141,8 +141,8 @@ baixo, os pedidos de verificação de sintaxe são agrupados.">
 "Você quer ativar o gerenciamento de scripts sieve para esta conta?">
 <!ENTITY options.account.activate.yes "Sim, gerencie scripts sieve para esta conta:">
 <!ENTITY options.account.activate.no "Não, esta conta não oferece suporte sieve">
-<!ENTITY options.account.filters "Editar Filtros...">
-<!ENTITY options.account.settings "Alterar as configurações...">
+<!ENTITY options.account.filters "Edit Filters…">
+<!ENTITY options.account.settings "Change Settings…">
 
 <!-- Credits -->
 <!ENTITY options.credits "Muito obrigado a todos os colaboradores:">
@@ -173,12 +173,12 @@ baixo, os pedidos de verificação de sintaxe são agrupados.">
 <!ENTITY list.tree.active "Ativo">
 <!ENTITY list.tree.name "Nome">
 
-<!ENTITY list.new "Novo...">
-<!ENTITY list.edit "Editar...">
+<!ENTITY list.new "New…">
+<!ENTITY list.edit "Edit…">
 <!ENTITY list.delete "Apagar">
 <!ENTITY list.rename "Renomear">
 <!ENTITY list.activate "Ativar">
-<!ENTITY list.settings "Configurações...">
+<!ENTITY list.settings "Settings…">
 
 <!ENTITY list.details.capability "Capacidades do servidor sieve">
 <!ENTITY list.details.capability.implementation "Versão do servidor:">
@@ -206,13 +206,13 @@ baixo, os pedidos de verificação de sintaxe são agrupados.">
 
 <!ENTITY list.autoconfig.detecting.caption "Autodetectando configuração">
 <!ENTITY list.autoconfig.detecting.description
-  "Pode levar alguns minutos para concluir...">
+  "Might take some minutes to complete…">
 
 <!ENTITY list.autoconfig.cancel "Cancelar">
 
 <!ENTITY list.autoconfig.success.caption "Parabéns!">
 <!ENTITY list.autoconfig.success.description
-  "Sua conta está configurada e pronta para uso...">
+  "Your account is now configured and ready to use…">
 
 <!ENTITY list.autoconfig.error.caption "Desculpe">
 <!ENTITY list.autoconfig.error.description
@@ -228,7 +228,7 @@ baixo, os pedidos de verificação de sintaxe são agrupados.">
 <!ENTITY edit.toolbar.cut "Recortar">
 <!ENTITY edit.toolbar.copy "Copiar">
 <!ENTITY edit.toolbar.paste "Colar">
-<!ENTITY edit.toolbar.compile "Conferência sintática">
+<!ENTITY edit.toolbar.compile "Syntax Check">
 <!ENTITY edit.toolbar.reference "Referência rápida">
 <!ENTITY edit.toolbar.tools "Ferramentas">
 <!ENTITY edit.toolbar.import "Importar Script">
@@ -265,7 +265,7 @@ baixo, os pedidos de verificação de sintaxe são agrupados.">
 <!ENTITY status.warning.ignore "Ignorar">
 <!ENTITY status.warning.reconnect "Reconectar">
 <!ENTITY status.warning
-  "Essa conta não está configurada para o protocolo Managesieve, vá em 'Ferramentas-&gt; Filtros Sieve'">
+  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
 
 <!ENTITY status.error.reconnect "Reconectar">
 <!ENTITY status.error "Último comando falhou, o servidor detectou um erro:">

@@ -247,11 +247,11 @@ Or choose 'Advanced' to configure the account manually.">
 <!ENTITY edit.searchreplace.searchfor "Search for:">
 <!ENTITY edit.searchreplace.replacewith "Replace with:">
 <!ENTITY edit.searchreplace.options "Options">
-<!ENTITY edit.searchreplace.case "Case Sensitive">
-<!ENTITY edit.searchreplace.backward "Backward">
-<!ENTITY edit.searchreplace.find "Find">
-<!ENTITY edit.searchreplace.replace "Replace">
-<!ENTITY edit.searchreplace.error "Phrase not found">
+<!ENTITY edit.searchreplace.case "Kis- és nagybetűk">
+<!ENTITY edit.searchreplace.backward "Visszafelé">
+<!ENTITY edit.searchreplace.find "Keresés">
+<!ENTITY edit.searchreplace.replace "Csere">
+<!ENTITY edit.searchreplace.error "A kifejezés nem található">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description

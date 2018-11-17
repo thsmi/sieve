@@ -192,7 +192,7 @@
 
 Do not continue unless you know there's a good reason why this server doesn't use trusted identification.">
 <!ENTITY list.badcert.remember "Remember my decision">
-<!ENTITY list.badcert.ignore "Continue">
+<!ENTITY list.badcert.ignore "Folytatás">
 <!ENTITY list.badcert.abort "Abort">
 
 <!ENTITY list.autoconfig.welcome.caption "Welcome!">
@@ -203,7 +203,7 @@ Do not continue unless you know there's a good reason why this server doesn't us
 Or choose 'Advanced' to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "Advanced">
-<!ENTITY list.autoconfig.continue "Continue">
+<!ENTITY list.autoconfig.continue "Folytatás">
 
 <!ENTITY list.autoconfig.detecting.caption "Autodetecting Configuration">
 <!ENTITY list.autoconfig.detecting.description
@@ -261,14 +261,14 @@ Or choose 'Advanced' to configure the account manually.">
 
 <!ENTITY status.connectivity.loss.description
 "Server terminated unexpectedly the connection, click on reconnect to try again.">
-<!ENTITY status.connectivity.loss.reconnect "Reconnect">
+<!ENTITY status.connectivity.loss.reconnect "Újracsatlakozás">
 
-<!ENTITY status.warning.ignore "Ignore">
-<!ENTITY status.warning.reconnect "Reconnect">
+<!ENTITY status.warning.ignore "Kihagyás">
+<!ENTITY status.warning.reconnect "Újracsatlakozás">
 <!ENTITY status.warning
   "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
 
-<!ENTITY status.error.reconnect "Reconnect">
+<!ENTITY status.error.reconnect "Újracsatlakozás">
 <!ENTITY status.error "Last Command failed, because the server reported an error:">
 
 <!ENTITY status.sync.description

@@ -19,7 +19,7 @@
 <!ENTITY options.tab.general "Allgemein">
 <!ENTITY options.tab.proxy "Proxy">
 <!ENTITY options.tab.advanced "Erweitert">
-<!ENTITY options.tab.advanced.warning "Diese Einstellungen sind für fortgeschrittene Benutzer gedacht...">
+<!ENTITY options.tab.advanced.warning "These settings are intended for advanced users…">
 <!ENTITY options.tab.editor "Editor">
 <!ENTITY options.tab.debug "Debug">
 <!ENTITY options.tab.credits "Danksagung">
@@ -40,9 +40,9 @@
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Anderer:">
 <!ENTITY options.port.autoselect "Port automatisch wählen">
-<!ENTITY options.port.autoselect.running "Porterkennung aktiv, bitte warten...">
+<!ENTITY options.port.autoselect.running "Selecting Port, please wait…">
 <!ENTITY options.port.autoselect.successful "Erkennung erfolgreich, Server Port:">
-<!ENTITY options.port.autoselect.error "Auswahl fehlgeschlagen...">
+<!ENTITY options.port.autoselect.error "Selecting Port failed…">
 
 <!ENTITY options.security.caption "Verbindungssicherheit">
 <!ENTITY options.security.description
@@ -61,7 +61,7 @@ hierdurch werden Abhören der Zugangsdaten sowie Manipulationen effektiv verhind
 <!ENTITY options.login.customAuth "Benutzername und Passwort">
 <!ENTITY options.login.username "Benutzername">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "Gespeicherte Passwörter anzeigen...">
+<!ENTITY options.login.show "View Saved Passwords…">
 
 <!ENTITY options.misc "Sonstige Einstellungen">
 <!ENTITY options.misc.keepalive "Keepalive Nachrichten aktivieren">
@@ -73,7 +73,7 @@ hierdurch werden Abhören der Zugangsdaten sowie Manipulationen effektiv verhind
 "Eine Keepalive Anfrage signalisiert dem Server vor Ablauf dieser Zeit, dass die Verbindung noch aktiv ist und nicht getrennt werden soll.">
 <!ENTITY options.misc.keepalive.min "min">
 
-<!ENTITY options.misc.compile.caption "Syntaxüberprüfung">
+<!ENTITY options.misc.compile.caption "Syntax Check">
 <!ENTITY options.misc.compile.description
 "Sieve Skripte können beim editieren auf Syntaxfehler überprüft werden. Der Syntaxcheck erfolgt durch den Server. Um den Netzwerkverkehr niedrig zu halten, findet die Syntax Überprüfung erst nach Ende der Eingabe statt.">
 <!ENTITY options.misc.compile "Skripte während der Eingabe auf Syntaxfehler überprüfen">
@@ -95,15 +95,15 @@ hierdurch werden Abhören der Zugangsdaten sowie Manipulationen effektiv verhind
 
 <!ENTITY options.debug.warning
 "Bitte beachten Sie, dass Debugmeldungen von SASL Login und SASL Plain Ihr Passwort im Klartext enthalten!">
-<!ENTITY options.debug.caption "Debug Einstellungen">
+<!ENTITY options.debug.caption "Debug Settings">
 <!ENTITY options.debug.request "Client zu Server Kommunikation (requests)">
 <!ENTITY options.debug.response "Server zu Client Kommunikation (responses)">
 <!ENTITY options.debug.exceptions "Ausnahmefehler und State Machine Informationen">
 <!ENTITY options.debug.stream "Rohdaten">
-<!ENTITY options.debug.session "Sessionmanagement">
+<!ENTITY options.debug.session "Session Management">
 <!ENTITY options.debug.output "Debugmeldungen">
 <!ENTITY options.debug.console "Debugmeldungen werden in die Fehlerkonsole geschrieben">
-<!ENTITY options.debug.console.open "Fehlerkonsole öffnen...">
+<!ENTITY options.debug.console.open "Show Error Console…">
 
 <!ENTITY options.authmechanism.caption "Authentifizierungsmechanismus">
 <!ENTITY options.authmechanism "Empfohlenen Authentifizierungsmechanismus übergehen">
@@ -126,14 +126,14 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 "Die Proxy Autorisation erfordert zwingend eine 'SASL PLAIN' Authentifizierung.">
 <!ENTITY options.proxyauth.none "Keine Autorisation">
 <!ENTITY options.proxyauth.default "Sieve Benutzername">
-<!ENTITY options.proxyauth.prompt "Benutzername abfragen">
+<!ENTITY options.proxyauth.prompt "Request Authorization">
 <!ENTITY options.proxyauth.custom "Autorisation als">
 <!ENTITY options.proxyauth.custom.username "Benutzername:">
 
 <!ENTITY options.info.servername "Servername:">
 <!ENTITY options.info.port "Port:">
 <!ENTITY options.info.secure "Sichere Verbindung:">
-<!ENTITY options.info.username "Benutzername:">
+<!ENTITY options.info.username "Username:">
 <!ENTITY options.info.auth "Authentifizierung:">
 
 <!ENTITY options.account.sieve
@@ -142,8 +142,8 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 "Möchten Sie Sieve Scripte für diesen Account verwalten?">
 <!ENTITY options.account.activate.yes "Ja, dieses Konto unterstützt Sieve:">
 <!ENTITY options.account.activate.no "Nein, dieses Konto unterstützt kein Sieve">
-<!ENTITY options.account.filters "Filter bearbeiten...">
-<!ENTITY options.account.settings "Einstellungen ändern...">
+<!ENTITY options.account.filters "Edit Filters…">
+<!ENTITY options.account.settings "Change Settings…">
 
 <!-- Credits -->
 <!ENTITY options.credits "Vielen Dank an alle Mitwirkenden:">
@@ -174,12 +174,12 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 <!ENTITY list.tree.active "Aktiv">
 <!ENTITY list.tree.name "Name">
 
-<!ENTITY list.new "Neu...">
-<!ENTITY list.edit "Bearbeiten...">
+<!ENTITY list.new "New…">
+<!ENTITY list.edit "Edit…">
 <!ENTITY list.delete "Löschen">
 <!ENTITY list.rename "Umbenennen...">
 <!ENTITY list.activate "Aktivieren">
-<!ENTITY list.settings "Einstellungen...">
+<!ENTITY list.settings "Settings…">
 
 <!ENTITY list.details.capability "Sieve Server Eigenschaften">
 <!ENTITY list.details.capability.implementation "Serverversion:">
@@ -210,13 +210,13 @@ auf 'Erweitert' um das Konto manuell zu konfigurieren.">
 
 <!ENTITY list.autoconfig.detecting.caption "Analysiere Konfiguration">
 <!ENTITY list.autoconfig.detecting.description
-  "Dauert mitunter mehrere Minuten...">
+  "Might take some minutes to complete…">
 
 <!ENTITY list.autoconfig.cancel "Abbrechen">
 
 <!ENTITY list.autoconfig.success.caption "Erkennung erfolgreich">
 <!ENTITY list.autoconfig.success.description
-  "Ihr Sieve Konto ist nun konfiguriert...">
+  "Your account is now configured and ready to use…">
 
 <!ENTITY list.autoconfig.error.caption "Erkennung fehlgeschlagen">
 <!ENTITY list.autoconfig.error.description
@@ -232,7 +232,7 @@ auf 'Erweitert' um das Konto manuell zu konfigurieren.">
 <!ENTITY edit.toolbar.cut "Ausschneiden">
 <!ENTITY edit.toolbar.copy "Kopieren">
 <!ENTITY edit.toolbar.paste "Einfügen">
-<!ENTITY edit.toolbar.compile "Syntaxprüfung">
+<!ENTITY edit.toolbar.compile "Syntax Check">
 <!ENTITY edit.toolbar.reference "Sprachreferenz">
 <!ENTITY edit.toolbar.tools "Extras">
 <!ENTITY edit.toolbar.import "Skript importieren">
@@ -269,7 +269,7 @@ auf 'Erweitert' um das Konto manuell zu konfigurieren.">
 <!ENTITY status.warning.ignore "Ignorieren">
 <!ENTITY status.warning.reconnect "Erneut verbinden">
 <!ENTITY status.warning
-  "Dieses Konto ist nicht konfiguriert. Bitte rufen Sie 'Extras-&gt; Sieve Filter Einstellungen' auf">
+  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
 
 <!ENTITY status.error.reconnect "Erneut verbinden">
 <!ENTITY status.error "Aktion fehlgeschlagen, Server meldet einen schweren Fehler:">

@@ -19,7 +19,7 @@
 <!ENTITY options.tab.general "General">
 <!ENTITY options.tab.proxy "Proxy">
 <!ENTITY options.tab.advanced "Avansat">
-<!ENTITY options.tab.advanced.warning "Aceste setări sunt destinate pentru utilizatorii avansați...">
+<!ENTITY options.tab.advanced.warning "These settings are intended for advanced users…">
 <!ENTITY options.tab.editor "Editor">
 <!ENTITY options.tab.debug "Remediere erori">
 <!ENTITY options.tab.credits "Credite">
@@ -40,9 +40,9 @@ conform serverului pot fi accesate numai prin portul 4190.">
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Altul:">
 <!ENTITY options.port.autoselect "Selectare automată port">
-<!ENTITY options.port.autoselect.running "Selectare por, vă rugăm așteptați...">
+<!ENTITY options.port.autoselect.running "Selecting Port, please wait…">
 <!ENTITY options.port.autoselect.successful "Sieve detectat pe Port ">
-<!ENTITY options.port.autoselect.error "Selectarea portului a eșuat...">
+<!ENTITY options.port.autoselect.error "Selecting Port failed…">
 
 <!ENTITY options.security.caption "Securitatea conexiunii">
 <!ENTITY options.security.description
@@ -60,7 +60,7 @@ conform serverului pot fi accesate numai prin portul 4190.">
 <!ENTITY options.login.customAuth "Nume utilizator și parolă">
 <!ENTITY options.login.username "Nume utilizator">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "Arată parolele salvate...">
+<!ENTITY options.login.show "View Saved Passwords…">
 
 <!ENTITY options.misc "Setări diverse">
 <!ENTITY options.misc.keepalive "Permite keepalives">
@@ -72,7 +72,7 @@ conform serverului pot fi accesate numai prin portul 4190.">
 "O cerere de keepalive indică că conexiunea este activă și ar trebui să fie conservată.">
 <!ENTITY options.misc.keepalive.min "min">
 
-<!ENTITY options.misc.compile.caption "Verificare sintaxă">
+<!ENTITY options.misc.compile.caption "Syntax Check">
 <!ENTITY options.misc.compile.description
 "În timp ce editați scripturile, acestea pot fi verificate pentru valabilitate. Verificarea sintaxei este făcută de server. Pentru a menține traficul rețelei scăzut, verificarea sintaxei este grupată.">
 <!ENTITY options.misc.compile "Sciptul verifică în timpul tastării">
@@ -94,15 +94,15 @@ conform serverului pot fi accesate numai prin portul 4190.">
 
 <!ENTITY options.debug.warning
 "Rețineți că SASL Login și SASL Plain nu criptează parolele, și ar putea apărea în erorile din consolă.">
-<!ENTITY options.debug.caption "Reparare erori setări">
+<!ENTITY options.debug.caption "Debug Settings">
 <!ENTITY options.debug.request "Comunicări client către server (cereri)">
 <!ENTITY options.debug.response "Comunicări client către server (răspunsuri)">
 <!ENTITY options.debug.exceptions "Excepții și informații despre statusul aparatelor">
 <!ENTITY options.debug.stream "Raw Dump/ Dump Byte Stream">
-<!ENTITY options.debug.session "Managementul sesiunilor">
+<!ENTITY options.debug.session "Session Management">
 <!ENTITY options.debug.output "Ieșirile erorilor">
 <!ENTITY options.debug.console "Informațiile de reparare a erorilor sunt postate în consola de afișare a erorilor">
-<!ENTITY options.debug.console.open "Afișează consola cu erori...">
+<!ENTITY options.debug.console.open "Show Error Console…">
 
 <!ENTITY options.authmechanism.caption "Mecanismul de autentificare">
 <!ENTITY options.authmechanism "Suprascrie mecanismul sugerat de autentificare">
@@ -124,14 +124,14 @@ conform serverului pot fi accesate numai prin portul 4190.">
 "Când folosiți o autorizare proxy, ar trebui să forțați autentificarea &quot;SASL PLAIN&quot;.">
 <!ENTITY options.proxyauth.none "Nici o autorizație">
 <!ENTITY options.proxyauth.default "Numele utilizatorului Sieve">
-<!ENTITY options.proxyauth.prompt "Solicită autorizația">
+<!ENTITY options.proxyauth.prompt "Request Authorization">
 <!ENTITY options.proxyauth.custom "Permite ca">
 <!ENTITY options.proxyauth.custom.username "Nume de utilizator:">
 
 <!ENTITY options.info.servername "Numele serverului:">
 <!ENTITY options.info.port "Port:">
 <!ENTITY options.info.secure "Securizare Conexiune:">
-<!ENTITY options.info.username "Nume utilizator:">
+<!ENTITY options.info.username "Username:">
 <!ENTITY options.info.auth "Autentificare:">
 
 <!ENTITY options.account.sieve
@@ -140,8 +140,8 @@ conform serverului pot fi accesate numai prin portul 4190.">
 "Vrei să activezi gestionarea Scripturilor Sieve pentru acest cont?">
 <!ENTITY options.account.activate.yes "Da, gestionează scripturile Sieve pentru acest cont:">
 <!ENTITY options.account.activate.no "Nu, acest cont nu acceptă Sieve">
-<!ENTITY options.account.filters "Editează Filtre...">
-<!ENTITY options.account.settings "Schimbă Setările...">
+<!ENTITY options.account.filters "Edit Filters…">
+<!ENTITY options.account.settings "Change Settings…">
 
 <!-- Credits -->
 <!ENTITY options.credits "Multe mulțumiri tuturor contribuabililor:">
@@ -172,12 +172,12 @@ conform serverului pot fi accesate numai prin portul 4190.">
 <!ENTITY list.tree.active "Activ">
 <!ENTITY list.tree.name "Nume">
 
-<!ENTITY list.new "Nou...">
-<!ENTITY list.edit "Editare...">
+<!ENTITY list.new "New…">
+<!ENTITY list.edit "Edit…">
 <!ENTITY list.delete "Ștergere">
 <!ENTITY list.rename "Redenumire">
 <!ENTITY list.activate "Activează">
-<!ENTITY list.settings "Setări...">
+<!ENTITY list.settings "Settings…">
 
 <!ENTITY list.details.capability "Capabilitățiile Server-ului Sieve">
 <!ENTITY list.details.capability.implementation "Versiune Server:">
@@ -206,13 +206,13 @@ Continuați numai în cazul în care există un motiv bine întemeiat pentru car
 
 <!ENTITY list.autoconfig.detecting.caption "Detectare automată a configurărilor">
 <!ENTITY list.autoconfig.detecting.description
-  "Ar putea dura câteva minute...">
+  "Might take some minutes to complete…">
 
 <!ENTITY list.autoconfig.cancel "Anulare">
 
 <!ENTITY list.autoconfig.success.caption "Felicitări!">
 <!ENTITY list.autoconfig.success.description
-  "Contul tău este configurat și gata de utilizare...">
+  "Your account is now configured and ready to use…">
 
 <!ENTITY list.autoconfig.error.caption "Ne pare rău">
 <!ENTITY list.autoconfig.error.description
@@ -228,7 +228,7 @@ Continuați numai în cazul în care există un motiv bine întemeiat pentru car
 <!ENTITY edit.toolbar.cut "Tăiere">
 <!ENTITY edit.toolbar.copy "Copiere">
 <!ENTITY edit.toolbar.paste "Inserează">
-<!ENTITY edit.toolbar.compile "Verificare sintaxă">
+<!ENTITY edit.toolbar.compile "Syntax Check">
 <!ENTITY edit.toolbar.reference "Referință rapidă">
 <!ENTITY edit.toolbar.tools "Instrumente">
 <!ENTITY edit.toolbar.import "Importă scriptul">
@@ -265,7 +265,7 @@ Continuați numai în cazul în care există un motiv bine întemeiat pentru car
 <!ENTITY status.warning.ignore "Ignoră">
 <!ENTITY status.warning.reconnect "Reconectare">
 <!ENTITY status.warning
-  "Acest cont nu este configurat pentru a gestiona sieve, du-te la 'Unelte-&gt; Filtre Mesaje Sieve'">
+  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
 
 <!ENTITY status.error.reconnect "Reconectare">
 <!ENTITY status.error "Ultima comandă a eșuat deoarece serverul a raportat o eroare:">

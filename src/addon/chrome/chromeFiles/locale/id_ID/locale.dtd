@@ -99,10 +99,6 @@ rendah, permintaan cek sintaks dikelompokkan.">
 <!ENTITY options.editor.tabs.description "Editorteks dengan lekukan otomatis menggantikan kebutuhan akan tombol tab, Tapi ada banyak editor yang gagal tab karena alasan bersejarah.">
 <!ENTITY options.editor.tabs.width "Lebar Tab">
 
-<!ENTITY options.editor.tabs.policy.caption "Kebijakan Tab">
-<!ENTITY options.editor.tabs.policy.spaces "Masukkan Spasi untuk Tab">
-<!ENTITY options.editor.tabs.policy.tabs "Masukkan Tab">
-
 <!ENTITY options.debug.warning
 "Ingatlah bahwa baik SASL Login maupun SASL Biasa menghitung kata sandi Anda, 
 itu mungkin diposting dalam teks yang jelas ke konsol kesalahan.">

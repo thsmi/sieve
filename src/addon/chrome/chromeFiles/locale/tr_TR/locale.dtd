@@ -19,7 +19,7 @@
 <!ENTITY options.tab.general "Genel">
 <!ENTITY options.tab.proxy "Proxy">
 <!ENTITY options.tab.advanced "Gelişmiş">
-<!ENTITY options.tab.advanced.warning "Bu ayarlar gelişmiş kullanıcılar için tasarlanmıştır...">
+<!ENTITY options.tab.advanced.warning "These settings are intended for advanced users…">
 <!ENTITY options.tab.editor "Editör">
 <!ENTITY options.tab.debug "Hata Ayıklama">
 <!ENTITY options.tab.credits "Tanıtım">
@@ -40,9 +40,9 @@ Bu sebeple, Sieve sunucu adı sizin IMAP sunucu adınızla aynıdır.">
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Diğer:">
 <!ENTITY options.port.autoselect "Otomatik Port Seç">
-<!ENTITY options.port.autoselect.running "Port seçiliyor, lütfen bekleyiniz...">
+<!ENTITY options.port.autoselect.running "Selecting Port, please wait…">
 <!ENTITY options.port.autoselect.successful "Sieve Port'u algıladı ">
-<!ENTITY options.port.autoselect.error "Seçilmiş Port başarısız oldu...">
+<!ENTITY options.port.autoselect.error "Selecting Port failed…">
 
 <!ENTITY options.security.caption "Bağlantı Güvenliği">
 <!ENTITY options.security.description
@@ -61,7 +61,7 @@ Bütün veriyi sıfıra indirir ve gizlice dinleme ile kurcalamayı önleme amac
 <!ENTITY options.login.customAuth "Kullanıcı Adı ve Şifre">
 <!ENTITY options.login.username "Kullanıcı Adı">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "Kayıtlı şifreleri göster...">
+<!ENTITY options.login.show "View Saved Passwords…">
 
 <!ENTITY options.misc "Diğer Seçenekler">
 <!ENTITY options.misc.keepalive "Keepalives'ları devreye sok">
@@ -73,7 +73,7 @@ Bütün veriyi sıfıra indirir ve gizlice dinleme ile kurcalamayı önleme amac
 "Bir keepalive talebi bağlantının hala daha aktif olduğunu ve aktif tutulması gerektiğini gösterir.">
 <!ENTITY options.misc.keepalive.min "dakika">
 
-<!ENTITY options.misc.compile.caption "Syntax kontrolü">
+<!ENTITY options.misc.compile.caption "Syntax Check">
 <!ENTITY options.misc.compile.description
 "Scriptleri düzenlerken, doğrulukları kontrol edilebilir. Söz dizimi kuralları sunucu tarafından kontrol edilir. Ağ trafiğini düşükte tutmak için söz dizimi kural kontrol talepleri gruplanmıştır.">
 <!ENTITY options.misc.compile "Yazarken Scriptleri kontrol et">
@@ -95,15 +95,15 @@ Bütün veriyi sıfıra indirir ve gizlice dinleme ile kurcalamayı önleme amac
 
 <!ENTITY options.debug.warning
 "Aklınızda bulunsun, ne SASL Login ne de SASL Plain parolanızı sıfırlamaz, temiz metin olarak hata konsoluna gönderilebilir.">
-<!ENTITY options.debug.caption "Hata Ayıklama Ayarları">
+<!ENTITY options.debug.caption "Debug Settings">
 <!ENTITY options.debug.request "Müşteri için sunucu iletişimi (talepler)">
 <!ENTITY options.debug.response "Sunucu için müşteri iletişimi (cevaplar)">
 <!ENTITY options.debug.exceptions "İstisnalar ve Ana Makine Bilgisi">
 <!ENTITY options.debug.stream "Ham Döküm/ Döküm Bayt Akışı">
-<!ENTITY options.debug.session "Oturum Yönetimi">
+<!ENTITY options.debug.session "Session Management">
 <!ENTITY options.debug.output "Hata Ayıklama Çıktısı">
 <!ENTITY options.debug.console "Hata ayıklama bilgisi hata konsoluna gönderildi">
-<!ENTITY options.debug.console.open "Hata Konsolunu Göster...">
+<!ENTITY options.debug.console.open "Show Error Console…">
 
 <!ENTITY options.authmechanism.caption "Kimlik Doğrulama Mekanizması">
 <!ENTITY options.authmechanism "Önerilen Kimlik Doğrulama Mekanizmasını geçersiz kıl">
@@ -125,14 +125,14 @@ Bütün veriyi sıfıra indirir ve gizlice dinleme ile kurcalamayı önleme amac
 "Proxy yetkilendirmesini kullanırken, &quot;SASL PLAIN&quot; Kimlik Doğrulamayı zorlamalısınız.">
 <!ENTITY options.proxyauth.none "Yetkilendirme yok">
 <!ENTITY options.proxyauth.default "Sieve Kullanıcı Adı">
-<!ENTITY options.proxyauth.prompt "Yetkilendirme İstemi">
+<!ENTITY options.proxyauth.prompt "Request Authorization">
 <!ENTITY options.proxyauth.custom "Yetkilendir">
 <!ENTITY options.proxyauth.custom.username "Kullanıcı Adı:">
 
 <!ENTITY options.info.servername "Sunucu Adı:">
 <!ENTITY options.info.port "Port:">
 <!ENTITY options.info.secure "Güvenli Bağlantı:">
-<!ENTITY options.info.username "Kullanıcı Adı:">
+<!ENTITY options.info.username "Username:">
 <!ENTITY options.info.auth "Kimlik doğrulama:">
 
 <!ENTITY options.account.sieve
@@ -141,8 +141,8 @@ Bütün veriyi sıfıra indirir ve gizlice dinleme ile kurcalamayı önleme amac
 "Sieve Komut dizisini bu hesap için aktifleştirmek istiyor musunuz?">
 <!ENTITY options.account.activate.yes "Evet, Sieve komut dizisini bu hesap için aktifleştir:">
 <!ENTITY options.account.activate.no "Hayır, bu hesap Sieve'yi desteklemiyor">
-<!ENTITY options.account.filters "Filtreleri düzenle...">
-<!ENTITY options.account.settings "Ayarları Değiştir...">
+<!ENTITY options.account.filters "Edit Filters…">
+<!ENTITY options.account.settings "Change Settings…">
 
 <!-- Credits -->
 <!ENTITY options.credits "Tüm katılımcılara çok teşekkürler:">
@@ -173,12 +173,12 @@ Bütün veriyi sıfıra indirir ve gizlice dinleme ile kurcalamayı önleme amac
 <!ENTITY list.tree.active "Aktif">
 <!ENTITY list.tree.name "Ad">
 
-<!ENTITY list.new "Yeni...">
-<!ENTITY list.edit "Düzenle...">
+<!ENTITY list.new "New…">
+<!ENTITY list.edit "Edit…">
 <!ENTITY list.delete "Sil">
 <!ENTITY list.rename "Yeniden Adlandır">
 <!ENTITY list.activate "Aktif">
-<!ENTITY list.settings "Ayarlar...">
+<!ENTITY list.settings "Settings…">
 
 <!ENTITY list.details.capability "Sunucu Sieve Özellikleri">
 <!ENTITY list.details.capability.implementation "Sunucu Versiyonu:">
@@ -207,13 +207,13 @@ Ya da elle yapılandırma için 'Gelişmiş'e tıklayınız.">
 
 <!ENTITY list.autoconfig.detecting.caption "Otomatik Algılama Yapılandırması">
 <!ENTITY list.autoconfig.detecting.description
-  "Tamamlanması bir kaç dakika sürebilir...">
+  "Might take some minutes to complete…">
 
 <!ENTITY list.autoconfig.cancel "İptal">
 
 <!ENTITY list.autoconfig.success.caption "Tebrikler!">
 <!ENTITY list.autoconfig.success.description
-  "Hesabınız şu an yapılandırıldı ve kullanıma hazır...">
+  "Your account is now configured and ready to use…">
 
 <!ENTITY list.autoconfig.error.caption "Özür Dileriz">
 <!ENTITY list.autoconfig.error.description
@@ -229,7 +229,7 @@ Ya da elle yapılandırma için 'Gelişmiş'e tıklayınız.">
 <!ENTITY edit.toolbar.cut "Kes">
 <!ENTITY edit.toolbar.copy "Yapıştır">
 <!ENTITY edit.toolbar.paste "Yapıştır">
-<!ENTITY edit.toolbar.compile "Sözdizimi Kontrolü">
+<!ENTITY edit.toolbar.compile "Syntax Check">
 <!ENTITY edit.toolbar.reference "Hızlı referans">
 <!ENTITY edit.toolbar.tools "Araçlar">
 <!ENTITY edit.toolbar.import "Komutu içe aktar">
@@ -266,7 +266,7 @@ Ya da elle yapılandırma için 'Gelişmiş'e tıklayınız.">
 <!ENTITY status.warning.ignore "Yoksay">
 <!ENTITY status.warning.reconnect "Yeniden Bağlan">
 <!ENTITY status.warning
-  "Bu hesap Manage Sieve için yapılandırılmamış. &quot;Araçlar-&gt; Sieve Mesaj Filtreler&quot; ine gidin">
+  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
 
 <!ENTITY status.error.reconnect "Yeniden Bağlan">
 <!ENTITY status.error "Sunucu bir hata bildirdiği için son komut başarısız oldu:">

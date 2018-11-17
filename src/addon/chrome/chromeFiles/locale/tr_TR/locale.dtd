@@ -93,10 +93,6 @@ Bütün veriyi sıfıra indirir ve gizlice dinleme ile kurcalamayı önleme amac
 <!ENTITY options.editor.tabs.description "Otomatik girintilemeli Texteditor, sekme tuşu ihtiyacını kaldırmıştır, ancak tarihi sebeplerden ötürü sekmeleri varsayılan olarak kullanan birçok editör vardır.">
 <!ENTITY options.editor.tabs.width "Sekme genişliği">
 
-<!ENTITY options.editor.tabs.policy.caption "Sekme Politikası">
-<!ENTITY options.editor.tabs.policy.spaces "Tab tuşları yerine Space tuşlarını yerleştir">
-<!ENTITY options.editor.tabs.policy.tabs "Tab tuşlarını yerleştir">
-
 <!ENTITY options.debug.warning
 "Aklınızda bulunsun, ne SASL Login ne de SASL Plain parolanızı sıfırlamaz, temiz metin olarak hata konsoluna gönderilebilir.">
 <!ENTITY options.debug.caption "Hata Ayıklama Ayarları">

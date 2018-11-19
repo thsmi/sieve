@@ -123,6 +123,33 @@
     return scripts;
   };
 
+  net.tschmid.yautt.test.server.isCompatible = function (name) {
+
+    let base = exports.net.tschmid.yautt.test.config[name];
+
+    if (!base.agents)
+      return true;
+
+    let agents = base.agents;
+
+    if (!Array.isArray(agents))
+      agents = [agents];
+
+    let userAgent = navigator.userAgent;
+    for (let agent of agents) {
+      this.logTrace("Checking if envirnoment is compatible with " + agent+" ...");
+      if (userAgent.indexOf(agent) > -1) {
+        this.logTrace("... Yes");
+        return true;
+      }
+
+      this.logTrace("... No");
+    }
+
+    this.logTrace(" ... no comaptible environment found.");
+    return false;
+  };
+
   net.tschmid.yautt.test.server.next = function () {
 
     this.current = this.queue.shift();
@@ -132,6 +159,13 @@
 
     this.startLog(this.current);
     this.log("Test profile '" + this.current + "'", "Header");
+
+    if (!net.tschmid.yautt.test.server.isCompatible(this.current)) {
+      net.tschmid.yautt.test.server.log("Skipping test " + name + " is incompatible with browser...");
+      net.tschmid.yautt.test.server.next();
+      return;
+    }
+
     let scripts = this.extend(this.current);
 
     let tests = exports.net.tschmid.yautt.test.config;

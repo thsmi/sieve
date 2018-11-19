@@ -47,7 +47,7 @@
    * @returns {void}
    */
   function succeed() {
-    var msg = {};
+    let msg = {};
     msg.type = "SUCCEED";
 
     parent.postMessage("" + JSON.stringify(msg), "*");
@@ -62,7 +62,7 @@
    */
   function fail(message) {
 
-    var msg = {};
+    let msg = {};
     msg.type = "FAIL";
     msg.description = "" + message;
 
@@ -74,16 +74,16 @@
 
   function require(script) {
 
-    var elm = document.createElement("script");
+    let elm = document.createElement("script");
     elm.type = "text/javascript";
     elm.src = "" + script;
 
     elm.addEventListener('error', function () {
       fail("Failed to load script " + script);
     }, true);
-    //    elm.onerror = function(ev) {
-    //    	debugger;
-    //    	that.abort("Script error "+ev.message+"\n"+ev.filename+"\n"+ev.lineno+"\n"+ev.colno+"\n") };
+    // elm.onerror = function(ev) {
+    //   debugger;
+    //   that.abort("Script error "+ev.message+"\n"+ev.filename+"\n"+ev.lineno+"\n"+ev.colno+"\n") };
 
     // The order maters wich means we need to get async.
     elm.async = false;
@@ -121,6 +121,7 @@
 
   /**
    * Checks if the actual value matches the expectation.
+   * In case it does not it throws an exception.
    *
    * @param {any} expected
    *   the expected value
@@ -133,14 +134,14 @@
   function assertEquals(expected, actual, message) {
 
     if (expected === actual) {
-      logTrace("Assert successfull:\n" + expected);
+      logTrace(`Assert successfull: ${expected}\n`);
       return;
     }
 
     if (typeof (message) === 'undefined' || message === null)
-      message = "Assert failed\nExpected: \n" + expected + "\n\nBut got\n" + actual;
+      message = `Assert failed\nExpected: \n${expected}\n\nBut got\n${actual}`;
 
-    throw new Error("" + message);
+    throw new Error(`${message}`);
   }
 
   function add(test) {
@@ -153,7 +154,7 @@
 
   function run() {
 
-    var tests = exports.net.tschmid.yautt.test.tests;
+    let tests = exports.net.tschmid.yautt.test.tests;
 
     if (!tests || !tests.length) {
       fail("Empty test configuration");
@@ -173,9 +174,10 @@
 
 
   // We communicate via postMessage command with our parent frame...
-  window.addEventListener("message", function (event) { // net.tschmid.yautt.test.onMessage(event);
+  window.addEventListener("message", function (event) {
 
-    //alert(event.origin);
+    // net.tschmid.yautt.test.onMessage(event);
+    // alert(event.origin);
     // Do we trust the sender of this message?
     //   if (event.origin !== document.domain)
     //      return;

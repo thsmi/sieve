@@ -16,7 +16,7 @@
 
   "use strict";
 
-  var suite = exports.net.tschmid.yautt.test;
+  let suite = exports.net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -29,8 +29,11 @@
 
     suite.log("SASL Login - OK");
 
+    const { SieveMozRequestBuilder } = require("./SieveMozRequestBuilder.js");
+    const { SieveMozResponseParser } = require("./SieveMozResponseParser.js");
+    const { SieveSaslLoginRequest } = require("./SieveRequest.js");
 
-    let request = new module.exports.SieveSaslLoginRequest();
+    let request = new SieveSaslLoginRequest();
 
     let hasError = null;
     let hasSucceded = null;
@@ -48,19 +51,20 @@
     // CLIENT -> SERVER
     // Client sends mechanism to server.
     suite.assertEquals(true, request.hasNextRequest());
+    debugger
     suite.assertEquals('AUTHENTICATE "LOGIN"\r\n',
-      request.getNextRequest(new module.exports.SieveMozRequestBuilder()).getBytes());
+      request.getNextRequest(new SieveMozRequestBuilder()).getBytes());
 
     // SERVER -> CLIENT
     // Server responds with a "VXNlcm5hbWU6" which is a "USERNAME:"
     request.addResponse(
-      new module.exports.SieveMozResponseParser([0x22, 0x56, 0x58, 0x4e, 0x6c, 0x63, 0x6d, 0x35, 0x68, 0x62, 0x57, 0x55, 0x36, 0x22, 0x0D, 0x0A]));
+      new SieveMozResponseParser([0x22, 0x56, 0x58, 0x4e, 0x6c, 0x63, 0x6d, 0x35, 0x68, 0x62, 0x57, 0x55, 0x36, 0x22, 0x0D, 0x0A]));
 
     // CLIENT -> SERVER
     // Client sends the username, Ymx1YmI= equals blubb
     suite.assertEquals(true, request.hasNextRequest());
     suite.assertEquals('"Ymx1YmI="\r\n',
-      request.getNextRequest(new module.exports.SieveMozRequestBuilder()).getBytes());
+      request.getNextRequest(new SieveMozRequestBuilder()).getBytes());
 
     // SERVER -> CLIENT
     // Server responds with a "UGFzc3dvcmQ6" which is a "PASSWORD:"

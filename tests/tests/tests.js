@@ -256,11 +256,16 @@
   suite.add({
     "managesieve": {
       script: "./managesieve/ManageSieveTest.js",
+      agents: ["Firefox"],
       require: [
-        "./../common/libManageSieve/SieveRequest.js",
+        "./managesieve/Require.js",
+        "./../common/libManageSieve/SieveResponseCodes.js",
         "./../common/libManageSieve/SieveResponse.js",
-        "./../common/libManageSieve/SieveResponseParser.js",
-        "./../common/libManageSieve/SieveResponseCodes.js"
+        "./../common/libManageSieve/SieveRequest.js",
+        "./../common/libManageSieve/SieveAbstractRequestBuilder.js",
+        "./../common/libManageSieve/SieveAbstractResponseParser.js",
+        "./../addon/libs/libManageSieve/SieveMozRequestBuilder.js",
+        "./../addon/libs//libManageSieve/SieveMozResponseParser.js"
       ]
     }
   });

@@ -80,8 +80,6 @@
 
       SieveOverlayManager.addOverlay(
         SieveMailWindowOverlay, "chrome://messenger/content/messenger.xul");
-      /* SieveOverlayManager.addOverlay(
-          SieveFilterListOverlay,"chrome://messenger/content/FilterListDialog.xul");*/
 
       // fixme this is incompatible with newer thunderbirds
       SieveOverlayManager.addOverlay(

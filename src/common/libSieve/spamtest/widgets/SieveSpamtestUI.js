@@ -23,6 +23,8 @@
   /* global SieveStringWidget */
   /* global SieveDesigner */
 
+  const DOM_ELEMENT = 0;
+
   /**
    * Provides a ui for the spam test
    */
@@ -93,7 +95,7 @@
 
       if (this.getSieve().hasElement("percent")) {
 
-        if ($("#sivSpamtestPercentRadio")[0].checked) {
+        if ($("#sivSpamtestPercentRadio")[DOM_ELEMENT].checked) {
           this.getSieve().enable("percent", true);
           (new SieveStringWidget("#sivSpamtestPercentValue")).save(this.value());
         } else {
@@ -118,12 +120,10 @@
       (new SieveComparatorWidget("#sivSpamtestComparator"))
         .init(this.comparator());
 
-      // FIXME enable and disable radio buttons.
-      // load items on demand
+      // Check if this is a spamtest or spamtestplus ui.
 
       if (this.getSieve().hasElement("percent")) {
-
-        $("#sivSpamtestPlaceholder").load("./spamtest/templates/SieveSpamtestPercentValue.html", () => {
+        $("#sivSpamtestPlaceholder").load("./spamtest/templates/SieveSpamtestPlusValue.html", () => {
           this.onLoadPercentualValue();
         });
       }
@@ -135,22 +135,33 @@
       }
     }
 
+    /**
+     * Called when the spamtest value ui is loaded.
+     * It is used to initialize the value field.
+     *
+     * @return {undefined}
+     */
     onLoadValue() {
 
       (new SieveStringWidget("#sivSpamtestValue"))
         .init(this.value());
     }
 
+    /**
+     * Called when the spamtest plus ui is loaded
+     * It is used to populate the radiobutton as well as the value fields
+     * @return {undefined}
+     */
     onLoadPercentualValue() {
       let value = "";
       let percentualValue = "";
 
       if (this.getSieve().enable("percent")) {
-        $("#sivSpamtestPercentRadio")[0].checked = true;
+        $("#sivSpamtestPercentRadio")[DOM_ELEMENT].checked = true;
         percentualValue = this.value();
       }
       else {
-        $("#sivSpamtestRadio")[0].checked = true;
+        $("#sivSpamtestRadio")[DOM_ELEMENT].checked = true;
         value = this.value();
       }
 

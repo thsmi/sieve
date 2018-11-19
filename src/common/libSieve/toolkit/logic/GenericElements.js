@@ -356,9 +356,17 @@
 
     let x = generics.get(item.extends);
 
-    item.properties.forEach(function (property) {
-      extendGenericProperty(x, property);
-    });
+    if (item.properties) {
+      item.properties.forEach(function (property) {
+        extendGenericProperty(x, property);
+      });
+    }
+
+    // TODO we currently just replace the requirements.
+    // instead we should extend it with an any..
+    if (item.requires) {
+      x.requires = item.requires;
+    }
   }
 
   /**

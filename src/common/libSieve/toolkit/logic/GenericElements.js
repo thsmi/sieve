@@ -193,6 +193,7 @@
   /**
    *
    * @param {*} item
+   * @returns {undefined}
    */
   function addAction(item) {
 
@@ -214,6 +215,7 @@
   /**
    *
    * @param {*} item
+   * @returns {undefined}
    */
   function addTest(item) {
     // Ensure the item has a valid structure...
@@ -233,28 +235,27 @@
 
   /**
    *
-   * @param {*} tag
+   * @param {*} group
+   * @returns {undefined}
    */
-  function addGroup(tag) {
+  function addGroup(group) {
 
-    if (tag.node === null || typeof (tag.node) === 'undefined')
+    if (group.node === null || typeof (group.node) === 'undefined')
       throw new Error("Node expected but not found");
 
     // if ( tag.value === null || typeof ( tag.value ) === 'undefined' )
     //  throw new Error( "Default value for tag group " + tag.node + " not found" );
 
-    let name = tag.node;
-    let type = tag.type;
-
-    let obj = new SieveGenericGroup(tag);
-
-    SieveLexer.registerGeneric(name, type, obj);
+    SieveLexer.registerGeneric(
+      group.node, group.type,
+      new SieveGenericGroup(group));
   }
 
 
   /**
    *
-   * @param {*} item
+   * @param {Object} item
+   * @returns {undefined}
    */
   function addTag(item) {
 
@@ -266,40 +267,34 @@
     if (!token.length)
       throw new Error("Adding Tag failed, no parser token defined");
 
-
-
-    let name = item.node;
-    let type = item.type;
-
-    let obj = new SieveGenericTag(item);
-
-    SieveLexer.registerGeneric(name, type, obj);
+    SieveLexer.registerGeneric(
+      item.node, item.type,
+      new SieveGenericTag(item));
   }
 
   /**
    *
+   * @returns {undefined}
    */
   function initActions() {
     actions.forEach((item) => {
-      let name = item.node;
-      let type = item.type;
 
-      let obj = new SieveGenericAction(item);
-
-      SieveLexer.registerGeneric(name, type, obj);
+      SieveLexer.registerGeneric(
+        item.node, item.type,
+        new SieveGenericAction(item));
     });
   }
 
   /**
    *
+   * @returns {undefined}
    */
   function initTests() {
     tests.forEach((item) => {
-      let name = item.node;
-      let type = item.type;
 
-      let obj = new SieveGenericTest(item);
-      SieveLexer.registerGeneric(name, type, obj);
+      SieveLexer.registerGeneric(
+        item.node, item.type,
+        new SieveGenericTest(item));
     });
   }
 
@@ -320,6 +315,8 @@
    *
    * @param {*} action
    * @param {*} item
+   *
+   * @returns {undefined}
    */
   function extendGenericProperty(action, item) {
 
@@ -330,7 +327,7 @@
       return;
     }
 
-    property = action.properties.find(function (cur) {
+    property = action.properties.find((cur) => {
       return cur.id === item.id;
     });
 
@@ -339,7 +336,7 @@
       return;
     }
 
-    item.elements.forEach(function (cur) {
+    item.elements.forEach((cur) => {
       property.elements.unshift(cur);
     });
 
@@ -350,6 +347,7 @@
    *
    * @param {*} generics
    * @param {*} item
+   * @returns {undefined}
    */
   function extendGeneric(generics, item) {
 
@@ -366,6 +364,7 @@
   /**
    *
    * @param {*} item
+   * @returns {undefined}
    */
   function extendAction(item) {
     extendGeneric(actions, item);
@@ -374,6 +373,7 @@
   /**
    *
    * @param {*} item
+   * @returns {undefined}
    */
   function extendTest(item) {
     extendGeneric(tests, item);
@@ -388,6 +388,5 @@
   exports.SieveGrammar.extendTest = extendTest;
 
   exports.SieveGrammar.create = createGrammar;
-
 
 })(window);

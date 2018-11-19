@@ -13,6 +13,8 @@
 
   "use strict";
 
+  /* global $ */
+
   /**
   * A poor mans I18n helper class which provides help to translate strings.
   */

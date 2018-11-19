@@ -38,6 +38,11 @@
       return this;
     }
 
+    /**
+     *
+     * @param {*} event
+     * @returns {boolean}
+     */
     onDragStart(event) {
 
       if (!this.onDrag)

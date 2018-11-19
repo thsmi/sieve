@@ -33,9 +33,6 @@
 
 */
 
-if (typeof (module) === "undefined" || !module.exports)
-  throw new Error("No exports");
-
 (function (exports) {
 
   // Enable Strict Mode
@@ -364,7 +361,10 @@ if (typeof (module) === "undefined" || !module.exports)
         this.responseListener.onPutScriptResponse(response);
     };
 
-  /** @param {SieveResponseParser} parser */
+  /**
+   * @param {SieveResponseParser} parser
+   * @returns {undefined}
+   **/
   SievePutScriptRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,

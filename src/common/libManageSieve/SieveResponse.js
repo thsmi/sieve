@@ -785,6 +785,9 @@
   const SHA_STATE_FINAL_MESSAGE = 1;
   const SHA_STATE_COMPLETED = 4;
 
+  const SHA_FIRST_TOKEN = 0;
+  const SHA_PREFIX_LENGTH = 2;
+
   /**
    * Parses responses for SCRAM-SHA authentication.
    *
@@ -796,6 +799,83 @@
    */
   class SieveSaslScramShaResponse extends SieveStateFullResponse {
 
+    /**
+     * Extracts the reserved-mext token from the array of tokens.
+     * @param {String[]} tokens
+     *   the first message response split into tokens.
+     * @returns {String}
+     *  the optional reserved-mext token or an empty string.
+     */
+    _extractReservedMext(tokens) {
+      let token = tokens[SHA_FIRST_TOKEN];
+
+      // Test for the reserved-mext token. If it is existant, we just skip it
+      if ((token.length <= SHA_PREFIX_LENGTH) || !token.startsWith("m="))
+        return "";
+
+      tokens.shift();
+      return token.substr(SHA_FIRST_TOKEN);
+    }
+
+    /**
+     * Extracts the nonce from the first message.
+     * @param {String[]} tokens
+     *   the first message response split into tokens.
+     * @returns {String}
+     *   the nonce or an exception in case it could not be extracted.
+     */
+    _extractNonce(tokens) {
+      let token = tokens[SHA_FIRST_TOKEN];
+
+      // Extract the nonce
+      if ((token.length <= SHA_PREFIX_LENGTH) || !token.startsWith("r="))
+        throw new Error(`Nonce expected but got ${token}`);
+
+      tokens.shift();
+
+      // remove the "r="
+      return token.substr(SHA_PREFIX_LENGTH);
+    }
+
+    /**
+     * Extracts the salt from the first message.
+     * @param {String[]} tokens
+     *   the first message resonse split into tokens.
+     * @returns {String}
+     *   the salt as base64 encoded string or an exception in case
+     *   it could not be extracted
+     */
+    _extractSalt(tokens) {
+      let token = tokens[SHA_FIRST_TOKEN];
+
+      if ((token.length <= SHA_PREFIX_LENGTH) || !token.startsWith("s="))
+        throw new Error(`Salt expected but got ${token}`);
+
+      tokens.shift();
+
+      // remove the "s=""
+      return token.substr(SHA_PREFIX_LENGTH);
+    }
+
+    /**
+     * Extracts the iteration count from the first message.
+     * @param {String[]} tokens
+     *   the first message resonse split into tokens.
+     * @returns {int}
+     *   the iteration count as integer or an exception in case the
+     *   iternations could not be extracted.
+     */
+    _extractIterations(tokens) {
+      let token = tokens[SHA_FIRST_TOKEN];
+
+      if ((token.length <= SHA_PREFIX_LENGTH) || !token.startsWith("i="))
+        throw new Error(`Iteration Count expected but got ${token}`);
+
+      tokens.shift();
+
+      // Remove the prefix and convert to an integer
+      return parseInt(tokens.substr(SHA_PREFIX_LENGTH), 10);
+    }
 
     /**
      * Parses the server-first-message it is defined to be:
@@ -821,27 +901,11 @@
 
       let tokens = this._serverFirstMessage.split(',');
 
-      // Test for the reserved-mext token. If it is existant, we just skip it
-      if ((tokens[0].length <= 2) || tokens[0][0] === "m")
-        tokens.shift();
+      this._extractReservedMext(tokens);
+      this._nonce = this._extractNonce(tokens);
 
-      // Extract the nonce
-      if ((tokens[0].length <= 2) || (tokens[0][0] !== "r"))
-        throw new Error("Nonce missing");
-
-      this._nonce = tokens[0].substr(2);
-
-
-      if ((tokens[1].length <= 2) || (tokens[1][0] !== "s"))
-        throw new Error("Salt missing");
-
-      this._salt = parser.convertFromBase64(tokens[1].substr(2));
-
-
-      if ((tokens[2].length <= 2) || (tokens[2][0] !== "i"))
-        throw new Error("Iteration Count missing");
-
-      this._iter = parseInt(tokens[2].substr(2), 10);
+      this._salt = parser.convertFromBase64(this._extractSalt(tokens));
+      this._iter = this._extractIterations(tokens);
     }
 
     /**
@@ -872,20 +936,20 @@
         data = parser.extractString();
 
       // server-final-message = (server-error / verifier) ["," extensions]
-      let token = parser.convertFromBase64(data).split(",");
+      let token = parser.convertFromBase64(data).split(",")[SHA_FIRST_TOKEN];
 
-      if (token[0].length <= 2)
+      if (token.length <= SHA_PREFIX_LENGTH)
         throw new Error("Response expected but got : " + data);
 
       // server-error = "e="
-      if (token[0][0] === "e") {
-        this._serverError = token[0].substr(2);
+      if (token.startsWith("e=")) {
+        this._serverError = token.substr(SHA_PREFIX_LENGTH);
         return;
       }
 
       // verifier = "v=" base64
-      if (token[0][0] === "v") {
-        this._verifier = parser.convertFromBase64(token[0].substr(2));
+      if (token.startsWith("v=")) {
+        this._verifier = parser.convertFromBase64(token.substr(SHA_PREFIX_LENGTH));
         return;
       }
 
@@ -970,6 +1034,13 @@
       return this._iter;
     }
 
+    /**
+     * Returns the nonce. Please note this it is only available after the
+     * final message was received
+     *
+     * @returns {string}
+     *   the nonce received from the server on an exception in case it is unkonwn.
+     */
     getNonce() {
       if (this.state < SHA_STATE_FINAL_MESSAGE)
         throw new Error("Illegal State, request not completed");
@@ -977,6 +1048,13 @@
       return this._nonce;
     }
 
+    /**
+     * Returns the servers first message. Pleas not is tis only available when the
+     * final message was received.
+     *
+     * @returns {string}
+     *   the server's first message or an exception in case it is unknown.
+     */
     getServerFirstMessage() {
       if (this.state < SHA_STATE_FINAL_MESSAGE)
         throw new Error("Illegal State, request not completed");

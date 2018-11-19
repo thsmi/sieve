@@ -13,6 +13,11 @@
 
   "use strict";
 
+  // const LOG_REQUEST = (1 << 0);
+  const LOG_RESPONSE = (1 << 1);
+  const LOG_STATE = (1 << 2);
+  const LOG_STREAM = (1 << 3);
+
   /* global Components */
 
   const Cc = Components.classes;
@@ -280,7 +285,7 @@
       this.idleTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
       this.timeoutTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
 
-      this.getLogger().log("Connecting to " + this.host + ":" + this.port + " ...", (1 << 2));
+      this.getLogger().log("Connecting to " + this.host + ":" + this.port + " ...", LOG_STATE);
 
       // If we know the proxy setting, we can do a shortcut...
       if (proxy) {
@@ -288,7 +293,7 @@
         return;
       }
 
-      this.getLogger().log("Lookup Proxy Configuration for x-sieve://" + this.host + ":" + this.port + " ...", (1 << 2));
+      this.getLogger().log("Lookup Proxy Configuration for x-sieve://" + this.host + ":" + this.port + " ...", LOG_STATE);
 
       let ios = Cc["@mozilla.org/network/io-service;1"]
         .getService(Ci.nsIIOService);
@@ -301,22 +306,22 @@
     };
 
   /**
-   * This is an closure for asyncronous Proxy
-   * @param {} aRequest
-   * @param {} aURI
-   * @param {} aProxyInfo
-   * @param {} aStatus
-   * @returns {void}
    *
+   * This is an closure for asyncronous Proxy
    * @private
-   */
+   * @param {*} aRequest
+   * @param {*} aURI
+   * @param {*} aProxyInfo
+   * @param {*} aStatus
+   * @returns {undefined}
+   **/
   Sieve.prototype.onProxyAvailable
     = function (aRequest, aURI, aProxyInfo, aStatus) {
 
       if (aProxyInfo)
-        this.getLogger().log("Using Proxy: [" + aProxyInfo.type + "] " + aProxyInfo.host + ":" + aProxyInfo.port, (1 << 2));
+        this.getLogger().log("Using Proxy: [" + aProxyInfo.type + "] " + aProxyInfo.host + ":" + aProxyInfo.port, LOG_STATE);
       else
-        this.getLogger().log("Using Proxy: Direct", (1 << 2));
+        this.getLogger().log("Using Proxy: Direct", LOG_STATE);
 
 
       let transportService =
@@ -357,7 +362,7 @@
         if (ex.name !== "NS_ERROR_XPC_NOT_ENOUGH_ARGS")
           throw ex;
 
-        this.getLogger().log("Falling back to legacy stream pump initalization ...", (1 << 2));
+        this.getLogger().log("Falling back to legacy stream pump initalization ...", LOG_STATE);
         pump.init(stream, -1, -1, 5000, 2, true);
       }
 
@@ -382,14 +387,14 @@
       this.idleTimer = null;
       this.timeoutTimer = null;
 
-      this.getLogger().log("Disconnected ...", (1 << 2));
+      this.getLogger().log("Disconnected ...", LOG_STATE);
     };
 
   Sieve.prototype.onStopRequest
     = function (request, context, status) {
       // this method is invoked anytime when the socket connection is closed
       // ... either by going to offlinemode or when the network cable is disconnected
-      this.getLogger().log("Stop request received ...", (1 << 2));
+      this.getLogger().log("Stop request received ...", LOG_STATE);
 
       // we can ignore this if we are already disconnected.
       if (!this.socket)
@@ -407,7 +412,7 @@
 
   Sieve.prototype.onStartRequest
     = function (request, context) {
-      this.getLogger().log("Connected to " + this.host + ":" + this.port + " ...", (1 << 2));
+      this.getLogger().log("Connected to " + this.host + ":" + this.port + " ...", LOG_STATE);
     };
 
   Sieve.prototype.onDataAvailable
@@ -419,9 +424,9 @@
 
       let data = binaryInStream.readByteArray(count);
 
-      this.getLogger().log("Server -> Client [Byte Array]\n" + data, (1 << 3));
+      this.getLogger().log("Server -> Client [Byte Array]\n" + data, LOG_STREAM);
 
-      if (this.getLogger().isLoggable(1 << 1)) {
+      if (this.getLogger().isLoggable(LOG_RESPONSE)) {
 
         let byteArray = data.slice(0, data.length);
 
@@ -437,7 +442,7 @@
       // Force String to UTF-8...
       let output = this.jsStringToByteArray(data);
 
-      this.getLogger().log("Client -> Server [Byte Array]:\n" + output, (1 << 3));
+      this.getLogger().log("Client -> Server [Byte Array]:\n" + output, LOG_STREAM);
 
       this.binaryOutStream.writeByteArray(output, output.length);
 

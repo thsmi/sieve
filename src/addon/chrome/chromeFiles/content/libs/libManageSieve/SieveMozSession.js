@@ -14,6 +14,12 @@
   "use strict";
 
   /* global Components */
+  const STATE_CLIENT_ERROR = 2;
+  const STATE_WAITING = 3;
+  const STATE_SERVER_ERROR = 4;
+  const STATE_CAPABILITIES = 7;
+
+  const LOG_SESSION_INFO = (1 << 4);
 
   const Cc = Components.classes;
   const Ci = Components.interfaces;
@@ -136,7 +142,7 @@
 
       // FIX ME: We should throw an error here...
       if (!response.getTLS()) {
-        this.disconnect(false, 2, "error.sasl");
+        this.disconnect(false, STATE_CLIENT_ERROR, "error.sasl");
         return;
       }
 
@@ -222,7 +228,7 @@
       // update the sasl mechanism
       this.sieve.capabilities.sasl = response.getSasl();
 
-      this._invokeListeners("onChannelStatus", 3, "progress.authenticating");
+      this._invokeListeners("onChannelStatus", STATE_WAITING, "progress.authenticating");
 
       let account = this.account;
       let mechanism = account.getSecurity().getMechanism();
@@ -241,12 +247,12 @@
       // Notify the listener to display capabilities. We simply pass the response...
       // ... to the listener. So the listener can pick whatever he needs.
       this.sieve.extensions = response.getExtensions();
-      this._invokeListeners("onChannelStatus", 7, response);
+      this._invokeListeners("onChannelStatus", STATE_CAPABILITIES, response);
 
       let request = this.getSaslMechanism(mechanism);
 
       if (!request) {
-        this.disconnect(false, 2, "error.sasl");
+        this.disconnect(false, STATE_CLIENT_ERROR, "error.sasl");
         return;
       }
 
@@ -259,7 +265,7 @@
         let password = account.getAuthentication().getPassword();
 
         if (typeof (password) === "undefined" || password === null) {
-          this.disconnect(false, 2, "error.authentication");
+          this.disconnect(false, STATE_CLIENT_ERROR, "error.authentication");
           return;
         }
 
@@ -274,7 +280,7 @@
         // ... if so retrieve the authorization identity
         let authorization = account.getAuthorization().getAuthorization();
         if (typeof (authorization) === "undefined" || authorization === null) {
-          this.disconnect(false, 2, "error.authentication");
+          this.disconnect(false, STATE_CLIENT_ERROR, "error.authentication");
           return;
         }
 
@@ -418,13 +424,13 @@
           iterator.push(this.listeners[i]);
 
       if (!iterator.length) {
-        if (this.getLogger().isLoggable((1 << 4)))
+        if (this.getLogger().isLoggable(LOG_SESSION_INFO))
           this.getLogger().log("No Listener for " + subject + "\n" + this.listeners.toString());
 
         return;
       }
 
-      this.getLogger().log("Invoking Listeners for " + subject + "\n", (1 << 4));
+      this.getLogger().log("Invoking Listeners for " + subject + "\n", LOG_SESSION_INFO);
 
       while (iterator.length) {
         let listener = iterator.pop();
@@ -460,8 +466,8 @@
         this.state = 0;
 
 
-        this.getLogger().log("Referred to Server: " + code.getHostname(), (1 << 4));
-        this.getLogger().log("Migrating Channel: [" + this.channels + "]", (1 << 4));
+        this.getLogger().log("Referred to Server: " + code.getHostname(), LOG_SESSION_INFO);
+        this.getLogger().log("Migrating Channel: [" + this.channels + "]", LOG_SESSION_INFO);
 
         this.connect(code.getHostname(), code.getPort());
         return;
@@ -480,7 +486,7 @@
     /** @private */
     onError(response) {
       this.getLogger().log("OnError: " + response.getMessage());
-      this.disconnect(false, 4, response.getMessage());
+      this.disconnect(false, STATE_SERVER_ERROR, response.getMessage());
     }
 
     /**
@@ -491,7 +497,7 @@
      * @returns {void}
      **/
     onDisconnect() {
-      this.getLogger().log("On Server Disconnect:  [" + this.channels + "]", (1 << 4));
+      this.getLogger().log("On Server Disconnect:  [" + this.channels + "]", LOG_SESSION_INFO);
 
       this._invokeListeners("onDisconnect");
       this.disconnect(true);
@@ -615,7 +621,7 @@
 
       this.channels.push(cid);
 
-      this.getLogger().log("Channel Added: " + cid + " [" + this.channels + "]", (1 << 4));
+      this.getLogger().log("Channel Added: " + cid + " [" + this.channels + "]", LOG_SESSION_INFO);
 
       return cid;
     }
@@ -645,7 +651,7 @@
 
       this.channels.splice(i, 1);
 
-      this.getLogger().log("Channel Closed: " + cid + " [" + this.channels + "]", (1 << 4));
+      this.getLogger().log("Channel Closed: " + cid + " [" + this.channels + "]", LOG_SESSION_INFO);
 
       return true;
     }

@@ -14,6 +14,9 @@
 
   "use strict";
 
+  const STATE_WAITING = 3;
+  const STATE_OFFLINE = 6;
+
   /* global Components */
 
   const Cc = Components.classes;
@@ -139,10 +142,12 @@
     = function (account) {
       let ioService = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
 
-      if (ioService.offline)
-        return this.onStatusChange(6);
+      if (ioService.offline) {
+        this.onStatusChange(STATE_OFFLINE);
+        return;
+      }
 
-      this.onStatusChange(3, "progress.connecting");
+      this.onStatusChange(STATE_WAITING, "progress.connecting");
 
       // Ensure that Sieve Object is null...
       let sivManager = this.getConnection();

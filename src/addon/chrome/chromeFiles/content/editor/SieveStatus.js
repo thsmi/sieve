@@ -18,6 +18,17 @@
 // Enable Strict Mode
 "use strict";
 
+const STATE_SCRIPT_READY = 0;
+const STATE_WARNING = 1;
+const STATE_CLIENT_ERROR = 2;
+const STATE_WAITING = 3;
+const STATE_SERVER_ERROR = 4;
+const STATE_BAD_CERT = 5;
+const STATE_OFFLINE = 6;
+const STATE_CAPABILITIES = 7;
+const STATE_AUTOCONFIG = 8;
+
+
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
@@ -45,27 +56,27 @@ function onStatus(state, message) {
   // we need this array to corelate status ids and the deck's selectedIndex
   // 0:StatusWait, 1:StatusBadCert, 2:StatusDisabled, 3:StatusConnectionLost,
   // 4:StatusOffline, 5:StatusWarning, 6:StatusOutOfSync, 7:StatusError
-  let mapping = { 0: null, 1: 5, 2: 7, 3: 0, 4: 7, 5: 1, 6: 4, 7: null, 8: 2, 9: 3, 10: 6 };
+  let mapping = { STATE_SCRIPT_READY: null, STATE_WARNING: 5, STATE_CLIENT_ERROR: 7, 3: 0, 4: 7, 5: 1, 6: 4, STATE_CAPABILITIES: null, STATE_AUTOCONFIG: 2, 9: 3, 10: 6 };
 
   try {
     let strings = Services.strings.createBundle("chrome://sieve/locale/locale.properties");
 
 
     switch (state) {
-      case 1: document.getElementById('StatusWarningMsg')
+      case STATE_WARNING: document.getElementById('StatusWarningMsg')
         .firstChild.nodeValue = strings.GetStringFromName(message);
         break;
       // client error
-      case 2: document.getElementById('StatusErrorMsg')
+      case STATE_CLIENT_ERROR: document.getElementById('StatusErrorMsg')
         .firstChild.nodeValue = strings.GetStringFromName(message);
         break;
-      case 3: document.getElementById('StatusWaitMsg')
+      case STATE_WAITING: document.getElementById('StatusWaitMsg')
         .firstChild.nodeValue = strings.GetStringFromName(message);
         break;
       // server error
-      case 4: document.getElementById('StatusErrorMsg').textContent = message;
+      case STATE_SERVER_ERROR: document.getElementById('StatusErrorMsg').textContent = message;
         break;
-      case 5:
+      case STATE_BAD_CERT:
         gCertStatus = message.status;
         document.getElementById("btnIgnoreBadCert").setAttribute("message", message.site);
         document.getElementById("btnIgnoreBadCert").setAttribute("oncommand",
@@ -76,13 +87,13 @@ function onStatus(state, message) {
 
         break;
       // Offline Mode
-      case 6:
+      case STATE_OFFLINE:
         break;
       // Capabilities set...
-      case 7:
+      case STATE_CAPABILITIES:
         return;
       // account disabled
-      case 8:
+      case STATE_AUTOCONFIG:
         document.getElementById('sivAutoConfig').setAttribute("selectedIndex", message);
         break;
 
@@ -109,22 +120,22 @@ function onStatus(state, message) {
 
 
 let gAutoConfigEvent =
-  {
-    onSuccess: function (host, port, proxy) {
-      onStatus(8, 2);
+{
+  onSuccess: function (host, port, proxy) {
+    onStatus(STATE_AUTOCONFIG, 2);
 
-      gAccount.setActiveHost(0);
-      gAccount.getHost().setPort(port);
-      gAccount.setEnabled(true);
+    gAccount.setActiveHost(0);
+    gAccount.getHost().setPort(port);
+    gAccount.setEnabled(true);
 
-      gAutoConfig = null;
-    },
+    gAutoConfig = null;
+  },
 
-    onError: function () {
-      onStatus(8, 3);
-      gAutoConfig = null;
-    }
-  };
+  onError: function () {
+    onStatus(STATE_AUTOCONFIG, 3);
+    gAutoConfig = null;
+  }
+};
 
 function onAutoConfigRunClick() {
   if (gAutoConfig)
@@ -144,14 +155,14 @@ function onAutoConfigRunClick() {
 
   gAutoConfig.run(gAutoConfigEvent);
 
-  onStatus(8, 1);
+  onStatus(STATE_AUTOCONFIG, 1);
 }
 
 function onAutoConfigCancelClick() {
   gAutoConfig.cancel();
   gAutoConfig = null;
 
-  onStatus(8, 3);
+  onStatus(STATE_AUTOCONFIG, 3);
 }
 
 function onAutoConfigFinishedClick() {
@@ -228,7 +239,7 @@ function onDetach() {
  *
  * @param {} account
  * @param {} callback
- *
+ * @returns {undefined}
  */
 function onAttach(account, callback, callbacks) {
   if (gAutoConfig) {

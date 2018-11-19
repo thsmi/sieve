@@ -492,6 +492,7 @@
     /**
      *
      * @param {*} tag
+     * @returns {undefined}
      */
     addTag(tag) {
 
@@ -525,6 +526,8 @@
     /**
      *
      * @param {*} tags
+     * @returns {SieveGenericOptionalItem}
+     *   a self reference
      */
     setTags(tags) {
 
@@ -922,6 +925,8 @@
      *   the literals token
      * @param {*} postfix
      * @param {*} prefix
+     * @returns {SieveGenericStructure}
+     *   a self reference
      */
     addLiteral(token, postfix, prefix) {
 
@@ -937,6 +942,8 @@
 
     /**
      * @param  {Array.<object>|object} tags
+     * @returns {SieveGenericStructure}
+     *   a self reference
      */
     addOptionalItems(tags) {
 
@@ -1207,7 +1214,8 @@
     }
 
     /**
-     *
+     * @returns {String}
+     *   the current value as string or null in case the current value is the default value.
      */
     getCurrentValue() {
 
@@ -1283,7 +1291,8 @@
 
     /**
      * @param {*} value
-     * @returns {}
+     * @returns {String}
+     *   the currently set value as string.
      */
     value(value) {
 

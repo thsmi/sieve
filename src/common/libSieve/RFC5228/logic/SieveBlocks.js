@@ -98,34 +98,50 @@
       return "{" + SieveBlockBody.prototype.toScript.call(this) + "}";
     };
 
-  // ****************************************************************************//
 
-  function SieveRootNode(docshell) {
-    SieveBlockBody.call(this, docshell, -1);
+  /**
+   *
+   */
+  class SieveRootNode extends SieveBlockBody {
 
-    this.elms[0] = this._createByName("import");
-    this.elms[1] = this._createByName("block/body");
-  }
+    /**
+     *
+     * @param {*} docshell
+     */
+    constructor(docshell) {
 
-  SieveRootNode.prototype = Object.create(SieveBlockBody.prototype);
-  SieveRootNode.prototype.constructor = SieveRootNode;
+      super(docshell, -1);
 
-  SieveRootNode.isElement
-    = function (token, doc) {
+      this.elms[0] = this._createByName("import");
+      this.elms[1] = this._createByName("block/body");
+    }
+
+    /**
+     * @inheritDoc
+     */
+    static isElement(token, doc) {
       return false;
-    };
+    }
 
-  SieveRootNode.nodeName = function () {
-    return "block/rootnode";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeName() {
+      return "block/rootnode";
+    }
 
-  SieveRootNode.nodeType = function () {
-    return "block/";
-  };
+    /**
+     * @inheritDoc
+     */
+    static nodeType() {
+      return "block/";
+    }
 
 
-  SieveRootNode.prototype.init
-    = function (parser) {
+    /**
+     * @inheritdoc
+     */
+    init(parser) {
       // requires are only valid if they are
       // before any other sieve command!
       if (this._probeByName("import", parser))
@@ -136,10 +152,12 @@
         this.elms[1].init(parser);
 
       return this;
-    };
+    }
 
-  SieveRootNode.prototype.toScript
-    = function () {
+    /**
+     * @inheritdoc
+     */
+    toScript() {
 
       let capabilities = this.document().capabilities();
 
@@ -154,9 +172,9 @@
 
       // TODO Remove unused requires...
 
-      // return the script
-      return SieveBlockBody.prototype.toScript.call(this);
-    };
+      return super.toScript();
+    }
+  }
 
 
   if (!SieveLexer)

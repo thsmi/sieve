@@ -135,7 +135,11 @@
       + '    stop;\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, [/* "variables":true, */ "fileinto"]);
+    // we can not detect when doing a clean parse if the script uses variables or not.
+    // ... thus in a perfect world we would expect the following
+    // suite.expectValidScript(script, ["variables":true, "fileinto"]);
+
+    suite.expectValidScript(script, ["fileinto"]);
   });
 
 

@@ -16,6 +16,10 @@
   const PORT_SIEVE_RFC = 4190;
   const PORT_SIEVE_OLD = 2000;
 
+  const TYPE_RFC = 0;
+  const TYPE_OLD = 1;
+  const TYPE_CUSTOM = 2;
+
   const CONFIG_HOST_PORT_TYPE = "port.type";
   const CONFIG_HOST_PORT = "port";
 
@@ -57,32 +61,34 @@
     getPort(type) {
 
       if (typeof (type) === "undefined" || type === null)
-        type = this.account.prefs.getInteger(CONFIG_HOST_PORT_TYPE, 0);
+        type = this.account.prefs.getInteger(CONFIG_HOST_PORT_TYPE, TYPE_RFC);
 
-      if (type === 2)
+      if (type === TYPE_CUSTOM)
         return this.account.prefs.getInteger(CONFIG_HOST_PORT, PORT_SIEVE_RFC);
 
-      if (type === 1)
+      if (type === TYPE_OLD)
         return PORT_SIEVE_OLD;
 
       return PORT_SIEVE_RFC;
     }
 
     /**
-     *
+     * Configures the TCP Port which sieve should use.
      * @param {string} port
+     *   the port number as string.
+     * @returns {undefined}
      */
     setPort(port) {
-      let type = 2;
+      let type = TYPE_CUSTOM;
 
       if (port === PORT_SIEVE_RFC)
-        type = 0;
+        type = TYPE_RFC;
       else if (port === PORT_SIEVE_OLD)
-        type = 1;
+        type = TYPE_OLD;
 
       this.account.prefs.setInteger(CONFIG_HOST_PORT_TYPE, type);
 
-      if (type !== 2)
+      if (type !== TYPE_CUSTOM)
         return;
 
       port = parseInt(port, 10);

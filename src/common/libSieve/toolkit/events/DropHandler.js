@@ -243,6 +243,9 @@
    */
   class SieveBlockDropHandler extends SieveDropHandler {
 
+    /**
+     * @inheritdoc
+     */
     constructor() {
       super(
         ["sieve/action", "sieve/test", "sieve/operator"]);
@@ -377,6 +380,9 @@
    */
   class SieveTrashBoxDropHandler extends SieveDropHandler {
 
+    /**
+     * @inheritdoc
+     */
     constructor() {
       super(["sieve/action", "sieve/test", "sieve/if", "sieve/operator"]);
     }
@@ -412,6 +418,9 @@
    */
   class SieveConditionDropHandler extends SieveDropHandler {
 
+    /**
+     * @inheritdoc
+     */
     constructor() {
       super(["sieve/test", "sieve/action", "sieve/operator"]);
     }
@@ -594,6 +603,9 @@
    */
   class SieveTestDropHandler extends SieveDropHandler {
 
+    /**
+     * @inheritdoc
+     */
     constructor() {
       super(["sieve/operator", "sieve/test"]);
     }
@@ -745,6 +757,9 @@
    */
   class SieveMultaryDropHandler extends SieveDropHandler {
 
+    /**
+     * @inheritdoc
+     */
     constructor() {
       super(["sieve/operator", "sieve/test"]);
     }

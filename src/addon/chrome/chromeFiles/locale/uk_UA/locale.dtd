@@ -19,7 +19,7 @@
 <!ENTITY options.tab.general "Загальні">
 <!ENTITY options.tab.proxy "Проксі">
 <!ENTITY options.tab.advanced "Розширені налаштування">
-<!ENTITY options.tab.advanced.warning "These settings are intended for advanced users…">
+<!ENTITY options.tab.advanced.warning "Ці налаштування призначені для досвідчених користувачів…">
 <!ENTITY options.tab.editor "Редактор">
 <!ENTITY options.tab.debug "Зневадження">
 <!ENTITY options.tab.credits "Творці">
@@ -40,9 +40,9 @@
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Інші:">
 <!ENTITY options.port.autoselect "Автовибір порту">
-<!ENTITY options.port.autoselect.running "Selecting Port, please wait…">
+<!ENTITY options.port.autoselect.running "Обираємо порт, зачекайте…">
 <!ENTITY options.port.autoselect.successful "Sieve виявлено на порту ">
-<!ENTITY options.port.autoselect.error "Selecting Port failed…">
+<!ENTITY options.port.autoselect.error "Не вдалося обрати порт…">
 
 <!ENTITY options.security.caption "Безпека підключення">
 <!ENTITY options.security.description
@@ -60,7 +60,7 @@
 <!ENTITY options.login.customAuth "Ім'я користувача та пароль">
 <!ENTITY options.login.username "Ім’я користувача">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "View Saved Passwords…">
+<!ENTITY options.login.show "Переглянути збережені паролі…">
 
 <!ENTITY options.misc "Інші параметри">
 <!ENTITY options.misc.keepalive "Увімкнути запити активності">
@@ -72,7 +72,7 @@
 "Запит активності вказує, що підключення ще активне і його можна не заркивати.">
 <!ENTITY options.misc.keepalive.min "хв">
 
-<!ENTITY options.misc.compile.caption "Syntax Check">
+<!ENTITY options.misc.compile.caption "Перевірка синтаксису">
 <!ENTITY options.misc.compile.description
 "While editing Scripts, they can be checked for validity. The syntax check is performed by the server. In order to keep network traffic low, syntax check requests are grouped.">
 <!ENTITY options.misc.compile "Перевіряти скрипти під час введення тексту">
@@ -94,15 +94,15 @@
 
 <!ENTITY options.debug.warning
 "Keep in mind that neither SASL Login nor SASL Plain cypher your password, it might be posted in clear text to the error console.">
-<!ENTITY options.debug.caption "Debug Settings">
+<!ENTITY options.debug.caption "Налаштування відлагодження">
 <!ENTITY options.debug.request "Звʼязок клієнта із сервером (запити)">
 <!ENTITY options.debug.response "Звʼязок сервера із клієнтом (відповіді)">
 <!ENTITY options.debug.exceptions "Exceptions and State Machine Information">
 <!ENTITY options.debug.stream "Raw Dump/ Dump Byte Stream">
-<!ENTITY options.debug.session "Session Management">
+<!ENTITY options.debug.session "Керування сесіями">
 <!ENTITY options.debug.output "Результат зневадження">
 <!ENTITY options.debug.console "Результат зневадження направлено на консоль помилок">
-<!ENTITY options.debug.console.open "Show Error Console…">
+<!ENTITY options.debug.console.open "Показати консоль помилок…">
 
 <!ENTITY options.authmechanism.caption "Механізм автентифікації">
 <!ENTITY options.authmechanism "Перевизначити механізм автентифікації">
@@ -124,14 +124,14 @@
 "When using proxy authorization you should force &quot;SASL PLAIN&quot; Authentication.">
 <!ENTITY options.proxyauth.none "Без авторизації">
 <!ENTITY options.proxyauth.default "Псевдонім Sieve">
-<!ENTITY options.proxyauth.prompt "Request Authorization">
+<!ENTITY options.proxyauth.prompt "Запит на авторизацію">
 <!ENTITY options.proxyauth.custom "Авторизуватися як">
 <!ENTITY options.proxyauth.custom.username "Псевдонім:">
 
 <!ENTITY options.info.servername "Назва сервера:">
 <!ENTITY options.info.port "Порт:">
 <!ENTITY options.info.secure "Безпечне зʼєднання:">
-<!ENTITY options.info.username "Username:">
+<!ENTITY options.info.username "Псевдонім:">
 <!ENTITY options.info.auth "Автентифікація:">
 
 <!ENTITY options.account.sieve
@@ -140,8 +140,8 @@
 "Do you want to activate managing Sieve Scripts for this account?">
 <!ENTITY options.account.activate.yes "Так, керувати сценаріями Sieve для цього акаунту:">
 <!ENTITY options.account.activate.no "Цей акаунт не підтримує Sieve">
-<!ENTITY options.account.filters "Edit Filters…">
-<!ENTITY options.account.settings "Change Settings…">
+<!ENTITY options.account.filters "Редагувати фільтри…">
+<!ENTITY options.account.settings "Змінити налаштування…">
 
 <!-- Credits -->
 <!ENTITY options.credits "Подяка за допомогу:">
@@ -172,12 +172,12 @@
 <!ENTITY list.tree.active "Активні">
 <!ENTITY list.tree.name "Назва">
 
-<!ENTITY list.new "New…">
-<!ENTITY list.edit "Edit…">
+<!ENTITY list.new "Нові…">
+<!ENTITY list.edit "Редагування…">
 <!ENTITY list.delete "Вилучити">
 <!ENTITY list.rename "Перейменувати">
 <!ENTITY list.activate "Активувати">
-<!ENTITY list.settings "Settings…">
+<!ENTITY list.settings "Налаштування…">
 
 <!ENTITY list.details.capability "Можливості Sieve на сервері">
 <!ENTITY list.details.capability.implementation "Версія сервера:">
@@ -208,7 +208,7 @@ Or choose 'Advanced' to configure the account manually.">
 
 <!ENTITY list.autoconfig.detecting.caption "Вгадуємо конфігурауцію">
 <!ENTITY list.autoconfig.detecting.description
-  "Might take some minutes to complete…">
+  "Це може зайняти декілька хвилин…">
 
 <!ENTITY list.autoconfig.cancel "Скаcувати">
 
@@ -230,7 +230,7 @@ Or choose 'Advanced' to configure the account manually.">
 <!ENTITY edit.toolbar.cut "Вирізати">
 <!ENTITY edit.toolbar.copy "Копіювати">
 <!ENTITY edit.toolbar.paste "Вставити">
-<!ENTITY edit.toolbar.compile "Syntax Check">
+<!ENTITY edit.toolbar.compile "Перевірка синтаксису">
 <!ENTITY edit.toolbar.reference "Quick Reference">
 <!ENTITY edit.toolbar.tools "Інструменти">
 <!ENTITY edit.toolbar.import "Імпортувати сценарій">

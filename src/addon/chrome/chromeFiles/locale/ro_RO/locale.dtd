@@ -121,7 +121,7 @@ conform serverului pot fi accesate numai prin portul 4190.">
 <!ENTITY options.proxyauth.desc
 "Autorizarea proxy îi permite unui utilizator autentificat să acționeze în numele altui utilizator. De obicei, serverele sunt configurate, ca această caracteristică să fie disponibilă numai pentru administartori.">
 <!ENTITY options.proxyauth.force
-"Când folosiți o autorizare proxy, ar trebui să forțați autentificarea &quot;SASL PLAIN&quot;.">
+"When using proxy authorization you should force SASL PLAIN Authentication.">
 <!ENTITY options.proxyauth.none "Nici o autorizație">
 <!ENTITY options.proxyauth.default "Numele utilizatorului Sieve">
 <!ENTITY options.proxyauth.prompt "Request Authorization">
@@ -168,7 +168,7 @@ conform serverului pot fi accesate numai prin portul 4190.">
 
 <!ENTITY list.accounts "Filtre pentru:">
 
-<!ENTITY list.tree "Filtre de mail-uri Servere Sieve">
+<!ENTITY list.tree "Server-side Sieve mailfilters">
 <!ENTITY list.tree.active "Activ">
 <!ENTITY list.tree.name "Nume">
 
@@ -191,7 +191,7 @@ conform serverului pot fi accesate numai prin portul 4190.">
 <!ENTITY list.badcert.error
 "Daca de obicei vă conectați fără probleme la acest server, această eroare ar putea însemna că cineva încearcă să atace serverul. 
 Continuați numai în cazul în care există un motiv bine întemeiat pentru care serverul nu folosește o identificare de încredere.">
-<!ENTITY list.badcert.remember "Reține decizia mea">
+<!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "Continuare">
 <!ENTITY list.badcert.abort "Renunță">
 
@@ -199,7 +199,8 @@ Continuați numai în cazul în care există un motiv bine întemeiat pentru car
 <!ENTITY list.autoconfig.welcome.description1
 "Acest cont nu este configurat pentru a gestiona sieve.">
 <!ENTITY list.autoconfig.welcome.description2
-"Apasă pe 'Continuare' pentru a porni configurarea automată. Alege 'Avansat' pentru a configura contul manual.">
+"Click on ‘Continue’ to detect the configuration automatically.
+Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "Avansat">
 <!ENTITY list.autoconfig.continue "Continuare">
@@ -242,7 +243,7 @@ Continuați numai în cazul în care există un motiv bine întemeiat pentru car
 <!ENTITY edit.sidebar.title "Referința limbii Sieve">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Cătare și înlocuire">
+<!ENTITY edit.searchreplace.title "Find and Replace">
 <!ENTITY edit.searchreplace.searchfor "Căutare pentru:">
 <!ENTITY edit.searchreplace.replacewith "Înlocuire cu:">
 <!ENTITY edit.searchreplace.options "Opțiuni">
@@ -254,7 +255,7 @@ Continuați numai în cazul în care există un motiv bine întemeiat pentru car
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"Sunteți offline. Apăsați pe 'Conectare' și încercați din nou">
+"You are currently offline. Check that you are connected to the internet, Click ‘Go Online’ and try again.">
 <!ENTITY status.offline.go "Conectare">
 
 
@@ -265,15 +266,17 @@ Continuați numai în cazul în care există un motiv bine întemeiat pentru car
 <!ENTITY status.warning.ignore "Ignoră">
 <!ENTITY status.warning.reconnect "Reconectare">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
+  "This account is not configured for manage sieve, go to Tools → Sieve Message Filters">
 
 <!ENTITY status.error.reconnect "Reconectare">
 <!ENTITY status.error "Ultima comandă a eșuat deoarece serverul a raportat o eroare:">
 
 <!ENTITY status.sync.description
-"Scripturile serverului local și al celui lateral sunt diferite. Ce ați vrea să faceți?">
+"The local and the server-side scripts are different.
+
+What would you like to do about it ?">
 <!ENTITY status.sync.keep "Păstrează scriptul local">
-<!ENTITY status.sync.replace "Utilizați scriptul lateral al serverului">
+<!ENTITY status.sync.replace "Use Server-side Script">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

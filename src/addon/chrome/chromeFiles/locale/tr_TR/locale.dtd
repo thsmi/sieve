@@ -122,7 +122,7 @@ Bütün veriyi sıfıra indirir ve gizlice dinleme ile kurcalamayı önleme amac
 <!ENTITY options.proxyauth.desc
 "Proxy yetkilendirme, kimliği doğrulanmış bir kullanıcının başka bir kullanıcı adına hareket etmesini sağlar. Genellikle sunucular yapılandırılmıştır, bu özellik yalnızca yöneticiler tarafından kullanılabilir.">
 <!ENTITY options.proxyauth.force
-"Proxy yetkilendirmesini kullanırken, &quot;SASL PLAIN&quot; Kimlik Doğrulamayı zorlamalısınız.">
+"When using proxy authorization you should force SASL PLAIN Authentication.">
 <!ENTITY options.proxyauth.none "Yetkilendirme yok">
 <!ENTITY options.proxyauth.default "Sieve Kullanıcı Adı">
 <!ENTITY options.proxyauth.prompt "Request Authorization">
@@ -169,7 +169,7 @@ Bütün veriyi sıfıra indirir ve gizlice dinleme ile kurcalamayı önleme amac
 
 <!ENTITY list.accounts "İçin filtreler:">
 
-<!ENTITY list.tree "Sunucu Tarafı Sieve posta filtresi">
+<!ENTITY list.tree "Server-side Sieve mailfilters">
 <!ENTITY list.tree.active "Aktif">
 <!ENTITY list.tree.name "Ad">
 
@@ -191,7 +191,7 @@ Bütün veriyi sıfıra indirir ve gizlice dinleme ile kurcalamayı önleme amac
   "Mail sunucunuz kendini geçerli olmayan bilgiyle tanımlamaya çalıştı.">
 <!ENTITY list.badcert.error
 "Bu sunucuya genellikle sorunsuz bağlanırsanız, bu hata birinin sunucuyu taklit etmeye çalıştığı anlamına gelebilir. Bu sunucunun, güvenilir tanımlamayı kullanmamasının iyi bir nedeni olduğunu bilmiyorsanız, devam etmeyin.">
-<!ENTITY list.badcert.remember "Tercihimi hatırla">
+<!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "Devam Et">
 <!ENTITY list.badcert.abort "İptal Et">
 
@@ -199,8 +199,8 @@ Bütün veriyi sıfıra indirir ve gizlice dinleme ile kurcalamayı önleme amac
 <!ENTITY list.autoconfig.welcome.description1
 "Bu hesap, sieve yönetmek için yapılandırılmış değil.">
 <!ENTITY list.autoconfig.welcome.description2
-"Otomatik yapılandırma için 'Devam Et'e tıklayınız.
-Ya da elle yapılandırma için 'Gelişmiş'e tıklayınız.">
+"Click on ‘Continue’ to detect the configuration automatically.
+Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "Gelişmiş">
 <!ENTITY list.autoconfig.continue "Devam Et">
@@ -243,7 +243,7 @@ Ya da elle yapılandırma için 'Gelişmiş'e tıklayınız.">
 <!ENTITY edit.sidebar.title "Sieve Dil Tercihi">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Ara ve Değiştir">
+<!ENTITY edit.searchreplace.title "Find and Replace">
 <!ENTITY edit.searchreplace.searchfor "Arama Sonuçları:">
 <!ENTITY edit.searchreplace.replacewith "İle Değiştir:">
 <!ENTITY edit.searchreplace.options "Seçenekler">
@@ -255,7 +255,7 @@ Ya da elle yapılandırma için 'Gelişmiş'e tıklayınız.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"Şu anda çevrimdışısın. 'Çevrimiçi Ol'a tıklayıp tekrar deneyin">
+"You are currently offline. Check that you are connected to the internet, Click ‘Go Online’ and try again.">
 <!ENTITY status.offline.go "Çevrimiçi Ol">
 
 
@@ -266,17 +266,17 @@ Ya da elle yapılandırma için 'Gelişmiş'e tıklayınız.">
 <!ENTITY status.warning.ignore "Yoksay">
 <!ENTITY status.warning.reconnect "Yeniden Bağlan">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
+  "This account is not configured for manage sieve, go to Tools → Sieve Message Filters">
 
 <!ENTITY status.error.reconnect "Yeniden Bağlan">
 <!ENTITY status.error "Sunucu bir hata bildirdiği için son komut başarısız oldu:">
 
 <!ENTITY status.sync.description
-"Yerel ve Sunucu kodları farklı.
+"The local and the server-side scripts are different.
 
-Bu konuda ne yapmak istersiniz ?">
+What would you like to do about it ?">
 <!ENTITY status.sync.keep "Yerel Kodu Sakla">
-<!ENTITY status.sync.replace "Sunucu Kodunu Kullan">
+<!ENTITY status.sync.replace "Use Server-side Script">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

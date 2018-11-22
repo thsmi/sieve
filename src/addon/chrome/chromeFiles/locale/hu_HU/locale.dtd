@@ -139,8 +139,8 @@
 "Do you want to activate managing Sieve Scripts for this account?">
 <!ENTITY options.account.activate.yes "Yes, manage Sieve scripts for this account:">
 <!ENTITY options.account.activate.no "No, this account does not support Sieve">
-<!ENTITY options.account.filters "Edit Filters…">
-<!ENTITY options.account.settings "Change Settings…">
+<!ENTITY options.account.filters "Szűrők szerkesztése…">
+<!ENTITY options.account.settings "Beállítások módosítása…">
 
 <!-- Credits -->
 <!ENTITY options.credits "Many thanks to all contributors:">
@@ -165,7 +165,7 @@
 <!-- Locale for the List Filter Dialog -->
 <!ENTITY list.title "Sieve Filters">
 
-<!ENTITY list.accounts "Filters for:">
+<!ENTITY list.accounts "Szűrők a következőkhöz:">
 
 <!ENTITY list.tree "Serverside Sieve mailfilters">
 <!ENTITY list.tree.active "Működő">

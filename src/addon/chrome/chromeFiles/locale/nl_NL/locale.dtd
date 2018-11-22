@@ -121,7 +121,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.proxyauth.desc
 "Met proxy-authenticatie kan een gebruiker uit naam van een andere gebruiker handelen. Meestal zijn servers zo geconfigureerd dat deze functie alleen voor beheerders beschikbaar is.">
 <!ENTITY options.proxyauth.force
-"Als u proxy-authenticatie gebruikt, dan moet u Standaard SASL-authenticatie forceren.">
+"When using proxy authorization you should force SASL PLAIN Authentication.">
 <!ENTITY options.proxyauth.none "Geen autorisatie">
 <!ENTITY options.proxyauth.default "Sieve-gebruikersnaam">
 <!ENTITY options.proxyauth.prompt "Request Authorization">
@@ -168,7 +168,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 
 <!ENTITY list.accounts "Filters voor:">
 
-<!ENTITY list.tree "Server-side Sieve e-mailfilters">
+<!ENTITY list.tree "Server-side Sieve mailfilters">
 <!ENTITY list.tree.active "Actief">
 <!ENTITY list.tree.name "Naam">
 
@@ -194,7 +194,7 @@ kan deze fout betekenen dat iemand probeert de server na te bootsen.
 
 Ga alleen verder als u op de hoogte bent waarom deze server geen vertrouwde
 identificatie gebruikt.">
-<!ENTITY list.badcert.remember "Mijn keuze onthouden">
+<!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "Doorgaan">
 <!ENTITY list.badcert.abort "Afbreken">
 
@@ -202,8 +202,8 @@ identificatie gebruikt.">
 <!ENTITY list.autoconfig.welcome.description1
 "Dit account is niet voor ManageSieve geconfigureerd.">
 <!ENTITY list.autoconfig.welcome.description2
-"Klik op ‘Doorgaan’ om de configuratie automatisch te detecteren.
-Kies ‘Geavanceerd’ om het account handmatig te configureren.">
+"Click on ‘Continue’ to detect the configuration automatically.
+Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "Geavanceerd">
 <!ENTITY list.autoconfig.continue "Doorgaan">
@@ -246,7 +246,7 @@ Kies ‘Geavanceerd’ om het account handmatig te configureren.">
 <!ENTITY edit.sidebar.title "Sieve-taalverwijzing">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Zoeken en Vervangen">
+<!ENTITY edit.searchreplace.title "Find and Replace">
 <!ENTITY edit.searchreplace.searchfor "Zoeken naar:">
 <!ENTITY edit.searchreplace.replacewith "Vervangen door:">
 <!ENTITY edit.searchreplace.options "Opties">
@@ -258,7 +258,7 @@ Kies ‘Geavanceerd’ om het account handmatig te configureren.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"U bent momenteel offline. Klik op ‘Online gaan’ en probeer het opnieuw">
+"You are currently offline. Check that you are connected to the internet, Click ‘Go Online’ and try again.">
 <!ENTITY status.offline.go "Online gaan">
 
 
@@ -269,17 +269,17 @@ Kies ‘Geavanceerd’ om het account handmatig te configureren.">
 <!ENTITY status.warning.ignore "Negeren">
 <!ENTITY status.warning.reconnect "Opnieuw verbinden">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
+  "This account is not configured for manage sieve, go to Tools → Sieve Message Filters">
 
 <!ENTITY status.error.reconnect "Opnieuw verbinden">
 <!ENTITY status.error "De laatste opdracht is mislukt, omdat de server een fout meldde:">
 
 <!ENTITY status.sync.description
-"De lokale en de server-side-scripts verschillen.
+"The local and the server-side scripts are different.
 
-Wat wilt u daaraan doen?">
+What would you like to do about it ?">
 <!ENTITY status.sync.keep "Lokale script behouden">
-<!ENTITY status.sync.replace "Server-side script gebruiken">
+<!ENTITY status.sync.replace "Use Server-side Script">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

@@ -90,8 +90,8 @@
 
       let description = strings.GetStringFromName("account.password.description") + "\r\n";
       description += "\r\n";
-      description += strings.GetStringFromName("account.password.username") + ": " + this.getUsername() + "\r\n";
-      description += strings.GetStringFromName("account.password.hostname") + ": " + this.getHostname() + "\r\n";
+      description += strings.GetStringFromName("account.password.username") + this.getUsername() + "\r\n";
+      description += strings.GetStringFromName("account.password.hostname") + this.getHostname() + "\r\n";
       description += "\r\n";
 
 
@@ -298,8 +298,8 @@
 
       let description = strings.GetStringFromName("account.password.description") + "\r\n";
       description += "\r\n";
-      description += strings.GetStringFromName("account.password.username") + ": " + username + "\r\n";
-      description += strings.GetStringFromName("account.password.hostname") + ": " + this.getHostname() + "\r\n";
+      description += strings.GetStringFromName("account.password.username") + username + "\r\n";
+      description += strings.GetStringFromName("account.password.hostname") + this.getHostname() + "\r\n";
       description += "\r\n";
 
       let result =

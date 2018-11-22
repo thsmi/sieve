@@ -30,7 +30,7 @@
 <!ENTITY options.host.imap "IMAP-kiszolgáló:">
 <!ENTITY options.host.custom "Más kiszolgáló:">
 
-<!ENTITY options.port.caption "Server Port">
+<!ENTITY options.port.caption "Kiszolgáló kikötő">
 <!ENTITY options.port.description
 "The server port changed, when ManageSieve turned into a full RFC Standard">
 <!ENTITY options.port.description2
@@ -38,7 +38,7 @@
 <!ENTITY options.port.4190 "4190 (alapértelmezett)" >
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Egyéb:">
-<!ENTITY options.port.autoselect "Auto Select Port">
+<!ENTITY options.port.autoselect "Önműködően kiválasztja a kikötőt">
 <!ENTITY options.port.autoselect.running "Selecting Port, please wait…">
 <!ENTITY options.port.autoselect.successful "Sieve detected on Port ">
 <!ENTITY options.port.autoselect.error "Selecting Port failed…">
@@ -128,7 +128,7 @@
 <!ENTITY options.proxyauth.custom.username "Felhasználónév:">
 
 <!ENTITY options.info.servername "Server Name:">
-<!ENTITY options.info.port "Port:">
+<!ENTITY options.info.port "Kikötő:">
 <!ENTITY options.info.secure "Biztonságos kapcsolat:">
 <!ENTITY options.info.username "Username:">
 <!ENTITY options.info.auth "Hitelesítés:">
@@ -159,7 +159,7 @@
 <!ENTITY options.proxy.socks5 "SOCKSv5">
 <!ENTITY options.proxy.nameresolution "Resolve hostnames on proxy">
 <!ENTITY options.proxy.host "Gépnév:">
-<!ENTITY options.proxy.port "Port:">
+<!ENTITY options.proxy.port "Kikötő:">
 
 
 <!-- Locale for the List Filter Dialog -->
@@ -195,27 +195,27 @@ Do not continue unless you know there's a good reason why this server doesn't us
 <!ENTITY list.badcert.ignore "Folytatás">
 <!ENTITY list.badcert.abort "Abort">
 
-<!ENTITY list.autoconfig.welcome.caption "Welcome!">
+<!ENTITY list.autoconfig.welcome.caption "Isten hozott!">
 <!ENTITY list.autoconfig.welcome.description1
 "This account is not Configured for manage sieve.">
 <!ENTITY list.autoconfig.welcome.description2
 "Click on 'Continue' to detect the configuration automatically.
 Or choose 'Advanced' to configure the account manually.">
 
-<!ENTITY list.autoconfig.advanced "Advanced">
+<!ENTITY list.autoconfig.advanced "Haladó">
 <!ENTITY list.autoconfig.continue "Folytatás">
 
 <!ENTITY list.autoconfig.detecting.caption "Autodetecting Configuration">
 <!ENTITY list.autoconfig.detecting.description
   "Might take some minutes to complete…">
 
-<!ENTITY list.autoconfig.cancel "Cancel">
+<!ENTITY list.autoconfig.cancel "Mégse">
 
 <!ENTITY list.autoconfig.success.caption "Congratulations!">
 <!ENTITY list.autoconfig.success.description
   "Your account is now configured and ready to use…">
 
-<!ENTITY list.autoconfig.error.caption "Sorry">
+<!ENTITY list.autoconfig.error.caption "Sajnáljuk">
 <!ENTITY list.autoconfig.error.description
 "It seems your mail server does not support manage sieve or requires a special configuration. Please contact your Mail provider or try to do a manual configuration.">
 

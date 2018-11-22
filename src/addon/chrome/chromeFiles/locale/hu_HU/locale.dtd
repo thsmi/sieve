@@ -134,7 +134,7 @@
 <!ENTITY options.info.auth "Hitelesítés:">
 
 <!ENTITY options.account.sieve
-"Sieve is a powerful script language for server-side mail filtering.">
+"A Szita (Sieve) egy erőteljes parancsnyelv a kiszolgálóoldali levélszűrés számára.">
 <!ENTITY options.account.activate
 "Do you want to activate managing Sieve Scripts for this account?">
 <!ENTITY options.account.activate.yes "Yes, manage Sieve scripts for this account:">

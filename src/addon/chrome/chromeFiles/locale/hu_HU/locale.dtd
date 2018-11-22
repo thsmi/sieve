@@ -173,10 +173,10 @@
 
 <!ENTITY list.new "New…">
 <!ENTITY list.edit "Edit…">
-<!ENTITY list.delete "Delete">
-<!ENTITY list.rename "Rename">
+<!ENTITY list.delete "Törlés">
+<!ENTITY list.rename "Átnevezés">
 <!ENTITY list.activate "Activate">
-<!ENTITY list.settings "Settings…">
+<!ENTITY list.settings "Beállítások…">
 
 <!ENTITY list.details.capability "Server Sieve Capabilities">
 <!ENTITY list.details.capability.implementation "Kiszolgálóverzió:">
@@ -211,7 +211,7 @@ Or choose 'Advanced' to configure the account manually.">
 
 <!ENTITY list.autoconfig.cancel "Mégse">
 
-<!ENTITY list.autoconfig.success.caption "Congratulations!">
+<!ENTITY list.autoconfig.success.caption "Gratulálunk!">
 <!ENTITY list.autoconfig.success.description
   "Your account is now configured and ready to use…">
 
@@ -219,8 +219,8 @@ Or choose 'Advanced' to configure the account manually.">
 <!ENTITY list.autoconfig.error.description
 "It seems your mail server does not support manage sieve or requires a special configuration. Please contact your Mail provider or try to do a manual configuration.">
 
-<!ENTITY list.autoconfig.retest "Re-test">
-<!ENTITY list.autoconfig.config "Manual Configuration">
+<!ENTITY list.autoconfig.retest "Újratesztelés">
+<!ENTITY list.autoconfig.config "Kézi beállítás">
 
 <!-- Locale for the Edit Filter Dialog -->
 <!ENTITY edit.toolbar.save "Mentés">
@@ -244,9 +244,9 @@ Or choose 'Advanced' to configure the account manually.">
 
 <!-- Search and Replace Side bar -->
 <!ENTITY edit.searchreplace.title "Search and Replace">
-<!ENTITY edit.searchreplace.searchfor "Search for:">
-<!ENTITY edit.searchreplace.replacewith "Replace with:">
-<!ENTITY edit.searchreplace.options "Options">
+<!ENTITY edit.searchreplace.searchfor "Keresés:">
+<!ENTITY edit.searchreplace.replacewith "Csere erre:">
+<!ENTITY edit.searchreplace.options "Beállítások">
 <!ENTITY edit.searchreplace.case "Kis- és nagybetűk">
 <!ENTITY edit.searchreplace.backward "Visszafelé">
 <!ENTITY edit.searchreplace.find "Keresés">

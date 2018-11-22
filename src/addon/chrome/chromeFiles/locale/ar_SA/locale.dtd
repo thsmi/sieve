@@ -124,7 +124,7 @@
 "تفويض البروكسي، يسمح للمستخدم الموثوق بالتصرف نيابة عن مستخدم آخر.
 عادة السيرفرات تكون مهيئة، هذه الميزة متاحة فقط للمشرفين.">
 <!ENTITY options.proxyauth.force
-"عند استخدام تفويض البروكسي عليك فرض مصادقة &quot;SASL العادي&quot;.">
+"When using proxy authorization you should force SASL PLAIN Authentication.">
 <!ENTITY options.proxyauth.none "لا يوجد تفويض">
 <!ENTITY options.proxyauth.default "اسم مستخدم الغربال">
 <!ENTITY options.proxyauth.prompt "Request Authorization">
@@ -171,7 +171,7 @@
 
 <!ENTITY list.accounts "الفلاتر لأجل:">
 
-<!ENTITY list.tree "سيرفر غربال تصفية الإيميل">
+<!ENTITY list.tree "Server-side Sieve mailfilters">
 <!ENTITY list.tree.active "مفعل">
 <!ENTITY list.tree.name "اسم">
 
@@ -194,7 +194,7 @@
 <!ENTITY list.badcert.error
 "إذا كنت في الغالب تتصل بهذا السيرفر بدون مشاكل، هذا الخطء يعني أن شخص ما حاول انتحال هوية السيرفر.
 لا تستمر إلا إذا كنت تعرف أنه يوجد سبب وجيه يبين لماذا هذا السيرفر لا يستخدم هوية موثوقة.">
-<!ENTITY list.badcert.remember "تذكر خياري">
+<!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "واصل">
 <!ENTITY list.badcert.abort "ألغي">
 
@@ -202,8 +202,8 @@
 <!ENTITY list.autoconfig.welcome.description1
 "هذا الحساب ليس مهيئ لإدارة الغربال.">
 <!ENTITY list.autoconfig.welcome.description2
-"انقر على 'واصل' لتكشف عن التهيئة تلقائياً.
-أو أختر 'مُتقدم' لتهيئة الحساب يدوياً.">
+"Click on ‘Continue’ to detect the configuration automatically.
+Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "مُتقدم">
 <!ENTITY list.autoconfig.continue "واصل">
@@ -246,7 +246,7 @@
 <!ENTITY edit.sidebar.title "مرجع لغة الغربال">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "ابحث و إستبدل">
+<!ENTITY edit.searchreplace.title "Find and Replace">
 <!ENTITY edit.searchreplace.searchfor "البحث عن:">
 <!ENTITY edit.searchreplace.replacewith "استبدل مع:">
 <!ENTITY edit.searchreplace.options "الخيارات">
@@ -258,7 +258,7 @@
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"أنت الآن غير متصل. انقر على' اتصل' و حاول مرة أخرى">
+"You are currently offline. Check that you are connected to the internet, Click ‘Go Online’ and try again.">
 <!ENTITY status.offline.go "اتصل">
 
 
@@ -269,16 +269,17 @@
 <!ENTITY status.warning.ignore "تجاهل">
 <!ENTITY status.warning.reconnect "اعد الاتصال">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
+  "This account is not configured for manage sieve, go to Tools → Sieve Message Filters">
 
 <!ENTITY status.error.reconnect "اعد الاتصال">
 <!ENTITY status.error "فشل الأمر الأخير، لأن السيرفر أبلغ عن خطأ:">
 
 <!ENTITY status.sync.description
-"البرمجة المحلية مختلفة عن السيرفر.
-ماذا تريد ان تفعل حيال ذالك؟">
+"The local and the server-side scripts are different.
+
+What would you like to do about it ?">
 <!ENTITY status.sync.keep "ابقي البرمجة المحلية">
-<!ENTITY status.sync.replace "استخدم برمجة السيرفر">
+<!ENTITY status.sync.replace "Use Server-side Script">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

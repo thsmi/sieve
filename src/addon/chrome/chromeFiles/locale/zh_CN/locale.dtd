@@ -122,7 +122,7 @@
 <!ENTITY options.proxyauth.desc
 "代理授权，允许经过身份验证的用户代表其他用户行事。通常服务器的设置只允许管理员使用此功能。">
 <!ENTITY options.proxyauth.force
-"在使用代理服务器身份验证时，您应该强制”SASL PLAIN“身份验证。">
+"When using proxy authorization you should force SASL PLAIN Authentication.">
 <!ENTITY options.proxyauth.none "无身份验证">
 <!ENTITY options.proxyauth.default "Sieve 用户名">
 <!ENTITY options.proxyauth.prompt "Request Authorization">
@@ -169,7 +169,7 @@
 
 <!ENTITY list.accounts "过滤器：">
 
-<!ENTITY list.tree "服务器侧 Sieve 邮件过滤器">
+<!ENTITY list.tree "Server-side Sieve mailfilters">
 <!ENTITY list.tree.active "活动">
 <!ENTITY list.tree.name "名称">
 
@@ -193,7 +193,7 @@
 "如果您通常没有问题地连接到此服务器，则此错误可能意味着有人正在尝试模仿此服务器。 
 
 除非您很清楚为什么此服务器不使用可信标识，否则不要继续。">
-<!ENTITY list.badcert.remember "记住我的决定">
+<!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "继续">
 <!ENTITY list.badcert.abort "放弃">
 
@@ -201,8 +201,8 @@
 <!ENTITY list.autoconfig.welcome.description1
 "此账户没有配置为管理 Sieve。">
 <!ENTITY list.autoconfig.welcome.description2
-"点击”继续“以自动检测配置。
-或选择”高级“，手动配置此账户。">
+"Click on ‘Continue’ to detect the configuration automatically.
+Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "高级">
 <!ENTITY list.autoconfig.continue "继续">
@@ -245,7 +245,7 @@
 <!ENTITY edit.sidebar.title "Sieve 语言参考">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "搜索和替换">
+<!ENTITY edit.searchreplace.title "Find and Replace">
 <!ENTITY edit.searchreplace.searchfor "搜索：">
 <!ENTITY edit.searchreplace.replacewith "替换：">
 <!ENTITY edit.searchreplace.options "选项">
@@ -257,7 +257,7 @@
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"您目前已离线。请点击”连线“并重试。">
+"You are currently offline. Check that you are connected to the internet, Click ‘Go Online’ and try again.">
 <!ENTITY status.offline.go "连线">
 
 
@@ -268,17 +268,17 @@
 <!ENTITY status.warning.ignore "忽略">
 <!ENTITY status.warning.reconnect "重新连接">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
+  "This account is not configured for manage sieve, go to Tools → Sieve Message Filters">
 
 <!ENTITY status.error.reconnect "重新连接">
 <!ENTITY status.error "最后的命令失败，服务器回报错误：">
 
 <!ENTITY status.sync.description
-"本地和服务器侧的脚本有差异。
+"The local and the server-side scripts are different.
 
-您想怎么办呢？">
+What would you like to do about it ?">
 <!ENTITY status.sync.keep "保留本地脚本">
-<!ENTITY status.sync.replace "使用服务器侧脚本">
+<!ENTITY status.sync.replace "Use Server-side Script">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

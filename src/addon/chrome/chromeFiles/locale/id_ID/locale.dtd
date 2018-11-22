@@ -19,7 +19,7 @@
 <!ENTITY options.tab.general "Umum">
 <!ENTITY options.tab.proxy "Proxy">
 <!ENTITY options.tab.advanced "Lanjutan">
-<!ENTITY options.tab.advanced.warning "These settings are intended for advanced users…">
+<!ENTITY options.tab.advanced.warning "Pengaturan ini ditujukan untuk pengguna tingkat lanjut…">
 <!ENTITY options.tab.editor "Penyusun">
 <!ENTITY options.tab.debug "Debug">
 <!ENTITY options.tab.credits "Kredit">
@@ -248,7 +248,7 @@ untuk melakukan konfigurasi manual.">
 <!ENTITY edit.toolbar.cut "Potong">
 <!ENTITY edit.toolbar.copy "Salin">
 <!ENTITY edit.toolbar.paste "Tempel">
-<!ENTITY edit.toolbar.compile "Syntax Check">
+<!ENTITY edit.toolbar.compile "Pemeriksaan Syntax">
 <!ENTITY edit.toolbar.reference "Referensi Cepat">
 <!ENTITY edit.toolbar.tools "Peralatan">
 <!ENTITY edit.toolbar.import "Impor Skrip">
@@ -285,7 +285,7 @@ untuk melakukan konfigurasi manual.">
 <!ENTITY status.warning.ignore "Abaikan">
 <!ENTITY status.warning.reconnect "Sambung kembali">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
+  "Akun ini tidak terkonfigurasi untuk mengelola sieve, pergi ke 'Peralatan → SieveMessage Filters'">
 
 <!ENTITY status.error.reconnect "Sambung kembali">
 <!ENTITY status.error "Perintah terakhir gagal, karena server melaporkan kesalahan:">

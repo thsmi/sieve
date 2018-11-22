@@ -131,7 +131,7 @@
 "Прокси авторизация, позволяет аутентифицированному пользователю действовать от имени другого пользователя.
 Обычно серверы настраивают так, чтобы эта возможность была доступна только администраторам.">
 <!ENTITY options.proxyauth.force
-"При использовании прокси авторизации следует принудительно установить &quot;SASL PLAIN&quot; аутентификацию.">
+"When using proxy authorization you should force SASL PLAIN Authentication.">
 <!ENTITY options.proxyauth.none "Без авторизации">
 <!ENTITY options.proxyauth.default "Имя пользователя Sieve">
 <!ENTITY options.proxyauth.prompt "Request Authorization">
@@ -182,7 +182,7 @@
 
 <!ENTITY list.accounts "Фильтры для:">
 
-<!ENTITY list.tree "Почтовые фильтры Sieve на сервере">
+<!ENTITY list.tree "Server-side Sieve mailfilters">
 <!ENTITY list.tree.active "Активный">
 <!ENTITY list.tree.name "Имя">
 
@@ -207,7 +207,7 @@
 означать, что кто-то пытается подменить этот сервер другим.
 
 В этом случае Вам не следует продолжать соединение.">
-<!ENTITY list.badcert.remember "Запомнить мой выбор">
+<!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "Продолжить">
 <!ENTITY list.badcert.abort "Прекратить">
 
@@ -215,8 +215,8 @@
 <!ENTITY list.autoconfig.welcome.description1
 "Эта учётная запись не настроена для работы с Sieve.">
 <!ENTITY list.autoconfig.welcome.description2
-"Для автоматической настройки кликните 'Продолжить'.
-Либо выберите 'Вручную', чтобы настроить учётную запись вручную.">
+"Click on ‘Continue’ to detect the configuration automatically.
+Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "Вручную">
 <!ENTITY list.autoconfig.continue "Продолжить">
@@ -261,7 +261,7 @@
 <!ENTITY edit.sidebar.title "Справочник по языку Sieve">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Найти и заменить">
+<!ENTITY edit.searchreplace.title "Find and Replace">
 <!ENTITY edit.searchreplace.searchfor "Найти:">
 <!ENTITY edit.searchreplace.replacewith "Заменить на:">
 <!ENTITY edit.searchreplace.options "Параметры">
@@ -273,7 +273,7 @@
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"Вы работаете в автономном режиме. Нажмите 'Перейти в онлайн' и попробуйте снова">
+"You are currently offline. Check that you are connected to the internet, Click ‘Go Online’ and try again.">
 <!ENTITY status.offline.go "Перейти в онлайн">
 
 
@@ -284,17 +284,17 @@
 <!ENTITY status.warning.ignore "Игнорировать">
 <!ENTITY status.warning.reconnect "Переподключить">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
+  "This account is not configured for manage sieve, go to Tools → Sieve Message Filters">
 
 <!ENTITY status.error.reconnect "Переподключить">
 <!ENTITY status.error "Последняя команда не выполнена, так как сервер сообщил об ошибке:">
 
 <!ENTITY status.sync.description
-"Локальный и серверный скрипты отличаются. 
+"The local and the server-side scripts are different.
 
-Чтобы вы хотели сделать?">
+What would you like to do about it ?">
 <!ENTITY status.sync.keep "Сохранить локальный скрипт">
-<!ENTITY status.sync.replace "Использовать серверный скрипт">
+<!ENTITY status.sync.replace "Use Server-side Script">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

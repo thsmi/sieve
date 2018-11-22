@@ -12,7 +12,7 @@
  -->
 
 <!-- Options Dialog -->
-<!ENTITY options.title "Sieve beállítások">
+<!ENTITY options.title "Szita beállítások">
 
 <!ENTITY options.tab.server "Kiszolgáló">
 <!ENTITY options.tab.security "Biztonság">

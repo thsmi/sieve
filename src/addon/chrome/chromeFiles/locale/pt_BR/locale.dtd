@@ -122,7 +122,7 @@ baixo, os pedidos de verificação de sintaxe são agrupados.">
 <!ENTITY options.proxyauth.desc
 "Autorização por proxy permite que um usuário autenticado agir em nome de outro usuário. Geralmente servidores são configurados com este recurso disponível apenas para administradores.">
 <!ENTITY options.proxyauth.force
-"Quando usando autenticação por proxy você deve forçar autenticação &quot;SASL PLAIN&quot;.">
+"When using proxy authorization you should force SASL PLAIN Authentication.">
 <!ENTITY options.proxyauth.none "Sem autorização">
 <!ENTITY options.proxyauth.default "Usuário sieve">
 <!ENTITY options.proxyauth.prompt "Request Authorization">
@@ -169,7 +169,7 @@ baixo, os pedidos de verificação de sintaxe são agrupados.">
 
 <!ENTITY list.accounts "Filtros para:">
 
-<!ENTITY list.tree "Filtros sieve do lado do servidor">
+<!ENTITY list.tree "Server-side Sieve mailfilters">
 <!ENTITY list.tree.active "Ativo">
 <!ENTITY list.tree.name "Nome">
 
@@ -191,7 +191,7 @@ baixo, os pedidos de verificação de sintaxe são agrupados.">
   "Seu servidor de email tenta identificar-se com informações inválidas.">
 <!ENTITY list.badcert.error
 "Se você costuma se conectar a esse servidor sem problemas, este erro pode significar que alguém está tentando forjar credenciais. Não continue a menos que você saiba que há uma boa razão para a qual este servidor não esteja usando identificação confiável.">
-<!ENTITY list.badcert.remember "Lembrar da minha decisão">
+<!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "Continuar">
 <!ENTITY list.badcert.abort "Cancelar">
 
@@ -199,7 +199,8 @@ baixo, os pedidos de verificação de sintaxe são agrupados.">
 <!ENTITY list.autoconfig.welcome.description1
 "Essa conta não está configurada para o protocolo managesieve.">
 <!ENTITY list.autoconfig.welcome.description2
-"Clique em 'Continuar' para detectar a configuração automaticamente. Ou escolha 'Avançado' para configurar a conta manualmente.">
+"Click on ‘Continue’ to detect the configuration automatically.
+Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "Avançado">
 <!ENTITY list.autoconfig.continue "Continuar">
@@ -242,7 +243,7 @@ baixo, os pedidos de verificação de sintaxe são agrupados.">
 <!ENTITY edit.sidebar.title "Referência da Linguagem Sieve">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Localizar e Substituir">
+<!ENTITY edit.searchreplace.title "Find and Replace">
 <!ENTITY edit.searchreplace.searchfor "Pesquisar por:">
 <!ENTITY edit.searchreplace.replacewith "Substituir por:">
 <!ENTITY edit.searchreplace.options "Opções">
@@ -254,7 +255,7 @@ baixo, os pedidos de verificação de sintaxe são agrupados.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"Você está offline agora. Clique em 'Conectar' e tente outra vez">
+"You are currently offline. Check that you are connected to the internet, Click ‘Go Online’ and try again.">
 <!ENTITY status.offline.go "Conectar">
 
 
@@ -265,15 +266,17 @@ baixo, os pedidos de verificação de sintaxe são agrupados.">
 <!ENTITY status.warning.ignore "Ignorar">
 <!ENTITY status.warning.reconnect "Reconectar">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
+  "This account is not configured for manage sieve, go to Tools → Sieve Message Filters">
 
 <!ENTITY status.error.reconnect "Reconectar">
 <!ENTITY status.error "Último comando falhou, o servidor detectou um erro:">
 
 <!ENTITY status.sync.description
-"O script local e o do servidor são diferentes. O que você quer fazer a respeito?">
+"The local and the server-side scripts are different.
+
+What would you like to do about it ?">
 <!ENTITY status.sync.keep "Manter o Script Local">
-<!ENTITY status.sync.replace "Use o script no servidor">
+<!ENTITY status.sync.replace "Use Server-side Script">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

@@ -167,7 +167,7 @@
 
 <!ENTITY list.accounts "Szűrők a következőkhöz:">
 
-<!ENTITY list.tree "Server-side Sieve mailfilters">
+<!ENTITY list.tree "Kiszolgálóoldali szita levelezőszűrőket">
 <!ENTITY list.tree.active "Működő">
 <!ENTITY list.tree.name "Név">
 
@@ -276,7 +276,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 What would you like to do about it ?">
 <!ENTITY status.sync.keep "Helyi parancsfájl megtartása">
-<!ENTITY status.sync.replace "Use Server-side Script">
+<!ENTITY status.sync.replace "Kiszolgálóoldali parancsfájl használata">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

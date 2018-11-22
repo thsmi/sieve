@@ -41,9 +41,9 @@ server yang sesuai hanya bisa diakses melalui port 4190.">
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Lainnya:">
 <!ENTITY options.port.autoselect "Otomatis Memilih Bagian">
-<!ENTITY options.port.autoselect.running "Selecting Port, please wait…">
+<!ENTITY options.port.autoselect.running "Memilih Port, silakan tunggu…">
 <!ENTITY options.port.autoselect.successful "Saringan terdeteksi di Bagian ">
-<!ENTITY options.port.autoselect.error "Selecting Port failed…">
+<!ENTITY options.port.autoselect.error "Gagal memilih Port…">
 
 <!ENTITY options.security.caption "Sambungan Keamanan">
 <!ENTITY options.security.description
@@ -63,7 +63,7 @@ Alasan bagus (misalnya Debugging), anda harus selalu memaksa TLS.">
 <!ENTITY options.login.customAuth "Nama pengguna dan Kata sandi">
 <!ENTITY options.login.username "Nama pengguna">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "View Saved Passwords…">
+<!ENTITY options.login.show "Lihat Password Tersimpan…">
 
 <!ENTITY options.misc "Pengaturan Tidak Biasa">
 <!ENTITY options.misc.keepalive "Aktifkan agar tetap hidup">
@@ -77,7 +77,7 @@ server menganggap klien terputus dan menutup koneksi.">
 harus dilestarikan.">
 <!ENTITY options.misc.keepalive.min "min">
 
-<!ENTITY options.misc.compile.caption "Syntax Check">
+<!ENTITY options.misc.compile.caption "Pemeriksaan Syntax">
 <!ENTITY options.misc.compile.description
 "Saat mengedit Skrip, mereka dapat diperiksa untuk validitasnya. Sintaksnya 
 cek dilakukan oleh server. Untuk menjaga lalu lintas jaringan 
@@ -102,15 +102,15 @@ rendah, permintaan cek sintaks dikelompokkan.">
 <!ENTITY options.debug.warning
 "Ingatlah bahwa baik SASL Login maupun SASL Biasa menghitung kata sandi Anda, 
 itu mungkin diposting dalam teks yang jelas ke konsol kesalahan.">
-<!ENTITY options.debug.caption "Debug Settings">
+<!ENTITY options.debug.caption "Pengaturan Debug">
 <!ENTITY options.debug.request "Klien ke Server komunikasi (permintaan)">
 <!ENTITY options.debug.response "Server untuk komunikasi Klien (merespon)">
 <!ENTITY options.debug.exceptions "Pengecualian dan Informasi Mesin Negara">
 <!ENTITY options.debug.stream "Buang Mentah/ Membuang Aliran Byte">
-<!ENTITY options.debug.session "Session Management">
+<!ENTITY options.debug.session "Pengelolaan Sesi">
 <!ENTITY options.debug.output "Pengeluaran Debug">
 <!ENTITY options.debug.console "Informasi debug di posting ke kesalahan konsol">
-<!ENTITY options.debug.console.open "Show Error Console…">
+<!ENTITY options.debug.console.open "Tampilkan Konsol Bermasalah…">
 
 <!ENTITY options.authmechanism.caption "Mekanisme Otentikasi">
 <!ENTITY options.authmechanism "Ganti Mekanisme Otentikasi yang disarankan">
@@ -134,14 +134,14 @@ Biasanya server dikonfigurasi, bahwa fitur ini hanya tersedia untuk administrato
 "Bila menggunakan otorisasi proxy anda harus memaksakan Otentikasi &quot;SASL BIASA&quot;.">
 <!ENTITY options.proxyauth.none "Tidak ada Otorisasi">
 <!ENTITY options.proxyauth.default "Saringan Nama pengguna">
-<!ENTITY options.proxyauth.prompt "Request Authorization">
+<!ENTITY options.proxyauth.prompt "Meminta Otorisasi">
 <!ENTITY options.proxyauth.custom "Otorisasi sebagai">
 <!ENTITY options.proxyauth.custom.username "Nama pengguna:">
 
 <!ENTITY options.info.servername "Nama Server:">
 <!ENTITY options.info.port "Bagian:">
 <!ENTITY options.info.secure "Koneksi aman:">
-<!ENTITY options.info.username "Username:">
+<!ENTITY options.info.username "Nama pengguna:">
 <!ENTITY options.info.auth "Otentikasi:">
 
 <!ENTITY options.account.sieve
@@ -150,8 +150,8 @@ Biasanya server dikonfigurasi, bahwa fitur ini hanya tersedia untuk administrato
 "Apakah anda ingin mengaktifkan pengelolaan Skrip Saringan untuk akun ini?">
 <!ENTITY options.account.activate.yes "Ya, kelola skrip Sieve untuk akun ini:">
 <!ENTITY options.account.activate.no "Tidak, akun ini tidak mendukung Saringan">
-<!ENTITY options.account.filters "Edit Filters…">
-<!ENTITY options.account.settings "Change Settings…">
+<!ENTITY options.account.filters "Edit Filter…">
+<!ENTITY options.account.settings "Ubah Pengaturan…">
 
 <!-- Credits -->
 <!ENTITY options.credits "Banyak terima kasih kepada semua kontributor:">
@@ -186,12 +186,12 @@ gunakan '127.0.0.1' sebagai gantinya.">
 <!ENTITY list.tree.active "Aktif">
 <!ENTITY list.tree.name "Nama">
 
-<!ENTITY list.new "New…">
+<!ENTITY list.new "Baru…">
 <!ENTITY list.edit "Edit…">
 <!ENTITY list.delete "Hapus">
 <!ENTITY list.rename "Ganti nama">
 <!ENTITY list.activate "Mengaktifkan">
-<!ENTITY list.settings "Settings…">
+<!ENTITY list.settings "Pengaturan…">
 
 <!ENTITY list.details.capability "Kemampuan Server Saringan">
 <!ENTITY list.details.capability.implementation "Versi Server:">
@@ -224,13 +224,13 @@ Atau pilih 'Lanjutan' untuk mengkonfigurasi akun secara manual.">
 
 <!ENTITY list.autoconfig.detecting.caption "Konfigurasi Deteksi otomatis">
 <!ENTITY list.autoconfig.detecting.description
-  "Might take some minutes to complete…">
+  "Membutuhkan waktu beberapa menit untuk menyelesaikan…">
 
 <!ENTITY list.autoconfig.cancel "Batalkan">
 
 <!ENTITY list.autoconfig.success.caption "Selamat!">
 <!ENTITY list.autoconfig.success.description
-  "Your account is now configured and ready to use…">
+  "Akun Anda telah terkonfigurasi dan siap digunakan…">
 
 <!ENTITY list.autoconfig.error.caption "Maaf">
 <!ENTITY list.autoconfig.error.description

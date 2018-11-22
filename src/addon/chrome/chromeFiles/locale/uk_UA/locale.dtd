@@ -121,7 +121,7 @@
 <!ENTITY options.proxyauth.desc
 "Proxy authorization, allows an authenticated user to act on behalf of another user. Usually servers are configured, that this feature is only available for administrators.">
 <!ENTITY options.proxyauth.force
-"When using proxy authorization you should force &quot;SASL PLAIN&quot; Authentication.">
+"When using proxy authorization you should force SASL PLAIN Authentication.">
 <!ENTITY options.proxyauth.none "Без авторизації">
 <!ENTITY options.proxyauth.default "Псевдонім Sieve">
 <!ENTITY options.proxyauth.prompt "Запит на авторизацію">
@@ -168,7 +168,7 @@
 
 <!ENTITY list.accounts "Фільтри для:">
 
-<!ENTITY list.tree "Фільтри Sieve на сервері">
+<!ENTITY list.tree "Server-side Sieve mailfilters">
 <!ENTITY list.tree.active "Активні">
 <!ENTITY list.tree.name "Назва">
 
@@ -192,7 +192,7 @@
 "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server.
 
 Do not continue unless you know there's a good reason why this server doesn't use trusted identification.">
-<!ENTITY list.badcert.remember "Запамʼятати мій вибір">
+<!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "Продовжити">
 <!ENTITY list.badcert.abort "Перервати">
 
@@ -200,8 +200,8 @@ Do not continue unless you know there's a good reason why this server doesn't us
 <!ENTITY list.autoconfig.welcome.description1
 "Цей акаунт не налаштовано для керування Sieve.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click on 'Continue' to detect the configuration automatically.
-Or choose 'Advanced' to configure the account manually.">
+"Click on ‘Continue’ to detect the configuration automatically.
+Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "Розширені">
 <!ENTITY list.autoconfig.continue "Продовжити">
@@ -244,7 +244,7 @@ Or choose 'Advanced' to configure the account manually.">
 <!ENTITY edit.sidebar.title "Документація з мови Sieve">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Пошук і заміна">
+<!ENTITY edit.searchreplace.title "Find and Replace">
 <!ENTITY edit.searchreplace.searchfor "Шукати:">
 <!ENTITY edit.searchreplace.replacewith "Замінити на:">
 <!ENTITY edit.searchreplace.options "Налаштування">
@@ -256,7 +256,7 @@ Or choose 'Advanced' to configure the account manually.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Click 'Go Online' and try again">
+"You are currently offline. Check that you are connected to the internet, Click ‘Go Online’ and try again.">
 <!ENTITY status.offline.go "Підключитись">
 
 
@@ -267,17 +267,17 @@ Or choose 'Advanced' to configure the account manually.">
 <!ENTITY status.warning.ignore "Пропустити">
 <!ENTITY status.warning.reconnect "Перезʼєднати">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
+  "This account is not configured for manage sieve, go to Tools → Sieve Message Filters">
 
 <!ENTITY status.error.reconnect "Перезʼєднати">
 <!ENTITY status.error "Збій останньої команди — сервер повідомив про помилку:">
 
 <!ENTITY status.sync.description
-"Сценарій на сервері відрізняється від локального.
+"The local and the server-side scripts are different.
 
-Як ви хочете це виправити?">
+What would you like to do about it ?">
 <!ENTITY status.sync.keep "Зберегти локальний сценарій">
-<!ENTITY status.sync.replace "Використати сценарій на сервері">
+<!ENTITY status.sync.replace "Use Server-side Script">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

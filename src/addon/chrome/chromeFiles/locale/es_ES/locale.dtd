@@ -131,7 +131,7 @@ forzar un Mecanismo de Autenticación específico." >
 "Autorización Proxy, permite a un usuario autenticado actuar en nombre de otro usuario.
 Normalmente los servidores están configurados, para que ésta característica esté sólo disponible para administradores.">
 <!ENTITY options.proxyauth.force
-"Cuando usa una autorización proxy debe forzar &quot;SASL PLAIN&quot; Autenticación.">
+"When using proxy authorization you should force SASL PLAIN Authentication.">
 <!ENTITY options.proxyauth.none "Sin Autorización">
 <!ENTITY options.proxyauth.default "Nombre de usuario Sieve">
 <!ENTITY options.proxyauth.prompt "Request Authorization">
@@ -182,7 +182,7 @@ use '127.0.0.1' en su lugar.">
 
 <!ENTITY list.accounts "Filtros para:">
 
-<!ENTITY list.tree "Filtros de correo en Sieve lado servidor">
+<!ENTITY list.tree "Server-side Sieve mailfilters">
 <!ENTITY list.tree.active "Activo">
 <!ENTITY list.tree.name "Nombre">
 
@@ -208,7 +208,7 @@ significar que alguien está intentando hacerse pasar por usted en el servidor.
 
 No continue a menos que tenga una buena razón porque 
 éste servidor no utiliza identificación de confianza.">
-<!ENTITY list.badcert.remember "Recordar mi decisión">
+<!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "Continuar">
 <!ENTITY list.badcert.abort "Abortar">
 
@@ -216,8 +216,8 @@ No continue a menos que tenga una buena razón porque
 <!ENTITY list.autoconfig.welcome.description1
 "Esta cuenta no está configurada para gestionar Sieve.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click en 'Continuar' para detectar la configuración automáticamente.
-O elija 'Avanzada' para configurar la cuenta manualmente.">
+"Click on ‘Continue’ to detect the configuration automatically.
+Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "Avanzado">
 <!ENTITY list.autoconfig.continue "Continuar">
@@ -262,7 +262,7 @@ hacer la configuración manualmente.">
 <!ENTITY edit.sidebar.title "Referencia de Lenguaje Sieve">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Buscar y Reemplazar">
+<!ENTITY edit.searchreplace.title "Find and Replace">
 <!ENTITY edit.searchreplace.searchfor "Buscar:">
 <!ENTITY edit.searchreplace.replacewith "Reemplazar con:">
 <!ENTITY edit.searchreplace.options "Opciones">
@@ -274,7 +274,7 @@ hacer la configuración manualmente.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"Actualmente está offline. Haga click 'Ir Online' e intente de nuevo">
+"You are currently offline. Check that you are connected to the internet, Click ‘Go Online’ and try again.">
 <!ENTITY status.offline.go "Ir Online">
 
 
@@ -285,17 +285,17 @@ hacer la configuración manualmente.">
 <!ENTITY status.warning.ignore "Ignorar">
 <!ENTITY status.warning.reconnect "Reconectar">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
+  "This account is not configured for manage sieve, go to Tools → Sieve Message Filters">
 
 <!ENTITY status.error.reconnect "Reconectar">
 <!ENTITY status.error "Ultimo comando falló porque el servidor reportó un error:">
 
 <!ENTITY status.sync.description
-"Los scripts Locales y del lado servidor son diferentes. 
+"The local and the server-side scripts are different.
 
-¿Que quiere hacer al respecto?">
+What would you like to do about it ?">
 <!ENTITY status.sync.keep "Mantener script Local">
-<!ENTITY status.sync.replace "Usar los scripts del lado servidor">
+<!ENTITY status.sync.replace "Use Server-side Script">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

@@ -120,7 +120,7 @@
 <!ENTITY options.proxyauth.desc
 "Proxy authorization, allows an authenticated user to act on behalf of another user. Usually servers are configured, that this feature is only available for administrators.">
 <!ENTITY options.proxyauth.force
-"When using proxy authorization you should force &quot;SASL PLAIN&quot; Authentication.">
+"When using proxy authorization you should force SASL PLAIN Authentication.">
 <!ENTITY options.proxyauth.none "No Authorization">
 <!ENTITY options.proxyauth.default "Sieve Username">
 <!ENTITY options.proxyauth.prompt "Request Authorization">
@@ -167,7 +167,7 @@
 
 <!ENTITY list.accounts "Filters for:">
 
-<!ENTITY list.tree "Serverside Sieve mailfilters">
+<!ENTITY list.tree "Server-side Sieve mailfilters">
 <!ENTITY list.tree.active "Active">
 <!ENTITY list.tree.name "Name">
 
@@ -191,7 +191,7 @@
 "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server.
 
 Do not continue unless you know there's a good reason why this server doesn't use trusted identification.">
-<!ENTITY list.badcert.remember "Remember my decision">
+<!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "Continue">
 <!ENTITY list.badcert.abort "Abort">
 
@@ -199,8 +199,8 @@ Do not continue unless you know there's a good reason why this server doesn't us
 <!ENTITY list.autoconfig.welcome.description1
 "This account is not Configured for manage sieve.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click on 'Continue' to detect the configuration automatically.
-Or choose 'Advanced' to configure the account manually.">
+"Click on ‘Continue’ to detect the configuration automatically.
+Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "Advanced">
 <!ENTITY list.autoconfig.continue "Continue">
@@ -243,7 +243,7 @@ Or choose 'Advanced' to configure the account manually.">
 <!ENTITY edit.sidebar.title "Sieve Language Reference">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Search and Replace">
+<!ENTITY edit.searchreplace.title "Find and Replace">
 <!ENTITY edit.searchreplace.searchfor "Search for:">
 <!ENTITY edit.searchreplace.replacewith "Replace with:">
 <!ENTITY edit.searchreplace.options "Options">
@@ -255,7 +255,7 @@ Or choose 'Advanced' to configure the account manually.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Click 'Go Online' and try again">
+"You are currently offline. Check that you are connected to the internet, Click ‘Go Online’ and try again.">
 <!ENTITY status.offline.go "Go Online">
 
 
@@ -266,17 +266,17 @@ Or choose 'Advanced' to configure the account manually.">
 <!ENTITY status.warning.ignore "Ignore">
 <!ENTITY status.warning.reconnect "Reconnect">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, go to 'Tools → SieveMessage Filters'">
+  "This account is not configured for manage sieve, go to Tools → Sieve Message Filters">
 
 <!ENTITY status.error.reconnect "Reconnect">
 <!ENTITY status.error "Last Command failed, because the server reported an error:">
 
 <!ENTITY status.sync.description
-"The local and the server side scripts are different.
+"The local and the server-side scripts are different.
 
 What would you like to do about it ?">
 <!ENTITY status.sync.keep "Keep Local Script">
-<!ENTITY status.sync.replace "Use Server Side Script">
+<!ENTITY status.sync.replace "Use Server-side Script">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

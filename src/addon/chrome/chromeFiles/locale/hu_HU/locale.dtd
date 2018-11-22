@@ -39,7 +39,7 @@
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Egyéb:">
 <!ENTITY options.port.autoselect "Önműködően kiválasztja a kikötőt">
-<!ENTITY options.port.autoselect.running "Selecting Port, please wait…">
+<!ENTITY options.port.autoselect.running "Kikötő választása, kis türelmet kérjük…">
 <!ENTITY options.port.autoselect.successful "Sieve detected on Port ">
 <!ENTITY options.port.autoselect.error "Selecting Port failed…">
 
@@ -168,8 +168,8 @@
 <!ENTITY list.accounts "Filters for:">
 
 <!ENTITY list.tree "Serverside Sieve mailfilters">
-<!ENTITY list.tree.active "Active">
-<!ENTITY list.tree.name "Name">
+<!ENTITY list.tree.active "Működő">
+<!ENTITY list.tree.name "Név">
 
 <!ENTITY list.new "New…">
 <!ENTITY list.edit "Edit…">
@@ -193,7 +193,7 @@
 Do not continue unless you know there's a good reason why this server doesn't use trusted identification.">
 <!ENTITY list.badcert.remember "Remember my decision">
 <!ENTITY list.badcert.ignore "Folytatás">
-<!ENTITY list.badcert.abort "Abort">
+<!ENTITY list.badcert.abort "Megszakít">
 
 <!ENTITY list.autoconfig.welcome.caption "Isten hozott!">
 <!ENTITY list.autoconfig.welcome.description1
@@ -223,21 +223,21 @@ Or choose 'Advanced' to configure the account manually.">
 <!ENTITY list.autoconfig.config "Manual Configuration">
 
 <!-- Locale for the Edit Filter Dialog -->
-<!ENTITY edit.toolbar.save "Save">
-<!ENTITY edit.toolbar.undo "Undo">
-<!ENTITY edit.toolbar.redo "Redo">
-<!ENTITY edit.toolbar.cut "Cut">
-<!ENTITY edit.toolbar.copy "Copy">
-<!ENTITY edit.toolbar.paste "Paste">
+<!ENTITY edit.toolbar.save "Mentés">
+<!ENTITY edit.toolbar.undo "Visszavonás">
+<!ENTITY edit.toolbar.redo "Újra">
+<!ENTITY edit.toolbar.cut "Kivágás">
+<!ENTITY edit.toolbar.copy "Másolás">
+<!ENTITY edit.toolbar.paste "Beillesztés">
 <!ENTITY edit.toolbar.compile "Syntax Check">
 <!ENTITY edit.toolbar.reference "Quick Reference">
-<!ENTITY edit.toolbar.tools "Tools">
-<!ENTITY edit.toolbar.import "Import Script">
-<!ENTITY edit.toolbar.export "Export Script">
-<!ENTITY edit.toolbar.back "Back">
-<!ENTITY edit.toolbar.forward "Forward">
-<!ENTITY edit.toolbar.home "Home">
-<!ENTITY edit.toolbar.search "Search">
+<!ENTITY edit.toolbar.tools "Eszközök">
+<!ENTITY edit.toolbar.import "Parancsfájl importálása">
+<!ENTITY edit.toolbar.export "Parancsfájl exportálása">
+<!ENTITY edit.toolbar.back "Vissza">
+<!ENTITY edit.toolbar.forward "Előre">
+<!ENTITY edit.toolbar.home "Kezdőlap">
+<!ENTITY edit.toolbar.search "Keresés">
 
 <!ENTITY edit.sidebar.uri "https://thsmi.github.io/sieve-reference/en/index.html">
 <!ENTITY edit.sidebar.title "Sieve Language Reference">

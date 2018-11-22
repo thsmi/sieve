@@ -19,7 +19,7 @@
 <!ENTITY options.tab.general "Általános">
 <!ENTITY options.tab.proxy "Meghatalmazott">
 <!ENTITY options.tab.advanced "Haladó">
-<!ENTITY options.tab.advanced.warning "These settings are intended for advanced users…">
+<!ENTITY options.tab.advanced.warning "Ezek a beállítások haladó felhasználók számára készültek…">
 <!ENTITY options.tab.editor "Szerkesztő">
 <!ENTITY options.tab.debug "Hibakeresés">
 <!ENTITY options.tab.credits "Közreműködők">

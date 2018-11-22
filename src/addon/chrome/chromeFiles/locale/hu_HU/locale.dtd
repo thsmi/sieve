@@ -12,7 +12,7 @@
  -->
 
 <!-- Options Dialog -->
-<!ENTITY options.title "Sieve Options">
+<!ENTITY options.title "Sieve beállítások">
 
 <!ENTITY options.tab.server "Kiszolgáló">
 <!ENTITY options.tab.security "Biztonság">
@@ -71,7 +71,7 @@
 "A keepalive request indicates the connection is still active and should be preserved.">
 <!ENTITY options.misc.keepalive.min "perc">
 
-<!ENTITY options.misc.compile.caption "Syntax Check">
+<!ENTITY options.misc.compile.caption "Mondattan-ellenőrzés">
 <!ENTITY options.misc.compile.description
 "While editing Scripts, they can be checked for validity. The syntax check is performed by the server. In order to keep network traffic low, syntax check requests are grouped.">
 <!ENTITY options.misc.compile "Check Scripts while typing">
@@ -105,7 +105,7 @@
 
 <!ENTITY options.authmechanism.caption "Hitelesítési mechanizmus">
 <!ENTITY options.authmechanism "Override suggested Authentication Mechanism">
-<!ENTITY options.authmechanism.default "Use always:">
+<!ENTITY options.authmechanism.default "Mindig használja:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
@@ -127,10 +127,10 @@
 <!ENTITY options.proxyauth.custom "Engedélyezze a(z)">
 <!ENTITY options.proxyauth.custom.username "Felhasználónév:">
 
-<!ENTITY options.info.servername "Server Name:">
+<!ENTITY options.info.servername "Kiszolgáló neve:">
 <!ENTITY options.info.port "Kikötő:">
 <!ENTITY options.info.secure "Biztonságos kapcsolat:">
-<!ENTITY options.info.username "Username:">
+<!ENTITY options.info.username "Felhasználónév:">
 <!ENTITY options.info.auth "Hitelesítés:">
 
 <!ENTITY options.account.sieve
@@ -171,11 +171,11 @@
 <!ENTITY list.tree.active "Működő">
 <!ENTITY list.tree.name "Név">
 
-<!ENTITY list.new "New…">
-<!ENTITY list.edit "Edit…">
+<!ENTITY list.new "Új…">
+<!ENTITY list.edit "Szerkesztés…">
 <!ENTITY list.delete "Törlés">
 <!ENTITY list.rename "Átnevezés">
-<!ENTITY list.activate "Activate">
+<!ENTITY list.activate "Működő">
 <!ENTITY list.settings "Beállítások…">
 
 <!ENTITY list.details.capability "Server Sieve Capabilities">
@@ -191,7 +191,7 @@
 "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server.
 
 Do not continue unless you know there's a good reason why this server doesn't use trusted identification.">
-<!ENTITY list.badcert.remember "Remember my decision">
+<!ENTITY list.badcert.remember "A döntés megjegyzése">
 <!ENTITY list.badcert.ignore "Folytatás">
 <!ENTITY list.badcert.abort "Megszakít">
 
@@ -229,7 +229,7 @@ Or choose 'Advanced' to configure the account manually.">
 <!ENTITY edit.toolbar.cut "Kivágás">
 <!ENTITY edit.toolbar.copy "Másolás">
 <!ENTITY edit.toolbar.paste "Beillesztés">
-<!ENTITY edit.toolbar.compile "Syntax Check">
+<!ENTITY edit.toolbar.compile "Mondattan-ellenőrzés">
 <!ENTITY edit.toolbar.reference "Quick Reference">
 <!ENTITY edit.toolbar.tools "Eszközök">
 <!ENTITY edit.toolbar.import "Parancsfájl importálása">

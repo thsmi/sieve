@@ -182,7 +182,7 @@
 <!ENTITY list.details.capability.implementation "Kiszolgálóverzió:">
 <!ENTITY list.details.capability.sasl "SASL Mechanisms:">
 <!ENTITY list.details.capability.extensions "Bővítmények:">
-<!ENTITY list.details.capability.protocol "Protocol Version:">
+<!ENTITY list.details.capability.protocol "Protokollverzió:">
 
 
 <!ENTITY list.badcert
@@ -205,7 +205,7 @@ Or choose 'Advanced' to configure the account manually.">
 <!ENTITY list.autoconfig.advanced "Haladó">
 <!ENTITY list.autoconfig.continue "Folytatás">
 
-<!ENTITY list.autoconfig.detecting.caption "Autodetecting Configuration">
+<!ENTITY list.autoconfig.detecting.caption "Beállítások önműködő észlelése">
 <!ENTITY list.autoconfig.detecting.description
   "Might take some minutes to complete…">
 
@@ -243,7 +243,7 @@ Or choose 'Advanced' to configure the account manually.">
 <!ENTITY edit.sidebar.title "Sieve Language Reference">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Search and Replace">
+<!ENTITY edit.searchreplace.title "Keresés és csere">
 <!ENTITY edit.searchreplace.searchfor "Keresés:">
 <!ENTITY edit.searchreplace.replacewith "Csere erre:">
 <!ENTITY edit.searchreplace.options "Beállítások">

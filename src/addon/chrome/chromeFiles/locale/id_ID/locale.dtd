@@ -131,7 +131,7 @@ paksa Mekanisme Otentikasi yang spesifik." >
 "Otorisasi proxy, memungkinkan pengguna terotentikasi untuk bertindak atas nama pengguna lain.
 Biasanya server dikonfigurasi, bahwa fitur ini hanya tersedia untuk administrator.">
 <!ENTITY options.proxyauth.force
-"Bila menggunakan otorisasi proxy anda harus memaksakan Otentikasi &quot;SASL BIASA&quot;.">
+"When using proxy authorization you should force SASL PLAIN Authentication.">
 <!ENTITY options.proxyauth.none "Tidak ada Otorisasi">
 <!ENTITY options.proxyauth.default "Saringan Nama pengguna">
 <!ENTITY options.proxyauth.prompt "Meminta Otorisasi">
@@ -182,7 +182,7 @@ gunakan '127.0.0.1' sebagai gantinya.">
 
 <!ENTITY list.accounts "Filter untuk:">
 
-<!ENTITY list.tree "Sisi server Saringan filter mail">
+<!ENTITY list.tree "Server-side Sieve mailfilters">
 <!ENTITY list.tree.active "Aktif">
 <!ENTITY list.tree.name "Nama">
 
@@ -208,7 +208,7 @@ Berarti seseorang sedang mencoba meniru server.
 
 Jangan teruskan kecuali jika anda tahu ada alasan bagus mengapa 
 server ini tidak menggunakan identifikasi terpercaya.">
-<!ENTITY list.badcert.remember "Mengingat keputusan saya">
+<!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "Melanjutkan">
 <!ENTITY list.badcert.abort "Batalkan">
 
@@ -216,8 +216,8 @@ server ini tidak menggunakan identifikasi terpercaya.">
 <!ENTITY list.autoconfig.welcome.description1
 "Akun ini tidak dikonfigurasi untuk mengelola saringan.">
 <!ENTITY list.autoconfig.welcome.description2
-"Klik 'Lanjutkan' untuk mendeteksi konfigurasi secara otomatis.
-Atau pilih 'Lanjutan' untuk mengkonfigurasi akun secara manual.">
+"Click on ‘Continue’ to detect the configuration automatically.
+Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "Lanjutan">
 <!ENTITY list.autoconfig.continue "Melanjutkan">
@@ -262,7 +262,7 @@ untuk melakukan konfigurasi manual.">
 <!ENTITY edit.sidebar.title "Referensi Bahasa Saringan">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Cari dan Ganti">
+<!ENTITY edit.searchreplace.title "Find and Replace">
 <!ENTITY edit.searchreplace.searchfor "Pencarian untuk:">
 <!ENTITY edit.searchreplace.replacewith "Ganti dengan:">
 <!ENTITY edit.searchreplace.options "Pilihan">
@@ -274,7 +274,7 @@ untuk melakukan konfigurasi manual.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"Anda sedang offline sekarang. Klik 'Pergi Online' dan coba lagi">
+"You are currently offline. Check that you are connected to the internet, Click ‘Go Online’ and try again.">
 <!ENTITY status.offline.go "Jadikan Online">
 
 
@@ -285,17 +285,17 @@ untuk melakukan konfigurasi manual.">
 <!ENTITY status.warning.ignore "Abaikan">
 <!ENTITY status.warning.reconnect "Sambung kembali">
 <!ENTITY status.warning
-  "Akun ini tidak terkonfigurasi untuk mengelola sieve, pergi ke 'Peralatan → SieveMessage Filters'">
+  "This account is not configured for manage sieve, go to Tools → Sieve Message Filters">
 
 <!ENTITY status.error.reconnect "Sambung kembali">
 <!ENTITY status.error "Perintah terakhir gagal, karena server melaporkan kesalahan:">
 
 <!ENTITY status.sync.description
-"Lokal server Skrip sisi berbeda. 
+"The local and the server-side scripts are different.
 
-Apa yang ingin kamu lakukan ?">
+What would you like to do about it ?">
 <!ENTITY status.sync.keep "Menjaga Lokal Skrip">
-<!ENTITY status.sync.replace "Gunakan Server Side Script">
+<!ENTITY status.sync.replace "Use Server-side Script">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

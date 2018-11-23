@@ -240,7 +240,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 <!ENTITY edit.toolbar.search "Keresés">
 
 <!ENTITY edit.sidebar.uri "https://thsmi.github.io/sieve-reference/en/index.html">
-<!ENTITY edit.sidebar.title "Sieve Language Reference">
+<!ENTITY edit.sidebar.title "Szita nyelvi hivatkozás">
 
 <!-- Search and Replace Side bar -->
 <!ENTITY edit.searchreplace.title "Keresés és csere">

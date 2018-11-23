@@ -143,7 +143,7 @@
 <!ENTITY options.account.settings "Beállítások módosítása…">
 
 <!-- Credits -->
-<!ENTITY options.credits "Many thanks to all contributors:">
+<!ENTITY options.credits "Köszönet minden közreműködőnek:">
 
 <!-- Proxy Settings -->
 <!ENTITY options.proxy "Meghatalmazás beállítása">
@@ -213,7 +213,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.success.caption "Gratulálunk!">
 <!ENTITY list.autoconfig.success.description
-  "Your account is now configured and ready to use…">
+  "Fiókja most be van állítva és használatra kész…">
 
 <!ENTITY list.autoconfig.error.caption "Sajnáljuk">
 <!ENTITY list.autoconfig.error.description

@@ -41,7 +41,7 @@
 <!ENTITY options.port.autoselect "Önműködően kiválasztja a kikötőt">
 <!ENTITY options.port.autoselect.running "Kikötő választása, kis türelmet kérjük…">
 <!ENTITY options.port.autoselect.successful "Sieve detected on Port ">
-<!ENTITY options.port.autoselect.error "Selecting Port failed…">
+<!ENTITY options.port.autoselect.error "A kikötő kiválasztása sikertelen…">
 
 <!ENTITY options.security.caption "Kapcsolat biztonsága">
 <!ENTITY options.security.description
@@ -180,7 +180,7 @@
 
 <!ENTITY list.details.capability "Server Sieve Capabilities">
 <!ENTITY list.details.capability.implementation "Kiszolgálóverzió:">
-<!ENTITY list.details.capability.sasl "SASL Mechanisms:">
+<!ENTITY list.details.capability.sasl "SASL mechanizmusok:">
 <!ENTITY list.details.capability.extensions "Bővítmények:">
 <!ENTITY list.details.capability.protocol "Protokollverzió:">
 
@@ -191,7 +191,7 @@
 "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server.
 
 Do not continue unless you know there's a good reason why this server doesn't use trusted identification.">
-<!ENTITY list.badcert.remember "Remember this decision">
+<!ENTITY list.badcert.remember "A döntés megjegyzése">
 <!ENTITY list.badcert.ignore "Folytatás">
 <!ENTITY list.badcert.abort "Megszakít">
 
@@ -230,7 +230,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 <!ENTITY edit.toolbar.copy "Másolás">
 <!ENTITY edit.toolbar.paste "Beillesztés">
 <!ENTITY edit.toolbar.compile "Mondattan-ellenőrzés">
-<!ENTITY edit.toolbar.reference "Quick Reference">
+<!ENTITY edit.toolbar.reference "Gyors hivatkozás">
 <!ENTITY edit.toolbar.tools "Eszközök">
 <!ENTITY edit.toolbar.import "Parancsfájl importálása">
 <!ENTITY edit.toolbar.export "Parancsfájl exportálása">

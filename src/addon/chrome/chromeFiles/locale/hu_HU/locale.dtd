@@ -59,7 +59,7 @@
 <!ENTITY options.login.customAuth "Felhasználónév és jelszó">
 <!ENTITY options.login.username "Felhasználónév">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "View Saved Passwords…">
+<!ENTITY options.login.show "Mentett jelszavak megtekintése…">
 
 <!ENTITY options.misc "Egyéb beállítások">
 <!ENTITY options.misc.keepalive "Enable keepalives">
@@ -101,7 +101,7 @@
 <!ENTITY options.debug.session "Munkamenet-kezelés">
 <!ENTITY options.debug.output "Kimenet hibakeresése">
 <!ENTITY options.debug.console "Debug information is posted to the error console">
-<!ENTITY options.debug.console.open "Show Error Console…">
+<!ENTITY options.debug.console.open "Hibakijelző megjelenítése…">
 
 <!ENTITY options.authmechanism.caption "Hitelesítési mechanizmus">
 <!ENTITY options.authmechanism "Override suggested Authentication Mechanism">

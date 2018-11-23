@@ -26,13 +26,13 @@
 
 <!ENTITY options.host.caption "Kiszolgáló neve">
 <!ENTITY options.host.description
-"Most Sieve implementations run directly on a mail server. Thus the Sieve server name is usually same as your IMAP server name.">
+"A legtöbb Szita megvalósítások közvetlenül fut a levélkiszolgálón. Így a Szita-kiszolgáló neve általában ugyanaz, mint az IMAP-kiszolgáló neve.">
 <!ENTITY options.host.imap "IMAP-kiszolgáló:">
 <!ENTITY options.host.custom "Más kiszolgáló:">
 
 <!ENTITY options.port.caption "Kiszolgáló kikötő">
 <!ENTITY options.port.description
-"The server port changed, when ManageSieve turned into a full RFC Standard">
+"A kiszolgáló kikötő megváltozott, amikor a SzitaKezelése (ManageSieve) teljes RFC szabványt váltott">
 <!ENTITY options.port.description2
 "Older server implementations still use port 2000, while newer standard conform server can only be accessed via port 4190.">
 <!ENTITY options.port.4190 "4190 (alapértelmezett)" >

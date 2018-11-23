@@ -104,7 +104,7 @@
 <!ENTITY options.debug.console.open "Hibakijelző megjelenítése…">
 
 <!ENTITY options.authmechanism.caption "Hitelesítési mechanizmus">
-<!ENTITY options.authmechanism "Override suggested Authentication Mechanism">
+<!ENTITY options.authmechanism "Hitelesítési mechanizmus felülbírálása">
 <!ENTITY options.authmechanism.default "Mindig használja:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">

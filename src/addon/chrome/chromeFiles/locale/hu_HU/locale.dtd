@@ -178,7 +178,7 @@
 <!ENTITY list.activate "Működő">
 <!ENTITY list.settings "Beállítások…">
 
-<!ENTITY list.details.capability "Server Sieve Capabilities">
+<!ENTITY list.details.capability "Szita-kiszolgáló képességeit">
 <!ENTITY list.details.capability.implementation "Kiszolgálóverzió:">
 <!ENTITY list.details.capability.sasl "SASL mechanizmusok:">
 <!ENTITY list.details.capability.extensions "Bővítmények:">

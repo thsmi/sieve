@@ -74,7 +74,7 @@
 <!ENTITY options.misc.compile.caption "Mondattan-ellenőrzés">
 <!ENTITY options.misc.compile.description
 "While editing Scripts, they can be checked for validity. The syntax check is performed by the server. In order to keep network traffic low, syntax check requests are grouped.">
-<!ENTITY options.misc.compile "Check Scripts while typing">
+<!ENTITY options.misc.compile "Mondattan-ellenőrzés beírás közben">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Validate at least every">
 <!ENTITY options.misc.compile.ms "ezredmásodperc">
@@ -93,12 +93,12 @@
 
 <!ENTITY options.debug.warning
 "Keep in mind that neither SASL Login nor SASL Plain cypher your password, it might be posted in clear text to the error console.">
-<!ENTITY options.debug.caption "Debug Settings">
+<!ENTITY options.debug.caption "Hibakeresési beállítások">
 <!ENTITY options.debug.request "Ügyféltől kiszolgálónak közlés (kérések)">
 <!ENTITY options.debug.response "Kiszolgálótól ügyfélnek közlés (válaszok)">
 <!ENTITY options.debug.exceptions "Kivételek és gépállapot információk">
 <!ENTITY options.debug.stream "Nyers lerakóhely/bájt-patak lerakóhely">
-<!ENTITY options.debug.session "Session Management">
+<!ENTITY options.debug.session "Munkamenet-kezelés">
 <!ENTITY options.debug.output "Kimenet hibakeresése">
 <!ENTITY options.debug.console "Debug information is posted to the error console">
 <!ENTITY options.debug.console.open "Show Error Console…">
@@ -163,7 +163,7 @@
 
 
 <!-- Locale for the List Filter Dialog -->
-<!ENTITY list.title "Sieve Filters">
+<!ENTITY list.title "Szita szűrők">
 
 <!ENTITY list.accounts "Szűrők a következőkhöz:">
 
@@ -243,7 +243,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 <!ENTITY edit.sidebar.title "Sieve Language Reference">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Find and Replace">
+<!ENTITY edit.searchreplace.title "Keresés és csere">
 <!ENTITY edit.searchreplace.searchfor "Keresés:">
 <!ENTITY edit.searchreplace.replacewith "Csere erre:">
 <!ENTITY edit.searchreplace.options "Beállítások">

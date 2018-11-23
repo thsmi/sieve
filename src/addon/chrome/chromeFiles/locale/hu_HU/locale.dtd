@@ -207,7 +207,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.detecting.caption "Beállítások önműködő észlelése">
 <!ENTITY list.autoconfig.detecting.description
-  "Might take some minutes to complete…">
+  "Kis türelmet…">
 
 <!ENTITY list.autoconfig.cancel "Mégse">
 

@@ -32,9 +32,9 @@
 
 <!ENTITY options.port.caption "Kiszolgáló kikötő">
 <!ENTITY options.port.description
-"A kiszolgáló kikötő megváltozott, amikor a SzitaKezelése (ManageSieve) teljes RFC szabványt váltott">
+"A kiszolgáló kikötő megváltozott, amikor a ManageSieve (szita kezelése) teljes RFC szabványt váltott">
 <!ENTITY options.port.description2
-"Older server implementations still use port 2000, while newer standard conform server can only be accessed via port 4190.">
+"A régebbi kiszolgálóteljesítések továbbra is a 2000-es kikötőt használják, míg az újabb szabványos kiszolgáló csak a 4190-es kikötőn keresztül érhető el.">
 <!ENTITY options.port.4190 "4190 (alapértelmezett)" >
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Egyéb:">
@@ -45,7 +45,7 @@
 
 <!ENTITY options.security.caption "Kapcsolat biztonsága">
 <!ENTITY options.security.description
-"Transport Layer Security (TLS) secures the connection to the manage sieve server. It cyphers all data and is designed to prevent eavesdropping and tampering.">
+"A TLS (Transport Layer Security – közlekedési rétegbiztonság) biztosítja a kapcsolatot a felügyeleti kiszolgálóval. Az összes adatot kiírja, és megakadályozza a lehallgatást és a illetéktelent.">
 <!ENTITY options.security.description2
 "ManageSieve usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
 <!ENTITY options.security.tls.disabled "Nincs TLS">

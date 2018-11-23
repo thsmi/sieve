@@ -138,7 +138,7 @@
 <!ENTITY options.account.activate
 "Do you want to activate managing Sieve Scripts for this account?">
 <!ENTITY options.account.activate.yes "Yes, manage Sieve scripts for this account:">
-<!ENTITY options.account.activate.no "No, this account does not support Sieve">
+<!ENTITY options.account.activate.no "Nem, ez a fiók nem támogatja a Szita parancs nyelvét">
 <!ENTITY options.account.filters "Szűrők szerkesztése…">
 <!ENTITY options.account.settings "Beállítások módosítása…">
 

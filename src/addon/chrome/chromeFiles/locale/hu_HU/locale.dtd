@@ -180,7 +180,7 @@
 
 <!ENTITY list.details.capability "Szita-kiszolgáló képességeit">
 <!ENTITY list.details.capability.implementation "Kiszolgálóverzió:">
-<!ENTITY list.details.capability.sasl "SASL mechanizmusok:">
+<!ENTITY list.details.capability.sasl "SASL (Simple Authentication and Security Layer – egyszerű hitelesítés és biztonsági réteg) mechanizmusok:">
 <!ENTITY list.details.capability.extensions "Bővítmények:">
 <!ENTITY list.details.capability.protocol "Protokollverzió:">
 

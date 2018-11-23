@@ -76,7 +76,7 @@
 "While editing Scripts, they can be checked for validity. The syntax check is performed by the server. In order to keep network traffic low, syntax check requests are grouped.">
 <!ENTITY options.misc.compile "Mondattan-ellenőrzés beírás közben">
 <!ENTITY options.misc.compile.key "c">
-<!ENTITY options.misc.compile2 "Validate at least every">
+<!ENTITY options.misc.compile2 "Érvényesít minden">
 <!ENTITY options.misc.compile.ms "ezredmásodperc">
 
 <!ENTITY options.editor.indention.caption "Behúzás">
@@ -122,8 +122,8 @@
 <!ENTITY options.proxyauth.force
 "When using proxy authorization you should force SASL PLAIN Authentication.">
 <!ENTITY options.proxyauth.none "Nincs engedélye">
-<!ENTITY options.proxyauth.default "Sieve Username">
-<!ENTITY options.proxyauth.prompt "Request Authorization">
+<!ENTITY options.proxyauth.default "Szita felhasználónév">
+<!ENTITY options.proxyauth.prompt "Hitelesítés kérése">
 <!ENTITY options.proxyauth.custom "Engedélyezze a(z)">
 <!ENTITY options.proxyauth.custom.username "Felhasználónév:">
 

@@ -146,7 +146,7 @@
 <!ENTITY options.credits "Köszönet minden közreműködőnek:">
 
 <!-- Proxy Settings -->
-<!ENTITY options.proxy "Meghatalmazás beállítása">
+<!ENTITY options.proxy "Meghatalmazott beállítása">
 <!ENTITY options.proxy.description
 "Instead of  a direct connection you may use a SOCKS Proxy to transparently and securely traverse a firewall.">
 <!ENTITY options.proxy.description.nameresolution
@@ -154,10 +154,10 @@
 <!ENTITY options.proxy.description.localhost
 "On some system using 'localhost' as proxy host does not function properly, use '127.0.0.1' instead.">
 <!ENTITY options.proxy.direct "Közvetlen kapcsolat">
-<!ENTITY options.proxy.default "Default Proxy configuration">
+<!ENTITY options.proxy.default "Alapértelmezett meghatalmazott beállítása">
 <!ENTITY options.proxy.socks4 "SOCKSv4">
 <!ENTITY options.proxy.socks5 "SOCKSv5">
-<!ENTITY options.proxy.nameresolution "Resolve hostnames on proxy">
+<!ENTITY options.proxy.nameresolution "Gépneveket elhatározás a meghatalmazottnál">
 <!ENTITY options.proxy.host "Gépnév:">
 <!ENTITY options.proxy.port "Kikötő:">
 

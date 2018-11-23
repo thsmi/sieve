@@ -47,7 +47,7 @@
 <!ENTITY options.security.description
 "A TLS (Transport Layer Security – közlekedési rétegbiztonság) biztosítja a kapcsolatot a felügyeleti kiszolgálóval. Az összes adatot kiírja, és megakadályozza a lehallgatást és a illetéktelent.">
 <!ENTITY options.security.description2
-"ManageSieve usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
+"A ManageSieve (szita kezelése) általában átküldi a jelszavak titkosítatlan. Tehát ha nincs igazán jó oka (például hibakeresés), akkor mindig kell a TLS (Transport Layer Security – közlekedési rétegbiztonság) kikényszerítésére.">
 <!ENTITY options.security.tls.disabled "Nincs TLS">
 <!ENTITY options.security.tls.available "TLS, ha lehetséges">
 <!ENTITY options.security.tls.force "TLS kényszerítve">
@@ -66,7 +66,7 @@
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.keepalive2 "Küldjön minden">
 <!ENTITY options.misc.keepalive.description
-"If the client was idle for too long (usually 30 minutes), the server assumes the client is disconnected and hangs up the connection.">
+"Ha az ügyfél túlságosan tétlen (általában 30 perc), a kiszolgáló feltételezi, hogy az ügyfél leválik, és feloldja a kapcsolatot.">
 <!ENTITY options.misc.keepalive.description2
 "A keepalive request indicates the connection is still active and should be preserved.">
 <!ENTITY options.misc.keepalive.min "perc">
@@ -80,7 +80,7 @@
 <!ENTITY options.misc.compile.ms "ezredmásodperc">
 
 <!ENTITY options.editor.indention.caption "Behúzás">
-<!ENTITY options.editor.indention.description "The plain text editor supports automatic indenting.">
+<!ENTITY options.editor.indention.description "Az egyszerű szövegszerkesztő támogatja az önműködő behúzását.">
 <!ENTITY options.editor.indention.width "Behúzási szélesség:">
 
 <!ENTITY options.editor.indention.policy.caption "Behúzás házirend:">

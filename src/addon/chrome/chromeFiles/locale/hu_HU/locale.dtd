@@ -269,7 +269,7 @@ Or choose ‘Advanced’ to configure the account manually.">
   "This account is not configured for manage sieve, go to Tools → Sieve Message Filters">
 
 <!ENTITY status.error.reconnect "Újracsatlakozás">
-<!ENTITY status.error "Last Command failed, because the server reported an error:">
+<!ENTITY status.error "Az utolsó parancs sikertelen volt, mert a kiszolgáló hibát jelzett:">
 
 <!ENTITY status.sync.description
 "The local and the server-side scripts are different.

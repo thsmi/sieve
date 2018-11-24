@@ -33,7 +33,7 @@
 
 <!ENTITY options.port.caption "منفذ السيرفر">
 <!ENTITY options.port.description
-"لقد تغير منفذ السيرفر، عندما تحول تسير الغربال إلى معيار RCF التام">
+"The server port changed, when “ManageSieve” turned into a full RFC Standard">
 <!ENTITY options.port.description2
 "غربال التطبيقات القديمة لازال يستعمل المنفذ 2000، بينما المعيار الجديد المطابق للسيرفر يمكنه الوصول فقط عبر المنفذ 4190.">
 <!ENTITY options.port.4190 "4190 (افتراضي)" >
@@ -46,10 +46,9 @@
 
 <!ENTITY options.security.caption "أمان الاتصال">
 <!ENTITY options.security.description
-"نقل طبقة الحماية TLS)) يؤمن الاتصال بمسير سيرفر الغربال.
-هو يحصي جميع البيانات و مصمم لمنع التنصت و التلاعب.">
+"Transport Layer Security (TLS) secures the connection to the “ManageSieve” server. It cyphers all data and is designed to prevent eavesdropping and tampering.">
 <!ENTITY options.security.description2
-"مسير الغربال عادة يحول الكلمات السرية غير مشفرة. اذا لم يكن لديك سبب وجيه (مثلا.التصليح)، عليك دائما فرض TLS.">
+"“ManageSieve” usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
 <!ENTITY options.security.tls.disabled "لا يوجد TLS">
 <!ENTITY options.security.tls.available "TLS، عندما يكون متاح">
 <!ENTITY options.security.tls.force "افرض TLS">
@@ -64,19 +63,19 @@
 <!ENTITY options.login.show "View Saved Passwords…">
 
 <!ENTITY options.misc "إعدادات متنوعة">
-<!ENTITY options.misc.keepalive "تمكين keepalives">
+<!ENTITY options.misc.keepalive "Enable Keep-Alive Messages">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.keepalive2 "ارسل الكل">
 <!ENTITY options.misc.keepalive.description
 "إذا كان المستخدم غير نشط لفترة طويلة جدا (عادة 30 دقيقة)، الخادم يفترض أن المستخدم غير متصل و يقوم بتعليق الاتصال.">
 <!ENTITY options.misc.keepalive.description2
-"طلب keepalive يشير إلى أن الاتصال لازال نشط و يجب الحفاظ عليه.">
+"A “Keep-Alive” request indicates the connection is still active and should be preserved.">
 <!ENTITY options.misc.keepalive.min "دقيقية">
 
-<!ENTITY options.misc.compile.caption "Syntax Check">
+<!ENTITY options.misc.compile.caption "Check Syntax">
 <!ENTITY options.misc.compile.description
-"أثناء تحرير النصوص، يمكن التحقق من صحتها. التحقق من بناء الجملة يتم تنفيذه من قبل السيرفر. من أجل تخفيف الزحام على الشبكة، يتم تجميع طلبات معالجة النصوص.">
-<!ENTITY options.misc.compile "دقق في الإملاء أثناء الكتابة">
+"Check Syntax as you type is performed by the server. Requests are grouped to keep network traffic low.">
+<!ENTITY options.misc.compile "Check syntax as you type">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "التحقق على الاقل من كل واحد">
 <!ENTITY options.misc.compile.ms "ميلي ثانية">
@@ -90,12 +89,11 @@
 <!ENTITY options.editor.indention.policy.tabs "التبويبات فقط">
 
 <!ENTITY options.editor.tabs.caption "التعامل مع التبويب">
-<!ENTITY options.editor.tabs.description "محرر النصوص تلقائي المسافة البادئة استبدل بالحاجة إلى مفتاح التبويب، ولكن هناك العديد من المحررين يهمل التبويبات بسبب التأريح.">
+<!ENTITY options.editor.tabs.description "Text editor with automatic indenting replaced the need for a Tab key, but there are many editors which default to tabs due to historic reasons.">
 <!ENTITY options.editor.tabs.width "عرض التبويب">
 
 <!ENTITY options.debug.warning
-"يجب اعتبار أن الولوج إلى SASL او SASL العادي لن يشفروا كلمة السر الخاصة بك،
-قد يتم نشرها على شكل نص واضح في خطاء وحدة التحكم.">
+"Keep in mind that neither “SASL LOGIN” nor “SASL PLAIN” cypher your password, it might be posted in clear text to the error console.">
 <!ENTITY options.debug.caption "Debug Settings">
 <!ENTITY options.debug.request "(طلبات) اتصال العميل بالسيرفر">
 <!ENTITY options.debug.response "(اجابات) اتصال العميل بالسيرفر">
@@ -107,14 +105,14 @@
 <!ENTITY options.debug.console.open "Show Error Console…">
 
 <!ENTITY options.authmechanism.caption "آلية المصادقة">
-<!ENTITY options.authmechanism "تجاوز آلية المصادقة المقترحة">
+<!ENTITY options.authmechanism "Override Authentication Mechanism">
 <!ENTITY options.authmechanism.default "إستخدم دائما:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
-<!ENTITY options.authmechanism.login "Login">
-<!ENTITY options.authmechanism.plain "Plain">
+<!ENTITY options.authmechanism.login "LOGIN">
+<!ENTITY options.authmechanism.plain "PLAIN">
 <!ENTITY options.authmechanism.external "EXTERNAL">
 <!ENTITY options.authmechanism.description
 "في حالات معينة مثلا. عند استخدام مصادقة البروكسي قد ترغب في فرض ألية مصادقة محددة." >
@@ -124,7 +122,7 @@
 "تفويض البروكسي، يسمح للمستخدم الموثوق بالتصرف نيابة عن مستخدم آخر.
 عادة السيرفرات تكون مهيئة، هذه الميزة متاحة فقط للمشرفين.">
 <!ENTITY options.proxyauth.force
-"When using proxy authorization you should force SASL PLAIN Authentication.">
+"When using proxy authorization you should force “SASL PLAIN” Authentication.">
 <!ENTITY options.proxyauth.none "لا يوجد تفويض">
 <!ENTITY options.proxyauth.default "اسم مستخدم الغربال">
 <!ENTITY options.proxyauth.prompt "Request Authorization">
@@ -140,9 +138,9 @@
 <!ENTITY options.account.sieve
 "الغربال هو كاتب لغة برمجة قوي لجانب السيرفر المخصص لتصفية البريد.">
 <!ENTITY options.account.activate
-"هل تريد تفعيل خاصية إدارة غربال النصوص لهذا الحساب؟">
+"Do you want to enable managing Sieve Scripts for this account?">
 <!ENTITY options.account.activate.yes "نعم، أدر غربال النصوص لهذا الحساب:">
-<!ENTITY options.account.activate.no "لا، هذا الحساب لا يدعم الغربال">
+<!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
 <!ENTITY options.account.filters "Edit Filters…">
 <!ENTITY options.account.settings "Change Settings…">
 
@@ -156,7 +154,7 @@
 <!ENTITY options.proxy.description.nameresolution
 "مع SOCKSv4 دائما يتم إعادة حل اسماء المصيفين على آلة المحلية. SOCKSv5 أيضا يدعم إعادة حل أسماء المضيفين بواسطة بروكسي SOCKS. اذا كنت تستطيع الوثوق في بروكسي SOCKSv5، هذا الاخير يعتبر أكثر آمنا و ينبغي أن يكون المفضل.">
 <!ENTITY options.proxy.description.localhost
-"على بعض الانظمة استخدام 'localhost' كبروكسي استظافة لا يعمل جيدا، استخدم '127.0.0.1' بدلا عن ذالك.">
+"On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
 <!ENTITY options.proxy.direct "اتصال مباشر">
 <!ENTITY options.proxy.default "تهيئة البروكسي الافتراضي">
 <!ENTITY options.proxy.socks4 "SOCKSv4">
@@ -182,7 +180,7 @@
 <!ENTITY list.activate "تفعيل">
 <!ENTITY list.settings "Settings…">
 
-<!ENTITY list.details.capability "قدرات سيرفر الغربال">
+<!ENTITY list.details.capability "Sieve Server Capabilities">
 <!ENTITY list.details.capability.implementation "نسخة السيرفر:">
 <!ENTITY list.details.capability.sasl "آلية SASL:">
 <!ENTITY list.details.capability.extensions "ملحقات:">
@@ -200,9 +198,9 @@
 
 <!ENTITY list.autoconfig.welcome.caption "مرحبا!">
 <!ENTITY list.autoconfig.welcome.description1
-"هذا الحساب ليس مهيئ لإدارة الغربال.">
+"“ManageSieve” not configured for this account.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click on ‘Continue’ to detect the configuration automatically.
+"Click ‘Continue’ to detect the configuration automatically.
 Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "مُتقدم">
@@ -220,7 +218,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.error.caption "عذراً">
 <!ENTITY list.autoconfig.error.description
-"يبدو أن سيرفر إيميلك لا يدعم إدارة الغربال او يتطلب تهيئة خاصة. الرجاء الاتصال بالذي منحك الايميل أو حاول القيام بالتهيئة اليدوية.">
+"Your mail server does not support “ManageSieve” or requires a special configuration. Please configure manually or contact your email provider for instructions.">
 
 <!ENTITY list.autoconfig.retest "اعد الاختبار">
 <!ENTITY list.autoconfig.config "التهيئة اليدوية">
@@ -232,7 +230,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 <!ENTITY edit.toolbar.cut "قص">
 <!ENTITY edit.toolbar.copy "انسخ">
 <!ENTITY edit.toolbar.paste "ألصق">
-<!ENTITY edit.toolbar.compile "Syntax Check">
+<!ENTITY edit.toolbar.compile "Check Syntax">
 <!ENTITY edit.toolbar.reference "مرجع سريع">
 <!ENTITY edit.toolbar.tools "أدوات">
 <!ENTITY edit.toolbar.import "استورد برمجة">
@@ -258,26 +256,24 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Check that you are connected to the internet, Click ‘Go Online’ and try again.">
+"You are currently offline. Check that you are connected to the internet, click ‘Go Online’ and try again.">
 <!ENTITY status.offline.go "اتصل">
 
 
 <!ENTITY status.connectivity.loss.description
-"انهى السيرفر الاتصال بشكل غير متوقع، انقر على إعادة الاتصال و حاول مرة آخرى.">
+"Server terminated unexpectedly the connection, click on ‘Reconnect’ to try again.">
 <!ENTITY status.connectivity.loss.reconnect "اعد الاتصال">
 
 <!ENTITY status.warning.ignore "تجاهل">
 <!ENTITY status.warning.reconnect "اعد الاتصال">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, go to Tools → Sieve Message Filters">
+  "“ManageSieve” not configured for this account. Go to Tools → Sieve Message Filters to enable “ManageSieve”.">
 
 <!ENTITY status.error.reconnect "اعد الاتصال">
 <!ENTITY status.error "فشل الأمر الأخير، لأن السيرفر أبلغ عن خطأ:">
 
 <!ENTITY status.sync.description
-"The local and the server-side scripts are different.
-
-What would you like to do about it ?">
+"The local and the server-side scripts are different. What would you like to do?">
 <!ENTITY status.sync.keep "ابقي البرمجة المحلية">
 <!ENTITY status.sync.replace "Use Server-side Script">
 

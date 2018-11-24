@@ -19,8 +19,8 @@
 <!ENTITY options.tab.general "Général">
 <!ENTITY options.tab.proxy "Proxy">
 <!ENTITY options.tab.advanced "Avancée">
-<!ENTITY options.tab.advanced.warning "These settings are intended for advanced users…">
-<!ENTITY options.tab.editor "Editor">
+<!ENTITY options.tab.advanced.warning "Ces paramètres sont destinés aux utilisateurs avancés…">
+<!ENTITY options.tab.editor "Éditeur">
 <!ENTITY options.tab.debug "Débogage">
 <!ENTITY options.tab.credits "Remerciements">
 
@@ -33,7 +33,7 @@ Par conséquent, le nom du serveur Sieve est habituellement le même que celui d
 
 <!ENTITY options.port.caption "Port du serveur">
 <!ENTITY options.port.description
-"The server port changed, when “ManageSieve” turned into a full RFC Standard">
+"Le port du serveur a changé quand ManageSieve est passé aux RFC standards">
 <!ENTITY options.port.description2
 "Les plus anciens serveurs continuent d'utiliser le port 2000, tandis que le standard
 le plus récent impose d'utiliser le port 4190.">
@@ -41,15 +41,17 @@ le plus récent impose d'utiliser le port 4190.">
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Autre:">
 <!ENTITY options.port.autoselect "Choix automatique du Port">
-<!ENTITY options.port.autoselect.running "Selecting Port, please wait…">
+<!ENTITY options.port.autoselect.running "Choix du Port, veuillez patienter…">
 <!ENTITY options.port.autoselect.successful "Sieve detecté sur le Port ">
-<!ENTITY options.port.autoselect.error "Selecting Port failed…">
+<!ENTITY options.port.autoselect.error "Le choix du Port a échoué…">
 
 <!ENTITY options.security.caption "Securité">
 <!ENTITY options.security.description
-"Transport Layer Security (TLS) secures the connection to the “ManageSieve” server. It cyphers all data and is designed to prevent eavesdropping and tampering.">
+"Transport Layer Security (TLS) sécurise la connexion au serveur sieve.
+Il encrypte toutes les données et est prévu pour empêcher les écoutes et les falsifications.">
 <!ENTITY options.security.description2
-"“ManageSieve” usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
+"Habituellement, ManageSieve envoie sur le réseau les mots de passe en clair. Alors, à moins que
+vous n'ayez une bonne raison (ex: Déboguer), vous devriez toujours forcer TLS.">
 <!ENTITY options.security.tls.disabled "Pas de TLS">
 <!ENTITY options.security.tls.available "TLS, quand disponible">
 <!ENTITY options.security.tls.force "Forcer TLS">
@@ -61,7 +63,7 @@ le plus récent impose d'utiliser le port 4190.">
 <!ENTITY options.login.customAuth "Utilisateur et mot de passe">
 <!ENTITY options.login.username "Utilisateur">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "View Saved Passwords…">
+<!ENTITY options.login.show "Afficher les mots de passe enregistrés…">
 
 <!ENTITY options.misc "Paramètres divers">
 <!ENTITY options.misc.keepalive "Enable Keep-Alive Messages">
@@ -71,7 +73,8 @@ le plus récent impose d'utiliser le port 4190.">
 "Si le client ne fait rien pendant trop longtemps (habituellement 30 minutes), le
 serveur conclut que le client est déconnecté et clôt la connexion.">
 <!ENTITY options.misc.keepalive.description2
-"A “Keep-Alive” request indicates the connection is still active and should be preserved.">
+"Une requête keepalive indique que la connexion est toujours active et
+doit être maintenue.">
 <!ENTITY options.misc.keepalive.min "min">
 
 <!ENTITY options.misc.compile.caption "Check Syntax">

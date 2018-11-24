@@ -32,7 +32,7 @@
 
 <!ENTITY options.port.caption "Kiszolgáló kikötő">
 <!ENTITY options.port.description
-"The server port changed, when “ManageSieve” turned into a full RFC Standard">
+"A kiszolgáló kikötő megváltozott, amikor a „ManageSieve” (szita kezelése) teljes RFC szabványt váltott">
 <!ENTITY options.port.description2
 "A régebbi kiszolgálóteljesítések továbbra is a 2000-es kikötőt használják, míg az újabb szabványos kiszolgáló csak a 4190-es kikötőn keresztül érhető el.">
 <!ENTITY options.port.4190 "4190 (alapértelmezett)" >
@@ -47,7 +47,7 @@
 <!ENTITY options.security.description
 "Transport Layer Security (TLS) secures the connection to the “ManageSieve” server. It cyphers all data and is designed to prevent eavesdropping and tampering.">
 <!ENTITY options.security.description2
-"“ManageSieve” usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
+"A „ManageSieve” (szita kezelése) általában átküldi a jelszavak titkosítatlan. Tehát ha nincs igazán jó oka (például hibakeresés), akkor mindig kell a TLS (Transport Layer Security – közlekedési rétegbiztonság) kikényszerítésére.">
 <!ENTITY options.security.tls.disabled "Nincs TLS">
 <!ENTITY options.security.tls.available "TLS, ha lehetséges">
 <!ENTITY options.security.tls.force "TLS kényszerítve">
@@ -71,10 +71,10 @@
 "A “Keep-Alive” request indicates the connection is still active and should be preserved.">
 <!ENTITY options.misc.keepalive.min "perc">
 
-<!ENTITY options.misc.compile.caption "Check Syntax">
+<!ENTITY options.misc.compile.caption "Mondattan-ellenőrzés">
 <!ENTITY options.misc.compile.description
 "Check Syntax as you type is performed by the server. Requests are grouped to keep network traffic low.">
-<!ENTITY options.misc.compile "Check syntax as you type">
+<!ENTITY options.misc.compile "Mondattan-ellenőrzés beírás közben">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Érvényesít minden">
 <!ENTITY options.misc.compile.ms "ezredmásodperc">
@@ -229,7 +229,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 <!ENTITY edit.toolbar.cut "Kivágás">
 <!ENTITY edit.toolbar.copy "Másolás">
 <!ENTITY edit.toolbar.paste "Beillesztés">
-<!ENTITY edit.toolbar.compile "Check Syntax">
+<!ENTITY edit.toolbar.compile "Mondattan-ellenőrzés">
 <!ENTITY edit.toolbar.reference "Gyors hivatkozás">
 <!ENTITY edit.toolbar.tools "Eszközök">
 <!ENTITY edit.toolbar.import "Parancsfájl importálása">

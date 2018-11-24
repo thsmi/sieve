@@ -272,7 +272,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 <!ENTITY status.error "Az utolsó parancs sikertelen volt, mert a kiszolgáló hibát jelzett:">
 
 <!ENTITY status.sync.description
-"The local and the server-side scripts are different. What would you like to do?">
+"A helyi és a kiszolgálóoldali parancsfájlok eltérőek. Mit szeretne tenni?">
 <!ENTITY status.sync.keep "Helyi parancsfájl megtartása">
 <!ENTITY status.sync.replace "Kiszolgálóoldali parancsfájl használata">
 

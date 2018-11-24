@@ -62,13 +62,13 @@
 <!ENTITY options.login.show "Mentett jelszavak megtekintése…">
 
 <!ENTITY options.misc "Egyéb beállítások">
-<!ENTITY options.misc.keepalive "Enable Keep-Alive Messages">
+<!ENTITY options.misc.keepalive "Keep-Alive üzenetek engedélyezése">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.keepalive2 "Küldjön minden">
 <!ENTITY options.misc.keepalive.description
 "Ha az ügyfél túlságosan tétlen (általában 30 perc), a kiszolgáló feltételezi, hogy az ügyfél leválik, és feloldja a kapcsolatot.">
 <!ENTITY options.misc.keepalive.description2
-"A “Keep-Alive” request indicates the connection is still active and should be preserved.">
+"A „Keep-Alive” kérés azt jelzi, hogy a kapcsolat még működik és meg kell őrizni.">
 <!ENTITY options.misc.keepalive.min "perc">
 
 <!ENTITY options.misc.compile.caption "Mondattan-ellenőrzés">

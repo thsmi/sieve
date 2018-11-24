@@ -32,7 +32,7 @@
 
 <!ENTITY options.port.caption "Port serwera">
 <!ENTITY options.port.description
-"Port serwera zmieniony, gdy ManageSieve przełączony do pełnego standardu RFC">
+"The server port changed, when “ManageSieve” turned into a full RFC Standard">
 <!ENTITY options.port.description2
 "Starsze implementacje serwera nadal korzystają z portu 2000, podczas gdy nowsze serwery mogą być dostępne wyłącznie przez port 4190.">
 <!ENTITY options.port.4190 "4190 (domyślne)" >
@@ -45,10 +45,9 @@
 
 <!ENTITY options.security.caption "Połączenie bezpieczne">
 <!ENTITY options.security.description
-"TLS (Transport Layer Security) zapewnia bezpieczne połączenie z serwerem zarządzającym Sieve. Szyfrowanie wszystkich danych ma zabezpieczyć przed przed ich podsłuchiwaniem i manipulacją.">
+"Transport Layer Security (TLS) secures the connection to the “ManageSieve” server. It cyphers all data and is designed to prevent eavesdropping and tampering.">
 <!ENTITY options.security.description2
-"ManageSieve zwykle przesyła hasła w postaci niezaszyfrowanej. Jeśli nie masz
-naprawdę dobrego powodu (np. debugowanie), zawsze wymuszaj TLS.">
+"“ManageSieve” usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
 <!ENTITY options.security.tls.disabled "Brak TLS">
 <!ENTITY options.security.tls.available "TLS, gdy dostępne">
 <!ENTITY options.security.tls.force "Wymuszenie TLS">
@@ -63,21 +62,19 @@ naprawdę dobrego powodu (np. debugowanie), zawsze wymuszaj TLS.">
 <!ENTITY options.login.show "View Saved Passwords…">
 
 <!ENTITY options.misc "Inne ustawienia">
-<!ENTITY options.misc.keepalive "Włącz utrzymanie aktywności">
+<!ENTITY options.misc.keepalive "Enable Keep-Alive Messages">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.keepalive2 "Wyślij wszystko">
 <!ENTITY options.misc.keepalive.description
 "Jeśli klient był bezczynny zbyt długo (zwykle 30 minut), serwer zakłada, że klienta został rozłączony i zawiesza połączenie.">
 <!ENTITY options.misc.keepalive.description2
-"Żądanie utrzymania aktywności wskazuje, że połączenie jest ciągle aktywne i powinno zostać utrzymane.">
+"A “Keep-Alive” request indicates the connection is still active and should be preserved.">
 <!ENTITY options.misc.keepalive.min "min">
 
-<!ENTITY options.misc.compile.caption "Syntax Check">
+<!ENTITY options.misc.compile.caption "Check Syntax">
 <!ENTITY options.misc.compile.description
-"Podczas edycji skryptów, można sprawdzić ich poprawność. Sprawdzanie 
-składni jest wykonywane przez serwer. Aby zachować ruch sieciowy na 
-niskim poziomie, żądania kontroli składni są grupowane.">
-<!ENTITY options.misc.compile "Sprawdź skrypty podczas pisania">
+"Check Syntax as you type is performed by the server. Requests are grouped to keep network traffic low.">
+<!ENTITY options.misc.compile "Check syntax as you type">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Sprawdź co najmniej raz">
 <!ENTITY options.misc.compile.ms "ms">
@@ -91,12 +88,11 @@ niskim poziomie, żądania kontroli składni są grupowane.">
 <!ENTITY options.editor.indention.policy.tabs "Tylko tabulatory">
 
 <!ENTITY options.editor.tabs.caption "Obsługa tabulatora">
-<!ENTITY options.editor.tabs.description "Edytor tekstu z automatycznym wcięciem zastąpił potrzebę wciskania klawisza tabulacji, ale istnieje wiele edytorów, które z przyczyn historycznych domyślnie korzystają z tabulatorów.">
+<!ENTITY options.editor.tabs.description "Text editor with automatic indenting replaced the need for a Tab key, but there are many editors which default to tabs due to historic reasons.">
 <!ENTITY options.editor.tabs.width "Szerokość tabulatora">
 
 <!ENTITY options.debug.warning
-"Należy pamiętać, że logowanie SASL w przeciwieństwie do szyfrowania SASL twojego hasła, 
-może wysyłać je na konsolę błędów w postaci zwykłego tekstu.">
+"Keep in mind that neither “SASL LOGIN” nor “SASL PLAIN” cypher your password, it might be posted in clear text to the error console.">
 <!ENTITY options.debug.caption "Debug Settings">
 <!ENTITY options.debug.request "Komunikacja od klienta do serwera (zapytanie)">
 <!ENTITY options.debug.response "Komunikacja od serwera do klienta (odpowiedzi)">
@@ -108,14 +104,14 @@ może wysyłać je na konsolę błędów w postaci zwykłego tekstu.">
 <!ENTITY options.debug.console.open "Show Error Console…">
 
 <!ENTITY options.authmechanism.caption "Mechanizm uwierzytelniania">
-<!ENTITY options.authmechanism "Zastąpić sugerowany mechanizm uwierzytelniania">
+<!ENTITY options.authmechanism "Override Authentication Mechanism">
 <!ENTITY options.authmechanism.default "Zawsze używaj:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
-<!ENTITY options.authmechanism.login "Login">
-<!ENTITY options.authmechanism.plain "Plain">
+<!ENTITY options.authmechanism.login "LOGIN">
+<!ENTITY options.authmechanism.plain "PLAIN">
 <!ENTITY options.authmechanism.external "ZEWNĘTRZNY">
 <!ENTITY options.authmechanism.description
 "W pewnych sytuacjach np. gdy korzystasz z uwierzytelniania serwera Proxy, możesz 
@@ -125,7 +121,7 @@ chcieć wymusić określony mechanizm uwierzytelniania." >
 <!ENTITY options.proxyauth.desc
 "Autoryzacja serwera proxy, umożliwia uwierzytelnionemu użytkownikowi działać w imieniu innego użytkownika. Zazwyczaj serwery są skonfigurowane tak, że ta funkcja jest dostępna wyłącznie dla administratorów.">
 <!ENTITY options.proxyauth.force
-"When using proxy authorization you should force SASL PLAIN Authentication.">
+"When using proxy authorization you should force “SASL PLAIN” Authentication.">
 <!ENTITY options.proxyauth.none "Brak autoryzacji">
 <!ENTITY options.proxyauth.default "Nazwa użytkownika Sieve">
 <!ENTITY options.proxyauth.prompt "Request Authorization">
@@ -141,9 +137,9 @@ chcieć wymusić określony mechanizm uwierzytelniania." >
 <!ENTITY options.account.sieve
 "Sieve jest potężnym językiem skryptów filtrującym pocztę, działającym po stronie serwera pocztowego.">
 <!ENTITY options.account.activate
-"Chcesz włączyć zarządzanie skryptami dla tego konta?">
+"Do you want to enable managing Sieve Scripts for this account?">
 <!ENTITY options.account.activate.yes "Tak, zarządzanie skryptami Sieve dla tego konta:">
-<!ENTITY options.account.activate.no "Nie, to konto nie obsługuje Sieve">
+<!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
 <!ENTITY options.account.filters "Edit Filters…">
 <!ENTITY options.account.settings "Change Settings…">
 
@@ -159,8 +155,7 @@ chcieć wymusić określony mechanizm uwierzytelniania." >
 również rozwiązywanie nazw hostów przez serwer proxy SOCKS. Jeśli możesz zaufać serwerowi
 proxy SOCKSv5, ta ostatnia uważana jest za bardziej bezpieczne i powinny być preferowane.">
 <!ENTITY options.proxy.description.localhost
-"Na niektórych systemu użycie 'localhost' jako serwera proxy nie działa prawidłowo, 
-należy użyć '127.0.0.1'.">
+"On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
 <!ENTITY options.proxy.direct "Połączenie bezpośrednie">
 <!ENTITY options.proxy.default "Domyślna konfiguracja serwera Proxy">
 <!ENTITY options.proxy.socks4 "SOCKSv4">
@@ -186,7 +181,7 @@ należy użyć '127.0.0.1'.">
 <!ENTITY list.activate "Aktywacja">
 <!ENTITY list.settings "Settings…">
 
-<!ENTITY list.details.capability "Funkcje serwera Sieve">
+<!ENTITY list.details.capability "Sieve Server Capabilities">
 <!ENTITY list.details.capability.implementation "Wersja serwera:">
 <!ENTITY list.details.capability.sasl "Mechanizmy SASL:">
 <!ENTITY list.details.capability.extensions "Rozszerzenia:">
@@ -207,9 +202,9 @@ dlaczego ten serwer nie korzysta z zaufanych tożsamości.">
 
 <!ENTITY list.autoconfig.welcome.caption "Witaj!">
 <!ENTITY list.autoconfig.welcome.description1
-"To konto nie jest skonfigurowane do zarządzania sieve.">
+"“ManageSieve” not configured for this account.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click on ‘Continue’ to detect the configuration automatically.
+"Click ‘Continue’ to detect the configuration automatically.
 Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "Zaawansowane">
@@ -227,8 +222,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.error.caption "Przepraszamy">
 <!ENTITY list.autoconfig.error.description
-"Wydaje się, że serwer poczty nie obsługuje zarządzanie sieve lub wymaga specjalnej konfiguracji.
-Proszę skontaktować się z dostawcą poczty lub spróbować ręcznie stworzyć konfigurację.">
+"Your mail server does not support “ManageSieve” or requires a special configuration. Please configure manually or contact your email provider for instructions.">
 
 <!ENTITY list.autoconfig.retest "Ponowny test">
 <!ENTITY list.autoconfig.config "Konfiguracja ręczna">
@@ -240,7 +234,7 @@ Proszę skontaktować się z dostawcą poczty lub spróbować ręcznie stworzyć
 <!ENTITY edit.toolbar.cut "Wytnij">
 <!ENTITY edit.toolbar.copy "Skopiuj">
 <!ENTITY edit.toolbar.paste "Wklej">
-<!ENTITY edit.toolbar.compile "Syntax Check">
+<!ENTITY edit.toolbar.compile "Check Syntax">
 <!ENTITY edit.toolbar.reference "Podręczny wykaz">
 <!ENTITY edit.toolbar.tools "Narzędzia">
 <!ENTITY edit.toolbar.import "Importuj skrypt">
@@ -266,26 +260,24 @@ Proszę skontaktować się z dostawcą poczty lub spróbować ręcznie stworzyć
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Check that you are connected to the internet, Click ‘Go Online’ and try again.">
+"You are currently offline. Check that you are connected to the internet, click ‘Go Online’ and try again.">
 <!ENTITY status.offline.go "Przejść do trybu Online">
 
 
 <!ENTITY status.connectivity.loss.description
-"Serwer nieoczekiwanie zakończył połączenie, kliknij na ponowne połączenie i spróbować jeszcze raz.">
+"Server terminated unexpectedly the connection, click on ‘Reconnect’ to try again.">
 <!ENTITY status.connectivity.loss.reconnect "Połącz ponownie">
 
 <!ENTITY status.warning.ignore "Ignoruj">
 <!ENTITY status.warning.reconnect "Połącz ponownie">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, go to Tools → Sieve Message Filters">
+  "“ManageSieve” not configured for this account. Go to Tools → Sieve Message Filters to enable “ManageSieve”.">
 
 <!ENTITY status.error.reconnect "Połącz ponownie">
 <!ENTITY status.error "Ostatnie polecenie nie powiodło się, ponieważ serwer zwrócił błąd:">
 
 <!ENTITY status.sync.description
-"The local and the server-side scripts are different.
-
-What would you like to do about it ?">
+"The local and the server-side scripts are different. What would you like to do?">
 <!ENTITY status.sync.keep "Pozostaw skrypt lokalny">
 <!ENTITY status.sync.replace "Use Server-side Script">
 

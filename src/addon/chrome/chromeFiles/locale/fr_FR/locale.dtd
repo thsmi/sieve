@@ -66,7 +66,7 @@ vous n'ayez une bonne raison (ex: Déboguer), vous devriez toujours forcer TLS."
 <!ENTITY options.login.show "Afficher les mots de passe enregistrés…">
 
 <!ENTITY options.misc "Paramètres divers">
-<!ENTITY options.misc.keepalive "Enable Keep-Alive Messages">
+<!ENTITY options.misc.keepalive "Activer keepalives">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.keepalive2 "Envoyer toutes les">
 <!ENTITY options.misc.keepalive.description
@@ -99,18 +99,18 @@ doit être maintenue.">
 
 <!ENTITY options.debug.warning
 "Keep in mind that neither “SASL LOGIN” nor “SASL PLAIN” cypher your password, it might be posted in clear text to the error console.">
-<!ENTITY options.debug.caption "Debug Settings">
+<!ENTITY options.debug.caption "Paramètres de débogage">
 <!ENTITY options.debug.request "Communication du Client vers le Serveur (demandes)">
 <!ENTITY options.debug.response "Communication du Serveur vers le Client (réponses)">
 <!ENTITY options.debug.exceptions "Information d'exceptions et d'état de la machine">
 <!ENTITY options.debug.stream "Dump brut / Dump du flux de données">
-<!ENTITY options.debug.session "Session Management">
+<!ENTITY options.debug.session "Gestion de session">
 <!ENTITY options.debug.output "Sortie de débuggage">
 <!ENTITY options.debug.console "Les informations de débuggage sont envoyées vers la console d'erreur">
-<!ENTITY options.debug.console.open "Show Error Console…">
+<!ENTITY options.debug.console.open "Voir la console d'erreur…">
 
 <!ENTITY options.authmechanism.caption "Méchanisme d'authentification">
-<!ENTITY options.authmechanism "Override Authentication Mechanism">
+<!ENTITY options.authmechanism "Redéfinir le méchanisme d'authentification">
 <!ENTITY options.authmechanism.default "Toujours utiliser:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">
@@ -128,7 +128,7 @@ vous pourriez vouloir forcer un méchanisme d'authentification spécifique." >
 "Le proxy d'autorisation permet à un utilisateur authentifié d'agir pour le compte 
 d'un autre utilisateur. En général, les serveurs sont configurés de façon à ce que cette fonctionalité ne soit disponible que pour les administrateurs.">
 <!ENTITY options.proxyauth.force
-"When using proxy authorization you should force “SASL PLAIN” Authentication.">
+"Lorsque vous utilisez le proxy d'autorisation, vous devriez forcer le méchanisme d'authentification à &quot;SASL PLAIN&quot;.">
 <!ENTITY options.proxyauth.none "Aucune autorisation">
 <!ENTITY options.proxyauth.default "Utilisateur Sieve">
 <!ENTITY options.proxyauth.prompt "Request Authorization">
@@ -138,17 +138,17 @@ d'un autre utilisateur. En général, les serveurs sont configurés de façon à
 <!ENTITY options.info.servername "Nom du serveur:">
 <!ENTITY options.info.port "Port:">
 <!ENTITY options.info.secure "Connexion sécurisée:">
-<!ENTITY options.info.username "Username:">
+<!ENTITY options.info.username "Utilisateur:">
 <!ENTITY options.info.auth "Authentification:">
 
 <!ENTITY options.account.sieve
 "Sieve est un puissant langage de script pour le filtrage des mails côté serveur.">
 <!ENTITY options.account.activate
-"Do you want to enable managing Sieve Scripts for this account?">
+"Voulez-vous activer la gestion des scripts Sieve de ce compte?">
 <!ENTITY options.account.activate.yes "Oui, gérer les scripts Sieve de ce compte:">
-<!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
-<!ENTITY options.account.filters "Edit Filters…">
-<!ENTITY options.account.settings "Change Settings…">
+<!ENTITY options.account.activate.no "Non, ce compte ne gère pas les scripts Sieve">
+<!ENTITY options.account.filters "Modifier les filtres…">
+<!ENTITY options.account.settings "Changer les paramètres…">
 
 <!-- Credits -->
 <!ENTITY options.credits "Merci beaucoup à tous les contributeurs:">
@@ -163,7 +163,8 @@ un firewall de manière sécurisée et transparente.">
 la résolution des noms d'hôte sur le proxy SOCKS. Si vous pouvez faire confiance au proxy
 SOCKSv5, il vaut mieux résoudre les noms d'hôte sur celui-ci car c'est plus sécurisé.">
 <!ENTITY options.proxy.description.localhost
-"On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
+"Ne fonctionne pas correctement sur certains systèmes utilisant 'localhost',
+utilisez '127.0.0.1' à la place.">
 <!ENTITY options.proxy.direct "Connexion Directe">
 <!ENTITY options.proxy.default "Configuration par défaut du Proxy">
 <!ENTITY options.proxy.socks4 "SOCKSv4">
@@ -178,7 +179,7 @@ SOCKSv5, il vaut mieux résoudre les noms d'hôte sur celui-ci car c'est plus s�
 
 <!ENTITY list.accounts "Filtres pour:">
 
-<!ENTITY list.tree "Server-side Sieve mailfilters">
+<!ENTITY list.tree "Filtres Sieve côté serveur">
 <!ENTITY list.tree.active "Actif">
 <!ENTITY list.tree.name "Nom">
 
@@ -187,9 +188,9 @@ SOCKSv5, il vaut mieux résoudre les noms d'hôte sur celui-ci car c'est plus s�
 <!ENTITY list.delete "Supprimer">
 <!ENTITY list.rename "Renommer">
 <!ENTITY list.activate "Activer">
-<!ENTITY list.settings "Settings…">
+<!ENTITY list.settings "Paramètres…">
 
-<!ENTITY list.details.capability "Sieve Server Capabilities">
+<!ENTITY list.details.capability "Capacités Sieve côté serveur">
 <!ENTITY list.details.capability.implementation "Version du serveur:">
 <!ENTITY list.details.capability.sasl "Méchanismes SASL:">
 <!ENTITY list.details.capability.extensions "Extensions:">
@@ -202,7 +203,7 @@ SOCKSv5, il vaut mieux résoudre les noms d'hôte sur celui-ci car c'est plus s�
 "Si habituellement vous vous connectez sans problème, cette erreur pourrait signifier que quelqu'un tente d'usurper l'identité du serveur.
 
   Ne continuez pas à moins que vous sachiez qu'il y a une bonne raison pour laquelle le serveur n'utilise pas une identification de confiance.">
-<!ENTITY list.badcert.remember "Remember this decision">
+<!ENTITY list.badcert.remember "Se rappeler de mon choix">
 <!ENTITY list.badcert.ignore "Continuer">
 <!ENTITY list.badcert.abort "Annuler">
 
@@ -210,21 +211,21 @@ SOCKSv5, il vaut mieux résoudre les noms d'hôte sur celui-ci car c'est plus s�
 <!ENTITY list.autoconfig.welcome.description1
 "“ManageSieve” not configured for this account.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click ‘Continue’ to detect the configuration automatically.
-Or choose ‘Advanced’ to configure the account manually.">
+"Cliquez sur 'Continuer' pour détecter automatiquement la configuration.
+Ou choisissez 'Avancé' pour configurer le compte manuellement.">
 
 <!ENTITY list.autoconfig.advanced "Avancé">
 <!ENTITY list.autoconfig.continue "Continuer">
 
 <!ENTITY list.autoconfig.detecting.caption "Détection automatique de la configuration">
 <!ENTITY list.autoconfig.detecting.description
-  "Might take some minutes to complete…">
+  "Cela peut prendre quelques minutes…">
 
 <!ENTITY list.autoconfig.cancel "Annuler">
 
 <!ENTITY list.autoconfig.success.caption "Félicitations!">
 <!ENTITY list.autoconfig.success.description
-  "Your account is now configured and ready to use…">
+  "Votre compte est configuré et prêt à être utilisé…">
 
 <!ENTITY list.autoconfig.error.caption "Désolé">
 <!ENTITY list.autoconfig.error.description
@@ -254,7 +255,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 <!ENTITY edit.sidebar.title "Base de référence du langage Sieve">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Find and Replace">
+<!ENTITY edit.searchreplace.title "Rechercher et remplacer">
 <!ENTITY edit.searchreplace.searchfor "Rechercher:">
 <!ENTITY edit.searchreplace.replacewith "Remplacer par:">
 <!ENTITY edit.searchreplace.options "Options">
@@ -271,7 +272,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 
 <!ENTITY status.connectivity.loss.description
-"Server terminated unexpectedly the connection, click on ‘Reconnect’ to try again.">
+"Le serveur a annulé soudainement la connexion, cliquez sur Reconnectez pour réessayer.">
 <!ENTITY status.connectivity.loss.reconnect "Reconnecter">
 
 <!ENTITY status.warning.ignore "Ignorer">
@@ -283,9 +284,11 @@ Or choose ‘Advanced’ to configure the account manually.">
 <!ENTITY status.error "La dernière commande a échoué car le serveur signale une erreur:">
 
 <!ENTITY status.sync.description
-"The local and the server-side scripts are different. What would you like to do?">
+"Le script local est différent de celui du serveur.
+
+Que voulez-vous faire ?">
 <!ENTITY status.sync.keep "Garder le script local">
-<!ENTITY status.sync.replace "Use Server-side Script">
+<!ENTITY status.sync.replace "Utiliser le script du serveur">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

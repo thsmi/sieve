@@ -38,7 +38,7 @@
 <!ENTITY options.port.4190 "4190 (alapértelmezett)" >
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Egyéb:">
-<!ENTITY options.port.autoselect "Önműködően kiválasztja a kikötőt">
+<!ENTITY options.port.autoselect "Kikötő önműködően kiválasztása">
 <!ENTITY options.port.autoselect.running "Kikötő választása, kis türelmet kérjük…">
 <!ENTITY options.port.autoselect.successful "Sieve detected on Port ">
 <!ENTITY options.port.autoselect.error "A kikötő kiválasztása sikertelen…">
@@ -199,8 +199,8 @@ Do not continue unless you know there's a good reason why this server doesn't us
 <!ENTITY list.autoconfig.welcome.description1
 "A „ManageSieve” (szita kezelése) szolgáltatást nincs beállítva erre a fiókra.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click ‘Continue’ to detect the configuration automatically.
-Or choose ‘Advanced’ to configure the account manually.">
+"Válassza a Folytatás gombot a beállítása önműködő-felismeréséhez.
+Válassza a Haladó gombot a fiók kézi beállításához.">
 
 <!ENTITY list.autoconfig.advanced "Haladó">
 <!ENTITY list.autoconfig.continue "Folytatás">

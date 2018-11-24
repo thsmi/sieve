@@ -77,10 +77,12 @@ serveur conclut que le client est déconnecté et clôt la connexion.">
 doit être maintenue.">
 <!ENTITY options.misc.keepalive.min "min">
 
-<!ENTITY options.misc.compile.caption "Check Syntax">
+<!ENTITY options.misc.compile.caption "Vérification syntaxique">
 <!ENTITY options.misc.compile.description
-"Check Syntax as you type is performed by the server. Requests are grouped to keep network traffic low.">
-<!ENTITY options.misc.compile "Check syntax as you type">
+"Pendant que vous écrivez les Scripts, il peuvent être vérifiés. La vérification
+syntaxique est exécutée par le serveur. De manière à limiter le traffic réseau, 
+les requêtes de vérification syntaxiques sont groupées.">
+<!ENTITY options.misc.compile "Vérifier les Scripts pendant la frappe">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Vérifier au moins toutes les">
 <!ENTITY options.misc.compile.ms "ms">
@@ -98,7 +100,8 @@ doit être maintenue.">
 <!ENTITY options.editor.tabs.width "Tab Width">
 
 <!ENTITY options.debug.warning
-"Keep in mind that neither “SASL LOGIN” nor “SASL PLAIN” cypher your password, it might be posted in clear text to the error console.">
+"Gardez à l'esprit que ni &quot;SASL LOGIN&quot; ni &quot;SASL PLAIN&quot; ne crypte votre mot de passe, 
+ il risque d'apparaître en clair dans la console d'erreur.">
 <!ENTITY options.debug.caption "Paramètres de débogage">
 <!ENTITY options.debug.request "Communication du Client vers le Serveur (demandes)">
 <!ENTITY options.debug.response "Communication du Serveur vers le Client (réponses)">
@@ -131,7 +134,7 @@ d'un autre utilisateur. En général, les serveurs sont configurés de façon à
 "Lorsque vous utilisez le proxy d'autorisation, vous devriez forcer le méchanisme d'authentification à &quot;SASL PLAIN&quot;.">
 <!ENTITY options.proxyauth.none "Aucune autorisation">
 <!ENTITY options.proxyauth.default "Utilisateur Sieve">
-<!ENTITY options.proxyauth.prompt "Request Authorization">
+<!ENTITY options.proxyauth.prompt "Me demander">
 <!ENTITY options.proxyauth.custom "En tant que">
 <!ENTITY options.proxyauth.custom.username "Utilisateur:">
 
@@ -183,8 +186,8 @@ utilisez '127.0.0.1' à la place.">
 <!ENTITY list.tree.active "Actif">
 <!ENTITY list.tree.name "Nom">
 
-<!ENTITY list.new "New…">
-<!ENTITY list.edit "Edit…">
+<!ENTITY list.new "Nouveau…">
+<!ENTITY list.edit "Modifier…">
 <!ENTITY list.delete "Supprimer">
 <!ENTITY list.rename "Renommer">
 <!ENTITY list.activate "Activer">
@@ -209,7 +212,7 @@ utilisez '127.0.0.1' à la place.">
 
 <!ENTITY list.autoconfig.welcome.caption "Bienvenue!">
 <!ENTITY list.autoconfig.welcome.description1
-"“ManageSieve” not configured for this account.">
+"Ce compte n'est pas configuré pour gérer Sieve.">
 <!ENTITY list.autoconfig.welcome.description2
 "Cliquez sur 'Continuer' pour détecter automatiquement la configuration.
 Ou choisissez 'Avancé' pour configurer le compte manuellement.">
@@ -229,7 +232,9 @@ Ou choisissez 'Avancé' pour configurer le compte manuellement.">
 
 <!ENTITY list.autoconfig.error.caption "Désolé">
 <!ENTITY list.autoconfig.error.description
-"Your mail server does not support “ManageSieve” or requires a special configuration. Please configure manually or contact your email provider for instructions.">
+"Il semble que votre serveur mail ne supporte pas Sieve ou demande
+une configuration particulière. Veuillez contacter votre fournisseur de mail ou
+essayez une configuration manuelle.">
 
 <!ENTITY list.autoconfig.retest "Tester de nouveau">
 <!ENTITY list.autoconfig.config "Configuration manuelle">
@@ -241,7 +246,7 @@ Ou choisissez 'Avancé' pour configurer le compte manuellement.">
 <!ENTITY edit.toolbar.cut "Couper">
 <!ENTITY edit.toolbar.copy "Copier">
 <!ENTITY edit.toolbar.paste "Coller">
-<!ENTITY edit.toolbar.compile "Check Syntax">
+<!ENTITY edit.toolbar.compile "Vérifier la syntaxe">
 <!ENTITY edit.toolbar.reference "Référence rapide">
 <!ENTITY edit.toolbar.tools "Outils">
 <!ENTITY edit.toolbar.import "Importer le script">
@@ -267,7 +272,7 @@ Ou choisissez 'Avancé' pour configurer le compte manuellement.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Check that you are connected to the internet, click ‘Go Online’ and try again.">
+"Vous êtes actuellement hors ligne. Cliquez 'Se connecter' et réessayez.">
 <!ENTITY status.offline.go "Se connecter">
 
 
@@ -278,7 +283,7 @@ Ou choisissez 'Avancé' pour configurer le compte manuellement.">
 <!ENTITY status.warning.ignore "Ignorer">
 <!ENTITY status.warning.reconnect "Reconnecter">
 <!ENTITY status.warning
-  "“ManageSieve” not configured for this account. Go to Tools → Sieve Message Filters to enable “ManageSieve”.">
+  "Ce compte n'est pas configuré pour Sieve, aller dans 'Outils → Filtres Sieve'.">
 
 <!ENTITY status.error.reconnect "Reconnecter">
 <!ENTITY status.error "La dernière commande a échoué car le serveur signale une erreur:">

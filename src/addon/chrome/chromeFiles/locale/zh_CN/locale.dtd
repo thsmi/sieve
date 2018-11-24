@@ -33,7 +33,7 @@
 
 <!ENTITY options.port.caption "服务器端口">
 <!ENTITY options.port.description
-"服务器端口已更改，在 ManageSieve 切换到完全 RFC 标准时">
+"The server port changed, when “ManageSieve” turned into a full RFC Standard">
 <!ENTITY options.port.description2
 "较旧的服务器实现仍然使用端口 2000，较新的标准确认服务器只能用端口 4190 访问。">
 <!ENTITY options.port.4190 "4190 (默认)" >
@@ -46,10 +46,9 @@
 
 <!ENTITY options.security.caption "连接安全">
 <!ENTITY options.security.description
-"TLS 可保护连接的安全性，即管理 Sieve 服务器的连接。
-它加密所有数据并能防止窃听和篡改。">
+"Transport Layer Security (TLS) secures the connection to the “ManageSieve” server. It cyphers all data and is designed to prevent eavesdropping and tampering.">
 <!ENTITY options.security.description2
-"ManageSieve 通常不加密的传输密码。所以，除非你很有必要（例如调试），否则应该始终强制 TLS。">
+"“ManageSieve” usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
 <!ENTITY options.security.tls.disabled "无 TLS">
 <!ENTITY options.security.tls.available "可用时使用 TLS">
 <!ENTITY options.security.tls.force "强制 TLS">
@@ -64,19 +63,19 @@
 <!ENTITY options.login.show "View Saved Passwords…">
 
 <!ENTITY options.misc "杂项设置">
-<!ENTITY options.misc.keepalive "启用保持活跃">
+<!ENTITY options.misc.keepalive "Enable Keep-Alive Messages">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.keepalive2 "发送每隔">
 <!ENTITY options.misc.keepalive.description
 "如果客户端闲置太久（通常30分钟），服务器会假定客户端已断开并挂断连接。">
 <!ENTITY options.misc.keepalive.description2
-"保持活跃请求用来表示连接仍然活跃并应该被保持。">
+"A “Keep-Alive” request indicates the connection is still active and should be preserved.">
 <!ENTITY options.misc.keepalive.min "分钟">
 
-<!ENTITY options.misc.compile.caption "Syntax Check">
+<!ENTITY options.misc.compile.caption "Check Syntax">
 <!ENTITY options.misc.compile.description
-"在编辑脚本时，它们会被检查有效性。语法检查是在服务器执行。为了降低网络流量消耗，语法检查请求非实时进行。">
-<!ENTITY options.misc.compile "输入时检查脚本">
+"Check Syntax as you type is performed by the server. Requests are grouped to keep network traffic low.">
+<!ENTITY options.misc.compile "Check syntax as you type">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "验证，至少每隔">
 <!ENTITY options.misc.compile.ms "毫秒">
@@ -90,11 +89,11 @@
 <!ENTITY options.editor.indention.policy.tabs "仅限制表符">
 
 <!ENTITY options.editor.tabs.caption "标签处理">
-<!ENTITY options.editor.tabs.description "带自动缩入的编辑器代替了制表键的使用，但是有很多编辑器因为历史原因缺省为制表符。">
+<!ENTITY options.editor.tabs.description "Text editor with automatic indenting replaced the need for a Tab key, but there are many editors which default to tabs due to historic reasons.">
 <!ENTITY options.editor.tabs.width "制表符宽度">
 
 <!ENTITY options.debug.warning
-"请记住，SASL登录或SASL Plain都不会加密你的密码。密码可能会以明文形式张贴到错误控制台。">
+"Keep in mind that neither “SASL LOGIN” nor “SASL PLAIN” cypher your password, it might be posted in clear text to the error console.">
 <!ENTITY options.debug.caption "Debug Settings">
 <!ENTITY options.debug.request "客户端至服务器的通信（请求）">
 <!ENTITY options.debug.response "服务器至客户端的通信（响应）">
@@ -106,14 +105,14 @@
 <!ENTITY options.debug.console.open "Show Error Console…">
 
 <!ENTITY options.authmechanism.caption "身份验证机制">
-<!ENTITY options.authmechanism "覆盖建议的身份验证机制">
+<!ENTITY options.authmechanism "Override Authentication Mechanism">
 <!ENTITY options.authmechanism.default "始终使用：">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
-<!ENTITY options.authmechanism.login "Login">
-<!ENTITY options.authmechanism.plain "Plain">
+<!ENTITY options.authmechanism.login "LOGIN">
+<!ENTITY options.authmechanism.plain "PLAIN">
 <!ENTITY options.authmechanism.external "外部">
 <!ENTITY options.authmechanism.description
 "在某些情况下，例如使用代理身份验证时，可能希望强制特定的身份验证机制。" >
@@ -122,7 +121,7 @@
 <!ENTITY options.proxyauth.desc
 "代理授权，允许经过身份验证的用户代表其他用户行事。通常服务器的设置只允许管理员使用此功能。">
 <!ENTITY options.proxyauth.force
-"When using proxy authorization you should force SASL PLAIN Authentication.">
+"When using proxy authorization you should force “SASL PLAIN” Authentication.">
 <!ENTITY options.proxyauth.none "无身份验证">
 <!ENTITY options.proxyauth.default "Sieve 用户名">
 <!ENTITY options.proxyauth.prompt "Request Authorization">
@@ -138,9 +137,9 @@
 <!ENTITY options.account.sieve
 "Sieve 是一个能力强大的脚本语言，管理服务器侧的邮件过滤。">
 <!ENTITY options.account.activate
-"您想为此账户激活管理 Sieve 脚本吗？">
+"Do you want to enable managing Sieve Scripts for this account?">
 <!ENTITY options.account.activate.yes "是的，为此账户管理 Sieve 脚本：">
-<!ENTITY options.account.activate.no "不用，此账户不支持 Sieve">
+<!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
 <!ENTITY options.account.filters "Edit Filters…">
 <!ENTITY options.account.settings "Change Settings…">
 
@@ -154,7 +153,7 @@
 <!ENTITY options.proxy.description.nameresolution
 "SOCKSv4主机名总是在本地计算机上解析。SOCKSv5也支持通过端口代理解析主机名。如果您可以信任 SOCKSv5代理，后者被认为更加安全，应该优先考虑。">
 <!ENTITY options.proxy.description.localhost
-"在某些使用 &quot;localhost&quot; 作为代理主机的系统上不能正常工作，请改用 &quot;127.0.0.1&quot;。">
+"On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
 <!ENTITY options.proxy.direct "直接连接">
 <!ENTITY options.proxy.default "默认代理配置">
 <!ENTITY options.proxy.socks4 "SOCKSv4">
@@ -180,7 +179,7 @@
 <!ENTITY list.activate "激活">
 <!ENTITY list.settings "Settings…">
 
-<!ENTITY list.details.capability "服务器 Sieve 能力">
+<!ENTITY list.details.capability "Sieve Server Capabilities">
 <!ENTITY list.details.capability.implementation "服务器版本：">
 <!ENTITY list.details.capability.sasl "SASL 机制：">
 <!ENTITY list.details.capability.extensions "扩展：">
@@ -199,9 +198,9 @@
 
 <!ENTITY list.autoconfig.welcome.caption "欢迎使用！">
 <!ENTITY list.autoconfig.welcome.description1
-"此账户没有配置为管理 Sieve。">
+"“ManageSieve” not configured for this account.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click on ‘Continue’ to detect the configuration automatically.
+"Click ‘Continue’ to detect the configuration automatically.
 Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "高级">
@@ -219,7 +218,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.error.caption "抱歉">
 <!ENTITY list.autoconfig.error.description
-"您的邮件服务器不支持管理 Sieve，或者需要特别设置。请联系您的邮箱提供商，或者尝试手动配置。">
+"Your mail server does not support “ManageSieve” or requires a special configuration. Please configure manually or contact your email provider for instructions.">
 
 <!ENTITY list.autoconfig.retest "重新测试">
 <!ENTITY list.autoconfig.config "手动配置">
@@ -231,7 +230,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 <!ENTITY edit.toolbar.cut "剪切">
 <!ENTITY edit.toolbar.copy "复制">
 <!ENTITY edit.toolbar.paste "粘贴">
-<!ENTITY edit.toolbar.compile "Syntax Check">
+<!ENTITY edit.toolbar.compile "Check Syntax">
 <!ENTITY edit.toolbar.reference "快速参考">
 <!ENTITY edit.toolbar.tools "工具">
 <!ENTITY edit.toolbar.import "导入脚本">
@@ -257,26 +256,24 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Check that you are connected to the internet, Click ‘Go Online’ and try again.">
+"You are currently offline. Check that you are connected to the internet, click ‘Go Online’ and try again.">
 <!ENTITY status.offline.go "连线">
 
 
 <!ENTITY status.connectivity.loss.description
-"服务器意外终止连接，点击重新连接以重试。">
+"Server terminated unexpectedly the connection, click on ‘Reconnect’ to try again.">
 <!ENTITY status.connectivity.loss.reconnect "重新连接">
 
 <!ENTITY status.warning.ignore "忽略">
 <!ENTITY status.warning.reconnect "重新连接">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, go to Tools → Sieve Message Filters">
+  "“ManageSieve” not configured for this account. Go to Tools → Sieve Message Filters to enable “ManageSieve”.">
 
 <!ENTITY status.error.reconnect "重新连接">
 <!ENTITY status.error "最后的命令失败，服务器回报错误：">
 
 <!ENTITY status.sync.description
-"The local and the server-side scripts are different.
-
-What would you like to do about it ?">
+"The local and the server-side scripts are different. What would you like to do?">
 <!ENTITY status.sync.keep "保留本地脚本">
 <!ENTITY status.sync.replace "Use Server-side Script">
 

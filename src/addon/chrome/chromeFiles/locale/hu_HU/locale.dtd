@@ -197,7 +197,7 @@ Do not continue unless you know there's a good reason why this server doesn't us
 
 <!ENTITY list.autoconfig.welcome.caption "Isten hozott!">
 <!ENTITY list.autoconfig.welcome.description1
-"A „ManageSieve” (szita kezelése) nincs beállítva erre a fiókra.">
+"A „ManageSieve” (szita kezelése) szolgáltatást nincs beállítva erre a fiókra.">
 <!ENTITY list.autoconfig.welcome.description2
 "Click ‘Continue’ to detect the configuration automatically.
 Or choose ‘Advanced’ to configure the account manually.">
@@ -217,7 +217,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.error.caption "Sajnáljuk">
 <!ENTITY list.autoconfig.error.description
-"Your mail server does not support “ManageSieve” or requires a special configuration. Please configure manually or contact your email provider for instructions.">
+"A levélkiszolgáló nem támogatja a „ManageSieve” (szita kezelése) szolgáltatást vagy különleges beállítást igényel. Kérem, állítsa be kézzel, vagy forduljon a levelezőszolgáltatójához további tanácsokért.">
 
 <!ENTITY list.autoconfig.retest "Újratesztelés">
 <!ENTITY list.autoconfig.config "Kézi beállítás">

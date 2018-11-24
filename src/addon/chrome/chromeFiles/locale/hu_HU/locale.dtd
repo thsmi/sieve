@@ -40,7 +40,7 @@
 <!ENTITY options.port.custom "Egyéb:">
 <!ENTITY options.port.autoselect "Kikötő önműködően kiválasztása">
 <!ENTITY options.port.autoselect.running "Kikötő választása, kis türelmet kérjük…">
-<!ENTITY options.port.autoselect.successful "Sieve detected on Port ">
+<!ENTITY options.port.autoselect.successful "Szita észlelt kikötő: ">
 <!ENTITY options.port.autoselect.error "A kikötő kiválasztása sikertelen…">
 
 <!ENTITY options.security.caption "Kapcsolat biztonsága">

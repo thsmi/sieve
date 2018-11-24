@@ -260,7 +260,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 
 <!ENTITY status.connectivity.loss.description
-"Server terminated unexpectedly the connection, click on ‘Reconnect’ to try again.">
+"A kiszolgáló váratlanul lezárta a kapcsolatot. Kattintson a Újracsatlakozás gombra az ismételt próbálkozáshoz.">
 <!ENTITY status.connectivity.loss.reconnect "Újracsatlakozás">
 
 <!ENTITY status.warning.ignore "Kihagyás">

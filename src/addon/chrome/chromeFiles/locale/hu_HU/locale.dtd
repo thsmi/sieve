@@ -260,7 +260,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 
 <!ENTITY status.connectivity.loss.description
-"A kiszolgáló váratlanul lezárta a kapcsolatot. Kattintson a Újracsatlakozás gombra az ismételt próbálkozáshoz.">
+"A kiszolgáló váratlanul lezárta a kapcsolatot. Válassza az Újracsatlakozás gombra az újrapróbálkozáshoz.">
 <!ENTITY status.connectivity.loss.reconnect "Újracsatlakozás">
 
 <!ENTITY status.warning.ignore "Kihagyás">

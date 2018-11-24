@@ -154,7 +154,7 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 <!ENTITY options.proxy.description.nameresolution
 "SOCKSv4 löst Hostnamen über den lokalen Rechner auf. Bei SOCKSv5 können Hostnamen über den DNS des Proxy ermittelt werden. Falls der Proxy vertrauenswürdig ist sollte die letztere Variante nutzen.">
 <!ENTITY options.proxy.description.localhost
-"On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
+"Der Hostname 'localhost' wird auf manchen Systemen nicht richtig aufgelöst, alternativ kann die Loopback Addresse '127.0.0.1' verwendet werden.">
 <!ENTITY options.proxy.direct "Direkte Verbindung">
 <!ENTITY options.proxy.default "Automatische Konfiguration">
 <!ENTITY options.proxy.socks4 "SOCKSv4">
@@ -169,18 +169,18 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 
 <!ENTITY list.accounts "Filter für:">
 
-<!ENTITY list.tree "Server-side Sieve mailfilters">
+<!ENTITY list.tree "Serverseitige Skripte">
 <!ENTITY list.tree.active "Aktiv">
 <!ENTITY list.tree.name "Name">
 
-<!ENTITY list.new "New…">
-<!ENTITY list.edit "Edit…">
+<!ENTITY list.new "Neu…">
+<!ENTITY list.edit "Bearbeiten…">
 <!ENTITY list.delete "Löschen">
 <!ENTITY list.rename "Umbenennen...">
 <!ENTITY list.activate "Aktivieren">
-<!ENTITY list.settings "Settings…">
+<!ENTITY list.settings "Einstellungen…">
 
-<!ENTITY list.details.capability "Sieve Server Capabilities">
+<!ENTITY list.details.capability "Server Eigenschaften">
 <!ENTITY list.details.capability.implementation "Serverversion:">
 <!ENTITY list.details.capability.sasl "SASL Mechanismen:">
 <!ENTITY list.details.capability.extensions "Erweiterungen:">
@@ -193,33 +193,33 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 "Es könnte sein, dass sich jemand als Ihr Mailserver ausgibt, um beispielsweise an Ihr Passwort zu gelangen.
 
 Ignorieren Sie diese Meldung nur, wenn Sie sich wirklich sicher sind, dass Sie tatsächlich mit dem gewünschten Server verbunden sind.">
-<!ENTITY list.badcert.remember "Remember this decision">
+<!ENTITY list.badcert.remember "Meldung nicht mehr anzeigen">
 <!ENTITY list.badcert.ignore "Weiter">
 <!ENTITY list.badcert.abort "Abbrechen">
 
 <!ENTITY list.autoconfig.welcome.caption "Herzlich Willkommen!">
 <!ENTITY list.autoconfig.welcome.description1
-"“ManageSieve” not configured for this account.">
+"Dieses Sieve Konto ist derzeit noch nicht konfiguriert.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click ‘Continue’ to detect the configuration automatically.
-Or choose ‘Advanced’ to configure the account manually.">
+"Klicken Sie auf 'Weiter' um die Konfiguration automatisch zu erkennen, oder
+auf 'Erweitert' um das Konto manuell zu konfigurieren.">
 
 <!ENTITY list.autoconfig.advanced "Erweitert">
 <!ENTITY list.autoconfig.continue "Weiter">
 
 <!ENTITY list.autoconfig.detecting.caption "Analysiere Konfiguration">
 <!ENTITY list.autoconfig.detecting.description
-  "Might take some minutes to complete…">
+  "Dauert mitunter mehrere Minuten…">
 
 <!ENTITY list.autoconfig.cancel "Abbrechen">
 
 <!ENTITY list.autoconfig.success.caption "Erkennung erfolgreich">
 <!ENTITY list.autoconfig.success.description
-  "Your account is now configured and ready to use…">
+  "Ihr Sieve Konto ist nun konfiguriert und einsatzbereit…">
 
 <!ENTITY list.autoconfig.error.caption "Erkennung fehlgeschlagen">
 <!ENTITY list.autoconfig.error.description
-"Your mail server does not support “ManageSieve” or requires a special configuration. Please configure manually or contact your email provider for instructions.">
+"Die Verbindungsdaten konnten nicht automatisch erkannt werden. Entweder unterstützt Ihr Server das ManageSieve Protokoll nicht oder es ist eine spezielle Konfiguration notwendig. Bitte erfragen Sie bei Ihrem E-Mail-Provider die Verbindungsdaten und konfigurieren Sie das Sieve Konto manuell.">
 
 <!ENTITY list.autoconfig.retest "Nochmal erkennen">
 <!ENTITY list.autoconfig.config "Manuelle Konfiguration">
@@ -231,7 +231,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 <!ENTITY edit.toolbar.cut "Ausschneiden">
 <!ENTITY edit.toolbar.copy "Kopieren">
 <!ENTITY edit.toolbar.paste "Einfügen">
-<!ENTITY edit.toolbar.compile "Check Syntax">
+<!ENTITY edit.toolbar.compile "Syntaxprüfung">
 <!ENTITY edit.toolbar.reference "Sprachreferenz">
 <!ENTITY edit.toolbar.tools "Extras">
 <!ENTITY edit.toolbar.import "Skript importieren">
@@ -245,7 +245,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 <!ENTITY edit.sidebar.title "Sieve Sprachreferenz">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Find and Replace">
+<!ENTITY edit.searchreplace.title "Suchen und Ersetzen">
 <!ENTITY edit.searchreplace.searchfor "Suchen nach:">
 <!ENTITY edit.searchreplace.replacewith "Ersetzen mit:">
 <!ENTITY edit.searchreplace.options "Optionen">
@@ -257,18 +257,18 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Check that you are connected to the internet, click ‘Go Online’ and try again.">
+"Sie sind derzeit im Offline-Modus. Möchten Sie diesen verlassen?">
 <!ENTITY status.offline.go "Verbindung herstellen">
 
 
 <!ENTITY status.connectivity.loss.description
-"Server terminated unexpectedly the connection, click on ‘Reconnect’ to try again.">
+"Die Verbindung zum Server wurde unterbrochen. Klicken sie auf &quot;Erneut verbinden&quot; um sie wiederherzustellen.">
 <!ENTITY status.connectivity.loss.reconnect "Erneut verbinden">
 
 <!ENTITY status.warning.ignore "Ignorieren">
 <!ENTITY status.warning.reconnect "Erneut verbinden">
 <!ENTITY status.warning
-  "“ManageSieve” not configured for this account. Go to Tools → Sieve Message Filters to enable “ManageSieve”.">
+  "Dieses Konto ist nicht konfiguriert. Bitte rufen Sie 'Extras → Sieve Filter Einstellungen' auf um es zu aktivieren.">
 
 <!ENTITY status.error.reconnect "Erneut verbinden">
 <!ENTITY status.error "Aktion fehlgeschlagen, Server meldet einen schweren Fehler:">

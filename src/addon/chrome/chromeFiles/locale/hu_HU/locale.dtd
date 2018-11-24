@@ -138,7 +138,7 @@
 <!ENTITY options.account.activate
 "Do you want to enable managing Sieve Scripts for this account?">
 <!ENTITY options.account.activate.yes "Yes, manage Sieve scripts for this account:">
-<!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
+<!ENTITY options.account.activate.no "Nem, ez a fiók nem támogatja a „ManageSieve”-t (szita kezelése)">
 <!ENTITY options.account.filters "Szűrők szerkesztése…">
 <!ENTITY options.account.settings "Beállítások módosítása…">
 
@@ -197,7 +197,7 @@ Do not continue unless you know there's a good reason why this server doesn't us
 
 <!ENTITY list.autoconfig.welcome.caption "Isten hozott!">
 <!ENTITY list.autoconfig.welcome.description1
-"“ManageSieve” not configured for this account.">
+"A „ManageSieve” (szita kezelése) nincs beállítva erre a fiókra.">
 <!ENTITY list.autoconfig.welcome.description2
 "Click ‘Continue’ to detect the configuration automatically.
 Or choose ‘Advanced’ to configure the account manually.">

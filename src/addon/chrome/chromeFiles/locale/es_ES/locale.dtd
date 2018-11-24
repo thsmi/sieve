@@ -19,7 +19,7 @@
 <!ENTITY options.tab.general "General">
 <!ENTITY options.tab.proxy "Proxy">
 <!ENTITY options.tab.advanced "Avanzado">
-<!ENTITY options.tab.advanced.warning "These settings are intended for advanced users…">
+<!ENTITY options.tab.advanced.warning "Estos ajustes están destinados a usuarios avanzados…">
 <!ENTITY options.tab.editor "Editor">
 <!ENTITY options.tab.debug "Depurar">
 <!ENTITY options.tab.credits "Créditos">
@@ -33,7 +33,7 @@ Por lo tanto el nombre del servidor Sieve suele ser el mismo que el nombre de su
 
 <!ENTITY options.port.caption "Puerto del servidor">
 <!ENTITY options.port.description
-"The server port changed, when “ManageSieve” turned into a full RFC Standard">
+"El puerto del servidor cambió, cuando ManageSieve se transformó en un RFC estándar completo">
 <!ENTITY options.port.description2
 "Las implementaciones de servidor más antiguas continuan usando el puerto 2000, mientras que los nuevos ajustes 
 estándar del servidor sólo pueden acceder vía puerto 4190.">
@@ -41,15 +41,17 @@ estándar del servidor sólo pueden acceder vía puerto 4190.">
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Otro:">
 <!ENTITY options.port.autoselect "Autoselección del Puerto">
-<!ENTITY options.port.autoselect.running "Selecting Port, please wait…">
+<!ENTITY options.port.autoselect.running "Seleccionando el Puerto, por favor espere…">
 <!ENTITY options.port.autoselect.successful "Sieve detectado en Puerto ">
-<!ENTITY options.port.autoselect.error "Selecting Port failed…">
+<!ENTITY options.port.autoselect.error "Fallo en la selección de Puerto…">
 
 <!ENTITY options.security.caption "Seguridad de Conexión">
 <!ENTITY options.security.description
-"Transport Layer Security (TLS) secures the connection to the “ManageSieve” server. It cyphers all data and is designed to prevent eavesdropping and tampering.">
+"Transport Layer Security (TLS) asegura la conexión con la administración del servidor Sieve.
+Cifra todos los datos y está diseñado para prevenir el espionaje y la manipulación.">
 <!ENTITY options.security.description2
-"“ManageSieve” usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
+"ManageSieve normalmente transfiere las contraseñas no encriptadas. Así que a menos que tengas una 
+buena razón (ej. Depuración), deberías siempre forzar TLS.">
 <!ENTITY options.security.tls.disabled "Sin TLS">
 <!ENTITY options.security.tls.available "TLS, cuando sea disponible">
 <!ENTITY options.security.tls.force "Forzar TLS">
@@ -61,7 +63,7 @@ estándar del servidor sólo pueden acceder vía puerto 4190.">
 <!ENTITY options.login.customAuth "Usuario y Contraseña">
 <!ENTITY options.login.username "Usuario">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "View Saved Passwords…">
+<!ENTITY options.login.show "Mostrar Contraseñas Guardadas…">
 
 <!ENTITY options.misc "Ajustes varios">
 <!ENTITY options.misc.keepalive "Enable Keep-Alive Messages">
@@ -71,7 +73,8 @@ estándar del servidor sólo pueden acceder vía puerto 4190.">
 "Si el cliente está ocupado por mucho tiempo (normalmente 30 minutos), el
 servidor asume que el cliente esta desconectado y corta la conexión.">
 <!ENTITY options.misc.keepalive.description2
-"A “Keep-Alive” request indicates the connection is still active and should be preserved.">
+"Una petición de conexión abierta indica que la conexión está todavía activa y
+debe ser preservada.">
 <!ENTITY options.misc.keepalive.min "min">
 
 <!ENTITY options.misc.compile.caption "Check Syntax">
@@ -95,19 +98,20 @@ servidor asume que el cliente esta desconectado y corta la conexión.">
 <!ENTITY options.editor.tabs.width "Tab Width">
 
 <!ENTITY options.debug.warning
-"Keep in mind that neither “SASL LOGIN” nor “SASL PLAIN” cypher your password, it might be posted in clear text to the error console.">
-<!ENTITY options.debug.caption "Debug Settings">
+"Tenga en cuenta que ni el SASL LOGIN ni SASL PLAIN cifran su contraseña, 
+podría ser enviado en texto sin cifrar a la consola de error.">
+<!ENTITY options.debug.caption "Ajustes de la Depuración">
 <!ENTITY options.debug.request "Cliente para comunicaciones al servidor (peticiones)">
 <!ENTITY options.debug.response "Servidor para la comunicación al cliente (respuestas)">
 <!ENTITY options.debug.exceptions "Excepciones e Información del Estado de la Máquina">
 <!ENTITY options.debug.stream "Descarga Bruta/ Descarga de la secuencia de bytes">
-<!ENTITY options.debug.session "Session Management">
+<!ENTITY options.debug.session "Sesión de Administración">
 <!ENTITY options.debug.output "Salida de Depuración">
 <!ENTITY options.debug.console "Información de Depuración enviada a la consola de error">
-<!ENTITY options.debug.console.open "Show Error Console…">
+<!ENTITY options.debug.console.open "Mostrar Consola de Error…">
 
 <!ENTITY options.authmechanism.caption "Mecanismo de Autenticación">
-<!ENTITY options.authmechanism "Override Authentication Mechanism">
+<!ENTITY options.authmechanism "Reemplazar mecanismo de autenticación sugerido">
 <!ENTITY options.authmechanism.default "Usar siempre:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">
@@ -125,7 +129,7 @@ forzar un Mecanismo de Autenticación específico." >
 "Autorización Proxy, permite a un usuario autenticado actuar en nombre de otro usuario.
 Normalmente los servidores están configurados, para que ésta característica esté sólo disponible para administradores.">
 <!ENTITY options.proxyauth.force
-"When using proxy authorization you should force “SASL PLAIN” Authentication.">
+"Cuando usa una autorización proxy debe forzar &quot;SASL PLAIN&quot; Autenticación.">
 <!ENTITY options.proxyauth.none "Sin Autorización">
 <!ENTITY options.proxyauth.default "Nombre de usuario Sieve">
 <!ENTITY options.proxyauth.prompt "Request Authorization">
@@ -135,13 +139,13 @@ Normalmente los servidores están configurados, para que ésta característica e
 <!ENTITY options.info.servername "Nombre Servidor:">
 <!ENTITY options.info.port "Puerto:">
 <!ENTITY options.info.secure "Conexión segura:">
-<!ENTITY options.info.username "Username:">
+<!ENTITY options.info.username "Nombre de usuario:">
 <!ENTITY options.info.auth "Autenticación:">
 
 <!ENTITY options.account.sieve
 "Sieve es un potente lenguaje script para el filtrado de correo del lado servidor.">
 <!ENTITY options.account.activate
-"Do you want to enable managing Sieve Scripts for this account?">
+"¿Quiere activar la gestión de scripts Sieve para ésta cuenta?">
 <!ENTITY options.account.activate.yes "Sí, gestionar los scripts Sieve para ésta cuenta:">
 <!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
 <!ENTITY options.account.filters "Edit Filters…">

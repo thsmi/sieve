@@ -32,7 +32,7 @@
 
 <!ENTITY options.port.caption "Port Server">
 <!ENTITY options.port.description
-"Portul serverului a fost schimbat, când ManageSieve s-a transformat în RFC Standard">
+"The server port changed, when “ManageSieve” turned into a full RFC Standard">
 <!ENTITY options.port.description2
 "Implementările vechi de server încă utilizează portul 2000, în timp ce standardele mai noi
 conform serverului pot fi accesate numai prin portul 4190.">
@@ -46,9 +46,9 @@ conform serverului pot fi accesate numai prin portul 4190.">
 
 <!ENTITY options.security.caption "Securitatea conexiunii">
 <!ENTITY options.security.description
-"Securitatea transporturilor stratului (TLS) asigură conexiunea de gestionare a serverului sieve. Criptează toate datele și este făcut să prevină interceptarea și falsificarea acestora.">
+"Transport Layer Security (TLS) secures the connection to the “ManageSieve” server. It cyphers all data and is designed to prevent eavesdropping and tampering.">
 <!ENTITY options.security.description2
-"ManageSieve transferă de obicei parole necriptate. Și dacă nu ai un motiv foarte bun (ex. Repararea erorilor), ar trebui să forțezi întotdeauna TLS.">
+"“ManageSieve” usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
 <!ENTITY options.security.tls.disabled "Nici TLS">
 <!ENTITY options.security.tls.available "TLS, când este disponibil">
 <!ENTITY options.security.tls.force "Forțează TLS">
@@ -63,19 +63,19 @@ conform serverului pot fi accesate numai prin portul 4190.">
 <!ENTITY options.login.show "View Saved Passwords…">
 
 <!ENTITY options.misc "Setări diverse">
-<!ENTITY options.misc.keepalive "Permite keepalives">
+<!ENTITY options.misc.keepalive "Enable Keep-Alive Messages">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.keepalive2 "Trimite fiecare">
 <!ENTITY options.misc.keepalive.description
 "Dacă clientul a fost inactiv pentru prea mult timp (de obicei 30 de minute), serverul presupune că acesta este deconectat și închide conexiunea.">
 <!ENTITY options.misc.keepalive.description2
-"O cerere de keepalive indică că conexiunea este activă și ar trebui să fie conservată.">
+"A “Keep-Alive” request indicates the connection is still active and should be preserved.">
 <!ENTITY options.misc.keepalive.min "min">
 
-<!ENTITY options.misc.compile.caption "Syntax Check">
+<!ENTITY options.misc.compile.caption "Check Syntax">
 <!ENTITY options.misc.compile.description
-"În timp ce editați scripturile, acestea pot fi verificate pentru valabilitate. Verificarea sintaxei este făcută de server. Pentru a menține traficul rețelei scăzut, verificarea sintaxei este grupată.">
-<!ENTITY options.misc.compile "Sciptul verifică în timpul tastării">
+"Check Syntax as you type is performed by the server. Requests are grouped to keep network traffic low.">
+<!ENTITY options.misc.compile "Check syntax as you type">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Validează cel puțin o dată">
 <!ENTITY options.misc.compile.ms "ms">
@@ -89,11 +89,11 @@ conform serverului pot fi accesate numai prin portul 4190.">
 <!ENTITY options.editor.indention.policy.tabs "Doar file">
 
 <!ENTITY options.editor.tabs.caption "Manipularea filelor">
-<!ENTITY options.editor.tabs.description "Texteditor cu indentare automată a înlocuit necesitatea unei taste pentru filă, dar există mai multe editoare care au filele implicite datorită istoricului.">
+<!ENTITY options.editor.tabs.description "Text editor with automatic indenting replaced the need for a Tab key, but there are many editors which default to tabs due to historic reasons.">
 <!ENTITY options.editor.tabs.width "Lățimea filei">
 
 <!ENTITY options.debug.warning
-"Rețineți că SASL Login și SASL Plain nu criptează parolele, și ar putea apărea în erorile din consolă.">
+"Keep in mind that neither “SASL LOGIN” nor “SASL PLAIN” cypher your password, it might be posted in clear text to the error console.">
 <!ENTITY options.debug.caption "Debug Settings">
 <!ENTITY options.debug.request "Comunicări client către server (cereri)">
 <!ENTITY options.debug.response "Comunicări client către server (răspunsuri)">
@@ -105,14 +105,14 @@ conform serverului pot fi accesate numai prin portul 4190.">
 <!ENTITY options.debug.console.open "Show Error Console…">
 
 <!ENTITY options.authmechanism.caption "Mecanismul de autentificare">
-<!ENTITY options.authmechanism "Suprascrie mecanismul sugerat de autentificare">
+<!ENTITY options.authmechanism "Override Authentication Mechanism">
 <!ENTITY options.authmechanism.default "Utilizați întotdeauna:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
-<!ENTITY options.authmechanism.login "Login">
-<!ENTITY options.authmechanism.plain "Plain">
+<!ENTITY options.authmechanism.login "LOGIN">
+<!ENTITY options.authmechanism.plain "PLAIN">
 <!ENTITY options.authmechanism.external "EXTERNE">
 <!ENTITY options.authmechanism.description
 "În anumite situații ex. când se folosește un Proxy de Autentificare se poate forța un mecanism specific de autentificare." >
@@ -121,7 +121,7 @@ conform serverului pot fi accesate numai prin portul 4190.">
 <!ENTITY options.proxyauth.desc
 "Autorizarea proxy îi permite unui utilizator autentificat să acționeze în numele altui utilizator. De obicei, serverele sunt configurate, ca această caracteristică să fie disponibilă numai pentru administartori.">
 <!ENTITY options.proxyauth.force
-"When using proxy authorization you should force SASL PLAIN Authentication.">
+"When using proxy authorization you should force “SASL PLAIN” Authentication.">
 <!ENTITY options.proxyauth.none "Nici o autorizație">
 <!ENTITY options.proxyauth.default "Numele utilizatorului Sieve">
 <!ENTITY options.proxyauth.prompt "Request Authorization">
@@ -137,9 +137,9 @@ conform serverului pot fi accesate numai prin portul 4190.">
 <!ENTITY options.account.sieve
 "Sieve este un limbaj de script puternic pentru filtrarea mailurilor de servere.">
 <!ENTITY options.account.activate
-"Vrei să activezi gestionarea Scripturilor Sieve pentru acest cont?">
+"Do you want to enable managing Sieve Scripts for this account?">
 <!ENTITY options.account.activate.yes "Da, gestionează scripturile Sieve pentru acest cont:">
-<!ENTITY options.account.activate.no "Nu, acest cont nu acceptă Sieve">
+<!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
 <!ENTITY options.account.filters "Edit Filters…">
 <!ENTITY options.account.settings "Change Settings…">
 
@@ -153,7 +153,7 @@ conform serverului pot fi accesate numai prin portul 4190.">
 <!ENTITY options.proxy.description.nameresolution
 "Cu SOCKSv4 numele gazdelei sunt întotdeauna rezolvate pe computerul local. SOCKSv5 sprijină rezolvarea numelor gazdei pe proxy SOCKS. Dacă aveți încerdere intr-un proxy SOCKSv5 acesta este considerat mai sigur.">
 <!ENTITY options.proxy.description.localhost
-"Pe unle sisteme, folosirea gazdei locale ca și proxy nu funcționează corect, folosiți '127.0.0.1'.">
+"On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
 <!ENTITY options.proxy.direct "Conexiune directă">
 <!ENTITY options.proxy.default "Configurare implicită proxy">
 <!ENTITY options.proxy.socks4 "SOCKSv4">
@@ -179,7 +179,7 @@ conform serverului pot fi accesate numai prin portul 4190.">
 <!ENTITY list.activate "Activează">
 <!ENTITY list.settings "Settings…">
 
-<!ENTITY list.details.capability "Capabilitățiile Server-ului Sieve">
+<!ENTITY list.details.capability "Sieve Server Capabilities">
 <!ENTITY list.details.capability.implementation "Versiune Server:">
 <!ENTITY list.details.capability.sasl "Mecanisme SASL:">
 <!ENTITY list.details.capability.extensions "Extensii:">
@@ -197,9 +197,9 @@ Continuați numai în cazul în care există un motiv bine întemeiat pentru car
 
 <!ENTITY list.autoconfig.welcome.caption "Bine ați venit!">
 <!ENTITY list.autoconfig.welcome.description1
-"Acest cont nu este configurat pentru a gestiona sieve.">
+"“ManageSieve” not configured for this account.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click on ‘Continue’ to detect the configuration automatically.
+"Click ‘Continue’ to detect the configuration automatically.
 Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "Avansat">
@@ -217,7 +217,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.error.caption "Ne pare rău">
 <!ENTITY list.autoconfig.error.description
-"Se pare că serverul mail nu acceptă gestionarea sieve sau necesită o configurare specială. Contactați furnizorul sau încercați să faceți o configurare manuală.">
+"Your mail server does not support “ManageSieve” or requires a special configuration. Please configure manually or contact your email provider for instructions.">
 
 <!ENTITY list.autoconfig.retest "Re-testare">
 <!ENTITY list.autoconfig.config "Configurare Manuală">
@@ -229,7 +229,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 <!ENTITY edit.toolbar.cut "Tăiere">
 <!ENTITY edit.toolbar.copy "Copiere">
 <!ENTITY edit.toolbar.paste "Inserează">
-<!ENTITY edit.toolbar.compile "Syntax Check">
+<!ENTITY edit.toolbar.compile "Check Syntax">
 <!ENTITY edit.toolbar.reference "Referință rapidă">
 <!ENTITY edit.toolbar.tools "Instrumente">
 <!ENTITY edit.toolbar.import "Importă scriptul">
@@ -255,26 +255,24 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Check that you are connected to the internet, Click ‘Go Online’ and try again.">
+"You are currently offline. Check that you are connected to the internet, click ‘Go Online’ and try again.">
 <!ENTITY status.offline.go "Conectare">
 
 
 <!ENTITY status.connectivity.loss.description
-"Serverul a întrerupt neașteptat conexiunea, apăsați pe reconectare pentru a încerca din nou.">
+"Server terminated unexpectedly the connection, click on ‘Reconnect’ to try again.">
 <!ENTITY status.connectivity.loss.reconnect "Reconectare">
 
 <!ENTITY status.warning.ignore "Ignoră">
 <!ENTITY status.warning.reconnect "Reconectare">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, go to Tools → Sieve Message Filters">
+  "“ManageSieve” not configured for this account. Go to Tools → Sieve Message Filters to enable “ManageSieve”.">
 
 <!ENTITY status.error.reconnect "Reconectare">
 <!ENTITY status.error "Ultima comandă a eșuat deoarece serverul a raportat o eroare:">
 
 <!ENTITY status.sync.description
-"The local and the server-side scripts are different.
-
-What would you like to do about it ?">
+"The local and the server-side scripts are different. What would you like to do?">
 <!ENTITY status.sync.keep "Păstrează scriptul local">
 <!ENTITY status.sync.replace "Use Server-side Script">
 

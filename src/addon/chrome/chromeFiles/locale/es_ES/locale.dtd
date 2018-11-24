@@ -147,9 +147,9 @@ Normalmente los servidores están configurados, para que ésta característica e
 <!ENTITY options.account.activate
 "¿Quiere activar la gestión de scripts Sieve para ésta cuenta?">
 <!ENTITY options.account.activate.yes "Sí, gestionar los scripts Sieve para ésta cuenta:">
-<!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
-<!ENTITY options.account.filters "Edit Filters…">
-<!ENTITY options.account.settings "Change Settings…">
+<!ENTITY options.account.activate.no "No, ésta cuenta no soporta Sieve">
+<!ENTITY options.account.filters "Editar Filtros…">
+<!ENTITY options.account.settings "Cambiar Opciones…">
 
 <!-- Credits -->
 <!ENTITY options.credits "Muchas gracias a todos los colaboradores:">
@@ -164,7 +164,8 @@ atravesar con seguridad el firewall.">
 soporta resolver nombres host por el proxy SOCKS. Si puede confiar en el proxy 
 SOCKSv5, éste último se considera más seguro y debe preferirse.">
 <!ENTITY options.proxy.description.localhost
-"On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
+"En algunos sistemas usar 'localhost' como proxy no funciona correctamente, 
+use '127.0.0.1' en su lugar.">
 <!ENTITY options.proxy.direct "Conexión directa">
 <!ENTITY options.proxy.default "Configuración Proxy predeterminada">
 <!ENTITY options.proxy.socks4 "SOCKSv4">
@@ -179,7 +180,7 @@ SOCKSv5, éste último se considera más seguro y debe preferirse.">
 
 <!ENTITY list.accounts "Filtros para:">
 
-<!ENTITY list.tree "Server-side Sieve mailfilters">
+<!ENTITY list.tree "Filtros de correo en Sieve lado servidor">
 <!ENTITY list.tree.active "Activo">
 <!ENTITY list.tree.name "Nombre">
 
@@ -188,9 +189,9 @@ SOCKSv5, éste último se considera más seguro y debe preferirse.">
 <!ENTITY list.delete "Borrar">
 <!ENTITY list.rename "Renombrar">
 <!ENTITY list.activate "Activar">
-<!ENTITY list.settings "Settings…">
+<!ENTITY list.settings "Opciones…">
 
-<!ENTITY list.details.capability "Sieve Server Capabilities">
+<!ENTITY list.details.capability "Capacidades Servidor Sieve">
 <!ENTITY list.details.capability.implementation "Versión Servidor:">
 <!ENTITY list.details.capability.sasl "Mecanismos SASL:">
 <!ENTITY list.details.capability.extensions "Extensiones:">
@@ -205,7 +206,7 @@ significar que alguien está intentando hacerse pasar por usted en el servidor.
 
 No continue a menos que tenga una buena razón porque 
 éste servidor no utiliza identificación de confianza.">
-<!ENTITY list.badcert.remember "Remember this decision">
+<!ENTITY list.badcert.remember "Recordar mi decisión">
 <!ENTITY list.badcert.ignore "Continuar">
 <!ENTITY list.badcert.abort "Abortar">
 
@@ -213,21 +214,21 @@ No continue a menos que tenga una buena razón porque
 <!ENTITY list.autoconfig.welcome.description1
 "“ManageSieve” not configured for this account.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click ‘Continue’ to detect the configuration automatically.
-Or choose ‘Advanced’ to configure the account manually.">
+"Click en 'Continuar' para detectar la configuración automáticamente.
+O elija 'Avanzada' para configurar la cuenta manualmente.">
 
 <!ENTITY list.autoconfig.advanced "Avanzado">
 <!ENTITY list.autoconfig.continue "Continuar">
 
 <!ENTITY list.autoconfig.detecting.caption "Autodetectar Configuración">
 <!ENTITY list.autoconfig.detecting.description
-  "Might take some minutes to complete…">
+  "Esto podría tardar algunos minutos para completarse…">
 
 <!ENTITY list.autoconfig.cancel "Cancelar">
 
 <!ENTITY list.autoconfig.success.caption "¡Felicidades!">
 <!ENTITY list.autoconfig.success.description
-  "Your account is now configured and ready to use…">
+  "Su cuenta está configurada y lista para usar…">
 
 <!ENTITY list.autoconfig.error.caption "Lo siento">
 <!ENTITY list.autoconfig.error.description
@@ -257,7 +258,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 <!ENTITY edit.sidebar.title "Referencia de Lenguaje Sieve">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Find and Replace">
+<!ENTITY edit.searchreplace.title "Buscar y Reemplazar">
 <!ENTITY edit.searchreplace.searchfor "Buscar:">
 <!ENTITY edit.searchreplace.replacewith "Reemplazar con:">
 <!ENTITY edit.searchreplace.options "Opciones">
@@ -274,7 +275,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 
 <!ENTITY status.connectivity.loss.description
-"Server terminated unexpectedly the connection, click on ‘Reconnect’ to try again.">
+"El servidor ha termnado la conexión inesperadamente, haga click en reconectar para intentar de nuevo.">
 <!ENTITY status.connectivity.loss.reconnect "Reconectar">
 
 <!ENTITY status.warning.ignore "Ignorar">
@@ -286,9 +287,11 @@ Or choose ‘Advanced’ to configure the account manually.">
 <!ENTITY status.error "Ultimo comando falló porque el servidor reportó un error:">
 
 <!ENTITY status.sync.description
-"The local and the server-side scripts are different. What would you like to do?">
+"Los scripts Locales y del lado servidor son diferentes. 
+
+¿Que quiere hacer al respecto?">
 <!ENTITY status.sync.keep "Mantener script Local">
-<!ENTITY status.sync.replace "Use Server-side Script">
+<!ENTITY status.sync.replace "Usar los scripts del lado servidor">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

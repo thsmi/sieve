@@ -104,7 +104,7 @@
 <!ENTITY options.debug.console.open "Hibakijelző megjelenítése…">
 
 <!ENTITY options.authmechanism.caption "Hitelesítési mechanizmus">
-<!ENTITY options.authmechanism "Override Authentication Mechanism">
+<!ENTITY options.authmechanism "Hitelesítési mechanizmus felülbírálása">
 <!ENTITY options.authmechanism.default "Mindig használja:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">
@@ -186,7 +186,7 @@
 
 
 <!ENTITY list.badcert
-  "Your mail server attempts to identify itself with invalid information.">
+  "A biztonságos kapcsolat sikertelen. A levélkiszolgáló rossz tanúsítványt adott ki.">
 <!ENTITY list.badcert.error
 "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server.
 
@@ -266,7 +266,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 <!ENTITY status.warning.ignore "Kihagyás">
 <!ENTITY status.warning.reconnect "Újracsatlakozás">
 <!ENTITY status.warning
-  "“ManageSieve” not configured for this account. Go to Tools → Sieve Message Filters to enable “ManageSieve”.">
+  "A „ManageSieve” (szita kezelése) szolgáltatást nincs beállítva erre a fiókra. Szita üzenetszűrők menüpontot a Eszközök menüből engedélyezhető a „ManageSieve” (szita kezelése) szolgáltatás.">
 
 <!ENTITY status.error.reconnect "Újracsatlakozás">
 <!ENTITY status.error "Az utolsó parancs sikertelen volt, mert a kiszolgáló hibát jelzett:">

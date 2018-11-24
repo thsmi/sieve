@@ -32,7 +32,7 @@
 
 <!ENTITY options.port.caption "Serverpoort">
 <!ENTITY options.port.description
-"De serverpoort is gewijzigd toen Sieve een volledige RFC standaard werd">
+"The server port changed, when “ManageSieve” turned into a full RFC Standard">
 <!ENTITY options.port.description2
 "Oudere serverimplementaties gebruiken nog steeds poort 2000, terwijl nieuwe standaard-conforme servers alleen via poort 4190 kunnen worden benaderd.">
 <!ENTITY options.port.4190 "4190 (Standaard)" >
@@ -45,10 +45,9 @@
 
 <!ENTITY options.security.caption "Verbindingsbeveiliging">
 <!ENTITY options.security.description
-"Transport Layer Security (TLS) beveiligt de verbinding naar de ManageSieve-server.
-Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tegen te gaan.">
+"Transport Layer Security (TLS) secures the connection to the “ManageSieve” server. It cyphers all data and is designed to prevent eavesdropping and tampering.">
 <!ENTITY options.security.description2
-"ManageSieve verstuurt wachtwoorden normaal gesproken onversleuteld. Tenzij u een goede reden heeft (bv. debugging), moet u altijd TLS forceren.">
+"“ManageSieve” usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
 <!ENTITY options.security.tls.disabled "Geen TLS">
 <!ENTITY options.security.tls.available "TLS, mits beschikbaar">
 <!ENTITY options.security.tls.force "TLS afdwingen">
@@ -63,19 +62,19 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.login.show "View Saved Passwords…">
 
 <!ENTITY options.misc "Overige Instellingen">
-<!ENTITY options.misc.keepalive "Keepalives inschakelen">
+<!ENTITY options.misc.keepalive "Enable Keep-Alive Messages">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.keepalive2 "Keepalive elke">
 <!ENTITY options.misc.keepalive.description
 "Als de client te lang niet actief was (normaal gesproken 30 minuten), dan neemt de server aan dat de client niet meer verbonden is en verbreekt de verbinding.">
 <!ENTITY options.misc.keepalive.description2
-"Een keepalive-aanvraag geeft aan dat de verbinding nog steeds actief is en moet worden behouden.">
+"A “Keep-Alive” request indicates the connection is still active and should be preserved.">
 <!ENTITY options.misc.keepalive.min "min">
 
-<!ENTITY options.misc.compile.caption "Syntax Check">
+<!ENTITY options.misc.compile.caption "Check Syntax">
 <!ENTITY options.misc.compile.description
-"Tijdens het bewerken van scripts, kunnen deze worden gecontroleerd op geldigheid. De syntaxiscontrole wordt door de server uitgevoerd. Om het netwerkverkeer laag te houden, worden syntaxiscontroles gegroepeerd.">
-<!ENTITY options.misc.compile "Scripts tijdens het typen controleren">
+"Check Syntax as you type is performed by the server. Requests are grouped to keep network traffic low.">
+<!ENTITY options.misc.compile "Check syntax as you type">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Ten minste elke">
 <!ENTITY options.misc.compile.ms "ms valideren">
@@ -89,11 +88,11 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.editor.indention.policy.tabs "alleen tabs">
 
 <!ENTITY options.editor.tabs.caption "Tab-afhandeling">
-<!ENTITY options.editor.tabs.description "Teksteditor met automatische inspringing heeft de noodzaak van een Tab-toets vervangen, maar er zijn veel editors die standaard tabs gebruiken vanwege historische redenen.">
+<!ENTITY options.editor.tabs.description "Text editor with automatic indenting replaced the need for a Tab key, but there are many editors which default to tabs due to historic reasons.">
 <!ENTITY options.editor.tabs.width "Tab-breedte">
 
 <!ENTITY options.debug.warning
-"Onthoud dat met SASL-aanmelding noch met normale SASL uw wachtwoord wordt gecodeerd. Mogelijk wordt het als leesbare tekst naar de foutconsole verzonden.">
+"Keep in mind that neither “SASL LOGIN” nor “SASL PLAIN” cypher your password, it might be posted in clear text to the error console.">
 <!ENTITY options.debug.caption "Debug Settings">
 <!ENTITY options.debug.request "Client-server-communicatie (verzoeken)">
 <!ENTITY options.debug.response "Server-client-communicatie (antwoorden)">
@@ -105,14 +104,14 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.debug.console.open "Show Error Console…">
 
 <!ENTITY options.authmechanism.caption "Authenticatiemethode">
-<!ENTITY options.authmechanism "Voorgestelde authenticatiemethode negeren">
+<!ENTITY options.authmechanism "Override Authentication Mechanism">
 <!ENTITY options.authmechanism.default "Altijd gebruiken:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
-<!ENTITY options.authmechanism.login "Login">
-<!ENTITY options.authmechanism.plain "Plain">
+<!ENTITY options.authmechanism.login "LOGIN">
+<!ENTITY options.authmechanism.plain "PLAIN">
 <!ENTITY options.authmechanism.external "EXTERN">
 <!ENTITY options.authmechanism.description
 "In bepaalde situaties, bv. als u proxy-authenticatie gebruikt, wilt u misschien een bepaalde authenticatiemethode afdwingen." >
@@ -121,7 +120,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.proxyauth.desc
 "Met proxy-authenticatie kan een gebruiker uit naam van een andere gebruiker handelen. Meestal zijn servers zo geconfigureerd dat deze functie alleen voor beheerders beschikbaar is.">
 <!ENTITY options.proxyauth.force
-"When using proxy authorization you should force SASL PLAIN Authentication.">
+"When using proxy authorization you should force “SASL PLAIN” Authentication.">
 <!ENTITY options.proxyauth.none "Geen autorisatie">
 <!ENTITY options.proxyauth.default "Sieve-gebruikersnaam">
 <!ENTITY options.proxyauth.prompt "Request Authorization">
@@ -137,9 +136,9 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.account.sieve
 "Sieve is een krachtige scripttaal voor het server-side filteren van e-mail.">
 <!ENTITY options.account.activate
-"Wilt u het beheren van Sieve-scripts voor deze account activeren?">
+"Do you want to enable managing Sieve Scripts for this account?">
 <!ENTITY options.account.activate.yes "Ja, Sieve-scripts voor deze account beheren:">
-<!ENTITY options.account.activate.no "Nee, deze account biedt geen ondersteuning voor Sieve">
+<!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
 <!ENTITY options.account.filters "Edit Filters…">
 <!ENTITY options.account.settings "Change Settings…">
 
@@ -153,7 +152,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.proxy.description.nameresolution
 "Met SCOKSv4 worden hostnamen altijd omgezet op de lokale machine. SOCKSv5 ondersteunt ook omzetten van hostnamen door de SOCKS-proxy. Als u de SOCKS-proxy vertrouwt, dan wordt het laatste als veiliger beschouwd en zou dat de voorkeur moeten hebben.">
 <!ENTITY options.proxy.description.localhost
-"Op sommige systemen werkt het gebruik van ‘localhost’ als proxy-host niet goed. Gebruik dan ‘127.0.0.1’ daarvoor in de plaats.">
+"On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
 <!ENTITY options.proxy.direct "Directe verbinding">
 <!ENTITY options.proxy.default "Standaard proxy-configuratie">
 <!ENTITY options.proxy.socks4 "SOCKSv4">
@@ -179,7 +178,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY list.activate "Activeren">
 <!ENTITY list.settings "Settings…">
 
-<!ENTITY list.details.capability "Sieve-servermogelijkheden">
+<!ENTITY list.details.capability "Sieve Server Capabilities">
 <!ENTITY list.details.capability.implementation "Serverversie:">
 <!ENTITY list.details.capability.sasl "SASL-mechanismen:">
 <!ENTITY list.details.capability.extensions "Extensies:">
@@ -200,9 +199,9 @@ identificatie gebruikt.">
 
 <!ENTITY list.autoconfig.welcome.caption "Welkom!">
 <!ENTITY list.autoconfig.welcome.description1
-"Dit account is niet voor ManageSieve geconfigureerd.">
+"“ManageSieve” not configured for this account.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click on ‘Continue’ to detect the configuration automatically.
+"Click ‘Continue’ to detect the configuration automatically.
 Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "Geavanceerd">
@@ -220,7 +219,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.error.caption "Sorry">
 <!ENTITY list.autoconfig.error.description
-"Het lijkt er op dat uw e-mailserver geen ManageSieve ondersteunt of een speciale configuratie nodig heeft. Neem contact op met uw e-mailprovider of probeer een handmatige configuratie uit te voeren.">
+"Your mail server does not support “ManageSieve” or requires a special configuration. Please configure manually or contact your email provider for instructions.">
 
 <!ENTITY list.autoconfig.retest "Opnieuw testen">
 <!ENTITY list.autoconfig.config "Handmatige configuratie">
@@ -232,7 +231,7 @@ Or choose ‘Advanced’ to configure the account manually.">
 <!ENTITY edit.toolbar.cut "Knippen">
 <!ENTITY edit.toolbar.copy "Kopiëren">
 <!ENTITY edit.toolbar.paste "Plakken">
-<!ENTITY edit.toolbar.compile "Syntax Check">
+<!ENTITY edit.toolbar.compile "Check Syntax">
 <!ENTITY edit.toolbar.reference "Snelzoekgids">
 <!ENTITY edit.toolbar.tools "Extra">
 <!ENTITY edit.toolbar.import "Script importeren">
@@ -258,26 +257,24 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Check that you are connected to the internet, Click ‘Go Online’ and try again.">
+"You are currently offline. Check that you are connected to the internet, click ‘Go Online’ and try again.">
 <!ENTITY status.offline.go "Online gaan">
 
 
 <!ENTITY status.connectivity.loss.description
-"De server heeft de verbinding onverwachts beëindigd. Klik op ‘Opnieuw verbinden’ op het nogmaals te proberen.">
+"Server terminated unexpectedly the connection, click on ‘Reconnect’ to try again.">
 <!ENTITY status.connectivity.loss.reconnect "Opnieuw verbinden">
 
 <!ENTITY status.warning.ignore "Negeren">
 <!ENTITY status.warning.reconnect "Opnieuw verbinden">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, go to Tools → Sieve Message Filters">
+  "“ManageSieve” not configured for this account. Go to Tools → Sieve Message Filters to enable “ManageSieve”.">
 
 <!ENTITY status.error.reconnect "Opnieuw verbinden">
 <!ENTITY status.error "De laatste opdracht is mislukt, omdat de server een fout meldde:">
 
 <!ENTITY status.sync.description
-"The local and the server-side scripts are different.
-
-What would you like to do about it ?">
+"The local and the server-side scripts are different. What would you like to do?">
 <!ENTITY status.sync.keep "Lokale script behouden">
 <!ENTITY status.sync.replace "Use Server-side Script">
 

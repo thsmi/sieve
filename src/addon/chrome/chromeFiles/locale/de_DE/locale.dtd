@@ -123,11 +123,11 @@ hierdurch werden Abhören der Zugangsdaten sowie Manipulationen effektiv verhind
 "Die Proxy Autorisation ermöglicht einem authentifiziertem Benutzer, sich als ein anderer Benutzer auszugeben. 
 Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Administratoren zur Verfügung.">
 <!ENTITY options.proxyauth.force
-"When using proxy authorization you should force “SASL PLAIN” Authentication.">
+"Die Proxy Autorisation erfordert zwingend eine 'SASL PLAIN' Authentifizierung.">
 <!ENTITY options.proxyauth.none "Keine Autorisation">
 <!ENTITY options.proxyauth.default "Sieve Benutzername">
-<!ENTITY options.proxyauth.prompt "Request Authorization">
-<!ENTITY options.proxyauth.custom "Autorisation als">
+<!ENTITY options.proxyauth.prompt "Benutzername abfragen">
+<!ENTITY options.proxyauth.custom "Autorisieren als">
 <!ENTITY options.proxyauth.custom.username "Benutzername:">
 
 <!ENTITY options.info.servername "Servername:">
@@ -139,9 +139,9 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 <!ENTITY options.account.sieve
 "Sieve ist eine Skriptsprache um serverseitig E-Mails zu filtern und sortieren.">
 <!ENTITY options.account.activate
-"Do you want to enable managing Sieve Scripts for this account?">
+"Möchten Sie Sieve für diesen Account aktivieren?">
 <!ENTITY options.account.activate.yes "Ja, dieses Konto unterstützt Sieve:">
-<!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
+<!ENTITY options.account.activate.no "Nein, dieses Konto unterstützt kein Sieve">
 <!ENTITY options.account.filters "Filter bearbeiten…">
 <!ENTITY options.account.settings "Einstellungen ändern…">
 

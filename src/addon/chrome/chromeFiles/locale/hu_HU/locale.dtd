@@ -92,7 +92,7 @@
 <!ENTITY options.editor.tabs.width "Fül szélessége">
 
 <!ENTITY options.debug.warning
-"Keep in mind that neither “SASL LOGIN” nor “SASL PLAIN” cypher your password, it might be posted in clear text to the error console.">
+"Sem a „SASL LOGIN”, sem a „SASL PLAIN” nem rejtjelez meg a jelszavát. Jelszavát tiszta szövegben lehet feltüntetni a hibakijelzőnek.">
 <!ENTITY options.debug.caption "Hibakeresési beállítások">
 <!ENTITY options.debug.request "Ügyféltől kiszolgálónak közlés (kérések)">
 <!ENTITY options.debug.response "Kiszolgálótól ügyfélnek közlés (válaszok)">

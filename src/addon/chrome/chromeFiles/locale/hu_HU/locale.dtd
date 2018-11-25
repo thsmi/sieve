@@ -188,9 +188,7 @@
 <!ENTITY list.badcert
   "A biztonságos kapcsolat sikertelen. A levélkiszolgáló rossz tanúsítványt adott ki.">
 <!ENTITY list.badcert.error
-"If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server.
-
-Do not continue unless you know there's a good reason why this server doesn't use trusted identification.">
+"Ha általában probléma nélkül tud kapcsolódni ehhez a kiszolgálóhoz, akkor ez a hiba azt jelentheti, hogy valaki leutánozta a kiszolgálót. Ne folytassa, kivéve ha tudja, hogy jó oka van annak, hogy ez a kiszolgáló nem megbízható azonosítást használ.">
 <!ENTITY list.badcert.remember "A döntés megjegyzése">
 <!ENTITY list.badcert.ignore "Folytatás">
 <!ENTITY list.badcert.abort "Megszakít">

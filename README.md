@@ -95,7 +95,7 @@ might be a good idea to check your spam filter.
 ## License
 
 The [Sieve add-on](https://addons.thunderbird.net/addon/sieve/) is free and 
-open source software, it is made available to you under the terms of the 
+open-source software, it is made available to you under the terms of the 
 [GNU Affero General Public License (AGPLv3)](http://www.fsf.org/licensing/licenses/agpl-3.0.html).
 
 Refer to 
@@ -134,7 +134,7 @@ pre-release. They will update to newer releases but not to newer pre-releases.
 
 ## Sieve Compatible Mail Servers
 
-Sieve comparability normally depends upon the mail server back end. In case it is based upon any of the open source mail servers like 
+Sieve comparability normally depends upon the mail server back end. In case it is based upon any of the open-source mail servers like 
 [Citadel](http://www.citadel.org/), 
 [Dovecot](https://www.dovecot.org/), 
 etc. your chances are high. This is normally true for many company accounts, almost all universities and lots of ISPs. Basically everyone who runs Linux based servers.
@@ -145,4 +145,4 @@ Microsoft Exchange is also build upon a proprietary communication protocol. The 
 
 A bit of fun trivia. My ISP supports Sieve out of the box, but on a non standard port. You do not find any documentation at their Homepage. But in projects statistics section at GitHub, regularly have referrals from their intranet which points to GitHub. Which means they use it internally…
 
-In general every back end which relies on a Linux or Unix based open source mail server will most likely support Sieve. Everything which runs on proprietary systems does not and most likely never will.
+In general every back end which relies on a Linux or Unix based open-source mail server will most likely support Sieve. Everything which runs on proprietary systems does not and most likely never will.

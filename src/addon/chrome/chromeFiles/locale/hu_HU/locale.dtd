@@ -255,7 +255,7 @@ Válassza a Haladó gombot a fiók kézi beállításához.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"Jelenleg kapcsolat nélküli üzemmódban van. Ellenőrizze, hogy csatlakozik-e az internetre, és próbálja újra.">
+"A Thunderbird jelenleg kapcsolat nélküli módban van. Ellenőrizze, hogy csatlakozik-e az internetre, vegye le a jelölést a Fájl menü Kapcsolat nélküli munka menüpontjáról, és próbálja újra.">
 <!ENTITY status.offline.go "Csatlakozás a hálózathoz">
 
 

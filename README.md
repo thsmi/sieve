@@ -134,15 +134,40 @@ pre-release. They will update to newer releases but not to newer pre-releases.
 
 ## Sieve Compatible Mail Servers
 
-Sieve comparability normally depends upon the mail server back end. In case it is based upon any of the open-source mail servers like 
+Sieve comparability normally depends upon the mail server back end. In case it is 
+based upon any of the open-source mail servers like 
 [Citadel](http://www.citadel.org/), 
 [Dovecot](https://www.dovecot.org/), 
-etc. your chances are high. This is normally true for many company accounts, almost all universities and lots of ISPs. Basically everyone who runs Linux based servers.
+etc. your chances are high. This is normally true for many company accounts, 
+almost all universities and lots of ISPs. Basically everyone who runs Linux based 
+servers.
 
-In case the back end is something proprietary, your chances are not good. They are usually relying on proprietary, non RFC protocols. Examples are Gmail and Hotmail. Sadly they have only very limited support for the standard RFCs like IMAP, which makes it unlikely that they will ever get support for more exotic RFCs like Sieve.
+In case the back end is something proprietary, your chances are not good. They are 
+usually relying on proprietary, non RFC protocols. Examples are Gmail and Hotmail. 
+Sadly they have only very limited support for the standard RFCs like IMAP, which 
+makes it unlikely that they will ever get support for more exotic RFCs like Sieve.
 
-Microsoft Exchange is also build upon a proprietary communication protocol. The very few RFCs which Exchange implements are very basic/limited (e.g. IMAP). This is the reason why there is the [Exquilla for Microsoft Exchange add-on](https://addons.thunderbird.net/addon/exquilla-exchange-web-services/) which implements the exchange protocol. Exchange’s mail filter system is completely proprietary and undocumented. It is definitely not Sieve compatible. You can say Exchange is basically a world of its own. It was designed to be that way.
+Microsoft Exchange is also build upon a proprietary communication protocol. The 
+very few RFCs which Exchange implements are very basic/limited (e.g. IMAP). This 
+is the reason why there is the 
+[Exquilla for Microsoft Exchange add-on](https://addons.thunderbird.net/addon/exquilla-exchange-web-services/) 
+which implements the exchange protocol. Exchange’s mail filter system is completely 
+proprietary and undocumented. It is definitely not Sieve compatible. You can say 
+Exchange is basically a world of its own. It was designed to be that way.
 
-A bit of fun trivia. My ISP supports Sieve out of the box, but on a non standard port. You do not find any documentation at their Homepage. But in projects statistics section at GitHub, regularly have referrals from their intranet which points to GitHub. Which means they use it internally…
+A bit of fun trivia. My ISP supports Sieve out of the box, but on a non standard 
+port. You do not find any documentation at their Homepage. But in projects 
+statistics section at GitHub, regularly have referrals from their intranet which 
+points to GitHub. Which means they use it internally…
 
-In general every back end which relies on a Linux or Unix based open-source mail server will most likely support Sieve. Everything which runs on proprietary systems does not and most likely never will.
+In general every back end which relies on a Linux or Unix based open-source mail 
+server will most likely support Sieve. Everything which runs on proprietary systems 
+does not and most likely never will.
+
+### Also known as
+
+Automatic Responses to Electronic Mail
+[Autoresponder](https://en.wikipedia.org/wiki/Autoresponder)
+Out of Office Autoresponder
+Out of Office Reply
+Vacation Extension

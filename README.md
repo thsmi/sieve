@@ -24,11 +24,11 @@ The [Sieve add-on](https://addons.thunderbird.net/addon/sieve/) is an
 implementation of 
 [A Protocol for Remotely Managing Sieve Scripts (RFC 5804)](https://wiki.tools.ietf.org/html/rfc5804).
 Currently supported authentication mechanisms are:
-SASL CRAM MD5;
-SASL Login;
-SASL Plain;
-[SASL SCRAM SHA1](https://tools.ietf.org/html/rfc5802);
-[SASL SCRAM SHA256](https://tools.ietf.org/html/rfc7677). 
+SASL CRAM-MD5;
+SASL LOGIN;
+SASL PLAIN;
+[SASL SCRAM-SHA-1](https://tools.ietf.org/html/rfc5802);
+[SASL SCRAM-SHA-256](https://tools.ietf.org/html/rfc7677). 
 Other authentication mechanisms may be added by request.
 
 The graphical script editor supports 
@@ -39,19 +39,20 @@ The [Sieve add-on](https://addons.thunderbird.net/addon/sieve/) exists since
 [Open Hub](https://www.openhub.net/p/tb-sieve).
 
 [The Sieve add-on is translated](https://crowdin.com/project/sieve/) into 
-[Arabic (ar)](https://crowdin.com/project/sieve/ar),
-[Chinese Simplified (zh-CN)](https://crowdin.com/project/sieve/zh-CN#),
-[Dutch (nl)](https://crowdin.com/project/sieve/nl),
-[French (fr)](https://crowdin.com/project/sieve/fr),
-[German (de)](https://crowdin.com/project/sieve/de),
-[Indonesian (id)](https://crowdin.com/project/sieve/id),
-[Polish (pl)](https://crowdin.com/project/sieve/pl),
-[Portuguese, Brazilian (pt-BR)](https://crowdin.com/project/sieve/pt-BR),
-[Romanian (ro)](https://crowdin.com/project/sieve/ro),
-[Russian (ru)](https://crowdin.com/project/sieve/ru),
-[Spanish (es-ES)](https://crowdin.com/project/sieve/es-ES),
-[Turkish (tr)](https://crowdin.com/project/sieve/tr),
-[Ukrainian (uk)](https://crowdin.com/project/sieve/uk).
+[ar (Arabic - عربى)](https://crowdin.com/project/sieve/ar),
+[de (German - Deutsche)](https://crowdin.com/project/sieve/de),
+[es-ES (Spanish - Español)](https://crowdin.com/project/sieve/es-ES),
+[fr (French - français)](https://crowdin.com/project/sieve/fr),
+[hu (Hungarian - magyar)](https://crowdin.com/project/sieve/hu),
+[id (Indonesian - bahasa Indonesia)](https://crowdin.com/project/sieve/id),
+[nl (Dutch - Nederlands)](https://crowdin.com/project/sieve/nl),
+[pl (Polish - Polskie)](https://crowdin.com/project/sieve/pl),
+[pt-BR (Portuguese, Brazilian - Português, brasileiro)](https://crowdin.com/project/sieve/pt-BR),
+[ro (Romanian - Română)](https://crowdin.com/project/sieve/ro),
+[ru (Russian - русский)](https://crowdin.com/project/sieve/ru),
+[tr (Turkish - Türk)](https://crowdin.com/project/sieve/tr),
+[uk (Ukrainian - Українська)](https://crowdin.com/project/sieve/uk).
+[zh-CN (Chinese Simplified - 简体中文)](https://crowdin.com/project/sieve/zh-CN),
 If you are interested in translating or localizing the 
 [Sieve add-on](https://addons.thunderbird.net/addon/sieve/) into your language, 
 sign up at [Crowdin](http://crowdin.net/project/sieve/invite) and start 

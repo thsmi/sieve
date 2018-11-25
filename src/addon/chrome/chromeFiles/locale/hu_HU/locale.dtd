@@ -118,7 +118,7 @@
 
 <!ENTITY options.proxyauth.caption "Meghatalmazott engedélye">
 <!ENTITY options.proxyauth.desc
-"Proxy authorization, allows an authenticated user to act on behalf of another user. Usually servers are configured, that this feature is only available for administrators.">
+"Meghatalmazott engedélyezés, lehetővé teszi egy hitelesített felhasználó számára, hogy egy másik felhasználó nevében járjon el. Általában a kiszolgálók beállítása vannak, hogy ez a vonás csak a rendszergazdák számára érhető el.">
 <!ENTITY options.proxyauth.force
 "Meghatalmazott engedélyezés esetén kényszeríteni kell a „SASL PLAIN” hitelesítést.">
 <!ENTITY options.proxyauth.none "Nincs engedélye">

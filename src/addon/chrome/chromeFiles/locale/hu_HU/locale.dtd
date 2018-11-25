@@ -120,7 +120,7 @@
 <!ENTITY options.proxyauth.desc
 "Proxy authorization, allows an authenticated user to act on behalf of another user. Usually servers are configured, that this feature is only available for administrators.">
 <!ENTITY options.proxyauth.force
-"When using proxy authorization you should force “SASL PLAIN” Authentication.">
+"Meghatalmazott engedélyezés esetén kényszeríteni kell a „SASL PLAIN” hitelesítést.">
 <!ENTITY options.proxyauth.none "Nincs engedélye">
 <!ENTITY options.proxyauth.default "Szita felhasználónév">
 <!ENTITY options.proxyauth.prompt "Hitelesítés kérése">

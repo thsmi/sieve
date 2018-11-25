@@ -312,7 +312,6 @@
         this.responseListener.onGetScriptResponse(response);
     };
 
-  /** @param {SieveResponseParser} parser */
   SieveGetScriptRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,

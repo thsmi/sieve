@@ -134,7 +134,7 @@ time-zone
         id: "keys",
         type: "stringlist",
         // the easiest way to get th current date in yyyy-mm-dd format
-        value: '"' + new Date().toJSON().substring(0, 10) + '"'
+        value: '"' + new Date().toJSON().substring(0, "yyyy-mm-dd".length) + '"'
       }]
     }]
   });
@@ -178,11 +178,29 @@ time-zone
       }, {
         id: "keys",
         type: "stringlist",
-        value: '"' + new Date().toJSON().substring(0, 10) + '"'
+        value: '"' + new Date().toJSON().substring(0, "yyyy-mm-dd".length) + '"'
       }]
     }]
   });
 
-  // TODO add index tests
+
+  // TODO extend date by index tag (requires index)
+  // Syntax:   date [":index" <fieldno: number> [":last"]]
+  //                [<":zone" <time-zone: string>> / ":originalzone"]
+  //                [COMPARATOR] [MATCH-TYPE] <header-name: string>
+  //                <date-part: string> <key-list: string-list>
+
+
+  // TODO extend header by index tag (requires index)
+  // Syntax:   header [":index" <fieldno: number> [":last"]]
+  //                  [COMPARATOR] [MATCH-TYPE]
+  //                  <header-names: string-list> <key-list: string-list>
+
+  // TODO extend address by index tag (requires index)
+  // Syntax:   address [":index" <fieldno: number> [":last"]]
+  //                   [ADDRESS-PART] [COMPARATOR] [MATCH-TYPE]
+  //                   <header-list: string-list> <key-list: string-list>
+
+
 
 })(window);

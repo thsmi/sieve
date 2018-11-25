@@ -45,14 +45,23 @@
   /* Object.assign(this,
       require("./SieveRequest.js"));*/
 
+  /**
+   * A client side error.
+   */
   class SieveClientException extends Error {
   }
 
+  /**
+   * Exception is thrown in case the conncetion was terminated
+   * by a referal request.
+   */
   class SieveReferralException extends Error {
   }
 
   /**
-   * A base class for server side exception.
+   * The server signaled an error.
+   * This normally results in the connection to be terminated
+   * by the server.
    */
   class SieveServerException extends Error {
 
@@ -88,6 +97,9 @@
     }
   }
 
+  /**
+   * Occures when the server's response take too long.
+   */
   class SieveTimeOutException extends Error {
   }
 
@@ -337,7 +349,8 @@
      *   the script's name
      * @param {String} script
      *   the script which should be saved.
-     * @returns {Promise}
+     * @returns {undefined}
+     *   a void promise
      */
     async putScript(name, script) {
 
@@ -348,7 +361,7 @@
       };
 
       let request = this.createPutScriptRequest(name, script);
-      return await this.exec(request, callback);
+      await this.exec(request, callback);
     }
 
     /**
@@ -579,6 +592,15 @@
       return await this.deleteScript(oldName);
     }
 
+    /**
+     * An internal method with wrapps connecting to the server.
+     *
+     * @param {String} hostname
+     *   the sieve server's hostname
+     * @param {String} port
+     *   the sieve server's port
+     * @returns {undefined}
+     */
     async connect2(hostname, port) {
 
       let callback = {
@@ -608,7 +630,7 @@
           this.account.getProxy().getProxyInfo());
       };
 
-      return await this.exec(request, callback, init);
+      await this.exec(request, callback, init);
     }
 
     /**
@@ -793,8 +815,13 @@
       (async () => { await this.noop(); })();
     }
 
+    /**
+     * The default error handler. Called in case no one else
+     * catches the error.
+     * @returns {undefined}
+     */
     onError() {
-      alert("server reported an error...")
+      alert("server reported an error...");
     }
 
     /**

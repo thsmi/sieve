@@ -114,7 +114,7 @@
 <!ENTITY options.authmechanism.plain "PLAIN">
 <!ENTITY options.authmechanism.external "EXTERNAL">
 <!ENTITY options.authmechanism.description
-"In certain situations e.g. when using Proxy Authentication you might want to force a specific Authentication Mechanism." >
+"Bizonyos helyzetekben pl. ha meghatalmazott engedélyezést használsz, egy bizonyos hitelesítési mechanizmusra kényszeríteni." >
 
 <!ENTITY options.proxyauth.caption "Meghatalmazott engedélye">
 <!ENTITY options.proxyauth.desc

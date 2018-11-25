@@ -97,7 +97,7 @@
 <!ENTITY options.debug.request "Client to Server communication (requests)">
 <!ENTITY options.debug.response "Server to Client communication (responses)">
 <!ENTITY options.debug.exceptions "Exceptions and State Machine Information">
-<!ENTITY options.debug.stream "Raw Dump/ Dump Byte Stream">
+<!ENTITY options.debug.stream "Raw Dump/Dump Byte Stream">
 <!ENTITY options.debug.session "Session Management">
 <!ENTITY options.debug.output "Debug Output">
 <!ENTITY options.debug.console "Debug information is posted to the error console">
@@ -150,13 +150,13 @@
 <!ENTITY options.proxy.description
 "Instead of  a direct connection you may use a SOCKS Proxy to transparently and securely traverse a firewall.">
 <!ENTITY options.proxy.description.nameresolution
-"With SOCKSv4 hostnames are always resolved on the local machine. SOCKSv5 also supports resolving hostnames by the SOCKS proxy. If you can trust the SOCKSv5 proxy, the latter is considered to be more secure and should be preferred.">
+"With SOCKSv4 hostnames are always resolved on the local machine. SOCKS v5 also supports resolving hostnames by the SOCKS proxy. If you can trust the SOCKSv5 proxy, the latter is considered to be more secure and should be preferred.">
 <!ENTITY options.proxy.description.localhost
 "On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
 <!ENTITY options.proxy.direct "Direct Connection">
 <!ENTITY options.proxy.default "Default Proxy configuration">
-<!ENTITY options.proxy.socks4 "SOCKSv4">
-<!ENTITY options.proxy.socks5 "SOCKSv5">
+<!ENTITY options.proxy.socks4 "SOCKS v4">
+<!ENTITY options.proxy.socks5 "SOCKS v5">
 <!ENTITY options.proxy.nameresolution "Resolve hostnames on proxy">
 <!ENTITY options.proxy.host "Host:">
 <!ENTITY options.proxy.port "Port:">

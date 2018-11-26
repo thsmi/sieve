@@ -737,12 +737,7 @@
   class SieveGenericStructure extends SieveAbstractElement {
 
     /**
-     *
-     * @param {*} docshell
-     * @param {String} id
-     *   the structure's unique id
-     * @param {String} type
-     *   the type name as string.
+     * @inheritdoc
      */
     constructor(docshell, id, type) {
       super(docshell, id);
@@ -1101,7 +1096,7 @@
 
     /**
      * @inheritdoc
-     **/
+     */
     constructor(docshell, id) {
       super(docshell, id);
 

@@ -99,15 +99,44 @@
    */
   class SieveIncludeActionUI extends SieveActionDialogBoxUI {
 
-
+    /**
+     * If once is enable the script can be included at most once.
+     * Including it more than once results in an error.
+     *
+     * @param {Boolean} value
+     *   true in case the script can be included more than once otherwise false.
+     * @returns {Boolean}
+     *   the current once flag
+     */
     once(value) {
       return this.getSieve().enable("once", value);
     }
 
+    /**
+     * Optional indicates if it is an error in case the script
+     * can not be included.
+     *
+     * @param {Boolean} value
+     *   true makes the action fail silently. False will raise an error.
+     * @returns {Boolean}
+     *   the current optional flag.
+     */
     optional(value) {
       return this.getSieve().enable("optional", value);
     }
 
+    /**
+     * Scripts can be included from personal or global location.
+     * Global locations are normally accessible by all users while
+     * a personal is normally equivalent to the current mailbox.
+     *
+     * A script has to be either in personal or global location.
+     *
+     * @param {Boolean} value
+     *   true to enable a personal script, false for a global script.
+     * @returns {boolean}
+     *   the current personal flag.
+     */
     personal(value) {
 
       let elm = this.getSieve().getElement("location");
@@ -121,6 +150,14 @@
       return (elm.getValue() === ":personal");
     }
 
+    /**
+     * Gets and sets the script location.
+     *
+     * @param {String} [value]
+     *   the script location to set
+     * @returns {String}
+     *   the current script location.
+     */
     script(value) {
 
       let elm = this.getSieve().getElement("script");

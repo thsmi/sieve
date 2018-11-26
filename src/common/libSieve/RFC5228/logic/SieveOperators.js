@@ -27,8 +27,10 @@
    * Sieve does not implement binary (2) or tenary operators (3)
    */
 
-  // Unary operators
-
+  /**
+   * Implements the unary operators not
+   * @inheritdoc
+   */
   function SieveNotOperator(docshell, id) {
     // first line with deadcode
     SieveAbstractElement.call(this, docshell, id);
@@ -43,7 +45,7 @@
   SieveNotOperator.prototype.constructor = SieveNotOperator;
 
 
-  SieveNotOperator.isElement = function (parser, lexer) {
+  SieveNotOperator.isElement = function (parser) {
     return parser.startsWith("not");
   };
 
@@ -125,10 +127,11 @@
         + this.whiteSpace[1].toScript();
     };
 
-  // ****************************************************************************//
 
-  // N-Ary Operator
-  // ****************************************************************************/
+  /**
+   * Impements the N-Ary Operator anyof/allof test
+   * @inheritdoc
+   */
   function SieveAnyOfAllOfTest(docshell, id) {
     SieveTestList.call(this, docshell, id);
     this.whiteSpace = this._createByName("whitespace");
@@ -140,7 +143,7 @@
   SieveAnyOfAllOfTest.prototype.constructor = SieveAnyOfAllOfTest;
 
   SieveAnyOfAllOfTest.isElement
-    = function (parser, lexer) {
+    = function (parser) {
       if (parser.startsWith("allof"))
         return true;
 
@@ -168,7 +171,7 @@
         throw new Error("allof or anyof expected but found: \n" + parser.bytes(MAX_QUOTE_LEN) + "...");
 
       // remove the allof or anyof
-      parser.extract(5);
+      parser.extract("allof".length);
 
       this.whiteSpace.init(parser);
 

@@ -23,6 +23,7 @@
   const Cr = Components.results;
 
   const SIEVE_SCHEME = "x-sieve";
+  const ZERO = 0;
 
   /**
    * Bogus channel implementation, based on chatzilla's IRCProtocolHandler
@@ -137,9 +138,9 @@
         Ci.nsIProtocolHandler.URI_NORELATIVE |
         Ci.nsIProtocolHandler.URI_NOAUTH |
         Ci.nsIProtocolHandler.ALLOWS_PROXY |
-        (("URI_DANGEROUS_TO_LOAD" in Ci.nsIProtocolHandler) ? Ci.nsIProtocolHandler.URI_LOADABLE_BY_ANYONE : 0) |
-        (("URI_NON_PERSISTABLE" in Ci.nsIProtocolHandler) ? Ci.nsIProtocolHandler.URI_NON_PERSISTABLE : 0) |
-        (("URI_DOES_NOT_RETURN_DATA" in Ci.nsIProtocolHandler) ? Ci.nsIProtocolHandler.URI_DOES_NOT_RETURN_DATA : 0),
+        (("URI_DANGEROUS_TO_LOAD" in Ci.nsIProtocolHandler) ? Ci.nsIProtocolHandler.URI_LOADABLE_BY_ANYONE : ZERO) |
+        (("URI_NON_PERSISTABLE" in Ci.nsIProtocolHandler) ? Ci.nsIProtocolHandler.URI_NON_PERSISTABLE : ZERO) |
+        (("URI_DOES_NOT_RETURN_DATA" in Ci.nsIProtocolHandler) ? Ci.nsIProtocolHandler.URI_DOES_NOT_RETURN_DATA : ZERO),
 
       allowPort: function (port, scheme) {
         if (scheme === this.scheme)

@@ -98,6 +98,8 @@
       return "{" + SieveBlockBody.prototype.toScript.call(this) + "}";
     };
 
+  const ROOT_ELEMENT_IMPORT = 0;
+  const ROOT_ELEMENT_BODY = 1;
 
   /**
    *
@@ -112,8 +114,8 @@
 
       super(docshell, -1);
 
-      this.elms[0] = this._createByName("import");
-      this.elms[1] = this._createByName("block/body");
+      this.elms[ROOT_ELEMENT_IMPORT] = this._createByName("import");
+      this.elms[ROOT_ELEMENT_BODY] = this._createByName("block/body");
     }
 
     /**
@@ -145,11 +147,11 @@
       // requires are only valid if they are
       // before any other sieve command!
       if (this._probeByName("import", parser))
-        this.elms[0].init(parser);
+        this.elms[ROOT_ELEMENT_IMPORT].init(parser);
 
       // After the import section only deadcode and actions are valid
       if (this._probeByName("block/body", parser))
-        this.elms[1].init(parser);
+        this.elms[ROOT_ELEMENT_BODY].init(parser);
 
       return this;
     }
@@ -164,11 +166,11 @@
       capabilities.clear();
 
       // Step 1: collect requires
-      this.elms[1].require(capabilities);
+      this.elms[ROOT_ELEMENT_BODY].require(capabilities);
 
       // Step 2: Add require...
       for (let item of capabilities.dependencies)
-        this.elms[0].capability(item);
+        this.elms[ROOT_ELEMENT_IMPORT].capability(item);
 
       // TODO Remove unused requires...
 

@@ -250,7 +250,8 @@
   }
 
   /**
-   *
+   * Models parameters. Parameters are a sequence of elements
+   * in a fixed order. All elements have to exist.
    */
   class SieveGenericMandatoryItem extends SieveAbstractGeneric {
 
@@ -263,8 +264,9 @@
     }
 
     /**
-     *
-     * @param {} id
+     * Checks it the given id is an child element of this item
+     * @param {String} id
+     *   the element's id
      * @returns {boolean}
      *   true in case the element exists otherwise false
      */
@@ -273,8 +275,15 @@
     }
 
     /**
+     * Returns the child element with the given id.
      *
-     * @param {*} id
+     * In case the item has no known child element with the id an
+     * exception will be throws.
+     *
+     * @param {String} id
+     *   the element's id
+     * @returns {*}
+     *   the child element with the given id.
      */
     getElement(id) {
 
@@ -371,12 +380,15 @@
 
 
   /**
-   *
+   * A dependent element can only exist if an other element they depend on exits.
+   * It is used e.g with variables lists in has flag.
    */
   class SieveGenericDependentItem extends SieveGenericMandatoryItem {
 
     /**
+     * Checks if this elements is a dependent element.
      * @returns {boolean}
+     *   true in case the element is dependent otherwise false.
      */
     isDependent() {
       return true;
@@ -425,9 +437,7 @@
   class SieveGenericOptionalItem extends SieveAbstractGeneric {
 
     /**
-     * Createas a new instance
-     * @param  {SieveGenericStructure} parent
-     *   the parent element
+     * @inheritdoc
      */
     constructor(parent) {
       super(parent);
@@ -467,9 +477,14 @@
 
     /**
      * Enables the given id. In case the element is disabled the implicit fallback is used
-     * @param {*} id
-     * @param {*} status
+     * @param {String} id
+     *   the child element's unique id.
+     * @param {Boolean} [status]
+     *   the optional new status. If set to false the element will be disabled.
+     *   true enables the element.
+     *
      * @returns {boolean}
+     *   the element's current status.
      */
     enable(id, status) {
 
@@ -490,8 +505,9 @@
     }
 
     /**
-     *
+     * Adds a new tag to the element
      * @param {*} tag
+     *   the tag which should be added.
      * @returns {undefined}
      */
     addTag(tag) {
@@ -723,8 +739,10 @@
     /**
      *
      * @param {*} docshell
-     * @param {*} id
-     * @param {*} type
+     * @param {String} id
+     *   the structure's unique id
+     * @param {String} type
+     *   the type name as string.
      */
     constructor(docshell, id, type) {
       super(docshell, id);
@@ -920,11 +938,15 @@
     }
 
     /**
+     * Adds a literal to the generic element.
+     * A literal is a fixed string.
      *
      * @param {String} token
      *   the literals token
-     * @param {*} postfix
-     * @param {*} prefix
+     * @param {String} [postfix]
+     *   an optional prefix
+     * @param {String} [prefix]
+     *   an optional postfix
      * @returns {SieveGenericStructure}
      *   a self reference
      */
@@ -1030,9 +1052,11 @@
     }
 
     /**
-     *
-     * @param {*} id
+     * Checks if the generic struture contains an element with the given id.
+     * @param {String} id
+     *   the element's unique id
      * @returns {boolean}
+     *   true in case the element exists otherwise false.
      */
     hasElement(id) {
 
@@ -1048,8 +1072,11 @@
     }
 
     /**
-     *
-     * @param {*} id
+     * Returns the child element with the given id.
+     * @param {String} id
+     *   the unique id as string.
+     * @returns {*}
+     *   the element or an exception in case the id is unknown.
      */
     getElement(id) {
 
@@ -1071,11 +1098,10 @@
    */
   class SieveGenericUnion extends SieveAbstractElement {
 
+
     /**
-     *
-     * @param {*} docshell
-     * @param {*} id
-     */
+     * @inheritdoc
+     **/
     constructor(docshell, id) {
       super(docshell, id);
 
@@ -1118,8 +1144,9 @@
     }
 
     /**
-     *
+     * Sets a prefix for this union.
      * @param {String} token
+     *   the prefix as string.
      * @returns {SieveGenericUnion}
      *   a self reference
      */
@@ -1135,8 +1162,11 @@
     }
 
     /**
+     * Adds a new item to the union. Keep in mind only one element
+     * of a union can match. All elements are threated equally.
      *
      * @param {*} items
+     *   the elements to add to this union.
      * @returns {SieveGenericUnion}
      *   a self reference
      */
@@ -1290,7 +1320,9 @@
     }
 
     /**
-     * @param {*} value
+     * @deprecated
+     *
+     * @param {String} value
      * @returns {String}
      *   the currently set value as string.
      */

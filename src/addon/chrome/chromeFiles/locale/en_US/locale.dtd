@@ -97,7 +97,7 @@
 <!ENTITY options.debug.request "Client to Server communication (requests)">
 <!ENTITY options.debug.response "Server to Client communication (responses)">
 <!ENTITY options.debug.exceptions "Exceptions and State Machine Information">
-<!ENTITY options.debug.stream "Raw Dump/Dump Byte Stream">
+<!ENTITY options.debug.stream "Raw Dump/ Dump Byte Stream">
 <!ENTITY options.debug.session "Session Management">
 <!ENTITY options.debug.output "Debug Output">
 <!ENTITY options.debug.console "Debug information is posted to the error console">

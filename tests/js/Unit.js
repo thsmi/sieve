@@ -38,6 +38,12 @@
     log(message, "Error");
   }
 
+  /**
+   * Logs the string at trace level
+   * @param {String} message
+   *   the message to log.
+   * @returns {void};
+   */
   function logTrace(message) {
     log(message, "Trace");
   }
@@ -139,11 +145,17 @@
     }
 
     if (typeof (message) === 'undefined' || message === null)
-      message = `Assert failed\nExpected: \n${expected}\n\nBut got\n${actual}`;
+      message = `Assert failed\nExpected (${expected.length} Bytes): \n${expected}\n\nBut got (${actual.length} Bytes)\n${actual}`;
 
     throw new Error(`${message}`);
   }
 
+  /**
+   * Registers a function which contains a test to run.
+   * @param {*} test
+   *   the function to call which contains the test.
+   * @returns {undefined}
+   */
   function add(test) {
 
     if (!exports.net.tschmid.yautt.test.tests)

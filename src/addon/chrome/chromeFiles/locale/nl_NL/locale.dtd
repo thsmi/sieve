@@ -19,7 +19,7 @@
 <!ENTITY options.tab.general "Algemeen">
 <!ENTITY options.tab.proxy "Proxy">
 <!ENTITY options.tab.advanced "Geavanceerd">
-<!ENTITY options.tab.advanced.warning "These settings are intended for advanced users…">
+<!ENTITY options.tab.advanced.warning "Deze instellingen zijn bedoeld voor gevorderde gebruikers…">
 <!ENTITY options.tab.editor "Editor">
 <!ENTITY options.tab.debug "Debuggen">
 <!ENTITY options.tab.credits "Met dank aan">
@@ -32,22 +32,23 @@
 
 <!ENTITY options.port.caption "Serverpoort">
 <!ENTITY options.port.description
-"The server port changed, when “ManageSieve” turned into a full RFC Standard">
+"De serverpoort is gewijzigd toen ‘ManageSieve’ een volledige RFC-standaard werd.">
 <!ENTITY options.port.description2
 "Oudere serverimplementaties gebruiken nog steeds poort 2000, terwijl nieuwe standaard-conforme servers alleen via poort 4190 kunnen worden benaderd.">
 <!ENTITY options.port.4190 "4190 (Standaard)" >
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Anders:">
 <!ENTITY options.port.autoselect "Poort automatisch selecteren">
-<!ENTITY options.port.autoselect.running "Selecting Port, please wait…">
+<!ENTITY options.port.autoselect.running "Poort wordt geselecteerd, even geduld…">
 <!ENTITY options.port.autoselect.successful "Sieve is gedetecteerd op poort ">
-<!ENTITY options.port.autoselect.error "Selecting Port failed…">
+<!ENTITY options.port.autoselect.error "Automatische poortselectie is mislukt…">
 
 <!ENTITY options.security.caption "Verbindingsbeveiliging">
 <!ENTITY options.security.description
-"Transport Layer Security (TLS) secures the connection to the “ManageSieve” server. It cyphers all data and is designed to prevent eavesdropping and tampering.">
+"Transport Layer Security (TLS) beveiligt de verbinding naar de ManageSieve-server.
+Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tegen te gaan.">
 <!ENTITY options.security.description2
-"“ManageSieve” usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
+"‘ManageSieve’ verstuurt wachtwoorden normaal gesproken onversleuteld. Tenzij u een goede reden heeft (bv. debugging), moet u altijd TLS forceren.">
 <!ENTITY options.security.tls.disabled "Geen TLS">
 <!ENTITY options.security.tls.available "TLS, mits beschikbaar">
 <!ENTITY options.security.tls.force "TLS afdwingen">
@@ -59,22 +60,22 @@
 <!ENTITY options.login.customAuth "Gebruikersnaam en wachtwoord">
 <!ENTITY options.login.username "Gebruikersnaam">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "View Saved Passwords…">
+<!ENTITY options.login.show "Opgeslagen wachtwoorden bekijken…">
 
 <!ENTITY options.misc "Overige Instellingen">
-<!ENTITY options.misc.keepalive "Enable Keep-Alive Messages">
+<!ENTITY options.misc.keepalive "Keepalive-berichten inschakelen">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.keepalive2 "Keepalive elke">
 <!ENTITY options.misc.keepalive.description
 "Als de client te lang niet actief was (normaal gesproken 30 minuten), dan neemt de server aan dat de client niet meer verbonden is en verbreekt de verbinding.">
 <!ENTITY options.misc.keepalive.description2
-"A “Keep-Alive” request indicates the connection is still active and should be preserved.">
+"Een keepalive-verzoek geeft aan dat de verbinding nog steeds actief is en moet worden behouden.">
 <!ENTITY options.misc.keepalive.min "min">
 
-<!ENTITY options.misc.compile.caption "Check Syntax">
+<!ENTITY options.misc.compile.caption "Syntaxis controleren">
 <!ENTITY options.misc.compile.description
-"Check Syntax as you type is performed by the server. Requests are grouped to keep network traffic low.">
-<!ENTITY options.misc.compile "Check syntax as you type">
+"Syntaxis controleren tijdens het typen wordt uitgevoerd door de server. Verzoeken worden gegroepeerd om het netwerkverkeer laag te houden.">
+<!ENTITY options.misc.compile "Syntaxis controleren tijdens het typen">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Ten minste elke">
 <!ENTITY options.misc.compile.ms "ms valideren">

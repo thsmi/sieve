@@ -254,6 +254,35 @@
   });
 
   suite.add({
+    "examples-dovecot": {
+      script: "./sieve/SieveDovecotTest.js",
+      extend: "rfc5228",
+      require: [
+        "./../common/libSieve/imapflags/logic/SieveImapFlags.js",
+        "./../common/libSieve/relational/logic/SieveRelational.js",
+        "./../common/libSieve/regex/logic/SieveRegularExpression.js",
+        "./../common/libSieve/include/logic/SieveInclude.js",
+        "./../common/libSieve/spamtest/logic/SieveSpamtest.js",
+        "./../common/libSieve/subaddress/logic/SieveSubaddress.js",
+        "./../common/libSieve/variables/logic/SieveVariables.js",
+        "./../common/libSieve/vacation/logic/SieveVacation.js",
+        "./../common/libSieve/date/logic/SieveDate.js",
+        "./../common/libSieve/mailbox/logic/SieveMailbox.js"
+      ]
+    }
+  });
+
+  suite.add({
+    "examples-tty1": {
+      script: "./sieve/SieveTty1Test.js",
+      extend: "rfc5228",
+      require: [
+        "./../common/libSieve/reject/logic/SieveReject.js"
+      ]
+    }
+  });
+
+  suite.add({
     "managesieve": {
       script: "./managesieve/ManageSieveTest.js",
       agents: ["Firefox"],

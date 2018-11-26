@@ -89,20 +89,20 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.editor.indention.policy.tabs "alleen tabs">
 
 <!ENTITY options.editor.tabs.caption "Tab-afhandeling">
-<!ENTITY options.editor.tabs.description "Text editor with automatic indenting replaced the need for a Tab key, but there are many editors which default to tabs due to historic reasons.">
+<!ENTITY options.editor.tabs.description "Teksteditor met automatische inspringing heeft de noodzaak van een Tab-toets vervangen, maar er zijn veel editors die standaard tabs gebruiken vanwege historische redenen.">
 <!ENTITY options.editor.tabs.width "Tab-breedte">
 
 <!ENTITY options.debug.warning
-"Keep in mind that neither “SASL LOGIN” nor “SASL PLAIN” cypher your password, it might be posted in clear text to the error console.">
-<!ENTITY options.debug.caption "Debug Settings">
+"Onthoud dat met SASL-aanmelding noch met normale SASL uw wachtwoord wordt gecodeerd. Mogelijk wordt het als leesbare tekst naar de foutconsole verzonden.">
+<!ENTITY options.debug.caption "Debug-instellingen">
 <!ENTITY options.debug.request "Client-server-communicatie (verzoeken)">
 <!ENTITY options.debug.response "Server-client-communicatie (antwoorden)">
 <!ENTITY options.debug.exceptions "Uitzonderingen- en toestandsmachineinformatie">
 <!ENTITY options.debug.stream "Onbewerkte dump / bytestroomdump">
-<!ENTITY options.debug.session "Session Management">
+<!ENTITY options.debug.session "Sessiebeheer">
 <!ENTITY options.debug.output "Debug-uitvoer">
 <!ENTITY options.debug.console "Debuginformatie wordt in de foutconsole geplaatst">
-<!ENTITY options.debug.console.open "Show Error Console…">
+<!ENTITY options.debug.console.open "Foutconsole tonen…">
 
 <!ENTITY options.authmechanism.caption "Authenticatiemethode">
 <!ENTITY options.authmechanism "Override Authentication Mechanism">

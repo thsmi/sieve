@@ -90,7 +90,7 @@ hierdurch werden Abhören der Zugangsdaten sowie Manipulationen effektiv verhind
 <!ENTITY options.editor.indention.policy.tabs "Nur Tabulatoren">
 
 <!ENTITY options.editor.tabs.caption "Tabulator Einzug">
-<!ENTITY options.editor.tabs.description "Der Texteditor unterstützt automatisches Einrücken. Wodurch die Tabulator überflüssig werden. Früher wurden Tabulatoren zum dynamischen Einrücken des Textes verwendet.">
+<!ENTITY options.editor.tabs.description "Text editors with automatic indenting replaced the need for a Tab key. But many editors default to tabs due to historical reasons.">
 <!ENTITY options.editor.tabs.width "Tabulatorbreite">
 
 <!ENTITY options.debug.warning
@@ -139,7 +139,7 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 <!ENTITY options.account.sieve
 "Sieve ist eine Skriptsprache um serverseitig E-Mails zu filtern und sortieren.">
 <!ENTITY options.account.activate
-"Möchten Sie Sieve für diesen Account aktivieren?">
+"Do you like to enable “ManageSieve” this account?">
 <!ENTITY options.account.activate.yes "Ja, dieses Konto unterstützt Sieve:">
 <!ENTITY options.account.activate.no "Nein, dieses Konto unterstützt kein Sieve">
 <!ENTITY options.account.filters "Filter bearbeiten…">
@@ -153,14 +153,17 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 <!ENTITY options.proxy.description
 "Um eine Firewall zu umgehen können Verbindungen zu einem Sieve Server durch einen transparenten SOCKS Proxy geleitet werden.">
 <!ENTITY options.proxy.description.nameresolution
-"SOCKSv4 löst Hostnamen über den lokalen Rechner auf. Bei SOCKSv5 können Hostnamen über den DNS des Proxy ermittelt werden. Falls der Proxy vertrauenswürdig ist sollte die letztere Variante nutzen.">
+"SOCKS4 always resolves hostnames only on the local machine.
+SOCKS5 supports both resolving on the remote SOCKS proxy as well as resolving on the local machine.
+
+You should prefer SOCKS5 with remote name resolution, if your remote DNS is more trustworthy than the local DNS.">
 <!ENTITY options.proxy.description.localhost
 "Der Hostname 'localhost' wird auf manchen Systemen nicht richtig aufgelöst, alternativ kann die Loopback Addresse '127.0.0.1' verwendet werden.">
 <!ENTITY options.proxy.direct "Direkte Verbindung">
 <!ENTITY options.proxy.default "Automatische Konfiguration">
-<!ENTITY options.proxy.socks4 "SOCKSv4">
-<!ENTITY options.proxy.socks5 "SOCKSv5">
-<!ENTITY options.proxy.nameresolution "Auf dem Proxy den Hostnamen auflösen">
+<!ENTITY options.proxy.socks4 "SOCKS4">
+<!ENTITY options.proxy.socks5 "SOCKS5">
+<!ENTITY options.proxy.nameresolution "Resolve hostnames on remote proxy">
 <!ENTITY options.proxy.host "Hostname:">
 <!ENTITY options.proxy.port "Port:">
 
@@ -189,11 +192,9 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 
 
 <!ENTITY list.badcert
-  "Ihr Mailserver kann nicht Identifiziert werden und wird als nicht vertrauenswürdig eingestuft.">
+  "Secure connection failed. The mail server identified itself with a bad certificate.">
 <!ENTITY list.badcert.error
-"Es könnte sein, dass sich jemand als Ihr Mailserver ausgibt, um beispielsweise an Ihr Passwort zu gelangen.
-
-Ignorieren Sie diese Meldung nur, wenn Sie sich wirklich sicher sind, dass Sie tatsächlich mit dem gewünschten Server verbunden sind.">
+  "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server. Do not continue unless you know there is a good reason why this server does not use trusted identification.">
 <!ENTITY list.badcert.remember "Meldung nicht mehr anzeigen">
 <!ENTITY list.badcert.ignore "Weiter">
 <!ENTITY list.badcert.abort "Abbrechen">
@@ -258,18 +259,18 @@ auf 'Erweitert' um das Konto manuell zu konfigurieren.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"Sie sind derzeit im Offline-Modus. Möchten Sie diesen verlassen?">
+"Thunderbird is currently in offline mode. Check that you are connected to the Internet and select ‘Go Online’ or uncheck ‘Work Offline’ from the File menu and try again.">
 <!ENTITY status.offline.go "Verbindung herstellen">
 
 
 <!ENTITY status.connectivity.loss.description
-"Die Verbindung zum Server wurde unterbrochen. Klicken sie auf &quot;Erneut verbinden&quot; um sie wiederherzustellen.">
+"The server unexpectedly closed the connection. Select ‘Reconnect’ to try again.">
 <!ENTITY status.connectivity.loss.reconnect "Erneut verbinden">
 
 <!ENTITY status.warning.ignore "Ignorieren">
 <!ENTITY status.warning.reconnect "Erneut verbinden">
 <!ENTITY status.warning
-  "Dieses Konto ist nicht konfiguriert. Bitte rufen Sie 'Extras → Sieve Filter Einstellungen' auf um es zu aktivieren.">
+  "“ManageSieve” is not configured for this account. To enable “ManageSieve”, select ‘Sieve Message Filters’ in the ‘Tools’ menu.">
 
 <!ENTITY status.error.reconnect "Erneut verbinden">
 <!ENTITY status.error "Aktion fehlgeschlagen, Server meldet einen schweren Fehler:">

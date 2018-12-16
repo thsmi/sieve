@@ -88,7 +88,7 @@
 <!ENTITY options.editor.indention.policy.tabs "Csak tabulátorok">
 
 <!ENTITY options.editor.tabs.caption "Fül kezelése">
-<!ENTITY options.editor.tabs.description "Szövegszerkesztők önműködő behúzással váltották fel a Tab billentyű használatának szükségességét. Történelmi okokból sok szövegszerkesztők van, amely alapértelmezés szerint a Tab.">
+<!ENTITY options.editor.tabs.description "Text editors with automatic indenting replaced the need for a Tab key. But many editors default to tabs due to historical reasons.">
 <!ENTITY options.editor.tabs.width "Fül szélessége">
 
 <!ENTITY options.debug.warning
@@ -136,7 +136,7 @@
 <!ENTITY options.account.sieve
 "A Szita (Sieve) egy erőteljes parancsnyelv a kiszolgálóoldali levélszűrés számára.">
 <!ENTITY options.account.activate
-"Szeretné engedélyezni a Szita parancsfájlokat ehhez a fiókhoz?">
+"Do you like to enable “ManageSieve” this account?">
 <!ENTITY options.account.activate.yes "Igen, kezelje a Szita parancsfájlokat ehhez a fiókhoz:">
 <!ENTITY options.account.activate.no "Nem, ez a fiók nem támogatja a „ManageSieve”-t (szita kezelése)">
 <!ENTITY options.account.filters "Szűrők szerkesztése…">
@@ -150,14 +150,17 @@
 <!ENTITY options.proxy.description
 "A közvetlen kapcsolat helyett a SOCKS meghatalmazottás segítségével átláthatóan és biztonságosan haladhat át egy tűzfalon.">
 <!ENTITY options.proxy.description.nameresolution
-"A SOCKS v4 mindig feloldja a gépneveket a helyi gépen. A SOCKS v5 támogatja a SOCKS meghatalmazott által használt gépneveket megoldását, és biztonságosabbnak tekinthető. Mindig a SOCKS v5-t használja, ha megbízik a meghatalmazottban.">
+"SOCKS4 always resolves hostnames only on the local machine.
+SOCKS5 supports both resolving on the remote SOCKS proxy as well as resolving on the local machine.
+
+You should prefer SOCKS5 with remote name resolution, if your remote DNS is more trustworthy than the local DNS.">
 <!ENTITY options.proxy.description.localhost
 "Ha a „localhost” meghatalmazott-kiszolgáló nem működik megfelelően, helyette használja a „127.0.0.1” meghatalmazott-kiszolgáló.">
 <!ENTITY options.proxy.direct "Közvetlen kapcsolat">
 <!ENTITY options.proxy.default "Alapértelmezett meghatalmazott beállítása">
-<!ENTITY options.proxy.socks4 "SOCKSv4">
-<!ENTITY options.proxy.socks5 "SOCKSv5">
-<!ENTITY options.proxy.nameresolution "Gépneveket elhatározás a meghatalmazottnál">
+<!ENTITY options.proxy.socks4 "SOCKS4">
+<!ENTITY options.proxy.socks5 "SOCKS5">
+<!ENTITY options.proxy.nameresolution "Resolve hostnames on remote proxy">
 <!ENTITY options.proxy.host "Gépnév:">
 <!ENTITY options.proxy.port "Kikötő:">
 
@@ -186,9 +189,9 @@
 
 
 <!ENTITY list.badcert
-  "A biztonságos kapcsolat sikertelen. A levélkiszolgáló rossz tanúsítványt adott ki.">
+  "Secure connection failed. The mail server identified itself with a bad certificate.">
 <!ENTITY list.badcert.error
-"Ha általában probléma nélkül tud kapcsolódni ehhez a kiszolgálóhoz, akkor ez a hiba azt jelentheti, hogy valaki leutánozta a kiszolgálót. Ne folytassa, kivéve ha tudja, hogy jó oka van annak, hogy ez a kiszolgáló nem megbízható azonosítást használ.">
+  "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server. Do not continue unless you know there is a good reason why this server does not use trusted identification.">
 <!ENTITY list.badcert.remember "A döntés megjegyzése">
 <!ENTITY list.badcert.ignore "Folytatás">
 <!ENTITY list.badcert.abort "Megszakít">
@@ -253,18 +256,18 @@ Válassza a Haladó gombot a fiók kézi beállításához.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"A Thunderbird jelenleg kapcsolat nélküli módban van. Ellenőrizze, hogy csatlakozik-e az internetre, vegye le a jelölést a Fájl menü Kapcsolat nélküli munka menüpontjáról, és próbálja újra.">
+"Thunderbird is currently in offline mode. Check that you are connected to the Internet and select ‘Go Online’ or uncheck ‘Work Offline’ from the File menu and try again.">
 <!ENTITY status.offline.go "Csatlakozás a hálózathoz">
 
 
 <!ENTITY status.connectivity.loss.description
-"A kiszolgáló váratlanul lezárta a kapcsolatot. Válassza az Újracsatlakozás gombra az újrapróbálkozáshoz.">
+"The server unexpectedly closed the connection. Select ‘Reconnect’ to try again.">
 <!ENTITY status.connectivity.loss.reconnect "Újracsatlakozás">
 
 <!ENTITY status.warning.ignore "Kihagyás">
 <!ENTITY status.warning.reconnect "Újracsatlakozás">
 <!ENTITY status.warning
-  "A „ManageSieve” (szita kezelése) szolgáltatást nincs beállítva erre a fiókra. Szita üzenetszűrők menüpontot a Eszközök menüből engedélyezhető a „ManageSieve” (szita kezelése) szolgáltatás.">
+  "“ManageSieve” is not configured for this account. To enable “ManageSieve”, select ‘Sieve Message Filters’ in the ‘Tools’ menu.">
 
 <!ENTITY status.error.reconnect "Újracsatlakozás">
 <!ENTITY status.error "Az utolsó parancs sikertelen volt, mert a kiszolgáló hibát jelzett:">

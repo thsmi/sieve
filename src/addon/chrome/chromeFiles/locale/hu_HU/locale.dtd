@@ -88,7 +88,7 @@
 <!ENTITY options.editor.indention.policy.tabs "Csak tabulátorok">
 
 <!ENTITY options.editor.tabs.caption "Fül kezelése">
-<!ENTITY options.editor.tabs.description "Text editors with automatic indenting replaced the need for a Tab key. But many editors default to tabs due to historical reasons.">
+<!ENTITY options.editor.tabs.description "Szövegszerkesztők önműködő behúzással váltották fel a Tab billentyű használatának szükségességét. Történelmi okokból sok szövegszerkesztők van, amely alapértelmezés szerint a Tab.">
 <!ENTITY options.editor.tabs.width "Fül szélessége">
 
 <!ENTITY options.debug.warning

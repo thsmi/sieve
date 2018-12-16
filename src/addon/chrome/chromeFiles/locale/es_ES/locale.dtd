@@ -94,7 +94,7 @@ debe ser preservada.">
 <!ENTITY options.editor.indention.policy.tabs "Tabs Only">
 
 <!ENTITY options.editor.tabs.caption "Tab Handling">
-<!ENTITY options.editor.tabs.description "Text editor with automatic indenting replaced the need for a Tab key, but there are many editors which default to tabs due to historic reasons.">
+<!ENTITY options.editor.tabs.description "Text editors with automatic indenting replaced the need for a Tab key. But many editors default to tabs due to historical reasons.">
 <!ENTITY options.editor.tabs.width "Tab Width">
 
 <!ENTITY options.debug.warning
@@ -145,7 +145,7 @@ Normalmente los servidores están configurados, para que ésta característica e
 <!ENTITY options.account.sieve
 "Sieve es un potente lenguaje script para el filtrado de correo del lado servidor.">
 <!ENTITY options.account.activate
-"¿Quiere activar la gestión de scripts Sieve para ésta cuenta?">
+"Do you like to enable “ManageSieve” this account?">
 <!ENTITY options.account.activate.yes "Sí, gestionar los scripts Sieve para ésta cuenta:">
 <!ENTITY options.account.activate.no "No, ésta cuenta no soporta Sieve">
 <!ENTITY options.account.filters "Editar Filtros…">
@@ -160,17 +160,18 @@ Normalmente los servidores están configurados, para que ésta característica e
 "En lugar de una conexión directa puede usar un Proxy SOCKS de forma transparente y 
 atravesar con seguridad el firewall.">
 <!ENTITY options.proxy.description.nameresolution
-"Con nombres host SOCKSv4 siempre podrá resolver en la máquina local. SOCKSv5 también 
-soporta resolver nombres host por el proxy SOCKS. Si puede confiar en el proxy 
-SOCKSv5, éste último se considera más seguro y debe preferirse.">
+"SOCKS4 always resolves hostnames only on the local machine.
+SOCKS5 supports both resolving on the remote SOCKS proxy as well as resolving on the local machine.
+
+You should prefer SOCKS5 with remote name resolution, if your remote DNS is more trustworthy than the local DNS.">
 <!ENTITY options.proxy.description.localhost
 "En algunos sistemas usar 'localhost' como proxy no funciona correctamente, 
 use '127.0.0.1' en su lugar.">
 <!ENTITY options.proxy.direct "Conexión directa">
 <!ENTITY options.proxy.default "Configuración Proxy predeterminada">
-<!ENTITY options.proxy.socks4 "SOCKSv4">
-<!ENTITY options.proxy.socks5 "SOCKSv5">
-<!ENTITY options.proxy.nameresolution "Resolver nombres host en el proxy">
+<!ENTITY options.proxy.socks4 "SOCKS4">
+<!ENTITY options.proxy.socks5 "SOCKS5">
+<!ENTITY options.proxy.nameresolution "Resolve hostnames on remote proxy">
 <!ENTITY options.proxy.host "Host:">
 <!ENTITY options.proxy.port "Puerto:">
 
@@ -199,13 +200,9 @@ use '127.0.0.1' en su lugar.">
 
 
 <!ENTITY list.badcert
-  "El servidor de correo intenta identificarse con información no válida.">
+  "Secure connection failed. The mail server identified itself with a bad certificate.">
 <!ENTITY list.badcert.error
-"Si conecta normalmente con éste servidor sin problemas, éste error puede 
-significar que alguien está intentando hacerse pasar por usted en el servidor.
-
-No continue a menos que tenga una buena razón porque 
-éste servidor no utiliza identificación de confianza.">
+  "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server. Do not continue unless you know there is a good reason why this server does not use trusted identification.">
 <!ENTITY list.badcert.remember "Recordar mi decisión">
 <!ENTITY list.badcert.ignore "Continuar">
 <!ENTITY list.badcert.abort "Abortar">
@@ -270,18 +267,18 @@ O elija 'Avanzada' para configurar la cuenta manualmente.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Check that you are connected to the internet, click ‘Go Online’ and try again.">
+"Thunderbird is currently in offline mode. Check that you are connected to the Internet and select ‘Go Online’ or uncheck ‘Work Offline’ from the File menu and try again.">
 <!ENTITY status.offline.go "Ir Online">
 
 
 <!ENTITY status.connectivity.loss.description
-"El servidor ha termnado la conexión inesperadamente, haga click en reconectar para intentar de nuevo.">
+"The server unexpectedly closed the connection. Select ‘Reconnect’ to try again.">
 <!ENTITY status.connectivity.loss.reconnect "Reconectar">
 
 <!ENTITY status.warning.ignore "Ignorar">
 <!ENTITY status.warning.reconnect "Reconectar">
 <!ENTITY status.warning
-  "“ManageSieve” not configured for this account. Go to Tools → Sieve Message Filters to enable “ManageSieve”.">
+  "“ManageSieve” is not configured for this account. To enable “ManageSieve”, select ‘Sieve Message Filters’ in the ‘Tools’ menu.">
 
 <!ENTITY status.error.reconnect "Reconectar">
 <!ENTITY status.error "Ultimo comando falló porque el servidor reportó un error:">

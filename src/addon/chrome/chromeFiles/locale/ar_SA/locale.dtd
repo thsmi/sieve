@@ -89,7 +89,7 @@
 <!ENTITY options.editor.indention.policy.tabs "التبويبات فقط">
 
 <!ENTITY options.editor.tabs.caption "التعامل مع التبويب">
-<!ENTITY options.editor.tabs.description "Text editor with automatic indenting replaced the need for a Tab key, but there are many editors which default to tabs due to historic reasons.">
+<!ENTITY options.editor.tabs.description "Text editors with automatic indenting replaced the need for a Tab key. But many editors default to tabs due to historical reasons.">
 <!ENTITY options.editor.tabs.width "عرض التبويب">
 
 <!ENTITY options.debug.warning
@@ -138,7 +138,7 @@
 <!ENTITY options.account.sieve
 "الغربال هو كاتب لغة برمجة قوي لجانب السيرفر المخصص لتصفية البريد.">
 <!ENTITY options.account.activate
-"Do you want to enable managing Sieve Scripts for this account?">
+"Do you like to enable “ManageSieve” this account?">
 <!ENTITY options.account.activate.yes "نعم، أدر غربال النصوص لهذا الحساب:">
 <!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
 <!ENTITY options.account.filters "Edit Filters…">
@@ -152,14 +152,17 @@
 <!ENTITY options.proxy.description
 "بدلا من الاتصال المباشر يمكنك استخدام بروكسي SOCKS للشفافية و لتأمين تجاوز جدار الحماية.">
 <!ENTITY options.proxy.description.nameresolution
-"مع SOCKSv4 دائما يتم إعادة حل اسماء المصيفين على آلة المحلية. SOCKSv5 أيضا يدعم إعادة حل أسماء المضيفين بواسطة بروكسي SOCKS. اذا كنت تستطيع الوثوق في بروكسي SOCKSv5، هذا الاخير يعتبر أكثر آمنا و ينبغي أن يكون المفضل.">
+"SOCKS4 always resolves hostnames only on the local machine.
+SOCKS5 supports both resolving on the remote SOCKS proxy as well as resolving on the local machine.
+
+You should prefer SOCKS5 with remote name resolution, if your remote DNS is more trustworthy than the local DNS.">
 <!ENTITY options.proxy.description.localhost
 "On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
 <!ENTITY options.proxy.direct "اتصال مباشر">
 <!ENTITY options.proxy.default "تهيئة البروكسي الافتراضي">
-<!ENTITY options.proxy.socks4 "SOCKSv4">
-<!ENTITY options.proxy.socks5 "SOCKSv5">
-<!ENTITY options.proxy.nameresolution "اعد حل اسماء المضيفين على البروكسي">
+<!ENTITY options.proxy.socks4 "SOCKS4">
+<!ENTITY options.proxy.socks5 "SOCKS5">
+<!ENTITY options.proxy.nameresolution "Resolve hostnames on remote proxy">
 <!ENTITY options.proxy.host "استضافة:">
 <!ENTITY options.proxy.port "المنفذ:">
 
@@ -188,10 +191,9 @@
 
 
 <!ENTITY list.badcert
-  "سيرفر الايميل الخاص بك يحاول التعريف بنفسه بمعلومات غير صحيحة.">
+  "Secure connection failed. The mail server identified itself with a bad certificate.">
 <!ENTITY list.badcert.error
-"إذا كنت في الغالب تتصل بهذا السيرفر بدون مشاكل، هذا الخطء يعني أن شخص ما حاول انتحال هوية السيرفر.
-لا تستمر إلا إذا كنت تعرف أنه يوجد سبب وجيه يبين لماذا هذا السيرفر لا يستخدم هوية موثوقة.">
+  "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server. Do not continue unless you know there is a good reason why this server does not use trusted identification.">
 <!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "واصل">
 <!ENTITY list.badcert.abort "ألغي">
@@ -256,18 +258,18 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Check that you are connected to the internet, click ‘Go Online’ and try again.">
+"Thunderbird is currently in offline mode. Check that you are connected to the Internet and select ‘Go Online’ or uncheck ‘Work Offline’ from the File menu and try again.">
 <!ENTITY status.offline.go "اتصل">
 
 
 <!ENTITY status.connectivity.loss.description
-"Server terminated unexpectedly the connection, click on ‘Reconnect’ to try again.">
+"The server unexpectedly closed the connection. Select ‘Reconnect’ to try again.">
 <!ENTITY status.connectivity.loss.reconnect "اعد الاتصال">
 
 <!ENTITY status.warning.ignore "تجاهل">
 <!ENTITY status.warning.reconnect "اعد الاتصال">
 <!ENTITY status.warning
-  "“ManageSieve” not configured for this account. Go to Tools → Sieve Message Filters to enable “ManageSieve”.">
+  "“ManageSieve” is not configured for this account. To enable “ManageSieve”, select ‘Sieve Message Filters’ in the ‘Tools’ menu.">
 
 <!ENTITY status.error.reconnect "اعد الاتصال">
 <!ENTITY status.error "فشل الأمر الأخير، لأن السيرفر أبلغ عن خطأ:">

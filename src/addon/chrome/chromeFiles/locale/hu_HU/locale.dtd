@@ -267,7 +267,7 @@ Válassza a Haladó gombot a fiók kézi beállításához.">
 <!ENTITY status.warning.ignore "Kihagyás">
 <!ENTITY status.warning.reconnect "Újracsatlakozás">
 <!ENTITY status.warning
-  "“ManageSieve” is not configured for this account. To enable “ManageSieve”, select ‘Sieve Message Filters’ in the ‘Tools’ menu.">
+  "A „ManageSieve” (szita kezelése) nincs konfigurálva ehhez a fiókhoz. A „ManageSieve” (szita kezelése) engedélyezéséhez válassza a Sieve üzenetszűrők menüpontot a Eszközök menüből.">
 
 <!ENTITY status.error.reconnect "Újracsatlakozás">
 <!ENTITY status.error "Az utolsó parancs sikertelen volt, mert a kiszolgáló hibát jelzett:">

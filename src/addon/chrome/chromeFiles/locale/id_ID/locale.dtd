@@ -91,7 +91,7 @@ server menganggap klien terputus dan menutup koneksi.">
 <!ENTITY options.editor.indention.policy.tabs "Hanya Tab">
 
 <!ENTITY options.editor.tabs.caption "Penanganan Tab">
-<!ENTITY options.editor.tabs.description "Text editor with automatic indenting replaced the need for a Tab key, but there are many editors which default to tabs due to historic reasons.">
+<!ENTITY options.editor.tabs.description "Text editors with automatic indenting replaced the need for a Tab key. But many editors default to tabs due to historical reasons.">
 <!ENTITY options.editor.tabs.width "Lebar Tab">
 
 <!ENTITY options.debug.warning
@@ -141,7 +141,7 @@ Biasanya server dikonfigurasi, bahwa fitur ini hanya tersedia untuk administrato
 <!ENTITY options.account.sieve
 "Saringan adalah bahasa script yang ampuh untuk penyaringan email sisi-server.">
 <!ENTITY options.account.activate
-"Do you want to enable managing Sieve Scripts for this account?">
+"Do you like to enable “ManageSieve” this account?">
 <!ENTITY options.account.activate.yes "Ya, kelola skrip Sieve untuk akun ini:">
 <!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
 <!ENTITY options.account.filters "Edit Filter…">
@@ -156,16 +156,17 @@ Biasanya server dikonfigurasi, bahwa fitur ini hanya tersedia untuk administrato
 "Alih koneksi langsung anda bisa menggunakan proxy SOCKS secara transparan dan 
 aman melintasi sebuah firewall.">
 <!ENTITY options.proxy.description.nameresolution
-"Dengan SOCKSv4 nama host selalu bisa teratasi di mesin lokal. SOCKSv5 juga 
-mendukung penyelesaian nama host oleh SOCKS proxy. jika anda bisa mempercaya SOCKSv5 
-proxy, yang terakhir ini di anggap untuk lebih aman dan lebih di utamakan.">
+"SOCKS4 always resolves hostnames only on the local machine.
+SOCKS5 supports both resolving on the remote SOCKS proxy as well as resolving on the local machine.
+
+You should prefer SOCKS5 with remote name resolution, if your remote DNS is more trustworthy than the local DNS.">
 <!ENTITY options.proxy.description.localhost
 "On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
 <!ENTITY options.proxy.direct "Sambungan Langsung">
 <!ENTITY options.proxy.default "Konfigurasi Proxy Gagal">
-<!ENTITY options.proxy.socks4 "SOCKSv4">
-<!ENTITY options.proxy.socks5 "SOCKSv5">
-<!ENTITY options.proxy.nameresolution "Mengatur nama host pada proxy">
+<!ENTITY options.proxy.socks4 "SOCKS4">
+<!ENTITY options.proxy.socks5 "SOCKS5">
+<!ENTITY options.proxy.nameresolution "Resolve hostnames on remote proxy">
 <!ENTITY options.proxy.host "Host:">
 <!ENTITY options.proxy.port "Bagian:">
 
@@ -194,13 +195,9 @@ proxy, yang terakhir ini di anggap untuk lebih aman dan lebih di utamakan.">
 
 
 <!ENTITY list.badcert
-  "Server surat anda mencoba untuk mengidentifikasi dirinya dengan informasi yang tidak benar.">
+  "Secure connection failed. The mail server identified itself with a bad certificate.">
 <!ENTITY list.badcert.error
-"Jika anda biasanya terhubung ke server ini tanpa masalah, kesalahan ini bisa 
-Berarti seseorang sedang mencoba meniru server.
-
-Jangan teruskan kecuali jika anda tahu ada alasan bagus mengapa 
-server ini tidak menggunakan identifikasi terpercaya.">
+  "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server. Do not continue unless you know there is a good reason why this server does not use trusted identification.">
 <!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "Melanjutkan">
 <!ENTITY list.badcert.abort "Batalkan">
@@ -265,18 +262,18 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Check that you are connected to the internet, click ‘Go Online’ and try again.">
+"Thunderbird is currently in offline mode. Check that you are connected to the Internet and select ‘Go Online’ or uncheck ‘Work Offline’ from the File menu and try again.">
 <!ENTITY status.offline.go "Jadikan Online">
 
 
 <!ENTITY status.connectivity.loss.description
-"Server terminated unexpectedly the connection, click on ‘Reconnect’ to try again.">
+"The server unexpectedly closed the connection. Select ‘Reconnect’ to try again.">
 <!ENTITY status.connectivity.loss.reconnect "Sambung kembali">
 
 <!ENTITY status.warning.ignore "Abaikan">
 <!ENTITY status.warning.reconnect "Sambung kembali">
 <!ENTITY status.warning
-  "“ManageSieve” not configured for this account. Go to Tools → Sieve Message Filters to enable “ManageSieve”.">
+  "“ManageSieve” is not configured for this account. To enable “ManageSieve”, select ‘Sieve Message Filters’ in the ‘Tools’ menu.">
 
 <!ENTITY status.error.reconnect "Sambung kembali">
 <!ENTITY status.error "Perintah terakhir gagal, karena server melaporkan kesalahan:">

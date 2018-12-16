@@ -160,7 +160,7 @@ You should prefer SOCKS5 with remote name resolution, if your remote DNS is more
 <!ENTITY options.proxy.default "Alapértelmezett meghatalmazott beállítása">
 <!ENTITY options.proxy.socks4 "SOCKS4">
 <!ENTITY options.proxy.socks5 "SOCKS5">
-<!ENTITY options.proxy.nameresolution "Resolve hostnames on remote proxy">
+<!ENTITY options.proxy.nameresolution "Gépneveket megoldása a távoli meghatalmazottnál">
 <!ENTITY options.proxy.host "Gépnév:">
 <!ENTITY options.proxy.port "Kikötő:">
 
@@ -261,7 +261,7 @@ Válassza a Haladó gombot a fiók kézi beállításához.">
 
 
 <!ENTITY status.connectivity.loss.description
-"The server unexpectedly closed the connection. Select ‘Reconnect’ to try again.">
+"A kiszolgáló váratlanul lezárta a kapcsolatot. Válassza a Újracsatlakozását az újrapróbálkozáshoz.">
 <!ENTITY status.connectivity.loss.reconnect "Újracsatlakozás">
 
 <!ENTITY status.warning.ignore "Kihagyás">

@@ -89,7 +89,7 @@ conform serverului pot fi accesate numai prin portul 4190.">
 <!ENTITY options.editor.indention.policy.tabs "Doar file">
 
 <!ENTITY options.editor.tabs.caption "Manipularea filelor">
-<!ENTITY options.editor.tabs.description "Text editor with automatic indenting replaced the need for a Tab key, but there are many editors which default to tabs due to historic reasons.">
+<!ENTITY options.editor.tabs.description "Text editors with automatic indenting replaced the need for a Tab key. But many editors default to tabs due to historical reasons.">
 <!ENTITY options.editor.tabs.width "Lățimea filei">
 
 <!ENTITY options.debug.warning
@@ -137,7 +137,7 @@ conform serverului pot fi accesate numai prin portul 4190.">
 <!ENTITY options.account.sieve
 "Sieve este un limbaj de script puternic pentru filtrarea mailurilor de servere.">
 <!ENTITY options.account.activate
-"Do you want to enable managing Sieve Scripts for this account?">
+"Do you like to enable “ManageSieve” this account?">
 <!ENTITY options.account.activate.yes "Da, gestionează scripturile Sieve pentru acest cont:">
 <!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
 <!ENTITY options.account.filters "Edit Filters…">
@@ -151,14 +151,17 @@ conform serverului pot fi accesate numai prin portul 4190.">
 <!ENTITY options.proxy.description
 "În loc de o conexiune directă, poți folosi SOCKS Proxy pentru transparență și a traversa cu siguranță firewall-ul.">
 <!ENTITY options.proxy.description.nameresolution
-"Cu SOCKSv4 numele gazdelei sunt întotdeauna rezolvate pe computerul local. SOCKSv5 sprijină rezolvarea numelor gazdei pe proxy SOCKS. Dacă aveți încerdere intr-un proxy SOCKSv5 acesta este considerat mai sigur.">
+"SOCKS4 always resolves hostnames only on the local machine.
+SOCKS5 supports both resolving on the remote SOCKS proxy as well as resolving on the local machine.
+
+You should prefer SOCKS5 with remote name resolution, if your remote DNS is more trustworthy than the local DNS.">
 <!ENTITY options.proxy.description.localhost
 "On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
 <!ENTITY options.proxy.direct "Conexiune directă">
 <!ENTITY options.proxy.default "Configurare implicită proxy">
-<!ENTITY options.proxy.socks4 "SOCKSv4">
-<!ENTITY options.proxy.socks5 "SOCKSv5">
-<!ENTITY options.proxy.nameresolution "Rezolvă nume gazdă și proxy">
+<!ENTITY options.proxy.socks4 "SOCKS4">
+<!ENTITY options.proxy.socks5 "SOCKS5">
+<!ENTITY options.proxy.nameresolution "Resolve hostnames on remote proxy">
 <!ENTITY options.proxy.host "Gazdă:">
 <!ENTITY options.proxy.port "Port:">
 
@@ -187,10 +190,9 @@ conform serverului pot fi accesate numai prin portul 4190.">
 
 
 <!ENTITY list.badcert
-  "Serverul mailului încearcă să se identifice cu informații incorecte.">
+  "Secure connection failed. The mail server identified itself with a bad certificate.">
 <!ENTITY list.badcert.error
-"Daca de obicei vă conectați fără probleme la acest server, această eroare ar putea însemna că cineva încearcă să atace serverul. 
-Continuați numai în cazul în care există un motiv bine întemeiat pentru care serverul nu folosește o identificare de încredere.">
+  "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server. Do not continue unless you know there is a good reason why this server does not use trusted identification.">
 <!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "Continuare">
 <!ENTITY list.badcert.abort "Renunță">
@@ -255,18 +257,18 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Check that you are connected to the internet, click ‘Go Online’ and try again.">
+"Thunderbird is currently in offline mode. Check that you are connected to the Internet and select ‘Go Online’ or uncheck ‘Work Offline’ from the File menu and try again.">
 <!ENTITY status.offline.go "Conectare">
 
 
 <!ENTITY status.connectivity.loss.description
-"Server terminated unexpectedly the connection, click on ‘Reconnect’ to try again.">
+"The server unexpectedly closed the connection. Select ‘Reconnect’ to try again.">
 <!ENTITY status.connectivity.loss.reconnect "Reconectare">
 
 <!ENTITY status.warning.ignore "Ignoră">
 <!ENTITY status.warning.reconnect "Reconectare">
 <!ENTITY status.warning
-  "“ManageSieve” not configured for this account. Go to Tools → Sieve Message Filters to enable “ManageSieve”.">
+  "“ManageSieve” is not configured for this account. To enable “ManageSieve”, select ‘Sieve Message Filters’ in the ‘Tools’ menu.">
 
 <!ENTITY status.error.reconnect "Reconectare">
 <!ENTITY status.error "Ultima comandă a eșuat deoarece serverul a raportat o eroare:">

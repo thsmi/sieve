@@ -89,7 +89,7 @@ Bu sebeple, Sieve sunucu adı sizin IMAP sunucu adınızla aynıdır.">
 <!ENTITY options.editor.indention.policy.tabs "Sadece TAB tuşu">
 
 <!ENTITY options.editor.tabs.caption "Sekme Kontrolü">
-<!ENTITY options.editor.tabs.description "Text editor with automatic indenting replaced the need for a Tab key, but there are many editors which default to tabs due to historic reasons.">
+<!ENTITY options.editor.tabs.description "Text editors with automatic indenting replaced the need for a Tab key. But many editors default to tabs due to historical reasons.">
 <!ENTITY options.editor.tabs.width "Sekme genişliği">
 
 <!ENTITY options.debug.warning
@@ -137,7 +137,7 @@ Bu sebeple, Sieve sunucu adı sizin IMAP sunucu adınızla aynıdır.">
 <!ENTITY options.account.sieve
 "Sieve sunucu tarafında posta filtrelemesi için güçlü bir betik dilidir.">
 <!ENTITY options.account.activate
-"Do you want to enable managing Sieve Scripts for this account?">
+"Do you like to enable “ManageSieve” this account?">
 <!ENTITY options.account.activate.yes "Evet, Sieve komut dizisini bu hesap için aktifleştir:">
 <!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
 <!ENTITY options.account.filters "Edit Filters…">
@@ -151,14 +151,17 @@ Bu sebeple, Sieve sunucu adı sizin IMAP sunucu adınızla aynıdır.">
 <!ENTITY options.proxy.description
 "Doğrudan bağlantı yerine, bir güvenlik duvarını şeffaf ve güvenli bir şekilde geçmek için SOCKS Proxy kullanabilirsiniz.">
 <!ENTITY options.proxy.description.nameresolution
-"SOCKSv4 ile konak isimleri her zaman yerel makinede çözülür. SOCKSv5 ayrıca, SOCKS proxy'si tarafından ana bilgisayar adlarının çözümlenmesini de desteklemektedir. SOCKSv5 proxy'sine güvenebilirsiniz, ikincisi daha güvenli olarak kabul edilir ve tercih edilmelidir.">
+"SOCKS4 always resolves hostnames only on the local machine.
+SOCKS5 supports both resolving on the remote SOCKS proxy as well as resolving on the local machine.
+
+You should prefer SOCKS5 with remote name resolution, if your remote DNS is more trustworthy than the local DNS.">
 <!ENTITY options.proxy.description.localhost
 "On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
 <!ENTITY options.proxy.direct "Doğrudan Bağlantı">
 <!ENTITY options.proxy.default "Varsayılan Poxy yapılandırması">
-<!ENTITY options.proxy.socks4 "SOCKSv4">
-<!ENTITY options.proxy.socks5 "SOCKSv5">
-<!ENTITY options.proxy.nameresolution "Vekil üzerindeki ana makine adlarını çözme">
+<!ENTITY options.proxy.socks4 "SOCKS4">
+<!ENTITY options.proxy.socks5 "SOCKS5">
+<!ENTITY options.proxy.nameresolution "Resolve hostnames on remote proxy">
 <!ENTITY options.proxy.host "Host:">
 <!ENTITY options.proxy.port "Port:">
 
@@ -187,9 +190,9 @@ Bu sebeple, Sieve sunucu adı sizin IMAP sunucu adınızla aynıdır.">
 
 
 <!ENTITY list.badcert
-  "Mail sunucunuz kendini geçerli olmayan bilgiyle tanımlamaya çalıştı.">
+  "Secure connection failed. The mail server identified itself with a bad certificate.">
 <!ENTITY list.badcert.error
-"Bu sunucuya genellikle sorunsuz bağlanırsanız, bu hata birinin sunucuyu taklit etmeye çalıştığı anlamına gelebilir. Bu sunucunun, güvenilir tanımlamayı kullanmamasının iyi bir nedeni olduğunu bilmiyorsanız, devam etmeyin.">
+  "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server. Do not continue unless you know there is a good reason why this server does not use trusted identification.">
 <!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "Devam Et">
 <!ENTITY list.badcert.abort "İptal Et">
@@ -254,18 +257,18 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Check that you are connected to the internet, click ‘Go Online’ and try again.">
+"Thunderbird is currently in offline mode. Check that you are connected to the Internet and select ‘Go Online’ or uncheck ‘Work Offline’ from the File menu and try again.">
 <!ENTITY status.offline.go "Çevrimiçi Ol">
 
 
 <!ENTITY status.connectivity.loss.description
-"Server terminated unexpectedly the connection, click on ‘Reconnect’ to try again.">
+"The server unexpectedly closed the connection. Select ‘Reconnect’ to try again.">
 <!ENTITY status.connectivity.loss.reconnect "Yeniden Bağlan">
 
 <!ENTITY status.warning.ignore "Yoksay">
 <!ENTITY status.warning.reconnect "Yeniden Bağlan">
 <!ENTITY status.warning
-  "“ManageSieve” not configured for this account. Go to Tools → Sieve Message Filters to enable “ManageSieve”.">
+  "“ManageSieve” is not configured for this account. To enable “ManageSieve”, select ‘Sieve Message Filters’ in the ‘Tools’ menu.">
 
 <!ENTITY status.error.reconnect "Yeniden Bağlan">
 <!ENTITY status.error "Sunucu bir hata bildirdiği için son komut başarısız oldu:">

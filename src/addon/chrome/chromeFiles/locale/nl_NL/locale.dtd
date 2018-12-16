@@ -89,7 +89,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.editor.indention.policy.tabs "alleen tabs">
 
 <!ENTITY options.editor.tabs.caption "Tab-afhandeling">
-<!ENTITY options.editor.tabs.description "Teksteditor met automatische inspringing heeft de noodzaak van een Tab-toets vervangen, maar er zijn veel editors die standaard tabs gebruiken vanwege historische redenen.">
+<!ENTITY options.editor.tabs.description "Text editors with automatic indenting replaced the need for a Tab key. But many editors default to tabs due to historical reasons.">
 <!ENTITY options.editor.tabs.width "Tab-breedte">
 
 <!ENTITY options.debug.warning
@@ -137,7 +137,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.account.sieve
 "Sieve is een krachtige scripttaal voor het server-side filteren van e-mail.">
 <!ENTITY options.account.activate
-"Do you want to enable managing Sieve Scripts for this account?">
+"Do you like to enable “ManageSieve” this account?">
 <!ENTITY options.account.activate.yes "Ja, Sieve-scripts voor deze account beheren:">
 <!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
 <!ENTITY options.account.filters "Edit Filters…">
@@ -151,14 +151,17 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.proxy.description
 "In plaats van een directe verbinding kunt u een SOCKS-proxy gebruiken om transparant en veilig langs een firewall te komen.">
 <!ENTITY options.proxy.description.nameresolution
-"Met SCOKSv4 worden hostnamen altijd omgezet op de lokale machine. SOCKSv5 ondersteunt ook omzetten van hostnamen door de SOCKS-proxy. Als u de SOCKS-proxy vertrouwt, dan wordt het laatste als veiliger beschouwd en zou dat de voorkeur moeten hebben.">
+"SOCKS4 always resolves hostnames only on the local machine.
+SOCKS5 supports both resolving on the remote SOCKS proxy as well as resolving on the local machine.
+
+You should prefer SOCKS5 with remote name resolution, if your remote DNS is more trustworthy than the local DNS.">
 <!ENTITY options.proxy.description.localhost
 "On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
 <!ENTITY options.proxy.direct "Directe verbinding">
 <!ENTITY options.proxy.default "Standaard proxy-configuratie">
-<!ENTITY options.proxy.socks4 "SOCKSv4">
-<!ENTITY options.proxy.socks5 "SOCKSv5">
-<!ENTITY options.proxy.nameresolution "Hostnamen op de proxy-server omzetten">
+<!ENTITY options.proxy.socks4 "SOCKS4">
+<!ENTITY options.proxy.socks5 "SOCKS5">
+<!ENTITY options.proxy.nameresolution "Resolve hostnames on remote proxy">
 <!ENTITY options.proxy.host "Host:">
 <!ENTITY options.proxy.port "Poort:">
 
@@ -187,13 +190,9 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 
 
 <!ENTITY list.badcert
-  "Uw e-mailserver probeert zichzelf te identificeren met ongeldige gegevens.">
+  "Secure connection failed. The mail server identified itself with a bad certificate.">
 <!ENTITY list.badcert.error
-"Als u normaal gesproken zonder problemen met deze server kunt verbinden,
-kan deze fout betekenen dat iemand probeert de server na te bootsen. 
-
-Ga alleen verder als u op de hoogte bent waarom deze server geen vertrouwde
-identificatie gebruikt.">
+  "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server. Do not continue unless you know there is a good reason why this server does not use trusted identification.">
 <!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "Doorgaan">
 <!ENTITY list.badcert.abort "Afbreken">
@@ -258,18 +257,18 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Check that you are connected to the internet, click ‘Go Online’ and try again.">
+"Thunderbird is currently in offline mode. Check that you are connected to the Internet and select ‘Go Online’ or uncheck ‘Work Offline’ from the File menu and try again.">
 <!ENTITY status.offline.go "Online gaan">
 
 
 <!ENTITY status.connectivity.loss.description
-"Server terminated unexpectedly the connection, click on ‘Reconnect’ to try again.">
+"The server unexpectedly closed the connection. Select ‘Reconnect’ to try again.">
 <!ENTITY status.connectivity.loss.reconnect "Opnieuw verbinden">
 
 <!ENTITY status.warning.ignore "Negeren">
 <!ENTITY status.warning.reconnect "Opnieuw verbinden">
 <!ENTITY status.warning
-  "“ManageSieve” not configured for this account. Go to Tools → Sieve Message Filters to enable “ManageSieve”.">
+  "“ManageSieve” is not configured for this account. To enable “ManageSieve”, select ‘Sieve Message Filters’ in the ‘Tools’ menu.">
 
 <!ENTITY status.error.reconnect "Opnieuw verbinden">
 <!ENTITY status.error "De laatste opdracht is mislukt, omdat de server een fout meldde:">

@@ -189,9 +189,9 @@ You should prefer SOCKS5 with remote name resolution, if your remote DNS is more
 
 
 <!ENTITY list.badcert
-  "Secure connection failed. The mail server identified itself with a bad certificate.">
+  "A biztonságos kapcsolat sikertelen. A levélkiszolgáló rossz tanúsítvánnyal rendelkezik.">
 <!ENTITY list.badcert.error
-  "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server. Do not continue unless you know there is a good reason why this server does not use trusted identification.">
+  "Ha általában probléma nélkül tud kapcsolódni ehhez a kiszolgálóhoz, akkor ez a hiba azt jelentheti, hogy valaki leutánozta a kiszolgálót. Ne folytassa, kivéve ha tudja, hogy jó oka van annak, hogy ez a kiszolgáló nem megbízható azonosítást használ.">
 <!ENTITY list.badcert.remember "A döntés megjegyzése">
 <!ENTITY list.badcert.ignore "Folytatás">
 <!ENTITY list.badcert.abort "Megszakít">

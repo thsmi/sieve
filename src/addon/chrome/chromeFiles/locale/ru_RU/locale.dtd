@@ -91,7 +91,7 @@
 <!ENTITY options.editor.indention.policy.tabs "Tabs Only">
 
 <!ENTITY options.editor.tabs.caption "Tab Handling">
-<!ENTITY options.editor.tabs.description "Text editor with automatic indenting replaced the need for a Tab key, but there are many editors which default to tabs due to historic reasons.">
+<!ENTITY options.editor.tabs.description "Text editors with automatic indenting replaced the need for a Tab key. But many editors default to tabs due to historical reasons.">
 <!ENTITY options.editor.tabs.width "Tab Width">
 
 <!ENTITY options.debug.warning
@@ -141,7 +141,7 @@
 <!ENTITY options.account.sieve
 "Sieve - это мощный язык для создания скриптов фильтрации почты на стороне сервера.">
 <!ENTITY options.account.activate
-"Do you want to enable managing Sieve Scripts for this account?">
+"Do you like to enable “ManageSieve” this account?">
 <!ENTITY options.account.activate.yes "Да, управлять скриптами Sieve для этой учётной записи:">
 <!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
 <!ENTITY options.account.filters "Edit Filters…">
@@ -156,16 +156,17 @@
 "Вместо прямого соединения Вы можете использовать SOCKS прокси, чтобы прозрачно и безопасно 
 пройти через межсетевой экран.">
 <!ENTITY options.proxy.description.nameresolution
-"При SOCKSv4 разрешение имен хостов всегда происходит на локальной машине. SOCKSv5 к тому же 
-поддерживает разрешение имен хостов через SOCKS прокси. Если Вы доверяете SOCKSv5 
-прокси, то ему следует отдавать предпочтение, так как последний считается более безопасным.">
+"SOCKS4 always resolves hostnames only on the local machine.
+SOCKS5 supports both resolving on the remote SOCKS proxy as well as resolving on the local machine.
+
+You should prefer SOCKS5 with remote name resolution, if your remote DNS is more trustworthy than the local DNS.">
 <!ENTITY options.proxy.description.localhost
 "On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
 <!ENTITY options.proxy.direct "Прямое соединение">
 <!ENTITY options.proxy.default "Конфигурация прокси по умолчанию">
-<!ENTITY options.proxy.socks4 "SOCKSv4">
-<!ENTITY options.proxy.socks5 "SOCKSv5">
-<!ENTITY options.proxy.nameresolution "Разрешать имена хостов на прокси">
+<!ENTITY options.proxy.socks4 "SOCKS4">
+<!ENTITY options.proxy.socks5 "SOCKS5">
+<!ENTITY options.proxy.nameresolution "Resolve hostnames on remote proxy">
 <!ENTITY options.proxy.host "Хост:">
 <!ENTITY options.proxy.port "Порт:">
 
@@ -194,12 +195,9 @@
 
 
 <!ENTITY list.badcert
-  "Ваш почтовый сервер использует недействительный сертификат.">
+  "Secure connection failed. The mail server identified itself with a bad certificate.">
 <!ENTITY list.badcert.error
-"Если обычно Вы соединяетесь с данным сервером без проблем, то эта ошибка может 
-означать, что кто-то пытается подменить этот сервер другим.
-
-В этом случае Вам не следует продолжать соединение.">
+  "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server. Do not continue unless you know there is a good reason why this server does not use trusted identification.">
 <!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "Продолжить">
 <!ENTITY list.badcert.abort "Прекратить">
@@ -264,18 +262,18 @@ Or choose ‘Advanced’ to configure the account manually.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Check that you are connected to the internet, click ‘Go Online’ and try again.">
+"Thunderbird is currently in offline mode. Check that you are connected to the Internet and select ‘Go Online’ or uncheck ‘Work Offline’ from the File menu and try again.">
 <!ENTITY status.offline.go "Перейти в онлайн">
 
 
 <!ENTITY status.connectivity.loss.description
-"Server terminated unexpectedly the connection, click on ‘Reconnect’ to try again.">
+"The server unexpectedly closed the connection. Select ‘Reconnect’ to try again.">
 <!ENTITY status.connectivity.loss.reconnect "Переподключить">
 
 <!ENTITY status.warning.ignore "Игнорировать">
 <!ENTITY status.warning.reconnect "Переподключить">
 <!ENTITY status.warning
-  "“ManageSieve” not configured for this account. Go to Tools → Sieve Message Filters to enable “ManageSieve”.">
+  "“ManageSieve” is not configured for this account. To enable “ManageSieve”, select ‘Sieve Message Filters’ in the ‘Tools’ menu.">
 
 <!ENTITY status.error.reconnect "Переподключить">
 <!ENTITY status.error "Последняя команда не выполнена, так как сервер сообщил об ошибке:">

@@ -1,16 +1,15 @@
 <div>
   <div id="test42">
     <div class="custom-control custom-radio">
-      <input type="radio" id="sivUniqueHeader" name="sieve-unique" value=":header" class="custom-control-input" />
-      <label class="custom-control-label" for="sivUniqueHeader">
+      <input type="radio" id="cbxUniqueHeader" name="sieve-unique" class="custom-control-input" />
+      <label class="custom-control-label" for="cbxUniqueHeader">
           ... extracted from the header named:
       </label>
       <small class="form-text text-muted">
-        By default the message id will be extracted from the "message-id" header.
-        It is assumed but not guaranteed to be gobally unique
+        Often mailinglist or ticket system use special headers to track duplicates.
       </small>
 
-      <input id="sivUniqueHeaderName" type="text" class="form-control col-lg-8" />
+      <input id="txtUniqueHeader" type="text" class="form-control col-lg-8" />
     </div>
   </div>
 </div>

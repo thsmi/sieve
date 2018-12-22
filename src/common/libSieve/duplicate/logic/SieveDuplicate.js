@@ -138,9 +138,6 @@
     node: "test/duplicate/unique",
     type: "test/duplicate/unique",
 
-    // if omitted unique falls back to use the message-id
-    value: ':header "message-id"',
-
     items: ["test/duplicate/unique/"]
   });
 

@@ -19,58 +19,62 @@
   /* global $: false */
   /* global SieveTestDialogBoxUI */
 
-  /* global SieveRadioGroupWidget */
-  /* global SieveRadioGroupItemWidget */
+  /* global SieveOverlayWidget */
+  /* global SieveOverlayItemWidget */
 
   /* global SieveDesigner */
 
   /**
-   * Provides a widget for the unique tags
-   */
-  class SieveUniqueWidget extends SieveRadioGroupWidget {
-
-    /**
-     * @inheritDoc
-     */
-    constructor(selector) {
-      super("test/duplicate/unique/", selector);
-    }
-  }
-
-  /**
    * An abstract unique UI implementation.
    */
-  class SieveAbstractUniqueUI extends SieveRadioGroupItemWidget {
+  class SieveAbstractUniqueUI extends SieveOverlayItemWidget {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "test/duplicate/unique/";
     }
+  }
+
+  /**
+   * Provides a UI for the unique id tag.
+   */
+  class SieveUniqueDefaultUI extends SieveAbstractUniqueUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
-    getName() {
-      return "sieve-unique";
+    static nodeName() {
+      return "test/duplicate/unique/default";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
-    onSave(sivElement) {
+    getTemplate() {
+      return "./duplicate/templates/SieveUniqueDefault.html";
+    }
 
-      // We prime the content type with a fake element.
-      // This makes updating the strings easier.
-      //
-      // But we skip if the lement is already primed.
+    /**
+     * @inheritdoc
+     */
+    load(sivElement) {
 
-      if (!sivElement._element.current || sivElement._element.current.nodeName() !== this.constructor.nodeName()) {
-        sivElement.setValue(
-          "" + this.getRadioItem().find("input[name='" + this.getName() + "']").val() + ' ""');
-      }
+      if (sivElement.getElement("unique").hasElement())
+        return;
 
+      $("#cbxUniqueDefault").prop("checked", true);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    save(sivElement) {
+      if (!$("#cbxUniqueDefault").prop("checked"))
+        return;
+
+      sivElement.getElement("unique").setElement();
     }
   }
 
@@ -80,50 +84,51 @@
   class SieveUniqueIdUI extends SieveAbstractUniqueUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "test/duplicate/unique/id";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./duplicate/templates/SieveUniqueId.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     load(sivElement) {
-      $("#sivUniqueIdName").val("");
 
-      super.load(sivElement);
+      $("#txtUniqueId").focus(() => { $('#cbxUniqueId').prop('checked', true); });
+      $("#txtUniqueId").val("");
+
+      let elm = sivElement.getElement("unique");
+
+      if (!elm.isNode(this.constructor.nodeName()))
+        return;
+
+      $("#cbxUniqueId").prop("checked", true);
+      $("#txtUniqueId").val(elm.getElement("uniqueid").value());
     }
 
-
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
-    onLoad(sivElement) {
+    save(sivElement) {
 
-      super.onLoad(sivElement);
+      if (!$("#cbxUniqueId").prop("checked"))
+        return;
 
-      $("#sivUniqueIdName").val(
-        sivElement._element.current.getElement("uniqueid").value());
-    }
+      let elm = sivElement.getElement("unique");
 
+      if (!elm.isNode(this.constructor.nodeName())) {
+        elm.setElement(':uniqueid ""');
+      }
 
-    /**
-     * @inheritDoc
-     */
-    onSave(sivElement) {
-
-      super.onSave(sivElement);
-
-      sivElement._element.current.getElement("uniqueid").value(
-        $("#sivUniqueIdName").val());
+      elm.getElement("uniqueid").value($("#txtUniqueId").val());
     }
   }
 
@@ -133,68 +138,53 @@
   class SieveUniqueHeaderUI extends SieveAbstractUniqueUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "test/duplicate/unique/header";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./duplicate/templates/SieveUniqueHeader.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     load(sivElement) {
-      $("#sivUniqueHeaderName").val("");
 
-      super.load(sivElement);
-    }
+      $("#txtUniqueHeader").focus(() => { $('#cbxUniqueHeader').prop('checked', true); });
+      $("#txtUniqueHeader").val("");
 
+      let elm = sivElement.getElement("unique");
 
-    /**
-     * @inheritDoc
-     */
-    onLoad(sivElement) {
-
-      super.onLoad(sivElement);
-
-      if (sivElement.isDefaultValue()) {
-        $("#sivUniqueHeaderName").val(
-          sivElement._element.default.getElement("header").value());
-
+      if (!elm.isNode(this.constructor.nodeName()))
         return;
-      }
 
-      $("#sivUniqueHeaderName").val(
-        sivElement._element.current.getElement("header").value());
+      $("#cbxUniqueHeader").prop("checked", true);
+      $("#txtUniqueHeader").val(elm.getElement("header").value());
     }
-
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
-    onSave(sivElement) {
+    save(sivElement) {
 
-      let value = $("#sivUniqueHeaderName").val();
+      if (!$("#cbxUniqueHeader").prop("checked"))
+        return;
 
-      if (sivElement.isDefaultValue()) {
+      let elm = sivElement.getElement("unique");
 
-        let defaultValue = sivElement._element.default.getElement("header").value();
-
-        if ( value === defaultValue)
-          return;
+      if (!elm.isNode(this.constructor.nodeName())) {
+        elm.setElement(':header ""');
       }
 
-      super.onSave(sivElement);
-
-      sivElement._element.current.getElement("header").value(value);
+      elm.getElement("header")
+        .value($("#txtUniqueHeader").val());
     }
-
   }
 
 
@@ -266,12 +256,11 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
-
-      (new SieveUniqueWidget("#sivUnique"))
-        .init(this.unique());
+      (new SieveOverlayWidget("test/duplicate/unique/", "#sivUnique"))
+        .init(this.getSieve());
 
       $('input:radio[name="sieve-duplicate-handle"][value="' + this.enable("handle") + '"]').attr("checked", "checked");
       $('input:radio[name="sieve-duplicate-seconds"][value="' + this.enable("seconds") + '"]').attr("checked", "checked");
@@ -290,12 +279,12 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
-      (new SieveUniqueWidget("#sivUnique"))
-        .save(this.unique());
+      (new SieveOverlayWidget("test/duplicate/unique/", "#sivUnique"))
+        .save(this.getSieve());
 
       let state = {};
       state["handle"] = ($("input[type='radio'][name='sieve-duplicate-handle']:checked").val() === "true");
@@ -322,14 +311,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./duplicate/templates/SieveDuplicateTestUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
 
@@ -345,6 +334,7 @@
   if (!SieveDesigner)
     throw new Error("Could not register Duplicate Extension");
 
+  SieveDesigner.register2(SieveUniqueDefaultUI);
   SieveDesigner.register2(SieveUniqueIdUI);
   SieveDesigner.register2(SieveUniqueHeaderUI);
 

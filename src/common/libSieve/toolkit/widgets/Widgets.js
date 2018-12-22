@@ -42,7 +42,9 @@
      *   true in case all strings are unique otherwise flase
      */
     isUnique() {
-      return (new Set(this.values()).size !== this.values().length);
+      // We add the values to a set, this guarantees uniquenes
+      // and drops duplicate elements.
+      return (new Set(this.values()).size === this.values().length);
     }
 
     /**
@@ -57,10 +59,10 @@
         if (item.trim() !== "")
           continue;
 
-        return false;
+        return true;
       }
 
-      return true;
+      return false;
     }
 
     /**
@@ -361,7 +363,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getElement() {
       throw new Error("Implement getElement()");
@@ -453,7 +455,7 @@
      * @returns {void}
      */
     onSave(sivElement) {
-      sivElement.setValue(
+      sivElement.setElement(
         this.getActiveItem().attr("data-value"));
     }
 
@@ -488,21 +490,21 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     load(sivElement) {
 
       let element = this.getMenuItem();
       element.click(() => { this.select(); });
 
-      if (this.constructor.nodeName() !== sivElement.nodeName())
+      if (this.constructor.nodeName() !== sivElement.getElement().nodeName())
         return;
 
       this.onLoad(sivElement, element);
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     save(sivElement) {
       let item = this.getActiveItem();
@@ -514,7 +516,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getElement() {
       return $("" + this.selector + " .sivDropDownWidget-menu");
@@ -600,23 +602,23 @@
      * @returns {void}
      */
     onSave(sivElement) {
-      sivElement.setValue(
+      sivElement.setElement(
         this.getRadioItem().find("input[name='" + this.getName() + "']").val());
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     load(sivElement) {
 
-      if (this.constructor.nodeName() !== sivElement.nodeName())
+      if (this.constructor.nodeName() !== sivElement.getElement().nodeName())
         return;
 
       this.onLoad(sivElement);
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     save(sivElement) {
       let item = this.getRadioItem();
@@ -628,7 +630,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getElement() {
       return $("" + this.selector);
@@ -687,7 +689,7 @@
   class SieveOverlayItemWidget extends SieveAbstractItemWidget {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getElement() {
       return $("" + this.selector);
@@ -818,6 +820,96 @@
 
   }
 
+  /**
+   * Provides a numeric widget which is aware of sieves unit field.
+   */
+  class SieveNumericWidget {
+
+    /**
+     * @param {String} selector
+     *   the selector which identifies place holder for the input elements
+     */
+    constructor(selector) {
+      this._selector = selector;
+    }
+
+    /**
+     * Call back which handles a change in the number's unit.
+     *
+     * @param {String} unit
+     *   either a M,K,G or an empty string
+     *
+     * @returns {undefined}
+     */
+    onUnitChanged(unit) {
+      $(this._selector).find(".sieve-numeric-unit")
+        .text($(this._selector).find(`.dropdown-item[data-value="${unit}"] .sieve-unit`).text())
+        .attr("data-value", unit);
+    }
+
+    /**
+     * Called as soon as the element is loaded.
+     * It initializes the dropdowns handlers.
+     *
+     * @param {int} value
+     *   the initial numeric value to set
+     * @param {string} unit
+     *   the initial unit to set
+     *
+     * @returns {undefined}
+     */
+    onInitialized(value, unit) {
+
+      $(this._selector).find(".sieve-numeric-value").val(value);
+      this.onUnitChanged(unit);
+
+      let items = $(this._selector)
+        .find(".dropdown-item");
+
+      let that = this;
+      items.click(function () {
+        that.onUnitChanged($(this).attr("data-value"));
+      });
+    }
+
+    /**
+     * Initializes the current numeric element
+     *
+     * @param {String|SieveString} sivElement
+     *   the string element which should be rendered.
+     * @returns {undefined}
+     */
+    init(sivElement) {
+
+      if (sivElement.nodeName() !== "number")
+        throw new Error("Expected a number but got " + sivElement.nodeName());
+
+      let value = sivElement.getValue();
+      let unit = sivElement.getUnit();
+
+      $(this._selector).load("./toolkit/templates/SieveNumericWidget.html #template", () => {
+        this.onInitialized(value, unit);
+      });
+
+    }
+
+    /**
+     * Saves the current element.
+     *
+     * @param {SieveString} sivElement
+     *   the string element which was rendered and should be saved.
+     * @returns {undefined}
+     */
+    save(sivElement) {
+
+      sivElement.setValue(
+        $(this._selector).find(".sieve-numeric-value").val());
+      sivElement.setUnit(
+        $(this._selector).find(".sieve-numeric-unit").attr("data-value"));
+    }
+
+  }
+
   exports.SieveDropDownWidget = SieveDropDownWidget;
   exports.SieveDropDownItemWidget = SieveDropDownItemWidget;
 
@@ -830,5 +922,6 @@
   exports.SieveOverlayItemWidget = SieveOverlayItemWidget;
 
   exports.SieveStringWidget = SieveStringWidget;
+  exports.SieveNumericWidget = SieveNumericWidget;
 
 })(window);

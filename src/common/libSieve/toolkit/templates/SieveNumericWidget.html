@@ -1,0 +1,26 @@
+<div id="template">
+  <div class="input-group col-md-8">
+    <input type="text" class="form-control sieve-numeric-value text-right"
+           aria-label="Text input with dropdown button"
+           type="number" min="0" step="1"> </input>
+    <div class="input-group-append">
+      <button class="btn btn-outline-secondary dropdown-toggle sieve-numeric-unit" type="button" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false">Dropdown</button>
+      <div class="dropdown-menu">
+          <button class="dropdown-item" type="button" data-value="">
+              <small class="text-muted sieve-unit">No Unit</small>
+          </button>
+          <div class="dropdown-divider"> </div>
+          <button class="dropdown-item" type="button" data-value="K">2^10
+              <small class="text-muted">- <span class="sieve-unit">Kilobytes</span></small>
+          </button>
+          <button class="dropdown-item" type="button" data-value="M">2^20
+              <small class="text-muted">- <span class="sieve-unit">Megabytes</span></small>
+          </button>
+          <button class="dropdown-item" type="button" data-value="G">2^30
+              <small class="text-muted">- <span class="sieve-unit">Gigabytes</span></small>
+          </button>
+      </div>
+    </div>
+  </div>
+</div>

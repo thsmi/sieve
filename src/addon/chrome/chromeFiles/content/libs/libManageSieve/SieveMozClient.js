@@ -13,11 +13,6 @@
 
   "use strict";
 
-  // const LOG_REQUEST = (1 << 0);
-  const LOG_RESPONSE = (1 << 1);
-  const LOG_STATE = (1 << 2);
-  const LOG_STREAM = (1 << 3);
-
   /* global Components */
 
   const Cc = Components.classes;
@@ -29,6 +24,9 @@
   const { SieveAbstractClient } = require("./SieveAbstractClient.js");
   const { SieveMozResponseParser } = require("./SieveMozResponseParser.js");
   const { SieveMozRequestBuilder } = require("./SieveMozRequestBuilder.js");
+
+  // eslint-disable-next-line no-magic-numbers
+  const LOG_RESPONSE = (1 << 1);
 
   /**
    *  This realizes the abstract sieve implementation by using
@@ -64,7 +62,7 @@
    * It also normalizes all linebreaks. In sieve all linebreaks have
    * to be \r\n
    *
-   * @param {String} str
+   * @param {string} str
    *   the string to convert.
    *
    * @returns {byte[]}
@@ -72,6 +70,8 @@
    */
   Sieve.prototype.jsStringToByteArray = function (str) {
     // cleanup linebreaks...
+
+    // eslint-disable-next-line no-control-regex
     str = str.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
 
     return Array.prototype.slice.call(
@@ -119,7 +119,7 @@
    *
    * @param {Function} callback
    *   the callback which should be invoked.
-   * @return {Boolean}
+   * @returns {boolean}
    *   a self reference.
    **/
   Sieve.prototype.startTLS
@@ -138,7 +138,7 @@
   /**
    * An internal callback which is triggered when the request timeout timer should be started.
    * This is typically when a new request is about to be send to the server.
-   * @returns {void}
+   *
    */
   Sieve.prototype.onStartTimeout
     = function () {
@@ -161,7 +161,7 @@
   /**
    * An internal callback wich is triggered when the request timeout timer should be stopped.
    * This is typically when a response was received and the request was completed.
-   * @returns {void}
+   *
    */
   Sieve.prototype.onStopTimeout
     = function () {
@@ -176,7 +176,7 @@
 
   /**
    * Called when the idle timer should be started or restarted
-   * @returns {void}
+   *
    */
   Sieve.prototype.onStartIdle
     = function () {
@@ -199,7 +199,7 @@
 
   /**
    * Called when the idle timer should be stopped.
-   * @returns {void}
+   *
    */
   Sieve.prototype.onStopIdle
     = function () {
@@ -216,7 +216,7 @@
    *
    * @param {nsITimer} timer
    *   the timer which caused this callback.
-   * @returns {void}
+   *
    */
   Sieve.prototype.notify
     = function (timer) {
@@ -250,11 +250,11 @@
   /**
    * Connects to a ManageSieve server.
    *
-   * @param {String} host
+   * @param {string} host
    *   The target hostname or IP address as String
    * @param {Int} port
    *   The target port as Interger
-   * @param {Boolean} secure
+   * @param {boolean} secure
    *   If true, a secure socket will be created. This allows switching to a secure
    *   connection.
    * @param {Components.interfaces.nsIBadCertListener2} badCertHandler
@@ -285,7 +285,7 @@
       this.idleTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
       this.timeoutTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
 
-      this.getLogger().log("Connecting to " + this.host + ":" + this.port + " ...", LOG_STATE);
+      this.getLogger().logState("Connecting to " + this.host + ":" + this.port + " ...");
 
       // If we know the proxy setting, we can do a shortcut...
       if (proxy) {
@@ -293,7 +293,7 @@
         return;
       }
 
-      this.getLogger().log("Lookup Proxy Configuration for x-sieve://" + this.host + ":" + this.port + " ...", LOG_STATE);
+      this.getLogger().logState("Lookup Proxy Configuration for x-sieve://" + this.host + ":" + this.port + " ...");
 
       let ios = Cc["@mozilla.org/network/io-service;1"]
         .getService(Ci.nsIIOService);
@@ -311,17 +311,19 @@
    * @private
    * @param {*} aRequest
    * @param {*} aURI
-   * @param {*} aProxyInfo
+   * @param {*} [aProxyInfo]
+   *   the proxy information from the lookup, if omitted or null a direct
+   *   connection will be used.
    * @param {*} aStatus
-   * @returns {undefined}
+   *
    **/
   Sieve.prototype.onProxyAvailable
     = function (aRequest, aURI, aProxyInfo, aStatus) {
 
       if (aProxyInfo)
-        this.getLogger().log("Using Proxy: [" + aProxyInfo.type + "] " + aProxyInfo.host + ":" + aProxyInfo.port, LOG_STATE);
+        this.getLogger().logState("Using Proxy: [" + aProxyInfo.type + "] " + aProxyInfo.host + ":" + aProxyInfo.port);
       else
-        this.getLogger().log("Using Proxy: Direct", LOG_STATE);
+        this.getLogger().logState("Using Proxy: Direct");
 
 
       let transportService =
@@ -362,7 +364,7 @@
         if (ex.name !== "NS_ERROR_XPC_NOT_ENOUGH_ARGS")
           throw ex;
 
-        this.getLogger().log("Falling back to legacy stream pump initalization ...", LOG_STATE);
+        this.getLogger().logState("Falling back to legacy stream pump initalization ...");
         pump.init(stream, -1, -1, 5000, 2, true);
       }
 
@@ -387,14 +389,14 @@
       this.idleTimer = null;
       this.timeoutTimer = null;
 
-      this.getLogger().log("Disconnected ...", LOG_STATE);
+      this.getLogger().logState("Disconnected ...");
     };
 
   Sieve.prototype.onStopRequest
     = function (request, context, status) {
       // this method is invoked anytime when the socket connection is closed
       // ... either by going to offlinemode or when the network cable is disconnected
-      this.getLogger().log("Stop request received ...", LOG_STATE);
+      this.getLogger().logState("Stop request received ...");
 
       // we can ignore this if we are already disconnected.
       if (!this.socket)
@@ -412,7 +414,7 @@
 
   Sieve.prototype.onStartRequest
     = function (request, context) {
-      this.getLogger().log("Connected to " + this.host + ":" + this.port + " ...", LOG_STATE);
+      this.getLogger().logState("Connected to " + this.host + ":" + this.port + " ...");
     };
 
   Sieve.prototype.onDataAvailable
@@ -424,13 +426,13 @@
 
       let data = binaryInStream.readByteArray(count);
 
-      this.getLogger().log("Server -> Client [Byte Array]\n" + data, LOG_STREAM);
+      this.getLogger().logStream("Server -> Client [Byte Array]\n" + data);
 
       if (this.getLogger().isLoggable(LOG_RESPONSE)) {
 
         let byteArray = data.slice(0, data.length);
 
-        this.getLogger().log("Server -> Client\n", this.convertToString(byteArray));
+        this.getLogger().logResponse("Server -> Client\n", this.convertToString(byteArray));
       }
 
       SieveAbstractClient.prototype.onDataReceived.call(this, data);
@@ -442,7 +444,7 @@
       // Force String to UTF-8...
       let output = this.jsStringToByteArray(data);
 
-      this.getLogger().log("Client -> Server [Byte Array]:\n" + output, LOG_STREAM);
+      this.getLogger().logStream("Client -> Server [Byte Array]:\n" + output);
 
       this.binaryOutStream.writeByteArray(output, output.length);
 

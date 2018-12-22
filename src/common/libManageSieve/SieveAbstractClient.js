@@ -30,12 +30,6 @@
 
   const DEFAULT_TIMEOUT = 20000;
 
-  const DEBUG_FLAG_STATUS = 2;
-  const DEBUG_FLAG_CLIENT_SERVER = 0;
-
-  const DEBUG_STATUS = (1 << DEBUG_FLAG_STATUS);
-  const DEBUG_CLIENT_SERVER = (1 << DEBUG_FLAG_CLIENT_SERVER);
-
   /**
    * An abstract implemenation for the manage sieve protocol.
    *
@@ -53,7 +47,7 @@
    * Mozilla's Modules, Node's Require and the new ES imports are mostly
    * incompatible to each other.
    *
-   * @constructor
+   * @class
    */
   function SieveAbstractClient() {
     this.host = null;
@@ -121,14 +115,14 @@
    *
    * You should override these defaults as soon as possible.
    *
-   * @return {Struct}
+   * @returns {Struct}
    *   an associative array structure indecating supported sieve command.
    *   Unsupported commands are indecated by a null, disabled by false value...
    *
    * @example
-   *   if (sieve.getCompatiblity().putscript)
+   *   if (sieve.getCompatiblity().putscript) {
    *     // put script command supported...
-   *
+   *   }
    */
   SieveAbstractClient.prototype.getCompatibility
     = function () {
@@ -151,7 +145,7 @@
   /**
    * Checks if the connection to the server is still alive and can be used to send
    * and receive messages
-   * @return {Boolean}
+   * @returns {boolean}
    *   true in case the connection is alive otherwise false
    */
   SieveAbstractClient.prototype.isAlive
@@ -170,9 +164,9 @@
    * sending a startTLSRequest. Invoke this method imediately after the server
    * confirms switching to TLS.
    *
-   * @param {function} callback
+   * @param {Function} callback
    *   the callback which is invoked after a successfully switch to tls.
-   * @return {SieveAbstractClient}
+   * @returns {SieveAbstractClient}
    *   a self reference
    **/
   SieveAbstractClient.prototype.startTLS
@@ -237,7 +231,6 @@
   /**
    * @abstract
    * Internal method trigged after a request was completely processed.
-   * @returns {void}
    */
   SieveAbstractClient.prototype.onStartIdle
     = function () {
@@ -247,7 +240,6 @@
   /**
    * @abstract
    * Internal method triggered when a new request is processed.
-   * @returns {void}
    */
   SieveAbstractClient.prototype.onStopIdle
     = function () {
@@ -363,11 +355,11 @@
   /**
    * Connects to a ManageSieve server.
    *
-   * @param {String} host
+   * @param {string} host
    *   The target hostname or IP address as String
-   * @param {Int} port
+   * @param {int} port
    *   The target port as Interger
-   * @param {Boolean} secure
+   * @param {noolean} secure
    *   If true, a secure socket will be created. This allows switching to a secure
    *   connection.
    * @param {Components.interfaces.nsIBadCertListener2} badCertHandler
@@ -397,14 +389,12 @@
    * Need to be overwritten. The current implementation is a stub
    * which take care about stopping the timeouts.
    *
-   * @returns {void}
-   *
    * @abstract
    */
   SieveAbstractClient.prototype.disconnect
     = function () {
 
-      this.getLogger().log("Disconnecting " + this.host + ":" + this.port + "...", DEBUG_STATUS);
+      this.getLogger().logState("Disconnecting " + this.host + ":" + this.port + "...");
 
       // free requests...
       // this.requests = new Array();
@@ -417,7 +407,7 @@
 
       this.onStopIdle();
 
-      this.getLogger().log("libManageSieve/Sieve.js:\nOnIdle", DEBUG_STATUS);
+      this.getLogger().logState("libManageSieve/Sieve.js:\nOnIdle");
 
       if (this.listener && this.listener.onIdle)
         this.listener.onIdle();
@@ -428,7 +418,7 @@
 
       this.onStopTimeout();
 
-      this.getLogger().log("libManageSieve/Sieve.js:\nOnTimeout", DEBUG_STATUS);
+      this.getLogger().logState("libManageSieve/Sieve.js:\nOnTimeout");
 
       // clear receive buffer and any pending request...
       this.data = null;
@@ -510,10 +500,9 @@
           // request could be fragmented or something else, as it's greedy,
           // we don't care about any exception. We just log them in oder
           // to make debugging easier....
-          if (this.getLogger().isLoggable(DEBUG_STATUS)) {
-            // console.error(ex);
-            this.getLogger().log("Parsing Warning in libManageSieve/Sieve.js:\n" + ex.toString());
-            this.getLogger().log(ex.stack);
+          if (this.getLogger().isLevelState()) {
+            this.getLogger().logState("Parsing Warning in libManageSieve/Sieve.js:\n" + ex.toString());
+            this.getLogger().logState(ex.stack);
           }
 
           // a greedy request might or might not get an request, thus
@@ -573,7 +562,7 @@
 
       this._unlockMessageQueue(requests);
 
-      this.getLogger().log("Skipping Event Queue", DEBUG_STATUS);
+      this.getLogger().logState("Skipping Event Queue");
     };
 
   SieveAbstractClient.prototype._sendRequest
@@ -596,7 +585,7 @@
 
       let output = this.requests[idx].getNextRequest(this.createRequestBuilder()).getBytes();
 
-      this.getLogger().log("Client -> Server:\n" + output, DEBUG_CLIENT_SERVER);
+      this.getLogger().logRequest("Client -> Server:\n" + output);
 
       this.onSend(output);
 

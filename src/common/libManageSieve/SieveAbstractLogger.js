@@ -15,6 +15,20 @@
 
   const TWO_CHARS = 2;
   const THREE_CHARS = 3;
+
+  // eslint-disable-next-line no-magic-numbers
+  const LOG_REQUEST = (1 << 0);
+  // eslint-disable-next-line no-magic-numbers
+  const LOG_RESPONSE = (1 << 1);
+  // eslint-disable-next-line no-magic-numbers
+  const LOG_STATE = (1 << 2);
+  // eslint-disable-next-line no-magic-numbers
+  const LOG_STREAM = (1 << 3);
+  // eslint-disable-next-line no-magic-numbers
+  const LOG_SESSION_INFO = (1 << 4);
+
+
+
   /**
    * Implements a common and platform independent logging interface.
    * The log level is interpreted as a bit filed with turns logging
@@ -27,7 +41,7 @@
 
     /**
      * Creates a new instance
-     * @param {String} [prefix]
+     * @param {string} [prefix]
      *   an optional prefix for this logger.
      */
     constructor(prefix) {
@@ -39,9 +53,66 @@
     }
 
     /**
+     * Logs a request related information
+     * @param {string} message
+     *   the request status to log.
+     * @returns {SieveAbstractLogger}
+     *   a self reference
+     */
+    logRequest(message) {
+      this.log(message, LOG_REQUEST);
+    }
+
+    /**
+     * Logs response related information
+     * @param {string} message
+     *   the response status to log
+     * @returns {SieveAbstractLogger}
+     *   a self reference
+     */
+    logResponse(message) {
+      this.log(message, LOG_RESPONSE);
+    }
+
+    /**
+     * Logs state machine information.
+     * @param {string} message
+     *   the stat information to log.
+     * @returns {SieveAbstractLogger}
+     *   a self reference
+     */
+    logState(message) {
+      this.log(message, LOG_STATE);
+    }
+
+    /**
+     * Dumps raw stream data to the log
+     * @param {string} message
+     *   the stream information to log.
+     * @returns {SieveAbstractLogger}
+     *   a self reference
+     */
+    logStream(message) {
+      this.log(message, LOG_STREAM);
+      return this;
+    }
+
+    /**
+     * Logs information about the session.
+     * @param {string} message
+     *   the message to log.
+     * @returns {SieveAbstractLogger}
+     *   a self reference
+     */
+    logSession(message) {
+      this.log(message, LOG_SESSION_INFO);
+      return this;
+    }
+
+    /**
      * Logs the given message to the browser console.
      *
-     * @param {String} message
+     * @param {string} message
      *   The message which should be logged
      * @param {int} [level]
      *   the log level. If ommited the message will be always logged.
@@ -52,13 +123,28 @@
       throw new Error("Implement log(" + message + "," + level + ")");
     }
 
+    /**
+     * @returns {boolean}
+     *   true in case state information should be logged otherwise false.
+     */
+    isLevelState() {
+      return this.isLoggable(LOG_STATE);
+    }
+
+    /**
+     * @returns {boolean}
+     *   true in case session information should be logged otherwise false.
+     */
+    isLevelSession() {
+      return this.isLoggable(LOG_SESSION_INFO);
+    }
 
     /**
      * Tests if the loglevel should log.
      *
      * @param {int} level
      *   the level which should be checked.
-     * @return {boolean}
+     * @returns {boolean}
      *   true in case the log level is activated otherwise false
      */
     isLoggable(level) {
@@ -78,7 +164,7 @@
      *
      * @param {int} [level]
      *   the desired loglevel as bit mask.
-     * @return {int}
+     * @returns {int}
      *   the current log level
      */
     level(level) {
@@ -114,7 +200,7 @@
     }
 
     /**
-     * @returns {String}
+     * @returns {string}
      *   the current timestamp as string.
      */
     getTimestamp() {
@@ -130,9 +216,9 @@
     /**
      * Gets and sets the loggers prefix. The prefix is appended to every logmessage
      *
-     * @param {String} [prefix]
+     * @param {string} [prefix]
      *   the new prefix.
-     * @return {String}
+     * @returns {string}
      *   the current prefix.
      */
     prefix(prefix) {

@@ -19,8 +19,6 @@
   const STATE_SERVER_ERROR = 4;
   const STATE_CAPABILITIES = 7;
 
-  const LOG_SESSION_INFO = (1 << 4);
-
   const Cc = Components.classes;
   const Ci = Components.interfaces;
 
@@ -67,7 +65,7 @@
      *
      * @param {SieveAccount} account
      *   a sieve account. this is needed to obtain login informations.
-     * @param {String} [sid]
+     * @param {string} [sid]
      *   a unique Identifier for this Session. Only needed to make debugging easier.
      */
     constructor(account, sid) {
@@ -94,10 +92,10 @@
      * If supported the noop command is used otherwise a capability
      * request is used.
      *
-     * @returns {void}
+     *
      */
     onIdle() {
-      this.getLogger().log("Sending keep alive packet...", (1 << 2));
+      this.getLogger().logState("Sending keep alive packet...");
 
       // as we send a keep alive request, we don't care
       // about the response...
@@ -121,7 +119,7 @@
      * @param {SieveCapabilitiesResponse} response
      *   the initial response which contains the capabilities
      *
-     * @return {void}
+     *
      */
     onInitResponse(response) {
       // establish a secure connection if TLS is enabled and if the Server ...
@@ -159,7 +157,7 @@
      *
      * Deprecated mechanisms like LOGIN are used as last resort
      *
-     * @param {String} mechanism
+     * @param {string} mechanism
      *   the mechanims unique name or the string "default"
      *
      * @returns {SieveAbstractSaslRequest}
@@ -219,7 +217,7 @@
      *
      * @param {SieveCapabilitiesResponse} response
      *   the servers's capabilities.
-     * @returns {void}
+     *
      */
     onAuthenticate(response) {
 
@@ -304,7 +302,7 @@
      * @param {SieveCapabilitiesResponse} response
      *   the initial start tls response.
      *
-     * @returns {void}
+     *
      */
     onStartTLSCompleted() {
       let that = this;
@@ -333,7 +331,7 @@
      *
      * @param {SieveSimpleResponse} response
      *   the servers response to the tls upgrade request.
-     * @returns {void}
+     *
      */
     onStartTLSResponse(response) {
       this.sieve.startTLS(() => {
@@ -355,7 +353,7 @@
      * Adds a new event listener to this session
      * @param {*} listener
      *   the event listener.
-     * @returns {void}
+     *
      */
     addListener(listener) {
       if (!this.listeners)
@@ -369,7 +367,7 @@
      *
      * @param {*} listener
      *   removes the given event listener
-     * @returns {void}
+     *
      */
     removeListener(listener) {
       if (!this.listeners)
@@ -383,7 +381,7 @@
     /**
      * Checks if any one listens to the given subject.
      *
-     * @param {String} subject
+     * @param {string} subject
      *   the subject as string.
      *
      * @returns {boolean}
@@ -403,14 +401,14 @@
     /**
      * Invokes all listernes for the given subject.
      *
-     * @param {String} subject
+     * @param {string} subject
      *   the subject as string.
-     * @param {object} arg1
+     * @param {Object} arg1
      *   an arbitray argument
-     * @param {object} arg2
+     * @param {Object} arg2
      *   an arbitray argument
      *
-     * @returns {void}
+     *
      */
     _invokeListeners(subject, arg1, arg2) {
       if (!this.listeners)
@@ -424,13 +422,11 @@
           iterator.push(this.listeners[i]);
 
       if (!iterator.length) {
-        if (this.getLogger().isLoggable(LOG_SESSION_INFO))
-          this.getLogger().log("No Listener for " + subject + "\n" + this.listeners.toString());
-
+        this.getLogger().logSession("No Listener for " + subject + "\n" + this.listeners.toString());
         return;
       }
 
-      this.getLogger().log("Invoking Listeners for " + subject + "\n", LOG_SESSION_INFO);
+      this.getLogger().logSession("Invoking Listeners for " + subject + "\n");
 
       while (iterator.length) {
         let listener = iterator.pop();
@@ -448,7 +444,7 @@
      * Called by the sieve object in case we received an BYE response.
      * @param {SieveAbstractResponse} response
      *   the servers reponse, contains the reason why the connection was terminated.
-     * @returns {void}
+     *
      */
     onByeResponse(response) {
       // The server is going to disconnected our session nicely...
@@ -466,8 +462,8 @@
         this.state = 0;
 
 
-        this.getLogger().log("Referred to Server: " + code.getHostname(), LOG_SESSION_INFO);
-        this.getLogger().log("Migrating Channel: [" + this.channels + "]", LOG_SESSION_INFO);
+        this.getLogger().logSession("Referred to Server: " + code.getHostname());
+        this.getLogger().logSession("Migrating Channel: [" + this.channels + "]");
 
         this.connect(code.getHostname(), code.getPort());
         return;
@@ -494,10 +490,10 @@
      * and the session is no more usable. It ensures that everything is disconnected
      * correctly.
      *
-     * @returns {void}
+     *
      **/
     onDisconnect() {
-      this.getLogger().log("On Server Disconnect:  [" + this.channels + "]", LOG_SESSION_INFO);
+      this.getLogger().logSesion("On Server Disconnect:  [" + this.channels + "]");
 
       this._invokeListeners("onDisconnect");
       this.disconnect(true);
@@ -512,12 +508,12 @@
      *
      * You get notification on the login status through the listener.
      *
-     * @param {String} hostname - optional
+     * @param {string} hostname - optional
      *   overrides the default hostname supplied by the account. This is needed
      *   for referrals and similar stuff.
      * @param {int} port - optional
      *   overrides the default port supplied by the account.
-     * @returns {void}
+     *
      */
     connect(hostname, port) {
       // set state to connecting...
@@ -610,7 +606,7 @@
      * "removeChannel", this will close the channel. Otherwise the connection
      * to the remote server might stay open.
      *
-     * @return {string} An unique Identifier
+     * @returns {string} An unique Identifier
      */
     addChannel() {
 
@@ -621,7 +617,7 @@
 
       this.channels.push(cid);
 
-      this.getLogger().log("Channel Added: " + cid + " [" + this.channels + "]", LOG_SESSION_INFO);
+      this.getLogger().logSession("Channel Added: " + cid + " [" + this.channels + "]");
 
       return cid;
     }
@@ -637,7 +633,7 @@
      *
      * @param {string} cid
      *   The unique Identifier of the channel which should be closed and invalidated.
-     * @return {Boolean}
+     * @returns {boolean}
      *   return true if the channel could be closed and false if not. A "false"
      *   means the identifier is invalid.
      */
@@ -651,14 +647,14 @@
 
       this.channels.splice(i, 1);
 
-      this.getLogger().log("Channel Closed: " + cid + " [" + this.channels + "]", LOG_SESSION_INFO);
+      this.getLogger().logSession("Channel Closed: " + cid + " [" + this.channels + "]");
 
       return true;
     }
 
     /**
      * Checks if the session has open/registered channels.
-     * @return {Boolean}
+     * @returns {boolean}
      *   returns true incase the session has open channels. Otherwise false.
      */
     hasChannels() {
@@ -670,9 +666,9 @@
 
     /**
      * Checks if a channel is registed with this session
-     * @param {String} cid
+     * @param {string} cid
      *   the channels unique identifier
-     * @return {Boolean}
+     * @returns {boolean}
      *   returns false in case the channel identifier is not registered with
      *   this session's object.
      */
@@ -720,9 +716,9 @@
      *   the socket info object
      * @param {Object} sslStatus
      *   the ssl status
-     * @param {String} targetSite
+     * @param {string} targetSite
      *   the traget site which cause the ssl error
-     * @return {Boolean}
+     * @returns {boolean}
      *   true in case we handled the notify otherwise false.
      */
     notifyCertProblem(socketInfo, sslStatus, targetSite) {

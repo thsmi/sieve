@@ -1,0 +1,283 @@
+
+
+
+
+
+
+Internet Engineering Task Force (IETF)                         R. George
+Request for Comments: 6131                                      B. Leiba
+Category: Standards Track                            Huawei Technologies
+ISSN: 2070-1721                                                July 2011
+
+
+             Sieve Vacation Extension: "Seconds" Parameter
+
+Abstract
+
+   This document describes a further extension to the Sieve Vacation
+   extension, allowing multiple auto-replies to the same sender in a
+   single day by adding a ":seconds" parameter.
+
+Status of This Memo
+
+   This is an Internet Standards Track document.
+
+   This document is a product of the Internet Engineering Task Force
+   (IETF).  It represents the consensus of the IETF community.  It has
+   received public review and has been approved for publication by the
+   Internet Engineering Steering Group (IESG).  Further information on
+   Internet Standards is available in Section 2 of RFC 5741.
+
+   Information about the current status of this document, any errata,
+   and how to provide feedback on it may be obtained at
+   http://www.rfc-editor.org/info/rfc6131.
+
+Copyright Notice
+
+   Copyright (c) 2011 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+
+
+
+
+
+
+
+
+George & Leiba               Standards Track                    [Page 1]
+
+RFC 6131            Sieve Vacation: Seconds Parameter          July 2011
+
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . . . 2
+     1.1.  Terminology Used in This Document . . . . . . . . . . . . . 2
+   2.  The ':seconds' Parameter  . . . . . . . . . . . . . . . . . . . 2
+   3.  Examples  . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . . . 4
+   5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . . . 4
+     5.1.  Registration of Sieve Extension . . . . . . . . . . . . . . 4
+   6.  References  . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+     6.1.  Normative References  . . . . . . . . . . . . . . . . . . . 5
+     6.2.  Informative References  . . . . . . . . . . . . . . . . . . 5
+
+1.  Introduction
+
+   The Sieve [RFC5228] Vacation extension [RFC5230] defines a mechanism
+   to generate automatic replies to incoming email messages.  Through
+   the ":days" parameter, it limits the number of auto-replies to the
+   same sender to one per [n] days, for a specified number of days.  But
+   there are cases when one needs more granularity, if one would like to
+   generate "vacation" replies more frequently.
+
+   This extension defines a ":seconds" parameter to provide more
+   granularity for such situations.
+
+1.1.  Terminology Used in This Document
+
+   The upper-case key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
+   "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in RFC
+   2119 [RFC2119].
+
+2.  The ':seconds' Parameter
+
+   The purpose of the ":seconds" parameter is to specify the minimum
+   time interval (in seconds) between consecutive auto-replies to a
+   given sender.  The ":seconds" value, if specified, is used instead of
+   the ":days" value, and works in a similar way (see the Vacation
+   extension [RFC5230] for details).  Only one of ":days" or ":seconds"
+   is allowed -- use of both parameters in the same vacation action MUST
+   result in a Sieve processing error.
+
+   The capability string associated with this extension is "vacation-
+   seconds".  Note that "vacation-seconds" implies "vacation", and a
+   script with "vacation-seconds" in a "require" list can omit
+   "vacation" from that list.
+
+
+
+
+
+George & Leiba               Standards Track                    [Page 2]
+
+RFC 6131            Sieve Vacation: Seconds Parameter          July 2011
+
+
+   The time value is specified in seconds, and MUST be greater than or
+   equal to 0 and less than 2**31.  All valid values, from 0 to 2**31,
+   MUST be accepted without error.  Sites MAY define a minimum effective
+   value and/or a maximum effective value.  If a site chooses to do
+   that:
+
+   1.  Call the value specified "v(spec)".
+
+   2.  Call the minimum effective value "v(min)".
+
+   3.  Call the maximum effective value "v(max)".
+
+   4.  Call the actual effective value used by the processor "v(eff)".
+
+   5.  The following apply for determining v(eff):
+
+       *  If 0 <= v(spec) < v(min), then v(eff) = v(min).
+
+       *  If v(min) <= v(spec) <= v(max), then v(eff) = v(spec).
+
+       *  If v(max) < v(spec) <= 2**31, then v(eff) = v(max).
+
+   If a site imposes a maximum effective value, that value MUST be at
+   least 86400 (one day).
+
+   If ":seconds 0" is specified and used, it means that all auto-replies
+   are sent, and no attempt is made to suppress consecutive replies.
+   This differs from the base vacation specification, which does not
+   allow a time period of zero (":days 0" is forbidden); the change is
+   necessary to allow operation of an auto-responder (see [RFC6133], and
+   note especially example 4 in section 3 of that document).
+
+   If ":seconds" and ":days" are both omitted, a site-defined interval
+   is used (see [RFC5230]).
+
+   Usage: vacation [":days" number | ":seconds" number]
+                   [":subject" string]
+                   [":from" string]
+                   [":addresses" string-list]
+                   [":mime"]
+                   [":handle" string]
+                   <reason: string>
+
+
+
+
+
+
+
+
+
+George & Leiba               Standards Track                    [Page 3]
+
+RFC 6131            Sieve Vacation: Seconds Parameter          July 2011
+
+
+3.  Examples
+
+   The following example will automatically reply to senders with a
+   message that the recipient is in a meeting.  Multiple replies to the
+   same sender will only be sent every half hour (1800 seconds).
+
+   require ["vacation-seconds"];
+   vacation :addresses ["tjs@example.edu", "ts4z@landru.example.edu"]
+            :seconds 1800
+            "I am in a meeting, and do not have access to email.";
+
+   The following example is used to send an acknowledgment to every
+   message received.  A :seconds value of zero is used to reply to every
+   message, with no removal of duplicates to the same sender.  This
+   requires that the Sieve engine allow an interval of zero; if it does
+   not, and it imposes a minimum value, not every message will receive
+   an auto-reply.
+
+   require ["vacation-seconds"];
+
+   vacation :handle "auto-resp" :seconds 0
+       "Your request has been received.  A service
+        representative will contact you as soon as
+        possible, usually within one business day.";
+
+4.  Security Considerations
+
+   Security considerations for the Sieve Vacation extension [RFC5230]
+   apply equally here.  In addition, implementations SHOULD consider the
+   number of auto-replies that might be generated by allowing small
+   values of ":seconds" (including 0), and MAY impose additional limits
+   on that number.  See the Security Considerations section of RFC 3834
+   [RFC3834] for a fuller discussion.
+
+5.  IANA Considerations
+
+5.1.  Registration of Sieve Extension
+
+   To:  iana@iana.org
+   Subject:  Registration of new Sieve extension
+   Capability name:  vacation-seconds
+   Description:  adds the ":seconds" parameter to the Sieve Vacation
+      extension.  Implementations that support this MUST also support
+      "vacation".
+   RFC number:  RFC 6131
+   Contact address:  The Sieve discussion list <sieve@ietf.org>
+
+
+
+
+
+George & Leiba               Standards Track                    [Page 4]
+
+RFC 6131            Sieve Vacation: Seconds Parameter          July 2011
+
+
+6.  References
+
+6.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119, March 1997.
+
+   [RFC3834]  Moore, K., "Recommendations for Automatic Responses to
+              Electronic Mail", RFC 3834, August 2004.
+
+   [RFC5228]  Guenther, P. and T. Showalter, "Sieve: An Email Filtering
+              Language", RFC 5228, January 2008.
+
+   [RFC5230]  Showalter, T. and N. Freed, "Sieve Email Filtering:
+              Vacation Extension", RFC 5230, January 2008.
+
+6.2.  Informative References
+
+   [RFC6133]  George, R., Leiba, B., and A. Melnikov, "Sieve Email
+              Filtering: Use of Presence Information with Auto-Responder
+              Functionality", RFC 6133, July 2011.
+
+Authors' Addresses
+
+   Robins George
+   Huawei Technologies
+   Bangalore, Karnataka  560071
+   India
+
+   Phone: +91-080-41117676
+   EMail: robinsgv@gmail.com
+
+
+   Barry Leiba
+   Huawei Technologies
+
+   Phone: +1 646 827 0648
+   EMail: barryleiba@computer.org
+   URI:   http://internetmessagingtechnology.org/
+
+
+
+
+
+
+
+
+
+
+
+
+George & Leiba               Standards Track                    [Page 5]
+

@@ -123,6 +123,17 @@
   });
 
   suite.add({
+    "vacation-seconds": {
+      script: "./../common/libSieve/vacation-seconds/tests/SieveVacationSecondsTest.js",
+      extend: "rfc5228",
+      require: [
+        "./../common/libSieve/vacation/logic/SieveVacation.js",
+        "./../common/libSieve/vacation-seconds/logic/SieveVacationSeconds.js"
+      ]
+    }
+  });
+
+  suite.add({
     "include": {
       script: "./../common/libSieve/include/tests/SieveIncludeTest.js",
       extend: "rfc5228",

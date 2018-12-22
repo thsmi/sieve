@@ -30,7 +30,7 @@
     suite.log("Single line comment");
 
     let script = ""
-      + 'if size :over 100k { # this is a comment\r\n'
+      + 'if size :over 100K { # this is a comment\r\n'
       + '    discard;\r\n'
       + '}\r\n';
 
@@ -275,7 +275,7 @@
   });
 
   suite.add(function () {
-    suite.log("true");
+    suite.log("Boolean true");
 
     let script = ""
       + 'if true {\r\n'
@@ -286,7 +286,7 @@
   });
 
   suite.add(function () {
-    suite.log("false");
+    suite.log("Boolean false");
 
     let script = ""
       + 'if false {\r\n'

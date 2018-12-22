@@ -29,7 +29,7 @@
   class SieveNumber extends SieveAbstractElement {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(docshell, id) {
       super(docshell, id);
@@ -38,33 +38,33 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isElement(parser) {
       return parser.isNumber(parser);
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "number";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "number/";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     init(parser) {
       this._number = parser.extractNumber();
 
-      if (parser.isChar(['K', 'k', 'M', 'm', 'G', 'g']))
+      if (parser.isChar(['K', 'M', 'G']))
         this._unit = parser.extractChar();
 
       return this;
@@ -93,7 +93,7 @@
       number = parseInt(number, 10);
 
       if (isNaN(number))
-        throw new Error("Invalid Number");
+        throw new Error("Not a number: " + number);
 
       this._number = number;
       return this;

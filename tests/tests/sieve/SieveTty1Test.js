@@ -217,7 +217,7 @@
       + '    discard;\r\n'
       + '}\r\n'
       + '# Also delete small mails, under 1k\r\n'
-      + 'if size :under 1k\r\n'
+      + 'if size :under 1K\r\n'
       + '{\r\n'
       + '    discard;\r\n'
       + '}\r\n';

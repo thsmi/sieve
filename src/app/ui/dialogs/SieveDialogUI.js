@@ -16,7 +16,7 @@
   const KEY_RETURN = 13;
 
   /* global $ */
-  /* global SieveTemplateLoader */
+  const { SieveTemplateLoader } = require("./../../utils/SieveTemplateLoader.js");
 
   /**
    * Displays a simple dialog with an action button.

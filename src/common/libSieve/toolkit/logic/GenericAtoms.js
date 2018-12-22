@@ -96,28 +96,6 @@
     toScript() {
       throw new Error("Implement SieveAbstractGeneric::toScript");
     }
-
-    /**
-     * Checks if the current element is the default value.
-     * Optional elements with the default value are typically not rendered.
-     *
-     * @returns {boolean}
-     *   true in case the element is the default value otherwise false.
-     */
-    hasDefaultValue() {
-      return true;
-    }
-
-    /**
-     * Checks if the current element has a value and thus needs
-     * to be rendered into a sieve script.
-     *
-     * @returns {boolean}
-     *   true or false
-     */
-    isDefaultValue() {
-      return true;
-    }
   }
 
   /**
@@ -566,7 +544,7 @@
 
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     parse(parser) {
 
@@ -646,48 +624,28 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
-    hasDefaultValue() {
-
-      if (this._elements.size > 0)
+    isDefault() {
+      // in case we have an element we can skip...
+      if (this._elements.size)
         return false;
 
-      for (let item of this._optionals.values()) {
-
-        if (item.element.hasDefaultValue())
-          continue;
-
-        return false;
-      }
-
-      return true;
-    }
-
-    /**
-     *@inheritDoc
-     */
-    isDefaultValue() {
-
-      // in case we have an element we can skip right here
-      if (this._elements.size > 0)
-        return false;
-
-      // we can skip otherwise in case one of our
+      // ... otherwise we need to check if one of our
       // optionals has a non default value.
       for (let item of this._optionals.values()) {
-
-        if (item.element.isDefaultValue())
+        if (!item.element.isDefault)
           continue;
 
-        return false;
+        if (item.element.isDefault())
+          return true;
       }
 
-      return true;
+      return false;
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     toScript() {
 
@@ -704,21 +662,15 @@
 
       // Then add other optional elements.
       for (let [id, item] of this._optionals) {
+
         if (this._elements.has(id))
           continue;
 
-        if (item.element.hasDefaultValue) {
-
-          if (item.element.hasDefaultValue() && item.element.isDefaultValue())
-            continue;
-        }
-
-        // TODO: Do we realy need this? A value which is enabled
-        // is contained in this._elements and a value which is not enabled
-        // should not be rendered.
-        if (!item.element.hasCurrentValue || item.element.hasCurrentValue() === false) {
+        if (!item.element.isDefault)
           continue;
-        }
+
+        if (item.element.isDefault())
+          continue;
 
         result += item.whitespace.toScript();
         result += item.element.toScript();
@@ -853,37 +805,6 @@
 
       return result;
     }
-
-    /**
-     * @returns {boolean}
-     */
-    hasDefaultValue() {
-      for (let item of this._elements) {
-        if (item.hasDefaultValue())
-          continue;
-
-        return false;
-      }
-
-      return true;
-    }
-
-    /**
-     * @returns {boolean}
-     */
-    isDefaultValue() {
-
-      for (let item of this._elements) {
-
-        if (item.isDefaultValue())
-          continue;
-
-        return false;
-      }
-
-      return true;
-    }
-
 
     /**
      * Adds the dependencies to this generic element.
@@ -1087,61 +1008,106 @@
     }
   }
 
-
   /**
-   * Used for matchtype, comparators, addressppart or body transforms
+   * A simple group at least one of the elements has to exist.
+   * There are no hidden default value logics.
    */
-  class SieveGenericUnion extends SieveAbstractElement {
-
+  class SieveGroupElement extends SieveAbstractElement {
 
     /**
      * @inheritdoc
      */
-    constructor(docshell, id) {
+    constructor(docshell, id, type) {
       super(docshell, id);
 
-      this._element = {
-        current: null,
-        default: null
-      };
       this._items = [];
-
       this._prefix = null;
+      this._nodeName = type;
+      this._current = null;
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     nodeName() {
+      return this._nodeName;
+    }
 
-      if (this._element.current !== null)
-        return this._element.current.nodeName();
+    /**
+     * Checks if the active element's name matches
+     * the given name.
+     *
+     * @param {string} name
+     *   the name to check.
+     * @returns {boolean}
+     *   true in case the name matches otherwise false.
+     */
+    isNode(name) {
+      if (!this.hasCurrentElement())
+        return false;
 
-      return this._element.default.nodeName();
+      if (this.getCurrentElement().nodeName() !== name)
+        return false;
+
+      return true;
     }
 
     /**
      * @inheritDoc
      */
     require(imports) {
-
-      if (this._element.current !== null) {
-        this._element.current.require(imports);
-        return this;
-      }
-
-      if (this._element.default !== null) {
-        this._element.default.require(imports);
-        return this;
-      }
+      if (this.hasCurrentElement())
+        this.getCurrentElement().require(imports);
 
       return this;
     }
 
     /**
+     * Checks is represented by an element.
+     *
+     * @returns {Boolean}
+     *   true in case the current element is defined otherwise false.
+     */
+    hasCurrentElement() {
+      return (this.getCurrentElement() !== null);
+    }
+
+    /**
+     * Returns the currently active element.
+     *
+     * @returns {SieveAbstractElement}
+     *   the current element..
+     */
+    getCurrentElement() {
+      return this._current;
+    }
+
+    /**
+     * Updates the current element by the given string or parser.
+     * It will throw in case no compatible element was found.
+     *
+     * @param {SieveParser|String} data
+     *   the data which should be parsed.
+     * @returns {SieveGroupElement}
+     *   a self reference
+     */
+    setCurrentElement(data) {
+
+      if (this.hasCurrentElement()) {
+        // We delete elements by making them an orphan
+        this.getCurrentElement().parent(null);
+        this._current = null;
+      }
+
+      this._current = this.document().createByClass(this._items, data, this);
+      return this;
+    }
+
+    /**
      * Sets a prefix for this union.
-     * @param {String} token
-     *   the prefix as string.
+     *
+     * @param {String} [token]
+     *   the prefix as string. The token may be null to simplify parsing.
      * @returns {SieveGenericUnion}
      *   a self reference
      */
@@ -1157,8 +1123,9 @@
     }
 
     /**
-     * Adds a new item to the union. Keep in mind only one element
-     * of a union can match. All elements are threated equally.
+     * Adds new item definitions to the union.
+     * Keep in mind at most one element of a union can match.
+     * All elements are threated equally.
      *
      * @param {*} items
      *   the elements to add to this union.
@@ -1166,210 +1133,324 @@
      *   a self reference
      */
     addItems(items) {
+
       this._items = this._items.concat(items);
-
       return this;
     }
 
     /**
-     * @returns {boolean}
-     */
-    hasDefaultValue() {
-
-      if (this._element.default === null)
-        return false;
-
-      if (typeof (this._element.default) === "undefined")
-        return false;
-
-      return true;
-    }
-
-    /**
-     * @returns {string}
-     */
-    getDefaultValue() {
-      return this._element.default.toScript();
-    }
-
-    /**
-     *
-     * @param {*} value
-     * @returns {SieveGenericUnion}
-     *   a self reference
-     */
-    setDefaultValue(value) {
-
-      if (value === null || typeof (value) === "undefined")
-        return this;
-
-      this._element.default = this.document().createByClass(this._items, value, this);
-
-      return this;
-    }
-
-    /**
-     * @returns {boolean}
-     */
-    isDefaultValue() {
-
-      if (this.hasDefaultValue() === false)
-        return false;
-
-      if (this.hasCurrentValue() === false)
-        return true;
-
-      return false;
-    }
-
-    /**
-     * Check if a current value was set.
-     *
-     * @returns {boolean}
-     *  true in case the element has a current value set otherwise false
-     */
-    hasCurrentValue() {
-      if (this._element.current === null)
-        return false;
-
-      if (typeof (this._element.current) === "undefined")
-        return false;
-
-      return true;
-    }
-
-    /**
-     * @returns {String}
-     *   the current value as string or null in case the current value is the default value.
-     */
-    getCurrentValue() {
-
-      if (this.isDefaultValue())
-        return null;
-
-      return this._element.current.toScript();
-    }
-
-
-    /**
-     * Sets the unions current value.
-     *
-     * @param {String|SieveParser} [value]
-     *  optional the new value which should be set. In case it is omitted it will
-     *  fallback to the default value if present.
-     * @returns {SieveGenericUnion}
-     *  a self reference
-     */
-    setCurrentValue(value) {
-
-      if (this.hasCurrentValue()) {
-        // We delete elements by making them an orphan
-        this._element.current.parent(null);
-        this._element.current = null;
-      }
-
-      if (value === null || typeof (value) === "undefined")
-        return this;
-
-      this._element.current = this.document().createByClass(this._items, value, this);
-      return this;
-    }
-
-    /**
-     * Sets the elements value. It is aware of the default and current value.
-     *
-     * @param {String} value
-     *  the value which should be set.
-     * @returns {SieveGenericUnion}
-     *  a self reference. To create chains.
-     **/
-    setValue(value) {
-
-      // Skip if the value has not changed ...
-      if (this.hasCurrentValue() && (this.getCurrentValue() === value))
-        return this;
-
-      // ... then check if it is the default value
-      if (this.hasDefaultValue() && (this.getDefaultValue() === value)) {
-
-        this.setCurrentValue(null);
-        return this;
-      }
-
-      this.setCurrentValue(value);
-      return this;
-    }
-
-    /**
-     * Gets the value. In case no current value is set it falls back to the default value.
-     *
-     * @returns {String}
-     *  the currently set value as string.
-     **/
-    getValue() {
-
-      if (this.isDefaultValue() === false)
-        return this.getCurrentValue();
-
-      return this.getDefaultValue();
-    }
-
-    /**
-     * @deprecated
-     *
-     * @param {String} value
-     * @returns {String}
-     *   the currently set value as string.
-     */
-    value(value) {
-
-      console.warn("SieveGenericUnion.value is deprecated use getValue and setValue");
-
-      if (typeof (value) !== "undefined") {
-        return this.setValue(value);
-      }
-
-      return this.getValue();
-    }
-
-    /**
-     * @inheritDoc
+     * @inheritdoc
      */
     init(parser) {
 
       if (this._prefix)
         this._prefix.parse(parser);
 
-      if (this._items.length === 0)
+      if (this._items.length === 0) {
+        this._current = null;
         return this;
+      }
 
-      this.setCurrentValue(parser);
-
+      this.setCurrentElement(parser);
       return this;
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     toScript() {
 
       let result = "";
-
-      // We do not need to render the default value in a union...
-      // ... it is an implicit fallback.
-      if (this.hasCurrentValue() === false)
-        return "";
-
       if (this._prefix)
         result += this._prefix.toScript();
 
-      result += this._element.current.toScript();
+      if (this.hasCurrentElement())
+        result += this.getCurrentElement().toScript();
 
       return result;
+    }
+
+    /**
+     * All of your values are well defined so we do not have
+     * any implicit default values.
+     *
+     * @returns {boolean}
+     *   always false.
+     */
+    isDefault() {
+      return false;
+    }
+  }
+
+  /**
+   * A group with an implicit default value.
+   * The default value acts like an independent state and is not contained
+   * in the possible elements.
+   *
+   * e.g. the vacation action defines the flags :days and :seconds
+   * which are mutural exclusive. In case neiterone of the two states
+   * is specified it falls back to an implicte third state. Which is the
+   * server's default value.
+   */
+  class SieveImplicitGroupElement extends SieveGroupElement {
+
+    /**
+     * @inheritdoc
+     */
+    init(parser) {
+
+      if (this._prefix)
+        this._prefix.parse(parser);
+
+      if (this._items.length === 0) {
+        this._current = null;
+        return this;
+      }
+
+      this.setCurrentElement(parser);
+      return this;
+    }
+
+    /**
+     * When data is null the current element will be reset to default
+     * otherwise the value will be set as current element.
+     *
+     * @override
+     */
+    setCurrentElement(data) {
+
+      if (typeof (data) !== "undefined" && data !== null) {
+        super.setCurrentElement(data);
+        return this;
+      }
+
+      if (!this.hasCurrentElement())
+        return this;
+
+      // We delete elements by making them an orphan
+      this.getCurrentElement().parent(null);
+      this._current = null;
+      return this;
+    }
+
+    /**
+     * Checks if the group has an active element.
+     *
+     * @param {String} [id]
+     *   an optional id of the child elemenet to get
+     * @returns {boolean}
+     *   true in case the element can be rendered
+     *   otherwise false.
+     */
+    hasElement(id) {
+
+      if (!this.hasCurrentElement())
+        return false;
+
+      if ((typeof (id) !== "undefined") && (id !== null))
+        return this.getCurrentElement().hasElement(id);
+
+      return true;
+    }
+
+    /**
+     * Returns the group's active element.
+     *
+     * It is similar to getCurrentElement but there are two
+     * major differences.
+     *
+     * The first one is, it will throw instead of returning
+     * null when accessing non existant element or when
+     * no element is active.
+     * The other difference is that you can access children
+     * directly by their id.
+     *
+     * @param {String} [id]
+     *   an optional id of the child elemenet to get
+     * @return {SieveAbstractElement}
+     *   the active element.
+     */
+    getElement(id) {
+
+      // In case we don't have an element we have to fail...
+      if (!this.hasElement(id))
+        throw new Error("No current element defined. Implicit server default used");
+
+      // ... otherwise in case no id is specified we just
+      // return the current element ...
+      if ((typeof (id) === "undefined") || (id === null)) {
+        return this.getCurrentElement();
+      }
+
+      // ... otherwise we return the current element's sub element.
+      return this.getCurrentElement().getElement(id);
+    }
+
+    setElement(data) {
+      this.setCurrentElement(data);
+      return this;
+    }
+
+    /**
+     * The default value is the server side default. It is basically
+     * an empty string, this signal the elment is only known to the
+     * server.
+     *
+     * All other possible value are client side values and have
+     * a well defined value.
+     *
+     * @returns {boolean}
+     *   true in case it is the server side default otherwise false.
+     */
+    isDefault() {
+      return !(this.hasCurrentElement());
+    }
+
+  }
+
+  /**
+   * A group with an explicit default value.
+   * The default is equivalent to one of the possible element.
+   *
+   * e.g. in case no match type is specified sieve specifies an
+   * fallback to an :is
+   */
+  class SieveExplicitGroupElement extends SieveImplicitGroupElement {
+
+    /**
+     * @inheritdoc
+     */
+    constructor(docshell, id, nodeName) {
+      super(docshell, id, nodeName);
+      this._default = null;
+    }
+
+    /**
+     * The default value will be used whenever no other group
+     * value is set.
+     *
+     * @returns {SieveAbstractElement}
+     *    the default value for this group.
+     */
+    getDefaultElement() {
+      return this._default;
+    }
+
+    /**
+     * Parses the given data and sets the default element.
+     *
+     * @param {SieveParser|Sieve} data
+     *   the data which should be parsed.
+     * @returns {SieveExplicitGroupElement}
+     *  a self reference
+     */
+    setDefaultElement(data) {
+
+      if (this._default !== null)
+        throw new Error("Default already defined. Can not be redefined.");
+
+      this._default = this.document().createByClass(this._items, data, this);
+      return this;
+    }
+
+    /**
+     * @param {String} [id]
+     *   an optional id of the child elemenet to get
+     * @return {SieveAbstractElement}
+     *   the active element. This can be either the current or the default element.
+     */
+    getElement(id) {
+
+      // In case the optional id is set...
+      if ((typeof (id) !== "undefined") && (id !== null)) {
+        // we call getElement without the optional id and then
+        // request the child element with the given id from the result.
+        return this.getElement().getElement(id);
+      }
+
+      // Check if there is a user specified value...
+      if (this.hasCurrentElement())
+        return this.getCurrentElement();
+
+      // ... otherwise we use the default, it is guaranteed to exist.
+      return this.getDefaultElement();
+    }
+
+    /**
+     * Sets the current element.
+     * This involves some guessing magic, to keep as much of the user structure as possible.
+     *
+     * @param {String} value
+     *   the new value to set.
+     * @returns {SieveExplicitGroupElement}
+     *  a self reference
+     */
+    setElement(value) {
+
+      // We can skip in case nothing was changed...
+      if (this.hasCurrentElement() && (this.getCurrentElement().toScript() === value))
+        return this;
+
+      // ... if possible we prefer the default value...
+      if (this.getDefaultElement().toScript() === value) {
+
+        // which means removing the current value if needed.
+        if (this.hasCurrentElement()) {
+          this._current.parent(null);
+          this._current = null;
+        }
+
+        return this;
+      }
+
+      // in any other case we need to update the current value.
+      this.setCurrentElement(value);
+      return this;
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    isDefault() {
+
+      // in case we do not have a current element we know
+      // it is the default value.
+      if (!this.hasCurrentElement())
+        return true;
+
+      // in case the current element is of the same type as
+      // the default value we keep the current element.
+      //if (this.isNode(this._default.nodeName()))
+      //  return false;
+
+      return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    require(imports) {
+
+      this.getElement().require(imports);
+      return this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    toScript() {
+
+      if (this.isDefault())
+        return "";
+
+      return super.toScript();
     }
   }
 
   exports.SieveGenericStructure = SieveGenericStructure;
-  exports.SieveGenericUnion = SieveGenericUnion;
+  exports.SieveExplicitGroupElement = SieveExplicitGroupElement;
+  exports.SieveImplicitGroupElement = SieveImplicitGroupElement;
+  exports.SieveGroupElement = SieveGroupElement;
 
 })(window);

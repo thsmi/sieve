@@ -254,7 +254,7 @@
       return $("<div/>")
         .html("Annotation " + this.annotation()
           + " in folder " + this.mailbox()
-          + " has a value which " + this.matchtype().getValue()
+          + " has a value which " + this.matchtype().getElement().toScript()
           + " any of " + this.keys().values());
     }
   }
@@ -398,7 +398,7 @@
       // case- insensitive is the default so skip it...
       return $("<div/>")
         .html("Server annotation " + this.annotation()
-          + " has a value which " + this.matchtype().getValue()
+          + " has a value which " + this.matchtype().getElement().toScript()
           + " any of " + this.keys().values());
     }
   }

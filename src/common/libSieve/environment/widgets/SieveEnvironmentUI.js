@@ -110,7 +110,7 @@
       return $("<div/>")
         .append($("<span/>").text("Environment info named "))
         .append($("<em/>").text(this.name().value()))
-        .append($("<span/>").text(" " + this.matchtype().getValue()))
+        .append($("<span/>").text(" " + this.matchtype().getElement().toScript()))
         .append($("<em/>").text(" " + this.keys().values().join(", ")));
     }
   }

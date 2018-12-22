@@ -33,7 +33,7 @@
   class SieveBodyTransformWidget extends SieveRadioGroupWidget {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(selector) {
       super("body-transform/", selector);
@@ -46,14 +46,14 @@
   class SieveAbstractBodyTransformUI extends SieveRadioGroupItemWidget {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "body-transform/";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getName() {
       return "sieve-bodytransform";
@@ -66,14 +66,14 @@
   class SieveRawBodyTransformUI extends SieveAbstractBodyTransformUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "body-transform/raw";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./body/templates/SieveBodyTransformRaw.html";
@@ -86,14 +86,14 @@
   class SieveTextBodyTransformUI extends SieveAbstractBodyTransformUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "body-transform/text";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./body/templates/SieveBodyTransformText.html";
@@ -106,21 +106,21 @@
   class SieveContentBodyTransformUI extends SieveAbstractBodyTransformUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "body-transform/content";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./body/templates/SieveBodyTransformContent.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     load(sivElement) {
       (new SieveStringListWidget("#sivBodyTransformContenType"))
@@ -131,7 +131,7 @@
 
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad(sivElement) {
 
@@ -139,26 +139,25 @@
 
       // update the string list...
       (new SieveStringListWidget("#sivBodyTransformContenType"))
-        .init(sivElement._element.current.getElement("contentType"));
+        .init(sivElement.getElement("contentType"));
     }
 
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave(sivElement) {
 
       // We update the content type with a fake element.
       // This makes updating the strings easier.
       // we can skip this in case the current element is already a content body transform element.
-
-      if (!sivElement._element.current || sivElement._element.current.nodeName() !== this.constructor.nodeName()) {
-        sivElement.setValue(
+      if (sivElement.getElement().nodeName() !== this.constructor.nodeName()) {
+        sivElement.setElement(
           "" + this.getRadioItem().find("input[name='" + this.getName() + "']").val() + ' ""');
       }
 
       (new SieveStringListWidget("#sivBodyTransformContenType"))
-        .save(sivElement._element.current.getElement("contentType"));
+        .save(sivElement.getElement("contentType"));
     }
 
   }
@@ -169,8 +168,6 @@
    *
    * "body" [COMPARATOR] [MATCH-TYPE] [BODY-TRANSFORM]  <key-list: string-list>
    *
-   * @constructor
-   * @param {Object} elm - The sieve element which should be rendered.
    */
   class SieveBodyUI extends SieveTestDialogBoxUI {
 
@@ -207,7 +204,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
 
@@ -223,7 +220,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -242,21 +239,21 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./body/templates/SieveBodyTestUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
 
       // case- insensitive is the default so skip it...
       return $("<div/>")
         .html(" message body <em> "
-          + this.matchtype().getValue() + " "
+          + this.matchtype().getElement().toScript() + " "
           + $('<div/>').text(this.keys().values()).html() + "</em>");
     }
   }

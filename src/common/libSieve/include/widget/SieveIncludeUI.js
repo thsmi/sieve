@@ -28,7 +28,7 @@
   class SieveReturnUI extends SieveActionBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -50,14 +50,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./include/template/SieveGlobalActionUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
       let variables = (new SieveStringListWidget("#sivIncludeGlobalList"));
@@ -77,7 +77,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
       (new SieveStringListWidget("#sivIncludeGlobalList"))
@@ -85,7 +85,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -142,12 +142,12 @@
       let elm = this.getSieve().getElement("location");
 
       if (value === true)
-        elm.setValue(":personal");
+        elm.setElement(":personal");
 
       if (value === false)
-        elm.setValue(":global");
+        elm.setElement(":global");
 
-      return (elm.getValue() === ":personal");
+      return (elm.getElement().nodeName() === "tag/location-type/personal" );
     }
 
     /**
@@ -169,14 +169,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./include/template/SieveIncludeActionUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
       $('input:radio[name="personal"][value="' + !!this.personal() + '"]').prop('checked', true);
@@ -188,7 +188,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -210,7 +210,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       let str =

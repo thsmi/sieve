@@ -178,7 +178,7 @@
 
       return $("<div/>")
         .append($("<span/>").text("Spam score "))
-        .append($("<span/>").text(this.matchtype().getValue() + " "))
+        .append($("<span/>").text(this.matchtype().getElement().toScript() + " "))
         .append($("<em/>").text(this.value().value() + (this.isPercental() ? "%" : "")));
     }
   }
@@ -256,7 +256,7 @@
      */
     getSummary() {
       return $("<div/>")
-        .html(" Viruscheck " + this.matchtype().getValue() + " " + this.value().value());
+        .html(" Viruscheck " + this.matchtype().getElement().toScript() + " " + this.value().value());
     }
   }
 

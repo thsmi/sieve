@@ -106,7 +106,7 @@
 
       // update the string list...
       $("#sivDateZoneOffset").val(
-        sivElement._element.current.getElement("time-zone").value());
+        sivElement.getElement("time-zone").value());
     }
 
     /**
@@ -117,12 +117,12 @@
       // We update the content type with a fake element.
       // This makes updating the strings easier.
       // we can skip this in case the current element is already a zone element.
-      if (!sivElement._element.current || sivElement._element.current.nodeName() !== this.constructor.nodeName()) {
-        sivElement.setValue(
+      if (!sivElement.getElement().nodeName() !== this.constructor.nodeName()) {
+        sivElement.setElement(
           "" + this.getRadioItem().find("input[name='" + this.getName() + "']").val() + ' ""');
       }
 
-      sivElement._element.current.getElement("time-zone").value($("#sivDateZoneOffset").val());
+      sivElement.getElement("time-zone").value($("#sivDateZoneOffset").val());
     }
   }
 
@@ -235,7 +235,7 @@
     getSummary() {
       return $("<div/>")
         .html("" + this.datepart().value() + " in header " + this.header().value() + " " +
-          this.matchtype().getValue() + " any of " + $('<div/>').text(this.keys().toScript()).html());
+          this.matchtype().getElement().toScript() + " any of " + $('<div/>').text(this.keys().toScript()).html());
     }
   }
 
@@ -338,7 +338,7 @@
     getSummary() {
       return $("<div/>")
         .html("The current " + this.datepart().value() + " " +
-          this.matchtype().getValue() + " any of " + $('<div/>').text(this.keys().toScript()).html());
+          this.matchtype().getElement().toScript() + " any of " + $('<div/>').text(this.keys().toScript()).html());
     }
   }
 

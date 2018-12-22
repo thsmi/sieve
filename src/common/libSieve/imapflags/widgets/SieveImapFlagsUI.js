@@ -208,7 +208,7 @@
       // case- insensitive is the default so skip it...
       return $("<div/>")
         .html("An IMAP flags(s) <em> "
-          + this.matchtype().getValue() + " "
+          + this.matchtype().getElement().toScript() + " "
           + $('<div/>').text(this.flags().values()).html() + "</em>");
     }
   }

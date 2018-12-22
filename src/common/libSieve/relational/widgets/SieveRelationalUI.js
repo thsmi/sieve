@@ -45,14 +45,14 @@
       super.onLoad(sivElement);
 
       this.getActiveItem().find(".sieve-matchtype-count-relational").val(
-        ":count " + sivElement._element.current.getElement("relational-match").getValue());
+        ":count " + sivElement.getElement("relational-match").toScript());
     }
 
     /**
      * @inheritDoc
      */
     onSave(sivElement) {
-      sivElement.setValue(
+      sivElement.setElement(
         this.getActiveItem().find(".sieve-matchtype-count-relational").val());
     }
 
@@ -72,35 +72,35 @@
   class SieveValueMatchUI extends SieveAbstractMatchTypeUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "match-type/value";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isCapable(capabilities) {
       return capabilities.hasCapability("relational");
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad(sivElement, item) {
 
       super.onLoad(sivElement, item);
 
       this.getActiveItem().find(".sieve-matchtype-value-relational").val(
-        ":value " + sivElement._element.current.getElement("relational-match").getValue());
+        ":value " + sivElement.getElement("relational-match").toScript());
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave(sivElement, item) {
-      sivElement.setValue(
+      sivElement.setElement(
         this.getActiveItem().find(".sieve-matchtype-value-relational").val());
     }
 

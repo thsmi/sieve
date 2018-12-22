@@ -27,7 +27,7 @@
     /**
      * Creates a new instance
      *
-     * @param {function} callback
+     * @param {Function} callback
      *   the password callback.
      */
     constructor(callback) {
@@ -108,7 +108,7 @@
      *
      * @param {AccountId} id
      *   the unique id which idendifies the account.
-     * @return {SieveAccounts}
+     * @returns {SieveAccounts}
      *   a self reference
      */
     remove(id) {
@@ -138,7 +138,7 @@
      * Returns a specific sieve account
      * @param {string} id
      *   the accounts unique id.
-     * @return {SieveAccount}
+     * @returns {SieveAccount}
      *   the sieve account or undefined.
      */
     getAccountById(id) {

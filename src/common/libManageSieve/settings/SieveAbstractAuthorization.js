@@ -92,7 +92,7 @@
   class SieveCustomAuthorization extends SieveAbstractAuthorization {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getAuthorization() {
       return this.account.prefs.getString(CONFIG_AUTHORIZATION_USERNAME, null);
@@ -103,7 +103,7 @@
      *
      * @param {string} authorization
      *   the authorization as string.
-     * @returns {void}
+     *
      */
     setAuthorization(authorization) {
       if (typeof (authorization) === "undefined" || (authorization === null))

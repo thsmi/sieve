@@ -46,28 +46,28 @@
   class SieveBlockImport extends SieveBlockBody {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isElement(parser, lexer) {
       return lexer.probeByClass(["import/", "whitespace"], parser);
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "import";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "import";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     init(parser) {
       // The import section consists of require and deadcode statments...
@@ -92,9 +92,9 @@
      * Checks if the given import are supported by the sieve implementation.
      * In case an incompatible require is found an exception will be thrown.
      *
-     * @param {String[]} dependencies
+     * @param {string[]} dependencies
      *   the require strings to check as string array
-     * @returns {void}
+     *
      *
      */
     check(dependencies) {
@@ -110,9 +110,9 @@
      * Add a require to the require statements.
      * In the require is already present, it will be silently skipped.
      *
-     * @param {String} require
+     * @param {string} require
      *   the require to add.
-     * @return {SieveBlockImport}
+     * @returns {SieveBlockImport}
      *   a self reference.
      */
     capability(require) {

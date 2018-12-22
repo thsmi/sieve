@@ -85,9 +85,9 @@
    * Add a response listener to this request. The response listener will
    * be triggered in case a successful server response was received
    *
-   * @param {function} listener
+   * @param {Function} listener
    *   the listener which should be invoked when the server response
-   * @returns {void}
+   *
    */
   SieveAbstractRequest.prototype.addResponseListener
     = function (listener) {
@@ -103,7 +103,7 @@
    * init request upon connecting or after tls completed.
    * Both are send by the server to the client.
    *
-   * @returns {Boolean}
+   * @returns {boolean}
    *   true in case the request is unsolicited. Which means
    *   the client sends a request and the server responds
    *   to that.
@@ -128,7 +128,7 @@
    * @param  {SieveAbstractRequestBuilder} builder
    *   a reference to a stateless request builder which can be used
    *   to form the request string.
-   * @return {String}
+   * @returns {string}
    *   the data which should be send to the server
    *
    * @abstract
@@ -151,7 +151,7 @@
 
   SieveAbstractRequest.prototype.onBye
     = function (response) {
-      if ((response.getResponse() === 1) && (this.byeListener))
+      if ((response.getResponse() === RESPONSE_BYE) && (this.byeListener))
         this.byeListener.onByeResponse(response);
     };
 
@@ -166,7 +166,7 @@
    *
    * @param {SieveSimpleResponse} response
    *   thr response which should be handled by this request.
-   * @returns {void}
+   *
    */
   SieveAbstractRequest.prototype.addResponse
     = function (response) {
@@ -203,9 +203,9 @@
   /**
    * Sets the sasl mechanisms username. Not all SASL Mechanisms require an username.
    *
-   * @param {String} username
+   * @param {string} username
    *   the username
-   * @return {void}
+   *
    **/
   SieveAbstractSaslRequest.prototype.setUsername
     = function (username) {
@@ -217,7 +217,7 @@
    * But there are also mechanisms like SASL EXTERNAL which does not need any passwords.
    * They use different methods to transfer the credentials.
    *
-   * @return {Boolean}
+   * @returns {boolean}
    *   indicates if this SASL Mechanism needs a password
    */
   SieveAbstractSaslRequest.prototype.hasPassword
@@ -228,7 +228,7 @@
   /**
    * Sets the sasl request's password.
    *
-   * @param {String} password
+   * @param {string} password
    *   the password which shall be used for the authentication.
    * @returns {SieveAbstractSaslRequest}
    *   a self reference
@@ -249,7 +249,7 @@
    * authorization which switch the user. Typically admins and superusers have
    * such super powers.
    *
-   * @returns {Boolean}
+   * @returns {boolean}
    *   true in case the request supports authorization otherwise false.
    */
   SieveAbstractSaslRequest.prototype.isAuthorizable
@@ -262,7 +262,7 @@
    * Sets the username which should be authorized.
    * In case authorization is not supported it will be silently ignored.
    *
-   * @param {String} authorization
+   * @param {string} authorization
    *   the username used for authorization
    * @returns {SieveAbstractRequest}
    *   a self reference
@@ -287,7 +287,7 @@
    * Loads a script from the server and returns the content.
    * In case the script is non existant an error will be triggered.
    *
-   * @param {String} script
+   * @param {string} script
    *   the script which should be retrived
    * @author Thomas Schmid
    * @constructor
@@ -330,9 +330,9 @@
    *
    * Please not it will overwrite silently any existing script with the same name.
    *
-   * @param {String} script
+   * @param {string} script
    *   the script's name
-   * @param {String} body
+   * @param {string} body
    *   the sieve script which should be stored on the server.
    *
    * @constructor
@@ -385,14 +385,13 @@
    *
    * An OK response can contain Syntax Warnings.
    *
-   * @example
    *   C: CheckScript {31+}
    *   C: #comment
    *   C: InvalidSieveCommand
    *   C:
    *   S: NO "line 2: Syntax error"
    *
-   * @param {String} body
+   * @param {string} body
    *   the script which should be check for syntactical validity
    *
    * @constructor
@@ -448,7 +447,7 @@
    * You activate a Script by calling SETACTIVE and the scriptname. At activation
    * the previous active Script will become inactive.
    *
-   * @param {String} script - The script name which should be activated. Passing
+   * @param {string} script - The script name which should be activated. Passing
    * an empty string deactivates the active script.
    *
    * @author Thomas Schmid
@@ -526,7 +525,7 @@
   // ****************************************************************************//
 
   /**
-   * @param {String} script
+   * @param {string} script
    * @author Thomas Schmid
      * @constructor
    */
@@ -579,7 +578,7 @@
   SieveNoopRequest.prototype = Object.create(SieveAbstractRequest.prototype);
   SieveNoopRequest.prototype.constructor = SieveNoopRequest;
 
-  /** @return {String} */
+  /** @returns {string} */
   SieveNoopRequest.prototype.getNextRequest
     = function (builder) {
       return builder
@@ -611,8 +610,8 @@
    *
    * Renaming the active script is allowed, the renamed script remains active.
    *
-   * @param {String} oldScript Name of the script, which should be renamed
-   * @param {String} newScript New name of the Script
+   * @param {string} oldScript Name of the script, which should be renamed
+   * @param {string} newScript New name of the Script
    *
    * @author Thomas Schmid
    * @constructor
@@ -808,9 +807,9 @@
    *        < OK
    *
    * @example
-   *  var sieve = new Sieve("example.com",2000,false,3)
+   *  let sieve = new Sieve('example.com',2000,false,3)
    *
-   *  var request = new SieveInitRequest();
+   *  let request = new SieveInitRequest();
    *  sieve.addRequest(request);
    *
    *  sieve.connect();
@@ -1392,7 +1391,7 @@
    * SASL External uses the TLS Cert for authentication.
    * Thus it does not rely upon any password, so this mehtod retuns always false.
    *
-   * @return {Boolean}
+   * @returns {boolean}
    *   returns always false
    */
   SieveSaslExternalRequest.prototype.hasPassword

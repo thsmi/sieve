@@ -31,7 +31,7 @@
      *
      * @param {string} id
      *   the account's unique id.
-     * @param {function} callback
+     * @param {Function} callback
      *   the callback which is invoked to retrieve the password.
      */
     constructor(id, callback) {

@@ -34,7 +34,7 @@
    *   informations about the addon which should be installed
    * @param {*} reason
    *   the reason why the addon should be installed.
-   * @returns {void}
+   *
    */
   function install(data, reason) {
   }
@@ -48,7 +48,7 @@
    *   informations about the addon which should be uninstalled
    * @param {*} reason
    *   the reason why the addon should be uninstalled.
-   * @returns {void}
+   *
    */
   function uninstall(data, reason) {
   }
@@ -60,7 +60,7 @@
    *   the startup information provided by thunderbird.
    * @param {*} reason
    *   the reason why the addon should be activated.
-   * @returns {void}
+   *
    */
   function startup(data, reason) {
 
@@ -115,7 +115,7 @@
    *   the startup information provided by thunderbird.
    * @param {*} reason
    *   the reason why the addon should be unloaded.
-   * @returns {void}
+   *
    */
   function shutdown(data, reason) {
     // Speedup shutdown, we don't need to cleanup if thunderbird closes

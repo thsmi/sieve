@@ -239,7 +239,7 @@ function onDetach() {
  *
  * @param {} account
  * @param {} callback
- * @returns {undefined}
+ *
  */
 function onAttach(account, callback, callbacks) {
   if (gAutoConfig) {

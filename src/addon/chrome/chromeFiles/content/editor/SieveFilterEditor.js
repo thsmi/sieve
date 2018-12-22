@@ -453,7 +453,7 @@
 
 
   /**
-   * @returns {undefined}
+   *
    */
   function onCompile() {
     gSFE.getScriptAsync((script) => { gSFE.checkScript(script); });
@@ -462,7 +462,7 @@
 
   /**
    * Called up on each editor input and resets the checkscript timer
-   * @returns {undefined}
+   *
    */
   function onInput() {
     // TODO update change status more lazilys
@@ -527,7 +527,7 @@
    *   the keydown event.
    * @param {Function} callback
    *   the callback event which should be invoked.
-   * @returns {void}
+   *
    */
   function onEnterKeyPress(event, callback) {
 
@@ -540,7 +540,7 @@
 
   /**
    * Callback handler for the find button in the search dialog
-   * @returns {void}
+   *
    */
   function onFindString() {
     document.getElementById("boxSearchError").removeAttribute('hidden');
@@ -557,7 +557,7 @@
 
   /**
    * Callback handler for the replace button in the search dialog
-   * @returns {void}
+   *
    */
   function onReplaceString() {
     document.getElementById("boxSearchError").removeAttribute('hidden');
@@ -581,7 +581,7 @@
   /**
    * Click handler for the donate button.
    * Opens a new browser window with the paypal donation website
-   * @return {void}
+   *
    */
   function onDonate() {
     let uri = Cc["@mozilla.org/network/io-service;1"]
@@ -786,7 +786,7 @@
 
   /**
    * Called when the user clicks on the save button.
-   * @returns {undefined}
+   *
    */
   function onSave() {
     gSFE.saveScript();
@@ -795,7 +795,7 @@
   /**
    *
    * @param {} callback
-   * @return {Boolean}
+   * @returns {boolean}
    *   true if a synchonous shutdown was successfull
    *   false if shutdown was canceled or asynchnous shutdown started and
    *   the callback will be invoked
@@ -845,7 +845,7 @@
 
   /**
    * Closes the tab, does not prompt if it should be saved or not...
-   * @return {Boolean}
+   * @returns {boolean}
    *   true if the tab can be close otherwise false
    */
   function closeTab() {
@@ -1036,7 +1036,7 @@
 
   /**
    * Shows the Sidebar containing the Sieve Reference
-   * @returns {void}
+   *
    */
   function onSideBarHide() {
     document.getElementById('btnReference').removeAttribute('checked');

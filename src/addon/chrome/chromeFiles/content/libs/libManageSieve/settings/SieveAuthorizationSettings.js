@@ -41,7 +41,7 @@
 
     /**
      * Shows a dialog asking for the authorization.
-     * @returns {String}
+     * @returns {string}
      *   the authorization string or null in case the dialog was canceled.
      */
     getAuthorization() {

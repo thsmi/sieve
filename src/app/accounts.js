@@ -20,7 +20,7 @@
 
   /**
    * The main entry point for the account view
-   * @returns {void}
+   *
    */
   async function main() {
     let accounts = new SieveAccountsUI();

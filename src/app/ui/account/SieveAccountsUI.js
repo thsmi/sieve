@@ -24,7 +24,7 @@
 
     /**
      * Renders the UI for this component.
-     * @returns {void}
+     *
      */
     async render() {
 
@@ -44,7 +44,7 @@
      *
      * @param {SieveAccountUI} account
      *   the account which should be removed.
-     * @returns {void}
+     *
      */
     async remove(account) {
 
@@ -57,7 +57,7 @@
     /**
      * Create a new account, and initializes it with default settings.
      *
-     * @returns {String}
+     * @returns {string}
      *   the accounts unique id.
      */
     async create() {

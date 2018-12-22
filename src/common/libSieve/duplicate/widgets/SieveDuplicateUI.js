@@ -207,12 +207,12 @@
     /**
      * Checks and changes a tag's enabled state.
      *
-     * @param {String} id
+     * @param {string} id
      *   the tag's id
-     * @param {Boolean} [status]
+     * @param {boolean} [status]
      *   optional parameter to change the tags state
      *
-     * @returns {Boolean}
+     * @returns {boolean}
      *   true in case the element is enabled otherwise false
      */
     enable(id, status) {
@@ -223,10 +223,10 @@
      * Checks if the given tag exists.
      * It is used to detect if tags a set.
      *
-     * @param {String} id
+     * @param {string} id
      *   the tag's  id
      *
-     * @returns {Boolean}
+     * @returns {boolean}
      *   true in case the tag existed during parsing otherwise false.
      */
     isEnabled(id) {

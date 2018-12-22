@@ -49,14 +49,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./variables/templates/SieveSetActionUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
       let item = $("#sivVariableName");
@@ -106,7 +106,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
 
@@ -141,7 +141,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -193,14 +193,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./variables/templates/SieveStringTestUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -218,7 +218,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
 
@@ -234,7 +234,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")

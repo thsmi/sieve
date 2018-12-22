@@ -19,7 +19,7 @@
    * The on message handler which receives the parent IPC messages.
    * @param {Event} e
    *   the event
-   * @returns {void}
+   *
    */
   function onMessage(e) {
     if (e.source === window)
@@ -52,9 +52,9 @@
 
     /**
      * Waits for a response from the IPC Server.
-     * @param {String} id
+     * @param {string} id
      *   the response's unique id.
-     * @return {Promise<Object>} the response from the IPC Server
+     * @returns {Promise<Object>} the response from the IPC Server
      */
     static async receiveMessage(id) {
       return await new Promise((resolve, reject) => {
@@ -79,7 +79,7 @@
 
     /**
      * Sends a message to the Ipc Server.
-     * @param {String} action
+     * @param {string} action
      *   the actions unique identifier
      * @param {Object} payload
      *   the data which should be send

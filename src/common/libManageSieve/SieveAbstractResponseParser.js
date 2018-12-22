@@ -56,7 +56,7 @@
      *
      * @param {int} size
      *   The number of bytes as integer which should be extracted
-     * @return {void}
+     *
      */
     extract(size) {
       this.pos += size;
@@ -65,7 +65,7 @@
     /**
      * Tests if the array starts with a line break (#13#10)
      *
-     * @return {Boolean}
+     * @returns {boolean}
      *   true if the buffer with a line break, otherwise false
      */
     isLineBreak() {
@@ -102,7 +102,7 @@
 
     /**
      * Test if the buffer starts with a space character (#32)
-     * @return {Boolean}
+     * @returns {boolean}
      *   true if buffer starts with a space character, otherwise false
      */
     isSpace() {
@@ -116,7 +116,7 @@
      * Extracts a space character (#32) form the buffer
      *
      * If it does not start with a space character an exception is thrown.
-     * @returns {void}
+     *
      */
     extractSpace() {
       if (this.isSpace() === false)
@@ -149,7 +149,7 @@
      *
      * Please not it is perfectly fine to have a literal with a zero byte length.
      *
-     * @returns {String}
+     * @returns {string}
      *   the string or an exception in case the literal could not be extracted.
      */
     extractLiteral() {
@@ -187,7 +187,7 @@
      *   the chararcter which should be found
      * @param {int} [offset]
      *   an absolut offset, from which to start searching
-     * @return {int} character
+     * @returns {int} character
      *   the characters absolute position within the buffer otherwise -1 if not found
      */
     indexOf(character, offset) {
@@ -203,7 +203,7 @@
 
     /**
      * Test if the buffer starts with a quote character (#34)
-     * @return {Boolean}
+     * @returns {boolean}
      *   true if buffer starts with a quote character, otherwise false
      */
     isQuoted() {
@@ -218,7 +218,7 @@
      *
      * If it does not start with a valid string an exception is thrown.
      *
-     * @return {string}
+     * @returns {string}
      *   the quoted string extracted, it is garanteed to be free of escape sequences
      */
     extractQuoted() {
@@ -268,7 +268,7 @@
     /**
      * Tests if the a quoted or literal string starts at the current position.
      *
-     * @return {Boolean}
+     * @returns {boolean}
      *   true if a strings starts, otherwise false
      */
     isString() {
@@ -284,7 +284,7 @@
     /**
      * Extracts a quoted or literal string from the current position
      *
-     * @returns {String}
+     * @returns {string}
      *   the quote or literal string or an exception in case no string could be extracted.
      */
     extractString() {
@@ -304,7 +304,7 @@
      *
      * @param {byte[]} separators
      *   an array containing possible token separators. The first match always wins.
-     * @return {String}
+     * @returns {string}
      *   the extracted token.
      */
     extractToken(separators) {
@@ -342,7 +342,7 @@
      * @param {Byte[]} bytes
      *   the bytes to compare as byte array encoded in UTF-8
      *
-     * @return {Boolean}
+     * @returns {boolean}
      *   true if bytes match the beginning of the buffer, otherwise false
      */
     startsWith(bytes) {
@@ -366,7 +366,7 @@
     /**
      * Returns a copy of the current buffer.
      *
-     * @return {byte[]}
+     * @returns {byte[]}
      *   an a copy of the array's current view. It is encoded in UTF-8
      */
     getByteArray() {
@@ -384,7 +384,7 @@
      *   Optional zero-based index at which to begin.
      * @param {int} [endIndex]
      *   Optional Zero-based index at which to end.
-     * @return {String} the copy buffers content
+     * @returns {string} the copy buffers content
      */
     getData(startIndex, endIndex) {
 
@@ -403,7 +403,7 @@
      * Check if the buffer is empty. This means the buffer does not contain any
      * extractable bytes or tokens.
      *
-     * @return {Boolean}
+     * @returns {boolean}
      *   true if the buffer is empty, otherwise false
      */
     isEmpty() {
@@ -431,9 +431,9 @@
     /**
      * Encodes a clear text string to a base64 encoded string.
      *
-     * @param {String} decoded
+     * @param {string} decoded
      *   the clear text string which should be encoded.
-     * @returns {String}
+     * @returns {string}
      *   the base64 encoded string.
      *
      * @abstract
@@ -446,7 +446,7 @@
     /**
      * Decodes an base64 encoded string into a cleat text string.
      *
-     * @param {String} encoded
+     * @param {string} encoded
      *   the base64 encoded string which should be decoded.
      * @returns {string}
      *   the decoded string.

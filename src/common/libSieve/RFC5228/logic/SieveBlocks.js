@@ -119,21 +119,21 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isElement(token, doc) {
       return false;
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "block/rootnode";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "block/";

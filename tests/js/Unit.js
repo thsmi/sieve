@@ -40,9 +40,9 @@
 
   /**
    * Logs the string at trace level
-   * @param {String} message
+   * @param {string} message
    *   the message to log.
-   * @returns {void};
+   *;
    */
   function logTrace(message) {
     log(message, "Trace");
@@ -50,7 +50,7 @@
 
   /**
    * Signals the test suit, tests succeeded.
-   * @returns {void}
+   *
    */
   function succeed() {
     let msg = {};
@@ -62,9 +62,9 @@
   /**
      * Signals the test suit, a test failed.
      *
-     * @param {String|Error} [message]
+     * @param {string|Error} [message]
      *   an optional error or error why tests failed.
-     * @returns {void}
+     *
    */
   function fail(message) {
 
@@ -102,11 +102,11 @@
   /**
    * Checks if the actual value is a equals to true.
    *
-   * @param {Boolean} actual
+   * @param {boolean} actual
    *   the actual value which should be tested
-   * @param {String} [message]
+   * @param {string} [message]
    *   the message to display in case of a failure.
-   * @returns {undefined}
+   *
    */
   function assertTrue(actual, message) {
     this.assertEquals(true, actual, message);
@@ -115,11 +115,11 @@
   /**
    * Checks if the actual value is a equals to false.
    *
-   * @param {Boolean} actual
+   * @param {boolean} actual
    *   the actual value which should be tested
-   * @param {String} [message]
+   * @param {string} [message]
    *   the message to display in case of a failure.
-   * @returns {undefined}
+   *
    */
   function assertFalse(actual, message) {
     this.assertEquals(false, actual, message);
@@ -133,9 +133,9 @@
    *   the expected value
    * @param {any} actual
    *   the actual value which should be tested
-   * @param {String} [message]
+   * @param {string} [message]
    *   the message to display in case of a failure
-   * @returns {undefined}
+   *
    */
   function assertEquals(expected, actual, message) {
 
@@ -154,7 +154,7 @@
    * Registers a function which contains a test to run.
    * @param {*} test
    *   the function to call which contains the test.
-   * @returns {undefined}
+   *
    */
   function add(test) {
 

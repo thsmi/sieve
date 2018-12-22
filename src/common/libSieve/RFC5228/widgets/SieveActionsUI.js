@@ -31,7 +31,7 @@
   class SieveStopUI extends SieveActionBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -45,7 +45,7 @@
   class SieveDiscardUI extends SieveActionBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -59,7 +59,7 @@
   class SieveKeepUI extends SieveActionBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -86,14 +86,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./RFC5228/templates/SieveRedirectActionUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -118,7 +118,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
       $("#sivRedirectAddress").val(this.address());
@@ -128,7 +128,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -155,14 +155,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./RFC5228/templates/SieveFileIntoActionUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -182,7 +182,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
       $("#sivFileIntoPath").val(this.path());
@@ -192,7 +192,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")

@@ -26,7 +26,7 @@
   class SieveMatchTypeWidget extends SieveDropDownWidget {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(selector) {
       super("match-type/", selector);
@@ -39,14 +39,14 @@
   class SieveAbstractMatchTypeUI extends SieveDropDownItemWidget {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "match-type/";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getName() {
       return "sieve-matchtype";
@@ -60,14 +60,14 @@
   class SieveContainsMatchUI extends SieveAbstractMatchTypeUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "match-type/contains";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./RFC5228/templates/SieveMatchTypeContainsUI.html";
@@ -81,14 +81,14 @@
   class SieveIsMatchUI extends SieveAbstractMatchTypeUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "match-type/is";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./RFC5228/templates/SieveMatchTypeIsUI.html";
@@ -102,14 +102,14 @@
   class SieveMatchesMatchUI extends SieveAbstractMatchTypeUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "match-type/matches";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./RFC5228/templates/SieveMatchTypeMatchesUI.html";

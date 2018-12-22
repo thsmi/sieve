@@ -62,14 +62,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./environment/templates/SieveEnvironmentUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
       (new SieveStringListWidget("#sivEnvironmentKeyList"))
@@ -87,7 +87,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
 
@@ -104,7 +104,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")

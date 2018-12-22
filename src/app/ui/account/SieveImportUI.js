@@ -24,7 +24,6 @@
 
     /**
      * Shows the import account dialog.
-     * @returns {void}
      */
     async show() {
       return await new Promise(async (resolve) => {

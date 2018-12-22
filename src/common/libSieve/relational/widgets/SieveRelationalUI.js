@@ -25,21 +25,21 @@
   class SieveCountMatchUI extends SieveAbstractMatchTypeUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "match-type/count";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isCapable(capabilities) {
       return capabilities.hasCapability("relational");
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad(sivElement) {
       super.onLoad(sivElement);
@@ -49,7 +49,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave(sivElement) {
       sivElement.setElement(
@@ -58,7 +58,7 @@
 
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./relational/templates/SieveMatchTypeCountUI.html";
@@ -105,7 +105,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./relational/templates/SieveMatchTypeValueUI.html";

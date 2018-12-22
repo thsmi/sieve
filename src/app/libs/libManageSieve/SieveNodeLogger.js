@@ -26,7 +26,7 @@
   class SieveLogger extends SieveAbstractLogger {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     log(message, level) {
 

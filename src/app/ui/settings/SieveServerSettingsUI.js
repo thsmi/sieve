@@ -32,7 +32,7 @@
 
     /**
      * Sets the account's human readable display name
-     * @param {String} name
+     * @param {string} name
      *   the name which should be set.
      * @returns {SieveServerSettingsUI}
      *  a self reference
@@ -138,7 +138,7 @@
 
     /**
      * Shows the advanced setting
-     * @returns {void}
+     *
      */
     showAdvanced() {
       let parent = this.getDialog();
@@ -150,7 +150,7 @@
 
     /**
      * Hides the advanced settings
-     * @returns {void}
+     *
      */
     hideAdvanced() {
       let parent = this.getDialog();
@@ -192,7 +192,7 @@
     /**
      * Validates and saves the setting before closing the dialog.
      * In case the settings are invalid an error message is displayed.
-     * @return {void}
+     *
      */
     async save() {
 
@@ -217,7 +217,7 @@
     /**
      * Retruns the currents diaogs UI Element.
      *
-     * @return {Object}
+     * @returns {Object}
      *   the dialogs UI elements.
      */
     getDialog() {
@@ -226,7 +226,7 @@
 
     /**
      * Renders the UI element into the dom.
-     * @returns {void}
+     *
      */
     async render() {
       let parent = this.getDialog();

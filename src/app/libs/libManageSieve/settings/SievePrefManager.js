@@ -38,7 +38,7 @@
 
     /**
      * Returns a specific value.
-     * @param {String} key
+     * @param {string} key
      *   the key which should be returned.
      * @returns {Object}
      *   the value or undefined in case it does not exist.
@@ -51,7 +51,7 @@
     /**
      * Sets and persists the given preference.
      *
-     * @param {String} key
+     * @param {string} key
      *   the prefence key which should be written.
      * @param {Object} value
      *   the key's value.

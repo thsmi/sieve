@@ -23,7 +23,7 @@
   class SieveMozResponseParser extends SieveAbstractResponseParser {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     convertToString(byteArray) {
       // The new code should run with Google and Mozilla
@@ -32,14 +32,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     convertToBase64(decoded) {
       return btoa(decoded);
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     convertFromBase64(encoded) {
       return atob(encoded);

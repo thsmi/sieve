@@ -22,7 +22,7 @@
 
     /**
      * Initializes the new i18n instance.
-     * @param {String} locale
+     * @param {string} locale
      *   the locale which should be used for translations.
      * @constructor
      */
@@ -32,7 +32,7 @@
     /**
      * Sets the current locale. In case the locale is unknown an exception will be thrown.
      *
-     * @param {String} locale
+     * @param {string} locale
      *   the new locale
      * @returns {SieveI18n}
      *   a self reference
@@ -63,9 +63,9 @@
     /**
      * The strings unique id
      *
-     * @param {String} string
+     * @param {string} string
      *   the string which should be translated
-     * @returns {String}
+     * @returns {string}
      *   the tranlated string
      */
     getString(string) {

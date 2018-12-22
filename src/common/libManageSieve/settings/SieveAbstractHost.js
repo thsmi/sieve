@@ -76,7 +76,7 @@
      * Configures the TCP Port which sieve should use.
      * @param {string} port
      *   the port number as string.
-     * @returns {undefined}
+     *
      */
     setPort(port) {
       let type = TYPE_CUSTOM;
@@ -117,7 +117,7 @@
   class SieveCustomHost extends SieveAbstractHost {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getHostname() {
       return this.account.prefs.getString("hostname", "");
@@ -126,9 +126,9 @@
     /**
      * Sets the custom hostname which shall be used.
      *
-     * @param {String} hostname
+     * @param {string} hostname
      *   the hostname or ip as string.
-     * @return {void}
+     *
      */
     setHostname(hostname) {
       this.account.prefs.setString("hostname", hostname);

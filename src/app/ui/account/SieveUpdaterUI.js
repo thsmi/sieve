@@ -24,7 +24,6 @@
 
     /**
      * Checks for new updates and display a new message if a newer version is available
-     * @returns {void}
      */
     async check() {
       let status = await SieveIpcClient.sendMessage("update-check");

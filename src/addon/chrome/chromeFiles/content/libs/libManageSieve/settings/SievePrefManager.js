@@ -29,11 +29,11 @@
     /**
      * Returns the boolean value for the preference.
      *
-     * @param {String} key
+     * @param {string} key
      *   the preference's key
-     * @param {Boolean} [fallback]
+     * @param {boolean} [fallback]
      *   the fallback value in case the key does not exist.
-     * @return {Boolean}
+     * @returns {boolean}
      *   the key's value as boolean
      */
     getBoolean(key, fallback) {
@@ -55,9 +55,9 @@
     /**
      * Sets a boolean value for the given key.
      *
-     * @param {String} key
+     * @param {string} key
      *   the preference's key
-     * @param {Boolean} value
+     * @param {boolean} value
      *   the value which should be set
      * @returns {SievePrefManager}
      *   a self reference
@@ -73,11 +73,11 @@
     /**
      * Returns the string value for the preference.
      *
-     * @param {String} key
+     * @param {string} key
      *   the preference key
-     * @param {String} [fallback]
+     * @param {string} [fallback]
      *   the fallback value in case the key does not exist.
-     * @return {String}
+     * @returns {string}
      *   the key's value as string
      */
     getString(key, fallback) {
@@ -96,9 +96,9 @@
     /**
      * The string which should be set for th preference
      *
-     * @param {String} key
+     * @param {string} key
      *   the preference key
-     * @param {String} value
+     * @param {string} value
      *   the key's value as string
      * @returns {SievePrefManager}
      *   a self reference
@@ -111,11 +111,11 @@
     /**
      * Returns the integer value for the preference.
      *
-     * @param {String} key
+     * @param {string} key
      *   the preference's key
-     * @param {Integer} [fallback]
+     * @param {int} [fallback]
      *   the fallback value in case the key does not exist.
-     * @return {String}
+     * @returns {string}
      *   the key's value as integer
      */
     getInteger(key, fallback) {
@@ -140,11 +140,11 @@
     /**
      * Sets an integer value for the given key.
      *
-     * @param {String} key
+     * @param {string} key
      *   the preference's key
-     * @param {Integer} value
+     * @param {int} value
      *   the integer value which should be set.
-     * @return {SievePrefManager}
+     * @returns {SievePrefManager}
      *   a self reference.
      */
     setInteger(key, value) {

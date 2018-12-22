@@ -32,7 +32,6 @@
 
     /**
      * Shows the settings dialog
-     * @returns {void}
      */
     show() {
       // TODO show should marked as async so that we can
@@ -44,7 +43,6 @@
     /**
      * Validates and saves the setting before closing the dialog.
      * In case the settings are invalid an error message is displayed.
-     * @return {void}
      */
     async save() {
 
@@ -55,7 +53,7 @@
     /**
      * Retruns the currents diaogs UI Element.
      *
-     * @return {Object}
+     * @returns {Object}
      *   the dialogs UI elements.
      */
     getDialog() {
@@ -64,7 +62,7 @@
 
     /**
      * Renders the UI element into the dom.
-     * @returns {void}
+     *
      */
     async render() {
       let parent = this.getDialog();

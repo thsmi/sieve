@@ -17,7 +17,7 @@
 
   /**
    * Creates the main window
-   * @return {void}
+   *
    */
   function createWindow() {
     // Create the browser window.

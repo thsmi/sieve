@@ -25,21 +25,21 @@
   class SieveRegExMatchUI extends SieveAbstractMatchTypeUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "match-type/regex";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isCapable(capabilities) {
       return capabilities.hasCapability("regex");
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./regex/templates/SieveMatchTypeRegExUI.html";

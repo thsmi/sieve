@@ -31,7 +31,7 @@
      *
      * @param {SieveAccountsUI} accounts
      *   the parent sieve accounts renderer
-     * @param {String} id
+     * @param {string} id
      *   the account unique id.
      */
     constructor(accounts, id) {
@@ -42,7 +42,7 @@
     /**
      * Executes an action on the communication process.
      *
-     * @param {String} action
+     * @param {string} action
      *   the aktions unique name
      * @param {Object} [payload]
      *   th payload which should be send
@@ -74,7 +74,7 @@
     /**
      * Establishes a connection to the server
      *
-     * @return {void}
+     *
      */
     async connect() {
       await this.send("account-connect");
@@ -84,7 +84,7 @@
     /**
      * Disconnects the account from the server.
      *
-     * @return {void}
+     *
      */
     async disconnect() {
       await this.send("account-disconnect");
@@ -93,7 +93,7 @@
 
     /**
      * Renders the settings pane
-     * @returns {void}
+     *
      */
     async renderSettings() {
 
@@ -126,7 +126,7 @@
 
     /**
      * Renders the accounts outer ui
-     * @returns {void}
+     *
      */
     async renderAccount() {
       let item = await (new SieveTemplateLoader()).load("./ui/account/account.tpl");
@@ -152,7 +152,7 @@
 
     /**
      * Renders the account ui's script pane
-     * @returns {void}
+     *
      */
     async renderScripts() {
       let data = await this.send("account-list");
@@ -185,7 +185,7 @@
 
     /**
     * Renders the UI for this component.
-    * @returns {void}
+    *
     */
     async render() {
       console.log("Rendering Account " + this.id);
@@ -223,7 +223,7 @@
      * If yes it triggers expurging the account settings.
      * This can not be undone.
      *
-     * @returns {void}
+     *
      */
     async remove() {
       await this.accounts.remove(this);
@@ -231,7 +231,7 @@
 
     /**
      * Shows the settings dialog
-     * @returns {void}
+     *
      */
     showSettings() {
       $("#siv-account-" + this.id + " .sieve-settings-tab").tab('show');
@@ -278,7 +278,7 @@
     /**
      * Shows the account's capabilities
      *
-     * @returns {void}
+     *
      */
     showCapabilities() {
       $("#sieve-capabilities-server").empty();
@@ -306,7 +306,7 @@
     /**
      * Prompts for the new script name an creates the script
      *
-     * @returns {void}
+     *
      */
     async createScript() {
       let name = await this.send("script-create");

@@ -37,7 +37,7 @@
      * Creates a new auto config instance. It tries to automagically detect
      * the correct sieve settings.
      *
-     * @param {String} hostname
+     * @param {string} hostname
      *   the hostname or ip which should be tested
      * @constructor
      */

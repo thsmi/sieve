@@ -36,9 +36,9 @@
   /**
    * Creates a new menu item
    *
-   * @param {String} action
+   * @param {string} action
    *   the items unique type
-   * @param {String} flavour
+   * @param {string} flavour
    *   the drop flavour
    * @param {*} docShell
    *   the sieve documents shell
@@ -60,7 +60,7 @@
 
   /**
    * Compacts the sieve dom
-   * @returns {void}
+   *
    **/
   function compact() {
     alert(dom2.compact());
@@ -69,7 +69,7 @@
 
   /**
    * Initializes the sieve rendering ui and script parser
-   * @returns {void}
+   *
    **/
   function init() {
     // Yes it's a global object
@@ -118,11 +118,11 @@
   /**
    * Renders the given script
    *
-   * @param {String} script
+   * @param {string} script
    *   the sieve script which should be rendered
    * @param {Object} [capabilities]
    *   the capabilities which should be enabled
-   * @returns {void}
+   *
    */
   function setSieveScript(script, capabilities) {
 
@@ -165,7 +165,7 @@
 
   /**
    * Collects and shows al require statements
-   * @returns {void}
+   *
    **/
   function collectRequires() {
     let requires = {};
@@ -178,7 +178,7 @@
 
   /**
    * Sets the capabilities as defined in the capabilies dialog
-   * @returns {void}
+   *
    **/
   function setCapabilities() {
 
@@ -200,7 +200,7 @@
    *   if omitted the current capabilities are set
    *   if true all capabilities are be selected
    *   if false all capabilities are be deselected
-   * @returns {void}
+   *
    */
   function loadCapabilities(value) {
 
@@ -224,11 +224,11 @@
 
   /**
    * Shows an info box
-   * @param {String} message
+   * @param {string} message
    *   the message's subject
-   * @param {String} content
+   * @param {string} content
    *   the message's details
-   * @returns {void}
+   *
    */
   function showInfoMessage(message, content) {
     $("#infobarsubject > span").text(message);
@@ -315,13 +315,13 @@
 
   /**
    * The windows default error handler
-   * @param {String} msg
+   * @param {string} msg
    *   the error message
-   * @param {String} url
+   * @param {string} url
    *   the file which caused the error
-   * @param {String} [line]
+   * @param {string} [line]
    *   the line which caused the error
-   * @returns {void}
+   *
    */
   function errorhandler(msg, url, line) {
     // alert(msg+"\n"+url+"\n"+line);

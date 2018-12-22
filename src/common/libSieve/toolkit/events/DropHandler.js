@@ -37,7 +37,7 @@
 
     /**
      * Gets the flavour for this drop type
-     * @returns {String[]}
+     * @returns {string[]}
      *   a string array containing all supported drop flavours.
      */
     flavours() {
@@ -57,7 +57,7 @@
     }
 
     /**
-     * @return {SieveAbstractWidget}
+     * @returns {SieveAbstractWidget}
      *   The owner on thich the drag event occured
      */
     owner() {
@@ -66,7 +66,7 @@
 
     /**
      * The target/sibling, the element which consumes the drop
-     * @return {SieveAbstractElement}
+     * @returns {SieveAbstractElement}
      *   the sibling element
      */
     sibling() {
@@ -75,13 +75,17 @@
 
     /**
      * The parent of this element.
-     * @return {SieveAbstractElement}
+     * @returns {SieveAbstractElement}
      *   the parent element
      */
     parent() {
       return this._owner.parent();
     }
 
+    /**
+     *
+     * @param {*} html
+     */
     attach(html) {
 
       html
@@ -206,7 +210,7 @@
      *
      * @param {*} sivFlavour
      * @param {*} type
-     * @returns {Boolean}
+     * @returns {boolean}
      */
     canCreateElement(sivFlavour, type) {
       return false;
@@ -216,7 +220,7 @@
      *
      * @param {*} sivFlavour
      * @param {*} id
-     * @returns {Boolean}
+     * @returns {boolean}
      */
     canMoveElement(sivFlavour, id) {
       return false;

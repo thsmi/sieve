@@ -32,7 +32,7 @@
 
     /**
      * Sets the authentication type
-     * @param {String} type
+     * @param {string} type
      *   the authentication type which should be used
      * @returns {SieveCredentialsUI}
      *   a self reference
@@ -57,7 +57,7 @@
     /**
      * The authentication type which was selected
      *
-     * @returns {String}
+     * @returns {string}
      *  authentication type
      */
     getSaslMechanism() {
@@ -69,7 +69,7 @@
     /**
      * Sets the username in the ui
      *
-     * @param {String} username
+     * @param {string} username
      *   the username which should be set
      * @returns {SieveSettingsUI}
      *   a self reference
@@ -153,7 +153,7 @@
 
     /**
      * Shows the advanced setting
-     * @returns {void}
+     *
      */
     showAdvanced() {
       let parent = this.getDialog();
@@ -165,7 +165,7 @@
 
     /**
      * Hides the advanced settings
-     * @returns {void}
+     *
      */
     hideAdvanced() {
       let parent = this.getDialog();
@@ -177,7 +177,7 @@
 
     /**
      * Shows the settings dialog
-     * @returns {void}
+     *
      */
     async show() {
       // TODO show should marked as async so that we can
@@ -207,7 +207,6 @@
     /**
      * Validates and saves the setting before closing the dialog.
      * In case the settings are invalid an error message is displayed.
-     * @return {void}
      */
     async save() {
 
@@ -232,7 +231,7 @@
     /**
      * Retruns the currents diaogs UI Element.
      *
-     * @return {Object}
+     * @returns {Object}
      *   the dialogs UI elements.
      */
     getDialog() {
@@ -241,7 +240,6 @@
 
     /**
      * Renders the UI element into the dom.
-     * @returns {void}
      */
     async render() {
       let parent = this.getDialog();

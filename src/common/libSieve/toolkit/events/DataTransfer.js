@@ -84,7 +84,7 @@
      *
      * @param {string} flavour
      *   the flavour which should be checked
-     * @return {Boolean}
+     * @returns {boolean}
      *   true in case the flavour is contained otherwise false.
      */
     contains(flavour) {
@@ -98,9 +98,9 @@
     /**
      * Retunrs the data bound to the given flavour.
      *
-     * @param {String} flavour
+     * @param {string} flavour
      *   the flavour as string
-     * @return {String}
+     * @returns {string}
      *   the data stored in the dragtarget.
      */
     getData(flavour) {
@@ -122,11 +122,11 @@
     /**
      * Binds the data to the data transfer object
      *
-     * @param {String} flavour
+     * @param {string} flavour
      *   the drag falvour as string
      * @param {Object} transfer
      *   the transfer object should be a string
-     * @returns {void}
+     *
      */
     setData(flavour, transfer) {
 
@@ -154,7 +154,7 @@
      * Otherwise you may leak.
      *
      * It releases the drop target from the current context.
-     * @returns {void}
+     *
      */
     clear() {
       _token = null;

@@ -47,7 +47,7 @@
 
     /**
      * Shows a dialog asking for the authorization.
-     * @returns {String}
+     * @returns {string}
      *   the authorization string or null in case the dialog was canceled.
      */
     async getAuthorization() {
@@ -70,7 +70,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getKey() {
       return CONFIG_AUTHORIZATION_TYPE;
@@ -114,7 +114,7 @@
     /**
      * Retunrs the current settings as json object.
      *
-     * @returns {String}
+     * @returns {string}
      *   the current settings as json.
      */
     stringify() {
@@ -128,9 +128,9 @@
      * Expects either a json string or object. Then it parses
      * the setting and applies them to the current object.
      *
-     * @param {JSON|String} json
+     * @param {JSON|string} json
      *   the configuration data which should be set.
-     * @returns {void}
+     *
      */
     parse(json) {
       if (typeof (json) === "string")

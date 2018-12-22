@@ -53,7 +53,7 @@
    *
    * @param {int} mechanism
    *   the authentication mechanisms unqiue id.
-   * @returns {Boolean}
+   * @returns {boolean}
    *   true in case the given type is supported otherwise false.
    */
     hasMechanism(mechanism) {
@@ -76,7 +76,7 @@
      * Sets the current mechanism.
      * @param {int} type
      *   the mechanism type's unique id.
-     * @return {void}
+     *
      */
     setMechanism(type) {
       if (typeof (type) === "undefined" || type === null)

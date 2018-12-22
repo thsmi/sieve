@@ -26,7 +26,6 @@
 
   // TODO we need a list of items to emulate blocks...
 
-
   /**
    * An Abstract implementation for all Generic elements
    */
@@ -69,7 +68,7 @@
      * @throws
      *   throws an exception in case the given buffer could not be parsed.
      *
-     * @returns {void}
+     *
      */
     parse(parser) {
       throw new Error("Implement SieveAbstractGeneric::parse(" + typeof (parser) + ")");
@@ -90,7 +89,7 @@
     /**
      * Concerts the current sieve elements into a script.
      *
-     * @returns {String}
+     * @returns {string}
      *   the sieve script as string
      */
     toScript() {
@@ -109,7 +108,7 @@
 
     /**
      * Creates a Generic Literal instance
-     * @param {String} token
+     * @param {string} token
      *   the literal's token
      * @param {SieveAbstractElement} parent
      *   the parent element
@@ -132,7 +131,7 @@
      *
      * Defaults to an empty string if omitted.
      *
-     * @param {String} [prefix]
+     * @param {string} [prefix]
      *   the default prefix which is used for an uninitialized element
      * @returns {SieveGenericLiteral}
      *   a self reference
@@ -150,7 +149,7 @@
      * Defines an optional postfix. Which is the whitespace after the literal
      * It is used to make the code more readable.
      *
-     * @param {String} postfix
+     * @param {string} postfix
      *   the postfixes default value.
      * @param {boolean} [linebreak]
      *   if true the postfix is considered to end at a linebreak. This is used to make
@@ -181,7 +180,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     parse(parser) {
 
@@ -211,7 +210,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     toScript() {
       let result = "";
@@ -234,7 +233,7 @@
   class SieveGenericMandatoryItem extends SieveAbstractGeneric {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(parent) {
       super(parent);
@@ -243,7 +242,7 @@
 
     /**
      * Checks it the given id is an child element of this item
-     * @param {String} id
+     * @param {string} id
      *   the element's id
      * @returns {boolean}
      *   true in case the element exists otherwise false
@@ -258,7 +257,7 @@
      * In case the item has no known child element with the id an
      * exception will be throws.
      *
-     * @param {String} id
+     * @param {string} id
      *   the element's id
      * @returns {*}
      *   the child element with the given id.
@@ -275,7 +274,7 @@
      * Initializes the given parameter.
      * @param {Object} parameter
      *  the parameter which should be set
-     * @returns {void}
+     *
      */
     addParameter(parameter) {
 
@@ -316,7 +315,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     require(capabilities) {
 
@@ -328,7 +327,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     parse(parser) {
 
@@ -341,7 +340,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     toScript() {
 
@@ -373,7 +372,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     parse(parser) {
 
@@ -389,7 +388,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     toScript() {
 
@@ -428,7 +427,7 @@
 
     /**
      * Checks if the given id is managed by this element.
-     * @param {String} id
+     * @param {string} id
      *   the element's unique id
      * @returns {boolean}
      *   true in case the element is a child element otherwise false.s
@@ -439,7 +438,7 @@
 
     /**
      * Returns the element for the given id.
-     * @param {String} id
+     * @param {string} id
      *   the element's unique id.
      * @returns {SieveAbstractElement}
      *   the sieve element with this is.
@@ -455,9 +454,9 @@
 
     /**
      * Enables the given id. In case the element is disabled the implicit fallback is used
-     * @param {String} id
+     * @param {string} id
      *   the child element's unique id.
-     * @param {Boolean} [status]
+     * @param {boolean} [status]
      *   the optional new status. If set to false the element will be disabled.
      *   true enables the element.
      *
@@ -486,7 +485,7 @@
      * Adds a new tag to the element
      * @param {*} tag
      *   the tag which should be added.
-     * @returns {undefined}
+     *
      */
     addTag(tag) {
 
@@ -519,7 +518,7 @@
 
     /**
      *
-     * @param {*} tags
+     * @param {Object} tags
      * @returns {SieveGenericOptionalItem}
      *   a self reference
      */
@@ -599,7 +598,7 @@
 
       // in case we did not find any tags, there won't be any elements. Which means we have
       // to restore the extracted whitespaces. We do this by reseting the postion.
-      if (this._elements.size === 0) {
+      if (!this._elements.size) {
 
         this._tail = null;
         parser.pos(pos);
@@ -612,7 +611,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     require(imports) {
 
@@ -700,7 +699,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     nodeName() {
       if (this._nodeName === null)
@@ -710,7 +709,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     require(capabilities) {
 
@@ -726,7 +725,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     init(parser) {
 
@@ -793,7 +792,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     toScript() {
 
@@ -830,7 +829,7 @@
      *
      * In case the given element is non existant an exception is thrown
      *
-     * @param {String} id
+     * @param {string} id
      *   the unique element's id
      * @param {boolean} [status]
      *   the new status in case it should be changed.
@@ -857,11 +856,11 @@
      * Adds a literal to the generic element.
      * A literal is a fixed string.
      *
-     * @param {String} token
+     * @param {string} token
      *   the literals token
-     * @param {String} [postfix]
+     * @param {string} [postfix]
      *   an optional prefix
-     * @param {String} [prefix]
+     * @param {string} [prefix]
      *   an optional postfix
      * @returns {SieveGenericStructure}
      *   a self reference
@@ -879,7 +878,7 @@
 
 
     /**
-     * @param  {Array.<object>|object} tags
+     * @param {Array.<Object>|Object} tags
      * @returns {SieveGenericStructure}
      *   a self reference
      */
@@ -924,7 +923,7 @@
      * A dependent element fixes this. The "variable" element is
      * non greedy. So that in the first case the "flags".
      *
-     * @param {Array.<object>|object} parameters
+     * @param {Array.<Object>|Object} parameters
      *  the configuration and parameters for the dependent item
      * @returns {SieveGenericStructure}
      *  a self reference
@@ -948,7 +947,7 @@
      * In case it is not at the expected position
      * an error will be raised
      *
-     * @param  {Array.<object>|object} parameters
+     * @param  {Array.<Object>|Object} parameters
      *  the configuration and parameter for the generic items.
      * @returns {SieveGenericStructure}
      *  a self reference
@@ -969,7 +968,7 @@
 
     /**
      * Checks if the generic struture contains an element with the given id.
-     * @param {String} id
+     * @param {string} id
      *   the element's unique id
      * @returns {boolean}
      *   true in case the element exists otherwise false.
@@ -989,7 +988,7 @@
 
     /**
      * Returns the child element with the given id.
-     * @param {String} id
+     * @param {string} id
      *   the unique id as string.
      * @returns {*}
      *   the element or an exception in case the id is unknown.
@@ -1053,7 +1052,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     require(imports) {
       if (this.hasCurrentElement())
@@ -1065,7 +1064,7 @@
     /**
      * Checks is represented by an element.
      *
-     * @returns {Boolean}
+     * @returns {boolean}
      *   true in case the current element is defined otherwise false.
      */
     hasCurrentElement() {
@@ -1086,7 +1085,7 @@
      * Updates the current element by the given string or parser.
      * It will throw in case no compatible element was found.
      *
-     * @param {SieveParser|String} data
+     * @param {SieveParser|string} data
      *   the data which should be parsed.
      * @returns {SieveGroupElement}
      *   a self reference
@@ -1106,7 +1105,7 @@
     /**
      * Sets a prefix for this union.
      *
-     * @param {String} [token]
+     * @param {string} [token]
      *   the prefix as string. The token may be null to simplify parsing.
      * @returns {SieveGenericUnion}
      *   a self reference
@@ -1146,7 +1145,7 @@
       if (this._prefix)
         this._prefix.parse(parser);
 
-      if (this._items.length === 0) {
+      if (!this._items.length) {
         this._current = null;
         return this;
       }
@@ -1202,7 +1201,7 @@
       if (this._prefix)
         this._prefix.parse(parser);
 
-      if (this._items.length === 0) {
+      if (!this._items.lengths) {
         this._current = null;
         return this;
       }
@@ -1236,7 +1235,7 @@
     /**
      * Checks if the group has an active element.
      *
-     * @param {String} [id]
+     * @param {string} [id]
      *   an optional id of the child elemenet to get
      * @returns {boolean}
      *   true in case the element can be rendered
@@ -1265,9 +1264,9 @@
      * The other difference is that you can access children
      * directly by their id.
      *
-     * @param {String} [id]
+     * @param {string} [id]
      *   an optional id of the child elemenet to get
-     * @return {SieveAbstractElement}
+     * @returns {SieveAbstractElement}
      *   the active element.
      */
     getElement(id) {
@@ -1354,9 +1353,9 @@
     }
 
     /**
-     * @param {String} [id]
+     * @param {string} [id]
      *   an optional id of the child elemenet to get
-     * @return {SieveAbstractElement}
+     * @returns {SieveAbstractElement}
      *   the active element. This can be either the current or the default element.
      */
     getElement(id) {
@@ -1380,7 +1379,7 @@
      * Sets the current element.
      * This involves some guessing magic, to keep as much of the user structure as possible.
      *
-     * @param {String} value
+     * @param {string} value
      *   the new value to set.
      * @returns {SieveExplicitGroupElement}
      *  a self reference
@@ -1421,9 +1420,6 @@
 
       // in case the current element is of the same type as
       // the default value we keep the current element.
-      //if (this.isNode(this._default.nodeName()))
-      //  return false;
-
       return false;
     }
 

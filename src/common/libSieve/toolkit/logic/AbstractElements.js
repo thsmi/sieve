@@ -21,7 +21,7 @@
    * @constructor
    * @param {SieveDocument} docshell
    *  the document which owns this element
-   * @param {String} id
+   * @param {string} id
    *  the elements unique id.
    */
   function SieveAbstractElement(docshell, id) {
@@ -90,7 +90,7 @@
 
   /**
    * Returns the new Widget bound to this element.
-   * @return {SieveAbstractWidget}
+   * @returns {SieveAbstractWidget}
    *  the widget which is associated with this element.
    */
   SieveAbstractElement.prototype.widget
@@ -115,7 +115,7 @@
 
   /**
    * Retuns the Document which "owns" this element
-   * @return {SieveDocument} the sieve document
+   * @returns {SieveDocument} the sieve document
    */
   SieveAbstractElement.prototype.document
     = function () {
@@ -132,7 +132,7 @@
    *
    * @param {int} [id]
    *   defines to use a reverse lookup by the Id
-   * @return {int|SieveElement}
+   * @returns {int|SieveElement}
    *   the id in case the id was omitted otherwise the element.
    */
   SieveAbstractElement.prototype.id
@@ -175,7 +175,7 @@
    *   set to true if you want to delete empty parents
    * @param {SieveAbstractElement} [stop]
    *   element which stops the cascade
-   * @return {SieveAbstractElement}
+   * @returns {SieveAbstractElement}
    *   returns the node which is removed
    */
   SieveAbstractElement.prototype.remove
@@ -229,7 +229,7 @@
    * @param {SieveElement} [sibling]
    *   defines the sibling after which the new element should be inserted.
    *   In case no matching sibling is found, it will be appended at the end.
-   * @return {SieveAbstractBlock}
+   * @returns {SieveAbstractBlock}
    *   a self reference
    */
   SieveAbstractBlock.prototype.append
@@ -258,10 +258,10 @@
    *
    * To remove just a child node pass it's id as an argument
    *
-   *  @param {int} [childId]
+   * @param {int} [childId]
    *  the child id which should be removed.
    *
-   * @return {}
+   * @returns {}
    */
   SieveAbstractBlock.prototype.removeChild
     = function (childId, cascade, stop) {
@@ -310,7 +310,7 @@
     };
 
   /**
-   * @inheritDoc
+   * @inheritdoc
    */
   SieveAbstractBlock.prototype.require
     = function (imports) {

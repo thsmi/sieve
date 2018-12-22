@@ -29,28 +29,28 @@
   class SieveLineBreak extends SieveAbstractElement {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isElement(parser, lexer) {
       return parser.startsWith("\r\n");
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "whitespace/linebreak";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "whitespace/";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     init(parser) {
       parser.extract("\r\n");
@@ -58,7 +58,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     toScript() {
       return "\r\n";
@@ -71,7 +71,7 @@
   class SieveDeadCode extends SieveAbstractElement {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(docshell, id) {
       super(docshell, id);
@@ -79,28 +79,28 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isElement(parser, lexer) {
       return (parser.isChar([" ", "\t"]));
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "whitespace/deadcode";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "whitespace/";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     init(parser) {
       this.whiteSpace = parser.extractToken([" ", "\t"]);
@@ -109,7 +109,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     toScript() {
       return this.whiteSpace;
@@ -124,7 +124,7 @@
   class SieveBracketComment extends SieveAbstractElement {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(docshell, id) {
       super(docshell, id);
@@ -132,28 +132,28 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isElement(parser, lexer) {
       return parser.startsWith("/*");
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "comment/bracketcomment";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "comment";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     init(parser) {
       parser.extract("/*");
@@ -164,7 +164,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     toScript() {
       return "/*" + this.text + "*/";
@@ -178,7 +178,7 @@
   class SieveHashComment extends SieveAbstractElement {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(docshell, id) {
       super(docshell, id);
@@ -186,28 +186,28 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isElement(parser, lexer) {
       return parser.isChar("#");
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "comment/hashcomment";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "comment";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     init(parser) {
       parser.extract("#");
@@ -219,7 +219,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     toScript() {
       return "#" + this.text + "\r\n";
@@ -235,7 +235,7 @@
   class SieveWhiteSpace extends SieveAbstractElement {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(docshell, id) {
       super(docshell, id);
@@ -243,21 +243,21 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isElement(parser, lexer) {
       return lexer.probeByClass(["whitespace/", "comment"], parser);
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "whitespace";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "whitespace";
@@ -293,12 +293,12 @@
      * it finds the first non whitespace. This means this method extracts
      * zero or more whitespace characters
      *
-     * @param {SieveParser|String} parser
+     * @param {SieveParser|string} parser
      *  the parser element which contains the data
      * @param {boolean} crlf
      *   if true the parser will stop after the first linebreak (\r\n) (this means the linebreak will be extracted)
      *   or when it encounters a non whitespace character.
-     * @return {SieveWhiteSpace}
+     * @returns {SieveWhiteSpace}
      *  a self reference
      */
     init(parser, crlf) {
@@ -326,7 +326,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     toScript() {
       let result = "";

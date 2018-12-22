@@ -179,7 +179,7 @@
   class SieveCondition extends SieveBlockBody {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(docshell, id) {
       super(docshell, id);
@@ -188,28 +188,28 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isElement(parser, lexer) {
       return SieveIf.isElement(parser, lexer);
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "condition";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "condition";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     init(parser) {
 
@@ -264,7 +264,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     toScript() {
       let str = "";

@@ -32,7 +32,7 @@
   class SieveIfUI extends SieveBlockUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     createHtml(parent) {
       return $("<div/>")
@@ -53,7 +53,7 @@
   class SieveElseUI extends SieveBlockUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     createHtml(parent) {
       return $("<div/>")
@@ -69,7 +69,7 @@
   class SieveConditionUI extends SieveAbstractBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(elm) {
       super(elm);
@@ -77,7 +77,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     createHtml(parent) {
       let elm = $("<div/>")

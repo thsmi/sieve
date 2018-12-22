@@ -121,7 +121,7 @@
      * Creates a new Session instance.
      * @param {SieveAccount} account
      *   an reference to a sieve account. this is needed to obtain login informations.
-     * @param {String} [sid]
+     * @param {string} [sid]
      *   a unique Identifier for this Session. Only needed to make debugging easier.
      */
     constructor(account, sid) {
@@ -213,11 +213,11 @@
      *
      * @param {AbstractSieveRequest} request
      *   the sieve request which should be executed.
-     * @param {Object<String,function>} handlers
+     * @param {Object<string,Function>} handlers
      *   the event handlers for this request as object with a string as key and a function as value.
-     * @param {function} [init]
+     * @param {Function} [init]
      *   an optional init function.
-     * @returns {void}
+     *
      */
     async exec(request, handlers, init) {
 
@@ -282,7 +282,7 @@
      * The implementation will use a capability request as
      * fallback as described in the rfc.
      *
-     * @return {void}
+     *
      *   a promise
      */
     async noop() {
@@ -307,7 +307,7 @@
      * Sends a capability request.
      * In case of an error an exception will be thrown.
      *
-     * @returns {object}
+     * @returns {Object}
      *   an object with the capabilies.
      */
     async capabilities() {
@@ -325,9 +325,9 @@
 
     /**
      * Deletes the given script name.
-     * @param {String} name
+     * @param {string} name
      *   the script which should be deleted.
-     * @returns {void}
+     *
      */
     async deleteScript(name) {
 
@@ -345,11 +345,11 @@
      * Saves the given script. In case the script exists
      * it will be silently overwritten.
      *
-     * @param {String} name
+     * @param {string} name
      *   the script's name
-     * @param {String} script
+     * @param {string} script
      *   the script which should be saved.
-     * @returns {undefined}
+     *
      *   a void promise
      */
     async putScript(name, script) {
@@ -385,9 +385,9 @@
      * Gets the script with the given name.
      * In case the script does not exists the server will throw an error.
      *
-     * @param {String} name
+     * @param {string} name
      *   the scripts unique name
-     * @returns {Promise<String>}
+     * @returns {Promise<string>}
      *   the scripts content as string
      */
     async getScript(name) {
@@ -408,10 +408,10 @@
      *
      * To deactivate all scripts just omit the script parameter
      *
-     * @param {String} [script]
+     * @param {string} [script]
      *   the script which should be activated.
      *   If omitted all script will be deactivated.
-     * @returns {void}
+     *
      */
     async setActiveScript(script) {
 
@@ -430,7 +430,7 @@
      * It sends a logout request, then the server should
      * hangup the connection.
      *
-     * @returns {void}
+     *
      */
     async logout() {
       let callback = {
@@ -451,9 +451,9 @@
      *
      * Throws an exception in case the script is not valid.
      *
-     * @param {String} script
+     * @param {string} script
      *   the script which should be checked.
-     * @returns {void}
+     *
      */
     async checkScript2(script) {
 
@@ -481,9 +481,9 @@
      *
      * Throws an exception in case the script is not valid.
      *
-     * @param {String} script
+     * @param {string} script
      *   the script which should be checked.
-     * @returns {void}
+     *
      */
     async checkScript(script) {
 
@@ -521,12 +521,12 @@
      *
      * It is an error if the new script name already existings.
      *
-     * @param {String} oldName
+     * @param {string} oldName
      *   the old script name
-     * @param {String} newName
+     * @param {string} newName
      *  the new script name
      *
-     * @returns {void}
+     *
      */
     async renameScript2(oldName, newName) {
 
@@ -551,11 +551,11 @@
      * Instead of throwing an error it will overwrite existing script with the
      * same name silently.
      *
-     * @param {String} oldName
+     * @param {string} oldName
      *   the old name
-     * @param {String} newName
+     * @param {string} newName
      *   the new name
-     * @returns {void}
+     *
      */
     async renameScript(oldName, newName) {
 
@@ -595,11 +595,11 @@
     /**
      * An internal method with wrapps connecting to the server.
      *
-     * @param {String} hostname
+     * @param {string} hostname
      *   the sieve server's hostname
-     * @param {String} port
+     * @param {string} port
      *   the sieve server's port
-     * @returns {undefined}
+     *
      */
     async connect2(hostname, port) {
 
@@ -709,7 +709,7 @@
      * Note: In case we do not support any of the server's advertised
      * mechanism an exception is thrown.
      *
-     * @param {String} mechanism
+     * @param {string} mechanism
      *   the sasl mechanism which shall be used.
      * @returns {SieveAbstractSaslRequest}
      *  the sasl request which implements the most prefered compatible mechanism.
@@ -759,7 +759,7 @@
 
     /**
      * Authenticates the current session.
-     * @returns {void}
+     *
      */
     async authenticate() {
       let account = this.account;
@@ -809,7 +809,7 @@
 
     /**
      * The on idle handler...
-     * @returns {void}
+     *
      */
     onIdle() {
       (async () => { await this.noop(); })();
@@ -818,7 +818,7 @@
     /**
      * The default error handler. Called in case no one else
      * catches the error.
-     * @returns {undefined}
+     *
      */
     onError() {
       alert("server reported an error...");
@@ -830,9 +830,9 @@
      * By default the host and port configured in the settings are used
      * By you may override host and port, e.g. to realize a referal.
      *
-     * @param {String} [hostname]
+     * @param {string} [hostname]
      *   the hostname, in case omitted the hostname from the account's settings is used
-     * @param {String} [port]
+     * @param {string} [port]
      *   the port, in case omitted the port from the account's settings is used
      * @returns {SieveSession}
      *   a self reference

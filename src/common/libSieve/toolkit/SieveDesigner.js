@@ -38,7 +38,7 @@
        *   the constructor which should be called in case the widget needs
        *   to be constructed.
        * @throws throws an exception in case the callback is invalid
-       * @returns {void}
+       *
        */
       register2: function (callback) {
 
@@ -104,11 +104,11 @@
        * When an element ist ready to be rendered the widget's constructor
        * is invoked, and the new widget's instance is bound to the element.
        *
-       * @param {String|Constructor} name
+       * @param {string|Constructor} name
        *   The name or the constructor of the element the widget can render.
        * @param {Constructor} callback
        *   Constructor which should be calls to render this element
-       * @returns {void}
+       *
        */
       register: function (name, callback) {
         if (typeof (name) === "undefined" || !name)

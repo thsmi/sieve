@@ -103,9 +103,9 @@
      * If once is enable the script can be included at most once.
      * Including it more than once results in an error.
      *
-     * @param {Boolean} value
+     * @param {boolean} value
      *   true in case the script can be included more than once otherwise false.
-     * @returns {Boolean}
+     * @returns {boolean}
      *   the current once flag
      */
     once(value) {
@@ -116,9 +116,9 @@
      * Optional indicates if it is an error in case the script
      * can not be included.
      *
-     * @param {Boolean} value
+     * @param {boolean} value
      *   true makes the action fail silently. False will raise an error.
-     * @returns {Boolean}
+     * @returns {boolean}
      *   the current optional flag.
      */
     optional(value) {
@@ -132,7 +132,7 @@
      *
      * A script has to be either in personal or global location.
      *
-     * @param {Boolean} value
+     * @param {boolean} value
      *   true to enable a personal script, false for a global script.
      * @returns {boolean}
      *   the current personal flag.
@@ -153,9 +153,9 @@
     /**
      * Gets and sets the script location.
      *
-     * @param {String} [value]
+     * @param {string} [value]
      *   the script location to set
-     * @returns {String}
+     * @returns {string}
      *   the current script location.
      */
     script(value) {

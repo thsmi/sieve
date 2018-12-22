@@ -28,21 +28,21 @@
   class SieveUserPartUI extends SieveAbstractAddressPartUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "address-part/user";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isCapable(capabilities) {
       return capabilities.hasCapability("subaddress");
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./subaddress/templates/SieveAddressPartUser.html";
@@ -55,21 +55,21 @@
   class SieveDetailPartUI extends SieveAbstractAddressPartUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "address-part/detail";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isCapable(capabilities) {
       return capabilities.hasCapability("subaddress");
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./subaddress/templates/SieveAddressPartDetail.html";

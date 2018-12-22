@@ -36,14 +36,14 @@
   class SieveSizeTestUI extends SieveTestDialogBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getTemplate() {
       return "./RFC5228/templates/SieveSizeTestUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
       (new SieveNumericWidget("#sivSizeInput"))
@@ -97,14 +97,14 @@
   class SieveBooleanTestUI extends SieveTestDialogBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getTemplate() {
       return "./RFC5228/templates/SieveBooleanTest.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     onSave() {
 
@@ -122,7 +122,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
       $("#sieve-widget-test")
@@ -131,7 +131,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
 
@@ -162,14 +162,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./RFC5228/templates/SieveExistsTestUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
       (new SieveStringListWidget("#sivExistsHeaderList"))
@@ -177,7 +177,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
       (new SieveStringListWidget("#sivExistsHeaderList")).save(this.headers());
@@ -186,7 +186,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -233,14 +233,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./RFC5228/templates/SieveHeaderTestUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
       (new SieveStringListWidget("#sivHeaderKeyList"))
@@ -255,7 +255,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
       (new SieveStringListWidget("#sivHeaderKeyList"))
@@ -272,7 +272,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -328,14 +328,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./RFC5228/templates/SieveAddressTestUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
       (new SieveStringListWidget("#sivAddressKeyList"))
@@ -352,7 +352,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -372,7 +372,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       // case- insensitive is the default so skip it...
@@ -430,14 +430,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./RFC5228/templates/SieveEnvelopeTestUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
       (new SieveStringListWidget("#sivEnvelopeKeyList"))
@@ -454,7 +454,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -471,7 +471,7 @@
       return true;
     }
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")

@@ -27,7 +27,7 @@
 
     /**
      * Converts the given string into an integer
-     * @param {String} version
+     * @param {string} version
      *   the version number as string which should be converted to integer.
      * @returns {Integer|NaN}
      *   returns the integer value or NaN in case the string is no integer.
@@ -47,9 +47,9 @@
      * For comparison the string values are converted to an integer.
      * In case no integer comparison is possible a string comparison will be performed.
      *
-     * @param {String} newVersion
+     * @param {string} newVersion
      *   the new version as string
-     * @param {String} currentVersion
+     * @param {string} currentVersion
      *   the current version as string
      *
      * @returns {boolean}
@@ -74,9 +74,9 @@
      * For comparison the string values are converted to an integer.
      * In case no integer comparison is possible a string comparison will be performed.
      *
-     * @param {String} newVersion
+     * @param {string} newVersion
      *   the new version as string
-     * @param {String} currentVersion
+     * @param {string} currentVersion
      *   the current version as string
      *
      * @returns {boolean}
@@ -97,9 +97,9 @@
 
     /**
      * Compares the current version against the manifest.
-     * @param {object} manifest
+     * @param {Object} manifest
      *   the manifest with the version information
-     * @param {String} currentVersion
+     * @param {string} currentVersion
      *   the apps current version.
      * @returns {boolean}
      *   false if the current version is the latest.

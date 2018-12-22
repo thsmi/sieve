@@ -78,7 +78,7 @@
        * Creates and opens a new Manage Sieve Session
        * @param {string} accountId
        *   the accounts unique id
-       * @return {int}
+       * @returns {int}
        *   a handle to the open session
        */
       createSession: function (accountId) {
@@ -103,7 +103,7 @@
        *
        * @param {string} sid
        *   the unique session id
-       * @return {}
+       * @returns {}
        */
       createChannel: function (sid) {
         if (!this.sessions[sid])
@@ -215,7 +215,7 @@
        *   The identifier identifing the session instance
        * @param {string} cid
        *   An Identifier the channel
-       * @return {SieveMozSession}
+       * @returns {SieveMozSession}
        *   a reference to the session object
        */
       getChannel: function (sid, cid) {

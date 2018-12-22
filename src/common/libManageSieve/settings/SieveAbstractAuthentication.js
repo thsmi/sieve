@@ -32,7 +32,7 @@
 
     /**
      * An human readable description, which describes the authentication procedure.
-     * @return {String} String containing the description.
+     * @returns {string} String containing the description.
      */
     getDescription() {
       throw new Error("Impement getDescription");
@@ -54,7 +54,7 @@
     /**
      * Returns the username for the account.
      *
-     * @returns {String}
+     * @returns {string}
      *   the username as string.
      **/
     getUsername() {

@@ -24,7 +24,7 @@
     /**
      * Initializes the password manager.
      *
-     * @param {function} callback
+     * @param {Function} callback
      *   a callback function which implements a password prompt
      */
     constructor(callback) {
@@ -38,7 +38,7 @@
      * Locks the password manager.
      * This means it drops the cached master password.
      *
-     * @returns {void}
+     *
      */
     lock() {
       this.master = null;
@@ -49,7 +49,7 @@
      * In case it the password manager is locked the callback is invoked
      * in order to retieve the master password.
      *
-     * @return {void}
+     *
      */
     async unlock() {
       if (this.isLocked())
@@ -58,7 +58,7 @@
 
     /**
      * Checks if the password manager is locked.
-     * @return {void}
+     *
      */
     isLocked() {
       return this.master === null;
@@ -66,9 +66,9 @@
 
     /**
      * Encrypts the given text
-     * @param {String} text
+     * @param {string} text
      *   the plain text
-     * @returns {String}
+     * @returns {string}
      *   the encrypted text as hex string
      */
     encrypt(text) {
@@ -81,9 +81,9 @@
 
     /**
      * Decrypts the given text
-     * @param {String} text
+     * @param {string} text
      *   the encrypted text as hex string
-     * @returns {String}
+     * @returns {string}
      *   the plain text
      */
     decrypt(text) {
@@ -96,12 +96,12 @@
 
     /**
      * Adds or updates a password entry
-     * @param {String} id
+     * @param {string} id
      *   the unique id, which is used to identify the password.
      *   Typically the account id.
-     * @param {String} password
+     * @param {string} password
      *   the password which should be stored.
-     * @returns {void}
+     *
      */
     set(id, password) {
       this.unlock();
@@ -110,10 +110,10 @@
 
     /**
      * Gets and decrypts a password from the the password store
-     * @param {String} id
+     * @param {string} id
      *   the unique id, which is used to identify the password.
      *   Typically the account id.
-     * @returns {Promise<String>}
+     * @returns {Promise<string>}
      *   the decrypted string.
      */
     get(id) {
@@ -123,10 +123,10 @@
 
     /**
      * Removes the password
-     * @param {String} id
+     * @param {string} id
      *   the unique id, which is used to identify the password.
      *   Typically the account id.
-     * @returns {void}
+     *
      */
     forget(id) {
       delete this.data[id];

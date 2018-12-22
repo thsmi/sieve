@@ -26,7 +26,7 @@
   class SieveComparatorWidget extends SieveRadioGroupWidget {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(selector) {
       super("comparator/", selector);
@@ -40,14 +40,14 @@
   class SieveAbstractComparatorUI extends SieveRadioGroupItemWidget {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "comparator/";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getName() {
       return "sieve-comparator";
@@ -60,14 +60,14 @@
   class SieveOctetComparatorUI extends SieveAbstractComparatorUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "comparator/i;octet";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./RFC5228/templates/SieveComparatorOctet.html";
@@ -80,14 +80,14 @@
   class SieveAsciiCasemapComparatorUI extends SieveAbstractComparatorUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "comparator/i;ascii-casemap";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./RFC5228/templates/SieveComparatorAsciiCasemap.html";
@@ -101,21 +101,21 @@
   class SieveAsciiNumericComparatorUI extends SieveAbstractComparatorUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "comparator/i;ascii-numeric";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isCapable(capabilities) {
       return capabilities.hasCapability("comparator-i;ascii-numeric");
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./RFC5228/templates/SieveComparatorAsciiNumeric.html";

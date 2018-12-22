@@ -40,14 +40,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./mailbox/templates/SieveMailboxExistsTest.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
 
@@ -56,7 +56,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
       (new SieveStringListWidget("#sivMailboxNamesList"))
@@ -66,7 +66,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       // case- insensitive is the default so skip it...
@@ -85,10 +85,10 @@
     /**
      * Gets and sets the mailbox name
      *
-     * @param {String} [value]
+     * @param {string} [value]
      *   the mailbox name, if omitted the name is unchanges.
      *
-     * @return {String}
+     * @returns {string}
      *   the mailbox name.
      */
     mailbox(value) {
@@ -104,7 +104,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
 
@@ -115,7 +115,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -128,14 +128,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./mailbox/templates/SieveMetaDataExistsTest.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
 
@@ -155,10 +155,10 @@
     /**
      * Gets and sets the mailbox name
      *
-     * @param {String} [value]
+     * @param {string} [value]
      *   the mailbox name, if omitted the name is unchanges.
      *
-     * @return {String}
+     * @returns {string}
      *   the mailbox name.
      */
     mailbox(value) {
@@ -168,10 +168,10 @@
     /**
      * Gets and/or sets the annotation name
      *
-     * @param {String} [value]
+     * @param {string} [value]
      *   if set updates the anntotation name.
      *
-     * @return {String}
+     * @returns {string}
      *   the currently set annotation name.
      */
     annotation(value) {
@@ -203,7 +203,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
 
@@ -220,7 +220,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -240,14 +240,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./mailbox/templates/SieveMetaDataTest.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       // case- insensitive is the default so skip it...
@@ -273,7 +273,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
 
@@ -282,7 +282,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
       (new SieveStringListWidget("#sivMailboxAnnotationsList"))
@@ -291,14 +291,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./mailbox/templates/SieveServerMetaDataExistsTest.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       // case- insensitive is the default so skip it...
@@ -316,10 +316,10 @@
     /**
      * Gets and/or sets the annotation name
      *
-     * @param {String} [value]
+     * @param {string} [value]
      *   if set updates the anntotation name.
      *
-     * @return {String}
+     * @returns {string}
      *   the currently set annotation name.
      */
     annotation(value) {
@@ -351,7 +351,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
 
@@ -367,7 +367,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -385,14 +385,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./mailbox/templates/SieveServerMetaDataTest.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       // case- insensitive is the default so skip it...
@@ -409,7 +409,7 @@
   class SieveMailboxCreateWidget extends SieveOverlayItemWidget {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "action/fileinto/";
@@ -422,7 +422,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isCapable(capabilities) {
       return capabilities.hasCapability("mailbox");
@@ -436,7 +436,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     load(sivElement) {
       if (sivElement.enable("create"))
@@ -444,7 +444,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     save(sivElement) {
       if ($("#sivMailboxCreateCheckbox")[DOM_ELEMENT].checked)

@@ -97,7 +97,7 @@
     /**
      * The Sieve script which should be transfered.
      *
-     * @return {String} the sieve script as plain text
+     * @returns {string} the sieve script as plain text
      */
     getScript() {
       throw new Error("Implement me");
@@ -106,7 +106,7 @@
     /**
      * The meta information for this sieve script.
      *
-     * @return {String} the meta information about the drag element
+     * @returns {string} the meta information about the drag element
      */
     getMetaInfo() {
       throw new Error("Implement me");

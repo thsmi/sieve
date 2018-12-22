@@ -30,9 +30,9 @@
      * This is typically needed for sasl requests as they have to be
      * base64 encoded by definition.
      *
-     * @param {String} token
+     * @param {string} token
      *   the string which should be added to the request.
-     * @return {SieveAbstractRequestBuilder}
+     * @returns {SieveAbstractRequestBuilder}
      *   a self reference
      */
     addQuotedBase64(token) {
@@ -50,10 +50,10 @@
      * Do not use this for any sasl method. All sasl strings
      * have to be base 64 encoded. Refer to addQuotedBase64String instead.
      *
-     * @param {String} [token]
+     * @param {string} [token]
      *   the string which should be added to the request.
      *   if omitted an empty string is sent.
-     * @return {SieveAbstractRequestBuilder}
+     * @returns {SieveAbstractRequestBuilder}
      *   a self reference
      */
     addQuotedString(token) {
@@ -70,9 +70,9 @@
      * It improves the requests readability in case you need to send a
      * string containing a linebreak.
      *
-     * @param {String} token
+     * @param {string} token
      *   the string which should be added to the request.
-     * @return {SieveAbstractRequestBuilder}
+     * @returns {SieveAbstractRequestBuilder}
      *   a self reference
      */
     addMultiLineString(token) {
@@ -85,9 +85,9 @@
      * The literal will used as it is. It will not be wrapped in a string or escaped.
      * In case you need this use the specialized methods.
      *
-     * @param {String} token
+     * @param {string} token
      *   the literal which should be added.
-     * @return {SieveAbstractRequestBuilder}
+     * @returns {SieveAbstractRequestBuilder}
      *   a self reference
      */
     addLiteral(token) {
@@ -102,7 +102,7 @@
     /**
      * Returns the current request as it was cached and build upto the call.
      *
-     * @returns {String}
+     * @returns {string}
      *   the current request including a tailing linebreak
      */
     getBytes() {
@@ -115,7 +115,7 @@
      * UTF uses variable length characters. Which means the length in bytes
      * in not nessesarily equivalent to the number of characters.
      *
-     * @param {String} data
+     * @param {string} data
      *   the string for which the byte length should be calculated.
      * @returns {int}
      *   the string's length in bytes.
@@ -132,7 +132,7 @@
      *
      * @param {string} str
      *   the string which should be escaped
-     * @return {string}
+     * @returns {string}
      *   the escaped string.
      */
     escapeString(str) {
@@ -141,9 +141,9 @@
 
     /**
      * Encodes a string into base64
-     * @param  {String|byte[]} decoded
+     * @param  {string|byte[]} decoded
      *   the string or byte array which shall be converted to base64
-     * @returns {String}
+     * @returns {string}
      *   the encoded string.
      *
      * @abstract
@@ -154,9 +154,9 @@
 
     /**
      * Decodes a base64 encoded string
-     * @param  {String} encoded
+     * @param {string} encoded
      *   the base64 encoded string which should be decoded
-     * @returns {String}
+     * @returns {string}
      *   the decoded string
      *
      * @abstract

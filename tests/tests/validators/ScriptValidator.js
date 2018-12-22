@@ -35,7 +35,7 @@
    * @param {Object.<string, boolean>} [capabilities]
    *   optional parameter which simulates the the server's capabilities
    *
-   * @return {SieveDocument}
+   * @returns {SieveDocument}
    *  the parsed sieve document
    */
   function parseScript(script, capabilities) {

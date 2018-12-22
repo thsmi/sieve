@@ -38,14 +38,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isCapable(capabilities) {
       return capabilities.hasCapability("copy");
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     load(sivElement) {
       if (sivElement.enable("copy"))
@@ -53,7 +53,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     save(sivElement) {
       if ($("#sivCopyCheckbox")[DOM_ELEMENT].checked)
@@ -63,7 +63,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getElement() {
       return $("" + this.selector);
@@ -76,7 +76,7 @@
   class SieveCopyFileIntoWidget extends SieveAbstractCopyWidget {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "action/fileinto/";
@@ -96,7 +96,7 @@
   class SieveCopyRedirectWidget extends SieveAbstractCopyWidget {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "action/redirect/";

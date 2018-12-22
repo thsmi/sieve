@@ -35,7 +35,7 @@ const INDEX_PATCH = 2;
  *
  * @param  {String} path
  *   the base path which should be cleared.
- * @returns {void}
+ *
  */
 function deleteRecursive(path) {
   "use strict";
@@ -83,7 +83,7 @@ function getPackageVersion(file) {
  *   the new version string
  * @param {string} [file]
  *   the path to the package json file.
- * @returns {void}
+ *
  */
 function setPackageVersion(version, file) {
   "use strict";
@@ -109,7 +109,7 @@ function setPackageVersion(version, file) {
  *    the new version string.
  * @param {string} file
  *   the path to the rdf file
- * @returns {void}
+ *
  */
 function setRdfVersion(version, file) {
   "use strict";
@@ -133,10 +133,10 @@ function setRdfVersion(version, file) {
  * It reads the version from the package.json bumps it and
  * updates other files with version numbers.
  *
- * @param {String} type
+ * @param {string} type
  *   the update type.
  *
- * @returns {void}
+ *
  */
 function bumpVersion(type) {
   "use strict";

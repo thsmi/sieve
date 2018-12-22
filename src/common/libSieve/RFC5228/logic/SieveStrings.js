@@ -36,7 +36,7 @@
   class SieveMultiLineString extends SieveAbstractElement {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(docshell, id) {
       super(docshell, id);
@@ -48,28 +48,28 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isElement(parser, lexer) {
       return parser.startsWith("text:");
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "string/multiline";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "string/";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     init(parser) {
       // <"text:"> *(SP / HTAB) (hash-comment / CRLF)
@@ -98,9 +98,9 @@
     /**
      * Gets or Sets the string's value
      *
-     * @param {String} [value]
+     * @param {string} [value]
      *   the value which should be set
-     * @return {String}
+     * @returns {string}
      *   the current value
      */
     value(value) {
@@ -112,7 +112,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     toScript() {
       let text = this.text;
@@ -137,7 +137,7 @@
   class SieveQuotedString extends SieveAbstractElement {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(docshell, id) {
 
@@ -146,21 +146,21 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isElement(parser) {
       return parser.isChar("\"");
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "string/quoted";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "string/";
@@ -224,9 +224,9 @@
     /**
      * Gets or Sets the string's value
      *
-     * @param {String} [value]
+     * @param {string} [value]
      *   the value which should be set
-     * @return {String}
+     * @returns {string}
      *   the current value
      */
     value(value) {
@@ -242,7 +242,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     toScript() {
       // we need to make sure all backslashes and all quotes are escaped.
@@ -345,7 +345,7 @@
     /**
      * Checks if the given string is contained in the stringlist.
      *
-     * @param {String} str
+     * @param {string} str
      *   the string which should be checked
      * @param {boolean} [matchCase]
      *   if true the comparison will be case sensitive.
@@ -379,7 +379,7 @@
      *
      * @param {int} idx
      *   the index which should be set
-     * @param {String} [value]
+     * @param {string} [value]
      *   the string value to set
      * @returns {string}
      *   the current value at the index
@@ -405,7 +405,7 @@
      * @param {string|string[]} str
      *   the a string or array like object with strings which should be added.
      *
-     * @return {SieveStringList}
+     * @returns {SieveStringList}
      *   a self recerene to build chains.
      */
     append(str) {
@@ -428,7 +428,7 @@
     /**
      * Removes all string list entries.
      *
-     * @return {SieveStringList}
+     * @returns {SieveStringList}
      *   a self reference to build chains.
      */
     clear() {
@@ -442,7 +442,7 @@
      *
      * @param {string} str
      *   the string to remove
-     * @return {SieveStringList}
+     * @returns {SieveStringList}
      *   a self reference to build chains.
      */
     remove(str) {
@@ -459,7 +459,7 @@
     /**
      * Get or set the string lists values.
      *
-     * @param {Strings|String[]} [values]
+     * @param {string|string[]} [values]
      *   optional, the values to set
      *
      * @returns {string[]}
@@ -519,7 +519,7 @@
   class SieveString extends SieveAbstractElement {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(docshell, id) {
       super(docshell, id);
@@ -527,28 +527,28 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isElement(parser, lexer) {
       return lexer.probeByClass(["string/"], parser);
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "string";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "string";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     init(parser) {
       this.string = this._createByClass(["string/"], parser);
@@ -562,9 +562,9 @@
      * When setting a string it automatically adjusts
      * the type to a quoted string or a multiline string.
      *
-     * @param {String} [str]
+     * @param {string} [str]
      *   the strings new value in case it should be changed.
-     * @return {String}
+     * @returns {string}
      *   the string stored in this object
      */
     value(str) {
@@ -602,7 +602,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     toScript() {
       return this.string.toScript();

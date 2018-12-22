@@ -197,7 +197,7 @@
 
     /**
      * The server may return a human readable (error) message
-     * @returns {String}
+     * @returns {string}
      *   the human readable message
      */
     getMessage() {
@@ -210,7 +210,7 @@
     /**
      * Checks if the request failed. In this case the server returns an error
      * instead of the expected response.
-     * @returns {Boolean}
+     * @returns {boolean}
      *   true in case the request succeeded, false in case it failed due to an error.
      */
     hasError() {
@@ -286,7 +286,7 @@
   class SieveCapabilitiesResponse extends SieveSimpleResponse {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor() {
 
@@ -311,9 +311,9 @@
 
     /**
      * Parses the sieve extensions string. It is a space separated list of strings.
-     * @param {String} value
+     * @param {string} value
      *   the string which should be parsed
-     * @returns  {Object.<String, Boolean>}
+     * @returns  {Object.<string, boolean>}
      *   a map with pairs of extension name and activation status.
      */
     parseSieveExtensions(value) {
@@ -327,7 +327,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     parse(parser) {
       while (parser.isString()) {
@@ -396,7 +396,7 @@
      * Returns a structure which contains all the details on the server's capabilities
      * like the implementation, version, extension, sasl mechanisms etc.
      *
-     * @return {Object}
+     * @returns {Object}
      *   the object which the capabilities.
      */
     getDetails() { return this.details; }
@@ -409,7 +409,7 @@
      *
      * You should never attempt to parse this string.
      *
-     * @returns {String}
+     * @returns {string}
      *   the servers implementation details
      */
     getImplementation() { return this.details.implementation; }
@@ -418,7 +418,7 @@
      * Returns the list of supported sasl mechanisms.
      *
      * They may change after a secure channel was established.
-     * @returns {String}
+     * @returns {string}
      *   the sasl mechanism
      */
     getSasl() {
@@ -432,7 +432,7 @@
      *   optional if true a string will be returned otherwise a
      *   structure with key value pairs.
      *
-     * @returns {Object.<String,boolean>|String}
+     * @returns {Object.<string,boolean>|string}
      *   the server's supported extension.
      */
     getExtensions(asString) {
@@ -453,7 +453,7 @@
      * Note: After the command STARTTLS or AUTHENTICATE completes successfully, this
      * value is always false.
      *
-     * @return {Boolean}
+     * @returns {boolean}
      *   true if TLS is supported, false if not.
      */
     getTLS() { return this.details.tls; }
@@ -469,7 +469,7 @@
      * A value of "1.0" adds to the minimal ManageSieve Support the commands
      * RENAMESCRIPT, CHECKSCRIPT and NOOP.
      *
-     * @return {float}
+     * @returns {float}
      *   a positive float describing the compatibility level of the ManageSieve server.
      */
     getVersion() { return this.details.version; }
@@ -481,7 +481,7 @@
      * Note, this is different from the total number of "redirect" actions a
      * script can contain.
      *
-     * @return {int}
+     * @returns {int}
      *   a non-negative number of redirects, or -1 for infinite redirects
      */
     getMaxRedirects() { return this.details.maxredirects; }
@@ -491,7 +491,7 @@
      * methods. This capability is be specified, if the Sieve implementation
      * supports the "enotify" extension.
      *
-     *  @return {String[]}
+     * @returns {string[]}
      *    The schema parts as string array
      */
     getNotify() { return this.details.notify; }
@@ -504,7 +504,7 @@
      * Note that the current language might be per-user configurable (i.e. it
      * might change after authentication)
      *
-     * @return {String}
+     * @returns {string}
      *   a [RFC4646] conform language tag as string
      */
     getLanguage() { return this.details.language; }
@@ -518,7 +518,7 @@
      *
      * Examples are RENAME, NOOP and CHECKSCRIPT.
      *
-     * @return {Object}
+     * @returns {Object}
      *   an associative array containing additional sieve commands
      */
     getCompatibility() { return this.details.compatibility; }
@@ -528,7 +528,7 @@
      *
      * Note: This value is only avaiable after AUTHENTICATE command succeeds
      *
-     * @return {String}
+     * @returns {string}
      *   a String containing the username
      */
     getOwner() { return this.details.owner; }
@@ -542,7 +542,7 @@
   class SieveListScriptResponse extends SieveSimpleResponse {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     parse(parser) {
       //    sieve-name    = string
@@ -587,7 +587,7 @@
      * script name and a property named active which is either
      * true or false.
      *
-     * @returns {object[]}
+     * @returns {Object[]}
      *   an array of objects with the name and activation state for each script
      */
     getScripts() {
@@ -606,7 +606,7 @@
      *
      * It is perfectly fine for the server to return an empty script.
      *
-     * @param {String} name
+     * @param {string} name
      *   the script name, to simplify the handling as the server just returns the content.
      */
     constructor(name) {
@@ -615,7 +615,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     parse(parser) {
       let body = "";
@@ -635,12 +635,12 @@
      * Keep in mind scripts can't be locked, so several clients may manipulate
      * a script at the same time.
      *
-     * @return {String} returns the requested script's content
+     * @returns {string} returns the requested script's content
      */
     getScriptBody() { return this.scriptBody; }
 
     /**
-     * @return {String} Containing the script's Name.
+     * @returns {string} Containing the script's Name.
      */
     getScriptName() { return this.scriptName; }
   }
@@ -657,7 +657,7 @@
   class SieveStateFullResponse extends SieveSimpleResponse {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor() {
       super();
@@ -688,7 +688,7 @@
   class SieveSaslLoginResponse extends SieveStateFullResponse {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     parse(parser) {
 
@@ -743,7 +743,7 @@
   class SieveSaslCramMd5Response extends SieveStateFullResponse {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     parse(parser) {
 
@@ -770,7 +770,7 @@
     }
 
     /**
-     * @returns {String}
+     * @returns {string}
      *   the server's challange which needs to be answered.
      */
     getChallenge() {
@@ -801,9 +801,9 @@
 
     /**
      * Extracts the reserved-mext token from the array of tokens.
-     * @param {String[]} tokens
+     * @param {string[]} tokens
      *   the first message response split into tokens.
-     * @returns {String}
+     * @returns {string}
      *  the optional reserved-mext token or an empty string.
      */
     _extractReservedMext(tokens) {
@@ -819,9 +819,9 @@
 
     /**
      * Extracts the nonce from the first message.
-     * @param {String[]} tokens
+     * @param {string[]} tokens
      *   the first message response split into tokens.
-     * @returns {String}
+     * @returns {string}
      *   the nonce or an exception in case it could not be extracted.
      */
     _extractNonce(tokens) {
@@ -839,9 +839,9 @@
 
     /**
      * Extracts the salt from the first message.
-     * @param {String[]} tokens
+     * @param {string[]} tokens
      *   the first message resonse split into tokens.
-     * @returns {String}
+     * @returns {string}
      *   the salt as base64 encoded string or an exception in case
      *   it could not be extracted
      */
@@ -859,7 +859,7 @@
 
     /**
      * Extracts the iteration count from the first message.
-     * @param {String[]} tokens
+     * @param {string[]} tokens
      *   the first message resonse split into tokens.
      * @returns {int}
      *   the iteration count as integer or an exception in case the
@@ -892,7 +892,7 @@
      *
      * @param {SieveResponseParser} parser
      *   the response parser which contains the response to be parsed.
-     * @returns {void}
+     *
      *
      * @private
      */
@@ -923,10 +923,10 @@
      *
      * @param {SieveResponseParser} parser
      *   the parser which should be to process the message.
-     * @param {String} [data]
+     * @param {string} [data]
      *   optional, the server's final message. It omitted it
      *   will be parsed from the response.
-     * @returns {void}
+     *
      *
      * @private
      */
@@ -957,7 +957,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     parse(parser) {
 
@@ -1013,7 +1013,7 @@
     }
 
     /**
-     * @returns {String}
+     * @returns {string}
      *   the salt which is used to randomize the sha request
      */
     getSalt() {
@@ -1024,7 +1024,7 @@
     }
 
     /**
-     * @return {int}
+     * @returns {int}
      *   the number of iterations.
      */
     getIterationCounter() {

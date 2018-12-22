@@ -39,7 +39,6 @@
 
     /**
      * Renders the UI element into the dom.
-     * @returns {void}
      */
     async render() {
 
@@ -84,8 +83,6 @@
     /**
      * Renames the script.
      * A propmpt will be show which ask the user about the new name
-     *
-     * @returns {void}
      */
     async rename() {
 
@@ -98,8 +95,6 @@
     /**
      * Removes the script
      * A verification prompt will be shown before the script is deleted
-     *
-     * @returns {void}
      */
     async remove() {
       let rv = await this.account.send("script-delete", this.name);
@@ -109,7 +104,6 @@
 
     /**
      * Open the script in a new tab. In order to edit it.
-     * @returns {void}
      */
     async edit() {
       await this.account.send("script-edit", this.name);
@@ -117,7 +111,6 @@
 
     /**
      * Marks the script as active.
-     * @returns {void}
      */
     async activate() {
       await this.account.send("script-activate", this.name);
@@ -126,7 +119,6 @@
 
     /**
      * Marks the script as in active.
-     * @returns {void}
      */
     async deactivate() {
       await this.account.send("script-deactivate", this.name);

@@ -25,8 +25,8 @@
      * binary, and javascript is something in between. This means we have to convert
      * UTF-8 into a binary by our own...
      *
-     * @param {String} str The binary string which should be converted
-     * @return {String} The converted string in UTF8
+     * @param {string} str The binary string which should be converted
+     * @returns {string} The converted string in UTF8
      *
      * @author Thomas Schmid <schmid-thomas@gmx.net>
      */
@@ -58,7 +58,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     convertFromBase64(encoded) {
       return atob(encoded);

@@ -30,7 +30,7 @@
     /**
      * Initalizes the instance.
      *
-     * @param {String} data
+     * @param {string} data
      *   the data which shall be parsed
      */
     constructor(data) {
@@ -98,7 +98,7 @@
      *   otherwise an exception is thrown.
      *   If omittes any character will match.
      *
-     * @return {char}
+     * @returns {char}
      *   the extracted character.
      */
     extractChar(ch) {
@@ -132,10 +132,10 @@
     /**
      *  Checks if the current puffer starts with the given token(s)
      *
-     *  @param {String|String[]} tokens
+     *  @param {string|string[]} tokens
      *    the tokens which should be checked
      *
-     *  @return {boolean}
+     *  @returns {boolean}
      *    true in case the string starts with one of the tokens
      *    otherwise false
      */
@@ -168,7 +168,7 @@
      *   Can be an integer which defines an absolute number of bytes which should be skipped.
      *   Or a string, which will be matched case sensitive and extracted.
      *
-     * @return {String}
+     * @returns {string}
      *   the extracted string
      */
     extract(length) {
@@ -203,9 +203,9 @@
      * In case the token is not found in the buffer an
      * exception will be thrown
      *
-     * @param {String} token
+     * @param {string} token
      *   the token which is used as delimiter
-     * @returns {String}
+     * @returns {string}
      *   the data between the token an the delimter
      */
     extractUntil(token) {
@@ -266,7 +266,7 @@
      * @param {int} [length]
      *   optional returns at lost length bytes.
      *   if omitted the complete buffer is returned
-     * @returns {void}
+     *
      */
     bytes(length) {
       return this._data.substr(this._pos, length);
@@ -287,7 +287,7 @@
      * Rewindes the internal buffer by the given number of bytes
      * @param {int} offset
      *   the number of bytes to rewind.
-     * @return {void}
+     *
      */
     rewind(offset) {
       this._pos -= offset;
@@ -301,7 +301,7 @@
      *
      * @param {int} position
      *   the new position which should be set. You can't exceed the buffer length.
-     * @return {int}
+     * @returns {int}
      *   the current position.
      */
     pos(position) {

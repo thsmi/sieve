@@ -32,7 +32,7 @@
   class SieveNotUI extends SieveOperatorBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -48,14 +48,14 @@
   class SieveAnyOfAllOfUI extends SieveOperatorDialogBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getTemplate() {
       return "./RFC5228/templates/SieveAllOfAnyOfOperator.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     onSave() {
 
@@ -71,7 +71,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
       $("#sieve-widget-allofanyof")
@@ -80,7 +80,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -88,7 +88,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     createHtml(parent) {
 

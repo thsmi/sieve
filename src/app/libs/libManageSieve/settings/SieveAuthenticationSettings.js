@@ -38,9 +38,9 @@
     /**
      * Sets the username.
      *
-     * @param {String} username
+     * @param {string} username
      *   the username as string, can not be null.
-     * @returns {void}
+     *
      */
     setUsername(username) {
       this.account.prefs.setString("authentication.username", username);
@@ -86,7 +86,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getKey() {
       return CONFIG_AUTHENTICATION_TYPE;

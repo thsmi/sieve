@@ -17,7 +17,7 @@
 
 /**
  *
- * @returns {void}
+ *
  */
 function updateSyntaxCheckUI(editor) {
 
@@ -118,7 +118,7 @@ async function initEditorSettings(editor) {
 
 /**
  * The main entry point...
- * @returns {void}
+ *
  */
 async function main() {
 
@@ -204,9 +204,9 @@ async function main() {
 
   /**
    * The on message handler which receives the parent IPC messages.
+   *
    * @param {Event} e
    *   the event
-   * @returns {void}
    */
   function onMessage(e) {
 

@@ -35,7 +35,7 @@
    * use this class. Any Settings are loaded dynamically when needed. This means
    * any changes to the IMAP account apply imediately to this class.
    *
-   * @param {String} imapKey
+   * @param {string} imapKey
    *   The unique imapKey of the IMAP account, which should be used.
    * @constructor
    */
@@ -43,7 +43,7 @@
 
     /**
      * The accounts original hostname
-     * @returns {String}
+     * @returns {string}
      *   return the hostname as string
      */
     getHostname() {
@@ -51,7 +51,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getDescription() {
       return "account.auth.imap";
@@ -72,7 +72,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getPassword() {
 
@@ -111,14 +111,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getUsername() {
       return this.getIncomingServer().realUsername;
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     hasUsername() {
       return true;
@@ -134,9 +134,9 @@
    * is used to find a matching account, as the original hostname is not
    * garanteed to be unique.
    *
-   * @param {String} host
+   * @param {string} host
    *   the original hostname for this account
-   * @param {String} uri
+   * @param {string} uri
    *   the unique URI of the associated sieve account
    * @constructor
    */
@@ -144,7 +144,7 @@
 
     /**
      * The accounts original hostname
-     * @returns {String}
+     * @returns {string}
      *   return the hostname as string
      */
     getHostname() {
@@ -162,9 +162,9 @@
      * Updates the account's username in the login manager
      * It uses the hostname to discover the username.
      *
-     * @param {String} oldUserName
+     * @param {string} oldUserName
      *   the account's old username
-     * @param {String} newUserName
+     * @param {string} newUserName
      *   the account's new username
      *
      * @returns {boolean}
@@ -205,9 +205,9 @@
      *
      * @deprecated
      *
-     * @param {String} oldUserName
+     * @param {string} oldUserName
      *   the account's old username
-     * @param {String} newUserName
+     * @param {string} newUserName
      *   the account's new username
      *
      * @returns {boolean}
@@ -248,9 +248,9 @@
      * Any saved passwords associated with this account will be updated too.
      * This is the default behaviour for Thunderbird3 an up.
      *
-     * @param {String} username
+     * @param {string} username
      *   the username as string, has to be neither empty nor null.
-     * @returns {void}
+     *
      */
     setUsername(username) {
       if (typeof (username) === "undefined" || username === null)
@@ -283,9 +283,9 @@
     /**
      * Shows a prompt which asks the user for a password.
      *
-     * @param {String} username
+     * @param {string} username
      *   the account's username
-     * @returns {String}
+     * @returns {string}
      *   the password or null in case the user dismissed the password prompt.
      */
     _promptPassword(username) {
@@ -338,10 +338,10 @@
     /**
      * Tries to obtain the password from the login manager by the account's hostname
      *
-     * @param {String} username
+     * @param {string} username
      *   the username as string
      *
-     * @returns {String}
+     * @returns {string}
      *   the password or null in case it could not be loaded e.g. the login manager was locked.
      **/
     _getPasswordByHost(username) {
@@ -364,10 +364,10 @@
      *
      * @deprecated
      *
-     * @param {String} username
+     * @param {string} username
      *   the username as string
      *
-     * @returns {String}
+     * @returns {string}
      *   the password or null in case it could not be loaded e.g. the login manager was locked.
      **/
     _getPasswordByUri(username) {
@@ -390,7 +390,7 @@
      * ... dialog requesting the user for his password will be automatically ...
      * ... displayed, if needed.
      *
-     * @return {String}
+     * @returns {string}
      *   The password as string or null in case the password could not be retrived.
      */
     getPassword() {
@@ -417,7 +417,7 @@
      *
      * The username is stored in the user preferences not in the Login Manager!
      *
-     * @return {String}
+     * @returns {string}
      *   The username or an empty string in case of an error
      */
     getUsername() {
@@ -445,7 +445,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getKey() {
       return CONFIG_AUTHENTICATION_TYPE;

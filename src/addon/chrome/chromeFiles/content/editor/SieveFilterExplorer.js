@@ -41,7 +41,7 @@ let { SieveAbstractChannel } = require("./SieveAbstractChannel.js");
 let gLogger = null;
 
 /**
- * @return {SieveAccount}
+ * @returns {SieveAccount}
  */
 function getSelectedAccount() {
   "use strict";
@@ -58,7 +58,7 @@ function getSelectedAccount() {
  * Disables or enables all input controls
  * @param {boolean} disabled
  *   if set to true all controls get disabled otherwise they will be enabled.
- * @return {void}
+ *
  */
 function disableControls(disabled) {
   "use strict";
@@ -239,9 +239,9 @@ function onCycleCell(row, col, script, active) {
 
 
 /**
- * @param {String} scriptName
- * @param {String} scriptBody
- * @return {void}
+ * @param {string} scriptName
+ * @param {string} scriptBody
+ *
  */
 function sivOpenEditor(scriptName, scriptBody) {
   "use strict";
@@ -345,7 +345,7 @@ function sivOpenEditor(scriptName, scriptBody) {
 /**
  * Click handler for the donate button.
  * Opens a new browser window with the paypal donation website
- * @return {void}
+ *
  */
 function onDonate() {
   "use strict";
@@ -361,7 +361,7 @@ function onDonate() {
 
 /**
  * Click handler for the activate button.
- * @returns {void}
+ *
  **/
 function onActivateClick() {
   "use strict";
@@ -378,7 +378,7 @@ function onActivateClick() {
 
 /**
  * Click hander for the settings button.
- * @returns {void}
+ *
  **/
 function onSettingsClick() {
   "use strict";
@@ -392,7 +392,7 @@ function onSettingsClick() {
 
 /**
  * Click handler for the rename button
- * @returns {void}
+ *
 */
 function onRenameClick() {
   "use strict";
@@ -434,7 +434,7 @@ function onRenameClick() {
 
 /**
  * Click handler for the delete button
- * @returns {void}
+ *
  **/
 function onDeleteClick() {
   "use strict";
@@ -471,7 +471,7 @@ function onDeleteClick() {
 
 /**
  * Click handler for the edit button
- * @returns {void}
+ *
  **/
 function onEditClick() {
   "use strict";
@@ -489,7 +489,7 @@ function onEditClick() {
 
 /**
  * Click handler for the new button
- * @returns {void}
+ *
  **/
 function onNewClick() {
   "use strict";
@@ -524,7 +524,6 @@ function onNewClick() {
 
 /**
  * Click handler for the server details button.
- * @returns {void}
  **/
 function onServerDetails() {
   "use strict";
@@ -590,7 +589,7 @@ function onSelectAccount(server) {
 
 /**
  * Called when the window is loaded
- * @returns {void}
+ *
  **/
 function onWindowLoad() {
   "use strict";

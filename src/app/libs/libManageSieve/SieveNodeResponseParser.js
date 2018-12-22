@@ -25,21 +25,21 @@
   class SieveNodeResponseParser extends SieveAbstractResponseParser {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     convertToString(byteArray) {
       return new StringDecoder('utf8').end(Buffer.from(byteArray)).toString();
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     convertToBase64(decoded) {
       return Buffer.from(decoded).toString('base64');
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     convertFromBase64(encoded) {
       return Buffer.from(encoded, 'base64').toString("latin1");

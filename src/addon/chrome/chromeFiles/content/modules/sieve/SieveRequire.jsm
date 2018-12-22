@@ -20,7 +20,7 @@
   /**
    * Emulates loading a commonjs module via a subscript loader
    *
-   * @param {String} uri
+   * @param {string} uri
    *   the path to the file which should be loaded.
    * @returns {Object}
    *   the component to load.

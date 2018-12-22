@@ -26,7 +26,7 @@
   class SieveAddressPartWidget extends SieveDropDownWidget {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(selector) {
       super("address-part/", selector);
@@ -39,14 +39,14 @@
   class SieveAbstractAddressPartUI extends SieveDropDownItemWidget {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "address-part/";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getName() {
       return "sieve-addresspart";
@@ -60,14 +60,14 @@
   class SieveAllPartUI extends SieveAbstractAddressPartUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "address-part/all";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./RFC5228/templates/SieveAddressPartAll.html";
@@ -81,14 +81,14 @@
   class SieveDomainPartUI extends SieveAbstractAddressPartUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "address-part/domain";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./RFC5228/templates/SieveAddressPartDomain.html";
@@ -102,14 +102,14 @@
   class SieveLocalPartUI extends SieveAbstractAddressPartUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "address-part/local";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./RFC5228/templates/SieveAddressPartLocal.html";

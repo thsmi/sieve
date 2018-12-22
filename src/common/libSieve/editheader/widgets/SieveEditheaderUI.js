@@ -49,14 +49,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./editheader/templates/SieveAddHeaderActionUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -84,7 +84,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
 
@@ -95,7 +95,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -146,7 +146,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./editheader/templates/SieveDeleteHeaderActionUI.html";
@@ -154,7 +154,7 @@
 
     /**
      * Saves the current header index.
-     * @returns {void}
+     *
      */
     saveHeaderIndex() {
       let indexType = $('input:radio[name="header-index"]:checked').val();
@@ -187,7 +187,7 @@
 
     /**
      * Saves the current header values
-     * @returns {void}
+     *
      */
     saveHeaderValues() {
       let value = $("input:radio[name='header-value']:checked").val();
@@ -205,7 +205,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -229,7 +229,6 @@
 
     /**
      * Initializes the header index elements
-     * @returns {void}
      */
     loadHeaderIndex() {
 
@@ -271,7 +270,6 @@
 
     /**
      * Initializes the ui for the header values
-     * @returns {void}
      */
     loadHeaderValues() {
       $('input:radio[name="header-value"][value="any"]').change(() => {
@@ -296,7 +294,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
 
@@ -318,7 +316,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")

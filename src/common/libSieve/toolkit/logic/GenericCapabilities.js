@@ -33,7 +33,7 @@
     /**
      * Checks it the server supports the given dependencies.
      *
-     * @param {String|Object} dependencies
+     * @param {string|Object} dependencies
      *   the dependencies which should be checked
      * @returns {boolean}
      *   true in case the dependencie is supported otherwise false.
@@ -59,9 +59,9 @@
 
     /**
      * Checks if all of the fiven dependencies are supported by the server
-     * @param {String|String[]} dependencies
+     * @param {string|string[]} dependencies
      *   the dependency or dependencies to test
-     * @returns {Boolean}
+     * @returns {boolean}
      *   true in case all of the dependencies are supported. Otherwise false.
      */
     isCapableOfAll(dependencies) {
@@ -78,9 +78,9 @@
 
     /**
      * Checks if at least one of the given dependencies is supported by the server
-     * @param {String|String[]} dependencies
+     * @param {string|string[]} dependencies
      *   the dependency or dependencies to test
-     * @returns {Boolean}
+     * @returns {boolean}
      *   true in case at least one dependency is supported otherwise false.
      */
     isCapableOfAny(dependencies) {
@@ -98,7 +98,7 @@
     /**
      * Ensures the given dependenies are supported by the server.
      *
-     * @param {String| Object} [dependencies]
+     * @param {string| Object} [dependencies]
      *   It can be a plain string or a more complex object. The complex objects are
      *   used to realize "any" of or "all" of stucts.
      *
@@ -128,7 +128,7 @@
      * Ensures all the required dependencies are supported.
      * In case the dependency can not be resolved an exception it thrown.
      *
-     * @param  {String} dependencies
+     * @param  {string} dependencies
      *   the required dependencies which all need to be fullfilled.
      *
      * @returns {SieveCapabilities}
@@ -157,7 +157,7 @@
      *
      * In case none of the dependencies match an exception will be throw.
      *
-     * @param  {...String} dependencies
+     * @param  {...string} dependencies
      *   a list with dependencies, from which at least one needs to be fullfilled
      *
      * @returns {SieveCapabilities}
@@ -189,7 +189,7 @@
 
     /**
      * Checks if the servers supports the given capability string.
-     * @param {String} capability
+     * @param {string} capability
      *   the capability which should be checked.
      * @returns {boolean}
      *   true in case the capability is supported by the server otherwise false.

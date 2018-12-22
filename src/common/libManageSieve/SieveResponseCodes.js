@@ -23,7 +23,7 @@
     /**
      * Creates a new instance.
      *
-     * @param {String[]} code
+     * @param {string[]} code
      *   the response code including the additional arguments returned by the server.
      */
     constructor(code) {
@@ -37,7 +37,7 @@
      * This method is aware of this behaviour, and should be always when comparing
      * ResponseCodes
      *
-     * @param {String} code
+     * @param {string} code
      *   the response code which should be testet for equality
      * @returns {boolean}
      *   true in case the response code is equal otherwise false.
@@ -61,7 +61,7 @@
   class SieveResponseCodeSasl extends SieveResponseCode {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(code) {
       super(code);
@@ -71,7 +71,7 @@
     }
 
     /**
-     * @returns {String}
+     * @returns {string}
      *   Returns the sasl response
      */
     getSasl() {
@@ -86,7 +86,7 @@
   class SieveResponseCodeReferral extends SieveResponseCode {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(code) {
       super(code);
@@ -119,7 +119,7 @@
     /**
      * Returns the hostname of the referred server.
      *
-     * @returns {String}
+     * @returns {string}
      *   the hostname as string.
      */
     getHostname() {
@@ -130,7 +130,7 @@
      * Returns the port of the referred server. If the server did not specify
      * any Port null is returend.
      *
-     * @return {Int}
+     * @returns {int}
      *   the port number or null
      */
     getPort() {

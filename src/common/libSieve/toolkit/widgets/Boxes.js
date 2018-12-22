@@ -53,7 +53,7 @@
      * Return the nesteds unique id. In case no sieve element is bound to
      * this element it return -1
      *
-     * @return {int}
+     * @returns {int}
      *   An Integer as unique identifiert for the nested sieve element.
      */
     id() {
@@ -67,7 +67,7 @@
      * Returns the sieve Element bound to this box.
      * In case no element is bound, an exception will be thrown
      *
-     * @return {SieveAbstractElement}
+     * @returns {SieveAbstractElement}
      *   the sieve object bound to this box
      */
     getSieve() {
@@ -136,7 +136,7 @@
      * The drop element handler
      * @param {} handler
      * @param {} sibling
-     * @return {}
+     * @returns {}
      */
     drop(handler, sibling) {
       if (typeof (handler) === "undefined")
@@ -174,7 +174,7 @@
   class SieveSimpleBoxUI extends SieveAbstractBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     createHtml(parent) {
       if (typeof (parent) === "undefined")
@@ -194,7 +194,7 @@
   class SieveActionBoxUI extends SieveSimpleBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(elm) {
       super(elm);
@@ -202,7 +202,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     createHtml(parent) {
       return super.createHtml(parent).addClass("sivAction");
@@ -236,7 +236,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     createHtml(parent) {
       return parent.append($("<div/>").addClass("sivDropBox"));
@@ -258,7 +258,7 @@
   class SieveTrashBoxUI extends SieveDropBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(docshell) {
       super(docshell);
@@ -273,7 +273,7 @@
   class SieveDialogBoxUI extends SieveAbstractBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(elm) {
       // Call parent constructor...
@@ -346,7 +346,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     createHtml(parent) {
 
@@ -399,7 +399,7 @@
   class SieveActionDialogBoxUI extends SieveDialogBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(elm) {
       // Call parent constructor...
@@ -408,7 +408,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     createHtml(parent) {
       return super.createHtml(parent)
@@ -423,7 +423,7 @@
   class SieveOperatorBoxUI extends SieveSimpleBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(elm) {
 
@@ -433,7 +433,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     createHtml(parent) {
       return super.createHtml(parent)
@@ -447,7 +447,7 @@
   class SieveOperatorDialogBoxUI extends SieveDialogBoxUI {
 
     /**
-   * @inheritDoc
+   * @inheritdoc
    */
     constructor(elm) {
       super(elm);
@@ -457,7 +457,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     createHtml(parent) {
       return super.createHtml(parent)
@@ -472,7 +472,7 @@
   class SieveTestDialogBoxUI extends SieveDialogBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(elm) {
       super(elm);
@@ -482,7 +482,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     createHtml(parent) {
       return super.createHtml(parent)

@@ -78,7 +78,7 @@
   class SieveNoProxy extends SieveAbstractProxy {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getProxyInfo() {
       return [];
@@ -91,7 +91,7 @@
   class SieveSystemProxy extends SieveAbstractProxy {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getProxyInfo() {
       return null;
@@ -120,16 +120,16 @@
     }
 
     /**
-     * @param {String} host
+     * @param {string} host
      *   sets the proxy's hostname
-     * @return {void}
+     *
      */
     setHost(host) {
       this.account.prefs.setString(this.getPrefKey() + ".host", host);
     }
 
     /**
-     * @returns {String}
+     * @returns {string}
      *   the proxy's port
      */
     getPort() {
@@ -138,9 +138,9 @@
 
     /**
      * Specifies on which TCP/IP Port the socks Proxy is listening.
-     * @param {String|Int} port
+     * @param {string|int} port
      *   the port as integer
-     * @returns {void}
+     *
      */
     setPort(port) {
       port = parseInt(port, 10);
@@ -155,7 +155,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getProxyInfo() {
       // generate proxy info
@@ -174,7 +174,7 @@
   class SieveSocks5Proxy extends SieveSocks4Proxy {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getPrefKey() {
       return CONFIG_SOCKS5;
@@ -193,14 +193,14 @@
      *
      * @param {boolean} enabled
      *  if true the remote dns is used, if false the local dns is used.
-     * @returns {void}
+     *
      */
     setRemoteDNS(enabled) {
       this.account.prefs.setBoolean(this.getPrefKey() + ".remote_dns", enabled);
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getProxyInfo() {
       // generate proxy info
@@ -219,21 +219,21 @@
   class SieveProxy extends SieveAbstractMechanism {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getKey() {
       return CONFIG_PROXY_TYPE;
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getDefault() {
       return PROXY_TYPE_SYSTEM;
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     hasMechanism(type) {
       switch (type) {

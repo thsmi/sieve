@@ -45,7 +45,7 @@
      *
      * @param {string} mechanism
      *   the sasl mechanism which should be used.
-     * @returns {void}
+     *
      */
     setMechanism(mechanism) {
       this.account.prefs.setString(PREF_MECHANISM, mechanism);
@@ -66,7 +66,7 @@
      * Defines if a secure connections shall be used.
      * @param {boolean} value
      *   set to true for a secure connection.
-     * @returns {void}
+     *
      */
     setSecure(value) {
       this.account.prefs.setBoolean(PREF_TLS, value);

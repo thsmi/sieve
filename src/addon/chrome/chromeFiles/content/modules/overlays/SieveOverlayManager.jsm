@@ -243,7 +243,7 @@
      *
      * @param {Window} win
      *   the window which was unloaded.
-     * @returns {void}
+     *
      */
     onUnload: function (win) {
 
@@ -269,7 +269,7 @@
     /**
      * Checks the refcounting if there are any unused script.
      * And removes them if needed
-     * @returns {void}
+     *
      */
     cleanup: function () {
       this.log(`Doing cleanup`);
@@ -290,7 +290,7 @@
      * Do not invoke it manually
      * @param {nsITimer} timer
      *   the timer instance which caused this notification.
-     * @returns {void}
+     *
      */
     notify: function (timer) {
       if (this.cleanupTimer !== timer)
@@ -323,7 +323,7 @@
      * @param {nsIXULWindow} xulWindow
      *   the new xul window which was opened
      *
-     * @returns {undefined}
+     *
      */
     onOpenWindow: function (xulWindow) {
 
@@ -343,7 +343,7 @@
      * @param {nsIXULWindow} xulWindow
      *   the xul window which was closed
      *
-     * @returns {undefined}
+     *
      */
     onCloseWindow: function (xulWindow) {
     },
@@ -376,7 +376,7 @@
      * @param {nsIXULWindow} xulWindow
      *   the xul window which should be monitored
      *
-     * @returns {void}
+     *
      */
     loadWatcher: function (xulWindow) {
 
@@ -399,7 +399,7 @@
      * @param {nsIXULWindow} xulWindow
      *   the xul for which the monitoring should be stopped
      *
-     * @returns {void}
+     *
      */
     unloadWatcher: function (xulWindow) {
 
@@ -461,7 +461,7 @@
 
     /**
      * Forces Unloading all loaded components.
-     * @returns {void}
+     *
      */
     unload: function () {
       let wm = Cc["@mozilla.org/appshell/window-mediator;1"]

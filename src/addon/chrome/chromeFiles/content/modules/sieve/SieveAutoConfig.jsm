@@ -35,7 +35,7 @@
      *   the port which should be tests
      * @param {Proxy} proxy
      *   a reference to the proxy configuration
-     * @param {object} listener
+     * @param {Object} listener
      *   the listener's onSuccess will be called when the server could be reached.
      *   the onError message will be called upon a timeout or a connection error.
      * @param {SieveAbstractLogger} logger
@@ -59,7 +59,7 @@
 
     /**
      * Internal callback, handles init responses.
-     * @returns {void}
+     *
      */
     onInitResponse() {
       this.listener.onSuccess(this);
@@ -68,7 +68,7 @@
 
     /**
      * Internal callback, handles on idle events
-     * @returns {void}
+     *
      */
     onIdle() {
       // just an empty stub...
@@ -76,7 +76,7 @@
 
     /**
      * Internal callback, handled on error events
-     * @returns {void}
+     *
      */
     onError() {
       if (this.listener)
@@ -87,7 +87,7 @@
 
     /**
      * Internal callback, handles a timeout event
-     * @returns {void}
+     *
      */
     onTimeout() {
       this.onError();
@@ -95,7 +95,7 @@
 
     /**
      * Internal callback, handles on disconnect event
-     * @returns {void}
+     *
      */
     onDisconnect() {
       this.onError();
@@ -103,7 +103,7 @@
 
     /**
      * Cancels the current auto configuration
-     * @returns {void}
+     *
      **/
     cancel() {
       this.callback = null;
@@ -112,7 +112,7 @@
 
     /**
      * Starts the auto configuration.
-     * @returns {void}
+     *
      */
     run() {
       this.sieve.connect(this.host, this.port, false, null, this.proxy);
@@ -137,13 +137,13 @@
     /**
      * Adds a new test request to the queue.
      *
-     * @param {String} host
+     * @param {string} host
      *   the hostname which should be tested
-     * @param {Integer} port
+     * @param {int} port
      *   the port which should be tested
      * @param {Proxy} proxy
      *   the proxy configuration
-     * @returns {void}
+     *
      */
     addHost(host, port, proxy) {
       if (this.activeHosts > 0)
@@ -157,7 +157,7 @@
      *
      * @param {SieveAutoConfigHost} listener
      *   the listener which is invoked when either a test succeeds or all of the test fail.
-     * @returns {void}
+     *
      */
     run(listener) {
       if (this.activeHosts > 0)
@@ -172,7 +172,7 @@
 
     /**
      * Cancels all pending tests.
-     * @returns {void}
+     *
      **/
     cancel() {
       for (let i = 0; i < this.hosts.length; i++)
@@ -185,7 +185,7 @@
     /**
      * Internal callback, called when a host test fails.
      *
-     * @returns {void}
+     *
      */
     onError() {
       this.activeHosts--;
@@ -204,7 +204,7 @@
      *
      * @param {SieveAutoConfigHost} sender
      *   the host test which succeeded
-     * @returns {void}
+     *
      */
     onSuccess(sender) {
       // decrement our ref counter;

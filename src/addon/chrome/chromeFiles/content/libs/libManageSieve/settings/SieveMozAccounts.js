@@ -44,7 +44,7 @@
   /**
    * This class manages general settings for the given sieve account.
    *
-   * @param {String} sieveKey
+   * @param {string} sieveKey
    *   The unique internal pref key of the sieve account.
    * @constructor
    */
@@ -109,7 +109,7 @@
    * This is used while editing a sieve script, it basically prevents useless
    * systax checks while the User is typing.
    *
-   * @return {Number}
+   * @returns {Number}
    *  The delay in mili seconds
    */
   SieveAccountSettings.prototype.getCompileDelay
@@ -160,7 +160,7 @@
    *
    * @param {int} editor
    *   pass a 0 for the default editor or a 1 for the graphical editor.
-   * @returns {void}
+   *
    */
   SieveAccountSettings.prototype.setDefaultEditor
     = function (editor) {
@@ -182,7 +182,7 @@
    *
    * @param {int} width
    *   the indention width, default to two.
-   * @returns {void}
+   *
    */
   SieveAccountSettings.prototype.setIndentionWidth
     = function (width) {
@@ -205,7 +205,7 @@
    *
    * @param {int} policy
    *   the indention policy. A zero means spaces, a one tabs
-   * @returns {void}
+   *
    */
   SieveAccountSettings.prototype.setIndentionPolicy
     = function (policy) {
@@ -228,7 +228,7 @@
    *
    * @param {int} width
    *   the tab width as integer.
-   * @returns {void}
+   *
    */
   SieveAccountSettings.prototype.setTabWidth
     = function (width) {
@@ -282,7 +282,7 @@
    * Identify the IMAP Account. Therefore it is used for binding SIEVE and IMAP
    * Account together.
    *
-   * @return {String}
+   * @returns {string}
    *   Returns the unique IMAP Key of the IMAP Account bound to this SIEVE Account.
    */
   SieveAccount.prototype.getKey
@@ -296,7 +296,7 @@
    * a "PrettyName". It is either an userdefined string or the hostname of the
    * IMAP account.
    *
-   * @return {String}
+   * @returns {string}
    *   The description for this account.
    */
   SieveAccount.prototype.getDescription
@@ -312,7 +312,7 @@
    *   defines which Authentication Settings ({@link SieveNoAuth},
    *   {@link SieveCustomAuth}, {@link SieveImapAuth}) should be loaded. If this
    *   parameter is skipped the default Authentication settings will be returned.
-   * @return {SieveImapAuth|SieveNoAuth|SieveCustomAuth}
+   * @returns {SieveImapAuth|SieveNoAuth|SieveCustomAuth}
    *   Returns the Authentication Settings for this SieveAccount
    */
   SieveAccount.prototype.getAuthentication
@@ -392,7 +392,7 @@
 
   /**
    * XXX ...
-   * @return {SieveAccountSettings} returns the account settings.
+   * @returns {SieveAccountSettings} returns the account settings.
    */
   SieveAccount.prototype.getSettings
     = function () {
@@ -411,7 +411,7 @@
    * nsIMsgIncomingServer in Thunderbird's AccountManager. Compatible accounts
    * are POP3 and IMAP.
    *
-   * @return {SieveAccount[]}
+   * @returns {SieveAccount[]}
    *   Array containing SieveAccounts
    */
   SieveAccounts.prototype.getAccounts
@@ -450,7 +450,7 @@
    * @param {nsIMsgIncomingServer} server
    *   the incoming server for which the sieve account should be returend
    *
-   * @return {SieveAccount}
+   * @returns {SieveAccount}
    *   a SieveAccount for the incoming server
    */
   SieveAccounts.prototype.getAccountByServer
@@ -461,9 +461,9 @@
   /**
    * Loads and returns a Sieve Account by a nsIMsgIncomingServer's unique id
    *
-   * @param {String} key
+   * @param {string} key
    *   The unique identifier of the associated nsIMsgIncomingServer account
-   * @return {SieveAccount}
+   * @returns {SieveAccount}
    *   a SieveAccount for the unique id
    */
   SieveAccounts.prototype.getAccountByName

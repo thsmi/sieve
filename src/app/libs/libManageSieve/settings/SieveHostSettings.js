@@ -74,21 +74,21 @@
   class SieveHost extends SieveAbstractMechanism {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getKey() {
       return CONFIG_HOST_TYPE;
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getDefault() {
       return HOST_TYPE_CUSTOM;
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     hasMechanism(type) {
       switch (type) {

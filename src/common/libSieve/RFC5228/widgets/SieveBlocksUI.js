@@ -31,7 +31,7 @@
   class SieveRootNodeUI extends SieveAbstractBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     createHtml(parent) {
       return parent.append(this.getSieve().elms[FIRST_ELEMENT].html());
@@ -79,7 +79,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     createHtml(parent) {
       return parent.append(this.init());

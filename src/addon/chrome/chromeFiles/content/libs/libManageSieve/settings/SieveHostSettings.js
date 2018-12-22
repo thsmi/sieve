@@ -33,7 +33,7 @@
   class SieveImapHost extends SieveAbstractHost {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getHostname() {
 
@@ -56,21 +56,21 @@
   class SieveHost extends SieveAbstractMechanism {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getKey() {
       return CONFIG_HOST_TYPE;
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     getDefault() {
       return HOST_TYPE_IMAP;
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     hasMechanism(type) {
       switch (type) {

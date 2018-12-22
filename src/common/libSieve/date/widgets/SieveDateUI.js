@@ -32,7 +32,7 @@
   class SieveZoneWidget extends SieveRadioGroupWidget {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     constructor(selector) {
       super("zone/", selector);
@@ -45,14 +45,14 @@
   class SieveAbstractZoneUI extends SieveRadioGroupItemWidget {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "zone/";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getName() {
       return "sieve-zone";
@@ -65,14 +65,14 @@
   class SieveOriginalZoneUI extends SieveAbstractZoneUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "zone/originalzone";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./date/templates/SieveZoneOriginal.html";
@@ -85,21 +85,21 @@
   class SieveCustomZoneUI extends SieveAbstractZoneUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeName() {
       return "zone/zone";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./date/templates/SieveZoneCustom.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad(sivElement) {
       super.onLoad(sivElement);
@@ -110,7 +110,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave(sivElement) {
 
@@ -181,14 +181,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./date/templates/SieveDateTestUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -210,7 +210,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
 
@@ -230,7 +230,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -286,14 +286,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./date/templates/SieveCurrentDateTestUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
       (new SieveStringListWidget("#sivDateKeyList"))
@@ -313,7 +313,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
 
@@ -333,7 +333,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")

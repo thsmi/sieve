@@ -23,21 +23,21 @@
   class SieveNodeRequestBuilder extends SieveAbstractRequestBuilder {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     calculateByteLength(data) {
       return Buffer.byteLength(data, 'utf8');
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     convertToBase64(decoded) {
       return Buffer.from(decoded).toString('base64');
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     convertFromBase64(encoded) {
       return Buffer.from(encoded, 'base64').toString("latin1");

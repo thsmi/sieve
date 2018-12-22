@@ -30,7 +30,7 @@
 
     /**
      * Parses a section from thunderbird's profile.ini
-     * @param {String} section
+     * @param {string} section
      *   the section which should be parsed.
      * @returns {Struct}
      *   an object containing the path as well as the information
@@ -65,10 +65,10 @@
 
     /**
      * Parses thunderbird's profile.ini and retruns the path to the profile.
-     * @param {String} [directory]
+     * @param {string} [directory]
      *   the directory to thunderbirds app data  directory.
      *   if omited the directory will be guessed.
-     * @returns {String}
+     * @returns {string}
      *   the path to the default user Profile.
      */
     getDefaultUserProfile(directory) {
@@ -103,7 +103,7 @@
     /**
      * Tries to get thunderbird's profile directory.
      *
-     * @returns {String}
+     * @returns {string}
      *   the profile directory
      */
     getProfileDirectory() {
@@ -128,7 +128,7 @@
     /**
      * Tries to read thunderbird's preference file.
      *
-     * @returns {String}
+     * @returns {string}
      *   the current user's preference.js
      */
     getProfile() {

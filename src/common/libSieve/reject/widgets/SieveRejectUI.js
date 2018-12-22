@@ -28,7 +28,7 @@
   class SieveRejectActionUI extends SieveActionDialogBoxUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./reject/templates/SieveRejectActionUI.html";
@@ -48,7 +48,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
       this.reason($("#sivRejectReason").val());
@@ -57,14 +57,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
       $("#sivRejectReason").val(this.reason());
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -83,7 +83,7 @@
   class SieveExtendedRejectActionUI extends SieveRejectActionUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./reject/templates/SieveExtendedRejectActionUI.html";

@@ -72,7 +72,7 @@
 
     /**
      * Get or sets the number's value.
-     * @returns {Integer}
+     * @returns {int}
      *   the current numeric value.
      **/
     getValue() {
@@ -81,7 +81,7 @@
 
     /**
      * Get or sets the number's value.
-     * @param {String|Integer} number
+     * @param {string|int} number
      *   the number which should be set.
      * @returns {SieveNumber}
      *   a self refernece.
@@ -130,7 +130,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     toScript() {
       return "" + this._number + "" + this._unit;

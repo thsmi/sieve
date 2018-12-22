@@ -118,7 +118,7 @@
        *   the parent window.
        * @param {nsIMsgIncomingServer} server
        *   the server which should be configured, can be null.
-       * @returns {void}
+       *
        */
       OpenSettings: function (window, server) {
         // the accountmanager is modal. We need a parent window!
@@ -156,7 +156,7 @@
        *
        * @param {window} window
        *   reference to a dom window.
-       * @return {nsIMsgIncomingServer}
+       * @returns {nsIMsgIncomingServer}
        *   the active server or null
        */
       GetActiveServer: function (window) {

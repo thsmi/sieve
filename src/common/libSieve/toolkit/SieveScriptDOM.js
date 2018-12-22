@@ -17,6 +17,8 @@
 
   "use strict";
 
+  const NO_ELEMENT = -1;
+
   /* global SieveParser */
 
   /**
@@ -45,7 +47,7 @@
 
   /**
    * Returns the root node for this document
-   * @return {SieveElement} the documents root node.
+   * @returns {SieveElement} the documents root node.
    */
   SieveDocument.prototype.root
     = function () {
@@ -138,7 +140,7 @@
    *   an array with acceptable types.
    * @param {string|SieveParser} parser
    *   a parser object or a string which holds the data that should be evaluated.
-   * @return {boolean}
+   * @returns {boolean}
    *   true in case the parser or string is of the given type otherwise false.
    */
   SieveDocument.prototype.probeByClass
@@ -217,7 +219,7 @@
    * It checks all cached elements for a valid parent pointer. If it's missing
    * the document was obviously deleted...
    *
-   * @param {String[]} whitelist
+   * @param {string[]} whitelist
    *   an optional whitelist list, with elements which should not be released
    * @returns {int}
    *   the number of deleted elements
@@ -233,7 +235,7 @@
 
       // scan for null nodes..
       for (item in this._nodes)
-        if (whitelist.indexOf(this._nodes[item]) === -1)
+        if (whitelist.indexOf(this._nodes[item]) === NO_ELEMENT)
           if (this._nodes[item].parent() === null)
             items.push(item);
 
@@ -246,7 +248,7 @@
         let it = items.shift();
 
         for (item in this._nodes)
-          if (whitelist.indexOf(this._nodes[item]) === -1)
+          if (whitelist.indexOf(this._nodes[item]) === NO_ELEMENT)
             if (this._nodes[item].parent().id() === it)
               items.push(item);
 

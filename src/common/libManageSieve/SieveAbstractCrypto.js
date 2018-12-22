@@ -28,7 +28,7 @@
 
     /**
      * Creates a new crypto wraper.
-     * @param {String} name
+     * @param {string} name
      *   the crypto algorithms name.
      */
     constructor(name) {
@@ -144,14 +144,14 @@
      *
      *   Hi := U1 XOR U2 XOR ... XOR Ui
      *
-     * @param {byte[]|String} str
+     * @param {byte[]|string} str
      *   an octet input string
-     * @param {byte[]|String} salt
+     * @param {byte[]|string} salt
      *   random octet string
      * @param {int} i
      *   iteration count a positiv number (>= 1), suggested to be at least 4096
      *
-     * @return {byte[]}
+     * @returns {byte[]}
      *   the pseudorandom value as byte string
      */
     Hi(str, salt, i) {

@@ -45,7 +45,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -55,7 +55,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
 
@@ -70,14 +70,14 @@
   class SieveSetFlagUI extends SieveAbstractFlagUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./imapflags/templates/SieveSetFlagActionUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -92,14 +92,14 @@
   class SieveAddFlagUI extends SieveAbstractFlagUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./imapflags/templates/SieveAddFlagActionUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -115,14 +115,14 @@
   class SieveRemoveFlagUI extends SieveAbstractFlagUI {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./imapflags/templates/SieveRemoveFlagActionUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -162,7 +162,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
 
@@ -178,7 +178,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -194,14 +194,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./imapflags/templates/SieveHasFlagTestUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
 
@@ -219,7 +219,7 @@
   class SieveFlagsTagWidget extends SieveOverlayItemWidget {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static nodeType() {
       return "action/fileinto/";
@@ -232,7 +232,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     static isCapable(capabilities) {
       return capabilities.hasCapability("imap4flags");
@@ -246,7 +246,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     load(sivElement) {
 
@@ -258,7 +258,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     save(sivElement) {
       if ($("#sivFlagsCheckbox")[DOM_ELEMENT].checked) {

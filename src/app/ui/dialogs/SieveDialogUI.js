@@ -25,7 +25,7 @@
 
     /**
      * The path to the html template which should be used for this dialog
-     * @returns {String}
+     * @returns {string}
      *   the path to the html template.
      */
     getTemplate() {
@@ -48,7 +48,7 @@
      * You can use getDialog to retrieve the dialogs root element.
      * E.g. when adding new elements.
      *
-     * @returns {void}
+     *
      */
     onInit() {
       throw new Error("Implement on Init");
@@ -87,8 +87,6 @@
     /**
      * Called when the dialog is shown.
      * This can be used e.g. to move the focus to the desired textbox.
-     *
-     * @returns {void}
      */
     onShown() {
     }
@@ -96,8 +94,6 @@
 
     /**
      * Shows the dialog.
-     *
-     * @returns {void}
      */
     async show() {
 
@@ -146,7 +142,8 @@
 
     /**
      * Creates a new dialog instance
-     * @param {String} displayName
+     *
+     * @param {string} displayName
      *   the accounts display name
      */
     constructor(displayName) {
@@ -177,7 +174,7 @@
     /**
      * Creates a new instance
      *
-     * @param {String} fingerprint
+     * @param {string} fingerprint
      *   The account's fingerprint
      */
     constructor(fingerprint) {
@@ -208,7 +205,7 @@
     /**
      * Create a new delete script dialog instance.
      *
-     * @param {String} name
+     * @param {string} name
      *   the script name as string
      */
     constructor(name) {
@@ -283,7 +280,7 @@
 
     /**
      * Create a rename script dialog instance.
-     * @param {String} name
+     * @param {string} name
      *   the scripts old name
      */
     constructor(name) {
@@ -341,9 +338,9 @@
     /**
      * Creates a password dialog.
      *
-     * @param {String} username
+     * @param {string} username
      *   the username for which the password is requested
-     * @param {String} displayname
+     * @param {string} displayname
      *   the accounts display name.
      * @constructor
      */
@@ -407,7 +404,7 @@
     /**
      * Creates a authorization request dialog.
      *
-     * @param {String} displayname
+     * @param {string} displayname
      *   the account's display name.
      * @constructor
      */

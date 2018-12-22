@@ -44,7 +44,7 @@
      * @param {SieveLexer} lexer
      *   the lexer which contains the grammar.
      *
-     * @returns {Boolean}
+     * @returns {boolean}
      *   true in case the generic is capable of parsing
      *   otherwise false.
      */
@@ -98,7 +98,7 @@
      * @param {SieveCapabilities} capabilities
      *   the capabilities supported by the server
      *
-     * @returns {Boolean}
+     * @returns {boolean}
      *   true in case the action is capable
      */
     onCapable(capabilities) {
@@ -138,7 +138,7 @@
   class SieveGenericTest extends SieveAbstractGeneric {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onNew(docshell, id) {
 
@@ -152,7 +152,7 @@
   class SieveGenericTag extends SieveAbstractGeneric {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onNew(docshell, id) {
 
@@ -166,7 +166,7 @@
   class SieveGenericGroup extends SieveAbstractGeneric {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onProbe(parser, lexer) {
       // in case we have an explicite token we got for it...
@@ -178,7 +178,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onNew(docshell, id) {
 
@@ -222,7 +222,7 @@
   /**
    *
    * @param {*} item
-   * @returns {undefined}
+   *
    */
   function addAction(item) {
 
@@ -244,7 +244,7 @@
   /**
    *
    * @param {*} item
-   * @returns {undefined}
+   *
    */
   function addTest(item) {
     // Ensure the item has a valid structure...
@@ -265,7 +265,7 @@
   /**
    *
    * @param {*} group
-   * @returns {undefined}
+   *
    */
   function addGroup(group) {
 
@@ -284,7 +284,7 @@
   /**
    *
    * @param {Object} item
-   * @returns {undefined}
+   *
    */
   function addTag(item) {
 
@@ -303,7 +303,7 @@
 
   /**
    *
-   * @returns {undefined}
+   *
    */
   function initActions() {
     actions.forEach((item) => {
@@ -316,7 +316,7 @@
 
   /**
    *
-   * @returns {undefined}
+   *
    */
   function initTests() {
     tests.forEach((item) => {
@@ -345,7 +345,7 @@
    * @param {*} action
    * @param {*} item
    *
-   * @returns {undefined}
+   *
    */
   function extendGenericProperty(action, item) {
 
@@ -376,7 +376,7 @@
    *
    * @param {*} generics
    * @param {*} item
-   * @returns {undefined}
+   *
    */
   function extendGeneric(generics, item) {
 
@@ -401,7 +401,7 @@
   /**
    *
    * @param {*} item
-   * @returns {undefined}
+   *
    */
   function extendAction(item) {
     extendGeneric(actions, item);
@@ -410,7 +410,7 @@
   /**
    *
    * @param {*} item
-   * @returns {undefined}
+   *
    */
   function extendTest(item) {
     extendGeneric(tests, item);

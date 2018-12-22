@@ -31,15 +31,15 @@
       /**
        * Registers a generic element
        *
-       * @param{String} name
+       * @param {string} name
        *  a unique name for this element
-       * @param{String} type
+       * @param {string} type
        *  a type information for this element. It is used to create group/classes of elements.
        *  It does not have to be unique.
-       * @param{Object} obj
+       * @param {Object} obj
        *  the callbacks which are invoked, e.g. when probing, checking for capabilities or creating a new instance.
        *
-       * @returns {undefined}
+       *
        */
       registerGeneric: function (name, type, obj) {
         if (!type)
@@ -104,12 +104,12 @@
       },
 
       /**
-       * @param{String|String[]} types
+       * @param {string|string[]} types
        *  the constructor types  which should be queried to find a matching constructor
-       * @param{SieveParser} token
+       * @param {SieveParser} token
        *  the token which is to probe if the constructor is compatible
        *
-       * @returns{SieveElement|null}
+       * @returns {SieveElement|null}
        *  the element which was created or null in case no matching constructor was found
        * @throws
        *  throws an exception in case quering a constructor failed or invalid typeinformation is passed.
@@ -139,14 +139,14 @@
        * Creates a new object by calling the given constructor.
        * It automaticially attaches the docshell to the newly created object.
        *
-       * @param{SieveDocument} docshell
+       * @param {SieveDocument} docshell
        *  the docshell which owns the new element
-       * @param{object} constructor
+       * @param {Object} constructor
        *  the costructor which should be used to create the new element
-       * @param{SieveParser} [parser]
+       * @param {SieveParser} [parser]
        *  an optional initializer for the newly created object
        *
-       * @return{SieveElement}
+       * @returns {SieveElement}
        *  the newly created sieve element
        *
        * @throws in case the document could not be created.
@@ -174,11 +174,11 @@
        *
        * @param {SieveDocument} docshell
        *  the document which owns the new element
-       * @param {String} types
+       * @param {string} types
        *  the constructor types
        * @param {SieveParser} parser
        *  a sieve parser containing the data which can be probed by the constructors.
-       * @return {SieveElement}
+       * @returns {SieveElement}
        *  the element which was created
        * @throws
        *  in case the document could not be created.
@@ -197,12 +197,12 @@
        *
        * @param {SieveDocument} docshell
        *  the document which owns the new element
-       * @param {String} name
+       * @param {string} name
        *  the construtor name which should be used to create the element
        * @param {SieveParser} [parser]
        *   Optional, used to initialize the created element.
        *
-       * @return {SieveElement}
+       * @returns {SieveElement}
        *  the newly created element
        **/
       createByName: function (docshell, name, parser) {
@@ -235,11 +235,11 @@
 
       /**
        * Tests if the given Data is parsable
-       * @param {String|String[]} types
+       * @param {string|string[]} types
        *   either a single type as string or a list of things containing all type to test.
        * @param {SieveParser} parser
        *  a SieveParser which contains the data which should be probed
-       * @return {Boolean}
+       * @returns {boolean}
        *  true in case a valid constructor was found otherwise false
        */
       probeByClass: function (types, parser) {

@@ -46,7 +46,7 @@ function onUnload() {
 
 /**
  * Called everytime we need to refresh the page's content.
- * @returns {void}
+ *
  */
 function updatePage() {
   "use strict";
@@ -120,7 +120,7 @@ function onFiltersClick() {
 
 /**
  * Clickhandler which opens the settings dialog.
- * @returns {void}
+ *
  **/
 function onSettingsClick() {
   "use strict";

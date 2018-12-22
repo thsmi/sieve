@@ -26,7 +26,7 @@
 
     /**
      * Initializes the list widget
-     * @param {String} selector
+     * @param {string} selector
      *   the selector which points to the dom element which
      *   should host the string list.
      */
@@ -78,9 +78,9 @@
      *
      * @param {DomElement} item
      *   the item's dom element
-     * @param {String} value
+     * @param {string} value
      *   the default value to set
-     * @returns {void}
+     *
      */
     onItemAdded(item, value) {
 
@@ -115,7 +115,7 @@
      * @param {JQuery} menuItem
      *   the menu item which was clicked
      *
-     * @returns {void}
+     *
      */
     onItemSelected(item, menuItem) {
       item.find("input[type=text], input[type=email]")
@@ -126,9 +126,9 @@
     /**
      * Adds a textbox with the give value to the UI
      *
-     * @param {String} [value]
+     * @param {string} [value]
      *   the value which should be added. If omitted an empty string is added.
-     * @returns {void}
+     *
      */
     addItem(value) {
 
@@ -151,7 +151,7 @@
     /**
      * Initializes the widget.
      *
-     * @param {String[] | SieveStringList} [values]
+     * @param {string[] | SieveStringList} [values]
      *   the initial values
      * @returns {SieveStringListWidget}
      *   a self reference
@@ -195,7 +195,7 @@
      * Saves the current widget into a sieve element.
      * @param {SieveStringList} elm
      *   the sieve element which should be updated.
-     * @returns {void}
+     *
      */
     save(elm) {
       elm.values(this.values());
@@ -253,9 +253,9 @@
 
     /**
      * Creates a new instance
-     * @param {String} nodeType
+     * @param {string} nodeType
      *   the widgets node type
-     * @param {String} selector
+     * @param {string} selector
      *   an selector which identifies the parent dom element
      */
     constructor(nodeType, selector) {
@@ -267,7 +267,7 @@
      * Initializes the widget's dropdown items.
      * @param {SieveAbstractElement} sivElement
      *   the sieve element which should
-     * @returns {void}
+     *
      */
     initWidgets(sivElement) {
       let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
@@ -281,7 +281,7 @@
      *
      * @param {SieveAbstractElement} sivElement
      *   the sieve element which should be rendered.
-     * @returns {void}
+     *
      */
     init(sivElement) {
 
@@ -295,7 +295,7 @@
      * Persist the sieve settings into the given sieve element
      * @param {SieveAbstractElement} sivElement
      *   the parent sieve element
-     * @returns {void}
+     *
      */
     save(sivElement) {
 
@@ -311,7 +311,7 @@
   class SieveAbstractItemWidget {
     /**
      * Creates a new instance.
-     * @param {String} selector
+     * @param {string} selector
      *   a selector which identifies the parent element.
      */
     constructor(selector) {
@@ -319,7 +319,7 @@
     }
 
     /**
-     * @returns {String}
+     * @returns {string}
      *   the element's node type as string
      */
     static nodeType() {
@@ -327,7 +327,7 @@
     }
 
     /**
-     * @returns {String}
+     * @returns {string}
      *   the elements node name as string
      */
     static nodeName() {
@@ -344,7 +344,7 @@
 
     /**
      * The radio groups unique name
-     * @returns {String}
+     * @returns {string}
      *   the name as string
      */
     getName() {
@@ -354,7 +354,7 @@
 
     /**
      * Returns the URL to the html template.
-     * @returns {String}
+     * @returns {string}
      *   the url which points to the template
      * @abstract
      */
@@ -376,7 +376,7 @@
      * @param {SieveAbstractElement} sivElement
      *   selects the current matchtype in case it is true.
      *
-     * @returns {void}
+     *
      */
     init(sivElement) {
       let that = this;
@@ -413,7 +413,7 @@
      *
      * @param {SieveAbstractElement} sivElement
      *   the parent sieve element
-     * @returns {void}
+     *
      */
     load(sivElement) {
       throw new Error("Implement load " + sivElement);
@@ -424,7 +424,7 @@
      *
      * @param {SieveElement} sivElement
      *   the parent sieve element
-     * @returns {void}
+     *
      */
     save(sivElement) {
       throw new Error("Implement load " + sivElement);
@@ -441,7 +441,7 @@
      *
      * @param {SieveElement} sivElement
      *   the parent sieve element
-     * @returns {void}
+     *
      */
     onLoad(sivElement) {
       this.select();
@@ -452,7 +452,7 @@
      *
      * @param {SieveElement} sivElement
      *   the parent sieve element
-     * @returns {void}
+     *
      */
     onSave(sivElement) {
       sivElement.setElement(
@@ -461,7 +461,7 @@
 
     /**
      * Selects the this item and sets is as active item
-     * @returns {void}
+     *
      */
     select() {
       let menuElement = this.getMenuItem();
@@ -475,7 +475,7 @@
 
     /**
      * Gets the currently active item. It does not nessearily be this item.
-     * @returns {void}
+     *
      */
     getActiveItem() {
       return $("" + this.selector + " .sivDropDownWidget-active");
@@ -483,7 +483,7 @@
 
     /**
      * Gets the menu item for this item.
-     * @returns {void}
+     *
      */
     getMenuItem() {
       return $('' + this.selector + ' .sivDropDownWidget-menu div[data-nodename="' + this.constructor.nodeName() + '"] .dropdown-item');
@@ -531,9 +531,9 @@
 
     /**
      * Creates a new instance
-     * @param {String} nodeType
+     * @param {string} nodeType
      *   the widgets node type
-     * @param {String} selector
+     * @param {string} selector
      *   an selector which identifies the parent dom element
      */
     constructor(nodeType, selector) {
@@ -546,7 +546,7 @@
      *
      * @param {SieveAbstractElement} sivElement
      *   the sieve element which should be rendered.
-     * @returns {void}
+     *
      */
     init(sivElement) {
       let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
@@ -559,7 +559,7 @@
      * Persist the sieve settings into the given sieve element
      * @param {SieveAbstractElement} sivElement
      *   the parent sieve element
-     * @returns {void}
+     *
      */
     save(sivElement) {
 
@@ -588,7 +588,7 @@
      *
      * @param {SieveElement} sivElement
      *   the parent sieve element
-     * @returns {void}
+     *
      */
     onLoad(sivElement) {
       this.getRadioItem().find("input[name='" + this.getName() + "']").attr("checked", "checked");
@@ -599,7 +599,7 @@
      *
      * @param {SieveElement} sivElement
      *   the parent sieve element
-     * @returns {void}
+     *
      */
     onSave(sivElement) {
       sivElement.setElement(
@@ -645,9 +645,9 @@
 
     /**
      * Creates a new instance
-     * @param {String} nodeType
+     * @param {string} nodeType
      *   the widgets node type
-     * @param {String} selector
+     * @param {string} selector
      *   an selector which identifies the parent dom element
      */
     constructor(nodeType, selector) {
@@ -660,7 +660,7 @@
      *
      * @param {SieveAbstractElement} sivElement
      *   the sieve element which should be rendered.
-     * @returns {void}
+     *
      */
     init(sivElement) {
       let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
@@ -673,7 +673,7 @@
      * Persist the sieve settings into the given sieve element
      * @param {SieveAbstractElement} sivElement
      *   the parent sieve element
-     * @returns {void}
+     *
      */
     save(sivElement) {
       let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
@@ -702,7 +702,7 @@
   class SieveStringWidget {
 
     /**
-     * @param {String} selector
+     * @param {string} selector
      *   the selector which identifies where the input dom element
      */
     constructor(selector) {
@@ -720,10 +720,10 @@
     /**
      * Set the input item's current value.
      *
-     * @param {String} value
+     * @param {string} value
      *   the value to set.
      *
-     * @returns {undefined}
+     *
      */
     setValue(value) {
       $(this._selector)
@@ -735,10 +735,10 @@
      * Called as soon as the element is loaded.
      * It initializes the dropdowns handlers if applicable.
      *
-     * @param {String} value
+     * @param {string} value
      *   the initial value to set
      *
-     * @returns {undefined}
+     *
      */
     onInitialized(value) {
       let that = this;
@@ -786,9 +786,9 @@
     /**
      * Initializes the current element
      *
-     * @param {String|SieveString} sivElement
+     * @param {string|SieveString} sivElement
      *   the string element which should be rendered.
-     * @returns {undefined}
+     *
      */
     init(sivElement) {
       let value = "";
@@ -810,7 +810,7 @@
      *
      * @param {SieveString} sivElement
      *   the string element which was rendered and should be saved.
-     * @returns {undefined}
+     *
      */
     save(sivElement) {
 
@@ -826,7 +826,7 @@
   class SieveNumericWidget {
 
     /**
-     * @param {String} selector
+     * @param {string} selector
      *   the selector which identifies place holder for the input elements
      */
     constructor(selector) {
@@ -836,10 +836,10 @@
     /**
      * Call back which handles a change in the number's unit.
      *
-     * @param {String} unit
+     * @param {string} unit
      *   either a M,K,G or an empty string
      *
-     * @returns {undefined}
+     *
      */
     onUnitChanged(unit) {
       $(this._selector).find(".sieve-numeric-unit")
@@ -856,7 +856,7 @@
      * @param {string} unit
      *   the initial unit to set
      *
-     * @returns {undefined}
+     *
      */
     onInitialized(value, unit) {
 
@@ -875,9 +875,9 @@
     /**
      * Initializes the current numeric element
      *
-     * @param {String|SieveString} sivElement
+     * @param {string|SieveString} sivElement
      *   the string element which should be rendered.
-     * @returns {undefined}
+     *
      */
     init(sivElement) {
 
@@ -898,7 +898,7 @@
      *
      * @param {SieveString} sivElement
      *   the string element which was rendered and should be saved.
-     * @returns {undefined}
+     *
      */
     save(sivElement) {
 

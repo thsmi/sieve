@@ -201,7 +201,7 @@ let gAccount = null;
    * Called when the security page should be populated.
    * @param {SieveAccount} account
    *   a reference to a sieve account which contains the settings.
-   * @returns {void}
+   *
    */
   function onSecuritySheetLoad(account) {
 
@@ -361,7 +361,7 @@ let gAccount = null;
    *
    * @param {SieveAccount} account
    *   A SieveAccount which should be used to populate the property sheet
-   * @returns {void}
+   *
    */
   function onAdvancedSheetLoad(account) {
 
@@ -399,7 +399,7 @@ let gAccount = null;
    *
    * @param {SieveAccount} account
    *   A SieveAccount which should be used to populate the property sheet
-   * @returns {void}
+   *
    */
   function onEditorSheetLoad(account) {
     try {
@@ -535,7 +535,7 @@ let gAccount = null;
    * Opens thunderbird's the password manager dialog
    *
    * The dialog call might be non modal.
-   * @returns {void}
+   *
    */
   function onShowPassword() {
 
@@ -559,7 +559,7 @@ let gAccount = null;
 
   /**
    * Opens the error / browser console
-   * @returns {void}
+   *
    */
   function onShowErrorConsole() {
 
@@ -638,7 +638,7 @@ let gAccount = null;
   /**
    * Click handler for the donate button.
    * Opens a new browser window with the paypal donation website
-   * @return {void}
+   *
    */
   function onDonate() {
     let uri = Cc["@mozilla.org/network/io-service;1"]

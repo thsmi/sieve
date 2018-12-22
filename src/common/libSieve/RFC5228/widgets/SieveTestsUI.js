@@ -24,6 +24,7 @@
   /* global SieveMatchTypeWidget */
   /* global SieveAddressPartWidget */
   /* global SieveComparatorWidget */
+  /* global SieveNumericWidget */
 
   // testunary .append() -> testunary in anyof wrapen  SieveTestUI einführen...
   // testmultary.append -> an entsprechender stelle einfügen SieveTestListUI...
@@ -37,22 +38,6 @@
     /**
      * @inheritDoc
      **/
-    onSave() {
-      let sieve = this.getSieve();
-
-      sieve
-        .isOver($("input[type='radio'][name='over']:checked").val() === "true");
-
-      sieve.getSize()
-        .setValue($("#sivSizeTestValue").val())
-        .setUnit($("#sivSizeTestUnit").val());
-
-      return true;
-    }
-
-    /**
-     * @inheritDoc
-     **/
     getTemplate() {
       return "./RFC5228/templates/SieveSizeTestUI.html";
     }
@@ -61,20 +46,47 @@
      * @inheritDoc
      */
     onLoad() {
+      (new SieveNumericWidget("#sivSizeInput"))
+        .init(this.getSieve().getElement("limit"));
 
-      $('input:radio[name="over"][value="' + this.getSieve().isOver() + '"]').prop('checked', true);
-
-      $("#sivSizeTestValue").val("" + this.getSieve().getSize().getValue());
-      $("#sivSizeTestUnit").val("" + this.getSieve().getSize().getUnit());
+      let elm = this.getSieve().getElement("operator").getCurrentElement();
+      $('input:radio[name="over"][value="' + elm.nodeName() + '"]').prop('checked', true);
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
+     **/
+    onSave() {
+
+      (new SieveNumericWidget("#sivSizeInput"))
+        .save(this.getSieve().getElement("limit"));
+
+      let name = $("input[type='radio'][name='over']:checked").val();
+
+      if (name === "test/size/operator/over")
+        this.getSieve().getElement("operator").setCurrentElement(":over");
+      else if (name === "test/size/operator/under")
+        this.getSieve().getElement("operator").setCurrentElement(":under");
+      else
+        throw new Error("Unknown operator, has to be either :over or :under");
+
+      return true;
+    }
+
+
+    /**
+     * @inheritdoc
      */
     getSummary() {
+      let name = this.getSieve().getElement("operator").getCurrentElement().nodeName();
+
+      let operator = "smaller";
+      if (name === "test/size/operator/over")
+        operator = "larger";
+
       return $("<div/>")
-        .text("message is " + (this.getSieve().isOver() ? "larger" : "smaller")
-          + " than " + this.getSieve().getSize().toScript());
+        .text("message is " + operator
+          + " than " + this.getSieve().getElement("limit").toScript());
     }
   }
 
@@ -99,10 +111,12 @@
       let value = $("#sieve-widget-test")
         .find("input[name='booleanValue']:checked").val();
 
-      if (value === "true")
-        this.getSieve().value = true;
+      if (value === "test/boolean/true")
+        this.getSieve().setCurrentElement("true");
+      else if (value === "test/boolean/false")
+        this.getSieve().setCurrentElement("false");
       else
-        this.getSieve().value = false;
+        throw new Error("Invalid boolean value");
 
       return true;
     }
@@ -113,15 +127,23 @@
     onLoad() {
       $("#sieve-widget-test")
         .find("input[name='booleanValue']")
-        .val(["" + this.getSieve().value]);
+        .val([this.getSieve().getCurrentElement().nodeName()]);
     }
 
     /**
      * @inheritDoc
      */
     getSummary() {
-      return $("<div/>")
-        .text("is " + (this.getSieve().value));
+
+      let name = this.getSieve().getCurrentElement().nodeName();
+
+      if ( name === "test/boolean/true")
+        return $("<div/>").text("is true");
+
+      if ( name === "test/boolean/false")
+        return $("<div/>").text("is false");
+
+      throw new Error("Invalid State boolean is neither true nor false");
     }
   }
 
@@ -255,7 +277,7 @@
     getSummary() {
       return $("<div/>")
         .html(" header " + $('<em/>').text(this.headers().values()).html()
-          + " " + this.matchtype().getValue() + " "
+          + " " + this.matchtype().getElement().toScript() + " "
           + $('<em/>').text(this.keys().values()).html());
     }
   }
@@ -356,8 +378,8 @@
       // case- insensitive is the default so skip it...
       return $("<div/>")
         .html(" address <em>" + $('<div/>').text(this.headers().toScript()).html() + "</em>"
-          + " " + this.matchtype().getValue()
-          + " " + ((this.addresspart().getValue() !== ":all") ? this.addresspart().getValue() : "")
+          + " " + this.matchtype().getElement().toScript()
+          + " " + ((this.addresspart().getElement().toScript() !== ":all") ? this.addresspart().getElement().toScript() : "")
           + " <em>" + $('<div/>').text(this.keys().toScript()).html() + "</em>");
     }
   }
@@ -454,8 +476,8 @@
     getSummary() {
       return $("<div/>")
         .html(" envelope " + $('<em/>').text(this.envelopes().toScript()).html()
-          + " " + this.matchtype().getValue()
-          + " " + ((this.addresspart().getValue() !== ":all") ? this.addresspart().getValue() : "")
+          + " " + this.matchtype().getElement().toScript()
+          + " " + ((this.addresspart().getElement().toScript() !== ":all") ? this.addresspart().toScript() : "")
           + " " + $('<em/>').text(this.keys().toScript()).html() + "");
     }
   }

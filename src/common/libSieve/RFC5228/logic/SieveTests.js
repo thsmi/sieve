@@ -158,164 +158,79 @@
     }]
   });
 
+  SieveGrammar.addTest({
+    node: "test/boolean/true",
+    type: "test/boolean/",
+
+    token: "true"
+  });
 
 
-  /**
-   *
-   * @param {*} docshell
-   * @param {*} id
-   *
-   * @constructor
-   */
-  function SieveBoolean(docshell, id) {
-    SieveAbstractElement.call(this, docshell, id);
+  SieveGrammar.addTest({
+    node: "test/boolean/false",
+    type: "test/boolean/",
 
-    // first line with deadcode
-    this.whiteSpace = this._createByName("whitespace");
+    token: "false"
+  });
 
-    this.value = false;
-  }
+  SieveGrammar.addGroup({
+    node: "test/boolean",
+    type: "test",
 
-  SieveBoolean.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveBoolean.prototype.constructor = SieveBoolean;
+    // Boolean tests don't have an implicit default value
+    value: "false",
+    mandatory: true,
 
-  SieveBoolean.isElement
-    = function (parser, lexer) {
-      if (parser.startsWith("true"))
-        return true;
-      if (parser.startsWith("false"))
-        return true;
-
-      return false;
-    };
-
-  SieveBoolean.nodeName = function () {
-    return "test/boolean";
-  };
-
-  SieveBoolean.nodeType = function () {
-    return "test";
-  };
-
-  SieveBoolean.prototype.init
-    = function (parser) {
-
-      if (parser.startsWith("true")) {
-        parser.extract("true");
-        this.value = true;
-      }
-
-      if (parser.startsWith("false")) {
-        parser.extract("false");
-        this.value = false;
-      }
-
-      this.whiteSpace.init(parser);
-
-      return this;
-    };
+    items: ["test/boolean/"]
+  });
 
 
-  SieveBoolean.prototype.toScript
-    = function () {
-      if (this.value)
-        return "true" + this.whiteSpace.toScript();
+  // size <":over" / ":under"> <limit: number>
 
-      return "false" + this.whiteSpace.toScript();
-    };
+  SieveGrammar.addTag({
+    node: "test/size/operator/over",
+    type: "test/size/operator/",
 
-  /**
-   *
-   * @param {*} docshell
-   * @param {*} id
-   */
-  function SieveSize(docshell, id) {
-    SieveAbstractElement.call(this, docshell, id);
+    token: ":over"
+  });
 
-    this.whiteSpace = [];
-    this.whiteSpace[0] = this._createByName("whitespace", " ");
-    this.whiteSpace[1] = this._createByName("whitespace", " ");
-    this.whiteSpace[2] = this._createByName("whitespace", " ");
+  SieveGrammar.addTag({
+    node: "test/size/operator/under",
+    type: "test/size/operator/",
 
-    this.over = false;
-    this.size = this._createByName("number");
-  }
+    token: ":under"
+  });
 
-  SieveSize.prototype = Object.create(SieveAbstractElement.prototype);
-  SieveSize.prototype.constructor = SieveSize;
+  SieveGrammar.addGroup({
+    node: "test/size/operator",
+    type: "test/size/operator",
 
-  SieveSize.isElement
-    = function (parser, lexer) {
-      return parser.startsWith("size");
-    };
+    // Either the :over or the :under operator has to exist
+    // there is no default value in case the operator is omitted.
+    value: ":over",
+    mandatory: true,
 
-  SieveSize.nodeName = function () {
-    return "test/size";
-  };
+    items: ["test/size/operator/"]
+  });
 
-  SieveSize.nodeType = function () {
-    return "test";
-  };
+  SieveGrammar.addTest({
+    node: "test/size",
+    type: "test",
 
-  SieveSize.prototype.init
-    = function (parser) {
-      // Syntax :
-      // <"size"> <":over" / ":under"> <limit: number>
+    token: "size",
 
-      parser.extract("size");
+    properties: [{
+      id: "parameters",
 
-      this.whiteSpace[0].init(parser);
-
-      if (parser.startsWith(":over")) {
-        parser.extract(":over");
-        this.isOver(true);
-      }
-      else if (parser.startsWith(":under")) {
-        parser.extract(":under");
-        this.isOver(false);
-      }
-      else
-        throw new Error("Syntaxerror, :under or :over expected");
-
-      this.whiteSpace[1].init(parser);
-      this.size.init(parser);
-      this.whiteSpace[2].init(parser);
-
-      return this;
-    };
-
-  /**
-   * Gets and Sets the over operator
-   * @param  {boolean} [value]
-   * @return {SieveSize}
-   */
-  SieveSize.prototype.isOver
-    = function (value) {
-      if (typeof (value) === "undefined")
-        return this.over;
-
-      if (typeof (value) === "string")
-        value = (("" + value).toLowerCase() === "true") ? true : false;
-
-      this.over = value;
-
-      return this;
-    };
-
-  SieveSize.prototype.getSize
-    = function () {
-      return this.size;
-    };
-
-  SieveSize.prototype.toScript
-    = function () {
-      return "size"
-        + this.whiteSpace[0].toScript()
-        + ((this.isOver()) ? ":over" : ":under")
-        + this.whiteSpace[1].toScript()
-        + this.getSize().toScript()
-        + this.whiteSpace[2].toScript();
-    };
+      elements: [{
+        id: "operator",
+        type: "test/size/operator"
+      }, {
+        id: "limit",
+        type: "number"
+      }]
+    }]
+  });
 
   // TODO Stringlist and testslist are quite simmilar
 
@@ -485,9 +400,6 @@
 
   if (!SieveLexer)
     throw new Error("Could not register Conditional Elements");
-
-  SieveLexer.register(SieveBoolean);
-  SieveLexer.register(SieveSize);
 
   SieveLexer.register(SieveTestList);
 

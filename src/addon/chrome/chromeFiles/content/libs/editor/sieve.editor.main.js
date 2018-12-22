@@ -179,6 +179,8 @@ var onActiveLineChange = null;
     // Get the current script...
     let script = editor.getValue();
     // ... and ensure the line endings are sanatized
+
+    // eslint-disable-next-line no-control-regex
     script = script.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
 
     broker.sendMessage("onGetScript", script);

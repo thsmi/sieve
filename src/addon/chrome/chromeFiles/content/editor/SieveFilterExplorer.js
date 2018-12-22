@@ -44,6 +44,8 @@ let gLogger = null;
  * @return {SieveAccount}
  */
 function getSelectedAccount() {
+  "use strict";
+
   let selectedItem = document.getElementById("menuImapAccounts").selectedItem;
 
   if (!selectedItem)
@@ -59,6 +61,8 @@ function getSelectedAccount() {
  * @return {void}
  */
 function disableControls(disabled) {
+  "use strict";
+
   if (disabled) {
     document.getElementById('btnNewButton').setAttribute('disabled', 'true');
     document.getElementById('btnEditButton').setAttribute('disabled', 'true');
@@ -85,6 +89,7 @@ function disableControls(disabled) {
  * @constructor
  **/
 function SieveFilterExplorer() {
+  "use strict";
   SieveAbstractChannel.call(this);
 
   this._view = null;
@@ -95,6 +100,7 @@ SieveFilterExplorer.prototype.constructor = SieveFilterExplorer;
 
 SieveFilterExplorer.prototype.getConnection
   = function () {
+    "use strict";
     return SieveConnections;
   };
 
@@ -104,6 +110,8 @@ SieveFilterExplorer.prototype.getConnection
 // -- Sieve Related Events
 SieveFilterExplorer.prototype.onListScriptResponse
   = function (response) {
+    "use strict";
+
     // Show List View...
     let tree = document.getElementById('treeImapRules');
 
@@ -122,18 +130,21 @@ SieveFilterExplorer.prototype.onListScriptResponse
 
 SieveFilterExplorer.prototype.onSetActiveResponse
   = function () {
+    "use strict";
     // Always refresh the table ...
     this.listScript();
   };
 
 SieveFilterExplorer.prototype.onDeleteScriptResponse
   = function () {
+    "use strict";
     // Always refresh the table ...
     this.listScript();
   };
 
 SieveFilterExplorer.prototype.onChannelClosed
   = function () {
+    "use strict";
     // a channel is usually closed when a child window is closed. Therefore
     // it is a good idea to refresh the list...
     this.listScript();
@@ -141,6 +152,7 @@ SieveFilterExplorer.prototype.onChannelClosed
 
 SieveFilterExplorer.prototype.onChannelReady
   = function (cid) {
+    "use strict";
     // We observe only our channel...
     if (cid !== this._cid)
       return;
@@ -151,6 +163,8 @@ SieveFilterExplorer.prototype.onChannelReady
 
 SieveFilterExplorer.prototype._renameScript
   = function (oldName, newName, isActive) {
+    "use strict";
+
     // As we are emulating rename, the server does not check for scripts with...
     // ... conflicting names. Instead it will overwrite such a script silently...
     // ... So we try hard and double check our cached scriptnames for possible...
@@ -172,6 +186,8 @@ SieveFilterExplorer.prototype._renameScript
 
 SieveFilterExplorer.prototype.connect
   = function (account) {
+    "use strict";
+
     if (!account)
       account = getSelectedAccount();
 
@@ -181,12 +197,16 @@ SieveFilterExplorer.prototype.connect
 
 SieveFilterExplorer.prototype.disconnect
   = function (state, message) {
+    "use strict";
+
     disableControls(true);
     SieveAbstractChannel.prototype.disconnect.call(this, state, message);
   };
 
 SieveFilterExplorer.prototype.onStatusChange
   = function (state, message) {
+    "use strict";
+
     // Script ready
     if (state === 0) {
       disableControls(false);
@@ -213,6 +233,7 @@ SieveFilterExplorer.prototype.onStatusChange
 let gSFE = new SieveFilterExplorer();
 
 function onCycleCell(row, col, script, active) {
+  "use strict";
   gSFE.setActiveScript((active ? null : script));
 }
 
@@ -506,6 +527,7 @@ function onNewClick() {
  * @returns {void}
  **/
 function onServerDetails() {
+  "use strict";
   let el = document.getElementById("vbServerDetails");
   let img = document.getElementById("imgServerDetails");
 
@@ -520,6 +542,7 @@ function onServerDetails() {
 }
 
 function onSelectAccount(server) {
+  "use strict";
   document.getElementById("sivExplorerStatus").contentWindow.onDetach();
 
   gSFE.disconnect();

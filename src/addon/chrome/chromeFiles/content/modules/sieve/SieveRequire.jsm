@@ -48,6 +48,7 @@
     // and a exports.
     scope.exports = {};
 
+    // eslint-disable-next-line no-unused-vars, no-shadow
     ((module, exports) => {
       loader.loadSubScript(uri, scope, "UTF-8");
     })(scope.module, exports);

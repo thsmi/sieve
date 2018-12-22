@@ -17,13 +17,15 @@
 
   const { SieveAbstractLogger } = require("./SieveAbstractLogger.js");
 
+
+
   /**
    * A mozilla specific logger
    */
   class SieveLogger extends SieveAbstractLogger {
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      **/
     log(message, level) {
 

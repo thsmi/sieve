@@ -312,6 +312,9 @@
         this.responseListener.onGetScriptResponse(response);
     };
 
+  /**
+   * @inheritdoc
+   */
   SieveGetScriptRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
@@ -339,6 +342,8 @@
     this.script = script;
 
     // cleanup linebreaks...
+
+    // eslint-disable-next-line no-control-regex
     this.body = body.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
   }
 
@@ -361,9 +366,8 @@
     };
 
   /**
-   * @param {SieveResponseParser} parser
-   * @returns {undefined}
-   **/
+   * @inheritdoc
+   */
   SievePutScriptRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
@@ -402,6 +406,8 @@
     // ... according to the documentation. But for some unknown reason a ...
     // ... string sometimes  contains mixed line breaks. Thus we convert ...
     // ... any \r\n, \r and \n to \r\n.
+
+    // eslint-disable-next-line no-control-regex
     this.body = body.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
     // this.body = UTF8Encode(body).replace(/\r\n|\r|\n/g, "\r\n");
   }
@@ -422,6 +428,9 @@
         this.responseListener.onCheckScriptResponse(response);
     };
 
+  /**
+   * @inheritdoc
+   */
   SieveCheckScriptRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
@@ -470,7 +479,9 @@
         this.responseListener.onSetActiveResponse(response);
     };
 
-  /** @param {SieveResponseParser} parser */
+  /**
+   * @inheritdoc
+   */
   SieveSetActiveRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
@@ -503,7 +514,9 @@
         this.responseListener.onCapabilitiesResponse(response);
     };
 
-  /** @param {SieveResponseParser} parser */
+  /**
+   * @inheritdoc
+   */
   SieveCapabilitiesRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
@@ -539,7 +552,9 @@
         this.responseListener.onDeleteScriptResponse(response);
     };
 
-  /** @param {SieveResponseParser} parser */
+  /**
+   * @inheritdoc
+   */
   SieveDeleteScriptRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
@@ -578,7 +593,9 @@
         this.responseListener.onNoopResponse(response);
     };
 
-  /** @param {SieveResponseParser} parser */
+  /**
+   * @inheritdoc
+   */
   SieveNoopRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
@@ -623,7 +640,9 @@
         this.responseListener.onRenameScriptResponse(response);
     };
 
-  /** @param {SieveResponseParser} parser */
+  /**
+   * @inheritdoc
+   */
   SieveRenameScriptRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
@@ -658,7 +677,9 @@
         this.responseListener.onListScriptResponse(response);
     };
 
-  /** @param {SieveResponseParser} parser */
+  /**
+   * @inheritdoc
+   */
   SieveListScriptRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
@@ -691,9 +712,8 @@
     };
 
   /**
-   *  @param {SieveResponseParser} parser
-   *  @returns {void}
-  */
+   * @inheritdoc
+   */
   SieveStartTLSRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
@@ -761,7 +781,9 @@
       this.onOk(response);
     };
 
-  /** @param {SieveResponseParser} parser */
+  /**
+   * @inheritdoc
+   */
   SieveLogoutRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
@@ -812,7 +834,9 @@
     return false;
   };
 
-  /** @param {SieveResponseParser} parser */
+  /**
+   * @inheritdoc
+   */
   SieveInitRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
@@ -874,7 +898,9 @@
         .addQuotedBase64(this._authorization + "\0" + this._username + "\0" + this._password);
     };
 
-
+  /**
+   * @inheritdoc
+   */
   SieveSaslPlainRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
@@ -1003,8 +1029,9 @@
       return true;
     };
 
-
-  /** @param {SieveResponseParser} parser */
+  /**
+   * @inheritdoc
+   */
   SieveSaslLoginRequest.prototype.addResponse
     = function (parser) {
       this.response.parse(parser);
@@ -1087,8 +1114,9 @@
       return true;
     };
 
-
-
+  /**
+   * @inheritdoc
+   */
   SieveSaslCramMd5Request.prototype.addResponse
     = function (parser) {
       this.response.parse(parser);
@@ -1267,6 +1295,9 @@
       SieveAbstractSaslRequest.prototype.onOk.call(this, response);
     };
 
+  /**
+   * @inheritdoc
+   */
   SieveAbstractSaslScramRequest.prototype.addResponse
     = function (parser) {
 
@@ -1369,6 +1400,9 @@
       return false;
     };
 
+  /**
+   * @inheritdoc
+   */
   SieveSaslExternalRequest.prototype.addResponse
     = function (parser) {
       SieveAbstractRequest.prototype.addResponse.call(this,
@@ -1395,5 +1429,3 @@
   exports.SieveSaslExternalRequest = SieveSaslExternalRequest;
 
 })(module.exports || this);
-
-

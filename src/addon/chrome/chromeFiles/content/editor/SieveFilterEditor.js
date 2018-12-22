@@ -193,6 +193,7 @@
         if (!gEditorStatus.closeListener)
           return;
 
+        // eslint-disable-next-line no-use-before-define
         if (closeTab())
           return;
       });
@@ -331,8 +332,10 @@
         editor = document.getElementById("sivEditor2").contentWindow.editor.getValue();
 
       // Thunderbird scrambles linebreaks to single \n so we have to fix that
-      if (editor)
+      if (editor) {
+        // eslint-disable-next-line no-control-regex
         editor = editor.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
+      }
 
       if (document.getElementById('btnViewSource').checked)
         return editor;
@@ -363,6 +366,8 @@
 
         textEditor.getScript((script) => {
           // Sanatize the line breaks to a single \n. Thunderbird scrambles them sometimes...
+
+          // eslint-disable-next-line no-control-regex
           script = script.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
 
           callback(script);
@@ -448,7 +453,7 @@
 
 
   /**
-   *
+   * @returns {undefined}
    */
   function onCompile() {
     gSFE.getScriptAsync((script) => { gSFE.checkScript(script); });
@@ -456,7 +461,8 @@
 
 
   /**
-   *
+   * Called up on each editor input and resets the checkscript timer
+   * @returns {undefined}
    */
   function onInput() {
     // TODO update change status more lazilys
@@ -473,8 +479,12 @@
   }
 
   /**
-   * Called by thunderbird.
-   * Needs to return the persistance information in order to restore a tab in case of a crash.
+   * Called by thunderbird. And needs to return the persistance information
+   * in order to restore a tab in case of a crash.
+   *
+   * @returns {*}
+   *   the arguments which are needed to restore this window.
+   *   They have to be JSON serializable
    */
   function onWindowPersist() {
     let args = {};
@@ -507,6 +517,7 @@
   };
 
 
+  const KEY_CODE_ENTER = 13;
   /**
    * A generic key event filter.
    * Checks if the user pressed the enter key in a textbox.
@@ -520,7 +531,7 @@
    */
   function onEnterKeyPress(event, callback) {
 
-    if (event.keyCode !== 13)
+    if (event.keyCode !== KEY_CODE_ENTER)
       return;
 
     callback();
@@ -690,6 +701,7 @@
       document.getElementById("dkSideBarBrowser").selectedIndex = 0;
   }
 
+  const MAX_HISTORY = 20;
   /**
    *
    * @param {*} uri
@@ -699,7 +711,7 @@
 
     gBackHistory.push(uri);
 
-    if (gBackHistory.length > 20)
+    if (gBackHistory.length > MAX_HISTORY)
       gBackHistory.shift();
 
     if (gBackHistory.length === 1)
@@ -717,7 +729,7 @@
         "DOMContentLoaded", function(event) { onSideBarLoading(false); }, false);*/
     if (document.getElementById("ifSideBar").addEventListener)
       document.getElementById("ifSideBar").addEventListener(
-        "DOMContentLoaded", function (event) { onSideBarLoading(false); }, false);
+        "DOMContentLoaded", function () { onSideBarLoading(false); }, false);
 
     document.getElementById("ifSideBar").setAttribute('src', uri);
   }
@@ -773,7 +785,8 @@
   }
 
   /**
-   *
+   * Called when the user clicks on the save button.
+   * @returns {undefined}
    */
   function onSave() {
     gSFE.saveScript();
@@ -792,8 +805,10 @@
     if (!gSFE)
       return true;
 
-    if (!gSFE.hasChanged())
+    if (!gSFE.hasChanged()) {
+      // eslint-disable-next-line no-use-before-define
       return closeTab();
+    }
 
     if (!gSFE.isActive())
       gEditorStatus.closeListener = null;
@@ -988,8 +1003,7 @@
   }
 
   /**
-   * Shows the Sidebar containing the Sieve Reference
-   * @returns {void}
+   * Shows the Sidebar containing the Sieve Reference.
    */
   function onSideBarShow() {
     document.getElementById('btnReference').setAttribute('checked', 'true');

@@ -48,6 +48,8 @@
 
 
 function toHex(tmp) {
+  "use strict";
+
   let str = "";
 
   for (let i = 0; i < tmp.length; i++)

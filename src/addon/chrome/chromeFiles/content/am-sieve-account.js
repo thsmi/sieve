@@ -16,9 +16,6 @@
 /* global SieveOverlayManager */
 /* global Services */
 
-// Enable Strict Mode
-"use strict";
-
 // This function is wraped into an iframe.
 // It is guaranteed we have a completely separated namespace.
 // So no need to wrap this into an anonymous function
@@ -35,19 +32,25 @@ let gLogger = Components.classes["@mozilla.org/consoleservice;1"].getService(Com
 
 
 function onLoad() {
+  "use strict";
+
   parent.onPanelLoaded('am-sieve-account.xul');
 }
 
 function onUnload() {
+  "use strict";
+
   gSieveAccount = null;
   gSivIncomingServer = null;
 }
 
 /**
  * Called everytime we need to refresh the page's content.
- * @returns{void}
+ * @returns {void}
  */
 function updatePage() {
+  "use strict";
+
   if (gSieveAccount.isEnabled())
     document.getElementById('rgAccount').selectedIndex = 1;
   else
@@ -79,10 +82,13 @@ function onSave() { }
 */
 
 function onPreInit(account, accountvalues) {
+  "use strict";
   gSivIncomingServer = account.incomingServer;
 }
 
 function onInit(pageId, serverId) {
+  "use strict";
+
   // we need to wrap this into a try catch otherwise the error will get discarded silently...
   try {
     gSieveAccount = SieveAccountManager.getAccountByServer(gSivIncomingServer);
@@ -93,6 +99,8 @@ function onInit(pageId, serverId) {
 }
 
 function onAccountStatusChange() {
+  "use strict";
+
   let rgAccount = document.getElementById('rgAccount');
 
   if (rgAccount.selectedIndex > 0)
@@ -102,6 +110,8 @@ function onAccountStatusChange() {
 }
 
 function onFiltersClick() {
+  "use strict";
+
   Components.utils.import("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
   SieveUtils.OpenFilter(window, gSivIncomingServer);
 
@@ -113,6 +123,8 @@ function onFiltersClick() {
  * @returns {void}
  **/
 function onSettingsClick() {
+  "use strict";
+
   try {
     // We don't need a mediator right here as long as we open a modal window ...
     // ... Because Thunderbird ensures, that the parent account settings can ...

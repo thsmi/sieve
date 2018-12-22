@@ -32,7 +32,7 @@
 
     /**
      * @returns {SieveString}
-     *   the element's datepart
+     *   The element's datepart.
      */
     value() {
       return this.getSieve().getElement("value");
@@ -40,7 +40,7 @@
 
     /**
      * @returns {SieveAbstractElement}
-     *   the element's matchtype
+     *   The element's matchtype.
      */
     matchtype() {
       return this.getSieve().getElement("match-type");
@@ -48,7 +48,7 @@
 
     /**
      * @returns {SieveAbstractElement}
-     *   the element's comparator
+     *   The element's comparator.
      */
     comparator() {
       return this.getSieve().getElement("comparator");
@@ -62,7 +62,7 @@
      * The percentual range it optional and so it may not be supported
      * by the sieve implementation
      *
-     * @returns {Boolean}
+     * @returns {boolean}
      *   true in case the value is percentual otherwise false.
      *   false can mean it is not supported or it is disabled.
      */
@@ -77,14 +77,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./spamtest/templates/SieveSpamtestUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -111,7 +111,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
 
@@ -138,8 +138,6 @@
     /**
      * Called when the spamtest value ui is loaded.
      * It is used to initialize the value field.
-     *
-     * @return {undefined}
      */
     onLoadValue() {
 
@@ -150,7 +148,6 @@
     /**
      * Called when the spamtest plus ui is loaded
      * It is used to populate the radiobutton as well as the value fields
-     * @return {undefined}
      */
     onLoadPercentualValue() {
       let value = "";
@@ -172,7 +169,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
 
@@ -215,14 +212,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./spamtest/templates/SieveVirustestUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -238,7 +235,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
 
@@ -252,7 +249,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")

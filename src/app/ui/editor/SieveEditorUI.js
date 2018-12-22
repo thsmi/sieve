@@ -29,9 +29,9 @@
      * Initializes the editor instance.
      * It requires a textbox which will be converted into a code mirror input.
      *
-     * @param {String} account
+     * @param {string} account
      *   the unqiue sieve account id for this editor
-     * @param {String} [id]
+     * @param {string} [id]
      *   An optional id, which points to a the textboxe, which will be converted
      *   into a code mirror input. In case it is ommited the id "code" will be used.
      */
@@ -92,7 +92,6 @@
 
     /**
      * Undos the last input
-     * @returns {void}
      */
     undo() {
       this.cm.undo();
@@ -101,7 +100,6 @@
 
     /**
      * Redos the last input
-     * @returns {void}
      */
     redo() {
       this.cm.redo();
@@ -111,7 +109,7 @@
     /**
      * Executes an action on the communication process.
      *
-     * @param {String} action
+     * @param {string} action
      *   the aktions unique name
      * @param {Object} [payload]
      *   th payload which should be send
@@ -133,7 +131,6 @@
 
     /**
      * Opens the sieve reference in a browser window
-     * @returns {void}
      */
     openReference() {
       this.send("reference-open");
@@ -150,7 +147,6 @@
      *   the current line
      * @param {Element} element
      *   the dom element which represents the line
-     * @returns {void}
      */
     onRenderLine(cm, line, element) {
       let charWidth = this.cm.defaultCharWidth();
@@ -164,8 +160,6 @@
     /**
      * On Change callback handler for codemirror
      * Do not invoke unless you know what you are doing.
-     *
-     * @returns {void}
      */
     onChange() {
 
@@ -187,8 +181,6 @@
     /**
      * On Active Line Change callback handler for codemirror.
      * Do not invoke unless you know what you are doing.
-     *
-     * @returns {void}
      */
     onActiveLineChange() {
       let currentLine = this.cm.getLineHandle(this.cm.getCursor().line);
@@ -204,7 +196,6 @@
 
     /**
      * Enables checking for syntax errors
-     * @returns {void}
      */
     enableSyntaxCheck() {
       this.syntaxCheckEnabled = true;
@@ -215,7 +206,6 @@
 
     /**
      * Disables checking for syntax errors
-     * @returns {void}
      */
     disableSyntaxCheck() {
       this.syntaxCheckEnabled = false;
@@ -245,9 +235,8 @@
 
     /**
      * Shows a message box with the given syntax errors
-     * @param {String} errors
+     * @param {string} errors
      *   the errors which should be displayed
-     * @returns {void}
      */
     showSyntaxErrors(errors) {
       $("#sieve-editor-msg")
@@ -258,7 +247,6 @@
 
     /**
      * Hides the syntax errors.
-     * @returns {void}
      */
     hideSyntaxErrors() {
       $("#sieve-editor-msg").hide();
@@ -266,7 +254,6 @@
 
     /**
      * Checks the current script for syntax errors
-     * @returns {void}
      */
     async checkScript() {
 
@@ -278,10 +265,11 @@
       let script = this.cm.getValue();
 
       // ... and ensure the line endings are sanatized
+
+      // eslint-disable-next-line no-control-regex
       script = script.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
 
       let errors = await this.send("script-check", script);
-
 
       // TODO show and errors in UI
       if (!errors)
@@ -296,9 +284,8 @@
      * It will discard the current script including
      * the history and the cursor position.
      *
-     * @param {String} name
+     * @param {string} name
      *   the script which should be loaded
-     * @returns {void}
      */
     async loadScript(name) {
       // Load a new script. It will discard the current script
@@ -320,7 +307,6 @@
 
     /**
      * Imports a sieve script from a file
-     * @returns {void}
      */
     async importScript() {
       let script = await this.send("script-import");
@@ -338,13 +324,14 @@
 
     /**
      * Exports the script to a file
-     * @returns {void}
      */
     async exportScript() {
 
       // Get the current script...
       let script = this.cm.getValue();
       // ... and ensure the line endings are sanatized
+
+      // eslint-disable-next-line no-control-regex
       script = script.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
 
       await this.send("script-export", { "name": this.name, "script": script });
@@ -367,7 +354,6 @@
      * Sets the editors change status
      * @param {boolean} value
      *   if true the editor status is set to changed otherwise unchanged.
-     * @returns {undefined}
      */
     setChanged(value) {
 
@@ -379,7 +365,6 @@
 
     /**
      * Saves the script.
-     * @returns {void}
      */
     async saveScript() {
 
@@ -394,6 +379,8 @@
       // Get the current script...
       let script = this.cm.getValue();
       // ... and ensure the line endings are sanatized
+
+      // eslint-disable-next-line no-control-regex
       script = script.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
 
       try {
@@ -409,9 +396,8 @@
     /**
      * Shows an error message.
      *
-     * @param {String} message
+     * @param {string} message
      *   the error message to show.
-     * @returns {void}
      */
     async showErrorMessage(message) {
       let content = await (new SieveTemplateLoader()).load("./editor.error.save.tpl");
@@ -429,8 +415,6 @@
 
     /**
      * Hides/Dismisses any error messages.
-     *
-     * @returns {void}
      */
     hideErrorMessage() {
       $("#sieve-editor-error").remove();
@@ -438,7 +422,6 @@
 
     /**
      * Cuts the currently selected text.
-     * @returns {void}
      */
     async cut() {
       await this.copy();
@@ -450,7 +433,6 @@
 
     /**
      * Copies the currently selected text.
-     * @returns {void}
      */
     async copy() {
       let data = this.cm.getSelection();
@@ -461,7 +443,6 @@
 
     /**
      * Pastes the clipboard content into the editor.
-     * @returns {void}
      */
     async paste() {
       let data = await this.send("paste");
@@ -517,7 +498,7 @@
     /**
      * Finds the specified token within the editor.
      *
-     * @param {String} token
+     * @param {string} token
      *   the string to find.
      * @param {boolean} [isCaseSensitive]
      *   if true the search is case sensitive.
@@ -564,9 +545,9 @@
     /**
      * Checks if the specified token is selected.
      *
-     * @param {String} token
+     * @param {string} token
      *   the token
-     * @param {Boolean} isCaseSensitive
+     * @param {boolean} isCaseSensitive
      *   true in case the check should be case insensitive.
      * @returns {boolean}
      *   true in case the token was found otherwise false.
@@ -588,9 +569,9 @@
     /**
      * Replaces the old token with the new token.
      *
-     * @param {String} oldToken
+     * @param {string} oldToken
      *   the old token which should be replaced
-     * @param {String} newToken
+     * @param {string} newToken
      *   the new token
      * @param {boolean} [isCaseSensitive]
      *   if true the search is case sensitive.
@@ -700,11 +681,10 @@
     /**
      * An internal short cut to sets a preference value.
      *
-     * @param {String} name
+     * @param {string} name
      *   the preferences unique name.
      * @param {Object} value
      *   the value which should be set.
-     * @returns {void}
      */
     async setPreference(name, value) {
       await this.send("set-preference", { "key": name, "value": value });
@@ -713,7 +693,7 @@
     /**
      * An internal shortcut to gets a preference value.
      *
-     * @param {String} name
+     * @param {string} name
      *   the preferences unique name
      * @returns {Object}
      *   the requested value.
@@ -724,7 +704,6 @@
 
     /**
      * Resets the editor to default settings
-     * @returns {void}
      */
     async loadDefaultSettings() {
 
@@ -746,7 +725,6 @@
 
     /**
      * Save the current settings as default.
-     * @returns {void}
      */
     async saveDefaultSettings() {
       await this.setPreference("tabulator-width", this.getTabWidth());

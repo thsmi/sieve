@@ -253,6 +253,16 @@
   });
 
   suite.add({
+    "convert" : {
+      script: "./../common/libSieve/convert/tests/SieveConvertTest.js",
+      extend: "rfc5228",
+      require: [
+        "./../common/libSieve/convert/logic/SieveConvert.js"
+      ]
+    }
+  });
+
+  suite.add({
     "examples-fastmail": {
       script: "./sieve/SieveFastMailTest.js",
       extend: "rfc5228",

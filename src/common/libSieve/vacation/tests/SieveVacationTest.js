@@ -204,8 +204,8 @@
     suite.assertEquals('', elms[FIRST_ELEMENT].getElement("from").getElement("from").value());
     suite.assertEquals(false, elms[FIRST_ELEMENT].enable("from"));
 
-    suite.assertEquals("7", elms[FIRST_ELEMENT].getElement("days").getElement("days").getValue());
-    suite.assertEquals(false, elms[FIRST_ELEMENT].enable("days"));
+    suite.assertFalse(elms[FIRST_ELEMENT].getElement("interval").hasElement());
+    suite.assertEquals(false, elms[FIRST_ELEMENT].enable("interval"));
 
     suite.assertEquals('', elms[FIRST_ELEMENT].getElement("handle").getElement("handle").value());
     suite.assertEquals(false, elms[FIRST_ELEMENT].enable("handle"));
@@ -221,8 +221,8 @@
     elms[FIRST_ELEMENT].getElement("from").getElement("from").value("some from");
     elms[FIRST_ELEMENT].enable("from", true);
 
-    elms[FIRST_ELEMENT].getElement("days").getElement("days").setValue(12);
-    elms[FIRST_ELEMENT].enable("days", true);
+    elms[FIRST_ELEMENT].getElement("interval").setElement(":days 12") ;
+    elms[FIRST_ELEMENT].enable("interval", true);
 
     elms[FIRST_ELEMENT].getElement("handle").getElement("handle").value("some handle");
     elms[FIRST_ELEMENT].enable("handle", true);
@@ -267,8 +267,8 @@
     suite.assertEquals('myfallbackaddress@example.edu', elms[FIRST_ELEMENT].getElement("from").getElement("from").value());
     suite.assertEquals(true, elms[FIRST_ELEMENT].enable("from"));
 
-    suite.assertEquals("14", elms[FIRST_ELEMENT].getElement("days").getElement("days").getValue());
-    suite.assertEquals(true, elms[FIRST_ELEMENT].enable("days"));
+    suite.assertEquals("14", elms[FIRST_ELEMENT].getElement("interval").getElement("days").getValue());
+    suite.assertEquals(true, elms[FIRST_ELEMENT].enable("interval"));
 
     suite.assertEquals('some handle', elms[FIRST_ELEMENT].getElement("handle").getElement("handle").value());
     suite.assertEquals(true, elms[FIRST_ELEMENT].enable("handle"));
@@ -279,7 +279,7 @@
     elms[FIRST_ELEMENT].getElement("reason").value("some other reason");
     elms[FIRST_ELEMENT].getElement("subject").getElement("subject").value("some other subject");
     elms[FIRST_ELEMENT].getElement("from").getElement("from").value("some other from");
-    elms[FIRST_ELEMENT].getElement("days").getElement("days").setValue(12);
+    elms[FIRST_ELEMENT].getElement("interval").getElement().getElement("days").setValue("12");
     elms[FIRST_ELEMENT].getElement("handle").getElement("handle").value("some other handle");
 
 
@@ -323,8 +323,8 @@
     suite.assertEquals('myfallbackaddress@example.edu', elms[FIRST_ELEMENT].getElement("from").getElement("from").value());
     suite.assertEquals(true, elms[FIRST_ELEMENT].enable("from"));
 
-    suite.assertEquals("14", elms[FIRST_ELEMENT].getElement("days").getElement("days").getValue());
-    suite.assertEquals(true, elms[FIRST_ELEMENT].enable("days"));
+    suite.assertEquals("14", elms[FIRST_ELEMENT].getElement("interval").getElement("days").getValue());
+    suite.assertEquals(true, elms[FIRST_ELEMENT].enable("interval"));
 
     suite.assertEquals('some handle', elms[FIRST_ELEMENT].getElement("handle").getElement("handle").value());
     suite.assertEquals(true, elms[FIRST_ELEMENT].enable("handle"));
@@ -333,9 +333,13 @@
 
     elms[FIRST_ELEMENT].enable("subject", false);
     elms[FIRST_ELEMENT].enable("from", false);
-    elms[FIRST_ELEMENT].enable("days", false);
     elms[FIRST_ELEMENT].enable("handle", false);
     elms[FIRST_ELEMENT].enable("mime", false);
+
+    // FIXME: An disable should not need resetting the element.
+    // The logic needs to be change....
+    elms[FIRST_ELEMENT].getElement("interval").setElement();
+    elms[FIRST_ELEMENT].enable("interval", false);
 
     let rv =
       'require "vacation";\r\n'

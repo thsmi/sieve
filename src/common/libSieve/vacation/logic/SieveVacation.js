@@ -34,8 +34,8 @@
       optional: true,
 
       elements: [{
-        id: "days",
-        type: "action/vacation/days"
+        id: "interval",
+        type: "action/vacation/interval"
       },
       {
         id: "subject",
@@ -68,11 +68,12 @@
     }]
   });
 
-  SieveGrammar.addTag({
-    node: "action/vacation/days",
-    type: "action/vacation/days",
 
-    requires: "vacation",
+  SieveGrammar.addTag({
+    node: "action/vacation/interval/days",
+    type: "action/vacation/interval/",
+
+    // requires: "vacation",
 
     token: ":days",
 
@@ -87,11 +88,16 @@
     }]
   });
 
+  SieveGrammar.addGroup({
+    node: "action/vacation/interval",
+    type: "action/vacation/interval",
+
+    items: ["action/vacation/interval/"]
+  });
+
   SieveGrammar.addTag({
     node: "action/vacation/subject",
     type: "action/vacation/subject",
-
-    requires: "vacation",
 
     token: ":subject",
 
@@ -109,8 +115,6 @@
     node: "action/vacation/from",
     type: "action/vacation/from",
 
-    requires: "vacation",
-
     token: ":from",
 
     properties: [{
@@ -126,8 +130,6 @@
   SieveGrammar.addTag({
     node: "action/vacation/addresses",
     type: "action/vacation/addresses",
-
-    requires: "vacation",
 
     token: ":addresses",
 
@@ -145,16 +147,12 @@
     node: "action/vacation/mime",
     type: "action/vacation/mime",
 
-    requires: "vacation",
-
     token: ":mime"
   });
 
   SieveGrammar.addTag({
     node: "action/vacation/handle",
     type: "action/vacation/handle",
-
-    requires: "vacation",
 
     token: ":handle",
 

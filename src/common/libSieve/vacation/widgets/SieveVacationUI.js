@@ -19,7 +19,9 @@
   /* global $: false */
   /* global SieveStringListWidget */
   /* global SieveActionDialogBoxUI */
+  /* global SieveOverlayItemWidget */
   /* global SieveDesigner */
+  /* global SieveOverlayWidget */
 
   const MAX_QUOTE_LEN = 240;
 
@@ -34,10 +36,6 @@
 
     subject() {
       return this.getSieve().getElement("subject").getElement("subject");
-    }
-
-    days() {
-      return this.getSieve().getElement("days").getElement("days");
     }
 
     from() {
@@ -88,9 +86,12 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onLoad() {
+
+      (new SieveOverlayWidget("action/vacation/interval/", "#sivVacationIntervalOverlay"))
+        .init(this.getSieve());
 
       $('a[data-toggle="tab"][href="#sieve-widget-envelope"]').on('hide.bs.tab', () => {
         this.onEnvelopeChanged();
@@ -101,7 +102,6 @@
           .tab('show');
       });
 
-      $('input:radio[name="days"][value="' + this.enable("days") + '"]').prop('checked', true);
       $('input:radio[name="subject"][value="' + this.enable("subject") + '"]').prop('checked', true);
       $('input:radio[name="from"][value="' + this.enable("from") + '"]').prop('checked', true);
       $('input:radio[name="addresses"][value="' + this.enable("addresses") + '"]').prop('checked', true);
@@ -111,7 +111,6 @@
       // In case the user focuses into a textfield the radio button should be changed...
       $("#sivVacationFrom").focus(function () { $('input:radio[name="from"][value="true"]').prop('checked', true); });
       $("#sivVacationSubject").focus(function () { $('input:radio[name="subject"][value="true"]').prop('checked', true); });
-      $("#sivVacationDays").focus(function () { $('input:radio[name="days"][value="true"]').prop('checked', true); });
       $("#sivVacationHandle").focus(function () { $('input:radio[name="handle"][value="true"]').prop('checked', true); });
 
       $("#sivVacationReason").val(this.reason().value());
@@ -119,9 +118,6 @@
 
       if (this.enable("subject"))
         $("#sivVacationSubject").val(this.subject().value());
-
-      if (this.enable("days"))
-        $("#sivVacationDays").val(this.days().getValue());
 
       if (this.enable("from"))
         $("#sivVacationFrom").val(this.from().value());
@@ -142,7 +138,7 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     onSave() {
 
@@ -152,7 +148,6 @@
 
       // Update the states...
       state["subject"] = ($("input[type='radio'][name='subject']:checked").val() === "true");
-      state["days"] = ($("input[type='radio'][name='days']:checked").val() === "true");
       state["from"] = ($("input[type='radio'][name='from']:checked").val() === "true");
       state["mime"] = ($("input[type='radio'][name='mime']:checked").val() === "true");
       state["handle"] = ($("input[type='radio'][name='handle']:checked").val() === "true");
@@ -170,9 +165,9 @@
         if (state["subject"])
           this.subject().value($("#sivVacationSubject").val());
 
-        // FIXME: we currently ignore unit...
-        if (state["days"])
-          this.days().setValue($("#sivVacationDays").val());
+
+        (new SieveOverlayWidget("action/vacation/interval/", "#sivVacationIntervalOverlay"))
+          .save(this.getSieve());
 
         if (state["from"])
           this.from().value($("#sivVacationFrom").val());
@@ -190,8 +185,6 @@
         return false;
       }
 
-
-      this.enable("days", state["days"]);
       this.enable("subject", state["subject"]);
       this.enable("from", state["from"]);
       this.enable("addresses", state["addresses"]);
@@ -202,14 +195,14 @@
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getTemplate() {
       return "./vacation/template/SieveVacationUI.html";
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     getSummary() {
       return $("<div/>")
@@ -221,9 +214,130 @@
     }
   }
 
+  /**
+   * Implements the create overlay for the fileinto action.
+   */
+  class SieveVacationIntervalDays extends SieveOverlayItemWidget {
+
+    /**
+     * @inheritdoc
+     */
+    static nodeType() {
+      return "action/vacation/interval/";
+    }
+    /**
+     * @inheritdoc
+     */
+    static nodeName() {
+      return "action/vacation/interval/days";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    static isCapable(capabilities) {
+      return capabilities.hasCapability("vacation");
+    }
+
+    /**
+     * @inheritdoc
+     **/
+    getTemplate() {
+      return "./vacation/template/SieveVacationIntervalDaysUI.html";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    load(sivElement) {
+
+      $("#txtVacationIntervalDays").focus(() => { $('#cbxVacationIntervalDays').prop('checked', true); });
+
+      let elm = sivElement.getElement("interval");
+
+      if (!elm.isNode(this.constructor.nodeName()))
+        return;
+
+      $("#cbxVacationIntervalDays").prop("checked", true);
+      // FIXME: we ignore the unit here. Instead we should use a numeric control
+      $("#txtVacationIntervalDays").val(elm.getElement("days").getValue());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    save(sivElement) {
+
+      if (!$("#cbxVacationIntervalDays").prop("checked"))
+        return;
+
+      sivElement.getElement("interval").setElement(
+        ":days " + $("#txtVacationIntervalDays").val());
+    }
+
+  }
+
+  /**
+   * Implements the create overlay for the fileinto action.
+   */
+  class SieveVacationIntervalDefault extends SieveOverlayItemWidget {
+
+    /**
+     * @inheritdoc
+     */
+    static nodeType() {
+      return "action/vacation/interval/";
+    }
+    /**
+     * @inheritdoc
+     */
+    static nodeName() {
+      return "action/vacation/interval/default";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    static isCapable(capabilities) {
+      return capabilities.hasCapability("vacation");
+    }
+
+    /**
+     * @inheritdoc
+     **/
+    getTemplate() {
+      return "./vacation/template/SieveVacationIntervalDefaultUI.html";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    load(sivElement) {
+
+      if (sivElement.getElement("interval").hasElement())
+        return;
+
+      $("#cbxVacationIntervalDefault").prop("checked", true);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    save(sivElement) {
+      if (!$("#cbxVacationIntervalDefault").prop("checked"))
+        return;
+
+      sivElement.getElement("interval").setElement();
+    }
+
+  }
+
   if (!SieveDesigner)
     throw new Error("Could not register Vacation Extension");
 
   SieveDesigner.register("action/vacation", SieveVacationUI);
+
+  SieveDesigner.register2(SieveVacationIntervalDefault);
+  SieveDesigner.register2(SieveVacationIntervalDays);
 
 })(window);

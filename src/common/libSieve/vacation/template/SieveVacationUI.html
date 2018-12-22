@@ -111,16 +111,9 @@
                 <br/>
                 <h5> Response Tracking</h5>
                 <div class="sivDescription">A vacation message is sent at most every some days to the same sender</div>
-                <div>
-                    <input type="radio" name="days" value="false" />
-                    <span>Use Server's default policy</span>
-                </div>
-                <div>
-                    <input type="radio" name="days" value="true" />
-                    <span>Reply atmost every</span>
-                    <input type="number" min="0" id="sivVacationDays" />
-                    <span>days to the same sender</span>
-                </div>
+                <form>
+                   <div id="sivVacationIntervalOverlay"> </div>
+                </form>
                 <br/>
                 <h5> Response Handles</h5>
                 <div class="sivDescription">

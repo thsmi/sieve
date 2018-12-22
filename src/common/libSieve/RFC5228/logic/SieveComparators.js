@@ -38,23 +38,19 @@
    *   end of string.
    **/
 
-  let octett = {
+  SieveGrammar.addTag({
     node: "comparator/i;octet",
     type: "comparator/",
 
     token: "\"i;octet\""
-  };
+  });
 
-  SieveGrammar.addTag(octett);
-
-  let asciiCasemap = {
+  SieveGrammar.addTag({
     node: "comparator/i;ascii-casemap",
     type: "comparator/",
 
     token: "\"i;ascii-casemap\""
-  };
-
-  SieveGrammar.addTag(asciiCasemap);
+  });
 
   /**
    9.1.1.  ASCII Numeric Collation Description
@@ -84,20 +80,18 @@
    "4294967298". "4294967298", "04294967298", and "4294967298b" are all
    equal. "04294967298" is less than "". "", "x", and "y" are equal.
    */
-  let numeric = {
+  SieveGrammar.addTag({
     node: "comparator/i;ascii-numeric",
     type: "comparator/",
 
     requires: "comparator-i;ascii-numeric",
 
     token: "\"i;ascii-numeric\""
-  };
-
-  SieveGrammar.addTag(numeric);
+  });
 
   // *******************************************************************
 
-  let comparator = {
+  SieveGrammar.addGroup({
     node: "comparator",
     type: "comparator",
 
@@ -106,8 +100,6 @@
     value: "\"i;ascii-casemap\"",
 
     items: ["comparator/"]
-  };
-
-  SieveGrammar.addGroup(comparator);
+  });
 
 })(window);

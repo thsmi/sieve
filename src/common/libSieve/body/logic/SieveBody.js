@@ -23,7 +23,7 @@
 
   // "body" [COMPARATOR] [MATCH-TYPE] [BODY-TRANSFORM] <key-list: string-list>
 
-  let _body = {
+  SieveGrammar.addTest({
     node: "test/body",
     type: "test",
 
@@ -54,24 +54,20 @@
         value: '"Example"'
       }]
     }]
-  };
-
-  SieveGrammar.addTest(_body);
+  });
 
   // -------------------------------------------------------------------------//
 
-  let _raw = {
+  SieveGrammar.addTag({
     node: "body-transform/raw",
     type: "body-transform/",
 
     requires: "body",
 
     token: ":raw"
-  };
+  });
 
-  SieveGrammar.addTag(_raw);
-
-  let _content = {
+  SieveGrammar.addTag({
     node: "body-transform/content",
     type: "body-transform/",
 
@@ -90,32 +86,26 @@
       }]
     }]
 
-  };
+  });
 
-  SieveGrammar.addTag(_content);
-
-  let _text = {
+  SieveGrammar.addTag({
     node: "body-transform/text",
     type: "body-transform/",
 
     requires: "body",
 
     token: ":text"
-  };
-
-  SieveGrammar.addTag(_text);
+  });
 
   // ----------------------------------------------------------------------------
 
-  let _bodytransform = {
+  SieveGrammar.addGroup({
     node: "body-transform",
     type: "body-transform",
 
     value: ":text",
 
     items: ["body-transform/"]
-  };
-
-  SieveGrammar.addGroup(_bodytransform);
+  });
 
 })(window);

@@ -21,31 +21,25 @@
   if (!SieveGrammar)
     throw new Error("Could not register default Actions");
 
-  let _discard = {
+  SieveGrammar.addAction({
     node: "action/discard",
     type: "action",
     token: "discard"
-  };
+  });
 
-  SieveGrammar.addAction(_discard);
-
-  let _stop = {
+  SieveGrammar.addAction({
     node: "action/stop",
     type: "action",
     token: "stop"
-  };
+  });
 
-  SieveGrammar.addAction(_stop);
-
-  let _keep = {
+  SieveGrammar.addAction({
     node: "action/keep",
     type: "action",
     token: "keep"
-  };
+  });
 
-  SieveGrammar.addAction(_keep);
-
-  let redirect = {
+  SieveGrammar.addAction({
     node: "action/redirect",
     type: "action",
     token: "redirect",
@@ -60,12 +54,10 @@
         value: "\"username@example.com\""
       }]
     }]
-  };
-
-  SieveGrammar.addAction(redirect);
+  });
 
   // <"fileinto"> <string> <";">
-  let fileinto = {
+  SieveGrammar.addAction({
     node: "action/fileinto",
     type: "action",
     token: "fileinto",
@@ -82,8 +74,6 @@
         value: "\"INBOX\""
       }]
     }]
-  };
-
-  SieveGrammar.addAction(fileinto);
+  });
 
 })(window);

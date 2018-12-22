@@ -98,15 +98,14 @@
   SieveGrammar.addTag(personallocation);
 
 
-  let _location = {
+  SieveGrammar.addGroup({
     node: "tag/location-type",
     type: "tag/location-type",
+
     value: ":personal",
 
     items: ["tag/location-type/"]
-  };
-
-  SieveGrammar.addGroup(_location);
+  });
 
 
   let _include = {

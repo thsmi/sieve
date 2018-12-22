@@ -77,6 +77,7 @@
   SieveGrammar.addGroup({
     node: "relational-match",
     type: "relational-match",
+
     value: '"eq"',
 
     items: ["relational-match/"]

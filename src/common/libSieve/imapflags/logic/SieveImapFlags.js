@@ -24,7 +24,7 @@
 
   // Inject :flags into  fileinto
   // :flags" <list-of-flags: string-list>
-  let fileintoflags = {
+  SieveGrammar.addTag({
     node: "action/fileinto/flags",
     type: "action/fileinto/",
 
@@ -43,11 +43,9 @@
         value: '["\\\\Flagged"]'
       }]
     }]
-  };
+  });
 
-  SieveGrammar.addTag(fileintoflags);
-
-  let fileinto = {
+  SieveGrammar.extendAction({
     extends: "action/fileinto",
 
     properties: [{
@@ -60,13 +58,10 @@
         requires: "imap4flags"
       }]
     }]
-  };
-
-  SieveGrammar.extendAction(fileinto);
-
+  });
 
   // Inject :flags into keep
-  let keepflags = {
+  SieveGrammar.addTag({
     node: "action/keep/flags",
     type: "action/keep/",
 
@@ -84,11 +79,9 @@
         value: '["\\\\Flagged"]'
       }]
     }]
-  };
+  });
 
-  SieveGrammar.addTag(keepflags);
-
-  let keep = {
+  SieveGrammar.extendAction({
     extends: "action/keep",
 
     properties: [{
@@ -101,14 +94,10 @@
         requires: "imap4flags"
       }]
     }]
-  };
-
-  SieveGrammar.extendAction(keep);
-
+  });
 
   // Usage:   setflag [<variablename: string>]  <list-of-flags: string-list>
-
-  let setflag = {
+  SieveGrammar.addAction({
     node: "action/setflag",
     type: "action",
     token: "setflag",
@@ -132,15 +121,11 @@
         value: '"\\\\Flagged"'
       }]
     }]
-  };
-
-  SieveGrammar.addAction(setflag);
-
+  });
 
   //     Usage:   addflag [<variablename: string>]
   //            <list-of-flags: string-list>
-
-  let addflag = {
+  SieveGrammar.addAction({
     node: "action/addflag",
     type: "action",
     token: "addflag",
@@ -164,15 +149,13 @@
         value: '"\\\\Flagged"'
       }]
     }]
-  };
-
-  SieveGrammar.addAction(addflag);
+  });
 
 
   //  Usage:   removeflag [<variablename: string>]
   //         <list-of-flags: string-list>
 
-  let removeflag = {
+  SieveGrammar.addAction({
 
     node: "action/removeflag",
     type: "action",
@@ -200,16 +183,14 @@
         value: '"\\Flagged"'
       }]
     }]
-  };
-
-  SieveGrammar.addAction(removeflag);
+  });
 
 
   //     Usage: hasflag [MATCH-TYPE] [COMPARATOR]
   //          [<variable-list: string-list>]
   //          <list-of-flags: string-list>
 
-  let hasflag = {
+  SieveGrammar.addTest({
 
     node: "test/hasflag",
     type: "test",
@@ -246,9 +227,7 @@
         type: "stringlist"
       }]
     }]
-  };
-
-  SieveGrammar.addTest(hasflag);
+  });
 
 
 })(window);

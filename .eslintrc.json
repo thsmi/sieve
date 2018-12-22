@@ -1,4 +1,7 @@
 {
+    "plugins": [
+        "jsdoc"
+    ],
     "extends": "eslint:recommended",
     "env": {
         "browser": true,
@@ -12,6 +15,13 @@
             "jsx": false
         },
         "sourceType": "script"
+    },
+    "settings": {
+        "jsdoc": {
+            "allowOverrideWithoutParam": true,
+            "allowImplementsWithoutParam": true,
+            "allowAugmentsExtendsWithoutParam": true
+        }
     },
     "rules": {
         "array-callback-return": "error",
@@ -108,7 +118,6 @@
         ],
         "constructor-super": "warn",
         "valid-typeof": "warn",
-        "valid-jsdoc": "warn",
         "no-alert": "warn",
         "no-magic-numbers": "warn",
         "no-throw-literal": "error",
@@ -154,15 +163,22 @@
             "error",
             "always"
         ],
-        "require-jsdoc": [
-            "error",
-            {
-                "require": {
-                    "FunctionDeclaration": true,
-                    "MethodDefinition": true,
-                    "ClassDeclaration": true
-                }
-            }
-        ]
+        "jsdoc/newline-after-description": 0,
+        "jsdoc/valid-types": 1,
+        "jsdoc/no-undefined-types": 0,
+        "jsdoc/require-description-complete-sentence": 0,
+        "jsdoc/check-examples": 1,
+        "jsdoc/check-param-names": 1,
+        "jsdoc/check-tag-names": 1,
+        "jsdoc/check-types": 1,
+        "jsdoc/require-param": 1,
+        "jsdoc/require-param-description": 1,
+        "jsdoc/require-param-name": 1,
+        "jsdoc/require-param-type": 1,
+        "jsdoc/require-returns-description": 1,
+        "jsdoc/require-returns-type": 1,
+        "jsdoc/require-description": 0,
+        "jsdoc/require-example": 0,
+        "jsdoc/require-hyphen-before-param-description": 0
     }
 }

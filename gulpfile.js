@@ -19,7 +19,7 @@ const BUILD_DIR_ADDON = "./build/thunderbird/";
 const BUILD_DIR_TEST = "./build/test/";
 
 const BASE_DIR_BOOTSTRAP = "./node_modules/bootstrap/dist";
-const BASE_DIR_MATERIALICONS = "./node_modules/material-design-icons/iconfont";
+const BASE_DIR_MATERIALICONS = "./node_modules/material-design-icons-iconfont/dist";
 const BASE_DIR_JQUERY = "./node_modules/jquery/dist";
 const BASE_DIR_CODEMIRROR = "./node_modules/codemirror";
 const BASE_DIR_COMMON = "./src/common";
@@ -223,8 +223,8 @@ gulp.task('app:package-material-icons', () => {
   "use strict";
 
   return gulp.src([
-    BASE_DIR_MATERIALICONS + "/material-icons.css",
-    BASE_DIR_MATERIALICONS + "/MaterialIcons-Regular.woff2"
+    BASE_DIR_MATERIALICONS + "/material-design-icons.css",
+    BASE_DIR_MATERIALICONS + "/fonts/MaterialIcons-Regular.woff2"
   ], { base: BASE_DIR_MATERIALICONS }).pipe(gulp.dest(BUILD_DIR_APP + '/libs/material-icons'));
 });
 
@@ -398,8 +398,8 @@ gulp.task('addon:package-material-icons', () => {
   "use strict";
 
   return gulp.src([
-    BASE_DIR_MATERIALICONS + "/material-icons.css",
-    BASE_DIR_MATERIALICONS + "/MaterialIcons-Regular.woff2"
+    BASE_DIR_MATERIALICONS + "/material-design-icons.css",
+    BASE_DIR_MATERIALICONS + "/fonts/MaterialIcons-Regular.woff2"
   ], { base: BASE_DIR_MATERIALICONS }).pipe(gulp.dest(BUILD_DIR_ADDON + '/chrome/chromeFiles/content/libs/material-icons'));
 });
 

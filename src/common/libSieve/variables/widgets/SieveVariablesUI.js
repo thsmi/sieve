@@ -75,7 +75,7 @@
       if (status)
         value = ":length";
 
-      this.getSieve().getElement("modifier/10").setValue(value);
+      this.getSieve().getElement("modifier/10").setElement(value);
       this.getSieve().enable("modifier/10", status);
 
       value = null;
@@ -83,7 +83,7 @@
       if (status)
         value = ":quotewildcard";
 
-      this.getSieve().getElement("modifier/20").setValue(value);
+      this.getSieve().getElement("modifier/20").setElement(value);
       this.getSieve().enable("modifier/20", status);
 
       value = null;
@@ -91,7 +91,7 @@
       if (status)
         value = $("input:radio[name='30']:checked").val();
 
-      this.getSieve().getElement("modifier/30").setValue(value);
+      this.getSieve().getElement("modifier/30").setElement(value);
       this.getSieve().enable("modifier/30", status);
 
       value = null;
@@ -99,7 +99,7 @@
       if (status)
         value = $("input:radio[name='40']:checked").val();
 
-      this.getSieve().getElement("modifier/40").setValue(value);
+      this.getSieve().getElement("modifier/40").setElement(value);
       this.getSieve().enable("modifier/40", status);
 
       return true;
@@ -125,7 +125,7 @@
         .change();
 
       if (state)
-        $('input:radio[name="30"][value="' + this.getSieve().getElement("modifier/30").getValue() + '"]').prop('checked', true);
+        $('input:radio[name="30"][value="' + this.getSieve().getElement("modifier/30").toScript() + '"]').prop('checked', true);
 
       state = this.getSieve().enable("modifier/40");
       $('input:checkbox[name="40"]')
@@ -134,7 +134,7 @@
         .change();
 
       if (state)
-        $('input:radio[name="40"][value="' + this.getSieve().getElement("modifier/40").getValue() + '"]').prop('checked', true);
+        $('input:radio[name="40"][value="' + this.getSieve().getElement("modifier/40").toScript() + '"]').prop('checked', true);
 
       $("#sivVariableName").val(this.name().value());
       $("#sivVariableValue").val(this.value().value());
@@ -239,7 +239,7 @@
     getSummary() {
       return $("<div/>")
         .html(" string " + $('<em/>').text(this.sources().values()).html()
-          + " " + this.matchtype().getValue()
+          + " " + this.matchtype().getElement().toScript()
           + " " + $('<em/>').text(this.keys().values()).html());
 
     }

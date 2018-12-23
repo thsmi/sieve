@@ -117,7 +117,7 @@
 
 
   if (!SieveDesigner)
-    throw new Error("Could not register Spamtest Extension");
+    throw new Error("Could not register Environment Extension");
 
   SieveDesigner.register("test/environment", SieveEnvironmentUI);
 

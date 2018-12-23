@@ -1,0 +1,79 @@
+<div>
+    <ul id="template-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-convert" role="tab">Convert</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+        </li>
+    </ul>
+
+    <div id="template-content">
+        <div class="tab-content m-2">
+            <div class="tab-pane fade show active" id="sieve-widget-convert" role="tabpanel">
+
+                <div class="form-group">
+                    <h5>Convert the media type</h5>
+                    <div id="sivConvertFrom" data-list-dropdown="#sivConvertTemplate">
+                    </div>
+
+                    <h5>... into ...</h5>
+                    <div id="sivConvertTo" data-list-dropdown="#sivConvertTemplate">
+                    </div>
+
+                    <div id="sivConvertTemplate" class="d-none">
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <button class="dropdown-item" type="button" data-value="image/tiff">
+                                <div>image/tiff</div>
+                            </button>
+                            <button class="dropdown-item" type="button" data-value="image/jpeg">
+                                <div>image/jpeg</div>
+                            </button>
+                            <button class="dropdown-item" type="button" data-value="image/png">
+                                <div>image/png</div>
+                            </button>
+                            <button class="dropdown-item" type="button" data-value="image/gif">
+                                <div>image/gif</div>
+                            </button>
+                            <div class="dropdown-divider"> </div>
+                            <button class="dropdown-item" type="button" data-value="text/plain">
+                                <div>text/plain</div>
+                            </button>
+                            <button class="dropdown-item" type="button" data-value="text/html">
+                                <div>text/html</div>
+                            </button>
+                            <button class="dropdown-item" type="button" data-value="text/html">
+                                <div>application/pdf</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <h5>... and apply the following transcodings</h5>
+                <small class="form-text text-muted">
+                    Transcodings are defined in RFC5259 and used to change properties during conversion
+                    Examples are rescale an images or change the encoding encoding of a text.
+                </small>
+                <div id="sivConvertTranscoding" data-list-min="0">
+                </div>
+            </div>
+            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+                    <p>
+                        Converts the whole message or their part into the a new media type.
+                        It is typically used to convert text documents and images as described in RFC5259.
+                    </p>
+                    <p>
+                        Theoretically it would be possible to convert everything into anything (e.g. an audio
+                        file into text). But in reality your server will support only a very limited subset of
+                        conversions. Keep in mind conversion may require lots of resources and processing time
+                        e.g. when rescaling images or creating pdfs.
+                    </p>
+                    <p>
+                        In case the conversion failes the message remains unchanges.
+                        If this method is used inside a test. The test will performing
+                        the conversion and evaluate if the conversion succeeded or failed.
+                    </p>
+                </div>
+        </div>
+    </div>
+</div>

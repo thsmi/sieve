@@ -133,6 +133,10 @@
   <script type="application/javascript" src="vacation-seconds/logic/SieveVacationSeconds.js"></script>
   <script type="application/javascript" src="vacation-seconds/widgets/SieveVacationSecondsUI.js"></script>
 
+  <!-- RFC6558 - Convert -->
+  <script type="application/javascript" src="convert/logic/SieveConvert.js"></script>
+  <script type="application/javascript" src="convert/widgets/SieveConvertUI.js"></script>
+
   <style>
     .sivMenuItem {
       font-size: 0.7em;
@@ -466,6 +470,14 @@
                   vacation-seconds (RFC6131)
                 </label>
               </div>
+
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                  <input type="checkbox" id="sivCapabilitiesConvert" name="capabilities" value="convert" class="custom-control-input" />
+                  <label class="custom-control-label" for="sivCapabilitiesConvert">
+                    convert (RFC6558)
+                  </label>
+              </div>
+
             </div>
 
             <div>

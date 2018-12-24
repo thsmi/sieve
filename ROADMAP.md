@@ -13,7 +13,7 @@ So a [Plan B](https://en.wikipedia.org/wiki/Contingency_plan) is needed. This me
 
 There is no hard [roadmap](https://en.wikipedia.org/wiki/Technology_roadmap) indicating the steps which will be done next; however, a rough plan is displayed in the [Projects section](https://github.com/thsmi/sieve/projects).
 
-Feel free to commit pull request if you are interested in a particular issue.
+Feel free to commit pull requests if you are interested in a particular issue.
 
 ## Status: [Next generation Parser](https://github.com/thsmi/sieve/projects/1)
 

@@ -41,7 +41,7 @@ As you can see there are lots of ifs and whens; hence, an alternative plan based
 
 ## Status: [Electron App](https://github.com/thsmi/sieve/projects/3)
 
-[Electron](https://electronjs.org/) is one of the new kids on the block and the new rising star in the JavaScript universe. It is a stripped down Chromium browser bundled with [Node.js](https://nodejs.org/). It supports complex JavaScript APIs with almost no limitation, virtually only the sky is the limit. Quite the opposite of [WebExtensions](https://developer.mozilla.org/en-US/Add-ons/WebExtensions).
+[Electron](https://electronjs.org/) is one of the new kids on the block and the new rising star in the JavaScript universe. It is a stripped down Chromium browser bundled with [Node.js](https://nodejs.org/). It supports complex JavaScript APIs with almost no limitation, virtually the sky is the limit. Quite the opposite of [WebExtensions](https://developer.mozilla.org/en-US/Add-ons/WebExtensions).
 
 You have most likely already used Electron based applications without knowing it. They are more common than you think.
 

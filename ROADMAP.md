@@ -30,7 +30,7 @@ But the whole next gen parser runs at very low priority.
 Thunderbird’s future is currently in a constant [up and down](
 https://blog.mozilla.org/thunderbird/2017/12/new-thunderbird-releases-and-new-thunderbird-staff/). They are doing a great job to keep it alive but they obviously don’t have the resources for further development.
 
-Firefox dropped recently all support for so called classic XUL add-ons. As Thunderbird shares a common codebase with Firefox, this means Thunderbird will either fork the Firefox codebase or let the XUL-based add-ons die.
+Firefox recently dropped all support for so called classic XUL add-ons. As Thunderbird shares a common codebase with Firefox, this means Thunderbird will either fork the Firefox codebase or let the XUL-based add-ons die.
 
 Firefox’s new way are [WebExtension](https://developer.mozilla.org/en-US/Add-ons/WebExtensions). Sadly they are designed very single mindedly and are extremely limited. Implementing something with a non-HTTP based protocol a sieve client is impossible, as they do not provide [APIs](https://en.wikipedia.org/wiki/Application_programming_interface) needed for [socket](https://en.wikipedia.org/wiki/Network_socket) connections. All request from developers to support sockets in WebExtensions have been turned down, ignored and denied. But it seems as if a miracle happened and a paradigm shift started. At least the relevant bug moved from a [denied feature request to an approved feature request](http://www.agmweb.ca/2017-12-21-design-decision/). Whatever this means.
 

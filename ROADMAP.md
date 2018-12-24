@@ -17,9 +17,9 @@ Feel free to commit pull requests if you are interested in a particular issue.
 
 ## Status: [Next Generation Parser](https://github.com/thsmi/sieve/projects/1)
 
-The graphical editor just supports the very basic [RFC 5228 (Sieve: An Email Filtering Language)](https://tools.ietf.org/html/rfc5228) syntax. Most of the parsing is hardcoded instead of using a generic parser. But this is addressed by the “next generation parser”. It is designed to be pluggable and allows a very easy way of extending the graphical editor.
+The graphical editor just supports the very basic [RFC 5228 (Sieve: An Email Filtering Language)](https://tools.ietf.org/html/rfc5228) syntax. Most of the parsing is hardcoded instead of using a generic parser. This is addressed by the “next generation parser” as it is designed to be pluggable and allows a very easy way of extending the graphical editor.
 
-Currently the parser works acceptably but still has issues which needs to be addressed.
+Currently the parser works well but still has issues which need to be addressed.
 
 The graphical editor’s [UI](https://en.wikipedia.org/wiki/User_interface) is currently a bit inconsistent. Some UI elements instantly apply logic while others need to be confirmed. So this needs to be updated to a modern UI framework like [Bootstrap](https://getbootstrap.com/). As this is a long running task, the plan is to updated the UI dialog-by-dialog as soon as the parser lands.
 

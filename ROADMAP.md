@@ -2,7 +2,7 @@
 
 ## Current status
 
-The add-on implements the complete [RFC 5804 (A Protocol for Remotely Managing Sieve Scripts)](https://wiki.tools.ietf.org/html/rfc5804) and the code base is rather stable. All common [SASL (Simple Authentication and Security Layer)](https://en.wikipedia.org/wiki/Simple_Authentication_and_Security_Layer) algoithms are supported, with one exception [GSSAPI (Generic Security Services Application Program Interface)](https://en.wikipedia.org/wiki/Generic_Security_Services_Application_Program_Interface).
+This add-on implements the complete [RFC 5804 (A Protocol for Remotely Managing Sieve Scripts)](https://wiki.tools.ietf.org/html/rfc5804) and the code base is rather stable. All common [SASL (Simple Authentication and Security Layer)](https://en.wikipedia.org/wiki/Simple_Authentication_and_Security_Layer) algoithms are supported, with one exception [GSSAPI (Generic Security Services Application Program Interface)](https://en.wikipedia.org/wiki/Generic_Security_Services_Application_Program_Interface).
 So there is not much to do here.
 
 Concerning the graphical sieve editor there is definitely space for improvement. This will be addressed with the next “generation parser”.

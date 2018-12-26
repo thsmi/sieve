@@ -51,7 +51,6 @@
     // CLIENT -> SERVER
     // Client sends mechanism to server.
     suite.assertEquals(true, request.hasNextRequest());
-    debugger
     suite.assertEquals('AUTHENTICATE "LOGIN"\r\n',
       request.getNextRequest(new SieveMozRequestBuilder()).getBytes());
 

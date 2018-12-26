@@ -1201,7 +1201,7 @@
       if (this._prefix)
         this._prefix.parse(parser);
 
-      if (!this._items.lengths) {
+      if (!this._items.length) {
         this._current = null;
         return this;
       }

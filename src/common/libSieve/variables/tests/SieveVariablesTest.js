@@ -173,16 +173,16 @@
     suite.assertEquals(ONE_ELEMENT, elms.length, "Invalid number of set variable elements");
 
     elms[FIRST_ELEMENT].enable("modifier/10", true);
-    elms[FIRST_ELEMENT].getElement("modifier/10").setValue(":length");
+    elms[FIRST_ELEMENT].getElement("modifier/10").setElement(":length");
 
     elms[FIRST_ELEMENT].enable("modifier/20", true);
-    elms[FIRST_ELEMENT].getElement("modifier/20").setValue(":quotewildcard");
+    elms[FIRST_ELEMENT].getElement("modifier/20").setElement(":quotewildcard");
 
     elms[FIRST_ELEMENT].enable("modifier/30", true);
-    elms[FIRST_ELEMENT].getElement("modifier/30").setValue(":upperfirst");
+    elms[FIRST_ELEMENT].getElement("modifier/30").setElement(":upperfirst");
 
     elms[FIRST_ELEMENT].enable("modifier/40", true);
-    elms[FIRST_ELEMENT].getElement("modifier/40").setValue(":upper");
+    elms[FIRST_ELEMENT].getElement("modifier/40").setElement(":upper");
 
     let rv =
       'require "variables";\r\n'
@@ -206,16 +206,16 @@
     suite.assertEquals(ONE_ELEMENT, elms.length, "Invalid number of set variable elements");
 
     elms[FIRST_ELEMENT].enable("modifier/10", true);
-    elms[FIRST_ELEMENT].getElement("modifier/10").setValue(":length");
+    elms[FIRST_ELEMENT].getElement("modifier/10").setElement(":length");
 
     elms[FIRST_ELEMENT].enable("modifier/20", true);
-    elms[FIRST_ELEMENT].getElement("modifier/20").setValue(":quotewildcard");
+    elms[FIRST_ELEMENT].getElement("modifier/20").setElement(":quotewildcard");
 
     elms[FIRST_ELEMENT].enable("modifier/30", true);
-    elms[FIRST_ELEMENT].getElement("modifier/30").setValue(":lowerfirst");
+    elms[FIRST_ELEMENT].getElement("modifier/30").setElement(":lowerfirst");
 
     elms[FIRST_ELEMENT].enable("modifier/40", true);
-    elms[FIRST_ELEMENT].getElement("modifier/40").setValue(":lower");
+    elms[FIRST_ELEMENT].getElement("modifier/40").setElement(":lower");
 
     let rv =
       'require "variables";\r\n'
@@ -239,16 +239,16 @@
     suite.assertEquals(ONE_ELEMENT, elms.length, "Invalid number of set variable elements");
 
     elms[FIRST_ELEMENT].enable("modifier/10", false);
-    elms[FIRST_ELEMENT].getElement("modifier/10").setValue();
+    elms[FIRST_ELEMENT].getElement("modifier/10").setElement();
 
     elms[FIRST_ELEMENT].enable("modifier/20", false);
-    elms[FIRST_ELEMENT].getElement("modifier/20").setValue();
+    elms[FIRST_ELEMENT].getElement("modifier/20").setElement();
 
     elms[FIRST_ELEMENT].enable("modifier/30", false);
-    elms[FIRST_ELEMENT].getElement("modifier/30").setValue();
+    elms[FIRST_ELEMENT].getElement("modifier/30").setElement();
 
     elms[FIRST_ELEMENT].enable("modifier/40", false);
-    elms[FIRST_ELEMENT].getElement("modifier/40").setValue();
+    elms[FIRST_ELEMENT].getElement("modifier/40").setElement();
 
     elms[FIRST_ELEMENT].getElement("name").value("Name");
     elms[FIRST_ELEMENT].getElement("value").value("Value");

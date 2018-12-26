@@ -22,6 +22,7 @@
   /* global SieveDesigner */
   /* global SieveStringListWidget */
 
+  const DOM_ELEMENT = 0;
   /**
    * Provides an UI for the Return Action
    */
@@ -194,13 +195,11 @@
 
       let script = $("#sivIncludeScriptName");
 
-      let value = script.val();
-      if (value.trim() === "") {
-        script.addClass("is-invalid");
+      if (!script.get(DOM_ELEMENT).checkValidity()) {
         return false;
       }
 
-      this.script(value);
+      this.script(script.val());
 
       this.personal($("input[type='radio'][name='personal']:checked").val() === "true");
       this.optional(($("input:checkbox[name='optional']:checked").length > 0));

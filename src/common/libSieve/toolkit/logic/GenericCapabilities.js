@@ -17,6 +17,12 @@
   "use strict";
   /**
    * Manages the dependencies required by sieve elements and components.
+   *
+   * Examples for valid dependecy descriptions are:
+   *
+   *   requires: { any: ["vacation-seconds", "vacation"] }
+   *   requires: { all: ["variable", "enotify"] }
+   *   requires: "spamtest"
    */
   class SieveCapabilities {
 

@@ -121,27 +121,27 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.proxyauth.desc
 "Met proxy-authenticatie kan een gebruiker uit naam van een andere gebruiker handelen. Meestal zijn servers zo geconfigureerd dat deze functie alleen voor beheerders beschikbaar is.">
 <!ENTITY options.proxyauth.force
-"When using proxy authorization you should force “SASL PLAIN” Authentication.">
+"Als u proxy-autorisatie gebruikt, dan moet u ‘SASL PLAIN’-authenticatie forceren.">
 <!ENTITY options.proxyauth.none "Geen autorisatie">
 <!ENTITY options.proxyauth.default "Sieve-gebruikersnaam">
-<!ENTITY options.proxyauth.prompt "Request Authorization">
+<!ENTITY options.proxyauth.prompt "Autorisatie-verzoek">
 <!ENTITY options.proxyauth.custom "Autoriseren als">
 <!ENTITY options.proxyauth.custom.username "Gebruikersnaam:">
 
 <!ENTITY options.info.servername "Servernaam:">
 <!ENTITY options.info.port "Poort:">
 <!ENTITY options.info.secure "Veilige verbinding:">
-<!ENTITY options.info.username "Username:">
+<!ENTITY options.info.username "Gebruikersnaam:">
 <!ENTITY options.info.auth "Authenticatie:">
 
 <!ENTITY options.account.sieve
 "Sieve is een krachtige scripttaal voor het server-side filteren van e-mail.">
 <!ENTITY options.account.activate
-"Do you like to enable “ManageSieve” this account?">
+"Wilt u ‘ManageSieve’ voor dit account inschakelen?">
 <!ENTITY options.account.activate.yes "Ja, Sieve-scripts voor deze account beheren:">
-<!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
-<!ENTITY options.account.filters "Edit Filters…">
-<!ENTITY options.account.settings "Change Settings…">
+<!ENTITY options.account.activate.no "Nee, dit account ondersteunt ‘ManageSieve’ niet">
+<!ENTITY options.account.filters "Filters bewerken…">
+<!ENTITY options.account.settings "Instellingen wijzigen…">
 
 <!-- Credits -->
 <!ENTITY options.credits "Veel dank aan alle betrokkenen:">

@@ -89,7 +89,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.editor.indention.policy.tabs "alleen tabs">
 
 <!ENTITY options.editor.tabs.caption "Tab-afhandeling">
-<!ENTITY options.editor.tabs.description "Text editors with automatic indenting replaced the need for a Tab key. But many editors default to tabs due to historical reasons.">
+<!ENTITY options.editor.tabs.description "Teksteditors met automatische inspringing hebben de noodzaak van een Tab-toets vervangen, maar er zijn veel editors die standaard tabs gebruiken vanwege historische redenen.">
 <!ENTITY options.editor.tabs.width "Tab-breedte">
 
 <!ENTITY options.debug.warning
@@ -105,7 +105,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.debug.console.open "Foutconsole tonen…">
 
 <!ENTITY options.authmechanism.caption "Authenticatiemethode">
-<!ENTITY options.authmechanism "Override Authentication Mechanism">
+<!ENTITY options.authmechanism "Authenticatiemechanisme vervangen">
 <!ENTITY options.authmechanism.default "Altijd gebruiken:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">

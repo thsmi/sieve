@@ -93,7 +93,10 @@
      */
     getSummary() {
       return $("<div/>")
-        .append($("<span/>").text("Convert"));
+        .append($("<span/>").text("Convert "))
+        .append($("<em/>").text(this.from().value()))
+        .append($("<span/>").text(" to "))
+        .append($("<em/>").text(this.to().value()));
     }
   }
 
@@ -168,7 +171,10 @@
      */
     getSummary() {
       return $("<div/>")
-        .append($("<span/>").text("Convert"));
+        .append($("<span/>").text("Convert "))
+        .append($("<em/>").text(this.from().value()))
+        .append($("<span/>").text(" to "))
+        .append($("<em/>").text(this.to().value()));
     }
   }
 

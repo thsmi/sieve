@@ -190,7 +190,7 @@ U kunt beter SOCKS5 met externe naamomzetting gebruiken als uw externe DNS betro
 
 
 <!ENTITY list.badcert
-  "Secure connection failed. The mail server identified itself with a bad certificate.">
+  "Beveiligde verbinding mislukt. De e-mailserver identificeerde zich met een verkeerd certificaat.">
 <!ENTITY list.badcert.error
   "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server. Do not continue unless you know there is a good reason why this server does not use trusted identification.">
 <!ENTITY list.badcert.remember "Remember this decision">

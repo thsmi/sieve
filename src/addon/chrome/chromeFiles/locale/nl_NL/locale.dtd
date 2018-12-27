@@ -151,17 +151,17 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.proxy.description
 "In plaats van een directe verbinding kunt u een SOCKS-proxy gebruiken om transparant en veilig langs een firewall te komen.">
 <!ENTITY options.proxy.description.nameresolution
-"SOCKS4 always resolves hostnames only on the local machine.
-SOCKS5 supports both resolving on the remote SOCKS proxy as well as resolving on the local machine.
+"Met SOCKS4 worden hostnamen altijd op de lokale machine omgezet.
+SOCKS5 ondersteunt zowel omzetting op de externe SOCKS-proxy alsmede omzetting op de lokale machine
 
-You should prefer SOCKS5 with remote name resolution, if your remote DNS is more trustworthy than the local DNS.">
+U kunt beter SOCKS5 met externe naamomzetting gebruiken als uw externe DNS betrouwbaarder is dan uw lokale DNS.">
 <!ENTITY options.proxy.description.localhost
-"On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
+"Op sommige systemen werkt het gebruik van ‘localhost’ als proxy-host niet goed. Gebruik dan ‘127.0.0.1’ daarvoor in de plaats.">
 <!ENTITY options.proxy.direct "Directe verbinding">
 <!ENTITY options.proxy.default "Standaard proxy-configuratie">
 <!ENTITY options.proxy.socks4 "SOCKS4">
 <!ENTITY options.proxy.socks5 "SOCKS5">
-<!ENTITY options.proxy.nameresolution "Resolve hostnames on remote proxy">
+<!ENTITY options.proxy.nameresolution "Hostnamen op externe proxy omzetten">
 <!ENTITY options.proxy.host "Host:">
 <!ENTITY options.proxy.port "Poort:">
 
@@ -171,16 +171,16 @@ You should prefer SOCKS5 with remote name resolution, if your remote DNS is more
 
 <!ENTITY list.accounts "Filters voor:">
 
-<!ENTITY list.tree "Server-side Sieve mailfilters">
+<!ENTITY list.tree "Serverside Sieve e-mailfilters">
 <!ENTITY list.tree.active "Actief">
 <!ENTITY list.tree.name "Naam">
 
-<!ENTITY list.new "New…">
-<!ENTITY list.edit "Edit…">
+<!ENTITY list.new "Nieuw…">
+<!ENTITY list.edit "Bewerken…">
 <!ENTITY list.delete "Verwijderen">
 <!ENTITY list.rename "Hernoemen">
 <!ENTITY list.activate "Activeren">
-<!ENTITY list.settings "Settings…">
+<!ENTITY list.settings "Instellingen…">
 
 <!ENTITY list.details.capability "Sieve Server Capabilities">
 <!ENTITY list.details.capability.implementation "Serverversie:">

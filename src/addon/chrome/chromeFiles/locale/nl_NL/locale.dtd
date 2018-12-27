@@ -182,7 +182,7 @@ U kunt beter SOCKS5 met externe naamomzetting gebruiken als uw externe DNS betro
 <!ENTITY list.activate "Activeren">
 <!ENTITY list.settings "Instellingen…">
 
-<!ENTITY list.details.capability "Sieve Server Capabilities">
+<!ENTITY list.details.capability "Sieve Server-mogelijkheden">
 <!ENTITY list.details.capability.implementation "Serverversie:">
 <!ENTITY list.details.capability.sasl "SASL-mechanismen:">
 <!ENTITY list.details.capability.extensions "Extensies:">

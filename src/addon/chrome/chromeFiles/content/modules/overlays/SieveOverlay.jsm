@@ -27,47 +27,39 @@
   Cu.import("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");
 
 
-  function SieveAbstractOverlay() {
-    this._callbacks = [];
-    this.window = null;
-  }
+  class SieveAbstractOverlay {
 
-  SieveAbstractOverlay.prototype.getWindow
-    = function () {
+    constructor() {
+      this._callbacks = [];
+      this.window = null;
+    }
+
+    getWindow() {
       return this.window;
-    };
+    }
 
-  SieveAbstractOverlay.prototype.unloadCallback
-    = function (callback) {
+    unloadCallback(callback) {
       this._callbacks.push(callback);
-    };
+    }
 
-  SieveAbstractOverlay.prototype.unload
-    = function () {
+    unload() {
       while (this._callbacks.length)
         this._callbacks.pop()();
 
       delete this._callbacks;
       delete this.window;
-    };
+    }
+  }
 
 
 
   /**
    * Overlay the main mail window.
    * Injects the menu items as well as the tab window handlers.
-   * @constructor
    */
-  function SieveMailWindowOverlay() {
-    SieveAbstractOverlay.call(this);
-  }
+  class SieveMailWindowOverlay extends SieveAbstractOverlay {
 
-  SieveMailWindowOverlay.prototype = Object.create(SieveAbstractOverlay.prototype);
-  SieveMailWindowOverlay.prototype.constructor = SieveMailWindowOverlay;
-
-
-  SieveMailWindowOverlay.prototype.load
-    = function (window) {
+    load(window) {
       if (this.window)
         throw new Error("Already bound to window");
 
@@ -209,24 +201,17 @@
 
       appMenu.appendChild(appMenuOpenSettings);
 
-    };
+    }
+  }
 
   // Filter window Overlay...Components
 
   /**
    * Overlays the toolbar and injects a toolbar button.
-   * @constructor
    */
-  function SieveToolbarOverlay() {
-    SieveAbstractOverlay.call(this);
-  }
+  class SieveToolbarOverlay extends SieveAbstractOverlay {
 
-  SieveToolbarOverlay.prototype = Object.create(SieveAbstractOverlay.prototype);
-  SieveToolbarOverlay.prototype.constructor = SieveToolbarOverlay;
-
-
-  SieveToolbarOverlay.prototype.load
-    = function (window) {
+    load(window) {
       if (this.window)
         throw new Error("already bound to window");
 
@@ -238,7 +223,8 @@
 
       this.unloadCallback(
         function () { SieveOverlayUtils.removeStyleSheet(document, "chrome://sieve/skin/ToolBarButton.css"); });
-    };
+    }
+  }
 
 
   exports.SieveMailWindowOverlay = SieveMailWindowOverlay;

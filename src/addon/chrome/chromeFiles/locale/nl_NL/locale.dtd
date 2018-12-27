@@ -258,18 +258,18 @@ Kies ‘Geavanceerd’ om het account handmatig te configureren.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"Thunderbird is currently in offline mode. Check that you are connected to the Internet and select ‘Go Online’ or uncheck ‘Work Offline’ from the File menu and try again.">
+"Thunderbird bevindt zich momenteel in offlinemodus. Controleer of u met het internet verbonden bent en selecteer ‘Online gaan’ of vink ‘Offline werken’ uit in het menu Bestand en probeer het opnieuw.">
 <!ENTITY status.offline.go "Online gaan">
 
 
 <!ENTITY status.connectivity.loss.description
-"The server unexpectedly closed the connection. Select ‘Reconnect’ to try again.">
+"De server heeft de verbinding onverwachts gesloten. Selecteer ‘Opnieuw verbinden’ om het opnieuw te proberen.">
 <!ENTITY status.connectivity.loss.reconnect "Opnieuw verbinden">
 
 <!ENTITY status.warning.ignore "Negeren">
 <!ENTITY status.warning.reconnect "Opnieuw verbinden">
 <!ENTITY status.warning
-  "“ManageSieve” is not configured for this account. To enable “ManageSieve”, select ‘Sieve Message Filters’ in the ‘Tools’ menu.">
+  "‘ManageSieve’ is niet geconfigureerd voor dit account. Selecteer ‘ManageSieve’ in het menu Extra om ‘ManageSieve’ in te schakelen.">
 
 <!ENTITY status.error.reconnect "Opnieuw verbinden">
 <!ENTITY status.error "De laatste opdracht is mislukt, omdat de server een fout meldde:">

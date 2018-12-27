@@ -135,7 +135,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.info.auth "Authenticatie:">
 
 <!ENTITY options.account.sieve
-"Sieve is een krachtige scripttaal voor het server-side filteren van e-mail.">
+"Sieve is een krachtige scripttaal voor het serverside filteren van e-mail.">
 <!ENTITY options.account.activate
 "Wilt u ‘ManageSieve’ voor dit account inschakelen?">
 <!ENTITY options.account.activate.yes "Ja, Sieve-scripts voor deze account beheren:">
@@ -275,9 +275,9 @@ Kies ‘Geavanceerd’ om het account handmatig te configureren.">
 <!ENTITY status.error "De laatste opdracht is mislukt, omdat de server een fout meldde:">
 
 <!ENTITY status.sync.description
-"The local and the server-side scripts are different. What would you like to do?">
+"De locale en de serverside-scipts verschillen. Wat wilt u doen?">
 <!ENTITY status.sync.keep "Lokale script behouden">
-<!ENTITY status.sync.replace "Use Server-side Script">
+<!ENTITY status.sync.replace "Serverside-script gebruiken">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

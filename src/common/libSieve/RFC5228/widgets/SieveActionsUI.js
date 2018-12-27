@@ -102,18 +102,10 @@
       if (address.get(DOM_ELEMENT).checkValidity() === false)
         return false;
 
-      let value = address.val();
-
-      if (value.trim() === "") {
-        address.addClass("is-invalid");
-        return false;
-      }
-
-
       (new SieveOverlayWidget("action/redirect/", "#sivRedirectOverlay"))
         .save(this.getSieve());
 
-      this.address(value);
+      this.address(address.val());
       return true;
     }
 

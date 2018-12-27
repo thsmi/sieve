@@ -602,6 +602,30 @@
     }
 
     /**
+     * Returns a quote of the given string.
+     *
+     * In case the strhing exceeds the maximum length
+     * it will be truncated and ... are appended.
+     *
+     * @param {int} [len]
+     *   the maximal length
+     * @returns {string}
+     *   returns the string's quote.
+     */
+    quote(len) {
+
+      if (typeof(len) === "undefined" || len === null)
+        len = MAX_QUOTE_LEN;
+
+      let str = this.value();
+
+      if (str.length > len)
+        str = str.substr(0, len) + "...";
+
+      return str;
+    }
+
+    /**
      * @inheritdoc
      */
     toScript() {

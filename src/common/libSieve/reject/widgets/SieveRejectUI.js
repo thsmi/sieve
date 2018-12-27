@@ -35,24 +35,19 @@
     }
 
     /**
-     *  Gets and/or Sets the reason why the mail should be rejected
+     * Gets the reason why the mail should be rejected
      *
-     *  @param  {string} [reason]
-     *    optional the new reason which should be set.
-     *
-     *  @returns {string} the current reason
+     * @returns {SieveString} the current reason
      */
-    reason(reason) {
-
-      return this.getSieve().getElement("reason").value(reason);
+    reason() {
+      return this.getSieve().getElement("reason");
     }
 
     /**
      * @inheritdoc
      */
     onSave() {
-      this.reason($("#sivRejectReason").val());
-
+      this.reason().value($("#sivRejectReason").val());
       return true;
     }
 
@@ -60,7 +55,7 @@
      * @inheritdoc
      */
     onLoad() {
-      $("#sivRejectReason").val(this.reason());
+      $("#sivRejectReason").val(this.reason().value());
     }
 
     /**
@@ -68,11 +63,11 @@
      */
     getSummary() {
       return $("<div/>")
-        .html("Reject incoming messages and reply the following reason:" +
-          "<div>" +
-          $('<em/>').text(this.reason().substr(0, MAX_QUOTE_LEN)).html() +
-          ((this.reason().length > MAX_QUOTE_LEN) ? "..." : "") +
-          "</div>");
+        .append($("<div/>")
+          .text("Reject incoming messages and reply the following reason:"))
+        .append($("<div/>")
+          .append($('<em/>')
+            .text(this.reason().quote(MAX_QUOTE_LEN))));
     }
   }
 

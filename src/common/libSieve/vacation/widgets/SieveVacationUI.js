@@ -206,11 +206,11 @@
      */
     getSummary() {
       return $("<div/>")
-        .html("Send a vacation/an out of office message:" +
-          "<div><em>" +
-          $('<div/>').text(this.reason().value().substr(0, MAX_QUOTE_LEN)).html() +
-          ((this.reason().value().length > MAX_QUOTE_LEN) ? "..." : "") +
-          "</em></div>");
+        .append($("<div/>")
+          .text("Send a vacation/an out of office message:"))
+        .append($("<div/>")
+          .append($('<em/>')
+            .text(this.reason().quote(MAX_QUOTE_LEN))));
     }
   }
 

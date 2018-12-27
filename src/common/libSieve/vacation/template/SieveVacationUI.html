@@ -29,15 +29,6 @@
                         white-space: nowrap;
                     }
 
-                    #sivVacationDays {
-                        width: 50px;
-                        min-width: 0px !important;
-                    }
-
-                    .sivDescription {
-                        color: rgba(0, 0, 0, 0.53);
-                        margin-bottom: 8px;
-                    }
                 </style>
                 <div>
                     <!-- Envelope Controls -->
@@ -61,7 +52,7 @@
 
             <div class="tab-pane fade" id="sieve-widget-envelope" role="tabpanel">
                 <h5>Subject</h5>
-                <div class="sivDescription">The subject is used for any vacation response</div>
+                <small class="text-muted">The subject is used for any vacation response</small>
                 <div>
                     <input type="radio" name="subject" value="false" /> Server's default Subject
                 </div>
@@ -72,7 +63,7 @@
 
                 <br/>
                 <h5>From</h5>
-                <div class="sivDescription">Used to specify an alternate From address.</div>
+                <small class="text-muted">Used to specify an alternate From address.</small>
                 <div>
                     <input type="radio" name="from" value="false" />
                     <span>Address of the sieve script owner</span>
@@ -98,7 +89,7 @@
             <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
 
                 <h5>Message Content Type</h5>
-                <div class="sivDescription">Instead of plaintext, the message can be a specified as a MIME Message</div>
+                <small class="text-muted">Instead of plaintext, the message can be a specified as a MIME Message</small>
                 <div>
                     <input type="radio" name="mime" value="false" />
                     <span>Is plaintext Message (Default)</span>
@@ -109,17 +100,17 @@
                 </div>
                 <br/>
                 <h5> Response Tracking</h5>
-                <div class="sivDescription">A vacation message is sent at most every some days to the same sender</div>
+                <small class="text-muted">A vacation message is sent at most every some days to the same sender</small>
                 <form>
                    <div id="sivVacationIntervalOverlay"> </div>
                 </form>
                 <br/>
                 <h5> Response Handles</h5>
-                <div class="sivDescription">
+                <small class="text-muted">
                     The response tracking considers all vacation statements that use the same handle as the same response
                     <br/> The default handle considers subject, from, mime as well as the message. A custom handle can be any
                     unique strings
-                </div>
+                </small>
                 <div>
                     <input type="radio" name="handle" value="false" />
                     <span>Use default handle</span>

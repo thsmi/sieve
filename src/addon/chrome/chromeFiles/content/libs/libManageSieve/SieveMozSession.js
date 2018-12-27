@@ -298,11 +298,6 @@
      *
      * A bug free server will return with two capability responsed
      * while a buggy implementation returns only one.
-     *
-     * @param {SieveCapabilitiesResponse} response
-     *   the initial start tls response.
-     *
-     *
      */
     onStartTLSCompleted() {
       let that = this;
@@ -331,7 +326,6 @@
      *
      * @param {SieveSimpleResponse} response
      *   the servers response to the tls upgrade request.
-     *
      */
     onStartTLSResponse(response) {
       this.sieve.startTLS(() => {
@@ -353,7 +347,6 @@
      * Adds a new event listener to this session
      * @param {*} listener
      *   the event listener.
-     *
      */
     addListener(listener) {
       if (!this.listeners)
@@ -431,6 +424,7 @@
       while (iterator.length) {
         let listener = iterator.pop();
         // we call this with the listener as scope...
+        // eslint-disable-next-line no-useless-call
         listener[subject].call(listener, arg1, arg2);
       }
     }

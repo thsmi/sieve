@@ -192,34 +192,35 @@ U kunt beter SOCKS5 met externe naamomzetting gebruiken als uw externe DNS betro
 <!ENTITY list.badcert
   "Beveiligde verbinding mislukt. De e-mailserver identificeerde zich met een verkeerd certificaat.">
 <!ENTITY list.badcert.error
-  "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server. Do not continue unless you know there is a good reason why this server does not use trusted identification.">
-<!ENTITY list.badcert.remember "Remember this decision">
+  "Als u normaal gesproken zonder problemen met deze server kunt verbinden,
+kan deze fout betekenen dat iemand probeert de server na te bootsen. Ga alleen verder als u weet waarom deze server geen vertrouwde identificatie gebruikt.">
+<!ENTITY list.badcert.remember "Deze keuze onthouden">
 <!ENTITY list.badcert.ignore "Doorgaan">
 <!ENTITY list.badcert.abort "Afbreken">
 
 <!ENTITY list.autoconfig.welcome.caption "Welkom!">
 <!ENTITY list.autoconfig.welcome.description1
-"“ManageSieve” not configured for this account.">
+"‘ManageSieve’ is niet geconfigureerd voor dit account.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click ‘Continue’ to detect the configuration automatically.
-Or choose ‘Advanced’ to configure the account manually.">
+"Klik op ‘Doorgaan’ om de configuratie automatisch te detecteren.
+Kies ‘Geavanceerd’ om het account handmatig te configureren.">
 
 <!ENTITY list.autoconfig.advanced "Geavanceerd">
 <!ENTITY list.autoconfig.continue "Doorgaan">
 
 <!ENTITY list.autoconfig.detecting.caption "Automatisch detecteren van configuratie">
 <!ENTITY list.autoconfig.detecting.description
-  "Might take some minutes to complete…">
+  "Dit kan een aantal minuten duren om te voltooien…">
 
 <!ENTITY list.autoconfig.cancel "Annuleren">
 
 <!ENTITY list.autoconfig.success.caption "Gefeliciteerd!">
 <!ENTITY list.autoconfig.success.description
-  "Your account is now configured and ready to use…">
+  "Uw account is nu geconfigureerd en klaar voor gebruik…">
 
 <!ENTITY list.autoconfig.error.caption "Sorry">
 <!ENTITY list.autoconfig.error.description
-"Your mail server does not support “ManageSieve” or requires a special configuration. Please configure manually or contact your email provider for instructions.">
+"Uw e-mailserver ondersteunt geen ‘ManageSieve’ of heeft een speciale configuratie nodig. Configureer handmatig of neem contact op met uw e-mailprovider voor instructies.">
 
 <!ENTITY list.autoconfig.retest "Opnieuw testen">
 <!ENTITY list.autoconfig.config "Handmatige configuratie">
@@ -231,21 +232,21 @@ Or choose ‘Advanced’ to configure the account manually.">
 <!ENTITY edit.toolbar.cut "Knippen">
 <!ENTITY edit.toolbar.copy "Kopiëren">
 <!ENTITY edit.toolbar.paste "Plakken">
-<!ENTITY edit.toolbar.compile "Check Syntax">
+<!ENTITY edit.toolbar.compile "Syntaxis controleren">
 <!ENTITY edit.toolbar.reference "Snelzoekgids">
 <!ENTITY edit.toolbar.tools "Extra">
 <!ENTITY edit.toolbar.import "Script importeren">
 <!ENTITY edit.toolbar.export "Script exporteren">
 <!ENTITY edit.toolbar.back "Vorige">
 <!ENTITY edit.toolbar.forward "Volgende">
-<!ENTITY edit.toolbar.home "Home">
+<!ENTITY edit.toolbar.home "Startpagina">
 <!ENTITY edit.toolbar.search "Zoeken">
 
 <!ENTITY edit.sidebar.uri "https://thsmi.github.io/sieve-reference/en/index.html">
 <!ENTITY edit.sidebar.title "Sieve-taalverwijzing">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Find and Replace">
+<!ENTITY edit.searchreplace.title "Zoeken en vervangen">
 <!ENTITY edit.searchreplace.searchfor "Zoeken naar:">
 <!ENTITY edit.searchreplace.replacewith "Vervangen door:">
 <!ENTITY edit.searchreplace.options "Opties">

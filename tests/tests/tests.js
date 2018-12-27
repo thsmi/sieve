@@ -223,10 +223,11 @@
       script: "./../common/libSieve/duplicate/tests/SieveDuplicateTest.js",
       extend: "rfc5228",
       require: [
-        "./../common/libSieve/duplicate/logic/SieveDuplicate.js",
         "./../common/libSieve/variables/logic/SieveVariables.js",
+        "./../common/libSieve/notify/logic/SieveNotify.js",
         "./../common/libSieve/mailbox/logic/SieveMailbox.js",
-        "./../common/libSieve/imapflags/logic/SieveImapFlags.js"
+        "./../common/libSieve/imapflags/logic/SieveImapFlags.js",
+        "./../common/libSieve/duplicate/logic/SieveDuplicate.js"
       ]
     }
   });
@@ -258,6 +259,17 @@
       extend: "rfc5228",
       require: [
         "./../common/libSieve/convert/logic/SieveConvert.js"
+      ]
+    }
+  });
+
+  suite.add({
+    "notify" : {
+      script: "./../common/libSieve/notify/tests/SieveNotifyTest.js",
+      extend: "rfc5228",
+      require: [
+        "./../common/libSieve/variables/logic/SieveVariables.js",
+        "./../common/libSieve/notify/logic/SieveNotify.js"
       ]
     }
   });

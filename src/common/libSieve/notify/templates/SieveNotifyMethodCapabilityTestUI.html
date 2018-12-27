@@ -1,0 +1,106 @@
+<div>
+  <ul id="template-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#sieve-widget-notifymethodcapability" role="tab">Notify Method
+        Capability</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+    </li>
+  </ul>
+
+  <div id="template-content">
+    <div class="tab-content m-2">
+      <div class="tab-pane fade show active" id="sieve-widget-notifymethodcapability" role="tabpanel">
+
+        <label>Check if method's...</label>
+        <div id="txtSieveNotifyUri" data-list-dropdown="#sivNotifyUriTemplate">
+        </div>
+
+        <div id="sivNotifyUriTemplate" class="d-none">
+          <div class="dropdown-menu dropdown-menu-right" style="min-width:100%">
+            <button class="dropdown-item" type="button" data-value="tel:+1234567890">
+              Send a short message to a phone<br />
+              <small class="text-muted">e.g. tel:+14085551212</small>
+            </button>
+            <button class="dropdown-item" type="button" data-value="xmpp:me@example.com?message;subject=SIEVE;body=You%20got%20mail">
+              Send a xmpp message<br />
+              <small class="text-muted">e.g. xmpp:me@example.com?message;subject=SIEVE;body=You%20got%20mail</small>
+            </button>
+            <button class="dropdown-item" type="button" data-value="mailto:me@example.com">
+              Send an email message<br />
+              <small class="text-muted">e.g. mailto:me@example.com</small>
+            </button>
+          </div>
+        </div>
+
+        <label>... notification capability...</label>
+
+        <div id="txtSieveNotifyCapability">
+        </div>
+
+        <br/>
+        <div id="sivNotifyMatchTypes">
+        </div>
+
+        <br/>
+        <label>... any of the keyword(s):</label>
+        <div id="sivNotifyKeyList" data-list-dropdown="#sivNotifyKeyListTemplate">
+        </div>
+
+        <div id="sivNotifyKeyListTemplate" class="d-none">
+          <div class="dropdown-menu dropdown-menu-right" style="min-width:100%">
+            <button class="dropdown-item" type="button" data-value="yes">
+              yes<br />
+              <small class="text-muted">
+                The entity identified by the notification-uri can receive
+                a notify notification.
+              </small>
+            </button>
+            <button class="dropdown-item" type="button" data-value="no">
+              no<br />
+              <small class="text-muted">
+                The entity identified by the notification-uri is currently not available
+                to receive an immediate notification.
+              </small>
+            </button>
+            <button class="dropdown-item" type="button" data-value="maybe">
+              maybe<br />
+              <small class="text-muted">
+                The Sieve interpreter can't determine if the entity
+                identified by the notification-uri is online or not
+              </small>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+        <h5>Comparator</h5>
+        <div id="sivNotifyComparator"> </div>
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+        <p>
+          The notify_method_capability test retrieves the notification
+          capability for given method and matches it to the given values.
+        </p>
+        <p>
+          The capability parameter is case insensitive. Currently only a
+          single capability "online" is defined. But Sieve Notifications
+          extensions may add aditional capabilities.
+        </p>
+        <p>
+          The "online" capabilities result is either "yes", "no" or "maybe".
+          And describes the likelyness for a successfull delivery.
+        </p>
+        <p>
+          Note that even after a "yes", there is no guarantee when and if the
+          notification is received. Transport errors, recipient policy, etc. can
+          prevent that.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

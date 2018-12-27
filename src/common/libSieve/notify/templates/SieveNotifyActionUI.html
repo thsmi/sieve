@@ -1,0 +1,139 @@
+<div>
+  <ul id="template-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#sieve-widget-notifyaction" role="tab">Notify</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+    </li>
+  </ul>
+
+  <div id="template-content">
+    <div class="tab-content m-2">
+      <div class="tab-pane fade show active" id="sieve-widget-notifyaction" role="tabpanel">
+        <label>Use the Method...</label>
+        <div id="sivNotifyMethod" data-list-dropdown="#sivNotifyMethodTemplate">
+        </div>
+
+        <div id="sivNotifyMethodTemplate" class="d-none">
+          <div class="dropdown-menu dropdown-menu-right" style="min-width:100%">
+            <button class="dropdown-item" type="button" data-value="tel:+1234567890">
+              Send a SMS message to a phone<br />
+              <small class="text-muted">e.g. tel:+14085551212</small>
+            </button>
+            <button class="dropdown-item" type="button" data-value="xmpp:me@example.com?message;subject=SIEVE;body=You%20got%20mail">
+              Send a xmpp message<br />
+              <small class="text-muted">e.g. xmpp:me@example.com?message;subject=SIEVE;body=You%20got%20mail</small>
+            </button>
+            <button class="dropdown-item" type="button" data-value="mailto:me@example.com">
+              Send an email message<br />
+              <small class="text-muted">e.g. mailto:me@example.com</small>
+            </button>
+          </div>
+        </div>
+
+        <br />
+
+        <div class="custom-control custom-radio">
+            <input type="radio" id="rbxSieveNotifyMessageDefault" name="sivNotifyMessage" value="false" class="custom-control-input"/>
+            <label class="custom-control-label" for="rbxSieveNotifyMessageDefault">... to send the server's default message</label>
+            <small class="form-text text-muted">
+              A default implementation-specific message is used. It contains at least
+              the value of the "From" header field and the value of the "Subject".
+            </small>
+        </div>
+        <div class="custom-control custom-radio">
+            <input type="radio" id="rbxSieveNotifyMessageCustom" name="sivNotifyMessage" value="true" class="custom-control-input"/>
+            <label class="custom-control-label" for="rbxSieveNotifyMessageCustom">... to send a custom message</label>
+            <small class="form-text text-muted">
+                The message data to be included in the notification. Implementations may
+                shorten the message for technical or aesthetic reasons.
+            </small>
+
+            <textarea class="form-control" id="txtSieveNotifyMessage" rows="5"> </textarea>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="cbxSieveNotifyFrom" />
+          <label class="custom-control-label" for="cbxSieveNotifyFrom">Override the default sender</label>
+          <small class="form-text text-muted">
+            The server's default is normally the current user. You can override
+            this, but in oder minimize/prevent forgery of the author value,
+            the server implementations impose restrictions on what values can be
+            specified.
+          </small>
+          <div id="txtSieveNotifyFrom">
+          </div>
+
+        </div>
+
+        <br />
+
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="cbxSieveNotifyImportance" />
+            <label class="custom-control-label" for="cbxSieveNotifyImportance">Override the default importance</label>
+            <small class="form-text text-muted">
+              Only few protocols support an importance or priority at all.
+              Refer to the method's documentation for more details on how the importance is mapped.
+            </small>
+
+            <div class="custom-control custom-radio">
+                <input type="radio" id="rbxSieveNotifyImportanceHigh" name="sivNotifyImportance" class="custom-control-input" value="1" />
+                <label class="custom-control-label" for="rbxSieveNotifyImportanceHigh">High</label>
+            </div>
+            <div class="custom-control custom-radio">
+                <input type="radio" id="rbxSieveNotifyImportanceNormal" name="sivNotifyImportance" class="custom-control-input" value="2" />
+                <label class="custom-control-label" for="rbxSieveNotifyImportanceNormal">Normal</label>
+            </div>
+            <div class="custom-control custom-radio">
+                  <input type="radio" id="rbxSieveNotifyImportanceLow" name="sivNotifyImportance" class="custom-control-input" value="3" />
+                  <label class="custom-control-label" for="rbxSieveNotifyImportanceLow">Low</label>
+            </div>
+        </div>
+
+        <br />
+        <!-- <optionname>=<value>
+        optionname = ALPHA / DIGIT *(ALPHA / DIGIT / "." / "-" / "_")
+        value = *(%x01-09 / %x0B-0C / %x0E-FF) -->
+
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="cbxSieveNotifyOptions" />
+          <label class="custom-control-label" for="cbxSieveNotifyOptions">Set additional options</label>
+          <small class="form-text text-muted">
+            Additional options passed to the mechanism as key and value pairs.
+            Refer to the specific mechanisms for more details.
+          </small>
+          <div id="txtSieveNotifyOptions" data-list-min="0">
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+        <p>
+          Specifies that a notification should be sent to a user.
+          The format of the notification is implementation-defined and
+          is affected by the notification method used.
+        </p>
+        <p>
+          The notification method is identified by a URI. For example, the
+          notification method can be a tel URI [TEL-URI] with a phone number
+          to send SMS messages to, or an XMPP [XMPP] URI containing an XMPP
+          identifiers [XMPP-URI]. The supported notification methods are
+          site-specific, but support for the [MailTo] method is guaranteed.
+        </p>
+        <p>
+          Sieve scripts should check the supported methods using the
+          valid_notify_method test to be sure that they only use supported ones.
+        </p>
+        <p class="alert alert-info" role="alert">
+          An implementation may enforce semantic restrictions on URIs.
+          For example, to restrict phone numbers in a tel URI to a particular
+          geographical region. This will cause a parser error.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

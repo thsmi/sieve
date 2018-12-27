@@ -24,6 +24,9 @@
   /* global SieveDesigner */
   /* global SieveComparatorWidget */
 
+  /* global SieveOverlayWidget */
+  /* global SieveOverlayItemWidget */
+
   const MAX_QUOTE_LEN = 240;
   const DOM_ELEMENT = 0;
 
@@ -68,17 +71,12 @@
       this.name().value(item.val());
       this.value().value($("#sivVariableValue").val());
 
+      (new SieveOverlayWidget("modifier/", "#sivModifier"))
+        .save(this.getSieve());
+
       let status;
       let value = null;
 
-      status = $("input[type='checkbox'][name='10']").is(":checked");
-      if (status)
-        value = ":length";
-
-      this.getSieve().getElement("modifier/10").setElement(value);
-      this.getSieve().enable("modifier/10", status);
-
-      value = null;
       status = $("input[type='checkbox'][name='20']").is(":checked");
       if (status)
         value = ":quotewildcard";
@@ -110,10 +108,22 @@
      */
     onLoad() {
 
-      let state = null;
+      // Sort by the modifier name
+      function sort(widget) {
+        let items = widget.find(".sieve-modifier");
+        items.sort((a, b) => {
+          let lhs = $(a).find("input:checkbox[name^='modifier/']").attr("name");
+          let rhs = $(b).find("input:checkbox[name^='modifier/']").attr("name");
+          return lhs < rhs;
+        });
 
-      state = this.getSieve().enable("modifier/10");
-      $('input:checkbox[name="10"]').prop('checked', state);
+        widget.append(items);
+      }
+
+      (new SieveOverlayWidget("modifier/", "#sivModifier"))
+        .init(this.getSieve(), sort);
+
+      let state = null;
 
       state = this.getSieve().enable("modifier/20");
       $('input:checkbox[name="20"]').prop('checked', state);
@@ -145,14 +155,82 @@
      */
     getSummary() {
       return $("<div/>")
-        .html("Set variable <em>" + this.name().value() + "</em> to value " +
-          "<div><em>" +
-          $('<div/>').text(this.value().value().substr(0, MAX_QUOTE_LEN)).html() +
-          ((this.value().value().substr().length > MAX_QUOTE_LEN) ? "..." : "") +
-          "</em></div>");
+        .append($("<div/>")
+          .html("Set variable <em>" + this.name().value() + "</em> to value"))
+        .append($("<div/>")
+          .append($('<em/>')
+            .text(this.value().quote(MAX_QUOTE_LEN))));
 
     }
   }
+
+  /**
+   * Implements an abstract overlay widget which is used by
+   * the copy overlay for the fileinto action as well as the
+   * redirect action.
+   */
+  class SieveModifierLengthWidget extends SieveOverlayItemWidget {
+
+    /**
+     * @inheritdoc
+     */
+    static nodeType() {
+      return "modifier/";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    static nodeName() {
+      return "modifier/10";
+    }
+
+    /**
+     * @inheritdoc
+     **/
+    getTemplate() {
+      return "./variables/templates/SieveLengthUI.html";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    static isCapable(capabilities) {
+      return capabilities.hasCapability("variables");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    load(sivElement) {
+      if (sivElement.enable("modifier/10"))
+        $("#cbxModifier10").attr("checked", "checked");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    save(sivElement) {
+
+      let value = null;
+      let status = $("input[type='checkbox'][name='modifier/10']").is(":checked");
+      if (status)
+        value = ":length";
+
+      sivElement.getElement("modifier/10").setElement(value);
+      sivElement.enable("modifier/10", status);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    getElement() {
+      return $("" + this.selector);
+    }
+  }
+
+
+
 
 
   /**
@@ -247,6 +325,8 @@
 
   if (!SieveDesigner)
     throw new Error("Could not register Body Extension");
+
+  SieveDesigner.register2(SieveModifierLengthWidget);
 
   SieveDesigner.register("action/set", SieveSetActionUI);
   SieveDesigner.register("test/string", SieveStringTestUI);

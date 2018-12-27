@@ -111,19 +111,18 @@
     suite.log("Example 3a");
 
     let script = ''
-      // + 'require ["variables", "envelope", "enotify", "duplicate"];\r\n'
-      + 'require ["variables", "envelope", "duplicate"];\r\n'
+      + 'require ["variables", "envelope", "enotify", "duplicate"];\r\n'
       + '\r\n'
       + 'if envelope :matches "from" "*" { set "sender" "${1}"; }\r\n'
       + 'if header :matches "subject" "*" { set "subject" "${1}"; }\r\n'
       + '\r\n'
       + 'if not duplicate :seconds 1800 :uniqueid "${sender}"\r\n'
       + '{\r\n'
-      // + '  notify :message "[SIEVE] ${sender}: ${subject}"\r\n'
-      // + '    "xmpp:user@im.example.com";\r\n'
+      + '  notify :message "[SIEVE] ${sender}: ${subject}"\r\n'
+      + '    "xmpp:user@im.example.com";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, ["variables", "envelope", "duplicate"]);
+    suite.expectValidScript(script, ["variables", "envelope", "enotify", "duplicate"]);
   });
 
 
@@ -132,8 +131,7 @@
     suite.log("Example 3b");
 
     let script = ''
-      // + 'require ["variables", "envelope", "enotify", "duplicate"];\r\n'
-      + 'require ["variables", "envelope", "duplicate"];\r\n'
+      + 'require ["variables", "envelope", "enotify", "duplicate"];\r\n'
       + '\r\n'
       + 'if envelope :matches "from" "*" { set "sender" "${1}"; }\r\n'
       + 'if header :matches "subject" "*" { set "subject" "${1}"; }\r\n'
@@ -147,11 +145,11 @@
       + 'if not duplicate :seconds 1800\r\n'
       + '  :uniqueid "${sender} ${subject}"\r\n'
       + '{\r\n'
-      // + '  notify :message "[SIEVE] ${sender}: ${subject}"\r\n'
-      // + '    "xmpp:user@im.example.com";\r\n'
+      + '  notify :message "[SIEVE] ${sender}: ${subject}"\r\n'
+      + '    "xmpp:user@im.example.com";\r\n'
       + '}\r\n';
 
-    suite.expectValidScript(script, ["variables", "envelope", "duplicate"]);
+    suite.expectValidScript(script, ["variables", "envelope", "enotify", "duplicate"]);
   });
 
 
@@ -177,4 +175,3 @@
   });
 
 })();
-

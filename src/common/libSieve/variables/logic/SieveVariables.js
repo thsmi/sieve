@@ -161,50 +161,46 @@
 
   SieveGrammar.addGroup(_modifier30);
 
-  let _quote = {
+  SieveGrammar.addTag({
     node: "modifier/20/quotewildcard",
     type: "modifier/20/",
 
     requires: "variables",
 
     token: ":quotewildcard"
-  };
-  SieveGrammar.addTag(_quote);
+  });
 
-  let _modifier20 = {
+  SieveGrammar.addGroup({
     node: "modifier/20",
     type: "modifier/",
 
     items: ["modifier/20/"]
-  };
-  SieveGrammar.addGroup(_modifier20);
+  });
 
 
-  let _length = {
+  SieveGrammar.addTag({
     node: "modifier/10/length",
     type: "modifier/10/",
 
     requires: "variables",
 
     token: ":length"
-  };
-  SieveGrammar.addTag(_length);
+  });
 
-  let _modifier10 = {
+  SieveGrammar.addGroup({
     node: "modifier/10",
     type: "modifier/",
 
     items: ["modifier/10/"]
-  };
-  SieveGrammar.addGroup(_modifier10);
+  });
 
-  let _modifier = {
+
+  SieveGrammar.addGroup({
     node: "modifier",
     type: "modifier",
 
     items: ["modifier/"]
-  };
-  SieveGrammar.addGroup(_modifier);
+  });
 
 
 })(window);

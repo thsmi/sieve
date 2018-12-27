@@ -57,7 +57,6 @@
 
   <!-- UI related Imports -->
   <!-- RFC 5228 - Sieve -->
-  <script type="application/javascript" src="RFC5228/widgets/SieveNumbersUI.js"></script>
   <script type="application/javascript" src="RFC5228/widgets/SieveBlocksUI.js"></script>
   <script type="application/javascript" src="RFC5228/widgets/SieveMatchTypesUI.js"></script>
   <script type="application/javascript" src="RFC5228/widgets/SieveAddressPartUI.js"></script>
@@ -136,6 +135,10 @@
   <!-- RFC6558 - Convert -->
   <script type="application/javascript" src="convert/logic/SieveConvert.js"></script>
   <script type="application/javascript" src="convert/widgets/SieveConvertUI.js"></script>
+
+  <!-- RFC5435 - Notify -->
+  <script type="application/javascript" src="notify/logic/SieveNotify.js"></script>
+  <script type="application/javascript" src="notify/widgets/SieveNotifyUI.js"></script>
 
   <style>
     .sivMenuItem {
@@ -465,17 +468,25 @@
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesVacationSeconds" name="capabilities" value="vacation-seconds" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesVacationSeconds" name="capabilities" value="vacation-seconds"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesVacationSeconds">
                   vacation-seconds (RFC6131)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                  <input type="checkbox" id="sivCapabilitiesConvert" name="capabilities" value="convert" class="custom-control-input" />
-                  <label class="custom-control-label" for="sivCapabilitiesConvert">
-                    convert (RFC6558)
-                  </label>
+                <input type="checkbox" id="sivCapabilitiesConvert" name="capabilities" value="convert" class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesConvert">
+                  convert (RFC6558)
+                </label>
+              </div>
+
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesNotify" name="capabilities" value="enotify" class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesNotify">
+                  notify (RFC5435)
+                </label>
               </div>
 
             </div>

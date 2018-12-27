@@ -114,10 +114,18 @@
      *   the string list widget.
      * @param {JQuery} menuItem
      *   the menu item which was clicked
-     *
-     *
      */
     onItemSelected(item, menuItem) {
+
+      if (menuItem.attr("data-value")) {
+
+        item.find("input[type=text], input[type=email]")
+          .val(menuItem.attr("data-value"))
+          .focus();
+
+        return;
+      }
+
       item.find("input[type=text], input[type=email]")
         .val(menuItem.text())
         .focus();
@@ -128,7 +136,6 @@
      *
      * @param {string} [value]
      *   the value which should be added. If omitted an empty string is added.
-     *
      */
     addItem(value) {
 
@@ -375,10 +382,10 @@
      *
      * @param {SieveAbstractElement} sivElement
      *   selects the current matchtype in case it is true.
-     *
-     *
+     * @param {Function} onInitialized
+     *   optional callback invoked when the element is fully initialized
      */
-    init(sivElement) {
+    init(sivElement, onInitialized) {
       let that = this;
 
       // We need here some to make mozilla happy.
@@ -397,6 +404,9 @@
         that.getElement().append(div);
 
         that.load(sivElement);
+
+        if (typeof(onInitialized) !== "undefined" && onInitialized !== null)
+          onInitialized(that.getElement());
       };
       xhr.open("GET", this.getTemplate());
       xhr.responseType = "document";
@@ -660,13 +670,14 @@
      *
      * @param {SieveAbstractElement} sivElement
      *   the sieve element which should be rendered.
-     *
+     * @param {Function} [onInitialized]
+     *   optional callback, invoked when a widget is fully initialized
      */
-    init(sivElement) {
+    init(sivElement, onInitialized) {
       let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
 
       for (let widget of widgets)
-        widget.init(sivElement);
+        widget.init(sivElement, onInitialized);
     }
 
     /**
@@ -697,7 +708,7 @@
   }
 
   /**
-   *
+   * Renders an UI for a SieveString item.
    */
   class SieveStringWidget {
 
@@ -714,7 +725,8 @@
      *   true in case the widget as a drop down otherwise false
      */
     _hasDropDown() {
-      return $(this._selector)[DOM_ELEMENT].hasAttribute("data-list-dropdown");
+      return $(this._selector)[DOM_ELEMENT]
+        .hasAttribute("data-list-dropdown");
     }
 
     /**
@@ -722,8 +734,6 @@
      *
      * @param {string} value
      *   the value to set.
-     *
-     *
      */
     setValue(value) {
       $(this._selector)
@@ -736,9 +746,7 @@
      * It initializes the dropdowns handlers if applicable.
      *
      * @param {string} value
-     *   the initial value to set
-     *
-     *
+     *   the initial value
      */
     onInitialized(value) {
       let that = this;
@@ -792,6 +800,9 @@
      */
     init(sivElement) {
       let value = "";
+
+      if (typeof(sivElement) === "undefined" || sivElement === null)
+        sivElement = "";
 
       if (typeof (sivElement) === "string")
         value = sivElement;

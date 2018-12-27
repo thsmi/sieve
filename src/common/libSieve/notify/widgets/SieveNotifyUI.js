@@ -318,9 +318,9 @@
     save(sivElement) {
 
       let value = null;
-      let status = $("input[type='checkbox'][name='modifier/15']").is(":checked");
+      let status = $("#cbxModifier15").is(":checked");
       if (status)
-        value = ":encodeurl";
+        value = $("#cbxModifier15").val();
 
       sivElement.getElement("modifier/15").setElement(value);
       sivElement.enable("modifier/15", status);

@@ -77,13 +77,6 @@
       let status;
       let value = null;
 
-      status = $("input[type='checkbox'][name='20']").is(":checked");
-      if (status)
-        value = ":quotewildcard";
-
-      this.getSieve().getElement("modifier/20").setElement(value);
-      this.getSieve().enable("modifier/20", status);
-
       value = null;
       status = $("input[type='checkbox'][name='30']").is(":checked");
       if (status)
@@ -124,9 +117,6 @@
         .init(this.getSieve(), sort);
 
       let state = null;
-
-      state = this.getSieve().enable("modifier/20");
-      $('input:checkbox[name="20"]').prop('checked', state);
 
       state = this.getSieve().enable("modifier/30");
       $('input:checkbox[name="30"]')
@@ -213,9 +203,9 @@
     save(sivElement) {
 
       let value = null;
-      let status = $("input[type='checkbox'][name='modifier/10']").is(":checked");
+      let status = $("#cbxModifier10").is(":checked");
       if (status)
-        value = ":length";
+        value = $("#cbxModifier10").val();
 
       sivElement.getElement("modifier/10").setElement(value);
       sivElement.enable("modifier/10", status);
@@ -229,8 +219,70 @@
     }
   }
 
+  /**
+   * Implements an abstract overlay widget which is used by
+   * the copy overlay for the fileinto action as well as the
+   * redirect action.
+   */
+  class SieveModifierQuotewildcardWidget extends SieveOverlayItemWidget {
 
+    /**
+     * @inheritdoc
+     */
+    static nodeType() {
+      return "modifier/";
+    }
 
+    /**
+     * @inheritdoc
+     */
+    static nodeName() {
+      return "modifier/20";
+    }
+
+    /**
+     * @inheritdoc
+     **/
+    getTemplate() {
+      return "./variables/templates/SieveQuotewildcardUI.html";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    static isCapable(capabilities) {
+      return capabilities.hasCapability("variables");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    load(sivElement) {
+      if (sivElement.enable("modifier/20"))
+        $("#cbxModifier20").attr("checked", "checked");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    save(sivElement) {
+
+      let value = null;
+      let status = $("#cbxModifier20").is(":checked");
+      if (status)
+        value = $("#cbxModifier20").val();
+
+      sivElement.getElement("modifier/20").setElement(value);
+      sivElement.enable("modifier/20", status);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    getElement() {
+      return $("" + this.selector);
+    }
+  }
 
 
   /**
@@ -327,6 +379,7 @@
     throw new Error("Could not register Body Extension");
 
   SieveDesigner.register2(SieveModifierLengthWidget);
+  SieveDesigner.register2(SieveModifierQuotewildcardWidget);
 
   SieveDesigner.register("action/set", SieveSetActionUI);
   SieveDesigner.register("test/string", SieveStringTestUI);

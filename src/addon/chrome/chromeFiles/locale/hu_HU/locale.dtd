@@ -135,7 +135,7 @@
 
 <!ENTITY options.account.sieve
 "A Szita (Sieve) egy erőteljes parancsnyelv a kiszolgálóoldali levélszűrés számára.">
-<!ENTITY options.account.activate "Enable “ManageSieve” for this account">
+<!ENTITY options.account.activate "„ManageSieve” (szita kezelése) engedélyezése ehhez a fiókhoz">
 <!ENTITY options.account.activate.yes "Igen, kezelje a Szita parancsfájlokat ehhez a fiókhoz:">
 <!ENTITY options.account.activate.no "Nem, ez a fiók nem támogatja a „ManageSieve”-t (szita kezelése)">
 <!ENTITY options.account.filters "Szűrők szerkesztése…">

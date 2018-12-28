@@ -153,17 +153,17 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 <!ENTITY options.proxy.description
 "Um eine Firewall zu umgehen können Verbindungen zu einem Sieve Server durch einen transparenten SOCKS Proxy geleitet werden.">
 <!ENTITY options.proxy.description.nameresolution
-"SOCKS4 always resolves hostnames only on the local machine.
-SOCKS5 supports both resolving on the remote SOCKS proxy as well as resolving on the local machine.
+"SOCKS4 löst Hostnamen nur auf dem lokalen Computer auf.
+Mit SOCKS5 ist es möglich Namen auf den entfernten SOCKS Proxy aufzulösen.
 
-You should prefer SOCKS5 with remote name resolution, if your remote DNS is more trustworthy than the local DNS.">
+Wenn Ihr entfernter DNS vertrauenswürdiger als der lokale DNS ist, dann sollten Sie die Namen immer auf den entfernten Proxy auflösen.">
 <!ENTITY options.proxy.description.localhost
 "Der Hostname 'localhost' wird auf manchen Systemen nicht richtig aufgelöst, alternativ kann die Loopback Addresse '127.0.0.1' verwendet werden.">
 <!ENTITY options.proxy.direct "Direkte Verbindung">
 <!ENTITY options.proxy.default "Automatische Konfiguration">
 <!ENTITY options.proxy.socks4 "SOCKS4">
 <!ENTITY options.proxy.socks5 "SOCKS5">
-<!ENTITY options.proxy.nameresolution "Resolve hostnames on remote proxy">
+<!ENTITY options.proxy.nameresolution "Hostnamen auf dem Proxy auflösen">
 <!ENTITY options.proxy.host "Hostname:">
 <!ENTITY options.proxy.port "Port:">
 
@@ -192,9 +192,11 @@ You should prefer SOCKS5 with remote name resolution, if your remote DNS is more
 
 
 <!ENTITY list.badcert
-  "Secure connection failed. The mail server identified itself with a bad certificate.">
+  "Aufbau einer sicheren Verbindung ist fehlgeschlagen. Der Mailserver identifiziert sich mit einem ungültigen Zertifikat.">
 <!ENTITY list.badcert.error
-  "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server. Do not continue unless you know there is a good reason why this server does not use trusted identification.">
+  "Es könnte sein, dass sich jemand als Ihr Mailserver ausgibt, um beispielsweise an Ihr Passwort zu gelangen.
+
+Ignorieren Sie diese Meldung nur, wenn Sie sich wirklich sicher sind, dass Sie tatsächlich mit dem gewünschten Server verbunden sind.">
 <!ENTITY list.badcert.remember "Meldung nicht mehr anzeigen">
 <!ENTITY list.badcert.ignore "Weiter">
 <!ENTITY list.badcert.abort "Abbrechen">
@@ -259,18 +261,18 @@ auf 'Erweitert' um das Konto manuell zu konfigurieren.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"Thunderbird is currently in offline mode. Check that you are connected to the Internet and select ‘Go Online’ or uncheck ‘Work Offline’ from the File menu and try again.">
+"Thunderbird ist derzeit im &quot;Offline-Modus&quot;. Überprüfen Sie, dass Sie mit dem Internet verbunden sind und wählen Sie &quot;Online gehen&quot; oder deaktivieren Sie die Option &quot;Offline arbeiten&quot; aus dem Menü &quot;Datei&quot; und versuchen Sie es erneut.">
 <!ENTITY status.offline.go "Verbindung herstellen">
 
 
 <!ENTITY status.connectivity.loss.description
-"The server unexpectedly closed the connection. Select ‘Reconnect’ to try again.">
+"Der Server hat unerwartet die Verbindung beendet. Wählen Sie &quot;Erneut verbinden&quot; und versuchen Sie es erneut.">
 <!ENTITY status.connectivity.loss.reconnect "Erneut verbinden">
 
 <!ENTITY status.warning.ignore "Ignorieren">
 <!ENTITY status.warning.reconnect "Erneut verbinden">
 <!ENTITY status.warning
-  "“ManageSieve” is not configured for this account. To enable “ManageSieve”, select ‘Sieve Message Filters’ in the ‘Tools’ menu.">
+  "&quot;ManageSieve&quot; ist nicht für dieses Konto konfiguriert. Zum aktivieren &quot;Sieve Filter Settings&quot; im &quot;Tools&quot; Menü auswählen.">
 
 <!ENTITY status.error.reconnect "Erneut verbinden">
 <!ENTITY status.error "Aktion fehlgeschlagen, Server meldet einen schweren Fehler:">

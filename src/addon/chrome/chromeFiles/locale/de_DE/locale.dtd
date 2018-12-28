@@ -19,7 +19,7 @@
 <!ENTITY options.tab.general "Allgemein">
 <!ENTITY options.tab.proxy "Proxy">
 <!ENTITY options.tab.advanced "Erweitert">
-<!ENTITY options.tab.advanced.warning "Diese Einstellungen sind für fortgeschrittene Benutzer gedacht...">
+<!ENTITY options.tab.advanced.warning "Diese Einstellungen sind für fortgeschrittene Benutzer gedacht…">
 <!ENTITY options.tab.editor "Editor">
 <!ENTITY options.tab.debug "Debug">
 <!ENTITY options.tab.credits "Danksagung">
@@ -40,9 +40,9 @@
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Anderer:">
 <!ENTITY options.port.autoselect "Port automatisch wählen">
-<!ENTITY options.port.autoselect.running "Porterkennung aktiv, bitte warten...">
+<!ENTITY options.port.autoselect.running "Porterkennung aktiv, bitte warten…">
 <!ENTITY options.port.autoselect.successful "Erkennung erfolgreich, Server Port:">
-<!ENTITY options.port.autoselect.error "Auswahl fehlgeschlagen...">
+<!ENTITY options.port.autoselect.error "Porterkennung fehlgeschlagen…">
 
 <!ENTITY options.security.caption "Verbindungssicherheit">
 <!ENTITY options.security.description
@@ -61,7 +61,7 @@ hierdurch werden Abhören der Zugangsdaten sowie Manipulationen effektiv verhind
 <!ENTITY options.login.customAuth "Benutzername und Passwort">
 <!ENTITY options.login.username "Benutzername">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "Gespeicherte Passwörter anzeigen...">
+<!ENTITY options.login.show "Gespeicherte Passwörter anzeigen…">
 
 <!ENTITY options.misc "Sonstige Einstellungen">
 <!ENTITY options.misc.keepalive "Keepalive Nachrichten aktivieren">
@@ -73,7 +73,7 @@ hierdurch werden Abhören der Zugangsdaten sowie Manipulationen effektiv verhind
 "Eine Keepalive Anfrage signalisiert dem Server vor Ablauf dieser Zeit, dass die Verbindung noch aktiv ist und nicht getrennt werden soll.">
 <!ENTITY options.misc.keepalive.min "min">
 
-<!ENTITY options.misc.compile.caption "Syntaxüberprüfung">
+<!ENTITY options.misc.compile.caption "Syntaxprüfung">
 <!ENTITY options.misc.compile.description
 "Sieve Skripte können beim editieren auf Syntaxfehler überprüft werden. Der Syntaxcheck erfolgt durch den Server. Um den Netzwerkverkehr niedrig zu halten, findet die Syntax Überprüfung erst nach Ende der Eingabe statt.">
 <!ENTITY options.misc.compile "Skripte während der Eingabe auf Syntaxfehler überprüfen">
@@ -90,15 +90,11 @@ hierdurch werden Abhören der Zugangsdaten sowie Manipulationen effektiv verhind
 <!ENTITY options.editor.indention.policy.tabs "Nur Tabulatoren">
 
 <!ENTITY options.editor.tabs.caption "Tabulator Einzug">
-<!ENTITY options.editor.tabs.description "Der Texteditor bietet automatisches Einrücken an und macht somit die Verwendung des Tabulator überflüssig. Früher wurden Tabulatoren zum dynamischen Einrücken des Textes verwendet.">
+<!ENTITY options.editor.tabs.description "Früher wurden Tabulatoren für dynamisch Texteinrückungen genutzt. Der Texteditor bietet jedoch automatisches Einrücken an. Es ersetzt Tabulatoren bei der Eingabe durch die Leerzeichen ersetzt und arbeitet viel zuverlässiger als Tabulatoren.">
 <!ENTITY options.editor.tabs.width "Tabulatorbreite">
 
-<!ENTITY options.editor.tabs.policy.caption "Tabulatoren">
-<!ENTITY options.editor.tabs.policy.spaces "Tabulatoren durch Leerzeichen ersetzen">
-<!ENTITY options.editor.tabs.policy.tabs "Tabulatoren einfügen">
-
 <!ENTITY options.debug.warning
-"Bitte beachten Sie, dass Debugmeldungen von SASL Login und SASL Plain Ihr Passwort im Klartext enthalten!">
+"Bitte beachten Sie, dass Debugmeldungen von SASL LOGIN und SASL PLAIN Ihr Passwort im Klartext enthalten!">
 <!ENTITY options.debug.caption "Debug Einstellungen">
 <!ENTITY options.debug.request "Client zu Server Kommunikation (requests)">
 <!ENTITY options.debug.response "Server zu Client Kommunikation (responses)">
@@ -107,7 +103,7 @@ hierdurch werden Abhören der Zugangsdaten sowie Manipulationen effektiv verhind
 <!ENTITY options.debug.session "Sessionmanagement">
 <!ENTITY options.debug.output "Debugmeldungen">
 <!ENTITY options.debug.console "Debugmeldungen werden in die Fehlerkonsole geschrieben">
-<!ENTITY options.debug.console.open "Fehlerkonsole öffnen...">
+<!ENTITY options.debug.console.open "Fehlerkonsole öffnen…">
 
 <!ENTITY options.authmechanism.caption "Authentifizierungsmechanismus">
 <!ENTITY options.authmechanism "Empfohlenen Authentifizierungsmechanismus übergehen">
@@ -131,7 +127,7 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 <!ENTITY options.proxyauth.none "Keine Autorisation">
 <!ENTITY options.proxyauth.default "Sieve Benutzername">
 <!ENTITY options.proxyauth.prompt "Benutzername abfragen">
-<!ENTITY options.proxyauth.custom "Autorisation als">
+<!ENTITY options.proxyauth.custom "Autorisieren als">
 <!ENTITY options.proxyauth.custom.username "Benutzername:">
 
 <!ENTITY options.info.servername "Servername:">
@@ -143,11 +139,11 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 <!ENTITY options.account.sieve
 "Sieve ist eine Skriptsprache um serverseitig E-Mails zu filtern und sortieren.">
 <!ENTITY options.account.activate
-"Möchten Sie Sieve Scripte für diesen Account verwalten?">
+"Möchten Sie &quot;ManageSieve&quot; diese Konto aktivieren?">
 <!ENTITY options.account.activate.yes "Ja, dieses Konto unterstützt Sieve:">
 <!ENTITY options.account.activate.no "Nein, dieses Konto unterstützt kein Sieve">
-<!ENTITY options.account.filters "Filter bearbeiten...">
-<!ENTITY options.account.settings "Einstellungen ändern...">
+<!ENTITY options.account.filters "Filter bearbeiten…">
+<!ENTITY options.account.settings "Einstellungen ändern…">
 
 <!-- Credits -->
 <!ENTITY options.credits "Vielen Dank an alle Mitwirkenden:">
@@ -157,14 +153,17 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 <!ENTITY options.proxy.description
 "Um eine Firewall zu umgehen können Verbindungen zu einem Sieve Server durch einen transparenten SOCKS Proxy geleitet werden.">
 <!ENTITY options.proxy.description.nameresolution
-"SOCKSv4 löst Hostnamen über den lokalen Rechner auf. Bei SOCKSv5 können Hostnamen über den DNS des Proxy ermittelt werden. Falls der Proxy vertrauenswürdig ist sollte die letztere Variante nutzen.">
+"SOCKS4 löst Hostnamen nur auf dem lokalen Computer auf.
+Mit SOCKS5 ist es möglich Namen auf den entfernten SOCKS Proxy aufzulösen.
+
+Wenn Ihr entfernter DNS vertrauenswürdiger als der lokale DNS ist, dann sollten Sie die Namen immer auf den entfernten Proxy auflösen.">
 <!ENTITY options.proxy.description.localhost
-"Der Hostname 'localhost' wird auf manchen Systemen nicht richtig aufgelöst, als Workaround die Loopback IP '127.0.0.1' nutzen.">
+"Der Hostname 'localhost' wird auf manchen Systemen nicht richtig aufgelöst, alternativ kann die Loopback Addresse '127.0.0.1' verwendet werden.">
 <!ENTITY options.proxy.direct "Direkte Verbindung">
 <!ENTITY options.proxy.default "Automatische Konfiguration">
-<!ENTITY options.proxy.socks4 "SOCKSv4">
-<!ENTITY options.proxy.socks5 "SOCKSv5">
-<!ENTITY options.proxy.nameresolution "Auf dem Proxy den Hostnamen auflösen">
+<!ENTITY options.proxy.socks4 "SOCKS4">
+<!ENTITY options.proxy.socks5 "SOCKS5">
+<!ENTITY options.proxy.nameresolution "Hostnamen auf dem Proxy auflösen">
 <!ENTITY options.proxy.host "Hostname:">
 <!ENTITY options.proxy.port "Port:">
 
@@ -174,18 +173,18 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 
 <!ENTITY list.accounts "Filter für:">
 
-<!ENTITY list.tree "Serverseitige Skripte:">
+<!ENTITY list.tree "Serverseitige Skripte">
 <!ENTITY list.tree.active "Aktiv">
 <!ENTITY list.tree.name "Name">
 
-<!ENTITY list.new "Neu...">
-<!ENTITY list.edit "Bearbeiten...">
+<!ENTITY list.new "Neu…">
+<!ENTITY list.edit "Bearbeiten…">
 <!ENTITY list.delete "Löschen">
 <!ENTITY list.rename "Umbenennen...">
 <!ENTITY list.activate "Aktivieren">
-<!ENTITY list.settings "Einstellungen...">
+<!ENTITY list.settings "Einstellungen…">
 
-<!ENTITY list.details.capability "Sieve Server Eigenschaften">
+<!ENTITY list.details.capability "Server Eigenschaften">
 <!ENTITY list.details.capability.implementation "Serverversion:">
 <!ENTITY list.details.capability.sasl "SASL Mechanismen:">
 <!ENTITY list.details.capability.extensions "Erweiterungen:">
@@ -193,9 +192,9 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 
 
 <!ENTITY list.badcert
-  "Ihr Mailserver kann nicht Identifiziert werden und wird als nicht vertrauenswürdig eingestuft.">
+  "Aufbau einer sicheren Verbindung ist fehlgeschlagen. Der Mailserver identifiziert sich mit einem ungültigen Zertifikat.">
 <!ENTITY list.badcert.error
-"Es könnte sein, dass sich jemand als Ihr Mailserver ausgibt, um beispielsweise an Ihr Passwort zu gelangen.
+  "Es könnte sein, dass sich jemand als Ihr Mailserver ausgibt, um beispielsweise an Ihr Passwort zu gelangen.
 
 Ignorieren Sie diese Meldung nur, wenn Sie sich wirklich sicher sind, dass Sie tatsächlich mit dem gewünschten Server verbunden sind.">
 <!ENTITY list.badcert.remember "Meldung nicht mehr anzeigen">
@@ -204,7 +203,7 @@ Ignorieren Sie diese Meldung nur, wenn Sie sich wirklich sicher sind, dass Sie t
 
 <!ENTITY list.autoconfig.welcome.caption "Herzlich Willkommen!">
 <!ENTITY list.autoconfig.welcome.description1
-"Dieses Sieve Konto ist derzeit noch nicht konfiguriert">
+"Dieses Sieve Konto ist derzeit noch nicht konfiguriert.">
 <!ENTITY list.autoconfig.welcome.description2
 "Klicken Sie auf 'Weiter' um die Konfiguration automatisch zu erkennen, oder
 auf 'Erweitert' um das Konto manuell zu konfigurieren.">
@@ -214,13 +213,13 @@ auf 'Erweitert' um das Konto manuell zu konfigurieren.">
 
 <!ENTITY list.autoconfig.detecting.caption "Analysiere Konfiguration">
 <!ENTITY list.autoconfig.detecting.description
-  "Dauert mitunter mehrere Minuten...">
+  "Dauert mitunter mehrere Minuten…">
 
 <!ENTITY list.autoconfig.cancel "Abbrechen">
 
 <!ENTITY list.autoconfig.success.caption "Erkennung erfolgreich">
 <!ENTITY list.autoconfig.success.description
-  "Ihr Sieve Konto ist nun konfiguriert...">
+  "Ihr Sieve Konto ist nun konfiguriert und einsatzbereit…">
 
 <!ENTITY list.autoconfig.error.caption "Erkennung fehlgeschlagen">
 <!ENTITY list.autoconfig.error.description
@@ -250,7 +249,7 @@ auf 'Erweitert' um das Konto manuell zu konfigurieren.">
 <!ENTITY edit.sidebar.title "Sieve Sprachreferenz">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Suchen und ersetzen">
+<!ENTITY edit.searchreplace.title "Suchen und Ersetzen">
 <!ENTITY edit.searchreplace.searchfor "Suchen nach:">
 <!ENTITY edit.searchreplace.replacewith "Ersetzen mit:">
 <!ENTITY edit.searchreplace.options "Optionen">
@@ -262,18 +261,18 @@ auf 'Erweitert' um das Konto manuell zu konfigurieren.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"Sie sind derzeit im Offline-Modus. Möchten Sie diesen verlassen?">
+"Thunderbird ist derzeit im &quot;Offline-Modus&quot;. Überprüfen Sie, dass Sie mit dem Internet verbunden sind und wählen Sie &quot;Online gehen&quot; oder deaktivieren Sie die Option &quot;Offline arbeiten&quot; aus dem Menü &quot;Datei&quot; und versuchen Sie es erneut.">
 <!ENTITY status.offline.go "Verbindung herstellen">
 
 
 <!ENTITY status.connectivity.loss.description
-"Die Verbindung zum Server wurde unterbrochen. Klicken sie auf &quot;Erneut verbinden&quot; um sie wiederherzustellen.">
+"Der Server hat unerwartet die Verbindung beendet. Wählen Sie &quot;Erneut verbinden&quot; und versuchen Sie es erneut.">
 <!ENTITY status.connectivity.loss.reconnect "Erneut verbinden">
 
 <!ENTITY status.warning.ignore "Ignorieren">
 <!ENTITY status.warning.reconnect "Erneut verbinden">
 <!ENTITY status.warning
-  "Dieses Konto ist nicht konfiguriert. Bitte rufen Sie 'Extras-&gt; Sieve Filter Einstellungen' auf">
+  "&quot;ManageSieve&quot; ist nicht für dieses Konto konfiguriert. Zum aktivieren &quot;Sieve Filter Settings&quot; im &quot;Tools&quot; Menü auswählen.">
 
 <!ENTITY status.error.reconnect "Erneut verbinden">
 <!ENTITY status.error "Aktion fehlgeschlagen, Server meldet einen schweren Fehler:">
@@ -283,7 +282,7 @@ auf 'Erweitert' um das Konto manuell zu konfigurieren.">
 
 Welches möchten Sie behalten?">
 <!ENTITY status.sync.keep "Lokales Skript beibehalten">
-<!ENTITY status.sync.replace "Serverseitiges Script verwenden">
+<!ENTITY status.sync.replace "Serverseitiges Skript verwenden">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

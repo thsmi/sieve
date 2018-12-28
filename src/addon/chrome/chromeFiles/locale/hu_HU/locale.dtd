@@ -12,45 +12,45 @@
  -->
 
 <!-- Options Dialog -->
-<!ENTITY options.title "Sieve Options">
+<!ENTITY options.title "Szita beállítások">
 
 <!ENTITY options.tab.server "Kiszolgáló">
 <!ENTITY options.tab.security "Biztonság">
 <!ENTITY options.tab.general "Általános">
 <!ENTITY options.tab.proxy "Meghatalmazott">
 <!ENTITY options.tab.advanced "Haladó">
-<!ENTITY options.tab.advanced.warning "These settings are intended for advanced users...">
+<!ENTITY options.tab.advanced.warning "Ezek a beállítások haladó felhasználók számára készültek…">
 <!ENTITY options.tab.editor "Szerkesztő">
 <!ENTITY options.tab.debug "Hibakeresés">
 <!ENTITY options.tab.credits "Közreműködők">
 
 <!ENTITY options.host.caption "Kiszolgáló neve">
 <!ENTITY options.host.description
-"Most Sieve implementations run directly on a mail server. Thus the Sieve server name is usually same as your IMAP server name.">
+"A legtöbb Szita megvalósítások közvetlenül fut a levélkiszolgálón. Így a Szita-kiszolgáló neve általában ugyanaz, mint az IMAP-kiszolgáló neve.">
 <!ENTITY options.host.imap "IMAP-kiszolgáló:">
 <!ENTITY options.host.custom "Más kiszolgáló:">
 
-<!ENTITY options.port.caption "Server Port">
+<!ENTITY options.port.caption "Kiszolgáló kikötő">
 <!ENTITY options.port.description
-"The server port changed, when ManageSieve turned into a full RFC Standard">
+"A kiszolgáló kikötő megváltozott, amikor a „ManageSieve” (szita kezelése) teljes RFC szabványt váltott">
 <!ENTITY options.port.description2
-"Older server implementations still use port 2000, while newer standard conform server can only be accessed via port 4190.">
+"A régebbi kiszolgálóteljesítések továbbra is a 2000-es kikötőt használják, míg az újabb szabványos kiszolgáló csak a 4190-es kikötőn keresztül érhető el.">
 <!ENTITY options.port.4190 "4190 (alapértelmezett)" >
 <!ENTITY options.port.2000 "2000" >
 <!ENTITY options.port.custom "Egyéb:">
-<!ENTITY options.port.autoselect "Auto Select Port">
-<!ENTITY options.port.autoselect.running "Selecting Port, please wait...">
-<!ENTITY options.port.autoselect.successful "Sieve detected on Port ">
-<!ENTITY options.port.autoselect.error "Selecting Port failed...">
+<!ENTITY options.port.autoselect "Kikötő önműködően kiválasztása">
+<!ENTITY options.port.autoselect.running "Kikötő választása, kis türelmet kérjük…">
+<!ENTITY options.port.autoselect.successful "Szita észlelt kikötő: ">
+<!ENTITY options.port.autoselect.error "A kikötő kiválasztása sikertelen…">
 
 <!ENTITY options.security.caption "Kapcsolat biztonsága">
 <!ENTITY options.security.description
-"Transport Layer Security (TLS) secures the connection to the manage sieve server. It cyphers all data and is designed to prevent eavesdropping and tampering.">
+"A TLS (Transport Layer Security – közlekedési rétegbiztonság) biztosítja a kapcsolatot a „ManageSieve” (szita kezelése) kiszolgálóval. Az összes adatot kiírja, és megakadályozza a lehallgatást és a illetéktelent.">
 <!ENTITY options.security.description2
-"ManageSieve usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
-<!ENTITY options.security.tls.disabled "Nincs TLS">
-<!ENTITY options.security.tls.available "TLS, ha lehetséges">
-<!ENTITY options.security.tls.force "TLS kényszerítve">
+"A „ManageSieve” (szita kezelése) általában átküldi a jelszavak titkosítatlan. Tehát ha nincs igazán jó oka (például hibakeresés), akkor mindig kell a TLS (Transport Layer Security – közlekedési rétegbiztonság) kikényszerítésére.">
+<!ENTITY options.security.tls.disabled "Nincs TLS (Transport Layer Security – közlekedési rétegbiztonság)">
+<!ENTITY options.security.tls.available "TLS (Transport Layer Security – közlekedési rétegbiztonság), ha lehetséges">
+<!ENTITY options.security.tls.force "TLS (Transport Layer Security – közlekedési rétegbiztonság) kényszerítve">
 
 <!ENTITY options.login "Hitelesítés">
 <!ENTITY options.login.key "A">
@@ -62,25 +62,25 @@
 <!ENTITY options.login.show "Mentett jelszavak megtekintése…">
 
 <!ENTITY options.misc "Egyéb beállítások">
-<!ENTITY options.misc.keepalive "Enable keepalives">
+<!ENTITY options.misc.keepalive "Keep-Alive üzenetek engedélyezése">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.keepalive2 "Küldjön minden">
 <!ENTITY options.misc.keepalive.description
-"If the client was idle for too long (usually 30 minutes), the server assumes the client is disconnected and hangs up the connection.">
+"Ha az ügyfél túlságosan tétlen (általában 30 perc), a kiszolgáló feltételezi, hogy az ügyfél leválik, és feloldja a kapcsolatot.">
 <!ENTITY options.misc.keepalive.description2
-"A keepalive request indicates the connection is still active and should be preserved.">
+"A „Keep-Alive” kérés azt jelzi, hogy a kapcsolat még működik és meg kell őrizni.">
 <!ENTITY options.misc.keepalive.min "perc">
 
-<!ENTITY options.misc.compile.caption "Mondattan ellenőrzés">
+<!ENTITY options.misc.compile.caption "Mondattan-ellenőrzés">
 <!ENTITY options.misc.compile.description
-"While editing Scripts, they can be checked for validity. The syntax check is performed by the server. In order to keep network traffic low, syntax check requests are grouped.">
-<!ENTITY options.misc.compile "Check Scripts while typing">
+"A kiszolgáló ellenőrzi a mondattan-ellenőrzés beírás közben. A kérelmeket csoportosítják, hogy a hálózati forgalom alacsony legyen.">
+<!ENTITY options.misc.compile "Mondattan-ellenőrzés beírás közben">
 <!ENTITY options.misc.compile.key "c">
-<!ENTITY options.misc.compile2 "Validate at least every">
+<!ENTITY options.misc.compile2 "Érvényesít minden">
 <!ENTITY options.misc.compile.ms "ezredmásodperc">
 
 <!ENTITY options.editor.indention.caption "Behúzás">
-<!ENTITY options.editor.indention.description "The plain text editor supports automatic indenting.">
+<!ENTITY options.editor.indention.description "Az egyszerű szövegszerkesztő támogatja az önműködő behúzását.">
 <!ENTITY options.editor.indention.width "Behúzási szélesség:">
 
 <!ENTITY options.editor.indention.policy.caption "Behúzás házirend:">
@@ -88,15 +88,11 @@
 <!ENTITY options.editor.indention.policy.tabs "Csak tabulátorok">
 
 <!ENTITY options.editor.tabs.caption "Fül kezelése">
-<!ENTITY options.editor.tabs.description "Texteditor with automatic indenting replaced the need for a tab key, but there are many editors which default to tabs due to historic reasons.">
+<!ENTITY options.editor.tabs.description "Szövegszerkesztők önműködő behúzással váltották fel a Tab billentyű használatának szükségességét. Történelmi okokból sok szövegszerkesztők van, amely alapértelmezés szerint a Tab.">
 <!ENTITY options.editor.tabs.width "Fül szélessége">
 
-<!ENTITY options.editor.tabs.policy.caption "Tabulátor házirend">
-<!ENTITY options.editor.tabs.policy.spaces "Helyezze be a tabulátorok szóközeit">
-<!ENTITY options.editor.tabs.policy.tabs "Tabulátorok beszúrása">
-
 <!ENTITY options.debug.warning
-"Keep in mind that neither SASL Login nor SASL Plain cypher your password, it might be posted in clear text to the error console.">
+"Sem a „SASL LOGIN”, sem a „SASL PLAIN” nem rejtjelez meg a jelszavát. Jelszavát tiszta szövegben lehet feltüntetni a hibakijelzőnek.">
 <!ENTITY options.debug.caption "Hibakeresési beállítások">
 <!ENTITY options.debug.request "Ügyféltől kiszolgálónak közlés (kérések)">
 <!ENTITY options.debug.response "Kiszolgálótól ügyfélnek közlés (válaszok)">
@@ -104,183 +100,181 @@
 <!ENTITY options.debug.stream "Nyers lerakóhely/bájt-patak lerakóhely">
 <!ENTITY options.debug.session "Munkamenet-kezelés">
 <!ENTITY options.debug.output "Kimenet hibakeresése">
-<!ENTITY options.debug.console "Debug information is posted to the error console">
-<!ENTITY options.debug.console.open "Hibakijelző megtekintése…">
+<!ENTITY options.debug.console "Hibakeresés felvilágosítás bekerül a hibakijelzőbe">
+<!ENTITY options.debug.console.open "Hibakijelző megjelenítése…">
 
 <!ENTITY options.authmechanism.caption "Hitelesítési mechanizmus">
-<!ENTITY options.authmechanism "Override suggested Authentication Mechanism">
-<!ENTITY options.authmechanism.default "Use always:">
+<!ENTITY options.authmechanism "Hitelesítési mechanizmus felülbírálása">
+<!ENTITY options.authmechanism.default "Mindig használja:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
-<!ENTITY options.authmechanism.login "Login">
-<!ENTITY options.authmechanism.plain "Plain">
+<!ENTITY options.authmechanism.login "LOGIN">
+<!ENTITY options.authmechanism.plain "PLAIN">
 <!ENTITY options.authmechanism.external "EXTERNAL">
 <!ENTITY options.authmechanism.description
-"In certain situations e.g. when using Proxy Authentication you might want to force a specific Authentication Mechanism." >
+"Bizonyos helyzetekben pl. ha meghatalmazott engedélyezést használsz, egy bizonyos hitelesítési mechanizmusra kényszeríteni." >
 
 <!ENTITY options.proxyauth.caption "Meghatalmazott engedélye">
 <!ENTITY options.proxyauth.desc
-"Proxy authorization, allows an authenticated user to act on behalf of another user. Usually servers are configured, that this feature is only available for administrators.">
+"Meghatalmazott engedélyezés, lehetővé teszi egy hitelesített felhasználó számára, hogy egy másik felhasználó nevében járjon el. Általában a kiszolgálók beállítása vannak, hogy ez a vonás csak a rendszergazdák számára érhető el.">
 <!ENTITY options.proxyauth.force
-"When using proxy authorization you should force &quot;SASL PLAIN&quot; Authentication.">
+"Meghatalmazott engedélyezés esetén kényszeríteni kell a „SASL PLAIN” hitelesítést.">
 <!ENTITY options.proxyauth.none "Nincs engedélye">
-<!ENTITY options.proxyauth.default "Sieve Username">
-<!ENTITY options.proxyauth.prompt "Kérjen engedélye">
+<!ENTITY options.proxyauth.default "Szita felhasználónév">
+<!ENTITY options.proxyauth.prompt "Hitelesítés kérése">
 <!ENTITY options.proxyauth.custom "Engedélyezze a(z)">
 <!ENTITY options.proxyauth.custom.username "Felhasználónév:">
 
-<!ENTITY options.info.servername "Server Name:">
-<!ENTITY options.info.port "Port:">
+<!ENTITY options.info.servername "Kiszolgáló neve:">
+<!ENTITY options.info.port "Kikötő:">
 <!ENTITY options.info.secure "Biztonságos kapcsolat:">
-<!ENTITY options.info.username "Felhasználói név:">
+<!ENTITY options.info.username "Felhasználónév:">
 <!ENTITY options.info.auth "Hitelesítés:">
 
 <!ENTITY options.account.sieve
-"Sieve is a powerful script language for server-side mail filtering.">
-<!ENTITY options.account.activate
-"Do you want to activate managing Sieve Scripts for this account?">
-<!ENTITY options.account.activate.yes "Yes, manage Sieve scripts for this account:">
-<!ENTITY options.account.activate.no "No, this account does not support Sieve">
-<!ENTITY options.account.filters "Edit Filters...">
+"A Szita (Sieve) egy erőteljes parancsnyelv a kiszolgálóoldali levélszűrés számára.">
+<!ENTITY options.account.activate "Enable “ManageSieve” for this account">
+<!ENTITY options.account.activate.yes "Igen, kezelje a Szita parancsfájlokat ehhez a fiókhoz:">
+<!ENTITY options.account.activate.no "Nem, ez a fiók nem támogatja a „ManageSieve”-t (szita kezelése)">
+<!ENTITY options.account.filters "Szűrők szerkesztése…">
 <!ENTITY options.account.settings "Beállítások módosítása…">
 
 <!-- Credits -->
-<!ENTITY options.credits "Many thanks to all contributors:">
+<!ENTITY options.credits "Köszönet minden közreműködőnek:">
 
 <!-- Proxy Settings -->
-<!ENTITY options.proxy "Meghatalmazás beállítása">
+<!ENTITY options.proxy "Meghatalmazott beállítása">
 <!ENTITY options.proxy.description
-"Instead of  a direct connection you may use a SOCKS Proxy to transparently and securely traverse a firewall.">
+"A közvetlen kapcsolat helyett a SOCKS meghatalmazottás segítségével átláthatóan és biztonságosan haladhat át egy tűzfalon.">
 <!ENTITY options.proxy.description.nameresolution
-"With SOCKSv4 hostnames are always resolved on the local machine. SOCKSv5 also supports resolving hostnames by the SOCKS proxy. If you can trust the SOCKSv5 proxy, the latter is considered to be more secure and should be preferred.">
+"SOCKS4 always resolves hostnames only on the local machine.
+SOCKS5 supports both resolving on the remote SOCKS proxy as well as resolving on the local machine.
+
+SOCKS5 with remote name resolution is preferred if the remote DNS is more trustworthy than the local DNS.">
 <!ENTITY options.proxy.description.localhost
-"On some system using 'localhost' as proxy host does not function properly, use '127.0.0.1' instead.">
+"Ha a „localhost” meghatalmazott-kiszolgáló nem működik megfelelően, helyette használja a „127.0.0.1” meghatalmazott-kiszolgáló.">
 <!ENTITY options.proxy.direct "Közvetlen kapcsolat">
-<!ENTITY options.proxy.default "Default Proxy configuration">
-<!ENTITY options.proxy.socks4 "SOCKSv4">
-<!ENTITY options.proxy.socks5 "SOCKSv5">
-<!ENTITY options.proxy.nameresolution "Resolve hostnames on proxy">
+<!ENTITY options.proxy.default "Alapértelmezett meghatalmazott beállítása">
+<!ENTITY options.proxy.socks4 "SOCKS4">
+<!ENTITY options.proxy.socks5 "SOCKS5">
+<!ENTITY options.proxy.nameresolution "Gépneveket megoldása a távoli meghatalmazottnál">
 <!ENTITY options.proxy.host "Gépnév:">
-<!ENTITY options.proxy.port "Port:">
+<!ENTITY options.proxy.port "Kikötő:">
 
 
 <!-- Locale for the List Filter Dialog -->
-<!ENTITY list.title "Sieve Filters">
+<!ENTITY list.title "Szita szűrők">
 
-<!ENTITY list.accounts "Filters for:">
+<!ENTITY list.accounts "Szűrők a következőkhöz:">
 
-<!ENTITY list.tree "Serverside Sieve mailfilters">
-<!ENTITY list.tree.active "Active">
-<!ENTITY list.tree.name "Name">
+<!ENTITY list.tree "Kiszolgálóoldali szita levelezőszűrőket">
+<!ENTITY list.tree.active "Működő">
+<!ENTITY list.tree.name "Név">
 
-<!ENTITY list.new "New...">
-<!ENTITY list.edit "Edit...">
-<!ENTITY list.delete "Delete">
-<!ENTITY list.rename "Rename">
-<!ENTITY list.activate "Activate">
+<!ENTITY list.new "Új…">
+<!ENTITY list.edit "Szerkesztés…">
+<!ENTITY list.delete "Törlés">
+<!ENTITY list.rename "Átnevezés">
+<!ENTITY list.activate "Működő">
 <!ENTITY list.settings "Beállítások…">
 
-<!ENTITY list.details.capability "Server Sieve Capabilities">
+<!ENTITY list.details.capability "Szita-kiszolgáló képességeit">
 <!ENTITY list.details.capability.implementation "Kiszolgálóverzió:">
-<!ENTITY list.details.capability.sasl "SASL Mechanisms:">
+<!ENTITY list.details.capability.sasl "SASL (Simple Authentication and Security Layer – egyszerű hitelesítés és biztonsági réteg) mechanizmusok:">
 <!ENTITY list.details.capability.extensions "Bővítmények:">
-<!ENTITY list.details.capability.protocol "Protocol Version:">
+<!ENTITY list.details.capability.protocol "Protokollverzió:">
 
 
 <!ENTITY list.badcert
-  "Your mail server attempts to identify itself with invalid information.">
+  "A biztonságos kapcsolat sikertelen. A levélkiszolgáló rossz tanúsítvánnyal rendelkezik.">
 <!ENTITY list.badcert.error
-"If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server.
+  "Ha általában probléma nélkül tud kapcsolódni ehhez a kiszolgálóhoz, akkor ez a hiba azt jelentheti, hogy valaki leutánozta a kiszolgálót. Ne folytassa, kivéve ha tudja, hogy jó oka van annak, hogy ez a kiszolgáló nem megbízható azonosítást használ.">
+<!ENTITY list.badcert.remember "A döntés megjegyzése">
+<!ENTITY list.badcert.ignore "Folytatás">
+<!ENTITY list.badcert.abort "Megszakít">
 
-Do not continue unless you know there's a good reason why this server doesn't use trusted identification.">
-<!ENTITY list.badcert.remember "Remember my decision">
-<!ENTITY list.badcert.ignore "Continue">
-<!ENTITY list.badcert.abort "Abort">
-
-<!ENTITY list.autoconfig.welcome.caption "Welcome!">
+<!ENTITY list.autoconfig.welcome.caption "Isten hozott!">
 <!ENTITY list.autoconfig.welcome.description1
-"This account is not Configured for manage sieve.">
+"A „ManageSieve” (szita kezelése) szolgáltatást nincs beállítva erre a fiókra.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click on 'Continue' to detect the configuration automatically.
-Or choose 'Advanced' to configure the account manually.">
+"Válassza a Folytatás gombot a beállítása önműködő-felismeréséhez.
+Válassza a Haladó gombot a fiók kézi beállításához.">
 
-<!ENTITY list.autoconfig.advanced "Advanced">
-<!ENTITY list.autoconfig.continue "Continue">
+<!ENTITY list.autoconfig.advanced "Haladó">
+<!ENTITY list.autoconfig.continue "Folytatás">
 
-<!ENTITY list.autoconfig.detecting.caption "Autodetecting Configuration">
+<!ENTITY list.autoconfig.detecting.caption "Beállítások önműködő észlelése">
 <!ENTITY list.autoconfig.detecting.description
-  "Might take some minutes to complete...">
+  "Kis türelmet…">
 
-<!ENTITY list.autoconfig.cancel "Cancel">
+<!ENTITY list.autoconfig.cancel "Mégse">
 
-<!ENTITY list.autoconfig.success.caption "Congratulations!">
+<!ENTITY list.autoconfig.success.caption "Gratulálunk!">
 <!ENTITY list.autoconfig.success.description
-  "Your account is now configured and ready to use...">
+  "Fiókja most be van állítva és használatra kész…">
 
-<!ENTITY list.autoconfig.error.caption "Sorry">
+<!ENTITY list.autoconfig.error.caption "Sajnáljuk">
 <!ENTITY list.autoconfig.error.description
-"It seems your mail server does not support manage sieve or requires a special configuration. Please contact your Mail provider or try to do a manual configuration.">
+"A levélkiszolgáló nem támogatja a „ManageSieve” (szita kezelése) szolgáltatást vagy különleges beállítást igényel. Kérem, állítsa be kézzel, vagy forduljon a levelezőszolgáltatójához további tanácsokért.">
 
-<!ENTITY list.autoconfig.retest "Re-test">
-<!ENTITY list.autoconfig.config "Manual Configuration">
+<!ENTITY list.autoconfig.retest "Újratesztelés">
+<!ENTITY list.autoconfig.config "Kézi beállítás">
 
 <!-- Locale for the Edit Filter Dialog -->
-<!ENTITY edit.toolbar.save "Save">
-<!ENTITY edit.toolbar.undo "Undo">
-<!ENTITY edit.toolbar.redo "Redo">
-<!ENTITY edit.toolbar.cut "Cut">
-<!ENTITY edit.toolbar.copy "Copy">
-<!ENTITY edit.toolbar.paste "Paste">
-<!ENTITY edit.toolbar.compile "Mondattan ellenőrzés">
-<!ENTITY edit.toolbar.reference "Quick Reference">
-<!ENTITY edit.toolbar.tools "Tools">
-<!ENTITY edit.toolbar.import "Import Script">
-<!ENTITY edit.toolbar.export "Export Script">
-<!ENTITY edit.toolbar.back "Back">
-<!ENTITY edit.toolbar.forward "Forward">
-<!ENTITY edit.toolbar.home "Home">
-<!ENTITY edit.toolbar.search "Search">
+<!ENTITY edit.toolbar.save "Mentés">
+<!ENTITY edit.toolbar.undo "Visszavonás">
+<!ENTITY edit.toolbar.redo "Újra">
+<!ENTITY edit.toolbar.cut "Kivágás">
+<!ENTITY edit.toolbar.copy "Másolás">
+<!ENTITY edit.toolbar.paste "Beillesztés">
+<!ENTITY edit.toolbar.compile "Mondattan-ellenőrzés">
+<!ENTITY edit.toolbar.reference "Gyors hivatkozás">
+<!ENTITY edit.toolbar.tools "Eszközök">
+<!ENTITY edit.toolbar.import "Parancsfájl importálása">
+<!ENTITY edit.toolbar.export "Parancsfájl exportálása">
+<!ENTITY edit.toolbar.back "Vissza">
+<!ENTITY edit.toolbar.forward "Előre">
+<!ENTITY edit.toolbar.home "Kezdőlap">
+<!ENTITY edit.toolbar.search "Keresés">
 
 <!ENTITY edit.sidebar.uri "https://thsmi.github.io/sieve-reference/en/index.html">
-<!ENTITY edit.sidebar.title "Sieve Language Reference">
+<!ENTITY edit.sidebar.title "Szita nyelvi hivatkozás">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Search and Replace">
-<!ENTITY edit.searchreplace.searchfor "Search for:">
-<!ENTITY edit.searchreplace.replacewith "Replace with:">
-<!ENTITY edit.searchreplace.options "Options">
-<!ENTITY edit.searchreplace.case "Case Sensitive">
-<!ENTITY edit.searchreplace.backward "Backward">
-<!ENTITY edit.searchreplace.find "Find">
-<!ENTITY edit.searchreplace.replace "Replace">
-<!ENTITY edit.searchreplace.error "Phrase not found">
+<!ENTITY edit.searchreplace.title "Keresés és csere">
+<!ENTITY edit.searchreplace.searchfor "Keresés:">
+<!ENTITY edit.searchreplace.replacewith "Csere erre:">
+<!ENTITY edit.searchreplace.options "Beállítások">
+<!ENTITY edit.searchreplace.case "Kis- és nagybetűk">
+<!ENTITY edit.searchreplace.backward "Visszafelé">
+<!ENTITY edit.searchreplace.find "Keresés">
+<!ENTITY edit.searchreplace.replace "Csere">
+<!ENTITY edit.searchreplace.error "A kifejezés nem található">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Click 'Go Online' and try again">
-<!ENTITY status.offline.go "Go Online">
+"A Thunderbird jelenleg kapcsolat nélküli módban van. Ellenőrizze, hogy csatlakozik-e az internetre, vegye le a jelölést a Fájl menü Kapcsolat nélküli munka menüpontjáról, és próbálja újra.">
+<!ENTITY status.offline.go "Csatlakozás a hálózathoz">
 
 
 <!ENTITY status.connectivity.loss.description
-"Server terminated unexpectedly the connection, click on reconnect to try again.">
-<!ENTITY status.connectivity.loss.reconnect "Reconnect">
+"A kiszolgáló váratlanul lezárta a kapcsolatot. Válassza a Újracsatlakozását az újrapróbálkozáshoz.">
+<!ENTITY status.connectivity.loss.reconnect "Újracsatlakozás">
 
-<!ENTITY status.warning.ignore "Ignore">
-<!ENTITY status.warning.reconnect "Reconnect">
+<!ENTITY status.warning.ignore "Kihagyás">
+<!ENTITY status.warning.reconnect "Újracsatlakozás">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, goto 'Tools-&gt; SieveMessage Filters'">
+  "A „ManageSieve” (szita kezelése) nincs konfigurálva ehhez a fiókhoz. A „ManageSieve” (szita kezelése) engedélyezéséhez válassza a Sieve üzenetszűrők menüpontot a Eszközök menüből.">
 
-<!ENTITY status.error.reconnect "Reconnect">
-<!ENTITY status.error "Last Command failed, because the server reported an error:">
+<!ENTITY status.error.reconnect "Újracsatlakozás">
+<!ENTITY status.error "Az utolsó parancs sikertelen volt, mert a kiszolgáló hibát jelzett:">
 
 <!ENTITY status.sync.description
-"The local and the server side scripts are different.
-
-What would you like to do about it ?">
-<!ENTITY status.sync.keep "Keep Local Script">
-<!ENTITY status.sync.replace "Use Server Side Script">
+"A helyi és a kiszolgálóoldali parancsfájlok eltérőek. Mit szeretne tenni?">
+<!ENTITY status.sync.keep "Helyi parancsfájl megtartása">
+<!ENTITY status.sync.replace "Kiszolgálóoldali parancsfájl használata">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

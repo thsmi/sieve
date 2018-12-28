@@ -86,7 +86,7 @@
 
       return $("<div/>")
         .text("message is " + operator
-          + " than " + this.getSieve().getElement("limit").toScript());
+          + " than " + this.getSieve().getElement("limit").toScript() + " bytes");
     }
   }
 
@@ -137,10 +137,10 @@
 
       let name = this.getSieve().getCurrentElement().nodeName();
 
-      if ( name === "test/boolean/true")
+      if (name === "test/boolean/true")
         return $("<div/>").text("is true");
 
-      if ( name === "test/boolean/false")
+      if (name === "test/boolean/false")
         return $("<div/>").text("is false");
 
       throw new Error("Invalid State boolean is neither true nor false");

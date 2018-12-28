@@ -135,8 +135,7 @@
 
 <!ENTITY options.account.sieve
 "Sieve is a powerful script language for server-side mail filtering.">
-<!ENTITY options.account.activate
-"Do you like to enable “ManageSieve” this account?">
+<!ENTITY options.account.activate "Enable “ManageSieve” for this account">
 <!ENTITY options.account.activate.yes "Yes, manage Sieve scripts for this account:">
 <!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
 <!ENTITY options.account.filters "Edit Filters…">
@@ -153,7 +152,7 @@
 "SOCKS4 always resolves hostnames only on the local machine.
 SOCKS5 supports both resolving on the remote SOCKS proxy as well as resolving on the local machine.
 
-You should prefer SOCKS5 with remote name resolution, if your remote DNS is more trustworthy than the local DNS.">
+SOCKS5 with remote name resolution is preferred if the remote DNS is more trustworthy than the local DNS.">
 <!ENTITY options.proxy.description.localhost
 "On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
 <!ENTITY options.proxy.direct "Direct Connection">

@@ -47,6 +47,9 @@
 
       this._elm = elm;
       this._handler = {};
+
+      // create a unique id, which makes identifing the dom object easier.
+      this.uniqueId = "" + Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING) + Date.now().toString(HEX_STRING);
     }
 
     /**
@@ -169,54 +172,12 @@
 
 
   /**
-   * Implements an abstract box for elements wihtout a ui
-   */
-  class SieveSimpleBoxUI extends SieveAbstractBoxUI {
-
-    /**
-     * @inheritdoc
-     */
-    createHtml(parent) {
-      if (typeof (parent) === "undefined")
-        throw new Error("parent parameter is missing");
-
-      if (this.getSummary)
-        parent.append(this.getSummary()
-          .addClass("sivSummaryContent"));
-
-      return parent;
-    }
-  }
-
-  /**
-   * An abstract UI widget used for simple actions which do not need an UI
-   */
-  class SieveActionBoxUI extends SieveSimpleBoxUI {
-
-    /**
-     * @inheritdoc
-     */
-    constructor(elm) {
-      super(elm);
-      this.drag(new SieveMoveDragHandler());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    createHtml(parent) {
-      return super.createHtml(parent).addClass("sivAction");
-    }
-  }
-
-  /**
    *
    */
   class SieveDropBoxUI extends SieveAbstractBoxUI {
     /**
      * @param {SieveAbstractBoxUI} parent
      *   The parent Sieve Element, to which dropped Elemenents will be added.
-     *
      */
     constructor(parent) {
       if (!parent)
@@ -266,22 +227,126 @@
     }
   }
 
+  /**
+   * A simple box which toggles between a summary view with widgets and a code view.
+   */
+  class SieveSourceBoxUI extends SieveAbstractBoxUI {
+
+    /**
+     * Toggles the current view.
+     * This means in case the summary is currently visible it will
+     * show the source and vice versa.
+     */
+    toggleView() {
+      if ($("#" + this.uniqueId + "-summary").is(':visible'))
+        this.showSource();
+      else
+        this.showSummary();
+    }
+
+    /**
+     * Shows the summary and hides the code view.
+     * It does not reload the summary view.
+     */
+    showSummary() {
+      $("#" + this.uniqueId + "-summary").show();
+      $("#" + this.uniqueId + "-code").hide();
+    }
+
+    /**
+     * Shows the code view and hides the summary view.
+     * It will automatically replace the code with the most recently changed.
+     */
+    showSource() {
+      $("#" + this.uniqueId + "-code")
+        .empty()
+        .append($("<code/>").text(this.getSieve().toScript()));
+
+      $("#" + this.uniqueId + "-summary").hide();
+      $("#" + this.uniqueId + "-code").show();
+    }
+  }
+
 
   /**
-   * Provides a UI with a tabbed modal dialog.
-   **/
-  class SieveDialogBoxUI extends SieveAbstractBoxUI {
+   * Implements an abstract box for elements wihtout any ui elements
+   */
+  class SieveSimpleBoxUI extends SieveAbstractBoxUI {
+
+    /**
+     * @inheritdoc
+     */
+    createHtml(parent) {
+      if (typeof (parent) === "undefined")
+        throw new Error("parent parameter is missing");
+
+      if (!this.getSummary)
+        return parent;
+
+      parent.append($("<div/>")
+        .append(this.getSummary())
+        .addClass("sivSummaryContent")
+        .attr("id", this.uniqueId + "-summary"));
+
+      return parent;
+    }
+  }
+
+  /**
+   * An UI widget used for simple actions which do not need an
+   * dialog based UI.
+   *
+   * @deprecated Elements implementing this need to migrate to a
+   * dialog based box to show at least the help
+   */
+  class SieveActionBoxUI extends SieveSourceBoxUI {
 
     /**
      * @inheritdoc
      */
     constructor(elm) {
-      // Call parent constructor...
       super(elm);
-
-      // create a unique id, which makes identifing the dom object easier.
-      this.uniqueId = "" + Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING) + Date.now().toString(HEX_STRING);
+      this.drag(new SieveMoveDragHandler());
     }
+
+    /**
+     * @inheritdoc
+     */
+    createHtml(parent) {
+      if (typeof (parent) === "undefined")
+        throw new Error("parent parameter is missing");
+
+      parent.addClass("sivAction");
+      parent.addClass("sivEditableElement");
+
+      parent.append($("<div/>")
+        .append(this.getSummary())
+        .addClass("sivSummaryContent")
+        .attr("id", this.uniqueId + "-summary"));
+
+      parent.append($("<div/>")
+        .append($("<code/>"))
+        .addClass("sivSummaryCode")
+        .attr("id", this.uniqueId + "-code")
+        .hide());
+
+      parent.append(
+        $("<div/>")
+          .addClass("sivSummaryControls")
+          .addClass("material-icons")
+          .append($("<span/>").text("code").click(
+            (e) => { this.toggleView(); e.preventDefault(); e.stopPropagation(); return true;}))
+          .append($("<span/>").text("edit").css({"visibility":"hidden"})));
+
+      return parent;
+    }
+  }
+
+
+  /**
+   * Provides a UI with a tabbed modal dialog.
+   **/
+  class SieveDialogBoxUI extends SieveSourceBoxUI {
 
     save() {
 
@@ -299,13 +364,17 @@
       $("#" + this.uniqueId + "-summary")
         .empty()
         .append(this.getSummary());
+
+      $("#" + this.uniqueId + "-code")
+        .empty()
+        .append($("<code/>").text(this.getSieve().toScript()));
+
     }
 
-    showEditor(e) {
+    showEditor() {
 
       $('#sivDialog2').modal("show");
       $("#sivDialogSave").off("click").click(() => { this.save(); });
-      // $('#sivDialogDiscard').click( function()  { that.onDiscard() } )
 
       $("#sivDialogTabs").empty();
       $('#sivDialogBody').empty();
@@ -353,20 +422,28 @@
       if (typeof (parent) === "undefined")
         throw new Error("parent parameter is missing");
 
-      let that = this;
-
       parent.addClass("sivEditableElement");
 
-      if (this.getSummary) {
+      parent.append($("<div/>")
+        .append(this.getSummary())
+        .addClass("sivSummaryContent")
+        .attr("id", this.uniqueId + "-summary"));
 
-        let summary = $("<div/>")
-          .append(this.getSummary())
-          .addClass("sivSummaryContent")
-          .attr("id", this.uniqueId + "-summary")
-          .click(function (e) { that.showEditor(); e.preventDefault(); return true; });
+      parent.append($("<div/>")
+        .append($("<code/>"))
+        .addClass("sivSummaryCode")
+        .attr("id", this.uniqueId + "-code")
+        .hide());
 
-        parent.append(summary);
-      }
+      parent.append(
+        $("<div/>")
+          .addClass("sivSummaryControls")
+          .addClass("material-icons")
+          .append($("<span/>").text("code").click((e) => { this.toggleView(); e.preventDefault(); e.stopPropagation(); return true;}))
+          .append($("<span/>").text("edit"))
+      );
+
+      parent.click((e) => { this.showEditor(); e.preventDefault(); return true; });
 
       return parent;
     }
@@ -418,55 +495,6 @@
 
 
   /**
-   * Provides an UI for a simple operator without any settings.
-   */
-  class SieveOperatorBoxUI extends SieveSimpleBoxUI {
-
-    /**
-     * @inheritdoc
-     */
-    constructor(elm) {
-
-      super(elm);
-      this.drag(new SieveMoveDragHandler("sieve/operator"));
-      this.drop(new SieveTestDropHandler());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    createHtml(parent) {
-      return super.createHtml(parent)
-        .addClass("sivOperator");
-    }
-  }
-
-  /**
-   * Provides an UI for complex operator with a dialog box.
-   */
-  class SieveOperatorDialogBoxUI extends SieveDialogBoxUI {
-
-    /**
-   * @inheritdoc
-   */
-    constructor(elm) {
-      super(elm);
-
-      this.drag(new SieveMoveDragHandler("sieve/operator"));
-      this.drop(new SieveTestDropHandler());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    createHtml(parent) {
-      return super.createHtml(parent)
-        .addClass("sivOperator");
-    }
-  }
-
-
-  /**
    * Provides an UI for an abstract test dialog
    */
   class SieveTestDialogBoxUI extends SieveDialogBoxUI {
@@ -493,13 +521,14 @@
 
   exports.SieveAbstractBoxUI = SieveAbstractBoxUI;
   exports.SieveSimpleBoxUI = SieveSimpleBoxUI;
-  exports.SieveOperatorBoxUI = SieveOperatorBoxUI;
+  exports.SieveSourceBoxUI = SieveSourceBoxUI;
+
   exports.SieveActionBoxUI = SieveActionBoxUI;
   exports.SieveDropBoxUI = SieveDropBoxUI;
   exports.SieveTrashBoxUI = SieveTrashBoxUI;
 
+  exports.SieveDialogBoxUI = SieveDialogBoxUI;
   exports.SieveActionDialogBoxUI = SieveActionDialogBoxUI;
   exports.SieveTestDialogBoxUI = SieveTestDialogBoxUI;
-  exports.SieveOperatorDialogBoxUI = SieveOperatorDialogBoxUI;
 
 })(window);

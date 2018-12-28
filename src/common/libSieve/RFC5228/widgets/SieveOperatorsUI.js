@@ -18,18 +18,31 @@
 
   /* global $: false */
   /* global SieveDesigner */
-  /* global SieveOperatorBoxUI */
-  /* global SieveOperatorDialogBoxUI */
+  /* global SieveSimpleBoxUI */
+  /* global SieveDialogBoxUI */
 
   /* global SieveMultaryDropHandler */
   /* global SieveDropBoxUI */
+
+  /* global SieveMoveDragHandler */
+  /* global SieveTestDropHandler */
 
   const TEST_ELEMENT = 1;
 
   /**
    * Provides an ui for the not operator
    */
-  class SieveNotUI extends SieveOperatorBoxUI {
+  class SieveNotUI extends SieveSimpleBoxUI {
+
+    /**
+     * @inheritdoc
+     */
+    constructor(elm) {
+
+      super(elm);
+      this.drag(new SieveMoveDragHandler("sieve/operator"));
+      this.drop(new SieveTestDropHandler());
+    }
 
     /**
      * @inheritdoc
@@ -37,7 +50,15 @@
     getSummary() {
       return $("<div/>")
         .text("does not match:")
-        .append(this.getSieve().test().html());
+        .append($("<ul/>").append($("<li/>").append(this.getSieve().test().html())));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    createHtml(parent) {
+      return super.createHtml(parent)
+        .addClass("sivOperator");
     }
   }
 
@@ -45,7 +66,17 @@
   /**
    * Provides an ui for the anyof and allof operator
    */
-  class SieveAnyOfAllOfUI extends SieveOperatorDialogBoxUI {
+  class SieveAnyOfAllOfUI extends SieveDialogBoxUI {
+
+    /**
+     * @inheritdoc
+     */
+    constructor(elm) {
+      super(elm);
+
+      this.drag(new SieveMoveDragHandler("sieve/operator"));
+      this.drop(new SieveTestDropHandler());
+    }
 
     /**
      * @inheritdoc
@@ -92,33 +123,47 @@
      */
     createHtml(parent) {
 
+      parent.addClass("sivOperator");
+
       let item = $("<div/>")
-        .addClass("sivOperator");
+        .addClass("sivEditableElement")
+        .append($("<div/>")
+          .append(this.getSummary())
+          .addClass("sivSummaryContent")
+          .attr("id", this.uniqueId + "-summary"))
+        .append($("<div/>")
+          .addClass("sivSummaryControls")
+          .addClass("material-icons")
+          .append($("<span/>").text("edit"))
+        );
+
+      parent.append(item);
+      item.click((e) => { this.showEditor(); e.preventDefault(); return true; });
 
       for (let test of this.getSieve().tests) {
-        item
+
+        parent.append($("<div/>")
           .append((new SieveDropBoxUI(this))
             .drop(new SieveMultaryDropHandler(), test[TEST_ELEMENT])
             .html()
-            .addClass("sivOperatorSpacer"))
-          .append(
-            $("<div/>").append(test[TEST_ELEMENT].html())
-              .addClass("sivOperatorChild"));
+            .addClass("sivOperatorSpacer")));
+
+        let ul = $("<ul/>");
+        ul.append(
+          $("<li/>").append(test[TEST_ELEMENT].html())
+            .addClass("sivOperatorChild"));
+        parent.append(ul);
       }
 
-      item
-        .append((new SieveDropBoxUI(this))
-          .drop(new SieveMultaryDropHandler())
-          .html()
-          .addClass("sivOperatorSpacer"));
+      parent.append((new SieveDropBoxUI(this))
+        .drop(new SieveMultaryDropHandler())
+        .html()
+        .addClass("sivOperatorSpacer"));
 
-      return super.createHtml(parent)
-        .append(item);
-
+      return parent;
     }
 
   }
-
 
   if (!SieveDesigner)
     throw new Error("Could not register operator Widgets");

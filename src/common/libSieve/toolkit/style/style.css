@@ -1,7 +1,7 @@
 
+.sivAction[sivtype],
 .sivConditionText,
-.sivConditionalText,
-div[sivtype] > .sivSummaryContent
+.sivConditionCode
 {
   border: 1px #DDE4E9 solid;
   background-color: #F3F6F7;
@@ -10,14 +10,39 @@ div[sivtype] > .sivSummaryContent
   cursor: default;
 }
 
-/* Style all interactive Elements */
-.sivEditableElement[sivtype] > .sivSummaryContent {
-  background-image: url('edit.png');
-  background-repeat: no-repeat;
-  background-position: right center ;
+.sivConditionCode code
+{
+  flex: auto 1 1;
+  white-space: pre-wrap;
 }
 
-.sivEditableElement[sivtype] > .sivSummaryContent:hover
+.sivConditionCode,
+.sivConditionText,
+.sivEditableElement[sivtype],
+.sivEditableElement
+{
+  display: flex;
+  flex-direction: row;
+}
+.sivEditableElement > .sivSummaryContent,
+.sivEditableElement > .sivSummaryCode {
+  flex: 1 1 auto;
+}
+
+.sivEditableElement > .sivSummaryCode {
+  white-space: pre-wrap;
+}
+
+.sivSummaryControls {
+  color: lightslategray;
+}
+
+.sivOperator > ul {
+  margin-bottom: inherit;
+}
+
+
+.sivEditableElement:hover
 {
   border: 1px red #EDEDED solid;
   background-color: white;
@@ -45,8 +70,7 @@ div[sivtype][sivDragging="true"] {
 
 /* Blocks */
 
-.sivBlock > .sivBlockChild:nth-last-of-type(2),
-.sivOperator > .sivOperatorChild:nth-last-of-type(2)
+.sivBlock > .sivBlockChild:nth-last-of-type(2)
 {
   background-image: url('hline.png');
   background-position: 2px top;
@@ -54,15 +78,13 @@ div[sivtype][sivDragging="true"] {
 }
 
 
-.sivBlock > .sivBlockSpacer:nth-last-of-type(1),
-.sivOperator > .sivOperatorSpacer:nth-last-of-type(1)
+.sivBlock > .sivBlockSpacer:nth-last-of-type(1)
 {
   background-image: none;
   padding-bottom: 0px;
 }
 
-.sivBlockChild,
-.sivOperatorChild
+.sivBlockChild
 {
   background-image: url('vline.png'), url('hline.png');
   background-position:  -7px center, 2px top;
@@ -77,7 +99,6 @@ div[sivtype][sivDragging="true"] {
 }
 
 .sivBlockChild,
-.sivOperatorChild,
 .sivConditionChild {
   padding-left:15px;
 }
@@ -89,8 +110,7 @@ div[sivtype][sivDragging="true"] {
 }
 
 /* Dropmarkers*/
-.sivBlockSpacer,
-.sivOperatorSpacer
+.sivBlockSpacer
 {
   background-image: url('vline.png');
   background-position:  -7px top;

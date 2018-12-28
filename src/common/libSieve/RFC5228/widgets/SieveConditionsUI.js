@@ -19,7 +19,7 @@
   /* global $: false */
   /* global SieveDesigner */
   /* global SieveBlockUI */
-  /* global SieveAbstractBoxUI */
+  /* global SieveSourceBoxUI */
   /* global SieveMoveDragHandler */
   /* global SieveDropBoxUI */
   /* global SieveConditionDropHandler */
@@ -66,7 +66,7 @@
   /**
    * Provides an UI for Sieve conditions
    */
-  class SieveConditionUI extends SieveAbstractBoxUI {
+  class SieveConditionUI extends SieveSourceBoxUI {
 
     /**
      * @inheritdoc
@@ -76,13 +76,26 @@
       this.drag(new SieveMoveDragHandler());
     }
 
+    showSource() {
+      super.showSource();
+
+      $("#" + this.uniqueId + "-code").append($("<div/>")
+        .addClass("material-icons")
+        .addClass("sivSummaryControls")
+        .append($("<span/>").text("code").click(
+          (e) => { this.toggleView(); e.preventDefault(); e.stopPropagation(); return true; }))
+        .append($("<span/>").text("edit").css({ "visibility": "hidden" })));
+    }
     /**
      * @inheritdoc
      */
     createHtml(parent) {
+
+      parent.addClass("sivCondition");
+      parent.attr("id", "sivElm" + this.id());
+
       let elm = $("<div/>")
-        .attr("id", "sivElm" + this.id())
-        .addClass("sivCondition");
+        .attr("id", this.uniqueId + "-summary");
 
       let children = this.getSieve().children();
 
@@ -93,13 +106,23 @@
             .html()
             .addClass("sivConditionSpacer"));
 
-        if (i === IS_FIRST_ITEM)
-          elm.append($("<div/>").text("IF").addClass("sivConditionText"));
-        else if (children[i].test)
+        if (i === IS_FIRST_ITEM) {
+          elm.append($("<div/>")
+            .addClass("sivConditionText")
+            .append($("<div/>")
+              .css({"flex":"1 1 auto"})
+              .text("IF"))
+            .append($("<div/>")
+              .addClass("material-icons")
+              .addClass("sivSummaryControls")
+              .append($("<span/>").text("code").click(
+                (e) => { this.toggleView(); e.preventDefault(); e.stopPropagation(); return true; }))
+              .append($("<span/>").text("edit").css({ "visibility": "hidden" }))));
+
+        } else if (children[i].test)
           elm.append($("<div/>").text("ELSE IF").addClass("sivConditionText"));
         else
           elm.append($("<div/>").text("ELSE").addClass("sivConditionText"));
-
 
         elm.append(
           $("<div/>").append(children[i].html())
@@ -112,7 +135,19 @@
           .html()
           .addClass("sivConditionSpacer"));
 
-      return elm;
+      parent.append(elm);
+
+      parent.append($("<div/>")
+        .append(elm)
+        .addClass("sivSummaryContent")
+        .attr("id", this.uniqueId + "-summary"));
+
+      parent.append($("<div/>")
+        .addClass("sivConditionCode")
+        .attr("id", this.uniqueId + "-code")
+        .hide());
+
+      return parent;
     }
   }
 

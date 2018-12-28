@@ -90,7 +90,8 @@
      */
     getSummary() {
       return $("<div/>")
-        .html("Define as global variable(s) " + $('<em/>').text(this.variables()).html());
+        .append($("<span/>").text("Define global variable(s): "))
+        .append($("<em/>").text(this.variables().values()));
     }
   }
 
@@ -148,7 +149,7 @@
       if (value === false)
         elm.setElement(":global");
 
-      return (elm.getElement().nodeName() === "tag/location-type/personal" );
+      return (elm.getElement().nodeName() === "tag/location-type/personal");
     }
 
     /**

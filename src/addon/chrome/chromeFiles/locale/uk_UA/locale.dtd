@@ -32,7 +32,7 @@
 
 <!ENTITY options.port.caption "Порт сервера">
 <!ENTITY options.port.description
-"Коли ManageSieve став повноцінним стандартом RFC, порт сервера змінився">
+"The server port changed, when “ManageSieve” turned into a full RFC Standard">
 <!ENTITY options.port.description2
 "Старіші екземпляри все ще використовують порт 2000, але нові
 сервери використовують тільки порт 4190 згідно стандарту.">
@@ -42,13 +42,13 @@
 <!ENTITY options.port.autoselect "Автовибір порту">
 <!ENTITY options.port.autoselect.running "Обираємо порт, зачекайте…">
 <!ENTITY options.port.autoselect.successful "Sieve виявлено на порту ">
-<!ENTITY options.port.autoselect.error "Обирання порта провалилося...">
+<!ENTITY options.port.autoselect.error "Не вдалося обрати порт…">
 
 <!ENTITY options.security.caption "Безпека підключення">
 <!ENTITY options.security.description
-"Transport Layer Security (TLS) secures the connection to the manage sieve server. It cyphers all data and is designed to prevent eavesdropping and tampering.">
+"Transport Layer Security (TLS) secures the connection to the “ManageSieve” server. It cyphers all data and is designed to prevent eavesdropping and tampering.">
 <!ENTITY options.security.description2
-"ManageSieve usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
+"“ManageSieve” usually transfers passwords unencrypted. So unless you have a really good reason (e.g. Debugging), you should always force TLS.">
 <!ENTITY options.security.tls.disabled "Без TLS">
 <!ENTITY options.security.tls.available "TLS, якщо доступно">
 <!ENTITY options.security.tls.force "Тільки TLS">
@@ -60,22 +60,22 @@
 <!ENTITY options.login.customAuth "Ім'я користувача та пароль">
 <!ENTITY options.login.username "Ім’я користувача">
 <!ENTITY options.login.username.key "u">
-<!ENTITY options.login.show "Показати збережені паролі...">
+<!ENTITY options.login.show "Переглянути збережені паролі…">
 
 <!ENTITY options.misc "Інші параметри">
-<!ENTITY options.misc.keepalive "Увімкнути запити активності">
+<!ENTITY options.misc.keepalive "Enable Keep-Alive Messages">
 <!ENTITY options.misc.keepalive.key "k">
 <!ENTITY options.misc.keepalive2 "Надсилати кожному">
 <!ENTITY options.misc.keepalive.description
 "Якщо клієнт на активний занадто довго (зазвичай 30 хвилин), сервер припускає, що клієнт було відключено і закриває з'єднання.">
 <!ENTITY options.misc.keepalive.description2
-"Запит активності вказує, що підключення ще активне і його можна не заркивати.">
+"A “Keep-Alive” request indicates the connection is still active and should be preserved.">
 <!ENTITY options.misc.keepalive.min "хв">
 
-<!ENTITY options.misc.compile.caption "Перевірка синтаксису">
+<!ENTITY options.misc.compile.caption "Check Syntax">
 <!ENTITY options.misc.compile.description
-"While editing Scripts, they can be checked for validity. The syntax check is performed by the server. In order to keep network traffic low, syntax check requests are grouped.">
-<!ENTITY options.misc.compile "Перевіряти скрипти під час введення тексту">
+"Check Syntax as you type is performed by the server. Requests are grouped to keep network traffic low.">
+<!ENTITY options.misc.compile "Check syntax as you type">
 <!ENTITY options.misc.compile.key "c">
 <!ENTITY options.misc.compile2 "Перевірити принаймні кожні">
 <!ENTITY options.misc.compile.ms "мс">
@@ -89,16 +89,12 @@
 <!ENTITY options.editor.indention.policy.tabs "Тільки табуляція">
 
 <!ENTITY options.editor.tabs.caption "Обробка табуляції">
-<!ENTITY options.editor.tabs.description "Texteditor with automatic indenting replaced the need for a tab key, but there are many editors which default to tabs due to historic reasons.">
+<!ENTITY options.editor.tabs.description "Text editors with automatic indenting replaced the need for a Tab key. But many editors default to tabs due to historical reasons.">
 <!ENTITY options.editor.tabs.width "Ширина табуляції">
 
-<!ENTITY options.editor.tabs.policy.caption "Політика табуляції">
-<!ENTITY options.editor.tabs.policy.spaces "Вставляти пробіли замість табуляції">
-<!ENTITY options.editor.tabs.policy.tabs "Вставляти табуляцію">
-
 <!ENTITY options.debug.warning
-"Keep in mind that neither SASL Login nor SASL Plain cypher your password, it might be posted in clear text to the error console.">
-<!ENTITY options.debug.caption "Налаштування зневадження">
+"Keep in mind that neither “SASL LOGIN” nor “SASL PLAIN” cypher your password, it might be posted in clear text to the error console.">
+<!ENTITY options.debug.caption "Налаштування відлагодження">
 <!ENTITY options.debug.request "Звʼязок клієнта із сервером (запити)">
 <!ENTITY options.debug.response "Звʼязок сервера із клієнтом (відповіді)">
 <!ENTITY options.debug.exceptions "Exceptions and State Machine Information">
@@ -106,17 +102,17 @@
 <!ENTITY options.debug.session "Керування сесіями">
 <!ENTITY options.debug.output "Результат зневадження">
 <!ENTITY options.debug.console "Результат зневадження направлено на консоль помилок">
-<!ENTITY options.debug.console.open "Показати консоль помилок...">
+<!ENTITY options.debug.console.open "Показати консоль помилок…">
 
 <!ENTITY options.authmechanism.caption "Механізм автентифікації">
-<!ENTITY options.authmechanism "Перевизначити механізм автентифікації">
+<!ENTITY options.authmechanism "Override Authentication Mechanism">
 <!ENTITY options.authmechanism.default "Завжди використовувати:">
 <!ENTITY options.authmechanism.scramsha1 "SCRAM-SHA-1">
 <!ENTITY options.authmechanism.scramsha256 "SCRAM-SHA-256">
 <!ENTITY options.authmechanism.crammd5 "CRAM-MD5">
 <!ENTITY options.authmechanism.digestmd5 "DIGEST-MD5">
-<!ENTITY options.authmechanism.login "Login">
-<!ENTITY options.authmechanism.plain "Plain">
+<!ENTITY options.authmechanism.login "LOGIN">
+<!ENTITY options.authmechanism.plain "PLAIN">
 <!ENTITY options.authmechanism.external "EXTERNAL">
 <!ENTITY options.authmechanism.description
 "In certain situations e.g. when using Proxy Authentication you might want to force a specific Authentication Mechanism." >
@@ -125,27 +121,26 @@
 <!ENTITY options.proxyauth.desc
 "Proxy authorization, allows an authenticated user to act on behalf of another user. Usually servers are configured, that this feature is only available for administrators.">
 <!ENTITY options.proxyauth.force
-"When using proxy authorization you should force &quot;SASL PLAIN&quot; Authentication.">
+"When using proxy authorization you should force “SASL PLAIN” Authentication.">
 <!ENTITY options.proxyauth.none "Без авторизації">
 <!ENTITY options.proxyauth.default "Псевдонім Sieve">
-<!ENTITY options.proxyauth.prompt "Питати про авторизацію">
+<!ENTITY options.proxyauth.prompt "Запит на авторизацію">
 <!ENTITY options.proxyauth.custom "Авторизуватися як">
 <!ENTITY options.proxyauth.custom.username "Псевдонім:">
 
 <!ENTITY options.info.servername "Назва сервера:">
 <!ENTITY options.info.port "Порт:">
 <!ENTITY options.info.secure "Безпечне зʼєднання:">
-<!ENTITY options.info.username "Імʼя користувача:">
+<!ENTITY options.info.username "Псевдонім:">
 <!ENTITY options.info.auth "Автентифікація:">
 
 <!ENTITY options.account.sieve
 "Sieve is a powerful script language for server-side mail filtering.">
-<!ENTITY options.account.activate
-"Do you want to activate managing Sieve Scripts for this account?">
+<!ENTITY options.account.activate "Enable “ManageSieve” for this account">
 <!ENTITY options.account.activate.yes "Так, керувати сценаріями Sieve для цього акаунту:">
-<!ENTITY options.account.activate.no "Цей акаунт не підтримує Sieve">
-<!ENTITY options.account.filters "Редагувати фільтри...">
-<!ENTITY options.account.settings "Змінити налаштування...">
+<!ENTITY options.account.activate.no "No, this account does not support “ManageSieve”">
+<!ENTITY options.account.filters "Редагувати фільтри…">
+<!ENTITY options.account.settings "Змінити налаштування…">
 
 <!-- Credits -->
 <!ENTITY options.credits "Подяка за допомогу:">
@@ -155,14 +150,17 @@
 <!ENTITY options.proxy.description
 "Instead of  a direct connection you may use a SOCKS Proxy to transparently and securely traverse a firewall.">
 <!ENTITY options.proxy.description.nameresolution
-"With SOCKSv4 hostnames are always resolved on the local machine. SOCKSv5 also supports resolving hostnames by the SOCKS proxy. If you can trust the SOCKSv5 proxy, the latter is considered to be more secure and should be preferred.">
+"SOCKS4 always resolves hostnames only on the local machine.
+SOCKS5 supports both resolving on the remote SOCKS proxy as well as resolving on the local machine.
+
+SOCKS5 with remote name resolution is preferred if the remote DNS is more trustworthy than the local DNS.">
 <!ENTITY options.proxy.description.localhost
-"On some system using 'localhost' as proxy host does not function properly, use '127.0.0.1' instead.">
+"On some system using “localhost” as proxy host does not function properly, use “127.0.0.1” instead.">
 <!ENTITY options.proxy.direct "Пряме підключення">
 <!ENTITY options.proxy.default "Типове налаштування проксі">
-<!ENTITY options.proxy.socks4 "SOCKSv4">
-<!ENTITY options.proxy.socks5 "SOCKSv5">
-<!ENTITY options.proxy.nameresolution "Визначати імʼя хостів через проксі">
+<!ENTITY options.proxy.socks4 "SOCKS4">
+<!ENTITY options.proxy.socks5 "SOCKS5">
+<!ENTITY options.proxy.nameresolution "Resolve hostnames on remote proxy">
 <!ENTITY options.proxy.host "Хост:">
 <!ENTITY options.proxy.port "Порт:">
 
@@ -172,18 +170,18 @@
 
 <!ENTITY list.accounts "Фільтри для:">
 
-<!ENTITY list.tree "Фільтри Sieve на сервері">
+<!ENTITY list.tree "Server-side Sieve mailfilters">
 <!ENTITY list.tree.active "Активні">
 <!ENTITY list.tree.name "Назва">
 
-<!ENTITY list.new "Створити...">
-<!ENTITY list.edit "Редагувати...">
+<!ENTITY list.new "Нові…">
+<!ENTITY list.edit "Редагування…">
 <!ENTITY list.delete "Вилучити">
 <!ENTITY list.rename "Перейменувати">
 <!ENTITY list.activate "Активувати">
-<!ENTITY list.settings "Налаштування...">
+<!ENTITY list.settings "Налаштування…">
 
-<!ENTITY list.details.capability "Можливості Sieve на сервері">
+<!ENTITY list.details.capability "Sieve Server Capabilities">
 <!ENTITY list.details.capability.implementation "Версія сервера:">
 <!ENTITY list.details.capability.sasl "Механізми SASL:">
 <!ENTITY list.details.capability.extensions "Розширення:">
@@ -191,38 +189,36 @@
 
 
 <!ENTITY list.badcert
-  "Ваш поштовий сервер неправильно себе ідентифікує.">
+  "Secure connection failed. The mail server identified itself with a bad certificate.">
 <!ENTITY list.badcert.error
-"If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server.
-
-Do not continue unless you know there's a good reason why this server doesn't use trusted identification.">
-<!ENTITY list.badcert.remember "Запамʼятати мій вибір">
+  "If you usually connect to this server without problems, this error could mean that someone is trying to impersonate the server. Do not continue unless you know there is a good reason why this server does not use trusted identification.">
+<!ENTITY list.badcert.remember "Remember this decision">
 <!ENTITY list.badcert.ignore "Продовжити">
 <!ENTITY list.badcert.abort "Перервати">
 
 <!ENTITY list.autoconfig.welcome.caption "Вітаємо!">
 <!ENTITY list.autoconfig.welcome.description1
-"Цей акаунт не налаштовано для керування Sieve.">
+"“ManageSieve” not configured for this account.">
 <!ENTITY list.autoconfig.welcome.description2
-"Click on 'Continue' to detect the configuration automatically.
-Or choose 'Advanced' to configure the account manually.">
+"Click ‘Continue’ to detect the configuration automatically.
+Or choose ‘Advanced’ to configure the account manually.">
 
 <!ENTITY list.autoconfig.advanced "Розширені">
 <!ENTITY list.autoconfig.continue "Продовжити">
 
 <!ENTITY list.autoconfig.detecting.caption "Вгадуємо конфігурауцію">
 <!ENTITY list.autoconfig.detecting.description
-  "Це може зайняти декілька хвилин...">
+  "Це може зайняти декілька хвилин…">
 
 <!ENTITY list.autoconfig.cancel "Скаcувати">
 
 <!ENTITY list.autoconfig.success.caption "Поздоровляємо!">
 <!ENTITY list.autoconfig.success.description
-  "Ваш акаунт налаштовано, можна починати...">
+  "Your account is now configured and ready to use…">
 
 <!ENTITY list.autoconfig.error.caption "Вибачте">
 <!ENTITY list.autoconfig.error.description
-"It seems your mail server does not support manage sieve or requires a special configuration. Please contact your Mail provider or try to do a manual configuration.">
+"Your mail server does not support “ManageSieve” or requires a special configuration. Please configure manually or contact your email provider for instructions.">
 
 <!ENTITY list.autoconfig.retest "Перевірити">
 <!ENTITY list.autoconfig.config "Ручне налаштування">
@@ -234,7 +230,7 @@ Or choose 'Advanced' to configure the account manually.">
 <!ENTITY edit.toolbar.cut "Вирізати">
 <!ENTITY edit.toolbar.copy "Копіювати">
 <!ENTITY edit.toolbar.paste "Вставити">
-<!ENTITY edit.toolbar.compile "Перевіряти синтакс">
+<!ENTITY edit.toolbar.compile "Check Syntax">
 <!ENTITY edit.toolbar.reference "Quick Reference">
 <!ENTITY edit.toolbar.tools "Інструменти">
 <!ENTITY edit.toolbar.import "Імпортувати сценарій">
@@ -248,7 +244,7 @@ Or choose 'Advanced' to configure the account manually.">
 <!ENTITY edit.sidebar.title "Документація з мови Sieve">
 
 <!-- Search and Replace Side bar -->
-<!ENTITY edit.searchreplace.title "Пошук і заміна">
+<!ENTITY edit.searchreplace.title "Find and Replace">
 <!ENTITY edit.searchreplace.searchfor "Шукати:">
 <!ENTITY edit.searchreplace.replacewith "Замінити на:">
 <!ENTITY edit.searchreplace.options "Налаштування">
@@ -260,28 +256,26 @@ Or choose 'Advanced' to configure the account manually.">
 
 <!-- Status messages -->
 <!ENTITY status.offline.description
-"You are currently offline. Click 'Go Online' and try again">
+"Thunderbird is currently in offline mode. Check that you are connected to the Internet and select ‘Go Online’ or uncheck ‘Work Offline’ from the File menu and try again.">
 <!ENTITY status.offline.go "Підключитись">
 
 
 <!ENTITY status.connectivity.loss.description
-"Server terminated unexpectedly the connection, click on reconnect to try again.">
+"The server unexpectedly closed the connection. Select ‘Reconnect’ to try again.">
 <!ENTITY status.connectivity.loss.reconnect "Перезʼєднати">
 
 <!ENTITY status.warning.ignore "Пропустити">
 <!ENTITY status.warning.reconnect "Перезʼєднати">
 <!ENTITY status.warning
-  "This account is not configured for manage sieve, goto 'Tools-&gt; SieveMessage Filters'">
+  "“ManageSieve” is not configured for this account. To enable “ManageSieve”, select ‘Sieve Message Filters’ in the ‘Tools’ menu.">
 
 <!ENTITY status.error.reconnect "Перезʼєднати">
 <!ENTITY status.error "Збій останньої команди — сервер повідомив про помилку:">
 
 <!ENTITY status.sync.description
-"Сценарій на сервері відрізняється від локального.
-
-Як ви хочете це виправити?">
+"The local and the server-side scripts are different. What would you like to do?">
 <!ENTITY status.sync.keep "Зберегти локальний сценарій">
-<!ENTITY status.sync.replace "Використати сценарій на сервері">
+<!ENTITY status.sync.replace "Use Server-side Script">
 
 <!-- Shortcut keys -->
 <!ENTITY shortcut.save.key "S">

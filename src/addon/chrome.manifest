@@ -5,6 +5,7 @@ locale    sieve de-DE chrome/chromeFiles/locale/de_DE/
 locale    sieve	en-US chrome/chromeFiles/locale/en_US/
 locale    sieve es-ES chrome/chromeFiles/locale/es_ES/
 locale    sieve fr-FR chrome/chromeFiles/locale/fr_FR/
+locale    sieve hu-HU chrome/chromeFiles/locale/hu_HU/
 locale    sieve id-ID chrome/chromeFiles/locale/id_ID/
 locale    sieve nl-NL chrome/chromeFiles/locale/nl_NL/
 locale    sieve pl-PL chrome/chromeFiles/locale/pl_PL/

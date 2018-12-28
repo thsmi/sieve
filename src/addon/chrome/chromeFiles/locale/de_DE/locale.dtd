@@ -90,7 +90,7 @@ hierdurch werden Abhören der Zugangsdaten sowie Manipulationen effektiv verhind
 <!ENTITY options.editor.indention.policy.tabs "Nur Tabulatoren">
 
 <!ENTITY options.editor.tabs.caption "Tabulator Einzug">
-<!ENTITY options.editor.tabs.description "Text editors with automatic indenting replaced the need for a Tab key. But many editors default to tabs due to historical reasons.">
+<!ENTITY options.editor.tabs.description "Früher wurden Tabulatoren für dynamisch Texteinrückungen genutzt. Der Texteditor bietet jedoch automatisches Einrücken an. Es ersetzt Tabulatoren bei der Eingabe durch die Leerzeichen ersetzt und arbeitet viel zuverlässiger als Tabulatoren.">
 <!ENTITY options.editor.tabs.width "Tabulatorbreite">
 
 <!ENTITY options.debug.warning
@@ -139,7 +139,7 @@ Diese erfordert besondere Rechte auf dem Mailserver und steht daher meist nur Ad
 <!ENTITY options.account.sieve
 "Sieve ist eine Skriptsprache um serverseitig E-Mails zu filtern und sortieren.">
 <!ENTITY options.account.activate
-"Do you like to enable “ManageSieve” this account?">
+"Möchten Sie &quot;ManageSieve&quot; diese Konto aktivieren?">
 <!ENTITY options.account.activate.yes "Ja, dieses Konto unterstützt Sieve:">
 <!ENTITY options.account.activate.no "Nein, dieses Konto unterstützt kein Sieve">
 <!ENTITY options.account.filters "Filter bearbeiten…">

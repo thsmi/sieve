@@ -27,18 +27,158 @@
       </Description>
     </em:targetApplication>
 
-    <em:localized>
+    <em:localized> <!-- German -->
       <Description>
-        <em:locale>ru-RU</em:locale>
-        <em:description>Настраивает фильтры Sieve на почтовом сервере.</em:description>
+        <em:locale>de</em:locale>
+        <em:description>Verwaltet serverseitige Sieve Filter</em:description>
+        <em:translator>Thomas Schmid (de)</em:translator>
+        <em:translator>Thomas Schmid (en-US)</em:translator>
+        <em:translator>Óvári (en-US)</em:translator>
+        <em:translator>Óvári (hu)</em:translator>
+        <em:contributor>Marion Desnault</em:contributor>
+        <em:contributor>Max Dittrich</em:contributor>
+        <em:contributor>Sébastien</em:contributor>
+        <em:contributor>Виктор Букреев</em:contributor>
+        <em:contributor>Christian Rößner</em:contributor>
+        <em:contributor>Michael Fladischer</em:contributor>
+        <em:contributor>Александр Моисеев</em:contributor>
+        <em:contributor>Cyril Kluska</em:contributor>
+        <em:contributor>Dominique Couot</em:contributor>
+        <em:contributor>Carlos Gomez Agun</em:contributor>
+        <em:contributor>Georgeto</em:contributor>
+      </Description>
+    </em:localized>
+
+    <em:localized> <!-- Spanish -->
+      <Description>
+        <em:locale>es-ES</em:locale>
+        <em:description>Filtros de correo en Sieve lado servidor</em:description>
+        <em:translator>Thomas Schmid (de)</em:translator>
+        <em:translator>Thomas Schmid (en-US)</em:translator>
+        <em:translator>Óvári (en-US)</em:translator>
+        <em:translator>Óvári (hu)</em:translator>
+        <em:contributor>Marion Desnault</em:contributor>
+        <em:contributor>Max Dittrich</em:contributor>
+        <em:contributor>Sébastien</em:contributor>
+        <em:contributor>Виктор Букреев</em:contributor>
+        <em:contributor>Christian Rößner</em:contributor>
+        <em:contributor>Michael Fladischer</em:contributor>
+        <em:contributor>Александр Моисеев</em:contributor>
+        <em:contributor>Cyril Kluska</em:contributor>
+        <em:contributor>Dominique Couot</em:contributor>
+        <em:contributor>Carlos Gomez Agun</em:contributor>
+        <em:contributor>Georgeto</em:contributor>
+      </Description>
+    </em:localized>
+
+    <em:localized> <!-- French -->
+      <Description>
+        <em:locale>fr</em:locale>
+        <em:description>Filtres Sieve</em:description>
+        <em:translator>Thomas Schmid (de)</em:translator>
+        <em:translator>Thomas Schmid (en-US)</em:translator>
+        <em:translator>Óvári (en-US)</em:translator>
+        <em:translator>Óvári (hu)</em:translator>
+        <em:contributor>Marion Desnault</em:contributor>
+        <em:contributor>Max Dittrich</em:contributor>
+        <em:contributor>Sébastien</em:contributor>
+        <em:contributor>Виктор Букреев</em:contributor>
+        <em:contributor>Christian Rößner</em:contributor>
+        <em:contributor>Michael Fladischer</em:contributor>
+        <em:contributor>Александр Моисеев</em:contributor>
+        <em:contributor>Cyril Kluska</em:contributor>
+        <em:contributor>Dominique Couot</em:contributor>
+        <em:contributor>Carlos Gomez Agun</em:contributor>
+        <em:contributor>Georgeto</em:contributor>
+      </Description>
+    </em:localized>
+
+    <em:localized> <!-- Hungarian -->
+      <Description>
+        <em:locale>hu</em:locale>
+        <em:description>Kezeli a kiszolgálóoldali szita levelezőszűrőket</em:description>
+        <em:translator>Thomas Schmid (de)</em:translator>
+        <em:translator>Thomas Schmid (en-US)</em:translator>
+        <em:translator>Óvári (en-US)</em:translator>
+        <em:translator>Óvári (hu)</em:translator>
+        <em:contributor>Marion Desnault</em:contributor>
+        <em:contributor>Max Dittrich</em:contributor>
+        <em:contributor>Sébastien</em:contributor>
+        <em:contributor>Виктор Букреев</em:contributor>
+        <em:contributor>Christian Rößner</em:contributor>
+        <em:contributor>Michael Fladischer</em:contributor>
+        <em:contributor>Александр Моисеев</em:contributor>
+        <em:contributor>Cyril Kluska</em:contributor>
+        <em:contributor>Dominique Couot</em:contributor>
+        <em:contributor>Carlos Gomez Agun</em:contributor>
+        <em:contributor>Georgeto</em:contributor>
+      </Description>
+    </em:localized>
+
+    <em:localized> <!-- Dutch -->
+      <Description>
+        <em:locale>nl</em:locale>
+        <em:description>Beheert serverside Sieve e-mailfilters</em:description>
+        <em:translator>Thomas Schmid (de)</em:translator>
+        <em:translator>Thomas Schmid (en-US)</em:translator>
+        <em:translator>Óvári (en-US)</em:translator>
+        <em:translator>Óvári (hu)</em:translator>
+        <em:contributor>Marion Desnault</em:contributor>
+        <em:contributor>Max Dittrich</em:contributor>
+        <em:contributor>Sébastien</em:contributor>
+        <em:contributor>Виктор Букреев</em:contributor>
+        <em:contributor>Christian Rößner</em:contributor>
+        <em:contributor>Michael Fladischer</em:contributor>
+        <em:contributor>Александр Моисеев</em:contributor>
+        <em:contributor>Cyril Kluska</em:contributor>
+        <em:contributor>Dominique Couot</em:contributor>
+        <em:contributor>Carlos Gomez Agun</em:contributor>
+        <em:contributor>Georgeto</em:contributor>
+      </Description>
+    </em:localized>
+
+    <em:localized> <!-- Russian -->
+      <Description>
+        <em:locale>ru</em:locale>
+        <em:description>Настраивает фильтры Sieve на почтовом сервере</em:description>
+        <em:translator>Thomas Schmid (de)</em:translator>
+        <em:translator>Thomas Schmid (en-US)</em:translator>
+        <em:translator>Óvári (en-US)</em:translator>
+        <em:translator>Óvári (hu)</em:translator>
+        <em:contributor>Marion Desnault</em:contributor>
+        <em:contributor>Max Dittrich</em:contributor>
+        <em:contributor>Sébastien</em:contributor>
+        <em:contributor>Виктор Букреев</em:contributor>
+        <em:contributor>Christian Rößner</em:contributor>
+        <em:contributor>Michael Fladischer</em:contributor>
+        <em:contributor>Александр Моисеев</em:contributor>
+        <em:contributor>Cyril Kluska</em:contributor>
+        <em:contributor>Dominique Couot</em:contributor>
+        <em:contributor>Carlos Gomez Agun</em:contributor>
+        <em:contributor>Georgeto</em:contributor>
       </Description>
     </em:localized>
 
     <em:bootstrap>true</em:bootstrap>
 
     <em:name>Sieve</em:name>
-    <em:description>Configures serverside sieve email filters</em:description>
+    <em:description>Manages server-side sieve mail filters</em:description>
     <em:creator>Thomas Schmid</em:creator>
+    <em:translator>Thomas Schmid (de)</em:translator>
+    <em:translator>Thomas Schmid (en-US)</em:translator>
+    <em:translator>Óvári (en-US)</em:translator>
+    <em:translator>Óvári (hu)</em:translator>
+    <em:contributor>Marion Desnault</em:contributor>
+    <em:contributor>Max Dittrich</em:contributor>
+    <em:contributor>Sébastien</em:contributor>
+    <em:contributor>Виктор Букреев</em:contributor>
+    <em:contributor>Christian Rößner</em:contributor>
+    <em:contributor>Michael Fladischer</em:contributor>
+    <em:contributor>Александр Моисеев</em:contributor>
+    <em:contributor>Cyril Kluska</em:contributor>
+    <em:contributor>Dominique Couot</em:contributor>
+    <em:contributor>Carlos Gomez Agun</em:contributor>
+    <em:contributor>Georgeto</em:contributor>
     <em:homepageURL>https://github.com/thsmi/sieve/</em:homepageURL>
 <!--    <em:iconURL>chrome://sieve/skin/icon.png</em:iconURL> -->
 <!--    <em:optionsURL>chrome://sieve/content/options/SieveOptions.xul</em:optionsURL> -->

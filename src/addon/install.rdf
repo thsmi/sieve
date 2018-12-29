@@ -96,6 +96,7 @@
     <em:localized> <!-- Hungarian -->
       <Description>
         <em:locale>hu</em:locale>
+        <em:name>Szita (Sieve)</em:name>
         <em:description>Kezeli a kiszolgálóoldali szita levelezőszűrőket</em:description>
         <em:translator>Thomas Schmid (de)</em:translator>
         <em:translator>Thomas Schmid (en-US)</em:translator>

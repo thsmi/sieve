@@ -136,7 +136,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 
 <!ENTITY options.account.sieve
 "Sieve is een krachtige scripttaal voor het serverside filteren van e-mail.">
-<!ENTITY options.account.activate "Enable “ManageSieve” for this account">
+<!ENTITY options.account.activate "‘ManageSieve’ voor dit account inschakelen">
 <!ENTITY options.account.activate.yes "Ja, Sieve-scripts voor deze account beheren:">
 <!ENTITY options.account.activate.no "Nee, dit account ondersteunt ‘ManageSieve’ niet">
 <!ENTITY options.account.filters "Filters bewerken…">
@@ -150,10 +150,10 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.proxy.description
 "In plaats van een directe verbinding kunt u een SOCKS-proxy gebruiken om transparant en veilig langs een firewall te komen.">
 <!ENTITY options.proxy.description.nameresolution
-"SOCKS4 always resolves hostnames only on the local machine.
-SOCKS5 supports both resolving on the remote SOCKS proxy as well as resolving on the local machine.
+"Met SOCKS4 worden hostnamen altijd op de lokale machine omgezet.
+SOCKS5 ondersteunt zowel omzetting op de externe SOCKS-proxy alsmede omzetting op de lokale machine
 
-SOCKS5 with remote name resolution is preferred if the remote DNS is more trustworthy than the local DNS.">
+U kunt beter SOCKS5 met externe naamomzetting gebruiken als uw externe DNS betrouwbaarder is dan uw lokale DNS.">
 <!ENTITY options.proxy.description.localhost
 "Op sommige systemen werkt het gebruik van ‘localhost’ als proxy-host niet goed. Gebruik dan ‘127.0.0.1’ daarvoor in de plaats.">
 <!ENTITY options.proxy.direct "Directe verbinding">
@@ -268,7 +268,7 @@ Kies ‘Geavanceerd’ om het account handmatig te configureren.">
 <!ENTITY status.warning.ignore "Negeren">
 <!ENTITY status.warning.reconnect "Opnieuw verbinden">
 <!ENTITY status.warning
-  "‘ManageSieve’ is niet geconfigureerd voor dit account. Selecteer ‘ManageSieve’ in het menu Extra om ‘ManageSieve’ in te schakelen.">
+  "‘ManageSieve’ is niet geconfigureerd voor dit account. Selecteer ‘Sieve-berichtfilters’ in het menu Extra om ‘ManageSieve’ in te schakelen.">
 
 <!ENTITY status.error.reconnect "Opnieuw verbinden">
 <!ENTITY status.error "De laatste opdracht is mislukt, omdat de server een fout meldde:">

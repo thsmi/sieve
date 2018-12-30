@@ -2,6 +2,8 @@
 Everyone who contributed either code, translations, money or resources is credited 
 here in no specific order.
 
+If you think you should be mentioned here, raise a pull request or send me a short mail.
+
 ## Code and translations
 Marion Desnault, Max Dittrich, Sébastien, Виктор Букреев, Christian Rößner, 
 Michael Fladischer, Александр Моисеев, Cyril Kluska, Dominique Couot, 

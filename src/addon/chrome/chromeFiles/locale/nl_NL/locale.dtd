@@ -59,7 +59,7 @@ Het versleutelt alle gegevens en is ontworpen om afluisteren en manipulatie tege
 <!ENTITY options.login.imapAuth "IMAP-gebruikersnaam en -wachtwoord">
 <!ENTITY options.login.customAuth "Gebruikersnaam en wachtwoord">
 <!ENTITY options.login.username "Gebruikersnaam">
-<!ENTITY options.login.username.key "u">
+<!ENTITY options.login.username.key "G">
 <!ENTITY options.login.show "Opgeslagen wachtwoorden bekijken…">
 
 <!ENTITY options.misc "Overige Instellingen">

@@ -7,7 +7,9 @@ If you think you should be mentioned here, raise a pull request or send me a sho
 ## Code and translations
 Marion Desnault, Max Dittrich, Sébastien, Виктор Букреев, Christian Rößner, 
 Michael Fladischer, Александр Моисеев, Cyril Kluska, Dominique Couot, 
-Carlos Gomez Agun, Georgeto
+Carlos Gomez Agun, Georgeto, Володимир Костирко, YFdyh000, Israel Rodrigo Faria, Óvári, 
+Arvin Noer, Onno Ekker, Johannes, Steffen (YellowGarbageBag),
+
 
 ## Donors
 John Fawcett, Simon Clarkstone, Janusz Wilk, Ralph Angenendt, Ralf Loeser,
@@ -23,11 +25,15 @@ Paul Whitney, Udo Rader, Matthew Davis, Oliver Majoross, Jean-Francois Pirus, Fr
 Daniel Gnoutcheff, Alfred Scherff, Willem Van Iseghem, Robert McQueen, Klaus-Dieter Scheffer,
 James Quilty,	Alexander Wetzel, Vassili Tchersky, Jonas Platte, Birk Schröder, Jérôme Avond, 
 Jeffrey Zimmerman, Koen Bailleul, Technical Flight Services, Mishima Mitsuharu, Jean-Yves Michaud, 
-Timo Baab, Markus Reineke, Justus Seifert, Péter Szládovics, Nils Steinger
+Timo Baab, Markus Reineke, Justus Seifert, Péter Szládovics, Nils Steinger, Marcel Sinn, 
+Ray Soft-Systems, Willem Van Iseghem, Jan Philippi, Halldor thor Straten
 
 ## Resources
+[mozilla.org](http://www.mozilla.org), [thunderbird.net](http://www.thunderbird.net),
 [mozdev](http://www.mozdev.org), [SourceForge](http://sf.net),
 [github](http://www.github.com), [crowdin](http://crowdin.net),
 [jQuery](http://www.jquery.com), [CodeMirror](http://www.codemirror.net),
-[ohloh](http://www.ohloh.net), [bootstrap](https://getbootstrap.com/)
+[ohloh](http://www.ohloh.net), [bootstrap](https://getbootstrap.com/),
+[gulp](https://gulpjs.com/), [electron](https://electronjs.org/), 
+[npm](https://www.npmjs.com/), [Google Material Design Icons](https://material.io/tools/icons/)
 

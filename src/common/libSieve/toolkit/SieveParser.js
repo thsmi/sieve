@@ -135,19 +135,30 @@
      *  @param {string|string[]} tokens
      *    the tokens which should be checked
      *
+     *  @param {boolean} [ignoreCase]
+     *    optional boolean argument default to true
+     *
      *  @returns {boolean}
      *    true in case the string starts with one of the tokens
      *    otherwise false
      */
-    startsWith(tokens) {
+    startsWith(tokens, ignoreCase) {
+
+      if (typeof(ignoreCase) === "undefined" || ignoreCase === null)
+        ignoreCase = true;
 
       if (!Array.isArray(tokens))
         tokens = [tokens];
 
-      for (let i in tokens) {
-        let data = this._data.substr(this._pos, tokens[i].length);
+      for (let token of tokens) {
+        let data = this._data.substr(this._pos, token.length);
 
-        if (data === tokens[i])
+        if (ignoreCase) {
+          token = token.toLowerCase();
+          data = data.toLowerCase();
+        }
+
+        if (data === token)
           return true;
       }
 

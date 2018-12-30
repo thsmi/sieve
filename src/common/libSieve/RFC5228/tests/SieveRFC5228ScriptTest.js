@@ -25,6 +25,18 @@
     suite.log("RFC5228 unit tests...");
   });
 
+  suite.add(function () {
+    suite.log("Test Case insensitivity");
+
+    let script = ""
+      + 'if NOT address :DOMAIN :is ["From", "To"] "example.com"\r\n'
+      + '        {\r\n'
+      + '        keep;               # keep in "In" mailbox\r\n'
+      + '        }\r\n';
+
+    suite.expectValidScript(script);
+  });
+
 
   suite.add(function () {
     suite.log("Single line comment");
@@ -248,7 +260,7 @@
       + '#\r\n'
       + '# Keep all messages to or from people in my company\r\n'
       + '#\r\n'
-      + 'elsif address :domain :is ["From", "To"] "example.com"\r\n'
+      + 'elsif address :DOMAIN :is ["From", "To"] "example.com"\r\n'
       + '        {\r\n'
       + '        keep;               # keep in "In" mailbox\r\n'
       + '        }\r\n'
@@ -257,7 +269,7 @@
       + '# Try and catch unsolicited email.  If a message is not to me,\r\n'
       + '# or it contains a subject known to be spam, file it away.\r\n'
       + '#\r\n'
-      + 'elsif anyof (not address :all :contains\r\n'
+      + 'elsif anyof (NOT address :all :contains\r\n'
       + '               ["To", "Cc", "Bcc"] "me@example.com",\r\n'
       + '             header :matches "subject"\r\n'
       + '               ["*make*money*fast*", "*university*dipl*mas*"])\r\n'

@@ -38,7 +38,8 @@
     this.whiteSpace = [];
     this.whiteSpace[0] = this._createByName("whitespace", " ");
     this.whiteSpace[1] = this._createByName("whitespace");
-    // this.test = this._createByName("operator");
+
+    this._literal = null;
   }
 
   SieveNotOperator.prototype = Object.create(SieveAbstractElement.prototype);
@@ -68,7 +69,7 @@
     = function (parser) {
       // Syntax :
       // <"not"> <test>
-      parser.extract("not");
+      this._literal = parser.extract("not");
 
       this.whiteSpace[0].init(parser);
 
@@ -121,10 +122,19 @@
 
   SieveNotOperator.prototype.toScript
     = function () {
-      return "not"
+      let result = "";
+
+      if (this._literal !== null)
+        result += this._literal;
+      else
+        result += "not";
+
+      result += ""
         + this.whiteSpace[0].toScript()
         + this._test.toScript()
         + this.whiteSpace[1].toScript();
+
+      return result;
     };
 
 

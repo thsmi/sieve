@@ -64,7 +64,7 @@
     init(parser) {
       this._number = parser.extractNumber();
 
-      if (parser.isChar(['K', 'M', 'G']))
+      if (parser.isChar(['K', 'M', 'G', 'k', 'm', 'g']))
         this._unit = parser.extractChar();
 
       return this;
@@ -121,6 +121,8 @@
     setUnit(unit) {
       if (typeof (unit) === "undefined" || unit === null)
         throw new Error("No unit specified");
+
+      unit = unit.toUpperCase();
 
       if ((unit !== "") && (unit !== "K") && (unit !== "M") && (unit !== "G"))
         throw new Error("Invalid unit must be either K, M or G");

@@ -121,6 +121,7 @@
         throw new Error("Token in a Literal as to be a string but is " + typeof (token));
 
       this._token = token;
+      this._literal = null;
 
       this._pre = this.getParent().createByName("whitespace", "");
       this._post = null;
@@ -189,7 +190,8 @@
       else
         this._pre.init("");
 
-      parser.extract(this._token);
+      // Preserve the original token's case.
+      this._literal = parser.extract(this._token);
 
       if (this._post === null)
         return;
@@ -215,7 +217,13 @@
     toScript() {
       let result = "";
 
-      result += this._pre.toScript() + this._token;
+      result += this._pre.toScript();
+
+      // We prefer the user's way of writing the token
+      if (this._literal !== null)
+        result += this._literal;
+      else
+        result += this._token;
 
       if (this._post !== null)
         result += this._post.toScript();

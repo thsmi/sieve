@@ -125,7 +125,10 @@ SieveFilterExplorer.prototype.onListScriptResponse
     this.onStatusChange(0);
 
     // force repainting treeview to speedup the ui...
-    tree.treeBoxObject.invalidate();
+    if (typeof(tree.treeBoxObject) !== "undefined")
+      tree.treeBoxObject.invalidate();
+    else
+      tree.invalidate();
   };
 
 SieveFilterExplorer.prototype.onSetActiveResponse
@@ -649,7 +652,14 @@ function closeTab() {
 }
 
 
+/**
+ * Called upon a double click on the tree
+ * @param {Event} ev
+ *   the event handler which is called
+ */
 function onTreeDblClick(ev) {
+  "use strict";
+
   let tree = document.getElementById('treeImapRules');
 
   // test if tree element is visible
@@ -661,23 +671,40 @@ function onTreeDblClick(ev) {
   if (style.visibility === 'hidden')
     return false;
 
-  let row = {};
-  let column = {};
-  let part = {};
+  // The Tree implementation changed in Thunderbird 66.
+  // Old implementation used a treeBoxObject, which was merged into
+  // the tree object in newer versions.
+  if (typeof (tree.treeBoxObject) !== "undefined") {
 
-  tree.treeBoxObject.getCellAt(ev.clientX, ev.clientY, row, column, part);
+    // Pre Thunderbird 66 implementation
+    let row = {};
+    let column = {};
+    let part = {};
 
-  if ((row.value === -1) || (column.value === -1))
+    tree.treeBoxObject.getCellAt(ev.clientX, ev.clientY, row, column, part);
+
+    if ((row.value === -1) || (column.value === -1))
+      return;
+
+    // ignore cycler cells, e.g. the one to (de)active scripts
+    if (column.value.cycler)
+      return;
+
+    sivOpenEditor(tree.view.getCellText(row.value, tree.columns.getColumnAt(0)));
+    return;
+  }
+
+  // Post Thunderbird 66 implementation
+  let cell = tree.getCellAt(ev.clientX, ev.clientY);
+
+  if ((cell.row === -1) || (cell.col === null))
     return;
 
   // ignore cycler cells, e.g. the one to (de)active scripts
-  if (column.value.cycler)
+  if (cell.col.cycler)
     return;
 
-  let scriptName = tree.view.getCellText(row.value, tree.columns.getColumnAt(0));
-
-  sivOpenEditor(scriptName);
-
+  sivOpenEditor(tree.view.getCellText(cell.row, tree.columns.getColumnAt(0)));
   return;
 }
 

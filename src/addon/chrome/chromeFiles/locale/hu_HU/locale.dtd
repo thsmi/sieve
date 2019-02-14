@@ -135,7 +135,7 @@
 
 <!ENTITY options.account.sieve
 "A Szita (Sieve) egy erőteljes parancsnyelv a kiszolgálóoldali levélszűrés számára.">
-<!ENTITY options.account.activate "Enable “ManageSieve” for this account">
+<!ENTITY options.account.activate "„ManageSieve” (szita kezelése) engedélyezése ehhez a fiókhoz">
 <!ENTITY options.account.activate.yes "Igen, kezelje a Szita parancsfájlokat ehhez a fiókhoz:">
 <!ENTITY options.account.activate.no "Nem, ez a fiók nem támogatja a „ManageSieve”-t (szita kezelése)">
 <!ENTITY options.account.filters "Szűrők szerkesztése…">
@@ -149,10 +149,10 @@
 <!ENTITY options.proxy.description
 "A közvetlen kapcsolat helyett a SOCKS meghatalmazottás segítségével átláthatóan és biztonságosan haladhat át egy tűzfalon.">
 <!ENTITY options.proxy.description.nameresolution
-"SOCKS4 always resolves hostnames only on the local machine.
-SOCKS5 supports both resolving on the remote SOCKS proxy as well as resolving on the local machine.
+"A SOCKS4 mindig csak a helyi gépen veszi fel a gépneveket.
+A SOCKS5 támogatja mind a távoli SOCKS proxy megoldását, mind a helyi gépen történő megoldást.
 
-SOCKS5 with remote name resolution is preferred if the remote DNS is more trustworthy than the local DNS.">
+A SOCKS5 távoli névfeloldással előnyösebb, ha a távoli DNS megbízhatóbb, mint a helyi DNS.">
 <!ENTITY options.proxy.description.localhost
 "Ha a „localhost” meghatalmazott-kiszolgáló nem működik megfelelően, helyette használja a „127.0.0.1” meghatalmazott-kiszolgáló.">
 <!ENTITY options.proxy.direct "Közvetlen kapcsolat">

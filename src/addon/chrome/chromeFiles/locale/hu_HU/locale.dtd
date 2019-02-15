@@ -277,4 +277,4 @@ Válassza a Haladó gombot a fiók kézi beállításához.">
 <!ENTITY status.sync.replace "Kiszolgálóoldali parancsfájl használata">
 
 <!-- Shortcut keys -->
-<!ENTITY shortcut.save.key "S">
+<!ENTITY shortcut.save.key "M">

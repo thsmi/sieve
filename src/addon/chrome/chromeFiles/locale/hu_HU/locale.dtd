@@ -53,17 +53,17 @@
 <!ENTITY options.security.tls.force "TLS (Transport Layer Security – közlekedési rétegbiztonság) kényszerítve">
 
 <!ENTITY options.login "Hitelesítés">
-<!ENTITY options.login.key "A">
+<!ENTITY options.login.key "H">
 <!ENTITY options.login.noAuth "Nincs hitelesítés">
 <!ENTITY options.login.imapAuth "IMAP felhasználónév és jelszó">
 <!ENTITY options.login.customAuth "Felhasználónév és jelszó">
 <!ENTITY options.login.username "Felhasználónév">
-<!ENTITY options.login.username.key "u">
+<!ENTITY options.login.username.key "n">
 <!ENTITY options.login.show "Mentett jelszavak megtekintése…">
 
 <!ENTITY options.misc "Egyéb beállítások">
 <!ENTITY options.misc.keepalive "Keep-Alive üzenetek engedélyezése">
-<!ENTITY options.misc.keepalive.key "k">
+<!ENTITY options.misc.keepalive.key "K">
 <!ENTITY options.misc.keepalive2 "Küldjön minden">
 <!ENTITY options.misc.keepalive.description
 "Ha az ügyfél túlságosan tétlen (általában 30 perc), a kiszolgáló feltételezi, hogy az ügyfél leválik, és feloldja a kapcsolatot.">
@@ -75,7 +75,7 @@
 <!ENTITY options.misc.compile.description
 "A kiszolgáló ellenőrzi a mondattan-ellenőrzés beírás közben. A kérelmeket csoportosítják, hogy a hálózati forgalom alacsony legyen.">
 <!ENTITY options.misc.compile "Mondattan-ellenőrzés beírás közben">
-<!ENTITY options.misc.compile.key "c">
+<!ENTITY options.misc.compile.key "M">
 <!ENTITY options.misc.compile2 "Érvényesít minden">
 <!ENTITY options.misc.compile.ms "ezredmásodperc">
 

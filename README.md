@@ -44,6 +44,7 @@ The [Sieve add-on](https://addons.thunderbird.net/addon/sieve/) exists since
 [Dutch (nl)](https://crowdin.com/project/sieve/nl),
 [French (fr)](https://crowdin.com/project/sieve/fr),
 [German (de)](https://crowdin.com/project/sieve/de),
+[Hungarian (hu)](https://crowdin.com/project/sieve/hu),
 [Indonesian (id)](https://crowdin.com/project/sieve/id),
 [Polish (pl)](https://crowdin.com/project/sieve/pl),
 [Portuguese, Brazilian (pt-BR)](https://crowdin.com/project/sieve/pt-BR),

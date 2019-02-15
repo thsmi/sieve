@@ -20,6 +20,9 @@ Please drop me a note (`schmid-thomas at gmx.net`) if I forgot to mention you be
 * Cyril KLUSKA <ckluska@easter-eggs.com> (ckluska)
 * Dominique Couot <dcouot@solipym.com> (dcouot)
 
+## Hungarian (hu)
+* Óvári
+
 ## Indonesian (id)
 * joelsteem (salman.alfasyimy)
 

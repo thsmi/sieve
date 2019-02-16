@@ -173,7 +173,16 @@ function onReconnectClick() {
   gCallback();
 }
 
+/**
+ * Called when a bad certificate should be overwritten.
+ * @param {string} targetSite
+ *   the websites address as string
+ * @param {boolean} permanent
+ *   if true the override will be permanent otherwise temporary
+ */
 function onBadCertOverride(targetSite, permanent) {
+  "use strict";
+
   try {
     let overrideService = Cc["@mozilla.org/security/certoverride;1"]
       .getService(Ci.nsICertOverrideService);
@@ -201,7 +210,11 @@ function onBadCertOverride(targetSite, permanent) {
       | ((status.isDomainMismatch) ? overrideService.ERROR_MISMATCH : 0)
       | ((status.isNotValidAtThisTime) ? overrideService.ERROR_TIME : 0);
 
-    let cert = status.QueryInterface(Ci.nsISSLStatus).serverCert;
+    if (typeof(Ci.nsISSLStatus) !== "undefined")
+      status = status.QueryInterface(Ci.nsISSLStatus);
+
+    let cert = status.serverCert;
+
     if (!cert)
       throw new Error("Status does not contain a certificate...");
 

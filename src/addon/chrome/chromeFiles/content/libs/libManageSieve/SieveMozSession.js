@@ -487,7 +487,7 @@
      *
      **/
     onDisconnect() {
-      this.getLogger().logSesion("On Server Disconnect:  [" + this.channels + "]");
+      this.getLogger().logSession("On Server Disconnect:  [" + this.channels + "]");
 
       this._invokeListeners("onDisconnect");
       this.disconnect(true);

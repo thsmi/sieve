@@ -874,7 +874,7 @@
       tokens.shift();
 
       // Remove the prefix and convert to an integer
-      return parseInt(tokens.substr(SHA_PREFIX_LENGTH), 10);
+      return parseInt(token.substr(SHA_PREFIX_LENGTH), 10);
     }
 
     /**

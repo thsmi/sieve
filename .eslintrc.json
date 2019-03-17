@@ -177,6 +177,8 @@
         "jsdoc/require-param-type": 1,
         "jsdoc/require-returns-description": 1,
         "jsdoc/require-returns-type": 1,
+        "jsdoc/require-returns-check": 1,
+        "jsdoc/require-returns":1,
         "jsdoc/require-description": 0,
         "jsdoc/require-example": 0,
         "jsdoc/require-hyphen-before-param-description": 0

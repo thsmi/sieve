@@ -12,7 +12,7 @@
     "electron": "^4.0.0",
     "electron-packager": "^13.0.1",
     "eslint": "^5.10.0",
-    "eslint-plugin-jsdoc": "^3.14.0",
+    "eslint-plugin-jsdoc": "^4.1.0",
     "gulp": "^4.0.0",
     "gulp-zip": "^4.2.0",
     "jquery": "^3.3.1",

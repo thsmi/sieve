@@ -178,17 +178,47 @@
         return url.QueryInterface(Ci.nsIURI);
       },
 
-      newChannel: function (URI) {
-        return this.newChannel2(URI);
-      },
-
-      newChannel2: function (URI, loadInfo) {
+      /**
+       * Creates a new Channel.
+       *
+       * Originally the implementation had only one argument and was
+       * replaced with the two argument version "newChannel2".
+       *
+       * But starting Thunderbird 67+, they broke the api and changed
+       * the signature. The ogiginal newChannel was dropped and newChannel2
+       * was renamed to newChannel.
+       *
+       * @param {nsIURI} URI
+       *   the URI for which the channel is needed.
+       * @param {nsILoadInfo} [loadInfo]
+       *   the load information e.g. needed for proxy discovery.
+       *   It is required in Thunderbird 67 and does not exit in prior versions.
+       * @returns {nsIChannel}
+       *   the newly created channel
+       */
+      newChannel: function (URI, loadInfo) {
         let ios = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
 
         if (!ios.allowPort(URI.port, URI.scheme))
           throw Components.results.NS_ERROR_FAILURE;
 
         return new BogusChannel(URI, loadInfo);
+      },
+
+      /**
+       * Creates a new Channel.
+       *
+       * see new Channel for more details. It got deprecated starting Thunderbird 67+
+       *
+       * @param {nsIURI} URI
+       *   the URL for which the channel is needed.
+       * @param {nsILoadInfo} loadInfo
+       *   the load information e.g. neede for proxy discovery.
+       * @returns {nsIChannel}
+       *   the newly created channel
+       */
+      newChannel2: function (URI, loadInfo) {
+        return this.newChannel(URI, loadInfo);
       },
 
       QueryInterface: function (aIID) {

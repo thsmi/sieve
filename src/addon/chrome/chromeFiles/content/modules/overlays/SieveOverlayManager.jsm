@@ -153,7 +153,7 @@
     },
 
     removeStyleSheet: function (document, url) {
-      for (let stylesheet of document.styleSheets.length) {
+      for (let stylesheet of document.styleSheets) {
         if (stylesheet.href !== url)
           continue;
 

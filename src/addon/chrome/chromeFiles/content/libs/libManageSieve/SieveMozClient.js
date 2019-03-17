@@ -417,8 +417,40 @@
       this.getLogger().logState("Connected to " + this.host + ":" + this.port + " ...");
     };
 
-  Sieve.prototype.onDataAvailable
-    = function (aRequest, context, inputStream, offset, count) {
+  /**
+   * Called as soon as data arrives.
+   * In Thunderbird 67+ the method signature was changed and api
+   * compatibility broken. So we need this magic wrapper.
+   *
+   * @param {...Object} args
+   *   the parameters passed to on DataAvailable
+   * @returns {undefined}
+   *   nothing to return
+   */
+  Sieve.prototype.onDataAvailable = function (...args) {
+
+    // The old api passes the stream as third parameter
+    if (args[2] instanceof Ci.nsIInputStream)
+      return this.onDataReceived(args[2], args[4]);
+
+    // The new api uses the second parameter
+    if (args[1] instanceof Ci.nsIInputStream)
+      return this.onDataReceived(args[1], args[3]);
+
+    throw new Error("Unknown signature for nsIStreamListener.onDataAvailable()");
+  };
+
+  /**
+   * Call as soon as data arrives and needs to be processed.
+   *
+   * @param {nsIInputStream} inputStream
+   *   the input stream containing the data chunks
+   * @param {int} count
+   *   the maximum number of bytes which can be read in this call.
+   */
+  Sieve.prototype.onDataReceived
+    = function (inputStream, count) {
+
       let binaryInStream = Cc["@mozilla.org/binaryinputstream;1"]
         .createInstance(Ci.nsIBinaryInputStream);
 

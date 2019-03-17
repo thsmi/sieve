@@ -141,14 +141,15 @@
 
     Cu.unload("chrome://sieve/content/modules/utils/SieveWindowHelper.jsm");
 
-    // Remove Chrome Manifest
-    Components.manager.removeBootstrappedManifestLocation(data.installPath);
-
     // unregister the resource protocol
     Services.io
       .getProtocolHandler('resource')
       .QueryInterface(Components.interfaces.nsIResProtocolHandler)
       .setSubstitution('sieve-addon', null);
+
+    // Remove Chrome Manifest
+    if (Services.vc.compare(Services.appinfo.platformVersion, "10.0") < 0)
+      Components.manager.removeBootstrappedManifestLocation(data.installPath);
   }
 
   exports.install = install;

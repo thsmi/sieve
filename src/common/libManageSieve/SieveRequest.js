@@ -907,7 +907,7 @@
    *   sieve.addRequest(request);
    */
 
-  class SieveSaslPlainRequest extends SieveAbstractRequest {
+  class SieveSaslPlainRequest extends SieveAbstractSaslRequest {
 
     /**
      * @returns {boolean}

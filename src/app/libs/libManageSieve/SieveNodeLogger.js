@@ -31,9 +31,10 @@
     log(message, level) {
 
       if (!this.isLoggable(level))
-        return;
+        return this;
 
       console.log("[" + this.getTimestamp() + " " + this.prefix() + "] " + message);
+      return this;
     }
   }
 

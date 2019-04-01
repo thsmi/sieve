@@ -43,13 +43,19 @@
      * Creates a new instance
      * @param {string} [prefix]
      *   an optional prefix for this logger.
+     * @param {int} [level]
+     *   the logger level
+     *
      */
-    constructor(prefix) {
+    constructor(prefix, level) {
       if (typeof (prefix) === "undefined")
         prefix = "";
 
-      this._level = 0x00;
-      this._prefix = "";
+      if (typeof(level) === "undefined")
+        level = 0x00;
+
+      this._level = level;
+      this._prefix = prefix;
     }
 
     /**
@@ -60,7 +66,7 @@
      *   a self reference
      */
     logRequest(message) {
-      this.log(message, LOG_REQUEST);
+      return this.log(message, LOG_REQUEST);
     }
 
     /**
@@ -71,7 +77,7 @@
      *   a self reference
      */
     logResponse(message) {
-      this.log(message, LOG_RESPONSE);
+      return this.log(message, LOG_RESPONSE);
     }
 
     /**
@@ -82,7 +88,7 @@
      *   a self reference
      */
     logState(message) {
-      this.log(message, LOG_STATE);
+      return this.log(message, LOG_STATE);
     }
 
     /**
@@ -93,8 +99,7 @@
      *   a self reference
      */
     logStream(message) {
-      this.log(message, LOG_STREAM);
-      return this;
+      return this.log(message, LOG_STREAM);
     }
 
     /**
@@ -105,12 +110,13 @@
      *   a self reference
      */
     logSession(message) {
-      this.log(message, LOG_SESSION_INFO);
-      return this;
+      return this.log(message, LOG_SESSION_INFO);
     }
 
     /**
      * Logs the given message to the browser console.
+     *
+     * @abstract
      *
      * @param {string} message
      *   The message which should be logged

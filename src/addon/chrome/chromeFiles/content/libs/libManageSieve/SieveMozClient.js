@@ -462,9 +462,8 @@
 
       if (this.getLogger().isLoggable(LOG_RESPONSE)) {
 
-        let byteArray = data.slice(0, data.length);
-
-        this.getLogger().logResponse("Server -> Client\n", this.convertToString(byteArray));
+        this.getLogger().logResponse(
+          "Server -> Client\n" + this.convertToString(data.slice(0, data.length)));
       }
 
       SieveAbstractClient.prototype.onDataReceived.call(this, data);

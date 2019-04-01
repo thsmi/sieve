@@ -15,7 +15,6 @@
 
   /* global SieveOverlayUtils */
   /* global Components */
-  /* global document */
   /* global Services */
   /* global SieveOverlayManager */
 

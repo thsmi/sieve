@@ -9,14 +9,14 @@
   "devDependencies": {
     "bootstrap": "^4.2.1",
     "codemirror": "^5.42.2",
-    "electron": "^4.0.0",
+    "electron": "^5.0.3",
     "electron-packager": "^13.0.1",
     "eslint": "^5.10.0",
-    "eslint-plugin-jsdoc": "^4.1.0",
+    "eslint-plugin-jsdoc": "^7.2.3",
     "gulp": "^4.0.0",
-    "gulp-zip": "^4.2.0",
+    "gulp-zip": "^5.0.0",
     "jquery": "^3.3.1",
-    "material-design-icons-iconfont": "^4.0.3"
+    "material-design-icons-iconfont": "^5.0.1"
   },
   "scripts": {
     "start": "./node_modules/.bin/electron ./build/electron/resources/",
@@ -28,7 +28,7 @@
     "type": "git",
     "url": "git+https://github.com/thsmi/sieve.git"
   },
-  "author": "",
+  "author": "Thomas Schmid <schmid-thomas@gmx.net>",
   "license": "AGPL-3.0",
   "bugs": {
     "url": "https://github.com/thsmi/sieve/issues"

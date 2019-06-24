@@ -82,7 +82,7 @@ function getPackageVersion(file) {
  * @param {string} version
  *   the new version string
  * @param {string} [file]
- *   the path to the package json file.
+ *   the path to the npm package json file.
  *
  */
 function setPackageVersion(version, file) {
@@ -114,7 +114,7 @@ function setPackageVersion(version, file) {
 function setRdfVersion(version, file) {
   "use strict";
 
-  console.log("Bumping " + file);
+  console.log("Bumping Thunderbird RDF" + file);
 
   let regexp = new RegExp("<em:version>(\\d)*\\.(\\d)*\\.(\\d)*<\\/em:version>", "g");
 
@@ -166,8 +166,12 @@ function bumpVersion(type) {
 
   console.log("... to " + pkgVersion.join("."));
 
+  // NPM & Electron Versioning.
   setPackageVersion(pkgVersion, './package.json');
+
+  // Old and new Thunderbird Versions.
   setRdfVersion(pkgVersion, './src/addon/install.rdf');
+  setPackageVersion(pkgVersion, './src/addon/manifest.json');
 }
 
 

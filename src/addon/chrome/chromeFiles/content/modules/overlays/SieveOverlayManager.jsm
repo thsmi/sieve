@@ -329,10 +329,16 @@
 
       let domWindow = SieveOverlayManager._getWindow(xulWindow);
 
-      // Wait for it to finish loading
+      // In case the window is already loaded, we missed the load event.
+      // So we need to call the method directly...
+      if (domWindow.document.readyState === "complete") {
+        SieveOverlayManager.loadOverlay(domWindow);
+        return;
+      }
+
+      // ... otherwise we need to wait until it finished loading.
       domWindow.addEventListener("load", function listener() {
         domWindow.removeEventListener("load", listener, false);
-
         SieveOverlayManager.loadOverlay(domWindow);
 
       }, false);
@@ -450,8 +456,7 @@
 
       let windows = wm.getEnumerator(null);
       while (windows.hasMoreElements()) {
-        let domWindow = windows.getNext();
-        SieveOverlayManager.loadOverlay(domWindow);
+        SieveOverlayManager.onOpenWindow(windows.getNext());
       }
 
       // Wait for any new browser windows to open

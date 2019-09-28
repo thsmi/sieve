@@ -7,15 +7,15 @@
     "test": "tests"
   },
   "devDependencies": {
-    "bootstrap": "^4.2.1",
-    "codemirror": "^5.42.2",
-    "electron": "^5.0.3",
-    "electron-packager": "^13.0.1",
-    "eslint": "^5.10.0",
-    "eslint-plugin-jsdoc": "^7.2.3",
+    "bootstrap": "^4.3.1",
+    "codemirror": "^5.49.0",
+    "electron": "^6.0.10",
+    "electron-packager": "^14.0.6",
+    "eslint": "^6.4.0",
+    "eslint-plugin-jsdoc": "^15.9.5",
     "gulp": "^4.0.0",
     "gulp-zip": "^5.0.0",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.1",
     "material-design-icons-iconfont": "^5.0.1"
   },
   "scripts": {

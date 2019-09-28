@@ -132,7 +132,7 @@ async function packageCommon() {
     "!" + common.BASE_DIR_COMMON + "/libSieve/**/rfc*.txt",
     "!" + common.BASE_DIR_COMMON + "/libSieve/**/tests/",
     "!" + common.BASE_DIR_COMMON + "/libSieve/**/tests/**"
-  ]).pipe(dest(common.BUILD_DIR_ADDON + '/chrome/chromeFiles/content/libs'));
+  ]).pipe(dest(`${BUILD_DIR_ADDON}/chrome/chromeFiles/content/libs`));
 }
 
 /**

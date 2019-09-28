@@ -39,7 +39,7 @@ async function packageCommon() {
 
     // Filter out the rfc documents
     "!" + common.BASE_DIR_COMMON + "/libSieve/**/rfc*.txt"
-  ]).pipe(dest(common.BUILD_DIR_TEST + '/common/'));
+  ]).pipe(dest(`${BUILD_DIR_TEST}/common/`));
 }
 
 /**

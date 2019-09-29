@@ -11,10 +11,10 @@
 
 const { series, parallel } = require('gulp');
 
-const common = require('./gulpfile.common.js');
-const addon = require('./gulpfile.addon.js');
-const app = require('./gulpfile.app.js');
-const testing = require('./gulpfile.testing.js');
+const common = require('./gulp/gulpfile.common.js');
+const addon = require('./gulp/gulpfile.addon.js');
+const app = require('./gulp/gulpfile.app.js');
+const testing = require('./gulp/gulpfile.testing.js');
 
 // App related gulp tasks
 exports["app:watch"] = app.watch;

@@ -146,7 +146,7 @@ async function packageXpi() {
 
   console.log(`Packaging sieve-${version}.xpi`);
 
-  await src([`${BUILD_DIR_ADDON}**`])
+  await src([`${BUILD_DIR_ADDON}/**`], {buffer:false})
     .pipe(zip(`sieve-${version}.xpi`))
     .pipe(dest('./release/thunderbird'));
   // place code for your default task here
@@ -167,7 +167,7 @@ async function packageXpi() {
 async function deploy() {
   "use strict";
 
-  let { SieveThunderbirdImport } = require("./src/app/utils/SieveThunderbirdImport.js");
+  let { SieveThunderbirdImport } = require("../src/app/utils/SieveThunderbirdImport.js");
 
   let target = (new SieveThunderbirdImport()).getDefaultUserProfile();
 

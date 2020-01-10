@@ -176,7 +176,7 @@ async function setPackageVersion(version, file) {
 
   console.log(`Updating ${file} to ${version}`);
 
-  let data = JSON.parse(await fs.promises.readFile(file, 'utf8'));
+  const data = JSON.parse(await fs.promises.readFile(file, 'utf8'));
   data.version = version;
 
   await fs.promises.writeFile(file, JSON.stringify(data, null, 2), 'utf-8');
@@ -194,7 +194,7 @@ async function setPackageVersion(version, file) {
 async function bumpMajorVersion() {
   "use strict";
 
-  let pkgVersion = await getPackageVersion('./package.json');
+  const pkgVersion = await getPackageVersion('./package.json');
 
   console.log("Major bump from " + pkgVersion.join(".") + " ...");
 
@@ -216,7 +216,7 @@ async function bumpMajorVersion() {
 async function bumpMinorVersion() {
   "use strict";
 
-  let pkgVersion = await getPackageVersion('./package.json');
+  const pkgVersion = await getPackageVersion('./package.json');
 
   console.log("Minor bump from " + pkgVersion.join("."));
 
@@ -237,7 +237,7 @@ async function bumpMinorVersion() {
 async function bumpPatchVersion() {
   "use strict";
 
-  let pkgVersion = await getPackageVersion('./package.json');
+  const pkgVersion = await getPackageVersion('./package.json');
 
   console.log("Patch bump from " + pkgVersion.join("."));
 

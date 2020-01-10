@@ -37,7 +37,7 @@ async function setRdfVersion(version, file) {
 
   console.log(`Updating ${file} to ${version}`);
 
-  let regexp = new RegExp("<em:version>(\\d)*\\.(\\d)*\\.(\\d)*<\\/em:version>", "g");
+  const regexp = new RegExp("<em:version>(\\d)*\\.(\\d)*\\.(\\d)*<\\/em:version>", "g");
 
   let data = await fs.promises.readFile(file, 'utf8');
   data = data.replace(
@@ -146,7 +146,7 @@ async function packageXpi() {
 
   console.log(`Packaging sieve-${version}.xpi`);
 
-  await src([`${BUILD_DIR_ADDON}/**`], {buffer:false})
+  await src([`./${BUILD_DIR_ADDON}/**`], {buffer:false})
     .pipe(zip(`sieve-${version}.xpi`))
     .pipe(dest('./release/thunderbird'));
   // place code for your default task here
@@ -167,7 +167,7 @@ async function packageXpi() {
 async function deploy() {
   "use strict";
 
-  let { SieveThunderbirdImport } = require("../src/app/utils/SieveThunderbirdImport.js");
+  const { SieveThunderbirdImport } = require("../src/app/utils/SieveThunderbirdImport.js");
 
   let target = (new SieveThunderbirdImport()).getDefaultUserProfile();
 
@@ -178,7 +178,7 @@ async function deploy() {
 
   target = path.join(target, "sieve@mozdev.org");
 
-  let source = path.join(
+  const source = path.join(
     path.resolve(BUILD_DIR_ADDON),
     path.sep);
 
@@ -225,6 +225,7 @@ function watchSrc() {
       './src/**/*.css',
       './src/**/*.xul',
       './src/**/*.dtd',
+      './src/**/*.tpl',
       './src/**/*.properties'],
     parallel(
       packageSrc,
@@ -250,7 +251,7 @@ exports['package'] = parallel(
   packageBootstrap,
   packageLicense,
   packageCodeMirror,
-  packageMaterialIcons,
+  packageMaterialIcons
 );
 
 exports['updateVersion'] = updateVersion;

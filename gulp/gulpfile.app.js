@@ -133,14 +133,15 @@ async function packageWin32() {
     arch: "ia32",
     platform: "win32",
     download: {
-      cache: path.join(common.BASE_DIR_BUILD, "/electron/cache")
+      // cache: path.join(common.BASE_DIR_BUILD, "/electron/cache"),
+      cacheRoot: path.join(common.BASE_DIR_BUILD, "/electron/cache")
     },
     out: path.join(common.BASE_DIR_BUILD, "/electron/out"),
     overwrite: true,
-    packageManager: "yarn",
+    // packageManager: "yarn",
     // packageManager : false,
-    prune: true,
-    icon: "./../test.ico"
+    // icon: "./../test.ico",
+    prune: true
   };
 
   const packager = require('electron-packager');
@@ -154,7 +155,7 @@ async function packageWin32() {
 async function packageLinux() {
   "use strict";
 
-  let options = {
+  const options = {
     dir: BUILD_DIR_APP,
     arch: "x64",
     platform: "linux",

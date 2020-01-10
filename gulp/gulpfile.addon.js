@@ -67,7 +67,7 @@ async function packageJQuery() {
   "use strict";
 
   await common.packageJQuery(
-    BUILD_DIR_ADDON + "/chrome/chromeFiles/content/libs/jQuery");
+    BUILD_DIR_ADDON + "/chrome/chromeFiles/content/libs/jquery");
 }
 
 /**

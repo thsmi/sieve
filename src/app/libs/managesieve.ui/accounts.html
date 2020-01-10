@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Manage Sieve Scripts</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="./../bootstrap/css/bootstrap.min.css">
+</head>
+
+<body>
+  <div class="container" id="ctx">
+    <div class="siv-accounts"></div>
+
+    <!-- capabilities -->
+    <div id="sieve-dialog-capabilities" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Server Capabilities</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped">
+              <tbody>
+                <tr>
+                  <th>Implementation</th>
+                  <td id="sieve-capabilities-server"></td>
+                </tr>
+                <tr>
+                  <th>Version</th>
+                  <td id="sieve-capabilities-version"></td>
+                </tr>
+                <tr>
+                  <th>SASL&nbsp;Mechanisms</th>
+                  <td id="sieve-capabilities-sasl"></td>
+                </tr>
+                <tr>
+                  <th>Sieve&nbsp;Extensions</th>
+                  <td id="sieve-capabilities-extensions"></td>
+                </tr>
+                <tr>
+                  <th>Language</th>
+                  <td id="sieve-capabilities-language"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+        <div class="card mt-4 mb-4">
+            <div class="card-body">
+                <h4 class="card-title">Add or Import Account</h4>
+                <p class="card-text">Add a new account to the sieve app or import an existing configuration from thunderbrid</p>
+                <button class="btn btn-sm btn-outline-primary" id="sieve-account-create">Add Server</button>
+                <button class="btn btn-sm btn-outline-primary" id="sieve-account-import">Import Server</button>
+              </div>
+        </div>
+
+
+
+    <!-- The settings dialog-->
+    <div id="sieve-dialog-settings" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Account settings</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button class="siv-settings-show-advanced btn btn-outline-secondary">More</button>
+            <button class="siv-settings-hide-advanced btn btn-outline-secondary">Less</button>
+
+            <button class="sieve-settings-apply btn btn-primary">Apply</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="template" style="display:none">
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="./../jquery/jquery.min.js"></script>
+    <script src="./../bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script src="./utils/SieveFakeRequire.js"></script>
+
+    <script src="./utils/SieveUniqueId.js"></script>
+    <script src="./utils/SieveAbstractIpcClient.js"></script>
+    <script src="./utils/SieveIpcClient.js"></script>
+    <script src="./utils/SieveTemplateLoader.js"></script>
+
+    <script src="./settings/SieveServerSettingsUI.js"></script>
+    <script src="./settings/SieveCredentialSettingsUI.js"></script>
+    <script src="./settings/SieveAdvancedSettingsUI.js"></script>
+
+
+    <script src="./accounts/SieveScriptUI.js"></script>
+    <script src="./accounts/SieveAccountUI.js"></script>
+    <script src="./accounts/SieveAccountsUI.js"></script>
+    <script src="./accounts/SieveAccountCreateUI.js"></script>
+    <script src="./importer/SieveImportUI.js"></script>
+    <script src="./updater/SieveUpdaterUI.js"></script>
+
+    <script src="accounts.js"></script>
+  </div>
+
+</body>
+
+</html>

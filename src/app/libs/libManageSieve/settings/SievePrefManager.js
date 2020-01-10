@@ -13,7 +13,7 @@
 
   "use strict";
 
-  let { SieveAbstractPrefManager } = require("./SieveAbstractPrefManager.js");
+  const { SieveAbstractPrefManager } = require("./SieveAbstractPrefManager.js");
 
   /**
    * Manages preferences.
@@ -24,7 +24,7 @@
     /**
      * Reads and returns all preference values.
      *
-     * @returns {Object}
+     * @returns {object}
      *   the complete preference structure
      */
     getValues() {
@@ -40,11 +40,11 @@
      * Returns a specific value.
      * @param {string} key
      *   the key which should be returned.
-     * @returns {Object}
+     * @returns {object}
      *   the value or undefined in case it does not exist.
      */
     getValue(key) {
-      let values = this.getValues();
+      const values = this.getValues();
       return values[key];
     }
 
@@ -53,13 +53,13 @@
      *
      * @param {string} key
      *   the prefence key which should be written.
-     * @param {Object} value
+     * @param {object} value
      *   the key's value.
      * @returns {SievePrefManager}
      *   a self reference.
      */
     setValue(key, value) {
-      let prefs = this.getValues();
+      const prefs = this.getValues();
       prefs[key] = value;
 
       localStorage.setItem(this.id, JSON.stringify(prefs));
@@ -100,7 +100,7 @@
      * @inheritdoc
      */
     getString(key, fallback) {
-      let value = this.getValue(key);
+      const value = this.getValue(key);
 
       if (typeof (value) === "undefined" || value === null)
         return fallback;
@@ -123,7 +123,7 @@
      * @inheritdoc
      */
     getInteger(key, fallback) {
-      let value = this.getValue(key);
+      const value = this.getValue(key);
 
       if (typeof (value) === "undefined" || value === null)
         return fallback;

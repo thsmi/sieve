@@ -20,6 +20,11 @@
 
   // const SievePasswordManager = require('./utils/SievePasswordManager.js');
 
+  // eslint-disable-next-line no-magic-numbers
+  const ONE_MINUTE = 60 * 1000;
+  // eslint-disable-next-line no-magic-numbers
+  const FIVE_MINUTES = 5 * ONE_MINUTE;
+
 
   /**
    * Manages the account specific settings
@@ -45,6 +50,9 @@
     }
 
     /**
+     * Contains information about the server settings like
+     * the hostname, port etc.
+     *
      * @returns {SieveHost}
      *   the current host settings
      **/
@@ -105,7 +113,7 @@
         },
 
         getKeepAliveInterval: () => {
-          return this.prefs.getInteger("keepalive.interval", 5 * 60 * 1000);
+          return this.prefs.getInteger("keepalive.interval", FIVE_MINUTES);
         }
       };
     }

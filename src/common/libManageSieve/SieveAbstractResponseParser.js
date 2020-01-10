@@ -162,19 +162,19 @@
       // some sieve implementations are broken, this means ....
       // ... we can get "{4+}\r\n1234" or "{4}\r\n1234"
 
-      let nextBracket = this.indexOf(CHAR_RIGHT_BRACES);
+      const nextBracket = this.indexOf(CHAR_RIGHT_BRACES);
       if (nextBracket === NOT_FOUND)
         throw new Error("Error unbalanced parentheses \"{\" in\n" + this.getData());
 
       // extract the size, and ignore "+"
-      let size = parseInt(this.getData(this.pos, nextBracket).replace(/\+/, ""), 10);
+      const size = parseInt(this.getData(this.pos, nextBracket).replace(/\+/, ""), 10);
 
       this.pos = nextBracket + CHAR_LEN;
 
       this.extractLineBreak();
 
       // extract the literal...
-      let literal = this.getData(this.pos, this.pos + size);
+      const literal = this.getData(this.pos, this.pos + size);
       this.pos += size;
 
       return literal;
@@ -313,7 +313,7 @@
       let index = NOT_FOUND;
 
       for (let i = 0; i < separators.length; i++) {
-        let idx = this.indexOf(separators[i], this.pos);
+        const idx = this.indexOf(separators[i], this.pos);
 
         if (idx === NOT_FOUND)
           continue;
@@ -327,7 +327,7 @@
       if (index === NOT_FOUND)
         throw new Error("Delimiter >>" + separators + "<< not found in: " + this.getData());
 
-      let token = this.getData(this.pos, index);
+      const token = this.getData(this.pos, index);
       this.pos = index;
 
       return token;
@@ -394,7 +394,7 @@
       if (typeof (startIndex) === "undefined" || startIndex === null)
         startIndex = this.pos;
 
-      let byteArray = this.data.slice(startIndex, endIndex);
+      const byteArray = this.data.slice(startIndex, endIndex);
       return this.convertToString(byteArray);
     }
 

@@ -24,7 +24,7 @@ async function packageJQuery() {
   "use strict";
 
   await common.packageJQuery(
-    `${BUILD_DIR_TEST}/common/jQuery/`);
+    `${BUILD_DIR_TEST}/common/jquery/`);
 }
 
 /**

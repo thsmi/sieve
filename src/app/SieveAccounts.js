@@ -14,6 +14,7 @@
   "use strict";
 
   const { SieveAccount } = require("./SieveAccount.js");
+  const { SieveUniqueId } = require("./libs/managesieve.ui/utils/SieveUniqueId.js");
 
   /**
    * Manages the configuration for sieve accounts.
@@ -43,7 +44,7 @@
      */
     load() {
 
-      let ids = JSON.parse(localStorage.getItem("accounts"));
+      const ids = JSON.parse(localStorage.getItem("accounts"));
 
       this.accounts = {};
 
@@ -68,10 +69,21 @@
     }
 
     /**
+     * Generates a pseudo unique id.
+     * The id is garanteed to be made of alphanumerical characters and dashes.
+     *
+     * @returns {string}
+     *   the unique id in string representation.
+     */
+    generateId() {
+      return (new SieveUniqueId()).generate();
+    }
+
+    /**
      * Creates a new account.
      * The new account will be initialized with default and then added to the list of accounts
      *
-     * @param {Object} [details]
+     * @param {object} [details]
      *   the accounts details like the name, hostname, port and username as key value pairs.
      *
      * @returns {SieveAccounts}
@@ -80,7 +92,8 @@
     create(details) {
 
       // create a unique id;
-      let id = "" + (new Date()).getTime().toString(36) + "-" + Math.random().toString(36).substr(2, 16);
+
+      const id = this.generateId();
 
       this.accounts[id] = new SieveAccount(id, this.callback);
 
@@ -89,14 +102,14 @@
       this.save();
 
       if (typeof(details) !== "undefined" && details !== null) {
-        if (details.name)
+        if ((details.name !== null) && (details.name !== undefined))
           this.accounts[id].getHost().setDisplayName(details.name);
-        if (details.hostname)
+        if ((details.hostname !== null) && (details.hostname !== undefined))
           this.accounts[id].getHost().setHostname(details.hostname);
-        if (details.port)
+        if ((details.port !== null) && (details.port !== undefined))
           this.accounts[id].getHost().setPort(details.port);
 
-        if (details.username)
+        if ((details.username !== null) && (details.username !== undefined))
           this.accounts[id].getAuthentication(1).setUsername(details.username);
       }
 
@@ -126,7 +139,7 @@
      * Returns a list with all accounts.
      * The accounts are returnes as key value pairs (uqique id and Account)
      *
-     * @returns { Object<string, SieveAccount>}
+     * @returns { object<string, SieveAccount>}
      *   a list with sieve account.
      */
     getAccounts() {

@@ -14,10 +14,11 @@
 
   "use strict";
 
-  /* global require */
   const { SieveAbstractClient } = require("./SieveAbstractClient.js");
   const { SieveNodeResponseParser } = require("./SieveNodeResponseParser.js");
   const { SieveNodeRequestBuilder } = require("./SieveNodeRequestBuilder.js");
+
+  const { SieveCertValidationException } = require("./SieveExceptions.js");
 
   const net = require('net');
   const tls = require('tls');
@@ -25,39 +26,29 @@
 
   const NOT_FOUND = -1;
 
-  class SieveCertValidationException extends Error {
-    constructor(error, cert) {
-      super("Error while validating Cerificate " + error);
-      this.error = error;
-      this.cert = cert;
-    }
-
-    getType() {
-      return "SIEVE_CERT_VALIDATION_EXCEPTION";
-    }
-  }
-
   /**
    * Uses Node networking to realize a sieve client.
-   *
-   * @param {AbstractLogger} logger
-   *   the logger instance to use
-   * @constructor
    */
-  function Sieve(logger) {
-    // Call the parent constructor...
-    SieveAbstractClient.call(this);
+  class Sieve extends SieveAbstractClient {
 
-    this.tlsSocket = null;
-    this._logger = logger;
-  }
 
-  Sieve.prototype = Object.create(SieveAbstractClient.prototype);
-  Sieve.prototype.constructor = Sieve;
+    /**
+     * Creates a new instance
+     * @param {AbstractLogger} logger
+     *   the logger instance to use
+     **/
+    constructor(logger) {
+      super();
 
-  // Method used to controll the timers...
-  Sieve.prototype.onStartTimeout
-    = function () {
+      this.tlsSocket = null;
+      this._logger = logger;
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    onStartTimeout() {
 
       // Clear any existing timeouts
       if (this.timeoutTimer) {
@@ -72,68 +63,92 @@
       this.timeoutTimer = timers.setTimeout(
         () => { this.onTimeout(); },
         this.getTimeoutWait());
-    };
-
-  Sieve.prototype.onStopTimeout = function () {
-
-    // clear any existing timeout
-    if (this.timeoutTimer) {
-      timers.clearTimeout(this.timeoutTimer);
-      this.timeoutTimer = null;
     }
 
-    // and start the idle timer.
-    this.onStartIdle();
+    /**
+     * @inheritdoc
+     */
+    onStopTimeout() {
 
-    return;
-  };
+      // clear any existing timeout
+      if (this.timeoutTimer) {
+        timers.clearTimeout(this.timeoutTimer);
+        this.timeoutTimer = null;
+      }
 
-  Sieve.prototype.onStartIdle
-    = function () {
+      // and start the idle timer.
+      this.onStartIdle();
+
+      return;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    onStartIdle() {
       // first ensure the timer is stopped..
       this.onStopIdle();
 
       // ... then configure the timer.
-      let delay = this.getIdleWait();
+      const delay = this.getIdleWait();
 
       if (!delay)
         return;
 
       this.idleTimer
-        = timers.setTimeout(() => { this.onIdle(); }, delay);
-    };
+        = timers.setTimeout(async () => { await this.onIdle(); }, delay);
+    }
 
-  Sieve.prototype.onStopIdle
-    = function () {
+    /**
+     * @inheritdoc
+     */
+    onStopIdle() {
 
       if (!this.idleTimer)
         return;
 
       timers.clearTimeout(this.idleTimer);
       this.idleTimer = null;
-    };
+    }
 
-  Sieve.prototype.createParser
-    = function (data) {
+    /**
+     * @inheritdoc
+     */
+    createParser(data) {
       return new SieveNodeResponseParser(data);
-    };
+    }
 
-  Sieve.prototype.createRequestBuilder = function () {
-    return new SieveNodeRequestBuilder();
-  };
+    /**
+     * @inheritdoc
+     */
+    createRequestBuilder() {
+      return new SieveNodeRequestBuilder();
+    }
 
-  Sieve.prototype.getLogger
-    = function () {
+    /**
+     * @inheritdoc
+     */
+    getLogger() {
       return this._logger;
-    };
+    }
 
-  // connect...
-
-  Sieve.prototype.connect
-    = function (host, port, secure) {
+    /**
+     * Connects to a ManageSieve server.
+     * @param {string} host
+     *   The target hostname or IP address as String
+     * @param {int} port
+     *   The target port as Interger
+     * @param {boolean} secure
+     *   If true, a secure socket will be created. This allows switching to a secure
+     *   connection.
+     *
+     * @returns {SieveAbstractClient}
+     *   a self reference
+     */
+    connect(host, port, secure) {
 
       if (this.socket !== null)
-        return;
+        return this;
 
       this.host = host;
       this.port = port;
@@ -141,95 +156,110 @@
 
       this.socket = net.connect(this.port, this.host);
 
-      this.socket.on('connect', () => { this.onSocketConnected(); });
       this.socket.on('data', (data) => { this.onReceive(data); });
       this.socket.on('error', (error) => {
         // Node guarantees that close is called after error.
         if ((this.listener) && (this.listener.onError))
-          this.listener.onError(error);
+          (async () => { await this.listener.onError(error); })();
       });
       this.socket.on('close', () => {
         this.disconnect();
 
         if ((this.listener) && (this.listener.onDisconnect))
-          this.listener.onDisconnect();
-      });
-    };
-
-  Sieve.prototype.startTLS = async function (fingerprints) {
-
-    SieveAbstractClient.prototype.startTLS.call(this);
-
-    if ((typeof (fingerprints) === "undefined") || fingerprints === null || fingerprints === "")
-      fingerprints = [];
-
-    if (Array.isArray(fingerprints) === false)
-      fingerprints = [fingerprints];
-
-    return new Promise((resolve, reject) => {
-      // Upgrade the current socket.
-      // this.tlsSocket = tls.TLSSocket(socket, options).connect();
-      this.tlsSocket = tls.connect({
-        socket: this.socket,
-        rejectUnauthorized: false
+          (async () => { await this.listener.onDisconnect(); })();
       });
 
-      this.tlsSocket.on('secureConnect', () => {
+      return this;
+    }
 
-        let cert = this.tlsSocket.getPeerCertificate(true);
+    /**
+     * @inheritdoc
+     */
+    async startTLS(options) {
 
-        if (this.tlsSocket.authorized === true) {
+      if (options === undefined || options === null)
+        options = {};
 
-          // in case the fingerprint is not pinned we can skip right here.
-          if (!fingerprints.length) {
-            resolve();
-            this.getLogger().log('Socket upgraded! (Chain of Trust)');
+      if (options.fingerprints === undefined || options.fingerprints === null || options.fingerprints === "")
+        options.fingerprints = [];
+
+      if (Array.isArray(options.fingerprints) === false)
+        options.fingerprints = [options.fingerprints];
+
+      if (options.ignoreErrors === undefined || options.ignoreErrors === null || options.ignoreErrors === "")
+        options.ignoreErrors = [];
+
+      if (Array.isArray(options.ignoreErrors) === false)
+        options.ignoreErrors = [options.ignoreErrors];
+
+      await super.startTLS();
+
+      return await new Promise((resolve, reject) => {
+        // Upgrade the current socket.
+        // this.tlsSocket = tls.TLSSocket(socket, options).connect();
+        this.tlsSocket = tls.connect({
+          socket: this.socket,
+          rejectUnauthorized: false
+        });
+
+        this.tlsSocket.on('secureConnect', () => {
+
+          const cert = this.tlsSocket.getPeerCertificate(true);
+
+          if (this.tlsSocket.authorized === true) {
+
+            // in case the fingerprint is not pinned we can skip right here.
+            if (!options.fingerprints.length) {
+              resolve();
+              this.getLogger().log('Socket upgraded! (Chain of Trust)');
+              return;
+            }
+
+            // so let's check the if the server's fingerpint matches the pinned one.
+            if (options.fingerprints.indexOf(cert.fingerprint) !== NOT_FOUND) {
+              resolve();
+              this.getLogger().log('Socket upgraded! (Chain of Trust and pinned fingerprint)');
+              return;
+            }
+
+            // If not we need to fail right here...
+            reject(new SieveCertValidationException(
+              new Error("Server fingerprint does not match pinned fingerprint"),
+              this.tlsSocket.getPeerCertificate(true)));
             return;
           }
 
-          // so let's check the if the server's fingerpint matches the pinned one.
-          if (fingerprints.indexOf(cert.fingerprint) !== NOT_FOUND) {
-            resolve();
-            this.getLogger().log('Socket upgraded! (Chain of Trust and pinned fingerprint)');
-            return;
+          const error = this.tlsSocket.ssl.verifyError();
+
+          // dealing with self signed certificates
+          if (options.ignoreErrors.indexOf(error.code) !== NOT_FOUND) {
+
+            // Check if the fingerprint is well known...
+            if (options.fingerprints.indexOf(cert.fingerprint) !== NOT_FOUND) {
+              resolve();
+
+              this.getLogger().log('Socket upgraded! (Trusted Finger Print)');
+              return;
+            }
           }
 
-          // If not we need to fail right here...
           reject(new SieveCertValidationException(
-            new Error("Server fingerprint does not match pinned fingerprint"),
-            this.tlsSocket.getPeerCertificate(true) ));
-          return;
-        }
+            this.tlsSocket.ssl.verifyError(),
+            this.tlsSocket.getPeerCertificate(true)));
 
-        let error = this.tlsSocket.ssl.verifyError();
+          this.tlsSocket.destroy();
+        });
 
-        // dealing with self signed certificates
-        if (error.code === "DEPTH_ZERO_SELF_SIGNED_CERT") {
-
-          // Check if the fingerprint is well known...
-          if (fingerprints.indexOf(cert.fingerprint) !== NOT_FOUND) {
-            resolve();
-
-            this.getLogger().log('Socket upgraded! (Trusted Finger Print)');
-            return;
-          }
-        }
-
-        reject(new SieveCertValidationException(
-          this.tlsSocket.ssl.verifyError(),
-          this.tlsSocket.getPeerCertificate(true) ));
-
-        this.tlsSocket.destroy();
+        this.tlsSocket.on('data', (data) => { this.onReceive(data); });
       });
+    }
 
-      this.tlsSocket.on('data', (data) => { this.onReceive(data); });
-    });
-  };
+    /**
+     * @inheritdoc
+     */
+    disconnect() {
 
-  Sieve.prototype.disconnect
-    = function () {
-
-      SieveAbstractClient.prototype.disconnect.call(this);
+      super.disconnect();
 
       this.getLogger().log("Disconnecting...");
       if (this.socket) {
@@ -248,37 +278,40 @@
       this.timeoutTimer = null;
 
       this.getLogger().log("Disconnected ...", (1 << 2));
-    };
+    }
 
-  // TODO detect server disconnects and communication errors...
+    // TODO detect server disconnects and communication errors...
 
-  Sieve.prototype.onReceive
-    = function (buffer) {
+    /**
+     * Called when data was received and is ready to be processed.
+     * @param {object} buffer
+     *   the received data.
+     */
+    onReceive(buffer) {
 
       this.getLogger().log('onDataRead (' + buffer.length + ')\n' + buffer.toString("utf8"));
 
-      let data = [];
+      const data = [];
 
       for (let i = 0; i < buffer.length; i++) {
         data[i] = buffer.readUInt8(i);
       }
 
-      SieveAbstractClient.prototype.onDataReceived.call(this, data);
-    };
+      super.onReceive(data);
+    }
 
-  Sieve.prototype.onSocketConnected
-    = function (result) {
-    };
-
-  Sieve.prototype.onSend
-    = function (data) {
+    /**
+     * @inheritdoc
+     */
+    onSend(data) {
       if (this.tlsSocket !== null) {
         this.tlsSocket.write(data, "utf8");
         return;
       }
 
       this.socket.write(data, "utf8");
-    };
+    }
+  }
 
 
   exports.Sieve = Sieve;

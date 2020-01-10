@@ -1,8 +1,3 @@
-/* global console */
-/* global require */
-/* global __dirname */
-/* global process */
-
 (function (exports) {
 
   "use strict";
@@ -21,7 +16,10 @@
    */
   function createWindow() {
     // Create the browser window.
-    win = new BrowserWindow({ width: 1200, height: 600 });
+    win = new BrowserWindow({ width: 1200, height: 600, webPreferences: {
+      // nodeIntegrationInSubFrames: true,
+      nodeIntegration: true
+    } });
     // win.setMenu(null);
 
     // and load the index.html of the app.
@@ -32,7 +30,7 @@
     }));
 
     // Open the DevTools.
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
 
     // Emitted when the window is closed.
     win.on('closed', () => {

@@ -40,8 +40,10 @@
     }
 
     /**
+     * Gets the hostsname for this account
+     * @abstract
      * @returns {string}
-     *   the hostname for this account.
+     *   the hostname as string.
      */
     getHostname() {
       throw new Error("Implement getHostname");

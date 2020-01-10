@@ -8,7 +8,6 @@
  *
  * Contibutors:
  *   Max Dittrich
- *
  */
 
 (function (exports) {
@@ -75,7 +74,6 @@
    * @param {SieveResponseParser} [parser]
    *  a SieveResponseParser object containing the response sent by the server.
    *
-   * @constructor
    */
   class SieveSimpleResponse {
 
@@ -280,8 +278,6 @@
    *
    * @param {SieveResponseParser} parser
    *   a parser containing the response sent by the server
-   *
-   * @constructor
    */
   class SieveCapabilitiesResponse extends SieveSimpleResponse {
 
@@ -313,12 +309,12 @@
      * Parses the sieve extensions string. It is a space separated list of strings.
      * @param {string} value
      *   the string which should be parsed
-     * @returns  {Object.<string, boolean>}
+     * @returns  {object.<string, boolean>}
      *   a map with pairs of extension name and activation status.
      */
     parseSieveExtensions(value) {
-      let extensions = value.split(" ");
-      let result = {};
+      const extensions = value.split(" ");
+      const result = {};
 
       for (let i = 0; i < extensions.length; ++i)
         result["" + extensions[i]] = true;
@@ -331,7 +327,7 @@
      */
     parse(parser) {
       while (parser.isString()) {
-        let tag = parser.extractString();
+        const tag = parser.extractString();
 
         let value = "";
         if (parser.isLineBreak() === false) {
@@ -396,7 +392,7 @@
      * Returns a structure which contains all the details on the server's capabilities
      * like the implementation, version, extension, sasl mechanisms etc.
      *
-     * @returns {Object}
+     * @returns {object}
      *   the object which the capabilities.
      */
     getDetails() { return this.details; }
@@ -432,7 +428,7 @@
      *   optional if true a string will be returned otherwise a
      *   structure with key value pairs.
      *
-     * @returns {Object.<string,boolean>|string}
+     * @returns {object.<string,boolean>|string}
      *   the server's supported extension.
      */
     getExtensions(asString) {
@@ -441,7 +437,7 @@
 
       let result = "";
 
-      for (let item in this.details.extensions)
+      for (const item in this.details.extensions)
         result += item + " ";
 
       return result;
@@ -518,7 +514,7 @@
      *
      * Examples are RENAME, NOOP and CHECKSCRIPT.
      *
-     * @returns {Object}
+     * @returns {object}
      *   an associative array containing additional sieve commands
      */
     getCompatibility() { return this.details.compatibility; }
@@ -539,7 +535,7 @@
   /**
    * Parses list script response.
    */
-  class SieveListScriptResponse extends SieveSimpleResponse {
+  class SieveListScriptsResponse extends SieveSimpleResponse {
 
     /**
      * @inheritdoc
@@ -549,7 +545,7 @@
       //    string        = quoted / literal
       //    (sieve-name [SP "ACTIVE"] CRLF) response-oknobye
 
-      let scripts = [];
+      const scripts = [];
       let i = -1;
 
       while (parser.isString()) {
@@ -587,7 +583,7 @@
      * script name and a property named active which is either
      * true or false.
      *
-     * @returns {Object[]}
+     * @returns {object[]}
      *   an array of objects with the name and activation state for each script
      */
     getScripts() {
@@ -738,7 +734,6 @@
   /**
    * @author Thomas Schmid
    * @author Max Dittrich
-   * @constructor
    */
   class SieveSaslCramMd5Response extends SieveStateFullResponse {
 
@@ -807,7 +802,7 @@
      *  the optional reserved-mext token or an empty string.
      */
     _extractReservedMext(tokens) {
-      let token = tokens[SHA_FIRST_TOKEN];
+      const token = tokens[SHA_FIRST_TOKEN];
 
       // Test for the reserved-mext token. If it is existant, we just skip it
       if ((token.length <= SHA_PREFIX_LENGTH) || !token.startsWith("m="))
@@ -825,7 +820,7 @@
      *   the nonce or an exception in case it could not be extracted.
      */
     _extractNonce(tokens) {
-      let token = tokens[SHA_FIRST_TOKEN];
+      const token = tokens[SHA_FIRST_TOKEN];
 
       // Extract the nonce
       if ((token.length <= SHA_PREFIX_LENGTH) || !token.startsWith("r="))
@@ -846,7 +841,7 @@
      *   it could not be extracted
      */
     _extractSalt(tokens) {
-      let token = tokens[SHA_FIRST_TOKEN];
+      const token = tokens[SHA_FIRST_TOKEN];
 
       if ((token.length <= SHA_PREFIX_LENGTH) || !token.startsWith("s="))
         throw new Error(`Salt expected but got ${token}`);
@@ -866,7 +861,7 @@
      *   iternations could not be extracted.
      */
     _extractIterations(tokens) {
-      let token = tokens[SHA_FIRST_TOKEN];
+      const token = tokens[SHA_FIRST_TOKEN];
 
       if ((token.length <= SHA_PREFIX_LENGTH) || !token.startsWith("i="))
         throw new Error(`Iteration Count expected but got ${token}`);
@@ -899,7 +894,7 @@
     _parseFirstMessage(parser) {
       this._serverFirstMessage = parser.convertFromBase64(parser.extractString());
 
-      let tokens = this._serverFirstMessage.split(',');
+      const tokens = this._serverFirstMessage.split(',');
 
       this._extractReservedMext(tokens);
       this._nonce = this._extractNonce(tokens);
@@ -936,7 +931,7 @@
         data = parser.extractString();
 
       // server-final-message = (server-error / verifier) ["," extensions]
-      let token = parser.convertFromBase64(data).split(",")[SHA_FIRST_TOKEN];
+      const token = parser.convertFromBase64(data).split(",")[SHA_FIRST_TOKEN];
 
       if (token.length <= SHA_PREFIX_LENGTH)
         throw new Error("Response expected but got : " + data);
@@ -1079,7 +1074,7 @@
 
   exports.SieveSimpleResponse = SieveSimpleResponse;
   exports.SieveCapabilitiesResponse = SieveCapabilitiesResponse;
-  exports.SieveListScriptResponse = SieveListScriptResponse;
+  exports.SieveListScriptsResponse = SieveListScriptsResponse;
   exports.SieveSaslLoginResponse = SieveSaslLoginResponse;
   exports.SieveSaslCramMd5Response = SieveSaslCramMd5Response;
   exports.SieveGetScriptResponse = SieveGetScriptResponse;

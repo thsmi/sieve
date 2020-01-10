@@ -1,0 +1,1 @@
+<iframe class="tab-pane fade" role="tabpanel" src="./libs/managesieve.ui/editor.html"></iframe>

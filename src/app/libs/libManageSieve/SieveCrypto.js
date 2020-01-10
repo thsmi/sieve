@@ -39,7 +39,7 @@
       if (typeof(output) === "undefined" || output === null)
         output = "latin1";
 
-      let rv = crypto
+      const rv = crypto
         .createHmac(this.name, key)
         .update(bytes)
         .digest(output);
@@ -61,7 +61,7 @@
       if (Array.isArray(bytes))
         bytes = Buffer.from(bytes);
 
-      let rv = crypto.createHash(this.name)
+      const rv = crypto.createHash(this.name)
         .update(bytes)
         .digest(output);
 

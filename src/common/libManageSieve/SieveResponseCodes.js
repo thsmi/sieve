@@ -99,7 +99,7 @@
 
       // the quoted text contains the authority
       // authority = [ userinfo "@" ] host [ ":" port ]
-      let uri = this.code[RESPONSE_CODE_EXTENSION];
+      const uri = this.code[RESPONSE_CODE_EXTENSION];
 
       // remove the sieve:// scheme
       this.hostname = uri.slice("sieve://".length);

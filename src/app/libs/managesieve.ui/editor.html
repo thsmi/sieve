@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Manage Sieve Scripts</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="./../../libs/bootstrap/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="./../../libs/CodeMirror/lib/codemirror.css">
+  <link rel="stylesheet" href="./../../libs/CodeMirror/theme/eclipse.css">
+
+  <script src="./../../libs/CodeMirror/lib/codemirror.js"></script>
+  <script src="./../../libs/CodeMirror/addon/search/searchcursor.js"></script>
+  <script src="./../../libs/CodeMirror/addon/edit/matchbrackets.js"></script>
+
+  <script src="./../../libs/CodeMirror/mode/sieve/sieve.js"></script>
+
+  <style>
+    .CodeMirror {
+      border-color: #eee;
+      border-width: 0px 1px 1px 1px;
+      border-style: solid;
+      height: auto;
+    }
+
+    #sieve-widget-editor {
+      border: 0;
+    }
+
+    .sticky {
+      position: sticky;
+      top: 0px;
+      z-index: 10;
+      background-color: inherit;
+      border-bottom: 1px solid #eee;
+    }
+
+    html {
+      overflow-y: scroll;
+    }
+
+    .activeline {
+      background: #e8f2ff !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="card mt-4 mb-2">
+      <div class="card-header d-flex justify-content-between py-0">
+        <ul class="nav nav-tabs card-header-tabs my-0 pt-3" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#sieve-widget-editor" role="tab">Script</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#sieve-plaintext-editor" role="tab">Source</a>
+          </li>
+          <li class="nav-item">
+            <a id="sieve-tab-settings" class="nav-link" data-toggle="tab" href="#sieve-content-settings" role="tab">Settings</a>
+          </li>
+        </ul>
+        <div class="align-self-center">
+
+          <div id="sieve-editor-settings" class="btn-group ml-2 dropdown">
+            <a class="btn btn-sm btn-outline-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              ☰
+              <!--<img src="./img/settings_24px.svg">-->
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+              <a class="dropdown-item sieve-editor-settings-show">Editor Settings</a>
+              <a class="dropdown-item" href="javascript:window.location.reload(true)">Reload UI</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item sieve-editor-import" href="#">Import Script</a>
+              <a class="dropdown-item sieve-editor-export" href="#">Export Script</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="sieve-tab-content" class="list-group list-group-flush siv-tpl-scripts tab-content mx-2 mb-2">
+        <div id="sieve-content-settings" class="tab-pane mt-3" role="tabpanel"></div>
+        <iframe id="sieve-widget-editor" class="tab-pane" role="tabpanel" src="./../../libs/libSieve/SieveGui.html"></iframe>
+        <div id="sieve-plaintext-editor" class="tab-pane show active" role="tabpanel">
+          <!-- insert editor here ... -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="sieve-editor-msg">
+    <!-- We do some magic here. First we render the real content-->
+    <div class="footer fixed-bottom container">
+      <div>
+        <div class="alert alert-warning mx-2" role="alert">
+          <h4 class="alert-heading">Server reports script errors</h4>
+          <p class="sieve-editor-msg-details"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Then an insible element which ensures there is alway enough -->
+    <!-- so that the messeage never overlays the textbox -->
+    <!-- it is like a dynamically sized space -->
+    <div class="footer container invisible">
+      <div style="margin: 1px;">
+        <div class="alert alert-warning mx-2" role="alert">
+          <h4 class="alert-heading">Server reports script errors</h4>
+          <p class="sieve-editor-msg-details"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="./../../libs/jquery/jquery.min.js"></script>
+  <script src="./../../libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <script src="./../../libs/managesieve.ui/utils/SieveFakeRequire.js"></script>
+
+  <script src="./../../libs/managesieve.ui/utils/SieveUniqueId.js"></script>
+  <script src="./../../libs/managesieve.ui/utils/SieveAbstractIpcClient.js"></script>
+  <script src="./../../libs/managesieve.ui/utils/SieveIpcClient.js"></script>
+  <script src="./../../libs/managesieve.ui/utils/SieveTemplateLoader.js"></script>
+
+  <script src="./../../libs/managesieve.ui/editor/SieveAbstractEditor.js"></script>
+  <script src="./../../libs/managesieve.ui/editor/SieveEditorController.js"></script>
+  <script src="./../../libs/managesieve.ui/editor/graphical/SieveGraphicalEditor.js"></script>
+  <script src="./../../libs/managesieve.ui/editor/text/SieveTextEditor.js"></script>
+
+  <script src="./../../libs/managesieve.ui/editor/SieveEditor.js"></script>
+
+  <script src="editor.js"></script>
+
+</body>
+
+</html>

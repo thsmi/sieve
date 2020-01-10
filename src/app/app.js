@@ -16,28 +16,35 @@
   /* global $ */
 
   // Import the node modules into our global namespace...
+  const { SieveIpcClient} = require("./libs/managesieve.ui/utils/SieveIpcClient.js");
+
+  const {
+    SieveCertValidationException
+  } = require("./libs/libManageSieve/SieveExceptions.js");
 
   const { SieveSession } = require("./libs/libManageSieve/SieveNodeSession.js");
   const { SieveAccounts } = require("./SieveAccounts.js");
 
   const { SievePrefManager } = require('./libs/libManageSieve/settings/SievePrefManager.js');
 
-  const { SieveTemplateLoader } = require("./utils/SieveTemplateLoader.js");
-  const { SieveUpdater } = require("./utils/SieveUpdater.js");
+  const { SieveUpdater } = require("./libs/managesieve.ui/updater/SieveUpdater.js");
+  const { SieveTabUI } = require("./libs/managesieve.ui/tabs/SieveTabsUI.js");
 
   const {
     SieveRenameScriptDialog,
     SieveCreateScriptDialog,
     SieveDeleteScriptDialog,
     SieveFingerprintDialog,
-    SieveDeleteAccountDialog
+    SieveDeleteAccountDialog,
+    SieveScriptBusyDialog,
+    SieveErrorDialog
   } = require("./ui/dialogs/SieveDialogUI.js");
 
-  let accounts = new SieveAccounts().load();
+  const accounts = new SieveAccounts().load();
 
-  let sessions = {};
+  const sessions = {};
 
-  let actions = {
+  const actions = {
 
     "update-check": async () => {
       return await (new SieveUpdater()).check();
@@ -50,7 +57,7 @@
     "import-thunderbird": function () {
       console.log("Import Thunderbird accounts");
 
-      const { SieveThunderbirdImport } = require("./utils/SieveThunderbirdImport.js");
+      const { SieveThunderbirdImport } = require("./libs/managesieve.ui/importer/SieveThunderbirdImport.js");
       return (new SieveThunderbirdImport()).getAccounts();
     },
 
@@ -60,13 +67,15 @@
       return accounts.getAccounts();
     },
 
-    "account-probe": async function (msg) {
+    "account-probe": async function (request) {
       console.log("probe Account");
 
-      const { SieveAutoConfig } = require("./libs/libManageSieve/SieveAutoConfig.js");
-      msg.payload["port"] = await (new SieveAutoConfig(msg.payload["hostname"])).detect();
+      const response = request;
 
-      return msg.payload;
+      const { SieveAutoConfig } = require("./libs/libManageSieve/SieveAutoConfig.js");
+      response.payload["port"] = await (new SieveAutoConfig(request.payload["hostname"])).detect();
+
+      return response.payload;
     },
 
     "account-create": function (msg) {
@@ -80,10 +89,10 @@
 
       console.log("Remove Account");
 
-      let account = msg.payload.account;
-      let displayName = accounts.getAccountById(account).getHost().getDisplayName();
+      const account = msg.payload.account;
+      const displayName = accounts.getAccountById(account).getHost().getDisplayName();
 
-      let rv = await (new SieveDeleteAccountDialog(displayName)).show();
+      const rv = await (new SieveDeleteAccountDialog(displayName)).show();
 
       if (rv)
         accounts.remove(account);
@@ -96,9 +105,8 @@
     },
 
     "account-get-server": function (msg) {
-      let account = accounts.getAccountById(msg.payload.account);
-
-      let host = account.getHost();
+      const account = accounts.getAccountById(msg.payload.account);
+      const host = account.getHost();
 
       return {
         displayName: host.getDisplayName(),
@@ -110,9 +118,9 @@
 
     "account-get-settings": function (msg) {
       // for the settings menu
-      let account = accounts.getAccountById(msg.payload.account);
+      const account = accounts.getAccountById(msg.payload.account);
+      const host = account.getHost();
 
-      let host = account.getHost();
       return {
         displayName: host.getDisplayName(),
         hostname: host.getHostname(),
@@ -127,7 +135,7 @@
     },
 
     "account-setting-get-credentials": function (msg) {
-      let account = accounts.getAccountById(msg.payload.account);
+      const account = accounts.getAccountById(msg.payload.account);
 
       return {
         "general": {
@@ -148,7 +156,7 @@
 
     "account-settings-set-credentials": function (msg) {
 
-      let account = accounts.getAccountById(msg.payload.account);
+      const account = accounts.getAccountById(msg.payload.account);
 
       account.getSecurity().setSecure(msg.payload.general.secure);
       account.getSecurity().setMechanism(msg.payload.general.sasl);
@@ -161,7 +169,7 @@
     },
 
     "account-get-general": function (msg) {
-      let account = accounts.getAccountById(msg.payload.account);
+      const account = accounts.getAccountById(msg.payload.account);
 
       return {
         keepAliveEnabled: account.getSettings().isKeepAlive(),
@@ -170,7 +178,7 @@
     },
 
     "account-set-server": function (msg) {
-      let account = accounts.getAccountById(msg.payload.account);
+      const account = accounts.getAccountById(msg.payload.account);
 
       account.getHost().setDisplayName(msg.payload.displayName);
       account.getHost().setHostname(msg.payload.hostname);
@@ -180,7 +188,7 @@
 
 
     "account-set-general": function (msg) {
-      let account = accounts.getAccountById(msg.payload.account);
+      const account = accounts.getAccountById(msg.payload.account);
 
       account.getSettings().setKeepAlive(msg.payload.keepAliveEnabled);
       account.getSettings().setKeepAliveInterval(msg.payload.keepAliveInterval);
@@ -193,30 +201,38 @@
     },
 
     "account-cert-error": async (msg) => {
-      let rv = await new SieveFingerprintDialog(msg.payload.fingerprint).show();
+      const rv = await (new SieveFingerprintDialog(msg.payload.fingerprint, msg.payload.message)).show();
 
       // save the fingerprint.
-      if (rv === true) {
-        accounts.getAccountById(msg.payload.account).getHost().setFingerprint(msg.payload.fingerprint);
-        // TODO we need to trigger this reconnect async...
-        actions["account-connecting"](msg);
-      }
+      if (rv !== true)
+        return;
+
+      accounts.getAccountById(msg.payload.account).getHost().setFingerprint(msg.payload.fingerprint);
+      accounts.getAccountById(msg.payload.account).getHost().setIgnoreCertErrors(msg.payload.code);
+
+      await actions["account-connecting"](msg);
     },
 
-    "account-connecting": async (msg) => {
+    "account-connecting": async (request) => {
+
+      const response = request;
       try {
-        await sessions[msg.payload.account].connect();
+        await sessions[request.payload.account].connect();
       } catch (e) {
 
-        if (e.getType && e.getType() === "SIEVE_CERT_VALIDATION_EXCEPTION") {
-          msg.payload.fingerprint = e.cert.fingerprint;
-          await actions["account-cert-error"](msg);
+        if ( e instanceof SieveCertValidationException) {
+          response.payload.fingerprint = e.cert.fingerprint;
+          response.payload.code = e.error.code;
+          response.payload.message = e.error.message;
+          await actions["account-cert-error"](response);
           return;
         }
 
         // connecting failed for some reason, which means we
         // need to handle the error.
-        alert(e);
+        console.error(e);
+        await (new SieveErrorDialog(e.message)).show();
+        throw e;
       }
 
     },
@@ -225,15 +241,17 @@
 
       console.log("Connect");
 
-      if (sessions[msg.payload.account])
-        await sessions[msg.payload.account].disconnect();
+      const accountId = msg.payload.account;
 
-      let account = accounts.getAccountById(msg.payload.account);
+      if (sessions[accountId])
+        await sessions[accountId].disconnect();
 
-      sessions[msg.payload.account] = new SieveSession(account, "sid2");
+      const account = accounts.getAccountById(accountId);
+      sessions[accountId] = new SieveSession(account, "sid2");
 
       await actions["account-connecting"](msg);
     },
+
 
     "account-connected": function (msg) {
       console.log("Is Connected");
@@ -247,6 +265,7 @@
 
 
     "account-disconnect": async function (msg) {
+
       if (sessions[msg.payload.account])
         await sessions[msg.payload.account].disconnect();
 
@@ -263,7 +282,7 @@
     "script-create": async function (msg) {
       console.log("Create Scripts for account: " + msg.payload.account);
 
-      let name = await (new SieveCreateScriptDialog()).show();
+      const name = await (new SieveCreateScriptDialog()).show();
 
       if (name.trim() !== "")
         await sessions[msg.payload.account].putScript(name, "#test\r\n");
@@ -272,25 +291,40 @@
     },
 
     "script-rename": async function (msg) {
-      console.log("Rename Script " + msg.payload.data + " for account: " + msg.payload.account);
+      const account = msg.payload.account;
+      const oldName = msg.payload.data;
 
-      let account = msg.payload.account;
-      let newName = await (new SieveRenameScriptDialog(msg.payload.data)).show();
+      console.log(`Rename Scripts ${oldName} for account: ${account}`);
 
-      if (newName === msg.payload.data)
+      if ((new SieveTabUI()).has(account, oldName)) {
+        await (new SieveScriptBusyDialog(oldName)).show();
+        return false;
+      }
+
+      const newName = await (new SieveRenameScriptDialog(oldName)).show();
+
+      if (newName === oldName)
         return false;
 
-      await sessions[account].renameScript(msg.payload.data, newName);
+      await sessions[account].renameScript(oldName, newName);
       return true;
     },
 
     "script-delete": async function (msg) {
-      console.log("Delete Scripts " + msg.payload.data + " for account: " + msg.payload.account);
+      const account = msg.payload.account;
+      const name = msg.payload.data;
 
-      let rv = await (new SieveDeleteScriptDialog(msg.payload.data)).show();
+      console.log(`Delete Scripts ${name} for account: ${account}`);
+
+      if ((new SieveTabUI()).has(account, name)) {
+        await (new SieveScriptBusyDialog(name)).show();
+        return false;
+      }
+
+      const rv = await (new SieveDeleteScriptDialog(name)).show();
 
       if (rv === true)
-        await sessions[msg.payload.account].deleteScript(msg.payload.data);
+        await sessions[account].deleteScript(name);
 
       return rv;
     },
@@ -309,62 +343,12 @@
 
     "script-edit": async function (msg) {
 
-      let name = msg.payload.data;
-      let account = msg.payload.account;
+      const name = msg.payload.data;
+      const account = msg.payload.account;
 
       // create a new tab...
-
       console.log("Edit Script " + name);
-
-      let id = "" + account + "-" + name;
-
-      let tabId = id + "-tab";
-      let contentId = id + "-content";
-
-      if ($("#" + tabId).length) {
-        $("#myTab .nav-link[href='#" + contentId + "']").tab('show');
-        return;
-      }
-
-      // create a new tab.
-      let content = await (new SieveTemplateLoader()).load("./ui/app/editor.content.tpl");
-      let tab = await (new SieveTemplateLoader()).load("./ui/app/editor.tab.tpl");
-
-      tab.find(".nav-link")
-        .attr("href", "#" + contentId);
-
-      tab
-        .find(".siv-tab-name")
-        .text(name);
-
-      tab
-        .find(".close")
-        .click(() => {
-          $("#" + contentId).remove();
-          $("#" + tabId).remove();
-          $("#accounts-tab").find(".nav-link").tab('show');
-        });
-
-      content.attr("id", contentId);
-      tab.attr("id", tabId);
-
-      // Update the iframe's url.
-      let url = new URL(content.attr("src"), window.location);
-
-      url.searchParams.append("account", account);
-      // FIXME: the script name should ne an id so that we survive a rename...
-      url.searchParams.append("script", name);
-
-      content.attr("src", url.toString());
-
-      $("#myTabContent").append(content);
-      $("#myTab").append(tab);
-
-      tab.find(".nav-link").tab('show');
-
-      // insert tab.
-      // insert content.
-      // wait for message...
+      await (new SieveTabUI()).open(account, name);
     },
 
     "script-get": async function (msg) {
@@ -394,10 +378,10 @@
       await sessions[msg.payload.account].putScript(msg.payload.name, msg.payload.script);
     },
 
-    "script-import": async function (msg) {
+    "script-import": async function () {
       console.log("Import Script...");
 
-      let options = {
+      const options = {
         title: "Import Script",
         openFile: true,
         openDirectory: false,
@@ -406,49 +390,42 @@
           { name: 'All Files', extensions: ['*'] }]
       };
 
-      let filenames = require("electron").remote.dialog.showOpenDialog(options);
+      const filename = await require("electron").remote.dialog.showOpenDialog(options);
 
-      if (!Array.isArray(filenames))
+      if (filename.canceled)
         return undefined;
 
-      let fs = require('fs');
+      const fs = require('fs');
 
-      if (!fs.existsSync(filenames[0]))
+      if (!fs.existsSync(filename.filePaths[0]))
         return undefined;
 
-      let file = fs.readFileSync(filenames[0], "utf-8");
-      return file;
+      return await fs.promises.readFile(filename.filePaths[0], "utf-8");
     },
 
-    "script-export": async function (msg) {
+    "script-export": async function (request) {
       console.log("Export Script...");
 
-      let options = {
+      const options = {
         title: "Export Script",
         filters: [
           { name: 'Sieve Scripts', extensions: ['siv', "sieve"] },
           { name: 'All Files', extensions: ['*'] }]
       };
 
-      let filename = require("electron").remote.dialog.showSaveDialog(options);
+      const filename = await require("electron").remote.dialog.showSaveDialog(options);
 
       // Check if the dialog was chanceled...
-      if (typeof (filename) === "undefined")
+      if (filename.canceled)
         return;
 
-      require('fs').writeFileSync(filename, msg.payload.script, "utf-8");
+      await require('fs').promises.writeFile(filename.filePath, request.payload.script, "utf-8");
       return;
     },
 
     "script-changed": function (msg) {
       console.log("Script changed...");
-
-      let tab = $("#" + msg.payload.account + "-" + msg.payload.name + "-tab .close");
-
-      if (msg.payload.changed)
-        tab.text("•");
-      else
-        tab.text("×");
+      (new SieveTabUI()).setChanged(msg.payload.account, msg.payload.name, msg.payload.changed);
     },
 
     "reference-open": function () {
@@ -465,7 +442,7 @@
 
     "get-preference": (msg) => {
 
-      let pref = new SievePrefManager("editor");
+      const pref = new SievePrefManager("editor");
 
       if (msg.payload.data === "tabulator-policy")
         return pref.getBoolean("tabulator-policy", true);
@@ -486,40 +463,16 @@
     },
 
     "set-preference": (msg) => {
-      let pref = new SievePrefManager("editor");
+      const pref = new SievePrefManager("editor");
       pref.setValue(msg.payload.key, msg.payload.value);
     }
 
   };
 
 
-  window.addEventListener("message", function (e) {
-
-    (async () => {
-      console.log('parent received message!:  ', e.data);
-      console.dir(e);
-
-      let msg = JSON.parse(e.data);
-
-      if (actions[msg.action]) {
-        try {
-          msg.payload = await (actions[msg.action])(msg);
-        } catch (ex) {
-          msg.error = ex.message;
-          console.log(ex);
-        }
-
-        e.source.postMessage(JSON.stringify(msg), e.origin);
-        return;
-      }
-
-      // TODO add timeout and error handling...
-      // othewise we block endlessly due to await.
-
-      console.log("Unknown action " + msg.action);
-      e.source.postMessage(JSON.stringify(msg), e.origin);
-    })();
-  }, false);
+  for (const [key, value] of Object.entries(actions)) {
+    SieveIpcClient.setRequestHandler(key, value);
+  }
 
 
   $("#donate").click(() => {

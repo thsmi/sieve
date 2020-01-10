@@ -27,6 +27,8 @@
   // eslint-disable-next-line no-magic-numbers
   const LOG_SESSION_INFO = (1 << 4);
 
+  const DEFAULT_LEVEL = 0;
+
 
 
   /**
@@ -52,7 +54,7 @@
         prefix = "";
 
       if (typeof(level) === "undefined")
-        level = 0x00;
+        level = DEFAULT_LEVEL;
 
       this._level = level;
       this._prefix = prefix;
@@ -130,6 +132,8 @@
     }
 
     /**
+     * Checks if state information should be logged.
+     *
      * @returns {boolean}
      *   true in case state information should be logged otherwise false.
      */
@@ -138,6 +142,8 @@
     }
 
     /**
+     * Checks if session information should be logged.
+     *
      * @returns {boolean}
      *   true in case session information should be logged otherwise false.
      */
@@ -182,9 +188,8 @@
 
 
     /**
-     * @private
-     *
      * Padds the given string with leading zeros
+     * @private
      *
      * @param {string} n
      *   the string which should be padded
@@ -206,12 +211,14 @@
     }
 
     /**
+     * Gets the current time in iso format (hh:mm:ss.SSS)
+     *
      * @returns {string}
      *   the current timestamp as string.
      */
     getTimestamp() {
 
-      let date = new Date();
+      const date = new Date();
       return this._pad(date.getHours(), TWO_CHARS)
         + ":" + this._pad(date.getMinutes(), TWO_CHARS)
         + ":" + this._pad(date.getSeconds(), TWO_CHARS)

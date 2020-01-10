@@ -9,113 +9,27 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-/* global window */
-
 (function (exports) {
 
   // Enable Strict Mode
   "use strict";
-  /* global require */
 
   const { Sieve } = require("./SieveNodeClient.js");
 
   const { SieveLogger } = require("./SieveNodeLogger.js");
 
   const {
-    SieveGetScriptRequest,
-    SievePutScriptRequest,
-    SieveCheckScriptRequest,
-    SieveSetActiveRequest,
-    SieveCapabilitiesRequest,
-    SieveDeleteScriptRequest,
-    SieveNoopRequest,
-    SieveRenameScriptRequest,
-    SieveListScriptRequest,
-    SieveStartTLSRequest,
-    SieveLogoutRequest,
-    SieveInitRequest,
-    SieveSaslPlainRequest,
-    SieveSaslLoginRequest,
-    SieveSaslCramMd5Request,
-    SieveSaslScramSha1Request,
-    SieveSaslScramSha256Request,
-    SieveSaslExternalRequest
-  } = require("./SieveRequest.js");
+    SieveAbstractSession
+  } = require("./SieveAbstractSession.js");
 
-  /* Object.assign(this,
-      require("./SieveRequest.js"));*/
+  const {
+    SieveReferralException
+  } = require("./SieveExceptions.js");
 
   /**
-   * A client side error.
+   * @inheritdoc
    */
-  class SieveClientException extends Error {
-  }
-
-  /**
-   * Exception is thrown in case the conncetion was terminated
-   * by a referal request.
-   */
-  class SieveReferralException extends Error {
-  }
-
-  /**
-   * The server signaled an error.
-   * This normally results in the connection to be terminated
-   * by the server.
-   */
-  class SieveServerException extends Error {
-
-    /**
-     * Creates a serverside exception
-     *
-     * @param {SieveSimpleResponse} response
-     *   the servers response which inidcated the error.
-     */
-    constructor(response) {
-      super(response.getMessage());
-      this.response = response;
-    }
-
-    /**
-     * Indicates that this exception was caused by the server.
-     * @returns {boolean}
-     *   always true, as server exceptions are always caused by the server
-     */
-    isServerSide() {
-      return true;
-    }
-
-    /**
-     * Returns the server's response it typically contains the cause
-     * why the request failed.
-     *
-     * @returns {SieveSimpleResponse}
-     *   the server response objet
-     */
-    getResponse() {
-      return this.response;
-    }
-  }
-
-  /**
-   * Occures when the server's response take too long.
-   */
-  class SieveTimeOutException extends Error {
-  }
-
-  /**
-   * This class realizes a manage sieve connection to a remote server.
-   * It provides the logic for login, logout, hartbeats, watchdogs and
-   * much more.
-   *
-   * It is save to have concurrent call within a session. The sieve backend
-   * uses a queue to process them. So you don't need to worry about using
-   * stuff in parallel.
-   *
-   * It is higly async but uses the ES6 await syntax, which makes it behave
-   * like a synchonous api.
-   */
-  class SieveSession {
+  class SieveSession extends SieveAbstractSession {
 
     /**
      * Creates a new Session instance.
@@ -125,703 +39,64 @@
      *   a unique Identifier for this Session. Only needed to make debugging easier.
      */
     constructor(account, sid) {
-      this.logger = new SieveLogger(sid);
-      this.logger.level(account.getSettings().getDebugFlags());
 
-      this.account = account;
+      super(
+        account,
+        new SieveLogger(sid, account.getSettings().getDebugFlags()));
     }
 
     /**
-     * @returns {SieveLogger}
-     *   a reference to the current logger
+     * @inheritdoc
      */
-    getLogger() {
-      return this.logger;
-    }
-
-    createGetScriptRequest(script) {
-      return new SieveGetScriptRequest(script);
-    }
-
-    createPutScriptRequest(script, body) {
-      return new SievePutScriptRequest(script, body);
-    }
-
-    createCheckScriptRequest(body) {
-      return new SieveCheckScriptRequest(body);
-    }
-
-    createSetActiveRequest(script) {
-      return new SieveSetActiveRequest(script);
-    }
-
-    createCapabilitiesRequest() {
-      return new SieveCapabilitiesRequest();
-    }
-
-    createDeleteScriptRequest(script) {
-      return new SieveDeleteScriptRequest(script);
-    }
-
-    createNoopRequest() {
-      return new SieveNoopRequest();
-    }
-
-    createRenameScriptRequest(oldScript, newScript) {
-      return new SieveRenameScriptRequest(oldScript, newScript);
-    }
-
-    createListScriptRequest() {
-      return new SieveListScriptRequest();
-    }
-
-    createStartTLSRequest() {
-      return new SieveStartTLSRequest();
-    }
-
-    createLogoutRequest() {
-      return new SieveLogoutRequest();
-    }
-
-    createInitRequest() {
-      return new SieveInitRequest();
-    }
-
-    createSaslPlainRequest() {
-      return new SieveSaslPlainRequest();
-    }
-
-    createSaslLoginRequest() {
-      return new SieveSaslLoginRequest();
-    }
-
-    createSaslCramMd5Request() {
-      return new SieveSaslCramMd5Request();
-    }
-
-    createSaslScramSha1Request() {
-      return new SieveSaslScramSha1Request();
-    }
-
-    createSaslScramSha256Request() {
-      return new SieveSaslScramSha256Request();
-    }
-
-
-    /**
-     * Wraps the request into a promise and passes it to the sieve client for execution.
-     *
-     * @param {AbstractSieveRequest} request
-     *   the sieve request which should be executed.
-     * @param {Object<string,Function>} handlers
-     *   the event handlers for this request as object with a string as key and a function as value.
-     * @param {Function} [init]
-     *   an optional init function.
-     *
-     */
-    async exec(request, handlers, init) {
-
-      return await new Promise((resolve, reject) => {
-
-        let callback = {};
-
-        // Wrap all handlers into a try catch so that we catch all exception..
-        for (let key in handlers) {
-          callback[key] = async (...args) => {
-            try {
-              await handlers[key](...args, resolve, reject);
-            } catch (ex) {
-              reject(ex);
-            }
-          };
-        }
-
-        if (!callback.onError)
-          callback["onError"] = (response) => { reject(new SieveServerException(response)); };
-
-        if (!callback.onTimeout)
-          callback["onTimeout"] = () => { reject(new SieveTimeOutException()); };
-
-        if (!callback.onByeResponse) {
-          callback["onByeResponse"] = (response) => {
-            // The server is going to disconnected our session nicely...
-            let code = response.getResponseCode();
-
-            // ... we most likely received a referal
-            if (code.equalsCode("REFERRAL")) {
-              reject(new SieveReferralException(code.getHostname()));
-              return;
-            }
-
-            // ... everything else is definitely an error.
-            reject(new SieveServerException(response));
-          };
-        }
-
-        if (request.responseListener !== null)
-          throw new Error("response listener already bound to object");
-
-        request.addResponseListener(callback);
-        request.addByeListener(callback);
-        request.addErrorListener(callback);
-        this.sieve.addRequest(request);
-
-        if (init)
-          init();
-
-      });
+    getSieve() {
+      return this.sieve;
     }
 
     /**
-     * Sends a noop or keep alive response.
-     * It is a request without sideeffect and without any
-     * payload. It is typically used to test if the server
-     * is available and to prevent closing the connection to the server.
-     *
-     * Servers do not have to support noop.
-     * The implementation will use a capability request as
-     * fallback as described in the rfc.
-     *
-     *
-     *   a promise
+     * @inheritdoc
      */
-    async noop() {
-
-      // In case th server does not support noop we fallback
-      // to a capability request as suggested in the rfc.
-      if (!this.sieve.getCompatibility().noop) {
-        return await this.capabilities();
-      }
-
-      let callback = {
-        onNoopResponse: function (response, resolve) {
-          resolve();
-        }
-      };
-
-      let request = this.createNoopRequest();
-      return await this.exec(request, callback);
+    createSieve() {
+      this.sieve = new Sieve(this.getLogger());
     }
 
     /**
-     * Sends a capability request.
-     * In case of an error an exception will be thrown.
-     *
-     * @returns {Object}
-     *   an object with the capabilies.
+     * @inheritdoc
      */
-    async capabilities() {
-
-      let callback = {
-        onCapabilitiesResponse: function (response, resolve) {
-          resolve(response.getDetails());
-        }
-      };
-
-      let request = this.createCapabilitiesRequest();
-
-      return await this.exec(request, callback);
+    destroySieve() {
+      this.sieve = null;
     }
 
     /**
-     * Deletes the given script name.
-     * @param {string} name
-     *   the script which should be deleted.
-     *
+     * @inheritdoc
      */
-    async deleteScript(name) {
+    async startTLS(options) {
 
-      let callback = {
-        onDeleteScriptResponse: function (response, resolve) {
-          resolve();
-        }
-      };
+      if (options === undefined || options === null)
+        options = {};
 
-      let request = this.createDeleteScriptRequest(name);
-      return await this.exec(request, callback);
+      if (options.fingerprints === undefined || options.fingerprints === null)
+        options.fingerprints = this.account.getHost().getFingerprint();
+
+      if (options.ignoreErrors === undefined || options.ignoreErrors === null)
+        options.ignoreErrors = this.account.getHost().getIgnoreCertErrors();
+
+      await super.startTLS(options);
     }
 
     /**
-     * Saves the given script. In case the script exists
-     * it will be silently overwritten.
+     * The default error handler called upon any unhandled error or exception.
+     * Called e.g. when the connection to the server was terminated unexpectedly.
      *
-     * @param {string} name
-     *   the script's name
-     * @param {string} script
-     *   the script which should be saved.
+     * The default behaviour is to disconnect.
      *
-     *   a void promise
+     * @param {Error} error
+     *   the error message which causes this exceptinal state.
      */
-    async putScript(name, script) {
+    async onError(error) {
 
-      let callback = {
-        onPutScriptResponse: function (response, resolve) {
-          resolve();
-        }
-      };
+      this.getLogger().log("OnError: " + error.message);
 
-      let request = this.createPutScriptRequest(name, script);
-      await this.exec(request, callback);
-    }
-
-    /**
-     * Lists all scripts available on the server.
-     * @returns {Promise<Object>}
-     *   the current scripts.
-     */
-    async listScripts() {
-
-      let callback = {
-        onListScriptResponse: (response, resolve) => {
-          resolve(response.getScripts());
-        }
-      };
-
-      let request = this.createListScriptRequest();
-      return await this.exec(request, callback);
-    }
-
-    /**
-     * Gets the script with the given name.
-     * In case the script does not exists the server will throw an error.
-     *
-     * @param {string} name
-     *   the scripts unique name
-     * @returns {Promise<string>}
-     *   the scripts content as string
-     */
-    async getScript(name) {
-
-      let callback = {
-        onGetScriptResponse: function (response, resolve) {
-          resolve(response.getScriptBody());
-        }
-      };
-
-      let request = this.createGetScriptRequest(name);
-      return await this.exec(request, callback);
-    }
-
-    /**
-     * Activates the specified script and deactivated the current script.
-     * Sieve supports at most one active script.
-     *
-     * To deactivate all scripts just omit the script parameter
-     *
-     * @param {string} [script]
-     *   the script which should be activated.
-     *   If omitted all script will be deactivated.
-     *
-     */
-    async setActiveScript(script) {
-
-      let callback = {
-        onSetActiveResponse: function (response, resolve) {
-          resolve();
-        }
-      };
-
-      let request = this.createSetActiveRequest(script);
-      return await this.exec(request, callback);
-    }
-
-    /**
-     * Used to gracefully disconnect from the server.
-     * It sends a logout request, then the server should
-     * hangup the connection.
-     *
-     *
-     */
-    async logout() {
-      let callback = {
-        onLogoutResponse: function (response, resolve) {
-          resolve();
-        }
-      };
-
-      let request = this.createLogoutRequest();
-      return await this.exec(request, callback);
-    }
-
-    /**
-     * Checks the script for syntax errors.
-     *
-     * It uses the checkscript command. In case
-     * the command is not supported it fails.
-     *
-     * Throws an exception in case the script is not valid.
-     *
-     * @param {string} script
-     *   the script which should be checked.
-     *
-     */
-    async checkScript2(script) {
-
-      if (!script.length)
-        return;
-
-      let callback = {
-        onCheckScriptResponse: (response, resolve) => { resolve(); }
-      };
-
-      let request = this.createCheckScriptRequest(script);
-      await this.exec(request, callback);
-
-      return;
-    }
-
-    /**
-     * Checks the script for syntax errors.
-     *
-     * It uses the checkscript command if present otherwise
-     * it emulates the checkscript by pushing a temporary script
-     * to the server.
-     *
-     * In you need a pure checkscript implementation use checkscript2
-     *
-     * Throws an exception in case the script is not valid.
-     *
-     * @param {string} script
-     *   the script which should be checked.
-     *
-     */
-    async checkScript(script) {
-
-      // We do not need to check an empty script...
-      if (script.length === 0)
-        return;
-
-      // Use the CHECKSCRIPT command when possible, otherwise we need to ...
-      // ... fallback to the PUTSCRIPT/DELETESCRIPT Hack...
-
-      if (this.sieve.getCompatibility().checkscript) {
-        await this.checkScript2(script);
-        return;
-      }
-
-      // ... we have to use the PUTSCRIPT/DELETESCRIPT Hack.
-
-      // First we use PUTSCRIPT to store a temporary script on the server...
-      // ... incase the command fails, it is most likely due to an syntax error...
-      // ... if it succeeds the script is syntactically correct!
-
-      await this.putScript("TMP_FILE_DELETE_ME", script);
-
-      // then delete the temporary script. We need to do this only when
-      // put script succeeded and when it was stored.
-      await this.deleteScript("TMP_FILE_DELETE_ME");
-
-      return;
-    }
-
-    /**
-     * Renames a script.
-     *
-     * It use the new "rename" command. In case the command is not supported it failes.
-     *
-     * It is an error if the new script name already existings.
-     *
-     * @param {string} oldName
-     *   the old script name
-     * @param {string} newName
-     *  the new script name
-     *
-     *
-     */
-    async renameScript2(oldName, newName) {
-
-      let callback = {
-        onRenameScriptResponse: function (response, resolve) {
-          resolve();
-        }
-      };
-
-      let request = this.createRenameScriptRequest(oldName, newName);
-      return await this.exec(request, callback);
-    }
-
-
-    /**
-     * Renames a script.
-     *
-     * It prefers the new rename command. In case it is not suppored it will
-     * use a get, put and delete sequence to emulate the rename command.
-     *
-     * So the result will be the very same, but there is one slight difference.
-     * Instead of throwing an error it will overwrite existing script with the
-     * same name silently.
-     *
-     * @param {string} oldName
-     *   the old name
-     * @param {string} newName
-     *   the new name
-     *
-     */
-    async renameScript(oldName, newName) {
-
-      if (this.sieve.getCompatibility().renameScript) {
-        return await this.renameScript2(oldName, newName);
-      }
-
-      // Get the scripts activation state and check if the script name clashes
-      let scripts = await this.listScripts();
-      let active = null;
-
-      for (let item of scripts) {
-        if (item.script === newName)
-          throw new SieveClientException("Name already exists");
-
-        if (item.script === oldName)
-          active = item.active;
-      }
-
-      if (active === null)
-        throw new SieveClientException("Unknown Script " + oldName);
-
-      // Get the old script's content
-      let script = await this.getScript(oldName);
-
-      // Put the new script to the server
-      await this.putScript(newName, script);
-
-      // Activate the new script
-      if (this.active === true)
-        await this.activateScript(newName);
-
-      // Delete the old script
-      return await this.deleteScript(oldName);
-    }
-
-    /**
-     * An internal method with wrapps connecting to the server.
-     *
-     * @param {string} hostname
-     *   the sieve server's hostname
-     * @param {string} port
-     *   the sieve server's port
-     *
-     */
-    async connect2(hostname, port) {
-
-      let callback = {
-
-        onInitResponse: (response, resolve) => {
-
-          this.sieve.capabilities = {};
-          this.sieve.capabilities.tls = response.getTLS();
-          this.sieve.capabilities.extensions = response.getExtensions();
-          this.sieve.capabilities.sasl = response.getSasl();
-
-          this.sieve.setCompatibility(
-            response.getCompatibility());
-
-          resolve(
-            response.getDetails());
-        }
-      };
-
-      let request = this.createInitRequest();
-
-      let init = () => {
-        this.sieve.connect(
-          hostname, port,
-          this.account.getSecurity().isSecure(),
-          this,
-          this.account.getProxy().getProxyInfo());
-      };
-
-      await this.exec(request, callback, init);
-    }
-
-    /**
-     * Starts a new TLS connections.
-     * It throws an exception in case the tls handshake failed for some reason.
-     *
-     * @returns {Object}
-     *   the new capabilites after the successfull connection
-     */
-    async startTLS() {
-
-      // establish a secure connection if TLS ist enabled and if the Server ...
-      // ... is capable of handling TLS, otherwise simply skip it and ...
-      // ... use an insecure connection
-
-      if (!this.account.getSecurity().isSecure())
-        return;
-
-      if (!this.sieve.capabilities.tls)
-        throw new SieveClientException("Server does not support a secure connection.");
-
-      let callback = {
-
-        onStartTLSResponse: async (response, resolve) => {
-
-          await this.sieve.startTLS(this.account.getHost().getFingerprint());
-
-          // we need some magic to avoid a nasty bug in some servers
-          // first we explicitely request the capabilites
-          let request = this.createCapabilitiesRequest();
-          request.addResponseListener(
-            { "onCapabilitiesResponse": (response) => { callback.onCapabilitiesResponse(response, resolve); } });
-          this.sieve.addRequest(request);
-
-          // With a bugfree server we endup with two capability request, one
-          // implicit after startTLS and one explicite from capbilites. So we have
-          // to consume one of them silently...
-          this.sieve.addRequest(this.createInitRequest(), true);
-        },
-
-        onCapabilitiesResponse: (response, resolve) => {
-
-          // Update the server's capabilities they may change after a successfull
-          // starttls handshake.
-          this.sieve.setCompatibility(response.getCompatibility());
-
-          this.sieve.capabilities = {};
-          this.sieve.capabilities.tls = response.getTLS();
-          this.sieve.capabilities.extensions = response.getExtensions();
-          this.sieve.capabilities.sasl = response.getSasl();
-
-          resolve(response.getDetails());
-          return;
-        }
-      };
-
-      let request = this.createStartTLSRequest();
-      await this.exec(request, callback);
-
-      return;
-    }
-
-    /**
-     * Normally the server returns more than one SASL Mechanism.
-     * The list is sorted by the server. It starts with the most
-     * prefered mechanism and ends with the least prefered one.
-     *
-     * This menas in case the user has forced a prefered mechanism.
-     * We try to use this first. In case is is not supported by the server
-     * or the user has no preference we start iterating though the advertised
-     * mechanism until we find a matching one.
-     *
-     * The is one exception to this rule. As suggested in the RFC,
-     * the SASL Login is only used as very last resort.
-     *
-     * Note: In case we do not support any of the server's advertised
-     * mechanism an exception is thrown.
-     *
-     * @param {string} mechanism
-     *   the sasl mechanism which shall be used.
-     * @returns {SieveAbstractSaslRequest}
-     *  the sasl request which implements the most prefered compatible mechanism.
-     */
-    getSaslMechanism(mechanism) {
-
-      if (mechanism === "none")
-        throw new SieveClientException("SASL Authentication disabled");
-
-      if (mechanism === "default")
-        mechanism = [... this.sieve.capabilities.sasl];
-      else
-        mechanism = [mechanism];
-
-      // ... translate the SASL Mechanism into an SieveSaslLogin Object ...
-      while (mechanism.length > 0) {
-        // remove and test the first element...
-        switch (mechanism.shift().toUpperCase()) {
-          case "PLAIN":
-            return this.createSaslPlainRequest();
-
-          case "CRAM-MD5":
-            return this.createSaslCramMd5Request();
-
-          case "SCRAM-SHA-1":
-            return this.createSaslScramSha1Request();
-
-          case "SCRAM-SHA-256":
-            return this.createSaslScramSha256Request();
-
-          case "EXTERNAL":
-            return new SieveSaslExternalRequest();
-
-          case "LOGIN":
-            // we use SASL LOGIN only as last resort...
-            // ... as suggested in the RFC.
-            if (mechanism.length === 0)
-              return this.createSaslLoginRequest();
-
-            mechanism.push("LOGIN");
-            break;
-        }
-      }
-
-      throw new SieveClientException("No compatible SASL Mechanism (error.sasl)");
-    }
-
-    /**
-     * Authenticates the current session.
-     *
-     */
-    async authenticate() {
-      let account = this.account;
-      let mechanism = account.getSecurity().getMechanism();
-
-      if (mechanism === "none")
-        return;
-
-      let request = this.getSaslMechanism(mechanism);
-
-      let username = account.getAuthentication().getUsername();
-      request.setUsername(username);
-
-      // SASL External has no passwort it relies completely on SSL...
-      if (request.hasPassword()) {
-
-        let password = await account.getAuthentication().getPassword();
-
-        if (typeof (password) === "undefined" || password === null)
-          throw new SieveClientException("error.authentication");
-
-        request.setPassword(password);
-      }
-
-      // check if the authentication method supports proxy authorization...
-      if (request.isAuthorizable()) {
-        // ... if so retrieve the authorization identity
-        let authorization = account.getAuthorization().getAuthorization();
-
-        if (authorization === null)
-          throw new SieveClientException("error.authorization");
-
-        if (authorization !== "")
-          request.setAuthorization(authorization);
-      }
-
-      let callback = {
-        onSaslResponse: function (response, resolve) {
-          resolve();
-        }
-      };
-
-      await this.exec(request, callback);
-
-      return;
-    }
-
-    /**
-     * The on idle handler...
-     *
-     */
-    onIdle() {
-      (async () => { await this.noop(); })();
-    }
-
-    /**
-     * The default error handler. Called in case no one else
-     * catches the error.
-     *
-     */
-    onError() {
-      alert("server reported an error...");
+      await this.disconnect(true);
     }
 
     /**
@@ -839,68 +114,20 @@
      */
     async connect(hostname, port) {
 
-      this.sieve = new Sieve(this.logger);
+      try {
+        await super.connect(hostname, port);
+      } catch (ex) {
 
-      // FIXME we need to add the onIdle and onTimeout methods
-      // FIXME in case we set the listner here the byeListener does not work anymore
-      this.sieve.addListener(this);
+        if (!(ex instanceof SieveReferralException))
+          throw ex;
 
-      // TODO Load Timeout interval from account settings...
-      if (this.account.getSettings().isKeepAlive())
-        this.sieve.setIdleWait(this.account.getSettings().getKeepAliveInterval());
-
-
-      if (typeof (hostname) === "undefined")
-        hostname = this.account.getHost().getHostname();
-
-      if (typeof (port) === "undefined")
-        port = this.account.getHost().getPort();
-
-      await this.connect2(hostname, port);
-
-      await this.startTLS();
-
-      await this.authenticate();
-
-      return this;
-    }
-
-    /**
-     * Checks if the current session is connected to the server
-     *
-     * @returns {boolean}
-     *   true in case the session is connected otherwise false.
-     */
-    isConnected() {
-      return this.sieve.isAlive();
-    }
-
-    /**
-     * Disconnects the current sieve session.
-     *
-     * The disconnect is by default graceful, which means the client send a
-     * logout command and waits for the server to terminate the connection.
-     *
-     * @param {boolean} [force]
-     *   if set to true the disconnect will be forced and not graceful.
-     *   This means the connection will be just disconnected.
-     * @returns {SieveSession}
-     *   a self reference.
-     */
-    async disconnect(force) {
-
-      if (this.sieve === null)
-        return this;
-
-      if (!force && this.sieve.isAlive()) {
-        await this.logout();
+        await this.disconnect(true);
+        await this.connect(ex.getHostname(), ex.getPort());
       }
 
-      await this.sieve.disconnect();
-      this.sieve = null;
-
       return this;
     }
+
   }
 
   exports.SieveSession = SieveSession;

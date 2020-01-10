@@ -8,15 +8,19 @@
         </button>
       </div>
       <div class="modal-body">
-        <p>Your mail server's authenticity can not be verified!</p>
+        <p>Your mail server's authenticity cannot be verified!</p>
         <div class="alert alert-danger" role="alert">
           <p>Someone might try to impersonate your mail server.</p>
 
-          <p>You need to verify manually, if the fingerprint matches your mailserver's fingerprint.</p>
+          <p>The validation failed with the following error message:</p>
+          <p class="sieve-dialog-certerror"></p>
+
+          <p>You need to verify manually, if the fingerprint matches your mailserver's fingerprint:</p>
           <p class="sieve-dialog-fingerprint"></p>
+
         </div>
 
-        <p>Continue only if the fingerprints match!</p>
+        <p>Continue only if the fingerprints match and the error message is resonable!</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger sieve-dialog-resolve">Continue</button>

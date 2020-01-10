@@ -9,19 +9,14 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-/* global window */
-
 (function (exports) {
 
   "use strict";
 
   const { SieveAbstractLogger } = require("./SieveAbstractLogger.js");
 
-  /* global console */
-
   /**
    * Implements a sieve compatilbe logger instance for node
-   * @constructor
    */
   class SieveLogger extends SieveAbstractLogger {
 

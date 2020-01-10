@@ -51,7 +51,7 @@
      *   the authorization string or null in case the dialog was canceled.
      */
     async getAuthorization() {
-      let displayname = this.account.getHost().getDisplayName();
+      const displayname = this.account.getHost().getDisplayName();
 
       return await (new SieveAuthorizationDialog(displayname)).show();
     }

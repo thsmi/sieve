@@ -38,7 +38,7 @@
   const {
     SieveSimpleResponse,
     SieveCapabilitiesResponse,
-    SieveListScriptResponse,
+    SieveListScriptsResponse,
     SieveSaslLoginResponse,
     SieveSaslCramMd5Response,
     SieveGetScriptResponse,
@@ -59,9 +59,14 @@
    */
   class SieveAbstractRequest {
 
+    /**
+     * Creates a new Instance.
+     */
     constructor() {
       this.errorListener = null;
+      this.timeoutListener = null;
       this.byeListener = null;
+
       this.responseListener = null;
     }
 
@@ -73,7 +78,35 @@
      *   a self reference
      */
     addErrorListener(listener) {
+
+      if (typeof listener !== 'function') {
+        throw new Error("Error listerner is not a function");
+      }
+
       this.errorListener = listener;
+      return this;
+    }
+
+    /**
+     * The timeout listener is calles whenever sending a request failes for some
+     * reason. This could be because of a timeout or because the server terminated
+     * the connection or something else happend.
+     *
+     * The listener does not nessearily wait for a timeout event. E.g. in case the
+     * connection is lost it will fire immediately.
+     *
+     * @param {Function} listener
+     *   the listener which should be invoked
+     * @returns {SieveAbstractRequest}
+     *   a self reference
+     */
+    addTimeoutListener(listener) {
+
+      if (typeof listener !== 'function') {
+        throw new Error("Timeout listerner is not a function");
+      }
+
+      this.timeoutListener = listener;
       return this;
     }
 
@@ -87,6 +120,11 @@
      *   a self reference
      */
     addByeListener(listener) {
+
+      if (typeof listener !== 'function') {
+        throw new Error("Bye listerner is not a function");
+      }
+
       this.byeListener = listener;
       return this;
     }
@@ -101,6 +139,11 @@
      *   a self reference
      */
     addResponseListener(listener) {
+
+      if (typeof listener !== 'function') {
+        throw new Error("Listerner is not a function " + listener);
+      }
+
       this.responseListener = listener;
       return this;
     }
@@ -159,10 +202,13 @@
     /**
      * Triggers a timeout on the error listener.
      * This should never be invoked directly by any other object than the sieve connection.
+     *
+     * @param {Error} [reason]
+     *   the optional reason why the request was canceled.
      */
-    cancel() {
-      if ((this.errorListener) && (this.errorListener.onTimeout))
-        this.errorListener.onTimeout();
+    cancel(reason) {
+      if (this.timeoutListener)
+        this.timeoutListener(reason);
     }
 
     /**
@@ -175,8 +221,8 @@
      *   the response which should be handled by this request.
      */
     onNo(response) {
-      if ((this.errorListener) && (this.errorListener.onError))
-        this.errorListener.onError(response);
+      if (this.errorListener)
+        this.errorListener(response);
     }
 
     /**
@@ -190,7 +236,7 @@
      */
     onBye(response) {
       if ((response.getResponse() === RESPONSE_BYE) && (this.byeListener))
-        this.byeListener.onByeResponse(response);
+        this.byeListener(response);
     }
 
     /**
@@ -326,7 +372,7 @@
      */
     onOk(response) {
       if (this.responseListener)
-        this.responseListener.onSaslResponse(response);
+        this.responseListener(response);
     }
   }
 
@@ -362,7 +408,7 @@
      */
     onOk(response) {
       if (this.responseListener)
-        this.responseListener.onGetScriptResponse(response);
+        this.responseListener(response);
     }
 
     /**
@@ -416,7 +462,7 @@
      */
     onOk(response) {
       if (this.responseListener)
-        this.responseListener.onPutScriptResponse(response);
+        this.responseListener(response);
     }
 
     /**
@@ -479,7 +525,7 @@
      */
     onOk(response) {
       if (this.responseListener)
-        this.responseListener.onCheckScriptResponse(response);
+        this.responseListener(response);
     }
 
     /**
@@ -530,7 +576,7 @@
      */
     onOk(response) {
       if (this.responseListener)
-        this.responseListener.onSetActiveResponse(response);
+        this.responseListener(response);
     }
 
     /**
@@ -569,7 +615,7 @@
      */
     onOk(response) {
       if (this.responseListener)
-        this.responseListener.onCapabilitiesResponse(response);
+        this.responseListener(response);
     }
 
     /**
@@ -612,7 +658,7 @@
      */
     onOk(response) {
       if (this.responseListener)
-        this.responseListener.onDeleteScriptResponse(response);
+        this.responseListener(response);
     }
 
     /**
@@ -645,7 +691,7 @@
      */
     onOk(response) {
       if (this.responseListener)
-        this.responseListener.onNoopResponse(response);
+        this.responseListener(response);
     }
 
     /**
@@ -680,6 +726,9 @@
       this.newScript = newScript;
     }
 
+    /**
+     * @inheritdoc
+     */
     getNextRequest(builder) {
       return builder
         .addLiteral("RENAMESCRIPT")
@@ -687,9 +736,12 @@
         .addQuotedString(this.newScript);
     }
 
+    /**
+     * @inheritdoc
+     */
     onOk(response) {
       if (this.responseListener)
-        this.responseListener.onRenameScriptResponse(response);
+        this.responseListener(response);
     }
 
     /**
@@ -705,7 +757,7 @@
    * This command is used to list all sieve script of the current user.
    * In case there are no scripts the server responds with an empty list.
    */
-  class SieveListScriptRequest extends SieveAbstractRequest {
+  class SieveListScriptsRequest extends SieveAbstractRequest {
 
     /**
      * @inheritdoc
@@ -720,7 +772,7 @@
      */
     onOk(response) {
       if (this.responseListener)
-        this.responseListener.onListScriptResponse(response);
+        this.responseListener(response);
     }
 
     /**
@@ -728,7 +780,7 @@
      */
     addResponse(parser) {
       return super.addResponse(
-        new SieveListScriptResponse().parse(parser));
+        new SieveListScriptsResponse().parse(parser));
     }
   }
 
@@ -750,7 +802,7 @@
      */
     onOk(response) {
       if (this.responseListener)
-        this.responseListener.onStartTLSResponse(response);
+        this.responseListener(response);
     }
 
     /**
@@ -774,25 +826,20 @@
    * The following example shows how to use a SieveLogoutRequest:
    *
    * @example
-   *  "use strict";
+   * const event = {
+   *   onLogoutResponse: function(response) {
+   *     alert("Logout successfull");
+   *   },
+   *   onError: function(response) {
+   *     alert("SERVER ERROR:" + response.getMessage());
+   *   }
+   * };
    *
-   *  let event = {
-   *    onLogoutResponse: function(response)
-   *    {
-   *      alert("Logout successfull");
-   *    }
-   *    ,
-   *    onError: function(response)
-   *    {
-   *      alert("SERVER ERROR:" + response.getMessage());
-   *    }
-   *  }
+   * const request = new SieveLogoutRequest();
+   * request.addErrorListener(event);
+   * request.addSaslListener(event);
    *
-   *  let request = new SieveLogoutRequest();
-   *  request.addErrorListener(event);
-   *  request.addSaslListener(event);
-   *
-   *  sieve.addRequest(request);
+   * sieve.addRequest(request);
    */
   class SieveLogoutRequest extends SieveAbstractRequest {
 
@@ -808,7 +855,7 @@
      */
     onOk(response) {
       if (this.responseListener)
-        this.responseListener.onLogoutResponse(response);
+        this.responseListener(response);
     }
 
     /**
@@ -844,12 +891,12 @@
    *        < OK
    *
    * @example
-   *  let sieve = new Sieve('example.com',2000,false,3)
+   * const sieve = new Sieve('example.com', 2000, false, 3);
    *
-   *  let request = new SieveInitRequest();
-   *  sieve.addRequest(request);
+   * const request = new SieveInitRequest();
+   * sieve.addRequest(request);
    *
-   *  sieve.connect();
+   * sieve.connect();
    *
    */
   class SieveInitRequest extends SieveAbstractRequest {
@@ -859,7 +906,7 @@
      */
     onOk(response) {
       if (this.responseListener)
-        this.responseListener.onInitResponse(response);
+        this.responseListener(response);
     }
 
     /**
@@ -906,7 +953,6 @@
    *
    *   sieve.addRequest(request);
    */
-
   class SieveSaslPlainRequest extends SieveAbstractSaslRequest {
 
     /**
@@ -917,6 +963,9 @@
       return true;
     }
 
+    /**
+     * @inheritdoc
+     */
     getNextRequest(builder) {
       return builder
         .addLiteral("AUTHENTICATE")
@@ -958,23 +1007,22 @@
    * @deprecated
    *
    * @example
-   *  let event = {
-   *     onSaslResponse: function(response) {
-   *       alert("Login successfull");
-   *     },
-   *     onError: function(response) {
-   *       alert("SERVER ERROR:"+response.getMessage());
-   *    }
-   *  }
+   * const event = {
+   *   onSaslResponse: function(response) {
+   *     alert("Login successfull");
+   *   },
+   *   onError: function(response) {
+   *     alert("SERVER ERROR:" + response.getMessage());
+   *   }
+   * };
    *
-   *  let request = new SieveSaslLoginRequest();
-   *  request.setUsername('geek');
-   *  request.setPassword('th3g33k1');
-   *  request.addErrorListener(event);
-   *  request.addSaslListener(event);
+   * const request = new SieveSaslLoginRequest();
+   * request.setUsername('geek');
+   * request.setPassword('th3g33k1');
+   * request.addErrorListener(event);
+   * request.addSaslListener(event);
    *
-   *  sieve.addRequest(request);
-   *
+   * sieve.addRequest(request);
    */
   class SieveSaslLoginRequest extends SieveAbstractSaslRequest {
 
@@ -1144,6 +1192,7 @@
 
     /**
      * Gets the SASL Mechanism name.
+     * @abstract
      *
      * @returns {string}
      *   the SASL Mechanism's unique it as string.
@@ -1152,13 +1201,16 @@
       throw new Error("Implement SASL Name");
     }
 
+    /**
+     * @abstract
+     */
     getCrypto() {
       throw new Error("Implement Crypto Method which returns a crypto provider");
     }
 
     onChallengeServer(builder) {
 
-      let crypto = this.getCrypto();
+      const crypto = this.getCrypto();
 
       this._cnonce = crypto.H("" + (Math.random() * 1234567890), "hex");
 
@@ -1192,15 +1244,15 @@
     onValidateChallenge(builder) {
       // Check if the server returned our nonce. This should prevent...
       // ... man in the middle attacks.
-      let nonce = this.response.getNonce();
+      const nonce = this.response.getNonce();
       if ((nonce.substr(0, this._cnonce.length) !== this._cnonce))
         throw new Error("Nonce invalid");
 
       const crypto = this.getCrypto();
 
       // As first step we need to salt the password...
-      let salt = this.response.getSalt();
-      let iter = this.response.getIterationCounter();
+      const salt = this.response.getSalt();
+      const iter = this.response.getIterationCounter();
 
       // TODO Normalize password; and convert it into a byte array...
       // ... It might contain special charaters.
@@ -1210,10 +1262,10 @@
       this._saltedPassword = crypto.Hi(this._password, salt, iter);
 
       // the clientKey is defined as HMAC(SaltedPassword, "Client Key")
-      let clientKey = crypto.HMAC(this._saltedPassword, "Client Key");
+      const clientKey = crypto.HMAC(this._saltedPassword, "Client Key");
 
       // create the client-final-message-without-proof, ...
-      let msg = "c=" + builder.convertToBase64(this._g2Header) + ",r=" + nonce;
+      const msg = "c=" + builder.convertToBase64(this._g2Header) + ",r=" + nonce;
       // ... append it and the server-first-message to client-first-message-bare...
       this._authMessage += "," + this.response.getServerFirstMessage() + "," + msg;
 
@@ -1223,14 +1275,14 @@
       // As next Step sign out message, this is done by applying the client...
       // ... key through a pseudorandom function to the message. It is defined...
       // as HMAC(H(ClientKey), AuthMessage)
-      let clientSignature = crypto.HMAC(
+      const clientSignature = crypto.HMAC(
         crypto.H(clientKey),
         this._authMessage);
 
       // We now complete the cryptographic part an apply our clientkey to the...
       // ... Signature, so that the server can be sure it is talking to us.
       // The RFC defindes this step as ClientKey XOR ClientSignature
-      let clientProof = clientKey;
+      const clientProof = clientKey;
       for (let k = 0; k < clientProof.length; k++)
         clientProof[k] ^= clientSignature[k];
 
@@ -1282,9 +1334,9 @@
      */
     onOk(response) {
 
-      let crypto = this.getCrypto();
+      const crypto = this.getCrypto();
 
-      let serverSignature = crypto.HMAC(
+      const serverSignature = crypto.HMAC(
         crypto.HMAC(
           this._saltedPassword,
           "Server Key"),
@@ -1414,7 +1466,7 @@
   exports.SieveDeleteScriptRequest = SieveDeleteScriptRequest;
   exports.SieveNoopRequest = SieveNoopRequest;
   exports.SieveRenameScriptRequest = SieveRenameScriptRequest;
-  exports.SieveListScriptRequest = SieveListScriptRequest;
+  exports.SieveListScriptsRequest = SieveListScriptsRequest;
   exports.SieveStartTLSRequest = SieveStartTLSRequest;
   exports.SieveLogoutRequest = SieveLogoutRequest;
   exports.SieveInitRequest = SieveInitRequest;

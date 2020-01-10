@@ -32,8 +32,9 @@
 
     /**
      * An human readable description, which describes the authentication procedure.
+     * @abstract
      * @returns {string} String containing the description.
-     */
+     **/
     getDescription() {
       throw new Error("Impement getDescription");
     }
@@ -44,15 +45,19 @@
      * Not all mechanisms require a password.
      * Others e.g. when prompting do not always return a password.
      *
+     * @abstract
+     *
      * @returns {string | null}
      *   the password or null e.g. when the password prompt was dismissed.
-    */
+     **/
     getPassword() {
       throw new Error("Impement getPassword");
     }
 
     /**
      * Returns the username for the account.
+     *
+     * @abstract
      *
      * @returns {string}
      *   the username as string.
@@ -63,6 +68,8 @@
 
     /**
      * Checks if the username is associated with a password.
+     *
+     * @abstract
      *
      * @returns {boolean}
      *   true in case the username has a password otherwise false.

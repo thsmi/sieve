@@ -15,8 +15,13 @@
 
   const KEY_RETURN = 13;
 
+  const DIALOG_CANCELED = 0;
+  const DIALOG_ACCEPTED = 1;
+  const DIALOG_DISCARDED = 2;
+
   /* global $ */
-  const { SieveTemplateLoader } = require("./../../utils/SieveTemplateLoader.js");
+  const { SieveTemplateLoader } = require("./../../libs/managesieve.ui/utils/SieveTemplateLoader.js");
+  const { SieveUniqueId } = require("./../../libs/managesieve.ui/utils/SieveUniqueId.js");
 
   /**
    * Displays a simple dialog with an action button.
@@ -25,6 +30,8 @@
 
     /**
      * The path to the html template which should be used for this dialog
+     * @abstract
+     *
      * @returns {string}
      *   the path to the html template.
      */
@@ -61,7 +68,7 @@
      * The result should be typically true for simple dialogs or
      * with more complex dialogs just return the desired value.
      *
-     * @returns {Object}
+     * @returns {object}
      *   returns true or the accept value
      *
      */
@@ -77,7 +84,7 @@
      * more complex dialogs. In case there is no default value, the best strategy
      * is to throw an exception.
      *
-     * @returns {Object}
+     * @returns {object}
      *   returns false or the reject result.
      */
     onCancel() {
@@ -91,15 +98,26 @@
     onShown() {
     }
 
+    /**
+     * Generates an if made of alphanumerical characertes and dashes.
+     * @returns {string}
+     *   a string with an html compatible unique id
+     */
+    generateId() {
+      return (new SieveUniqueId()).generate();
+    }
 
     /**
      * Shows the dialog.
+     *
+     * @returns {object}
+     *   the value returned from the dialog.
      */
     async show() {
 
-      this.id = "" + Math.floor(Math.random() * 10000000).toString(16) + Date.now().toString(16);
+      this.id = this.generateId();
 
-      let dialog = await (new SieveTemplateLoader()).load(this.getTemplate());
+      const dialog = await (new SieveTemplateLoader()).load(this.getTemplate());
       dialog.attr("id", this.id);
       $("#ctx").append(dialog);
 
@@ -119,9 +137,9 @@
           .on('shown.bs.modal', () => {
             this.onShown();
           })
-          .find(".sieve-dialog-resolve").click(async () => {
+          .find(".sieve-dialog-resolve").click(async (event) => {
             try {
-              resolve(await this.onAccept(resolve, reject));
+              resolve(await this.onAccept(event.target));
             } catch (ex) {
               reject(ex);
             }
@@ -176,10 +194,13 @@
      *
      * @param {string} fingerprint
      *   The account's fingerprint
+     * @param {string} error
+     *   The error code.
      */
-    constructor(fingerprint) {
+    constructor(fingerprint, error) {
       super();
       this.fingerprint = fingerprint;
+      this.error = error;
     }
 
     /**
@@ -194,6 +215,7 @@
      */
     onInit() {
       this.getDialog().find(".sieve-dialog-fingerprint").text(this.fingerprint);
+      this.getDialog().find(".sieve-dialog-certerror").text(this.error);
     }
   }
 
@@ -319,7 +341,7 @@
      * @inheritdoc
      */
     onAccept() {
-      this.getDialog().find(".sieve-rename-dialog-newname").val();
+      return this.getDialog().find(".sieve-rename-dialog-newname").val();
     }
 
     /**
@@ -332,6 +354,7 @@
 
   /**
    * Asks for a password.
+   * The show method returns null or the authorization.
    */
   class SievePasswordDialog extends SieveDialog {
 
@@ -342,7 +365,6 @@
      *   the username for which the password is requested
      * @param {string} displayname
      *   the accounts display name.
-     * @constructor
      */
     constructor(username, displayname) {
       super();
@@ -361,7 +383,7 @@
      * @inheritdoc
      */
     onInit() {
-      let dialog = this.getDialog();
+      const dialog = this.getDialog();
 
       dialog.find(".sieve-username").text(this.username);
       dialog.find(".sieve-displayname").text(this.displayname);
@@ -392,12 +414,13 @@
      * @inheritdoc
      */
     onCancel() {
-      throw new Error("Dialog canceled");
+      return null;
     }
   }
 
   /**
-   * Asks for a password.
+   * Asks for a authorization.
+   * The show method returns null or the authorization.
    */
   class SieveAuthorizationDialog extends SieveDialog {
 
@@ -406,7 +429,6 @@
      *
      * @param {string} displayname
      *   the account's display name.
-     * @constructor
      */
     constructor(displayname) {
       super();
@@ -424,7 +446,7 @@
      * @inheritdoc
      */
     onInit() {
-      let dialog = this.getDialog();
+      const dialog = this.getDialog();
 
       dialog.find(".sieve-displayname").text(this.displayname);
 
@@ -454,7 +476,151 @@
      * @inheritdoc
      */
     onCancel() {
-      throw new Error("Dialog canceled");
+      return null;
+    }
+  }
+
+  /**
+   * An info dialog indicating the current script is busy.
+   */
+  class SieveScriptBusyDialog extends SieveDialog {
+
+    /**
+     * Create a new script busy dialog.
+     * @param {string} name
+     *   the scripts name.
+     */
+    constructor(name) {
+      super();
+      this.name = name;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    getTemplate() {
+      return "./ui/dialogs/dialog.script.busy.tpl";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    onInit() {
+      this.getDialog().find(".sieve-busy-dialog-scriptname").text(this.name);
+    }
+  }
+
+
+  /**
+   * Asks is a changed script should be saved
+   */
+  class SieveScriptSaveDialog extends SieveDialog {
+
+    /**
+     * Create a rename script dialog instance.
+     * @param {string} name
+     *   the scripts old name
+     */
+    constructor(name) {
+      super();
+      this.name = name;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    getTemplate() {
+      return "./ui/dialogs/dialog.script.save.tpl";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    onInit() {
+      this.getDialog().find(".sieve-save-dialog-scriptname").text(this.name);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    onAccept(element) {
+      if (element.classList.contains("sieve-save-dialog-discard"))
+        return DIALOG_DISCARDED;
+
+      if (element.classList.contains("sieve-save-dialog-save"))
+        return DIALOG_ACCEPTED;
+
+      throw new Error("Unknown button pressed");
+    }
+
+    /**
+     * Checks if the dialogs return value was a discard
+     * @param {int} value
+     *  the value to be checked.
+     * @returns {boolean}
+     *   true in case the dialog was discarded.
+     */
+    static isDiscarded(value) {
+      return value === DIALOG_DISCARDED;
+    }
+
+    /**
+     * Checks if the dialogs return value was a cancel
+     * @param {int} value
+     *   the value to be checked.
+     * @returns {boolean}
+     *   true in case the dialog was canceled
+     */
+    static isCanceled(value) {
+      return value === DIALOG_CANCELED;
+    }
+
+    /**
+     * Checks if the dialogs return value was an accept
+     * @param {int} value
+     *   the value to be checked.
+     * @returns {boolean}
+     *   true in case the dialog was accepted.
+     */
+    static isAccepted(value) {
+      return value === DIALOG_ACCEPTED;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    onCancel() {
+      return DIALOG_CANCELED;
+    }
+  }
+
+  /**
+   * An info dialog indicating the current script is busy.
+   */
+  class SieveErrorDialog extends SieveDialog {
+
+    /**
+     * Create a new script busy dialog.
+     * @param {string} description
+     *   the scripts name.
+     */
+    constructor(description) {
+      super();
+      this.description = description;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    getTemplate() {
+      return "./ui/dialogs/dialog.error.tpl";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    onInit() {
+      this.getDialog().find(".sieve-error-dialog-description").text(this.description);
     }
   }
 
@@ -467,6 +633,9 @@
     module.exports.SieveFingerprintDialog = SieveFingerprintDialog;
     module.exports.SieveDeleteAccountDialog = SieveDeleteAccountDialog;
     module.exports.SieveAuthorizationDialog = SieveAuthorizationDialog;
+    module.exports.SieveScriptBusyDialog = SieveScriptBusyDialog;
+    module.exports.SieveScriptSaveDialog = SieveScriptSaveDialog;
+    module.exports.SieveErrorDialog = SieveErrorDialog;
   }
   else {
     exports.SievePasswordDialog = SievePasswordDialog;
@@ -476,6 +645,9 @@
     exports.SieveFingerprintDialog = SieveFingerprintDialog;
     exports.SieveDeleteAccountDialog = SieveDeleteAccountDialog;
     exports.SieveAuthorizationDialog = SieveAuthorizationDialog;
+    exports.SieveScriptBusyDialog = SieveScriptBusyDialog;
+    exports.SieveScriptSaveDialog = SieveScriptSaveDialog;
+    exports.SieveErrorDialog = SieveErrorDialog;
   }
 
 })(this);

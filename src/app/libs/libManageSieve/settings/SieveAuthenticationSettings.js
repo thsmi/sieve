@@ -65,9 +65,10 @@
      */
     async getPassword() {
 
-      let username = this.getUsername();
-      let displayname = this.account.getHost().getDisplayName();
+      const username = this.getUsername();
+      const displayname = this.account.getHost().getDisplayName();
 
+      // TODO we need to get rid of this dependency...
       return await (new SievePasswordDialog(username, displayname)).show();
     }
   }

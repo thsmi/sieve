@@ -32,6 +32,8 @@
     /**
      * Returns the boolean value for the preference.
      *
+     * @abstract
+     *
      * @param {string} key
      *   the preference's key
      * @param {boolean} [fallback]
@@ -45,6 +47,8 @@
 
     /**
      * Sets a boolean value for the given key.
+     *
+     * @abstract
      *
      * @param {string} key
      *   the preference's key
@@ -60,6 +64,8 @@
     /**
      * Returns the string value for the preference.
      *
+     * @abstract
+     *
      * @param {string} key
      *   the preference key
      * @param {string} [fallback]
@@ -73,6 +79,8 @@
 
     /**
      * The string which should be set for th preference
+     *
+     * @abstract
      *
      * @param {string} key
      *   the preference key
@@ -88,6 +96,8 @@
     /**
      * Returns the integer value for the preference.
      *
+     * @abstract
+     *
      * @param {string} key
      *   the preference's key
      * @param {int} [fallback]
@@ -101,6 +111,8 @@
 
     /**
      * Sets an integer value for the given key.
+     *
+     * @abstract
      *
      * @param {string} key
      *   the preference's key

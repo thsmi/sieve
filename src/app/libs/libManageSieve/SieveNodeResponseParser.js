@@ -9,12 +9,7 @@
 
 (function (exports) {
 
-
-  // Enable Strict Mode
   "use strict";
-
-  /* global require */
-  /* global Buffer */
 
   const { SieveAbstractResponseParser } = require("./SieveAbstractResponseParser.js");
   const { StringDecoder } = require('string_decoder');

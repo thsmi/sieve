@@ -29,7 +29,7 @@
     }
 
     /**
-     *
+     * @abstract
      * @returns {string}
      *   the pref key which is used to store the information about the mechanism
      **/
@@ -41,6 +41,8 @@
      * Returns the default mechanism which is used unless it is
      * overwritten by an other mechanism.
      *
+     * @abstract
+     *
      * @returns {int}
      *   the default mechanism
      */
@@ -49,19 +51,23 @@
     }
 
     /**
-   * Checks it the given mechanism is supported.
-   *
-   * @param {int} mechanism
-   *   the authentication mechanisms unqiue id.
-   * @returns {boolean}
-   *   true in case the given type is supported otherwise false.
-   */
+     * Checks it the given mechanism is supported.
+     *
+     * @abstract
+     *
+     * @param {int} mechanism
+     *   the authentication mechanisms unqiue id.
+     * @returns {boolean}
+     *   true in case the given type is supported otherwise false.
+     */
     hasMechanism(mechanism) {
       throw new Error("Implement hasMechanism(" + mechanism + ")");
     }
 
     /**
      * Returns the authentication mechanism for the given type.
+     *
+     * @abstract
      *
      * @param {int} mechanism
      *   the authentication mechanism

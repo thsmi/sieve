@@ -9,11 +9,7 @@
 
 (function (exports) {
 
-  // Enable Strict Mode
   "use strict";
-
-  /* global require */
-  /* global Buffer */
 
   const { SieveAbstractRequestBuilder } = require("./SieveAbstractRequestBuilder.js");
 

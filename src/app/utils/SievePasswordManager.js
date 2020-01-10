@@ -72,7 +72,7 @@
      *   the encrypted text as hex string
      */
     encrypt(text) {
-      let cipher = crypto.createCipher(this.algorithm, this.master);
+      const cipher = crypto.createCipher(this.algorithm, this.master);
       let crypted = cipher.update(text, 'utf8', 'hex');
       crypted += cipher.final('hex');
 
@@ -87,7 +87,7 @@
      *   the plain text
      */
     decrypt(text) {
-      let decipher = crypto.createDecipher(this.algorithm, this.master);
+      const decipher = crypto.createDecipher(this.algorithm, this.master);
       let dec = decipher.update(text, 'hex', 'utf8');
       dec += decipher.final('utf8');
 

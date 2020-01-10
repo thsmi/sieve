@@ -26,6 +26,9 @@
   class SieveCustomHostEx extends SieveCustomHost {
 
     /**
+     * The human readable display name for this account.
+     * It can be any valid javascript string.
+     *
      * @returns {string}
      *   the display name
      **/
@@ -46,8 +49,16 @@
     }
 
     /**
+     * Each certificate has a unique fingerprint.
+     *
+     * Normally this fingerpint is not used directly.
+     * But in case no chain of trust can be stablished,
+     * the typicall fallback is to verify the fingerprint.
+     *
+     * This is normal case for a self signed certificate.
+     *
      * @returns {string}
-     *   the accounts fingerprint or an empty string
+     *   the accounts fingerprint or an empty string in case no fingerprint is stored.
      **/
     getFingerprint() {
       return this.account.prefs.getString("host.fingerprint", "");
@@ -57,12 +68,39 @@
      * Sets the account's fingerprint.
      *
      * @param {string} value
-     *   the accounts fingerprint
+     *   the accounts fingerprint, or pass an empty string to disable.
      * @returns {SieveCustomHostEx}
      *   a self reference
      */
     setFingerprint(value) {
       this.account.prefs.setString("host.fingerprint", value);
+      return this;
+    }
+
+    /**
+     * Gets the certificate errors to ignore.
+     *
+     * @returns {string}
+     *   the node js error code to ignore as string or an empty string.
+     */
+    getIgnoreCertErrors() {
+      return this.account.prefs.getString("host.ignoreCertErrors", "");
+    }
+
+    /**
+     * Defines which certificate error code should be ignored.
+     *
+     * In general it is not a good idea to ignore certificate errors.
+     * But there are some exception: e.g. a self signed error
+     * after you verfied the certificates fingerprint.
+     *
+     * @param {string} errorCode
+     *   the node js error code or an empty string to disable.
+     * @returns {SieveCustomHostEx}
+     *   a self reference
+     */
+    setIgnoreCertErrors(errorCode) {
+      this.account.prefs.setString("host.ignoreCertErrors", errorCode);
       return this;
     }
   }

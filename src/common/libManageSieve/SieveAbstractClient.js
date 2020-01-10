@@ -95,12 +95,12 @@
    *   the supported sieve commands as an associative array. Attribute names have
    *   to be in lower case, the values can be either null, undefined, true or false.
    * @example
-   *   sieve.setCompatibility({checkscript:true,rename:true,starttls:false});
+   * sieve.setCompatibility({checkscript:true, rename:true, starttls:false});
    */
 
   SieveAbstractClient.prototype.setCompatibility
     = function (capabilites) {
-      for (let capability in capabilites)
+      for (const capability in capabilites)
         this.compatibility[capability] = capabilites[capability];
     };
 
@@ -120,9 +120,9 @@
    *   Unsupported commands are indecated by a null, disabled by false value...
    *
    * @example
-   *   if (sieve.getCompatiblity().putscript) {
-   *     // put script command supported...
-   *   }
+   * if (sieve.getCompatiblity().putscript) {
+   *   // put script command supported...
+   * }
    */
   SieveAbstractClient.prototype.getCompatibility
     = function () {
@@ -164,6 +164,7 @@
    * sending a startTLSRequest. Invoke this method imediately after the server
    * confirms switching to TLS.
    *
+   *
    * @param {Function} callback
    *   the callback which is invoked after a successfully switch to tls.
    * @returns {SieveAbstractClient}
@@ -200,6 +201,7 @@
    */
   SieveAbstractClient.prototype.getTimeoutWait
     = function () {
+
       // Apply some selfhealing magic...
       if (!this.timeoutDelay)
         return DEFAULT_TIMEOUT;
@@ -229,8 +231,8 @@
 
 
   /**
-   * @abstract
    * Internal method trigged after a request was completely processed.
+   * @abstract
    */
   SieveAbstractClient.prototype.onStartIdle
     = function () {
@@ -238,8 +240,8 @@
     };
 
   /**
-   * @abstract
    * Internal method triggered when a new request is processed.
+   * @abstract
    */
   SieveAbstractClient.prototype.onStopIdle
     = function () {
@@ -316,9 +318,9 @@
     = function (request, greedy) {
 
       // Attach the global bye listener only when needed.
-      if (!request.byeListener || !request.byeListener.onByeResponse)
+      if (!request.byeListener)
         if (this.listener && this.listener.onByeResponse)
-          request.addByeListener(this.listener);
+          request.addByeListener(this.listener.onByeResponse);
 
       // TODO: we should realy store this internally, instead of tagging objects
       if (greedy)
@@ -354,12 +356,13 @@
 
   /**
    * Connects to a ManageSieve server.
+   * @abstract
    *
    * @param {string} host
    *   The target hostname or IP address as String
    * @param {int} port
    *   The target port as Interger
-   * @param {noolean} secure
+   * @param {boolean} secure
    *   If true, a secure socket will be created. This allows switching to a secure
    *   connection.
    * @param {Components.interfaces.nsIBadCertListener2} badCertHandler
@@ -375,8 +378,6 @@
    *
    * @returns {SieveAbstractClient}
    *   a self reference
-   *
-   * @abstract
    */
   SieveAbstractClient.prototype.connect
     = function (host, port, secure, badCertHandler, proxy) {
@@ -384,17 +385,30 @@
     };
 
   /**
+   * Cancels all pending request.
+   *
+   * @param {Error} [reason]
+   *   the optional reason why the request was canceled.
+   */
+  SieveAbstractClient.prototype.cancel
+    = function(reason) {
+
+      while (this.requests.length)
+        this.requests.shift().cancel(reason);
+    };
+
+  /**
    * Disconnets from the server.
    *
    * Need to be overwritten. The current implementation is a stub
    * which take care about stopping the timeouts.
-   *
-   * @abstract
    */
   SieveAbstractClient.prototype.disconnect
     = function () {
 
       this.getLogger().logState("Disconnecting " + this.host + ":" + this.port + "...");
+
+      this.cancel();
 
       // free requests...
       // this.requests = new Array();
@@ -403,14 +417,14 @@
     };
 
   SieveAbstractClient.prototype.onIdle
-    = function () {
+    = async function () {
 
       this.onStopIdle();
 
       this.getLogger().logState("libManageSieve/Sieve.js:\nOnIdle");
 
       if (this.listener && this.listener.onIdle)
-        this.listener.onIdle();
+        await this.listener.onIdle();
     };
 
   SieveAbstractClient.prototype.onTimeout
@@ -427,13 +441,13 @@
       while ((idx < this.requests.length) && (this.requests[idx].isGreedy))
         idx++;
 
-      // ... and cancel any active request. It will automatically invoke the ...
+      // ... and cancel the active request. It will automatically invoke the ...
       // ... request's onTimeout() listener.
       if (idx < this.requests.length) {
-        let request = this.requests[idx];
+        const request = this.requests[idx];
         this.requests.splice(0, idx + 1);
 
-        request.cancel();
+        request.cancel(new Error("Timeout"));
         return;
       }
 
@@ -456,7 +470,7 @@
       throw new Error("Implement SieveAbstractClient::createRequestBuilder");
     };
 
-  SieveAbstractClient.prototype.onDataReceived
+  SieveAbstractClient.prototype.onReceive
     = function (data) {
       // responses packets could be fragmented...
       if ((this.data === null) || (this.data.length === 0))
@@ -482,7 +496,7 @@
 
       while (idx + 1 < requests.length) {
         idx++;
-        let parser = this.createParser(this.data);
+        const parser = this.createParser(this.data);
 
         try {
           requests[idx].addResponse(parser);
@@ -525,7 +539,7 @@
         // Request is completed...
         if (!requests[0].hasNextRequest()) {
           // so remove it from the event queue.
-          let request = requests.shift();
+          const request = requests.shift();
           // and update the index
           idx--;
 
@@ -583,7 +597,7 @@
       // ... in case the socket is jammed...
       this.onStartTimeout();
 
-      let output = this.requests[idx].getNextRequest(this.createRequestBuilder()).getBytes();
+      const output = this.requests[idx].getNextRequest(this.createRequestBuilder()).getBytes();
 
       this.getLogger().logRequest("Client -> Server:\n" + output);
 
@@ -592,10 +606,22 @@
       return;
     };
 
+  /**
+   * Called everytime data is ready to send.
+   * @abstract
+   *
+   * @param {object} data
+   *   the data to send to the server.
+   */
+  SieveAbstractClient.prototype.onSend
+    = function (data) {
+      throw new Error(`Implement SieveAbstractClient::onSend(${data})`);
+    };
+
   SieveAbstractClient.prototype._lockMessageQueue
     = function () {
       this.queueLocked = true;
-      let requests = this.requests.concat();
+      const requests = this.requests.concat();
 
       this.requests = [];
 

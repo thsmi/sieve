@@ -16,18 +16,9 @@
   /* global $ */
 
   /**
-  * A poor mans I18n helper class which provides help to translate strings.
-  */
+   * A poor mans I18n helper class which provides help to translate strings.
+   */
   class SieveI18n {
-
-    /**
-     * Initializes the new i18n instance.
-     * @param {string} locale
-     *   the locale which should be used for translations.
-     * @constructor
-     */
-    SieveI18n() {
-    }
 
     /**
      * Sets the current locale. In case the locale is unknown an exception will be thrown.
@@ -69,7 +60,7 @@
      *   the tranlated string
      */
     getString(string) {
-      let value = this.strings[string];
+      const value = this.strings[string];
 
       if (typeof (value) === "undefined" || value === null)
         return string;

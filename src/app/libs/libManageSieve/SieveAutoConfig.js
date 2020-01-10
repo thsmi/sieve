@@ -9,17 +9,15 @@
 *   Thomas Schmid <schmid-thomas@gmx.net>
 */
 
-/* global window */
 
 (function (exports) {
-  // Enable Strict Mode
+
   "use strict";
 
   const SIEVE_PORT_NEW = 4190;
   const SIEVE_PORT_OLD = 2000;
 
   const { SieveLogger } = require("./SieveNodeLogger.js");
-  /* global require */
   const { Sieve } = require("./SieveNodeClient.js");
   const {
     /* SieveCapabilitiesRequest,
@@ -39,7 +37,6 @@
      *
      * @param {string} hostname
      *   the hostname or ip which should be tested
-     * @constructor
      */
     constructor(hostname) {
       this.hostname = hostname;
@@ -55,9 +52,8 @@
      *  the sieve port in case autodetect succeeds.
      */
     async detect() {
-      let ports = [SIEVE_PORT_NEW, SIEVE_PORT_OLD];
 
-      for (let port of ports)
+      for (const port of [SIEVE_PORT_NEW, SIEVE_PORT_OLD])
         if (await this.probe(port))
           return port;
 
@@ -73,12 +69,11 @@
      */
     async probe(port) {
 
-      let sieve = new Sieve(this.logger);
+      const sieve = new Sieve(this.logger);
 
+      return await new Promise((resolve) => {
 
-      return new Promise(async (resolve) => {
-
-        let listener = {
+        const listener = {
 
           onInitResponse: function () {
             resolve(true);
@@ -101,9 +96,9 @@
           }
         };
 
-        let request = new SieveInitRequest();
-        request.addErrorListener(listener);
-        request.addResponseListener(listener);
+        const request = new SieveInitRequest();
+        request.addErrorListener(listener.onError);
+        request.addResponseListener(listener.onInitResponse);
         sieve.addRequest(request);
 
         sieve.addListener(listener);

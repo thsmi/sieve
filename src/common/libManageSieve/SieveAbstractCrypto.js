@@ -66,7 +66,7 @@
         throw new Error("Parameter bytes is not a byte array");
 
       for (let i = 0; i < bytes.length; i++) {
-        let byte = String.fromCharCode(bytes[i]);
+        const byte = String.fromCharCode(bytes[i]);
         if (byte > MAX_CHAR_CODE)
           throw new Error("Byte Array Invalid: " + byte);
 
@@ -85,7 +85,7 @@
      *   the converted string in byte array representation
      */
     strToByteArray(str) {
-      let result = [];
+      const result = [];
 
       for (let i = 0; i < str.length; i++) {
         if (str.charCodeAt(i) > MAX_CHAR_CODE)
@@ -98,16 +98,17 @@
     }
 
     /**
-    * Calculates the HMAC keyed hash for the given algorithm.
-    *
-    * @param {byte[]} key
-    *   The key as octet string
-    * @param {byte[]|string} bytes
-    *   The input string as byte array or string
-    * @returns {byte[]}
-    *   the calculated HAMC keyed hash for the given input string. E.g. HMAC-SHA-1 hashes are
-    *   always always 20 octets long.
-    */
+     * Calculates the HMAC keyed hash for the given algorithm.
+     * @abstract
+     *
+     * @param {byte[]} key
+     *   The key as octet string
+     * @param {byte[]|string} bytes
+     *   The input string as byte array or string
+     * @returns {byte[]}
+     *   the calculated HAMC keyed hash for the given input string. E.g. HMAC-SHA-1 hashes are
+     *   always always 20 octets long.
+     */
     HMAC(key, bytes) {
       throw new Error("Implement HMAC Algorithm for " + this.name + " with key " + key + " and data " + bytes);
     }
@@ -115,6 +116,7 @@
 
     /**
      * Calculates the Hash for the given algorithm.
+     * @abstract
      *
      * @param {bytes[]|string} bytes
      *   The input string as byte array or string
@@ -172,7 +174,7 @@
 
       salt = this.HMAC(str, salt);
 
-      let hi = salt;
+      const hi = salt;
 
       while (--i) {
         salt = this.HMAC(str, salt);
@@ -185,7 +187,6 @@
     }
   }
 
-
   exports.SieveAbstractCrypto = SieveAbstractCrypto;
 
-})(module.exports);
+})(module.exports || this);

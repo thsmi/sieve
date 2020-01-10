@@ -36,6 +36,9 @@
      *   a self reference
      */
     addQuotedBase64(token) {
+      if (token === undefined || token === null)
+        throw new Error("Invalid token");
+
       this.addLiteral('"' + this.convertToBase64(token) + '"');
       return this;
     }

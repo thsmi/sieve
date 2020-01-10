@@ -46,6 +46,8 @@
     /**
      * Returns the authorization string.
      *
+     * @abstract
+     *
      * @returns {string}
      *   the authorization string
      */

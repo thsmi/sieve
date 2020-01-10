@@ -1,1 +1,0 @@
-<iframe class="tab-pane fade" role="tabpanel" aria-labelledby="home-tab" src="./ui/editor/editor.html"></iframe>

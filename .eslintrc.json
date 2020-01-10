@@ -16,13 +16,6 @@
         },
         "sourceType": "script"
     },
-    "settings": {
-        "jsdoc": {
-            "allowOverrideWithoutParam": true,
-            "allowImplementsWithoutParam": true,
-            "allowAugmentsExtendsWithoutParam": true
-        }
-    },
     "rules": {
         "array-callback-return": "error",
         "func-call-spacing": [
@@ -60,6 +53,8 @@
             "error",
             "always"
         ],
+        "prefer-const" :"warn",
+        "no-octal":"error",
         "no-octal-escape": "error",
         "no-new-wrappers": "error",
         "no-whitespace-before-property": "error",
@@ -73,6 +68,7 @@
         "no-multi-spaces": "error",
         "no-multi-str": "error",
         "no-new": "error",
+        "no-loop-func" : "warn",
         "no-lone-blocks": "error",
         "new-parens": "error",
         "eol-last": [
@@ -100,42 +96,57 @@
             "error",
             "that"
         ],
+        "no-constructor-return" : "error",
         "max-depth": "error",
         "eqeqeq": "error",
+        "no-class-assign" : "warn",
         "no-sequences": "error",
         "no-labels": "error",
         "no-label-var": "error",
         "consistent-return": "error",
         "no-use-before-define": "error",
         "no-else-return": "error",
-        "no-const-assign": "warn",
+        "no-empty-pattern" : "warn",
+        "no-const-assign": "error",
         "no-this-before-super": "warn",
+        "no-eq-null" : "warn",
+        "no-dupe-class-members" :"error",
         "no-undef": "warn",
         "no-unreachable": "warn",
         "no-unused-vars": [
             "warn",
             { "varsIgnorePattern": "EXPORTED_SYMBOLS" }
         ],
-        "constructor-super": "warn",
+        "constructor-super": "error",
         "valid-typeof": "warn",
         "no-alert": "warn",
         "no-magic-numbers": "warn",
         "no-throw-literal": "error",
         "require-await": "warn",
         "no-var": "warn",
+        "no-confusing-arrow": "error",
         "no-console": "off",
         "no-caller": "error",
         "no-eval": "error",
+        "no-extra-label" :"error",
+        "no-floating-decimal":"error",
         "no-extend-native": "error",
         "no-implied-eval": "error",
+        "no-global-assign": "warn",
+        "no-implicit-globals" :"warn",
         "no-iterator": "error",
         "no-proto": "error",
+        "no-redeclare" : "error",
         "no-return-assign": "error",
         "no-self-compare": "error",
+        "no-self-assign" : "error",
         "no-script-url": "error",
         "no-shadow":"warn",
+        "no-useless-catch":"warn",
+        "no-unused-labels":"error",
         "no-unmodified-loop-condition": "error",
         "no-useless-concat": "error",
+        "no-useless-escape":"error",
         "no-useless-call": "error",
         "no-void": "error",
         "no-with": "error",
@@ -150,24 +161,30 @@
         "no-multi-assign": "error",
         "no-tabs": "error",
         "no-useless-constructor": "error",
+        "require-atomic-updates": "warn",
         "semi": [
             "error",
             "always"
         ],
         "no-warning-comments" : "warn",
-        "arrow-body-style": [
-            "error",
-            "always"
-        ],
-        "arrow-parens": [
-            "error",
-            "always"
-        ],
+        "arrow-body-style": [ "error", "always" ],
+        "arrow-parens": ["error", "always" ],
+        "arrow-spacing": "error",
+
+        "jsdoc/require-jsdoc": ["error", {
+            "exemptEmptyFunctions":false,
+            "require": {
+                "ClassDeclaration" : true,
+                "ClassExpression" : true,
+                "FunctionDeclaration":true,
+                "MethodDefinition":true
+            }
+         }],
         "jsdoc/newline-after-description": 0,
         "jsdoc/valid-types": 1,
         "jsdoc/no-undefined-types": 0,
         "jsdoc/require-description-complete-sentence": 0,
-        "jsdoc/check-examples": 1,
+
         "jsdoc/check-param-names": 1,
         "jsdoc/check-tag-names": 1,
         "jsdoc/check-types": 1,
@@ -179,8 +196,11 @@
         "jsdoc/require-returns-type": 1,
         "jsdoc/require-returns-check": 1,
         "jsdoc/require-returns":1,
-        "jsdoc/require-description": 0,
+        "jsdoc/require-description": 1,
         "jsdoc/require-example": 0,
-        "jsdoc/require-hyphen-before-param-description": 0
+        "jsdoc/require-hyphen-before-param-description": 0,
+
+        "jsdoc/check-alignment": 1,
+        "jsdoc/check-examples": ["warn", {"paddedIndent": 4 }]
     }
 }

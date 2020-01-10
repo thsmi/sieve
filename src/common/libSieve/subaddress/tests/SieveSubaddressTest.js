@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -29,7 +29,7 @@
 
     suite.log("Parse Subaddress Example 1");
 
-    let script = ''
+    const script = ''
       + 'require ["envelope", "subaddress", "fileinto"];\r\n'
       + '\r\n'
       + '\r\n'

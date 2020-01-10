@@ -10,8 +10,6 @@
  *
  */
 
-/* global window:false */
-
 (function (exports) {
 
   "use strict";
@@ -25,9 +23,6 @@
   /* global SieveSimpleBoxUI */
   /* global SieveCreateDragHandler */
   /* global SieveTrashBoxUI*/
-
-  /* global console:false */
-  /* global document:false */
 
   /* global SieveGrammar */
 
@@ -48,7 +43,7 @@
    */
   function createMenuItem(action, flavour, docShell) {
 
-    let elm2 = (new SieveSimpleBoxUI(docShell));
+    const elm2 = (new SieveSimpleBoxUI(docShell));
     elm2.drag(new SieveCreateDragHandler());
     elm2.drag().flavour(flavour);
     elm2._elmType = action;
@@ -75,7 +70,7 @@
     // Yes it's a global object
     dom2 = new SieveDocument(SieveLexer, SieveDesigner);
 
-    let docShell = dom2;
+    const docShell = dom2;
     let key;
 
     let elm = $("#sivActions").empty();
@@ -120,7 +115,7 @@
    *
    * @param {string} script
    *   the sieve script which should be rendered
-   * @param {Object} [capabilities]
+   * @param {object} [capabilities]
    *   the capabilities which should be enabled
    *
    */
@@ -134,8 +129,8 @@
       // we need some magic here, the addon returns hashmap while
       // the new parser expects an iterable.
       if (!Array.isArray(capabilities)) {
-        let tmp = [];
-        for (let item in capabilities)
+        const tmp = [];
+        for (const item in capabilities)
           tmp.push(item);
 
         capabilities = tmp;
@@ -168,11 +163,11 @@
    *
    **/
   function collectRequires() {
-    let requires = {};
+    const requires = {};
 
     dom2.root().require(requires);
 
-    for (let i in requires)
+    for (const i in requires)
       alert(i);
   }
 
@@ -182,7 +177,7 @@
    **/
   function setCapabilities() {
 
-    let capabilities = [];
+    const capabilities = [];
 
     $("#debugcapabilities input:checked").each(function () {
       capabilities.push($(this).val());
@@ -212,7 +207,7 @@
 
     $("#debugcapabilities input:checkbox").prop('checked', false);
 
-    let capabilities = SieveLexer.capabilities();
+    const capabilities = SieveLexer.capabilities();
 
     $("#debugcapabilities input:checkbox").each(function () {
       if (capabilities.hasCapability($(this).val()))
@@ -260,7 +255,7 @@
       $("#draggable").val(ev.target.nodeName);
     });
 
-    let toolbarLeft = $('#toolbar').offset().left;
+    const toolbarLeft = $('#toolbar').offset().left;
 
     $(window).scroll(function () {
       $('#toolbar').css('left', toolbarLeft - $(window).scrollLeft());
@@ -328,8 +323,19 @@
     showInfoMessage(msg, "");
   }
 
+  /**
+   * Checks if the current script has changed
+   *
+   * @returns {boolean}
+   *   true in case the script changed otherwise false.
+   */
+  function hasChanged() {
+    return true;
+  }
+
   exports.onerror = errorhandler;
   exports.setSieveScript = setSieveScript;
   exports.getSieveScript = getSieveScript;
+  exports.hasChanged = hasChanged;
 
 })(window);

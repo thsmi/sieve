@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -58,7 +56,7 @@
 
     onEnvelopeChanged() {
 
-      let addresses = (new SieveStringListWidget("#sivAddresses")).items();
+      const addresses = (new SieveStringListWidget("#sivAddresses")).items();
       let text = "";
 
       addresses.each(function () {
@@ -126,7 +124,7 @@
         $("#sivVacationHandle").val(this.handle().value());
 
 
-      let addresses = (new SieveStringListWidget("#sivAddresses"))
+      const addresses = (new SieveStringListWidget("#sivAddresses"))
         .init();
 
       if (this.enable("addresses")) {
@@ -142,7 +140,7 @@
      */
     onSave() {
 
-      let state = {};
+      const state = {};
 
       // $("#myform input[type='radio']:checked").val();
 
@@ -152,7 +150,7 @@
       state["mime"] = ($("input[type='radio'][name='mime']:checked").val() === "true");
       state["handle"] = ($("input[type='radio'][name='handle']:checked").val() === "true");
 
-      let addresses = (new SieveStringListWidget("#sivAddresses")).values();
+      const addresses = (new SieveStringListWidget("#sivAddresses")).values();
       state["addresses"] = !!addresses.length;
 
       // TODO Catch exceptions...
@@ -253,7 +251,7 @@
 
       $("#txtVacationIntervalDays").focus(() => { $('#cbxVacationIntervalDays').prop('checked', true); });
 
-      let elm = sivElement.getElement("interval");
+      const elm = sivElement.getElement("interval");
 
       if (!elm.isNode(this.constructor.nodeName()))
         return;

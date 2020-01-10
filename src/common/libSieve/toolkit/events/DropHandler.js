@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function (exports) {
 
   "use strict";
@@ -137,9 +135,9 @@
     }
 
     onDrop(flavour, event) {
-      let dt = new SieveDataTransfer(event.originalEvent.dataTransfer);
+      const dt = new SieveDataTransfer(event.originalEvent.dataTransfer);
 
-      let meta = JSON.parse(dt.getData(flavour));
+      const meta = JSON.parse(dt.getData(flavour));
 
       switch (meta.action) {
         case "create":
@@ -182,7 +180,7 @@
     }
 
     onCanDrop(flavour, event) {
-      let dt = new SieveDataTransfer(event.originalEvent.dataTransfer);
+      const dt = new SieveDataTransfer(event.originalEvent.dataTransfer);
 
       let meta = dt.getData(flavour);
 
@@ -260,7 +258,7 @@
      * @inheritdoc
      */
     canMoveElement(sivFlavour, id) {
-      let source = this.document().id(id);
+      const source = this.document().id(id);
 
       if (source.html().parent().prev().get(0) == this.owner().html().get(0))
         return false;
@@ -274,7 +272,7 @@
     moveTest(source, target) {
 
       // Create a new Condition...
-      let newCondition = this.document().createByName("condition");
+      const newCondition = this.document().createByName("condition");
 
       // Find the if element which owns this test...
       let conditional = source;
@@ -309,7 +307,7 @@
     moveAction(source, target) {
 
       // remember owner
-      let oldOwner = source.remove(true, target);
+      const oldOwner = source.remove(true, target);
       // Move Item to new owner
       target.append(source, this.sibling());
 
@@ -319,11 +317,11 @@
     }
 
     moveElement(sivFlavour, id) {
-      let source = this.document().id(id);
+      const source = this.document().id(id);
       if (!source)
         throw new Error("Block Drop Handler: No Element found for " + id);
 
-      let target = this.parent().getSieve();
+      const target = this.parent().getSieve();
       if (!target)
         throw new Error("Block Drop Handler: No Element found for " + this.parent().id());
 
@@ -353,7 +351,7 @@
 
     createElement(sivFlavour, type) {
 
-      let item = this.parent().getSieve();
+      const item = this.parent().getSieve();
 
       if (!item)
         throw new Error("Element " + this.parent().getSieve().id() + " not found");
@@ -472,7 +470,7 @@
 
       // ... if the last element has no test, it's an else statement...
       // ... and it's not possible to add anything...
-      let target = this.parent().getSieve();
+      const target = this.parent().getSieve();
       if (!target)
         return false;
 
@@ -485,11 +483,11 @@
     moveElement(flavour, id) {
       let oldOwner;
 
-      let source = this.document().id(id);
+      const source = this.document().id(id);
       if (!source)
         throw new Error("Block Drop Handler: No Element found for " + id);
 
-      let target = this.parent().getSieve();
+      const target = this.parent().getSieve();
       if (!target)
         throw new Error("Block Drop Handler: No Element found for " + this.parent().id());
 
@@ -557,7 +555,7 @@
 
       // ... if the last element has no test, it's an else statement...
       // ... and it's not possible to add anything...
-      let target = this.parent().getSieve();
+      const target = this.parent().getSieve();
       if (!target)
         return false;
 
@@ -569,7 +567,7 @@
 
     createElement(sivFlavour, type) {
       // The new home for our element
-      let item = this.parent().getSieve();
+      const item = this.parent().getSieve();
       let elm = null;
 
       if (!item)
@@ -647,12 +645,12 @@
     }
 
     moveElement(sivFlavour, id) {
-      let source = this.document().id(id);
+      const source = this.document().id(id);
       if (!source)
         throw new Error("Test Drop Handler: No Element found for " + id);
 
       // The new home for our element
-      let target = this.owner().getSieve();
+      const target = this.owner().getSieve();
 
       if (!target)
         throw new Error("Element " + this.owner().id() + " not found");
@@ -663,8 +661,8 @@
         conditional = conditional.parent();
 
       // Wrap test into new test
-      let outer = target.parent();
-      let inner = this.document().createByName("operator/anyof");
+      const outer = target.parent();
+      const inner = this.document().createByName("operator/anyof");
 
       target.parent(null);
 
@@ -714,12 +712,12 @@
 
     createElement(sivFlavour, type) {
       // The new home for our element
-      let inner = this.owner().getSieve();
+      const inner = this.owner().getSieve();
 
       if (!inner)
         throw new Error("Element " + this.owner().id() + " not found");
 
-      let container = inner.parent();
+      const container = inner.parent();
       let test = null;
 
       if (sivFlavour === "sieve/test") {
@@ -728,7 +726,7 @@
       }
 
 
-      let outer = inner.document().createByName(type);
+      const outer = inner.document().createByName(type);
       // share the same source...
       if (outer.parent())
         throw new Error("wrap already bound to " + outer.parent().id());
@@ -779,7 +777,7 @@
       if (!target)
         return false;
 
-      let source = target.document().id(id);
+      const source = target.document().id(id);
       if (!source)
         return false;
 
@@ -801,12 +799,12 @@
     }
 
     moveElement(sivFlavour, id) {
-      let target = this.parent().getSieve();
+      const target = this.parent().getSieve();
 
       if (!target)
         throw new Error("Element " + this.parent().getSieve().id() + " not found");
 
-      let source = this.document().id(id);
+      const source = this.document().id(id);
       if (!source)
         throw new Error("Block Drop Handler: No Element found for " + id);
 
@@ -856,12 +854,12 @@
     }
 
     createElement(sivFlavour, type) {
-      let item = this.parent().getSieve();
+      const item = this.parent().getSieve();
 
       if (!item)
         throw new Error("Element " + this.parent().getSieve().id() + " not found");
 
-      let elm = item.document().createByName(type);
+      const elm = item.document().createByName(type);
 
       item.append(elm, this.sibling());
       item.widget().reflow();

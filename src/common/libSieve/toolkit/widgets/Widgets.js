@@ -55,7 +55,7 @@
      */
     isEmpty() {
 
-      for (let item of this.values()) {
+      for (const item of this.values()) {
         if (item.trim() !== "")
           continue;
 
@@ -96,7 +96,7 @@
 
       // connect the drop down menu...
       if (this._hasDropDown()) {
-        let elm = $($(this._selector).attr("data-list-dropdown")).children().first().clone();
+        const elm = $($(this._selector).attr("data-list-dropdown")).children().first().clone();
 
         item.find(".sieve-stringlist-dropdown").removeClass("d-none");
         item.find(".sieve-stringlist-dropdown").before(elm);
@@ -136,13 +136,16 @@
      *
      * @param {string} [value]
      *   the value which should be added. If omitted an empty string is added.
+     *
+     * @returns {SieveStringListWidget}
+     *   a self reference
      */
     addItem(value) {
 
       if (typeof (value) === "undefined" || value === null)
         value = "";
 
-      let item = $("<div/>");
+      const item = $("<div/>");
 
       $(this._selector)
         .find(".sieve-stringlist-items")
@@ -167,10 +170,10 @@
 
       $(this._selector).empty();
 
-      let items = $("<div/>")
+      const items = $("<div/>")
         .addClass("sieve-stringlist-items");
 
-      let controls = $("<div/>")
+      const controls = $("<div/>")
         .addClass("sieve-stringlist-control");
 
       $(this._selector)
@@ -214,7 +217,7 @@
      *   the input elements.
      */
     items() {
-      let id = this._selector;
+      const id = this._selector;
 
       return $(id + " input[type='text']," + id + " input[type='email']");
     }
@@ -242,7 +245,7 @@
       }
 
       // Convert the items into a string array...
-      let result = [];
+      const result = [];
 
       this.items().each(function () {
         result.push($(this).val());
@@ -277,9 +280,9 @@
      *
      */
     initWidgets(sivElement) {
-      let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+      const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
 
-      for (let widget of widgets)
+      for (const widget of widgets)
         widget.init(sivElement);
     }
 
@@ -306,8 +309,8 @@
      */
     save(sivElement) {
 
-      let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
-      for (let widget of widgets)
+      const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+      for (const widget of widgets)
         widget.save(sivElement);
     }
   }
@@ -326,6 +329,7 @@
     }
 
     /**
+     * @abstract
      * @returns {string}
      *   the element's node type as string
      */
@@ -334,6 +338,7 @@
     }
 
     /**
+     * @abstract
      * @returns {string}
      *   the elements node name as string
      */
@@ -353,6 +358,8 @@
      * The radio groups unique name
      * @returns {string}
      *   the name as string
+     *
+     * @abstract
      */
     getName() {
       throw new Error("Implement getName()");
@@ -363,6 +370,7 @@
      * Returns the URL to the html template.
      * @returns {string}
      *   the url which points to the template
+     *
      * @abstract
      */
     getTemplate() {
@@ -386,17 +394,17 @@
      *   optional callback invoked when the element is fully initialized
      */
     init(sivElement, onInitialized) {
-      let that = this;
+      const that = this;
 
       // We need here some to make mozilla happy.
       // it is no more possible to load fragments from chrome urls
 
-      let xhr = new XMLHttpRequest();
+      const xhr = new XMLHttpRequest();
       xhr.onload = function () {
 
-        let item = this.responseXML.querySelector("#test42");
+        const item = this.responseXML.querySelector("#test42");
 
-        let div = document.createElement("div");
+        const div = document.createElement("div");
         div.innerHTML = item.innerHTML;
 
         div.setAttribute("data-nodename", that.constructor.nodeName());
@@ -474,8 +482,8 @@
      *
      */
     select() {
-      let menuElement = this.getMenuItem();
-      let activeElement = this.getActiveItem();
+      const menuElement = this.getMenuItem();
+      const activeElement = this.getActiveItem();
 
       activeElement
         .html(menuElement.html())
@@ -504,7 +512,7 @@
      */
     load(sivElement) {
 
-      let element = this.getMenuItem();
+      const element = this.getMenuItem();
       element.click(() => { this.select(); });
 
       if (this.constructor.nodeName() !== sivElement.getElement().nodeName())
@@ -517,7 +525,7 @@
      * @inheritdoc
      */
     save(sivElement) {
-      let item = this.getActiveItem();
+      const item = this.getActiveItem();
 
       if (item.attr("data-nodename") !== this.constructor.nodeName())
         return;
@@ -559,9 +567,9 @@
      *
      */
     init(sivElement) {
-      let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+      const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
 
-      for (let widget of widgets)
+      for (const widget of widgets)
         widget.init(sivElement);
     }
 
@@ -573,8 +581,8 @@
      */
     save(sivElement) {
 
-      let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
-      for (let widget of widgets)
+      const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+      for (const widget of widgets)
         widget.save(sivElement);
     }
   }
@@ -631,7 +639,7 @@
      * @inheritdoc
      */
     save(sivElement) {
-      let item = this.getRadioItem();
+      const item = this.getRadioItem();
 
       if (item.find("input[name='" + this.getName() + "']:checked").length !== 1)
         return;
@@ -674,9 +682,9 @@
      *   optional callback, invoked when a widget is fully initialized
      */
     init(sivElement, onInitialized) {
-      let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+      const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
 
-      for (let widget of widgets)
+      for (const widget of widgets)
         widget.init(sivElement, onInitialized);
     }
 
@@ -687,9 +695,9 @@
      *
      */
     save(sivElement) {
-      let widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
+      const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
 
-      for (let widget of widgets)
+      for (const widget of widgets)
         widget.save(sivElement);
     }
   }
@@ -749,21 +757,21 @@
      *   the initial value
      */
     onInitialized(value) {
-      let that = this;
+      const that = this;
 
       this.setValue(value);
 
       if (!this._hasDropDown())
         return;
 
-      let elm = $($(this._selector).attr("data-list-dropdown")).children().first().clone();
+      const elm = $($(this._selector).attr("data-list-dropdown")).children().first().clone();
 
       $(this._selector)
         .find(".sieve-string-dropdown")
         .removeClass("d-none")
         .before(elm);
 
-      let items = $(this._selector)
+      const items = $(this._selector)
         .find(".dropdown-item");
 
       items
@@ -773,14 +781,14 @@
 
       $.each(items, (index, menuitem) => {
 
-        let updatables = $(menuitem).find(".sieve-string-dropdown-updateable");
+        const updatables = $(menuitem).find(".sieve-string-dropdown-updateable");
 
         if (!updatables.length)
           return;
 
         updatables.on("input change", (event) => {
 
-          let somevalue = event.target.value;
+          const somevalue = event.target.value;
 
           if (event.target.hasAttribute("data-update-element"))
             $(menuitem).find(event.target.getAttribute("data-update-element")).text(somevalue);
@@ -874,10 +882,10 @@
       $(this._selector).find(".sieve-numeric-value").val(value);
       this.onUnitChanged(unit);
 
-      let items = $(this._selector)
+      const items = $(this._selector)
         .find(".dropdown-item");
 
-      let that = this;
+      const that = this;
       items.click(function () {
         that.onUnitChanged($(this).attr("data-value"));
       });
@@ -895,8 +903,8 @@
       if (sivElement.nodeName() !== "number")
         throw new Error("Expected a number but got " + sivElement.nodeName());
 
-      let value = sivElement.getValue();
-      let unit = sivElement.getUnit();
+      const value = sivElement.getValue();
+      const unit = sivElement.getUnit();
 
       $(this._selector).load("./toolkit/templates/SieveNumericWidget.html #template", () => {
         this.onInitialized(value, unit);

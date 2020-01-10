@@ -10,9 +10,6 @@
  *
  */
 
-/* global window */
-
-
 (function () {
 
   "use strict";
@@ -281,7 +278,7 @@
      *   any meta information. Otherwise false
      */
     isDeadCode() {
-      for (let key in this.elements)
+      for (const key in this.elements)
         if (this.elements[key].nodeType !== "whitespace/")
           return false;
 
@@ -330,7 +327,7 @@
      */
     toScript() {
       let result = "";
-      for (let key in this.elements)
+      for (const key in this.elements)
         result += this.elements[key].toScript();
 
       return result;

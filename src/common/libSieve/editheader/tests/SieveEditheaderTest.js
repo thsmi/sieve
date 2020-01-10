@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -29,7 +29,7 @@
 
     suite.log("RFC5293 Sniplet I");
 
-    let script = ""
+    const script = ""
       + 'require ["editheader"];\r\n'
       // FIXME:
       // + '// Don\'t redirect if we already redirected\r\n'
@@ -47,7 +47,7 @@
 
     suite.log("RFC5293 Sniplet II");
 
-    let script = ""
+    const script = ""
       + 'require ["editheader"];\r\n'
       + 'addheader "X-Hello" "World";\r\n'
       + 'deleteheader :index 1 "X-Hello";\r\n';
@@ -59,7 +59,7 @@
 
     suite.log("RFC5293 Sniplet III");
 
-    let script = ""
+    const script = ""
       + 'require ["editheader"];\r\n'
       + 'deleteheader :index 1 "X-Hello";\r\n'
       + 'deleteheader :index 2 "X-Hello";\r\n';
@@ -71,7 +71,7 @@
 
     suite.log("RFC5293 Sniplet IV");
 
-    let script = ""
+    const script = ""
       + 'require ["editheader", "fileinto"];\r\n'
       + 'addheader "X-Hello" "World";\r\n'
       + 'if header :contains "X-Hello" "World"\r\n'
@@ -86,7 +86,7 @@
 
     suite.log("RFC5293 Sniplet V");
 
-    let script = ""
+    const script = ""
       + 'require ["editheader"];\r\n'
       + 'keep;\r\n'
       + 'addheader "X-Flavor" "vanilla";\r\n'
@@ -99,7 +99,7 @@
 
     suite.log("RFC5293 Sniplet VI");
 
-    let script = ""
+    const script = ""
       + 'require ["editheader"];\r\n'
       + 'deleteheader :index 1 :contains "Delivered-To"\r\n'
       + '                        "bob@example.com";\r\n';

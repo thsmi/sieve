@@ -19,7 +19,7 @@
     throw new Error("Could not register Variables");
 
   // set [MODIFIER] <name: string> <value: string>
-  let _set = {
+  const _set = {
     node: "action/set",
     type: "action",
 
@@ -65,7 +65,7 @@
   //    Usage:  string [MATCH-TYPE] [COMPARATOR]
   //           <source: string-list> <key-list: string-list>
 
-  let _string = {
+  const _string = {
     node: "test/string",
     type: "test",
 
@@ -102,7 +102,7 @@
   SieveGrammar.addTest(_string);
 
 
-  let _lower = {
+  const _lower = {
     node: "modifier/40/lower",
     type: "modifier/40/",
 
@@ -112,7 +112,7 @@
   };
   SieveGrammar.addTag(_lower);
 
-  let _upper = {
+  const _upper = {
     node: "modifier/40/upper",
     type: "modifier/40/",
 
@@ -122,7 +122,7 @@
   };
   SieveGrammar.addTag(_upper);
 
-  let _modifier40 = {
+  const _modifier40 = {
     node: "modifier/40",
     type: "modifier/",
 
@@ -132,7 +132,7 @@
   SieveGrammar.addGroup(_modifier40);
 
 
-  let _lowerfirst = {
+  const _lowerfirst = {
     node: "modifier/30/lowerfirst",
     type: "modifier/30/",
 
@@ -142,7 +142,7 @@
   };
   SieveGrammar.addTag(_lowerfirst);
 
-  let _upperfirst = {
+  const _upperfirst = {
     node: "modifier/30/upperfirst",
     type: "modifier/30/",
 
@@ -152,7 +152,7 @@
   };
   SieveGrammar.addTag(_upperfirst);
 
-  let _modifier30 = {
+  const _modifier30 = {
     node: "modifier/30",
     type: "modifier/",
 

@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -22,7 +20,7 @@
     throw new Error("Could not register Mailbox");
 
   // fileinto [:create] <mailbox: string>
-  let create = {
+  const create = {
     node: "action/fileinto/create",
     type: "action/fileinto/",
 
@@ -33,7 +31,7 @@
 
   SieveGrammar.addTag(create);
 
-  let fileinto = {
+  const fileinto = {
     extends: "action/fileinto",
 
     properties: [{
@@ -52,7 +50,7 @@
 
 
   // mailboxexists <mailbox-names: string-list>
-  let mailboxexists = {
+  const mailboxexists = {
     node: "test/mailboxexists",
     type: "test",
 
@@ -74,7 +72,7 @@
   SieveGrammar.addTest(mailboxexists);
 
   // metadataexists <mailbox: string> <annotation-names: string-list>
-  let metadataexists = {
+  const metadataexists = {
     node: "test/metadataexists",
     type: "test",
 
@@ -113,7 +111,7 @@
    * The default matchtype is :is and the default comparator is "i;ascii-casemap"
    */
 
-  let metadata = {
+  const metadata = {
     node: "test/metadata",
     type: "test",
 
@@ -158,7 +156,7 @@
   SieveGrammar.addTest(metadata);
 
   // servermetadataexists <annotation-names: string-list>
-  let servermetadataexists = {
+  const servermetadataexists = {
     node: "test/servermetadataexists",
     type: "test",
 
@@ -181,7 +179,7 @@
   SieveGrammar.addTest(servermetadataexists);
 
   // servermetadata [MATCH-TYPE] [COMPARATOR] <annotation-name: string> <key-list: string-list>
-  let servermetadata = {
+  const servermetadata = {
     node: "test/servermetadata",
     type: "test",
 

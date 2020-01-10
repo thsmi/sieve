@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -29,7 +29,7 @@
 
     suite.log("Extended Example test");
 
-    let script =
+    const script =
       'require ["relational", "comparator-i;ascii-numeric", "fileinto"];\r\n'
       + '\r\n'
       + 'if header :comparator "i;ascii-numeric" :value "lt" \r\n'
@@ -69,7 +69,7 @@
 
     suite.log("Invalid operator");
 
-    let script =
+    const script =
       'require ["relational"];\r\n'
       + '\r\n'
       + 'if address :all :comparator "i;ascii-casemap" :value "egt" \r\n'
@@ -85,7 +85,7 @@
 
     suite.log("Missing operator");
 
-    let script =
+    const script =
       'require ["relational"];\r\n'
       + '\r\n'
       + 'if address :all :comparator "i;ascii-casemap" :value \r\n'
@@ -101,14 +101,14 @@
   suite.add(function () {
     suite.log("Validate :value constructors");
 
-    let snipplet = ':value "eq"';
+    const snipplet = ':value "eq"';
     suite.expectValidSnipplet("match-type/value", snipplet, ["relational"]);
   });
 
   suite.add(function () {
     suite.log("Validate :count constructors");
 
-    let snipplet = ':count "eq"';
+    const snipplet = ':count "eq"';
     suite.expectValidSnipplet("match-type/count", snipplet, ["relational"]);
   });
 

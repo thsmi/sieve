@@ -10,9 +10,6 @@
  *
  */
 
-/* global window */
-
-
 (function (exports) {
   "use strict";
 
@@ -73,6 +70,8 @@
 
   /**
    * Initializes this element with the given data
+   * @abstract
+   *
    * @param {SieveParser} data
    *  the data which is used to initialize the element
    * @returns {SieveAbstractElement}
@@ -187,7 +186,7 @@
       if ((stop) && (this.id() === stop.id()))
         cascade = false;
       // ...and remove this node
-      let elm = this._parent.removeChild(this._id, cascade, stop);
+      const elm = this._parent.removeChild(this._id, cascade, stop);
 
       if ((!cascade) && (elm.id() !== this._id))
         throw new Error("Could not remove Node");

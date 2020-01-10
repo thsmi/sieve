@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -29,7 +29,7 @@
 
     suite.log("Example 0 (Spamtest)");
 
-    let script = ''
+    const script = ''
       + 'require ["spamtest", "fileinto"];\r\n'
       + '\r\n'
       + 'if spamtest  "0"\r\n'
@@ -48,7 +48,7 @@
 
     suite.log("Example 0 (Spamtestplus)");
 
-    let script = ''
+    const script = ''
       + 'require ["spamtestplus", "fileinto"];\r\n'
       + '\r\n'
       + 'if spamtest  "0"\r\n'
@@ -68,7 +68,7 @@
 
     suite.log("Example 1");
 
-    let script = ''
+    const script = ''
       + 'require ["spamtestplus", "fileinto", "relational", "comparator-i;ascii-numeric"];\r\n'
       + '\r\n'
       + 'if spamtest :value "eq" :comparator "i;ascii-numeric" "0"\r\n'
@@ -101,7 +101,7 @@
 
     suite.log("Example 2");
 
-    let script = ''
+    const script = ''
       + 'require ["spamtest", "fileinto", "relational", "comparator-i;ascii-numeric"];\r\n'
       + '\r\n'
       + 'if spamtest :value "eq" :comparator "i;ascii-numeric" "0"\r\n'
@@ -121,7 +121,7 @@
 
     suite.log("Example 3");
 
-    let script = ''
+    const script = ''
       + 'require ["spamtestplus", "fileinto", "relational", "comparator-i;ascii-numeric"];\r\n'
       + 'if spamtest :percent :count "eq"\r\n'
       + '            :comparator "i;ascii-numeric" "0"\r\n'
@@ -151,7 +151,7 @@
 
     suite.log("Example 4");
 
-    let script = ''
+    const script = ''
       + 'require ["virustest", "fileinto", "relational", "comparator-i;ascii-numeric"];\r\n'
       + '\r\n'
       + 'if virustest :value "eq" :comparator "i;ascii-numeric" "0"\r\n'

@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -29,7 +29,7 @@
   suite.add(function () {
     suite.log("Parse :regex match-type with single import");
 
-    let script =
+    const script =
       'require "regex";\r\n'
       + 'if header :regex "Sender" "owner-ietf-mta-filters@imc.org" \r\n'
       + '{\r\n'
@@ -43,7 +43,7 @@
 
     suite.log("Parse :regex match-type with multiple import");
 
-    let script =
+    const script =
       'require ["regex", "fileinto"];\r\n'
       + 'if address :comparator "i;ascii-casemap" :regex ["to", "cc"] "j(i|la).*@mydomain.com"\r\n'
       + '{\r\n'

@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -22,7 +20,7 @@
     throw new Error("Could not register copy");
 
   // "fileinto" [":copy"] <folder: string>
-  let fileintocopy = {
+  const fileintocopy = {
     node: "action/fileinto/copy",
     type: "action/fileinto/",
 
@@ -33,7 +31,7 @@
 
   SieveGrammar.addTag(fileintocopy);
 
-  let fileinto = {
+  const fileinto = {
     extends: "action/fileinto",
 
     properties: [{
@@ -51,7 +49,7 @@
   SieveGrammar.extendAction(fileinto);
 
   // "redirect" [":copy"] <address: string>
-  let redirectcopy = {
+  const redirectcopy = {
     node: "action/redirect/copy",
     type: "action/redirect/",
 
@@ -62,7 +60,7 @@
 
   SieveGrammar.addTag(redirectcopy);
 
-  let redirect = {
+  const redirect = {
     extends: "action/redirect",
 
     properties: [{

@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -97,7 +95,7 @@
      */
     onSave() {
 
-      let address = $("#sivRedirectAddress");
+      const address = $("#sivRedirectAddress");
 
       if (address.get(DOM_ELEMENT).checkValidity() === false)
         return false;
@@ -158,9 +156,9 @@
      */
     onSave() {
 
-      let path = $("#sivFileIntoPath");
+      const path = $("#sivFileIntoPath");
 
-      let value = path.val();
+      const value = path.val();
       if (value.trim() === "") {
         path.addClass("is-invalid");
         return false;

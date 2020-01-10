@@ -10,9 +10,6 @@
  *
  */
 
-/* global window */
-
-
 (function () {
 
   "use strict";
@@ -22,7 +19,7 @@
   if (!SieveGrammar)
     throw new Error("Could not register AddressParts");
 
-  let userpart = {
+  const userpart = {
     node: "address-part/user",
     type: "address-part/",
 
@@ -34,7 +31,7 @@
   SieveGrammar.addTag(userpart);
 
 
-  let detailpart = {
+  const detailpart = {
     node: "address-part/detail",
     type: "address-part/",
 

@@ -17,7 +17,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -29,7 +29,7 @@
   suite.add(function () {
     suite.log("Testing fileinto :create");
 
-    let script = ""
+    const script = ""
       + 'require "fileinto";\r\n'
       + 'require "mailbox";\r\n'
       + '\r\n'
@@ -43,7 +43,7 @@
   suite.add(function () {
     suite.log("Testing mailboxexists");
 
-    let script = ""
+    const script = ""
       + 'require ["fileinto", "mailbox"];\r\n'
       + 'if mailboxexists "Partners" {\r\n'
       + '   fileinto "Partners";\r\n'
@@ -57,7 +57,7 @@
   suite.add(function () {
     suite.log("Testing metadataexists");
 
-    let script = ""
+    const script = ""
       + 'require ["mboxmetadata"];\r\n'
       + '\r\n'
       + 'if metadataexists "mailbox" "annotations" {\r\n'
@@ -70,7 +70,7 @@
   suite.add(function () {
     suite.log("Testing metadata");
 
-    let script = ""
+    const script = ""
       + 'require ["mboxmetadata"];\r\n'
       + '\r\n'
       + 'if metadata :is "INBOX"\r\n'
@@ -90,7 +90,7 @@
   suite.add(function () {
     suite.log("Testing servermetadataexists");
 
-    let script = ""
+    const script = ""
       + 'require ["servermetadata"];\r\n'
       + '\r\n'
       + 'if servermetadataexists "test" {\r\n'
@@ -102,7 +102,7 @@
   suite.add(function () {
     suite.log("Testing servermetadata");
 
-    let script = ""
+    const script = ""
       + 'require ["servermetadata"];\r\n'
       + '\r\n'
       + 'if servermetadata :matches\r\n'

@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -105,7 +103,7 @@
       $("#txtUniqueId").focus(() => { $('#cbxUniqueId').prop('checked', true); });
       $("#txtUniqueId").val("");
 
-      let elm = sivElement.getElement("unique");
+      const elm = sivElement.getElement("unique");
 
       if (!elm.isNode(this.constructor.nodeName()))
         return;
@@ -122,7 +120,7 @@
       if (!$("#cbxUniqueId").prop("checked"))
         return;
 
-      let elm = sivElement.getElement("unique");
+      const elm = sivElement.getElement("unique");
 
       if (!elm.isNode(this.constructor.nodeName())) {
         elm.setElement(':uniqueid ""');
@@ -159,7 +157,7 @@
       $("#txtUniqueHeader").focus(() => { $('#cbxUniqueHeader').prop('checked', true); });
       $("#txtUniqueHeader").val("");
 
-      let elm = sivElement.getElement("unique");
+      const elm = sivElement.getElement("unique");
 
       if (!elm.isNode(this.constructor.nodeName()))
         return;
@@ -176,7 +174,7 @@
       if (!$("#cbxUniqueHeader").prop("checked"))
         return;
 
-      let elm = sivElement.getElement("unique");
+      const elm = sivElement.getElement("unique");
 
       if (!elm.isNode(this.constructor.nodeName())) {
         elm.setElement(':header ""');
@@ -191,8 +189,7 @@
   /**
    * Implements a control for editing a duplicate test
    *
-   * @constructor
-   * @param {Object} elm - The sieve element which should be rendered.
+   * @param {object} elm - The sieve element which should be rendered.
    */
   class SieveDuplicateUI extends SieveTestDialogBoxUI {
 
@@ -286,7 +283,7 @@
       (new SieveOverlayWidget("test/duplicate/unique/", "#sivUnique"))
         .save(this.getSieve());
 
-      let state = {};
+      const state = {};
       state["handle"] = ($("input[type='radio'][name='sieve-duplicate-handle']:checked").val() === "true");
       state["seconds"] = ($("input[type='radio'][name='sieve-duplicate-seconds']:checked").val() === "true");
       state["last"] = ($("input[type='radio'][name='sieve-duplicate-last']:checked").val() === "true");

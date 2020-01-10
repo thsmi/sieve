@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -29,7 +29,7 @@
 
     suite.log("RFC 3894 - Example I");
 
-    let script = ""
+    const script = ""
       + 'require ["copy", "fileinto"];\r\n'
       + 'fileinto :copy "incoming";\r\n';
 
@@ -40,7 +40,7 @@
 
     suite.log("RFC 3894 - Example Ia");
 
-    let script = ""
+    const script = ""
       + 'require ["fileinto"];\r\n'
       + 'fileinto :copy "incoming";\r\n';
 

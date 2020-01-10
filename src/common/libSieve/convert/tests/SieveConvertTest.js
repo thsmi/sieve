@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -29,7 +29,7 @@
 
     suite.log("RFC 6558 - Example I");
 
-    let script = ""
+    const script = ""
       + 'require ["convert"];\r\n'
       + 'convert "image/tiff" "image/jpeg" ["pix-x=320","pix-y=240"];\r\n';
 
@@ -40,7 +40,7 @@
 
     suite.log("RFC 6558 - Example 2");
 
-    let script = ""
+    const script = ""
       + 'require ["fileinto", "convert"];\r\n'
       // + 'require ["mime", "fileinto", "convert"];\r\n'
       // + 'if header :mime :anychild :contenttype\r\n'

@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -21,7 +19,7 @@
   if (!SieveGrammar)
     throw new Error("Could not register Reject Grammar");
 
-  let reject = {
+  const reject = {
     node: "action/reject",
     type: "action",
     token: "reject",
@@ -42,7 +40,7 @@
   SieveGrammar.addAction(reject);
 
 
-  let ereject = {
+  const ereject = {
     node: "action/ereject",
     type: "action",
     token: "ereject",

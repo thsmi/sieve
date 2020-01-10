@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -21,7 +19,7 @@
   if (!SieveGrammar)
     throw new Error("Could not register Include Grammar");
 
-  let _return = {
+  const _return = {
     node: "action/return",
     type: "action",
     token: "return",
@@ -32,7 +30,7 @@
   SieveGrammar.addAction(_return);
 
 
-  let _global = {
+  const _global = {
     node: "action/global",
     type: "action",
     token: "global",
@@ -54,7 +52,7 @@
   SieveGrammar.addAction(_global);
 
 
-  let _once = {
+  const _once = {
     node: "action/include/once",
     type: "action/include/once",
 
@@ -66,7 +64,7 @@
   SieveGrammar.addTag(_once);
 
 
-  let _optional = {
+  const _optional = {
     node: "action/include/optional",
     type: "action/include/optional",
 
@@ -78,7 +76,7 @@
   SieveGrammar.addTag(_optional);
 
 
-  let globallocation = {
+  const globallocation = {
     node: "tag/location-type/global",
     type: "tag/location-type/",
 
@@ -88,7 +86,7 @@
   SieveGrammar.addTag(globallocation);
 
 
-  let personallocation = {
+  const personallocation = {
     node: "tag/location-type/personal",
     type: "tag/location-type/",
 
@@ -108,7 +106,7 @@
   });
 
 
-  let _include = {
+  const _include = {
     node: "action/include",
     type: "action",
 

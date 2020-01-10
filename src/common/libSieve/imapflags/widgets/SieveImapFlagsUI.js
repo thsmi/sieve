@@ -10,7 +10,6 @@
  *
  */
 
-/* global window */
 
 (function () {
 

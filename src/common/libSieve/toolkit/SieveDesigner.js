@@ -10,9 +10,6 @@
  *
  */
 
-/* global window */
-
-
 (function (exports) {
 
   "use strict";
@@ -25,7 +22,7 @@
    *
    * Widgest can register on rendering Elements.
    */
-  let SieveDesigner =
+  const SieveDesigner =
     {
       names: {},
       types: {},
@@ -34,7 +31,7 @@
        * Registers a widget. A widget needs to be a prototype/class
        * with a static nodeName() and nodeType() method.
        *
-       * @param {Object} callback
+       * @param {object} callback
        *   the constructor which should be called in case the widget needs
        *   to be constructed.
        * @throws throws an exception in case the callback is invalid
@@ -45,17 +42,17 @@
         if (!callback.nodeType)
           throw new Error("Designer Error: Registration failed, element has no type");
 
-        let type = callback.nodeType();
+        const type = callback.nodeType();
 
         if (!callback.nodeName)
           throw new Error("Designer Error: Registration failed, element has no name");
 
-        let name = callback.nodeName();
+        const name = callback.nodeName();
 
         if (typeof (this.types[type]) === 'undefined')
           this.types[type] = {};
 
-        let obj = {};
+        const obj = {};
         obj.onNew = function (id) { return new callback(id); };
         obj.onCapable = (capabilities) => {
           if (callback.isCapable)
@@ -71,12 +68,12 @@
 
       getWidgetsByClass: function (clazz, id) {
 
-        let widgets = [];
+        const widgets = [];
 
-        let tmp = this.types[clazz];
-        let capabilities = SieveLexer.capabilities();
+        const tmp = this.types[clazz];
+        const capabilities = SieveLexer.capabilities();
 
-        for (let item in tmp) {
+        for (const item in tmp) {
           if (tmp[item].onCapable(capabilities))
             widgets.push(tmp[item].onNew(id));
         }
@@ -89,7 +86,7 @@
         if (!elm.nodeName || !elm.nodeName())
           throw new Error("Layout Engine Error: Element has no name");
 
-        let name = elm.nodeName();
+        const name = elm.nodeName();
 
         if (!this.names[name])
           return null;
@@ -129,14 +126,11 @@
        *
        * @param {SieveAbstractElement} elm
        *   the sieve element for which the widget should be returned.
-       * @returns {Object} the widget
+       * @returns {object} the widget
        */
       widget: function (elm) {
         return this.getWidgetByElement(elm);
       }
-
-      // TODO implement  method do toggle if element should be displayed or not
-
     };
 
   exports.SieveDesigner = SieveDesigner;

@@ -10,7 +10,6 @@
  *
  */
 
-/* global window */
 /* global SieveCapabilities */
 
 (function (exports) {
@@ -21,7 +20,7 @@
 
   // Sieve Lexer is a static class...
 
-  let SieveLexer =
+  const SieveLexer =
     {
       types: {},
       names: {},
@@ -36,7 +35,7 @@
        * @param {string} type
        *  a type information for this element. It is used to create group/classes of elements.
        *  It does not have to be unique.
-       * @param {Object} obj
+       * @param {object} obj
        *  the callbacks which are invoked, e.g. when probing, checking for capabilities or creating a new instance.
        *
        *
@@ -73,12 +72,12 @@
         if (!callback.nodeType)
           throw new Error("Lexer Error: Registration failed, element has no type");
 
-        let type = callback.nodeType();
+        const type = callback.nodeType();
 
         if (!callback.nodeName)
           throw new Error("Lexer Error: Registration failed, element has no name");
 
-        let name = callback.nodeName();
+        const name = callback.nodeName();
 
         if (!callback.isElement)
           throw new Error("Lexer Error: isElement function for " + name + " missing");
@@ -86,7 +85,7 @@
         if (typeof (this.types[type]) === 'undefined')
           this.types[type] = {};
 
-        let obj = {};
+        const obj = {};
         obj.name = name;
         obj.onProbe = function (token, doc) { return callback.isElement(token, doc); };
         obj.onNew = function (docshell, id) { return new callback(docshell, id); };
@@ -126,7 +125,7 @@
         for (let type in types) {
           type = types[type];
 
-          for (let key in this.types[type])
+          for (const key in this.types[type])
             if (this.types[type][key].onCapable(this._capabilities))
               if (this.types[type][key].onProbe(token, this))
                 return this.types[type][key];
@@ -141,7 +140,7 @@
        *
        * @param {SieveDocument} docshell
        *  the docshell which owns the new element
-       * @param {Object} constructor
+       * @param {object} constructor
        *  the costructor which should be used to create the new element
        * @param {SieveParser} [parser]
        *  an optional initializer for the newly created object
@@ -157,7 +156,7 @@
         if (!constructor.onCapable(this._capabilities))
           throw new Error("Capability not supported");
 
-        let item = constructor.onNew(docshell, ++(this.maxId));
+        const item = constructor.onNew(docshell, ++(this.maxId));
 
         if ((typeof (parser) !== "undefined") && (parser))
           item.init(parser);
@@ -184,7 +183,7 @@
        *  in case the document could not be created.
        **/
       createByClass: function (docshell, types, parser) {
-        let item = this.getConstructor(types, parser);
+        const item = this.getConstructor(types, parser);
 
         if ((typeof (item) === 'undefined') || (item === null))
           throw new Error("Unknown or incompatible type >>" + types + "<< at >>" + parser.bytes(QUOTE_LENGTH) + "<<");
@@ -276,7 +275,7 @@
         for (let selector in selectors) {
           selector = selectors[selector];
 
-          for (let key in this.types[selector])
+          for (const key in this.types[selector])
             if (this.types[selector][key].onCapable(this._capabilities))
               return true;
         }

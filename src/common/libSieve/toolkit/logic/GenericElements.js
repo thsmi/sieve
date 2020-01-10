@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function (exports) {
 
   "use strict";
@@ -54,7 +52,7 @@
       if (!Array.isArray(tokens))
         tokens = [tokens];
 
-      for (let i in tokens)
+      for (const i in tokens)
         if (parser.startsWith(tokens[i]))
           return true;
 
@@ -69,7 +67,7 @@
      * @returns {SieveAbstractElement}
      */
     onNew(docshell, id) {
-      let element = new SieveGenericStructure(docshell, id, this.item.node);
+      const element = new SieveGenericStructure(docshell, id, this.item.node);
 
       element
         .addLiteral(this.item.token)
@@ -121,7 +119,7 @@
      */
     onNew(docshell, id) {
 
-      let element = super.onNew(docshell, id);
+      const element = super.onNew(docshell, id);
 
       element.addLiteral(";", "\r\n");
 
@@ -216,8 +214,8 @@
   }
 
 
-  let actions = new Map();
-  let tests = new Map();
+  const actions = new Map();
+  const tests = new Map();
 
   /**
    *
@@ -283,7 +281,7 @@
 
   /**
    *
-   * @param {Object} item
+   * @param {object} item
    *
    */
   function addTag(item) {
@@ -383,7 +381,7 @@
     if (!generics.has(item.extends))
       return;
 
-    let x = generics.get(item.extends);
+    const x = generics.get(item.extends);
 
     if (item.properties) {
       item.properties.forEach(function (property) {

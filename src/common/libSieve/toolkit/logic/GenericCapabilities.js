@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function (exports) {
 
   "use strict";
@@ -39,7 +37,7 @@
     /**
      * Checks it the server supports the given dependencies.
      *
-     * @param {string|Object} dependencies
+     * @param {string|object} dependencies
      *   the dependencies which should be checked
      * @returns {boolean}
      *   true in case the dependencie is supported otherwise false.
@@ -75,7 +73,7 @@
       if (!Array.isArray(dependencies))
         dependencies = [dependencies];
 
-      for (let dependency of dependencies)
+      for (const dependency of dependencies)
         if (!this.capabilities.has(dependency))
           return false;
 
@@ -94,7 +92,7 @@
       if (!Array.isArray(dependencies))
         dependencies = [dependencies];
 
-      for (let dependency of dependencies)
+      for (const dependency of dependencies)
         if (this.capabilities.has(dependency))
           return true;
 
@@ -104,7 +102,7 @@
     /**
      * Ensures the given dependenies are supported by the server.
      *
-     * @param {string| Object} [dependencies]
+     * @param {string|object} [dependencies]
      *   It can be a plain string or a more complex object. The complex objects are
      *   used to realize "any" of or "all" of stucts.
      *
@@ -145,7 +143,7 @@
       if (!Array.isArray(dependencies))
         dependencies = [dependencies];
 
-      for (let dependency of dependencies) {
+      for (const dependency of dependencies) {
 
         if (!this.capabilities.has(dependency))
           throw new Error("The required dependency " + dependency + " is not supported by the server");
@@ -171,7 +169,7 @@
      */
     requireAny(dependencies) {
 
-      for (let dependency of dependencies) {
+      for (const dependency of dependencies) {
         if (!this.capabilities.has(dependency))
           continue;
 

@@ -17,7 +17,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -30,7 +30,7 @@
 
     suite.log("Snipplet 1");
 
-    let script = ''
+    const script = ''
       + 'require "duplicate";\r\n'
       + 'if duplicate {\r\n'
       + '  discard;\r\n'
@@ -44,7 +44,7 @@
 
     suite.log("Snipplet 2");
 
-    let script = ''
+    const script = ''
       + 'require "duplicate";\r\n'
       + 'if duplicate :header "message-id" {\r\n'
       + '  discard;\r\n'
@@ -58,7 +58,7 @@
 
     suite.log("Snipplet 3");
 
-    let script = ''
+    const script = ''
       // + 'require ["duplicate", "variables"];\r\n'
       + 'require ["duplicate"];\r\n'
       + 'if header :matches "message-id" "*" {\r\n'
@@ -75,7 +75,7 @@
 
     suite.log("Example 1");
 
-    let script = ''
+    const script = ''
       + 'require ["duplicate", "fileinto", "mailbox"];\r\n'
       + '\r\n'
       + 'if duplicate {\r\n'
@@ -90,7 +90,7 @@
 
     suite.log("Example 2");
 
-    let script = ''
+    const script = ''
       // + 'require ["duplicate", "variables", "imap4flags",\r\n'
       + 'require ["duplicate", "imap4flags",\r\n'
       + '  "fileinto"];\r\n'
@@ -110,7 +110,7 @@
 
     suite.log("Example 3a");
 
-    let script = ''
+    const script = ''
       + 'require ["variables", "envelope", "enotify", "duplicate"];\r\n'
       + '\r\n'
       + 'if envelope :matches "from" "*" { set "sender" "${1}"; }\r\n'
@@ -130,7 +130,7 @@
 
     suite.log("Example 3b");
 
-    let script = ''
+    const script = ''
       + 'require ["variables", "envelope", "enotify", "duplicate"];\r\n'
       + '\r\n'
       + 'if envelope :matches "from" "*" { set "sender" "${1}"; }\r\n'
@@ -157,7 +157,7 @@
 
     suite.log("Example 4");
 
-    let script = ''
+    const script = ''
       + 'require ["duplicate", "imap4flags"];\r\n'
       + '\r\n'
       + 'if duplicate :header "X-Event-ID" :handle "notifier" {\r\n'

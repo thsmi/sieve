@@ -9,9 +9,6 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  *
  */
-
-/* global window */
-
 (function () {
 
   "use strict";
@@ -27,7 +24,7 @@
       ":uniqueid" <value: string>]
   [":seconds" <timeout: number>] [":last"] */
 
-  let duplicate = {
+  const duplicate = {
     node: "test/duplicate",
     type: "test",
 

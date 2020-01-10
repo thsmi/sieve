@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -29,7 +29,7 @@
 
     suite.log("RFC5232 Sniplet I");
 
-    let script = ''
+    const script = ''
       + 'require "imap4flags";\r\n'
       + 'if size :over 500K {\r\n'
       + '    setflag "\\\\Deleted";\r\n'
@@ -42,7 +42,7 @@
 
     suite.log("RFC5232 Sniplet II");
 
-    let script = ''
+    const script = ''
       + 'require "imap4flags";\r\n'
       + 'require "fileinto";\r\n'
       + '\r\n'
@@ -59,7 +59,7 @@
 
     suite.log("RFC5232 Sniplet III");
 
-    let script = ''
+    const script = ''
       + 'require "imap4flags";\r\n'
       + '\r\n'
       + 'addflag "flagvar" "\\\\Deleted";\r\n'
@@ -78,7 +78,7 @@
 
     suite.log("RFC5232 Sniplet IV");
 
-    let script = ''
+    const script = ''
       + 'require "imap4flags";\r\n'
       + 'require "fileinto";\r\n'
       + '\r\n'
@@ -99,7 +99,7 @@
 
     suite.log("RFC5232 Sniplet V");
 
-    let script = ''
+    const script = ''
       + 'require "imap4flags";\r\n'
       + '\r\n'
       + 'if hasflag :is "b A" {}\r\n'
@@ -112,7 +112,7 @@
 
     suite.log("RFC5232 Sniplet VI");
 
-    let script = ''
+    const script = ''
       + 'require "imap4flags";\r\n'
       + '\r\n'
       + 'if hasflag :contains "MyVar" "Junk" {}\r\n'
@@ -138,7 +138,7 @@
 
     suite.log("RFC5232 Sniplet VII");
 
-    let script = ''
+    const script = ''
       + 'require "imap4flags";\r\n'
       + 'require "fileinto";\r\n'
       + '\r\n'
@@ -152,7 +152,7 @@
 
     suite.log("Extended Example");
 
-    let script = ''
+    const script = ''
       + '#\r\n'
       + '# Example Sieve Filter\r\n'
       + '# Declare any optional features or extension used by the script\r\n'

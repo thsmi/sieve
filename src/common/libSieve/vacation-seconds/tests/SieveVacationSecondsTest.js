@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -29,7 +29,7 @@
   suite.add(function () {
     suite.log("Parse Vacation Seconds Example 1");
 
-    let script = ''
+    const script = ''
       + 'require ["vacation-seconds"];\r\n'
       + 'vacation :addresses ["tjs@example.edu", "ts4z@landru.example.edu"]\r\n'
       + '         :seconds 1800\r\n'
@@ -41,7 +41,7 @@
   suite.add(function () {
     suite.log("Parse Vacation Seconds Example 2");
 
-    let script = ''
+    const script = ''
       + 'require ["vacation-seconds"];\r\n'
       + '\r\n'
       + 'vacation :handle "auto-resp" :seconds 0\r\n'

@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function (exports) {
 
   "use strict";
@@ -307,7 +305,7 @@
 
       if (this._probeByName("string/quoted", parser)) {
         this.compact = true;
-        let item = [];
+        const item = [];
         item[STRING_VALUE] = this._createByName("string/quoted", parser);
         this.elements = [item];
 
@@ -322,7 +320,7 @@
         if (this.elements.length)
           parser.extractChar(",");
 
-        let element = [null, null, null];
+        const element = [null, null, null];
 
         if (this._probeByName("whitespace", parser))
           element[LEADING_WHITESPACE] = this._createByName("whitespace", parser);
@@ -416,7 +414,7 @@
         return this;
       }
 
-      let elm = [null, "", null];
+      const elm = [null, "", null];
       elm[STRING_VALUE] = this._createByName("string/quoted", '""');
       elm[STRING_VALUE].value(str);
 
@@ -470,7 +468,7 @@
       if (values !== null && typeof (values) !== "undefined")
         this.clear().append(values);
 
-      let result = [];
+      const result = [];
       this.elements.forEach( (element) => {
         result.push(element[STRING_VALUE].value());
       });

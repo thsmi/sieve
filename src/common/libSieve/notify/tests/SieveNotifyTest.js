@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -29,7 +29,7 @@
 
     suite.log("Notify Example 1");
 
-    let script = ''
+    const script = ''
       + 'require ["enotify", "fileinto", "variables"];\r\n'
       + '\r\n'
       + 'if header :contains "from" "boss@example.org" {\r\n'
@@ -65,7 +65,7 @@
 
     suite.log("Notify Example 2");
 
-    let script = ''
+    const script = ''
       + 'require ["enotify", "fileinto", "variables", "envelope"];\r\n'
       + '\r\n'
       + 'if header :matches "from" "*@*.example.org" {\r\n'
@@ -96,7 +96,7 @@
 
     suite.log("Notify Example 3");
 
-    let script = ''
+    const script = ''
       + 'require ["enotify", "variables"];\r\n'
       + '\r\n'
       + 'set "notif_method"\r\n'
@@ -136,7 +136,7 @@
 
     suite.log("Notify Example 4");
 
-    let script = ''
+    const script = ''
       + 'require ["enotify"];\r\n'
       + '\r\n'
       + 'if not valid_notify_method ["mailto:",\r\n'
@@ -152,7 +152,7 @@
 
     suite.log("Notify Example 5");
 
-    let script = ''
+    const script = ''
       + 'require ["enotify"];\r\n'
       + '\r\n'
       + 'if notify_method_capability\r\n'
@@ -173,7 +173,7 @@
 
     suite.log("Notify Example 6");
 
-    let script = ''
+    const script = ''
       + 'require ["enotify", "variables"];\r\n'
       + '\r\n'
       + 'set :encodeurl "body_param" "Safe body&evil=evilbody";\r\n'

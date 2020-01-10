@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -111,7 +109,7 @@
 
   SieveIf.prototype.removeChild
     = function (childId, cascade, stop) {
-      let elm = SieveBlock.prototype.removeChild.call(this, childId);
+      const elm = SieveBlock.prototype.removeChild.call(this, childId);
       if (cascade && elm)
         return this;
 
@@ -237,7 +235,7 @@
       if (stop && (stop.id() === this.id()))
         cascade = false;
 
-      let elm = SieveBlockBody.prototype.removeChild.call(this, childId, cascade, stop);
+      const elm = SieveBlockBody.prototype.removeChild.call(this, childId, cascade, stop);
 
       //  ... if we endup after delete with just an else, merge it into parent...
       if ((this.children().length) && (!this.children(0).test)) {

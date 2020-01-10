@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -62,7 +60,7 @@
      * @inheritdoc
      */
     onSave() {
-      let item = $("#sivVariableName");
+      const item = $("#sivVariableName");
 
       if (! item.get(DOM_ELEMENT).checkValidity()) {
         return false;
@@ -103,10 +101,10 @@
 
       // Sort by the modifier name
       function sort(widget) {
-        let items = widget.find(".sieve-modifier");
+        const items = widget.find(".sieve-modifier");
         items.sort((a, b) => {
-          let lhs = $(a).find("input:checkbox[name^='modifier/']").attr("name");
-          let rhs = $(b).find("input:checkbox[name^='modifier/']").attr("name");
+          const lhs = $(a).find("input:checkbox[name^='modifier/']").attr("name");
+          const rhs = $(b).find("input:checkbox[name^='modifier/']").attr("name");
           return lhs < rhs;
         });
 
@@ -203,7 +201,7 @@
     save(sivElement) {
 
       let value = null;
-      let status = $("#cbxModifier10").is(":checked");
+      const status = $("#cbxModifier10").is(":checked");
       if (status)
         value = $("#cbxModifier10").val();
 
@@ -268,7 +266,7 @@
     save(sivElement) {
 
       let value = null;
-      let status = $("#cbxModifier20").is(":checked");
+      const status = $("#cbxModifier20").is(":checked");
       if (status)
         value = $("#cbxModifier20").val();
 

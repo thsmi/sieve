@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -28,7 +28,7 @@
   suite.add(function () {
     suite.log("Test Case insensitivity");
 
-    let script = ""
+    const script = ""
       + 'if NOT address :DOMAIN :is ["From", "To"] "example.com"\r\n'
       + '        {\r\n'
       + '        keep;               # keep in "In" mailbox\r\n'
@@ -41,7 +41,7 @@
   suite.add(function () {
     suite.log("Single line comment");
 
-    let script = ""
+    const script = ""
       + 'if size :over 100K { # this is a comment\r\n'
       + '    discard;\r\n'
       + '}\r\n';
@@ -53,7 +53,7 @@
   suite.add(function () {
     suite.log("Multiline comment");
 
-    let script = ""
+    const script = ""
       + 'if size :over 100K { /* this is a comment\r\n'
       + '    this is still a comment */ discard /* this is a comment\r\n'
       + '     */ ;\r\n'
@@ -66,7 +66,7 @@
   suite.add(function () {
     suite.log("Example 1");
 
-    let script = ""
+    const script = ""
       + 'if anyof (not exists ["From", "Date"],\r\n'
       + '          header :contains "from" "fool@example.com") {\r\n'
       + '  discard;\r\n'
@@ -78,7 +78,7 @@
   suite.add(function () {
     suite.log("Example 2");
 
-    let script = ""
+    const script = ""
       + 'if header :comparator "i;octet" :contains "Subject"\r\n'
       + '             "MAKE MONEY FAST" {\r\n'
       + '          discard;\r\n'
@@ -90,7 +90,7 @@
   suite.add(function () {
     suite.log("Example 2a (with linebreaks in comparator)");
 
-    let script = ""
+    const script = ""
       + 'if header :comparator \r\n"i;octet" :contains "Subject"\r\n'
       + '             "MAKE MONEY FAST" {\r\n'
       + '          discard;\r\n'
@@ -102,7 +102,7 @@
   suite.add(function () {
     suite.log("Example 2b (with linebreaks in comparator)");
 
-    let script = ""
+    const script = ""
       + 'if header :comparator\r\n "i;octet" :contains "Subject"\r\n'
       + '             "MAKE MONEY FAST" {\r\n'
       + '          discard;\r\n'
@@ -115,7 +115,7 @@
   suite.add(function () {
     suite.log("Example 3");
 
-    let script =
+    const script =
       'if size :over 500K { discard; }';
 
     suite.expectValidScript(script);
@@ -124,7 +124,7 @@
   suite.add(function () {
     suite.log("Example 4");
 
-    let script = ""
+    const script = ""
       + 'if header :contains ["From"] ["coyote"] {\r\n'
       + '   redirect "acm@example.com";\r\n'
       + '} elsif header :contains "Subject" "$$$" {\r\n'
@@ -139,7 +139,7 @@
   suite.add(function () {
     suite.log("Example 5");
 
-    let script = ""
+    const script = ""
       + 'require "fileinto";\r\n'
       + 'if header :contains "from" "coyote" {\r\n'
       + '   discard;\r\n'
@@ -155,7 +155,7 @@
   suite.add(function () {
     suite.log("Example 6");
 
-    let script = ""
+    const script = ""
       + 'require "fileinto";\r\n'
       + 'if header :contains ["from"] "coyote" {\r\n'
       + '   fileinto "INBOX.harassment";\r\n'
@@ -167,7 +167,7 @@
   suite.add(function () {
     suite.log("Example 7");
 
-    let script = ""
+    const script = ""
       + 'if size :under 1M { keep; } else { discard; }';
 
     suite.expectValidScript(script);
@@ -176,7 +176,7 @@
   suite.add(function () {
     suite.log("Example 8");
 
-    let script = ""
+    const script = ""
       + 'if not size :under 1M { discard; }';
 
     suite.expectValidScript(script);
@@ -185,7 +185,7 @@
   suite.add(function () {
     suite.log("Example 9");
 
-    let script = ""
+    const script = ""
       + 'if header :contains ["from"] ["idiot@example.com"] {\r\n'
       + '   discard;\r\n'
       + '}\r\n';
@@ -196,7 +196,7 @@
   suite.add(function () {
     suite.log("Example 10");
 
-    let script = ""
+    const script = ""
       + 'if address :all :is "from" "tim@example.com" {\r\n'
       + '   discard;\r\n'
       + '}\r\n';
@@ -207,7 +207,7 @@
   suite.add(function () {
     suite.log("Example 11");
 
-    let script = ""
+    const script = ""
       + 'require "envelope";\r\n'
       + 'if envelope :all :is "from" "tim@example.com" {\r\n'
       + '   discard;\r\n'
@@ -219,7 +219,7 @@
   suite.add(function () {
     suite.log("Example 12");
 
-    let script = ""
+    const script = ""
       + 'if not exists ["From","Date"] {\r\n'
       + '   discard;\r\n'
       + '}\r\n';
@@ -242,7 +242,7 @@
   suite.add(function () {
     suite.log("Example Sieve Filter");
 
-    let script = ""
+    const script = ""
       + '#\r\n'
       + '# Example Sieve Filter\r\n'
       + '# Declare any optional features or extension used by the script\r\n'
@@ -289,7 +289,7 @@
   suite.add(function () {
     suite.log("Boolean true");
 
-    let script = ""
+    const script = ""
       + 'if true {\r\n'
       + '   discard;\r\n'
       + '}\r\n';
@@ -300,7 +300,7 @@
   suite.add(function () {
     suite.log("Boolean false");
 
-    let script = ""
+    const script = ""
       + 'if false {\r\n'
       + '   discard;\r\n'
       + '}\r\n';

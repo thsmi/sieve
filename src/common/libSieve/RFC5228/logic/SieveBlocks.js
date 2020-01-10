@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function (exports) {
 
   "use strict";
@@ -53,7 +51,7 @@
     = function () {
       let str = "";
 
-      for (let key in this.elms)
+      for (const key in this.elms)
         str += this.elms[key].toScript();
 
       return str;
@@ -161,7 +159,7 @@
      */
     toScript() {
 
-      let capabilities = this.document().capabilities();
+      const capabilities = this.document().capabilities();
 
       capabilities.clear();
 
@@ -169,7 +167,7 @@
       this.elms[ROOT_ELEMENT_BODY].require(capabilities);
 
       // Step 2: Add require...
-      for (let item of capabilities.dependencies)
+      for (const item of capabilities.dependencies)
         this.elms[ROOT_ELEMENT_IMPORT].capability(item);
 
       // TODO Remove unused requires...

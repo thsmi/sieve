@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function (exports) {
 
   "use strict";
@@ -280,7 +278,7 @@
 
     /**
      * Initializes the given parameter.
-     * @param {Object} parameter
+     * @param {object} parameter
      *  the parameter which should be set
      *
      */
@@ -289,7 +287,7 @@
       if (parameter.type === null || typeof (parameter.type) === 'undefined')
         throw new Error("Parameter without a type ");
 
-      let item = {};
+      const item = {};
       item.element = this.getParent().createByName(parameter.type, parameter.value);
       item.whitespace = this.getParent().createByName("whitespace", " ");
 
@@ -507,7 +505,7 @@
       if (SieveLexer.supportsByName(tag.type) === false)
         return;
 
-      let item = {};
+      const item = {};
       // item.id = tag.id;
       item.type = tag.type;
       item.element = this.getParent().createByName(tag.type, tag.value);
@@ -526,7 +524,7 @@
 
     /**
      *
-     * @param {Object} tags
+     * @param {object} tags
      * @returns {SieveGenericOptionalItem}
      *   a self reference
      */
@@ -562,7 +560,7 @@
       this._elements = new Set();
 
       // Tags may be optional, which means they might be there nor not...
-      let pos = parser.pos();
+      const pos = parser.pos();
 
       // ... in any case it needs to be separated by a whitespace
       // if not we know are no tags.
@@ -571,7 +569,7 @@
         whitespace.init(parser);
 
       // then we clone the tags element to track duplicate elements.
-      let ids = new Set(this._optionals.keys());
+      const ids = new Set(this._optionals.keys());
       let hasTags = true;
 
       // now we need to parse until there are no more tags.
@@ -579,9 +577,9 @@
 
         hasTags = false;
 
-        for (let id of ids) {
+        for (const id of ids) {
 
-          let item = this._optionals.get(id);
+          const item = this._optionals.get(id);
 
           if (!this.getDocument().probeByName(item.type, parser))
             continue;
@@ -623,7 +621,7 @@
      */
     require(imports) {
 
-      for (let id of this._elements) {
+      for (const id of this._elements) {
         this._optionals.get(id).element.require(imports);
       }
 
@@ -640,7 +638,7 @@
 
       // ... otherwise we need to check if one of our
       // optionals has a non default value.
-      for (let item of this._optionals.values()) {
+      for (const item of this._optionals.values()) {
         if (!item.element.isDefault)
           continue;
 
@@ -659,16 +657,16 @@
       let result = "";
 
       // We try to preserve all elemets entered by the user
-      for (let id of this._elements) {
+      for (const id of this._elements) {
 
-        let item = this._optionals.get(id);
+        const item = this._optionals.get(id);
 
         result += item.whitespace.toScript();
         result += item.element.toScript();
       }
 
       // Then add other optional elements.
-      for (let [id, item] of this._optionals) {
+      for (const [id, item] of this._optionals) {
 
         if (this._elements.has(id))
           continue;
@@ -846,7 +844,7 @@
      */
     enable(id, status) {
 
-      for (let item of this._elements) {
+      for (const item of this._elements) {
 
         if (!item.enable || !item.hasElement)
           continue;
@@ -875,7 +873,7 @@
      */
     addLiteral(token, postfix, prefix) {
 
-      let literal = new SieveGenericLiteral(token, this);
+      const literal = new SieveGenericLiteral(token, this);
       literal.setPostfix(postfix);
       literal.setPrefix(prefix);
 
@@ -886,7 +884,7 @@
 
 
     /**
-     * @param {Array.<Object>|Object} tags
+     * @param {Array.<object>|object} tags
      * @returns {SieveGenericStructure}
      *   a self reference
      */
@@ -931,7 +929,7 @@
      * A dependent element fixes this. The "variable" element is
      * non greedy. So that in the first case the "flags".
      *
-     * @param {Array.<Object>|Object} parameters
+     * @param {Array.<object>|object} parameters
      *  the configuration and parameters for the dependent item
      * @returns {SieveGenericStructure}
      *  a self reference
@@ -955,7 +953,7 @@
      * In case it is not at the expected position
      * an error will be raised
      *
-     * @param  {Array.<Object>|Object} parameters
+     * @param  {Array.<object>|object} parameters
      *  the configuration and parameter for the generic items.
      * @returns {SieveGenericStructure}
      *  a self reference
@@ -983,7 +981,7 @@
      */
     hasElement(id) {
 
-      for (let item of this._elements) {
+      for (const item of this._elements) {
 
         if (!item.hasElement || !item.hasElement(id))
           continue;
@@ -1003,7 +1001,7 @@
      */
     getElement(id) {
 
-      for (let item of this._elements) {
+      for (const item of this._elements) {
 
         if (!item.hasElement || !item.hasElement(id))
           continue;

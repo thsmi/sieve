@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -29,7 +29,7 @@
 
     suite.log("Example 1");
 
-    let script = ''
+    const script = ''
       + 'require "environment";\r\n'
       + 'if environment :contains "item" "" { keep; }';
 
@@ -40,7 +40,7 @@
 
     suite.log("Example 2");
 
-    let script = ''
+    const script = ''
       + 'require "environment";\r\n'
       + 'if environment :matches "remote-host" "*.example.com" { keep; }';
 
@@ -50,7 +50,7 @@
   suite.add(function () {
     suite.log("Validate environment test constructor");
 
-    let snipplet = 'environment "domain" "imap.example.com"';
+    const snipplet = 'environment "domain" "imap.example.com"';
     suite.expectValidSnipplet("test/environment", snipplet, ["environment"]);
   });
 })();

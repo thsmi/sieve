@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -28,8 +26,6 @@
   /* global SieveOverlayItemWidget */
 
   /* global SieveDesigner */
-
-  const DOM_ELEMENT = 0;
 
   /**
    * Implements an UI for the notify action.
@@ -82,7 +78,7 @@
       if (this.getSieve().enable("importance"))
         $("#cbxSieveNotifyImportance").attr("checked", "checked");
 
-      let importance = this.getSieve().getElement("importance").getElement("importance").value();
+      const importance = this.getSieve().getElement("importance").getElement("importance").value();
       $("input[name=sivNotifyImportance][value='" + importance + "']").prop('checked', true);
 
 
@@ -113,7 +109,7 @@
 
       this.getSieve().enable("importance",
         $("#cbxSieveNotifyImportance").is(":checked"));
-      let importance = $("input[name=sivNotifyImportance]:checked").val();
+      const importance = $("input[name=sivNotifyImportance]:checked").val();
 
       this.getSieve()
         .getElement("importance")
@@ -318,7 +314,7 @@
     save(sivElement) {
 
       let value = null;
-      let status = $("#cbxModifier15").is(":checked");
+      const status = $("#cbxModifier15").is(":checked");
       if (status)
         value = $("#cbxModifier15").val();
 

@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -29,7 +29,7 @@
 
     suite.log("RFC5260 Sniplet I");
 
-    let script = ""
+    const script = ""
       + 'require ["date", "relational", "fileinto"];\r\n'
       + 'if allof(header :is "from" "boss@example.com",\r\n'
       + '         date :value "ge" :originalzone "date" "hour" "09",\r\n'
@@ -43,7 +43,7 @@
 
     suite.log("RFC5260 Sniplet II");
 
-    let script = ""
+    const script = ""
       + 'require ["date", "fileinto"];\r\n'
       + 'if anyof(date :is "received" "weekday" "0",\r\n'
       + '         date :is "received" "weekday" "6")\r\n'
@@ -56,7 +56,7 @@
 
     suite.log("RFC5260 Sniplet III");
 
-    let script = ""
+    const script = ""
       + 'require ["date", "relational"];\r\n'
       + 'if anyof(currentdate :is "weekday" "0",\r\n'
       + '         currentdate :is "weekday" "6",\r\n'
@@ -71,7 +71,7 @@
 
     suite.log("RFC5260 Sniplet IV");
 
-    let script = ""
+    const script = ""
       + 'require ["date", "relational", "vacation"];\r\n'
       + 'if allof(currentdate :value "ge" "date" "2007-06-30",\r\n'
       + '         currentdate :value "le" "date" "2007-07-07")\r\n'
@@ -84,7 +84,7 @@
 
     suite.log("RFC5260 Sniplet V");
 
-    let script = ""
+    const script = ""
       + 'require ["date", "variables", "fileinto"];\r\n'
       + 'if currentdate :matches "month" "*" { set "month" "${1}"; }\r\n'
       + 'if currentdate :matches "year"  "*" { set "year"  "${1}"; }\r\n'
@@ -97,7 +97,7 @@
 
     suite.log("RFC5260 Sniplet VIa");
 
-    let script = ""
+    const script = ""
       + 'require "date";\r\n'
       + 'if currentdate :matches "std11" "*"\r\n'
       + '  {keep;}\r\n';
@@ -110,7 +110,7 @@
     suite.log("RFC5260 Sniplet VI");
 
     // FIXME: Variables import is dropped silently
-    let script = ""
+    const script = ""
       // + 'require ["variables", "date", "editheader"];\r\n'
       + 'require ["date", "editheader"];\r\n'
       + 'if currentdate :matches "std11" "*"\r\n'
@@ -123,14 +123,14 @@
   suite.add(function () {
     suite.log("Validate date test constructor");
 
-    let snipplet = 'date "date" "date" "' + new Date().toJSON().substring(0, 10) + '"';
+    const snipplet = 'date "date" "date" "' + new Date().toJSON().substring(0, 10) + '"';
     suite.expectValidSnipplet("test/date", snipplet, ["date"]);
   });
 
   suite.add(function () {
     suite.log("Validate currentdate test constructor");
 
-    let snipplet = 'currentdate "date" "' + new Date().toJSON().substring(0, 10) + '"';
+    const snipplet = 'currentdate "date" "' + new Date().toJSON().substring(0, 10) + '"';
     suite.expectValidSnipplet("test/currentdate", snipplet, ["date"]);
   });
 

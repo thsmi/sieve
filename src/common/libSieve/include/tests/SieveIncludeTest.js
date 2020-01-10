@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -29,7 +29,7 @@
 
     suite.log("return test");
 
-    let script =
+    const script =
       'require "include";\r\n'
       + 'return;\r\n';
 
@@ -40,12 +40,12 @@
 
     suite.log("include ambigious location ");
 
-    let script =
+    const script =
       'require ["include"];\r\n'
       + '\r\n'
       + 'include :personal :global "always_allow";\r\n';
 
-    let exception = "Error: Unknown or incompatible type >>string/<< at >>:global";
+    const exception = "Error: Unknown or incompatible type >>string/<< at >>:global";
 
     suite.expectInvalidScript(script, exception, ["include"]);
   });
@@ -55,7 +55,7 @@
 
     suite.log("include multiple scripts");
 
-    let script =
+    const script =
       'require ["include"];\r\n'
       + '\r\n'
       + 'include :personal "always_allow";\r\n'
@@ -70,7 +70,7 @@
 
     suite.log("include test2");
 
-    let script =
+    const script =
       'require [ "include", "variables" ];\r\n'
       + 'global "test";\r\n'
       + 'global "test_mailbox";\r\n'
@@ -94,7 +94,7 @@
 
     suite.log("multiple globals");
 
-    let script =
+    const script =
       'require ["include", "variables"];\r\n'
       + 'global ["test", "test_mailbox"];\r\n'
       + '\r\n'
@@ -111,7 +111,7 @@
 
     suite.log("single global");
 
-    let script =
+    const script =
       'require ["variables", "include" /*, "vacation"*/];\r\n'
       + 'global "i_am_on_vacation";\r\n'
       + '\r\n'

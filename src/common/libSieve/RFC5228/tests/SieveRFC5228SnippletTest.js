@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -28,7 +28,7 @@
   suite.add(function () {
     suite.log("Test header constructors");
 
-    let snipplet = 'header "Subject" "Example"';
+    const snipplet = 'header "Subject" "Example"';
     suite.expectValidSnipplet("test/header", snipplet);
   });
 

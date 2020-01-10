@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -23,7 +21,7 @@
 
   // Usage:   environment [COMPARATOR] [MATCH-TYPE] <name: string> <key-list: string-list>
 
-  let _environment = {
+  const _environment = {
     node: "test/environment",
     type: "test",
 

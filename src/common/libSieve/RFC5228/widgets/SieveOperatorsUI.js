@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -90,7 +88,7 @@
      **/
     onSave() {
 
-      let value = $("#sieve-widget-allofanyof")
+      const value = $("#sieve-widget-allofanyof")
         .find("input[name='allofanyof']:checked").val();
 
       if (value === "true")
@@ -125,7 +123,7 @@
 
       parent.addClass("sivOperator");
 
-      let item = $("<div/>")
+      const item = $("<div/>")
         .addClass("sivEditableElement")
         .append($("<div/>")
           .append(this.getSummary())
@@ -140,7 +138,7 @@
       parent.append(item);
       item.click((e) => { this.showEditor(); e.preventDefault(); return true; });
 
-      for (let test of this.getSieve().tests) {
+      for (const test of this.getSieve().tests) {
 
         parent.append($("<div/>")
           .append((new SieveDropBoxUI(this))
@@ -148,7 +146,7 @@
             .html()
             .addClass("sivOperatorSpacer")));
 
-        let ul = $("<ul/>");
+        const ul = $("<ul/>");
         ul.append(
           $("<li/>").append(test[TEST_ELEMENT].html())
             .addClass("sivOperatorChild"));

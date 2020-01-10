@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function (exports) {
 
   "use strict";
@@ -58,7 +56,7 @@
 
       ch = [].concat(ch);
 
-      for (let item of ch)
+      for (const item of ch)
         if (this._data.charAt(this._pos + offset) === item)
           return true;
 
@@ -83,7 +81,7 @@
       if (offset === IDX_BEGIN)
         throw new Error("Delimiter >>" + delimiter + "<< expected but found\n" + this.bytes(QUOTE_LENGTH) + "...");
 
-      let str = this._data.substr(this._pos, offset);
+      const str = this._data.substr(this._pos, offset);
 
       this._pos += str.length;
 
@@ -186,7 +184,7 @@
       let result = null;
 
       if (typeof (length) === "string") {
-        let str = length;
+        const str = length;
 
         if (!this.startsWith(str))
           throw new Error("" + str + " expected but found:\n" + this.bytes(QUOTE_LENGTH) + "...");
@@ -220,12 +218,12 @@
      *   the data between the token an the delimter
      */
     extractUntil(token) {
-      let idx = this._data.indexOf(token, this._pos);
+      const idx = this._data.indexOf(token, this._pos);
 
       if (idx === NO_SUCH_TOKEN)
         throw new Error("Token expected: " + token.toString());
 
-      let str = this._data.substring(this._pos, idx);
+      const str = this._data.substring(this._pos, idx);
 
       this._pos += str.length + token.length;
 
@@ -265,7 +263,7 @@
       if (offset === IDX_BEGIN)
         throw new Error("Number expected but found:\n" + this.bytes(QUOTE_LENGTH) + "...");
 
-      let number = this._data.substr(this._pos, offset);
+      const number = this._data.substr(this._pos, offset);
 
       this._pos += offset;
 

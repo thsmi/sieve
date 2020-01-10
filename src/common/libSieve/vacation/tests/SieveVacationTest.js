@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -34,7 +34,7 @@
 
     suite.log("Parse Vacation Example 1");
 
-    let script =
+    const script =
       'require "vacation";\r\n'
       + 'if header :contains "subject" "cyrus" {\r\n'
       + '    vacation "I\'m out -- send mail to cyrus-bugs";\r\n'
@@ -49,7 +49,7 @@
 
     suite.log("Parse Vacation Example 2");
 
-    let script =
+    const script =
       'require ["vacation"];\r\n'
       + 'if header :matches "subject" "*" {\r\n'
       + '  vacation :subject "Automatic response to: ${1}"\r\n'
@@ -63,7 +63,7 @@
 
     suite.log("Parse Vacation Example 3");
 
-    let script =
+    const script =
       'require "vacation";\r\n'
       + 'if header :contains "subject" "lunch" {\r\n'
       + '    vacation :handle "ran-away" "I\'m out and can\'t meet for lunch";\r\n'
@@ -79,7 +79,7 @@
 
     suite.log("Parse Vacation Example 4");
 
-    let script =
+    const script =
       'require "vacation";\r\n'
       + 'vacation :mime text:\r\n'
       + 'Content-Type: multipart/alternative; boundary=foo\r\n'
@@ -110,7 +110,7 @@
 
     suite.log("Parse Vacation Example 5");
 
-    let script =
+    const script =
       'require "vacation";\r\n'
       + 'vacation :days 23 :addresses ["tjs@example.edu",\r\n'
       + '                              "ts4z@landru.example.edu"]\r\n'
@@ -123,7 +123,7 @@
 
     suite.log("Parse Vacation Example 6 ");
 
-    let script =
+    const script =
       'require "vacation";\r\n'
       + 'if header :contains "from" "boss@example.edu" {\r\n'
       + '    redirect "pleeb@isp.example.org";\r\n'
@@ -139,7 +139,7 @@
 
     suite.log("Parse Vacation Example 7");
 
-    let script =
+    const script =
       'require "vacation";\r\n'
       + 'if header :contains ["accept-language", "content-language"] "en"\r\n'
       + '{\r\n'
@@ -155,7 +155,7 @@
 
     suite.log("Parse Vacation Example 8");
 
-    let script =
+    const script =
       'require "vacation";\r\n'
       + 'if address :matches "from" "*@ourdivision.example.com"\r\n'
       + '{\r\n'
@@ -173,7 +173,7 @@
 
     suite.log("Parse Vacation :from ");
 
-    let script =
+    const script =
       'require "vacation";\r\n'
       + 'vacation :subject "Gone fishing"\r\n'
       + '         :from "myfallbackaddress@example.edu"\r\n'
@@ -185,14 +185,14 @@
   suite.add(function () {
     suite.log("Manipulate Vacation Element - No values set - Set all values");
 
-    let script =
+    const script =
       'require "vacation";\r\n'
       + 'vacation\r\n'
       + '         "Having lots of fun! Back in a day or two!";\r\n';
 
-    let doc = suite.parseScript(script, ["vacation"]);
+    const doc = suite.parseScript(script, ["vacation"]);
 
-    let elms = doc.queryElements("action/vacation");
+    const elms = doc.queryElements("action/vacation");
 
     suite.assertEquals(ONE_ELEMENT, elms.length, "Invalid number of vacation elements");
 
@@ -230,7 +230,7 @@
     elms[FIRST_ELEMENT].enable("mime", true);
 
 
-    let rv =
+    const rv =
       'require "vacation";\r\n'
       + 'vacation :subject "some subject" :from "some from" :days 12 :handle "some handle" :mime\r\n'
       + '         "some reason";\r\n';
@@ -244,7 +244,7 @@
   suite.add(function () {
     suite.log("Manipulate Vacation Element - All values set - Change all values");
 
-    let script =
+    const script =
       'require "vacation";\r\n'
       + 'vacation :subject "Gone fishing"\r\n'
       + '         :from "myfallbackaddress@example.edu"\r\n'
@@ -253,9 +253,9 @@
       + '         :mime\r\n'
       + '         "Having lots of fun! Back in a day or two!";\r\n';
 
-    let doc = suite.parseScript(script, ["vacation"]);
+    const doc = suite.parseScript(script, ["vacation"]);
 
-    let elms = doc.queryElements("action/vacation");
+    const elms = doc.queryElements("action/vacation");
 
     suite.assertEquals(ONE_ELEMENT, elms.length, "Invalid number of vacation elements");
 
@@ -283,7 +283,7 @@
     elms[FIRST_ELEMENT].getElement("handle").getElement("handle").value("some other handle");
 
 
-    let rv =
+    const rv =
       'require "vacation";\r\n'
       + 'vacation :subject "some other subject"\r\n'
       + '         :from "some other from"\r\n'
@@ -300,7 +300,7 @@
   suite.add(function () {
     suite.log("Manipulate Vacation Element - All values set - Remove all values");
 
-    let script =
+    const script =
       'require "vacation";\r\n'
       + 'vacation :subject "Gone fishing"\r\n'
       + '         :from "myfallbackaddress@example.edu"\r\n'
@@ -309,9 +309,9 @@
       + '         :mime\r\n'
       + '         "Having lots of fun! Back in a day or two!";\r\n';
 
-    let doc = suite.parseScript(script, ["vacation"]);
+    const doc = suite.parseScript(script, ["vacation"]);
 
-    let elms = doc.queryElements("action/vacation");
+    const elms = doc.queryElements("action/vacation");
 
     suite.assertEquals(ONE_ELEMENT, elms.length, "Invalid number of vacation elements");
 
@@ -341,7 +341,7 @@
     elms[FIRST_ELEMENT].getElement("interval").setElement();
     elms[FIRST_ELEMENT].enable("interval", false);
 
-    let rv =
+    const rv =
       'require "vacation";\r\n'
       + 'vacation\r\n'
       + '         "Having lots of fun! Back in a day or two!";\r\n';
@@ -353,7 +353,7 @@
   suite.add(function () {
     suite.log("Validate vacation action's constructor");
 
-    let snipplet = 'vacation "";\r\n';
+    const snipplet = 'vacation "";\r\n';
     suite.expectValidSnipplet("action/vacation", snipplet, ["vacation"]);
   });
 

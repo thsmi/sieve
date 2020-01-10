@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -53,32 +51,32 @@
   });
 
   /**
-   9.1.1.  ASCII Numeric Collation Description
-
-   The "i;ascii-numeric" collation is a simple collation intended for
-   use with arbitrarily-sized, unsigned decimal integer numbers stored
-   as octet strings.  US-ASCII digits (0x30 to 0x39) represent digits of
-   the numbers.  Before converting from string to integer, the input
-   string is truncated at the first non-digit character.  All input is
-   valid; strings that do not start with a digit represent positive
-   infinity.
-
-   The collation supports equality and ordering, but does not support
-   the substring operation.
-
-   The equality operation returns "match" if the two strings represent
-   the same number (i.e., leading zeroes and trailing non-digits are
-   disregarded), and "no-match" if the two strings represent different
-   numbers.
-
-   The ordering operation returns "less" if the first string represents
-   a smaller number than the second, "equal" if they represent the same
-   number, and "greater" if the first string represents a larger number
-   than the second.
-
-   Some examples: "0" is less than "1", and "1" is less than
-   "4294967298". "4294967298", "04294967298", and "4294967298b" are all
-   equal. "04294967298" is less than "". "", "x", and "y" are equal.
+   * 9.1.1.  ASCII Numeric Collation Description
+   *
+   * The "i;ascii-numeric" collation is a simple collation intended for
+   * use with arbitrarily-sized, unsigned decimal integer numbers stored
+   * as octet strings.  US-ASCII digits (0x30 to 0x39) represent digits of
+   * the numbers.  Before converting from string to integer, the input
+   * string is truncated at the first non-digit character.  All input is
+   * valid; strings that do not start with a digit represent positive
+   * infinity.
+   *
+   * The collation supports equality and ordering, but does not support
+   * the substring operation.
+   *
+   * The equality operation returns "match" if the two strings represent
+   * the same number (i.e., leading zeroes and trailing non-digits are
+   * disregarded), and "no-match" if the two strings represent different
+   * numbers.
+   *
+   * The ordering operation returns "less" if the first string represents
+   * a smaller number than the second, "equal" if they represent the same
+   * number, and "greater" if the first string represents a larger number
+   * than the second.
+   *
+   * Some examples: "0" is less than "1", and "1" is less than
+   * "4294967298". "4294967298", "04294967298", and "4294967298b" are all
+   * equal. "04294967298" is less than "". "", "x", and "y" are equal.
    */
   SieveGrammar.addTag({
     node: "comparator/i;ascii-numeric",

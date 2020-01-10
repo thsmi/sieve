@@ -10,7 +10,6 @@
  *
  */
 
-/* global window */
 
 (function () {
 
@@ -21,7 +20,7 @@
   if (!SieveGrammar)
     throw new Error("Could not register Vacation-Seconds");
 
-  let vacationSeconds = {
+  const vacationSeconds = {
     extends: "action/vacation",
     requires: { any: ["vacation-seconds", "vacation"] }
   };

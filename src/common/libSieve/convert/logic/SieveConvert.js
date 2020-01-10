@@ -26,7 +26,7 @@
   // can be either a test or an action...
 
 
-  let properties = [{
+  const properties = [{
     id: "parameters",
 
     elements: [{

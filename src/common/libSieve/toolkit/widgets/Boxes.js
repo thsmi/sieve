@@ -10,9 +10,6 @@
  *
  */
 
-/* global window */
-
-
 (function (exports) {
 
   "use strict";
@@ -101,7 +98,7 @@
         this._domElm.attr("id", "sivElm" + this.id());
 
       // update all our event handlers
-      for (let topic in this._handler)
+      for (const topic in this._handler)
         if (this._handler[topic].attach)
           this._handler[topic].attach(this._domElm);
 
@@ -112,7 +109,7 @@
       if (this.id() < 0)
         throw new Error("Invalid id");
 
-      let item = $("#sivElm" + this.id());
+      const item = $("#sivElm" + this.id());
 
       if ((!item.length) || (item.length > 1))
         throw new Error("" + item.length + " Elements found for #sivElm" + this.id());
@@ -379,24 +376,24 @@
       $("#sivDialogTabs").empty();
       $('#sivDialogBody').empty();
 
-      let that = this;
-      let xhr = new XMLHttpRequest();
+      const that = this;
+      const xhr = new XMLHttpRequest();
       xhr.onload = function () {
 
-        let tabs = this.responseXML.querySelector("#template-tabs");
+        const tabs = this.responseXML.querySelector("#template-tabs");
 
         if (tabs) {
-          let div = document.createElement("div");
+          const div = document.createElement("div");
           div.innerHTML = tabs.innerHTML;
 
           $("#sivDialogTabs").append(div.children);
         }
 
 
-        let content = this.responseXML.querySelector("#template-content");
+        const content = this.responseXML.querySelector("#template-content");
 
         if (content) {
-          let div = document.createElement("div");
+          const div = document.createElement("div");
           div.innerHTML = content.innerHTML;
 
           $("#sivDialogBody").append(div.children);
@@ -449,6 +446,7 @@
     }
 
     /**
+     * @abstract
      * @returns {string}
      *   an url which points to an html fragment and contains the template.
      */

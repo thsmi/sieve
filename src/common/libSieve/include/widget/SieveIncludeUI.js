@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -61,7 +59,7 @@
      * @inheritdoc
      */
     onSave() {
-      let variables = (new SieveStringListWidget("#sivIncludeGlobalList"));
+      const variables = (new SieveStringListWidget("#sivIncludeGlobalList"));
 
       if (!variables.isUnique()) {
         alert("Variable list items have to be unique");
@@ -141,7 +139,7 @@
      */
     personal(value) {
 
-      let elm = this.getSieve().getElement("location");
+      const elm = this.getSieve().getElement("location");
 
       if (value === true)
         elm.setElement(":personal");
@@ -162,7 +160,7 @@
      */
     script(value) {
 
-      let elm = this.getSieve().getElement("script");
+      const elm = this.getSieve().getElement("script");
 
       if (value !== null && typeof (value) !== "undefined")
         elm.value(value);
@@ -194,7 +192,7 @@
      */
     onSave() {
 
-      let script = $("#sivIncludeScriptName");
+      const script = $("#sivIncludeScriptName");
 
       if (!script.get(DOM_ELEMENT).checkValidity()) {
         return false;
@@ -213,7 +211,7 @@
      * @inheritdoc
      */
     getSummary() {
-      let str =
+      const str =
         "Include "
         + (this.personal() ? "personal" : "global")
         + " script " + $('<em/>').text(this.script()).html();

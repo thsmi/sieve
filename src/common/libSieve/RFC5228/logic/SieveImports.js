@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -76,7 +74,7 @@
           this._createByClass(["import/", "whitespace"], parser));
 
       // check if the imports are valid
-      for (let item of this.elms) {
+      for (const item of this.elms) {
 
         if (item.nodeName() !== "import/require")
           continue;
@@ -99,9 +97,9 @@
      */
     check(dependencies) {
 
-      let capabilities = this.document().capabilities();
+      const capabilities = this.document().capabilities();
 
-      for (let item of dependencies)
+      for (const item of dependencies)
         if (!capabilities.hasCapability(item))
           throw new Error('Unknown capability string "' + item + '"');
     }
@@ -122,7 +120,7 @@
       // last require we found.
       let last = null;
 
-      for (let item of this.elms) {
+      for (const item of this.elms) {
         if (item.nodeName() !== "import/require")
           continue;
 
@@ -132,7 +130,7 @@
         last = item;
       }
 
-      let elm = this.document().createByName("import/require");
+      const elm = this.document().createByName("import/require");
       elm.getElement("capabilities").values(require);
 
       this.append(elm, last);

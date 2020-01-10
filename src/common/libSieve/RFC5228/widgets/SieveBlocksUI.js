@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function (exports) {
 
   "use strict";
@@ -51,11 +49,11 @@
      *   the newly create Element
      */
     init() {
-      let elm = $("<div/>")
+      const elm = $("<div/>")
         .addClass("sivBlock");
 
-      for (let sivElm of this.getSieve().elms) {
-        let item = sivElm.html();
+      for (const sivElm of this.getSieve().elms) {
+        const item = sivElm.html();
 
         if (!item)
           continue;

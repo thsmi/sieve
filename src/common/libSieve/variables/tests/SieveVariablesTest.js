@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -33,7 +33,7 @@
 
     suite.log("Simple Set Actions without modifiers");
 
-    let script =
+    const script =
       'require ["variables"];\r\n'
       + 'set "dollar" "$";\r\n'
       + 'set "text" "regarding ${dollar}{beep}";';
@@ -45,7 +45,7 @@
 
     suite.log("Complex Set Action without modifiers");
 
-    let script =
+    const script =
       'require "variables";\r\n\r\n'
       + 'set "honorific"  "Mr";\r\n'
       + 'set "first_name" "Wile";\r\n'
@@ -63,7 +63,7 @@
 
     suite.log("Complex Set Action with modifiers");
 
-    let script =
+    const script =
       'require "variables";\r\n\r\n'
       + '# The value assigned to the variable is printed after the arrow\r\n'
       // a = "juMBlEd lETteRS"
@@ -100,7 +100,7 @@
   suite.add(function () {
     suite.log("Match Variables Example");
 
-    let script =
+    const script =
       'require ["fileinto" /*, "variables"*/];\r\n'
       + '\r\n'
       + 'if header :matches "List-ID" "*<*@*" {\r\n'
@@ -148,7 +148,7 @@
 
     suite.log("Test string");
 
-    let script =
+    const script =
       'require "variables";\r\n'
       + 'set "state" "${state} pending";\r\n'
       + 'if string :matches " ${state} " "* pending *" {\r\n'
@@ -162,13 +162,13 @@
 
     suite.log("Manipulate SetVariable - No values set - Set all values (upper)");
 
-    let script = ''
+    const script = ''
       + 'require "variables";\r\n'
       + 'set "b" "${a}";\r\n';
 
-    let doc = suite.parseScript(script, ["variables"]);
+    const doc = suite.parseScript(script, ["variables"]);
 
-    let elms = doc.queryElements("action/set");
+    const elms = doc.queryElements("action/set");
 
     suite.assertEquals(ONE_ELEMENT, elms.length, "Invalid number of set variable elements");
 
@@ -184,7 +184,7 @@
     elms[FIRST_ELEMENT].enable("modifier/40", true);
     elms[FIRST_ELEMENT].getElement("modifier/40").setElement(":upper");
 
-    let rv =
+    const rv =
       'require "variables";\r\n'
       + 'set :length :quotewildcard :upperfirst :upper "b" "${a}";\r\n';
 
@@ -195,13 +195,13 @@
 
     suite.log("Manipulate SetVariable - No values set - Set all values (lower)");
 
-    let script = ''
+    const script = ''
       + 'require "variables";\r\n'
       + 'set "b" "${a}";\r\n';
 
-    let doc = suite.parseScript(script, ["variables"]);
+    const doc = suite.parseScript(script, ["variables"]);
 
-    let elms = doc.queryElements("action/set");
+    const elms = doc.queryElements("action/set");
 
     suite.assertEquals(ONE_ELEMENT, elms.length, "Invalid number of set variable elements");
 
@@ -217,7 +217,7 @@
     elms[FIRST_ELEMENT].enable("modifier/40", true);
     elms[FIRST_ELEMENT].getElement("modifier/40").setElement(":lower");
 
-    let rv =
+    const rv =
       'require "variables";\r\n'
       + 'set :length :quotewildcard :lowerfirst :lower "b" "${a}";\r\n';
 
@@ -228,13 +228,13 @@
 
     suite.log("Manipulate SetVariable - All values set - Remove all values");
 
-    let script = ''
+    const script = ''
       + 'require "variables";\r\n'
       + 'set :length :quotewildcard :lowerfirst :lower "b" "${a}";\r\n';
 
-    let doc = suite.parseScript(script, ["variables"]);
+    const doc = suite.parseScript(script, ["variables"]);
 
-    let elms = doc.queryElements("action/set");
+    const elms = doc.queryElements("action/set");
 
     suite.assertEquals(ONE_ELEMENT, elms.length, "Invalid number of set variable elements");
 
@@ -253,7 +253,7 @@
     elms[FIRST_ELEMENT].getElement("name").value("Name");
     elms[FIRST_ELEMENT].getElement("value").value("Value");
 
-    let rv =
+    const rv =
       'require "variables";\r\n'
       + 'set "Name" "Value";\r\n';
 
@@ -296,14 +296,14 @@
   suite.add(function () {
     suite.log("Validate set action constructors");
 
-    let snipplet = 'set "variable" "";\r\n';
+    const snipplet = 'set "variable" "";\r\n';
     suite.expectValidSnipplet("action/set", snipplet, ["variables"]);
   });
 
   suite.add(function () {
     suite.log("Validate string test constructors");
 
-    let snipplet = 'string "${somevariable}" "some value"';
+    const snipplet = 'string "${somevariable}" "some value"';
     suite.expectValidSnipplet("test/string", snipplet, ["variables"]);
   });
 

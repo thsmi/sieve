@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function (exports) {
 
   "use strict";
@@ -270,7 +268,7 @@
         if (this.tests.length > 0)
           parser.extractChar(",");
 
-        let element = [];
+        const element = [];
 
         element[LEADING_WHITESPACE] = this._createByName("whitespace");
         if (this._probeByName("whitespace", parser))

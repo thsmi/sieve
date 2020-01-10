@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -60,14 +58,14 @@
      */
     onSave() {
 
-      let name = $("#sivNewHeaderName").val();
+      const name = $("#sivNewHeaderName").val();
 
       if (name.trim() === "") {
         window.alert("Header name is empty");
         return false;
       }
 
-      let value = $("#sivNewHeaderValue").val();
+      const value = $("#sivNewHeaderValue").val();
 
       if (value.trim() === "") {
         window.alert("Header value is empty");
@@ -77,7 +75,7 @@
       this.name().value(name);
       this.value().value(value);
 
-      let last = ($("input[type='radio'][name='last']:checked").val() === "true");
+      const last = ($("input[type='radio'][name='last']:checked").val() === "true");
 
       this.enable("last", last);
       return true;
@@ -157,7 +155,7 @@
      *
      */
     saveHeaderIndex() {
-      let indexType = $('input:radio[name="header-index"]:checked').val();
+      const indexType = $('input:radio[name="header-index"]:checked').val();
 
       switch (indexType) {
         case "first":
@@ -190,7 +188,7 @@
      *
      */
     saveHeaderValues() {
-      let value = $("input:radio[name='header-value']:checked").val();
+      const value = $("input:radio[name='header-value']:checked").val();
 
       switch (value) {
         case "some":
@@ -248,7 +246,7 @@
       });
 
       let indexType = "all";
-      let indexValue = this.getSieve().getElement("index").getElement("name").getValue();
+      const indexValue = this.getSieve().getElement("index").getElement("name").getValue();
 
       if (!this.getSieve().enable("index")) {
         indexType = "all";

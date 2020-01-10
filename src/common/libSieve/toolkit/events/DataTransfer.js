@@ -10,7 +10,6 @@
  *
  */
 
-/* global window */
 (function (exports) {
 
   "use strict";
@@ -54,7 +53,7 @@
      * Checks if the current runtime is affected by the drag and drop bug.
      * @returns {boolean}
      *   returns true in case it is bug free otherwise false
-    */
+     **/
     isBugFree() {
 
       // Check if we are running in electron...
@@ -124,7 +123,7 @@
      *
      * @param {string} flavour
      *   the drag falvour as string
-     * @param {Object} transfer
+     * @param {object} transfer
      *   the transfer object should be a string
      *
      */

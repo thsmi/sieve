@@ -17,7 +17,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -30,7 +30,7 @@
 
     suite.log("Parse body transform :raw");
 
-    let script =
+    const script =
       'require "body";\r\n'
       + '\r\n'
       + '# This will match a message containing the literal text\r\n'
@@ -49,7 +49,7 @@
 
     suite.log("Parse body transform :content");
 
-    let script =
+    const script =
       'require ["body", "fileinto"];\r\n'
       + '\r\n'
       + '# Save any message with any text MIME part that contains the\r\n'
@@ -72,7 +72,7 @@
 
     suite.log("Parse body transform :text");
 
-    let script =
+    const script =
       'require ["body", "fileinto"];\r\n'
       + '\r\n'
       + '# Save messages mentioning the project schedule in the\r\n'

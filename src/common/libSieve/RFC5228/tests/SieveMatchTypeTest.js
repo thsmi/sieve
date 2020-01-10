@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -28,7 +28,7 @@
   suite.add(function () {
     suite.log("Parse :is match-type");
 
-    let script =
+    const script =
       'if header :is "Sender" "owner-ietf-mta-filters@imc.org" \r\n'
       + '{\r\n'
       + '  keep;\r\n'
@@ -41,7 +41,7 @@
   suite.add(function () {
     suite.log("Parse :matches match-type");
 
-    let script =
+    const script =
       'if header :matches "Sender" "owner-ietf-mta-filters@imc.org" \r\n'
       + '{\r\n'
       + '  keep; \r\n'
@@ -54,7 +54,7 @@
   suite.add(function () {
     suite.log("Parse :contains match-type");
 
-    let script =
+    const script =
       'if header :contains "Sender" "owner-ietf-mta-filters@imc.org" \r\n'
       + '{\r\n'
       + '  keep; \r\n'

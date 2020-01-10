@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -59,7 +57,7 @@
 
       $("#txtVacationIntervalSeconds").focus(() => { $('#cbxVacationIntervalSeconds').prop('checked', true); });
 
-      let elm = sivElement.getElement("interval");
+      const elm = sivElement.getElement("interval");
 
       if (!elm.isNode(this.constructor.nodeName()))
         return;

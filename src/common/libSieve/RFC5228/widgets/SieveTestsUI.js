@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -49,7 +47,7 @@
       (new SieveNumericWidget("#sivSizeInput"))
         .init(this.getSieve().getElement("limit"));
 
-      let elm = this.getSieve().getElement("operator").getCurrentElement();
+      const elm = this.getSieve().getElement("operator").getCurrentElement();
       $('input:radio[name="over"][value="' + elm.nodeName() + '"]').prop('checked', true);
     }
 
@@ -61,7 +59,7 @@
       (new SieveNumericWidget("#sivSizeInput"))
         .save(this.getSieve().getElement("limit"));
 
-      let name = $("input[type='radio'][name='over']:checked").val();
+      const name = $("input[type='radio'][name='over']:checked").val();
 
       if (name === "test/size/operator/over")
         this.getSieve().getElement("operator").setCurrentElement(":over");
@@ -78,7 +76,7 @@
      * @inheritdoc
      */
     getSummary() {
-      let name = this.getSieve().getElement("operator").getCurrentElement().nodeName();
+      const name = this.getSieve().getElement("operator").getCurrentElement().nodeName();
 
       let operator = "smaller";
       if (name === "test/size/operator/over")
@@ -108,7 +106,7 @@
      **/
     onSave() {
 
-      let value = $("#sieve-widget-test")
+      const value = $("#sieve-widget-test")
         .find("input[name='booleanValue']:checked").val();
 
       if (value === "test/boolean/true")
@@ -135,7 +133,7 @@
      */
     getSummary() {
 
-      let name = this.getSieve().getCurrentElement().nodeName();
+      const name = this.getSieve().getCurrentElement().nodeName();
 
       if (name === "test/boolean/true")
         return $("<div/>").text("is true");

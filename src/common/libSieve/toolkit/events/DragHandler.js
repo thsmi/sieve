@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function (exports) {
 
   "use strict";
@@ -86,7 +84,7 @@
     }
 
     onDrag(event) {
-      let dt = new SieveDataTransfer(event.dataTransfer);
+      const dt = new SieveDataTransfer(event.dataTransfer);
 
       dt.clear();
 
@@ -96,6 +94,7 @@
 
     /**
      * The Sieve script which should be transfered.
+     * @abstract
      *
      * @returns {string} the sieve script as plain text
      */
@@ -105,6 +104,7 @@
 
     /**
      * The meta information for this sieve script.
+     * @abstract
      *
      * @returns {string} the meta information about the drag element
      */

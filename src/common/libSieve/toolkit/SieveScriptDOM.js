@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function (exports) {
 
 
@@ -74,7 +72,7 @@
 
   SieveDocument.prototype.queryElements = function (name) {
 
-    let result = [];
+    const result = [];
 
     this._walk(this.root().elms, name, result);
 
@@ -97,7 +95,7 @@
       if (typeof (parser) === "string")
         parser = new SieveParser(parser);
 
-      let item = this._lexer.createByName(this, name, parser);
+      const item = this._lexer.createByName(this, name, parser);
 
       if (typeof (parent) !== "undefined")
         item.parent(parent);
@@ -113,7 +111,7 @@
       if (typeof (parser) === "string")
         parser = new SieveParser(parser);
 
-      let item = this._lexer.createByClass(this, types, parser);
+      const item = this._lexer.createByClass(this, types, parser);
 
       if (typeof (parent) !== "undefined")
         item.parent(parent);
@@ -192,7 +190,7 @@
       if (n !== r)
         throw new Error("Something went terribly wrong. The linebreaks are mixed up...\n");
 
-      let parser = new SieveParser(data);
+      const parser = new SieveParser(data);
 
       this._rootNode.init(parser);
 
@@ -227,7 +225,7 @@
   SieveDocument.prototype.compact
     = function (whitelist) {
 
-      let items = [];
+      const items = [];
       let cnt = 0;
       let item;
 
@@ -245,7 +243,7 @@
 
       // ... and remove all dependent nodes
       while (items.length) {
-        let it = items.shift();
+        const it = items.shift();
 
         for (item in this._nodes)
           if (whitelist.indexOf(this._nodes[item]) === NO_ELEMENT)

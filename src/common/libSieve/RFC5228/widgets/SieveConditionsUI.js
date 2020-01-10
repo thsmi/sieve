@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function () {
 
   "use strict";
@@ -76,6 +74,9 @@
       this.drag(new SieveMoveDragHandler());
     }
 
+    /**
+     * @inheritdoc
+     */
     showSource() {
       super.showSource();
 
@@ -94,10 +95,10 @@
       parent.addClass("sivCondition");
       parent.attr("id", "sivElm" + this.id());
 
-      let elm = $("<div/>")
+      const elm = $("<div/>")
         .attr("id", this.uniqueId + "-summary");
 
-      let children = this.getSieve().children();
+      const children = this.getSieve().children();
 
       for (let i = 0; i < children.length; i++) {
         elm

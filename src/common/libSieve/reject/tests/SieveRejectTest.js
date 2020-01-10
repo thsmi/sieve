@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -29,7 +29,7 @@
 
     suite.log("Example 1");
 
-    let script =
+    const script =
       'require ["ereject"];\r\n'
       + '\r\n'
       + 'if address "from" "someone@example.com" {\r\n'
@@ -43,7 +43,7 @@
 
     suite.log("Example 2");
 
-    let script =
+    const script =
       'require ["reject"];\r\n'
       + '\r\n'
       + 'if size :over 100K {\r\n'
@@ -63,7 +63,7 @@
 
     suite.log("Example 3");
 
-    let script =
+    const script =
       'require ["reject"];\r\n'
       + '\r\n'
       + 'if header :contains "from" "coyote@desert.example.org" {\r\n'

@@ -14,9 +14,8 @@
   // Enable Strict Mode
   "use strict";
 
-  const { Sieve } = require("./SieveNodeClient.js");
-
-  const { SieveLogger } = require("./SieveNodeLogger.js");
+  const { Sieve } = require("./SieveClient.js");
+  const { SieveLogger } = require("./SieveLogger.js");
 
   const {
     SieveAbstractSession
@@ -29,7 +28,7 @@
   /**
    * @inheritdoc
    */
-  class SieveSession extends SieveAbstractSession {
+  class SieveNodeSession extends SieveAbstractSession {
 
     /**
      * Creates a new Session instance.
@@ -130,6 +129,6 @@
 
   }
 
-  exports.SieveSession = SieveSession;
+  exports.SieveSession = SieveNodeSession;
 
 })(exports || this);

@@ -8,15 +8,17 @@
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
+
 (function (exports) {
 
   "use strict";
 
-  const { SievePrefManager } = require('./libs/libManageSieve/settings/SievePrefManager.js');
-  const { SieveAuthorization } = require("./libs/libManageSieve/settings/SieveAuthorizationSettings.js");
-  const { SieveAuthentication } = require("./libs/libManageSieve/settings/SieveAuthenticationSettings.js");
-  const { SieveSecurity } = require("./libs/libManageSieve/settings/SieveSecuritySettings.js");
-  const { SieveHost } = require("./libs/libManageSieve/settings/SieveHostSettings.js");
+  const { SievePrefManager } = require('./SievePrefManager.js');
+
+  const { SieveAuthorization } = require("./SieveAuthorizationSettings.js");
+  const { SieveAuthentication } = require("./SieveAuthenticationSettings.js");
+  const { SieveSecurity } = require("./SieveSecuritySettings.js");
+  const { SieveHost } = require("./SieveHostSettings.js");
 
   // const SievePasswordManager = require('./utils/SievePasswordManager.js');
 
@@ -61,6 +63,9 @@
     }
 
     /**
+     * Host alls security related setting like the SASL
+     * mechanisms or the tls configuration.
+     *
      *  @returns {SieveSecurity}
      *   the current security settings
      */

@@ -14,7 +14,9 @@
   "use strict";
 
   const { SieveAccount } = require("./SieveAccount.js");
-  const { SieveUniqueId } = require("./libs/managesieve.ui/utils/SieveUniqueId.js");
+
+  // TODO Remove the external dependency...
+  const { SieveUniqueId } = require("./../../managesieve.ui/utils/SieveUniqueId.js");
 
   /**
    * Manages the configuration for sieve accounts.

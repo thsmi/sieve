@@ -20,11 +20,15 @@
 
   const { SieveScriptSaveDialog} = require("./../../../ui/dialogs/SieveDialogUI.js");
 
+  /**
+   * Implements a single tab ui element.
+   */
   class SieveTab {
 
     /**
-     *
+     * Creates a new instance
      * @param {SieveTabUI} tabs
+     *   the parent tab ui object
      * @param {string} account
      *   the accounts name
      * @param {string} name
@@ -40,10 +44,18 @@
       return $(`#${this.tabs.tabId} [data-sieve-account='${this.account}'][data-sieve-name='${this.name}']`);
     }
 
+    /**
+     * Gets the tab unique id.
+     * @returns {string}
+     *   the unique tab id.
+     */
     getId() {
       return this.getTab().attr("data-sieve-id");
     }
 
+    /**
+     * Ensures the tab's content is shown.
+     */
     show() {
       this.getTab().find(".nav-link").tab('show');
 
@@ -83,11 +95,20 @@
       return true;
     }
 
+    /**
+     * Closes the tab and removes the tab content frame.
+     */
     close() {
       $(`#${this.getId()}-tab`).remove();
       $(`#${this.getId()}-content`).remove();
     }
 
+    /**
+     * Checks if the tab has unsaved changes.
+     *
+     * @returns {boolean}
+     *   ture in case of unsaved changes
+     */
     async hasChanges() {
       return await SieveIpcClient.sendMessage("editor-hasChanged", null, this.getContent());
     }
@@ -103,6 +124,45 @@
       this.tabId = id;
     }
 
+    /**
+     * Scrolls the tab bar to the right
+     */
+    scrollRight() {
+      // $('.scroller-left').fadeIn('slow');
+      // $('.scroller-right').fadeOut('slow');
+
+      $('.list').animate({ left: "-=100px" }, () => {});
+    }
+
+    /**
+     * Scrolls the tab bar to the left
+     */
+    scrollLeft() {
+      // $('.scroller-right').fadeIn('slow');
+      // $('.scroller-left').fadeOut('slow');
+
+      if ($('.list').position().left >= 0)
+        $('.list').animate({ left: "0px" });
+      else
+        $('.list').animate({ left: "+=100px" });
+    }
+
+    /**
+     * Initializes the TabUI
+     */
+    init() {
+
+      // Add event listeners...
+      // TODO ensure they get also removed...
+      document
+        .getElementById("scrollleft")
+        .addEventListener("click", () => { this.scrollLeft(); });
+
+      document
+        .getElementById("scrollright")
+        .addEventListener("click", () => { this.scrollRight(); });
+    }
+
     getTab(account, name) {
       const tab = new SieveTab(this, account, name);
 
@@ -111,7 +171,6 @@
 
       return tab;
     }
-
 
     setChanged(account, name, changed) {
 
@@ -145,6 +204,14 @@
       this.getTab(account, name).onTabShown();
     }
 
+    /**
+     * Closes the given tab.
+     * Tabs are identified by the unique account id plus the script name.
+     * @param {string} account
+     *   the uniue account id.
+     * @param {string} name
+     *   the script name.
+     */
     async close(account, name) {
 
       const tab = this.getTab(account, name);
@@ -161,10 +228,26 @@
       $("#accounts-tab").find(".nav-link").tab('show');
     }
 
+    /**
+     * Creates a unique id
+     * @returns {string}
+     *   the unique id
+     */
     generateId() {
       return (new SieveUniqueId()).generate();
     }
 
+    /**
+     * Creates a new tab for the script.
+     * In case the tab exists it will switch to the tab.
+     *
+     * Tabs are identified by the account id and the script name.
+     *
+     * @param {string} account
+     *   the unique account id
+     * @param {string} name
+     *   the script name
+     */
     async create(account, name) {
 
       if (this.has(account, name)) {
@@ -217,6 +300,19 @@
       this.getTab(account, name).show();
     }
 
+    /**
+     * Opens a script in a tab.
+     *
+     * In case the script is already open it will switch
+     * to this tab.
+     *
+     * Tabs are identified by the account id and the script name.
+     *
+     * @param {string} account
+     *   the account id
+     * @param {string} name
+     *   the script name
+     */
     async open(account, name) {
 
       const tab = this.getTab(account, name);

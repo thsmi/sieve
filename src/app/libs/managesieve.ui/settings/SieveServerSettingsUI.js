@@ -46,18 +46,33 @@
     }
 
     /**
-     * Gets the account'S human readable display name
-     * @returns {SieveServerSettingsUI}
-     *   a self reference
+     * Gets the account's human readable display name
+     * @returns {string}
+     *   the display name
      */
     getDisplayName() {
       return this.getDialog().find(".sieve-settings-displayname").val();
     }
 
+    /**
+     * Sets the server's hostname.
+     *
+     * @param {string} hostname
+     *   the hostname as string.
+     * @returns {SieveServerSettingsUI}
+     *  a self reference
+     */
     setHostname(hostname) {
       this.getDialog().find(".sieve-settings-hostname").val(hostname);
+      return this;
     }
 
+    /**
+     * Gets the server's hostname.
+     *
+     * @returns {string}
+     *   the hostname
+     */
     getHostname() {
       return this.getDialog().find(".sieve-settings-hostname").val();
     }
@@ -70,10 +85,25 @@
       return this.getDialog().find(".sieve-settings-port").val();
     }
 
+    /**
+     * Sets the server's certificate fingerpint in the ui.
+     * The fingerprint is normally a sha checksum.
+     *
+     * @param {string} fingerprint
+     *   the fingerprint.
+     * @returns {SieveServerSettingsUI}
+     *  a self reference
+     */
     setFingerprint(fingerprint) {
       this.getDialog().find(".sieve-settings-fingerprint").val(fingerprint);
+      return this;
     }
 
+    /**
+     * Gets the server's fingerpint from the setting ui.
+     * @returns {string}
+     *   the certificate fingerpint
+     */
     getFingerprint() {
       return this.getDialog().find(".sieve-settings-fingerprint").val();
     }

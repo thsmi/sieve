@@ -29,7 +29,7 @@
   /**
    * Uses Node networking to realize a sieve client.
    */
-  class Sieve extends SieveAbstractClient {
+  class SieveNodeClient extends SieveAbstractClient {
 
 
     /**
@@ -277,7 +277,7 @@
       this.idleTimer = null;
       this.timeoutTimer = null;
 
-      this.getLogger().log("Disconnected ...", (1 << 2));
+      this.getLogger().logState("Disconnected ...");
     }
 
     // TODO detect server disconnects and communication errors...
@@ -314,6 +314,6 @@
   }
 
 
-  exports.Sieve = Sieve;
+  exports.Sieve = SieveNodeClient;
 
 })(this);

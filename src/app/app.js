@@ -13,7 +13,12 @@
 
   "use strict";
 
-  /* global $ */
+  const DEFAULT_TAB_POLICY = true;
+  const DEFAULT_TAB_WIDTH = 2;
+  const DEFAULT_INDENTATION_POLICY = false;
+  const DEFAULT_INDENTATION_WIDTH = 2;
+
+  const FIRST_ELEMENT = 0;
 
   // Import the node modules into our global namespace...
   const { SieveIpcClient} = require("./libs/managesieve.ui/utils/SieveIpcClient.js");
@@ -22,8 +27,8 @@
     SieveCertValidationException
   } = require("./libs/libManageSieve/SieveExceptions.js");
 
-  const { SieveSession } = require("./libs/libManageSieve/SieveNodeSession.js");
-  const { SieveAccounts } = require("./SieveAccounts.js");
+  const { SieveSessions } = require("./libs/libManageSieve/SieveSessions.js");
+  const { SieveAccounts } = require("./libs/libManageSieve/settings/SieveAccounts.js");
 
   const { SievePrefManager } = require('./libs/libManageSieve/settings/SievePrefManager.js');
 
@@ -40,9 +45,11 @@
     SieveErrorDialog
   } = require("./ui/dialogs/SieveDialogUI.js");
 
-  const accounts = new SieveAccounts().load();
+  const { SieveThunderbirdImport } = require("./libs/managesieve.ui/importer/SieveThunderbirdImport.js");
+  const { SieveAutoConfig } = require("./libs/libManageSieve/SieveAutoConfig.js");
 
-  const sessions = {};
+  const accounts = new SieveAccounts().load();
+  const sessions = new SieveSessions();
 
   const actions = {
 
@@ -56,8 +63,6 @@
 
     "import-thunderbird": function () {
       console.log("Import Thunderbird accounts");
-
-      const { SieveThunderbirdImport } = require("./libs/managesieve.ui/importer/SieveThunderbirdImport.js");
       return (new SieveThunderbirdImport()).getAccounts();
     },
 
@@ -71,8 +76,6 @@
       console.log("probe Account");
 
       const response = request;
-
-      const { SieveAutoConfig } = require("./libs/libManageSieve/SieveAutoConfig.js");
       response.payload["port"] = await (new SieveAutoConfig(request.payload["hostname"])).detect();
 
       return response.payload;
@@ -196,8 +199,7 @@
 
     "account-capabilities": async function (msg) {
       console.log("Get Capabilities");
-
-      return await sessions[msg.payload.account].capabilities();
+      return await (sessions.get(msg.payload.account).capabilities());
     },
 
     "account-cert-error": async (msg) => {
@@ -217,7 +219,7 @@
 
       const response = request;
       try {
-        await sessions[request.payload.account].connect();
+        await (sessions.get(request.payload.account).connect());
       } catch (e) {
 
         if ( e instanceof SieveCertValidationException) {
@@ -243,11 +245,8 @@
 
       const accountId = msg.payload.account;
 
-      if (sessions[accountId])
-        await sessions[accountId].disconnect();
-
       const account = accounts.getAccountById(accountId);
-      sessions[accountId] = new SieveSession(account, "sid2");
+      await sessions.create(accountId, account);
 
       await actions["account-connecting"](msg);
     },
@@ -256,26 +255,21 @@
     "account-connected": function (msg) {
       console.log("Is Connected");
 
-      if (typeof (sessions[msg.payload.account]) === "undefined") {
+      if (!sessions.has(msg.payload.account))
         return false;
-      }
 
-      return sessions[msg.payload.account].isConnected();
+      return sessions.get(msg.payload.account).isConnected();
     },
 
 
     "account-disconnect": async function (msg) {
-
-      if (sessions[msg.payload.account])
-        await sessions[msg.payload.account].disconnect();
-
-      delete sessions[msg.payload.account];
+      await sessions.destroy(msg.payload.account);
     },
 
     "account-list": async function (msg) {
       console.log("List Scripts for account: " + msg.payload.account);
 
-      return await sessions[msg.payload.account].listScripts();
+      return await sessions.get(msg.payload.account).listScripts();
     },
 
     // Script endpoint...
@@ -285,7 +279,7 @@
       const name = await (new SieveCreateScriptDialog()).show();
 
       if (name.trim() !== "")
-        await sessions[msg.payload.account].putScript(name, "#test\r\n");
+        await sessions.get(msg.payload.account).putScript(name, "#test\r\n");
 
       return name;
     },
@@ -306,7 +300,7 @@
       if (newName === oldName)
         return false;
 
-      await sessions[account].renameScript(oldName, newName);
+      await sessions.get(account).renameScript(oldName, newName);
       return true;
     },
 
@@ -324,7 +318,7 @@
       const rv = await (new SieveDeleteScriptDialog(name)).show();
 
       if (rv === true)
-        await sessions[account].deleteScript(name);
+        await sessions.get(account).deleteScript(name);
 
       return rv;
     },
@@ -332,13 +326,13 @@
     "script-activate": async function (msg) {
       console.log("Activate..." + msg);
 
-      await sessions[msg.payload.account].setActiveScript(msg.payload.data);
+      await sessions.get(msg.payload.account).setActiveScript(msg.payload.data);
     },
 
     "script-deactivate": async function (msg) {
       console.log("Deactivate...");
 
-      await sessions[msg.payload.account].setActiveScript();
+      await sessions.get(msg.payload.account).setActiveScript();
     },
 
     "script-edit": async function (msg) {
@@ -353,7 +347,7 @@
 
     "script-get": async function (msg) {
       console.log("Get Script...");
-      return await sessions[msg.payload.account].getScript(msg.payload.data);
+      return await sessions.get(msg.payload.account).getScript(msg.payload.data);
     },
 
     "script-check": async function (msg) {
@@ -375,7 +369,7 @@
     "script-save": async function (msg) {
       console.log("Save Script...");
 
-      await sessions[msg.payload.account].putScript(msg.payload.name, msg.payload.script);
+      await sessions.get(msg.payload.account).putScript(msg.payload.name, msg.payload.script);
     },
 
     "script-import": async function () {
@@ -397,10 +391,10 @@
 
       const fs = require('fs');
 
-      if (!fs.existsSync(filename.filePaths[0]))
+      if (!fs.existsSync(filename.filePaths[FIRST_ELEMENT]))
         return undefined;
 
-      return await fs.promises.readFile(filename.filePaths[0], "utf-8");
+      return await fs.promises.readFile(filename.filePaths[FIRST_ELEMENT], "utf-8");
     },
 
     "script-export": async function (request) {
@@ -420,7 +414,6 @@
         return;
 
       await require('fs').promises.writeFile(filename.filePath, request.payload.script, "utf-8");
-      return;
     },
 
     "script-changed": function (msg) {
@@ -445,16 +438,16 @@
       const pref = new SievePrefManager("editor");
 
       if (msg.payload.data === "tabulator-policy")
-        return pref.getBoolean("tabulator-policy", true);
+        return pref.getBoolean("tabulator-policy", DEFAULT_TAB_POLICY);
 
       if (msg.payload.data === "tabulator-width")
-        return pref.getInteger("tabulator-width", 2);
+        return pref.getInteger("tabulator-width", DEFAULT_TAB_WIDTH);
 
       if (msg.payload.data === "indentation-policy")
-        return pref.getBoolean("indentation-policy", false);
+        return pref.getBoolean("indentation-policy", DEFAULT_INDENTATION_POLICY);
 
       if (msg.payload.data === "indentation-width")
-        return pref.getInteger("indentation-width", 2);
+        return pref.getInteger("indentation-width", DEFAULT_INDENTATION_WIDTH);
 
       if (msg.payload.data === "syntax-check")
         return pref.getBoolean("syntax-check", true);
@@ -475,29 +468,24 @@
   }
 
 
-  $("#donate").click(() => {
-    require("electron").shell.openExternal("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC");
-  });
+  /**
+   * The main entry point
+   * Called as soon as the DOM is ready.
+   */
+  function main() {
 
-  $('#scrollright').click(function () {
+    document
+      .getElementById("donate")
+      .addEventListener("click", () => {
+        require("electron").shell.openExternal("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC");
+      });
 
-    // $('.scroller-left').fadeIn('slow');
-    // $('.scroller-right').fadeOut('slow');
+    (new SieveTabUI()).init();
+  }
 
-    $('.list').animate({ left: "-=100px" }, function () {
-
-    });
-  });
-
-  $('#scrollleft').click(function () {
-
-    // $('.scroller-right').fadeIn('slow');
-    // $('.scroller-left').fadeOut('slow');
-
-    if ($('.list').position().left >= 0)
-      $('.list').animate({ left: "0px" });
-    else
-      $('.list').animate({ left: "+=100px" });
-  });
+  if (document.readyState !== 'loading')
+    main();
+  else
+    document.addEventListener('DOMContentLoaded', () => { main(); }, { once: true });
 
 })();

@@ -53,10 +53,22 @@
       return await this.send("script-check", script);
     }
 
+    /**
+     * Sets the current clipboard conent.
+     *
+     * @param {string} data
+     *  the data to copy to the clipboard.
+     */
     async setClipboard(data) {
       await this.send("copy", data);
     }
 
+    /**
+     * Gets the current clipboard content.
+     *
+     * @returns {string}
+     *   the current clipboard conent
+     */
     async getClipboard() {
       return await this.send("paste");
     }
@@ -73,6 +85,9 @@
       await this.send("script-export", { "name": this.name, "script": script });
     }
 
+    /**
+     * Opens the sieve reference in the web browser.
+     */
     async openReference() {
       await this.send("reference-open");
     }

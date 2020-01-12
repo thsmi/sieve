@@ -203,11 +203,16 @@
             return new SieveSaslExternalRequest();
 
           case "LOGIN":
-            // we use SASL LOGIN only as last resort...
-            // ... as suggested in the RFC.
-            if (mechanism.length === 0)
+            // as suggested in the RFC, we use SASL LOGIN
+            // only as last resort...
+
+            // this means in case it is the only mechnisms
+            // we have no options
+            if (!mechanism.length)
               return new SieveSaslLoginRequest();
 
+            // otherwise be move it to the end of the
+            // mechanism list.
             mechanism.push("LOGIN");
             break;
         }

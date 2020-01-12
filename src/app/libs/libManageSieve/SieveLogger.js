@@ -18,7 +18,7 @@
   /**
    * Implements a sieve compatilbe logger instance for node
    */
-  class SieveLogger extends SieveAbstractLogger {
+  class SieveNodeLogger extends SieveAbstractLogger {
 
     /**
      * @inheritdoc
@@ -33,7 +33,7 @@
     }
   }
 
-  exports.SieveLogger = SieveLogger;
+  exports.SieveLogger = SieveNodeLogger;
 
 })(this);
 

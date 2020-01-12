@@ -124,6 +124,12 @@
       this.resize();
     }
 
+    /**
+     * Checks if the current editor has unsave changes
+     *
+     * @returns {boolean}
+     *   true in case the editor contains unsaved changes.
+     */
     hasChanged() {
       return this.getCurrentEditor().hasChanged();
     }
@@ -173,11 +179,22 @@
       return true;
     }
 
+    /**
+     * Checks the script on the server for syntax errors.
+     *
+     * @param {string} [script]
+     *   the script to check if omitted the current editors
+     *   script will be used.
+     *
+     * @returns {undefined|string}
+     *   in case of an script error, the error message
+     *   otherwise null
+     */
     async checkScript(script) {
       if (script === undefined || script === null)
         script = await this.getCurrentEditor().getScript();
 
-      return super.checkScript(script);
+      return await super.checkScript(script);
     }
 
     /**
@@ -282,10 +299,24 @@
       return this.getGraphicalEditor();
     }
 
+    /**
+     * Returns the plain text editor.
+     * Keep in mind the editor might be hidden.
+     *
+     * @returns {SieveTextEditorUI}
+     *   the plain text editor
+     */
     getTextEditor() {
       return this.textEditor;
     }
 
+    /**
+     * Returns the graphical editor.
+     * Keep in mind the editor might be hidden.
+     *
+     * @returns {SieveGraphicalEditorUI}
+     *   the graphical editor
+     */
     getGraphicalEditor() {
       return this.graphicalEditor;
     }

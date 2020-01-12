@@ -79,6 +79,12 @@
       return this;
     }
 
+    /**
+     * Gets the username from the ui.
+     *
+     * @returns {string}
+     *   the username as string.
+     */
     getAuthentication() {
       return this.getDialog().find(".sieve-settings-username").val();
     }

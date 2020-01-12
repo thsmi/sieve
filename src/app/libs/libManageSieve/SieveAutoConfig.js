@@ -17,13 +17,9 @@
   const SIEVE_PORT_NEW = 4190;
   const SIEVE_PORT_OLD = 2000;
 
-  const { SieveLogger } = require("./SieveNodeLogger.js");
-  const { Sieve } = require("./SieveNodeClient.js");
-  const {
-    /* SieveCapabilitiesRequest,
-    SieveLogoutRequest,*/
-    SieveInitRequest
-  } = require("./SieveRequest.js");
+  const { SieveLogger } = require("./SieveLogger.js");
+  const { Sieve } = require("./SieveClient.js");
+  const { SieveInitRequest } = require("./SieveRequest.js");
 
   /**
    * Tries to detect the correct sieve port.

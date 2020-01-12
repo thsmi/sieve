@@ -13,7 +13,6 @@
 
   "use strict";
 
-  /* global $ */
   /* global SieveAccountsUI */
   /* global SieveImportUI */
   /* global SieveUpdaterUI */
@@ -21,25 +20,33 @@
 
   /**
    * The main entry point for the account view
+   * Called as soon as the DOM is ready.
    */
-  $(document).ready(function () {
-
+  function main() {
     const accounts = new SieveAccountsUI();
-
     accounts.render();
 
-    $("#sieve-account-import").click(async () => {
-      await (new SieveImportUI()).show();
-      accounts.render();
-    });
+    document
+      .getElementById("sieve-account-import")
+      .addEventListener("click", async () => {
+        await (new SieveImportUI()).show();
+        accounts.render();
+      });
 
-    $("#sieve-account-create").click(async () => {
-      await (new SieveAccountCreateUI().show());
-      accounts.render();
-    });
+    document
+      .getElementById("sieve-account-create")
+      .addEventListener("click", async () => {
+        await (new SieveAccountCreateUI().show());
+        accounts.render();
+      });
 
     (new SieveUpdaterUI()).check();
-  });
+  }
+
+  if (document.readyState !== 'loading')
+    main();
+  else
+    document.addEventListener('DOMContentLoaded', () => { main(); }, { once: true });
 
 })();
 

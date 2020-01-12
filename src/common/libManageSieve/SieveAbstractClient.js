@@ -164,14 +164,11 @@
    * sending a startTLSRequest. Invoke this method imediately after the server
    * confirms switching to TLS.
    *
-   *
-   * @param {Function} callback
-   *   the callback which is invoked after a successfully switch to tls.
    * @returns {SieveAbstractClient}
    *   a self reference
    **/
   SieveAbstractClient.prototype.startTLS
-    = function (callback) {
+    = function () {
       if (this.secure !== true)
         throw new Error("TLS can't be started no secure socket");
 

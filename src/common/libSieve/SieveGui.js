@@ -232,7 +232,11 @@
   }
 
 
-  $(document).ready(function () {
+  /**
+   * The main entry point.
+   * Executed as soon as the DOM is Ready.
+   */
+  function main() {
     init();
 
     /* i += 1;
@@ -305,8 +309,7 @@
         e.preventDefault();
         console.dir(e.dataTransfer);
       });
-
-  });
+  }
 
   /**
    * The windows default error handler
@@ -332,6 +335,11 @@
   function hasChanged() {
     return true;
   }
+
+  if (document.readyState !== 'loading')
+    main();
+  else
+    document.addEventListener('DOMContentLoaded', () => { main(); }, { once: true });
 
   exports.onerror = errorhandler;
   exports.setSieveScript = setSieveScript;

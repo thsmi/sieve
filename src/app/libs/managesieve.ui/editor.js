@@ -13,14 +13,14 @@
 
   "use strict";
 
-  /* global $ */
   /* global SieveEditorUI */
   /* global SieveIpcClient */
 
   /**
-   * The main entry point...
+   * The main entry point.
+   * Called as soon as the DOM is ready.
    */
-  $(document).ready(async () => {
+  async function main() {
     const url = new URL(window.location);
 
     console.log(url);
@@ -36,8 +36,12 @@
     SieveIpcClient.setRequestHandler("editor-hasChanged", async () => { return await editor.hasChanged(); });
 
     // TODO Send a ready signal...
+  }
 
-  });
+  if (document.readyState !== 'loading')
+    main();
+  else
+    document.addEventListener('DOMContentLoaded', () => { main(); }, {once: true});
 
   /*
   CodeMirror.on(window, "resize", function() {

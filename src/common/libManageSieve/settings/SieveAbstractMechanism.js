@@ -29,9 +29,11 @@
     }
 
     /**
+     * The pref key which is used to store the information about the mechanism.
      * @abstract
+     *
      * @returns {string}
-     *   the pref key which is used to store the information about the mechanism
+     *  the pref key
      **/
     getKey() {
       throw new Error("Implement getKey()");
@@ -82,7 +84,6 @@
      * Sets the current mechanism.
      * @param {int} type
      *   the mechanism type's unique id.
-     *
      */
     setMechanism(type) {
       if (typeof (type) === "undefined" || type === null)

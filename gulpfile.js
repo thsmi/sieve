@@ -14,7 +14,13 @@ const { series, parallel } = require('gulp');
 const common = require('./gulp/gulpfile.common.js');
 const addon = require('./gulp/gulpfile.addon.js');
 const app = require('./gulp/gulpfile.app.js');
+const wx = require('./gulp/gulpfile.wx.js');
 const testing = require('./gulp/gulpfile.testing.js');
+
+// WX related gulp tasks
+
+exports["wx:watch"] = wx.watch;
+exports["wx:package"] = wx.package;
 
 // App related gulp tasks
 exports["app:watch"] = app.watch;

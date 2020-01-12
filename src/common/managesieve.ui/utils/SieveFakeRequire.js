@@ -54,6 +54,12 @@
     return m;
   }
 
+  const globals = new Map();
+  globals.set("./SieveUniqueId.js", "SieveUniqueId");
+  globals.set("./libs/managesieve.ui/utils/SieveUniqueId.js", "SieveUniqueId");
+
+  globals.set("./SieveAbstractIpcClient.js", "SieveAbstractIpcClient");
+
   /**
    * A fake CommonJs Module implementation.
    * Temporaily needs as node does not yes support ES6 modules.
@@ -67,11 +73,8 @@
    */
   function fakeRequire(module) {
 
-    if (module === "./SieveAbstractIpcClient.js")
-      return getModules("SieveAbstractIpcClient");
-
-    if (module === "./SieveUniqueId.js")
-      return getModules("SieveUniqueId");
+    if (globals.has(module))
+      return getModules(globals.get(module));
 
     throw new Error(`Module ${module} unknown to fake module loader`);
   }

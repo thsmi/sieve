@@ -1,0 +1,17 @@
+{
+  "name": "Sieve",
+  "description": "Blab bla bla",
+  "version": "2",
+  "applications": {
+    "gecko": {
+      "id": "sieve@mozdev.org"
+    }
+  },
+  "background": {
+    "page": "background.html"
+  },
+  "manifest_version": 2,
+  "permissions": [
+    "accountsRead", "tabs", "storage"
+  ]
+}

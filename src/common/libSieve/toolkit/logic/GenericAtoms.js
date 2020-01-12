@@ -60,13 +60,12 @@
 
     /**
      * Parses the given buffer and extracts the informations needed by the generic element.
+     * @abstract
      *
      * @param  {SieveParser} parser
      *  the parser which should be used
      * @throws
      *   throws an exception in case the given buffer could not be parsed.
-     *
-     *
      */
     parse(parser) {
       throw new Error("Implement SieveAbstractGeneric::parse(" + typeof (parser) + ")");
@@ -86,6 +85,7 @@
 
     /**
      * Concerts the current sieve elements into a script.
+     * @abstract
      *
      * @returns {string}
      *   the sieve script as string
@@ -280,7 +280,6 @@
      * Initializes the given parameter.
      * @param {object} parameter
      *  the parameter which should be set
-     *
      */
     addParameter(parameter) {
 
@@ -1291,6 +1290,10 @@
       return this.getCurrentElement().getElement(id);
     }
 
+    /**
+     *
+     * @param {*} data
+     */
     setElement(data) {
       this.setCurrentElement(data);
       return this;

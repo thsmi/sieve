@@ -13,7 +13,10 @@
 (function (exports) {
 
   "use strict";
+
   /* global SieveDataTransfer */
+
+  const DOM_ELEMENT = 0;
 
   /**
    *
@@ -260,10 +263,10 @@
     canMoveElement(sivFlavour, id) {
       const source = this.document().id(id);
 
-      if (source.html().parent().prev().get(0) == this.owner().html().get(0))
+      if (source.html().parent().prev().get(DOM_ELEMENT) == this.owner().html().get(DOM_ELEMENT))
         return false;
 
-      if (source.html().parent().next().get(0) == this.owner().html().get(0))
+      if (source.html().parent().next().get(DOM_ELEMENT) == this.owner().html().get(DOM_ELEMENT))
         return false;
 
       return true;
@@ -455,10 +458,10 @@
 
         // if it's a conditional statement it's parent does not have a test method
         if (!source.parent().test) {
-          if (source.html().parent().prev().prev().get(0) === this.owner().html().get(0))
+          if (source.html().parent().prev().prev().get(DOM_ELEMENT) === this.owner().html().get(DOM_ELEMENT))
             return false;
 
-          if (source.html().parent().next().get(0) === this.owner().html().get(0))
+          if (source.html().parent().next().get(DOM_ELEMENT) === this.owner().html().get(DOM_ELEMENT))
             return false;
         }
       }
@@ -789,10 +792,10 @@
       }
 
       // It makes no sense so drop the item directly before or after the element.
-      if (source.html().parent().prev().get(0) == this.owner().html().get(0))
+      if (source.html().parent().prev().get(DOM_ELEMENT) == this.owner().html().get(DOM_ELEMENT))
         return false;
 
-      if (source.html().parent().next().get(0) == this.owner().html().get(0))
+      if (source.html().parent().next().get(DOM_ELEMENT) == this.owner().html().get(DOM_ELEMENT))
         return false;
 
       return true;

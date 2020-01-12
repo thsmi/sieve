@@ -21,6 +21,7 @@
   const { SieveAbstractAuthentication } = require("./SieveAbstractAuthentication.js");
   const { SieveAbstractMechanism } = require("./SieveAbstractMechanism.js");
 
+  // TODO Remove external dependency
   const { SievePasswordDialog } = require("./../../../ui/dialogs/SieveDialogUI.js");
 
   /**
@@ -68,7 +69,6 @@
       const username = this.getUsername();
       const displayname = this.account.getHost().getDisplayName();
 
-      // TODO we need to get rid of this dependency...
       return await (new SievePasswordDialog(username, displayname)).show();
     }
   }

@@ -16,7 +16,7 @@
     "base": {
       require: [
         // JQuery
-        "./../common/jQuery/jquery.min.js",
+        "./../common/jquery/jquery.min.js",
         // Basic Sieve Elements
         "./../common/libSieve/toolkit/logic/GenericCapabilities.js",
         "./../common/libSieve/toolkit/SieveParser.js",

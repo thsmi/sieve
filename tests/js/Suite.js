@@ -1,8 +1,5 @@
 // Create the namespace...
 
-/* global window */
-
-
 // Our server is implemented within an anonymous method...
 
 (function (exports) {
@@ -11,8 +8,6 @@
 
   /* global $: false */
   /* global net */
-  /* global tests */
-  /* global document */
 
   // Create the namespace, even if we are inside an anonymous method...
   if (!exports.net)
@@ -38,14 +33,14 @@
 
   exports.net.tschmid.yautt.test.server.onMessage = function (event) {
 
-    let msg = JSON.parse(event.data);
+    const msg = JSON.parse(event.data);
 
     if (msg.type === "LOG") {
       this.log(msg.data, msg.level);
       return;
     }
 
-    let that = this;
+    const that = this;
 
     if (msg.type === "FAIL") {
 
@@ -103,7 +98,7 @@
 
   net.tschmid.yautt.test.server.extend = function (name) {
 
-    let base = exports.net.tschmid.yautt.test.config[name];
+    const base = exports.net.tschmid.yautt.test.config[name];
     let scripts = [];
 
     if (!base)
@@ -125,7 +120,7 @@
 
   net.tschmid.yautt.test.server.isCompatible = function (name) {
 
-    let base = exports.net.tschmid.yautt.test.config[name];
+    const base = exports.net.tschmid.yautt.test.config[name];
 
     if (!base.agents)
       return true;
@@ -135,8 +130,8 @@
     if (!Array.isArray(agents))
       agents = [agents];
 
-    let userAgent = navigator.userAgent;
-    for (let agent of agents) {
+    const userAgent = navigator.userAgent;
+    for (const agent of agents) {
       this.logTrace("Checking if envirnoment is compatible with " + agent+" ...");
       if (userAgent.indexOf(agent) > -1) {
         this.logTrace("... Yes");
@@ -166,28 +161,28 @@
       return;
     }
 
-    let scripts = this.extend(this.current);
+    const scripts = this.extend(this.current);
 
-    let tests = exports.net.tschmid.yautt.test.config;
+    const tests = exports.net.tschmid.yautt.test.config;
 
     scripts.push("./../js/Unit.js");
     scripts.push(tests[this.current].script);
     scripts.push("./../js/UnitInit.js");
 
 
-    let that = this;
+    const that = this;
 
     $("#divFrame")
       .empty()
       .append($("<iframe/>")
         .attr("id", "testFrame")
         .load(function () {
-          let iframe = document.getElementById("testFrame").contentWindow;
+          const iframe = document.getElementById("testFrame").contentWindow;
           that.logTrace("Injecting Scripts for " + that.current + " ...");
 
           $.each(scripts, function (idx, script) {
 
-            let msg = { type: "IMPORT", data: script };
+            const msg = { type: "IMPORT", data: script };
 
             iframe.postMessage("" + JSON.stringify(msg), "*");
           });
@@ -199,9 +194,9 @@
    * Adds the test configuration to this server.
    * Existing items are replaced silently
    *
-   * @param{object} tests
+   * @param {object} tests
    *   the tests which should be performed
-   * @returns{undefined}
+   * @returns {undefined}
    */
   net.tschmid.yautt.test.server.add = function (tests) {
 
@@ -222,11 +217,11 @@
 
   net.tschmid.yautt.test.server.run = function () {
 
-    let that = this;
+    const that = this;
 
     this.queue = [];
 
-    let tests = exports.net.tschmid.yautt.test.config;
+    const tests = exports.net.tschmid.yautt.test.config;
 
     $.each(tests, function (name, value) {
       // Loop through tests..
@@ -248,7 +243,6 @@
 
   /**
    * Clears all results...
-   * @returns{undefined}
    */
   net.tschmid.yautt.test.server.clear = function () {
     $("#divOutput").empty();
@@ -259,7 +253,7 @@
   };
 
   net.tschmid.yautt.test.server.init = function () {
-    let that = this;
+    const that = this;
     window.addEventListener("message", function (event) { that.onMessage(event); }, false);
   };
 
@@ -274,16 +268,16 @@
 
     $("#start").click(function () {
 
-      let tests = exports.net.tschmid.yautt.test.config;
+      const tests = exports.net.tschmid.yautt.test.config;
 
       $.each(tests, function (name, value) {
         if (value.disabled)
           value.disabled = false;
       });
 
-      let items = $("#tests input:checkbox:not(:checked)");
+      const items = $("#tests input:checkbox:not(:checked)");
       items.each(function (idx, elm) {
-        let name = $(this).val();
+        const name = $(this).val();
 
         if (tests[name].script)
           tests[name].disabled = true;
@@ -314,8 +308,8 @@
     });
 
 
-    let elm = $("#tests");
-    let tests = exports.net.tschmid.yautt.test.config;
+    const elm = $("#tests");
+    const tests = exports.net.tschmid.yautt.test.config;
 
     $.each(tests, function (name) {
 

@@ -174,6 +174,32 @@ async function packageLinux() {
 }
 
 /**
+ * Packages the build directory and electron for macOS
+ * @returns {undefined}
+ */
+async function packageMacOS() {
+  "use strict";
+
+  const options = {
+    dir: BUILD_DIR_APP,
+    arch: "x64",
+    platform: "mas",
+    download: {
+      cache: path.join(common.BASE_DIR_BUILD, "/electron/cache")
+    },
+    out: path.join(common.BASE_DIR_BUILD, "/electron/out"),
+    overwrite: true,
+    // packageManager : "yarn"
+    // packageManager : false,
+    prune: true
+    //app-bundle-id: "net.tschmid.sieve"
+  };
+
+  const packager = require('electron-packager');
+  await packager(options);
+}
+
+/**
  * Updates the addon's version.
  * @returns {undefined}
  */
@@ -222,6 +248,7 @@ exports["packageCommon"] = packageCommon;
 
 exports["packageWin32"] = packageWin32;
 exports["packageLinux"] = packageLinux;
+exports["packageMacOS"] = packageMacOS;
 
 exports['package'] = parallel(
   packageDefinition,

@@ -56,9 +56,20 @@
 
   const globals = new Map();
   globals.set("./SieveUniqueId.js", "SieveUniqueId");
-  globals.set("./libs/managesieve.ui/utils/SieveUniqueId.js", "SieveUniqueId");
+  globals.set("libs/managesieve.ui/utils/SieveUniqueId.js", "SieveUniqueId");
+  globals.set("./../utils/SieveUniqueId.js", "SieveUniqueId");
 
   globals.set("./SieveAbstractIpcClient.js", "SieveAbstractIpcClient");
+
+  globals.set("./../utils/SieveTemplateLoader.js", "SieveTemplateLoader");
+
+  globals.set("libs/managesieve.ui/settings/SieveAbstractMechanism.js","SieveAbstractMechanism");
+  globals.set("libs/managesieve.ui/settings/SieveAuthorization.js", "SieveAuthorization");
+  globals.set("libs/managesieve.ui/settings/SieveAbstractAuthentication.js", "SieveAbstractAuthentication");
+  globals.set("libs/managesieve.ui/settings/SieveAuthentication.js", "SieveAuthentication");
+  globals.set("libs/managesieve.ui/settings/SieveSecurity.js", "SieveSecurity");
+  globals.set("libs/managesieve.ui/settings/SieveHost.js", "SieveHost");
+
 
   /**
    * A fake CommonJs Module implementation.

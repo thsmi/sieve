@@ -284,12 +284,12 @@
      */
     async checkScript() {
 
-      const errors = await this.getController().checkScript(this.getScript());
+      const errors = await this.getController().checkScript(await this.getScript());
 
-      if (!errors)
-        this.hideSyntaxErrors();
-      else
+      if (errors && errors !== "")
         this.showSyntaxErrors(errors);
+      else
+        this.hideSyntaxErrors();
     }
 
     /**

@@ -1,5 +1,5 @@
 <div>
-  <hr>
+  <hr />
   <h5>Defaults</h5>
   <p>
     Use the current settings as default for all editor instances or load the default values.

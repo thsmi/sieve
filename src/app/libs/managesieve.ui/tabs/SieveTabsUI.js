@@ -18,7 +18,7 @@
   const { SieveIpcClient } = require("./../utils/SieveIpcClient.js");
   const { SieveUniqueId } = require("./../utils/SieveUniqueId.js");
 
-  const { SieveScriptSaveDialog} = require("./../../../ui/dialogs/SieveDialogUI.js");
+  const { SieveScriptSaveDialog} = require("./../dialogs/SieveDialogUI.js");
 
   /**
    * Implements a single tab ui element.
@@ -40,6 +40,12 @@
       this.name = name;
     }
 
+    /**
+     * Gets the current tab. The dom element is used to store meta data.
+     *
+     * @returns {DomElement}
+     *   the tab's dom element
+     */
     getTab() {
       return $(`#${this.tabs.tabId} [data-sieve-account='${this.account}'][data-sieve-name='${this.name}']`);
     }
@@ -75,10 +81,21 @@
       return $(`#${this.getId()}-content`)[0].contentWindow;
     }
 
+    /**
+     * Called whenever the tab got activated and the tab's content was
+     * shown to the user.
+     */
     onTabShown() {
-      SieveIpcClient.sendMessage("editor-shown", null, this.getContent());
+      SieveIpcClient.sendMessage("editor", "editor-shown", null, this.getContent());
     }
 
+    /**
+     * Requests the tab to save the content.
+     *
+     * @returns {true}
+     *   true in case the tab was changed and has no more unsaved changes.
+     *   otherwise false.
+     */
     async save() {
 
       if (!await this.hasChanges())
@@ -90,7 +107,7 @@
         return false;
 
       if (SieveScriptSaveDialog.isAccepted(result))
-        await SieveIpcClient.sendMessage("editor-save", null, this.getContent());
+        await SieveIpcClient.sendMessage("editor", "editor-save", null, this.getContent());
 
       return true;
     }
@@ -110,7 +127,7 @@
      *   ture in case of unsaved changes
      */
     async hasChanges() {
-      return await SieveIpcClient.sendMessage("editor-hasChanged", null, this.getContent());
+      return await SieveIpcClient.sendMessage("editor", "editor-hasChanged", null, this.getContent());
     }
 
   }

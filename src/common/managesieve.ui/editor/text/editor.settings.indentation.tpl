@@ -1,5 +1,5 @@
 <div>
-  <hr>
+  <hr />
   <h5>Indentation</h5>
   <p>The plain text editor supports automatic indenting</p>
   <div class="form-group row">
@@ -23,10 +23,10 @@
     <div class="col-sm-9">
       <div id="editor-settings-indentation-policy" class="btn-group btn-group-toggle" data-toggle="buttons">
         <label id="editor-settings-indentation-policy-spaces" class="btn btn-outline-secondary btn-sm">
-          <input type="radio" name="indentation-policy" autocomplete="off">Use Spaces
+          <input type="radio" name="indentation-policy" autocomplete="off" />Use Spaces
         </label>
         <label id="editor-settings-indentation-policy-tabs" class="btn btn-outline-secondary btn-sm">
-          <input type="radio" name="indentation-policy" autocomplete="off">Use Tab
+          <input type="radio" name="indentation-policy" autocomplete="off" />Use Tab
         </label>
       </div>
     </div>

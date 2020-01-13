@@ -125,7 +125,7 @@
         "require-await": "warn",
         "no-var": "warn",
         "no-confusing-arrow": "error",
-        "no-console": "off",
+        "no-console": "warn",
         "no-caller": "error",
         "no-eval": "error",
         "no-extra-label" :"error",

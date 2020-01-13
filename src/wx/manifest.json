@@ -13,5 +13,32 @@
   "manifest_version": 2,
   "permissions": [
     "accountsRead", "tabs", "storage"
-  ]
+  ],
+
+  "experiment_apis": {
+    "SieveAccountsApi": {
+      "schema": "api/sieve/SieveAccountsApi.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "api/sieve/SieveAccountsApi.js",
+        "paths": [["sieve", "accounts"]]
+      }
+    },
+    "SieveSessionApi": {
+      "schema": "api/sieve/SieveSessionApi.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "api/sieve/SieveSessionApi.js",
+        "paths": [["sieve", "session"]]
+      }
+    },
+    "SieveMenuApi": {
+      "schema": "api/sieve/SieveMenuApi.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "script": "api/sieve/SieveMenuApi.js",
+        "paths": [["sieve", "menu"]]
+      }
+    }
+  }
 }

@@ -52,7 +52,6 @@
   function SieveAbstractClient() {
     this.host = null;
     this.port = null;
-    this.secure = null;
 
     this.socket = null;
     this.data = null;
@@ -157,6 +156,20 @@
     };
 
   /**
+   * Check is the connection supports any connection security.
+   * It could be either disabled by the client or the server.
+   *
+   * @abstract
+   *
+   * @returns {boolean}
+   *   true in case the connection can be or is secure otherwise false
+   */
+  SieveAbstractClient.prototype.isSecure
+     = function () {
+      throw new Error("Impelement isSecure()");
+    };
+
+  /**
    * This method secures the connection to the sieve server. By activating
    * Transport Layer Security all Data exchanged is crypted.
    *
@@ -169,7 +182,7 @@
    **/
   SieveAbstractClient.prototype.startTLS
     = function () {
-      if (this.secure !== true)
+      if (!this.isSecure())
         throw new Error("TLS can't be started no secure socket");
 
       if (!this.socket)

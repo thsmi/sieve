@@ -26,14 +26,14 @@
      * Checks for new updates and display a new message if a newer version is available
      */
     async check() {
-      const status = await SieveIpcClient.sendMessage("update-check");
+      const status = await SieveIpcClient.sendMessage("core", "update-check");
 
       if (status !== true)
         return;
 
       const template = await (new SieveTemplateLoader()).load("./updater/update.tpl");
       template.find(".sieve-update-msg").click(() => {
-        SieveIpcClient.sendMessage("update-goto-url");
+        SieveIpcClient.sendMessage("core", "update-goto-url");
       });
 
       $("#ctx").prepend(template);

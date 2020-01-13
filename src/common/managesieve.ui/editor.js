@@ -31,9 +31,9 @@
     await editor.render();
     await editor.load();
 
-    SieveIpcClient.setRequestHandler("editor-shown", () => { window.focus(); editor.focus(); });
-    SieveIpcClient.setRequestHandler("editor-save", async () => { return await editor.save(); });
-    SieveIpcClient.setRequestHandler("editor-hasChanged", async () => { return await editor.hasChanged(); });
+    SieveIpcClient.setRequestHandler("editor", "editor-shown", () => { window.focus(); editor.focus(); });
+    SieveIpcClient.setRequestHandler("editor", "editor-save", async () => { return await editor.save(); });
+    SieveIpcClient.setRequestHandler("editor", "editor-hasChanged", async () => { return await editor.hasChanged(); });
 
     // TODO Send a ready signal...
   }

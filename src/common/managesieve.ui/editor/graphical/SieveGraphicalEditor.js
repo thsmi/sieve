@@ -20,7 +20,7 @@
   /**
    *
    */
-  class SieveNodeGraphicalEditorUI extends SieveAbstractEditorUI {
+  class SieveGraphicalEditorUI extends SieveAbstractEditorUI {
 
     /**
      * Creates a new graphical editor UI.
@@ -46,7 +46,8 @@
 
       const capabilities = await this.getController().getCapabilities();
       // set script content...
-      document.getElementById(this.id).contentWindow
+      document.getElementById(this.id)
+        .contentWindow
         .setSieveScript(script, JSON.stringify(capabilities.extensions));
     }
 
@@ -54,7 +55,8 @@
      * @inheritdoc
      */
     getScript() {
-      return document.getElementById(this.id).contentWindow
+      return document.getElementById(this.id)
+        .contentWindow
         .getSieveScript();
     }
 
@@ -62,14 +64,15 @@
      * @inheritdoc
      */
     hasChanged() {
-      return document.getElementById(this.id).contentWindow
+      return document.getElementById(this.id)
+        .contentWindow
         .hasChanged();
     }
   }
 
   if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveGraphicalEditorUI = SieveNodeGraphicalEditorUI;
+    module.exports.SieveGraphicalEditorUI = SieveGraphicalEditorUI;
   else
-    exports.SieveGraphicalEditorUI = SieveNodeGraphicalEditorUI;
+    exports.SieveGraphicalEditorUI = SieveGraphicalEditorUI;
 
 })(this);

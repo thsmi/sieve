@@ -8,10 +8,10 @@
     <div class="col-sm-9">
       <div class="btn-group btn-group-toggle" data-toggle="buttons">
         <label class="btn btn-outline-secondary btn-sm" id="sieve-editor-settings-synatxcheck-on">
-          <input type="radio" name="tabulator-policy" autocomplete="off">Enabled
+          <input type="radio" name="tabulator-policy" autocomplete="off" />Enabled
         </label>
         <label class="btn btn-outline-secondary btn-sm" id="sieve-editor-settings-synatxcheck-off">
-          <input type="radio" name="tabulator-policy" autocomplete="off">Disabled
+          <input type="radio" name="tabulator-policy" autocomplete="off" />Disabled
         </label>
       </div>
     </div>

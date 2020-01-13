@@ -42,7 +42,6 @@
     /**
      * Returns the default mechanism which is used unless it is
      * overwritten by an other mechanism.
-     *
      * @abstract
      *
      * @returns {int}
@@ -54,7 +53,6 @@
 
     /**
      * Checks it the given mechanism is supported.
-     *
      * @abstract
      *
      * @param {int} mechanism
@@ -68,7 +66,6 @@
 
     /**
      * Returns the authentication mechanism for the given type.
-     *
      * @abstract
      *
      * @param {int} mechanism
@@ -82,6 +79,7 @@
 
     /**
      * Sets the current mechanism.
+     *
      * @param {int} type
      *   the mechanism type's unique id.
      */
@@ -100,6 +98,7 @@
 
     /**
      * Gets the current mechanism.
+     *
      * @returns {int}
      *   the mechanisms unique id.
      */

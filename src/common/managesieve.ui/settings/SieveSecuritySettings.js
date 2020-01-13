@@ -22,7 +22,8 @@
   class SieveSecurity {
 
     /**
-     * Creates a new instance
+     * Creates a new instance.
+     *
      * @param {SieveAccount} account
      *   the account with is associated with this account.
      */
@@ -41,7 +42,7 @@
     }
 
     /**
-     * Sets the sasl mechanism
+     * Sets the sasl mechanism.
      *
      * @param {string} mechanism
      *   the sasl mechanism which should be used.
@@ -64,6 +65,7 @@
 
     /**
      * Defines if a secure connections shall be used.
+     *
      * @param {boolean} value
      *   set to true for a secure connection.
      *

@@ -42,6 +42,14 @@
 
       this.tlsSocket = null;
       this._logger = logger;
+      this.secure = true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    isSecure() {
+      return this.secure;
     }
 
 

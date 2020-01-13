@@ -60,6 +60,53 @@
     }
 
     /**
+     * Called when an authentication is needed
+     *
+     * @param {SieveAccount} account
+     *   the account which should be authenticated.
+     * @param {boolean} hasPassword
+     *   true if the password is needed otherwise false.
+     * @returns {object}
+     *   an object the the username and optionally the password.
+     */
+    async onAuthenticate(account, hasPassword) {
+
+      const authentication = {};
+
+      authentication.username = account.getAuthentication().getUsername();
+
+      if (hasPassword)
+        authentication.password = await account.getAuthentication().getPassword();
+
+      return authentication;
+    }
+
+    /**
+     * Called when an authorization is needed.
+     *
+     * @param {SieveAccount} account
+     *   the account which should be authorized.
+     * @returns {string}
+     *   the user name to be authorized as or an empty string.
+     */
+    async onAuthorize(account) {
+      return await account.getAuthorization().getAuthorization();
+    }
+
+    /**
+     * Called when a proxy lookup is needed.
+     *
+     * @param {SieveAccount} account
+     *   the current account.
+     * @returns {object}
+     *   the proxy information.
+     */
+    async onProxyLookup(account) {
+      return await account.getProxy().getProxyInfo();
+    }
+
+
+    /**
      * Creates a new session for the given id.
      * In case the session id is in use. It will
      * terminate the connection, and recreate a
@@ -71,9 +118,25 @@
      *   the account with the session's configuration
      */
     async create(id, account) {
-      if (await this.destroy(id));
 
-      this.sessions.set(id, new SieveSession(account, "sid2"));
+      await this.destroy(id);
+
+      const options = {
+        secure : account.getSecurity().isSecure(),
+        sasl : account.getSecurity().getMechanism(),
+        keepAlive : (account.getSettings().isKeepAlive()) ? account.getSettings().getKeepAliveInterval() : 0,
+        logLevel : account.getSettings().getDebugFlags(),
+        certFingerprints : account.getHost().getFingerprint(),
+        certIgnoreError : account.getHost().getIgnoreCertErrors()
+      };
+
+      const session = new SieveSession(id, options);
+
+      session.on("authenticate", async (hasPassword) => { return await this.onAuthenticate(account, hasPassword); });
+      session.on("authorize", async () => { return await this.onAuthorize(account); });
+      session.on("proxy", async (host, port) => { return await this.onProxyLookup(account, host, port); });
+
+      this.sessions.set(id, session);
     }
 
     /**

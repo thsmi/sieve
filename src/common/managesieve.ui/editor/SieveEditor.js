@@ -130,8 +130,8 @@
      * @returns {boolean}
      *   true in case the editor contains unsaved changes.
      */
-    hasChanged() {
-      return this.getCurrentEditor().hasChanged();
+    async hasChanged() {
+      return await this.getCurrentEditor().hasChanged();
     }
 
     /**
@@ -160,7 +160,7 @@
      */
     async save() {
 
-      if (!this.hasChanged())
+      if (!await this.hasChanged())
         return this;
 
       try {
@@ -218,7 +218,7 @@
      * Exports the script to a file
      */
     async exportScript() {
-      await super.exportScript(this.getCurrentEditor().getScript());
+      await super.exportScript(await this.getCurrentEditor().getScript());
 
       // The dialog stole our focus...
       this.getCurrentEditor().focus();
@@ -270,7 +270,8 @@
         await this.getGraphicalEditor().setScript(
           await this.getTextEditor().getScript());
       } catch (ex) {
-        this.showErrorMessage("Switching to Graphical editor failed");
+        console.log(ex);
+        this.showErrorMessage("Switching to Graphical editor failed " + ex);
         return false;
       }
 

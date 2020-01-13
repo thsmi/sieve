@@ -28,9 +28,9 @@
   } = require("./libs/libManageSieve/SieveExceptions.js");
 
   const { SieveSessions } = require("./libs/libManageSieve/SieveSessions.js");
-  const { SieveAccounts } = require("./libs/libManageSieve/settings/SieveAccounts.js");
 
-  const { SievePrefManager } = require('./libs/libManageSieve/settings/SievePrefManager.js');
+  const { SieveAccounts } = require("./libs/managesieve.ui/settings/SieveAccounts.js");
+  const { SievePrefManager } = require('./libs/managesieve.ui/settings/SievePrefManager.js');
 
   const { SieveUpdater } = require("./libs/managesieve.ui/updater/SieveUpdater.js");
   const { SieveTabUI } = require("./libs/managesieve.ui/tabs/SieveTabsUI.js");
@@ -103,7 +103,7 @@
       return rv;
     },
 
-    "account-get-displayname": function (msg) {
+    "account-get-displayname": async function (msg) {
       return accounts.getAccountById(msg.payload.account).getHost().getDisplayName();
     },
 
@@ -219,7 +219,11 @@
 
       const response = request;
       try {
-        await (sessions.get(request.payload.account).connect());
+        const account = accounts.getAccountById(request.payload.account);
+
+        await (sessions.get(request.payload.account).connect(
+          account.getHost().getHostname(),
+          account.getHost().getPort()));
       } catch (e) {
 
         if ( e instanceof SieveCertValidationException) {
@@ -326,13 +330,13 @@
     "script-activate": async function (msg) {
       console.log("Activate..." + msg);
 
-      await sessions.get(msg.payload.account).setActiveScript(msg.payload.data);
+      await sessions.get(msg.payload.account).activateScript(msg.payload.data);
     },
 
     "script-deactivate": async function (msg) {
       console.log("Deactivate...");
 
-      await sessions.get(msg.payload.account).setActiveScript();
+      await sessions.get(msg.payload.account).activateScript();
     },
 
     "script-edit": async function (msg) {
@@ -354,14 +358,12 @@
       console.log("Check Script " + msg.payload.account + "... ");
 
       try {
-        return await sessions[msg.payload.account].checkScript(msg.payload.data);
+        return await sessions.get(msg.payload.account).checkScript(msg.payload.data);
       }
       catch (ex) {
 
-        // Rethrow in case it is no serverside exception...
-        if (!ex.isServerSide || !ex.isServerSide())
-          throw ex;
-
+        // TODO thow an exception in case is it not an instance of a server side exception...
+        debugger;
         return ex.getResponse().getMessage();
       }
     },
@@ -464,7 +466,7 @@
 
 
   for (const [key, value] of Object.entries(actions)) {
-    SieveIpcClient.setRequestHandler(key, value);
+    SieveIpcClient.setRequestHandler("core", key, value);
   }
 
 

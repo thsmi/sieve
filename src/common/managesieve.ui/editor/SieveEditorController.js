@@ -15,7 +15,7 @@
 
   /* global SieveIpcClient */
 
-  class SieveNodeEditorController {
+  class SieveEditorController {
 
     constructor(name, account) {
       this.name = name;
@@ -140,13 +140,13 @@
 
       payload["account"] = this.account;
 
-      return await SieveIpcClient.sendMessage(action, payload);
+      return await SieveIpcClient.sendMessage("core", action, payload);
     }
   }
 
   if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveEditorController = SieveNodeEditorController;
+    module.exports.SieveEditorController = SieveEditorController;
   else
-    exports.SieveEditorController = SieveNodeEditorController;
+    exports.SieveEditorController = SieveEditorController;
 
 })(this);

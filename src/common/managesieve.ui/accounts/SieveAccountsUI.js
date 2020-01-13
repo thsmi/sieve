@@ -28,7 +28,7 @@
      */
     async render() {
 
-      const items = await SieveIpcClient.sendMessage("accounts-list");
+      const items = await SieveIpcClient.sendMessage("core", "accounts-list");
 
       $(".siv-accounts").empty();
       console.log("Rendering Accounts...");
@@ -61,7 +61,7 @@
      *   the accounts unique id.
      */
     async create() {
-      const id = await SieveIpcClient.sendMessage("account-create");
+      const id = await SieveIpcClient.sendMessage("core", "account-create");
       await this.render();
 
       // Fixme show the settings dialog.

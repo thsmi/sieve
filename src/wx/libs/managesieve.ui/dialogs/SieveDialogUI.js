@@ -20,8 +20,8 @@
   const DIALOG_DISCARDED = 2;
 
   /* global $ */
-  const { SieveTemplateLoader } = require("./../../libs/managesieve.ui/utils/SieveTemplateLoader.js");
-  const { SieveUniqueId } = require("./../../libs/managesieve.ui/utils/SieveUniqueId.js");
+  const { SieveTemplateLoader } = require("./../utils/SieveTemplateLoader.js");
+  const { SieveUniqueId } = require("./../utils/SieveUniqueId.js");
 
   /**
    * Displays a simple dialog with an action button.
@@ -173,7 +173,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./ui/dialogs/dialog.account.delete.tpl";
+      return "./dialogs/dialog.account.delete.tpl";
     }
 
     /**
@@ -207,7 +207,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./ui/dialogs/dialog.account.cert.tpl";
+      return "./dialogs/dialog.account.cert.tpl";
     }
 
     /**
@@ -239,7 +239,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./ui/dialogs/dialog.script.delete.tpl";
+      return "./dialogs/dialog.script.delete.tpl";
     }
 
     /**
@@ -259,7 +259,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./ui/dialogs/dialog.script.create.tpl";
+      return "./dialogs/dialog.script.create.tpl";
     }
 
     /**
@@ -314,7 +314,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./ui/dialogs/dialog.script.rename.tpl";
+      return "./dialogs/dialog.script.rename.tpl";
     }
 
     /**
@@ -376,7 +376,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./ui/dialogs/dialog.account.password.tpl";
+      return "./dialogs/dialog.account.password.tpl";
     }
 
     /**
@@ -439,7 +439,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./ui/dialogs/dialog.account.authorization.tpl";
+      return "./dialogs/dialog.account.authorization.tpl";
     }
 
     /**
@@ -499,7 +499,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./ui/dialogs/dialog.script.busy.tpl";
+      return "./dialogs/dialog.script.busy.tpl";
     }
 
     /**
@@ -530,7 +530,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./ui/dialogs/dialog.script.save.tpl";
+      return "./dialogs/dialog.script.save.tpl";
     }
 
     /**
@@ -613,7 +613,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./ui/dialogs/dialog.error.tpl";
+      return "./dialogs/dialog.error.tpl";
     }
 
     /**

@@ -29,6 +29,7 @@
 
     /**
      * Create a new instance.
+     *
      * @param {int} type
      *   the accounts unique identifier.
      * @param {SieveAccount} account
@@ -76,9 +77,9 @@
 
     /**
      * Configures the TCP Port which sieve should use.
-     * @param {string} port
-     *   the port number as string.
      *
+     *  @param {string} port
+     *   the port number as string.
      */
     setPort(port) {
       let type = TYPE_CUSTOM;

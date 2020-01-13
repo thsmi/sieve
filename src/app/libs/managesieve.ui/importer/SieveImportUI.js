@@ -33,7 +33,7 @@
 
         // we need to call it on the main thread because we don't have
         // to all the libraries we need right here.
-        const accounts = await SieveIpcClient.sendMessage("import-thunderbird");
+        const accounts = await SieveIpcClient.sendMessage("core","import-thunderbird");
 
         for (let account of accounts) {
           const item = await (new SieveTemplateLoader()).load("./importer/account.import.item.tpl");
@@ -50,7 +50,7 @@
             dialog.find(".sieve-import-progress").show();
 
             try {
-              account = await SieveIpcClient.sendMessage("account-probe", account);
+              account = await SieveIpcClient.sendMessage("core", "account-probe", account);
             } catch (ex) {
               alert("Failed to import" + ex);
               resolve(false);
@@ -61,7 +61,7 @@
             }
 
             // fix me remove modal2 from dom.
-            await SieveIpcClient.sendMessage("account-create", account);
+            await SieveIpcClient.sendMessage("core", "account-create", account);
             dialog.modal('hide');
 
             resolve(true);

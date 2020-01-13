@@ -20,6 +20,7 @@
 
     /**
      * Create a new instance.
+     *
      * @param {int} type
      *   the accounts unique identifier.
      * @param {SieveAccount} account
@@ -32,8 +33,11 @@
 
     /**
      * An human readable description, which describes the authentication procedure.
+     *
      * @abstract
-     * @returns {string} String containing the description.
+     *
+     * @returns {string}
+     *   String containing the description.
      **/
     getDescription() {
       throw new Error("Impement getDescription");
@@ -50,7 +54,7 @@
      * @returns {string | null}
      *   the password or null e.g. when the password prompt was dismissed.
      **/
-    getPassword() {
+    async getPassword() {
       throw new Error("Impement getPassword");
     }
 
@@ -62,7 +66,7 @@
      * @returns {string}
      *   the username as string.
      **/
-    getUsername() {
+    async getUsername() {
       throw new Error("Implement getUsername");
     }
 

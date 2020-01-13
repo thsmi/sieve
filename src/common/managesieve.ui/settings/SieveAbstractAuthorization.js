@@ -23,6 +23,7 @@
 
     /**
      * Create a new instance.
+     *
      * @param {int} type
      *   the account's unique identifier.
      * @param {SieveAccount} account
@@ -64,6 +65,7 @@
 
     /**
      * Returns always an empty string. This means the server should choose the most suitable authorization.
+     *
      * @returns {string}
      *   an empty string.
      */

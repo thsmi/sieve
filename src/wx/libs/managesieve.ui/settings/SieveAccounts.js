@@ -16,6 +16,35 @@
   /* global browser */
 
   const { SieveUniqueId } = require("./libs/managesieve.ui/utils/SieveUniqueId.js");
+  // const { SieveAbstractAuthentication } = require("./settings/SieveAbstractAuthentication.js");
+  // const { SieveAbstractAuthorization } = require("./settings/SieveAbstractAuthorization.js");
+
+  class SieveAuthorization /*extends SieveAbstractAuthorization*/ {
+
+    constructor(id) {
+      this.id = id;
+    }
+
+    async getUsername() {
+      return await browser.sieve.accounts.getUsername(this.id);
+    }
+
+  }
+
+  class SieveImapAuth/* extends SieveAbstractAuthentication*/ {
+
+    constructor(id) {
+      this.id = id;
+    }
+
+    async getPassword() {
+      return await browser.sieve.accounts.getPassword(this.id);
+    }
+
+    async getUsername() {
+      return await browser.sieve.accounts.getUsername(this.id);
+    }
+  }
 
   class SieveHost {
 
@@ -23,28 +52,63 @@
       this.id = id;
     }
 
-    getDisplayName() {
-      debugger;
-      return "Test"+this.id;
+    async getDisplayName() {
+      return await browser.sieve.accounts.getPrettyName(this.id);
+    }
+
+    async getHostname() {
+      return await browser.sieve.accounts.getHostname(this.id);
+    }
+
+    getPort() {
+      return "4190";
+    }
+  }
+
+  class SieveSecurity {
+    constructor(id) {
+      this.id = id;
+    }
+
+    async isSecure() {
+      return true;
+    }
+
+    async getMechanism() {
+      return "default";
     }
   }
 
   class SieveAccount {
-    constructor(id, callback) {
+    constructor(id) {
       this.id = id;
-      this.callback = callback;
 
       this.host = new SieveHost(id);
+      this.authentication = new SieveImapAuth(id);
+      this.authorization = new SieveAuthorization(id);
+      this.security = new SieveSecurity(id);
     }
 
     getHost() {
       return this.host;
     }
+
+    getAuthentication() {
+      return this.authentication;
+    }
+
+    getAuthorization() {
+      return this.authorization;
+    }
+
+    getSecurity() {
+      return this.security;
+    }
   }
 
   /**
    * Manages the configuration for sieve accounts.
-   * It behaves like a directory. Ist just lists the accounts.
+   * It behaves like a directory. It just lists the accounts.
    * The inidividual settings are managed by the SieveAccount object
    *
    * It uses the DOM's local store to persist the configuration data.
@@ -82,7 +146,7 @@
         if (item.type !== "imap" && item.type !== "pop3")
           continue;
 
-        this.accounts[item.id] = new SieveAccount(item, this.callback);
+        this.accounts[item.id] = new SieveAccount(item.id, this.callback);
       }
 
       return this;
@@ -107,7 +171,7 @@
      *   a list with sieve account.
      */
     getAccounts() {
-      this.load();
+      //this.load();
       return Object.keys(this.accounts);
     }
 
@@ -119,7 +183,7 @@
      *   the sieve account or undefined.
      */
     getAccountById(id) {
-      this.load();
+      //this.load();
       return this.accounts[id];
     }
   }

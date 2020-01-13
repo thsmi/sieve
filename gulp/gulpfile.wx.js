@@ -115,13 +115,10 @@ function watchSrc() {
 
   watch(
     ['./src/**/*.js',
-      './src/**/*.jsm',
       './src/**/*.html',
       './src/**/*.tpl',
       './src/**/*.css',
-      './src/**/*.xul',
-      './src/**/*.dtd',
-      './src/**/*.properties'],
+      './src/**/*.json'],
     parallel(
       packageSrc,
       packageCommon)

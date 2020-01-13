@@ -76,7 +76,7 @@
     }
 
     onTabShown() {
-      SieveIpcClient.sendMessage("editor-shown", null, this.getContent());
+      SieveIpcClient.sendMessage("editor", "editor-shown", null, this.getContent());
     }
 
     async save() {
@@ -90,7 +90,7 @@
         return false;
 
       if (SieveScriptSaveDialog.isAccepted(result))
-        await SieveIpcClient.sendMessage("editor-save", null, this.getContent());
+        await SieveIpcClient.sendMessage("editor", "editor-save", null, this.getContent());
 
       return true;
     }
@@ -110,7 +110,7 @@
      *   ture in case of unsaved changes
      */
     async hasChanges() {
-      return await SieveIpcClient.sendMessage("editor-hasChanged", null, this.getContent());
+      return await SieveIpcClient.sendMessage("editor", "editor-hasChanged", null, this.getContent());
     }
 
   }

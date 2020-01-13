@@ -15,7 +15,6 @@
   "use strict";
 
   const { Sieve } = require("./SieveClient.js");
-  const { SieveLogger } = require("./SieveLogger.js");
 
   const {
     SieveAbstractSession
@@ -31,18 +30,9 @@
   class SieveNodeSession extends SieveAbstractSession {
 
     /**
-     * Creates a new Session instance.
-     * @param {SieveAccount} account
-     *   an reference to a sieve account. this is needed to obtain login informations.
-     * @param {string} [sid]
-     *   a unique Identifier for this Session. Only needed to make debugging easier.
+     * @inheritdoc
      */
-    constructor(account, sid) {
 
-      super(
-        account,
-        new SieveLogger(sid, account.getSettings().getDebugFlags()));
-    }
 
     /**
      * @inheritdoc
@@ -68,16 +58,12 @@
     /**
      * @inheritdoc
      */
-    async startTLS(options) {
+    async startTLS() {
 
-      if (options === undefined || options === null)
-        options = {};
-
-      if (options.fingerprints === undefined || options.fingerprints === null)
-        options.fingerprints = this.account.getHost().getFingerprint();
-
-      if (options.ignoreErrors === undefined || options.ignoreErrors === null)
-        options.ignoreErrors = this.account.getHost().getIgnoreCertErrors();
+      const options = {
+        fingerprints : this.getOption("certFingerprints"),
+        ignoreCertErrors : this.getOption("certIgnoreError")
+      };
 
       await super.startTLS(options);
     }
@@ -104,10 +90,10 @@
      * By default the host and port configured in the settings are used
      * By you may override host and port, e.g. to realize a referal.
      *
-     * @param {string} [hostname]
-     *   the hostname, in case omitted the hostname from the account's settings is used
-     * @param {string} [port]
-     *   the port, in case omitted the port from the account's settings is used
+     * @param {string} hostname
+     *   the hostname
+     * @param {string} port
+     *   the port
      * @returns {SieveSession}
      *   a self reference
      */

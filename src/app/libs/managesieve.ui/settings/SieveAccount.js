@@ -38,11 +38,8 @@
      *
      * @param {string} id
      *   the account's unique id.
-     * @param {Function} callback
-     *   the callback which is invoked to retrieve the password.
      */
-    constructor(id, callback) {
-      this.callback = callback;
+    constructor(id) {
       this.prefs = new SievePrefManager(id);
 
       this.authorization = new SieveAuthorization(this);

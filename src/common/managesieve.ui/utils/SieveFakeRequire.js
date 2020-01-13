@@ -60,6 +60,9 @@
 
   globals.set("./SieveAbstractIpcClient.js", "SieveAbstractIpcClient");
 
+  globals.set("./../utils/SieveTemplateLoader.js", "SieveTemplateLoader");
+  globals.set("./../utils/SieveUniqueId.js", "SieveUniqueId");
+
   /**
    * A fake CommonJs Module implementation.
    * Temporaily needs as node does not yes support ES6 modules.

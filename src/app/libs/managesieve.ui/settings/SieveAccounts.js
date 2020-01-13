@@ -14,9 +14,7 @@
   "use strict";
 
   const { SieveAccount } = require("./SieveAccount.js");
-
-  // TODO Remove the external dependency...
-  const { SieveUniqueId } = require("./../../managesieve.ui/utils/SieveUniqueId.js");
+  const { SieveUniqueId } = require("./../utils/SieveUniqueId.js");
 
   /**
    * Manages the configuration for sieve accounts.
@@ -29,12 +27,8 @@
 
     /**
      * Creates a new instance
-     *
-     * @param {Function} callback
-     *   the password callback.
      */
-    constructor(callback) {
-      this.callback = callback;
+    constructor() {
       this.accounts = {};
     }
 
@@ -54,7 +48,7 @@
         return this;
 
       ids.forEach((id) => {
-        this.accounts[id] = new SieveAccount(id, this.callback);
+        this.accounts[id] = new SieveAccount(id);
       });
 
       return this;
@@ -97,7 +91,7 @@
 
       const id = this.generateId();
 
-      this.accounts[id] = new SieveAccount(id, this.callback);
+      this.accounts[id] = new SieveAccount(id);
 
       console.log(Object.keys(this.accounts));
 

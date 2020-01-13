@@ -40,7 +40,7 @@
           };
 
           // fix me remove modal2 from dom.
-          await SieveIpcClient.sendMessage("account-create", account);
+          await SieveIpcClient.sendMessage("core", "account-create", account);
           dialog.modal('hide');
           resolve(true);
         });

@@ -174,7 +174,7 @@ async function packageLinux() {
 }
 
 /**
- * Packages the build directory and electron for linux
+ * Packages the build directory and electron for macOS
  * @returns {undefined}
  */
 async function packageMacOS() {
@@ -192,7 +192,7 @@ async function packageMacOS() {
     // packageManager : "yarn"
     // packageManager : false,
     prune: true
-    //app-bundle-id: "com.thsmi.sieve"
+    //app-bundle-id: "net.tschmid.sieve"
   };
 
   const packager = require('electron-packager');

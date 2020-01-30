@@ -59,6 +59,17 @@
   await browser.sieve.menu.load();
 
 
+  async function getTabs(account, name) {
+    const url = new URL("./libs/managesieve.ui/editor.html", window.location);
+
+    url.searchParams.append("account", account);
+    url.searchParams.append("script", name);
+
+    console.log(url.toString);
+
+    return await browser.tabs.query({ url: url.toString() });
+  }
+
   let accounts = [];
 
   const actions = {

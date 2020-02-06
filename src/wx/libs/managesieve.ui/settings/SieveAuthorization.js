@@ -13,24 +13,58 @@
 
   "use strict";
 
-  /* global browser */
+  const AUTHORIZATION_TYPE_USERNAME = 1;
+  const CONFIG_AUTHORIZATION_TYPE = "authorization.type";
 
-  // const { SieveAbstractAuthorization } = require("./settings/SieveAbstractAuthorization.js");
+  const { SieveAbstractMechanism } = require("libs/managesieve.ui/settings/SieveAbstractMechanism.js");
+  const { SieveDefaultAuthorization } = require("libs/managesieve.ui/settings/SieveAbstractAuthorization.js");
 
-  class SieveAuthorization /*extends SieveAbstractAuthorization*/ {
+  /**
+   * Manages the authorization settings.
+   */
+  class SieveAuthorization extends SieveAbstractMechanism {
 
-    constructor(account) {
-      this.account = account;
+    /**
+     * @inheritdoc
+     **/
+    getDefault() {
+      return AUTHORIZATION_TYPE_USERNAME;
     }
 
     /**
      * @inheritdoc
-     */
-    async getUsername() {
-      return await browser.sieve.accounts.getUsername(this.account.getId());
+     **/
+    getKey() {
+      return CONFIG_AUTHORIZATION_TYPE;
     }
 
+    /**
+     * @inheritdoc
+     **/
+    hasMechanism(type) {
+      switch (type) {
+        case AUTHORIZATION_TYPE_USERNAME:
+          return true;
+
+        default:
+          return false;
+      }
+    }
+
+    /**
+     * @inheritdoc
+     **/
+    getMechanismById(type) {
+      switch (type) {
+        case AUTHORIZATION_TYPE_USERNAME:
+          return new SieveDefaultAuthorization(AUTHORIZATION_TYPE_USERNAME, this.account);
+
+        default:
+          throw new Error("Unknown authorization mechanism");
+      }
+    }
   }
+
 
   // Require modules need to use export.module
   if (typeof (module) !== "undefined" && module && module.exports)

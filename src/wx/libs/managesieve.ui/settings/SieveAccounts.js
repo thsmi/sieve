@@ -21,11 +21,15 @@
   const { SieveSecurity } = require("libs/managesieve.ui/settings/SieveSecurity.js");
   const { SieveHost } = require("libs/managesieve.ui/settings/SieveHost.js");
 
-  // const { SieveAbstractAuthentication } = require("./settings/SieveAbstractAuthentication.js");
+  const { SievePrefManager } = require("libs/managesieve.ui/settings/SievePrefManager.js");
+
+  // TODO App and WebExtension should have a common base class..
 
   class SieveAccount /* extends SieveAbstractAccount */{
     constructor(id) {
       this.id = id;
+
+      this.prefs = new SievePrefManager(id);
 
       this.host = new SieveHost(this);
       this.authentication = new SieveAuthentication(this);
@@ -43,16 +47,16 @@
     }
 
     getHost() {
-      return this.host;
+      return this.host.get();
     }
 
     getAuthentication() {
-      // FIXME Temporary hack until a pref system is up.
-      return this.authentication.get(1);
+      return this.authentication.get();
     }
 
     getAuthorization() {
-      return this.authorization;
+      debugger;
+      return this.authorization.get();
     }
 
     getSecurity() {

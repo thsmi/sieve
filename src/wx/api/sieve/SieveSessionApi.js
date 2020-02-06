@@ -15,6 +15,10 @@
 
   /* global ExtensionCommon */
   /* global ChromeUtils */
+  /* global Components */
+
+  const Cc = Components.classes;
+  const Ci = Components.interfaces;
 
   /**
    * Implements a webextension api for sieve session and connection management.
@@ -74,6 +78,25 @@
               }
             }).api(),
 
+            onCertError: new ExtensionCommon.EventManager({
+              context,
+              name: "sieve.session.onCertError",
+              register: (fire, id) => {
+
+                // It is just a notification so no need to wait.
+                const callback = (host, port, securityInfo) => {
+                  fire.async(host, port, securityInfo);
+                };
+
+                sessions.get(id).on("certerror", callback);
+
+                return () => {
+                  if (sessions.has(id))
+                    sessions.get(id).on("certerror");
+                };
+              }
+            }).api(),
+
             onProxyLookup: new ExtensionCommon.EventManager({
               context,
               name: "sieve.session.onProxyLookup",
@@ -92,8 +115,6 @@
               }
             }).api(),
 
-            // TODO Implement a minimal pref parser.
-
             async create(id, options) {
 
               if (sessions.has(id))
@@ -109,6 +130,22 @@
 
               await this.disconnect(id, true);
               sessions.delete(id);
+            },
+
+            async addCertErrorOverride(hostname, port, rawDER, flags) {
+
+              const overrideService = Cc["@mozilla.org/security/certoverride;1"]
+                .getService(Ci.nsICertOverrideService);
+
+              const certdb = Cc["@mozilla.org/security/x509certdb;1"]
+                .getService(Ci.nsIX509CertDB);
+              const cert = certdb.constructX509(rawDER, rawDER.length);
+
+              overrideService.rememberValidityOverride(
+                hostname, port,
+                cert,
+                flags,
+                false);
             },
 
             async connect(id, host, port) {

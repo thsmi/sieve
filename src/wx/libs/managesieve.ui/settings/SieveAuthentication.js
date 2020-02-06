@@ -29,15 +29,6 @@
   class SieveImapAuthentication extends SieveAbstractAuthentication {
 
     /**
-     * Creates a new instance
-     * @param {SieveAccount} account
-     *  the parent sieve account
-     */
-    constructor(account) {
-      super(AUTH_TYPE_IMAP, account);
-    }
-
-    /**
      * @inheritdoc
      */
     async getPassword() {
@@ -92,7 +83,7 @@
         case AUTH_TYPE_IMAP:
           // fall through we just implement prompt authentication
         default:
-          return new SieveImapAuthentication(this.account);
+          return new SieveImapAuthentication(AUTH_TYPE_IMAP, this.account);
       }
     }
   }

@@ -57,8 +57,10 @@
      */
     constructor(error, cert) {
       super("Error while validating Cerificate: " + error);
-      this.error = error;
-      this.cert = cert;
+      this._error = error;
+
+      // TODO Rename to sec info.
+      this._cert = cert;
     }
   }
 

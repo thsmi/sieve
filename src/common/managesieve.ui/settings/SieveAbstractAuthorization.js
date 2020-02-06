@@ -117,10 +117,20 @@
     }
   }
 
-  exports.SieveAbstractAuthorization = SieveAbstractAuthorization;
+  // Require modules need to use export.module
+  if (typeof (module) !== "undefined" && module && module.exports) {
+    module.exports.SieveAbstractAuthorization = SieveAbstractAuthorization;
 
-  exports.SieveNoAuthorization = SieveNoAuthorization;
-  exports.SieveCustomAuthorization = SieveCustomAuthorization;
-  exports.SieveDefaultAuthorization = SieveDefaultAuthorization;
+    module.exports.SieveNoAuthorization = SieveNoAuthorization;
+    module.exports.SieveCustomAuthorization = SieveCustomAuthorization;
+    module.exports.SieveDefaultAuthorization = SieveDefaultAuthorization;
+  } else {
+    exports.SieveAbstractAuthorization = SieveAbstractAuthorization;
 
-})(module.exports);
+    exports.SieveNoAuthorization = SieveNoAuthorization;
+    exports.SieveCustomAuthorization = SieveCustomAuthorization;
+    exports.SieveDefaultAuthorization = SieveDefaultAuthorization;
+  }
+
+
+})(this);

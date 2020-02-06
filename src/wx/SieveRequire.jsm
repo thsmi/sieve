@@ -65,6 +65,7 @@
     if (base.endsWith("/"))
       base = base.slice(0, -1);
 
+    const cache = new Map();
     /**
      * Emulates loading a commonjs module via a sandbox.
      *
@@ -83,12 +84,17 @@
       if (uri.startsWith("./"))
         uri = base + uri.substring(1);
 
-      console.log("Loading uri " + uri);
+      if (cache.has(uri)) {
+        console.log("Cache hit for " + uri);
+        return cache.get(uri);
+      }
 
+      console.log("Loading uri " + uri);
       const script = readURI(uri);
 
       const systemPrincipal = Components.classes["@mozilla.org/systemprincipal;1"].createInstance(Components.interfaces.nsIPrincipal);
 
+      // TODO we should load everything into the same sandbox...
       // create a new scope.
       const sandbox = new Components.utils.Sandbox(systemPrincipal, {
         wantGlobalProperties: ["XMLHttpRequest", "TextEncoder", "TextDecoder", "atob", "btoa"],
@@ -100,6 +106,7 @@
       sandbox.console = console;
       // then push a reference to our require function to it
       sandbox.require = require;
+      sandbox.Error = Error;
       // and create a dummy modules.exports
       sandbox.module = { exports: {} };
       // and a exports.
@@ -114,6 +121,7 @@
       if (Object.getOwnPropertyNames(sandbox.module.exports).length === 0)
         throw new Error("Module does not export anything " + uri);
 
+      cache.set(uri, sandbox.module.exports);
       return sandbox.module.exports;
     }
 

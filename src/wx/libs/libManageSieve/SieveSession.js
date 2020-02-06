@@ -23,6 +23,8 @@
   const { Sieve } = require("./SieveClient.js");
   const { SieveAbstractSession } = require("./SieveAbstractSession.js");
 
+  const { SieveCertValidationException } = require("./SieveExceptions.js");
+
   /**
    * This class pools and caches concurrent connections (Channel) to an destinct
    * remote server (Session).
@@ -35,6 +37,16 @@
    *
    **/
   class SieveSession extends SieveAbstractSession {
+
+    // TODO Should be moved to parent
+    getExtensions() {
+      return this.sieve.extensions;
+    }
+
+    // TODO Should be moved to parent
+    getCompatibility() {
+      return this.getSieve().getCompatibility();
+    }
 
     /**
      * @inheritdoc
@@ -55,6 +67,23 @@
      */
     destroySieve() {
       this.sieve = null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    async connect(hostname, port) {
+
+      // TODO move to sieve abstract session...
+      try {
+        await super.connect(hostname, port);
+      } catch (ex) {
+
+        if (ex instanceof SieveCertValidationException)
+          this.listeners.onCertError(hostname, port, ex._cert);
+
+        throw ex;
+      }
     }
 
 
@@ -81,9 +110,6 @@
       if (aIID.equals(Ci.nsISupports))
         return this;
 
-      if (aIID.equals(Ci.nsIBadCertListener2))
-        return this;
-
       if (aIID.equals(Ci.nsIInterfaceRequestor))
         return this;
 
@@ -95,39 +121,6 @@
       return this.QueryInterface(aIID);
     }
 
-    /**
-     * Implements the nsIBadCertListener2 which is used to override the "bad cert" dialog.
-     *
-     * Thunderbird alway closes the connection after an certificate error. Which means
-     * in case we endup here we need to reconnect after resolving the cert error.
-     *
-     * @param {object} socketInfo
-     *   the socket info object
-     * @param {object} sslStatus
-     *   the ssl status
-     * @param {string} targetSite
-     *   the traget site which cause the ssl error
-     * @returns {boolean}
-     *   true in case we handled the notify otherwise false.
-     */
-    notifyCertProblem(socketInfo, sslStatus, targetSite) {
-      this.getLogger().log("Sieve BadCertHandler: notifyCertProblem");
-
-      // no listener registert, show the default UI
-      if (!this._hasListeners("onBadCert"))
-        return false;
-
-      this._invokeListeners("onBadCert", targetSite, sslStatus);
-      return true;
-    }
-
-    getExtensions() {
-      return this.sieve.extensions;
-    }
-
-    getCompatibility() {
-      return this.getSieve().getCompatibility();
-    }
   }
 
   exports.SieveSession = SieveSession;

@@ -224,6 +224,36 @@
           "type": "string",
           "description" : "the server's port"
         }]
+      },{
+        "name": "addCertErrorOverride",
+        "type": "function",
+        "description": "Adds a certificate error override for the given cert.",
+        "async": true,
+        "parameters": [
+          {
+            "name" : "host",
+            "type" : "string",
+            "description" : "The hostname to override"
+          },
+          {
+            "name" : "port",
+            "type" : "string",
+            "description" : "The port to override"
+          },
+          {
+            "name": "rawDER",
+            "type": "array",
+            "description" : "The server's certificate",
+            "items": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "flags",
+            "type": "integer",
+            "description": "The override flags."
+          }
+        ]
       }
     ],
     "events": [
@@ -263,6 +293,63 @@
         "returns": {
           "type" : "string",
           "description" : "The authentication information."
+        },
+        "extraParameters": [
+          {
+            "name": "id",
+            "description": "The unique account id.",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "onCertError",
+        "type": "function",
+        "description" : "Called when a tls handshake failed",
+        "parameters": [
+          {
+            "name" : "host",
+            "type" : "string",
+            "description" : "The hostname for which the validation failed"
+          },
+          {
+            "name" : "port",
+            "type" : "string",
+            "description" : "The port for which te validation failed"
+          },
+          {
+            "name": "securityInfo",
+            "type": "object",
+            "description": "The authentication information.",
+            "properties": {
+              "rawDER": {
+                "type": "array",
+                "description" : "The server's certificate",
+                "items": {
+                  "type": "integer"
+                }
+              },
+              "isDomainMismatch": {
+                "description" : "The domain does not match",
+                "type": "boolean"
+              },
+              "isExtendedValidation": {
+                "description" : "The extended validation failed",
+                "type": "boolean"
+              },
+              "isNotValidAtThisTime": {
+                "description" : "The certificate's validity expired",
+                "type": "boolean"
+              },
+              "isUntrusted": {
+                "description" : "The certificate's is untrusted or selfsigned",
+                "type": "boolean"
+              }
+            }
+          }
+        ],
+        "returns": {
+
         },
         "extraParameters": [
           {

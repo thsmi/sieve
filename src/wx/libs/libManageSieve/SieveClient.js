@@ -25,6 +25,8 @@
   const { SieveResponseParser } = require("./SieveResponseParser.js");
   const { SieveRequestBuilder } = require("./SieveRequestBuilder.js");
 
+  const { SieveCertValidationException } = require("./SieveExceptions.js");
+
   // eslint-disable-next-line no-magic-numbers
   const LOG_RESPONSE = (1 << 1);
 
@@ -35,14 +37,14 @@
   class SieveMozClient extends SieveAbstractClient {
 
 
-    /** Creates a new instance
+    /**
+     * Creates a new instance
      * @param {SieveAbstractLogger} logger
      *   the logger which should be used.
      */
     constructor(logger) {
-      // Call the parent constructor...
-      super();
 
+      super();
 
       this.timeoutTimer = null;
       this.idleTimer = null;
@@ -150,7 +152,6 @@
     /**
      * An internal callback wich is triggered when the request timeout timer should be stopped.
      * This is typically when a response was received and the request was completed.
-     *
      */
     onStopTimeout() {
 
@@ -244,29 +245,11 @@
     }
 
     /**
-     * Connects to a ManageSieve server.
-     *
-     * @param {string} host
-     *   The target hostname or IP address as String
-     * @param {Int} port
-     *   The target port as Interger
-     * @param {boolean} secure
-     *   If true, a secure socket will be created. This allows switching to a secure
-     *   connection.
-     * @param {Components.interfaces.nsIBadCertListener2} badCertHandler
-     *   Listener to call incase of an SSL Error. Can be null. See startTLS for more
-     *   details.
-     * @param {Array<nsIProxyInfo>} proxy
-     *   An Array of nsIProxyInfo Objects which specifies the proxy to use.
-     *   Pass an empty array for no proxy.
-     *   Set to null if the default proxy should be resolved. Resolving proxy info is
-     *   done asynchronous. The connect method returns imedately, without any
-     *   information on the connection status...
-     *   Currently only the first array entry is evaluated.
+     * @inheritdoc
      */
-    connect(host, port, secure, badCertHandler, proxy) {
+    connect(host, port, secure, proxy) {
       if (this.socket)
-        return;
+        return this;
 
       /* if ( (this.socket != null) && (this.socket.isAlive()) )
         return;*/
@@ -274,7 +257,6 @@
       this.host = host;
       this.port = port;
       this.secure = secure;
-      this.badCertHandler = badCertHandler;
 
       this.idleTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
       this.timeoutTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
@@ -284,7 +266,7 @@
       // If we know the proxy setting, we can do a shortcut...
       if (proxy) {
         this.onProxyAvailable(null, null, proxy[0], null);
-        return;
+        return this;
       }
 
       this.getLogger().logState("Lookup Proxy Configuration for x-sieve://" + this.host + ":" + this.port + " ...");
@@ -301,6 +283,8 @@
       const pps = Cc["@mozilla.org/network/protocol-proxy-service;1"]
         .getService(Ci.nsIProtocolProxyService);
       pps.asyncResolve(uri, 0, this);
+
+      return this;
     }
 
     /**
@@ -366,11 +350,6 @@
 
       this.socket = this.createTransport(this.host, this.port, this.isSecure(), aProxyInfo);
 
-
-
-      if (this.badCertHandler)
-        this.socket.securityCallbacks = this.badCertHandler;
-
       this.outstream = this.socket.openOutputStream(0, 0, 0);
 
       this.binaryOutStream =
@@ -404,8 +383,11 @@
       pump.asyncRead(this, null);
     }
 
-    disconnect() {
-      super.disconnect();
+    /**
+     * @inheritdoc
+     */
+    disconnect(reason) {
+      super.disconnect(reason);
 
       if (!this.socket)
         return;
@@ -424,7 +406,49 @@
       this.getLogger().logState("Disconnected ...");
     }
 
+    /**
+     * Checks if the status indicates a certificate error.
+     *
+     * @param {int} status
+     *   the status which should be checked.
+     *
+     * @returns {boolean}
+     *   true in case of a certificate error otherwise false.
+     */
+    isBadCert(status) {
+      if (status === Cr.NS_OK)
+        return false;
+
+      const nssErrorsService = Cc["@mozilla.org/nss_errors_service;1"]
+        .getService(Ci.nsINSSErrorsService);
+
+      try {
+        const errorType = nssErrorsService.getErrorClass(status);
+        if (errorType === Ci.nsINSSErrorsService.ERROR_CLASS_BAD_CERT) {
+          return true;
+        }
+      } catch (e) {
+        console.warn(e);
+        // nsINSSErrorsService.getErrorClass throws if given a non-TLS, non-cert error, so ignore this
+      }
+
+      return false;
+    }
+
+    // FIXME make var Arg like onDataAvilable...
+    /**
+     *
+     * @param {*} request
+     * @param {*} context
+     * @param {int} status
+     *   the reason why the stop was called.
+     */
     onStopRequest(request, context, status) {
+
+      if (status === undefined)
+        status = context;
+
+      console.error("On Stop Request " + status);
       // this method is invoked anytime when the socket connection is closed
       // ... either by going to offlinemode or when the network cable is disconnected
       this.getLogger().logState("Stop request received ...");
@@ -433,9 +457,24 @@
       if (!this.socket)
         return;
 
+      let reason;
+
+      if (this.isBadCert(status)) {
+        const secInfo = this.socket.securityInfo.QueryInterface(Ci.nsITransportSecurityInfo);
+
+        reason = new SieveCertValidationException("error", {
+          "rawDER": secInfo.serverCert.getRawDER({}),
+          "errorCodeString" : secInfo.errorCodeString,
+          "isDomainMismatch": secInfo.isDomainMismatch,
+          "isExtendedValidation": secInfo.isExtendedValidation,
+          "isNotValidAtThisTime": secInfo.isNotValidAtThisTime,
+          "isUntrusted": secInfo.isUntrusted
+        });
+      }
+
       // Stop timeout timer, the connection is gone, so...
       // ... it won't help us anymore...
-      this.disconnect();
+      this.disconnect(reason);
 
       // if the request queue is not empty,
       // we should call directly on timeout..
@@ -444,7 +483,7 @@
     }
 
     onStartRequest(request, context) {
-      this.getLogger().logState("Connected to " + this.host + ":" + this.port + " ...");
+      this.getLogger().logState(`Connected to ${this.host}:${this.port} ...`);
     }
 
     /**

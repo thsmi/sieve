@@ -30,9 +30,35 @@
     }
 
     /**
-     * Returns the boolean value for the preference.
-     *
+     * Returns a specific value.
      * @abstract
+     *
+     * @param {string} key
+     *   the key which should be returned.
+     * @returns {object}
+     *   the value or undefined in case it does not exist.
+     */
+    getValue(key) {
+      throw new Error(`Implement SieveAbstractPrefManager::getValue(${key})`);
+    }
+
+    /**
+     * Sets and persists the given preference.
+     * @abstract
+     *
+     * @param {string} key
+     *   the prefence key which should be written.
+     * @param {object} value
+     *   the key's value.
+     * @returns {SievePrefManager}
+     *   a self reference.
+     */
+    setValue(key, value) {
+      throw new Error(`Implement SieveAbstractPrefManager::setValue(${key},${value})`);
+    }
+
+    /**
+     * Returns the boolean value for the preference.
      *
      * @param {string} key
      *   the preference's key
@@ -42,13 +68,22 @@
      *   the key's value as boolean
      */
     getBoolean(key, fallback) {
-      throw new Error("Implement getBoolean(" + key + ", " + fallback + ")");
+      let value = this.getValue(key);
+
+      if (typeof (value) === "undefined" || value === null)
+        return fallback;
+
+      // Parse boolean
+      value = !!value;
+
+      if (value)
+        return true;
+
+      return false;
     }
 
     /**
      * Sets a boolean value for the given key.
-     *
-     * @abstract
      *
      * @param {string} key
      *   the preference's key
@@ -58,13 +93,15 @@
      *   a self reference
      */
     setBoolean(key, value) {
-      throw new Error("Implement setBoolean(" + key + ", " + value + ")");
+      // ensure it is an boolean...
+      value = !!value;
+
+      this.setValue(key, value);
+      return this;
     }
 
     /**
      * Returns the string value for the preference.
-     *
-     * @abstract
      *
      * @param {string} key
      *   the preference key
@@ -74,13 +111,16 @@
      *   the key's value as string
      */
     getString(key, fallback) {
-      throw new Error("Implement getString(" + key + ", " + fallback + ")");
+      const value = this.getValue(key);
+
+      if (typeof (value) === "undefined" || value === null)
+        return fallback;
+
+      return `${value}`;
     }
 
     /**
      * The string which should be set for th preference
-     *
-     * @abstract
      *
      * @param {string} key
      *   the preference key
@@ -90,13 +130,12 @@
      *   a self reference
      */
     setString(key, value) {
-      throw new Error("Implement setString(" + key + ", " + value + ")");
+      this.setValue(key, `${value}`);
+      return this;
     }
 
     /**
      * Returns the integer value for the preference.
-     *
-     * @abstract
      *
      * @param {string} key
      *   the preference's key
@@ -106,13 +145,23 @@
      *   the key's value as integer
      */
     getInteger(key, fallback) {
-      throw new Error("Implement getInteger(" + key + ", " + fallback + ")");
+      const value = this.getValue(key);
+
+      if (typeof (value) === "undefined" || value === null)
+        return fallback;
+
+      if (Number.isInteger())
+        return value;
+
+      try {
+        return Number.parseInt(value, 10);
+      } catch (ex) {
+        return fallback;
+      }
     }
 
     /**
      * Sets an integer value for the given key.
-     *
-     * @abstract
      *
      * @param {string} key
      *   the preference's key
@@ -122,7 +171,9 @@
      *   a self reference.
      */
     setInteger(key, value) {
-      throw new Error("Implement setInteger(" + key + ", " + value + ")");
+
+      this.setValue(key, Number.parseInt(value, 10));
+      return this;
     }
 
   }

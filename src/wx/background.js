@@ -123,10 +123,23 @@
 
       const onAuthorize = async() => {
         console.log("onAuthorize");
-        return await account.getAuthorization().getUsername();
+        return await account.getAuthorization().getAuthorization();
       };
 
-      console.log("Connect");
+      const onCertError = async (host, port, secInfo) => {
+        console.log(`Certificate Error for ${host}:${port}`);
+
+        // TODO Show Cert Override Dialog...
+
+        const ERROR_UNTRUSTED = 1;
+        const ERROR_MISMATCH = 2;
+        const ERROR_TIME = 4;
+
+        const overrideBits = ERROR_TIME | ERROR_UNTRUSTED | ERROR_MISMATCH;
+
+        await browser.sieve.session.addCertErrorOverride(
+          host, port, secInfo.rawDER, overrideBits);
+      };
 
       await browser.sieve.session.create(id, options);
       await browser.sieve.session.onAuthenticate.addListener(
@@ -134,10 +147,13 @@
       await browser.sieve.session.onAuthorize.addListener(
         async () => { return await onAuthorize(); }, id);
 
+      await browser.sieve.session.onCertError.addListener(
+        async (host, port, secInfo) => { return await onCertError(host, port, secInfo); }, id);
+
       const hostname = await account.getHost().getHostname();
       const port = await account.getHost().getPort();
 
-      await browser.sieve.session.connect(id, hostname, port);
+      await browser.sieve.session.connect(id, hostname, "" + port);
     },
 
     "account-disconnect": async function (msg) {

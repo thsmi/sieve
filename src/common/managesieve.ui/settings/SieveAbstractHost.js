@@ -24,7 +24,10 @@
   const CONFIG_HOST_PORT = "port";
 
 
-  /** */
+  /**
+   * An abstract implementation for the host settings.
+   * They define the hostname as well as the port.
+   **/
   class SieveAbstractHost {
 
     /**
@@ -138,7 +141,12 @@
     }
   }
 
-  exports.SieveCustomHost = SieveCustomHost;
-  exports.SieveAbstractHost = SieveAbstractHost;
+  if (typeof (module) !== "undefined" && module && module.exports) {
+    module.exports.SieveCustomHost = SieveCustomHost;
+    module.exports.SieveAbstractHost = SieveAbstractHost;
+  } else {
+    exports.SieveCustomHost = SieveCustomHost;
+    exports.SieveAbstractHost = SieveAbstractHost;
+  }
 
-})(module.exports);
+})(this);

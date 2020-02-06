@@ -280,6 +280,11 @@
         return;
       }
 
+      if (name === "certerror") {
+        this.listeners.onCertError = callback;
+        return;
+      }
+
       throw new SieveClientException(`Unknown callback handler ${name}`);
     }
 
@@ -417,7 +422,13 @@
         });
 
         request[FIRST_ELEMENT].addTimeoutListener((error) => {
-          reject(new SieveTimeOutException(error));
+
+          if (error) {
+            reject(error);
+            return;
+          }
+
+          reject(new SieveTimeOutException("Request was canceled or took too long"));
         });
 
 

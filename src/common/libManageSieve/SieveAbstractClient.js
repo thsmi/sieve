@@ -375,9 +375,6 @@
    * @param {boolean} secure
    *   If true, a secure socket will be created. This allows switching to a secure
    *   connection.
-   * @param {Components.interfaces.nsIBadCertListener2} badCertHandler
-   *   Listener to call incase of an SSL Error. Can be null. See startTLS for more
-   *   details.
    * @param {nsIProxyInfo[]} proxy
    *   An Array of nsIProxyInfo Objects which specifies the proxy to use.
    *   Pass an empty array for no proxy.
@@ -390,7 +387,7 @@
    *   a self reference
    */
   SieveAbstractClient.prototype.connect
-    = function (host, port, secure, badCertHandler, proxy) {
+    = function (host, port, secure, proxy) {
       throw new Error("Implement me SieveAbstractClient ");
     };
 
@@ -408,17 +405,20 @@
     };
 
   /**
-   * Disconnets from the server.
+   * Disconnects from the server.
    *
    * Need to be overwritten. The current implementation is a stub
-   * which take care about stopping the timeouts.
+   * which takes care about stopping the timeouts.
+   *
+   * @param {Error} [reason]
+   *   the optional reason why the client was disconnected.
    */
   SieveAbstractClient.prototype.disconnect
-    = function () {
+    = function (reason) {
 
       this.getLogger().logState("Disconnecting " + this.host + ":" + this.port + "...");
 
-      this.cancel();
+      this.cancel(reason);
 
       // free requests...
       // this.requests = new Array();

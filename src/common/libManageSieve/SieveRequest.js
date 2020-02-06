@@ -102,6 +102,7 @@
      */
     addTimeoutListener(listener) {
 
+      //TODO should be renamed to error listener...
       if (typeof listener !== 'function') {
         throw new Error("Timeout listerner is not a function");
       }

@@ -17,7 +17,7 @@ window.require = function (path) {
     return {
       "SieveSimpleResponse": module.exports.SieveSimpleResponse,
       "SieveCapabilitiesResponse": module.exports.SieveCapabilitiesResponse,
-      "SieveListScriptResponse": module.exports.SieveListScriptResponse,
+      "SieveListScriptsResponse": module.exports.SieveListScriptsResponse,
       "SieveSaslLoginResponse": module.exports.SieveSaslLoginResponse,
       "SieveSaslCramMd5Response": module.exports.SieveSaslCramMd5Response,
       "SieveGetScriptResponse": module.exports.SieveGetScriptResponse,
@@ -77,7 +77,7 @@ window.require = function (path) {
       "SieveStartTLSRequest": module.exports.SieveStartTLSRequest,
       "SieveDeleteScriptRequest": module.exports.SieveDeleteScriptRequest,
       "SieveRenameScriptRequest": module.exports.SieveRenameScriptRequest,
-      "SieveListScriptRequest": module.exports.SieveListScriptRequest
+      "SieveListScriptsRequest": module.exports.SieveListScriptsRequest
     };
   }
 

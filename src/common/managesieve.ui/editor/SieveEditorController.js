@@ -17,6 +17,14 @@
 
   class SieveEditorController {
 
+    /**
+     * Creates a new instance
+     *
+     * @param {string} name
+     *   the sieve scripts name
+     * @param {string} account
+     *   the account id
+     */
     constructor(name, account) {
       this.name = name;
       this.account = account;
@@ -54,7 +62,7 @@
     }
 
     /**
-     * Sets the current clipboard conent.
+     * Sets the current clipboard content.
      *
      * @param {string} data
      *  the data to copy to the clipboard.
@@ -67,7 +75,7 @@
      * Gets the current clipboard content.
      *
      * @returns {string}
-     *   the current clipboard conent
+     *   the current clipboard content
      */
     async getClipboard() {
       return await this.send("paste");
@@ -77,10 +85,21 @@
       await this.send("script-changed", { "name": this.name, "changed": changed });
     }
 
+    /**
+     * Imports the given script from a file.
+     *
+     * @returns {string}
+     *   the imported sieve script.
+     */
     async importScript() {
       return await this.send("script-import");
     }
 
+    /**
+     * Exports the given script into a file.
+     * @param {string} script
+     *   the sieve content to be exportet
+     */
     async exportScript(script) {
       await this.send("script-export", { "name": this.name, "script": script });
     }
@@ -92,6 +111,11 @@
       await this.send("reference-open");
     }
 
+    /**
+     * Retuns the server side capabilities for the given account
+     * @returns {object}
+     *   the server's capabilities.
+     */
     async getCapabilities() {
       return await this.send("account-capabilities");
     }

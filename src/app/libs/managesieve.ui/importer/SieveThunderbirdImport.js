@@ -113,7 +113,7 @@
       let directory;
 
       if (process.platform === "linux")
-        directory = "~/.thunderbird";
+        directory = path.join(process.env.HOME, ".thunderbird");
       else if (process.platform === "win32")
         directory = path.join(process.env.APPDATA, "Thunderbird");
       else

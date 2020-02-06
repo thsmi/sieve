@@ -23,37 +23,40 @@
    * Creates a new document for sieve scripts it is used to parse
    * store and manupulate sieve scripts
    *
-   * @constructor
-   * @param {SieveLexer} lexer
-   *   the lexer which should be associated with this document.
-   *   It will be used to create new objects.
-   * @param {SieveDesigner} [widgets]
-   *   the layout engine which should be used to render the document.
-   *   Can be ommited in case the document should not be rendered.
    */
-  function SieveDocument(lexer, widgets) {
-    this._lexer = lexer;
-    this._widgets = widgets;
-    this._nodes = {};
+  class SieveDocument {
 
-    // we cannot use this.createNode(). It would add a node without a parent...
-    // ... to this._nodes. All nodes without a vaild parent and their...
-    // ... descendants are removed when this.compact() is called. So that we...
-    // ... would endup with an empty tree.
-    this._rootNode = this._lexer.createByName(this, "block/rootnode");
-  }
+    /**
+     * Creates a new instance.
+     *
+     * @param {SieveLexer} lexer
+     *   the lexer which should be associated with this document.
+     *   It will be used to create new objects.
+     * @param {SieveDesigner} [widgets]
+     *   the layout engine which should be used to render the document.
+     *   Can be ommited in case the document should not be rendered.
+     */
+    costructor(lexer, widgets) {
+      this._lexer = lexer;
+      this._widgets = widgets;
+      this._nodes = {};
 
-  /**
-   * Returns the root node for this document
-   * @returns {SieveElement} the documents root node.
-   */
-  SieveDocument.prototype.root
-    = function () {
+      // we cannot use this.createNode(). It would add a node without a parent...
+      // ... to this._nodes. All nodes without a vaild parent and their...
+      // ... descendants are removed when this.compact() is called. So that we...
+      // ... would endup with an empty tree.
+      this._rootNode = this._lexer.createByName(this, "block/rootnode");
+    }
+
+    /**
+     * Returns the root node for this document
+     * @returns {SieveElement} the documents root node.
+     */
+    root() {
       return this._rootNode;
-    };
+    }
 
-  SieveDocument.prototype._walk
-    = function (elms, name, result) {
+    _walk(elms, name, result) {
 
       elms.forEach(function (item) {
 
@@ -68,30 +71,27 @@
 
         this._walk(item.elms, name, result);
       }, this);
-    };
+    }
 
-  SieveDocument.prototype.queryElements = function (name) {
+    queryElements(name) {
 
-    const result = [];
+      const result = [];
 
-    this._walk(this.root().elms, name, result);
+      this._walk(this.root().elms, name, result);
 
-    return result;
-  };
+      return result;
+    }
 
-  SieveDocument.prototype.html
-    = function () {
+    html() {
       return this._rootNode.widget().html();
-    };
+    }
 
-  SieveDocument.prototype.layout
-    = function (elm) {
+    layout(elm) {
       return this._widgets.widget(elm);
-    };
+    }
 
-  // A shorthand to create children bound to this Element...
-  SieveDocument.prototype.createByName
-    = function (name, parser, parent) {
+    // A shorthand to create children bound to this Element...
+    createByName(name, parser, parent) {
       if (typeof (parser) === "string")
         parser = new SieveParser(parser);
 
@@ -104,10 +104,9 @@
       this._nodes[item.id()] = item;
 
       return item;
-    };
+    }
 
-  SieveDocument.prototype.createByClass
-    = function (types, parser, parent) {
+    createByClass(types, parser, parent) {
       if (typeof (parser) === "string")
         parser = new SieveParser(parser);
 
@@ -120,52 +119,46 @@
       this._nodes[item.id()] = item;
 
       return item;
-    };
+    }
 
-  SieveDocument.prototype.probeByName
-    = function (name, parser) {
+    probeByName(name, parser) {
       if (typeof (parser) === "string")
         parser = new SieveParser(parser);
 
       return this._lexer.probeByName(name, parser);
-    };
+    }
 
-  /**
-   * Uses the Document's lexer to check if a parser object
-   * or a string starts with the expected types
-   *
-   * @param {string|string[]} types
-   *   an array with acceptable types.
-   * @param {string|SieveParser} parser
-   *   a parser object or a string which holds the data that should be evaluated.
-   * @returns {boolean}
-   *   true in case the parser or string is of the given type otherwise false.
-   */
-  SieveDocument.prototype.probeByClass
-    = function (types, parser) {
+    /**
+     * Uses the Document's lexer to check if a parser object
+     * or a string starts with the expected types
+     *
+     * @param {string|string[]} types
+     *   an array with acceptable types.
+     * @param {string|SieveParser} parser
+     *   a parser object or a string which holds the data that should be evaluated.
+     * @returns {boolean}
+     *   true in case the parser or string is of the given type otherwise false.
+     */
+    probeByClass(types, parser) {
       if (typeof (parser) === "string")
         parser = new SieveParser(parser);
 
       return this._lexer.probeByClass(types, parser);
-    };
+    }
 
-  SieveDocument.prototype.supportsByName
-    = function (name) {
+    supportsByName(name) {
       return this._lexer.supportsByName(name);
-    };
+    }
 
-  SieveDocument.prototype.supportsByClass
-    = function (type) {
+    supportsByClass(type) {
       return this._lexer.supportsByClass(type);
-    };
+    }
 
-  SieveDocument.prototype.id
-    = function (id) {
+    id(id) {
       return this._nodes[id];
-    };
+    }
 
-  SieveDocument.prototype.script
-    = function (data) {
+    script(data) {
       if (typeof (data) === "undefined")
         return this._rootNode.toScript();
 
@@ -199,31 +192,29 @@
 
       // data should be empty right here...
       return parser.bytes();
-    };
+    }
 
-  SieveDocument.prototype.capabilities
-    = function (capabilities) {
+    capabilities(capabilities) {
       if (typeof (capabilities) === "undefined")
         return this._lexer.capabilities();
 
       return this._lexer.capabilities(capabilities);
-    };
+    }
 
-  /**
-   * In oder to speedup mutation elements are cached. But this cache is lazy.
-   * So deleted objects will remain in memory until you call this cleanup
-   * Method.
-   *
-   * It checks all cached elements for a valid parent pointer. If it's missing
-   * the document was obviously deleted...
-   *
-   * @param {string[]} whitelist
-   *   an optional whitelist list, with elements which should not be released
-   * @returns {int}
-   *   the number of deleted elements
-   */
-  SieveDocument.prototype.compact
-    = function (whitelist) {
+    /**
+     * In oder to speedup mutation elements are cached. But this cache is lazy.
+     * So deleted objects will remain in memory until you call this cleanup
+     * Method.
+     *
+     * It checks all cached elements for a valid parent pointer. If it's missing
+     * the document was obviously deleted...
+     *
+     * @param {string[]} whitelist
+     *   an optional whitelist list, with elements which should not be released
+     * @returns {int}
+     *   the number of deleted elements
+     */
+    compact(whitelist) {
 
       const items = [];
       let cnt = 0;
@@ -255,7 +246,8 @@
       }
 
       return cnt;
-    };
+    }
+  }
 
   exports.SieveDocument = SieveDocument;
 

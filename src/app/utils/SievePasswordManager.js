@@ -58,7 +58,10 @@
 
     /**
      * Checks if the password manager is locked.
+     * Locked means the user has not provided the master password.
      *
+     * @returns {boolean}
+     *   true in case the passwor managerd is locked otherwise false
      */
     isLocked() {
       return this.master === null;

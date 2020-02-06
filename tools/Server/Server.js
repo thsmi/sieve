@@ -40,7 +40,7 @@
    * @param {*} filePath
    */
   function getContentType(filePath) {
-    let extname = path.extname(filePath);
+    const extname = path.extname(filePath);
 
     switch (extname) {
       case '.js':
@@ -114,11 +114,11 @@
         return;
       }
 
-      let stat = await (util.promisify(fs.lstat))(filePath);
+      const stat = await (util.promisify(fs.lstat))(filePath);
 
       if (stat.isDirectory()) {
 
-        let items = await (util.promisify(fs.readdir))(filePath, { withFileTypes: true });
+        const items = await (util.promisify(fs.readdir))(filePath, { withFileTypes: true });
 
         let url = request.url;
 
@@ -148,7 +148,7 @@
 
       if (stat.isFile()) {
 
-        let content = await (util.promisify(fs.readFile))(filePath);
+        const content = await fs.promises.readFile(filePath);
         response.writeHead(HTTP_SUCCESS, { 'Content-Type': getContentType(filePath) });
         response.end(content, 'utf-8');
 

@@ -111,11 +111,27 @@
         .data("sieve-authorization");
     }
 
+    /**
+     * Sets the authorization name.
+     * Authorization allows an authenticated user (normally admin)
+     * to access an other users sieve account.
+     *
+     * @param {string} username
+     *   the username as which the current user should authorized
+     * @returns {SieveSettingsUI}
+     *   a self reference
+     */
     setAuthorization(username) {
       this.getDialog().find(".sieve-settings-text-authorization-username").val(username);
       return this;
     }
 
+    /**
+     * Gets the authorization name from the ui.
+     *
+     * @returns {string}
+     *   the authorized username.
+     */
     getAuthorization() {
       return this.getDialog().find(".sieve-settings-text-authorization-username").val();
     }

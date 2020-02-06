@@ -35,7 +35,7 @@
       if (this.locale === locale)
         return this;
 
-      return new Promise((resolve, reject) => {
+      return await new Promise((resolve, reject) => {
         if (this.locale === locale)
           resolve(this);
 

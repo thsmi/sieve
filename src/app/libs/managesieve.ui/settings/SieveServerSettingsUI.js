@@ -77,10 +77,22 @@
       return this.getDialog().find(".sieve-settings-hostname").val();
     }
 
+    /**
+     * Populates the server's port in the dialog
+     *
+     * @param {string} port
+     *   the port
+     */
     setPort(port) {
       this.getDialog().find(".sieve-settings-port").val(port);
     }
 
+    /**
+     * Gets the server's port.
+     *
+     * @returns {string}
+     *   the port as string.
+     */
     getPort() {
       return this.getDialog().find(".sieve-settings-port").val();
     }

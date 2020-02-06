@@ -36,6 +36,11 @@ exports['app:package-linux'] = series(
   app.packageLinux
 );
 
+exports['app:package-macos'] = series(
+  app.package,
+  app.packageMacOS
+);
+
 // Addon related gulp tasks
 exports['addon:watch'] = addon.watch;
 exports['addon:package'] = addon.package;

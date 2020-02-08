@@ -30,6 +30,18 @@
   // eslint-disable-next-line no-magic-numbers
   const LOG_RESPONSE = (1 << 1);
 
+  const NEW_TRANSPORT_API = 4;
+  const OLD_TRANSPORT_API = 5;
+
+  // Input & outpt stream constants.
+  const DEFAULT_FLAGS = 0;
+  const DEFAULT_SEGMENT_SIZE = 0;
+  const DEFAULT_SEGMENT_COUNT = 0;
+
+  const SEGMENT_SIZE = 5000;
+  const SEGMENT_COUNT = 2;
+
+
   /**
    *  This realizes the abstract sieve implementation by using
    *  the mozilla specific network implementation.
@@ -84,18 +96,31 @@
       return (new TextDecoder("UTF-8")).decode(byteArray);
     }
 
-    // Needed for the Gecko 2.0 Component Manager...
-    QueryInterface(aIID) {
-      if (aIID.equals(Ci.nsISupports))
+    /**
+     * Implements the Gecko Component Manager's interfaces.
+     * So that the JavaScript code can be passed as interface
+     * to C++.
+     *
+     * In case the interface is not supported an NS_ERROR_NO_INTERFACE
+     * will be thrown.
+     *
+     * @param {nsIIDRef} uuid
+     *   the interface's unique id to check.
+     *
+     * @returns {SieveMozClient}
+     *   a self reference.
+     */
+    QueryInterface(uuid) {
+      if (uuid.equals(Ci.nsISupports))
         return this;
       // onProxyAvailable...
-      if (aIID.equals(Ci.nsIProtocolProxyCallback))
+      if (uuid.equals(Ci.nsIProtocolProxyCallback))
         return this;
       // onDataAvailable...
-      if (aIID.equals(Ci.nsIStreamListener))
+      if (uuid.equals(Ci.nsIStreamListener))
         return this;
       // onStartRequest and onStopRequest...
-      if (aIID.equals(Ci.nsIRequestObserver))
+      if (uuid.equals(Ci.nsIRequestObserver))
         return this;
 
       throw Cr.NS_ERROR_NO_INTERFACE;
@@ -129,8 +154,7 @@
     }
 
     /**
-     * An internal callback which is triggered when the request timeout timer should be started.
-     * This is typically when a new request is about to be send to the server.
+     * @inheritdoc
      */
     onStartTimeout() {
 
@@ -150,8 +174,7 @@
     }
 
     /**
-     * An internal callback wich is triggered when the request timeout timer should be stopped.
-     * This is typically when a response was received and the request was completed.
+     * @inheritdoc
      */
     onStopTimeout() {
 
@@ -315,10 +338,10 @@
         Cc["@mozilla.org/network/socket-transport-service;1"]
           .getService(Ci.nsISocketTransportService);
 
-      if (transportService.createTransport.length === 4)
+      if (transportService.createTransport.length === NEW_TRANSPORT_API)
         return transportService.createTransport(((secure) ? ["starttls"] : []), host, port, proxyInfo);
 
-      if (transportService.createTransport.length === 5) {
+      if (transportService.createTransport.length === OLD_TRANSPORT_API) {
         if (secure)
           return transportService.createTransport(["starttls"], 1, host, port, proxyInfo);
 
@@ -329,18 +352,20 @@
     }
 
     /**
+     * An async callback for the proxy lookup.
      *
-     * This is an closure for asyncronous Proxy
      * @private
-     * @param {*} aRequest
+     * @param {nsIRequest} request
+     *   thr request for which the proxy information as requested.
      * @param {*} aURI
-     * @param {*} [aProxyInfo]
-     *   the proxy information from the lookup, if omitted or null a direct
+     * @param {*} aProxyInfo
+     *   the proxy information from the lookup, if null a direct
      *   connection will be used.
-     * @param {*} aStatus
+     * @param {*} status
      *
      **/
-    onProxyAvailable(aRequest, aURI, aProxyInfo, aStatus) {
+    // eslint-disable-next-line no-unused-vars
+    onProxyAvailable( request, aURI, aProxyInfo, status) {
 
       if (aProxyInfo)
         this.getLogger().logState("Using Proxy: [" + aProxyInfo.type + "] " + aProxyInfo.host + ":" + aProxyInfo.port);
@@ -350,7 +375,8 @@
 
       this.socket = this.createTransport(this.host, this.port, this.isSecure(), aProxyInfo);
 
-      this.outstream = this.socket.openOutputStream(0, 0, 0);
+      this.outstream = this.socket.openOutputStream(
+        DEFAULT_FLAGS, DEFAULT_SEGMENT_SIZE, DEFAULT_SEGMENT_COUNT);
 
       this.binaryOutStream =
         Cc["@mozilla.org/binaryoutputstream;1"]
@@ -358,27 +384,13 @@
 
       this.binaryOutStream.setOutputStream(this.outstream);
 
-      const stream = this.socket.openInputStream(0, 0, 0);
+      const stream = this.socket.openInputStream(
+        DEFAULT_FLAGS, DEFAULT_SEGMENT_SIZE, DEFAULT_SEGMENT_COUNT);
+
       const pump = Cc["@mozilla.org/network/input-stream-pump;1"]
         .createInstance(Ci.nsIInputStreamPump);
 
-      // the guys at mozilla changed their api without caring
-      // about backward compatibility. Which means we need
-      // Some try catch magic here.
-      try {
-        // first we try the new api definition...
-        pump.init(stream, 5000, 2, true);
-      } catch (ex) {
-
-        // ... in case we run into an not enough args exception
-        // we try the old api definition and in any other case
-        // we just rethrow the exception
-        if (ex.name !== "NS_ERROR_XPC_NOT_ENOUGH_ARGS")
-          throw ex;
-
-        this.getLogger().logState("Falling back to legacy stream pump initalization ...");
-        pump.init(stream, -1, -1, 5000, 2, true);
-      }
+      pump.init(stream, SEGMENT_SIZE, SEGMENT_COUNT, true);
 
       pump.asyncRead(this, null);
     }
@@ -435,23 +447,28 @@
       return false;
     }
 
-    // FIXME make var Arg like onDataAvilable...
     /**
+     * Called whenever the connection is terminated. And no more communication
+     * via this socket is possible.
      *
-     * @param {*} request
-     * @param {*} context
+     * If the disconnect is planned/"gracefull", the error code is zero.
+     *
+     * Otherwise the status indicates what caused this disconnect.
+     * Common issues are linkloss (e.g. by switching to offlinemode, when
+     * the network cable is disconected or when the server closed the connection.)^
+     *
+     * But the socket may be also closed because of non tivial errors. E.g
+     * in case a tls upgrade failed due to an certification validation error.
+     *
+     * @param {nsIRequest} request
+     *   the request which was stopped.
      * @param {int} status
      *   the reason why the stop was called.
      */
-    onStopRequest(request, context, status) {
+    // eslint-disable-next-line no-unused-vars
+    onStopRequest(request, status) {
 
-      if (status === undefined)
-        status = context;
-
-      console.error("On Stop Request " + status);
-      // this method is invoked anytime when the socket connection is closed
-      // ... either by going to offlinemode or when the network cable is disconnected
-      this.getLogger().logState("Stop request received ...");
+      this.getLogger().logState(`Diconnected from  ${this.host}:${this.port} with status ${status}`);
 
       // we can ignore this if we are already disconnected.
       if (!this.socket)
@@ -462,9 +479,14 @@
       if (this.isBadCert(status)) {
         const secInfo = this.socket.securityInfo.QueryInterface(Ci.nsITransportSecurityInfo);
 
-        reason = new SieveCertValidationException("error", {
+        reason = new SieveCertValidationException({
+          "host": this.host,
+          "port": this.port,
+
           "rawDER": secInfo.serverCert.getRawDER({}),
-          "errorCodeString" : secInfo.errorCodeString,
+          "fingerprint" : secInfo.serverCert.sha256Fingerprint,
+
+          "message" : secInfo.errorCodeString,
           "isDomainMismatch": secInfo.isDomainMismatch,
           "isExtendedValidation": secInfo.isExtendedValidation,
           "isNotValidAtThisTime": secInfo.isNotValidAtThisTime,
@@ -482,42 +504,31 @@
         (async () => { await this.listener.onDisconnect(); })();
     }
 
-    onStartRequest(request, context) {
-      this.getLogger().logState(`Connected to ${this.host}:${this.port} ...`);
-    }
-
     /**
-     * Called as soon as data arrives.
-     * In Thunderbird 67+ the method signature was changed and api
-     * compatibility broken. So we need this magic wrapper.
+     * Called when the connection to the remote as is ready.
      *
-     * @param {...object} args
-     *   the parameters passed to on DataAvailable
-     * @returns {undefined}
-     *   nothing to return
+     * @param {nsIRequest} request
+     *   the request which is ready.
      */
-    onDataAvailable(...args) {
-
-      // The old api passes the stream as third parameter
-      if (args[2] instanceof Ci.nsIInputStream)
-        return this.onDataReceived(args[2], args[4]);
-
-      // The new api uses the second parameter
-      if (args[1] instanceof Ci.nsIInputStream)
-        return this.onDataReceived(args[1], args[3]);
-
-      throw new Error("Unknown signature for nsIStreamListener.onDataAvailable()");
+    // eslint-disable-next-line no-unused-vars
+    onStartRequest(request) {
+      this.getLogger().logState(`Connected to ${this.host}:${this.port} ...`);
     }
 
     /**
      * Call as soon as data arrives and needs to be processed.
      *
+     * @param {nsIRequest} request
+     *   the request object.
      * @param {nsIInputStream} inputStream
      *   the input stream containing the data chunks
+     * @param {offset} offset
+     *   the offset from the begining of the stream.
      * @param {int} count
      *   the maximum number of bytes which can be read in this call.
      */
-    onDataReceived(inputStream, count) {
+    // eslint-disable-next-line no-unused-vars
+    onDataAvailable(request, inputStream, offset, count) {
 
       const binaryInStream = Cc["@mozilla.org/binaryinputstream;1"]
         .createInstance(Ci.nsIBinaryInputStream);
@@ -534,7 +545,7 @@
           "Server -> Client\n" + this.convertToString(data.slice(0, data.length)));
       }
 
-      SieveAbstractClient.prototype.onReceive.call(this, data);
+      super.onReceive(data);
     }
 
     /**

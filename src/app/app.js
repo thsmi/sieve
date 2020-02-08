@@ -202,35 +202,33 @@
       return await (sessions.get(msg.payload.account).capabilities());
     },
 
-    "account-cert-error": async (msg) => {
-      const rv = await (new SieveFingerprintDialog(msg.payload.fingerprint, msg.payload.message)).show();
-
-      // save the fingerprint.
-      if (rv !== true)
-        return;
-
-      accounts.getAccountById(msg.payload.account).getHost().setFingerprint(msg.payload.fingerprint);
-      accounts.getAccountById(msg.payload.account).getHost().setIgnoreCertErrors(msg.payload.code);
-
-      await actions["account-connecting"](msg);
-    },
-
     "account-connecting": async (request) => {
 
+      const account = request.payload.account;
       const response = request;
-      try {
-        const account = accounts.getAccountById(request.payload.account);
 
-        await (sessions.get(request.payload.account).connect(
-          account.getHost().getHostname(),
-          account.getHost().getPort()));
+      try {
+        const host = accounts.getAccountById(account).getHost();
+
+        await (sessions.get(account).connect(host.getHostname(), host.getPort()));
+
       } catch (e) {
 
-        if ( e instanceof SieveCertValidationException) {
-          response.payload.fingerprint = e.cert.fingerprint;
-          response.payload.code = e.error.code;
-          response.payload.message = e.error.message;
-          await actions["account-cert-error"](response);
+        if (e instanceof SieveCertValidationException) {
+          const secInfo = e.getSecurityInfo();
+
+          const rv = await (new SieveFingerprintDialog(secInfo)).show();
+
+          // save the fingerprint.
+          if (rv !== true)
+            return;
+
+          const host = accounts.getAccountById(account).getHost();
+
+          host.setFingerprint(secInfo.fingerprint);
+          host.setIgnoreCertErrors(secInfo.code);
+
+          await actions["account-connecting"](response);
           return;
         }
 

@@ -11,6 +11,8 @@
 
 (function (exports) {
 
+  // TODO merge with wx and move to common...
+
   "use strict";
 
   const KEY_RETURN = 13;
@@ -41,6 +43,7 @@
 
     /**
      * Get the current dialogs root element
+     *
      * @returns {HTMLElement}
      *   the dialogs root element.
      */
@@ -54,7 +57,6 @@
      *
      * You can use getDialog to retrieve the dialogs root element.
      * E.g. when adding new elements.
-     *
      *
      */
     onInit() {
@@ -192,15 +194,13 @@
     /**
      * Creates a new instance
      *
-     * @param {string} fingerprint
-     *   The account's fingerprint
-     * @param {string} error
-     *   The error code.
+     * @param {object} secInfo
+     *   the security info object with details about the validation error.
      */
-    constructor(fingerprint, error) {
+    constructor(secInfo) {
       super();
-      this.fingerprint = fingerprint;
-      this.error = error;
+      this.fingerprint = secInfo.fingerprint;
+      this.error = secInfo.message;
     }
 
     /**

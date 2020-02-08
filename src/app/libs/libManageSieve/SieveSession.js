@@ -14,46 +14,15 @@
   // Enable Strict Mode
   "use strict";
 
-  const { Sieve } = require("./SieveClient.js");
 
   const {
     SieveAbstractSession
   } = require("./SieveAbstractSession.js");
 
-  const {
-    SieveReferralException
-  } = require("./SieveExceptions.js");
-
   /**
    * @inheritdoc
    */
   class SieveNodeSession extends SieveAbstractSession {
-
-    /**
-     * @inheritdoc
-     */
-
-
-    /**
-     * @inheritdoc
-     */
-    getSieve() {
-      return this.sieve;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    createSieve() {
-      this.sieve = new Sieve(this.getLogger());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    destroySieve() {
-      this.sieve = null;
-    }
 
     /**
      * @inheritdoc
@@ -82,35 +51,6 @@
       this.getLogger().log("OnError: " + error.message);
 
       await this.disconnect(true);
-    }
-
-    /**
-     * Connects the session to the given port.
-     *
-     * By default the host and port configured in the settings are used
-     * By you may override host and port, e.g. to realize a referal.
-     *
-     * @param {string} hostname
-     *   the hostname
-     * @param {string} port
-     *   the port
-     * @returns {SieveSession}
-     *   a self reference
-     */
-    async connect(hostname, port) {
-
-      try {
-        await super.connect(hostname, port);
-      } catch (ex) {
-
-        if (!(ex instanceof SieveReferralException))
-          throw ex;
-
-        await this.disconnect(true);
-        await this.connect(ex.getHostname(), ex.getPort());
-      }
-
-      return this;
     }
 
   }

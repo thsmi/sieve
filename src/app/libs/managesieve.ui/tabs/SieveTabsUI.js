@@ -134,6 +134,11 @@
 
   class SieveTabUI {
 
+    /**
+     * Creates a new instance
+     * @param {string} [id]
+     *   the tab bars unique id. It is the element which hosts the tabs.
+     */
     constructor(id) {
       if (id === null || id === undefined)
         id = "myTab";

@@ -100,7 +100,7 @@
         wantGlobalProperties: ["XMLHttpRequest", "TextEncoder", "TextDecoder", "atob", "btoa"],
         wantXrays: false,
         freshCompartment: false
-        //invisibleToDebugger: true
+        // invisibleToDebugger: true
       });
 
       sandbox.console = console;

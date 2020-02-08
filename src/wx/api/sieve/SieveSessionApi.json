@@ -308,20 +308,18 @@
         "description" : "Called when a tls handshake failed",
         "parameters": [
           {
-            "name" : "host",
-            "type" : "string",
-            "description" : "The hostname for which the validation failed"
-          },
-          {
-            "name" : "port",
-            "type" : "string",
-            "description" : "The port for which te validation failed"
-          },
-          {
             "name": "securityInfo",
             "type": "object",
             "description": "The authentication information.",
             "properties": {
+              "host": {
+                "type" : "string",
+                "description" : "The hostname for which the validation failed"
+              },
+              "port": {
+                "type" : "string",
+                "description" : "The port for which te validation failed"
+              },
               "rawDER": {
                 "type": "array",
                 "description" : "The server's certificate",

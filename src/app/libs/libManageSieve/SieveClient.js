@@ -194,11 +194,11 @@
       if (Array.isArray(options.fingerprints) === false)
         options.fingerprints = [options.fingerprints];
 
-      if (options.ignoreErrors === undefined || options.ignoreErrors === null || options.ignoreErrors === "")
-        options.ignoreErrors = [];
+      if (options.ignoreCertErrors === undefined || options.ignoreCertErrors === null || options.ignoreCertErrors === "")
+        options.ignoreCertErrors = [];
 
-      if (Array.isArray(options.ignoreErrors) === false)
-        options.ignoreErrors = [options.ignoreErrors];
+      if (Array.isArray(options.ignoreCertErrors) === false)
+        options.ignoreCertErrors = [options.ignoreCertErrors];
 
       await super.startTLS();
 
@@ -223,24 +223,32 @@
               return;
             }
 
-            // so let's check the if the server's fingerpint matches the pinned one.
+            // so let's check the if the server's fingerprint matches the pinned one.
             if (options.fingerprints.indexOf(cert.fingerprint) !== NOT_FOUND) {
               resolve();
               this.getLogger().log('Socket upgraded! (Chain of Trust and pinned fingerprint)');
               return;
             }
 
+            const secInfo = {
+              host: this.host,
+              port: this.port,
+
+              fingerprint: cert.fingerprint,
+              fingerprint256 : cert.fingerprint256,
+
+              message: "Server fingerprint does not match pinned fingerprint"
+            };
+
             // If not we need to fail right here...
-            reject(new SieveCertValidationException(
-              new Error("Server fingerprint does not match pinned fingerprint"),
-              this.tlsSocket.getPeerCertificate(true)));
+            reject(new SieveCertValidationException(secInfo));
             return;
           }
 
           const error = this.tlsSocket.ssl.verifyError();
 
           // dealing with self signed certificates
-          if (options.ignoreErrors.indexOf(error.code) !== NOT_FOUND) {
+          if (options.ignoreCertErrors.indexOf(error.code) !== NOT_FOUND) {
 
             // Check if the fingerprint is well known...
             if (options.fingerprints.indexOf(cert.fingerprint) !== NOT_FOUND) {
@@ -251,9 +259,18 @@
             }
           }
 
-          reject(new SieveCertValidationException(
-            this.tlsSocket.ssl.verifyError(),
-            this.tlsSocket.getPeerCertificate(true)));
+          const secInfo = {
+            host: this.host,
+            port: this.port,
+
+            fingerprint : cert.fingerprint,
+            fingerprint256 : cert.fingerprint256,
+
+            code : error.code,
+            message : error.message
+          };
+
+          reject(new SieveCertValidationException(secInfo));
 
           this.tlsSocket.destroy();
         });
@@ -287,8 +304,6 @@
 
       this.getLogger().logState("Disconnected ...");
     }
-
-    // TODO detect server disconnects and communication errors...
 
     /**
      * Called when data was received and is ready to be processed.

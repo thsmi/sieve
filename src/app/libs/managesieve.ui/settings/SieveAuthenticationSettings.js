@@ -29,15 +29,6 @@
   class SievePromptAuthentication extends SieveAbstractAuthentication {
 
     /**
-     * Creates a new instance
-     * @param {SieveAccount} account
-     *   the parent account.
-     */
-    constructor(account) {
-      super(AUTH_TYPE_PROMPT, account);
-    }
-
-    /**
      * Sets the username.
      *
      * @param {string} username

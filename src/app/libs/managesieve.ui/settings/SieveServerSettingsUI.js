@@ -98,7 +98,7 @@
     }
 
     /**
-     * Sets the server's certificate fingerpint in the ui.
+     * Sets the server's certificate fingerprint in the ui.
      * The fingerprint is normally a sha checksum.
      *
      * @param {string} fingerprint
@@ -112,9 +112,9 @@
     }
 
     /**
-     * Gets the server's fingerpint from the setting ui.
+     * Gets the server's fingerprint from the setting ui.
      * @returns {string}
-     *   the certificate fingerpint
+     *   the certificate fingerprint
      */
     getFingerprint() {
       return this.getDialog().find(".sieve-settings-fingerprint").val();

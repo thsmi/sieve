@@ -102,7 +102,7 @@
      */
     addTimeoutListener(listener) {
 
-      //TODO should be renamed to error listener...
+      // TODO should be renamed to error listener as it is more than just a timeout handler...
       if (typeof listener !== 'function') {
         throw new Error("Timeout listerner is not a function");
       }
@@ -666,7 +666,7 @@
      * @inheritdoc
      */
     addResponse(parser) {
-      return SieveAbstractRequest.prototype.addResponse.call(this,
+      return super.addResponse(
         (new SieveSimpleResponse()).parse(parser));
     }
   }
@@ -824,23 +824,6 @@
    * [ connection terminated ]
    * </pre>
    * <p>
-   * The following example shows how to use a SieveLogoutRequest:
-   *
-   * @example
-   * const event = {
-   *   onLogoutResponse: function(response) {
-   *     alert("Logout successfull");
-   *   },
-   *   onError: function(response) {
-   *     alert("SERVER ERROR:" + response.getMessage());
-   *   }
-   * };
-   *
-   * const request = new SieveLogoutRequest();
-   * request.addErrorListener(event);
-   * request.addSaslListener(event);
-   *
-   * sieve.addRequest(request);
    */
   class SieveLogoutRequest extends SieveAbstractRequest {
 
@@ -935,30 +918,14 @@
    *
    * Client > AUTHENTICATE "PLAIN" AHRlc3QAc2VjcmV0   | AUTHENTICATE "PLAIN" [UTF8NULL]test[UTF8NULL]secret
    * Server < OK                                      | OK
-   *
-   *
-   *   @example
-   *   let event = {
-   *     onSaslResponse: function(response) {
-   *       alert("Login successfull");
-   *     },
-   *     onError: function(response) {
-   *       alert("SERVER ERROR:"+response.getMessage());
-   *     }
-   *   }
-   *
-   *   let request = new SieveSaslPlainRequest('geek');
-   *   request.setPassword('th3g33k1');
-   *   request.addErrorListener(event);
-   *   request.addSaslListener(event);
-   *
-   *   sieve.addRequest(request);
    */
   class SieveSaslPlainRequest extends SieveAbstractSaslRequest {
 
     /**
+     * The sasl plain request always support proxy authentication.
+     *
      * @returns {boolean}
-     *   always true as sasl plain supports proxy authorization
+     *   always true
      */
     isAuthorizable() {
       return true;
@@ -1006,24 +973,6 @@
    *   Server < OK                     | OK
    *
    * @deprecated
-   *
-   * @example
-   * const event = {
-   *   onSaslResponse: function(response) {
-   *     alert("Login successfull");
-   *   },
-   *   onError: function(response) {
-   *     alert("SERVER ERROR:" + response.getMessage());
-   *   }
-   * };
-   *
-   * const request = new SieveSaslLoginRequest();
-   * request.setUsername('geek');
-   * request.setPassword('th3g33k1');
-   * request.addErrorListener(event);
-   * request.addSaslListener(event);
-   *
-   * sieve.addRequest(request);
    */
   class SieveSaslLoginRequest extends SieveAbstractSaslRequest {
 
@@ -1097,9 +1046,7 @@
     }
 
     /**
-     * Retruns the crypto engine which should be used for this request.
-     * @returns {SieveCrypto}
-     *   the crypto engine for sha1
+     * @inheritdoc
      */
     getCrypto() {
       return new SieveCrypto("MD5");
@@ -1203,7 +1150,11 @@
     }
 
     /**
+     * Retruns the crypto engine/provider which should be used for this request.
      * @abstract
+     *
+     * @returns {SieveCrypto}
+     *   the crypto engine
      */
     getCrypto() {
       throw new Error("Implement Crypto Method which returns a crypto provider");
@@ -1381,9 +1332,7 @@
     }
 
     /**
-     * Retruns the crypto engine which should be used for this request.
-     * @returns {SieveCrypto}
-     *   the crypto engine for sha1
+     * @inheritdoc
      */
     getCrypto() {
       return new SieveCrypto("SHA1");
@@ -1403,9 +1352,7 @@
     }
 
     /**
-     * Retruns the crypto engine which should be used for this request.
-     * @returns {SieveCrypto}
-     *   the crypto engine for sha265
+     * @inheritdoc
      */
     getCrypto() {
       return new SieveCrypto("SHA256");

@@ -29,9 +29,21 @@
      */
     getAPI(context) {
 
-      const url = context.extension.getURL("/");
+      const url = context.extension.getURL();
 
-      const { require } = ChromeUtils.import(`${url}/SieveRequire.jsm`).loadRequire(`${url}/libs/libManageSieve/`);
+      // For some strage reasons ChromeUtils import failes in packaged XPIs.
+      //
+      // const { require } = ChromeUtils.import(`${url}/SieveRequire.jsm`)
+      //   .loadRequire(`${url}/libs/libManageSieve/`);
+
+      // So we use the subscript loader...
+      const subscript = {};
+      Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+        .getService(Components.interfaces.mozIJSSubScriptLoader)
+        .loadSubScript(`${url}/SieveRequire.jsm`, subscript);
+
+      const { require } = subscript.loadRequire(`${url}/libs/libManageSieve/`);
+
       const { SieveSession } = require("./SieveSession.js");
 
       const sessions = new Map();
@@ -84,8 +96,8 @@
               register: (fire, id) => {
 
                 // It is just a notification so no need to wait.
-                const callback = (host, port, securityInfo) => {
-                  fire.async(host, port, securityInfo);
+                const callback = (secInfo) => {
+                  fire.async(secInfo);
                 };
 
                 sessions.get(id).on("certerror", callback);
@@ -115,6 +127,7 @@
               }
             }).api(),
 
+            // eslint-disable-next-line require-await
             async create(id, options) {
 
               if (sessions.has(id))
@@ -132,6 +145,7 @@
               sessions.delete(id);
             },
 
+            // eslint-disable-next-line require-await
             async addCertErrorOverride(hostname, port, rawDER, flags) {
 
               const overrideService = Cc["@mozilla.org/security/certoverride;1"]
@@ -139,7 +153,26 @@
 
               const certdb = Cc["@mozilla.org/security/x509certdb;1"]
                 .getService(Ci.nsIX509CertDB);
-              const cert = certdb.constructX509(rawDER, rawDER.length);
+
+              // The constructX509 has an incompatible change.
+              // While newer version consume an array, older version use strings.
+              // This magic is only needed for thunderbird 68
+              let cert = null;
+              try {
+                // Try first with the new api..
+                cert = certdb.constructX509(rawDER);
+              } catch (ex) {
+
+                if (ex.name !== "NS_ERROR_FAILURE")
+                  throw ex;
+
+                // ... other wise the use the old api.
+                cert = "";
+                for (const ch of rawDER)
+                  cert += (String.fromCharCode(ch));
+
+                cert = certdb.constructX509(cert);
+              }
 
               overrideService.rememberValidityOverride(
                 hostname, port,

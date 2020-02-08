@@ -27,6 +27,8 @@
   class SieveAddHeaderUI extends SieveActionDialogBoxUI {
 
     /**
+     * Gets the header name
+     *
      * @returns {SieveAbstractString}
      *   the element's header field name
      */
@@ -35,6 +37,8 @@
     }
 
     /**
+     * Gets the header value
+     *
      * @returns {SieveAbstractString}
      *   the element's header value field
      */
@@ -111,6 +115,8 @@
   class SieveDeleteHeaderUI extends SieveActionDialogBoxUI {
 
     /**
+     * Gets the match type.
+     *
      * @returns {SieveAbstractElement}
      *   the element's match type
      */
@@ -119,6 +125,8 @@
     }
 
     /**
+     * Gets the comparator type.
+     *
      * @returns {SieveAbstractElement}
      *   the element's comparator type
      */
@@ -127,6 +135,8 @@
     }
 
     /**
+     * Gets the header name
+     *
      * @returns {SieveAbstractString}
      *   the element's header field name
      */

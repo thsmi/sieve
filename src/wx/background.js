@@ -17,6 +17,10 @@
   /* global SieveIpcClient */
   /* global SieveAccounts */
 
+  const ERROR_UNTRUSTED = 1;
+  const ERROR_MISMATCH = 2;
+  const ERROR_TIME = 4;
+
   async function getTabs(account, name) {
     const url = new URL("./libs/managesieve.ui/editor.html", window.location);
 
@@ -59,16 +63,6 @@
   await browser.sieve.menu.load();
 
 
-  async function getTabs(account, name) {
-    const url = new URL("./libs/managesieve.ui/editor.html", window.location);
-
-    url.searchParams.append("account", account);
-    url.searchParams.append("script", name);
-
-    console.log(url.toString);
-
-    return await browser.tabs.query({ url: url.toString() });
-  }
 
   let accounts = [];
 
@@ -106,6 +100,7 @@
         "secure" : await account.getSecurity().isSecure(),
         "sasl" : await account.getSecurity().getMechanism(),
         "keepAlive" :  60 * 1000
+        // Todo
         // keepAlive : account.getSettings().getKeepAliveInterval(),
         // logLevel : account.getSettings().getDebugFlags()
       };
@@ -126,19 +121,27 @@
         return await account.getAuthorization().getAuthorization();
       };
 
-      const onCertError = async (host, port, secInfo) => {
-        console.log(`Certificate Error for ${host}:${port}`);
+      const onCertError = async (secInfo) => {
+        console.log(`Certificate Error for ${secInfo.host}:${secInfo.port}`);
 
-        // TODO Show Cert Override Dialog...
+        const rv = await SieveIpcClient.sendMessage(
+          "accounts", "script-show-certerror", secInfo);
 
-        const ERROR_UNTRUSTED = 1;
-        const ERROR_MISMATCH = 2;
-        const ERROR_TIME = 4;
+        if (!rv)
+          return;
 
-        const overrideBits = ERROR_TIME | ERROR_UNTRUSTED | ERROR_MISMATCH;
+        let overrideBits = 0;
+        if (secInfo.isNotValidAtThisTime)
+          overrideBits |= ERROR_TIME;
+
+        if (secInfo.isUntrusted)
+          overrideBits |= ERROR_UNTRUSTED;
+
+        if (secInfo.isDomainMismatch)
+          overrideBits |= ERROR_MISMATCH;
 
         await browser.sieve.session.addCertErrorOverride(
-          host, port, secInfo.rawDER, overrideBits);
+          secInfo.host, secInfo.port, secInfo.rawDER, overrideBits);
       };
 
       await browser.sieve.session.create(id, options);
@@ -148,7 +151,7 @@
         async () => { return await onAuthorize(); }, id);
 
       await browser.sieve.session.onCertError.addListener(
-        async (host, port, secInfo) => { return await onCertError(host, port, secInfo); }, id);
+        async (secInfo) => { return await onCertError(secInfo); }, id);
 
       const hostname = await account.getHost().getHostname();
       const port = await account.getHost().getPort();

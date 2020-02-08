@@ -132,7 +132,7 @@
 
     /**
      * @returns {SieveString}
-     *   the element's datepart
+     *   the element's header
      */
     header() {
       return this.getSieve().getElement("header");
@@ -155,6 +155,8 @@
     }
 
     /**
+     * Gets the match type.
+     *
      * @returns {SieveAbstractElement}
      *   the element's matchtype
      */
@@ -163,6 +165,8 @@
     }
 
     /**
+     * Gets the comparator type.
+     *
      * @returns {SieveAbstractElement}
      *   the element's comparator
      */

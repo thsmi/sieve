@@ -15,6 +15,8 @@
 
   const { SieveLogger } = require("./SieveLogger.js");
 
+  const { Sieve } = require("./SieveClient.js");
+
   const {
     SieveSaslPlainRequest,
     SieveSaslLoginRequest,
@@ -41,7 +43,8 @@
     SieveClientException,
     SieveServerException,
     SieveReferralException,
-    SieveTimeOutException
+    SieveTimeOutException,
+    SieveCertValidationException
   } = require("./SieveExceptions.js");
 
   const FIRST_ELEMENT = 0;
@@ -70,8 +73,10 @@
      *   a dictionary with options as key/value pairs.
      */
     constructor(id, options) {
+      this.id = id;
       this.options = options;
       this.listeners = {};
+      this.sieve = null;
     }
 
     /**
@@ -83,35 +88,29 @@
      */
     getLogger() {
       if (!this.logger)
-        this.logger = new SieveLogger(this.getOption("id"), this.getOption("logLevel"));
+        this.logger = new SieveLogger(this.id, this.getOption("logLevel"));
 
       return this.logger;
     }
+
     /**
      * Returns the sieve client bound to this session.
-     * @abstract
      *
      * @returns {SieveAbstractClient}
      *   a reference to the sieve client.
      */
     getSieve() {
-      throw new Error("Implement SieveAbstractSession::getSieve()");
+      return this.sieve;
     }
 
     /**
      * Creates a new sieve client for this session.
-     * @abstract
      */
     createSieve() {
-      throw new Error("Implement SieveAbstractSession::createSieve()");
-    }
+      if (this.sieve !== undefined && this.sieve !== null)
+        throw new SieveClientException("Sieve Connection Active");
 
-    /**
-     * Destroys the current sieve client for this session
-     * @abstract
-     */
-    destroySieve() {
-      throw new Error("Implement SieveAbstractSession::createSieve()");
+      this.sieve = new Sieve(this.getLogger());
     }
 
     /**
@@ -367,18 +366,29 @@
       if (!this.getSieve().capabilities.tls)
         throw new SieveClientException("Server does not support a secure connection.");
 
-      await this.sendRequest(new SieveStartTLSRequest(), false);
+      try {
+        await this.sendRequest(new SieveStartTLSRequest(), false);
 
-      await this.getSieve().startTLS(options);
+        await this.getSieve().startTLS(options);
 
-      // A bugfree server we endup with two capability request, one
-      // implicit after startTLS and one explicite from capbilites.
-      // So we have to consume one of them silently...
-      const capabilities = await this.sendRequest([
-        new SieveCapabilitiesRequest(),
-        new SieveInitRequest()], false);
+        // A bugfree server we endup with two capability request, one
+        // implicit after startTLS and one explicite from capbilites.
+        // So we have to consume one of them silently...
+        const capabilities = await this.sendRequest([
+          new SieveCapabilitiesRequest(),
+          new SieveInitRequest()], false);
 
-      this.setCapabilities(capabilities);
+        this.setCapabilities(capabilities);
+
+      } catch (ex) {
+        // Upon a cert validation we emit a notification...
+        if (ex instanceof SieveCertValidationException)
+          if (this.listeners.onCertError)
+            this.listeners.onCertError(ex.getSecurityInfo());
+
+        // ... and then rethrow.
+        throw ex;
+      }
     }
 
     /**
@@ -501,10 +511,11 @@
      *   the sieve server's hostname
      * @param {string} port
      *   the sieve server's port
+     * @returns {SieveSession}
+     *   a self reference
      */
     async connect(hostname, port) {
 
-      // TODO remove the santity checks
       if (typeof (hostname) === "undefined" || hostname === null)
         throw new SieveClientException("No Hostname specified");
 
@@ -518,7 +529,6 @@
       // TODO do we really need this? Or do we need this only for keep alive?
       this.getSieve().addListener(this);
 
-      // FIX me we should not throw instead we should return a direct connection...
       let proxy = null;
       if (this.listeners.onProxyLookup)
         proxy = await this.listeners.onProxyLookup(hostname, port);
@@ -537,6 +547,8 @@
       await this.startTLS();
 
       await this.authenticate();
+
+      return this;
     }
 
     /**
@@ -568,7 +580,7 @@
       // ... in case it failed for we do it the hard way
       if (this.getSieve()) {
         await this.getSieve().disconnect();
-        this.destroySieve();
+        this.sieve = null;
       }
 
       return this;

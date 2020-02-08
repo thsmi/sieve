@@ -12,10 +12,12 @@
 const { src, dest, watch, parallel } = require('gulp');
 
 const common = require("./gulpfile.common.js");
+
+const zip = require('gulp-zip');
 const path = require('path');
 
-const BUILD_DIR_APP = path.join(common.BASE_DIR_BUILD, "thunderbird-wx");
-const BASE_DIR_APP = "./src/wx/";
+const BUILD_DIR_WX = path.join(common.BASE_DIR_BUILD, "thunderbird-wx");
+const BASE_DIR_WX = "./src/wx/";
 
 /**
  * Copies the license file into the build directory.
@@ -26,7 +28,7 @@ async function packageLicense() {
 
   await src([
     "./LICENSE.md"
-  ]).pipe(dest(BUILD_DIR_APP));
+  ]).pipe(dest(BUILD_DIR_WX));
 }
 
 /**
@@ -37,7 +39,7 @@ async function packageJQuery() {
   "use strict";
 
   await common.packageJQuery(
-    BUILD_DIR_APP + "/libs/jquery");
+    BUILD_DIR_WX + "/libs/jquery");
 }
 
 /**
@@ -48,7 +50,7 @@ async function packageCodeMirror() {
   "use strict";
 
   await common.packageCodeMirror(
-    `${BUILD_DIR_APP}/libs/CodeMirror`);
+    `${BUILD_DIR_WX}/libs/CodeMirror`);
 }
 
 /**
@@ -59,7 +61,7 @@ async function packageBootstrap() {
   "use strict";
 
   await common.packageBootstrap(
-    `${BUILD_DIR_APP}/libs/bootstrap`);
+    `${BUILD_DIR_WX}/libs/bootstrap`);
 }
 
 /**
@@ -70,7 +72,7 @@ async function packageMaterialIcons() {
   "use strict";
 
   await common.packageMaterialIcons(
-    `${BUILD_DIR_APP}/libs/material-icons`);
+    `${BUILD_DIR_WX}/libs/material-icons`);
 }
 
 /**
@@ -81,8 +83,8 @@ async function packageSrc() {
   "use strict";
 
   await src([
-    BASE_DIR_APP + "/**"
-  ]).pipe(dest(BUILD_DIR_APP));
+    BASE_DIR_WX + "/**"
+  ]).pipe(dest(BUILD_DIR_WX));
 }
 
 /**
@@ -101,7 +103,7 @@ async function packageCommon() {
     "!" + common.BASE_DIR_COMMON + "/libSieve/**/rfc*.txt",
     "!" + common.BASE_DIR_COMMON + "/libSieve/**/tests/",
     "!" + common.BASE_DIR_COMMON + "/libSieve/**/tests/**"
-  ]).pipe(dest(BUILD_DIR_APP + '/libs'));
+  ]).pipe(dest(BUILD_DIR_WX + '/libs'));
 }
 
 
@@ -125,10 +127,39 @@ function watchSrc() {
   );
 }
 
+/**
+ * Updates the addon's version.
+ * It reads the information from the npm package and updates the install.rdf as well as the manifest.json
+ * @returns {undefined}
+ */
+async function updateVersion() {
+  "use strict";
+
+  const pkgVersion = await common.getPackageVersion();
+  await common.setPackageVersion(pkgVersion, './src/wx/manifest.json');
+}
+
+/**
+ * Zips the build directory and creates a XPI inside the release folder.
+ * @returns {undefined}
+ */
+async function packageXpi() {
+  "use strict";
+
+  const version = (await common.getPackageVersion()).join(".");
+
+  console.log(`Packaging sieve-${version}.xpi`);
+
+  await src([`./${BUILD_DIR_WX}/**`], {buffer:false})
+    .pipe(zip(`sieve-${version}.xpi`))
+    .pipe(dest('./release/thunderbird'));
+  // place code for your default task here
+}
+
+
 exports["watch"] = watchSrc;
 
-// TODO
-//exports["updateVersion"] = updateVersion;
+exports["updateVersion"] = updateVersion;
 
 exports["packageJQuery"] = packageJQuery;
 exports["packageCodeMirror"] = packageCodeMirror;
@@ -147,4 +178,6 @@ exports['package'] = parallel(
   packageSrc,
   packageCommon
 );
+
+exports["packageXpi"] = packageXpi;
 

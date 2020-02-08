@@ -50,17 +50,24 @@
     /**
      * Creates a Certificate Validation Exception.
      *
-     * @param {Error} error
-     *   the error which causes this exception
-     * @param {object} cert
-     *   a certificate object.
+     * @param {object} securityInfo
+     *   the security info object with details on the certificate.
      */
-    constructor(error, cert) {
-      super("Error while validating Cerificate: " + error);
-      this._error = error;
+    constructor(securityInfo) {
+      super("Error while validating Cerificate");
 
-      // TODO Rename to sec info.
-      this._cert = cert;
+      this.securityInfo = securityInfo;
+    }
+
+    /**
+     * The security Info objecte with detailed information
+     * on the certificate which caused this error.
+     *
+     * @returns {object}
+     *   the security info.
+     */
+    getSecurityInfo() {
+      return this.securityInfo;
     }
   }
 

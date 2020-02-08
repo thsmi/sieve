@@ -36,7 +36,7 @@
      *   the layout engine which should be used to render the document.
      *   Can be ommited in case the document should not be rendered.
      */
-    costructor(lexer, widgets) {
+    constructor(lexer, widgets) {
       this._lexer = lexer;
       this._widgets = widgets;
       this._nodes = {};

@@ -28,10 +28,17 @@
      */
     getAPI(context) {
 
-      const url = context.extension.getURL("/");
+      const url = context.extension.getURL();
 
-      // TODO SieveOverlayManager into this class
-      const { require } = ChromeUtils.import(`${url}/SieveRequire.jsm`).loadRequire(`${url}/api/sieve/`);
+      // TODO Add SieveOverlayManager into this class
+
+      const subScript = {};
+      Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+        .getService(Components.interfaces.mozIJSSubScriptLoader)
+        .loadSubScript(`${url}/SieveRequire.jsm`, subScript);
+
+      const { require } = subScript.loadRequire(`${url}/api/sieve/`);
+
       const { SieveOverlayManager } = require("./SieveOverlayManager.js");
 
       return {

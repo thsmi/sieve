@@ -51,7 +51,7 @@
     /**
      * Each certificate has a unique fingerprint.
      *
-     * Normally this fingerpint is not used directly.
+     * Normally this fingerprint is not used directly.
      * But in case no chain of trust can be stablished,
      * the typicall fallback is to verify the fingerprint.
      *

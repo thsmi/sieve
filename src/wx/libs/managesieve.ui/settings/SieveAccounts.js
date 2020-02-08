@@ -55,7 +55,6 @@
     }
 
     getAuthorization() {
-      debugger;
       return this.authorization.get();
     }
 

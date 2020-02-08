@@ -19,11 +19,13 @@
   /* global SieveCreateScriptDialog */
   /* global SieveDeleteScriptDialog */
   /* global SieveScriptBusyDialog */
+  /* global SieveFingerprintDialog */
 
   /**
-   * Shows a prompt which asks the user if the script should be deleted.
+   * Shows a prompt which asks the user for the new script name.
    *
-   * @returns
+   * @returns {string}
+   *   the script name or an empty string in case the dialog was canceled.
    */
   async function onCreateScript() {
     return await (new SieveCreateScriptDialog()).show();
@@ -35,7 +37,8 @@
    * @param {string} name
    *   the scriptname which should be deleted
    *
-   * @returns
+   * @returns {boolean}
+   *   true in case the script shall be deleted otherwise false.
    */
   async function onDeleteScript(name) {
     return await (new SieveDeleteScriptDialog(name)).show();
@@ -67,6 +70,19 @@
   }
 
   /**
+   * Informs the user about a faild certificate validation.
+   *
+   * @param {object} secInfo
+   *   the security information with more details about the validation error.
+   *
+   * @returns {boolean}
+   *   true in case the certificate sould be overwritten otherwise false.
+   */
+  async function onCertError(secInfo) {
+    return await (new SieveFingerprintDialog(secInfo)).show();
+  }
+
+  /**
    * The main entry point for the account view
    */
   function main() {
@@ -85,6 +101,7 @@
     SieveIpcClient.setRequestHandler("accounts", "script-show-delete", async (msg) => { return await onDeleteScript(msg.payload); });
     SieveIpcClient.setRequestHandler("accounts", "script-show-rename", async (msg) => { return await onRenameScript(msg.payload); });
     SieveIpcClient.setRequestHandler("accounts", "script-show-busy", async (msg) => { return await onBusy(msg.payload); });
+    SieveIpcClient.setRequestHandler("accounts", "script-show-certerror", async (msg) => { return await onCertError(msg.payload); });
   }
 
   if (document.readyState !== 'loading')

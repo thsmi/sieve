@@ -47,141 +47,139 @@
    * Mozilla's Modules, Node's Require and the new ES imports are mostly
    * incompatible to each other.
    *
-   * @class
    */
-  function SieveAbstractClient() {
-    this.host = null;
-    this.port = null;
+  class SieveAbstractClient {
 
-    this.socket = null;
-    this.data = null;
+    /**
+     * Creates a new instance
+     */
+    constructor() {
+      this.host = null;
+      this.port = null;
 
-    this.queueLocked = false;
+      this.socket = null;
+      this.data = null;
 
-    this.requests = [];
+      this.queueLocked = false;
 
-    this.idleDelay = 0;
+      this.requests = [];
+
+      this.idleDelay = 0;
 
 
-    // out of the box we support the following manage sieve commands...
-    // ... the server might advertise additional commands they are added ...
-    // ... or removed by the set compatibility method
-    this.compatibility = {
-      authenticate: true,
-      starttls: true,
-      logout: true,
-      capability: true,
-      // until now we do not support havespace...
-      // havespace  : false,
-      putscript: true,
-      listscripts: true,
-      setactive: true,
-      getscript: true,
-      deletescript: true
-    };
-  }
+      // out of the box we support the following manage sieve commands...
+      // ... the server might advertise additional commands they are added ...
+      // ... or removed by the set compatibility method
+      this.compatibility = {
+        authenticate: true,
+        starttls: true,
+        logout: true,
+        capability: true,
+        // until now we do not support havespace...
+        // havespace  : false,
+        putscript: true,
+        listscripts: true,
+        setactive: true,
+        getscript: true,
+        deletescript: true
+      };
+    }
 
-  /**
-   * Gives this socket a hint, whether a sieve commands is supported or not.
-   *
-   * Setting the corresponding attribute to false, indicates, that a sieve command
-   * should not be used. As this is only an advice, such command will still be
-   * processed by this sieve socket.
-   *
-   * By default the socket seek maximal compatibility.
-   *
-   * @param {Struct} supported commands
-   *   the supported sieve commands as an associative array. Attribute names have
-   *   to be in lower case, the values can be either null, undefined, true or false.
-   * @example
-   * sieve.setCompatibility({checkscript:true, rename:true, starttls:false});
-   */
-
-  SieveAbstractClient.prototype.setCompatibility
-    = function (capabilites) {
+    /**
+     * Gives this socket a hint, whether a sieve commands is supported or not.
+     *
+     * Setting the corresponding attribute to false, indicates, that a sieve command
+     * should not be used. As this is only an advice, such command will still be
+     * processed by this sieve socket.
+     *
+     * By default the socket seek maximal compatibility.
+     *
+     * @param {object} capabilites commands
+     *   the supported sieve commands as an associative array. Attribute names have
+     *   to be in lower case, the values can be either null, undefined, true or false.
+     *
+     * @example
+     * sieve.setCompatibility({checkscript:true, rename:true, starttls:false});
+     */
+    setCompatibility(capabilites) {
       for (const capability in capabilites)
         this.compatibility[capability] = capabilites[capability];
-    };
+    }
 
-  /**
-   * Returns a list of supported sieve commands. As the socket seeks
-   * maximal compatibility, it always suggest the absolute minimal sieve
-   * command set defined in the rfc. This value is only a hint, and does
-   * not represent the server's capabilities!
-   *
-   * A command is most likely unsupported if the corresponding attribute is null and
-   * disabled if the the attribute is false
-   *
-   * You should override these defaults as soon as possible.
-   *
-   * @returns {Struct}
-   *   an associative array structure indecating supported sieve command.
-   *   Unsupported commands are indecated by a null, disabled by false value...
-   *
-   * @example
-   * if (sieve.getCompatiblity().putscript) {
-   *   // put script command supported...
-   * }
-   */
-  SieveAbstractClient.prototype.getCompatibility
-    = function () {
+    /**
+     * Returns a list of supported sieve commands. As the socket seeks
+     * maximal compatibility, it always suggest the absolute minimal sieve
+     * command set defined in the rfc. This value is only a hint, and does
+     * not represent the server's capabilities!
+     *
+     * A command is most likely unsupported if the corresponding attribute is null and
+     * disabled if the the attribute is false
+     *
+     * You should override these defaults as soon as possible.
+     *
+     * @returns {Struct}
+     *   an associative array structure indecating supported sieve command.
+     *   Unsupported commands are indecated by a null, disabled by false value...
+     *
+     * @example
+     * if (sieve.getCompatiblity().putscript) {
+     *   // put script command supported...
+     * }
+     */
+    getCompatibility() {
       return this.compatibility;
-    };
+    }
 
 
-  /**
-   * Gets a reference to the current logger
-   * @returns {SieveAbstractLogger}
-   *   the current logger
-   *
-   * @abstract
-   */
-  SieveAbstractClient.prototype.getLogger
-    = function () {
+    /**
+     * Gets a reference to the current logger
+     * @returns {SieveAbstractLogger}
+     *   the current logger
+     *
+     * @abstract
+     */
+    getLogger() {
       throw new Error("Implement getLogger()");
-    };
+    }
 
-  /**
-   * Checks if the connection to the server is still alive and can be used to send
-   * and receive messages
-   * @returns {boolean}
-   *   true in case the connection is alive otherwise false
-   */
-  SieveAbstractClient.prototype.isAlive
-    = function () {
+    /**
+     * Checks if the connection to the server is still alive and can be used to send
+     * and receive messages
+     * @returns {boolean}
+     *   true in case the connection is alive otherwise false
+     */
+    isAlive() {
       if (!this.socket)
         return false;
 
       return true;
-    };
+    }
 
-  /**
-   * Check is the connection supports any connection security.
-   * It could be either disabled by the client or the server.
-   *
-   * @abstract
-   *
-   * @returns {boolean}
-   *   true in case the connection can be or is secure otherwise false
-   */
-  SieveAbstractClient.prototype.isSecure
-     = function () {
+    /**
+     * Check is the connection supports any connection security.
+     * It could be either disabled by the client or the server.
+     *
+     * @abstract
+     *
+     * @returns {boolean}
+     *   true in case the connection can be or is secure otherwise false
+     */
+    isSecure() {
       throw new Error("Impelement isSecure()");
-    };
+    }
 
-  /**
-   * This method secures the connection to the sieve server. By activating
-   * Transport Layer Security all Data exchanged is crypted.
-   *
-   * Before calling this method you need to request a crypted connection by
-   * sending a startTLSRequest. Invoke this method imediately after the server
-   * confirms switching to TLS.
-   *
-   * @returns {SieveAbstractClient}
-   *   a self reference
-   **/
-  SieveAbstractClient.prototype.startTLS
-    = function () {
+    /**
+     * This method secures the connection to the sieve server. By activating
+     * Transport Layer Security all Data exchanged is crypted.
+     *
+     * Before calling this method you need to request a crypted connection by
+     * sending a startTLSRequest. Invoke this method imediately after the server
+     * confirms switching to TLS.
+     *
+     * @returns {SieveAbstractClient}
+     *   a self reference
+     **/
+    startTLS() {
       if (!this.isSecure())
         throw new Error("TLS can't be started no secure socket");
 
@@ -190,102 +188,108 @@
 
       // Need to be overwritten in a subclass....
       return this;
-    };
+    }
 
-  SieveAbstractClient.prototype.onStartTimeout
-    = function () {
+    /**
+     * An internal callback which is triggered when the request timeout timer
+     * should be started. This is typically whenever a new request is about to
+     * be send to the server.
+     *
+     * @abstract
+     */
+    onStartTimeout() {
       throw new Error("Implement onStartTimeout()");
-    };
+    }
 
-  SieveAbstractClient.prototype.onStopTimeout
-    = function () {
+    /**
+     * An internal callback wich is triggered when the request timeout timer
+     * should be stopped. This is typically whenever a response was received and
+     * the request was completed.
+     *
+     * @abstract
+     */
+    onStopTimeout() {
       throw new Error("Implement onStopTimeout()");
-    };
+    }
 
 
-  /**
-   * Returns the maximal interval in ms between a request and a response.
-   * The default timeout is 20 seconds
-   * @returns {int}
-   *   the maximal number of milliseconds
-   */
-  SieveAbstractClient.prototype.getTimeoutWait
-    = function () {
+    /**
+     * Returns the maximal interval in ms between a request and a response.
+     * The default timeout is 20 seconds
+     * @returns {int}
+     *   the maximal number of milliseconds
+     */
+    getTimeoutWait() {
 
       // Apply some selfhealing magic...
       if (!this.timeoutDelay)
         return DEFAULT_TIMEOUT;
 
       return this.timeoutDelay;
-    };
+    }
 
-  /**
-   * Specifies the maximal interval between a request and a response. If the
-   * timeout elapsed, all pending request will be canceled and the event queue
-   * will be cleared. Either the onTimeout() method of the most recend request
-   * will invoked or in case the request does not support onTimeout() the
-   * default's listener will be called.
-   *
-   * @param {int} interval
-   *   the number of milliseconds before the timeout is triggered.
-   *   Pass null to set the default timeout.
-   * @returns {SieveAbstractClient}
-   *   a self reference
-   */
-  SieveAbstractClient.prototype.setTimeoutWait
-    = function (interval) {
+    /**
+     * Specifies the maximal interval between a request and a response. If the
+     * timeout elapsed, all pending request will be canceled and the event queue
+     * will be cleared. Either the onTimeout() method of the most recend request
+     * will invoked or in case the request does not support onTimeout() the
+     * default's listener will be called.
+     *
+     * @param {int} interval
+     *   the number of milliseconds before the timeout is triggered.
+     *   Pass null to set the default timeout.
+     * @returns {SieveAbstractClient}
+     *   a self reference
+     */
+    setTimeoutWait(interval) {
 
       this.timeoutDelay = interval;
       return this;
-    };
+    }
 
 
-  /**
-   * Internal method trigged after a request was completely processed.
-   * @abstract
-   */
-  SieveAbstractClient.prototype.onStartIdle
-    = function () {
+    /**
+     * Internal method trigged after a request was completely processed.
+     * @abstract
+     */
+    onStartIdle() {
       throw new Error("Implement onStartIdle()");
-    };
+    }
 
-  /**
-   * Internal method triggered when a new request is processed.
-   * @abstract
-   */
-  SieveAbstractClient.prototype.onStopIdle
-    = function () {
+    /**
+     * Internal method triggered when a new request is processed.
+     * @abstract
+     */
+    onStopIdle() {
       throw new Error("Implement onStopIdle()");
-    };
+    }
 
-  /**
-   * Gets the maximal number of idle time between two subsequent requests.
-   * A value of zero indicates idle detection is disabled.
-   *
-   * @returns {int}
-   *   the number of ms to wait or null in case idle detection is disabled.
-   */
-  SieveAbstractClient.prototype.getIdleWait
-    = function () {
+    /**
+     * Gets the maximal number of idle time between two subsequent requests.
+     * A value of zero indicates idle detection is disabled.
+     *
+     * @returns {int}
+     *   the number of ms to wait or null in case idle detection is disabled.
+     */
+    getIdleWait() {
       if (!this.idleDelay)
         return 0;
 
       return this.idleDelay;
-    };
+    }
 
-  /**
-   * Specifies the maximal interval between a response and a request.
-   * If the max time elapsed, the listener's OnIdle() event will be called.
-   * Thus it can be used for sending "Keep alive" packets.
-   *
-   * @param {int} ms
-   *  the maximal number of milliseconds between a response and a request,
-   *  pass null to deactivate.
-   * @returns {SieveAbstractClient}
-   *   a self reference
-   */
-  SieveAbstractClient.prototype.setIdleWait
-    = function (ms) {
+    /**
+     * Specifies the maximal interval between a response and a request.
+     * If the max time elapsed, the listener's OnIdle() event will be called.
+     * Thus it can be used for sending "Keep alive" packets.
+     *
+     * @param {int} ms
+     *  the maximal number of milliseconds between a response and a request,
+     *  pass null to deactivate.
+     * @returns {SieveAbstractClient}
+     *   a self reference
+     */
+    setIdleWait(ms) {
       if (ms) {
         this.idleDelay = ms;
         return this;
@@ -296,36 +300,34 @@
       this.onStopIdle();
 
       return this;
-    };
+    }
 
-  SieveAbstractClient.prototype.addListener
-    = function (listener) {
+    addListener(listener) {
       this.listener = listener;
-    };
+    }
 
-  /**
-   * Adds a request to the send queue.
-   *
-   * Normal request runs to completion, so they are blocking the queue
-   * until they are fully processed. If the request failes, the error
-   * handler is triggered and the request is dequeued.
-   *
-   * A greedy request in constrast accepts whatever it can get. Upon an
-   * error greedy request are not dequeued. They fail silently and the next
-   * requests is processed. This continues until a request succeeds, a non
-   * greedy request failes or the queue has no more requests.
-   *
-   * @param {SieveAbstractRequest} request
-   *   the request object which should be added to the queue
-   *
-   * @param {boolean} [greedy]
-   *   if true requests fail silently
-   *
-   * @returns {SieveAbstractClient}
-   *   a self reference
-   */
-  SieveAbstractClient.prototype.addRequest
-    = function (request, greedy) {
+    /**
+     * Adds a request to the send queue.
+     *
+     * Normal request runs to completion, so they are blocking the queue
+     * until they are fully processed. If the request failes, the error
+     * handler is triggered and the request is dequeued.
+     *
+     * A greedy request in constrast accepts whatever it can get. Upon an
+     * error greedy request are not dequeued. They fail silently and the next
+     * requests is processed. This continues until a request succeeds, a non
+     * greedy request failes or the queue has no more requests.
+     *
+     * @param {SieveAbstractRequest} request
+     *   the request object which should be added to the queue
+     *
+     * @param {boolean} [greedy]
+     *   if true requests fail silently
+     *
+     * @returns {SieveAbstractClient}
+     *   a self reference
+     */
+    addRequest(request, greedy) {
 
       // Attach the global bye listener only when needed.
       if (!request.byeListener)
@@ -361,60 +363,58 @@
       this._sendRequest();
 
       return this;
-    };
+    }
 
 
-  /**
-   * Connects to a ManageSieve server.
-   * @abstract
-   *
-   * @param {string} host
-   *   The target hostname or IP address as String
-   * @param {int} port
-   *   The target port as Interger
-   * @param {boolean} secure
-   *   If true, a secure socket will be created. This allows switching to a secure
-   *   connection.
-   * @param {nsIProxyInfo[]} proxy
-   *   An Array of nsIProxyInfo Objects which specifies the proxy to use.
-   *   Pass an empty array for no proxy.
-   *   Set to null if the default proxy should be resolved. Resolving proxy info is
-   *   done asynchronous. The connect method returns imedately, without any
-   *   information on the connection status...
-   *   Currently only the first array entry is evaluated.
-   *
-   * @returns {SieveAbstractClient}
-   *   a self reference
-   */
-  SieveAbstractClient.prototype.connect
-    = function (host, port, secure, proxy) {
+    /**
+     * Connects to a ManageSieve server.
+     * @abstract
+     *
+     * @param {string} host
+     *   The target hostname or IP address as String
+     * @param {int} port
+     *   The target port as Interger
+     * @param {boolean} secure
+     *   If true, a secure socket will be created. This allows switching to a secure
+     *   connection.
+     * @param {nsIProxyInfo[]} proxy
+     *   An Array of nsIProxyInfo Objects which specifies the proxy to use.
+     *   Pass an empty array for no proxy.
+     *   Set to null if the default proxy should be resolved. Resolving proxy info is
+     *   done asynchronous. The connect method returns imedately, without any
+     *   information on the connection status...
+     *   Currently only the first array entry is evaluated.
+     *
+     * @returns {SieveAbstractClient}
+     *   a self reference
+     */
+    // eslint-disable-next-line no-unused-vars
+    connect(host, port, secure, proxy) {
       throw new Error("Implement me SieveAbstractClient ");
-    };
+    }
 
-  /**
-   * Cancels all pending request.
-   *
-   * @param {Error} [reason]
-   *   the optional reason why the request was canceled.
-   */
-  SieveAbstractClient.prototype.cancel
-    = function(reason) {
+    /**
+     * Cancels all pending request.
+     *
+     * @param {Error} [reason]
+     *   the optional reason why the request was canceled.
+     */
+    cancel(reason) {
 
       while (this.requests.length)
         this.requests.shift().cancel(reason);
-    };
+    }
 
-  /**
-   * Disconnects from the server.
-   *
-   * Need to be overwritten. The current implementation is a stub
-   * which takes care about stopping the timeouts.
-   *
-   * @param {Error} [reason]
-   *   the optional reason why the client was disconnected.
-   */
-  SieveAbstractClient.prototype.disconnect
-    = function (reason) {
+    /**
+     * Disconnects from the server.
+     *
+     * Need to be overwritten. The current implementation is a stub
+     * which takes care about stopping the timeouts.
+     *
+     * @param {Error} [reason]
+     *   the optional reason why the client was disconnected.
+     */
+    disconnect(reason) {
 
       this.getLogger().logState("Disconnecting " + this.host + ":" + this.port + "...");
 
@@ -424,10 +424,15 @@
       // this.requests = new Array();
       this.onStopTimeout();
       this.onStopIdle();
-    };
+    }
 
-  SieveAbstractClient.prototype.onIdle
-    = async function () {
+    /**
+     * Called whenever the client enters idle state.
+     * Which means no request where send for the given idle time.
+     *
+     * It emits a signal to external idle listeners.
+     */
+    async onIdle() {
 
       this.onStopIdle();
 
@@ -435,10 +440,13 @@
 
       if (this.listener && this.listener.onIdle)
         await this.listener.onIdle();
-    };
+    }
 
-  SieveAbstractClient.prototype.onTimeout
-    = function () {
+    /**
+     * Called whenever a request was not responed in a reasonable timeframe.
+     * It cancel all pending requests and emits a timeout signal to the listeners.
+     */
+    onTimeout() {
 
       this.onStopTimeout();
 
@@ -467,21 +475,17 @@
       if (this.listener && this.listener.onTimeout)
         this.listener.onTimeout();
 
-    };
+    }
 
-
-  SieveAbstractClient.prototype.createParser
-    = function (data) {
+    createParser(data) {
       throw new Error("Implement SieveAbstractClient::createParser " + data);
-    };
+    }
 
-  SieveAbstractClient.prototype.createRequestBuilder
-    = function () {
+    createRequestBuilder() {
       throw new Error("Implement SieveAbstractClient::createRequestBuilder");
-    };
+    }
 
-  SieveAbstractClient.prototype.onReceive
-    = function (data) {
+    onReceive(data) {
       // responses packets could be fragmented...
       if ((this.data === null) || (this.data.length === 0))
         this.data = data;
@@ -587,10 +591,9 @@
       this._unlockMessageQueue(requests);
 
       this.getLogger().logState("Skipping Event Queue");
-    };
+    }
 
-  SieveAbstractClient.prototype._sendRequest
-    = function () {
+    _sendRequest() {
 
       let idx = 0;
       while (idx < this.requests.length) {
@@ -614,35 +617,33 @@
       this.onSend(output);
 
       return;
-    };
+    }
 
-  /**
-   * Called everytime data is ready to send.
-   * @abstract
-   *
-   * @param {object} data
-   *   the data to send to the server.
-   */
-  SieveAbstractClient.prototype.onSend
-    = function (data) {
+    /**
+     * Called everytime data is ready to send.
+     * @abstract
+     *
+     * @param {object} data
+     *   the data to send to the server.
+     */
+    onSend(data) {
       throw new Error(`Implement SieveAbstractClient::onSend(${data})`);
-    };
+    }
 
-  SieveAbstractClient.prototype._lockMessageQueue
-    = function () {
+    _lockMessageQueue() {
       this.queueLocked = true;
       const requests = this.requests.concat();
 
       this.requests = [];
 
       return requests;
-    };
+    }
 
-  SieveAbstractClient.prototype._unlockMessageQueue
-    = function (requests) {
+    _unlockMessageQueue(requests) {
       this.requests = requests.concat(this.requests);
       this.queueLocked = false;
-    };
+    }
+  }
 
   exports.SieveAbstractClient = SieveAbstractClient;
 })(module.exports || this);

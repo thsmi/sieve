@@ -11,6 +11,7 @@
 
 const fs = require('fs');
 const { src, dest } = require('gulp');
+const logger = require('gulplog');
 
 const BASE_DIR_BOOTSTRAP = "./node_modules/bootstrap/dist";
 const BASE_DIR_MATERIALICONS = "./node_modules/material-design-icons-iconfont/dist";
@@ -174,7 +175,7 @@ async function setPackageVersion(version, file) {
 
   version = version.join(".");
 
-  console.log(`Updating ${file} to ${version}`);
+  logger.info(`Updating ${file} to ${version}`);
 
   const data = JSON.parse(await fs.promises.readFile(file, 'utf8'));
   data.version = version;
@@ -196,13 +197,13 @@ async function bumpMajorVersion() {
 
   const pkgVersion = await getPackageVersion('./package.json');
 
-  console.log("Major bump from " + pkgVersion.join(".") + " ...");
+  logger.info("Major bump from " + pkgVersion.join(".") + " ...");
 
   pkgVersion[INDEX_MAJOR] = parseInt(pkgVersion[INDEX_MAJOR], 10) + 1;
   pkgVersion[INDEX_MINOR] = 0;
   pkgVersion[INDEX_PATCH] = 0;
 
-  console.log("... to " + pkgVersion.join("."));
+  logger.info("... to " + pkgVersion.join("."));
 
   await setPackageVersion(pkgVersion, './package.json');
 }
@@ -218,12 +219,12 @@ async function bumpMinorVersion() {
 
   const pkgVersion = await getPackageVersion('./package.json');
 
-  console.log("Minor bump from " + pkgVersion.join("."));
+  logger.info("Minor bump from " + pkgVersion.join("."));
 
   pkgVersion[INDEX_MINOR] = parseInt(pkgVersion[INDEX_MINOR], 10) + 1;
   pkgVersion[INDEX_PATCH] = 0;
 
-  console.log("... to " + pkgVersion.join("."));
+  logger.info("... to " + pkgVersion.join("."));
 
   await setPackageVersion(pkgVersion, './package.json');
 }
@@ -239,11 +240,11 @@ async function bumpPatchVersion() {
 
   const pkgVersion = await getPackageVersion('./package.json');
 
-  console.log("Patch bump from " + pkgVersion.join("."));
+  logger.info("Patch bump from " + pkgVersion.join("."));
 
   pkgVersion[INDEX_PATCH] = parseInt(pkgVersion[INDEX_PATCH], 10) + 1;
 
-  console.log("... to " + pkgVersion.join("."));
+  logger.info("... to " + pkgVersion.join("."));
 
   await setPackageVersion(pkgVersion, './package.json');
 }

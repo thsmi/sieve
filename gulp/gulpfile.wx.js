@@ -11,10 +11,14 @@
 
 const { src, dest, watch, parallel } = require('gulp');
 
+const { unlink } = require('fs').promises;
+const { existsSync } = require('fs');
+
 const common = require("./gulpfile.common.js");
 
 const zip = require('gulp-zip');
 const path = require('path');
+const logger = require('gulplog');
 
 const BUILD_DIR_WX = path.join(common.BASE_DIR_BUILD, "thunderbird-wx");
 const BASE_DIR_WX = "./src/wx/";
@@ -128,7 +132,7 @@ function watchSrc() {
 }
 
 /**
- * Updates the addon's version.
+ * Updates the WebExtension's version.
  * It reads the information from the npm package and updates the install.rdf as well as the manifest.json
  * @returns {undefined}
  */
@@ -148,12 +152,15 @@ async function packageXpi() {
 
   const version = (await common.getPackageVersion()).join(".");
 
-  console.log(`Packaging sieve-${version}.xpi`);
+  if (existsSync(`./release/thunderbird/sieve-${version}.xpi`)) {
+    logger.info(`Deleting sieve-${version}.xpi`);
+    await unlink(`./release/thunderbird/sieve-${version}.xpi`);
+  }
 
+  logger.info(`Packaging sieve-${version}.xpi`);
   await src([`./${BUILD_DIR_WX}/**`], {buffer:false})
     .pipe(zip(`sieve-${version}.xpi`))
     .pipe(dest('./release/thunderbird'));
-  // place code for your default task here
 }
 
 

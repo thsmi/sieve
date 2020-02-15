@@ -14,7 +14,7 @@ but that is far too uncomfortable, not applicable for a normal user and almost
 impossible with secure connections. Wouldn’t it be great to activate, edit,
 delete and add Sieve scripts with a convenient interface? That is exactly what this sieve editor offers…
 
-![Thunderbird with Sieve add-on showing “Extended Sieve Examples” tab](https://f.cloud.github.com/assets/2531380/15883/135e6ae4-47dc-11e2-8909-189ce5476ab6.png)
+![Sieve Editor showing a “Demo” script](https://user-images.githubusercontent.com/2531380/74590832-6efe1480-5012-11ea-8b4e-f7c3e8128824.png))
 
 … it provides an implementation of [A Protocol for Remotely Managing Sieve Scripts (RFC 5804)](https://wiki.tools.ietf.org/html/rfc5804) as well as a graphical editor for [Sieve: An Email Filtering Language (RFC 5228)](https://tools.ietf.org/html/rfc5228)
 

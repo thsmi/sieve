@@ -1,0 +1,23 @@
+[
+  {
+    "namespace": "sieve.menu",
+    "description": "Sieve Menu Glue Code",
+    "functions": [
+      {
+        "name": "load",
+        "type": "function",
+        "description": "Loads the sieve menus into the ui",
+        "async": true,
+        "parameters": []
+      }
+    ],
+    "events": [
+      {
+        "name": "onCommand",
+        "type": "function",
+        "description": "Invoked when the menu is activated",
+        "parameters": []
+      }
+    ]
+  }
+]

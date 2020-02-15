@@ -28,9 +28,9 @@
   } = require("./libs/libManageSieve/SieveExceptions.js");
 
   const { SieveSessions } = require("./libs/libManageSieve/SieveSessions.js");
-  const { SieveAccounts } = require("./libs/libManageSieve/settings/SieveAccounts.js");
 
-  const { SievePrefManager } = require('./libs/libManageSieve/settings/SievePrefManager.js');
+  const { SieveAccounts } = require("./libs/managesieve.ui/settings/SieveAccounts.js");
+  const { SievePrefManager } = require('./libs/managesieve.ui/settings/SievePrefManager.js');
 
   const { SieveUpdater } = require("./libs/managesieve.ui/updater/SieveUpdater.js");
   const { SieveTabUI } = require("./libs/managesieve.ui/tabs/SieveTabsUI.js");
@@ -43,7 +43,7 @@
     SieveDeleteAccountDialog,
     SieveScriptBusyDialog,
     SieveErrorDialog
-  } = require("./ui/dialogs/SieveDialogUI.js");
+  } = require("./libs/managesieve.ui/dialogs/SieveDialogUI.js");
 
   const { SieveThunderbirdImport } = require("./libs/managesieve.ui/importer/SieveThunderbirdImport.js");
   const { SieveAutoConfig } = require("./libs/libManageSieve/SieveAutoConfig.js");
@@ -103,7 +103,7 @@
       return rv;
     },
 
-    "account-get-displayname": function (msg) {
+    "account-get-displayname": async function (msg) {
       return accounts.getAccountById(msg.payload.account).getHost().getDisplayName();
     },
 
@@ -202,31 +202,33 @@
       return await (sessions.get(msg.payload.account).capabilities());
     },
 
-    "account-cert-error": async (msg) => {
-      const rv = await (new SieveFingerprintDialog(msg.payload.fingerprint, msg.payload.message)).show();
-
-      // save the fingerprint.
-      if (rv !== true)
-        return;
-
-      accounts.getAccountById(msg.payload.account).getHost().setFingerprint(msg.payload.fingerprint);
-      accounts.getAccountById(msg.payload.account).getHost().setIgnoreCertErrors(msg.payload.code);
-
-      await actions["account-connecting"](msg);
-    },
-
     "account-connecting": async (request) => {
 
+      const account = request.payload.account;
       const response = request;
+
       try {
-        await (sessions.get(request.payload.account).connect());
+        const host = accounts.getAccountById(account).getHost();
+
+        await (sessions.get(account).connect(host.getHostname(), host.getPort()));
+
       } catch (e) {
 
-        if ( e instanceof SieveCertValidationException) {
-          response.payload.fingerprint = e.cert.fingerprint;
-          response.payload.code = e.error.code;
-          response.payload.message = e.error.message;
-          await actions["account-cert-error"](response);
+        if (e instanceof SieveCertValidationException) {
+          const secInfo = e.getSecurityInfo();
+
+          const rv = await (new SieveFingerprintDialog(secInfo)).show();
+
+          // save the fingerprint.
+          if (rv !== true)
+            return;
+
+          const host = accounts.getAccountById(account).getHost();
+
+          host.setFingerprint(secInfo.fingerprint);
+          host.setIgnoreCertErrors(secInfo.code);
+
+          await actions["account-connecting"](response);
           return;
         }
 
@@ -326,13 +328,13 @@
     "script-activate": async function (msg) {
       console.log("Activate..." + msg);
 
-      await sessions.get(msg.payload.account).setActiveScript(msg.payload.data);
+      await sessions.get(msg.payload.account).activateScript(msg.payload.data);
     },
 
     "script-deactivate": async function (msg) {
       console.log("Deactivate...");
 
-      await sessions.get(msg.payload.account).setActiveScript();
+      await sessions.get(msg.payload.account).activateScript();
     },
 
     "script-edit": async function (msg) {
@@ -354,14 +356,10 @@
       console.log("Check Script " + msg.payload.account + "... ");
 
       try {
-        return await sessions[msg.payload.account].checkScript(msg.payload.data);
+        return await sessions.get(msg.payload.account).checkScript(msg.payload.data);
       }
       catch (ex) {
-
-        // Rethrow in case it is no serverside exception...
-        if (!ex.isServerSide || !ex.isServerSide())
-          throw ex;
-
+        // TODO thow an exception in case is it not an instance of a server side exception...
         return ex.getResponse().getMessage();
       }
     },
@@ -464,7 +462,7 @@
 
 
   for (const [key, value] of Object.entries(actions)) {
-    SieveIpcClient.setRequestHandler(key, value);
+    SieveIpcClient.setRequestHandler("core", key, value);
   }
 
 

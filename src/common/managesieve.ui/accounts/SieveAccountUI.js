@@ -64,7 +64,7 @@
 
       payload["account"] = this.id;
 
-      return await SieveIpcClient.sendMessage(action, payload);
+      return await SieveIpcClient.sendMessage("core", action, payload);
     }
 
     /**

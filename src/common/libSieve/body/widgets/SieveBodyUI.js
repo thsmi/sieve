@@ -170,6 +170,8 @@
   class SieveBodyUI extends SieveTestDialogBoxUI {
 
     /**
+     * Gets the match type.
+     *
      * @returns {SieveAbstractElement}
      *   the element's matchtype field
      */
@@ -178,6 +180,8 @@
     }
 
     /**
+     * Gets the comparator type.
+     *
      * @returns {SieveAbstractElement}
      *   the element's comparator field
      */
@@ -186,6 +190,8 @@
     }
 
     /**
+     * Gets the body transfrom type.
+     *
      * @returns {SieveAbstractElement}
      *   the element's bodytransform field
      */
@@ -194,6 +200,8 @@
     }
 
     /**
+     * Gets the keys.
+     *
      * @returns {SieveAbstractElement}
      *   the element's keys field
      */

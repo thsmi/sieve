@@ -112,7 +112,7 @@
         "no-eq-null" : "warn",
         "no-dupe-class-members" :"error",
         "no-undef": "warn",
-        "no-unreachable": "warn",
+        "no-unreachable": "error",
         "no-unused-vars": [
             "warn",
             { "varsIgnorePattern": "EXPORTED_SYMBOLS" }
@@ -125,7 +125,7 @@
         "require-await": "warn",
         "no-var": "warn",
         "no-confusing-arrow": "error",
-        "no-console": "off",
+        "no-console": ["warn", { "allow": ["warn", "error"] }],
         "no-caller": "error",
         "no-eval": "error",
         "no-extra-label" :"error",

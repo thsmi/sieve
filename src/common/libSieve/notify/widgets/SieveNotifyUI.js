@@ -143,6 +143,8 @@
   class SieveNotifyMethodCapablityUI extends SieveTestDialogBoxUI {
 
     /**
+     * Gets the match type.
+     *
      * @returns {SieveAbstractElement}
      *   the element's matchtype field
      */
@@ -151,6 +153,8 @@
     }
 
     /**
+     * Gets the comparator type.
+     *
      * @returns {SieveAbstractElement}
      *   the element's comparator field
      */

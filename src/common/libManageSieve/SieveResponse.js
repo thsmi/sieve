@@ -1057,6 +1057,9 @@
       return this._serverFirstMessage;
     }
 
+    /**
+     *
+     */
     getServerError() {
       if (this.state < 2)
         throw new Error("Illegal State, request not completed");
@@ -1064,6 +1067,9 @@
       return this._serverError;
     }
 
+    /**
+     *
+     */
     getVerifier() {
       if (this.state < 2)
         throw new Error("Illegal State, request not completed");

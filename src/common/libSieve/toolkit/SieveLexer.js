@@ -141,7 +141,7 @@
        * @param {SieveDocument} docshell
        *  the docshell which owns the new element
        * @param {object} constructor
-       *  the costructor which should be used to create the new element
+       *  the constructor which should be used to create the new element
        * @param {SieveParser} [parser]
        *  an optional initializer for the newly created object
        *

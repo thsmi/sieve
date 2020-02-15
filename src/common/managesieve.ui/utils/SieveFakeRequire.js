@@ -54,10 +54,32 @@
     return m;
   }
 
+  const globals = new Map();
+  globals.set("./SieveUniqueId.js", "SieveUniqueId");
+  globals.set("libs/managesieve.ui/utils/SieveUniqueId.js", "SieveUniqueId");
+  globals.set("./../utils/SieveUniqueId.js", "SieveUniqueId");
+
+  globals.set("./SieveAbstractIpcClient.js", "SieveAbstractIpcClient");
+
+  globals.set("./../utils/SieveTemplateLoader.js", "SieveTemplateLoader");
+
+  globals.set("libs/managesieve.ui/settings/SieveAbstractMechanism.js", "SieveAbstractMechanism");
+  globals.set(
+    "libs/managesieve.ui/settings/SieveAbstractAuthorization.js",
+    ["SieveAbstractAuthorization", "SieveDefaultAuthorization"]);
+  globals.set("libs/managesieve.ui/settings/SieveAuthorization.js", "SieveAuthorization");
+  globals.set("libs/managesieve.ui/settings/SieveAbstractAuthentication.js", "SieveAbstractAuthentication");
+  globals.set("libs/managesieve.ui/settings/SieveAuthentication.js", "SieveAuthentication");
+  globals.set("libs/managesieve.ui/settings/SieveSecurity.js", "SieveSecurity");
+  globals.set("libs/managesieve.ui/settings/SieveAbstractHost.js", "SieveAbstractHost");
+  globals.set("libs/managesieve.ui/settings/SieveHost.js", "SieveHost");
+  globals.set("libs/managesieve.ui/settings/SievePrefManager.js", "SievePrefManager");
+  globals.set("libs/managesieve.ui/settings/SieveAbstractPrefManager.js", "SieveAbstractPrefManager");
+
   /**
    * A fake CommonJs Module implementation.
-   * Temporaily needs as node does not yes support ES6 modules.
-   * And mozilla does not really support CommonJS
+   * Temporaily needed as node does not yet support ES6 modules.
+   * And mozilla does not support CommonJS
    *
    * @param {string} module
    *   the module to be loaded
@@ -67,13 +89,15 @@
    */
   function fakeRequire(module) {
 
-    if (module === "./SieveAbstractIpcClient.js")
-      return getModules("SieveAbstractIpcClient");
+    if (!globals.has(module))
+      throw new Error(`Module ${module} unknown to fake module loader`);
 
-    if (module === "./SieveUniqueId.js")
-      return getModules("SieveUniqueId");
+    let modules = globals.get(module);
 
-    throw new Error(`Module ${module} unknown to fake module loader`);
+    if (!Array.isArray(modules))
+      modules = [modules];
+
+    return getModules(...modules);
   }
 
 

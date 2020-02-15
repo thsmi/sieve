@@ -1,0 +1,54 @@
+[
+  {
+    "namespace": "sieve.accounts",
+    "description": "Sieve Account Management",
+    "functions": [
+      {
+        "name": "getPassword",
+        "type": "function",
+        "description": "Gets a password from the password store",
+        "async": true,
+        "parameters": [{
+            "name": "id",
+            "type": "string",
+            "description": "The server's id"
+        }]
+      },
+      {
+        "name": "getPrettyName",
+        "type": "function",
+        "description": "Gets a password from the password store",
+        "async": true,
+        "parameters": [{
+            "name": "id",
+            "type": "string",
+            "description": "The account key"
+        }]
+      },
+      {
+        "name": "getUsername",
+        "type": "function",
+        "description": "Gets a password from the password store",
+        "async": true,
+        "parameters": [
+          {
+            "name": "id",
+            "type": "string",
+            "description": "The account key"
+          }
+        ]
+      },
+      {
+        "name": "getHostname",
+        "type": "function",
+        "description": "Gets a password from the password store",
+        "async": true,
+        "parameters": [{
+            "name": "id",
+            "type": "string",
+            "description": "The account key"
+        }]
+      }
+    ]
+  }
+]

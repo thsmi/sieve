@@ -14,16 +14,10 @@
   // Enable Strict Mode
   "use strict";
 
-  const { Sieve } = require("./SieveClient.js");
-  const { SieveLogger } = require("./SieveLogger.js");
 
   const {
     SieveAbstractSession
   } = require("./SieveAbstractSession.js");
-
-  const {
-    SieveReferralException
-  } = require("./SieveExceptions.js");
 
   /**
    * @inheritdoc
@@ -31,53 +25,14 @@
   class SieveNodeSession extends SieveAbstractSession {
 
     /**
-     * Creates a new Session instance.
-     * @param {SieveAccount} account
-     *   an reference to a sieve account. this is needed to obtain login informations.
-     * @param {string} [sid]
-     *   a unique Identifier for this Session. Only needed to make debugging easier.
-     */
-    constructor(account, sid) {
-
-      super(
-        account,
-        new SieveLogger(sid, account.getSettings().getDebugFlags()));
-    }
-
-    /**
      * @inheritdoc
      */
-    getSieve() {
-      return this.sieve;
-    }
+    async startTLS() {
 
-    /**
-     * @inheritdoc
-     */
-    createSieve() {
-      this.sieve = new Sieve(this.getLogger());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    destroySieve() {
-      this.sieve = null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    async startTLS(options) {
-
-      if (options === undefined || options === null)
-        options = {};
-
-      if (options.fingerprints === undefined || options.fingerprints === null)
-        options.fingerprints = this.account.getHost().getFingerprint();
-
-      if (options.ignoreErrors === undefined || options.ignoreErrors === null)
-        options.ignoreErrors = this.account.getHost().getIgnoreCertErrors();
+      const options = {
+        fingerprints : this.getOption("certFingerprints"),
+        ignoreCertErrors : this.getOption("certIgnoreError")
+      };
 
       await super.startTLS(options);
     }
@@ -96,35 +51,6 @@
       this.getLogger().log("OnError: " + error.message);
 
       await this.disconnect(true);
-    }
-
-    /**
-     * Connects the session to the given port.
-     *
-     * By default the host and port configured in the settings are used
-     * By you may override host and port, e.g. to realize a referal.
-     *
-     * @param {string} [hostname]
-     *   the hostname, in case omitted the hostname from the account's settings is used
-     * @param {string} [port]
-     *   the port, in case omitted the port from the account's settings is used
-     * @returns {SieveSession}
-     *   a self reference
-     */
-    async connect(hostname, port) {
-
-      try {
-        await super.connect(hostname, port);
-      } catch (ex) {
-
-        if (!(ex instanceof SieveReferralException))
-          throw ex;
-
-        await this.disconnect(true);
-        await this.connect(ex.getHostname(), ex.getPort());
-      }
-
-      return this;
     }
 
   }

@@ -28,6 +28,7 @@
       if (!this.isLoggable(level))
         return this;
 
+      // eslint-disable-next-line no-console
       console.log("[" + this.getTimestamp() + " " + this.prefix() + "] " + message);
       return this;
     }

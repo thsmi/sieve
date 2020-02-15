@@ -16,7 +16,7 @@
   const _requestHandlers = new Map();
   const _responseHandlers = new Map();
 
-  const {SieveUniqueId} = require("./SieveUniqueId.js");
+  const { SieveUniqueId } = require("./SieveUniqueId.js");
 
   /**
    * An abstract implementation for a inter process/frame communication.
@@ -38,8 +38,6 @@
      *   the ipc message containting the data.
      */
     static onMessage(e) {
-      console.dir(e);
-
       const msg = this.parseMessageFromEvent(e);
 
       if (msg.isResponse === true) {
@@ -55,8 +53,6 @@
       this.onError(e);
     }
 
-
-
     /**
      * Called upon an external request which requires a response.
      *
@@ -70,15 +66,23 @@
 
       console.log('OnRequest:  ', request);
 
+      if (!_requestHandlers.has(request.subject)) {
+        console.log(`Unknown subject ${request.subject} in ${window.location}`);
+        return;
+      }
+
+      const handler = _requestHandlers.get(request.subject);
+
       const response = request;
       response.isResponse = true;
 
       try {
-        if (!_requestHandlers.has(request.action)) {
-          console.log(`Unknown action ${request.action}`);
+        if (!handler.has(request.action)) {
+          console.log(`Unknown action ${request.action} in ${window.location}`);
+          throw new Error(`Unknown action ${request.action}`);
         }
 
-        response.payload = await (_requestHandlers.get(response.action)(request));
+        response.payload = await (handler.get(request.action)(request));
       } catch (ex) {
         response.error = ex.message;
         console.log(ex);
@@ -158,18 +162,25 @@
      * The can be at most one handler per action. In case it already
      * exists it will be replaced.
      *
+     * @param {string} subject
+     *   the subject name to listen to. All other subject will be ignored.
      * @param {string} action
      *   the action's unique name.
      * @param {Function} callback
      *   the callback which should be invoked upon a matching request.
      */
-    static setRequestHandler(action, callback) {
-      _requestHandlers.set(action, callback);
+    static setRequestHandler(subject, action, callback) {
+      if (!_requestHandlers.has(subject))
+        _requestHandlers.set(subject, new Map());
+
+      _requestHandlers.get(subject).set(action, callback);
     }
 
     /**
      * Sends a message to the given target.
      *
+     * @param {string} subject
+     *   the messages subject name specifies who will receive the message.
      * @param {string} action
      *   the action to be performed.
      * @param {object} payload
@@ -179,15 +190,16 @@
      * @returns {*}
      *   the messages response or an excetion in case of an error.
      */
-    static async sendMessage(action, payload, target) {
+    static async sendMessage(subject, action, payload, target) {
 
       const id = this.generateId();
 
-      const msg = JSON.stringify( {
-        id : id,
-        action : action,
-        payload : payload,
-        isRequest : true
+      const msg = JSON.stringify({
+        id: id,
+        subject: subject,
+        action: action,
+        payload: payload,
+        isRequest: true
       });
 
       return await new Promise((resolve, reject) => {
@@ -208,7 +220,7 @@
   }
 
   // Require modules need to use export.module
-  if (typeof(module) !== "undefined" && module && module.exports)
+  if (typeof (module) !== "undefined" && module && module.exports)
     module.exports.SieveAbstractIpcClient = SieveAbstractIpcClient;
   else
     exports.SieveAbstractIpcClient = SieveAbstractIpcClient;

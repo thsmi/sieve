@@ -57,6 +57,16 @@ time-zone
   if (!SieveGrammar)
     throw new Error("Could not register Variables");
 
+  /**
+   * Gets the current date in yyyy-mm-dd format.
+   *
+   * @returns {string}
+   *   the current date as string
+   */
+  function getCurrentDate() {
+    return '"' + new Date().toJSON().substring(0, "yyyy-mm-dd".length) + '"';
+  }
+
   SieveGrammar.addTag({
     node: "zone/originalzone",
     type: "zone/",
@@ -133,8 +143,7 @@ time-zone
       }, {
         id: "keys",
         type: "stringlist",
-        // the easiest way to get th current date in yyyy-mm-dd format
-        value: '"' + new Date().toJSON().substring(0, "yyyy-mm-dd".length) + '"'
+        value: getCurrentDate()
       }]
     }]
   });
@@ -178,7 +187,7 @@ time-zone
       }, {
         id: "keys",
         type: "stringlist",
-        value: '"' + new Date().toJSON().substring(0, "yyyy-mm-dd".length) + '"'
+        value: getCurrentDate()
       }]
     }]
   });

@@ -54,6 +54,8 @@
   const RESPONSE_BYE = 1;
   const RESPONSE_NO = 2;
 
+  const SEED = 1234567890;
+
   /**
    * An abstract class, it is the prototype for any requests
    */
@@ -874,14 +876,6 @@
    *        < "STARTTLS"
    *        < OK
    *
-   * @example
-   * const sieve = new Sieve('example.com', 2000, false, 3);
-   *
-   * const request = new SieveInitRequest();
-   * sieve.addRequest(request);
-   *
-   * sieve.connect();
-   *
    */
   class SieveInitRequest extends SieveAbstractRequest {
 
@@ -1160,11 +1154,15 @@
       throw new Error("Implement Crypto Method which returns a crypto provider");
     }
 
+    /**
+     *
+     * @param {*} builder
+     */
     onChallengeServer(builder) {
 
       const crypto = this.getCrypto();
 
-      this._cnonce = crypto.H("" + (Math.random() * 1234567890), "hex");
+      this._cnonce = crypto.H("" + (Math.random() * SEED), "hex");
 
       // For integration tests, we need to fake the nonce...
       // ... so we take the nonce from the rfc otherwise the verification fails.
@@ -1193,6 +1191,10 @@
         .addQuotedBase64("" + this._g2Header + this._authMessage);
     }
 
+    /**
+     *
+     * @param {*} builder
+     */
     onValidateChallenge(builder) {
       // Check if the server returned our nonce. This should prevent...
       // ... man in the middle attacks.

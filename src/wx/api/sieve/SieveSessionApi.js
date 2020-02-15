@@ -14,7 +14,6 @@
   "use strict";
 
   /* global ExtensionCommon */
-  /* global ChromeUtils */
   /* global Components */
 
   const Cc = Components.classes;

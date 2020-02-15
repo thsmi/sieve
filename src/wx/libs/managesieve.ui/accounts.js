@@ -35,7 +35,7 @@
    * Shows a prompt which asks the user if the script should be deleted.
    *
    * @param {string} name
-   *   the scriptname which should be deleted
+   *   the script name which should be deleted
    *
    * @returns {boolean}
    *   true in case the script shall be deleted otherwise false.
@@ -66,17 +66,17 @@
    *   the name of the script which was busy
    */
   async function onBusy(name) {
-    return await (new SieveScriptBusyDialog(name)).show();
+    await (new SieveScriptBusyDialog(name)).show();
   }
 
   /**
-   * Informs the user about a faild certificate validation.
+   * Informs the user about a failed certificate validation.
    *
    * @param {object} secInfo
    *   the security information with more details about the validation error.
    *
    * @returns {boolean}
-   *   true in case the certificate sould be overwritten otherwise false.
+   *   true in case the certificate should be overwritten otherwise false.
    */
   async function onCertError(secInfo) {
     return await (new SieveFingerprintDialog(secInfo)).show();
@@ -88,10 +88,10 @@
   function main() {
 
     // TODO move to editor
-    window.onbeforeunload = (e) => {
+/*    window.onbeforeunload = (e) => {
       // if changed...
       e.preventDefault();
-    };
+    };*/
 
     const accounts = new SieveAccountsUI();
     accounts.render();
@@ -100,7 +100,7 @@
     SieveIpcClient.setRequestHandler("accounts", "script-show-create", async () => { return await onCreateScript(); });
     SieveIpcClient.setRequestHandler("accounts", "script-show-delete", async (msg) => { return await onDeleteScript(msg.payload); });
     SieveIpcClient.setRequestHandler("accounts", "script-show-rename", async (msg) => { return await onRenameScript(msg.payload); });
-    SieveIpcClient.setRequestHandler("accounts", "script-show-busy", async (msg) => { return await onBusy(msg.payload); });
+    SieveIpcClient.setRequestHandler("accounts", "script-show-busy", async (msg) => { await onBusy(msg.payload); });
     SieveIpcClient.setRequestHandler("accounts", "script-show-certerror", async (msg) => { return await onCertError(msg.payload); });
   }
 

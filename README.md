@@ -69,6 +69,6 @@ for details about third party licenses included into this project.
 
 You are looking for the most recent release?
 
-[They are by downloading from the Releases page (release notes can also be viewed)](https://github.com/thsmi/sieve/releases/latest).
+[They are by downloading from the Releases page (release notes can also be viewed)](https://github.com/thsmi/sieve/releases).
 
 Development builds are marked as pre-release.

@@ -44,7 +44,7 @@
      * The default behaviour is to disconnect.
      *
      * @param {Error} error
-     *   the error message which causes this exceptinal state.
+     *   the error message which causes this exceptional state.
      */
     async onError(error) {
 

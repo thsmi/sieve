@@ -14,7 +14,7 @@
   "use strict";
 
   /**
-   * Defines the security releated settings for an account.
+   * Defines the security related settings for an account.
    * It is a minimal, mozilla specific implementation.
    */
   class SieveSecurity {

@@ -22,7 +22,7 @@
      * Creates a new text editor UI.
      *
      * @param {SieveEditorController} controller
-     *   The controller which is assigne to this editor.
+     *   The controller which is assigned to this editor.
      */
     constructor(controller) {
       this.controller = controller;
@@ -33,6 +33,9 @@
       return this.controller;
     }
 
+    /**
+     * @abstract
+     */
     async render() {
     }
 

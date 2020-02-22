@@ -33,7 +33,7 @@
   const NEW_TRANSPORT_API = 4;
   const OLD_TRANSPORT_API = 5;
 
-  // Input & outpt stream constants.
+  // Input & output stream constants.
   const DEFAULT_FLAGS = 0;
   const DEFAULT_SEGMENT_SIZE = 0;
   const DEFAULT_SEGMENT_COUNT = 0;
@@ -70,9 +70,9 @@
 
     /**
      * Converts an UTF16 encoded Javascript string to an UTF8 encoded
-     * byte aray.
+     * byte array.
      *
-     * It also normalizes all linebreaks. In sieve all linebreaks have
+     * It also normalizes all line breaks. In sieve all line breaks have
      * to be \r\n
      *
      * @param {string} str
@@ -138,10 +138,10 @@
 
     /**
      * This method secures the connection to the sieve server. By activating
-     * Transport Layer Security all Data exchanged is crypted.
+     * Transport Layer Security all Data exchanged is encrypted.
      *
-     * Before calling this method you need to request a crypted connection by
-     * sending a startTLSRequest. Invoke this method imediately after the server
+     * Before calling this method you need to request a encrypted connection by
+     * sending a startTLSRequest. Invoke this method immediately after the server
      * confirms switching to TLS.
      *
      **/
@@ -316,8 +316,8 @@
      * introduced a breaking change for this interface.
      *
      * Before the change the first parameter was an array and the second one
-     * the array lenght. After the change the length parameter was removed
-     * which causes all the other agruments to shift by one.
+     * the array length. After the change the length parameter was removed
+     * which causes all the other arguments to shift by one.
      *
      * @private
      * @param {string} host
@@ -451,13 +451,13 @@
      * Called whenever the connection is terminated. And no more communication
      * via this socket is possible.
      *
-     * If the disconnect is planned/"gracefull", the error code is zero.
+     * If the disconnect is planned/"graceful", the error code is zero.
      *
      * Otherwise the status indicates what caused this disconnect.
-     * Common issues are linkloss (e.g. by switching to offlinemode, when
-     * the network cable is disconected or when the server closed the connection.)^
+     * Common issues are link loss (e.g. by switching to offline mode, when
+     * the network cable is disconnected or when the server closed the connection.)^
      *
-     * But the socket may be also closed because of non tivial errors. E.g
+     * But the socket may be also closed because of non trivial errors. E.g
      * in case a tls upgrade failed due to an certification validation error.
      *
      * @param {nsIRequest} request
@@ -468,7 +468,7 @@
     // eslint-disable-next-line no-unused-vars
     onStopRequest(request, status) {
 
-      this.getLogger().logState(`Diconnected from  ${this.host}:${this.port} with status ${status}`);
+      this.getLogger().logState(`Disconnected from  ${this.host}:${this.port} with status ${status}`);
 
       // we can ignore this if we are already disconnected.
       if (!this.socket)
@@ -523,7 +523,7 @@
      * @param {nsIInputStream} inputStream
      *   the input stream containing the data chunks
      * @param {offset} offset
-     *   the offset from the begining of the stream.
+     *   the offset from the beginning of the stream.
      * @param {int} count
      *   the maximum number of bytes which can be read in this call.
      */

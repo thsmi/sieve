@@ -95,13 +95,13 @@
 
     /**
      * Called when the dialog is shown.
-     * This can be used e.g. to move the focus to the desired textbox.
+     * This can be used e.g. to move the focus to the desired text box.
      */
     onShown() {
     }
 
     /**
-     * Generates an if made of alphanumerical characertes and dashes.
+     * Generates an if made of alphanumerical characters and dashes.
      * @returns {string}
      *   a string with an html compatible unique id
      */
@@ -156,7 +156,7 @@
   }
 
   /**
-   * Prompts if the given account shalle be deleted.
+   * Prompts if the given account shall be deleted.
    */
   class SieveDeleteAccountDialog extends SieveDialog {
 
@@ -363,13 +363,13 @@
      *
      * @param {string} username
      *   the username for which the password is requested
-     * @param {string} displayname
+     * @param {string} displayName
      *   the accounts display name.
      */
-    constructor(username, displayname) {
+    constructor(username, displayName) {
       super();
       this.username = username;
-      this.displayname = displayname;
+      this.displayName = displayName;
     }
 
     /**
@@ -386,7 +386,7 @@
       const dialog = this.getDialog();
 
       dialog.find(".sieve-username").text(this.username);
-      dialog.find(".sieve-displayname").text(this.displayname);
+      dialog.find(".sieve-displayname").text(this.displayName);
 
       dialog.find('.sieve-password').keypress((e) => {
         if (e.which === KEY_RETURN)
@@ -427,12 +427,12 @@
     /**
      * Creates a authorization request dialog.
      *
-     * @param {string} displayname
+     * @param {string} displayName
      *   the account's display name.
      */
-    constructor(displayname) {
+    constructor(displayName) {
       super();
-      this.displayname = displayname;
+      this.displayName = displayName;
     }
 
     /**
@@ -448,7 +448,7 @@
     onInit() {
       const dialog = this.getDialog();
 
-      dialog.find(".sieve-displayname").text(this.displayname);
+      dialog.find(".sieve-displayname").text(this.displayName);
 
       dialog.find('.sieve-authorization').keypress((e) => {
         if (e.which === KEY_RETURN)

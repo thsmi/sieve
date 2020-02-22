@@ -21,7 +21,7 @@
 
   /**
    * Creates a new document for sieve scripts it is used to parse
-   * store and manupulate sieve scripts
+   * store and manipulate sieve scripts
    *
    */
   class SieveDocument {
@@ -34,7 +34,7 @@
      *   It will be used to create new objects.
      * @param {SieveDesigner} [widgets]
      *   the layout engine which should be used to render the document.
-     *   Can be ommited in case the document should not be rendered.
+     *   Can be omitted in case the document should not be rendered.
      */
     constructor(lexer, widgets) {
       this._lexer = lexer;
@@ -42,9 +42,9 @@
       this._nodes = {};
 
       // we cannot use this.createNode(). It would add a node without a parent...
-      // ... to this._nodes. All nodes without a vaild parent and their...
+      // ... to this._nodes. All nodes without a valid parent and their...
       // ... descendants are removed when this.compact() is called. So that we...
-      // ... would endup with an empty tree.
+      // ... would end up with an empty tree.
       this._rootNode = this._lexer.createByName(this, "block/rootnode");
     }
 

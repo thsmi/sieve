@@ -137,7 +137,7 @@
     }
 
     /**
-     * Gets the current dialog's encryption settings.
+     * Gets the current dialogs encryption settings.
      *
      * @returns {boolean}
      *   true in case an encrypted connection should be used otherwise false.
@@ -250,7 +250,7 @@
     }
 
     /**
-     * Retruns the currents diaogs UI Element.
+     * Returns the currents dialogs UI Element.
      *
      * @returns {object}
      *   the dialogs UI elements.
@@ -267,7 +267,7 @@
 
       const loader = new SieveTemplateLoader();
 
-      // Load all subsectionss...
+      // Load all subsections...
       parent.find(".modal-body").empty()
         .append(await loader.load("./settings/settings.credentials.tpl"));
 

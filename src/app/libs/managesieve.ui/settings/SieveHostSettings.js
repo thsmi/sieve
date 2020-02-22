@@ -52,8 +52,8 @@
      * Each certificate has a unique fingerprint.
      *
      * Normally this fingerprint is not used directly.
-     * But in case no chain of trust can be stablished,
-     * the typicall fallback is to verify the fingerprint.
+     * But in case no chain of trust can be established,
+     * the typical fallback is to verify the fingerprint.
      *
      * This is normal case for a self signed certificate.
      *
@@ -92,7 +92,7 @@
      *
      * In general it is not a good idea to ignore certificate errors.
      * But there are some exception: e.g. a self signed error
-     * after you verfied the certificates fingerprint.
+     * after you verified the certificates fingerprint.
      *
      * @param {string} errorCode
      *   the node js error code or an empty string to disable.
@@ -106,7 +106,7 @@
   }
 
   /**
-   * A transparent wraper needed to deal with the different
+   * A transparent wrapper needed to deal with the different
    * host mechanism which are provided by electron and thunderbird.
    **/
   class SieveHost extends SieveAbstractMechanism {

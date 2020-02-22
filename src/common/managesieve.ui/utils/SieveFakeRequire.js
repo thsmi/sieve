@@ -36,7 +36,7 @@
 
   /**
    * Gets a list of modules.
-   * It will throw an exceptin in case one or more of the module
+   * It will throw an exception in case one or more of the module
    * names could not be loaded from the current scope
    *
    * @param  {...string} names
@@ -78,7 +78,7 @@
 
   /**
    * A fake CommonJs Module implementation.
-   * Temporaily needed as node does not yet support ES6 modules.
+   * Temporarily needed as node does not yet support ES6 modules.
    * And mozilla does not support CommonJS
    *
    * @param {string} module

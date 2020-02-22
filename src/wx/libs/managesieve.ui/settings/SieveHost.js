@@ -43,7 +43,7 @@
   }
 
   /**
-   * A transparent wraper needed to deal with the different
+   * A transparent wrapper needed to deal with the different
    * host mechanism which are provided by electron and thunderbird.
    **/
   class SieveHost extends SieveAbstractMechanism {

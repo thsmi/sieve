@@ -8,31 +8,34 @@ But you can also send an email to schmid-thomas at gmx.net
 In order to process bugs faster consider the following:
 
 * Try if the [most recent nightly build](https://github.com/thsmi/sieve/blob/master/nightly/README.md) fixes your issue.
- 
-* Check if you issue is already reported. The list with open issues is small. 
+
+* Check if you issue is already reported. The list with open issues is small.
   Try to avoid to duplicate an issue. It slows down the development.
 
-* Include information about your system and server. This means which 
+* Include information about your system and server. This means which
   the operating System you are on. Which Thunderbird release you are using.
   If possible check your server's logs for any related errors.
 
-* Include a debug log/trace with your issue. Just go to the extensions settings 
-  and enable debugging options in the Debug tab. Dumping Byte arrays is usually not 
-  necessary. Keep in mind that the line starting with "AUTHENTICATE" contains 
+* Include a debug log/trace with your issue. Just go to the extensions settings
+  and enable debugging options in the Debug tab. Dumping Byte arrays is usually not
+  necessary. Keep in mind that the line starting with "AUTHENTICATE" contains
   your password. So scramble this line.
 
 * Mention very precisely what went wrong. "X is broken" is not a good bug
-  report. What did you expect to happen? What happened instead? If possible 
-  describe the exact steps how to reproduce the issue. 
+  report. What did you expect to happen? What happened instead? If possible
+  describe the exact steps how to reproduce the issue.
 
-* Do not spam or troll issues and bug reports. I don not accept bugspam, it is considered the worst thing you can do with an open source project. It slows down development. Any bug spam will be deleted without notice and the spamming user will be blocked.
+* Do not spam or troll issues and bug reports. I do not accept bug spam, it is
+  considered the worst thing you can do with an open source project. It slows down
+  development. Any bug spam will be deleted without notice and the spamming user will
+  be blocked.
 
 ## Contributing translations via crowdin.net
 
-[crowdin](http://www.crowdin.net) is an collaborative translation tool.  
+[crowdin](http://www.crowdin.net) is an collaborative translation tool.
 
 - [Log into you Crowding Account](http://crowdin.net/login) or [join/signup for free](http://crowdin.net/join)
-- Join the project http://crowdin.net/project/sieve/invite 
+- Join the project http://crowdin.net/project/sieve/invite
 - Translate and vote for translations
 
 I'll copy all crowdin translation prior to a release into the source tree.

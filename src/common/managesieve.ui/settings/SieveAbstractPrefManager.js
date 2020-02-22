@@ -47,7 +47,7 @@
      * @abstract
      *
      * @param {string} key
-     *   the prefence key which should be written.
+     *   the preference key which should be written.
      * @param {object} value
      *   the key's value.
      * @returns {SievePrefManager}

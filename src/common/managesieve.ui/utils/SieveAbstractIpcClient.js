@@ -33,9 +33,9 @@
     }
 
     /**
-     * Called everytime a new ipc message was received.
+     * Called every time a new ipc message was received.
      * @param {Event} e
-     *   the ipc message containting the data.
+     *   the ipc message containing the data.
      */
     static onMessage(e) {
       const msg = this.parseMessageFromEvent(e);
@@ -57,7 +57,7 @@
      * Called upon an external request which requires a response.
      *
      * @param {object} request
-     *   the response message containting the data.
+     *   the response message containing the data.
      *
      * @param {object} source
      *   the object which emitted/created this message.
@@ -95,7 +95,7 @@
      * Called when a response to a request it received.
      *
      * @param {object} message
-     *   the response message containting the data.
+     *   the response message containing the data.
      */
     static onResponse(message) {
 
@@ -186,9 +186,9 @@
      * @param {object} payload
      *   the payload to be send
      * @param {Window} [target]
-     *   the target which host the receiver. In case it is ommitted "parent" is used.
+     *   the target which host the receiver. In case it is omitted "parent" is used.
      * @returns {*}
-     *   the messages response or an excetion in case of an error.
+     *   the messages response or an exception in case of an error.
      */
     static async sendMessage(subject, action, payload, target) {
 

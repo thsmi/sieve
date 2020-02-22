@@ -103,7 +103,7 @@
      *   the apps current version.
      * @returns {boolean}
      *   false if the current version is the latest.
-     *   true in case the manifast contains a newer version definition.
+     *   true in case the manifest contains a newer version definition.
      */
     compare(manifest, currentVersion) {
       currentVersion = currentVersion.split(".");

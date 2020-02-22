@@ -66,7 +66,7 @@
       this.getTab().find(".nav-link").tab('show');
 
       // On Tab show is not fired when the tab is already visible.
-      // so we need to emulate this. In worst case we endup with a
+      // so we need to emulate this. In worst case we end up with a
       // duplicated shown message...
       this.onTabShown();
     }
@@ -124,7 +124,7 @@
      * Checks if the tab has unsaved changes.
      *
      * @returns {boolean}
-     *   ture in case of unsaved changes
+     *   true in case of unsaved changes
      */
     async hasChanges() {
       return await SieveIpcClient.sendMessage("editor", "editor-hasChanged", null, this.getContent());
@@ -230,7 +230,7 @@
      * Closes the given tab.
      * Tabs are identified by the unique account id plus the script name.
      * @param {string} account
-     *   the uniue account id.
+     *   the unique account id.
      * @param {string} name
      *   the script name.
      */

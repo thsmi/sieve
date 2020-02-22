@@ -19,7 +19,7 @@
   /**
    * Manages the configuration for sieve accounts.
    * It behaves like a directory. Ist just lists the accounts.
-   * The inidividual settings are managed by the SieveAccount object
+   * The individual settings are managed by the SieveAccount object
    *
    * It uses the DOM's local store to persist the configuration data.
    */
@@ -66,7 +66,7 @@
 
     /**
      * Generates a pseudo unique id.
-     * The id is garanteed to be made of alphanumerical characters and dashes.
+     * The id is guaranteed to be made of alphanumerical characters and dashes.
      *
      * @returns {string}
      *   the unique id in string representation.
@@ -116,7 +116,7 @@
      * Removes the account including all settings.
      *
      * @param {AccountId} id
-     *   the unique id which idendifies the account.
+     *   the unique id which identifies the account.
      * @returns {SieveAccounts}
      *   a self reference
      */
@@ -133,7 +133,7 @@
 
     /**
      * Returns a list with all accounts.
-     * The accounts are returnes as key value pairs (uqique id and Account)
+     * The accounts are returned as key value pairs (unique id and Account)
      *
      * @returns { object<string, SieveAccount>}
      *   a list with sieve account.

@@ -145,7 +145,7 @@
      * @param {string} host
      *   The target hostname or IP address as String
      * @param {int} port
-     *   The target port as Interger
+     *   The target port as integer
      * @param {boolean} secure
      *   If true, a secure socket will be created. This allows switching to a secure
      *   connection.

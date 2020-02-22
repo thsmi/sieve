@@ -112,7 +112,7 @@
     }
 
     /**
-     * Retunrs the current settings as json object.
+     * Returns the current settings as json object.
      *
      * @returns {string}
      *   the current settings as json.

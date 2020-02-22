@@ -21,7 +21,7 @@
   class SieveMozRequestBuilder extends SieveAbstractRequestBuilder {
 
     /**
-     * Manage Sieve uses for literals UTF-8 as encoding, network sockets are usualy
+     * Manage Sieve uses for literals UTF-8 as encoding, network sockets are usually
      * binary, and javascript is something in between. This means we have to convert
      * UTF-8 into a binary by our own...
      *
@@ -49,7 +49,7 @@
     convertToBase64(decoded) {
 
       // btoa is a bit strange it requires a javascript (unicode) string
-      // which contains only latin1 codepoint.
+      // which contains only latin1 code point.
 
       if (Array.isArray(decoded))
         decoded = String.fromCharCode(...new Uint8Array(decoded));

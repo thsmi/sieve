@@ -29,10 +29,10 @@
      * Creates a new text editor UI.
      *
      * @param {SieveEditorController} controller
-     *   The controller which is assigne to this editor.
+     *   The controller which is assigned to this editor.
      * @param {string} [id]
-     *   An optional id, which points to a the textboxe, which will be converted
-     *   into a code mirror input. In case it is ommited the id "code" will be used.
+     *   An optional id, which points to a the textbox, which will be converted
+     *   into a code mirror input. In case it is omitted the id "code" will be used.
      */
     constructor(controller, id) {
 
@@ -229,7 +229,7 @@
      */
     async setScript(script) {
       // Load a new script. It will discard the current script
-      // the cursorposition is reset to defaults.
+      // the cursor position is reset to defaults.
 
       this.cm.setValue(script);
       this.cm.setCursor({ line: 0, ch: 0 });
@@ -249,7 +249,7 @@
 
       const script = this.cm.getValue();
 
-      // ... and ensure the line endings are sanatized
+      // ... and ensure the line endings are sanitized
       // eslint-disable-next-line no-control-regex
       return script.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
     }

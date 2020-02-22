@@ -64,10 +64,10 @@
     }
 
     /**
-     * Parses thunderbird's profile.ini and retruns the path to the profile.
+     * Parses Thunderbird's profile.ini and returns the path to the profile.
      * @param {string} [directory]
-     *   the directory to thunderbirds app data  directory.
-     *   if omited the directory will be guessed.
+     *   the directory to thunderbird's app data  directory.
+     *   if omitted the directory will be guessed.
      * @returns {string}
      *   the path to the default user Profile.
      */
@@ -144,7 +144,7 @@
     }
 
     /**
-     * Reads the accounts from thunderbirds preferences file.
+     * Reads the accounts from thunderbird's preferences file.
      *
      * @returns {object}
      *   username and the host for each imap account.

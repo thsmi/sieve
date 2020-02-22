@@ -51,7 +51,7 @@
     }
 
     /**
-     * Retruns the currents diaogs UI Element.
+     * Returns the currents dialogs UI Element.
      *
      * @returns {object}
      *   the dialogs UI elements.

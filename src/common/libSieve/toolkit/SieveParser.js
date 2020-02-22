@@ -21,12 +21,12 @@
   const IDX_BEGIN = 0;
   const ONE_CHARACTER = 1;
   /**
-   * A linear string parser used to tokeizes and extract a string into atoms.
+   * A linear string parser used to tokenize and extract a string into atoms.
    */
   class SieveParser {
 
     /**
-     * Initalizes the instance.
+     * Initializes the instance.
      *
      * @param {string} data
      *   the data which shall be parsed
@@ -94,7 +94,7 @@
      * @param {char|char[]} [ch]
      *   the extracted character has to be one of the given characters
      *   otherwise an exception is thrown.
-     *   If omittes any character will match.
+     *   If omits any character will match.
      *
      * @returns {char}
      *   the extracted character.
@@ -169,9 +169,9 @@
      * You can either pass an integer with the absolute number of bytes or a string.
      *
      * In case you pass a string, the string length will be skipped. But only in case
-     * it matches case insensitive. Othewise an exception is thrown.
+     * it matches case insensitive. Otherwise an exception is thrown.
      *
-     * In case the length parameter is neiter a string nor a parameter and exception is thrown.
+     * In case the length parameter is neither a string nor a parameter and exception is thrown.
      *
      * @param {int|string} length
      *   Can be an integer which defines an absolute number of bytes which should be skipped.
@@ -206,7 +206,7 @@
 
     /**
      * Searches for the given token.
-     * If found all data before the token is returend and
+     * If found all data before the token is returned and
      * the buffer is advanced to the end of the token.
      *
      * In case the token is not found in the buffer an
@@ -215,7 +215,7 @@
      * @param {string} token
      *   the token which is used as delimiter
      * @returns {string}
-     *   the data between the token an the delimter
+     *   the data between the token an the delimiter
      */
     extractUntil(token) {
       const idx = this._data.indexOf(token, this._pos);
@@ -250,7 +250,7 @@
     }
 
     /**
-     * Extracts an integer value starting from the current postion.
+     * Extracts an integer value starting from the current position.
      *
      * @returns {int}
      *  the extracted number.
@@ -271,7 +271,7 @@
     }
 
     /**
-     * Returns the remainig buffer.
+     * Returns the remaining buffer.
      * @param {int} [length]
      *   optional returns at lost length bytes.
      *   if omitted the complete buffer is returned
@@ -293,7 +293,7 @@
     }
 
     /**
-     * Rewindes the internal buffer by the given number of bytes
+     * Rewinds the internal buffer by the given number of bytes
      * @param {int} offset
      *   the number of bytes to rewind.
      *

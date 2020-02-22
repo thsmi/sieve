@@ -6,9 +6,6 @@
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  *
- * Contibutors:
- *   Max Dittrich
- *
  */
 
 (function (exports) {

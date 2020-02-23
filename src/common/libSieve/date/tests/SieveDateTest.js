@@ -1,5 +1,5 @@
 /*
-* The contents of this file are licenced. You may obtain a copy of
+* The contents of this file are licensed. You may obtain a copy of
 * the license at https://github.com/thsmi/sieve/ or request it via
 * email from the author.
 *
@@ -27,7 +27,7 @@
 
   suite.add(function () {
 
-    suite.log("RFC5260 Sniplet I");
+    suite.log("RFC5260 Snippet I");
 
     const script = ""
       + 'require ["date", "relational", "fileinto"];\r\n'
@@ -41,7 +41,7 @@
 
   suite.add(function () {
 
-    suite.log("RFC5260 Sniplet II");
+    suite.log("RFC5260 Snippet II");
 
     const script = ""
       + 'require ["date", "fileinto"];\r\n'
@@ -54,7 +54,7 @@
 
   suite.add(function () {
 
-    suite.log("RFC5260 Sniplet III");
+    suite.log("RFC5260 Snippet III");
 
     const script = ""
       + 'require ["date", "relational"];\r\n'
@@ -69,7 +69,7 @@
 
   suite.add(function () {
 
-    suite.log("RFC5260 Sniplet IV");
+    suite.log("RFC5260 Snippet IV");
 
     const script = ""
       + 'require ["date", "relational", "vacation"];\r\n'
@@ -82,7 +82,7 @@
 
   suite.add(function () {
 
-    suite.log("RFC5260 Sniplet V");
+    suite.log("RFC5260 Snippet V");
 
     const script = ""
       + 'require ["date", "variables", "fileinto"];\r\n'
@@ -95,7 +95,7 @@
 
   suite.add(function () {
 
-    suite.log("RFC5260 Sniplet VIa");
+    suite.log("RFC5260 Snippet VIa");
 
     const script = ""
       + 'require "date";\r\n'
@@ -107,7 +107,7 @@
 
   suite.add(function () {
 
-    suite.log("RFC5260 Sniplet VI");
+    suite.log("RFC5260 Snippet VI");
 
     // FIXME: Variables import is dropped silently
     const script = ""
@@ -123,15 +123,15 @@
   suite.add(function () {
     suite.log("Validate date test constructor");
 
-    const snipplet = 'date "date" "date" "' + new Date().toJSON().substring(0, 10) + '"';
-    suite.expectValidSnipplet("test/date", snipplet, ["date"]);
+    const snippet = 'date "date" "date" "' + new Date().toJSON().substring(0, 10) + '"';
+    suite.expectValidSnippet("test/date", snippet, ["date"]);
   });
 
   suite.add(function () {
     suite.log("Validate currentdate test constructor");
 
-    const snipplet = 'currentdate "date" "' + new Date().toJSON().substring(0, 10) + '"';
-    suite.expectValidSnipplet("test/currentdate", snipplet, ["date"]);
+    const snippet = 'currentdate "date" "' + new Date().toJSON().substring(0, 10) + '"';
+    suite.expectValidSnippet("test/currentdate", snippet, ["date"]);
   });
 
 })();

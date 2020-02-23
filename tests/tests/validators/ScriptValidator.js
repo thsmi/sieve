@@ -136,10 +136,10 @@
   /**
    *
    * @param {*} type
-   * @param {*} snipplet
+   * @param {*} snippet
    * @param {*} capabilities
    */
-  function expectValidSnipplet(type, snipplet, capabilities) {
+  function expectValidSnippet(type, snippet, capabilities) {
 
     SieveGrammar.create(capabilities);
 
@@ -153,12 +153,12 @@
     let rv1 = element.toScript();
 
     // ... and should match our expectation.
-    suite.assertEquals(snipplet, rv1);
+    suite.assertEquals(snippet, rv1);
 
     // ... then try to parse these script sniplet
     let rv2 = doc.createByName(type, rv1).toScript();
 
-    // and ensure both snipplets should be identical...
+    // and ensure both snippets should be identical...
     suite.assertEquals(rv1, rv2);
 
     if (capabilities) {
@@ -177,6 +177,6 @@
     return doc;
   }
 
-  suite.expectValidSnipplet = expectValidSnipplet;
+  suite.expectValidSnippet = expectValidSnippet;
 
 })(window);

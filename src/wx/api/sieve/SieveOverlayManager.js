@@ -229,7 +229,7 @@
      *   an optional callback function which is executed when clicking
      *   on the element
      * @returns {DOMElement}
-     *   the element which shold be added to the document
+     *   the element which should be added to the document
      */
     onLoad(document, callback) {
       throw new Error("Implement me");

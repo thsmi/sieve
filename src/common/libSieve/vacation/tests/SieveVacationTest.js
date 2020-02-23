@@ -353,8 +353,8 @@
   suite.add(function () {
     suite.log("Validate vacation action's constructor");
 
-    const snipplet = 'vacation "";\r\n';
-    suite.expectValidSnipplet("action/vacation", snipplet, ["vacation"]);
+    const snippet = 'vacation "";\r\n';
+    suite.expectValidSnippet("action/vacation", snippet, ["vacation"]);
   });
 
 })();

@@ -50,7 +50,7 @@
   suite.add(function () {
     suite.log("Validate environment test constructor");
 
-    const snipplet = 'environment "domain" "imap.example.com"';
-    suite.expectValidSnipplet("test/environment", snipplet, ["environment"]);
+    const snippet = 'environment "domain" "imap.example.com"';
+    suite.expectValidSnippet("test/environment", snippet, ["environment"]);
   });
 })();

@@ -111,7 +111,7 @@
        * @returns {SieveElement|null}
        *  the element which was created or null in case no matching constructor was found
        * @throws
-       *  throws an exception in case quering a constructor failed or invalid typeinformation is passed.
+       *  throws an exception in case querying a constructor failed or invalid type information is passed.
        */
       getConstructor: function (types, token) {
         if (typeof (types) === "string")

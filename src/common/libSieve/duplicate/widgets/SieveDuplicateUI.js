@@ -131,7 +131,7 @@
   }
 
   /**
-   * Provides a UI for the uniue header tag.
+   * Provides a UI for the unique header tag.
    */
   class SieveUniqueHeaderUI extends SieveAbstractUniqueUI {
 

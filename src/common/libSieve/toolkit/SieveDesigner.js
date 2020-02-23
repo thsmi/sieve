@@ -20,7 +20,7 @@
   /**
    * A static class implementing a simple Layout engine.
    *
-   * Widgest can register on rendering Elements.
+   * Widgets can register on rendering Elements.
    */
   const SieveDesigner =
     {
@@ -96,10 +96,10 @@
 
       /**
        * Widgets can register a constructor in order to rendering element.
-       * They use either the elements name or the construtor as identifier.
+       * They use either the elements name or the constructor as identifier.
        *
-       * When an element ist ready to be rendered the widget's constructor
-       * is invoked, and the new widget's instance is bound to the element.
+       * When an element ist ready to be rendered the widgets constructor
+       * is invoked, and the new widgets instance is bound to the element.
        *
        * @param {string|Constructor} name
        *   The name or the constructor of the element the widget can render.

@@ -1,5 +1,5 @@
 /*
-* The contents of this file are licenced. You may obtain a copy of
+* The contents of this file are licensed. You may obtain a copy of
 * the license at https://github.com/thsmi/sieve/ or request it via
 * email from the author.
 *
@@ -27,7 +27,7 @@
 
   suite.add(function () {
 
-    suite.log("RFC5232 Sniplet I");
+    suite.log("RFC5232 Snippet I");
 
     const script = ''
       + 'require "imap4flags";\r\n'
@@ -40,7 +40,7 @@
 
   suite.add(function () {
 
-    suite.log("RFC5232 Sniplet II");
+    suite.log("RFC5232 Snippet II");
 
     const script = ''
       + 'require "imap4flags";\r\n'
@@ -57,7 +57,7 @@
 
   suite.add(function () {
 
-    suite.log("RFC5232 Sniplet III");
+    suite.log("RFC5232 Snippet III");
 
     const script = ''
       + 'require "imap4flags";\r\n'
@@ -76,7 +76,7 @@
 
   suite.add(function () {
 
-    suite.log("RFC5232 Sniplet IV");
+    suite.log("RFC5232 Snippet IV");
 
     const script = ''
       + 'require "imap4flags";\r\n'
@@ -97,7 +97,7 @@
 
   suite.add(function () {
 
-    suite.log("RFC5232 Sniplet V");
+    suite.log("RFC5232 Snippet V");
 
     const script = ''
       + 'require "imap4flags";\r\n'
@@ -110,7 +110,7 @@
 
   suite.add(function () {
 
-    suite.log("RFC5232 Sniplet VI");
+    suite.log("RFC5232 Snippet VI");
 
     const script = ''
       + 'require "imap4flags";\r\n'
@@ -136,7 +136,7 @@
 
   suite.add(function () {
 
-    suite.log("RFC5232 Sniplet VII");
+    suite.log("RFC5232 Snippet VII");
 
     const script = ''
       + 'require "imap4flags";\r\n'

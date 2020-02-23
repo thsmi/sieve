@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
@@ -28,8 +28,8 @@
   suite.add(function () {
     suite.log("Test header constructors");
 
-    const snipplet = 'header "Subject" "Example"';
-    suite.expectValidSnipplet("test/header", snipplet);
+    const snippet = 'header "Subject" "Example"';
+    suite.expectValidSnippet("test/header", snippet);
   });
 
   // :comparator "i;ascii-casemap"

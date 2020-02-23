@@ -113,7 +113,7 @@
     };
 
   /**
-   * Retuns the Document which "owns" this element
+   * Returns the Document which "owns" this element
    * @returns {SieveDocument} the sieve document
    */
   SieveAbstractElement.prototype.document

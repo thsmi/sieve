@@ -296,15 +296,15 @@
   suite.add(function () {
     suite.log("Validate set action constructors");
 
-    const snipplet = 'set "variable" "";\r\n';
-    suite.expectValidSnipplet("action/set", snipplet, ["variables"]);
+    const snippet = 'set "variable" "";\r\n';
+    suite.expectValidSnippet("action/set", snippet, ["variables"]);
   });
 
   suite.add(function () {
     suite.log("Validate string test constructors");
 
-    const snipplet = 'string "${somevariable}" "some value"';
-    suite.expectValidSnipplet("test/string", snipplet, ["variables"]);
+    const snippet = 'string "${somevariable}" "some value"';
+    suite.expectValidSnippet("test/string", snippet, ["variables"]);
   });
 
 })();

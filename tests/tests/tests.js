@@ -59,7 +59,7 @@
 
   suite.add({
     "sieve-elements": {
-      script: "./../common/libSieve/RFC5228/tests/SieveRFC5228SnippletTest.js",
+      script: "./../common/libSieve/RFC5228/tests/SieveRFC5228SnippetTest.js",
       extend: "rfc5228"
     }
   });

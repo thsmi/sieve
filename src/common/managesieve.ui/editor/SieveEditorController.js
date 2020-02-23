@@ -98,7 +98,7 @@
     /**
      * Exports the given script into a file.
      * @param {string} script
-     *   the sieve content to be exportet
+     *   the sieve content to be exported
      */
     async exportScript(script) {
       await this.send("script-export", { "name": this.name, "script": script });
@@ -112,7 +112,7 @@
     }
 
     /**
-     * Retuns the server side capabilities for the given account
+     * Reruns the server side capabilities for the given account
      * @returns {object}
      *   the server's capabilities.
      */
@@ -148,7 +148,7 @@
      * Executes an action on the communication process.
      *
      * @param {string} action
-     *   the aktions unique name
+     *   the actions unique name
      * @param {object} [payload]
      *   th payload which should be send
      * @returns {Promise<object>}

@@ -27,7 +27,7 @@
   class SieveAbstractCrypto {
 
     /**
-     * Creates a new crypto wraper.
+     * Creates a new crypto wrapper.
      * @param {string} name
      *   the crypto algorithms name.
      */

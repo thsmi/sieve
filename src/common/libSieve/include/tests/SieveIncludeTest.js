@@ -38,7 +38,7 @@
 
   suite.add(function () {
 
-    suite.log("include ambigious location ");
+    suite.log("include ambiguous location ");
 
     const script =
       'require ["include"];\r\n'

@@ -25,12 +25,12 @@
   const CHAR_LEN = 1;
 
   /**
-   * The manage sieve protocol syntax uses a fixed gramar which is based on atomar tokens.
+   * The manage sieve protocol syntax uses a fixed grammar which is based on atomic tokens.
    * This class offers an interface to test for and extract these predefined tokens. It supports
-   * Strings (Quoted and Literal), White Space (Line Break, Space ...) as well as arbitraty tokens.
+   * Strings (Quoted and Literal), White Space (Line Break, Space ...) as well as arbitrary tokens.
    *
    * The parser does not change or alter the byte array's content. So extracting data does not shrink
-   * the array free any bytes. This parser is just somekind of a view to this array.
+   * the array free any bytes. This parser is just some kind of a view to this array.
    *
    * Tokens are automatically converted from UTF-8 encoded byte arrays to JavaScript Unicode Strings
    * during extraction.
@@ -73,7 +73,7 @@
       if (this.data.length < this.pos + CHAR_LEN)
         return false;
 
-      // Test for a linebreak #13#10
+      // Test for a line break #13#10
       if (this.data[this.pos] !== CHAR_CR)
         return false;
 
@@ -93,7 +93,7 @@
      */
     extractLineBreak() {
       if (this.isLineBreak() === false)
-        throw new Error("Linebreak expected but found:\n" + this.getData());
+        throw new Error("Line break expected but found:\n" + this.getData());
 
       this.pos += 2;
 
@@ -184,9 +184,9 @@
      * Searches the buffer for a character.
      *
      * @param {byte} character
-     *   the chararcter which should be found
+     *   the character which should be found
      * @param {int} [offset]
-     *   an absolut offset, from which to start searching
+     *   an absolute offset, from which to start searching
      * @returns {int} character
      *   the characters absolute position within the buffer otherwise -1 if not found
      */
@@ -219,7 +219,7 @@
      * If it does not start with a valid string an exception is thrown.
      *
      * @returns {string}
-     *   the quoted string extracted, it is garanteed to be free of escape sequences
+     *   the quoted string extracted, it is guaranteed to be free of escape sequences
      */
     extractQuoted() {
       if (this.isQuoted() === false)
@@ -230,12 +230,12 @@
 
       while (this.data[nextQuote] !== CHAR_QUOTE) {
 
-        // Quoted stings can not contain linebreaks...
+        // Quoted stings can not contain line breaks...
         if (this.data[nextQuote] === CHAR_LF)
-          throw new Error("Linebreak (LF) in Quoted String detected");
+          throw new Error("Line break (LF) in Quoted String detected");
 
         if (this.data[nextQuote] === CHAR_CR)
-          throw new Error("Linebreak (CR) in Quoted String detected");
+          throw new Error("Line break (CR) in Quoted String detected");
 
         // is it an escape sequence?
         if (this.data[nextQuote] === CHAR_BACKSLASH) {
@@ -297,7 +297,7 @@
     }
 
     /**
-     * Extracts a token form a response. The token is beeing delimited by any
+     * Extracts a token form a response. The token is being delimited by any
      * separator. The extracted token does not include the separator.
      *
      * Throws an exception if none of the separators is found.
@@ -309,7 +309,7 @@
      */
     extractToken(separators) {
       // Search for the separators, the one with the lowest index which is not...
-      // ... equal to -1 wins. The -2 indecates not initalized...
+      // ... equal to -1 wins. The -2 indicates not initialized...
       let index = NOT_FOUND;
 
       for (let i = 0; i < separators.length; i++) {
@@ -374,9 +374,9 @@
     }
 
     /**
-     * Returns a copy of the response parser's buffer as JavaScript Unicode string.
+     * Returns a copy of the response parsers buffer as JavaScript Unicode string.
      *
-     * Manage Sieve encodes literals in UTF-8 while network sockets are usualy
+     * Manage Sieve encodes literals in UTF-8 while network sockets are usually
      * binary. So we can't use java scripts build in string functions as they expect
      * pure unicode.
      *
@@ -414,7 +414,7 @@
     }
 
     /**
-     * Converts a bytearray into an UTF8 encoded string
+     * Converts a byte array into an UTF8 encoded string
      *
      * @param {byte[]} byteArray
      *   the byte array which should be converted.

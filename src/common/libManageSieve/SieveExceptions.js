@@ -54,13 +54,13 @@
      *   the security info object with details on the certificate.
      */
     constructor(securityInfo) {
-      super("Error while validating Cerificate");
+      super("Error while validating Certificate");
 
       this.securityInfo = securityInfo;
     }
 
     /**
-     * The security Info objecte with detailed information
+     * The security Info object with detailed information
      * on the certificate which caused this error.
      *
      * @returns {object}
@@ -83,7 +83,7 @@
      * Creates a server side exception
      *
      * @param {SieveSimpleResponse} response
-     *   the servers response which inidcated the error.
+     *   the servers response which indicated the error.
      */
     constructor(response) {
       super(response.getMessage());

@@ -11,7 +11,7 @@ You find all app specific code in `src/app`, the WebExtension code is in `src/wx
 To get started clone the project for github.
 
 Then use either [yarn](https://yarnpkg.com/) or `npm install` to download the dependencies.
-This will download gulp as well as jquery, codemirror, bootstrap, electon and everything else which is needed.
+This will download gulp as well as jquery, codemirror, bootstrap, electron and everything else which is needed.
 
 As editor I suggest [Visual Studio Code](https://code.visualstudio.com/)
 
@@ -37,7 +37,7 @@ In case you need to inspect the UI's HTML debug the JavaScript, just select `Vie
 
 WebExtensions are the new addon api for Thunderbird.
 
-Internally they show similarities to electon.
+Internally they show similarities to electron.
 
 The background page is the main entry point, it is a single instance and has neither direct access to the UI nor to any XPCOM functions.
 

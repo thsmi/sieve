@@ -27,7 +27,7 @@
     /**
      * Adds a string as quoted base 64 encoded literal to the request.
      *
-     * This is typically needed for sasl requests as they have to be
+     * This is typically needed for SASL requests as they have to be
      * base64 encoded by definition.
      *
      * @param {string} token
@@ -46,8 +46,8 @@
     /**
      * Adds a string as quoted literal to the request.
      *
-     * This is typically used for string without a linebreak.
-     * In case you know you'll have a linebreak use the multiline
+     * This is typically used for string without a line break.
+     * In case you know you'll have a line break use the multiline
      * version for better readability.
      *
      * Do not use this for any sasl method. All sasl strings
@@ -71,7 +71,7 @@
      * Adds a string as multiline literal to the request.
      *
      * It improves the requests readability in case you need to send a
-     * string containing a linebreak.
+     * string containing a line break.
      *
      * @param {string} token
      *   the string which should be added to the request.
@@ -103,10 +103,10 @@
     }
 
     /**
-     * Returns the current request as it was cached and build upto the call.
+     * Returns the current request as it was cached and build up to the call.
      *
      * @returns {string}
-     *   the current request including a tailing linebreak
+     *   the current request including a tailing line break
      */
     getBytes() {
       return this.data + "\r\n";
@@ -116,7 +116,7 @@
      * Calculates a strings length in bytes.
      *
      * UTF uses variable length characters. Which means the length in bytes
-     * in not nessesarily equivalent to the number of characters.
+     * in not necessarily equivalent to the number of characters.
      *
      * @param {string} data
      *   the string for which the byte length should be calculated.
@@ -131,7 +131,7 @@
 
     /**
      * Escapes a string. All Backslashes are converted to \\  while
-     * all quotes are esacped as \"
+     * all quotes are escaped as \"
      *
      * @param {string} str
      *   the string which should be escaped

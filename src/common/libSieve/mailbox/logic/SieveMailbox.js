@@ -1,5 +1,5 @@
 /*
- * The contents of this file are licenced. You may obtain a copy of
+ * The contents of this file are licensed. You may obtain a copy of
  * the license at https://github.com/thsmi/sieve/ or request it via
  * email from the author.
  *
@@ -103,7 +103,7 @@
 
   /**
    * Retrieves the value of the mailbox annotation "annotation-name" for mailbox
-   * "mailbox#". The retrived value is compared against the key-list.
+   * "mailbox#". The retrieved value is compared against the key-list.
    *
    * The test returns true if the annotation exits and its value matches and of
    * the keys.

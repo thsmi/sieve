@@ -25,10 +25,10 @@ In order to process bugs faster consider the following:
   report. What did you expect to happen? What happened instead? If possible
   describe the exact steps how to reproduce the issue.
 
-* Do not spam or troll issues and bug reports. I do not accept bug spam, it is
+* Do not spam or troll issues and bug reports. I don not accept bug spam, it is
   considered the worst thing you can do with an open source project. It slows down
-  development. Any bug spam will be deleted without notice and the spamming user will
-  be blocked.
+  development. Any bug spam will be deleted without notice and the spamming user
+  will be blocked.
 
 ## Contributing translations via crowdin.net
 

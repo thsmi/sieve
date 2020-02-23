@@ -28,7 +28,7 @@
 
   suite.add(function () {
 
-    suite.log("Snipplet 1");
+    suite.log("Snippet 1");
 
     const script = ''
       + 'require "duplicate";\r\n'
@@ -42,7 +42,7 @@
 
   suite.add(function () {
 
-    suite.log("Snipplet 2");
+    suite.log("Snippet 2");
 
     const script = ''
       + 'require "duplicate";\r\n'
@@ -56,7 +56,7 @@
 
   suite.add(function () {
 
-    suite.log("Snipplet 3");
+    suite.log("Snippet 3");
 
     const script = ''
       // + 'require ["duplicate", "variables"];\r\n'

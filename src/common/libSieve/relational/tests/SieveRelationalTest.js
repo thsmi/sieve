@@ -101,15 +101,15 @@
   suite.add(function () {
     suite.log("Validate :value constructors");
 
-    const snipplet = ':value "eq"';
-    suite.expectValidSnipplet("match-type/value", snipplet, ["relational"]);
+    const snippet = ':value "eq"';
+    suite.expectValidSnippet("match-type/value", snippet, ["relational"]);
   });
 
   suite.add(function () {
     suite.log("Validate :count constructors");
 
-    const snipplet = ':count "eq"';
-    suite.expectValidSnipplet("match-type/count", snipplet, ["relational"]);
+    const snippet = ':count "eq"';
+    suite.expectValidSnippet("match-type/count", snippet, ["relational"]);
   });
 
   /*

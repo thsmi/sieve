@@ -27,7 +27,7 @@
 
   suite.add(function () {
 
-    suite.log("Mime Sniplet 1");
+    suite.log("Mime Snippet 1");
 
     const script = ''
       + 'require ["mime", "fileinto"];\r\n'
@@ -42,7 +42,7 @@
 
   suite.add(function () {
 
-    suite.log("Mime Sniplet 2");
+    suite.log("Mime Snippet 2");
 
     const script = ''
       + 'require ["mime", "fileinto"];\r\n'
@@ -58,7 +58,7 @@
 
   suite.add(function () {
 
-    suite.log("Mime Sniplet 3");
+    suite.log("Mime Snippet 3");
 
     const script = ''
       + 'require ["mime", "foreverypart", "fileinto"];\r\n'
@@ -81,7 +81,7 @@
 
   suite.add(function () {
 
-    suite.log("Mime Sniplet 4");
+    suite.log("Mime Snippet 4");
 
     const script = ''
       + 'require ["mime", "fileinto"];\r\n'
@@ -96,7 +96,7 @@
 
   suite.add(function () {
 
-    suite.log("Mime Sniplet 5");
+    suite.log("Mime Snippet 5");
 
     const script = ''
       + 'require ["mime", "fileinto"];\r\n'

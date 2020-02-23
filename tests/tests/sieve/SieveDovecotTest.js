@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -32,7 +32,7 @@
 
     suite.log("Dovecot - Mail filtering by various headers I");
 
-    let script = ''
+    const script = ''
       + 'require ["fileinto", "envelope"];\r\n'
       + 'if address :is "to" "dovecot@dovecot.org" {\r\n'
       + '  fileinto "Dovecot-list";\r\n'
@@ -55,7 +55,7 @@
 
     suite.log("Mail filtering by various headers II");
 
-    let script = ''
+    const script = ''
       + 'if header :contains "subject" ["order", "buy"] {\r\n'
       + '  redirect "orders@company.dom";\r\n'
       + '}\r\n';
@@ -68,7 +68,7 @@
 
     suite.log("Flagging or Highlighting your mail I");
 
-    let script = ''
+    const script = ''
       + 'require "imap4flags";\r\n'
       + 'require "regex";\r\n'
       + 'if anyof (exists "X-Cron-Env",\r\n'
@@ -94,7 +94,7 @@
 
     suite.log("Flagging or Highlighting your mail II");
 
-    let script = ''
+    const script = ''
       + 'require ["envelope", "imap4flags"];\r\n'
       + 'if envelope "from" "my_address@my_domain.com"\r\n'
       + '{\r\n'
@@ -109,7 +109,7 @@
 
     suite.log("Direct filtering using message header I");
 
-    let script = ''
+    const script = ''
       + 'require "fileinto";\r\n'
       + 'if header :contains "X-Spam-Flag" "YES" {\r\n'
       + '  fileinto "Spam";\r\n'
@@ -123,7 +123,7 @@
 
     suite.log("Direct filtering using message header II");
 
-    let script = ''
+    const script = ''
       + 'if header :contains "X-Spam-Level" "**********" {\r\n'
       + '  discard;\r\n'
       + '  stop;\r\n'
@@ -137,7 +137,7 @@
 
     suite.log("Direct filtering using message header III");
 
-    let script = ''
+    const script = ''
       + 'require ["comparator-i;ascii-numeric","relational"];\r\n'
       + 'if allof (\r\n'
       + '   not header :matches "x-spam-score" "-*",\r\n'
@@ -155,7 +155,7 @@
 
     suite.log("Filtering using the spamtest and virustest extensions I");
 
-    let script = ''
+    const script = ''
       + 'require "spamtestplus";\r\n'
       + 'require "fileinto";\r\n'
       + 'require "relational";\r\n'
@@ -192,7 +192,7 @@
 
     suite.log("Filtering using the spamtest and virustest extensions II");
 
-    let script = ''
+    const script = ''
       + 'require "virustest";\r\n'
       + 'require "fileinto";\r\n'
       + 'require "relational";\r\n'
@@ -222,7 +222,7 @@
 
     suite.log("Plus Addressed mail filtering I");
 
-    let script = ''
+    const script = ''
       + 'require ["fileinto", "envelope", "subaddress"];\r\n'
       + 'if envelope :detail "to" "spam"{\r\n'
       + '  fileinto "Spam";\r\n'
@@ -236,7 +236,7 @@
 
     suite.log("Plus Addressed mail filtering II");
 
-    let script = ''
+    const script = ''
       + 'require ["variables", "envelope", "fileinto", "subaddress"];\r\n'
       + '\r\n'
       + 'if envelope :is :user "to" "sales" {\r\n'
@@ -264,7 +264,7 @@
 
     suite.log("Vacation auto-reply I");
 
-    let script = ''
+    const script = ''
       + 'require ["fileinto", "vacation"];\r\n'
       + '# Move spam to spam folder\r\n'
       + 'if header :contains "X-Spam-Flag" "YES" {\r\n'
@@ -292,7 +292,7 @@
 
     suite.log("Vacation auto-reply II");
 
-    let script = ''
+    const script = ''
       + 'require ["variables", "vacation"];\r\n'
       + '# Store old Subject line so it can be used in vacation message\r\n'
       + 'if header :matches "Subject" "*" {\r\n'
@@ -315,7 +315,7 @@
 
     suite.log("Include scripts");
 
-    let script = ''
+    const script = ''
       + 'require ["include"];\r\n'
       + 'include :global "global-spam";\r\n'
       + 'include :personal "my-own-spam";\r\n';
@@ -328,7 +328,7 @@
 
     suite.log("Archiving a Mailinglist by Date");
 
-    let script = ''
+    const script = ''
       + 'require ["variables","date","fileinto","mailbox"];\r\n'
       + '\r\n'
       + '# Extract date info\r\n'

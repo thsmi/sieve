@@ -1,7 +1,3 @@
-/* global window */
-/* global parent */
-/* global document */
-
 (function (exports) {
 
   "use strict";
@@ -26,7 +22,7 @@
     if (typeof (level) !== "string")
       level = "Info";
 
-    let msg = {};
+    const msg = {};
     msg.type = "LOG";
     msg.level = level;
     msg.data = "" + message;
@@ -53,22 +49,22 @@
    *
    */
   function succeed() {
-    let msg = {};
+    const msg = {};
     msg.type = "SUCCEED";
 
     parent.postMessage("" + JSON.stringify(msg), "*");
   }
 
   /**
-     * Signals the test suit, a test failed.
-     *
-     * @param {string|Error} [message]
-     *   an optional error or error why tests failed.
-     *
+   * Signals the test suit, a test failed.
+   *
+   * @param {string|Error} [message]
+   *   an optional error or error why tests failed.
+   *
    */
   function fail(message) {
 
-    let msg = {};
+    const msg = {};
     msg.type = "FAIL";
     msg.description = "" + message;
 
@@ -80,7 +76,7 @@
 
   function require(script) {
 
-    let elm = document.createElement("script");
+    const elm = document.createElement("script");
     elm.type = "text/javascript";
     elm.src = "" + script;
 
@@ -91,10 +87,10 @@
     //   debugger;
     //   that.abort("Script error "+ev.message+"\n"+ev.filename+"\n"+ev.lineno+"\n"+ev.colno+"\n") };
 
-    // The order maters wich means we need to get async.
+    // The order maters which means we need to get async.
     elm.async = false;
 
-    logTrace("  + Injecting script " + script + " ...");
+    logTrace(`  + Injecting script ${script}...`);
 
     document.head.appendChild(elm);
   }
@@ -140,7 +136,7 @@
   function assertEquals(expected, actual, message) {
 
     if (expected === actual) {
-      logTrace(`Assert successfull: ${expected}\n`);
+      logTrace(`Assert successful: ${expected}\n`);
       return;
     }
 
@@ -166,7 +162,7 @@
 
   function run() {
 
-    let tests = exports.net.tschmid.yautt.test.tests;
+    const tests = exports.net.tschmid.yautt.test.tests;
 
     if (!tests || !tests.length) {
       fail("Empty test configuration");
@@ -194,7 +190,7 @@
     //   if (event.origin !== document.domain)
     //      return;
 
-    let msg = JSON.parse(event.data);
+    const msg = JSON.parse(event.data);
 
     if (msg.type !== "IMPORT")
       return;
@@ -203,7 +199,7 @@
   }, false);
 
   // ... we need to catch any errors...
-  let oldErrorHandler = window.onerror;
+  const oldErrorHandler = window.onerror;
 
   window.onerror = function (message, url, line) {
 

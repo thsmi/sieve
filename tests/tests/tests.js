@@ -1,12 +1,9 @@
-
-/* global window */
-
 (function () {
 
   "use strict";
 
   /* global net */
-  let suite = net.tschmid.yautt.test.server;
+  const suite = net.tschmid.yautt.test.server;
 
   if (!suite)
     throw new Error("Could not locate the test server");

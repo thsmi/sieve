@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -32,7 +32,7 @@
 
     suite.log("TTY1 Example I");
 
-    let script = ''
+    const script = ''
       + 'require ["fileinto", "reject"];\r\n'
       + '\r\n'
       + '# Daffy Duck is a good friend of mine.\r\n'
@@ -56,7 +56,7 @@
 
     suite.log("TTY1 Example II");
 
-    let script = ''
+    const script = ''
       + '# The hash character starts a one-line comment.\r\n'
       + '# Everything after a # character until the end of line is ignored.\r\n'
       + '\r\n'
@@ -73,7 +73,7 @@
 
     suite.log("TTY1 Example III");
 
-    let script = ''
+    const script = ''
       + 'require ["fileinto"];\r\n'
       + '\r\n'
       + '# The two test below are equivalent;\r\n'
@@ -95,7 +95,7 @@
 
     suite.log("TTY1 Example IV");
 
-    let script = ''
+    const script = ''
       + 'require ["fileinto"];\r\n'
       + '\r\n'
       + '# File mails with a Spamassassin score of 4.0 or more\r\n'
@@ -113,7 +113,7 @@
 
     suite.log("TTY1 Example V");
 
-    let script = ''
+    const script = ''
       + 'require ["reject"];\r\n'
       + '\r\n'
       + '# Reject all messages that contain the string "viagra"in the Subject.\r\n'
@@ -135,7 +135,7 @@
 
     suite.log("TTY1 Example VI");
 
-    let script = ''
+    const script = ''
       + 'require ["fileinto"];\r\n'
       + '\r\n'
       + '# A mail to any of the recipients in the list of strings is filed to the folder "friends".\r\n'
@@ -152,7 +152,7 @@
 
     suite.log("TTY1 Example VII");
 
-    let script = ''
+    const script = ''
       + 'require ["fileinto"];\r\n'
       + '\r\n'
       + '# Check if either the "from" or the "sender" header is from Porky.\r\n'
@@ -169,7 +169,7 @@
 
     suite.log("TTY1 Example VIII");
 
-    let script = ''
+    const script = ''
       + 'require ["fileinto"];\r\n'
       + '\r\n'
       + '# Match "from" or the "sender" file with any of Daffy, Porky or Speedy.\r\n'
@@ -186,7 +186,7 @@
 
     suite.log("TTY1 Example IX");
 
-    let script = ''
+    const script = ''
       + '# This test checks against Spamassassin\'s header fields:\r\n'
       + '# If the spam level ls 4 or more and the Subject contains too\r\n'
       + '# many illegal characters, then silently discard the mail.\r\n'
@@ -210,7 +210,7 @@
 
     suite.log("TTY1 Example X");
 
-    let script = ''
+    const script = ''
       + '# Delete messages greater than half a MB\r\n'
       + 'if size :over 500K\r\n'
       + '{\r\n'

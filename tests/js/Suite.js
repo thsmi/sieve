@@ -49,7 +49,7 @@
       if (msg.details)
         this.log("" + msg.details, "Trace");
 
-      // The post event blocks both window. So defere processing...
+      // The post event blocks both window. So defer processing...
       window.setTimeout(function () { that.next(); }, 10);
 
       $("#tests input[value='" + this.current + "']").parent("div").css("color", "red");
@@ -59,7 +59,7 @@
 
     if (msg.type === "SUCCEED") {
       this.log("##### Test succeeded.", "Success");
-      // The post event blocks both window. So defere processing...
+      // The post event blocks both window. So defer processing...
       window.setTimeout(function () { that.next(); }, 10);
 
       $("#tests input[value='" + this.current + "']").parent("div").css("color", "green");
@@ -132,7 +132,7 @@
 
     const userAgent = navigator.userAgent;
     for (const agent of agents) {
-      this.logTrace("Checking if envirnoment is compatible with " + agent+" ...");
+      this.logTrace("Checking if environment is compatible with " + agent + " ...");
       if (userAgent.indexOf(agent) > -1) {
         this.logTrace("... Yes");
         return true;
@@ -141,7 +141,7 @@
       this.logTrace("... No");
     }
 
-    this.logTrace(" ... no comaptible environment found.");
+    this.logTrace(" ... no compatible environment found.");
     return false;
   };
 
@@ -316,9 +316,8 @@
       if (!tests[name].script)
         return;
 
-      function gotoTest(name) {
-        var items = $("#divOutput [testprofile='" + name + "']");
-
+      function gotoTest(test) {
+        const items = $(`#divOutput [testprofile='${test}']`);
         items.last().get(0).scrollIntoView();
       }
 

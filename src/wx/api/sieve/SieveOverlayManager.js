@@ -191,7 +191,7 @@
     }
 
     /**
-     * Loads the overlay into the gien document
+     * Loads the overlay into the given document
      * @param {Document} document
      *   the document for which the overlay should be loaded.
      * @param {Function} [callback]
@@ -374,7 +374,7 @@
 
       this.log("OnUnloadWindow");
 
-      // we mutate the array thus we interate backwards...
+      // we mutate the array thus we iterate backwards...
       for (let i = this._overlays.length - 1; i >= 0; i--) {
 
         const windowId = aWindow.windowUtils.outerWindowID;
@@ -414,7 +414,7 @@
     }
 
     /**
-     * Removes the unload wtach from the given xul window.
+     * Removes the unload watch from the given xul window.
      *
      * @param {nsIXULWindow|nsIAppWindow} appWindow
      *   the xul for which the monitoring should be stopped

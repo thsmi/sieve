@@ -106,7 +106,7 @@
   });
 
   /**
-   * The count match type determins the number of the specified entities in the
+   * The count match type determines the number of the specified entities in the
    * message and then does a relational comparison of numbers of entities
    *
    * Count should only be used with a numeric comparator.

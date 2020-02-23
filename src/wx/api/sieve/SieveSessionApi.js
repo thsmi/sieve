@@ -30,7 +30,7 @@
 
       const url = context.extension.getURL();
 
-      // For some strage reasons ChromeUtils import failes in packaged XPIs.
+      // For some strange reasons ChromeUtils import fails in packaged XPI.
       //
       // const { require } = ChromeUtils.import(`${url}/SieveRequire.jsm`)
       //   .loadRequire(`${url}/libs/libManageSieve/`);

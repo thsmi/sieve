@@ -125,7 +125,7 @@
     }
 
     /**
-     * Checks if the current editor has unsave changes
+     * Checks if the current editor has unsaved changes
      *
      * @returns {boolean}
      *   true in case the editor contains unsaved changes.
@@ -288,7 +288,7 @@
     }
 
     /**
-     * Returns a refernce to the currently active editor.
+     * Returns a reference to the currently active editor.
      * Which is either the plain text editor or the rich text editor.
      *
      * @returns {SieveAbstractEditorUI} the currently active editor.

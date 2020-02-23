@@ -10,7 +10,7 @@
       </div>
       <div class="modal-body">
         <div>The script <span class="sieve-busy-dialog-scriptname"> </span> can not be renamed or deleted.</div>
-        <div>It is currenlty beeing edited in a tab.</div>
+        <div>It is currently being edited in a tab.</div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary sieve-dialog-resolve">Ok</button>

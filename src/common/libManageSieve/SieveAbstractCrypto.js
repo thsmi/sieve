@@ -89,7 +89,7 @@
 
       for (let i = 0; i < str.length; i++) {
         if (str.charCodeAt(i) > MAX_CHAR_CODE)
-          throw new Error("Invalid Charaters for Binary String :" + str.charCodeAt(i));
+          throw new Error("Invalid Characters for Binary String :" + str.charCodeAt(i));
 
         result.push(str.charCodeAt(i));
       }
@@ -151,7 +151,7 @@
      * @param {byte[]|string} salt
      *   random octet string
      * @param {int} i
-     *   iteration count a positiv number (>= 1), suggested to be at least 4096
+     *   iteration count a positive number (>= 1), suggested to be at least 4096
      *
      * @returns {byte[]}
      *   the pseudorandom value as byte string

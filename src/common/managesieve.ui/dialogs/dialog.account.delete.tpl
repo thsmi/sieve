@@ -8,7 +8,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <div> Do you realy want to delete the configuration for
+        <div> Do you really want to delete the configuration for
           <em id="sieve-dialog-account-remove-name"></em>? </div>
       </div>
       <div class="modal-footer">

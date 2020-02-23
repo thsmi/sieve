@@ -20,7 +20,7 @@
 
         </div>
 
-        <p>Continue only if the fingerprints match and the error message is resonable!</p>
+        <p>Continue only if the fingerprints match and the error message is reasonable!</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger sieve-dialog-resolve">Continue</button>

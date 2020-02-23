@@ -26,7 +26,7 @@
      * Creates a new graphical editor UI.
      *
      * @param {SieveEditorController} controller
-     *   The controller which is assigne to this editor.
+     *   The controller which is assigned to this editor.
      */
     constructor(controller) {
       super(controller);

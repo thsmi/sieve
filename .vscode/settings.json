@@ -13,5 +13,20 @@
   },
   "files.eol": "\n",
   "editor.tabSize": 2,
-  "editor.useTabStops": false
+  "editor.useTabStops": false,
+  "cSpell.words": [
+    "CHECKSCRIPT",
+    "DELETESCRIPT",
+    "GETSCRIPT",
+    "HAVESPACE",
+    "LISTSCRIPTS",
+    "PUTSCRIPT",
+    "RENAMESCRIPT",
+    "SETACTIVE",
+    "STARTTLS",
+    "managesieve",
+    "stateful",
+    "transcoding",
+    "webextension"
+  ]
 }

@@ -6,7 +6,7 @@
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  *
- * Contibutors:
+ * Contributors:
  *   Max Dittrich
  */
 
@@ -65,7 +65,7 @@
   /**
    * This class implements a generic response handler for simple sieve requests.
    *
-   * Simple requests just indicate, wether the command succeded or not. They
+   * Simple requests just indicate, wether the command succeeded or not. They
    * return only status information, and do not contain any data relevant for
    * the user.
    *
@@ -152,7 +152,7 @@
         while (parser.isSpace()) {
           parser.extractSpace();
 
-          // We might stumbe upon opening brackets...
+          // We might stumble upon opening brackets...
           if (parser.startsWith([[CHAR_BRACKET_OPEN]])) {
             // ... oh we did, so increase our nesting counter.
             parser.extract(ONE_CHAR);
@@ -160,7 +160,7 @@
           }
 
           // ok, more tokens, more fun...
-          // ... it could be either a string, a number, an atom or even a backet
+          // ... it could be either a string, a number, an atom or even a bracket
           if (parser.isString())
             this.responseCode.push(parser.extractString());
           else
@@ -174,7 +174,7 @@
         }
 
         if (!parser.startsWith([[CHAR_BRACKET_CLOSE]]))
-          throw new Error("Closing Backets expected in " + parser.getData());
+          throw new Error("Closing brackets expected in " + parser.getData());
 
         parser.extract(ONE_CHAR);
 
@@ -222,7 +222,7 @@
     }
 
     /**
-     * The server reponds to a message with eiher an ok, bye or no.
+     * The server responds to a message with either an ok, bye or no.
      *
      * @returns {int}
      *   the servers response. It is set to 0 in case of an OK, to 1 in case of a BYE and to 3 incase of a NO
@@ -234,8 +234,8 @@
     /**
      * A response code is used by the server to narrow down an error or to give hints.
      *
-     * E.g.: In case the server wants to do a referal. It will answer a request with a BYE
-     * and adds the details to the REFERAL response code.
+     * E.g.: In case the server wants to do a referral. It will answer a request with a BYE
+     * and adds the details to the REFERRAL response code.
      *
      * Or in case the user tries do delete the active script. Then the server responds with
      * a NO and will an response code "ACTIVE".
@@ -270,7 +270,7 @@
   }
 
   /**
-   * Parses the capabilites posted by the ManageSieve server upon a client
+   * Parses the capabilities posted by the ManageSieve server upon a client
    * connection, after successful STARTTLS and AUTHENTICATE or by issuing the
    * CAPABILITY command.
    *
@@ -455,7 +455,7 @@
     getTLS() { return this.details.tls; }
 
     /**
-     * Inorder to maintain compatibility to older implementations, the servers
+     * In order to maintain compatibility to older implementations, the servers
      * should state their compatibility level upon login.
      *
      * A value of "0" indicates, minimal ManageSieve support. This means the server
@@ -509,8 +509,8 @@
      * Returns a list with sieve commands which are supported by this implementation
      * and are not part of the absolute minimal ManageSieve support.
      *
-     * The server advertises such additional commands either by explicitely
-     * naming the command or by using the compatiblility level capability.
+     * The server advertises such additional commands either by explicitly
+     * naming the command or by using the compatibility level capability.
      *
      * Examples are RENAME, NOOP and CHECKSCRIPT.
      *
@@ -522,7 +522,7 @@
     /**
      * Gets the name of the logged in user.
      *
-     * Note: This value is only avaiable after AUTHENTICATE command succeeds
+     * Note: This value is only available after AUTHENTICATE command succeeds
      *
      * @returns {string}
      *   a String containing the username
@@ -648,7 +648,7 @@
    * to be completed. Which means the response has to track
    * the state.
    *
-   * This simple wrapper makes the resposne statefull.
+   * This simple wrapper makes the response stateful.
    */
   class SieveStateFullResponse extends SieveSimpleResponse {
 
@@ -698,7 +698,7 @@
       }
 
       if ((this.state === STATE_LOGIN_PASSWORD) && (parser.isString())) {
-        // String should be equivalten to 'Password:'
+        // String should be equivalent to 'Password:'
         parser.extractString();
         parser.extractLineBreak();
 
@@ -728,7 +728,7 @@
   }
 
   const STATE_CRAMMD5_INITIATED = 0;
-  const STATE_CRAMMD5_CHALLANGED = 1;
+  const STATE_CRAMMD5_CHALLENGED = 1;
   const STATE_CRAMMD5_COMPLETED = 4;
 
   /**
@@ -747,12 +747,12 @@
         this.challenge = parser.extractString();
         parser.extractLineBreak();
 
-        this.state = STATE_CRAMMD5_CHALLANGED;
+        this.state = STATE_CRAMMD5_CHALLENGED;
 
         return this;
       }
 
-      if (this.state === STATE_CRAMMD5_CHALLANGED) {
+      if (this.state === STATE_CRAMMD5_CHALLENGED) {
         // Should be either a NO, BYE or OK
         this.state = STATE_CRAMMD5_COMPLETED;
 
@@ -766,10 +766,10 @@
 
     /**
      * @returns {string}
-     *   the server's challange which needs to be answered.
+     *   the server's challenge which needs to be answered.
      */
     getChallenge() {
-      if (this.state < STATE_CRAMMD5_CHALLANGED)
+      if (this.state < STATE_CRAMMD5_CHALLENGED)
         throw new Error("Illegal State, request not completed");
 
       return this.challenge;
@@ -787,7 +787,7 @@
    * Parses responses for SCRAM-SHA authentication.
    *
    * SCRAM is a secure client first authentication mechanism. The client
-   * callanges the server and descides if the connection is trustworthy.
+   * challenges the server and deicides if the connection is trustworthy.
    *
    * This requires a way mor logic on the client than with simple authentication
    * mechanisms. It also requires more communication, in total two roundtrips.
@@ -804,7 +804,7 @@
     _extractReservedMext(tokens) {
       const token = tokens[SHA_FIRST_TOKEN];
 
-      // Test for the reserved-mext token. If it is existant, we just skip it
+      // Test for the reserved-mext token. If it is existent, we just skip it
       if ((token.length <= SHA_PREFIX_LENGTH) || !token.startsWith("m="))
         return "";
 
@@ -835,7 +835,7 @@
     /**
      * Extracts the salt from the first message.
      * @param {string[]} tokens
-     *   the first message resonse split into tokens.
+     *   the first message response split into tokens.
      * @returns {string}
      *   the salt as base64 encoded string or an exception in case
      *   it could not be extracted
@@ -855,10 +855,10 @@
     /**
      * Extracts the iteration count from the first message.
      * @param {string[]} tokens
-     *   the first message resonse split into tokens.
+     *   the first message response split into tokens.
      * @returns {int}
      *   the iteration count as integer or an exception in case the
-     *   iternations could not be extracted.
+     *   iterations could not be extracted.
      */
     _extractIterations(tokens) {
       const token = tokens[SHA_FIRST_TOKEN];
@@ -990,7 +990,7 @@
       }
 
       // Or the response is wrapped into the ResponseCode in order to save...
-      // ... roundtip time so we endup with the following
+      // ... roundtrip time so we end up with the following
       //
       // S: OK (SASL "cnNwYXV0aD1lYTQwZjYwMzM1YzQyN2I1NTI3Yjg0ZGJhYmNkZmZmZA==")
 
@@ -1034,7 +1034,7 @@
      * final message was received
      *
      * @returns {string}
-     *   the nonce received from the server on an exception in case it is unkonwn.
+     *   the nonce received from the server on an exception in case it is unknown.
      */
     getNonce() {
       if (this.state < SHA_STATE_FINAL_MESSAGE)

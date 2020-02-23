@@ -121,7 +121,7 @@
      * @inheritdoc
      */
     load(sivElement) {
-      (new SieveStringListWidget("#sivBodyTransformContenType"))
+      (new SieveStringListWidget("#sivBodyTransformContentType"))
         .init([""]);
 
       super.load(sivElement);
@@ -136,7 +136,7 @@
       super.onLoad(sivElement);
 
       // update the string list...
-      (new SieveStringListWidget("#sivBodyTransformContenType"))
+      (new SieveStringListWidget("#sivBodyTransformContentType"))
         .init(sivElement.getElement("contentType"));
     }
 
@@ -154,7 +154,7 @@
           "" + this.getRadioItem().find("input[name='" + this.getName() + "']").val() + ' ""');
       }
 
-      (new SieveStringListWidget("#sivBodyTransformContenType"))
+      (new SieveStringListWidget("#sivBodyTransformContentType"))
         .save(sivElement.getElement("contentType"));
     }
 

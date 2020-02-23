@@ -10,8 +10,6 @@
  *
  */
 
-/* global window */
-
 (function (exports) {
 
   "use strict";
@@ -21,7 +19,7 @@
   /* global SieveGrammar */
   /* global SieveCapabilities */
 
-  var suite = exports.net.tschmid.yautt.test;
+  const suite = exports.net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not append script test tools to test suite");
@@ -32,7 +30,7 @@
    *
    * @param {string} script
    *   the script to parse
-   * @param {Object.<string, boolean>} [capabilities]
+   * @param {object.<string, boolean>} [capabilities]
    *   optional parameter which simulates the the server's capabilities
    *
    * @returns {SieveDocument}
@@ -45,7 +43,7 @@
     if (capabilities)
       SieveLexer.capabilities(capabilities);
 
-    let doc = new SieveDocument(SieveLexer, null);
+    const doc = new SieveDocument(SieveLexer, null);
 
     doc.script(script);
 
@@ -63,18 +61,18 @@
   function validateDocument(doc, script, capabilities) {
 
     suite.logTrace("Start Serializing Script");
-    let rv = doc.script();
+    const rv = doc.script();
     suite.logTrace("End Serializing Script");
 
     suite.assertEquals(script, rv);
 
     if (capabilities) {
-      let dependencies = new SieveCapabilities(capabilities);
+      const dependencies = new SieveCapabilities(capabilities);
       doc.root().require(dependencies);
 
       suite.logTrace(rv);
 
-      for (let capability of capabilities) {
+      for (const capability of capabilities) {
         suite.logTrace("Testing Capability: " + capability);
         suite.assertTrue(dependencies.hasCapability(capability), "Did not find capability '" + capability + "'");
       }
@@ -90,7 +88,7 @@
   function expectValidScript(script, capabilities) {
 
     suite.logTrace("Start Parsing Script");
-    let doc = suite.parseScript(script, capabilities);
+    const doc = suite.parseScript(script, capabilities);
     suite.logTrace("End Parsing Script");
 
     suite.logTrace("Start Serializing Script");
@@ -115,7 +113,7 @@
     if (capabilities)
       SieveLexer.capabilities(capabilities);
 
-    let doc = new SieveDocument(SieveLexer, null);
+    const doc = new SieveDocument(SieveLexer, null);
 
     suite.logTrace("Start Parsing Script");
     try {
@@ -146,29 +144,29 @@
     if (capabilities)
       SieveLexer.capabilities(capabilities);
 
-    let doc = new SieveDocument(SieveLexer, null);
+    const doc = new SieveDocument(SieveLexer, null);
 
-    // Create element with defaults and convert it to a script sniplet...
-    let element = doc.createByName(type);
-    let rv1 = element.toScript();
+    // Create element with defaults and convert it to a script snippet...
+    const element = doc.createByName(type);
+    const rv1 = element.toScript();
 
     // ... and should match our expectation.
     suite.assertEquals(snippet, rv1);
 
-    // ... then try to parse these script sniplet
-    let rv2 = doc.createByName(type, rv1).toScript();
+    // ... then try to parse these script snippet
+    const rv2 = doc.createByName(type, rv1).toScript();
 
     // and ensure both snippets should be identical...
     suite.assertEquals(rv1, rv2);
 
     if (capabilities) {
 
-      let dependencies = new SieveCapabilities(capabilities);
+      const dependencies = new SieveCapabilities(capabilities);
       element.require(dependencies);
 
       suite.logTrace(rv1);
 
-      for (let capability of capabilities) {
+      for (const capability of capabilities) {
         suite.logTrace("Testing Capability: " + capability);
         suite.assertTrue(dependencies.hasCapability(capability), "Did not find capability '" + capability + "'");
       }

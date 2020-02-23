@@ -18,7 +18,7 @@
 
   /**
    * An UI elements which handles displaying details for a sieve script.
-   * It does not provied any support for editing the scripts content.
+   * It does not provide any support for editing the scripts content.
    */
   class SieveScriptUI {
 
@@ -96,7 +96,7 @@
 
     /**
      * Renames the script.
-     * A propmpt will be show which ask the user about the new name
+     * A prompt will be show which ask the user about the new name
      */
     async rename() {
 

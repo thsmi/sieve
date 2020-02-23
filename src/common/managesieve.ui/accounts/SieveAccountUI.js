@@ -31,7 +31,7 @@
   class SieveAccountUI {
 
     /**
-     * Creates a new rendere for a sieve account.
+     * Creates a new renderer for a sieve account.
      *
      * @param {SieveAccountsUI} accounts
      *   the parent sieve accounts renderer
@@ -204,7 +204,7 @@
     }
 
     /**
-     * Called when the account should be rerenderd because of a disconnect.
+     * Called when the account should be rendered because of a disconnect.
      */
     async onRenderDisconnected() {
       const item2 = await (new SieveTemplateLoader()).load(`./accounts/account.disconnected.tpl`);
@@ -239,10 +239,8 @@
 
     /**
      * Asks the user if he is sure to delete the account.
-     * If yes it triggers expurging the account settings.
+     * If yes it triggers expunging the account settings.
      * This can not be undone.
-     *
-     *
      */
     async remove() {
       await this.accounts.remove(this);
@@ -265,7 +263,7 @@
 
       const rv = await (new SieveServerSettingsUI(this)).show();
 
-      // rerender settings in case they got changed.
+      // render settings in case they got changed.
       if (rv === true)
         this.renderSettings();
 
@@ -288,7 +286,7 @@
     }
 
     /**
-     * Show the advanced settings disalog
+     * Show the advanced settings dialog
      */
     showAdvancedSettings() {
       (new SieveAdvancedSettingsUI(this)).show();

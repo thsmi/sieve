@@ -16,7 +16,7 @@
 
   /* global net */
 
-  let suite = net.tschmid.yautt.test;
+  const suite = net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -30,7 +30,7 @@
 
     suite.log("FastMail - File all messages from a recipient into a folder");
 
-    let script = ''
+    const script = ''
       + 'require ["fileinto"];\r\n'
       + '\r\n'
       + 'if address :is "From" "pal@mypals.org" {\r\n'
@@ -46,7 +46,7 @@
 
     suite.log("FastMail - File all messages from a domain into a folder");
 
-    let script = ''
+    const script = ''
       + 'require ["fileinto"];\r\n'
       + '\r\n'
       + 'if address :domain :is "From" "mypals.org" {\r\n'
@@ -62,7 +62,7 @@
 
     suite.log("FastMail - File all undefined addresses at a virtual domain into a folder");
 
-    let script = ''
+    const script = ''
       + 'require ["fileinto"];\r\n'
       + '\r\n'
       + 'if allof(\r\n'
@@ -81,7 +81,7 @@
 
     suite.log("FastMail - File messages to some aliases into alias-dependent folders");
 
-    let script = ''
+    const script = ''
       + 'require ["fileinto", "imap4flags"];\r\n'
       + '\r\n'
       + 'if address :is "X-Delivered-To" "alias1@fastmail.fm" {\r\n'
@@ -106,7 +106,7 @@
 
     suite.log("FastMail - Spam filtering for SpamAssassin score");
 
-    let script = ''
+    const script = ''
       + 'require ["fileinto","relational", "comparator-i;ascii-numeric"];\r\n'
       + '\r\n'
       + 'if  header :value "ge" :comparator "i;ascii-numeric" ["X-Spam-score"] ["20"]  {\r\n'
@@ -129,7 +129,7 @@
 
     suite.log("FastMail - Spam filtering based on Bayesian filter)");
 
-    let script = ''
+    const script = ''
       + 'require ["fileinto"];\r\n'
       + '\r\n'
       + 'if header :contains ["SPAM", "X-Spam-hits"] ["BAYES_40", "BAYES_44", "BAYES_50", "BAYES_56", "BAYES_60"]'
@@ -145,7 +145,7 @@
 
     suite.log("FastMail - Filtering known messages as sent");
 
-    let script = ''
+    const script = ''
       + 'require ["fileinto","imap4flags"];\r\n'
       + '\r\n'
       + 'if header :is ["X-Delivered-to"] "sent@domain.com" {\r\n'
@@ -160,7 +160,7 @@
 
     suite.log("FastMail - Do not filter known senders");
 
-    let script = ''
+    const script = ''
       + '\r\n'
       + 'if not anyof(\r\n'
       + '  header :contains ["X-Spam-known-sender"] "yes",\r\n'
@@ -176,7 +176,7 @@
 
     suite.log("FastMail - Time-sensitive notification example");
 
-    let script = ''
+    const script = ''
       + 'require ["regex"];\r\n'
       + '\r\n'
       + 'if allof (\r\n'

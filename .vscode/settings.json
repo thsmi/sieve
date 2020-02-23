@@ -24,9 +24,21 @@
     "RENAMESCRIPT",
     "SETACTIVE",
     "STARTTLS",
+    "addflag",
+    "allof",
+    "anyof",
+    "currentdate",
+    "fileinto",
+    "localpart",
     "managesieve",
+    "setflag",
+    "spamtest",
+    "spamtestplus",
     "stateful",
+    "subaddress",
     "transcoding",
+    "upperfirst",
+    "virustest",
     "webextension"
   ]
 }

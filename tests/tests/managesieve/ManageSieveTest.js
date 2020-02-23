@@ -9,14 +9,11 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-/* globals window */
-
-
 (function (exports) {
 
   "use strict";
 
-  let suite = exports.net.tschmid.yautt.test;
+  const suite = exports.net.tschmid.yautt.test;
 
   if (!suite)
     throw new Error("Could not initialize test suite");
@@ -33,13 +30,13 @@
     const { SieveMozResponseParser } = require("./SieveMozResponseParser.js");
     const { SieveSaslLoginRequest } = require("./SieveRequest.js");
 
-    let request = new SieveSaslLoginRequest();
+    const request = new SieveSaslLoginRequest();
 
     let hasError = null;
-    let hasSucceded = null;
+    let hasSucceeded = null;
 
-    let handler = {};
-    handler.onSaslResponse = function () { hasSucceded = true; };
+    const handler = {};
+    handler.onSaslResponse = function () { hasSucceeded = true; };
     handler.onError = function () { hasError = true; };
 
     request.addResponseListener(handler);
@@ -86,7 +83,7 @@
 
     suite.assertEquals(false, request.hasNextRequest());
 
-    suite.assertEquals(true, hasSucceded);
+    suite.assertEquals(true, hasSucceeded);
     suite.assertEquals(null, hasError);
   });
 
@@ -94,17 +91,16 @@
 
     suite.log("SASL External - OK");
 
-    // Single theaded javascript magic...
+    // Single threaded javascript magic...
     let hasError = null;
-    let hasSucceded = null;
-    let builder = null;
+    let hasSucceeded = null;
 
-    let handler = {};
-    handler.onSaslResponse = function () { hasSucceded = true; };
+    const handler = {};
+    handler.onSaslResponse = function () { hasSucceeded = true; };
     handler.onError = function () { hasError = true; };
 
 
-    let request = new module.exports.SieveSaslExternalRequest();
+    const request = new module.exports.SieveSaslExternalRequest();
     request.addResponseListener(handler);
     request.addErrorListener(handler);
 
@@ -119,7 +115,7 @@
       new module.exports.SieveMozResponseParser([0x4f, 0x4b, 0x0D, 0x0A]));
 
     // This works only because of closures and javascript single threaded nature...
-    suite.assertEquals(true, hasSucceded);
+    suite.assertEquals(true, hasSucceeded);
     suite.assertEquals(null, hasError);
   });
 
@@ -127,16 +123,16 @@
 
     suite.log("SASL External - NO");
 
-    // Single theaded javascript magic...
+    // Single threaded javascript magic...
     let hasError = null;
-    let hasSucceded = null;
+    let hasSucceeded = null;
 
-    let handler = {};
-    handler.onSaslResponse = function () { hasSucceded = true; };
+    const handler = {};
+    handler.onSaslResponse = function () { hasSucceeded = true; };
     handler.onError = function () { hasError = true; };
 
 
-    let request = new module.exports.SieveSaslExternalRequest();
+    const request = new module.exports.SieveSaslExternalRequest();
 
     request.addResponseListener(handler);
     request.addErrorListener(handler);
@@ -152,9 +148,8 @@
       new module.exports.SieveMozResponseParser([0x4e, 0x4f, 0x0D, 0x0A]));
 
     // This works only because of closures and javascript single threaded nature...
-    suite.assertEquals(null, hasSucceded);
+    suite.assertEquals(null, hasSucceeded);
     suite.assertEquals(true, hasError);
   });
-
 
 })(window);

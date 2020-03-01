@@ -35,9 +35,19 @@ exports['app:package-win32'] = series(
   app.packageWin32
 );
 
+exports['app:zip-win32'] = series(
+  exports['app:package-win32'],
+  app.zipWin32
+);
+
 exports['app:package-linux'] = series(
   app.package,
   app.packageLinux
+);
+
+exports['app:zip-linux'] = series(
+  exports['app:package-linux'],
+  app.zipLinux
 );
 
 exports['app:package-macos'] = series(

@@ -11,14 +11,9 @@
 
 const { src, dest, watch, parallel } = require('gulp');
 
-const { unlink } = require('fs').promises;
-const { existsSync } = require('fs');
-
 const common = require("./gulpfile.common.js");
 
-const zip = require('gulp-zip');
 const path = require('path');
-const logger = require('gulplog');
 
 const BUILD_DIR_WX = path.join(common.BASE_DIR_BUILD, "thunderbird-wx");
 const BASE_DIR_WX = "./src/wx/";
@@ -142,15 +137,10 @@ async function packageXpi() {
 
   const version = (await common.getPackageVersion()).join(".");
 
-  if (existsSync(`./release/thunderbird/sieve-${version}.xpi`)) {
-    logger.info(`Deleting sieve-${version}.xpi`);
-    await unlink(`./release/thunderbird/sieve-${version}.xpi`);
-  }
+  const destination = path.resolve(common.BASE_DIR_BUILD, `sieve-${version}.xpi`);
+  const source = path.resolve(`./${BUILD_DIR_WX}/`);
 
-  logger.info(`Packaging sieve-${version}.xpi`);
-  await src([`./${BUILD_DIR_WX}/**`], {buffer:false})
-    .pipe(zip(`sieve-${version}.xpi`))
-    .pipe(dest('./release/thunderbird'));
+  await common.compress(source, destination);
 }
 
 

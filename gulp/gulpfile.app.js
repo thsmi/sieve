@@ -124,7 +124,6 @@ async function packageWin32() {
     arch: "ia32",
     platform: "win32",
     download: {
-      // cache: path.join(common.BASE_DIR_BUILD, "/electron/cache"),
       cacheRoot: path.join(common.BASE_DIR_BUILD, "/electron/cache")
     },
     out: path.join(common.BASE_DIR_BUILD, "/electron/out"),
@@ -220,6 +219,41 @@ function watchSrc() {
   );
 }
 
+/**
+ * Zip the windows electron app.
+ */
+async function zipWin32() {
+  "use strict";
+
+  const version = (await common.getPackageVersion()).join(".");
+
+  const source = path.resolve(path.join(common.BASE_DIR_BUILD, "/electron/out/sieve-win32-ia32"));
+  const destination = path.join(common.BASE_DIR_BUILD, `sieve-${version}-win32-ia32.zip`);
+
+  await common.compress(source, destination);
+}
+
+/**
+ * Zip the linux electron app.
+ */
+async function zipLinux() {
+  "use strict";
+
+  const version = (await common.getPackageVersion()).join(".");
+
+  const source = path.resolve(path.join(common.BASE_DIR_BUILD, "/electron/out/sieve-linux-x64"));
+  const destination = path.join(common.BASE_DIR_BUILD, `sieve-${version}-linux-x64.zip`);
+
+  const options = {
+    permissions: {
+      "sieve": 0o100770,
+      "*": 0o100660
+    }
+  };
+
+  await common.compress(source, destination, options);
+}
+
 exports["watch"] = watchSrc;
 
 exports["updateVersion"] = updateVersion;
@@ -236,6 +270,9 @@ exports["packageCommon"] = packageCommon;
 exports["packageWin32"] = packageWin32;
 exports["packageLinux"] = packageLinux;
 exports["packageMacOS"] = packageMacOS;
+
+exports["zipWin32"] = zipWin32;
+exports["zipLinux"] = zipLinux;
 
 exports['package'] = parallel(
   packageDefinition,

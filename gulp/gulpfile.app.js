@@ -20,7 +20,6 @@ const BASE_DIR_APP = "./src/app/";
 /**
  * Copies and updates the package.json inside the build directory.
  * It is typically used by other tools like the electron-packager.
- * @returns {undefined}
  */
 async function packageDefinition() {
 
@@ -35,7 +34,6 @@ async function packageDefinition() {
 
 /**
  * Copies the license file into the build directory.
- * @returns {undefined}
  */
 async function packageLicense() {
   "use strict";
@@ -48,7 +46,6 @@ async function packageLicense() {
 
 /**
  * Copies the jquery sources into the build directory.
- * @returns {undefined}
  */
 async function packageJQuery() {
   "use strict";
@@ -59,7 +56,6 @@ async function packageJQuery() {
 
 /**
  * Copies the codemirror sources into the build directory.
- * @returns {undefined}
  */
 async function packageCodeMirror() {
   "use strict";
@@ -70,7 +66,6 @@ async function packageCodeMirror() {
 
 /**
  * Copies the bootstrap sources into the build directory.
- * @returns {undefined}
  **/
 async function packageBootstrap() {
   "use strict";
@@ -81,7 +76,6 @@ async function packageBootstrap() {
 
 /**
  * Copies the material design icons into the build directory.
- * @returns {undefined}
  */
 async function packageMaterialIcons() {
   "use strict";
@@ -92,7 +86,6 @@ async function packageMaterialIcons() {
 
 /**
  * Copies the source files into the app/ directory...
- * @returns {undefined}
  */
 async function packageSrc() {
   "use strict";
@@ -104,7 +97,6 @@ async function packageSrc() {
 
 /**
  * The common files need to go into the app/lib directory...
- * @returns {undefined}
  */
 async function packageCommon() {
   "use strict";
@@ -123,7 +115,6 @@ async function packageCommon() {
 
 /**
  * Packages the build directory and electron for windows.
- * @returns {undefined}
  */
 async function packageWin32() {
   "use strict";
@@ -150,7 +141,6 @@ async function packageWin32() {
 
 /**
  * Packages the build directory and electron for linux
- * @returns {undefined}
  */
 async function packageLinux() {
   "use strict";
@@ -175,7 +165,6 @@ async function packageLinux() {
 
 /**
  * Packages the build directory and electron for macOS
- * @returns {undefined}
  */
 async function packageMacOS() {
   "use strict";
@@ -192,7 +181,7 @@ async function packageMacOS() {
     // packageManager : "yarn"
     // packageManager : false,
     prune: true
-    //app-bundle-id: "net.tschmid.sieve"
+    // app-bundle-id: "net.tschmid.sieve"
   };
 
   const packager = require('electron-packager');
@@ -200,8 +189,7 @@ async function packageMacOS() {
 }
 
 /**
- * Updates the addon's version.
- * @returns {undefined}
+ * Updates the addons version.
  */
 async function updateVersion() {
   "use strict";
@@ -212,7 +200,6 @@ async function updateVersion() {
 
 /**
  * Watches for changed source files and copies them into the build directory.
- * @returns {undefined}
  */
 function watchSrc() {
 

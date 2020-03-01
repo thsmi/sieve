@@ -18,7 +18,6 @@ const BUILD_DIR_TEST = path.join(common.BASE_DIR_BUILD, "test/");
 
 /**
  * Copies jquery into the test folder.
- * @returns {undefined}
  */
 async function packageJQuery() {
   "use strict";
@@ -29,7 +28,6 @@ async function packageJQuery() {
 
 /**
  * Copies the common files into the test folder.
- * @returns {undefined}
  */
 async function packageCommon() {
   "use strict";
@@ -44,7 +42,6 @@ async function packageCommon() {
 
 /**
  * Copies the test suite files into the test folder.
- * @returns {undefined}
  */
 async function packageTestSuite() {
   "use strict";
@@ -58,7 +55,6 @@ async function packageTestSuite() {
 
 /**
  * Copies the addons source files into the test folder.
- * @returns {undefined}
  */
 async function packageAddonSrc() {
   "use strict";
@@ -75,7 +71,6 @@ async function packageAddonSrc() {
 
 /**
  * Watches for changed source files and copies them into the build directory.
- * @returns {undefined}
  */
 function watchSrc() {
 

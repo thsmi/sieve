@@ -25,7 +25,6 @@ const BASE_DIR_WX = "./src/wx/";
 
 /**
  * Copies the license file into the build directory.
- * @returns {undefined}
  */
 async function packageLicense() {
   "use strict";
@@ -37,7 +36,6 @@ async function packageLicense() {
 
 /**
  * Copies the jquery sources into the build directory.
- * @returns {undefined}
  */
 async function packageJQuery() {
   "use strict";
@@ -48,7 +46,6 @@ async function packageJQuery() {
 
 /**
  * Copies the codemirror sources into the build directory.
- * @returns {undefined}
  */
 async function packageCodeMirror() {
   "use strict";
@@ -59,7 +56,6 @@ async function packageCodeMirror() {
 
 /**
  * Copies the bootstrap sources into the build directory.
- * @returns {undefined}
  **/
 async function packageBootstrap() {
   "use strict";
@@ -70,7 +66,6 @@ async function packageBootstrap() {
 
 /**
  * Copies the material design icons into the build directory.
- * @returns {undefined}
  */
 async function packageMaterialIcons() {
   "use strict";
@@ -81,7 +76,6 @@ async function packageMaterialIcons() {
 
 /**
  * Copies the source files into the app/ directory...
- * @returns {undefined}
  */
 async function packageSrc() {
   "use strict";
@@ -93,7 +87,6 @@ async function packageSrc() {
 
 /**
  * The common files need to go into the app/lib directory...
- * @returns {undefined}
  */
 async function packageCommon() {
   "use strict";
@@ -113,7 +106,6 @@ async function packageCommon() {
 
 /**
  * Watches for changed source files and copies them into the build directory.
- * @returns {undefined}
  */
 function watchSrc() {
 
@@ -134,7 +126,6 @@ function watchSrc() {
 /**
  * Updates the WebExtension's version.
  * It reads the information from the npm package and updates the install.rdf as well as the manifest.json
- * @returns {undefined}
  */
 async function updateVersion() {
   "use strict";
@@ -145,7 +136,6 @@ async function updateVersion() {
 
 /**
  * Zips the build directory and creates a XPI inside the release folder.
- * @returns {undefined}
  */
 async function packageXpi() {
   "use strict";

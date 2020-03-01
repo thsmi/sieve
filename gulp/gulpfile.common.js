@@ -30,7 +30,6 @@ const INDEX_PATCH = 2;
  *
  * @param  {string} path
  *   the base path which should be cleared.
- * @returns {undefined}
  */
 async function deleteRecursive(path) {
   "use strict";
@@ -41,7 +40,7 @@ async function deleteRecursive(path) {
   const files = await fs.promises.readdir(path);
 
   for (const file of files) {
-    let curPath = path + "/" + file;
+    const curPath = path + "/" + file;
     if (!(await fs.promises.lstat(curPath)).isDirectory()) {
       await fs.promises.unlink(curPath);
       continue;
@@ -55,7 +54,6 @@ async function deleteRecursive(path) {
 
 /**
  * Clean the build environment including all build and packaging artifacts.
- * @returns {undefined}
  */
 async function clean() {
   "use strict";
@@ -67,7 +65,6 @@ async function clean() {
  *
  * @param {string} destination
  *   where to place the jquery sources
- * @returns {undefined}
  */
 async function packageJQuery(destination) {
   "use strict";
@@ -83,7 +80,6 @@ async function packageJQuery(destination) {
  *
  * @param {string} destination
  *   where to place the codemirror sources
- * @returns {undefined}
  */
 async function packageCodeMirror(destination) {
   "use strict";
@@ -105,7 +101,6 @@ async function packageCodeMirror(destination) {
  *
  * @param {string} destination
  *   where to place the bootstrap sources
- * @returns {undefined}
  **/
 async function packageBootstrap(destination) {
   "use strict";
@@ -122,7 +117,6 @@ async function packageBootstrap(destination) {
  *
  * @param {string} destination
  *   where to place the material design sources
- * @returns {undefined}
  */
 async function packageMaterialIcons(destination) {
   "use strict";
@@ -139,7 +133,7 @@ async function packageMaterialIcons(destination) {
  * @param {string} [file]
  *   the path to the package json file.
  * @returns {int[]}
- *   the version as a tripple of integer
+ *   the version as a triple of integer
  */
 async function getPackageVersion(file) {
   "use strict";
@@ -164,8 +158,6 @@ async function getPackageVersion(file) {
  *   the new version string
  * @param {string} [file]
  *   the path to the npm package json file.
- *
- * @returns {undefined}
  */
 async function setPackageVersion(version, file) {
   "use strict";
@@ -189,8 +181,6 @@ async function setPackageVersion(version, file) {
 /**
  * Bumps the package.json version info to the next major version.
  * The minor and patch level is reset to zero
- *
- * @returns {undefined}
  */
 async function bumpMajorVersion() {
   "use strict";
@@ -211,8 +201,6 @@ async function bumpMajorVersion() {
 /**
  * Bumps the package.json version info to the next minor version.
  * The major version remains untouched but the patch level is reset to zero
- *
- * @returns {undefined}
  */
 async function bumpMinorVersion() {
   "use strict";
@@ -232,8 +220,6 @@ async function bumpMinorVersion() {
 /**
  * Pumps the package.json version info to the next patch level.
  * Neither the major nor the minor version will be changed.
- *
- * @returns {undefined}
  */
 async function bumpPatchVersion() {
   "use strict";

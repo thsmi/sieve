@@ -216,11 +216,6 @@
         $("#sieve-editor-find-toolbar").toggle();
       });
 
-
-      $("#sieve-editor-quickreference").click(() => {
-        this.openReference();
-      });
-
       await this.renderSettings();
     }
 
@@ -252,15 +247,6 @@
       // ... and ensure the line endings are sanitized
       // eslint-disable-next-line no-control-regex
       return script.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
-    }
-
-    /**
-     * Opens the sieve reference in a browser window
-     */
-    async openReference() {
-      await this.getController().openReference();
-      this.focus();
-      this.cm.refresh();
     }
 
     /**

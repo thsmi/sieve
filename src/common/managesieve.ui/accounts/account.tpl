@@ -13,7 +13,9 @@
         </li>
       </ul>
       <div class="align-self-center">
-
+        <a class="btn btn-sm btn-outline-info mr-1 "
+            href="https://www.paypal.com/paypalme2/thsmi"
+            target="_blank" role="button">Donate</a>
         <button type="button" class="btn btn-sm btn-outline-secondary mr-1 siv-account-create">Create new script</button>
 
         <div id="sieve-editor-settings" class="btn-group ml-1 dropdown">

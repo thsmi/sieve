@@ -64,6 +64,16 @@
         inputMenu.popup(win);
       }
     });
+
+    const handleRedirect = (e, uri) => {
+      if (uri !== win.webContents.getURL()) {
+        e.preventDefault();
+        require('electron').shell.openExternal(uri);
+      }
+    };
+
+    // win.webContents.on('will-navigate', handleRedirect);
+    win.webContents.on('new-window', handleRedirect);
   }
 
   // This method will be called when Electron has finished

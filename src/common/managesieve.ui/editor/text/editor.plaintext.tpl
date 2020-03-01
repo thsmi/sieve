@@ -21,8 +21,10 @@
           Replace</button>
       </div>
 
-      <button id="sieve-editor-quickreference" type="button"
-        class="btn-group mr-2 btn btn-sm btn-outline-secondary">Reference</button>
+      <a class="btn-group mr-2 btn btn-sm btn-outline-secondary"
+         href="https://thsmi.github.io/sieve-reference/en/index.html"
+         target="_blank" role="button">Reference</a>
+
     </div>
     <div id="sieve-editor-find-toolbar" style="display:none;">
       <hr />

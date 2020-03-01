@@ -105,13 +105,6 @@
     }
 
     /**
-     * Opens the sieve reference in the web browser.
-     */
-    async openReference() {
-      await this.send("reference-open");
-    }
-
-    /**
      * Reruns the server side capabilities for the given account
      * @returns {object}
      *   the server's capabilities.

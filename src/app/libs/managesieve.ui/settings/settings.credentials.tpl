@@ -68,7 +68,7 @@
   <p class="form-text text-muted">
   <small>
     Proxy authorization allows an authenticated user to act on behalf of another users.<br>
-    Usually servers provide this feature only to special elevated administrator or root acccounts.</small>
+    Usually servers provide this feature only to special elevated administrator or root accounts.</small>
   </p>
   <p class="form-text text-muted">
   <small>Keep in mind very few authentication mechanism support authorization. <br>
@@ -82,7 +82,7 @@
           aria-expanded="false">
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" data-sieve-authorization="0" href="#">Implicit, server descides (default)</a>
+          <a class="dropdown-item" data-sieve-authorization="0" href="#">Implicit, server decides (default)</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" data-sieve-authorization="1" href="#">Explicit, use current user</a>
           <a class="dropdown-item" data-sieve-authorization="2" href="#">Explicit, prompt for username</a>

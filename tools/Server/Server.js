@@ -30,8 +30,8 @@
   const TEST_PATH = "./build/test";
 
   const HTTP_SUCCESS = 200;
-  const HTTP_FILENOTFOUND = 404;
-  const HTTP_INTERNALERROR = 500;
+  const HTTP_FILE_NOT_FOUND = 404;
+  const HTTP_INTERNAL_ERROR = 500;
 
   const CONTENT_TYPE_HTML = "text/html";
 
@@ -59,9 +59,19 @@
   }
 
   /**
+   * Compares  the given path elements.
+   *
+   * A directory always wins the comparison.
+   * Otherwise in case two directories or two
+   * files are compared alphabetically.
    *
    * @param {*} a
+   *   the first path
    * @param {*} b
+   *   the second path.
+   *
+   * @returns {int}
+   *   the comparisons result.
    */
   function sortDirectory(a, b) {
 
@@ -87,7 +97,7 @@
       filePath = TEST_PATH + request.url.substr(TEST_URL.length);
     } else {
 
-      response.writeHead(HTTP_FILENOTFOUND, { 'Content-Type': CONTENT_TYPE_HTML });
+      response.writeHead(HTTP_FILE_NOT_FOUND, { 'Content-Type': CONTENT_TYPE_HTML });
 
       let content = "";
 
@@ -107,7 +117,7 @@
     try {
 
       if (!fs.existsSync(filePath)) {
-        response.writeHead(HTTP_FILENOTFOUND);
+        response.writeHead(HTTP_FILE_NOT_FOUND);
         response.end(` File not found (404) ${filePath}\n`);
         response.end();
 
@@ -134,7 +144,7 @@
 
         content += `<div><a href="${url}../">&#11168; &nbsp;..</a></div>`;
 
-        for (let item of items) {
+        for (const item of items) {
           if (item.isDirectory())
             content += `<div><a href="${url}${item.name}">&#128448;&nbsp;${item.name}/</a></div>`;
           else
@@ -161,7 +171,7 @@
       console.log(ex);
     }
 
-    response.writeHead(HTTP_INTERNALERROR);
+    response.writeHead(HTTP_INTERNAL_ERROR);
     response.end('Internal server error ' + filePath + ' ...\n');
     response.end();
 

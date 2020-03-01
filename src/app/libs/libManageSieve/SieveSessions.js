@@ -18,9 +18,9 @@
   /**
    * Manages Sieve session.
    *
-   * Sessions are identified by a uniue id.
+   * Sessions are identified by a unique id.
    * As the account id unique, it is typically
-   * used as ssession id.
+   * used as session id.
    */
   class SieveSessions {
 
@@ -144,7 +144,7 @@
      * If active it will disconnect from the server.
      *
      * @param {string} id
-     *   the unque session id
+     *   the unique session id
      */
     async destroy(id) {
       if (this.has(id))

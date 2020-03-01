@@ -196,7 +196,6 @@
    *
    * @param {object} tests
    *   the tests which should be performed
-   * @returns {undefined}
    */
   net.tschmid.yautt.test.server.add = function (tests) {
 

@@ -38,7 +38,7 @@
      *   the sasl mechanism
      **/
     getMechanism() {
-      return this.account.prefs.getString(PREF_MECHANISM, "default");
+      return this.account.getConfig().getString(PREF_MECHANISM, "default");
     }
 
     /**
@@ -47,9 +47,12 @@
      * @param {string} mechanism
      *   the sasl mechanism which should be used.
      *
+     * @returns {SieveSecurity}
+     *   a self reference
      */
     setMechanism(mechanism) {
-      this.account.prefs.setString(PREF_MECHANISM, mechanism);
+      this.account.getConfig().setString(PREF_MECHANISM, mechanism);
+      return this;
     }
 
     /**
@@ -60,7 +63,7 @@
      *   true in  case a secure connection should be used.
      **/
     isSecure() {
-      return this.account.prefs.getBoolean(PREF_TLS, true);
+      return this.account.getConfig().getBoolean(PREF_TLS, true);
     }
 
     /**
@@ -69,9 +72,12 @@
      * @param {boolean} value
      *   set to true for a secure connection.
      *
+     * @returns {SieveSecurity}
+     *   a self reference
      */
     setSecure(value) {
-      this.account.prefs.setBoolean(PREF_TLS, value);
+      this.account.getConfig().setBoolean(PREF_TLS, value);
+      return this;
     }
 
   }

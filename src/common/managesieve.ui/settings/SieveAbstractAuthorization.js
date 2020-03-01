@@ -99,11 +99,11 @@
      * @inheritdoc
      **/
     getAuthorization() {
-      return this.account.prefs.getString(CONFIG_AUTHORIZATION_USERNAME, null);
+      return this.account.getConfig().getString(CONFIG_AUTHORIZATION_USERNAME, null);
     }
 
     /**
-     * Sets a custrom authorization.
+     * Sets a custom authorization.
      *
      * @param {string} authorization
      *   the authorization as string.
@@ -113,7 +113,7 @@
       if (typeof (authorization) === "undefined" || (authorization === null))
         throw new Error("Authorization can't be undefined");
 
-      this.account.prefs.setString(CONFIG_AUTHORIZATION_USERNAME, authorization);
+      this.account.getConfig().setString(CONFIG_AUTHORIZATION_USERNAME, authorization);
     }
   }
 

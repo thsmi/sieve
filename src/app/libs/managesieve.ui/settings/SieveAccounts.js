@@ -83,7 +83,7 @@
      *   the accounts details like the name, hostname, port and username as key value pairs.
      *
      * @returns {SieveAccounts}
-     *  a self reference.
+     *   a self reference.
      */
     create(details) {
 

@@ -88,7 +88,7 @@
   function main() {
 
     // TODO move to editor
-/*    window.onbeforeunload = (e) => {
+    /*    window.onbeforeunload = (e) => {
       // if changed...
       e.preventDefault();
     };*/

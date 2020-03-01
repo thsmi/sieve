@@ -371,7 +371,7 @@
 
         await this.getSieve().startTLS(options);
 
-        // A bug free server we  end up with two capability request, one
+        // A bug free server we end up with two capability request, one
         // implicit after startTLS and one explicit from capabilities.
         // So we have to consume one of them silently...
         const capabilities = await this.sendRequest([
@@ -524,7 +524,7 @@
 
       this.createSieve();
 
-      this.getSieve().setIdleWait(this.getOption("keepAliveInterval"));
+      this.getSieve().setIdleWait(this.getOption("keepAlive"));
 
       // TODO do we really need this? Or do we need this only for keep alive?
       this.getSieve().addListener(this);

@@ -63,18 +63,28 @@
 
   globals.set("./../utils/SieveTemplateLoader.js", "SieveTemplateLoader");
 
+  globals.set("libs/managesieve.ui/settings/SieveAbstractAccount.js", "SieveAbstractAccount");
+  globals.set("./SievePrefManager.js", "SievePrefManager");
+  globals.set("./SieveHostSettings.js", "SieveHost");
+  globals.set("./SieveAuthorizationSettings.js", "SieveAuthorization");
+  globals.set("./SieveAuthenticationSettings.js", "SieveAuthentication");
+  globals.set("./SieveSecuritySettings.js", "SieveSecurity");
+  globals.set("./SieveCommonSettings.js", "SieveCommonSettings");
+
+
   globals.set("libs/managesieve.ui/settings/SieveAbstractMechanism.js", "SieveAbstractMechanism");
   globals.set(
     "libs/managesieve.ui/settings/SieveAbstractAuthorization.js",
     ["SieveAbstractAuthorization", "SieveDefaultAuthorization"]);
-  globals.set("libs/managesieve.ui/settings/SieveAuthorization.js", "SieveAuthorization");
   globals.set("libs/managesieve.ui/settings/SieveAbstractAuthentication.js", "SieveAbstractAuthentication");
-  globals.set("libs/managesieve.ui/settings/SieveAuthentication.js", "SieveAuthentication");
-  globals.set("libs/managesieve.ui/settings/SieveSecurity.js", "SieveSecurity");
+
+
   globals.set("libs/managesieve.ui/settings/SieveAbstractHost.js", "SieveAbstractHost");
-  globals.set("libs/managesieve.ui/settings/SieveHost.js", "SieveHost");
+
   globals.set("libs/managesieve.ui/settings/SievePrefManager.js", "SievePrefManager");
   globals.set("libs/managesieve.ui/settings/SieveAbstractPrefManager.js", "SieveAbstractPrefManager");
+
+
 
   /**
    * A fake CommonJs Module implementation.

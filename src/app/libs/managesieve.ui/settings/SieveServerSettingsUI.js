@@ -38,7 +38,7 @@
      * @param {string} name
      *   the name which should be set.
      * @returns {SieveServerSettingsUI}
-     *  a self reference
+     *   a self reference
      */
     setDisplayName(name) {
       this.getDialog().find(".sieve-settings-displayname").val(name);
@@ -60,7 +60,7 @@
      * @param {string} hostname
      *   the hostname as string.
      * @returns {SieveServerSettingsUI}
-     *  a self reference
+     *   a self reference
      */
     setHostname(hostname) {
       this.getDialog().find(".sieve-settings-hostname").val(hostname);
@@ -104,7 +104,7 @@
      * @param {string} fingerprint
      *   the fingerprint.
      * @returns {SieveServerSettingsUI}
-     *  a self reference
+     *   a self reference
      */
     setFingerprint(fingerprint) {
       this.getDialog().find(".sieve-settings-fingerprint").val(fingerprint);
@@ -120,50 +120,15 @@
       return this.getDialog().find(".sieve-settings-fingerprint").val();
     }
 
-    /**
-     * Enabled or disables th keep alive button in the ui
-     *
-     * @param {boolean} enabled
-     *   set to true in case the keep alive is enabled otherwise set to false
-     * @returns {SieveServerSettingsUI}
-     *   a self reference
-     */
-    setKeepAliveEnabled(enabled) {
-      const parent = this.getDialog();
-
-      // reset the toggle button status...
-      parent.find(".sieve-settings-keepalive .active").removeClass("active");
-
-      if (enabled === false)
-        parent.find(".sieve-settings-keepalive-disabled").button('toggle');
-      else
-        parent.find(".sieve-settings-keepalive-enabled").button('toggle');
-
-      return this;
-    }
-
-    /**
-     * Returns the keep alive status
-     * @returns {boolean}
-     *   true in case keep alive is enabled otherwise false.
-     */
-    isKeepAliveEnabled() {
-      const active = this.getDialog().find(".sieve-settings-keepalive .active");
-
-      if (active.hasClass("sieve-settings-keepalive-disabled"))
-        return false;
-
-      return true;
-    }
 
     /**
      * Sets the keep alive interval
      * @param {int} interval
-     *  the keep alive interval in ms
+     *   the keep alive interval in ms
      * @returns {SieveServerSettingsUI}
      *   a self reference
      */
-    setKeepAliveInterval(interval) {
+    setKeepAlive(interval) {
       // convert to seconds
       interval = interval / ONE_MINUTE;
       this.getDialog().find(".sieve-settings-keepalive-interval").val(interval);
@@ -176,7 +141,7 @@
      * @returns {int}
      *   the keep alive interval
      */
-    getKeepAliveInterval() {
+    getKeepAlive() {
       const interval = this.getDialog().find(".sieve-settings-keepalive-interval").val();
       return interval * ONE_MINUTE;
     }
@@ -245,22 +210,15 @@
         displayName: this.getDisplayName(),
         hostname: this.getHostname(),
         port: this.getPort(),
-        fingerprint: this.getFingerprint()
+        fingerprint: this.getFingerprint(),
+        keepAlive: this.getKeepAlive()
       };
 
       await this.account.send("account-set-server", server);
-
-      const general = {
-        keepAliveEnabled: this.isKeepAliveEnabled(),
-        keepAliveInterval: this.getKeepAliveInterval()
-      };
-
-      await this.account.send("account-set-general", general);
-
     }
 
     /**
-     * Retruns the currents diaogs UI Element.
+     * Returns the currents dialogs UI Element.
      *
      * @returns {object}
      *   the dialogs UI elements.
@@ -277,7 +235,7 @@
 
       const loader = new SieveTemplateLoader();
 
-      // Load all subsectionss...
+      // Load all subsections...
       parent.find(".modal-body").empty()
         .append(await loader.load("./settings/settings.server.tpl"));
 
@@ -288,9 +246,7 @@
       this.setPort(server.port);
       this.setFingerprint(server.fingerprint);
 
-      const general = await this.account.send("account-get-general");
-      this.setKeepAliveEnabled(general.keepAliveEnabled);
-      this.setKeepAliveInterval(general.keepAliveInterval);
+      this.setKeepAlive(server.keepAlive);
 
       parent.find(".siv-settings-show-advanced").off().click(() => { this.showAdvanced(); });
       parent.find(".siv-settings-hide-advanced").off().click(() => { this.hideAdvanced(); });

@@ -32,7 +32,7 @@
     }
 
     /**
-     * Retruns the password for the choosen mechanism.
+     * Returns the password for the chosen mechanism.
      *
      * Not all mechanisms require a password.
      * Others e.g. when prompting do not always return a password.
@@ -44,7 +44,7 @@
      **/
     // eslint-disable-next-line require-await
     async getPassword() {
-      throw new Error("Impement getPassword");
+      throw new Error("Implement getPassword");
     }
 
     /**

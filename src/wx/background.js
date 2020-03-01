@@ -83,25 +83,20 @@
     "account-connected": function (msg) {
       console.log("Is Connected");
 
-      // FixMe should be the id from the message
       const id = msg.payload.account;
-
       return browser.sieve.session.isConnected(id);
     },
 
     "account-connect" : async function(msg) {
 
-      // FixMe should be the id from the message
       const id = msg.payload.account;
-
       const account = accounts.getAccountById(id);
 
       const options = {
         "secure" : await account.getSecurity().isSecure(),
         "sasl" : await account.getSecurity().getMechanism(),
-        "keepAlive" :  60 * 1000
+        "keepAlive" :  await account.getHost().getKeepAlive()
         // Todo
-        // keepAlive : account.getSettings().getKeepAliveInterval(),
         // logLevel : account.getSettings().getDebugFlags()
       };
 

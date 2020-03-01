@@ -121,20 +121,24 @@
 
       await this.destroy(id);
 
+      const host = account.getHost();
+      const security = account.getSecurity();
+      const settings = account.getSettings();
+
       const options = {
-        secure : account.getSecurity().isSecure(),
-        sasl : account.getSecurity().getMechanism(),
-        keepAlive : (account.getSettings().isKeepAlive()) ? account.getSettings().getKeepAliveInterval() : 0,
-        logLevel : account.getSettings().getDebugFlags(),
-        certFingerprints : account.getHost().getFingerprint(),
-        certIgnoreError : account.getHost().getIgnoreCertErrors()
+        secure : security.isSecure(),
+        sasl : security.getMechanism(),
+        keepAlive : host.getKeepAlive(),
+        logLevel : settings.getDebugFlags(),
+        certFingerprints : host.getFingerprint(),
+        certIgnoreError : host.getIgnoreCertErrors()
       };
 
       const session = new SieveSession(id, options);
 
       session.on("authenticate", async (hasPassword) => { return await this.onAuthenticate(account, hasPassword); });
       session.on("authorize", async () => { return await this.onAuthorize(account); });
-      session.on("proxy", async (host, port) => { return await this.onProxyLookup(account, host, port); });
+      session.on("proxy", async (hostname, port) => { return await this.onProxyLookup(account, hostname, port); });
 
       this.sessions.set(id, session);
     }

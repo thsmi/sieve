@@ -56,7 +56,7 @@
      * @abstract
      *
      * @param {int} mechanism
-     *   the authentication mechanisms unqiue id.
+     *   the authentication mechanisms unique id.
      * @returns {boolean}
      *   true in case the given type is supported otherwise false.
      */
@@ -93,7 +93,7 @@
       if (!this.hasMechanism(type))
         throw new Error("Invalid mechanism " + type);
 
-      this.account.prefs.setInteger(this.getKey(), type);
+      this.account.getConfig().setInteger(this.getKey(), type);
     }
 
     /**
@@ -103,7 +103,7 @@
      *   the mechanisms unique id.
      */
     getMechanism() {
-      return this.account.prefs.getInteger(this.getKey(), this.getDefault());
+      return this.account.getConfig().getInteger(this.getKey(), this.getDefault());
     }
 
     /**

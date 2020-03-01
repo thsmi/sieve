@@ -23,6 +23,13 @@
   const CONFIG_HOST_PORT_TYPE = "port.type";
   const CONFIG_HOST_PORT = "port";
 
+  const CONFIG_KEEP_ALIVE_INTERVAL = "keepalive";
+
+  // eslint-disable-next-line no-magic-numbers
+  const ONE_MINUTE = 60 * 1000;
+  // eslint-disable-next-line no-magic-numbers
+  const FIVE_MINUTES = 5 * ONE_MINUTE;
+
 
   /**
    * An abstract implementation for the host settings.
@@ -44,7 +51,7 @@
     }
 
     /**
-     * Gets the hostsname for this account
+     * Gets the hostname for this account
      * @abstract
      * @returns {string}
      *   the hostname as string.
@@ -61,16 +68,17 @@
      *   One returns the old port 2000.
      *   And two the currently configured port.
      *   if omitted the port for the current type is returned
+     *
      * @returns {int}
-     *   the port as integer for this account.s
+     *   the port as integer for this account.
      */
     getPort(type) {
 
       if (typeof (type) === "undefined" || type === null)
-        type = this.account.prefs.getInteger(CONFIG_HOST_PORT_TYPE, TYPE_RFC);
+        type = this.account.getConfig().getInteger(CONFIG_HOST_PORT_TYPE, TYPE_RFC);
 
       if (type === TYPE_CUSTOM)
-        return this.account.prefs.getInteger(CONFIG_HOST_PORT, PORT_SIEVE_RFC);
+        return this.account.getConfig().getInteger(CONFIG_HOST_PORT, PORT_SIEVE_RFC);
 
       if (type === TYPE_OLD)
         return PORT_SIEVE_OLD;
@@ -83,6 +91,9 @@
      *
      *  @param {string} port
      *   the port number as string.
+     *
+     *  @returns {SieveAbstractHost}
+     *   a self reference
      */
     setPort(port) {
       let type = TYPE_CUSTOM;
@@ -92,17 +103,18 @@
       else if (port === PORT_SIEVE_OLD)
         type = TYPE_OLD;
 
-      this.account.prefs.setInteger(CONFIG_HOST_PORT_TYPE, type);
+      this.account.getConfig().setInteger(CONFIG_HOST_PORT_TYPE, type);
 
       if (type !== TYPE_CUSTOM)
-        return;
+        return this;
 
       port = parseInt(port, 10);
 
       if (isNaN(port))
         port = PORT_SIEVE_RFC;
 
-      this.account.prefs.setInteger(CONFIG_HOST_PORT, port);
+      this.account.getConfig().setInteger(CONFIG_HOST_PORT, port);
+      return this;
     }
 
     /**
@@ -113,6 +125,32 @@
      */
     getType() {
       return this.type;
+    }
+
+    /**
+     * Configures the maximum idle time after a message is send.
+     * In case the time span elapsed an keep alive message will be
+     * send to the server.
+     *
+     * @param {int} value
+     *   the maximal time in seconds. zero disables keep alive messages
+     *
+     * @returns {SieveAbstractHost}
+     *   a self reference
+     */
+    setKeepAlive(value) {
+      this.account.getConfig().setInteger(CONFIG_KEEP_ALIVE_INTERVAL, value);
+      return this;
+    }
+
+    /**
+     * Gets the maximum idle time after a message is send
+     * @returns {int}
+     *  the maximum idle time in seconds.
+     *  zero indicates keep alive messages are disabled
+     **/
+    getKeepAlive() {
+      return this.account.getConfig().getInteger(CONFIG_KEEP_ALIVE_INTERVAL, FIVE_MINUTES);
     }
   }
 
@@ -126,7 +164,7 @@
      * @inheritdoc
      **/
     getHostname() {
-      return this.account.prefs.getString("hostname", "");
+      return this.account.getConfig().getString("hostname", "");
     }
 
     /**
@@ -135,9 +173,12 @@
      * @param {string} hostname
      *   the hostname or ip as string.
      *
+     * @returns {SieveCustomHost}
+     *   a self reference
      */
     setHostname(hostname) {
-      this.account.prefs.setString("hostname", hostname);
+      this.account.getConfig().setString("hostname", hostname);
+      return this;
     }
   }
 

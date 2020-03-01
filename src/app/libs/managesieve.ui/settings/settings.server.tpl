@@ -37,28 +37,20 @@
 
 <div class="siv-settings-advanced">
   <hr/>
-
+  <p class="form-text text-muted">
+    <small>
+      Most server will disconnect a client after being inactive for a certain time span.
+      To prevent this and keep the connection alive, idle messages are sent. To disable
+      keep alive messages set the interval to zero.
+    </small>
+  </p>
   <div class="form-group row">
-    <label class="col-sm-3 col-form-label">Send Keep Alive</label>
-    <div class="col-sm-8">
-      <div class="sieve-settings-keepalive btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="sieve-settings-keepalive-enabled btn btn-outline-secondary btn-sm">
-          <input type="radio" name="keepalive" autocomplete="off">Yes
-        </label>
-        <label class="sieve-settings-keepalive-disabled btn btn-outline-secondary btn-sm">
-          <input type="radio" name="keepalive" autocomplete="off">No
-        </label>
-      </div>
-    </div>
-  </div>
-
-  <div class="form-group row">
-    <label class="col-sm-3 col-form-label">Send every</label>
+    <label class="col-sm-3 col-form-label">Send idle message after</label>
     <div class="col-sm-3">
       <input type="text" class="sieve-settings-keepalive-interval form-control" id="inputPassword">
     </div>
     <div class="col-sm-3 col-form-label">
-      min
+      minutes of in activity.
     </div>
   </div>
 </div>

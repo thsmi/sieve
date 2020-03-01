@@ -115,7 +115,8 @@
         displayName: host.getDisplayName(),
         hostname: host.getHostname(),
         port: host.getPort(),
-        fingerprint: host.getFingerprint()
+        fingerprint: host.getFingerprint(),
+        keepAlive: host.getKeepAlive()
       };
     },
 
@@ -171,31 +172,18 @@
       account.getAuthorization(3).setAuthorization(msg.payload.authorization.username);
     },
 
-    "account-get-general": function (msg) {
-      const account = accounts.getAccountById(msg.payload.account);
-
-      return {
-        keepAliveEnabled: account.getSettings().isKeepAlive(),
-        keepAliveInterval: account.getSettings().getKeepAliveInterval()
-      };
-    },
-
     "account-set-server": function (msg) {
-      const account = accounts.getAccountById(msg.payload.account);
+      const host = accounts.getAccountById(msg.payload.account).getHost();
 
-      account.getHost().setDisplayName(msg.payload.displayName);
-      account.getHost().setHostname(msg.payload.hostname);
-      account.getHost().setPort(msg.payload.port);
-      account.getHost().setFingerprint(msg.payload.fingerprint);
+      host.setDisplayName(msg.payload.displayName);
+      host.setHostname(msg.payload.hostname);
+      host.setPort(msg.payload.port);
+
+      host.setFingerprint(msg.payload.fingerprint);
+
+      host.setKeepAlive(msg.payload.keepAlive);
     },
 
-
-    "account-set-general": function (msg) {
-      const account = accounts.getAccountById(msg.payload.account);
-
-      account.getSettings().setKeepAlive(msg.payload.keepAliveEnabled);
-      account.getSettings().setKeepAliveInterval(msg.payload.keepAliveInterval);
-    },
 
     "account-capabilities": async function (msg) {
       console.log("Get Capabilities");
@@ -407,7 +395,7 @@
 
       const filename = await require("electron").remote.dialog.showSaveDialog(options);
 
-      // Check if the dialog was chanceled...
+      // Check if the dialog was canceled...
       if (filename.canceled)
         return;
 
@@ -417,10 +405,6 @@
     "script-changed": function (msg) {
       console.log("Script changed...");
       (new SieveTabUI()).setChanged(msg.payload.account, msg.payload.name, msg.payload.changed);
-    },
-
-    "reference-open": function () {
-      require("electron").shell.openExternal('https://thsmi.github.io/sieve-reference/en/index.html');
     },
 
     "copy": function (msg) {
@@ -471,13 +455,6 @@
    * Called as soon as the DOM is ready.
    */
   function main() {
-
-    document
-      .getElementById("donate")
-      .addEventListener("click", () => {
-        require("electron").shell.openExternal("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EAS576XCWHKTC");
-      });
-
     (new SieveTabUI()).init();
   }
 

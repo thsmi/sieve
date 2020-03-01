@@ -929,9 +929,9 @@
      * non greedy. So that in the first case the "flags".
      *
      * @param {Array.<object>|object} parameters
-     *  the configuration and parameters for the dependent item
+     *   the configuration and parameters for the dependent item
      * @returns {SieveGenericStructure}
-     *  a self reference
+     *   a self reference
      */
     addDependentItems(parameters) {
 
@@ -953,9 +953,9 @@
      * an error will be raised
      *
      * @param  {Array.<object>|object} parameters
-     *  the configuration and parameter for the generic items.
+     *   the configuration and parameter for the generic items.
      * @returns {SieveGenericStructure}
-     *  a self reference
+     *   a self reference
      */
     addMandatoryItems(parameters) {
 
@@ -1350,7 +1350,7 @@
      * @param {SieveParser|Sieve} data
      *   the data which should be parsed.
      * @returns {SieveExplicitGroupElement}
-     *  a self reference
+     *   a self reference
      */
     setDefaultElement(data) {
 
@@ -1391,7 +1391,7 @@
      * @param {string} value
      *   the new value to set.
      * @returns {SieveExplicitGroupElement}
-     *  a self reference
+     *   a self reference
      */
     setElement(value) {
 

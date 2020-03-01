@@ -40,21 +40,21 @@
         throw new Error("Element expected");
 
       if (!elm.document && !elm.root)
-        throw new Error("Neiter a Sieve Element nor a Sieve Document");
+        throw new Error("Neither a Sieve Element nor a Sieve Document");
 
       this._elm = elm;
       this._handler = {};
 
-      // create a unique id, which makes identifing the dom object easier.
+      // create a unique id, which makes identifying the dom object easier.
       this.uniqueId = "" + Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING) + Date.now().toString(HEX_STRING);
     }
 
     /**
-     * Return the nesteds unique id. In case no sieve element is bound to
+     * Return the nested unique id. In case no sieve element is bound to
      * this element it return -1
      *
      * @returns {int}
-     *   An Integer as unique identifiert for the nested sieve element.
+     *   An Integer as unique identifier for the nested sieve element.
      */
     id() {
       if (this._elm.document)
@@ -174,7 +174,7 @@
   class SieveDropBoxUI extends SieveAbstractBoxUI {
     /**
      * @param {SieveAbstractBoxUI} parent
-     *   The parent Sieve Element, to which dropped Elemenents will be added.
+     *   The parent Sieve Element, to which dropped Elements will be added.
      */
     constructor(parent) {
       if (!parent)
@@ -211,7 +211,7 @@
 
 
   /**
-   * The trashbox is used to delete elements via drag and drop
+   * The trash box is used to delete elements via drag and drop
    */
   class SieveTrashBoxUI extends SieveDropBoxUI {
 
@@ -266,7 +266,7 @@
 
 
   /**
-   * Implements an abstract box for elements wihtout any ui elements
+   * Implements an abstract box for elements without any ui elements
    */
   class SieveSimpleBoxUI extends SieveAbstractBoxUI {
 

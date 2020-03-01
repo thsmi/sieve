@@ -82,7 +82,7 @@
     addErrorListener(listener) {
 
       if (typeof listener !== 'function') {
-        throw new Error("Error listerner is not a function");
+        throw new Error("Error listener is not a function");
       }
 
       this.errorListener = listener;
@@ -90,11 +90,11 @@
     }
 
     /**
-     * The timeout listener is calles whenever sending a request failes for some
+     * The timeout listener is calls whenever sending a request fails for some
      * reason. This could be because of a timeout or because the server terminated
-     * the connection or something else happend.
+     * the connection or something else happened.
      *
-     * The listener does not nessearily wait for a timeout event. E.g. in case the
+     * The listener does not necessarily wait for a timeout event. E.g. in case the
      * connection is lost it will fire immediately.
      *
      * @param {Function} listener
@@ -106,7 +106,7 @@
 
       // TODO should be renamed to error listener as it is more than just a timeout handler...
       if (typeof listener !== 'function') {
-        throw new Error("Timeout listerner is not a function");
+        throw new Error("Timeout listener is not a function");
       }
 
       this.timeoutListener = listener;
@@ -1209,7 +1209,7 @@
       const iter = this.response.getIterationCounter();
 
       // TODO Normalize password; and convert it into a byte array...
-      // ... It might contain special charaters.
+      // ... It might contain special characters.
 
       // ... this is done by applying a simplified PBKDF2 algorithm...
       // ... so we endup by calling Hi(Normalize(password), salt, i)

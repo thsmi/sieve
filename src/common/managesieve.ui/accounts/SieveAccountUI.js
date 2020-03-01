@@ -330,6 +330,7 @@
       if (name !== "")
         await this.render();
     }
+
   }
 
   if (typeof (module) !== "undefined" && module !== null && module.exports)

@@ -59,7 +59,7 @@
 
     /**
      * @returns {SieveAbstractWidget}
-     *   The owner on thich the drag event occured
+     *   The owner on which the drag event occurred
      */
     owner() {
       return this._owner;
@@ -447,7 +447,7 @@
 
       // nested test might be dropped directly in front of a test, in order to...
       // ... remove an operator. But it does not make any sense to drop the ...
-      // ... source directly before or after the traget.
+      // ... source directly before or after the target.
       if (flavour !== "sieve/action") {
         // we have to the check if the test's parent is a conditional
         source = source.parent();
@@ -627,7 +627,7 @@
       if (!source)
         return false;
 
-      // As we nest the tests we get in troube if the test is a direct descendant
+      // As we nest the tests we get in trouble if the test is a direct descendant
       // of the source, or of the target.
       while (source) {
         if (source.id() === target.id())

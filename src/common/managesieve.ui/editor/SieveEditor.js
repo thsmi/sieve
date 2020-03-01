@@ -21,6 +21,9 @@
 
   class SieveEditorUI extends SieveEditorController {
 
+    /**
+     * @inheritdoc
+     */
     constructor(name, account) {
       super(name, account);
 

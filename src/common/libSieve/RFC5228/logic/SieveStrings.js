@@ -263,7 +263,7 @@
       this.elements = [];
 
       // if the list contains only one entry...
-      // ... use the comact syntac, this means ...
+      // ... use the compact syntax, this means ...
       // ... don't use the "[...]" to encapsulate the string
       this.compact = true;
     }
@@ -272,7 +272,7 @@
      * @inheritdoc
      */
     static isElement(parser, lexer) {
-      // the [ is not necessary if the list contains only one enty!
+      // the [ is not necessary if the list contains only one entry!
       if (parser.isChar("["))
         return true;
 

@@ -66,7 +66,9 @@
         this.exportScript();
       });
 
-
+      $("#sieve-editor-save").click(() => {
+        this.save();
+      });
 
       $('.nav-item > a[href="#sieve-widget-editor"]').on('show.bs.tab', async (e) => {
 

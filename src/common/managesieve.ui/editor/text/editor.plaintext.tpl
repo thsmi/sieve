@@ -2,10 +2,6 @@
   <div id="sieve-editor-toolbar" class="sticky py-2 bg-white">
     <div>
       <div class="btn-group mr-2" role="group">
-        <button id="sieve-editor-save" type="button" class="btn btn-sm btn-outline-secondary">Save</button>
-      </div>
-
-      <div class="btn-group mr-2" role="group">
         <button id="sieve-editor-cut" type="button" class="btn btn-sm btn-outline-secondary">Cut</button>
         <button id="sieve-editor-copy" type="button" class="btn btn-sm btn-outline-secondary">Copy</button>
         <button id="sieve-editor-paste" type="button" class="btn btn-sm btn-outline-secondary">Paste</button>

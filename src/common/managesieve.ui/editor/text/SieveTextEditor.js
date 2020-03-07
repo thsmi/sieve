@@ -165,10 +165,6 @@
         }
       });
 
-      $("#sieve-editor-save").click(() => {
-        this.save();
-      });
-
       $("#sieve-editor-undo").click(() => {
         this.undo();
       });

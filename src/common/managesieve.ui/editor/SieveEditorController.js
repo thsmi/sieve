@@ -81,10 +81,6 @@
       return await this.send("paste");
     }
 
-    async onChanged(changed) {
-      await this.send("script-changed", { "name": this.name, "changed": changed });
-    }
-
     /**
      * Imports the given script from a file.
      *

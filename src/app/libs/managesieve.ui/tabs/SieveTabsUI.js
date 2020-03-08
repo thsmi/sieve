@@ -194,19 +194,6 @@
       return tab;
     }
 
-    setChanged(account, name, changed) {
-
-      const tab = this.getTab(account, name).getTab().find(".close");
-
-      if (changed) {
-        tab.text("•");
-        return;
-      }
-
-      tab.text("×");
-    }
-
-
     /**
      * Checks if a tab for the given script exits.
      *

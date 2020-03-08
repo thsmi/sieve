@@ -59,15 +59,6 @@
         .contentWindow
         .getSieveScript();
     }
-
-    /**
-     * @inheritdoc
-     */
-    hasChanged() {
-      return document.getElementById(this.id)
-        .contentWindow
-        .hasChanged();
-    }
   }
 
   if (typeof (module) !== "undefined" && module && module.exports)

@@ -48,6 +48,8 @@
       this.activeLine = null;
 
       this.disableSyntaxCheck();
+
+      this.changed = false;
     }
 
     async renderSettings() {
@@ -216,6 +218,16 @@
     }
 
     /**
+     * Returns the editor change status.
+     *
+     * @returns {boolean}
+     *   true in case the document was changed otherwise false.
+     */
+    hasChanged() {
+      return this.changed;
+    }
+
+    /**
      * @inheritdoc
      */
     async setScript(script) {
@@ -258,7 +270,6 @@
      */
     clearHistory() {
       this.cm.clearHistory();
-      this.setChanged(false);
     }
 
     /**
@@ -296,7 +307,6 @@
     async cut() {
       await this.copy();
       this.cm.replaceSelection("");
-      this.setChanged(true);
 
       this.cm.focus();
     }
@@ -318,7 +328,6 @@
     async paste() {
       const data = await this.getController().getClipboard();
       this.cm.replaceSelection(data);
-      this.setChanged(true);
 
       this.cm.focus();
     }
@@ -466,7 +475,6 @@
       }
 
       this.cm.replaceSelection(newToken);
-      this.setChanged(true);
 
       return true;
     }
@@ -496,8 +504,6 @@
      */
     onChange() {
 
-      this.setChanged(true);
-
       if (this.syntaxCheckEnabled === false)
         return;
 
@@ -507,7 +513,6 @@
         this.timeout = null;
       }
 
-      // TODO check if compile is deactivated...
       this.timeout = setTimeout(() => { this.checkScript(); }, COMPILE_DELAY);
     }
 

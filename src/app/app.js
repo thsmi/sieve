@@ -402,11 +402,6 @@
       await require('fs').promises.writeFile(filename.filePath, request.payload.script, "utf-8");
     },
 
-    "script-changed": function (msg) {
-      console.log("Script changed...");
-      (new SieveTabUI()).setChanged(msg.payload.account, msg.payload.name, msg.payload.changed);
-    },
-
     "copy": function (msg) {
       require("electron").clipboard.writeText(msg.payload.data);
     },

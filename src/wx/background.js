@@ -268,12 +268,6 @@
       return await browser.sieve.session.checkScript(msg.payload.account, msg.payload.data);
     },
 
-    "script-changed": function (msg) {
-      console.log("Script changed...");
-      // TODO update tab title.
-      // (new SieveTabUI()).setChanged(msg.payload.account, msg.payload.name, msg.payload.changed);
-    },
-
     "script-save": async function (msg) {
       console.log("Save Script...");
 

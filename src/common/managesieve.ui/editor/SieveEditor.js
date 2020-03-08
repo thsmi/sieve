@@ -19,6 +19,9 @@
   /* global SieveGraphicalEditorUI */
   /* global SieveTemplateLoader */
 
+  /**
+   * Implements a editor UI which contains a graphical as well as a text editor.
+   */
   class SieveEditorUI extends SieveEditorController {
 
     /**
@@ -29,6 +32,7 @@
 
       this.textEditor = new SieveTextEditorUI(this);
       this.graphicalEditor = new SieveGraphicalEditorUI(this);
+      this.checksum = "";
     }
 
 
@@ -42,12 +46,16 @@
         $(window).height() - offset - 40);
     }
 
+    /**
+     * Moves the input focus to the currently active editor.
+     */
     focus() {
       this.getCurrentEditor().focus();
     }
 
-
-
+    /**
+     * Renders the editor to screen.
+     */
     async render() {
       await this.renderSettings();
 
@@ -136,7 +144,7 @@
      *   true in case the editor contains unsaved changes.
      */
     async hasChanged() {
-      return await this.getCurrentEditor().hasChanged();
+      return (await this.getCurrentEditor().getChecksum() !== this.checksum);
     }
 
     /**
@@ -148,11 +156,14 @@
      */
     async load() {
 
-      await this.getCurrentEditor().setScript(
-        await this.loadScript());
+      const editor = this.getCurrentEditor();
 
-      this.getCurrentEditor().clearHistory();
-      this.getCurrentEditor().focus();
+      await editor.setScript(await this.loadScript());
+
+      this.checksum = await editor.getChecksum();
+
+      editor.clearHistory();
+      editor.focus();
 
       return true;
     }
@@ -170,10 +181,12 @@
 
       try {
 
-        await this.saveScript(
-          await this.getCurrentEditor().getScript());
+        const editor = this.getCurrentEditor();
 
-        this.getCurrentEditor().setChanged(false);
+        await this.saveScript(
+          await editor.getScript());
+
+        this.checksum = await editor.getChecksum();
 
         this.hideErrorMessage();
       } catch (ex) {
@@ -213,7 +226,6 @@
         return;
 
       await this.getCurrentEditor().setScript(script);
-      this.getCurrentEditor().setChanged(true);
 
       // The dialog stole our focus...
       this.getCurrentEditor().focus();
@@ -231,7 +243,7 @@
 
     /**
      * Switches to the text editor.
-     * It transfers the script from the graphical to the texteditor.
+     * It transfers the script from the graphical to the text editor.
      *
      *  @returns {boolean}
      *   true in case the editor was changed otherwise false.
@@ -247,8 +259,6 @@
       // The set script would be just like an edit..
       await this.getTextEditor().setScript(
         await this.getGraphicalEditor().getScript());
-
-      this.getTextEditor().setChanged(true);
 
       this.isTextEditor(true);
 

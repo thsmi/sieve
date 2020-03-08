@@ -326,16 +326,6 @@
     showInfoMessage(msg, "");
   }
 
-  /**
-   * Checks if the current script has changed
-   *
-   * @returns {boolean}
-   *   true in case the script changed otherwise false.
-   */
-  function hasChanged() {
-    return true;
-  }
-
   if (document.readyState !== 'loading')
     main();
   else
@@ -344,6 +334,5 @@
   exports.onerror = errorhandler;
   exports.setSieveScript = setSieveScript;
   exports.getSieveScript = getSieveScript;
-  exports.hasChanged = hasChanged;
 
 })(window);

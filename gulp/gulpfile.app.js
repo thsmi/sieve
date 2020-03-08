@@ -128,9 +128,7 @@ async function packageWin32() {
     },
     out: path.join(common.BASE_DIR_BUILD, "/electron/out"),
     overwrite: true,
-    // packageManager: "yarn",
-    // packageManager : false,
-    // icon: "./../test.ico",
+    icon: path.join(common.BASE_DIR_COMMON, "icons/win.ico"),
     prune: true
   };
 
@@ -177,8 +175,7 @@ async function packageMacOS() {
     },
     out: path.join(common.BASE_DIR_BUILD, "/electron/out"),
     overwrite: true,
-    // packageManager : "yarn"
-    // packageManager : false,
+    icon: path.join(common.BASE_DIR_COMMON, "icons/mac.icns"),
     prune: true
     // app-bundle-id: "net.tschmid.sieve"
   };

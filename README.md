@@ -30,7 +30,7 @@ Now in 2020 classic Thunderbird addons are dead. Which meant for the addon it ne
 
 The project is actively developed. The focus shifted from a thunderbird addon to a portable standalone app.
 
-Status and future development plans are described in the [Roadmap](roadmap.md). The [Capabilities page](capabilities.md) contains a list of all supported sieve and manage sieve features.
+Status and future development plans are described in the [Roadmap](ROADMAP.md). The [Capabilities page](CAPABILITIES.md) contains a list of all supported sieve and manage sieve features.
 
 Project statistics are available at
 [Open Hub](https://www.openhub.net/p/tb-sieve).

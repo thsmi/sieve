@@ -14,9 +14,9 @@
     "eslint": "^6.4.0",
     "eslint-plugin-jsdoc": "^22.0.0",
     "gulp": "^4.0.0",
-    "yazl": "^2.5.1",
     "jquery": "^3.4.1",
-    "material-design-icons-iconfont": "^5.0.1"
+    "material-design-icons-iconfont": "^5.0.1",
+    "yazl": "^2.5.1"
   },
   "scripts": {
     "start": "./node_modules/.bin/electron ./build/electron/resources/",

@@ -81,7 +81,7 @@
         this.hashComment = this._createByName("comment/hashcomment", parser);
 
       // we include the previously extracted linebreak. this makes life way easier...
-      //  and allows us to match agains the unique "\r\n.\r\n" Pattern instead of
+      //  and allows us to match against the unique "\r\n.\r\n" Pattern instead of
       // ... just ".\r\n"
       parser.rewind("\r\n".length);
 
@@ -130,7 +130,7 @@
   }
 
   /**
-   * Defines the atomar String which in encapsulated in Quotes (")
+   * Defines the atomic String which in encapsulated in Quotes (")
    */
   class SieveQuotedString extends SieveAbstractElement {
 
@@ -250,7 +250,7 @@
 
 
   /**
-   * A Stringlist is an Array of Quotedstring
+   * A Stringlist is an Array of quoted string
    */
   class SieveStringList extends SieveAbstractElement {
 
@@ -404,7 +404,7 @@
      *   the a string or array like object with strings which should be added.
      *
      * @returns {SieveStringList}
-     *   a self recerene to build chains.
+     *   a self reference to build chains.
      */
     append(str) {
       // Append multiple strings at once...
@@ -509,7 +509,7 @@
   }
 
   /**
-   * Defines an abstracted SieveString primitive by combinig the two atomar String types
+   * Defines an abstracted SieveString primitive by combining the two atomic String types
    * SieveQuotedString and SieveMultiLineString.
    *
    * It converts automatically between the two string types depending on the context.
@@ -602,7 +602,7 @@
     /**
      * Returns a quote of the given string.
      *
-     * In case the strhing exceeds the maximum length
+     * In case the string exceeds the maximum length
      * it will be truncated and ... are appended.
      *
      * @param {int} [len]

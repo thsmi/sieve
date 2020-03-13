@@ -53,6 +53,7 @@
      * @param {string} script
      *   the script
      */
+    // eslint-disable-next-line require-await
     async setScript(script) {
       throw new Error(`Implement setScript(${script})`);
     }

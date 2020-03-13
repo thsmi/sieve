@@ -10,22 +10,22 @@
  */
 
 /*
-  The communication in this library is asynchonous! After sending a request,
-  you will be notified by a listerner, as soon as a response arrives.
+  The communication in this library is asynchronous! After sending a request,
+  you will be notified by a listener, as soon as a response arrives.
 
   If a request caused an error or timeout, its error listener will be called
   to resolve the issue. If a server rejects a request, the onError() function
   of the error listener will be invoked. In case of a timeout situation, the
   onTimeout() function is called.
 
-  If a request succees, the corresponding response listener of the request
+  If a request succeeded, the corresponding response listener of the request
   will be notified.
 
   The addResponse(), getNextRequest(), hasNextRequest(), cancel() Methods are
   used by the Sieve object, and should not be invoked manually.
 
   When the sieve object receives a response, it is passed to the addResponse()
-  Method of the requesting object. A timeout is singaled by passing invoking
+  Method of the requesting object. A timeout is signaled by passing invoking
   the cancel() Method.
 
 */
@@ -125,7 +125,7 @@
     addByeListener(listener) {
 
       if (typeof listener !== 'function') {
-        throw new Error("Bye listerner is not a function");
+        throw new Error("Bye listener is not a function");
       }
 
       this.byeListener = listener;
@@ -144,7 +144,7 @@
     addResponseListener(listener) {
 
       if (typeof listener !== 'function') {
-        throw new Error("Listerner is not a function " + listener);
+        throw new Error(`Listener is not a function ${listener}`);
       }
 
       this.responseListener = listener;
@@ -173,7 +173,7 @@
     }
 
     /**
-     * Most request use a single request response pair. But expecially the SASL
+     * Most request use a single request response pair. But especially the SASL
      * script use normally more than one round trip due to security reasons.
      *
      * This flags indicates if the Request's internal state engine was completed.
@@ -338,10 +338,10 @@
 
     /**
      * Checks if this mechanism supports authorization. Keep in mind
-     * authorization is rearely used and only very few machanisms
+     * authorization is rarely used and only very few mechanisms
      * support it.
      *
-     * With autorization you use your credentials to login as a different user.
+     * With authorization you use your credentials to login as a different user.
      * Which means you first authenticate with your username and then do the
      * authorization which switch the user. Typically admins and superusers have
      * such super powers.
@@ -381,7 +381,7 @@
 
   /**
    * Loads a script from the server and returns the content.
-   * In case the script is non existant an error will be triggered.
+   * In case the script is non existent an error will be triggered.
    */
   class SieveGetScriptRequest extends SieveAbstractRequest {
 
@@ -390,7 +390,7 @@
      * remote server.
      *
      * @param {string} script
-     *   the script which should be retrived
+     *   the script which should be retrieved
      */
     constructor(script) {
       super();
@@ -426,7 +426,7 @@
   /**
    * Stores the given script on the server.
    * The script is validated by the server and will be rejected with a NO
-   * in case the validation failes.
+   * in case the validation fails.
    *
    * Please not it will overwrite silently any existing script with the same name.
    */
@@ -444,7 +444,7 @@
       super();
       this.script = script;
 
-      // cleanup linebreaks...
+      // cleanup line breaks...
 
       // eslint-disable-next-line no-control-regex
       this.body = body.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
@@ -496,7 +496,7 @@
   class SieveCheckScriptRequest extends SieveAbstractRequest {
 
     /**
-     * Creates a new request which checks if the scripts' sytax is valid.
+     * Creates a new request which checks if the scripts' syntax is valid.
      * @param {string} body
      *   the script which should be check for syntactical validity
      */
@@ -541,12 +541,12 @@
   }
 
   /**
-   * This class encaspulates a Sieve SETACTIVE request.
+   * This class encapsulates a Sieve SETACTIVE request.
    * <p>
-   * Either none or one serverscripts can be active, this means you can't have
+   * Either none or one server scripts can be active, this means you can't have
    * more than one active scripts
    * <p>
-   * You activate a Script by calling SETACTIVE and the scriptname. At activation
+   * You activate a Script by calling SETACTIVE and the script name. At activation
    * the previous active Script will become inactive.
    */
   class SieveSetActiveRequest extends SieveAbstractRequest {
@@ -674,7 +674,7 @@
   }
 
   /**
-   * The NOOP request does nothing, it is used for protocol re-synchronisation or
+   * The NOOP request does nothing, it is used for protocol resynchronization or
    * to reset any inactivity auto-logout timer on the server.
    *
    * The response to the NOOP command is always OK.
@@ -849,7 +849,7 @@
      */
     onBye(response) {
       // As issued a logout request thus onBye response is perfectly fine...
-      // ... and equivalten to an ok in this case.
+      // ... and equivalent to an ok in this case.
       this.onOk(response);
     }
 
@@ -904,7 +904,7 @@
   }
 
   /**
-   * Implements the SASL Plain autentication method.
+   * Implements the SASL Plain authentication method.
    *
    * The password is only base64 encoded not encrypted. Therefore it can be
    * read or sniffed easily. A secure connection will solve this issue. Always
@@ -945,8 +945,8 @@
   }
 
   /**
-   * This request implements the SALS Login autentication method. It is deprecated
-   * and has been superseeded by SASL Plain method. SASL Login uses a question and
+   * This request implements the SALS Login authentication method. It is deprecated
+   * and has been superseded by SASL Plain method. SASL Login uses a question and
    * answer style communication. The server will request first the username and
    * then the password.
    * <p>
@@ -995,7 +995,7 @@
             .addQuotedBase64(this._password);
       }
 
-      throw new Error("Unkown state in SASL login");
+      throw new Error("Unknown state in SASL login");
     }
 
     /**
@@ -1109,7 +1109,7 @@
   /**
    * This request implements an abstract base class for the "Salted Challenge Response Authentication
    * Mechanism" (SCRAM). A SASL SCRAM-SHA-1 compatible implementation is mandatory
-   * for every manage sieve server. SASL SCRAM-SHA-1 superseeds DIGEST-MD5.
+   * for every manage sieve server. SASL SCRAM-SHA-1 supersedes DIGEST-MD5.
    *
    * @author Thomas Schmid
    */
@@ -1144,7 +1144,7 @@
     }
 
     /**
-     * Retruns the crypto engine/provider which should be used for this request.
+     * Returns the crypto engine/provider which should be used for this request.
      * @abstract
      *
      * @returns {SieveCrypto}
@@ -1235,7 +1235,7 @@
 
       // We now complete the cryptographic part an apply our clientkey to the...
       // ... Signature, so that the server can be sure it is talking to us.
-      // The RFC defindes this step as ClientKey XOR ClientSignature
+      // The RFC defines this step as ClientKey XOR ClientSignature
       const clientProof = clientKey;
       for (let k = 0; k < clientProof.length; k++)
         clientProof[k] ^= clientSignature[k];
@@ -1390,7 +1390,7 @@
 
     /**
      * SASL External uses the TLS Cert for authentication.
-     * Thus it does not rely upon any password, so this mehtod retuns always false.
+     * Thus it does not rely upon any password, so this method returns always false.
      *
      * @returns {boolean}
      *   returns always false

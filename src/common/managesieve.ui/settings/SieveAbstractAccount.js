@@ -87,7 +87,7 @@
     }
 
     /**
-     * Defines which authentification configuration is active.
+     * Defines which authentication configuration is active.
      *
      * An account may support multiple concurrent configurations
      * from which only one can be active.

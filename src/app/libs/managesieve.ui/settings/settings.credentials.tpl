@@ -75,7 +75,7 @@
     So you should always force SASL Plain Authentication, when using this feature. </small>
   </p>
   <div class="form-group row">
-    <label class="col-sm-3 col-form-label">Authorization as</label>
+    <label class="col-sm-3 col-form-label">Authorization</label>
     <div class="col-sm-8">
       <div class="sieve-settings-authorization dropdown">
         <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"

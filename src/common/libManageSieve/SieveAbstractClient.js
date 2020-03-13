@@ -11,16 +11,16 @@
 
 /*
  *  This class is a simple socket implementation for the manage sieve protocol.
- *  Due to the asymetric nature of the Mozilla sockets we need message queue.
+ *  Due to the asymmetric nature of the Mozilla sockets we need message queue.
  *  <p>
  *  New requests are added via the "addRequest" method. In case of a response,
- *  the corresponding request will be automatically calledback via its
+ *  the corresponding request will be automatically called back via its
  *  "addResponse" method.
  *  <p>
  *  If you need a secure connection, set the flag secure in the constructor.
  *  Then connect to the host. And invoke the "startTLS" Method as soon as you
- *  nagociated the switch to a crypted connection. After calling startTLS
- *  Mozilla will imediately switch to a cryped connection.
+ *  negotiated the switch to a encrypted connection. After calling startTLS
+ *  Mozilla will immediately switch to an encrypted connection.
  *  <p>
  */
 
@@ -29,9 +29,10 @@
   "use strict";
 
   const DEFAULT_TIMEOUT = 20000;
+  const NO_IDLE = 0;
 
   /**
-   * An abstract implemenation for the manage sieve protocol.
+   * An abstract implementation for the manage sieve protocol.
    *
    * It implements a message pump and parsing facility.
    * Only the connections to the transport are needed to be implemented.
@@ -41,7 +42,7 @@
    *
    * Due to various limitation there is no window object and also no toSource().
    * Same applies to timeouts. They need to be implemented with platform
-   * sepcific code.
+   * specific code.
    *
    * In general you should avoid the "new" operator as this makes imports difficult.
    * Mozilla's Modules, Node's Require and the new ES imports are mostly
@@ -94,16 +95,16 @@
      *
      * By default the socket seek maximal compatibility.
      *
-     * @param {object} capabilites commands
+     * @param {object} capabilities commands
      *   the supported sieve commands as an associative array. Attribute names have
      *   to be in lower case, the values can be either null, undefined, true or false.
      *
      * @example
      * sieve.setCompatibility({checkscript:true, rename:true, starttls:false});
      */
-    setCompatibility(capabilites) {
-      for (const capability in capabilites)
-        this.compatibility[capability] = capabilites[capability];
+    setCompatibility(capabilities) {
+      for (const capability in capabilities)
+        this.compatibility[capability] = capabilities[capability];
     }
 
     /**
@@ -118,11 +119,11 @@
      * You should override these defaults as soon as possible.
      *
      * @returns {Struct}
-     *   an associative array structure indecating supported sieve command.
-     *   Unsupported commands are indecated by a null, disabled by false value...
+     *   an associative array structure indicating supported sieve command.
+     *   Unsupported commands are indicated by a null, disabled by false value...
      *
      * @example
-     * if (sieve.getCompatiblity().putscript) {
+     * if (sieve.getCompatibility().putscript) {
      *   // put script command supported...
      * }
      */
@@ -165,15 +166,15 @@
      *   true in case the connection can be or is secure otherwise false
      */
     isSecure() {
-      throw new Error("Impelement isSecure()");
+      throw new Error("Implement isSecure()");
     }
 
     /**
      * This method secures the connection to the sieve server. By activating
-     * Transport Layer Security all Data exchanged is crypted.
+     * Transport Layer Security all Data exchanged is encrypted.
      *
-     * Before calling this method you need to request a crypted connection by
-     * sending a startTLSRequest. Invoke this method imediately after the server
+     * Before calling this method you need to request a encrypted connection by
+     * sending a startTLSRequest. Invoke this method immediately after the server
      * confirms switching to TLS.
      *
      * @returns {SieveAbstractClient}
@@ -202,7 +203,7 @@
     }
 
     /**
-     * An internal callback wich is triggered when the request timeout timer
+     * An internal callback which is triggered when the request timeout timer
      * should be stopped. This is typically whenever a response was received and
      * the request was completed.
      *
@@ -221,7 +222,7 @@
      */
     getTimeoutWait() {
 
-      // Apply some selfhealing magic...
+      // Apply some self healing magic...
       if (!this.timeoutDelay)
         return DEFAULT_TIMEOUT;
 
@@ -231,7 +232,7 @@
     /**
      * Specifies the maximal interval between a request and a response. If the
      * timeout elapsed, all pending request will be canceled and the event queue
-     * will be cleared. Either the onTimeout() method of the most recend request
+     * will be cleared. Either the onTimeout() method of the most recent request
      * will invoked or in case the request does not support onTimeout() the
      * default's listener will be called.
      *
@@ -273,7 +274,7 @@
      */
     getIdleWait() {
       if (!this.idleDelay)
-        return 0;
+        return NO_IDLE;
 
       return this.idleDelay;
     }
@@ -302,6 +303,10 @@
       return this;
     }
 
+    /**
+     *
+     * @param {*} listener
+     */
     addListener(listener) {
       this.listener = listener;
     }
@@ -310,13 +315,13 @@
      * Adds a request to the send queue.
      *
      * Normal request runs to completion, so they are blocking the queue
-     * until they are fully processed. If the request failes, the error
+     * until they are fully processed. If the request fails, the error
      * handler is triggered and the request is dequeued.
      *
-     * A greedy request in constrast accepts whatever it can get. Upon an
+     * A greedy request in contrast accepts whatever it can get. Upon an
      * error greedy request are not dequeued. They fail silently and the next
      * requests is processed. This continues until a request succeeds, a non
-     * greedy request failes or the queue has no more requests.
+     * greedy request fails or the queue has no more requests.
      *
      * @param {SieveAbstractRequest} request
      *   the request object which should be added to the queue
@@ -334,14 +339,14 @@
         if (this.listener && this.listener.onByeResponse)
           request.addByeListener(this.listener.onByeResponse);
 
-      // TODO: we should realy store this internally, instead of tagging objects
+      // TODO: we should really store this internally, instead of tagging objects
       if (greedy)
         request.isGreedy = true;
 
       // Add the request to the message queue
       this.requests.push(request);
 
-      // If the message queue was empty, we might have to reinitalize the...
+      // If the message queue was empty, we might have to reinitialize the...
       // ... request pump.
 
       // We can skip this if queue is locked...
@@ -373,7 +378,7 @@
      * @param {string} host
      *   The target hostname or IP address as String
      * @param {int} port
-     *   The target port as Interger
+     *   The target port as Integer
      * @param {boolean} secure
      *   If true, a secure socket will be created. This allows switching to a secure
      *   connection.
@@ -381,7 +386,7 @@
      *   An Array of nsIProxyInfo Objects which specifies the proxy to use.
      *   Pass an empty array for no proxy.
      *   Set to null if the default proxy should be resolved. Resolving proxy info is
-     *   done asynchronous. The connect method returns imedately, without any
+     *   done asynchronous. The connect method returns immediately, without any
      *   information on the connection status...
      *   Currently only the first array entry is evaluated.
      *
@@ -443,7 +448,7 @@
     }
 
     /**
-     * Called whenever a request was not responed in a reasonable timeframe.
+     * Called whenever a request was not responded in a reasonable timeframe.
      * It cancel all pending requests and emits a timeout signal to the listeners.
      */
     onTimeout() {
@@ -477,10 +482,26 @@
 
     }
 
+    /**
+     * Creates a new request parser instance
+     * @abstract
+     *
+     * @param {byte[]} data
+     *   the data to be parsed
+     * @returns {SieveNodeResponseParser}
+     *   the request parser
+     */
     createParser(data) {
-      throw new Error("Implement SieveAbstractClient::createParser " + data);
+      throw new Error(`Implement SieveAbstractClient::createParser(${data})`);
     }
 
+    /**
+     * Creates a new response builder instance
+     * @abstract
+     *
+     * @returns {SieveAbstractRequestBuilder}
+     *   the response builder.
+     */
     createRequestBuilder() {
       throw new Error("Implement SieveAbstractClient::createRequestBuilder");
     }
@@ -518,7 +539,7 @@
           // We do some cleanup as we don't need the parsed data anymore...
           this.data = parser.getByteArray();
 
-          // parsing was successfull, so drop every previous request...
+          // parsing was successful, so drop every previous request...
           // ... keep in mid previous greedy request continue on exceptions.
           requests = requests.slice(idx);
 
@@ -534,7 +555,7 @@
           }
 
           // a greedy request might or might not get an request, thus
-          // it's ok if it failes
+          // it's ok if it fails
           if (requests[idx].isGreedy)
             continue;
 
@@ -558,7 +579,7 @@
           idx--;
 
           // ... if it was greedy, we munched an unexpected packet...
-          // ... so there is still a valid request dangeling around.
+          // ... so there is still a valid request dangling around.
           if (request.isGreedy)
             continue;
         }
@@ -573,7 +594,7 @@
 
         // TODO FIX ME should always be dispatched, to relax the main thread.
         // But in mozilla modules we don't have access to a window object and
-        // timeouts are more compilcated.
+        // timeouts are more complicated.
 
         // var that = this;
         // window.setTimeout(function () {that._sendRequest()}, 0);
@@ -584,7 +605,7 @@
       }
 
 
-      // we endup here only if all responses where greedy or there were no...
+      // we end up here only if all responses where greedy or there were no...
       // ... response parser at all. Thus all we can do is release the message...
       // ... queue, cache the data and wait for a new response to be added.
 
@@ -606,7 +627,7 @@
       if (idx >= this.requests.length)
         return;
 
-      // start the timeout, before sending anything. Sothat we will timeout...
+      // start the timeout, before sending anything. So that we will timeout...
       // ... in case the socket is jammed...
       this.onStartTimeout();
 

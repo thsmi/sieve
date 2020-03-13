@@ -298,7 +298,11 @@
     /**
      * Shows the account's capabilities
      */
-    showCapabilities() {
+    async showCapabilities() {
+
+      if (await this.isConnected() === false)
+        return;
+
       $("#sieve-capabilities-server").empty();
       $("#sieve-capabilities-version").empty();
       $("#sieve-capabilities-sasl").empty();
@@ -325,6 +329,10 @@
      * Prompts for the new script name an creates the script
      */
     async createScript() {
+
+      if (await this.isConnected() === false)
+        return;
+
       const name = await this.send("script-create");
 
       if (name !== "")

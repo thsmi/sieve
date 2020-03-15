@@ -126,7 +126,7 @@
      * @abstract
      */
     calculateByteLength(data) {
-      throw new Error("Implement SieveAbstractRequestBuilder::calculateByteLength(" + data + ")");
+      throw new Error(`Implement SieveAbstractRequestBuilder::calculateByteLength(${data})`);
     }
 
     /**
@@ -152,7 +152,7 @@
      * @abstract
      */
     convertToBase64(decoded) {
-      throw new Error("Implement SieveAbstractRequestBuilder::convertToBase64(" + decoded + ")");
+      throw new Error(`Implement SieveAbstractRequestBuilder::convertToBase64(${decoded})`);
     }
 
     /**
@@ -165,7 +165,7 @@
      * @abstract
      */
     convertFromBase64(encoded) {
-      throw new Error("Implement SieveAbstractRequestBuilder::convertFromBase64(" + encoded + ")");
+      throw new Error(`Implement SieveAbstractRequestBuilder::convertFromBase64(${encoded})`);
     }
   }
 

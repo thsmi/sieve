@@ -85,7 +85,7 @@
 
       try {
         const item2 = await (new SieveTemplateLoader()).load(`./accounts/account.connecting.tpl`);
-        $("#siv-account-" + this.id + " .siv-tpl-scripts")
+        $(`#siv-account-${this.id} .siv-tpl-scripts`)
           .empty()
           .append(item2);
 
@@ -103,7 +103,7 @@
      */
     async disconnect() {
       const item2 = await (new SieveTemplateLoader()).load(`./accounts/account.disconnecting.tpl`);
-      $("#siv-account-" + this.id + " .siv-tpl-scripts")
+      $(`#siv-account-${this.id} .siv-tpl-scripts`)
         .empty()
         .append(item2);
 
@@ -117,7 +117,7 @@
      */
     async renderSettings() {
 
-      const settings = $("#siv-account-" + this.id).find(".sieve-settings-content");
+      const settings = $(`#siv-account-${this.id}`).find(".sieve-settings-content");
 
       const item = await (new SieveTemplateLoader()).load("./accounts/account.settings.tpl");
 
@@ -151,16 +151,16 @@
     async renderAccount() {
       const item = await (new SieveTemplateLoader()).load("./accounts/account.tpl");
 
-      item.find(".sieve-accounts-content").attr("id", "sieve-accounts-content-" + this.id);
-      item.find(".sieve-accounts-tab").attr("href", "#sieve-accounts-content-" + this.id);
+      item.find(".sieve-accounts-content").attr("id", `sieve-accounts-content-${this.id}`);
+      item.find(".sieve-accounts-tab").attr("href", `#sieve-accounts-content-${this.id}`);
 
-      item.find(".sieve-settings-content").attr("id", "sieve-settings-content-" + this.id);
-      item.find(".sieve-settings-tab").attr("href", "#sieve-settings-content-" + this.id);
+      item.find(".sieve-settings-content").attr("id", `sieve-settings-content-${this.id}`);
+      item.find(".sieve-settings-tab").attr("href", `#sieve-settings-content-${this.id}`);
       item.find(".sieve-settings-tab").on('shown.bs.tab', () => { this.renderSettings(); });
 
       item.find(".siv-account-name").text(await this.send("account-get-displayname"));
 
-      item.attr("id", "siv-account-" + this.id);
+      item.attr("id", `siv-account-${this.id}`);
       item.find(".siv-account-create").click(() => { this.createScript(); });
 
       item.find(".sieve-account-edit-settings").click(() => { this.showSettings(); });
@@ -177,9 +177,7 @@
     async onRenderConnected() {
       const data = await this.send("account-list");
 
-      console.log("Data received " + JSON.stringify(data));
-
-      $("#siv-account-" + this.id + " .siv-tpl-scripts").empty();
+      $(`#siv-account-${this.id} .siv-tpl-scripts`).empty();
 
       // Sort the script names by their name...
       data.sort((a, b) => {
@@ -197,7 +195,7 @@
 
       data.forEach(async (item) => {
 
-        console.log("Rendering " + this.id + "/" + item.script + " ");
+        console.log(`Rendering ${this.id}/${item.script}`);
         await (new SieveScriptUI(this, item.script, item.active)).render();
       });
 
@@ -208,7 +206,7 @@
      */
     async onRenderDisconnected() {
       const item2 = await (new SieveTemplateLoader()).load(`./accounts/account.disconnected.tpl`);
-      $("#siv-account-" + this.id + " .siv-tpl-scripts")
+      $(`#siv-account-${this.id} .siv-tpl-scripts`)
         .empty()
         .append(item2);
 
@@ -219,10 +217,10 @@
      * Renders the UI for this component.
      */
     async render() {
-      console.log("Rendering Account " + this.id);
+      console.log(`Rendering Account ${this.id}`);
 
       // Check if the element exists...
-      if ($("#siv-account-" + this.id).length === 0) {
+      if ($(`#siv-account-${this.id}`).length === 0) {
         await this.renderAccount();
         this.renderSettings();
       }
@@ -251,7 +249,7 @@
      *
      */
     showSettings() {
-      $("#siv-account-" + this.id + " .sieve-settings-tab").tab('show');
+      $(`#siv-account-${this.id} .sieve-settings-tab`).tab('show');
     }
 
     /**

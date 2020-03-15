@@ -43,7 +43,7 @@
 
       const text = parent
         .find(".sieve-settings-authentication")
-        .find(".dropdown-item[data-sieve-authentication=" + type + "]")
+        .find(`.dropdown-item[data-sieve-authentication=${type}]`)
         .text();
 
       parent
@@ -94,7 +94,7 @@
 
       const text = parent
         .find(".sieve-settings-authorization")
-        .find(".dropdown-item[data-sieve-authorization=" + type + "]")
+        .find(`.dropdown-item[data-sieve-authorization=${type}]`)
         .text();
 
       parent

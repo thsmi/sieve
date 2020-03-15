@@ -38,7 +38,7 @@
   class SieveAbstractHost {
 
     /**
-     * Create a new instance.
+     * Creates a new instance.
      *
      * @param {int} type
      *   the accounts unique identifier.

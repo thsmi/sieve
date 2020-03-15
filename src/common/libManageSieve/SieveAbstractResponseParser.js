@@ -93,7 +93,7 @@
      */
     extractLineBreak() {
       if (this.isLineBreak() === false)
-        throw new Error("Line break expected but found:\n" + this.getData());
+        throw new Error(`Line break expected but found:\n${this.getData()}`);
 
       this.pos += 2;
 
@@ -120,7 +120,7 @@
      */
     extractSpace() {
       if (this.isSpace() === false)
-        throw new Error("Space expected but found:\n" + this.getData());
+        throw new Error(`Space expected but found:\n${this.getData()}`);
 
       this.pos++;
     }
@@ -154,7 +154,7 @@
      */
     extractLiteral() {
       if (this.isLiteral() === false)
-        throw new Error("Literal Expected but found\n" + this.getData());
+        throw new Error(`Literal Expected but found\n ${this.getData()}`);
 
       // remove the "{"
       this.pos++;
@@ -164,7 +164,7 @@
 
       const nextBracket = this.indexOf(CHAR_RIGHT_BRACES);
       if (nextBracket === NOT_FOUND)
-        throw new Error("Error unbalanced parentheses \"{\" in\n" + this.getData());
+        throw new Error(`Error unbalanced parentheses "{" in \n ${this.getData()}`);
 
       // extract the size, and ignore "+"
       const size = parseInt(this.getData(this.pos, nextBracket).replace(/\+/, ""), 10);
@@ -223,7 +223,7 @@
      */
     extractQuoted() {
       if (this.isQuoted() === false)
-        throw new Error("Quoted string expected but found \n" + this.getData());
+        throw new Error(`Quoted string expected but found\n${this.getData()}`);
 
       // now search for the end. But we need to be aware of escape sequences.
       let nextQuote = this.pos + CHAR_LEN;
@@ -293,7 +293,7 @@
       if (this.isLiteral())
         return this.extractLiteral();
 
-      throw new Error("String expected but found\n" + this.getData());
+      throw new Error(`String expected but found\n${this.getData()}`);
     }
 
     /**
@@ -325,7 +325,7 @@
       }
 
       if (index === NOT_FOUND)
-        throw new Error("Delimiter >>" + separators + "<< not found in: " + this.getData());
+        throw new Error(`Delimiter >>${separators}<< not found in: ${this.getData()}`);
 
       const token = this.getData(this.pos, index);
       this.pos = index;
@@ -425,7 +425,7 @@
      * @abstract
      */
     convertToString(byteArray) {
-      throw new Error("convertToString(" + byteArray + ")");
+      throw new Error(`convertToString(${byteArray})`);
     }
 
     /**
@@ -439,7 +439,7 @@
      * @abstract
      */
     convertToBase64(decoded) {
-      throw new Error("Implement convertToBase64(" + decoded + ")");
+      throw new Error(`Implement convertToBase64(${decoded})`);
     }
 
 
@@ -454,7 +454,7 @@
      * @abstract
      */
     convertFromBase64(encoded) {
-      throw new Error("Implement convertFromBase64(" + encoded + ")");
+      throw new Error(`Implement convertFromBase64(${encoded})`);
     }
   }
 

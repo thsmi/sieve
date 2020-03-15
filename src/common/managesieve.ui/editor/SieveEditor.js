@@ -35,7 +35,9 @@
       this.checksum = "";
     }
 
-
+    /**
+     *
+     */
     resize() {
       const offset = $("#sieve-widget-editor").offset().top;
 
@@ -286,7 +288,7 @@
           await this.getTextEditor().getScript());
       } catch (ex) {
         console.log(ex);
-        this.showErrorMessage("Switching to Graphical editor failed " + ex);
+        this.showErrorMessage(`Switching to Graphical editor failed ${ex}`);
         return false;
       }
 
@@ -337,6 +339,9 @@
       return this.graphicalEditor;
     }
 
+    /**
+     *
+     */
     async renderSettings() {
       const settings = await (new SieveTemplateLoader()).load("./editor/editor.settings.defaults.tpl");
 

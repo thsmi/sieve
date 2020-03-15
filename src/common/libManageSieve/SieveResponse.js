@@ -719,7 +719,7 @@
         super.parse(parser);
       }
       catch (ex) {
-        throw new Error('Illegal State:' + this.state + ' / ' + parser.getData(0) + '\n' + ex);
+        throw new Error(`Illegal State: ${this.state} / ${parser.getData(0)}\n${ex}`);
       }
 
       this.state = STATE_LOGIN_COMPLETED;
@@ -761,7 +761,7 @@
         return this;
       }
 
-      throw new Error('Illegal State:' + this.state + ' / ' + parser.getData());
+      throw new Error(`Illegal State: ${this.state} / ${parser.getData()}`);
     }
 
     /**
@@ -934,7 +934,7 @@
       const token = parser.convertFromBase64(data).split(",")[SHA_FIRST_TOKEN];
 
       if (token.length <= SHA_PREFIX_LENGTH)
-        throw new Error("Response expected but got : " + data);
+        throw new Error(`Response expected but got: ${data}`);
 
       // server-error = "e="
       if (token.startsWith("e=")) {
@@ -1004,7 +1004,7 @@
         return this;
       }
 
-      throw new Error('Illegal State:' + this.state + ' / ' + parser.getData());
+      throw new Error(`Illegal State: ${this.state} / ${parser.getData()}`);
     }
 
     /**

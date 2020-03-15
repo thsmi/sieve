@@ -14,7 +14,6 @@
   // Enable Strict Mode
   "use strict";
 
-
   const {
     SieveAbstractSession
   } = require("./SieveAbstractSession.js");
@@ -48,7 +47,7 @@
      */
     async onError(error) {
 
-      this.getLogger().log("OnError: " + error.message);
+      this.getLogger().logSession(`OnError: ${error.message}`);
 
       await this.disconnect(true);
     }

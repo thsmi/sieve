@@ -40,7 +40,7 @@
       if (this.name === "MD5")
         return Components.interfaces.nsICryptoHMAC.MD5;
 
-      throw Error("Unknown HMAC algorithm " + this.name);
+      throw Error(`Unknown HMAC algorithm ${this.name}`);
     }
 
     /**
@@ -60,7 +60,7 @@
       if (this.name === "MD5")
         return Components.interfaces.nsICryptoHash.MD5;
 
-      throw Error("Unknown HASH algorithm " + this.name);
+      throw Error(`Unknown HASH algorithm ${this.name}`);
     }
 
     /**

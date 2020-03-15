@@ -46,7 +46,7 @@
         $("<template />").load(tpl,
           function (response, status, xhr) {
             if (status === "error") {
-              console.log("Failed to load " + tpl);
+              console.log(`Failed to load ${tpl}`);
               reject(Error(`Failed to load resource. ${tpl}`));
             }
 

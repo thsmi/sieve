@@ -50,7 +50,7 @@
       for (let i = 0; i < this.name.length; i++)
         str += ("0" + this.name.charCodeAt(i).toString(16)).slice(-2);
 
-      return this.account.id + "-" + str;
+      return `${this.account.id}-${str}`;
     }
 
 
@@ -61,15 +61,15 @@
 
       const id = this.getId();
 
-      let item = $("#siv-script-" + id);
+      let item = $(`#siv-script-${id}`);
       // Check if the element exists...
       if (item.length === 0) {
 
         item = await (new SieveTemplateLoader()).load("./accounts/SieveScriptUI.tpl");
 
-        item.attr("id", "siv-script-" + id);
+        item.attr("id", `siv-script-${id}`);
 
-        $("#siv-account-" + this.account.id + " .siv-tpl-scripts").append(item);
+        $(`#siv-account-${this.account.id} .siv-tpl-scripts`).append(item);
 
         $(item).find(".sieve-list-script-name").text(this.name);
 
@@ -83,14 +83,14 @@
       item.prop("active", this.isActive);
 
       if (this.isActive === false) {
-        $("#siv-script-" + id + " .sieve-list-script-active").addClass("invisible");
-        $("#siv-script-" + id + " .sieve-script-activate").removeClass("d-none");
-        $("#siv-script-" + id + " .sieve-script-deactivate").addClass("d-none");
+        $(`#siv-script-${id} .sieve-list-script-active`).addClass("invisible");
+        $(`#siv-script-${id} .sieve-script-activate`).removeClass("d-none");
+        $(`#siv-script-${id} .sieve-script-deactivate`).addClass("d-none");
       }
       else {
-        $("#siv-script-" + id + " .sieve-list-script-active").removeClass("invisible");
-        $("#siv-script-" + id + " .sieve-script-activate").addClass("d-none");
-        $("#siv-script-" + id + " .sieve-script-deactivate").removeClass("d-none");
+        $(`#siv-script-${id} .sieve-list-script-active`).removeClass("invisible");
+        $(`#siv-script-${id} .sieve-script-activate`).addClass("d-none");
+        $(`#siv-script-${id} .sieve-script-deactivate`).removeClass("d-none");
       }
     }
 

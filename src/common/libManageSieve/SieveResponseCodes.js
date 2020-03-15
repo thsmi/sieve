@@ -31,14 +31,14 @@
     }
 
     /**
-     * Response codes should not encapulsted in quotes according to the RFC.
+     * Response codes should not encapsulated in quotes according to the RFC.
      * Never the less Cyrus Servers sometimes do encapsulate the response codes.
      *
      * This method is aware of this behaviour, and should be always when comparing
      * ResponseCodes
      *
      * @param {string} code
-     *   the response code which should be testet for equality
+     *   the response code which should be tested for equality
      * @returns {boolean}
      *   true in case the response code is equal otherwise false.
      */
@@ -80,7 +80,7 @@
   }
 
   /**
-   * In case of a refereal a special response code is returned.
+   * In case of a referral a special response code is returned.
    * It contains the address to which the server refers us.
    */
   class SieveResponseCodeReferral extends SieveResponseCode {
@@ -94,7 +94,7 @@
       if (this.code[RESPONSE_CODE_NAME].toUpperCase() !== "REFERRAL")
         throw new Error("Malformed REFERRAL Response Code");
 
-      // We should have received something similiar to
+      // We should have received something similar to
       //   REFERRAL "sieve://c3.mail.example.com"
 
       // the quoted text contains the authority
@@ -128,7 +128,7 @@
 
     /**
      * Returns the port of the referred server. If the server did not specify
-     * any Port null is returend.
+     * any Port null is returned.
      *
      * @returns {int}
      *   the port number or null

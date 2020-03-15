@@ -48,7 +48,7 @@
      *   the dialogs root element.
      */
     getDialog() {
-      return $("#" + this.id);
+      return $(`#${this.id}`);
     }
 
     /**

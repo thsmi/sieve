@@ -33,10 +33,10 @@
       $(".siv-accounts").empty();
       console.log("Rendering Accounts...");
 
-      items.forEach((element) => {
-        console.log(" + Accounts " + element);
-        new SieveAccountUI(this, element).render();
-      });
+      for (const item of items) {
+        console.log(` + Accounts ${item}`);
+        await ((new SieveAccountUI(this, item)).render());
+      }
     }
 
     /**

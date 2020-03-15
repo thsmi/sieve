@@ -61,7 +61,7 @@
      *   true in case the given type is supported otherwise false.
      */
     hasMechanism(mechanism) {
-      throw new Error("Implement hasMechanism(" + mechanism + ")");
+      throw new Error(`Implement hasMechanism(${mechanism})`);
     }
 
     /**
@@ -74,7 +74,7 @@
      *   the authentication mechanism instance.
      */
     getMechanismById(mechanism) {
-      throw new Error("Implement getMechanism(" + mechanism + ")");
+      throw new Error(`Implement getMechanism(${mechanism})`);
     }
 
     /**
@@ -91,7 +91,7 @@
         type = Number.parseInt(type, 10);
 
       if (!this.hasMechanism(type))
-        throw new Error("Invalid mechanism " + type);
+        throw new Error(`Invalid mechanism ${type}`);
 
       this.account.getConfig().setInteger(this.getKey(), type);
     }

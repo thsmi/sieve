@@ -68,7 +68,7 @@
       for (let i = 0; i < bytes.length; i++) {
         const byte = String.fromCharCode(bytes[i]);
         if (byte > MAX_CHAR_CODE)
-          throw new Error("Byte Array Invalid: " + byte);
+          throw new Error(`Byte Array Invalid: ${byte}`);
 
         result += byte;
       }
@@ -89,7 +89,7 @@
 
       for (let i = 0; i < str.length; i++) {
         if (str.charCodeAt(i) > MAX_CHAR_CODE)
-          throw new Error("Invalid Characters for Binary String :" + str.charCodeAt(i));
+          throw new Error(`Invalid Characters for Binary String: ${str.charCodeAt(i)}`);
 
         result.push(str.charCodeAt(i));
       }
@@ -106,11 +106,11 @@
      * @param {byte[]|string} bytes
      *   The input string as byte array or string
      * @returns {byte[]}
-     *   the calculated HAMC keyed hash for the given input string. E.g. HMAC-SHA-1 hashes are
+     *   the calculated HMAC keyed hash for the given input string. E.g. HMAC-SHA-1 hashes are
      *   always always 20 octets long.
      */
     HMAC(key, bytes) {
-      throw new Error("Implement HMAC Algorithm for " + this.name + " with key " + key + " and data " + bytes);
+      throw new Error(`Implement HMAC Algorithm for ${this.name} with key ${key} and data ${bytes}`);
     }
 
 
@@ -124,7 +124,7 @@
      *   the calculated hash value for the input string.s
      */
     H(bytes) {
-      throw new Error("Implement Hashing Algorithm for " + this.name + " with data " + bytes);
+      throw new Error(`Implement Hashing Algorithm for ${this.name} with data ${bytes}`);
     }
 
     /**

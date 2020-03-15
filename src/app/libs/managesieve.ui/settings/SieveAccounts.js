@@ -93,8 +93,6 @@
 
       this.accounts[id] = new SieveAccount(id);
 
-      console.log(Object.keys(this.accounts));
-
       this.save();
 
       if (typeof(details) !== "undefined" && details !== null) {

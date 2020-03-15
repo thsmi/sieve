@@ -199,7 +199,7 @@
      * @abstract
      */
     getNextRequest(builder) {
-      throw new Error("Abstract Method implement me " + builder);
+      throw new Error(`Abstract Method implement me ${builder}`);
     }
 
     /**
@@ -255,7 +255,7 @@
      * @abstract
      */
     onOk(response) {
-      throw new Error("Abstract Method override me " + response);
+      throw new Error(`Abstract Method override me ${response}`);
     }
 
     /**
@@ -932,7 +932,7 @@
       return builder
         .addLiteral("AUTHENTICATE")
         .addQuotedString("PLAIN")
-        .addQuotedBase64(this._authorization + "\0" + this._username + "\0" + this._password);
+        .addQuotedBase64(`${this._authorization}\0${this._username}\0${this._password}`);
     }
 
     /**
@@ -1064,7 +1064,7 @@
       const hmac = crypto.HMAC(this._password, challenge, "hex");
 
       return builder
-        .addQuotedBase64(this._username + " " + hmac);
+        .addQuotedBase64(`${this._username} ${hmac}`);
     }
 
     /**
@@ -1124,6 +1124,8 @@
     }
 
     /**
+     * Checks if the request supports authorization
+     *
      * @returns {boolean}
      *   true, as a scram request can always be used for a proxy authentication
      */
@@ -1188,7 +1190,7 @@
       return builder
         .addLiteral("AUTHENTICATE")
         .addQuotedString(this.getSaslName())
-        .addQuotedBase64("" + this._g2Header + this._authMessage);
+        .addQuotedBase64(`${this._g2Header}${this._authMessage}`);
     }
 
     /**

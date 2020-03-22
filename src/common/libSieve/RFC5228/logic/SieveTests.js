@@ -230,7 +230,7 @@
     }]
   });
 
-  // TODO Stringlist and testslist are quite simmilar
+  // TODO Stringlist and testslist are quite similar
 
   /**
    *

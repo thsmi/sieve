@@ -57,7 +57,7 @@
      * @param {string} string
      *   the string which should be translated
      * @returns {string}
-     *   the tranlated string
+     *   the translated string
      */
     getString(string) {
       const value = this.strings[string];

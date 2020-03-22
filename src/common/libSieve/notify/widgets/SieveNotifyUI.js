@@ -33,6 +33,8 @@
   class SieveNotifyActionUI extends SieveActionDialogBoxUI {
 
     /**
+     * Gets the uri for the notification method.
+     *
      * @returns {SieveString}
      *   the uri as string.
      */

@@ -15,6 +15,12 @@
 
   /* global SieveIpcClient */
 
+  /**
+   * An editor controller is the logical endpoint for all editor
+   * specific actions. It is triggered from the graphical editor
+   * as well as the text editor and interacts with the outside world
+   * like the sieve server or the operating system.
+   */
   class SieveEditorController {
 
     /**

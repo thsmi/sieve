@@ -111,14 +111,14 @@
       return;
     }
 
-    console.log('request for ' + filePath);
+    console.log('Request for ' + filePath);
 
 
     try {
 
       if (!fs.existsSync(filePath)) {
         response.writeHead(HTTP_FILE_NOT_FOUND);
-        response.end(` File not found (404) ${filePath}\n`);
+        response.end(`File not found (404) ${filePath}\n`);
         response.end();
 
         return;

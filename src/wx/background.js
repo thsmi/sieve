@@ -16,10 +16,13 @@
   /* global browser */
   /* global SieveIpcClient */
   /* global SieveAccounts */
+  /* global SieveLogger */
 
   const ERROR_UNTRUSTED = 1;
   const ERROR_MISMATCH = 2;
   const ERROR_TIME = 4;
+
+  const logger = SieveLogger.getInstance();
 
   async function getTabs(account, name) {
     const url = new URL("./libs/managesieve.ui/editor.html", window.location);
@@ -64,24 +67,22 @@
 
 
 
-  let accounts = [];
+  const accounts = await (new SieveAccounts().load());
 
   const actions = {
     // account endpoints...
     "accounts-list": async function () {
-      console.log("List Accounts");
-
-      accounts = (await (new SieveAccounts().load()));
-
-      return accounts.getAccounts();
+      logger.logAction("List Accounts");
+      return await accounts.getAccounts();
     },
 
     "account-get-displayname": async function (msg) {
-      return await accounts.getAccountById(msg.payload.account).getHost().getDisplayName();
+      const host = await accounts.getAccountById(msg.payload.account).getHost();
+      return await host.getDisplayName();
     },
 
     "account-connected": function (msg) {
-      console.log("Is Connected");
+      logger.logAction(`Is connected ${msg.payload.account}`);
 
       const id = msg.payload.account;
       return browser.sieve.session.isConnected(id);
@@ -90,34 +91,46 @@
     "account-connect" : async function(msg) {
 
       const id = msg.payload.account;
-      const account = accounts.getAccountById(id);
+      const account = await accounts.getAccountById(id);
+
+      logger.logAction(`Connect ${id}`);
+
+      const host = await account.getHost();
+      const security = await account.getSecurity();
+      const settings = await account.getSettings();
 
       const options = {
-        "secure" : await account.getSecurity().isSecure(),
-        "sasl" : await account.getSecurity().getMechanism(),
-        "keepAlive" :  await account.getHost().getKeepAlive()
-        // Todo
-        // logLevel : account.getSettings().getDebugFlags()
+        "secure" : await security.isSecure(),
+        "sasl" : await security.getMechanism(),
+        "keepAlive" :  await host.getKeepAlive(),
+        "logLevel" : await settings.getLogLevel()
       };
 
       const onAuthenticate = async (hasPassword) => {
 
-        const authentication = {};
-        authentication.username = await account.getAuthentication().getUsername();
+        logger.logAction(`OnAuthenticate`);
+
+        const authentication = await account.getAuthentication();
+
+        const credentials = {};
+        credentials.username = await authentication.getUsername();
 
         if (hasPassword)
-          authentication.password = await account.getAuthentication().getPassword();
+          credentials.password = await authentication.getPassword();
 
-        return authentication;
+        return credentials;
       };
 
       const onAuthorize = async() => {
-        console.log("onAuthorize");
-        return await account.getAuthorization().getAuthorization();
+
+        logger.logAction(`onAuthorize`);
+
+        const authorization = await account.getAuthorization();
+        return await authorization.getAuthorization();
       };
 
       const onCertError = async (secInfo) => {
-        console.log(`Certificate Error for ${secInfo.host}:${secInfo.port}`);
+        logger.logAction(`Certificate Error for ${secInfo.host}:${secInfo.port}`);
 
         const rv = await SieveIpcClient.sendMessage(
           "accounts", "script-show-certerror", secInfo);
@@ -148,23 +161,24 @@
       await browser.sieve.session.onCertError.addListener(
         async (secInfo) => { return await onCertError(secInfo); }, id);
 
-      const hostname = await account.getHost().getHostname();
-      const port = await account.getHost().getPort();
+      const hostname = await host.getHostname();
+      const port = await host.getPort();
 
-      await browser.sieve.session.connect(id, hostname, "" + port);
+      await browser.sieve.session.connect(id, hostname, `${port}`);
     },
 
     "account-disconnect": async function (msg) {
+      logger.logAction(`Disconnect ${msg.payload.account}`);
       await browser.sieve.session.destroy(msg.payload.account);
     },
 
     "account-list": async function (msg) {
-      console.log("List Scripts for account: " + msg.payload.account);
+      logger.logAction(`List scripts for ${msg.payload.account}`);
       return await browser.sieve.session.listScripts(msg.payload.account);
     },
 
     "account-capabilities": async function (msg) {
-      console.log("Get Capabilities");
+      logger.logAction(`Get capabilities for ${msg.payload.account}`);
       return await browser.sieve.session.capabilities(msg.payload.account);
     },
 
@@ -172,7 +186,7 @@
     "script-create": async function (msg) {
       const account = msg.payload.account;
 
-      console.log("Create Scripts for account: " + account);
+      logger.logAction(`Create script for ${account}`);
 
       const name = await SieveIpcClient.sendMessage("accounts", "script-show-create", account);
 
@@ -186,7 +200,7 @@
       const account = msg.payload.account;
       const oldName = msg.payload.data;
 
-      console.log(`Rename Scripts ${oldName} for account: ${account}`);
+      logger.logAction(`Rename Script ${oldName} for account: ${account}`);
 
       if (await getTabs(account, oldName).length > 0) {
         await SieveIpcClient.sendMessage("accounts", "script-show-busy", oldName);
@@ -206,7 +220,7 @@
       const account = msg.payload.account;
       const name = msg.payload.data;
 
-      console.log(`Delete Scripts ${name} for account: ${account}`);
+      logger.logAction(`Delete Script ${name} for account: ${account}`);
 
       if (await getTabs(account, name).length > 0) {
         await SieveIpcClient.sendMessage("accounts", "script-show-busy", name);
@@ -222,21 +236,28 @@
     },
 
     "script-activate": async function (msg) {
-      console.log("Activate..." + msg);
+      const account = msg.payload.account;
+      const name = msg.payload.data;
 
-      await browser.sieve.session.activateScript(msg.payload.account, msg.payload.data);
+      logger.logAction(`Activate ${name} for ${account}`);
+
+      await browser.sieve.session.activateScript(account, name);
     },
 
     "script-deactivate": async function (msg) {
-      console.log("Deactivate...");
+      const account = msg.payload.account;
 
-      await browser.sieve.session.activateScript(msg.payload.account);
+      logger.logAction(`Deactivate script for ${account}`);
+
+      await browser.sieve.session.activateScript(account);
     },
 
     "script-edit": async function (msg) {
 
       const name = msg.payload.data;
       const account = msg.payload.account;
+
+      logger.logAction(`Edit ${name} on ${account}`);
 
       const url = new URL("./libs/managesieve.ui/editor.html", window.location);
 
@@ -250,7 +271,6 @@
       }
 
       // create a new tab...
-      console.log("Edit Script " + name);
       await browser.tabs.create({
         active: true,
         url : url.toString()
@@ -258,39 +278,80 @@
     },
 
     "script-get": async function (msg) {
-      console.log("Get Script...");
-      return await browser.sieve.session.getScript(msg.payload.account, msg.payload.data);
+      const name = msg.payload.data;
+      const account = msg.payload.account;
+
+      logger.logAction(`Get ${name} for ${account}`);
+
+      return await browser.sieve.session.getScript(account, name);
     },
 
     "script-check": async function (msg) {
-      console.log("Check Script " + msg.payload.account + "... ");
+      const account = msg.payload.account;
+      const script = msg.payload.data;
 
-      return await browser.sieve.session.checkScript(msg.payload.account, msg.payload.data);
+      logger.logAction(`Check Script for ${account}`);
+
+      return await browser.sieve.session.checkScript(account, script);
     },
 
     "script-save": async function (msg) {
-      console.log("Save Script...");
+      const account = msg.payload.account;
+      const name = msg.payload.name;
+      const script = msg.payload.script;
 
-      await await browser.sieve.session.putScript(msg.payload.account, msg.payload.name, msg.payload.script);
+      logger.logAction(`Save ${name} for ${account}`);
+
+      await browser.sieve.session.putScript(account, name, script);
     },
 
     "account-get-settings": async function (msg) {
-      // for the settings menu
+
+      logger.logAction(`Get settings for ${msg.payload.account}`);
 
       const account = accounts.getAccountById(msg.payload.account);
       const host = await account.getHost();
+      const authentication = await account.getAuthentication();
+      const security = await account.getSecurity();
 
       return {
         displayName: await host.getDisplayName(),
         hostname: await host.getHostname(),
         port: await host.getPort(),
 
-        secure: await account.getSecurity().isSecure(),
+        secure: await security.isSecure(),
+        mechanism: await security.getMechanism(),
 
-        mechanism: await account.getSecurity().getMechanism(),
-        username: await account.getAuthentication().getUsername()
+        username: await authentication.getUsername()
+      };
+    },
+
+    "settings-get-loglevel": async function(msg) {
+      return await accounts.getLogLevel();
+    },
+
+    "account-settings-set-debug": async function (msg) {
+
+      logger.logAction(`Set Debug Level for ${msg.payload.account}`);
+
+      const account = accounts.getAccountById(msg.payload.account);
+
+      await account.getSettings().setLogLevel(msg.payload.levels.account);
+      await accounts.setLogLevel(msg.payload.levels.global);
+    },
+
+    "account-settings-get-debug": async function (msg) {
+
+      logger.logAction(`Get Debug Level for ${msg.payload.account}`);
+
+      const account = accounts.getAccountById(msg.payload.account);
+
+      return {
+        "account" : await account.getSettings().getLogLevel(),
+        "global" : await accounts.getLogLevel()
       };
     }
+
   };
 
   for (const [key, value] of Object.entries(actions)) {

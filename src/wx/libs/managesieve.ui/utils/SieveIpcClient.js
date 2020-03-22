@@ -14,6 +14,7 @@
   "use strict";
 
   /* global browser */
+  const { SieveLogger } = require("./SieveLogger.js");
   const { SieveAbstractIpcClient } = require("./SieveAbstractIpcClient.js");
 
   /**
@@ -21,6 +22,12 @@
    */
   class SieveWxIpcClient extends SieveAbstractIpcClient {
 
+    /**
+     * @inheritdoc
+     */
+    static getLogger() {
+      return SieveLogger.getInstance();
+    }
 
     /**
      * @inheritdoc

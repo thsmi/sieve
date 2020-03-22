@@ -21,7 +21,7 @@
   <div class="mt-3">
     <button type="button" class="sieve-account-edit-server btn btn-sm btn-outline-secondary mr-1">Edit Server</button>
     <button type="button" class="sieve-account-edit-credentials btn btn-sm btn-outline-secondary mr-1">Edit Credentials</button>
-    <button type="button" class="sieve-account-edit-advanced btn btn-sm btn-outline-secondary">Debugging</button>
+    <button type="button" class="sieve-account-edit-debug btn btn-sm btn-outline-secondary">Debugging</button>
   </div>
   <hr>
   <h4>Danger Zone</h4>

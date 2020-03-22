@@ -207,11 +207,11 @@
     async save() {
 
       const server = {
-        displayName: this.getDisplayName(),
-        hostname: this.getHostname(),
-        port: this.getPort(),
-        fingerprint: this.getFingerprint(),
-        keepAlive: this.getKeepAlive()
+        displayName: await this.getDisplayName(),
+        hostname: await this.getHostname(),
+        port: await this.getPort(),
+        fingerprint: await this.getFingerprint(),
+        keepAlive: await this.getKeepAlive()
       };
 
       await this.account.send("account-set-server", server);

@@ -37,8 +37,8 @@
      * @returns {string}
      *   the sasl mechanism
      **/
-    getMechanism() {
-      return this.account.getConfig().getString(PREF_MECHANISM, "default");
+    async getMechanism() {
+      return await this.account.getConfig().getString(PREF_MECHANISM, "default");
     }
 
     /**
@@ -50,8 +50,8 @@
      * @returns {SieveSecurity}
      *   a self reference
      */
-    setMechanism(mechanism) {
-      this.account.getConfig().setString(PREF_MECHANISM, mechanism);
+    async setMechanism(mechanism) {
+      await this.account.getConfig().setString(PREF_MECHANISM, mechanism);
       return this;
     }
 
@@ -62,8 +62,8 @@
      * @returns {boolean}
      *   true in  case a secure connection should be used.
      **/
-    isSecure() {
-      return this.account.getConfig().getBoolean(PREF_TLS, true);
+    async isSecure() {
+      return await this.account.getConfig().getBoolean(PREF_TLS, true);
     }
 
     /**
@@ -75,8 +75,8 @@
      * @returns {SieveSecurity}
      *   a self reference
      */
-    setSecure(value) {
-      this.account.getConfig().setBoolean(PREF_TLS, value);
+    async setSecure(value) {
+      await this.account.getConfig().setBoolean(PREF_TLS, value);
       return this;
     }
 

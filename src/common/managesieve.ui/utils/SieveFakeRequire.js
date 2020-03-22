@@ -69,8 +69,9 @@
   globals.set("./SieveAuthorizationSettings.js", "SieveAuthorization");
   globals.set("./SieveAuthenticationSettings.js", "SieveAuthentication");
   globals.set("./SieveSecuritySettings.js", "SieveSecurity");
-  globals.set("./SieveCommonSettings.js", "SieveCommonSettings");
+  globals.set("./SieveAccountSettings.js", "SieveAccountSettings");
 
+  globals.set("./SieveLogger.js", "SieveLogger");
 
   globals.set("libs/managesieve.ui/settings/SieveAbstractMechanism.js", "SieveAbstractMechanism");
   globals.set(

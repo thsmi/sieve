@@ -51,7 +51,7 @@
      *   the authorization string or null in case the dialog was canceled.
      */
     async getAuthorization() {
-      const displayname = this.account.getHost().getDisplayName();
+      const displayname = await (await this.account.getHost()).getDisplayName();
 
       return await (new SieveAuthorizationDialog(displayname)).show();
     }
@@ -109,35 +109,6 @@
         default:
           throw new Error("Unknown authorization mechanism");
       }
-    }
-
-    /**
-     * Returns the current settings as json object.
-     *
-     * @returns {string}
-     *   the current settings as json.
-     */
-    stringify() {
-      return {
-        type: this.getType(),
-        username: this.getUsername()
-      };
-    }
-
-    /**
-     * Expects either a json string or object. Then it parses
-     * the setting and applies them to the current object.
-     *
-     * @param {JSON|string} json
-     *   the configuration data which should be set.
-     *
-     */
-    parse(json) {
-      if (typeof (json) === "string")
-        json = JSON.parse(json);
-
-      this.setType(json.type);
-      this.setUsername(json.username);
     }
   }
 

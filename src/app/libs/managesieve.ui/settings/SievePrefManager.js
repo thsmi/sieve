@@ -28,8 +28,8 @@
      * @returns {object}
      *   the value or undefined in case it does not exist.
      */
-    getValue(key) {
-      return localStorage.getItem(`${this.id}.${key}`);
+    async getValue(key) {
+      return await localStorage.getItem(`${this.id}.${key}`);
     }
 
     /**
@@ -42,8 +42,8 @@
      * @returns {SievePrefManager}
      *   a self reference.
      */
-    setValue(key, value) {
-      localStorage.setItem(`${this.id}.${key}`, value);
+    async setValue(key, value) {
+      await localStorage.setItem(`${this.id}.${key}`, value);
       return this;
     }
   }

@@ -13,10 +13,10 @@
 
   "use strict";
 
+  const { SieveUniqueId } = require("./SieveUniqueId.js");
+
   const _requestHandlers = new Map();
   const _responseHandlers = new Map();
-
-  const { SieveUniqueId } = require("./SieveUniqueId.js");
 
   /**
    * An abstract implementation for a inter process/frame communication.
@@ -30,6 +30,17 @@
      */
     static generateId() {
       return (new SieveUniqueId()).generate();
+    }
+
+    /**
+     * Gets a logger instance.
+     * @abstract
+     *
+     * @returns {SieveLogger}
+     *   a sieve logger instance
+     */
+    static getLogger() {
+      throw new Error(`Implement getLogger`);
     }
 
     /**
@@ -64,10 +75,10 @@
      */
     static async onRequest(request, source) {
 
-      console.log('OnRequest:  ', request);
+      this.getLogger().logIpcMessage(`OnRequest: ${request}`);
 
       if (!_requestHandlers.has(request.subject)) {
-        console.log(`Unknown subject ${request.subject} in ${window.location}`);
+        this.getLogger().logIpcMessage(`Unknown subject ${request.subject} in ${window.location}`);
         return;
       }
 
@@ -78,14 +89,14 @@
 
       try {
         if (!handler.has(request.action)) {
-          console.log(`Unknown action ${request.action} in ${window.location}`);
+          this.getLogger().logIpcMessage(`Unknown action ${request.action} in ${window.location}`);
           throw new Error(`Unknown action ${request.action}`);
         }
 
         response.payload = await (handler.get(request.action)(request));
       } catch (ex) {
         response.error = ex.message;
-        console.log(ex);
+        this.getLogger().logIpcMessage(ex);
       }
 
       this.dispatch(response, source);
@@ -99,7 +110,7 @@
      */
     static onResponse(message) {
 
-      console.log('On Response:  ', message);
+      this.getLogger().logIpcMessage('On Response:  ', message);
 
       const id = message.id;
 
@@ -110,7 +121,7 @@
       if (!_responseHandlers.has(message.id))
         return;
 
-      console.log("Callback for " + id);
+      this.getLogger().logIpcMessage(`Callback for ${id}`);
 
       // Check the response handlers
       const handler = _responseHandlers.get(id);

@@ -38,7 +38,7 @@
      * @returns {object}
      *   the value or undefined in case it does not exist.
      */
-    getValue(key) {
+    async getValue(key) {
       throw new Error(`Implement SieveAbstractPrefManager::getValue(${key})`);
     }
 
@@ -53,7 +53,7 @@
      * @returns {SievePrefManager}
      *   a self reference.
      */
-    setValue(key, value) {
+    async setValue(key, value) {
       throw new Error(`Implement SieveAbstractPrefManager::setValue(${key},${value})`);
     }
 
@@ -67,8 +67,8 @@
      * @returns {boolean}
      *   the key's value as boolean
      */
-    getBoolean(key, fallback) {
-      let value = this.getValue(key);
+    async getBoolean(key, fallback) {
+      let value = await this.getValue(key);
 
       if (typeof (value) === "undefined" || value === null)
         return fallback;
@@ -92,11 +92,11 @@
      * @returns {SievePrefManager}
      *   a self reference
      */
-    setBoolean(key, value) {
+    async setBoolean(key, value) {
       // ensure it is an boolean...
       value = !!value;
 
-      this.setValue(key, value);
+      await this.setValue(key, value);
       return this;
     }
 
@@ -110,8 +110,8 @@
      * @returns {string}
      *   the key's value as string
      */
-    getString(key, fallback) {
-      const value = this.getValue(key);
+    async getString(key, fallback) {
+      const value = await this.getValue(key);
 
       if (typeof (value) === "undefined" || value === null)
         return fallback;
@@ -129,8 +129,8 @@
      * @returns {SievePrefManager}
      *   a self reference
      */
-    setString(key, value) {
-      this.setValue(key, `${value}`);
+    async setString(key, value) {
+      await this.setValue(key, `${value}`);
       return this;
     }
 
@@ -140,24 +140,30 @@
      * @param {string} key
      *   the preference's key
      * @param {int} [fallback]
-     *   the fallback value in case the key does not exist.
+     *   the fallback value in case the key does not exist or is not a number.
      * @returns {string}
      *   the key's value as integer
      */
-    getInteger(key, fallback) {
-      const value = this.getValue(key);
+    async getInteger(key, fallback) {
 
-      if (typeof (value) === "undefined" || value === null)
+      let value = await this.getValue(key);
+
+      if (typeof (value) === "undefined" || value === null || Number.isNaN(value))
         return fallback;
 
       if (Number.isInteger())
         return value;
 
       try {
-        return Number.parseInt(value, 10);
+        value = Number.parseInt(value, 10);
       } catch (ex) {
         return fallback;
       }
+
+      if (Number.isNaN(value))
+        return fallback;
+
+      return value;
     }
 
     /**
@@ -170,10 +176,48 @@
      * @returns {SievePrefManager}
      *   a self reference.
      */
-    setInteger(key, value) {
-
-      this.setValue(key, Number.parseInt(value, 10));
+    async setInteger(key, value) {
+      await this.setValue(key, Number.parseInt(value, 10));
       return this;
+    }
+
+    /**
+     * Saves a complex value like an object for the given key.
+     * The object needs to be serializable to a json string.
+     *
+     * @param {string} key
+     *   the preference's key
+     * @param {object} value
+     *   the complex value which should be saved.
+     * @returns {SievePrefManager}
+     *   a self reference.
+     */
+    async setComplexValue(key, value) {
+      await this.setValue(key, JSON.stringify(value));
+      return this;
+    }
+
+    /**
+     * Returns the complex value for the given key.
+     *
+     * @param {string} key
+     *   the preference's key.
+     * @param {object} fallback
+     *   the fallback value in case the key does not exist.
+     * @returns {object}
+     *   the key's complex value.
+     */
+    async getComplexValue(key, fallback) {
+      const value = await this.getValue(key);
+
+      if (typeof (value) === "undefined" || value === null)
+        return fallback;
+
+      try {
+        return JSON.parse(value);
+      } catch (ex) {
+        return fallback;
+      }
     }
 
   }

@@ -9,7 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function () {
+(async function () {
 
   "use strict";
 
@@ -21,6 +21,7 @@
   const FIRST_ELEMENT = 0;
 
   // Import the node modules into our global namespace...
+  const { SieveLogger } = require("./libs/managesieve.ui/utils/SieveLogger.js");
   const { SieveIpcClient} = require("./libs/managesieve.ui/utils/SieveIpcClient.js");
 
   const {
@@ -48,7 +49,9 @@
   const { SieveThunderbirdImport } = require("./libs/managesieve.ui/importer/SieveThunderbirdImport.js");
   const { SieveAutoConfig } = require("./libs/libManageSieve/SieveAutoConfig.js");
 
-  const accounts = new SieveAccounts().load();
+  const logger = SieveLogger.getInstance();
+
+  const accounts = await (new SieveAccounts().load());
   const sessions = new SieveSessions();
 
   const actions = {
@@ -62,18 +65,18 @@
     },
 
     "import-thunderbird": function () {
-      console.log("Import Thunderbird accounts");
+      logger.logAction("Import Thunderbird accounts");
       return (new SieveThunderbirdImport()).getAccounts();
     },
 
     // account endpoints...
     "accounts-list": function () {
-      console.log("List Accounts");
+      logger.logAction("List Accounts");
       return accounts.getAccounts();
     },
 
     "account-probe": async function (request) {
-      console.log("probe Account");
+      logger.logAction("probe Account");
 
       const response = request;
       response.payload["port"] = await (new SieveAutoConfig(request.payload["hostname"])).detect();
@@ -81,124 +84,173 @@
       return response.payload;
     },
 
-    "account-create": function (msg) {
-      console.log("create Account");
-      accounts.create(msg.payload);
+    "account-create": async function (msg) {
+      logger.logAction("create Account");
+      await accounts.create(msg.payload);
 
       return msg.payload;
     },
 
     "account-delete": async function (msg) {
 
-      console.log("Remove Account");
-
       const account = msg.payload.account;
-      const displayName = accounts.getAccountById(account).getHost().getDisplayName();
+      logger.logAction(`Remove Account ${account}`);
 
-      const rv = await (new SieveDeleteAccountDialog(displayName)).show();
+      const host = await accounts.getAccountById(account).getHost();
+
+      const rv = await (new SieveDeleteAccountDialog(await host.getDisplayName())).show();
 
       if (rv)
-        accounts.remove(account);
+        await accounts.remove(account);
 
       return rv;
     },
 
     "account-get-displayname": async function (msg) {
-      return accounts.getAccountById(msg.payload.account).getHost().getDisplayName();
+      const account = msg.payload.account;
+      logger.logAction(`Get display name for ${account}`);
+
+      const host = await accounts.getAccountById(account).getHost();
+      return await host.getDisplayName();
     },
 
-    "account-get-server": function (msg) {
-      const account = accounts.getAccountById(msg.payload.account);
-      const host = account.getHost();
+    "account-get-server": async function (msg) {
+
+      logger.logAction(`Get server for ${msg.payload.account}`);
+
+      const host = await accounts.getAccountById(msg.payload.account).getHost();
 
       return {
-        displayName: host.getDisplayName(),
-        hostname: host.getHostname(),
-        port: host.getPort(),
-        fingerprint: host.getFingerprint(),
-        keepAlive: host.getKeepAlive()
+        displayName: await host.getDisplayName(),
+        hostname: await host.getHostname(),
+        port: await host.getPort(),
+        fingerprint: await host.getFingerprint(),
+        keepAlive: await host.getKeepAlive()
       };
     },
 
-    "account-get-settings": function (msg) {
+    "account-get-settings": async function (msg) {
+
+      logger.logAction(`Get settings for ${msg.payload.account}`);
+
       // for the settings menu
       const account = accounts.getAccountById(msg.payload.account);
-      const host = account.getHost();
+      const host = await account.getHost();
+      const authentication = await account.getAuthentication();
+      const security = await account.getSecurity();
 
       return {
-        displayName: host.getDisplayName(),
-        hostname: host.getHostname(),
-        port: host.getPort(),
-        fingerprint: host.getFingerprint(),
+        displayName: await host.getDisplayName(),
+        hostname: await host.getHostname(),
+        port: await host.getPort(),
+        fingerprint: await host.getFingerprint(),
 
-        secure: account.getSecurity().isSecure(),
+        secure: await security.isSecure(),
 
-        mechanism: account.getSecurity().getMechanism(),
-        username: account.getAuthentication().getUsername()
+        mechanism: await security.getMechanism(),
+        username: await authentication.getUsername()
       };
     },
 
-    "account-setting-get-credentials": function (msg) {
+    "settings-get-loglevel": async function(msg) {
+      return await accounts.getLogLevel();
+    },
+
+    "account-settings-set-debug": async function (msg) {
+
+      logger.logAction(`Set Debug Level for ${msg.payload.account}`);
+
+      const account = accounts.getAccountById(msg.payload.account);
+
+      await account.getSettings().setLogLevel(msg.payload.levels.account);
+      await accounts.setLogLevel(msg.payload.levels.global);
+    },
+
+    "account-settings-get-debug": async function (msg) {
+
+      logger.logAction(`Get Debug Level for ${msg.payload.account}`);
+
+      const account = accounts.getAccountById(msg.payload.account);
+
+      return {
+        "account" : await account.getSettings().getLogLevel(),
+        "global" : await accounts.getLogLevel()
+      };
+    },
+
+    "account-setting-get-credentials": async function (msg) {
+
+      logger.logAction(`Get credentials for ${msg.payload.account}`);
+
       const account = accounts.getAccountById(msg.payload.account);
 
       return {
         "general": {
-          secure: account.getSecurity().isSecure(),
-          sasl: account.getSecurity().getMechanism()
+          secure: await account.getSecurity().isSecure(),
+          sasl: await account.getSecurity().getMechanism()
         },
         "authentication": {
-          type: account.getAuthentication().getType(),
-          username: account.getAuthentication(0).getUsername()
+          type: await (await account.getAuthentication()).getType(),
+          username: await (await account.getAuthentication(0)).getUsername()
         },
 
         "authorization": {
-          type: account.getAuthorization().getType(),
-          username: account.getAuthorization(3).getAuthorization()
+          type: await (await account.getAuthorization()).getType(),
+          username: await (await account.getAuthorization(3)).getAuthorization()
         }
       };
     },
 
-    "account-settings-set-credentials": function (msg) {
+    "account-settings-set-credentials": async function (msg) {
 
-      const account = accounts.getAccountById(msg.payload.account);
+      logger.logAction(`Set credentials for ${msg.payload.account}`);
 
-      account.getSecurity().setSecure(msg.payload.general.secure);
-      account.getSecurity().setMechanism(msg.payload.general.sasl);
+      const account = await accounts.getAccountById(msg.payload.account);
 
-      account.setAuthentication(msg.payload.authentication.mechanism);
-      account.getAuthentication(0).setUsername(msg.payload.authentication.username);
+      await account.getSecurity().setSecure(msg.payload.general.secure);
+      await account.getSecurity().setMechanism(msg.payload.general.sasl);
 
-      account.setAuthorization(msg.payload.authorization.mechanism);
-      account.getAuthorization(3).setAuthorization(msg.payload.authorization.username);
+      await account.setAuthentication(msg.payload.authentication.mechanism);
+      await (await account.getAuthentication(0)).setUsername(msg.payload.authentication.username);
+
+      await account.setAuthorization(msg.payload.authorization.mechanism);
+      await (await account.getAuthorization(3)).setAuthorization(msg.payload.authorization.username);
     },
 
-    "account-set-server": function (msg) {
-      const host = accounts.getAccountById(msg.payload.account).getHost();
+    "account-set-server": async function (msg) {
 
-      host.setDisplayName(msg.payload.displayName);
-      host.setHostname(msg.payload.hostname);
-      host.setPort(msg.payload.port);
+      logger.logAction(`Get display server for ${msg.payload.account}`);
 
-      host.setFingerprint(msg.payload.fingerprint);
+      const host = await accounts.getAccountById(msg.payload.account).getHost();
 
-      host.setKeepAlive(msg.payload.keepAlive);
+      await host.setDisplayName(msg.payload.displayName);
+      await host.setHostname(msg.payload.hostname);
+      await host.setPort(msg.payload.port);
+
+      await host.setFingerprint(msg.payload.fingerprint);
+
+      await host.setKeepAlive(msg.payload.keepAlive);
     },
 
 
     "account-capabilities": async function (msg) {
-      console.log("Get Capabilities");
+
+      logger.logAction(`Get capabilities for ${msg.payload.account}`);
+
       return await (sessions.get(msg.payload.account).capabilities());
     },
 
     "account-connecting": async (request) => {
 
+      logger.logAction(`Connecting ${request.payload.account}`);
+
       const account = request.payload.account;
       const response = request;
 
       try {
-        const host = accounts.getAccountById(account).getHost();
+        const host = await accounts.getAccountById(account).getHost();
 
-        await (sessions.get(account).connect(host.getHostname(), host.getPort()));
+        await (sessions.get(account).connect(await host.getHostname(), await host.getPort()));
 
       } catch (e) {
 
@@ -211,10 +263,10 @@
           if (rv !== true)
             return;
 
-          const host = accounts.getAccountById(account).getHost();
+          const host = await accounts.getAccountById(account).getHost();
 
-          host.setFingerprint(secInfo.fingerprint);
-          host.setIgnoreCertErrors(secInfo.code);
+          await host.setFingerprint(secInfo.fingerprint);
+          await host.setIgnoreCertErrors(secInfo.code);
 
           await actions["account-connecting"](response);
           return;
@@ -231,11 +283,11 @@
 
     "account-connect": async (msg) => {
 
-      console.log("Connect");
+      logger.logAction(`Connect ${msg.payload.account}`);
 
       const accountId = msg.payload.account;
 
-      const account = accounts.getAccountById(accountId);
+      const account = await accounts.getAccountById(accountId);
       await sessions.create(accountId, account);
 
       await actions["account-connecting"](msg);
@@ -243,7 +295,7 @@
 
 
     "account-connected": function (msg) {
-      console.log("Is Connected");
+      logger.logAction(`Is connected ${msg.payload.account}`);
 
       if (!sessions.has(msg.payload.account))
         return false;
@@ -253,23 +305,27 @@
 
 
     "account-disconnect": async function (msg) {
+      logger.logAction(`Disconnect ${msg.payload.account}`);
+
       await sessions.destroy(msg.payload.account);
     },
 
     "account-list": async function (msg) {
-      console.log("List Scripts for account: " + msg.payload.account);
+      logger.logAction(`List scripts for ${msg.payload.account}`);
 
       return await sessions.get(msg.payload.account).listScripts();
     },
 
     // Script endpoint...
     "script-create": async function (msg) {
-      console.log("Create Scripts for account: " + msg.payload.account);
+      const account = msg.payload.account;
+
+      logger.logAction(`Create script for ${account}`);
 
       const name = await (new SieveCreateScriptDialog()).show();
 
       if (name.trim() !== "")
-        await sessions.get(msg.payload.account).putScript(name, "#test\r\n");
+        await sessions.get(account).putScript(name, "#test\r\n");
 
       return name;
     },
@@ -278,7 +334,7 @@
       const account = msg.payload.account;
       const oldName = msg.payload.data;
 
-      console.log(`Rename Scripts ${oldName} for account: ${account}`);
+      logger.logAction(`Rename Script ${oldName} for account: ${account}`);
 
       if ((new SieveTabUI()).has(account, oldName)) {
         await (new SieveScriptBusyDialog(oldName)).show();
@@ -298,7 +354,7 @@
       const account = msg.payload.account;
       const name = msg.payload.data;
 
-      console.log(`Delete Scripts ${name} for account: ${account}`);
+      logger.logAction(`Delete Script ${name} for account: ${account}`);
 
       if ((new SieveTabUI()).has(account, name)) {
         await (new SieveScriptBusyDialog(name)).show();
@@ -314,15 +370,20 @@
     },
 
     "script-activate": async function (msg) {
-      console.log("Activate..." + msg);
+      const account = msg.payload.account;
+      const name = msg.payload.data;
 
-      await sessions.get(msg.payload.account).activateScript(msg.payload.data);
+      logger.logAction(`Activate ${name} for ${account}`);
+
+      await sessions.get(account).activateScript(name);
     },
 
     "script-deactivate": async function (msg) {
-      console.log("Deactivate...");
+      const account = msg.payload.account;
 
-      await sessions.get(msg.payload.account).activateScript();
+      logger.logAction(`Deactivate script for ${account}`);
+
+      await sessions.get(account).activateScript();
     },
 
     "script-edit": async function (msg) {
@@ -330,36 +391,48 @@
       const name = msg.payload.data;
       const account = msg.payload.account;
 
-      // create a new tab...
-      console.log("Edit Script " + name);
+      logger.logAction(`Edit ${name} on ${account}`);
+
       await (new SieveTabUI()).open(account, name);
     },
 
     "script-get": async function (msg) {
-      console.log("Get Script...");
-      return await sessions.get(msg.payload.account).getScript(msg.payload.data);
+
+      const name = msg.payload.data;
+      const account = msg.payload.account;
+
+      logger.logAction(`Get ${name} for ${account}`);
+
+      return await sessions.get(account).getScript(name);
     },
 
     "script-check": async function (msg) {
-      console.log("Check Script " + msg.payload.account + "... ");
+      const account = msg.payload.account;
+      const script = msg.payload.data;
+
+      logger.logAction(`Check Script for ${account}`);
 
       try {
-        return await sessions.get(msg.payload.account).checkScript(msg.payload.data);
+        return await sessions.get(account).checkScript(script);
       }
       catch (ex) {
-        // TODO thow an exception in case is it not an instance of a server side exception...
+        // TODO throw an exception in case is it not an instance of a server side exception...
         return ex.getResponse().getMessage();
       }
     },
 
     "script-save": async function (msg) {
-      console.log("Save Script...");
+      const account = msg.payload.account;
+      const name = msg.payload.name;
+      const script = msg.payload.script;
 
-      await sessions.get(msg.payload.account).putScript(msg.payload.name, msg.payload.script);
+      logger.logAction(`Save ${name} for ${account}`);
+
+      await sessions.get(account).putScript(name, script);
     },
 
     "script-import": async function () {
-      console.log("Import Script...");
+      logger.logAction("Import Script");
 
       const options = {
         title: "Import Script",
@@ -384,7 +457,9 @@
     },
 
     "script-export": async function (request) {
-      console.log("Export Script...");
+      logger.logAction("Export Script");
+
+      const script = request.payload.script;
 
       const options = {
         title: "Export Script",
@@ -399,7 +474,7 @@
       if (filename.canceled)
         return;
 
-      await require('fs').promises.writeFile(filename.filePath, request.payload.script, "utf-8");
+      await require('fs').promises.writeFile(filename.filePath, script, "utf-8");
     },
 
     "copy": function (msg) {
@@ -410,35 +485,42 @@
       return require("electron").clipboard.readText();
     },
 
-    "get-preference": (msg) => {
+    "get-preference": async (msg) => {
+
+      const name = msg.payload.data;
+
+      logger.logAction(`Get preference for ${name}`);
 
       const pref = new SievePrefManager("editor");
 
-      if (msg.payload.data === "tabulator-policy")
-        return pref.getBoolean("tabulator-policy", DEFAULT_TAB_POLICY);
+      if (name === "tabulator-policy")
+        return await pref.getBoolean("tabulator-policy", DEFAULT_TAB_POLICY);
 
-      if (msg.payload.data === "tabulator-width")
-        return pref.getInteger("tabulator-width", DEFAULT_TAB_WIDTH);
+      if (name === "tabulator-width")
+        return await pref.getInteger("tabulator-width", DEFAULT_TAB_WIDTH);
 
-      if (msg.payload.data === "indentation-policy")
-        return pref.getBoolean("indentation-policy", DEFAULT_INDENTATION_POLICY);
+      if (name === "indentation-policy")
+        return await pref.getBoolean("indentation-policy", DEFAULT_INDENTATION_POLICY);
 
-      if (msg.payload.data === "indentation-width")
-        return pref.getInteger("indentation-width", DEFAULT_INDENTATION_WIDTH);
+      if (name === "indentation-width")
+        return await pref.getInteger("indentation-width", DEFAULT_INDENTATION_WIDTH);
 
-      if (msg.payload.data === "syntax-check")
-        return pref.getBoolean("syntax-check", true);
+      if (name === "syntax-check")
+        return await pref.getBoolean("syntax-check", true);
 
-      throw new Error("Unknown settings");
+      throw new Error(`Unknown settings ${name}`);
     },
 
-    "set-preference": (msg) => {
-      const pref = new SievePrefManager("editor");
-      pref.setValue(msg.payload.key, msg.payload.value);
+    "set-preference": async (msg) => {
+      const name = msg.payload.key;
+      const value = msg.payload.value;
+
+      logger.logAction(`Set preference for ${name}`);
+
+      await (new SievePrefManager("editor"))
+        .setValue(name, value);
     }
-
   };
-
 
   for (const [key, value] of Object.entries(actions)) {
     SieveIpcClient.setRequestHandler("core", key, value);

@@ -26,20 +26,31 @@
     /**
      * @inheritdoc
      */
-    getValue(key) {
-      return browser.storage.local.get(`${this.id}.${key}`);
+    async getValue(key) {
+      key = `${this.id}.${key}`;
+
+      const pair = await browser.storage.local.get(key);
+
+      if (pair[key] === undefined)
+        return undefined;
+
+      return pair[key];
     }
 
     /**
      * @inheritdoc
      */
-    setValue(key, value) {
-      browser.storage.local.set(`${this.id}.${key}`, value);
+    async setValue(key, value) {
+
+      const item = {};
+      item[`${this.id}.${key}`] = value;
+
+      await browser.storage.local.set(item);
       return this;
     }
   }
 
-  if (typeof(module) !== "undefined" && module && module.exports)
+  if (typeof (module) !== "undefined" && module && module.exports)
     module.exports.SievePrefManager = SieveMozPrefManager;
   else
     exports.SievePrefManager = SieveMozPrefManager;

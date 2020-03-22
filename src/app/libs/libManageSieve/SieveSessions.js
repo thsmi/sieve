@@ -73,10 +73,10 @@
 
       const authentication = {};
 
-      authentication.username = account.getAuthentication().getUsername();
+      authentication.username = await (await account.getAuthentication()).getUsername();
 
       if (hasPassword)
-        authentication.password = await account.getAuthentication().getPassword();
+        authentication.password = await (await account.getAuthentication()).getPassword();
 
       return authentication;
     }
@@ -90,7 +90,7 @@
      *   the user name to be authorized as or an empty string.
      */
     async onAuthorize(account) {
-      return await account.getAuthorization().getAuthorization();
+      return await (await account.getAuthorization()).getAuthorization();
     }
 
     /**
@@ -121,21 +121,22 @@
 
       await this.destroy(id);
 
-      const host = account.getHost();
-      const security = account.getSecurity();
-      const settings = account.getSettings();
+      const host = await account.getHost();
+      const security = await account.getSecurity();
+      const settings = await account.getSettings();
 
       const options = {
-        secure : security.isSecure(),
-        sasl : security.getMechanism(),
-        keepAlive : host.getKeepAlive(),
-        logLevel : settings.getDebugFlags(),
-        certFingerprints : host.getFingerprint(),
-        certIgnoreError : host.getIgnoreCertErrors()
+        secure : await security.isSecure(),
+        sasl : await security.getMechanism(),
+        keepAlive : await host.getKeepAlive(),
+        logLevel : await settings.getLogLevel(),
+        certFingerprints : await host.getFingerprint(),
+        certIgnoreError : await host.getIgnoreCertErrors()
       };
 
       const session = new SieveSession(id, options);
 
+      // TODO move to app so that it can be shared with the wx implementation.
       session.on("authenticate", async (hasPassword) => { return await this.onAuthenticate(account, hasPassword); });
       session.on("authorize", async () => { return await this.onAuthorize(account); });
       session.on("proxy", async (hostname, port) => { return await this.onProxyLookup(account, hostname, port); });

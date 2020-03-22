@@ -14,12 +14,13 @@
   "use strict";
 
   /* global $ */
+  /* global SieveLogger */
   /* global SieveTemplateLoader */
   /* global SieveScriptUI */
   /* global SieveIpcClient */
   /* global SieveServerSettingsUI */
   /* global SieveCredentialsSettingsUI */
-  /* global SieveAdvancedSettingsUI */
+  /* global SieveDebugSettingsUI */
 
   const IS_SMALLER = -1;
   const IS_EQUAL = 0;
@@ -41,6 +42,16 @@
     constructor(accounts, id) {
       this.accounts = accounts;
       this.id = id;
+    }
+
+    /**
+     * Gets an instance to the logger.
+     *
+     * @returns {SieveLogger}
+     *   an reference to the logger instance.
+     **/
+    getLogger() {
+      return SieveLogger.getInstance();
     }
 
     /**
@@ -139,7 +150,7 @@
       item.find(".sieve-account-delete-server").click(() => { this.remove(); });
       item.find(".sieve-account-edit-server").click(() => { this.showServerSettings(); });
       item.find(".sieve-account-edit-credentials").click(() => { this.showCredentialSettings(); });
-      item.find(".sieve-account-edit-advanced").click(() => { this.showAdvancedSettings(); });
+      item.find(".sieve-account-edit-debug").click(() => { this.showAdvancedSettings(); });
 
       settings.empty().append(item);
     }
@@ -195,7 +206,7 @@
 
       data.forEach(async (item) => {
 
-        console.log(`Rendering ${this.id}/${item.script}`);
+        this.getLogger().logWidget(`Rendering ${this.id}/${item.script}`);
         await (new SieveScriptUI(this, item.script, item.active)).render();
       });
 
@@ -217,7 +228,7 @@
      * Renders the UI for this component.
      */
     async render() {
-      console.log(`Rendering Account ${this.id}`);
+      this.getLogger().logWidget(`Rendering Account ${this.id}`);
 
       // Check if the element exists...
       if ($(`#siv-account-${this.id}`).length === 0) {
@@ -287,7 +298,7 @@
      * Show the advanced settings dialog
      */
     showAdvancedSettings() {
-      (new SieveAdvancedSettingsUI(this)).show();
+      (new SieveDebugSettingsUI(this)).show();
       this.renderSettings();
     }
 

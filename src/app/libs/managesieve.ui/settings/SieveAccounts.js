@@ -9,12 +9,22 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+
 (function (exports) {
 
   "use strict";
 
+  const CONFIG_ID_GLOBAL = "global";
+  const CONFIG_KEY_ACCOUNTS = "accounts";
+  const CONFIG_KEY_LOGLEVEL = "loglevel";
+
+  const { SieveLogger } = require("./../utils/SieveLogger.js");
+
   const { SieveAccount } = require("./SieveAccount.js");
   const { SieveUniqueId } = require("./../utils/SieveUniqueId.js");
+
+  const { SievePrefManager } = require('./SievePrefManager.js');
+
 
   /**
    * Manages the configuration for sieve accounts.
@@ -38,29 +48,37 @@
      * @returns {SieveAccounts}
      *   a self reference.
      */
-    load() {
+    async load() {
 
-      const ids = JSON.parse(localStorage.getItem("accounts"));
+      const items = await (new SievePrefManager(CONFIG_ID_GLOBAL)).getComplexValue(CONFIG_KEY_ACCOUNTS, []);
 
-      this.accounts = {};
+      const accounts = {};
 
-      if (!ids)
+      SieveLogger.getInstance().level(await this.getLogLevel());
+
+      if (!items)
         return this;
 
-      ids.forEach((id) => {
-        this.accounts[id] = new SieveAccount(id);
-      });
+      for (const item of items) {
+        // Recreate the accounts only when needed...
+        if (this.accounts[item])
+          accounts[item] = this.accounts[item];
+        else
+          accounts[item] = new SieveAccount(item);
+      }
 
+      this.accounts = accounts;
       return this;
     }
 
     /**
      * Saves the list of account configurations.
+     *
      * @returns {SieveAccounts}
      *   a self reference.
      */
-    save() {
-      localStorage.setItem("accounts", JSON.stringify([...Object.keys(this.accounts)]));
+    async save() {
+      await (new SievePrefManager(CONFIG_ID_GLOBAL)).setComplexValue(CONFIG_KEY_ACCOUNTS, [...Object.keys(this.accounts)]);
       return this;
     }
 
@@ -85,7 +103,7 @@
      * @returns {SieveAccounts}
      *   a self reference.
      */
-    create(details) {
+    async create(details) {
 
       // create a unique id;
 
@@ -93,19 +111,22 @@
 
       this.accounts[id] = new SieveAccount(id);
 
-      this.save();
+      await this.save();
 
-      if (typeof(details) !== "undefined" && details !== null) {
-        if ((details.name !== null) && (details.name !== undefined))
-          this.accounts[id].getHost().setDisplayName(details.name);
-        if ((details.hostname !== null) && (details.hostname !== undefined))
-          this.accounts[id].getHost().setHostname(details.hostname);
-        if ((details.port !== null) && (details.port !== undefined))
-          this.accounts[id].getHost().setPort(details.port);
+      if (typeof (details) === "undefined" || details === null)
+        return this;
 
-        if ((details.username !== null) && (details.username !== undefined))
-          this.accounts[id].getAuthentication(1).setUsername(details.username);
-      }
+      if ((details.name !== null) && (details.name !== undefined))
+        await this.accounts[id].getHost().setDisplayName(details.name);
+
+      if ((details.hostname !== null) && (details.hostname !== undefined))
+        await this.accounts[id].getHost().setHostname(details.hostname);
+
+      if ((details.port !== null) && (details.port !== undefined))
+        await this.accounts[id].getHost().setPort(details.port);
+
+      if ((details.username !== null) && (details.username !== undefined))
+        await this.accounts[id].getAuthentication(1).setUsername(details.username);
 
       return this;
     }
@@ -118,13 +139,11 @@
      * @returns {SieveAccounts}
      *   a self reference
      */
-    remove(id) {
+    async remove(id) {
       // remove the accounts...
       delete this.accounts[id];
-      localStorage.removeItem(id);
-
-      // ... as well as the.
-      this.save();
+      // ... an persist it.
+      await this.save();
 
       return this;
     }
@@ -137,20 +156,42 @@
      *   a list with sieve account.
      */
     getAccounts() {
-      this.load();
       return Object.keys(this.accounts);
     }
 
     /**
      * Returns a specific sieve account
+     *
      * @param {string} id
      *   the accounts unique id.
      * @returns {SieveAccount}
      *   the sieve account or undefined.
      */
     getAccountById(id) {
-      this.load();
       return this.accounts[id];
+    }
+
+    /**
+     * Sets the global log level.
+     *
+     * @param {int} level
+     *   the global log level as integer.
+     * @returns {SieveAccounts}
+     *   a self reference.
+     */
+    async setLogLevel(level) {
+      await (new SievePrefManager(CONFIG_ID_GLOBAL)).setInteger(CONFIG_KEY_LOGLEVEL, level);
+      return this;
+    }
+
+    /**
+     * Gets the global log level.
+     *
+     * @returns {int}
+     *   the log level as integer.
+     */
+    async getLogLevel() {
+      return await (new SievePrefManager(CONFIG_ID_GLOBAL)).getInteger(CONFIG_KEY_LOGLEVEL, 0);
     }
   }
 

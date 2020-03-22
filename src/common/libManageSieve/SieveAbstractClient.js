@@ -185,7 +185,7 @@
         throw new Error("TLS can't be started no secure socket");
 
       if (!this.socket)
-        throw new Error("Can't start TLS, your are not connected to " + this.host);
+        throw new Error(`Can't start TLS, your are not connected to ${this.host}`);
 
       // Need to be overwritten in a subclass....
       return this;
@@ -421,7 +421,7 @@
      */
     disconnect(reason) {
 
-      this.getLogger().logState("Disconnecting " + this.host + ":" + this.port + "...");
+      this.getLogger().logState(`Disconnecting ${this.host}:${this.port}...`);
 
       this.cancel(reason);
 
@@ -507,6 +507,13 @@
     }
 
     onReceive(data) {
+
+      if (this.getLogger().isLevelStream())
+        this.getLogger().logStream(`Server -> Client [Byte Array]\n ${data}`);
+
+      if (this.getLogger().isLevelResponse())
+        this.getLogger().logResponse(data);
+
       // responses packets could be fragmented...
       if ((this.data === null) || (this.data.length === 0))
         this.data = data;
@@ -550,7 +557,7 @@
           // we don't care about any exception. We just log them in oder
           // to make debugging easier....
           if (this.getLogger().isLevelState()) {
-            this.getLogger().logState("Parsing Warning in libManageSieve/Sieve.js:\n" + ex.toString());
+            this.getLogger().logState(`Parsing Warning in libManageSieve/Sieve.js:\\n${ex.toString()}`);
             this.getLogger().logState(ex.stack);
           }
 
@@ -633,7 +640,8 @@
 
       const output = this.requests[idx].getNextRequest(this.createRequestBuilder()).getBytes();
 
-      this.getLogger().logRequest("Client -> Server:\n" + output);
+      if (this.getLogger().isLevelRequest())
+        this.getLogger().logRequest(`Client -> Server:\n${output}`);
 
       this.onSend(output);
 

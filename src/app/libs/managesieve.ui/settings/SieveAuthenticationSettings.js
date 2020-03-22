@@ -35,15 +35,15 @@
      *   the username as string, can not be null.
      *
      */
-    setUsername(username) {
-      this.account.prefs.setString("authentication.username", username);
+    async setUsername(username) {
+      await this.account.getConfig().setString("authentication.username", username);
     }
 
     /**
      * @inheritdoc
      */
-    getUsername() {
-      return this.account.prefs.getString("authentication.username");
+    async getUsername() {
+      return await this.account.getConfig().getString("authentication.username");
     }
 
     /**
@@ -58,8 +58,8 @@
      */
     async getPassword() {
 
-      const username = this.getUsername();
-      const displayname = this.account.getHost().getDisplayName();
+      const username = await this.getUsername();
+      const displayname = await (await this.account.getHost()).getDisplayName();
 
       return await (new SievePasswordDialog(username, displayname)).show();
     }

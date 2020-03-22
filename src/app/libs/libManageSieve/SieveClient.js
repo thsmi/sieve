@@ -219,14 +219,14 @@
             // in case the fingerprint is not pinned we can skip right here.
             if (!options.fingerprints.length) {
               resolve();
-              this.getLogger().log('Socket upgraded! (Chain of Trust)');
+              this.getLogger().logState('Socket upgraded! (Chain of Trust)');
               return;
             }
 
             // so let's check the if the server's fingerprint matches the pinned one.
             if (options.fingerprints.indexOf(cert.fingerprint) !== NOT_FOUND) {
               resolve();
-              this.getLogger().log('Socket upgraded! (Chain of Trust and pinned fingerprint)');
+              this.getLogger().logState('Socket upgraded! (Chain of Trust and pinned fingerprint)');
               return;
             }
 
@@ -254,7 +254,7 @@
             if (options.fingerprints.indexOf(cert.fingerprint) !== NOT_FOUND) {
               resolve();
 
-              this.getLogger().log('Socket upgraded! (Trusted Finger Print)');
+              this.getLogger().logState('Socket upgraded! (Trusted Finger Print)');
               return;
             }
           }
@@ -286,7 +286,7 @@
 
       super.disconnect();
 
-      this.getLogger().log("Disconnecting...");
+      this.getLogger().logState("Disconnecting...");
       if (this.socket) {
         this.socket.destroy();
         this.socket.unref();
@@ -312,7 +312,7 @@
      */
     onReceive(buffer) {
 
-      this.getLogger().log('onDataRead (' + buffer.length + ')\n' + buffer.toString("utf8"));
+      this.getLogger().logState(`onDataRead (${buffer.length})`);
 
       const data = [];
 
@@ -327,6 +327,15 @@
      * @inheritdoc
      */
     onSend(data) {
+
+      if (this.getLogger().isLevelStream()) {
+        // Force String to UTF-8...
+        const output = Array.prototype.slice.call(
+          new Uint8Array(new TextEncoder("UTF-8").encode(data)));
+
+        this.getLogger().logStream(`Client -> Server [Byte Array]:\n${output}`);
+      }
+
       if (this.tlsSocket !== null) {
         this.tlsSocket.write(data, "utf8");
         return;

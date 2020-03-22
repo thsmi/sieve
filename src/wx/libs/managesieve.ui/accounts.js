@@ -20,6 +20,7 @@
   /* global SieveDeleteScriptDialog */
   /* global SieveScriptBusyDialog */
   /* global SieveFingerprintDialog */
+  /* global SieveLogger */
 
   /**
    * Shows a prompt which asks the user for the new script name.
@@ -85,7 +86,7 @@
   /**
    * The main entry point for the account view
    */
-  function main() {
+  async function main() {
 
     // TODO move to editor
     /*    window.onbeforeunload = (e) => {
@@ -93,10 +94,12 @@
       e.preventDefault();
     };*/
 
+    SieveLogger.getInstance().level(
+      await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
+
     const accounts = new SieveAccountsUI();
     accounts.render();
 
-    // await SieveIpcClient.sendMessage("editor", "editor-save", null, this.getContent());
     SieveIpcClient.setRequestHandler("accounts", "script-show-create", async () => { return await onCreateScript(); });
     SieveIpcClient.setRequestHandler("accounts", "script-show-delete", async (msg) => { return await onDeleteScript(msg.payload); });
     SieveIpcClient.setRequestHandler("accounts", "script-show-rename", async (msg) => { return await onRenameScript(msg.payload); });

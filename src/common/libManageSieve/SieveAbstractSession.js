@@ -121,7 +121,7 @@
      * request is used.
      */
     async onIdle() {
-      this.getLogger().logState("Sending keep alive packet...");
+      this.getLogger().logSession("Sending keep alive packet...");
       await this.noop();
     }
 
@@ -485,18 +485,18 @@
       catch (ex) {
 
         if (!(ex instanceof SieveReferralException)) {
-          this.getLogger().logSession("Sending Request failed " + ex);
+          this.getLogger().logSession(`Sending Request failed ${ex}`);
           throw ex;
         }
 
         if (!follow) {
-          this.getLogger().logSession("Sending Request failed " + ex);
+          this.getLogger().logSession(`Sending Request failed ${ex}`);
           throw ex;
         }
 
         await this.disconnect(true);
 
-        this.getLogger().logSession("Referred to Server: " + ex.getHostname());
+        this.getLogger().logSession(`Referred to Server: ${ex.getHostname()}`);
         await this.connect(ex.getHostname(), ex.getPort());
 
         return await this.promisify(request, init);
@@ -573,7 +573,7 @@
         try {
           await this.logout();
         } catch (ex) {
-          this.getLogger().logSession("Graceful logout failed" + ex);
+          this.getLogger().logSession(`Graceful logout failed ${ex}`);
         }
       }
 
@@ -630,7 +630,7 @@
       }
 
       if (active === null)
-        throw new SieveClientException("Unknown Script " + oldName);
+        throw new SieveClientException(`Unknown Script ${oldName}`);
 
       // Get the script'S content and save is as a new file
       await this.putScript(newName,

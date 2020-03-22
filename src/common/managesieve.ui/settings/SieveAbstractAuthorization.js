@@ -85,8 +85,8 @@
      * @returns {string}
      *   the username as string.
      */
-    getAuthorization() {
-      return this.account.getAuthentication().getUsername();
+    async getAuthorization() {
+      return await (await this.account.getAuthentication()).getUsername();
     }
   }
 
@@ -98,8 +98,8 @@
     /**
      * @inheritdoc
      **/
-    getAuthorization() {
-      return this.account.getConfig().getString(CONFIG_AUTHORIZATION_USERNAME, null);
+    async getAuthorization() {
+      return await this.account.getConfig().getString(CONFIG_AUTHORIZATION_USERNAME, null);
     }
 
     /**
@@ -109,11 +109,11 @@
      *   the authorization as string.
      *
      */
-    setAuthorization(authorization) {
+    async setAuthorization(authorization) {
       if (typeof (authorization) === "undefined" || (authorization === null))
         throw new Error("Authorization can't be undefined");
 
-      this.account.getConfig().setString(CONFIG_AUTHORIZATION_USERNAME, authorization);
+      await this.account.getConfig().setString(CONFIG_AUTHORIZATION_USERNAME, authorization);
     }
   }
 

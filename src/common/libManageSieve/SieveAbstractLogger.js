@@ -29,8 +29,6 @@
 
   const DEFAULT_LEVEL = 0;
 
-
-
   /**
    * Implements a common and platform independent logging interface.
    * The log level is interpreted as a bit filed with turns logging
@@ -73,13 +71,17 @@
 
     /**
      * Logs response related information
-     * @param {string} message
+     * @param {byte[]} data
      *   the response status to log
      * @returns {SieveAbstractLogger}
      *   a self reference
      */
-    logResponse(message) {
-      return this.log(message, LOG_RESPONSE);
+    logResponse(data) {
+      const byteArray = new Uint8Array(data.slice(0, data.length));
+
+      return this.log(
+        "Server -> Client\n" + (new TextDecoder("UTF-8")).decode(byteArray),
+        LOG_RESPONSE);
     }
 
     /**
@@ -128,7 +130,7 @@
      *   a self reference
      */
     log(message, level) {
-      throw new Error("Implement log(" + message + "," + level + ")");
+      throw new Error(`Implement log(${message},${level})`);
     }
 
     /**
@@ -164,6 +166,36 @@
         return true;
 
       return !!(this.level() & level);
+    }
+
+    /**
+     * Checks if stream data should be logged.
+     *
+     * @returns {boolean}
+     *   true in case the stream data should be logged otherwise false
+     */
+    isLevelStream() {
+      return this.isLoggable(LOG_STREAM);
+    }
+
+    /**
+     * Checks if request data should be logged.
+     *
+     * @returns {boolean}
+     *   true in case the request data should be logged otherwise false
+     */
+    isLevelRequest() {
+      return this.isLoggable(LOG_REQUEST);
+    }
+
+    /**
+     * Checks if response data should be logged.
+     *
+     * @returns {boolean}
+     *   true in case the response data should be logged otherwise false
+     */
+    isLevelResponse() {
+      return this.isLoggable(LOG_RESPONSE);
     }
 
     /**

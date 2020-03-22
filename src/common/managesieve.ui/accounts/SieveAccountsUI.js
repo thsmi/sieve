@@ -16,11 +16,22 @@
   /* global $ */
   /* global SieveAccountUI */
   /* global SieveIpcClient */
+  /* global SieveLogger */
 
   /**
    * A UI renderer for a list of sieve accounts
    **/
   class SieveAccountsUI {
+
+    /**
+     * Gets an instance to the logger.
+     *
+     * @returns {SieveLogger}
+     *   an reference to the logger instance.
+     **/
+    getLogger() {
+      return SieveLogger.getInstance();
+    }
 
     /**
      * Renders the UI for this component.
@@ -31,10 +42,10 @@
       const items = await SieveIpcClient.sendMessage("core", "accounts-list");
 
       $(".siv-accounts").empty();
-      console.log("Rendering Accounts...");
+      this.getLogger().logWidget("Rendering Accounts...");
 
       for (const item of items) {
-        console.log(` + Accounts ${item}`);
+        this.getLogger().logWidget(` + Accounts ${item}`);
         await ((new SieveAccountUI(this, item)).render());
       }
     }
@@ -63,8 +74,6 @@
     async create() {
       const id = await SieveIpcClient.sendMessage("core", "account-create");
       await this.render();
-
-      // Fixme show the settings dialog.
 
       return id;
     }

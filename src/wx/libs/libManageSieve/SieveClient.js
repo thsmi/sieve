@@ -27,9 +27,6 @@
 
   const { SieveCertValidationException } = require("./SieveExceptions.js");
 
-  // eslint-disable-next-line no-magic-numbers
-  const LOG_RESPONSE = (1 << 1);
-
   const NEW_TRANSPORT_API = 4;
   const OLD_TRANSPORT_API = 5;
 
@@ -68,33 +65,6 @@
       this.secure = true;
     }
 
-    /**
-     * Converts an UTF16 encoded Javascript string to an UTF8 encoded
-     * byte array.
-     *
-     * It also normalizes all line breaks. In sieve all line breaks have
-     * to be \r\n
-     *
-     * @param {string} str
-     *   the string to convert.
-     *
-     * @returns {byte[]}
-     *   an utf8 encoded byte array.
-     */
-    jsStringToByteArray(str) {
-      // cleanup linebreaks...
-
-      // eslint-disable-next-line no-control-regex
-      str = str.replace(/\r\n|\r|\n|\u0085|\u000C|\u2028|\u2029/g, "\r\n");
-
-      return Array.prototype.slice.call(
-        new Uint8Array(new TextEncoder("UTF-8").encode(str)));
-    }
-
-    convertToString(byteArray) {
-      byteArray = new Uint8Array(byteArray);
-      return (new TextDecoder("UTF-8")).decode(byteArray);
-    }
 
     /**
      * Implements the Gecko Component Manager's interfaces.
@@ -284,7 +254,7 @@
       this.idleTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
       this.timeoutTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
 
-      this.getLogger().logState("Connecting to " + this.host + ":" + this.port + " ...");
+      this.getLogger().logState(`Connecting to ${this.host}:${this.port} ...`);
 
       // If we know the proxy setting, we can do a shortcut...
       if (proxy) {
@@ -292,16 +262,15 @@
         return this;
       }
 
-      this.getLogger().logState("Lookup Proxy Configuration for x-sieve://" + this.host + ":" + this.port + " ...");
+      this.getLogger().logState(`Lookup Proxy Configuration for x-sieve://${this.host}:${this.port} ...`);
 
       const ios = Cc["@mozilla.org/network/io-service;1"]
         .getService(Ci.nsIIOService);
 
       // const uri = ios.newURI("x-sieve://" + this.host + ":" + this.port, null, null);
-      const uri = ios.newURI("http://" + this.host + ":" + this.port, null, null);
+      const uri = ios.newURI(`http://${this.host}:${this.port}`, null, null);
 
-      this.getLogger().logState("Connecting to " + uri.hostPort + ":" + this.host + " ...");
-
+      this.getLogger().logState(`Connecting to ${uri.hostPort}:${this.host} ...`);
 
       const pps = Cc["@mozilla.org/network/protocol-proxy-service;1"]
         .getService(Ci.nsIProtocolProxyService);
@@ -368,7 +337,7 @@
     onProxyAvailable( request, aURI, aProxyInfo, status) {
 
       if (aProxyInfo)
-        this.getLogger().logState("Using Proxy: [" + aProxyInfo.type + "] " + aProxyInfo.host + ":" + aProxyInfo.port);
+        this.getLogger().logState(`Using Proxy: [${aProxyInfo.type}] ${aProxyInfo.host}:${aProxyInfo.port}`);
       else
         this.getLogger().logState("Using Proxy: Direct");
 
@@ -537,14 +506,6 @@
 
       const data = binaryInStream.readByteArray(count);
 
-      this.getLogger().logStream("Server -> Client [Byte Array]\n" + data);
-
-      if (this.getLogger().isLoggable(LOG_RESPONSE)) {
-
-        this.getLogger().logResponse(
-          "Server -> Client\n" + this.convertToString(data.slice(0, data.length)));
-      }
-
       super.onReceive(data);
     }
 
@@ -553,10 +514,12 @@
      */
     onSend(data) {
 
-      // Force String to UTF-8...
-      const output = this.jsStringToByteArray(data);
+      // Convert string into an UTF-8 array...
+      const output = Array.prototype.slice.call(
+        new Uint8Array(new TextEncoder("UTF-8").encode(data)));
 
-      this.getLogger().logStream("Client -> Server [Byte Array]:\n" + output);
+      if (this.getLogger().isLevelStream())
+        this.getLogger().logStream(`Client -> Server [Byte Array]:\n${output}`);
 
       this.binaryOutStream.writeByteArray(output, output.length);
 

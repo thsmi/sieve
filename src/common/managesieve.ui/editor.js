@@ -15,6 +15,7 @@
 
   /* global SieveEditorUI */
   /* global SieveIpcClient */
+  /* global SieveLogger */
 
   /**
    * The main entry point.
@@ -22,10 +23,15 @@
    */
   async function main() {
 
+    SieveLogger.getInstance().level(
+      await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
+
     const url = new URL(window.location);
+    const script = url.searchParams.get("script");
+    const account = url.searchParams.get("account");
 
     // initialize the editor
-    const editor = new SieveEditorUI(url.searchParams.get("script"), url.searchParams.get("account"), "code");
+    const editor = new SieveEditorUI(script, account, "code");
 
     await editor.render();
     await editor.load();

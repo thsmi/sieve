@@ -83,7 +83,7 @@
      * @param {int} type
      *   the mechanism type's unique id.
      */
-    setMechanism(type) {
+    async setMechanism(type) {
       if (typeof (type) === "undefined" || type === null)
         type = this.getDefault();
 
@@ -93,7 +93,7 @@
       if (!this.hasMechanism(type))
         throw new Error(`Invalid mechanism ${type}`);
 
-      this.account.getConfig().setInteger(this.getKey(), type);
+      await this.account.getConfig().setInteger(this.getKey(), type);
     }
 
     /**
@@ -102,8 +102,8 @@
      * @returns {int}
      *   the mechanisms unique id.
      */
-    getMechanism() {
-      return this.account.getConfig().getInteger(this.getKey(), this.getDefault());
+    async getMechanism() {
+      return await this.account.getConfig().getInteger(this.getKey(), this.getDefault());
     }
 
     /**
@@ -115,14 +115,14 @@
      * @returns {SieveAbstractAuthentication}
      *   the selected authentication mechanism.
      */
-    get(mechanism) {
+    async get(mechanism) {
       if (typeof (mechanism) === "undefined" || mechanism === null)
-        mechanism = this.getMechanism();
+        mechanism = await this.getMechanism();
 
       if (!this.hasMechanism(mechanism))
         mechanism = this.getDefault();
 
-      return this.getMechanismById(mechanism);
+      return await this.getMechanismById(mechanism);
     }
   }
 

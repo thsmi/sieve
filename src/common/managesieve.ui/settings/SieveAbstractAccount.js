@@ -19,8 +19,7 @@
   const { SieveAuthentication } = require("./SieveAuthenticationSettings.js");
   const { SieveSecurity } = require("./SieveSecuritySettings.js");
   const { SieveHost } = require("./SieveHostSettings.js");
-  const { SieveCommonSettings } = require("./SieveCommonSettings.js");
-
+  const { SieveAccountSettings } = require("./SieveAccountSettings.js");
 
   /**
    * Abstract implementation for managing an account's preferences.
@@ -36,13 +35,13 @@
     constructor(id) {
       this.id = id;
 
-      this.prefs = new SievePrefManager(id);
+      this.preferences = new SievePrefManager(`@${id}`);
 
       this.host = new SieveHost(this);
       this.authentication = new SieveAuthentication(this);
       this.authorization = new SieveAuthorization(this);
       this.security = new SieveSecurity(this);
-      this.common = new SieveCommonSettings(this);
+      this.common = new SieveAccountSettings(this);
     }
 
     /**
@@ -61,7 +60,7 @@
      *   the reference to the preference manager
      */
     getConfig() {
-      return this.prefs;
+      return this.preferences;
     }
 
     /**
@@ -71,8 +70,8 @@
      * @returns {SieveHost}
      *   the current host settings
      **/
-    getHost() {
-      return this.host.get();
+    async getHost() {
+      return await this.host.get();
     }
 
     /**
@@ -101,23 +100,55 @@
      * @returns {SieveAbstractAccount}
      *   a self reference
      */
-    setAuthentication(type) {
-      this.authentication.setMechanism(type);
+    async setAuthentication(type) {
+      await this.authentication.setMechanism(type);
       return this;
     }
 
-    getAuthentication(type) {
-      return this.authentication.get(type);
+    /**
+     * Gets the authentication configuration
+     *
+     * @param {int} [type]
+     *   optional the configuration type. If omitted the default type is returned.
+     * @returns {SieveAbstractAuthentication}
+     *   the object managing the authentication for the type.
+     */
+    async getAuthentication(type) {
+      return await this.authentication.get(type);
     }
 
-    setAuthorization(type) {
-      this.authorization.setMechanism(type);
+    /**
+     * Defines which authorization configuration is active.
+     *
+     * @param {int} type
+     *   the authorization type which should be activated.
+     * @returns {SieveAbstractAccount}
+     *   a self reference
+     */
+    async setAuthorization(type) {
+      await this.authorization.setMechanism(type);
+      return this;
     }
 
-    getAuthorization(type) {
-      return this.authorization.get(type);
+    /**
+     * Gets the authorization configuration.
+     *
+     * @param {SieveAbstractAuthorization} [type]
+     *   optional authorization type. In case it is omitted
+     *   default settings are returned.
+     * @returns {SieveAbstractAuthorization}
+     *   the object managing the authorization for the type
+     */
+    async getAuthorization(type) {
+      return await this.authorization.get(type);
     }
 
+    /**
+     * Gets miscellaneous account specific settings like the log levels etc.
+     *
+     * @returns {SieveAccountSettings}
+     *   the object managing the miscellaneous account settings
+     */
     getSettings() {
       return this.common;
     }

@@ -32,8 +32,8 @@
      * @returns {string}
      *   the display name
      **/
-    getDisplayName() {
-      return this.account.prefs.getString("host.displayName", "Unnamed Account");
+    async getDisplayName() {
+      return await this.account.getConfig().getString("host.displayName", "Unnamed Account");
     }
 
     /**
@@ -43,8 +43,8 @@
      * @returns {SieveCustomHostEx}
      *   a self reference
      */
-    setDisplayName(value) {
-      this.account.prefs.setString("host.displayName", value);
+    async setDisplayName(value) {
+      await this.account.getConfig().setString("host.displayName", value);
       return this;
     }
 
@@ -60,8 +60,8 @@
      * @returns {string}
      *   the accounts fingerprint or an empty string in case no fingerprint is stored.
      **/
-    getFingerprint() {
-      return this.account.prefs.getString("host.fingerprint", "");
+    async getFingerprint() {
+      return await this.account.getConfig().getString("host.fingerprint", "");
     }
 
     /**
@@ -72,8 +72,8 @@
      * @returns {SieveCustomHostEx}
      *   a self reference
      */
-    setFingerprint(value) {
-      this.account.prefs.setString("host.fingerprint", value);
+    async setFingerprint(value) {
+      await this.account.getConfig().setString("host.fingerprint", value);
       return this;
     }
 
@@ -83,8 +83,8 @@
      * @returns {string}
      *   the node js error code to ignore as string or an empty string.
      */
-    getIgnoreCertErrors() {
-      return this.account.prefs.getString("host.ignoreCertErrors", "");
+    async getIgnoreCertErrors() {
+      return await this.account.getConfig().getString("host.ignoreCertErrors", "");
     }
 
     /**
@@ -99,8 +99,8 @@
      * @returns {SieveCustomHostEx}
      *   a self reference
      */
-    setIgnoreCertErrors(errorCode) {
-      this.account.prefs.setString("host.ignoreCertErrors", errorCode);
+    async setIgnoreCertErrors(errorCode) {
+      await this.account.getConfig().setString("host.ignoreCertErrors", errorCode);
       return this;
     }
   }

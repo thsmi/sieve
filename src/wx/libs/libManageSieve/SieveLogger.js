@@ -32,7 +32,7 @@
 
       Components.classes["@mozilla.org/consoleservice;1"]
         .getService(Components.interfaces.nsIConsoleService)
-        .logStringMessage("[" + this.getTimestamp() + " " + this.prefix() + "] " + message);
+        .logStringMessage(`[${this.getTimestamp()} ${this.prefix()}] ${message}`);
 
       /* Cc["@mozilla.org/embedcomp/prompt-service;1"]
         .getService(Components.interfaces.nsIPromptService)

@@ -17,12 +17,18 @@
   /* global SieveImportUI */
   /* global SieveUpdaterUI */
   /* global SieveAccountCreateUI */
+  /* global SieveIpcClient */
+  /* global SieveLogger */
 
   /**
    * The main entry point for the account view
    * Called as soon as the DOM is ready.
    */
-  function main() {
+  async function main() {
+
+    SieveLogger.getInstance().level(
+      await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
+
     const accounts = new SieveAccountsUI();
     accounts.render();
 

@@ -72,13 +72,13 @@
      * @returns {int}
      *   the port as integer for this account.
      */
-    getPort(type) {
+    async getPort(type) {
 
       if (typeof (type) === "undefined" || type === null)
-        type = this.account.getConfig().getInteger(CONFIG_HOST_PORT_TYPE, TYPE_RFC);
+        type = await this.account.getConfig().getInteger(CONFIG_HOST_PORT_TYPE, TYPE_RFC);
 
       if (type === TYPE_CUSTOM)
-        return this.account.getConfig().getInteger(CONFIG_HOST_PORT, PORT_SIEVE_RFC);
+        return await this.account.getConfig().getInteger(CONFIG_HOST_PORT, PORT_SIEVE_RFC);
 
       if (type === TYPE_OLD)
         return PORT_SIEVE_OLD;
@@ -95,7 +95,7 @@
      *  @returns {SieveAbstractHost}
      *   a self reference
      */
-    setPort(port) {
+    async setPort(port) {
       let type = TYPE_CUSTOM;
 
       if (port === PORT_SIEVE_RFC)
@@ -103,7 +103,7 @@
       else if (port === PORT_SIEVE_OLD)
         type = TYPE_OLD;
 
-      this.account.getConfig().setInteger(CONFIG_HOST_PORT_TYPE, type);
+      await this.account.getConfig().setInteger(CONFIG_HOST_PORT_TYPE, type);
 
       if (type !== TYPE_CUSTOM)
         return this;
@@ -113,7 +113,7 @@
       if (isNaN(port))
         port = PORT_SIEVE_RFC;
 
-      this.account.getConfig().setInteger(CONFIG_HOST_PORT, port);
+      await this.account.getConfig().setInteger(CONFIG_HOST_PORT, port);
       return this;
     }
 
@@ -138,8 +138,8 @@
      * @returns {SieveAbstractHost}
      *   a self reference
      */
-    setKeepAlive(value) {
-      this.account.getConfig().setInteger(CONFIG_KEEP_ALIVE_INTERVAL, value);
+    async setKeepAlive(value) {
+      await this.account.getConfig().setInteger(CONFIG_KEEP_ALIVE_INTERVAL, value);
       return this;
     }
 
@@ -149,8 +149,8 @@
      *  the maximum idle time in seconds.
      *  zero indicates keep alive messages are disabled
      **/
-    getKeepAlive() {
-      return this.account.getConfig().getInteger(CONFIG_KEEP_ALIVE_INTERVAL, FIVE_MINUTES);
+    async getKeepAlive() {
+      return await this.account.getConfig().getInteger(CONFIG_KEEP_ALIVE_INTERVAL, FIVE_MINUTES);
     }
   }
 
@@ -163,8 +163,8 @@
     /**
      * @inheritdoc
      **/
-    getHostname() {
-      return this.account.getConfig().getString("hostname", "");
+    async getHostname() {
+      return await this.account.getConfig().getString("hostname", "");
     }
 
     /**
@@ -176,8 +176,8 @@
      * @returns {SieveCustomHost}
      *   a self reference
      */
-    setHostname(hostname) {
-      this.account.getConfig().setString("hostname", hostname);
+    async setHostname(hostname) {
+      await this.account.getConfig().setString("hostname", hostname);
       return this;
     }
   }

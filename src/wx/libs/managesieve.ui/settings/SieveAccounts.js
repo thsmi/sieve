@@ -9,13 +9,19 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+// TODO merge with APP most of the code is duplicated
+
 (function (exports) {
 
   "use strict";
 
+  const CONFIG_ID_GLOBAL = "global";
+
   /* global browser */
   const { SieveUniqueId } = require("libs/managesieve.ui/utils/SieveUniqueId.js");
   const { SieveAbstractAccount } = require("libs/managesieve.ui/settings/SieveAbstractAccount.js");
+
+  const { SievePrefManager } = require('./SievePrefManager.js');
 
   /**
    * Manages the configuration for sieve accounts.
@@ -28,12 +34,8 @@
 
     /**
      * Creates a new instance
-     *
-     * @param {Function} callback
-     *   the password callback.
      */
-    constructor(callback) {
-      this.callback = callback;
+    constructor() {
       this.accounts = {};
     }
 
@@ -57,7 +59,7 @@
         if (item.type !== "imap" && item.type !== "pop3")
           continue;
 
-        this.accounts[item.id] = new SieveAbstractAccount(item.id, this.callback);
+        this.accounts[item.id] = new SieveAbstractAccount(item.id);
       }
 
       return this;
@@ -95,6 +97,30 @@
     getAccountById(id) {
       return this.accounts[id];
     }
+
+    /**
+     * Sets the global log level.
+     *
+     * @param {int} level
+     *   the global log level as integer.
+     * @returns {SieveAccounts}
+     *   a self reference.
+     */
+    async setLogLevel(level) {
+      await (new SievePrefManager(CONFIG_ID_GLOBAL)).setInteger("loglevel", level);
+      return this;
+    }
+
+    /**
+     * Gets the global log level.
+     *
+     * @returns {int}
+     *   the log level as integer.
+     */
+    async getLogLevel() {
+      return await (new SievePrefManager(CONFIG_ID_GLOBAL)).getInteger("loglevel", 0);
+    }
+
   }
 
   // Require modules need to use export.module

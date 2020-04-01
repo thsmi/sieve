@@ -116,17 +116,17 @@
       if (typeof (details) === "undefined" || details === null)
         return this;
 
-      if ((details.name !== null) && (details.name !== undefined))
-        await this.accounts[id].getHost().setDisplayName(details.name);
-
       if ((details.hostname !== null) && (details.hostname !== undefined))
-        await this.accounts[id].getHost().setHostname(details.hostname);
+        await (await this.accounts[id].getHost()).setHostname(details.hostname);
 
       if ((details.port !== null) && (details.port !== undefined))
-        await this.accounts[id].getHost().setPort(details.port);
+        await (await this.accounts[id].getHost()).setPort(details.port);
 
       if ((details.username !== null) && (details.username !== undefined))
-        await this.accounts[id].getAuthentication(1).setUsername(details.username);
+        await (await this.accounts[id].getAuthentication(1)).setUsername(details.username);
+
+      if ((details.name !== null) && (details.name !== undefined))
+        await (await this.accounts[id].getHost()).setDisplayName(details.name);
 
       return this;
     }

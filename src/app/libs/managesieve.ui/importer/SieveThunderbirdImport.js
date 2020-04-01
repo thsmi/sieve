@@ -18,10 +18,11 @@
   const PREF_KEY_SERVER_TYPE = '^.*user_pref\\(.*"mail.server.%server%.type".*,.*"(.*)"\\);.*$';
   const PREF_KEY_SERVER_USERNAME = '^.*user_pref\\(.*"mail.server.%server%.userName".*,.*"(.*)"\\);.*$';
   const PREF_KEY_SERVER_HOSTNAME = '^.*user_pref\\(.*"mail.server.%server%.hostname".*,.*"(.*)"\\);.*$';
+  const PREF_KEY_SERVER_REALUSERNAME = '^.*user_pref\\(.*"mail.server.%server%.realuserName".*,.*"(.*)"\\);.*$';
+  const PREF_KEY_SERVER_REALHOSTNAME = '^.*user_pref\\(.*"mail.server.%server%.realhostname".*,.*"(.*)"\\);.*$';
   const PREF_KEY_SERVER_NAME = '^.*user_pref\\(.*"mail.server.%server%.name".*,.*"(.*)"\\);.*$';
 
   const FIRST_MATCH = 1;
-
 
   /**
    * Imports Account settings from thunderbird's profile directory.
@@ -144,6 +145,28 @@
     }
 
     /**
+     * Extracts the given key from the server settings.
+     *
+     * @param {string} profile
+     *   the profile data
+     * @param {string} server
+     *   the server's unique name
+     * @param {string} key
+     *   the preference key to be retrieved
+     *
+     * @returns {string}
+     *   the key's value or null in case it does not exist.
+     */
+    getServerKey(profile, server, key) {
+      const value = (new RegExp(key.replace("%server%", server), "gm")).exec(profile);
+
+      if (!value)
+        return null;
+
+      return value[FIRST_MATCH];
+    }
+
+    /**
      * Reads the accounts from thunderbird's preferences file.
      *
      * @returns {object}
@@ -159,15 +182,27 @@
       for (const account of accounts) {
 
         const server = (new RegExp(PREF_KEY_SERVER.replace("%account%", account), "gm")).exec(profile)[FIRST_MATCH];
-        const type = (new RegExp(PREF_KEY_SERVER_TYPE.replace("%server%", server), "gm")).exec(profile)[FIRST_MATCH];
+        const type = this.getServerKey(profile, server, PREF_KEY_SERVER_TYPE);
 
         if (type !== "imap")
           continue;
 
+        let username = this.getServerKey(profile, server, PREF_KEY_SERVER_REALUSERNAME);
+
+        if (!username)
+          username = this.getServerKey(profile, server, PREF_KEY_SERVER_USERNAME);
+
+        let hostname = this.getServerKey(profile, server, PREF_KEY_SERVER_REALHOSTNAME);
+        if (!hostname)
+          hostname = this.getServerKey(profile, server, PREF_KEY_SERVER_HOSTNAME);
+
+        const name = this.getServerKey(profile, server, PREF_KEY_SERVER_NAME);
+
         const result = {};
-        result["username"] = (new RegExp(PREF_KEY_SERVER_USERNAME.replace("%server%", server), "gm")).exec(profile)[FIRST_MATCH];
-        result["hostname"] = (new RegExp(PREF_KEY_SERVER_HOSTNAME.replace("%server%", server), "gm")).exec(profile)[FIRST_MATCH];
-        result["name"] = (new RegExp(PREF_KEY_SERVER_NAME.replace("%server%", server), "gm")).exec(profile)[FIRST_MATCH];
+
+        result["username"] = username;
+        result["hostname"] = hostname;
+        result["name"] = name;
 
         results.push(result);
       }

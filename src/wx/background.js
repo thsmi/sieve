@@ -23,7 +23,9 @@
   const ERROR_TIME = 4;
 
   const logger = SieveLogger.getInstance();
+  const accounts = await (new SieveAccounts().load());
 
+  // TODO Extract into separate class..
   async function getTabs(account, name) {
     const url = new URL("./libs/managesieve.ui/editor.html", window.location);
 
@@ -44,8 +46,19 @@
       tab.windowId,
       { focused : true }
     );
-
   }
+
+  browser.tabs.onRemoved.addListener(async (tabId) => {
+
+    const url = new URL("./libs/managesieve.ui/*", window.location);
+    const tabs = await browser.tabs.query({ url: url.toString() });
+
+    if (tabs.length)
+      return;
+
+    for (const id of accounts.getAccounts())
+      browser.sieve.session.destroy(id);
+  });
 
   await browser.sieve.menu.onCommand.addListener(
     async () => {
@@ -63,11 +76,8 @@
         url : "./libs/managesieve.ui/accounts.html"
       });
     });
+
   await browser.sieve.menu.load();
-
-
-
-  const accounts = await (new SieveAccounts().load());
 
   const actions = {
     // account endpoints...

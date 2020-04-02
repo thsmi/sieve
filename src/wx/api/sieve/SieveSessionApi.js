@@ -15,6 +15,7 @@
 
   /* global ExtensionCommon */
   /* global Components */
+  /* global ChromeUtils */
 
   const Cc = Components.classes;
   const Ci = Components.interfaces;
@@ -28,26 +29,41 @@
      */
     getAPI(context) {
 
+      const rootUri = context.extension.rootURI;
       const url = context.extension.getURL();
 
-      // For some strange reasons ChromeUtils import fails in packaged XPI.
-      //
-      // const { require } = ChromeUtils.import(`${url}/SieveRequire.jsm`)
-      //   .loadRequire(`${url}/libs/libManageSieve/`);
+      // The default case it loading from a jar file.
+      let requireUrl = rootUri.resolve("/modules/SieveRequire.jsm");
 
-      // So we use the subscript loader...
-      const subscript = {};
-      Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-        .getService(Components.interfaces.mozIJSSubScriptLoader)
-        .loadSubScript(`${url}/SieveRequire.jsm`, subscript);
+      // But for debugging we are loading from a file url. Which is prohibited
+      // so we need to convert the file url into an extension url.
+      if (rootUri.schemeIs("file"))
+        requireUrl = `${url}/modules/SieveRequire.jsm`;
 
-      const { require } = subscript.loadRequire(`${url}/libs/libManageSieve/`);
-
-      const { SieveSession } = require("./SieveSession.js");
+      const { Modules } = ChromeUtils.import(requireUrl);
+      const modules = new Modules(
+        `${url}/libs/libManageSieve/`,
+        // eslint-disable-next-line no-console
+        function(msg) { console.log(msg); });
 
       const sessions = new Map();
 
-      // webExtension.localizeMessage("libraryLabel");
+      context.callOnClose({ close: () => {
+        console.log("Unloading Sieve Session API");
+
+        // First ensure we exit all active sessions.
+        for (const item of sessions.values())
+          item.disconnect(true);
+        sessions.clear();
+
+        // Then invalidate all the modules.
+        modules.invalidate();
+
+        // And finally unload the module loader.
+        Components.utils.unload(rootUri.resolve("/modules/SieveRequire.jsm"));
+      }});
+
+      const { SieveSession } = modules.require("./SieveSession.js");
 
       return {
         sieve: {
@@ -144,6 +160,10 @@
               sessions.delete(id);
             },
 
+            async has(id) {
+              return await sessions.has(id);
+            },
+
             // eslint-disable-next-line require-await
             async addCertErrorOverride(hostname, port, rawDER, flags) {
 
@@ -237,9 +257,9 @@
 
             async probe(host, port) {
 
-              const { Sieve } = require("./SieveSession.js");
-              const { SieveLogger } = require("./SieveLogger.js");
-              const { SieveInitRequest } = require("./SieveRequest.js");
+              const { Sieve } = modules.require("./SieveSession.js");
+              const { SieveLogger } = modules.require("./SieveLogger.js");
+              const { SieveInitRequest } = modules.require("./SieveRequest.js");
 
               const sieve = new Sieve(new SieveLogger());
 

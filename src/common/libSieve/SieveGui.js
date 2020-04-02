@@ -309,6 +309,9 @@
         e.preventDefault();
         console.dir(e.dataTransfer);
       });
+
+    $("#infobartoggle")
+      .click(function() { $("#infobar").toggle(); });
   }
 
   /**

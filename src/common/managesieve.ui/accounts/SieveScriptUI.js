@@ -16,6 +16,9 @@
 
   "use strict";
 
+  const HEX = 16;
+  const HEX_OFFSET = -2;
+
   /**
    * An UI elements which handles displaying details for a sieve script.
    * It does not provide any support for editing the scripts content.
@@ -48,7 +51,7 @@
       // Convert the name into hex to escape dangerous characters.
       let str = "";
       for (let i = 0; i < this.name.length; i++)
-        str += ("0" + this.name.charCodeAt(i).toString(16)).slice(-2);
+        str += ("0" + this.name.charCodeAt(i).toString(HEX)).slice(HEX_OFFSET);
 
       return `${this.account.id}-${str}`;
     }

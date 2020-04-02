@@ -47,8 +47,14 @@
 
   const { SieveCrypto } = require("./SieveCrypto.js");
 
+  const STATE_CRAM_MD5_INITIALIZED = 0;
   const STATE_CRAM_MD5_CHALLENGED = 1;
-  const STATE_CRAM_MD5_INIT = 0;
+  const STATE_CRAM_MD5_COMPLETED = 4;
+
+  const STATE_LOGIN_INITIALIZED = 0;
+  const STATE_LOGIN_USERNAME = 1;
+  const STATE_LOGIN_PASSWORD = 2;
+  const STATE_LOGIN_COMPLETED = 4;
 
   const RESPONSE_OK = 0;
   const RESPONSE_BYE = 1;
@@ -983,14 +989,14 @@
      */
     getNextRequest(builder) {
       switch (this.response.getState()) {
-        case 0:
+        case STATE_LOGIN_INITIALIZED:
           return builder
             .addLiteral("AUTHENTICATE")
             .addQuotedString("LOGIN");
-        case 1:
+        case STATE_LOGIN_USERNAME:
           return builder
             .addQuotedBase64(this._username);
-        case 2:
+        case STATE_LOGIN_PASSWORD:
           return builder
             .addQuotedBase64(this._password);
       }
@@ -1002,7 +1008,7 @@
      * @inheritdoc
      */
     hasNextRequest() {
-      if (this.response.getState() === 4)
+      if (this.response.getState() === STATE_LOGIN_COMPLETED)
         return false;
 
       return true;
@@ -1072,7 +1078,7 @@
      */
     getNextRequest(builder) {
       switch (this.response.getState()) {
-        case STATE_CRAM_MD5_INIT:
+        case STATE_CRAM_MD5_INITIALIZED:
           return builder
             .addLiteral("AUTHENTICATE")
             .addQuotedString("CRAM-MD5");
@@ -1087,7 +1093,7 @@
      * @inheritdoc
      */
     hasNextRequest() {
-      if (this.response.getState() === 4)
+      if (this.response.getState() === STATE_CRAM_MD5_COMPLETED)
         return false;
 
       return true;

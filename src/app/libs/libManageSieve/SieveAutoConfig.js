@@ -17,6 +17,8 @@
   const SIEVE_PORT_NEW = 4190;
   const SIEVE_PORT_OLD = 2000;
 
+  const LOG_LEVEL = 255;
+
   const { SieveLogger } = require("./SieveLogger.js");
   const { Sieve } = require("./SieveClient.js");
   const { SieveInitRequest } = require("./SieveRequest.js");
@@ -37,7 +39,7 @@
     constructor(hostname) {
       this.hostname = hostname;
       this.logger = new SieveLogger();
-      this.logger.level(255);
+      this.logger.level(LOG_LEVEL);
     }
 
     /**

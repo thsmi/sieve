@@ -13,6 +13,9 @@
 
   "use strict";
 
+  const HEX = 16;
+  const HEX_LENGTH = 2;
+
   /**
    * An abstract and generic sieve editor interface .
    */
@@ -100,7 +103,7 @@
         new TextEncoder().encode(await this.getScript()));
 
       return Array.from(new Uint8Array(digest)).map(
-        (b) => { return b.toString(16).padStart(2, '0'); }).join('');
+        (b) => { return b.toString(HEX).padStart(HEX_LENGTH, '0'); }).join('');
     }
 
     async loadDefaultSettings() {

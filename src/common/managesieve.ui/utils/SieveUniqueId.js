@@ -14,6 +14,8 @@
   "use strict";
 
   const ASCII = 36;
+  const SEED_OFFSET = 2;
+  const SEED_LENGTH = 16;
   /**
    * Generates a poor mans unique id.
    * It simply combines the current time with a random number.
@@ -28,7 +30,8 @@
      */
     generate() {
       // "" + Math.floor(Math.random() * 10000000).toString(16) + Date.now().toString(16)
-      return (new Date()).getTime().toString(ASCII) + "-" + Math.random().toString(ASCII).substr(2, 16);
+      return (new Date()).getTime().toString(ASCII)
+        + "-" + Math.random().toString(ASCII).substr(SEED_OFFSET, SEED_LENGTH);
     }
   }
 

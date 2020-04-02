@@ -18,6 +18,9 @@
   const DEFAULT_INDENTATION_POLICY = false;
   const DEFAULT_INDENTATION_WIDTH = 2;
 
+  const DEFAULT_AUTHENTICATION = 0;
+  const DEFAULT_AUTHORIZATION = 3;
+
   const FIRST_ELEMENT = 0;
 
   // Import the node modules into our global namespace...
@@ -152,7 +155,7 @@
       };
     },
 
-    "settings-get-loglevel": async function(msg) {
+    "settings-get-loglevel": async function() {
       return await accounts.getLogLevel();
     },
 
@@ -191,12 +194,12 @@
         },
         "authentication": {
           type: await (await account.getAuthentication()).getType(),
-          username: await (await account.getAuthentication(0)).getUsername()
+          username: await (await account.getAuthentication(DEFAULT_AUTHENTICATION)).getUsername()
         },
 
         "authorization": {
           type: await (await account.getAuthorization()).getType(),
-          username: await (await account.getAuthorization(3)).getAuthorization()
+          username: await (await account.getAuthorization(DEFAULT_AUTHORIZATION)).getAuthorization()
         }
       };
     },
@@ -211,10 +214,10 @@
       await account.getSecurity().setMechanism(msg.payload.general.sasl);
 
       await account.setAuthentication(msg.payload.authentication.mechanism);
-      await (await account.getAuthentication(0)).setUsername(msg.payload.authentication.username);
+      await (await account.getAuthentication(DEFAULT_AUTHENTICATION)).setUsername(msg.payload.authentication.username);
 
       await account.setAuthorization(msg.payload.authorization.mechanism);
-      await (await account.getAuthorization(3)).setAuthorization(msg.payload.authorization.username);
+      await (await account.getAuthorization(DEFAULT_AUTHORIZATION)).setAuthorization(msg.payload.authorization.username);
     },
 
     "account-set-server": async function (msg) {

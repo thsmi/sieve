@@ -450,7 +450,7 @@
     }
 
     addOverlay2() {
-      this.addOverlay(() => { return new SieveMenuLabel();}, "chrome://messenger/content/messenger.xul");
+      this.addOverlay(() => { return new SieveMenuLabel(); }, "chrome://messenger/content/messenger.xul");
       this.addOverlay(() => { return new SieveMenuSeparator(); }, "chrome://messenger/content/messenger.xul");
 
       this.addOverlay(() => { return new SieveAppMenuItem(); }, "chrome://messenger/content/messenger.xul");
@@ -471,7 +471,7 @@
 
     // ...
     addOverlay(overlay, url) {
-      if (typeof(overlay) !== "function")
+      if (typeof (overlay) !== "function")
         throw new Error("Overlay is not a function");
 
       if (!this._overlayUrls[url])
@@ -555,6 +555,8 @@
     }
   }
 
+  const overlayManager = new SieveOverlayManager();
+
   /**
    * Implements a webextension api for sieve session and connection management.
    */
@@ -577,42 +579,19 @@
                   return await fire.async();
                 };
 
-                SieveOverlayManager.on("command", callback);
+                overlayManager.on("command", callback);
 
                 return () => {
-                  SieveOverlayManager.on("command");
+                  overlayManager.on("command");
                 };
               }
             }).api(),
 
-            async addMenuItem(id, options) {
-              // TODO make implementation more generic
-
-              /*     type : label || separator
-                   label : text
-                   accesskey : key
-                   insert: before || after || first || last
-                   sibling : id*/
-            },
-
-            async addAppViewItem(id, options) {
-
-              // TODO make implementation more generic
-
-              /*
-                type: label || separator
-                label: text
-                accesskey: key
-                view: "appMenu-filtersView"
-                insert: before || after || first || last
-                sibling: id
-              */
-
-            },
 
             async load() {
+
               try {
-                await SieveOverlayManager.addOverlay2().load();
+                await overlayManager.addOverlay2().load();
               } catch (ex) {
                 console.error("Load failed " + ex);
                 throw ex;
@@ -622,7 +601,7 @@
             async unload() {
               console.warn("Menu API unload called");
               // Step 2: remove Code Injections
-              SieveOverlayManager.unload();
+              overlayManager.unload();
 
               // FIXME: this doesn't work...
               Cu.unload("chrome://sieve/content/modules/overlays/SieveOverlayManager.jsm");

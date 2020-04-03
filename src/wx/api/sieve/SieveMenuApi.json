@@ -4,11 +4,53 @@
     "description": "Sieve Menu Glue Code",
     "functions": [
       {
-        "name": "load",
+        "name": "has",
         "type": "function",
-        "description": "Loads the sieve menus into the ui",
+        "description": "Checks if the menu item exists.",
         "async": true,
-        "parameters": []
+        "parameters": [{
+          "name": "windowId",
+          "type": "string",
+          "description" : "The unique window id"
+        },{
+          "name": "widgetId",
+          "type": "string",
+          "description" : "the widget unique id",
+          "additionalProperties" :true
+        }]
+      },
+      {
+        "name": "add",
+        "type": "function",
+        "description": "Adds the menu item, in case it exists it will be overwritten",
+        "async": true,
+        "parameters": [{
+            "name": "windowId",
+            "type": "string",
+            "description" : "The unique window id"
+          },{
+            "name": "widget",
+            "type": "object",
+            "description" : "the widget description",
+            "additionalProperties" :true
+          }
+        ]
+      },
+      {
+        "name": "remove",
+        "type": "function",
+        "description": "Removes the menu item.",
+        "async": true,
+        "parameters": [{
+          "name": "windowId",
+          "type": "string",
+          "description" : "The unique window id"
+        },{
+          "name": "widgetId",
+          "type": "string",
+          "description" : "the widget unique id",
+          "additionalProperties" :true
+        }]
       }
     ],
     "events": [

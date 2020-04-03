@@ -9,7 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(async function() {
+(async function () {
 
   "use strict";
 
@@ -23,6 +23,7 @@
   const ERROR_TIME = 4;
 
   const logger = SieveLogger.getInstance();
+
   const accounts = await (new SieveAccounts().load());
 
   // TODO Extract into separate class..
@@ -39,12 +40,12 @@
 
     await browser.tabs.update(
       tab.id,
-      { active : true }
+      { active: true }
     );
 
     await browser.windows.update(
       tab.windowId,
-      { focused : true }
+      { focused: true }
     );
   }
 
@@ -60,6 +61,61 @@
       browser.sieve.session.destroy(id);
   });
 
+  // ------------------------------------------------------------------------ //
+
+  /**
+   * Populates thunderbird's menus.
+   *
+   * @param {string} windowId
+   *   the unique window id.
+   */
+  function populateMenus(windowId) {
+
+    // populate the main menu
+    browser.sieve.menu.add(windowId, {
+      "id": "mnuSieveListDialog",
+      "type": "menu-label",
+      "reference": "filtersCmd",
+      "position": "before",
+      "label": "Sieve Message Filters",
+      "accesskey": "S"
+    });
+
+    browser.sieve.menu.add(windowId, {
+      "id": "mnuSieveSeparator",
+      "type": "menu-separator",
+      "reference": "filtersCmd",
+      "position": "before"
+    });
+
+    // We need some magic here. They moved the filers menu item
+    // in Thunderbird 68
+    let ref;
+
+    if (browser.sieve.menu.has(windowId, "appmenu_filtersCmd"))
+      ref = "appmenu_filtersCmd";
+    else if (browser.sieve.menu.has(windowId, "appmenu_FilterMenu"))
+      ref = "appmenu_FilterMenu";
+    else
+      throw new Error("No app menu found");
+
+    browser.sieve.menu.add(windowId, {
+      "id": "appMenuSieveListDialog",
+      "type": "appmenu-label",
+      "reference": ref,
+      "label": "Sieve Message Filters",
+      "accesskey": "S",
+      "position": "before"
+    });
+
+    browser.sieve.menu.add(windowId, {
+      "id": "appMenuSieveSeparator",
+      "type": "appmenu-separator",
+      "reference": ref,
+      "position": "before"
+    });
+  }
+
   await browser.sieve.menu.onCommand.addListener(
     async () => {
       const url = new URL("./libs/managesieve.ui/accounts.html", window.location);
@@ -73,11 +129,20 @@
 
       await browser.tabs.create({
         active: true,
-        url : "./libs/managesieve.ui/accounts.html"
+        url: "./libs/managesieve.ui/accounts.html"
       });
     });
 
-  await browser.sieve.menu.load();
+
+  for (const item of await browser.windows.getAll())
+    populateMenus("" + item.id);
+
+  browser.windows.onCreated.addListener((window) => {
+    populateMenus("" + window.id);
+  });
+
+
+  // ------------------------------------------------------------------------ //
 
   const actions = {
     // account endpoints...
@@ -98,7 +163,7 @@
       return browser.sieve.session.isConnected(id);
     },
 
-    "account-connect" : async function(msg) {
+    "account-connect": async function (msg) {
 
       const id = msg.payload.account;
       const account = await accounts.getAccountById(id);
@@ -110,10 +175,10 @@
       const settings = await account.getSettings();
 
       const options = {
-        "secure" : await security.isSecure(),
-        "sasl" : await security.getMechanism(),
-        "keepAlive" :  await host.getKeepAlive(),
-        "logLevel" : await settings.getLogLevel()
+        "secure": await security.isSecure(),
+        "sasl": await security.getMechanism(),
+        "keepAlive": await host.getKeepAlive(),
+        "logLevel": await settings.getLogLevel()
       };
 
       const onAuthenticate = async (hasPassword) => {
@@ -131,7 +196,7 @@
         return credentials;
       };
 
-      const onAuthorize = async() => {
+      const onAuthorize = async () => {
 
         logger.logAction(`onAuthorize`);
 
@@ -283,7 +348,7 @@
       // create a new tab...
       await browser.tabs.create({
         active: true,
-        url : url.toString()
+        url: url.toString()
       });
     },
 
@@ -336,7 +401,7 @@
       };
     },
 
-    "settings-get-loglevel": async function(msg) {
+    "settings-get-loglevel": async function (msg) {
       return await accounts.getLogLevel();
     },
 
@@ -357,8 +422,8 @@
       const account = accounts.getAccountById(msg.payload.account);
 
       return {
-        "account" : await account.getSettings().getLogLevel(),
-        "global" : await accounts.getLogLevel()
+        "account": await account.getSettings().getLogLevel(),
+        "global": await accounts.getLogLevel()
       };
     }
 

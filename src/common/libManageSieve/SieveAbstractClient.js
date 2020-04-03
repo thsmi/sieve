@@ -506,6 +506,12 @@
       throw new Error("Implement SieveAbstractClient::createRequestBuilder");
     }
 
+    /**
+     * Called when data was received on the socket.
+     *
+     * @param {byte[]} data
+     *   the data received.
+     */
     onReceive(data) {
 
       if (this.getLogger().isLevelStream())
@@ -675,4 +681,5 @@
   }
 
   exports.SieveAbstractClient = SieveAbstractClient;
+
 })(module.exports || this);

@@ -39,6 +39,7 @@
     /**
      * @inheritdoc
      */
+    // eslint-disable-next-line no-unused-vars
     static dispatch(message, target) {
 
       if (typeof(message) !== 'string') {

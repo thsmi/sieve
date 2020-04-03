@@ -324,6 +324,7 @@
    *   the line which caused the error
    *
    */
+  // eslint-disable-next-line no-unused-vars
   function errorhandler(msg, url, line) {
     // alert(msg+"\n"+url+"\n"+line);
     showInfoMessage(msg, "");

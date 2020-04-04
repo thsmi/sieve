@@ -66,13 +66,19 @@
   /**
    * Populates thunderbird's menus.
    *
-   * @param {string} windowId
-   *   the unique window id.
+   * @param {window} window
+   *   the window to which the menu items should be added.
    */
-  function populateMenus(windowId) {
+  function populateMenus(window) {
+
+    // We can skip in case it is not a normal window.
+    if (`${window.type}` !== "normal")
+      return;
+
+    const id = `${window.id}`;
 
     // populate the main menu
-    browser.sieve.menu.add(windowId, {
+    browser.sieve.menu.add(id, {
       "id": "mnuSieveListDialog",
       "type": "menu-label",
       "reference": "filtersCmd",
@@ -81,7 +87,7 @@
       "accesskey": "S"
     });
 
-    browser.sieve.menu.add(windowId, {
+    browser.sieve.menu.add(id, {
       "id": "mnuSieveSeparator",
       "type": "menu-separator",
       "reference": "filtersCmd",
@@ -92,14 +98,14 @@
     // in Thunderbird 68
     let ref;
 
-    if (browser.sieve.menu.has(windowId, "appmenu_filtersCmd"))
+    if (browser.sieve.menu.has(id, "appmenu_filtersCmd"))
       ref = "appmenu_filtersCmd";
-    else if (browser.sieve.menu.has(windowId, "appmenu_FilterMenu"))
+    else if (browser.sieve.menu.has(id, "appmenu_FilterMenu"))
       ref = "appmenu_FilterMenu";
     else
       throw new Error("No app menu found");
 
-    browser.sieve.menu.add(windowId, {
+    browser.sieve.menu.add(id, {
       "id": "appMenuSieveListDialog",
       "type": "appmenu-label",
       "reference": ref,
@@ -108,7 +114,7 @@
       "position": "before"
     });
 
-    browser.sieve.menu.add(windowId, {
+    browser.sieve.menu.add(id, {
       "id": "appMenuSieveSeparator",
       "type": "appmenu-separator",
       "reference": ref,
@@ -134,11 +140,12 @@
     });
 
 
-  for (const item of await browser.windows.getAll())
-    populateMenus("" + item.id);
+  for (const window of await browser.windows.getAll()) {
+    populateMenus(window);
+  }
 
   browser.windows.onCreated.addListener((window) => {
-    populateMenus("" + window.id);
+    populateMenus(window);
   });
 
 

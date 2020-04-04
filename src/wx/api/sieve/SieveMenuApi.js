@@ -275,6 +275,95 @@
   }
 
   const callbacks = new Set();
+  const ids = new Set();
+
+  /**
+   * Clears all of the known custom ui elements from all known windows.
+   */
+  function clearAllWindows() {
+
+    const wm = Cc["@mozilla.org/appshell/window-mediator;1"]
+      .getService(Ci.nsIWindowMediator);
+
+    const windows = wm.getEnumerator(null);
+
+    while (windows.hasMoreElements()) {
+
+      const doc = new SieveDomHelper(windows.getNext().docShell.domWindow.document);
+
+      for (const id of ids)
+        doc.removeNode(id);
+    }
+  }
+
+  /**
+   * Converts the widget description into a widget class
+   * which can be used to construct the dom element.
+   *
+   * @param {object} widget
+   *   the widget description
+   *
+   * @returns {SieveAbstractWidget}
+   *   the widget or an exception in case the description is invalid.
+   */
+  function createWidget(widget) {
+
+    if (widget.type === "menu-label")
+      return new SieveMenuLabel(widget.id, widget.label, widget.accesskey);
+
+    if (widget.type === "menu-separator")
+      return new SieveMenuSeparator(widget.id);
+
+    if (widget.type === "appmenu-label")
+      return new SieveAppMenuLabel(widget.id, widget.label, widget.accesskey);
+
+    if (widget.type === "appmenu-separator")
+      return new SieveAppMenuSeparator(widget.id);
+
+    throw new Error("Unknown widget type");
+  }
+
+
+  /**
+   * Gets the document of the given window.
+   * In case no window with the given id exists an exception will be thrown.
+   *
+   * @param {string} windowId
+   *   the windows unique id
+   *
+   * @returns {SieveDomHelper}
+   *   the warper which can be used to access the windows document.
+   */
+  function getDocumentByWindow(windowId) {
+
+    const wm = Cc["@mozilla.org/appshell/window-mediator;1"]
+      .getService(Ci.nsIWindowMediator);
+
+    const windows = wm.getEnumerator(null);
+
+    while (windows.hasMoreElements()) {
+      const win = windows.getNext().docShell.domWindow;
+
+      if (`${windowId}` === `${win.windowUtils.outerWindowID}`)
+        return new SieveDomHelper(win.document);
+    }
+
+    throw new Error(`Invalid window ${windowId}`);
+  }
+
+  /**
+   * Invokes an event callback for the given window and element.
+   *
+   * @param {string} windowId
+   *   the windows unique id.
+   * @param {string} id
+   *   the elements unique id on which the event occurred
+   */
+  function invokeCallback(windowId, id) {
+    for (const callback of callbacks)
+      callback(windowId, id);
+  }
+
 
   /**
    * Implements a webextension api for sieve session and connection management.
@@ -284,6 +373,10 @@
      * @inheritdoc
      */
     getAPI(context) {
+
+      context.callOnClose({
+        close: () => { clearAllWindows(); }
+      });
 
       return {
         sieve: {
@@ -307,65 +400,6 @@
             }).api(),
 
             /**
-             * Converts the widget description into a widget class
-             * which can be used to construct the dom element.
-             *
-             * @param {object} widget
-             *   the widget description
-             *
-             * @returns {SieveAbstractWidget}
-             *   the widget or an exception in case the description is invalid.
-             */
-            createWidget(widget) {
-
-              if (widget.type === "menu-label")
-                return new SieveMenuLabel(widget.id, widget.label, widget.accesskey);
-
-              if (widget.type === "menu-separator")
-                return new SieveMenuSeparator(widget.id);
-
-              if (widget.type === "appmenu-label")
-                return new SieveAppMenuLabel(widget.id, widget.label, widget.accesskey);
-
-              if (widget.type === "appmenu-separator")
-                return new SieveAppMenuSeparator(widget.id);
-
-              throw new Error("Unknown widget type");
-            },
-
-            /**
-             * Gets the document of the given window.
-             * In case no window with the given id exists an exception will be thrown.
-             *
-             * @param {string} windowId
-             *   the windows unique id
-             *
-             * @returns {SieveDomHelper}
-             *   the warper which can be used to access the windows document.
-             */
-            getDocumentByWindow(windowId) {
-
-              const wm = Cc["@mozilla.org/appshell/window-mediator;1"]
-                .getService(Ci.nsIWindowMediator);
-
-              const windows = wm.getEnumerator(null);
-
-              while (windows.hasMoreElements()) {
-                const win = windows.getNext().docShell.domWindow;
-
-                if (`${windowId}` === `${win.windowUtils.outerWindowID}`)
-                  return new SieveDomHelper(win.document);
-              }
-
-              throw new Error(`Invalid window ${windowId}`);
-            },
-
-            invokeCallback(windowId, id) {
-              for (const callback of callbacks)
-                callback(windowId, id);
-            },
-
-            /**
              * Adds the widget to the given window.
              *
              * @param {string} windowId
@@ -375,8 +409,8 @@
              */
             async add(windowId, widget) {
 
-              const item = this.createWidget(widget);
-              const document = this.getDocumentByWindow(windowId);
+              const item = createWidget(widget);
+              const document = getDocumentByWindow(windowId);
 
               const id = item.getId();
 
@@ -397,8 +431,10 @@
                   throw new Error(`Invalid position ${widget.position}`);
               }
 
+              ids.add(id);
+
               await document.getNode(id)
-                .addEventListener("command", () => { this.invokeCallback(windowId, id); });
+                .addEventListener("command", () => { invokeCallback(windowId, id); });
             },
 
             /**
@@ -410,7 +446,7 @@
              *   the menu elements id
              */
             async remove(windowId, id) {
-              await this.getDocumentByWindow(windowId).removeNode(id);
+              await getDocumentByWindow(windowId).removeNode(id);
             },
 
             /**
@@ -424,7 +460,7 @@
              *   true in case the element exists otherwise false.
              */
             async has(windowId, id) {
-              return await this.getDocumentByWindow(windowId).hasNode(id);
+              return await getDocumentByWindow(windowId).hasNode(id);
             }
           }
         }

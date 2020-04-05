@@ -31,7 +31,8 @@
 
   const { SieveAbstractMechanism } = require("./SieveAbstractMechanism.js");
 
-  const { SieveAuthorizationDialog } = require("./../dialogs/SieveDialogUI.js");
+  // TODO move from dialogs to here.
+  const { SieveAuthorizationDialog } = require("./../../dialogs/SieveDialogUI.js");
 
   /**
    * Shows a dialog and prompts for the authorization.

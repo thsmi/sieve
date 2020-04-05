@@ -21,7 +21,8 @@
   const { SieveAbstractAuthentication } = require("./SieveAbstractAuthentication.js");
   const { SieveAbstractMechanism } = require("./SieveAbstractMechanism.js");
 
-  const { SievePasswordDialog } = require("./../dialogs/SieveDialogUI.js");
+  // TODO move from dialogs to here.
+  const { SievePasswordDialog } = require("./../../dialogs/SieveDialogUI.js");
 
   /**
    * Prompts for a password.

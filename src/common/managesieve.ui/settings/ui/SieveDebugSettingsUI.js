@@ -190,7 +190,7 @@
       const parent = this.getDialog();
 
       parent.find(".modal-body").empty()
-        .append(await (new SieveTemplateLoader().load("./settings/settings.debug.tpl")));
+        .append(await (new SieveTemplateLoader().load("./settings/ui/settings.debug.tpl")));
 
       const levels = await this.account.send("account-settings-get-debug");
 

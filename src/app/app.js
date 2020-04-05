@@ -33,8 +33,8 @@
 
   const { SieveSessions } = require("./libs/libManageSieve/SieveSessions.js");
 
-  const { SieveAccounts } = require("./libs/managesieve.ui/settings/SieveAccounts.js");
-  const { SievePrefManager } = require('./libs/managesieve.ui/settings/SievePrefManager.js');
+  const { SieveAccounts } = require("./libs/managesieve.ui/settings/logic/SieveAccounts.js");
+  const { SievePrefManager } = require('./libs/managesieve.ui/settings/logic/SievePrefManager.js');
 
   const { SieveUpdater } = require("./libs/managesieve.ui/updater/SieveUpdater.js");
   const { SieveTabUI } = require("./libs/managesieve.ui/tabs/SieveTabsUI.js");

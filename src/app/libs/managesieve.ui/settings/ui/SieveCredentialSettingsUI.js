@@ -269,7 +269,7 @@
 
       // Load all subsections...
       parent.find(".modal-body").empty()
-        .append(await loader.load("./settings/settings.credentials.tpl"));
+        .append(await loader.load("./settings/ui/settings.credentials.tpl"));
 
       const credentials = await this.account.send("account-setting-get-credentials");
 

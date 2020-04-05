@@ -18,8 +18,8 @@
   const CONFIG_ID_GLOBAL = "global";
 
   /* global browser */
-  const { SieveUniqueId } = require("libs/managesieve.ui/utils/SieveUniqueId.js");
-  const { SieveAbstractAccount } = require("libs/managesieve.ui/settings/SieveAbstractAccount.js");
+  const { SieveUniqueId } = require("./../../utils/SieveUniqueId.js");
+  const { SieveAbstractAccount } = require("./SieveAbstractAccount.js");
 
   const { SievePrefManager } = require('./SievePrefManager.js');
 

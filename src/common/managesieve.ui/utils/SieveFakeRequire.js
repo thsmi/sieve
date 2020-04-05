@@ -56,14 +56,14 @@
 
   const globals = new Map();
   globals.set("./SieveUniqueId.js", "SieveUniqueId");
-  globals.set("libs/managesieve.ui/utils/SieveUniqueId.js", "SieveUniqueId");
+  globals.set("./../../utils/SieveUniqueId.js", "SieveUniqueId");
   globals.set("./../utils/SieveUniqueId.js", "SieveUniqueId");
 
   globals.set("./SieveAbstractIpcClient.js", "SieveAbstractIpcClient");
 
   globals.set("./../utils/SieveTemplateLoader.js", "SieveTemplateLoader");
 
-  globals.set("libs/managesieve.ui/settings/SieveAbstractAccount.js", "SieveAbstractAccount");
+  globals.set("./SieveAbstractAccount.js", "SieveAbstractAccount");
   globals.set("./SievePrefManager.js", "SievePrefManager");
   globals.set("./SieveHostSettings.js", "SieveHost");
   globals.set("./SieveAuthorizationSettings.js", "SieveAuthorization");

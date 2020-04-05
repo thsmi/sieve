@@ -18,13 +18,12 @@
   const CONFIG_KEY_ACCOUNTS = "accounts";
   const CONFIG_KEY_LOGLEVEL = "loglevel";
 
-  const { SieveLogger } = require("./../utils/SieveLogger.js");
+  const { SieveLogger } = require("./../../utils/SieveLogger.js");
 
-  const { SieveAccount } = require("./SieveAccount.js");
-  const { SieveUniqueId } = require("./../utils/SieveUniqueId.js");
-
+  const { SieveUniqueId } = require("./../../utils/SieveUniqueId.js");
   const { SievePrefManager } = require('./SievePrefManager.js');
 
+  const { SieveAccount } = require("./SieveAccount.js");
 
   /**
    * Manages the configuration for sieve accounts.

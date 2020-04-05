@@ -237,7 +237,7 @@
 
       // Load all subsections...
       parent.find(".modal-body").empty()
-        .append(await loader.load("./settings/settings.server.tpl"));
+        .append(await loader.load("./settings/ui/settings.server.tpl"));
 
       const server = await this.account.send("account-get-server");
 

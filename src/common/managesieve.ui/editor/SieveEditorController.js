@@ -116,7 +116,7 @@
     }
 
     /**
-     * An internal short cut to sets a preference value.
+     * Sets a preference value.
      *
      * @param {string} name
      *   the preferences unique name.
@@ -128,7 +128,19 @@
     }
 
     /**
-     * An internal shortcut to gets a preference value.
+     * Sets a default value for a preference.
+     *
+     * @param {string} name
+     *   the preferences unique name.
+     * @param {object} value
+     *   the value which should be set as default.
+     */
+    async setDefaultPreference(name, value) {
+      await this.send("set-default-preference", { "key": name, "value": value });
+    }
+
+    /**
+     * Gets a preference value.
      *
      * @param {string} name
      *   the preferences unique name
@@ -137,6 +149,18 @@
      */
     async getPreference(name) {
       return await this.send("get-preference", name);
+    }
+
+    /**
+     * Gets the default value for a preference.
+     *
+     * @param {string} name
+     *   the preferences unique name
+     * @returns {object}
+     *   the preference's default value.
+     */
+    async getDefaultPreference(name) {
+      return await this.send("get-default-preference", name);
     }
 
     /**

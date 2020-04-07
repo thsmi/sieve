@@ -75,7 +75,7 @@
      */
     static async onRequest(request, source) {
 
-      this.getLogger().logIpcMessage(`OnRequest: ${request}`);
+      this.getLogger().logIpcMessage(`OnRequest: ${JSON.stringify(request)}`);
 
       if (!_requestHandlers.has(request.subject)) {
         this.getLogger().logIpcMessage(`Unknown subject ${request.subject} in ${window.location}`);
@@ -110,7 +110,7 @@
      */
     static onResponse(message) {
 
-      this.getLogger().logIpcMessage('On Response:  ', message);
+      this.getLogger().logIpcMessage(`On Response:  ${JSON.stringify(message)}`);
 
       const id = message.id;
 

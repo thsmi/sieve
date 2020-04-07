@@ -68,18 +68,19 @@
      *   the key's value as boolean
      */
     async getBoolean(key, fallback) {
-      let value = await this.getValue(key);
+      const value = await this.getValue(key);
 
       if (typeof (value) === "undefined" || value === null)
         return fallback;
 
       // Parse boolean
-      value = !!value;
-
-      if (value)
+      if ((value === true) || (value === "true"))
         return true;
 
-      return false;
+      if ((value === false) || (value === "false"))
+        return false;
+
+      return fallback;
     }
 
     /**
@@ -151,7 +152,7 @@
       if (typeof (value) === "undefined" || value === null || Number.isNaN(value))
         return fallback;
 
-      if (Number.isInteger())
+      if (Number.isInteger(value))
         return value;
 
       try {

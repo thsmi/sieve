@@ -1,7 +1,13 @@
 <div>
   <hr />
   <h5>Indentation</h5>
-  <p>The plain text editor supports automatic indenting</p>
+  <p class="form-text text-muted">
+    <small>
+      While editing script they can be checked for validity. The syntax check
+      is performed by the server. In order to keep network traffic low, syntax
+      check are grouped.
+    </small>
+  </p>
   <div class="form-group row">
     <label class="col-sm-3 col-form-label">Indention width</label>
     <div class="col-sm-2">

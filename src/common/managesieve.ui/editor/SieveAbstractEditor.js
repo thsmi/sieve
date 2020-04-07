@@ -106,9 +106,21 @@
         (b) => { return b.toString(HEX).padStart(HEX_LENGTH, '0'); }).join('');
     }
 
+    /**
+     * Loads the editors settings.
+     */
+    async loadSettings() {
+    }
+
+    /**
+     * Resets the editor to default settings
+     */
     async loadDefaultSettings() {
     }
 
+    /**
+     * Save the current settings as default.
+     */
     async saveDefaultSettings() {
     }
 

@@ -491,8 +491,24 @@
     "get-preference": async (msg) => {
 
       const name = msg.payload.data;
+      const account = msg.payload.account;
 
-      logger.logAction(`Get preference for ${name}`);
+      logger.logAction(`Set value ${name} on ${account}`);
+
+      const pref = accounts.getAccountById(msg.payload.account).getConfig();
+
+      const value = await pref.getValue(`editor.${name}`);
+
+      if (value === null)
+        return await actions["get-default-preference"](msg);
+
+      return value;
+    },
+
+    "get-default-preference": async(msg) => {
+      const name = msg.payload.data;
+
+      logger.logAction(`Get default value for ${name}`);
 
       const pref = new SievePrefManager("editor");
 
@@ -517,8 +533,19 @@
     "set-preference": async (msg) => {
       const name = msg.payload.key;
       const value = msg.payload.value;
+      const account = msg.payload.account;
 
-      logger.logAction(`Set preference for ${name}`);
+      logger.logAction(`Set value ${name} on ${account}`);
+
+      const pref = accounts.getAccountById(msg.payload.account).getConfig();
+      await pref.setValue(`editor.${name}`, value);
+    },
+
+    "set-default-preference": async(msg) => {
+      const name = msg.payload.key;
+      const value = msg.payload.value;
+
+      logger.logAction(`Set default value for ${name}`);
 
       await (new SievePrefManager("editor"))
         .setValue(name, value);

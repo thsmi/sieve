@@ -32,30 +32,30 @@
       Session management</label>
   </div>
   <div class="siv-settings-advanced">
-  <hr />
-  <h5>Global</h5>
+    <hr />
+    <h5>Global</h5>
 
-  <p class="form-text text-muted">
-    <small>
-      Used to log and debug the app's UI and rendering.
-      The settings are global and apply to all accounts after restarting the app.
-    </small>
-  </p>
+    <p class="form-text text-muted">
+      <small>
+        Used to log and debug the app's UI and rendering.
+        The settings are global and apply to all accounts after restarting the app.
+      </small>
+    </p>
 
-  <div class="custom-control custom-switch">
-    <input type="checkbox" class="custom-control-input" id="debugActions" />
-    <label class="custom-control-label" for="debugActions">User Events and Actions</label>
+    <div class="custom-control custom-switch">
+      <input type="checkbox" class="custom-control-input" id="debugActions" />
+      <label class="custom-control-label" for="debugActions">User Events and Actions</label>
+    </div>
+
+    <div class="custom-control custom-switch">
+      <input type="checkbox" class="custom-control-input" id="debugIpcMessages" />
+      <label class="custom-control-label" for="debugIpcMessages">IPC Messages</label>
+    </div>
+
+    <div class="custom-control custom-switch">
+      <input type="checkbox" class="custom-control-input" id="debugWidgets" />
+      <label class="custom-control-label" for="debugWidgets">Widgets</label>
+    </div>
   </div>
-
-  <div class="custom-control custom-switch">
-    <input type="checkbox" class="custom-control-input" id="debugIpcMessages" />
-    <label class="custom-control-label" for="debugIpcMessages">IPC Messages</label>
-  </div>
-
-  <div class="custom-control custom-switch">
-    <input type="checkbox" class="custom-control-input" id="debugWidgets" />
-    <label class="custom-control-label" for="debugWidgets">Widgets</label>
-  </div>
-</div>
 
 </div>

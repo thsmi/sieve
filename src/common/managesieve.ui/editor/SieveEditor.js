@@ -59,10 +59,11 @@
      * Renders the editor to screen.
      */
     async render() {
-      await this.renderSettings();
 
       await this.getTextEditor().render();
       await this.getGraphicalEditor().render();
+
+      await this.loadSettings();
 
       $("#sieve-editor-settings .sieve-editor-settings-show").click(() => {
         $("#sieve-tab-settings").tab('show');
@@ -296,6 +297,18 @@
       return true;
     }
 
+    /**
+     * Gets the currently active editor type and optionally
+     * also sets the editor type.
+     *
+     * @param {boolean} [value]
+     *  optional. If set to true the text editor will be enabled.
+     *  Setting it to false will switch to the graphical editor.
+     *
+     * @returns {boolean}
+     *   true in case the text editor is the current editor.
+     *   Otherwise false.
+     */
     isTextEditor(value) {
 
       if (value === true || value === false)
@@ -340,12 +353,18 @@
     }
 
     /**
-     *
+     * Renders the current settings.
      */
     async renderSettings() {
+
+      $("#sieve-content-settings").empty();
+
+      await this.getTextEditor().renderSettings();
+      // this.getGraphicalEditor().renderSettings();
+
       const settings = await (new SieveTemplateLoader()).load("./editor/editor.settings.defaults.tpl");
 
-      $("#sieve-content-settings").empty().append(settings);
+      $("#sieve-content-settings").append(settings);
 
       $("#editor-settings-save-defaults").click(async () => {
         await this.saveDefaultSettings();
@@ -357,15 +376,27 @@
     }
 
     /**
-     * Resets the editor to default settings
+     * @inheritdoc
+     */
+    async loadSettings() {
+      await this.getTextEditor().loadSettings();
+      await this.getGraphicalEditor().loadSettings();
+
+      await this.renderSettings();
+    }
+
+    /**
+     * @inheritdoc
      */
     async loadDefaultSettings() {
       await this.getTextEditor().loadDefaultSettings();
       await this.getGraphicalEditor().loadDefaultSettings();
+
+      await this.renderSettings();
     }
 
     /**
-     * Save the current settings as default.
+     * @inheritdoc
      */
     async saveDefaultSettings() {
       await this.getTextEditor().saveDefaultSettings();

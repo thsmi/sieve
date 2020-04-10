@@ -63,6 +63,7 @@
 
   globals.set("./../utils/SieveTemplateLoader.js", "SieveTemplateLoader");
 
+  globals.set("./SieveAbstractAccounts.js", "SieveAbstractAccounts");
   globals.set("./SieveAbstractAccount.js", "SieveAbstractAccount");
   globals.set("./SievePrefManager.js", "SievePrefManager");
   globals.set("./SieveHostSettings.js", "SieveHost");

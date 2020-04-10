@@ -16,14 +16,13 @@
 
   const CONFIG_ID_GLOBAL = "global";
   const CONFIG_KEY_ACCOUNTS = "accounts";
-  const CONFIG_KEY_LOGLEVEL = "loglevel";
 
   const { SieveLogger } = require("./../../utils/SieveLogger.js");
 
-  const { SieveUniqueId } = require("./../../utils/SieveUniqueId.js");
   const { SievePrefManager } = require('./SievePrefManager.js');
 
   const { SieveAccount } = require("./SieveAccount.js");
+  const { SieveAbstractAccounts } = require("./SieveAbstractAccounts.js");
 
   /**
    * Manages the configuration for sieve accounts.
@@ -32,20 +31,10 @@
    *
    * It uses the DOM's local store to persist the configuration data.
    */
-  class SieveAccounts {
+  class SieveAccounts extends SieveAbstractAccounts {
 
     /**
-     * Creates a new instance
-     */
-    constructor() {
-      this.accounts = {};
-    }
-
-    /**
-     * Loads the list of accounts configurations.
-     *
-     * @returns {SieveAccounts}
-     *   a self reference.
+     * @inheritdoc
      */
     async load() {
 
@@ -79,17 +68,6 @@
     async save() {
       await (new SievePrefManager(CONFIG_ID_GLOBAL)).setComplexValue(CONFIG_KEY_ACCOUNTS, [...Object.keys(this.accounts)]);
       return this;
-    }
-
-    /**
-     * Generates a pseudo unique id.
-     * The id is guaranteed to be made of alphanumerical characters and dashes.
-     *
-     * @returns {string}
-     *   the unique id in string representation.
-     */
-    generateId() {
-      return (new SieveUniqueId()).generate();
     }
 
     /**
@@ -147,51 +125,7 @@
       return this;
     }
 
-    /**
-     * Returns a list with all accounts.
-     * The accounts are returned as key value pairs (unique id and Account)
-     *
-     * @returns { object<string, SieveAccount>}
-     *   a list with sieve account.
-     */
-    getAccounts() {
-      return Object.keys(this.accounts);
-    }
 
-    /**
-     * Returns a specific sieve account
-     *
-     * @param {string} id
-     *   the accounts unique id.
-     * @returns {SieveAccount}
-     *   the sieve account or undefined.
-     */
-    getAccountById(id) {
-      return this.accounts[id];
-    }
-
-    /**
-     * Sets the global log level.
-     *
-     * @param {int} level
-     *   the global log level as integer.
-     * @returns {SieveAccounts}
-     *   a self reference.
-     */
-    async setLogLevel(level) {
-      await (new SievePrefManager(CONFIG_ID_GLOBAL)).setInteger(CONFIG_KEY_LOGLEVEL, level);
-      return this;
-    }
-
-    /**
-     * Gets the global log level.
-     *
-     * @returns {int}
-     *   the log level as integer.
-     */
-    async getLogLevel() {
-      return await (new SievePrefManager(CONFIG_ID_GLOBAL)).getInteger(CONFIG_KEY_LOGLEVEL, 0);
-    }
   }
 
   // Require modules need to use export.module

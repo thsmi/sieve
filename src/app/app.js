@@ -75,7 +75,7 @@
     // account endpoints...
     "accounts-list": function () {
       logger.logAction("List Accounts");
-      return accounts.getAccounts();
+      return accounts.getAccountIds();
     },
 
     "account-probe": async function (request) {

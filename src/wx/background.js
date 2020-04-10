@@ -49,7 +49,7 @@
     );
   }
 
-  browser.tabs.onRemoved.addListener(async (tabId) => {
+  browser.tabs.onRemoved.addListener(async () => {
 
     const url = new URL("./libs/managesieve.ui/*", window.location);
     const tabs = await browser.tabs.query({ url: url.toString() });
@@ -57,7 +57,7 @@
     if (tabs.length)
       return;
 
-    for (const id of accounts.getAccounts())
+    for (const id of accounts.getAccountIds())
       browser.sieve.session.destroy(id);
   });
 
@@ -155,7 +155,7 @@
     // account endpoints...
     "accounts-list": async function () {
       logger.logAction("List Accounts");
-      return await accounts.getAccounts();
+      return await accounts.getAccountIds();
     },
 
     "account-get-displayname": async function (msg) {

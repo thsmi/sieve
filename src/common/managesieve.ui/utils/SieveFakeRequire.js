@@ -71,6 +71,7 @@
   globals.set("./SieveAuthenticationSettings.js", "SieveAuthentication");
   globals.set("./SieveSecuritySettings.js", "SieveSecurity");
   globals.set("./SieveAccountSettings.js", "SieveAccountSettings");
+  globals.set("./SieveEditorSettings.js", "SieveEditorSettings");
 
   globals.set("./SieveLogger.js", "SieveLogger");
 

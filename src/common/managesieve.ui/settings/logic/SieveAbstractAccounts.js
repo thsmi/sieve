@@ -21,6 +21,7 @@
 
   const { SieveUniqueId } = require("./../../utils/SieveUniqueId.js");
   const { SievePrefManager } = require('./SievePrefManager.js');
+  const { SieveEditorSettings } = require("./SieveEditorSettings.js");
 
   /**
    * Abstract class which manages sieve accounts.
@@ -99,7 +100,18 @@
      *   the log level as integer.
      */
     async getLogLevel() {
-      return await (new SievePrefManager(CONFIG_ID_GLOBAL)).getInteger(CONFIG_KEY_LOG_LEVEL, DEFAULT_LOG_LEVEL);
+      return await (new SievePrefManager(CONFIG_ID_GLOBAL))
+        .getInteger(CONFIG_KEY_LOG_LEVEL, DEFAULT_LOG_LEVEL);
+    }
+
+    /**
+     * Gets the object managing the editor's default settings.
+     *
+     * @returns {SieveEditorSettings}
+     *   the settings object
+     */
+    getEditor() {
+      return new SieveEditorSettings(new SievePrefManager("editor"));
     }
 
   }

@@ -432,8 +432,49 @@
         "account": await account.getSettings().getLogLevel(),
         "global": await accounts.getLogLevel()
       };
-    }
+    },
 
+    "get-preference": async (msg) => {
+
+      const name = msg.payload.data;
+      const account = msg.payload.account;
+
+      logger.logAction(`Set value ${name} on ${account}`);
+
+      const value = await accounts.getAccountById(account).getEditor().getValue(name);
+
+      if (value === null)
+        return await actions["get-default-preference"](msg);
+
+      return value;
+    },
+
+    "get-default-preference": async(msg) => {
+      const name = msg.payload.data;
+
+      logger.logAction(`Get default value for ${name}`);
+
+      return await accounts.getEditor().getValue(name);
+    },
+
+    "set-preference": async (msg) => {
+      const name = msg.payload.key;
+      const value = msg.payload.value;
+      const account = msg.payload.account;
+
+      logger.logAction(`Set value ${name} on ${account}`);
+
+      await accounts.getAccountById(account).getEditor().setValue(name, value);
+    },
+
+    "set-default-preference": async(msg) => {
+      const name = msg.payload.key;
+      const value = msg.payload.value;
+
+      logger.logAction(`Set default value for ${name}`);
+
+      await accounts.getEditor().setValue(name, value);
+    }
   };
 
   for (const [key, value] of Object.entries(actions)) {

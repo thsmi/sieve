@@ -13,11 +13,6 @@
 
   "use strict";
 
-  const DEFAULT_TAB_POLICY = true;
-  const DEFAULT_TAB_WIDTH = 2;
-  const DEFAULT_INDENTATION_POLICY = false;
-  const DEFAULT_INDENTATION_WIDTH = 2;
-
   const DEFAULT_AUTHENTICATION = 0;
   const DEFAULT_AUTHORIZATION = 3;
 
@@ -34,7 +29,6 @@
   const { SieveSessions } = require("./libs/libManageSieve/SieveSessions.js");
 
   const { SieveAccounts } = require("./libs/managesieve.ui/settings/logic/SieveAccounts.js");
-  const { SievePrefManager } = require('./libs/managesieve.ui/settings/logic/SievePrefManager.js');
 
   const { SieveUpdater } = require("./libs/managesieve.ui/updater/SieveUpdater.js");
   const { SieveTabUI } = require("./libs/managesieve.ui/tabs/SieveTabsUI.js");
@@ -495,9 +489,7 @@
 
       logger.logAction(`Set value ${name} on ${account}`);
 
-      const pref = accounts.getAccountById(msg.payload.account).getConfig();
-
-      const value = await pref.getValue(`editor.${name}`);
+      const value = await accounts.getAccountById(account).getEditor().getValue(name);
 
       if (value === null)
         return await actions["get-default-preference"](msg);
@@ -510,24 +502,7 @@
 
       logger.logAction(`Get default value for ${name}`);
 
-      const pref = new SievePrefManager("editor");
-
-      if (name === "tabulator-policy")
-        return await pref.getBoolean("tabulator-policy", DEFAULT_TAB_POLICY);
-
-      if (name === "tabulator-width")
-        return await pref.getInteger("tabulator-width", DEFAULT_TAB_WIDTH);
-
-      if (name === "indentation-policy")
-        return await pref.getBoolean("indentation-policy", DEFAULT_INDENTATION_POLICY);
-
-      if (name === "indentation-width")
-        return await pref.getInteger("indentation-width", DEFAULT_INDENTATION_WIDTH);
-
-      if (name === "syntax-check")
-        return await pref.getBoolean("syntax-check", true);
-
-      throw new Error(`Unknown settings ${name}`);
+      return await accounts.getEditor().getValue(name);
     },
 
     "set-preference": async (msg) => {
@@ -537,8 +512,7 @@
 
       logger.logAction(`Set value ${name} on ${account}`);
 
-      const pref = accounts.getAccountById(msg.payload.account).getConfig();
-      await pref.setValue(`editor.${name}`, value);
+      await accounts.getAccountById(account).getEditor().setValue(name, value);
     },
 
     "set-default-preference": async(msg) => {
@@ -547,8 +521,7 @@
 
       logger.logAction(`Set default value for ${name}`);
 
-      await (new SievePrefManager("editor"))
-        .setValue(name, value);
+      await accounts.getEditor().setValue(name, value);
     }
   };
 

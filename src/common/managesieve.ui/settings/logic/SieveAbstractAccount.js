@@ -20,6 +20,7 @@
   const { SieveSecurity } = require("./SieveSecuritySettings.js");
   const { SieveHost } = require("./SieveHostSettings.js");
   const { SieveAccountSettings } = require("./SieveAccountSettings.js");
+  const { SieveEditorSettings } = require("./SieveEditorSettings.js");
 
   /**
    * Abstract implementation for managing an account's preferences.
@@ -153,6 +154,16 @@
       return this.common;
     }
 
+    /**
+     * Gets the object managing the accounts editor's settings.
+     *
+     * @returns {SieveEditorSettings}
+     *   the settings object
+     */
+    getEditor() {
+      return new SieveEditorSettings(
+        new SievePrefManager(`${this.getConfig().getNamespace()}.editor`));
+    }
   }
 
   // Require modules need to use export.module

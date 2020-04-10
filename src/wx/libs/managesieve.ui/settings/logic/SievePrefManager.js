@@ -27,7 +27,7 @@
      * @inheritdoc
      */
     async getValue(key) {
-      key = `${this.id}.${key}`;
+      key = `${this.getNamespace()}.${key}`;
 
       const pair = await browser.storage.local.get(key);
 
@@ -43,7 +43,7 @@
     async setValue(key, value) {
 
       const item = {};
-      item[`${this.id}.${key}`] = value;
+      item[`${this.getNamespace()}.${key}`] = value;
 
       await browser.storage.local.set(item);
       return this;

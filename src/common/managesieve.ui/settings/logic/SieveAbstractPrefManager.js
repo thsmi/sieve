@@ -15,18 +15,30 @@
 
   /**
    * Manages preferences.
-   * It uses the DOM's local storage interface
    */
   class SieveAbstractPrefManager {
 
     /**
      * Initializes the preference manager.
      *
-     * @param {string} id
-     *   the preferences unique id.
+     * @param {string} [namespace]
+     *   the optional preferences namespace.
      */
-    constructor(id) {
-      this.id = id;
+    constructor(namespace) {
+      if ((typeof(namespace) === "undefined") || (namespace === null))
+        namespace = "";
+
+      this.namespace = namespace;
+    }
+
+    /**
+     * Returns the namespace which is added to all preferences
+     *
+     * @returns {string}
+     *   the prefix as string.
+     */
+    getNamespace() {
+      return this.namespace;
     }
 
     /**
@@ -38,6 +50,7 @@
      * @returns {object}
      *   the value or undefined in case it does not exist.
      */
+    // eslint-disable-next-line require-await
     async getValue(key) {
       throw new Error(`Implement SieveAbstractPrefManager::getValue(${key})`);
     }
@@ -53,6 +66,7 @@
      * @returns {SievePrefManager}
      *   a self reference.
      */
+    // eslint-disable-next-line require-await
     async setValue(key, value) {
       throw new Error(`Implement SieveAbstractPrefManager::setValue(${key},${value})`);
     }

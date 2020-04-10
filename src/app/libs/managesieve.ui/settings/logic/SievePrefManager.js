@@ -29,7 +29,7 @@
      *   the value or undefined in case it does not exist.
      */
     async getValue(key) {
-      return await localStorage.getItem(`${this.id}.${key}`);
+      return await localStorage.getItem(`${this.getNamespace()}.${key}`);
     }
 
     /**
@@ -43,7 +43,7 @@
      *   a self reference.
      */
     async setValue(key, value) {
-      await localStorage.setItem(`${this.id}.${key}`, value);
+      await localStorage.setItem(`${this.getNamespace()}.${key}`, value);
       return this;
     }
   }

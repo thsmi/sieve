@@ -1,0 +1,18 @@
+{
+  "account.disconnected.title" : "Not Connected to the Server",
+  "account.disconnected.description" : "The account is not connected to the server.",
+  "account.connect" : "Connect",
+
+  "account.delete.title" : "Danger Zone",
+  "account.delete.description" : "Remove this server configuration from the app. Your account on your mail server will remain untouched, no scripts are deleted and the currently active remains active.",
+  "account.delete" : "Delete Server",
+
+  "account.settings" : "Settings",
+  "account.newscript" : "New script",
+  "account.donate" : "Donate",
+
+  "account.settings.edit" : "Edit Settings",
+  "account.disconnect" : "Disconnect",
+  "account.reconnect" : "Reconnect",
+  "account.capabilities.show" : "Show Server Capabilities"
+}

@@ -56,6 +56,11 @@
       <input type="checkbox" class="custom-control-input" id="debugWidgets" />
       <label class="custom-control-label" for="debugWidgets">Widgets</label>
     </div>
+
+    <div class="custom-control custom-switch">
+      <input type="checkbox" class="custom-control-input" id="debugI18n" />
+      <label class="custom-control-label" for="debugI18n">Internationalization (I18n)</label>
+    </div>
   </div>
 
 </div>

@@ -15,10 +15,31 @@
 
   /* global $ */
 
+  let instance = null;
+
   /**
    * A poor mans I18n helper class which provides help to translate strings.
    */
   class SieveI18n {
+
+    /**
+     * Creates or returns an initialized i18n instance.
+     * It is guaranteed to be a singleton.
+     *
+     * @returns {SieveI18n}
+     *   the logger instance.
+     */
+    static async getInstance() {
+
+      if (instance === null) {
+        // Create a new instance...
+        instance = new SieveI18n();
+        // ... and load the locale.
+        await instance.setLocale(navigator.language);
+      }
+
+      return instance;
+    }
 
     /**
      * Sets the current locale. In case the locale is unknown an exception will be thrown.
@@ -29,6 +50,9 @@
      *   a self reference
      */
     async setLocale(locale) {
+
+      // navigator.language
+
       if (locale === undefined)
         locale = "en-US";
 

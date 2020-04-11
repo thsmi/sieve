@@ -22,6 +22,16 @@
   class SieveTemplateLoader {
 
     /**
+     * Initializes the template loader.
+     *
+     * @param {*} [i18n]
+     *   an i18n object which is used to translate the templates
+     */
+    constructor(i18n) {
+      this.i18n = i18n;
+    }
+
+    /**
      * Gets an instance to the logger.
      *
      * @returns {SieveLogger}
@@ -29,6 +39,46 @@
      **/
     getLogger() {
       return SieveLogger.getInstance();
+    }
+
+    /**
+     * Translates a loaded template.
+     * It queries all data-i18n and translates all elements found.
+     *
+     * @param {DocumentFragment} fragment
+     *   the template which should be translated.
+     * @returns {DocumentFragment}
+     *   the translated template.
+     */
+    translate(fragment) {
+
+      // Check if a translator is attached to this loader...
+      // if ((typeof(this.i18n) === "undefined") || (this.i18n === null))
+      //  return fragment;
+
+      // Get all elements with a data-i18n tag from the fragment.
+      const elms = fragment.querySelectorAll('[data-i18n]');
+
+      for (const elm of elms) {
+
+        const entity = elm.dataset.i18n;
+        this.getLogger().logI18n(`Translating ${entity}`);
+
+        // Check if the text node is empty
+        if (elm.textContent.trim() !== "")
+          this.getLogger().logI18n(`Text node for ${entity} not empty, replacing existing text`);
+
+        // In case we have no translator replace the content with the entity name.
+        if ((typeof(this.i18n) === "undefined") || (this.i18n === null)) {
+          elm.textContent = entity;
+          continue;
+        }
+
+        // Get the translation and update the text...
+        elm.textContent = this.i18n.getString(entity);
+      }
+
+      return fragment;
     }
 
 
@@ -57,7 +107,8 @@
 
         const onSuccess = (content) => {
           this.getLogger().logWidget(`Template ${tpl} loaded`);
-          resolve($(content.children));
+
+          resolve($(this.translate(content).children));
         };
 
         $("<template />").load(tpl,

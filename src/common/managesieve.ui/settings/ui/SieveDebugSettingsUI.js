@@ -33,6 +33,8 @@
   const LOG_GLOBAL_ACTION = (1 << 1);
   // eslint-disable-next-line no-magic-numbers
   const LOG_GLOBAL_WIDGET = (1 << 2);
+  // eslint-disable-next-line no-magic-numbers
+  const LOG_GLOBAL_I18N = (1 << 3);
 
   /**
    * A UI renderer for the sieve debug settings dialog
@@ -91,11 +93,11 @@
      */
     setAccountLogLevel(level) {
 
-      $("#debugClientServer").prop( "checked", (level & LOG_ACCOUNT_REQUEST) );
-      $("#debugServerClient").prop( "checked", (level & LOG_ACCOUNT_RESPONSE) );
-      $("#debugSessionManagement").prop( "checked", (level & LOG_ACCOUNT_SESSION_INFO) );
-      $("#debugStateMachine").prop( "checked", (level & LOG_ACCOUNT_STATE) );
-      $("#debugRawDump").prop( "checked", (level & LOG_ACCOUNT_STREAM) );
+      $("#debugClientServer").prop("checked", (level & LOG_ACCOUNT_REQUEST));
+      $("#debugServerClient").prop("checked", (level & LOG_ACCOUNT_RESPONSE));
+      $("#debugSessionManagement").prop("checked", (level & LOG_ACCOUNT_SESSION_INFO));
+      $("#debugStateMachine").prop("checked", (level & LOG_ACCOUNT_STATE));
+      $("#debugRawDump").prop("checked", (level & LOG_ACCOUNT_STREAM));
     }
 
     /**
@@ -107,14 +109,17 @@
     getGlobalLogLevel() {
       let level = 0x00;
 
-      if ($("#debugActions").prop( "checked"))
+      if ($("#debugActions").prop("checked"))
         level |= LOG_GLOBAL_ACTION;
 
-      if ($("#debugIpcMessages").prop( "checked"))
+      if ($("#debugIpcMessages").prop("checked"))
         level |= LOG_GLOBAL_IPC_MESSAGES;
 
-      if ($("#debugWidgets").prop( "checked"))
+      if ($("#debugWidgets").prop("checked"))
         level |= LOG_GLOBAL_WIDGET;
+
+      if ($("#debugI18n").prop("checked"))
+        level |= LOG_GLOBAL_I18N;
 
       return level;
     }
@@ -126,9 +131,10 @@
      *   the global log level as integer
      */
     setGlobalLogLevel(level) {
-      $("#debugActions").prop( "checked", (level & LOG_GLOBAL_ACTION) );
-      $("#debugIpcMessages").prop( "checked", (level & LOG_GLOBAL_IPC_MESSAGES) );
-      $("#debugWidgets").prop( "checked", (level & LOG_GLOBAL_WIDGET) );
+      $("#debugActions").prop("checked", (level & LOG_GLOBAL_ACTION));
+      $("#debugIpcMessages").prop("checked", (level & LOG_GLOBAL_IPC_MESSAGES));
+      $("#debugWidgets").prop("checked", (level & LOG_GLOBAL_WIDGET));
+      $("#debugI18n").prop("checked", (level & LOG_GLOBAL_I18N));
     }
 
     /**
@@ -138,11 +144,11 @@
     async save() {
 
       const levels = {
-        account  : this.getAccountLogLevel(),
-        global : this.getGlobalLogLevel()
+        account: this.getAccountLogLevel(),
+        global: this.getGlobalLogLevel()
       };
 
-      await this.account.send("account-settings-set-debug", {"levels" : levels});
+      await this.account.send("account-settings-set-debug", { "levels": levels });
 
       // Validate and close
       $('#sieve-dialog-settings').modal('hide');

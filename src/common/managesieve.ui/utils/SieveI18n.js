@@ -15,6 +15,85 @@
 
   /* global $ */
 
+  const { SieveLogger } = require("./SieveLogger.js");
+
+  const entities = {
+    "account.disconnected.title" : "Not Connected to the Server",
+    "account.disconnected.description" : "The account is not connected to the server.",
+    "account.connect" : "Connect",
+
+    "account.delete.title" : "Danger Zone",
+    "account.delete.description" : "Remove this server configuration from the app. Your account on your mail server will remain untouched, no scripts are deleted and the currently active remains active.",
+    "account.delete" : "Delete Server",
+
+    "account.settings" : "Settings",
+    "account.newscript" : "New script",
+    "account.donate" : "Donate",
+
+    "account.settings.edit" : "Edit Settings",
+    "account.disconnect" : "Disconnect",
+    "account.reconnect" : "Reconnect",
+    "account.capabilities.show" : "Show Server Capabilities",
+
+    "account.details.title" : "Account Details",
+    "account.details.server" : "Server",
+    "account.details.secure" : "(Secure Connection)",
+    "account.details.fingerprint" : "Fingerprint",
+    "account.details.username" : "Username",
+    "account.details.sasl" : "SASL Mechanism",
+    "account.details.server.edit" : "Edit Server",
+    "account.details.credentials.edit" : "Edit Credentials",
+    "account.details.debugging.edit" : "Debugging",
+
+    "account.script.active" : "active",
+    "account.script.deactivate" : "Deactivate",
+    "account.script.activate" : "Activate",
+    "account.script.rename" : "Rename",
+    "account.script.delete" : "Delete",
+    "account.script.edit" : "Edit",
+
+    "password.dialog.title" : "Password Required",
+    "password.dialog.description" : "Please enter the password for your Sieve account.",
+    "password.dialog.account" : "Account",
+    "password.dialog.username" : "Username",
+    "password.dialog.password" : "Password",
+    "password.dialog.accept" : "Login",
+
+    "script.create.title" : "Create Script",
+    "script.create.description" : "Enter the new name for your script",
+    "script.create.name" : "The new script's name",
+    "script.create.accept" : "Create",
+
+    "editor.syntax.title" : "Syntax check",
+    "editor.syntax.description" : "While editing script they can be checked for validity. The syntax check is performed by the server. In order to keep network traffic low, syntax check are grouped.",
+    "editor.syntax.switch" : "Checks scripts while editing",
+
+    "editor.indentation.title" : "Indentation",
+    "editor.indentation.description" : "The editor automatically indent code while typing.",
+    "editor.indentation.width" : "Indention width",
+    "editor.indentation.policy" : "Indention Policy",
+    "editor.indentation.tabs" : "Use Tabs",
+    "editor.indentation.spaces" : "Use Spaces",
+    "editor.indentation.tabWidth" : "Tab width",
+
+    "texteditor.cut" : "Cut",
+    "texteditor.copy" : "Copy",
+    "texteditor.paste" : "Paste",
+
+    "texteditor.undo" : "Undo",
+    "texteditor.redo" : "Redo",
+    "texteditor.findAndReplace" : "Find & Replace",
+    "texteditor.reference" : "Reference",
+
+    "texteditor.find" : "Find",
+    "texteditor.find.text" : "Search for...",
+    "texteditor.replace" : "Replace",
+    "texteditor.replace.text" : "Replace with...",
+
+    "texteditor.matchCase" : "Match Case.",
+    "texteditor.backwards" : "Search Backward"
+  };
+
   let instance = null;
 
   /**
@@ -29,17 +108,24 @@
      * @returns {SieveI18n}
      *   the logger instance.
      */
-    static async getInstance() {
+    static getInstance() {
 
-      if (instance === null) {
-        // Create a new instance...
+      if (instance === null)
         instance = new SieveI18n();
-        // ... and load the locale.
-        await instance.setLocale(navigator.language);
-      }
 
       return instance;
     }
+
+    /**
+     * Gets an instance of the default logger.
+     *
+     * @returns {SieveLogger}
+     *   a reference to a logger instance.
+     */
+    getLogger() {
+      return SieveLogger.getInstance();
+    }
+
 
     /**
      * Sets the current locale. In case the locale is unknown an exception will be thrown.
@@ -78,18 +164,21 @@
     /**
      * The strings unique id
      *
-     * @param {string} string
+     * @param {string} entity
      *   the string which should be translated
      * @returns {string}
      *   the translated string
      */
-    getString(string) {
-      const value = this.strings[string];
+    getString(entity) {
+      const value = entities[entity];
+      // const value = this.strings[string];
 
-      if (typeof (value) === "undefined" || value === null)
-        return string;
+      if (typeof (value) === "undefined" || value === null) {
+        this.getLogger().logI18n("No translation for ${entity}");
+        return entity;
+      }
 
-      return value;
+      return `##${value}##`;
     }
 
   }

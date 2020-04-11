@@ -15,6 +15,7 @@
 
   /* global $ */
   const { SieveLogger } = require("./SieveLogger.js");
+  const { SieveI18n } = require("./SieveI18n.js");
 
   /**
    * Loads an html fragment from a file or url.
@@ -22,21 +23,21 @@
   class SieveTemplateLoader {
 
     /**
-     * Initializes the template loader.
+     * Gets an instance of the default i18n
      *
-     * @param {*} [i18n]
-     *   an i18n object which is used to translate the templates
+     * @returns {SieveI18n}
+     *   a reference to an i18n instance.
      */
-    constructor(i18n) {
-      this.i18n = i18n;
+    getI18n() {
+      return SieveI18n.getInstance();
     }
 
     /**
-     * Gets an instance to the logger.
+     * Gets an instance of the default logger.
      *
      * @returns {SieveLogger}
-     *   an reference to the logger instance.
-     **/
+     *   a reference to a logger instance.
+     */
     getLogger() {
       return SieveLogger.getInstance();
     }
@@ -57,25 +58,23 @@
       //  return fragment;
 
       // Get all elements with a data-i18n tag from the fragment.
-      const elms = fragment.querySelectorAll('[data-i18n]');
-
-      for (const elm of elms) {
+      for (const elm of fragment.querySelectorAll('[data-i18n]')) {
 
         const entity = elm.dataset.i18n;
         this.getLogger().logI18n(`Translating ${entity}`);
 
-        // Check if the text node is empty
-        if (elm.textContent.trim() !== "")
-          this.getLogger().logI18n(`Text node for ${entity} not empty, replacing existing text`);
-
-        // In case we have no translator replace the content with the entity name.
-        if ((typeof(this.i18n) === "undefined") || (this.i18n === null)) {
-          elm.textContent = entity;
+        // We translate the placeholder on HTML Elements
+        if ((elm instanceof HTMLInputElement) && (elm.type === "text")) {
+          elm.placeholder = `###${this.getI18n().getString(entity)}###`;
           continue;
         }
 
+        // Warn if text content is not empty.
+        if (elm.textContent.trim() !== "")
+          this.getLogger().logI18n(`Text node for ${entity} not empty, replacing existing text`);
+
         // Get the translation and update the text...
-        elm.textContent = this.i18n.getString(entity);
+        elm.textContent = this.getI18n().getString(entity);
       }
 
       return fragment;

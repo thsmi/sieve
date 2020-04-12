@@ -2,6 +2,9 @@
   "name": "Sieve",
   "description": "Manages Sieve Message Filters",
   "version": "0.4.0",
+  "icons" : {
+    "64" : "libs/icons/linux.png"
+  },
   "applications": {
     "gecko": {
       "id": "sieve@mozdev.org"

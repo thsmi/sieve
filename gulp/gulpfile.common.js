@@ -41,7 +41,7 @@ const INDEX_PATCH = 2;
 async function deleteRecursive(dir) {
   "use strict";
 
-  if (! existsSync(dir))
+  if (!existsSync(dir))
     return;
 
   const items = await readdir(dir, { withFileTypes: true });
@@ -73,11 +73,14 @@ async function clean() {
  *
  * @param {string} destination
  *   where to place the jquery sources
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  */
-async function packageJQuery(destination) {
+function packageJQuery(destination) {
   "use strict";
 
-  await src([
+  return src([
     BASE_DIR_JQUERY + "/jquery.min.js"
   ], { base: BASE_DIR_JQUERY }).pipe(
     dest(destination));
@@ -88,11 +91,14 @@ async function packageJQuery(destination) {
  *
  * @param {string} destination
  *   where to place the codemirror sources
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  */
-async function packageCodeMirror(destination) {
+function packageCodeMirror(destination) {
   "use strict";
 
-  await src([
+  return src([
     BASE_DIR_CODEMIRROR + "/addon/edit/**",
     BASE_DIR_CODEMIRROR + "/addon/search/**",
     BASE_DIR_CODEMIRROR + "/lib/**",
@@ -109,11 +115,14 @@ async function packageCodeMirror(destination) {
  *
  * @param {string} destination
  *   where to place the bootstrap sources
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  **/
-async function packageBootstrap(destination) {
+function packageBootstrap(destination) {
   "use strict";
 
-  await src([
+  return src([
     BASE_DIR_BOOTSTRAP + "/css/*.min.css",
     BASE_DIR_BOOTSTRAP + "/js/*.bundle.min.js"
   ], { base: BASE_DIR_BOOTSTRAP }).pipe(
@@ -125,11 +134,14 @@ async function packageBootstrap(destination) {
  *
  * @param {string} destination
  *   where to place the material design sources
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  */
-async function packageMaterialIcons(destination) {
+function packageMaterialIcons(destination) {
   "use strict";
 
-  await src([
+  return src([
     BASE_DIR_MATERIALICONS + "/material-design-icons.css",
     BASE_DIR_MATERIALICONS + "/fonts/MaterialIcons-Regular.woff2"
   ], { base: BASE_DIR_MATERIALICONS }).pipe(dest(destination));
@@ -279,7 +291,7 @@ async function compressDirectory(zip, dir, options) {
 
     if (item.isDirectory()) {
       zip.addEmptyDirectory(metaPath);
-      compressDirectory(zip, realPath, options);
+      await compressDirectory(zip, realPath, options);
       continue;
     }
 
@@ -323,11 +335,13 @@ async function compress(source, destination, options) {
     await unlink(destination);
   }
 
-  logger.info(`Compressing ${path.basename(destination)}`);
+  logger.info(`Collecting files ${source}`);
 
   const zip = new yazl.ZipFile();
 
   await compressDirectory(zip, source, options);
+
+  logger.info(`Compressing files ${path.basename(destination)}`);
 
   await new Promise((resolve) => {
     zip.outputStream

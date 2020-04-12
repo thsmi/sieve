@@ -26,11 +26,21 @@
    *
    */
   function createWindow() {
+
+    let icon = undefined;
+    if (process.platform === "linux")
+      icon = path.join(__dirname, 'libs/icons/linux.png');
+
     // Create the browser window.
-    win = new BrowserWindow({ width: 1200, height: 600, webPreferences: {
-      // nodeIntegrationInSubFrames: true,
-      nodeIntegration: true
-    } });
+    win = new BrowserWindow({
+      width: 1200,
+      height: 600,
+      icon: icon,
+      webPreferences: {
+        // nodeIntegrationInSubFrames: true,
+        nodeIntegration: true
+      }
+    });
     // win.setMenu(null);
 
     // and load the index.html of the app.
@@ -53,9 +63,9 @@
 
     // As suggested in https://github.com/electron/electron/issues/4068
     const inputMenu = Menu.buildFromTemplate([
-      {role: 'cut'},
-      {role: 'copy'},
-      {role: 'paste'}
+      { role: 'cut' },
+      { role: 'copy' },
+      { role: 'paste' }
     ]);
 
     win.webContents.on('context-menu', (e, props) => {

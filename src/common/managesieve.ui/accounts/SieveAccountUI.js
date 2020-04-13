@@ -179,7 +179,7 @@
       item.find(".sieve-account-reconnect-server").click(() => { this.connect(); });
       item.find(".sieve-account-disconnect-server").click(() => { this.disconnect(); });
 
-      $(".siv-accounts").append(item);
+      $(".siv-accounts-items").append(item);
     }
 
     /**

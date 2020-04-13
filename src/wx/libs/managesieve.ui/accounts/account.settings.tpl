@@ -4,8 +4,7 @@
     <span class="col-3" data-i18n="account.details.server"></span>
     <span class="sieve-settings-hostname"></span>:
     <span class="sieve-settings-port"></span>
-    &nbsp;
-    <span class="sieve-settings-secure" data-i18n="account.details.secure"></span>
+    <span class="sieve-settings-secure ml-1" data-i18n="account.details.secure"></span>
   </div>
   <!--<div class="row sieve-settings-fingerprint-item">
     <span class="col-3">Fingerprint:</span>

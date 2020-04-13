@@ -13,7 +13,7 @@
 
   "use strict";
 
-  /* global SieveAccountsUI */
+  /* global SieveAccounts */
   /* global SieveIpcClient */
   /* global SieveRenameScriptDialog */
   /* global SieveCreateScriptDialog */
@@ -97,7 +97,7 @@
     SieveLogger.getInstance().level(
       await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
 
-    const accounts = new SieveAccountsUI();
+    const accounts = new SieveAccounts();
     accounts.render();
 
     SieveIpcClient.setRequestHandler("accounts", "script-show-create", async () => { return await onCreateScript(); });

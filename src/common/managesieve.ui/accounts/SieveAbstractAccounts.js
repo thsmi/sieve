@@ -21,7 +21,7 @@
   /**
    * A UI renderer for a list of sieve accounts
    **/
-  class SieveAccountsUI {
+  class SieveAbstractAccounts {
 
     /**
      * Gets an instance to the logger.
@@ -35,53 +35,24 @@
 
     /**
      * Renders the UI for this component.
-     *
      */
     async render() {
 
-      const items = await SieveIpcClient.sendMessage("core", "accounts-list");
-
-      $(".siv-accounts").empty();
+      $(".siv-accounts-items").empty();
       this.getLogger().logWidget("Rendering Accounts...");
+
+      const items = await SieveIpcClient.sendMessage("core", "accounts-list");
 
       for (const item of items) {
         this.getLogger().logWidget(` + Accounts ${item}`);
         await ((new SieveAccountUI(this, item)).render());
       }
     }
-
-    /**
-     * Removes the account including all settings.
-     *
-     * @param {SieveAccountUI} account
-     *   the account which should be removed.
-     *
-     */
-    async remove(account) {
-
-      const rv = await account.send("account-delete", account.id);
-
-      if (rv)
-        await this.render();
-    }
-
-    /**
-     * Create a new account, and initializes it with default settings.
-     *
-     * @returns {string}
-     *   the accounts unique id.
-     */
-    async create() {
-      const id = await SieveIpcClient.sendMessage("core", "account-create");
-      await this.render();
-
-      return id;
-    }
   }
 
-  if (typeof (module) !== "undefined" && module !== null && module.exports)
-    module.exports = SieveAccountsUI;
+  if (typeof (module) !== "undefined" && module && module.exports)
+    module.exports.SieveAbstractAccounts = SieveAbstractAccounts;
   else
-    exports.SieveAccountsUI = SieveAccountsUI;
+    exports.SieveAbstractAccounts = SieveAbstractAccounts;
 
 })(this);

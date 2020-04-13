@@ -65,7 +65,7 @@
         // We translate the placeholder on HTML Elements
         if ((elm instanceof HTMLInputElement) && (elm.type === "text")) {
           try {
-            elm.placeholder = `###${this.getI18n().getString(entity)}###`;
+            elm.placeholder = this.getI18n().getString(entity);
           } catch (ex) {
             this.getLogger().logI18n(ex);
           }

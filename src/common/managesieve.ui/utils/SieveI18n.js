@@ -33,9 +33,15 @@
     "account.connecting.title" : "Connecting...",
     "account.disconnecting.title" : "Disconnecting...",
 
+    "accounts.create.title" : "Add or Import",
+    "accounts.create.description": "Add a new account to the sieve app or import an existing configuration from Thunderbird",
+    "accounts.create.add" : "Add Server",
+    "accounts.create.import" : "Import Server",
+
     "account.create.title" : "Create Account",
     "account.create.displayName" : "Display name",
     "account.create.displayName.placeholder" : "e.g. work or mail@example.com",
+
     "account.server.hostname" : "Hostname",
     "account.server.hostname.placeholder" : "e.g. imap.example.com",
     "account.server.port" : "Port",
@@ -203,7 +209,7 @@
     "texteditor.replace" : "Replace",
     "texteditor.replace.text" : "Replace with...",
 
-    "texteditor.matchCase" : "Match Case.",
+    "texteditor.matchCase" : "Match Case",
     "texteditor.backwards" : "Search Backward",
 
     "updater.message" : "A new version was released click to update.",
@@ -306,6 +312,7 @@
       if (typeof (value) === "undefined" || value === null)
         throw new Error(`No translation for ${entity}`);
 
+      // return `##${value}##`;
       return value;
     }
 

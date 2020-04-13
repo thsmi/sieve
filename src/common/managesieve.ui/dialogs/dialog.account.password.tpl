@@ -10,8 +10,7 @@
       </div>
       <div class="modal-body">
         <div class="form-group row">
-          <div class="col-sm-12" data-i18n="password.dialog.description">
-            Please enter the password for your Sieve account.</div>
+          <div class="col-sm-12" data-i18n="password.dialog.description"></div>
         </div>
         <div class="form-group row">
           <label class="col-sm-3 col-form-label" data-i18n="password.dialog.account"></label>

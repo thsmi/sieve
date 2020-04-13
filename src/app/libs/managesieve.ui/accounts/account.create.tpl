@@ -4,7 +4,7 @@
     <div class="modal-content">
 
       <div class="modal-header">
-        <h5 class="modal-title">Create Account</h5>
+        <h5 class="modal-title" data-i18n="account.create.title"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -12,36 +12,36 @@
 
       <div class="modal-body">
         <div class="form-group row">
-          <label class="col-sm-3 col-form-label ">Display Name</label>
+          <label class="col-sm-3 col-form-label" data-i18n="account.create.displayName"></label>
           <div class="col-sm-8">
-            <input type="text" class="sieve-create-account-displayname form-control" placeholder="e.g. work or mail@example.com">
+            <input type="text" data-i18n="account.create.displayName.placeholder" class="sieve-create-account-displayname form-control">
           </div>
         </div>
 
         <div class="form-group row">
-          <label class="col-sm-3 col-form-label ">Hostname</label>
+          <label class="col-sm-3 col-form-label" data-i18n="account.server.hostname"></label>
           <div class="col-sm-8">
-            <input type="text" class="sieve-create-account-hostname form-control" placeholder="e.g. imap.example.com">
+            <input type="text" class="sieve-create-account-hostname form-control" data-i18n="account.server.hostname.placeholder">
           </div>
         </div>
 
         <div class="form-group row">
-          <label class="col-sm-3 col-form-label">Port</label>
+          <label class="col-sm-3 col-form-label" data-i18n="account.server.port"></label>
           <div class="col-sm-3">
-            <input type="text" class="sieve-create-account-port form-control" id="sieve-dialog-settings-port" placeholder="e.g. 4190 or 2000">
+            <input type="text" class="sieve-create-account-port form-control" data-i18n="account.server.port.placeholder" id="sieve-dialog-settings-port">
           </div>
         </div>
 
         <div class="form-group row">
-          <label class="col-sm-3 col-form-label">Username</label>
+          <label class="col-sm-3 col-form-label" data-i18n="account.server.username"></label>
           <div class="col-sm-8">
-            <input type="text" class="sieve-create-account-username form-control" placeholder="Username">
+            <input type="text" class="sieve-create-account-username form-control">
           </div>
         </div>
       </div>
 
       <div class="modal-footer">
-        <button class="sieve-create-account-btn btn btn-primary">Create</button>
+        <button class="sieve-create-account-btn btn btn-primary" data-i18n="account.create.accept"></button>
       </div>
 
     </div>

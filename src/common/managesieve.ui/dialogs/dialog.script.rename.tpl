@@ -3,17 +3,17 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Rename Script</h5>
+        <h5 data-i18n="script.rename.title" class="modal-title"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <div>Enter the new name for your script</div>
-        <input class="sieve-rename-dialog-newname form-control" type="text" placeholder="Script name">
+        <div data-i18n="script.rename.description"></div>
+        <input data-i18n="script.rename.placeholder" class="sieve-rename-dialog-newname form-control" type="text">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary sieve-dialog-resolve">Rename</button>
+        <button type="button" data-i18n="script.rename.accept" class="btn btn-primary sieve-dialog-resolve"></button>
       </div>
     </div>
   </div>

@@ -4,7 +4,7 @@
     <div class="modal-content">
 
       <div class="modal-header">
-        <h5 class="modal-title">Import Accounts</h5>
+        <h5 class="modal-title" data-i18n="import.title"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -12,7 +12,7 @@
 
       <div class="modal-body">
         <div class="sieve-import-progress">
-          <p>Verifying configuration, please wait...</p>
+          <p data-i18n="import.verify"></p>
           <div class="progress">
             <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0"
               aria-valuemax="100" style="width: 100%"></div>

@@ -61,20 +61,30 @@
       for (const elm of fragment.querySelectorAll('[data-i18n]')) {
 
         const entity = elm.dataset.i18n;
-        this.getLogger().logI18n(`Translating ${entity}`);
 
         // We translate the placeholder on HTML Elements
         if ((elm instanceof HTMLInputElement) && (elm.type === "text")) {
-          elm.placeholder = `###${this.getI18n().getString(entity)}###`;
+          try {
+            elm.placeholder = `###${this.getI18n().getString(entity)}###`;
+          } catch (ex) {
+            this.getLogger().logI18n(ex);
+          }
           continue;
         }
 
         // Warn if text content is not empty.
-        if (elm.textContent.trim() !== "")
+        if (elm.textContent.trim() !== "") {
           this.getLogger().logI18n(`Text node for ${entity} not empty, replacing existing text`);
+        }
 
         // Get the translation and update the text...
-        elm.textContent = this.getI18n().getString(entity);
+        try {
+          elm.textContent = this.getI18n().getString(entity);
+        } catch (ex) {
+          this.getLogger().logI18n(ex);
+          elm.classList.add("alert-danger");
+          elm.textContent = entity;
+        }
       }
 
       return fragment;

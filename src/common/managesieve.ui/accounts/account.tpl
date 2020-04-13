@@ -5,7 +5,7 @@
       <ul class="nav nav-tabs card-header-tabs my-0 pt-3" role="tablist">
         <li class="nav-item">
           <a class="sieve-accounts-tab nav-link active" data-toggle="tab" role="tab">
-            <span class="siv-account-name">Unnamed</span>
+            <span class="siv-account-name"></span>
           </a>
         </li>
         <li class="nav-item">

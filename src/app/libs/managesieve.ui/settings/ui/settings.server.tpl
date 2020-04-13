@@ -1,56 +1,47 @@
 <div class="form-group row">
-  <label class="col-sm-3 col-form-label ">Display Name</label>
+  <label class="col-sm-3 col-form-label" data-i18n="settings.server.displayname"></label>
   <div class="col-sm-8">
-    <input type="text" class="sieve-settings-displayname form-control" placeholder="e.g. work or mail@example.com">
+    <input type="text" data-i18n="settings.server.displayname.placeholder" class="sieve-settings-displayname form-control">
   </div>
 </div>
 
 <div class="form-group row">
-  <label class="col-sm-3 col-form-label ">Hostname</label>
+  <label class="col-sm-3 col-form-label" data-i18n="settings.server.hostname"></label>
   <div class="col-sm-8">
-    <input type="text" class="sieve-settings-hostname form-control" placeholder="e.g. imap.example.com">
+    <input type="text" data-i18n="settings.server.hostname.placeholder" class="sieve-settings-hostname form-control">
   </div>
 </div>
 
 <div class="form-group row">
-  <label class="col-sm-3 col-form-label">Port</label>
+  <label class="col-sm-3 col-form-label" data-i18n="settings.server.port"></label>
   <div class="col-sm-3">
-    <input type="text" class="sieve-settings-port form-control" id="sieve-dialog-settings-port" placeholder="e.g. 4190 or 2000">
+    <input type="text" data-i18n="settings.server.port.placeholder" class="sieve-settings-port form-control" id="sieve-dialog-settings-port">
   </div>
 </div>
 
 <hr/>
 
 <p class="form-text text-muted">
-    <small>
-      The fingerprint is used to trust certificates which can not be validated automatically.<br/>
-      You will need this only if you are using with selfsigned certificates.
-    </small>
+    <small data-i18n="settings.server.fingerprint.description"></small>
 </p>
 <div class="form-group row">
 
-  <label class="col-sm-3 col-form-label">Fingerprint</label>
+  <label class="col-sm-3 col-form-label" data-i18n="settings.server.fingerprint"></label>
   <div class="col-sm-8">
-    <input type="text" class="sieve-settings-fingerprint form-control" placeholder="The server's certificates fingerprint.">
+    <input type="text" data-i18n="settings.server.fingerprint.placeholder" class="sieve-settings-fingerprint form-control">
   </div>
 </div>
 
 <div class="siv-settings-advanced">
   <hr/>
   <p class="form-text text-muted">
-    <small>
-      Most server will disconnect a client after being inactive for a certain time span.
-      To prevent this and keep the connection alive, idle messages are sent. To disable
-      keep alive messages set the interval to zero.
-    </small>
+    <small data-i18n="settings.server.idle.description"></small>
   </p>
   <div class="form-group row">
-    <label class="col-sm-3 col-form-label">Send idle message after</label>
+    <label class="col-sm-3 col-form-label" data-i18n="settings.server.idle1"></label>
     <div class="col-sm-3">
       <input type="text" class="sieve-settings-keepalive-interval form-control" id="inputPassword">
     </div>
-    <div class="col-sm-3 col-form-label">
-      minutes of in activity.
-    </div>
+    <div class="col-sm-3 col-form-label" data-i18n="settings.server.idle2"></div>
   </div>
 </div>

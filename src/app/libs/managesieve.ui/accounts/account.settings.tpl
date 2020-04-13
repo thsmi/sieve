@@ -31,7 +31,7 @@
       class="sieve-account-edit-debug btn btn-sm btn-outline-secondary"></button>
   </div>
   <hr>
-  <h4 data-i18n="account.delete.title"></h4>
-  <div data-i18n="account.delete.description"></div>
-  <button data-i18n="account.delete" type="button" class="mt-3 sieve-account-delete-server btn btn-sm btn-outline-danger" ></button>
+  <h4 data-i18n="account.details.delete.title"></h4>
+  <div data-i18n="account.details.delete.description"></div>
+  <button data-i18n="account.details.delete" type="button" class="mt-3 sieve-account-delete-server btn btn-sm btn-outline-danger" ></button>
 </div>

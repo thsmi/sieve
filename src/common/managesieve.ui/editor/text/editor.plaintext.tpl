@@ -2,14 +2,14 @@
   <div id="sieve-editor-toolbar" class="sticky py-2 bg-white">
     <div>
       <div class="btn-group mr-2" role="group">
-        <button id="sieve-editor-cut" type="button" class="btn btn-sm btn-outline-secondary" data-i18n="texteditor.cut">Cut</button>
-        <button id="sieve-editor-copy" type="button" class="btn btn-sm btn-outline-secondary" data-i18n="texteditor.copy">Copy</button>
-        <button id="sieve-editor-paste" type="button" class="btn btn-sm btn-outline-secondary" data-i18n="texteditor.paste">Paste</button>
+        <button id="sieve-editor-cut" type="button" class="btn btn-sm btn-outline-secondary" data-i18n="texteditor.cut"></button>
+        <button id="sieve-editor-copy" type="button" class="btn btn-sm btn-outline-secondary" data-i18n="texteditor.copy"></button>
+        <button id="sieve-editor-paste" type="button" class="btn btn-sm btn-outline-secondary" data-i18n="texteditor.paste"></button>
       </div>
 
       <div class="btn-group mr-2 " role="group">
-        <button id="sieve-editor-undo" type="button" class="btn btn-sm btn-outline-secondary" data-i18n="texteditor.undo">Undo</button>
-        <button id="sieve-editor-redo" type="button" class="btn btn-sm btn-outline-secondary" data-i18n="texteditor.redo">Redo</button>
+        <button id="sieve-editor-undo" type="button" class="btn btn-sm btn-outline-secondary" data-i18n="texteditor.undo"></button>
+        <button id="sieve-editor-redo" type="button" class="btn btn-sm btn-outline-secondary" data-i18n="texteditor.redo"></button>
       </div>
 
       <div class="btn-group mr-2 " role="group">
@@ -49,13 +49,13 @@
         <div class="col-md-6">
           <div class="custom-control custom-checkbox">
             <input id="sieve-editor-casesensitive" type="checkbox" class="custom-control-input"></input>
-            <label class="custom-control-label" for="sieve-editor-casesensitive" data-i18n="texteditor.matchCase">Match Case</label>
+            <label class="custom-control-label" for="sieve-editor-casesensitive" data-i18n="texteditor.matchCase"></label>
           </div>
         </div>
         <div class="col-md-6">
           <div class="custom-control custom-checkbox">
             <input id="sieve-editor-backward" type="checkbox" class="custom-control-input"></input>
-            <label class="custom-control-label" for="sieve-editor-backward" data-i18n="texteditor.backwards">Search Backward</label>
+            <label class="custom-control-label" for="sieve-editor-backward" data-i18n="texteditor.backwards"></label>
           </div>
         </div>
       </div>

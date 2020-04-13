@@ -3,18 +3,21 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="deleteScriptLabel">Delete Script</h5>
+        <h5 class="modal-title" data-i18n="script.delete.title" id="deleteScriptLabel"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <div>Are you really sure to delete the script
-          <em class="sieve-delete-dialog-name"></em>?</div>
-        <div> This can not be undone.</div>
+        <div>
+          <span data-i18n="script.delete.description1"></span>
+          <em class="sieve-delete-dialog-name"></em>
+          <span data-i18n="script.delete.description2"></span>
+        </div>
+        <div data-i18n="script.delete.description3"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="sieve-dialog-resolve btn btn-danger">Delete</button>
+        <button type="button" data-i18n="script.delete.accept" class="sieve-dialog-resolve btn btn-danger"></button>
       </div>
     </div>
   </div>

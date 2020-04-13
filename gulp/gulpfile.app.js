@@ -17,28 +17,41 @@ const path = require('path');
 const BUILD_DIR_APP = path.join(common.BASE_DIR_BUILD, "electron/resources");
 const BASE_DIR_APP = "./src/app/";
 
+const WIN_ARCH = "x64";
+const WIN_PLATFORM = "win32";
+const LINUX_ARCH = "x64";
+const LINUX_PLATFORM = "linux";
+const MAC_ARCH = "x64";
+const MAC_PLATFORM = "mas";
+
 /**
  * Copies and updates the package.json inside the build directory.
  * It is typically used by other tools like the electron-packager.
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  */
-async function packageDefinition() {
+function packageDefinition() {
 
   "use strict";
 
   const BASE_PATH = ".";
 
-  await src([
+  return src([
     BASE_PATH + "/package.json"
   ], { base: BASE_PATH }).pipe(dest(BUILD_DIR_APP));
 }
 
 /**
  * Copies the license file into the build directory.
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  */
-async function packageLicense() {
+function packageLicense() {
   "use strict";
 
-  await src([
+  return src([
     "./LICENSE.md"
   ]).pipe(dest(BUILD_DIR_APP));
 }
@@ -46,66 +59,81 @@ async function packageLicense() {
 
 /**
  * Copies the jquery sources into the build directory.
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  */
-async function packageJQuery() {
+function packageJQuery() {
   "use strict";
 
-  await common.packageJQuery(
+  return common.packageJQuery(
     BUILD_DIR_APP + "/libs/jquery");
 }
 
 /**
  * Copies the codemirror sources into the build directory.
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  */
-async function packageCodeMirror() {
+function packageCodeMirror() {
   "use strict";
 
-  await common.packageCodeMirror(
+  return common.packageCodeMirror(
     `${BUILD_DIR_APP}/libs/CodeMirror`);
 }
 
 /**
  * Copies the bootstrap sources into the build directory.
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  **/
-async function packageBootstrap() {
+function packageBootstrap() {
   "use strict";
 
-  await common.packageBootstrap(
+  return common.packageBootstrap(
     `${BUILD_DIR_APP}/libs/bootstrap`);
 }
 
 /**
  * Copies the material design icons into the build directory.
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  */
-async function packageMaterialIcons() {
+function packageMaterialIcons() {
   "use strict";
 
-  await common.packageMaterialIcons(
+  return common.packageMaterialIcons(
     `${BUILD_DIR_APP}/libs/material-icons`);
 }
 
 /**
  * Copies the source files into the app/ directory...
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  */
-async function packageSrc() {
+function packageSrc() {
   "use strict";
 
-  await src([
+  return src([
     BASE_DIR_APP + "/**"
   ]).pipe(dest(BUILD_DIR_APP));
 }
 
 /**
  * The common files need to go into the app/lib directory...
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  */
-async function packageCommon() {
+function packageCommon() {
   "use strict";
 
-  await src([
+  return src([
     common.BASE_DIR_COMMON + "/**",
-    // Filter out the editor wrapper
-    "!" + common.BASE_DIR_COMMON + "/editor",
-    "!" + common.BASE_DIR_COMMON + "/editor/**",
     // Filter out the rfc documents
     "!" + common.BASE_DIR_COMMON + "/libSieve/**/rfc*.txt",
     "!" + common.BASE_DIR_COMMON + "/libSieve/**/tests/",
@@ -121,8 +149,8 @@ async function packageWin32() {
 
   const options = {
     dir: BUILD_DIR_APP,
-    arch: "ia32",
-    platform: "win32",
+    arch: WIN_ARCH,
+    platform: WIN_PLATFORM,
     download: {
       cacheRoot: path.join(common.BASE_DIR_BUILD, "/electron/cache")
     },
@@ -144,8 +172,8 @@ async function packageLinux() {
 
   const options = {
     dir: BUILD_DIR_APP,
-    arch: "x64",
-    platform: "linux",
+    arch: LINUX_ARCH,
+    platform: LINUX_PLATFORM,
     download: {
       cache: path.join(common.BASE_DIR_BUILD, "/electron/cache")
     },
@@ -168,8 +196,8 @@ async function packageMacOS() {
 
   const options = {
     dir: BUILD_DIR_APP,
-    arch: "x64",
-    platform: "mas",
+    arch: MAC_ARCH,
+    platform: MAC_PLATFORM,
     download: {
       cache: path.join(common.BASE_DIR_BUILD, "/electron/cache")
     },
@@ -187,6 +215,7 @@ async function packageMacOS() {
 /**
  * Updates the addons version.
  */
+// eslint-disable-next-line require-await
 async function updateVersion() {
   "use strict";
 
@@ -224,8 +253,8 @@ async function zipWin32() {
 
   const version = (await common.getPackageVersion()).join(".");
 
-  const source = path.resolve(path.join(common.BASE_DIR_BUILD, "/electron/out/sieve-win32-ia32"));
-  const destination = path.join(common.BASE_DIR_BUILD, `sieve-${version}-win32-ia32.zip`);
+  const source = path.resolve(path.join(common.BASE_DIR_BUILD, `/electron/out/sieve-${WIN_PLATFORM}-${WIN_ARCH}`));
+  const destination = path.join(common.BASE_DIR_BUILD, `sieve-${version}-${WIN_PLATFORM}-${WIN_ARCH}.zip`);
 
   await common.compress(source, destination);
 }
@@ -238,8 +267,8 @@ async function zipLinux() {
 
   const version = (await common.getPackageVersion()).join(".");
 
-  const source = path.resolve(path.join(common.BASE_DIR_BUILD, "/electron/out/sieve-linux-x64"));
-  const destination = path.join(common.BASE_DIR_BUILD, `sieve-${version}-linux-x64.zip`);
+  const source = path.resolve(path.join(common.BASE_DIR_BUILD, `/electron/out/sieve-${LINUX_PLATFORM}-${LINUX_ARCH}`));
+  const destination = path.join(common.BASE_DIR_BUILD, `sieve-${version}-${LINUX_PLATFORM}-${LINUX_ARCH}.zip`);
 
   const options = {
     permissions: {

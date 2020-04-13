@@ -20,77 +20,94 @@ const BASE_DIR_WX = "./src/wx/";
 
 /**
  * Copies the license file into the build directory.
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  */
-async function packageLicense() {
+function packageLicense() {
   "use strict";
 
-  await src([
+  return src([
     "./LICENSE.md"
   ]).pipe(dest(BUILD_DIR_WX));
 }
 
 /**
  * Copies the jquery sources into the build directory.
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  */
-async function packageJQuery() {
+function packageJQuery() {
   "use strict";
 
-  await common.packageJQuery(
+  return common.packageJQuery(
     BUILD_DIR_WX + "/libs/jquery");
 }
 
 /**
  * Copies the codemirror sources into the build directory.
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  */
-async function packageCodeMirror() {
+function packageCodeMirror() {
   "use strict";
 
-  await common.packageCodeMirror(
+  return common.packageCodeMirror(
     `${BUILD_DIR_WX}/libs/CodeMirror`);
 }
 
 /**
  * Copies the bootstrap sources into the build directory.
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  **/
-async function packageBootstrap() {
+function packageBootstrap() {
   "use strict";
 
-  await common.packageBootstrap(
+  return common.packageBootstrap(
     `${BUILD_DIR_WX}/libs/bootstrap`);
 }
 
 /**
  * Copies the material design icons into the build directory.
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  */
-async function packageMaterialIcons() {
+function packageMaterialIcons() {
   "use strict";
 
-  await common.packageMaterialIcons(
+  return common.packageMaterialIcons(
     `${BUILD_DIR_WX}/libs/material-icons`);
 }
 
 /**
  * Copies the source files into the app/ directory...
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  */
-async function packageSrc() {
+function packageSrc() {
   "use strict";
 
-  await src([
+  return src([
     BASE_DIR_WX + "/**"
   ]).pipe(dest(BUILD_DIR_WX));
 }
 
 /**
  * The common files need to go into the app/lib directory...
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
  */
-async function packageCommon() {
+function packageCommon() {
   "use strict";
 
-  await src([
+  return src([
     common.BASE_DIR_COMMON + "/**",
-    // Filter out the editor wrapper
-    "!" + common.BASE_DIR_COMMON + "/editor",
-    "!" + common.BASE_DIR_COMMON + "/editor/**",
     // Filter out the rfc documents
     "!" + common.BASE_DIR_COMMON + "/libSieve/**/rfc*.txt",
     "!" + common.BASE_DIR_COMMON + "/libSieve/**/tests/",
@@ -108,6 +125,7 @@ function watchSrc() {
 
   watch(
     ['./src/**/*.js',
+      './src/**/*.jsm',
       './src/**/*.html',
       './src/**/*.tpl',
       './src/**/*.css',

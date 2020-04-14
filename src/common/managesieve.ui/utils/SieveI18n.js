@@ -168,6 +168,18 @@
     "script.busy.description3" : "It is currently being edited in a tab.",
     "script.busy.accept" : "Ok",
 
+    "editor.script" : "Script",
+    "editor.source" : "Source",
+    "editor.settings" : "Settings",
+    "editor.save" : "Save",
+    "editor.donate" : "Donate",
+    "editor.error" :"Server reports script errors",
+
+    "editor.menu.settings" : "Editor Settings",
+    "editor.menu.reload" : "Reload UI",
+    "editor.menu.import" : "Import Script",
+    "editor.menu.export" : "Export Script",
+
     "editor.save.title" : "Script changed",
     "editor.save.description1" : "The Script",
     "editor.save.description2" : "was changed.",

@@ -60,6 +60,9 @@
      */
     async render() {
 
+      const editor = await (new SieveTemplateLoader()).load("./editor/editor.tpl");
+      $("#sieve-editor").append(editor);
+
       await this.getTextEditor().render();
       await this.getGraphicalEditor().render();
 

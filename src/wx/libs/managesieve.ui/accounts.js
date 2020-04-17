@@ -21,6 +21,7 @@
   /* global SieveScriptBusyDialog */
   /* global SieveFingerprintDialog */
   /* global SieveLogger */
+  /* global SieveI18n */
 
   /**
    * Shows a prompt which asks the user for the new script name.
@@ -96,6 +97,9 @@
 
     SieveLogger.getInstance().level(
       await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
+
+    await (SieveI18n.getInstance())
+      .load("./i18n/en-US.json");
 
     const accounts = new SieveAccounts();
     accounts.render();

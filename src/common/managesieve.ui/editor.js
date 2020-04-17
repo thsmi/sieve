@@ -16,6 +16,7 @@
   /* global SieveEditorUI */
   /* global SieveIpcClient */
   /* global SieveLogger */
+  /* global SieveI18n */
 
   /**
    * The main entry point.
@@ -25,6 +26,9 @@
 
     SieveLogger.getInstance().level(
       await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
+
+    await (SieveI18n.getInstance())
+      .load("./i18n/en-US.json");
 
     const url = new URL(window.location);
     const script = url.searchParams.get("script");

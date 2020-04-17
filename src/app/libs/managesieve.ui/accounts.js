@@ -17,6 +17,7 @@
   /* global SieveUpdaterUI */
   /* global SieveIpcClient */
   /* global SieveLogger */
+  /* global SieveI18n */
 
   /**
    * The main entry point for the account view
@@ -26,6 +27,10 @@
 
     SieveLogger.getInstance().level(
       await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
+
+    await (SieveI18n.getInstance())
+      .load("./i18n/en-US.json");
+
 
     const accounts = new SieveAccounts();
     accounts.render();

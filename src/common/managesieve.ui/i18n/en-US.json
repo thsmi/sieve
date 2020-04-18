@@ -18,12 +18,12 @@
   "account.connecting.title" : "Connecting...",
   "account.disconnecting.title" : "Disconnecting...",
 
-  "accounts.capabilities.title" : "Server Capabilities",
-  "accounts.capabilities.implementation" : "Implementation",
-  "accounts.capabilities.version" : "Version",
-  "accounts.capabilities.sasl" : "SASL Mechanisms",
-  "accounts.capabilities.extensions" : "Sieve Extensions",
-  "accounts.capabilities.languages" : "Languages",
+  "account.capabilities.title" : "Server Capabilities",
+  "account.capabilities.implementation" : "Implementation",
+  "account.capabilities.version" : "Version",
+  "account.capabilities.sasl" : "SASL Mechanisms",
+  "account.capabilities.extensions" : "Sieve Extensions",
+  "account.capabilities.languages" : "Languages",
 
   "accounts.create.title" : "Add or Import",
   "accounts.create.description": "Add a new account to the sieve app or import an existing configuration from Thunderbird",

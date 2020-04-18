@@ -16,46 +16,6 @@
 
     <div class="siv-accounts"></div>
 
-    <!-- capabilities -->
-    <div id="sieve-dialog-capabilities" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Server Capabilities</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <table class="table-sm">
-              <tbody>
-                <tr>
-                  <th>Implementation</th>
-                  <td id="sieve-capabilities-server"></td>
-                </tr>
-                <tr>
-                  <th>Version</th>
-                  <td id="sieve-capabilities-version"></td>
-                </tr>
-                <tr>
-                  <th>SASL&nbsp;Mechanisms</th>
-                  <td id="sieve-capabilities-sasl"></td>
-                </tr>
-                <tr>
-                  <th>Sieve&nbsp;Extensions</th>
-                  <td id="sieve-capabilities-extensions"></td>
-                </tr>
-                <tr>
-                  <th>Language</th>
-                  <td id="sieve-capabilities-language"></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- The settings dialog-->
     <div id="sieve-dialog-settings" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
       aria-hidden="true">
@@ -100,6 +60,7 @@
     <script src="./settings/ui/SieveCredentialSettingsUI.js"></script>
     <script src="./settings/ui/SieveDebugSettingsUI.js"></script>
 
+    <script src="./accounts/SieveCapabilities.js"></script>
     <script src="./accounts/SieveScriptUI.js"></script>
     <script src="./accounts/SieveAccountUI.js"></script>
     <script src="./accounts/SieveAbstractAccounts.js"></script>

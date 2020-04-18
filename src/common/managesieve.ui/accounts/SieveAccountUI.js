@@ -21,6 +21,7 @@
   /* global SieveServerSettingsUI */
   /* global SieveCredentialsSettingsUI */
   /* global SieveDebugSettingsUI */
+  /* global SieveCapabilities */
 
   const IS_SMALLER = -1;
   const IS_EQUAL = 0;
@@ -257,7 +258,6 @@
 
     /**
      * Shows the settings dialog
-     *
      */
     showSettings() {
       $(`#siv-account-${this.id} .sieve-settings-tab`).tab('show');
@@ -299,39 +299,23 @@
      */
     showAdvancedSettings() {
       (new SieveDebugSettingsUI(this)).show();
-      this.renderSettings();
     }
-
-
 
     /**
      * Shows the account's capabilities
+     *
+     * @returns {SieveAccountUI}
+     *   a self reference.
      */
     async showCapabilities() {
 
       if (await this.isConnected() === false)
-        return;
+        return this;
 
-      $("#sieve-capabilities-server").empty();
-      $("#sieve-capabilities-version").empty();
-      $("#sieve-capabilities-sasl").empty();
-      $("#sieve-capabilities-extensions").empty();
-      $("#sieve-capabilities-language").empty();
+      const capabilities = await this.send("account-capabilities");
+      await (new SieveCapabilities()).show(capabilities);
 
-      $('#sieve-dialog-capabilities').modal('show');
-
-      // TODO show wait indicator...
-      (async () => {
-        const capabilities = await this.send("account-capabilities");
-
-        $("#sieve-capabilities-server").text(capabilities.implementation);
-        $("#sieve-capabilities-version").text(capabilities.version);
-        $("#sieve-capabilities-sasl").text(
-          Object.values(capabilities.sasl).join(" "));
-        $("#sieve-capabilities-extensions").text(
-          Object.keys(capabilities.extensions).join(" "));
-        $("#sieve-capabilities-language").text(capabilities.language);
-      })();
+      return this;
     }
 
     /**

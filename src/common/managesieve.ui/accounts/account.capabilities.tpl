@@ -11,23 +11,23 @@
         <table class="table-sm">
           <tbody>
             <tr>
-              <th data-i18n="account.capabilities.implementation"></th>
+              <th data-i18n="account.capabilities.implementation" class="text-nowrap"></th>
               <td id="sieve-capabilities-server"></td>
             </tr>
             <tr>
-              <th data-i18n="account.capabilities.version"></th>
+              <th data-i18n="account.capabilities.version" class="text-nowrap"></th>
               <td id="sieve-capabilities-version"></td>
             </tr>
             <tr>
-              <th data-i18n="account.capabilities.sasl"></th>
+              <th data-i18n="account.capabilities.sasl" class="text-nowrap"></th>
               <td id="sieve-capabilities-sasl"></td>
             </tr>
             <tr>
-              <th data-i18n="account.capabilities.extensions"></th>
+              <th data-i18n="account.capabilities.extensions" class="text-nowrap"></th>
               <td id="sieve-capabilities-extensions"></td>
             </tr>
             <tr>
-              <th data-i18n="account.capabilities.languages"></th>
+              <th data-i18n="account.capabilities.languages" class="text-nowrap"></th>
               <td id="sieve-capabilities-language"></td>
             </tr>
           </tbody>

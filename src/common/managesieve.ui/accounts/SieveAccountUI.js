@@ -273,8 +273,14 @@
       const rv = await (new SieveServerSettingsUI(this)).show();
 
       // render settings in case they got changed.
-      if (rv === true)
-        this.renderSettings();
+      if (rv === false)
+        return rv;
+
+      this.renderSettings();
+
+      // Update the account name it may have changed.
+      $(`#siv-account-${this.id} .siv-account-name`)
+        .text(await this.send("account-get-displayname"));
 
       return rv;
     }

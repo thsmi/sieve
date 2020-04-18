@@ -51,11 +51,47 @@
     }
 
     /**
+     * Renders the UI element into the dom.
+     */
+    async render() {
+      const dialog = this.getDialog();
+
+      dialog.find(".modal-body").empty()
+        .append(await (new SieveTemplateLoader().load("./settings/ui/settings.debug.tpl")));
+
+      const levels = await this.account.send("account-settings-get-debug");
+
+      this.setAccountLogLevel(levels.account);
+      this.setGlobalLogLevel(levels.global);
+
+      dialog.find(".sieve-settings-apply").click(() => { this.save(); });
+
+      dialog.find(".siv-settings-show-advanced").click(() => { this.showAdvanced(); });
+      dialog.find(".siv-settings-hide-advanced").click(() => { this.hideAdvanced(); });
+
+      this.hideAdvanced();
+
+    }
+
+    /**
      * Shows the settings dialog
      */
-    show() {
-      this.render();
-      this.getDialog().modal('show');
+    async show() {
+
+      $("#ctx").append(
+        await (new SieveTemplateLoader()).load("./settings/ui/settings.dialog.tpl"));
+
+      await this.render();
+
+      return await new Promise((resolve) => {
+
+        this.getDialog().modal("show")
+          .on("hidden.bs.modal", () => {
+            this.getDialog().remove();
+            resolve();
+          });
+      });
+
     }
 
     /**
@@ -188,28 +224,6 @@
       parent.find(".siv-settings-hide-advanced").hide();
     }
 
-    /**
-     * Renders the UI element into the dom.
-     *
-     */
-    async render() {
-      const parent = this.getDialog();
-
-      parent.find(".modal-body").empty()
-        .append(await (new SieveTemplateLoader().load("./settings/ui/settings.debug.tpl")));
-
-      const levels = await this.account.send("account-settings-get-debug");
-
-      this.setAccountLogLevel(levels.account);
-      this.setGlobalLogLevel(levels.global);
-
-      parent.find(".sieve-settings-apply").off().click(() => { this.save(); });
-
-      parent.find(".siv-settings-show-advanced").off().click(() => { this.showAdvanced(); });
-      parent.find(".siv-settings-hide-advanced").off().click(() => { this.hideAdvanced(); });
-
-      this.hideAdvanced();
-    }
   }
   if (typeof (module) !== "undefined" && module !== null && module.exports)
     module.exports = SieveDebugSettingsUI;

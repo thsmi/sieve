@@ -49,7 +49,6 @@
       const sessions = new Map();
 
       context.callOnClose({ close: () => {
-        console.log("Unloading Sieve Session API");
 
         // First ensure we exit all active sessions.
         for (const item of sessions.values())

@@ -89,6 +89,14 @@
       return this.getDialog().find(".sieve-settings-username").val();
     }
 
+    /**
+     * Selects the given authorization type in the dropdown control.
+     *
+     * @param {int|string} type
+     *   the authorization type to be activated.
+     * @returns {SieveCredentialsSettingsUI}
+     *   a self reference.
+     */
     setAuthorizationType(type) {
       const parent = this.getDialog();
 
@@ -105,6 +113,12 @@
       return this;
     }
 
+    /**
+     * Gets the current authorization type set in the dropdown menu.
+     *
+     * @returns {string}
+     *   the authorization type as string.
+     */
     getAuthorizationType() {
       return this.getDialog()
         .find(".sieve-settings-authorization button")

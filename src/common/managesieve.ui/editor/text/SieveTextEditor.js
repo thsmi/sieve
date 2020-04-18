@@ -51,6 +51,9 @@
       this.changed = false;
     }
 
+    /**
+     * Renders the text editors settings
+     */
     async renderSettings() {
 
 
@@ -100,7 +103,6 @@
         await this.setTabWidth($("#editor-settings-tabulator-width").val());
       });
       $("#editor-settings-tabulator-width").val(this.getTabWidth());
-
     }
 
     /**

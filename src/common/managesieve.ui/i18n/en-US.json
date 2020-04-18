@@ -217,7 +217,8 @@
   "texteditor.matchCase" : "Match Case",
   "texteditor.backwards" : "Search Backward",
 
-  "updater.message" : "A new version was released click to update.",
+  "updater.title" : "A new version was released!",
+  "updater.message" : "Click to download the update.",
 
   "debug.transport.description" : "Used to log and debug the communication between this app and the server. All of the settings apply to this accounts after a reconnect.",
   "debug.transport.clientserver" : "Client to Server communication (requests)",

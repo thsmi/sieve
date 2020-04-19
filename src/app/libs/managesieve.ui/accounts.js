@@ -28,8 +28,7 @@
     SieveLogger.getInstance().level(
       await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
 
-    await (SieveI18n.getInstance())
-      .load("./i18n/en-US.json");
+    await (SieveI18n.getInstance()).load();
 
 
     const accounts = new SieveAccounts();

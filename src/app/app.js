@@ -51,8 +51,9 @@
 
   const logger = SieveLogger.getInstance();
 
+  // TODO remove me this file should not have any dependency to i18n
   await (SieveI18n.getInstance())
-    .load("./libs/managesieve.ui/i18n/en-US.json");
+    .load("default", "./libs/managesieve.ui/i18n/");
 
   const accounts = await (new SieveAccounts().load());
   const sessions = new SieveSessions();

@@ -135,11 +135,11 @@
       this.getLogger().logI18n(`Language normalized to ${locale}`);
 
       try {
-        await this.loadDictionary(`${path}${locale}.jsonc`);
+        await this.loadDictionary(`${path}${locale}.json`);
       } catch (ex) {
         // In case loading the dictionary failed e.g. due to a parsing error
         // we try falling back to our default one which is used during development.
-        await this.loadDictionary(`${path}${DEFAULT_LOCALE}.jsonc`);
+        await this.loadDictionary(`${path}${DEFAULT_LOCALE}.json`);
       }
 
       return this;

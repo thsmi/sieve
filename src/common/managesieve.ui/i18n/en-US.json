@@ -115,7 +115,6 @@
   "account.error.description" : "Failed to connect to the server",
   "account.error.accept" : "Ok",
 
-  // password dialog
   "password.dialog.title" : "Password Required",
   "password.dialog.description" : "Please enter the password for your Sieve account.",
   "password.dialog.account" : "Account",
@@ -123,7 +122,6 @@
   "password.dialog.password" : "Password",
   "password.dialog.accept" : "Login",
 
-  // authorization dialog
   "authorization.title" : "Authorization Required",
   "authorization.description" : "Please enter the user as which you would like to be authorized.",
   "authorization.account" : "Account",
@@ -131,7 +129,6 @@
   "authorization.placeholder" : "Authorization",
   "authorization.accept" : "Authorize",
 
-  // Cert dialog
   "cert.title" : "Security alert",
   "cert.description1" : "Your mail server's authenticity cannot be verified!",
   "cert.description2" : "Someone might try to impersonate your mail server.",
@@ -140,26 +137,22 @@
   "cert.warning" : "Continue only if the fingerprints match and the error message is reasonable!",
   "cert.accept" : "Continue",
 
-  // Create Script Dialog
   "script.create.title" : "Create Script",
   "script.create.description" : "Enter the new name for your script",
   "script.create.name" : "The new script's name",
   "script.create.accept" : "Create",
 
-  // Delete Script Dialog
   "script.delete.title" : "Delete Script",
   "script.delete.description1": "Are you really sure to delete the script",
   "script.delete.description2": "?",
   "script.delete.description3": "This can not be undone",
   "script.delete.accept" : "Delete",
 
-  // Rename Script Dialog
   "script.rename.title" : "Rename Script",
   "script.rename.description": "Enter the new name for your script",
   "script.rename.placeholder" : "New Script name",
   "script.rename.accept" : "Rename",
 
-  // Busy Script Dialog
   "script.busy.title" : "Script is in use",
   "script.busy.description1" : "The script",
   "script.busy.description2" : "can not be renamed or deleted.",

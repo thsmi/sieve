@@ -21,9 +21,27 @@
   // be closed automatically when the JavaScript object is garbage collected.
   let win;
 
+  // ensure we are running as a singleton.
+  const isLocked = app.requestSingleInstanceLock();
+
+  if (!isLocked) {
+    app.quit();
+    return;
+  }
+
+  app.on('second-instance', () => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (!win)
+      return;
+
+    if (win.isMinimized());
+    win.restore();
+
+    win.focus();
+  });
+
   /**
    * Creates the main window
-   *
    */
   function createWindow() {
 

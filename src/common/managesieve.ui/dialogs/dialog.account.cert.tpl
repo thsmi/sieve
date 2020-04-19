@@ -2,28 +2,28 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Security alert</h5>
+        <h5 class="modal-title" data-i18n="cert.title"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p>Your mail server's authenticity cannot be verified!</p>
+        <p data-i18n="cert.description1"></p>
         <div class="alert alert-danger" role="alert">
-          <p>Someone might try to impersonate your mail server.</p>
+          <p data-i18n="cert.description2"></p>
 
-          <p>The validation failed with the following error message:</p>
+          <p data-i18n="cert.error"></p>
           <p class="sieve-dialog-certerror"></p>
 
-          <p>You need to verify manually, if the fingerprint matches your mailserver's fingerprint:</p>
+          <p data-i18n="cert.fingerprint"></p>
           <p class="sieve-dialog-fingerprint"></p>
 
         </div>
 
-        <p>Continue only if the fingerprints match and the error message is reasonable!</p>
+        <p data-i18n="cert.warning"></p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger sieve-dialog-resolve">Continue</button>
+        <button data-i18n="cert.accept" type="button" class="btn btn-danger sieve-dialog-resolve"></button>
       </div>
     </div>
   </div>

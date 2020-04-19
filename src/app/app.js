@@ -33,6 +33,7 @@
   const { SieveUpdater } = require("./libs/managesieve.ui/updater/SieveUpdater.js");
   const { SieveTabUI } = require("./libs/managesieve.ui/tabs/SieveTabsUI.js");
 
+  // TODO move and handle dialogs inside the account.html/js
   const {
     SieveRenameScriptDialog,
     SieveCreateScriptDialog,
@@ -46,7 +47,13 @@
   const { SieveThunderbirdImport } = require("./libs/managesieve.ui/importer/SieveThunderbirdImport.js");
   const { SieveAutoConfig } = require("./libs/libManageSieve/SieveAutoConfig.js");
 
+  const { SieveI18n } = require("./libs/managesieve.ui/utils/SieveI18n.js");
+
   const logger = SieveLogger.getInstance();
+
+  // TODO remove me this file should not have any dependency to i18n
+  await (SieveI18n.getInstance())
+    .load("default", "./libs/managesieve.ui/i18n/");
 
   const accounts = await (new SieveAccounts().load());
   const sessions = new SieveSessions();

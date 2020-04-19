@@ -172,20 +172,47 @@
 
 
     /**
+     * Renders the UI element into the dom.
+     */
+    async render() {
+      const parent = this.getDialog();
+
+      // Load all subsections...
+      parent.find(".modal-body").empty()
+        .append(await (new SieveTemplateLoader()).load("./settings/ui/settings.server.tpl"));
+
+      const server = await this.account.send("account-get-server");
+
+      this.setDisplayName(server.displayName);
+      this.setHostname(server.hostname);
+      this.setPort(server.port);
+      this.setFingerprint(server.fingerprint);
+
+      this.setKeepAlive(server.keepAlive);
+
+      parent.find(".siv-settings-show-advanced").click(() => { this.showAdvanced(); });
+      parent.find(".siv-settings-hide-advanced").click(() => { this.hideAdvanced(); });
+
+      this.hideAdvanced();
+    }
+
+    /**
      * Shows the settings dialog
      * @returns {Promise<boolean>}
      *   false in case the dialog was dismissed otherwise true.
      */
     async show() {
 
-      this.render();
+      $("#ctx").append(
+        await (new SieveTemplateLoader()).load("./settings/ui/settings.dialog.tpl"));
+
+      await this.render();
+
       return await new Promise((resolve) => {
 
-        const dialog = this.getDialog();
-
-        dialog.modal('show')
+        this.getDialog().modal('show')
           .on('hidden.bs.modal', () => {
-            // dialog.remove();
+            this.getDialog().remove();
             resolve(false);
           })
           .find(".sieve-settings-apply").off().click(async () => {
@@ -194,7 +221,8 @@
             // ... now trigger the hidden listener it will cleanup
             // it is afe to do so due to promise magics, the first
             // alway resolve wins and all subsequent calls are ignored...
-            dialog.modal("hide");
+
+            $('#sieve-dialog-settings').modal('hide');
           });
       });
     }
@@ -227,32 +255,6 @@
       return $("#sieve-dialog-settings");
     }
 
-    /**
-     * Renders the UI element into the dom.
-     */
-    async render() {
-      const parent = this.getDialog();
-
-      const loader = new SieveTemplateLoader();
-
-      // Load all subsections...
-      parent.find(".modal-body").empty()
-        .append(await loader.load("./settings/ui/settings.server.tpl"));
-
-      const server = await this.account.send("account-get-server");
-
-      this.setDisplayName(server.displayName);
-      this.setHostname(server.hostname);
-      this.setPort(server.port);
-      this.setFingerprint(server.fingerprint);
-
-      this.setKeepAlive(server.keepAlive);
-
-      parent.find(".siv-settings-show-advanced").off().click(() => { this.showAdvanced(); });
-      parent.find(".siv-settings-hide-advanced").off().click(() => { this.hideAdvanced(); });
-
-      this.hideAdvanced();
-    }
   }
   if (typeof (module) !== "undefined" && module !== null && module.exports)
     module.exports = SieveServerSettingsUI;

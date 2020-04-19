@@ -2,6 +2,6 @@
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
-    <strong>Failed to save the script</strong>
-    <span class="sieve-editor-error-msg">The script can not be saved to the server this is most likely due to an invalid syntax.</span>
+    <strong data-i18n="editor.error.save.title"></strong>
+    <span data-i18n="editor.error.save.description" class="sieve-editor-error-msg"></span>
   </div>

@@ -27,7 +27,7 @@
      */
     async show() {
       return await new Promise(async (resolve) => {
-        const dialog = await (new SieveTemplateLoader()).load("./accounts/account.create.tpl");
+        const dialog = await (new SieveTemplateLoader()).load("./accounts/account.dialog.create.tpl");
         $("#container").append(dialog);
 
         dialog.find(".sieve-create-account-btn").click(async () => {

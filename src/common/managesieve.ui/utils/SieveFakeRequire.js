@@ -62,6 +62,7 @@
   globals.set("./SieveAbstractIpcClient.js", "SieveAbstractIpcClient");
 
   globals.set("./../utils/SieveTemplateLoader.js", "SieveTemplateLoader");
+  globals.set("./SieveI18n.js", "SieveI18n");
 
   globals.set("./SieveAbstractAccounts.js", "SieveAbstractAccounts");
   globals.set("./SieveAbstractAccount.js", "SieveAbstractAccount");
@@ -115,7 +116,7 @@
 
 
   // In case there is no require in our scope we add our fake.
-  if (typeof(exports.require) !== "undefined" && exports.require !== null) {
+  if (typeof (exports.require) !== "undefined" && exports.require !== null) {
     exports.require = fakeRequire();
   }
 

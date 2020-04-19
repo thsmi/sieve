@@ -1,31 +1,37 @@
 <div>
-  <h4>Account Details</h4>
+  <h4 data-i18n="account.details.title"></h4>
   <div class="row">
-    <span class="col-3">Server:</span>
-    <span class="sieve-settings-hostname">Hostname</span>:
-    <span class="sieve-settings-port">999</span>
-    <span class="sieve-settings-secure">&nbsp;(Secure Connection)</span>
+    <span class="col-3" data-i18n="account.details.server"></span>
+    <span class="sieve-settings-hostname"></span>:
+    <span class="sieve-settings-port"></span>
+    &nbsp;
+    <span class="sieve-settings-secure" data-i18n="account.details.secure"></span>
   </div>
   <div class="row sieve-settings-fingerprint-item">
-    <span class="col-3">Fingerprint:</span>
+    <span class="col-3" data-i18n="account.details.fingerprint"></span>
     <span class="sieve-settings-fingerprint"></span>
   </div>
   <div class="row">
-    <span class="col-3">Username:</span>
-    <span class="sieve-settings-username">Authentication</span>
+    <span class="col-3" data-i18n="account.details.username"></span>
+    <span class="sieve-settings-username"></span>
   </div>
   <div class="row">
-    <span class="col-3">SASL Mechanism:</span>
-    <span class="sieve-settings-mechanism">SCRAM-MD5</span>
+    <span class="col-3" data-i18n="account.details.sasl"></span>
+    <span class="sieve-settings-mechanism"></span>
   </div>
   <div class="mt-3">
-    <button type="button" class="sieve-account-edit-server btn btn-sm btn-outline-secondary mr-1">Edit Server</button>
-    <button type="button" class="sieve-account-edit-credentials btn btn-sm btn-outline-secondary mr-1">Edit Credentials</button>
-    <button type="button" class="sieve-account-edit-debug btn btn-sm btn-outline-secondary">Debugging</button>
+    <button type="button"
+      data-i18n="account.details.server.edit"
+      class="sieve-account-edit-server btn btn-sm btn-outline-secondary mr-1"></button>
+    <button type="button"
+      data-i18n="account.details.credentials.edit"
+      class="sieve-account-edit-credentials btn btn-sm btn-outline-secondary mr-1"></button>
+    <button type="button"
+      data-i18n="account.details.debugging.edit"
+      class="sieve-account-edit-debug btn btn-sm btn-outline-secondary"></button>
   </div>
   <hr>
-  <h4>Danger Zone</h4>
-  <div>Remove this server configuration from the app. Your account on your mail server will remain untouched, no scripts are deleted and the currently active
-    remains active.</div>
-  <button type="button" class="mt-3 sieve-account-delete-server btn btn-sm btn-outline-danger">Delete Server</button>
+  <h4 data-i18n="account.details.delete.title"></h4>
+  <div data-i18n="account.details.delete.description"></div>
+  <button data-i18n="account.details.delete" type="button" class="mt-3 sieve-account-delete-server btn btn-sm btn-outline-danger" ></button>
 </div>

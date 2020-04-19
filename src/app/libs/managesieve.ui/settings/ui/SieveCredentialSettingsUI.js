@@ -215,9 +215,11 @@
      * Shows the settings dialog
      */
     async show() {
-      // TODO show should marked as async so that we can
-      // wait for it and trigger
-      this.render();
+
+      $("#ctx").append(
+        await (new SieveTemplateLoader()).load("./settings/ui/settings.dialog.tpl"));
+
+      await this.render();
 
       return await new Promise((resolve) => {
 
@@ -279,11 +281,9 @@
     async render() {
       const parent = this.getDialog();
 
-      const loader = new SieveTemplateLoader();
-
       // Load all subsections...
       parent.find(".modal-body").empty()
-        .append(await loader.load("./settings/ui/settings.credentials.tpl"));
+        .append(await new SieveTemplateLoader().load("./settings/ui/settings.credentials.tpl"));
 
       const credentials = await this.account.send("account-setting-get-credentials");
 

@@ -2,17 +2,20 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Delete Account</h5>
+        <h5 class="modal-title" data-i18n="account.delete.title"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <div> Do you really want to delete the configuration for
-          <em id="sieve-dialog-account-remove-name"></em>? </div>
+        <div>
+          <span data-i18n="account.delete.description1"></span>
+          <em id="sieve-dialog-account-remove-name"></em>
+          <span data-i18n="account.delete.description2"></span>
+        </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger sieve-dialog-resolve">Delete</button>
+        <button data-i18n="account.delete.accept" type="button" class="btn btn-danger sieve-dialog-resolve"></button>
       </div>
     </div>
   </div>

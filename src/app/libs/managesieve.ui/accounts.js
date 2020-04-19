@@ -13,12 +13,11 @@
 
   "use strict";
 
-  /* global SieveAccountsUI */
-  /* global SieveImportUI */
+  /* global SieveAccounts */
   /* global SieveUpdaterUI */
-  /* global SieveAccountCreateUI */
   /* global SieveIpcClient */
   /* global SieveLogger */
+  /* global SieveI18n */
 
   /**
    * The main entry point for the account view
@@ -29,22 +28,11 @@
     SieveLogger.getInstance().level(
       await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
 
-    const accounts = new SieveAccountsUI();
+    await (SieveI18n.getInstance()).load();
+
+
+    const accounts = new SieveAccounts();
     accounts.render();
-
-    document
-      .getElementById("sieve-account-import")
-      .addEventListener("click", async () => {
-        await (new SieveImportUI()).show();
-        accounts.render();
-      });
-
-    document
-      .getElementById("sieve-account-create")
-      .addEventListener("click", async () => {
-        await (new SieveAccountCreateUI().show());
-        accounts.render();
-      });
 
     (new SieveUpdaterUI()).check();
   }

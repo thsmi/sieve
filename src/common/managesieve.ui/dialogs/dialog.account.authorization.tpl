@@ -3,29 +3,28 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Authorization Required</h5>
+        <h5 data-i18n="authorization.title" class="modal-title"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="form-group row">
-          <div class="col-sm-12">
-            Please enter the user as which you would like to be authorized.</div>
+          <div class="col-sm-12" data-i18n="authorization.description"></div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 col-form-label">Account</label>
+          <label class="col-sm-3 col-form-label" data-i18n="authorization.account"></label>
           <div class="col-sm-8 col-form-label sieve-displayname"></div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 col-form-label">Username</label>
+          <label class="col-sm-3 col-form-label" data-i18n="authorization.username"></label>
           <div class="col-sm-8">
-            <input class="form-control sieve-authorization" placeholder="Authorization">
+            <input class="form-control sieve-authorization" data-i18n="authorization.placeholder">
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary sieve-dialog-resolve">Authorize</button>
+        <button data-i18n="authorization.accept" type="button" class="btn btn-primary sieve-dialog-resolve"></button>
       </div>
     </div>
   </div>

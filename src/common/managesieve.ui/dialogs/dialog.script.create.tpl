@@ -2,17 +2,17 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Create Script</h5>
+        <h5 class="modal-title" data-i18n="script.create.title"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <div>Enter the new name for your script</div>
-        <input class="sieve-create-dialog-name form-control" type="text" placeholder="Script name">
+        <div data-i18n="script.create.description"></div>
+        <input data-i18n="script.create.name" class="sieve-create-dialog-name form-control" type="text"></input>
       </div>
       <div class="modal-footer">
-        <button type="button" class="sieve-dialog-resolve btn btn-primary">Create</button>
+        <button data-i18n="script.create.accept" type="button" class="sieve-dialog-resolve btn btn-primary"></button>
       </div>
     </div>
   </div>

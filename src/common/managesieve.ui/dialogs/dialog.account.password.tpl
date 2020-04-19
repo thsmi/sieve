@@ -3,33 +3,32 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Password Required</h5>
+        <h5 class="modal-title" data-i18n="password.dialog.title"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="form-group row">
-          <div class="col-sm-12">
-            Please enter the password for your Sieve account.</div>
+          <div class="col-sm-12" data-i18n="password.dialog.description"></div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 col-form-label">Account</label>
+          <label class="col-sm-3 col-form-label" data-i18n="password.dialog.account"></label>
           <div class="col-sm-8 col-form-label sieve-displayname"></div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 col-form-label">Username</label>
+          <label class="col-sm-3 col-form-label" data-i18n="password.dialog.username"></label>
           <div class="col-sm-8 col-form-label sieve-username"></div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-3 col-form-label">Password</label>
+          <label class="col-sm-3 col-form-label" data-i18n="password.dialog.password"></label>
           <div class="col-sm-8">
-            <input type="password" class="form-control sieve-password" placeholder="Password">
+            <input type="password" class="form-control sieve-password">
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary sieve-dialog-resolve">Login</button>
+        <button type="button" data-i18n="password.dialog.accept" class="btn btn-primary sieve-dialog-resolve"></button>
       </div>
     </div>
   </div>

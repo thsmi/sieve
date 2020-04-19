@@ -3,18 +3,22 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Script changed</h5>
+        <h5 class="modal-title" data-i18n="editor.save.title"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <div>The script <span class="sieve-save-dialog-scriptname"> </span> was changed.</div>
-        <div>Do you want to save the changes?</div>
+        <div>
+          <span data-i18n="editor.save.description1"></span>
+          <em class="sieve-save-dialog-scriptname"></em>
+          <span data-i18n="editor.save.description2"></span>
+        </div>
+        <div data-i18n="editor.save.description3"></div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary sieve-save-dialog-save sieve-dialog-resolve">Save Changes</button>
-        <button type="button" class="btn btn-outline-secondary sieve-save-dialog-discard sieve-dialog-resolve">Discard Changes</button>
+        <button data-i18n="editor.save.accept" type="button" class="btn btn-primary sieve-save-dialog-save sieve-dialog-resolve"></button>
+        <button data-i18n="editor.save.discard" type="button" class="btn btn-outline-secondary sieve-save-dialog-discard sieve-dialog-resolve"></button>
       </div>
     </div>
   </div>

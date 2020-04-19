@@ -23,10 +23,12 @@
   // A list with all supported languages.
   const LANGUAGES = new Set();
   LANGUAGES.add("en-US");
+  LANGUAGES.add("de-DE");
 
   // Maps a language to a supported language.
   const LANGUAGE_MAPPING = new Map();
   LANGUAGE_MAPPING.set("en", "en-US");
+  LANGUAGE_MAPPING.set("de", "de-DE");
 
   const { SieveLogger } = require("./SieveLogger.js");
 

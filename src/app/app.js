@@ -33,17 +33,6 @@
   const { SieveUpdater } = require("./libs/managesieve.ui/updater/SieveUpdater.js");
   const { SieveTabUI } = require("./libs/managesieve.ui/tabs/SieveTabsUI.js");
 
-  // TODO move and handle dialogs inside the account.html/js
-  const {
-    SieveRenameScriptDialog,
-    SieveCreateScriptDialog,
-    SieveDeleteScriptDialog,
-    SieveFingerprintDialog,
-    SieveDeleteAccountDialog,
-    SieveScriptBusyDialog,
-    SieveErrorDialog
-  } = require("./libs/managesieve.ui/dialogs/SieveDialogUI.js");
-
   const { SieveThunderbirdImport } = require("./libs/managesieve.ui/importer/SieveThunderbirdImport.js");
   const { SieveAutoConfig } = require("./libs/libManageSieve/SieveAutoConfig.js");
 
@@ -102,7 +91,8 @@
 
       const host = await accounts.getAccountById(account).getHost();
 
-      const rv = await (new SieveDeleteAccountDialog(await host.getDisplayName())).show();
+      const rv = await SieveIpcClient.sendMessage(
+        "accounts", "account-show-delete", await host.getDisplayName());
 
       if (rv)
         await accounts.remove(account);
@@ -261,7 +251,8 @@
         if (e instanceof SieveCertValidationException) {
           const secInfo = e.getSecurityInfo();
 
-          const rv = await (new SieveFingerprintDialog(secInfo)).show();
+          const rv = await SieveIpcClient.sendMessage(
+            "accounts", "account-show-certerror", secInfo);
 
           // save the fingerprint.
           if (rv !== true)
@@ -279,7 +270,10 @@
         // connecting failed for some reason, which means we
         // need to handle the error.
         console.error(e);
-        await (new SieveErrorDialog(e.message)).show();
+
+        await SieveIpcClient.sendMessage(
+          "accounts", "account-show-error", e.message);
+
         throw e;
       }
 
@@ -326,7 +320,7 @@
 
       logger.logAction(`Create script for ${account}`);
 
-      const name = await (new SieveCreateScriptDialog()).show();
+      const name = await SieveIpcClient.sendMessage("accounts", "script-show-create", account);
 
       if (name.trim() !== "")
         await sessions.get(account).putScript(name, "#test\r\n");
@@ -341,11 +335,11 @@
       logger.logAction(`Rename Script ${oldName} for account: ${account}`);
 
       if ((new SieveTabUI()).has(account, oldName)) {
-        await (new SieveScriptBusyDialog(oldName)).show();
+        await SieveIpcClient.sendMessage("accounts", "script-show-busy", oldName);
         return false;
       }
 
-      const newName = await (new SieveRenameScriptDialog(oldName)).show();
+      const newName = await SieveIpcClient.sendMessage("accounts", "script-show-rename", oldName);
 
       if (newName === oldName)
         return false;
@@ -361,11 +355,11 @@
       logger.logAction(`Delete Script ${name} for account: ${account}`);
 
       if ((new SieveTabUI()).has(account, name)) {
-        await (new SieveScriptBusyDialog(name)).show();
+        await SieveIpcClient.sendMessage("accounts", "script-show-busy", name);
         return false;
       }
 
-      const rv = await (new SieveDeleteScriptDialog(name)).show();
+      const rv = await SieveIpcClient.sendMessage("accounts", "script-show-delete", name, window.frames);
 
       if (rv === true)
         await sessions.get(account).deleteScript(name);

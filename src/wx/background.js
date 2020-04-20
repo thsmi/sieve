@@ -284,7 +284,7 @@
 
       logger.logAction(`Rename Script ${oldName} for account: ${account}`);
 
-      if (await getTabs(account, oldName).length > 0) {
+      if ((await getTabs(account, oldName)).length) {
         await SieveIpcClient.sendMessage("accounts", "script-show-busy", oldName);
         return false;
       }
@@ -304,7 +304,7 @@
 
       logger.logAction(`Delete Script ${name} for account: ${account}`);
 
-      if (await getTabs(account, name).length > 0) {
+      if ((await getTabs(account, name)).length) {
         await SieveIpcClient.sendMessage("accounts", "script-show-busy", name);
         return false;
       }

@@ -11,8 +11,6 @@
 
 (function (exports) {
 
-  // TODO merge with App and move to common.
-
   "use strict";
 
   const KEY_RETURN = 13;
@@ -510,7 +508,7 @@
     }
   }
 
-
+  // TODO should be extracted an stored next to the editor
   /**
    * Asks is a changed script should be saved
    */

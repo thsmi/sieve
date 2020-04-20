@@ -21,8 +21,7 @@
   const { SieveAbstractAuthentication } = require("./SieveAbstractAuthentication.js");
   const { SieveAbstractMechanism } = require("./SieveAbstractMechanism.js");
 
-  // TODO move from dialogs to here.
-  const { SievePasswordDialog } = require("./../../dialogs/SieveDialogUI.js");
+  const { SieveIpcClient} = require("./../../utils/SieveIpcClient.js");
 
   /**
    * Prompts for a password.
@@ -62,7 +61,9 @@
       const username = await this.getUsername();
       const displayname = await (await this.account.getHost()).getDisplayName();
 
-      return await (new SievePasswordDialog(username, displayname)).show();
+      return await SieveIpcClient.sendMessage(
+        "accounts", "account-show-authentication",
+        { "username": username, "displayname": displayname });
     }
   }
 

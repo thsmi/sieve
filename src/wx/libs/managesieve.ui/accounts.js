@@ -103,11 +103,16 @@
     const accounts = new SieveAccounts();
     accounts.render();
 
-    SieveIpcClient.setRequestHandler("accounts", "script-show-create", async () => { return await onCreateScript(); });
-    SieveIpcClient.setRequestHandler("accounts", "script-show-delete", async (msg) => { return await onDeleteScript(msg.payload); });
-    SieveIpcClient.setRequestHandler("accounts", "script-show-rename", async (msg) => { return await onRenameScript(msg.payload); });
-    SieveIpcClient.setRequestHandler("accounts", "script-show-busy", async (msg) => { await onBusy(msg.payload); });
-    SieveIpcClient.setRequestHandler("accounts", "script-show-certerror", async (msg) => { return await onCertError(msg.payload); });
+    SieveIpcClient.setRequestHandler("accounts", "script-show-create",
+      async () => { return await onCreateScript(); });
+    SieveIpcClient.setRequestHandler("accounts", "script-show-delete",
+      async (msg) => { return await onDeleteScript(msg.payload); });
+    SieveIpcClient.setRequestHandler("accounts", "script-show-rename",
+      async (msg) => { return await onRenameScript(msg.payload); });
+    SieveIpcClient.setRequestHandler("accounts", "script-show-busy",
+      async (msg) => { await onBusy(msg.payload); });
+    SieveIpcClient.setRequestHandler("accounts", "account-show-certerror",
+      async (msg) => { return await onCertError(msg.payload); });
   }
 
   if (document.readyState !== 'loading')

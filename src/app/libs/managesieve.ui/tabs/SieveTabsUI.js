@@ -18,8 +18,6 @@
   const { SieveIpcClient } = require("./../utils/SieveIpcClient.js");
   const { SieveUniqueId } = require("./../utils/SieveUniqueId.js");
 
-  const { SieveScriptSaveDialog} = require("./../dialogs/SieveDialogUI.js");
-
   /**
    * Implements a single tab ui element.
    */
@@ -90,34 +88,23 @@
     }
 
     /**
-     * Requests the tab to save the content.
-     *
-     * @returns {true}
-     *   true in case the tab was changed and has no more unsaved changes.
-     *   otherwise false.
-     */
-    async save() {
-
-      if (!await this.hasChanges())
-        return true;
-
-      const result = await(new SieveScriptSaveDialog(this.name).show());
-
-      if (SieveScriptSaveDialog.isCanceled(result))
-        return false;
-
-      if (SieveScriptSaveDialog.isAccepted(result))
-        await SieveIpcClient.sendMessage("editor", "editor-save", null, this.getContent());
-
-      return true;
-    }
-
-    /**
      * Closes the tab and removes the tab content frame.
      */
-    close() {
+    async close() {
+
+      if (await this.hasChanges()) {
+        this.show();
+        const rv = await SieveIpcClient.sendMessage("editor", "editor-close", this.name, this.getContent());
+
+        // Closing was canceled?
+        if (!rv)
+          return false;
+      }
+
       $(`#${this.getId()}-tab`).remove();
       $(`#${this.getId()}-content`).remove();
+
+      return true;
     }
 
     /**
@@ -228,12 +215,10 @@
       if (!tab)
         return;
 
-      if (!await tab.save(account, name)) {
-        tab.show();
+      if (!await tab.close()) {
         return;
       }
 
-      tab.close();
       $("#accounts-tab").find(".nav-link").tab('show');
     }
 

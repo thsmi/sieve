@@ -5,12 +5,12 @@
       <div class="modal-header">
         <h5 data-i18n="script.rename.title" class="modal-title"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+          <span aria-hidden="true">×</span>
         </button>
       </div>
       <div class="modal-body">
         <div data-i18n="script.rename.description"></div>
-        <input data-i18n="script.rename.placeholder" class="sieve-rename-dialog-newname form-control" type="text">
+        <input data-i18n="script.rename.placeholder" class="sieve-rename-dialog-newname form-control" type="text" />
       </div>
       <div class="modal-footer">
         <button type="button" data-i18n="script.rename.accept" class="btn btn-primary sieve-dialog-resolve"></button>

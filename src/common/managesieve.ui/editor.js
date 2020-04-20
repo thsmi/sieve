@@ -17,6 +17,22 @@
   /* global SieveIpcClient */
   /* global SieveLogger */
   /* global SieveI18n */
+  /* global SieveScriptSaveDialog */
+
+  let editor = null;
+
+  async function onClose(name) {
+
+    const result = await(new SieveScriptSaveDialog(name).show());
+
+    if (SieveScriptSaveDialog.isCanceled(result))
+      return false;
+
+    if (SieveScriptSaveDialog.isAccepted(result))
+      return await editor.save();
+
+    return true;
+  }
 
   /**
    * The main entry point.
@@ -34,13 +50,14 @@
     const account = url.searchParams.get("account");
 
     // initialize the editor
-    const editor = new SieveEditorUI(script, account, "code");
+    editor = new SieveEditorUI(script, account, "code");
 
     await editor.render();
     await editor.load();
 
+    SieveIpcClient.setRequestHandler("editor", "editor-close",
+      async (msg) => { return await onClose(msg.payload); });
     SieveIpcClient.setRequestHandler("editor", "editor-shown", () => { window.focus(); editor.focus(); });
-    SieveIpcClient.setRequestHandler("editor", "editor-save", async () => { return await editor.save(); });
     SieveIpcClient.setRequestHandler("editor", "editor-hasChanged", async () => { return await editor.hasChanged(); });
 
     // TODO Send a ready signal...

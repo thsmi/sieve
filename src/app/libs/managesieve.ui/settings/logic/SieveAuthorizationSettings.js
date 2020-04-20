@@ -31,8 +31,7 @@
 
   const { SieveAbstractMechanism } = require("./SieveAbstractMechanism.js");
 
-  // TODO move from dialogs to here.
-  const { SieveAuthorizationDialog } = require("./../../dialogs/SieveDialogUI.js");
+  const { SieveIpcClient} = require("./../../utils/SieveIpcClient.js");
 
   /**
    * Shows a dialog and prompts for the authorization.
@@ -52,9 +51,11 @@
      *   the authorization string or null in case the dialog was canceled.
      */
     async getAuthorization() {
-      const displayname = await (await this.account.getHost()).getDisplayName();
+      const name = await (await this.account.getHost()).getDisplayName();
 
-      return await (new SieveAuthorizationDialog(displayname)).show();
+      return await SieveIpcClient.sendMessage(
+        "accounts", "account-show-authorization",
+        { "displayname": name });
     }
   }
 

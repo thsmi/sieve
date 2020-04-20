@@ -2,6 +2,6 @@
     <strong data-i18n="updater.title"></strong>
     <span class="sieve-update-msg" style="cursor: pointer" data-i18n="updater.message"></span>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
+        <span aria-hidden="true">×</span>
     </button>
 </div>

@@ -29,8 +29,8 @@ const BASE_DIR_APP = "./src/app/";
 
 
 const KEYTAR_NAME = "keytar";
+const KEYTAR_OUTPUT_DIR = `/libs/${KEYTAR_NAME}`;
 const BASE_DIR_KEYTAR = `./node_modules/${KEYTAR_NAME}/`;
-const BUILD_DIR_KEYTAR = path.join(BUILD_DIR_APP, `/libs/${KEYTAR_NAME}`);
 const PREBUILT_URL_KEYTAR = `https://github.com/atom/node-keytar/releases/download`;
 
 const WIN_ARCH = "x64";
@@ -226,7 +226,7 @@ function packageKeytar() {
     "!" + BASE_DIR_KEYTAR + "/src/**",
     "!" + BASE_DIR_KEYTAR + "/build/**",
     "!" + BASE_DIR_KEYTAR + "/node_modules/**"
-  ]).pipe(dest(BUILD_DIR_KEYTAR));
+  ]).pipe(dest(path.join(BUILD_DIR_APP, KEYTAR_OUTPUT_DIR)));
 }
 
 /**
@@ -240,10 +240,13 @@ function packageKeytar() {
  * compatible and the abi has to match. An Windows Electron requires
  * a windows prebuilt, a Linux electron a linux prebuilt, etc
  *
- * @param {string} destination
- *   the location to the electron framework
- * @param {string} pkgDir
- *   the directory to the package
+ * @param {string} electronDest
+ *   the location of the electron framework which should be repackaged
+ * @param {string} prebuiltDest
+ *   the location (inside the electron application) where the prebuilt
+ *   binaries should be stored.
+ * @param {string} pkgSrc
+ *   the directory to the source node package, which should be repackaged.
  * @param {string} pkgName
  *   the the package name
  * @param {string} platform
@@ -251,28 +254,45 @@ function packageKeytar() {
  * @param {string} arch
  *   the architecture for the prebuilt packages
  */
-async function deployPrebuilt(destination, pkgDir, pkgName, platform, arch) {
+async function deployPrebuilt(electronDest, prebuiltDest, pkgName, platform, arch) {
   "use strict";
 
   logger.debug(`Packaging Prebuilt ${pkgName} for ${platform}-${arch}`);
 
-  destination = path.resolve(path.join(destination, `/sieve-${platform}-${arch}`));
+  // Step one, extract the electron version
+  electronDest = path.resolve(path.join(electronDest, `/sieve-${platform}-${arch}`));
+
+  if (!existsSync(electronDest))
+    throw new Error(`Could not find a compatible electron release in ${electronDest}`);
+
+  const abi = (await getElectronVersion(electronDest)).abi;
+
+  // Step two, extract the package version
+
+  // Prebuilt and electron packager use a different naming for mac.
+  if (platform.toLowerCase() === "mas")
+    platform = "darwin";
+
+  if (platform === "darwin")
+    prebuiltDest = path.join(electronDest, "sieve.app/Contents/Resources/app", prebuiltDest);
+  else
+    prebuiltDest = path.join(electronDest, "/resources/app/", prebuiltDest);
 
   const pkg = JSON.parse(
-    await readFile(path.join(pkgDir, '/package.json')));
+    await readFile(path.join(prebuiltDest, '/package.json')));
 
-  const abi = (await getElectronVersion(destination)).abi;
+  // Step three, download the package,
 
   const filename = `${pkgName}-v${pkg.version}-${RUNTIME_ELECTRON}-v${abi}-${platform}-${arch}.tar.gz`;
-  const prebuilt = path.join(CACHE_DIR_APP, filename);
+  const prebuiltSrc = path.join(CACHE_DIR_APP, filename);
 
-  if (!existsSync(prebuilt)) {
+  if (!existsSync(prebuiltSrc)) {
     const url = `${PREBUILT_URL_KEYTAR}/v${pkg.version}/${filename}`;
-    await common.download(url, prebuilt);
+    await common.download(url, prebuiltSrc);
   }
 
-  await untar(prebuilt,
-    path.join(destination, "/resources/app/libs/keytar/"));
+  // Step four, deploy the prebuilt.
+  await untar(prebuiltSrc, prebuiltDest);
 
   return;
 }
@@ -282,7 +302,7 @@ async function deployPrebuilt(destination, pkgDir, pkgName, platform, arch) {
  */
 async function packageKeytarWin32() {
   "use strict";
-  return await deployPrebuilt(OUTPUT_DIR_APP, BUILD_DIR_KEYTAR, KEYTAR_NAME, WIN_PLATFORM, WIN_ARCH);
+  return await deployPrebuilt(OUTPUT_DIR_APP, KEYTAR_OUTPUT_DIR, KEYTAR_NAME, WIN_PLATFORM, WIN_ARCH);
 }
 
 /**
@@ -290,7 +310,7 @@ async function packageKeytarWin32() {
  */
 async function packageKeytarLinux() {
   "use strict";
-  return await deployPrebuilt(OUTPUT_DIR_APP, BUILD_DIR_KEYTAR, KEYTAR_NAME, LINUX_PLATFORM, LINUX_ARCH);
+  return await deployPrebuilt(OUTPUT_DIR_APP, KEYTAR_OUTPUT_DIR, KEYTAR_NAME, LINUX_PLATFORM, LINUX_ARCH);
 }
 
 /**
@@ -298,7 +318,7 @@ async function packageKeytarLinux() {
  */
 async function packageKeytarMacOS() {
   "use strict";
-  return await deployPrebuilt(OUTPUT_DIR_APP, BUILD_DIR_KEYTAR, KEYTAR_NAME, MAC_PLATFORM, MAC_ARCH);
+  return await deployPrebuilt(OUTPUT_DIR_APP, KEYTAR_OUTPUT_DIR, KEYTAR_NAME, MAC_PLATFORM, MAC_ARCH);
 }
 
 /**
@@ -334,7 +354,7 @@ async function packageLinux() {
     arch: LINUX_ARCH,
     platform: LINUX_PLATFORM,
     download: {
-      cache: CACHE_DIR_APP
+      cacheRoot: CACHE_DIR_APP
     },
     out: OUTPUT_DIR_APP,
     overwrite: true,
@@ -356,7 +376,7 @@ async function packageMacOS() {
     arch: MAC_ARCH,
     platform: MAC_PLATFORM,
     download: {
-      cache: CACHE_DIR_APP
+      cacheRoot: CACHE_DIR_APP
     },
     out: OUTPUT_DIR_APP,
     overwrite: true,

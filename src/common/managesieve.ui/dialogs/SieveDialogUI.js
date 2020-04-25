@@ -363,11 +363,20 @@
      *   the username for which the password is requested
      * @param {string} displayName
      *   the accounts display name.
+     * @param {{ remember : boolean }} [options]
+     *   extended additional options.
+     *   In case "remember" is set to true a switch will be rendered which allows
+     *   the user to select if the password should be stored.
      */
-    constructor(username, displayName) {
+    constructor(username, displayName, options) {
       super();
       this.username = username;
       this.displayName = displayName;
+
+      if (typeof(options) === "undefined" || options === null)
+        options = {};
+
+      this.options = options;
     }
 
     /**
@@ -382,6 +391,9 @@
      */
     onInit() {
       const dialog = this.getDialog();
+
+      if (!this.options.remember)
+        dialog.find(".sieve-password-remember").hide();
 
       dialog.find(".sieve-username").text(this.username);
       dialog.find(".sieve-displayname").text(this.displayName);
@@ -405,14 +417,18 @@
      * @inheritdoc
      */
     onAccept() {
-      return this.getDialog().find(".sieve-password").val();
+      return {
+        "username" : this.username,
+        "password" : this.getDialog().find(".sieve-password").val(),
+        "remember" : $("#sieve-password-remember").prop("checked")
+      };
     }
 
     /**
      * @inheritdoc
      */
     onCancel() {
-      return null;
+      return {};
     }
   }
 

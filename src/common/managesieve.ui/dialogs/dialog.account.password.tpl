@@ -26,6 +26,13 @@
             <input type="password" class="form-control sieve-password">
           </div>
         </div>
+        <div class="form-group row sieve-password-remember">
+          <label class="col-sm-3 col-form-label"></label>
+          <div class="col-sm-8 ml-3 custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="sieve-password-remember">
+            <label class="custom-control-label" for="sieve-password-remember" data-i18n="password.dialog.remember"></label>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" data-i18n="password.dialog.accept" class="btn btn-primary sieve-dialog-resolve"></button>

@@ -185,7 +185,8 @@
         },
         "authentication": {
           type: await (await account.getAuthentication()).getType(),
-          username: await (await account.getAuthentication(DEFAULT_AUTHENTICATION)).getUsername()
+          username: await (await account.getAuthentication(DEFAULT_AUTHENTICATION)).getUsername(),
+          stored: await (await account.getAuthentication(DEFAULT_AUTHENTICATION)).hasStoredPassword()
         },
 
         "authorization": {
@@ -193,6 +194,13 @@
           username: await (await account.getAuthorization(DEFAULT_AUTHORIZATION)).getAuthorization()
         }
       };
+    },
+
+    "account-settings-forget-credentials": async function(msg) {
+      logger.logAction(`Forget credentials for ${msg.payload.account}`);
+
+      const account = await accounts.getAccountById(msg.payload.account);
+      await (await account.getAuthentication(DEFAULT_AUTHENTICATION)).forget();
     },
 
     "account-settings-set-credentials": async function (msg) {

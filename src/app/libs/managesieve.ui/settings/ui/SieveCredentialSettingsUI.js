@@ -300,6 +300,18 @@
           .text($(event.target).text());
       });
 
+      // Show the forget password button only when a password is stored.
+      if (credentials.authentication.stored)
+        parent.find(".sieve-settings-forget-password").show();
+      else
+        parent.find(".sieve-settings-forget-password").hide();
+
+      parent.find(".sieve-settings-forget-password button")
+        .click(async () => {
+          await this.account.send("account-settings-forget-credentials");
+          this.getDialog().find(".sieve-settings-forget-password").hide();
+        });
+
       // Authorization settings....
       this.setAuthorizationType(credentials.authorization.type);
       this.setAuthorization(credentials.authorization.username);

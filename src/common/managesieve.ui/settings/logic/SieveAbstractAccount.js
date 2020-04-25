@@ -22,6 +22,8 @@
   const { SieveAccountSettings } = require("./SieveAccountSettings.js");
   const { SieveEditorSettings } = require("./SieveEditorSettings.js");
 
+  const { SieveLogger } = require("./../../utils/SieveLogger.js");
+
   /**
    * Abstract implementation for managing an account's preferences.
    */
@@ -43,6 +45,16 @@
       this.authorization = new SieveAuthorization(this);
       this.security = new SieveSecurity(this);
       this.common = new SieveAccountSettings(this);
+    }
+
+    /**
+     * Gets an instance to the logger.
+     *
+     * @returns {SieveLogger}
+     *   an reference to the logger instance.
+     **/
+    getLogger() {
+      return SieveLogger.getInstance();
     }
 
     /**

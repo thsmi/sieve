@@ -74,6 +74,7 @@
   globals.set("./SieveAccountSettings.js", "SieveAccountSettings");
   globals.set("./SieveEditorSettings.js", "SieveEditorSettings");
 
+  globals.set("./../../utils/SieveLogger.js", "SieveLogger");
   globals.set("./SieveLogger.js", "SieveLogger");
 
   globals.set("libs/managesieve.ui/settings/SieveAbstractMechanism.js", "SieveAbstractMechanism");

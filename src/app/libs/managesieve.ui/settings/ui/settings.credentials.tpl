@@ -45,24 +45,14 @@
     <input type="text" class="sieve-settings-username form-control">
   </div>
 </div>
-<!--<div class="form-group row">
-    <div class="col-sm-8 offset-md-3">
-      <button type="button" class="btn btn-outline-secondary">Forget Password</button>
-    </div>
+
+<div class="form-group row sieve-settings-forget-password">
+  <label class="col-sm-3 col-form-label"></label>
+  <div class="col-sm-8">
+    <button type="button" data-i18n="credentials.forget" class="btn btn-outline-secondary"></button>
   </div>
-  <div class="form-group row">
-    <label class="col-sm-3 col-form-label">Autologin</label>
-    <div class="col-sm-8">
-      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-outline-secondary btn-sm">
-          <input type="radio" name="autologin" autocomplete="off">Yes
-        </label>
-        <label class="btn btn-outline-secondary btn-sm">
-          <input type="radio" name="autologin" autocomplete="off">No
-        </label>
-      </div>
-    </div>
-  </div>-->
+</div>
+
 
 <div class="siv-settings-advanced">
   <hr />

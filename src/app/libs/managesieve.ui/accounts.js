@@ -119,25 +119,27 @@
    *
    * @param {string} username
    *   the username for which the password is requested.
-   * @param {string} displayname
+   * @param {string} account
    *   the account's display name.
+   * @param {boolean} remember
+   *   show the "remember password" field.
    * @returns {string}
    *   the password as string.
    */
-  async function onAuthenticate(username, displayname) {
-    return await (new SievePasswordDialog(username, displayname)).show();
+  async function onAuthenticate(username, account, remember) {
+    return await (new SievePasswordDialog(username, account, {remember : remember})).show();
   }
 
   /**
    * Prompts for the username to be authorized.
    *
-   * @param {string} displayname
+   * @param {string} account
    *   the accounts displayname.
    * @returns {string}
    *   the username to be authorized.
    */
-  async function onAuthorize(displayname) {
-    return await (new SieveAuthorizationDialog(displayname)).show();
+  async function onAuthorize(account) {
+    return await (new SieveAuthorizationDialog(account)).show();
   }
 
   /**
@@ -170,7 +172,7 @@
       async (msg) => { return await onError(msg.payload); });
 
     SieveIpcClient.setRequestHandler("accounts", "account-show-authentication",
-      async (msg) => { return await onAuthenticate(msg.payload.username, msg.payload.displayname); });
+      async (msg) => { return await onAuthenticate(msg.payload.username, msg.payload.displayname, msg.payload.remember); });
     SieveIpcClient.setRequestHandler("accounts", "account-show-authorization",
       async (msg) => { return await onAuthorize(msg.payload.displayname); });
 

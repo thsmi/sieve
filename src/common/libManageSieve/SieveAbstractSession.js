@@ -48,6 +48,7 @@
   } = require("./SieveExceptions.js");
 
   const FIRST_ELEMENT = 0;
+  const SIEVE_PORT = 4190;
 
 
   /**
@@ -508,9 +509,9 @@
      * An internal method creating a server connection.
      *
      * @param {string} hostname
-     *   the sieve server's hostname
-     * @param {string} port
-     *   the sieve server's port
+     *   the sieve server's hostname.
+     * @param {string} [port]
+     *   the sieve server's port. If omitted the default port 4190 is used.
      * @returns {SieveSession}
      *   a self reference
      */
@@ -520,7 +521,7 @@
         throw new SieveClientException("No Hostname specified");
 
       if (typeof (port) === "undefined" || port === null)
-        throw new SieveClientException("No Port specified");
+        port = SIEVE_PORT;
 
       this.createSieve();
 

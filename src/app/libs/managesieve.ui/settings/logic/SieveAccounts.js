@@ -131,6 +131,28 @@
     }
 
     /**
+     * Imports previously exported account settings.
+     *
+     * @param {string} data
+     *   the settings to be imported.
+     */
+    async import(data) {
+      data = JSON.parse(data);
+
+      if (data.version !== 1)
+        throw new Error(`Unknown version ${data.version}`);
+
+      const details = {
+        name: data.settings["host.displayName"],
+        hostname: data.settings["hostname"],
+        port: data.settings["port"],
+        username: data.settings["authentication.username"]
+      };
+
+      await this.create(details);
+    }
+
+    /**
      * Exports the account's settings.
      *
      * @param {string} id
@@ -146,7 +168,9 @@
       for (const key of config.getKeys())
         data[key] = await (config.getValue(key));
 
-      return JSON.stringify(data, null, JSON_INDENTATION);
+      return JSON.stringify(
+        { "version": 1, "settings": data },
+        null, JSON_INDENTATION);
     }
   }
 

@@ -35,7 +35,13 @@
         $(".siv-accounts").append(
           await (new SieveTemplateLoader()).load("./accounts/accounts.tpl"));
 
-        document.getElementById("sieve-account-import")
+        document.getElementById("sieve-account-import-file")
+          .addEventListener("click", async () => {
+            await SieveIpcClient.sendMessage("core", "account-import");
+            this.render();
+          });
+
+        document.getElementById("sieve-account-import-thunderbird")
           .addEventListener("click", async () => {
             await (new SieveImportUI()).show();
             this.render();

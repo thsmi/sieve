@@ -28,7 +28,8 @@
   "accounts.create.title" : "Add or Import",
   "accounts.create.description": "Add a new account to the sieve app or import an existing configuration from Thunderbird",
   "accounts.create.add" : "Add Server",
-  "accounts.create.import" : "Import Server",
+  "accounts.create.import.thunderbird" : "Import from Thunderbird",
+  "accounts.create.import.file" : "Import from file",
 
   "account.create.title" : "Create Account",
   "account.create.displayName" : "Display name",

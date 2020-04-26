@@ -234,6 +234,58 @@
       await host.setKeepAlive(msg.payload.keepAlive);
     },
 
+    "account-import" : async function() {
+      logger.logAction("Import account settings");
+
+      const options = {
+        title: "Import Sieve Settings",
+        openFile: true,
+        openDirectory: false,
+        filters: [
+          { name: 'Sieve Account Configuration', extensions: ['json'] },
+          { name: 'All Files', extensions: ['*'] }]
+      };
+
+      const filename = await require("electron").remote.dialog.showOpenDialog(options);
+
+      if (filename.canceled)
+        return;
+
+      const fs = require('fs');
+
+      if (!fs.existsSync(filename.filePaths[FIRST_ELEMENT]))
+        return;
+
+      const data = await fs.promises.readFile(filename.filePaths[FIRST_ELEMENT], "utf-8");
+
+      await accounts.import(data);
+    },
+
+    "account-export" : async function(msg) {
+      logger.logAction("Export account settings");
+
+      const host = await accounts.getAccountById(msg.payload.account).getHost();
+      const name = await host.getDisplayName();
+
+      const data = await accounts.export(msg.payload.account);
+
+
+      const options = {
+        title: "Export Account Settings",
+        defaultPath: `${name}`,
+        filters: [
+          { name: 'Sieve Account Configuration', extensions: ['json'] },
+          { name: 'All Files', extensions: ['*'] }]
+      };
+
+      const filename = await require("electron").remote.dialog.showSaveDialog(options);
+
+      // Check if the dialog was canceled...
+      if (filename.canceled)
+        return;
+
+      await require('fs').promises.writeFile(filename.filePath, data, "utf-8");
+    },
 
     "account-capabilities": async function (msg) {
 
@@ -469,6 +521,7 @@
 
       const options = {
         title: "Export Script",
+        defaultPath: request.payload.name,
         filters: [
           { name: 'Sieve Scripts', extensions: ['siv', "sieve"] },
           { name: 'All Files', extensions: ['*'] }]

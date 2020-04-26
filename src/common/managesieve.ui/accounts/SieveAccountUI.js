@@ -153,6 +153,8 @@
       item.find(".sieve-account-edit-credentials").click(() => { this.showCredentialSettings(); });
       item.find(".sieve-account-edit-debug").click(() => { this.showAdvancedSettings(); });
 
+      item.find(".sieve-account-export").click(() => { this.exportSettings(); });
+
       settings.empty().append(item);
     }
 
@@ -305,6 +307,13 @@
      */
     showAdvancedSettings() {
       (new SieveDebugSettingsUI(this)).show();
+    }
+
+    /**
+     * Exports the account's settings to a file.
+     */
+    async exportSettings() {
+      await this.send("account-export");
     }
 
     /**

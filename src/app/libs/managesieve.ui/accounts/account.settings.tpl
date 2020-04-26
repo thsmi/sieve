@@ -29,6 +29,9 @@
     <button type="button"
       data-i18n="account.details.debugging.edit"
       class="sieve-account-edit-debug btn btn-sm btn-outline-secondary"></button>
+    <button type="button"
+      data-i18n="account.details.export"
+      class="sieve-account-export btn btn-sm btn-outline-secondary"></button>
   </div>
   <hr>
   <h4 data-i18n="account.details.delete.title"></h4>

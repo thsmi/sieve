@@ -14,6 +14,8 @@
 
   "use strict";
 
+  const JSON_INDENTATION = 2;
+
   const CONFIG_ID_GLOBAL = "global";
   const CONFIG_KEY_ACCOUNTS = "accounts";
 
@@ -122,10 +124,54 @@
       // ... an persist it.
       await this.save();
 
+      // remove the account's settings.
+      (new SievePrefManager(`@${id}`)).clear();
+
       return this;
     }
 
+    /**
+     * Imports previously exported account settings.
+     *
+     * @param {string} data
+     *   the settings to be imported.
+     */
+    async import(data) {
+      data = JSON.parse(data);
 
+      if (data.version !== 1)
+        throw new Error(`Unknown version ${data.version}`);
+
+      const details = {
+        name: data.settings["host.displayName"],
+        hostname: data.settings["hostname"],
+        port: data.settings["port"],
+        username: data.settings["authentication.username"]
+      };
+
+      await this.create(details);
+    }
+
+    /**
+     * Exports the account's settings.
+     *
+     * @param {string} id
+     *   the unique account id.
+     *
+     * @returns {string}
+     *   the account settings as json string.
+     */
+    async export(id) {
+      const config = new SievePrefManager(`@${id}`);
+
+      const data = {};
+      for (const key of config.getKeys())
+        data[key] = await (config.getValue(key));
+
+      return JSON.stringify(
+        { "version": 1, "settings": data },
+        null, JSON_INDENTATION);
+    }
   }
 
   // Require modules need to use export.module

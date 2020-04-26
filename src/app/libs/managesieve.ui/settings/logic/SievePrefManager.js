@@ -22,6 +22,37 @@
   class SievePrefManager extends SieveAbstractPrefManager {
 
     /**
+     * Returns all the keys contained by this namespace.
+     * The keys are returned without any namespace prefix.
+     *
+     * @returns {Set}
+     *   a set with all key names.
+     */
+    getKeys() {
+      const keys = new Set();
+
+      const namespace = `${this.getNamespace()}.`;
+
+      for (let idx = 0; idx < localStorage.length; idx++) {
+        const key = localStorage.key(idx);
+        if (key.startsWith(namespace))
+          keys.add(key.substring(namespace.length));
+      }
+
+      return keys;
+    }
+
+    /**
+     * Clears the complete name space.
+     */
+    clear() {
+      const keys = this.getKeys();
+
+      for (const key of keys)
+        localStorage.removeItem(`${this.getNamespace()}.${key}`);
+    }
+
+    /**
      * Returns a specific value.
      * @param {string} key
      *   the key which should be returned.

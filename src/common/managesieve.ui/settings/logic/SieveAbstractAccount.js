@@ -174,7 +174,7 @@
      */
     getEditor() {
       return new SieveEditorSettings(
-        new SievePrefManager(`${this.getConfig().getNamespace()}.editor`));
+        new SievePrefManager(this.getConfig().getNamespace()));
     }
   }
 

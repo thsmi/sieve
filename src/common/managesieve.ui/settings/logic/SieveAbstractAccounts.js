@@ -111,7 +111,7 @@
      *   the settings object
      */
     getEditor() {
-      return new SieveEditorSettings(new SievePrefManager("editor"));
+      return new SieveEditorSettings(new SievePrefManager("defaults"));
     }
 
   }

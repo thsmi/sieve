@@ -104,6 +104,7 @@
   "account.details.server.edit" : "Edit Server",
   "account.details.credentials.edit" : "Edit Credentials",
   "account.details.debugging.edit" : "Debugging",
+  "account.details.export" : "Export Settings",
 
   "account.script.active" : "active",
   "account.script.deactivate" : "Deactivate",

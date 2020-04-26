@@ -234,6 +234,31 @@
       await host.setKeepAlive(msg.payload.keepAlive);
     },
 
+    "account-export" : async function(msg) {
+      logger.logAction("Export account settings");
+
+      const host = await accounts.getAccountById(msg.payload.account).getHost();
+      const name = await host.getDisplayName();
+
+      const data = await accounts.export(msg.payload.account);
+
+
+      const options = {
+        title: "Export Account Settings",
+        defaultPath: `${name}`,
+        filters: [
+          { name: 'Sieve Account Configuration', extensions: ['json'] },
+          { name: 'All Files', extensions: ['*'] }]
+      };
+
+      const filename = await require("electron").remote.dialog.showSaveDialog(options);
+
+      // Check if the dialog was canceled...
+      if (filename.canceled)
+        return;
+
+      await require('fs').promises.writeFile(filename.filePath, data, "utf-8");
+    },
 
     "account-capabilities": async function (msg) {
 
@@ -469,6 +494,7 @@
 
       const options = {
         title: "Export Script",
+        defaultPath: request.payload.name,
         filters: [
           { name: 'Sieve Scripts', extensions: ['siv', "sieve"] },
           { name: 'All Files', extensions: ['*'] }]

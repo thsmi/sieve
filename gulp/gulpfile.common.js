@@ -18,6 +18,8 @@ const { createWriteStream, existsSync } = require('fs');
 const path = require('path');
 const yazl = require('yazl');
 
+const JSON_INDENTATION = 2;
+
 const BASE_DIR_BOOTSTRAP = "./node_modules/bootstrap/dist";
 const BASE_DIR_MATERIALICONS = "./node_modules/material-design-icons-iconfont/dist";
 const BASE_DIR_JQUERY = "./node_modules/jquery/dist";
@@ -190,7 +192,7 @@ async function setPackageVersion(version, file) {
   const data = JSON.parse(await readFile(file, 'utf8'));
   data.version = version;
 
-  await writeFile(file, JSON.stringify(data, null, 2), 'utf-8');
+  await writeFile(file, JSON.stringify(data, null, JSON_INDENTATION), 'utf-8');
 }
 
 // We can only use major, minor and patch. Everything else

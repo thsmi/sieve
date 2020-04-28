@@ -133,9 +133,10 @@
      *  true if newer version are available, otherwise false.
      */
     async check() {
-      return await new Promise((resolve, reject) => {
 
-        const currentVersion = require('electron').remote.app.getVersion();
+      const currentVersion = await (require('electron').ipcRenderer.invoke("get-version"));
+
+      return await new Promise((resolve, reject) => {
 
         $.getJSON(SIEVE_GITHUB_UPDATE_URL)
           .done((data) => {

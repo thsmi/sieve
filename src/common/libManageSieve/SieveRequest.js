@@ -1164,7 +1164,11 @@
 
     /**
      *
-     * @param {*} builder
+     * @param  {SieveAbstractRequestBuilder} builder
+     *   a reference to an request builder.
+     *
+     * @returns {SieveAbstractRequestBuilder}
+     *   a builder which contains the request data.
      */
     onChallengeServer(builder) {
 
@@ -1201,7 +1205,11 @@
 
     /**
      *
-     * @param {*} builder
+     * @param  {SieveAbstractRequestBuilder} builder
+     *   a reference to an request builder.
+     *
+     * @returns {SieveAbstractRequestBuilder}
+     *   a builder which contains the request data.
      */
     onValidateChallenge(builder) {
       // Check if the server returned our nonce. This should prevent...

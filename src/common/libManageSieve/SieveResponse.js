@@ -636,7 +636,9 @@
     getScriptBody() { return this.scriptBody; }
 
     /**
-     * @returns {string} Containing the script's Name.
+     * Returns the requested script's name,
+     *
+     * @returns {string} the script name.
      */
     getScriptName() { return this.scriptName; }
   }

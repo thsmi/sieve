@@ -13,6 +13,8 @@
 
   "use strict";
 
+  const DOM_ELEMENT = 0;
+
   /* global $ */
   const { SieveTemplateLoader } = require("./../utils/SieveTemplateLoader.js");
   const { SieveIpcClient } = require("./../utils/SieveIpcClient.js");
@@ -76,7 +78,7 @@
      *   the iframe which hosts the content
      */
     getContent() {
-      return $(`#${this.getId()}-content`)[0].contentWindow;
+      return $(`#${this.getId()}-content`)[DOM_ELEMENT].contentWindow;
     }
 
     /**
@@ -119,6 +121,9 @@
 
   }
 
+  /**
+   * Implements a tab ui.
+   */
   class SieveTabUI {
 
     /**
@@ -172,10 +177,21 @@
         .addEventListener("click", () => { this.scrollRight(); });
     }
 
+    /**
+     * Gets the tab by the account name and script name.
+     *
+     * @param {string} account
+     *   the unique account name.
+     * @param {string} name
+     *   the script name.
+     *
+     * @returns {SieveTab|null}
+     *   the tab or null in case no such tab exists.
+     */
     getTab(account, name) {
       const tab = new SieveTab(this, account, name);
 
-      if (tab.getTab().length === 0)
+      if (!tab.getTab().length)
         return null;
 
       return tab;
@@ -187,7 +203,7 @@
      * @param {string} account
      *   the accounts unique id.
      * @param {string} name
-     *   the script name
+     *   the script name.
      *
      * @returns {boolean}
      *   true in case the tab exits otherwise false.
@@ -196,6 +212,14 @@
       return (this.getTab(account, name) !== null);
     }
 
+    /**
+     * Called whenever tab is shown when switching to it.
+     *
+     * @param {string} account
+     *   the unique account id.
+     * @param {string} name
+     *   the script name.
+     */
     onTabShown(account, name) {
       this.getTab(account, name).onTabShown();
     }

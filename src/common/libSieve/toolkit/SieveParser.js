@@ -275,7 +275,8 @@
      * @param {int} [length]
      *   optional returns at lost length bytes.
      *   if omitted the complete buffer is returned
-     *
+     * @returns {string}
+     *   the buffer data.
      */
     bytes(length) {
       return this._data.substr(this._pos, length);

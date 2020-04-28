@@ -18,6 +18,8 @@
 
   const FIRST_ELEMENT = 0;
 
+  const { ipcRenderer } = require('electron');
+
   // Import the node modules into our global namespace...
   const { SieveLogger } = require("./libs/managesieve.ui/utils/SieveLogger.js");
   const { SieveIpcClient} = require("./libs/managesieve.ui/utils/SieveIpcClient.js");
@@ -246,7 +248,7 @@
           { name: 'All Files', extensions: ['*'] }]
       };
 
-      const filename = await require("electron").remote.dialog.showOpenDialog(options);
+      const filename = await ipcRenderer.invoke("open-dialog", options);
 
       if (filename.canceled)
         return;
@@ -278,7 +280,7 @@
           { name: 'All Files', extensions: ['*'] }]
       };
 
-      const filename = await require("electron").remote.dialog.showSaveDialog(options);
+      const filename = await ipcRenderer.invoke("save-dialog", options);
 
       // Check if the dialog was canceled...
       if (filename.canceled)
@@ -501,7 +503,7 @@
           { name: 'All Files', extensions: ['*'] }]
       };
 
-      const filename = await require("electron").remote.dialog.showOpenDialog(options);
+      const filename = await ipcRenderer.invoke("open-dialog", options);
 
       if (filename.canceled)
         return undefined;
@@ -527,7 +529,7 @@
           { name: 'All Files', extensions: ['*'] }]
       };
 
-      const filename = await require("electron").remote.dialog.showSaveDialog(options);
+      const filename = await ipcRenderer.invoke("save-dialog", options);
 
       // Check if the dialog was canceled...
       if (filename.canceled)

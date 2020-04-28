@@ -13,7 +13,7 @@
 
   "use strict";
 
-  const { app, Menu, BrowserWindow } = require('electron');
+  const { app, Menu, BrowserWindow, ipcMain, dialog } = require('electron');
   const path = require('path');
   const url = require('url');
 
@@ -38,6 +38,18 @@
     win.restore();
 
     win.focus();
+  });
+
+  ipcMain.handle("open-dialog", async(event, options) => {
+    return await dialog.showOpenDialog(options);
+  });
+
+  ipcMain.handle("save-dialog", async(event, options) => {
+    return await dialog.showSaveDialog(options);
+  });
+
+  ipcMain.handle("get-version", async() => {
+    return await app.getVersion();
   });
 
   /**

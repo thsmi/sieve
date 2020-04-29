@@ -110,6 +110,10 @@
         this.switchToTextEditor();
       });
 
+      $('.nav-item > a[href="#sieve-content-settings"]').on('shown.bs.tab', () => {
+        this.switchToSettings();
+      });
+
       return this;
     }
 
@@ -256,6 +260,8 @@
      */
     async switchToTextEditor() {
 
+      $("#sieve-editor-save").show();
+
       if (this.isTextEditor()) {
         this.getTextEditor().focus();
         return true;
@@ -284,6 +290,8 @@
      */
     async switchToGraphicalEditor() {
 
+      $("#sieve-editor-save").show();
+
       if (!this.isTextEditor())
         return true;
 
@@ -298,6 +306,13 @@
 
       this.isTextEditor(false);
       return true;
+    }
+
+    /**
+     * Switches to the settings tab.
+     */
+    switchToSettings() {
+      $("#sieve-editor-save").hide();
     }
 
     /**

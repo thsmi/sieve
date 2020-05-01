@@ -13,7 +13,6 @@
 
   "use strict";
 
-  /* global $ */
   /* global SieveTemplateLoader */
   /* global SieveIpcClient */
 
@@ -31,12 +30,13 @@
       if (status !== true)
         return;
 
-      const template = await (new SieveTemplateLoader()).load("./updater/update.tpl");
-      template.find(".sieve-update-msg").click(() => {
+      const template = (await (new SieveTemplateLoader()).load("./updater/update.tpl"))[0];
+      template.querySelector(".sieve-update-msg").addEventListener("click", () => {
         SieveIpcClient.sendMessage("core", "update-goto-url");
       });
 
-      $("#ctx").prepend(template);
+      const parent = document.querySelector("#ctx");
+      parent.insertBefore(template, parent.firstChild);
     }
   }
 

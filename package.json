@@ -13,6 +13,7 @@
     "electron-packager": "^14.0.6",
     "eslint": "^6.4.0",
     "eslint-plugin-jsdoc": "^24.0.0",
+    "eslint-plugin-no-jquery": "^2.3.2",
     "gulp": "^4.0.0",
     "jquery": "~3.4.1",
     "keytar": "^5.4.0",
@@ -21,7 +22,7 @@
     "yazl": "^2.5.1"
   },
   "scripts": {
-    "start-win32" : "gulp \"app:package-win32\" && cd ./build/electron/out/sieve-win32-x64/ && sieve.exe",
+    "start-win32": "gulp \"app:package-win32\" && cd ./build/electron/out/sieve-win32-x64/ && sieve.exe",
     "start": "./node_modules/.bin/electron ./build/electron/resources/",
     "debug": "./node_modules/.bin/electron ./build/electron/resources/ --debug",
     "test": "echo \"Error: no test specified\" && exit 1",

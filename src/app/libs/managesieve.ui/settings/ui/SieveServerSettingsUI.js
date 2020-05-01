@@ -41,7 +41,9 @@
      *   a self reference
      */
     setDisplayName(name) {
-      this.getDialog().find(".sieve-settings-displayname").val(name);
+      this.getDialog()
+        .querySelector(".sieve-settings-displayname").value = name;
+
       return this;
     }
 
@@ -51,7 +53,8 @@
      *   the display name
      */
     getDisplayName() {
-      return this.getDialog().find(".sieve-settings-displayname").val();
+      return this.getDialog()
+        .querySelector(".sieve-settings-displayname").value;
     }
 
     /**
@@ -63,7 +66,9 @@
      *   a self reference
      */
     setHostname(hostname) {
-      this.getDialog().find(".sieve-settings-hostname").val(hostname);
+      this.getDialog()
+        .querySelector(".sieve-settings-hostname").value = hostname;
+
       return this;
     }
 
@@ -74,7 +79,8 @@
      *   the hostname
      */
     getHostname() {
-      return this.getDialog().find(".sieve-settings-hostname").val();
+      return this.getDialog()
+        .querySelector(".sieve-settings-hostname").value;
     }
 
     /**
@@ -82,9 +88,14 @@
      *
      * @param {string} port
      *   the port
+     * @returns {SieveServerSettingsUI}
+     *   a self reference
      */
     setPort(port) {
-      this.getDialog().find(".sieve-settings-port").val(port);
+      this.getDialog()
+        .querySelector(".sieve-settings-port").value = port;
+
+      return this;
     }
 
     /**
@@ -94,7 +105,8 @@
      *   the port as string.
      */
     getPort() {
-      return this.getDialog().find(".sieve-settings-port").val();
+      return this.getDialog()
+        .querySelector(".sieve-settings-port").value;
     }
 
     /**
@@ -107,22 +119,27 @@
      *   a self reference
      */
     setFingerprint(fingerprint) {
-      this.getDialog().find(".sieve-settings-fingerprint").val(fingerprint);
+      this.getDialog()
+        .querySelector(".sieve-settings-fingerprint").value = fingerprint;
+
       return this;
     }
 
     /**
      * Gets the server's fingerprint from the setting ui.
+     *
      * @returns {string}
      *   the certificate fingerprint
      */
     getFingerprint() {
-      return this.getDialog().find(".sieve-settings-fingerprint").val();
+      return this.getDialog()
+        .querySelector(".sieve-settings-fingerprint").value;
     }
 
 
     /**
-     * Sets the keep alive interval
+     * Sets the keep alive interval.
+     *
      * @param {int} interval
      *   the keep alive interval in ms
      * @returns {SieveServerSettingsUI}
@@ -131,7 +148,9 @@
     setKeepAlive(interval) {
       // convert to seconds
       interval = interval / ONE_MINUTE;
-      this.getDialog().find(".sieve-settings-keepalive-interval").val(interval);
+      this.getDialog()
+        .querySelector(".sieve-settings-keepalive-interval").value = interval;
+
       return this;
     }
 
@@ -142,7 +161,9 @@
      *   the keep alive interval
      */
     getKeepAlive() {
-      const interval = this.getDialog().find(".sieve-settings-keepalive-interval").val();
+      const interval = this.getDialog()
+        .querySelector(".sieve-settings-keepalive-interval").value;
+
       return interval * ONE_MINUTE;
     }
 
@@ -153,9 +174,9 @@
     showAdvanced() {
       const parent = this.getDialog();
 
-      parent.find(".siv-settings-advanced").show();
-      parent.find(".siv-settings-show-advanced").hide();
-      parent.find(".siv-settings-hide-advanced").show();
+      parent.querySelector(".siv-settings-advanced").style.display = "";
+      parent.querySelector(".siv-settings-show-advanced").style.display = "none";
+      parent.querySelector(".siv-settings-hide-advanced").style.display = "";
     }
 
     /**
@@ -165,9 +186,9 @@
     hideAdvanced() {
       const parent = this.getDialog();
 
-      parent.find(".siv-settings-advanced").hide();
-      parent.find(".siv-settings-show-advanced").show();
-      parent.find(".siv-settings-hide-advanced").hide();
+      parent.querySelector(".siv-settings-advanced").style.display = "none";
+      parent.querySelector(".siv-settings-show-advanced").style.display = "";
+      parent.querySelector(".siv-settings-hide-advanced").style.display = "none";
     }
 
 
@@ -178,8 +199,12 @@
       const parent = this.getDialog();
 
       // Load all subsections...
-      parent.find(".modal-body").empty()
-        .append(await (new SieveTemplateLoader()).load("./settings/ui/settings.server.tpl"));
+      const settings = parent.querySelector(".modal-body");
+      while (settings.firstChild)
+        settings.removeChild(settings.firstChild);
+
+      settings.appendChild(
+        (await (new SieveTemplateLoader()).load("./settings/ui/settings.server.tpl"))[0]);
 
       const server = await this.account.send("account-get-server");
 
@@ -190,8 +215,10 @@
 
       this.setKeepAlive(server.keepAlive);
 
-      parent.find(".siv-settings-show-advanced").click(() => { this.showAdvanced(); });
-      parent.find(".siv-settings-hide-advanced").click(() => { this.hideAdvanced(); });
+      parent.querySelector(".siv-settings-show-advanced")
+        .addEventListener("click", () => { this.showAdvanced(); });
+      parent.querySelector(".siv-settings-hide-advanced")
+        .addEventListener("click", () => { this.hideAdvanced(); });
 
       this.hideAdvanced();
     }
@@ -203,16 +230,16 @@
      */
     async show() {
 
-      $("#ctx").append(
-        await (new SieveTemplateLoader()).load("./settings/ui/settings.dialog.tpl"));
+      document.querySelector("#ctx").appendChild(
+        (await (new SieveTemplateLoader()).load("./settings/ui/settings.dialog.tpl"))[0]);
 
       await this.render();
 
       return await new Promise((resolve) => {
 
-        this.getDialog().modal('show')
+        $(this.getDialog()).modal('show')
           .on('hidden.bs.modal', () => {
-            this.getDialog().remove();
+            $(this.getDialog()).remove();
             resolve(false);
           })
           .find(".sieve-settings-apply").off().click(async () => {
@@ -248,11 +275,11 @@
     /**
      * Returns the currents dialogs UI Element.
      *
-     * @returns {object}
+     * @returns {HTMLElement}
      *   the dialogs UI elements.
      */
     getDialog() {
-      return $("#sieve-dialog-settings");
+      return document.querySelector("#sieve-dialog-settings");
     }
 
   }

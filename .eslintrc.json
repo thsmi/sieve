@@ -1,8 +1,11 @@
 {
     "plugins": [
-        "jsdoc"
+        "jsdoc",
+        "no-jquery"
     ],
-    "extends": "eslint:recommended",
+    "extends": [
+        "eslint:recommended"
+    ],
     "env": {
         "browser": true,
         "commonjs": true,
@@ -201,6 +204,21 @@
         "jsdoc/require-hyphen-before-param-description": 0,
 
         "jsdoc/check-alignment": 1,
-        "jsdoc/check-examples": ["warn", {"paddedIndent": 4 }]
+        "jsdoc/check-examples": ["warn", {"paddedIndent": 4 }],
+
+        "no-jquery/no-ready" : 2,
+        "no-jquery/no-on-ready" : 2,
+        "no-jquery/no-trim":2,
+        "no-jquery/no-class" : 1,
+        "no-jquery/no-find" : 1,
+        "no-jquery/no-data" : 1,
+        "no-jquery/no-attr" : 1,
+        "no-jquery/no-prop" : 1,
+        "no-jquery/no-val" : 1,
+        "no-jquery/no-load" : 1,
+        "no-jquery/no-ajax" : 1,
+        "no-jquery/no-text" : 1,
+        "no-jquery/no-visibility" : 1
+
     }
 }

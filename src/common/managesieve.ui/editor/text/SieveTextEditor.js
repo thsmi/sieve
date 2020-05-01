@@ -65,13 +65,14 @@
 
       $("#sieve-editor-settings-synatxcheck").click(async () => {
 
-        if ($("#sieve-editor-settings-synatxcheck").prop("checked"))
+        if (document.querySelector("#sieve-editor-settings-synatxcheck").checked === true)
           await this.enableSyntaxCheck();
         else
           await this.disableSyntaxCheck();
       });
 
-      $("#sieve-editor-settings-synatxcheck").prop( "checked", this.isSyntaxCheckEnabled());
+      document.querySelector("#sieve-editor-settings-synatxcheck")
+        .checked = this.isSyntaxCheckEnabled();
 
       // Indentation
       $("#sieve-content-settings")
@@ -79,10 +80,12 @@
 
       // Indentation width...
       $("#editor-settings-indentation-width").change(async () => {
-        await this.setIndentWidth($("#editor-settings-indentation-width").val());
+        await this.setIndentWidth(
+          document.querySelector("#editor-settings-indentation-width").value);
       });
 
-      $("#editor-settings-indentation-width").val(this.getIndentWidth());
+      document.querySelector("#editor-settings-indentation-width")
+        .value = this.getIndentWidth();
 
       // Indentation policy...
       $("#editor-settings-indentation-policy-spaces").on('click', async () => {
@@ -100,9 +103,12 @@
 
       // Tabulator width...
       $("#editor-settings-tabulator-width").change(async () => {
-        await this.setTabWidth($("#editor-settings-tabulator-width").val());
+        await this.setTabWidth(
+          document.querySelector("#editor-settings-tabulator-width").value);
       });
-      $("#editor-settings-tabulator-width").val(this.getTabWidth());
+
+      document.querySelector("#editor-settings-tabulator-width")
+        .value = this.getTabWidth();
     }
 
     /**
@@ -568,8 +574,7 @@
      *   the errors which should be displayed
      */
     showSyntaxErrors(errors) {
-      $("#sieve-editor-msg")
-        .show();
+      document.querySelector("#sieve-editor-msg").style.display = '';
       $("#sieve-editor-msg .sieve-editor-msg-details")
         .empty().text(errors);
     }
@@ -578,7 +583,7 @@
      * Hides the syntax errors.
      */
     hideSyntaxErrors() {
-      $("#sieve-editor-msg").hide();
+      document.querySelector("#sieve-editor-msg").style.display = 'none';
     }
 
     /**

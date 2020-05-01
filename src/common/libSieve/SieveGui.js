@@ -266,29 +266,29 @@
     });
 
 
-    $("#CapabilitiesApply")
-      .click(function () { setCapabilities(); });
-    $("#CapabilitiesAll")
-      .click(function () { loadCapabilities(true); });
-    $("#CapabilitiesNone")
-      .click(function () { loadCapabilities(false); });
-    $("#CapabilitiesReset")
-      .click(function () { loadCapabilities(); });
+    document.querySelector("#CapabilitiesApply")
+      .addEventListener("click", () => { setCapabilities(); });
+    document.querySelector("#CapabilitiesAll")
+      .addEventListener("click", () => { loadCapabilities(true); });
+    document.querySelector("#CapabilitiesNone")
+      .addEventListener("click", () => { loadCapabilities(false); });
+    document.querySelector("#CapabilitiesReset")
+      .addEventListener("click", () => { loadCapabilities(); });
 
     $('a[data-toggle="tab"][href="#debugcapabilities"]')
       .on('show.bs.tab', function () { loadCapabilities(); });
 
 
-    $("#DebugParse")
-      .click(function () { setSieveScript(); });
-    $("#DebugStringify")
-      .click(function () { $('#txtOutput').val(getSieveScript()); });
-    $("#DebugRequire")
-      .click(function () { collectRequires(); });
-    $("#DebugCompact")
-      .click(function () { compact(); });
-    $("#DebugToggle")
-      .click(function () { $('#boxScript').toggle(); });
+    document.querySelector("#DebugParse")
+      .addEventListener("click", () => { setSieveScript(); });
+    document.querySelector("#DebugStringify")
+      .addEventListener("click", () => { $('#txtOutput').val(getSieveScript()); });
+    document.querySelector("#DebugRequire")
+      .addEventListener("click", () => { collectRequires(); });
+    document.querySelector("#DebugCompact")
+      .addEventListener("click", () => { compact(); });
+    document.querySelector("#DebugToggle")
+      .addEventListener("click", () => { $('#boxScript').toggle(); });
 
     $("#DebugDropTarget")
       .on('dragover', function (e) {
@@ -310,8 +310,8 @@
         console.dir(e.dataTransfer);
       });
 
-    $("#infobartoggle")
-      .click(function() { $("#infobar").toggle(); });
+    document.querySelector("#infobartoggle")
+      .addEventListener("click", () => { $("#infobar").toggle(); });
   }
 
   /**

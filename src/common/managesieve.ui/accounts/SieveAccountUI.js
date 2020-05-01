@@ -90,17 +90,18 @@
 
     /**
      * Establishes a connection to the server
-     *
-     *
      */
     async connect() {
 
-      try {
-        const item2 = await (new SieveTemplateLoader()).load(`./accounts/account.connecting.tpl`);
-        $(`#siv-account-${this.id} .siv-tpl-scripts`)
-          .empty()
-          .append(item2);
+      const item = (await (new SieveTemplateLoader()).load(`./accounts/account.connecting.tpl`))[0];
 
+      const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
+      while (scripts.firstChild)
+        scripts.removeChild(scripts.firstChild);
+
+      scripts.appendChild(item);
+
+      try {
         await this.send("account-connect");
       }
       catch (ex) {
@@ -114,10 +115,13 @@
      * Disconnects the account from the server.
      */
     async disconnect() {
-      const item2 = await (new SieveTemplateLoader()).load(`./accounts/account.disconnecting.tpl`);
-      $(`#siv-account-${this.id} .siv-tpl-scripts`)
-        .empty()
-        .append(item2);
+      const item = (await (new SieveTemplateLoader()).load(`./accounts/account.disconnecting.tpl`))[0];
+
+      const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
+      while (scripts.firstChild)
+        scripts.removeChild(scripts.firstChild);
+
+      scripts.appendChild(item);
 
       await this.send("account-disconnect");
       await this.render();
@@ -129,33 +133,52 @@
      */
     async renderSettings() {
 
-      const settings = $(`#siv-account-${this.id}`).find(".sieve-settings-content");
+      const elm = (await (new SieveTemplateLoader()).load("./accounts/account.settings.tpl"))[0];
 
-      const item = await (new SieveTemplateLoader()).load("./accounts/account.settings.tpl");
 
       const account = await this.send("account-get-settings");
 
-      item.find(".sieve-settings-hostname").text(account.hostname);
-      item.find(".sieve-settings-port").text(account.port);
+
+      elm.querySelector(".sieve-settings-hostname")
+        .textContent = account.hostname;
+      elm.querySelector(".sieve-settings-port")
+        .textContent = account.port;
 
       if (!account.secure)
-        item.find(".sieve-settings-secure").hide();
+        elm.querySelector(".sieve-settings-secure").style.display = 'none';
 
-      item.find(".sieve-settings-username").text(account.username);
-      item.find(".sieve-settings-mechanism").text(account.mechanism);
-      item.find(".sieve-settings-fingerprint").text(account.fingerprint);
+      elm.querySelector(".sieve-settings-username")
+        .textContent = account.username;
+      elm.querySelector(".sieve-settings-mechanism")
+        .textContent = account.mechanism;
+      elm.querySelector(".sieve-settings-fingerprint")
+        .textContent = account.fingerprint;
 
       if (account.fingerprint === "")
-        item.find(".sieve-settings-fingerprint-item").hide();
+        elm.querySelector(".sieve-settings-fingerprint-item").style.display = 'none';
 
-      item.find(".sieve-account-delete-server").click(() => { this.remove(); });
-      item.find(".sieve-account-edit-server").click(() => { this.showServerSettings(); });
-      item.find(".sieve-account-edit-credentials").click(() => { this.showCredentialSettings(); });
-      item.find(".sieve-account-edit-debug").click(() => { this.showAdvancedSettings(); });
 
-      item.find(".sieve-account-export").click(() => { this.exportSettings(); });
+      // Clear any existing left overs...
+      const settings = document.querySelector(`#siv-account-${this.id} .sieve-settings-content`);
+      while (settings.firstChild)
+        settings.removeChild(settings.firstChild);
 
-      settings.empty().append(item);
+      // ... and append the new element
+      settings.appendChild(elm);
+
+      // ... finally connect the listeners.
+      elm.querySelector(".sieve-account-delete-server")
+        .addEventListener("click", () => { this.remove(); });
+      elm.querySelector(".sieve-account-edit-server")
+        .addEventListener("click", () => { this.showServerSettings(); });
+      elm.querySelector(".sieve-account-edit-credentials")
+        .addEventListener("click", () => { this.showCredentialSettings(); });
+      elm.querySelector(".sieve-account-edit-debug")
+        .addEventListener("click", () => { this.showAdvancedSettings(); });
+
+      elm.querySelector(".sieve-account-export")
+        .addEventListener("click", () => { this.exportSettings(); });
+
     }
 
     /**
@@ -165,6 +188,8 @@
     async renderAccount() {
       const item = await (new SieveTemplateLoader()).load("./accounts/account.tpl");
 
+      item.attr("id", `siv-account-${this.id}`);
+
       item.find(".sieve-accounts-content").attr("id", `sieve-accounts-content-${this.id}`);
       item.find(".sieve-accounts-tab").attr("href", `#sieve-accounts-content-${this.id}`);
 
@@ -172,17 +197,29 @@
       item.find(".sieve-settings-tab").attr("href", `#sieve-settings-content-${this.id}`);
       item.find(".sieve-settings-tab").on('shown.bs.tab', () => { this.renderSettings(); });
 
-      item.find(".siv-account-name").text(await this.send("account-get-displayname"));
+      const elm = item[0];
 
-      item.attr("id", `siv-account-${this.id}`);
-      item.find(".siv-account-create").click(() => { this.createScript(); });
+      elm.querySelector(".siv-account-name").textContent
+        = await this.send("account-get-displayname");
 
-      item.find(".sieve-account-edit-settings").click(() => { this.showSettings(); });
-      item.find(".sieve-account-capabilities").click(() => { this.showCapabilities(); });
-      item.find(".sieve-account-reconnect-server").click(() => { this.connect(); });
-      item.find(".sieve-account-disconnect-server").click(() => { this.disconnect(); });
+      document.querySelector(".siv-accounts-items").appendChild(elm);
 
-      $(".siv-accounts-items").append(item);
+      elm
+        .querySelector(".siv-account-create")
+        .addEventListener("click", () => { this.createScript(); });
+      elm
+        .querySelector(".sieve-account-edit-settings")
+        .addEventListener("click", () => { this.showSettings(); });
+      elm
+        .querySelector(".sieve-account-capabilities")
+        .addEventListener("click", () => { this.showCapabilities(); });
+      elm
+        .querySelector(".sieve-account-reconnect-server")
+        .addEventListener("click", () => { this.connect(); });
+      elm
+        .querySelector(".sieve-account-disconnect-server")
+        .addEventListener("click", () => { this.disconnect(); });
+
     }
 
     /**
@@ -191,7 +228,10 @@
     async onRenderConnected() {
       const data = await this.send("account-list");
 
-      $(`#siv-account-${this.id} .siv-tpl-scripts`).empty();
+      const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
+
+      while (scripts.firstChild)
+        scripts.removeChild(scripts.firstChild);
 
       // Sort the script names by their name...
       data.sort((a, b) => {
@@ -210,7 +250,7 @@
       data.forEach(async (item) => {
 
         this.getLogger().logWidget(`Rendering ${this.id}/${item.script}`);
-        await (new SieveScriptUI(this, item.script, item.active)).render();
+        await ((new SieveScriptUI(this, item.script, item.active)).render());
       });
 
     }
@@ -219,12 +259,18 @@
      * Called when the account should be rendered because of a disconnect.
      */
     async onRenderDisconnected() {
-      const item2 = await (new SieveTemplateLoader()).load(`./accounts/account.disconnected.tpl`);
-      $(`#siv-account-${this.id} .siv-tpl-scripts`)
-        .empty()
-        .append(item2);
 
-      item2.find(".sieve-script-connect").click(() => { this.connect(); });
+      const elm = (await (new SieveTemplateLoader()).load(`./accounts/account.disconnected.tpl`))[0];
+
+      const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
+
+      while (scripts.firstChild)
+        scripts.removeChild(scripts.firstChild);
+
+      scripts.append(elm);
+
+      elm.querySelector(".sieve-script-connect")
+        .addEventListener("click", () => { this.connect(); });
     }
 
     /**
@@ -233,8 +279,7 @@
     async render() {
       this.getLogger().logWidget(`Rendering Account ${this.id}`);
 
-      // Check if the element exists...
-      if ($(`#siv-account-${this.id}`).length === 0) {
+      if (!document.querySelector(`#siv-account-${this.id}`)) {
         await this.renderAccount();
         this.renderSettings();
       }
@@ -281,8 +326,9 @@
       this.renderSettings();
 
       // Update the account name it may have changed.
-      $(`#siv-account-${this.id} .siv-account-name`)
-        .text(await this.send("account-get-displayname"));
+      document
+        .querySelector(`#siv-account-${this.id} .siv-account-name`)
+        .textContent = await this.send("account-get-displayname");
 
       return rv;
     }

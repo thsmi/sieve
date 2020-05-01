@@ -13,7 +13,6 @@
 
   "use strict";
 
-  /* global $ */
   /* global SieveAbstractAccounts */
   /* global SieveIpcClient */
   /* global SieveTemplateLoader */
@@ -31,24 +30,24 @@
      */
     async render() {
 
-      if ($(".siv-accounts-items").length === 0) {
-        $(".siv-accounts").append(
-          await (new SieveTemplateLoader()).load("./accounts/accounts.tpl"));
+      if (!document.querySelector(".siv-accounts-items")) {
 
-        document.getElementById("sieve-account-import-file")
+        document.querySelector(".siv-accounts").append(
+          (await (new SieveTemplateLoader()).load("./accounts/accounts.tpl"))[0]);
+
+        document.querySelector("#sieve-account-import-file")
           .addEventListener("click", async () => {
             await SieveIpcClient.sendMessage("core", "account-import");
             this.render();
           });
 
-        document.getElementById("sieve-account-import-thunderbird")
+        document.querySelector("#sieve-account-import-thunderbird")
           .addEventListener("click", async () => {
             await (new SieveImportUI()).show();
             this.render();
           });
 
-        document
-          .getElementById("sieve-account-create")
+        document.querySelector("#sieve-account-create")
           .addEventListener("click", async () => {
             await (new SieveAccountCreateUI().show());
             this.render();

@@ -16,6 +16,9 @@
 
   /* global $: false */
 
+  /* global SieveI18n */
+  /* global SieveLogger */
+
   /* global SieveLexer:false */
   /* global SieveDesigner */
   /* global SieveDocument */
@@ -173,15 +176,14 @@
 
   /**
    * Sets the capabilities as defined in the capabilities dialog
-   *
    **/
   function setCapabilities() {
 
     const capabilities = [];
 
-    $("#debugcapabilities input:checked").each(function () {
-      capabilities.push($(this).val());
-    });
+    document
+      .querySelectorAll("#debugcapabilities [type=checkbox]:checked")
+      .forEach( (item) => { capabilities.push(item.value); });
 
     setSieveScript(
       getSieveScript(), capabilities);
@@ -199,21 +201,23 @@
    */
   function loadCapabilities(value) {
 
-    if (value === true || value === false) {
-      $("#debugcapabilities input:checkbox").prop("checked", value);
+    const items = document
+      .querySelectorAll("#debugcapabilities [type=checkbox]");
 
+    if (value === true || value === false) {
+      items.forEach((item) => { item.checked = value; });
       return;
     }
 
-    $("#debugcapabilities input:checkbox").prop('checked', false);
+    items.forEach((item) => { item.checked = false; });
 
     const capabilities = SieveLexer.capabilities();
 
-    $("#debugcapabilities input:checkbox").each(function () {
-      if (capabilities.hasCapability($(this).val()))
-        $(this).prop("checked", true);
-    });
-
+    items
+      .forEach((item) => {
+        if (capabilities.hasCapability(item.value))
+          item.checked = true;
+      });
   }
 
 
@@ -226,8 +230,8 @@
    *
    */
   function showInfoMessage(message, content) {
-    document.querySelector("#infobarsubject > span").textContent(message);
-    document.querySelector("#infobarmessage > span").textContent(content);
+    document.querySelector("#infobarsubject > span").textContent = message;
+    document.querySelector("#infobarmessage > span").textContent = content;
     $("#infobar").toggle();
   }
 
@@ -236,14 +240,13 @@
    * The main entry point.
    * Executed as soon as the DOM is Ready.
    */
-  function main() {
+  async function main() {
+
+    SieveLogger.getInstance().level(0xFF);
+    await (SieveI18n.getInstance()).load();
+
     init();
 
-    /* i += 1;
-    $(this).find("span").text( "mouse over x " + i );
-  }).mouseout(function(){
-    $(this).find("span").text("mouse out ");
-  })*/
     $("#divOutput").mouseover(function (ev) {
 
       switch (ev.target.nodeName) {

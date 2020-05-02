@@ -69,7 +69,7 @@
         return false;
       }
 
-      const value = $("#sivNewHeaderValue").val();
+      const value = document.querySelector("#sivNewHeaderValue").value;
 
       if (value.trim() === "") {
         window.alert("Header value is empty");
@@ -174,7 +174,7 @@
 
 
           this.getSieve().getElement("index").getElement("name")
-            .setValue($("#sivDeleteHeaderFirstIndex").val());
+            .setValue(document.querySelector("#sivDeleteHeaderFirstIndex").value);
 
           break;
 
@@ -183,7 +183,7 @@
           this.getSieve().getElement("index").enable("last", true);
 
           this.getSieve().getElement("index").getElement("name")
-            .setValue($("#sivDeleteHeaderLastIndex").val());
+            .setValue(document.querySelector("#sivDeleteHeaderLastIndex").value);
           break;
 
         default:
@@ -263,11 +263,11 @@
       }
       else if (!this.getSieve().getElement("index").enable("last")) {
         indexType = "first";
-        $("#sivDeleteHeaderFirstIndex").val(indexValue);
+        document.querySelector("#sivDeleteHeaderFirstIndex").value = indexValue;
       }
       else {
         indexType = "last";
-        $("#sivDeleteHeaderLastIndex").val(indexValue);
+        document.querySelector("#sivDeleteHeaderLastIndex").value = indexValue;
       }
 
       $('input:radio[name="header-index"][value="' + indexType + '"]')
@@ -315,9 +315,8 @@
         .init(this.values());
 
 
-      $("#sivDeleteHeaderName")
-        .val(this.getSieve().getElement("name").value());
-
+      document.querySelector("#sivDeleteHeaderName")
+        .value = this.getSieve().getElement("name").value();
 
       this.loadHeaderValues();
       this.loadHeaderIndex();

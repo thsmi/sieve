@@ -20,7 +20,6 @@
   /* global SieveDesigner */
   /* global SieveStringListWidget */
 
-  const DOM_ELEMENT = 0;
   /**
    * Provides an UI for the Return Action
    */
@@ -184,7 +183,7 @@
       $('input:checkbox[name="optional"]').prop('checked', !!this.optional());
       $('input:checkbox[name="once"]').prop('checked', !!this.once());
 
-      $("#sivIncludeScriptName").val(this.script());
+      document.querySelector("#sivIncludeScriptName").value = this.script();
     }
 
     /**
@@ -192,13 +191,13 @@
      */
     onSave() {
 
-      const script = $("#sivIncludeScriptName");
+      const script = document.querySelector("#sivIncludeScriptName");
 
-      if (!script.get(DOM_ELEMENT).checkValidity()) {
+      if (!script.checkValidity()) {
         return false;
       }
 
-      this.script(script.val());
+      this.script(script.value);
 
       this.personal($("input[type='radio'][name='personal']:checked").val() === "true");
       this.optional(($("input:checkbox[name='optional']:checked").length > 0));

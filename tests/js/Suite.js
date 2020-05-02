@@ -257,15 +257,18 @@
   };
 
 
-  $(document).ready(function () {
+  /**
+   * The main entry point which is executed after the page is loaded
+   */
+  function main() {
 
     net.tschmid.yautt.test.server.init();
 
-    $("#toggleTrace").click(function () {
+    document.querySelector("#toggleTrace").addEventListener("click", () => {
       $(".logTrace").toggle();
     });
 
-    $("#start").click(function () {
+    document.querySelector("#start").addEventListener("click", () => {
 
       const tests = exports.net.tschmid.yautt.test.config;
 
@@ -286,19 +289,19 @@
       net.tschmid.yautt.test.server.run();
     });
 
-    $("#tests-none").click(function () {
-      $("#tests input:checkbox").each(function () {
-        $(this).prop("checked", false);
+    document.querySelector("#tests-none").addEventListener("click", () => {
+      document.querySelectorAll("#tests [type=checkbox]").forEach((item) => {
+        item.checked = false;
       });
     });
 
-    $("#tests-all").click(function () {
-      $("#tests input:checkbox").each(function () {
-        $(this).prop("checked", true);
+    document.querySelector("#tests-all").addEventListener("click", () => {
+      document.querySelectorAll("#tests [type=checkbox]").forEach((item) => {
+        item.checked = true;
       });
     });
 
-    $("#result-clear").click(function () {
+    document.querySelector("#result-clear").addEventListener("click", () => {
       $("#divOutput").empty();
 
       $("#tests div").each(function () {
@@ -326,6 +329,11 @@
           .append($("<span />").text(name).click(function () { gotoTest(name); })));
 
     });
-  });
+  }
+
+  if (document.readyState !== 'loading')
+    main();
+  else
+    document.addEventListener('DOMContentLoaded', () => { main(); }, { once: true });
 
 })(window);

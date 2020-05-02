@@ -18,8 +18,6 @@
   const MINOR_VERSION = 1;
   const PATCH_VERSION = 2;
 
-  /* global $ */
-
   /**
    * Checks for Updates on github.
    */
@@ -136,16 +134,9 @@
 
       const currentVersion = await (require('electron').ipcRenderer.invoke("get-version"));
 
-      return await new Promise((resolve, reject) => {
-
-        $.getJSON(SIEVE_GITHUB_UPDATE_URL)
-          .done((data) => {
-            resolve(this.compare(data, currentVersion));
-          })
-          .fail(() => {
-            reject(new Error("Failed to update script"));
-          });
-      });
+      return this.compare(
+        await (await fetch(SIEVE_GITHUB_UPDATE_URL)).json(),
+        currentVersion);
     }
   }
 

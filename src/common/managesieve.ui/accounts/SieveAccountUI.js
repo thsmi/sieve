@@ -15,7 +15,7 @@
 
   /* global $ */
   /* global SieveLogger */
-  /* global SieveTemplateLoader */
+  /* global SieveTemplate */
   /* global SieveScriptUI */
   /* global SieveIpcClient */
   /* global SieveServerSettingsUI */
@@ -93,7 +93,7 @@
      */
     async connect() {
 
-      const item = await (new SieveTemplateLoader()).load(`./accounts/account.connecting.tpl`);
+      const item = await (new SieveTemplate()).load(`./accounts/account.connecting.tpl`);
 
       const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
       while (scripts.firstChild)
@@ -115,7 +115,7 @@
      * Disconnects the account from the server.
      */
     async disconnect() {
-      const item = await (new SieveTemplateLoader()).load(`./accounts/account.disconnecting.tpl`);
+      const item = await (new SieveTemplate()).load(`./accounts/account.disconnecting.tpl`);
 
       const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
       while (scripts.firstChild)
@@ -133,7 +133,7 @@
      */
     async renderSettings() {
 
-      const elm = await (new SieveTemplateLoader()).load("./accounts/account.settings.tpl");
+      const elm = await (new SieveTemplate()).load("./accounts/account.settings.tpl");
 
 
       const account = await this.send("account-get-settings");
@@ -186,7 +186,7 @@
      *
      */
     async renderAccount() {
-      const elm = await (new SieveTemplateLoader()).load("./accounts/account.tpl");
+      const elm = await (new SieveTemplate()).load("./accounts/account.tpl");
 
       elm.id = `siv-account-${this.id}`;
 
@@ -256,14 +256,14 @@
      */
     async onRenderDisconnected() {
 
-      const elm = await (new SieveTemplateLoader()).load(`./accounts/account.disconnected.tpl`);
+      const elm = await (new SieveTemplate()).load(`./accounts/account.disconnected.tpl`);
 
       const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
 
       while (scripts.firstChild)
         scripts.removeChild(scripts.firstChild);
 
-      scripts.append(elm);
+      scripts.appendChild(elm);
 
       elm.querySelector(".sieve-script-connect")
         .addEventListener("click", () => { this.connect(); });

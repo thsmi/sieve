@@ -11,7 +11,7 @@
 
 (function (exports) {
 
-  /* global SieveTemplateLoader */
+  /* global SieveTemplate */
 
   "use strict";
 
@@ -67,7 +67,7 @@
       // Check if the element exists...
       if (!elm) {
 
-        elm = await (new SieveTemplateLoader()).load("./accounts/SieveScriptUI.tpl");
+        elm = await (new SieveTemplate()).load("./accounts/SieveScriptUI.tpl");
 
         elm.id = `siv-script-${id}`;
 

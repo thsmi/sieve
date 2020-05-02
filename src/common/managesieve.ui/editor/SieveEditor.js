@@ -17,7 +17,7 @@
   /* global SieveEditorController */
   /* global SieveTextEditorUI */
   /* global SieveGraphicalEditorUI */
-  /* global SieveTemplateLoader */
+  /* global SieveTemplate */
 
   /**
    * Implements a editor UI which contains a graphical as well as a text editor.
@@ -61,7 +61,7 @@
     async render() {
 
       document.querySelector("#sieve-editor").appendChild(
-        await (new SieveTemplateLoader()).load("./editor/editor.tpl"));
+        await (new SieveTemplate()).load("./editor/editor.tpl"));
 
       await this.getTextEditor().render();
       await this.getGraphicalEditor().render();
@@ -140,7 +140,7 @@
      */
     async showErrorMessage(message) {
 
-      const content = await (new SieveTemplateLoader()).load("./editor/editor.error.save.tpl");
+      const content = await (new SieveTemplate()).load("./editor/editor.error.save.tpl");
 
       content.querySelector(".sieve-editor-error-msg").textContent = message;
 
@@ -391,7 +391,7 @@
       // this.getGraphicalEditor().renderSettings();
 
       parent.appendChild(
-        await (new SieveTemplateLoader()).load("./editor/editor.settings.defaults.tpl"));
+        await (new SieveTemplate()).load("./editor/editor.settings.defaults.tpl"));
 
       document.querySelector("#editor-settings-save-defaults")
         .addEventListener("click", async () => {

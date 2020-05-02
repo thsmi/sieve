@@ -14,7 +14,7 @@
   "use strict";
 
   /* global $ */
-  /* global SieveTemplateLoader */
+  /* global SieveTemplate */
 
   /**
    * A UI renderer for the sieve settings dialog
@@ -32,6 +32,7 @@
 
     /**
      * Sets the authentication type
+     *
      * @param {string} type
      *   the authentication type which should be used
      * @returns {SieveCredentialsUI}
@@ -42,14 +43,17 @@
       const parent = this.getDialog();
 
       const text = parent
-        .find(".sieve-settings-authentication")
-        .find(`.dropdown-item[data-sieve-authentication=${type}]`)
-        .text();
+        .querySelector(".sieve-settings-authentication")
+        .querySelector(`.dropdown-item[data-sieve-authentication="${type}"]`)
+        .textContent;
 
       parent
-        .find(".sieve-settings-authentication button")
-        .data("sieve-authentication", type)
-        .text(text);
+        .querySelector(".sieve-settings-authentication button")
+        .dataset.sieveAuthentication = type;
+
+      parent
+        .querySelector(".sieve-settings-authentication button")
+        .textContent = text;
 
       return this;
     }
@@ -62,8 +66,8 @@
      */
     getSaslMechanism() {
       return this.getDialog()
-        .find(".sieve-settings-authentication button")
-        .data("sieve-authentication");
+        .querySelector(".sieve-settings-authentication button")
+        .dataset.sieveAuthentication;
     }
 
     /**
@@ -75,7 +79,9 @@
      *   a self reference
      */
     setAuthentication(username) {
-      this.getDialog().find(".sieve-settings-username").val(username);
+      this.getDialog()
+        .querySelector(".sieve-settings-username").value = username;
+
       return this;
     }
 
@@ -86,7 +92,8 @@
      *   the username as string.
      */
     getAuthentication() {
-      return this.getDialog().find(".sieve-settings-username").val();
+      return this.getDialog()
+        .querySelector(".sieve-settings-username").value;
     }
 
     /**
@@ -98,17 +105,25 @@
      *   a self reference.
      */
     setAuthorizationType(type) {
-      const parent = this.getDialog();
+      const dialog = this.getDialog();
 
-      const text = parent
-        .find(".sieve-settings-authorization")
-        .find(`.dropdown-item[data-sieve-authorization=${type}]`)
-        .text();
+      const text = dialog
+        .querySelector(".sieve-settings-authorization")
+        .querySelector(`.dropdown-item[data-sieve-authorization="${type}"]`)
+        .textContent;
 
-      parent
-        .find(".sieve-settings-authorization button")
-        .data("sieve-authorization", type)
-        .text(text);
+      dialog
+        .querySelector(".sieve-settings-authorization button")
+        .dataset.sieveAuthorization = type;
+
+      dialog
+        .querySelector(".sieve-settings-authorization button")
+        .textContent = text;
+
+      if (`${type}` === "3")
+        dialog.querySelector(".sieve-settings-authorization-username").style.display = "";
+      else
+        dialog.querySelector(".sieve-settings-authorization-username").style.display = "none";
 
       return this;
     }
@@ -121,8 +136,8 @@
      */
     getAuthorizationType() {
       return this.getDialog()
-        .find(".sieve-settings-authorization button")
-        .data("sieve-authorization");
+        .querySelector(".sieve-settings-authorization button")
+        .dataset.sieveAuthorization;
     }
 
     /**
@@ -136,7 +151,9 @@
      *   a self reference
      */
     setAuthorization(username) {
-      this.getDialog().find(".sieve-settings-text-authorization-username").val(username);
+      this.getDialog()
+        .querySelector(".sieve-settings-text-authorization-username").value = username;
+
       return this;
     }
 
@@ -147,7 +164,8 @@
      *   the authorized username.
      */
     getAuthorization() {
-      return this.getDialog().find(".sieve-settings-text-authorization-username").val();
+      return this.getDialog()
+        .querySelector(".sieve-settings-text-authorization-username").value;
     }
 
     /**
@@ -157,9 +175,9 @@
      *   true in case an encrypted connection should be used otherwise false.
      */
     isEncrypted() {
-      const active = this.getDialog().find(".sieve-settings-encryption .active");
+      const active = this.getDialog().querySelector(".sieve-settings-encryption .active");
 
-      if (active.hasClass("sieve-settings-encryption-disabled"))
+      if (active.classList.contains("sieve-settings-encryption-disabled"))
         return false;
 
       return true;
@@ -167,6 +185,7 @@
 
     /**
      * Sets the encryption settings in the current dialog.
+     *
      * @param {boolean} encrypted
      *   the encryption status to set. False in case encryption is disabled
      *   otherwise it will be enabled
@@ -177,38 +196,38 @@
       const parent = this.getDialog();
 
       // reset the toggle button status...
-      parent.find(".sieve-settings-encryption .active").removeClass("active");
+      parent
+        .querySelectorAll(".sieve-settings-encryption .active")
+        .forEach((item) => { item.classList.remove("active"); });
 
       if (encrypted === false)
-        parent.find(".sieve-settings-encryption-disabled").button('toggle');
+        $(parent.querySelector(".sieve-settings-encryption-disabled")).button('toggle');
       else
-        parent.find(".sieve-settings-encryption-enabled").button('toggle');
+        $(parent.querySelector(".sieve-settings-encryption-enabled")).button('toggle');
 
       return this;
     }
 
     /**
      * Shows the advanced setting
-     *
      */
     showAdvanced() {
       const parent = this.getDialog();
 
-      parent.find(".siv-settings-advanced").show();
-      parent.find(".siv-settings-show-advanced").hide();
-      parent.find(".siv-settings-hide-advanced").show();
+      parent.querySelector(".siv-settings-advanced").style.display = "";
+      parent.querySelector(".siv-settings-show-advanced").style.display = "none";
+      parent.querySelector(".siv-settings-hide-advanced").style.display = "";
     }
 
     /**
      * Hides the advanced settings
-     *
      */
     hideAdvanced() {
       const parent = this.getDialog();
 
-      parent.find(".siv-settings-advanced").hide();
-      parent.find(".siv-settings-show-advanced").show();
-      parent.find(".siv-settings-hide-advanced").hide();
+      parent.querySelector(".siv-settings-advanced").style.display = "none";
+      parent.querySelector(".siv-settings-show-advanced").style.display = "";
+      parent.querySelector(".siv-settings-hide-advanced").style.display = "none";
     }
 
     /**
@@ -216,27 +235,29 @@
      */
     async show() {
 
-      $("#ctx").append(
-        await (new SieveTemplateLoader()).load("./settings/ui/settings.dialog.tpl"));
+      document.querySelector("#ctx").appendChild(
+        await (new SieveTemplate()).load("./settings/ui/settings.dialog.tpl"));
 
       await this.render();
 
       return await new Promise((resolve) => {
 
-        const dialog = this.getDialog();
-
-        dialog.modal('show')
+        $(this.getDialog()).modal('show')
           .on('hidden.bs.modal', () => {
-            // dialog.remove();
+            this.getDialog().parentNode.removeChild(this.getDialog());
             resolve(false);
-          })
-          .find(".sieve-settings-apply").off().click(async () => {
+          });
+
+        this.getDialog()
+          .querySelector(".sieve-settings-apply")
+          .addEventListener("click", async () => {
             await this.save();
             resolve(true);
+
             // ... now trigger the hidden listener it will cleanup
             // it is afe to do so due to promise magics, the first
             // alway resolve wins and all subsequent calls are ignored...
-            dialog.modal("hide");
+            $(this.getDialog()).modal("hide");
           });
       });
     }
@@ -248,15 +269,15 @@
     async save() {
 
       const settings = {
-        general : {
+        general: {
           secure: this.isEncrypted(),
           sasl: this.getSaslMechanism()
         },
-        authentication : {
+        authentication: {
           username: this.getAuthentication(),
           mechanism: 0
         },
-        authorization : {
+        authorization: {
           username: this.getAuthorization(),
           mechanism: this.getAuthorizationType()
         }
@@ -272,7 +293,7 @@
      *   the dialogs UI elements.
      */
     getDialog() {
-      return $("#sieve-dialog-settings");
+      return document.querySelector("#sieve-dialog-settings");
     }
 
     /**
@@ -282,8 +303,12 @@
       const parent = this.getDialog();
 
       // Load all subsections...
-      parent.find(".modal-body").empty()
-        .append(await new SieveTemplateLoader().load("./settings/ui/settings.credentials.tpl"));
+      const settings = parent.querySelector(".modal-body");
+      while (settings.firstChild)
+        settings.removeChild(settings.firstChild);
+
+      settings.appendChild(
+        await new SieveTemplate().load("./settings/ui/settings.credentials.tpl"));
 
       const credentials = await this.account.send("account-setting-get-credentials");
 
@@ -293,44 +318,48 @@
 
       this.setAuthentication(credentials.authentication.username);
 
-      parent.find(".sieve-settings-authentication .dropdown-item").click((event) => {
-        this.getDialog()
-          .find(".sieve-settings-authentication button")
-          .data("sieve-authentication", $(event.target).data("sieve-authentication"))
-          .text($(event.target).text());
-      });
+      parent
+        .querySelectorAll(".sieve-settings-authentication .dropdown-item")
+        .forEach((item) => {
+          item.addEventListener("click", (event) => {
+            this.setSaslMechanism(event.target.dataset.sieveAuthentication);
+          });
+        });
 
       // Show the forget password button only when a password is stored.
       if (credentials.authentication.stored)
-        parent.find(".sieve-settings-forget-password").show();
+        parent.querySelector(".sieve-settings-forget-password").style.display = "";
       else
-        parent.find(".sieve-settings-forget-password").hide();
+        parent.querySelector(".sieve-settings-forget-password").style.display = "none";
 
-      parent.find(".sieve-settings-forget-password button")
-        .click(async () => {
+      parent
+        .querySelector(".sieve-settings-forget-password button")
+        .addEventListener("click", async () => {
           await this.account.send("account-settings-forget-credentials");
-          this.getDialog().find(".sieve-settings-forget-password").hide();
+
+          this.getDialog()
+            .querySelector(".sieve-settings-forget-password").style.display = "none";
         });
 
       // Authorization settings....
       this.setAuthorizationType(credentials.authorization.type);
       this.setAuthorization(credentials.authorization.username);
 
-      parent.find(".sieve-settings-authorization .dropdown-item").click((event) => {
-        this.getDialog()
-          .find(".sieve-settings-authorization button")
-          .data("sieve-authorization", $(event.target).data("sieve-authorization"))
-          .text($(event.target).text());
+      parent
+        .querySelectorAll(".sieve-settings-authorization .dropdown-item")
+        .forEach((item) => {
+          item.addEventListener("click", (event) => {
+            this.setAuthorizationType(event.target.dataset.sieveAuthorization);
+          });
+        });
 
-        if ("" + $(event.target).data("sieve-authorization") === "3")
-          this.getDialog().find(".sieve-settings-authorization-username").show();
-        else
-          this.getDialog().find(".sieve-settings-authorization-username").hide();
+      parent
+        .querySelector(".siv-settings-show-advanced")
+        .addEventListener("click", () => { this.showAdvanced(); });
 
-      });
-
-      parent.find(".siv-settings-show-advanced").off().click(() => { this.showAdvanced(); });
-      parent.find(".siv-settings-hide-advanced").off().click(() => { this.hideAdvanced(); });
+      parent
+        .querySelector(".siv-settings-hide-advanced")
+        .addEventListener("click", () => { this.hideAdvanced(); });
 
       this.hideAdvanced();
     }

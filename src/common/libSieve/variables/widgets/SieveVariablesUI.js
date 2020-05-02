@@ -26,7 +26,6 @@
   /* global SieveOverlayItemWidget */
 
   const MAX_QUOTE_LEN = 240;
-  const DOM_ELEMENT = 0;
 
   /**
    * Provides a ui for the set action
@@ -60,14 +59,14 @@
      * @inheritdoc
      */
     onSave() {
-      const item = $("#sivVariableName");
+      const item = document.querySelector("#sivVariableName");
 
-      if (! item.get(DOM_ELEMENT).checkValidity()) {
+      if (!item.checkValidity()) {
         return false;
       }
 
-      this.name().value(item.val());
-      this.value().value($("#sivVariableValue").val());
+      this.name().value(item.value);
+      this.value().value(document.querySelector("#sivVariableValue").value);
 
       (new SieveOverlayWidget("modifier/", "#sivModifier"))
         .save(this.getSieve());
@@ -134,8 +133,8 @@
       if (state)
         $('input:radio[name="40"][value="' + this.getSieve().getElement("modifier/40").toScript() + '"]').prop('checked', true);
 
-      $("#sivVariableName").val(this.name().value());
-      $("#sivVariableValue").val(this.value().value());
+      document.querySelector("#sivVariableName").value = this.name().value();
+      document.querySelector("#sivVariableValue").value = this.value().value();
     }
 
     /**
@@ -203,7 +202,7 @@
       let value = null;
       const status = $("#cbxModifier10").is(":checked");
       if (status)
-        value = $("#cbxModifier10").val();
+        value = document.querySelector("#cbxModifier10").value;
 
       sivElement.getElement("modifier/10").setElement(value);
       sivElement.enable("modifier/10", status);
@@ -268,7 +267,7 @@
       let value = null;
       const status = $("#cbxModifier20").is(":checked");
       if (status)
-        value = $("#cbxModifier20").val();
+        value = document.querySelector("#cbxModifier20").value;
 
       sivElement.getElement("modifier/20").setElement(value);
       sivElement.enable("modifier/20", status);

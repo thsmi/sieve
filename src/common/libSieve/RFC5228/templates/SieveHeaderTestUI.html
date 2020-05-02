@@ -1,13 +1,13 @@
 <div>
   <ul id="template-tabs">
     <li class="nav-item">
-      <a class="nav-link active" data-toggle="tab" href="#sieve-widget-headertest" role="tab">Header</a>
+      <a class="nav-link active" data-i18n="header.tab.home" data-toggle="tab" href="#sieve-widget-headertest" role="tab"></a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+      <a class="nav-link" data-i18n="header.tab.advanced" data-toggle="tab" href="#sieve-widget-advanced" role="tab"></a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+      <a class="nav-link" data-i18n="header.tab.help" data-toggle="tab" href="#sieve-widget-help" role="tab"></a>
     </li>
   </ul>
 
@@ -15,7 +15,7 @@
     <div class="tab-content m-2">
       <div class="tab-pane fade show active" id="sieve-widget-headertest" role="tabpanel">
         <div class="form-group">
-          <h5>Any of the following header ... </h5>
+          <h5 data-i18n="header.header"></h5>
 
           <div id="sivHeaderHeaderList"
                data-list-dropdown="#sivHeaderHeaderListTemplate">
@@ -34,21 +34,18 @@
           <div id="sivHeaderMatchTypes"> </div>
           <hr/>
 
-          <h5>... any of the keyword(s):</h5>
+          <h5 data-i18n="header.keywords"></h5>
           <div id="sivHeaderKeyList">
           </div>
 
         </div>
       </div>
+
       <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
         <div id="sivHeaderComparator"> </div>
       </div>
-      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
-        <p>Compares headers against constant strings.</p>
-        <p>You typically use this test with headers containing subject line or a spam score.</p>
-        <p>Do not use this test, if the header should be matched against a mail addresses. The result will be unrealiable, as
-          this test is not aware of display names. Use the address test instead.
-        </p>
+
+      <div  data-i18n="header.help.text" style="white-space: pre-line" class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
       </div>
     </div>
   </div>

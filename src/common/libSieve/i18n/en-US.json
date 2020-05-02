@@ -1,0 +1,77 @@
+{
+  "fileinto.tab.home" : "Fileinto",
+  "fileinto.tab.help" : "Help",
+
+  "fileinto.folder.label" : "Save the incoming message into folder:",
+  "fileinto.folder.placeholder" : "Enter folder",
+  "fileinto.folder.invalid" : "Invalid folder name",
+
+  "fileinto.help.text" : "The mailbox name is typically a hierarchical name used to determine a folder on the server. So it is equivalent with the folder structure you can see in your mail client.\n\nThere is no precise definition how the hierarchical name is formed. It depends on your mail server implementation. Only the case-insensitive mailbox name INBOX is a special name reserved to mean \"the primary mailbox for this user on this server\".\n\nBut you should avoid using non-graphical characters, the list-wildcard characters (\"%\" and \"*\"), characters which are reserved by the server for the level of hierarchy (typically \"/\" or \".\") as well as \"#\" as \"&\" because they can have special meanings.",
+
+
+  "exists.tab.home" : "Exists",
+  "exists.tab.help" : "Help",
+
+  "exists.header.label" :"All of the following header exist:",
+
+  "exists.help.text":"",
+
+
+  "header.tab.home" : "Header",
+  "header.tab.advanced" : "Advanced",
+  "header.tab.help" : "Help",
+
+  "header.header": "Any of the following header ... ",
+  "header.keywords": "... any of the keyword(s):",
+  "header.help.text" : "Compares headers against constant strings.\n\nYou typically use this test with headers containing subject line or a spam score.\n\nDo not use this test, if the header should be matched against a mail addresses. The result will be unrealiable, as this test is not aware of display names. Use the address test instead.",
+
+
+  "redirect.tab.home" : "Redirect",
+  "redirect.tab.help" : "Help",
+
+  "redirect.address.label" : "Forward email to:",
+  "redirect.address.placeholder" : "Enter mail",
+  "redirect.address.invalid" : "Invalid redirect address",
+
+  "redirect.help" : "Redirect forwards the message to the given address. It makes no changes to the message body or existing headers, but it may add new headers.\n\n The envelope sender address on the outgoing message is chosen by the sieve implementation.\n\nImplementations may ignore a redirect action silently due to policy reasons.",
+
+
+  "size.tab.home" : "Size",
+  "size.tab.help" : "Help",
+
+  "size.description" : "Check if message size is ... ",
+  "size.larger" : "larger",
+  "size.smaller" : "smaller",
+  "size.compare" : "... than ...",
+
+  "size.help" : "Compares the message size.\n\nTest the message size is greater or smaller than the given size. The size is measured in bytes, character encoding are ignored.\n\n",
+  "size.help.warning" : "There is only a larger or smaller, no equals. A message with exactly 4000 bytes is neither larger nor smaller than 4000 bytes.",
+
+
+
+  "bodyTransform.contentType" : "... the MIME parts that have the specified content types:",
+  "bodyTransform.text" : "... the decoded message body. (Default)",
+  "bodyTransform.raw" : "... the entire undecoded message body",
+
+  "matchtype.is.title" : "... is ...",
+  "matchtype.is.text" : "Only \"frobnitzm\" is \"frobnitzm\"",
+
+  "matchtype.contains.title" : "... contains ...",
+  "matchtype.contains.text" : "\"frobnitzm\" contains \"frob\" and \"nit\", but not \"fbm\"",
+
+  "matchtype.matches.title" : "... matches ...",
+  "matchtype.matches.text" : "\"*\" matches zero or more characters, and \"?\" matches a single character\n\"frobnitzm\" matches \"frob*zm\" or \"frobnit?m\" but not frob?m",
+
+  "matchtype.value.title" : "... is",
+  "matchtype.value.title2" : "...",
+  "matchtype.value.greater" : "greater than",
+  "matchtype.value.greaterEqual" : "greater than or equal",
+  "matchtype.value.less" : "less than",
+  "matchtype.value.lessEqual" : "less than or equal",
+  "matchtype.value.equal" : "equal to",
+  "matchtype.value.notEqual" : "not equal to",
+  "matchtype.value.text" : "Compares the relation between strings. The test is considered true if any pair is true",
+
+  "matchtype.regex.title" : "... regex matches ...",
+  "matchtype.regex.text" : "Matches and compares using on a regular expression as defined in IEEE.1003-2.1992"
+}

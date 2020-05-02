@@ -14,7 +14,7 @@
   "use strict";
 
   /* global $ */
-  /* global SieveTemplateLoader */
+  /* global SieveTemplate */
 
   // eslint-disable-next-line no-magic-numbers
   const ONE_MINUTE = 60 * 1000;
@@ -204,7 +204,7 @@
         settings.removeChild(settings.firstChild);
 
       settings.appendChild(
-        await (new SieveTemplateLoader()).load("./settings/ui/settings.server.tpl"));
+        await (new SieveTemplate()).load("./settings/ui/settings.server.tpl"));
 
       const server = await this.account.send("account-get-server");
 
@@ -231,7 +231,7 @@
     async show() {
 
       document.querySelector("#ctx").appendChild(
-        await (new SieveTemplateLoader()).load("./settings/ui/settings.dialog.tpl"));
+        await (new SieveTemplate()).load("./settings/ui/settings.dialog.tpl"));
 
       await this.render();
 
@@ -241,15 +241,18 @@
           .on('hidden.bs.modal', () => {
             this.getDialog().parentNode.removeChild(this.getDialog());
             resolve(false);
-          })
-          .find(".sieve-settings-apply").off().click(async () => {
+          });
+
+        this.getDialog()
+          .querySelector(".sieve-settings-apply")
+          .addEventListener("click", async () => {
             await this.save();
             resolve(true);
+
             // ... now trigger the hidden listener it will cleanup
             // it is afe to do so due to promise magics, the first
             // alway resolve wins and all subsequent calls are ignored...
-
-            $('#sieve-dialog-settings').modal('hide');
+            $(this.getDialog()).modal('hide');
           });
       });
     }

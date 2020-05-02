@@ -85,7 +85,7 @@
 
 
       $("input[name=sivNotifyMessage][value='" + this.getSieve().enable("message") + "']").prop('checked', true);
-      $("#txtSieveNotifyMessage").val(this.message().value());
+      document.querySelector("#txtSieveNotifyMessage").value = this.message().value();
     }
 
     /**
@@ -121,7 +121,8 @@
 
       this.getSieve().enable("message",
         $("#rbxSieveNotifyMessageCustom").is(":checked"));
-      this.message().value($("#txtSieveNotifyMessage").val());
+      this.message().value(
+        document.querySelector("#txtSieveNotifyMessage").value);
 
       return true;
     }
@@ -322,7 +323,7 @@
       let value = null;
       const status = $("#cbxModifier15").is(":checked");
       if (status)
-        value = $("#cbxModifier15").val();
+        value = document.querySelector("#cbxModifier15").value;
 
       sivElement.getElement("modifier/15").setElement(value);
       sivElement.enable("modifier/15", status);

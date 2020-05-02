@@ -21,8 +21,6 @@
   /* global SieveActionDialogBoxUI */
   /* global SieveOverlayWidget */
 
-  const DOM_ELEMENT = 0;
-
   /**
    * Provides a UI for the stop action
    */
@@ -175,7 +173,7 @@
      * @inheritdoc
      */
     onLoad() {
-      $("#sivFileIntoPath").val(this.path());
+      document.querySelector("#sivFileIntoPath").value = this.path();
 
       (new SieveOverlayWidget("action/fileinto/", "#sivFileIntoOverlay"))
         .init(this.getSieve());

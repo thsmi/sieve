@@ -75,8 +75,9 @@
       if (!$("#cbxVacationIntervalSeconds").prop("checked"))
         return;
 
-      sivElement.getElement("interval").setElement(
-        ":seconds " + $("#txtVacationIntervalSeconds").val());
+      const seconds = document.querySelector("#txtVacationIntervalSeconds").value;
+
+      sivElement.getElement("interval").setElement(`:seconds ${seconds}`);
     }
 
   }

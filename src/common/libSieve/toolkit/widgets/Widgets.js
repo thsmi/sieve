@@ -70,7 +70,10 @@
      *   true in case the widget as a drop down otherwise false
      */
     _hasDropDown() {
-      return $(this._selector)[DOM_ELEMENT].hasAttribute("data-list-dropdown");
+      if (document.querySelector(this._selector).dataset.listDropdown)
+        return true;
+
+      return false;
     }
 
     /**
@@ -257,7 +260,7 @@
 
   /**
    * Provides a widget for dropdown
-   * e.g. the addres part uses it
+   * e.g. the address part uses it
    */
   class SieveDropDownWidget {
 
@@ -393,37 +396,25 @@
      * @param {Function} onInitialized
      *   optional callback invoked when the element is fully initialized
      */
-    init(sivElement, onInitialized) {
-      const that = this;
+    async init(sivElement, onInitialized) {
 
-      // We need here some to make mozilla happy.
-      // it is no more possible to load fragments from chrome urls
+      const template = await (new SieveTemplate()).load(this.getTemplate());
 
-      const xhr = new XMLHttpRequest();
-      xhr.onload = function () {
+      const container = document.createElement("div");
 
-        const item = this.responseXML.querySelector("#test42");
+      while (template.children.length)
+        container.appendChild(template.firstChild);
 
-        const div = document.createElement("div");
-        div.innerHTML = item.innerHTML;
+      container.dataset.nodename = this.constructor.nodeName();
 
-        div.setAttribute("data-nodename", that.constructor.nodeName());
+      // TODO getElement should return vanilla.js
+      this.getElement()[0].appendChild(container);
 
-        that.getElement().append(div);
+      this.load(sivElement);
 
-        that.load(sivElement);
-
-        if (typeof(onInitialized) !== "undefined" && onInitialized !== null)
-          onInitialized(that.getElement());
-      };
-      xhr.open("GET", this.getTemplate());
-      xhr.responseType = "document";
-      xhr.setRequestHeader('cache-control', 'no-cache, must-revalidate, post-check=0, pre-check=0');
-      xhr.setRequestHeader('cache-control', 'max-age=0');
-      xhr.setRequestHeader('expires', '0');
-      xhr.setRequestHeader('expires', 'Tue, 01 Jan 1980 1:00:00 GMT');
-      xhr.setRequestHeader('pragma', 'no-cache');
-      xhr.send();
+      // TODO remove me we are async no need for a callback...
+      if (typeof (onInitialized) !== "undefined" && onInitialized !== null)
+        onInitialized(this.getElement());
     }
 
     /**
@@ -743,9 +734,10 @@
      *   the value to set.
      */
     setValue(value) {
-      $(this._selector)
-        .find(".sieve-string-item")
-        .val(value);
+      document
+        .querySelector(this._selector)
+        .querySelector(".sieve-string-item")
+        .value = value;
     }
 
     /**
@@ -808,7 +800,7 @@
     init(sivElement) {
       let value = "";
 
-      if (typeof(sivElement) === "undefined" || sivElement === null)
+      if (typeof (sivElement) === "undefined" || sivElement === null)
         sivElement = "";
 
       if (typeof (sivElement) === "string")
@@ -878,16 +870,21 @@
      */
     onInitialized(value, unit) {
 
-      $(this._selector).find(".sieve-numeric-value").val(value);
+      document
+        .querySelector(this._selector)
+        .querySelector(".sieve-numeric-value")
+        .value = value;
+
       this.onUnitChanged(unit);
 
-      const items = $(this._selector)
-        .find(".dropdown-item");
-
-      const that = this;
-      items.click(function () {
-        that.onUnitChanged($(this).attr("data-value"));
-      });
+      document
+        .querySelector(this._selector)
+        .querySelectorAll(".dropdown-item")
+        .forEach((item) => {
+          item.addEventListener("click", () => {
+            this.onUnitChanged(item.value);
+          });
+        });
     }
 
     /**

@@ -15,6 +15,9 @@
   "use strict";
 
   /* global $: false */
+
+  /* global SieveTemplate */
+
   /* global SieveMoveDragHandler */
   /* global SieveTestDropHandler */
   /* global SieveDropHandler */
@@ -368,7 +371,10 @@
 
     }
 
-    showEditor() {
+    /**
+     * Shows the sieve element's ui to edit the element.
+     */
+    async showEditor() {
 
       $('#sivDialog2').modal("show");
       $("#sivDialogSave").off("click").click(() => { this.save(); });
@@ -376,39 +382,21 @@
       $("#sivDialogTabs").empty();
       $('#sivDialogBody').empty();
 
-      const that = this;
-      const xhr = new XMLHttpRequest();
-      xhr.onload = function () {
+      const template = await (new SieveTemplate()).load(this.getTemplate());
 
-        const tabs = this.responseXML.querySelector("#template-tabs");
+      const tabs = template.querySelector("#template-tabs");
+      if (tabs) {
+        while (tabs.children.length)
+          document.querySelector("#sivDialogTabs").appendChild(tabs.firstChild);
+      }
 
-        if (tabs) {
-          const div = document.createElement("div");
-          div.innerHTML = tabs.innerHTML;
+      const content = template.querySelector("#template-content");
+      if (content) {
+        while (content.children.length)
+          document.querySelector("#sivDialogBody").appendChild(content.firstChild);
+      }
 
-          $("#sivDialogTabs").append(div.children);
-        }
-
-
-        const content = this.responseXML.querySelector("#template-content");
-
-        if (content) {
-          const div = document.createElement("div");
-          div.innerHTML = content.innerHTML;
-
-          $("#sivDialogBody").append(div.children);
-        }
-
-        that.onLoad();
-      };
-      xhr.open("GET", this.getTemplate());
-      xhr.responseType = "document";
-      xhr.setRequestHeader('cache-control', 'no-cache, must-revalidate, post-check=0, pre-check=0');
-      xhr.setRequestHeader('cache-control', 'max-age=0');
-      xhr.setRequestHeader('expires', '0');
-      xhr.setRequestHeader('expires', 'Tue, 01 Jan 1980 1:00:00 GMT');
-      xhr.setRequestHeader('pragma', 'no-cache');
-      xhr.send();
+      this.onLoad();
     }
 
     /**

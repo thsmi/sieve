@@ -13,10 +13,8 @@
 
   "use strict";
 
-  const DOM_ELEMENT = 0;
-
   /* global $ */
-  const { SieveTemplateLoader } = require("./../utils/SieveTemplateLoader.js");
+  const { SieveTemplate } = require("./../utils/SieveTemplate.js");
   const { SieveIpcClient } = require("./../utils/SieveIpcClient.js");
   const { SieveUniqueId } = require("./../utils/SieveUniqueId.js");
 
@@ -43,11 +41,12 @@
     /**
      * Gets the current tab. The dom element is used to store meta data.
      *
-     * @returns {DomElement}
+     * @returns {HTMLElement}
      *   the tab's dom element
      */
     getTab() {
-      return $(`#${this.tabs.tabId} [data-sieve-account='${this.account}'][data-sieve-name='${this.name}']`);
+      return document
+        .querySelector(`#${this.tabs.tabId} [data-sieve-account='${this.account}'][data-sieve-name='${this.name}']`);
     }
 
     /**
@@ -56,14 +55,14 @@
      *   the unique tab id.
      */
     getId() {
-      return this.getTab().attr("data-sieve-id");
+      return this.getTab().dataset.sieveId;
     }
 
     /**
      * Ensures the tab's content is shown.
      */
     show() {
-      this.getTab().find(".nav-link").tab('show');
+      $(this.getTab().querySelector(".nav-link")).tab('show');
 
       // On Tab show is not fired when the tab is already visible.
       // so we need to emulate this. In worst case we end up with a
@@ -78,7 +77,7 @@
      *   the iframe which hosts the content
      */
     getContent() {
-      return $(`#${this.getId()}-content`)[DOM_ELEMENT].contentWindow;
+      return document.querySelector(`#${this.getId()}-content`).contentWindow;
     }
 
     /**
@@ -103,8 +102,13 @@
           return false;
       }
 
-      $(`#${this.getId()}-tab`).remove();
-      $(`#${this.getId()}-content`).remove();
+      // we need to delete first the content...
+      const content = document.querySelector(`#${this.getId()}-content`);
+      content.parentNode.removeChild(content);
+
+      // and then the tab, otherwise getId fails...
+      const tab = document.querySelector(`#${this.getId()}-tab`);
+      tab.parentNode.removeChild(tab);
 
       return true;
     }
@@ -145,7 +149,7 @@
       // $('.scroller-left').fadeIn('slow');
       // $('.scroller-right').fadeOut('slow');
 
-      $('.list').animate({ left: "-=100px" }, () => {});
+      $('.list').animate({ left: "-=100px" }, () => { });
     }
 
     /**
@@ -167,13 +171,12 @@
     init() {
 
       // Add event listeners...
-      // TODO ensure they get also removed...
       document
-        .getElementById("scrollleft")
+        .querySelector("#scrollleft")
         .addEventListener("click", () => { this.scrollLeft(); });
 
       document
-        .getElementById("scrollright")
+        .querySelector("#scrollright")
         .addEventListener("click", () => { this.scrollRight(); });
     }
 
@@ -191,7 +194,7 @@
     getTab(account, name) {
       const tab = new SieveTab(this, account, name);
 
-      if (!tab.getTab().length)
+      if (!tab.getTab())
         return null;
 
       return tab;
@@ -243,7 +246,7 @@
         return;
       }
 
-      $("#accounts-tab").find(".nav-link").tab('show');
+      $(document.querySelector("#accounts-tab .nav-link")).tab('show');
     }
 
     /**
@@ -280,40 +283,36 @@
       const contentId = `${id}-content`;
 
       // create a new tab.
-      const content = $(await (new SieveTemplateLoader()).load("./libs/managesieve.ui/tabs/editor.content.tpl"));
-      const tab = $(await (new SieveTemplateLoader()).load("./libs/managesieve.ui/tabs/editor.tab.tpl"));
+      const content = await (
+        new SieveTemplate()).load("./libs/managesieve.ui/tabs/editor.content.tpl");
+      const tab = await (
+        new SieveTemplate()).load("./libs/managesieve.ui/tabs/editor.tab.tpl");
 
-      tab.find(".nav-link")
-        .attr("href", `#${contentId}`);
+      tab.querySelector(".nav-link").href = `#${contentId}`;
+      tab.querySelector(".siv-tab-name").textContent = name;
 
-      tab
-        .find(".siv-tab-name")
-        .text(name);
+      tab.querySelector(".close").addEventListener("click", async () => {
+        await this.close(account, name);
+      });
 
-      tab
-        .find(".close")
-        .click(async () => {
-          await this.close(account, name);
-        });
-
-      content.attr("id", contentId);
-      tab.attr("id", tabId);
-      tab.attr("data-sieve-account", account);
-      tab.attr("data-sieve-name", name);
-      tab.attr("data-sieve-id", id);
+      content.id = contentId;
+      tab.id = tabId;
+      tab.dataset.sieveAccount = account;
+      tab.dataset.sieveName = name;
+      tab.dataset.sieveId = id;
 
       // Update the iframe's url.
-      const url = new URL(content.attr("src"), window.location);
+      const url = new URL(content.src, window.location);
 
       url.searchParams.append("account", account);
       url.searchParams.append("script", name);
 
-      content.attr("src", url.toString());
+      content.src = url.toString();
 
-      $(`#${this.tabId}Content`).append(content);
-      $(`#${this.tabId}`).append(tab);
+      document.querySelector(`#${this.tabId}Content`).appendChild(content);
+      document.querySelector(`#${this.tabId}`).appendChild(tab);
 
-      tab.on('shown.bs.tab', () => { this.onTabShown(account, name); });
+      $(tab).on('shown.bs.tab', () => { this.onTabShown(account, name); });
 
       this.getTab(account, name).show();
     }
@@ -335,7 +334,7 @@
 
       const tab = this.getTab(account, name);
 
-      if (this.tab) {
+      if (tab) {
         tab.show();
         return;
       }

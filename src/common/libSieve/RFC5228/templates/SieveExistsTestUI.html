@@ -1,20 +1,20 @@
 <div>
   <ul id="template-tabs">
     <li class="nav-item">
-      <a class="nav-link active" data-toggle="tab" href="#sieve-widget-exists-test" role="tab">Exists</a>
+      <a class="nav-link active" data-i18n="exists.tab.home" data-toggle="tab" href="#sieve-widget-exists-test"
+        role="tab"></a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+      <a class="nav-link" data-i18n="exists.tab.help" data-toggle="tab" href="#sieve-widget-help" role="tab"></a>
     </li>
   </ul>
 
   <div id="template-content">
     <div class="tab-content m-2">
       <div class="tab-pane fade show active" id="sieve-widget-exists-test" role="tabpanel">
-        <p>All of the following header exist:</p>
+        <p data-i18n="exists.header.label"></p>
         <div class="form-group">
-          <div id="sivExistsHeaderList"
-               data-list-dropdown="#sivExistsHeaderListTemplate">
+          <div id="sivExistsHeaderList" data-list-dropdown="#sivExistsHeaderListTemplate">
           </div>
 
           <div id="sivExistsHeaderListTemplate" class="d-none">
@@ -29,7 +29,7 @@
 
         </div>
       </div>
-      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+      <div data-i18n="exists.help.text" style="white-space: pre-line" class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
       </div>
     </div>
   </div>

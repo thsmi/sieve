@@ -28,8 +28,6 @@
 
   /* global SieveOverlayItemWidget */
 
-  const DOM_ELEMENT = 0;
-
   /**
    * Provides an abstract UI for the flags actions.
    */
@@ -250,7 +248,7 @@
     load(sivElement) {
 
       if (sivElement.enable("flags"))
-        $("#sivFlagsCheckbox").attr("checked", "checked");
+        document.querySelector("#sivFlagsCheckbox").checked = true;
 
       (new SieveStringListWidget("#sivFlagKeyList"))
         .init(sivElement.getElement("flags").getElement("flags"));
@@ -260,7 +258,7 @@
      * @inheritdoc
      */
     save(sivElement) {
-      if ($("#sivFlagsCheckbox")[DOM_ELEMENT].checked) {
+      if (document.querySelector("#sivFlagsCheckbox").checked) {
         sivElement.enable("flags", true);
         (new SieveStringListWidget("#sivFlagKeyList"))
           .save(sivElement.getElement("flags").getElement("flags"));

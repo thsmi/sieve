@@ -14,7 +14,7 @@
   "use strict";
 
   /* global $ */
-  /* global SieveTemplateLoader */
+  /* global SieveTemplate */
 
   // eslint-disable-next-line no-magic-numbers
   const LOG_ACCOUNT_REQUEST = (1 << 0);
@@ -61,7 +61,7 @@
         settings.removeChild(settings.firstChild);
 
       settings.appendChild(
-        await (new SieveTemplateLoader().load("./settings/ui/settings.debug.tpl")));
+        await (new SieveTemplate().load("./settings/ui/settings.debug.tpl")));
 
       const levels = await this.account.send("account-settings-get-debug");
 
@@ -86,7 +86,7 @@
     async show() {
 
       document.querySelector("#ctx").appendChild(
-        await (new SieveTemplateLoader()).load("./settings/ui/settings.dialog.tpl"));
+        await (new SieveTemplate()).load("./settings/ui/settings.dialog.tpl"));
 
       await this.render();
 
@@ -94,7 +94,7 @@
 
         $(this.getDialog()).modal("show")
           .on("hidden.bs.modal", () => {
-            $(this.getDialog()).remove();
+            this.getDialog().parentNode.removeChild(this.getDialog());
             resolve();
           });
       });
@@ -194,7 +194,7 @@
       await this.account.send("account-settings-set-debug", { "levels": levels });
 
       // Validate and close
-      $('#sieve-dialog-settings').modal('hide');
+      $(this.getDialog()).modal('hide');
     }
 
     /**

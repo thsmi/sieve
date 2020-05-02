@@ -3,16 +3,21 @@
   "files.trimTrailingWhitespace": true,
   "files.exclude": {
     "**/.git": true,
-    "**/node_modules":true,
-    "build/**":true
+    "**/node_modules": true,
+    "build/**": true
   },
   "eslint.enable": true,
   "files.associations": {
     "*.tpl": "html",
-    "*.jsm" : "javascript"
+    "*.jsm": "javascript"
   },
   "files.eol": "\n",
   "editor.tabSize": 2,
   "editor.useTabStops": false,
-  "editor.rulers": [ 80 ]
+  "editor.rulers": [
+    80
+  ],
+  "[json]": {
+    "editor.wordWrap": "on"
+  }
 }

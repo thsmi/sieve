@@ -14,7 +14,7 @@
   "use strict";
 
   /* global $ */
-  /* global SieveTemplateLoader */
+  /* global SieveTemplate */
 
   /**
    * Implements a dialog which displays the accounts capabilities.
@@ -30,7 +30,7 @@
     async show(capabilities) {
 
       document.querySelector("#ctx").appendChild(
-        await (new SieveTemplateLoader()).load("./accounts/account.capabilities.tpl"));
+        await (new SieveTemplate()).load("./accounts/account.capabilities.tpl"));
 
       $('#sieve-dialog-capabilities').modal('show');
 

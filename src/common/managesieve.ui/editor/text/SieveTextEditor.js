@@ -15,7 +15,7 @@
 
   /* global $ */
   /* global CodeMirror */
-  /* global SieveTemplateLoader */
+  /* global SieveTemplate */
   /* global SieveAbstractEditorUI */
 
   const COMPILE_DELAY = 500;
@@ -57,7 +57,7 @@
     async renderSettings() {
 
 
-      const loader = new SieveTemplateLoader();
+      const loader = new SieveTemplate();
 
       // Syntax Checks
       document
@@ -83,10 +83,12 @@
         .appendChild(await loader.load("./editor/text/editor.settings.indentation.tpl"));
 
       // Indentation width...
-      $("#editor-settings-indentation-width").change(async () => {
-        await this.setIndentWidth(
-          document.querySelector("#editor-settings-indentation-width").value);
-      });
+      document
+        .querySelector("#editor-settings-indentation-width")
+        .addEventListener("change", async () => {
+          await this.setIndentWidth(
+            document.querySelector("#editor-settings-indentation-width").value);
+        });
 
       document.querySelector("#editor-settings-indentation-width")
         .value = this.getIndentWidth();
@@ -106,10 +108,12 @@
         $("#editor-settings-indentation-policy-spaces").button('toggle');
 
       // Tabulator width...
-      $("#editor-settings-tabulator-width").change(async () => {
-        await this.setTabWidth(
-          document.querySelector("#editor-settings-tabulator-width").value);
-      });
+      document
+        .querySelector("#editor-settings-tabulator-width")
+        .addEventListener("change", async () => {
+          await this.setTabWidth(
+            document.querySelector("#editor-settings-tabulator-width").value);
+        });
 
       document.querySelector("#editor-settings-tabulator-width")
         .value = this.getTabWidth();
@@ -120,10 +124,14 @@
      */
     async render() {
 
-      const loader = new SieveTemplateLoader();
+      const loader = new SieveTemplate();
 
-      $("#sieve-plaintext-editor").empty()
-        .append($(await loader.load("./editor/text/editor.plaintext.tpl")));
+      const editor = document.querySelector("#sieve-plaintext-editor");
+      while (editor.firstChild)
+        editor.removeChild(editor.firstChild);
+
+      editor.appendChild(
+        await loader.load("./editor/text/editor.plaintext.tpl"));
 
       this.cm = CodeMirror.fromTextArea(document.getElementById(this.id), {
         lineNumbers: true,
@@ -287,7 +295,7 @@
     }
 
     /**
-     * Undos the last input
+     * Undoes the last input
      */
     undo() {
       this.cm.undo();
@@ -552,8 +560,15 @@
       this.syntaxCheckEnabled = false;
       this.hideSyntaxErrors();
 
-      $("#sieve-editor-settings .sieve-editor-disable-syntaxcheck").show();
-      $("#sieve-editor-settings .sieve-editor-enable-syntaxcheck").hide();
+      const settings = document.querySelector("#sieve-editor-settings");
+
+      settings
+        .querySelector(".sieve-editor-disable-syntaxcheck")
+        .style.display = "";
+
+      settings
+        .querySelector(".sieve-editor-enable-syntaxcheck")
+        .style.display = "none";
 
       this.focus();
 
@@ -582,9 +597,14 @@
      *   the errors which should be displayed
      */
     showSyntaxErrors(errors) {
-      document.querySelector("#sieve-editor-msg").style.display = '';
-      $("#sieve-editor-msg .sieve-editor-msg-details")
-        .empty().text(errors);
+      const msg = document.querySelector("#sieve-editor-msg");
+      msg.style.display = '';
+
+      const details = msg.querySelector(".sieve-editor-msg-details");
+      while (details.firstChild)
+        details.removeChild(details.firstChild);
+
+      details.textContent = errors;
     }
 
     /**

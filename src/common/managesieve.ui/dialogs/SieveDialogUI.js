@@ -20,7 +20,7 @@
   const DIALOG_DISCARDED = 2;
 
   /* global $ */
-  const { SieveTemplateLoader } = require("./../utils/SieveTemplateLoader.js");
+  const { SieveTemplate } = require("./../utils/SieveTemplate.js");
   const { SieveUniqueId } = require("./../utils/SieveUniqueId.js");
 
   /**
@@ -125,7 +125,7 @@
 
       this.id = this.generateId();
 
-      const dialog = await (new SieveTemplateLoader()).load(this.getTemplate());
+      const dialog = await (new SieveTemplate()).load(this.getTemplate());
       dialog.id = this.id;
       document.querySelector("#ctx").appendChild(dialog);
 
@@ -230,7 +230,7 @@
 
       this.getDialog()
         .querySelector(".sieve-dialog-certerror")
-        .textContent(this.error);
+        .textContent = this.error;
     }
   }
 

@@ -14,7 +14,7 @@
   "use strict";
 
   /* global $ */
-  /* global SieveTemplateLoader */
+  /* global SieveTemplate */
   /* global SieveIpcClient */
 
   /**
@@ -27,7 +27,7 @@
      */
     async show() {
       return await new Promise(async (resolve) => {
-        const dialog = await (new SieveTemplateLoader()).load("./importer/account.import.tpl");
+        const dialog = await (new SieveTemplate()).load("./importer/account.import.tpl");
         dialog.querySelector(".sieve-import-progress").style.display = "none";
         document.querySelector("#ctx").appendChild(dialog);
 
@@ -36,7 +36,7 @@
         const accounts = await SieveIpcClient.sendMessage("core", "import-thunderbird");
 
         for (let account of accounts) {
-          const item = await (new SieveTemplateLoader()).load("./importer/account.import.item.tpl");
+          const item = await (new SieveTemplate()).load("./importer/account.import.item.tpl");
 
           item.querySelector(".sieve-import-username").textContent = account["username"];
           item.querySelector(".sieve-import-hostname").textContent = account["hostname"];
@@ -44,7 +44,7 @@
 
           item.querySelector(".sieve-import-source").textContent = "Thunderbird";
 
-          item.querySelector(".sieve-import-btn").addEventListener("click" , async () => {
+          item.querySelector(".sieve-import-btn").addEventListener("click", async () => {
 
             dialog.querySelector(".sieve-import-items").style.display = "none";
             dialog.querySelector(".sieve-import-progress").style.display = "";

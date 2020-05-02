@@ -21,8 +21,6 @@
   if (!SieveDesigner)
     throw new Error("Could not register Copy Extension");
 
-  const DOM_ELEMENT = 0;
-
   /**
    * Implements an abstract overlay widget which is used by
    * the copy overlay for the fileinto action as well as the
@@ -49,7 +47,7 @@
      */
     load(sivElement) {
       if (sivElement.enable("copy"))
-        $("#sivCopyCheckbox").attr("checked", "checked");
+        document.querySelector("#sivCopyCheckbox").checked = true;
     }
 
     /**

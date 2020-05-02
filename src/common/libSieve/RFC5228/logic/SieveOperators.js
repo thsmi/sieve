@@ -137,7 +137,7 @@
 
 
   /**
-   * Impements the N-Ary Operator anyof/allof test
+   * Implements the N-Ary Operator anyof/allof test
    * @inheritdoc
    */
   function SieveAnyOfAllOfTest(docshell, id) {
@@ -146,7 +146,7 @@
     this.isAllOf = true;
   }
 
-  // Inherrit TestList
+  // Inherit TestList
   SieveAnyOfAllOfTest.prototype = Object.create(SieveTestList.prototype);
   SieveAnyOfAllOfTest.prototype.constructor = SieveAnyOfAllOfTest;
 

@@ -90,7 +90,7 @@
 
   /**
    * Provides an UI for the Sieve Boolean tests, which have no
-   * practival use as a true always succeed and a false always fails.
+   * practical use as a true always succeed and a false always fails.
    */
   class SieveBooleanTestUI extends SieveTestDialogBoxUI {
 
@@ -123,9 +123,10 @@
      * @inheritdoc
      */
     onLoad() {
-      $("#sieve-widget-test")
-        .find("input[name='booleanValue']")
-        .val([this.getSieve().getCurrentElement().nodeName()]);
+      document
+        .querySelector("#sieve-widget-test")
+        .querySelector("input[name='booleanValue']")
+        .value = this.getSieve().getCurrentElement().nodeName();
     }
 
     /**

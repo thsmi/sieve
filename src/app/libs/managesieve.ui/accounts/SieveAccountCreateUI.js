@@ -14,7 +14,7 @@
   "use strict";
 
   /* global $ */
-  /* global SieveTemplateLoader */
+  /* global SieveTemplate */
   /* global SieveIpcClient */
 
   /**
@@ -27,11 +27,11 @@
      */
     async show() {
 
-      const dialog = await (new SieveTemplateLoader())
+      const dialog = await (new SieveTemplate())
         .load("./accounts/account.dialog.create.tpl");
       document.querySelector("#ctx").appendChild(dialog);
 
-      return await new Promise(async (resolve) => {
+      return await new Promise((resolve) => {
 
         dialog
           .querySelector(".sieve-create-account-btn")

@@ -19,7 +19,7 @@
   /**
    * Loads an html fragment from a file or url.
    */
-  class SieveTemplateLoader {
+  class SieveTemplate {
 
     /**
      * Gets an instance of the default i18n
@@ -111,8 +111,8 @@
 
 
   if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveTemplateLoader = SieveTemplateLoader;
+    module.exports.SieveTemplate = SieveTemplate;
   else
-    exports.SieveTemplateLoader = SieveTemplateLoader;
+    exports.SieveTemplate = SieveTemplate;
 
 })(this);

@@ -72,15 +72,14 @@
 
       // Update the From Field
       if ($("input[type='radio'][name='from']:checked").val() === "true")
-        $('#vacationFromDesc').text($("#sivVacationFrom").val());
+        document.querySelector('#vacationFromDesc').textContent = $("#sivVacationFrom").val();
       else
         $('#vacationFromDesc').text("Address of the sieve script owner");
 
       if ($("input[type='radio'][name='subject']:checked").val() === "true")
         $('#vacationSubjectDesc').text($("#sivVacationSubject").val());
       else
-        document.querySelector('#vacationSubjectDesc').textContent("Server's default Subject");
-
+        document.querySelector('#vacationSubjectDesc').textContent = "Server's default Subject";
     }
 
     /**
@@ -95,7 +94,7 @@
         this.onEnvelopeChanged();
       });
 
-      $("#vacationEnvelopeEdit").click(() => {
+      document.querySelector("#vacationEnvelopeEdit").addEventListener("click", () => {
         $('a[data-toggle="tab"][href="#sieve-widget-envelope"]')
           .tab('show');
       });

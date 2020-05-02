@@ -13,7 +13,7 @@
 
   "use strict";
 
-  /* global SieveTemplateLoader */
+  /* global SieveTemplate */
   /* global SieveIpcClient */
 
   /**
@@ -30,7 +30,7 @@
       if (status !== true)
         return;
 
-      const template = await (new SieveTemplateLoader()).load("./updater/update.tpl");
+      const template = await (new SieveTemplate()).load("./updater/update.tpl");
       template.querySelector(".sieve-update-msg").addEventListener("click", () => {
         SieveIpcClient.sendMessage("core", "update-goto-url");
       });

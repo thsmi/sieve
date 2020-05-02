@@ -42,8 +42,8 @@
     onLoad(sivElement) {
       super.onLoad(sivElement);
 
-      this.getActiveItem().find(".sieve-matchtype-count-relational").val(
-        ":count " + sivElement.getElement("relational-match").toScript());
+      this.getActiveItem().querySelector(".sieve-matchtype-count-relational").value =
+        ":count " + sivElement.getElement("relational-match").toScript();
     }
 
     /**
@@ -51,7 +51,7 @@
      */
     onSave(sivElement) {
       sivElement.setElement(
-        this.getActiveItem().find(".sieve-matchtype-count-relational").val());
+        this.getActiveItem().querySelector(".sieve-matchtype-count-relational").value);
     }
 
 
@@ -90,16 +90,17 @@
 
       super.onLoad(sivElement, item);
 
-      this.getActiveItem().find(".sieve-matchtype-value-relational").val(
-        ":value " + sivElement.getElement("relational-match").toScript());
+      this.getActiveItem().querySelector(".sieve-matchtype-value-relational").value =
+        ":value " + sivElement.getElement("relational-match").toScript();
     }
 
     /**
      * @inheritdoc
      */
+    // eslint-disable-next-line no-unused-vars
     onSave(sivElement, item) {
       sivElement.setElement(
-        this.getActiveItem().find(".sieve-matchtype-value-relational").val());
+        this.getActiveItem().querySelector(".sieve-matchtype-value-relational").value);
     }
 
     /**

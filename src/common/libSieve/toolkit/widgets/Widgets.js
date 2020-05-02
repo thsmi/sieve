@@ -14,10 +14,9 @@
 
   "use strict";
 
-  const DOM_ELEMENT = 0;
-
   /* global $: false */
   /* global SieveDesigner */
+  /* global SieveTemplate */
 
   /**
    * Provides a string list UI.
@@ -99,7 +98,7 @@
 
       // connect the drop down menu...
       if (this._hasDropDown()) {
-        const elm = $($(this._selector).attr("data-list-dropdown")).children().first().clone();
+        const elm = $(document.querySelector(this._selector).dataset.listDropdown).children().first().clone();
 
         item.find(".sieve-stringlist-dropdown").removeClass("d-none");
         item.find(".sieve-stringlist-dropdown").before(elm);
@@ -277,7 +276,7 @@
     }
 
     /**
-     * Initializes the widget's dropdown items.
+     * Initializes the widgets' dropdown items.
      * @param {SieveAbstractElement} sivElement
      *   the sieve element which should
      *
@@ -395,6 +394,9 @@
      *   selects the current matchtype in case it is true.
      * @param {Function} onInitialized
      *   optional callback invoked when the element is fully initialized
+     *
+     * @return {HTMLElement}
+     *   a reference to the newly initialized html element.
      */
     async init(sivElement, onInitialized) {
 
@@ -407,14 +409,17 @@
 
       container.dataset.nodename = this.constructor.nodeName();
 
-      // TODO getElement should return vanilla.js
-      this.getElement()[0].appendChild(container);
+      this.getElement().appendChild(container);
 
       this.load(sivElement);
 
       // TODO remove me we are async no need for a callback...
-      if (typeof (onInitialized) !== "undefined" && onInitialized !== null)
+      if (typeof (onInitialized) !== "undefined" && onInitialized !== null) {
+        throw new Error("Deprecated");
         onInitialized(this.getElement());
+      }
+
+      return this.getElement();
     }
 
     /**
@@ -425,7 +430,7 @@
      *
      */
     load(sivElement) {
-      throw new Error("Implement load " + sivElement);
+      throw new Error(`Implement load ${sivElement}`);
     }
 
     /**
@@ -436,7 +441,7 @@
      *
      */
     save(sivElement) {
-      throw new Error("Implement load " + sivElement);
+      throw new Error(`Implement load ${sivElement}`);
     }
   }
 
@@ -450,8 +455,8 @@
      *
      * @param {SieveElement} sivElement
      *   the parent sieve element
-     *
      */
+    // eslint-disable-next-line no-unused-vars
     onLoad(sivElement) {
       this.select();
     }
@@ -464,8 +469,7 @@
      *
      */
     onSave(sivElement) {
-      sivElement.setElement(
-        this.getActiveItem().attr("data-value"));
+      sivElement.setElement(this.getActiveItem().dataset.value);
     }
 
     /**
@@ -473,8 +477,8 @@
      *
      */
     select() {
-      const menuElement = this.getMenuItem();
-      const activeElement = this.getActiveItem();
+      const menuElement = $(this.getMenuItem());
+      const activeElement = $(this.getActiveItem());
 
       activeElement
         .html(menuElement.html())
@@ -483,18 +487,23 @@
     }
 
     /**
-     * Gets the currently active item. It does not necessarily be this item.
+     * Gets the currently active dropdown item. It does not necessarily be this item.
      *
+     * @returns {HTMLElement}
+     *   the active dropdown item.
      */
     getActiveItem() {
-      return $(`${this.selector} .sivDropDownWidget-active`);
+      return document.querySelector(`${this.selector} .sivDropDownWidget-active`);
     }
 
     /**
      * Gets the menu item for this item.
+     *
+     * @returns {HTMLElement}
+     *   the menu item.
      */
     getMenuItem() {
-      return $(`${this.selector} .sivDropDownWidget-menu div[data-nodename="${this.constructor.nodeName()}"] .dropdown-item`);
+      return document.querySelector(`${this.selector} .sivDropDownWidget-menu div[data-nodename="${this.constructor.nodeName()}"] .dropdown-item`);
     }
 
     /**
@@ -503,12 +512,12 @@
     load(sivElement) {
 
       const element = this.getMenuItem();
-      element.click(() => { this.select(); });
+      element.addEventListener("click", () => { this.select(); });
 
       if (this.constructor.nodeName() !== sivElement.getElement().nodeName())
         return;
 
-      this.onLoad(sivElement, element);
+      this.onLoad(sivElement, $(element));
     }
 
     /**
@@ -517,7 +526,7 @@
     save(sivElement) {
       const item = this.getActiveItem();
 
-      if (item.attr("data-nodename") !== this.constructor.nodeName())
+      if (item.dataset.nodename !== this.constructor.nodeName())
         return;
 
       this.onSave(sivElement);
@@ -527,7 +536,7 @@
      * @inheritdoc
      */
     getElement() {
-      return $("" + this.selector + " .sivDropDownWidget-menu");
+      return document.querySelector(`${this.selector} .sivDropDownWidget-menu`);
     }
   }
 
@@ -584,11 +593,13 @@
   class SieveRadioGroupItemWidget extends SieveAbstractItemWidget {
 
     /**
-     * @returns {JQuery}
+     * The current radio item.
+     *
+     * @returns {HTMLElement}
      *   the current element
      */
     getRadioItem() {
-      return $("" + this.selector + " [data-nodename='" + this.constructor.nodeName() + "']");
+      return document.querySelector(`${this.selector} [data-nodename="${this.constructor.nodeName()}"]`);
     }
 
     /**
@@ -596,10 +607,9 @@
      *
      * @param {SieveElement} sivElement
      *   the parent sieve element
-     *
      */
     onLoad(sivElement) {
-      this.getRadioItem().find("input[name='" + this.getName() + "']").attr("checked", "checked");
+      this.getRadioItem().querySelector(`input[name='${this.getName()}']`).checked = true;
     }
 
     /**
@@ -611,7 +621,7 @@
      */
     onSave(sivElement) {
       sivElement.setElement(
-        this.getRadioItem().find("input[name='" + this.getName() + "']").val());
+        this.getRadioItem().querySelector(`input[name='${this.getName()}']`).value);
     }
 
     /**
@@ -631,7 +641,7 @@
     save(sivElement) {
       const item = this.getRadioItem();
 
-      if (item.find("input[name='" + this.getName() + "']:checked").length !== 1)
+      if (!item.querySelector(`input[name='${this.getName()}']:checked`))
         return;
 
       this.onSave(sivElement);
@@ -641,13 +651,13 @@
      * @inheritdoc
      */
     getElement() {
-      return $("" + this.selector);
+      return document.querySelector(`${this.selector}`);
     }
   }
 
 
   /**
-   * Provides support for defered elements like :copy or :create
+   * Provides support for deferred elements like :copy or :create
    */
   class SieveOverlayWidget {
 
@@ -671,11 +681,15 @@
      * @param {Function} [onInitialized]
      *   optional callback, invoked when a widget is fully initialized
      */
-    init(sivElement, onInitialized) {
+    async init(sivElement, onInitialized) {
       const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
 
-      for (const widget of widgets)
-        widget.init(sivElement, onInitialized);
+      for (const widget of widgets) {
+        const elm = await widget.init(sivElement);
+
+        if (typeof (onInitialized) !== "undefined" && onInitialized !== null)
+          onInitialized($(elm));
+      }
     }
 
     /**
@@ -701,7 +715,7 @@
      * @inheritdoc
      */
     getElement() {
-      return $("" + this.selector);
+      return document.querySelector(`${this.selector}`);
     }
   }
 
@@ -723,7 +737,7 @@
      *   true in case the widget as a drop down otherwise false
      */
     _hasDropDown() {
-      return $(this._selector)[DOM_ELEMENT]
+      return document.querySelector(this._selector)
         .hasAttribute("data-list-dropdown");
     }
 
@@ -820,12 +834,10 @@
      *
      * @param {SieveString} sivElement
      *   the string element which was rendered and should be saved.
-     *
      */
     save(sivElement) {
-
       sivElement.value(
-        $(this._selector).find(".sieve-string-item").val());
+        document.querySelector(`${this._selector} .sieve-string-item`).value);
     }
 
   }

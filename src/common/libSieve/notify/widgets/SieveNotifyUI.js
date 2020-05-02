@@ -64,27 +64,26 @@
 
 
       if (this.getSieve().enable("from"))
-        $("#cbxSieveNotifyFrom").attr("checked", "checked");
+        document.querySelector("#cbxSieveNotifyFrom").checked = true;
 
       (new SieveStringWidget("#txtSieveNotifyFrom"))
         .init(this.from());
 
 
       if (this.getSieve().enable("options"))
-        $("#cbxSieveNotifyOptions").attr("checked", "checked");
+        document.querySelector("#cbxSieveNotifyOptions").checked = true;
 
       (new SieveStringListWidget("#txtSieveNotifyOptions"))
         .init(this.options());
 
 
       if (this.getSieve().enable("importance"))
-        $("#cbxSieveNotifyImportance").attr("checked", "checked");
+        document.querySelector("#cbxSieveNotifyImportance").checked = true;
 
       const importance = this.getSieve().getElement("importance").getElement("importance").value();
-      $("input[name=sivNotifyImportance][value='" + importance + "']").prop('checked', true);
+      document.querySelector("input[name=sivNotifyImportance][value='" + importance + "']").checked = true;
 
-
-      $("input[name=sivNotifyMessage][value='" + this.getSieve().enable("message") + "']").prop('checked', true);
+      document.querySelector("input[name=sivNotifyMessage][value='" + this.getSieve().enable("message") + "']").checked = true;
       document.querySelector("#txtSieveNotifyMessage").value = this.message().value();
     }
 
@@ -98,20 +97,20 @@
       // Importance...
 
       this.getSieve().enable("options",
-        $("#cbxSieveNotifyOptions").is(":checked"));
+        document.querySelector("#cbxSieveNotifyOptions").checked);
+
       (new SieveStringListWidget("#txtSieveNotifyOptions"))
         .save(this.options());
 
-
       this.getSieve().enable("from",
-        $("#cbxSieveNotifyFrom").is(":checked"));
+        document.querySelector("#cbxSieveNotifyFrom").checked);
       (new SieveStringWidget("#txtSieveNotifyFrom"))
         .save(this.from());
 
 
       this.getSieve().enable("importance",
-        $("#cbxSieveNotifyImportance").is(":checked"));
-      const importance = $("input[name=sivNotifyImportance]:checked").val();
+        document.querySelector("#cbxSieveNotifyImportance").checked);
+      const importance = document.querySelector("input[name=sivNotifyImportance]:checked").value();
 
       this.getSieve()
         .getElement("importance")
@@ -120,7 +119,7 @@
 
 
       this.getSieve().enable("message",
-        $("#rbxSieveNotifyMessageCustom").is(":checked"));
+        document.querySelector("#rbxSieveNotifyMessageCustom").checked);
       this.message().value(
         document.querySelector("#txtSieveNotifyMessage").value);
 
@@ -312,7 +311,7 @@
      */
     load(sivElement) {
       if (sivElement.enable("modifier/15"))
-        $("#cbxModifier15").attr("checked", "checked");
+        document.querySelector("#cbxModifier15").checked = true;
     }
 
     /**
@@ -321,19 +320,12 @@
     save(sivElement) {
 
       let value = null;
-      const status = $("#cbxModifier15").is(":checked");
+      const status = document.querySelector("#cbxModifier15").checked;
       if (status)
         value = document.querySelector("#cbxModifier15").value;
 
       sivElement.getElement("modifier/15").setElement(value);
       sivElement.enable("modifier/15", status);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getElement() {
-      return $("" + this.selector);
     }
   }
 

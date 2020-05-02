@@ -191,7 +191,7 @@
      */
     load(sivElement) {
       if (sivElement.enable("modifier/10"))
-        $("#cbxModifier10").attr("checked", "checked");
+        document.querySelector("#cbxModifier10").checked = true;
     }
 
     /**
@@ -200,19 +200,12 @@
     save(sivElement) {
 
       let value = null;
-      const status = $("#cbxModifier10").is(":checked");
+      const status = document.querySelector("#cbxModifier10").checked;
       if (status)
         value = document.querySelector("#cbxModifier10").value;
 
       sivElement.getElement("modifier/10").setElement(value);
       sivElement.enable("modifier/10", status);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getElement() {
-      return $("" + this.selector);
     }
   }
 
@@ -256,7 +249,7 @@
      */
     load(sivElement) {
       if (sivElement.enable("modifier/20"))
-        $("#cbxModifier20").attr("checked", "checked");
+        document.querySelector("#cbxModifier20").checked = true;
     }
 
     /**
@@ -265,19 +258,12 @@
     save(sivElement) {
 
       let value = null;
-      const status = $("#cbxModifier20").is(":checked");
+      const status = document.querySelector("#cbxModifier20").checked;
       if (status)
         value = document.querySelector("#cbxModifier20").value;
 
       sivElement.getElement("modifier/20").setElement(value);
       sivElement.enable("modifier/20", status);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getElement() {
-      return $("" + this.selector);
     }
   }
 
@@ -304,6 +290,8 @@
     }
 
     /**
+     * Gets a reference to the active match-type
+     *
      * @returns {SieveAbstractElement}
      *   the element's matchtype
      */
@@ -312,6 +300,8 @@
     }
 
     /**
+     * Gets a reference to the active comparator.
+     *
      * @returns {SieveAbstractElement}
      *   the element's comparator
      */

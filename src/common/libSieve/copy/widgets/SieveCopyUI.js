@@ -14,7 +14,6 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveDesigner */
   /* global SieveOverlayItemWidget */
 
@@ -58,13 +57,6 @@
         sivElement.enable("copy", true);
       else
         sivElement.enable("copy", false);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getElement() {
-      return $("" + this.selector);
     }
   }
 

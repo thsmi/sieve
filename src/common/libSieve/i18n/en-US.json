@@ -98,6 +98,11 @@
   "flags.label" : "Add imap flag",
   "flags.text" : "Adds flags to a message. It doesn't replace any previously set flags.",
 
+  "copy.label" : "Keep a copy",
+  "copy.text" : "By default the action cancels the implicit keep statement. So that it won't be stored in the inbox after processing. When activating a copy of the original message is kept in the inbox.",
+
+  "create.label" : "Create folder, when non existent",
+
   "unique.default.title" : "... extracted from the header named message-id.",
   "unique.default.text" : "The message-id is assumed but not guaranteed to be globally unique.",
 
@@ -132,5 +137,21 @@
   "matchtype.value.text" : "Compares the relation between strings. The test is considered true if any pair is true",
 
   "matchtype.regex.title" : "... regex matches ...",
-  "matchtype.regex.text" : "Matches and compares using on a regular expression as defined in IEEE.1003-2.1992"
+  "matchtype.regex.text" : "Matches and compares using on a regular expression as defined in IEEE.1003-2.1992",
+
+  "matchtype.count.title" : "... has",
+  "matchtype.count.title2" : "items ...",
+  "matchtype.count.greater" : "greater than",
+  "matchtype.count.greaterEqual" : "greater than or equal",
+  "matchtype.count.less" : "less than",
+  "matchtype.count.lessEqual" : "less than or equal",
+  "matchtype.count.equal" : "equal to",
+  "matchtype.count.notEqual" : "not equal to",
+  "matchtype.count.text" : "Counts the number of entities and compares them to the given value",
+
+  "modifier.length.title" : "Count character",
+  "modifier.length.text" : "Variables are expanded before determining the number of characters.",
+
+  "modifier.quotewildcard.title" : "Escape Wildcards",
+  "modifier.quotewildcard.text" : "Ensures that the expanded text will only match a literal occurrence if used as a parameter to :matches. Every character with special meaning (\"*\", \"?\", and \"\\\") is prefixed with \"\\\" in the expansion."
 }

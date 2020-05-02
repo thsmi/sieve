@@ -149,14 +149,19 @@
 
       elm.querySelector(".sieve-settings-username")
         .textContent = account.username;
-      elm.querySelector(".sieve-settings-mechanism")
-        .textContent = account.mechanism;
-      elm.querySelector(".sieve-settings-fingerprint")
-        .textContent = account.fingerprint;
 
-      if (account.fingerprint === "")
-        elm.querySelector(".sieve-settings-fingerprint-item").style.display = 'none';
+      if (elm.querySelector(".sieve-settings-mechanism")) {
+        elm.querySelector(".sieve-settings-mechanism")
+          .textContent = account.mechanism;
+      }
 
+      if (elm.querySelector(".sieve-settings-fingerprint")) {
+        elm.querySelector(".sieve-settings-fingerprint")
+          .textContent = account.fingerprint;
+
+        if (account.fingerprint === "")
+          elm.querySelector(".sieve-settings-fingerprint-item").style.display = 'none';
+      }
 
       // Clear any existing left overs...
       const settings = document.querySelector(`#siv-account-${this.id} .sieve-settings-content`);
@@ -167,17 +172,30 @@
       settings.appendChild(elm);
 
       // ... finally connect the listeners.
-      elm.querySelector(".sieve-account-delete-server")
-        .addEventListener("click", () => { this.remove(); });
-      elm.querySelector(".sieve-account-edit-server")
-        .addEventListener("click", () => { this.showServerSettings(); });
-      elm.querySelector(".sieve-account-edit-credentials")
-        .addEventListener("click", () => { this.showCredentialSettings(); });
-      elm.querySelector(".sieve-account-edit-debug")
-        .addEventListener("click", () => { this.showAdvancedSettings(); });
+      if (elm.querySelector(".sieve-account-delete-server")) {
+        elm.querySelector(".sieve-account-delete-server")
+          .addEventListener("click", () => { this.remove(); });
+      }
 
-      elm.querySelector(".sieve-account-export")
-        .addEventListener("click", () => { this.exportSettings(); });
+      if (elm.querySelector(".sieve-account-edit-server")) {
+        elm.querySelector(".sieve-account-edit-server")
+          .addEventListener("click", () => { this.showServerSettings(); });
+      }
+
+      if (elm.querySelector(".sieve-account-edit-credentials")) {
+        elm.querySelector(".sieve-account-edit-credentials")
+          .addEventListener("click", () => { this.showCredentialSettings(); });
+      }
+
+      if (elm.querySelector(".sieve-account-edit-debug")) {
+        elm.querySelector(".sieve-account-edit-debug")
+          .addEventListener("click", () => { this.showAdvancedSettings(); });
+      }
+
+      if (elm.querySelector(".sieve-account-export")) {
+        elm.querySelector(".sieve-account-export")
+          .addEventListener("click", () => { this.exportSettings(); });
+      }
 
     }
 
@@ -338,7 +356,7 @@
 
       const rv = await (new SieveCredentialsSettingsUI(this)).show();
 
-      if ( rv === true )
+      if (rv === true)
         this.renderSettings();
 
       return rv;

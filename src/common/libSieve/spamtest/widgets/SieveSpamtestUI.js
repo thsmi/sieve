@@ -57,11 +57,11 @@
      * As this was not too intuitive, they extended the definition
      * and added a percentual range (0 to 100%).
      *
-     * The percentual range it optional and so it may not be supported
+     * The range in percent it optional and so it may not be supported
      * by the sieve implementation
      *
      * @returns {boolean}
-     *   true in case the value is percentual otherwise false.
+     *   true in case the value is in percent otherwise false.
      *   false can mean it is not supported or it is disabled.
      */
     isPercental() {

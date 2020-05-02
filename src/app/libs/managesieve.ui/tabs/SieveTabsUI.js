@@ -280,8 +280,8 @@
       const contentId = `${id}-content`;
 
       // create a new tab.
-      const content = await (new SieveTemplateLoader()).load("./libs/managesieve.ui/tabs/editor.content.tpl");
-      const tab = await (new SieveTemplateLoader()).load("./libs/managesieve.ui/tabs/editor.tab.tpl");
+      const content = $(await (new SieveTemplateLoader()).load("./libs/managesieve.ui/tabs/editor.content.tpl"));
+      const tab = $(await (new SieveTemplateLoader()).load("./libs/managesieve.ui/tabs/editor.tab.tpl"));
 
       tab.find(".nav-link")
         .attr("href", `#${contentId}`);

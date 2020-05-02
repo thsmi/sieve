@@ -140,18 +140,18 @@
     }
 
     SieveGrammar.create();
-    // reset environemnt
+    // reset environment
     init();
 
     if (!script)
-      script = $('#txtScript').val();
+      script = document.querySelector('#txtScript').value;
     else
-      $('#txtScript').val(script);
+      document.querySelector('#txtScript').value = script;
 
     dom2.script(script);
 
-    $("#txtOutput")
-      .val(dom2.script());
+    document.querySelector("#txtOutput")
+      .value = dom2.script();
 
     $("#divOutput")
       .empty()
@@ -172,7 +172,7 @@
   }
 
   /**
-   * Sets the capabilities as defined in the capabilies dialog
+   * Sets the capabilities as defined in the capabilities dialog
    *
    **/
   function setCapabilities() {
@@ -226,8 +226,8 @@
    *
    */
   function showInfoMessage(message, content) {
-    $("#infobarsubject > span").text(message);
-    $("#infobarmessage > span").text(content);
+    document.querySelector("#infobarsubject > span").textContent(message);
+    document.querySelector("#infobarmessage > span").textContent(content);
     $("#infobar").toggle();
   }
 

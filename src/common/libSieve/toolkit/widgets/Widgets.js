@@ -466,7 +466,7 @@
     }
 
     /**
-     * Called wehn the UI element should be persisted to a sieve script.
+     * Called when the UI element should be persisted to a sieve script.
      *
      * @param {SieveElement} sivElement
      *   the parent sieve element
@@ -492,19 +492,18 @@
     }
 
     /**
-     * Gets the currently active item. It does not nessearily be this item.
+     * Gets the currently active item. It does not necessarily be this item.
      *
      */
     getActiveItem() {
-      return $("" + this.selector + " .sivDropDownWidget-active");
+      return $(`${this.selector} .sivDropDownWidget-active`);
     }
 
     /**
      * Gets the menu item for this item.
-     *
      */
     getMenuItem() {
-      return $('' + this.selector + ' .sivDropDownWidget-menu div[data-nodename="' + this.constructor.nodeName() + '"] .dropdown-item');
+      return $(`${this.selector} .sivDropDownWidget-menu div[data-nodename="${this.constructor.nodeName()}"] .dropdown-item`);
     }
 
     /**

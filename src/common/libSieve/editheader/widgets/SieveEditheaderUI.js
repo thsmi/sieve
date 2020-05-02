@@ -62,7 +62,7 @@
      */
     onSave() {
 
-      const name = $("#sivNewHeaderName").val();
+      const name = document.querySelector("#sivNewHeaderName").value;
 
       if (name.trim() === "") {
         window.alert("Header name is empty");
@@ -90,8 +90,8 @@
      */
     onLoad() {
 
-      $("#sivNewHeaderName").val(this.name().value());
-      $("#sivNewHeaderValue").val(this.value().value());
+      document.querySelector("#sivNewHeaderName").value = this.name().value();
+      document.querySelector("#sivNewHeaderValue").value = this.value().value();
 
       $('input:radio[name="last"][value="' + this.enable("last") + '"]').prop('checked', true);
     }
@@ -226,7 +226,7 @@
         .save(this.values());
 
       this.getSieve().getElement("name")
-        .value($("#sivDeleteHeaderName").val());
+        .value(document.querySelector("#sivDeleteHeaderName").value);
 
       this.saveHeaderIndex();
       this.saveHeaderValues();

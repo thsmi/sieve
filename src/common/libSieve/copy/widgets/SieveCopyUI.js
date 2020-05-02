@@ -56,7 +56,7 @@
      * @inheritdoc
      */
     save(sivElement) {
-      if ($("#sivCopyCheckbox")[DOM_ELEMENT].checked)
+      if (document.querySelector("#sivCopyCheckbox").checked)
         sivElement.enable("copy", true);
       else
         sivElement.enable("copy", false);

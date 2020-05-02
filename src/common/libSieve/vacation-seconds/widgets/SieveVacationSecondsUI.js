@@ -64,7 +64,7 @@
 
       $("#cbxVacationIntervalSeconds").prop("checked", true);
       // FIXME: we ignore the unit here., instead we should use a numeric control
-      $("#txtVacationIntervalSeconds").val(elm.getElement("seconds").getValue());
+      document.querySelector("#txtVacationIntervalSeconds").value = elm.getElement("seconds").getValue();
     }
 
     /**

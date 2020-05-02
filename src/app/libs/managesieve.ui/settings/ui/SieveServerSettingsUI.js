@@ -204,7 +204,7 @@
         settings.removeChild(settings.firstChild);
 
       settings.appendChild(
-        (await (new SieveTemplateLoader()).load("./settings/ui/settings.server.tpl"))[0]);
+        await (new SieveTemplateLoader()).load("./settings/ui/settings.server.tpl"));
 
       const server = await this.account.send("account-get-server");
 
@@ -231,7 +231,7 @@
     async show() {
 
       document.querySelector("#ctx").appendChild(
-        (await (new SieveTemplateLoader()).load("./settings/ui/settings.dialog.tpl"))[0]);
+        await (new SieveTemplateLoader()).load("./settings/ui/settings.dialog.tpl"));
 
       await this.render();
 
@@ -239,7 +239,7 @@
 
         $(this.getDialog()).modal('show')
           .on('hidden.bs.modal', () => {
-            $(this.getDialog()).remove();
+            this.getDialog().parentNode.removeChild(this.getDialog());
             resolve(false);
           })
           .find(".sieve-settings-apply").off().click(async () => {

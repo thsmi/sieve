@@ -45,7 +45,7 @@
      * @inheritdoc
      */
     onSave() {
-      this.reason().value($("#sivRejectReason").val());
+      this.reason().value(document.querySelector("#sivRejectReason").value);
       return true;
     }
 
@@ -53,7 +53,7 @@
      * @inheritdoc
      */
     onLoad() {
-      $("#sivRejectReason").val(this.reason().value());
+      document.querySelector("#sivRejectReason").value = this.reason().value();
     }
 
     /**

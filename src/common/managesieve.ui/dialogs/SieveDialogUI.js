@@ -125,7 +125,7 @@
 
       this.id = this.generateId();
 
-      const dialog = (await (new SieveTemplateLoader()).load(this.getTemplate()))[0];
+      const dialog = await (new SieveTemplateLoader()).load(this.getTemplate());
       dialog.id = this.id;
       document.querySelector("#ctx").appendChild(dialog);
 

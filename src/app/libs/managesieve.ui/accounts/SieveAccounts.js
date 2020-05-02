@@ -33,7 +33,7 @@
       if (!document.querySelector(".siv-accounts-items")) {
 
         document.querySelector(".siv-accounts").append(
-          (await (new SieveTemplateLoader()).load("./accounts/accounts.tpl"))[0]);
+          (await (new SieveTemplateLoader()).load("./accounts/accounts.tpl")));
 
         document.querySelector("#sieve-account-import-file")
           .addEventListener("click", async () => {

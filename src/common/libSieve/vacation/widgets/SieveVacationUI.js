@@ -63,7 +63,7 @@
         text += (text.length ? ", " : "") + $(this).val();
       });
 
-      $('#vacationAddressesDesc').text(text);
+      document.querySelector('#vacationAddressesDesc').textContent = text;
 
       if (text.length)
         $('#vacationAddressesDesc').parent().show();
@@ -79,7 +79,7 @@
       if ($("input[type='radio'][name='subject']:checked").val() === "true")
         $('#vacationSubjectDesc').text($("#sivVacationSubject").val());
       else
-        $('#vacationSubjectDesc').text("Server's default Subject");
+        document.querySelector('#vacationSubjectDesc').textContent("Server's default Subject");
 
     }
 
@@ -111,17 +111,16 @@
       $("#sivVacationSubject").focus(function () { $('input:radio[name="subject"][value="true"]').prop('checked', true); });
       $("#sivVacationHandle").focus(function () { $('input:radio[name="handle"][value="true"]').prop('checked', true); });
 
-      $("#sivVacationReason").val(this.reason().value());
-
+      document.querySelector("#sivVacationReason").value = this.reason().value();
 
       if (this.enable("subject"))
-        $("#sivVacationSubject").val(this.subject().value());
+        document.querySelector("#sivVacationSubject").value = this.subject().value();
 
       if (this.enable("from"))
-        $("#sivVacationFrom").val(this.from().value());
+        document.querySelector("#sivVacationFrom").value = this.from().value();
 
       if (this.enable("handle"))
-        $("#sivVacationHandle").val(this.handle().value());
+        document.querySelector("#sivVacationHandle").value = this.handle().value();
 
 
       const addresses = (new SieveStringListWidget("#sivAddresses"))
@@ -161,24 +160,24 @@
           throw new Error("From contains an invalid mail address");
 
         if (state["subject"])
-          this.subject().value($("#sivVacationSubject").val());
+          this.subject().value(document.querySelector("#sivVacationSubject").value);
 
 
         (new SieveOverlayWidget("action/vacation/interval/", "#sivVacationIntervalOverlay"))
           .save(this.getSieve());
 
         if (state["from"])
-          this.from().value($("#sivVacationFrom").val());
+          this.from().value(document.querySelector("#sivVacationFrom").value);
 
         if (state["handle"])
-          this.handle().value($("#sivVacationHandle").val());
+          this.handle().value(document.querySelector("#sivVacationHandle").value);
 
         if (state["addresses"])
           this.addresses().values(addresses);
 
-        this.reason().value($("#sivVacationReason").val());
-      }
-      catch (ex) {
+        this.reason().value(document.querySelector("#sivVacationReason").value);
+
+      } catch (ex) {
         alert(ex);
         return false;
       }
@@ -258,7 +257,7 @@
 
       $("#cbxVacationIntervalDays").prop("checked", true);
       // FIXME: we ignore the unit here. Instead we should use a numeric control
-      $("#txtVacationIntervalDays").val(elm.getElement("days").getValue());
+      document.querySelector("#txtVacationIntervalDays").value = elm.getElement("days").getValue();
     }
 
     /**
@@ -270,7 +269,7 @@
         return;
 
       sivElement.getElement("interval").setElement(
-        ":days " + $("#txtVacationIntervalDays").val());
+        ":days " + document.querySelector("#txtVacationIntervalDays").value);
     }
 
   }

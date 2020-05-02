@@ -67,7 +67,7 @@
       // Check if the element exists...
       if (!elm) {
 
-        elm = (await (new SieveTemplateLoader()).load("./accounts/SieveScriptUI.tpl"))[0];
+        elm = await (new SieveTemplateLoader()).load("./accounts/SieveScriptUI.tpl");
 
         elm.id = `siv-script-${id}`;
 

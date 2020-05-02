@@ -106,7 +106,7 @@
      */
     onLoad() {
 
-      $("#sivMailboxName").val(this.mailbox());
+      document.querySelector("#sivMailboxName").value = this.mailbox();
 
       (new SieveStringListWidget("#sivMailboxAnnotationsList"))
         .init(this.annotations());
@@ -117,7 +117,7 @@
      */
     onSave() {
 
-      this.mailbox($("#sivMailboxName").val());
+      this.mailbox(document.querySelector("#sivMailboxName").value);
       (new SieveStringListWidget("#sivMailboxAnnotationsList"))
         .save(this.annotations());
 
@@ -205,8 +205,8 @@
      */
     onLoad() {
 
-      $("#sivMailboxName").val(this.mailbox());
-      $("#sivAnnotationName").val(this.annotation());
+      document.querySelector("#sivMailboxName").value = this.mailbox();
+      document.querySelector("#sivAnnotationName").value = this.annotation();
 
       (new SieveStringListWidget("#sivMailboxKeys"))
         .init(this.keys());
@@ -222,9 +222,9 @@
      */
     onSave() {
 
-      this.mailbox($("#sivMailboxName").val());
+      this.mailbox(document.querySelector("#sivMailboxName").value);
 
-      this.annotation($("#sivAnnotationName").val());
+      this.annotation(document.querySelector("#sivAnnotationName").value);
 
       (new SieveStringListWidget("#sivMailboxKeys"))
         .save(this.keys());
@@ -353,7 +353,7 @@
      */
     onLoad() {
 
-      $("#sivAnnotationName").val(this.annotation());
+      document.querySelector("#sivAnnotationName").value = this.annotation();
 
       (new SieveStringListWidget("#sivMailboxKeys"))
         .init(this.keys());
@@ -369,7 +369,7 @@
      */
     onSave() {
 
-      this.annotation($("#sivAnnotationName").val());
+      this.annotation(document.querySelector("#sivAnnotationName").value);
 
       (new SieveStringListWidget("#sivMailboxKeys"))
         .save(this.keys());
@@ -445,7 +445,7 @@
      * @inheritdoc
      */
     save(sivElement) {
-      if ($("#sivMailboxCreateCheckbox")[DOM_ELEMENT].checked)
+      if (document.querySelector("#sivMailboxCreateCheckbox").checked)
         sivElement.enable("create", true);
       else
         sivElement.enable("create", false);

@@ -101,7 +101,7 @@
     load(sivElement) {
 
       $("#txtUniqueId").focus(() => { $('#cbxUniqueId').prop('checked', true); });
-      $("#txtUniqueId").val("");
+      document.querySelector("#txtUniqueId").value = "";
 
       const elm = sivElement.getElement("unique");
 
@@ -109,7 +109,7 @@
         return;
 
       $("#cbxUniqueId").prop("checked", true);
-      $("#txtUniqueId").val(elm.getElement("uniqueid").value());
+      document.querySelector("#txtUniqueId").value = elm.getElement("uniqueid").value();
     }
 
     /**
@@ -126,7 +126,7 @@
         elm.setElement(':uniqueid ""');
       }
 
-      elm.getElement("uniqueid").value($("#txtUniqueId").val());
+      elm.getElement("uniqueid").value(document.querySelector("#txtUniqueId").value);
     }
   }
 
@@ -155,7 +155,7 @@
     load(sivElement) {
 
       $("#txtUniqueHeader").focus(() => { $('#cbxUniqueHeader').prop('checked', true); });
-      $("#txtUniqueHeader").val("");
+      document.querySelector("#txtUniqueHeader").value = "";
 
       const elm = sivElement.getElement("unique");
 
@@ -163,7 +163,7 @@
         return;
 
       $("#cbxUniqueHeader").prop("checked", true);
-      $("#txtUniqueHeader").val(elm.getElement("header").value());
+      document.querySelector("#txtUniqueHeader").value = elm.getElement("header").value();
     }
 
     /**
@@ -181,7 +181,7 @@
       }
 
       elm.getElement("header")
-        .value($("#txtUniqueHeader").val());
+        .value(document.querySelector("#txtUniqueHeader").value);
     }
   }
 
@@ -268,11 +268,10 @@
       $("#sivDuplicateSeconds").focus(function () { $('input:radio[name="sieve-duplicate-seconds"][value="true"]').attr("checked", "checked"); });
 
       if (this.isEnabled("handle"))
-        $("#sivDuplicateHandle").val(this.handle().value());
+        document.querySelector("#sivDuplicateHandle").value = this.handle().value();
 
       if (this.isEnabled("seconds"))
-        $("#sivDuplicateSeconds").val(this.seconds().getValue());
-
+        document.querySelector("#sivDuplicateSeconds").value = this.seconds().getValue();
     }
 
     /**
@@ -290,10 +289,10 @@
 
       try {
         if (state["handle"])
-          this.handle().value($("#sivDuplicateHandle").val());
+          this.handle().value(document.querySelector("#sivDuplicateHandle").value);
 
         if (state["seconds"])
-          this.seconds().setValue($("#sivDuplicateSeconds").val());
+          this.seconds().setValue(document.querySelector("#sivDuplicateSeconds").value);
       }
       catch (ex) {
         alert(ex);

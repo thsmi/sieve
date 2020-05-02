@@ -61,7 +61,7 @@
     async render() {
 
       document.querySelector("#sieve-editor").appendChild(
-        (await (new SieveTemplateLoader()).load("./editor/editor.tpl"))[0]);
+        await (new SieveTemplateLoader()).load("./editor/editor.tpl"));
 
       await this.getTextEditor().render();
       await this.getGraphicalEditor().render();
@@ -140,7 +140,7 @@
      */
     async showErrorMessage(message) {
 
-      const content = (await (new SieveTemplateLoader()).load("./editor/editor.error.save.tpl"))[0];
+      const content = await (new SieveTemplateLoader()).load("./editor/editor.error.save.tpl");
 
       content.querySelector(".sieve-editor-error-msg").textContent = message;
 
@@ -391,7 +391,7 @@
       // this.getGraphicalEditor().renderSettings();
 
       parent.appendChild(
-        (await (new SieveTemplateLoader()).load("./editor/editor.settings.defaults.tpl"))[0]);
+        await (new SieveTemplateLoader()).load("./editor/editor.settings.defaults.tpl"));
 
       document.querySelector("#editor-settings-save-defaults")
         .addEventListener("click", async () => {

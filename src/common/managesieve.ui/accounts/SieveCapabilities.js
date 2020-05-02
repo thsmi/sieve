@@ -30,7 +30,7 @@
     async show(capabilities) {
 
       document.querySelector("#ctx").appendChild(
-        (await (new SieveTemplateLoader()).load("./accounts/account.capabilities.tpl"))[0]);
+        await (new SieveTemplateLoader()).load("./accounts/account.capabilities.tpl"));
 
       $('#sieve-dialog-capabilities').modal('show');
 

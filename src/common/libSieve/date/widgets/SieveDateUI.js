@@ -103,8 +103,8 @@
       super.onLoad(sivElement);
 
       // update the string list...
-      $("#sivDateZoneOffset").val(
-        sivElement.getElement("time-zone").value());
+      document.querySelector("#sivDateZoneOffset").value
+        = sivElement.getElement("time-zone").value();
     }
 
     /**
@@ -120,7 +120,8 @@
           "" + this.getRadioItem().find("input[name='" + this.getName() + "']").val() + ' ""');
       }
 
-      sivElement.getElement("time-zone").value($("#sivDateZoneOffset").val());
+      sivElement.getElement("time-zone").value(
+        document.querySelector("#sivDateZoneOffset").value);
     }
   }
 
@@ -204,7 +205,7 @@
       (new SieveZoneWidget("#sivDateZone"))
         .save(this.zone());
 
-      this.header().value($("#sivDateHeader").val());
+      this.header().value(document.querySelector("#sivDateHeader").value);
 
       (new SieveStringWidget("#sivDateDatepart"))
         .save(this.datepart());
@@ -226,7 +227,7 @@
       (new SieveZoneWidget("#sivDateZone"))
         .init(this.zone());
 
-      $("#sivDateHeader").val(this.header().value());
+      document.querySelector("#sivDateHeader").value = this.header().value();
       (new SieveStringWidget("#sivDateDatepart"))
         .init(this.datepart());
     }

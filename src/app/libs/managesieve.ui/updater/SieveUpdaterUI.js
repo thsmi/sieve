@@ -30,7 +30,7 @@
       if (status !== true)
         return;
 
-      const template = (await (new SieveTemplateLoader()).load("./updater/update.tpl"))[0];
+      const template = await (new SieveTemplateLoader()).load("./updater/update.tpl");
       template.querySelector(".sieve-update-msg").addEventListener("click", () => {
         SieveIpcClient.sendMessage("core", "update-goto-url");
       });

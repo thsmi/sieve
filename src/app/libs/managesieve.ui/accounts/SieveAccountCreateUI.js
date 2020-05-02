@@ -26,34 +26,38 @@
      * Shows the import account dialog.
      */
     async show() {
+
+      const dialog = await (new SieveTemplateLoader())
+        .load("./accounts/account.dialog.create.tpl");
+      document.querySelector("#ctx").appendChild(dialog);
+
       return await new Promise(async (resolve) => {
-        const dialog = await (new SieveTemplateLoader()).load("./accounts/account.dialog.create.tpl");
-        document.querySelector("#container").appendChild(dialog[0]);
 
-        dialog.find(".sieve-create-account-btn").click(async () => {
+        dialog
+          .querySelector(".sieve-create-account-btn")
+          .addEventListener("click", async () => {
 
-          const account = {
-            name : dialog.find(".sieve-create-account-displayname").val(),
-            hostname : dialog.find(".sieve-create-account-hostname").val(),
-            port : dialog.find(".sieve-create-account-port").val(),
-            username : dialog.find(".sieve-create-account-username").val()
-          };
+            const account = {
+              name: dialog.querySelector(".sieve-create-account-displayname").value,
+              hostname: dialog.querySelector(".sieve-create-account-hostname").value,
+              port: dialog.querySelector(".sieve-create-account-port").value,
+              username: dialog.querySelector(".sieve-create-account-username").value
+            };
 
-          // fix me remove modal2 from dom.
-          await SieveIpcClient.sendMessage("core", "account-create", account);
-          dialog.modal('hide');
-          resolve(true);
-        });
+            // fix me remove modal2 from dom.
+            await SieveIpcClient.sendMessage("core", "account-create", account);
+            $(dialog).modal('hide');
+            resolve(true);
+          });
 
-        dialog.modal('show')
+        $(dialog).modal('show')
           .on('hidden.bs.modal', () => {
-            dialog.remove();
+            dialog.parentNode.removeChild(dialog);
             resolve(false);
           });
       });
     }
   }
-
 
   if (typeof (module) !== "undefined" && module !== null && module.exports)
     module.exports = SieveAccountCreateUI;

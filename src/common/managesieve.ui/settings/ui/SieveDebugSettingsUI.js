@@ -61,7 +61,7 @@
         settings.removeChild(settings.firstChild);
 
       settings.appendChild(
-        (await (new SieveTemplateLoader().load("./settings/ui/settings.debug.tpl")))[0]);
+        await (new SieveTemplateLoader().load("./settings/ui/settings.debug.tpl")));
 
       const levels = await this.account.send("account-settings-get-debug");
 
@@ -86,7 +86,7 @@
     async show() {
 
       document.querySelector("#ctx").appendChild(
-        (await (new SieveTemplateLoader()).load("./settings/ui/settings.dialog.tpl"))[0]);
+        await (new SieveTemplateLoader()).load("./settings/ui/settings.dialog.tpl"));
 
       await this.render();
 

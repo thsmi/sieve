@@ -13,8 +13,6 @@
 
   "use strict";
 
-  /* global $ */
-
   const FIRST_ELEMENT = 0;
 
   const DEFAULT_LOCALE = "en-US";
@@ -121,10 +119,10 @@
      */
     async load(locale, path) {
 
-      if (typeof(locale) === "undefined" || locale === null || locale === "default")
+      if (typeof (locale) === "undefined" || locale === null || locale === "default")
         locale = navigator.language;
 
-      if (typeof(path) === "undefined" || path === null)
+      if (typeof (path) === "undefined" || path === null)
         path = DEFAULT_PATH;
 
       if (!path.endsWith("/"))
@@ -159,25 +157,24 @@
      */
     async loadDictionary(dictionary) {
 
-      return await new Promise((resolve, reject) => {
+      let data = null;
 
-        $.ajax(dictionary, { dataType: "text" })
-          .done((data) => {
-            try {
-              this.entities = JSON.parse(data.replace(/^\s+\/\/.*$/gm, ""));
-            }
-            catch (ex) {
-              this.getLogger().logI18n(`Parsing dictionary ${dictionary} failed with error ${ex}`);
-            }
+      try {
+        data = await (await fetch(dictionary, { cache: "no-store" })).text();
+      } catch (ex) {
+        this.getLogger().logI18n(`Failed to load dictionary ${dictionary}`);
+        throw new Error(`Failed to load dictionary ${dictionary}`);
+      }
 
-            this.getLogger().logI18n(`Dictionary ${dictionary} loaded`);
-            resolve(this);
-          })
-          .fail(() => {
-            this.getLogger().logI18n(`Failed to load dictionary ${dictionary}`);
-            reject(new Error(`Failed to load dictionary ${dictionary}`));
-          });
-      });
+      try {
+        this.entities = JSON.parse(data.replace(/^\s+\/\/.*$/gm, ""));
+      } catch (ex) {
+        this.getLogger().logI18n(`Parsing dictionary ${dictionary} failed with error ${ex}`);
+      }
+
+      this.getLogger().logI18n(`Dictionary ${dictionary} loaded`);
+
+      return this;
     }
 
     /**

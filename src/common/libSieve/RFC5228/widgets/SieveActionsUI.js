@@ -95,15 +95,15 @@
      */
     onSave() {
 
-      const address = $("#sivRedirectAddress");
+      const address = document.querySelector("#sivRedirectAddress");
 
-      if (address.get(DOM_ELEMENT).checkValidity() === false)
+      if (address.checkValidity() === false)
         return false;
 
       (new SieveOverlayWidget("action/redirect/", "#sivRedirectOverlay"))
         .save(this.getSieve());
 
-      this.address(address.val());
+      this.address(address.value);
       return true;
     }
 
@@ -111,7 +111,7 @@
      * @inheritdoc
      */
     onLoad() {
-      $("#sivRedirectAddress").val(this.address());
+      document.querySelector("#sivRedirectAddress").value = this.address();
 
       (new SieveOverlayWidget("action/redirect/", "#sivRedirectOverlay"))
         .init(this.getSieve());

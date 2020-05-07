@@ -62,14 +62,14 @@
       if (sivElement.getElement("unique").hasElement())
         return;
 
-      $("#cbxUniqueDefault").prop("checked", true);
+      document.querySelector("#cbxUniqueDefault").checked = true;
     }
 
     /**
      * @inheritdoc
      */
     save(sivElement) {
-      if (!$("#cbxUniqueDefault").prop("checked"))
+      if (!document.querySelector("#cbxUniqueDefault").checked)
         return;
 
       sivElement.getElement("unique").setElement();
@@ -100,7 +100,7 @@
      */
     load(sivElement) {
 
-      $("#txtUniqueId").focus(() => { $('#cbxUniqueId').prop('checked', true); });
+      $("#txtUniqueId").focus(() => { document.querySelector("#cbxUniqueId").checked = true; });
       document.querySelector("#txtUniqueId").value = "";
 
       const elm = sivElement.getElement("unique");
@@ -108,7 +108,7 @@
       if (!elm.isNode(this.constructor.nodeName()))
         return;
 
-      $("#cbxUniqueId").prop("checked", true);
+      document.querySelector("#cbxUniqueId").checked = true;
       document.querySelector("#txtUniqueId").value = elm.getElement("uniqueid").value();
     }
 
@@ -117,7 +117,7 @@
      */
     save(sivElement) {
 
-      if (!$("#cbxUniqueId").prop("checked"))
+      if (!document.querySelector("#cbxUniqueId").checked)
         return;
 
       const elm = sivElement.getElement("unique");
@@ -154,7 +154,7 @@
      */
     load(sivElement) {
 
-      $("#txtUniqueHeader").focus(() => { $('#cbxUniqueHeader').prop('checked', true); });
+      $("#txtUniqueHeader").focus(() => { document.querySelector("#cbxUniqueHeader").checked = true; });
       document.querySelector("#txtUniqueHeader").value = "";
 
       const elm = sivElement.getElement("unique");
@@ -162,7 +162,7 @@
       if (!elm.isNode(this.constructor.nodeName()))
         return;
 
-      $("#cbxUniqueHeader").prop("checked", true);
+      document.querySelector("#cbxUniqueHeader").checked = true;
       document.querySelector("#txtUniqueHeader").value = elm.getElement("header").value();
     }
 
@@ -171,7 +171,7 @@
      */
     save(sivElement) {
 
-      if (!$("#cbxUniqueHeader").prop("checked"))
+      if (!document.querySelector("#cbxUniqueHeader").checked)
         return;
 
       const elm = sivElement.getElement("unique");

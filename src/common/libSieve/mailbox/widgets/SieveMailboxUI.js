@@ -22,7 +22,6 @@
   /* global SieveComparatorWidget */
   /* global SieveOverlayItemWidget */
 
-  const DOM_ELEMENT = 0;
 
   /**
    * Provides a UI for the Mailbox exists test
@@ -84,7 +83,7 @@
      * Gets and sets the mailbox name
      *
      * @param {string} [value]
-     *   the mailbox name, if omitted the name is unchanges.
+     *   the mailbox name, if omitted the name is unchanged.
      *
      * @returns {string}
      *   the mailbox name.
@@ -154,7 +153,7 @@
      * Gets and sets the mailbox name
      *
      * @param {string} [value]
-     *   the mailbox name, if omitted the name is unchanges.
+     *   the mailbox name, if omitted the name is unchanged.
      *
      * @returns {string}
      *   the mailbox name.
@@ -167,7 +166,7 @@
      * Gets and/or sets the annotation name
      *
      * @param {string} [value]
-     *   if set updates the anntotation name.
+     *   if set updates the annotation name.
      *
      * @returns {string}
      *   the currently set annotation name.
@@ -177,6 +176,8 @@
     }
 
     /**
+     * Gets the keys
+     *
      * @returns {SieveAbstractElement}
      *   the element's key fields
      */
@@ -185,6 +186,8 @@
     }
 
     /**
+     * Gets the match type.
+     *
      * @returns {SieveAbstractElement}
      *   the element's matchtype field
      */
@@ -315,7 +318,7 @@
      * Gets and/or sets the annotation name
      *
      * @param {string} [value]
-     *   if set updates the anntotation name.
+     *   if set updates the annotation name.
      *
      * @returns {string}
      *   the currently set annotation name.
@@ -438,7 +441,7 @@
      */
     load(sivElement) {
       if (sivElement.enable("create"))
-        $("#sivMailboxCreateCheckbox").attr("checked", "checked");
+        document.querySelector("#sivMailboxCreateCheckbox").checked = true;
     }
 
     /**

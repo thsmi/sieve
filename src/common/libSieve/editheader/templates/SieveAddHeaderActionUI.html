@@ -1,10 +1,10 @@
 <div>
     <ul id="template-tabs">
         <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-addheader" role="tab">Add Header</a>
+            <a data-i18n="addheader.tab.home" class="nav-link active" data-toggle="tab" href="#sieve-widget-addheader" role="tab"></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+            <a data-i18n="addheader.tab.help" class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab"></a>
         </li>
     </ul>
 
@@ -13,36 +13,26 @@
             <div class="tab-pane fade show active" id="sieve-widget-addheader" role="tabpanel">
 
                 <div class="form-group">
-                    <h5>Create a new header ...</h5>
+                    <h5 data-i18n="addheader.name"></h5>
                     <input type="text" id="sivNewHeaderName" class="form-control form-control-sm col-lg-8" />
-                    <h5>... with a value of ...</h5>
+                    <h5 data-i18n="addheader.value"></h5>
                     <input type="text" id="sivNewHeaderValue" class="form-control form-control-sm col-lg-8" />
-                    <h5>... and add as ...</h5>
+                    <h5 data-i18n="addheader.position"></h5>
 
                     <div class="custom-control custom-radio mr-sm-2">
                         <input type="radio" class="custom-control-input" name="last" value="false" id="sieve-header-first" />
-                        <label class="custom-control-label" for="sieve-header-first">
-                            ... first header
-                        </label>
+                        <label data-i18n="addheader.first" class="custom-control-label" for="sieve-header-first"></label>
                     </div>
 
                     <div class="custom-control custom-radio mr-sm-2">
                         <input type="radio" class="custom-control-input" name="last" value="true" id="sieve-header-last" />
-                        <label class="custom-control-label" for="sieve-header-last">
-                            ... last header
-                        </label>
+                        <label data-i18n="addheader.last" class="custom-control-label" for="sieve-header-last"></label>
                     </div>
                 </div>
             </div>
             <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
-                <p>
-                    Adds a new header to the meassage. The existing message header are untouched. By default, the header field is inserted at
-                    the beginning of the existing message header.
-                </p>
-                <p class="alert alert-info" role="alert">
-                    The header name is by definition a case insensitive 7bit US-ASCII string. Leading and tailing whitespaces are ignored. Headers
-                    with invalid names are silently ignored.
-                </p>
+                <p data-i18n="addheader.help" style="white-space: pre-line"></p>
+                <p data-i18n="addheader.hint" style="white-space: pre-line" class="alert alert-info" role="alert"></p>
             </div>
         </div>
     </div>

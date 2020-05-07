@@ -155,7 +155,7 @@
       // ... then update the fields...
 
       try {
-        if (state["from"] && (!$("#sivVacationFrom")[0].checkValidity()))
+        if (state["from"] && (!document.querySelector("#sivVacationFrom").checkValidity()))
           throw new Error("From contains an invalid mail address");
 
         if (state["subject"])
@@ -247,14 +247,16 @@
      */
     load(sivElement) {
 
-      $("#txtVacationIntervalDays").focus(() => { $('#cbxVacationIntervalDays').prop('checked', true); });
+      $("#txtVacationIntervalDays").focus(() => {
+        document.querySelector('#cbxVacationIntervalDays').checked = true;
+      });
 
       const elm = sivElement.getElement("interval");
 
       if (!elm.isNode(this.constructor.nodeName()))
         return;
 
-      $("#cbxVacationIntervalDays").prop("checked", true);
+      document.querySelector("#cbxVacationIntervalDays").checked = true;
       // FIXME: we ignore the unit here. Instead we should use a numeric control
       document.querySelector("#txtVacationIntervalDays").value = elm.getElement("days").getValue();
     }
@@ -264,7 +266,7 @@
      */
     save(sivElement) {
 
-      if (!$("#cbxVacationIntervalDays").prop("checked"))
+      if (!(document.querySelector("#cbxVacationIntervalDays").checked))
         return;
 
       sivElement.getElement("interval").setElement(
@@ -313,14 +315,14 @@
       if (sivElement.getElement("interval").hasElement())
         return;
 
-      $("#cbxVacationIntervalDefault").prop("checked", true);
+      document.querySelector("#cbxVacationIntervalDefault").checked = true;
     }
 
     /**
      * @inheritdoc
      */
     save(sivElement) {
-      if (!$("#cbxVacationIntervalDefault").prop("checked"))
+      if (!(document.querySelector("#cbxVacationIntervalDefault").checked))
         return;
 
       sivElement.getElement("interval").setElement();

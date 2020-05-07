@@ -48,7 +48,7 @@
         .init(this.getSieve().getElement("limit"));
 
       const elm = this.getSieve().getElement("operator").getCurrentElement();
-      $('input:radio[name="over"][value="' + elm.nodeName() + '"]').prop('checked', true);
+      document.querySelector('input:radio[name="over"][value="' + elm.nodeName() + '"]').checked = true;
     }
 
     /**
@@ -59,7 +59,7 @@
       (new SieveNumericWidget("#sivSizeInput"))
         .save(this.getSieve().getElement("limit"));
 
-      const name = $("input[type='radio'][name='over']:checked").val();
+      const name = document.querySelector("input[type='radio'][name='over']:checked").value;
 
       if (name === "test/size/operator/over")
         this.getSieve().getElement("operator").setCurrentElement(":over");
@@ -106,8 +106,8 @@
      **/
     onSave() {
 
-      const value = $("#sieve-widget-test")
-        .find("input[name='booleanValue']:checked").val();
+      const value = document.querySelector("#sieve-widget-test")
+        .querySelector("input[name='booleanValue']:checked").value;
 
       if (value === "test/boolean/true")
         this.getSieve().setCurrentElement("true");

@@ -333,10 +333,10 @@
       parent.append(
         $("<div/>")
           .addClass("sivSummaryControls")
-          .addClass("material-icons")
-          .append($("<span/>").text("code").click(
+
+          .append($("<span/>").addClass("sivIconCode").click(
             (e) => { this.toggleView(); e.preventDefault(); e.stopPropagation(); return true;}))
-          .append($("<span/>").text("edit").css({"visibility":"hidden"})));
+          .append($("<span/>").addClass("sivIconEdit").css({"visibility":"hidden"})));
 
       return parent;
     }
@@ -423,9 +423,8 @@
       parent.append(
         $("<div/>")
           .addClass("sivSummaryControls")
-          .addClass("material-icons")
-          .append($("<span/>").text("code").click((e) => { this.toggleView(); e.preventDefault(); e.stopPropagation(); return true;}))
-          .append($("<span/>").text("edit"))
+          .append($("<span/>").addClass("sivIconCode").click((e) => { this.toggleView(); e.preventDefault(); e.stopPropagation(); return true;}))
+          .append($("<span/>").addClass("sivIconEdit"))
       );
 
       parent.click((e) => { this.showEditor(); e.preventDefault(); return true; });

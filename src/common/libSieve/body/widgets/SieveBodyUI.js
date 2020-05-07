@@ -151,7 +151,7 @@
       // we can skip this in case the current element is already a content body transform element.
       if (sivElement.getElement().nodeName() !== this.constructor.nodeName()) {
         sivElement.setElement(
-          "" + this.getRadioItem().find("input[name='" + this.getName() + "']").val() + ' ""');
+          "" + this.getRadioItem().querySelector(`input[name='${this.getName()}']`).value + ' ""');
       }
 
       (new SieveStringListWidget("#sivBodyTransformContentType"))
@@ -190,10 +190,10 @@
     }
 
     /**
-     * Gets the body transfrom type.
+     * Gets the body transform type.
      *
      * @returns {SieveAbstractElement}
-     *   the element's bodytransform field
+     *   the element's body transform field
      */
     bodyTransform() {
       return this.getSieve().getElement("body-transform");

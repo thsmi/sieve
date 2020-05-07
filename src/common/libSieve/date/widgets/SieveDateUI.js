@@ -117,7 +117,7 @@
       // we can skip this in case the current element is already a zone element.
       if (!sivElement.getElement().nodeName() !== this.constructor.nodeName()) {
         sivElement.setElement(
-          "" + this.getRadioItem().find("input[name='" + this.getName() + "']").val() + ' ""');
+          "" + this.getRadioItem().querySelector("input[name='" + this.getName() + "']").value + ' ""');
       }
 
       sivElement.getElement("time-zone").value(
@@ -132,6 +132,8 @@
   class SieveDateTestUI extends SieveTestDialogBoxUI {
 
     /**
+     * Gets the header.
+     *
      * @returns {SieveString}
      *   the element's header
      */
@@ -140,6 +142,8 @@
     }
 
     /**
+     * Gets the date part
+     *
      * @returns {SieveString}
      *   the element's datepart
      */
@@ -148,6 +152,8 @@
     }
 
     /**
+     * Gets the keywords
+     *
      * @returns {SieveStringList}
      *   the element's keys
      */
@@ -176,6 +182,8 @@
     }
 
     /**
+     * Gets the time zone.
+     *
      * @returns {SieveAbstractElement}
      *   the element's zone
      */
@@ -249,6 +257,8 @@
   class SieveCurrentDateTestUI extends SieveTestDialogBoxUI {
 
     /**
+     * Gets the keywords.
+     *
      * @returns {SieveStringList}
      *   the element's keys
      */
@@ -257,6 +267,8 @@
     }
 
     /**
+     * Gets the date part.
+     *
      * @returns {SieveString}
      *   the element's datepart
      */
@@ -265,6 +277,8 @@
     }
 
     /**
+     * Gets the match type.
+     *
      * @returns {SieveAbstractElement}
      *   the element's matchtype
      */
@@ -273,6 +287,8 @@
     }
 
     /**
+     * Gets the comparator.
+     *
      * @returns {SieveAbstractElement}
      *   the element's comparator
      */
@@ -281,6 +297,8 @@
     }
 
     /**
+     * Gets the timezone.
+     *
      * @returns {SieveAbstractElement}
      *   the element's zone
      */

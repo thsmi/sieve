@@ -38,10 +38,10 @@
      * Checks if the strings contained in the list are unique.
      *
      * @returns {boolean}
-     *   true in case all strings are unique otherwise flase
+     *   true in case all strings are unique otherwise false
      */
     isUnique() {
-      // We add the values to a set, this guarantees uniquenes
+      // We add the values to a set, this guarantees uniqueness
       // and drops duplicate elements.
       return (new Set(this.values()).size === this.values().length);
     }
@@ -78,7 +78,7 @@
     /**
      * Called when a new item was added.
      *
-     * @param {DomElement} item
+     * @param {HTMLElement} item
      *   the item's dom element
      * @param {string} value
      *   the default value to set
@@ -86,25 +86,47 @@
      */
     onItemAdded(item, value) {
 
-      item.find("input[type=text], input[type=email]").val(value).focus();
+      const target = item.querySelector("input[type=text], input[type=email]");
+      target.value = value;
+      target.focus();
 
       // Connect the delete button
-      item.find(".sieve-stringlist-delete").click(() => {
-        if (this._min >= this.items().length)
-          return;
+      item
+        .querySelector(".sieve-stringlist-delete")
+        .addEventListener("click", () => {
+          if (this._min >= this.items().length)
+            return;
 
-        item.remove();
-      });
+          item.parentNode.removeChild(item);
+        });
 
       // connect the drop down menu...
-      if (this._hasDropDown()) {
-        const elm = $(document.querySelector(this._selector).dataset.listDropdown).children().first().clone();
+      if (!this._hasDropDown())
+        return;
 
-        item.find(".sieve-stringlist-dropdown").removeClass("d-none");
-        item.find(".sieve-stringlist-dropdown").before(elm);
+      // Get the dropdown selector
+      const id = document.querySelector(this._selector).dataset.listDropdown;
 
-        elm.find("button").on("click", (event) => {
-          this.onItemSelected(item, $(event.currentTarget));
+      // Try to load the template, in case it does not exist we fail silently.
+      const template = document.querySelector(id);
+      if (!template)
+        return;
+
+      const elm = template.firstElementChild.cloneNode(true);
+
+      // Show the dropdown button.
+      item
+        .querySelector(".sieve-stringlist-dropdown")
+        .classList.remove("d-none");
+
+      // and connect the cloned menu
+      item
+        .querySelector(".sieve-stringlist-dropdown")
+        .insertAdjacentElement('beforebegin', elm);
+
+      for (const menu of elm.querySelectorAll(".dropdown-item")) {
+        menu.addEventListener("click", () => {
+          this.onItemSelected(item, menu);
         });
       }
     }
@@ -112,25 +134,25 @@
     /**
      * Called when a dropdown item is selected
      *
-     * @param {JQuery} item
+     * @param {HTMLElement} item
      *   the string list widget.
-     * @param {JQuery} menuItem
+     * @param {HTMLElement} menuItem
      *   the menu item which was clicked
      */
     onItemSelected(item, menuItem) {
 
-      if (menuItem.attr("data-value")) {
+      let value = menuItem.textContent;
 
-        item.find("input[type=text], input[type=email]")
-          .val(menuItem.attr("data-value"))
-          .focus();
+      if (menuItem.dataset.value !== undefined)
+        value = menuItem.dataset.value;
 
+      const target = item.querySelector("input[type=text], input[type=email]");
+
+      if (target === null)
         return;
-      }
 
-      item.find("input[type=text], input[type=email]")
-        .val(menuItem.text())
-        .focus();
+      target.value = value;
+      target.focus();
     }
 
     /**
@@ -142,20 +164,22 @@
      * @returns {SieveStringListWidget}
      *   a self reference
      */
-    addItem(value) {
+    async addItem(value) {
 
       if (typeof (value) === "undefined" || value === null)
         value = "";
 
-      const item = $("<div/>");
+      const container = document.createElement("div");
 
-      $(this._selector)
-        .find(".sieve-stringlist-items")
-        .append(item);
+      const item = document.querySelector(`${this._selector} .sieve-stringlist-items`);
+      item.appendChild(container);
 
-      $(item).load("./toolkit/templates/SieveStringListWidget.html #template .string-list-item-template", () => {
-        this.onItemAdded(item, value);
-      });
+      const template = (await (new SieveTemplate())
+        .load("./toolkit/templates/SieveStringListWidget.html"))
+        .querySelector(".string-list-item-template");
+
+      container.appendChild(template);
+      this.onItemAdded(container, value);
 
       return this;
     }
@@ -170,23 +194,32 @@
      */
     init(values) {
 
-      $(this._selector).empty();
+      const elm = document.querySelector(this._selector);
 
-      const items = $("<div/>")
-        .addClass("sieve-stringlist-items");
+      while (elm.firstChild)
+        elm.removeChild(elm.firstChild);
 
-      const controls = $("<div/>")
-        .addClass("sieve-stringlist-control");
+      const items = document.createElement("div");
+      items.classList.add("sieve-stringlist-items");
 
-      $(this._selector)
-        .append(items)
-        .append(controls);
+      const controls = document.createElement("div");
+      controls.classList.add("sieve-stringlist-control");
 
-      $(controls).load("./toolkit/templates/SieveStringListWidget.html #template .sieve-stringlist-add", () => {
-        controls.click(() => { this.addItem(); });
-      });
+      elm.appendChild(items);
+      elm.appendChild(controls);
 
-      this._min = parseInt($(this._selector).attr("data-list-min"), 10);
+
+      (async () => {
+        const template = (await (new SieveTemplate())
+          .load("./toolkit/templates/SieveStringListWidget.html"))
+          .querySelector(".sieve-stringlist-add");
+
+        controls.appendChild(template);
+        controls
+          .addEventListener("click", () => { this.addItem(); });
+      })();
+
+      this._min = parseInt(elm.dataset.listMin, 10);
 
       if (isNaN(this._min))
         this._min = 1;
@@ -395,7 +428,7 @@
      * @param {Function} onInitialized
      *   optional callback invoked when the element is fully initialized
      *
-     * @return {HTMLElement}
+     * @returns {HTMLElement}
      *   a reference to the newly initialized html element.
      */
     async init(sivElement, onInitialized) {
@@ -480,6 +513,7 @@
       const menuElement = $(this.getMenuItem());
       const activeElement = $(this.getActiveItem());
 
+      // TODO clone element instead of html...
       activeElement
         .html(menuElement.html())
         .attr("data-nodename", this.constructor.nodeName())
@@ -725,6 +759,8 @@
   class SieveStringWidget {
 
     /**
+     * Creates a new instance.
+     *
      * @param {string} selector
      *   the selector which identifies where the input dom element
      */
@@ -795,10 +831,12 @@
 
           const somevalue = event.target.value;
 
-          if (event.target.hasAttribute("data-update-element"))
-            $(menuitem).find(event.target.getAttribute("data-update-element")).text(somevalue);
+          if (event.target.dataset.updateElement)
+            menuitem
+              .querySelector(event.target.dataset.updateElement)
+              .textContent = somevalue;
 
-          menuitem.setAttribute("data-value", somevalue);
+          menuitem.dataset.value = somevalue;
         });
 
       });
@@ -848,6 +886,8 @@
   class SieveNumericWidget {
 
     /**
+     * Creates a new instance.
+     *
      * @param {string} selector
      *   the selector which identifies place holder for the input elements
      */
@@ -860,8 +900,6 @@
      *
      * @param {string} unit
      *   either a M,K,G or an empty string
-     *
-     *
      */
     onUnitChanged(unit) {
       $(this._selector).find(".sieve-numeric-unit")
@@ -877,8 +915,6 @@
      *   the initial numeric value to set
      * @param {string} unit
      *   the initial unit to set
-     *
-     *
      */
     onInitialized(value, unit) {
 
@@ -930,9 +966,9 @@
     save(sivElement) {
 
       sivElement.setValue(
-        $(this._selector).find(".sieve-numeric-value").val());
+        document.querySelector(`${this._selector} .sieve-numeric-value`).value);
       sivElement.setUnit(
-        $(this._selector).find(".sieve-numeric-unit").attr("data-value"));
+        document.querySelector(`${this._selector} .sieve-numeric-unit`).dataset.value);
     }
 
   }

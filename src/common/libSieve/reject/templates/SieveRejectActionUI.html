@@ -1,32 +1,28 @@
 <div>
-    <ul id="template-tabs">
-        <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-reject" role="tab">Reject</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
-        </li>
-    </ul>
+  <ul id="template-tabs">
+    <li class="nav-item">
+      <a data-i18n="reject.tab.home" class="nav-link active" data-toggle="tab" href="#sieve-widget-reject"
+        role="tab"></a>
+    </li>
+    <li class="nav-item">
+      <a data-i18n="reject.tab.help" class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab"></a>
+    </li>
+  </ul>
 
-    <div id="template-content">
-        <div class="tab-content m-2">
-            <div class="tab-pane fade show active" id="sieve-widget-reject" role="tabpanel">
+  <div id="template-content">
+    <div class="tab-content m-2">
+      <div class="tab-pane fade show active" id="sieve-widget-reject" role="tabpanel">
 
-                <div class="alert alert-warning" role="alert">
-                    Reject is unsafe and was replaced by the ereject.
-                </div>
+        <div data-i18n="reject.deprecated" class="alert alert-warning" role="alert"></div>
 
-                <div class="form-group">
-                    <label>Reject incoming messages and reply the following reason:</label>
-                    <textarea class="form-control" id="sivRejectReason" rows="7"> </textarea>
-                </div>
-
-            </div>
-            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
-                Reject is replaced by the ereject and should not be used anymore,
-                because it is unsafe. The ereject action is similar to
-                reject, but will always favor protocol-level message rejection.
-            </div>
+        <div class="form-group">
+          <label data-i18n="reject.reject"></label>
+          <textarea class="form-control" id="sivRejectReason" rows="7"> </textarea>
         </div>
+
+      </div>
+      <div data-i18n="reject.help" style="white-space: pre-line" class="tab-pane fade" id="sieve-widget-help"
+        role="tabpanel"></div>
     </div>
+  </div>
 </div>

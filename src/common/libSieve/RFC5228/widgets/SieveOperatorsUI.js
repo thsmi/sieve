@@ -131,8 +131,7 @@
           .attr("id", this.uniqueId + "-summary"))
         .append($("<div/>")
           .addClass("sivSummaryControls")
-          .addClass("material-icons")
-          .append($("<span/>").text("edit"))
+          .append($("<span/>").addClass("sivIconEdit"))
         );
 
       parent.append(item);

@@ -130,24 +130,6 @@ function packageBootstrap(destination) {
 }
 
 /**
- * Copies the material design icons into the build directory.
- *
- * @param {string} destination
- *   where to place the material design sources
- *
- * @returns {Stream}
- *   a stream to be consumed by gulp
- */
-function packageMaterialIcons(destination) {
-  "use strict";
-
-  return src([
-    BASE_DIR_MATERIALICONS + "/material-design-icons.css",
-    BASE_DIR_MATERIALICONS + "/fonts/MaterialIcons-Regular.woff2"
-  ], { base: BASE_DIR_MATERIALICONS }).pipe(dest(destination));
-}
-
-/**
  * Extracts the version from the package.json file
  *
  * @param {string} [file]
@@ -410,7 +392,6 @@ exports["download"] = download;
 exports["packageJQuery"] = packageJQuery;
 exports["packageCodeMirror"] = packageCodeMirror;
 exports["packageBootstrap"] = packageBootstrap;
-exports["packageMaterialIcons"] = packageMaterialIcons;
 
 exports["getPackageVersion"] = getPackageVersion;
 exports["setPackageVersion"] = setPackageVersion;

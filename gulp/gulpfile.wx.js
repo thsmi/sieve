@@ -72,18 +72,6 @@ function packageBootstrap() {
 }
 
 /**
- * Copies the material design icons into the build directory.
- * @returns {Stream}
- *   a stream to be consumed by gulp
- */
-function packageMaterialIcons() {
-  "use strict";
-
-  return common.packageMaterialIcons(
-    `${BUILD_DIR_WX}/libs/material-icons`);
-}
-
-/**
  * Copies the source files into the app/ directory...
  *
  * @returns {Stream}
@@ -169,7 +157,6 @@ exports["updateVersion"] = updateVersion;
 exports["packageJQuery"] = packageJQuery;
 exports["packageCodeMirror"] = packageCodeMirror;
 exports["packageBootstrap"] = packageBootstrap;
-exports["packageMaterialIcons"] = packageMaterialIcons;
 exports["packageLicense"] = packageLicense;
 exports["packageSrc"] = packageSrc;
 exports["packageCommon"] = packageCommon;
@@ -178,7 +165,6 @@ exports['package'] = parallel(
   packageJQuery,
   packageCodeMirror,
   packageBootstrap,
-  packageMaterialIcons,
   packageLicense,
   packageSrc,
   packageCommon

@@ -1,10 +1,11 @@
 <div>
   <ul id="template-tabs">
     <li class="nav-item">
-      <a class="nav-link active" data-toggle="tab" href="#sieve-widget-test" role="tab">Boolean</a>
+      <a data-i18n="boolean.tab.home" class="nav-link active" data-toggle="tab" href="#sieve-widget-test"
+        role="tab"></a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+      <a data-i18n="boolean.tab.help" class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab"></a>
     </li>
   </ul>
 
@@ -13,22 +14,22 @@
       <div class="tab-pane fade show active" id="sieve-widget-test" role="tabpanel">
 
         <div class="form-group">
-          <label>Make this test always </label>
+          <label data-i18n></label>
 
           <div class="custom-control custom-radio">
-            <input type="radio" id="SieveBooleanTrue" name="booleanValue" value="test/boolean/true" class="custom-control-input" />
-            <label class="custom-control-label" for="SieveBooleanTrue">succeed (true)</label>
+            <input type="radio" id="SieveBooleanTrue" name="booleanValue" value="test/boolean/true"
+              class="custom-control-input" />
+            <label data-i18n="boolean.true" class="custom-control-label" for="SieveBooleanTrue"></label>
           </div>
           <div class="custom-control custom-radio">
-            <input type="radio" id="SieveBooleanFalse" name="booleanValue" value="test/boolean/false" class="custom-control-input" />
-            <label class="custom-control-label" for="SieveBooleanFalse">fail (false)</label>
+            <input type="radio" id="SieveBooleanFalse" name="booleanValue" value="test/boolean/false"
+              class="custom-control-input" />
+            <label data-i18n="boolean.false" class="custom-control-label" for="SieveBooleanFalse"></label>
           </div>
         </div>
 
       </div>
-      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
-        <p>The boolean test is of limited practical use.
-          If it is set to true it will always succeed. If set to false it will always fail</p>
+      <div data-i18n="boolean.help" class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
       </div>
     </div>
   </div>

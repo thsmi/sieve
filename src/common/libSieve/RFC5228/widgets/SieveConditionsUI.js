@@ -81,11 +81,10 @@
       super.showSource();
 
       $("#" + this.uniqueId + "-code").append($("<div/>")
-        .addClass("material-icons")
         .addClass("sivSummaryControls")
-        .append($("<span/>").text("code").click(
+        .append($("<span/>").addClass("sivIconCode").click(
           (e) => { this.toggleView(); e.preventDefault(); e.stopPropagation(); return true; }))
-        .append($("<span/>").text("edit").css({ "visibility": "hidden" })));
+        .append($("<span/>").addClass("sivIconEdit").css({ "visibility": "hidden" })));
     }
     /**
      * @inheritdoc
@@ -114,11 +113,10 @@
               .css({"flex":"1 1 auto"})
               .text("IF"))
             .append($("<div/>")
-              .addClass("material-icons")
               .addClass("sivSummaryControls")
-              .append($("<span/>").text("code").click(
+              .append($("<span/>").addClass("sivIconCode").click(
                 (e) => { this.toggleView(); e.preventDefault(); e.stopPropagation(); return true; }))
-              .append($("<span/>").text("edit").css({ "visibility": "hidden" }))));
+              .append($("<span/>").addClass("sivIconEdit").css({ "visibility": "hidden" }))));
 
         } else if (children[i].test)
           elm.append($("<div/>").text("ELSE IF").addClass("sivConditionText"));

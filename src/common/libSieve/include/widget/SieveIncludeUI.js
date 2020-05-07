@@ -178,10 +178,14 @@
      * @inheritdoc
      */
     onLoad() {
-      $('input:radio[name="personal"][value="' + !!this.personal() + '"]').prop('checked', true);
 
-      $('input:checkbox[name="optional"]').prop('checked', !!this.optional());
-      $('input:checkbox[name="once"]').prop('checked', !!this.once());
+      if (this.personal())
+        document.querySelector("#sivIncludePersonal").checked = true;
+      else
+        document.querySelector("#sivIncludeGlobal").checked = true;
+
+      document.querySelector('#sivIncludeOptional').checked = !!this.optional();
+      document.querySelector('#sivIncludeOnce').checked = !!this.once();
 
       document.querySelector("#sivIncludeScriptName").value = this.script();
     }
@@ -199,9 +203,9 @@
 
       this.script(script.value);
 
-      this.personal($("input[type='radio'][name='personal']:checked").val() === "true");
-      this.optional(($("input:checkbox[name='optional']:checked").length > 0));
-      this.once(($("input:checkbox[name='once']:checked").length > 0));
+      this.personal(document.querySelector("#sivIncludePersonal").checked);
+      this.optional(document.querySelector('#sivIncludeOptional').checked);
+      this.once(document.querySelector('#sivIncludeOnce').checked);
 
       return true;
     }

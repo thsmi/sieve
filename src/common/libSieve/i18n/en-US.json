@@ -1,4 +1,11 @@
 {
+  "stringlist.add" : "Add",
+
+  "numeric.nounit" : "No Unit",
+  "numeric.kilobytes" : "Kilobytes",
+  "numeric.megabytes" : "Megabytes",
+  "numeric.gigabytes" : "Gigabytes",
+
   "fileinto.tab.home" : "Fileinto",
   "fileinto.tab.help" : "Help",
 
@@ -23,8 +30,109 @@
 
   "header.header": "Any of the following header ... ",
   "header.keywords": "... any of the keyword(s):",
-  "header.help.text" : "Compares headers against constant strings.\n\nYou typically use this test with headers containing subject line or a spam score.\n\nDo not use this test, if the header should be matched against a mail addresses. The result will be unrealiable, as this test is not aware of display names. Use the address test instead.",
+  "header.help" : "Compares headers against constant strings.\n\nYou typically use this test with headers containing subject line or a spam score.\n\nDo not use this test, if the header should be matched against a mail addresses. The result will be unreliable, as this test is not aware of display names. Use the address test instead.",
 
+  "addheader.tab.home" : "Add Header",
+  "addheader.tab.help" : "Help",
+  "addheader.name" : "Create a new header ...",
+  "addheader.value" : "... with a value of ...",
+  "addheader.position" : "... and add as ...",
+  "addheader.first" : "... first header",
+  "addheader.last" : "... last header",
+  "addheader.help" : "Adds a new header to the message. The existing message header are untouched. By default, the header field is inserted at the beginning of the existing message header.",
+  "addheader.hint" : "The header name is by definition a case insensitive 7bit US-ASCII string. Leading and tailing whitespace are ignored. Headers with invalid names are silently ignored.",
+
+
+  "deleteheader.tab.home" : "Delete Header",
+  "deleteheader.tab.advanced" : "Advanced",
+  "deleteheader.tab.help" : "Help",
+  "deleteheader.position" : "Delete ...",
+  "deleteheader.all" : "... all ...",
+  "deleteheader.first": "... the first",
+  "deleteheader.last": "... the last",
+  "deleteheader.name" : "... header named ...",
+  "deleteheader.value": "... with ...",
+  "deleteheader.any": "... any value",
+  "deleteheader.some": "... one of the following values ...",
+  "deleteheader.some.matchtype": "... which ...",
+  "deleteheader.some.keywords": "... any of the keyword(s):",
+  "deleteheader.help": "By default, the deleteheader action deletes all occurrences of the named header field. The deleteheader action does not affect Sieve's implicit keep",
+  "deleteheader.hint": "The header name is by definition a case insensitive 7bit US-ASCII string. Leading and tailing whitespace are ignored. Headers with invalid names are silently ignored.",
+
+  "mailboxexits.tab.home" : "Mailbox exists",
+  "mailboxexits.tab.help" : "Help",
+  "mailboxexits.folders" : "All of the following mailboxes (folders) exist:",
+  "mailboxexits.help" : "Verifies existence of mailboxes\n\nTests if all mailbox folders listed exist in the mailstore and if delivery is possible. Delivery is possible means the user has access right and the is allowed to read and write the folder.\n\n Note that a successful \"mailboxexists\" test doesn't necessarily mean that a \"fileinto\" action on this mailbox would succeed. For example, the \"fileinto\" action might put user over quota.",
+
+  "metadataexits.tab.home" : "Meta Data exists",
+  "metadataexits.tab.help" : "Help",
+  "metadataexits.folder" : "The mailbox (folder) ...",
+  "metadataexits.annotations" : "... has all of the following annotations:",
+  "metadataexits.help" : "Checks a mailbox for annotations\n\nThe test return true if all of the annotations exist (i.e., have non-NIL values) for the specified mailbox.",
+
+  "metadata.tab.home" : "Meta Data",
+  "metadata.tab.advanced" : "Advanced",
+  "metadata.tab.help" : "Help",
+  "metadata.annotation" : "The annotation ...",
+  "metadata.folder" : "... in mailbox/folder ...",
+  "metadata.matchtype" : "... has a value which ...",
+  "metadata.keys" : "... any of the following keys:",
+  "metadata.help" : "",
+
+  "servermetadataexits.tab.home" : "Server Meta Data exists",
+  "servermetadataexits.tab.help" : "Help",
+  "servermetadataexits.annotations" : "The server has all of the following annotations:",
+  "servermetadataexits.help" : "Checks a mailbox for annotations\n\nThe test is true if all of the server annotations listed in the annotations exist (i.e., have non-NIL values).",
+
+  "servermetadata.tab.home" : "Server Meta Data",
+  "servermetadata.tab.advanced" : "Advanced",
+  "servermetadata.tab.help" : "Help",
+  "servermetadata.annotation" : "The server annotation ... ",
+  "servermetadata.matchtype" : "... has a value which ...",
+  "servermetadata.keys" : "... any of the following keys:",
+  "servermetadata.help" : "",
+
+  "reject.tab.home" : "Reject",
+  "reject.tab.help" : "Help",
+  "reject.deprecated" : "Reject is unsafe and was replaced by the ereject.",
+  "reject.reject" :"Reject incoming messages and reply the following reason:",
+  "reject.help" :"Reject is replaced by the ereject and should not be used anymore, because it is unsafe. The ereject action is similar to reject, but will always favor protocol-level message rejection.",
+
+  "set.tab.home" : "Set",
+  "set.tab.advanced" : "Advanced",
+  "set.tab.help" : "Help",
+  "set.value" : "Store the value ...",
+  "set.variable" : "... into variable",
+  "set.variable.invalid" : "Invalid variable name",
+  "set.modifier": "Modifiers are used to change a variables' value. They are processed in the following order",
+  "set.case": "Modify variable's case",
+  "set.case.text" : "Only plain Latin (A-Z and a-z) are changed, no umlauts or similar characters.",
+  "set.case.upper" : "upper case",
+  "set.case.lower" : "lower case",
+
+  "set.first": "Modify variable's first character",
+  "set.first.text": "Only the first character's case is changed, the rest of the string is unchanged.",
+  "set.first.upper" : "upper case",
+  "set.first.lower" : "lower case",
+
+  "set.help" : "Stores the specified value in the variable identified by name.\n\n The name has to be a constant string and conform to the syntax of variable-name. Variable names are case insensitive.\n\n Modifiers are applied before it is stored in the variable. If more than one modifier is specified, they are applied according to this precedence list:\n\n • Variable's case\n • Variable's first character\n • Escape Wildcards\n • Count characters\n",
+
+  "ereject.tab.home" : "Reject",
+  "ereject.tab.help" : "Help",
+  "ereject.reject" : "Reject incoming messages and reply the following reason:",
+  "ereject.help" : "",
+
+  "string.tab.home" : "String",
+  "string.tab.advanced" : "Advanced",
+  "string.tab.help" : "Help",
+  "string.variables" : "Any of the following strings ...",
+  "string.keywords" : "... any of the keyword(s):",
+  "string.help" : "",
+
+  "validnotifymethod.tab.home" : "Valid notify method",
+  "validnotifymethod.tab.help" : "Help",
+  "validnotifymethod.notifyuris" : "All notify methods are supported...",
+  "validnotifymethod.help" : "",
 
   "redirect.tab.home" : "Redirect",
   "redirect.tab.help" : "Help",
@@ -48,6 +156,38 @@
   "size.help.warning" : "There is only a larger or smaller, no equals. A message with exactly 4000 bytes is neither larger nor smaller than 4000 bytes.",
 
 
+  "envelope.tab.home" : "Envelope",
+  "envelope.tab.advanced" : "Advanced",
+  "envelope.tab.help" : "Help",
+  "envelope.envelopes" : "Any of the following envelope fields ...",
+  "envelope.keywords" : "... any of the keyword(s):",
+  "envelope.help" : "Compares fields against the envelope\n\nThe envelop is equivalent to the mail delivery protocol. So it does not test against a real header. Instead uses trace information from the mail delivery protocol for specific values.\n\nA \"to\" tests the SMTP sender field \"RCPT TO\" a \"from\" the recipient \"MAIL FROM\".\n\nIt is the most reliant way to test from which address a message was send to or received.\n\nCompares headers against constant strings.\n\nYou typically use this test with headers containing subject line or a spam score.\n\nDo not use this test, if the header should be matched against a mail addresses. The result will be unreliable, as this test is not aware of display names. Use the address test instead.",
+
+  "address.tab.home" : "Address",
+  "address.tab.advanced" : "Advanced",
+  "address.tab.help" : "Help",
+
+  "address.headers" : "Any of the following header ...",
+  "address.keywords" : "... any of the keyword(s):",
+
+  "address.help" : "Compares headers against E-Mail addresses.\n\nYou typically use test with headers like \"to\", \"from\", \"cc\" etc.\n\nAs this test is aware of e-mail addresses containing display names. A header containing '\"roadrunner\" <roadrunner@acme.example.com>' is considered to be equivalent to \"'roadrunner@acme.example.com\"\n\nIf the header should be matched against a string use the header test.",
+
+
+  "allofanyof.tab.home": "AllOf/AnyOf",
+  "allofanyof.tab.help": "Help",
+  "allofanyof.label": "Consider the test as successful if ...",
+  "allofanyof.allof": "... all of the tests succeed",
+  "allofanyof.anyof": "... any of the tests succeed",
+  "allofanyof.help" : "",
+
+
+  "boolean.tab.home" :"Boolean",
+  "boolean.tab.help" : "Help",
+  "boolean.label" :"Make this test always",
+  "boolean.true" : "succeed (true)",
+  "boolean.false" : "fail (false)",
+  "boolean.help" : "The boolean test is of limited practical use. If it is set to true it will always succeed. If set to false it will always fail",
+
   "duplicate.tab.home" :"Duplicate",
   "duplicate.tab.advanced" : "Advanced",
   "duplicate.tab.help" : "Help",
@@ -70,11 +210,136 @@
   "duplicate.time.accessed" : "The timestamp of the most recent access",
   "duplicate.help" : "The main application for this test is handling duplicate deliveries commonly caused by mailing list subscriptions or redirected mail addresses.\n\n The detection is normally performed by matching the message ID to an internal list of message IDs from previously delivered messages.\n\n For more complex applications, the \"duplicate\" test can also use the content of a specific header field or other parts of the message.\n\nDuplicate deliveries are a common side effect of being subscribed to a mailing list. For example, if a member of the list decides to reply to both the user and the mailing list itself, the user will often get one copy of the message directly and another through the mailing list.",
 
+
+  "global.tab.home" : "Global",
+  "global.tab.help" : "Help",
+  "global.title" : "Export variables into the global namespace:",
+  "global.help" : "",
+
+
+  "include.tab.home" : "Include",
+  "include.tab.advanced" : "Advanced",
+  "include.tab.help" : "Help",
+
+  "include.name" : "Include script name:",
+  "include.name.placeholder" : "Script name",
+  "include.name.invalid" : "Invalid script name",
+
+  "include.once.label" : "Include at most once",
+  "include.once.text" : "Subsequent include calls to the same script are silently discarded",
+
+  "include.optional.label" : "Script is optional",
+  "include.optional.text" : "By default a include throws an error if the script is not found.\nIn case script flagged as optional and is missing, it will be silently skipped.",
+
+  "include.storage" : "Storage Location",
+  "include.personal.label" : "Personal (default)",
+  "include.personal.text" : "Personal scripts are located in your personal and private Sieve repository.",
+  "include.global.label" : "Global",
+  "include.global.text" : "Global scripts are stored in a site-wide Sieve repository.\nIt is accessible to all users any typically provided and maintained by your administrator.",
+  "include.help" : "",
+
+  "date.tab.home" : "Date",
+  "date.tab.advanced" : "Advanced",
+  "date.tab.help" : "Help",
+  "date.header" : "Has a Header ... ",
+  "date.datepart" : "... where the ...",
+  "date.keywords" : "... any of the keyword(s):",
+  "date.timezone" : "Timezone",
+  "date.comparator" : "Comparator",
+  "date.help" : "The date/time information is extracted from the header, shifted to the specified time zone, and the value of the given date-part is determined.\n\nThe test returns true if the resulting string matches any of the strings specified in the key-list.\n\nThe date test returns false if the specified header field does not exist, the field exists but does not contain a syntactically valid date-time specification, the date-time isn't valid according to the rules of the calendar system (e.g., January 32nd, February 29 in a non-leap year), or the resulting string fails to match any key-list value\n\n Unlike the header and address tests, the date test can only be applied to a single header field at a time. If multiple header fields with the same name are present, only the first field that is found is used.",
+
+
+  "currentdate.tab.home" : "Current Date",
+  "currentdate.tab.advanced" : "Advanced",
+  "currentdate.tab.help" : "Help",
+  "currentdate.datepart" : "The current...",
+  "currentdate.keyword" : "... any of the keyword(s):",
+  "currentdate.timezone" : "Timezone",
+  "currentdate.comparator" : "Comparator",
+  "currentdate.help" : "The currentdate test is similar to the date test, except that it operates on the current date/time rather than a value extracted from the message header.\n\nThe test returns true if the current date matches any of the strings specified in the key-list. It returns false if the resulting string fails to match any key-list value.",
+
+
+  "datepart.year" : "year",
+  "datepart.year.text" : "\"0000\" ... \"9999\"",
+  "datepart.month" : "month",
+  "datepart.month.text" : "\"01\" ... \"12\"",
+  "datepart.day" : "day",
+  "datepart.day.text" : "\"01\" ... \"31\"",
+  "datepart.date" : "date",
+  "datepart.date.text" : "\"yyyy-mm-dd\"",
+  "datepart.hour" : "hour",
+  "datepart.hour.text" : "\"00\" ... \"23\"",
+  "datepart.minute" : "minute",
+  "datepart.minute.text" : "\"00\" ... \"59\"",
+  "datepart.second" : "second",
+  "datepart.second.text" : "\"00\" ... \"60\"",
+  "datepart.time" : "time",
+  "datepart.time.text" : "\"hh:mm:ss\"",
+  "datepart.iso8601" : "iso8601",
+  "datepart.iso8601.text" : "Restricted ISO 8601 Format (RFC3339)",
+  "datepart.std11" : "std11",
+  "datepart.std11.text" : "Internet Message Format (RFC2822)",
+  "datepart.zone" : "zone",
+  "datepart.zone.text" : "Time zone (\"+hhmm\" or \"-hhmm\")",
+  "datepart.weekday" : "weekday",
+  "datepart.weekday.text" : "\"0\" (Sunday) ... \"6\" (Saturday)",
+  "datepart.julian" : "julian",
+  "datepart.julian.text" : "days since 1858-11-17 0:00 UTC",
+
+
+  "zone.original" : "Original zone",
+  "zone.original.text" : "Use the time zone offset from the date-time value.",
+
+
+  "zone.custom" : "Adjust Timezone",
+  "zone.custom.text" : "Shift the zone offset from the date-time value.\n\nOffsets are written in the format ±[hh][mm]. They can range from -1200 to +1400 and represent whole numbers of hours. Few zones are offset by 30 or 45 minutes like e.g. −0330 or +0545",
+
+
+  "convert.tab.home" : "Convert",
+  "convert.tab.help" : "Help",
+  "convert.from" : "Convert the media type",
+  "convert.to" : "... into ...",
+  "convert.transcode" : "... and apply the following transcodings",
+  "convert.transcode.text" : "Transcodings are defined in RFC5259 and used to change properties during conversion.  Examples are rescale an images or change the encoding encoding of a text.",
+  "convert.help" : "Converts the whole message or their part into the a new media type. It is typically used to convert text documents and images as described in RFC5259.\n\nTheoretically it would be possible to convert everything into anything (e.g. an audio file into text). But in reality your server will support only a very limited subset of conversions. Keep in mind conversion may require lots of resources and processing time e.g. when rescaling images or creating pdfs.\n\nIn case the conversion fails the message remains unchanged. If this method is used inside a test. The test will performing the conversion and evaluate if the conversion succeeded or failed.",
+
+
+  "body.tab.home" : "Body",
+  "body.tab.advanced" : "Advanced",
+  "body.tab.help" : "Help",
+  "body.matchtypes" : "The email's message body...",
+  "body.keylist" : "... any of the keyword(s):",
+  "body.comparator" : "Comparator",
+  "body.transform" : "Match against...",
+  "body.help" : "The body test matches content in the body of an email message, that is, anything following the first empty line after the header. (The empty line itself, if present, is not considered to be part of the body.",
+
+
   "addflag.tab.home" : "Add Flag",
   "addflag.tab.help" : "Help",
   "addflag.flags.title" : "Add the following IMAP Flags ...",
   "addflag.flags.text" : "It doesn't replace any previously set flags. This means that multiple occurrences of addflag are treated additively.",
   "addflag.help" : "Add flags to a message. It doesn't replace any previously set flags. This means that multiple occurrences of addflag are treated additively.\n\nMessage labels are called flags in the IMAP specification and are divided into two types: system flags and user-defined flags.\n\nSystem flags are defined in the IMAP Specification. They start with a leading backslash (\\). The current the following six system flags \\Seen, \\Answered, \\Flagged, \\Deleted, \\Draft, \\Recent are defined.\n\nUser-defined flags are also known as IMAP keywords and, as the name implies, are defined by IMAP users. There is a de facto standard that keywords which are in common use have names that begin with a dollar sign ($).\n\nExamples of common keywords are: $Label1, $Label2, $Label3, $Label4, $Label5. These keywords are typically hardwired to Important, Work, Personal, To Do and Later.\n\nIf you define your own personal keyword, its name should not begin with dollar sign ($) or backslash (\\) because otherwise it might collide with a flag that is used by current or future IMAP clients and servers",
+
+
+  "spamtest.tab.home" : "Spamtest",
+  "spamtest.tab.advanced" : "Advanced",
+  "spamtest.tab.help" : "Help",
+  "spamtest.spamscore" : "The spam score...",
+  "spamtest.help" : "",
+
+  "spamtest.absolute.label": "... absolute value ...",
+  "spamtest.absolute.text": "By default sieve uses a spam score ranging from zero to ten describing the likelihood to be spam. Where zero means untested, one clear of spam and ten definitive spam.",
+  "spamtest.absolute.nottested" : "Message was not tested for spam",
+  "spamtest.absolute.nospam" : "Message is clear of spam",
+  "spamtest.absolute.likelyspan" : "Message's spam likelihood",
+  "spamtest.absolute.spam" : "Message definitely contains spam",
+
+  "spamtest.percent.label" : "... percentual value ...",
+  "spamtest.percent.text" : "The spam score can also be a likelihood ranging from zero to 100. Where zero means no spam or untested and 100 definitive spam",
+  "spamtest.percent.nospam" : "Message was not tested for spam or is clear of spam",
+  "spamtest.percent.likelyspan" : "Message's spam likelihood in percent",
+  "spamtest.percent.spam" : "Message definitely contains spam",
+
 
   "hasflag.tab.home" : "Has Flag",
   "hasflag.tab.advanced" : "Advanced",
@@ -153,5 +418,90 @@
   "modifier.length.text" : "Variables are expanded before determining the number of characters.",
 
   "modifier.quotewildcard.title" : "Escape Wildcards",
-  "modifier.quotewildcard.text" : "Ensures that the expanded text will only match a literal occurrence if used as a parameter to :matches. Every character with special meaning (\"*\", \"?\", and \"\\\") is prefixed with \"\\\" in the expansion."
+  "modifier.quotewildcard.text" : "Ensures that the expanded text will only match a literal occurrence if used as a parameter to :matches. Every character with special meaning (\"*\", \"?\", and \"\\\") is prefixed with \"\\\" in the expansion.",
+
+  "modifier.encodeurl.title" : "Url Encode" ,
+  "modifier.encodeurl.text" : " Url encodes the variable. This means it performs percent-encoding of any octet in the string that doesn't belong to the \"unreserved\" set (see [URI])." ,
+
+  "addresspart.all.title" : "... an email address with ...",
+  "addresspart.all.text" : "An email address consists of a domain an a local part split by the \"@\" sign.\nThe local part is case sensitive while the domain part is not.",
+
+  "addresspart.domain.title" : "... a domain part with ...",
+  "addresspart.domain.text" : "Everything after the @ sign. The domain part is not case sensitive.\ne.g.: \"me@example.com\" is stripped to \"example.com\"",
+
+  "addresspart.local.title" : "... a local part with ...",
+  "addresspart.local.text" : "Everything before the @ sign. The local part is case sensitive.\ne.g.: \"me@example.com\" is stripped to \"me\"",
+
+  "addresspart.user.title" : "... a user sub-part with ...",
+  "addresspart.user.text" : "Everything before the + sign or between the -- sequence and the @sign.\nThe localpart part is case sensitive.\ne.g.: \"user+detail@example.com\" or \"detail--user@example.com\" is stripped to \"user\"",
+
+  "addresspart.detail.title" : "... a detail sub-part with ...",
+  "addresspart.detail.text" : "Everything between the + sign and the @ sign, or before a -- sequence.\nThe localpart part is case sensitive.\ne.g.: \"user+detail@example.com\" or \"detail--user@example.com\" is stripped to \"detail\"",
+
+  "comparator.asciicasemap.title" : "Case insensitive (default)",
+  "comparator.asciicasemap.text" : "Treats uppercase and lowercase ASCII characters as the same.\nAll non ASCII characters are compared byte by byte.",
+
+  "comparator.asciinumeric.title" : "Numeric",
+  "comparator.asciinumeric.text" : "Converts the string to an integer and does a numeric compare.",
+
+  "comparator.octet.title" : "Case sensitive",
+  "comparator.octet.text" : "Compares the string byte by byte.",
+
+  "interval.days.label.pre": "Reply at most every",
+  "interval.days.label.post": "days",
+
+  "interval.default.label":"Use Server's default policy",
+
+  "interval.seconds.label.pre":"Reply at most every",
+  "interval.seconds.label.post":"seconds",
+
+  "virustest.tab.home" : "Virustest",
+  "virustest.tab.advanced" : "Advanced",
+  "virustest.tab.help" : "Help",
+  "virustest.title" : "The virus scan result...",
+  "virustest.nottested" : "Message was not tested for viruses",
+  "virustest.notinfected" : "Message was tested and contains no known viruses",
+  "virustest.sanitized" : "Message contained a known virus that was replaced with harmless content",
+  "virustest.cured" : "Message contained a known virus that was \"cured\" such that it is now harmless",
+  "virustest.likelyinfected" : "Message possibly contains a known virus",
+  "virustest.infected" : "Message was tested and definitely contains a known virus",
+  "virustest.help" : "The \"virustest\" test evaluates to true if the normalized result string matches the value.\n\nThe normalized result string starts with a numeric value in the range \"0\" (zero) through \"5\", with meanings summarized below:",
+
+  "vacation.tab.home" : "Vacation",
+  "vacation.tab.envelope" : "Envelope",
+  "vacation.tab.advanced" : "Advanced",
+  "vacation.tab.help" : "Help",
+
+  "vacation.envelope.subject" : "Subject:",
+  "vacation.envelope.from" : "From:",
+  "vacation.envelope.addresses" : "Addresses:",
+  "vacation.envelope.text" : "Enter your message",
+
+  "vacation.subject" : "Subject",
+  "vacation.subject.text" : "The subject is used for any vacation response",
+  "vacation.subject.default" : "Server's default Subject",
+  "vacation.subject.custom" : "Custom Subject",
+
+  "vacation.from" : "From",
+  "vacation.from.text" : "Used to specify an alternate From address.",
+  "vacation.from.default" : "Address of the sieve script owner",
+  "vacation.from.custom" : "Custom From Address",
+
+  "vacation.addresses" : "Addresses",
+  "vacation.addresses.text" : "By default a response message is only send, if it was addressed to the recipient user or sieve script owner.\n\nYou can supply additional mail addresses. For Example if mails are forwarded or you have multiple aliases for a single mail address",
+
+  "vacation.contenttype" : "Message Content Type",
+  "vacation.contenttype.text" : "Instead of plaintext, the message can be a specified as a MIME Message",
+  "vacation.contenttype.default" : "Is plaintext Message (Default)",
+  "vacation.contenttype.mime" : "Is MIME Message",
+
+  "vacation.tracking" : "Response Tracking",
+  "vacation.tracking.text" : "A vacation message is sent at most every some days to the same sender",
+
+  "vacation.response" : "Response Handles",
+  "vacation.response.text" : "The response tracking considers all vacation statements that use the same handle as the same response\n\nThe default handle considers subject, from, mime as well as the message. A custom handle can be any unique strings",
+  "vacation.response.default" : "Use default handle",
+  "vacation.response.custom" : "Custom Handle",
+
+  "vacation.help" : "The \"vacation\" action implements a vacation autoresponder similar to the vacation command available under many versions of Unix. Its purpose is to provide correspondents with notification that the user is away for an extended period of time and that they should not expect quick responses.\n\n\"Vacation\" is used to respond to a message with another message. Vacation's messages are always addressed to the Return-Path address (that is, the envelope from address) of the message being responded to."
 }

@@ -1,16 +1,16 @@
 <div>
     <ul id="template-tabs">
         <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-vacation" role="tab">Vacation</a>
+            <a data-i18n="vacation.tab.home" class="nav-link active" data-toggle="tab" href="#sieve-widget-vacation" role="tab"></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#sieve-widget-envelope" role="tab">Envelope</a>
+            <a data-i18n="vacation.tab.envelope" class="nav-link" data-toggle="tab" href="#sieve-widget-envelope" role="tab"></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+            <a data-i18n="vacation.tab.advanced" class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab"></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+            <a data-i18n="vacation.tab.help" class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab"></a>
         </li>
     </ul>
 
@@ -33,53 +33,53 @@
                 <div>
                     <!-- Envelope Controls -->
                     <div id="vacationEnvelopeEdit">
-                        <div>Subject:
+                        <div>
+                            <span data-i18n="vacation.envelope.subject"></span>
                             <span id="vacationSubjectDesc" style="color: rgba(0,0,0,0.53);"> </span>
                         </div>
-                        <div>From:
-                            <span id="vacationFromDesc" style="color: rgba(0,0,0,0.53);"> </span>
+                        <div>
+                          <span data-i18n="vacation.envelope.from"></span>
+                          <span id="vacationFromDesc" style="color: rgba(0,0,0,0.53);"> </span>
                         </div>
-                        <div>Addresses:
-                            <span id="vacationAddressesDesc" style="color: rgba(0,0,0,0.53);">...</span>
+                        <div>
+                          <span data-i18n="vacation.envelope.addresses"></span>
+                          <span id="vacationAddressesDesc" style="color: rgba(0,0,0,0.53);">...</span>
                         </div>
                     </div>
                     <br/>
                     <!-- Reason textarea -->
-                    <textarea class="form-control" rows="10" id="sivVacationReason" placeholder="Enter your message"> </textarea>
+                    <textarea data-i18n="vacation.envelope.text" class="form-control" rows="10" id="sivVacationReason"> </textarea>
 
                 </div>
             </div>
 
             <div class="tab-pane fade" id="sieve-widget-envelope" role="tabpanel">
-                <h5>Subject</h5>
-                <small class="text-muted">The subject is used for any vacation response</small>
+                <h5 data-i18n="vacation.subject"></h5>
+                <small data-i18n="vacation.subject.text" class="text-muted"></small>
                 <div>
-                    <input type="radio" name="subject" value="false" /> Server's default Subject
+                    <input type="radio" name="subject" value="false" />
+                    <span data-i18n="vacation.subject.default"></span>
                 </div>
                 <div>
                     <input type="radio" name="subject" value="true" />
-                    <input type="text" class="form-control" id="sivVacationSubject" placeholder="Custom Subject" />
+                    <input data-i18n="vacation.subject.custom" type="text" class="form-control" id="sivVacationSubject"/>
                 </div>
 
                 <br/>
-                <h5>From</h5>
-                <small class="text-muted">Used to specify an alternate From address.</small>
+                <h5 data-i18n="vacation.from"></h5>
+                <small data-i18n="vacation.from.text" class="text-muted"></small>
                 <div>
                     <input type="radio" name="from" value="false" />
-                    <span>Address of the sieve script owner</span>
+                    <span data-i18n="vacation.from.default"></span>
                 </div>
                 <div>
                     <input type="radio" name="from" value="true" />
-                    <input type="email" class="form-control" id="sivVacationFrom" placeholder="Custom From Address" />
+                    <input data-i18n="vacation.from.custom" type="email" class="form-control" id="sivVacationFrom" />
                 </div>
                 <br/>
-                <h5>Addresses</h5>
+                <h5 data-i18n="vacation.addresses"></h5>
                 <div>
-                    <small  class="form-text text-muted">
-                        By default a response message is only send, if it was addressed to the recipient user or sieve script owner.
-                        <br/> You can supply additional mail addresses. For Example if mails are forwarded or you have multiple
-                        aliases for a single mail address
-                    </small>
+                    <small data-i18n="vacation.addresses.text" style="white-space: pre-line" class="form-text text-muted"></small>
                 </div>
 
                 <div id="sivAddresses" data-list-min="0">
@@ -88,49 +88,37 @@
 
             <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
 
-                <h5>Message Content Type</h5>
-                <small class="text-muted">Instead of plaintext, the message can be a specified as a MIME Message</small>
+                <h5 data-i18n="vacation.contenttype"></h5>
+                <small data-i18n="vacation.contenttype.text" class="text-muted"></small>
                 <div>
                     <input type="radio" name="mime" value="false" />
-                    <span>Is plaintext Message (Default)</span>
+                    <span data-i18n="vacation.contenttype.default"></span>
                 </div>
                 <div>
                     <input type="radio" name="mime" value="true" />
-                    <span>Is MIME Message</span>
+                    <span data-i18n="vacation.contenttype.mime"></span>
                 </div>
                 <br/>
-                <h5> Response Tracking</h5>
-                <small class="text-muted">A vacation message is sent at most every some days to the same sender</small>
+                <h5 data-i18n="vacation.tracking"></h5>
+                <small data-i18n="vacation.tracking.text" class="text-muted"></small>
                 <form>
                    <div id="sivVacationIntervalOverlay"> </div>
                 </form>
                 <br/>
-                <h5> Response Handles</h5>
-                <small class="text-muted">
-                    The response tracking considers all vacation statements that use the same handle as the same response
-                    <br/> The default handle considers subject, from, mime as well as the message. A custom handle can be any
-                    unique strings
-                </small>
+                <h5 data-i18n="vacation.response"></h5>
+                <small data-i18n="vacation.response.text" style="white-space: pre-line" class="text-muted"></small>
                 <div>
                     <input type="radio" name="handle" value="false" />
-                    <span>Use default handle</span>
+                    <span data-i18n="vacation.response.default"></span>
                 </div>
                 <div>
                     <input type="radio" name="handle" value="true" />
-                    <input type="text" id="sivVacationHandle" placeholder="Custom Handle" />
+                    <input data-i18n="vacation.response.custom" type="text" id="sivVacationHandle"/>
                 </div>
             </div>
 
             <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
-                <p>
-                    The "vacation" action implements a vacation autoresponder similar to the vacation command available under many versions of
-                    Unix. Its purpose is to provide correspondents with notification that the user is away for an extended
-                    period of time and that they should not expect quick responses.
-                </p>
-                <p>
-                    "Vacation" is used to respond to a message with another message. Vacation's messages are always addressed to the Return-Path
-                    address (that is, the envelope from address) of the message being responded to.
-                </p>
+                <p data-i18n="vacation.help" style="white-space: pre-line"></p>
             </div>
         </div>
     </div>

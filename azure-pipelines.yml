@@ -10,15 +10,18 @@ jobs:
     vmImage: 'ubuntu-latest'
   steps:
   - script: echo hello from Linux
+  - script: yarn install
 
 - job: macOS
   pool:
     vmImage: 'macOS-latest'
   steps:
   - script: echo hello from macOS
+  - script: yarn install
 
 - job: Windows
   pool:
     vmImage: 'windows-latest'
   steps:
   - script: echo hello from Windows
+  - script: yarn install

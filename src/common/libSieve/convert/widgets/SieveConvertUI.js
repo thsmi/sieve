@@ -94,7 +94,8 @@
         .append($("<span/>").text("Convert "))
         .append($("<em/>").text(this.from().value()))
         .append($("<span/>").text(" to "))
-        .append($("<em/>").text(this.to().value()));
+        .append($("<em/>").text(this.to().value()))
+        .get(0);
     }
   }
 
@@ -172,7 +173,8 @@
         .append($("<span/>").text("Convert "))
         .append($("<em/>").text(this.from().value()))
         .append($("<span/>").text(" to "))
-        .append($("<em/>").text(this.to().value()));
+        .append($("<em/>").text(this.to().value()))
+        .get(0);
     }
   }
 

@@ -90,6 +90,19 @@
     }
 
     /**
+     * Load a template from a string.
+     *
+     * @param {string} html
+     *   the template to be transformed
+     * @returns {HTMLElement}
+     *   the html element
+     */
+    convert(html) {
+      const doc = (new DOMParser()).parseFromString(html, "text/html");
+      return this.translate(doc.body.firstElementChild);
+    }
+
+    /**
      * Loads an html fragment from file or url
      *
      * @param {string} tpl
@@ -98,14 +111,10 @@
      *   the template which should be loaded.
      */
     async load(tpl) {
-
       this.getLogger().logWidget(`Load template ${tpl}`);
 
-      const html = await (await fetch(tpl, { cache: "no-store" })).text();
-
-      const doc = (new DOMParser()).parseFromString(html, "text/html");
-
-      return this.translate(doc.body.firstElementChild);
+      return this.convert(
+        await (await fetch(tpl, { cache: "no-store" })).text() );
     }
   }
 

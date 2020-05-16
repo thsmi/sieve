@@ -23,6 +23,7 @@
   /* global SieveAddressPartWidget */
   /* global SieveComparatorWidget */
   /* global SieveNumericWidget */
+  /* global SieveTemplate */
 
   // testunary .append() -> testunary in anyof wrapen  SieveTestUI einführen...
   // testmultary.append -> an entsprechender stelle einfügen SieveTestListUI...
@@ -84,7 +85,7 @@
 
       return $("<div/>")
         .text("message is " + operator
-          + " than " + this.getSieve().getElement("limit").toScript() + " bytes");
+          + " than " + this.getSieve().getElement("limit").toScript() + " bytes").get(0);
     }
   }
 
@@ -134,13 +135,24 @@
      */
     getSummary() {
 
+      const FRAGMENT =
+        `<div>
+          <span data-i18n="boolean.summary.true" class="sivBooleanTrue d-none"></span>
+          <span data-i18n="boolean.summary.false" class="sivBooleanFalse d-none"></span>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+
       const name = this.getSieve().getCurrentElement().nodeName();
+      if (name === "test/boolean/true") {
+        elm.querySelector(".sivBooleanTrue").classList.remove("d-none");
+        return elm;
+      }
 
-      if (name === "test/boolean/true")
-        return $("<div/>").text("is true");
-
-      if (name === "test/boolean/false")
-        return $("<div/>").text("is false");
+      if (name === "test/boolean/false") {
+        elm.querySelector(".sivBooleanFalse").classList.remove("d-none");
+        return elm;
+      }
 
       throw new Error("Invalid State boolean is neither true nor false");
     }
@@ -190,7 +202,7 @@
     getSummary() {
       return $("<div/>")
         .html("the following header(s) exist:"
-          + "<em>" + $('<div/>').text(this.headers().toScript()).html() + "</em>");
+          + "<em>" + $('<div/>').text(this.headers().toScript()).html() + "</em>").get(0);
     }
   }
 
@@ -277,7 +289,7 @@
       return $("<div/>")
         .html(" header " + $('<em/>').text(this.headers().values()).html()
           + " " + this.matchtype().getElement().toScript() + " "
-          + $('<em/>').text(this.keys().values()).html());
+          + $('<em/>').text(this.keys().values()).html()).get(0);
     }
   }
 
@@ -379,7 +391,7 @@
         .html(" address <em>" + $('<div/>').text(this.headers().toScript()).html() + "</em>"
           + " " + this.matchtype().getElement().toScript()
           + " " + ((this.addresspart().getElement().toScript() !== ":all") ? this.addresspart().getElement().toScript() : "")
-          + " <em>" + $('<div/>').text(this.keys().toScript()).html() + "</em>");
+          + " <em>" + $('<div/>').text(this.keys().toScript()).html() + "</em>").get(0);
     }
   }
 
@@ -477,7 +489,7 @@
         .html(" envelope " + $('<em/>').text(this.envelopes().toScript()).html()
           + " " + this.matchtype().getElement().toScript()
           + " " + ((this.addresspart().getElement().toScript() !== ":all") ? this.addresspart().toScript() : "")
-          + " " + $('<em/>').text(this.keys().toScript()).html() + "");
+          + " " + $('<em/>').text(this.keys().toScript()).html() + "").get(0);
     }
   }
 

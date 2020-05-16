@@ -32,7 +32,10 @@
      * @inheritdoc
      */
     createHtml(parent) {
-      return parent.append(this.getSieve().elms[FIRST_ELEMENT].html());
+      parent.appendChild(
+        this.getSieve().elms[FIRST_ELEMENT].html());
+
+      return parent;
     }
   }
 
@@ -43,14 +46,30 @@
    */
   class SieveBlockUI extends SieveAbstractBoxUI {
 
+    // TODO is this really needed to wrap the item?
     /**
-     * Initializes the Block element.
-     * @returns {jQuery}
-     *   the newly create Element
+     * Wraps the given child item in to a block.
+     * @private
+     *
+     * @param {HTMLElement} item
+     *   the item to be wrapped
+     * @returns {HTMLElement}
+     *   the ui element
      */
-    init() {
-      const elm = $("<div/>")
-        .addClass("sivBlock");
+    createBlockChild(item) {
+      const child = document.createElement('div');
+      child.appendChild(item);
+      child.classList.add("sivBlockChild");
+
+      return child;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    createHtml(parent) {
+      const elm = document.createElement("div");
+      elm.classList.add("sivBlock");
 
       for (const sivElm of this.getSieve().elms) {
         const item = sivElm.html();
@@ -58,29 +77,18 @@
         if (!item)
           continue;
 
-        elm
-          .append((new SieveDropBoxUI(this))
-            .drop(new SieveBlockDropHandler(), sivElm)
-            .html()
-            .addClass("sivBlockSpacer"))
-          .append(
-            $("<div/>").append(item)
-              .addClass("sivBlockChild"));
+        elm.appendChild((new SieveDropBoxUI(this, "sivBlockSpacer"))
+          .drop(new SieveBlockDropHandler(), sivElm)
+          .html());
+        elm.appendChild(this.createBlockChild(item));
       }
 
-      elm.append((new SieveDropBoxUI(this))
+      elm.appendChild((new SieveDropBoxUI(this, "sivBlockSpacer"))
         .drop(new SieveBlockDropHandler())
-        .html()
-        .addClass("sivBlockSpacer"));
+        .html());
 
-      return elm;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    createHtml(parent) {
-      return parent.append(this.init());
+      parent.appendChild(elm);
+      return parent;
     }
   }
 

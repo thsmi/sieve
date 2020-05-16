@@ -15,6 +15,7 @@
   "use strict";
 
   /* global SieveDataTransfer */
+  /* global $ */
 
   const DOM_ELEMENT = 0;
 
@@ -85,11 +86,11 @@
 
     /**
      *
-     * @param {*} html
+     * @param {HTMLElement} html
      */
     attach(html) {
 
-      html
+      $(html)
         .bind("drop", (e) => { return this.onDragDrop(e); })
         .bind("dragover", (e) => { return this.onDragOver(e); })
         .bind("dragleave", (e) => { return this.onDragExit(e); })
@@ -103,14 +104,15 @@
       if (!this.canDrop(event))
         return true;
 
-      this.owner().html().attr("sivDragging", "true");
+      this.owner().html().dataset.sieveDragging = true;
 
       return false;
     }
 
+    // eslint-disable-next-line no-unused-vars
     onDragExit(event) {
 
-      this.owner().html().removeAttr("sivDragging");
+      delete (this.owner().html().dataset.sieveDragging);
 
       // Exit is only used for UI cleanup, so we should never cancel this event.
       // Our parent might want to do cleanup too.
@@ -122,14 +124,14 @@
       if (!this.canDrop(event))
         return true;
 
-      this.owner().html().attr("sivDragging", "true");
+      this.owner().html().dataset.sieveDragging = true;
 
       return false;
     }
 
     onDragDrop(event) {
 
-      this.owner().html().removeAttr("sivDragging");
+      delete (this.owner().html().dataset.sieveDragging);
 
       if (!this.drop(event))
         return true;
@@ -213,6 +215,7 @@
      * @param {*} type
      * @returns {boolean}
      */
+    // eslint-disable-next-line no-unused-vars
     canCreateElement(sivFlavour, type) {
       return false;
     }
@@ -220,16 +223,21 @@
     /**
      *
      * @param {*} sivFlavour
-     * @param {*} id
+     * @param {string} id
      * @returns {boolean}
      */
+    // eslint-disable-next-line no-unused-vars
     canMoveElement(sivFlavour, id) {
       return false;
     }
 
+    /**
+     *
+     * @param {*} event
+     */
     canDrop(event) {
-      for (let i = 0; i < this.flavours().length; i++) {
-        if (!this.onCanDrop(this.flavours()[i], event))
+      for (const flavour of this.flavours()) {
+        if (!this.onCanDrop(flavour, event))
           continue;
 
         event.preventDefault();
@@ -263,10 +271,10 @@
     canMoveElement(sivFlavour, id) {
       const source = this.document().id(id);
 
-      if (source.html().parent().prev().get(DOM_ELEMENT) == this.owner().html().get(DOM_ELEMENT))
+      if ($(source.html()).parent().prev().get(DOM_ELEMENT) == this.owner().html())
         return false;
 
-      if (source.html().parent().next().get(DOM_ELEMENT) == this.owner().html().get(DOM_ELEMENT))
+      if ($(source.html()).parent().next().get(DOM_ELEMENT) == this.owner().html())
         return false;
 
       return true;
@@ -345,6 +353,7 @@
     /**
      * @inheritdoc
      */
+    // eslint-disable-next-line no-unused-vars
     canCreateElement(sivFlavour, type) {
       if (sivFlavour === "sieve/operator")
         return false;
@@ -352,6 +361,11 @@
       return true;
     }
 
+    /**
+     *
+     * @param {*} sivFlavour
+     * @param {*} type
+     */
     createElement(sivFlavour, type) {
 
       const item = this.parent().getSieve();
@@ -395,10 +409,16 @@
     /**
      * @inheritdoc
      */
+    // eslint-disable-next-line no-unused-vars
     canMoveElement(sivFlavour, id) {
       return true;
     }
 
+    /**
+     *
+     * @param {*} sivFlavour
+     * @param {*} id
+     */
     moveElement(sivFlavour, id) {
 
       let item = this.document().id(id);
@@ -458,10 +478,10 @@
 
         // if it's a conditional statement it's parent does not have a test method
         if (!source.parent().test) {
-          if (source.html().parent().prev().prev().get(DOM_ELEMENT) === this.owner().html().get(DOM_ELEMENT))
+          if ($(source.html()).parent().prev().prev().get(DOM_ELEMENT) === this.owner().html())
             return false;
 
-          if (source.html().parent().next().get(DOM_ELEMENT) === this.owner().html().get(DOM_ELEMENT))
+          if ($(source.html()).parent().next().get(DOM_ELEMENT) === this.owner().html())
             return false;
         }
       }
@@ -542,6 +562,7 @@
     /**
      * @inheritdoc
      */
+    // eslint-disable-next-line no-unused-vars
     canCreateElement(flavour, type) {
       if (flavour === "sieve/operator")
         return false;
@@ -713,6 +734,11 @@
       return true;
     }
 
+    /**
+     *
+     * @param {*} sivFlavour
+     * @param {*} type
+     */
     createElement(sivFlavour, type) {
       // The new home for our element
       const inner = this.owner().getSieve();
@@ -792,10 +818,10 @@
       }
 
       // It makes no sense so drop the item directly before or after the element.
-      if (source.html().parent().prev().get(DOM_ELEMENT) == this.owner().html().get(DOM_ELEMENT))
+      if ($(source.html()).parent().prev().get(DOM_ELEMENT) == this.owner().html())
         return false;
 
-      if (source.html().parent().next().get(DOM_ELEMENT) == this.owner().html().get(DOM_ELEMENT))
+      if ($(source.html()).parent().next().get(DOM_ELEMENT) == this.owner().html())
         return false;
 
       return true;
@@ -849,6 +875,7 @@
     /**
      * @inheritdoc
      */
+    // eslint-disable-next-line no-unused-vars
     canCreateElement(sivFlavour, type) {
       if (sivFlavour !== "sieve/test")
         return false;
@@ -856,6 +883,11 @@
       return true;
     }
 
+    /**
+     *
+     * @param {*} sivFlavour
+     * @param {*} type
+     */
     createElement(sivFlavour, type) {
       const item = this.parent().getSieve();
 

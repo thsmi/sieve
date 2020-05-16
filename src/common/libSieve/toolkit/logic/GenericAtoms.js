@@ -362,7 +362,7 @@
 
 
   /**
-   * A dependent element can only exist if an other element they depend on exits.
+   * A dependent element can only exist if an other element they depend on exists.
    * It is used e.g with variables lists in has flag.
    */
   class SieveGenericDependentItem extends SieveGenericMandatoryItem {
@@ -972,7 +972,7 @@
     }
 
     /**
-     * Checks if the generic struture contains an element with the given id.
+     * Checks if the generic structure contains an element with the given id.
      * @param {string} id
      *   the element's unique id
      * @returns {boolean}

@@ -25,6 +25,8 @@
   /* global SieveMoveDragHandler */
   /* global SieveTestDropHandler */
 
+  /* global SieveTemplate */
+
   const TEST_ELEMENT = 1;
 
   /**
@@ -48,15 +50,16 @@
     getSummary() {
       return $("<div/>")
         .text("does not match:")
-        .append($("<ul/>").append($("<li/>").append(this.getSieve().test().html())));
+        .append($("<ul/>").append($("<li/>").append(this.getSieve().test().html()))).get(0);
     }
 
     /**
      * @inheritdoc
      */
     createHtml(parent) {
-      return super.createHtml(parent)
-        .addClass("sivOperator");
+      const elm = super.createHtml(parent);
+      elm.classList.add("sivOperator");
+      return elm;
     }
   }
 
@@ -112,8 +115,19 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .text((this.getSieve().isAllOf) ? "All of the following:" : "Any of the following:");
+      const FRAGMENT =
+        `<div>
+           <span class="sivOperatorAllOf d-none" data-i18n="operator.allof.summary"></span>
+           <span class="sivOperatorAnyOf d-none" data-i18n="operator.anyof.summary"></span>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      if (this.getSieve().isAllOf)
+        elm.querySelector(".sivOperatorAllOf").classList.remove("d-none");
+      else
+        elm.querySelector(".sivOperatorAnyOf").classList.remove("d-none");
+
+      return elm;
     }
 
     /**
@@ -121,7 +135,9 @@
      */
     createHtml(parent) {
 
-      parent.addClass("sivOperator");
+      parent.classList.add("sivOperator");
+
+      parent = $(parent);
 
       const item = $("<div/>")
         .addClass("sivEditableElement")
@@ -139,11 +155,12 @@
 
       for (const test of this.getSieve().tests) {
 
+        const dropbox = (new SieveDropBoxUI(this, "sivOperatorSpacer"))
+          .drop(new SieveMultaryDropHandler(), test[TEST_ELEMENT])
+          .html();
+
         parent.append($("<div/>")
-          .append((new SieveDropBoxUI(this))
-            .drop(new SieveMultaryDropHandler(), test[TEST_ELEMENT])
-            .html()
-            .addClass("sivOperatorSpacer")));
+          .append(dropbox));
 
         const ul = $("<ul/>");
         ul.append(
@@ -152,10 +169,11 @@
         parent.append(ul);
       }
 
-      parent.append((new SieveDropBoxUI(this))
+      parent = parent.get(0);
+
+      parent.append((new SieveDropBoxUI(this, "sivOperatorSpacer"))
         .drop(new SieveMultaryDropHandler())
-        .html()
-        .addClass("sivOperatorSpacer"));
+        .html());
 
       return parent;
     }

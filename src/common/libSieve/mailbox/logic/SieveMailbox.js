@@ -64,7 +64,7 @@
       elements: [{
         id: "mailboxes",
         type: "stringlist",
-        value: '""'
+        value: '"INBOX"'
       }]
     }]
   };
@@ -86,7 +86,7 @@
       elements: [{
         id: "mailbox",
         type: "string",
-        value: '""'
+        value: '"INBOX"'
       }, {
         id: "annotations",
         type: "stringlist",
@@ -105,7 +105,7 @@
    * Retrieves the value of the mailbox annotation "annotation-name" for mailbox
    * "mailbox#". The retrieved value is compared against the key-list.
    *
-   * The test returns true if the annotation exits and its value matches and of
+   * The test returns true if the annotation exists and its value matches and of
    * the keys.
    *
    * The default matchtype is :is and the default comparator is "i;ascii-casemap"
@@ -137,7 +137,7 @@
         id: "mailbox",
         type: "string",
 
-        value: "\"\""
+        value: '"INBOX"'
       }, {
         id: "annotation",
         type: "string",

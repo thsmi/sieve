@@ -15,7 +15,6 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveDesigner */
 
   /* global SieveStringListWidget */
@@ -28,12 +27,16 @@
 
   /* global SieveOverlayItemWidget */
 
+  /* global SieveTemplate */
+
   /**
    * Provides an abstract UI for the flags actions.
    */
   class SieveAbstractFlagUI extends SieveActionDialogBoxUI {
 
     /**
+     * Gets the currently set flags.
+     *
      * @returns {SieveAbstractElement}
      *   the element's flags
      */
@@ -77,9 +80,15 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("Set IMAP flag(s) "
-          + $('<em/>').text(" " + this.flags().values().join(", ")).prop('outerHTML'));
+      const FRAGMENT =
+        `<div>
+          <span data-i18n="setflag.summary"></span>
+          <em class="sivSetflagFlags"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivSetflagFlags").textContent = this.flags().values().join(", ");
+      return elm;
     }
   }
 
@@ -99,9 +108,15 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("Add IMAP flag(s) "
-          + $('<em/>').text(" " + this.flags().values().join(", ")).prop('outerHTML'));
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="addflag.summary"></span>
+           <em class="sivAddflagFlags"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivAddflagFlags").textContent = this.flags().values().join(", ");
+      return elm;
     }
   }
 
@@ -122,9 +137,15 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("Remove IMAP flag(s) "
-          + $('<em/>').text(" " + this.flags().values().join(", ")).prop('outerHTML'));
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="removeflag.summary"></span>
+           <em class="sivRemoveflagFlags"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivRemoveflagFlags").textContent = this.flags().values().join(", ");
+      return elm;
     }
   }
 
@@ -151,6 +172,8 @@
     }
 
     /**
+     * The currently set imap flags
+     *
      * @returns {SieveAbstractElement}
      *   the element's flags
      */
@@ -201,12 +224,15 @@
      * @inheritdoc
      */
     getSummary() {
+      const FRAGMENT =
+        `<div>
+         <span data-i18n="hasflag.summary"></span>
+         <em class="sivHasflagFlags"></em>
+       </div>`;
 
-      // case- insensitive is the default so skip it...
-      return $("<div/>")
-        .html("An IMAP flags(s) <em> "
-          + this.matchtype().getElement().toScript() + " "
-          + $('<div/>').text(this.flags().values()).html() + "</em>");
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivHasflagFlags").textContent = this.flags().values().join(", ");
+      return elm;
     }
   }
 

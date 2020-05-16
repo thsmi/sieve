@@ -14,23 +14,33 @@
 
   "use strict";
 
-  /* global $: false */
-  /* global SieveActionBoxUI */
   /* global SieveActionDialogBoxUI */
   /* global SieveDesigner */
   /* global SieveStringListWidget */
+  /* global SieveTemplate */
 
   /**
    * Provides an UI for the Return Action
    */
-  class SieveReturnUI extends SieveActionBoxUI {
+  class SieveReturnUI extends SieveActionDialogBoxUI {
+
+    /**
+     * @inheritdoc
+     */
+    getTemplate() {
+      return "./include/template/SieveReturnActionUI.html";
+    }
 
     /**
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .text("End current script and return to the parent script");
+      const FRAGMENT =
+        `<div>
+           <div data-i18n="return.summary"></div>
+         </div>`;
+
+      return (new SieveTemplate()).convert(FRAGMENT);
     }
   }
 
@@ -40,6 +50,8 @@
   class SieveGlobalActionUI extends SieveActionDialogBoxUI {
 
     /**
+     * The variables which are exported into the global namespace.
+     *
      * @returns {SieveAbstractElement}
      *   the element's variables field
      */
@@ -86,9 +98,16 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .append($("<span/>").text("Define global variable(s): "))
-        .append($("<em/>").text(this.variables().values()));
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="global.summary"></span>
+           <em class="sivGlobalVariables"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivGlobalVariables").textContent
+        = this.variables().values();
+      return elm;
     }
   }
 
@@ -214,13 +233,25 @@
      * @inheritdoc
      */
     getSummary() {
-      const str =
-        "Include "
-        + (this.personal() ? "personal" : "global")
-        + " script " + $('<em/>').text(this.script()).html();
 
-      return $("<div/>")
-        .html(str);
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="include.summary1"></span>
+           <span class="sivIncludePersonal" data-i18n="include.summary.personal"></span>
+           <span class="sivIncludeGlobal" data-i18n="include.summary.global"></span>
+           <span data-i18n="include.summary2"></span>
+           <em class="sivIncludeScript"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+
+      if (!this.personal())
+        elm.querySelector(".sivIncludeGlobal").classList.add("d-none");
+      else
+        elm.querySelector(".sivIncludePersonal").classList.add("d-none");
+
+      elm.querySelector(".sivIncludeScript").textContent = this.script();
+      return elm;
     }
   }
 

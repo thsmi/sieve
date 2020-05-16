@@ -14,7 +14,6 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveStringWidget */
   /* global SieveStringListWidget */
   /* global SieveTestDialogBoxUI */
@@ -23,6 +22,7 @@
   /* global SieveComparatorWidget */
   /* global SieveRadioGroupWidget*/
   /* global SieveRadioGroupItemWidget */
+  /* global SieveTemplate */
 
   /**
    * Provides a widget for the zone element
@@ -244,9 +244,28 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("" + this.datepart().value() + " in header " + this.header().value() + " " +
-          this.matchtype().getElement().toScript() + " any of " + $('<div/>').text(this.keys().toScript()).html());
+
+      const FRAGMENT =
+        `<div>
+          <span class="sivDateDatePart"></span>
+          <span data-i18n="date.summary.inheader"></span>
+          <span class="sivDateHeader"></span>
+          <span class="sivDateMatchType"></span>
+          <span data-i18n="date.summary.anyof"></span>
+          <span class="sivDateKeys"></span>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivDateDatePart").textContent
+        = this.datepart().value();
+      elm.querySelector(".sivDateHeader").textContent
+        = this.header().value();
+      elm.querySelector(".sivDateMatchType").textContent
+        = this.matchtype().getElement().toScript();
+      elm.querySelector(".sivDateKeys").textContent
+        = this.keys().toScript();
+
+      return elm;
     }
   }
 
@@ -357,9 +376,25 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("The current " + this.datepart().value() + " " +
-          this.matchtype().getElement().toScript() + " any of " + $('<div/>').text(this.keys().toScript()).html());
+
+      const FRAGMENT =
+        `<div>
+          <span data-i18n="currentdate.summary.current"></span>
+          <span class="sivCurrentDateDatePart"></span>
+          <span class="sivCurrentDateMatchType"></span>
+          <span data-i18n="currentdate.summary.anyof"></span>
+          <span class="sivCurrentDateKeys"></span>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivCurrentDateDatePart").textContent
+        = this.datepart().value();
+      elm.querySelector(".sivCurrentDateMatchType").textContent
+        = this.matchtype().getElement().toScript();
+      elm.querySelector(".sivCurrentDateKeys").textContent
+        = this.keys().toScript();
+
+      return elm;
     }
   }
 

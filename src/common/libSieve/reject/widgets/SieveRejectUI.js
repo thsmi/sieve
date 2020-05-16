@@ -14,9 +14,9 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveActionDialogBoxUI */
   /* global SieveDesigner */
+  /* global SieveTemplate */
 
   const MAX_QUOTE_LEN = 240;
 
@@ -60,12 +60,16 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .append($("<div/>")
-          .text("Reject incoming messages and reply the following reason:"))
-        .append($("<div/>")
-          .append($('<em/>')
-            .text(this.reason().quote(MAX_QUOTE_LEN))));
+      const FRAGMENT =
+        `<div>
+           <div data-i18n="reject.summary"></div>
+           <div><em class="sivRejectReason"></em></div>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivRejectReason").textContent
+        = this.reason().quote(MAX_QUOTE_LEN);
+      return elm;
     }
   }
 

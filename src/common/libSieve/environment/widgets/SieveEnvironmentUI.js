@@ -14,13 +14,13 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveTestDialogBoxUI */
   /* global SieveMatchTypeWidget */
   /* global SieveComparatorWidget */
   /* global SieveStringListWidget */
   /* global SieveStringWidget */
   /* global SieveDesigner */
+  /* global SieveTemplate */
 
   /**
    * Provides a ui for the virus test
@@ -28,6 +28,8 @@
   class SieveEnvironmentUI extends SieveTestDialogBoxUI {
 
     /**
+     * The environment unique name to be queried.
+     *
      * @returns {SieveString}
      *   the element's name
      */
@@ -36,6 +38,8 @@
     }
 
     /**
+     * The keys to be checked if they are contained in the name.
+     *
      * @returns {SieveString}
      *   the element's keys
      */
@@ -44,6 +48,8 @@
     }
 
     /**
+     * The matchtype used during comparisons.
+     *
      * @returns {SieveAbstractElement}
      *   the element's matchtype
      */
@@ -52,6 +58,8 @@
     }
 
     /**
+     * The comparator used during the conversion.
+     *
      * @returns {SieveAbstractElement}
      *   the element's comparator
      */
@@ -105,14 +113,21 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .append($("<span/>").text("Environment info named "))
-        .append($("<em/>").text(this.name().value()))
-        .append($("<span/>").text(" " + this.matchtype().getElement().toScript()))
-        .append($("<em/>").text(" " + this.keys().values().join(", ")));
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="environment.summary"></span>
+           <em class="sivEnvironmentName"></em>
+           <span class="sivEnvironmentMatchType"></span>
+           <em class="sivEnvironmentKeys"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivEnvironmentName").textContent = this.name().value();
+      elm.querySelector(".sivEnvironmentMatchType").textContent = " " + this.matchtype().getElement().toScript();
+      elm.querySelector(".sivEnvironmentKeys").textContent = " " + this.keys().values().join(", ");
+      return elm;
     }
   }
-
 
   if (!SieveDesigner)
     throw new Error("Could not register Environment Extension");

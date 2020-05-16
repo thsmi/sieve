@@ -14,14 +14,13 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveTestDialogBoxUI */
   /* global SieveStringListWidget */
   /* global SieveDesigner */
   /* global SieveMatchTypeWidget */
   /* global SieveComparatorWidget */
   /* global SieveOverlayItemWidget */
-
+  /* global SieveTemplate */
 
   /**
    * Provides a UI for the Mailbox exists test
@@ -29,6 +28,8 @@
   class SieveMailboxExistsTestUI extends SieveTestDialogBoxUI {
 
     /**
+     * The mail box names which should be tested for existence.
+     *
      * @returns {SieveAbstractElement}
      *   the element's mailbox field
      */
@@ -66,10 +67,18 @@
      * @inheritdoc
      */
     getSummary() {
-      // case- insensitive is the default so skip it...
-      return $("<div/>")
-        .html(" Mailbox(es) "
-          + $('<em/>').text(this.mailboxes().values()).html() + " exist");
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="mailboxexists.summary1"></span>
+           <em class="sivMailboxExistsMailboxes"></em>
+           <span data-i18n="mailboxexists.summary2"></span>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivMailboxExistsMailboxes").textContent
+        = this.mailboxes().values();
+
+      return elm;
     }
   }
 
@@ -93,6 +102,8 @@
     }
 
     /**
+     * The annotations which should be checked for extistence.
+     *
      * @returns {SieveAbstractElement}
      *   the element's annotations field
      */
@@ -136,11 +147,21 @@
      */
     getSummary() {
 
-      // case- insensitive is the default so skip it...
-      return $("<div/>")
-        .html(" Mailbox " + $('<em/>').text(this.mailbox()).html()
-          + " has all annotations "
-          + $('<em/>').text(this.annotations().values()).html());
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="metadataexists.summary1"></span>
+           <em class="sivMetaDataExistsMailbox"></em>
+           <span data-i18n="metadataexists.summary2"></span>
+           <em class="sivMetaDataExistsAnnotations"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivMetaDataExistsMailbox").textContent
+        = this.mailbox();
+      elm.querySelector(".sivMetaDataExistsAnnotations").textContent
+        = this.annotations().values();
+
+      return elm;
     }
   }
 
@@ -251,12 +272,30 @@
      * @inheritdoc
      */
     getSummary() {
-      // case- insensitive is the default so skip it...
-      return $("<div/>")
-        .html("Annotation " + this.annotation()
-          + " in folder " + this.mailbox()
-          + " has a value which " + this.matchtype().getElement().toScript()
-          + " any of " + this.keys().values());
+
+      const FRAGMENT =
+        `<div>
+             <span data-i18n="metadata.summary1"></span>
+             <em class="sivMetaDataAnnotation"></em>
+             <span data-i18n="metadata.summary2"></span>
+             <em class="sivMetaDataMailbox"></em>
+             <span data-i18n="metadata.summary3"></span>
+             <em class="sivMetaDataMatchType"></em>
+             <span data-i18n="metadata.summary4"></span>
+             <em class="sivMetaDataKeys"></em>
+           </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivMetaDataAnnotation").textContent
+        = this.annotation();
+      elm.querySelector(".sivMetaDataMailbox").textContent
+        = this.mailbox();
+      elm.querySelector(".sivMetaDataMatchType").textContent
+        = this.matchtype().getElement().toScript();
+      elm.querySelector(".sivMetaDataKeys").textContent
+        = this.keys().values();
+
+      return elm;
     }
   }
 
@@ -266,6 +305,8 @@
   class SieveServerMetaDataExistsTestUI extends SieveTestDialogBoxUI {
 
     /**
+     * Gets the annotations which are checked for existence.
+     *
      * @returns {SieveAbstractElement}
      *   the element's annotations
      */
@@ -302,10 +343,17 @@
      * @inheritdoc
      */
     getSummary() {
-      // case- insensitive is the default so skip it...
-      return $("<div/>")
-        .html(" The server supports all annotations "
-          + $('<em/>').text(this.annotations().values()).html());
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="servermetadataexists.summary"></span>
+           <em class="sivServerMetaDataExistsAnnotations"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivServerMetaDataExistsAnnotations").textContent
+        = this.annotations().values();
+
+      return elm;
     }
   }
 
@@ -396,11 +444,25 @@
      * @inheritdoc
      */
     getSummary() {
-      // case- insensitive is the default so skip it...
-      return $("<div/>")
-        .html("Server annotation " + this.annotation()
-          + " has a value which " + this.matchtype().getElement().toScript()
-          + " any of " + this.keys().values());
+      const FRAGMENT =
+        `<div>
+             <span data-i18n="servermetadata.summary1"></span>
+             <em class="sivServerMetaDataAnnotation"></em>
+             <span data-i18n="servermetadata.summary2"></span>
+             <em class="sivServerMetaDataMatchType"></em>
+             <span data-i18n="servermetadata.summary3"></span>
+             <em class="sivServerMetaDataKeys"></em>
+           </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivServerMetaDataAnnotation").textContent
+        = this.annotation();
+      elm.querySelector(".sivServerMetaDataMatchType").textContent
+        = this.matchtype().getElement().toScript();
+      elm.querySelector(".sivServerMetaDataKeys").textContent
+        = this.keys().values();
+
+      return elm;
     }
   }
 

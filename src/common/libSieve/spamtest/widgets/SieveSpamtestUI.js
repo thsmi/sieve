@@ -14,7 +14,6 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveTestDialogBoxUI */
   /* global SieveMatchTypeWidget */
   /* global SieveComparatorWidget */
@@ -184,10 +183,19 @@
      */
     getSummary() {
 
-      return $("<div/>")
-        .append($("<span/>").text("Spam score "))
-        .append($("<span/>").text(this.matchtype().getElement().toScript() + " "))
-        .append($("<em/>").text(this.value().value() + (this.isPercental() ? "%" : "")));
+      const FRAGMENT =
+        `<div>
+         <span data-i18n="spamtest.summary"></span>
+         <span class="sivSpamtestMatchtype"></span>
+         <em class="sivSpamtestValue"></em>
+       </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivSpamtestMatchtype").textContent
+        = this.matchtype().getElement().toScript();
+      elm.querySelector(".sivSpamtestValue").textContent
+        = this.value().value() + (this.isPercental() ? "%" : "");
+      return elm;
     }
   }
 
@@ -269,8 +277,19 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html(" Viruscheck " + this.matchtype().getElement().toScript() + " " + this.value().value());
+      const FRAGMENT =
+        `<div>
+         <span data-i18n="virustest.summary"></span>
+         <span class="sivVirustestMatchtype"></span>
+         <em class="sivVirustestValue"></em>
+       </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivVirustestMatchtype").textContent
+        = this.matchtype().getElement().toScript();
+      elm.querySelector(".sivVirustestValue").textContent
+        = this.value().value();
+      return elm;
     }
   }
 
@@ -280,6 +299,5 @@
 
   SieveDesigner.register("test/virustest", SieveVirustestUI);
   SieveDesigner.register("test/spamtest", SieveSpamtestUI);
-
 
 })(window);

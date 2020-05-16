@@ -22,6 +22,8 @@
 
   /* global SieveDesigner */
 
+  /* global SieveTemplate */
+
   /**
    * An abstract unique UI implementation.
    */
@@ -259,13 +261,15 @@
       (new SieveOverlayWidget("test/duplicate/unique/", "#sivUnique"))
         .init(this.getSieve());
 
-      $('input:radio[name="sieve-duplicate-handle"][value="' + this.enable("handle") + '"]').attr("checked", "checked");
-      $('input:radio[name="sieve-duplicate-seconds"][value="' + this.enable("seconds") + '"]').attr("checked", "checked");
-      $('input:radio[name="sieve-duplicate-last"][value="' + this.enable("last") + '"]').attr("checked", "checked");
-
-
-      $("#sivDuplicateHandle").focus(function () { $('input:radio[name="sieve-duplicate-handle"][value="true"]').attr("checked", "checked"); });
-      $("#sivDuplicateSeconds").focus(function () { $('input:radio[name="sieve-duplicate-seconds"][value="true"]').attr("checked", "checked"); });
+      document
+        .querySelectorAll(`input:radio[name="sieve-duplicate-handle"][value="${this.enable("handle")}"]`)
+        .checked = true;
+      document
+        .querySelectorAll(`input:radio[name="sieve-duplicate-seconds"][value="${this.enable("seconds")}"]`)
+        .checked = true;
+      document
+        .querySelectorAll(`input:radio[name="sieve-duplicate-last"][value="${this.enable("last")}"]`)
+        .checked = true;
 
       if (this.isEnabled("handle"))
         document.querySelector("#sivDuplicateHandle").value = this.handle().value();
@@ -283,9 +287,10 @@
         .save(this.getSieve());
 
       const state = {};
-      state["handle"] = ($("input[type='radio'][name='sieve-duplicate-handle']:checked").val() === "true");
-      state["seconds"] = ($("input[type='radio'][name='sieve-duplicate-seconds']:checked").val() === "true");
-      state["last"] = ($("input[type='radio'][name='sieve-duplicate-last']:checked").val() === "true");
+
+      state["handle"] = (document.querySelector("input[type='radio'][name='sieve-duplicate-handle']:checked").value === "true");
+      state["seconds"] = (document.querySelector("input[type='radio'][name='sieve-duplicate-seconds']:checked").value === "true");
+      state["last"] = (document.querySelector("input[type='radio'][name='sieve-duplicate-last']:checked").value === "true");
 
       try {
         if (state["handle"])
@@ -318,9 +323,12 @@
      */
     getSummary() {
 
-      // case- insensitive is the default so skip it...
-      return $("<div/>")
-        .html(" duplicate ");
+      const FRAGMENT =
+        `<div>
+          <span data-i18n="duplicate.summary"></span>
+         </div>`;
+
+      return (new SieveTemplate()).convert(FRAGMENT);
     }
   }
 

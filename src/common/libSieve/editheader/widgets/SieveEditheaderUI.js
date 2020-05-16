@@ -20,6 +20,7 @@
   /* global SieveStringListWidget */
   /* global SieveMatchTypeWidget */
   /* global SieveComparatorWidget */
+  /* global SieveTemplate */
 
   /**
    * Provides a UI for th add header action
@@ -100,11 +101,21 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("Add a header "
-          + $('<em/>').text(this.name().value()).html()
-          + " with a value "
-          + $('<em/>').text(this.value().value()).html());
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="addheader.summary1"></span>
+           <em class="sivAddheaderName"></em>
+           <span data-i18n="addheader.summary2"></span>
+           <em class="sivAddheaderValue"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivAddheaderName").textContent
+        = this.name().value();
+      elm.querySelector(".sivAddheaderValue").textContent
+        = this.value().value();
+
+      return elm;
     }
   }
 
@@ -281,11 +292,11 @@
      */
     loadHeaderValues() {
       $('input:radio[name="header-value"][value="any"]').change(() => {
-        $('#sivSomeValues').hide();
+        document.querySelector('#sivSomeValues').style.display = "none";
       });
 
       $('input:radio[name="header-value"][value="some"]').change(() => {
-        $('#sivSomeValues').show();
+        document.querySelector('#sivSomeValues').style.display = "";
       });
 
 
@@ -326,15 +337,31 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("Remove a header "
-          // + $( '<em/>' ).text( this.name() ).html()
-          + " with a value "
-          // + $( '<em/>' ).text( this.value() ).html()
-        );
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="deleteheader.summary1"></span>
+           <em class="sivDeleteheaderName"></em>
+           <span class="sivDeleteheaderHasValue">
+             <span data-i18n="deleteheader.summary2"></span>
+             <em class="sivDeleteheaderValue"></em>
+           </span>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivDeleteheaderName").textContent
+        = this.name().value();
+
+      if (!this.getSieve().enable("values")) {
+        elm.querySelector(".sivDeleteheaderHasValue").style.display = "none";
+        return elm;
+      }
+
+      elm.querySelector(".sivDeleteheaderValue").textContent
+        = this.values().toScript();
+
+      return elm;
     }
   }
-
 
   if (!SieveDesigner)
     throw new Error("Could not register add header Widgets");

@@ -50,9 +50,9 @@
 
       event = event.originalEvent;
 
-      event.dataTransfer.setDragImage(this.owner().html().get(0),
-        event.pageX - this.owner().html().offset().left,
-        event.pageY - this.owner().html().offset().top);
+      event.dataTransfer.setDragImage(this.owner().html(),
+        event.pageX - $(this.owner().html()).offset().left,
+        event.pageY - $(this.owner().html()).offset().top);
 
       // event.preventDefault();
       event.stopPropagation();
@@ -67,20 +67,31 @@
       return this._owner.document();
     }
 
+    /**
+     *
+     * @param {SieveAbstractElement} owner
+     */
     bind(owner) {
       this._owner = owner;
     }
 
-    owner(owner) {
+    /**
+     * @returns {SieveAbstractElement}
+     */
+    owner() {
       return this._owner;
     }
 
+    /**
+     *
+     * @param {HTMLElement} html
+     */
     attach(html) {
+      html.dataset.sieveFlavour = this.flavour();
+      html.draggable = true;
 
-      html.attr("sivtype", this.flavour())
-        .attr("draggable", "true")
-        .bind("dragstart", (e) => { this.onDragStart(e); return true; })
-        .bind("dragend", () => { return false; });
+      $(html).bind("dragstart", (e) => { this.onDragStart(e); return true; });
+      html.addEventListener("dragend", () => { return false; });
     }
 
     onDrag(event) {
@@ -93,7 +104,7 @@
     }
 
     /**
-     * The Sieve script which should be transfered.
+     * The Sieve script which should be transferred.
      * @abstract
      *
      * @returns {string} the sieve script as plain text

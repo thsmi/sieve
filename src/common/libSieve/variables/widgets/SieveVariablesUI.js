@@ -25,6 +25,8 @@
   /* global SieveOverlayWidget */
   /* global SieveOverlayItemWidget */
 
+  /* global SieveTemplate */
+
   const MAX_QUOTE_LEN = 240;
 
   /**
@@ -33,6 +35,8 @@
   class SieveSetActionUI extends SieveActionDialogBoxUI {
 
     /**
+     * The variable's name
+     *
      * @returns {SieveString}
      *   the element's name
      */
@@ -41,6 +45,8 @@
     }
 
     /**
+     * The variable's value
+     *
      * @returns {SieveString}
      *   the element's value
      */
@@ -141,13 +147,20 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .append($("<div/>")
-          .html("Set variable <em>" + this.name().value() + "</em> to value"))
-        .append($("<div/>")
-          .append($('<em/>')
-            .text(this.value().quote(MAX_QUOTE_LEN))));
+      const FRAGMENT =
+        `<div>
+         <span data-i18n="set.summary1"></span>
+         <em class="sivSetVariable"></em>
+         <span data-i18n="set.summary2"></span>
+         <div><em class="sivSetValue"></em></div>
+       </div>`;
 
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivSetVariable").textContent
+        = this.name().value();
+      elm.querySelector(".sivSetValue").textContent
+        = this.value().quote(MAX_QUOTE_LEN);
+      return elm;
     }
   }
 
@@ -354,11 +367,23 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html(" string " + $('<em/>').text(this.sources().values()).html()
-          + " " + this.matchtype().getElement().toScript()
-          + " " + $('<em/>').text(this.keys().values()).html());
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="string.summary"></span>
+           <em class="sivStringSources"></em>
+           <span class="sivStringMatchType"></span>
+           <em class="sivStringValue"></em>
+         </div>`;
 
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivStringSources").textContent
+        = this.sources().values();
+      elm.querySelector(".sivStringMatchType").textContent
+        = this.matchtype().getElement().toScript();
+      elm.querySelector(".sivStringValue").textContent
+        = this.keys().values();
+
+      return elm;
     }
   }
 

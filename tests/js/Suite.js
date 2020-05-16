@@ -172,8 +172,11 @@
 
     const that = this;
 
-    $("#divFrame")
-      .empty()
+    const frame = document.querySelector("#divFrame");
+    while (frame.firstChild)
+      frame.removeChild(frame.firstChild);
+
+    $(frame)
       .append($("<iframe/>")
         .attr("id", "testFrame")
         .load(function () {
@@ -244,7 +247,9 @@
    * Clears all results...
    */
   net.tschmid.yautt.test.server.clear = function () {
-    $("#divOutput").empty();
+    const output = document.querySelector("#divOutput");
+    while (output.firstChild)
+      output.removeChild(output.firstChild);
 
     $("#tests div").each(function () {
       $(this).css("color", "");
@@ -302,7 +307,9 @@
     });
 
     document.querySelector("#result-clear").addEventListener("click", () => {
-      $("#divOutput").empty();
+      const output = document.querySelector("#divOutput");
+      while (output.firstChild)
+        output.removeChild(output.firstChild);
 
       $("#tests div").each(function () {
         $(this).css("color", "");

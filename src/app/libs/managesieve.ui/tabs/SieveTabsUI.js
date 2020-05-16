@@ -201,7 +201,7 @@
     }
 
     /**
-     * Checks if a tab for the given script exits.
+     * Checks if a tab for the given script exists.
      *
      * @param {string} account
      *   the accounts unique id.
@@ -209,7 +209,7 @@
      *   the script name.
      *
      * @returns {boolean}
-     *   true in case the tab exits otherwise false.
+     *   true in case the tab exists otherwise false.
      */
     has(account, name) {
       return (this.getTab(account, name) !== null);

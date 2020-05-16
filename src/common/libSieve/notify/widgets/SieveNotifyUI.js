@@ -138,7 +138,7 @@
      */
     getSummary() {
       return $("<div/>")
-        .html("Notify");
+        .html("Notify").get(0);
     }
   }
 
@@ -226,7 +226,7 @@
      */
     getSummary() {
       return $("<div/>")
-        .html("Check Notify Method Capability");
+        .html("Check Notify Method Capability").get(0);
     }
   }
 
@@ -267,7 +267,7 @@
      */
     getSummary() {
       return $("<div/>")
-        .html(" Notify methods are supported " + this.uris().toScript());
+        .html(" Notify methods are supported " + this.uris().toScript()).get(0);
     }
   }
 

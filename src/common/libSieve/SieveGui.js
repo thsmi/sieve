@@ -41,19 +41,21 @@
    * @param {*} docShell
    *   the sieve documents shell
    *
-   * @returns {jQuery}
+   * @returns {HTMLElement}
    *   the newly created sieve element
    */
   function createMenuItem(action, flavour, docShell) {
 
-    const elm2 = (new SieveSimpleBoxUI(docShell));
+    const elm2 = new SieveSimpleBoxUI(docShell);
     elm2.drag(new SieveCreateDragHandler());
     elm2.drag().flavour(flavour);
     elm2._elmType = action;
 
-    return elm2.html()
-      .addClass("sivMenuItem")
-      .append($(document.createTextNode(action.split('/')[1])));
+    const elm = elm2.html();
+    elm.classList.add("sivMenuItem");
+    elm.textContent = action.split('/')[1];
+
+    return elm;
   }
 
   /**
@@ -76,32 +78,41 @@
     const docShell = dom2;
     let key;
 
-    let elm = $("#sivActions").empty();
+    // populate the action section
+    const actions = document.querySelector("#sivActions");
+    while (actions.firstChild)
+      actions.removeChild(actions.firstChild);
 
-    //  alert(SieveLexer.capabilities());
     for (key in SieveLexer.types["action"])
       if (SieveLexer.types["action"][key].onCapable(SieveLexer.capabilities()))
-        elm.append(createMenuItem(key, "sieve/action", docShell));
+        actions.appendChild(createMenuItem(key, "sieve/action", docShell));
 
-    elm = $("#sivTests").empty();
+    // populate the test section
+    const tests = document.querySelector("#sivTests");
+    while (tests.firstChild)
+      tests.removeChild(tests.firstChild);
 
     for (key in SieveLexer.types["test"])
       if (SieveLexer.types["test"][key].onCapable(SieveLexer.capabilities()))
         if (key !== "test/boolean")
-          elm.append(createMenuItem(key, "sieve/test", docShell).get(0));
+          tests.appendChild(createMenuItem(key, "sieve/test", docShell));
 
-    elm = $("#sivOperators").empty();
+    // populate the operator section
+    const operators = document.querySelector("#sivOperators");
+    while (operators.firstChild)
+      operators.removeChild(operators.firstChild);
 
     for (key in SieveLexer.types["operator"])
       if (SieveLexer.types["operator"][key].onCapable(SieveLexer.capabilities()))
-        elm.append(createMenuItem(key, "sieve/operator", docShell).get(0));
+        operators.appendChild(createMenuItem(key, "sieve/operator", docShell));
 
-    elm = $("#sivTrash").empty();
-    elm
-      .append($(document.createElement('div'))
-        .addClass("spacer"))
-      .append($(new SieveTrashBoxUI(docShell).html())
-        .attr('id', 'trash'));
+    // create the trash bin
+    const trash = document.querySelector("#sivTrash");
+    while (trash.firstChild)
+      trash.removeChild(trash.firstChild);
+
+    trash.appendChild(
+      new SieveTrashBoxUI(docShell).html());
   }
 
   /**
@@ -156,9 +167,11 @@
     document.querySelector("#txtOutput")
       .value = dom2.script();
 
-    $("#divOutput")
-      .empty()
-      .append(dom2.html());
+    const output = document.querySelector(`#divOutput`);
+    while (output.firstChild)
+      output.removeChild(output.firstChild);
+
+    output.appendChild(dom2.html());
   }
 
   /**
@@ -230,8 +243,8 @@
    *
    */
   function showInfoMessage(message, content) {
-    document.querySelector("#infobarsubject > span").textContent = message;
-    document.querySelector("#infobarmessage > span").textContent = content;
+    document.querySelector("#infobarsubject").textContent = message;
+    document.querySelector("#infobarmessage").textContent = content;
     $("#infobar").toggle();
   }
 
@@ -259,7 +272,7 @@
           $("[draggable=false]").attr("draggable", "true");
       }
 
-      $("#draggable").val(ev.target.nodeName);
+      document.querySelector("#draggable").value = ev.target.nodeName;
     });
 
     const toolbarLeft = $('#toolbar').offset().left;
@@ -285,7 +298,8 @@
     document.querySelector("#DebugParse")
       .addEventListener("click", () => { setSieveScript(); });
     document.querySelector("#DebugStringify")
-      .addEventListener("click", () => { $('#txtOutput').val(getSieveScript()); });
+      .addEventListener("click", () => {
+        document.querySelector('#txtOutput').value = getSieveScript(); });
     document.querySelector("#DebugRequire")
       .addEventListener("click", () => { collectRequires(); });
     document.querySelector("#DebugCompact")

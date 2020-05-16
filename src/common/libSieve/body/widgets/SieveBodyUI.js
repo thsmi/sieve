@@ -14,7 +14,6 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveTestDialogBoxUI */
   /* global SieveMatchTypeWidget */
   /* global SieveComparatorWidget */
@@ -24,6 +23,8 @@
   /* global SieveRadioGroupItemWidget */
 
   /* global SieveDesigner */
+
+  /* global SieveTemplate */
 
   /**
    * Provides a widget for the body transform element
@@ -255,12 +256,20 @@
      * @inheritdoc
      */
     getSummary() {
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="body.summary"></span>
+           <span class="sivBodyMatchType"></span>
+           <em class="sivBodyValue"></em>
+         </div>`;
 
-      // case- insensitive is the default so skip it...
-      return $("<div/>")
-        .html(" message body <em> "
-          + this.matchtype().getElement().toScript() + " "
-          + $('<div/>').text(this.keys().values()).html() + "</em>");
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivBodyMatchType").textContent
+        = this.matchtype().getElement().toScript();
+      elm.querySelector(".sivBodyValue").textContent
+        = this.keys().values();
+
+      return elm;
     }
   }
 

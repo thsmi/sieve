@@ -25,3 +25,12 @@ jobs:
   steps:
   - script: echo hello from Windows
   - script: yarn install
+    displayName: "Yarn install"
+  - task: gulp@1
+    inputs:
+      targets: 'app:package-win32'
+      enableCodeCoverage: false
+  - task: gulp@1
+    inputs:
+      targets: 'app:zip-win32'
+      enableCodeCoverage: false

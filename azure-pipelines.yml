@@ -9,27 +9,30 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   steps:
-  - script: echo hello from Linux
   - script: yarn install
+    displayName: Install Yarn
+  - task: gulp@1
+    inputs:
+      targets: 'app:package-linux'
+      enableCodeCoverage: false    
 
 - job: macOS
   pool:
     vmImage: 'macOS-latest'
   steps:
-  - script: echo hello from macOS
   - script: yarn install
+    displayName: "Install Yarn"
+  - task: gulp@1
+    inputs:
+      targets: 'app:package-macos'
+      enableCodeCoverage: false  
 
 - job: Windows
   pool:
     vmImage: 'windows-latest'
   steps:
-  - script: echo hello from Windows
   - script: yarn install
-    displayName: "Yarn install"
-  - task: gulp@1
-    inputs:
-      targets: 'app:package-win32'
-      enableCodeCoverage: false
+    displayName: "Install Yarn"
   - task: gulp@1
     inputs:
       targets: 'app:zip-win32'

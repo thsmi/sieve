@@ -39,6 +39,6 @@ jobs:
       enableCodeCoverage: false
   - task: PublishPipelineArtifact@1
     inputs:
-      targetPath: '$(Pipeline.Workspace)/build/sieve-0.4.2-win32-x64.zip'
+      targetPath: '$(Build.SourcesDirectory)/build/sieve-0.4.2-win32-x64.zip'
       artifact: 'sieve-0.4.2-win32-x64.zip'
       publishLocation: 'pipeline'      

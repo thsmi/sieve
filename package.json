@@ -26,7 +26,8 @@
     "debug": "./node_modules/.bin/electron ./build/electron/resources/ --debug",
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "node ./tools/Server/Server.js",
-    "gulp": "gulp"
+    "gulp": "gulp",
+    "lint": "eslint --config .eslintrc.json src gulpfile.js gulp"
   },
   "repository": {
     "type": "git",

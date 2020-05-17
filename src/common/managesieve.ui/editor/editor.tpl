@@ -36,7 +36,7 @@
       </div>
     </div>
 
-    <div id="sieve-tab-content" class="list-group list-group-flush siv-tpl-scripts tab-content mx-2 mb-2">
+    <div id="sieve-tab-content" class="list-group list-group-flush siv-tpl-scripts tab-content mx-2 mb-2 border-top-0">
       <div id="sieve-content-settings" class="tab-pane m-4" role="tabpanel"></div>
       <iframe id="sieve-widget-editor" class="tab-pane" role="tabpanel"
         src="./../../libs/libSieve/SieveGui.html"></iframe>

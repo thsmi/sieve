@@ -665,6 +665,9 @@
       throw new Error(`Implement SieveAbstractClient::onSend(${data})`);
     }
 
+    /**
+     *
+     */
     _lockMessageQueue() {
       this.queueLocked = true;
       const requests = this.requests.concat();
@@ -674,6 +677,10 @@
       return requests;
     }
 
+    /**
+     *
+     * @param {*} requests
+     */
     _unlockMessageQueue(requests) {
       this.requests = requests.concat(this.requests);
       this.queueLocked = false;

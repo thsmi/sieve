@@ -29,32 +29,53 @@
    */
   class SieveVacationUI extends SieveActionDialogBoxUI {
 
+    /**
+     * @returns
+     */
     reason() {
       return this.getSieve().getElement("reason");
     }
 
+    /**
+     * @returns
+     */
     subject() {
       return this.getSieve().getElement("subject").getElement("subject");
     }
 
+    /**
+     * @returns
+     */
     from() {
       return this.getSieve().getElement("from").getElement("from");
     }
 
+    /**
+     * @returns
+     */
     handle() {
       return this.getSieve().getElement("handle").getElement("handle");
     }
 
+    /**
+     * @returns
+     */
     addresses() {
       return this.getSieve().getElement("addresses").getElement("addresses");
     }
 
-
+    /**
+     *
+     * @param {string} id
+     * @param {*} status
+     */
     enable(id, status) {
       return this.getSieve().enable(id, status);
     }
 
-
+    /**
+     *
+     */
     onEnvelopeChanged() {
 
       const addresses = (new SieveStringListWidget("#sivAddresses")).items();
@@ -100,16 +121,29 @@
           .tab('show');
       });
 
-      $('input:radio[name="subject"][value="' + this.enable("subject") + '"]').prop('checked', true);
-      $('input:radio[name="from"][value="' + this.enable("from") + '"]').prop('checked', true);
-      $('input:radio[name="addresses"][value="' + this.enable("addresses") + '"]').prop('checked', true);
-      $('input:radio[name="mime"][value="' + this.enable("mime") + '"]').prop('checked', true);
-      $('input:radio[name="handle"][value="' + this.enable("handle") + '"]').prop('checked', true);
+      document
+        .querySelector(`input:radio[name="subject"][value="${this.enable("subject")}"]`).checked = true;
+      document
+        .querySelector(`input:radio[name="from"][value="${this.enable("from")}"]`).checked = true;
+      document
+        .querySelector(`input:radio[name="addresses"][value="${this.enable("addresses")}"]`).checked = true;
+      document
+        .querySelector(`input:radio[name="mime"][value="${this.enable("mime")}"]`).checked = true;
+      document
+        .querySelector(`input:radio[name="handle"][value="${this.enable("handle")}"]`).checked = true;
 
-      // In case the user focuses into a textfield the radio button should be changed...
-      $("#sivVacationFrom").focus(function () { $('input:radio[name="from"][value="true"]').prop('checked', true); });
-      $("#sivVacationSubject").focus(function () { $('input:radio[name="subject"][value="true"]').prop('checked', true); });
-      $("#sivVacationHandle").focus(function () { $('input:radio[name="handle"][value="true"]').prop('checked', true); });
+      // In case the user focuses into a text field the radio button should be changed...
+      document.querySelector("#sivVacationFrom").addEventListener("focus", () => {
+        document.querySelector('input:radio[name="from"][value="true"]').checked = true;
+      });
+
+      document.querySelector("#sivVacationSubject").addEventListener("focus", () => {
+        document.querySelector('input:radio[name="subject"][value="true"]').checked = true;
+      });
+
+      document.querySelector("#sivVacationHandle").addEventListener("focus", () => {
+        document.querySelector('input:radio[name="handle"][value="true"]').checked = true;
+      });
 
       document.querySelector("#sivVacationReason").value = this.reason().value();
 
@@ -253,7 +287,7 @@
      */
     load(sivElement) {
 
-      $("#txtVacationIntervalDays").focus(() => {
+      document.querySelector("#txtVacationIntervalDays").addEventListener("focus", () => {
         document.querySelector('#cbxVacationIntervalDays').checked = true;
       });
 

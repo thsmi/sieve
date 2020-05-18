@@ -26,6 +26,9 @@
 
     /**
      *
+     *
+     * @param {string|string[]} flavours
+     *
      */
     constructor(flavours) {
 
@@ -46,6 +49,9 @@
       return this._flavours;
     }
 
+    /**
+     * @returns {}
+     */
     document() {
       if (!this._owner)
         throw new Error("Owner for this Drop Handler");
@@ -53,6 +59,11 @@
       return this._owner.document();
     }
 
+    /**
+     *
+     * @param {*} owner
+     * @param {*} sibling
+     */
     bind(owner, sibling) {
       this._owner = owner;
       this._sibling = sibling;
@@ -99,6 +110,9 @@
 
     /* Official HTML5 Drag&Drop events... */
 
+    /**
+     * @returns {boolean}
+     */
     onDragEnter(event) {
 
       if (!this.canDrop(event))
@@ -109,6 +123,11 @@
       return false;
     }
 
+
+    /**
+     *
+     * @param {*} event
+     */
     // eslint-disable-next-line no-unused-vars
     onDragExit(event) {
 
@@ -119,6 +138,10 @@
       return true;
     }
 
+    /**
+     *
+     * @param {*} event
+     */
     onDragOver(event) {
 
       if (!this.canDrop(event))
@@ -129,6 +152,10 @@
       return false;
     }
 
+    /**
+     *
+     * @param {*} event
+     */
     onDragDrop(event) {
 
       delete (this.owner().html().dataset.sieveDragging);
@@ -139,6 +166,11 @@
       return false;
     }
 
+    /**
+     *
+     * @param {*} flavour
+     * @param {*} event
+     */
     onDrop(flavour, event) {
       const dt = new SieveDataTransfer(event.originalEvent.dataTransfer);
 
@@ -173,6 +205,10 @@
       throw new Error("Invalid action..." + meta.action);
     }
 
+    /**
+     *
+     * @param {*} event
+     */
     drop(event) {
       for (let i = 0; i < this.flavours().length; i++) {
         if (!this.onCanDrop(this.flavours()[i], event))
@@ -184,6 +220,11 @@
       return true;
     }
 
+    /**
+     *
+     * @param {*} flavour
+     * @param {*} event
+     */
     onCanDrop(flavour, event) {
       const dt = new SieveDataTransfer(event.originalEvent.dataTransfer);
 
@@ -280,6 +321,11 @@
       return true;
     }
 
+    /**
+     *
+     * @param {*} source
+     * @param {*} target
+     */
     moveTest(source, target) {
 
       // Create a new Condition...
@@ -315,6 +361,11 @@
 
     }
 
+    /**
+     *
+     * @param {*} source
+     * @param {*} target
+     */
     moveAction(source, target) {
 
       // remember owner
@@ -327,6 +378,11 @@
       oldOwner.widget().reflow();
     }
 
+    /**
+     *
+     * @param {*} sivFlavour
+     * @param {*} id
+     */
     moveElement(sivFlavour, id) {
       const source = this.document().id(id);
       if (!source)
@@ -589,6 +645,11 @@
       return true;
     }
 
+    /**
+     *
+     * @param {*} sivFlavour
+     * @param {*} type
+     */
     createElement(sivFlavour, type) {
       // The new home for our element
       const item = this.parent().getSieve();
@@ -668,6 +729,11 @@
       return true;
     }
 
+    /**
+     *
+     * @param {*} sivFlavour
+     * @param {*} id
+     */
     moveElement(sivFlavour, id) {
       const source = this.document().id(id);
       if (!source)
@@ -827,6 +893,11 @@
       return true;
     }
 
+    /**
+     *
+     * @param {*} sivFlavour
+     * @param {*} id
+     */
     moveElement(sivFlavour, id) {
       const target = this.parent().getSieve();
 

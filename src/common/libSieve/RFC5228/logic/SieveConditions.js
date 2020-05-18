@@ -18,6 +18,11 @@
   /* global SieveBlock */
   /* global SieveBlockBody */
 
+  /**
+   *
+   * @param {*} docshell
+   * @param {*} id
+   */
   function SieveElse(docshell, id) {
     SieveBlock.call(this, docshell, id);
 
@@ -66,6 +71,11 @@
 
   // ****************************************************************************//
 
+  /**
+   *
+   * @param {*} docshell
+   * @param {*} id
+   */
   function SieveIf(docshell, id) {
     SieveElse.call(this, docshell, id);
 

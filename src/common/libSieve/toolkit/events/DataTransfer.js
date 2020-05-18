@@ -32,8 +32,8 @@
    * The workaround is to store the transfer element locally and just add
    * a token to the drag's datatransfer element.
    *
-   * This wrapper automatically detects buggy runtimes so that the workaround
-   * is only used when realy needed.
+   * This wrapper automatically detects a buggy runtime so that the workaround
+   * is only used when relay needed.
    *
    * The workaround has some limitation you can set at most one data object.
    */
@@ -67,8 +67,8 @@
     }
 
     /**
-     * Calculates a random token, which is used to idenfiy the transfer.
-     * It is just a precausion in for very unlikely cases, that an
+     * Calculates a random token, which is used to identify the transfer.
+     * It is just a precaution in for very unlikely cases, that an
      * external drop uses the very same flavours.
      *
      * @returns {string}
@@ -95,7 +95,7 @@
     }
 
     /**
-     * Retunrs the data bound to the given flavour.
+     * Returns the data bound to the given flavour.
      *
      * @param {string} flavour
      *   the flavour as string
@@ -122,7 +122,7 @@
      * Binds the data to the data transfer object
      *
      * @param {string} flavour
-     *   the drag falvour as string
+     *   the drag flavour as string
      * @param {object} transfer
      *   the transfer object should be a string
      *

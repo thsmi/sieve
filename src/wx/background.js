@@ -27,6 +27,11 @@
   const accounts = await (new SieveAccounts().load());
 
   // TODO Extract into separate class..
+  /**
+   *
+   * @param {*} account
+   * @param {*} name
+   */
   async function getTabs(account, name) {
     const url = new URL("./libs/managesieve.ui/editor.html", window.location);
 
@@ -36,6 +41,10 @@
     return await browser.tabs.query({ url: url.toString() });
   }
 
+  /**
+   *
+   * @param {*} tab
+   */
   async function showTab(tab) {
 
     await browser.tabs.update(

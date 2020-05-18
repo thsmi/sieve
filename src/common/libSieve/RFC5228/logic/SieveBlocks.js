@@ -17,6 +17,11 @@
   /* global SieveLexer */
   /* global SieveAbstractBlock */
 
+  /**
+   *
+   * @param {*} docshell
+   * @param {*} id
+   */
   function SieveBlockBody(docshell, id) {
     SieveAbstractBlock.call(this, docshell, id);
     this.elms = [];
@@ -60,6 +65,11 @@
   // ****************************************************************************//
 
 
+  /**
+   *
+   * @param {*} docshell
+   * @param {*} id
+   */
   function SieveBlock(docshell, id) {
     SieveBlockBody.call(this, docshell, id);
   }

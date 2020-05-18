@@ -80,6 +80,9 @@
       return this._elm;
     }
 
+    /**
+     * @returns
+     */
     document() {
       if (this._elm.document)
         return this._elm.document();
@@ -102,6 +105,11 @@
       throw new Error(`Implement html(${parent}`);
     }
 
+    /**
+     *
+     * @param {*} invalidate
+     * @returns {HTMLElement}
+     */
     html(invalidate) {
       if (this._domElm && !invalidate)
         return this._domElm;
@@ -119,6 +127,9 @@
       return this._domElm;
     }
 
+    /**
+     *
+     */
     reflow() {
       if (this.id() < 0)
         throw new Error("Invalid id");
@@ -354,6 +365,9 @@
    **/
   class SieveDialogBoxUI extends SieveSourceBoxUI {
 
+    /**
+     *
+     */
     save() {
 
       // Check if on save was canceled...
@@ -491,10 +505,16 @@
       throw new Error("Implement getSummary()");
     }
 
+    /**
+     * @returns {boolean}
+     */
     onSave() {
       return true;
     }
 
+    /**
+     *
+     */
     onLoad() {
     }
   }

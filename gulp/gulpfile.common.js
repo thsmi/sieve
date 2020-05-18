@@ -21,7 +21,6 @@ const yazl = require('yazl');
 const JSON_INDENTATION = 2;
 
 const BASE_DIR_BOOTSTRAP = "./node_modules/bootstrap/dist";
-const BASE_DIR_MATERIALICONS = "./node_modules/material-design-icons-iconfont/dist";
 const BASE_DIR_JQUERY = "./node_modules/jquery/dist";
 const BASE_DIR_CODEMIRROR = "./node_modules/codemirror";
 

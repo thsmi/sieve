@@ -22,6 +22,9 @@
    */
   class SieveAccount extends SieveAbstractAccount {
 
+    /**
+     *
+     */
     getProxy() {
       return {
         getProxyInfo: function () {

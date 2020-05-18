@@ -19,15 +19,15 @@
     throw new Error("Could not register Comparator");
 
   /**
-   * Comparators sepcify the charset which should be used for string comparison
+   * Comparators specify the charset which should be used for string comparison
    * By default two matchtypes are supported.
    *
    * "i;octet"
-   *   Compares strings byte by byte (octet by octet) used typically with UTF-8 octetts
+   *   Compares strings byte by byte (octet by octet) used typically with UTF-8 octets
    *
-   * "i;ascii-codemap"
+   * "i;ascii-casemap"
    *   Converts strings before comparison to US-ASCII.
-   *   All US-ASCII letters are converted to upercase (0x61-0x7A to 0x41-0x5A)
+   *   All US-ASCII letters are converted to uppercase (0x61-0x7A to 0x41-0x5A)
    *   "hello" equals "HELLO"
    *
    * "i;ascii-numeric"

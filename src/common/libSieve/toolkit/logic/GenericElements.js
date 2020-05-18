@@ -169,7 +169,7 @@
      * @inheritdoc
      */
     onProbe(parser, lexer) {
-      // in case we have an explicit token we got for it...
+      // in case we have an explicit token we go for it...
       if (this.item.token !== null && typeof (this.item.token) !== "undefined")
         return super.onProbe(parser, lexer);
 
@@ -182,12 +182,10 @@
      */
     onNew(docshell, id) {
 
-      let element;
-
       // The easiest case, there is no default. At least one of the items has to exist.
       // We detect this by the mandatory tag.
       if ((typeof (this.item.mandatory) !== "undefined") && (this.item.mandatory === true)) {
-        element = new SieveGroupElement(docshell, id, this.item.node);
+        const element = new SieveGroupElement(docshell, id, this.item.node);
         element.setToken(this.item.token);
         element.addItems(this.item.items);
         element.setCurrentElement(this.item.value);
@@ -198,7 +196,7 @@
       // This is typically when a default is defined the server.
       // We detect this whenever no value is defined.
       if (this.item.value === null || typeof (this.item.value) === "undefined") {
-        element = new SieveImplicitGroupElement(docshell, id, this.item.node);
+        const element = new SieveImplicitGroupElement(docshell, id, this.item.node);
         element.setToken(this.item.token);
         element.addItems(this.item.items);
         return element;
@@ -207,7 +205,7 @@
       // The last case is when we have an explicit default.
       // Like the match types have, it will automatically fallback to an :is
       // We detect this when the value is defined.
-      element = new SieveExplicitGroupElement(docshell, id, this.item.node);
+      const element = new SieveExplicitGroupElement(docshell, id, this.item.node);
       element.setToken(this.item.token);
       element.addItems(this.item.items);
       element.setDefaultElement(this.item.value);

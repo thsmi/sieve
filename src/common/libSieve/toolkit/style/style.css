@@ -104,7 +104,7 @@ div[data-sieve-flavour][data-sieve-dragging] {
 }
 
 .sivConditionalChild {
-  padding:3px;
+  padding:3px 0px 3px 3px;
   background-color: #E8EDF0;
   border: 1px #DDE4E9 solid
 }

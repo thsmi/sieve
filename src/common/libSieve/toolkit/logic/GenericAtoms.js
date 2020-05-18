@@ -18,7 +18,7 @@
   /* global SieveLexer */
 
   // TODO we need to do a cleanup, which means document caches elements by their id.
-  // These elements should be also tracked by the generic elements. espeically with tags.
+  // These elements should be also tracked by the generic elements. especially with tags.
   // So it would be good to have a method which collects all ids of elements in use.
   // all other elements can then be dropped and removed.
 
@@ -43,6 +43,8 @@
     }
 
     /**
+     * Returns a reference to the parent element.
+     *
      * @returns {SieveAbstractElement}
      *   the parent element.
      */
@@ -51,6 +53,8 @@
     }
 
     /**
+     * Returns a reference to the document which owns this element.
+     *
      * @returns {SieveDocument}
      *   the parent document
      */
@@ -59,7 +63,7 @@
     }
 
     /**
-     * Parses the given buffer and extracts the informations needed by the generic element.
+     * Parses the given buffer and extracts the information needed by the generic element.
      * @abstract
      *
      * @param  {SieveParser} parser
@@ -79,6 +83,7 @@
      * @returns {SieveAbstractGeneric}
      *   a self reference
      */
+    // eslint-disable-next-line no-unused-vars
     require(capabilities) {
       return this;
     }
@@ -150,30 +155,30 @@
      *
      * @param {string} postfix
      *   the postfixes default value.
-     * @param {boolean} [linebreak]
-     *   if true the postfix is considered to end at a linebreak. This is used to make
-     *   the code more readiable. Especially when moving elements.
+     * @param {boolean} [lineBreak]
+     *   if true the postfix is considered to end at a line break. This is used to make
+     *   the code more readable. Especially when moving elements.
      * @param {boolean} [optional]
      *   if true the postfix is optional, which means it is not an error when it is missing.
      *   If omitted it default to true
      * @returns {SieveGenericLiteral}
      *   a self reference
      */
-    setPostfix(postfix, linebreak, optional) {
+    setPostfix(postfix, lineBreak, optional) {
 
       if (postfix === null || typeof (postfix) === "undefined") {
         this._post = null;
         return this;
       }
 
-      if (linebreak === null || typeof (linebreak) === "undefined")
-        linebreak = true;
+      if (lineBreak === null || typeof (lineBreak) === "undefined")
+        lineBreak = true;
 
       if (optional === null || typeof (optional) === "undefined")
         optional = true;
 
       this._postIsOptional = optional;
-      this._postExpectLinebreak = linebreak;
+      this._postExpectLinebreak = lineBreak;
       this._post = this.getParent().createByName("whitespace", postfix);
       return this;
     }
@@ -194,7 +199,7 @@
       if (this._post === null)
         return;
 
-      // Seems a bit strange, but we stop parsing at linebreaks.
+      // Seems a bit strange, but we stop parsing at line breaks.
       // This makes deleting elements easier and generates much
       // more readable code.
       if (this.getDocument().probeByName("whitespace", parser)) {
@@ -295,7 +300,7 @@
 
     /**
      * Assigns parameters to this object.
-     * Any existing parametes will be replaced.
+     * Any existing parameters will be replaced.
      *
      * @param  {Array} parameters
      *  the parameters which should be set.
@@ -411,7 +416,7 @@
    * A tag may be a single flag or a list of mutual exclusive like in matchtypes.
    *
    * But all Tags are by definition optional, they may be there or not.
-   * This also means they have an implicit default value which makes parsing akward.
+   * This also means they have an implicit default value which makes parsing awkward.
    *
    * In case the tag is missing (which means using the implicit default) the class is fully transparent.
    * Otherwise it is greedy and eats leading and tailing whitespaces.
@@ -533,7 +538,7 @@
         throw new Error("Invalid Tags");
 
       if (this._optionals.length)
-        throw new Error(" Tags already initialized");
+        throw new Error("Tags already initialized");
 
       // Initialize all Parameters...
       tags.forEach((tag) => {
@@ -552,7 +557,7 @@
      */
     parse(parser) {
 
-      // Skip in case this element has not tags
+      // Skip in case this element has no tags
       if (!this._optionals)
         return this;
 
@@ -602,7 +607,7 @@
       }
 
       // in case we did not find any tags, there won't be any elements. Which means we have
-      // to restore the extracted whitespaces. We do this by reseting the postion.
+      // to restore the extracted whitespaces. We do this by resetting the position.
       if (!this._elements.size) {
 
         this._tail = null;
@@ -655,7 +660,7 @@
 
       let result = "";
 
-      // We try to preserve all elemets entered by the user
+      // We try to preserve all elements entered by the user
       for (const id of this._elements) {
 
         const item = this._optionals.get(id);
@@ -718,7 +723,6 @@
      */
     require(capabilities) {
 
-
       capabilities
         .require(this._requirements);
 
@@ -775,7 +779,7 @@
 
             // parsing failed. So let's reset the position and
             // try parsing without the dependent element.
-            // we need to reset the dependet element
+            // we need to reset the depended element
             parser.pos(pos);
             element.parse(parser);
           }
@@ -830,9 +834,9 @@
 
     /**
      * Enables the given element.
-     * Disabling means using the implicit allback.
+     * Disabling means using the implicit fallback.
      *
-     * In case the given element is non existant an exception is thrown
+     * In case the given element is non existent an exception is thrown
      *
      * @param {string} id
      *   the unique element's id
@@ -910,7 +914,7 @@
      *
      * Such an element is by definition optional but can not
      * live without the mandatory element but has a fixed position.
-     * This can occure in case of an ambious type definition.
+     * This can occur in case of an ambiguous type definition.
      *
      * Let's take an example structure
      * "action" <variables:string> [flags:string];
@@ -1013,7 +1017,7 @@
   }
 
   /**
-   * A simple group at least one of the elements has to exist.
+   * In a simple at least one of the elements has to exist.
    * There are no hidden default value logics.
    */
   class SieveGroupElement extends SieveAbstractElement {
@@ -1192,8 +1196,8 @@
    * in the possible elements.
    *
    * e.g. the vacation action defines the flags :days and :seconds
-   * which are mutural exclusive. In case neiterone of the two states
-   * is specified it falls back to an implicte third state. Which is the
+   * which are mutual exclusive. In case neither one of the two states
+   * is specified it falls back to an implicate third state. Which is the
    * server's default value.
    */
   class SieveImplicitGroupElement extends SieveGroupElement {
@@ -1241,7 +1245,7 @@
      * Checks if the group has an active element.
      *
      * @param {string} [id]
-     *   an optional id of the child elemenet to get
+     *   an optional id of the child element to get
      * @returns {boolean}
      *   true in case the element can be rendered
      *   otherwise false.
@@ -1264,13 +1268,13 @@
      * major differences.
      *
      * The first one is, it will throw instead of returning
-     * null when accessing non existant element or when
+     * null when accessing non existent element or when
      * no element is active.
      * The other difference is that you can access children
      * directly by their id.
      *
      * @param {string} [id]
-     *   an optional id of the child elemenet to get
+     *   an optional id of the child element to get
      * @returns {SieveAbstractElement}
      *   the active element.
      */
@@ -1301,7 +1305,7 @@
 
     /**
      * The default value is the server side default. It is basically
-     * an empty string, this signal the elment is only known to the
+     * an empty string, this signal the element is only known to the
      * server.
      *
      * All other possible value are client side values and have
@@ -1363,7 +1367,7 @@
 
     /**
      * @param {string} [id]
-     *   an optional id of the child elemenet to get
+     *   an optional id of the child element to get
      * @returns {SieveAbstractElement}
      *   the active element. This can be either the current or the default element.
      */

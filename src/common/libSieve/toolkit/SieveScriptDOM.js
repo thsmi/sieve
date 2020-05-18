@@ -56,6 +56,12 @@
       return this._rootNode;
     }
 
+    /**
+     *
+     * @param {*} elms
+     * @param {*} name
+     * @param {*} result
+     */
     _walk(elms, name, result) {
 
       elms.forEach(function (item) {
@@ -73,6 +79,10 @@
       }, this);
     }
 
+    /**
+     *
+     * @param {*} name
+     */
     queryElements(name) {
 
       const result = [];
@@ -82,15 +92,27 @@
       return result;
     }
 
+    /**
+     * @returns {HTMLElement}
+     */
     html() {
       return this._rootNode.widget().html();
     }
 
+    /**
+     *
+     * @param {*} elm
+     */
     layout(elm) {
       return this._widgets.widget(elm);
     }
 
-    // A shorthand to create children bound to this Element...
+    /**
+     * A shorthand to create children bound to this Element...
+     * @param {*} name
+     * @param {*} parser
+     * @param {*} parent
+     */
     createByName(name, parser, parent) {
       if (typeof (parser) === "string")
         parser = new SieveParser(parser);
@@ -106,6 +128,12 @@
       return item;
     }
 
+    /**
+     *
+     * @param {*} types
+     * @param {*} parser
+     * @param {*} parent
+     */
     createByClass(types, parser, parent) {
       if (typeof (parser) === "string")
         parser = new SieveParser(parser);
@@ -121,6 +149,11 @@
       return item;
     }
 
+    /**
+     *
+     * @param {*} name
+     * @param {*} parser
+     */
     probeByName(name, parser) {
       if (typeof (parser) === "string")
         parser = new SieveParser(parser);
@@ -146,18 +179,35 @@
       return this._lexer.probeByClass(types, parser);
     }
 
+    /**
+     *
+     * @param {*} name
+     */
     supportsByName(name) {
       return this._lexer.supportsByName(name);
     }
 
+    /**
+     *
+     * @param {*} type
+     */
     supportsByClass(type) {
       return this._lexer.supportsByClass(type);
     }
 
+    /**
+     *
+     * @param {*} id
+     */
     id(id) {
       return this._nodes[id];
     }
 
+    /**
+     *
+     * @param {string} [data]
+     * @returns {string}
+     */
     script(data) {
       if (typeof (data) === "undefined")
         return this._rootNode.toScript();
@@ -194,6 +244,10 @@
       return parser.bytes();
     }
 
+    /**
+     *
+     * @param {*} capabilities
+     */
     capabilities(capabilities) {
       if (typeof (capabilities) === "undefined")
         return this._lexer.capabilities();

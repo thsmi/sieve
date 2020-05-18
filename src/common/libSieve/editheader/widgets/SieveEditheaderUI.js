@@ -47,6 +47,11 @@
       return this.getSieve().getElement("value");
     }
 
+    /**
+     *
+     * @param {*} id
+     * @param {*} status
+     */
     enable(id, status) {
       return this.getSieve().enable(id, status);
     }

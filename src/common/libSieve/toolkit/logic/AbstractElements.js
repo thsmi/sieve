@@ -75,7 +75,7 @@
    * @param {SieveParser} data
    *  the data which is used to initialize the element
    * @returns {SieveAbstractElement}
-   *  a self refrence
+   *  a self reference
    */
   SieveAbstractElement.prototype.init
     = function (data) {
@@ -153,6 +153,7 @@
     };
 
   SieveAbstractElement.prototype.require
+    // eslint-disable-next-line no-unused-vars
     = function (imports) {
     };
 
@@ -199,6 +200,11 @@
 
   //* ***************************************************************************//
 
+  /**
+   *
+   * @param {*} docshell
+   * @param {*} id
+   */
   function SieveAbstractBlock(docshell, id) {
     SieveAbstractElement.call(this, docshell, id);
 
@@ -221,10 +227,10 @@
     };
 
   /**
-   * Appends an Element to this Element. Inf the element is alread existant, it will be moved
+   * Appends an Element to this Element. If the element is already existent, it will be moved
    *
    * @param {SieveElement} elm
-   *   the element that should be appened
+   *   the element that should be appended
    * @param {SieveElement} [sibling]
    *   defines the sibling after which the new element should be inserted.
    *   In case no matching sibling is found, it will be appended at the end.

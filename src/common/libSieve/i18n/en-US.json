@@ -29,19 +29,19 @@
 
   "exists.tab.home" : "Exists",
   "exists.tab.help" : "Help",
-
-  "exists.header.label" :"All of the following header exist:",
-
-  "exists.help.text":"",
+  "exists.header.label" : "All of the following header exist:",
+  "exists.help.text ": "",
+  "exists.summary" : "the following headers exist:",
 
 
   "header.tab.home" : "Header",
   "header.tab.advanced" : "Advanced",
   "header.tab.help" : "Help",
-
   "header.header": "Any of the following header ... ",
   "header.keywords": "... any of the keyword(s):",
   "header.help" : "Compares headers against constant strings.\n\nYou typically use this test with headers containing subject line or a spam score.\n\nDo not use this test, if the header should be matched against a mail addresses. The result will be unreliable, as this test is not aware of display names. Use the address test instead.",
+  "header.summary" : "header",
+
 
   "addheader.tab.home" : "Add Header",
   "addheader.tab.help" : "Help",
@@ -179,15 +179,16 @@
 
   "size.tab.home" : "Size",
   "size.tab.help" : "Help",
-
   "size.description" : "Check if message size is ... ",
   "size.larger" : "larger",
   "size.smaller" : "smaller",
   "size.compare" : "... than ...",
-
   "size.help" : "Compares the message size.\n\nTest the message size is greater or smaller than the given size. The size is measured in bytes, character encoding are ignored.\n\n",
   "size.help.warning" : "There is only a larger or smaller, no equals. A message with exactly 4000 bytes is neither larger nor smaller than 4000 bytes.",
-
+  "size.summary.message" : "message is",
+  "size.summary.larger" : "larger",
+  "size.summary.smaller" : "smaller",
+  "size.summary.than" : "than",
 
   "envelope.tab.home" : "Envelope",
   "envelope.tab.advanced" : "Advanced",
@@ -195,15 +196,15 @@
   "envelope.envelopes" : "Any of the following envelope fields ...",
   "envelope.keywords" : "... any of the keyword(s):",
   "envelope.help" : "Compares fields against the envelope\n\nThe envelop is equivalent to the mail delivery protocol. So it does not test against a real header. Instead uses trace information from the mail delivery protocol for specific values.\n\nA \"to\" tests the SMTP sender field \"RCPT TO\" a \"from\" the recipient \"MAIL FROM\".\n\nIt is the most reliant way to test from which address a message was send to or received.\n\nCompares headers against constant strings.\n\nYou typically use this test with headers containing subject line or a spam score.\n\nDo not use this test, if the header should be matched against a mail addresses. The result will be unreliable, as this test is not aware of display names. Use the address test instead.",
+  "envelope.summary" : "envelope",
 
   "address.tab.home" : "Address",
   "address.tab.advanced" : "Advanced",
   "address.tab.help" : "Help",
-
   "address.headers" : "Any of the following header ...",
   "address.keywords" : "... any of the keyword(s):",
-
   "address.help" : "Compares headers against E-Mail addresses.\n\nYou typically use test with headers like \"to\", \"from\", \"cc\" etc.\n\nAs this test is aware of e-mail addresses containing display names. A header containing '\"roadrunner\" <roadrunner@acme.example.com>' is considered to be equivalent to \"'roadrunner@acme.example.com\"\n\nIf the header should be matched against a string use the header test.",
+  "address.summary" : "address",
 
 
   "allofanyof.tab.home": "AllOf/AnyOf",
@@ -540,7 +541,7 @@
   "vacation.from.custom" : "Custom From Address",
 
   "vacation.addresses" : "Addresses",
-  "vacation.addresses.text" : "By default a response message is only send, if it was addressed to the recipient user or sieve script owner.\n\nYou can supply additional mail addresses. For Example if mails are forwarded or you have multiple aliases for a single mail address",
+  "vacation.addresses.text" : "By default a response message is only send, if it was addressed to the recipient user or sieve script owner.\nYou can supply additional mail addresses. For Example if mails are forwarded or you have multiple aliases for a single mail address",
 
   "vacation.contenttype" : "Message Content Type",
   "vacation.contenttype.text" : "Instead of plaintext, the message can be a specified as a MIME Message",

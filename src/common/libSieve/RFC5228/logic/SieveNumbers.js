@@ -82,7 +82,7 @@
      * @param {string|int} number
      *   the number which should be set.
      * @returns {SieveNumber}
-     *   a self refernece.
+     *   a self reference.
      */
     setValue(number) {
       if (typeof (number) === "undefined" || number === null)

@@ -68,7 +68,7 @@
      * @inheritdoc
      */
     init(parser) {
-      // The import section consists of require and deadcode statments...
+      // The import section consists of require and deadcode statements...
       while (this._probeByClass(["import/", "whitespace"], parser))
         this.elms.push(
           this._createByClass(["import/", "whitespace"], parser));

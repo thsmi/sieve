@@ -305,7 +305,7 @@
     document.querySelector("#DebugCompact")
       .addEventListener("click", () => { compact(); });
     document.querySelector("#DebugToggle")
-      .addEventListener("click", () => { $('#boxScript').toggle(); });
+      .addEventListener("click", () => { document.querySelector('#boxScript').classList.toggle("d-none"); });
 
     $("#DebugDropTarget")
       .on('dragover', function (e) {

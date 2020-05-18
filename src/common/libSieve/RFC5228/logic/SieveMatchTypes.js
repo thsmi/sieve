@@ -20,7 +20,7 @@
     throw new Error("Could not register MatchTypes");
 
   // TODO match-type items (matchtype/) should not eat tailing whitespaces...
-  // they this should be done my the match-type goup
+  // they this should be done my the match-type group
 
   SieveGrammar.addTag({
     node: "match-type/is",

@@ -21,6 +21,12 @@
 
   let editor = null;
 
+  /**
+   *
+   * @param {string} name
+   *   the script name
+   * @returns {boolean}
+   */
   async function onClose(name) {
 
     const result = await(new SieveScriptSaveDialog(name).show());

@@ -20,6 +20,10 @@
    */
   class SieveDragHandler {
 
+    /**
+     *
+     * @param {*} flavour
+     */
     constructor(flavour) {
       if (typeof (flavour) !== "undefined")
         this._flavour = flavour;
@@ -27,6 +31,10 @@
         this._flavour = "sieve/action";
     }
 
+    /**
+     *
+     * @param {*} flavour
+     */
     flavour(flavour) {
       if (typeof (flavour) === 'undefined')
         return this._flavour;
@@ -60,6 +68,9 @@
       return true;
     }
 
+    /**
+     *
+     */
     document() {
       if (!this._owner)
         throw new Error("Owner for this Drop Handler");
@@ -94,6 +105,10 @@
       html.addEventListener("dragend", () => { return false; });
     }
 
+    /**
+     *
+     * @param {*} event
+     */
     onDrag(event) {
       const dt = new SieveDataTransfer(event.dataTransfer);
 

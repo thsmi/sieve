@@ -42,14 +42,23 @@
       return this.getSieve().getElement("method");
     }
 
+    /**
+     *
+     */
     options() {
       return this.getSieve().getElement("options").getElement("options");
     }
 
+    /**
+     *
+     */
     from() {
       return this.getSieve().getElement("from").getElement("from");
     }
 
+    /**
+     *
+     */
     message() {
       return this.getSieve().getElement("message").getElement("message");
     }
@@ -142,6 +151,9 @@
     }
   }
 
+  /**
+   *
+   */
   class SieveNotifyMethodCapabilityUI extends SieveTestDialogBoxUI {
 
     /**
@@ -164,14 +176,23 @@
       return this.getSieve().getElement("comparator");
     }
 
+    /**
+     *
+     */
     keys() {
       return this.getSieve().getElement("keys");
     }
 
+    /**
+     *
+     */
     uri() {
       return this.getSieve().getElement("uri");
     }
 
+    /**
+     *
+     */
     capability() {
       return this.getSieve().getElement("capability");
     }
@@ -231,8 +252,14 @@
   }
 
 
+  /**
+   *
+   */
   class SieveValidNotifyMethodUI extends SieveTestDialogBoxUI {
 
+    /**
+     *
+     */
     uris() {
       return this.getSieve().getElement("uris");
     }

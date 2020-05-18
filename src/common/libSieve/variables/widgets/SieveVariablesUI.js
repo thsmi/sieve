@@ -104,7 +104,10 @@
      */
     onLoad() {
 
-      // Sort by the modifier name
+      /**
+       * Sorts the modifiers.
+       * @param {*} widget
+       */
       function sort(widget) {
         const items = widget.find(".sieve-modifier");
         items.sort((a, b) => {
@@ -227,7 +230,7 @@
    * the copy overlay for the fileinto action as well as the
    * redirect action.
    */
-  class SieveModifierQuotewildcardWidget extends SieveOverlayItemWidget {
+  class SieveModifierQuoteWildcardWidget extends SieveOverlayItemWidget {
 
     /**
      * @inheritdoc
@@ -391,7 +394,7 @@
     throw new Error("Could not register Body Extension");
 
   SieveDesigner.register2(SieveModifierLengthWidget);
-  SieveDesigner.register2(SieveModifierQuotewildcardWidget);
+  SieveDesigner.register2(SieveModifierQuoteWildcardWidget);
 
   SieveDesigner.register("action/set", SieveSetActionUI);
   SieveDesigner.register("test/string", SieveStringTestUI);

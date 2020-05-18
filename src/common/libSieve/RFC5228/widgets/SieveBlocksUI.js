@@ -14,7 +14,6 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveDesigner */
   /* global SieveAbstractBoxUI */
 

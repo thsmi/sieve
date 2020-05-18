@@ -14,7 +14,6 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveOverlayItemWidget */
   /* global SieveDesigner */
 
@@ -55,7 +54,7 @@
      */
     load(sivElement) {
 
-      $("#txtVacationIntervalSeconds").focus(() => {
+      document.querySelector("#txtVacationIntervalSeconds").addEventListener("focus", () => {
         document.querySelector('#cbxVacationIntervalSeconds').checked = true;
       });
 

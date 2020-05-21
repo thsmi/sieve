@@ -528,7 +528,7 @@ function packageAppImageDir() {
 function packageAppImageFiles() {
   "use strict";
 
-  const appImageFiles = path.join(common.BASE_DIR_COMMON, "/AppImage/");
+  const appImageFiles = path.join(common.BASE_DIR_COMMON, "/appImage/");
 
   return src([
     appImageFiles + "/**/*"

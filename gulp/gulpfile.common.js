@@ -28,6 +28,10 @@ const BASE_DIR_CODEMIRROR = "./node_modules/codemirror";
 const BASE_DIR_COMMON = "./src/common";
 const BASE_DIR_BUILD = "./build";
 
+const BASE_DIR_LIBMANAGESIEVE = path.join(BASE_DIR_COMMON, "libManageSieve");
+const BASE_DIR_LIBSIEVE = path.join(BASE_DIR_COMMON, "libSieve");
+const BASE_DIR_MANAGESIEVEUI = path.join(BASE_DIR_COMMON, "managesieve.ui");
+
 const INDEX_MAJOR = 0;
 const INDEX_MINOR = 1;
 const INDEX_PATCH = 2;
@@ -145,6 +149,60 @@ function packageMaterialIcons(destination) {
     BASE_DIR_MATERIALICONS + "/material-design-icons.css",
     BASE_DIR_MATERIALICONS + "/fonts/MaterialIcons-Regular.woff2"
   ], { base: BASE_DIR_MATERIALICONS }).pipe(dest(destination));
+}
+
+/**
+ * Packages the common libManageSieve files
+ *
+ * @param {string} destination
+ *   where to place the common libManageSieve files
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
+ */
+function packageLibManageSieve(destination) {
+  "use strict";
+
+  return src([
+    BASE_DIR_LIBMANAGESIEVE + "/**"
+  ], { base: BASE_DIR_COMMON }).pipe(dest(destination));
+}
+
+/**
+ * Packages the common libSieve files
+ *
+ * @param {string} destination
+ *   where to place the common libSieve files
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
+ */
+function packageLibSieve(destination) {
+  "use strict";
+
+  return src([
+    BASE_DIR_LIBSIEVE + "/**",
+    "!" + BASE_DIR_LIBSIEVE + "/libSieve/**/rfc*.txt",
+    "!" + BASE_DIR_LIBSIEVE + "/libSieve/**/tests/",
+    "!" + BASE_DIR_LIBSIEVE + "/libSieve/**/tests/**"
+  ], { base: BASE_DIR_COMMON }).pipe(dest(destination));
+}
+
+/**
+ * Packages the common managesieve.ui files
+ *
+ * @param {string} destination
+ *   where to place the common managesieve.ui files
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
+ */
+function packageManageSieveUi(destination) {
+  "use strict";
+
+  return src([
+    BASE_DIR_MANAGESIEVEUI + "/**"
+  ], { base: BASE_DIR_COMMON }).pipe(dest(destination));
 }
 
 /**
@@ -359,6 +417,10 @@ exports["packageJQuery"] = packageJQuery;
 exports["packageCodeMirror"] = packageCodeMirror;
 exports["packageBootstrap"] = packageBootstrap;
 exports["packageMaterialIcons"] = packageMaterialIcons;
+
+exports["packageLibManageSieve"] = packageLibManageSieve;
+exports["packageLibSieve"] = packageLibSieve;
+exports["packageManageSieveUi"] = packageManageSieveUi;
 
 exports["getPackageVersion"] = getPackageVersion;
 exports["setPackageVersion"] = setPackageVersion;

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Sieve
+Exec=sieve
+Icon=sieve
+Type=Application
+Categories=Utility;
+Terminal=false
+Comment=Tool to Manage Sieve Message Filters

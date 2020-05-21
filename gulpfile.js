@@ -50,9 +50,19 @@ exports['app:zip-linux'] = series(
   app.zipLinux
 );
 
+exports['app:appimage-linux'] = series(
+  exports['app:package-linux'],
+  app.appImageLinux
+);
+
 exports['app:package-macos'] = series(
   app.package,
   app.packageMacOS
+);
+
+exports['app:zip-macos'] = series(
+  exports['app:package-macos'],
+  app.zipMacOs
 );
 
 // Test related gulp tasks

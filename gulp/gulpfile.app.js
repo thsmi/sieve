@@ -565,7 +565,7 @@ async function packageAppImage() {
   const source = path.resolve(APP_IMAGE_DIR);
   const destination = path.resolve(path.join(common.BASE_DIR_BUILD, `sieve-${version}-${LINUX_PLATFORM}-${LINUX_ARCH}.AppImage`));
 
-  const {stdout} = await exec(`${tool} "${source}" "${destination} 2>&1"`);
+  const {stdout} = await exec(`${tool} "${source}" "${destination}"  2>&1`);
 
   console.log(stdout);
 }

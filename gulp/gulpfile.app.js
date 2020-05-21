@@ -31,6 +31,8 @@ const BUILD_DIR_APP = path.join(common.BASE_DIR_BUILD, "electron/resources");
 const OUTPUT_DIR_APP = path.join(common.BASE_DIR_BUILD, "electron/out");
 const BASE_DIR_APP = "./src/app/";
 
+const BUILD_DIR_APP_LIBS = path.join(BUILD_DIR_APP, '/libs');
+
 
 const KEYTAR_NAME = "keytar";
 const KEYTAR_OUTPUT_DIR = `/libs/${KEYTAR_NAME}`;
@@ -48,6 +50,10 @@ const RUNTIME_ELECTRON = "electron";
 
 const APP_IMAGE_RELEASE_URL = "https://api.github.com/repos/AppImage/AppImageKit/releases/latest";
 const APP_IMAGE_TOOL_NAME = "appimagetool-x86_64.AppImage";
+const APP_IMAGE_DIR = path.join(OUTPUT_DIR_APP, "sieve.AppDir");
+
+const OUTPUT_DIR_APP_WIN32 = path.join(OUTPUT_DIR_APP, `sieve-${WIN_PLATFORM}-${WIN_ARCH}`);
+const OUTPUT_DIR_APP_LINUX = path.join(OUTPUT_DIR_APP, `sieve-${LINUX_PLATFORM}-${LINUX_ARCH}`);
 
 /**
  * Extracts a tar or tar.gz file to the given destination.
@@ -197,22 +203,56 @@ function packageSrc() {
 }
 
 /**
- * The common files need to go into the app/lib directory...
+ * Copies the application's icons into the lib folder.
+ * We use it internally for windows decoration.
  *
  * @returns {Stream}
  *   a stream to be consumed by gulp
  */
-function packageCommon() {
+function packageIcons() {
   "use strict";
 
   return src([
-    common.BASE_DIR_COMMON + "/**",
-    // Filter out the rfc documents
-    "!" + common.BASE_DIR_COMMON + "/libSieve/**/rfc*.txt",
-    "!" + common.BASE_DIR_COMMON + "/libSieve/**/tests/",
-    "!" + common.BASE_DIR_COMMON + "/libSieve/**/tests/**"
-  ]).pipe(dest(BUILD_DIR_APP + '/libs'));
+    path.join(common.BASE_DIR_COMMON, "icons") + "/**"
+  ], { base: common.BASE_DIR_COMMON }).pipe(dest(BUILD_DIR_APP_LIBS));
 }
+
+/**
+ * Copies the common libManageSieve files into the app's lib folder
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
+ */
+function packageLibManageSieve() {
+  "use strict";
+  return common.packageLibManageSieve(BUILD_DIR_APP_LIBS);
+}
+
+
+/**
+ * Copies the common libSieve files into the app's lib folder
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
+ */
+function packageLibSieve() {
+  "use strict";
+  return common.packageLibSieve(BUILD_DIR_APP_LIBS);
+}
+
+
+/**
+ * Copies the common managiesieve.ui files into the app's lib folder
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
+ */
+function packageManageSieveUi() {
+  "use strict";
+
+  return common.packageManageSieveUi(BUILD_DIR_APP_LIBS);
+}
+
 
 /**
  * The keytar files need to go into the app/lib directory.
@@ -423,7 +463,9 @@ function watchSrc() {
       './src/**/*.properties'],
     parallel(
       packageSrc,
-      packageCommon)
+      packageManageSieveUi,
+      packageLibSieve,
+      packageLibManageSieve)
   );
 }
 
@@ -435,7 +477,7 @@ async function zipWin32() {
 
   const version = (await common.getPackageVersion()).join(".");
 
-  const source = path.resolve(path.join(OUTPUT_DIR_APP, `sieve-${WIN_PLATFORM}-${WIN_ARCH}`));
+  const source = path.resolve(OUTPUT_DIR_APP_WIN32);
   const destination = path.join(common.BASE_DIR_BUILD, `sieve-${version}-${WIN_PLATFORM}-${WIN_ARCH}.zip`);
 
   await common.compress(source, destination);
@@ -449,7 +491,7 @@ async function zipLinux() {
 
   const version = (await common.getPackageVersion()).join(".");
 
-  const source = path.resolve(path.join(OUTPUT_DIR_APP, `sieve-${LINUX_PLATFORM}-${LINUX_ARCH}`));
+  const source = path.resolve(path.join(OUTPUT_DIR_APP_LINUX));
   const destination = path.join(common.BASE_DIR_BUILD, `sieve-${version}-${LINUX_PLATFORM}-${LINUX_ARCH}.zip`);
 
   const options = {
@@ -463,9 +505,40 @@ async function zipLinux() {
 }
 
 /**
+ * App Images enforce a very strict naming scheme, this means
+ * we copy the staged files and do our adjustments
+ *
+ * @returns {stream}
+ *   a stream to be consumed by gulp
+ */
+function packageAppImageDir() {
+  "use strict";
+
+  return src([
+    OUTPUT_DIR_APP_LINUX + "/**/*"
+  ]).pipe(dest(APP_IMAGE_DIR));
+}
+
+/**
+ * Packages the AppDir related files into the app image folder.
+ *
+ * @returns {stream}
+ *   a stream to be consumed by gulp
+ */
+function packageAppImageFiles() {
+  "use strict";
+
+  const appImageFiles = path.join(common.BASE_DIR_COMMON, "/appImage/");
+
+  return src([
+    appImageFiles + "/**/*"
+  ], { base: appImageFiles}).pipe(dest(APP_IMAGE_DIR));
+}
+
+/**
  * Creates a linux appImage Container
  */
-async function appImageLinux() {
+async function packageAppImage() {
   "use strict";
 
   const latest = await https.fetch(APP_IMAGE_RELEASE_URL);
@@ -479,7 +552,7 @@ async function appImageLinux() {
   if (!url)
     throw new Error("Could not download app image tool.");
 
-  const tool = path.join(CACHE_DIR_APP, `appimagetool-v${latest.name}.AppImage`);
+  const tool = path.resolve(path.join(CACHE_DIR_APP, `appimagetool-v${latest.name}.AppImage`));
 
   if (!existsSync(tool))
     await https.download(url, tool);
@@ -487,12 +560,14 @@ async function appImageLinux() {
   const RWX_RWX_RX = 0o775;
   await chmod(tool, RWX_RWX_RX);
 
+  await chmod(path.resolve(path.join(APP_IMAGE_DIR, "AppRun")), RWX_RWX_RX);
+
   const version = (await common.getPackageVersion()).join(".");
 
-  const source = path.resolve(path.join(OUTPUT_DIR_APP, `sieve-${LINUX_PLATFORM}-${LINUX_ARCH}`));
+  const source = path.resolve(APP_IMAGE_DIR);
   const destination = path.resolve(path.join(common.BASE_DIR_BUILD, `sieve-${version}-${LINUX_PLATFORM}-${LINUX_ARCH}.AppImage`));
 
-  exec(`${tool} "${source}" "${destination}" 2>&1`);
+  await exec(`${tool} "${source}" "${destination}"  2>&1`);
 }
 
 
@@ -528,7 +603,9 @@ exports["packageBootstrap"] = packageBootstrap;
 exports["packageMaterialIcons"] = packageMaterialIcons;
 exports["packageLicense"] = packageLicense;
 exports["packageSrc"] = packageSrc;
-exports["packageCommon"] = packageCommon;
+exports["packageLibManageSieve"] = packageLibManageSieve;
+exports["packageLibSieve"] = packageLibSieve;
+exports["packageManageSieveUi"] = packageManageSieveUi;
 
 exports["packageWin32"] = series(
   packageWin32,
@@ -549,16 +626,25 @@ exports["zipWin32"] = zipWin32;
 exports["zipLinux"] = zipLinux;
 exports["zipMacOs"] = zipMacOs;
 
-exports["appImageLinux"] = appImageLinux;
+exports["appImageLinux"] = series(
+  packageAppImageDir,
+  packageAppImageFiles,
+  packageAppImage
+);
 
-exports['package'] = parallel(
+exports['package'] = series(
   packageDefinition,
-  packageJQuery,
-  packageCodeMirror,
-  packageBootstrap,
-  packageMaterialIcons,
-  packageLicense,
-  packageSrc,
-  packageCommon,
-  packageKeytar
+  parallel(
+    packageLicense,
+    packageIcons,
+    packageJQuery,
+    packageCodeMirror,
+    packageBootstrap,
+    packageMaterialIcons,
+    packageLibManageSieve,
+    packageLibSieve,
+    packageManageSieveUi,
+    packageKeytar
+  ),
+  packageSrc
 );

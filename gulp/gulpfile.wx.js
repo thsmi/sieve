@@ -9,14 +9,18 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-const { src, dest, watch, parallel } = require('gulp');
+const { src, dest, watch, parallel, series } = require('gulp');
 
 const common = require("./gulpfile.common.js");
 
 const path = require('path');
 
 const BUILD_DIR_WX = path.join(common.BASE_DIR_BUILD, "thunderbird-wx");
+const BUILD_DIR_WX_LIBS = path.join(BUILD_DIR_WX, '/libs');
+
 const BASE_DIR_WX = "./src/wx/";
+
+
 
 /**
  * Copies the license file into the build directory.
@@ -98,21 +102,54 @@ function packageSrc() {
 }
 
 /**
- * The common files need to go into the app/lib directory...
+ * Copies the application's icons into the lib folder.
+ * We use it internally for windows decoration.
  *
  * @returns {Stream}
  *   a stream to be consumed by gulp
  */
-function packageCommon() {
+function packageIcons() {
   "use strict";
 
   return src([
-    common.BASE_DIR_COMMON + "/**",
-    // Filter out the rfc documents
-    "!" + common.BASE_DIR_COMMON + "/libSieve/**/rfc*.txt",
-    "!" + common.BASE_DIR_COMMON + "/libSieve/**/tests/",
-    "!" + common.BASE_DIR_COMMON + "/libSieve/**/tests/**"
-  ]).pipe(dest(BUILD_DIR_WX + '/libs'));
+    path.join(common.BASE_DIR_COMMON, "icons") + "/**"
+  ], { base: common.BASE_DIR_COMMON }).pipe(dest(BUILD_DIR_WX_LIBS));
+}
+
+/**
+ * Copies the common libManageSieve files into the app's lib folder
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
+ */
+function packageLibManageSieve() {
+  "use strict";
+  return common.packageLibManageSieve(BUILD_DIR_WX_LIBS);
+}
+
+
+/**
+ * Copies the common libSieve files into the app's lib folder
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
+ */
+function packageLibSieve() {
+  "use strict";
+  return common.packageLibSieve(BUILD_DIR_WX_LIBS);
+}
+
+
+/**
+ * Copies the common managesieve.ui files into the app's lib folder
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
+ */
+function packageManageSieveUi() {
+  "use strict";
+
+  return common.packageManageSieveUi(BUILD_DIR_WX_LIBS);
 }
 
 
@@ -132,7 +169,9 @@ function watchSrc() {
       './src/**/*.json'],
     parallel(
       packageSrc,
-      packageCommon)
+      packageManageSieveUi,
+      packageLibSieve,
+      packageLibManageSieve)
   );
 }
 
@@ -172,16 +211,20 @@ exports["packageBootstrap"] = packageBootstrap;
 exports["packageMaterialIcons"] = packageMaterialIcons;
 exports["packageLicense"] = packageLicense;
 exports["packageSrc"] = packageSrc;
-exports["packageCommon"] = packageCommon;
 
-exports['package'] = parallel(
-  packageJQuery,
-  packageCodeMirror,
-  packageBootstrap,
-  packageMaterialIcons,
-  packageLicense,
-  packageSrc,
-  packageCommon
+exports['package'] = series(
+  parallel(
+    packageJQuery,
+    packageCodeMirror,
+    packageBootstrap,
+    packageMaterialIcons,
+    packageLicense,
+    packageIcons,
+    packageLibManageSieve,
+    packageLibSieve,
+    packageManageSieveUi
+  ),
+  packageSrc
 );
 
 exports["packageXpi"] = packageXpi;

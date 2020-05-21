@@ -516,7 +516,7 @@ function packageAppImageDir() {
 
   return src([
     OUTPUT_DIR_APP_LINUX + "/**/*"
-  ]).pipe(dest(path.join(APP_IMAGE_DIR, "/usr/bin")));
+  ]).pipe(dest(APP_IMAGE_DIR));
 }
 
 /**
@@ -559,6 +559,8 @@ async function packageAppImage() {
 
   const RWX_RWX_RX = 0o775;
   await chmod(tool, RWX_RWX_RX);
+
+  await chmod(path.resolve(path.join(APP_IMAGE_DIR, "AppRun")), RWX_RWX_RX);
 
   const version = (await common.getPackageVersion()).join(".");
 

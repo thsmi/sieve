@@ -50,7 +50,7 @@ const RUNTIME_ELECTRON = "electron";
 
 const APP_IMAGE_RELEASE_URL = "https://api.github.com/repos/AppImage/AppImageKit/releases/latest";
 const APP_IMAGE_TOOL_NAME = "appimagetool-x86_64.AppImage";
-const APP_IMAGE_DIR = path.join(OUTPUT_DIR_APP, `sieve-${LINUX_PLATFORM}-${LINUX_ARCH}.AppDir`);
+const APP_IMAGE_DIR = path.join(OUTPUT_DIR_APP, `sieve.AppDir`);
 
 const OUTPUT_DIR_APP_WIN32 = path.join(OUTPUT_DIR_APP, `sieve-${WIN_PLATFORM}-${WIN_ARCH}`);
 const OUTPUT_DIR_APP_LINUX = path.join(OUTPUT_DIR_APP, `sieve-${LINUX_PLATFORM}-${LINUX_ARCH}`);

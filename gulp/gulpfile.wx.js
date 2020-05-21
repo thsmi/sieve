@@ -141,7 +141,7 @@ function packageLibSieve() {
 
 
 /**
- * Copies the common managiesieve.ui files into the app's lib folder
+ * Copies the common managesieve.ui files into the app's lib folder
  *
  * @returns {Stream}
  *   a stream to be consumed by gulp

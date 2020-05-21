@@ -112,7 +112,7 @@ function packageIcons() {
   "use strict";
 
   return src([
-    common.BASE_DIR_COMMON + "icons/**"
+    path.join(common.BASE_DIR_COMMON, "icons") + "/**"
   ], { base: common.BASE_DIR_COMMON }).pipe(dest(BUILD_DIR_WX_LIBS));
 }
 

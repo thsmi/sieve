@@ -492,7 +492,9 @@ async function appImageLinux() {
   const source = path.resolve(path.join(OUTPUT_DIR_APP, `sieve-${LINUX_PLATFORM}-${LINUX_ARCH}`));
   const destination = path.resolve(path.join(common.BASE_DIR_BUILD, `sieve-${version}-${LINUX_PLATFORM}-${LINUX_ARCH}.AppImage`));
 
-  await exec(`${tool} "${source}" "${destination}"`);
+  const {stdout} = await exec(`${tool} "${source}" "${destination} 2>&1"`);
+
+  console.log(stdout);
 }
 
 

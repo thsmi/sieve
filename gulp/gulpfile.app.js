@@ -50,7 +50,7 @@ const RUNTIME_ELECTRON = "electron";
 
 const APP_IMAGE_RELEASE_URL = "https://api.github.com/repos/AppImage/AppImageKit/releases/latest";
 const APP_IMAGE_TOOL_NAME = "appimagetool-x86_64.AppImage";
-const APP_IMAGE_DIR = path.join(OUTPUT_DIR_APP, `Sieve.AppDir`);
+const APP_IMAGE_DIR = path.join(OUTPUT_DIR_APP, "sieve.AppDir");
 
 const OUTPUT_DIR_APP_WIN32 = path.join(OUTPUT_DIR_APP, `sieve-${WIN_PLATFORM}-${WIN_ARCH}`);
 const OUTPUT_DIR_APP_LINUX = path.join(OUTPUT_DIR_APP, `sieve-${LINUX_PLATFORM}-${LINUX_ARCH}`);
@@ -567,9 +567,7 @@ async function packageAppImage() {
   const source = path.resolve(APP_IMAGE_DIR);
   const destination = path.resolve(path.join(common.BASE_DIR_BUILD, `sieve-${version}-${LINUX_PLATFORM}-${LINUX_ARCH}.AppImage`));
 
-  const {stdout} = await exec(`${tool} "${source}" "${destination}"  2>&1`);
-
-  console.log(stdout);
+  await exec(`${tool} "${source}" "${destination}"  2>&1`);
 }
 
 

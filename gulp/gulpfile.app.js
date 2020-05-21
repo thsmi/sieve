@@ -479,7 +479,7 @@ async function appImageLinux() {
   if (!url)
     throw new Error("Could not download app image tool.");
 
-  const tool = path.join(CACHE_DIR_APP, `appimagetool-v${latest.name}.AppImage`);
+  const tool = path.resolve(path.join(CACHE_DIR_APP, `appimagetool-v${latest.name}.AppImage`));
 
   if (!existsSync(tool))
     await https.download(url, tool);
@@ -492,7 +492,7 @@ async function appImageLinux() {
   const source = path.resolve(path.join(OUTPUT_DIR_APP, `sieve-${LINUX_PLATFORM}-${LINUX_ARCH}`));
   const destination = path.resolve(path.join(common.BASE_DIR_BUILD, `sieve-${version}-${LINUX_PLATFORM}-${LINUX_ARCH}.AppImage`));
 
-  exec(`${tool} "${source}" "${destination}" 2>&1`);
+  await exec(`${tool} "${source}" "${destination}"`);
 }
 
 

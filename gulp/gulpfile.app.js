@@ -11,11 +11,15 @@
 
 const { src, dest, watch, parallel, series } = require('gulp');
 const { existsSync } = require('fs');
-const { readFile } = require('fs').promises;
+const { readFile, chmod } = require('fs').promises;
+
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 
 const logger = require('gulplog');
 
 const common = require("./gulpfile.common.js");
+const https = require("./gulpfile.common.https.js");
 
 const path = require('path');
 const tar = require('tar');
@@ -41,6 +45,9 @@ const MAC_ARCH = "x64";
 const MAC_PLATFORM = "mas";
 
 const RUNTIME_ELECTRON = "electron";
+
+const APP_IMAGE_RELEASE_URL = "https://api.github.com/repos/AppImage/AppImageKit/releases/latest";
+const APP_IMAGE_TOOL_NAME = "appimagetool-x86_64.AppImage";
 
 /**
  * Extracts a tar or tar.gz file to the given destination.
@@ -245,8 +252,6 @@ function packageKeytar() {
  * @param {string} prebuiltDest
  *   the location (inside the electron application) where the prebuilt
  *   binaries should be stored.
- * @param {string} pkgSrc
- *   the directory to the source node package, which should be repackaged.
  * @param {string} pkgName
  *   the the package name
  * @param {string} platform
@@ -288,7 +293,7 @@ async function deployPrebuilt(electronDest, prebuiltDest, pkgName, platform, arc
 
   if (!existsSync(prebuiltSrc)) {
     const url = `${PREBUILT_URL_KEYTAR}/v${pkg.version}/${filename}`;
-    await common.download(url, prebuiltSrc);
+    await https.download(url, prebuiltSrc);
   }
 
   // Step four, deploy the prebuilt.
@@ -457,6 +462,61 @@ async function zipLinux() {
   await common.compress(source, destination, options);
 }
 
+/**
+ * Creates a linux appImage Container
+ */
+async function appImageLinux() {
+  "use strict";
+
+  const latest = await https.fetch(APP_IMAGE_RELEASE_URL);
+
+  let url = null;
+  for (const asset of latest.assets) {
+    if (asset.name === APP_IMAGE_TOOL_NAME)
+      url = asset.browser_download_url;
+  }
+
+  if (!url)
+    throw new Error("Could not download app image tool.");
+
+  const tool = path.join(CACHE_DIR_APP, `appimagetool-v${latest.name}.AppImage`);
+
+  if (!existsSync(tool))
+    await https.download(url, tool);
+
+  const RWX_RWX_RX = 0o775;
+  await chmod(tool, RWX_RWX_RX);
+
+  const version = (await common.getPackageVersion()).join(".");
+
+  const source = path.resolve(path.join(OUTPUT_DIR_APP, `sieve-${LINUX_PLATFORM}-${LINUX_ARCH}`));
+  const destination = path.resolve(path.join(common.BASE_DIR_BUILD, `sieve-${version}-${LINUX_PLATFORM}-${LINUX_ARCH}.AppImage`));
+
+  exec(`${tool} "${source}" "${destination}" 2>&1`);
+}
+
+
+/**
+ * Zip the macOS electron app.
+ */
+async function zipMacOs() {
+  "use strict";
+
+  const version = (await common.getPackageVersion()).join(".");
+
+  const source = path.resolve(path.join(OUTPUT_DIR_APP, `sieve-${MAC_PLATFORM}-${MAC_ARCH}`));
+  const destination = path.join(common.BASE_DIR_BUILD, `sieve-${version}-${MAC_PLATFORM}-${MAC_ARCH}.zip`);
+
+  const options = {
+    permissions: {
+      "sieve": 0o100770,
+      "*": 0o100660
+    }
+  };
+
+  await common.compress(source, destination, options);
+}
+
 exports["watch"] = watchSrc;
 
 exports["updateVersion"] = updateVersion;
@@ -487,6 +547,9 @@ exports["packageMacOS"] = series(
 
 exports["zipWin32"] = zipWin32;
 exports["zipLinux"] = zipLinux;
+exports["zipMacOs"] = zipMacOs;
+
+exports["appImageLinux"] = appImageLinux;
 
 exports['package'] = parallel(
   packageDefinition,

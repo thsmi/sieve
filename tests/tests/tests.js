@@ -272,6 +272,20 @@
   });
 
   suite.add({
+    "pipe" : {
+      script: "./../common/libSieve/pipe/tests/SievePipeTest.js",
+      extend: "rfc5228",
+      require: [
+        "./../common/libSieve/copy/logic/SieveCopy.js",
+        "./../common/libSieve/variables/logic/SieveVariables.js",
+        "./../common/libSieve/subaddress/logic/SieveSubaddress.js",
+        "./../common/libSieve/vacation/logic/SieveVacation.js",
+        "./../common/libSieve/pipe/logic/SievePipe.js"
+      ]
+    }
+  });
+
+  suite.add({
     "examples-fastmail": {
       script: "./sieve/SieveFastMailTest.js",
       extend: "rfc5228",

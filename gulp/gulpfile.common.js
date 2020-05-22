@@ -27,6 +27,10 @@ const BASE_DIR_CODEMIRROR = "./node_modules/codemirror";
 const BASE_DIR_COMMON = "./src/common";
 const BASE_DIR_BUILD = "./build";
 
+const BASE_DIR_LIBMANAGESIEVE = path.join(BASE_DIR_COMMON, "libManageSieve");
+const BASE_DIR_LIBSIEVE = path.join(BASE_DIR_COMMON, "libSieve");
+const BASE_DIR_MANAGESIEVEUI = path.join(BASE_DIR_COMMON, "managesieve.ui");
+
 const INDEX_MAJOR = 0;
 const INDEX_MINOR = 1;
 const INDEX_PATCH = 2;
@@ -126,6 +130,62 @@ function packageBootstrap(destination) {
     BASE_DIR_BOOTSTRAP + "/js/*.bundle.min.js"
   ], { base: BASE_DIR_BOOTSTRAP }).pipe(
     dest(destination));
+}
+
+/**
+
+/**
+ * Packages the common libManageSieve files
+ *
+ * @param {string} destination
+ *   where to place the common libManageSieve files
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
+ */
+function packageLibManageSieve(destination) {
+  "use strict";
+
+  return src([
+    BASE_DIR_LIBMANAGESIEVE + "/**"
+  ], { base: BASE_DIR_COMMON }).pipe(dest(destination));
+}
+
+/**
+ * Packages the common libSieve files
+ *
+ * @param {string} destination
+ *   where to place the common libSieve files
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
+ */
+function packageLibSieve(destination) {
+  "use strict";
+
+  return src([
+    BASE_DIR_LIBSIEVE + "/**",
+    "!" + BASE_DIR_LIBSIEVE + "/libSieve/**/rfc*.txt",
+    "!" + BASE_DIR_LIBSIEVE + "/libSieve/**/tests/",
+    "!" + BASE_DIR_LIBSIEVE + "/libSieve/**/tests/**"
+  ], { base: BASE_DIR_COMMON }).pipe(dest(destination));
+}
+
+/**
+ * Packages the common managesieve.ui files
+ *
+ * @param {string} destination
+ *   where to place the common managesieve.ui files
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
+ */
+function packageManageSieveUi(destination) {
+  "use strict";
+
+  return src([
+    BASE_DIR_MANAGESIEVEUI + "/**"
+  ], { base: BASE_DIR_COMMON }).pipe(dest(destination));
 }
 
 /**
@@ -333,64 +393,16 @@ async function compress(source, destination, options) {
   });
 }
 
-/**
- * Downloads a file from an https url and stores the data into the given file.
- * It follows redirects. Upon a non 200 status code an error is thrown.
- *
- * @param {string} url
- *   the download url.
- * @param {string} destination
- *   the file into which the downloaded data should be stored.
- *   In case the file exists it will be silently overwritten.
- */
-async function download(url, destination) {
-
-  "use strict";
-
-  const https = require('https');
-  const fs = require('fs');
-
-  logger.debug(`Downloading ${url} to ${destination}`);
-
-  return await new Promise((resolve, reject) => {
-    https.get(url, async function (response) {
-
-      try {
-        if (response.statusCode >= 300 && response.statusCode <= 308) {
-          logger.debug(`Following redirect to ${response.headers.location}`);
-          await download(response.headers.location, destination);
-
-          resolve();
-          return;
-        }
-
-        if (response.statusCode !== 200)
-          throw Error(`Response failed with status code ${response.statusCode}.`);
-
-        const file = fs.createWriteStream(destination);
-
-        response.pipe(file);
-
-        file.on('finish', function () {
-          file.close(function () {
-            resolve();
-          });
-        });
-      } catch (ex) {
-        reject(new Error(ex));
-      }
-    });
-  });
-}
-
-
 exports["clean"] = clean;
 exports["compress"] = compress;
-exports["download"] = download;
 
 exports["packageJQuery"] = packageJQuery;
 exports["packageCodeMirror"] = packageCodeMirror;
 exports["packageBootstrap"] = packageBootstrap;
+
+exports["packageLibManageSieve"] = packageLibManageSieve;
+exports["packageLibSieve"] = packageLibSieve;
+exports["packageManageSieveUi"] = packageManageSieveUi;
 
 exports["getPackageVersion"] = getPackageVersion;
 exports["setPackageVersion"] = setPackageVersion;

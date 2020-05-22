@@ -38,7 +38,8 @@
         </div>
       </div>
 
-      <div id="sieve-tab-content" class="list-group list-group-flush siv-tpl-scripts tab-content mx-2 mb-2">
+      <div id="sieve-tab-content"
+        class="list-group list-group-flush siv-tpl-scripts tab-content mx-2 mb-2 border-top-0">
         <div id="sieve-content-settings" class="tab-pane m-4" role="tabpanel"></div>
         <iframe id="sieve-widget-editor" class="tab-pane" role="tabpanel"
           src="./../../libs/libSieve/SieveGui.html"></iframe>
@@ -46,29 +47,29 @@
           <!-- insert editor here ... -->
         </div>
       </div>
+
     </div>
 
-  </div>
-
-  <div id="sieve-editor-msg">
-    <!-- We do some magic here. First we render the real content-->
-    <div class="footer fixed-bottom container">
-      <div>
-        <div class="alert alert-warning mx-2" role="alert">
-          <h4 class="alert-heading" data-i18n="editor.error"></h4>
-          <p class="sieve-editor-msg-details"></p>
+    <div id="sieve-editor-msg">
+      <!-- We do some magic here. First we render the real content-->
+      <div class="footer fixed-bottom container">
+        <div>
+          <div class="alert alert-warning mx-2" role="alert">
+            <h4 class="alert-heading" data-i18n="editor.error"></h4>
+            <p class="sieve-editor-msg-details"></p>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- An invisible element which ensures there is alway enough -->
-    <!-- so that the message never overlays the textbox -->
-    <!-- it is like a dynamically sized space -->
-    <div class="footer container invisible">
-      <div style="margin: 1px;">
-        <div class="alert alert-warning mx-2" role="alert">
-          <h4 class="alert-heading" data-i18n="editor.error"></h4>
-          <p class="sieve-editor-msg-details"></p>
+      <!-- An invisible element which ensures there is alway enough -->
+      <!-- so that the message never overlays the textbox -->
+      <!-- it is like a dynamically sized space -->
+      <div class="footer container invisible">
+        <div style="margin: 1px;">
+          <div class="alert alert-warning mx-2" role="alert">
+            <h4 class="alert-heading" data-i18n="editor.error"></h4>
+            <p class="sieve-editor-msg-details"></p>
+          </div>
         </div>
       </div>
     </div>

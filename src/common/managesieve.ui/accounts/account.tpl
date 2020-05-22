@@ -35,7 +35,7 @@
 
       </div>
     </div>
-    <div class="list-group list-group-flush tab-content">
+    <div class="list-group list-group-flush tab-content border-top-0">
       <div class="sieve-accounts-content tab-pane fade show active" role="tabpanel">
         <ul class="list-group list-group-flush siv-tpl-scripts">
           <!--items go here -->

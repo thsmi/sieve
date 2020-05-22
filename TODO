@@ -1,0 +1,14 @@
+
+* Show connection error inside account view as red box...
+
+account-connect should also use callbacks in app.
+
+
+Editor hide save button when being in settings view. the save is confusing.
+
+remove foreach() with for ...of
+
+
+###
+environment
+notify

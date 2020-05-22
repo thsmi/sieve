@@ -1,0 +1,325 @@
+# TODO: Generic Implementations
+
+generic:onNew returns as SieveElement
+generic:onProbe tests for a match
+generic:onCapcable test if compatible.
+
+TODO Rename SieveAbstractGeneric to SieveGenericElement
+TODO Create a real SieveAbstractGeneric which can be inherited by SieveGenericList
+
+TODO There are two abstract generic classes. May be rename one to template
+
+## Lists
+
+SieveGenericList {
+
+onProbe(parser, lexer) {
+
+
+  if (this.item.prefix !== null && typeof(this.item.token) !== "undefined")
+    if (this.item.collapsible !== true)
+      if (parser.startsWith(this.item.prefix))
+        return true;
+
+  if (this.item.nonempty === false)
+    return true;
+
+  return lexer.probyByClass([...this.items.items, "whitepace"], parser);
+}
+
+onNew() {
+  const element = SieveListElement(docshell, id, this.item.node);
+  element.setDelimiter(this.item.delimiter);
+  element.setValue(this.item.value);
+  element.setItems([...this.item.items, "whitespace"]);
+  element.setNonEmpty(this.items.nonempty);
+  element.setCollapsible(this.items.collapsible);
+}
+}
+
+class SieveListElement extends SieveAbstractElement {
+
+  nodeName();
+  require(imports) {
+      for (let i = 0; i < this.tests.length; i++)
+        this.tests[i][TEST].require(imports);
+    };
+
+  setDelimiter(delimiter) {
+    if (!Array.isArray(delimiter) || delimiter.length !== 3)
+      this.prefix = null;
+      this.separator = null;
+      this.postfix = null;
+
+      return this;
+    };
+
+    this.prefix = delimiter[0];
+    this.separator = delimiter[1];
+    this.postfix = delimiter[2];
+  }
+
+  parserDelimited(parser) {
+
+    if (!this.delimiters)
+      return false;
+
+    this.delimiters.prefix.parse(parser);
+
+    this.elements = [];
+
+    while (parser.hasData()) {
+      let element = {null, null, null};
+
+      if (whitespace)
+        element[LEADING_WS] = extractWhitespace;
+
+      element[ELEMENT] = this.getParent().createByClass(this.items, parser);
+
+      if (whitespace)
+        element[TAILING_WS] = extractWhitespace;
+
+      this.elements.push(element);
+
+      if !parser.startsWith(this.delimiter.separator)
+        break;
+
+      this.extract(this.separator)
+    }
+
+    // todo configure to consume witespaces untill the eol.
+    this.delimiters.postfix.parse(parser);
+  }
+
+
+
+  parseEmpty(parser) {
+    if (!this.canBeEmpty)
+      return false;
+
+    const pos = parser.pos();
+
+    if (ws)
+      element[ws] = ws;
+
+    if (!tryParse(class)) {
+      this.elements.push(element);
+      return true;
+    }
+
+    // reset the parser
+    parser.pos(pos);
+    return false;
+  }
+
+  parseCollapsed(parser) {
+
+    if (!this.collapsible)
+      return false;
+
+    const element = [];
+    const pos = parser.pos();
+    try {
+
+      if (ws)
+        element[LEADING_WS] = ws;
+
+      element[ELEMENT] = this.getParent.parse...
+
+      if (ws)
+        element[TAILING_WS] = ws;
+    } catch (ex) {
+      // it is not collapsed so we need to restore the parser
+      parser.pos(pos);
+      return false;
+    }
+
+    this.collapsed = true;
+    this.elements = [];
+    this.elements.push(element);
+  }
+
+
+  // parse until the end is reached or an unknown element
+  parseNonDelimited(parse) {
+    this.elements = [];
+
+    while (parser.hasData()) {
+      let element = {null, null, null};
+
+      if (whitespace)
+        element[LEADING_WS] = extractWhitespace;
+
+      if ((this.elements.length > 0) && (!probeByClass(this.items)) {
+         this.elements.push(element);
+         break;
+      }
+
+     element[ELEMENT] = this.getParent().createByClass(this.items, parser);
+
+     if (whitespace)
+      element[TAILING_WS] = extractWhitespace;
+
+     this.elements.push(element);
+    }
+  }
+
+  init(parser) {
+    if (parseEmpty(parser))
+      return this;
+
+    if (parseCollapsed(parser))
+      return this;
+
+    if (parseDelimited(parser));
+      return this;
+
+    if (parseXY(parser))
+      return this;
+
+    throw new Error;
+  }
+
+  toScript() {
+    let result = "";
+
+    if this.delimiter.prefix
+      result += this.prefix.toScript();
+
+    for (element of this.elements) {
+      for (item of element)
+        if item !== null
+          result += item.toScript();
+    }
+
+    if this.delimiter.prefix
+      result += this.prefix.toScript();
+
+    return result;
+  }
+
+  append()
+
+  empty();
+  clear():
+
+  contains()
+
+  index()
+
+  size()
+
+  removeChild
+  remove(str)
+
+  values()
+}
+
+
+
+
+## String List
+addList({
+  type: "stringlist"
+
+  delimiter: [ "[", "," , "]" ],
+
+  value: '[""]',
+
+  items: ["string"], // also consumes whitespace
+
+  // Requires at least one non whitespace item
+  nonempty : true,
+
+  // A single item will can the pre and postfix
+  collapsible: true
+})
+
+### Tests
+
+addList({
+  type: testlist,
+
+  prefix: "("
+  postfix: ")"
+  separator: ","
+
+  //+whitespaces
+  items: [test, operator]
+
+  nonempty: true,
+  collapse: false
+})
+
+### Commands
+addList({
+  type : "commands",
+
+  // no prefix, postfix & separator
+
+  value: "",
+
+  //+whitespaces
+  items: [condition, action],
+
+  nonempty: false,
+  collapse: false,
+
+## Blocks
+
+addBock(block) {
+  if block.postfix
+    addLiteral(block.postfix)
+
+  for item of block.properties
+    addMandatoryItem(item)
+
+  if block.prefix
+    addLiteral(block.prefix)
+}
+
+### Block
+
+addBlock({
+  prefix: "{",
+  postfix: "}"
+
+  properties: [{
+    id: "commands"
+    type: commands
+  }]
+})
+
+### RootNode
+
+addBlock({
+  properties: [{
+    id: "imports"
+    type: imports
+  },{
+    id: "commands"
+    type: commands
+  }]
+})
+
+
+
+// Collapsed
+"Test"
+
+// One element with delimiters
+["TEST"]
+// Multiple elements with delimiters
+[ "Test","TEST", "TEST" ,"TEST"]
+
+"stop;stop;"
+
+"
+  stop;
+  stop;
+"
+
+""
+
+
+

@@ -1453,6 +1453,304 @@
     }
   }
 
+  class SieveListItem {
+
+    constructor(parent) {
+      this.parent = parent;
+
+      this.prefix = this.parent.createByName("whitespace", "");
+      this.item = null;
+      this.postfix = this.parent.createByName("whitespace", "");
+    }
+
+    /**
+     * Extracts one item including leading and tailing whitespace from the parser.
+     *
+     * @param {SieveParser} parser
+     *   the parser which contains the data.
+     * @param {boolean} optional
+     *   indicates an missing item is ok
+     * @returns {SieveAbstractElement[]}
+     *   an array containing the extracted elements.
+     */
+    parse(parser, optional) {
+
+      this.prefix.init("");
+      this.postfix.init("");
+
+      if (parent.probeByName("whitespace", parser))
+        this.prefix.init(parser);
+
+      if (optional && (!parent.probeByName(this.items, parser)))
+        return element;
+
+      this.item = parent.createByClass(this.items, parser);
+
+      if (parent.probeByName("whitespace", parser))
+        this.postfix.init(parser);
+
+      return element;
+    }
+
+    toScript() {
+      let rv = "";
+
+      if (prefix)
+        rv += prefix.toScript();
+
+      if (item)
+        rv += this.item.toScript();
+
+      if (postfix)
+        rv += postfix.toScript();
+
+      return rv;
+    }
+  }
+
+  class SieveListElement extends SieveAbstractElement {
+
+    constructor(docshell, id, type) {
+      super(docshell, id);
+
+      this._elements = [];
+      this._nodeName = type;
+      this._delimiter = null;
+      this._items = [];
+    }
+
+    nodeName() {
+      return this._nodeName;
+    }
+
+    require(imports) {
+      for (const elm of this._elements)
+        elm.require(imports);
+
+      return this;
+    }
+
+
+    setDelimiter(delimiter) {
+      if (!Array.isArray(delimiter) || delimiter.length !== 3) {
+        this._delimiter = null;
+        return this;
+      };
+
+      this._delimiter = {
+        prefix: delimiter[0],
+        separator: delimiter[1],
+        postfix: delimiter[2]
+      };
+    }
+
+    getDelimiter() {
+      return this._delimiter;
+    }
+
+    parseEmpty(parser) {
+
+      if (!this.getDelimiter())
+        return false;
+
+      if (!this.canBeEmpty)
+        return false;
+
+      const pos = parser.pos();
+      const element = [null, null, null];
+
+      if (this.getDocument().probeByName("whitespace", parser))
+        element[LIST_LEADING_WS] = this.getDocument().createByName("whitespace", parser);
+
+      if (!this.getDocument().probeByClass(this.items, parser)) {
+        // reset the parser
+        parser.pos(pos);
+        return false;
+      }
+
+      this.elements = [element];
+
+      return true;
+    }
+
+    parseCollapsed(parser) {
+
+      if (!this.collapsible)
+        return false;
+
+      let element;
+      const pos = parser.pos();
+      try {
+        const element = SieveListItem()
+        element.parse(this, parser)
+      } catch (ex) {
+        // it is not collapsed so we need to restore the parser
+        parser.pos(pos);
+        return false;
+      }
+
+      this.elements = [element];
+      this._collapsed = true;
+
+      return true;
+    }
+
+    // parse until the end is reached or an unknown element
+    parseNonDelimited(parser) {
+
+      const elements = [];
+
+      while (parser.hasData()) {
+
+        const element = new SieveListItem();
+
+        if (this.elements.length > 0)
+          element.parse(this, parser, this.items, true);
+        else
+          element.parse(this, parser, this.items, false);
+
+        elements.push("");
+
+        if (!element.hasData())
+          break;
+
+        const element = [null, null, null];
+
+        if (this.getDocument().probeByName("whitespace", parser))
+          element[LIST_LEADING_WS] = this.getDocument().createByName("whitespace", parser);
+
+        if (this.elements.length > 0) {
+          if (!this.getDocument().probeByName(this.items, parser)) {
+            this.elements.push(element);
+            break;
+          }
+        }
+
+        element[LIST_ELEMENT] = this.getParent().createByClass(this.items, parser);
+
+        if (this.getDocument().probeByName("whitespace", parser))
+          element[LIST_TAILING_WS] = this.getDocument().createByName("whitespace", parser);
+
+        const element = this.extractElement(parser);
+        elements.push(element);
+
+        if (element[LIST_ELEMENT].)
+      }
+
+      this._elements = elements;
+    }
+
+    parserDelimited(parser) {
+
+      if (!this._delimiters)
+        return false;
+
+      parser.extract(this._delimiter.prefix);
+
+      this._elements = [];
+
+      while (parser.hasData()) {
+        const element = [null, null, null];
+
+        if (this.getDocument().probeByName("whitespace", parser))
+          element[LIST_LEADING_WS] = this.getDocument().createByName("whitespace", parser);
+
+        element[LIST_ELEMENT] = this.getDocument().createByClass(this.items, parser);
+
+        if (this.getDocument().probeByName("whitespace", parser))
+          element[LIST_TAILING_WS] = this.getDocument().createByName("whitespace", parser);
+
+        this._elements.push(element);
+
+        if (!parser.startsWith(this._delimiter.separator))
+          break;
+
+        this.extract(this._delimiter.separator);
+      }
+
+      // todo configure to consume whitespace until the eol.
+      this.extract(this._delimiter.postfix);
+    }
+
+    init(parser) {
+      if (this.parseEmpty(parser))
+        return this;
+
+      if (this.parseCollapsed(parser))
+        return this;
+
+      if (this.parseDelimited(parser))
+        return this;
+
+      if (this.parseNonDelimited(parser))
+        return this;
+
+      throw new Error("...");
+    }
+
+    toScript() {
+
+      // TODO implement collapsed
+
+      let result = "";
+
+      for (const element of this._elements) {
+
+        if ((result === "") && (this._delimiter))
+          result += this._delimiter.separator;
+
+        for (const item of element) {
+          if (item === null)
+            continue;
+
+          result += item.toScript();
+        }
+      }
+
+      if (this.delimiter)
+        result = this._delimiter.prefix + result + this._delimiter.postfix;
+
+      return result;
+    }
+
+    append() {
+      throw new Error("Implement me");
+    }
+
+    empty() {
+      throw new Error("Implement me");
+    }
+
+    clear() {
+      throw new Error("Implement me");
+    }
+
+    contains() {
+      throw new Error("Implement me");
+    }
+
+    index() {
+      throw new Error("Implement me");
+    }
+
+    size() {
+      throw new Error("Implement me");
+    }
+
+    removeChild() {
+      throw new Error("Implement me");
+    }
+
+    remove(str) {
+      throw new Error("Implement me");
+    }
+
+    values() {
+      throw new Error("Implement me");
+    }
+  }
+
+
   exports.SieveGenericStructure = SieveGenericStructure;
   exports.SieveExplicitGroupElement = SieveExplicitGroupElement;
   exports.SieveImplicitGroupElement = SieveImplicitGroupElement;

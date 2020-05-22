@@ -330,4 +330,4 @@
 
   exports.SieveParser = SieveParser;
 
-})(window);
+})(this);

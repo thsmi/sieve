@@ -66,4 +66,4 @@
     properties: properties
   });
 
-})(window);
+})(this);

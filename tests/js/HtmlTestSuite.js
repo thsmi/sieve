@@ -98,7 +98,7 @@
 
   net.tschmid.yautt.test.server.extend = function (name) {
 
-    const base = exports.net.tschmid.yautt.test.config[name];
+    const base = exports.tests.get(name);
     let scripts = [];
 
     if (!base)
@@ -120,7 +120,7 @@
 
   net.tschmid.yautt.test.server.isCompatible = function (name) {
 
-    const base = exports.net.tschmid.yautt.test.config[name];
+    const base = exports.tests.get(name);
 
     if (!base.agents)
       return true;
@@ -163,10 +163,8 @@
 
     const scripts = this.extend(this.current);
 
-    const tests = exports.net.tschmid.yautt.test.config;
-
     scripts.push("./../js/Unit.js");
-    scripts.push(tests[this.current].script);
+    scripts.push(exports.tests.get(this.current).script);
     scripts.push("./../js/UnitInit.js");
 
 
@@ -190,29 +188,7 @@
         .attr("src", "./tests/tests.html"));
   };
 
-  /**
-   * Adds the test configuration to this server.
-   * Existing items are replaced silently
-   *
-   * @param {object} tests
-   *   the tests which should be performed
-   */
-  net.tschmid.yautt.test.server.add = function (tests) {
 
-    let config = exports.net.tschmid.yautt.test.config;
-
-    if (config === null || typeof (config) === "undefined")
-      config = {};
-
-    $.each(tests, function (name, value) {
-      if (typeof (value) === "undefined")
-        return;
-
-      config[name] = value;
-    });
-
-    exports.net.tschmid.yautt.test.config = config;
-  };
 
   net.tschmid.yautt.test.server.run = function () {
 
@@ -220,21 +196,19 @@
 
     this.queue = [];
 
-    const tests = exports.net.tschmid.yautt.test.config;
-
-    $.each(tests, function (name, value) {
+    for (const [name, value] of exports.tests.entries()) {
       // Loop through tests..
       if (typeof (value) === "undefined")
-        return;
+        continue;
 
       if (value.disabled)
-        return;
+        continue;
 
       if (!value.script)
-        return;
+        continue;
 
       that.queue.push(name);
-    });
+    }
 
     this.next();
     // TODO add a timeout watchdog.
@@ -267,19 +241,17 @@
 
     $("#start").click(function () {
 
-      const tests = exports.net.tschmid.yautt.test.config;
-
-      $.each(tests, function (name, value) {
+      for (const [name, value] of exports.tests.entries()) {
         if (value.disabled)
           value.disabled = false;
-      });
+      }
 
       const items = $("#tests input:checkbox:not(:checked)");
       items.each(function (idx, elm) {
         const name = $(this).val();
 
-        if (tests[name].script)
-          tests[name].disabled = true;
+        if (exports.tests.get(name).script)
+          exports.tests.get(name).disabled = true;
       });
 
       net.tschmid.yautt.test.server.clear();
@@ -308,12 +280,11 @@
 
 
     const elm = $("#tests");
-    const tests = exports.net.tschmid.yautt.test.config;
 
-    $.each(tests, function (name) {
+    for (const [name, value] of exports.tests.entries()) {
 
-      if (!tests[name].script)
-        return;
+      if (!value.script)
+        continue;
 
       function gotoTest(test) {
         const items = $(`#divOutput [testprofile='${test}']`);
@@ -325,7 +296,7 @@
           .append($("<input />", { type: "checkbox", "checked": "checked" }).val(name))
           .append($("<span />").text(name).click(function () { gotoTest(name); })));
 
-    });
+    }
   });
 
 })(window);

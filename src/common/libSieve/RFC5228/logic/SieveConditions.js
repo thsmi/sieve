@@ -286,4 +286,4 @@
   SieveLexer.register(SieveElse);
   SieveLexer.register(SieveCondition);
 
-})(window);
+})(this);

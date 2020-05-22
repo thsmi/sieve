@@ -51,4 +51,4 @@
     items: ["address-part/"]
   });
 
-})(window);
+})(this);

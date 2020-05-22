@@ -321,4 +321,4 @@
   exports.SieveAbstractElement = SieveAbstractElement;
   exports.SieveAbstractBlock = SieveAbstractBlock;
 
-})(window);
+})(this);

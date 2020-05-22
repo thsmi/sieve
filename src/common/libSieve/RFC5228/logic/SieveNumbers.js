@@ -142,4 +142,4 @@
 
   SieveLexer.register(SieveNumber);
 
-})(window);
+})(this);

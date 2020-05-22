@@ -177,4 +177,4 @@
 
   suite.expectValidSnippet = expectValidSnippet;
 
-})(window);
+})(this);

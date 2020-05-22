@@ -17,7 +17,8 @@
       },
       "args": [
         "./src/**/*.js",
-        "./src/**/*.jsm"
+        "./src/**/*.jsm",
+        "./tests/**/*.js"
       ],
       "promptOnClose": false,
       "presentation": {

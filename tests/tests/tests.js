@@ -220,7 +220,7 @@
     ]
   });
 
-  tests.add({
+  tests.set({
     "pipe" : {
       script: "./../common/libSieve/pipe/tests/SievePipeTest.js",
       extend: "rfc5228",

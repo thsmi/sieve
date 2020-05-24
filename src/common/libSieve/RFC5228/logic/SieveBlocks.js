@@ -198,4 +198,4 @@
 
   SieveLexer.register(SieveRootNode);
 
-})(window);
+})(this);

@@ -295,4 +295,4 @@
 
   exports.SieveLexer = SieveLexer;
 
-})(window);
+})(this);

@@ -42,7 +42,7 @@
 
   SieveGrammar.addTag(detailpart);
 
-})(window);
+})(this);
 
 
 //   :user "+" :detail "@" :domain

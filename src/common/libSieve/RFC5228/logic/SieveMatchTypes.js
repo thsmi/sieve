@@ -52,4 +52,4 @@
     items: ["match-type/"]
   });
 
-})(window);
+})(this);

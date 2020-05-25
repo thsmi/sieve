@@ -80,9 +80,10 @@
      */
     addInfo(msg) {
       if (this.verbosity < VERBOSITY_INFO)
-        return;
+        return this;
 
       console.log(msg);
+      return this;
     }
 
     /**
@@ -90,9 +91,10 @@
      */
     addTrace(msg) {
       if (this.verbosity < VERBOSITY_TRACE)
-        return;
+        return this;
 
       console.log(`\u001B[90m${msg}\u001b[0m`);
+      return this;
     }
 
     /**
@@ -103,7 +105,7 @@
       this.status = STATUS_FAILED;
 
       if (this.verbosity < VERBOSITY_NORMAL)
-        return;
+        return this;
 
       if (message instanceof Error) {
         details = "" + message.stack;
@@ -114,6 +116,8 @@
 
       if (details)
         console.log(`\u001B[31m${details} \u001b[0m`);
+
+      return this;
     }
 
     /**
@@ -121,9 +125,10 @@
      */
     addWarning(msg) {
       if (this.verbosity < VERBOSITY_NORMAL)
-        return;
+        return this;
 
       console.log(`\u001B[33m⚠ ${msg} \u001b[0m`);
+      return this;
     }
 
     /**
@@ -134,14 +139,16 @@
       this.status = STATUS_SUCCESS;
 
       if (this.verbosity < VERBOSITY_NORMAL)
-        return;
+        return this;
 
       console.log("\u001B[32m✓ Test succeeded.\u001b[0m");
+      return this;
     }
 
   }
 
   exports.NodeTestReport = NodeTestReport;
+
   exports.STATUS_FAILED = STATUS_FAILED;
   exports.STATUS_SUCCESS = STATUS_SUCCESS;
   exports.STATUS_UNKNOWN = STATUS_UNKNOWN;

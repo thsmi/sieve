@@ -52,6 +52,7 @@
      **/
     addInfo(msg) {
       this.log(msg, "Info");
+      return this;
     }
 
     /**
@@ -59,6 +60,7 @@
      **/
     addTrace(msg) {
       this.log(msg, "Trace");
+      return this;
     }
 
     /**
@@ -80,6 +82,8 @@
         .querySelector(`#tests input[value='${this.getName()}']`)
         .parentNode
         .classList.add("failure");
+
+      return this;
     }
 
     /**
@@ -87,6 +91,7 @@
      **/
     addWarning(msg) {
       this.log("⚠ " + msg, "Warning");
+      return this;
     }
 
     /**
@@ -99,6 +104,8 @@
         .querySelector(`#tests input[value='${this.getName()}']`)
         .parentNode
         .classList.add("success");
+
+      return this;
     }
 
     /**

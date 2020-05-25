@@ -17,6 +17,12 @@
   exports.net.tschmid.yautt.test.tests = [];
 
 
+  /**
+   * Logs the string at error level.
+   *
+   * @param {string} message
+   *   the message to log.
+   */
   function logError(message) {
     exports.net.tschmid.yautt.test.log(message, "Error");
   }
@@ -98,6 +104,9 @@
     exports.net.tschmid.yautt.test.tests.push(test);
   }
 
+  /**
+   * Runs the test cases for this fixture.
+   */
   function run() {
 
     const tests = exports.net.tschmid.yautt.test.tests;

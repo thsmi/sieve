@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "bootstrap": "^4.5.0",
-    "codemirror": "^5.52.2",
+    "codemirror": "^5.54.0",
     "electron": "^8.2.3",
     "electron-packager": "^14.0.6",
     "eslint": "^7.0.0",

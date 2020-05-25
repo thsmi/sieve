@@ -16,9 +16,7 @@
     const suite = new BrowserTestSuite();
 
     document.querySelector("#toggleTrace").addEventListener('click', () => {
-
-      for (const elm of document.querySelectorAll(".logTrace"))
-        elm.classList.toggle("visible");
+      document.querySelector("#divOutput").classList.toggle("showTrace");
     });
 
     document.querySelector("#start").addEventListener('click', () => {
@@ -68,6 +66,12 @@
         elm.classList.remove("failure");
     });
 
+    /**
+     * Scrolls the give test name into view
+     *
+     * @param {string} test
+     *   the test name
+     */
     function gotoTest(test) {
       document
         .querySelector(`#divOutput div[data-name='${test}']`)

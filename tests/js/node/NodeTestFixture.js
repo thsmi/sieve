@@ -8,6 +8,9 @@
 
   const { AbstractTestFixture} = require("./../common/AbstractTestFixture.js");
 
+  /**
+   * Adapts the test fixture to a node based runtime environment.
+   */
   class NodeTestFixture extends AbstractTestFixture {
 
     /**

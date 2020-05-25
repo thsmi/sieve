@@ -17,6 +17,11 @@
   exports.net.tschmid.yautt.test.tests = [];
 
 
+  /**
+   *
+   * @param {*} message
+   * @param {*} level
+   */
   function log(message, level) {
 
     if (typeof (level) !== "string")
@@ -30,6 +35,11 @@
     parent.postMessage("" + JSON.stringify(msg), "*");
   }
 
+  /**
+   * Logs a message as an error.
+   * @param {string} message
+   *   the message to log.
+   */
   function logError(message) {
     log(message, "Error");
   }
@@ -74,6 +84,12 @@
     parent.postMessage("" + JSON.stringify(msg), "*");
   }
 
+  /**
+   * Loads a javascript file into this test.
+   *
+   * @param {string} script
+   *   the url to load.
+   */
   function require(script) {
 
     const elm = document.createElement("script");
@@ -159,6 +175,9 @@
     exports.net.tschmid.yautt.test.tests.push(test);
   }
 
+  /**
+   * Runs all tests inside this fixture.
+   */
   function run() {
 
     const tests = exports.net.tschmid.yautt.test.tests;

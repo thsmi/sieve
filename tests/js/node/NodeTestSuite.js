@@ -5,7 +5,9 @@
   const { AbstractTestSuite} = require("./../common/AbstractTestSuite.js");
   const { NodeTestFixture} = require("./NodeTestFixture.js");
 
-
+  /**
+   * Adapts the test fixture to a browser based runtime environment.
+   */
   class NodeTestSuite extends AbstractTestSuite {
 
     /**

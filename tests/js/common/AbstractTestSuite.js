@@ -2,27 +2,29 @@
 
   "use strict";
 
-  // Suite
-  // Fixture
-  // Case
-
+  /**
+   * Implements an abstract test suite
+   *
+   * A test suite has fixtures and fixtures have test cases.
+   */
   class AbstractTestSuite {
 
     /**
-     * Creates a new instance
+     * Creates a new instance.
      */
     constructor() {
       this.tests = new Set();
     }
 
-    logTrace(message) {
-      this.log(message, "Trace");
-    }
-
-    logError(message) {
-      this.log(message, "Error");
-    }
-
+    /**
+     * Loads the test definitions into this test suite.
+     *
+     * @param {*} tests
+     *   the test definition
+     *
+     * @returns {AbstractTestSuite}
+     *   a self reference.
+     */
     load(tests) {
       this.tests.clear();
 
@@ -41,10 +43,16 @@
     }
 
     /**
+     * Adds a test to this test suite.
+     * It will clone the test specification.
      *
      * @param {string} name
+     *   the test fixtures name.
      * @param {*} tests
+     *   the test definitions.
+     *
      * @returns {AbstractTest}
+     *   a self reference.
      */
     add(name, tests) {
       // Clone the test description...
@@ -61,8 +69,22 @@
 
       this.tests.add(
         this.create(name, test));
+
+      return this;
     }
 
+    /**
+     * The extends the given test resolving the
+     * dependency inheritance.
+     *
+     * @param {string} name
+     *   the test name to be extended.
+     * @param {*} tests
+     *   the test definition which is used for the lookup.
+     *
+     * @returns {AbstractTestSuite}
+     *   a self reference.
+     */
     extend(name, tests) {
 
       const base = tests.get(name);

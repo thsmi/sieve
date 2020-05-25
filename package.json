@@ -11,7 +11,7 @@
     "codemirror": "^5.54.0",
     "electron": "^8.2.3",
     "electron-packager": "^14.0.6",
-    "eslint": "^7.0.0",
+    "eslint": "^7.1.0",
     "eslint-plugin-jsdoc": "^25.4.2",
     "gulp": "^4.0.0",
     "jquery": "^3.5.1",

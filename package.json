@@ -17,6 +17,7 @@
     "jquery": "^3.5.1",
     "keytar": "^5.4.0",
     "material-design-icons-iconfont": "^5.0.1",
+    "node-abi": "^2.17.0",
     "tar": "^6.0.1",
     "yazl": "^2.5.1"
   },

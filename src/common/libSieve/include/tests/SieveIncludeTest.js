@@ -21,13 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Sieve Include (RFC6609) unit tests...");
-  });
+  suite.description("Sieve Include (RFC6609) unit tests...");
 
-  suite.add(function () {
-
-    suite.log("return test");
+  suite.add("return test", () => {
 
     const script =
       'require "include";\r\n'
@@ -36,9 +32,7 @@
     suite.expectValidScript(script, ["include"]);
   });
 
-  suite.add(function () {
-
-    suite.log("include ambiguous location ");
+  suite.add("include ambiguous location ", () => {
 
     const script =
       'require ["include"];\r\n'
@@ -51,9 +45,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("include multiple scripts");
+  suite.add("include multiple scripts", () => {
 
     const script =
       'require ["include"];\r\n'
@@ -66,9 +58,7 @@
     suite.expectValidScript(script, ["include"]);
   });
 
-  suite.add(function () {
-
-    suite.log("include test2");
+  suite.add("include test2", () => {
 
     const script =
       'require [ "include", "variables" ];\r\n'
@@ -90,9 +80,7 @@
     suite.expectValidScript(script, ["include", "variables"]);
   });
 
-  suite.add(function () {
-
-    suite.log("multiple globals");
+  suite.add("multiple globals", () => {
 
     const script =
       'require ["include", "variables"];\r\n'
@@ -107,9 +95,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("single global");
+  suite.add("single global", () => {
 
     const script =
       'require ["variables", "include" /*, "vacation"*/];\r\n'

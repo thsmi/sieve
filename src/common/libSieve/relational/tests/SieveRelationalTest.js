@@ -21,13 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Sieve Relational (RFC5231) unit tests...");
-  });
+  suite.description("Sieve Relational (RFC5231) unit tests...");
 
-  suite.add(function () {
-
-    suite.log("Extended Example test");
+  suite.add("Extended Example test", () => {
 
     const script =
       'require ["relational", "comparator-i;ascii-numeric", "fileinto"];\r\n'
@@ -65,9 +61,7 @@
     suite.expectValidScript(script, ["relational", "comparator-i;ascii-numeric", "fileinto"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Invalid operator");
+  suite.add("Invalid operator", () => {
 
     const script =
       'require ["relational"];\r\n'
@@ -81,9 +75,7 @@
     suite.expectInvalidScript(script, "Error: Unknown or incompatible type", ["relational"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Missing operator");
+  suite.add("Missing operator", () => {
 
     const script =
       'require ["relational"];\r\n'
@@ -98,15 +90,13 @@
   });
 
 
-  suite.add(function () {
-    suite.log("Validate :value constructors");
+  suite.add("Validate :value constructors", () => {
 
     const snippet = ':value "eq"';
     suite.expectValidSnippet("match-type/value", snippet, ["relational"]);
   });
 
-  suite.add(function () {
-    suite.log("Validate :count constructors");
+  suite.add("Validate :count constructors", () => {
 
     const snippet = ':count "eq"';
     suite.expectValidSnippet("match-type/count", snippet, ["relational"]);

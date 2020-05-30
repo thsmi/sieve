@@ -426,4 +426,4 @@
 
   exports.SieveGrammar.create = createGrammar;
 
-})(window);
+})(this);

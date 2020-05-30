@@ -22,12 +22,9 @@
     throw new Error("Could not initialize test suite");
 
 
-  suite.add(function () {
-    suite.log("Vacation Seconds Unit Tests...");
-  });
+  suite.description("Vacation Seconds Unit Tests...");
 
-  suite.add(function () {
-    suite.log("Parse Vacation Seconds Example 1");
+  suite.add("Parse Vacation Seconds Example 1", () => {
 
     const script = ''
       + 'require ["vacation-seconds"];\r\n'
@@ -38,8 +35,7 @@
     suite.expectValidScript(script, ["vacation-seconds"]);
   });
 
-  suite.add(function () {
-    suite.log("Parse Vacation Seconds Example 2");
+  suite.add("Parse Vacation Seconds Example 2", () => {
 
     const script = ''
       + 'require ["vacation-seconds"];\r\n'

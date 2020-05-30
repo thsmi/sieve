@@ -17,16 +17,6 @@ const path = require('path');
 const BUILD_DIR_TEST = path.join(common.BASE_DIR_BUILD, "test/");
 
 /**
- * Copies jquery into the test folder.
- */
-async function packageJQuery() {
-  "use strict";
-
-  await common.packageJQuery(
-    `${BUILD_DIR_TEST}/common/jquery/`);
-}
-
-/**
  * Copies the common files into the test folder.
  */
 async function packageCommon() {
@@ -54,22 +44,6 @@ async function packageTestSuite() {
 }
 
 /**
- * Copies the addons source files into the test folder.
- */
-async function packageAddonSrc() {
-  "use strict";
-
-  const BASE_PATH = "./src/addon/chrome/chromeFiles/content";
-
-  await src([
-    BASE_PATH + "/**",
-
-    "!" + BASE_PATH + "/filterList",
-    "!" + BASE_PATH + "/filterList/**"
-  ]).pipe(dest(BUILD_DIR_TEST + "/addon/"));
-}
-
-/**
  * Watches for changed source files and copies them into the build directory.
  */
 function watchSrc() {
@@ -89,8 +63,6 @@ function watchSrc() {
 
 exports["package"] = parallel(
   packageCommon,
-  packageAddonSrc,
-  packageJQuery,
   packageTestSuite
 );
 

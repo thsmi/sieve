@@ -28,4 +28,4 @@
     token: ":regex"
   });
 
-})(window);
+})(this);

@@ -21,13 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Editheader Unit Tests...");
-  });
+  suite.description("Editheader Unit Tests...");
 
-  suite.add(function () {
-
-    suite.log("RFC5293 Snippet I");
+  suite.add("RFC5293 Snippet I", () => {
 
     const script = ""
       + 'require ["editheader"];\r\n'
@@ -43,9 +39,7 @@
     suite.expectValidScript(script, ["editheader"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC5293 Snippet II");
+  suite.add("RFC5293 Snippet II", () => {
 
     const script = ""
       + 'require ["editheader"];\r\n'
@@ -55,9 +49,7 @@
     suite.expectValidScript(script, ["editheader"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC5293 Snippet III");
+  suite.add("RFC5293 Snippet III", () => {
 
     const script = ""
       + 'require ["editheader"];\r\n'
@@ -67,9 +59,7 @@
     suite.expectValidScript(script, ["editheader"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC5293 Snippet IV");
+  suite.add("RFC5293 Snippet IV", () => {
 
     const script = ""
       + 'require ["editheader", "fileinto"];\r\n'
@@ -82,9 +72,7 @@
     suite.expectValidScript(script, ["editheader", "fileinto"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC5293 Snippet V");
+  suite.add("RFC5293 Snippet V", () => {
 
     const script = ""
       + 'require ["editheader"];\r\n'
@@ -95,9 +83,7 @@
     suite.expectValidScript(script, ["editheader"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC5293 Snippet VI");
+  suite.add("RFC5293 Snippet VI", () => {
 
     const script = ""
       + 'require ["editheader"];\r\n'

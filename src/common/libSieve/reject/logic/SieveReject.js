@@ -60,4 +60,4 @@
 
   SieveGrammar.addAction(ereject);
 
-})(window);
+})(this);

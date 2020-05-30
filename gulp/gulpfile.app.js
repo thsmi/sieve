@@ -54,6 +54,7 @@ const APP_IMAGE_DIR = path.join(OUTPUT_DIR_APP, "sieve.AppDir");
 
 const OUTPUT_DIR_APP_WIN32 = path.join(OUTPUT_DIR_APP, `sieve-${WIN_PLATFORM}-${WIN_ARCH}`);
 const OUTPUT_DIR_APP_LINUX = path.join(OUTPUT_DIR_APP, `sieve-${LINUX_PLATFORM}-${LINUX_ARCH}`);
+const OUTPUT_DIR_APP_MACOS = path.join(OUTPUT_DIR_APP, `sieve-${MAC_PLATFORM}-${MAC_ARCH}`);
 
 /**
  * Extracts a tar or tar.gz file to the given destination.
@@ -68,11 +69,13 @@ async function untar(filename, destination) {
 
   logger.debug(`Extracting ${filename} to ${destination}`);
 
-  return await tar.x({
+  await tar.x({
     file: filename,
     cwd: destination,
     strict: true
   });
+
+  return;
 }
 
 /**
@@ -338,8 +341,6 @@ async function deployPrebuilt(electronDest, prebuiltDest, pkgName, platform, arc
 
   // Step four, deploy the prebuilt.
   await untar(prebuiltSrc, prebuiltDest);
-
-  return;
 }
 
 /**
@@ -347,7 +348,7 @@ async function deployPrebuilt(electronDest, prebuiltDest, pkgName, platform, arc
  */
 async function packageKeytarWin32() {
   "use strict";
-  return await deployPrebuilt(OUTPUT_DIR_APP, KEYTAR_OUTPUT_DIR, KEYTAR_NAME, WIN_PLATFORM, WIN_ARCH);
+  await deployPrebuilt(OUTPUT_DIR_APP, KEYTAR_OUTPUT_DIR, KEYTAR_NAME, WIN_PLATFORM, WIN_ARCH);
 }
 
 /**
@@ -355,7 +356,7 @@ async function packageKeytarWin32() {
  */
 async function packageKeytarLinux() {
   "use strict";
-  return await deployPrebuilt(OUTPUT_DIR_APP, KEYTAR_OUTPUT_DIR, KEYTAR_NAME, LINUX_PLATFORM, LINUX_ARCH);
+  await deployPrebuilt(OUTPUT_DIR_APP, KEYTAR_OUTPUT_DIR, KEYTAR_NAME, LINUX_PLATFORM, LINUX_ARCH);
 }
 
 /**
@@ -363,7 +364,7 @@ async function packageKeytarLinux() {
  */
 async function packageKeytarMacOS() {
   "use strict";
-  return await deployPrebuilt(OUTPUT_DIR_APP, KEYTAR_OUTPUT_DIR, KEYTAR_NAME, MAC_PLATFORM, MAC_ARCH);
+  await deployPrebuilt(OUTPUT_DIR_APP, KEYTAR_OUTPUT_DIR, KEYTAR_NAME, MAC_PLATFORM, MAC_ARCH);
 }
 
 /**
@@ -570,16 +571,15 @@ async function packageAppImage() {
   await exec(`${tool} "${source}" "${destination}"  2>&1`);
 }
 
-
 /**
  * Zip the macOS electron app.
  */
-async function zipMacOs() {
+async function zipMacOS() {
   "use strict";
 
   const version = (await common.getPackageVersion()).join(".");
 
-  const source = path.resolve(path.join(OUTPUT_DIR_APP, `sieve-${MAC_PLATFORM}-${MAC_ARCH}`));
+  const source = path.resolve(OUTPUT_DIR_APP_MACOS);
   const destination = path.join(common.BASE_DIR_BUILD, `sieve-${version}-${MAC_PLATFORM}-${MAC_ARCH}.zip`);
 
   const options = {
@@ -624,7 +624,7 @@ exports["packageMacOS"] = series(
 
 exports["zipWin32"] = zipWin32;
 exports["zipLinux"] = zipLinux;
-exports["zipMacOs"] = zipMacOs;
+exports["zipMacOS"] = zipMacOS;
 
 exports["appImageLinux"] = series(
   packageAppImageDir,

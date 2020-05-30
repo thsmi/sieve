@@ -21,13 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Notify Unit Tests...");
-  });
+  suite.description("Notify Unit Tests...");
 
-  suite.add(function () {
-
-    suite.log("Notify Example 1");
+  suite.add("Notify Example 1", () => {
 
     const script = ''
       + 'require ["enotify", "fileinto", "variables"];\r\n'
@@ -61,9 +57,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Notify Example 2");
+  suite.add("Notify Example 2", () => {
 
     const script = ''
       + 'require ["enotify", "fileinto", "variables", "envelope"];\r\n'
@@ -92,9 +86,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Notify Example 3");
+  suite.add("Notify Example 3", () => {
 
     const script = ''
       + 'require ["enotify", "variables"];\r\n'
@@ -132,9 +124,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Notify Example 4");
+  suite.add("Notify Example 4", () => {
 
     const script = ''
       + 'require ["enotify"];\r\n'
@@ -148,9 +138,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Notify Example 5");
+  suite.add("Notify Example 5", () => {
 
     const script = ''
       + 'require ["enotify"];\r\n'
@@ -169,9 +157,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Notify Example 6");
+  suite.add("Notify Example 6", () => {
 
     const script = ''
       + 'require ["enotify", "variables"];\r\n'

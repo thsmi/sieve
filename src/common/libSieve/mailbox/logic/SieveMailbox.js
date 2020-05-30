@@ -217,4 +217,4 @@
 
   SieveGrammar.addTest(servermetadata);
 
-})(window);
+})(this);

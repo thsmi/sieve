@@ -21,13 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Subaddress Unit Tests...");
-  });
+  suite.description("Subaddress Unit Tests...");
 
-  suite.add(function () {
-
-    suite.log("Parse Subaddress Example 1");
+  suite.add("Parse Subaddress Example 1", () => {
 
     const script = ''
       + 'require ["envelope", "subaddress", "fileinto"];\r\n'

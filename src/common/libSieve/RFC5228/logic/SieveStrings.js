@@ -640,4 +640,4 @@
   SieveLexer.register(SieveQuotedString);
   SieveLexer.register(SieveMultiLineString);
 
-})(window);
+})(this);

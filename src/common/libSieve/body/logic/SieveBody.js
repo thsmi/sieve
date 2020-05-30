@@ -106,4 +106,4 @@
     items: ["body-transform/"]
   });
 
-})(window);
+})(this);

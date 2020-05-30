@@ -100,4 +100,4 @@
     items: ["comparator/"]
   });
 
-})(window);
+})(this);

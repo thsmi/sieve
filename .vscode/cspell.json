@@ -25,6 +25,7 @@
         "promisify",
         "PUTSCRIPT",
         "RENAMESCRIPT",
+        "Sandboxed",
         "sasl",
         "Schmid",
         "SETACTIVE",

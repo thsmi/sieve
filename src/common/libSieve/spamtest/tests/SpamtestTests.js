@@ -21,13 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Spamtest Tests...");
-  });
+  suite.description("Spamtest Tests...");
 
-  suite.add(function () {
-
-    suite.log("Example 0 (Spamtest)");
+  suite.add("Example 0 (Spamtest)", () => {
 
     const script = ''
       + 'require ["spamtest", "fileinto"];\r\n'
@@ -44,9 +40,7 @@
     suite.expectValidScript(script, ["spamtest", "fileinto"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Example 0 (Spamtestplus)");
+  suite.add("Example 0 (Spamtestplus)", () => {
 
     const script = ''
       + 'require ["spamtestplus", "fileinto"];\r\n'
@@ -64,9 +58,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Example 1");
+  suite.add("Example 1", () => {
 
     const script = ''
       + 'require ["spamtestplus", "fileinto", "relational", "comparator-i;ascii-numeric"];\r\n'
@@ -97,9 +89,7 @@
     );
   });
 
-  suite.add(function () {
-
-    suite.log("Example 2");
+  suite.add("Example 2", () => {
 
     const script = ''
       + 'require ["spamtest", "fileinto", "relational", "comparator-i;ascii-numeric"];\r\n'
@@ -117,9 +107,7 @@
       "spamtest", "fileinto", "relational", "comparator-i;ascii-numeric"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Example 3");
+  suite.add("Example 3", () => {
 
     const script = ''
       + 'require ["spamtestplus", "fileinto", "relational", "comparator-i;ascii-numeric"];\r\n'
@@ -147,9 +135,7 @@
       "spamtestplus", "fileinto", "relational", "comparator-i;ascii-numeric"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Example 4");
+  suite.add("Example 4", () => {
 
     const script = ''
       + 'require ["virustest", "fileinto", "relational", "comparator-i;ascii-numeric"];\r\n'

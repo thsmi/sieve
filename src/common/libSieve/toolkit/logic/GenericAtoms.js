@@ -1458,4 +1458,4 @@
   exports.SieveImplicitGroupElement = SieveImplicitGroupElement;
   exports.SieveGroupElement = SieveGroupElement;
 
-})(window);
+})(this);

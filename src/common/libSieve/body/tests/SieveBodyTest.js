@@ -22,13 +22,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Body Unit Tests...");
-  });
+  suite.description("Body Unit Tests...");
 
-  suite.add(function () {
-
-    suite.log("Parse body transform :raw");
+  suite.add("Parse body transform :raw", () => {
 
     const script =
       'require "body";\r\n'
@@ -45,9 +41,7 @@
     suite.expectValidScript(script, ["body"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Parse body transform :content");
+  suite.add("Parse body transform :content", () => {
 
     const script =
       'require ["body", "fileinto"];\r\n'
@@ -68,9 +62,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Parse body transform :text");
+  suite.add("Parse body transform :text", () => {
 
     const script =
       'require ["body", "fileinto"];\r\n'

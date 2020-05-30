@@ -22,13 +22,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Duplicate Tests...");
-  });
+  suite.description("Duplicate Tests...");
 
-  suite.add(function () {
-
-    suite.log("Snippet 1");
+  suite.add("Snippet 1", () => {
 
     const script = ''
       + 'require "duplicate";\r\n'
@@ -40,9 +36,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Snippet 2");
+  suite.add("Snippet 2", () => {
 
     const script = ''
       + 'require "duplicate";\r\n'
@@ -54,9 +48,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Snippet 3");
+  suite.add("Snippet 3", () => {
 
     const script = ''
       // + 'require ["duplicate", "variables"];\r\n'
@@ -71,9 +63,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Example 1");
+  suite.add("Example 1", () => {
 
     const script = ''
       + 'require ["duplicate", "fileinto", "mailbox"];\r\n'
@@ -86,9 +76,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Example 2");
+  suite.add("Example 2", () => {
 
     const script = ''
       // + 'require ["duplicate", "variables", "imap4flags",\r\n'
@@ -106,9 +94,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Example 3a");
+  suite.add("Example 3a", () => {
 
     const script = ''
       + 'require ["variables", "envelope", "enotify", "duplicate"];\r\n'
@@ -126,9 +112,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Example 3b");
+  suite.add("Example 3b", () => {
 
     const script = ''
       + 'require ["variables", "envelope", "enotify", "duplicate"];\r\n'
@@ -153,9 +137,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Example 4");
+  suite.add("Example 4", () => {
 
     const script = ''
       + 'require ["duplicate", "imap4flags"];\r\n'

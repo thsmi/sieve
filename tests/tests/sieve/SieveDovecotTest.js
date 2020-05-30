@@ -22,18 +22,16 @@
     throw new Error("Could not initialize test suite");
 
 
-  suite.add(function () {
-    suite.log("Examples from Dovecot...");
-    suite.log("https://wiki2.dovecot.org/Pigeonhole/Sieve/Examples");
-  });
+  suite.description(
+    "Examples from Dovecot...",
+    "https://wiki2.dovecot.org/Pigeonhole/Sieve/Examples");
 
 
-  suite.add(function () {
-
-    suite.log("Dovecot - Mail filtering by various headers I");
+  suite.add("Dovecot - Mail filtering by various headers I", function () {
 
     const script = ''
       + 'require ["fileinto", "envelope"];\r\n'
+      + '\r\n'
       + 'if address :is "to" "dovecot@dovecot.org" {\r\n'
       + '  fileinto "Dovecot-list";\r\n'
       + '} elsif envelope :is "from" "owner-cipe-l@inka.de" {\r\n'
@@ -51,9 +49,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Mail filtering by various headers II");
+  suite.add("Mail filtering by various headers II", function () {
 
     const script = ''
       + 'if header :contains "subject" ["order", "buy"] {\r\n'
@@ -64,9 +60,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Flagging or Highlighting your mail I");
+  suite.add("Flagging or Highlighting your mail I", function () {
 
     const script = ''
       + 'require "imap4flags";\r\n'
@@ -90,9 +84,7 @@
     suite.expectValidScript(script, ["imap4flags", "regex"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Flagging or Highlighting your mail II");
+  suite.add("Flagging or Highlighting your mail II", function () {
 
     const script = ''
       + 'require ["envelope", "imap4flags"];\r\n'
@@ -105,9 +97,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Direct filtering using message header I");
+  suite.add("Direct filtering using message header I", function () {
 
     const script = ''
       + 'require "fileinto";\r\n'
@@ -119,9 +109,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Direct filtering using message header II");
+  suite.add("Direct filtering using message header II", function () {
 
     const script = ''
       + 'if header :contains "X-Spam-Level" "**********" {\r\n'
@@ -133,9 +121,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Direct filtering using message header III");
+  suite.add("Direct filtering using message header III", function () {
 
     const script = ''
       + 'require ["comparator-i;ascii-numeric","relational"];\r\n'
@@ -151,9 +137,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Filtering using the spamtest and virustest extensions I");
+  suite.add("Filtering using the spamtest and virustest extensions I", () => {
 
     const script = ''
       + 'require "spamtestplus";\r\n'
@@ -188,9 +172,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Filtering using the spamtest and virustest extensions II");
+  suite.add("Filtering using the spamtest and virustest extensions II", () => {
 
     const script = ''
       + 'require "virustest";\r\n'
@@ -218,9 +200,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Plus Addressed mail filtering I");
+  suite.add("Plus Addressed mail filtering I", function () {
 
     const script = ''
       + 'require ["fileinto", "envelope", "subaddress"];\r\n'
@@ -232,9 +212,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Plus Addressed mail filtering II");
+  suite.add("Plus Addressed mail filtering II", function () {
 
     const script = ''
       + 'require ["variables", "envelope", "fileinto", "subaddress"];\r\n'
@@ -260,9 +238,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Vacation auto-reply I");
+  suite.add("Vacation auto-reply I", function () {
 
     const script = ''
       + 'require ["fileinto", "vacation"];\r\n'
@@ -288,9 +264,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Vacation auto-reply II");
+  suite.add("Vacation auto-reply II", function () {
 
     const script = ''
       + 'require ["variables", "vacation"];\r\n'
@@ -311,9 +285,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Include scripts");
+  suite.add("Include scripts", function () {
 
     const script = ''
       + 'require ["include"];\r\n'
@@ -324,9 +296,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Archiving a Mailinglist by Date");
+  suite.add("Archiving a Mailinglist by Date", function () {
 
     const script = ''
       + 'require ["variables","date","fileinto","mailbox"];\r\n'

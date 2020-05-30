@@ -142,4 +142,4 @@
 
   SieveGrammar.addAction(_include);
 
-})(window);
+})(this);

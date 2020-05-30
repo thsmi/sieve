@@ -251,4 +251,4 @@
 
   exports.SieveDocument = SieveDocument;
 
-})(window);
+})(this);

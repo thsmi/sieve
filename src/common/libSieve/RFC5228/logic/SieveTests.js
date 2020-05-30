@@ -403,4 +403,4 @@
 
   exports.SieveTestList = SieveTestList;
 
-})(window);
+})(this);

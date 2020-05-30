@@ -21,13 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Sieve Reject (RFC5429) unit tests...");
-  });
+  suite.description("Sieve Reject (RFC5429) unit tests...");
 
-  suite.add(function () {
-
-    suite.log("Example 1");
+  suite.add("Example 1", () => {
 
     const script =
       'require ["ereject"];\r\n'
@@ -39,9 +35,7 @@
     suite.expectValidScript(script, ["ereject"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Example 2");
+  suite.add("Example 2", () => {
 
     const script =
       'require ["reject"];\r\n'
@@ -59,9 +53,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Example 3");
+  suite.add("Example 3", () => {
 
     const script =
       'require ["reject"];\r\n'

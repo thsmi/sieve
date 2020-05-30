@@ -10,7 +10,6 @@
  *
  */
 
-
 (function () {
 
   "use strict";
@@ -22,12 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Sieve Mailbox (RFC5490) unit tests...");
-  });
+  suite.description("Sieve Mailbox (RFC5490) unit tests...");
 
-  suite.add(function () {
-    suite.log("Testing fileinto :create");
+  suite.add("Testing fileinto :create", () => {
 
     const script = ""
       + 'require "fileinto";\r\n'
@@ -40,8 +36,7 @@
     suite.expectValidScript(script, ["fileinto", "mailbox"]);
   });
 
-  suite.add(function () {
-    suite.log("Testing mailboxexists");
+  suite.add("Testing mailboxexists", () => {
 
     const script = ""
       + 'require ["fileinto", "mailbox"];\r\n'
@@ -54,8 +49,7 @@
     suite.expectValidScript(script, ["fileinto", "mailbox"]);
   });
 
-  suite.add(function () {
-    suite.log("Testing metadataexists");
+  suite.add("Testing metadataexists", () => {
 
     const script = ""
       + 'require ["mboxmetadata"];\r\n'
@@ -67,8 +61,7 @@
   });
 
 
-  suite.add(function () {
-    suite.log("Testing metadata");
+  suite.add("Testing metadata", () => {
 
     const script = ""
       + 'require ["mboxmetadata"];\r\n'
@@ -87,8 +80,7 @@
     suite.expectValidScript(script, ["mboxmetadata"]);
   });
 
-  suite.add(function () {
-    suite.log("Testing servermetadataexists");
+  suite.add("Testing servermetadataexists", () => {
 
     const script = ""
       + 'require ["servermetadata"];\r\n'
@@ -99,8 +91,7 @@
     suite.expectValidScript(script, ["servermetadata"]);
   });
 
-  suite.add(function () {
-    suite.log("Testing servermetadata");
+  suite.add("Testing servermetadata", () => {
 
     const script = ""
       + 'require ["servermetadata"];\r\n'

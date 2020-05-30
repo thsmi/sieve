@@ -22,15 +22,12 @@
     throw new Error("Could not initialize test suite");
 
 
-  suite.add(function () {
-    suite.log("Examples from tty1.net...");
-    suite.log("http://www.tty1.net/blog/2011-07-16-sieve-tutorial_en.html");
-  });
+  suite.description(
+    "Examples from tty1.net...",
+    "http://www.tty1.net/blog/2011-07-16-sieve-tutorial_en.html");
 
 
-  suite.add(function () {
-
-    suite.log("TTY1 Example I");
+  suite.add("TTY1 Example I", function () {
 
     const script = ''
       + 'require ["fileinto", "reject"];\r\n'
@@ -52,9 +49,7 @@
     suite.expectValidScript(script, ["fileinto", "reject"]);
   });
 
-  suite.add(function () {
-
-    suite.log("TTY1 Example II");
+  suite.add("TTY1 Example II", function () {
 
     const script = ''
       + '# The hash character starts a one-line comment.\r\n'
@@ -69,9 +64,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("TTY1 Example III");
+  suite.add("TTY1 Example III", function () {
 
     const script = ''
       + 'require ["fileinto"];\r\n'
@@ -91,9 +84,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("TTY1 Example IV");
+  suite.add("TTY1 Example IV", function () {
 
     const script = ''
       + 'require ["fileinto"];\r\n'
@@ -109,9 +100,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("TTY1 Example V");
+  suite.add("TTY1 Example V", function () {
 
     const script = ''
       + 'require ["reject"];\r\n'
@@ -131,9 +120,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("TTY1 Example VI");
+  suite.add("TTY1 Example VI", function () {
 
     const script = ''
       + 'require ["fileinto"];\r\n'
@@ -148,9 +135,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("TTY1 Example VII");
+  suite.add("TTY1 Example VII", function () {
 
     const script = ''
       + 'require ["fileinto"];\r\n'
@@ -165,9 +150,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("TTY1 Example VIII");
+  suite.add("TTY1 Example VIII", function () {
 
     const script = ''
       + 'require ["fileinto"];\r\n'
@@ -182,9 +165,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("TTY1 Example IX");
+  suite.add("TTY1 Example IX", function () {
 
     const script = ''
       + '# This test checks against Spamassassin\'s header fields:\r\n'
@@ -206,9 +187,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("TTY1 Example X");
+  suite.add("TTY1 Example X", function () {
 
     const script = ''
       + '# Delete messages greater than half a MB\r\n'

@@ -62,7 +62,7 @@ exports['app:package-macos'] = series(
 
 exports['app:zip-macos'] = series(
   exports['app:package-macos'],
-  app.zipMacOs
+  app.zipMacOS
 );
 
 // Test related gulp tasks

@@ -24,14 +24,9 @@
   const ONE_ELEMENT = 1;
   const FIRST_ELEMENT = 0;
 
-  suite.add(function () {
-    suite.log("Sieve Variables (RFC5229) unit tests...");
-  });
+  suite.description("Sieve Variables (RFC5229) unit tests...");
 
-
-  suite.add(function () {
-
-    suite.log("Simple Set Actions without modifiers");
+  suite.add("Simple Set Actions without modifiers", () => {
 
     const script =
       'require ["variables"];\r\n'
@@ -41,9 +36,7 @@
     suite.expectValidScript(script, ["variables"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Complex Set Action without modifiers");
+  suite.add("Complex Set Action without modifiers", () => {
 
     const script =
       'require "variables";\r\n\r\n'
@@ -59,9 +52,7 @@
     suite.expectValidScript(script, ["variables"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Complex Set Action with modifiers");
+  suite.add("Complex Set Action with modifiers", () => {
 
     const script =
       'require "variables";\r\n\r\n'
@@ -83,8 +74,7 @@
   });
 
 
-  //  suite.add( function() {
-  //    suite.log("Parse :contains match-type");
+  //  suite.add("Parse :contains match-type", () => {
   //
   //    var script =
   //      'require ["encoded-character", "variables"];\r\n'
@@ -97,8 +87,7 @@
   //  });
 
 
-  suite.add(function () {
-    suite.log("Match Variables Example");
+  suite.add("Match Variables Example", () => {
 
     const script =
       'require ["fileinto" /*, "variables"*/];\r\n'
@@ -144,9 +133,7 @@
 
 
 
-  suite.add(function () {
-
-    suite.log("Test string");
+  suite.add("Test string", () => {
 
     const script =
       'require "variables";\r\n'
@@ -158,9 +145,7 @@
     suite.expectValidScript(script, ["variables"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Manipulate SetVariable - No values set - Set all values (upper)");
+  suite.add("Manipulate SetVariable - No values set - Set all values (upper)", () => {
 
     const script = ''
       + 'require "variables";\r\n'
@@ -191,9 +176,7 @@
     suite.validateDocument(doc, rv, ["variables"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Manipulate SetVariable - No values set - Set all values (lower)");
+  suite.add("Manipulate SetVariable - No values set - Set all values (lower)", () => {
 
     const script = ''
       + 'require "variables";\r\n'
@@ -224,9 +207,7 @@
     suite.validateDocument(doc, rv, ["variables"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Manipulate SetVariable - All values set - Remove all values");
+  suite.add("Manipulate SetVariable - All values set - Remove all values", () => {
 
     const script = ''
       + 'require "variables";\r\n'
@@ -260,9 +241,7 @@
     suite.validateDocument(doc, rv, ["variables"]);
   });
 
-  /* suite.add( function () {
-
-    suite.log( "Manipulate SetVariable - All values set - Change all values" );
+  /* suite.add("Manipulate SetVariable - All values set - Change all values", () => {
 
     var script = ''
       + 'require "variables";\r\n'
@@ -293,15 +272,13 @@
     suite.validateDocument( doc, rv, [ "variables"]);
   });*/
 
-  suite.add(function () {
-    suite.log("Validate set action constructors");
+  suite.add("Validate set action constructors", () => {
 
     const snippet = 'set "variable" "";\r\n';
     suite.expectValidSnippet("action/set", snippet, ["variables"]);
   });
 
-  suite.add(function () {
-    suite.log("Validate string test constructors");
+  suite.add("Validate string test constructors", () => {
 
     const snippet = 'string "${somevariable}" "some value"';
     suite.expectValidSnippet("test/string", snippet, ["variables"]);

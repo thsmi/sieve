@@ -21,13 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Copy Unit Tests...");
-  });
+  suite.description("Copy Unit Tests...");
 
-  suite.add(function () {
-
-    suite.log("RFC 3894 - Example I");
+  suite.add("RFC 3894 - Example I", () => {
 
     const script = ""
       + 'require ["copy", "fileinto"];\r\n'
@@ -36,9 +32,7 @@
     suite.expectValidScript(script, ["copy", "fileinto"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC 3894 - Example Ia");
+  suite.add("RFC 3894 - Example Ia", () => {
 
     const script = ""
       + 'require ["fileinto"];\r\n'

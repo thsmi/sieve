@@ -26,13 +26,9 @@
   const FIRST_ELEMENT = 0;
 
 
-  suite.add(function () {
-    suite.log("Vacation Unit Tests...");
-  });
+  suite.description("Vacation Unit Tests...");
 
-  suite.add(function () {
-
-    suite.log("Parse Vacation Example 1");
+  suite.add("Parse Vacation Example 1", () => {
 
     const script =
       'require "vacation";\r\n'
@@ -45,9 +41,7 @@
     suite.expectValidScript(script, ["vacation"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Parse Vacation Example 2");
+  suite.add("Parse Vacation Example 2", () => {
 
     const script =
       'require ["vacation"];\r\n'
@@ -59,9 +53,7 @@
     suite.expectValidScript(script, ["vacation"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Parse Vacation Example 3");
+  suite.add("Parse Vacation Example 3", () => {
 
     const script =
       'require "vacation";\r\n'
@@ -75,9 +67,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("Parse Vacation Example 4");
+  suite.add("Parse Vacation Example 4", () => {
 
     const script =
       'require "vacation";\r\n'
@@ -106,9 +96,7 @@
     suite.expectValidScript(script, ["vacation"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Parse Vacation Example 5");
+  suite.add("Parse Vacation Example 5", () => {
 
     const script =
       'require "vacation";\r\n'
@@ -119,9 +107,7 @@
     suite.expectValidScript(script, ["vacation"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Parse Vacation Example 6 ");
+  suite.add("Parse Vacation Example 6 ", () => {
 
     const script =
       'require "vacation";\r\n'
@@ -135,9 +121,7 @@
     suite.expectValidScript(script, ["vacation"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Parse Vacation Example 7");
+  suite.add("Parse Vacation Example 7", () => {
 
     const script =
       'require "vacation";\r\n'
@@ -151,9 +135,7 @@
     suite.expectValidScript(script, ["vacation"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Parse Vacation Example 8");
+  suite.add("Parse Vacation Example 8", () => {
 
     const script =
       'require "vacation";\r\n'
@@ -169,9 +151,7 @@
     suite.expectValidScript(script, ["vacation"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Parse Vacation :from ");
+  suite.add("Parse Vacation :from ", () => {
 
     const script =
       'require "vacation";\r\n'
@@ -182,8 +162,7 @@
     suite.expectValidScript(script, ["vacation"]);
   });
 
-  suite.add(function () {
-    suite.log("Manipulate Vacation Element - No values set - Set all values");
+  suite.add("Manipulate Vacation Element - No values set - Set all values", () => {
 
     const script =
       'require "vacation";\r\n'
@@ -241,8 +220,7 @@
   });
 
 
-  suite.add(function () {
-    suite.log("Manipulate Vacation Element - All values set - Change all values");
+  suite.add("Manipulate Vacation Element - All values set - Change all values", () => {
 
     const script =
       'require "vacation";\r\n'
@@ -297,8 +275,7 @@
     // elms[FIRST_ELEMENT].getElement( "addresses" ).getElement( "addresses" );
   });
 
-  suite.add(function () {
-    suite.log("Manipulate Vacation Element - All values set - Remove all values");
+  suite.add("Manipulate Vacation Element - All values set - Remove all values", () => {
 
     const script =
       'require "vacation";\r\n'
@@ -350,8 +327,7 @@
 
   });
 
-  suite.add(function () {
-    suite.log("Validate vacation action's constructor");
+  suite.add("Validate vacation action's constructor", () => {
 
     const snippet = 'vacation "";\r\n';
     suite.expectValidSnippet("action/vacation", snippet, ["vacation"]);

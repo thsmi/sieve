@@ -21,12 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Match-type unit tests...");
-  });
+  suite.description("Match-type unit tests...");
 
-  suite.add(function () {
-    suite.log("Parse :is match-type");
+  suite.add("Parse :is match-type", () => {
 
     const script =
       'if header :is "Sender" "owner-ietf-mta-filters@imc.org" \r\n'
@@ -38,8 +35,7 @@
   });
 
 
-  suite.add(function () {
-    suite.log("Parse :matches match-type");
+  suite.add("Parse :matches match-type", () => {
 
     const script =
       'if header :matches "Sender" "owner-ietf-mta-filters@imc.org" \r\n'
@@ -51,8 +47,7 @@
   });
 
 
-  suite.add(function () {
-    suite.log("Parse :contains match-type");
+  suite.add("Parse :contains match-type", () => {
 
     const script =
       'if header :contains "Sender" "owner-ietf-mta-filters@imc.org" \r\n'

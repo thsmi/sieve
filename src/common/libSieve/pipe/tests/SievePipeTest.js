@@ -21,13 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Pipe Unit Tests...");
-  });
+  suite.description("Pipe Unit Tests...");
 
-  suite.add(function () {
-
-    suite.log("Pipe Example I");
+  suite.add("Pipe Example I", () => {
 
     const script = ''
       + 'require "vnd.dovecot.execute";\r\n'
@@ -40,9 +36,7 @@
     suite.expectValidScript(script, ["vnd.dovecot.execute"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Pipe Example II");
+  suite.add("Pipe Example II", () => {
 
     const script = ''
       + 'require ["variables", "copy", "envelope", "vnd.dovecot.execute"];\r\n'
@@ -60,8 +54,7 @@
     suite.expectValidScript(script, ["variables", "copy", "envelope", "vnd.dovecot.execute"]);
   });
 
-  suite.add(function () {
-    suite.log("Pipe Example III");
+  suite.add("Pipe Example III", () => {
 
     const script = ''
       + 'require [ "vnd.dovecot.pipe", "subaddress", "envelope" ];\r\n'
@@ -74,8 +67,7 @@
     suite.expectValidScript(script, ["vnd.dovecot.pipe", "subaddress", "envelope"]);
   });
 
-  suite.add(function () {
-    suite.log("Pipe Example IV");
+  suite.add("Pipe Example IV", () => {
 
     const script = ''
       + 'require [ "vnd.dovecot.pipe", "copy" ];\r\n'
@@ -88,8 +80,7 @@
     suite.expectValidScript(script, ["vnd.dovecot.pipe", "copy"]);
   });
 
-  suite.add(function () {
-    suite.log("Pipe Example V");
+  suite.add("Pipe Example V", () => {
 
     const script = ''
       + 'require [ "vnd.dovecot.filter", "fileinto" ];\r\n'
@@ -104,8 +95,7 @@
     suite.expectValidScript(script, ["vnd.dovecot.filter", "fileinto"]);
   });
 
-  suite.add(function () {
-    suite.log("Pipe Example VI");
+  suite.add("Pipe Example VI", () => {
 
     const script = ''
       + 'require [ "vnd.dovecot.filter", "fileinto" ];\r\n'
@@ -122,8 +112,7 @@
     suite.expectValidScript(script, ["vnd.dovecot.filter", "fileinto"]);
   });
 
-  suite.add(function () {
-    suite.log("Pipe Example VII");
+  suite.add("Pipe Example VII", () => {
 
     const script = ''
       + 'require [ "vnd.dovecot.execute", "vacation", "variables",\r\n'

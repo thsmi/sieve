@@ -36,7 +36,7 @@
     }
 
     /**
-     *
+     * Resizes the editor to fill all of the available screen.
      */
     resize() {
       const offset = $("#sieve-widget-editor").offset().top;
@@ -57,6 +57,9 @@
 
     /**
      * Renders the editor to screen.
+     *
+     * @returns {SieveEditorUI}
+     *   a self reference.
      */
     async render() {
 

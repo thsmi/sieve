@@ -77,10 +77,10 @@
   SieveBlock.prototype = Object.create(SieveBlockBody.prototype);
   SieveBlock.prototype.constructor = SieveBlock;
 
-  SieveBlock.isElement
-    = function (parser, lexer) {
-      return parser.isChar("{");
-    };
+  // eslint-disable-next-line no-unused-vars
+  SieveBlock.isElement = function (parser, lexer) {
+    return parser.isChar("{");
+  };
 
   SieveBlock.nodeName = function () {
     return "block/block";
@@ -129,6 +129,7 @@
     /**
      * @inheritdoc
      */
+    // eslint-disable-next-line no-unused-vars
     static isElement(token, doc) {
       return false;
     }
@@ -185,7 +186,6 @@
       return super.toScript();
     }
   }
-
 
   if (!SieveLexer)
     throw new Error("Could not register Block Elements");

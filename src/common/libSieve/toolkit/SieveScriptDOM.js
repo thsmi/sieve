@@ -82,6 +82,7 @@
     /**
      *
      * @param {*} name
+     * @returns {}
      */
     queryElements(name) {
 

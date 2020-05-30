@@ -103,6 +103,9 @@
       },
 
       /**
+       * Gets the constructor for the given types and probes if the token can
+       * be consumed by the element.
+       *
        * @param {string|string[]} types
        *  the constructor types  which should be queried to find a matching constructor
        * @param {SieveParser} token

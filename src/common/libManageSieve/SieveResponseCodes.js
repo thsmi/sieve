@@ -71,6 +71,8 @@
     }
 
     /**
+     * Gets the sasl response code.
+     *
      * @returns {string}
      *   Returns the sasl response
      */

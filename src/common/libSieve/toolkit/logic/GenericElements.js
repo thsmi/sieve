@@ -333,7 +333,7 @@
     initActions();
     initTests();
 
-    // todo we should retrun a lexxer so that the gramar is scoped.
+    // todo we should return a lexer so that the grammar is scoped.
     // but this is fare future
     return null;
   }

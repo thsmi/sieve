@@ -9,6 +9,8 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+/* eslint-disable no-magic-numbers */
+
 (function (exports) {
 
   "use strict";

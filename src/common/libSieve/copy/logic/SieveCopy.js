@@ -77,4 +77,4 @@
 
   SieveGrammar.extendAction(redirect);
 
-})(window);
+})(this);

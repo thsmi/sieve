@@ -21,13 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Mime Unit Tests...");
-  });
+  suite.description("Mime Unit Tests...");
 
-  suite.add(function () {
-
-    suite.log("Mime Snippet 1");
+  suite.add("Mime Snippet 1", () => {
 
     const script = ''
       + 'require ["mime", "fileinto"];\r\n'
@@ -40,9 +36,7 @@
     suite.expectValidScript(script, ["mime", "fileinto"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Mime Snippet 2");
+  suite.add("Mime Snippet 2", () => {
 
     const script = ''
       + 'require ["mime", "fileinto"];\r\n'
@@ -56,9 +50,7 @@
     suite.expectValidScript(script, ["mime", "fileinto"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Mime Snippet 3");
+  suite.add("Mime Snippet 3", () => {
 
     const script = ''
       + 'require ["mime", "foreverypart", "fileinto"];\r\n'
@@ -79,9 +71,7 @@
     suite.expectValidScript(script, ["mime", "foreverypart", "fileinto"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Mime Snippet 4");
+  suite.add("Mime Snippet 4", () => {
 
     const script = ''
       + 'require ["mime", "fileinto"];\r\n'
@@ -94,9 +84,7 @@
     suite.expectValidScript(script, ["mime", "fileinto"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Mime Snippet 5");
+  suite.add("Mime Snippet 5", () => {
 
     const script = ''
       + 'require ["mime", "fileinto"];\r\n'
@@ -109,9 +97,7 @@
     suite.expectValidScript(script, ["mime", "fileinto"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Mime Example 1");
+  suite.add("Mime Example 1", () => {
 
     const script = ''
 
@@ -131,9 +117,7 @@
     suite.expectValidScript(script, ["foreverypart", "mime", "replace"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Mime Example 2");
+  suite.add("Mime Example 2", () => {
 
     const script = ''
       + 'require [ "foreverypart", "mime", "enclose" ];\r\n'
@@ -163,9 +147,7 @@
     suite.expectValidScript(script, ["foreverypart", "mime", "enclose"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Mime Example 3");
+  suite.add("Mime Example 3", () => {
 
     const script = ''
       + 'require ["mime", "variables", "extracttext"];\r\n'

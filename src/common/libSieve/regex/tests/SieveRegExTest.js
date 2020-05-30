@@ -21,13 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Reg Ex unit tests...");
-  });
+  suite.description("Reg Ex unit tests...");
 
-
-  suite.add(function () {
-    suite.log("Parse :regex match-type with single import");
+  suite.add("Parse :regex match-type with single import", () => {
 
     const script =
       'require "regex";\r\n'
@@ -39,9 +35,7 @@
     suite.expectValidScript(script, ["regex"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Parse :regex match-type with multiple import");
+  suite.add("Parse :regex match-type with multiple import", () => {
 
     const script =
       'require ["regex", "fileinto"];\r\n'
@@ -55,4 +49,3 @@
   });
 
 })();
-

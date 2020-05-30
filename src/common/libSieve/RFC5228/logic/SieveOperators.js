@@ -231,4 +231,4 @@
   SieveLexer.register(SieveAnyOfAllOfTest);
 
 
-})(window);
+})(this);

@@ -57,4 +57,4 @@
 
   SieveGrammar.addTest(_environment);
 
-})(window);
+})(this);

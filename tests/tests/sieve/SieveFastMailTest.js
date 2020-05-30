@@ -21,14 +21,11 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Examples from FastMail...");
-    suite.log("https://www.fastmail.com/help/technical/sieve-examples.html");
-  });
+  suite.description(
+    "Examples from FastMail...",
+    "https://www.fastmail.com/help/technical/sieve-examples.html");
 
-  suite.add(function () {
-
-    suite.log("FastMail - File all messages from a recipient into a folder");
+  suite.add("FastMail - File all messages from a recipient into a folder", function () {
 
     const script = ''
       + 'require ["fileinto"];\r\n'
@@ -42,9 +39,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("FastMail - File all messages from a domain into a folder");
+  suite.add("FastMail - File all messages from a domain into a folder", function () {
 
     const script = ''
       + 'require ["fileinto"];\r\n'
@@ -58,9 +53,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("FastMail - File all undefined addresses at a virtual domain into a folder");
+  suite.add("FastMail - File all undefined addresses at a virtual domain into a folder", function () {
 
     const script = ''
       + 'require ["fileinto"];\r\n'
@@ -77,9 +70,7 @@
   });
 
 
-  suite.add(function () {
-
-    suite.log("FastMail - File messages to some aliases into alias-dependent folders");
+  suite.add("FastMail - File messages to some aliases into alias-dependent folders", function () {
 
     const script = ''
       + 'require ["fileinto", "imap4flags"];\r\n'
@@ -102,9 +93,7 @@
     suite.expectValidScript(script, ["fileinto", "imap4flags"]);
   });
 
-  suite.add(function () {
-
-    suite.log("FastMail - Spam filtering for SpamAssassin score");
+  suite.add("FastMail - Spam filtering for SpamAssassin score", function () {
 
     const script = ''
       + 'require ["fileinto","relational", "comparator-i;ascii-numeric"];\r\n'
@@ -125,9 +114,7 @@
     suite.expectValidScript(script, ["fileinto", "relational", "comparator-i;ascii-numeric"]);
   });
 
-  suite.add(function () {
-
-    suite.log("FastMail - Spam filtering based on Bayesian filter)");
+  suite.add("FastMail - Spam filtering based on Bayesian filter)", function () {
 
     const script = ''
       + 'require ["fileinto"];\r\n'
@@ -141,9 +128,7 @@
     suite.expectValidScript(script, ["fileinto"]);
   });
 
-  suite.add(function () {
-
-    suite.log("FastMail - Filtering known messages as sent");
+  suite.add("FastMail - Filtering known messages as sent", function () {
 
     const script = ''
       + 'require ["fileinto","imap4flags"];\r\n'
@@ -156,9 +141,7 @@
     suite.expectValidScript(script, ["fileinto", "imap4flags"]);
   });
 
-  suite.add(function () {
-
-    suite.log("FastMail - Do not filter known senders");
+  suite.add("FastMail - Do not filter known senders", function () {
 
     const script = ''
       + '\r\n'
@@ -172,9 +155,7 @@
     suite.expectValidScript(script);
   });
 
-  suite.add(function () {
-
-    suite.log("FastMail - Time-sensitive notification example");
+  suite.add("FastMail - Time-sensitive notification example", function () {
 
     const script = ''
       + 'require ["regex"];\r\n'

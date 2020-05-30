@@ -21,13 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Convert Unit Tests...");
-  });
+  suite.description("Convert Unit Tests...");
 
-  suite.add(function () {
-
-    suite.log("RFC 6558 - Example I");
+  suite.add("RFC 6558 - Example I", () => {
 
     const script = ""
       + 'require ["convert"];\r\n'
@@ -36,9 +32,7 @@
     suite.expectValidScript(script, ["convert"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC 6558 - Example 2");
+  suite.add("RFC 6558 - Example 2", () => {
 
     const script = ""
       + 'require ["fileinto", "convert"];\r\n'
@@ -59,9 +53,7 @@
 
   // FIXME: Enable tests as soon as for every part is implemented
   /*
-  suite.add(function () {
-
-    suite.log("RFC 6558 - Example 3");
+  suite.add("RFC 6558 - Example 3", () => {
 
     let script = ""
       + 'require ["mime", "foreverypart", "fileinto", "convert"];\r\n'
@@ -82,9 +74,7 @@
     suite.expectValidScript(script, ["mime", "foreverypart", "fileinto", "convert"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC 6558 - Example 4");
+  suite.add("RFC 6558 - Example 4", () => {
 
     let script = ""
       + 'require ["mime", "foreverypart", "fileinto", "redirect", "convert"];\r\n'

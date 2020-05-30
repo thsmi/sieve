@@ -21,12 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("RFC5228 unit tests...");
-  });
+  suite.description("RFC5228 unit tests...");
 
-  suite.add(function () {
-    suite.log("Test Case insensitivity");
+  suite.add("Test Case insensitivity", () => {
 
     const script = ""
       + 'if NOT address :DOMAIN :is ["From", "To"] "example.com"\r\n'
@@ -38,8 +35,7 @@
   });
 
 
-  suite.add(function () {
-    suite.log("Single line comment");
+  suite.add("Single line comment", () => {
 
     const script = ""
       + 'if size :over 100K { # this is a comment\r\n'
@@ -50,8 +46,7 @@
   });
 
 
-  suite.add(function () {
-    suite.log("Multiline comment");
+  suite.add("Multiline comment", () => {
 
     const script = ""
       + 'if size :over 100K { /* this is a comment\r\n'
@@ -63,8 +58,7 @@
   });
 
 
-  suite.add(function () {
-    suite.log("Example 1");
+  suite.add("Example 1", () => {
 
     const script = ""
       + 'if anyof (not exists ["From", "Date"],\r\n'
@@ -75,8 +69,7 @@
     suite.expectValidScript(script);
   });
 
-  suite.add(function () {
-    suite.log("Example 2");
+  suite.add("Example 2", () => {
 
     const script = ""
       + 'if header :comparator "i;octet" :contains "Subject"\r\n'
@@ -87,8 +80,7 @@
     suite.expectValidScript(script);
   });
 
-  suite.add(function () {
-    suite.log("Example 2a (with linebreaks in comparator)");
+  suite.add("Example 2a (with linebreaks in comparator)", () => {
 
     const script = ""
       + 'if header :comparator \r\n"i;octet" :contains "Subject"\r\n'
@@ -99,8 +91,7 @@
     suite.expectValidScript(script);
   });
 
-  suite.add(function () {
-    suite.log("Example 2b (with linebreaks in comparator)");
+  suite.add("Example 2b (with linebreaks in comparator)", () => {
 
     const script = ""
       + 'if header :comparator\r\n "i;octet" :contains "Subject"\r\n'
@@ -112,8 +103,7 @@
   });
 
 
-  suite.add(function () {
-    suite.log("Example 3");
+  suite.add("Example 3", () => {
 
     const script =
       'if size :over 500K { discard; }';
@@ -121,8 +111,7 @@
     suite.expectValidScript(script);
   });
 
-  suite.add(function () {
-    suite.log("Example 4");
+  suite.add("Example 4", () => {
 
     const script = ""
       + 'if header :contains ["From"] ["coyote"] {\r\n'
@@ -136,8 +125,7 @@
     suite.expectValidScript(script);
   });
 
-  suite.add(function () {
-    suite.log("Example 5");
+  suite.add("Example 5", () => {
 
     const script = ""
       + 'require "fileinto";\r\n'
@@ -152,8 +140,7 @@
     suite.expectValidScript(script, ["fileinto"]);
   });
 
-  suite.add(function () {
-    suite.log("Example 6");
+  suite.add("Example 6", () => {
 
     const script = ""
       + 'require "fileinto";\r\n'
@@ -164,8 +151,7 @@
     suite.expectValidScript(script, ["fileinto"]);
   });
 
-  suite.add(function () {
-    suite.log("Example 7");
+  suite.add("Example 7", () => {
 
     const script = ""
       + 'if size :under 1M { keep; } else { discard; }';
@@ -173,8 +159,7 @@
     suite.expectValidScript(script);
   });
 
-  suite.add(function () {
-    suite.log("Example 8");
+  suite.add("Example 8", () => {
 
     const script = ""
       + 'if not size :under 1M { discard; }';
@@ -182,8 +167,7 @@
     suite.expectValidScript(script);
   });
 
-  suite.add(function () {
-    suite.log("Example 9");
+  suite.add("Example 9", () => {
 
     const script = ""
       + 'if header :contains ["from"] ["idiot@example.com"] {\r\n'
@@ -193,8 +177,7 @@
     suite.expectValidScript(script);
   });
 
-  suite.add(function () {
-    suite.log("Example 10");
+  suite.add("Example 10", () => {
 
     const script = ""
       + 'if address :all :is "from" "tim@example.com" {\r\n'
@@ -204,8 +187,7 @@
     suite.expectValidScript(script);
   });
 
-  suite.add(function () {
-    suite.log("Example 11");
+  suite.add("Example 11", () => {
 
     const script = ""
       + 'require "envelope";\r\n'
@@ -216,8 +198,7 @@
     suite.expectValidScript(script, ["envelope"]);
   });
 
-  suite.add(function () {
-    suite.log("Example 12");
+  suite.add("Example 12", () => {
 
     const script = ""
       + 'if not exists ["From","Date"] {\r\n'
@@ -227,8 +208,7 @@
     suite.expectValidScript(script);
   });
 
-  /* suite.add( function() {
-    suite.log("Example 12");
+  /* suite.add("Example 12", () => {
 
     var script = ""
           + 'require "encoded-character";\r\n'
@@ -239,8 +219,7 @@
     testScript(script, {"encoded-character":true});
   });*/
 
-  suite.add(function () {
-    suite.log("Example Sieve Filter");
+  suite.add("Example Sieve Filter", () => {
 
     const script = ""
       + '#\r\n'
@@ -286,8 +265,7 @@
     suite.expectValidScript(script, ["fileinto"]);
   });
 
-  suite.add(function () {
-    suite.log("Boolean true");
+  suite.add("Boolean true", () => {
 
     const script = ""
       + 'if true {\r\n'
@@ -297,8 +275,7 @@
     suite.expectValidScript(script);
   });
 
-  suite.add(function () {
-    suite.log("Boolean false");
+  suite.add("Boolean false", () => {
 
     const script = ""
       + 'if false {\r\n'

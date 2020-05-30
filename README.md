@@ -71,4 +71,12 @@ You are looking for the most recent release?
 
 [They are by downloading from the Releases page (release notes can also be viewed)](https://github.com/thsmi/sieve/releases).
 
-Development builds are marked as pre-release.
+## Continous Builds
+
+Continuous builds are triggerd upon each change to the master. You can find them in the Azure DevOp Pipeline.
+
+| Windows <br> [![Build Status](https://img.shields.io/azure-devops/tests/thsmi/sieve/4) ![Test Status](https://img.shields.io/azure-devops/build/thsmi/sieve/4)](https://dev.azure.com/thsmi/sieve/_build/latest?definitionId=4&branchName=master) | Linux <br> [![Build Status](https://img.shields.io/azure-devops/tests/thsmi/sieve/2) ![Test Status](https://img.shields.io/azure-devops/build/thsmi/sieve/2)](https://dev.azure.com/thsmi/sieve/_build/latest?definitionId=2&branchName=master) | macOS <br> [![Build Status](https://img.shields.io/azure-devops/tests/thsmi/sieve/6) ![Test Status](https://img.shields.io/azure-devops/build/thsmi/sieve/6)](https://dev.azure.com/thsmi/sieve/_build/latest?definitionId=6&branchName=master) | WebExtension <br>[![Build Status](https://img.shields.io/azure-devops/tests/thsmi/sieve/5) ![Test Status](https://img.shields.io/azure-devops/build/thsmi/sieve/5)](https://dev.azure.com/thsmi/sieve/_build/latest?definitionId=5&branchName=master) |
+|---------|-------|-------|--------------|
+
+Click on the test and build status to see more details or to download the build Artifacts. The later can be accessed by clicking on "Published" in the "Related" section.
+

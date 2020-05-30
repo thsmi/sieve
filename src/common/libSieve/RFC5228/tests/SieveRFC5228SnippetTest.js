@@ -21,12 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("RFC5228 unit tests...");
-  });
+  suite.description("RFC5228 unit tests...");
 
-  suite.add(function () {
-    suite.log("Test header constructors");
+  suite.add("Test header constructors", () => {
 
     const snippet = 'header "Subject" "Example"';
     suite.expectValidSnippet("test/header", snippet);

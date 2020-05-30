@@ -145,4 +145,4 @@
 
   SieveLexer.register(SieveBlockImport);
 
-})(window);
+})(this);

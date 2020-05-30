@@ -344,4 +344,4 @@
 
   SieveLexer.register(SieveWhiteSpace);
 
-})(window);
+})(this);

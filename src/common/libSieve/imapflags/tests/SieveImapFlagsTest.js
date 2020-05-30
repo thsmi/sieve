@@ -21,13 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("imap4flags Unit Tests...");
-  });
+  suite.description("imap4flags Unit Tests...");
 
-  suite.add(function () {
-
-    suite.log("RFC5232 Snippet I");
+  suite.add("RFC5232 Snippet I", () => {
 
     const script = ''
       + 'require "imap4flags";\r\n'
@@ -38,9 +34,7 @@
     suite.expectValidScript(script, ["imap4flags"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC5232 Snippet II");
+  suite.add("RFC5232 Snippet II", () => {
 
     const script = ''
       + 'require "imap4flags";\r\n'
@@ -55,9 +49,7 @@
     suite.expectValidScript(script, ["fileinto", "imap4flags"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC5232 Snippet III");
+  suite.add("RFC5232 Snippet III", () => {
 
     const script = ''
       + 'require "imap4flags";\r\n'
@@ -74,9 +66,7 @@
     suite.expectValidScript(script, ["imap4flags"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC5232 Snippet IV");
+  suite.add("RFC5232 Snippet IV", () => {
 
     const script = ''
       + 'require "imap4flags";\r\n'
@@ -95,9 +85,7 @@
     suite.expectValidScript(script, ["imap4flags", "fileinto"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC5232 Snippet V");
+  suite.add("RFC5232 Snippet V", () => {
 
     const script = ''
       + 'require "imap4flags";\r\n'
@@ -108,9 +96,7 @@
     suite.expectValidScript(script, ["imap4flags"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC5232 Snippet VI");
+  suite.add("RFC5232 Snippet VI", () => {
 
     const script = ''
       + 'require "imap4flags";\r\n'
@@ -134,9 +120,7 @@
   // TODO add a test for :
   // 'hasflag :count "ge" :comparator "i;ascii-numeric" "MyFlags" "2"
 
-  suite.add(function () {
-
-    suite.log("RFC5232 Snippet VII");
+  suite.add("RFC5232 Snippet VII", () => {
 
     const script = ''
       + 'require "imap4flags";\r\n'
@@ -148,9 +132,7 @@
     suite.expectValidScript(script, ["imap4flags", "fileinto"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Extended Example");
+  suite.add("Extended Example", () => {
 
     const script = ''
       + '#\r\n'

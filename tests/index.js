@@ -20,12 +20,9 @@ async function main() {
 
   await writeFile("./test.log.xml", (new JUnitExporter()).export(report));
 
-  // TODO Print a summary
-  // report.summary();
-  console.log(` Ran ${report.getReports().length} fixtures xx failed xx errored`);
+  report.summary();
 
   if (report.hasFailed()) {
-    console.log("Some Tests failed.");
     process.exit(1);
   }
 }

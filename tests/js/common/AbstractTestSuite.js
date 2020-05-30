@@ -306,9 +306,13 @@
      */
     async run(report) {
 
+      report.start();
+
       for (const fixture of this.tests) {
         await fixture.run(report);
       }
+
+      report.stop();
 
       return this;
     }

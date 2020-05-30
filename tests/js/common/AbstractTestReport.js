@@ -336,10 +336,10 @@
       if (this.status === STATUS_FIXTURE_ERROR)
         return true;
 
-      if (this.getFailures())
+      if (this.getFailures().length)
         return true;
 
-      if (this.getErrors())
+      if (this.getErrors().length)
         return true;
 
       return false;

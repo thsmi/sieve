@@ -166,6 +166,32 @@
       return new NodeTestFixtureReport(name, this.getLogger());
     }
 
+    /**
+     * Prints a summary
+     */
+    summary() {
+      let total = 0;
+      let failures = 0;
+      let errors = 0;
+
+      for (const report of this.getReports()) {
+        total += report.getReports().length;
+        failures += report.getFailures().length;
+        errors += report.getErrors().length;
+      }
+
+      const fixtures = this.getReports().length;
+      const duration = this.getDuration();
+
+      this.getLogger().header("Summary");
+      this.getLogger().logInfo(
+        `Ran ${fixtures} fixtures with ${total} Tests in ${duration} ms.`);
+
+      if (this.hasFailed())
+        this.getLogger().logError(`${failures} tests failed ${errors} test errored`);
+
+    }
+
   }
 
   exports.NodeTestReport = NodeTestSuiteReport;

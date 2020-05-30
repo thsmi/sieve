@@ -71,4 +71,12 @@ You are looking for the most recent release?
 
 [They are by downloading from the Releases page (release notes can also be viewed)](https://github.com/thsmi/sieve/releases).
 
-Development builds are marked as pre-release.
+## Continous Builds
+
+Continuous builds are triggerd upon each change to the master. You can find them in the Azure DevOp Pipeline.
+
+| Windows <br> [![Build Status](https://dev.azure.com/thsmi/sieve/_apis/build/status/App%20Windows?branchName=master)](https://dev.azure.com/thsmi/sieve/_build/latest?definitionId=4&branchName=master) | Linux [![Build Status](https://dev.azure.com/thsmi/sieve/_apis/build/status/App%20Linux?branchName=master)](https://dev.azure.com/thsmi/sieve/_build/latest?definitionId=2&branchName=master) | macOS [![Build Status](https://dev.azure.com/thsmi/sieve/_apis/build/status/App%20macOS?branchName=master)](https://dev.azure.com/thsmi/sieve/_build/latest?definitionId=6&branchName=master) | WebExtension [![Build Status](https://dev.azure.com/thsmi/sieve/_apis/build/status/WebExtension?branchName=master)](https://dev.azure.com/thsmi/sieve/_build/latest?definitionId=5&branchName=master) |
+|---------|-------|-------|--------------|
+
+Just open one of the pipelines and click on "Published" in the "Related" section.
+

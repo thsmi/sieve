@@ -2,26 +2,14 @@
 
   "use strict";
 
-  /* global AbstractTestReport */
+  /* global TestSuiteReport */
+  /* global TestFixtureReport */
+  /* global TestCaseReport */
 
   /**
-   * Renders the test report into the browser
+   * Logs messages and renders them inside a browser window.
    */
-  class BrowserTestReport extends AbstractTestReport {
-
-    /**
-     * @inheritdoc
-     */
-    addSubReport(name) {
-
-      const container = document.createElement("div");
-      container.dataset.name = name;
-      document.querySelector("#divOutput").appendChild(container);
-
-      this.log("Test fixture '" + name + "'", "Header");
-
-      return new BrowserTestReport(name);
-    }
+  class Logger {
 
     /**
      * Renders a message to the test Report.
@@ -48,57 +36,103 @@
     }
 
     /**
-     * @inheritdoc
-     **/
-    addInfo(msg) {
-      this.log(msg, "Info");
-      return this;
-    }
-
-    /**
-     * @inheritdoc
-     **/
-    addTrace(msg) {
+     * Logs a trace message.
+     *
+     * @param {string} msg
+     *   the trace message to be logged.
+     */
+    logTrace(msg) {
       this.log(msg, "Trace");
-      return this;
+    }
+
+    /**
+     * Logs an info message.
+     *
+     * @param {string} msg
+     *   the info message to be logged.
+     */
+    logInfo(msg) {
+      this.log(msg, "Info");
+    }
+
+    /**
+     * Logs an error message.
+     *
+     * @param {string} msg
+     *   the error message to be logged.
+     */
+    logError(msg) {
+      this.log(msg, "Error");
+    }
+
+    /**
+     * Logs a failure message.
+     *
+     * @param {string} msg
+     *   the failure message to be logged.
+     */
+    logFailure(msg) {
+      this.log(msg, "Failure");
+    }
+
+    /**
+     * Logs a success message
+     *
+     * @param {string} msg
+     *   the success message to be logged.
+     */
+    success(msg) {
+      this.log(msg, "Success");
+    }
+
+    /**
+     * Logs a header, title or chapter.
+     * Used to structure the log.
+     *
+     * @param {string} msg
+     *   the headers message to be displayed.
+     */
+    header(msg) {
+      this.log(msg, "Header");
+    }
+
+    /**
+     * Logs a warning message.
+     *
+     * @param {string} msg
+     *   the warning to be logged.
+     */
+    warning(msg) {
+      this.log(msg, "Warning");
+    }
+  }
+
+
+  /**
+   * Reports a fixtures status, and renders the results in a browser window.
+   */
+  class BrowserTestFixtureReport extends TestFixtureReport {
+
+    /**
+     * @inheritdoc
+     */
+    createReport(name) {
+      return new TestCaseReport(name, this.getLogger());
     }
 
     /**
      * @inheritdoc
-     **/
-    addError(message, details) {
-
-      if (message instanceof Error) {
-        details = "" + message.stack;
-        message = "" + message;
-      }
-
-      this.log("✗ " + message, "Fail");
-
-      if (details)
-        this.log("" + details, "Trace");
-
-      document
-        .querySelector(`#tests input[value='${this.getName()}']`)
-        .parentNode
-        .classList.add("failure");
-
-      return this;
+     */
+    log(msg, level) {
+      this.getLogger().log(msg, level);
     }
 
     /**
      * @inheritdoc
-     **/
-    addWarning(msg) {
-      this.log("⚠ " + msg, "Warning");
-      return this;
-    }
+     */
+    complete() {
 
-    /**
-     * @inheritdoc
-     **/
-    addSuccess() {
-      this.log("✓ Test succeeded.", "Success");
+      super.complete();
 
       document
         .querySelector(`#tests input[value='${this.getName()}']`)
@@ -109,9 +143,55 @@
     }
 
     /**
+     * @inheritdoc
+     */
+    error(ex) {
+
+      super.error(ex);
+
+      document
+        .querySelector(`#tests input[value='${this.getName()}']`)
+        .parentNode
+        .classList.add("failure");
+
+      return this;
+    }
+  }
+
+  /**
+   * Reports the status of a test suite and renders the results in a browser windows.
+   */
+  class BrowserTestSuiteReport extends TestSuiteReport {
+
+    /**
+     * @inheritdoc
+     */
+    constructor(name) {
+      super(name, new Logger());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    createReport(name) {
+
+      const div = document.createElement("div");
+      div.dataset.name = name;
+
+      document
+        .querySelector("#divOutput")
+        .appendChild(div);
+
+      this.getLogger().header(`Test fixture '${name}'`);
+      return new BrowserTestFixtureReport(name, this.getLogger());
+    }
+
+    /**
      * Clears all results...
      */
     clear() {
+
+      super.clear();
 
       const container = document.querySelector("#divOutput");
       while (container.firstChild)
@@ -123,8 +203,9 @@
       for (const elm of document.querySelectorAll("#tests .failure"))
         elm.classList.remove("failure");
     }
+
   }
 
-  exports.BrowserTestReport = BrowserTestReport;
+  exports.BrowserTestReport = BrowserTestSuiteReport;
 
 })(this);

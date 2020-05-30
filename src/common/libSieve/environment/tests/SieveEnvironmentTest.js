@@ -21,13 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Environment Tests...");
-  });
+  suite.description("Environment Tests...");
 
-  suite.add(function () {
-
-    suite.log("Example 1");
+  suite.add("Example 1", () => {
 
     const script = ''
       + 'require "environment";\r\n'
@@ -36,9 +32,7 @@
     suite.expectValidScript(script, ["environment"]);
   });
 
-  suite.add(function () {
-
-    suite.log("Example 2");
+  suite.add("Example 2", () => {
 
     const script = ''
       + 'require "environment";\r\n'
@@ -47,8 +41,7 @@
     suite.expectValidScript(script, ["environment"]);
   });
 
-  suite.add(function () {
-    suite.log("Validate environment test constructor");
+  suite.add("Validate environment test constructor", () => {
 
     const snippet = 'environment "domain" "imap.example.com"';
     suite.expectValidSnippet("test/environment", snippet, ["environment"]);

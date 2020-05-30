@@ -21,13 +21,9 @@
   if (!suite)
     throw new Error("Could not initialize test suite");
 
-  suite.add(function () {
-    suite.log("Date Unit Tests...");
-  });
+  suite.description("Date Unit Tests...");
 
-  suite.add(function () {
-
-    suite.log("RFC5260 Snippet I");
+  suite.add("RFC5260 Snippet I", () => {
 
     const script = ""
       + 'require ["date", "relational", "fileinto"];\r\n'
@@ -39,9 +35,7 @@
     suite.expectValidScript(script, ["date", "relational", "fileinto"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC5260 Snippet II");
+  suite.add("RFC5260 Snippet II", () => {
 
     const script = ""
       + 'require ["date", "fileinto"];\r\n'
@@ -52,9 +46,7 @@
     suite.expectValidScript(script, ["date", "fileinto"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC5260 Snippet III");
+  suite.add("RFC5260 Snippet III", () => {
 
     const script = ""
       + 'require ["date", "relational"];\r\n'
@@ -67,9 +59,7 @@
     suite.expectValidScript(script, ["date", "relational"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC5260 Snippet IV");
+  suite.add("RFC5260 Snippet IV", () => {
 
     const script = ""
       + 'require ["date", "relational", "vacation"];\r\n'
@@ -80,9 +70,7 @@
     suite.expectValidScript(script, ["date", "relational", "vacation"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC5260 Snippet V");
+  suite.add("RFC5260 Snippet V", () => {
 
     const script = ""
       + 'require ["date", "variables", "fileinto"];\r\n'
@@ -93,9 +81,7 @@
     suite.expectValidScript(script, ["date", "variables", "fileinto"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC5260 Snippet VIa");
+  suite.add("RFC5260 Snippet VIa", () => {
 
     const script = ""
       + 'require "date";\r\n'
@@ -105,9 +91,7 @@
     suite.expectValidScript(script, ["date"]);
   });
 
-  suite.add(function () {
-
-    suite.log("RFC5260 Snippet VI");
+  suite.add("RFC5260 Snippet VI", () => {
 
     // FIXME: Variables import is dropped silently
     const script = ""
@@ -120,15 +104,13 @@
   });
 
 
-  suite.add(function () {
-    suite.log("Validate date test constructor");
+  suite.add("Validate date test constructor", () => {
 
     const snippet = 'date "date" "date" "' + new Date().toJSON().substring(0, 10) + '"';
     suite.expectValidSnippet("test/date", snippet, ["date"]);
   });
 
-  suite.add(function () {
-    suite.log("Validate currentdate test constructor");
+  suite.add("Validate currentdate test constructor", () => {
 
     const snippet = 'currentdate "date" "' + new Date().toJSON().substring(0, 10) + '"';
     suite.expectValidSnippet("test/currentdate", snippet, ["date"]);

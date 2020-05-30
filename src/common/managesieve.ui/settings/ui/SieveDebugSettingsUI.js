@@ -90,7 +90,7 @@
 
       await this.render();
 
-      return await new Promise((resolve) => {
+      await new Promise((resolve) => {
 
         $(this.getDialog()).modal("show")
           .on("hidden.bs.modal", () => {

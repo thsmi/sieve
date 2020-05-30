@@ -15,7 +15,7 @@
 
   // TODO: Should be renamed to SieveAbstractWidget
   /**
-   * @constructor
+   *
    * @param {SieveDocument} docshell
    *  the document which owns this element
    * @param {string} id

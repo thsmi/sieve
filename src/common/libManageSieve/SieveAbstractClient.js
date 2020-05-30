@@ -627,6 +627,9 @@
       this.getLogger().logState("Skipping Event Queue");
     }
 
+    /**
+     *
+     */
     _sendRequest() {
 
       let idx = 0;

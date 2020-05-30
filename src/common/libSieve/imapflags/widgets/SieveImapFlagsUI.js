@@ -156,6 +156,8 @@
   class SieveHasFlagUI extends SieveTestDialogBoxUI {
 
     /**
+     * Gets the current match type
+     *
      * @returns {SieveAbstractElement}
      *   the element's match type
      */
@@ -164,6 +166,8 @@
     }
 
     /**
+     * Gets te current operator
+     *
      * @returns {SieveAbstractElement}
      *   the element's comparator
      */

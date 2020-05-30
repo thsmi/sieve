@@ -14,7 +14,6 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveTestDialogBoxUI */
   /* global SieveActionDialogBoxUI */
 
@@ -26,6 +25,8 @@
   /* global SieveOverlayItemWidget */
 
   /* global SieveDesigner */
+
+  /* global SieveTemplate */
 
   /**
    * Implements an UI for the notify action.
@@ -43,21 +44,32 @@
     }
 
     /**
+     * Gets optional additional configures to extend the notification method.
+     * Each configuration is string which contains a key/value pair separated
+     * by an equals sign.
      *
+     * @returns {SieveStringList}
+     *   a string list with strings containing key/pairs.
      */
     options() {
       return this.getSieve().getElement("options").getElement("options");
     }
 
     /**
+     * Returns the sender/from field which is used when sending the notification.
      *
+     * @returns {SieveString}
+     *   the notification's from
      */
     from() {
       return this.getSieve().getElement("from").getElement("from");
     }
 
     /**
+     * Returns the message to be send via the notification method.
      *
+     * @returns {SieveString}
+     *   the message
      */
     message() {
       return this.getSieve().getElement("message").getElement("message");
@@ -146,8 +158,12 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("Notify").get(0);
+      const FRAGMENT =
+        `<div>
+         <span data-i18n="notify.summary"></span>
+       </div>`;
+
+      return (new SieveTemplate()).convert(FRAGMENT);
     }
   }
 
@@ -177,21 +193,30 @@
     }
 
     /**
+     * The keys against  which the capabilities should be checked.
      *
+     * @returns {SieveStringList}
+     *  the keys as string list.
      */
     keys() {
       return this.getSieve().getElement("keys");
     }
 
     /**
+     * Gets the notification methods unique uri.
      *
+     * @returns {SieveString}
+     *   the notification methods as uri.
      */
     uri() {
       return this.getSieve().getElement("uri");
     }
 
     /**
+     * Gets the notifications method capability which should be checked.
      *
+     * @returns {SieveString}
+     *   the notification capability.
      */
     capability() {
       return this.getSieve().getElement("capability");
@@ -246,19 +271,26 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("Check Notify Method Capability").get(0);
+      const FRAGMENT =
+        `<div>
+         <span data-i18n="notifymethodcapability.summary"></span>
+       </div>`;
+
+      return (new SieveTemplate()).convert(FRAGMENT);
     }
   }
 
 
   /**
-   *
+   * Implements a ui for the ValidNotifyMethod test.
    */
   class SieveValidNotifyMethodUI extends SieveTestDialogBoxUI {
 
     /**
+     * Gets the list which notification uris to be checked for validity.
      *
+     * @returns {SieveStringList}
+     *   a list with uris
      */
     uris() {
       return this.getSieve().getElement("uris");
@@ -293,8 +325,15 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html(" Notify methods are supported " + this.uris().toScript()).get(0);
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="validnotifymethod.summary"></span>
+           <em class="sivValidNotifyMethodUris"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivValidNotifyMethodUris").textContent = this.uris().toScript();
+      return elm;
     }
   }
 

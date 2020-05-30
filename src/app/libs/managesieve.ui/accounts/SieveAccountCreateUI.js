@@ -24,6 +24,9 @@
 
     /**
      * Shows the import account dialog.
+     *
+     * @returns {boolean}
+     *   true in case the dialog as accepted otherwise false.
      */
     async show() {
 

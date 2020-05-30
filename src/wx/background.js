@@ -28,9 +28,15 @@
 
   // TODO Extract into separate class..
   /**
+   * Gets a tab by its script and account name.
    *
-   * @param {*} account
-   * @param {*} name
+   * @param {string} account
+   *   the account name
+   * @param {string} name
+   *   the script name
+   *
+   * @returns {*}
+   *   the webextension tab object.
    */
   async function getTabs(account, name) {
     const url = new URL("./libs/managesieve.ui/editor.html", window.location);
@@ -356,7 +362,7 @@
       url.searchParams.append("script", name);
 
       const tabs = await getTabs(account, name);
-      if (tabs.length > 0) {
+      if (tabs.length) {
         await showTab(tabs[0]);
         return;
       }
@@ -417,6 +423,7 @@
       };
     },
 
+    // eslint-disable-next-line no-unused-vars
     "settings-get-loglevel": async function (msg) {
       return await accounts.getLogLevel();
     },

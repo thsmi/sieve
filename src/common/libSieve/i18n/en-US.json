@@ -158,10 +158,15 @@
   "string.help" : "",
   "string.summary" : "string",
 
+  "notify.summary" : "Send notification",
+
+  "notifymethodcapability.summary" :"Check Notify Method Capability",
+
   "validnotifymethod.tab.home" : "Valid notify method",
   "validnotifymethod.tab.help" : "Help",
   "validnotifymethod.notifyuris" : "All notify methods are supported...",
   "validnotifymethod.help" : "",
+  "validnotifymethod.summary" : "Notify methods are supported",
 
   "redirect.tab.home" : "Redirect",
   "redirect.tab.help" : "Help",
@@ -351,6 +356,8 @@
   "convert.transcode" : "... and apply the following transcodings",
   "convert.transcode.text" : "Transcodings are defined in RFC5259 and used to change properties during conversion.  Examples are rescale an images or change the encoding encoding of a text.",
   "convert.help" : "Converts the whole message or their part into the a new media type. It is typically used to convert text documents and images as described in RFC5259.\n\nTheoretically it would be possible to convert everything into anything (e.g. an audio file into text). But in reality your server will support only a very limited subset of conversions. Keep in mind conversion may require lots of resources and processing time e.g. when rescaling images or creating pdfs.\n\nIn case the conversion fails the message remains unchanged. If this method is used inside a test. The test will performing the conversion and evaluate if the conversion succeeded or failed.",
+  "convert.summary.from": "Convert",
+  "convert.summary.to": "to",
 
 
   "body.tab.home" : "Body",

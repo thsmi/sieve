@@ -13,10 +13,13 @@
 
   "use strict";
 
+  const MILLISECONDS_PER_SECOND = 1000;
 
   /**
    * Exports a report in the JUnit Format. The format details can be found at:
    * https://raw.githubusercontent.com/windyroad/JUnit-Schema/master/JUnit.xsd
+   *
+   * https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml#result-formats-mapping
    *
    * It is a poor mans xml implementation.
    */
@@ -33,7 +36,7 @@
     exportTestCase(report) {
 
       const name = `name="${report.getName()}"`;
-      const time = `time="${report.getDuration()}"`;
+      const time = `time="${report.getDuration() / MILLISECONDS_PER_SECOND}"`;
 
       const attributes = `${name} ${time}`;
 
@@ -62,9 +65,13 @@
       const failures = `failures="${report.getFailures()}"`;
       const name = `name="${report.getName()}"`;
       const tests = `tests="${report.getReports().length}"`;
-      const time = `time="${report.getDuration()}"`;
+      const time = `time="${report.getDuration() / MILLISECONDS_PER_SECOND}"`;
 
-      const attributes = `${failures} ${name} ${tests} ${time}`;
+      let timestamp = "";
+      if (report.getTimestamp())
+        timestamp = `timestamp="${JSON.stringify(report.getTimestamp()).substring(1,20)}"`;
+
+      const attributes = `${failures} ${name} ${tests} ${time} ${timestamp}`;
 
       let testcases = "";
       for (const subReport of report.getReports())
@@ -85,19 +92,18 @@
      * @returns {string}
      *   the xml fragment as string
      */
-    exportTestCases(report) {
+    exportTestSuites(report) {
       let suites = "";
 
       for (const subReport of report.getReports())
         suites += this.exportTestSuite(subReport);
 
-      const time = `time="${report.getDuration()}"`;
       const name = `name="${report.getName()}"`;
       const tests = `tests=""`;
       const errors = `errors=""`;
       const failures = `failures=""`;
 
-      const attributes = `${time} ${name} ${tests} ${errors} ${failures}`;
+      const attributes = `${name} ${tests} ${errors} ${failures}`;
 
       return `<testsuites ${attributes} >\n${suites}\n</testsuites>\n`;
     }
@@ -113,7 +119,7 @@
      *   the xml as string
      */
     export(report) {
-      return `<?xml version="1.0" encoding="UTF-8"?>\n${this.exportTestCases(report)}`;
+      return `<?xml version="1.0" encoding="UTF-8"?>\n${this.exportTestSuites(report)}`;
     }
 
   }

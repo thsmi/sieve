@@ -59,6 +59,16 @@
     }
 
     /**
+     * Gets the time when the test case was executed.
+     *
+     * @returns {Date}
+     *   the start timestamp.
+     */
+    getTimestamp() {
+      return this.startMarker;
+    }
+
+    /**
      * Calculates the execution time. Which are the milliseconds between the
      * start and stop marker.
      *

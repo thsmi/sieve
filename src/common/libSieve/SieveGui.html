@@ -143,6 +143,10 @@
   <script type="application/javascript" src="notify/logic/SieveNotify.js"></script>
   <script type="application/javascript" src="notify/widgets/SieveNotifyUI.js"></script>
 
+  <!-- vnd.dovecot.pipe - pipe -->
+  <script type="application/javascript" src="pipe/logic/SievePipe.js"></script>
+  <script type="application/javascript" src="pipe/widgets/SievePipeUI.js"></script>
+
   <style>
     .sivMenuItem {
       font-size: 0.7em;
@@ -564,6 +568,30 @@
                   class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesNotify">
                   notify (RFC5435)
+                </label>
+              </div>
+
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesPipe" name="capabilities" value="vnd.dovecot.pipe"
+                  class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesPipe">
+                  vnd.dovecot.pipe
+                </label>
+              </div>
+
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesFilter" name="capabilities" value="vnd.dovecot.filter"
+                  class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesFilter">
+                  vnd.dovecot.filter
+                </label>
+              </div>
+
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesExecute" name="capabilities" value="vnd.dovecot.execute"
+                  class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesExecute">
+                  vnd.dovecot.execute
                 </label>
               </div>
 

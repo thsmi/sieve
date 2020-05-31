@@ -53,10 +53,8 @@
      * @inheritdoc
      */
     save(sivElement) {
-      if (document.querySelector("#sivCopyCheckbox").checked)
-        sivElement.enable("copy", true);
-      else
-        sivElement.enable("copy", false);
+      sivElement.enable("copy",
+        document.querySelector("#sivCopyCheckbox").checked);
     }
   }
 
@@ -78,7 +76,6 @@
       return "action/fileinto/copy";
     }
   }
-
 
   /**
    * Implements an overlay for the copy redirect overlay

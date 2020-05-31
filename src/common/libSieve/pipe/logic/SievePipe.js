@@ -29,6 +29,15 @@
     token: ":try"
   });
 
+  SieveGrammar.addTag({
+    node: "action/pipe/copy",
+    type: "action/pipe/",
+
+    requires: "copy",
+
+    token: ":copy"
+  });
+
   SieveGrammar.addAction({
     node: "action/pipe",
     type: "action",
@@ -43,25 +52,25 @@
 
       elements: [{
         id: "copy",
-        type: "action/fileinto/copy"
+        type: "action/pipe/copy"
       }, {
-        id: "input",
+        id: "try",
         type: "action/pipe/try"
       }]
     }, {
-      id: "program",
+      id: "parameters",
 
       elements: [{
-        id: "name",
+        id: "program",
         type: "string",
-        value: '""'
+        value: '"example"'
       }]
     }, {
       id: "arguments",
       optional: true,
 
       elements: [{
-        id: "names",
+        id: "arguments",
         type: "stringlist",
         value: '""'
       }]
@@ -72,16 +81,16 @@
     id: "program",
 
     elements: [{
-      id: "name",
+      id: "program",
       type: "string",
-      value: '""'
+      value: '"example"'
     }]
   }, {
     id: "arguments",
     optional: true,
 
     elements: [{
-      id: "names",
+      id: "arguments",
       type: "stringlist",
       value: '""'
     }]
@@ -123,7 +132,7 @@
   });
 
   SieveGrammar.addTag({
-    node: "execute/input/zone",
+    node: "execute/input/input",
     type: "execute/input/",
 
     token: ":input",

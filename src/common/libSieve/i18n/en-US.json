@@ -583,6 +583,29 @@
   "environment.name.version" : "The Sieve interpreter's version number.",
   "environment.keys" : "... any of the following keys...",
   "environment.help" : "The environment test retrieves the item of environment information specified by the name string and matches it to the values specified in the key-list argument. The test succeeds if a match occurs.\n\n The current message is not a direct source of information for the environment test; the item of information specified by the name string is extracted from the script's operating environment and the key-list argument comes from the script.",
+  "environment.summary" : "Environment info named",
 
-  "environment.summary" : "Environment info named"
+  "pipe.tab.home" : "Pipe",
+  "pipe.tab.help" : "Help",
+  "pipe.program.label" : "Pipe the message to the program",
+  "pipe.program.placeholder" : "The program which should be executed",
+  "pipe.program.invalid" : "The program name is invalid.",
+  "pipe.arguments.label" : "Pass arguments",
+  "pipe.arguments.text" : "Command line arguments to be passed to the external program.",
+  "pipe.try.label" : "Fail silently",
+  "pipe.try.text" : "Do not trigger an error in case executing the program failed.",
+  "pipe.copy.label" : "Keep a copy",
+  "pipe.copy.text" :  "Do not cancel the implicit keep.",
+  "pipe.help" : "Pipe executes an external program on the server and pipes the messag into this program.\n\nIn case the program terminated without an error, the implicit keep will be canceled.",
+  "pipe.summary" : "Pipe message to",
+
+  "filter.tab.home" : "Filter",
+  "filter.tab.help" : "Help",
+  "filter.program.label" : "Run message through filter program",
+  "filter.program.placeholder" : "The program which should be executed",
+  "filter.program.invalid" : "The program name is invalid.",
+  "filter.arguments.label" : "Pass arguments",
+  "filter.arguments.text" : "Command line arguments to be passed to the external program.",
+  "filter.help" : "",
+  "filter.summary" : "Run message through filter program"
 }

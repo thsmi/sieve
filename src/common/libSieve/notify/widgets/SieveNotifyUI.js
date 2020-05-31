@@ -131,7 +131,7 @@
 
       this.getSieve().enable("importance",
         document.querySelector("#cbxSieveNotifyImportance").checked);
-      const importance = document.querySelector("input[name=sivNotifyImportance]:checked").value();
+      const importance = document.querySelector("input[name=sivNotifyImportance]:checked").value;
 
       this.getSieve()
         .getElement("importance")

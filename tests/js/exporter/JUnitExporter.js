@@ -14,6 +14,8 @@
   "use strict";
 
   const MILLISECONDS_PER_SECOND = 1000;
+  const TIMESTAMP_BEGIN = 1;
+  const TIMESTAMP_END = 20;
 
   /**
    * Exports a report in the JUnit Format. The format details can be found at:
@@ -52,6 +54,20 @@
     }
 
     /**
+     * Converts a java script timestamp into a "yyyy-mm-ddTHH:MM:SS".
+     *
+     * @param {Date} timestamp
+     *   the timestamp to be converted.
+     *
+     * @returns {string}
+     *   the converted timestamp.
+     */
+    convertTimestamp(timestamp) {
+      return JSON.stringify(timestamp)
+        .substring(TIMESTAMP_BEGIN, TIMESTAMP_END);
+    }
+
+    /**
      * Exports a test fixture including all contained test cases into a
      * xml fragment.
      *
@@ -69,7 +85,7 @@
 
       let timestamp = "";
       if (report.getTimestamp())
-        timestamp = `timestamp="${JSON.stringify(report.getTimestamp()).substring(1,20)}"`;
+        timestamp = `timestamp="${this.convertTimestamp(report.getTimestamp())}"`;
 
       const attributes = `${failures} ${name} ${tests} ${time} ${timestamp}`;
 

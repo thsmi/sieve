@@ -16,19 +16,19 @@
   <div id="template-content">
     <div class="tab-content m-2">
       <div class="tab-pane fade show active" id="sieve-widget-setaction" role="tabpanel">
-        <form class="was-validated" novalidate="novalidate">
           <div class="form-group">
             <label data-i18n="set.value"></label>
             <textarea class="form-control" id="sivVariableValue" rows="6"> </textarea>
           </div>
           <div class="form-group">
             <label data-i18n="set.variable"></label>
-            <input type="text" class="form-control" id="sivVariableName"
-              pattern="((([A-Za-z_][A-Za-z0-9_]*))\.((([0-9]+)|([A-Za-z_][A-Za-z0-9_]*))\.)*)?(([0-9]+)|([A-Za-z_][A-Za-z0-9_]*))"
-              required="required" />
-            <div data-i18n="set.variable.invalid" class="invalid-feedback"></div>
+            <form class="was-validated" novalidate="novalidate">
+              <input type="text" class="form-control" id="sivVariableName"
+                pattern="((([A-Za-z_][A-Za-z0-9_]*))\.((([0-9]+)|([A-Za-z_][A-Za-z0-9_]*))\.)*)?(([0-9]+)|([A-Za-z_][A-Za-z0-9_]*))"
+                required="required" />
+              <div data-i18n="set.variable.invalid" class="invalid-feedback"></div>
+            </form>
           </div>
-        </form>
       </div>
       <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
         <small data-i18n="set.modifier" class="form-text text-muted"></small>

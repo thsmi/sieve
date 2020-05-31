@@ -120,7 +120,7 @@
       elements: [{
         id: "name",
         type: "string",
-        value: '""'
+        value: '"X-Header"'
       }]
     }, {
       id: "parameter2",

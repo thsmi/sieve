@@ -33,7 +33,7 @@
               </div>
             </div>
             <div class="col-auto">
-              <input type="number" id="sivDeleteHeaderFirstIndex" class="form-control form-control-sm col-lg-5"
+              <input type="number" min="1" id="sivDeleteHeaderFirstIndex" class="form-control form-control-sm col-lg-5"
                 value="1"> </input>
             </div>
           </div>
@@ -47,7 +47,7 @@
               </div>
             </div>
             <div class="col-auto">
-              <input type="number" id="sivDeleteHeaderLastIndex" class="form-control form-control-sm col-lg-5"
+              <input type="number" min="1" id="sivDeleteHeaderLastIndex" class="form-control form-control-sm col-lg-5"
                 value="1" />
             </div>
           </div>
@@ -55,7 +55,10 @@
           <br />
 
           <h5 data-i18n="deleteheader.name"></h5>
-          <input type="text" id="sivDeleteHeaderName" class="form-control form-control-sm col-lg-8" />
+          <form class="was-validated" novalidate="novalidate">
+            <input type="text" id="sivDeleteHeaderName" class="form-control form-control-sm col-lg-8" required="required" pattern="[ -~]+"/>
+            <div data-i18n="deleteheader.name.invalid" class="invalid-feedback"></div>
+          </form>
 
           <h5 data-i18n="deleteheader.value"></h5>
           <div class="custom-control custom-radio mr-sm-2">

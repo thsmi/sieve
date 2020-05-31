@@ -86,9 +86,9 @@
     /**
      * @inheritdoc
      */
-    onLoad(sivElement, item) {
+    onLoad(sivElement) {
 
-      super.onLoad(sivElement, item);
+      super.onLoad(sivElement);
 
       this.getActiveItem().querySelector(".sieve-matchtype-value-relational").value =
         ":value " + sivElement.getElement("relational-match").toScript();

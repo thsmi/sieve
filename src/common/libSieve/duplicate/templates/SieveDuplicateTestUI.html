@@ -36,7 +36,10 @@
           <input type="radio" id="sivDuplicateCustomHandle" name="sieve-duplicate-handle" class="custom-control-input"
             value="true" />
           <label class="custom-control-label" for="sivDuplicateCustomHandle">
-            <input data-i18n="duplicate.tracking.custom" type="text" id="sivDuplicateHandle" />
+            <form class="was-validated" novalidate="novalidate">
+              <input data-i18n="duplicate.tracking.custom" type="text" value="${sender} ${subject}" id="sivDuplicateHandle" required="required"/>
+              <div data-i18n="duplicate.tracking.custom.invalid" class="invalid-feedback"></div>
+            </form>
           </label>
         </div>
 
@@ -56,9 +59,12 @@
           <input type="radio" id="sivDuplicateCustomExpiration" name="sieve-duplicate-seconds"
             class="custom-control-input" value="true" />
           <label class="custom-control-label" for="sivDuplicateCustomExpiration">
-            <span data-i18n="duplicate.expiration.custom.pre"></span>
-            <input type="number" min="0" id="sivDuplicateSeconds" />
-            <span data-i18n="duplicate.expiration.custom.post"></span>
+            <form class="was-validated" novalidate="novalidate">
+              <span data-i18n="duplicate.expiration.custom.pre"></span>
+              <input type="number" min="0" id="sivDuplicateSeconds" value="600" required="required"/>
+              <span data-i18n="duplicate.expiration.custom.post"></span>
+              <div data-i18n="duplicate.expiration.custom.invalid" class="invalid-feedback"></div>
+            </form>
           </label>
         </div>
 

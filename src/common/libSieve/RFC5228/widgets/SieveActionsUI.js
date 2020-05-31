@@ -120,7 +120,7 @@
 
       const address = document.querySelector("#sivRedirectAddress");
 
-      if (address.checkValidity() === false)
+      if (!address.checkValidity())
         return false;
 
       (new SieveOverlayWidget("action/redirect/", "#sivRedirectOverlay"))
@@ -187,16 +187,13 @@
 
       const path = document.querySelector("#sivFileIntoPath");
 
-      const value = path.value;
-      if (value.trim() === "") {
-        path.classList.add("is-invalid");
+      if (!path.checkValidity())
         return false;
-      }
 
       (new SieveOverlayWidget("action/fileinto/", "#sivFileIntoOverlay"))
         .save(this.getSieve());
 
-      this.path(value);
+      this.path(path.value);
       return true;
     }
 

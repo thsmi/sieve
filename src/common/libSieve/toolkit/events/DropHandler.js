@@ -15,9 +15,6 @@
   "use strict";
 
   /* global SieveDataTransfer */
-  /* global $ */
-
-  const DOM_ELEMENT = 0;
 
   /**
    * Consumes drop events.
@@ -159,8 +156,12 @@
     }
 
     /**
+     * Called when an element is dragged over the drop handler.
+     * @param {Event} event
+     *   the dom event which was fired.
      *
-     * @param {*} event
+     * @returns {boolean}
+     *   true in case the drag over event can be handled otherwise false
      */
     onDragOver(event) {
 
@@ -173,8 +174,13 @@
     }
 
     /**
+     * Called when a element was dropped onto this drop handler.
      *
-     * @param {*} event
+     * @param {Event} event
+     *   the dom event which was fired.
+     *
+     * @returns {boolean}
+     *   true in case the element can be dropped, otherwise false.
      */
     onDragDrop(event) {
 
@@ -187,9 +193,17 @@
     }
 
     /**
+     * Called when an element is dropped onto the handler.
+     * It either creates or moves the element depending on the data transfers
+     * meta data.
      *
-     * @param {*} flavour
-     * @param {*} event
+     * @param {string} flavour
+     *   the data transfers preferred flavour.
+     * @param {Event} event
+     *   the dom event which was fired.
+     *
+     * @returns {boolean}
+     *   true in case the element can be dropped other wise false.
      */
     onDrop(flavour, event) {
       const dt = new SieveDataTransfer(event.originalEvent.dataTransfer);
@@ -235,11 +249,11 @@
      *   true in case the drop was successful otherwise false.
      */
     drop(event) {
-      for (let i = 0; i < this.flavours().length; i++) {
-        if (!this.onCanDrop(this.flavours()[i], event))
+      for (const flavour of this.flavours()) {
+        if (!this.onCanDrop(flavour, event))
           continue;
 
-        return this.onDrop(this.flavours()[i], event);
+        return this.onDrop(flavour, event);
       }
 
       return true;
@@ -311,8 +325,12 @@
     }
 
     /**
+     * Checks if the drop event is compatible and can be handled.
      *
-     * @param {*} event
+     * @param {Event} event
+     *   the dom event which was fired.
+     * @returns {boolean}
+     *   true in case the element can be dropped otherwise false.
      */
     canDrop(event) {
       for (const flavour of this.flavours()) {
@@ -331,7 +349,7 @@
   // ****************************************************************************//
 
   /**
-   *
+   * Accepts any elements which can be added to a block statement.
    */
   class SieveBlockDropHandler extends SieveDropHandler {
 
@@ -350,16 +368,17 @@
     canMoveElement(sivFlavour, id) {
       const source = this.document().id(id);
 
-      if ($(source.html()).parent().prev().get(DOM_ELEMENT) == this.owner().html())
+      if (source.html().parentElement.previousElementSibling === this.owner().html())
         return false;
 
-      if ($(source.html()).parent().next().get(DOM_ELEMENT) == this.owner().html())
+      if (source.html().parentElement.nextElementSibling === this.owner().html())
         return false;
 
       return true;
     }
 
     /**
+     * Moves a the given test from the source to the target destination.
      *
      * @param {*} source
      * @param {*} target
@@ -572,10 +591,10 @@
 
         // if it's a conditional statement it's parent does not have a test method
         if (!source.parent().test) {
-          if ($(source.html()).parent().prev().prev().get(DOM_ELEMENT) === this.owner().html())
+          if (source.html().parentElement.previousElementSibling().previousElementSibling() === this.owner().html())
             return false;
 
-          if ($(source.html()).parent().next().get(DOM_ELEMENT) === this.owner().html())
+          if (source.html().parentElement.nextElementSibling() === this.owner().html())
             return false;
         }
       }
@@ -597,6 +616,12 @@
       return true;
     }
 
+    /**
+     *
+     * @param {string} flavour
+     *   the flavour of the move element.
+     * @param {string} id
+     */
     moveElement(flavour, id) {
       let oldOwner;
 
@@ -685,7 +710,8 @@
 
     /**
      *
-     * @param {*} sivFlavour
+     * @param {string} sivFlavour
+     *   the flavour of the new element.
      * @param {*} type
      */
     createElement(sivFlavour, type) {
@@ -769,7 +795,8 @@
 
     /**
      *
-     * @param {*} sivFlavour
+     * @param {string} sivFlavour
+     *   the flavour of the moved element.
      * @param {*} id
      */
     moveElement(sivFlavour, id) {
@@ -840,7 +867,8 @@
 
     /**
      *
-     * @param {*} sivFlavour
+     * @param {string} sivFlavour
+     *   the flavour of the to be created element.
      * @param {*} type
      */
     createElement(sivFlavour, type) {
@@ -922,10 +950,10 @@
       }
 
       // It makes no sense so drop the item directly before or after the element.
-      if ($(source.html()).parent().prev().get(DOM_ELEMENT) == this.owner().html())
+      if (source.html().parentElement.previousElementSibling === this.owner().html())
         return false;
 
-      if ($(source.html()).parent().next().get(DOM_ELEMENT) == this.owner().html())
+      if (source.html().parentElement.nextElementSibling === this.owner().html())
         return false;
 
       return true;
@@ -934,7 +962,7 @@
     /**
      *
      * @param {*} sivFlavour
-     * @param {*} id
+     * @param {string} id
      */
     moveElement(sivFlavour, id) {
       const target = this.parent().getSieve();

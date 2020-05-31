@@ -26,13 +26,11 @@
   "fileinto.help.text" : "The mailbox name is typically a hierarchical name used to determine a folder on the server. So it is equivalent with the folder structure you can see in your mail client.\n\nThere is no precise definition how the hierarchical name is formed. It depends on your mail server implementation. Only the case-insensitive mailbox name INBOX is a special name reserved to mean \"the primary mailbox for this user on this server\".\n\nBut you should avoid using non-graphical characters, the list-wildcard characters (\"%\" and \"*\"), characters which are reserved by the server for the level of hierarchy (typically \"/\" or \".\") as well as \"#\" as \"&\" because they can have special meanings.",
   "fileinto.summary" : "Save message into:",
 
-
   "exists.tab.home" : "Exists",
   "exists.tab.help" : "Help",
   "exists.header.label" : "All of the following header exist:",
-  "exists.help.text ": "",
+  "exists.help.text": "",
   "exists.summary" : "the following headers exist:",
-
 
   "header.tab.home" : "Header",
   "header.tab.advanced" : "Advanced",
@@ -46,7 +44,9 @@
   "addheader.tab.home" : "Add Header",
   "addheader.tab.help" : "Help",
   "addheader.name" : "Create a new header ...",
+  "addheader.name.invalid" : "Invalid header name, has to be a non empty 7bit ASCII string",
   "addheader.value" : "... with a value of ...",
+  "addheader.value.invalid" : "Invalid header value, has to be non empty",
   "addheader.position" : "... and add as ...",
   "addheader.first" : "... first header",
   "addheader.last" : "... last header",
@@ -63,6 +63,7 @@
   "deleteheader.first": "... the first",
   "deleteheader.last": "... the last",
   "deleteheader.name" : "... header named ...",
+  "deleteheader.name.invalid" : "Invalid header name, has to be a non empty 7bit ASCII string",
   "deleteheader.value": "... with ...",
   "deleteheader.any": "... any value",
   "deleteheader.some": "... one of the following values ...",
@@ -247,12 +248,14 @@
   "duplicate.tracking.text" :  "Duplicate tracking considers only messages which are tagged with the same handle. The rational is to have multiple tracking policies. In case no handle it provided the server will use a default one. A custom handle can be any unique strings.",
   "duplicate.tracking.default" : "Use default handle",
   "duplicate.tracking.custom" : "Custom Handle",
+  "duplicate.tracking.custom.invalid" : "Invalid custom handle",
 
   "duplicate.expiration.title" : "Expiration",
   "duplicate.expiration.text" : "The server uses a duplicate message list to track duplicates. To keep this list small and fast, the list entries expire. After a list entry is expired it is no more considered as a Duplicate",
   "duplicate.expiration.default" : "Use server's default policy (usually 7 days)",
   "duplicate.expiration.custom.pre" : "Expire after",
   "duplicate.expiration.custom.post" : "seconds",
+  "duplicate.expiration.custom.invalid" : "Invalid expiration time",
 
   "duplicate.time.text": "Expiration time uses either the point in time when the entry in the duplicate message list was created or the point in time when the duplicate message entry was last accessed.",
   "duplicate.time.created" : "The moment the entry was created",

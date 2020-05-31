@@ -214,7 +214,7 @@
         throw new Error(`Not a JavaScript file ${uri}`);
 
       if (uri.startsWith("./"))
-        uri = this.base + uri.substring(1);
+        uri = this.base + uri.substring(".".length);
 
       return uri;
     }

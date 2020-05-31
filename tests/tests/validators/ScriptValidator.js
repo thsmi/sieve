@@ -53,10 +53,15 @@
   suite.parseScript = parseScript;
 
   /**
+   * Serializes the document and compares it against the given script.
+   * In case it does not meet the expectations an exception is thrown.
    *
-   * @param {*} doc
-   * @param {*} script
-   * @param {*} capabilities
+   * @param {SieveDocument} doc
+   *   the documents to be tested.
+   * @param {string} script
+   *   the script with the expected outcome.
+   * @param {string[]} [capabilities]
+   *   a string array with sieve capabilities needed for the test.
    */
   function validateDocument(doc, script, capabilities) {
 
@@ -81,9 +86,15 @@
   suite.validateDocument = validateDocument;
 
   /**
+   * Parses the given script and serializes it back into a string.
+   * The serialized string is then compared against the original script.
    *
-   * @param {*} script
-   * @param {*} capabilities
+   * In case the validation failed an exception is thrown.
+   *
+   * @param {script} script
+   *   the script to be validated
+   * @param {string[]} capabilities
+   *   a string array with sieve capabilities needed for the test.
    */
   function expectValidScript(script, capabilities) {
 
@@ -94,17 +105,22 @@
     suite.logTrace("Start Serializing Script");
     validateDocument(doc, script, capabilities);
     suite.logTrace("End Serializing Script");
-
-    return doc;
   }
 
   suite.expectValidScript = expectValidScript;
 
   /**
+   * Parses the given script and expects it to fail with the given exception.
+   * The exception is compared by its message text. It will just check if
+   * the exception starts with the message test. So it does not have to be
+   * a perfect match.
    *
-   * @param {*} script
-   * @param {*} exception
-   * @param {*} capabilities
+   * @param {string} script
+   *   the script to be tested.
+   * @param {string} exception
+   *   the message with which the exception has to start.
+   * @param {string[]} [capabilities]
+   *   a string array with sieve capabilities needed for the test.
    */
   function expectInvalidScript(script, exception, capabilities) {
 
@@ -132,10 +148,18 @@
   suite.expectInvalidScript = expectInvalidScript;
 
   /**
+   * First it creates an element by its type with default values, converts it
+   * to a script and validates it against the snippet.
    *
-   * @param {*} type
-   * @param {*} snippet
-   * @param {*} capabilities
+   * Then does it does the reverse. It initializes the element with the snippet
+   * and converts it to a script. The result has to be equal to the snippet.
+   *
+   * @param {string} type
+   *   the element to be created
+   * @param {string} snippet
+   *   the snippet
+   * @param {string[]} [capabilities]
+   *   a string array with sieve capabilities needed for the test.
    */
   function expectValidSnippet(type, snippet, capabilities) {
 
@@ -159,20 +183,20 @@
     // and ensure both snippets should be identical...
     suite.assertEquals(rv1, rv2);
 
-    if (capabilities) {
+    if (!capabilities)
+      return;
 
-      const dependencies = new SieveCapabilities(capabilities);
-      element.require(dependencies);
+    const dependencies = new SieveCapabilities(capabilities);
+    element.require(dependencies);
 
-      suite.logTrace(rv1);
+    suite.logTrace(rv1);
 
-      for (const capability of capabilities) {
-        suite.logTrace("Testing Capability: " + capability);
-        suite.assertTrue(dependencies.hasCapability(capability), "Did not find capability '" + capability + "'");
-      }
+    for (const capability of capabilities) {
+      suite.logTrace("Testing Capability: " + capability);
+      suite.assertTrue(
+        dependencies.hasCapability(capability),
+        `Did not find capability '${capability}'`);
     }
-
-    return doc;
   }
 
   suite.expectValidSnippet = expectValidSnippet;

@@ -18,7 +18,7 @@ async function main() {
 
   await suite.load(tests).run(report);
 
-  await writeFile("./test.log.xml", (new JUnitExporter()).export(report));
+  await writeFile("./TEST-sieve.xml", (new JUnitExporter()).export(report));
 
   report.summary();
 

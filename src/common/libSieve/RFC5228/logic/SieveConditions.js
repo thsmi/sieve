@@ -18,6 +18,10 @@
   /* global SieveBlock */
   /* global SieveBlockBody */
 
+  const BEFORE_BLOCK = 0;
+  const AFTER_BLOCK = 1;
+  const BEFORE_TEST = 2;
+
   /**
    *
    * @param {*} docshell
@@ -28,17 +32,17 @@
 
     this.ws = [];
 
-    this.ws[0] = this._createByName("whitespace", "\r\n");
-    this.ws[1] = this._createByName("whitespace", "\r\n");
+    this.ws[BEFORE_BLOCK] = this._createByName("whitespace", "\r\n");
+    this.ws[AFTER_BLOCK] = this._createByName("whitespace", "\r\n");
   }
 
   SieveElse.prototype = Object.create(SieveBlock.prototype);
   SieveElse.prototype.constructor = SieveElse;
 
-  SieveElse.isElement
-    = function (parser, lexer) {
-      return parser.startsWith("else");
-    };
+  // eslint-disable-next-line no-unused-vars
+  SieveElse.isElement = function (parser, lexer) {
+    return parser.startsWith("else");
+  };
 
   SieveElse.nodeName = function () {
     return "condition/else";
@@ -52,11 +56,11 @@
     = function (parser) {
       parser.extract("else");
 
-      this.ws[0].init(parser);
+      this.ws[BEFORE_BLOCK].init(parser);
 
       SieveBlock.prototype.init.call(this, parser);
 
-      this.ws[1].init(parser);
+      this.ws[AFTER_BLOCK].init(parser);
 
       return this;
     };
@@ -64,9 +68,9 @@
   SieveElse.prototype.toScript
     = function () {
       return "else"
-        + this.ws[0].toScript()
+        + this.ws[BEFORE_BLOCK].toScript()
         + SieveBlock.prototype.toScript.call(this)
-        + this.ws[1].toScript();
+        + this.ws[AFTER_BLOCK].toScript();
     };
 
   // ****************************************************************************//
@@ -80,16 +84,16 @@
     SieveElse.call(this, docshell, id);
 
     this._test = null;
-    this.ws[2] = this._createByName("whitespace");
+    this.ws[BEFORE_TEST] = this._createByName("whitespace");
   }
 
   SieveIf.prototype = Object.create(SieveElse.prototype);
   SieveIf.prototype.constructor = SieveIf;
 
-  SieveIf.isElement
-    = function (parser, lexer) {
-      return parser.startsWith("if");
-    };
+  // eslint-disable-next-line no-unused-vars
+  SieveIf.isElement = function (parser, lexer) {
+    return parser.startsWith("if");
+  };
 
   SieveIf.nodeName = function () {
     return "condition/if";
@@ -104,15 +108,15 @@
     = function (parser) {
       parser.extract("if");
 
-      this.ws[2].init(parser);
+      this.ws[BEFORE_TEST].init(parser);
 
       this._test = this._createByClass(["test", "operator"], parser);
 
-      this.ws[0].init(parser);
+      this.ws[BEFORE_BLOCK].init(parser);
 
       SieveBlock.prototype.init.call(this, parser);
 
-      this.ws[1].init(parser);
+      this.ws[AFTER_BLOCK].init(parser);
 
       return this;
     };
@@ -174,11 +178,11 @@
   SieveIf.prototype.toScript
     = function () {
       return "if"
-        + this.ws[2].toScript()
+        + this.ws[BEFORE_TEST].toScript()
         + this._test.toScript()
-        + this.ws[0].toScript()
+        + this.ws[BEFORE_BLOCK].toScript()
         + SieveBlock.prototype.toScript.call(this)
-        + this.ws[1].toScript();
+        + this.ws[AFTER_BLOCK].toScript();
     };
 
   /**
@@ -237,6 +241,12 @@
       return this;
     }
 
+    /**
+     *
+     * @param {*} childId
+     * @param {boolean} cascade
+     * @param {*} stop
+     */
     removeChild(childId, cascade, stop) {
       // should we remove the whole node
       if (typeof (childId) === "undefined")

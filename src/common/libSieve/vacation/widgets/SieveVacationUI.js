@@ -44,7 +44,10 @@
     }
 
     /**
-     * @returns
+     * Gets the address which is used as sender for the vacation messages.
+     *
+     * @returns {SieveString}
+     *   the sender address
      */
     from() {
       return this.getSieve().getElement("from").getElement("from");
@@ -88,9 +91,9 @@
       document.querySelector('#vacationAddressesDesc').textContent = text;
 
       if (text.length)
-        $('#vacationAddressesDesc').parent().show();
+        document.querySelector('#vacationAddressesDesc').parentElement.style.display = "";
       else
-        $('#vacationAddressesDesc').parent().hide();
+        document.querySelector('#vacationAddressesDesc').parentElement.style.display = "none";
 
       // Update the From Field
       if ($("input[type='radio'][name='from']:checked").val() === "true")
@@ -122,27 +125,27 @@
       });
 
       document
-        .querySelector(`input:radio[name="subject"][value="${this.enable("subject")}"]`).checked = true;
+        .querySelector(`input[type="radio"][name="subject"][value="${this.enable("subject")}"]`).checked = true;
       document
-        .querySelector(`input:radio[name="from"][value="${this.enable("from")}"]`).checked = true;
+        .querySelector(`input[type="radio"][name="from"][value="${this.enable("from")}"]`).checked = true;
       document
-        .querySelector(`input:radio[name="addresses"][value="${this.enable("addresses")}"]`).checked = true;
+        .querySelector(`input[type="radio"][name="addresses"][value="${this.enable("addresses")}"]`).checked = true;
       document
-        .querySelector(`input:radio[name="mime"][value="${this.enable("mime")}"]`).checked = true;
+        .querySelector(`input[type="radio"][name="mime"][value="${this.enable("mime")}"]`).checked = true;
       document
-        .querySelector(`input:radio[name="handle"][value="${this.enable("handle")}"]`).checked = true;
+        .querySelector(`input[type="radio"][name="handle"][value="${this.enable("handle")}"]`).checked = true;
 
       // In case the user focuses into a text field the radio button should be changed...
       document.querySelector("#sivVacationFrom").addEventListener("focus", () => {
-        document.querySelector('input:radio[name="from"][value="true"]').checked = true;
+        document.querySelector('input[type="radio"][name="from"][value="true"]').checked = true;
       });
 
       document.querySelector("#sivVacationSubject").addEventListener("focus", () => {
-        document.querySelector('input:radio[name="subject"][value="true"]').checked = true;
+        document.querySelector('input[type="radio"][name="subject"][value="true"]').checked = true;
       });
 
       document.querySelector("#sivVacationHandle").addEventListener("focus", () => {
-        document.querySelector('input:radio[name="handle"][value="true"]').checked = true;
+        document.querySelector('input[type="radio"][name="handle"][value="true"]').checked = true;
       });
 
       document.querySelector("#sivVacationReason").value = this.reason().value();

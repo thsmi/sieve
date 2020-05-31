@@ -67,9 +67,8 @@
     onSave() {
       const item = document.querySelector("#sivVariableName");
 
-      if (!item.checkValidity()) {
+      if (!item.checkValidity())
         return false;
-      }
 
       this.name().value(item.value);
       this.value().value(document.querySelector("#sivVariableValue").value);
@@ -83,7 +82,7 @@
       value = null;
       status = $("input[type='checkbox'][name='30']").is(":checked");
       if (status)
-        value = $("input:radio[name='30']:checked").val();
+        value = $(`input[type="radio"][name='30']:checked`).val();
 
       this.getSieve().getElement("modifier/30").setElement(value);
       this.getSieve().enable("modifier/30", status);
@@ -91,7 +90,7 @@
       value = null;
       status = $("input[type='checkbox'][name='40']").is(":checked");
       if (status)
-        value = $("input:radio[name='40']:checked").val();
+        value = $(`input[type="radio"][name='40']:checked`).val();
 
       this.getSieve().getElement("modifier/40").setElement(value);
       this.getSieve().enable("modifier/40", status);
@@ -102,45 +101,42 @@
     /**
      * @inheritdoc
      */
-    onLoad() {
+    async onLoad() {
 
-      /**
-       * Sorts the modifiers.
-       * @param {*} widget
-       */
-      function sort(widget) {
-        const items = widget.find(".sieve-modifier");
-        items.sort((a, b) => {
-          const lhs = $(a).find("input:checkbox[name^='modifier/']").attr("name");
-          const rhs = $(b).find("input:checkbox[name^='modifier/']").attr("name");
-          return lhs < rhs;
-        });
+      const widget = (new SieveOverlayWidget("modifier/", "#sivModifier"));
+      await widget.init(this.getSieve());
 
-        widget.append(items);
-      }
+      // Sort the selectors...
+      let modifiers = document.querySelectorAll(`${widget.selector} .sieve-modifier`);
+      modifiers = Array.from(modifiers).sort((lhs, rhs) => {
+        rhs = rhs.querySelector("input[type='checkbox'][name^='modifier/']").name;
+        lhs = lhs.querySelector("input[type='checkbox'][name^='modifier/']").name;
 
-      (new SieveOverlayWidget("modifier/", "#sivModifier"))
-        .init(this.getSieve(), sort);
+        return rhs.localeCompare(lhs);
+      });
+
+      for (const modifier of modifiers)
+        document.querySelector(`${widget.selector}`).appendChild(modifier);
 
       let state = null;
 
       state = this.getSieve().enable("modifier/30");
-      $('input:checkbox[name="30"]')
-        .change(function () { $('input:radio[name="30"]').prop('disabled', !($(this).prop('checked'))); })
+      $('input[type="checkbox"][name="30"]')
+        .change(function () { $('input[type="radio"][name="30"]').prop('disabled', !($(this).prop('checked'))); })
         .prop('checked', state)
         .change();
 
       if (state)
-        $('input:radio[name="30"][value="' + this.getSieve().getElement("modifier/30").toScript() + '"]').prop('checked', true);
+        $('input[type="radio"][name="30"][value="' + this.getSieve().getElement("modifier/30").toScript() + '"]').prop('checked', true);
 
       state = this.getSieve().enable("modifier/40");
-      $('input:checkbox[name="40"]')
-        .change(function () { $('input:radio[name="40"]').prop('disabled', !($(this).prop('checked'))); })
+      $('input[type="checkbox"][name="40"]')
+        .change(function () { $('input[type="radio"][name="40"]').prop('disabled', !($(this).prop('checked'))); })
         .prop('checked', state)
         .change();
 
       if (state)
-        $('input:radio[name="40"][value="' + this.getSieve().getElement("modifier/40").toScript() + '"]').prop('checked', true);
+        $('input[type="radio"][name="40"][value="' + this.getSieve().getElement("modifier/40").toScript() + '"]').prop('checked', true);
 
       document.querySelector("#sivVariableName").value = this.name().value();
       document.querySelector("#sivVariableValue").value = this.value().value();

@@ -216,9 +216,8 @@
 
       const script = document.querySelector("#sivIncludeScriptName");
 
-      if (!script.checkValidity()) {
+      if (!script.checkValidity())
         return false;
-      }
 
       this.script(script.value);
 

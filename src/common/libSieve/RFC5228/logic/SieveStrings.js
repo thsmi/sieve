@@ -48,6 +48,7 @@
     /**
      * @inheritdoc
      */
+    // eslint-disable-next-line no-unused-vars
     static isElement(parser, lexer) {
       return parser.startsWith("text:");
     }
@@ -390,6 +391,8 @@
     }
 
     /**
+     * Gets the list entry count.
+     *
      * @returns {int}
      *   the number of elements contained in the list.
      */

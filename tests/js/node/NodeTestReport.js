@@ -187,9 +187,7 @@
       this.getLogger().logInfo(
         `Ran ${fixtures} fixtures with ${total} Tests in ${duration} ms.`);
 
-
       if (this.hasFailed())
-        this.getLogger().logError(`Running at least one fixture failed`);
         this.getLogger().logError(`${failures} tests failed ${errors} test errored`);
 
     }

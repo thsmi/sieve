@@ -34,9 +34,6 @@
         .getService(Components.interfaces.nsIConsoleService)
         .logStringMessage(`[${this.getTimestamp()} ${this.prefix()}] ${message}`);
 
-      /* Cc["@mozilla.org/embedcomp/prompt-service;1"]
-        .getService(Components.interfaces.nsIPromptService)
-        .alert(null, "Alert", msg); */
       return this;
     }
   }

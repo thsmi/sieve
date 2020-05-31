@@ -150,7 +150,10 @@
     }
 
     /**
-     * Checks if the password is stored in the cert store
+     * Checks if the password is stored in the cert store.
+     *
+     * @returns {boolean}
+     *   true in case a password is stored.
      */
     async hasStoredPassword() {
       try {

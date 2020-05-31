@@ -14,12 +14,13 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveTestDialogBoxUI */
   /* global SieveActionDialogBoxUI */
   /* global SieveStringListWidget */
   /* global SieveStringWidget */
   /* global SieveDesigner */
+
+  /* global SieveTemplate */
 
   /**
    * Provides a ui for the convert test
@@ -27,6 +28,8 @@
   class SieveConvertTestUI extends SieveTestDialogBoxUI {
 
     /**
+     * The source media type which should be converted
+     *
      * @returns {SieveString}
      *   the element's from media type
      */
@@ -35,6 +38,8 @@
     }
 
     /**
+     * The target media type to which the content should be converted.
+     *
      * @returns {SieveString}
      *   the element's to media type
      */
@@ -43,6 +48,9 @@
     }
 
     /**
+     * A list with transcoding instructions. They are used to
+     * control and configure the conversion.
+     *
      * @returns {SieveStringList}
      *   a string list with transcoding instructions.
      */
@@ -90,12 +98,18 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .append($("<span/>").text("Convert "))
-        .append($("<em/>").text(this.from().value()))
-        .append($("<span/>").text(" to "))
-        .append($("<em/>").text(this.to().value()))
-        .get(0);
+      const FRAGMENT =
+        `<div>
+         <span data-i18n="convert.summary.from"></span>
+         <em class="sivConvertTo"></em>
+         <span data-i18n="convert.summary.to"></span>
+         <em class="sivConvertFrom"></em>
+       </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivConvertFrom").textContent = this.from().value();
+      elm.querySelector(".sivConvertTo").textContent = this.to().value();
+      return elm;
     }
   }
 
@@ -106,6 +120,8 @@
   class SieveConvertActionUI extends SieveActionDialogBoxUI {
 
     /**
+     * The source media type which should be converted
+     *
      * @returns {SieveString}
      *   the element's from media type
      */
@@ -114,6 +130,8 @@
     }
 
     /**
+     * The target media type to which the content should be converted.
+     *
      * @returns {SieveString}
      *   the element's to media type
      */
@@ -122,6 +140,9 @@
     }
 
     /**
+     * A list with transcoding instructions. They are used to
+     * control and configure the conversion.
+     *
      * @returns {SieveStringList}
      *   a string list with transcoding instructions.
      */
@@ -169,12 +190,18 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .append($("<span/>").text("Convert "))
-        .append($("<em/>").text(this.from().value()))
-        .append($("<span/>").text(" to "))
-        .append($("<em/>").text(this.to().value()))
-        .get(0);
+      const FRAGMENT =
+        `<div>
+         <span data-i18n="convert.summary.from"></span>
+         <em class="sivConvertTo"></em>
+         <span data-i18n="convert.summary.to"></span>
+         <em class="sivConvertFrom"></em>
+       </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivConvertFrom").textContent = this.from().value();
+      elm.querySelector(".sivConvertTo").textContent = this.to().value();
+      return elm;
     }
   }
 

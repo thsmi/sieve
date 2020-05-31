@@ -45,7 +45,7 @@
       document.querySelector("#sieve-capabilities-language").textContent
         = capabilities.language;
 
-      return await new Promise((resolve) => {
+      await new Promise((resolve) => {
 
         $('#sieve-dialog-capabilities').modal("show")
           .on("hidden.bs.modal", () => {

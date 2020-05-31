@@ -217,6 +217,8 @@
     }
 
     /**
+     * Gets the comparator type.
+     *
      * @returns {SieveAbstractElement}
      *   the element's comparator field
      */
@@ -384,16 +386,20 @@
     }
 
     /**
+     * Gets the match type.
+     *
      * @returns {SieveAbstractElement}
-     *   the element's matchtype fields
+     *   the element's matchtype field
      */
     matchtype() {
       return this.getSieve().getElement("match-type");
     }
 
     /**
+     * Gets the comparator type.
+     *
      * @returns {SieveAbstractElement}
-     *   the element's comparator fields
+     *   the element's comparator field
      */
     comparator() {
       return this.getSieve().getElement("comparator");

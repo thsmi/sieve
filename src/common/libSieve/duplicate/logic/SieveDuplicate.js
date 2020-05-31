@@ -153,7 +153,8 @@
 
       elements: [{
         id: "timeout",
-        type: "number"
+        type: "number",
+        value: "600"
       }]
     }]
   });

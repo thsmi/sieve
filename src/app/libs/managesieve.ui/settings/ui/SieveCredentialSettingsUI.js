@@ -232,6 +232,10 @@
 
     /**
      * Shows the settings dialog
+     *
+     * @returns {boolean}
+     *   true in case new settings where applied.
+     *   false in case the dialog was canceled.
      */
     async show() {
 

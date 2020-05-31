@@ -26,7 +26,7 @@
      * Shows the import account dialog.
      */
     async show() {
-      return await new Promise(async (resolve) => {
+      await new Promise(async (resolve) => {
         const dialog = await (new SieveTemplate()).load("./importer/account.import.tpl");
         dialog.querySelector(".sieve-import-progress").style.display = "none";
         document.querySelector("#ctx").appendChild(dialog);

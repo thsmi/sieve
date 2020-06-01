@@ -260,21 +260,6 @@
 
     init();
 
-    $("#divOutput").mouseover(function (ev) {
-
-      switch (ev.target.nodeName) {
-        case "INPUT":
-        case "TEXTAREA":
-          $("[draggable=true]").attr("draggable", "false");
-          break;
-
-        default:
-          $("[draggable=false]").attr("draggable", "true");
-      }
-
-      document.querySelector("#draggable").value = ev.target.nodeName;
-    });
-
     const toolbarLeft = $('#toolbar').offset().left;
 
     $(window).scroll(function () {
@@ -307,25 +292,29 @@
     document.querySelector("#DebugToggle")
       .addEventListener("click", () => { document.querySelector('#boxScript').classList.toggle("d-none"); });
 
-    $("#DebugDropTarget")
-      .on('dragover', function (e) {
-        console.log("on drag over");
-        console.dir(e.originalEvent.dataTransfer.getData("sieve/action"));
-        e.preventDefault();
-        e.stopPropagation();
-      })
-      .on('dragenter', function (e) {
-        console.log("on drag enter");
-        console.dir(e.originalEvent.dataTransfer.getData("sieve/action"));
-        e.preventDefault();
-        e.stopPropagation();
-      })
-      .on('drop', function (e) {
-        console.log("on drop");
-        console.dir(e.originalEvent.dataTransfer.getData("sieve/action"));
-        e.preventDefault();
-        console.dir(e.dataTransfer);
-      });
+    if (new URL(window.location).searchParams.has("debug"))
+      document.querySelector('#boxScript').classList.remove("d-none");
+
+    document.querySelector("#DebugDropTarget").addEventListener('dragover', (e) => {
+      console.log("on drag over");
+      console.dir(e.dataTransfer.getData("sieve/action"));
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    document.querySelector("#DebugDropTarget").addEventListener('dragenter', function (e) {
+      console.log("on drag enter");
+      console.dir(e.dataTransfer.getData("sieve/action"));
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    document.querySelector("#DebugDropTarget").addEventListener('drop', function (e) {
+      console.log("on drop");
+      console.dir(e.dataTransfer.getData("sieve/action"));
+      e.preventDefault();
+      console.dir(e.dataTransfer);
+    });
 
     document.querySelector("#infobartoggle")
       .addEventListener("click", () => { $("#infobar").toggle(); });

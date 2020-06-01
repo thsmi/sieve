@@ -63,8 +63,8 @@
 
     /**
      *
-     * @param {*} owner
-     * @param {*} sibling
+     * @param {SieveAbstractElement} owner
+     * @param {SieveAbstractElement} sibling
      */
     bind(owner, sibling) {
       this._owner = owner;
@@ -101,16 +101,16 @@
     }
 
     /**
+     * Binds drag and drop event handlers to the html element
      *
      * @param {HTMLElement} html
+     *   the html element
      */
     attach(html) {
-
-      $(html)
-        .bind("drop", (e) => { return this.onDragDrop(e); })
-        .bind("dragover", (e) => { return this.onDragOver(e); })
-        .bind("dragleave", (e) => { return this.onDragExit(e); })
-        .bind("dragenter", (e) => { return this.onDragEnter(e); });
+      html.addEventListener("drop", (e) => { return this.onDragDrop(e); });
+      html.addEventListener("dragover", (e) => { return this.onDragOver(e); });
+      html.addEventListener("dragleave", (e) => { return this.onDragExit(e); });
+      html.addEventListener("dragenter", (e) => { return this.onDragEnter(e); });
     }
 
     /* Official HTML5 Drag&Drop events... */
@@ -206,7 +206,7 @@
      *   true in case the element can be dropped other wise false.
      */
     onDrop(flavour, event) {
-      const dt = new SieveDataTransfer(event.originalEvent.dataTransfer);
+      const dt = new SieveDataTransfer(event.dataTransfer);
 
       const meta = JSON.parse(dt.getData(flavour));
 
@@ -271,7 +271,7 @@
      *   true in case the flavour is supported by this drop handler otherwise false.
      */
     onCanDrop(flavour, event) {
-      const dt = new SieveDataTransfer(event.originalEvent.dataTransfer);
+      const dt = new SieveDataTransfer(event.dataTransfer);
 
       let meta = dt.getData(flavour);
 
@@ -420,8 +420,8 @@
 
     /**
      *
-     * @param {*} source
-     * @param {*} target
+     * @param {SieveAbstractElement} source
+     * @param {SieveAbstractElement} target
      */
     moveAction(source, target) {
 
@@ -436,9 +436,12 @@
     }
 
     /**
+     * Moves a sieve element to the element bound by the drop handler.
      *
-     * @param {*} sivFlavour
-     * @param {*} id
+     * @param {string} sivFlavour
+     *   the drag operations flavour.
+     * @param {string} id
+     *   the id of the sieve element to be moved
      */
     moveElement(sivFlavour, id) {
       const source = this.document().id(id);
@@ -528,9 +531,12 @@
     }
 
     /**
+     * Moves a sieve element to the trash bin and removes it from the document.
      *
-     * @param {*} sivFlavour
-     * @param {*} id
+     * @param {string} sivFlavour
+     *   the drag operations flavour.
+     * @param {string} id
+     *   the id of the sieve element to be removed
      */
     moveElement(sivFlavour, id) {
 
@@ -617,10 +623,12 @@
     }
 
     /**
+     * Moves a sieve element to the element bound by the drop handler.
      *
      * @param {string} flavour
-     *   the flavour of the move element.
+     *   the drag operations flavour.
      * @param {string} id
+     *   the id of the sieve element to be moved
      */
     moveElement(flavour, id) {
       let oldOwner;
@@ -794,10 +802,12 @@
     }
 
     /**
+     * Moves a sieve element to the element bound by the drop handler.
      *
      * @param {string} sivFlavour
-     *   the flavour of the moved element.
-     * @param {*} id
+     *   the drag operations flavour.
+     * @param {string} id
+     *   the id of the sieve element to be moved
      */
     moveElement(sivFlavour, id) {
       const source = this.document().id(id);
@@ -960,9 +970,12 @@
     }
 
     /**
+     * Moves a sieve element to the element bound by the drop handler.
      *
-     * @param {*} sivFlavour
+     * @param {string} sivFlavour
+     *   the drag operations flavour.
      * @param {string} id
+     *   the id of the sieve element to be moved
      */
     moveElement(sivFlavour, id) {
       const target = this.parent().getSieve();

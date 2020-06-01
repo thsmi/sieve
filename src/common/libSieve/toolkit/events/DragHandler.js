@@ -16,13 +16,15 @@
   /* global SieveDataTransfer */
 
   /**
-   *
+   * Implements a abstract drag handler.
    */
-  class SieveDragHandler {
+  class SieveAbstractDragHandler {
 
     /**
+     * Creates a new instance.
      *
-     * @param {*} flavour
+     * @param {string} [flavour]
+     *   the drag handler's flavour, if omitted "sieve/action" is used.
      */
     constructor(flavour) {
       if (typeof (flavour) !== "undefined")
@@ -32,31 +34,35 @@
     }
 
     /**
+     * Gets and sets the drag flavour.
      *
-     * @param {*} flavour
+     * @param {string} [flavour]
+     *   the new drag flavour.
+     *
+     * @returns {string}
+     *   the current drag flavour.
      */
     flavour(flavour) {
-      if (typeof (flavour) === 'undefined')
-        return this._flavour;
+      if ((typeof (flavour) !== 'undefined') && (flavour !== null))
+        this._flavour = flavour;
 
-      this._flavour = flavour;
-
-      return this;
+      return this._flavour;
     }
 
     /**
+     * Called when a drag operation starts.
      *
-     * @param {*} event
+     * @param {Event} event
+     *   the DOM Event which fired.
      * @returns {boolean}
+     *   true in case the drag operation can start otherwise false.
      */
     onDragStart(event) {
 
       if (!this.onDrag)
         return false;
 
-      this.onDrag(event.originalEvent);
-
-      event = event.originalEvent;
+      this.onDrag(event);
 
       event.dataTransfer.setDragImage(this.owner().html(),
         event.pageX - $(this.owner().html()).offset().left,
@@ -69,7 +75,12 @@
     }
 
     /**
+     * A short hand to get the sieve document for this drag handler.
+     * It queries the owner document to get a reference to the document.
+     * In case the owner is not set an exception is thrown.
      *
+     * @returns {SieveDocument}
+     *  the document which is associated to this document
      */
     document() {
       if (!this._owner)
@@ -79,8 +90,10 @@
     }
 
     /**
+     * Sets the sieve element which is associated with this owner.
      *
      * @param {SieveAbstractElement} owner
+     *   the owner which should be bound to this drag handler.
      */
     bind(owner) {
       this._owner = owner;
@@ -94,20 +107,24 @@
     }
 
     /**
+     * Binds drag event handlers to the html element and marks it at draggable
      *
      * @param {HTMLElement} html
+     *   the html element
      */
     attach(html) {
       html.dataset.sieveFlavour = this.flavour();
       html.draggable = true;
 
-      $(html).bind("dragstart", (e) => { this.onDragStart(e); return true; });
+      html.addEventListener("dragstart", (e) => { this.onDragStart(e); return true; });
       html.addEventListener("dragend", () => { return false; });
     }
 
     /**
+     * Fired whe n an element is being dragged.
      *
-     * @param {*} event
+     * @param {Event} event
+     *   the dom event which was fired.
      */
     onDrag(event) {
       const dt = new SieveDataTransfer(event.dataTransfer);
@@ -143,7 +160,7 @@
   /**
    *
    */
-  class SieveMoveDragHandler extends SieveDragHandler {
+  class SieveMoveDragHandler extends SieveAbstractDragHandler {
 
     /**
      * @inheritdoc
@@ -163,7 +180,7 @@
   /**
    *
    */
-  class SieveCreateDragHandler extends SieveDragHandler {
+  class SieveCreateDragHandler extends SieveAbstractDragHandler {
 
     /**
      * @inheritdoc
@@ -180,7 +197,6 @@
     }
   }
 
-  exports.SieveDragHandler = SieveDragHandler;
   exports.SieveMoveDragHandler = SieveMoveDragHandler;
   exports.SieveCreateDragHandler = SieveCreateDragHandler;
 

@@ -21,6 +21,7 @@
   const path = require('path');
   const util = require('util');
 
+
   const SERVER_PORT = 8125;
 
   const GUI_URL = "gui/";
@@ -87,27 +88,61 @@
     return a.name.localeCompare(b.name);
   }
 
+  async function doDirectoryListing(filePath, url, response) {
+    const items = await(util.promisify(fs.readdir))(filePath, { withFileTypes: true });
+
+    let directory = url.pathname;
+
+    if (!directory.endsWith("/"))
+      directory += "/";
+
+    response.writeHead(HTTP_SUCCESS, { 'Content-Type': CONTENT_TYPE_HTML });
+
+    let content = "";
+    content += `<h1> Index of ${directory}</h1>`;
+
+    items.sort(sortDirectory);
+
+    content += `<div><a href="${directory}../">&#11168; &nbsp;..</a></div>`;
+
+    for (const item of items) {
+      if (item.isDirectory())
+        content += `<div><a href="${directory}${item.name}">&#128448;&nbsp;${item.name}/</a></div>`;
+      else
+        content += `<div><a href="${directory}${item.name}">&#128462;&nbsp;${item.name}</a></div>`;
+    }
+
+    response.end(content, 'utf-8');
+  }
+
+  function doIndex(response) {
+
+    response.writeHead(HTTP_FILE_NOT_FOUND, { 'Content-Type': CONTENT_TYPE_HTML });
+
+    let content = "";
+
+    content += "<h1>Welcome to the debug server</h1>";
+    content += "<p>This server is used to bypass cross site scripting problems during development.</p>";
+    content += "<ul>";
+    content += `<li><a href="http://127.0.0.1:${SERVER_PORT}/${GUI_URL}libSieve/SieveGui.html">&#128448;&nbsp;Run GUI Editor</a></li>`;
+    content += `<li><a href="http://127.0.0.1:${SERVER_PORT}/${TEST_URL}index.html">&#128448;&nbsp;Run Unit Tests</a></li>`;
+    content += "</ul>";
+    response.end(content, 'utf-8');
+    return;
+  }
+
   http.createServer(async function (request, response) {
 
     let filePath = "";
 
-    if (request.url.startsWith(`/${GUI_URL}`)) {
-      filePath = GUI_PATH + request.url.substr(GUI_URL.length);
-    } else if (request.url.startsWith(`/${TEST_URL}`)) {
-      filePath = TEST_PATH + request.url.substr(TEST_URL.length);
+    const url = new URL(request.url, `http://${request.headers.host}`);
+
+    if (url.pathname.startsWith(`/${GUI_URL}`)) {
+      filePath = GUI_PATH + url.pathname.substr(GUI_URL.length);
+    } else if (url.pathname.startsWith(`/${TEST_URL}`)) {
+      filePath = TEST_PATH + url.pathname.url.substr(TEST_URL.length);
     } else {
-
-      response.writeHead(HTTP_FILE_NOT_FOUND, { 'Content-Type': CONTENT_TYPE_HTML });
-
-      let content = "";
-
-      content += "<h1>Welcome to the debug server</h1>";
-      content += "<p>This server is used to bypass cross site scripting problems during development.</p>";
-      content += "<ul>";
-      content += `<li><a href="http://127.0.0.1:${SERVER_PORT}/${GUI_URL}libSieve/SieveGui.html">&#128448;&nbsp;Run GUI Editor</a></li>`;
-      content += `<li><a href="http://127.0.0.1:${SERVER_PORT}/${TEST_URL}index.html">&#128448;&nbsp;Run Unit Tests</a></li>`;
-      content += "</ul>";
-      response.end(content, 'utf-8');
+      doIndex(response);
       return;
     }
 
@@ -127,32 +162,7 @@
       const stat = await (util.promisify(fs.lstat))(filePath);
 
       if (stat.isDirectory()) {
-
-        const items = await (util.promisify(fs.readdir))(filePath, { withFileTypes: true });
-
-        let url = request.url;
-
-        if (!url.endsWith("/"))
-          url += "/";
-
-        response.writeHead(HTTP_SUCCESS, { 'Content-Type': CONTENT_TYPE_HTML });
-
-        let content = "";
-        content += `<h1> Index of ${request.url}</h1>`;
-
-        items.sort(sortDirectory);
-
-        content += `<div><a href="${url}../">&#11168; &nbsp;..</a></div>`;
-
-        for (const item of items) {
-          if (item.isDirectory())
-            content += `<div><a href="${url}${item.name}">&#128448;&nbsp;${item.name}/</a></div>`;
-          else
-            content += `<div><a href="${url}${item.name}">&#128462;&nbsp;${item.name}</a></div>`;
-        }
-
-        response.end(content, 'utf-8');
-
+        await doDirectoryListing(filePath, url, response);
         return;
       }
 

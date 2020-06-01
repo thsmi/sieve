@@ -161,12 +161,13 @@
     type: "execute/",
 
     token: ":output",
+    requires : "variables",
 
     properties: [{
       id: "parameters",
 
       elements: [{
-        id: "varname",
+        id: "name",
         type: "string",
 
         value: '""'
@@ -187,19 +188,19 @@
       type: "execute/output"
     }]
   }, {
-    id: "program",
+    id: "parameters",
 
     elements: [{
-      id: "name",
+      id: "program",
       type: "string",
-      value: '""'
+      value: '"example"'
     }]
   }, {
     id: "arguments",
     optional: true,
 
     elements: [{
-      id: "names",
+      id: "arguments",
       type: "stringlist",
       value: '""'
     }]

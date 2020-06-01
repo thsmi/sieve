@@ -591,10 +591,10 @@
 
         // if it's a conditional statement it's parent does not have a test method
         if (!source.parent().test) {
-          if (source.html().parentElement.previousElementSibling().previousElementSibling() === this.owner().html())
+          if (source.html().parentElement.previousElementSibling.previousElementSibling === this.owner().html())
             return false;
 
-          if (source.html().parentElement.nextElementSibling() === this.owner().html())
+          if (source.html().parentElement.nextElementSibling === this.owner().html())
             return false;
         }
       }

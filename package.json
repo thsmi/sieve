@@ -15,7 +15,7 @@
     "eslint-plugin-jsdoc": "^25.4.2",
     "gulp": "^4.0.0",
     "jquery": "^3.5.1",
-    "keytar": "^6.0.0",
+    "keytar": "^6.0.1",
     "material-design-icons-iconfont": "^5.0.1",
     "node-abi": "^2.17.0",
     "tar": "^6.0.1",

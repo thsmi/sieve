@@ -14,7 +14,6 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveDesigner */
   /* global SieveActionDialogBoxUI */
   /* global SieveStringListWidget */
@@ -49,7 +48,8 @@
 
     /**
      *
-     * @param {*} id
+     * @param {string} id
+     *   the unique id to be checked or changed.
      * @param {*} status
      */
     enable(id, status) {
@@ -260,20 +260,28 @@
      */
     loadHeaderIndex() {
 
-      $('input[type="radio"][name="header-index"][value="all"]').change(() => {
-        $("#sivDeleteHeaderFirstIndex").prop("disabled", true);
-        $("#sivDeleteHeaderLastIndex").prop("disabled", true);
-      });
+      const headerSelector = 'input[type="radio"][name="header-index"]';
 
-      $('input[type="radio"][name="header-index"][value="first"]').change(() => {
-        $("#sivDeleteHeaderFirstIndex").prop("disabled", false);
-        $("#sivDeleteHeaderLastIndex").prop("disabled", true);
-      });
+      document
+        .querySelector(`${headerSelector}[value="all"]`)
+        .addEventListener("change", () => {
+          document.querySelector("#sivDeleteHeaderFirstIndex").disabled = true;
+          document.querySelector("#sivDeleteHeaderLastIndex").disabled = true;
+        });
 
-      $('input[type="radio"][name="header-index"][value="last"]').change(() => {
-        $("#sivDeleteHeaderFirstIndex").prop("disabled", true);
-        $("#sivDeleteHeaderLastIndex").prop("disabled", false);
-      });
+      document
+        .querySelector(`${headerSelector}[value="first"]`)
+        .addEventListener("change", () => {
+          document.querySelector("#sivDeleteHeaderFirstIndex").disabled = false;
+          document.querySelector("#sivDeleteHeaderLastIndex").disabled = true;
+        });
+
+      document
+        .querySelector(`${headerSelector}[value="last"]`)
+        .addEventListener("change", () => {
+          document.querySelector("#sivDeleteHeaderFirstIndex").disabled = true;
+          document.querySelector("#sivDeleteHeaderLastIndex").disabled = false;
+        });
 
       let indexType = "all";
       const indexValue = this.getSieve().getElement("index").getElement("name").getValue();
@@ -290,23 +298,31 @@
         document.querySelector("#sivDeleteHeaderLastIndex").value = indexValue;
       }
 
-      $('input[type="radio"][name="header-index"][value="' + indexType + '"]')
-        .prop('checked', true)
-        .change();
+      document
+        .querySelector(`${headerSelector}[value="${indexType}"]`)
+        .checked = true;
 
+      $(`${headerSelector}[value="${indexType}"]`)
+        .change();
     }
 
     /**
      * Initializes the ui for the header values
      */
     loadHeaderValues() {
-      $('input[type="radio"][name="header-value"][value="any"]').change(() => {
-        document.querySelector('#sivSomeValues').style.display = "none";
-      });
+      const headerSelector = 'input[type="radio"][name="header-value"]';
 
-      $('input[type="radio"][name="header-value"][value="some"]').change(() => {
-        document.querySelector('#sivSomeValues').style.display = "";
-      });
+      document
+        .querySelector(`${headerSelector}[value="any"]`)
+        .addEventListener("change", () => {
+          document.querySelector('#sivSomeValues').style.display = "none";
+        });
+
+      document
+        .querySelector(`${headerSelector}[value="some"]`)
+        .addEventListener("change", () => {
+          document.querySelector('#sivSomeValues').style.display = "";
+        });
 
 
       let headerType = "any";
@@ -316,8 +332,11 @@
         headerType = "some";
       }
 
-      $('input[type="radio"][name="header-value"][value="' + headerType + '"]')
-        .prop('checked', true)
+      document
+        .querySelector(`${headerSelector}[value="${headerType}"]`)
+        .checked = true;
+
+      $(`${headerSelector}[value="${headerType}"]`)
         .change();
     }
 
@@ -377,4 +396,5 @@
 
   SieveDesigner.register("action/addheader", SieveAddHeaderUI);
   SieveDesigner.register("action/deleteheader", SieveDeleteHeaderUI);
+
 })(window);

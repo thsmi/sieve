@@ -14,8 +14,6 @@
 
   "use strict";
 
-  /* global $: false */
-
   /* global SieveI18n */
   /* global SieveLogger */
 

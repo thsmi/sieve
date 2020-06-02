@@ -80,17 +80,17 @@
       let value = null;
 
       value = null;
-      status = $("input[type='checkbox'][name='30']").is(":checked");
+      status = document.querySelector("input[type='checkbox'][name='30']").checked;
       if (status)
-        value = $(`input[type="radio"][name='30']:checked`).val();
+        value = document.querySelector(`input[type="radio"][name='30']:checked`).value;
 
       this.getSieve().getElement("modifier/30").setElement(value);
       this.getSieve().enable("modifier/30", status);
 
       value = null;
-      status = $("input[type='checkbox'][name='40']").is(":checked");
+      status = document.querySelector("input[type='checkbox'][name='40']").checked;
       if (status)
-        value = $(`input[type="radio"][name='40']:checked`).val();
+        value = document.querySelector(`input[type="radio"][name='40']:checked`).value;
 
       this.getSieve().getElement("modifier/40").setElement(value);
       this.getSieve().enable("modifier/40", status);

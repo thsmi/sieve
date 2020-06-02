@@ -140,7 +140,7 @@
     if (url.pathname.startsWith(`/${GUI_URL}`)) {
       filePath = GUI_PATH + url.pathname.substr(GUI_URL.length);
     } else if (url.pathname.startsWith(`/${TEST_URL}`)) {
-      filePath = TEST_PATH + url.pathname.url.substr(TEST_URL.length);
+      filePath = TEST_PATH + url.pathname.substr(TEST_URL.length);
     } else {
       doIndex(response);
       return;

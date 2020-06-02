@@ -30,14 +30,20 @@
   class SieveVacationUI extends SieveActionDialogBoxUI {
 
     /**
-     * @returns
+     * Gets the reason for the vacation message.
+     *
+     * @returns {SieveString}
+     *   the vacation message.
      */
     reason() {
       return this.getSieve().getElement("reason");
     }
 
     /**
-     * @returns
+     * Gets the subject which should be used for the vacation message.
+     *
+     * @returns {SieveString}
+     *   the subject
      */
     subject() {
       return this.getSieve().getElement("subject").getElement("subject");
@@ -54,14 +60,21 @@
     }
 
     /**
-     * @returns
+     * Gets the unique handle for the vacation message.
+     * Handles are for tracking messages.
+     *
+     * @returns {SieveString}
+     *   the handle
      */
     handle() {
       return this.getSieve().getElement("handle").getElement("handle");
     }
 
     /**
-     * @returns
+     * The additional addresses which should trigger a the vacation message.
+     *
+     * @returns {SieveStringList}
+     *   a list with additional addresses
      */
     addresses() {
       return this.getSieve().getElement("addresses").getElement("addresses");
@@ -70,7 +83,9 @@
     /**
      *
      * @param {string} id
-     * @param {*} status
+     * @param {boolean} status
+     * @returns {boolean}
+     *   true in case the element is enabled otherwise false.
      */
     enable(id, status) {
       return this.getSieve().enable(id, status);
@@ -84,9 +99,9 @@
       const addresses = (new SieveStringListWidget("#sivAddresses")).items();
       let text = "";
 
-      addresses.each(function () {
-        text += (text.length ? ", " : "") + $(this).val();
-      });
+      for (const address of addresses) {
+        text += (text.length ? "," : "") + address.value();
+      }
 
       document.querySelector('#vacationAddressesDesc').textContent = text;
 
@@ -96,15 +111,23 @@
         document.querySelector('#vacationAddressesDesc').parentElement.style.display = "none";
 
       // Update the From Field
-      if ($("input[type='radio'][name='from']:checked").val() === "true")
-        document.querySelector('#vacationFromDesc').textContent = $("#sivVacationFrom").val();
-      else
-        $('#vacationFromDesc').text("Address of the sieve script owner");
+      if (document.querySelector("input[type='radio'][name='from']:checked").value === "true") {
+        document.querySelector('#vacationFromDesc').textContent
+           = document.querySelector("#sivVacationFrom").value;
+      } else {
+        // TODO needs to be localized
+        document.querySelector('#vacationFromDesc').textContent
+          = "Address of the sieve script owner";
+      }
 
-      if ($("input[type='radio'][name='subject']:checked").val() === "true")
-        $('#vacationSubjectDesc').text($("#sivVacationSubject").val());
-      else
-        document.querySelector('#vacationSubjectDesc').textContent = "Server's default Subject";
+      if (document.querySelector("input[type='radio'][name='subject']:checked").value === "true") {
+        document.querySelector('#vacationSubjectDesc').textContent
+          = document.querySelector("#sivVacationSubject").value;
+      } else {
+        // TODO needs to be localized
+        document.querySelector('#vacationSubjectDesc').textContent
+          = "Server's default Subject";
+      }
     }
 
     /**
@@ -178,13 +201,11 @@
 
       const state = {};
 
-      // $("#myform input[type='radio']:checked").val();
-
       // Update the states...
-      state["subject"] = ($("input[type='radio'][name='subject']:checked").val() === "true");
-      state["from"] = ($("input[type='radio'][name='from']:checked").val() === "true");
-      state["mime"] = ($("input[type='radio'][name='mime']:checked").val() === "true");
-      state["handle"] = ($("input[type='radio'][name='handle']:checked").val() === "true");
+      state["subject"] = (document.querySelector("input[type='radio'][name='subject']:checked").value === "true");
+      state["from"] = (document.querySelector("input[type='radio'][name='from']:checked").value === "true");
+      state["mime"] = (document.querySelector("input[type='radio'][name='mime']:checked").value === "true");
+      state["handle"] = (document.querySelector("input[type='radio'][name='handle']:checked").value === "true");
 
       const addresses = (new SieveStringListWidget("#sivAddresses")).values();
       state["addresses"] = !!addresses.length;
@@ -301,7 +322,8 @@
 
       document.querySelector("#cbxVacationIntervalDays").checked = true;
       // FIXME: we ignore the unit here. Instead we should use a numeric control
-      document.querySelector("#txtVacationIntervalDays").value = elm.getElement("days").getValue();
+      document.querySelector("#txtVacationIntervalDays").value
+        = elm.getElement("days").getValue();
     }
 
     /**

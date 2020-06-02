@@ -22,7 +22,6 @@
   /**
    * Creates a new document for sieve scripts it is used to parse
    * store and manipulate sieve scripts
-   *
    */
   class SieveDocument {
 
@@ -80,9 +79,12 @@
     }
 
     /**
+     * Walks the document tree from the root node looking for the given name.
      *
-     * @param {*} name
-     * @returns {}
+     * @param {string} name
+     *   the name which should be queried.
+     * @returns {SieveAbstractElement[]}
+     *   the element found.
      */
     queryElements(name) {
 
@@ -94,7 +96,10 @@
     }
 
     /**
+     * Renders this the document as html
+     *
      * @returns {HTMLElement}
+     *   the html element
      */
     html() {
       return this._rootNode.widget().html();
@@ -110,9 +115,11 @@
 
     /**
      * A shorthand to create children bound to this Element...
-     * @param {*} name
-     * @param {*} parser
-     * @param {*} parent
+     *
+     * @param {string} name
+     * @param {SieveParser|string} parser
+     *   a parser object or a string which holds the data that should be evaluated.
+     * @param {*} [parent]
      */
     createByName(name, parser, parent) {
       if (typeof (parser) === "string")
@@ -131,8 +138,10 @@
 
     /**
      *
-     * @param {*} types
-     * @param {*} parser
+     * @param {string|string[]} types
+     *   an list with types.
+     * @param {SieveParser|string} parser
+     *   a parser object or a string which holds the data that should be evaluated.
      * @param {*} parent
      */
     createByClass(types, parser, parent) {
@@ -152,8 +161,9 @@
 
     /**
      *
-     * @param {*} name
-     * @param {*} parser
+     * @param {string} name
+     * @param {string|SieveParser} parser
+     *   a parser object or a string which holds the data that should be evaluated.
      */
     probeByName(name, parser) {
       if (typeof (parser) === "string")
@@ -182,7 +192,7 @@
 
     /**
      *
-     * @param {*} name
+     * @param {string} name
      */
     supportsByName(name) {
       return this._lexer.supportsByName(name);
@@ -198,16 +208,20 @@
 
     /**
      *
-     * @param {*} id
+     * @param {string} id
+     *   the unique id
      */
     id(id) {
       return this._nodes[id];
     }
 
     /**
+     * Gets and sets the script content for this document.
      *
      * @param {string} [data]
+     *   the script content to be parsed by this document.
      * @returns {string}
+     *   the document converted to a script
      */
     script(data) {
       if (typeof (data) === "undefined")

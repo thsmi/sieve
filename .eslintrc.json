@@ -123,7 +123,7 @@
         "constructor-super": "error",
         "valid-typeof": "warn",
         "no-alert": "warn",
-        "no-magic-numbers": "warn",
+        "no-magic-numbers": ["warn", { "ignore": [0], "detectObjects": true }],
         "no-throw-literal": "error",
         "require-await": "warn",
         "no-var": "warn",
@@ -206,8 +206,6 @@
         "jsdoc/check-alignment": 1,
         "jsdoc/check-examples": ["warn", {"paddedIndent": 4 }],
 
-        "no-jquery/no-ajax" : 2,
-        "no-jquery/no-ajax-events" : 2,
         "no-jquery/no-animate" : 2,
         "no-jquery/no-animate-toggle" : 2,
         "no-jquery/no-attr" : 1,
@@ -216,15 +214,8 @@
         "no-jquery/no-contains" : 1,
         "no-jquery/no-context-prop" : 1,
         "no-jquery/no-css" : 2,
-        "no-jquery/no-data" : 2,
-        "no-jquery/no-each" : 2,
-        "no-jquery/no-each-collection" : 2,
-        "no-jquery/no-each-util" : 2,
         "no-jquery/no-fade" : 1,
         "no-jquery/no-find" : 1,
-        "no-jquery/no-html" : 2,
-        "no-jquery/no-load" : 2,
-        "no-jquery/no-on-ready" : 2,
         "no-jquery/no-param" : 2,
         "no-jquery/no-parent" : 2,
         "no-jquery/no-parents" : 2,
@@ -232,9 +223,6 @@
         "no-jquery/no-ready" : 2,
         "no-jquery/no-selector-prop" : 1,
         "no-jquery/no-text" : 1,
-        "no-jquery/no-trigger" : 2,
-        "no-jquery/no-trim":2,
-        "no-jquery/no-val" : 1,
-        "no-jquery/no-visibility" : 2
+        "no-jquery/no-val" : 1
     }
 }

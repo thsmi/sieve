@@ -45,16 +45,19 @@
   tests.set("sieve-elements", {
     script: "./../common/libSieve/RFC5228/tests/SieveRFC5228SnippetTest.js",
     extend: "rfc5228"
-  }
-  );
+  });
+
+  tests.set("sieve-atoms", {
+    script: "./../common/libSieve/RFC5228/tests/SieveRFC5228AtomsTest.js",
+    extend: "rfc5228"
+  });
 
   // Specialized profiles which contain the tests...
 
   tests.set("matchTypes", {
     script: "./../common/libSieve/RFC5228/tests/SieveMatchTypeTest.js",
     extend: "rfc5228"
-  }
-  );
+  });
 
   tests.set("variables", {
     script: "./../common/libSieve/variables/tests/SieveVariablesTest.js",
@@ -109,7 +112,9 @@
     script: "./../common/libSieve/include/tests/SieveIncludeTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/include/logic/SieveInclude.js"
+      "./../common/libSieve/include/logic/SieveInclude.js",
+      "./../common/libSieve/variables/logic/SieveVariables.js",
+      "./../common/libSieve/relational/logic/SieveRelational.js"
     ]
   });
 
@@ -150,7 +155,8 @@
     extend: "rfc5228",
     require: [
       "./../common/libSieve/imapflags/logic/SieveImapFlags.js",
-      "./../common/libSieve/variables/logic/SieveVariables.js"
+      "./../common/libSieve/variables/logic/SieveVariables.js",
+      "./../common/libSieve/relational/logic/SieveRelational.js"
     ]
   });
 

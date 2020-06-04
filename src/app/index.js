@@ -17,6 +17,9 @@
   const path = require('path');
   const url = require('url');
 
+  const DEFAULT_WINDOW_WIDTH = 1200;
+  const DEFAULT_WINDOW_HEIGHT = 600;
+
   // Keep a global reference of the window object, if you don't, the window will
   // be closed automatically when the JavaScript object is garbage collected.
   let win;
@@ -63,8 +66,8 @@
 
     // Create the browser window.
     win = new BrowserWindow({
-      width: 1200,
-      height: 600,
+      width: DEFAULT_WINDOW_WIDTH,
+      height: DEFAULT_WINDOW_HEIGHT,
       icon: icon,
       webPreferences: {
         // nodeIntegrationInSubFrames: true,

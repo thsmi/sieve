@@ -95,7 +95,7 @@
       if (this.isLineBreak() === false)
         throw new Error(`Line break expected but found:\n${this.getData()}`);
 
-      this.pos += 2;
+      this.pos += "\r\n".length;
 
       return this;
     }

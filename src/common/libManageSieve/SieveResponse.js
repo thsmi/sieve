@@ -767,6 +767,8 @@
     }
 
     /**
+     * Gets the challenge returned by the server.
+     *
      * @returns {string}
      *   the server's challenge which needs to be answered.
      */

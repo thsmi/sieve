@@ -31,39 +31,6 @@ body {
   background-image:url('trash-full.png');
 }
 
-  #infobar {
-  background-image: -moz-linear-gradient(bottom, #ffdd66, #ffeb7d);
-
-  border: 1px solid black;
-  border-top: none;
-
-  top: 0px;
-  width: 720px;
-
-  margin-left: 10px;
-  margin-right: 10px;
-
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-
-  display: none;
-}
-
-#infobarsubject
-{
-  line-height:20px;
-  padding: 10px;
-  font-weight:bold;
-}
-
-#infobar button {
-  float:right;
-}
-
-#debug {
-	display: none;
-}
-
 #content {
 	margin-left: 180px;
 }

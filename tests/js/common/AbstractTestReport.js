@@ -229,7 +229,7 @@
       this.status = STATUS_ERROR;
       this.stop();
 
-      this.logger.logError(`✗ ${ex.stack}  (${this.getDuration()})`);
+      this.logger.logError(`✗ ${ex.stack}  (${this.getDuration()} ms)`);
 
       return this;
     }
@@ -260,7 +260,7 @@
       this.stop();
 
       this.getLogger().logFailure(
-        `✗ ${this.getName()} (${this.getDuration()})\n\n${ex.message}`);
+        `✗ ${this.getName()} (${this.getDuration()} ms)\n\n${ex.message}`);
       this.addTrace(ex.stack);
       return this;
     }

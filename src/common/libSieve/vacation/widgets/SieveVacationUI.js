@@ -81,9 +81,13 @@
     }
 
     /**
+     * Gets the status of optional elements and optionally enables and disables them.
+     * Elements are addressed by their id.
      *
      * @param {string} id
-     * @param {boolean} status
+     *   the element id.
+     * @param {boolean} [status]
+     *   the optional new status. If omitted the status will not be changed.
      * @returns {boolean}
      *   true in case the element is enabled otherwise false.
      */
@@ -92,42 +96,75 @@
     }
 
     /**
-     *
+     * Called whenever the addresses field changed.
      */
-    onEnvelopeChanged() {
+    onAddressChanged() {
 
       const addresses = (new SieveStringListWidget("#sivAddresses")).items();
       let text = "";
 
       for (const address of addresses) {
-        text += (text.length ? "," : "") + address.value();
+        text += (text.length ? "," : "") + address.value;
       }
 
-      document.querySelector('#vacationAddressesDesc').textContent = text;
+      const elm = document.querySelector('#vacationAddressesDesc');
+      elm.textContent = text;
 
-      if (text.length)
-        document.querySelector('#vacationAddressesDesc').parentElement.style.display = "";
-      else
-        document.querySelector('#vacationAddressesDesc').parentElement.style.display = "none";
+      if (text.length) {
+        elm.parentElement.classList.add("d-flex");
+        elm.parentElement.classList.remove("d-none");
+      } else {
+        elm.parentElement.classList.remove("d-flex");
+        elm.parentElement.classList.add("d-none");
+      }
+    }
+
+    /**
+     * Called whenever the from field changed.
+     */
+    onFromChanged() {
+
+      const checked = (document.querySelector("input[type='radio'][name='from']:checked").value === "true");
 
       // Update the From Field
-      if (document.querySelector("input[type='radio'][name='from']:checked").value === "true") {
+      if (checked) {
         document.querySelector('#vacationFromDesc').textContent
-           = document.querySelector("#sivVacationFrom").value;
+          = document.querySelector("#sivVacationFrom").value;
+
+        document.querySelector('#vacationFromDesc').classList.remove("d-none");
+        document.querySelector('#vacationFromDescDefault').classList.add("d-none");
       } else {
-        // TODO needs to be localized
-        document.querySelector('#vacationFromDesc').textContent
-          = "Address of the sieve script owner";
+        document.querySelector('#vacationFromDesc').classList.add("d-none");
+        document.querySelector('#vacationFromDescDefault').classList.remove("d-none");
+      }
+    }
+
+    /**
+     * Called whenever the subject field changed.
+     */
+    onSubjectChanged() {
+      if (document.querySelector("input[type='radio'][name='subject']:checked").value !== "true") {
+        document.querySelector('#vacationSubjectDesc').classList.add("d-none");
+        document.querySelector('#vacationSubjectDescDefault').classList.remove("d-none");
+
+        return;
       }
 
-      if (document.querySelector("input[type='radio'][name='subject']:checked").value === "true") {
-        document.querySelector('#vacationSubjectDesc').textContent
-          = document.querySelector("#sivVacationSubject").value;
-      } else {
-        // TODO needs to be localized
-        document.querySelector('#vacationSubjectDesc').textContent
-          = "Server's default Subject";
-      }
+      document.querySelector('#vacationSubjectDesc').textContent
+        = document.querySelector("#sivVacationSubject").value;
+
+      document.querySelector('#vacationSubjectDesc').classList.remove("d-none");
+      document.querySelector('#vacationSubjectDescDefault').classList.add("d-none");
+    }
+
+    /**
+     * Called when one of the envelope elements are changed.
+     */
+    onEnvelopeChanged() {
+
+      this.onAddressChanged();
+      this.onFromChanged();
+      this.onSubjectChanged();
     }
 
     /**
@@ -143,16 +180,15 @@
       });
 
       document.querySelector("#vacationEnvelopeEdit").addEventListener("click", () => {
-        $('a[data-toggle="tab"][href="#sieve-widget-envelope"]')
-          .tab('show');
+        document
+          .querySelector(`a[data-toggle="tab"][href="#sieve-widget-envelope"]`)
+          .click();
       });
 
       document
         .querySelector(`input[type="radio"][name="subject"][value="${this.enable("subject")}"]`).checked = true;
       document
         .querySelector(`input[type="radio"][name="from"][value="${this.enable("from")}"]`).checked = true;
-      document
-        .querySelector(`input[type="radio"][name="addresses"][value="${this.enable("addresses")}"]`).checked = true;
       document
         .querySelector(`input[type="radio"][name="mime"][value="${this.enable("mime")}"]`).checked = true;
       document
@@ -212,6 +248,9 @@
 
       // TODO Catch exceptions...
       // ... then update the fields...
+
+      // TODO use html validation while typing....
+      // ... an djump to tab
 
       try {
         if (state["from"] && (!document.querySelector("#sivVacationFrom").checkValidity()))

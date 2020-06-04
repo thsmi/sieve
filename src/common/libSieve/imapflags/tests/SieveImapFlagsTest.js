@@ -117,10 +117,19 @@
 
   });
 
-  // TODO add a test for :
-  // 'hasflag :count "ge" :comparator "i;ascii-numeric" "MyFlags" "2"
-
   suite.add("RFC5232 Snippet VII", () => {
+
+    const script = ''
+      + 'require ["relational", "comparator-i;ascii-numeric", "imap4flags"];\r\n'
+      + '\r\n'
+      + 'if hasflag :count "ge" :comparator "i;ascii-numeric" "MyFlags" "2" {}\r\n'
+      + '\r\n';
+
+    suite.expectValidScript(script, ["imap4flags", "relational", "comparator-i;ascii-numeric"]);
+
+  });
+
+  suite.add("RFC5232 Snippet VIII", () => {
 
     const script = ''
       + 'require "imap4flags";\r\n'

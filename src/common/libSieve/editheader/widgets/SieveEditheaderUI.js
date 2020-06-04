@@ -47,10 +47,15 @@
     }
 
     /**
+     * Gets and sets the status for the given it, used to activate and
+     * deactivate tag.
      *
      * @param {string} id
      *   the unique id to be checked or changed.
-     * @param {*} status
+     * @param {boolean} [status]
+     *   the optional status to be set
+     * @returns {boolean}
+     *   true in case the id was enabled otherwise false.
      */
     enable(id, status) {
       return this.getSieve().enable(id, status);
@@ -251,7 +256,6 @@
       this.saveHeaderIndex();
       this.saveHeaderValues();
 
-
       return true;
     }
 
@@ -302,8 +306,9 @@
         .querySelector(`${headerSelector}[value="${indexType}"]`)
         .checked = true;
 
-      $(`${headerSelector}[value="${indexType}"]`)
-        .change();
+      document
+        .querySelector(`${headerSelector}[value="${indexType}"]`)
+        .dispatchEvent(new Event('change'));
     }
 
     /**
@@ -336,8 +341,9 @@
         .querySelector(`${headerSelector}[value="${headerType}"]`)
         .checked = true;
 
-      $(`${headerSelector}[value="${headerType}"]`)
-        .change();
+      document
+        .querySelector(`${headerSelector}[value="${headerType}"]`)
+        .dispatchEvent(new Event('change'));
     }
 
     /**

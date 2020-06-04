@@ -17,33 +17,26 @@
     <div id="template-content">
         <div class="tab-content m-2">
             <div class="tab-pane fade show active" id="sieve-widget-vacation" role="tabpanel">
-                <style>
-                    #sivVacationServerDesc,
-                    #sivVacationFromDesc,
-                    #sivVacationAddressesDesc {
-                        color: rgba(0, 0, 0, 0.53);
-                    }
-
-                    #vacationEnvelopeEdit div {
-                        text-overflow: ellipsis;
-                        white-space: nowrap;
-                    }
-
-                </style>
                 <div>
                     <!-- Envelope Controls -->
                     <div id="vacationEnvelopeEdit">
-                        <div>
-                            <span data-i18n="vacation.envelope.subject"></span>
-                            <span id="vacationSubjectDesc" style="color: rgba(0,0,0,0.53);"> </span>
+                        <div class="d-flex">
+                            <div data-i18n="vacation.envelope.subject"></div>
+                            <div class="flex-grow-1 text-truncate text-secondary pl-1">
+                                <span id="vacationSubjectDesc"></span>
+                                <span class="d-none" id="vacationSubjectDescDefault" data-i18n="vacation.envelope.subject.default"></span>
+                            </div>
                         </div>
-                        <div>
-                          <span data-i18n="vacation.envelope.from"></span>
-                          <span id="vacationFromDesc" style="color: rgba(0,0,0,0.53);"> </span>
+                        <div class="d-flex">
+                            <div data-i18n="vacation.envelope.from"></div>
+                            <div class="flex-grow-1 text-truncate text-secondary pl-1">
+                               <span id="vacationFromDesc"></span>
+                               <span class="d-none" id="vacationFromDescDefault" data-i18n="vacation.envelope.from.default"></span>
+                            </div>
                         </div>
-                        <div>
-                          <span data-i18n="vacation.envelope.addresses"></span>
-                          <span id="vacationAddressesDesc" style="color: rgba(0,0,0,0.53);">...</span>
+                        <div class="d-flex">
+                            <div data-i18n="vacation.envelope.addresses"></div>
+                            <div id="vacationAddressesDesc" class="flex-grow-1 text-truncate text-secondary pl-1"></div>
                         </div>
                     </div>
                     <br/>

@@ -14,7 +14,6 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveStringListWidget */
   /* global SieveActionDialogBoxUI */
   /* global SieveTestDialogBoxUI */
@@ -76,25 +75,6 @@
       (new SieveOverlayWidget("modifier/", "#sivModifier"))
         .save(this.getSieve());
 
-      let status;
-      let value = null;
-
-      value = null;
-      status = document.querySelector("input[type='checkbox'][name='30']").checked;
-      if (status)
-        value = document.querySelector(`input[type="radio"][name='30']:checked`).value;
-
-      this.getSieve().getElement("modifier/30").setElement(value);
-      this.getSieve().enable("modifier/30", status);
-
-      value = null;
-      status = document.querySelector("input[type='checkbox'][name='40']").checked;
-      if (status)
-        value = document.querySelector(`input[type="radio"][name='40']:checked`).value;
-
-      this.getSieve().getElement("modifier/40").setElement(value);
-      this.getSieve().enable("modifier/40", status);
-
       return true;
     }
 
@@ -106,7 +86,7 @@
       const widget = (new SieveOverlayWidget("modifier/", "#sivModifier"));
       await widget.init(this.getSieve());
 
-      // Sort the selectors...
+      // Sort the modifiers...
       let modifiers = document.querySelectorAll(`${widget.selector} .sieve-modifier`);
       modifiers = Array.from(modifiers).sort((lhs, rhs) => {
         rhs = rhs.querySelector("input[type='checkbox'][name^='modifier/']").name;
@@ -117,26 +97,6 @@
 
       for (const modifier of modifiers)
         document.querySelector(`${widget.selector}`).appendChild(modifier);
-
-      let state = null;
-
-      state = this.getSieve().enable("modifier/30");
-      $('input[type="checkbox"][name="30"]')
-        .change(function () { $('input[type="radio"][name="30"]').prop('disabled', !($(this).prop('checked'))); })
-        .prop('checked', state)
-        .change();
-
-      if (state)
-        $('input[type="radio"][name="30"][value="' + this.getSieve().getElement("modifier/30").toScript() + '"]').prop('checked', true);
-
-      state = this.getSieve().enable("modifier/40");
-      $('input[type="checkbox"][name="40"]')
-        .change(function () { $('input[type="radio"][name="40"]').prop('disabled', !($(this).prop('checked'))); })
-        .prop('checked', state)
-        .change();
-
-      if (state)
-        $('input[type="radio"][name="40"][value="' + this.getSieve().getElement("modifier/40").toScript() + '"]').prop('checked', true);
 
       document.querySelector("#sivVariableName").value = this.name().value();
       document.querySelector("#sivVariableValue").value = this.value().value();
@@ -164,11 +124,12 @@
   }
 
   /**
-   * Implements an abstract overlay widget which is used by
-   * the copy overlay for the fileinto action as well as the
-   * redirect action.
+   * Renders a UI for the :upper and :lower modifiers
+   *
+   * They are used tom make the whole string upper or lowercase.
+   * Their precedence is 40
    */
-  class SieveModifierLengthWidget extends SieveOverlayItemWidget {
+  class SieveModifierCaseWidget extends SieveOverlayItemWidget {
 
     /**
      * @inheritdoc
@@ -181,14 +142,14 @@
      * @inheritdoc
      */
     static nodeName() {
-      return "modifier/10";
+      return "modifier/40";
     }
 
     /**
      * @inheritdoc
      **/
     getTemplate() {
-      return "./variables/templates/SieveLengthUI.html";
+      return "./variables/templates/SieveCaseUI.html";
     }
 
     /**
@@ -202,8 +163,31 @@
      * @inheritdoc
      */
     load(sivElement) {
-      if (sivElement.enable("modifier/10"))
-        document.querySelector("#cbxModifier10").checked = true;
+      document
+        .querySelector("#cbxModifier40")
+        .addEventListener("change", () => {
+          if (document.querySelector("#cbxModifier40").checked)
+            document.querySelector("#divModifier40").classList.remove("d-none");
+          else
+            document.querySelector("#divModifier40").classList.add("d-none");
+        });
+
+
+      if (sivElement.enable("modifier/40")) {
+
+        document
+          .querySelector("#cbxModifier40")
+          .checked = true;
+
+        const value = sivElement.getElement("modifier/40").toScript();
+        document
+          .querySelector(`input[type="radio"][name="modifier/40/"][value="${value}"]`)
+          .checked = true;
+      }
+
+      document
+        .querySelector("#cbxModifier40")
+        .dispatchEvent(new Event('change'));
     }
 
     /**
@@ -212,19 +196,99 @@
     save(sivElement) {
 
       let value = null;
-      const status = document.querySelector("#cbxModifier10").checked;
+      const status = document.querySelector("#cbxModifier40").checked;
       if (status)
-        value = document.querySelector("#cbxModifier10").value;
+        value = document.querySelector(`input[type="radio"][name='modifier/40/']:checked`).value;
 
-      sivElement.getElement("modifier/10").setElement(value);
-      sivElement.enable("modifier/10", status);
+      sivElement.getElement("modifier/40").setElement(value);
+      sivElement.enable("modifier/40", status);
     }
   }
 
   /**
-   * Implements an abstract overlay widget which is used by
-   * the copy overlay for the fileinto action as well as the
-   * redirect action.
+   * Renders a UI for the :upperfirst and :lowerfirst modifier.
+   *
+   * The are used to manipulate the first character and have a precedence of 30
+   */
+  class SieveModifierCaseFirstWidget extends SieveOverlayItemWidget {
+
+    /**
+     * @inheritdoc
+     */
+    static nodeType() {
+      return "modifier/";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    static nodeName() {
+      return "modifier/30";
+    }
+
+    /**
+     * @inheritdoc
+     **/
+    getTemplate() {
+      return "./variables/templates/SieveCaseFirstUI.html";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    static isCapable(capabilities) {
+      return capabilities.hasCapability("variables");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    load(sivElement) {
+
+      document
+        .querySelector("#cbxModifier30")
+        .addEventListener("change", () => {
+          if (document.querySelector("#cbxModifier30").checked)
+            document.querySelector("#divModifier30").classList.remove("d-none");
+          else
+            document.querySelector("#divModifier30").classList.add("d-none");
+        });
+
+
+      if (sivElement.enable("modifier/30")) {
+
+        document
+          .querySelector("#cbxModifier30")
+          .checked = true;
+
+        const value = sivElement.getElement("modifier/30").toScript();
+        document
+          .querySelector(`input[type="radio"][name="modifier/30/"][value="${value}"]`)
+          .checked = true;
+      }
+
+      document
+        .querySelector("#cbxModifier30")
+        .dispatchEvent(new Event('change'));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    save(sivElement) {
+
+      let value = null;
+      const status = document.querySelector("#cbxModifier30").checked;
+      if (status)
+        value = document.querySelector(`input[type="radio"][name='modifier/30/']:checked`).value;
+
+      sivElement.getElement("modifier/30").setElement(value);
+      sivElement.enable("modifier/30", status);
+    }
+  }
+
+  /**
+   * Renders a ui for the quote wildcard modifier.
    */
   class SieveModifierQuoteWildcardWidget extends SieveOverlayItemWidget {
 
@@ -279,13 +343,73 @@
     }
   }
 
+  /**
+   * Renders a UI for the length modifier.
+   */
+  class SieveModifierLengthWidget extends SieveOverlayItemWidget {
+
+    /**
+     * @inheritdoc
+     */
+    static nodeType() {
+      return "modifier/";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    static nodeName() {
+      return "modifier/10";
+    }
+
+    /**
+     * @inheritdoc
+     **/
+    getTemplate() {
+      return "./variables/templates/SieveLengthUI.html";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    static isCapable(capabilities) {
+      return capabilities.hasCapability("variables");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    load(sivElement) {
+      if (sivElement.enable("modifier/10"))
+        document.querySelector("#cbxModifier10").checked = true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    save(sivElement) {
+
+      let value = null;
+      const status = document.querySelector("#cbxModifier10").checked;
+      if (status)
+        value = document.querySelector("#cbxModifier10").value;
+
+      sivElement.getElement("modifier/10").setElement(value);
+      sivElement.enable("modifier/10", status);
+    }
+  }
+
+
 
   /**
    * Provides a ui for the sieve string test
+   * Checks if any of  the source strings matches against any of the keys.
    */
   class SieveStringTestUI extends SieveTestDialogBoxUI {
 
     /**
+     * The keys against which the source strings should be checked.
+     *
      * @returns {SieveStringList}
      *   the element's keys
      */
@@ -294,6 +418,8 @@
     }
 
     /**
+     * The source strings which should be compared against the keys.
+     *
      * @returns {SieveStringList}
      *   the element's sources
      */
@@ -391,6 +517,8 @@
 
   SieveDesigner.register2(SieveModifierLengthWidget);
   SieveDesigner.register2(SieveModifierQuoteWildcardWidget);
+  SieveDesigner.register2(SieveModifierCaseFirstWidget);
+  SieveDesigner.register2(SieveModifierCaseWidget);
 
   SieveDesigner.register("action/set", SieveSetActionUI);
   SieveDesigner.register("test/string", SieveStringTestUI);

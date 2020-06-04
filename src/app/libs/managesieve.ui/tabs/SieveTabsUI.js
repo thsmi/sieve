@@ -90,6 +90,10 @@
 
     /**
      * Closes the tab and removes the tab content frame.
+     * It may be vetoed, e.g. if an editor contains unsaved changes.
+     *
+     * @returns {boolean}
+     *   true in case the tab could be closed. In case it was canceled false.
      */
     async close() {
 

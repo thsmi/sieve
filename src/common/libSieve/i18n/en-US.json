@@ -536,21 +536,23 @@
   "vacation.tab.help" : "Help",
 
   "vacation.envelope.subject" : "Subject:",
+  "vacation.envelope.subject.default" : "Server's default Subject",
   "vacation.envelope.from" : "From:",
+  "vacation.envelope.from.default" : "Address of the sieve script owner",
   "vacation.envelope.addresses" : "Addresses:",
-  "vacation.envelope.text" : "Enter your message",
+  "vacation.envelope.text" : "Enter your vacation message",
 
   "vacation.subject" : "Subject",
   "vacation.subject.text" : "The subject is used for any vacation response",
   "vacation.subject.default" : "Server's default Subject",
   "vacation.subject.custom" : "Custom Subject",
 
-  "vacation.from" : "From",
+  "vacation.from" : "From address",
   "vacation.from.text" : "Used to specify an alternate From address.",
   "vacation.from.default" : "Address of the sieve script owner",
   "vacation.from.custom" : "Custom From Address",
 
-  "vacation.addresses" : "Addresses",
+  "vacation.addresses" : "Additional recipients addresses",
   "vacation.addresses.text" : "By default a response message is only send, if it was addressed to the recipient user or sieve script owner.\nYou can supply additional mail addresses. For Example if mails are forwarded or you have multiple aliases for a single mail address",
 
   "vacation.contenttype" : "Message Content Type",

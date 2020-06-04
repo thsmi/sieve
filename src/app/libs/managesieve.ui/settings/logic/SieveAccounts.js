@@ -19,6 +19,10 @@
   const CONFIG_ID_GLOBAL = "global";
   const CONFIG_KEY_ACCOUNTS = "accounts";
 
+  const DEFAULT_AUTHENTICATION = 1;
+
+  const SETTINGS_VERSION_I = 1;
+
   const { SieveLogger } = require("./../../utils/SieveLogger.js");
 
   const { SievePrefManager } = require('./SievePrefManager.js');
@@ -102,7 +106,7 @@
         await (await this.accounts[id].getHost()).setPort(details.port);
 
       if ((details.username !== null) && (details.username !== undefined))
-        await (await this.accounts[id].getAuthentication(1)).setUsername(details.username);
+        await (await this.accounts[id].getAuthentication(DEFAULT_AUTHENTICATION)).setUsername(details.username);
 
       if ((details.name !== null) && (details.name !== undefined))
         await (await this.accounts[id].getHost()).setDisplayName(details.name);
@@ -139,7 +143,7 @@
     async import(data) {
       data = JSON.parse(data);
 
-      if (data.version !== 1)
+      if (data.version !== SETTINGS_VERSION_I)
         throw new Error(`Unknown version ${data.version}`);
 
       const details = {
@@ -164,13 +168,17 @@
     async export(id) {
       const config = new SievePrefManager(`@${id}`);
 
-      const data = {};
+      let data = {};
       for (const key of config.getKeys())
         data[key] = await (config.getValue(key));
 
+      data = {
+        "version": SETTINGS_VERSION_I,
+        "settings": data
+      };
+
       return JSON.stringify(
-        { "version": 1, "settings": data },
-        null, JSON_INDENTATION);
+        data, null, JSON_INDENTATION);
     }
   }
 

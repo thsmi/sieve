@@ -7,6 +7,9 @@ const { JUnitExporter } = require("./js/exporter/JUnitExporter.js");
 
 const { writeFile } = require('fs').promises;
 
+const EXIT_CODE_ERROR = 1;
+const JUNIT_EXPORT_FILE = "./TEST-sieve.xml";
+
 /**
  * The entry point
  */
@@ -18,13 +21,13 @@ async function main() {
 
   await suite.load(tests).run(report);
 
-  await writeFile("./TEST-sieve.xml", (new JUnitExporter()).export(report));
+  await writeFile(JUNIT_EXPORT_FILE, (new JUnitExporter()).export(report));
 
   report.summary();
 
-  if (report.hasFailed()) {
-    process.exit(1);
-  }
+  if (report.hasFailed())
+    process.exitCode = EXIT_CODE_ERROR;
+
 }
 
 main();

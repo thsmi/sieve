@@ -193,12 +193,12 @@
 
   /**
    * Implements a control for editing a duplicate test
-   *
-   * @param {object} elm - The sieve element which should be rendered.
    */
   class SieveDuplicateUI extends SieveTestDialogBoxUI {
 
     /**
+     * Gets the optional unique id. It is used to track duplicates.
+     *
      * @returns {SieveAbstractElement}
      *   the element's unique field
      */

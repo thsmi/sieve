@@ -256,12 +256,15 @@
   <div id="content">
 
     <!-- Infobar -->
-    <div id="infobar">
-      <div id="infobarsubject">
-        <span id="infobarsubject"></span>
-        <button id="infobartoggle">Dismiss</button>
+    <div id="infobar" class="d-none alert alert-danger alert-dismissible mt-2 mr-4" role="alert">
+      <div>
+        <strong id="infobar-subject"></strong>
+        <button id="infobar-close" class="close">
+          <span>×</span>
+        </button>
       </div>
-      <div id="infobarmessage"></div>
+      <small id="infobar-brief-message" style="white-space: pre-wrap;"></small>
+      <small id="infobar-message" style="white-space: pre-wrap;"></small>
     </div>
 
     <!-- Modal dialog -->

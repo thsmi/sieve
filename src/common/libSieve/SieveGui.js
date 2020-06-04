@@ -27,6 +27,10 @@
 
   /* global SieveGrammar */
 
+  const BRIEF_MAX_LENGTH = 256;
+  const NAME = 1;
+  const DEFAULT_LOG_LEVEL = 0xFF;
+
   let dom2;
 
   /**
@@ -51,7 +55,7 @@
 
     const elm = elm2.html();
     elm.classList.add("sivMenuItem");
-    elm.textContent = action.split('/')[1];
+    elm.textContent = action.split('/')[NAME];
 
     return elm;
   }
@@ -238,12 +242,23 @@
    *   the message's subject
    * @param {string} content
    *   the message's details
-   *
    */
   function showInfoMessage(message, content) {
-    document.querySelector("#infobarsubject").textContent = message;
-    document.querySelector("#infobarmessage").textContent = content;
-    $("#infobar").toggle();
+
+    document.querySelector("#infobar-subject")
+      .textContent = message;
+    document.querySelector("#infobar-message")
+      .textContent = content;
+    document.querySelector("#infobar-brief-message")
+      .textContent = content.substring(0, BRIEF_MAX_LENGTH) + "...";
+
+    document.querySelector("#infobar-brief-message")
+      .classList.remove("d-none");
+    document.querySelector("#infobar-message")
+      .classList.add("d-none");
+
+    document.querySelector("#infobar")
+      .classList.remove("d-none");
   }
 
 
@@ -253,7 +268,23 @@
    */
   async function main() {
 
-    SieveLogger.getInstance().level(0xFF);
+    // Connect the error handler...
+    window.addEventListener("error", (event) => {
+      showInfoMessage(event.message, event.error.stack);
+    });
+
+    document.querySelector("#infobar-close")
+      .addEventListener("click", () => {
+        document.querySelector("#infobar").classList.add("d-none");
+      });
+
+    document.querySelector("#infobar-brief-message")
+      .addEventListener("click", () => {
+        document.querySelector("#infobar-brief-message").classList.add("d-none");
+        document.querySelector("#infobar-message").classList.remove("d-none");
+      });
+
+    SieveLogger.getInstance().level(DEFAULT_LOG_LEVEL);
     await (SieveI18n.getInstance()).load();
 
     init();
@@ -290,8 +321,14 @@
     document.querySelector("#DebugToggle")
       .addEventListener("click", () => { document.querySelector('#boxScript').classList.toggle("d-none"); });
 
-    if (new URL(window.location).searchParams.has("debug"))
+    const url = new URL(window.location);
+    if (url.searchParams.has("debug"))
       document.querySelector('#boxScript').classList.remove("d-none");
+
+    if (url.searchParams.get("capabilities") === "all") {
+      loadCapabilities(true);
+      setCapabilities();
+    }
 
     document.querySelector("#DebugDropTarget").addEventListener('dragover', (e) => {
       console.log("on drag over");
@@ -314,24 +351,6 @@
       console.dir(e.dataTransfer);
     });
 
-    document.querySelector("#infobartoggle")
-      .addEventListener("click", () => { $("#infobar").toggle(); });
-  }
-
-  /**
-   * The windows default error handler
-   * @param {string} msg
-   *   the error message
-   * @param {string} url
-   *   the file which caused the error
-   * @param {string} [line]
-   *   the line which caused the error
-   *
-   */
-  // eslint-disable-next-line no-unused-vars
-  function errorhandler(msg, url, line) {
-    // alert(msg+"\n"+url+"\n"+line);
-    showInfoMessage(msg, "");
   }
 
   if (document.readyState !== 'loading')
@@ -339,7 +358,6 @@
   else
     document.addEventListener('DOMContentLoaded', () => { main(); }, { once: true });
 
-  exports.onerror = errorhandler;
   exports.setSieveScript = setSieveScript;
   exports.getSieveScript = getSieveScript;
 

@@ -378,6 +378,8 @@
     }
 
     /**
+     * The keys which are compared.
+     *
      * @returns {SieveAbstractElement}
      *   the element's key fields
      */

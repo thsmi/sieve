@@ -64,7 +64,7 @@
     /**
      *
      * @param {*} docshell
-     * @param {*} id
+     * @param {string} id
      *
      * @returns {SieveAbstractElement}
      */
@@ -327,9 +327,9 @@
 
   /**
    *
-   * @param {*} capabilites
+   * @param {*} capabilities
    */
-  function createGrammar(capabilites) {
+  function createGrammar(capabilities) {
     initActions();
     initTests();
 

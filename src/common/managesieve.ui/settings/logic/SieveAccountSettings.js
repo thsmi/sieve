@@ -14,6 +14,7 @@
   "use strict";
 
   const CONFIG_DEBUG_ACCOUNT = "debug";
+  const DEFAULT_LOG_LEVEL = 0;
 
   /**
    * Manages the accounts common settings.
@@ -37,7 +38,8 @@
      *  the current log level
      */
     async getLogLevel() {
-      return await this.account.getConfig().getInteger(CONFIG_DEBUG_ACCOUNT, 0);
+      return await this.account.getConfig()
+        .getInteger(CONFIG_DEBUG_ACCOUNT, DEFAULT_LOG_LEVEL);
     }
 
     /**

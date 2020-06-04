@@ -15,6 +15,8 @@
   const RESPONSE_CODE_NAME = 0;
   const RESPONSE_CODE_EXTENSION = 1;
 
+  const NOT_FOUND = -1;
+
   /**
    * The response codes is a string with optional additional arguments
    */
@@ -110,11 +112,11 @@
       if (this.hostname.indexOf("/") >= 0)
         this.hostname = this.hostname.slice(0, this.hostname.indexOf("/"));
 
-      if (this.hostname.indexOf(":") === -1)
+      if (this.hostname.indexOf(":") === NOT_FOUND)
         return;
 
       // extract the port
-      this.port = this.hostname.slice(this.hostname.indexOf(":") + 1);
+      this.port = this.hostname.slice(this.hostname.indexOf(":") + ":".length);
       this.hostname = this.hostname.slice(0, this.hostname.indexOf(":"));
     }
 

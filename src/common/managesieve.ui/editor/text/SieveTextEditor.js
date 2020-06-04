@@ -19,6 +19,7 @@
   /* global SieveAbstractEditorUI */
 
   const COMPILE_DELAY = 500;
+  const EDITOR_SCROLL_INTO_VIEW_OFFSET = 200;
 
   /**
    * An text editor ui for sieve scripts.
@@ -221,7 +222,9 @@
 
       document
         .querySelector("#sieve-editor-replace-replace")
-        .addEventListener("click", () => { $("#sieve-editor-find-toolbar").toggle(); });
+        .addEventListener("click", () => {
+          document.querySelector("#sieve-editor-find-toolbar").classList.toggle("d-none");
+        });
 
       await this.renderSettings();
     }
@@ -426,7 +429,7 @@
       else
         this.cm.setSelection(cursor.to(), cursor.from());
 
-      this.cm.scrollIntoView(cursor.to(), 200);
+      this.cm.scrollIntoView(cursor.to(), EDITOR_SCROLL_INTO_VIEW_OFFSET);
 
       return true;
     }

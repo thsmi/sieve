@@ -23,8 +23,7 @@
          target="_blank" role="button"></a>
 
     </div>
-    <div id="sieve-editor-find-toolbar" style="display:none;">
-      <hr />
+    <div id="sieve-editor-find-toolbar" class="d-none mt-2">
       <div class="row">
         <div class="col-md-6">
           <div class="input-group mb-2">

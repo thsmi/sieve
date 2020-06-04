@@ -22,6 +22,8 @@
   const ERROR_MISMATCH = 2;
   const ERROR_TIME = 4;
 
+  const FIRST_ENTRY = 0;
+
   const logger = SieveLogger.getInstance();
 
   const accounts = await (new SieveAccounts().load());
@@ -144,7 +146,7 @@
       const tabs = await browser.tabs.query({ url: url.toString() });
 
       if (tabs.length) {
-        await showTab(tabs[0]);
+        await showTab(tabs[FIRST_ENTRY]);
         return;
       }
 
@@ -363,7 +365,7 @@
 
       const tabs = await getTabs(account, name);
       if (tabs.length) {
-        await showTab(tabs[0]);
+        await showTab(tabs[FIRST_ENTRY]);
         return;
       }
 

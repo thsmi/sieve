@@ -215,9 +215,9 @@
 </head>
 
 <body>
-
+  <div class="container-xl mt-2">
   <!-- the toolvar -->
-  <div id="toolbar">
+  <div id="toolbar" class="ml-2">
     <div id="accordion">
       <div class="card">
         <div class="card-header" data-toggle="collapse" data-target="#collapseOne">
@@ -238,15 +238,6 @@
         <div class="collapse" data-parent="#accordion" id="collapseThree">
           <div class="card-body p-2" id="sivOperators"></div>
         </div>
-        <div class="card-header" data-toggle="collapse" data-target="#collapseDebugging">
-          Debugging
-        </div>
-        <div class="collapse" data-parent="#accordion" id="collapseDebugging">
-          <div class="card-body p-2" id="sivDebugging"></div>
-          <button type="button" class="btn btn-sm btn-outline-secondary" id="DebugToggle">
-            Show/Hide
-          </button>
-        </div>
       </div>
 
       <div id="sivTrash"></div>
@@ -256,7 +247,7 @@
   <div id="content">
 
     <!-- Infobar -->
-    <div id="infobar" class="d-none alert alert-danger alert-dismissible mt-2 mr-4" role="alert">
+    <div id="infobar" class="d-none alert alert-danger alert-dismissible mt-2" role="alert">
       <div>
         <strong id="infobar-subject"></strong>
         <button id="infobar-close" class="close">
@@ -295,7 +286,7 @@
 
     <div id="debug2">
 
-      <div class="card mt-2 mb-2 mr-4 d-none" id="boxScript">
+      <div class="card mt-2 mb-2 d-none" id="boxScript">
         <div class="card-header d-flex justify-content-between py-0">
           <ul class="nav nav-tabs card-header-tabs my-0 pt-3" role="tablist">
             <li class="nav-item">
@@ -334,9 +325,6 @@
             </div>
           </div>
           <div class="tab-pane fade" id="debugadvanced" role="tabpanel">
-            <input id="draggable" />
-            <span id="DebugDropTarget">DROP TARGET</span>
-            <hr />
             <button type="button" class="btn btn-sm btn-outline-secondary" id="DebugCompact">
               Compact
             </button>
@@ -344,7 +332,6 @@
 
           <div class="tab-pane fade" id="debugcapabilities" role="tabpanel">
             <div>
-              <button type="button" class="btn btn-sm btn-outline-secondary" id="DebugRequire">Collect Require</button>
               <button type="button" class="btn btn-sm btn-outline-secondary" id="CapabilitiesReset">Load from
                 Script</button>
               <button type="button" class="btn btn-sm btn-outline-secondary" id="CapabilitiesNone">Select None</button>
@@ -609,11 +596,13 @@
 
     </div>
 
-    <div id="divOutput">
+    <div id="divOutput" class="card p-2 pr-4">
     </div>
 
     <script type="application/javascript" src="SieveGui.js"></script>
   </div>
+
+</div>
 </body>
 
 </html>

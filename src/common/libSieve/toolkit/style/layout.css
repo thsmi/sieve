@@ -2,14 +2,15 @@ body {
   margin:0px;
 }
 
-#toolbar {
-    position:fixed;
-    width:160px;
-	left: 10px;
-	top: 10px;
+#content {
+  padding: 0px 10px;
+  margin-left: 180px;
+}
 
-	width:150px;
-	z-index:100;
+#toolbar {
+  position: fixed;
+  width: 170px;
+  overflow-x: hidden;
 }
 
 #toolbar .SivElement {
@@ -30,23 +31,3 @@ body {
 {
   background-image:url('trash-full.png');
 }
-
-#content {
-	margin-left: 180px;
-}
-
-  #divOutput {
-    width: 100%;
-    margin-left:-5px;
-    margin-top:10px;
-
-    padding: 5px 20px;
-
-    background-color:white;
-    padding-right:90px;
-    padding-left:30px;
-
-    border-radius: 3px;
-    box-shadow: 0 0 3px lightgray;
-  }
-

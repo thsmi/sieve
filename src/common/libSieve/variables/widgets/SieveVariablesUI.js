@@ -83,6 +83,9 @@
      */
     async onLoad() {
 
+      document.querySelector("#sivVariableName").value = this.name().value();
+      document.querySelector("#sivVariableValue").value = this.value().value();
+
       const widget = (new SieveOverlayWidget("modifier/", "#sivModifier"));
       await widget.init(this.getSieve());
 
@@ -97,9 +100,6 @@
 
       for (const modifier of modifiers)
         document.querySelector(`${widget.selector}`).appendChild(modifier);
-
-      document.querySelector("#sivVariableName").value = this.name().value();
-      document.querySelector("#sivVariableValue").value = this.value().value();
     }
 
     /**

@@ -232,10 +232,11 @@
         .init(this.matchtype());
       (new SieveComparatorWidget("#sivDateComparator"))
         .init(this.comparator());
-      (new SieveZoneWidget("#sivDateZone"))
-        .init(this.zone());
 
       document.querySelector("#sivDateHeader").value = this.header().value();
+
+      (new SieveZoneWidget("#sivDateZone"))
+        .init(this.zone());
       (new SieveStringWidget("#sivDateDatepart"))
         .init(this.datepart());
     }

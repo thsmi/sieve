@@ -133,9 +133,11 @@
 
       return await new Promise((resolve, reject) => {
 
-        this.getDialog()
-          .querySelector(".sieve-dialog-resolve")
-          .addEventListener("click", async () => {
+        const buttons = this.getDialog()
+          .querySelectorAll(".sieve-dialog-resolve");
+
+        for (const button of buttons) {
+          button.addEventListener("click", async () => {
             try {
               resolve(await this.onAccept(event.target));
             } catch (ex) {
@@ -144,6 +146,7 @@
 
             $(this.getDialog()).modal("hide");
           });
+        }
 
         $(this.getDialog()).modal('show')
           .on('hidden.bs.modal', async () => {

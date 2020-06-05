@@ -62,12 +62,11 @@
 
   /**
    * Compacts the sieve dom
-   *
    **/
   function compact() {
-    alert(dom2.compact());
+    SieveLogger.getInstance()
+      .logWidget(`Removed ${dom2.compact()} stale elements`);
   }
-
 
   /**
    * Initializes the sieve rendering ui and script parser
@@ -177,19 +176,6 @@
   }
 
   /**
-   * Collects and shows al require statements
-   *
-   **/
-  function collectRequires() {
-    const requires = {};
-
-    dom2.root().require(requires);
-
-    for (const i in requires)
-      alert(i);
-  }
-
-  /**
    * Sets the capabilities as defined in the capabilities dialog
    **/
   function setCapabilities() {
@@ -289,13 +275,6 @@
 
     init();
 
-    const toolbarLeft = $('#toolbar').offset().left;
-
-    $(window).scroll(function () {
-      $('#toolbar').css('left', toolbarLeft - $(window).scrollLeft());
-    });
-
-
     document.querySelector("#CapabilitiesApply")
       .addEventListener("click", () => { setCapabilities(); });
     document.querySelector("#CapabilitiesAll")
@@ -314,12 +293,9 @@
     document.querySelector("#DebugStringify")
       .addEventListener("click", () => {
         document.querySelector('#txtOutput').value = getSieveScript(); });
-    document.querySelector("#DebugRequire")
-      .addEventListener("click", () => { collectRequires(); });
+
     document.querySelector("#DebugCompact")
       .addEventListener("click", () => { compact(); });
-    document.querySelector("#DebugToggle")
-      .addEventListener("click", () => { document.querySelector('#boxScript').classList.toggle("d-none"); });
 
     const url = new URL(window.location);
     if (url.searchParams.has("debug"))
@@ -329,27 +305,6 @@
       loadCapabilities(true);
       setCapabilities();
     }
-
-    document.querySelector("#DebugDropTarget").addEventListener('dragover', (e) => {
-      console.log("on drag over");
-      console.dir(e.dataTransfer.getData("sieve/action"));
-      e.preventDefault();
-      e.stopPropagation();
-    });
-
-    document.querySelector("#DebugDropTarget").addEventListener('dragenter', function (e) {
-      console.log("on drag enter");
-      console.dir(e.dataTransfer.getData("sieve/action"));
-      e.preventDefault();
-      e.stopPropagation();
-    });
-
-    document.querySelector("#DebugDropTarget").addEventListener('drop', function (e) {
-      console.log("on drop");
-      console.dir(e.dataTransfer.getData("sieve/action"));
-      e.preventDefault();
-      console.dir(e.dataTransfer);
-    });
 
   }
 

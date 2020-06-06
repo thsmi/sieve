@@ -18,6 +18,8 @@
   const { SieveIpcClient } = require("./../utils/SieveIpcClient.js");
   const { SieveUniqueId } = require("./../utils/SieveUniqueId.js");
 
+  const SCROLL_INCREMENT = 100;
+
   /**
    * Implements a single tab ui element.
    */
@@ -46,7 +48,7 @@
      */
     getTab() {
       return document
-        .querySelector(`#${this.tabs.tabId} [data-sieve-account='${this.account}'][data-sieve-name='${this.name}']`);
+        .querySelector(`#tabs-items [data-sieve-account='${this.account}'][data-sieve-name='${this.name}']`);
     }
 
     /**
@@ -135,38 +137,50 @@
   class SieveTabUI {
 
     /**
-     * Creates a new instance
-     * @param {string} [id]
-     *   the tab bars unique id. It is the element which hosts the tabs.
-     */
-    constructor(id) {
-      if (id === null || id === undefined)
-        id = "myTab";
-
-      this.tabId = id;
-    }
-
-    /**
      * Scrolls the tab bar to the right
      */
     scrollRight() {
-      // $('.scroller-left').fadeIn('slow');
-      // $('.scroller-right').fadeOut('slow');
+      const lastTab = document.querySelector("#tabs-items").lastElementChild;
+      const tabs = document.querySelector("#tabs-items");
 
-      $('.list').animate({ left: "-=100px" }, () => { });
+      const lastTabRight = lastTab.offsetLeft + lastTab.offsetWidth;
+
+      if (lastTabRight < tabs.clientWidth) {
+        tabs.style.left = `${0}px`;
+        return;
+      }
+
+      let left = tabs.offsetLeft - SCROLL_INCREMENT;
+
+      const max = tabs.offsetWidth - lastTabRight;
+
+      if (left < max)
+        left = max;
+
+      tabs.style.left = `${left}px`;
     }
 
     /**
      * Scrolls the tab bar to the left
      */
     scrollLeft() {
-      // $('.scroller-right').fadeIn('slow');
-      // $('.scroller-left').fadeOut('slow');
+      const lastTab = document.querySelector("#tabs-items").lastElementChild;
+      const tabs = document.querySelector("#tabs-items");
 
-      if ($('.list').position().left >= 0)
-        $('.list').animate({ left: "0px" });
-      else
-        $('.list').animate({ left: "+=100px" });
+      const lastTabRight = lastTab.offsetLeft + lastTab.offsetWidth;
+
+
+      if (lastTabRight < tabs.clientWidth) {
+        tabs.style.left = `${0}px`;
+        return;
+      }
+
+      let left = tabs.offsetLeft + SCROLL_INCREMENT;
+
+      if (left > 0)
+        left = 0;
+
+      tabs.style.left = `${left}px`;
     }
 
     /**
@@ -174,13 +188,21 @@
      */
     init() {
 
+      document
+        .querySelector("#tabs-items")
+        .style.transitionProperty = "left";
+
+      document
+        .querySelector("#tabs-items")
+        .style.transitionDuration = "0.5s";
+
       // Add event listeners...
       document
-        .querySelector("#scrollleft")
+        .querySelector("#tabs-scroll-left")
         .addEventListener("click", () => { this.scrollLeft(); });
 
       document
-        .querySelector("#scrollright")
+        .querySelector("#tabs-scroll-right")
         .addEventListener("click", () => { this.scrollRight(); });
     }
 
@@ -313,8 +335,8 @@
 
       content.src = url.toString();
 
-      document.querySelector(`#${this.tabId}Content`).appendChild(content);
-      document.querySelector(`#${this.tabId}`).appendChild(tab);
+      document.querySelector(`#tabs-content`).appendChild(content);
+      document.querySelector(`#tabs-items`).appendChild(tab);
 
       $(tab).on('shown.bs.tab', () => { this.onTabShown(account, name); });
 

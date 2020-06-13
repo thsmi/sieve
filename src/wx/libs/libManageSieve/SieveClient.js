@@ -27,6 +27,8 @@
 
   const { SieveCertValidationException } = require("./SieveExceptions.js");
 
+  const { SieveTimer } = require("./SieveTimer.js");
+
   const NEW_TRANSPORT_API = 4;
   const OLD_TRANSPORT_API = 5;
 
@@ -55,8 +57,8 @@
 
       super();
 
-      this.timeoutTimer = null;
-      this.idleTimer = null;
+      this.timeoutTimer = new SieveTimer();
+      this.idleTimer = new SieveTimer();
 
       this.outstream = null;
       this.binaryOutStream = null;
@@ -123,91 +125,14 @@
       securityInfo.StartTLS();
     }
 
-    /**
-     * @inheritdoc
-     */
-    onStartTimeout() {
-
-      // clear any existing timeouts
-      if (this.timeoutTimer)
-        this.timeoutTimer.cancel();
-
-      // ensure the idle timer is stopped
-      this.onStopIdle();
-
-      // then restart the timeout timer.
-      if (this.timeoutTimer)
-        this.timeoutTimer.initWithCallback(
-          this, this.getTimeoutWait(),
-          Components.interfaces.nsITimer.TYPE_ONE_SHOT);
-
+    getTimeoutTimer() {
+      return this.timeoutTimer;
     }
 
-    /**
-     * @inheritdoc
-     */
-    onStopTimeout() {
-
-      // clear any existing timeouts.
-      if (this.timeoutTimer)
-        this.timeoutTimer.cancel();
-
-      // and start the idle timer
-      this.onStartIdle();
+    getIdleTimer() {
+      return this.idleTimer;
     }
 
-    /**
-     * Called when the idle timer should be started or restarted
-     */
-    onStartIdle() {
-
-      // first ensure the timer is stopped..
-      this.onStopIdle();
-
-      // ... then configure the timer.
-      const delay = this.getIdleWait();
-
-      if (!delay)
-        return;
-
-      if (!this.idleTimer)
-        return;
-
-      this.idleTimer.initWithCallback(this, delay,
-        Components.interfaces.nsITimer.TYPE_ONE_SHOT);
-    }
-
-    /**
-     * Called when the idle timer should be stopped.
-     */
-    onStopIdle() {
-
-      if (!this.idleTimer)
-        return;
-
-      this.idleTimer.cancel();
-    }
-
-    /**
-     * When a mozilla timer triggers, it calls this
-     * well known method.
-     *
-     * @param {nsITimer} timer
-     *   the timer which caused this callback.
-     *
-     */
-    notify(timer) {
-
-      if (this.idleTimer === timer) {
-        (async () => { await this.onIdle(); })();
-        return;
-      }
-
-      if (this.timeoutTimer === timer) {
-        (async () => { await this.onTimeout(); })();
-        return;
-      }
-    }
 
     /**
      * @inheritdoc
@@ -250,9 +175,6 @@
       this.host = host;
       this.port = port;
       this.secure = secure;
-
-      this.idleTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-      this.timeoutTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
 
       this.getLogger().logState(`Connecting to ${this.host}:${this.port} ...`);
 
@@ -380,9 +302,6 @@
       this.binaryOutStream = null;
       this.outstream = null;
       this.socket = null;
-
-      this.idleTimer = null;
-      this.timeoutTimer = null;
 
       this.getLogger().logState("Disconnected ...");
     }

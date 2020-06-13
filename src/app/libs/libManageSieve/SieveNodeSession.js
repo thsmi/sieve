@@ -14,14 +14,12 @@
   // Enable Strict Mode
   "use strict";
 
-  const {
-    SieveAbstractSession
-  } = require("./SieveAbstractSession.js");
+  const { SieveSession } = require("./SieveSession.js");
 
   /**
    * @inheritdoc
    */
-  class SieveNodeSession extends SieveAbstractSession {
+  class SieveNodeSession extends SieveSession {
 
     /**
      * @inheritdoc

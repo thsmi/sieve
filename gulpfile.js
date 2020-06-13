@@ -14,6 +14,8 @@ const { series, parallel } = require('gulp');
 const common = require('./gulp/gulpfile.common.js');
 const app = require('./gulp/gulpfile.app.js');
 const wx = require('./gulp/gulpfile.wx.js');
+const web = require('./gulp/gulpfile.web.js');
+
 const testing = require('./gulp/gulpfile.testing.js');
 
 // WX related gulp tasks
@@ -25,6 +27,10 @@ exports['wx:package-xpi'] = series(
   wx.package,
   wx.packageXpi
 );
+
+// Web related gulp tats
+exports["web:watch"] = web.watch;
+exports["web:package"] = web.package;
 
 // App related gulp tasks
 exports["app:watch"] = app.watch;

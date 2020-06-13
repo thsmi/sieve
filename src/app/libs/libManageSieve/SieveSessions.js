@@ -13,7 +13,7 @@
 
   "use strict";
 
-  const { SieveSession } = require("./SieveSession.js");
+  const { SieveSession } = require("./SieveNodeSession.js");
 
   /**
    * Manages Sieve session.

@@ -195,22 +195,32 @@
      * An internal callback which is triggered when the request timeout timer
      * should be started. This is typically whenever a new request is about to
      * be send to the server.
-     *
-     * @abstract
      */
     onStartTimeout() {
-      throw new Error("Implement onStartTimeout()");
+      // clear any existing timeouts
+      this.getTimeoutTimer().cancel();
+
+      // ensure the idle timer is stopped
+      this.onStopIdle();
+
+      // then restart the timeout timer.
+      this.getTimeoutTimer().start(
+        () => { this.onTimeout(); },
+        this.getTimeoutWait());
     }
 
     /**
      * An internal callback which is triggered when the request timeout timer
      * should be stopped. This is typically whenever a response was received and
      * the request was completed.
-     *
-     * @abstract
      */
     onStopTimeout() {
-      throw new Error("Implement onStopTimeout()");
+
+      // clear any existing timeouts.
+      this.getTimeoutTimer().cancel();
+
+      // and start the idle timer
+      this.onStartIdle();
     }
 
 
@@ -248,13 +258,28 @@
       return this;
     }
 
+    getTimeoutTimer() {
+      throw new Error("Implement getTimeoutTimer()");
+    }
+
+    getIdleTimer() {
+      throw new Error("Implement getIdleTimer()");
+    }
 
     /**
      * Internal method trigged after a request was completely processed.
-     * @abstract
      */
     onStartIdle() {
-      throw new Error("Implement onStartIdle()");
+      // first ensure the timer is stopped..
+      this.onStopIdle();
+
+      // ... then configure the timer.
+      const delay = this.getIdleWait();
+
+      if (!delay)
+        return;
+
+      this.getIdleTimer().start(() => { this.onIdle(); }, delay);
     }
 
     /**
@@ -262,7 +287,7 @@
      * @abstract
      */
     onStopIdle() {
-      throw new Error("Implement onStopIdle()");
+      this.getIdleTimer().cancel();
     }
 
     /**
@@ -423,12 +448,13 @@
 
       this.getLogger().logState(`Disconnecting ${this.host}:${this.port}...`);
 
+      this.getIdleTimer().cancel();
+      this.getTimeoutTimer().cancel();
+
       this.cancel(reason);
 
       // free requests...
       // this.requests = new Array();
-      this.onStopTimeout();
-      this.onStopIdle();
     }
 
     /**

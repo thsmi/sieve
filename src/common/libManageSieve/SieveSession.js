@@ -63,7 +63,7 @@
    * It is highly async but uses the ES6 await syntax, which makes it behave
    * like a synchronous api.
    */
-  class SieveAbstractSession {
+  class SieveSession {
 
     /**
      * Creates a new Session instance.
@@ -780,6 +780,6 @@
 
   }
 
-  exports.SieveAbstractSession = SieveAbstractSession;
+  exports.SieveSession = SieveSession;
 
 })(module.exports || this);

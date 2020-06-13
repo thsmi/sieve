@@ -256,7 +256,7 @@
 
             async probe(host, port) {
 
-              const { Sieve } = modules.require("./SieveSession.js");
+              const { Sieve } = modules.require("./SieveClient.js");
               const { SieveLogger } = modules.require("./SieveLogger.js");
               const { SieveInitRequest } = modules.require("./SieveRequest.js");
 

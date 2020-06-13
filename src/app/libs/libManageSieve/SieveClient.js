@@ -20,9 +20,10 @@
 
   const { SieveCertValidationException } = require("./SieveExceptions.js");
 
+  const { SieveTimer } = require("./SieveTimer.js");
+
   const net = require('net');
   const tls = require('tls');
-  const timers = require('timers');
 
   const NOT_FOUND = -1;
 
@@ -40,6 +41,9 @@
     constructor(logger) {
       super();
 
+      this.timeoutTimer = new SieveTimer();
+      this.idleTimer = new SieveTimer();
+
       this.tlsSocket = null;
       this._logger = logger;
       this.secure = true;
@@ -50,73 +54,6 @@
      */
     isSecure() {
       return this.secure;
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    onStartTimeout() {
-
-      // Clear any existing timeouts
-      if (this.timeoutTimer) {
-        timers.clearTimeout(this.timeoutTimer);
-        this.timeoutTimer = null;
-      }
-
-      // ensure the idle timer is stopped
-      this.onStopIdle();
-
-      // then restart the timeout timer
-      this.timeoutTimer = timers.setTimeout(
-        () => { this.onTimeout(); },
-        this.getTimeoutWait());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    onStopTimeout() {
-
-      // clear any existing timeout
-      if (this.timeoutTimer) {
-        timers.clearTimeout(this.timeoutTimer);
-        this.timeoutTimer = null;
-      }
-
-      // and start the idle timer.
-      this.onStartIdle();
-
-      return;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    onStartIdle() {
-      // first ensure the timer is stopped..
-      this.onStopIdle();
-
-      // ... then configure the timer.
-      const delay = this.getIdleWait();
-
-      if (!delay)
-        return;
-
-      this.idleTimer
-        = timers.setTimeout(async () => { await this.onIdle(); }, delay);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    onStopIdle() {
-
-      if (!this.idleTimer)
-        return;
-
-      timers.clearTimeout(this.idleTimer);
-      this.idleTimer = null;
     }
 
     /**
@@ -141,6 +78,20 @@
     }
 
     /**
+     * @inheritdoc
+     */
+    getTimeoutTimer() {
+      return this.timeoutTimer;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    getIdleTimer() {
+      return this.idleTimer;
+    }
+
+    /**
      * Connects to a ManageSieve server.
      * @param {string} host
      *   The target hostname or IP address as String
@@ -162,19 +113,21 @@
       this.port = port;
       this.secure = secure;
 
+      this.getLogger().logState(`Connecting to ${this.host}:${this.port} ...`);
+
       this.socket = net.connect(this.port, this.host);
 
       this.socket.on('data', (data) => { this.onReceive(data); });
-      this.socket.on('error', (error) => {
+      this.socket.on('error', async (error) => {
         // Node guarantees that close is called after error.
         if ((this.listener) && (this.listener.onError))
-          (async () => { await this.listener.onError(error); })();
+          await this.listener.onError(error);
       });
-      this.socket.on('close', () => {
+      this.socket.on('close', async () => {
         this.disconnect();
 
         if ((this.listener) && (this.listener.onDisconnect))
-          (async () => { await this.listener.onDisconnect(); })();
+          await this.listener.onDisconnect();
       });
 
       return this;
@@ -298,9 +251,6 @@
         this.tlsSocket.unref();
         this.tlsSocket = null;
       }
-
-      this.idleTimer = null;
-      this.timeoutTimer = null;
 
       this.getLogger().logState("Disconnected ...");
     }

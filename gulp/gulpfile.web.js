@@ -171,6 +171,25 @@ function packageManageSieveUi() {
 }
 
 /**
+ * Copies the common managesieve.ui files into the app's lib folder
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
+ */
+function packageManageSieveUiApp() {
+
+  "use strict";
+
+  const destination = path.join(BUILD_DIR_WEB, 'static/libs/managesieve.ui');
+  const base = path.join(BASE_DIR_APP, "libs/managesieve.ui");
+
+  return src([
+    path.join(base, "/tabs/*.js"),
+    path.join(base, "/utils/SieveIpcClient.js")
+  ], { base: base }).pipe(dest(destination));
+}
+
+/**
  * Watches for changed source files and copies them into the build directory.
  */
 function watchSrc() {
@@ -187,6 +206,7 @@ function watchSrc() {
     parallel(
       packageSrc,
       packageManageSieveUi,
+      packageManageSieveUiApp,
       packageLibSieve,
       packageLibManageSieve,
       packageLibManageSieveApp,
@@ -214,7 +234,8 @@ exports['package'] = series(
     packageLibManageSieveApp,
     packageLibManageSieveWx,
     packageLibSieve,
-    packageManageSieveUi
+    packageManageSieveUi,
+    packageManageSieveUiApp
   ),
   packageSrc
 );

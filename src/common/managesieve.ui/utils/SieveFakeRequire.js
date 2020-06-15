@@ -60,9 +60,21 @@
   globals.set("./../utils/SieveUniqueId.js", "SieveUniqueId");
 
   globals.set("./SieveAbstractIpcClient.js", "SieveAbstractIpcClient");
+  globals.set("./../utils/SieveIpcClient.js", "SieveAbstractIpcClient");
 
   globals.set("./../utils/SieveTemplateLoader.js", "SieveTemplateLoader");
   globals.set("./SieveI18n.js", "SieveI18n");
+
+  globals.set("./SieveSession.js", "SieveSession");
+
+  globals.set("./SieveResponseParser.js", "SieveResponseParser");
+  globals.set("./SieveAbstractResponseParser.js", "SieveAbstractResponseParser");
+  globals.set("./SieveRequestBuilder.js", "SieveRequestBuilder");
+  globals.set("./SieveAbstractRequestBuilder.js", "SieveAbstractRequestBuilder");
+
+
+  globals.set("./SieveAbstractClient.js", "SieveAbstractClient");
+  globals.set("./SieveClient.js", "SieveClient");
 
   globals.set("./SieveAbstractAccounts.js", "SieveAbstractAccounts");
   globals.set("./SieveAbstractAccount.js", "SieveAbstractAccount");

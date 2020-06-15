@@ -780,6 +780,9 @@
 
   }
 
-  exports.SieveSession = SieveSession;
+  if (module.exports)
+    module.exports.SieveSession = SieveSession;
+  else
+    exports.SieveSession = SieveSession;
 
-})(module.exports || this);
+})(this);

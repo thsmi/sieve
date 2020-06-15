@@ -65,6 +65,9 @@
     }
   }
 
-  exports.SieveRequestBuilder = SieveMozRequestBuilder;
+  if (typeof (module) !== "undefined" && module && module.exports)
+    module.exports.SieveRequestBuilder = SieveMozRequestBuilder;
+  else
+    exports.SieveRequestBuilder = SieveMozRequestBuilder;
 
-})(module.exports);
+})(this);

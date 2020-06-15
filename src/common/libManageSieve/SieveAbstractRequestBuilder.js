@@ -169,6 +169,9 @@
     }
   }
 
-  exports.SieveAbstractRequestBuilder = SieveAbstractRequestBuilder;
+  if (typeof (module) !== "undefined" && module && module.exports)
+    module.exports.SieveAbstractRequestBuilder = SieveAbstractRequestBuilder;
+  else
+    exports.SieveAbstractRequestBuilder = SieveAbstractRequestBuilder;
 
-})(module.exports || this);
+})(this);

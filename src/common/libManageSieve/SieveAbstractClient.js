@@ -706,6 +706,10 @@
     }
   }
 
-  exports.SieveAbstractClient = SieveAbstractClient;
 
-})(module.exports || this);
+  if (typeof (module) !== "undefined" && module && module.exports)
+    module.exports.SieveAbstractClient = SieveAbstractClient;
+  else
+    exports.SieveAbstractClient = SieveAbstractClient;
+
+})(this);

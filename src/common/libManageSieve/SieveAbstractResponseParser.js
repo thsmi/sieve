@@ -458,6 +458,9 @@
     }
   }
 
-  exports.SieveAbstractResponseParser = SieveAbstractResponseParser;
+  if (typeof (module) !== "undefined" && module && module.exports)
+    module.exports.SieveAbstractResponseParser = SieveAbstractResponseParser;
+  else
+    exports.SieveAbstractResponseParser = SieveAbstractResponseParser;
 
-})(module.exports || this);
+})(this);

@@ -180,6 +180,9 @@
     }
   }
 
-  exports.Sieve = SieveWebSocketClient;
+  if (typeof (module) !== "undefined" && module && module.exports)
+    module.exports.SieveWebSocketClient = SieveWebSocketClient;
+  else
+    exports.SieveWebSocketClient = SieveWebSocketClient;
 
-})(module.exports);
+})(this);

@@ -43,6 +43,10 @@
     }
   }
 
-  exports.SieveResponseParser = SieveMozResponseParser;
 
-})(module.exports);
+  if (typeof (module) !== "undefined" && module && module.exports)
+    module.exports.SieveResponseParser = SieveMozResponseParser;
+  else
+    exports.SieveResponseParser = SieveMozResponseParser;
+
+})(this);

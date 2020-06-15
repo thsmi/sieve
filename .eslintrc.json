@@ -126,7 +126,7 @@
         "no-magic-numbers": ["warn", { "ignore": [0], "detectObjects": true }],
         "no-throw-literal": "error",
         "require-await": "warn",
-        "no-var": "warn",
+        "no-var": "error",
         "no-confusing-arrow": "error",
         "no-console": ["warn", { "allow": ["warn", "error"] }],
         "no-caller": "error",
@@ -154,12 +154,14 @@
         "no-void": "error",
         "no-with": "error",
         "prefer-promise-reject-errors": "error",
+        "prefer-spread": "error",
         "radix": "error",
         "no-new-require": "error",
         "linebreak-style": [
             "error",
             "unix"
         ],
+        "rest-spread-spacing": ["error", "never"],
         "no-inline-comments": "error",
         "no-multi-assign": "error",
         "no-tabs": "error",

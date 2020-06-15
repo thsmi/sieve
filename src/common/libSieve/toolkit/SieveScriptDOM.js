@@ -117,9 +117,13 @@
      * A shorthand to create children bound to this Element...
      *
      * @param {string} name
+     *   the element name.
      * @param {SieveParser|string} parser
      *   a parser object or a string which holds the data that should be evaluated.
-     * @param {*} [parent]
+     * @param {SieveAbstractElement} [parent]
+     *   a the elements optional parent.
+     * @returns {SieveAbstractElement}
+     *   the newly generated element.
      */
     createByName(name, parser, parent) {
       if (typeof (parser) === "string")

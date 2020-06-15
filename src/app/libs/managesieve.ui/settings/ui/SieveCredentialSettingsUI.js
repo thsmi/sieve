@@ -121,9 +121,9 @@
         .textContent = text;
 
       if (`${type}` === "3")
-        dialog.querySelector(".sieve-settings-authorization-username").style.display = "";
+        dialog.querySelector(".sieve-settings-authorization-username").classList.remove("d-none");
       else
-        dialog.querySelector(".sieve-settings-authorization-username").style.display = "none";
+        dialog.querySelector(".sieve-settings-authorization-username").classList.add("d-none");
 
       return this;
     }
@@ -214,9 +214,9 @@
     showAdvanced() {
       const parent = this.getDialog();
 
-      parent.querySelector(".siv-settings-advanced").style.display = "";
-      parent.querySelector(".siv-settings-show-advanced").style.display = "none";
-      parent.querySelector(".siv-settings-hide-advanced").style.display = "";
+      parent.querySelector(".siv-settings-advanced").classList.remove("d-none");
+      parent.querySelector(".siv-settings-show-advanced").classList.add("d-none");
+      parent.querySelector(".siv-settings-hide-advanced").classList.remove("d-none");
     }
 
     /**
@@ -225,9 +225,9 @@
     hideAdvanced() {
       const parent = this.getDialog();
 
-      parent.querySelector(".siv-settings-advanced").style.display = "none";
-      parent.querySelector(".siv-settings-show-advanced").style.display = "";
-      parent.querySelector(".siv-settings-hide-advanced").style.display = "none";
+      parent.querySelector(".siv-settings-advanced").classList.add("d-none");
+      parent.querySelector(".siv-settings-show-advanced").classList.remove("d-none");
+      parent.querySelector(".siv-settings-hide-advanced").classList.add("d-none");
     }
 
     /**
@@ -332,9 +332,9 @@
 
       // Show the forget password button only when a password is stored.
       if (credentials.authentication.stored)
-        parent.querySelector(".sieve-settings-forget-password").style.display = "";
+        parent.querySelector(".sieve-settings-forget-password").classList.remove("d-none");
       else
-        parent.querySelector(".sieve-settings-forget-password").style.display = "none";
+        parent.querySelector(".sieve-settings-forget-password").classList.add("d-none");
 
       parent
         .querySelector(".sieve-settings-forget-password button")
@@ -342,7 +342,7 @@
           await this.account.send("account-settings-forget-credentials");
 
           this.getDialog()
-            .querySelector(".sieve-settings-forget-password").style.display = "none";
+            .querySelector(".sieve-settings-forget-password").classList.add("d-none");
         });
 
       // Authorization settings....

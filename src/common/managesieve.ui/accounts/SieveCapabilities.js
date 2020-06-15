@@ -49,7 +49,8 @@
 
         $('#sieve-dialog-capabilities').modal("show")
           .on("hidden.bs.modal", () => {
-            $('#sieve-dialog-capabilities').remove();
+            const elm = document.querySelector('#sieve-dialog-capabilities');
+            elm.parentNode.removeChild(elm);
             resolve();
           });
       });

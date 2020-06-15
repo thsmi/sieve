@@ -24,6 +24,8 @@
 
   const MAX_QUOTE_LEN = 50;
 
+  const IS_EVEN = 1;
+
   /* global SieveLexer */
   /* global SieveAbstractElement */
 
@@ -208,10 +210,10 @@
           count++;
         }
 
-        // We have an offset of one. So an odd count means an even number of
-        // backslashes and this means we we can ignore them.
-        // In case of an even count the quote is escaped and protected.
-        if (count % 2 === 1)
+        // An even number of backslashes means we we can ignore them. Thus the
+        // quote terminates the string. An odd number means the quote is escaped
+        // thus and protected.
+        if (count % 2 === IS_EVEN)
           break;
 
         // add the quote, it was escaped...

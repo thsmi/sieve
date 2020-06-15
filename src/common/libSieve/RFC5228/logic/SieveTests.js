@@ -235,7 +235,8 @@
   /**
    *
    * @param {*} docshell
-   * @param {*} id
+   * @param {string} id
+   *   the test lists unique id.
    */
   function SieveTestList(docshell, id) {
     SieveAbstractElement.call(this, docshell, id);

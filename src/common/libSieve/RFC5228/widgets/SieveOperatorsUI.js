@@ -14,7 +14,6 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveDesigner */
   /* global SieveSimpleBoxUI */
   /* global SieveDialogBoxUI */
@@ -48,9 +47,18 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .text("does not match:")
-        .append($("<ul/>").append($("<li/>").append(this.getSieve().test().html()))).get(0);
+      const FRAGMENT =
+        `<div>
+           <div data-i18n="not.summary"></div>
+           <div class="sivNotTest"></div>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm
+        .querySelector(".sivNotTest")
+        .appendChild(this.getSieve().test().html());
+
+      return elm;
     }
 
     /**
@@ -91,8 +99,9 @@
      **/
     onSave() {
 
-      const value = $("#sieve-widget-allofanyof")
-        .find("input[name='allofanyof']:checked").val();
+      const value = document
+        .querySelector("#sieve-widget-allofanyof")
+        .querySelector("input[name='allofanyof']:checked").value;
 
       if (value === "true")
         this.getSieve().isAllOf = true;
@@ -106,9 +115,10 @@
      * @inheritdoc
      */
     onLoad() {
-      $("#sieve-widget-allofanyof")
-        .find("input[name='allofanyof']")
-        .val(["" + this.getSieve().isAllOf]);
+      document
+        .querySelector("#sieve-widget-allofanyof")
+        .querySelector(`input[name='allofanyof'][value='${this.getSieve().isAllOf}']`)
+        .checked = true;
     }
 
     /**
@@ -135,47 +145,57 @@
      */
     createHtml(parent) {
 
+      super.createHtml(parent);
       parent.classList.add("sivOperator");
 
-      parent = $(parent);
-
-      const item = $("<div/>")
-        .addClass("sivEditableElement")
-        .append($("<div/>")
-          .append(this.getSummary())
-          .addClass("sivSummaryContent")
-          .attr("id", this.uniqueId + "-summary"))
-        .append($("<div/>")
-          .addClass("sivSummaryControls")
-          .append($("<span/>").addClass("sivIconEdit"))
-        );
-
-      parent.append(item);
-      item.click((e) => { this.showEditor(); e.preventDefault(); return true; });
+      const testElms = document.createElement("div");
 
       for (const test of this.getSieve().tests) {
-
         const dropbox = (new SieveDropBoxUI(this, "sivOperatorSpacer"))
           .drop(new SieveMultaryDropHandler(), test[TEST_ELEMENT])
           .html();
 
-        parent.append($("<div/>")
-          .append(dropbox));
+        testElms.appendChild(dropbox);
 
-        const ul = $("<ul/>");
-        ul.append(
-          $("<li/>").append(test[TEST_ELEMENT].html())
-            .addClass("sivOperatorChild"));
-        parent.append(ul);
+        const ul = document.createElement("ul");
+        ul.classList.add("mb-0");
+        ul.classList.add("pl-3");
+
+        const li = document.createElement("li");
+        li.appendChild(test[TEST_ELEMENT].html());
+        li.classList.add("sivOperatorChild");
+
+        ul.appendChild(li);
+
+        testElms.appendChild(ul);
       }
 
-      parent = parent.get(0);
+      testElms.appendChild(
+        (new SieveDropBoxUI(this, "sivOperatorSpacer"))
+          .drop(new SieveMultaryDropHandler())
+          .html());
 
-      parent.append((new SieveDropBoxUI(this, "sivOperatorSpacer"))
-        .drop(new SieveMultaryDropHandler())
-        .html());
+      testElms.id = `${this.uniqueId}-tests`;
+
+      parent.append(testElms);
 
       return parent;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    showSummary() {
+      super.showSummary();
+      document.querySelector(`#${this.uniqueId}-tests`).classList.remove("d-none");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    showSource() {
+      super.showSource();
+      document.querySelector(`#${this.uniqueId}-tests`).classList.add("d-none");
     }
 
   }

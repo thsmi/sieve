@@ -15,6 +15,8 @@
   "use strict";
 
   const MAX_QUOTE_LEN = 50;
+  const BEFORE_OPERATOR = 0;
+  const AFTER_OPERATOR = 1;
 
   /* global SieveLexer */
   /* global SieveAbstractElement */
@@ -34,8 +36,8 @@
     SieveAbstractElement.call(this, docshell, id);
 
     this.whiteSpace = [];
-    this.whiteSpace[0] = this._createByName("whitespace", " ");
-    this.whiteSpace[1] = this._createByName("whitespace");
+    this.whiteSpace[BEFORE_OPERATOR] = this._createByName("whitespace", " ");
+    this.whiteSpace[AFTER_OPERATOR] = this._createByName("whitespace");
 
     this._literal = null;
   }
@@ -69,7 +71,7 @@
       // <"not"> <test>
       this._literal = parser.extract("not");
 
-      this.whiteSpace[0].init(parser);
+      this.whiteSpace[BEFORE_OPERATOR].init(parser);
 
       if (!this._probeByClass(["test", "operator"], parser))
         throw new Error("Test command expected but found:\n'" + parser.bytes(MAX_QUOTE_LEN) + "'...");
@@ -77,7 +79,7 @@
       this._test = this._createByClass(["test", "operator"], parser);
 
       if (this._probeByName("whitespace", parser))
-        this.whiteSpace[1].init(parser);
+        this.whiteSpace[AFTER_OPERATOR].init(parser);
 
       return this;
     };
@@ -128,9 +130,9 @@
         result += "not";
 
       result += ""
-        + this.whiteSpace[0].toScript()
+        + this.whiteSpace[BEFORE_OPERATOR].toScript()
         + this._test.toScript()
-        + this.whiteSpace[1].toScript();
+        + this.whiteSpace[AFTER_OPERATOR].toScript();
 
       return result;
     };

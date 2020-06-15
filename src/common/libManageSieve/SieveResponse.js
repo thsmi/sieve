@@ -62,6 +62,8 @@
   const RESPONSE_BYE = 1;
   const RESPONSE_NO = 2;
 
+  const MAX_REDIRECTS_UNLIMITED = -1;
+
   /**
    * This class implements a generic response handler for simple sieve requests.
    *
@@ -296,7 +298,7 @@
         tls: false,
         sasl: {},
 
-        maxredirects: -1,
+        maxredirects: MAX_REDIRECTS_UNLIMITED,
         owner: "",
         notify: {},
         language: "i-default",
@@ -663,6 +665,8 @@
     }
 
     /**
+     * Gets the responses current state
+     *
      * @returns {int}
      *  the current state as integer
      */
@@ -1012,8 +1016,11 @@
     }
 
     /**
+     * The salt is transferred with the first message and used to
+     * randomize the SHA request
+     *
      * @returns {string}
-     *   the salt which is used to randomize the sha request
+     *   the salt
      */
     getSalt() {
       if (this.state < SHA_STATE_FINAL_MESSAGE)
@@ -1072,7 +1079,10 @@
     }
 
     /**
+     * The server's signature which needs to be verified.
      *
+     * @returns {string}
+     *   the server's signature
      */
     getVerifier() {
       if (this.state < 2)

@@ -14,8 +14,7 @@
 
   "use strict";
 
-  /* global $: false */
-
+  /* global $ */
   /* global SieveTemplate */
 
   /* global SieveMoveDragHandler */
@@ -81,7 +80,10 @@
     }
 
     /**
-     * @returns
+     * A reference to the sieve document which hosts this element.
+     *
+     * @returns {SieveDocument}
+     *   the sieve document for this context
      */
     document() {
       if (this._elm.document)
@@ -106,9 +108,18 @@
     }
 
     /**
+     * Renders the current sieve element into the html dom.
+     * It is using a cache to speedup rendering.
      *
-     * @param {*} invalidate
+     * Use the invalidate parameter to bypass this cache and
+     * force the element to be rendered again
+     *
+     * @param {boolean} [invalidate]
+     *   optional if true the cache will be ignored and it will force to render
+     *   the element again.
+     *
      * @returns {HTMLElement}
+     *   the html representation of the object.
      */
     html(invalidate) {
       if (this._domElm && !invalidate)
@@ -128,20 +139,19 @@
     }
 
     /**
-     *
+     * Reflows means it will reset the html elements and replaces the box
+     * content with a clean rendering.
      */
     reflow() {
       if (this.id() < 0)
         throw new Error("Invalid id");
 
-      const item = $("#sivElm" + this.id());
+      const item = document.querySelectorAll(`#sivElm${this.id()}`);
 
       if ((!item.length) || (item.length > 1))
-        throw new Error("" + item.length + " Elements found for #sivElm" + this.id());
+        throw new Error(`${item.length} Elements found for #sivElm${this.id()}`);
 
-      this._domElm = null;
-
-      item.replaceWith(this.html());
+      item[0].parentElement.replaceChild(this.html(true), item[0]);
     }
 
     /**
@@ -159,8 +169,8 @@
 
     /**
      * The drop element handler
-     * @param {} handler
-     * @param {} sibling
+     * @param {} [handler]
+     * @param {} [sibling]
      * @returns {SieveAbstractBoxUI}
      *   a self reference
      */
@@ -180,7 +190,7 @@
 
     /**
      *
-     * @param {*} handler
+     * @param {*} [handler]
      * @returns {SieveAbstractBoxUI}
      *   a self reference
      */
@@ -249,8 +259,10 @@
     }
 
     /**
+     * Gets the parent UI element/ Widget
+     *
      * @returns {SieveAbstractBoxUI}
-     *   the parent ui element.
+     *   the parent element.
      */
     parent() {
       return this._parent;
@@ -283,10 +295,10 @@
      * show the source and vice versa.
      */
     toggleView() {
-      if (document.querySelector(`#${this.uniqueId}-summary`).style.display === '')
-        this.showSource();
-      else
+      if (document.querySelector(`#${this.uniqueId}-summary`).classList.contains("d-none"))
         this.showSummary();
+      else
+        this.showSource();
     }
 
     /**
@@ -310,8 +322,8 @@
      * It does not reload the summary view.
      */
     showSummary() {
-      document.querySelector(`#${this.uniqueId}-summary`).style.display = '';
-      document.querySelector(`#${this.uniqueId}-code`).style.display = 'none';
+      document.querySelector(`#${this.uniqueId}-summary`).classList.remove("d-none");
+      document.querySelector(`#${this.uniqueId}-code`).classList.add("d-none");
     }
 
     /**
@@ -327,8 +339,8 @@
 
       code.textContent = this.getSieve().toScript();
 
-      document.querySelector(`#${this.uniqueId}-summary`).style.display = 'none';
-      document.querySelector(`#${this.uniqueId}-code`).style.display = '';
+      document.querySelector(`#${this.uniqueId}-summary`).classList.add('d-none');
+      document.querySelector(`#${this.uniqueId}-code`).classList.remove('d-none');
     }
   }
 
@@ -349,9 +361,9 @@
         return parent;
 
       const summary = document.createElement("div");
-      summary.appendChild(this.getSummary());
       summary.classList.add("sivSummaryContent");
       summary.id = `${this.uniqueId}-summary`;
+      summary.appendChild(this.getSummary());
 
       parent.appendChild(summary);
 
@@ -366,7 +378,10 @@
   class SieveDialogBoxUI extends SieveSourceBoxUI {
 
     /**
+     * Called when the user clicks on the save button in the dialog.
      *
+     * It triggers the onSave() method. In case this returned true,
+     * the dialog will be hidden and the summary is updated.
      */
     save() {
 
@@ -378,9 +393,8 @@
       while (body.firstChild)
         body.removeChild(body.firstChild);
 
-      // Remove the event handlers...
+      // Hide the dialog...
       $(document.querySelector('#sivDialog2')).modal("hide");
-      // $('#sivDialogDiscard').off('click');
 
       // update the summary section
       const summary = document.querySelector(`#${this.uniqueId}-summary`);
@@ -403,8 +417,17 @@
     async showEditor() {
 
       // TODO hide the save button in case we have only a help tab...
-      $('#sivDialog2').modal("show");
-      $("#sivDialogSave").off("click").click(() => { this.save(); });
+      $(document.querySelector('#sivDialog2')).modal("show");
+
+      const save = () => {this.save(); };
+
+      document.querySelector('#sivDialogSave').addEventListener("click", save);
+
+      $(document.querySelector('#sivDialog2')).on('hide.bs.modal', function () {
+        document
+          .querySelector("#sivDialogSave")
+          .removeEventListener("click", save);
+      });
 
       // Empty the existing dialog.
       const dialogTabs = document.querySelector("#sivDialogTabs");
@@ -419,16 +442,19 @@
       const template = await (new SieveTemplate()).load(this.getTemplate());
 
       const tabs = template.querySelector("#template-tabs");
-      if (tabs) {
-        while (tabs.children.length)
-          dialogTabs.appendChild(tabs.firstChild);
-      }
+      if (!tabs)
+        throw new Error("Failed to load template, no tab section specified");
+
+      while (tabs.children.length)
+        dialogTabs.appendChild(tabs.firstChild);
+
 
       const content = template.querySelector("#template-content");
-      if (content) {
-        while (content.children.length)
-          dialogBody.appendChild(content.firstChild);
-      }
+      if (!content)
+        throw new Error("Failed to load template, no content section specified");
+
+      while (content.children.length)
+        dialogBody.appendChild(content.firstChild);
 
       this.onLoad();
     }
@@ -441,13 +467,11 @@
       if (typeof (parent) === "undefined")
         throw new Error("parent parameter is missing");
 
-      parent.classList.add("sivEditableElement");
-
       const FRAGMENT =
         `<div>
            <div class="sivSummaryContent">
              </div>
-           <div class="sivSummaryCode" style="display : none">
+           <div class="sivSummaryCode d-none">
              <code></code>
            </div>
            <div class="sivSummaryControls">
@@ -458,27 +482,40 @@
 
       const elm = (new SieveTemplate()).convert(FRAGMENT);
 
+      // First assign unique ids...
       const content = elm.querySelector(".sivSummaryContent");
       content.id = `${this.uniqueId}-summary`;
-      content.appendChild(this.getSummary());
 
       const code = elm.querySelector(".sivSummaryCode");
       code.id = this.uniqueId + "-code";
 
       const controls = elm.querySelector(".sivSummaryControls");
+      controls.id = this.uniqueId + "-control";
+
       controls.querySelector(".sivIconCode").addEventListener("click", (e) => {
         return this.onToggleView(e);
       });
 
       parent.addEventListener("click", (e) => {
-        this.showEditor();
         e.preventDefault();
+        e.stopPropagation();
+
+        this.showEditor();
         return true;
       });
 
-      parent.appendChild(content);
-      parent.appendChild(code);
-      parent.appendChild(controls);
+      content.appendChild(this.getSummary());
+
+      // We need this container to make customizing the box easier.
+      // e.g. for the allof/anyof operator.
+      const div = document.createElement("div");
+      div.classList.add("sivEditableElement");
+
+      div.appendChild(content);
+      div.appendChild(code);
+      div.appendChild(controls);
+
+      parent.appendChild(div);
 
       return parent;
     }
@@ -506,14 +543,25 @@
     }
 
     /**
+     * Called when the user clicks on the save button.
+     *
+     * Intended to be overwritten by a child. The default implementation just
+     * returns true and does nothing.
+     *
      * @returns {boolean}
+     *   true in case the element was saved and the dialog can be closed.
+     *   false in case the dialog needs to stay open.
      */
     onSave() {
       return true;
     }
 
     /**
+     * Called when the dialog is about to be shown and is used to initialized
+     * the dialog content.
      *
+     * Intended to be overwritten by a child. The default implementation does
+     * nothing.
      */
     onLoad() {
     }

@@ -20,7 +20,8 @@
   /**
    *
    * @param {*} docshell
-   * @param {*} id
+   * @param {string} id
+   *   the blocks unique id.
    */
   function SieveBlockBody(docshell, id) {
     SieveAbstractBlock.call(this, docshell, id);
@@ -68,7 +69,8 @@
   /**
    *
    * @param {*} docshell
-   * @param {*} id
+   * @param {string} id
+   *   the blocks unique id.
    */
   function SieveBlock(docshell, id) {
     SieveBlockBody.call(this, docshell, id);
@@ -109,6 +111,8 @@
   const ROOT_ELEMENT_IMPORT = 0;
   const ROOT_ELEMENT_BODY = 1;
 
+  const UNKNOWN_ID = -1;
+
   /**
    *
    */
@@ -120,7 +124,7 @@
      */
     constructor(docshell) {
 
-      super(docshell, -1);
+      super(docshell, UNKNOWN_ID);
 
       this.elms[ROOT_ELEMENT_IMPORT] = this._createByName("import");
       this.elms[ROOT_ELEMENT_BODY] = this._createByName("block/body");

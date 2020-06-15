@@ -30,7 +30,8 @@
   "exists.tab.help" : "Help",
   "exists.header.label" : "All of the following header exist:",
   "exists.help.text": "",
-  "exists.summary" : "the following headers exist:",
+  "exists.summary1" : "Header(s)",
+  "exists.summary2" : "exist",
 
   "header.tab.home" : "Header",
   "header.tab.advanced" : "Advanced",
@@ -631,5 +632,7 @@
   "execute.help" : "Executes an external program.\n\nThe optional input can be forwarded to the program as well as output can be returned from the script.",
   "execute.summary" : "Run program ",
   "execute.summary.test.pre" : "Program",
-  "execute.summary.test.post" : "ran without errors"
+  "execute.summary.test.post" : "ran without errors",
+
+  "not.summary" : "does not match"
 }

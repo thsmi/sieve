@@ -217,8 +217,9 @@
     getSummary() {
       const FRAGMENT =
         `<div>
-           <span data-i18n="exists.summary"></span>
+           <span data-i18n="exists.summary1"></span>
            <em class="sivExistsHeaders"></em>
+           <span data-i18n="exists.summary2"></span>
          </div>`;
 
       const elm = (new SieveTemplate()).convert(FRAGMENT);

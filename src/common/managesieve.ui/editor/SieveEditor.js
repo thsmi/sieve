@@ -19,6 +19,7 @@
   /* global SieveGraphicalEditorUI */
   /* global SieveTemplate */
 
+  const EDITOR_OFFSET_PX = 40;
   /**
    * Implements a editor UI which contains a graphical as well as a text editor.
    */
@@ -45,7 +46,7 @@
         return;
 
       $("#sieve-widget-editor").height(
-        $(window).height() - offset - 40);
+        $(window).height() - offset - EDITOR_OFFSET_PX);
     }
 
     /**
@@ -109,7 +110,7 @@
 
       $('.nav-item > a[href="#sieve-widget-editor"]').on('shown.bs.tab', () => {
         $("#sieve-widget-editor").height(
-          $(window).height() - $("#sieve-widget-editor").offset().top - 40);
+          $(window).height() - $("#sieve-widget-editor").offset().top - EDITOR_OFFSET_PX);
       });
 
       window.addEventListener("resize", () => {

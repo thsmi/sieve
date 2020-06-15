@@ -16,6 +16,8 @@
   const TWO_CHARS = 2;
   const THREE_CHARS = 3;
 
+  const BASE_10 = 10;
+
   // eslint-disable-next-line no-magic-numbers
   const LOG_REQUEST = (1 << 0);
   // eslint-disable-next-line no-magic-numbers
@@ -236,7 +238,7 @@
       let str = n;
 
       for (let i = 0; i < m; i++)
-        if (n < Math.pow(10, i))
+        if (n < Math.pow(BASE_10, i))
           str = '0' + str;
 
       return str;

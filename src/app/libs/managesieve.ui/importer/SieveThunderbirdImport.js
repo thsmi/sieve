@@ -82,7 +82,7 @@
       const file = fs.readFileSync(
         path.join(directory, "profiles.ini"), "utf-8");
 
-      const sections = file.split(/\\[[a-zA-Z0-9]*\\]/g);
+      const sections = file.split(/\[\w*\]/gm);
 
       for (let section of sections) {
 

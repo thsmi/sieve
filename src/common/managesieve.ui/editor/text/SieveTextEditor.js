@@ -13,7 +13,6 @@
 
   "use strict";
 
-  /* global $ */
   /* global CodeMirror */
   /* global SieveTemplate */
   /* global SieveAbstractEditorUI */

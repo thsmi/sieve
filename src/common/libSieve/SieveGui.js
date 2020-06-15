@@ -14,6 +14,8 @@
 
   "use strict";
 
+  /* global $ */
+
   /* global SieveI18n */
   /* global SieveLogger */
 
@@ -55,6 +57,9 @@
 
     const elm = elm2.html();
     elm.classList.add("sivMenuItem");
+    elm.classList.add("bg-light");
+    elm.classList.add("border");
+    elm.classList.add("rounded");
     elm.textContent = action.split('/')[NAME];
 
     return elm;

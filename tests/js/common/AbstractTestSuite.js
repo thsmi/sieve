@@ -252,7 +252,7 @@
 
       // ... and extend it...
       test.require = [
-        ... this.extend(name, tests),
+        ...this.extend(name, tests),
         ...test.require
       ];
 

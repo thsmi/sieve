@@ -191,7 +191,7 @@
         mechanism = "default";
 
       if (mechanism === "default")
-        mechanism = [... this.getSieve().capabilities.sasl];
+        mechanism = [...this.getSieve().capabilities.sasl];
       else
         mechanism = [mechanism];
 

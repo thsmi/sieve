@@ -17,6 +17,8 @@
   /* global SieveDesigner */
   /* global SieveTemplate */
 
+  const DEFAULT_STRING_LIST_MIN = 1;
+
   /**
    * Provides a string list UI.
    */
@@ -30,7 +32,7 @@
      */
     constructor(selector) {
       this._selector = selector;
-      this._min = 1;
+      this._min = DEFAULT_STRING_LIST_MIN;
     }
 
     /**
@@ -223,7 +225,7 @@
       this._min = parseInt(elm.dataset.listMin, 10);
 
       if (isNaN(this._min))
-        this._min = 1;
+        this._min = DEFAULT_STRING_LIST_MIN;
 
       // init values if possible
       if (values === null || typeof (values) === "undefined")

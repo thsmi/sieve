@@ -14,7 +14,6 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveDesigner */
   /* global SieveBlockUI */
   /* global SieveSourceBoxUI */
@@ -35,14 +34,18 @@
      * @inheritdoc
      */
     createHtml(parent) {
-      return $("<div/>")
-        .attr("id", "sivElm" + this.id())
-        .addClass("sivConditional")
-        .append(
-          $("<div/>").append(this.getSieve().test().html())
-            .addClass("sivConditionalChild"))
-        .append(
-          super.createHtml(parent)).get(0);
+
+      const test = document.createElement("div");
+      test.appendChild(this.getSieve().test().html());
+      test.classList.add("sivConditionalChild");
+
+      const elm = document.createElement("div");
+      elm.id = `sivElm${this.id()}`;
+      elm.classList.add("sivConditional");
+      elm.appendChild(test);
+      elm.appendChild(super.createHtml(parent));
+
+      return elm;
     }
   }
 
@@ -56,10 +59,12 @@
      * @inheritdoc
      */
     createHtml(parent) {
-      return $("<div/>")
-        .attr("id", "sivElm" + this.id())
-        .addClass("sivConditional")
-        .append(super.createHtml(parent)).get(0);
+      const elm = document.createElement("div");
+      elm.id = `sivElm${this.id()}`;
+      elm.classList.add("sivConditional");
+      elm.appendChild(super.createHtml(parent));
+
+      return elm;
     }
   }
 
@@ -145,7 +150,7 @@
         elm2.appendChild(condition);
 
         const child = item.querySelector(".sivConditionChild").cloneNode(true);
-        child.appendChild($(children[i].html()).get(0));
+        child.appendChild(children[i].html());
         elm2.appendChild(child);
       }
 

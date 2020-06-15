@@ -65,8 +65,10 @@
      *
      * @param {*} docshell
      * @param {string} id
+     *   the elements uniquer id.
      *
      * @returns {SieveAbstractElement}
+     *   the new element.
      */
     onNew(docshell, id) {
       const element = new SieveGenericStructure(docshell, id, this.item.node);
@@ -300,12 +302,10 @@
   }
 
   /**
-   *
-   *
+   * Initializes all registered actions
    */
   function initActions() {
     actions.forEach((item) => {
-
       SieveLexer.registerGeneric(
         item.node, item.type,
         new SieveGenericAction(item));
@@ -313,8 +313,7 @@
   }
 
   /**
-   *
-   *
+   * Initializes all registered tests.
    */
   function initTests() {
     tests.forEach((item) => {

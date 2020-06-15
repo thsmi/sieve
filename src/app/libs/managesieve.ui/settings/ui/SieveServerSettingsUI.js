@@ -174,9 +174,9 @@
     showAdvanced() {
       const parent = this.getDialog();
 
-      parent.querySelector(".siv-settings-advanced").style.display = "";
-      parent.querySelector(".siv-settings-show-advanced").style.display = "none";
-      parent.querySelector(".siv-settings-hide-advanced").style.display = "";
+      parent.querySelector(".siv-settings-advanced").classList.remove("d-none");
+      parent.querySelector(".siv-settings-show-advanced").classList.add("d-none");
+      parent.querySelector(".siv-settings-hide-advanced").classList.remove("d-none");
     }
 
     /**
@@ -186,9 +186,9 @@
     hideAdvanced() {
       const parent = this.getDialog();
 
-      parent.querySelector(".siv-settings-advanced").style.display = "none";
-      parent.querySelector(".siv-settings-show-advanced").style.display = "";
-      parent.querySelector(".siv-settings-hide-advanced").style.display = "none";
+      parent.querySelector(".siv-settings-advanced").classList.add("d-none");
+      parent.querySelector(".siv-settings-show-advanced").classList.remove("d-none");
+      parent.querySelector(".siv-settings-hide-advanced").classList.add("d-none");
     }
 
 

@@ -1103,6 +1103,11 @@ eslint-plugin-jsdoc@^27.0.7:
     semver "^6.3.0"
     spdx-expression-parse "^3.0.1"
 
+eslint-plugin-no-jquery@^2.3.2:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-no-jquery/-/eslint-plugin-no-jquery-2.4.1.tgz#0c0df5e584ac826cddadbde3576918f850530393"
+  integrity sha512-pHyBFyDgUj/cQD1QNh9SiLaicFJyqeFGDEGRLUn3HezETvsCSi1oeRqjotkL6xAyvwyTiih5d3dhfon0DUvZJA==
+
 eslint-scope@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/eslint-scope/-/eslint-scope-5.1.0.tgz#d0f971dfe59c69e0cada684b23d49dbf82600ce5"
@@ -2358,11 +2363,6 @@ matcher@^2.1.0:
   integrity sha512-o+nZr+vtJtgPNklyeUKkkH42OsK8WAfdgaJE2FNxcjLPg+5QbeEoT6vRj8Xq/iv18JlQ9cmKsEu0b94ixWf1YQ==
   dependencies:
     escape-string-regexp "^2.0.0"
-
-material-design-icons-iconfont@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/material-design-icons-iconfont/-/material-design-icons-iconfont-5.0.1.tgz#371875ed7fe9c8c520bc7123c3231feeab731c31"
-  integrity sha512-Xg6rIdGrfySTqiTZ6d+nQbcFepS6R4uKbJP0oAqyeZXJY/bX6mZDnOmmUJusqLXfhIwirs0c++a6JpqVa8RFvA==
 
 micromatch@^3.0.4, micromatch@^3.1.10, micromatch@^3.1.4:
   version "3.1.10"

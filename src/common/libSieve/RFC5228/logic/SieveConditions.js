@@ -92,7 +92,7 @@
   /**
    *
    */
-  class SieveIf extends SieveElse {
+  class SieveIf extends SieveBlock {
 
     /**
      * @inheritdoc
@@ -101,7 +101,11 @@
       super(docshell, id);
 
       this._test = null;
+
+      this.ws = [];
       this.ws[BEFORE_TEST] = this._createByName("whitespace");
+      this.ws[BEFORE_BLOCK] = this._createByName("whitespace", "\r\n");
+      this.ws[AFTER_BLOCK] = this._createByName("whitespace", "\r\n");
     }
 
     /**
@@ -138,6 +142,7 @@
 
       this.ws[BEFORE_BLOCK].init(parser);
 
+      // Ugly hack to all super of parent.
       super.init(parser);
 
       this.ws[AFTER_BLOCK].init(parser);
@@ -178,10 +183,14 @@
     }
 
     /**
+     * Gets and tests the test for the condition.
      *
-     * @param {*} item
+     * @param {SieveAbstractElement} [item]
+     *   the optional test to be set.
      *
      * @returns {SieveAbstractElement}
+     *   the currently set test in case of a get or a self reference
+     *   in case of a set.
      */
     test(item) {
       if (typeof (item) === "undefined")
@@ -289,7 +298,8 @@
 
     /**
      *
-     * @param {*} childId
+     * @param {String} childId
+     *   the childs unique id.
      * @param {boolean} cascade
      * @param {SieveAbstractElement} stop
      */

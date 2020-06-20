@@ -14,15 +14,13 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveTestDialogBoxUI */
   /* global SieveStringListWidget */
   /* global SieveDesigner */
   /* global SieveMatchTypeWidget */
   /* global SieveComparatorWidget */
   /* global SieveOverlayItemWidget */
-
-  const DOM_ELEMENT = 0;
+  /* global SieveTemplate */
 
   /**
    * Provides a UI for the Mailbox exists test
@@ -30,6 +28,8 @@
   class SieveMailboxExistsTestUI extends SieveTestDialogBoxUI {
 
     /**
+     * The mail box names which should be tested for existence.
+     *
      * @returns {SieveAbstractElement}
      *   the element's mailbox field
      */
@@ -67,10 +67,18 @@
      * @inheritdoc
      */
     getSummary() {
-      // case- insensitive is the default so skip it...
-      return $("<div/>")
-        .html(" Mailbox(es) "
-          + $('<em/>').text(this.mailboxes().values()).html() + " exist");
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="mailboxexists.summary1"></span>
+           <em class="sivMailboxExistsMailboxes"></em>
+           <span data-i18n="mailboxexists.summary2"></span>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivMailboxExistsMailboxes").textContent
+        = this.mailboxes().values();
+
+      return elm;
     }
   }
 
@@ -84,7 +92,7 @@
      * Gets and sets the mailbox name
      *
      * @param {string} [value]
-     *   the mailbox name, if omitted the name is unchanges.
+     *   the mailbox name, if omitted the name is unchanged.
      *
      * @returns {string}
      *   the mailbox name.
@@ -94,6 +102,8 @@
     }
 
     /**
+     * The annotations which should be checked for extistence.
+     *
      * @returns {SieveAbstractElement}
      *   the element's annotations field
      */
@@ -106,7 +116,7 @@
      */
     onLoad() {
 
-      $("#sivMailboxName").val(this.mailbox());
+      document.querySelector("#sivMailboxName").value = this.mailbox();
 
       (new SieveStringListWidget("#sivMailboxAnnotationsList"))
         .init(this.annotations());
@@ -117,7 +127,7 @@
      */
     onSave() {
 
-      this.mailbox($("#sivMailboxName").val());
+      this.mailbox(document.querySelector("#sivMailboxName").value);
       (new SieveStringListWidget("#sivMailboxAnnotationsList"))
         .save(this.annotations());
 
@@ -137,11 +147,21 @@
      */
     getSummary() {
 
-      // case- insensitive is the default so skip it...
-      return $("<div/>")
-        .html(" Mailbox " + $('<em/>').text(this.mailbox()).html()
-          + " has all annotations "
-          + $('<em/>').text(this.annotations().values()).html());
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="metadataexists.summary1"></span>
+           <em class="sivMetaDataExistsMailbox"></em>
+           <span data-i18n="metadataexists.summary2"></span>
+           <em class="sivMetaDataExistsAnnotations"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivMetaDataExistsMailbox").textContent
+        = this.mailbox();
+      elm.querySelector(".sivMetaDataExistsAnnotations").textContent
+        = this.annotations().values();
+
+      return elm;
     }
   }
 
@@ -154,7 +174,7 @@
      * Gets and sets the mailbox name
      *
      * @param {string} [value]
-     *   the mailbox name, if omitted the name is unchanges.
+     *   the mailbox name, if omitted the name is unchanged.
      *
      * @returns {string}
      *   the mailbox name.
@@ -167,7 +187,7 @@
      * Gets and/or sets the annotation name
      *
      * @param {string} [value]
-     *   if set updates the anntotation name.
+     *   if set updates the annotation name.
      *
      * @returns {string}
      *   the currently set annotation name.
@@ -177,6 +197,8 @@
     }
 
     /**
+     * Gets the keys
+     *
      * @returns {SieveAbstractElement}
      *   the element's key fields
      */
@@ -185,6 +207,8 @@
     }
 
     /**
+     * Gets the match type.
+     *
      * @returns {SieveAbstractElement}
      *   the element's matchtype field
      */
@@ -193,6 +217,8 @@
     }
 
     /**
+     * Gets the comparator type.
+     *
      * @returns {SieveAbstractElement}
      *   the element's comparator field
      */
@@ -205,8 +231,8 @@
      */
     onLoad() {
 
-      $("#sivMailboxName").val(this.mailbox());
-      $("#sivAnnotationName").val(this.annotation());
+      document.querySelector("#sivMailboxName").value = this.mailbox();
+      document.querySelector("#sivAnnotationName").value = this.annotation();
 
       (new SieveStringListWidget("#sivMailboxKeys"))
         .init(this.keys());
@@ -222,9 +248,9 @@
      */
     onSave() {
 
-      this.mailbox($("#sivMailboxName").val());
+      this.mailbox(document.querySelector("#sivMailboxName").value);
 
-      this.annotation($("#sivAnnotationName").val());
+      this.annotation(document.querySelector("#sivAnnotationName").value);
 
       (new SieveStringListWidget("#sivMailboxKeys"))
         .save(this.keys());
@@ -248,12 +274,30 @@
      * @inheritdoc
      */
     getSummary() {
-      // case- insensitive is the default so skip it...
-      return $("<div/>")
-        .html("Annotation " + this.annotation()
-          + " in folder " + this.mailbox()
-          + " has a value which " + this.matchtype().getElement().toScript()
-          + " any of " + this.keys().values());
+
+      const FRAGMENT =
+        `<div>
+             <span data-i18n="metadata.summary1"></span>
+             <em class="sivMetaDataAnnotation"></em>
+             <span data-i18n="metadata.summary2"></span>
+             <em class="sivMetaDataMailbox"></em>
+             <span data-i18n="metadata.summary3"></span>
+             <em class="sivMetaDataMatchType"></em>
+             <span data-i18n="metadata.summary4"></span>
+             <em class="sivMetaDataKeys"></em>
+           </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivMetaDataAnnotation").textContent
+        = this.annotation();
+      elm.querySelector(".sivMetaDataMailbox").textContent
+        = this.mailbox();
+      elm.querySelector(".sivMetaDataMatchType").textContent
+        = this.matchtype().getElement().toScript();
+      elm.querySelector(".sivMetaDataKeys").textContent
+        = this.keys().values();
+
+      return elm;
     }
   }
 
@@ -263,6 +307,8 @@
   class SieveServerMetaDataExistsTestUI extends SieveTestDialogBoxUI {
 
     /**
+     * Gets the annotations which are checked for existence.
+     *
      * @returns {SieveAbstractElement}
      *   the element's annotations
      */
@@ -299,10 +345,17 @@
      * @inheritdoc
      */
     getSummary() {
-      // case- insensitive is the default so skip it...
-      return $("<div/>")
-        .html(" The server supports all annotations "
-          + $('<em/>').text(this.annotations().values()).html());
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="servermetadataexists.summary"></span>
+           <em class="sivServerMetaDataExistsAnnotations"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivServerMetaDataExistsAnnotations").textContent
+        = this.annotations().values();
+
+      return elm;
     }
   }
 
@@ -315,7 +368,7 @@
      * Gets and/or sets the annotation name
      *
      * @param {string} [value]
-     *   if set updates the anntotation name.
+     *   if set updates the annotation name.
      *
      * @returns {string}
      *   the currently set annotation name.
@@ -325,6 +378,8 @@
     }
 
     /**
+     * The keys which are compared.
+     *
      * @returns {SieveAbstractElement}
      *   the element's key fields
      */
@@ -333,16 +388,20 @@
     }
 
     /**
+     * Gets the match type.
+     *
      * @returns {SieveAbstractElement}
-     *   the element's matchtype fields
+     *   the element's matchtype field
      */
     matchtype() {
       return this.getSieve().getElement("match-type");
     }
 
     /**
+     * Gets the comparator type.
+     *
      * @returns {SieveAbstractElement}
-     *   the element's comparator fields
+     *   the element's comparator field
      */
     comparator() {
       return this.getSieve().getElement("comparator");
@@ -353,7 +412,7 @@
      */
     onLoad() {
 
-      $("#sivAnnotationName").val(this.annotation());
+      document.querySelector("#sivAnnotationName").value = this.annotation();
 
       (new SieveStringListWidget("#sivMailboxKeys"))
         .init(this.keys());
@@ -369,7 +428,7 @@
      */
     onSave() {
 
-      this.annotation($("#sivAnnotationName").val());
+      this.annotation(document.querySelector("#sivAnnotationName").value);
 
       (new SieveStringListWidget("#sivMailboxKeys"))
         .save(this.keys());
@@ -393,11 +452,25 @@
      * @inheritdoc
      */
     getSummary() {
-      // case- insensitive is the default so skip it...
-      return $("<div/>")
-        .html("Server annotation " + this.annotation()
-          + " has a value which " + this.matchtype().getElement().toScript()
-          + " any of " + this.keys().values());
+      const FRAGMENT =
+        `<div>
+             <span data-i18n="servermetadata.summary1"></span>
+             <em class="sivServerMetaDataAnnotation"></em>
+             <span data-i18n="servermetadata.summary2"></span>
+             <em class="sivServerMetaDataMatchType"></em>
+             <span data-i18n="servermetadata.summary3"></span>
+             <em class="sivServerMetaDataKeys"></em>
+           </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivServerMetaDataAnnotation").textContent
+        = this.annotation();
+      elm.querySelector(".sivServerMetaDataMatchType").textContent
+        = this.matchtype().getElement().toScript();
+      elm.querySelector(".sivServerMetaDataKeys").textContent
+        = this.keys().values();
+
+      return elm;
     }
   }
 
@@ -438,14 +511,14 @@
      */
     load(sivElement) {
       if (sivElement.enable("create"))
-        $("#sivMailboxCreateCheckbox").attr("checked", "checked");
+        document.querySelector("#sivMailboxCreateCheckbox").checked = true;
     }
 
     /**
      * @inheritdoc
      */
     save(sivElement) {
-      if ($("#sivMailboxCreateCheckbox")[DOM_ELEMENT].checked)
+      if (document.querySelector("#sivMailboxCreateCheckbox").checked)
         sivElement.enable("create", true);
       else
         sivElement.enable("create", false);

@@ -15,8 +15,14 @@ variable's defered elements should be added via extend...
  - Convert date selector to real dropdown
 
 - globals beschreibung fehlt
- - set variable -> advanced -> radio buttons ot working
 
 dependen (varlist) in imapflags needs to be implemented
 
 - Fixme spamtestplus shoudl be used when :precent is specified otherwise spamtest should be used.
+
+
+---
+
+anyof/allof broken
+size radio buttons broken
+boolean radio button broken.

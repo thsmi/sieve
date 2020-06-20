@@ -14,7 +14,9 @@
 
   "use strict";
 
-  /* global $: false */
+  /* global $ */
+  /* global SieveTemplate */
+
   /* global SieveMoveDragHandler */
   /* global SieveTestDropHandler */
   /* global SieveDropHandler */
@@ -46,7 +48,7 @@
       this._handler = {};
 
       // create a unique id, which makes identifying the dom object easier.
-      this.uniqueId = "" + Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING) + Date.now().toString(HEX_STRING);
+      this.uniqueId = "siv-" + Math.floor(Math.random() * RANDOM_SEED_SIZE).toString(HEX_STRING) + Date.now().toString(HEX_STRING);
     }
 
     /**
@@ -77,6 +79,12 @@
       return this._elm;
     }
 
+    /**
+     * A reference to the sieve document which hosts this element.
+     *
+     * @returns {SieveDocument}
+     *   the sieve document for this context
+     */
     document() {
       if (this._elm.document)
         return this._elm.document();
@@ -84,18 +92,43 @@
       return this._elm;
     }
 
+    /**
+     * Creates the html content for the box.
+     * It appends the content to the parent element.
+     * @abstract
+     *
+     * @param {HTMLElement} parent
+     *   the parent element to which this box should be appended.
+     *
+     * @returns {HTMLElement}
+     *   the created element. It may nest the parent element.
+     */
     createHtml(parent) {
-      throw new Error("Implement html()");
+      throw new Error(`Implement html(${parent}`);
     }
 
+    /**
+     * Renders the current sieve element into the html dom.
+     * It is using a cache to speedup rendering.
+     *
+     * Use the invalidate parameter to bypass this cache and
+     * force the element to be rendered again
+     *
+     * @param {boolean} [invalidate]
+     *   optional if true the cache will be ignored and it will force to render
+     *   the element again.
+     *
+     * @returns {HTMLElement}
+     *   the html representation of the object.
+     */
     html(invalidate) {
       if (this._domElm && !invalidate)
         return this._domElm;
 
-      this._domElm = this.createHtml($("<div/>"));
+      this._domElm = this.createHtml(document.createElement('div'));
 
-      if (this.id() !== -1)
-        this._domElm.attr("id", "sivElm" + this.id());
+      if (this.id() !== UNKNOWN_ID)
+        this._domElm.id = `sivElm${this.id()}`;
 
       // update all our event handlers
       for (const topic in this._handler)
@@ -105,18 +138,20 @@
       return this._domElm;
     }
 
+    /**
+     * Reflows means it will reset the html elements and replaces the box
+     * content with a clean rendering.
+     */
     reflow() {
       if (this.id() < 0)
         throw new Error("Invalid id");
 
-      const item = $("#sivElm" + this.id());
+      const item = document.querySelectorAll(`#sivElm${this.id()}`);
 
       if ((!item.length) || (item.length > 1))
-        throw new Error("" + item.length + " Elements found for #sivElm" + this.id());
+        throw new Error(`${item.length} Elements found for #sivElm${this.id()}`);
 
-      this._domElm = null;
-
-      item.replaceWith(this.html());
+      item[0].parentElement.replaceChild(this.html(true), item[0]);
     }
 
     /**
@@ -134,9 +169,10 @@
 
     /**
      * The drop element handler
-     * @param {} handler
-     * @param {} sibling
-     * @returns {}
+     * @param {} [handler]
+     * @param {} [sibling]
+     * @returns {SieveAbstractBoxUI}
+     *   a self reference
      */
     drop(handler, sibling) {
       if (typeof (handler) === "undefined")
@@ -152,6 +188,12 @@
       return this;
     }
 
+    /**
+     *
+     * @param {*} [handler]
+     * @returns {SieveAbstractBoxUI}
+     *   a self reference
+     */
     drag(handler) {
       if (typeof (handler) === "undefined")
         return this._handler["drag"];
@@ -167,18 +209,28 @@
     }
   }
 
-
   /**
-   *
+   * Implements a drop target.
+   * It acts as a endpoint for drag an drop operation.
    */
   class SieveDropBoxUI extends SieveAbstractBoxUI {
+
     /**
+     * Creates a new instance.
+     *
      * @param {SieveAbstractBoxUI} parent
      *   The parent Sieve Element, to which dropped Elements will be added.
+     *
+     * @param {string} name
+     *   the drop targets class name. It is used to distinguish
+     *   and style drop targets
      */
-    constructor(parent) {
+    constructor(parent, name) {
       if (!parent)
         throw new Error("Parent expected");
+
+      if ((typeof(name) === "undefined") || (name === null))
+        throw new Error("No Class specified");
 
       if (parent.document)
         super(parent.document());
@@ -191,18 +243,26 @@
         this._parent = parent;
 
       this.drop(new SieveDropHandler());
+
+      this.name = name;
     }
 
     /**
      * @inheritdoc
      */
     createHtml(parent) {
-      return parent.append($("<div/>").addClass("sivDropBox"));
+      parent.classList.add("sivDropBox");
+      parent.classList.add(this.name);
+      parent.appendChild(document.createElement("div"));
+
+      return parent;
     }
 
     /**
+     * Gets the parent UI element/ Widget
+     *
      * @returns {SieveAbstractBoxUI}
-     *   the parent ui element.
+     *   the parent element.
      */
     parent() {
       return this._parent;
@@ -219,7 +279,7 @@
      * @inheritdoc
      */
     constructor(docshell) {
-      super(docshell);
+      super(docshell, "sivTrashBin");
       this.drop(new SieveTrashBoxDropHandler());
     }
   }
@@ -235,10 +295,26 @@
      * show the source and vice versa.
      */
     toggleView() {
-      if ($("#" + this.uniqueId + "-summary").is(':visible'))
-        this.showSource();
-      else
+      if (document.querySelector(`#${this.uniqueId}-summary`).classList.contains("d-none"))
         this.showSummary();
+      else
+        this.showSource();
+    }
+
+    /**
+     * Called when the view was toggled.
+     *
+     * @param {Event} e
+     *   the event listener.
+     *
+     * @returns {boolean}
+     *   always true.
+     */
+    onToggleView(e) {
+      this.toggleView();
+      e.preventDefault();
+      e.stopPropagation();
+      return true;
     }
 
     /**
@@ -246,8 +322,8 @@
      * It does not reload the summary view.
      */
     showSummary() {
-      $("#" + this.uniqueId + "-summary").show();
-      $("#" + this.uniqueId + "-code").hide();
+      document.querySelector(`#${this.uniqueId}-summary`).classList.remove("d-none");
+      document.querySelector(`#${this.uniqueId}-code`).classList.add("d-none");
     }
 
     /**
@@ -255,12 +331,16 @@
      * It will automatically replace the code with the most recently changed.
      */
     showSource() {
-      $("#" + this.uniqueId + "-code")
-        .empty()
-        .append($("<code/>").text(this.getSieve().toScript()));
 
-      $("#" + this.uniqueId + "-summary").hide();
-      $("#" + this.uniqueId + "-code").show();
+      // update the code section
+      const code = document.querySelector(`#${this.uniqueId}-code > code`);
+      while (code.firstChild)
+        code.removeChild(code.firstChild);
+
+      code.textContent = this.getSieve().toScript();
+
+      document.querySelector(`#${this.uniqueId}-summary`).classList.add('d-none');
+      document.querySelector(`#${this.uniqueId}-code`).classList.remove('d-none');
     }
   }
 
@@ -280,60 +360,12 @@
       if (!this.getSummary)
         return parent;
 
-      parent.append($("<div/>")
-        .append(this.getSummary())
-        .addClass("sivSummaryContent")
-        .attr("id", this.uniqueId + "-summary"));
+      const summary = document.createElement("div");
+      summary.classList.add("sivSummaryContent");
+      summary.id = `${this.uniqueId}-summary`;
+      summary.appendChild(this.getSummary());
 
-      return parent;
-    }
-  }
-
-  /**
-   * An UI widget used for simple actions which do not need an
-   * dialog based UI.
-   *
-   * @deprecated Elements implementing this need to migrate to a
-   * dialog based box to show at least the help
-   */
-  class SieveActionBoxUI extends SieveSourceBoxUI {
-
-    /**
-     * @inheritdoc
-     */
-    constructor(elm) {
-      super(elm);
-      this.drag(new SieveMoveDragHandler());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    createHtml(parent) {
-      if (typeof (parent) === "undefined")
-        throw new Error("parent parameter is missing");
-
-      parent.addClass("sivAction");
-      parent.addClass("sivEditableElement");
-
-      parent.append($("<div/>")
-        .append(this.getSummary())
-        .addClass("sivSummaryContent")
-        .attr("id", this.uniqueId + "-summary"));
-
-      parent.append($("<div/>")
-        .append($("<code/>"))
-        .addClass("sivSummaryCode")
-        .attr("id", this.uniqueId + "-code")
-        .hide());
-
-      parent.append(
-        $("<div/>")
-          .addClass("sivSummaryControls")
-          .addClass("material-icons")
-          .append($("<span/>").text("code").click(
-            (e) => { this.toggleView(); e.preventDefault(); e.stopPropagation(); return true;}))
-          .append($("<span/>").text("edit").css({"visibility":"hidden"})));
+      parent.appendChild(summary);
 
       return parent;
     }
@@ -345,70 +377,86 @@
    **/
   class SieveDialogBoxUI extends SieveSourceBoxUI {
 
+    /**
+     * Called when the user clicks on the save button in the dialog.
+     *
+     * It triggers the onSave() method. In case this returned true,
+     * the dialog will be hidden and the summary is updated.
+     */
     save() {
 
       // Check if on save was canceled...
       if (!this.onSave())
         return;
 
-      $('#sivDialogBody').empty();
+      const body = document.querySelector("#sivDialogBody");
+      while (body.firstChild)
+        body.removeChild(body.firstChild);
 
-      // Remove the event handlers...
-      $('#sivDialog2').modal("hide");
-      // $('#sivDialogDiscard').off('click');
+      // Hide the dialog...
+      $(document.querySelector('#sivDialog2')).modal("hide");
 
-      // update the summary
-      $("#" + this.uniqueId + "-summary")
-        .empty()
-        .append(this.getSummary());
+      // update the summary section
+      const summary = document.querySelector(`#${this.uniqueId}-summary`);
+      while (summary.firstChild)
+        summary.removeChild(summary.firstChild);
 
-      $("#" + this.uniqueId + "-code")
-        .empty()
-        .append($("<code/>").text(this.getSieve().toScript()));
+      summary.appendChild(this.getSummary());
 
+      // update the code section
+      const code = document.querySelector(`#${this.uniqueId}-code > code`);
+      while (code.firstChild)
+        code.removeChild(code.firstChild);
+
+      code.textContent = this.getSieve().toScript();
     }
 
-    showEditor() {
+    /**
+     * Shows the sieve element's ui to edit the element.
+     */
+    async showEditor() {
 
-      $('#sivDialog2').modal("show");
-      $("#sivDialogSave").off("click").click(() => { this.save(); });
+      // TODO hide the save button in case we have only a help tab...
+      $(document.querySelector('#sivDialog2')).modal("show");
 
-      $("#sivDialogTabs").empty();
-      $('#sivDialogBody').empty();
+      const save = () => {this.save(); };
 
-      const that = this;
-      const xhr = new XMLHttpRequest();
-      xhr.onload = function () {
+      document.querySelector('#sivDialogSave').addEventListener("click", save);
 
-        const tabs = this.responseXML.querySelector("#template-tabs");
+      $(document.querySelector('#sivDialog2')).on('hide.bs.modal', function () {
+        document
+          .querySelector("#sivDialogSave")
+          .removeEventListener("click", save);
+      });
 
-        if (tabs) {
-          const div = document.createElement("div");
-          div.innerHTML = tabs.innerHTML;
+      // Empty the existing dialog.
+      const dialogTabs = document.querySelector("#sivDialogTabs");
+      while (dialogTabs.firstChild)
+        dialogTabs.removeChild(dialogTabs.firstChild);
 
-          $("#sivDialogTabs").append(div.children);
-        }
+      const dialogBody = document.querySelector("#sivDialogBody");
+      while (dialogBody.firstChild)
+        dialogBody.removeChild(dialogBody.firstChild);
 
 
-        const content = this.responseXML.querySelector("#template-content");
+      const template = await (new SieveTemplate()).load(this.getTemplate());
 
-        if (content) {
-          const div = document.createElement("div");
-          div.innerHTML = content.innerHTML;
+      const tabs = template.querySelector("#template-tabs");
+      if (!tabs)
+        throw new Error("Failed to load template, no tab section specified");
 
-          $("#sivDialogBody").append(div.children);
-        }
+      while (tabs.children.length)
+        dialogTabs.appendChild(tabs.firstChild);
 
-        that.onLoad();
-      };
-      xhr.open("GET", this.getTemplate());
-      xhr.responseType = "document";
-      xhr.setRequestHeader('cache-control', 'no-cache, must-revalidate, post-check=0, pre-check=0');
-      xhr.setRequestHeader('cache-control', 'max-age=0');
-      xhr.setRequestHeader('expires', '0');
-      xhr.setRequestHeader('expires', 'Tue, 01 Jan 1980 1:00:00 GMT');
-      xhr.setRequestHeader('pragma', 'no-cache');
-      xhr.send();
+
+      const content = template.querySelector("#template-content");
+      if (!content)
+        throw new Error("Failed to load template, no content section specified");
+
+      while (content.children.length)
+        dialogBody.appendChild(content.firstChild);
+
+      this.onLoad();
     }
 
     /**
@@ -419,51 +467,103 @@
       if (typeof (parent) === "undefined")
         throw new Error("parent parameter is missing");
 
-      parent.addClass("sivEditableElement");
+      const FRAGMENT =
+        `<div>
+           <div class="sivSummaryContent">
+             </div>
+           <div class="sivSummaryCode d-none">
+             <code></code>
+           </div>
+           <div class="sivSummaryControls">
+             <span class="sivIconEdit"></span>
+             <span class="sivIconCode"></span>
+           </div>
+         </div>`;
 
-      parent.append($("<div/>")
-        .append(this.getSummary())
-        .addClass("sivSummaryContent")
-        .attr("id", this.uniqueId + "-summary"));
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
 
-      parent.append($("<div/>")
-        .append($("<code/>"))
-        .addClass("sivSummaryCode")
-        .attr("id", this.uniqueId + "-code")
-        .hide());
+      // First assign unique ids...
+      const content = elm.querySelector(".sivSummaryContent");
+      content.id = `${this.uniqueId}-summary`;
 
-      parent.append(
-        $("<div/>")
-          .addClass("sivSummaryControls")
-          .addClass("material-icons")
-          .append($("<span/>").text("code").click((e) => { this.toggleView(); e.preventDefault(); e.stopPropagation(); return true;}))
-          .append($("<span/>").text("edit"))
-      );
+      const code = elm.querySelector(".sivSummaryCode");
+      code.id = this.uniqueId + "-code";
 
-      parent.click((e) => { this.showEditor(); e.preventDefault(); return true; });
+      const controls = elm.querySelector(".sivSummaryControls");
+      controls.id = this.uniqueId + "-control";
+
+      controls.querySelector(".sivIconCode").addEventListener("click", (e) => {
+        return this.onToggleView(e);
+      });
+
+      parent.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        this.showEditor();
+        return true;
+      });
+
+      content.appendChild(this.getSummary());
+
+      // We need this container to make customizing the box easier.
+      // e.g. for the allof/anyof operator.
+      const div = document.createElement("div");
+      div.classList.add("sivEditableElement");
+
+      div.appendChild(content);
+      div.appendChild(code);
+      div.appendChild(controls);
+
+      parent.appendChild(div);
 
       return parent;
     }
 
     /**
+     * Gets the url from which the html fragment should be loaded.
      * @abstract
+     *
      * @returns {string}
-     *   an url which points to an html fragment and contains the template.
+     *   an url which points to an html fragment.
      */
     getTemplate() {
       throw new Error("Implement getTemplate()");
     }
 
+    /**
+     * Renders the element's summary view.
+     * @abstract
+     *
+     * @returns {HTMLElement}
+     *   the element's summary
+     */
     getSummary() {
       throw new Error("Implement getSummary()");
     }
 
+    /**
+     * Called when the user clicks on the save button.
+     *
+     * Intended to be overwritten by a child. The default implementation just
+     * returns true and does nothing.
+     *
+     * @returns {boolean}
+     *   true in case the element was saved and the dialog can be closed.
+     *   false in case the dialog needs to stay open.
+     */
     onSave() {
       return true;
     }
 
+    /**
+     * Called when the dialog is about to be shown and is used to initialized
+     * the dialog content.
+     *
+     * Intended to be overwritten by a child. The default implementation does
+     * nothing.
+     */
     onLoad() {
-      throw new Error("Implement onLoad()");
     }
   }
 
@@ -486,8 +586,9 @@
      * @inheritdoc
      */
     createHtml(parent) {
-      return super.createHtml(parent)
-        .addClass("sivAction");
+      const elm = super.createHtml(parent);
+      elm.classList.add("sivAction");
+      return elm;
     }
   }
 
@@ -511,8 +612,9 @@
      * @inheritdoc
      */
     createHtml(parent) {
-      return super.createHtml(parent)
-        .addClass("sivTest");
+      const elm = super.createHtml(parent);
+      elm.classList.add("sivTest");
+      return elm;
     }
   }
 
@@ -521,7 +623,6 @@
   exports.SieveSimpleBoxUI = SieveSimpleBoxUI;
   exports.SieveSourceBoxUI = SieveSourceBoxUI;
 
-  exports.SieveActionBoxUI = SieveActionBoxUI;
   exports.SieveDropBoxUI = SieveDropBoxUI;
   exports.SieveTrashBoxUI = SieveTrashBoxUI;
 

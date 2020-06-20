@@ -10,7 +10,7 @@
  *
  */
 
-(function (exports) {
+(function () {
 
   "use strict";
 
@@ -21,9 +21,10 @@
   const TAILING_WHITESPACE = 2;
 
   const ONE_CHAR = 1;
-  const TWO_CHARS = 2;
 
   const MAX_QUOTE_LEN = 50;
+
+  const IS_EVEN = 1;
 
   /* global SieveLexer */
   /* global SieveAbstractElement */
@@ -48,6 +49,7 @@
     /**
      * @inheritdoc
      */
+    // eslint-disable-next-line no-unused-vars
     static isElement(parser, lexer) {
       return parser.startsWith("text:");
     }
@@ -190,21 +192,34 @@
        *  "\\"
        */
 
-      while (true) {
-        this.text += parser.extractUntil("\"");
+      // extract until we stumble upon the first quote...
+      this.text += parser.extractUntil("\"");
 
-        // Skip if the quote is not escaped
-        if (this.text.charAt(this.text.length - ONE_CHAR) !== "\\")
-          break;
+      // ... in case it was escaped we need to continue extracting.
+      // which means for us some extra checks...
+      while (this.text.charAt(this.text.length - ONE_CHAR) === "\\") {
 
-        // well it is obviously escaped, so we have to check if the escape
-        // character is escaped
-        if (this.text.length >= TWO_CHARS)
-          if (this.text.charAt(this.text.length - TWO_CHARS) === "\\")
+        // The backslash could be escaped which means we need to
+        // count backslashes starting from the end.
+        let count = 1;
+
+        while (count <= this.text.length) {
+          if (this.text.charAt(this.text.length - count) !== "\\")
             break;
+
+          count++;
+        }
+
+        // An even number of backslashes means we we can ignore them. Thus the
+        // quote terminates the string. An odd number means the quote is escaped
+        // thus and protected.
+        if (count % 2 === IS_EVEN)
+          break;
 
         // add the quote, it was escaped...
         this.text += "\"";
+        // ... and continue extracting.
+        this.text += parser.extractUntil("\"");
       }
 
       // Only double quotes and backslashes are escaped...
@@ -390,6 +405,8 @@
     }
 
     /**
+     * Gets the list entry count.
+     *
      * @returns {int}
      *   the number of elements contained in the list.
      */
@@ -469,9 +486,9 @@
         this.clear().append(values);
 
       const result = [];
-      this.elements.forEach( (element) => {
-        result.push(element[STRING_VALUE].value());
-      });
+      for (const elm of this.elements) {
+        result.push(elm[STRING_VALUE].value());
+      }
 
       return result;
     }
@@ -480,7 +497,7 @@
      * @inheritdoc
      */
     toScript() {
-      if (this.elements.length === 0)
+      if (!this.elements.length)
         return '""';
 
       if (this.compact && this.elements.length <= 1)
@@ -489,16 +506,16 @@
       let result = "[";
       let separator = "";
 
-      for (let i = 0; i < this.elements.length; i++) {
+      for (const elm of this.elements) {
         result += separator;
 
-        if (this.elements[i][LEADING_WHITESPACE] !== null && (typeof (this.elements[i][LEADING_WHITESPACE]) !== "undefined"))
-          result += this.elements[i][LEADING_WHITESPACE].toScript();
+        if (elm[LEADING_WHITESPACE] !== null && (typeof (elm[LEADING_WHITESPACE]) !== "undefined"))
+          result += elm[LEADING_WHITESPACE].toScript();
 
-        result += this.elements[i][STRING_VALUE].toScript();
+        result += elm[STRING_VALUE].toScript();
 
-        if (this.elements[i][TAILING_WHITESPACE] !== null && (typeof (this.elements[i][TAILING_WHITESPACE]) !== "undefined"))
-          result += this.elements[i][TAILING_WHITESPACE].toScript();
+        if (elm[TAILING_WHITESPACE] !== null && (typeof (elm[TAILING_WHITESPACE]) !== "undefined"))
+          result += elm[TAILING_WHITESPACE].toScript();
 
         separator = ",";
       }

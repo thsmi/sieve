@@ -14,7 +14,6 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveTestDialogBoxUI */
   /* global SieveActionDialogBoxUI */
 
@@ -26,6 +25,8 @@
   /* global SieveOverlayItemWidget */
 
   /* global SieveDesigner */
+
+  /* global SieveTemplate */
 
   /**
    * Implements an UI for the notify action.
@@ -42,14 +43,34 @@
       return this.getSieve().getElement("method");
     }
 
+    /**
+     * Gets optional additional configures to extend the notification method.
+     * Each configuration is string which contains a key/value pair separated
+     * by an equals sign.
+     *
+     * @returns {SieveStringList}
+     *   a string list with strings containing key/pairs.
+     */
     options() {
       return this.getSieve().getElement("options").getElement("options");
     }
 
+    /**
+     * Returns the sender/from field which is used when sending the notification.
+     *
+     * @returns {SieveString}
+     *   the notification's from
+     */
     from() {
       return this.getSieve().getElement("from").getElement("from");
     }
 
+    /**
+     * Returns the message to be send via the notification method.
+     *
+     * @returns {SieveString}
+     *   the message
+     */
     message() {
       return this.getSieve().getElement("message").getElement("message");
     }
@@ -64,28 +85,27 @@
 
 
       if (this.getSieve().enable("from"))
-        $("#cbxSieveNotifyFrom").attr("checked", "checked");
+        document.querySelector("#cbxSieveNotifyFrom").checked = true;
 
       (new SieveStringWidget("#txtSieveNotifyFrom"))
         .init(this.from());
 
 
       if (this.getSieve().enable("options"))
-        $("#cbxSieveNotifyOptions").attr("checked", "checked");
+        document.querySelector("#cbxSieveNotifyOptions").checked = true;
 
       (new SieveStringListWidget("#txtSieveNotifyOptions"))
         .init(this.options());
 
 
       if (this.getSieve().enable("importance"))
-        $("#cbxSieveNotifyImportance").attr("checked", "checked");
+        document.querySelector("#cbxSieveNotifyImportance").checked = true;
 
       const importance = this.getSieve().getElement("importance").getElement("importance").value();
-      $("input[name=sivNotifyImportance][value='" + importance + "']").prop('checked', true);
+      document.querySelector("input[name=sivNotifyImportance][value='" + importance + "']").checked = true;
 
-
-      $("input[name=sivNotifyMessage][value='" + this.getSieve().enable("message") + "']").prop('checked', true);
-      $("#txtSieveNotifyMessage").val(this.message().value());
+      document.querySelector("input[name=sivNotifyMessage][value='" + this.getSieve().enable("message") + "']").checked = true;
+      document.querySelector("#txtSieveNotifyMessage").value = this.message().value();
     }
 
     /**
@@ -98,20 +118,20 @@
       // Importance...
 
       this.getSieve().enable("options",
-        $("#cbxSieveNotifyOptions").is(":checked"));
+        document.querySelector("#cbxSieveNotifyOptions").checked);
+
       (new SieveStringListWidget("#txtSieveNotifyOptions"))
         .save(this.options());
 
-
       this.getSieve().enable("from",
-        $("#cbxSieveNotifyFrom").is(":checked"));
+        document.querySelector("#cbxSieveNotifyFrom").checked);
       (new SieveStringWidget("#txtSieveNotifyFrom"))
         .save(this.from());
 
 
       this.getSieve().enable("importance",
-        $("#cbxSieveNotifyImportance").is(":checked"));
-      const importance = $("input[name=sivNotifyImportance]:checked").val();
+        document.querySelector("#cbxSieveNotifyImportance").checked);
+      const importance = document.querySelector("input[name=sivNotifyImportance]:checked").value;
 
       this.getSieve()
         .getElement("importance")
@@ -120,8 +140,9 @@
 
 
       this.getSieve().enable("message",
-        $("#rbxSieveNotifyMessageCustom").is(":checked"));
-      this.message().value($("#txtSieveNotifyMessage").val());
+        document.querySelector("#rbxSieveNotifyMessageCustom").checked);
+      this.message().value(
+        document.querySelector("#txtSieveNotifyMessage").value);
 
       return true;
     }
@@ -137,11 +158,18 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("Notify");
+      const FRAGMENT =
+        `<div>
+         <span data-i18n="notify.summary"></span>
+       </div>`;
+
+      return (new SieveTemplate()).convert(FRAGMENT);
     }
   }
 
+  /**
+   *
+   */
   class SieveNotifyMethodCapabilityUI extends SieveTestDialogBoxUI {
 
     /**
@@ -164,14 +192,32 @@
       return this.getSieve().getElement("comparator");
     }
 
+    /**
+     * The keys against  which the capabilities should be checked.
+     *
+     * @returns {SieveStringList}
+     *  the keys as string list.
+     */
     keys() {
       return this.getSieve().getElement("keys");
     }
 
+    /**
+     * Gets the notification methods unique uri.
+     *
+     * @returns {SieveString}
+     *   the notification methods as uri.
+     */
     uri() {
       return this.getSieve().getElement("uri");
     }
 
+    /**
+     * Gets the notifications method capability which should be checked.
+     *
+     * @returns {SieveString}
+     *   the notification capability.
+     */
     capability() {
       return this.getSieve().getElement("capability");
     }
@@ -225,14 +271,27 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("Check Notify Method Capability");
+      const FRAGMENT =
+        `<div>
+         <span data-i18n="notifymethodcapability.summary"></span>
+       </div>`;
+
+      return (new SieveTemplate()).convert(FRAGMENT);
     }
   }
 
 
+  /**
+   * Implements a ui for the ValidNotifyMethod test.
+   */
   class SieveValidNotifyMethodUI extends SieveTestDialogBoxUI {
 
+    /**
+     * Gets the list which notification uris to be checked for validity.
+     *
+     * @returns {SieveStringList}
+     *   a list with uris
+     */
     uris() {
       return this.getSieve().getElement("uris");
     }
@@ -266,8 +325,15 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html(" Notify methods are supported " + this.uris().toScript());
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="validnotifymethod.summary"></span>
+           <em class="sivValidNotifyMethodUris"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivValidNotifyMethodUris").textContent = this.uris().toScript();
+      return elm;
     }
   }
 
@@ -311,7 +377,7 @@
      */
     load(sivElement) {
       if (sivElement.enable("modifier/15"))
-        $("#cbxModifier15").attr("checked", "checked");
+        document.querySelector("#cbxModifier15").checked = true;
     }
 
     /**
@@ -320,19 +386,12 @@
     save(sivElement) {
 
       let value = null;
-      const status = $("#cbxModifier15").is(":checked");
+      const status = document.querySelector("#cbxModifier15").checked;
       if (status)
-        value = $("#cbxModifier15").val();
+        value = document.querySelector("#cbxModifier15").value;
 
       sivElement.getElement("modifier/15").setElement(value);
       sivElement.enable("modifier/15", status);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getElement() {
-      return $("" + this.selector);
     }
   }
 

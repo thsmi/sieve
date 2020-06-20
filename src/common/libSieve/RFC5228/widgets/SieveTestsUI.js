@@ -14,7 +14,6 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveDesigner */
   /* global SieveTestDialogBoxUI */
 
@@ -23,6 +22,7 @@
   /* global SieveAddressPartWidget */
   /* global SieveComparatorWidget */
   /* global SieveNumericWidget */
+  /* global SieveTemplate */
 
   // testunary .append() -> testunary in anyof wrapen  SieveTestUI einführen...
   // testmultary.append -> an entsprechender stelle einfügen SieveTestListUI...
@@ -48,7 +48,7 @@
         .init(this.getSieve().getElement("limit"));
 
       const elm = this.getSieve().getElement("operator").getCurrentElement();
-      $('input:radio[name="over"][value="' + elm.nodeName() + '"]').prop('checked', true);
+      document.querySelector(`input[type='radio'][name="over"][value="${elm.nodeName()}"]`).checked = true;
     }
 
     /**
@@ -59,7 +59,7 @@
       (new SieveNumericWidget("#sivSizeInput"))
         .save(this.getSieve().getElement("limit"));
 
-      const name = $("input[type='radio'][name='over']:checked").val();
+      const name = document.querySelector("input[type='radio'][name='over']:checked").value;
 
       if (name === "test/size/operator/over")
         this.getSieve().getElement("operator").setCurrentElement(":over");
@@ -76,21 +76,35 @@
      * @inheritdoc
      */
     getSummary() {
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="size.summary.message"></span>
+           <em data-i18n="size.summary.larger" class="sivSizeLarger d-none"></em>
+           <em data-i18n="size.summary.smaller" class="sivSizeSmaller d-none"></em>
+           <span data-i18n="size.summary.than"></span>
+           <em class="sivSizeLimit"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+
       const name = this.getSieve().getElement("operator").getCurrentElement().nodeName();
-
-      let operator = "smaller";
       if (name === "test/size/operator/over")
-        operator = "larger";
+        elm.querySelector(".sivSizeLarger").classList.remove("d-none");
+      else if (name === "test/size/operator/under")
+        elm.querySelector(".sivSizeSmaller").classList.remove("d-none");
+      else
+        throw new Error("Invalid size operator");
 
-      return $("<div/>")
-        .text("message is " + operator
-          + " than " + this.getSieve().getElement("limit").toScript() + " bytes");
+      elm.querySelector(".sivSizeLimit").textContent
+        = this.getSieve().getElement("limit").toScript();
+
+      return elm;
     }
   }
 
   /**
    * Provides an UI for the Sieve Boolean tests, which have no
-   * practival use as a true always succeed and a false always fails.
+   * practical use as a true always succeed and a false always fails.
    */
   class SieveBooleanTestUI extends SieveTestDialogBoxUI {
 
@@ -106,8 +120,8 @@
      **/
     onSave() {
 
-      const value = $("#sieve-widget-test")
-        .find("input[name='booleanValue']:checked").val();
+      const value = document.querySelector("#sieve-widget-test")
+        .querySelector("input[name='booleanValue']:checked").value;
 
       if (value === "test/boolean/true")
         this.getSieve().setCurrentElement("true");
@@ -123,9 +137,10 @@
      * @inheritdoc
      */
     onLoad() {
-      $("#sieve-widget-test")
-        .find("input[name='booleanValue']")
-        .val([this.getSieve().getCurrentElement().nodeName()]);
+      document
+        .querySelector("#sieve-widget-test")
+        .querySelector("input[name='booleanValue']")
+        .value = this.getSieve().getCurrentElement().nodeName();
     }
 
     /**
@@ -133,13 +148,24 @@
      */
     getSummary() {
 
+      const FRAGMENT =
+        `<div>
+          <span data-i18n="boolean.summary.true" class="sivBooleanTrue d-none"></span>
+          <span data-i18n="boolean.summary.false" class="sivBooleanFalse d-none"></span>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+
       const name = this.getSieve().getCurrentElement().nodeName();
+      if (name === "test/boolean/true") {
+        elm.querySelector(".sivBooleanTrue").classList.remove("d-none");
+        return elm;
+      }
 
-      if (name === "test/boolean/true")
-        return $("<div/>").text("is true");
-
-      if (name === "test/boolean/false")
-        return $("<div/>").text("is false");
+      if (name === "test/boolean/false") {
+        elm.querySelector(".sivBooleanFalse").classList.remove("d-none");
+        return elm;
+      }
 
       throw new Error("Invalid State boolean is neither true nor false");
     }
@@ -152,6 +178,8 @@
   class SieveExistsUI extends SieveTestDialogBoxUI {
 
     /**
+     * The headers which should be checked for existence.
+     *
      * @returns {SieveAbstractElement}
      *   the element's headers
      */
@@ -187,9 +215,18 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("the following header(s) exist:"
-          + "<em>" + $('<div/>').text(this.headers().toScript()).html() + "</em>");
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="exists.summary1"></span>
+           <em class="sivExistsHeaders"></em>
+           <span data-i18n="exists.summary2"></span>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivExistsHeaders").textContent
+        = this.headers().values();
+
+      return elm;
     }
   }
 
@@ -199,6 +236,8 @@
   class SieveHeaderUI extends SieveTestDialogBoxUI {
 
     /**
+     * The headers values.
+     *
      * @returns {SieveAbstractElement}
      *   the element's keys
      */
@@ -207,6 +246,8 @@
     }
 
     /**
+     * The header which value should be checked against the keys.
+     *
      * @returns {SieveAbstractElement}
      *   the element's headers
      */
@@ -215,6 +256,8 @@
     }
 
     /**
+     * The matchtype describe how to match the headers to the keys.
+     *
      * @returns {SieveAbstractElement}
      *   the element's match type
      */
@@ -223,6 +266,8 @@
     }
 
     /**
+     * The comparator which is used to compare the headers against the keys.
+     *
      * @returns {SieveAbstractElement}
      *   the element's comparator
      */
@@ -273,10 +318,23 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html(" header " + $('<em/>').text(this.headers().values()).html()
-          + " " + this.matchtype().getElement().toScript() + " "
-          + $('<em/>').text(this.keys().values()).html());
+      const FRAGMENT =
+      `<div>
+         <span data-i18n="header.summary"></span>
+         <em class="sivHeaderValues"></em>
+         <span class="sivHeaderMatchType"></span>
+         <em class="sivHeaderKeys"></em>
+       </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivHeaderValues").textContent
+        = this.headers().values();
+      elm.querySelector(".sivHeaderMatchType").textContent
+        = this.matchtype().getElement().toScript();
+      elm.querySelector(".sivHeaderKeys").textContent
+        = this.keys().values();
+
+      return elm;
     }
   }
 
@@ -286,6 +344,9 @@
   class SieveAddressUI extends SieveTestDialogBoxUI {
 
     /**
+     * The address part defined which part of the mail address should
+     *  be compared. It can be the local part, the domain part or both.
+     *
      * @returns {SieveAbstractElement}
      *   the element's address part
      */
@@ -294,6 +355,8 @@
     }
 
     /**
+     * The comparison type. Defines how individual characters are compared.
+     *
      * @returns {SieveAbstractElement}
      *   the element's comparator
      */
@@ -302,6 +365,8 @@
     }
 
     /**
+     * Match types define how to match the headers and the keys.
+     *
      * @returns {SieveAbstractElement}
      *   the element's match type
      */
@@ -310,6 +375,8 @@
     }
 
     /**
+     * The headers to compare against the keys.
+     *
      * @returns {SieveAbstractElement}
      *   the element's headers
      */
@@ -318,6 +385,8 @@
     }
 
     /**
+     * The expected header values/keys.
+     *
      * @returns {SieveAbstractElement}
      *   the element's keys
      */
@@ -373,12 +442,32 @@
      * @inheritdoc
      */
     getSummary() {
-      // case- insensitive is the default so skip it...
-      return $("<div/>")
-        .html(" address <em>" + $('<div/>').text(this.headers().toScript()).html() + "</em>"
-          + " " + this.matchtype().getElement().toScript()
-          + " " + ((this.addresspart().getElement().toScript() !== ":all") ? this.addresspart().getElement().toScript() : "")
-          + " <em>" + $('<div/>').text(this.keys().toScript()).html() + "</em>");
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="address.summary"></span>
+           <em class="sivAddressHeaders"></em>
+           <span class="sivAddressMatchType"></span>
+           <span class="sivAddressAddressPart d-none"></span>
+           <em class="sivAddressKeys"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivAddressHeaders").textContent
+        = this.headers().values();
+      elm.querySelector(".sivAddressMatchType").textContent
+        = this.matchtype().getElement().toScript();
+
+      const addresspart = this.addresspart().getElement().toScript();
+      if (addresspart !== ":all") {
+        elm.querySelector(".sivAddressAddressPart").textContent
+          = this.addresspart().getElement().toScript();
+        elm.classList.remove("d-none");
+      }
+
+      elm.querySelector(".sivAddressKeys").textContent
+        = this.keys().values();
+
+      return elm;
     }
   }
 
@@ -388,6 +477,8 @@
   class SieveEnvelopeUI extends SieveTestDialogBoxUI {
 
     /**
+     * Specifies which part of the mail address in the envelope should be compared.
+     *
      * @returns {SieveAbstractElement}
      *   the element's address part
      */
@@ -396,6 +487,8 @@
     }
 
     /**
+     * Specifies how individual characters are compared.
+     *
      * @returns {SieveAbstractElement}
      *   the element's comparator
      */
@@ -404,6 +497,8 @@
     }
 
     /**
+     * Specified how the envelope is compared against the keys.
+     *
      * @returns {SieveAbstractElement}
      *   the element's match type
      */
@@ -412,6 +507,8 @@
     }
 
     /**
+     * The envelope values which should be evaluated.
+     *
      * @returns {SieveAbstractElement}
      *   the element's envelopes
      */
@@ -420,6 +517,8 @@
     }
 
     /**
+     * The expected keys /envelope values.
+     *
      * @returns {SieveAbstractElement}
      *   the element's keys
      */
@@ -468,22 +567,43 @@
 
       return true;
     }
+
     /**
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html(" envelope " + $('<em/>').text(this.envelopes().toScript()).html()
-          + " " + this.matchtype().getElement().toScript()
-          + " " + ((this.addresspart().getElement().toScript() !== ":all") ? this.addresspart().toScript() : "")
-          + " " + $('<em/>').text(this.keys().toScript()).html() + "");
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="envelope.summary"></span>
+           <em class="sivEnvelopeEnvelopes"></em>
+           <span class="sivEnvelopeMatchType"></span>
+           <span class="sivEnvelopesAddressPart d-none"></span>
+           <em class="sivEnvelopeKeys"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivEnvelopeEnvelopes").textContent
+        = this.envelopes().values();
+      elm.querySelector(".sivEnvelopeMatchType").textContent
+        = this.matchtype().getElement().toScript();
+
+      const addresspart = this.addresspart().getElement().toScript();
+      if (addresspart !== ":all") {
+        elm.querySelector(".sivEnvelopesAddressPart").textContent
+          = this.addresspart().getElement().toScript();
+        elm.classList.remove("d-none");
+      }
+
+      elm.querySelector(".sivEnvelopeKeys").textContent
+        = this.keys().values();
+
+      return elm;
     }
   }
 
 
   if (!SieveDesigner)
     throw new Error("Could not register Action Widgets");
-
 
   SieveDesigner.register("test/address", SieveAddressUI);
   SieveDesigner.register("test/boolean", SieveBooleanTestUI);

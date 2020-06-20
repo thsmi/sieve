@@ -14,7 +14,7 @@
   "use strict";
 
   /* global $ */
-  /* global SieveTemplateLoader */
+  /* global SieveTemplate */
 
   // eslint-disable-next-line no-magic-numbers
   const LOG_ACCOUNT_REQUEST = (1 << 0);
@@ -56,18 +56,25 @@
     async render() {
       const dialog = this.getDialog();
 
-      dialog.find(".modal-body").empty()
-        .append(await (new SieveTemplateLoader().load("./settings/ui/settings.debug.tpl")));
+      const settings = dialog.querySelector(".modal-body");
+      while (settings.firstChild)
+        settings.removeChild(settings.firstChild);
+
+      settings.appendChild(
+        await (new SieveTemplate().load("./settings/ui/settings.debug.tpl")));
 
       const levels = await this.account.send("account-settings-get-debug");
 
       this.setAccountLogLevel(levels.account);
       this.setGlobalLogLevel(levels.global);
 
-      dialog.find(".sieve-settings-apply").click(() => { this.save(); });
+      dialog.querySelector(".sieve-settings-apply")
+        .addEventListener("click", () => { this.save(); });
 
-      dialog.find(".siv-settings-show-advanced").click(() => { this.showAdvanced(); });
-      dialog.find(".siv-settings-hide-advanced").click(() => { this.hideAdvanced(); });
+      dialog.querySelector(".siv-settings-show-advanced")
+        .addEventListener("click", () => { this.showAdvanced(); });
+      dialog.querySelector(".siv-settings-hide-advanced")
+        .addEventListener("click", () => { this.hideAdvanced(); });
 
       this.hideAdvanced();
 
@@ -78,16 +85,16 @@
      */
     async show() {
 
-      $("#ctx").append(
-        await (new SieveTemplateLoader()).load("./settings/ui/settings.dialog.tpl"));
+      document.querySelector("#ctx").appendChild(
+        await (new SieveTemplate()).load("./settings/ui/settings.dialog.tpl"));
 
       await this.render();
 
-      return await new Promise((resolve) => {
+      await new Promise((resolve) => {
 
-        this.getDialog().modal("show")
+        $(this.getDialog()).modal("show")
           .on("hidden.bs.modal", () => {
-            this.getDialog().remove();
+            this.getDialog().parentNode.removeChild(this.getDialog());
             resolve();
           });
       });
@@ -103,19 +110,19 @@
     getAccountLogLevel() {
       let level = 0x00;
 
-      if ($("#debugClientServer").prop("checked"))
+      if (document.querySelector("#debugClientServer").checked === true)
         level |= LOG_ACCOUNT_REQUEST;
 
-      if ($("#debugServerClient").prop("checked"))
+      if (document.querySelector("#debugServerClient").checked === true)
         level |= LOG_ACCOUNT_RESPONSE;
 
-      if ($("#debugSessionManagement").prop("checked"))
+      if (document.querySelector("#debugSessionManagement").checked === true)
         level |= LOG_ACCOUNT_SESSION_INFO;
 
-      if ($("#debugStateMachine").prop("checked"))
+      if (document.querySelector("#debugStateMachine").checked === true)
         level |= LOG_ACCOUNT_STATE;
 
-      if ($("#debugRawDump").prop("checked"))
+      if (document.querySelector("#debugRawDump").checked === true)
         level |= LOG_ACCOUNT_STREAM;
 
       return level;
@@ -129,11 +136,11 @@
      */
     setAccountLogLevel(level) {
 
-      $("#debugClientServer").prop("checked", (level & LOG_ACCOUNT_REQUEST));
-      $("#debugServerClient").prop("checked", (level & LOG_ACCOUNT_RESPONSE));
-      $("#debugSessionManagement").prop("checked", (level & LOG_ACCOUNT_SESSION_INFO));
-      $("#debugStateMachine").prop("checked", (level & LOG_ACCOUNT_STATE));
-      $("#debugRawDump").prop("checked", (level & LOG_ACCOUNT_STREAM));
+      document.querySelector("#debugClientServer").checked = (level & LOG_ACCOUNT_REQUEST);
+      document.querySelector("#debugServerClient").checked = (level & LOG_ACCOUNT_RESPONSE);
+      document.querySelector("#debugSessionManagement").checked = (level & LOG_ACCOUNT_SESSION_INFO);
+      document.querySelector("#debugStateMachine").checked = (level & LOG_ACCOUNT_STATE);
+      document.querySelector("#debugRawDump").checked = (level & LOG_ACCOUNT_STREAM);
     }
 
     /**
@@ -145,16 +152,16 @@
     getGlobalLogLevel() {
       let level = 0x00;
 
-      if ($("#debugActions").prop("checked"))
+      if (document.querySelector("#debugActions").checked)
         level |= LOG_GLOBAL_ACTION;
 
-      if ($("#debugIpcMessages").prop("checked"))
+      if (document.querySelector("#debugIpcMessages").checked)
         level |= LOG_GLOBAL_IPC_MESSAGES;
 
-      if ($("#debugWidgets").prop("checked"))
+      if (document.querySelector("#debugWidgets").checked)
         level |= LOG_GLOBAL_WIDGET;
 
-      if ($("#debugI18n").prop("checked"))
+      if (document.querySelector("#debugI18n").checked)
         level |= LOG_GLOBAL_I18N;
 
       return level;
@@ -167,10 +174,10 @@
      *   the global log level as integer
      */
     setGlobalLogLevel(level) {
-      $("#debugActions").prop("checked", (level & LOG_GLOBAL_ACTION));
-      $("#debugIpcMessages").prop("checked", (level & LOG_GLOBAL_IPC_MESSAGES));
-      $("#debugWidgets").prop("checked", (level & LOG_GLOBAL_WIDGET));
-      $("#debugI18n").prop("checked", (level & LOG_GLOBAL_I18N));
+      document.querySelector("#debugActions").checked = (level & LOG_GLOBAL_ACTION);
+      document.querySelector("#debugIpcMessages").checked = (level & LOG_GLOBAL_IPC_MESSAGES);
+      document.querySelector("#debugWidgets").checked = (level & LOG_GLOBAL_WIDGET);
+      document.querySelector("#debugI18n").checked = (level & LOG_GLOBAL_I18N);
     }
 
     /**
@@ -187,41 +194,39 @@
       await this.account.send("account-settings-set-debug", { "levels": levels });
 
       // Validate and close
-      $('#sieve-dialog-settings').modal('hide');
+      $(this.getDialog()).modal('hide');
     }
 
     /**
      * Returns the currents dialogs UI Element.
      *
-     * @returns {object}
+     * @returns {HTMLElement}
      *   the dialogs UI elements.
      */
     getDialog() {
-      return $("#sieve-dialog-settings");
+      return document.querySelector("#sieve-dialog-settings");
     }
 
     /**
      * Shows the advanced setting
-     *
      */
     showAdvanced() {
       const parent = this.getDialog();
 
-      parent.find(".siv-settings-advanced").show();
-      parent.find(".siv-settings-show-advanced").hide();
-      parent.find(".siv-settings-hide-advanced").show();
+      parent.querySelector(".siv-settings-advanced").style.display = "";
+      parent.querySelector(".siv-settings-show-advanced").style.display = "none";
+      parent.querySelector(".siv-settings-hide-advanced").style.display = "";
     }
 
     /**
      * Hides the advanced settings
-     *
      */
     hideAdvanced() {
       const parent = this.getDialog();
 
-      parent.find(".siv-settings-advanced").hide();
-      parent.find(".siv-settings-show-advanced").show();
-      parent.find(".siv-settings-hide-advanced").hide();
+      parent.querySelector(".siv-settings-advanced").style.display = "none";
+      parent.querySelector(".siv-settings-show-advanced").style.display = "";
+      parent.querySelector(".siv-settings-hide-advanced").style.display = "none";
     }
 
   }

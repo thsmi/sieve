@@ -1,15 +1,9 @@
 <div>
-  <div id="test42">
-    <div class="custom-control custom-radio">
-      <input type="radio" id="cbxUniqueHeader" name="sieve-unique" class="custom-control-input" />
-      <label class="custom-control-label" for="cbxUniqueHeader">
-          ... extracted from the header named:
-      </label>
-      <small class="form-text text-muted">
-        Often mailinglist or ticket system use special headers to track duplicates.
-      </small>
+  <div class="custom-control custom-radio">
+    <input type="radio" id="cbxUniqueHeader" name="sieve-unique" class="custom-control-input" />
+    <label data-i18n="unique.header.title" class="custom-control-label" for="cbxUniqueHeader"></label>
+    <small data-i18n="unique.header.text" class="form-text text-muted"></small>
 
-      <input id="txtUniqueHeader" type="text" class="form-control col-lg-8" />
-    </div>
+    <input id="txtUniqueHeader" type="text" class="form-control col-lg-8" />
   </div>
 </div>

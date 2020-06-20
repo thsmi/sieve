@@ -14,13 +14,14 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveTestDialogBoxUI */
 
   /* global SieveOverlayWidget */
   /* global SieveOverlayItemWidget */
 
   /* global SieveDesigner */
+
+  /* global SieveTemplate */
 
   /**
    * An abstract unique UI implementation.
@@ -62,14 +63,14 @@
       if (sivElement.getElement("unique").hasElement())
         return;
 
-      $("#cbxUniqueDefault").prop("checked", true);
+      document.querySelector("#cbxUniqueDefault").checked = true;
     }
 
     /**
      * @inheritdoc
      */
     save(sivElement) {
-      if (!$("#cbxUniqueDefault").prop("checked"))
+      if (!document.querySelector("#cbxUniqueDefault").checked)
         return;
 
       sivElement.getElement("unique").setElement();
@@ -100,16 +101,18 @@
      */
     load(sivElement) {
 
-      $("#txtUniqueId").focus(() => { $('#cbxUniqueId').prop('checked', true); });
-      $("#txtUniqueId").val("");
+      document.querySelector("#txtUniqueId").addEventListener("focus", () => {
+        document.querySelector("#cbxUniqueId").checked = true;
+      });
+      document.querySelector("#txtUniqueId").value = "";
 
       const elm = sivElement.getElement("unique");
 
       if (!elm.isNode(this.constructor.nodeName()))
         return;
 
-      $("#cbxUniqueId").prop("checked", true);
-      $("#txtUniqueId").val(elm.getElement("uniqueid").value());
+      document.querySelector("#cbxUniqueId").checked = true;
+      document.querySelector("#txtUniqueId").value = elm.getElement("uniqueid").value();
     }
 
     /**
@@ -117,7 +120,7 @@
      */
     save(sivElement) {
 
-      if (!$("#cbxUniqueId").prop("checked"))
+      if (!document.querySelector("#cbxUniqueId").checked)
         return;
 
       const elm = sivElement.getElement("unique");
@@ -126,7 +129,7 @@
         elm.setElement(':uniqueid ""');
       }
 
-      elm.getElement("uniqueid").value($("#txtUniqueId").val());
+      elm.getElement("uniqueid").value(document.querySelector("#txtUniqueId").value);
     }
   }
 
@@ -154,16 +157,18 @@
      */
     load(sivElement) {
 
-      $("#txtUniqueHeader").focus(() => { $('#cbxUniqueHeader').prop('checked', true); });
-      $("#txtUniqueHeader").val("");
+      document.querySelector("#txtUniqueHeader").addEventListener("focus", () => {
+        document.querySelector("#cbxUniqueHeader").checked = true;
+      });
+      document.querySelector("#txtUniqueHeader").value = "";
 
       const elm = sivElement.getElement("unique");
 
       if (!elm.isNode(this.constructor.nodeName()))
         return;
 
-      $("#cbxUniqueHeader").prop("checked", true);
-      $("#txtUniqueHeader").val(elm.getElement("header").value());
+      document.querySelector("#cbxUniqueHeader").checked = true;
+      document.querySelector("#txtUniqueHeader").value = elm.getElement("header").value();
     }
 
     /**
@@ -171,7 +176,7 @@
      */
     save(sivElement) {
 
-      if (!$("#cbxUniqueHeader").prop("checked"))
+      if (!document.querySelector("#cbxUniqueHeader").checked)
         return;
 
       const elm = sivElement.getElement("unique");
@@ -181,19 +186,19 @@
       }
 
       elm.getElement("header")
-        .value($("#txtUniqueHeader").val());
+        .value(document.querySelector("#txtUniqueHeader").value);
     }
   }
 
 
   /**
    * Implements a control for editing a duplicate test
-   *
-   * @param {object} elm - The sieve element which should be rendered.
    */
   class SieveDuplicateUI extends SieveTestDialogBoxUI {
 
     /**
+     * Gets the optional unique id. It is used to track duplicates.
+     *
      * @returns {SieveAbstractElement}
      *   the element's unique field
      */
@@ -259,20 +264,29 @@
       (new SieveOverlayWidget("test/duplicate/unique/", "#sivUnique"))
         .init(this.getSieve());
 
-      $('input:radio[name="sieve-duplicate-handle"][value="' + this.enable("handle") + '"]').attr("checked", "checked");
-      $('input:radio[name="sieve-duplicate-seconds"][value="' + this.enable("seconds") + '"]').attr("checked", "checked");
-      $('input:radio[name="sieve-duplicate-last"][value="' + this.enable("last") + '"]').attr("checked", "checked");
-
-
-      $("#sivDuplicateHandle").focus(function () { $('input:radio[name="sieve-duplicate-handle"][value="true"]').attr("checked", "checked"); });
-      $("#sivDuplicateSeconds").focus(function () { $('input:radio[name="sieve-duplicate-seconds"][value="true"]').attr("checked", "checked"); });
+      document
+        .querySelector(`input[type="radio"][name="sieve-duplicate-handle"][value="${this.enable("handle")}"]`)
+        .checked = true;
+      document
+        .querySelector(`input[type="radio"][name="sieve-duplicate-seconds"][value="${this.enable("seconds")}"]`)
+        .checked = true;
+      document
+        .querySelector(`input[type="radio"][name="sieve-duplicate-last"][value="${this.enable("last")}"]`)
+        .checked = true;
 
       if (this.isEnabled("handle"))
-        $("#sivDuplicateHandle").val(this.handle().value());
+        document.querySelector("#sivDuplicateHandle").value = this.handle().value();
 
       if (this.isEnabled("seconds"))
-        $("#sivDuplicateSeconds").val(this.seconds().getValue());
+        document.querySelector("#sivDuplicateSeconds").value = this.seconds().getValue();
 
+      document.querySelector("#sivDuplicateHandle").addEventListener("focus", () => {
+        document.querySelector("#sivDuplicateCustomHandle").checked = true;
+      });
+
+      document.querySelector("#sivDuplicateSeconds").addEventListener("focus", () => {
+        document.querySelector("#sivDuplicateCustomExpiration").checked = true;
+      });
     }
 
     /**
@@ -284,20 +298,27 @@
         .save(this.getSieve());
 
       const state = {};
-      state["handle"] = ($("input[type='radio'][name='sieve-duplicate-handle']:checked").val() === "true");
-      state["seconds"] = ($("input[type='radio'][name='sieve-duplicate-seconds']:checked").val() === "true");
-      state["last"] = ($("input[type='radio'][name='sieve-duplicate-last']:checked").val() === "true");
 
-      try {
-        if (state["handle"])
-          this.handle().value($("#sivDuplicateHandle").val());
+      state["handle"] = (document.querySelector("input[type='radio'][name='sieve-duplicate-handle']:checked").value === "true");
+      state["seconds"] = (document.querySelector("input[type='radio'][name='sieve-duplicate-seconds']:checked").value === "true");
+      state["last"] = (document.querySelector("input[type='radio'][name='sieve-duplicate-last']:checked").value === "true");
 
-        if (state["seconds"])
-          this.seconds().setValue($("#sivDuplicateSeconds").val());
+      if (state["handle"]) {
+        const handle = document.querySelector("#sivDuplicateHandle");
+
+        if (!handle.checkValidity())
+          return false;
+
+        this.handle().value(handle.value);
       }
-      catch (ex) {
-        alert(ex);
-        return false;
+
+      if (state["seconds"]) {
+        const seconds = document.querySelector("#sivDuplicateSeconds");
+
+        if (!seconds.checkValidity())
+          return false;
+
+        this.seconds().setValue(seconds.value);
       }
 
       this.enable("handle", state["handle"]);
@@ -319,9 +340,12 @@
      */
     getSummary() {
 
-      // case- insensitive is the default so skip it...
-      return $("<div/>")
-        .html(" duplicate ");
+      const FRAGMENT =
+        `<div>
+          <span data-i18n="duplicate.summary"></span>
+         </div>`;
+
+      return (new SieveTemplate()).convert(FRAGMENT);
     }
   }
 

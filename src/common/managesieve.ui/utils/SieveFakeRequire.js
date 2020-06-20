@@ -62,7 +62,7 @@
   globals.set("./SieveAbstractIpcClient.js", "SieveAbstractIpcClient");
   globals.set("./../utils/SieveIpcClient.js", "SieveAbstractIpcClient");
 
-  globals.set("./../utils/SieveTemplateLoader.js", "SieveTemplateLoader");
+  globals.set("./../utils/SieveTemplate.js", "SieveTemplate");
   globals.set("./SieveI18n.js", "SieveI18n");
 
   globals.set("./SieveSession.js", "SieveSession");

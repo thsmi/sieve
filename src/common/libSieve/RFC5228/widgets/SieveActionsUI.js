@@ -14,54 +14,77 @@
 
   "use strict";
 
-  /* global $: false */
-
-  /* global SieveActionBoxUI */
   /* global SieveDesigner */
   /* global SieveActionDialogBoxUI */
   /* global SieveOverlayWidget */
-
-  const DOM_ELEMENT = 0;
+  /* global SieveTemplate */
 
   /**
    * Provides a UI for the stop action
    */
-  class SieveStopUI extends SieveActionBoxUI {
+  class SieveStopUI extends SieveActionDialogBoxUI {
+
+    /**
+     * @inheritdoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveStopActionUI.html";
+    }
 
     /**
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .text("End Script (Stop processing)");
+      const FRAGMENT =
+        `<div><span data-i18n="stop.summary"></span></div>`;
+
+      return (new SieveTemplate()).convert(FRAGMENT);
     }
   }
 
   /**
    * Provides a UI for the discard action
    */
-  class SieveDiscardUI extends SieveActionBoxUI {
+  class SieveDiscardUI extends SieveActionDialogBoxUI {
+
+    /**
+     * @inheritdoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveDiscardActionUI.html";
+    }
 
     /**
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .text("Discard message silently");
+      const FRAGMENT =
+        `<div><span data-i18n="discard.summary"></span></div>`;
+
+      return (new SieveTemplate()).convert(FRAGMENT);
     }
   }
 
   /**
    * Provides a UI for the keep action
    */
-  class SieveKeepUI extends SieveActionBoxUI {
+  class SieveKeepUI extends SieveActionDialogBoxUI {
+
+    /**
+     * @inheritdoc
+     */
+    getTemplate() {
+      return "./RFC5228/templates/SieveKeepActionUI.html";
+    }
 
     /**
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .text("Keep a copy in the main inbox");
+      const FRAGMENT =
+        `<div><span data-i18n="keep.summary"></span></div>`;
+
+      return (new SieveTemplate()).convert(FRAGMENT);
     }
   }
 
@@ -95,15 +118,15 @@
      */
     onSave() {
 
-      const address = $("#sivRedirectAddress");
+      const address = document.querySelector("#sivRedirectAddress");
 
-      if (address.get(DOM_ELEMENT).checkValidity() === false)
+      if (!address.checkValidity())
         return false;
 
       (new SieveOverlayWidget("action/redirect/", "#sivRedirectOverlay"))
         .save(this.getSieve());
 
-      this.address(address.val());
+      this.address(address.value);
       return true;
     }
 
@@ -111,7 +134,7 @@
      * @inheritdoc
      */
     onLoad() {
-      $("#sivRedirectAddress").val(this.address());
+      document.querySelector("#sivRedirectAddress").value = this.address();
 
       (new SieveOverlayWidget("action/redirect/", "#sivRedirectOverlay"))
         .init(this.getSieve());
@@ -121,9 +144,15 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("Redirect message to " +
-          "<em>" + $('<div/>').text(this.address()).html() + "</em>");
+      const FRAGMENT =
+        `<div>
+          <span data-i18n="redirect.summary"></span>
+          <em class="sivRedirectAddress"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivRedirectAddress").textContent = this.address();
+      return elm;
     }
   }
 
@@ -156,18 +185,15 @@
      */
     onSave() {
 
-      const path = $("#sivFileIntoPath");
+      const path = document.querySelector("#sivFileIntoPath");
 
-      const value = path.val();
-      if (value.trim() === "") {
-        path.addClass("is-invalid");
+      if (!path.checkValidity())
         return false;
-      }
 
       (new SieveOverlayWidget("action/fileinto/", "#sivFileIntoOverlay"))
         .save(this.getSieve());
 
-      this.path(value);
+      this.path(path.value);
       return true;
     }
 
@@ -175,7 +201,7 @@
      * @inheritdoc
      */
     onLoad() {
-      $("#sivFileIntoPath").val(this.path());
+      document.querySelector("#sivFileIntoPath").value = this.path();
 
       (new SieveOverlayWidget("action/fileinto/", "#sivFileIntoOverlay"))
         .init(this.getSieve());
@@ -185,12 +211,18 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("Save message into:" +
-          "<div><em>" + $('<div/>').text(this.path()).html() + "</em></div>");
+
+      const FRAGMENT =
+        `<div>
+          <div data-i18n="fileinto.summary"></div>
+          <div><em class="sivFileintoPath"></em></div>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivFileintoPath").textContent = this.path();
+      return elm;
     }
   }
-
 
   if (!SieveDesigner)
     throw new Error("Could not register Action Widgets");

@@ -106,13 +106,14 @@
 
   suite.add("Validate date test constructor", () => {
 
-    const snippet = 'date "date" "date" "' + new Date().toJSON().substring(0, 10) + '"';
+
+    const snippet = 'date "date" "date" "' + new Date().toJSON().substring(0, "YYYY-MM-DD".length) + '"';
     suite.expectValidSnippet("test/date", snippet, ["date"]);
   });
 
   suite.add("Validate currentdate test constructor", () => {
 
-    const snippet = 'currentdate "date" "' + new Date().toJSON().substring(0, 10) + '"';
+    const snippet = 'currentdate "date" "' + new Date().toJSON().substring(0, "YYYY-MM-DD".length) + '"';
     suite.expectValidSnippet("test/currentdate", snippet, ["date"]);
   });
 

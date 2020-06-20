@@ -9,14 +9,14 @@
   "devDependencies": {
     "bootstrap": "^4.5.0",
     "codemirror": "^5.54.0",
-    "electron": "^9.0.0",
+    "electron": "^9.0.4",
     "electron-packager": "^14.0.6",
-    "eslint": "^7.1.0",
-    "eslint-plugin-jsdoc": "^26.0.1",
+    "eslint": "^7.2.0",
+    "eslint-plugin-jsdoc": "^27.0.7",
+    "eslint-plugin-no-jquery": "^2.3.2",
     "gulp": "^4.0.0",
     "jquery": "^3.5.1",
     "keytar": "^6.0.1",
-    "material-design-icons-iconfont": "^5.0.1",
     "node-abi": "^2.18.0",
     "tar": "^6.0.1",
     "yazl": "^2.5.1"
@@ -27,7 +27,8 @@
     "debug": "./node_modules/.bin/electron ./build/electron/resources/ --debug",
     "test": "node ./tests/index.js",
     "server": "node ./tools/Server/Server.js",
-    "gulp": "gulp"
+    "gulp": "gulp",
+    "lint": "eslint --config .eslintrc.json src gulpfile.js gulp"
   },
   "repository": {
     "type": "git",

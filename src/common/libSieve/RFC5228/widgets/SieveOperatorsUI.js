@@ -14,7 +14,6 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveDesigner */
   /* global SieveSimpleBoxUI */
   /* global SieveDialogBoxUI */
@@ -24,6 +23,8 @@
 
   /* global SieveMoveDragHandler */
   /* global SieveTestDropHandler */
+
+  /* global SieveTemplate */
 
   const TEST_ELEMENT = 1;
 
@@ -46,17 +47,27 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .text("does not match:")
-        .append($("<ul/>").append($("<li/>").append(this.getSieve().test().html())));
+      const FRAGMENT =
+        `<div>
+           <div data-i18n="not.summary"></div>
+           <div class="sivNotTest"></div>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm
+        .querySelector(".sivNotTest")
+        .appendChild(this.getSieve().test().html());
+
+      return elm;
     }
 
     /**
      * @inheritdoc
      */
     createHtml(parent) {
-      return super.createHtml(parent)
-        .addClass("sivOperator");
+      const elm = super.createHtml(parent);
+      elm.classList.add("sivOperator");
+      return elm;
     }
   }
 
@@ -88,8 +99,9 @@
      **/
     onSave() {
 
-      const value = $("#sieve-widget-allofanyof")
-        .find("input[name='allofanyof']:checked").val();
+      const value = document
+        .querySelector("#sieve-widget-allofanyof")
+        .querySelector("input[name='allofanyof']:checked").value;
 
       if (value === "true")
         this.getSieve().isAllOf = true;
@@ -103,17 +115,29 @@
      * @inheritdoc
      */
     onLoad() {
-      $("#sieve-widget-allofanyof")
-        .find("input[name='allofanyof']")
-        .val(["" + this.getSieve().isAllOf]);
+      document
+        .querySelector("#sieve-widget-allofanyof")
+        .querySelector(`input[name='allofanyof'][value='${this.getSieve().isAllOf}']`)
+        .checked = true;
     }
 
     /**
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .text((this.getSieve().isAllOf) ? "All of the following:" : "Any of the following:");
+      const FRAGMENT =
+        `<div>
+           <span class="sivOperatorAllOf d-none" data-i18n="operator.allof.summary"></span>
+           <span class="sivOperatorAnyOf d-none" data-i18n="operator.anyof.summary"></span>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      if (this.getSieve().isAllOf)
+        elm.querySelector(".sivOperatorAllOf").classList.remove("d-none");
+      else
+        elm.querySelector(".sivOperatorAnyOf").classList.remove("d-none");
+
+      return elm;
     }
 
     /**
@@ -121,44 +145,57 @@
      */
     createHtml(parent) {
 
-      parent.addClass("sivOperator");
+      super.createHtml(parent);
+      parent.classList.add("sivOperator");
 
-      const item = $("<div/>")
-        .addClass("sivEditableElement")
-        .append($("<div/>")
-          .append(this.getSummary())
-          .addClass("sivSummaryContent")
-          .attr("id", this.uniqueId + "-summary"))
-        .append($("<div/>")
-          .addClass("sivSummaryControls")
-          .addClass("material-icons")
-          .append($("<span/>").text("edit"))
-        );
-
-      parent.append(item);
-      item.click((e) => { this.showEditor(); e.preventDefault(); return true; });
+      const testElms = document.createElement("div");
 
       for (const test of this.getSieve().tests) {
+        const dropbox = (new SieveDropBoxUI(this, "sivOperatorSpacer"))
+          .drop(new SieveMultaryDropHandler(), test[TEST_ELEMENT])
+          .html();
 
-        parent.append($("<div/>")
-          .append((new SieveDropBoxUI(this))
-            .drop(new SieveMultaryDropHandler(), test[TEST_ELEMENT])
-            .html()
-            .addClass("sivOperatorSpacer")));
+        testElms.appendChild(dropbox);
 
-        const ul = $("<ul/>");
-        ul.append(
-          $("<li/>").append(test[TEST_ELEMENT].html())
-            .addClass("sivOperatorChild"));
-        parent.append(ul);
+        const ul = document.createElement("ul");
+        ul.classList.add("mb-0");
+        ul.classList.add("pl-3");
+
+        const li = document.createElement("li");
+        li.appendChild(test[TEST_ELEMENT].html());
+        li.classList.add("sivOperatorChild");
+
+        ul.appendChild(li);
+
+        testElms.appendChild(ul);
       }
 
-      parent.append((new SieveDropBoxUI(this))
-        .drop(new SieveMultaryDropHandler())
-        .html()
-        .addClass("sivOperatorSpacer"));
+      testElms.appendChild(
+        (new SieveDropBoxUI(this, "sivOperatorSpacer"))
+          .drop(new SieveMultaryDropHandler())
+          .html());
+
+      testElms.id = `${this.uniqueId}-tests`;
+
+      parent.append(testElms);
 
       return parent;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    showSummary() {
+      super.showSummary();
+      document.querySelector(`#${this.uniqueId}-tests`).classList.remove("d-none");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    showSource() {
+      super.showSource();
+      document.querySelector(`#${this.uniqueId}-tests`).classList.add("d-none");
     }
 
   }

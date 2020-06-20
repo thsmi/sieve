@@ -21,6 +21,15 @@
 
   let editor = null;
 
+  /**
+   * Called when the editor is about to be closed.
+   * Asks if the script should be saved or closing the window should be aborted.
+   *
+   * @param {string} name
+   *   the script name
+   * @returns {boolean}
+   *   true in case the editor can be close, otherwise false.
+   */
   async function onClose(name) {
 
     const result = await(new SieveScriptSaveDialog(name).show());

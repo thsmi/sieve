@@ -11,8 +11,7 @@
 
 (function (exports) {
 
-  /* global $ */
-  /* global SieveTemplateLoader */
+  /* global SieveTemplate */
 
   "use strict";
 
@@ -64,36 +63,41 @@
 
       const id = this.getId();
 
-      let item = $(`#siv-script-${id}`);
+      let elm = document.querySelector(`#siv-script-${id}`);
       // Check if the element exists...
-      if (item.length === 0) {
+      if (!elm) {
 
-        item = await (new SieveTemplateLoader()).load("./accounts/SieveScriptUI.tpl");
+        elm = await (new SieveTemplate()).load("./accounts/SieveScriptUI.tpl");
 
-        item.attr("id", `siv-script-${id}`);
+        elm.id = `siv-script-${id}`;
 
-        $(`#siv-account-${this.account.id} .siv-tpl-scripts`).append(item);
+        document
+          .querySelector(`#siv-account-${this.account.id} .siv-tpl-scripts`)
+          .appendChild(elm);
 
-        $(item).find(".sieve-list-script-name").text(this.name);
+        elm.querySelector(".sieve-list-script-name").textContent = this.name;
 
-        $(item).find(".sieve-script-rename").click(() => { this.rename(); });
-        $(item).find(".sieve-script-delete").click(() => { this.remove(); });
-        $(item).find(".sieve-script-edit").click(() => { this.edit(); });
-        $(item).find(".sieve-script-activate").click(() => { this.activate(); });
-        $(item).find(".sieve-script-deactivate").click(() => { this.deactivate(); });
+        elm.querySelector(".sieve-script-rename")
+          .addEventListener("click", () => { this.rename(); });
+        elm.querySelector(".sieve-script-delete")
+          .addEventListener("click", () => { this.remove(); });
+        elm.querySelector(".sieve-script-edit")
+          .addEventListener("click", () => { this.edit(); });
+        elm.querySelector(".sieve-script-activate")
+          .addEventListener("click", () => { this.activate(); });
+        elm.querySelector(".sieve-script-deactivate")
+          .addEventListener("click", () => { this.deactivate(); });
       }
-
-      item.prop("active", this.isActive);
 
       if (this.isActive === false) {
-        $(`#siv-script-${id} .sieve-list-script-active`).addClass("invisible");
-        $(`#siv-script-${id} .sieve-script-activate`).removeClass("d-none");
-        $(`#siv-script-${id} .sieve-script-deactivate`).addClass("d-none");
+        elm.querySelector(".sieve-list-script-active").classList.add("invisible");
+        elm.querySelector(".sieve-script-activate").classList.remove("d-none");
+        elm.querySelector(".sieve-script-deactivate").classList.add("d-none");
       }
       else {
-        $(`#siv-script-${id} .sieve-list-script-active`).removeClass("invisible");
-        $(`#siv-script-${id} .sieve-script-activate`).addClass("d-none");
-        $(`#siv-script-${id} .sieve-script-deactivate`).removeClass("d-none");
+        elm.querySelector(".sieve-list-script-active").classList.remove("invisible");
+        elm.querySelector(".sieve-script-activate").classList.add("d-none");
+        elm.querySelector(".sieve-script-deactivate").classList.remove("d-none");
       }
     }
 

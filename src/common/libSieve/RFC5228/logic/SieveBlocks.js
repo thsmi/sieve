@@ -17,6 +17,12 @@
   /* global SieveLexer */
   /* global SieveAbstractBlock */
 
+  /**
+   *
+   * @param {*} docshell
+   * @param {string} id
+   *   the blocks unique id.
+   */
   function SieveBlockBody(docshell, id) {
     SieveAbstractBlock.call(this, docshell, id);
     this.elms = [];
@@ -60,6 +66,12 @@
   // ****************************************************************************//
 
 
+  /**
+   *
+   * @param {*} docshell
+   * @param {string} id
+   *   the blocks unique id.
+   */
   function SieveBlock(docshell, id) {
     SieveBlockBody.call(this, docshell, id);
   }
@@ -67,10 +79,10 @@
   SieveBlock.prototype = Object.create(SieveBlockBody.prototype);
   SieveBlock.prototype.constructor = SieveBlock;
 
-  SieveBlock.isElement
-    = function (parser, lexer) {
-      return parser.isChar("{");
-    };
+  // eslint-disable-next-line no-unused-vars
+  SieveBlock.isElement = function (parser, lexer) {
+    return parser.isChar("{");
+  };
 
   SieveBlock.nodeName = function () {
     return "block/block";
@@ -99,6 +111,8 @@
   const ROOT_ELEMENT_IMPORT = 0;
   const ROOT_ELEMENT_BODY = 1;
 
+  const UNKNOWN_ID = -1;
+
   /**
    *
    */
@@ -110,7 +124,7 @@
      */
     constructor(docshell) {
 
-      super(docshell, -1);
+      super(docshell, UNKNOWN_ID);
 
       this.elms[ROOT_ELEMENT_IMPORT] = this._createByName("import");
       this.elms[ROOT_ELEMENT_BODY] = this._createByName("block/body");
@@ -119,6 +133,7 @@
     /**
      * @inheritdoc
      */
+    // eslint-disable-next-line no-unused-vars
     static isElement(token, doc) {
       return false;
     }
@@ -175,7 +190,6 @@
       return super.toScript();
     }
   }
-
 
   if (!SieveLexer)
     throw new Error("Could not register Block Elements");

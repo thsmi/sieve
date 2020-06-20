@@ -17,8 +17,9 @@
   /* global SieveEditorController */
   /* global SieveTextEditorUI */
   /* global SieveGraphicalEditorUI */
-  /* global SieveTemplateLoader */
+  /* global SieveTemplate */
 
+  const EDITOR_OFFSET_PX = 40;
   /**
    * Implements a editor UI which contains a graphical as well as a text editor.
    */
@@ -36,7 +37,7 @@
     }
 
     /**
-     *
+     * Resizes the editor to fill all of the available screen.
      */
     resize() {
       const offset = $("#sieve-widget-editor").offset().top;
@@ -45,7 +46,7 @@
         return;
 
       $("#sieve-widget-editor").height(
-        $(window).height() - offset - 40);
+        $(window).height() - offset - EDITOR_OFFSET_PX);
     }
 
     /**
@@ -57,32 +58,43 @@
 
     /**
      * Renders the editor to screen.
+     *
+     * @returns {SieveEditorUI}
+     *   a self reference.
      */
     async render() {
 
-      const editor = await (new SieveTemplateLoader()).load("./editor/editor.tpl");
-      $("#sieve-editor").append(editor);
+      document.querySelector("#sieve-editor").appendChild(
+        await (new SieveTemplate()).load("./editor/editor.tpl"));
 
       await this.getTextEditor().render();
       await this.getGraphicalEditor().render();
 
       await this.loadSettings();
 
-      $("#sieve-editor-settings .sieve-editor-settings-show").click(() => {
-        $("#sieve-tab-settings").tab('show');
-      });
+      document
+        .querySelector("#sieve-editor-settings .sieve-editor-settings-show")
+        .addEventListener("click", () => {
+          $("#sieve-tab-settings").tab('show');
+        });
 
-      $("#sieve-editor-settings .sieve-editor-import").click(() => {
-        this.importScript();
-      });
+      document
+        .querySelector("#sieve-editor-settings .sieve-editor-import")
+        .addEventListener("click", () => {
+          this.importScript();
+        });
 
-      $("#sieve-editor-settings .sieve-editor-export").click(() => {
-        this.exportScript();
-      });
+      document
+        .querySelector("#sieve-editor-settings .sieve-editor-export")
+        .addEventListener("click", () => {
+          this.exportScript();
+        });
 
-      $("#sieve-editor-save").click(() => {
-        this.save();
-      });
+      document
+        .querySelector("#sieve-editor-save")
+        .addEventListener("click", () => {
+          this.save();
+        });
 
       $('.nav-item > a[href="#sieve-widget-editor"]').on('show.bs.tab', async (e) => {
 
@@ -98,13 +110,12 @@
 
       $('.nav-item > a[href="#sieve-widget-editor"]').on('shown.bs.tab', () => {
         $("#sieve-widget-editor").height(
-          $(window).height() - $("#sieve-widget-editor").offset().top - 40);
+          $(window).height() - $("#sieve-widget-editor").offset().top - EDITOR_OFFSET_PX);
       });
 
-      $(window).on("resize", () => {
+      window.addEventListener("resize", () => {
         this.resize();
       });
-
 
       $('.nav-item > a[href="#sieve-plaintext-editor"]').on('shown.bs.tab', () => {
         this.switchToTextEditor();
@@ -121,7 +132,8 @@
      * Hides/Dismisses any error messages.
      */
     hideErrorMessage() {
-      $("#sieve-editor-error").remove();
+      const elm = document.querySelector("#sieve-editor-error");
+      elm.parentNode.removeChild(elm);
     }
 
     /**
@@ -132,17 +144,15 @@
      */
     async showErrorMessage(message) {
 
-      const content = await (new SieveTemplateLoader()).load("./editor/editor.error.save.tpl");
+      const content = await (new SieveTemplate()).load("./editor/editor.error.save.tpl");
 
-      content
-        .find(".sieve-editor-error-msg")
-        .text(message);
+      content.querySelector(".sieve-editor-error-msg").textContent = message;
 
       this.hideErrorMessage();
 
-      $("#sieve-editor-toolbar").append(content);
+      document.querySelector("#sieve-editor-toolbar").appendChild(content);
 
-      content.alert();
+      $(content).alert();
 
       this.resize();
     }
@@ -260,7 +270,7 @@
      */
     async switchToTextEditor() {
 
-      $("#sieve-editor-save").show();
+      document.querySelector("#sieve-editor-save").style.display = "";
 
       if (this.isTextEditor()) {
         this.getTextEditor().focus();
@@ -290,7 +300,7 @@
      */
     async switchToGraphicalEditor() {
 
-      $("#sieve-editor-save").show();
+      document.querySelector("#sieve-editor-save").style.display = "";
 
       if (!this.isTextEditor())
         return true;
@@ -312,7 +322,7 @@
      * Switches to the settings tab.
      */
     switchToSettings() {
-      $("#sieve-editor-save").hide();
+      document.querySelector("#sieve-editor-save").style.display = "none";
     }
 
     /**
@@ -329,10 +339,12 @@
      */
     isTextEditor(value) {
 
-      if (value === true || value === false)
-        $('.nav-item > a[href="#sieve-widget-editor"]').attr("data-current-editor", (!value).toString());
+      const elm = document.querySelector('.nav-item > a[href="#sieve-widget-editor"]');
 
-      return !($('.nav-item > a[href="#sieve-widget-editor"]').attr("data-current-editor") === "true");
+      if (value === true || value === false)
+        elm.dataset.currentEditor = (!value).toString();
+
+      return !(elm.dataset.currentEditor === "true");
     }
 
     /**
@@ -375,22 +387,25 @@
      */
     async renderSettings() {
 
-      $("#sieve-content-settings").empty();
+      const parent = document.querySelector("#sieve-content-settings");
+      while (parent.firstChild)
+        parent.removeChild(parent.firstChild);
 
       await this.getTextEditor().renderSettings();
       // this.getGraphicalEditor().renderSettings();
 
-      const settings = await (new SieveTemplateLoader()).load("./editor/editor.settings.defaults.tpl");
+      parent.appendChild(
+        await (new SieveTemplate()).load("./editor/editor.settings.defaults.tpl"));
 
-      $("#sieve-content-settings").append(settings);
+      document.querySelector("#editor-settings-save-defaults")
+        .addEventListener("click", async () => {
+          await this.saveDefaultSettings();
+        });
 
-      $("#editor-settings-save-defaults").click(async () => {
-        await this.saveDefaultSettings();
-      });
-
-      $("#editor-settings-load-defaults").click(async () => {
-        await this.loadDefaultSettings();
-      });
+      document.querySelector("#editor-settings-load-defaults")
+        .addEventListener("click", async () => {
+          await this.loadDefaultSettings();
+        });
     }
 
     /**

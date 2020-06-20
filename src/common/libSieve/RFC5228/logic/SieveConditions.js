@@ -18,98 +18,149 @@
   /* global SieveBlock */
   /* global SieveBlockBody */
 
-  function SieveElse(docshell, id) {
-    SieveBlock.call(this, docshell, id);
+  const BEFORE_BLOCK = 0;
+  const AFTER_BLOCK = 1;
+  const BEFORE_TEST = 2;
 
-    this.ws = [];
 
-    this.ws[0] = this._createByName("whitespace", "\r\n");
-    this.ws[1] = this._createByName("whitespace", "\r\n");
-  }
+  /**
+   *
+   */
+  class SieveElse extends SieveBlock {
 
-  SieveElse.prototype = Object.create(SieveBlock.prototype);
-  SieveElse.prototype.constructor = SieveElse;
+    /**
+     * @inheritdoc
+     */
+    constructor(docshell, id) {
+      super(docshell, id);
 
-  SieveElse.isElement
-    = function (parser, lexer) {
+      this.ws = [];
+
+      this.ws[BEFORE_BLOCK] = this._createByName("whitespace", "\r\n");
+      this.ws[AFTER_BLOCK] = this._createByName("whitespace", "\r\n");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    // eslint-disable-next-line no-unused-vars
+    static isElement(parser, lexer) {
       return parser.startsWith("else");
-    };
+    }
 
-  SieveElse.nodeName = function () {
-    return "condition/else";
-  };
+    /**
+     * @inheritdoc
+     */
+    static nodeName() {
+      return "condition/else";
+    }
 
-  SieveElse.nodeType = function () {
-    return "condition/";
-  };
+    /**
+     * @inheritdoc
+     */
+    static nodeType() {
+      return "condition/";
+    }
 
-  SieveElse.prototype.init
-    = function (parser) {
+    /**
+     * @inheritdoc
+     */
+    init(parser) {
       parser.extract("else");
 
-      this.ws[0].init(parser);
+      this.ws[BEFORE_BLOCK].init(parser);
 
-      SieveBlock.prototype.init.call(this, parser);
+      super.init(parser);
 
-      this.ws[1].init(parser);
+      this.ws[AFTER_BLOCK].init(parser);
 
       return this;
-    };
+    }
 
-  SieveElse.prototype.toScript
-    = function () {
+    /**
+     * @inheritdoc
+     */
+    toScript() {
       return "else"
-        + this.ws[0].toScript()
-        + SieveBlock.prototype.toScript.call(this)
-        + this.ws[1].toScript();
-    };
-
-  // ****************************************************************************//
-
-  function SieveIf(docshell, id) {
-    SieveElse.call(this, docshell, id);
-
-    this._test = null;
-    this.ws[2] = this._createByName("whitespace");
+        + this.ws[BEFORE_BLOCK].toScript()
+        + super.toScript()
+        + this.ws[AFTER_BLOCK].toScript();
+    }
   }
 
-  SieveIf.prototype = Object.create(SieveElse.prototype);
-  SieveIf.prototype.constructor = SieveIf;
 
-  SieveIf.isElement
-    = function (parser, lexer) {
+  /**
+   *
+   */
+  class SieveIf extends SieveBlock {
+
+    /**
+     * @inheritdoc
+     */
+    constructor(docshell, id) {
+      super(docshell, id);
+
+      this._test = null;
+
+      this.ws = [];
+      this.ws[BEFORE_TEST] = this._createByName("whitespace");
+      this.ws[BEFORE_BLOCK] = this._createByName("whitespace", "\r\n");
+      this.ws[AFTER_BLOCK] = this._createByName("whitespace", "\r\n");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    // eslint-disable-next-line no-unused-vars
+    static isElement(parser, lexer) {
       return parser.startsWith("if");
-    };
+    }
 
-  SieveIf.nodeName = function () {
-    return "condition/if";
-  };
+    /**
+     * @inheritdoc
+     */
+    static nodeName() {
+      return "condition/if";
+    }
 
-  SieveIf.nodeType = function () {
-    return "condition/";
-  };
+    /**
+     * @inheritdoc
+     */
+    static nodeType() {
+      return "condition/";
+    }
 
-
-  SieveIf.prototype.init
-    = function (parser) {
+    /**
+     * @inheritdoc
+     */
+    init(parser) {
       parser.extract("if");
 
-      this.ws[2].init(parser);
+      this.ws[BEFORE_TEST].init(parser);
 
       this._test = this._createByClass(["test", "operator"], parser);
 
-      this.ws[0].init(parser);
+      this.ws[BEFORE_BLOCK].init(parser);
 
-      SieveBlock.prototype.init.call(this, parser);
+      // Ugly hack to all super of parent.
+      super.init(parser);
 
-      this.ws[1].init(parser);
+      this.ws[AFTER_BLOCK].init(parser);
 
       return this;
-    };
+    }
 
-  SieveIf.prototype.removeChild
-    = function (childId, cascade, stop) {
-      const elm = SieveBlock.prototype.removeChild.call(this, childId);
+    /**
+     *
+     * @param {string} childId
+     *   the child's unique id.
+     * @param {boolean} cascade
+     * @param {SieveAbstractElement} stop
+     *
+     * @returns {SieveAbstractElement}
+     */
+    removeChild(childId, cascade, stop) {
+      const elm = super.removeChild(childId);
       if (cascade && elm)
         return this;
 
@@ -129,10 +180,19 @@
         return this.remove(cascade, stop);
 
       return this;
-    };
+    }
 
-  SieveIf.prototype.test
-    = function (item) {
+    /**
+     * Gets and tests the test for the condition.
+     *
+     * @param {SieveAbstractElement} [item]
+     *   the optional test to be set.
+     *
+     * @returns {SieveAbstractElement}
+     *   the currently set test in case of a get or a self reference
+     *   in case of a set.
+     */
+    test(item) {
       if (typeof (item) === "undefined")
         return this._test;
 
@@ -147,29 +207,38 @@
       this._test = item.parent(this);
 
       return this;
-    };
+    }
 
-  SieveIf.prototype.empty
-    = function () {
+    /**
+     * Checks if the element contains any tests.
+     *
+     * @returns {boolean}
+     *   true in case the if contains tests otherwise false.
+     */
+    empty() {
       return (!this._test) ? true : false;
-    };
+    }
 
-
-  SieveIf.prototype.require
-    = function (imports) {
-      SieveElse.prototype.require.call(this, imports);
+    /**
+     * @inheritdoc
+     */
+    require(imports) {
+      super.require(imports);
       this._test.require(imports);
-    };
+    }
 
-  SieveIf.prototype.toScript
-    = function () {
+    /**
+     * @inheritdoc
+     */
+    toScript() {
       return "if"
-        + this.ws[2].toScript()
+        + this.ws[BEFORE_TEST].toScript()
         + this._test.toScript()
-        + this.ws[0].toScript()
-        + SieveBlock.prototype.toScript.call(this)
-        + this.ws[1].toScript();
-    };
+        + this.ws[BEFORE_BLOCK].toScript()
+        + super.toScript()
+        + this.ws[AFTER_BLOCK].toScript();
+    }
+  }
 
   /**
    *
@@ -227,6 +296,13 @@
       return this;
     }
 
+    /**
+     *
+     * @param {String} childId
+     *   the childs unique id.
+     * @param {boolean} cascade
+     * @param {SieveAbstractElement} stop
+     */
     removeChild(childId, cascade, stop) {
       // should we remove the whole node
       if (typeof (childId) === "undefined")
@@ -235,7 +311,7 @@
       if (stop && (stop.id() === this.id()))
         cascade = false;
 
-      const elm = SieveBlockBody.prototype.removeChild.call(this, childId, cascade, stop);
+      const elm = super.removeChild(childId, cascade, stop);
 
       //  ... if we endup after delete with just an else, merge it into parent...
       if ((this.children().length) && (!this.children(0).test)) {

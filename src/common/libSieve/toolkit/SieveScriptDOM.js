@@ -22,7 +22,6 @@
   /**
    * Creates a new document for sieve scripts it is used to parse
    * store and manipulate sieve scripts
-   *
    */
   class SieveDocument {
 
@@ -56,6 +55,12 @@
       return this._rootNode;
     }
 
+    /**
+     *
+     * @param {*} elms
+     * @param {*} name
+     * @param {*} result
+     */
     _walk(elms, name, result) {
 
       elms.forEach(function (item) {
@@ -73,6 +78,14 @@
       }, this);
     }
 
+    /**
+     * Walks the document tree from the root node looking for the given name.
+     *
+     * @param {string} name
+     *   the name which should be queried.
+     * @returns {SieveAbstractElement[]}
+     *   the element found.
+     */
     queryElements(name) {
 
       const result = [];
@@ -82,15 +95,36 @@
       return result;
     }
 
+    /**
+     * Renders this the document as html
+     *
+     * @returns {HTMLElement}
+     *   the html element
+     */
     html() {
       return this._rootNode.widget().html();
     }
 
+    /**
+     *
+     * @param {*} elm
+     */
     layout(elm) {
       return this._widgets.widget(elm);
     }
 
-    // A shorthand to create children bound to this Element...
+    /**
+     * A shorthand to create children bound to this Element...
+     *
+     * @param {string} name
+     *   the element name.
+     * @param {SieveParser|string} parser
+     *   a parser object or a string which holds the data that should be evaluated.
+     * @param {SieveAbstractElement} [parent]
+     *   a the elements optional parent.
+     * @returns {SieveAbstractElement}
+     *   the newly generated element.
+     */
     createByName(name, parser, parent) {
       if (typeof (parser) === "string")
         parser = new SieveParser(parser);
@@ -106,6 +140,14 @@
       return item;
     }
 
+    /**
+     *
+     * @param {string|string[]} types
+     *   an list with types.
+     * @param {SieveParser|string} parser
+     *   a parser object or a string which holds the data that should be evaluated.
+     * @param {*} parent
+     */
     createByClass(types, parser, parent) {
       if (typeof (parser) === "string")
         parser = new SieveParser(parser);
@@ -121,6 +163,12 @@
       return item;
     }
 
+    /**
+     *
+     * @param {string} name
+     * @param {string|SieveParser} parser
+     *   a parser object or a string which holds the data that should be evaluated.
+     */
     probeByName(name, parser) {
       if (typeof (parser) === "string")
         parser = new SieveParser(parser);
@@ -146,18 +194,39 @@
       return this._lexer.probeByClass(types, parser);
     }
 
+    /**
+     *
+     * @param {string} name
+     */
     supportsByName(name) {
       return this._lexer.supportsByName(name);
     }
 
+    /**
+     *
+     * @param {*} type
+     */
     supportsByClass(type) {
       return this._lexer.supportsByClass(type);
     }
 
+    /**
+     *
+     * @param {string} id
+     *   the unique id
+     */
     id(id) {
       return this._nodes[id];
     }
 
+    /**
+     * Gets and sets the script content for this document.
+     *
+     * @param {string} [data]
+     *   the script content to be parsed by this document.
+     * @returns {string}
+     *   the document converted to a script
+     */
     script(data) {
       if (typeof (data) === "undefined")
         return this._rootNode.toScript();
@@ -194,6 +263,10 @@
       return parser.bytes();
     }
 
+    /**
+     *
+     * @param {*} capabilities
+     */
     capabilities(capabilities) {
       if (typeof (capabilities) === "undefined")
         return this._lexer.capabilities();

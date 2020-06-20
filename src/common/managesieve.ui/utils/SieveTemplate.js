@@ -13,14 +13,13 @@
 
   "use strict";
 
-  /* global $ */
   const { SieveLogger } = require("./SieveLogger.js");
   const { SieveI18n } = require("./SieveI18n.js");
 
   /**
    * Loads an html fragment from a file or url.
    */
-  class SieveTemplateLoader {
+  class SieveTemplate {
 
     /**
      * Gets an instance of the default i18n
@@ -90,7 +89,6 @@
       return fragment;
     }
 
-
     /**
      * Loads an html fragment from file or url
      *
@@ -101,41 +99,20 @@
      */
     async load(tpl) {
 
-      // ensure we bypass any caching...
-      tpl += "?_=" + (new Date().getTime());
-
       this.getLogger().logWidget(`Load template ${tpl}`);
 
-      return await new Promise((resolve, reject) => {
+      const html = await (await fetch(tpl, { cache: "no-store" })).text();
 
-        const onError = (status, text) => {
-          this.getLogger().logWidget(`Loading template ${tpl} failed\n ${status} ${text}`);
+      const doc = (new DOMParser()).parseFromString(html, "text/html");
 
-          reject(new Error(`Failed to load resource. ${tpl}`));
-        };
-
-        const onSuccess = (content) => {
-          this.getLogger().logWidget(`Template ${tpl} loaded`);
-
-          resolve($(this.translate(content).children));
-        };
-
-        $("<template />").load(tpl,
-          function (response, status, xhr) {
-            if (status === "error") {
-              onError(xhr.status, xhr.statusText);
-              return;
-            }
-
-            onSuccess(this.content);
-          });
-      });
+      return this.translate(doc.body.firstElementChild);
     }
   }
 
+
   if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveTemplateLoader = SieveTemplateLoader;
+    module.exports.SieveTemplate = SieveTemplate;
   else
-    exports.SieveTemplateLoader = SieveTemplateLoader;
+    exports.SieveTemplate = SieveTemplate;
 
 })(this);

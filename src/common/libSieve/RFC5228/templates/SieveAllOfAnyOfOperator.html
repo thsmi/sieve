@@ -1,10 +1,10 @@
 <div>
   <ul id="template-tabs">
     <li class="nav-item">
-      <a class="nav-link active" data-toggle="tab" href="#sieve-widget-allofanyof" role="tab">AllOf/AnyOf</a>
+      <a data-i18n="allofanyof.tab.home" class="nav-link active" data-toggle="tab" href="#sieve-widget-allofanyof" role="tab"></a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+      <a data-i18n="allofanyof.tab.help" class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab"></a>
     </li>
   </ul>
 
@@ -13,20 +13,20 @@
       <div class="tab-pane fade show active" id="sieve-widget-allofanyof" role="tabpanel">
 
         <div class="form-group">
-          <label>Consider the test as successfull if ...</label>
+          <label data-i18n="allofanyof.label"></label>
 
           <div class="custom-control custom-radio">
             <input type="radio" id="SieveAllOf" name="allofanyof" value="true" class="custom-control-input" />
-            <label class="custom-control-label" for="SieveAllOf">... all of the tests succeed</label>
+            <label data-i18n="allofanyof.allof" class="custom-control-label" for="SieveAllOf"></label>
           </div>
           <div class="custom-control custom-radio">
             <input type="radio" id="SieveAnyOf" name="allofanyof" value="false" class="custom-control-input" />
-            <label class="custom-control-label" for="SieveAnyOf">... any of the tests succeed</label>
+            <label data-i18n="allofanyof.anyof" class="custom-control-label" for="SieveAnyOf"></label>
           </div>
         </div>
 
       </div>
-      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+      <div data-i18n="allofanyof.help" class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
       </div>
     </div>
   </div>

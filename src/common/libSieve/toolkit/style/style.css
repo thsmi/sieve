@@ -1,5 +1,5 @@
 
-.sivAction[sivtype],
+.sivAction[data-sieve-flavour],
 .sivConditionText,
 .sivConditionCode
 {
@@ -18,7 +18,7 @@
 
 .sivConditionCode,
 .sivConditionText,
-.sivEditableElement[sivtype],
+.sivEditableElement[data-sieve-flavour],
 .sivEditableElement
 {
   display: flex;
@@ -29,7 +29,7 @@
   flex: 1 1 auto;
 }
 
-.sivEditableElement > .sivSummaryCode {
+.sivEditableElement > .sivSummaryCode > code{
   white-space: pre-wrap;
 }
 
@@ -50,7 +50,7 @@
 }
 
 
-div[sivtype][sivDragging="true"] {
+div[data-sieve-flavour][data-sieve-dragging] {
   border-radius: 2px;
   box-shadow: 0 0 5px red;
 }
@@ -104,7 +104,7 @@ div[sivtype][sivDragging="true"] {
 }
 
 .sivConditionalChild {
-  padding:3px;
+  padding:3px 0px 3px 3px;
   background-color: #E8EDF0;
   border: 1px #DDE4E9 solid
 }
@@ -123,24 +123,30 @@ div[sivtype][sivDragging="true"] {
   padding:0px;
 }
 
+.sivBlockSpacer,
+.sivOperatorSpacer,
+.sivConditionSpacer
+{
+  height: 6px;
+}
 
-.sivBlockSpacer > .sivDropBox,
-.sivOperatorSpacer > .sivDropBox,
-.sivConditionSpacer > .sivDropBox
+.sivBlockSpacer > div,
+.sivConditionSpacer > div,
+.sivOperatorSpacer > div
 {
   height: 3px;
 }
 
-.sivBlockSpacer[sivDragging="true"] > .sivDropBox,
-.sivConditionSpacer[sivDragging="true"] > .sivDropBox,
-.sivOperatorSpacer[sivDragging="true"] > .sivDropBox
- {
+.sivBlockSpacer[data-sieve-dragging] > div,
+.sivConditionSpacer[data-sieve-dragging] > div,
+.sivOperatorSpacer[data-sieve-dragging] > div
+{
   background-color : red;
-  background-image: -moz-linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
+  background-image: linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
   box-shadow: 0 0 5px red;
 }
 
-#toolbar div[sivtype]
+#toolbar div[data-sieve-flavour]
 {
   margin:2px 5px;
   padding:0px 3px;

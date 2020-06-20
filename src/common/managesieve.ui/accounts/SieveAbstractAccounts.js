@@ -13,7 +13,6 @@
 
   "use strict";
 
-  /* global $ */
   /* global SieveAccountUI */
   /* global SieveIpcClient */
   /* global SieveLogger */
@@ -38,14 +37,17 @@
      */
     async render() {
 
-      $(".siv-accounts-items").empty();
       this.getLogger().logWidget("Rendering Accounts...");
 
-      const items = await SieveIpcClient.sendMessage("core", "accounts-list");
+      const items = document.querySelector(".siv-accounts-items");
+      while (items.firstChild)
+        items.removeChild(items.firstChild);
 
-      for (const item of items) {
-        this.getLogger().logWidget(` + Accounts ${item}`);
-        await ((new SieveAccountUI(this, item)).render());
+      const accounts = await SieveIpcClient.sendMessage("core", "accounts-list");
+
+      for (const account of accounts) {
+        this.getLogger().logWidget(` + Accounts ${account}`);
+        await ((new SieveAccountUI(this, account)).render());
       }
     }
   }

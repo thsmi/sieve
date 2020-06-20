@@ -27,8 +27,7 @@
 
     const script = ""
       + 'require ["editheader"];\r\n'
-      // FIXME:
-      // + '// Don\'t redirect if we already redirected\r\n'
+      + '/* Don\'t redirect if we already redirected*/\r\n'
       + 'if not header :contains "X-Sieve-Filtered"\r\n'
       + '        ["<kim@job.example.com>", "<kim@home.example.com>"]\r\n'
       + '{\r\n'

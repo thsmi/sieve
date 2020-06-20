@@ -14,24 +14,33 @@
 
   "use strict";
 
-  /* global $: false */
-  /* global SieveActionBoxUI */
   /* global SieveActionDialogBoxUI */
   /* global SieveDesigner */
   /* global SieveStringListWidget */
+  /* global SieveTemplate */
 
-  const DOM_ELEMENT = 0;
   /**
    * Provides an UI for the Return Action
    */
-  class SieveReturnUI extends SieveActionBoxUI {
+  class SieveReturnUI extends SieveActionDialogBoxUI {
+
+    /**
+     * @inheritdoc
+     */
+    getTemplate() {
+      return "./include/template/SieveReturnActionUI.html";
+    }
 
     /**
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .text("End current script and return to the parent script");
+      const FRAGMENT =
+        `<div>
+           <div data-i18n="return.summary"></div>
+         </div>`;
+
+      return (new SieveTemplate()).convert(FRAGMENT);
     }
   }
 
@@ -41,6 +50,8 @@
   class SieveGlobalActionUI extends SieveActionDialogBoxUI {
 
     /**
+     * The variables which are exported into the global namespace.
+     *
      * @returns {SieveAbstractElement}
      *   the element's variables field
      */
@@ -87,9 +98,16 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .append($("<span/>").text("Define global variable(s): "))
-        .append($("<em/>").text(this.variables().values()));
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="global.summary"></span>
+           <em class="sivGlobalVariables"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivGlobalVariables").textContent
+        = this.variables().values();
+      return elm;
     }
   }
 
@@ -179,12 +197,16 @@
      * @inheritdoc
      */
     onLoad() {
-      $('input:radio[name="personal"][value="' + !!this.personal() + '"]').prop('checked', true);
 
-      $('input:checkbox[name="optional"]').prop('checked', !!this.optional());
-      $('input:checkbox[name="once"]').prop('checked', !!this.once());
+      if (this.personal())
+        document.querySelector("#sivIncludePersonal").checked = true;
+      else
+        document.querySelector("#sivIncludeGlobal").checked = true;
 
-      $("#sivIncludeScriptName").val(this.script());
+      document.querySelector('#sivIncludeOptional').checked = !!this.optional();
+      document.querySelector('#sivIncludeOnce').checked = !!this.once();
+
+      document.querySelector("#sivIncludeScriptName").value = this.script();
     }
 
     /**
@@ -192,17 +214,16 @@
      */
     onSave() {
 
-      const script = $("#sivIncludeScriptName");
+      const script = document.querySelector("#sivIncludeScriptName");
 
-      if (!script.get(DOM_ELEMENT).checkValidity()) {
+      if (!script.checkValidity())
         return false;
-      }
 
-      this.script(script.val());
+      this.script(script.value);
 
-      this.personal($("input[type='radio'][name='personal']:checked").val() === "true");
-      this.optional(($("input:checkbox[name='optional']:checked").length > 0));
-      this.once(($("input:checkbox[name='once']:checked").length > 0));
+      this.personal(document.querySelector("#sivIncludePersonal").checked);
+      this.optional(document.querySelector('#sivIncludeOptional').checked);
+      this.once(document.querySelector('#sivIncludeOnce').checked);
 
       return true;
     }
@@ -211,13 +232,25 @@
      * @inheritdoc
      */
     getSummary() {
-      const str =
-        "Include "
-        + (this.personal() ? "personal" : "global")
-        + " script " + $('<em/>').text(this.script()).html();
 
-      return $("<div/>")
-        .html(str);
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="include.summary1"></span>
+           <span class="sivIncludePersonal" data-i18n="include.summary.personal"></span>
+           <span class="sivIncludeGlobal" data-i18n="include.summary.global"></span>
+           <span data-i18n="include.summary2"></span>
+           <em class="sivIncludeScript"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+
+      if (!this.personal())
+        elm.querySelector(".sivIncludeGlobal").classList.add("d-none");
+      else
+        elm.querySelector(".sivIncludePersonal").classList.add("d-none");
+
+      elm.querySelector(".sivIncludeScript").textContent = this.script();
+      return elm;
     }
   }
 

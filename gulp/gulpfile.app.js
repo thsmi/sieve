@@ -179,19 +179,6 @@ function packageBootstrap() {
 }
 
 /**
- * Copies the material design icons into the build directory.
- *
- * @returns {Stream}
- *   a stream to be consumed by gulp
- */
-function packageMaterialIcons() {
-  "use strict";
-
-  return common.packageMaterialIcons(
-    `${BUILD_DIR_APP}/libs/material-icons`);
-}
-
-/**
  * Copies the source files into the app/ directory...
  *
  * @returns {Stream}
@@ -600,7 +587,6 @@ exports["packageDefinition"] = packageDefinition;
 exports["packageJQuery"] = packageJQuery;
 exports["packageCodeMirror"] = packageCodeMirror;
 exports["packageBootstrap"] = packageBootstrap;
-exports["packageMaterialIcons"] = packageMaterialIcons;
 exports["packageLicense"] = packageLicense;
 exports["packageSrc"] = packageSrc;
 exports["packageLibManageSieve"] = packageLibManageSieve;
@@ -640,7 +626,6 @@ exports['package'] = series(
     packageJQuery,
     packageCodeMirror,
     packageBootstrap,
-    packageMaterialIcons,
     packageLibManageSieve,
     packageLibSieve,
     packageManageSieveUi,

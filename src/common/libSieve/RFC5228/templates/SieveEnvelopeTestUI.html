@@ -1,13 +1,13 @@
 <div>
   <ul id="template-tabs">
     <li class="nav-item">
-      <a class="nav-link active" data-toggle="tab" href="#sieve-widget-envelope-test" role="tab">Envelope</a>
+      <a data-i18n="envelope.tab.home" class="nav-link active" data-toggle="tab" href="#sieve-widget-envelope-test" role="tab"></a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+      <a data-i18n="envelope.tab.advanced" class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab"></a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+      <a data-i18n="envelope.tab.help" class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab"></a>
     </li>
   </ul>
 
@@ -15,7 +15,7 @@
     <div class="tab-content m-2">
       <div class="tab-pane fade show active" id="sieve-widget-envelope-test" role="tabpanel">
         <div class="form-group">
-          <h5>Any of the following envelope fields ...</h5>
+          <h5 data-i18n="envelope.envelopes"></h5>
 
           <div id="sivEnvelopeList"
                data-list-dropdown="#sivEnvelopeListTemplate">
@@ -29,33 +29,20 @@
           </div>
 
           <hr />
-          <div id="sivEnvelopeMatchTypes"> </div>
+          <div id="sivEnvelopeMatchTypes"></div>
           <hr />
-          <div id="sivEnvelopeAddressPart"> </div>
+          <div id="sivEnvelopeAddressPart"></div>
           <hr />
 
-          <h5>... any of the keyword(s):</h5>
-          <div id="sivEnvelopeKeyList">
-          </div>
+          <h5 data-i18n="envelope.keywords"></h5>
+          <div id="sivEnvelopeKeyList"></div>
 
         </div>
       </div>
       <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
         <div id="sivEnvelopeComparator"> </div>
       </div>
-      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
-        <p>Compares fields against the envelope</p>
-        <p>The envelop is equivalent to the mail delivery protocol. So it does not test against a real header. Instead uses
-          trace information from the mail delivery protocol for specific values.</p>
-        <p>A "to" tests the SMTP sender field "RCPT TO" a "from" the recipient "MAIL FROM". </p>
-        <p>It is the most reliant way to test from which address a message was send to or received.</p>
-
-        <p>Compares headers against constant strings.</p>
-        <p>You typically use this test with headers containing subject line or a spam score.</p>
-        <p>Do not use this test, if the header should be matched against a mail addresses. The result will be unrealiable, as
-          this test is not aware of display names. Use the address test instead.
-        </p>
-      </div>
+      <div data-i18n="envelope.help" style="white-space: pre-line" class="tab-pane fade" id="sieve-widget-help" role="tabpanel"></div>
     </div>
   </div>
 </div>

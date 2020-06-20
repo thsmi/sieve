@@ -28,6 +28,7 @@
     /**
      * @inheritdoc
      */
+    // eslint-disable-next-line no-unused-vars
     static isElement(parser, lexer) {
       return parser.startsWith("\r\n");
     }
@@ -78,6 +79,7 @@
     /**
      * @inheritdoc
      */
+    // eslint-disable-next-line no-unused-vars
     static isElement(parser, lexer) {
       return (parser.isChar([" ", "\t"]));
     }
@@ -131,6 +133,7 @@
     /**
      * @inheritdoc
      */
+    // eslint-disable-next-line no-unused-vars
     static isElement(parser, lexer) {
       return parser.startsWith("/*");
     }
@@ -185,6 +188,7 @@
     /**
      * @inheritdoc
      */
+    // eslint-disable-next-line no-unused-vars
     static isElement(parser, lexer) {
       return parser.isChar("#");
     }

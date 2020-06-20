@@ -121,7 +121,7 @@
 
   // Usage:  exists [":mime"] [":anychild"] <header-names: string-list>
   SieveGrammar.extendTest({
-    extends: "test/exits",
+    extends: "test/exists",
 
     properties: [{
       id: "tags",

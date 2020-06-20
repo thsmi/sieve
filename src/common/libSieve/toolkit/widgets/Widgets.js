@@ -14,10 +14,10 @@
 
   "use strict";
 
-  const DOM_ELEMENT = 0;
-
-  /* global $: false */
   /* global SieveDesigner */
+  /* global SieveTemplate */
+
+  const DEFAULT_STRING_LIST_MIN = 1;
 
   /**
    * Provides a string list UI.
@@ -32,17 +32,17 @@
      */
     constructor(selector) {
       this._selector = selector;
-      this._min = 1;
+      this._min = DEFAULT_STRING_LIST_MIN;
     }
 
     /**
      * Checks if the strings contained in the list are unique.
      *
      * @returns {boolean}
-     *   true in case all strings are unique otherwise flase
+     *   true in case all strings are unique otherwise false
      */
     isUnique() {
-      // We add the values to a set, this guarantees uniquenes
+      // We add the values to a set, this guarantees uniqueness
       // and drops duplicate elements.
       return (new Set(this.values()).size === this.values().length);
     }
@@ -66,17 +66,22 @@
     }
 
     /**
+     * Checks if String list has a reference to a drop down menu.
+     *
      * @returns {boolean}
      *   true in case the widget as a drop down otherwise false
      */
-    _hasDropDown() {
-      return $(this._selector)[DOM_ELEMENT].hasAttribute("data-list-dropdown");
+    hasDropDown() {
+      if (document.querySelector(this._selector).dataset.listDropdown)
+        return true;
+
+      return false;
     }
 
     /**
      * Called when a new item was added.
      *
-     * @param {DomElement} item
+     * @param {HTMLElement} item
      *   the item's dom element
      * @param {string} value
      *   the default value to set
@@ -84,25 +89,47 @@
      */
     onItemAdded(item, value) {
 
-      item.find("input[type=text], input[type=email]").val(value).focus();
+      const target = item.querySelector("input[type=text], input[type=email]");
+      target.value = value;
+      target.focus();
 
       // Connect the delete button
-      item.find(".sieve-stringlist-delete").click(() => {
-        if (this._min >= this.items().length)
-          return;
+      item
+        .querySelector(".sieve-stringlist-delete")
+        .addEventListener("click", () => {
+          if (this._min >= this.items().length)
+            return;
 
-        item.remove();
-      });
+          item.parentNode.removeChild(item);
+        });
 
       // connect the drop down menu...
-      if (this._hasDropDown()) {
-        const elm = $($(this._selector).attr("data-list-dropdown")).children().first().clone();
+      if (!this.hasDropDown())
+        return;
 
-        item.find(".sieve-stringlist-dropdown").removeClass("d-none");
-        item.find(".sieve-stringlist-dropdown").before(elm);
+      // Get the dropdown selector
+      const id = document.querySelector(this._selector).dataset.listDropdown;
 
-        elm.find("button").on("click", (event) => {
-          this.onItemSelected(item, $(event.currentTarget));
+      // Try to load the template, in case it does not exist we fail silently.
+      const template = document.querySelector(id);
+      if (!template)
+        return;
+
+      const elm = template.firstElementChild.cloneNode(true);
+
+      // Show the dropdown button.
+      item
+        .querySelector(".sieve-stringlist-dropdown")
+        .classList.remove("d-none");
+
+      // and connect the cloned menu
+      item
+        .querySelector(".sieve-stringlist-dropdown")
+        .insertAdjacentElement('beforebegin', elm);
+
+      for (const menu of elm.querySelectorAll(".dropdown-item")) {
+        menu.addEventListener("click", () => {
+          this.onItemSelected(item, menu);
         });
       }
     }
@@ -110,25 +137,25 @@
     /**
      * Called when a dropdown item is selected
      *
-     * @param {JQuery} item
+     * @param {HTMLElement} item
      *   the string list widget.
-     * @param {JQuery} menuItem
+     * @param {HTMLElement} menuItem
      *   the menu item which was clicked
      */
     onItemSelected(item, menuItem) {
 
-      if (menuItem.attr("data-value")) {
+      let value = menuItem.textContent;
 
-        item.find("input[type=text], input[type=email]")
-          .val(menuItem.attr("data-value"))
-          .focus();
+      if (menuItem.dataset.value !== undefined)
+        value = menuItem.dataset.value;
 
+      const target = item.querySelector("input[type=text], input[type=email]");
+
+      if (target === null)
         return;
-      }
 
-      item.find("input[type=text], input[type=email]")
-        .val(menuItem.text())
-        .focus();
+      target.value = value;
+      target.focus();
     }
 
     /**
@@ -140,20 +167,22 @@
      * @returns {SieveStringListWidget}
      *   a self reference
      */
-    addItem(value) {
+    async addItem(value) {
 
       if (typeof (value) === "undefined" || value === null)
         value = "";
 
-      const item = $("<div/>");
+      const container = document.createElement("div");
 
-      $(this._selector)
-        .find(".sieve-stringlist-items")
-        .append(item);
+      const item = document.querySelector(`${this._selector} .sieve-stringlist-items`);
+      item.appendChild(container);
 
-      $(item).load("./toolkit/templates/SieveStringListWidget.html #template .string-list-item-template", () => {
-        this.onItemAdded(item, value);
-      });
+      const template = (await (new SieveTemplate())
+        .load("./toolkit/templates/SieveStringListWidget.html"))
+        .querySelector(".string-list-item-template");
+
+      container.appendChild(template);
+      this.onItemAdded(container, value);
 
       return this;
     }
@@ -168,26 +197,35 @@
      */
     init(values) {
 
-      $(this._selector).empty();
+      const elm = document.querySelector(this._selector);
 
-      const items = $("<div/>")
-        .addClass("sieve-stringlist-items");
+      while (elm.firstChild)
+        elm.removeChild(elm.firstChild);
 
-      const controls = $("<div/>")
-        .addClass("sieve-stringlist-control");
+      const items = document.createElement("div");
+      items.classList.add("sieve-stringlist-items");
 
-      $(this._selector)
-        .append(items)
-        .append(controls);
+      const controls = document.createElement("div");
+      controls.classList.add("sieve-stringlist-control");
 
-      $(controls).load("./toolkit/templates/SieveStringListWidget.html #template .sieve-stringlist-add", () => {
-        controls.click(() => { this.addItem(); });
-      });
+      elm.appendChild(items);
+      elm.appendChild(controls);
 
-      this._min = parseInt($(this._selector).attr("data-list-min"), 10);
+
+      (async () => {
+        const template = (await (new SieveTemplate())
+          .load("./toolkit/templates/SieveStringListWidget.html"))
+          .querySelector(".sieve-stringlist-add");
+
+        controls.appendChild(template);
+        controls
+          .addEventListener("click", () => { this.addItem(); });
+      })();
+
+      this._min = parseInt(elm.dataset.listMin, 10);
 
       if (isNaN(this._min))
-        this._min = 1;
+        this._min = DEFAULT_STRING_LIST_MIN;
 
       // init values if possible
       if (values === null || typeof (values) === "undefined")
@@ -213,13 +251,16 @@
 
     /**
      * Returns all input elements which are associated with this string list.
-     * @returns {jQuery}
+     *
+     * @returns {NodeList}
      *   the input elements.
      */
     items() {
+
       const id = this._selector;
 
-      return $(id + " input[type='text']," + id + " input[type='email']");
+      return document
+        .querySelectorAll(`${id} input[type='text'], ${id} input[type='email']`);
     }
 
     /**
@@ -238,18 +279,16 @@
         if (Array.isArray(values) === false)
           throw new Error("Values is not an array");
 
-        values.forEach(function (value) {
-          this.addItem(value);
-        }, this);
-
+        values.forEach(async (value) => {
+          await this.addItem(value);
+        });
       }
 
       // Convert the items into a string array...
       const result = [];
 
-      this.items().each(function () {
-        result.push($(this).val());
-      });
+      for (const item of this.items())
+        result.push(item.value);
 
       return result;
     }
@@ -257,7 +296,7 @@
 
   /**
    * Provides a widget for dropdown
-   * e.g. the addres part uses it
+   * e.g. the address part uses it
    */
   class SieveDropDownWidget {
 
@@ -274,7 +313,7 @@
     }
 
     /**
-     * Initializes the widget's dropdown items.
+     * Initializes the widgets' dropdown items.
      * @param {SieveAbstractElement} sivElement
      *   the sieve element which should
      *
@@ -293,12 +332,18 @@
      *   the sieve element which should be rendered.
      *
      */
-    init(sivElement) {
+    async init(sivElement) {
 
-      $(this.selector)
-        .load("./toolkit/templates/SieveDropDownWidget.html #template", () => {
-          this.initWidgets(sivElement);
-        });
+      const template = await (new SieveTemplate()).load("./toolkit/templates/SieveDropDownWidget.html");
+
+      const elm = document.querySelector(this.selector);
+      while (elm.firstChild)
+        elm.removeChild(elm.firstChild);
+
+      while (template.children.length)
+        elm.appendChild(template.firstChild);
+
+      this.initWidgets(sivElement);
     }
 
     /**
@@ -329,7 +374,9 @@
     }
 
     /**
+     * Gets the node type.
      * @abstract
+     *
      * @returns {string}
      *   the element's node type as string
      */
@@ -338,15 +385,19 @@
     }
 
     /**
+     * Gets the node name.
      * @abstract
+     *
      * @returns {string}
-     *   the elements node name as string
+     *   the elements node name as string.
      */
     static nodeName() {
       throw new Error("Implement a nodeName()");
     }
 
     /**
+     * Checks if the element is compatible.
+     *
      * @returns {boolean}
      *   the element's capabilities
      */
@@ -390,40 +441,26 @@
      *
      * @param {SieveAbstractElement} sivElement
      *   selects the current matchtype in case it is true.
-     * @param {Function} onInitialized
-     *   optional callback invoked when the element is fully initialized
+     *
+     * @returns {HTMLElement}
+     *   a reference to the newly initialized html element.
      */
-    init(sivElement, onInitialized) {
-      const that = this;
+    async init(sivElement) {
 
-      // We need here some to make mozilla happy.
-      // it is no more possible to load fragments from chrome urls
+      const template = await (new SieveTemplate()).load(this.getTemplate());
 
-      const xhr = new XMLHttpRequest();
-      xhr.onload = function () {
+      const container = document.createElement("div");
 
-        const item = this.responseXML.querySelector("#test42");
+      while (template.children.length)
+        container.appendChild(template.firstChild);
 
-        const div = document.createElement("div");
-        div.innerHTML = item.innerHTML;
+      container.dataset.nodename = this.constructor.nodeName();
 
-        div.setAttribute("data-nodename", that.constructor.nodeName());
+      this.getElement().appendChild(container);
 
-        that.getElement().append(div);
+      this.load(sivElement);
 
-        that.load(sivElement);
-
-        if (typeof(onInitialized) !== "undefined" && onInitialized !== null)
-          onInitialized(that.getElement());
-      };
-      xhr.open("GET", this.getTemplate());
-      xhr.responseType = "document";
-      xhr.setRequestHeader('cache-control', 'no-cache, must-revalidate, post-check=0, pre-check=0');
-      xhr.setRequestHeader('cache-control', 'max-age=0');
-      xhr.setRequestHeader('expires', '0');
-      xhr.setRequestHeader('expires', 'Tue, 01 Jan 1980 1:00:00 GMT');
-      xhr.setRequestHeader('pragma', 'no-cache');
-      xhr.send();
+      return this.getElement();
     }
 
     /**
@@ -434,7 +471,7 @@
      *
      */
     load(sivElement) {
-      throw new Error("Implement load " + sivElement);
+      throw new Error(`Implement load ${sivElement}`);
     }
 
     /**
@@ -445,7 +482,7 @@
      *
      */
     save(sivElement) {
-      throw new Error("Implement load " + sivElement);
+      throw new Error(`Implement load ${sivElement}`);
     }
   }
 
@@ -459,22 +496,21 @@
      *
      * @param {SieveElement} sivElement
      *   the parent sieve element
-     *
      */
+    // eslint-disable-next-line no-unused-vars
     onLoad(sivElement) {
       this.select();
     }
 
     /**
-     * Called wehn the UI element should be persisted to a sieve script.
+     * Called when the UI element should be persisted to a sieve script.
      *
      * @param {SieveElement} sivElement
      *   the parent sieve element
      *
      */
     onSave(sivElement) {
-      sivElement.setElement(
-        this.getActiveItem().attr("data-value"));
+      sivElement.setElement(this.getActiveItem().dataset.value);
     }
 
     /**
@@ -482,29 +518,37 @@
      *
      */
     select() {
-      const menuElement = this.getMenuItem();
+      const menuElement = this.getMenuItem().cloneNode(true);
       const activeElement = this.getActiveItem();
 
-      activeElement
-        .html(menuElement.html())
-        .attr("data-nodename", this.constructor.nodeName())
-        .attr("data-value", menuElement.attr("data-value"));
+      while (activeElement.firstChild)
+        activeElement.removeChild(activeElement.firstChild);
+
+      while (menuElement.firstChild)
+        activeElement.appendChild(menuElement.firstChild);
+
+      activeElement.dataset.nodename = this.constructor.nodeName();
+      activeElement.dataset.value = menuElement.dataset.value;
     }
 
     /**
-     * Gets the currently active item. It does not nessearily be this item.
+     * Gets the currently active dropdown item. It does not necessarily be this item.
      *
+     * @returns {HTMLElement}
+     *   the active dropdown item.
      */
     getActiveItem() {
-      return $("" + this.selector + " .sivDropDownWidget-active");
+      return document.querySelector(`${this.selector} .sivDropDownWidget-active`);
     }
 
     /**
      * Gets the menu item for this item.
      *
+     * @returns {HTMLElement}
+     *   the menu item.
      */
     getMenuItem() {
-      return $('' + this.selector + ' .sivDropDownWidget-menu div[data-nodename="' + this.constructor.nodeName() + '"] .dropdown-item');
+      return document.querySelector(`${this.selector} .sivDropDownWidget-menu div[data-nodename="${this.constructor.nodeName()}"] .dropdown-item`);
     }
 
     /**
@@ -513,12 +557,12 @@
     load(sivElement) {
 
       const element = this.getMenuItem();
-      element.click(() => { this.select(); });
+      element.addEventListener("click", () => { this.select(); });
 
       if (this.constructor.nodeName() !== sivElement.getElement().nodeName())
         return;
 
-      this.onLoad(sivElement, element);
+      this.onLoad(sivElement);
     }
 
     /**
@@ -527,7 +571,7 @@
     save(sivElement) {
       const item = this.getActiveItem();
 
-      if (item.attr("data-nodename") !== this.constructor.nodeName())
+      if (item.dataset.nodename !== this.constructor.nodeName())
         return;
 
       this.onSave(sivElement);
@@ -537,7 +581,7 @@
      * @inheritdoc
      */
     getElement() {
-      return $("" + this.selector + " .sivDropDownWidget-menu");
+      return document.querySelector(`${this.selector} .sivDropDownWidget-menu`);
     }
   }
 
@@ -594,11 +638,13 @@
   class SieveRadioGroupItemWidget extends SieveAbstractItemWidget {
 
     /**
-     * @returns {JQuery}
+     * The current radio item.
+     *
+     * @returns {HTMLElement}
      *   the current element
      */
     getRadioItem() {
-      return $("" + this.selector + " [data-nodename='" + this.constructor.nodeName() + "']");
+      return document.querySelector(`${this.selector} [data-nodename="${this.constructor.nodeName()}"]`);
     }
 
     /**
@@ -606,10 +652,10 @@
      *
      * @param {SieveElement} sivElement
      *   the parent sieve element
-     *
      */
+    // eslint-disable-next-line no-unused-vars
     onLoad(sivElement) {
-      this.getRadioItem().find("input[name='" + this.getName() + "']").attr("checked", "checked");
+      this.getRadioItem().querySelector(`input[name='${this.getName()}']`).checked = true;
     }
 
     /**
@@ -621,7 +667,7 @@
      */
     onSave(sivElement) {
       sivElement.setElement(
-        this.getRadioItem().find("input[name='" + this.getName() + "']").val());
+        this.getRadioItem().querySelector(`input[name='${this.getName()}']`).value);
     }
 
     /**
@@ -641,7 +687,7 @@
     save(sivElement) {
       const item = this.getRadioItem();
 
-      if (item.find("input[name='" + this.getName() + "']:checked").length !== 1)
+      if (!item.querySelector(`input[name='${this.getName()}']:checked`))
         return;
 
       this.onSave(sivElement);
@@ -651,13 +697,13 @@
      * @inheritdoc
      */
     getElement() {
-      return $("" + this.selector);
+      return document.querySelector(`${this.selector}`);
     }
   }
 
 
   /**
-   * Provides support for defered elements like :copy or :create
+   * Provides support for deferred elements like :copy or :create
    */
   class SieveOverlayWidget {
 
@@ -678,14 +724,12 @@
      *
      * @param {SieveAbstractElement} sivElement
      *   the sieve element which should be rendered.
-     * @param {Function} [onInitialized]
-     *   optional callback, invoked when a widget is fully initialized
      */
-    init(sivElement, onInitialized) {
+    async init(sivElement) {
       const widgets = SieveDesigner.getWidgetsByClass(this.nodeType, this.selector);
 
       for (const widget of widgets)
-        widget.init(sivElement, onInitialized);
+        await widget.init(sivElement);
     }
 
     /**
@@ -711,7 +755,7 @@
      * @inheritdoc
      */
     getElement() {
-      return $("" + this.selector);
+      return document.querySelector(`${this.selector}`);
     }
   }
 
@@ -721,6 +765,8 @@
   class SieveStringWidget {
 
     /**
+     * Creates a new instance.
+     *
      * @param {string} selector
      *   the selector which identifies where the input dom element
      */
@@ -729,11 +775,13 @@
     }
 
     /**
+     * Checks if the string widget has a reference to a drop down list.
+     *
      * @returns {boolean}
-     *   true in case the widget as a drop down otherwise false
+     *   true in case the string widget as a drop down otherwise false.
      */
-    _hasDropDown() {
-      return $(this._selector)[DOM_ELEMENT]
+    hasDropDown() {
+      return document.querySelector(this._selector)
         .hasAttribute("data-list-dropdown");
     }
 
@@ -744,72 +792,23 @@
      *   the value to set.
      */
     setValue(value) {
-      $(this._selector)
-        .find(".sieve-string-item")
-        .val(value);
+      document
+        .querySelector(this._selector)
+        .querySelector(".sieve-string-item")
+        .value = value;
     }
 
-    /**
-     * Called as soon as the element is loaded.
-     * It initializes the dropdowns handlers if applicable.
-     *
-     * @param {string} value
-     *   the initial value
-     */
-    onInitialized(value) {
-      const that = this;
-
-      this.setValue(value);
-
-      if (!this._hasDropDown())
-        return;
-
-      const elm = $($(this._selector).attr("data-list-dropdown")).children().first().clone();
-
-      $(this._selector)
-        .find(".sieve-string-dropdown")
-        .removeClass("d-none")
-        .before(elm);
-
-      const items = $(this._selector)
-        .find(".dropdown-item");
-
-      items
-        .click(function () {
-          that.setValue($(this).attr("data-value"));
-        });
-
-      $.each(items, (index, menuitem) => {
-
-        const updatables = $(menuitem).find(".sieve-string-dropdown-updateable");
-
-        if (!updatables.length)
-          return;
-
-        updatables.on("input change", (event) => {
-
-          const somevalue = event.target.value;
-
-          if (event.target.hasAttribute("data-update-element"))
-            $(menuitem).find(event.target.getAttribute("data-update-element")).text(somevalue);
-
-          menuitem.setAttribute("data-value", somevalue);
-        });
-
-      });
-    }
 
     /**
      * Initializes the current element
      *
      * @param {string|SieveString} sivElement
      *   the string element which should be rendered.
-     *
      */
-    init(sivElement) {
+    async init(sivElement) {
       let value = "";
 
-      if (typeof(sivElement) === "undefined" || sivElement === null)
+      if (typeof (sivElement) === "undefined" || sivElement === null)
         sivElement = "";
 
       if (typeof (sivElement) === "string")
@@ -817,11 +816,97 @@
       else
         value = sivElement.value();
 
+      await this.initTextField(value);
 
-      $(this._selector).load("./toolkit/templates/SieveStringWidget.html #template", () => {
-        this.onInitialized(value);
-      });
+      if (this.hasDropDown())
+        this.initDropDown();
+    }
 
+    /**
+     * Initializes the strings text field.
+     * @param {string} value
+     *   the value to which the string should be initialized.
+     */
+    async initTextField(value) {
+      const template = (await (new SieveTemplate())
+        .load("./toolkit/templates/SieveStringWidget.html"))
+        .querySelector(".string-item-template");
+
+      document.querySelector(this._selector).appendChild(template);
+
+      this.setValue(value);
+    }
+
+    /**
+     * Initializes the drop down menu.
+     */
+    initDropDown() {
+      const id = document.querySelector(this._selector).dataset.listDropdown;
+
+      const template = document.querySelector(id);
+      if (!template)
+        return;
+
+      const menu = template.firstElementChild.cloneNode(true);
+
+      const button = document
+        .querySelector(this._selector)
+        .querySelector(".sieve-string-dropdown");
+
+      button.classList.remove("d-none");
+      button.insertAdjacentElement('beforebegin', menu);
+
+      this.initClickHandler(menu);
+      this.initUpdatables(menu);
+    }
+
+    /**
+     * Initializes the Drop Down Click handlers.
+     */
+    initClickHandler() {
+
+      const onClick = (menuItem) => {
+        this.setValue(menuItem.dataset.value);
+      };
+
+      const menuItems = document
+        .querySelectorAll(`${this._selector} .dropdown-item`);
+
+      for (const menuItem of menuItems) {
+        menuItem.addEventListener("click", () => { onClick(menuItem); });
+      }
+    }
+
+    /**
+     * Initializes updatable elements
+     */
+    initUpdatables() {
+
+      const onChange = (updatable, menuItem) => {
+
+        const value = updatable.value;
+        const id = updatable.dataset.updateElement;
+
+        if (id)
+          menuItem.querySelector(`${id}`).textContent = value;
+
+        menuItem.dataset.value = value;
+        this.setValue(value);
+      };
+
+
+      const menuItems = document
+        .querySelectorAll(`${this._selector} .dropdown-item`);
+
+      for (const menuItem of menuItems) {
+
+        const updatable = menuItem.querySelector(".sieve-string-dropdown-updatable");
+        if (!updatable)
+          continue;
+
+        updatable.addEventListener("input",
+          (event) => { onChange(event.target, menuItem); });
+      }
     }
 
     /**
@@ -829,12 +914,10 @@
      *
      * @param {SieveString} sivElement
      *   the string element which was rendered and should be saved.
-     *
      */
     save(sivElement) {
-
       sivElement.value(
-        $(this._selector).find(".sieve-string-item").val());
+        document.querySelector(`${this._selector} .sieve-string-item`).value);
     }
 
   }
@@ -845,6 +928,8 @@
   class SieveNumericWidget {
 
     /**
+     * Creates a new instance.
+     *
      * @param {string} selector
      *   the selector which identifies place holder for the input elements
      */
@@ -857,38 +942,19 @@
      *
      * @param {string} unit
      *   either a M,K,G or an empty string
-     *
-     *
      */
     onUnitChanged(unit) {
-      $(this._selector).find(".sieve-numeric-unit")
-        .text($(this._selector).find(`.dropdown-item[data-value="${unit}"] .sieve-unit`).text())
-        .attr("data-value", unit);
-    }
+      const widget = document.querySelector(this._selector);
 
-    /**
-     * Called as soon as the element is loaded.
-     * It initializes the dropdowns handlers.
-     *
-     * @param {int} value
-     *   the initial numeric value to set
-     * @param {string} unit
-     *   the initial unit to set
-     *
-     *
-     */
-    onInitialized(value, unit) {
+      const text = widget
+        .querySelector(`.dropdown-item[data-value="${unit}"] .sieve-unit`)
+        .textContent;
 
-      $(this._selector).find(".sieve-numeric-value").val(value);
-      this.onUnitChanged(unit);
+      const elm = widget
+        .querySelector(`.sieve-numeric-unit`);
 
-      const items = $(this._selector)
-        .find(".dropdown-item");
-
-      const that = this;
-      items.click(function () {
-        that.onUnitChanged($(this).attr("data-value"));
-      });
+      elm.textContent = text;
+      elm.dataset.value = unit;
     }
 
     /**
@@ -896,9 +962,8 @@
      *
      * @param {string|SieveString} sivElement
      *   the string element which should be rendered.
-     *
      */
-    init(sivElement) {
+    async init(sivElement) {
 
       if (sivElement.nodeName() !== "number")
         throw new Error("Expected a number but got " + sivElement.nodeName());
@@ -906,9 +971,29 @@
       const value = sivElement.getValue();
       const unit = sivElement.getUnit();
 
-      $(this._selector).load("./toolkit/templates/SieveNumericWidget.html #template", () => {
-        this.onInitialized(value, unit);
-      });
+      const template = await (new SieveTemplate()).load("./toolkit/templates/SieveNumericWidget.html");
+
+      const elm = document.querySelector(this._selector);
+      while (elm.firstChild)
+        elm.removeChild(elm.firstChild);
+
+      while (template.children.length)
+        elm.appendChild(template.firstChild);
+
+      document
+        .querySelector(`${this._selector} .sieve-numeric-value`)
+        .value = value;
+
+      this.onUnitChanged(unit);
+
+      const items = document
+        .querySelectorAll(`${this._selector} .dropdown-item`);
+
+      for (const item of items) {
+        item.addEventListener("click", () => {
+          this.onUnitChanged(item.dataset.value);
+        });
+      }
 
     }
 
@@ -922,9 +1007,9 @@
     save(sivElement) {
 
       sivElement.setValue(
-        $(this._selector).find(".sieve-numeric-value").val());
+        document.querySelector(`${this._selector} .sieve-numeric-value`).value);
       sivElement.setUnit(
-        $(this._selector).find(".sieve-numeric-unit").attr("data-value"));
+        document.querySelector(`${this._selector} .sieve-numeric-unit`).dataset.value);
     }
 
   }

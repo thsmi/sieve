@@ -14,12 +14,12 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveDesigner */
   /* global SieveActionDialogBoxUI */
   /* global SieveStringListWidget */
   /* global SieveMatchTypeWidget */
   /* global SieveComparatorWidget */
+  /* global SieveTemplate */
 
   /**
    * Provides a UI for th add header action
@@ -46,6 +46,17 @@
       return this.getSieve().getElement("value");
     }
 
+    /**
+     * Gets and sets the status for the given it, used to activate and
+     * deactivate tag.
+     *
+     * @param {string} id
+     *   the unique id to be checked or changed.
+     * @param {boolean} [status]
+     *   the optional status to be set
+     * @returns {boolean}
+     *   true in case the id was enabled otherwise false.
+     */
     enable(id, status) {
       return this.getSieve().enable(id, status);
     }
@@ -62,26 +73,22 @@
      */
     onSave() {
 
-      const name = $("#sivNewHeaderName").val();
+      const name = document.querySelector("#sivNewHeaderName");
 
-      if (name.trim() === "") {
-        window.alert("Header name is empty");
+      if (!name.checkValidity())
         return false;
-      }
 
-      const value = $("#sivNewHeaderValue").val();
+      const value = document.querySelector("#sivNewHeaderValue");
 
-      if (value.trim() === "") {
-        window.alert("Header value is empty");
+      if (!value.checkValidity())
         return false;
-      }
 
-      this.name().value(name);
-      this.value().value(value);
+      this.name().value(name.value);
+      this.value().value(value.value);
 
-      const last = ($("input[type='radio'][name='last']:checked").val() === "true");
+      this.enable("last",
+        document.querySelector("input[type='radio'][name='last']:checked").value === "true");
 
-      this.enable("last", last);
       return true;
     }
 
@@ -90,21 +97,33 @@
      */
     onLoad() {
 
-      $("#sivNewHeaderName").val(this.name().value());
-      $("#sivNewHeaderValue").val(this.value().value());
+      document.querySelector("#sivNewHeaderName").value = this.name().value();
+      document.querySelector("#sivNewHeaderValue").value = this.value().value();
 
-      $('input:radio[name="last"][value="' + this.enable("last") + '"]').prop('checked', true);
+      document
+        .querySelector(`input[type="radio"][name="last"][value="${this.enable("last")}"]`)
+        .checked = true;
     }
 
     /**
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("Add a header "
-          + $('<em/>').text(this.name().value()).html()
-          + " with a value "
-          + $('<em/>').text(this.value().value()).html());
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="addheader.summary1"></span>
+           <em class="sivAddheaderName"></em>
+           <span data-i18n="addheader.summary2"></span>
+           <em class="sivAddheaderValue"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivAddheaderName").textContent
+        = this.name().value();
+      elm.querySelector(".sivAddheaderValue").textContent
+        = this.value().value();
+
+      return elm;
     }
   }
 
@@ -165,7 +184,8 @@
      *
      */
     saveHeaderIndex() {
-      const indexType = $('input:radio[name="header-index"]:checked').val();
+      const indexType = document
+        .querySelector('input[type="radio"][name="header-index"]:checked').value;
 
       switch (indexType) {
         case "first":
@@ -174,7 +194,7 @@
 
 
           this.getSieve().getElement("index").getElement("name")
-            .setValue($("#sivDeleteHeaderFirstIndex").val());
+            .setValue(document.querySelector("#sivDeleteHeaderFirstIndex").value);
 
           break;
 
@@ -183,7 +203,7 @@
           this.getSieve().getElement("index").enable("last", true);
 
           this.getSieve().getElement("index").getElement("name")
-            .setValue($("#sivDeleteHeaderLastIndex").val());
+            .setValue(document.querySelector("#sivDeleteHeaderLastIndex").value);
           break;
 
         default:
@@ -198,7 +218,8 @@
      *
      */
     saveHeaderValues() {
-      const value = $("input:radio[name='header-value']:checked").val();
+      const value = document
+        .querySelector(`input[type="radio"][name='header-value']:checked`).value;
 
       switch (value) {
         case "some":
@@ -217,6 +238,11 @@
      */
     onSave() {
 
+      const name = document.querySelector("#sivDeleteHeaderName");
+
+      if (!name.checkValidity())
+        return false;
+
       (new SieveMatchTypeWidget("#sivDeleteHeaderMatchTypes"))
         .save(this.matchtype());
       (new SieveComparatorWidget("#sivDeleteHeaderComparator"))
@@ -225,12 +251,10 @@
       (new SieveStringListWidget("#sivValuePatternsList"))
         .save(this.values());
 
-      this.getSieve().getElement("name")
-        .value($("#sivDeleteHeaderName").val());
+      this.getSieve().getElement("name").value(name.value);
 
       this.saveHeaderIndex();
       this.saveHeaderValues();
-
 
       return true;
     }
@@ -240,20 +264,28 @@
      */
     loadHeaderIndex() {
 
-      $('input:radio[name="header-index"][value="all"]').change(() => {
-        $("#sivDeleteHeaderFirstIndex").prop("disabled", true);
-        $("#sivDeleteHeaderLastIndex").prop("disabled", true);
-      });
+      const headerSelector = 'input[type="radio"][name="header-index"]';
 
-      $('input:radio[name="header-index"][value="first"]').change(() => {
-        $("#sivDeleteHeaderFirstIndex").prop("disabled", false);
-        $("#sivDeleteHeaderLastIndex").prop("disabled", true);
-      });
+      document
+        .querySelector(`${headerSelector}[value="all"]`)
+        .addEventListener("change", () => {
+          document.querySelector("#sivDeleteHeaderFirstIndex").disabled = true;
+          document.querySelector("#sivDeleteHeaderLastIndex").disabled = true;
+        });
 
-      $('input:radio[name="header-index"][value="last"]').change(() => {
-        $("#sivDeleteHeaderFirstIndex").prop("disabled", true);
-        $("#sivDeleteHeaderLastIndex").prop("disabled", false);
-      });
+      document
+        .querySelector(`${headerSelector}[value="first"]`)
+        .addEventListener("change", () => {
+          document.querySelector("#sivDeleteHeaderFirstIndex").disabled = false;
+          document.querySelector("#sivDeleteHeaderLastIndex").disabled = true;
+        });
+
+      document
+        .querySelector(`${headerSelector}[value="last"]`)
+        .addEventListener("change", () => {
+          document.querySelector("#sivDeleteHeaderFirstIndex").disabled = true;
+          document.querySelector("#sivDeleteHeaderLastIndex").disabled = false;
+        });
 
       let indexType = "all";
       const indexValue = this.getSieve().getElement("index").getElement("name").getValue();
@@ -263,30 +295,39 @@
       }
       else if (!this.getSieve().getElement("index").enable("last")) {
         indexType = "first";
-        $("#sivDeleteHeaderFirstIndex").val(indexValue);
+        document.querySelector("#sivDeleteHeaderFirstIndex").value = indexValue;
       }
       else {
         indexType = "last";
-        $("#sivDeleteHeaderLastIndex").val(indexValue);
+        document.querySelector("#sivDeleteHeaderLastIndex").value = indexValue;
       }
 
-      $('input:radio[name="header-index"][value="' + indexType + '"]')
-        .prop('checked', true)
-        .change();
+      document
+        .querySelector(`${headerSelector}[value="${indexType}"]`)
+        .checked = true;
 
+      document
+        .querySelector(`${headerSelector}[value="${indexType}"]`)
+        .dispatchEvent(new Event('change'));
     }
 
     /**
      * Initializes the ui for the header values
      */
     loadHeaderValues() {
-      $('input:radio[name="header-value"][value="any"]').change(() => {
-        $('#sivSomeValues').hide();
-      });
+      const headerSelector = 'input[type="radio"][name="header-value"]';
 
-      $('input:radio[name="header-value"][value="some"]').change(() => {
-        $('#sivSomeValues').show();
-      });
+      document
+        .querySelector(`${headerSelector}[value="any"]`)
+        .addEventListener("change", () => {
+          document.querySelector('#sivSomeValues').style.display = "none";
+        });
+
+      document
+        .querySelector(`${headerSelector}[value="some"]`)
+        .addEventListener("change", () => {
+          document.querySelector('#sivSomeValues').style.display = "";
+        });
 
 
       let headerType = "any";
@@ -296,9 +337,13 @@
         headerType = "some";
       }
 
-      $('input:radio[name="header-value"][value="' + headerType + '"]')
-        .prop('checked', true)
-        .change();
+      document
+        .querySelector(`${headerSelector}[value="${headerType}"]`)
+        .checked = true;
+
+      document
+        .querySelector(`${headerSelector}[value="${headerType}"]`)
+        .dispatchEvent(new Event('change'));
     }
 
     /**
@@ -315,9 +360,8 @@
         .init(this.values());
 
 
-      $("#sivDeleteHeaderName")
-        .val(this.getSieve().getElement("name").value());
-
+      document.querySelector("#sivDeleteHeaderName")
+        .value = this.getSieve().getElement("name").value();
 
       this.loadHeaderValues();
       this.loadHeaderIndex();
@@ -327,19 +371,36 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("Remove a header "
-          // + $( '<em/>' ).text( this.name() ).html()
-          + " with a value "
-          // + $( '<em/>' ).text( this.value() ).html()
-        );
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="deleteheader.summary1"></span>
+           <em class="sivDeleteheaderName"></em>
+           <span class="sivDeleteheaderHasValue">
+             <span data-i18n="deleteheader.summary2"></span>
+             <em class="sivDeleteheaderValue"></em>
+           </span>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivDeleteheaderName").textContent
+        = this.name().value();
+
+      if (!this.getSieve().enable("values")) {
+        elm.querySelector(".sivDeleteheaderHasValue").style.display = "none";
+        return elm;
+      }
+
+      elm.querySelector(".sivDeleteheaderValue").textContent
+        = this.values().toScript();
+
+      return elm;
     }
   }
-
 
   if (!SieveDesigner)
     throw new Error("Could not register add header Widgets");
 
   SieveDesigner.register("action/addheader", SieveAddHeaderUI);
   SieveDesigner.register("action/deleteheader", SieveDeleteHeaderUI);
+
 })(window);

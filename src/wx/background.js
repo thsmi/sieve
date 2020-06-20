@@ -22,11 +22,24 @@
   const ERROR_MISMATCH = 2;
   const ERROR_TIME = 4;
 
+  const FIRST_ENTRY = 0;
+
   const logger = SieveLogger.getInstance();
 
   const accounts = await (new SieveAccounts().load());
 
   // TODO Extract into separate class..
+  /**
+   * Gets a tab by its script and account name.
+   *
+   * @param {string} account
+   *   the account name
+   * @param {string} name
+   *   the script name
+   *
+   * @returns {*}
+   *   the webextension tab object.
+   */
   async function getTabs(account, name) {
     const url = new URL("./libs/managesieve.ui/editor.html", window.location);
 
@@ -36,6 +49,10 @@
     return await browser.tabs.query({ url: url.toString() });
   }
 
+  /**
+   *
+   * @param {*} tab
+   */
   async function showTab(tab) {
 
     await browser.tabs.update(
@@ -129,7 +146,7 @@
       const tabs = await browser.tabs.query({ url: url.toString() });
 
       if (tabs.length) {
-        await showTab(tabs[0]);
+        await showTab(tabs[FIRST_ENTRY]);
         return;
       }
 
@@ -347,8 +364,8 @@
       url.searchParams.append("script", name);
 
       const tabs = await getTabs(account, name);
-      if (tabs.length > 0) {
-        await showTab(tabs[0]);
+      if (tabs.length) {
+        await showTab(tabs[FIRST_ENTRY]);
         return;
       }
 
@@ -408,6 +425,7 @@
       };
     },
 
+    // eslint-disable-next-line no-unused-vars
     "settings-get-loglevel": async function (msg) {
       return await accounts.getLogLevel();
     },

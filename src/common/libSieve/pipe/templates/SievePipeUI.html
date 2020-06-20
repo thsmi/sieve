@@ -1,0 +1,58 @@
+<div>
+  <ul id="template-tabs">
+    <li class="nav-item">
+      <a data-i18n="pipe.tab.home" class="nav-link active" data-toggle="tab" href="#sieve-widget-pipe"
+        role="tab"></a>
+    </li>
+    <li class="nav-item">
+      <a data-i18n="pipe.tab.help" class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab"></a>
+    </li>
+  </ul>
+
+  <div id="template-content">
+    <div class="tab-content m-2">
+      <div class="tab-pane fade show active" id="sieve-widget-pipe" role="tabpanel">
+        <div class="form-group">
+          <label data-i18n="pipe.program.label"></label>
+          <form class="was-validated" novalidate="novalidate">
+            <input id="sivPipeProgram" type="text" class="form-control col-lg-8" data-i18n="pipe.program.placeholder" required="required"/>
+            <div class="invalid-feedback" data-i18n="pipe.program.invalid"></div>
+          </form>
+
+          <br />
+
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="sivPipeArgumentsCbx" />
+            <label class="custom-control-label" for="sivPipeArgumentsCbx" data-i18n="pipe.arguments.label"></label>
+
+            <small class="form-text text-muted" data-i18n="pipe.arguments.text"></small>
+
+            <div id="sivPipeArguments"></div>
+          </div>
+
+          <br />
+
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="sivPipeTryCbx" />
+            <label class="custom-control-label" for="sivPipeTryCbx" data-i18n="pipe.try.label"></label>
+
+            <small class="form-text text-muted" data-i18n="pipe.try.text"></small>
+          </div>
+
+          <div id="sivPipeCopy" class="d-none">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="sivPipeCopyCheckbox" />
+              <label class="custom-control-label" for="sivPipeCopyCheckbox" data-i18n="pipe.copy.label"></label>
+
+              <small class="form-text text-muted" data-i18n="pipe.copy.text"></small>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+      <div data-i18n="pipe.help" style="white-space: pre-line" class="tab-pane fade" id="sieve-widget-help"
+        role="tabpanel"></div>
+    </div>
+  </div>
+</div>

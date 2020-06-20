@@ -15,7 +15,6 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveDesigner */
 
   /* global SieveStringListWidget */
@@ -28,7 +27,7 @@
 
   /* global SieveOverlayItemWidget */
 
-  const DOM_ELEMENT = 0;
+  /* global SieveTemplate */
 
   /**
    * Provides an abstract UI for the flags actions.
@@ -36,6 +35,8 @@
   class SieveAbstractFlagUI extends SieveActionDialogBoxUI {
 
     /**
+     * Gets the currently set flags.
+     *
      * @returns {SieveAbstractElement}
      *   the element's flags
      */
@@ -79,9 +80,15 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("Set IMAP flag(s) "
-          + $('<em/>').text(" " + this.flags().values().join(", ")).prop('outerHTML'));
+      const FRAGMENT =
+        `<div>
+          <span data-i18n="setflag.summary"></span>
+          <em class="sivSetflagFlags"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivSetflagFlags").textContent = this.flags().values().join(", ");
+      return elm;
     }
   }
 
@@ -101,9 +108,15 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("Add IMAP flag(s) "
-          + $('<em/>').text(" " + this.flags().values().join(", ")).prop('outerHTML'));
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="addflag.summary"></span>
+           <em class="sivAddflagFlags"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivAddflagFlags").textContent = this.flags().values().join(", ");
+      return elm;
     }
   }
 
@@ -124,9 +137,15 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html("Remove IMAP flag(s) "
-          + $('<em/>').text(" " + this.flags().values().join(", ")).prop('outerHTML'));
+      const FRAGMENT =
+        `<div>
+           <span data-i18n="removeflag.summary"></span>
+           <em class="sivRemoveflagFlags"></em>
+         </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivRemoveflagFlags").textContent = this.flags().values().join(", ");
+      return elm;
     }
   }
 
@@ -137,6 +156,8 @@
   class SieveHasFlagUI extends SieveTestDialogBoxUI {
 
     /**
+     * Gets the current match type
+     *
      * @returns {SieveAbstractElement}
      *   the element's match type
      */
@@ -145,6 +166,8 @@
     }
 
     /**
+     * Gets te current operator
+     *
      * @returns {SieveAbstractElement}
      *   the element's comparator
      */
@@ -153,6 +176,8 @@
     }
 
     /**
+     * The currently set imap flags
+     *
      * @returns {SieveAbstractElement}
      *   the element's flags
      */
@@ -203,12 +228,15 @@
      * @inheritdoc
      */
     getSummary() {
+      const FRAGMENT =
+        `<div>
+         <span data-i18n="hasflag.summary"></span>
+         <em class="sivHasflagFlags"></em>
+       </div>`;
 
-      // case- insensitive is the default so skip it...
-      return $("<div/>")
-        .html("An IMAP flags(s) <em> "
-          + this.matchtype().getElement().toScript() + " "
-          + $('<div/>').text(this.flags().values()).html() + "</em>");
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivHasflagFlags").textContent = this.flags().values().join(", ");
+      return elm;
     }
   }
 
@@ -250,7 +278,7 @@
     load(sivElement) {
 
       if (sivElement.enable("flags"))
-        $("#sivFlagsCheckbox").attr("checked", "checked");
+        document.querySelector("#sivFlagsCheckbox").checked = true;
 
       (new SieveStringListWidget("#sivFlagKeyList"))
         .init(sivElement.getElement("flags").getElement("flags"));
@@ -260,7 +288,7 @@
      * @inheritdoc
      */
     save(sivElement) {
-      if ($("#sivFlagsCheckbox")[DOM_ELEMENT].checked) {
+      if (document.querySelector("#sivFlagsCheckbox").checked) {
         sivElement.enable("flags", true);
         (new SieveStringListWidget("#sivFlagKeyList"))
           .save(sivElement.getElement("flags").getElement("flags"));

@@ -20,7 +20,7 @@
   const DIALOG_DISCARDED = 2;
 
   /* global $ */
-  const { SieveTemplateLoader } = require("./../utils/SieveTemplateLoader.js");
+  const { SieveTemplate } = require("./../utils/SieveTemplate.js");
   const { SieveUniqueId } = require("./../utils/SieveUniqueId.js");
 
   /**
@@ -46,7 +46,7 @@
      *   the dialogs root element.
      */
     getDialog() {
-      return $(`#${this.id}`);
+      return document.querySelector(`#${this.id}`);
     }
 
     /**
@@ -108,6 +108,14 @@
     }
 
     /**
+     * Removes the dialog window from the UI.
+     */
+    destroy() {
+      const elm = this.getDialog();
+      elm.parentNode.removeChild(elm);
+    }
+
+    /**
      * Shows the dialog.
      *
      * @returns {object}
@@ -117,17 +125,34 @@
 
       this.id = this.generateId();
 
-      const dialog = await (new SieveTemplateLoader()).load(this.getTemplate());
-      dialog.attr("id", this.id);
-      $("#ctx").append(dialog);
+      const dialog = await (new SieveTemplate()).load(this.getTemplate());
+      dialog.id = this.id;
+      document.querySelector("#ctx").appendChild(dialog);
 
       this.onInit();
 
       return await new Promise((resolve, reject) => {
 
-        this.getDialog().modal('show')
+        const buttons = this.getDialog()
+          .querySelectorAll(".sieve-dialog-resolve");
+
+        for (const button of buttons) {
+          button.addEventListener("click", async () => {
+            try {
+              resolve(await this.onAccept(event.target));
+            } catch (ex) {
+              reject(ex);
+            }
+
+            $(this.getDialog()).modal("hide");
+          });
+        }
+
+        $(this.getDialog()).modal('show')
           .on('hidden.bs.modal', async () => {
-            this.getDialog().remove();
+
+            this.destroy();
+
             try {
               resolve(await this.onCancel());
             } catch (ex) {
@@ -136,18 +161,6 @@
           })
           .on('shown.bs.modal', () => {
             this.onShown();
-          })
-          .find(".sieve-dialog-resolve").click(async (event) => {
-            try {
-              resolve(await this.onAccept(event.target));
-            } catch (ex) {
-              reject(ex);
-            }
-
-            // ... now trigger the hidden listener it will cleanup
-            // it is afe to do so due to promise magics, the first
-            // alway resolve wins and all subsequent calls are ignored...
-            this.getDialog().modal("hide");
           });
       });
     }
@@ -180,7 +193,9 @@
      * @inheritdoc
      */
     onInit() {
-      this.getDialog().find("#sieve-dialog-account-remove-name").text(this.displayName);
+      this.getDialog()
+        .querySelector("#sieve-dialog-account-remove-name")
+        .textContent = this.displayName;
     }
   }
 
@@ -212,8 +227,13 @@
      * @inheritdoc
      */
     onInit() {
-      this.getDialog().find(".sieve-dialog-fingerprint").text(this.fingerprint);
-      this.getDialog().find(".sieve-dialog-certerror").text(this.error);
+      this.getDialog()
+        .querySelector(".sieve-dialog-fingerprint")
+        .textContent = this.fingerprint;
+
+      this.getDialog()
+        .querySelector(".sieve-dialog-certerror")
+        .textContent = this.error;
     }
   }
 
@@ -244,7 +264,9 @@
      * @inheritdoc
      */
     onInit() {
-      this.getDialog().find('.sieve-delete-dialog-name').text(this.name);
+      this.getDialog()
+        .querySelector('.sieve-delete-dialog-name')
+        .textContent = this.name;
     }
   }
 
@@ -264,9 +286,11 @@
      * @inheritdoc
      */
     onInit() {
-      this.getDialog().find('.sieve-create-dialog-name').keypress((e) => {
+      this.getDialog().querySelector('.sieve-create-dialog-name').addEventListener("keypress", (e) => {
         if (e.which === KEY_RETURN) {
-          this.getDialog().find(".sieve-dialog-resolve").trigger('click');
+          const event = document.createEvent('HTMLEvents');
+          event.initEvent('click', true, false);
+          this.getDialog().querySelector(".sieve-dialog-resolve").dispatchEvent(event);
         }
       });
     }
@@ -275,14 +299,14 @@
      * @inheritdoc
      */
     onShown() {
-      this.getDialog().find('.sieve-create-dialog-name').focus();
+      this.getDialog().querySelector('.sieve-create-dialog-name').focus();
     }
 
     /**
      * @inheritdoc
      */
     onAccept() {
-      return this.getDialog().find('.sieve-create-dialog-name').val();
+      return this.getDialog().querySelector('.sieve-create-dialog-name').value;
     }
 
     /**
@@ -319,27 +343,31 @@
      * @inheritdoc
      */
     onInit() {
-      this.getDialog().find('.sieve-rename-dialog-newname').keypress((e) => {
+      this.getDialog().querySelector('.sieve-rename-dialog-newname').addEventListener("keypress", (e) => {
         if (e.which === KEY_RETURN) {
-          this.getDialog().find(".sieve-dialog-resolve").trigger('click');
+          const event = document.createEvent('HTMLEvents');
+          event.initEvent('click', true, false);
+          this.getDialog().querySelector(".sieve-dialog-resolve").dispatchEvent(event);
         }
       });
 
-      this.getDialog().find(".sieve-rename-dialog-newname").val(this.name);
+      this.getDialog()
+        .querySelector(".sieve-rename-dialog-newname").value = this.name;
     }
 
     /**
      * @inheritdoc
      */
     onShown() {
-      this.getDialog().find('.sieve-rename-dialog-newname').focus();
+      this.getDialog().querySelector('.sieve-rename-dialog-newname').focus();
     }
 
     /**
      * @inheritdoc
      */
     onAccept() {
-      return this.getDialog().find(".sieve-rename-dialog-newname").val();
+      return this.getDialog()
+        .querySelector(".sieve-rename-dialog-newname").value;
     }
 
     /**
@@ -393,24 +421,25 @@
       const dialog = this.getDialog();
 
       if (!this.options.remember)
-        dialog.find(".sieve-password-remember").hide();
+        dialog.querySelector(".sieve-password-remember").style.display = "none";
 
-      dialog.find(".sieve-username").text(this.username);
-      dialog.find(".sieve-displayname").text(this.displayName);
+      dialog.querySelector(".sieve-username").textContent = this.username;
+      dialog.querySelector(".sieve-displayname").textContent = this.displayName;
 
-      dialog.find('.sieve-password').keypress((e) => {
-        if (e.which === KEY_RETURN)
-          dialog.find(".sieve-dialog-resolve").trigger('click');
+      this.getDialog().querySelector('.sieve-password').addEventListener("keypress", (e) => {
+        if (e.which === KEY_RETURN) {
+          const event = document.createEvent('HTMLEvents');
+          event.initEvent('click', true, false);
+          this.getDialog().querySelector(".sieve-dialog-resolve").dispatchEvent(event);
+        }
       });
-
-      return dialog;
     }
 
     /**
      * @inheritdoc
      */
     onShown() {
-      this.getDialog().find('.sieve-password').focus();
+      this.getDialog().querySelector('.sieve-password').focus();
     }
 
     /**
@@ -419,8 +448,8 @@
     onAccept() {
       return {
         "username" : this.username,
-        "password" : this.getDialog().find(".sieve-password").val(),
-        "remember" : $("#sieve-password-remember").prop("checked")
+        "password" : this.getDialog().querySelector(".sieve-password").value,
+        "remember" : document.querySelector("#sieve-password-remember").checked
       };
     }
 
@@ -462,28 +491,29 @@
     onInit() {
       const dialog = this.getDialog();
 
-      dialog.find(".sieve-displayname").text(this.displayName);
+      dialog.querySelector(".sieve-displayname").textContent = this.displayName;
 
-      dialog.find('.sieve-authorization').keypress((e) => {
-        if (e.which === KEY_RETURN)
-          dialog.find(".sieve-dialog-resolve").trigger('click');
+      dialog.querySelector('.sieve-authorization').addEventListener("keypress", (e) => {
+        if (e.which === KEY_RETURN) {
+          const event = document.createEvent('HTMLEvents');
+          event.initEvent('click', true, false);
+          this.getDialog().querySelector(".sieve-dialog-resolve").dispatchEvent(event);
+        }
       });
-
-      return dialog;
     }
 
     /**
      * @inheritdoc
      */
     onShown() {
-      this.getDialog().find('.sieve-authorization').focus();
+      this.getDialog().querySelector('.sieve-authorization').focus();
     }
 
     /**
      * @inheritdoc
      */
     onAccept() {
-      return this.getDialog().find(".sieve-authorization").val();
+      return this.getDialog().querySelector(".sieve-authorization").value;
     }
 
     /**
@@ -520,7 +550,8 @@
      * @inheritdoc
      */
     onInit() {
-      this.getDialog().find(".sieve-busy-dialog-scriptname").text(this.name);
+      this.getDialog()
+        .querySelector(".sieve-busy-dialog-scriptname").textContent = this.name;
     }
   }
 
@@ -551,7 +582,8 @@
      * @inheritdoc
      */
     onInit() {
-      this.getDialog().find(".sieve-save-dialog-scriptname").text(this.name);
+      this.getDialog()
+        .querySelector(".sieve-save-dialog-scriptname").textContent = this.name;
     }
 
     /**
@@ -634,7 +666,9 @@
      * @inheritdoc
      */
     onInit() {
-      this.getDialog().find(".sieve-error-dialog-description").text(this.description);
+      this.getDialog()
+        .querySelector(".sieve-error-dialog-description")
+        .textContent = this.description;
     }
   }
 

@@ -235,7 +235,8 @@
   /**
    *
    * @param {*} docshell
-   * @param {*} id
+   * @param {string} id
+   *   the test lists unique id.
    */
   function SieveTestList(docshell, id) {
     SieveAbstractElement.call(this, docshell, id);
@@ -245,10 +246,10 @@
   SieveTestList.prototype = Object.create(SieveAbstractElement.prototype);
   SieveTestList.prototype.constructor = SieveTestList;
 
-  SieveTestList.isElement
-    = function (parser, lexer) {
-      return parser.isChar("(");
-    };
+  // eslint-disable-next-line no-unused-vars
+  SieveTestList.isElement = function (parser, lexer) {
+    return parser.isChar("(");
+  };
 
   SieveTestList.nodeName = function () {
     return "test/testlist";

@@ -14,13 +14,14 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveDesigner */
   /* global SieveBlockUI */
   /* global SieveSourceBoxUI */
   /* global SieveMoveDragHandler */
   /* global SieveDropBoxUI */
   /* global SieveConditionDropHandler */
+
+  /* global SieveTemplate */
 
   const IS_FIRST_ITEM = 0;
 
@@ -33,14 +34,18 @@
      * @inheritdoc
      */
     createHtml(parent) {
-      return $("<div/>")
-        .attr("id", "sivElm" + this.id())
-        .addClass("sivConditional")
-        .append(
-          $("<div/>").append(this.getSieve().test().html())
-            .addClass("sivConditionalChild"))
-        .append(
-          super.createHtml(parent));
+
+      const test = document.createElement("div");
+      test.appendChild(this.getSieve().test().html());
+      test.classList.add("sivConditionalChild");
+
+      const elm = document.createElement("div");
+      elm.id = `sivElm${this.id()}`;
+      elm.classList.add("sivConditional");
+      elm.appendChild(test);
+      elm.appendChild(super.createHtml(parent));
+
+      return elm;
     }
   }
 
@@ -54,10 +59,12 @@
      * @inheritdoc
      */
     createHtml(parent) {
-      return $("<div/>")
-        .attr("id", "sivElm" + this.id())
-        .addClass("sivConditional")
-        .append(super.createHtml(parent));
+      const elm = document.createElement("div");
+      elm.id = `sivElm${this.id()}`;
+      elm.classList.add("sivConditional");
+      elm.appendChild(super.createHtml(parent));
+
+      return elm;
     }
   }
 
@@ -74,79 +81,99 @@
       this.drag(new SieveMoveDragHandler());
     }
 
-    /**
-     * @inheritdoc
-     */
-    showSource() {
-      super.showSource();
 
-      $("#" + this.uniqueId + "-code").append($("<div/>")
-        .addClass("material-icons")
-        .addClass("sivSummaryControls")
-        .append($("<span/>").text("code").click(
-          (e) => { this.toggleView(); e.preventDefault(); e.stopPropagation(); return true; }))
-        .append($("<span/>").text("edit").css({ "visibility": "hidden" })));
-    }
     /**
      * @inheritdoc
      */
     createHtml(parent) {
 
-      parent.addClass("sivCondition");
-      parent.attr("id", "sivElm" + this.id());
+      const FRAGMENT =
+      `<div>
+         <div class="sivConditionText sivConditionIf">
+           <div data-i18n="condition.if" style="flex: 1 1 auto"></div>
+           <div class="sivSummaryControls">
+             <span class="sivIconCode"></span>
+           </div>
+         </div>
+         <div class="sivConditionText sivConditionElse">
+           <div data-i18n="condition.else" style="flex: 1 1 auto"></div>
+           <div class="sivSummaryControls">
+             <span class="sivIconCode"></span>
+           </div>
+         </div>
+         <div class="sivConditionText sivConditionElseIf">
+           <div data-i18n="condition.elseif" style="flex: 1 1 auto"></div>
+           <div class="sivSummaryControls">
+             <span class="sivIconCode"></span>
+           </div>
+         </div>
 
-      const elm = $("<div/>")
-        .attr("id", this.uniqueId + "-summary");
+         <div class="sivConditionChild"></div>
+
+         <div class="sivSummaryContent"></div>
+
+         <div class="sivConditionCode" style="display:none">
+           <code></code>
+           <div class="sivSummaryControls">
+             <span class="sivIconEdit invisible"></span>
+             <span class="sivIconCode"></span>
+           </div>
+         </div>
+       </div>`;
+
+      const item = (new SieveTemplate()).convert(FRAGMENT);
+
+      parent.classList.add("sivCondition");
+      parent.id = `sivElm${this.id()}`;
+
+      const elm2 = document.createElement("div");
 
       const children = this.getSieve().children();
-
       for (let i = 0; i < children.length; i++) {
-        elm
-          .append((new SieveDropBoxUI(this))
-            .drop(new SieveConditionDropHandler(), children[i])
-            .html()
-            .addClass("sivConditionSpacer"));
 
+        elm2.appendChild((new SieveDropBoxUI(this, "sivConditionSpacer"))
+          .drop(new SieveConditionDropHandler(), children[i])
+          .html());
+
+        let condition;
         if (i === IS_FIRST_ITEM) {
-          elm.append($("<div/>")
-            .addClass("sivConditionText")
-            .append($("<div/>")
-              .css({"flex":"1 1 auto"})
-              .text("IF"))
-            .append($("<div/>")
-              .addClass("material-icons")
-              .addClass("sivSummaryControls")
-              .append($("<span/>").text("code").click(
-                (e) => { this.toggleView(); e.preventDefault(); e.stopPropagation(); return true; }))
-              .append($("<span/>").text("edit").css({ "visibility": "hidden" }))));
+          condition = item.querySelector(".sivConditionIf");
+        } else if (children[i].test) {
+          condition = item.querySelector(".sivConditionElseIf").cloneNode(true);
+        } else {
+          condition = item.querySelector(".sivConditionElse").cloneNode(true);
+        }
 
-        } else if (children[i].test)
-          elm.append($("<div/>").text("ELSE IF").addClass("sivConditionText"));
-        else
-          elm.append($("<div/>").text("ELSE").addClass("sivConditionText"));
+        condition.querySelector(".sivIconCode").addEventListener("click", (e) => {
+          return this.onToggleView(e);
+        });
+        elm2.appendChild(condition);
 
-        elm.append(
-          $("<div/>").append(children[i].html())
-            .addClass("sivConditionChild"));
+        const child = item.querySelector(".sivConditionChild").cloneNode(true);
+        child.appendChild(children[i].html());
+        elm2.appendChild(child);
       }
 
-      elm
-        .append((new SieveDropBoxUI(this))
-          .drop(new SieveConditionDropHandler())
-          .html()
-          .addClass("sivConditionSpacer"));
+      elm2.appendChild((new SieveDropBoxUI(this, "sivConditionSpacer"))
+        .drop(new SieveConditionDropHandler())
+        .html());
 
-      parent.append(elm);
+      const content = item.querySelector(".sivSummaryContent");
+      content.id = `${this.uniqueId}-summary`;
 
-      parent.append($("<div/>")
-        .append(elm)
-        .addClass("sivSummaryContent")
-        .attr("id", this.uniqueId + "-summary"));
+      while (elm2.children.length)
+        content.appendChild(elm2.firstChild);
 
-      parent.append($("<div/>")
-        .addClass("sivConditionCode")
-        .attr("id", this.uniqueId + "-code")
-        .hide());
+      const code = item.querySelector(".sivConditionCode");
+      code.id = `${this.uniqueId}-code`;
+
+      const control = code.querySelector(".sivSummaryControls");
+      control.querySelector(".sivIconCode").addEventListener("click", (e) => {
+        return this.onToggleView(e);
+      });
+
+      parent.appendChild(content);
+      parent.appendChild(code);
 
       return parent;
     }

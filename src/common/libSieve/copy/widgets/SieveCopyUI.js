@@ -14,14 +14,11 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveDesigner */
   /* global SieveOverlayItemWidget */
 
   if (!SieveDesigner)
     throw new Error("Could not register Copy Extension");
-
-  const DOM_ELEMENT = 0;
 
   /**
    * Implements an abstract overlay widget which is used by
@@ -49,24 +46,15 @@
      */
     load(sivElement) {
       if (sivElement.enable("copy"))
-        $("#sivCopyCheckbox").attr("checked", "checked");
+        document.querySelector("#sivCopyCheckbox").checked = true;
     }
 
     /**
      * @inheritdoc
      */
     save(sivElement) {
-      if ($("#sivCopyCheckbox")[DOM_ELEMENT].checked)
-        sivElement.enable("copy", true);
-      else
-        sivElement.enable("copy", false);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getElement() {
-      return $("" + this.selector);
+      sivElement.enable("copy",
+        document.querySelector("#sivCopyCheckbox").checked);
     }
   }
 
@@ -88,7 +76,6 @@
       return "action/fileinto/copy";
     }
   }
-
 
   /**
    * Implements an overlay for the copy redirect overlay

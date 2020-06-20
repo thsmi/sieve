@@ -48,5 +48,4 @@ Knuth Posern, Tim Van Den Eynde, Marcel Lamm, Lucy Archer
 [electron](https://electronjs.org/),
 [npm](https://www.npmjs.com/),
 [yarn](https://yarnpkg.com/),
-[Google Material Design Icons](https://material.io/tools/icons/)
 [Visual Studio Code](https://code.visualstudio.com/)

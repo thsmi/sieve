@@ -1,70 +1,67 @@
 <div>
-    <ul id="template-tabs">
-        <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-include" role="tab">Include</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
-        </li>
-    </ul>
+  <ul id="template-tabs">
+    <li class="nav-item">
+      <a data-i18n="include.tab.home" class="nav-link active" data-toggle="tab" href="#sieve-widget-include" role="tab"></a>
+    </li>
+    <li class="nav-item">
+      <a data-i18n="include.tab.advanced" class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab"></a>
+    </li>
+    <li class="nav-item">
+      <a data-i18n="include.tab.help" class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab"></a>
+    </li>
+  </ul>
 
-    <div id="template-content">
-        <div class="tab-content m-2">
-            <div class="tab-pane fade show active" id="sieve-widget-include" role="tabpanel">
-                <div class="form-group">
-                    <form class="was-validated" novalidate="novalidate">
-                        <label>Include script name:</label>
-                        <input id="sivIncludeScriptName" type="text" placeholder="Script name" class="form-control col-lg-8"
-                            required="required" />
-                        <div class="invalid-feedback">Invalid script name</div>
-                    </form>
-                </div>
-
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name="once" id="sivIncludeOnce" />
-                    <label class="custom-control-label" for="sivIncludeOnce">Include at most once
-                        <br />
-                        <small class="form-text text-muted">Subsequent include calls to the same script are silently
-                            discarded</small>
-                    </label>
-                </div>
-
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name="optional" id="sivIncludeOptional" />
-                    <label class="custom-control-label" for="sivIncludeOptional">Script is optional
-                        <br />
-                        <small class="form-text text-muted">By default a include throws an error if the script is not
-                            found.
-                            <br /> In case script flagged as optional and is missing, it will be silently skipped.</small>
-                    </label>
-                </div>
-
-            </div>
-            <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
-                <p>Storage Location</p>
-                <div class="custom-control custom-radio">
-                    <input type="radio" id="sivIncludePersonal" name="personal" value="true" class="custom-control-input" />
-                    <label class="custom-control-label" for="sivIncludePersonal">Personal (default)
-                        <br />
-                        <small class="form-text text-muted">Personal scripts are located in your personal and private
-                            Sieve repository.</small>
-                    </label>
-                </div>
-                <div class="custom-control custom-radio">
-                    <input type="radio" id="sivIncludeGlobal" name="personal" value="false" class="custom-control-input" />
-                    <label class="custom-control-label" for="sivIncludeGlobal">Global
-                        <br />
-                        <small class="form-text text-muted">Global scripts are stored in a site-wide Sieve repository.
-                            It is accessible to all users any typically
-                            provided and maintained by your administrator.</small>
-                    </label>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
-            </div>
+  <div id="template-content">
+    <div class="tab-content m-2">
+      <div class="tab-pane fade show active" id="sieve-widget-include" role="tabpanel">
+        <div class="form-group">
+          <form class="was-validated" novalidate="novalidate">
+            <label data-i18n="include.name"></label>
+            <input data-i18n="include.name.placeholder" id="sivIncludeScriptName" type="text" class="form-control col-lg-8" required="required" />
+            <div data-i18n="include.name.invalid" class="invalid-feedback"></div>
+          </form>
         </div>
+
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" name="once" id="sivIncludeOnce" />
+          <label class="custom-control-label" for="sivIncludeOnce">
+            <span data-i18n="include.once.label"></span>
+            <br />
+            <small data-i18n="include.once.text" class="form-text text-muted"></small>
+          </label>
+        </div>
+
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" name="optional" id="sivIncludeOptional" />
+          <label class="custom-control-label" for="sivIncludeOptional">
+            <span data-i18n="include.optional.label"></span>
+            <br />
+            <small data-i18n="include.optional.text" style="white-space: pre-line" class="form-text text-muted"></small>
+          </label>
+        </div>
+
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+        <p data-i18n="include.storage"></p>
+        <div class="custom-control custom-radio">
+          <input type="radio" id="sivIncludePersonal" name="personal" value="true" class="custom-control-input" />
+          <label class="custom-control-label" for="sivIncludePersonal">
+            <span data-i18n="include.personal.label"></span>
+            <br />
+            <small data-i18n="include.personal.text" class="form-text text-muted"></small>
+          </label>
+        </div>
+        <div class="custom-control custom-radio">
+          <input type="radio" id="sivIncludeGlobal" name="personal" value="false" class="custom-control-input" />
+          <label class="custom-control-label" for="sivIncludeGlobal">
+            <span data-i18n="include.global.label"></span>
+            <br />
+            <small data-i18n="include.global.text" style="white-space: pre-line" class="form-text text-muted"></small>
+          </label>
+        </div>
+      </div>
+      <div data-i18n="include.help" class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+      </div>
     </div>
+  </div>
 </div>

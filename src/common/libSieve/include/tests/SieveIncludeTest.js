@@ -61,7 +61,7 @@
   suite.add("include test2", () => {
 
     const script =
-      'require [ "include", "variables" ];\r\n'
+      'require [ "relational", "include", "variables", "fileinto" ];\r\n'
       + 'global "test";\r\n'
       + 'global "test_mailbox";\r\n'
       + '\r\n'
@@ -71,13 +71,13 @@
       + '#set "test" "Make money";\r\n'
       + 'include "subject_tests";\r\n'
       + '\r\n'
-      + '#if string :count "eq" "${test_mailbox}" "1"\r\n'
-      + '#{\r\n'
-      + '#    fileinto "${test_mailbox}";\r\n'
+      + 'if string :count "eq" "${test_mailbox}" "1"\r\n'
+      + '{\r\n'
+      + '    fileinto "${test_mailbox}";\r\n'
       + '    stop;\r\n'
-      + '#}\r\n';
+      + '}\r\n';
 
-    suite.expectValidScript(script, ["include", "variables"]);
+    suite.expectValidScript(script, ["relational", "include", "variables", "fileinto"]);
   });
 
   suite.add("multiple globals", () => {

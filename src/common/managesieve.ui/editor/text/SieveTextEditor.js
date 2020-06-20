@@ -13,12 +13,12 @@
 
   "use strict";
 
-  /* global $ */
   /* global CodeMirror */
-  /* global SieveTemplateLoader */
+  /* global SieveTemplate */
   /* global SieveAbstractEditorUI */
 
   const COMPILE_DELAY = 500;
+  const EDITOR_SCROLL_INTO_VIEW_OFFSET = 200;
 
   /**
    * An text editor ui for sieve scripts.
@@ -57,41 +57,50 @@
     async renderSettings() {
 
 
-      const loader = new SieveTemplateLoader();
+      const loader = new SieveTemplate();
 
       // Syntax Checks
-      $("#sieve-content-settings")
-        .append(await loader.load("./editor/text/editor.settings.syntax.tpl"));
+      document
+        .querySelector("#sieve-content-settings")
+        .appendChild(await loader.load("./editor/text/editor.settings.syntax.tpl"));
 
-      $("#sieve-editor-settings-synatxcheck").click(async () => {
+      document
+        .querySelector("#sieve-editor-settings-synatxcheck")
+        .addEventListener("click", async () => {
 
-        if ($("#sieve-editor-settings-synatxcheck").prop("checked"))
-          await this.enableSyntaxCheck();
-        else
-          await this.disableSyntaxCheck();
-      });
+          if (document.querySelector("#sieve-editor-settings-synatxcheck").checked === true)
+            await this.enableSyntaxCheck();
+          else
+            await this.disableSyntaxCheck();
+        });
 
-      $("#sieve-editor-settings-synatxcheck").prop( "checked", this.isSyntaxCheckEnabled());
+      document.querySelector("#sieve-editor-settings-synatxcheck")
+        .checked = this.isSyntaxCheckEnabled();
 
       // Indentation
-      $("#sieve-content-settings")
-        .append(await loader.load("./editor/text/editor.settings.indentation.tpl"));
+      document
+        .querySelector("#sieve-content-settings")
+        .appendChild(await loader.load("./editor/text/editor.settings.indentation.tpl"));
 
       // Indentation width...
-      $("#editor-settings-indentation-width").change(async () => {
-        await this.setIndentWidth($("#editor-settings-indentation-width").val());
-      });
+      document
+        .querySelector("#editor-settings-indentation-width")
+        .addEventListener("change", async () => {
+          await this.setIndentWidth(
+            document.querySelector("#editor-settings-indentation-width").value);
+        });
 
-      $("#editor-settings-indentation-width").val(this.getIndentWidth());
+      document.querySelector("#editor-settings-indentation-width")
+        .value = this.getIndentWidth();
 
       // Indentation policy...
-      $("#editor-settings-indentation-policy-spaces").on('click', async () => {
-        await this.setIndentWithTabs(false);
-      });
+      document
+        .querySelector("#editor-settings-indentation-policy-spaces")
+        .addEventListener("click", async () => { await this.setIndentWithTabs(false); });
 
-      $("#editor-settings-indentation-policy-tabs").on('click', async () => {
-        await this.setIndentWithTabs(true);
-      });
+      document
+        .querySelector("#editor-settings-indentation-policy-tabs")
+        .addEventListener("click", async () => { await this.setIndentWithTabs(true); });
 
       if (this.getIndentWithTabs())
         $("#editor-settings-indentation-policy-tabs").button('toggle');
@@ -99,10 +108,15 @@
         $("#editor-settings-indentation-policy-spaces").button('toggle');
 
       // Tabulator width...
-      $("#editor-settings-tabulator-width").change(async () => {
-        await this.setTabWidth($("#editor-settings-tabulator-width").val());
-      });
-      $("#editor-settings-tabulator-width").val(this.getTabWidth());
+      document
+        .querySelector("#editor-settings-tabulator-width")
+        .addEventListener("change", async () => {
+          await this.setTabWidth(
+            document.querySelector("#editor-settings-tabulator-width").value);
+        });
+
+      document.querySelector("#editor-settings-tabulator-width")
+        .value = this.getTabWidth();
     }
 
     /**
@@ -110,10 +124,14 @@
      */
     async render() {
 
-      const loader = new SieveTemplateLoader();
+      const loader = new SieveTemplate();
 
-      $("#sieve-plaintext-editor").empty()
-        .append(await loader.load("./editor/text/editor.plaintext.tpl"));
+      const editor = document.querySelector("#sieve-plaintext-editor");
+      while (editor.firstChild)
+        editor.removeChild(editor.firstChild);
+
+      editor.appendChild(
+        await loader.load("./editor/text/editor.plaintext.tpl"));
 
       this.cm = CodeMirror.fromTextArea(document.getElementById(this.id), {
         lineNumbers: true,
@@ -154,52 +172,58 @@
         }
       });
 
-      $("#sieve-editor-undo").click(() => {
-        this.undo();
-      });
+      document
+        .querySelector("#sieve-editor-undo")
+        .addEventListener("click", () => { this.undo(); });
 
-      $("#sieve-editor-redo").click(() => {
-        this.redo();
-      });
+      document
+        .querySelector("#sieve-editor-redo")
+        .addEventListener("click", () => { this.redo(); });
 
-      $("#sieve-editor-cut").click(() => {
-        this.cut();
-      });
+      document
+        .querySelector("#sieve-editor-cut")
+        .addEventListener("click", () => { this.cut(); });
 
-      $("#sieve-editor-copy").click(() => {
-        this.copy();
-      });
+      document
+        .querySelector("#sieve-editor-copy")
+        .addEventListener("click", () => { this.copy(); });
 
-      $("#sieve-editor-paste").click(() => {
-        this.paste();
-      });
+      document
+        .querySelector("#sieve-editor-paste")
+        .addEventListener("click", () => { this.paste(); });
 
-      $("#sieve-editor-find").click(() => {
-        const token = $("#sieve-editor-txt-find").val();
+      document
+        .querySelector("#sieve-editor-find")
+        .addEventListener("click", () => {
+          const token = document.querySelector("#sieve-editor-txt-find").value;
 
-        const isReverse = $("#sieve-editor-backward").prop("checked");
-        const isCaseSensitive = $("#sieve-editor-casesensitive").prop("checked");
+          const isReverse = document.querySelector("#sieve-editor-backward").checked;
+          const isCaseSensitive = document.querySelector("#sieve-editor-casesensitive").checked;
 
-        this.find(token, isCaseSensitive, isReverse);
-      });
+          this.find(token, isCaseSensitive, isReverse);
+        });
 
-      $("#sieve-editor-replace").click(() => {
-        const oldToken = $("#sieve-editor-txt-find").val();
-        const newToken = $("#sieve-editor-txt-replace").val();
+      document
+        .querySelector("#sieve-editor-replace")
+        .addEventListener("click", () => {
+          const oldToken = document.querySelector("#sieve-editor-txt-find").value;
+          const newToken = document.querySelector("#sieve-editor-txt-replace").value;
 
-        const isReverse = $("#sieve-editor-backward").prop("checked");
-        const isCaseSensitive = $("#sieve-editor-casesensitive").prop("checked");
+          const isReverse = document.querySelector("#sieve-editor-backward").checked;
+          const isCaseSensitive = document.querySelector("#sieve-editor-casesensitive").checked;
 
-        if (oldToken === "")
-          return;
+          if (oldToken === "")
+            return;
 
-        this.replace(oldToken, newToken, isCaseSensitive, isReverse);
-      });
+          this.replace(oldToken, newToken, isCaseSensitive, isReverse);
+        });
 
 
-      $("#sieve-editor-replace-replace").click(() => {
-        $("#sieve-editor-find-toolbar").toggle();
-      });
+      document
+        .querySelector("#sieve-editor-replace-replace")
+        .addEventListener("click", () => {
+          document.querySelector("#sieve-editor-find-toolbar").classList.toggle("d-none");
+        });
 
       await this.renderSettings();
     }
@@ -273,7 +297,7 @@
     }
 
     /**
-     * Undos the last input
+     * Undoes the last input
      */
     undo() {
       this.cm.undo();
@@ -404,7 +428,7 @@
       else
         this.cm.setSelection(cursor.to(), cursor.from());
 
-      this.cm.scrollIntoView(cursor.to(), 200);
+      this.cm.scrollIntoView(cursor.to(), EDITOR_SCROLL_INTO_VIEW_OFFSET);
 
       return true;
     }
@@ -538,8 +562,15 @@
       this.syntaxCheckEnabled = false;
       this.hideSyntaxErrors();
 
-      $("#sieve-editor-settings .sieve-editor-disable-syntaxcheck").show();
-      $("#sieve-editor-settings .sieve-editor-enable-syntaxcheck").hide();
+      const settings = document.querySelector("#sieve-editor-settings");
+
+      settings
+        .querySelector(".sieve-editor-disable-syntaxcheck")
+        .style.display = "";
+
+      settings
+        .querySelector(".sieve-editor-enable-syntaxcheck")
+        .style.display = "none";
 
       this.focus();
 
@@ -568,17 +599,21 @@
      *   the errors which should be displayed
      */
     showSyntaxErrors(errors) {
-      $("#sieve-editor-msg")
-        .show();
-      $("#sieve-editor-msg .sieve-editor-msg-details")
-        .empty().text(errors);
+      const msg = document.querySelector("#sieve-editor-msg");
+      msg.style.display = '';
+
+      const details = msg.querySelector(".sieve-editor-msg-details");
+      while (details.firstChild)
+        details.removeChild(details.firstChild);
+
+      details.textContent = errors;
     }
 
     /**
      * Hides the syntax errors.
      */
     hideSyntaxErrors() {
-      $("#sieve-editor-msg").hide();
+      document.querySelector("#sieve-editor-msg").style.display = 'none';
     }
 
     /**

@@ -14,14 +14,12 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveTestDialogBoxUI */
   /* global SieveMatchTypeWidget */
   /* global SieveComparatorWidget */
   /* global SieveStringWidget */
   /* global SieveDesigner */
-
-  const DOM_ELEMENT = 0;
+  /* global SieveTemplate */
 
   /**
    * Provides a ui for the spam test
@@ -29,14 +27,18 @@
   class SieveSpamtestUI extends SieveTestDialogBoxUI {
 
     /**
+     * The spam tests' value.
+     *
      * @returns {SieveString}
-     *   The element's datepart.
+     *   The element's value.
      */
     value() {
       return this.getSieve().getElement("value");
     }
 
     /**
+     * The spam tests match type.
+     *
      * @returns {SieveAbstractElement}
      *   The element's matchtype.
      */
@@ -45,6 +47,8 @@
     }
 
     /**
+     * The spamtest's comparator.
+     *
      * @returns {SieveAbstractElement}
      *   The element's comparator.
      */
@@ -57,11 +61,11 @@
      * As this was not too intuitive, they extended the definition
      * and added a percentual range (0 to 100%).
      *
-     * The percentual range it optional and so it may not be supported
+     * The range in percent it optional and so it may not be supported
      * by the sieve implementation
      *
      * @returns {boolean}
-     *   true in case the value is percentual otherwise false.
+     *   true in case the value is in percent otherwise false.
      *   false can mean it is not supported or it is disabled.
      */
     isPercental() {
@@ -91,20 +95,19 @@
       (new SieveComparatorWidget("#sivSpamtestComparator"))
         .save(this.comparator());
 
-      if (this.getSieve().hasElement("percent")) {
-
-        if ($("#sivSpamtestPercentRadio")[DOM_ELEMENT].checked) {
-          this.getSieve().enable("percent", true);
-          (new SieveStringWidget("#sivSpamtestPercentValue")).save(this.value());
-        } else {
-          this.getSieve().enable("percent", false);
-          (new SieveStringWidget("#sivSpamtestValue")).save(this.value());
-        }
-      }
-      else {
+      if (!this.getSieve().hasElement("percent")) {
         (new SieveStringWidget("#sivSpamtestValue")).save(this.value());
+        return true;
       }
 
+      if (document.querySelector("#sivSpamtestPercentRadio").checked) {
+        this.getSieve().enable("percent", true);
+        (new SieveStringWidget("#sivSpamtestPercentValue")).save(this.value());
+        return true;
+      }
+
+      this.getSieve().enable("percent", false);
+      (new SieveStringWidget("#sivSpamtestValue")).save(this.value());
       return true;
     }
 
@@ -121,16 +124,25 @@
       // Check if this is a spamtest or spamtestplus ui.
 
       if (this.getSieve().hasElement("percent")) {
-        $("#sivSpamtestPlaceholder").load("./spamtest/templates/SieveSpamtestPlusValue.html", () => {
-          this.onLoadPercentualValue();
-        });
-      }
-      else {
+        (async () => {
+          const elm = await ((new SieveTemplate())
+            .load("./spamtest/templates/SieveSpamtestPlusValue.html"));
 
-        $("#sivSpamtestPlaceholder").load("./spamtest/templates/SieveSpamtestValue.html", () => {
-          this.onLoadValue();
-        });
+          document.querySelector("#sivSpamtestPlaceholder").appendChild(elm);
+
+          this.onLoadPercentualValue();
+        })();
+        return;
       }
+
+      (async () => {
+        const elm = await ((new SieveTemplate())
+          .load("./spamtest/templates/SieveSpamtestValue.html"));
+
+        document.querySelector("#sivSpamtestPlaceholder").appendChild(elm);
+
+        this.onLoadValue();
+      })();
     }
 
     /**
@@ -152,11 +164,11 @@
       let percentualValue = "";
 
       if (this.getSieve().enable("percent")) {
-        $("#sivSpamtestPercentRadio")[DOM_ELEMENT].checked = true;
+        document.querySelector("#sivSpamtestPercentRadio").checked = true;
         percentualValue = this.value();
       }
       else {
-        $("#sivSpamtestRadio")[DOM_ELEMENT].checked = true;
+        document.querySelector("#sivSpamtestRadio").checked = true;
         value = this.value();
       }
 
@@ -171,10 +183,19 @@
      */
     getSummary() {
 
-      return $("<div/>")
-        .append($("<span/>").text("Spam score "))
-        .append($("<span/>").text(this.matchtype().getElement().toScript() + " "))
-        .append($("<em/>").text(this.value().value() + (this.isPercental() ? "%" : "")));
+      const FRAGMENT =
+        `<div>
+         <span data-i18n="spamtest.summary"></span>
+         <span class="sivSpamtestMatchtype"></span>
+         <em class="sivSpamtestValue"></em>
+       </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivSpamtestMatchtype").textContent
+        = this.matchtype().getElement().toScript();
+      elm.querySelector(".sivSpamtestValue").textContent
+        = this.value().value() + (this.isPercental() ? "%" : "");
+      return elm;
     }
   }
 
@@ -186,14 +207,18 @@
   class SieveVirustestUI extends SieveTestDialogBoxUI {
 
     /**
+     * The virus test's value.
+     *
      * @returns {SieveString}
-     *   the element's datepart
+     *   the element's value
      */
     value() {
       return this.getSieve().getElement("value");
     }
 
     /**
+     * The virus test's match type.
+     *
      * @returns {SieveAbstractElement}
      *   the element's matchtype
      */
@@ -202,6 +227,8 @@
     }
 
     /**
+     * The virus test's comparator.
+     *
      * @returns {SieveAbstractElement}
      *   the element's comparator
      */
@@ -250,8 +277,19 @@
      * @inheritdoc
      */
     getSummary() {
-      return $("<div/>")
-        .html(" Viruscheck " + this.matchtype().getElement().toScript() + " " + this.value().value());
+      const FRAGMENT =
+        `<div>
+         <span data-i18n="virustest.summary"></span>
+         <span class="sivVirustestMatchtype"></span>
+         <em class="sivVirustestValue"></em>
+       </div>`;
+
+      const elm = (new SieveTemplate()).convert(FRAGMENT);
+      elm.querySelector(".sivVirustestMatchtype").textContent
+        = this.matchtype().getElement().toScript();
+      elm.querySelector(".sivVirustestValue").textContent
+        = this.value().value();
+      return elm;
     }
   }
 
@@ -261,6 +299,5 @@
 
   SieveDesigner.register("test/virustest", SieveVirustestUI);
   SieveDesigner.register("test/spamtest", SieveSpamtestUI);
-
 
 })(window);

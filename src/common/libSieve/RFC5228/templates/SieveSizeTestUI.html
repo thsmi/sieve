@@ -1,10 +1,10 @@
 <div>
   <ul id="template-tabs">
     <li class="nav-item">
-      <a class="nav-link active" data-toggle="tab" href="#sieve-widget-size" role="tab">Size</a>
+      <a class="nav-link active" data-i18n="size.tab.home" data-toggle="tab" href="#sieve-widget-size" role="tab"></a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+      <a class="nav-link" data-i18n="size.tab.help" data-toggle="tab" href="#sieve-widget-help" role="tab"></a>
     </li>
   </ul>
 
@@ -13,32 +13,27 @@
       <div class="tab-pane fade show active" id="sieve-widget-size" role="tabpanel">
 
         <div class="form-group">
-          <label>Check if message size is ... </label>
+          <label data-i18n="size.description"></label>
 
           <div class="custom-control custom-radio">
             <input type="radio" id="customRadio1" name="over" value="test/size/operator/over" class="custom-control-input" />
-            <label class="custom-control-label" for="customRadio1">larger</label>
+            <label class="custom-control-label" data-i18n="size.larger" for="customRadio1"></label>
           </div>
           <div class="custom-control custom-radio">
             <input type="radio" id="customRadio2" name="over" value="test/size/operator/under" class="custom-control-input" />
-            <label class="custom-control-label" for="customRadio2">smaller</label>
+            <label class="custom-control-label" data-i18n="size.smaller" for="customRadio2"></label>
           </div>
         </div>
 
-        <div class="form-group">... than ...</div>
+        <div class="form-group" data-i18n="size.compare"></div>
 
         <div id="sivSizeInput"> </div>
 
       </div>
-      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
-        <p>Compares the message size.</p>
-        <p>
-          Test the message size is greater or smaller than the given size. The size is measured in bytes, character encoding are ignored.
-        </p>
-        <div class="alert alert-info" role="alert">
-          There is only a larger or smaller, no equals. A message with exaclty 4000 bytes is neither larger nor smaller than 4000
-          bytes.
-        </div>
+      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel" style="white-space: pre-line">
+        <div data-i18n="size.help"></div>
+        <div data-i18n="size.help.warning" class="alert alert-info" role="alert"></div>
+
       </div>
     </div>
   </div>

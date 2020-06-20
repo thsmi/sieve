@@ -1,22 +1,15 @@
-<template id="test42">
+<div>
   <div class="custom-control custom-radio">
     <input type="radio" id="sivDateCustomZone" name="sieve-zone" value=":zone" class="custom-control-input" />
-    <label class="custom-control-label" for="sivDateCustomZone">
-      Adjust Timezone
-    </label>
+    <label data-i18n="zone.custom" class="custom-control-label" for="sivDateCustomZone"></label>
     <div>
-      <small class="form-text text-muted">
-        Shift the zone offset from the date-time value.
-      </small>
-      <small class="form-text text-muted">
-        Offsets are written in the format ±[hh][mm]. They can range from -1200 to +1400 and represent whole numbers of hours. Few zones are offset by 30 or 45 minutes like e.g. −0330 or +0545
-      </small>
+      <small data-i18n="zone.custom.text" class="form-text text-muted" style="white-space: pre-line"></small>
     </div>
     <div>
       <form class="was-validated" novalidate="novalidate">
         <input type="text" id="sivDateZoneOffset" class="form-control form-control-sm col-sm-3" pattern="((\+(13|12|11|10|0[0-9])([0-5][0-9]))|(-(11|10|0[1-9])([0-5][0-9]))|(\+1400)|(-1200))"
-          maxlength="5" size="5" required="required" />
+          maxlength="5" size="5" value="+0100" required="required" />
       </form>
     </div>
   </div>
-</template>
+</div>

@@ -4,17 +4,20 @@
 <head>
   <title>Sieve DOM</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+
   <link rel="stylesheet" href="./toolkit/style/layout.css" type="text/css" />
-
-  <link rel="stylesheet" href="./../material-icons/material-design-icons.css" type="text/css" />
-
   <link rel="stylesheet" href="toolkit/style/style.css" type="text/css" />
 
   <link rel="stylesheet" href="./../bootstrap/css/bootstrap.min.css">
+
   <script src="./../jquery/jquery.min.js"></script>
   <script src="./../bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <script type="application/javascript" src="toolkit/logic/GenericCapabilities.js"></script>
+
+  <script type="application/javascript" src="toolkit/utils/SieveLogger.js"></script>
+  <script type="application/javascript" src="toolkit/utils/SieveI18n.js"></script>
+  <script type="application/javascript" src="toolkit/utils/SieveTemplate.js"></script>
 
   <!-- Basic Sieve Elements -->
   <script type="application/javascript" src="./toolkit/SieveParser.js"></script>
@@ -140,6 +143,10 @@
   <script type="application/javascript" src="notify/logic/SieveNotify.js"></script>
   <script type="application/javascript" src="notify/widgets/SieveNotifyUI.js"></script>
 
+  <!-- vnd.dovecot.pipe - pipe -->
+  <script type="application/javascript" src="pipe/logic/SievePipe.js"></script>
+  <script type="application/javascript" src="pipe/widgets/SievePipeUI.js"></script>
+
   <style>
     .sivMenuItem {
       font-size: 0.7em;
@@ -152,13 +159,65 @@
     .was-validated .form-control:focus {
       border: 1px solid #28a745
     }
+
+    button > .sivIconMore {
+      display: inline-block;
+      content: "";
+      background-image: url('data:image/svg+xml,<svg class="bi bi-three-dots" width="1.0em" height="1.0em" viewBox="0 0 16 16" fill="rgb(108, 117, 125)" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd"/></svg>');
+      background-repeat: no-repeat;
+      background-size: 1.0rem 1.0rem;
+      background-position: center center;
+      width: 1.5em;
+      height: 1em;
+    }
+
+    button:hover > .sivIconMore {
+      background-image: url('data:image/svg+xml,<svg class="bi bi-three-dots" width="1.0em" height="1.0em" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd"/></svg>');
+    }
+
+    button > .sivIconDelete {
+      display: inline-block;
+      content: "";
+      background-image: url('data:image/svg+xml,<svg class="bi bi-trash" width="1.0em" height="1.0em" viewBox="0 0 16 16" fill="rgb(108, 117, 125)" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 5.5A.5.5 0 016 6v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm2.5 0a.5.5 0 01.5.5v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm3 .5a.5.5 0 00-1 0v6a.5.5 0 001 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0 01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0 011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" clip-rule="evenodd"/></svg>');
+      background-repeat: no-repeat;
+      background-size: 1.0rem 1.0rem;
+      background-position: center center;
+      width: 1.5em;
+      height: 1em;
+    }
+
+    button:hover > .sivIconDelete {
+      background-image: url('data:image/svg+xml,<svg class="bi bi-trash" width="1.0em" height="1.0em" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 5.5A.5.5 0 016 6v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm2.5 0a.5.5 0 01.5.5v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm3 .5a.5.5 0 00-1 0v6a.5.5 0 001 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0 01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0 011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" clip-rule="evenodd"/></svg>');
+    }
+
+    .sivIconCode {
+      display: inline-block;
+      content: "";
+      background-image: url('data:image/svg+xml,<svg class="bi bi-code" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.854 4.146a.5.5 0 010 .708L2.707 8l3.147 3.146a.5.5 0 01-.708.708l-3.5-3.5a.5.5 0 010-.708l3.5-3.5a.5.5 0 01.708 0zm4.292 0a.5.5 0 000 .708L13.293 8l-3.147 3.146a.5.5 0 00.708.708l3.5-3.5a.5.5 0 000-.708l-3.5-3.5a.5.5 0 00-.708 0z" clip-rule="evenodd"/></svg>');
+      background-repeat: no-repeat;
+      background-size: 1.3rem 1.3rem;
+      background-position: center center;
+      width: 1.5em;
+      height: 1em;
+    }
+
+    .sivIconEdit {
+      display: inline-block;
+      content: "";
+      background-image: url('data:image/svg+xml,<svg class="bi bi-pencil" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M11.293 1.293a1 1 0 011.414 0l2 2a1 1 0 010 1.414l-9 9a1 1 0 01-.39.242l-3 1a1 1 0 01-1.266-1.265l1-3a1 1 0 01.242-.391l9-9zM12 2l2 2-9 9-3 1 1-3 9-9z" clip-rule="evenodd"/><path fill-rule="evenodd" d="M12.146 6.354l-2.5-2.5.708-.708 2.5 2.5-.707.708zM3 10v.5a.5.5 0 00.5.5H4v.5a.5.5 0 00.5.5H5v.5a.5.5 0 00.5.5H6v-1.5a.5.5 0 00-.5-.5H5v-.5a.5.5 0 00-.5-.5H3z" clip-rule="evenodd"/></svg>');
+      background-repeat: no-repeat;
+      background-size: 1.1rem 1.1rem;
+      background-position: center center;
+      width: 1.5em;
+      height: 1em;
+    }
   </style>
 </head>
 
 <body>
-
+  <div class="container-xl mt-2">
   <!-- the toolvar -->
-  <div id="toolbar">
+  <div id="toolbar" class="ml-2">
     <div id="accordion">
       <div class="card">
         <div class="card-header" data-toggle="collapse" data-target="#collapseOne">
@@ -179,15 +238,6 @@
         <div class="collapse" data-parent="#accordion" id="collapseThree">
           <div class="card-body p-2" id="sivOperators"></div>
         </div>
-        <div class="card-header" data-toggle="collapse" data-target="#collapseDebugging">
-          Debugging
-        </div>
-        <div class="collapse" data-parent="#accordion" id="collapseDebugging">
-          <div class="card-body p-2" id="sivDebugging"></div>
-          <button type="button" class="btn btn-sm btn-outline-secondary" id="DebugToggle">
-            Show/Hide
-          </button>
-        </div>
       </div>
 
       <div id="sivTrash"></div>
@@ -197,18 +247,20 @@
   <div id="content">
 
     <!-- Infobar -->
-    <div id="infobar">
-      <div id="infobarsubject">
-        <span>
-          Message Text
-        </span>
-        <button id="infobartoggle">Dismiss</button>
+    <div id="infobar" class="d-none alert alert-danger alert-dismissible mt-2" role="alert">
+      <div>
+        <strong id="infobar-subject"></strong>
+        <button id="infobar-close" class="close">
+          <span>×</span>
+        </button>
       </div>
+      <small id="infobar-brief-message" style="white-space: pre-wrap;"></small>
+      <small id="infobar-message" style="white-space: pre-wrap;"></small>
     </div>
 
     <!-- Modal dialog -->
-    <div id="sivDialog2" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-      aria-hidden="true">
+    <div id="sivDialog2" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+      aria-labelledby="myLargeModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header card-header d-flex justify-content-between py-0">
@@ -234,14 +286,15 @@
 
     <div id="debug2">
 
-      <div class="card mt-2 mb-2 mr-4" id="boxScript" style="display:none;">
+      <div class="card mt-2 mb-2 d-none" id="boxScript">
         <div class="card-header d-flex justify-content-between py-0">
           <ul class="nav nav-tabs card-header-tabs my-0 pt-3" role="tablist">
             <li class="nav-item">
               <a class="sieve-accounts-tab nav-link active" data-toggle="tab" role="tab" href="#debugscript">Script</a>
             </li>
             <li class="nav-item">
-              <a class="sieve-settings-tab nav-link" data-toggle="tab" role="tab" href="#debugcapabilities">Capabilities</a>
+              <a class="sieve-settings-tab nav-link" data-toggle="tab" role="tab"
+                href="#debugcapabilities">Capabilities</a>
             </li>
             <li class="nav-item">
               <a class="sieve-settings-tab nav-link" data-toggle="tab" role="tab" href="#debugadvanced">Advanced</a>
@@ -272,9 +325,6 @@
             </div>
           </div>
           <div class="tab-pane fade" id="debugadvanced" role="tabpanel">
-            <input id="draggable" />
-            <span id="DebugDropTarget">DROP TARGET</span>
-            <hr />
             <button type="button" class="btn btn-sm btn-outline-secondary" id="DebugCompact">
               Compact
             </button>
@@ -282,8 +332,8 @@
 
           <div class="tab-pane fade" id="debugcapabilities" role="tabpanel">
             <div>
-              <button type="button" class="btn btn-sm btn-outline-secondary" id="DebugRequire">Collect Require</button>
-              <button type="button" class="btn btn-sm btn-outline-secondary" id="CapabilitiesReset">Load from Script</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="CapabilitiesReset">Load from
+                Script</button>
               <button type="button" class="btn btn-sm btn-outline-secondary" id="CapabilitiesNone">Select None</button>
               <button type="button" class="btn btn-sm btn-outline-secondary" id="CapabilitiesAll">Select All</button>
             </div>
@@ -291,15 +341,16 @@
             <div class="row m-2">
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesAsciiNumeric" name="capabilities" value="comparator-i;ascii-numeric"
-                  class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesAsciiNumeric" name="capabilities"
+                  value="comparator-i;ascii-numeric" class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesAsciiNumeric">
                   comparator-i;ascii-numeric (RFC5228)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesEnvelope" name="capabilities" value="envelope" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesEnvelope" name="capabilities" value="envelope"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesEnvelope">
                   envelope (RFC5228)
                 </label>
@@ -307,7 +358,8 @@
 
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesFileinto" name="capabilities" value="fileinto" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesFileinto" name="capabilities" value="fileinto"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesFileinto">
                   fileinto (RFC 5228)
                 </label>
@@ -315,21 +367,24 @@
 
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesImap4flags" name="capabilities" value="imap4flags" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesImap4flags" name="capabilities" value="imap4flags"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesImap4flags">
                   imap4flags (RFC 5232)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesReject" name="capabilities" value="reject" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesReject" name="capabilities" value="reject"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesReject">
                   reject (RFC5429)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesEreject" name="capabilities" value="ereject" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesEreject" name="capabilities" value="ereject"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesEreject">
                   ereject (RFC5429)
                 </label>
@@ -337,7 +392,8 @@
 
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesRegex" name="capabilities" value="regex" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesRegex" name="capabilities" value="regex"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesRegex">
                   regex
                 </label>
@@ -345,7 +401,8 @@
 
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesBody" name="capabilities" value="body" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesBody" name="capabilities" value="body"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesBody">
                   body (RFC5173)
                 </label>
@@ -353,35 +410,40 @@
 
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesVacation" name="capabilities" value="vacation" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesVacation" name="capabilities" value="vacation"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesVacation">
                   vacation (RFC5230)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesVariables" name="capabilities" value="variables" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesVariables" name="capabilities" value="variables"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesVariables">
                   variables (RFC5229)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesInclude" name="capabilities" value="include" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesInclude" name="capabilities" value="include"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesInclude">
                   include (RFC6609)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesMailbox" name="capabilities" value="mailbox" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesMailbox" name="capabilities" value="mailbox"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesMailbox">
                   mailbox (RFC5490)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesMboxmetadata" name="capabilities" value="mboxmetadata" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesMboxmetadata" name="capabilities" value="mboxmetadata"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesMboxmetadata">
                   mboxmetadata (RFC5490)
                 </label>
@@ -396,70 +458,80 @@
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesSubaddress" name="capabilities" value="subaddress" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesSubaddress" name="capabilities" value="subaddress"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesSubaddress">
                   subaddress (RFC5233)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesCopy" name="capabilities" value="copy" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesCopy" name="capabilities" value="copy"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesCopy">
                   copy (RFC3894)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesEditheader" name="capabilities" value="editheader" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesEditheader" name="capabilities" value="editheader"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesEditheader">
                   editheader (RFC5293)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesRelational" name="capabilities" value="relational" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesRelational" name="capabilities" value="relational"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesRelational">
                   relational (RFC5231)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesDate" name="capabilities" value="date" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesDate" name="capabilities" value="date"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesDate">
                   date (RFC5260)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesDuplicate" name="capabilities" value="duplicate" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesDuplicate" name="capabilities" value="duplicate"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesDuplicate">
                   duplicate (RFC5435)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesSpamtest" name="capabilities" value="spamtest" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesSpamtest" name="capabilities" value="spamtest"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesSpamtest">
                   spamtest (RFC5235)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesSpamtestplus" name="capabilities" value="spamtestplus" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesSpamtestplus" name="capabilities" value="spamtestplus"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesSpamtestplus">
                   spamtestplus (RFC5235)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesVirustest" name="capabilities" value="virustest" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesVirustest" name="capabilities" value="virustest"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesVirustest">
                   virustest (RFC5235)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesEnvironment" name="capabilities" value="environment" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesEnvironment" name="capabilities" value="environment"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesEnvironment">
                   environment (RFC5183)
                 </label>
@@ -474,16 +546,42 @@
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesConvert" name="capabilities" value="convert" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesConvert" name="capabilities" value="convert"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesConvert">
                   convert (RFC6558)
                 </label>
               </div>
 
               <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
-                <input type="checkbox" id="sivCapabilitiesNotify" name="capabilities" value="enotify" class="custom-control-input" />
+                <input type="checkbox" id="sivCapabilitiesNotify" name="capabilities" value="enotify"
+                  class="custom-control-input" />
                 <label class="custom-control-label" for="sivCapabilitiesNotify">
                   notify (RFC5435)
+                </label>
+              </div>
+
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesPipe" name="capabilities" value="vnd.dovecot.pipe"
+                  class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesPipe">
+                  vnd.dovecot.pipe
+                </label>
+              </div>
+
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesFilter" name="capabilities" value="vnd.dovecot.filter"
+                  class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesFilter">
+                  vnd.dovecot.filter
+                </label>
+              </div>
+
+              <div class="col-md-4 col-lg-3 custom-control custom-checkbox">
+                <input type="checkbox" id="sivCapabilitiesExecute" name="capabilities" value="vnd.dovecot.execute"
+                  class="custom-control-input" />
+                <label class="custom-control-label" for="sivCapabilitiesExecute">
+                  vnd.dovecot.execute
                 </label>
               </div>
 
@@ -498,11 +596,13 @@
 
     </div>
 
-    <div id="divOutput">
+    <div id="divOutput" class="card p-2 pr-4">
     </div>
 
     <script type="application/javascript" src="SieveGui.js"></script>
   </div>
+
+</div>
 </body>
 
 </html>

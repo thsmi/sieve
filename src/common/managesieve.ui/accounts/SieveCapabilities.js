@@ -14,7 +14,7 @@
   "use strict";
 
   /* global $ */
-  /* global SieveTemplateLoader */
+  /* global SieveTemplate */
 
   /**
    * Implements a dialog which displays the accounts capabilities.
@@ -29,24 +29,28 @@
      */
     async show(capabilities) {
 
-      const dialog = await (new SieveTemplateLoader()).load("./accounts/account.capabilities.tpl");
-      $("#ctx").append(dialog);
+      document.querySelector("#ctx").appendChild(
+        await (new SieveTemplate()).load("./accounts/account.capabilities.tpl"));
 
       $('#sieve-dialog-capabilities').modal('show');
 
-      $("#sieve-capabilities-server").text(capabilities.implementation);
-      $("#sieve-capabilities-version").text(capabilities.version);
-      $("#sieve-capabilities-sasl").text(
-        Object.values(capabilities.sasl).join(" "));
-      $("#sieve-capabilities-extensions").text(
-        Object.keys(capabilities.extensions).join(" "));
-      $("#sieve-capabilities-language").text(capabilities.language);
+      document.querySelector("#sieve-capabilities-server").textContent
+        = capabilities.implementation;
+      document.querySelector("#sieve-capabilities-version").textContent
+        = capabilities.version;
+      document.querySelector("#sieve-capabilities-sasl").textContent
+        = Object.values(capabilities.sasl).join(" ");
+      document.querySelector("#sieve-capabilities-extensions").textContent
+        = Object.keys(capabilities.extensions).join(" ");
+      document.querySelector("#sieve-capabilities-language").textContent
+        = capabilities.language;
 
-      return await new Promise((resolve) => {
+      await new Promise((resolve) => {
 
         $('#sieve-dialog-capabilities').modal("show")
           .on("hidden.bs.modal", () => {
-            $('#sieve-dialog-capabilities').remove();
+            const elm = document.querySelector('#sieve-dialog-capabilities');
+            elm.parentNode.removeChild(elm);
             resolve();
           });
       });

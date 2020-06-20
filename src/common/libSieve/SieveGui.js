@@ -14,7 +14,10 @@
 
   "use strict";
 
-  /* global $: false */
+  /* global $ */
+
+  /* global SieveI18n */
+  /* global SieveLogger */
 
   /* global SieveLexer:false */
   /* global SieveDesigner */
@@ -25,6 +28,10 @@
   /* global SieveTrashBoxUI*/
 
   /* global SieveGrammar */
+
+  const BRIEF_MAX_LENGTH = 256;
+  const NAME = 1;
+  const DEFAULT_LOG_LEVEL = 0xFF;
 
   let dom2;
 
@@ -38,29 +45,33 @@
    * @param {*} docShell
    *   the sieve documents shell
    *
-   * @returns {jQuery}
+   * @returns {HTMLElement}
    *   the newly created sieve element
    */
   function createMenuItem(action, flavour, docShell) {
 
-    const elm2 = (new SieveSimpleBoxUI(docShell));
+    const elm2 = new SieveSimpleBoxUI(docShell);
     elm2.drag(new SieveCreateDragHandler());
     elm2.drag().flavour(flavour);
     elm2._elmType = action;
 
-    return elm2.html()
-      .addClass("sivMenuItem")
-      .append($(document.createTextNode(action.split('/')[1])));
+    const elm = elm2.html();
+    elm.classList.add("sivMenuItem");
+    elm.classList.add("bg-light");
+    elm.classList.add("border");
+    elm.classList.add("rounded");
+    elm.textContent = action.split('/')[NAME];
+
+    return elm;
   }
 
   /**
    * Compacts the sieve dom
-   *
    **/
   function compact() {
-    alert(dom2.compact());
+    SieveLogger.getInstance()
+      .logWidget(`Removed ${dom2.compact()} stale elements`);
   }
-
 
   /**
    * Initializes the sieve rendering ui and script parser
@@ -73,32 +84,41 @@
     const docShell = dom2;
     let key;
 
-    let elm = $("#sivActions").empty();
+    // populate the action section
+    const actions = document.querySelector("#sivActions");
+    while (actions.firstChild)
+      actions.removeChild(actions.firstChild);
 
-    //  alert(SieveLexer.capabilities());
     for (key in SieveLexer.types["action"])
       if (SieveLexer.types["action"][key].onCapable(SieveLexer.capabilities()))
-        elm.append(createMenuItem(key, "sieve/action", docShell));
+        actions.appendChild(createMenuItem(key, "sieve/action", docShell));
 
-    elm = $("#sivTests").empty();
+    // populate the test section
+    const tests = document.querySelector("#sivTests");
+    while (tests.firstChild)
+      tests.removeChild(tests.firstChild);
 
     for (key in SieveLexer.types["test"])
       if (SieveLexer.types["test"][key].onCapable(SieveLexer.capabilities()))
         if (key !== "test/boolean")
-          elm.append(createMenuItem(key, "sieve/test", docShell).get(0));
+          tests.appendChild(createMenuItem(key, "sieve/test", docShell));
 
-    elm = $("#sivOperators").empty();
+    // populate the operator section
+    const operators = document.querySelector("#sivOperators");
+    while (operators.firstChild)
+      operators.removeChild(operators.firstChild);
 
     for (key in SieveLexer.types["operator"])
       if (SieveLexer.types["operator"][key].onCapable(SieveLexer.capabilities()))
-        elm.append(createMenuItem(key, "sieve/operator", docShell).get(0));
+        operators.appendChild(createMenuItem(key, "sieve/operator", docShell));
 
-    elm = $("#sivTrash").empty();
-    elm
-      .append($(document.createElement('div'))
-        .addClass("spacer"))
-      .append($(new SieveTrashBoxUI(docShell).html())
-        .attr('id', 'trash'));
+    // create the trash bin
+    const trash = document.querySelector("#sivTrash");
+    while (trash.firstChild)
+      trash.removeChild(trash.firstChild);
+
+    trash.appendChild(
+      new SieveTrashBoxUI(docShell).html());
   }
 
   /**
@@ -140,48 +160,36 @@
     }
 
     SieveGrammar.create();
-    // reset environemnt
+    // reset environment
     init();
 
     if (!script)
-      script = $('#txtScript').val();
+      script = document.querySelector('#txtScript').value;
     else
-      $('#txtScript').val(script);
+      document.querySelector('#txtScript').value = script;
 
     dom2.script(script);
 
-    $("#txtOutput")
-      .val(dom2.script());
+    document.querySelector("#txtOutput")
+      .value = dom2.script();
 
-    $("#divOutput")
-      .empty()
-      .append(dom2.html());
+    const output = document.querySelector(`#divOutput`);
+    while (output.firstChild)
+      output.removeChild(output.firstChild);
+
+    output.appendChild(dom2.html());
   }
 
   /**
-   * Collects and shows al require statements
-   *
-   **/
-  function collectRequires() {
-    const requires = {};
-
-    dom2.root().require(requires);
-
-    for (const i in requires)
-      alert(i);
-  }
-
-  /**
-   * Sets the capabilities as defined in the capabilies dialog
-   *
+   * Sets the capabilities as defined in the capabilities dialog
    **/
   function setCapabilities() {
 
     const capabilities = [];
 
-    $("#debugcapabilities input:checked").each(function () {
-      capabilities.push($(this).val());
-    });
+    document
+      .querySelectorAll("#debugcapabilities [type=checkbox]:checked")
+      .forEach( (item) => { capabilities.push(item.value); });
 
     setSieveScript(
       getSieveScript(), capabilities);
@@ -199,21 +207,23 @@
    */
   function loadCapabilities(value) {
 
-    if (value === true || value === false) {
-      $("#debugcapabilities input:checkbox").prop("checked", value);
+    const items = document
+      .querySelectorAll("#debugcapabilities [type=checkbox]");
 
+    if (value === true || value === false) {
+      items.forEach((item) => { item.checked = value; });
       return;
     }
 
-    $("#debugcapabilities input:checkbox").prop('checked', false);
+    items.forEach((item) => { item.checked = false; });
 
     const capabilities = SieveLexer.capabilities();
 
-    $("#debugcapabilities input:checkbox").each(function () {
-      if (capabilities.hasCapability($(this).val()))
-        $(this).prop("checked", true);
-    });
-
+    items
+      .forEach((item) => {
+        if (capabilities.hasCapability(item.value))
+          item.checked = true;
+      });
   }
 
 
@@ -223,12 +233,23 @@
    *   the message's subject
    * @param {string} content
    *   the message's details
-   *
    */
   function showInfoMessage(message, content) {
-    $("#infobarsubject > span").text(message);
-    $("#infobarmessage > span").text(content);
-    $("#infobar").toggle();
+
+    document.querySelector("#infobar-subject")
+      .textContent = message;
+    document.querySelector("#infobar-message")
+      .textContent = content;
+    document.querySelector("#infobar-brief-message")
+      .textContent = content.substring(0, BRIEF_MAX_LENGTH) + "...";
+
+    document.querySelector("#infobar-brief-message")
+      .classList.remove("d-none");
+    document.querySelector("#infobar-message")
+      .classList.add("d-none");
+
+    document.querySelector("#infobar")
+      .classList.remove("d-none");
   }
 
 
@@ -236,98 +257,60 @@
    * The main entry point.
    * Executed as soon as the DOM is Ready.
    */
-  function main() {
+  async function main() {
+
+    // Connect the error handler...
+    window.addEventListener("error", (event) => {
+      showInfoMessage(event.message, event.error.stack);
+    });
+
+    document.querySelector("#infobar-close")
+      .addEventListener("click", () => {
+        document.querySelector("#infobar").classList.add("d-none");
+      });
+
+    document.querySelector("#infobar-brief-message")
+      .addEventListener("click", () => {
+        document.querySelector("#infobar-brief-message").classList.add("d-none");
+        document.querySelector("#infobar-message").classList.remove("d-none");
+      });
+
+    SieveLogger.getInstance().level(DEFAULT_LOG_LEVEL);
+    await (SieveI18n.getInstance()).load();
+
     init();
 
-    /* i += 1;
-    $(this).find("span").text( "mouse over x " + i );
-  }).mouseout(function(){
-    $(this).find("span").text("mouse out ");
-  })*/
-    $("#divOutput").mouseover(function (ev) {
-
-      switch (ev.target.nodeName) {
-        case "INPUT":
-        case "TEXTAREA":
-          $("[draggable=true]").attr("draggable", "false");
-          break;
-
-        default:
-          $("[draggable=false]").attr("draggable", "true");
-      }
-
-      $("#draggable").val(ev.target.nodeName);
-    });
-
-    const toolbarLeft = $('#toolbar').offset().left;
-
-    $(window).scroll(function () {
-      $('#toolbar').css('left', toolbarLeft - $(window).scrollLeft());
-    });
-
-
-    $("#CapabilitiesApply")
-      .click(function () { setCapabilities(); });
-    $("#CapabilitiesAll")
-      .click(function () { loadCapabilities(true); });
-    $("#CapabilitiesNone")
-      .click(function () { loadCapabilities(false); });
-    $("#CapabilitiesReset")
-      .click(function () { loadCapabilities(); });
+    document.querySelector("#CapabilitiesApply")
+      .addEventListener("click", () => { setCapabilities(); });
+    document.querySelector("#CapabilitiesAll")
+      .addEventListener("click", () => { loadCapabilities(true); });
+    document.querySelector("#CapabilitiesNone")
+      .addEventListener("click", () => { loadCapabilities(false); });
+    document.querySelector("#CapabilitiesReset")
+      .addEventListener("click", () => { loadCapabilities(); });
 
     $('a[data-toggle="tab"][href="#debugcapabilities"]')
       .on('show.bs.tab', function () { loadCapabilities(); });
 
 
-    $("#DebugParse")
-      .click(function () { setSieveScript(); });
-    $("#DebugStringify")
-      .click(function () { $('#txtOutput').val(getSieveScript()); });
-    $("#DebugRequire")
-      .click(function () { collectRequires(); });
-    $("#DebugCompact")
-      .click(function () { compact(); });
-    $("#DebugToggle")
-      .click(function () { $('#boxScript').toggle(); });
+    document.querySelector("#DebugParse")
+      .addEventListener("click", () => { setSieveScript(); });
+    document.querySelector("#DebugStringify")
+      .addEventListener("click", () => {
+        document.querySelector('#txtOutput').value = getSieveScript(); });
 
-    $("#DebugDropTarget")
-      .on('dragover', function (e) {
-        console.log("on drag over");
-        console.dir(e.originalEvent.dataTransfer.getData("sieve/action"));
-        e.preventDefault();
-        e.stopPropagation();
-      })
-      .on('dragenter', function (e) {
-        console.log("on drag enter");
-        console.dir(e.originalEvent.dataTransfer.getData("sieve/action"));
-        e.preventDefault();
-        e.stopPropagation();
-      })
-      .on('drop', function (e) {
-        console.log("on drop");
-        console.dir(e.originalEvent.dataTransfer.getData("sieve/action"));
-        e.preventDefault();
-        console.dir(e.dataTransfer);
-      });
+    document.querySelector("#DebugCompact")
+      .addEventListener("click", () => { compact(); });
 
-    $("#infobartoggle")
-      .click(function() { $("#infobar").toggle(); });
-  }
+    const url = new URL(window.location);
+    if (url.searchParams.has("debug"))
+      document.querySelector('#boxScript').classList.remove("d-none");
 
-  /**
-   * The windows default error handler
-   * @param {string} msg
-   *   the error message
-   * @param {string} url
-   *   the file which caused the error
-   * @param {string} [line]
-   *   the line which caused the error
-   *
-   */
-  // eslint-disable-next-line no-unused-vars
-  function errorhandler(msg, url, line) {
-    // alert(msg+"\n"+url+"\n"+line);
-    showInfoMessage(msg, "");
+    if (url.searchParams.get("capabilities") === "all") {
+      loadCapabilities(true);
+      setCapabilities();
+    }
+
   }
 
   if (document.readyState !== 'loading')
@@ -335,7 +318,6 @@
   else
     document.addEventListener('DOMContentLoaded', () => { main(); }, { once: true });
 
-  exports.onerror = errorhandler;
   exports.setSieveScript = setSieveScript;
   exports.getSieveScript = getSieveScript;
 

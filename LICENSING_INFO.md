@@ -28,8 +28,6 @@ All of the third party source code is available under licenses which are both fr
 * [CodeMirror](http://www.codemirror.net) is released under the [MIT license](http://codemirror.net/LICENSE)
 * [JQuery](http://www.jquery.com) is released under the [MIT License](http://jquery.org/license/)
 * [Bootstrap](https://getbootstrap.com/) is released under the [MIT license](https://raw.githubusercontent.com/twbs/bootstrap/master/LICENSE)
-* [Material Design Icons](http://google.github.io/material-design-icons/) is released under the [Apache License](https://raw.githubusercontent.com/google/material-design-icons/master/LICENSE)
-
 
 ## Icon
 

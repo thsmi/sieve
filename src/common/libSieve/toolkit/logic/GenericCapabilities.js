@@ -16,7 +16,7 @@
   /**
    * Manages the dependencies required by sieve elements and components.
    *
-   * Examples for valid dependecy descriptions are:
+   * Examples for valid dependency descriptions are:
    *
    *   requires: { any: ["vacation-seconds", "vacation"] }
    *   requires: { all: ["variable", "enotify"] }
@@ -40,7 +40,7 @@
      * @param {string|object} dependencies
      *   the dependencies which should be checked
      * @returns {boolean}
-     *   true in case the dependencie is supported otherwise false.
+     *   true in case the dependencies are supported otherwise false.
      */
     isCapable(dependencies) {
 
@@ -62,7 +62,7 @@
     }
 
     /**
-     * Checks if all of the fiven dependencies are supported by the server
+     * Checks if all of the given dependencies are supported by the server
      * @param {string|string[]} dependencies
      *   the dependency or dependencies to test
      * @returns {boolean}
@@ -100,11 +100,11 @@
     }
 
     /**
-     * Ensures the given dependenies are supported by the server.
+     * Ensures the given dependencies are supported by the server.
      *
      * @param {string|object} [dependencies]
      *   It can be a plain string or a more complex object. The complex objects are
-     *   used to realize "any" of or "all" of stucts.
+     *   used to realize "any" of or "all" of structs.
      *
      * @returns {SieveCapabilities}
      *   a self reference
@@ -133,7 +133,7 @@
      * In case the dependency can not be resolved an exception it thrown.
      *
      * @param  {string} dependencies
-     *   the required dependencies which all need to be fullfilled.
+     *   the required dependencies which all need to be fulfilled.
      *
      * @returns {SieveCapabilities}
      *   a self reference
@@ -156,13 +156,13 @@
 
     /**
      * Ensures that at least one onf the required dependencies.
-     * The list is ordered which means the firs dependency is the most prefered one.
-     * In case it can not be fulfiled  the next one will be tried.
+     * The list is ordered which means the firs dependency is the most preferred one.
+     * In case it can not be fulfilled  the next one will be tried.
      *
      * In case none of the dependencies match an exception will be throw.
      *
      * @param  {...string} dependencies
-     *   a list with dependencies, from which at least one needs to be fullfilled
+     *   a list with dependencies, from which at least one needs to be fulfilled
      *
      * @returns {SieveCapabilities}
      *   a self reference
@@ -181,7 +181,7 @@
     }
 
     /**
-     * Clears all of the currend dependencies.
+     * Clears all of the current dependencies.
      *
      * @returns {SieveCapabilities}
      *   a self reference

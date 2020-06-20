@@ -1,104 +1,42 @@
 <div>
-    <ul id="template-tabs">
-        <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#sieve-widget-setaction" role="tab">Set</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
-        </li>
-    </ul>
+  <ul id="template-tabs">
+    <li class="nav-item">
+      <a data-i18n="set.tab.home" class="nav-link active" data-toggle="tab" href="#sieve-widget-setaction"
+        role="tab"></a>
+    </li>
+    <li class="nav-item">
+      <a data-i18n="set.tab.advanced" class="nav-link" data-toggle="tab" href="#sieve-widget-advanced"
+        role="tab"></a>
+    </li>
+    <li class="nav-item">
+      <a data-i18n="set.tab.help" class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab"></a>
+    </li>
+  </ul>
 
-    <div id="template-content">
-        <div class="tab-content m-2">
-            <div class="tab-pane fade show active" id="sieve-widget-setaction" role="tabpanel">
-                <form class="was-validated" novalidate="novalidate">
-                <div class="form-group">
-                    <label>Store the value ...</label>
-                    <textarea class="form-control" id="sivVariableValue" rows="6"> </textarea>
-                </div>
-                <div class="form-group">
-                    <label>... into variable</label>
-                    <input type="text" class="form-control" id="sivVariableName"
-                    pattern="((([A-Za-z_][A-Za-z0-9_]*))\.((([0-9]+)|([A-Za-z_][A-Za-z0-9_]*))\.)*)?(([0-9]+)|([A-Za-z_][A-Za-z0-9_]*))"
-                    required="required" />
-                    <div class="invalid-feedback">Invalid variable name</div>
-                </div>
+  <div id="template-content">
+    <div class="tab-content m-2">
+      <div class="tab-pane fade show active" id="sieve-widget-setaction" role="tabpanel">
+          <div class="form-group">
+            <label data-i18n="set.value"></label>
+            <textarea class="form-control" id="sivVariableValue" rows="6"> </textarea>
+          </div>
+          <div class="form-group">
+            <label data-i18n="set.variable"></label>
+            <form class="was-validated" novalidate="novalidate">
+              <input type="text" class="form-control" id="sivVariableName"
+                pattern="((([A-Za-z_][A-Za-z0-9_]*))\.((([0-9]+)|([A-Za-z_][A-Za-z0-9_]*))\.)*)?(([0-9]+)|([A-Za-z_][A-Za-z0-9_]*))"
+                required="required" />
+              <div data-i18n="set.variable.invalid" class="invalid-feedback"></div>
             </form>
-            </div>
-            <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
-                <small class="form-text text-muted">
-                  Modifiers are used to change a variables' value.
-                  They are processed in the following order
-                </small>
-                <br/>
-
-                <div class="sivModifiers">
-
-                    <div class="form-group">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" name="40" class="custom-control-input" id="customCheckDisabled0" />
-                            <label class="custom-control-label" for="customCheckDisabled0">
-                                <div>Modify variable's case</div>
-                                <small class="form-text text-muted">Only plain Latin (A-Z and a-z) are changed, no umlauts or similar characters.</small>
-                            </label>
-
-                            <div class="custom-control custom-radio">
-                                <input type="radio" id="customRadio1" name="40" value=":upper" class="custom-control-input" checked="checked" />
-                                <label class="custom-control-label" for="customRadio1">upper case</label>
-                            </div>
-                            <div class="custom-control custom-radio">
-                                <input type="radio" id="customRadio2" name="40" value=":lower" class="custom-control-input" />
-                                <label class="custom-control-label" for="customRadio2">lower case</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" name="30" class="custom-control-input" id="customCheckDisabled1" />
-                            <label class="custom-control-label" for="customCheckDisabled1">
-                                <div>Modify variable's first character</div>
-                                <small class="form-text text-muted">Only the first character's case is changed, the rest of the string is unchanged.</small>
-                            </label>
-
-                            <div class="custom-control custom-radio">
-                                <input type="radio" id="customRadio3" name="30" value=":upperfirst" class="custom-control-input" checked="checked" />
-                                <label class="custom-control-label" for="customRadio3">upper case</label>
-                            </div>
-                            <div class="custom-control custom-radio">
-                                <input type="radio" id="customRadio4" name="30" value=":lowerfirst" class="custom-control-input" />
-                                <label class="custom-control-label" for="customRadio4">lower case</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="sivModifier">
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
-                <p>Stores the specified value in the variable identified by name. </p>
-                <p>
-                The name has to be a constant string and conform to the syntax of variable-name.
-                Variable names are case insensitive.
-            </p>
-            <p>
-            Modifiers are applied before it is stored in the variable.
-            If more than one modifier is specified, they are applied according to
-            this precedence list:
-            </p>
-            <ul>
-                <li>Variable's case</li>
-                <li>Variable's first character</li>
-                <li>Escape Wildcards</li>
-                <li>Count characters</li>
-            </ul>
-
-
-            </div>
-        </div>
+          </div>
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
+        <small data-i18n="set.modifier" class="form-text text-muted"></small>
+        <br />
+        <div id="sivModifier"> </div>
+      </div>
+      <div data-i18n="set.help" style="white-space: pre-line" class="tab-pane fade" id="sieve-widget-help"
+        role="tabpanel"></div>
     </div>
+  </div>
 </div>

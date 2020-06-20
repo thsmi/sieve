@@ -2,84 +2,32 @@ body {
   margin:0px;
 }
 
-#toolbar {
-    position:fixed;
-    width:160px;
-	left: 10px;
-	top: 10px;
+#content {
+  padding: 0px 10px;
+  margin-left: 180px;
+}
 
-	width:150px;
-	z-index:100;
+#toolbar {
+  position: fixed;
+  width: 170px;
+  overflow-x: hidden;
 }
 
 #toolbar .SivElement {
    width:140px;
 }
 
-    #trash
-    {
-      height: 80px;
-      min-width:80px;
-      background-color:transparent;
-      background-image:url('trash.png');
-      background-repeat:no-repeat;
-      background-position:center center;
-    }
-
-  #trash[sivDragging="true"]
-  {
-  background-image:url('trash-full.png');
-  }
-
-  #infobar {
-  background-image: -moz-linear-gradient(bottom, #ffdd66, #ffeb7d);
-
-  border: 1px solid black;
-  border-top: none;
-
-  top: 0px;
-  width: 720px;
-
-  margin-left: 10px;
-  margin-right: 10px;
-
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-
-  display: none;
-}
-
-#infobarsubject
+#sivTrash .sivTrashBin
 {
-  line-height:20px;
-  padding: 10px;
-  font-weight:bold;
+  height: 80px;
+  min-width:80px;
+  background-color:transparent;
+  background-image:url('trash.png');
+  background-repeat:no-repeat;
+  background-position:center center;
 }
 
-#infobar button {
-  float:right;
+#sivTrash .sivTrashBin[data-sieve-dragging]
+{
+  background-image:url('trash-full.png');
 }
-
-#debug {
-	display: none;
-}
-
-#content {
-	margin-left: 180px;
-}
-
-  #divOutput {
-    width: 100%;
-    margin-left:-5px;
-    margin-top:10px;
-
-    padding: 5px 20px;
-
-    background-color:white;
-    padding-right:90px;
-    padding-left:30px;
-
-    border-radius: 3px;
-    box-shadow: 0 0 3px lightgray;
-  }
-

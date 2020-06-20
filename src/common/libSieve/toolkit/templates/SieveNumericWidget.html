@@ -1,4 +1,4 @@
-<div id="template">
+<div>
   <div class="input-group col-md-8">
     <input class="form-control sieve-numeric-value text-right"
            aria-label="Text input with dropdown button"
@@ -8,17 +8,17 @@
         aria-expanded="false">Dropdown</button>
       <div class="dropdown-menu">
           <button class="dropdown-item" type="button" data-value="">
-              <small class="text-muted sieve-unit">No Unit</small>
+              <small data-i18n="numeric.nounit" class="text-muted sieve-unit"></small>
           </button>
           <div class="dropdown-divider"> </div>
           <button class="dropdown-item" type="button" data-value="K">2^10
-              <small class="text-muted">- <span class="sieve-unit">Kilobytes</span></small>
+              <small class="text-muted">- <span data-i18n="numeric.kilobytes" class="sieve-unit"></span></small>
           </button>
           <button class="dropdown-item" type="button" data-value="M">2^20
-              <small class="text-muted">- <span class="sieve-unit">Megabytes</span></small>
+              <small class="text-muted">- <span data-i18n="numeric.megabytes" class="sieve-unit"></span></small>
           </button>
           <button class="dropdown-item" type="button" data-value="G">2^30
-              <small class="text-muted">- <span class="sieve-unit">Gigabytes</span></small>
+              <small class="text-muted">- <span data-i18n="numeric.gigabytes" class="sieve-unit"></span></small>
           </button>
       </div>
     </div>

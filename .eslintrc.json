@@ -122,6 +122,8 @@
         ],
         "constructor-super": "error",
         "valid-typeof": "warn",
+        "no-unreachable-loop": "error",
+        "no-promise-executor-return": "error",
         "no-alert": "warn",
         "no-magic-numbers": ["warn", { "ignore": [0], "detectObjects": true }],
         "no-throw-literal": "error",

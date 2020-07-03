@@ -81,3 +81,10 @@ Continuous builds are triggered upon each change to the master. You can find the
 
 Click on the test or build status to see more details or to download the build Artifacts. The later can be accessed by selecting a build and then clicking on "Published" in the "Related" section.
 
+## macOS maintainer wanted
+We're looking for a contributor willing to help with macOS releases:
+
+1. Fix the automated build pipeline (see https://github.com/thsmi/sieve/blob/master/.azure/macos.yml and https://github.com/thsmi/sieve/issues/313)
+2. Test the releases during the alpha/beta phases to iron out potential bugs (~2 releases/year)
+
+If you're using Sieve on macOS to manage your mailbox filters, please consider helping us!

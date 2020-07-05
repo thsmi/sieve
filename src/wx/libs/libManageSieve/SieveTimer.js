@@ -9,82 +9,75 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+/* global Components */
 
-(function (exports) {
+const Cc = Components.classes;
+const Ci = Components.interfaces;
 
-  "use strict";
+import { SieveAbstractTimer } from "./SieveAbstractTimer.js";
 
-  /* global Components */
-
-  const Cc = Components.classes;
-  const Ci = Components.interfaces;
-
-  const { SieveAbstractTimer } = require("./SieveAbstractTimer.js");
+/**
+ * The mozilla timer is special.
+ * It implements a custom interface and invokes a fixed callback method.
+ */
+class SieveMozTimer extends SieveAbstractTimer {
 
   /**
-   * The mozilla timer is special.
-   * It implements a custom interface and invokes a fixed callback method.
+   * Creates a new instance.
    */
-  class SieveMozTimer extends SieveAbstractTimer {
+  constructor() {
+    super();
 
-    /**
-     * Creates a new instance.
-     */
-    constructor() {
-      super();
-
-      this.timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    cancel() {
-      this.timer.cancel();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    start(callback, ms) {
-      this.timer.cancel();
-
-      if (ms === 0)
-        return;
-
-      this.callback = callback;
-      this.timeoutTimer.initWithCallback(this, ms, Ci.nsITimer.TYPE_ONE_SHOT);
-    }
-
-
-    /**
-     * The entry point triggered by the mozilla timer.
-     *
-     * @param {nsITimer} timer
-     *   the timer which caused this callback.
-     *
-     */
-    notify(timer) {
-      if (this.timer !== timer)
-        return;
-
-      if (!this.callback)
-        return;
-
-      // We need to null the callback otherwise we leak. But we need to do this
-      // before invoking the callback. As it is perfectly fine if the callback
-      // restarts the timer and thus sets a new callback. And in this case nulling
-      // the callback would accidentally cancel the new callback.
-      const callback = this.callback;
-      this.callback = null;
-
-      (async () => {
-        await callback();
-      })();
-    }
-
+    this.timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
   }
 
-  exports.SieveTimer = SieveMozTimer;
+  /**
+   * @inheritdoc
+   */
+  cancel() {
+    this.timer.cancel();
+  }
 
-})(this);
+  /**
+   * @inheritdoc
+   */
+  start(callback, ms) {
+    this.timer.cancel();
+
+    if (ms === 0)
+      return;
+
+    this.callback = callback;
+    this.timer.initWithCallback(this, ms, Ci.nsITimer.TYPE_ONE_SHOT);
+  }
+
+
+  /**
+   * The entry point triggered by the mozilla timer.
+   *
+   * @param {nsITimer} timer
+   *   the timer which caused this callback.
+   *
+   */
+  notify(timer) {
+    if (this.timer !== timer)
+      return;
+
+    if (!this.callback)
+      return;
+
+    // We need to null the callback otherwise we leak. But we need to do this
+    // before invoking the callback. As it is perfectly fine if the callback
+    // restarts the timer and thus sets a new callback. And in this case nulling
+    // the callback would accidentally cancel the new callback.
+    const callback = this.callback;
+    this.callback = null;
+
+    (async () => {
+      await callback();
+    })();
+  }
+
+}
+
+export { SieveMozTimer as SieveTimer };

@@ -73,19 +73,6 @@ function packageBootstrap() {
   return common.packageBootstrap(
     path.join(BUILD_DIR_WEB, "/static/libs/bootstrap"));
 }
-
-/**
- * Copies the material design icons into the build directory.
- * @returns {Stream}
- *   a stream to be consumed by gulp
- */
-function packageMaterialIcons() {
-  "use strict";
-
-  return common.packageMaterialIcons(
-    path.join(BUILD_DIR_WEB, "/static/libs/material-icons"));
-}
-
 /**
  * Copies the source files into the app/ directory...
  *
@@ -93,58 +80,32 @@ function packageMaterialIcons() {
  *   a stream to be consumed by gulp
  */
 function packageSrc() {
-  "use strict";
 
   return src([
-    BASE_DIR_WEB + "/**"
+    BASE_DIR_WEB + "/**",
+    `!${BASE_DIR_WEB}/static/libs/libManageSieve/**`
   ]).pipe(dest(BUILD_DIR_WEB));
 }
 
-
 /**
- * Copies some files from the wx libManageSieve into web lib folder
- *
- * @returns {Stream}
- *   a stream to be consumed by gulp
- */
-function packageLibManageSieveWx() {
-  "use strict";
-
-  const destination = path.join(BUILD_DIR_WEB, 'static/libs/libManageSieve');
-  const base = path.join(BASE_DIR_WX, "libs/libManageSieve");
-
-  return src([
-    path.join(base, "SieveResponseParser.js"),
-    path.join(base, "SieveRequestBuilder.js")
-  ], { base: base }).pipe(dest(destination));
-}
-
-/**
- * Copies some files from the wx libManageSieve into web lib folder
- *
- * @returns {Stream}
- *   a stream to be consumed by gulp
- */
-function packageLibManageSieveApp() {
-  "use strict";
-
-  const destination = path.join(BUILD_DIR_WEB, 'static/libs/libManageSieve');
-  const base = path.join(BASE_DIR_APP, "libs/libManageSieve");
-
-  return src([
-    path.join(base, "SieveLogger.js")
-  ], { base: base }).pipe(dest(destination));
-}
-
-/**
- * Copies the common libManageSieve files into the app's lib folder
+ * Copies the libManageSieve files into the app's lib folder.
+ * It merges files from common, webextension, the app and the web app.
  *
  * @returns {Stream}
  *   a stream to be consumed by gulp
  */
 function packageLibManageSieve() {
-  "use strict";
-  return common.packageLibManageSieve(path.join(BUILD_DIR_WEB, 'static/libs'));
+
+  const BASE_WX = path.join(BASE_DIR_WX, "libs/libManageSieve");
+  const BASE_APP = path.join(BASE_DIR_APP, "libs/libManageSieve");
+  const BASE_WEB = path.join(BASE_DIR_WEB, "static/libs/libManageSieve");
+  const BASE_COMMON = path.join(common.BASE_DIR_COMMON, "libManageSieve");
+
+  return common.src2(BASE_WEB)
+    .pipe(common.src2(BASE_WX, ["SieveResponseParser.js", "SieveRequestBuilder.js"]))
+    .pipe(common.src2(BASE_APP, "SieveLogger.js"))
+    .pipe(common.src2(BASE_COMMON))
+    .pipe(dest(path.join(BUILD_DIR_WEB, 'static/libs/libManageSieve')));
 }
 
 /**
@@ -208,9 +169,7 @@ function watchSrc() {
       packageManageSieveUi,
       packageManageSieveUiApp,
       packageLibSieve,
-      packageLibManageSieve,
-      packageLibManageSieveApp,
-      packageLibManageSieveWx)
+      packageLibManageSieve)
   );
 }
 
@@ -219,7 +178,6 @@ exports["watch"] = watchSrc;
 exports["packageJQuery"] = packageJQuery;
 exports["packageCodeMirror"] = packageCodeMirror;
 exports["packageBootstrap"] = packageBootstrap;
-exports["packageMaterialIcons"] = packageMaterialIcons;
 exports["packageLicense"] = packageLicense;
 exports["packageSrc"] = packageSrc;
 
@@ -228,11 +186,8 @@ exports['package'] = series(
     packageJQuery,
     packageCodeMirror,
     packageBootstrap,
-    packageMaterialIcons,
     packageLicense,
     packageLibManageSieve,
-    packageLibManageSieveApp,
-    packageLibManageSieveWx,
     packageLibSieve,
     packageManageSieveUi,
     packageManageSieveUiApp

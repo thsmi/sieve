@@ -17,6 +17,7 @@ const { createWriteStream, existsSync } = require('fs');
 
 const path = require('path');
 const yazl = require('yazl');
+const { Stream } = require('stream');
 
 const JSON_INDENTATION = 2;
 
@@ -133,22 +134,26 @@ function packageBootstrap(destination) {
 }
 
 /**
-
-/**
- * Packages the common libManageSieve files
+ * An src clone which reasonable default values which avoid code duplication
  *
- * @param {string} destination
- *   where to place the common libManageSieve files
- *
+ * @param {string} dir
+ *   the source directory which contains the files
+ * @param {string|string[]} [files]
+ *   the globs to be applied to the directory. If omitted it will select
+ *   everything except a "doc" folder.
  * @returns {Stream}
- *   a stream to be consumed by gulp
+ *   a vinyl file stream.
  */
-function packageLibManageSieve(destination) {
-  "use strict";
+function src2(dir, files) {
 
-  return src([
-    BASE_DIR_LIBMANAGESIEVE + "/**"
-  ], { base: BASE_DIR_COMMON }).pipe(dest(destination));
+  if (!files)
+    files = [`./**`, `!./doc/**`];
+
+  if (!Array.isArray(files))
+    files = [files];
+
+  return src(
+    files, { base: dir, root: dir, cwd:dir, passthrough: true });
 }
 
 /**
@@ -400,7 +405,6 @@ exports["packageJQuery"] = packageJQuery;
 exports["packageCodeMirror"] = packageCodeMirror;
 exports["packageBootstrap"] = packageBootstrap;
 
-exports["packageLibManageSieve"] = packageLibManageSieve;
 exports["packageLibSieve"] = packageLibSieve;
 exports["packageManageSieveUi"] = packageManageSieveUi;
 
@@ -413,3 +417,5 @@ exports["bumpPatchVersion"] = bumpPatchVersion;
 
 exports["BASE_DIR_BUILD"] = BASE_DIR_BUILD;
 exports["BASE_DIR_COMMON"] = BASE_DIR_COMMON;
+
+exports["src2"] = src2;

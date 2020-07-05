@@ -9,44 +9,35 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
 
-  "use strict";
+import { SieveAbstractResponseParser } from "./SieveAbstractResponseParser.js";
 
-  const { SieveAbstractResponseParser } = require("./SieveAbstractResponseParser.js");
+/**
+ * Implements a mozilla specific response parser
+ **/
+class SieveMozResponseParser extends SieveAbstractResponseParser {
 
   /**
-   * Implements a mozilla specific response parser
+   * @inheritdoc
    **/
-  class SieveMozResponseParser extends SieveAbstractResponseParser {
-
-    /**
-     * @inheritdoc
-     **/
-    convertToString(byteArray) {
-      byteArray = new Uint8Array(byteArray);
-      return (new TextDecoder("UTF-8")).decode(byteArray);
-    }
-
-    /**
-     * @inheritdoc
-     **/
-    convertToBase64(decoded) {
-      return btoa(decoded);
-    }
-
-    /**
-     * @inheritdoc
-     **/
-    convertFromBase64(encoded) {
-      return atob(encoded);
-    }
+  convertToString(byteArray) {
+    byteArray = new Uint8Array(byteArray);
+    return (new TextDecoder("UTF-8")).decode(byteArray);
   }
 
+  /**
+   * @inheritdoc
+   **/
+  convertToBase64(decoded) {
+    return btoa(decoded);
+  }
 
-  if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveResponseParser = SieveMozResponseParser;
-  else
-    exports.SieveResponseParser = SieveMozResponseParser;
+  /**
+   * @inheritdoc
+   **/
+  convertFromBase64(encoded) {
+    return atob(encoded);
+  }
+}
 
-})(this);
+export { SieveMozResponseParser as SieveResponseParser };

@@ -185,10 +185,9 @@ function packageBootstrap() {
  *   a stream to be consumed by gulp
  */
 function packageSrc() {
-  "use strict";
-
   return src([
-    BASE_DIR_APP + "/**"
+    BASE_DIR_APP + "/**",
+    `!${BASE_DIR_APP}/libs/libManageSieve/**`
   ]).pipe(dest(BUILD_DIR_APP));
 }
 
@@ -214,8 +213,13 @@ function packageIcons() {
  *   a stream to be consumed by gulp
  */
 function packageLibManageSieve() {
-  "use strict";
-  return common.packageLibManageSieve(BUILD_DIR_APP_LIBS);
+
+  const BASE_APP = path.join(BASE_DIR_APP, "libs", "libManageSieve");
+  const BASE_COMMON = path.join(common.BASE_DIR_COMMON, "libManageSieve");
+
+  return common.src2(BASE_APP)
+    .pipe(common.src2(BASE_COMMON))
+    .pipe(dest(path.join(BUILD_DIR_APP_LIBS, "libManageSieve")));
 }
 
 
@@ -232,7 +236,7 @@ function packageLibSieve() {
 
 
 /**
- * Copies the common managiesieve.ui files into the app's lib folder
+ * Copies the common managesieve.ui files into the app's lib folder
  *
  * @returns {Stream}
  *   a stream to be consumed by gulp

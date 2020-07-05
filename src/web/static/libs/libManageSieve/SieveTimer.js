@@ -9,45 +9,38 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+import { SieveAbstractTimer } from "./SieveAbstractTimer.js";
 
-(function (exports) {
-
-  "use strict";
-
-  const { SieveAbstractTimer } = require("./SieveAbstractTimer.js");
+/**
+ * WebSocket live typically inside a window like javascript context.
+ *
+ * This provides access to the the typical setTimeout and clearTimeout
+ * methods.
+ */
+class SieveWebSocketTimer extends SieveAbstractTimer {
 
   /**
-   * WebSocket live typically inside a window like javascript context.
-   *
-   * This provides access to the the typical setTimeout and clearTimeout
-   * methods.
+   * @inheritdoc
    */
-  class SieveWebSocketTimer extends SieveAbstractTimer {
+  start(callback, ms) {
+    this.cancel();
 
-    /**
-     * @inheritdoc
-     */
-    start(callback, ms) {
-      this.cancel();
+    if (ms === 0)
+      return;
 
-      if (ms === 0)
-        return;
-
-      this.timer = window.setTimeout(callback, ms);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    cancel() {
-      if (!this.timer)
-        return;
-
-      window.clearTimeout(this.timer);
-      this.timer = null;
-    }
+    this.timer = window.setTimeout(callback, ms);
   }
 
-  exports.SieveTimer = SieveWebSocketTimer;
+  /**
+   * @inheritdoc
+   */
+  cancel() {
+    if (!this.timer)
+      return;
 
-})(this);
+    window.clearTimeout(this.timer);
+    this.timer = null;
+  }
+}
+
+export { SieveWebSocketTimer as SieveTimer };

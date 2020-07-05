@@ -9,14 +9,12 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+/* global browser */
+import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.js";
+import { SieveIpcClient } from "./libs/managesieve.ui/utils/SieveIpcClient.js";
+import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccounts.js";
+
 (async function () {
-
-  "use strict";
-
-  /* global browser */
-  /* global SieveIpcClient */
-  /* global SieveAccounts */
-  /* global SieveLogger */
 
   const ERROR_UNTRUSTED = 1;
   const ERROR_MISMATCH = 2;
@@ -467,7 +465,7 @@
       return value;
     },
 
-    "get-default-preference": async(msg) => {
+    "get-default-preference": async (msg) => {
       const name = msg.payload.data;
 
       logger.logAction(`Get default value for ${name}`);
@@ -485,7 +483,7 @@
       await accounts.getAccountById(account).getEditor().setValue(name, value);
     },
 
-    "set-default-preference": async(msg) => {
+    "set-default-preference": async (msg) => {
       const name = msg.payload.key;
       const value = msg.payload.value;
 

@@ -9,213 +9,200 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+const PREF_KEY_ACCOUNTS = '^.*user_pref\\(.*"mail.accountmanager.accounts".*,.*"(.*)"\\);.*$';
+const PREF_KEY_SERVER = '^.*user_pref\\(.*"mail.account.%account%.server".*,.*"(.*)"\\);.*$';
+const PREF_KEY_SERVER_TYPE = '^.*user_pref\\(.*"mail.server.%server%.type".*,.*"(.*)"\\);.*$';
+const PREF_KEY_SERVER_USERNAME = '^.*user_pref\\(.*"mail.server.%server%.userName".*,.*"(.*)"\\);.*$';
+const PREF_KEY_SERVER_HOSTNAME = '^.*user_pref\\(.*"mail.server.%server%.hostname".*,.*"(.*)"\\);.*$';
+const PREF_KEY_SERVER_REALUSERNAME = '^.*user_pref\\(.*"mail.server.%server%.realuserName".*,.*"(.*)"\\);.*$';
+const PREF_KEY_SERVER_REALHOSTNAME = '^.*user_pref\\(.*"mail.server.%server%.realhostname".*,.*"(.*)"\\);.*$';
+const PREF_KEY_SERVER_NAME = '^.*user_pref\\(.*"mail.server.%server%.name".*,.*"(.*)"\\);.*$';
 
-  "use strict";
+const FIRST_MATCH = 1;
 
-  const PREF_KEY_ACCOUNTS = '^.*user_pref\\(.*"mail.accountmanager.accounts".*,.*"(.*)"\\);.*$';
-  const PREF_KEY_SERVER = '^.*user_pref\\(.*"mail.account.%account%.server".*,.*"(.*)"\\);.*$';
-  const PREF_KEY_SERVER_TYPE = '^.*user_pref\\(.*"mail.server.%server%.type".*,.*"(.*)"\\);.*$';
-  const PREF_KEY_SERVER_USERNAME = '^.*user_pref\\(.*"mail.server.%server%.userName".*,.*"(.*)"\\);.*$';
-  const PREF_KEY_SERVER_HOSTNAME = '^.*user_pref\\(.*"mail.server.%server%.hostname".*,.*"(.*)"\\);.*$';
-  const PREF_KEY_SERVER_REALUSERNAME = '^.*user_pref\\(.*"mail.server.%server%.realuserName".*,.*"(.*)"\\);.*$';
-  const PREF_KEY_SERVER_REALHOSTNAME = '^.*user_pref\\(.*"mail.server.%server%.realhostname".*,.*"(.*)"\\);.*$';
-  const PREF_KEY_SERVER_NAME = '^.*user_pref\\(.*"mail.server.%server%.name".*,.*"(.*)"\\);.*$';
+const path = require('path');
+const fs = require('fs');
 
-  const FIRST_MATCH = 1;
+/**
+ * Imports Account settings from thunderbird's profile directory.
+ */
+class SieveThunderbirdImport {
 
   /**
-   * Imports Account settings from thunderbird's profile directory.
+   * Parses a section from thunderbird's profile.ini
+   * @param {string} section
+   *   the section which should be parsed.
+   * @returns {Struct}
+   *   an object containing the path as well as the information
+   *   if the profile is default and the path is relative.
    */
-  class SieveThunderbirdImport {
+  parseProfileSection(section) {
+    const lines = section.split(/\r?\n/g);
 
-    /**
-     * Parses a section from thunderbird's profile.ini
-     * @param {string} section
-     *   the section which should be parsed.
-     * @returns {Struct}
-     *   an object containing the path as well as the information
-     *   if the profile is default and the path is relative.
-     */
-    parseProfileSection(section) {
-      const lines = section.split(/\r?\n/g);
+    let profile = "";
+    let isRelative = false;
+    let isDefault = false;
 
-      let path = "";
-      let isRelative = false;
-      let isDefault = false;
+    for (let line of lines) {
+      line = line.trim();
 
-      for (let line of lines) {
-        line = line.trim();
+      if (line.toLocaleLowerCase() === "default=1")
+        isDefault = true;
 
-        if (line.toLocaleLowerCase() === "default=1")
-          isDefault = true;
+      if (line.toLocaleLowerCase().startsWith("path="))
+        profile = line.split("=")[FIRST_MATCH];
 
-        if (line.toLocaleLowerCase().startsWith("path="))
-          path = line.split("=")[FIRST_MATCH];
-
-        if (line.toLocaleLowerCase() === "isrelative=1")
-          isRelative = true;
-      }
-
-      return {
-        "path": path,
-        "isRelative": isRelative,
-        "isDefault": isDefault
-      };
+      if (line.toLocaleLowerCase() === "isrelative=1")
+        isRelative = true;
     }
 
-    /**
-     * Parses Thunderbird's profile.ini and returns the path to the profile.
-     * @param {string} [directory]
-     *   the directory to thunderbird's app data  directory.
-     *   if omitted the directory will be guessed.
-     * @returns {string}
-     *   the path to the default user Profile.
-     */
-    getDefaultUserProfile(directory) {
-      const path = require('path');
-      const fs = require('fs');
+    return {
+      "path": profile,
+      "isRelative": isRelative,
+      "isDefault": isDefault
+    };
+  }
 
-      if (typeof (directory) === "undefined" || directory === null)
-        directory = this.getProfileDirectory();
+  /**
+   * Parses Thunderbird's profile.ini and returns the path to the profile.
+   * @param {string} [directory]
+   *   the directory to thunderbird's app data  directory.
+   *   if omitted the directory will be guessed.
+   * @returns {string}
+   *   the path to the default user Profile.
+   */
+  getDefaultUserProfile(directory) {
 
-      const file = fs.readFileSync(
-        path.join(directory, "profiles.ini"), "utf-8");
+    if (typeof (directory) === "undefined" || directory === null)
+      directory = this.getProfileDirectory();
 
-      const sections = file.split(/\\[[a-zA-Z0-9]*\\]/g);
+    const file = fs.readFileSync(
+      path.join(directory, "profiles.ini"), "utf-8");
 
-      for (let section of sections) {
+    const sections = file.split(/\[\w*\]/gm);
 
-        section = this.parseProfileSection(section);
+    for (let section of sections) {
 
-        if (!section.isDefault)
-          continue;
+      section = this.parseProfileSection(section);
 
-        if (section.isRelative)
-          return path.join(directory, section.path);
+      if (!section.isDefault)
+        continue;
 
-        return section.path;
-      }
+      if (section.isRelative)
+        return path.join(directory, section.path);
 
-      throw new Error("Failed to parse profile.ini");
-
+      return section.path;
     }
 
-    /**
-     * Tries to get thunderbird's profile directory.
-     *
-     * @returns {string}
-     *   the profile directory
-     */
-    getProfileDirectory() {
-      const path = require('path');
-      const fs = require('fs');
-
-      let directory;
-
-      if (process.platform === "linux")
-        directory = path.join(process.env.HOME, ".thunderbird");
-      else if (process.platform === "win32")
-        directory = path.join(process.env.APPDATA, "Thunderbird");
-      else
-        throw new Error("Unsupported Platform");
-
-      if (!fs.existsSync(directory))
-        throw new Error("No file path");
-
-      return directory;
-    }
-
-    /**
-     * Tries to read thunderbird's preference file.
-     *
-     * @returns {string}
-     *   the current user's preference.js
-     */
-    getProfile() {
-      const path = require('path');
-      const fs = require('fs');
-
-      const profile = this.getProfileDirectory();
-
-      this.getDefaultUserProfile(profile);
-
-      return fs.readFileSync(
-        path.join(this.getDefaultUserProfile(profile), "prefs.js"), "utf-8");
-    }
-
-    /**
-     * Extracts the given key from the server settings.
-     *
-     * @param {string} profile
-     *   the profile data
-     * @param {string} server
-     *   the server's unique name
-     * @param {string} key
-     *   the preference key to be retrieved
-     *
-     * @returns {string}
-     *   the key's value or null in case it does not exist.
-     */
-    getServerKey(profile, server, key) {
-      const value = (new RegExp(key.replace("%server%", server), "gm")).exec(profile);
-
-      if (!value)
-        return null;
-
-      return value[FIRST_MATCH];
-    }
-
-    /**
-     * Reads the accounts from thunderbird's preferences file.
-     *
-     * @returns {object}
-     *   username and the host for each imap account.
-     */
-    getAccounts() {
-
-      const results = [];
-      const profile = this.getProfile();
-
-      const accounts = (new RegExp(PREF_KEY_ACCOUNTS, "gm")).exec(profile)[FIRST_MATCH].split(",");
-
-      for (const account of accounts) {
-
-        const server = (new RegExp(PREF_KEY_SERVER.replace("%account%", account), "gm")).exec(profile)[FIRST_MATCH];
-        const type = this.getServerKey(profile, server, PREF_KEY_SERVER_TYPE);
-
-        if (type !== "imap")
-          continue;
-
-        let username = this.getServerKey(profile, server, PREF_KEY_SERVER_REALUSERNAME);
-
-        if (!username)
-          username = this.getServerKey(profile, server, PREF_KEY_SERVER_USERNAME);
-
-        let hostname = this.getServerKey(profile, server, PREF_KEY_SERVER_REALHOSTNAME);
-        if (!hostname)
-          hostname = this.getServerKey(profile, server, PREF_KEY_SERVER_HOSTNAME);
-
-        const name = this.getServerKey(profile, server, PREF_KEY_SERVER_NAME);
-
-        const result = {};
-
-        result["username"] = username;
-        result["hostname"] = hostname;
-        result["name"] = name;
-
-        results.push(result);
-      }
-
-      return results;
-    }
+    throw new Error("Failed to parse profile.ini");
 
   }
 
+  /**
+   * Tries to get thunderbird's profile directory.
+   *
+   * @returns {string}
+   *   the profile directory
+   */
+  getProfileDirectory() {
 
-  if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveThunderbirdImport = SieveThunderbirdImport;
-  else
-    exports.SieveThunderbirdImport = SieveThunderbirdImport;
+    let directory;
 
-})(this);
+    if (process.platform === "linux")
+      directory = path.join(process.env.HOME, ".thunderbird");
+    else if (process.platform === "win32")
+      directory = path.join(process.env.APPDATA, "Thunderbird");
+    else
+      throw new Error("Unsupported Platform");
+
+    if (!fs.existsSync(directory))
+      throw new Error("No file path");
+
+    return directory;
+  }
+
+  /**
+   * Tries to read thunderbird's preference file.
+   *
+   * @returns {string}
+   *   the current user's preference.js
+   */
+  getProfile() {
+
+    const profile = this.getProfileDirectory();
+
+    this.getDefaultUserProfile(profile);
+
+    return fs.readFileSync(
+      path.join(this.getDefaultUserProfile(profile), "prefs.js"), "utf-8");
+  }
+
+  /**
+   * Extracts the given key from the server settings.
+   *
+   * @param {string} profile
+   *   the profile data
+   * @param {string} server
+   *   the server's unique name
+   * @param {string} key
+   *   the preference key to be retrieved
+   *
+   * @returns {string}
+   *   the key's value or null in case it does not exist.
+   */
+  getServerKey(profile, server, key) {
+    const value = (new RegExp(key.replace("%server%", server), "gm")).exec(profile);
+
+    if (!value)
+      return null;
+
+    return value[FIRST_MATCH];
+  }
+
+  /**
+   * Reads the accounts from thunderbird's preferences file.
+   *
+   * @returns {object}
+   *   username and the host for each imap account.
+   */
+  getAccounts() {
+
+    const results = [];
+    const profile = this.getProfile();
+
+    const accounts = (new RegExp(PREF_KEY_ACCOUNTS, "gm")).exec(profile)[FIRST_MATCH].split(",");
+
+    for (const account of accounts) {
+
+      const server = (new RegExp(PREF_KEY_SERVER.replace("%account%", account), "gm")).exec(profile)[FIRST_MATCH];
+      const type = this.getServerKey(profile, server, PREF_KEY_SERVER_TYPE);
+
+      if (type !== "imap")
+        continue;
+
+      let username = this.getServerKey(profile, server, PREF_KEY_SERVER_REALUSERNAME);
+
+      if (!username)
+        username = this.getServerKey(profile, server, PREF_KEY_SERVER_USERNAME);
+
+      let hostname = this.getServerKey(profile, server, PREF_KEY_SERVER_REALHOSTNAME);
+      if (!hostname)
+        hostname = this.getServerKey(profile, server, PREF_KEY_SERVER_HOSTNAME);
+
+      const name = this.getServerKey(profile, server, PREF_KEY_SERVER_NAME);
+
+      const result = {};
+
+      result["username"] = username;
+      result["hostname"] = hostname;
+      result["name"] = name;
+
+      results.push(result);
+    }
+
+    return results;
+  }
+
+}
+
+export { SieveThunderbirdImport };

@@ -1,15 +1,7 @@
-/* Show it is fixed to the top */
-/*body {
-  min-height: 75rem;
-  padding-top: 4.5rem;
-}*/
 
 html,
 body {
   height: 100%;
-  /* Seite soll über volle Höhe gehen */
-  color: #aaa;
-  /* graue Textfarbe */
   overflow: hidden;
   height: 100%;
 }
@@ -22,59 +14,61 @@ body {
   flex-direction: column;
 }
 
-#myTabContent>* {
+#tabs-content>* {
   height: 100%;
   width: 100%;
   border: 0;
 }
 
-#myTabContent {
+#tabs-content {
   display: inline-flex;
   height: 100%;
   width: 100%;
 }
 
-.wrapper {
-  position: relative;
-  margin: 0 auto;
-  overflow: hidden;
-  width: 100%;
-  vertical-align: bottom;
+#tabs-container {
+  height: 50px;
+  padding: 0px;
 }
 
-.list {
+#tabs-scroll-left {
   position: absolute;
-  left: 0px;
   bottom: 0px;
-  min-width: 3000px;
-  margin-top: 0px;
-}
+  left: 0px;
+  width: 20px;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
 
-.list li {
-  display: table-cell;
-  position: relative;
-  text-align: center;
-  cursor: grab;
-  cursor: -webkit-grab;
-  color: #efefef;
-  vertical-align: bottom;
-}
-
-.scroller {
-  text-align: center;
   cursor: pointer;
-  display: none;
-  padding: 7px;
-  padding-top: 11px;
-  white-space: no-wrap;
-  vertical-align: middle;
-  background-color: #fff;
 }
 
-.scroller-right {
-  float: right;
+#tabs-scroll-right {
+  position: absolute;
+  bottom:0px;
+  right: 0px;
+  width: 20px;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+
+  cursor: pointer;
 }
 
-.scroller-left {
-  float: left;
+#tabs-scroll-box {
+  position: absolute;
+  bottom: 0px;
+  left:20px;
+  right:20px;
+
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#tabs-items {
+  position: relative;
+  border-bottom: none;
+  display: block;
+}
+
+#tabs-items > li {
+  display:inline-block;
 }

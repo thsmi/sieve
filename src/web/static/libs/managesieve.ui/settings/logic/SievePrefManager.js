@@ -9,50 +9,41 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+/* global browser */
 
-  "use strict";
+import { SieveAbstractPrefManager } from "./SieveAbstractPrefManager.js";
 
-  /* global browser */
-
-  const { SieveAbstractPrefManager } = require("libs/managesieve.ui/settings/SieveAbstractPrefManager.js");
+/**
+ * Manages preferences.
+ * It uses the WebExtension's local storage interface
+ */
+class SieveWebSocketPrefManager extends SieveAbstractPrefManager {
 
   /**
-   * Manages preferences.
-   * It uses the WebExtension's local storage interface
+   * @inheritdoc
    */
-  class SieveMozPrefManager extends SieveAbstractPrefManager {
+  async getValue(key) {
+    key = `${this.getNamespace()}.${key}`;
 
-    /**
-     * @inheritdoc
-     */
-    async getValue(key) {
-      key = `${this.getNamespace()}.${key}`;
+    const pair = await browser.storage.local.get(key);
 
-      const pair = await browser.storage.local.get(key);
+    if (pair[key] === undefined)
+      return undefined;
 
-      if (pair[key] === undefined)
-        return undefined;
-
-      return pair[key];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    async setValue(key, value) {
-
-      const item = {};
-      item[`${this.getNamespace()}.${key}`] = value;
-
-      await browser.storage.local.set(item);
-      return this;
-    }
+    return pair[key];
   }
 
-  if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SievePrefManager = SieveMozPrefManager;
-  else
-    exports.SievePrefManager = SieveMozPrefManager;
+  /**
+   * @inheritdoc
+   */
+  async setValue(key, value) {
 
-})(this);
+    const item = {};
+    item[`${this.getNamespace()}.${key}`] = value;
+
+    await browser.storage.local.set(item);
+    return this;
+  }
+}
+
+export { SieveWebSocketPrefManager as SievePrefManager }

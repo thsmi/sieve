@@ -9,53 +9,42 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+/* global browser */
+import { SieveAbstractAccount } from "./SieveAbstractAccount.js";
+import { SieveAbstractAccounts } from "./SieveAbstractAccounts.js";
 
-  "use strict";
-
-  /* global browser */
-  const { SieveAbstractAccount } = require("./SieveAbstractAccount.js");
-  const { SieveAbstractAccounts } = require("./SieveAbstractAccounts.js");
-
+/**
+ * Manages the configuration for sieve accounts.
+ * It queries thunderbird's account and extracts all needed information.
+ *
+ * Global settings are stored in the addons persistence.
+ */
+class SieveAccounts extends SieveAbstractAccounts {
 
   /**
-   * Manages the configuration for sieve accounts.
-   * It queries thunderbird's account and extracts all needed information.
-   *
-   * Global settings are stored in the addons persistence.
+   * @inheritdoc
    */
-  class SieveAccounts extends SieveAbstractAccounts{
+  async load() {
 
-    /**
-     * @inheritdoc
-     */
-    async load() {
+    const items = await (browser.accounts.list());
 
-      const items = await (browser.accounts.list());
+    const accounts = {};
 
-      const accounts = {};
-
-      if (!items)
-        return this;
-
-      for (const item of items) {
-
-        if (item.type !== "imap" && item.type !== "pop3")
-          continue;
-
-        accounts[item.id] = new SieveAbstractAccount(item.id);
-      }
-
-      this.accounts = accounts;
+    if (!items)
       return this;
+
+    for (const item of items) {
+
+      if (item.type !== "imap" && item.type !== "pop3")
+        continue;
+
+      accounts[item.id] = new SieveAbstractAccount(item.id);
     }
 
+    this.accounts = accounts;
+    return this;
   }
 
-  // Require modules need to use export.module
-  if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveAccounts = SieveAccounts;
-  else
-    exports.SieveAccounts = SieveAccounts;
+}
 
-})(this);
+export { SieveAccounts };

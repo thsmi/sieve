@@ -9,75 +9,64 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+import { SieveLogger } from "./SieveLogger.js";
+import { SieveAbstractIpcClient } from "./SieveAbstractIpcClient.js";
 
-  "use strict";
-
-  const { SieveLogger } = require("./SieveLogger.js");
-  const { SieveAbstractIpcClient } = require("./SieveAbstractIpcClient.js");
+/**
+ * Implements a IPC based on the postMessage interface.
+ */
+class SieveIpcClient extends SieveAbstractIpcClient {
 
   /**
-   * Implements a IPC based on the postMessage interface.
+   * @inheritdoc
    */
-  class SieveIpcClient extends SieveAbstractIpcClient {
-
-    /**
-     * @inheritdoc
-     */
-    static getLogger() {
-      return SieveLogger.getInstance();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static parseMessageFromEvent(e) {
-      return JSON.parse(e.data);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static dispatch(message, target, origin) {
-      if (origin === undefined)
-        origin = "*";
-
-      if (target === undefined)
-        target = parent;
-
-      if (typeof (message) !== 'string') {
-        message = JSON.stringify(message);
-      }
-
-      this.getLogger().logIpcMessage(`Sending message ${message}`);
-
-      if (target !== window) {
-        target.postMessage(message, origin);
-        return;
-      }
-
-      for (let idx = 0; idx < frames.length; idx++)
-        frames[idx].postMessage(message, origin);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static onMessage(e) {
-      if (e.source === window)
-        return;
-
-      super.onMessage(e);
-    }
+  static getLogger() {
+    return SieveLogger.getInstance();
   }
 
-  window.addEventListener("message", (ev) => { SieveIpcClient.onMessage(ev); }, false);
+  /**
+   * @inheritdoc
+   */
+  static parseMessageFromEvent(e) {
+    return JSON.parse(e.data);
+  }
 
-  // Require modules need to use export.module
-  if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveIpcClient = SieveIpcClient;
-  else
-    exports.SieveIpcClient = SieveIpcClient;
+  /**
+   * @inheritdoc
+   */
+  static dispatch(message, target, origin) {
+    if (origin === undefined)
+      origin = "*";
 
-})(this);
+    if (target === undefined)
+      target = parent;
 
+    if (typeof (message) !== 'string') {
+      message = JSON.stringify(message);
+    }
+
+    this.getLogger().logIpcMessage(`Sending message ${message}`);
+
+    if (target !== window) {
+      target.postMessage(message, origin);
+      return;
+    }
+
+    for (let idx = 0; idx < frames.length; idx++)
+      frames[idx].postMessage(message, origin);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  static onMessage(e) {
+    if (e.source === window)
+      return;
+
+    super.onMessage(e);
+  }
+}
+
+window.addEventListener("message", (ev) => { SieveIpcClient.onMessage(ev); }, false);
+
+export { SieveIpcClient };

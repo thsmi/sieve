@@ -9,37 +9,30 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-
-(function (exports) {
-
-  "use strict";
+/**
+ * Implements an abstract interface for a simple single shot timer.
+ */
+class SieveAbstractTimer {
 
   /**
-   * Implements an abstract interface for a simple single shot timer.
+   * Starts the timer. In case the timer is already running it will be restarted
+   * @abstract
+   *
+   * @param {Function} callback
+   *   the callback to be invoked when the timer fires.
+   * @param {int} ms
+   *   the ms after which the timer should fire
    */
-  class SieveAbstractTimer {
-
-    /**
-     * Starts the timer. In case the timer is already running it will be restarted
-     * @abstract
-     *
-     * @param {Function} callback
-     *   the callback to be invoked when the timer fires.
-     * @param {int} ms
-     *   the ms after which the timer should fire
-     */
-    start(callback, ms) {
-      throw new Error(`Override SieveAbstractTimer::start(${callback},${ms})`);
-    }
-
-    /**
-     * Stops the timer. It will fail silently in case the timer is already stopped.
-     */
-    cancel() {
-      throw new Error(`Override SieveAbstractTimer::cancel()`);
-    }
+  start(callback, ms) {
+    throw new Error(`Override SieveAbstractTimer::start(${callback},${ms})`);
   }
 
-  exports.SieveAbstractTimer = SieveAbstractTimer;
+  /**
+   * Stops the timer. It will fail silently in case the timer is already stopped.
+   */
+  cancel() {
+    throw new Error(`Override SieveAbstractTimer::cancel()`);
+  }
+}
 
-})(this);
+export { SieveAbstractTimer };

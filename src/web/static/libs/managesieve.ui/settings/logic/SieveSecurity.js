@@ -9,36 +9,26 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
 
-  "use strict";
+/**
+ * Defines the security related settings for an account.
+ * It is a minimal, mozilla specific implementation.
+ */
+class SieveSecurity {
 
   /**
-   * Defines the security related settings for an account.
-   * It is a minimal, mozilla specific implementation.
+   * @inheritdoc
    */
-  class SieveSecurity {
-
-    /**
-     * @inheritdoc
-     */
-    async isSecure() {
-      return await true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    async getMechanism() {
-      return await "default";
-    }
+  async isSecure() {
+    return await true;
   }
 
+  /**
+   * @inheritdoc
+   */
+  async getMechanism() {
+    return await "default";
+  }
+}
 
-  // Require modules need to use export.module
-  if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveSecurity = SieveSecurity;
-  else
-    exports.SieveSecurity = SieveSecurity;
-
-})(this);
+export { SieveSecurity };

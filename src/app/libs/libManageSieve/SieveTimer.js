@@ -9,48 +9,41 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+import { SieveAbstractTimer } from "./SieveAbstractTimer.js";
 
-(function (exports) {
+const timers = require('timers');
 
-  "use strict";
-
-  const { SieveAbstractTimer } = require("./SieveAbstractTimer.js");
-
-  const timers = require('timers');
+/**
+ * By default node does not inject a timer into the standard context.
+ *
+ * Your need to include it via require. All in all it is almost identical
+ * with the timer used by a javascript window object. But it lives in a
+ * different namespace.
+ */
+class SieveNodeTimer extends SieveAbstractTimer {
 
   /**
-   * By default node does not inject a timer into the standard context.
-   *
-   * Your need to include it via require. All in all it is almost identical
-   * with the timer used by a javascript window object. But it lives in a
-   * different namespace.
+   * @inheritdoc
    */
-  class SieveNodeTimer extends SieveAbstractTimer {
+  start(callback, ms) {
+    this.cancel();
 
-    /**
-     * @inheritdoc
-     */
-    start(callback, ms) {
-      this.cancel();
+    if (ms === 0)
+      return;
 
-      if (ms === 0)
-        return;
-
-      this.timer = timers.setTimeout(callback, ms);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    cancel() {
-      if (!this.timer)
-        return;
-
-      timers.clearTimeout(this.timer);
-      this.timer = null;
-    }
+    this.timer = timers.setTimeout(callback, ms);
   }
 
-  exports.SieveTimer = SieveNodeTimer;
+  /**
+   * @inheritdoc
+   */
+  cancel() {
+    if (!this.timer)
+      return;
 
-})(this);
+    timers.clearTimeout(this.timer);
+    this.timer = null;
+  }
+}
+
+export { SieveNodeTimer as SieveTimer };

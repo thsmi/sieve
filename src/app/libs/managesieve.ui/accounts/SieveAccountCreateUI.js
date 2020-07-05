@@ -9,55 +9,54 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+/* global $ */
 
-  "use strict";
+import { SieveIpcClient } from "./../utils/SieveIpcClient.js";
+import { SieveTemplate } from "./../utils/SieveTemplate.js";
 
-  /* global $ */
-  /* global SieveTemplateLoader */
-  /* global SieveIpcClient */
+/**
+ * Imports sieve settings from mailers.
+ */
+class SieveAccountCreateUI {
 
   /**
-   * Imports sieve settings from mailers.
+   * Shows the import account dialog.
+   *
+   * @returns {boolean}
+   *   true in case the dialog as accepted otherwise false.
    */
-  class SieveAccountCreateUI {
+  async show() {
 
-    /**
-     * Shows the import account dialog.
-     */
-    async show() {
-      return await new Promise(async (resolve) => {
-        const dialog = await (new SieveTemplateLoader()).load("./accounts/account.dialog.create.tpl");
-        $("#container").append(dialog);
+    const dialog = await (new SieveTemplate())
+      .load("./accounts/account.dialog.create.tpl");
+    document.querySelector("#ctx").appendChild(dialog);
 
-        dialog.find(".sieve-create-account-btn").click(async () => {
+    return await new Promise((resolve) => {
+
+      dialog
+        .querySelector(".sieve-create-account-btn")
+        .addEventListener("click", async () => {
 
           const account = {
-            name : dialog.find(".sieve-create-account-displayname").val(),
-            hostname : dialog.find(".sieve-create-account-hostname").val(),
-            port : dialog.find(".sieve-create-account-port").val(),
-            username : dialog.find(".sieve-create-account-username").val()
+            name: dialog.querySelector(".sieve-create-account-displayname").value,
+            hostname: dialog.querySelector(".sieve-create-account-hostname").value,
+            port: dialog.querySelector(".sieve-create-account-port").value,
+            username: dialog.querySelector(".sieve-create-account-username").value
           };
 
           // fix me remove modal2 from dom.
           await SieveIpcClient.sendMessage("core", "account-create", account);
-          dialog.modal('hide');
+          $(dialog).modal('hide');
           resolve(true);
         });
 
-        dialog.modal('show')
-          .on('hidden.bs.modal', () => {
-            dialog.remove();
-            resolve(false);
-          });
-      });
-    }
+      $(dialog).modal('show')
+        .on('hidden.bs.modal', () => {
+          dialog.parentNode.removeChild(dialog);
+          resolve(false);
+        });
+    });
   }
+}
 
-
-  if (typeof (module) !== "undefined" && module !== null && module.exports)
-    module.exports = SieveAccountCreateUI;
-  else
-    exports.SieveAccountCreateUI = SieveAccountCreateUI;
-
-})(this);
+export { SieveAccountCreateUI };

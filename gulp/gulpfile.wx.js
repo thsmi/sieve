@@ -15,12 +15,73 @@ const common = require("./gulpfile.common.js");
 
 const path = require('path');
 
-const BUILD_DIR_WX = path.join(common.BASE_DIR_BUILD, "thunderbird-wx");
+const BUILD_DIR_WX = path.join(common.BASE_DIR_BUILD, "wx");
 const BUILD_DIR_WX_LIBS = path.join(BUILD_DIR_WX, '/libs');
 
 const BASE_DIR_WX = "./src/wx/";
 
+const { Stream } = require('stream');
 
+/**
+ * A gulp helper to transpose import statements to requires.
+ */
+class TransposeImports extends Stream.Transform {
+
+  /**
+   * Create a new instance
+   */
+  constructor() {
+    super({ readableObjectMode: true, writableObjectMode: true });
+  }
+
+  /**
+   * Implements the stream's transform method which does the actual
+   * work and transforms the ES6 imports and export statements into
+   * commons modules require and export statements.
+   *
+   * @param {File} file
+   *   the vinyl file object
+   * @param {*} enc
+   *   the encoding
+   * @param {Function} cb
+   *   the callback which is called when processing is completed.
+   */
+  _transform(file, enc, cb) {
+
+    if (file.extname !== ".js") {
+      cb(null, file);
+      return;
+    }
+
+    if (!file.isBuffer()) {
+      cb(null, file);
+      return;
+    }
+
+    let content = file.contents.toString();
+
+    // Convert all ES6 imports...
+    content = content.replace(/import\s*{([\w\s\n,]*)}\s*from\s*("[\w/.]*");/g, "const {$1} = require($2);");
+
+    // ... and then all ES6 exports, but we have three styles here:
+    // First one is "exports { something as somethingElse }"
+    content = content.replace(/export\s*{\s*(\w*)\s*as\s*(\w*)\s*};/g, "module.exports.$2 = $1");
+    // Second one is "exports { something }"
+    content = content.replace(/export\s*{\s*(\w*)\s*};/g, "module.exports.$1 = $1");
+
+    // And the most complex one is the third one "exports { something,\n  somethingElse }"
+    const matches = content.matchAll(/export\s*{((?:[\s\n]*\w+[\s\n,]*)+)};/g);
+
+    for (const match of matches) {
+      const result = match[1].replace(/[^\S\n]*(\w+)(?:\s*,)?/g, "module.exports.$1 = $1;");
+      content = content.replace(match[0], result);
+    }
+
+    file.contents = Buffer.from(content);
+
+    cb(null, file);
+  }
+}
 
 /**
  * Copies the license file into the build directory.
@@ -82,10 +143,9 @@ function packageBootstrap() {
  *   a stream to be consumed by gulp
  */
 function packageSrc() {
-  "use strict";
-
   return src([
-    BASE_DIR_WX + "/**"
+    BASE_DIR_WX + "/**",
+    `!${BASE_DIR_WX}/libs/libManageSieve/**`
   ]).pipe(dest(BUILD_DIR_WX));
 }
 
@@ -105,14 +165,21 @@ function packageIcons() {
 }
 
 /**
- * Copies the common libManageSieve files into the app's lib folder
+ * Copies the all libManageSieve files into the app's lib folder.
+ * It mixes the common files with the app specific.
  *
  * @returns {Stream}
  *   a stream to be consumed by gulp
  */
 function packageLibManageSieve() {
-  "use strict";
-  return common.packageLibManageSieve(BUILD_DIR_WX_LIBS);
+
+  const BASE_LIB_DIR_WX = path.join(BASE_DIR_WX, "libs", "libManageSieve");
+  const BASE_LIB_DIR_COMMON = path.join(common.BASE_DIR_COMMON, "libManageSieve");
+
+  return common.src2(BASE_LIB_DIR_WX)
+    .pipe(common.src2(BASE_LIB_DIR_COMMON))
+    .pipe(new TransposeImports())
+    .pipe(dest(path.join(BUILD_DIR_WX_LIBS, "libManageSieve")));
 }
 
 

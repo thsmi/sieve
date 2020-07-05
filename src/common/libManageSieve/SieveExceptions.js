@@ -9,129 +9,124 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+/**
+ * A generic base class for Sieve Exceptions.
+ */
+class SieveException extends Error {
+}
 
-  "use strict";
+/**
+ * An error on the client side.
+ */
+class SieveClientException extends SieveException {
+}
 
-  /**
-   * A generic base class for Sieve Exceptions.
-   */
-  class SieveException extends Error {
-  }
-
-  /**
-   * An error on the client side.
-   */
-  class SieveClientException extends SieveException {
-  }
-
-  /**
-   * The request took too long or it was canceled.
-   * This is a clients side exception.
-   */
-  class SieveTimeOutException extends SieveClientException {
-
-    /**
-     * Creates a new timeout exception.
-     *
-     * @param {Error} [error]
-     *   the optional root error which caused this exception.
-     */
-    constructor(error) {
-      super("Request took too long or was canceled.");
-      this.error = error;
-    }
-  }
+/**
+ * The request took too long or it was canceled.
+ * This is a clients side exception.
+ */
+class SieveTimeOutException extends SieveClientException {
 
   /**
-   * The Certificate validation failed.
-   */
-  class SieveCertValidationException extends SieveClientException {
-    /**
-     * Creates a Certificate Validation Exception.
-     *
-     * @param {object} securityInfo
-     *   the security info object with details on the certificate.
-     */
-    constructor(securityInfo) {
-      super("Error while validating Certificate");
-
-      this.securityInfo = securityInfo;
-    }
-
-    /**
-     * The security Info object with detailed information
-     * on the certificate which caused this error.
-     *
-     * @returns {object}
-     *   the security info.
-     */
-    getSecurityInfo() {
-      return this.securityInfo;
-    }
-  }
-
-  /**
-   * The server signaled an error.
+   * Creates a new timeout exception.
    *
-   * The most reliable way to recover from such an error is to
-   * disconnect and then reconnect to the server.
+   * @param {Error} [error]
+   *   the optional root error which caused this exception.
    */
-  class SieveServerException extends SieveException {
+  constructor(error) {
+    super("Request took too long or was canceled.");
+    this.error = error;
+  }
+}
 
-    /**
-     * Creates a server side exception
-     *
-     * @param {SieveSimpleResponse} response
-     *   the servers response which indicated the error.
-     */
-    constructor(response) {
-      super(response.getMessage());
-      this.response = response;
-    }
+/**
+ * The Certificate validation failed.
+ */
+class SieveCertValidationException extends SieveClientException {
+  /**
+   * Creates a Certificate Validation Exception.
+   *
+   * @param {object} securityInfo
+   *   the security info object with details on the certificate.
+   */
+  constructor(securityInfo) {
+    super("Error while validating Certificate");
 
-    /**
-     * Returns the server's response it typically contains the cause
-     * why the request failed.
-     *
-     * @returns {SieveSimpleResponse}
-     *   the server response objet
-     */
-    getResponse() {
-      return this.response;
-    }
+    this.securityInfo = securityInfo;
   }
 
   /**
-   * The server terminated the connection and referred to a new host
+   * The security Info object with detailed information
+   * on the certificate which caused this error.
+   *
+   * @returns {object}
+   *   the security info.
    */
-  class SieveReferralException extends SieveServerException {
+  getSecurityInfo() {
+    return this.securityInfo;
+  }
+}
 
-    /**
-     * The new remote hostname to which the server referred the connection.
-     * @returns {string}
-     *   the hostname
-     */
-    getHostname() {
-      return this.getResponse().getResponseCode().getHostname();
-    }
+/**
+ * The server signaled an error.
+ *
+ * The most reliable way to recover from such an error is to
+ * disconnect and then reconnect to the server.
+ */
+class SieveServerException extends SieveException {
 
-    /**
-     * The new remote port to which the server referred the connection.
-     * @returns {string}
-     *   the port
-     */
-    getPort() {
-      return this.getResponse().getResponseCode().getPort();
-    }
+  /**
+   * Creates a server side exception
+   *
+   * @param {SieveSimpleResponse} response
+   *   the servers response which indicated the error.
+   */
+  constructor(response) {
+    super(response.getMessage());
+    this.response = response;
   }
 
-  exports.SieveClientException = SieveClientException;
-  exports.SieveReferralException = SieveReferralException;
-  exports.SieveServerException = SieveServerException;
-  exports.SieveTimeOutException = SieveTimeOutException;
-  exports.SieveCertValidationException = SieveCertValidationException;
+  /**
+   * Returns the server's response it typically contains the cause
+   * why the request failed.
+   *
+   * @returns {SieveSimpleResponse}
+   *   the server response objet
+   */
+  getResponse() {
+    return this.response;
+  }
+}
 
-  exports.SieveException = SieveException;
+/**
+ * The server terminated the connection and referred to a new host
+ */
+class SieveReferralException extends SieveServerException {
 
-})(module.exports || this);
+  /**
+   * The new remote hostname to which the server referred the connection.
+   * @returns {string}
+   *   the hostname
+   */
+  getHostname() {
+    return this.getResponse().getResponseCode().getHostname();
+  }
+
+  /**
+   * The new remote port to which the server referred the connection.
+   * @returns {string}
+   *   the port
+   */
+  getPort() {
+    return this.getResponse().getResponseCode().getPort();
+  }
+}
+
+export {
+  SieveClientException,
+  SieveReferralException,
+  SieveServerException,
+  SieveTimeOutException,
+  SieveCertValidationException,
+  SieveException
+};

@@ -16,29 +16,28 @@
 
 <body>
   <div id="ctx">
-    <nav class="navbar navbar-expand-md navbar-dark static-top bg-dark" style="padding: 0px;">
-      <div style="width:100%; height:50px; display:flex; flex-direction:row; flex-wrap: nowrap; justify-content:flex-end" class="bg-dark">
-        <div id="scrollleft" style="flex: auto 0;">◁</div>
-        <div class="wrapper">
-          <ul class="nav nav-tabs list" id="myTab" role="tablist">
+
+    <nav id="tabs-container" class="navbar navbar-expand-md navbar-dark static-top bg-dark">
+
+
+        <div id="tabs-scroll-left" class="navbar-text">◁</div>
+        <div id="tabs-scroll-box">
+          <ul id="tabs-items" class="nav nav-tabs list" role="tablist">
             <li id="accounts-tab" class="nav-item">
               <a class="nav-link active" data-toggle="tab" href="#accounts" role="tab">Home</a>
             </li>
           </ul>
         </div>
-        <div id="scrollright" style="flex: auto 0;">▷</div>
-      </div>
+        <div id="tabs-scroll-right" class="navbar-text">▷</div>
+
     </nav>
 
-    <div class="tab-content" id="myTabContent">
+    <div class="tab-content" id="tabs-content">
       <iframe id="accounts" class="tab-pane fade show active" role="tabpanel" src="./libs/managesieve.ui/accounts.html"></iframe>
     </div>
 
   </div>
 
-
-
-  <!--<iframe id="test" src="accounts.html" style="border: 1px solid red; height:100%; width:100%; min-height:100%"></iframe>     -->
 
   <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -51,37 +50,7 @@
   <script src="./libs/jquery/jquery.min.js"></script>
   <script src="./libs/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-  <script src="./libs/managesieve.ui/utils/SieveFakeRequire.js"></script>
-
-  <script src="./libs/managesieve.ui/utils/SieveLogger.js"></script>
-  <script src="./libs/managesieve.ui/utils/SieveUniqueId.js"></script>
-  <script src="./libs/managesieve.ui/utils/SieveAbstractIpcClient.js"></script>
-  <script src="./libs/managesieve.ui/utils/SieveIpcClient.js"></script>
-
-  <script src="./libs/managesieve.ui/utils/SieveI18n.js"></script>
-  <script src="./libs/managesieve.ui/utils/SieveTemplateLoader.js"></script>
-
-
-  <script src="./libs/libManageSieve/SieveAbstractResponseParser.js"></script>
-  <script src="./libs/libManageSieve/SieveResponseParser.js"></script>
-  <script src="./libs/libManageSieve/SieveAbstractRequestBuilder.js"></script>
-  <script src="./libs/libManageSieve/SieveRequestBuilder.js"></script>
-  <script src="./libs/libManageSieve/SieveAbstractClient.js"></script>
-  <script src="./libs/libManageSieve/SieveClient.js"></script>
-  <script src="./libs/libManageSieve/SieveSession.js"></script>
-  <script src="./libs/libManageSieve/SieveSessions.js"></script>
-
-  <script src="./libs/managesieve.ui/settings/logic/SieveAccounts.js"></script>
-  <script src="./libs/managesieve.ui/settings/logic/SieveAbstractAccount.js"></script>
-  <script src="./libs/managesieve.ui/settings/logic/SieveAbstractAccounts.js"></script>
-  <script src="./libs/managesieve.ui/settings/logic/SieveAccounts.js"></script>
-
-  <script src="./libs/managesieve.ui/tabs/SieveTabsUI.js"></script>
-
-  <script src="./libs/managesieve.ui/utils/SieveI18n.js"></script>
-
-
-  <script src="./app.js"></script>
+  <script type="module" src="./app.js"></script>
 </body>
 
 </html>

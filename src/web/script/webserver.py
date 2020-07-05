@@ -69,6 +69,8 @@ class WebServer:
       sock.bind((self.__hostname, self.__port))
       sock.listen(5)
 
+      print("Listening on https://"+self.__hostname+":"+str(self.__port))
+
       while True:
           # accept connections from outside
           (clientsocket, address) = sock.accept()

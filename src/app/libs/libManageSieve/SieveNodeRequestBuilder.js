@@ -7,39 +7,34 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
 
-  "use strict";
+import { SieveAbstractRequestBuilder } from "./SieveAbstractRequestBuilder.js";
 
-  const { SieveAbstractRequestBuilder } = require("./SieveAbstractRequestBuilder.js");
+/**
+ * Realizes a Request builder which uses native node commands
+ */
+class SieveNodeRequestBuilder extends SieveAbstractRequestBuilder {
 
   /**
-   * Realizes a Request builder which uses native node commands
+   * @inheritdoc
    */
-  class SieveNodeRequestBuilder extends SieveAbstractRequestBuilder {
-
-    /**
-     * @inheritdoc
-     */
-    calculateByteLength(data) {
-      return Buffer.byteLength(data, 'utf8');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    convertToBase64(decoded) {
-      return Buffer.from(decoded).toString('base64');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    convertFromBase64(encoded) {
-      return Buffer.from(encoded, 'base64').toString("latin1");
-    }
+  calculateByteLength(data) {
+    return Buffer.byteLength(data, 'utf8');
   }
 
-  exports.SieveNodeRequestBuilder = SieveNodeRequestBuilder;
+  /**
+   * @inheritdoc
+   */
+  convertToBase64(decoded) {
+    return Buffer.from(decoded).toString('base64');
+  }
 
-})(this);
+  /**
+   * @inheritdoc
+   */
+  convertFromBase64(encoded) {
+    return Buffer.from(encoded, 'base64').toString("latin1");
+  }
+}
+
+export { SieveNodeRequestBuilder };

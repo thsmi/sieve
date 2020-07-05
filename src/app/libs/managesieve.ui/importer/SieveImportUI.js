@@ -9,80 +9,74 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+/* global $ */
+import { SieveTemplate } from "./../utils/SieveTemplate.js";
+import { SieveIpcClient } from "./../utils/SieveIpcClient.js";
 
-  "use strict";
-
-  /* global $ */
-  /* global SieveTemplateLoader */
-  /* global SieveIpcClient */
+/**
+ * Imports sieve settings from mailers.
+ */
+class SieveImportUI {
 
   /**
-   * Imports sieve settings from mailers.
+   * Shows the import account dialog.
    */
-  class SieveImportUI {
+  async show() {
 
-    /**
-     * Shows the import account dialog.
-     */
-    async show() {
-      return await new Promise(async (resolve) => {
-        const dialog = await (new SieveTemplateLoader()).load("./importer/account.import.tpl");
-        dialog.find(".sieve-import-progress").hide();
-        $("#container").append(dialog);
+    const dialog = await (new SieveTemplate()).load("./importer/account.import.tpl");
+    dialog.querySelector(".sieve-import-progress").classList.add("d-none");
+    document.querySelector("#ctx").appendChild(dialog);
 
-        // we need to call it on the main thread because we don't have
-        // to all the libraries we need right here.
-        const accounts = await SieveIpcClient.sendMessage("core", "import-thunderbird");
+    // we need to call it on the main thread because we don't have
+    // to all the libraries we need right here.
+    const accounts = await SieveIpcClient.sendMessage("core", "import-thunderbird");
 
-        for (let account of accounts) {
-          const item = await (new SieveTemplateLoader()).load("./importer/account.import.item.tpl");
+    await new Promise((resolve) => {
 
-          item.find(".sieve-import-username").text(account["username"]);
-          item.find(".sieve-import-hostname").text(account["hostname"]);
-          item.find(".sieve-import-name").text(account["name"]);
+      accounts.forEach(async (account) => {
+        const item = await (new SieveTemplate()).load("./importer/account.import.item.tpl");
 
-          item.find(".sieve-import-source").text("Thunderbird");
+        item.querySelector(".sieve-import-username").textContent = account["username"];
+        item.querySelector(".sieve-import-hostname").textContent = account["hostname"];
+        item.querySelector(".sieve-import-name").textContent = account["name"];
 
-          item.find(".sieve-import-btn").click(async () => {
+        item.querySelector(".sieve-import-source").textContent = "Thunderbird";
 
-            dialog.find(".sieve-import-items").hide();
-            dialog.find(".sieve-import-progress").show();
+        item.querySelector(".sieve-import-btn").addEventListener("click", async () => {
 
-            try {
-              account = await SieveIpcClient.sendMessage("core", "account-probe", account);
-            } catch (ex) {
-              alert(`Failed to import ${ex}`);
-              resolve(false);
+          dialog.querySelector(".sieve-import-items").classList.add("d-none");
+          dialog.querySelector(".sieve-import-progress").classList.remove("d-none");
 
-              dialog.find(".sieve-import-items").show();
-              dialog.find(".sieve-import-progress").hide();
-              return;
-            }
-
-            // fix me remove modal2 from dom.
-            await SieveIpcClient.sendMessage("core", "account-create", account);
-            dialog.modal('hide');
-
-            resolve(true);
-          });
-
-          dialog.find(".sieve-import-items").append(item);
-        }
-
-        dialog.modal('show')
-          .on('hidden.bs.modal', () => {
-            dialog.remove();
+          let account2;
+          try {
+            account2 = await SieveIpcClient.sendMessage("core", "account-probe", account);
+          } catch (ex) {
+            alert(`Failed to import ${ex}`);
             resolve(false);
-          });
+
+            dialog.querySelector(".sieve-import-items").classList.remove("d-none");
+            dialog.querySelector(".sieve-import-progress").classList.add("d-none");
+            return;
+          }
+
+          // fix me remove modal2 from dom.
+          await SieveIpcClient.sendMessage("core", "account-create", account2);
+          $(dialog).modal('hide');
+
+          resolve(true);
+        });
+
+        dialog.querySelector(".sieve-import-items").appendChild(item);
+
       });
-    }
+
+      $(dialog).modal('show')
+        .on('hidden.bs.modal', () => {
+          dialog.parentNode.removeChild(dialog);
+          resolve(false);
+        });
+    });
   }
+}
 
-
-  if (typeof (module) !== "undefined" && module !== null && module.exports)
-    module.exports = SieveImportUI;
-  else
-    exports.SieveImportUI = SieveImportUI;
-
-})(this);
+export { SieveImportUI };

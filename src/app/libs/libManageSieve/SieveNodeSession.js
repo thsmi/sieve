@@ -9,49 +9,42 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+import { SieveSession } from "./SieveSession.js";
 
-  // Enable Strict Mode
-  "use strict";
-
-  const { SieveSession } = require("./SieveSession.js");
+/**
+ * @inheritdoc
+ */
+class SieveNodeSession extends SieveSession {
 
   /**
    * @inheritdoc
    */
-  class SieveNodeSession extends SieveSession {
+  async startTLS() {
 
-    /**
-     * @inheritdoc
-     */
-    async startTLS() {
+    const options = {
+      fingerprints: this.getOption("certFingerprints"),
+      ignoreCertErrors: this.getOption("certIgnoreError")
+    };
 
-      const options = {
-        fingerprints : this.getOption("certFingerprints"),
-        ignoreCertErrors : this.getOption("certIgnoreError")
-      };
-
-      await super.startTLS(options);
-    }
-
-    /**
-     * The default error handler called upon any unhandled error or exception.
-     * Called e.g. when the connection to the server was terminated unexpectedly.
-     *
-     * The default behaviour is to disconnect.
-     *
-     * @param {Error} error
-     *   the error message which causes this exceptional state.
-     */
-    async onError(error) {
-
-      this.getLogger().logSession(`OnError: ${error.message}`);
-
-      await this.disconnect(true);
-    }
-
+    await super.startTLS(options);
   }
 
-  exports.SieveSession = SieveNodeSession;
+  /**
+   * The default error handler called upon any unhandled error or exception.
+   * Called e.g. when the connection to the server was terminated unexpectedly.
+   *
+   * The default behaviour is to disconnect.
+   *
+   * @param {Error} error
+   *   the error message which causes this exceptional state.
+   */
+  async onError(error) {
 
-})(exports || this);
+    this.getLogger().logSession(`OnError: ${error.message}`);
+
+    await this.disconnect(true);
+  }
+
+}
+
+export { SieveNodeSession as SieveSession };

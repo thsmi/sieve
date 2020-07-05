@@ -9,52 +9,43 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+import { SieveAccountUI } from "./SieveAccountUI.js";
+import { SieveIpcClient } from "./../utils/SieveIpcClient.js";
+import { SieveLogger } from "./../utils/SieveLogger.js";
 
-  "use strict";
-
-  /* global SieveAccountUI */
-  /* global SieveIpcClient */
-  /* global SieveLogger */
+/**
+ * A UI renderer for a list of sieve accounts
+ **/
+class SieveAbstractAccounts {
 
   /**
-   * A UI renderer for a list of sieve accounts
+   * Gets an instance to the logger.
+   *
+   * @returns {SieveLogger}
+   *   an reference to the logger instance.
    **/
-  class SieveAbstractAccounts {
-
-    /**
-     * Gets an instance to the logger.
-     *
-     * @returns {SieveLogger}
-     *   an reference to the logger instance.
-     **/
-    getLogger() {
-      return SieveLogger.getInstance();
-    }
-
-    /**
-     * Renders the UI for this component.
-     */
-    async render() {
-
-      this.getLogger().logWidget("Rendering Accounts...");
-
-      const items = document.querySelector(".siv-accounts-items");
-      while (items.firstChild)
-        items.removeChild(items.firstChild);
-
-      const accounts = await SieveIpcClient.sendMessage("core", "accounts-list");
-
-      for (const account of accounts) {
-        this.getLogger().logWidget(` + Accounts ${account}`);
-        await ((new SieveAccountUI(this, account)).render());
-      }
-    }
+  getLogger() {
+    return SieveLogger.getInstance();
   }
 
-  if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveAbstractAccounts = SieveAbstractAccounts;
-  else
-    exports.SieveAbstractAccounts = SieveAbstractAccounts;
+  /**
+   * Renders the UI for this component.
+   */
+  async render() {
 
-})(this);
+    this.getLogger().logWidget("Rendering Accounts...");
+
+    const items = document.querySelector(".siv-accounts-items");
+    while (items.firstChild)
+      items.removeChild(items.firstChild);
+
+    const accounts = await SieveIpcClient.sendMessage("core", "accounts-list");
+
+    for (const account of accounts) {
+      this.getLogger().logWidget(` + Accounts ${account}`);
+      await ((new SieveAccountUI(this, account)).render());
+    }
+  }
+}
+
+export {SieveAbstractAccounts};

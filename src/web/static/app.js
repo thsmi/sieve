@@ -9,21 +9,22 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(async function () {
+import { SieveSessions } from "./libs/libManageSieve/SieveSessions.js";
+import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.js";
+import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.js";
+import { SieveIpcClient } from "./libs/managesieve.ui/utils/SieveIpcClient.js";
 
-  "use strict";
+import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccounts.js";
+import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.js";
+
+(async function () {
 
   const DEFAULT_AUTHENTICATION = 0;
   const DEFAULT_AUTHORIZATION = 3;
 
   const FIRST_ELEMENT = 0;
 
-  /* global SieveLogger */
-  /* global SieveI18n */
-  /* global SieveAccounts */
-  /* global SieveSessions */
-  /* global SieveIpcClient */
-  /* global SieveTabUI */
+
 
   const logger = SieveLogger.getInstance();
 

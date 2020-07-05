@@ -14,7 +14,6 @@ const JUNIT_EXPORT_FILE = "./TEST-sieve.xml";
  * The entry point
  */
 async function main() {
-  "use strict";
 
   const suite = new NodeTestSuite();
   const report = new NodeTestReport("Test");

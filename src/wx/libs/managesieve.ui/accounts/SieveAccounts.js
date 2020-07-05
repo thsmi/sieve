@@ -9,24 +9,15 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+import { SieveAbstractAccounts } from "./SieveAbstractAccounts.js";
 
-  "use strict";
+// TODO Remove me...
 
-  /* global SieveAbstractAccounts */
+/**
+ * @inheritdoc
+ */
+class SieveWxAccounts extends SieveAbstractAccounts {
 
-  // TODO Remove me.
+}
 
-  /**
-   * @inheritdoc
-   */
-  class SieveWxAccounts extends SieveAbstractAccounts {
-
-  }
-
-  if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveAccounts = SieveWxAccounts;
-  else
-    exports.SieveAccounts = SieveWxAccounts;
-
-})(this);
+export { SieveWxAccounts as SieveAccounts };

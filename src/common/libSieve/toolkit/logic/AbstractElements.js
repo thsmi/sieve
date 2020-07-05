@@ -319,9 +319,13 @@
    */
   SieveAbstractBlock.prototype.require
     = function (imports) {
-      for (let i = 0; i < this.elms.length; i++)
-        if (this.elms[i].require)
-          this.elms[i].require(imports);
+
+      for (const elm of this.elms) {
+        if (!elm.require)
+          continue;
+
+        elm.require(imports);
+      }
     };
 
   exports.SieveAbstractElement = SieveAbstractElement;

@@ -10,7 +10,7 @@
     "bootstrap": "^4.5.0",
     "codemirror": "^5.55.0",
     "electron": "^9.0.5",
-    "electron-packager": "^14.0.6",
+    "electron-packager": "^15.0.0",
     "eslint": "^7.4.0",
     "eslint-plugin-jsdoc": "^28.6.1",
     "eslint-plugin-no-jquery": "^2.5.0",

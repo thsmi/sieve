@@ -1078,10 +1078,10 @@ eslint-plugin-jsdoc@^28.0.0:
     semver "^7.3.2"
     spdx-expression-parse "^3.0.1"
 
-eslint-plugin-no-jquery@^2.3.2:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-no-jquery/-/eslint-plugin-no-jquery-2.4.1.tgz#0c0df5e584ac826cddadbde3576918f850530393"
-  integrity sha512-pHyBFyDgUj/cQD1QNh9SiLaicFJyqeFGDEGRLUn3HezETvsCSi1oeRqjotkL6xAyvwyTiih5d3dhfon0DUvZJA==
+eslint-plugin-no-jquery@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-no-jquery/-/eslint-plugin-no-jquery-2.5.0.tgz#6c12e3aae172bfd3363b7ac8c3f3e944704867f4"
+  integrity sha512-RrQ380mUJJKdjgpQ/tZAJ3B3W1n3LbVmULooS2Pv5pUDcc5uVHVSJMTdUlsbvQyfo6hWP2LJ4FbOoDzENWcF7A==
 
 eslint-scope@^5.1.0:
   version "5.1.0"

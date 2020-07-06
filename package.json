@@ -13,7 +13,7 @@
     "electron-packager": "^14.0.6",
     "eslint": "^7.3.0",
     "eslint-plugin-jsdoc": "^28.0.0",
-    "eslint-plugin-no-jquery": "^2.3.2",
+    "eslint-plugin-no-jquery": "^2.5.0",
     "gulp": "^4.0.0",
     "jquery": "^3.5.1",
     "keytar": "^6.0.1",

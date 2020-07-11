@@ -20,256 +20,256 @@
 
   tests.set("rfc5228", {
     require: [
-      "./../common/libSieve/RFC5228/logic/SieveWhiteSpaces.js",
-      "./../common/libSieve/RFC5228/logic/SieveStrings.js",
-      "./../common/libSieve/RFC5228/logic/SieveMatchTypes.js",
-      "./../common/libSieve/RFC5228/logic/SieveComparators.js",
-      "./../common/libSieve/RFC5228/logic/SieveAddressParts.js",
-      "./../common/libSieve/RFC5228/logic/SieveNumbers.js",
-      "./../common/libSieve/RFC5228/logic/SieveBlocks.js",
-      "./../common/libSieve/RFC5228/logic/SieveTests.js",
-      "./../common/libSieve/RFC5228/logic/SieveOperators.js",
-      "./../common/libSieve/RFC5228/logic/SieveConditions.js",
-      "./../common/libSieve/RFC5228/logic/SieveActions.js",
-      "./../common/libSieve/RFC5228/logic/SieveImports.js",
+      "./../common/libSieve/extensions/RFC5228/logic/SieveWhiteSpaces.js",
+      "./../common/libSieve/extensions/RFC5228/logic/SieveStrings.js",
+      "./../common/libSieve/extensions/RFC5228/logic/SieveMatchTypes.js",
+      "./../common/libSieve/extensions/RFC5228/logic/SieveComparators.js",
+      "./../common/libSieve/extensions/RFC5228/logic/SieveAddressParts.js",
+      "./../common/libSieve/extensions/RFC5228/logic/SieveNumbers.js",
+      "./../common/libSieve/extensions/RFC5228/logic/SieveBlocks.js",
+      "./../common/libSieve/extensions/RFC5228/logic/SieveTests.js",
+      "./../common/libSieve/extensions/RFC5228/logic/SieveOperators.js",
+      "./../common/libSieve/extensions/RFC5228/logic/SieveConditions.js",
+      "./../common/libSieve/extensions/RFC5228/logic/SieveActions.js",
+      "./../common/libSieve/extensions/RFC5228/logic/SieveImports.js",
       "./validators/ScriptValidator.js"
     ],
     extend: "base"
   });
 
   tests.set("sieve-scripts", {
-    script: "./../common/libSieve/RFC5228/tests/SieveRFC5228ScriptTest.js",
+    script: "./../common/libSieve/extensions/RFC5228/tests/SieveRFC5228ScriptTest.js",
     extend: "rfc5228"
   });
 
   tests.set("sieve-elements", {
-    script: "./../common/libSieve/RFC5228/tests/SieveRFC5228SnippetTest.js",
+    script: "./../common/libSieve/extensions/RFC5228/tests/SieveRFC5228SnippetTest.js",
     extend: "rfc5228"
   });
 
   tests.set("sieve-atoms", {
-    script: "./../common/libSieve/RFC5228/tests/SieveRFC5228AtomsTest.js",
+    script: "./../common/libSieve/extensions/RFC5228/tests/SieveRFC5228AtomsTest.js",
     extend: "rfc5228"
   });
 
   // Specialized profiles which contain the tests...
 
   tests.set("matchTypes", {
-    script: "./../common/libSieve/RFC5228/tests/SieveMatchTypeTest.js",
+    script: "./../common/libSieve/extensions/RFC5228/tests/SieveMatchTypeTest.js",
     extend: "rfc5228"
   });
 
   tests.set("variables", {
-    script: "./../common/libSieve/variables/tests/SieveVariablesTest.js",
+    script: "./../common/libSieve/extensions/variables/tests/SieveVariablesTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/variables/logic/SieveVariables.js"
+      "./../common/libSieve/extensions/variables/logic/SieveVariables.js"
     ]
   });
 
   tests.set("regex", {
-    script: "./../common/libSieve/regex/tests/SieveRegExTest.js",
+    script: "./../common/libSieve/extensions/regex/tests/SieveRegExTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/regex/logic/SieveRegularExpression.js"
+      "./../common/libSieve/extensions/regex/logic/SieveRegularExpression.js"
     ]
   });
 
   tests.set("reject", {
-    script: "./../common/libSieve/reject/tests/SieveRejectTest.js",
+    script: "./../common/libSieve/extensions/reject/tests/SieveRejectTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/reject/logic/SieveReject.js"
+      "./../common/libSieve/extensions/reject/logic/SieveReject.js"
     ]
   });
 
   tests.set("body", {
-    script: "./../common/libSieve/body/tests/SieveBodyTest.js",
+    script: "./../common/libSieve/extensions/body/tests/SieveBodyTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/body/logic/SieveBody.js"
+      "./../common/libSieve/extensions/body/logic/SieveBody.js"
     ]
   });
 
   tests.set("vacation", {
-    script: "./../common/libSieve/vacation/tests/SieveVacationTest.js",
+    script: "./../common/libSieve/extensions/vacation/tests/SieveVacationTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/vacation/logic/SieveVacation.js"
+      "./../common/libSieve/extensions/vacation/logic/SieveVacation.js"
     ]
   });
 
   tests.set("vacation-seconds", {
-    script: "./../common/libSieve/vacation-seconds/tests/SieveVacationSecondsTest.js",
+    script: "./../common/libSieve/extensions/vacation-seconds/tests/SieveVacationSecondsTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/vacation/logic/SieveVacation.js",
-      "./../common/libSieve/vacation-seconds/logic/SieveVacationSeconds.js"
+      "./../common/libSieve/extensions/vacation/logic/SieveVacation.js",
+      "./../common/libSieve/extensions/vacation-seconds/logic/SieveVacationSeconds.js"
     ]
   });
 
   tests.set("include", {
-    script: "./../common/libSieve/include/tests/SieveIncludeTest.js",
+    script: "./../common/libSieve/extensions/include/tests/SieveIncludeTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/include/logic/SieveInclude.js",
-      "./../common/libSieve/variables/logic/SieveVariables.js",
-      "./../common/libSieve/relational/logic/SieveRelational.js"
+      "./../common/libSieve/extensions/include/logic/SieveInclude.js",
+      "./../common/libSieve/extensions/variables/logic/SieveVariables.js",
+      "./../common/libSieve/extensions/relational/logic/SieveRelational.js"
     ]
   });
 
   tests.set("relational", {
-    script: "./../common/libSieve/relational/tests/SieveRelationalTest.js",
+    script: "./../common/libSieve/extensions/relational/tests/SieveRelationalTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/relational/logic/SieveRelational.js"
+      "./../common/libSieve/extensions/relational/logic/SieveRelational.js"
     ]
   });
 
   tests.set("mailbox", {
-    script: "./../common/libSieve/mailbox/tests/SieveMailboxTest.js",
+    script: "./../common/libSieve/extensions/mailbox/tests/SieveMailboxTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/mailbox/logic/SieveMailbox.js"
+      "./../common/libSieve/extensions/mailbox/logic/SieveMailbox.js"
     ]
   });
 
   tests.set("subaddress", {
-    script: "./../common/libSieve/subaddress/tests/SieveSubaddressTest.js",
+    script: "./../common/libSieve/extensions/subaddress/tests/SieveSubaddressTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/subaddress/logic/SieveSubaddress.js"
+      "./../common/libSieve/extensions/subaddress/logic/SieveSubaddress.js"
     ]
   });
 
   tests.set("copy", {
-    script: "./../common/libSieve/copy/tests/SieveCopyTest.js",
+    script: "./../common/libSieve/extensions/copy/tests/SieveCopyTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/copy/logic/SieveCopy.js"
+      "./../common/libSieve/extensions/copy/logic/SieveCopy.js"
     ]
   });
 
   tests.set("imapflags", {
-    script: "./../common/libSieve/imapflags/tests/SieveImapFlagsTest.js",
+    script: "./../common/libSieve/extensions/imapflags/tests/SieveImapFlagsTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/imapflags/logic/SieveImapFlags.js",
-      "./../common/libSieve/variables/logic/SieveVariables.js",
-      "./../common/libSieve/relational/logic/SieveRelational.js"
+      "./../common/libSieve/extensions/imapflags/logic/SieveImapFlags.js",
+      "./../common/libSieve/extensions/variables/logic/SieveVariables.js",
+      "./../common/libSieve/extensions/relational/logic/SieveRelational.js"
     ]
   });
 
   tests.set("editheader", {
-    script: "./../common/libSieve/editheader/tests/SieveEditheaderTest.js",
+    script: "./../common/libSieve/extensions/editheader/tests/SieveEditheaderTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/editheader/logic/SieveEditheader.js"
+      "./../common/libSieve/extensions/editheader/logic/SieveEditheader.js"
     ]
   });
 
   tests.set("date", {
-    script: "./../common/libSieve/date/tests/SieveDateTest.js",
+    script: "./../common/libSieve/extensions/date/tests/SieveDateTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/variables/logic/SieveVariables.js",
-      "./../common/libSieve/vacation/logic/SieveVacation.js",
-      "./../common/libSieve/relational/logic/SieveRelational.js",
-      "./../common/libSieve/editheader/logic/SieveEditheader.js",
-      "./../common/libSieve/date/logic/SieveDate.js"
+      "./../common/libSieve/extensions/variables/logic/SieveVariables.js",
+      "./../common/libSieve/extensions/vacation/logic/SieveVacation.js",
+      "./../common/libSieve/extensions/relational/logic/SieveRelational.js",
+      "./../common/libSieve/extensions/editheader/logic/SieveEditheader.js",
+      "./../common/libSieve/extensions/date/logic/SieveDate.js"
     ]
   });
 
   tests.set("duplicate", {
-    script: "./../common/libSieve/duplicate/tests/SieveDuplicateTest.js",
+    script: "./../common/libSieve/extensions/duplicate/tests/SieveDuplicateTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/variables/logic/SieveVariables.js",
-      "./../common/libSieve/notify/logic/SieveNotify.js",
-      "./../common/libSieve/mailbox/logic/SieveMailbox.js",
-      "./../common/libSieve/imapflags/logic/SieveImapFlags.js",
-      "./../common/libSieve/duplicate/logic/SieveDuplicate.js"
+      "./../common/libSieve/extensions/variables/logic/SieveVariables.js",
+      "./../common/libSieve/extensions/notify/logic/SieveNotify.js",
+      "./../common/libSieve/extensions/mailbox/logic/SieveMailbox.js",
+      "./../common/libSieve/extensions/imapflags/logic/SieveImapFlags.js",
+      "./../common/libSieve/extensions/duplicate/logic/SieveDuplicate.js"
     ]
   });
 
   tests.set("spamtest", {
-    script: "./../common/libSieve/spamtest/tests/SpamtestTests.js",
+    script: "./../common/libSieve/extensions/spamtest/tests/SpamtestTests.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/spamtest/logic/SieveSpamtest.js",
-      "./../common/libSieve/relational/logic/SieveRelational.js"
+      "./../common/libSieve/extensions/spamtest/logic/SieveSpamtest.js",
+      "./../common/libSieve/extensions/relational/logic/SieveRelational.js"
     ]
   });
 
   tests.set("environment", {
-    script: "./../common/libSieve/environment/tests/SieveEnvironmentTest.js",
+    script: "./../common/libSieve/extensions/environment/tests/SieveEnvironmentTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/environment/logic/SieveEnvironment.js"
+      "./../common/libSieve/extensions/environment/logic/SieveEnvironment.js"
     ]
   });
 
   tests.set("convert", {
-    script: "./../common/libSieve/convert/tests/SieveConvertTest.js",
+    script: "./../common/libSieve/extensions/convert/tests/SieveConvertTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/convert/logic/SieveConvert.js"
+      "./../common/libSieve/extensions/convert/logic/SieveConvert.js"
     ]
   });
 
   tests.set("notify", {
-    script: "./../common/libSieve/notify/tests/SieveNotifyTest.js",
+    script: "./../common/libSieve/extensions/notify/tests/SieveNotifyTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/variables/logic/SieveVariables.js",
-      "./../common/libSieve/notify/logic/SieveNotify.js"
+      "./../common/libSieve/extensions/variables/logic/SieveVariables.js",
+      "./../common/libSieve/extensions/notify/logic/SieveNotify.js"
     ]
   });
 
   tests.set("pipe", {
-    script: "./../common/libSieve/pipe/tests/SievePipeTest.js",
+    script: "./../common/libSieve/extensions/pipe/tests/SievePipeTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/copy/logic/SieveCopy.js",
-      "./../common/libSieve/variables/logic/SieveVariables.js",
-      "./../common/libSieve/subaddress/logic/SieveSubaddress.js",
-      "./../common/libSieve/vacation/logic/SieveVacation.js",
-      "./../common/libSieve/pipe/logic/SievePipe.js"
+      "./../common/libSieve/extensions/copy/logic/SieveCopy.js",
+      "./../common/libSieve/extensions/variables/logic/SieveVariables.js",
+      "./../common/libSieve/extensions/subaddress/logic/SieveSubaddress.js",
+      "./../common/libSieve/extensions/vacation/logic/SieveVacation.js",
+      "./../common/libSieve/extensions/pipe/logic/SievePipe.js"
     ]
   });
 
   tests.set("examples-fastmail", {
-    script: "./sieve/SieveFastMailTest.js",
+    script: "./../common/libSieve/tests/SieveFastMailTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/imapflags/logic/SieveImapFlags.js",
-      "./../common/libSieve/relational/logic/SieveRelational.js",
-      "./../common/libSieve/regex/logic/SieveRegularExpression.js"
+      "./../common/libSieve/extensions/imapflags/logic/SieveImapFlags.js",
+      "./../common/libSieve/extensions/relational/logic/SieveRelational.js",
+      "./../common/libSieve/extensions/regex/logic/SieveRegularExpression.js"
     ]
   });
 
   tests.set("examples-dovecot", {
-    script: "./sieve/SieveDovecotTest.js",
+    script: "./../common/libSieve/tests/SieveDovecotTest.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/imapflags/logic/SieveImapFlags.js",
-      "./../common/libSieve/relational/logic/SieveRelational.js",
-      "./../common/libSieve/regex/logic/SieveRegularExpression.js",
-      "./../common/libSieve/include/logic/SieveInclude.js",
-      "./../common/libSieve/spamtest/logic/SieveSpamtest.js",
-      "./../common/libSieve/subaddress/logic/SieveSubaddress.js",
-      "./../common/libSieve/variables/logic/SieveVariables.js",
-      "./../common/libSieve/vacation/logic/SieveVacation.js",
-      "./../common/libSieve/date/logic/SieveDate.js",
-      "./../common/libSieve/mailbox/logic/SieveMailbox.js"
+      "./../common/libSieve/extensions/imapflags/logic/SieveImapFlags.js",
+      "./../common/libSieve/extensions/relational/logic/SieveRelational.js",
+      "./../common/libSieve/extensions/regex/logic/SieveRegularExpression.js",
+      "./../common/libSieve/extensions/include/logic/SieveInclude.js",
+      "./../common/libSieve/extensions/spamtest/logic/SieveSpamtest.js",
+      "./../common/libSieve/extensions/subaddress/logic/SieveSubaddress.js",
+      "./../common/libSieve/extensions/variables/logic/SieveVariables.js",
+      "./../common/libSieve/extensions/vacation/logic/SieveVacation.js",
+      "./../common/libSieve/extensions/date/logic/SieveDate.js",
+      "./../common/libSieve/extensions/mailbox/logic/SieveMailbox.js"
     ]
   });
 
   tests.set("examples-tty1", {
-    script: "./sieve/SieveTty1Test.js",
+    script: "./../common/libSieve/tests/SieveTty1Test.js",
     extend: "rfc5228",
     require: [
-      "./../common/libSieve/reject/logic/SieveReject.js"
+      "./../common/libSieve/extensions/reject/logic/SieveReject.js"
     ]
   });
 

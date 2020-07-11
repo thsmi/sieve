@@ -18,6 +18,7 @@
 
   /* global SieveI18n */
   /* global SieveLogger */
+  /* global SieveTemplate */
 
   /* global SieveLexer:false */
   /* global SieveDesigner */
@@ -277,6 +278,23 @@
 
     SieveLogger.getInstance().level(DEFAULT_LOG_LEVEL);
     await (SieveI18n.getInstance()).load();
+
+    const debug = document.querySelector(`#debug2`);
+    while (debug.firstChild)
+      debug.removeChild(debug.firstChild);
+
+    // ... and append the new element
+    debug.appendChild(
+      (await (new SieveTemplate()).load("./templates/debug.html")));
+
+    // Clear any existing left overs...
+    const sidebar = document.querySelector(`#toolbar`);
+    while (sidebar.firstChild)
+      sidebar.removeChild(sidebar.firstChild);
+
+    // ... and append the new element
+    sidebar.appendChild(
+      (await (new SieveTemplate()).load("./templates/sidebar.html")));
 
     init();
 

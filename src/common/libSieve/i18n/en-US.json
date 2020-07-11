@@ -1,4 +1,24 @@
 {
+  "sidebar.actions" : "Actions",
+  "sidebar.tests" : "Tests",
+  "sidebar.operators" : "Operators",
+
+  "debug.tab.script" : "Script",
+  "debug.tab.capabilities" : "Capabilities",
+  "debug.tab.advanced" : "Advanced",
+
+  "debug.script.input" : "Input:",
+  "debug.script.parse" : "Parse Sieve Script",
+  "debug.script.result" : "Result:",
+  "debug.script.update" : "Update Sieve Script",
+
+  "debug.advanced.compact" : "Compact",
+
+  "debug.capabilities.script" : "Load from Script",
+  "debug.capabilities.none" : "Select None",
+  "debug.capabilities.all" : "Select All",
+  "debug.capabilities.apply" : "Apply",
+
   "stringlist.add" : "Add",
 
   "numeric.nounit" : "No Unit",

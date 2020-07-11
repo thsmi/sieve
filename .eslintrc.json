@@ -1,7 +1,6 @@
 {
     "plugins": [
-        "jsdoc",
-        "no-jquery"
+        "jsdoc"
     ],
     "extends": [
         "eslint:recommended"
@@ -208,25 +207,6 @@
         "jsdoc/require-hyphen-before-param-description": 0,
 
         "jsdoc/check-alignment": 1,
-        "jsdoc/check-examples": ["warn", {"paddedIndent": 4 }],
-
-        "no-jquery/no-animate" : 2,
-        "no-jquery/no-animate-toggle" : 2,
-        "no-jquery/no-attr" : 1,
-        "no-jquery/no-class" : 1,
-        "no-jquery/no-class-state" : 1,
-        "no-jquery/no-contains" : 1,
-        "no-jquery/no-context-prop" : 1,
-        "no-jquery/no-css" : 2,
-        "no-jquery/no-fade" : 1,
-        "no-jquery/no-find" : 1,
-        "no-jquery/no-param" : 2,
-        "no-jquery/no-parent" : 2,
-        "no-jquery/no-parents" : 2,
-        "no-jquery/no-prop" : 1,
-        "no-jquery/no-ready" : 2,
-        "no-jquery/no-selector-prop" : 1,
-        "no-jquery/no-text" : 1,
-        "no-jquery/no-val" : 1
-    }
+        "jsdoc/check-examples": ["warn", {"paddedIndent": 4 }]
+   }
 }

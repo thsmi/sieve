@@ -138,20 +138,6 @@ function packageLicense() {
   ]).pipe(dest(BUILD_DIR_APP));
 }
 
-
-/**
- * Copies the jquery sources into the build directory.
- *
- * @returns {Stream}
- *   a stream to be consumed by gulp
- */
-function packageJQuery() {
-  "use strict";
-
-  return common.packageJQuery(
-    BUILD_DIR_APP + "/libs/jquery");
-}
-
 /**
  * Copies the codemirror sources into the build directory.
  *
@@ -232,7 +218,7 @@ function packageLibSieve() {
 
 
 /**
- * Copies the common managiesieve.ui files into the app's lib folder
+ * Copies the common managesieve.ui files into the app's lib folder
  *
  * @returns {Stream}
  *   a stream to be consumed by gulp
@@ -584,7 +570,6 @@ exports["watch"] = watchSrc;
 exports["updateVersion"] = updateVersion;
 
 exports["packageDefinition"] = packageDefinition;
-exports["packageJQuery"] = packageJQuery;
 exports["packageCodeMirror"] = packageCodeMirror;
 exports["packageBootstrap"] = packageBootstrap;
 exports["packageLicense"] = packageLicense;
@@ -623,7 +608,6 @@ exports['package'] = series(
   parallel(
     packageLicense,
     packageIcons,
-    packageJQuery,
     packageCodeMirror,
     packageBootstrap,
     packageLibManageSieve,

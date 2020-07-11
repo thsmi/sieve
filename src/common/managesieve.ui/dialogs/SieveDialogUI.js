@@ -19,7 +19,7 @@
   const DIALOG_ACCEPTED = 1;
   const DIALOG_DISCARDED = 2;
 
-  /* global $ */
+  /* global bootstrap */
   const { SieveTemplate } = require("./../utils/SieveTemplate.js");
   const { SieveUniqueId } = require("./../utils/SieveUniqueId.js");
 
@@ -133,6 +133,8 @@
 
       return await new Promise((resolve, reject) => {
 
+        const modal = new bootstrap.Modal(this.getDialog());
+
         const buttons = this.getDialog()
           .querySelectorAll(".sieve-dialog-resolve");
 
@@ -144,24 +146,27 @@
               reject(ex);
             }
 
-            $(this.getDialog()).modal("hide");
+            modal.hide();
           });
         }
 
-        $(this.getDialog()).modal('show')
-          .on('hidden.bs.modal', async () => {
 
-            this.destroy();
+        modal.show();
 
-            try {
-              resolve(await this.onCancel());
-            } catch (ex) {
-              reject(ex);
-            }
-          })
-          .on('shown.bs.modal', () => {
-            this.onShown();
-          });
+        this.getDialog().addEventListener('hidden.bs.modal', async () => {
+
+          this.destroy();
+
+          try {
+            resolve(await this.onCancel());
+          } catch (ex) {
+            reject(ex);
+          }
+        });
+
+        this.getDialog().addEventListener('shown.bs.modal', () => {
+          this.onShown();
+        });
       });
     }
   }

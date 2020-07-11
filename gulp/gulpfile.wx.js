@@ -37,19 +37,6 @@ function packageLicense() {
 }
 
 /**
- * Copies the jquery sources into the build directory.
- *
- * @returns {Stream}
- *   a stream to be consumed by gulp
- */
-function packageJQuery() {
-  "use strict";
-
-  return common.packageJQuery(
-    BUILD_DIR_WX + "/libs/jquery");
-}
-
-/**
  * Copies the codemirror sources into the build directory.
  *
  * @returns {Stream}
@@ -193,7 +180,6 @@ exports["watch"] = watchSrc;
 
 exports["updateVersion"] = updateVersion;
 
-exports["packageJQuery"] = packageJQuery;
 exports["packageCodeMirror"] = packageCodeMirror;
 exports["packageBootstrap"] = packageBootstrap;
 exports["packageLicense"] = packageLicense;
@@ -201,7 +187,6 @@ exports["packageSrc"] = packageSrc;
 
 exports['package'] = series(
   parallel(
-    packageJQuery,
     packageCodeMirror,
     packageBootstrap,
     packageLicense,

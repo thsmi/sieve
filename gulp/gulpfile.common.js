@@ -21,7 +21,6 @@ const yazl = require('yazl');
 const JSON_INDENTATION = 2;
 
 const BASE_DIR_BOOTSTRAP = "./node_modules/bootstrap/dist";
-const BASE_DIR_JQUERY = "./node_modules/jquery/dist";
 const BASE_DIR_CODEMIRROR = "./node_modules/codemirror";
 
 const BASE_DIR_COMMON = "./src/common";
@@ -69,24 +68,6 @@ async function deleteRecursive(dir) {
 async function clean() {
   "use strict";
   await deleteRecursive(BASE_DIR_BUILD);
-}
-
-/**
- * Copies the jquery sources into the given build directory.
- *
- * @param {string} destination
- *   where to place the jquery sources
- *
- * @returns {Stream}
- *   a stream to be consumed by gulp
- */
-function packageJQuery(destination) {
-  "use strict";
-
-  return src([
-    BASE_DIR_JQUERY + "/jquery.min.js"
-  ], { base: BASE_DIR_JQUERY }).pipe(
-    dest(destination));
 }
 
 /**
@@ -396,7 +377,6 @@ async function compress(source, destination, options) {
 exports["clean"] = clean;
 exports["compress"] = compress;
 
-exports["packageJQuery"] = packageJQuery;
 exports["packageCodeMirror"] = packageCodeMirror;
 exports["packageBootstrap"] = packageBootstrap;
 

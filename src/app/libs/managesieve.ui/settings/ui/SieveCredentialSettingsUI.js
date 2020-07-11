@@ -13,7 +13,7 @@
 
   "use strict";
 
-  /* global $ */
+  /* global bootstrap */
   /* global SieveTemplate */
 
   /**
@@ -175,9 +175,8 @@
      *   true in case an encrypted connection should be used otherwise false.
      */
     isEncrypted() {
-      const active = this.getDialog().querySelector(".sieve-settings-encryption .active");
 
-      if (active.classList.contains("sieve-settings-encryption-disabled"))
+      if (this.getDialog().querySelector("#sieve-settings-encryption-off").checked)
         return false;
 
       return true;
@@ -195,15 +194,10 @@
     setEncrypted(encrypted) {
       const parent = this.getDialog();
 
-      // reset the toggle button status...
-      parent
-        .querySelectorAll(".sieve-settings-encryption .active")
-        .forEach((item) => { item.classList.remove("active"); });
-
       if (encrypted === false)
-        $(parent.querySelector(".sieve-settings-encryption-disabled")).button('toggle');
+        parent.querySelector("#sieve-settings-encryption-off").checked = true;
       else
-        $(parent.querySelector(".sieve-settings-encryption-enabled")).button('toggle');
+        parent.querySelector("#sieve-settings-encryption-on").checked = true;
 
       return this;
     }
@@ -240,29 +234,31 @@
     async show() {
 
       document.querySelector("#ctx").appendChild(
-        await (new SieveTemplate()).load("./settings/ui/settings.dialog.tpl"));
+        await (new SieveTemplate()).load("./settings/ui/settings.credentials.tpl"));
 
       await this.render();
 
+      const dialog = document.querySelector("#dialog-settings-credentials");
+      const modal = new bootstrap.Modal(dialog);
+
+      modal.show();
+
+      dialog
+        .querySelector(".sieve-settings-apply")
+        .addEventListener("click", async () => {
+          await this.save();
+          modal.hide();
+        });
+
       return await new Promise((resolve) => {
 
-        $(this.getDialog()).modal('show')
-          .on('hidden.bs.modal', () => {
-            this.getDialog().parentNode.removeChild(this.getDialog());
-            resolve(false);
-          });
+        dialog.addEventListener('hidden.bs.modal', () => {
+          modal.dispose();
+          dialog.parentElement.removeChild(dialog);
 
-        this.getDialog()
-          .querySelector(".sieve-settings-apply")
-          .addEventListener("click", async () => {
-            await this.save();
-            resolve(true);
+          resolve();
+        });
 
-            // ... now trigger the hidden listener it will cleanup
-            // it is afe to do so due to promise magics, the first
-            // alway resolve wins and all subsequent calls are ignored...
-            $(this.getDialog()).modal("hide");
-          });
       });
     }
 
@@ -297,7 +293,7 @@
      *   the dialogs UI elements.
      */
     getDialog() {
-      return document.querySelector("#sieve-dialog-settings");
+      return document.querySelector("#dialog-settings-credentials");
     }
 
     /**
@@ -305,14 +301,6 @@
      */
     async render() {
       const parent = this.getDialog();
-
-      // Load all subsections...
-      const settings = parent.querySelector(".modal-body");
-      while (settings.firstChild)
-        settings.removeChild(settings.firstChild);
-
-      settings.appendChild(
-        await new SieveTemplate().load("./settings/ui/settings.credentials.tpl"));
 
       const credentials = await this.account.send("account-setting-get-credentials");
 

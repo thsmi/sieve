@@ -13,7 +13,7 @@
 
   "use strict";
 
-  /* global $ */
+  /* global bootstrap */
   /* global SieveTemplate */
 
   // eslint-disable-next-line no-magic-numbers
@@ -198,14 +198,6 @@
     async render() {
       const parent = this.getDialog();
 
-      // Load all subsections...
-      const settings = parent.querySelector(".modal-body");
-      while (settings.firstChild)
-        settings.removeChild(settings.firstChild);
-
-      settings.appendChild(
-        await (new SieveTemplate()).load("./settings/ui/settings.server.tpl"));
-
       const server = await this.account.send("account-get-server");
 
       this.setDisplayName(server.displayName);
@@ -231,29 +223,30 @@
     async show() {
 
       document.querySelector("#ctx").appendChild(
-        await (new SieveTemplate()).load("./settings/ui/settings.dialog.tpl"));
+        await (new SieveTemplate()).load("./settings/ui/settings.server.tpl"));
 
       await this.render();
 
+      const dialog = document.querySelector("#dialog-settings-server");
+      const modal = new bootstrap.Modal(dialog);
+
+      modal.show();
+
+      dialog
+        .querySelector(".sieve-settings-apply")
+        .addEventListener("click", async () => {
+          await this.save();
+          modal.hide();
+        });
+
       return await new Promise((resolve) => {
 
-        $(this.getDialog()).modal('show')
-          .on('hidden.bs.modal', () => {
-            this.getDialog().parentNode.removeChild(this.getDialog());
-            resolve(false);
-          });
+        dialog.addEventListener('hidden.bs.modal', () => {
+          modal.dispose();
+          dialog.parentNode.removeChild(dialog);
 
-        this.getDialog()
-          .querySelector(".sieve-settings-apply")
-          .addEventListener("click", async () => {
-            await this.save();
-            resolve(true);
-
-            // ... now trigger the hidden listener it will cleanup
-            // it is afe to do so due to promise magics, the first
-            // alway resolve wins and all subsequent calls are ignored...
-            $(this.getDialog()).modal('hide');
-          });
+          resolve();
+        });
       });
     }
 
@@ -282,7 +275,7 @@
      *   the dialogs UI elements.
      */
     getDialog() {
-      return document.querySelector("#sieve-dialog-settings");
+      return document.querySelector("#dialog-settings-server");
     }
 
   }

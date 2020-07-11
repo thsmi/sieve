@@ -40,7 +40,6 @@ Knuth Posern, Tim Van Den Eynde, Marcel Lamm, Lucy Archer
 [SourceForge](http://sf.net),
 [github](https://www.github.com),
 [crowdin](https://crowdin.net),
-[jQuery](https://www.jquery.com),
 [CodeMirror](http://www.codemirror.net),
 [ohloh](http://www.ohloh.net),
 [bootstrap](https://getbootstrap.com/),

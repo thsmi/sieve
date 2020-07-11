@@ -625,8 +625,8 @@
      */
     require(imports) {
 
-      for (const id of this._elements) {
-        this._optionals.get(id).element.require(imports);
+      for (const item of this._optionals.values()) {
+        item.element.require(imports);
       }
 
       return this;

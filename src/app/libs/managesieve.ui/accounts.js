@@ -9,26 +9,26 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+import { SieveLogger } from "./utils/SieveLogger.js";
+import { SieveIpcClient } from "./utils/SieveIpcClient.js";
+import { SieveI18n } from "./utils/SieveI18n.js";
+
+import { SieveAccounts } from "./accounts/SieveAccounts.js";
+import { SieveUpdaterUI } from "./updater/SieveUpdaterUI.js";
+import {
+  SieveCreateScriptDialog,
+  SieveDeleteScriptDialog,
+  SieveRenameScriptDialog,
+  SieveFingerprintDialog,
+  SieveScriptBusyDialog,
+  SieveDeleteAccountDialog,
+  SieveErrorDialog,
+  SievePasswordDialog,
+  SieveAuthorizationDialog
+} from "./dialogs/SieveDialogUI.js";
+
+
 (function () {
-
-  "use strict";
-
-  /* global SieveAccounts */
-  /* global SieveUpdaterUI */
-  /* global SieveIpcClient */
-  /* global SieveLogger */
-  /* global SieveI18n */
-
-  /* global SieveCreateScriptDialog */
-  /* global SieveDeleteScriptDialog */
-  /* global SieveRenameScriptDialog */
-  /* global SieveFingerprintDialog */
-  /* global SieveScriptBusyDialog */
-  /* global SieveDeleteAccountDialog */
-  /* global SieveErrorDialog */
-
-  /* global SievePasswordDialog */
-  /* global SieveAuthorizationDialog */
 
   /**
    * Shows a prompt which asks the user for the new script name.
@@ -127,7 +127,7 @@
    *   the password as string.
    */
   async function onAuthenticate(username, account, remember) {
-    return await (new SievePasswordDialog(username, account, {remember : remember})).show();
+    return await (new SievePasswordDialog(username, account, { remember: remember })).show();
   }
 
   /**

@@ -7,40 +7,35 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
 
-  "use strict";
+import { SieveAbstractResponseParser } from "./SieveAbstractResponseParser.js";
+const { StringDecoder } = require('string_decoder');
 
-  const { SieveAbstractResponseParser } = require("./SieveAbstractResponseParser.js");
-  const { StringDecoder } = require('string_decoder');
+/**
+ * Implements a node specific response parser
+ */
+class SieveNodeResponseParser extends SieveAbstractResponseParser {
 
   /**
-   * Implements a node specific response parser
-   */
-  class SieveNodeResponseParser extends SieveAbstractResponseParser {
-
-    /**
-     * @inheritdoc
-     **/
-    convertToString(byteArray) {
-      return new StringDecoder('utf8').end(Buffer.from(byteArray)).toString();
-    }
-
-    /**
-     * @inheritdoc
-     **/
-    convertToBase64(decoded) {
-      return Buffer.from(decoded).toString('base64');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    convertFromBase64(encoded) {
-      return Buffer.from(encoded, 'base64').toString("latin1");
-    }
+   * @inheritdoc
+   **/
+  convertToString(byteArray) {
+    return new StringDecoder('utf8').end(Buffer.from(byteArray)).toString();
   }
 
-  exports.SieveNodeResponseParser = SieveNodeResponseParser;
+  /**
+   * @inheritdoc
+   **/
+  convertToBase64(decoded) {
+    return Buffer.from(decoded).toString('base64');
+  }
 
-})(this);
+  /**
+   * @inheritdoc
+   */
+  convertFromBase64(encoded) {
+    return Buffer.from(encoded, 'base64').toString("latin1");
+  }
+}
+
+export { SieveNodeResponseParser };

@@ -9,32 +9,26 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
 
-  "use strict";
+import { SieveAbstractLogger } from "./SieveAbstractLogger.js";
 
-  const { SieveAbstractLogger } = require("./SieveAbstractLogger.js");
+/**
+ * Implements a sieve compatible logger instance for node
+ */
+class SieveNodeLogger extends SieveAbstractLogger {
 
   /**
-   * Implements a sieve compatible logger instance for node
+   * @inheritdoc
    */
-  class SieveNodeLogger extends SieveAbstractLogger {
+  log(message, level) {
 
-    /**
-     * @inheritdoc
-     */
-    log(message, level) {
-
-      if (!this.isLoggable(level))
-        return this;
-
-      // eslint-disable-next-line no-console
-      console.log(`[${this.getTimestamp()} ${this.prefix()} ] ${message}`);
+    if (!this.isLoggable(level))
       return this;
-    }
+
+    // eslint-disable-next-line no-console
+    console.log(`[${this.getTimestamp()} ${this.prefix()} ] ${message}`);
+    return this;
   }
+}
 
-  exports.SieveLogger = SieveNodeLogger;
-
-})(this);
-
+export { SieveNodeLogger as SieveLogger };

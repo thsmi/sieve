@@ -1,0 +1,74 @@
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  height: 100%;
+}
+
+
+#ctx {
+  display: inline-flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+}
+
+#tabs-content>* {
+  height: 100%;
+  width: 100%;
+  border: 0;
+}
+
+#tabs-content {
+  display: inline-flex;
+  height: 100%;
+  width: 100%;
+}
+
+#tabs-container {
+  height: 50px;
+  padding: 0px;
+}
+
+#tabs-scroll-left {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 20px;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+
+  cursor: pointer;
+}
+
+#tabs-scroll-right {
+  position: absolute;
+  bottom:0px;
+  right: 0px;
+  width: 20px;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+
+  cursor: pointer;
+}
+
+#tabs-scroll-box {
+  position: absolute;
+  bottom: 0px;
+  left:20px;
+  right:20px;
+
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#tabs-items {
+  position: relative;
+  border-bottom: none;
+  display: block;
+}
+
+#tabs-items > li {
+  display:inline-block;
+}

@@ -11,8 +11,6 @@
 
 (function () {
 
-  "use strict";
-
   const { app, Menu, BrowserWindow, ipcMain, dialog } = require('electron');
   const path = require('path');
   const url = require('url');

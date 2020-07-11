@@ -9,82 +9,78 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(() => {
+import { SieveIpcClient } from "./utils/SieveIpcClient.js";
+import { SieveLogger } from "./utils/SieveLogger.js";
+import { SieveI18n } from "./utils/SieveI18n.js";
 
-  "use strict";
+import { SieveEditorUI } from "./editor/SieveEditor.js";
+import { SieveScriptSaveDialog} from "./dialogs/SieveDialogUI.js";
 
-  /* global SieveEditorUI */
-  /* global SieveIpcClient */
-  /* global SieveLogger */
-  /* global SieveI18n */
-  /* global SieveScriptSaveDialog */
+let editor = null;
 
-  let editor = null;
+/**
+ * Called when the editor is about to be closed.
+ * Asks if the script should be saved or closing the window should be aborted.
+ *
+ * @param {string} name
+ *   the script name
+ * @returns {boolean}
+ *   true in case the editor can be close, otherwise false.
+ */
+async function onClose(name) {
 
-  /**
-   * Called when the editor is about to be closed.
-   * Asks if the script should be saved or closing the window should be aborted.
-   *
-   * @param {string} name
-   *   the script name
-   * @returns {boolean}
-   *   true in case the editor can be close, otherwise false.
-   */
-  async function onClose(name) {
+  const result = await (new SieveScriptSaveDialog(name).show());
 
-    const result = await(new SieveScriptSaveDialog(name).show());
+  if (SieveScriptSaveDialog.isCanceled(result))
+    return false;
 
-    if (SieveScriptSaveDialog.isCanceled(result))
-      return false;
+  if (SieveScriptSaveDialog.isAccepted(result))
+    return await editor.save();
 
-    if (SieveScriptSaveDialog.isAccepted(result))
-      return await editor.save();
+  return true;
+}
 
-    return true;
-  }
+/**
+ * The main entry point.
+ * Called as soon as the DOM is ready.
+ */
+async function main() {
 
-  /**
-   * The main entry point.
-   * Called as soon as the DOM is ready.
-   */
-  async function main() {
+  SieveLogger.getInstance().level(
+    await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
 
-    SieveLogger.getInstance().level(
-      await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
+  await (SieveI18n.getInstance()).load();
 
-    await (SieveI18n.getInstance()).load();
+  const url = new URL(window.location);
+  const script = url.searchParams.get("script");
+  const account = url.searchParams.get("account");
 
-    const url = new URL(window.location);
-    const script = url.searchParams.get("script");
-    const account = url.searchParams.get("account");
+  // initialize the editor
+  editor = new SieveEditorUI(script, account, "code");
 
-    // initialize the editor
-    editor = new SieveEditorUI(script, account, "code");
+  await editor.render();
+  await editor.load();
 
-    await editor.render();
-    await editor.load();
+  SieveIpcClient.setRequestHandler("editor", "editor-close",
+    async (msg) => { return await onClose(msg.payload); });
+  SieveIpcClient.setRequestHandler("editor", "editor-shown", () => { window.focus(); editor.focus(); });
+  SieveIpcClient.setRequestHandler("editor", "editor-hasChanged", async () => { return await editor.hasChanged(); });
 
-    SieveIpcClient.setRequestHandler("editor", "editor-close",
-      async (msg) => { return await onClose(msg.payload); });
-    SieveIpcClient.setRequestHandler("editor", "editor-shown", () => { window.focus(); editor.focus(); });
-    SieveIpcClient.setRequestHandler("editor", "editor-hasChanged", async () => { return await editor.hasChanged(); });
+  // TODO Send a ready signal...
+}
 
-    // TODO Send a ready signal...
-  }
+if (document.readyState !== 'loading')
+  main();
+else
+  document.addEventListener('DOMContentLoaded', () => { main(); }, { once: true });
 
-  if (document.readyState !== 'loading')
-    main();
-  else
-    document.addEventListener('DOMContentLoaded', () => { main(); }, {once: true});
+/*
+CodeMirror.on(window, "resize", function() {
+  document.body.getElementsByClassName("CodeMirror-fullscreen")[0]
+    .CodeMirror.getWrapperElement().style.height = winHeight() + "px";
+});
+*/
 
-  /*
-  CodeMirror.on(window, "resize", function() {
-    document.body.getElementsByClassName("CodeMirror-fullscreen")[0]
-      .CodeMirror.getWrapperElement().style.height = winHeight() + "px";
-  });
-  */
+// hlLine = editor.addLineClass(0, "background", "activeline");
+// editor.on("change", function() { onChange(); });
 
-  // hlLine = editor.addLineClass(0, "background", "activeline");
-
-  // editor.on("change", function() { onChange(); });
-})();

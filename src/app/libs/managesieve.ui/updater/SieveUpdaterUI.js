@@ -9,40 +9,31 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+import { SieveTemplate } from "./../utils/SieveTemplate.js";
+import { SieveIpcClient } from "./../utils/SieveIpcClient.js";
 
-  "use strict";
-
-  /* global SieveTemplate */
-  /* global SieveIpcClient */
+/**
+ * Checks for new updates and display a new message if a newer version is available
+ **/
+class SieveUpdaterUI {
 
   /**
    * Checks for new updates and display a new message if a newer version is available
-   **/
-  class SieveUpdaterUI {
+   */
+  async check() {
+    const status = await SieveIpcClient.sendMessage("core", "update-check");
 
-    /**
-     * Checks for new updates and display a new message if a newer version is available
-     */
-    async check() {
-      const status = await SieveIpcClient.sendMessage("core", "update-check");
+    if (status !== true)
+      return;
 
-      if (status !== true)
-        return;
+    const template = await (new SieveTemplate()).load("./updater/update.tpl");
+    template.querySelector(".sieve-update-msg").addEventListener("click", () => {
+      SieveIpcClient.sendMessage("core", "update-goto-url");
+    });
 
-      const template = await (new SieveTemplate()).load("./updater/update.tpl");
-      template.querySelector(".sieve-update-msg").addEventListener("click", () => {
-        SieveIpcClient.sendMessage("core", "update-goto-url");
-      });
-
-      const parent = document.querySelector("#ctx");
-      parent.insertBefore(template, parent.firstChild);
-    }
+    const parent = document.querySelector("#ctx");
+    parent.insertBefore(template, parent.firstChild);
   }
+}
 
-  if (typeof (module) !== "undefined" && module !== null && module.exports)
-    module.exports = SieveUpdaterUI;
-  else
-    exports.SieveUpdaterUI = SieveUpdaterUI;
-
-})(this);
+export { SieveUpdaterUI };

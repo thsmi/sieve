@@ -9,70 +9,64 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
 
-  "use strict";
+import { SieveAbstractCrypto } from "./SieveAbstractCrypto.js";
 
-  const { SieveAbstractCrypto } = require("./SieveAbstractCrypto.js");
+const crypto = require('crypto');
 
-  const crypto = require('crypto');
+/**
+ * A Electron specific crypto implementation.
+ */
+class SieveNodeCrypto extends SieveAbstractCrypto {
 
   /**
-   * A Electron specific crypto implementation.
+   * @inheritdoc
    */
-  class SieveCrypto extends SieveAbstractCrypto {
+  HMAC(key, bytes, output) {
 
-    /**
-     * @inheritdoc
-     */
-    HMAC(key, bytes, output) {
+    if (typeof (key) === "undefined" || key === null)
+      throw new Error("Invalid key");
 
-      if (typeof(key) === "undefined" || key === null)
-        throw new Error("Invalid key");
+    if (Array.isArray(key))
+      key = Buffer.from(key);
 
-      if (Array.isArray(key))
-        key = Buffer.from(key);
+    if (Array.isArray(bytes))
+      bytes = Buffer.from(bytes);
 
-      if (Array.isArray(bytes))
-        bytes = Buffer.from(bytes);
+    if (typeof (output) === "undefined" || output === null)
+      output = "latin1";
 
-      if (typeof(output) === "undefined" || output === null)
-        output = "latin1";
+    const rv = crypto
+      .createHmac(this.name, key)
+      .update(bytes)
+      .digest(output);
 
-      const rv = crypto
-        .createHmac(this.name, key)
-        .update(bytes)
-        .digest(output);
+    if (output === "hex")
+      return rv;
 
-      if (output === "hex")
-        return rv;
-
-      return this.strToByteArray(rv);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    H(bytes, output) {
-
-      if (typeof(output) === "undefined" || output === null)
-        output = "latin1";
-
-      if (Array.isArray(bytes))
-        bytes = Buffer.from(bytes);
-
-      const rv = crypto.createHash(this.name)
-        .update(bytes)
-        .digest(output);
-
-      if (output === "hex")
-        return rv;
-
-      return this.strToByteArray(rv);
-    }
-
+    return this.strToByteArray(rv);
   }
 
-  exports.SieveCrypto = SieveCrypto;
+  /**
+   * @inheritdoc
+   */
+  H(bytes, output) {
 
-})(module.exports);
+    if (typeof (output) === "undefined" || output === null)
+      output = "latin1";
+
+    if (Array.isArray(bytes))
+      bytes = Buffer.from(bytes);
+
+    const rv = crypto.createHash(this.name)
+      .update(bytes)
+      .digest(output);
+
+    if (output === "hex")
+      return rv;
+
+    return this.strToByteArray(rv);
+  }
+}
+
+export { SieveNodeCrypto as SieveCrypto };

@@ -21,8 +21,6 @@
  */
 (function (exports) {
 
-  "use strict";
-
   const JS_EXTENSION = ".js";
 
   /* global Components */
@@ -66,8 +64,6 @@
       this.sandbox.Error = Error;
       // and create a dummy modules.exports
       this.sandbox.module = { exports: {} };
-      // and a exports.
-      this.sandbox.export = {};
     }
 
     /**
@@ -85,7 +81,6 @@
       delete this.sandbox.require;
       delete this.sandbox.Error;
       delete this.sandbox.module;
-      delete this.sandbox.export;
 
       try {
         Components.utils.nukeSandbox(this.sandbox);

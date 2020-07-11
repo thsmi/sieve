@@ -17,7 +17,7 @@
         "ecmaFeatures": {
             "jsx": false
         },
-        "sourceType": "script"
+        "sourceType": "module"
     },
     "rules": {
         "array-callback-return": "error",

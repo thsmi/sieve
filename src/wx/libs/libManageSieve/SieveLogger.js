@@ -9,36 +9,30 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+/* global Components */
 
-  "use strict";
+import { SieveAbstractLogger } from "./SieveAbstractLogger.js";
 
-  /* global Components */
-
-  const { SieveAbstractLogger } = require("./SieveAbstractLogger.js");
+/**
+ * A mozilla specific logger
+ */
+class SieveMozLogger extends SieveAbstractLogger {
 
   /**
-   * A mozilla specific logger
-   */
-  class SieveMozLogger extends SieveAbstractLogger {
+   * @inheritdoc
+   **/
+  log(message, level) {
 
-    /**
-     * @inheritdoc
-     **/
-    log(message, level) {
-
-      if (!this.isLoggable(level))
-        return this;
-
-      Components.classes["@mozilla.org/consoleservice;1"]
-        .getService(Components.interfaces.nsIConsoleService)
-        .logStringMessage(`[${this.getTimestamp()} ${this.prefix()}] ${message}`);
-
+    if (!this.isLoggable(level))
       return this;
-    }
+
+    Components.classes["@mozilla.org/consoleservice;1"]
+      .getService(Components.interfaces.nsIConsoleService)
+      .logStringMessage(`[${this.getTimestamp()} ${this.prefix()}] ${message}`);
+
+    return this;
   }
+}
 
-  exports.SieveLogger = SieveMozLogger;
-
-})(module.exports);
+export { SieveMozLogger as SieveLogger };
 

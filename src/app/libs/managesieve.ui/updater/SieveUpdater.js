@@ -9,141 +9,131 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+const SIEVE_GITHUB_UPDATE_URL = "https://thsmi.github.io/sieve/update.json";
+const MAJOR_VERSION = 0;
+const MINOR_VERSION = 1;
+const PATCH_VERSION = 2;
 
-  "use strict";
-
-  const SIEVE_GITHUB_UPDATE_URL = "https://thsmi.github.io/sieve/update.json";
-  const MAJOR_VERSION = 0;
-  const MINOR_VERSION = 1;
-  const PATCH_VERSION = 2;
+/**
+ * Checks for Updates on github.
+ */
+class SieveUpdater {
 
   /**
-   * Checks for Updates on github.
+   * Converts the given string into an integer
+   * @param {string} version
+   *   the version number as string which should be converted to integer.
+   * @returns {Integer|NaN}
+   *   returns the integer value or NaN in case the string is no integer.
    */
-  class SieveUpdater {
+  getInt(version) {
+    const value = parseInt(version, 10);
 
-    /**
-     * Converts the given string into an integer
-     * @param {string} version
-     *   the version number as string which should be converted to integer.
-     * @returns {Integer|NaN}
-     *   returns the integer value or NaN in case the string is no integer.
-     */
-    getInt(version) {
-      const value = parseInt(version, 10);
+    if (Number.isInteger(value))
+      return value;
 
-      if (Number.isInteger(value))
-        return value;
-
-      return Number.NaN;
-    }
-
-    /**
-     * Checks if the current version is less or equal to the new version.
-     *
-     * For comparison the string values are converted to an integer.
-     * In case no integer comparison is possible a string comparison will be performed.
-     *
-     * @param {string} newVersion
-     *   the new version as string
-     * @param {string} currentVersion
-     *   the current version as string
-     *
-     * @returns {boolean}
-     *   true in case the new version is less than or equal to the old version
-     *   otherwise true
-     */
-    lessThanOrEqual(newVersion, currentVersion) {
-      const newValue = this.getInt(newVersion);
-      const currentValue = this.getInt(currentVersion);
-
-      // in case conversion failed we use string comparison
-      if (newValue === Number.NaN || currentValue === Number.NaN)
-        return (newVersion <= currentVersion);
-
-      // otherwise we compare as int
-      return newValue <= currentValue;
-    }
-
-    /**
-     * Checks if the current version is less than the new version.
-     *
-     * For comparison the string values are converted to an integer.
-     * In case no integer comparison is possible a string comparison will be performed.
-     *
-     * @param {string} newVersion
-     *   the new version as string
-     * @param {string} currentVersion
-     *   the current version as string
-     *
-     * @returns {boolean}
-     *    false in case the current version is the latest
-     *    true in case there is a newer version
-     */
-    lessThan(newVersion, currentVersion) {
-
-      const newValue = this.getInt(newVersion);
-      const currentValue = this.getInt(currentVersion);
-
-      // in case conversion failed we use string comparison
-      if (newValue === Number.NaN || currentValue === Number.NaN)
-        return (newVersion < currentVersion);
-
-      return newValue < currentValue;
-    }
-
-    /**
-     * Compares the current version against the manifest.
-     * @param {object} manifest
-     *   the manifest with the version information
-     * @param {string} currentVersion
-     *   the apps current version.
-     * @returns {boolean}
-     *   false if the current version is the latest.
-     *   true in case the manifest contains a newer version definition.
-     */
-    compare(manifest, currentVersion) {
-      currentVersion = currentVersion.split(".");
-      const items = manifest["addons"]["sieve@mozdev.org"]["updates"];
-
-      for (const item of items) {
-        const version = item.version.split(".");
-
-        if (this.lessThan(version[MAJOR_VERSION], currentVersion[MAJOR_VERSION]))
-          continue;
-
-        if (this.lessThan(version[MINOR_VERSION], currentVersion[MINOR_VERSION]))
-          continue;
-
-        if (this.lessThanOrEqual(version[PATCH_VERSION], currentVersion[PATCH_VERSION]))
-          continue;
-
-        return true;
-      }
-
-      return false;
-    }
-
-    /**
-     * Checks the if any updates are published at github.
-     * @returns {boolean}
-     *  true if newer version are available, otherwise false.
-     */
-    async check() {
-
-      const currentVersion = await (require('electron').ipcRenderer.invoke("get-version"));
-
-      return this.compare(
-        await (await fetch(SIEVE_GITHUB_UPDATE_URL)).json(),
-        currentVersion);
-    }
+    return Number.NaN;
   }
 
+  /**
+   * Checks if the current version is less or equal to the new version.
+   *
+   * For comparison the string values are converted to an integer.
+   * In case no integer comparison is possible a string comparison will be performed.
+   *
+   * @param {string} newVersion
+   *   the new version as string
+   * @param {string} currentVersion
+   *   the current version as string
+   *
+   * @returns {boolean}
+   *   true in case the new version is less than or equal to the old version
+   *   otherwise true
+   */
+  lessThanOrEqual(newVersion, currentVersion) {
+    const newValue = this.getInt(newVersion);
+    const currentValue = this.getInt(currentVersion);
 
-  if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveUpdater = SieveUpdater;
-  else
-    exports.SieveUpdater = SieveUpdater;
+    // in case conversion failed we use string comparison
+    if (newValue === Number.NaN || currentValue === Number.NaN)
+      return (newVersion <= currentVersion);
 
-})(this);
+    // otherwise we compare as int
+    return newValue <= currentValue;
+  }
+
+  /**
+   * Checks if the current version is less than the new version.
+   *
+   * For comparison the string values are converted to an integer.
+   * In case no integer comparison is possible a string comparison will be performed.
+   *
+   * @param {string} newVersion
+   *   the new version as string
+   * @param {string} currentVersion
+   *   the current version as string
+   *
+   * @returns {boolean}
+   *    false in case the current version is the latest
+   *    true in case there is a newer version
+   */
+  lessThan(newVersion, currentVersion) {
+
+    const newValue = this.getInt(newVersion);
+    const currentValue = this.getInt(currentVersion);
+
+    // in case conversion failed we use string comparison
+    if (newValue === Number.NaN || currentValue === Number.NaN)
+      return (newVersion < currentVersion);
+
+    return newValue < currentValue;
+  }
+
+  /**
+   * Compares the current version against the manifest.
+   * @param {object} manifest
+   *   the manifest with the version information
+   * @param {string} currentVersion
+   *   the apps current version.
+   * @returns {boolean}
+   *   false if the current version is the latest.
+   *   true in case the manifest contains a newer version definition.
+   */
+  compare(manifest, currentVersion) {
+    currentVersion = currentVersion.split(".");
+    const items = manifest["addons"]["sieve@mozdev.org"]["updates"];
+
+    for (const item of items) {
+      const version = item.version.split(".");
+
+      if (this.lessThan(version[MAJOR_VERSION], currentVersion[MAJOR_VERSION]))
+        continue;
+
+      if (this.lessThan(version[MINOR_VERSION], currentVersion[MINOR_VERSION]))
+        continue;
+
+      if (this.lessThanOrEqual(version[PATCH_VERSION], currentVersion[PATCH_VERSION]))
+        continue;
+
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Checks the if any updates are published at github.
+   * @returns {boolean}
+   *  true if newer version are available, otherwise false.
+   */
+  async check() {
+
+    const currentVersion = await (require('electron').ipcRenderer.invoke("get-version"));
+
+    return this.compare(
+      await (await fetch(SIEVE_GITHUB_UPDATE_URL)).json(),
+      currentVersion);
+  }
+}
+
+export { SieveUpdater };

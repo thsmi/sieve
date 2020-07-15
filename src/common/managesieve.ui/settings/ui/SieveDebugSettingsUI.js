@@ -13,7 +13,7 @@
 
   "use strict";
 
-  /* global $ */
+  /* global bootstrap */
   /* global SieveTemplate */
 
   // eslint-disable-next-line no-magic-numbers
@@ -56,20 +56,10 @@
     async render() {
       const dialog = this.getDialog();
 
-      const settings = dialog.querySelector(".modal-body");
-      while (settings.firstChild)
-        settings.removeChild(settings.firstChild);
-
-      settings.appendChild(
-        await (new SieveTemplate().load("./settings/ui/settings.debug.tpl")));
-
       const levels = await this.account.send("account-settings-get-debug");
 
       this.setAccountLogLevel(levels.account);
       this.setGlobalLogLevel(levels.global);
-
-      dialog.querySelector(".sieve-settings-apply")
-        .addEventListener("click", () => { this.save(); });
 
       dialog.querySelector(".siv-settings-show-advanced")
         .addEventListener("click", () => { this.showAdvanced(); });
@@ -86,17 +76,29 @@
     async show() {
 
       document.querySelector("#ctx").appendChild(
-        await (new SieveTemplate()).load("./settings/ui/settings.dialog.tpl"));
+        await (new SieveTemplate()).load("./settings/ui/settings.debug.tpl"));
 
       await this.render();
 
+      const dialog = this.getDialog();
+      const modal = new bootstrap.Modal(dialog);
+
+      modal.show();
+
+      dialog.querySelector(".sieve-settings-apply")
+        .addEventListener("click", () => {
+          this.save();
+          modal.hide();
+        });
+
       await new Promise((resolve) => {
 
-        $(this.getDialog()).modal("show")
-          .on("hidden.bs.modal", () => {
-            this.getDialog().parentNode.removeChild(this.getDialog());
-            resolve();
-          });
+        dialog.addEventListener("hidden.bs.modal", () => {
+          modal.dispose();
+          dialog.parentNode.removeChild(dialog);
+
+          resolve();
+        });
       });
 
     }
@@ -192,9 +194,6 @@
       };
 
       await this.account.send("account-settings-set-debug", { "levels": levels });
-
-      // Validate and close
-      $(this.getDialog()).modal('hide');
     }
 
     /**
@@ -204,7 +203,7 @@
      *   the dialogs UI elements.
      */
     getDialog() {
-      return document.querySelector("#sieve-dialog-settings");
+      return document.querySelector("#dialog-settings-debug");
     }
 
     /**

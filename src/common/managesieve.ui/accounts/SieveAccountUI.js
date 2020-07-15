@@ -13,7 +13,8 @@
 
   "use strict";
 
-  /* global $ */
+  /* global bootstrap */
+
   /* global SieveLogger */
   /* global SieveTemplate */
   /* global SieveScriptUI */
@@ -321,7 +322,8 @@
      * Shows the settings dialog
      */
     showSettings() {
-      $(`#siv-account-${this.id} .sieve-settings-tab`).tab('show');
+      const tab = document.querySelector(`#siv-account-${this.id} .sieve-settings-tab`);
+      (new bootstrap.Tab(tab)).show();
     }
 
     /**

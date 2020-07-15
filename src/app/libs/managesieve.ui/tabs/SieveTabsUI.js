@@ -13,7 +13,7 @@
 
   "use strict";
 
-  /* global $ */
+  /* global bootstrap */
   const { SieveTemplate } = require("./../utils/SieveTemplate.js");
   const { SieveIpcClient } = require("./../utils/SieveIpcClient.js");
   const { SieveUniqueId } = require("./../utils/SieveUniqueId.js");
@@ -64,7 +64,8 @@
      * Ensures the tab's content is shown.
      */
     show() {
-      $(this.getTab().querySelector(".nav-link")).tab('show');
+      const tab = this.getTab().querySelector(".nav-link");
+      (new bootstrap.Tab(tab)).show();
 
       // On Tab show is not fired when the tab is already visible.
       // so we need to emulate this. In worst case we end up with a
@@ -114,6 +115,11 @@
 
       // and then the tab, otherwise getId fails...
       const tab = document.querySelector(`#${this.getId()}-tab`);
+      const elm = bootstrap.Tab.getInstance(tab);
+
+      if (elm)
+        elm.dispose();
+
       tab.parentNode.removeChild(tab);
 
       return true;
@@ -272,7 +278,8 @@
         return;
       }
 
-      $(document.querySelector("#accounts-tab .nav-link")).tab('show');
+      const newTab = document.querySelector("#accounts-tab .nav-link");
+      (new bootstrap.Tab(newTab)).show();
     }
 
     /**
@@ -338,7 +345,7 @@
       document.querySelector(`#tabs-content`).appendChild(content);
       document.querySelector(`#tabs-items`).appendChild(tab);
 
-      $(tab).on('shown.bs.tab', () => { this.onTabShown(account, name); });
+      tab.addEventListener('shown.bs.tab', () => { this.onTabShown(account, name); });
 
       this.getTab(account, name).show();
     }

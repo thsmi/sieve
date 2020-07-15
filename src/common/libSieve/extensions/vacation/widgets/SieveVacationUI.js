@@ -14,7 +14,6 @@
 
   "use strict";
 
-  /* global $: false */
   /* global SieveStringListWidget */
   /* global SieveActionDialogBoxUI */
   /* global SieveOverlayItemWidget */
@@ -175,9 +174,10 @@
       (new SieveOverlayWidget("action/vacation/interval/", "#sivVacationIntervalOverlay"))
         .init(this.getSieve());
 
-      $('a[data-toggle="tab"][href="#sieve-widget-envelope"]').on('hide.bs.tab', () => {
-        this.onEnvelopeChanged();
-      });
+      document.querySelector('a[data-toggle="tab"][href="#sieve-widget-envelope"]')
+        .addEventListener('hide.bs.tab', () => {
+          this.onEnvelopeChanged();
+        });
 
       document.querySelector("#vacationEnvelopeEdit").addEventListener("click", () => {
         document

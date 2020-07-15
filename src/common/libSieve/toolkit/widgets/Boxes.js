@@ -423,7 +423,7 @@
 
       document.querySelector('#sivDialogSave').addEventListener("click", save);
 
-      $(document.querySelector('#sivDialog2')).on('hide.bs.modal', function () {
+      document.querySelector('#sivDialog2').addEventListener('hide.bs.modal', function () {
         document
           .querySelector("#sivDialogSave")
           .removeEventListener("click", save);

@@ -64,9 +64,13 @@
 
       this.onDrag(event);
 
-      event.dataTransfer.setDragImage(this.owner().html(),
-        event.pageX - $(this.owner().html()).offset().left,
-        event.pageY - $(this.owner().html()).offset().top);
+      const elm = this.owner().html();
+
+      const rect = elm.getBoundingClientRect();
+
+      event.dataTransfer.setDragImage(elm,
+        Math.round(event.clientX - rect.x),
+        Math.round(event.clientY - rect.y));
 
       // event.preventDefault();
       event.stopPropagation();

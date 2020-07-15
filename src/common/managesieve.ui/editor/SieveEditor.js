@@ -13,7 +13,7 @@
 
   "use strict";
 
-  /* global $ */
+  /* global bootstrap */
   /* global SieveEditorController */
   /* global SieveTextEditorUI */
   /* global SieveGraphicalEditorUI */
@@ -152,7 +152,7 @@
 
       document.querySelector("#sieve-editor-toolbar").appendChild(content);
 
-      $(content).alert();
+      new bootstrap.Alert(content);
 
       this.resize();
     }

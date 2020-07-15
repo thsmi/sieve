@@ -14,8 +14,6 @@
 
   "use strict";
 
-  /* global $ */
-
   /* global SieveI18n */
   /* global SieveLogger */
   /* global SieveTemplate */
@@ -307,8 +305,8 @@
     document.querySelector("#CapabilitiesReset")
       .addEventListener("click", () => { loadCapabilities(); });
 
-    $('a[data-toggle="tab"][href="#debugcapabilities"]')
-      .on('show.bs.tab', function () { loadCapabilities(); });
+    document.querySelector('a[data-toggle="tab"][href="#debugcapabilities"]')
+      .addEventListener('show.bs.tab', function () { loadCapabilities(); });
 
 
     document.querySelector("#DebugParse")

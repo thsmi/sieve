@@ -238,7 +238,7 @@
 
       await this.render();
 
-      const dialog = document.querySelector("#dialog-settings-credentials");
+      const dialog = this.getDialog();
       const modal = new bootstrap.Modal(dialog);
 
       modal.show();

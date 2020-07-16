@@ -10,7 +10,7 @@
  *
  */
 
-import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js";
 
 // Usage:   environment [COMPARATOR] [MATCH-TYPE] <name: string> <key-list: string-list>
 

@@ -21,13 +21,13 @@ import {
 import {
   SieveMultaryDropHandler,
   SieveTestDropHandler
-} from "./../../../toolkit/events/DropHandler.js"
+} from "./../../../toolkit/events/DropHandler.js";
 
 import {
   SieveMoveDragHandler
-} from "./../../../toolkit/events/DragHandler.js"
+} from "./../../../toolkit/events/DragHandler.js";
 
-import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js"
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
 
 const TEST_ELEMENT = 1;
 

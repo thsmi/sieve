@@ -75,7 +75,7 @@
       document
         .querySelector("#sieve-editor-settings .sieve-editor-settings-show")
         .addEventListener("click", () => {
-          $("#sieve-tab-settings").tab('show');
+          (new bootstrap.Tab(document.querySelector("#sieve-tab-settings"))).show();
         });
 
       document
@@ -96,34 +96,38 @@
           this.save();
         });
 
-      $('.nav-item > a[href="#sieve-widget-editor"]').on('show.bs.tab', async (e) => {
+      document
+        .querySelector('.nav-item > a[href="#sieve-widget-editor"]')
+        .addEventListener('show.bs.tab', async (e) => {
 
-        if (!this.isTextEditor())
-          return;
+          if (!this.isTextEditor())
+            return;
 
-        e.preventDefault();
+          e.preventDefault();
 
-        if (await this.switchToGraphicalEditor()) {
-          $('.nav-item > a[href="#sieve-widget-editor"]').tab("show");
-        }
-      });
+          if (await this.switchToGraphicalEditor()) {
+            $('.nav-item > a[href="#sieve-widget-editor"]').tab("show");
+          }
+        });
 
-      $('.nav-item > a[href="#sieve-widget-editor"]').on('shown.bs.tab', () => {
-        $("#sieve-widget-editor").height(
-          $(window).height() - $("#sieve-widget-editor").offset().top - EDITOR_OFFSET_PX);
-      });
+      document
+        .querySelector('.nav-item > a[href="#sieve-widget-editor"]')
+        .addEventListener('shown.bs.tab', () => {
+          $("#sieve-widget-editor").height(
+            $(window).height() - $("#sieve-widget-editor").offset().top - EDITOR_OFFSET_PX);
+        });
 
       window.addEventListener("resize", () => {
         this.resize();
       });
 
-      $('.nav-item > a[href="#sieve-plaintext-editor"]').on('shown.bs.tab', () => {
-        this.switchToTextEditor();
-      });
+      document
+        .querySelector('.nav-item > a[href="#sieve-plaintext-editor"]')
+        .addEventListener('shown.bs.tab', () => { this.switchToTextEditor(); });
 
-      $('.nav-item > a[href="#sieve-content-settings"]').on('shown.bs.tab', () => {
-        this.switchToSettings();
-      });
+      document
+        .querySelector('.nav-item > a[href="#sieve-content-settings"]')
+        .addEventListener('shown.bs.tab', () => { this.switchToSettings(); });
 
       return this;
     }
@@ -152,6 +156,7 @@
 
       document.querySelector("#sieve-editor-toolbar").appendChild(content);
 
+      // eslint-disable-next-line no-new
       new bootstrap.Alert(content);
 
       this.resize();

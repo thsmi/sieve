@@ -13,11 +13,11 @@
 import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
 
 import {
-  SieveTestDialogBoxUI,
+  SieveTestDialogBoxUI
 } from "./../../../toolkit/widgets/Boxes.js";
 
 import {
-  SieveStringListWidget,
+  SieveStringListWidget
 } from "./../../../toolkit/widgets/Widgets.js";
 
 import { SieveMatchTypeWidget } from "./../../../extensions/RFC5228/widgets/SieveMatchTypesUI.js";

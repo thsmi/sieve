@@ -10,8 +10,8 @@
  *
  */
 
-import { SieveLexer } from "./../../../toolkit/SieveLexer.js"
-import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.js"
+import { SieveLexer } from "./../../../toolkit/SieveLexer.js";
+import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.js";
 import { SieveTestList } from "./SieveTests.js";
 
 const MAX_QUOTE_LEN = 50;

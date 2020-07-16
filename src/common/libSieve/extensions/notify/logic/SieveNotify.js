@@ -10,7 +10,7 @@
  *
  */
 
-import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js";
 
 // Usage:  notify
 //           [":from" string]

@@ -114,4 +114,4 @@ class SieveTemplate {
   }
 }
 
-export { SieveTemplate as SieveTemplate };
+export { SieveTemplate };

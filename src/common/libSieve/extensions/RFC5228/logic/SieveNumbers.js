@@ -10,8 +10,8 @@
  *
  */
 
-import { SieveLexer } from "./../../../toolkit/SieveLexer.js"
-import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.js"
+import { SieveLexer } from "./../../../toolkit/SieveLexer.js";
+import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.js";
 
 /**
  * Implements a sieve numeric atom as defined in the rfc.

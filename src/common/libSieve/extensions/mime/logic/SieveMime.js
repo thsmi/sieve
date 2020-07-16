@@ -10,7 +10,7 @@
  *
  */
 
-import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js";
 
 // Usage:  foreverypart [":name" string] block
 
@@ -126,10 +126,10 @@ SieveGrammar.extendTest({
   }]
 });
 
-  // Usage:  replace [":mime"] [":subject" string] [":from" string]
-  // <replacement: string>
+// Usage:  replace [":mime"] [":subject" string] [":from" string]
+// <replacement: string>
 
-  // Usage:  enclose <:subject string> <:headers string-list> string
+// Usage:  enclose <:subject string> <:headers string-list> string
 
-  // Usage:  extracttext [MODIFIER] [":first" number] <varname: string>
+// Usage:  extracttext [MODIFIER] [":first" number] <varname: string>
 

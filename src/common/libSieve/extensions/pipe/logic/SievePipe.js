@@ -10,7 +10,7 @@
  *
  */
 
-import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js";
 
 // Usage: "pipe" [":try"] <program-name: string> [<arguments: string-list>]
 // Usage: "pipe" [":copy"] [":try"] <program-name: string> [<arguments: string-list>]

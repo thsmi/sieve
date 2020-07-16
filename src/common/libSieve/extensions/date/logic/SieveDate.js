@@ -49,7 +49,7 @@ time-zone
 /* :orignalzone" */
 
 
-import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js";
 
 /**
  * Gets the current date in yyyy-mm-dd format.
@@ -187,21 +187,21 @@ SieveGrammar.addTest({
 });
 
 
-  // TODO: extend date by index tag (requires index)
-  // Syntax:   date [":index" <fieldno: number> [":last"]]
-  //                [<":zone" <time-zone: string>> / ":originalzone"]
-  //                [COMPARATOR] [MATCH-TYPE] <header-name: string>
-  //                <date-part: string> <key-list: string-list>
+// TODO: extend date by index tag (requires index)
+// Syntax:   date [":index" <fieldno: number> [":last"]]
+//                [<":zone" <time-zone: string>> / ":originalzone"]
+//                [COMPARATOR] [MATCH-TYPE] <header-name: string>
+//                <date-part: string> <key-list: string-list>
 
 
-  // TODO: extend header by index tag (requires index)
-  // Syntax:   header [":index" <fieldno: number> [":last"]]
-  //                  [COMPARATOR] [MATCH-TYPE]
-  //                  <header-names: string-list> <key-list: string-list>
+// TODO: extend header by index tag (requires index)
+// Syntax:   header [":index" <fieldno: number> [":last"]]
+//                  [COMPARATOR] [MATCH-TYPE]
+//                  <header-names: string-list> <key-list: string-list>
 
-  // TODO: extend address by index tag (requires index)
-  // Syntax:   address [":index" <fieldno: number> [":last"]]
-  //                   [ADDRESS-PART] [COMPARATOR] [MATCH-TYPE]
-  //                   <header-list: string-list> <key-list: string-list>
+// TODO: extend address by index tag (requires index)
+// Syntax:   address [":index" <fieldno: number> [":last"]]
+//                   [ADDRESS-PART] [COMPARATOR] [MATCH-TYPE]
+//                   <header-list: string-list> <key-list: string-list>
 
 

@@ -10,7 +10,7 @@
  *
  */
 
-import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js";
 
 /**
  * Comparators specify the charset which should be used for string comparison

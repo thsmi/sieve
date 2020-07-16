@@ -190,4 +190,4 @@ class SieveLogger {
 
 }
 
-export { SieveLogger as SieveLogger };
+export { SieveLogger };

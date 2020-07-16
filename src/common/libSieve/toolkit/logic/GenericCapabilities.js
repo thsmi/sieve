@@ -200,4 +200,4 @@ class SieveCapabilities {
   }
 }
 
-export { SieveCapabilities as SieveCapabilities };
+export { SieveCapabilities };

@@ -7,8 +7,9 @@
  *
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
- *
  */
+
+/* global bootstrap */
 
 import { SieveTemplate } from "./../utils/SieveTemplate.js";
 
@@ -393,7 +394,9 @@ class SieveDialogBoxUI extends SieveSourceBoxUI {
       body.removeChild(body.firstChild);
 
     // Hide the dialog...
-    $(document.querySelector('#sivDialog2')).modal("hide");
+    bootstrap.Modal
+      .getInstance(document.querySelector('#sivDialog2'))
+      .hide();
 
     // update the summary section
     const summary = document.querySelector(`#${this.uniqueId}-summary`);
@@ -416,17 +419,19 @@ class SieveDialogBoxUI extends SieveSourceBoxUI {
   async showEditor() {
 
     // TODO hide the save button in case we have only a help tab...
-    $(document.querySelector('#sivDialog2')).modal("show");
+    (new bootstrap.Modal(document.querySelector('#sivDialog2'))).show();
 
     const save = () => { this.save(); };
 
     document.querySelector('#sivDialogSave').addEventListener("click", save);
 
-    document.querySelector('#sivDialog2').addEventListener('hide.bs.modal', function () {
-      document
-        .querySelector("#sivDialogSave")
-        .removeEventListener("click", save);
-    });
+    document
+      .querySelector('#sivDialog2')
+      .addEventListener('hide.bs.modal', function () {
+        document
+          .querySelector("#sivDialogSave")
+          .removeEventListener("click", save);
+      });
 
     // Empty the existing dialog.
     const dialogTabs = document.querySelector("#sivDialogTabs");

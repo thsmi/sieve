@@ -195,4 +195,4 @@ class SieveI18n {
 
 }
 
-export { SieveI18n as SieveI18n };
+export { SieveI18n };

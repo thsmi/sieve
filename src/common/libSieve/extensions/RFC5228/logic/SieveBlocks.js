@@ -10,9 +10,8 @@
  *
  */
 
-import { SieveLexer } from "./../../../toolkit/SieveLexer.js"
-import { SieveAbstractBlock } from "./../../../toolkit/logic/AbstractElements.js"
-
+import { SieveLexer } from "./../../../toolkit/SieveLexer.js";
+import { SieveAbstractBlock } from "./../../../toolkit/logic/AbstractElements.js";
 
 /**
  *

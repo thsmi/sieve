@@ -10,9 +10,9 @@
  *
  */
 
-import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
-import { SieveLexer } from "./../../../toolkit/SieveLexer.js"
-import { SieveBlockBody } from "./SieveBlocks.js"
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js";
+import { SieveLexer } from "./../../../toolkit/SieveLexer.js";
+import { SieveBlockBody } from "./SieveBlocks.js";
 
 SieveGrammar.addAction({
   node: "import/require",

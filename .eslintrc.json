@@ -16,7 +16,7 @@
         "ecmaFeatures": {
             "jsx": false
         },
-        "sourceType": "script"
+        "sourceType": "module"
     },
     "rules": {
         "array-callback-return": "error",
@@ -113,7 +113,7 @@
         "no-this-before-super": "warn",
         "no-eq-null" : "warn",
         "no-dupe-class-members" :"error",
-        "no-undef": "warn",
+        "no-undef": "error",
         "no-unreachable": "error",
         "no-unused-vars": [
             "warn",

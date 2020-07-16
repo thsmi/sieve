@@ -14,7 +14,7 @@ import {
   SieveGenericStructure,
   SieveGroupElement,
   SieveExplicitGroupElement,
-  SieveImplicitGroupElement,
+  SieveImplicitGroupElement
 } from "./GenericAtoms.js";
 
 import { SieveLexer } from "./../SieveLexer.js";

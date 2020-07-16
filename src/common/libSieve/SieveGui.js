@@ -21,7 +21,7 @@ import { SieveDocument } from "./toolkit/SieveScriptDOM.js";
 import { SieveSimpleBoxUI, SieveTrashBoxUI } from "./toolkit/widgets/Boxes.js";
 import { SieveCreateDragHandler } from "./toolkit/events/DragHandler.js";
 
-import { SieveGrammar } from "./toolkit/logic/GenericElements.js"
+import { SieveGrammar } from "./toolkit/logic/GenericElements.js";
 
 const BRIEF_MAX_LENGTH = 256;
 const NAME = 1;
@@ -330,5 +330,5 @@ if (document.readyState !== 'loading')
 else
   document.addEventListener('DOMContentLoaded', () => { main(); }, { once: true });
 
-export { setSieveScript as setSieveScript };
-export { getSieveScript as getSieveScript };
+export { setSieveScript };
+export { getSieveScript };

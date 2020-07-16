@@ -1020,4 +1020,4 @@ export {
   SieveOverlayItemWidget,
   SieveStringWidget,
   SieveNumericWidget
-}
+};

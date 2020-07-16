@@ -15,9 +15,9 @@ import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
 import { SieveSourceBoxUI, SieveDropBoxUI } from "./../../../toolkit/widgets/Boxes.js";
 import { SieveBlockUI } from "./SieveBlocksUI.js";
 
-import { SieveMoveDragHandler } from "./../../../toolkit/events/DragHandler.js"
+import { SieveMoveDragHandler } from "./../../../toolkit/events/DragHandler.js";
 
-import { SieveConditionDropHandler } from "./../../../toolkit/events/DropHandler.js"
+import { SieveConditionDropHandler } from "./../../../toolkit/events/DropHandler.js";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
 

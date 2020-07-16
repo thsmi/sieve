@@ -328,4 +328,4 @@ SieveAbstractBlock.prototype.require
 export {
   SieveAbstractElement,
   SieveAbstractBlock
-}
+};

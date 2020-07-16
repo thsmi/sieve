@@ -10,7 +10,7 @@
  *
  */
 
-import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js";
 
 // spamtest [":percent"] [COMPARATOR] [MATCH-TYPE] <value: string>
 SieveGrammar.addTest({

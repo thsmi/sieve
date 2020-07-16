@@ -10,8 +10,8 @@
  *
  */
 
-import { SieveLexer } from "./../../../toolkit/SieveLexer.js"
-import { SieveBlock, SieveBlockBody } from "./SieveBlocks.js"
+import { SieveLexer } from "./../../../toolkit/SieveLexer.js";
+import { SieveBlock, SieveBlockBody } from "./SieveBlocks.js";
 
 const BEFORE_BLOCK = 0;
 const AFTER_BLOCK = 1;

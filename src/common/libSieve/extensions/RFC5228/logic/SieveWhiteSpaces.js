@@ -10,9 +10,9 @@
  *
  */
 
-import { SieveParser } from "./../../../toolkit/SieveParser.js"
-import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.js"
-import { SieveLexer } from "./../../../toolkit/SieveLexer.js"
+import { SieveParser } from "./../../../toolkit/SieveParser.js";
+import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.js";
+import { SieveLexer } from "./../../../toolkit/SieveLexer.js";
 
 // ToDo HashComment separated by line breaks are equivalent to bracket Comments...
 

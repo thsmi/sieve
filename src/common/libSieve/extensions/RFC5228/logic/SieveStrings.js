@@ -10,8 +10,8 @@
  *
  */
 
-import { SieveLexer } from "./../../../toolkit/SieveLexer.js"
-import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.js"
+import { SieveLexer } from "./../../../toolkit/SieveLexer.js";
+import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.js";
 
 const TOKEN_NOT_FOUND = -1;
 

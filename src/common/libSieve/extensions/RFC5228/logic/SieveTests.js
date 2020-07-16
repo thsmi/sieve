@@ -10,9 +10,9 @@
  *
  */
 
-import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
-import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.js"
-import { SieveLexer } from "./../../../toolkit/SieveLexer.js"
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js";
+import { SieveAbstractElement } from "./../../../toolkit/logic/AbstractElements.js";
+import { SieveLexer } from "./../../../toolkit/SieveLexer.js";
 
 const LEADING_WHITESPACE = 0;
 const TEST = 1;
@@ -390,4 +390,4 @@ SieveTestList.prototype.require
 
 SieveLexer.register(SieveTestList);
 
-export { SieveTestList as SieveTestList };
+export { SieveTestList };

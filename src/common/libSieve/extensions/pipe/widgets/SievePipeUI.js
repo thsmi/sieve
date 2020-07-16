@@ -17,8 +17,8 @@ import { SieveStringListWidget } from "./../../../toolkit/widgets/Widgets.js";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
 
-import { SieveMoveDragHandler } from "./../../../toolkit/events/DragHandler.js"
-import { SieveTestDropHandler } from "./../../../toolkit/events/DropHandler.js"
+import { SieveMoveDragHandler } from "./../../../toolkit/events/DragHandler.js";
+import { SieveTestDropHandler } from "./../../../toolkit/events/DropHandler.js";
 
 /**
  * Implements a UI for the pipe execute action/test

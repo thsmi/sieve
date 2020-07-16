@@ -10,7 +10,7 @@
  *
  */
 
-import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js";
 
 // TODO match-type items (matchtype/) should not eat tailing whitespaces...
 // they this should be done my the match-type group

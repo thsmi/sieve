@@ -10,294 +10,288 @@
  *
  */
 
-(function () {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
 
-  "use strict";
+import { SieveTestDialogBoxUI } from "./../../../toolkit/widgets/Boxes.js";
 
-  /* global SieveTestDialogBoxUI */
-  /* global SieveMatchTypeWidget */
-  /* global SieveComparatorWidget */
-  /* global SieveStringWidget */
-  /* global SieveDesigner */
-  /* global SieveTemplate */
+import { SieveStringWidget } from "./../../../toolkit/widgets/Widgets.js";
+
+import { SieveMatchTypeWidget } from "./../../../extensions/RFC5228/widgets/SieveMatchTypesUI.js";
+import { SieveComparatorWidget } from "./../../../extensions/RFC5228/widgets/SieveComparatorsUI.js";
+
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+
+/**
+ * Provides a ui for the spam test
+ */
+class SieveSpamtestUI extends SieveTestDialogBoxUI {
 
   /**
-   * Provides a ui for the spam test
+   * The spam tests' value.
+   *
+   * @returns {SieveString}
+   *   The element's value.
    */
-  class SieveSpamtestUI extends SieveTestDialogBoxUI {
+  value() {
+    return this.getSieve().getElement("value");
+  }
 
-    /**
-     * The spam tests' value.
-     *
-     * @returns {SieveString}
-     *   The element's value.
-     */
-    value() {
-      return this.getSieve().getElement("value");
-    }
+  /**
+   * The spam tests match type.
+   *
+   * @returns {SieveAbstractElement}
+   *   The element's matchtype.
+   */
+  matchtype() {
+    return this.getSieve().getElement("match-type");
+  }
 
-    /**
-     * The spam tests match type.
-     *
-     * @returns {SieveAbstractElement}
-     *   The element's matchtype.
-     */
-    matchtype() {
-      return this.getSieve().getElement("match-type");
-    }
+  /**
+   * The spamtest's comparator.
+   *
+   * @returns {SieveAbstractElement}
+   *   The element's comparator.
+   */
+  comparator() {
+    return this.getSieve().getElement("comparator");
+  }
 
-    /**
-     * The spamtest's comparator.
-     *
-     * @returns {SieveAbstractElement}
-     *   The element's comparator.
-     */
-    comparator() {
-      return this.getSieve().getElement("comparator");
-    }
+  /**
+   * The default spam probability is a range from 0 to 10.
+   * As this was not too intuitive, they extended the definition
+   * and added a percentual range (0 to 100%).
+   *
+   * The range in percent it optional and so it may not be supported
+   * by the sieve implementation
+   *
+   * @returns {boolean}
+   *   true in case the value is in percent otherwise false.
+   *   false can mean it is not supported or it is disabled.
+   */
+  isPercental() {
+    if (!this.getSieve().hasElement("percent"))
+      return false;
 
-    /**
-     * The default spam probability is a range from 0 to 10.
-     * As this was not too intuitive, they extended the definition
-     * and added a percentual range (0 to 100%).
-     *
-     * The range in percent it optional and so it may not be supported
-     * by the sieve implementation
-     *
-     * @returns {boolean}
-     *   true in case the value is in percent otherwise false.
-     *   false can mean it is not supported or it is disabled.
-     */
-    isPercental() {
-      if (!this.getSieve().hasElement("percent"))
-        return false;
+    if (!this.getSieve().enable("percent"))
+      return false;
 
-      if (!this.getSieve().enable("percent"))
-        return false;
+    return true;
+  }
 
-      return true;
-    }
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./spamtest/templates/SieveSpamtestUI.html";
+  }
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./spamtest/templates/SieveSpamtestUI.html";
-    }
+  /**
+   * @inheritdoc
+   */
+  onSave() {
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
+    (new SieveMatchTypeWidget("#sivSpamtestMatchTypes"))
+      .save(this.matchtype());
+    (new SieveComparatorWidget("#sivSpamtestComparator"))
+      .save(this.comparator());
 
-      (new SieveMatchTypeWidget("#sivSpamtestMatchTypes"))
-        .save(this.matchtype());
-      (new SieveComparatorWidget("#sivSpamtestComparator"))
-        .save(this.comparator());
-
-      if (!this.getSieve().hasElement("percent")) {
-        (new SieveStringWidget("#sivSpamtestValue")).save(this.value());
-        return true;
-      }
-
-      if (document.querySelector("#sivSpamtestPercentRadio").checked) {
-        this.getSieve().enable("percent", true);
-        (new SieveStringWidget("#sivSpamtestPercentValue")).save(this.value());
-        return true;
-      }
-
-      this.getSieve().enable("percent", false);
+    if (!this.getSieve().hasElement("percent")) {
       (new SieveStringWidget("#sivSpamtestValue")).save(this.value());
       return true;
     }
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
+    if (document.querySelector("#sivSpamtestPercentRadio").checked) {
+      this.getSieve().enable("percent", true);
+      (new SieveStringWidget("#sivSpamtestPercentValue")).save(this.value());
+      return true;
+    }
 
-      (new SieveMatchTypeWidget("#sivSpamtestMatchTypes"))
-        .init(this.matchtype());
-      (new SieveComparatorWidget("#sivSpamtestComparator"))
-        .init(this.comparator());
+    this.getSieve().enable("percent", false);
+    (new SieveStringWidget("#sivSpamtestValue")).save(this.value());
+    return true;
+  }
 
-      // Check if this is a spamtest or spamtestplus ui.
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
 
-      if (this.getSieve().hasElement("percent")) {
-        (async () => {
-          const elm = await ((new SieveTemplate())
-            .load("./spamtest/templates/SieveSpamtestPlusValue.html"));
+    (new SieveMatchTypeWidget("#sivSpamtestMatchTypes"))
+      .init(this.matchtype());
+    (new SieveComparatorWidget("#sivSpamtestComparator"))
+      .init(this.comparator());
 
-          document.querySelector("#sivSpamtestPlaceholder").appendChild(elm);
+    // Check if this is a spamtest or spamtestplus ui.
 
-          this.onLoadPercentualValue();
-        })();
-        return;
-      }
-
+    if (this.getSieve().hasElement("percent")) {
       (async () => {
         const elm = await ((new SieveTemplate())
-          .load("./spamtest/templates/SieveSpamtestValue.html"));
+          .load("./spamtest/templates/SieveSpamtestPlusValue.html"));
 
         document.querySelector("#sivSpamtestPlaceholder").appendChild(elm);
 
-        this.onLoadValue();
+        this.onLoadPercentualValue();
       })();
+      return;
     }
 
-    /**
-     * Called when the spamtest value ui is loaded.
-     * It is used to initialize the value field.
-     */
-    onLoadValue() {
+    (async () => {
+      const elm = await ((new SieveTemplate())
+        .load("./spamtest/templates/SieveSpamtestValue.html"));
 
-      (new SieveStringWidget("#sivSpamtestValue"))
-        .init(this.value());
+      document.querySelector("#sivSpamtestPlaceholder").appendChild(elm);
+
+      this.onLoadValue();
+    })();
+  }
+
+  /**
+   * Called when the spamtest value ui is loaded.
+   * It is used to initialize the value field.
+   */
+  onLoadValue() {
+
+    (new SieveStringWidget("#sivSpamtestValue"))
+      .init(this.value());
+  }
+
+  /**
+   * Called when the spamtest plus ui is loaded
+   * It is used to populate the radiobutton as well as the value fields
+   */
+  onLoadPercentualValue() {
+    let value = "";
+    let percentualValue = "";
+
+    if (this.getSieve().enable("percent")) {
+      document.querySelector("#sivSpamtestPercentRadio").checked = true;
+      percentualValue = this.value();
+    }
+    else {
+      document.querySelector("#sivSpamtestRadio").checked = true;
+      value = this.value();
     }
 
-    /**
-     * Called when the spamtest plus ui is loaded
-     * It is used to populate the radiobutton as well as the value fields
-     */
-    onLoadPercentualValue() {
-      let value = "";
-      let percentualValue = "";
+    (new SieveStringWidget("#sivSpamtestValue"))
+      .init(value);
+    (new SieveStringWidget("#sivSpamtestPercentValue"))
+      .init(percentualValue);
+  }
 
-      if (this.getSieve().enable("percent")) {
-        document.querySelector("#sivSpamtestPercentRadio").checked = true;
-        percentualValue = this.value();
-      }
-      else {
-        document.querySelector("#sivSpamtestRadio").checked = true;
-        value = this.value();
-      }
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
 
-      (new SieveStringWidget("#sivSpamtestValue"))
-        .init(value);
-      (new SieveStringWidget("#sivSpamtestPercentValue"))
-        .init(percentualValue);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-
-      const FRAGMENT =
-        `<div>
+    const FRAGMENT =
+      `<div>
          <span data-i18n="spamtest.summary"></span>
          <span class="sivSpamtestMatchtype"></span>
          <em class="sivSpamtestValue"></em>
        </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivSpamtestMatchtype").textContent
-        = this.matchtype().getElement().toScript();
-      elm.querySelector(".sivSpamtestValue").textContent
-        = this.value().value() + (this.isPercental() ? "%" : "");
-      return elm;
-    }
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivSpamtestMatchtype").textContent
+      = this.matchtype().getElement().toScript();
+    elm.querySelector(".sivSpamtestValue").textContent
+      = this.value().value() + (this.isPercental() ? "%" : "");
+    return elm;
   }
+}
 
 
+
+/**
+ * Provides a ui for the virus test
+ */
+class SieveVirustestUI extends SieveTestDialogBoxUI {
 
   /**
-   * Provides a ui for the virus test
+   * The virus test's value.
+   *
+   * @returns {SieveString}
+   *   the element's value
    */
-  class SieveVirustestUI extends SieveTestDialogBoxUI {
+  value() {
+    return this.getSieve().getElement("value");
+  }
 
-    /**
-     * The virus test's value.
-     *
-     * @returns {SieveString}
-     *   the element's value
-     */
-    value() {
-      return this.getSieve().getElement("value");
-    }
+  /**
+   * The virus test's match type.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's matchtype
+   */
+  matchtype() {
+    return this.getSieve().getElement("match-type");
+  }
 
-    /**
-     * The virus test's match type.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's matchtype
-     */
-    matchtype() {
-      return this.getSieve().getElement("match-type");
-    }
+  /**
+   * The virus test's comparator.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's comparator
+   */
+  comparator() {
+    return this.getSieve().getElement("comparator");
+  }
 
-    /**
-     * The virus test's comparator.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's comparator
-     */
-    comparator() {
-      return this.getSieve().getElement("comparator");
-    }
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./spamtest/templates/SieveVirustestUI.html";
+  }
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./spamtest/templates/SieveVirustestUI.html";
-    }
+  /**
+   * @inheritdoc
+   */
+  onSave() {
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
+    (new SieveMatchTypeWidget("#sivVirustestMatchTypes"))
+      .save(this.matchtype());
+    (new SieveComparatorWidget("#sivVirustestComparator"))
+      .save(this.comparator());
 
-      (new SieveMatchTypeWidget("#sivVirustestMatchTypes"))
-        .save(this.matchtype());
-      (new SieveComparatorWidget("#sivVirustestComparator"))
-        .save(this.comparator());
+    (new SieveStringWidget("#sivVirustestValue"))
+      .save(this.value());
 
-      (new SieveStringWidget("#sivVirustestValue"))
-        .save(this.value());
+    return true;
+  }
 
-      return true;
-    }
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
+    (new SieveMatchTypeWidget("#sivVirustestMatchTypes"))
+      .init(this.matchtype());
+    (new SieveComparatorWidget("#sivVirustestComparator"))
+      .init(this.comparator());
 
-      (new SieveMatchTypeWidget("#sivVirustestMatchTypes"))
-        .init(this.matchtype());
-      (new SieveComparatorWidget("#sivVirustestComparator"))
-        .init(this.comparator());
+    (new SieveStringWidget("#sivVirustestValue"))
+      .init(this.value());
+  }
 
-      (new SieveStringWidget("#sivVirustestValue"))
-        .init(this.value());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div>
          <span data-i18n="virustest.summary"></span>
          <span class="sivVirustestMatchtype"></span>
          <em class="sivVirustestValue"></em>
        </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivVirustestMatchtype").textContent
-        = this.matchtype().getElement().toScript();
-      elm.querySelector(".sivVirustestValue").textContent
-        = this.value().value();
-      return elm;
-    }
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivVirustestMatchtype").textContent
+      = this.matchtype().getElement().toScript();
+    elm.querySelector(".sivVirustestValue").textContent
+      = this.value().value();
+    return elm;
   }
+}
 
-
-  if (!SieveDesigner)
-    throw new Error("Could not register Spamtest Extension");
-
-  SieveDesigner.register("test/virustest", SieveVirustestUI);
-  SieveDesigner.register("test/spamtest", SieveSpamtestUI);
-
-})(window);
+SieveDesigner.register("test/virustest", SieveVirustestUI);
+SieveDesigner.register("test/spamtest", SieveSpamtestUI);

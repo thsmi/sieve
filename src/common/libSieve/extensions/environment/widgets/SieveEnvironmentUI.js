@@ -10,128 +10,127 @@
  *
  */
 
-(function () {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
 
-  "use strict";
+import {
+  SieveTestDialogBoxUI,
+} from "./../../../toolkit/widgets/Boxes.js";
 
-  /* global SieveTestDialogBoxUI */
-  /* global SieveMatchTypeWidget */
-  /* global SieveComparatorWidget */
-  /* global SieveStringListWidget */
-  /* global SieveStringWidget */
-  /* global SieveDesigner */
-  /* global SieveTemplate */
+import {
+  SieveStringListWidget,
+  SieveStringWidget,
+} from "./../../../toolkit/widgets/Widgets.js";
+
+import { SieveMatchTypeWidget } from "./../../../extensions/RFC5228/widgets/SieveMatchTypesUI.js";
+import { SieveComparatorWidget } from "./../../../extensions/RFC5228/widgets/SieveComparatorsUI.js";
+
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+
+/**
+ * Provides a ui for the virus test
+ */
+class SieveEnvironmentUI extends SieveTestDialogBoxUI {
 
   /**
-   * Provides a ui for the virus test
+   * The environment unique name to be queried.
+   *
+   * @returns {SieveString}
+   *   the element's name
    */
-  class SieveEnvironmentUI extends SieveTestDialogBoxUI {
+  name() {
+    return this.getSieve().getElement("name");
+  }
 
-    /**
-     * The environment unique name to be queried.
-     *
-     * @returns {SieveString}
-     *   the element's name
-     */
-    name() {
-      return this.getSieve().getElement("name");
-    }
+  /**
+   * The keys to be checked if they are contained in the name.
+   *
+   * @returns {SieveString}
+   *   the element's keys
+   */
+  keys() {
+    return this.getSieve().getElement("keys");
+  }
 
-    /**
-     * The keys to be checked if they are contained in the name.
-     *
-     * @returns {SieveString}
-     *   the element's keys
-     */
-    keys() {
-      return this.getSieve().getElement("keys");
-    }
+  /**
+   * The matchtype used during comparisons.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's matchtype
+   */
+  matchtype() {
+    return this.getSieve().getElement("match-type");
+  }
 
-    /**
-     * The matchtype used during comparisons.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's matchtype
-     */
-    matchtype() {
-      return this.getSieve().getElement("match-type");
-    }
+  /**
+   * The comparator used during the conversion.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's comparator
+   */
+  comparator() {
+    return this.getSieve().getElement("comparator");
+  }
 
-    /**
-     * The comparator used during the conversion.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's comparator
-     */
-    comparator() {
-      return this.getSieve().getElement("comparator");
-    }
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./environment/templates/SieveEnvironmentUI.html";
+  }
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./environment/templates/SieveEnvironmentUI.html";
-    }
+  /**
+   * @inheritdoc
+   */
+  onSave() {
+    (new SieveStringListWidget("#sivEnvironmentKeyList"))
+      .save(this.keys());
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
-      (new SieveStringListWidget("#sivEnvironmentKeyList"))
-        .save(this.keys());
+    (new SieveMatchTypeWidget("#sivEnvironmentMatchTypes"))
+      .save(this.matchtype());
+    (new SieveComparatorWidget("#sivEnvironmentComparator"))
+      .save(this.comparator());
 
-      (new SieveMatchTypeWidget("#sivEnvironmentMatchTypes"))
-        .save(this.matchtype());
-      (new SieveComparatorWidget("#sivEnvironmentComparator"))
-        .save(this.comparator());
+    (new SieveStringWidget("#sivEnvironmentName"))
+      .save(this.name());
 
-      (new SieveStringWidget("#sivEnvironmentName"))
-        .save(this.name());
+    return true;
+  }
 
-      return true;
-    }
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
+    (new SieveStringListWidget("#sivEnvironmentKeyList"))
+      .init(this.keys());
 
-      (new SieveStringListWidget("#sivEnvironmentKeyList"))
-        .init(this.keys());
+    (new SieveMatchTypeWidget("#sivEnvironmentMatchTypes"))
+      .init(this.matchtype());
+    (new SieveComparatorWidget("#sivEnvironmentComparator"))
+      .init(this.comparator());
 
-      (new SieveMatchTypeWidget("#sivEnvironmentMatchTypes"))
-        .init(this.matchtype());
-      (new SieveComparatorWidget("#sivEnvironmentComparator"))
-        .init(this.comparator());
+    (new SieveStringWidget("#sivEnvironmentName"))
+      .init(this.name());
+  }
 
-      (new SieveStringWidget("#sivEnvironmentName"))
-        .init(this.name());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div>
            <span data-i18n="environment.summary"></span>
            <em class="sivEnvironmentName"></em>
            <span class="sivEnvironmentMatchType"></span>
            <em class="sivEnvironmentKeys"></em>
          </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivEnvironmentName").textContent = this.name().value();
-      elm.querySelector(".sivEnvironmentMatchType").textContent = " " + this.matchtype().getElement().toScript();
-      elm.querySelector(".sivEnvironmentKeys").textContent = " " + this.keys().values().join(", ");
-      return elm;
-    }
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivEnvironmentName").textContent = this.name().value();
+    elm.querySelector(".sivEnvironmentMatchType").textContent = " " + this.matchtype().getElement().toScript();
+    elm.querySelector(".sivEnvironmentKeys").textContent = " " + this.keys().values().join(", ");
+    return elm;
   }
+}
 
-  if (!SieveDesigner)
-    throw new Error("Could not register Environment Extension");
-
-  SieveDesigner.register("test/environment", SieveEnvironmentUI);
-
-})(window);
+SieveDesigner.register("test/environment", SieveEnvironmentUI);

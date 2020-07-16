@@ -12,139 +12,123 @@
 
   <script src="./../bootstrap/js/bootstrap.bundle.min.js"></script>
 
-  <script type="application/javascript" src="toolkit/logic/GenericCapabilities.js"></script>
-
-  <script type="application/javascript" src="toolkit/utils/SieveLogger.js"></script>
-  <script type="application/javascript" src="toolkit/utils/SieveI18n.js"></script>
-  <script type="application/javascript" src="toolkit/utils/SieveTemplate.js"></script>
-
-  <!-- Basic Sieve Elements -->
-  <script type="application/javascript" src="./toolkit/SieveParser.js"></script>
-  <script type="application/javascript" src="./toolkit/SieveLexer.js"></script>
-  <script type="application/javascript" src="./toolkit/SieveDesigner.js"></script>
-
   <!-- logic related Imports -->
-  <script type="application/javascript" src="toolkit/SieveScriptDOM.js"></script>
-  <script type="application/javascript" src="toolkit/logic/AbstractElements.js"></script>
-  <script type="application/javascript" src="toolkit/logic/GenericAtoms.js"></script>
-  <script type="application/javascript" src="toolkit/logic/GenericElements.js"></script>
+  <script type="module" src="toolkit/logic/GenericAtoms.js"></script>
+  <script type="module" src="toolkit/logic/GenericElements.js"></script>
 
 
-  <script type="application/javascript" src="toolkit/widgets/Boxes.js"></script>
-  <script type="application/javascript" src="toolkit/widgets/Widgets.js"></script>
+  <script type="module" src="toolkit/widgets/Boxes.js"></script>
+  <script type="module" src="toolkit/widgets/Widgets.js"></script>
 
-  <script type="application/javascript" src="toolkit/events/DataTransfer.js"></script>
-  <script type="application/javascript" src="toolkit/events/DropHandler.js"></script>
-  <script type="application/javascript" src="toolkit/events/DragHandler.js"></script>
-
+  <!-- TODO load sieve capabilities on demand only when needed -->
 
   <!-- RFC 5228 - Sieve -->
-  <script type="application/javascript" src="extensions/RFC5228/logic/SieveWhiteSpaces.js"></script>
-  <script type="application/javascript" src="extensions/RFC5228/logic/SieveStrings.js"></script>
-  <script type="application/javascript" src="extensions/RFC5228/logic/SieveNumbers.js"></script>
-  <script type="application/javascript" src="extensions/RFC5228/logic/SieveMatchTypes.js"></script>
-  <script type="application/javascript" src="extensions/RFC5228/logic/SieveAddressParts.js"></script>
-  <script type="application/javascript" src="extensions/RFC5228/logic/SieveComparators.js"></script>
+  <script type="module" src="extensions/RFC5228/logic/SieveWhiteSpaces.js"></script>
+  <script type="module" src="extensions/RFC5228/logic/SieveStrings.js"></script>
+  <script type="module" src="extensions/RFC5228/logic/SieveNumbers.js"></script>
+  <script type="module" src="extensions/RFC5228/logic/SieveMatchTypes.js"></script>
+  <script type="module" src="extensions/RFC5228/logic/SieveAddressParts.js"></script>
+  <script type="module" src="extensions/RFC5228/logic/SieveComparators.js"></script>
 
-  <script type="application/javascript" src="extensions/RFC5228/logic/SieveBlocks.js"></script>
-  <script type="application/javascript" src="extensions/RFC5228/logic/SieveTests.js"></script>
-  <script type="application/javascript" src="extensions/RFC5228/logic/SieveOperators.js"></script>
-  <script type="application/javascript" src="extensions/RFC5228/logic/SieveConditions.js"></script>
+  <script type="module" src="extensions/RFC5228/logic/SieveBlocks.js"></script>
+  <script type="module" src="extensions/RFC5228/logic/SieveTests.js"></script>
+  <script type="module" src="extensions/RFC5228/logic/SieveOperators.js"></script>
+  <script type="module" src="extensions/RFC5228/logic/SieveConditions.js"></script>
 
-  <script type="application/javascript" src="extensions/RFC5228/logic/SieveActions.js"></script>
-  <script type="application/javascript" src="extensions/RFC5228/logic/SieveImports.js"></script>
+  <script type="module" src="extensions/RFC5228/logic/SieveActions.js"></script>
+  <script type="module" src="extensions/RFC5228/logic/SieveImports.js"></script>
 
   <!-- RFC 5232 - ImapFlags-->
-  <script type="application/javascript" src="extensions/imapflags/logic/SieveImapFlags.js"></script>
+  <script type="module" src="extensions/imapflags/logic/SieveImapFlags.js"></script>
 
   <!-- UI related Imports -->
   <!-- RFC 5228 - Sieve -->
-  <script type="application/javascript" src="extensions/RFC5228/widgets/SieveBlocksUI.js"></script>
-  <script type="application/javascript" src="extensions/RFC5228/widgets/SieveMatchTypesUI.js"></script>
-  <script type="application/javascript" src="extensions/RFC5228/widgets/SieveAddressPartUI.js"></script>
-  <script type="application/javascript" src="extensions/RFC5228/widgets/SieveComparatorsUI.js"></script>
-  <script type="application/javascript" src="extensions/RFC5228/widgets/SieveTestsUI.js"></script>
-  <script type="application/javascript" src="extensions/RFC5228/widgets/SieveOperatorsUI.js"></script>
-  <script type="application/javascript" src="extensions/RFC5228/widgets/SieveConditionsUI.js"></script>
-  <script type="application/javascript" src="extensions/RFC5228/widgets/SieveActionsUI.js"></script>
+  <script type="module" src="extensions/RFC5228/widgets/SieveBlocksUI.js"></script>
+  <script type="module" src="extensions/RFC5228/widgets/SieveMatchTypesUI.js"></script>
+  <script type="module" src="extensions/RFC5228/widgets/SieveAddressPartUI.js"></script>
+  <script type="module" src="extensions/RFC5228/widgets/SieveComparatorsUI.js"></script>
+  <script type="module" src="extensions/RFC5228/widgets/SieveTestsUI.js"></script>
+  <script type="module" src="extensions/RFC5228/widgets/SieveOperatorsUI.js"></script>
+  <script type="module" src="extensions/RFC5228/widgets/SieveConditionsUI.js"></script>
+  <script type="module" src="extensions/RFC5228/widgets/SieveActionsUI.js"></script>
 
   <!-- RFC 5429 - Reject -->
-  <script type="application/javascript" src="extensions/reject/widgets/SieveRejectUI.js"></script>
-  <script type="application/javascript" src="extensions/reject/logic/SieveReject.js"></script>
+  <script type="module" src="extensions/reject/widgets/SieveRejectUI.js"></script>
+  <script type="module" src="extensions/reject/logic/SieveReject.js"></script>
 
   <!-- RFC 5232 - ImapFlags-->
-  <script type="application/javascript" src="extensions/imapflags/widgets/SieveImapFlagsUI.js"></script>
+  <script type="module" src="extensions/imapflags/widgets/SieveImapFlagsUI.js"></script>
 
   <!-- RFC Draft for RegEx-->
-  <script type="application/javascript" src="extensions/regex/logic/SieveRegularExpression.js"></script>
-  <script type="application/javascript" src="extensions/regex/widgets/SieveRegularExpressionUI.js"></script>
+  <script type="module" src="extensions/regex/logic/SieveRegularExpression.js"></script>
+  <script type="module" src="extensions/regex/widgets/SieveRegularExpressionUI.js"></script>
 
   <!-- RFC5173 - Body -->
-  <script type="application/javascript" src="extensions/body/logic/SieveBody.js"></script>
-  <script type="application/javascript" src="extensions/body/widgets/SieveBodyUI.js"></script>
+  <script type="module" src="extensions/body/logic/SieveBody.js"></script>
+  <script type="module" src="extensions/body/widgets/SieveBodyUI.js"></script>
 
   <!-- RFC5230 - Vacation -->
-  <script type="application/javascript" src="extensions/vacation/logic/SieveVacation.js"></script>
-  <script type="application/javascript" src="extensions/vacation/widgets/SieveVacationUI.js"></script>
+  <script type="module" src="extensions/vacation/logic/SieveVacation.js"></script>
+  <script type="module" src="extensions/vacation/widgets/SieveVacationUI.js"></script>
 
   <!-- RFC5229 - Variables -->
-  <script type="application/javascript" src="extensions/variables/logic/SieveVariables.js"></script>
-  <script type="application/javascript" src="extensions/variables/widgets/SieveVariablesUI.js"></script>
+  <script type="module" src="extensions/variables/logic/SieveVariables.js"></script>
+  <script type="module" src="extensions/variables/widgets/SieveVariablesUI.js"></script>
 
   <!-- RFC6609 - Include -->
-  <script type="application/javascript" src="extensions/include/logic/SieveInclude.js"></script>
-  <script type="application/javascript" src="extensions/include/widget/SieveIncludeUI.js"></script>
+  <script type="module" src="extensions/include/logic/SieveInclude.js"></script>
+  <script type="module" src="extensions/include/widget/SieveIncludeUI.js"></script>
 
   <!-- RFC5233 - Subaddress -->
-  <script type="application/javascript" src="extensions/subaddress/logic/SieveSubaddress.js"></script>
-  <script type="application/javascript" src="extensions/subaddress/widgets/SieveSubaddressUI.js"></script>
+  <script type="module" src="extensions/subaddress/logic/SieveSubaddress.js"></script>
+  <script type="module" src="extensions/subaddress/widgets/SieveSubaddressUI.js"></script>
 
   <!-- RFC5490 - Mailbox -->
-  <script type="application/javascript" src="extensions/mailbox/logic/SieveMailbox.js"></script>
-  <script type="application/javascript" src="extensions/mailbox/widgets/SieveMailboxUI.js"></script>
+  <script type="module" src="extensions/mailbox/logic/SieveMailbox.js"></script>
+  <script type="module" src="extensions/mailbox/widgets/SieveMailboxUI.js"></script>
 
   <!-- RFC55293 - Editheader -->
-  <script type="application/javascript" src="extensions/editheader/logic/SieveEditheader.js"></script>
-  <script type="application/javascript" src="extensions/editheader/widgets/SieveEditheaderUI.js"></script>
+  <script type="module" src="extensions/editheader/logic/SieveEditheader.js"></script>
+  <script type="module" src="extensions/editheader/widgets/SieveEditheaderUI.js"></script>
 
   <!-- RFC3894 - Copy -->
-  <script type="application/javascript" src="extensions/copy/logic/SieveCopy.js"></script>
-  <script type="application/javascript" src="extensions/copy/widgets/SieveCopyUI.js"></script>
+  <script type="module" src="extensions/copy/logic/SieveCopy.js"></script>
+  <script type="module" src="extensions/copy/widgets/SieveCopyUI.js"></script>
 
   <!-- RFC5231 - Relational -->
-  <script type="application/javascript" src="extensions/relational/logic/SieveRelational.js"></script>
-  <script type="application/javascript" src="extensions/relational/widgets/SieveRelationalUI.js"></script>
+  <script type="module" src="extensions/relational/logic/SieveRelational.js"></script>
+  <script type="module" src="extensions/relational/widgets/SieveRelationalUI.js"></script>
 
-  <script type="application/javascript" src="extensions/date/logic/SieveDate.js"></script>
-  <script type="application/javascript" src="extensions/date/widgets/SieveDateUI.js"></script>
+  <script type="module" src="extensions/date/logic/SieveDate.js"></script>
+  <script type="module" src="extensions/date/widgets/SieveDateUI.js"></script>
 
   <!-- RCF5435 - Duplicate -->
-  <script type="application/javascript" src="extensions/duplicate/logic/SieveDuplicate.js"></script>
-  <script type="application/javascript" src="extensions/duplicate/widgets/SieveDuplicateUI.js"></script>
+  <script type="module" src="extensions/duplicate/logic/SieveDuplicate.js"></script>
+  <script type="module" src="extensions/duplicate/widgets/SieveDuplicateUI.js"></script>
 
   <!-- RCF5235 - Spamtest-->
-  <script type="application/javascript" src="extensions/spamtest/logic/SieveSpamtest.js"></script>
-  <script type="application/javascript" src="extensions/spamtest/widgets/SieveSpamtestUI.js"></script>
+  <script type="module" src="extensions/spamtest/logic/SieveSpamtest.js"></script>
+  <script type="module" src="extensions/spamtest/widgets/SieveSpamtestUI.js"></script>
 
   <!-- RCF5183 - Environment -->
-  <script type="application/javascript" src="extensions/environment/logic/SieveEnvironment.js"></script>
-  <script type="application/javascript" src="extensions/environment/widgets/SieveEnvironmentUI.js"></script>
+  <script type="module" src="extensions/environment/logic/SieveEnvironment.js"></script>
+  <script type="module" src="extensions/environment/widgets/SieveEnvironmentUI.js"></script>
 
   <!-- RCF6131 - Vacation Seconds -->
-  <script type="application/javascript" src="extensions/vacation-seconds/logic/SieveVacationSeconds.js"></script>
-  <script type="application/javascript" src="extensions/vacation-seconds/widgets/SieveVacationSecondsUI.js"></script>
+  <script type="module" src="extensions/vacation-seconds/logic/SieveVacationSeconds.js"></script>
+  <script type="module" src="extensions/vacation-seconds/widgets/SieveVacationSecondsUI.js"></script>
 
   <!-- RFC6558 - Convert -->
-  <script type="application/javascript" src="extensions/convert/logic/SieveConvert.js"></script>
-  <script type="application/javascript" src="extensions/convert/widgets/SieveConvertUI.js"></script>
+  <script type="module" src="extensions/convert/logic/SieveConvert.js"></script>
+  <script type="module" src="extensions/convert/widgets/SieveConvertUI.js"></script>
 
   <!-- RFC5435 - Notify -->
-  <script type="application/javascript" src="extensions/notify/logic/SieveNotify.js"></script>
-  <script type="application/javascript" src="extensions/notify/widgets/SieveNotifyUI.js"></script>
+  <script type="module" src="extensions/notify/logic/SieveNotify.js"></script>
+  <script type="module" src="extensions/notify/widgets/SieveNotifyUI.js"></script>
 
   <!-- vnd.dovecot.pipe - pipe -->
-  <script type="application/javascript" src="extensions/pipe/logic/SievePipe.js"></script>
-  <script type="application/javascript" src="extensions/pipe/widgets/SievePipeUI.js"></script>
+  <script type="module" src="extensions/pipe/logic/SievePipe.js"></script>
+  <script type="module" src="extensions/pipe/widgets/SievePipeUI.js"></script>
 
   <style>
     .sivMenuItem {
@@ -159,7 +143,7 @@
       border: 1px solid #28a745
     }
 
-    button > .sivIconMore {
+    button>.sivIconMore {
       display: inline-block;
       content: "";
       background-image: url('data:image/svg+xml,<svg class="bi bi-three-dots" width="1.0em" height="1.0em" viewBox="0 0 16 16" fill="rgb(108, 117, 125)" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd"/></svg>');
@@ -170,11 +154,11 @@
       height: 1em;
     }
 
-    button:hover > .sivIconMore {
+    button:hover>.sivIconMore {
       background-image: url('data:image/svg+xml,<svg class="bi bi-three-dots" width="1.0em" height="1.0em" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" clip-rule="evenodd"/></svg>');
     }
 
-    button > .sivIconDelete {
+    button>.sivIconDelete {
       display: inline-block;
       content: "";
       background-image: url('data:image/svg+xml,<svg class="bi bi-trash" width="1.0em" height="1.0em" viewBox="0 0 16 16" fill="rgb(108, 117, 125)" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 5.5A.5.5 0 016 6v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm2.5 0a.5.5 0 01.5.5v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm3 .5a.5.5 0 00-1 0v6a.5.5 0 001 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0 01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0 011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" clip-rule="evenodd"/></svg>');
@@ -185,7 +169,7 @@
       height: 1em;
     }
 
-    button:hover > .sivIconDelete {
+    button:hover>.sivIconDelete {
       background-image: url('data:image/svg+xml,<svg class="bi bi-trash" width="1.0em" height="1.0em" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 5.5A.5.5 0 016 6v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm2.5 0a.5.5 0 01.5.5v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm3 .5a.5.5 0 00-1 0v6a.5.5 0 001 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0 01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0 011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" clip-rule="evenodd"/></svg>');
     }
 
@@ -215,58 +199,58 @@
 
 <body>
   <div class="container-xl mt-2">
-  <!-- the toolvar -->
-  <div id="toolbar" class="ml-2"></div>
+    <!-- the toolvar -->
+    <div id="toolbar" class="ml-2"></div>
 
-  <div id="content">
+    <div id="content">
 
-    <!-- Infobar -->
-    <div id="infobar" class="d-none alert alert-danger alert-dismissible mt-2" role="alert">
-      <div>
-        <strong id="infobar-subject"></strong>
-        <button id="infobar-close" class="close">
-          <span>×</span>
-        </button>
+      <!-- Infobar -->
+      <div id="infobar" class="d-none alert alert-danger alert-dismissible mt-2" role="alert">
+        <div>
+          <strong id="infobar-subject"></strong>
+          <button id="infobar-close" class="close">
+            <span>×</span>
+          </button>
+        </div>
+        <small id="infobar-brief-message" style="white-space: pre-wrap;"></small>
+        <small id="infobar-message" style="white-space: pre-wrap;"></small>
       </div>
-      <small id="infobar-brief-message" style="white-space: pre-wrap;"></small>
-      <small id="infobar-message" style="white-space: pre-wrap;"></small>
-    </div>
 
-    <!-- Modal dialog -->
-    <div id="sivDialog2" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
-      aria-labelledby="myLargeModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header card-header d-flex justify-content-between py-0">
-            <ul id="sivDialogTabs" class="nav nav-tabs card-header-tabs my-0 pt-3" role="tablist">
-            </ul>
-            <div class="align-self-center">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
-              </button>
+      <!-- Modal dialog -->
+      <div id="sivDialog2" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+        aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header card-header d-flex justify-content-between py-0">
+              <ul id="sivDialogTabs" class="nav nav-tabs card-header-tabs my-0 pt-3" role="tablist">
+              </ul>
+              <div class="align-self-center">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
             </div>
-          </div>
-          <div class="modal-body">
-            <div id="sivDialogBody">
+            <div class="modal-body">
+              <div id="sivDialogBody">
+              </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button id="sivDialogSave" type="button" class="btn btn-primary">Apply</button>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button id="sivDialogSave" type="button" class="btn btn-primary">Apply</button>
+            </div>
           </div>
         </div>
       </div>
+
+      <div id="debug2"></div>
+
+      <div id="divOutput" class="card p-2 pr-4">
+      </div>
+
+      <script type="module" src="SieveGui.js"></script>
     </div>
 
-    <div id="debug2"></div>
-
-    <div id="divOutput" class="card p-2 pr-4">
-    </div>
-
-    <script type="application/javascript" src="SieveGui.js"></script>
   </div>
-
-</div>
 </body>
 
 </html>

@@ -10,46 +10,37 @@
  *
  */
 
-(function () {
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
-  "use strict";
+// TODO match-type items (matchtype/) should not eat tailing whitespaces...
+// they this should be done my the match-type group
 
-  /* global SieveGrammar */
+SieveGrammar.addTag({
+  node: "match-type/is",
+  type: "match-type/",
 
-  if (!SieveGrammar)
-    throw new Error("Could not register MatchTypes");
+  token: ":is"
+});
 
-  // TODO match-type items (matchtype/) should not eat tailing whitespaces...
-  // they this should be done my the match-type group
+SieveGrammar.addTag({
+  node: "match-type/matches",
+  type: "match-type/",
 
-  SieveGrammar.addTag({
-    node: "match-type/is",
-    type: "match-type/",
+  token: ":matches"
+});
 
-    token: ":is"
-  });
+SieveGrammar.addTag({
+  node: "match-type/contains",
+  type: "match-type/",
 
-  SieveGrammar.addTag({
-    node: "match-type/matches",
-    type: "match-type/",
+  token: ":contains"
+});
 
-    token: ":matches"
-  });
+SieveGrammar.addGroup({
+  node: "match-type",
+  type: "match-type",
 
-  SieveGrammar.addTag({
-    node: "match-type/contains",
-    type: "match-type/",
+  value: ":is",
 
-    token: ":contains"
-  });
-
-  SieveGrammar.addGroup({
-    node: "match-type",
-    type: "match-type",
-
-    value: ":is",
-
-    items: ["match-type/"]
-  });
-
-})(this);
+  items: ["match-type/"]
+});

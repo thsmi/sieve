@@ -10,182 +10,45 @@
  *
  */
 
-(function () {
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
-  "use strict";
+// Usage: "pipe" [":try"] <program-name: string> [<arguments: string-list>]
+// Usage: "pipe" [":copy"] [":try"] <program-name: string> [<arguments: string-list>]
 
-  /* global SieveGrammar */
+SieveGrammar.addTag({
+  node: "action/pipe/try",
+  type: "action/pipe/",
 
-  if (!SieveGrammar)
-    throw new Error("Could not register Notify");
+  token: ":try"
+});
 
-  // Usage: "pipe" [":try"] <program-name: string> [<arguments: string-list>]
-  // Usage: "pipe" [":copy"] [":try"] <program-name: string> [<arguments: string-list>]
+SieveGrammar.addTag({
+  node: "action/pipe/copy",
+  type: "action/pipe/",
 
-  SieveGrammar.addTag({
-    node: "action/pipe/try",
-    type: "action/pipe/",
+  requires: "copy",
 
-    token: ":try"
-  });
+  token: ":copy"
+});
 
-  SieveGrammar.addTag({
-    node: "action/pipe/copy",
-    type: "action/pipe/",
+SieveGrammar.addAction({
+  node: "action/pipe",
+  type: "action",
 
-    requires: "copy",
+  requires: "vnd.dovecot.pipe",
 
-    token: ":copy"
-  });
+  token: "pipe",
 
-  SieveGrammar.addAction({
-    node: "action/pipe",
-    type: "action",
-
-    requires: "vnd.dovecot.pipe",
-
-    token: "pipe",
-
-    properties: [{
-      id: "tags",
-      optional: true,
-
-      elements: [{
-        id: "copy",
-        type: "action/pipe/copy"
-      }, {
-        id: "try",
-        type: "action/pipe/try"
-      }]
-    }, {
-      id: "parameters",
-
-      elements: [{
-        id: "program",
-        type: "string",
-        value: '"example"'
-      }]
-    }, {
-      id: "arguments",
-      optional: true,
-
-      elements: [{
-        id: "arguments",
-        type: "stringlist",
-        value: '""'
-      }]
-    }]
-  });
-
-  const filterProperties = [{
-    id: "program",
-
-    elements: [{
-      id: "program",
-      type: "string",
-      value: '"example"'
-    }]
-  }, {
-    id: "arguments",
-    optional: true,
-
-    elements: [{
-      id: "arguments",
-      type: "stringlist",
-      value: '""'
-    }]
-  }];
-
-  // Usage: "filter" <program-name: string> [<arguments: string-list>]
-  SieveGrammar.addAction({
-    node: "action/filter",
-    type: "action",
-
-    requires: "vnd.dovecot.filter",
-
-    token: "filter",
-
-    properties: filterProperties
-  });
-
-  SieveGrammar.addTest({
-    node: "test/filter",
-    type: "test",
-
-    requires: "vnd.dovecot.filter",
-
-    token: "filter",
-
-    properties: filterProperties
-  });
-
-
-  // Usage: "execute"
-  //  [":input" <input-data: string> / ":pipe"]
-  //  [":output" <varname: string>]
-  //  <program-name: string> [<arguments: string-list>]
-  SieveGrammar.addTag({
-    node: "execute/input/pipe",
-    type: "execute/input/",
-
-    token: ":pipe"
-  });
-
-  SieveGrammar.addTag({
-    node: "execute/input/input",
-    type: "execute/input/",
-
-    token: ":input",
-
-    properties: [{
-      id: "parameters",
-
-      elements: [{
-        id: "data",
-        type: "string",
-
-        value: '""'
-      }]
-    }]
-  });
-
-  SieveGrammar.addGroup({
-    node: "execute/input",
-    type: "execute/input",
-
-    items: ["execute/input/"]
-  });
-
-  SieveGrammar.addTag({
-    node: "execute/output",
-    type: "execute/",
-
-    token: ":output",
-    requires : "variables",
-
-    properties: [{
-      id: "parameters",
-
-      elements: [{
-        id: "name",
-        type: "string",
-
-        value: '""'
-      }]
-    }]
-  });
-
-
-  const executeProperties = [{
+  properties: [{
     id: "tags",
     optional: true,
 
     elements: [{
-      id: "input",
-      type: "execute/input"
+      id: "copy",
+      type: "action/pipe/copy"
     }, {
-      id: "output",
-      type: "execute/output"
+      id: "try",
+      type: "action/pipe/try"
     }]
   }, {
     id: "parameters",
@@ -204,29 +67,156 @@
       type: "stringlist",
       value: '""'
     }]
-  }];
+  }]
+});
 
-  SieveGrammar.addAction({
-    node: "action/execute",
-    type: "action",
+const filterProperties = [{
+  id: "program",
 
-    requires: "vnd.dovecot.execute",
+  elements: [{
+    id: "program",
+    type: "string",
+    value: '"example"'
+  }]
+}, {
+  id: "arguments",
+  optional: true,
 
-    token: "execute",
+  elements: [{
+    id: "arguments",
+    type: "stringlist",
+    value: '""'
+  }]
+}];
 
-    properties: executeProperties
-  });
+// Usage: "filter" <program-name: string> [<arguments: string-list>]
+SieveGrammar.addAction({
+  node: "action/filter",
+  type: "action",
 
-  SieveGrammar.addTest({
-    node: "test/execute",
-    type: "test",
+  requires: "vnd.dovecot.filter",
 
-    requires: "vnd.dovecot.execute",
+  token: "filter",
 
-    token: "execute",
+  properties: filterProperties
+});
 
-    properties: executeProperties
-  });
+SieveGrammar.addTest({
+  node: "test/filter",
+  type: "test",
+
+  requires: "vnd.dovecot.filter",
+
+  token: "filter",
+
+  properties: filterProperties
+});
 
 
-})(this);
+// Usage: "execute"
+//  [":input" <input-data: string> / ":pipe"]
+//  [":output" <varname: string>]
+//  <program-name: string> [<arguments: string-list>]
+SieveGrammar.addTag({
+  node: "execute/input/pipe",
+  type: "execute/input/",
+
+  token: ":pipe"
+});
+
+SieveGrammar.addTag({
+  node: "execute/input/input",
+  type: "execute/input/",
+
+  token: ":input",
+
+  properties: [{
+    id: "parameters",
+
+    elements: [{
+      id: "data",
+      type: "string",
+
+      value: '""'
+    }]
+  }]
+});
+
+SieveGrammar.addGroup({
+  node: "execute/input",
+  type: "execute/input",
+
+  items: ["execute/input/"]
+});
+
+SieveGrammar.addTag({
+  node: "execute/output",
+  type: "execute/",
+
+  token: ":output",
+  requires: "variables",
+
+  properties: [{
+    id: "parameters",
+
+    elements: [{
+      id: "name",
+      type: "string",
+
+      value: '""'
+    }]
+  }]
+});
+
+
+const executeProperties = [{
+  id: "tags",
+  optional: true,
+
+  elements: [{
+    id: "input",
+    type: "execute/input"
+  }, {
+    id: "output",
+    type: "execute/output"
+  }]
+}, {
+  id: "parameters",
+
+  elements: [{
+    id: "program",
+    type: "string",
+    value: '"example"'
+  }]
+}, {
+  id: "arguments",
+  optional: true,
+
+  elements: [{
+    id: "arguments",
+    type: "stringlist",
+    value: '""'
+  }]
+}];
+
+SieveGrammar.addAction({
+  node: "action/execute",
+  type: "action",
+
+  requires: "vnd.dovecot.execute",
+
+  token: "execute",
+
+  properties: executeProperties
+});
+
+SieveGrammar.addTest({
+  node: "test/execute",
+  type: "test",
+
+  requires: "vnd.dovecot.execute",
+
+  token: "execute",
+
+  properties: executeProperties
+});

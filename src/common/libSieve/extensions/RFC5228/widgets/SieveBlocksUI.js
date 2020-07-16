@@ -10,94 +10,88 @@
  *
  */
 
-(function (exports) {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
 
-  "use strict";
+import {
+  SieveAbstractBoxUI,
+  SieveDropBoxUI
+} from "./../../../toolkit/widgets/Boxes.js";
 
-  /* global SieveDesigner */
-  /* global SieveAbstractBoxUI */
+import { SieveBlockDropHandler } from "./../../../toolkit/events/DropHandler.js";
 
-  /* global SieveDropBoxUI */
-  /* global SieveBlockDropHandler */
 
-  const FIRST_ELEMENT = 1;
+const FIRST_ELEMENT = 1;
+
+/**
+ * The UI Element which renders the root node.
+ */
+class SieveRootNodeUI extends SieveAbstractBoxUI {
 
   /**
-   * The UI Element which renders the root node.
+   * @inheritdoc
    */
-  class SieveRootNodeUI extends SieveAbstractBoxUI {
+  createHtml(parent) {
+    parent.appendChild(
+      this.getSieve().elms[FIRST_ELEMENT].html());
 
-    /**
-     * @inheritdoc
-     */
-    createHtml(parent) {
-      parent.appendChild(
-        this.getSieve().elms[FIRST_ELEMENT].html());
+    return parent;
+  }
+}
 
-      return parent;
-    }
+
+/**
+ * Provides an UI which realizes a block.
+ * It is used tho host tests and actions.
+ */
+class SieveBlockUI extends SieveAbstractBoxUI {
+
+  // TODO is this really needed to wrap the item?
+  /**
+   * Wraps the given child item in to a block.
+   * @private
+   *
+   * @param {HTMLElement} item
+   *   the item to be wrapped
+   * @returns {HTMLElement}
+   *   the ui element
+   */
+  createBlockChild(item) {
+    const child = document.createElement('div');
+    child.appendChild(item);
+    child.classList.add("sivBlockChild");
+
+    return child;
   }
 
-
   /**
-   * Provides an UI which realizes a block.
-   * It is used tho host tests and actions.
+   * @inheritdoc
    */
-  class SieveBlockUI extends SieveAbstractBoxUI {
+  createHtml(parent) {
+    const elm = document.createElement("div");
+    elm.classList.add("sivBlock");
 
-    // TODO is this really needed to wrap the item?
-    /**
-     * Wraps the given child item in to a block.
-     * @private
-     *
-     * @param {HTMLElement} item
-     *   the item to be wrapped
-     * @returns {HTMLElement}
-     *   the ui element
-     */
-    createBlockChild(item) {
-      const child = document.createElement('div');
-      child.appendChild(item);
-      child.classList.add("sivBlockChild");
+    for (const sivElm of this.getSieve().elms) {
+      const item = sivElm.html();
 
-      return child;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    createHtml(parent) {
-      const elm = document.createElement("div");
-      elm.classList.add("sivBlock");
-
-      for (const sivElm of this.getSieve().elms) {
-        const item = sivElm.html();
-
-        if (!item)
-          continue;
-
-        elm.appendChild((new SieveDropBoxUI(this, "sivBlockSpacer"))
-          .drop(new SieveBlockDropHandler(), sivElm)
-          .html());
-        elm.appendChild(this.createBlockChild(item));
-      }
+      if (!item)
+        continue;
 
       elm.appendChild((new SieveDropBoxUI(this, "sivBlockSpacer"))
-        .drop(new SieveBlockDropHandler())
+        .drop(new SieveBlockDropHandler(), sivElm)
         .html());
-
-      parent.appendChild(elm);
-      return parent;
+      elm.appendChild(this.createBlockChild(item));
     }
+
+    elm.appendChild((new SieveDropBoxUI(this, "sivBlockSpacer"))
+      .drop(new SieveBlockDropHandler())
+      .html());
+
+    parent.appendChild(elm);
+    return parent;
   }
+}
 
-  if (!SieveDesigner)
-    throw new Error("Could not register Block Widgets");
+SieveDesigner.register("block/body", SieveBlockUI);
+SieveDesigner.register("block/rootnode", SieveRootNodeUI);
 
-
-  SieveDesigner.register("block/body", SieveBlockUI);
-  SieveDesigner.register("block/rootnode", SieveRootNodeUI);
-
-  exports.SieveBlockUI = SieveBlockUI;
-
-})(window);
+export { SieveBlockUI };

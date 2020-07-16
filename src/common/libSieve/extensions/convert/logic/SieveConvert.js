@@ -10,60 +10,51 @@
  *
  */
 
-(function () {
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
-  "use strict";
-  /* global SieveGrammar */
+// Usage: convert  <quoted-from-media-type: string>
+//                 <quoted-to-media-type: string>
+//                 <transcoding-params: string-list>
+//
+// can be either a test or an action...
 
-  if (!SieveGrammar)
-    throw new Error("Could not register Convert");
+const properties = [{
+  id: "parameters",
 
+  elements: [{
+    id: "from",
+    type: "string",
+    value: '"image/tiff"'
+  }, {
+    id: "to",
+    type: "string",
+    value: '"image/jpeg"'
+  }, {
+    id: "transcoding",
+    type: "stringlist",
+    value: '["pix-x=320","pix-y=240"]'
+  }]
+}];
 
-  // Usage: convert  <quoted-from-media-type: string>
-  //                 <quoted-to-media-type: string>
-  //                 <transcoding-params: string-list>
-  //
-  // can be either a test or an action...
+SieveGrammar.addTest({
+  node: "test/convert",
+  type: "test",
 
+  requires: "convert",
 
-  const properties = [{
-    id: "parameters",
+  token: "convert",
 
-    elements: [{
-      id: "from",
-      type: "string",
-      value: '"image/tiff"'
-    }, {
-      id: "to",
-      type: "string",
-      value: '"image/jpeg"'
-    }, {
-      id: "transcoding",
-      type: "stringlist",
-      value: '["pix-x=320","pix-y=240"]'
-    }]
-  }];
+  properties: properties
+});
 
-  SieveGrammar.addTest({
-    node: "test/convert",
-    type: "test",
+SieveGrammar.addAction({
+  node: "action/convert",
+  type: "action",
 
-    requires: "convert",
+  requires: "convert",
 
-    token: "convert",
+  token: "convert",
 
-    properties: properties
-  });
+  properties: properties
+});
 
-  SieveGrammar.addAction({
-    node: "action/convert",
-    type: "action",
-
-    requires: "convert",
-
-    token: "convert",
-
-    properties: properties
-  });
-
-})(this);

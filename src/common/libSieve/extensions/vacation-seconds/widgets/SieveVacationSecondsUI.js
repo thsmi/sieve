@@ -10,82 +10,73 @@
  *
  */
 
-(function () {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
+import { SieveOverlayItemWidget } from "./../../../toolkit/widgets/Widgets.js";
 
-  "use strict";
-
-  /* global SieveOverlayItemWidget */
-  /* global SieveDesigner */
-
-  /**
+/**
    * Implements the create overlay for the fileinto action.
    */
-  class SieveVacationIntervalSeconds extends SieveOverlayItemWidget {
+class SieveVacationIntervalSeconds extends SieveOverlayItemWidget {
 
-    /**
-     * @inheritdoc
-     */
-    static nodeType() {
-      return "action/vacation/interval/";
-    }
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "action/vacation/interval/seconds";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static isCapable(capabilities) {
-      return capabilities.hasCapability("vacation-seconds");
-    }
-
-    /**
-     * @inheritdoc
-     **/
-    getTemplate() {
-      return "./vacation-seconds/template/SieveVacationIntervalSecondsUI.html";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    load(sivElement) {
-
-      document.querySelector("#txtVacationIntervalSeconds").addEventListener("focus", () => {
-        document.querySelector('#cbxVacationIntervalSeconds').checked = true;
-      });
-
-      const elm = sivElement.getElement("interval");
-
-      if (!elm.isNode(this.constructor.nodeName()))
-        return;
-
-      document.querySelector("#cbxVacationIntervalSeconds").checked = true;
-      // FIXME: we ignore the unit here., instead we should use a numeric control
-      document.querySelector("#txtVacationIntervalSeconds").value = elm.getElement("seconds").getValue();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    save(sivElement) {
-
-      if (!document.querySelector("#cbxVacationIntervalSeconds").checked)
-        return;
-
-      const seconds = document.querySelector("#txtVacationIntervalSeconds").value;
-
-      sivElement.getElement("interval").setElement(`:seconds ${seconds}`);
-    }
-
+  /**
+   * @inheritdoc
+   */
+  static nodeType() {
+    return "action/vacation/interval/";
+  }
+  /**
+   * @inheritdoc
+   */
+  static nodeName() {
+    return "action/vacation/interval/seconds";
   }
 
-  if (!SieveDesigner)
-    throw new Error("Could not register Vacation Extension");
+  /**
+   * @inheritdoc
+   */
+  static isCapable(capabilities) {
+    return capabilities.hasCapability("vacation-seconds");
+  }
 
-  SieveDesigner.register2(SieveVacationIntervalSeconds);
+  /**
+   * @inheritdoc
+   **/
+  getTemplate() {
+    return "./vacation-seconds/template/SieveVacationIntervalSecondsUI.html";
+  }
 
-})(window);
+  /**
+   * @inheritdoc
+   */
+  load(sivElement) {
+
+    document.querySelector("#txtVacationIntervalSeconds").addEventListener("focus", () => {
+      document.querySelector('#cbxVacationIntervalSeconds').checked = true;
+    });
+
+    const elm = sivElement.getElement("interval");
+
+    if (!elm.isNode(this.constructor.nodeName()))
+      return;
+
+    document.querySelector("#cbxVacationIntervalSeconds").checked = true;
+    // FIXME: we ignore the unit here., instead we should use a numeric control
+    document.querySelector("#txtVacationIntervalSeconds").value = elm.getElement("seconds").getValue();
+  }
+
+  /**
+   * @inheritdoc
+   */
+  save(sivElement) {
+
+    if (!document.querySelector("#cbxVacationIntervalSeconds").checked)
+      return;
+
+    const seconds = document.querySelector("#txtVacationIntervalSeconds").value;
+
+    sivElement.getElement("interval").setElement(`:seconds ${seconds}`);
+  }
+
+}
+
+SieveDesigner.register2(SieveVacationIntervalSeconds);

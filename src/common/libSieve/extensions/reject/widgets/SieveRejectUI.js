@@ -10,89 +10,81 @@
  *
  */
 
-(function () {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
 
-  "use strict";
+import { SieveActionDialogBoxUI } from "./../../../toolkit/widgets/Boxes.js";
 
-  /* global SieveActionDialogBoxUI */
-  /* global SieveDesigner */
-  /* global SieveTemplate */
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
 
-  const MAX_QUOTE_LEN = 240;
+const MAX_QUOTE_LEN = 240;
+
+/**
+ * Provides a UI for the reject action
+ */
+class SieveRejectActionUI extends SieveActionDialogBoxUI {
 
   /**
-   * Provides a UI for the reject action
+   * @inheritdoc
    */
-  class SieveRejectActionUI extends SieveActionDialogBoxUI {
+  getTemplate() {
+    return "./reject/templates/SieveRejectActionUI.html";
+  }
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./reject/templates/SieveRejectActionUI.html";
-    }
+  /**
+   * Gets the reason why the mail should be rejected
+   *
+   * @returns {SieveString} the current reason
+   */
+  reason() {
+    return this.getSieve().getElement("reason");
+  }
 
-    /**
-     * Gets the reason why the mail should be rejected
-     *
-     * @returns {SieveString} the current reason
-     */
-    reason() {
-      return this.getSieve().getElement("reason");
-    }
+  /**
+   * @inheritdoc
+   */
+  onSave() {
+    this.reason().value(document.querySelector("#sivRejectReason").value);
+    return true;
+  }
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
-      this.reason().value(document.querySelector("#sivRejectReason").value);
-      return true;
-    }
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
+    document.querySelector("#sivRejectReason").value = this.reason().value();
+  }
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
-      document.querySelector("#sivRejectReason").value = this.reason().value();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div>
            <div data-i18n="reject.summary"></div>
            <div><em class="sivRejectReason"></em></div>
          </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivRejectReason").textContent
-        = this.reason().quote(MAX_QUOTE_LEN);
-      return elm;
-    }
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivRejectReason").textContent
+      = this.reason().quote(MAX_QUOTE_LEN);
+    return elm;
   }
+}
+
+/**
+ * Provides an UI for the extended reject action.
+ * The extended reject replaces reject and has the same syntax.
+ */
+class SieveExtendedRejectActionUI extends SieveRejectActionUI {
 
   /**
-   * Provides an UI for the extended reject action.
-   * The extended reject replaces reject and has the same syntax.
+   * @inheritdoc
    */
-  class SieveExtendedRejectActionUI extends SieveRejectActionUI {
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./reject/templates/SieveExtendedRejectActionUI.html";
-    }
-
+  getTemplate() {
+    return "./reject/templates/SieveExtendedRejectActionUI.html";
   }
 
-  if (!SieveDesigner)
-    throw new Error("Could not register Reject Widgets");
+}
 
-
-  SieveDesigner.register("action/reject", SieveRejectActionUI);
-  SieveDesigner.register("action/ereject", SieveExtendedRejectActionUI);
-
-})(window);
+SieveDesigner.register("action/reject", SieveRejectActionUI);
+SieveDesigner.register("action/ereject", SieveExtendedRejectActionUI);

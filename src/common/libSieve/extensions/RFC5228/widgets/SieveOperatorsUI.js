@@ -10,200 +10,198 @@
  *
  */
 
-(function () {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
 
-  "use strict";
+import {
+  SieveSimpleBoxUI,
+  SieveDialogBoxUI,
+  SieveDropBoxUI
+} from "./../../../toolkit/widgets/Boxes.js";
 
-  /* global SieveDesigner */
-  /* global SieveSimpleBoxUI */
-  /* global SieveDialogBoxUI */
+import {
+  SieveMultaryDropHandler,
+  SieveTestDropHandler
+} from "./../../../toolkit/events/DropHandler.js"
 
-  /* global SieveMultaryDropHandler */
-  /* global SieveDropBoxUI */
+import {
+  SieveMoveDragHandler
+} from "./../../../toolkit/events/DragHandler.js"
 
-  /* global SieveMoveDragHandler */
-  /* global SieveTestDropHandler */
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js"
 
-  /* global SieveTemplate */
+const TEST_ELEMENT = 1;
 
-  const TEST_ELEMENT = 1;
+/**
+ * Provides an ui for the not operator
+ */
+class SieveNotUI extends SieveSimpleBoxUI {
 
   /**
-   * Provides an ui for the not operator
+   * @inheritdoc
    */
-  class SieveNotUI extends SieveSimpleBoxUI {
+  constructor(elm) {
 
-    /**
-     * @inheritdoc
-     */
-    constructor(elm) {
+    super(elm);
+    this.drag(new SieveMoveDragHandler("sieve/operator"));
+    this.drop(new SieveTestDropHandler());
+  }
 
-      super(elm);
-      this.drag(new SieveMoveDragHandler("sieve/operator"));
-      this.drop(new SieveTestDropHandler());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div>
            <div data-i18n="not.summary"></div>
            <div class="sivNotTest"></div>
          </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm
-        .querySelector(".sivNotTest")
-        .appendChild(this.getSieve().test().html());
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm
+      .querySelector(".sivNotTest")
+      .appendChild(this.getSieve().test().html());
 
-      return elm;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    createHtml(parent) {
-      const elm = super.createHtml(parent);
-      elm.classList.add("sivOperator");
-      return elm;
-    }
+    return elm;
   }
 
+  /**
+   * @inheritdoc
+   */
+  createHtml(parent) {
+    const elm = super.createHtml(parent);
+    elm.classList.add("sivOperator");
+    return elm;
+  }
+}
+
+
+/**
+ * Provides an ui for the anyof and allof operator
+ */
+class SieveAnyOfAllOfUI extends SieveDialogBoxUI {
 
   /**
-   * Provides an ui for the anyof and allof operator
+   * @inheritdoc
    */
-  class SieveAnyOfAllOfUI extends SieveDialogBoxUI {
+  constructor(elm) {
+    super(elm);
 
-    /**
-     * @inheritdoc
-     */
-    constructor(elm) {
-      super(elm);
+    this.drag(new SieveMoveDragHandler("sieve/operator"));
+    this.drop(new SieveTestDropHandler());
+  }
 
-      this.drag(new SieveMoveDragHandler("sieve/operator"));
-      this.drop(new SieveTestDropHandler());
-    }
+  /**
+   * @inheritdoc
+   **/
+  getTemplate() {
+    return "./RFC5228/templates/SieveAllOfAnyOfOperator.html";
+  }
 
-    /**
-     * @inheritdoc
-     **/
-    getTemplate() {
-      return "./RFC5228/templates/SieveAllOfAnyOfOperator.html";
-    }
+  /**
+   * @inheritdoc
+   **/
+  onSave() {
 
-    /**
-     * @inheritdoc
-     **/
-    onSave() {
+    const value = document
+      .querySelector("#sieve-widget-allofanyof")
+      .querySelector("input[name='allofanyof']:checked").value;
 
-      const value = document
-        .querySelector("#sieve-widget-allofanyof")
-        .querySelector("input[name='allofanyof']:checked").value;
+    if (value === "true")
+      this.getSieve().isAllOf = true;
+    else
+      this.getSieve().isAllOf = false;
 
-      if (value === "true")
-        this.getSieve().isAllOf = true;
-      else
-        this.getSieve().isAllOf = false;
+    return true;
+  }
 
-      return true;
-    }
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
+    document
+      .querySelector("#sieve-widget-allofanyof")
+      .querySelector(`input[name='allofanyof'][value='${this.getSieve().isAllOf}']`)
+      .checked = true;
+  }
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
-      document
-        .querySelector("#sieve-widget-allofanyof")
-        .querySelector(`input[name='allofanyof'][value='${this.getSieve().isAllOf}']`)
-        .checked = true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div>
            <span class="sivOperatorAllOf d-none" data-i18n="operator.allof.summary"></span>
            <span class="sivOperatorAnyOf d-none" data-i18n="operator.anyof.summary"></span>
          </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      if (this.getSieve().isAllOf)
-        elm.querySelector(".sivOperatorAllOf").classList.remove("d-none");
-      else
-        elm.querySelector(".sivOperatorAnyOf").classList.remove("d-none");
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    if (this.getSieve().isAllOf)
+      elm.querySelector(".sivOperatorAllOf").classList.remove("d-none");
+    else
+      elm.querySelector(".sivOperatorAnyOf").classList.remove("d-none");
 
-      return elm;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    createHtml(parent) {
-
-      super.createHtml(parent);
-      parent.classList.add("sivOperator");
-
-      const testElms = document.createElement("div");
-
-      for (const test of this.getSieve().tests) {
-        const dropbox = (new SieveDropBoxUI(this, "sivOperatorSpacer"))
-          .drop(new SieveMultaryDropHandler(), test[TEST_ELEMENT])
-          .html();
-
-        testElms.appendChild(dropbox);
-
-        const ul = document.createElement("ul");
-        ul.classList.add("mb-0");
-        ul.classList.add("pl-3");
-
-        const li = document.createElement("li");
-        li.appendChild(test[TEST_ELEMENT].html());
-        li.classList.add("sivOperatorChild");
-
-        ul.appendChild(li);
-
-        testElms.appendChild(ul);
-      }
-
-      testElms.appendChild(
-        (new SieveDropBoxUI(this, "sivOperatorSpacer"))
-          .drop(new SieveMultaryDropHandler())
-          .html());
-
-      testElms.id = `${this.uniqueId}-tests`;
-
-      parent.append(testElms);
-
-      return parent;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    showSummary() {
-      super.showSummary();
-      document.querySelector(`#${this.uniqueId}-tests`).classList.remove("d-none");
-    }
-
-    /**
-     * @inheritdoc
-     */
-    showSource() {
-      super.showSource();
-      document.querySelector(`#${this.uniqueId}-tests`).classList.add("d-none");
-    }
-
+    return elm;
   }
 
-  if (!SieveDesigner)
-    throw new Error("Could not register operator Widgets");
+  /**
+   * @inheritdoc
+   */
+  createHtml(parent) {
 
-  SieveDesigner.register("operator/not", SieveNotUI);
-  SieveDesigner.register("operator/anyof", SieveAnyOfAllOfUI);
+    super.createHtml(parent);
+    parent.classList.add("sivOperator");
 
-})(window);
+    const testElms = document.createElement("div");
+
+    for (const test of this.getSieve().tests) {
+      const dropbox = (new SieveDropBoxUI(this, "sivOperatorSpacer"))
+        .drop(new SieveMultaryDropHandler(), test[TEST_ELEMENT])
+        .html();
+
+      testElms.appendChild(dropbox);
+
+      const ul = document.createElement("ul");
+      ul.classList.add("mb-0");
+      ul.classList.add("pl-3");
+
+      const li = document.createElement("li");
+      li.appendChild(test[TEST_ELEMENT].html());
+      li.classList.add("sivOperatorChild");
+
+      ul.appendChild(li);
+
+      testElms.appendChild(ul);
+    }
+
+    testElms.appendChild(
+      (new SieveDropBoxUI(this, "sivOperatorSpacer"))
+        .drop(new SieveMultaryDropHandler())
+        .html());
+
+    testElms.id = `${this.uniqueId}-tests`;
+
+    parent.append(testElms);
+
+    return parent;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  showSummary() {
+    super.showSummary();
+    document.querySelector(`#${this.uniqueId}-tests`).classList.remove("d-none");
+  }
+
+  /**
+   * @inheritdoc
+   */
+  showSource() {
+    super.showSource();
+    document.querySelector(`#${this.uniqueId}-tests`).classList.add("d-none");
+  }
+
+}
+
+SieveDesigner.register("operator/not", SieveNotUI);
+SieveDesigner.register("operator/anyof", SieveAnyOfAllOfUI);

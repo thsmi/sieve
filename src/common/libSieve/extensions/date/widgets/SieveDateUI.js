@@ -10,244 +10,251 @@
  *
  */
 
-(function () {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
 
-  "use strict";
+import {
+  SieveTestDialogBoxUI,
+} from "./../../../toolkit/widgets/Boxes.js";
 
-  /* global SieveStringWidget */
-  /* global SieveStringListWidget */
-  /* global SieveTestDialogBoxUI */
-  /* global SieveMatchTypeWidget */
-  /* global SieveDesigner */
-  /* global SieveComparatorWidget */
-  /* global SieveRadioGroupWidget*/
-  /* global SieveRadioGroupItemWidget */
-  /* global SieveTemplate */
+import {
+  SieveStringListWidget,
+  SieveStringWidget,
+} from "./../../../toolkit/widgets/Widgets.js";
+
+import {
+  SieveRadioGroupWidget,
+  SieveRadioGroupItemWidget
+} from "./../../../toolkit/widgets/Widgets.js";
+
+import { SieveMatchTypeWidget } from "./../../../extensions/RFC5228/widgets/SieveMatchTypesUI.js";
+import { SieveComparatorWidget } from "./../../../extensions/RFC5228/widgets/SieveComparatorsUI.js";
+
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+
+/**
+ * Provides a widget for the zone element
+ */
+class SieveZoneWidget extends SieveRadioGroupWidget {
 
   /**
-   * Provides a widget for the zone element
+   * @inheritdoc
    */
-  class SieveZoneWidget extends SieveRadioGroupWidget {
+  constructor(selector) {
+    super("zone/", selector);
+  }
+}
 
-    /**
-     * @inheritdoc
-     */
-    constructor(selector) {
-      super("zone/", selector);
-    }
+/**
+ * An Abstract zone UI implementation.
+ */
+class SieveAbstractZoneUI extends SieveRadioGroupItemWidget {
+
+  /**
+   * @inheritdoc
+   */
+  static nodeType() {
+    return "zone/";
   }
 
   /**
-   * An Abstract zone UI implementation.
+   * @inheritdoc
    */
-  class SieveAbstractZoneUI extends SieveRadioGroupItemWidget {
+  getName() {
+    return "sieve-zone";
+  }
+}
 
-    /**
-     * @inheritdoc
-     */
-    static nodeType() {
-      return "zone/";
-    }
+/**
+ * Provides a UI for the original zone.
+ */
+class SieveOriginalZoneUI extends SieveAbstractZoneUI {
 
-    /**
-     * @inheritdoc
-     */
-    getName() {
-      return "sieve-zone";
-    }
+  /**
+   * @inheritdoc
+   */
+  static nodeName() {
+    return "zone/originalzone";
   }
 
   /**
-   * Provides a UI for the original zone.
+   * @inheritdoc
    */
-  class SieveOriginalZoneUI extends SieveAbstractZoneUI {
+  getTemplate() {
+    return "./date/templates/SieveZoneOriginal.html";
+  }
+}
 
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "zone/originalzone";
-    }
+/**
+ * Provides a UI for a custom zone .
+ */
+class SieveCustomZoneUI extends SieveAbstractZoneUI {
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./date/templates/SieveZoneOriginal.html";
-    }
+  /**
+   * @inheritdoc
+   */
+  static nodeName() {
+    return "zone/zone";
   }
 
   /**
-   * Provides a UI for a custom zone .
+   * @inheritdoc
    */
-  class SieveCustomZoneUI extends SieveAbstractZoneUI {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "zone/zone";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./date/templates/SieveZoneCustom.html";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    onLoad(sivElement) {
-      super.onLoad(sivElement);
-
-      // update the string list...
-      document.querySelector("#sivDateZoneOffset").value
-        = sivElement.getElement("time-zone").value();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    onSave(sivElement) {
-
-      // We update the content type with a fake element.
-      // This makes updating the strings easier.
-      // we can skip this in case the current element is already a zone element.
-      if (!sivElement.getElement().nodeName() !== this.constructor.nodeName()) {
-        sivElement.setElement(
-          "" + this.getRadioItem().querySelector("input[name='" + this.getName() + "']").value + ' ""');
-      }
-
-      sivElement.getElement("time-zone").value(
-        document.querySelector("#sivDateZoneOffset").value);
-    }
+  getTemplate() {
+    return "./date/templates/SieveZoneCustom.html";
   }
 
+  /**
+   * @inheritdoc
+   */
+  onLoad(sivElement) {
+    super.onLoad(sivElement);
+
+    // update the string list...
+    document.querySelector("#sivDateZoneOffset").value
+      = sivElement.getElement("time-zone").value();
+  }
 
   /**
-   * Provides a ui for the set action
+   * @inheritdoc
    */
-  class SieveDateTestUI extends SieveTestDialogBoxUI {
+  onSave(sivElement) {
 
-    /**
-     * Gets the header.
-     *
-     * @returns {SieveString}
-     *   the element's header
-     */
-    header() {
-      return this.getSieve().getElement("header");
+    // We update the content type with a fake element.
+    // This makes updating the strings easier.
+    // we can skip this in case the current element is already a zone element.
+    if (!sivElement.getElement().nodeName() !== this.constructor.nodeName()) {
+      sivElement.setElement(
+        "" + this.getRadioItem().querySelector("input[name='" + this.getName() + "']").value + ' ""');
     }
 
-    /**
-     * Gets the date part
-     *
-     * @returns {SieveString}
-     *   the element's datepart
-     */
-    datepart() {
-      return this.getSieve().getElement("datepart");
-    }
+    sivElement.getElement("time-zone").value(
+      document.querySelector("#sivDateZoneOffset").value);
+  }
+}
 
-    /**
-     * Gets the keywords
-     *
-     * @returns {SieveStringList}
-     *   the element's keys
-     */
-    keys() {
-      return this.getSieve().getElement("keys");
-    }
 
-    /**
-     * Gets the match type.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's matchtype
-     */
-    matchtype() {
-      return this.getSieve().getElement("match-type");
-    }
+/**
+ * Provides a ui for the set action
+ */
+class SieveDateTestUI extends SieveTestDialogBoxUI {
 
-    /**
-     * Gets the comparator type.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's comparator
-     */
-    comparator() {
-      return this.getSieve().getElement("comparator");
-    }
+  /**
+   * Gets the header.
+   *
+   * @returns {SieveString}
+   *   the element's header
+   */
+  header() {
+    return this.getSieve().getElement("header");
+  }
 
-    /**
-     * Gets the time zone.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's zone
-     */
-    zone() {
-      return this.getSieve().getElement("zone");
-    }
+  /**
+   * Gets the date part
+   *
+   * @returns {SieveString}
+   *   the element's datepart
+   */
+  datepart() {
+    return this.getSieve().getElement("datepart");
+  }
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./date/templates/SieveDateTestUI.html";
-    }
+  /**
+   * Gets the keywords
+   *
+   * @returns {SieveStringList}
+   *   the element's keys
+   */
+  keys() {
+    return this.getSieve().getElement("keys");
+  }
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
+  /**
+   * Gets the match type.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's matchtype
+   */
+  matchtype() {
+    return this.getSieve().getElement("match-type");
+  }
 
-      (new SieveStringListWidget("#sivDateKeyList"))
-        .save(this.keys());
+  /**
+   * Gets the comparator type.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's comparator
+   */
+  comparator() {
+    return this.getSieve().getElement("comparator");
+  }
 
-      (new SieveMatchTypeWidget("#sivDateMatchTypes"))
-        .save(this.matchtype());
-      (new SieveComparatorWidget("#sivDateComparator"))
-        .save(this.comparator());
-      (new SieveZoneWidget("#sivDateZone"))
-        .save(this.zone());
+  /**
+   * Gets the time zone.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's zone
+   */
+  zone() {
+    return this.getSieve().getElement("zone");
+  }
 
-      this.header().value(document.querySelector("#sivDateHeader").value);
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./date/templates/SieveDateTestUI.html";
+  }
 
-      (new SieveStringWidget("#sivDateDatepart"))
-        .save(this.datepart());
-      return true;
-    }
+  /**
+   * @inheritdoc
+   */
+  onSave() {
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
+    (new SieveStringListWidget("#sivDateKeyList"))
+      .save(this.keys());
 
-      (new SieveStringListWidget("#sivDateKeyList"))
-        .init(this.keys());
+    (new SieveMatchTypeWidget("#sivDateMatchTypes"))
+      .save(this.matchtype());
+    (new SieveComparatorWidget("#sivDateComparator"))
+      .save(this.comparator());
+    (new SieveZoneWidget("#sivDateZone"))
+      .save(this.zone());
 
-      (new SieveMatchTypeWidget("#sivDateMatchTypes"))
-        .init(this.matchtype());
-      (new SieveComparatorWidget("#sivDateComparator"))
-        .init(this.comparator());
+    this.header().value(document.querySelector("#sivDateHeader").value);
 
-      document.querySelector("#sivDateHeader").value = this.header().value();
+    (new SieveStringWidget("#sivDateDatepart"))
+      .save(this.datepart());
+    return true;
+  }
 
-      (new SieveZoneWidget("#sivDateZone"))
-        .init(this.zone());
-      (new SieveStringWidget("#sivDateDatepart"))
-        .init(this.datepart());
-    }
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
 
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
+    (new SieveStringListWidget("#sivDateKeyList"))
+      .init(this.keys());
 
-      const FRAGMENT =
-        `<div>
+    (new SieveMatchTypeWidget("#sivDateMatchTypes"))
+      .init(this.matchtype());
+    (new SieveComparatorWidget("#sivDateComparator"))
+      .init(this.comparator());
+
+    document.querySelector("#sivDateHeader").value = this.header().value();
+
+    (new SieveZoneWidget("#sivDateZone"))
+      .init(this.zone());
+    (new SieveStringWidget("#sivDateDatepart"))
+      .init(this.datepart());
+  }
+
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+
+    const FRAGMENT =
+      `<div>
           <span class="sivDateDatePart"></span>
           <span data-i18n="date.summary.inheader"></span>
           <span class="sivDateHeader"></span>
@@ -256,130 +263,130 @@
           <span class="sivDateKeys"></span>
          </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivDateDatePart").textContent
-        = this.datepart().value();
-      elm.querySelector(".sivDateHeader").textContent
-        = this.header().value();
-      elm.querySelector(".sivDateMatchType").textContent
-        = this.matchtype().getElement().toScript();
-      elm.querySelector(".sivDateKeys").textContent
-        = this.keys().toScript();
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivDateDatePart").textContent
+      = this.datepart().value();
+    elm.querySelector(".sivDateHeader").textContent
+      = this.header().value();
+    elm.querySelector(".sivDateMatchType").textContent
+      = this.matchtype().getElement().toScript();
+    elm.querySelector(".sivDateKeys").textContent
+      = this.keys().toScript();
 
-      return elm;
-    }
+    return elm;
   }
+}
 
+
+/**
+ * Provides a ui for the sieve current date test
+ */
+class SieveCurrentDateTestUI extends SieveTestDialogBoxUI {
 
   /**
-   * Provides a ui for the sieve current date test
+   * Gets the keywords.
+   *
+   * @returns {SieveStringList}
+   *   the element's keys
    */
-  class SieveCurrentDateTestUI extends SieveTestDialogBoxUI {
+  keys() {
+    return this.getSieve().getElement("keys");
+  }
 
-    /**
-     * Gets the keywords.
-     *
-     * @returns {SieveStringList}
-     *   the element's keys
-     */
-    keys() {
-      return this.getSieve().getElement("keys");
-    }
+  /**
+   * Gets the date part.
+   *
+   * @returns {SieveString}
+   *   the element's datepart
+   */
+  datepart() {
+    return this.getSieve().getElement("datepart");
+  }
 
-    /**
-     * Gets the date part.
-     *
-     * @returns {SieveString}
-     *   the element's datepart
-     */
-    datepart() {
-      return this.getSieve().getElement("datepart");
-    }
+  /**
+   * Gets the match type.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's matchtype
+   */
+  matchtype() {
+    return this.getSieve().getElement("match-type");
+  }
 
-    /**
-     * Gets the match type.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's matchtype
-     */
-    matchtype() {
-      return this.getSieve().getElement("match-type");
-    }
+  /**
+   * Gets the comparator.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's comparator
+   */
+  comparator() {
+    return this.getSieve().getElement("comparator");
+  }
 
-    /**
-     * Gets the comparator.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's comparator
-     */
-    comparator() {
-      return this.getSieve().getElement("comparator");
-    }
+  /**
+   * Gets the timezone.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's zone
+   */
+  zone() {
+    return this.getSieve().getElement("zone");
+  }
 
-    /**
-     * Gets the timezone.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's zone
-     */
-    zone() {
-      return this.getSieve().getElement("zone");
-    }
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./date/templates/SieveCurrentDateTestUI.html";
+  }
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./date/templates/SieveCurrentDateTestUI.html";
-    }
+  /**
+   * @inheritdoc
+   */
+  onSave() {
+    (new SieveStringListWidget("#sivDateKeyList"))
+      .save(this.keys());
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
-      (new SieveStringListWidget("#sivDateKeyList"))
-        .save(this.keys());
+    (new SieveMatchTypeWidget("#sivDateMatchTypes"))
+      .save(this.matchtype());
+    (new SieveComparatorWidget("#sivDateComparator"))
+      .save(this.comparator());
+    (new SieveZoneWidget("#sivDateZone"))
+      .save(this.zone());
 
-      (new SieveMatchTypeWidget("#sivDateMatchTypes"))
-        .save(this.matchtype());
-      (new SieveComparatorWidget("#sivDateComparator"))
-        .save(this.comparator());
-      (new SieveZoneWidget("#sivDateZone"))
-        .save(this.zone());
+    (new SieveStringWidget("#sivDateDatepart"))
+      .save(this.datepart());
 
-      (new SieveStringWidget("#sivDateDatepart"))
-        .save(this.datepart());
+    return true;
+  }
 
-      return true;
-    }
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
+    (new SieveStringListWidget("#sivDateKeyList"))
+      .init(this.keys());
 
-      (new SieveStringListWidget("#sivDateKeyList"))
-        .init(this.keys());
+    (new SieveMatchTypeWidget("#sivDateMatchTypes"))
+      .init(this.matchtype());
+    (new SieveComparatorWidget("#sivDateComparator"))
+      .init(this.comparator());
 
-      (new SieveMatchTypeWidget("#sivDateMatchTypes"))
-        .init(this.matchtype());
-      (new SieveComparatorWidget("#sivDateComparator"))
-        .init(this.comparator());
+    (new SieveZoneWidget("#sivDateZone"))
+      .init(this.zone());
 
-      (new SieveZoneWidget("#sivDateZone"))
-        .init(this.zone());
+    (new SieveStringWidget("#sivDateDatepart"))
+      .init(this.datepart());
+  }
 
-      (new SieveStringWidget("#sivDateDatepart"))
-        .init(this.datepart());
-    }
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
 
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-
-      const FRAGMENT =
-        `<div>
+    const FRAGMENT =
+      `<div>
           <span data-i18n="currentdate.summary.current"></span>
           <span class="sivCurrentDateDatePart"></span>
           <span class="sivCurrentDateMatchType"></span>
@@ -387,26 +394,20 @@
           <span class="sivCurrentDateKeys"></span>
          </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivCurrentDateDatePart").textContent
-        = this.datepart().value();
-      elm.querySelector(".sivCurrentDateMatchType").textContent
-        = this.matchtype().getElement().toScript();
-      elm.querySelector(".sivCurrentDateKeys").textContent
-        = this.keys().toScript();
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivCurrentDateDatePart").textContent
+      = this.datepart().value();
+    elm.querySelector(".sivCurrentDateMatchType").textContent
+      = this.matchtype().getElement().toScript();
+    elm.querySelector(".sivCurrentDateKeys").textContent
+      = this.keys().toScript();
 
-      return elm;
-    }
+    return elm;
   }
+}
 
-  if (!SieveDesigner)
-    throw new Error("Could not register Date Extension");
+SieveDesigner.register("test/date", SieveDateTestUI);
+SieveDesigner.register("test/currentdate", SieveCurrentDateTestUI);
 
-  SieveDesigner.register("test/date", SieveDateTestUI);
-  SieveDesigner.register("test/currentdate", SieveCurrentDateTestUI);
-
-  SieveDesigner.register2(SieveOriginalZoneUI);
-  SieveDesigner.register2(SieveCustomZoneUI);
-
-
-})(window);
+SieveDesigner.register2(SieveOriginalZoneUI);
+SieveDesigner.register2(SieveCustomZoneUI);

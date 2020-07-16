@@ -10,273 +10,276 @@
  *
  */
 
-(function () {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
 
-  "use strict";
+import { SieveTestDialogBoxUI } from "./../../../toolkit/widgets/Boxes.js";
 
-  /* global SieveTestDialogBoxUI */
-  /* global SieveStringListWidget */
-  /* global SieveDesigner */
-  /* global SieveMatchTypeWidget */
-  /* global SieveComparatorWidget */
-  /* global SieveOverlayItemWidget */
-  /* global SieveTemplate */
+import {
+  SieveStringListWidget,
+  SieveOverlayItemWidget
+} from "./../../../toolkit/widgets/Widgets.js";
+
+import { SieveMatchTypeWidget } from "./../../../extensions/RFC5228/widgets/SieveMatchTypesUI.js";
+import { SieveComparatorWidget } from "./../../../extensions/RFC5228/widgets/SieveComparatorsUI.js";
+
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+
+
+/**
+ * Provides a UI for the Mailbox exists test
+ */
+class SieveMailboxExistsTestUI extends SieveTestDialogBoxUI {
 
   /**
-   * Provides a UI for the Mailbox exists test
+   * The mail box names which should be tested for existence.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's mailbox field
    */
-  class SieveMailboxExistsTestUI extends SieveTestDialogBoxUI {
+  mailboxes() {
+    return this.getSieve().getElement("mailboxes");
+  }
 
-    /**
-     * The mail box names which should be tested for existence.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's mailbox field
-     */
-    mailboxes() {
-      return this.getSieve().getElement("mailboxes");
-    }
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./mailbox/templates/SieveMailboxExistsTest.html";
+  }
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./mailbox/templates/SieveMailboxExistsTest.html";
-    }
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
+    (new SieveStringListWidget("#sivMailboxNamesList"))
+      .init(this.mailboxes());
+  }
 
-      (new SieveStringListWidget("#sivMailboxNamesList"))
-        .init(this.mailboxes());
-    }
+  /**
+   * @inheritdoc
+   */
+  onSave() {
+    (new SieveStringListWidget("#sivMailboxNamesList"))
+      .save(this.mailboxes());
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
-      (new SieveStringListWidget("#sivMailboxNamesList"))
-        .save(this.mailboxes());
+    return true;
+  }
 
-      return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div>
            <span data-i18n="mailboxexists.summary1"></span>
            <em class="sivMailboxExistsMailboxes"></em>
            <span data-i18n="mailboxexists.summary2"></span>
          </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivMailboxExistsMailboxes").textContent
-        = this.mailboxes().values();
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivMailboxExistsMailboxes").textContent
+      = this.mailboxes().values();
 
-      return elm;
-    }
+    return elm;
   }
+}
 
+
+/**
+ * Provides a UI for the SieveMetaDataExistsUI
+ */
+class SieveMetaDataExistsTestUI extends SieveTestDialogBoxUI {
 
   /**
-   * Provides a UI for the SieveMetaDataExistsUI
+   * Gets and sets the mailbox name
+   *
+   * @param {string} [value]
+   *   the mailbox name, if omitted the name is unchanged.
+   *
+   * @returns {string}
+   *   the mailbox name.
    */
-  class SieveMetaDataExistsTestUI extends SieveTestDialogBoxUI {
+  mailbox(value) {
+    return this.getSieve().getElement("mailbox").value(value);
+  }
 
-    /**
-     * Gets and sets the mailbox name
-     *
-     * @param {string} [value]
-     *   the mailbox name, if omitted the name is unchanged.
-     *
-     * @returns {string}
-     *   the mailbox name.
-     */
-    mailbox(value) {
-      return this.getSieve().getElement("mailbox").value(value);
-    }
+  /**
+   * The annotations which should be checked for extistence.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's annotations field
+   */
+  annotations() {
+    return this.getSieve().getElement("annotations");
+  }
 
-    /**
-     * The annotations which should be checked for extistence.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's annotations field
-     */
-    annotations() {
-      return this.getSieve().getElement("annotations");
-    }
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
+    document.querySelector("#sivMailboxName").value = this.mailbox();
 
-      document.querySelector("#sivMailboxName").value = this.mailbox();
+    (new SieveStringListWidget("#sivMailboxAnnotationsList"))
+      .init(this.annotations());
+  }
 
-      (new SieveStringListWidget("#sivMailboxAnnotationsList"))
-        .init(this.annotations());
-    }
+  /**
+   * @inheritdoc
+   */
+  onSave() {
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
-
-      this.mailbox(document.querySelector("#sivMailboxName").value);
-      (new SieveStringListWidget("#sivMailboxAnnotationsList"))
-        .save(this.annotations());
+    this.mailbox(document.querySelector("#sivMailboxName").value);
+    (new SieveStringListWidget("#sivMailboxAnnotationsList"))
+      .save(this.annotations());
 
 
-      return true;
-    }
+    return true;
+  }
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./mailbox/templates/SieveMetaDataExistsTest.html";
-    }
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./mailbox/templates/SieveMetaDataExistsTest.html";
+  }
 
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
 
-      const FRAGMENT =
-        `<div>
+    const FRAGMENT =
+      `<div>
            <span data-i18n="metadataexists.summary1"></span>
            <em class="sivMetaDataExistsMailbox"></em>
            <span data-i18n="metadataexists.summary2"></span>
            <em class="sivMetaDataExistsAnnotations"></em>
          </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivMetaDataExistsMailbox").textContent
-        = this.mailbox();
-      elm.querySelector(".sivMetaDataExistsAnnotations").textContent
-        = this.annotations().values();
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivMetaDataExistsMailbox").textContent
+      = this.mailbox();
+    elm.querySelector(".sivMetaDataExistsAnnotations").textContent
+      = this.annotations().values();
 
-      return elm;
-    }
+    return elm;
+  }
+}
+
+/**
+ * Provides a UI for the ServerMetaData Test
+ */
+class SieveMetaDataTestUI extends SieveTestDialogBoxUI {
+
+  /**
+   * Gets and sets the mailbox name
+   *
+   * @param {string} [value]
+   *   the mailbox name, if omitted the name is unchanged.
+   *
+   * @returns {string}
+   *   the mailbox name.
+   */
+  mailbox(value) {
+    return this.getSieve().getElement("mailbox").value(value);
   }
 
   /**
-   * Provides a UI for the ServerMetaData Test
+   * Gets and/or sets the annotation name
+   *
+   * @param {string} [value]
+   *   if set updates the annotation name.
+   *
+   * @returns {string}
+   *   the currently set annotation name.
    */
-  class SieveMetaDataTestUI extends SieveTestDialogBoxUI {
+  annotation(value) {
+    return this.getSieve().getElement("annotation").value(value);
+  }
 
-    /**
-     * Gets and sets the mailbox name
-     *
-     * @param {string} [value]
-     *   the mailbox name, if omitted the name is unchanged.
-     *
-     * @returns {string}
-     *   the mailbox name.
-     */
-    mailbox(value) {
-      return this.getSieve().getElement("mailbox").value(value);
-    }
+  /**
+   * Gets the keys
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's key fields
+   */
+  keys() {
+    return this.getSieve().getElement("keys");
+  }
 
-    /**
-     * Gets and/or sets the annotation name
-     *
-     * @param {string} [value]
-     *   if set updates the annotation name.
-     *
-     * @returns {string}
-     *   the currently set annotation name.
-     */
-    annotation(value) {
-      return this.getSieve().getElement("annotation").value(value);
-    }
+  /**
+   * Gets the match type.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's matchtype field
+   */
+  matchtype() {
+    return this.getSieve().getElement("match-type");
+  }
 
-    /**
-     * Gets the keys
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's key fields
-     */
-    keys() {
-      return this.getSieve().getElement("keys");
-    }
+  /**
+   * Gets the comparator type.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's comparator field
+   */
+  comparator() {
+    return this.getSieve().getElement("comparator");
+  }
 
-    /**
-     * Gets the match type.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's matchtype field
-     */
-    matchtype() {
-      return this.getSieve().getElement("match-type");
-    }
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
 
-    /**
-     * Gets the comparator type.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's comparator field
-     */
-    comparator() {
-      return this.getSieve().getElement("comparator");
-    }
+    document.querySelector("#sivMailboxName").value = this.mailbox();
+    document.querySelector("#sivAnnotationName").value = this.annotation();
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
+    (new SieveStringListWidget("#sivMailboxKeys"))
+      .init(this.keys());
 
-      document.querySelector("#sivMailboxName").value = this.mailbox();
-      document.querySelector("#sivAnnotationName").value = this.annotation();
+    (new SieveMatchTypeWidget("#sivMailboxMatchTypes"))
+      .init(this.matchtype());
+    (new SieveComparatorWidget("#sivMailboxComparator"))
+      .init(this.comparator());
+  }
 
-      (new SieveStringListWidget("#sivMailboxKeys"))
-        .init(this.keys());
+  /**
+   * @inheritdoc
+   */
+  onSave() {
 
-      (new SieveMatchTypeWidget("#sivMailboxMatchTypes"))
-        .init(this.matchtype());
-      (new SieveComparatorWidget("#sivMailboxComparator"))
-        .init(this.comparator());
-    }
+    this.mailbox(document.querySelector("#sivMailboxName").value);
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
+    this.annotation(document.querySelector("#sivAnnotationName").value);
 
-      this.mailbox(document.querySelector("#sivMailboxName").value);
+    (new SieveStringListWidget("#sivMailboxKeys"))
+      .save(this.keys());
 
-      this.annotation(document.querySelector("#sivAnnotationName").value);
+    (new SieveMatchTypeWidget("#sivMailboxMatchTypes"))
+      .save(this.matchtype());
+    (new SieveComparatorWidget("#sivMailboxComparator"))
+      .save(this.comparator());
 
-      (new SieveStringListWidget("#sivMailboxKeys"))
-        .save(this.keys());
+    return true;
+  }
 
-      (new SieveMatchTypeWidget("#sivMailboxMatchTypes"))
-        .save(this.matchtype());
-      (new SieveComparatorWidget("#sivMailboxComparator"))
-        .save(this.comparator());
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./mailbox/templates/SieveMetaDataTest.html";
+  }
 
-      return true;
-    }
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./mailbox/templates/SieveMetaDataTest.html";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-
-      const FRAGMENT =
-        `<div>
+    const FRAGMENT =
+      `<div>
              <span data-i18n="metadata.summary1"></span>
              <em class="sivMetaDataAnnotation"></em>
              <span data-i18n="metadata.summary2"></span>
@@ -287,173 +290,173 @@
              <em class="sivMetaDataKeys"></em>
            </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivMetaDataAnnotation").textContent
-        = this.annotation();
-      elm.querySelector(".sivMetaDataMailbox").textContent
-        = this.mailbox();
-      elm.querySelector(".sivMetaDataMatchType").textContent
-        = this.matchtype().getElement().toScript();
-      elm.querySelector(".sivMetaDataKeys").textContent
-        = this.keys().values();
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivMetaDataAnnotation").textContent
+      = this.annotation();
+    elm.querySelector(".sivMetaDataMailbox").textContent
+      = this.mailbox();
+    elm.querySelector(".sivMetaDataMatchType").textContent
+      = this.matchtype().getElement().toScript();
+    elm.querySelector(".sivMetaDataKeys").textContent
+      = this.keys().values();
 
-      return elm;
-    }
+    return elm;
+  }
+}
+
+/**
+ * Provides a UI for the ServerMetaDataExists Test
+ */
+class SieveServerMetaDataExistsTestUI extends SieveTestDialogBoxUI {
+
+  /**
+   * Gets the annotations which are checked for existence.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's annotations
+   */
+  annotations() {
+    return this.getSieve().getElement("annotations");
   }
 
   /**
-   * Provides a UI for the ServerMetaDataExists Test
+   * @inheritdoc
    */
-  class SieveServerMetaDataExistsTestUI extends SieveTestDialogBoxUI {
+  onLoad() {
 
-    /**
-     * Gets the annotations which are checked for existence.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's annotations
-     */
-    annotations() {
-      return this.getSieve().getElement("annotations");
-    }
+    (new SieveStringListWidget("#sivMailboxAnnotationsList"))
+      .init(this.annotations());
+  }
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
+  /**
+   * @inheritdoc
+   */
+  onSave() {
+    (new SieveStringListWidget("#sivMailboxAnnotationsList"))
+      .save(this.annotations());
+    return true;
+  }
 
-      (new SieveStringListWidget("#sivMailboxAnnotationsList"))
-        .init(this.annotations());
-    }
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./mailbox/templates/SieveServerMetaDataExistsTest.html";
+  }
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
-      (new SieveStringListWidget("#sivMailboxAnnotationsList"))
-        .save(this.annotations());
-      return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./mailbox/templates/SieveServerMetaDataExistsTest.html";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div>
            <span data-i18n="servermetadataexists.summary"></span>
            <em class="sivServerMetaDataExistsAnnotations"></em>
          </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivServerMetaDataExistsAnnotations").textContent
-        = this.annotations().values();
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivServerMetaDataExistsAnnotations").textContent
+      = this.annotations().values();
 
-      return elm;
-    }
+    return elm;
+  }
+}
+
+/**
+ * Provides an UI for the ServerMetaData test
+ */
+class SieveServerMetaDataTestUI extends SieveTestDialogBoxUI {
+
+  /**
+   * Gets and/or sets the annotation name
+   *
+   * @param {string} [value]
+   *   if set updates the annotation name.
+   *
+   * @returns {string}
+   *   the currently set annotation name.
+   */
+  annotation(value) {
+    return this.getSieve().getElement("annotation").value(value);
   }
 
   /**
-   * Provides an UI for the ServerMetaData test
+   * The keys which are compared.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's key fields
    */
-  class SieveServerMetaDataTestUI extends SieveTestDialogBoxUI {
+  keys() {
+    return this.getSieve().getElement("keys");
+  }
 
-    /**
-     * Gets and/or sets the annotation name
-     *
-     * @param {string} [value]
-     *   if set updates the annotation name.
-     *
-     * @returns {string}
-     *   the currently set annotation name.
-     */
-    annotation(value) {
-      return this.getSieve().getElement("annotation").value(value);
-    }
+  /**
+   * Gets the match type.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's matchtype field
+   */
+  matchtype() {
+    return this.getSieve().getElement("match-type");
+  }
 
-    /**
-     * The keys which are compared.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's key fields
-     */
-    keys() {
-      return this.getSieve().getElement("keys");
-    }
+  /**
+   * Gets the comparator type.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's comparator field
+   */
+  comparator() {
+    return this.getSieve().getElement("comparator");
+  }
 
-    /**
-     * Gets the match type.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's matchtype field
-     */
-    matchtype() {
-      return this.getSieve().getElement("match-type");
-    }
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
 
-    /**
-     * Gets the comparator type.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's comparator field
-     */
-    comparator() {
-      return this.getSieve().getElement("comparator");
-    }
+    document.querySelector("#sivAnnotationName").value = this.annotation();
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
+    (new SieveStringListWidget("#sivMailboxKeys"))
+      .init(this.keys());
 
-      document.querySelector("#sivAnnotationName").value = this.annotation();
+    (new SieveMatchTypeWidget("#sivMailboxMatchTypes"))
+      .init(this.matchtype());
+    (new SieveComparatorWidget("#sivMailboxComparator"))
+      .init(this.comparator());
+  }
 
-      (new SieveStringListWidget("#sivMailboxKeys"))
-        .init(this.keys());
+  /**
+   * @inheritdoc
+   */
+  onSave() {
 
-      (new SieveMatchTypeWidget("#sivMailboxMatchTypes"))
-        .init(this.matchtype());
-      (new SieveComparatorWidget("#sivMailboxComparator"))
-        .init(this.comparator());
-    }
+    this.annotation(document.querySelector("#sivAnnotationName").value);
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
+    (new SieveStringListWidget("#sivMailboxKeys"))
+      .save(this.keys());
 
-      this.annotation(document.querySelector("#sivAnnotationName").value);
+    (new SieveMatchTypeWidget("#sivMailboxMatchTypes"))
+      .save(this.matchtype());
+    (new SieveComparatorWidget("#sivMailboxComparator"))
+      .save(this.comparator());
 
-      (new SieveStringListWidget("#sivMailboxKeys"))
-        .save(this.keys());
+    return true;
+  }
 
-      (new SieveMatchTypeWidget("#sivMailboxMatchTypes"))
-        .save(this.matchtype());
-      (new SieveComparatorWidget("#sivMailboxComparator"))
-        .save(this.comparator());
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./mailbox/templates/SieveServerMetaDataTest.html";
+  }
 
-      return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./mailbox/templates/SieveServerMetaDataTest.html";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div>
              <span data-i18n="servermetadata.summary1"></span>
              <em class="sivServerMetaDataAnnotation"></em>
              <span data-i18n="servermetadata.summary2"></span>
@@ -462,79 +465,74 @@
              <em class="sivServerMetaDataKeys"></em>
            </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivServerMetaDataAnnotation").textContent
-        = this.annotation();
-      elm.querySelector(".sivServerMetaDataMatchType").textContent
-        = this.matchtype().getElement().toScript();
-      elm.querySelector(".sivServerMetaDataKeys").textContent
-        = this.keys().values();
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivServerMetaDataAnnotation").textContent
+      = this.annotation();
+    elm.querySelector(".sivServerMetaDataMatchType").textContent
+      = this.matchtype().getElement().toScript();
+    elm.querySelector(".sivServerMetaDataKeys").textContent
+      = this.keys().values();
 
-      return elm;
-    }
+    return elm;
+  }
+}
+
+/**
+ * Implements the create overlay for the fileinto action.
+ */
+class SieveMailboxCreateWidget extends SieveOverlayItemWidget {
+
+  /**
+   * @inheritdoc
+   */
+  static nodeType() {
+    return "action/fileinto/";
+  }
+  /**
+   * @inheritdoc
+   */
+  static nodeName() {
+    return "action/fileinto/create";
   }
 
   /**
-   * Implements the create overlay for the fileinto action.
+   * @inheritdoc
    */
-  class SieveMailboxCreateWidget extends SieveOverlayItemWidget {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeType() {
-      return "action/fileinto/";
-    }
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "action/fileinto/create";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static isCapable(capabilities) {
-      return capabilities.hasCapability("mailbox");
-    }
-
-    /**
-     * @inheritdoc
-     **/
-    getTemplate() {
-      return "./mailbox/templates/SieveCreateTag.html";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    load(sivElement) {
-      if (sivElement.enable("create"))
-        document.querySelector("#sivMailboxCreateCheckbox").checked = true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    save(sivElement) {
-      if (document.querySelector("#sivMailboxCreateCheckbox").checked)
-        sivElement.enable("create", true);
-      else
-        sivElement.enable("create", false);
-    }
-
+  static isCapable(capabilities) {
+    return capabilities.hasCapability("mailbox");
   }
 
-  if (!SieveDesigner)
-    throw new Error("Could not register Mailbox Extension");
+  /**
+   * @inheritdoc
+   **/
+  getTemplate() {
+    return "./mailbox/templates/SieveCreateTag.html";
+  }
 
-  SieveDesigner.register("test/mailboxexists", SieveMailboxExistsTestUI);
-  SieveDesigner.register("test/metadataexists", SieveMetaDataExistsTestUI);
-  SieveDesigner.register("test/metadata", SieveMetaDataTestUI);
-  SieveDesigner.register("test/servermetadataexists", SieveServerMetaDataExistsTestUI);
-  SieveDesigner.register("test/servermetadata", SieveServerMetaDataTestUI);
+  /**
+   * @inheritdoc
+   */
+  load(sivElement) {
+    if (sivElement.enable("create"))
+      document.querySelector("#sivMailboxCreateCheckbox").checked = true;
+  }
 
-  SieveDesigner.register2(SieveMailboxCreateWidget);
+  /**
+   * @inheritdoc
+   */
+  save(sivElement) {
+    if (document.querySelector("#sivMailboxCreateCheckbox").checked)
+      sivElement.enable("create", true);
+    else
+      sivElement.enable("create", false);
+  }
 
-})(window);
+}
+
+SieveDesigner.register("test/mailboxexists", SieveMailboxExistsTestUI);
+SieveDesigner.register("test/metadataexists", SieveMetaDataExistsTestUI);
+SieveDesigner.register("test/metadata", SieveMetaDataTestUI);
+SieveDesigner.register("test/servermetadataexists", SieveServerMetaDataExistsTestUI);
+SieveDesigner.register("test/servermetadata", SieveServerMetaDataTestUI);
+
+SieveDesigner.register2(SieveMailboxCreateWidget);

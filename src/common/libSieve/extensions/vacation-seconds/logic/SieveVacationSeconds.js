@@ -10,40 +10,30 @@
  *
  */
 
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
-(function () {
+const vacationSeconds = {
+  extends: "action/vacation",
+  requires: { any: ["vacation-seconds", "vacation"] }
+};
 
-  "use strict";
+SieveGrammar.extendAction(vacationSeconds);
 
-  /* global SieveGrammar */
+SieveGrammar.addTag({
+  node: "action/vacation/interval/seconds",
+  type: "action/vacation/interval/",
 
-  if (!SieveGrammar)
-    throw new Error("Could not register Vacation-Seconds");
+  token: ":seconds",
 
-  const vacationSeconds = {
-    extends: "action/vacation",
-    requires: { any: ["vacation-seconds", "vacation"] }
-  };
+  requires: "vacation-seconds",
 
-  SieveGrammar.extendAction(vacationSeconds);
+  properties: [{
+    id: "parameters",
 
-  SieveGrammar.addTag({
-    node: "action/vacation/interval/seconds",
-    type: "action/vacation/interval/",
-
-    token: ":seconds",
-
-    requires: "vacation-seconds",
-
-    properties: [{
-      id: "parameters",
-
-      elements: [{
-        id: "seconds",
-        type: "number",
-        value: '1800'
-      }]
+    elements: [{
+      id: "seconds",
+      type: "number",
+      value: '1800'
     }]
-  });
-
-})(this);
+  }]
+});

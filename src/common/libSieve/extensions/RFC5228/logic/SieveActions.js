@@ -10,68 +10,59 @@
  *
  */
 
-(function () {
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
-  "use strict";
+SieveGrammar.addAction({
+  node: "action/discard",
+  type: "action",
+  token: "discard"
+});
 
-  /* global SieveGrammar */
+SieveGrammar.addAction({
+  node: "action/stop",
+  type: "action",
+  token: "stop"
+});
 
-  if (!SieveGrammar)
-    throw new Error("Could not register default Actions");
+SieveGrammar.addAction({
+  node: "action/keep",
+  type: "action",
+  token: "keep"
+});
 
-  SieveGrammar.addAction({
-    node: "action/discard",
-    type: "action",
-    token: "discard"
-  });
+SieveGrammar.addAction({
+  node: "action/redirect",
+  type: "action",
+  token: "redirect",
 
-  SieveGrammar.addAction({
-    node: "action/stop",
-    type: "action",
-    token: "stop"
-  });
+  properties: [{
+    id: "parameters",
 
-  SieveGrammar.addAction({
-    node: "action/keep",
-    type: "action",
-    token: "keep"
-  });
+    elements: [{
+      id: "address",
 
-  SieveGrammar.addAction({
-    node: "action/redirect",
-    type: "action",
-    token: "redirect",
-
-    properties: [{
-      id: "parameters",
-
-      elements: [{
-        id: "address",
-
-        type: "string",
-        value: "\"username@example.com\""
-      }]
+      type: "string",
+      value: "\"username@example.com\""
     }]
-  });
+  }]
+});
 
-  // <"fileinto"> <string> <";">
-  SieveGrammar.addAction({
-    node: "action/fileinto",
-    type: "action",
-    token: "fileinto",
+// <"fileinto"> <string> <";">
+SieveGrammar.addAction({
+  node: "action/fileinto",
+  type: "action",
+  token: "fileinto",
 
-    requires: "fileinto",
+  requires: "fileinto",
 
-    properties: [{
-      id: "parameters",
+  properties: [{
+    id: "parameters",
 
-      elements: [{
-        id: "path",
+    elements: [{
+      id: "path",
 
-        type: "string",
-        value: "\"INBOX\""
-      }]
+      type: "string",
+      value: "\"INBOX\""
     }]
-  });
-
-})(this);
+  }]
+});

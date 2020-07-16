@@ -10,211 +10,202 @@
  *
  */
 
-(function () {
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
-  "use strict";
+// fileinto [:create] <mailbox: string>
+const create = {
+  node: "action/fileinto/create",
+  type: "action/fileinto/",
 
-  /* global SieveGrammar */
+  requires: "mailbox",
 
-  if (!SieveGrammar)
-    throw new Error("Could not register Mailbox");
+  token: ":create"
+};
 
-  // fileinto [:create] <mailbox: string>
-  const create = {
-    node: "action/fileinto/create",
-    type: "action/fileinto/",
+SieveGrammar.addTag(create);
 
-    requires: "mailbox",
+const fileinto = {
+  extends: "action/fileinto",
 
-    token: ":create"
-  };
+  properties: [{
+    id: "tags",
+    optional: true,
 
-  SieveGrammar.addTag(create);
-
-  const fileinto = {
-    extends: "action/fileinto",
-
-    properties: [{
-      id: "tags",
-      optional: true,
-
-      elements: [{
-        id: "create",
-        type: "action/fileinto/create",
-        requires: "mailbox"
-      }]
+    elements: [{
+      id: "create",
+      type: "action/fileinto/create",
+      requires: "mailbox"
     }]
-  };
+  }]
+};
 
-  SieveGrammar.extendAction(fileinto);
+SieveGrammar.extendAction(fileinto);
 
 
-  // mailboxexists <mailbox-names: string-list>
-  const mailboxexists = {
-    node: "test/mailboxexists",
-    type: "test",
+// mailboxexists <mailbox-names: string-list>
+const mailboxexists = {
+  node: "test/mailboxexists",
+  type: "test",
 
-    requires: "mailbox",
+  requires: "mailbox",
 
-    token: "mailboxexists",
+  token: "mailboxexists",
 
-    properties: [{
-      id: "parameters",
+  properties: [{
+    id: "parameters",
 
-      elements: [{
-        id: "mailboxes",
-        type: "stringlist",
-        value: '"INBOX"'
-      }]
+    elements: [{
+      id: "mailboxes",
+      type: "stringlist",
+      value: '"INBOX"'
     }]
-  };
+  }]
+};
 
-  SieveGrammar.addTest(mailboxexists);
+SieveGrammar.addTest(mailboxexists);
 
-  // metadataexists <mailbox: string> <annotation-names: string-list>
-  const metadataexists = {
-    node: "test/metadataexists",
-    type: "test",
+// metadataexists <mailbox: string> <annotation-names: string-list>
+const metadataexists = {
+  node: "test/metadataexists",
+  type: "test",
 
-    requires: "mboxmetadata",
+  requires: "mboxmetadata",
 
-    token: "metadataexists",
+  token: "metadataexists",
 
-    properties: [{
-      id: "parameters",
+  properties: [{
+    id: "parameters",
 
-      elements: [{
-        id: "mailbox",
-        type: "string",
-        value: '"INBOX"'
-      }, {
-        id: "annotations",
-        type: "stringlist",
-        value: '""'
-      }]
-    }]
-  };
-
-  SieveGrammar.addTest(metadataexists);
-
-  // metadata [MATCH-TYPE] [COMPARATOR]
-  //         <mailbox: string>
-  //         <annotation-name: string> <key-list: string-list>
-
-  /**
-   * Retrieves the value of the mailbox annotation "annotation-name" for mailbox
-   * "mailbox#". The retrieved value is compared against the key-list.
-   *
-   * The test returns true if the annotation exists and its value matches and of
-   * the keys.
-   *
-   * The default matchtype is :is and the default comparator is "i;ascii-casemap"
-   */
-
-  const metadata = {
-    node: "test/metadata",
-    type: "test",
-
-    requires: "mboxmetadata",
-
-    token: "metadata",
-
-    properties: [{
-      id: "tags",
-      optional: true,
-
-      elements: [{
-        id: "match-type",
-        type: "match-type"
-      }, {
-        id: "comparator",
-        type: "comparator"
-      }]
+    elements: [{
+      id: "mailbox",
+      type: "string",
+      value: '"INBOX"'
     }, {
-      id: "parameters",
-
-      elements: [{
-        id: "mailbox",
-        type: "string",
-
-        value: '"INBOX"'
-      }, {
-        id: "annotation",
-        type: "string",
-
-        value: "\"\""
-      }, {
-        id: "keys",
-        type: "stringlist",
-
-        value: "\"\""
-      }]
+      id: "annotations",
+      type: "stringlist",
+      value: '""'
     }]
+  }]
+};
 
-  };
+SieveGrammar.addTest(metadataexists);
 
-  SieveGrammar.addTest(metadata);
+// metadata [MATCH-TYPE] [COMPARATOR]
+//         <mailbox: string>
+//         <annotation-name: string> <key-list: string-list>
 
-  // servermetadataexists <annotation-names: string-list>
-  const servermetadataexists = {
-    node: "test/servermetadataexists",
-    type: "test",
+/**
+ * Retrieves the value of the mailbox annotation "annotation-name" for mailbox
+ * "mailbox#". The retrieved value is compared against the key-list.
+ *
+ * The test returns true if the annotation exists and its value matches and of
+ * the keys.
+ *
+ * The default matchtype is :is and the default comparator is "i;ascii-casemap"
+ */
 
-    requires: "servermetadata",
+const metadata = {
+  node: "test/metadata",
+  type: "test",
 
-    token: "servermetadataexists",
+  requires: "mboxmetadata",
 
-    properties: [{
-      id: "parameters",
+  token: "metadata",
 
-      elements: [{
-        id: "annotations",
-        type: "stringlist",
+  properties: [{
+    id: "tags",
+    optional: true,
 
-        value: '""'
-      }]
-    }]
-  };
-
-  SieveGrammar.addTest(servermetadataexists);
-
-  // servermetadata [MATCH-TYPE] [COMPARATOR] <annotation-name: string> <key-list: string-list>
-  const servermetadata = {
-    node: "test/servermetadata",
-    type: "test",
-
-    requires: "servermetadata",
-
-    token: "servermetadata",
-
-    properties: [{
-      id: "tags",
-      optional: true,
-
-      elements: [{
-        id: "match-type",
-        type: "match-type"
-      }, {
-        id: "comparator",
-        type: "comparator"
-      }]
+    elements: [{
+      id: "match-type",
+      type: "match-type"
     }, {
-      id: "parameters",
-
-      elements: [{
-        id: "annotation",
-        type: "string",
-
-        value: '""'
-      }, {
-        id: "keys",
-        type: "stringlist",
-
-        value: '""'
-      }]
+      id: "comparator",
+      type: "comparator"
     }]
-  };
+  }, {
+    id: "parameters",
 
-  SieveGrammar.addTest(servermetadata);
+    elements: [{
+      id: "mailbox",
+      type: "string",
 
-})(this);
+      value: '"INBOX"'
+    }, {
+      id: "annotation",
+      type: "string",
+
+      value: "\"\""
+    }, {
+      id: "keys",
+      type: "stringlist",
+
+      value: "\"\""
+    }]
+  }]
+
+};
+
+SieveGrammar.addTest(metadata);
+
+// servermetadataexists <annotation-names: string-list>
+const servermetadataexists = {
+  node: "test/servermetadataexists",
+  type: "test",
+
+  requires: "servermetadata",
+
+  token: "servermetadataexists",
+
+  properties: [{
+    id: "parameters",
+
+    elements: [{
+      id: "annotations",
+      type: "stringlist",
+
+      value: '""'
+    }]
+  }]
+};
+
+SieveGrammar.addTest(servermetadataexists);
+
+// servermetadata [MATCH-TYPE] [COMPARATOR] <annotation-name: string> <key-list: string-list>
+const servermetadata = {
+  node: "test/servermetadata",
+  type: "test",
+
+  requires: "servermetadata",
+
+  token: "servermetadata",
+
+  properties: [{
+    id: "tags",
+    optional: true,
+
+    elements: [{
+      id: "match-type",
+      type: "match-type"
+    }, {
+      id: "comparator",
+      type: "comparator"
+    }]
+  }, {
+    id: "parameters",
+
+    elements: [{
+      id: "annotation",
+      type: "string",
+
+      value: '""'
+    }, {
+      id: "keys",
+      type: "stringlist",
+
+      value: '""'
+    }]
+  }]
+};
+
+SieveGrammar.addTest(servermetadata);

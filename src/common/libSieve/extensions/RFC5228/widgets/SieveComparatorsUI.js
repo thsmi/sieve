@@ -10,123 +10,117 @@
  *
  */
 
-(function (exports) {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
 
-  "use strict";
+import {
+  SieveRadioGroupWidget,
+  SieveRadioGroupItemWidget
+} from "./../../../toolkit/widgets/Widgets.js";
 
-  /* global SieveDesigner */
-  /* global SieveRadioGroupItemWidget */
-  /* global SieveRadioGroupWidget */
+/**
+ *
+ */
+class SieveComparatorWidget extends SieveRadioGroupWidget {
 
   /**
-   *
+   * @inheritdoc
    */
-  class SieveComparatorWidget extends SieveRadioGroupWidget {
-
-    /**
-     * @inheritdoc
-     */
-    constructor(selector) {
-      super("comparator/", selector);
-    }
+  constructor(selector) {
+    super("comparator/", selector);
   }
+}
 
+
+/**
+ * An Abstract Comparator UI implementation.
+ */
+class SieveAbstractComparatorUI extends SieveRadioGroupItemWidget {
 
   /**
-   * An Abstract Comparator UI implementation.
+   * @inheritdoc
    */
-  class SieveAbstractComparatorUI extends SieveRadioGroupItemWidget {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeType() {
-      return "comparator/";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getName() {
-      return "sieve-comparator";
-    }
+  static nodeType() {
+    return "comparator/";
   }
 
   /**
-   * Provides an UI for the contains match type
+   * @inheritdoc
    */
-  class SieveOctetComparatorUI extends SieveAbstractComparatorUI {
+  getName() {
+    return "sieve-comparator";
+  }
+}
 
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "comparator/i;octet";
-    }
+/**
+ * Provides an UI for the contains match type
+ */
+class SieveOctetComparatorUI extends SieveAbstractComparatorUI {
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./RFC5228/templates/SieveComparatorOctet.html";
-    }
+  /**
+   * @inheritdoc
+   */
+  static nodeName() {
+    return "comparator/i;octet";
   }
 
   /**
-   * Provides an UI for the contains match type
+   * @inheritdoc
    */
-  class SieveAsciiCasemapComparatorUI extends SieveAbstractComparatorUI {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "comparator/i;ascii-casemap";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./RFC5228/templates/SieveComparatorAsciiCasemap.html";
-    }
+  getTemplate() {
+    return "./RFC5228/templates/SieveComparatorOctet.html";
   }
+}
 
+/**
+ * Provides an UI for the contains match type
+ */
+class SieveAsciiCasemapComparatorUI extends SieveAbstractComparatorUI {
 
   /**
-   * Provides an UI for the contains match type
+   * @inheritdoc
    */
-  class SieveAsciiNumericComparatorUI extends SieveAbstractComparatorUI {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "comparator/i;ascii-numeric";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static isCapable(capabilities) {
-      return capabilities.hasCapability("comparator-i;ascii-numeric");
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./RFC5228/templates/SieveComparatorAsciiNumeric.html";
-    }
+  static nodeName() {
+    return "comparator/i;ascii-casemap";
   }
 
-  if (!SieveDesigner)
-    throw new Error("Could not register String Widgets");
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./RFC5228/templates/SieveComparatorAsciiCasemap.html";
+  }
+}
 
-  SieveDesigner.register2(SieveOctetComparatorUI);
-  SieveDesigner.register2(SieveAsciiCasemapComparatorUI);
-  SieveDesigner.register2(SieveAsciiNumericComparatorUI);
 
-  exports.SieveComparatorWidget = SieveComparatorWidget;
+/**
+ * Provides an UI for the contains match type
+ */
+class SieveAsciiNumericComparatorUI extends SieveAbstractComparatorUI {
 
-})(window);
+  /**
+   * @inheritdoc
+   */
+  static nodeName() {
+    return "comparator/i;ascii-numeric";
+  }
+
+  /**
+   * @inheritdoc
+   */
+  static isCapable(capabilities) {
+    return capabilities.hasCapability("comparator-i;ascii-numeric");
+  }
+
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./RFC5228/templates/SieveComparatorAsciiNumeric.html";
+  }
+}
+
+SieveDesigner.register2(SieveOctetComparatorUI);
+SieveDesigner.register2(SieveAsciiCasemapComparatorUI);
+SieveDesigner.register2(SieveAsciiNumericComparatorUI);
+
+export { SieveComparatorWidget };

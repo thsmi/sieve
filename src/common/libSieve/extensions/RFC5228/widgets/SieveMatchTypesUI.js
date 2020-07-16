@@ -10,120 +10,115 @@
  *
  */
 
-(function (exports) {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
 
-  "use strict";
+import {
+  SieveDropDownWidget,
+  SieveDropDownItemWidget
+} from "./../../../toolkit/widgets/Widgets.js";
 
-  /* global SieveDesigner */
-  /* global SieveDropDownItemWidget */
-  /* global SieveDropDownWidget */
+/**
+ * Provides a widget for the matchtype element
+ */
+class SieveMatchTypeWidget extends SieveDropDownWidget {
 
   /**
-   * Provides a widget for the matchtype element
+   * @inheritdoc
    */
-  class SieveMatchTypeWidget extends SieveDropDownWidget {
+  constructor(selector) {
+    super("match-type/", selector);
+  }
+}
 
-    /**
-     * @inheritdoc
-     */
-    constructor(selector) {
-      super("match-type/", selector);
-    }
+/**
+ * An Abstract Matchtype UI implementation.
+ */
+class SieveAbstractMatchTypeUI extends SieveDropDownItemWidget {
+
+  /**
+   * @inheritdoc
+   */
+  static nodeType() {
+    return "match-type/";
   }
 
   /**
-   * An Abstract Matchtype UI implementation.
+   * @inheritdoc
    */
-  class SieveAbstractMatchTypeUI extends SieveDropDownItemWidget {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeType() {
-      return "match-type/";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getName() {
-      return "sieve-matchtype";
-    }
+  getName() {
+    return "sieve-matchtype";
   }
+}
 
+
+/**
+ * Provides an UI for the contains match type
+ */
+class SieveContainsMatchUI extends SieveAbstractMatchTypeUI {
 
   /**
-   * Provides an UI for the contains match type
+   * @inheritdoc
    */
-  class SieveContainsMatchUI extends SieveAbstractMatchTypeUI {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "match-type/contains";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./RFC5228/templates/SieveMatchTypeContainsUI.html";
-    }
+  static nodeName() {
+    return "match-type/contains";
   }
-
 
   /**
-   * Provides a UI for the is match type.
+   * @inheritdoc
    */
-  class SieveIsMatchUI extends SieveAbstractMatchTypeUI {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "match-type/is";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./RFC5228/templates/SieveMatchTypeIsUI.html";
-    }
+  getTemplate() {
+    return "./RFC5228/templates/SieveMatchTypeContainsUI.html";
   }
+}
 
+
+/**
+ * Provides a UI for the is match type.
+ */
+class SieveIsMatchUI extends SieveAbstractMatchTypeUI {
 
   /**
-   * Provides a UI for the matches match type
+   * @inheritdoc
    */
-  class SieveMatchesMatchUI extends SieveAbstractMatchTypeUI {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "match-type/matches";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./RFC5228/templates/SieveMatchTypeMatchesUI.html";
-    }
-
+  static nodeName() {
+    return "match-type/is";
   }
 
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./RFC5228/templates/SieveMatchTypeIsUI.html";
+  }
+}
 
-  if (!SieveDesigner)
-    throw new Error("Could not register String Widgets");
 
-  SieveDesigner.register2(SieveIsMatchUI);
-  SieveDesigner.register2(SieveContainsMatchUI);
-  SieveDesigner.register2(SieveMatchesMatchUI);
+/**
+ * Provides a UI for the matches match type
+ */
+class SieveMatchesMatchUI extends SieveAbstractMatchTypeUI {
 
-  exports.SieveAbstractMatchTypeUI = SieveAbstractMatchTypeUI;
-  exports.SieveMatchTypeWidget = SieveMatchTypeWidget;
+  /**
+   * @inheritdoc
+   */
+  static nodeName() {
+    return "match-type/matches";
+  }
 
-})(window);
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./RFC5228/templates/SieveMatchTypeMatchesUI.html";
+  }
+
+}
+
+SieveDesigner.register2(SieveIsMatchUI);
+SieveDesigner.register2(SieveContainsMatchUI);
+SieveDesigner.register2(SieveMatchesMatchUI);
+
+export {
+  SieveAbstractMatchTypeUI,
+  SieveMatchTypeWidget
+};

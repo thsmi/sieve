@@ -10,400 +10,395 @@
  *
  */
 
-(function () {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
 
-  "use strict";
+import {
+  SieveTestDialogBoxUI,
+  SieveActionDialogBoxUI
+} from "./../../../toolkit/widgets/Boxes.js";
 
-  /* global SieveTestDialogBoxUI */
-  /* global SieveActionDialogBoxUI */
+import {
+  SieveStringListWidget,
+  SieveStringWidget,
+  SieveOverlayItemWidget
+} from "./../../../toolkit/widgets/Widgets.js";
 
-  /* global SieveStringListWidget */
-  /* global SieveStringWidget */
-  /* global SieveMatchTypeWidget */
-  /* global SieveComparatorWidget */
+import { SieveMatchTypeWidget } from "./../../../extensions/RFC5228/widgets/SieveMatchTypesUI.js";
+import { SieveComparatorWidget } from "./../../../extensions/RFC5228/widgets/SieveComparatorsUI.js";
 
-  /* global SieveOverlayItemWidget */
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
 
-  /* global SieveDesigner */
-
-  /* global SieveTemplate */
+/**
+ * Implements an UI for the notify action.
+ */
+class SieveNotifyActionUI extends SieveActionDialogBoxUI {
 
   /**
-   * Implements an UI for the notify action.
+   * Gets the uri for the notification method.
+   *
+   * @returns {SieveString}
+   *   the uri as string.
    */
-  class SieveNotifyActionUI extends SieveActionDialogBoxUI {
+  method() {
+    return this.getSieve().getElement("method");
+  }
 
-    /**
-     * Gets the uri for the notification method.
-     *
-     * @returns {SieveString}
-     *   the uri as string.
-     */
-    method() {
-      return this.getSieve().getElement("method");
-    }
+  /**
+   * Gets optional additional configures to extend the notification method.
+   * Each configuration is string which contains a key/value pair separated
+   * by an equals sign.
+   *
+   * @returns {SieveStringList}
+   *   a string list with strings containing key/pairs.
+   */
+  options() {
+    return this.getSieve().getElement("options").getElement("options");
+  }
 
-    /**
-     * Gets optional additional configures to extend the notification method.
-     * Each configuration is string which contains a key/value pair separated
-     * by an equals sign.
-     *
-     * @returns {SieveStringList}
-     *   a string list with strings containing key/pairs.
-     */
-    options() {
-      return this.getSieve().getElement("options").getElement("options");
-    }
+  /**
+   * Returns the sender/from field which is used when sending the notification.
+   *
+   * @returns {SieveString}
+   *   the notification's from
+   */
+  from() {
+    return this.getSieve().getElement("from").getElement("from");
+  }
 
-    /**
-     * Returns the sender/from field which is used when sending the notification.
-     *
-     * @returns {SieveString}
-     *   the notification's from
-     */
-    from() {
-      return this.getSieve().getElement("from").getElement("from");
-    }
+  /**
+   * Returns the message to be send via the notification method.
+   *
+   * @returns {SieveString}
+   *   the message
+   */
+  message() {
+    return this.getSieve().getElement("message").getElement("message");
+  }
 
-    /**
-     * Returns the message to be send via the notification method.
-     *
-     * @returns {SieveString}
-     *   the message
-     */
-    message() {
-      return this.getSieve().getElement("message").getElement("message");
-    }
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
-
-      (new SieveStringWidget("#sivNotifyMethod"))
-        .init(this.method());
+    (new SieveStringWidget("#sivNotifyMethod"))
+      .init(this.method());
 
 
-      if (this.getSieve().enable("from"))
-        document.querySelector("#cbxSieveNotifyFrom").checked = true;
+    if (this.getSieve().enable("from"))
+      document.querySelector("#cbxSieveNotifyFrom").checked = true;
 
-      (new SieveStringWidget("#txtSieveNotifyFrom"))
-        .init(this.from());
-
-
-      if (this.getSieve().enable("options"))
-        document.querySelector("#cbxSieveNotifyOptions").checked = true;
-
-      (new SieveStringListWidget("#txtSieveNotifyOptions"))
-        .init(this.options());
+    (new SieveStringWidget("#txtSieveNotifyFrom"))
+      .init(this.from());
 
 
-      if (this.getSieve().enable("importance"))
-        document.querySelector("#cbxSieveNotifyImportance").checked = true;
+    if (this.getSieve().enable("options"))
+      document.querySelector("#cbxSieveNotifyOptions").checked = true;
 
-      const importance = this.getSieve().getElement("importance").getElement("importance").value();
-      document.querySelector("input[name=sivNotifyImportance][value='" + importance + "']").checked = true;
-
-      document.querySelector("input[name=sivNotifyMessage][value='" + this.getSieve().enable("message") + "']").checked = true;
-      document.querySelector("#txtSieveNotifyMessage").value = this.message().value();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    onSave() {
-      (new SieveStringWidget("#sivNotifyMethod"))
-        .save(this.method());
-
-      // Importance...
-
-      this.getSieve().enable("options",
-        document.querySelector("#cbxSieveNotifyOptions").checked);
-
-      (new SieveStringListWidget("#txtSieveNotifyOptions"))
-        .save(this.options());
-
-      this.getSieve().enable("from",
-        document.querySelector("#cbxSieveNotifyFrom").checked);
-      (new SieveStringWidget("#txtSieveNotifyFrom"))
-        .save(this.from());
+    (new SieveStringListWidget("#txtSieveNotifyOptions"))
+      .init(this.options());
 
 
-      this.getSieve().enable("importance",
-        document.querySelector("#cbxSieveNotifyImportance").checked);
-      const importance = document.querySelector("input[name=sivNotifyImportance]:checked").value;
+    if (this.getSieve().enable("importance"))
+      document.querySelector("#cbxSieveNotifyImportance").checked = true;
 
-      this.getSieve()
-        .getElement("importance")
-        .getElement("importance")
-        .value(importance);
+    const importance = this.getSieve().getElement("importance").getElement("importance").value();
+    document.querySelector("input[name=sivNotifyImportance][value='" + importance + "']").checked = true;
+
+    document.querySelector("input[name=sivNotifyMessage][value='" + this.getSieve().enable("message") + "']").checked = true;
+    document.querySelector("#txtSieveNotifyMessage").value = this.message().value();
+  }
+
+  /**
+   * @inheritdoc
+   */
+  onSave() {
+    (new SieveStringWidget("#sivNotifyMethod"))
+      .save(this.method());
+
+    // Importance...
+
+    this.getSieve().enable("options",
+      document.querySelector("#cbxSieveNotifyOptions").checked);
+
+    (new SieveStringListWidget("#txtSieveNotifyOptions"))
+      .save(this.options());
+
+    this.getSieve().enable("from",
+      document.querySelector("#cbxSieveNotifyFrom").checked);
+    (new SieveStringWidget("#txtSieveNotifyFrom"))
+      .save(this.from());
 
 
-      this.getSieve().enable("message",
-        document.querySelector("#rbxSieveNotifyMessageCustom").checked);
-      this.message().value(
-        document.querySelector("#txtSieveNotifyMessage").value);
+    this.getSieve().enable("importance",
+      document.querySelector("#cbxSieveNotifyImportance").checked);
+    const importance = document.querySelector("input[name=sivNotifyImportance]:checked").value;
 
-      return true;
-    }
+    this.getSieve()
+      .getElement("importance")
+      .getElement("importance")
+      .value(importance);
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./notify/templates/SieveNotifyActionUI.html";
-    }
 
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+    this.getSieve().enable("message",
+      document.querySelector("#rbxSieveNotifyMessageCustom").checked);
+    this.message().value(
+      document.querySelector("#txtSieveNotifyMessage").value);
+
+    return true;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./notify/templates/SieveNotifyActionUI.html";
+  }
+
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div>
          <span data-i18n="notify.summary"></span>
        </div>`;
 
-      return (new SieveTemplate()).convert(FRAGMENT);
-    }
+    return (new SieveTemplate()).convert(FRAGMENT);
+  }
+}
+
+/**
+ *
+ */
+class SieveNotifyMethodCapabilityUI extends SieveTestDialogBoxUI {
+
+  /**
+   * Gets the match type.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's matchtype field
+   */
+  matchtype() {
+    return this.getSieve().getElement("match-type");
   }
 
   /**
+   * Gets the comparator type.
    *
+   * @returns {SieveAbstractElement}
+   *   the element's comparator field
    */
-  class SieveNotifyMethodCapabilityUI extends SieveTestDialogBoxUI {
+  comparator() {
+    return this.getSieve().getElement("comparator");
+  }
 
-    /**
-     * Gets the match type.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's matchtype field
-     */
-    matchtype() {
-      return this.getSieve().getElement("match-type");
-    }
+  /**
+   * The keys against  which the capabilities should be checked.
+   *
+   * @returns {SieveStringList}
+   *  the keys as string list.
+   */
+  keys() {
+    return this.getSieve().getElement("keys");
+  }
 
-    /**
-     * Gets the comparator type.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's comparator field
-     */
-    comparator() {
-      return this.getSieve().getElement("comparator");
-    }
+  /**
+   * Gets the notification methods unique uri.
+   *
+   * @returns {SieveString}
+   *   the notification methods as uri.
+   */
+  uri() {
+    return this.getSieve().getElement("uri");
+  }
 
-    /**
-     * The keys against  which the capabilities should be checked.
-     *
-     * @returns {SieveStringList}
-     *  the keys as string list.
-     */
-    keys() {
-      return this.getSieve().getElement("keys");
-    }
+  /**
+   * Gets the notifications method capability which should be checked.
+   *
+   * @returns {SieveString}
+   *   the notification capability.
+   */
+  capability() {
+    return this.getSieve().getElement("capability");
+  }
 
-    /**
-     * Gets the notification methods unique uri.
-     *
-     * @returns {SieveString}
-     *   the notification methods as uri.
-     */
-    uri() {
-      return this.getSieve().getElement("uri");
-    }
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
+    (new SieveMatchTypeWidget("#sivNotifyMatchTypes"))
+      .init(this.matchtype());
+    (new SieveComparatorWidget("#sivNotifyComparator"))
+      .init(this.comparator());
 
-    /**
-     * Gets the notifications method capability which should be checked.
-     *
-     * @returns {SieveString}
-     *   the notification capability.
-     */
-    capability() {
-      return this.getSieve().getElement("capability");
-    }
+    (new SieveStringListWidget("#sivNotifyKeyList"))
+      .init(this.keys());
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
-      (new SieveMatchTypeWidget("#sivNotifyMatchTypes"))
-        .init(this.matchtype());
-      (new SieveComparatorWidget("#sivNotifyComparator"))
-        .init(this.comparator());
+    (new SieveStringWidget("#txtSieveNotifyUri"))
+      .init(this.uri());
+    (new SieveStringWidget("#txtSieveNotifyCapability"))
+      .init(this.capability());
+  }
 
-      (new SieveStringListWidget("#sivNotifyKeyList"))
-        .init(this.keys());
+  /**
+   * @inheritdoc
+   */
+  onSave() {
+    (new SieveMatchTypeWidget("#sivNotifyMatchTypes"))
+      .save(this.matchtype());
+    (new SieveComparatorWidget("#sivNotifyComparator"))
+      .save(this.comparator());
 
-      (new SieveStringWidget("#txtSieveNotifyUri"))
-        .init(this.uri());
-      (new SieveStringWidget("#txtSieveNotifyCapability"))
-        .init(this.capability());
-    }
+    (new SieveStringListWidget("#sivNotifyKeyList"))
+      .save(this.keys());
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
-      (new SieveMatchTypeWidget("#sivNotifyMatchTypes"))
-        .save(this.matchtype());
-      (new SieveComparatorWidget("#sivNotifyComparator"))
-        .save(this.comparator());
+    (new SieveStringWidget("#txtSieveNotifyUri"))
+      .save(this.uri());
+    (new SieveStringWidget("#txtSieveNotifyCapability"))
+      .save(this.capability());
 
-      (new SieveStringListWidget("#sivNotifyKeyList"))
-        .save(this.keys());
+    return true;
+  }
 
-      (new SieveStringWidget("#txtSieveNotifyUri"))
-        .save(this.uri());
-      (new SieveStringWidget("#txtSieveNotifyCapability"))
-        .save(this.capability());
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./notify/templates/SieveNotifyMethodCapabilityTestUI.html";
+  }
 
-      return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./notify/templates/SieveNotifyMethodCapabilityTestUI.html";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div>
          <span data-i18n="notifymethodcapability.summary"></span>
        </div>`;
 
-      return (new SieveTemplate()).convert(FRAGMENT);
-    }
+    return (new SieveTemplate()).convert(FRAGMENT);
   }
+}
 
+
+/**
+ * Implements a ui for the ValidNotifyMethod test.
+ */
+class SieveValidNotifyMethodUI extends SieveTestDialogBoxUI {
 
   /**
-   * Implements a ui for the ValidNotifyMethod test.
+   * Gets the list which notification uris to be checked for validity.
+   *
+   * @returns {SieveStringList}
+   *   a list with uris
    */
-  class SieveValidNotifyMethodUI extends SieveTestDialogBoxUI {
+  uris() {
+    return this.getSieve().getElement("uris");
+  }
 
-    /**
-     * Gets the list which notification uris to be checked for validity.
-     *
-     * @returns {SieveStringList}
-     *   a list with uris
-     */
-    uris() {
-      return this.getSieve().getElement("uris");
-    }
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
+    (new SieveStringListWidget("#sivNotifyUris"))
+      .init(this.uris());
+  }
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
-      (new SieveStringListWidget("#sivNotifyUris"))
-        .init(this.uris());
-    }
+  /**
+   * @inheritdoc
+   */
+  onSave() {
+    (new SieveStringListWidget("#sivNotifyUris"))
+      .save(this.uris());
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
-      (new SieveStringListWidget("#sivNotifyUris"))
-        .save(this.uris());
+    return true;
+  }
 
-      return true;
-    }
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./notify/templates/SieveValidNotifyMethodTestUI.html";
+  }
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./notify/templates/SieveValidNotifyMethodTestUI.html";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div>
            <span data-i18n="validnotifymethod.summary"></span>
            <em class="sivValidNotifyMethodUris"></em>
          </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivValidNotifyMethodUris").textContent = this.uris().toScript();
-      return elm;
-    }
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivValidNotifyMethodUris").textContent = this.uris().toScript();
+    return elm;
+  }
+}
+
+/**
+ * Implements an abstract overlay widget which is used by
+ * the copy overlay for the fileinto action as well as the
+ * redirect action.
+ */
+class SieveModifierEncodeUrlWidget extends SieveOverlayItemWidget {
+
+  /**
+   * @inheritdoc
+   */
+  static nodeType() {
+    return "modifier/";
   }
 
   /**
-   * Implements an abstract overlay widget which is used by
-   * the copy overlay for the fileinto action as well as the
-   * redirect action.
+   * @inheritdoc
    */
-  class SieveModifierEncodeUrlWidget extends SieveOverlayItemWidget {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeType() {
-      return "modifier/";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "modifier/15";
-    }
-
-    /**
-     * @inheritdoc
-     **/
-    getTemplate() {
-      return "./notify/templates/SieveEncodeUrlUI.html";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static isCapable(capabilities) {
-      return capabilities.hasCapability("enotify") && capabilities.hasCapability("variables");
-    }
-
-    /**
-     * @inheritdoc
-     */
-    load(sivElement) {
-      if (sivElement.enable("modifier/15"))
-        document.querySelector("#cbxModifier15").checked = true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    save(sivElement) {
-
-      let value = null;
-      const status = document.querySelector("#cbxModifier15").checked;
-      if (status)
-        value = document.querySelector("#cbxModifier15").value;
-
-      sivElement.getElement("modifier/15").setElement(value);
-      sivElement.enable("modifier/15", status);
-    }
+  static nodeName() {
+    return "modifier/15";
   }
 
-  // ************************************************************************************
+  /**
+   * @inheritdoc
+   **/
+  getTemplate() {
+    return "./notify/templates/SieveEncodeUrlUI.html";
+  }
 
-  if (!SieveDesigner)
-    throw new Error("Could not register Notify");
+  /**
+   * @inheritdoc
+   */
+  static isCapable(capabilities) {
+    return capabilities.hasCapability("enotify") && capabilities.hasCapability("variables");
+  }
 
-  SieveDesigner.register2(SieveModifierEncodeUrlWidget);
+  /**
+   * @inheritdoc
+   */
+  load(sivElement) {
+    if (sivElement.enable("modifier/15"))
+      document.querySelector("#cbxModifier15").checked = true;
+  }
 
-  SieveDesigner.register("action/notify", SieveNotifyActionUI);
-  SieveDesigner.register("test/notify_method_capability", SieveNotifyMethodCapabilityUI);
-  SieveDesigner.register("test/valid_notify_method", SieveValidNotifyMethodUI);
+  /**
+   * @inheritdoc
+   */
+  save(sivElement) {
 
-})(window);
+    let value = null;
+    const status = document.querySelector("#cbxModifier15").checked;
+    if (status)
+      value = document.querySelector("#cbxModifier15").value;
+
+    sivElement.getElement("modifier/15").setElement(value);
+    sivElement.enable("modifier/15", status);
+  }
+}
+
+// ************************************************************************************
+
+SieveDesigner.register2(SieveModifierEncodeUrlWidget);
+
+SieveDesigner.register("action/notify", SieveNotifyActionUI);
+SieveDesigner.register("test/notify_method_capability", SieveNotifyMethodCapabilityUI);
+SieveDesigner.register("test/valid_notify_method", SieveValidNotifyMethodUI);

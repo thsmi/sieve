@@ -10,22 +10,13 @@
  *
  */
 
-(function () {
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
-  "use strict";
+SieveGrammar.addTag({
+  node: "match-type/regex",
+  type: "match-type/",
 
-  /* global SieveGrammar */
+  requires: "regex",
 
-  if (!SieveGrammar)
-    throw new Error("Could not register MatchTypes");
-
-  SieveGrammar.addTag({
-    node: "match-type/regex",
-    type: "match-type/",
-
-    requires: "regex",
-
-    token: ":regex"
-  });
-
-})(this);
+  token: ":regex"
+});

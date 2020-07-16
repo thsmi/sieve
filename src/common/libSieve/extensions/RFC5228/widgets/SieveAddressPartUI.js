@@ -10,121 +10,114 @@
  *
  */
 
-(function (exports) {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
 
-  "use strict";
+import {
+  SieveDropDownWidget,
+  SieveDropDownItemWidget
+} from "./../../../toolkit/widgets/Widgets.js";
 
-  /* global SieveDesigner */
-  /* global SieveDropDownWidget */
-  /* global SieveDropDownItemWidget */
+/**
+ * Provides a widget for the address part widget
+ */
+class SieveAddressPartWidget extends SieveDropDownWidget {
 
   /**
-   * Provides a widget for the address part widget
+   * @inheritdoc
    */
-  class SieveAddressPartWidget extends SieveDropDownWidget {
+  constructor(selector) {
+    super("address-part/", selector);
+  }
+}
 
-    /**
-     * @inheritdoc
-     */
-    constructor(selector) {
-      super("address-part/", selector);
-    }
+/**
+ * An Abstract Address Part UI.
+ */
+class SieveAbstractAddressPartUI extends SieveDropDownItemWidget {
+
+  /**
+   * @inheritdoc
+   */
+  static nodeType() {
+    return "address-part/";
   }
 
   /**
-   * An Abstract Address Part UI.
+   * @inheritdoc
    */
-  class SieveAbstractAddressPartUI extends SieveDropDownItemWidget {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeType() {
-      return "address-part/";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getName() {
-      return "sieve-addresspart";
-    }
+  getName() {
+    return "sieve-addresspart";
   }
+}
 
+
+/**
+ * Provides an UI for the all address part
+ */
+class SieveAllPartUI extends SieveAbstractAddressPartUI {
 
   /**
-   * Provides an UI for the all address part
+   * @inheritdoc
    */
-  class SieveAllPartUI extends SieveAbstractAddressPartUI {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "address-part/all";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./RFC5228/templates/SieveAddressPartAll.html";
-    }
+  static nodeName() {
+    return "address-part/all";
   }
-
 
   /**
-   * Provides an UI for the domain part
+   * @inheritdoc
    */
-  class SieveDomainPartUI extends SieveAbstractAddressPartUI {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "address-part/domain";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./RFC5228/templates/SieveAddressPartDomain.html";
-    }
+  getTemplate() {
+    return "./RFC5228/templates/SieveAddressPartAll.html";
   }
+}
 
+
+/**
+ * Provides an UI for the domain part
+ */
+class SieveDomainPartUI extends SieveAbstractAddressPartUI {
 
   /**
-   * Provides an UI for the local part
+   * @inheritdoc
    */
-  class SieveLocalPartUI extends SieveAbstractAddressPartUI {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "address-part/local";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./RFC5228/templates/SieveAddressPartLocal.html";
-    }
+  static nodeName() {
+    return "address-part/domain";
   }
 
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./RFC5228/templates/SieveAddressPartDomain.html";
+  }
+}
 
-  // ************************************************************************************
 
-  if (!SieveDesigner)
-    throw new Error("Could not register address part Widgets");
+/**
+ * Provides an UI for the local part
+ */
+class SieveLocalPartUI extends SieveAbstractAddressPartUI {
 
-  SieveDesigner.register2(SieveAllPartUI);
-  SieveDesigner.register2(SieveDomainPartUI);
-  SieveDesigner.register2(SieveLocalPartUI);
+  /**
+   * @inheritdoc
+   */
+  static nodeName() {
+    return "address-part/local";
+  }
 
-  exports.SieveAbstractAddressPartUI = SieveAbstractAddressPartUI;
-  exports.SieveAddressPartWidget = SieveAddressPartWidget;
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./RFC5228/templates/SieveAddressPartLocal.html";
+  }
+}
 
-})(window);
+SieveDesigner.register2(SieveAllPartUI);
+SieveDesigner.register2(SieveDomainPartUI);
+SieveDesigner.register2(SieveLocalPartUI);
+
+export {
+  SieveAbstractAddressPartUI,
+  SieveAddressPartWidget
+};

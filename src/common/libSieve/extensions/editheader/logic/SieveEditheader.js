@@ -10,127 +10,119 @@
  *
  */
 
-(function () {
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
-  "use strict";
-  /* global SieveGrammar */
+SieveGrammar.addTag({
+  node: "action/addheader/last",
+  type: "action/addheader/",
 
-  if (!SieveGrammar)
-    throw new Error("Could not register EditHeaders");
+  requires: "editheader",
 
-  SieveGrammar.addTag({
-    node: "action/addheader/last",
-    type: "action/addheader/",
+  token: ":last"
+});
 
-    requires: "editheader",
+// "addheader"[":last"] < field - name: string > <value: string>
+SieveGrammar.addAction({
+  node: "action/addheader",
+  type: "action",
 
-    token: ":last"
-  });
+  requires: "editheader",
 
-  // "addheader"[":last"] < field - name: string > <value: string>
-  SieveGrammar.addAction({
-    node: "action/addheader",
-    type: "action",
+  token: "addheader",
 
-    requires: "editheader",
+  properties: [{
+    id: "tags",
+    optional: true,
 
-    token: "addheader",
-
-    properties: [{
-      id: "tags",
-      optional: true,
-
-      elements: [{
-        id: "last",
-        type: "action/addheader/last"
-      }]
-    }, {
-      id: "parameters",
-
-      elements: [{
-        id: "name",
-        type: "string",
-        value: '"X-Header"'
-      }, {
-        id: "value",
-        type: "string",
-        value: '"Some Value"'
-      }]
-    }]
-  });
-
-  // ":index" <fieldno: number> [":last"]
-  SieveGrammar.addTag({
-    node: "action/deleteheader/index",
-    type: "action/deleteheader/",
-
-    requires: "editheader",
-
-    token: ":index",
-
-    properties: [{
-      id: "field",
-
-      elements: [{
-        id: "name",
-        type: "number",
-        value: '1'
-      }]
-    }, {
+    elements: [{
       id: "last",
-      optional: true,
-
-      elements: [{
-        id: "last",
-        type: "action/addheader/last"
-      }]
+      type: "action/addheader/last"
     }]
-  });
+  }, {
+    id: "parameters",
 
-  // "deleteheader" [":index" <fieldno: number> [":last"]]
-  //                   [COMPARATOR] [MATCH-TYPE]
-  //                   <field-name: string>
-  //                   [<value-patterns: string-list>]
-
-  SieveGrammar.addAction({
-    node: "action/deleteheader",
-    type: "action",
-
-    requires: "editheader",
-
-    token: "deleteheader",
-
-    properties: [{
-      id: "tags",
-      optional: true,
-
-      elements: [{
-        id: "index",
-        type: "action/deleteheader/index"
-      }, {
-        id: "match-type",
-        type: "match-type"
-      }, {
-        id: "comparator",
-        type: "comparator"
-      }]
+    elements: [{
+      id: "name",
+      type: "string",
+      value: '"X-Header"'
     }, {
-      id: "parameter",
-
-      elements: [{
-        id: "name",
-        type: "string",
-        value: '"X-Header"'
-      }]
-    }, {
-      id: "parameter2",
-      optional: true,
-      elements: [{
-        id: "values",
-        type: "stringlist",
-        value: '""'
-      }]
+      id: "value",
+      type: "string",
+      value: '"Some Value"'
     }]
-  });
+  }]
+});
 
-})(this);
+// ":index" <fieldno: number> [":last"]
+SieveGrammar.addTag({
+  node: "action/deleteheader/index",
+  type: "action/deleteheader/",
+
+  requires: "editheader",
+
+  token: ":index",
+
+  properties: [{
+    id: "field",
+
+    elements: [{
+      id: "name",
+      type: "number",
+      value: '1'
+    }]
+  }, {
+    id: "last",
+    optional: true,
+
+    elements: [{
+      id: "last",
+      type: "action/addheader/last"
+    }]
+  }]
+});
+
+// "deleteheader" [":index" <fieldno: number> [":last"]]
+//                   [COMPARATOR] [MATCH-TYPE]
+//                   <field-name: string>
+//                   [<value-patterns: string-list>]
+
+SieveGrammar.addAction({
+  node: "action/deleteheader",
+  type: "action",
+
+  requires: "editheader",
+
+  token: "deleteheader",
+
+  properties: [{
+    id: "tags",
+    optional: true,
+
+    elements: [{
+      id: "index",
+      type: "action/deleteheader/index"
+    }, {
+      id: "match-type",
+      type: "match-type"
+    }, {
+      id: "comparator",
+      type: "comparator"
+    }]
+  }, {
+    id: "parameter",
+
+    elements: [{
+      id: "name",
+      type: "string",
+      value: '"X-Header"'
+    }]
+  }, {
+    id: "parameter2",
+    optional: true,
+    elements: [{
+      id: "values",
+      type: "stringlist",
+      value: '""'
+    }]
+  }]
+});

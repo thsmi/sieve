@@ -10,71 +10,62 @@
  *
  */
 
-(function () {
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
-  "use strict";
+// "fileinto" [":copy"] <folder: string>
+const fileintocopy = {
+  node: "action/fileinto/copy",
+  type: "action/fileinto/",
 
-  /* global SieveGrammar */
+  requires: "copy",
 
-  if (!SieveGrammar)
-    throw new Error("Could not register copy");
+  token: ":copy"
+};
 
-  // "fileinto" [":copy"] <folder: string>
-  const fileintocopy = {
-    node: "action/fileinto/copy",
-    type: "action/fileinto/",
+SieveGrammar.addTag(fileintocopy);
 
-    requires: "copy",
+const fileinto = {
+  extends: "action/fileinto",
 
-    token: ":copy"
-  };
+  properties: [{
+    id: "tags",
+    optional: true,
 
-  SieveGrammar.addTag(fileintocopy);
-
-  const fileinto = {
-    extends: "action/fileinto",
-
-    properties: [{
-      id: "tags",
-      optional: true,
-
-      elements: [{
-        id: "copy",
-        type: "action/fileinto/copy",
-        requires: "copy"
-      }]
+    elements: [{
+      id: "copy",
+      type: "action/fileinto/copy",
+      requires: "copy"
     }]
-  };
+  }]
+};
 
-  SieveGrammar.extendAction(fileinto);
+SieveGrammar.extendAction(fileinto);
 
-  // "redirect" [":copy"] <address: string>
-  const redirectcopy = {
-    node: "action/redirect/copy",
-    type: "action/redirect/",
+// "redirect" [":copy"] <address: string>
+const redirectcopy = {
+  node: "action/redirect/copy",
+  type: "action/redirect/",
 
-    requires: "copy",
+  requires: "copy",
 
-    token: ":copy"
-  };
+  token: ":copy"
+};
 
-  SieveGrammar.addTag(redirectcopy);
+SieveGrammar.addTag(redirectcopy);
 
-  const redirect = {
-    extends: "action/redirect",
+const redirect = {
+  extends: "action/redirect",
 
-    properties: [{
-      id: "tags",
-      optional: true,
+  properties: [{
+    id: "tags",
+    optional: true,
 
-      elements: [{
-        id: "copy",
-        type: "action/redirect/copy",
-        requires: "copy"
-      }]
+    elements: [{
+      id: "copy",
+      type: "action/redirect/copy",
+      requires: "copy"
     }]
-  };
+  }]
+};
 
-  SieveGrammar.extendAction(redirect);
-
-})(this);
+SieveGrammar.extendAction(redirect);

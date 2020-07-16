@@ -10,54 +10,45 @@
  *
  */
 
-(function () {
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
-  "use strict";
+const reject = {
+  node: "action/reject",
+  type: "action",
+  token: "reject",
 
-  /* global SieveGrammar */
+  requires: "reject",
 
-  if (!SieveGrammar)
-    throw new Error("Could not register Reject Grammar");
+  properties: [{
+    id: "parameters",
 
-  const reject = {
-    node: "action/reject",
-    type: "action",
-    token: "reject",
-
-    requires: "reject",
-
-    properties: [{
-      id: "parameters",
-
-      elements: [{
-        id: "reason",
-        type: "string",
-        value: "text:\r\n.\r\n"
-      }]
+    elements: [{
+      id: "reason",
+      type: "string",
+      value: "text:\r\n.\r\n"
     }]
-  };
+  }]
+};
 
-  SieveGrammar.addAction(reject);
+SieveGrammar.addAction(reject);
 
 
-  const ereject = {
-    node: "action/ereject",
-    type: "action",
-    token: "ereject",
+const ereject = {
+  node: "action/ereject",
+  type: "action",
+  token: "ereject",
 
-    requires: "ereject",
+  requires: "ereject",
 
-    properties: [{
-      id: "parameters",
+  properties: [{
+    id: "parameters",
 
-      elements: [{
-        id: "reason",
-        type: "string",
-        value: "text:\r\n.\r\n"
-      }]
+    elements: [{
+      id: "reason",
+      type: "string",
+      value: "text:\r\n.\r\n"
     }]
-  };
+  }]
+};
 
-  SieveGrammar.addAction(ereject);
-
-})(this);
+SieveGrammar.addAction(ereject);

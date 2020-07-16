@@ -10,100 +10,93 @@
  *
  */
 
-(function () {
 
-  "use strict";
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
-  /* global SieveGrammar */
+// "body" [COMPARATOR] [MATCH-TYPE] [BODY-TRANSFORM] <key-list: string-list>
 
-  if (!SieveGrammar)
-    throw new Error("Could not register Body");
+SieveGrammar.addTest({
+  node: "test/body",
+  type: "test",
 
-  // "body" [COMPARATOR] [MATCH-TYPE] [BODY-TRANSFORM] <key-list: string-list>
+  requires: "body",
 
-  SieveGrammar.addTest({
-    node: "test/body",
-    type: "test",
+  token: "body",
 
-    requires: "body",
+  properties: [{
+    id: "tags",
+    optional: true,
 
-    token: "body",
-
-    properties: [{
-      id: "tags",
-      optional: true,
-
-      elements: [{
-        id: "body-transform",
-        type: "body-transform"
-      }, {
-        id: "match-type",
-        type: "match-type"
-      }, {
-        id: "comparator",
-        type: "comparator"
-
-      }]
+    elements: [{
+      id: "body-transform",
+      type: "body-transform"
     }, {
-      id: "parameters",
-      elements: [{
-        id: "keys",
-        type: "stringlist",
-        value: '"Example"'
-      }]
+      id: "match-type",
+      type: "match-type"
+    }, {
+      id: "comparator",
+      type: "comparator"
+
     }]
-  });
-
-  // -------------------------------------------------------------------------//
-
-  SieveGrammar.addTag({
-    node: "body-transform/raw",
-    type: "body-transform/",
-
-    requires: "body",
-
-    token: ":raw"
-  });
-
-  SieveGrammar.addTag({
-    node: "body-transform/content",
-    type: "body-transform/",
-
-    requires: "body",
-
-    token: ":content",
-
-
-    properties: [{
-      id: "parameters",
-
-      elements: [{
-        id: "contentType",
-        type: "stringlist",
-        value: '""'
-      }]
+  }, {
+    id: "parameters",
+    elements: [{
+      id: "keys",
+      type: "stringlist",
+      value: '"Example"'
     }]
+  }]
+});
 
-  });
+// -------------------------------------------------------------------------//
 
-  SieveGrammar.addTag({
-    node: "body-transform/text",
-    type: "body-transform/",
+SieveGrammar.addTag({
+  node: "body-transform/raw",
+  type: "body-transform/",
 
-    requires: "body",
+  requires: "body",
 
-    token: ":text"
-  });
+  token: ":raw"
+});
 
-  // ----------------------------------------------------------------------------
+SieveGrammar.addTag({
+  node: "body-transform/content",
+  type: "body-transform/",
 
-  SieveGrammar.addGroup({
-    node: "body-transform",
-    type: "body-transform",
+  requires: "body",
 
-    value: ":text",
+  token: ":content",
 
-    items: ["body-transform/"]
-  });
 
-})(this);
+  properties: [{
+    id: "parameters",
+
+    elements: [{
+      id: "contentType",
+      type: "stringlist",
+      value: '""'
+    }]
+  }]
+
+});
+
+SieveGrammar.addTag({
+  node: "body-transform/text",
+  type: "body-transform/",
+
+  requires: "body",
+
+  token: ":text"
+});
+
+// ----------------------------------------------------------------------------
+
+SieveGrammar.addGroup({
+  node: "body-transform",
+  type: "body-transform",
+
+  value: ":text",
+
+  items: ["body-transform/"]
+});
+

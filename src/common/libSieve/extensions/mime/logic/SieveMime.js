@@ -10,127 +10,121 @@
  *
  */
 
-(function () {
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
-  "use strict";
-  /* global SieveGrammar */
+// Usage:  foreverypart [":name" string] block
 
-  if (!SieveGrammar)
-    throw new Error("Could not register Mime");
+// Usage:  break [":name" string];
 
-  // Usage:  foreverypart [":name" string] block
+// The definition of [MIMEOPTS] is:
+// Syntax:  ":type" / ":subtype" / ":contenttype" / ":param" <param-list: string-list>
 
-  // Usage:  break [":name" string];
+SieveGrammar.addTag({
+  node: "mimeopts/type",
+  type: "mimeopts/",
 
-  // The definition of [MIMEOPTS] is:
-  // Syntax:  ":type" / ":subtype" / ":contenttype" / ":param" <param-list: string-list>
+  // fixme
+  requires: "body",
 
-  SieveGrammar.addTag({
-    node: "mimeopts/type",
-    type: "mimeopts/",
+  token: ":type"
+});
 
-    // fixme
-    requires: "body",
+SieveGrammar.addTag({
+  node: "mimeopts/subtype",
+  type: "mimeopts/",
 
-    token: ":type"
-  });
+  // fixme
+  requires: "body",
 
-  SieveGrammar.addTag({
-    node: "mimeopts/subtype",
-    type: "mimeopts/",
+  token: ":subtype"
+});
 
-    // fixme
-    requires: "body",
+SieveGrammar.addTag({
+  node: "mimeopts/contenttype",
+  type: "mimeopts/",
 
-    token: ":subtype"
-  });
+  // fixme
+  requires: "body",
 
-  SieveGrammar.addTag({
-    node: "mimeopts/contenttype",
-    type: "mimeopts/",
+  token: ":contenttype"
+});
 
-    // fixme
-    requires: "body",
+SieveGrammar.addTag({
+  node: "mimeopts/param",
+  type: "mimeopts/",
 
-    token: ":contenttype"
-  });
+  // fixme
+  requires: "body",
 
-  SieveGrammar.addTag({
-    node: "mimeopts/param",
-    type: "mimeopts/",
+  token: ":param",
 
-    // fixme
-    requires: "body",
+  properties: [{
+    id: "parameters",
 
-    token: ":param",
+    elements: [{
+      id: "time-zone",
+      type: "string",
 
-    properties: [{
-      id: "parameters",
-
-      elements: [{
-        id: "time-zone",
-        type: "string",
-
-        value: '"+0100"'
-      }]
+      value: '"+0100"'
     }]
-  });
+  }]
+});
 
-  SieveGrammar.addGroup({
-    node: "mimeopts",
-    type: "mimeopts",
+SieveGrammar.addGroup({
+  node: "mimeopts",
+  type: "mimeopts",
 
-    // fixme what is the default
-    value: ":text",
+  // fixme what is the default
+  value: ":text",
 
-    items: ["mimeopts/"]
-  });
+  items: ["mimeopts/"]
+});
 
-  // Usage:  header [":mime"] [":anychild"] [MIMEOPTS]
-  // [COMPARATOR] [MATCH-TYPE]
-  // <header-names: string-list> <key-list: string-list>
+// Usage:  header [":mime"] [":anychild"] [MIMEOPTS]
+// [COMPARATOR] [MATCH-TYPE]
+// <header-names: string-list> <key-list: string-list>
 
-  SieveGrammar.extendTest({
-    extends: "test/header",
+SieveGrammar.extendTest({
+  extends: "test/header",
 
-    properties: [{
-      id: "tags",
-      optional: true,
+  properties: [{
+    id: "tags",
+    optional: true,
 
-      elements: [{
-      }]
+    elements: [{
     }]
-  });
+  }]
+});
 
-  // Usage:  address [":mime"] [":anychild"] [COMPARATOR]
-  // [ADDRESS-PART] [MATCH-TYPE]
-  // <header-list: string-list> <key-list: string-list>
+// Usage:  address [":mime"] [":anychild"] [COMPARATOR]
+// [ADDRESS-PART] [MATCH-TYPE]
+// <header-list: string-list> <key-list: string-list>
 
-  SieveGrammar.extendTest({
-    extends: "test/address",
+SieveGrammar.extendTest({
+  extends: "test/address",
 
-    properties: [{
-      id: "tags",
-      optional: true,
+  properties: [{
+    id: "tags",
+    optional: true,
 
-      elements: [{
-      }]
+    elements: [{
     }]
-  });
+  }]
+});
 
 
-  // Usage:  exists [":mime"] [":anychild"] <header-names: string-list>
-  SieveGrammar.extendTest({
-    extends: "test/exists",
+// Usage:  exists [":mime"] [":anychild"] <header-names: string-list>
+SieveGrammar.extendTest({
+  extends: "test/exists",
 
-    properties: [{
-      id: "tags",
-      optional: true,
+  properties: [{
+    id: "tags",
+    optional: true,
 
-      elements: [{
-      }]
+    elements: [{
     }]
-  });
+  }]
+});
 
   // Usage:  replace [":mime"] [":subject" string] [":from" string]
   // <replacement: string>
@@ -139,4 +133,3 @@
 
   // Usage:  extracttext [MODIFIER] [":first" number] <varname: string>
 
-})(window);

@@ -9,154 +9,145 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  *
  */
-(function () {
 
-  "use strict";
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
-  /* global SieveGrammar */
+/* Usage: "duplicate" [":handle" <handle: string>]
+[":header" <header-name: string> /
+    ":uniqueid" <value: string>]
+[":seconds" <timeout: number>] [":last"] */
 
-  if (!SieveGrammar)
-    throw new Error("Could not register Duplicate");
+const duplicate = {
+  node: "test/duplicate",
+  type: "test",
 
+  requires: "duplicate",
 
-  /* Usage: "duplicate" [":handle" <handle: string>]
-  [":header" <header-name: string> /
-      ":uniqueid" <value: string>]
-  [":seconds" <timeout: number>] [":last"] */
+  token: "duplicate",
 
-  const duplicate = {
-    node: "test/duplicate",
-    type: "test",
+  properties: [{
+    id: "tags",
+    optional: true,
 
-    requires: "duplicate",
-
-    token: "duplicate",
-
-    properties: [{
-      id: "tags",
-      optional: true,
-
-      elements: [{
-        id: "handle",
-        type: "test/duplicate/handle"
-      },
-      {
-        id: "unique",
-        type: "test/duplicate/unique"
-      },
-      {
-        id: "seconds",
-        type: "test/duplicate/seconds"
-      },
-      {
-        id: "last",
-        type: "test/duplicate/last"
-      }]
+    elements: [{
+      id: "handle",
+      type: "test/duplicate/handle"
+    },
+    {
+      id: "unique",
+      type: "test/duplicate/unique"
+    },
+    {
+      id: "seconds",
+      type: "test/duplicate/seconds"
+    },
+    {
+      id: "last",
+      type: "test/duplicate/last"
     }]
-  };
+  }]
+};
 
-  SieveGrammar.addTest(duplicate);
+SieveGrammar.addTest(duplicate);
 
-  SieveGrammar.addTag({
-    node: "test/duplicate/last",
-    type: "test/duplicate/",
+SieveGrammar.addTag({
+  node: "test/duplicate/last",
+  type: "test/duplicate/",
 
-    requires: "duplicate",
+  requires: "duplicate",
 
-    token: ":last"
-  });
+  token: ":last"
+});
 
-  // handle
-  SieveGrammar.addTag({
-    node: "test/duplicate/handle",
-    type: "test/duplicate/",
+// handle
+SieveGrammar.addTag({
+  node: "test/duplicate/handle",
+  type: "test/duplicate/",
 
-    token: ":handle",
+  token: ":handle",
 
-    requires: "duplicate",
+  requires: "duplicate",
 
-    properties: [{
-      id: "parameters",
+  properties: [{
+    id: "parameters",
 
-      elements: [{
-        id: "handle",
-        type: "string",
+    elements: [{
+      id: "handle",
+      type: "string",
 
-        value: '""'
-      }]
+      value: '""'
     }]
-  });
+  }]
+});
 
 
-  // uniqueid/header
-  SieveGrammar.addTag({
-    node: "test/duplicate/unique/header",
-    type: "test/duplicate/unique/",
+// uniqueid/header
+SieveGrammar.addTag({
+  node: "test/duplicate/unique/header",
+  type: "test/duplicate/unique/",
 
-    token: ":header",
+  token: ":header",
 
-    requires: "duplicate",
+  requires: "duplicate",
 
-    properties: [{
-      id: "parameters",
+  properties: [{
+    id: "parameters",
 
-      elements: [{
-        id: "header",
-        type: "string",
+    elements: [{
+      id: "header",
+      type: "string",
 
-        value: '""'
-      }]
+      value: '""'
     }]
-  });
+  }]
+});
 
-  // uniqueid/id
-  SieveGrammar.addTag({
-    node: "test/duplicate/unique/id",
-    type: "test/duplicate/unique/",
+// uniqueid/id
+SieveGrammar.addTag({
+  node: "test/duplicate/unique/id",
+  type: "test/duplicate/unique/",
 
-    token: ":uniqueid",
+  token: ":uniqueid",
 
-    requires: "duplicate",
+  requires: "duplicate",
 
-    properties: [{
-      id: "parameters",
+  properties: [{
+    id: "parameters",
 
-      elements: [{
-        id: "uniqueid",
-        type: "string",
-        value: '""'
-      }]
+    elements: [{
+      id: "uniqueid",
+      type: "string",
+      value: '""'
     }]
-  });
+  }]
+});
 
 
 
-  SieveGrammar.addGroup({
-    node: "test/duplicate/unique",
-    type: "test/duplicate/unique",
+SieveGrammar.addGroup({
+  node: "test/duplicate/unique",
+  type: "test/duplicate/unique",
 
-    items: ["test/duplicate/unique/"]
-  });
+  items: ["test/duplicate/unique/"]
+});
 
 
-  // seconds
-  SieveGrammar.addTag({
-    node: "test/duplicate/seconds",
-    type: "test/duplicate/seconds/",
+// seconds
+SieveGrammar.addTag({
+  node: "test/duplicate/seconds",
+  type: "test/duplicate/seconds/",
 
-    token: ":seconds",
+  token: ":seconds",
 
-    requires: "duplicate",
+  requires: "duplicate",
 
-    properties: [{
-      id: "parameters",
+  properties: [{
+    id: "parameters",
 
-      elements: [{
-        id: "timeout",
-        type: "number",
-        value: "600"
-      }]
+    elements: [{
+      id: "timeout",
+      type: "number",
+      value: "600"
     }]
-  });
-
-})(this);
+  }]
+});

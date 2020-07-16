@@ -10,229 +10,221 @@
  *
  */
 
-(function () {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
 
-  "use strict";
+import { SieveActionDialogBoxUI } from "./../../../toolkit/widgets/Boxes.js";
+import { SieveOverlayWidget } from "./../../../toolkit/widgets/Widgets.js";
 
-  /* global SieveDesigner */
-  /* global SieveActionDialogBoxUI */
-  /* global SieveOverlayWidget */
-  /* global SieveTemplate */
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+
+/**
+ * Provides a UI for the stop action
+ */
+class SieveStopUI extends SieveActionDialogBoxUI {
 
   /**
-   * Provides a UI for the stop action
+   * @inheritdoc
    */
-  class SieveStopUI extends SieveActionDialogBoxUI {
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./RFC5228/templates/SieveStopActionUI.html";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div><span data-i18n="stop.summary"></span></div>`;
-
-      return (new SieveTemplate()).convert(FRAGMENT);
-    }
+  getTemplate() {
+    return "./RFC5228/templates/SieveStopActionUI.html";
   }
 
   /**
-   * Provides a UI for the discard action
+   * @inheritdoc
    */
-  class SieveDiscardUI extends SieveActionDialogBoxUI {
+  getSummary() {
+    const FRAGMENT =
+      `<div><span data-i18n="stop.summary"></span></div>`;
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./RFC5228/templates/SieveDiscardActionUI.html";
-    }
+    return (new SieveTemplate()).convert(FRAGMENT);
+  }
+}
 
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div><span data-i18n="discard.summary"></span></div>`;
+/**
+ * Provides a UI for the discard action
+ */
+class SieveDiscardUI extends SieveActionDialogBoxUI {
 
-      return (new SieveTemplate()).convert(FRAGMENT);
-    }
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./RFC5228/templates/SieveDiscardActionUI.html";
   }
 
   /**
-   * Provides a UI for the keep action
+   * @inheritdoc
    */
-  class SieveKeepUI extends SieveActionDialogBoxUI {
+  getSummary() {
+    const FRAGMENT =
+      `<div><span data-i18n="discard.summary"></span></div>`;
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./RFC5228/templates/SieveKeepActionUI.html";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div><span data-i18n="keep.summary"></span></div>`;
-
-      return (new SieveTemplate()).convert(FRAGMENT);
-    }
+    return (new SieveTemplate()).convert(FRAGMENT);
   }
+}
 
+/**
+ * Provides a UI for the keep action
+ */
+class SieveKeepUI extends SieveActionDialogBoxUI {
 
   /**
-   * Provides an UI for the redirect action
+   * @inheritdoc
    */
-  class SieveRedirectUI extends SieveActionDialogBoxUI {
+  getTemplate() {
+    return "./RFC5228/templates/SieveKeepActionUI.html";
+  }
 
-    /**
-     *  Gets and/or sets the redirect address
-     *
-     *  @param  {string} [address]
-     *    optional the new address which should be set.
-     *
-     *  @returns {string} the current address
-     */
-    address(address) {
-      return this.getSieve().getElement("address").value(address);
-    }
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div><span data-i18n="keep.summary"></span></div>`;
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./RFC5228/templates/SieveRedirectActionUI.html";
-    }
+    return (new SieveTemplate()).convert(FRAGMENT);
+  }
+}
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
 
-      const address = document.querySelector("#sivRedirectAddress");
+/**
+ * Provides an UI for the redirect action
+ */
+class SieveRedirectUI extends SieveActionDialogBoxUI {
 
-      if (!address.checkValidity())
-        return false;
+  /**
+   *  Gets and/or sets the redirect address
+   *
+   *  @param  {string} [address]
+   *    optional the new address which should be set.
+   *
+   *  @returns {string} the current address
+   */
+  address(address) {
+    return this.getSieve().getElement("address").value(address);
+  }
 
-      (new SieveOverlayWidget("action/redirect/", "#sivRedirectOverlay"))
-        .save(this.getSieve());
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./RFC5228/templates/SieveRedirectActionUI.html";
+  }
 
-      this.address(address.value);
-      return true;
-    }
+  /**
+   * @inheritdoc
+   */
+  onSave() {
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
-      document.querySelector("#sivRedirectAddress").value = this.address();
+    const address = document.querySelector("#sivRedirectAddress");
 
-      (new SieveOverlayWidget("action/redirect/", "#sivRedirectOverlay"))
-        .init(this.getSieve());
-    }
+    if (!address.checkValidity())
+      return false;
 
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+    (new SieveOverlayWidget("action/redirect/", "#sivRedirectOverlay"))
+      .save(this.getSieve());
+
+    this.address(address.value);
+    return true;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
+    document.querySelector("#sivRedirectAddress").value = this.address();
+
+    (new SieveOverlayWidget("action/redirect/", "#sivRedirectOverlay"))
+      .init(this.getSieve());
+  }
+
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div>
           <span data-i18n="redirect.summary"></span>
           <em class="sivRedirectAddress"></em>
          </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivRedirectAddress").textContent = this.address();
-      return elm;
-    }
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivRedirectAddress").textContent = this.address();
+    return elm;
+  }
+}
+
+/**
+ * A UI for the fileinto action
+ */
+class SieveFileIntoUI extends SieveActionDialogBoxUI {
+
+  /**
+   *  Gets and/or Sets the FileInto's paths
+   *
+   *  @param  {string} [value]
+   *    optional the new path which should be set.
+   *
+   *  @returns {string} the current file into path
+   */
+  path(value) {
+    return this.getSieve().getElement("path").value(value);
   }
 
   /**
-   * A UI for the fileinto action
+   * @inheritdoc
    */
-  class SieveFileIntoUI extends SieveActionDialogBoxUI {
+  getTemplate() {
+    return "./RFC5228/templates/SieveFileIntoActionUI.html";
+  }
 
-    /**
-     *  Gets and/or Sets the FileInto's paths
-     *
-     *  @param  {string} [value]
-     *    optional the new path which should be set.
-     *
-     *  @returns {string} the current file into path
-     */
-    path(value) {
-      return this.getSieve().getElement("path").value(value);
-    }
+  /**
+   * @inheritdoc
+   */
+  onSave() {
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./RFC5228/templates/SieveFileIntoActionUI.html";
-    }
+    const path = document.querySelector("#sivFileIntoPath");
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
+    if (!path.checkValidity())
+      return false;
 
-      const path = document.querySelector("#sivFileIntoPath");
+    (new SieveOverlayWidget("action/fileinto/", "#sivFileIntoOverlay"))
+      .save(this.getSieve());
 
-      if (!path.checkValidity())
-        return false;
+    this.path(path.value);
+    return true;
+  }
 
-      (new SieveOverlayWidget("action/fileinto/", "#sivFileIntoOverlay"))
-        .save(this.getSieve());
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
+    document.querySelector("#sivFileIntoPath").value = this.path();
 
-      this.path(path.value);
-      return true;
-    }
+    (new SieveOverlayWidget("action/fileinto/", "#sivFileIntoOverlay"))
+      .init(this.getSieve());
+  }
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
-      document.querySelector("#sivFileIntoPath").value = this.path();
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
 
-      (new SieveOverlayWidget("action/fileinto/", "#sivFileIntoOverlay"))
-        .init(this.getSieve());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-
-      const FRAGMENT =
-        `<div>
+    const FRAGMENT =
+      `<div>
           <div data-i18n="fileinto.summary"></div>
           <div><em class="sivFileintoPath"></em></div>
          </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivFileintoPath").textContent = this.path();
-      return elm;
-    }
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivFileintoPath").textContent = this.path();
+    return elm;
   }
+}
 
-  if (!SieveDesigner)
-    throw new Error("Could not register Action Widgets");
+SieveDesigner.register("action/discard", SieveDiscardUI);
+SieveDesigner.register("action/keep", SieveKeepUI);
+SieveDesigner.register("action/stop", SieveStopUI);
 
-
-  SieveDesigner.register("action/discard", SieveDiscardUI);
-  SieveDesigner.register("action/keep", SieveKeepUI);
-  SieveDesigner.register("action/stop", SieveStopUI);
-
-  SieveDesigner.register("action/fileinto", SieveFileIntoUI);
-  SieveDesigner.register("action/redirect", SieveRedirectUI);
-
-})(window);
+SieveDesigner.register("action/fileinto", SieveFileIntoUI);
+SieveDesigner.register("action/redirect", SieveRedirectUI);

@@ -10,74 +10,65 @@
  *
  */
 
-(function () {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
+import { SieveAbstractAddressPartUI } from "./../../../extensions/RFC5228/widgets/SieveAddressPartUI.js";
 
-  "use strict";
+//   :user "+" :detail "@" :domain
+// \----:local-part----/
 
-  /* global SieveDesigner */
-  /* global SieveAbstractAddressPartUI */
-
-  //   :user "+" :detail "@" :domain
-  // \----:local-part----/
+/**
+ * Provides an UI for the user part
+ */
+class SieveUserPartUI extends SieveAbstractAddressPartUI {
 
   /**
-   * Provides an UI for the user part
+   * @inheritdoc
    */
-  class SieveUserPartUI extends SieveAbstractAddressPartUI {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "address-part/user";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static isCapable(capabilities) {
-      return capabilities.hasCapability("subaddress");
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./subaddress/templates/SieveAddressPartUser.html";
-    }
+  static nodeName() {
+    return "address-part/user";
   }
 
   /**
-   * Provides and UI for the detail part
+   * @inheritdoc
    */
-  class SieveDetailPartUI extends SieveAbstractAddressPartUI {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "address-part/detail";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static isCapable(capabilities) {
-      return capabilities.hasCapability("subaddress");
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./subaddress/templates/SieveAddressPartDetail.html";
-    }
+  static isCapable(capabilities) {
+    return capabilities.hasCapability("subaddress");
   }
 
-  if (!SieveDesigner)
-    throw new Error("Could not register String Widgets");
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./subaddress/templates/SieveAddressPartUser.html";
+  }
+}
 
-  SieveDesigner.register2(SieveUserPartUI);
-  SieveDesigner.register2(SieveDetailPartUI);
+/**
+ * Provides and UI for the detail part
+ */
+class SieveDetailPartUI extends SieveAbstractAddressPartUI {
 
-})(window);
+  /**
+   * @inheritdoc
+   */
+  static nodeName() {
+    return "address-part/detail";
+  }
+
+  /**
+   * @inheritdoc
+   */
+  static isCapable(capabilities) {
+    return capabilities.hasCapability("subaddress");
+  }
+
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./subaddress/templates/SieveAddressPartDetail.html";
+  }
+}
+
+SieveDesigner.register2(SieveUserPartUI);
+SieveDesigner.register2(SieveDetailPartUI);

@@ -10,104 +10,96 @@
  *
  */
 
-(function () {
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
-  "use strict";
+// spamtest [":percent"] [COMPARATOR] [MATCH-TYPE] <value: string>
+SieveGrammar.addTest({
+  node: "test/spamtest",
+  type: "test",
 
-  /* global SieveGrammar */
+  // spamtestplus implies spamtest...
+  // ... this means we prefer spamtestplus, but
+  // if we endup with spamtest it is also ok.
 
-  if (!SieveGrammar)
-    throw new Error("Could not register Spamtest");
+  requires: { any: ["spamtestplus", "spamtest"] },
 
-  // spamtest [":percent"] [COMPARATOR] [MATCH-TYPE] <value: string>
-  SieveGrammar.addTest({
-    node: "test/spamtest",
-    type: "test",
+  token: "spamtest",
 
-    // spamtestplus implies spamtest...
-    // ... this means we prefer spamtestplus, but
-    // if we endup with spamtest it is also ok.
+  properties: [{
+    id: "tags",
+    optional: true,
 
-    requires: { any: ["spamtestplus", "spamtest"] },
-
-    token: "spamtest",
-
-    properties: [{
-      id: "tags",
-      optional: true,
-
-      elements: [{
-        id: "comparator",
-        type: "comparator"
-      }, {
-        id: "match-type",
-        type: "match-type"
-      }]
+    elements: [{
+      id: "comparator",
+      type: "comparator"
     }, {
-      id: "parameters",
-
-      elements: [{
-        id: "value",
-        type: "string",
-        value: '"1"'
-      }]
+      id: "match-type",
+      type: "match-type"
     }]
-  });
+  }, {
+    id: "parameters",
 
-  SieveGrammar.addTag({
-    node: "test/spamtestplus/percent",
-    type: "test/spamtestplus/percent",
-
-    requires: "spamtestplus",
-
-    token: ":percent"
-  });
-
-  SieveGrammar.extendTest({
-    extends: "test/spamtest",
-
-    properties: [{
-      id: "tags",
-      optional: true,
-
-      elements: [{
-        id: "percent",
-        type: "test/spamtestplus/percent",
-
-        requires: "spamtestplus"
-      }]
+    elements: [{
+      id: "value",
+      type: "string",
+      value: '"1"'
     }]
-  });
+  }]
+});
 
-  // virustest [COMPARATOR] [MATCH-TYPE] <value: string>
-  SieveGrammar.addTest({
-    node: "test/virustest",
-    type: "test",
+SieveGrammar.addTag({
+  node: "test/spamtestplus/percent",
+  type: "test/spamtestplus/percent",
 
-    requires: "virustest",
+  requires: "spamtestplus",
 
-    token: "virustest",
+  token: ":percent"
+});
 
-    properties: [{
-      id: "tags",
-      optional: true,
+SieveGrammar.extendTest({
+  extends: "test/spamtest",
 
-      elements: [{
-        id: "comparator",
-        type: "comparator"
-      }, {
-        id: "match-type",
-        type: "match-type"
-      }]
+  properties: [{
+    id: "tags",
+    optional: true,
+
+    elements: [{
+      id: "percent",
+      type: "test/spamtestplus/percent",
+
+      requires: "spamtestplus"
+    }]
+  }]
+});
+
+// virustest [COMPARATOR] [MATCH-TYPE] <value: string>
+SieveGrammar.addTest({
+  node: "test/virustest",
+  type: "test",
+
+  requires: "virustest",
+
+  token: "virustest",
+
+  properties: [{
+    id: "tags",
+    optional: true,
+
+    elements: [{
+      id: "comparator",
+      type: "comparator"
     }, {
-      id: "parameters",
-
-      elements: [{
-        id: "value",
-        type: "string",
-        value: '"1"'
-      }]
+      id: "match-type",
+      type: "match-type"
     }]
-  });
+  }, {
+    id: "parameters",
 
-})(this);
+    elements: [{
+      id: "value",
+      type: "string",
+      value: '"1"'
+    }]
+  }]
+});
+

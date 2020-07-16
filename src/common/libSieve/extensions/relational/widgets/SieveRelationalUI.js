@@ -10,111 +10,102 @@
  *
  */
 
-(function() {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
+import { SieveAbstractMatchTypeUI } from "./../../../extensions/RFC5228/widgets/SieveMatchTypesUI.js";
 
-  "use strict";
-
-  /* global SieveDesigner */
-  /* global SieveAbstractMatchTypeUI */
+/**
+ * Provides an UI for the Sieve Count Match Type
+ */
+class SieveCountMatchUI extends SieveAbstractMatchTypeUI {
 
   /**
-   * Provides an UI for the Sieve Count Match Type
+   * @inheritdoc
    */
-  class SieveCountMatchUI extends SieveAbstractMatchTypeUI {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "match-type/count";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static isCapable(capabilities) {
-      return capabilities.hasCapability("relational");
-    }
-
-    /**
-     * @inheritdoc
-     */
-    onLoad(sivElement) {
-      super.onLoad(sivElement);
-
-      this.getActiveItem().querySelector(".sieve-matchtype-count-relational").value =
-        ":count " + sivElement.getElement("relational-match").toScript();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    onSave(sivElement) {
-      sivElement.setElement(
-        this.getActiveItem().querySelector(".sieve-matchtype-count-relational").value);
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./relational/templates/SieveMatchTypeCountUI.html";
-    }
-
+  static nodeName() {
+    return "match-type/count";
   }
 
   /**
-   * Provides a UI for the value match type
+   * @inheritdoc
    */
-  class SieveValueMatchUI extends SieveAbstractMatchTypeUI {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "match-type/value";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static isCapable(capabilities) {
-      return capabilities.hasCapability("relational");
-    }
-
-    /**
-     * @inheritdoc
-     */
-    onLoad(sivElement) {
-
-      super.onLoad(sivElement);
-
-      this.getActiveItem().querySelector(".sieve-matchtype-value-relational").value =
-        ":value " + sivElement.getElement("relational-match").toScript();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    // eslint-disable-next-line no-unused-vars
-    onSave(sivElement, item) {
-      sivElement.setElement(
-        this.getActiveItem().querySelector(".sieve-matchtype-value-relational").value);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./relational/templates/SieveMatchTypeValueUI.html";
-    }
+  static isCapable(capabilities) {
+    return capabilities.hasCapability("relational");
   }
 
-  if (!SieveDesigner)
-    throw new Error("Could not register String Widgets");
+  /**
+   * @inheritdoc
+   */
+  onLoad(sivElement) {
+    super.onLoad(sivElement);
 
-  SieveDesigner.register2(SieveValueMatchUI);
-  SieveDesigner.register2(SieveCountMatchUI);
+    this.getActiveItem().querySelector(".sieve-matchtype-count-relational").value =
+      ":count " + sivElement.getElement("relational-match").toScript();
+  }
 
-})(window);
+  /**
+   * @inheritdoc
+   */
+  onSave(sivElement) {
+    sivElement.setElement(
+      this.getActiveItem().querySelector(".sieve-matchtype-count-relational").value);
+  }
+
+
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./relational/templates/SieveMatchTypeCountUI.html";
+  }
+
+}
+
+/**
+ * Provides a UI for the value match type
+ */
+class SieveValueMatchUI extends SieveAbstractMatchTypeUI {
+
+  /**
+   * @inheritdoc
+   */
+  static nodeName() {
+    return "match-type/value";
+  }
+
+  /**
+   * @inheritdoc
+   */
+  static isCapable(capabilities) {
+    return capabilities.hasCapability("relational");
+  }
+
+  /**
+   * @inheritdoc
+   */
+  onLoad(sivElement) {
+
+    super.onLoad(sivElement);
+
+    this.getActiveItem().querySelector(".sieve-matchtype-value-relational").value =
+      ":value " + sivElement.getElement("relational-match").toScript();
+  }
+
+  /**
+   * @inheritdoc
+   */
+  // eslint-disable-next-line no-unused-vars
+  onSave(sivElement, item) {
+    sivElement.setElement(
+      this.getActiveItem().querySelector(".sieve-matchtype-value-relational").value);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./relational/templates/SieveMatchTypeValueUI.html";
+  }
+}
+
+SieveDesigner.register2(SieveValueMatchUI);
+SieveDesigner.register2(SieveCountMatchUI);

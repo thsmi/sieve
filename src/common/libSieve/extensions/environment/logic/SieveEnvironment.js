@@ -10,51 +10,42 @@
  *
  */
 
-(function () {
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
-  "use strict";
+// Usage:   environment [COMPARATOR] [MATCH-TYPE] <name: string> <key-list: string-list>
 
-  /* global SieveGrammar */
+const _environment = {
+  node: "test/environment",
+  type: "test",
 
-  if (!SieveGrammar)
-    throw new Error("Could not register Environment");
+  requires: "environment",
 
-  // Usage:   environment [COMPARATOR] [MATCH-TYPE] <name: string> <key-list: string-list>
+  token: "environment",
 
-  const _environment = {
-    node: "test/environment",
-    type: "test",
+  properties: [{
+    id: "tags",
+    optional: true,
 
-    requires: "environment",
-
-    token: "environment",
-
-    properties: [{
-      id: "tags",
-      optional: true,
-
-      elements: [{
-        id: "match-type",
-        type: "match-type"
-      }, {
-        id: "comparator",
-        type: "comparator"
-
-      }]
+    elements: [{
+      id: "match-type",
+      type: "match-type"
     }, {
-      id: "parameters",
-      elements: [{
-        id: "name",
-        type: "string",
-        value: '"domain"'
-      }, {
-        id: "keys",
-        type: "stringlist",
-        value: '"imap.example.com"'
-      }]
+      id: "comparator",
+      type: "comparator"
+
     }]
-  };
+  }, {
+    id: "parameters",
+    elements: [{
+      id: "name",
+      type: "string",
+      value: '"domain"'
+    }, {
+      id: "keys",
+      type: "stringlist",
+      value: '"imap.example.com"'
+    }]
+  }]
+};
 
-  SieveGrammar.addTest(_environment);
-
-})(this);
+SieveGrammar.addTest(_environment);

@@ -10,303 +10,296 @@
  *
  */
 
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
 
-(function () {
+import {
+  SieveTestDialogBoxUI,
+  SieveActionDialogBoxUI
+} from "./../../../toolkit/widgets/Boxes.js";
 
-  "use strict";
+import {
+  SieveStringListWidget,
+  SieveOverlayItemWidget
+} from "./../../../toolkit/widgets/Widgets.js";
 
-  /* global SieveDesigner */
+import { SieveMatchTypeWidget } from "./../../../extensions/RFC5228/widgets/SieveMatchTypesUI.js";
+import { SieveComparatorWidget } from "./../../../extensions/RFC5228/widgets/SieveComparatorsUI.js";
 
-  /* global SieveStringListWidget */
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
 
-  /* global SieveActionDialogBoxUI */
-  /* global SieveTestDialogBoxUI */
-
-  /* global SieveComparatorWidget */
-  /* global SieveMatchTypeWidget */
-
-  /* global SieveOverlayItemWidget */
-
-  /* global SieveTemplate */
+/**
+ * Provides an abstract UI for the flags actions.
+ */
+class SieveAbstractFlagUI extends SieveActionDialogBoxUI {
 
   /**
-   * Provides an abstract UI for the flags actions.
+   * Gets the currently set flags.
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's flags
    */
-  class SieveAbstractFlagUI extends SieveActionDialogBoxUI {
-
-    /**
-     * Gets the currently set flags.
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's flags
-     */
-    flags() {
-      return this.getSieve().getElement("flags");
-    }
-
-    /**
-     * @inheritdoc
-     */
-    onSave() {
-
-      (new SieveStringListWidget("#sivFlagKeywordList"))
-        .save(this.flags());
-      return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
-
-      (new SieveStringListWidget("#sivFlagKeywordList"))
-        .init(this.flags());
-    }
+  flags() {
+    return this.getSieve().getElement("flags");
   }
 
   /**
-   * Provides an UI for the set flag action
+   * @inheritdoc
    */
-  class SieveSetFlagUI extends SieveAbstractFlagUI {
+  onSave() {
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./imapflags/templates/SieveSetFlagActionUI.html";
-    }
+    (new SieveStringListWidget("#sivFlagKeywordList"))
+      .save(this.flags());
+    return true;
+  }
 
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
+
+    (new SieveStringListWidget("#sivFlagKeywordList"))
+      .init(this.flags());
+  }
+}
+
+/**
+ * Provides an UI for the set flag action
+ */
+class SieveSetFlagUI extends SieveAbstractFlagUI {
+
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./imapflags/templates/SieveSetFlagActionUI.html";
+  }
+
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div>
           <span data-i18n="setflag.summary"></span>
           <em class="sivSetflagFlags"></em>
          </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivSetflagFlags").textContent = this.flags().values().join(", ");
-      return elm;
-    }
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivSetflagFlags").textContent = this.flags().values().join(", ");
+    return elm;
+  }
+}
+
+/**
+ * Provides an UI for the add flag action
+ */
+class SieveAddFlagUI extends SieveAbstractFlagUI {
+
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./imapflags/templates/SieveAddFlagActionUI.html";
   }
 
   /**
-   * Provides an UI for the add flag action
+   * @inheritdoc
    */
-  class SieveAddFlagUI extends SieveAbstractFlagUI {
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./imapflags/templates/SieveAddFlagActionUI.html";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+  getSummary() {
+    const FRAGMENT =
+      `<div>
            <span data-i18n="addflag.summary"></span>
            <em class="sivAddflagFlags"></em>
          </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivAddflagFlags").textContent = this.flags().values().join(", ");
-      return elm;
-    }
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivAddflagFlags").textContent = this.flags().values().join(", ");
+    return elm;
   }
+}
 
+
+/**
+ * Provides an UI for the remove flag action
+ */
+class SieveRemoveFlagUI extends SieveAbstractFlagUI {
 
   /**
-   * Provides an UI for the remove flag action
+   * @inheritdoc
    */
-  class SieveRemoveFlagUI extends SieveAbstractFlagUI {
+  getTemplate() {
+    return "./imapflags/templates/SieveRemoveFlagActionUI.html";
+  }
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./imapflags/templates/SieveRemoveFlagActionUI.html";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div>
            <span data-i18n="removeflag.summary"></span>
            <em class="sivRemoveflagFlags"></em>
          </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivRemoveflagFlags").textContent = this.flags().values().join(", ");
-      return elm;
-    }
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivRemoveflagFlags").textContent = this.flags().values().join(", ");
+    return elm;
   }
+}
 
+
+/**
+ * Provides a UI for the has flag test
+ **/
+class SieveHasFlagUI extends SieveTestDialogBoxUI {
 
   /**
-   * Provides a UI for the has flag test
-   **/
-  class SieveHasFlagUI extends SieveTestDialogBoxUI {
+   * Gets the current match type
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's match type
+   */
+  matchtype() {
+    return this.getSieve().getElement("match-type");
+  }
 
-    /**
-     * Gets the current match type
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's match type
-     */
-    matchtype() {
-      return this.getSieve().getElement("match-type");
-    }
+  /**
+   * Gets te current operator
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's comparator
+   */
+  comparator() {
+    return this.getSieve().getElement("comparator");
+  }
 
-    /**
-     * Gets te current operator
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's comparator
-     */
-    comparator() {
-      return this.getSieve().getElement("comparator");
-    }
+  /**
+   * The currently set imap flags
+   *
+   * @returns {SieveAbstractElement}
+   *   the element's flags
+   */
+  flags() {
+    return this.getSieve().getElement("flags");
+  }
 
-    /**
-     * The currently set imap flags
-     *
-     * @returns {SieveAbstractElement}
-     *   the element's flags
-     */
-    flags() {
-      return this.getSieve().getElement("flags");
-    }
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
+    (new SieveMatchTypeWidget("#sivHasFlagMatchTypes"))
+      .init(this.matchtype());
 
-      (new SieveMatchTypeWidget("#sivHasFlagMatchTypes"))
-        .init(this.matchtype());
+    (new SieveComparatorWidget("#sivHasFlagComparator"))
+      .init(this.comparator());
 
-      (new SieveComparatorWidget("#sivHasFlagComparator"))
-        .init(this.comparator());
+    (new SieveStringListWidget("#sivHasFlagKeyList"))
+      .init(this.flags());
 
-      (new SieveStringListWidget("#sivHasFlagKeyList"))
-        .init(this.flags());
+  }
 
-    }
+  /**
+   * @inheritdoc
+   */
+  onSave() {
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
+    (new SieveMatchTypeWidget("#sivHasFlagMatchTypes"))
+      .save(this.matchtype());
 
-      (new SieveMatchTypeWidget("#sivHasFlagMatchTypes"))
-        .save(this.matchtype());
+    (new SieveComparatorWidget("#sivHasFlagComparator"))
+      .save(this.comparator());
 
-      (new SieveComparatorWidget("#sivHasFlagComparator"))
-        .save(this.comparator());
+    (new SieveStringListWidget("#sivHasFlagKeyList"))
+      .save(this.flags());
+    return true;
+  }
 
-      (new SieveStringListWidget("#sivHasFlagKeyList"))
-        .save(this.flags());
-      return true;
-    }
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./imapflags/templates/SieveHasFlagTestUI.html";
+  }
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./imapflags/templates/SieveHasFlagTestUI.html";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div>
          <span data-i18n="hasflag.summary"></span>
          <em class="sivHasflagFlags"></em>
        </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivHasflagFlags").textContent = this.flags().values().join(", ");
-      return elm;
-    }
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivHasflagFlags").textContent = this.flags().values().join(", ");
+    return elm;
+  }
+}
+
+/**
+ * Implements the create overlay for the fileinto action.
+ */
+class SieveFlagsTagWidget extends SieveOverlayItemWidget {
+
+  /**
+   * @inheritdoc
+   */
+  static nodeType() {
+    return "action/fileinto/";
+  }
+  /**
+   * @inheritdoc
+   */
+  static nodeName() {
+    return "action/fileinto/flags";
   }
 
   /**
-   * Implements the create overlay for the fileinto action.
+   * @inheritdoc
    */
-  class SieveFlagsTagWidget extends SieveOverlayItemWidget {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeType() {
-      return "action/fileinto/";
-    }
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "action/fileinto/flags";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static isCapable(capabilities) {
-      return capabilities.hasCapability("imap4flags");
-    }
-
-    /**
-     * @inheritdoc
-     **/
-    getTemplate() {
-      return "./imapflags/templates/SieveFlagsTag.html";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    load(sivElement) {
-
-      if (sivElement.enable("flags"))
-        document.querySelector("#sivFlagsCheckbox").checked = true;
-
-      (new SieveStringListWidget("#sivFlagKeyList"))
-        .init(sivElement.getElement("flags").getElement("flags"));
-    }
-
-    /**
-     * @inheritdoc
-     */
-    save(sivElement) {
-      if (document.querySelector("#sivFlagsCheckbox").checked) {
-        sivElement.enable("flags", true);
-        (new SieveStringListWidget("#sivFlagKeyList"))
-          .save(sivElement.getElement("flags").getElement("flags"));
-      } else
-        sivElement.enable("flags", false);
-    }
-
+  static isCapable(capabilities) {
+    return capabilities.hasCapability("imap4flags");
   }
 
-  if (!SieveDesigner)
-    throw new Error("Could not register IMAP Flags Widgets");
+  /**
+   * @inheritdoc
+   **/
+  getTemplate() {
+    return "./imapflags/templates/SieveFlagsTag.html";
+  }
 
-  SieveDesigner.register("action/setflag", SieveSetFlagUI);
-  SieveDesigner.register("action/addflag", SieveAddFlagUI);
-  SieveDesigner.register("action/removeflag", SieveRemoveFlagUI);
+  /**
+   * @inheritdoc
+   */
+  load(sivElement) {
 
-  SieveDesigner.register("test/hasflag", SieveHasFlagUI);
+    if (sivElement.enable("flags"))
+      document.querySelector("#sivFlagsCheckbox").checked = true;
 
-  SieveDesigner.register2(SieveFlagsTagWidget);
+    (new SieveStringListWidget("#sivFlagKeyList"))
+      .init(sivElement.getElement("flags").getElement("flags"));
+  }
 
-})(window);
+  /**
+   * @inheritdoc
+   */
+  save(sivElement) {
+    if (document.querySelector("#sivFlagsCheckbox").checked) {
+      sivElement.enable("flags", true);
+      (new SieveStringListWidget("#sivFlagKeyList"))
+        .save(sivElement.getElement("flags").getElement("flags"));
+    } else
+      sivElement.enable("flags", false);
+  }
+
+}
+
+SieveDesigner.register("action/setflag", SieveSetFlagUI);
+SieveDesigner.register("action/addflag", SieveAddFlagUI);
+SieveDesigner.register("action/removeflag", SieveRemoveFlagUI);
+
+SieveDesigner.register("test/hasflag", SieveHasFlagUI);
+
+SieveDesigner.register2(SieveFlagsTagWidget);

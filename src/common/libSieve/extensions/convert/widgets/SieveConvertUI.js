@@ -10,206 +10,203 @@
  *
  */
 
-(function () {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
 
-  "use strict";
+import {
+  SieveTestDialogBoxUI,
+  SieveActionDialogBoxUI
+} from "./../../../toolkit/widgets/Boxes.js";
 
-  /* global SieveTestDialogBoxUI */
-  /* global SieveActionDialogBoxUI */
-  /* global SieveStringListWidget */
-  /* global SieveStringWidget */
-  /* global SieveDesigner */
+import {
+  SieveStringListWidget,
+  SieveStringWidget
+} from "./../../../toolkit/widgets/Widgets.js";
 
-  /* global SieveTemplate */
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+
+
+/**
+ * Provides a ui for the convert test
+ */
+class SieveConvertTestUI extends SieveTestDialogBoxUI {
 
   /**
-   * Provides a ui for the convert test
+   * The source media type which should be converted
+   *
+   * @returns {SieveString}
+   *   the element's from media type
    */
-  class SieveConvertTestUI extends SieveTestDialogBoxUI {
+  from() {
+    return this.getSieve().getElement("from");
+  }
 
-    /**
-     * The source media type which should be converted
-     *
-     * @returns {SieveString}
-     *   the element's from media type
-     */
-    from() {
-      return this.getSieve().getElement("from");
-    }
+  /**
+   * The target media type to which the content should be converted.
+   *
+   * @returns {SieveString}
+   *   the element's to media type
+   */
+  to() {
+    return this.getSieve().getElement("to");
+  }
 
-    /**
-     * The target media type to which the content should be converted.
-     *
-     * @returns {SieveString}
-     *   the element's to media type
-     */
-    to() {
-      return this.getSieve().getElement("to");
-    }
+  /**
+   * A list with transcoding instructions. They are used to
+   * control and configure the conversion.
+   *
+   * @returns {SieveStringList}
+   *   a string list with transcoding instructions.
+   */
+  transcoding() {
+    return this.getSieve().getElement("transcoding");
+  }
 
-    /**
-     * A list with transcoding instructions. They are used to
-     * control and configure the conversion.
-     *
-     * @returns {SieveStringList}
-     *   a string list with transcoding instructions.
-     */
-    transcoding() {
-      return this.getSieve().getElement("transcoding");
-    }
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./convert/templates/SieveConvertUI.html";
+  }
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./convert/templates/SieveConvertUI.html";
-    }
+  /**
+   * @inheritdoc
+   */
+  onSave() {
+    (new SieveStringListWidget("#sivConvertTranscoding"))
+      .save(this.transcoding());
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
-      (new SieveStringListWidget("#sivConvertTranscoding"))
-        .save(this.transcoding());
+    (new SieveStringWidget("#sivConvertTo"))
+      .save(this.to());
 
-      (new SieveStringWidget("#sivConvertTo"))
-        .save(this.to());
+    (new SieveStringWidget("#sivConvertFrom"))
+      .save(this.from());
+    return true;
+  }
 
-      (new SieveStringWidget("#sivConvertFrom"))
-        .save(this.from());
-      return true;
-    }
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
+    (new SieveStringListWidget("#sivConvertTranscoding"))
+      .init(this.transcoding());
 
-      (new SieveStringListWidget("#sivConvertTranscoding"))
-        .init(this.transcoding());
+    (new SieveStringWidget("#sivConvertTo"))
+      .init(this.to());
+    (new SieveStringWidget("#sivConvertFrom"))
+      .init(this.from());
+  }
 
-      (new SieveStringWidget("#sivConvertTo"))
-        .init(this.to());
-      (new SieveStringWidget("#sivConvertFrom"))
-        .init(this.from());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div>
          <span data-i18n="convert.summary.from"></span>
          <em class="sivConvertTo"></em>
          <span data-i18n="convert.summary.to"></span>
          <em class="sivConvertFrom"></em>
        </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivConvertFrom").textContent = this.from().value();
-      elm.querySelector(".sivConvertTo").textContent = this.to().value();
-      return elm;
-    }
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivConvertFrom").textContent = this.from().value();
+    elm.querySelector(".sivConvertTo").textContent = this.to().value();
+    return elm;
   }
+}
 
+
+/**
+ * Provides a ui for the convert action
+ */
+class SieveConvertActionUI extends SieveActionDialogBoxUI {
 
   /**
-   * Provides a ui for the convert action
+   * The source media type which should be converted
+   *
+   * @returns {SieveString}
+   *   the element's from media type
    */
-  class SieveConvertActionUI extends SieveActionDialogBoxUI {
+  from() {
+    return this.getSieve().getElement("from");
+  }
 
-    /**
-     * The source media type which should be converted
-     *
-     * @returns {SieveString}
-     *   the element's from media type
-     */
-    from() {
-      return this.getSieve().getElement("from");
-    }
+  /**
+   * The target media type to which the content should be converted.
+   *
+   * @returns {SieveString}
+   *   the element's to media type
+   */
+  to() {
+    return this.getSieve().getElement("to");
+  }
 
-    /**
-     * The target media type to which the content should be converted.
-     *
-     * @returns {SieveString}
-     *   the element's to media type
-     */
-    to() {
-      return this.getSieve().getElement("to");
-    }
+  /**
+   * A list with transcoding instructions. They are used to
+   * control and configure the conversion.
+   *
+   * @returns {SieveStringList}
+   *   a string list with transcoding instructions.
+   */
+  transcoding() {
+    return this.getSieve().getElement("transcoding");
+  }
 
-    /**
-     * A list with transcoding instructions. They are used to
-     * control and configure the conversion.
-     *
-     * @returns {SieveStringList}
-     *   a string list with transcoding instructions.
-     */
-    transcoding() {
-      return this.getSieve().getElement("transcoding");
-    }
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./convert/templates/SieveConvertUI.html";
+  }
 
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./convert/templates/SieveConvertUI.html";
-    }
+  /**
+   * @inheritdoc
+   */
+  onSave() {
+    (new SieveStringListWidget("#sivConvertTranscoding"))
+      .save(this.transcoding());
 
-    /**
-     * @inheritdoc
-     */
-    onSave() {
-      (new SieveStringListWidget("#sivConvertTranscoding"))
-        .save(this.transcoding());
+    (new SieveStringWidget("#sivConvertTo"))
+      .save(this.to());
 
-      (new SieveStringWidget("#sivConvertTo"))
-        .save(this.to());
+    (new SieveStringWidget("#sivConvertFrom"))
+      .save(this.from());
+    return true;
+  }
 
-      (new SieveStringWidget("#sivConvertFrom"))
-        .save(this.from());
-      return true;
-    }
+  /**
+   * @inheritdoc
+   */
+  onLoad() {
 
-    /**
-     * @inheritdoc
-     */
-    onLoad() {
+    (new SieveStringListWidget("#sivConvertTranscoding"))
+      .init(this.transcoding());
 
-      (new SieveStringListWidget("#sivConvertTranscoding"))
-        .init(this.transcoding());
+    (new SieveStringWidget("#sivConvertTo"))
+      .init(this.to());
+    (new SieveStringWidget("#sivConvertFrom"))
+      .init(this.from());
+  }
 
-      (new SieveStringWidget("#sivConvertTo"))
-        .init(this.to());
-      (new SieveStringWidget("#sivConvertFrom"))
-        .init(this.from());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getSummary() {
-      const FRAGMENT =
-        `<div>
+  /**
+   * @inheritdoc
+   */
+  getSummary() {
+    const FRAGMENT =
+      `<div>
          <span data-i18n="convert.summary.from"></span>
          <em class="sivConvertTo"></em>
          <span data-i18n="convert.summary.to"></span>
          <em class="sivConvertFrom"></em>
        </div>`;
 
-      const elm = (new SieveTemplate()).convert(FRAGMENT);
-      elm.querySelector(".sivConvertFrom").textContent = this.from().value();
-      elm.querySelector(".sivConvertTo").textContent = this.to().value();
-      return elm;
-    }
+    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    elm.querySelector(".sivConvertFrom").textContent = this.from().value();
+    elm.querySelector(".sivConvertTo").textContent = this.to().value();
+    return elm;
   }
+}
 
-
-  if (!SieveDesigner)
-    throw new Error("Could not register Convert Extension");
-
-  SieveDesigner.register("test/convert", SieveConvertTestUI);
-  SieveDesigner.register("action/convert", SieveConvertActionUI);
-
-})(window);
+SieveDesigner.register("test/convert", SieveConvertTestUI);
+SieveDesigner.register("action/convert", SieveConvertActionUI);

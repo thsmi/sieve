@@ -10,136 +10,127 @@
  *
  */
 
-(function () {
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
-  "use strict";
+const _return = {
+  node: "action/return",
+  type: "action",
+  token: "return",
 
-  /* global SieveGrammar */
+  requires: "include"
+};
 
-  if (!SieveGrammar)
-    throw new Error("Could not register Include Grammar");
-
-  const _return = {
-    node: "action/return",
-    type: "action",
-    token: "return",
-
-    requires: "include"
-  };
-
-  SieveGrammar.addAction(_return);
+SieveGrammar.addAction(_return);
 
 
-  const _global = {
-    node: "action/global",
-    type: "action",
-    token: "global",
+const _global = {
+  node: "action/global",
+  type: "action",
+  token: "global",
 
-    requires: { all : ["include", "variables"] },
+  requires: { all: ["include", "variables"] },
 
-    properties: [{
-      id: "parameters",
+  properties: [{
+    id: "parameters",
 
-      elements: [{
-        id: "variables",
+    elements: [{
+      id: "variables",
 
-        type: "stringlist",
-        value: '"Example"'
-      }]
+      type: "stringlist",
+      value: '"Example"'
     }]
-  };
+  }]
+};
 
-  SieveGrammar.addAction(_global);
-
-
-  const _once = {
-    node: "action/include/once",
-    type: "action/include/once",
-
-    requires: "include",
-
-    token: ":once"
-  };
-
-  SieveGrammar.addTag(_once);
+SieveGrammar.addAction(_global);
 
 
-  const _optional = {
-    node: "action/include/optional",
-    type: "action/include/optional",
+const _once = {
+  node: "action/include/once",
+  type: "action/include/once",
 
-    requires: "include",
+  requires: "include",
 
-    token: ":optional"
-  };
+  token: ":once"
+};
 
-  SieveGrammar.addTag(_optional);
-
-
-  const globallocation = {
-    node: "tag/location-type/global",
-    type: "tag/location-type/",
-
-    token: ":global"
-  };
-
-  SieveGrammar.addTag(globallocation);
+SieveGrammar.addTag(_once);
 
 
-  const personallocation = {
-    node: "tag/location-type/personal",
-    type: "tag/location-type/",
+const _optional = {
+  node: "action/include/optional",
+  type: "action/include/optional",
 
-    token: ":personal"
-  };
+  requires: "include",
 
-  SieveGrammar.addTag(personallocation);
+  token: ":optional"
+};
 
-
-  SieveGrammar.addGroup({
-    node: "tag/location-type",
-    type: "tag/location-type",
-
-    value: ":personal",
-
-    items: ["tag/location-type/"]
-  });
+SieveGrammar.addTag(_optional);
 
 
-  const _include = {
-    node: "action/include",
-    type: "action",
+const globallocation = {
+  node: "tag/location-type/global",
+  type: "tag/location-type/",
 
-    token: "include",
+  token: ":global"
+};
 
-    requires: "include",
+SieveGrammar.addTag(globallocation);
 
-    properties: [{
-      id: "tags",
-      optional: true,
 
-      elements: [{
-        id: "location",
-        type: "tag/location-type"
-      }, {
-        id: "once",
-        type: "action/include/once"
-      }, {
-        id: "optional",
-        type: "action/include/optional"
-      }]
+const personallocation = {
+  node: "tag/location-type/personal",
+  type: "tag/location-type/",
+
+  token: ":personal"
+};
+
+SieveGrammar.addTag(personallocation);
+
+
+SieveGrammar.addGroup({
+  node: "tag/location-type",
+  type: "tag/location-type",
+
+  value: ":personal",
+
+  items: ["tag/location-type/"]
+});
+
+
+const _include = {
+  node: "action/include",
+  type: "action",
+
+  token: "include",
+
+  requires: "include",
+
+  properties: [{
+    id: "tags",
+    optional: true,
+
+    elements: [{
+      id: "location",
+      type: "tag/location-type"
     }, {
-      id: "parameters",
-
-      elements: [{
-        id: "script",
-        type: "string",
-
-        value: '"Example"'
-      }]
+      id: "once",
+      type: "action/include/once"
+    }, {
+      id: "optional",
+      type: "action/include/optional"
     }]
-  };
+  }, {
+    id: "parameters",
 
-  SieveGrammar.addAction(_include);
+    elements: [{
+      id: "script",
+      type: "string",
 
-})(this);
+      value: '"Example"'
+    }]
+  }]
+};
+
+SieveGrammar.addAction(_include);

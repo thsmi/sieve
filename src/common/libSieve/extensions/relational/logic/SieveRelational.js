@@ -10,125 +10,117 @@
  *
  */
 
-(function () {
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
-  "use strict";
-  /* global SieveGrammar */
+/*
+  relational-match = DQUOTE
+          ("gt" / "ge" / "lt" / "le" / "eq" / "ne") DQUOTE
+          ; "gt" means "greater than", the C operator ">".
+          ; "ge" means "greater than or equal", the C operator ">=".
+          ; "lt" means "less than", the C operator "<".
+          ; "le" means "less than or equal", the C operator "<=".
+          ; "eq" means "equal to", the C operator "==".
+          ; "ne" means "not equal to", the C operator "!=".
+ */
 
-  if (!SieveGrammar)
-    throw new Error("Could not register Relational");
+SieveGrammar.addTag({
+  node: "relational-match/gt",
+  type: "relational-match/",
 
-  /*
-    relational-match = DQUOTE
-            ("gt" / "ge" / "lt" / "le" / "eq" / "ne") DQUOTE
-            ; "gt" means "greater than", the C operator ">".
-            ; "ge" means "greater than or equal", the C operator ">=".
-            ; "lt" means "less than", the C operator "<".
-            ; "le" means "less than or equal", the C operator "<=".
-            ; "eq" means "equal to", the C operator "==".
-            ; "ne" means "not equal to", the C operator "!=".
-   */
+  token: '"gt"'
+});
 
-  SieveGrammar.addTag({
-    node: "relational-match/gt",
-    type: "relational-match/",
+SieveGrammar.addTag({
+  node: "relational-match/ge",
+  type: "relational-match/",
 
-    token: '"gt"'
-  });
+  token: '"ge"'
+});
 
-  SieveGrammar.addTag({
-    node: "relational-match/ge",
-    type: "relational-match/",
+SieveGrammar.addTag({
+  node: "relational-match/lt",
+  type: "relational-match/",
 
-    token: '"ge"'
-  });
+  token: '"lt"'
+});
 
-  SieveGrammar.addTag({
-    node: "relational-match/lt",
-    type: "relational-match/",
+SieveGrammar.addTag({
+  node: "relational-match/le",
+  type: "relational-match/",
 
-    token: '"lt"'
-  });
+  token: '"le"'
+});
 
-  SieveGrammar.addTag({
-    node: "relational-match/le",
-    type: "relational-match/",
+SieveGrammar.addTag({
+  node: "relational-match/eq",
+  type: "relational-match/",
 
-    token: '"le"'
-  });
+  token: '"eq"'
+});
 
-  SieveGrammar.addTag({
-    node: "relational-match/eq",
-    type: "relational-match/",
+SieveGrammar.addTag({
+  node: "relational-match/ne",
+  type: "relational-match/",
 
-    token: '"eq"'
-  });
+  token: '"ne"'
+});
 
-  SieveGrammar.addTag({
-    node: "relational-match/ne",
-    type: "relational-match/",
+SieveGrammar.addGroup({
+  node: "relational-match",
+  type: "relational-match",
 
-    token: '"ne"'
-  });
+  value: '"eq"',
 
-  SieveGrammar.addGroup({
-    node: "relational-match",
-    type: "relational-match",
+  items: ["relational-match/"]
+});
 
-    value: '"eq"',
+/**
+ * The value match type does a relational comparison between strings
+ *
+ *  VALUE = ":value" relational-match
+ */
+SieveGrammar.addTag({
+  node: "match-type/value",
+  type: "match-type/",
 
-    items: ["relational-match/"]
-  });
+  token: ":value",
 
-  /**
-   * The value match type does a relational comparison between strings
-   *
-   *  VALUE = ":value" relational-match
-   */
-  SieveGrammar.addTag({
-    node: "match-type/value",
-    type: "match-type/",
+  requires: "relational",
 
-    token: ":value",
+  properties: [{
+    id: "parameters",
 
-    requires: "relational",
+    elements: [{
+      id: "relational-match",
+      type: "relational-match",
 
-    properties: [{
-      id: "parameters",
-
-      elements: [{
-        id: "relational-match",
-        type: "relational-match",
-
-        value: '"eq"'
-      }]
+      value: '"eq"'
     }]
-  });
+  }]
+});
 
-  /**
-   * The count match type determines the number of the specified entities in the
-   * message and then does a relational comparison of numbers of entities
-   *
-   * Count should only be used with a numeric comparator.
-   */
-  SieveGrammar.addTag({
-    node: "match-type/count",
-    type: "match-type/",
+/**
+ * The count match type determines the number of the specified entities in the
+ * message and then does a relational comparison of numbers of entities
+ *
+ * Count should only be used with a numeric comparator.
+ */
+SieveGrammar.addTag({
+  node: "match-type/count",
+  type: "match-type/",
 
-    token: ":count",
+  token: ":count",
 
-    requires: "relational",
+  requires: "relational",
 
-    properties: [{
-      id: "parameters",
+  properties: [{
+    id: "parameters",
 
-      elements: [{
-        id: "relational-match",
-        type: "relational-match",
+    elements: [{
+      id: "relational-match",
+      type: "relational-match",
 
-        value: '"eq"'
-      }]
+      value: '"eq"'
     }]
-  });
-
-})(this);
+  }]
+});

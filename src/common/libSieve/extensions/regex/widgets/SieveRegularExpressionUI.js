@@ -10,43 +10,34 @@
  *
  */
 
-(function () {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
+import { SieveAbstractMatchTypeUI } from "./../../../extensions/RFC5228/widgets/SieveMatchTypesUI.js";
 
-  "use strict";
-
-  /* global SieveAbstractMatchTypeUI */
-  /* global SieveDesigner */
+/**
+ * Provides an UI for the RegEx match type.
+ */
+class SieveRegExMatchUI extends SieveAbstractMatchTypeUI {
 
   /**
-   * Provides an UI for the RegEx match type.
+   * @inheritdoc
    */
-  class SieveRegExMatchUI extends SieveAbstractMatchTypeUI {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "match-type/regex";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static isCapable(capabilities) {
-      return capabilities.hasCapability("regex");
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getTemplate() {
-      return "./regex/templates/SieveMatchTypeRegExUI.html";
-    }
+  static nodeName() {
+    return "match-type/regex";
   }
 
-  if (!SieveDesigner)
-    throw new Error("Could not register Regex Widgets");
+  /**
+   * @inheritdoc
+   */
+  static isCapable(capabilities) {
+    return capabilities.hasCapability("regex");
+  }
 
-  SieveDesigner.register2(SieveRegExMatchUI);
+  /**
+   * @inheritdoc
+   */
+  getTemplate() {
+    return "./regex/templates/SieveMatchTypeRegExUI.html";
+  }
+}
 
-})(window);
+SieveDesigner.register2(SieveRegExMatchUI);

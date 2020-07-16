@@ -10,40 +10,30 @@
  *
  */
 
-(function () {
-
-  "use strict";
-
-  /* global SieveGrammar */
-
-  if (!SieveGrammar)
-    throw new Error("Could not register AddressParts");
-
-  const userpart = {
-    node: "address-part/user",
-    type: "address-part/",
-
-    requires: "subaddress",
-
-    token: ":user"
-  };
-
-  SieveGrammar.addTag(userpart);
-
-
-  const detailpart = {
-    node: "address-part/detail",
-    type: "address-part/",
-
-    requires: "subaddress",
-
-    token: ":detail"
-  };
-
-  SieveGrammar.addTag(detailpart);
-
-})(this);
-
+import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.js"
 
 //   :user "+" :detail "@" :domain
 // \----:local-part----/
+
+const userpart = {
+  node: "address-part/user",
+  type: "address-part/",
+
+  requires: "subaddress",
+
+  token: ":user"
+};
+
+SieveGrammar.addTag(userpart);
+
+
+const detailpart = {
+  node: "address-part/detail",
+  type: "address-part/",
+
+  requires: "subaddress",
+
+  token: ":detail"
+};
+
+SieveGrammar.addTag(detailpart);

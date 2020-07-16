@@ -10,94 +10,85 @@
 *
 */
 
-(function () {
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
+import { SieveOverlayItemWidget } from "./../../../toolkit/widgets/Widgets.js";
 
-  "use strict";
-
-  /* global SieveDesigner */
-  /* global SieveOverlayItemWidget */
-
-  if (!SieveDesigner)
-    throw new Error("Could not register Copy Extension");
+/**
+ * Implements an abstract overlay widget which is used by
+ * the copy overlay for the fileinto action as well as the
+ * redirect action.
+ */
+class SieveAbstractCopyWidget extends SieveOverlayItemWidget {
 
   /**
-   * Implements an abstract overlay widget which is used by
-   * the copy overlay for the fileinto action as well as the
-   * redirect action.
-   */
-  class SieveAbstractCopyWidget extends SieveOverlayItemWidget {
-
-    /**
-     * @inheritdoc
-     **/
-    getTemplate() {
-      return "./copy/templates/SieveCopyTag.html";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static isCapable(capabilities) {
-      return capabilities.hasCapability("copy");
-    }
-
-    /**
-     * @inheritdoc
-     */
-    load(sivElement) {
-      if (sivElement.enable("copy"))
-        document.querySelector("#sivCopyCheckbox").checked = true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    save(sivElement) {
-      sivElement.enable("copy",
-        document.querySelector("#sivCopyCheckbox").checked);
-    }
+   * @inheritdoc
+   **/
+  getTemplate() {
+    return "./copy/templates/SieveCopyTag.html";
   }
 
   /**
-   * Implements an overlay for the copy fileinto overlay.
+   * @inheritdoc
    */
-  class SieveCopyFileIntoWidget extends SieveAbstractCopyWidget {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeType() {
-      return "action/fileinto/";
-    }
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "action/fileinto/copy";
-    }
+  static isCapable(capabilities) {
+    return capabilities.hasCapability("copy");
   }
 
   /**
-   * Implements an overlay for the copy redirect overlay
+   * @inheritdoc
    */
-  class SieveCopyRedirectWidget extends SieveAbstractCopyWidget {
-
-    /**
-     * @inheritdoc
-     */
-    static nodeType() {
-      return "action/redirect/";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static nodeName() {
-      return "action/redirect/copy";
-    }
+  load(sivElement) {
+    if (sivElement.enable("copy"))
+      document.querySelector("#sivCopyCheckbox").checked = true;
   }
 
-  SieveDesigner.register2(SieveCopyFileIntoWidget);
-  SieveDesigner.register2(SieveCopyRedirectWidget);
+  /**
+   * @inheritdoc
+   */
+  save(sivElement) {
+    sivElement.enable("copy",
+      document.querySelector("#sivCopyCheckbox").checked);
+  }
+}
 
-})(window);
+/**
+ * Implements an overlay for the copy fileinto overlay.
+ */
+class SieveCopyFileIntoWidget extends SieveAbstractCopyWidget {
+
+  /**
+   * @inheritdoc
+   */
+  static nodeType() {
+    return "action/fileinto/";
+  }
+  /**
+   * @inheritdoc
+   */
+  static nodeName() {
+    return "action/fileinto/copy";
+  }
+}
+
+/**
+ * Implements an overlay for the copy redirect overlay
+ */
+class SieveCopyRedirectWidget extends SieveAbstractCopyWidget {
+
+  /**
+   * @inheritdoc
+   */
+  static nodeType() {
+    return "action/redirect/";
+  }
+
+  /**
+   * @inheritdoc
+   */
+  static nodeName() {
+    return "action/redirect/copy";
+  }
+}
+
+SieveDesigner.register2(SieveCopyFileIntoWidget);
+SieveDesigner.register2(SieveCopyRedirectWidget);

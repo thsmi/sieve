@@ -57,7 +57,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./variables/templates/SieveSetActionUI.html";
+      return "./extensions/variables/templates/SieveSetActionUI.html";
     }
 
     /**
@@ -149,7 +149,7 @@
      * @inheritdoc
      **/
     getTemplate() {
-      return "./variables/templates/SieveCaseUI.html";
+      return "./extensions/variables/templates/SieveCaseUI.html";
     }
 
     /**
@@ -230,7 +230,7 @@
      * @inheritdoc
      **/
     getTemplate() {
-      return "./variables/templates/SieveCaseFirstUI.html";
+      return "./extensions/variables/templates/SieveCaseFirstUI.html";
     }
 
     /**
@@ -310,7 +310,7 @@
      * @inheritdoc
      **/
     getTemplate() {
-      return "./variables/templates/SieveQuotewildcardUI.html";
+      return "./extensions/variables/templates/SieveQuotewildcardUI.html";
     }
 
     /**
@@ -366,7 +366,7 @@
      * @inheritdoc
      **/
     getTemplate() {
-      return "./variables/templates/SieveLengthUI.html";
+      return "./extensions/variables/templates/SieveLengthUI.html";
     }
 
     /**
@@ -451,7 +451,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./variables/templates/SieveStringTestUI.html";
+      return "./extensions/variables/templates/SieveStringTestUI.html";
     }
 
     /**

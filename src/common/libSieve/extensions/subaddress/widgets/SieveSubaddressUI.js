@@ -43,7 +43,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./subaddress/templates/SieveAddressPartUser.html";
+      return "./extensions/subaddress/templates/SieveAddressPartUser.html";
     }
   }
 
@@ -70,7 +70,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./subaddress/templates/SieveAddressPartDetail.html";
+      return "./extensions/subaddress/templates/SieveAddressPartDetail.html";
     }
   }
 

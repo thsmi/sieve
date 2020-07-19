@@ -91,7 +91,7 @@
      * @inheritdoc
      **/
     getTemplate() {
-      return "./RFC5228/templates/SieveAllOfAnyOfOperator.html";
+      return "./extensions/RFC5228/templates/SieveAllOfAnyOfOperator.html";
     }
 
     /**

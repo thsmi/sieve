@@ -73,7 +73,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./date/templates/SieveZoneOriginal.html";
+      return "./extensions/date/templates/SieveZoneOriginal.html";
     }
   }
 
@@ -93,7 +93,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./date/templates/SieveZoneCustom.html";
+      return "./extensions/date/templates/SieveZoneCustom.html";
     }
 
     /**
@@ -195,7 +195,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./date/templates/SieveDateTestUI.html";
+      return "./extensions/date/templates/SieveDateTestUI.html";
     }
 
     /**
@@ -330,7 +330,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./date/templates/SieveCurrentDateTestUI.html";
+      return "./extensions/date/templates/SieveCurrentDateTestUI.html";
     }
 
     /**

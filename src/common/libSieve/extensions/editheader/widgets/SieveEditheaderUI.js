@@ -65,7 +65,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./editheader/templates/SieveAddHeaderActionUI.html";
+      return "./extensions/editheader/templates/SieveAddHeaderActionUI.html";
     }
 
     /**
@@ -176,7 +176,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./editheader/templates/SieveDeleteHeaderActionUI.html";
+      return "./extensions/editheader/templates/SieveDeleteHeaderActionUI.html";
     }
 
     /**

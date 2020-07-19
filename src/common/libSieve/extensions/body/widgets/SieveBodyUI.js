@@ -75,7 +75,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./body/templates/SieveBodyTransformRaw.html";
+      return "./extensions/body/templates/SieveBodyTransformRaw.html";
     }
   }
 
@@ -95,7 +95,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./body/templates/SieveBodyTransformText.html";
+      return "./extensions/body/templates/SieveBodyTransformText.html";
     }
   }
 
@@ -115,7 +115,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./body/templates/SieveBodyTransformContent.html";
+      return "./extensions/body/templates/SieveBodyTransformContent.html";
     }
 
     /**
@@ -249,7 +249,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./body/templates/SieveBodyTestUI.html";
+      return "./extensions/body/templates/SieveBodyTestUI.html";
     }
 
     /**

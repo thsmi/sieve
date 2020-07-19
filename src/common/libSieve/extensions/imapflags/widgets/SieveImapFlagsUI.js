@@ -73,7 +73,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./imapflags/templates/SieveSetFlagActionUI.html";
+      return "./extensions/imapflags/templates/SieveSetFlagActionUI.html";
     }
 
     /**
@@ -101,7 +101,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./imapflags/templates/SieveAddFlagActionUI.html";
+      return "./extensions/imapflags/templates/SieveAddFlagActionUI.html";
     }
 
     /**
@@ -130,7 +130,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./imapflags/templates/SieveRemoveFlagActionUI.html";
+      return "./extensions/imapflags/templates/SieveRemoveFlagActionUI.html";
     }
 
     /**
@@ -221,7 +221,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./imapflags/templates/SieveHasFlagTestUI.html";
+      return "./extensions/imapflags/templates/SieveHasFlagTestUI.html";
     }
 
     /**
@@ -269,7 +269,7 @@
      * @inheritdoc
      **/
     getTemplate() {
-      return "./imapflags/templates/SieveFlagsTag.html";
+      return "./extensions/imapflags/templates/SieveFlagsTag.html";
     }
 
     /**

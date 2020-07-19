@@ -50,7 +50,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./pipe/templates/SieveExecuteUI.html";
+      return "./extensions/pipe/templates/SieveExecuteUI.html";
     }
 
     /**
@@ -247,7 +247,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./pipe/templates/SieveFilterUI.html";
+      return "./extensions/pipe/templates/SieveFilterUI.html";
     }
 
     /**
@@ -332,7 +332,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./pipe/templates/SievePipeUI.html";
+      return "./extensions/pipe/templates/SievePipeUI.html";
     }
 
     /**

@@ -40,7 +40,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./regex/templates/SieveMatchTypeRegExUI.html";
+      return "./extensions/regex/templates/SieveMatchTypeRegExUI.html";
     }
   }
 

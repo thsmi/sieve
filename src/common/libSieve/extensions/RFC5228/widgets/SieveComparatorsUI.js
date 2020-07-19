@@ -68,7 +68,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveComparatorOctet.html";
+      return "./extensions/RFC5228/templates/SieveComparatorOctet.html";
     }
   }
 
@@ -88,7 +88,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveComparatorAsciiCasemap.html";
+      return "./extensions/RFC5228/templates/SieveComparatorAsciiCasemap.html";
     }
   }
 
@@ -116,7 +116,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveComparatorAsciiNumeric.html";
+      return "./extensions/RFC5228/templates/SieveComparatorAsciiNumeric.html";
     }
   }
 

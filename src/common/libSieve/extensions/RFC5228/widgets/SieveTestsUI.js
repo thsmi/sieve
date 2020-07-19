@@ -37,7 +37,7 @@
      * @inheritdoc
      **/
     getTemplate() {
-      return "./RFC5228/templates/SieveSizeTestUI.html";
+      return "./extensions/RFC5228/templates/SieveSizeTestUI.html";
     }
 
     /**
@@ -112,7 +112,7 @@
      * @inheritdoc
      **/
     getTemplate() {
-      return "./RFC5228/templates/SieveBooleanTest.html";
+      return "./extensions/RFC5228/templates/SieveBooleanTest.html";
     }
 
     /**
@@ -191,7 +191,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveExistsTestUI.html";
+      return "./extensions/RFC5228/templates/SieveExistsTestUI.html";
     }
 
     /**
@@ -279,7 +279,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveHeaderTestUI.html";
+      return "./extensions/RFC5228/templates/SieveHeaderTestUI.html";
     }
 
     /**
@@ -398,7 +398,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveAddressTestUI.html";
+      return "./extensions/RFC5228/templates/SieveAddressTestUI.html";
     }
 
     /**
@@ -530,7 +530,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveEnvelopeTestUI.html";
+      return "./extensions/RFC5228/templates/SieveEnvelopeTestUI.html";
     }
 
     /**

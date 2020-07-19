@@ -59,7 +59,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./relational/templates/SieveMatchTypeCountUI.html";
+      return "./extensions/relational/templates/SieveMatchTypeCountUI.html";
     }
 
   }
@@ -107,7 +107,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./relational/templates/SieveMatchTypeValueUI.html";
+      return "./extensions/relational/templates/SieveMatchTypeValueUI.html";
     }
   }
 

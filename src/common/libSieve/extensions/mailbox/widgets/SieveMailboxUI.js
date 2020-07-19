@@ -41,7 +41,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./mailbox/templates/SieveMailboxExistsTest.html";
+      return "./extensions/mailbox/templates/SieveMailboxExistsTest.html";
     }
 
     /**
@@ -139,7 +139,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./mailbox/templates/SieveMetaDataExistsTest.html";
+      return "./extensions/mailbox/templates/SieveMetaDataExistsTest.html";
     }
 
     /**
@@ -267,7 +267,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./mailbox/templates/SieveMetaDataTest.html";
+      return "./extensions/mailbox/templates/SieveMetaDataTest.html";
     }
 
     /**
@@ -338,7 +338,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./mailbox/templates/SieveServerMetaDataExistsTest.html";
+      return "./extensions/mailbox/templates/SieveServerMetaDataExistsTest.html";
     }
 
     /**
@@ -445,7 +445,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./mailbox/templates/SieveServerMetaDataTest.html";
+      return "./extensions/mailbox/templates/SieveServerMetaDataTest.html";
     }
 
     /**
@@ -503,7 +503,7 @@
      * @inheritdoc
      **/
     getTemplate() {
-      return "./mailbox/templates/SieveCreateTag.html";
+      return "./extensions/mailbox/templates/SieveCreateTag.html";
     }
 
     /**

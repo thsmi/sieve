@@ -68,7 +68,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveMatchTypeContainsUI.html";
+      return "./extensions/RFC5228/templates/SieveMatchTypeContainsUI.html";
     }
   }
 
@@ -89,7 +89,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveMatchTypeIsUI.html";
+      return "./extensions/RFC5228/templates/SieveMatchTypeIsUI.html";
     }
   }
 
@@ -110,7 +110,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveMatchTypeMatchesUI.html";
+      return "./extensions/RFC5228/templates/SieveMatchTypeMatchesUI.html";
     }
 
   }

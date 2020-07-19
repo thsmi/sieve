@@ -62,7 +62,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./convert/templates/SieveConvertUI.html";
+      return "./extensions/convert/templates/SieveConvertUI.html";
     }
 
     /**
@@ -154,7 +154,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./convert/templates/SieveConvertUI.html";
+      return "./extensions/convert/templates/SieveConvertUI.html";
     }
 
     /**

@@ -68,7 +68,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveAddressPartAll.html";
+      return "./extensions/RFC5228/templates/SieveAddressPartAll.html";
     }
   }
 
@@ -89,7 +89,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveAddressPartDomain.html";
+      return "./extensions/RFC5228/templates/SieveAddressPartDomain.html";
     }
   }
 
@@ -110,7 +110,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveAddressPartLocal.html";
+      return "./extensions/RFC5228/templates/SieveAddressPartLocal.html";
     }
   }
 

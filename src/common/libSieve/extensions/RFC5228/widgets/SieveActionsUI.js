@@ -28,7 +28,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveStopActionUI.html";
+      return "./extensions/RFC5228/templates/SieveStopActionUI.html";
     }
 
     /**
@@ -51,7 +51,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveDiscardActionUI.html";
+      return "./extensions/RFC5228/templates/SieveDiscardActionUI.html";
     }
 
     /**
@@ -74,7 +74,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveKeepActionUI.html";
+      return "./extensions/RFC5228/templates/SieveKeepActionUI.html";
     }
 
     /**
@@ -110,7 +110,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveRedirectActionUI.html";
+      return "./extensions/RFC5228/templates/SieveRedirectActionUI.html";
     }
 
     /**
@@ -177,7 +177,7 @@
      * @inheritdoc
      */
     getTemplate() {
-      return "./RFC5228/templates/SieveFileIntoActionUI.html";
+      return "./extensions/RFC5228/templates/SieveFileIntoActionUI.html";
     }
 
     /**

@@ -37,16 +37,22 @@
     }
 
     /**
-     * Resizes the editor to fill all of the available screen.
+     * Resizes the widget editors iframe to fill all of the available screen.
      */
     resize() {
-      const offset = $("#sieve-widget-editor").offset().top;
+      const topOffset = document
+        .querySelector("#sieve-widget-editor")
+        .getBoundingClientRect()
+        .top + document.body.scrollTop;
 
-      if (offset === 0)
-        return;
+      const screen = document.documentElement.clientHeight;
 
-      $("#sieve-widget-editor").height(
-        $(window).height() - offset - EDITOR_OFFSET_PX);
+      // the visible screen size minus the top and bottom offset
+      const size = screen - topOffset - EDITOR_OFFSET_PX;
+
+      document
+        .querySelector("#sieve-widget-editor")
+        .style.height = `${size}px`;
     }
 
     /**
@@ -106,15 +112,14 @@
           e.preventDefault();
 
           if (await this.switchToGraphicalEditor()) {
-            $('.nav-item > a[href="#sieve-widget-editor"]').tab("show");
+            (new bootstrap.Tab(document.querySelector('.nav-item > a[href="#sieve-widget-editor"]'))).show();
           }
         });
 
       document
         .querySelector('.nav-item > a[href="#sieve-widget-editor"]')
         .addEventListener('shown.bs.tab', () => {
-          $("#sieve-widget-editor").height(
-            $(window).height() - $("#sieve-widget-editor").offset().top - EDITOR_OFFSET_PX);
+          this.resize();
         });
 
       window.addEventListener("resize", () => {

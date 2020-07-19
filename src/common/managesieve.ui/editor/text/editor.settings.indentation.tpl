@@ -20,18 +20,21 @@
       </select>
     </div>
   </div>
+
   <div class="form-group row">
     <label class="col-sm-3 col-form-label" data-i18n="editor.indentation.policy"></label>
     <div class="col-sm-9">
-      <div id="editor-settings-indentation-policy" class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label id="editor-settings-indentation-policy-spaces" class="btn btn-outline-secondary btn-sm">
-          <input type="radio" name="indentation-policy" autocomplete="off"/>
-          <span data-i18n="editor.indentation.spaces"></span>
-        </label>
-        <label id="editor-settings-indentation-policy-tabs" class="btn btn-outline-secondary btn-sm">
-          <input type="radio" name="indentation-policy" autocomplete="off"/>
-          <span data-i18n="editor.indentation.tabs"></span>
-        </label>
+      <div id="editor-settings-indentation-policy" class="btn-group">
+
+        <input type="radio" class="btn-check" name="indentation-policy" id="editor-settings-indentation-policy-spaces"
+          autocomplete="off">
+        <label class="btn btn-outline-secondary btn-sm" for="editor-settings-indentation-policy-spaces"
+          data-i18n="editor.indentation.spaces"></label>
+
+        <input type="radio" class="btn-check" name="indentation-policy" id="editor-settings-indentation-policy-tabs"
+          autocomplete="off">
+        <label class="btn btn-outline-secondary btn-sm" for="editor-settings-indentation-policy-tabs"
+          data-i18n="editor.indentation.tabs"></label>
       </div>
     </div>
   </div>

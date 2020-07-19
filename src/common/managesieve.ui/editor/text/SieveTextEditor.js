@@ -96,16 +96,16 @@
       // Indentation policy...
       document
         .querySelector("#editor-settings-indentation-policy-spaces")
-        .addEventListener("click", async () => { await this.setIndentWithTabs(false); });
+        .addEventListener("change", async () => { await this.setIndentWithTabs(false); });
 
       document
         .querySelector("#editor-settings-indentation-policy-tabs")
-        .addEventListener("click", async () => { await this.setIndentWithTabs(true); });
+        .addEventListener("change", async () => { await this.setIndentWithTabs(true); });
 
       if (this.getIndentWithTabs())
-        $("#editor-settings-indentation-policy-tabs").button('toggle');
+        document.querySelector("#editor-settings-indentation-policy-tabs").checked = true;
       else
-        $("#editor-settings-indentation-policy-spaces").button('toggle');
+        document.querySelector("#editor-settings-indentation-policy-spaces").checked = true;
 
       // Tabulator width...
       document
@@ -561,16 +561,6 @@
     async disableSyntaxCheck() {
       this.syntaxCheckEnabled = false;
       this.hideSyntaxErrors();
-
-      const settings = document.querySelector("#sieve-editor-settings");
-
-      settings
-        .querySelector(".sieve-editor-disable-syntaxcheck")
-        .style.display = "";
-
-      settings
-        .querySelector(".sieve-editor-enable-syntaxcheck")
-        .style.display = "none";
 
       this.focus();
 

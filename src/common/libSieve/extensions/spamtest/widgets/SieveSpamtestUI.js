@@ -82,7 +82,7 @@ class SieveSpamtestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./spamtest/templates/SieveSpamtestUI.html";
+    return "./extensions/spamtest/templates/SieveSpamtestUI.html";
   }
 
   /**
@@ -126,7 +126,7 @@ class SieveSpamtestUI extends SieveTestDialogBoxUI {
     if (this.getSieve().hasElement("percent")) {
       (async () => {
         const elm = await ((new SieveTemplate())
-          .load("./spamtest/templates/SieveSpamtestPlusValue.html"));
+          .load("./extensions/spamtest/templates/SieveSpamtestPlusValue.html"));
 
         document.querySelector("#sivSpamtestPlaceholder").appendChild(elm);
 
@@ -137,7 +137,7 @@ class SieveSpamtestUI extends SieveTestDialogBoxUI {
 
     (async () => {
       const elm = await ((new SieveTemplate())
-        .load("./spamtest/templates/SieveSpamtestValue.html"));
+        .load("./extensions/spamtest/templates/SieveSpamtestValue.html"));
 
       document.querySelector("#sivSpamtestPlaceholder").appendChild(elm);
 
@@ -240,7 +240,7 @@ class SieveVirustestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./spamtest/templates/SieveVirustestUI.html";
+    return "./extensions/spamtest/templates/SieveVirustestUI.html";
   }
 
   /**

@@ -44,7 +44,7 @@ class SieveMailboxExistsTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./mailbox/templates/SieveMailboxExistsTest.html";
+    return "./extensions/mailbox/templates/SieveMailboxExistsTest.html";
   }
 
   /**
@@ -142,7 +142,7 @@ class SieveMetaDataExistsTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./mailbox/templates/SieveMetaDataExistsTest.html";
+    return "./extensions/mailbox/templates/SieveMetaDataExistsTest.html";
   }
 
   /**
@@ -270,7 +270,7 @@ class SieveMetaDataTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./mailbox/templates/SieveMetaDataTest.html";
+    return "./extensions/mailbox/templates/SieveMetaDataTest.html";
   }
 
   /**
@@ -341,7 +341,7 @@ class SieveServerMetaDataExistsTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./mailbox/templates/SieveServerMetaDataExistsTest.html";
+    return "./extensions/mailbox/templates/SieveServerMetaDataExistsTest.html";
   }
 
   /**
@@ -448,7 +448,7 @@ class SieveServerMetaDataTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./mailbox/templates/SieveServerMetaDataTest.html";
+    return "./extensions/mailbox/templates/SieveServerMetaDataTest.html";
   }
 
   /**
@@ -506,7 +506,7 @@ class SieveMailboxCreateWidget extends SieveOverlayItemWidget {
    * @inheritdoc
    **/
   getTemplate() {
-    return "./mailbox/templates/SieveCreateTag.html";
+    return "./extensions/mailbox/templates/SieveCreateTag.html";
   }
 
   /**

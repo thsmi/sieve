@@ -67,7 +67,7 @@ class SieveContainsMatchUI extends SieveAbstractMatchTypeUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveMatchTypeContainsUI.html";
+    return "./extensions/RFC5228/templates/SieveMatchTypeContainsUI.html";
   }
 }
 
@@ -88,7 +88,7 @@ class SieveIsMatchUI extends SieveAbstractMatchTypeUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveMatchTypeIsUI.html";
+    return "./extensions/RFC5228/templates/SieveMatchTypeIsUI.html";
   }
 }
 
@@ -109,7 +109,7 @@ class SieveMatchesMatchUI extends SieveAbstractMatchTypeUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveMatchTypeMatchesUI.html";
+    return "./extensions/RFC5228/templates/SieveMatchTypeMatchesUI.html";
   }
 
 }

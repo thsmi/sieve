@@ -75,7 +75,7 @@ class SieveEnvironmentUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./environment/templates/SieveEnvironmentUI.html";
+    return "./extensions/environment/templates/SieveEnvironmentUI.html";
   }
 
   /**

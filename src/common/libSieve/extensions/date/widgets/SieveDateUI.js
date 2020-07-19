@@ -80,7 +80,7 @@ class SieveOriginalZoneUI extends SieveAbstractZoneUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./date/templates/SieveZoneOriginal.html";
+    return "./extensions/date/templates/SieveZoneOriginal.html";
   }
 }
 
@@ -100,7 +100,7 @@ class SieveCustomZoneUI extends SieveAbstractZoneUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./date/templates/SieveZoneCustom.html";
+    return "./extensions/date/templates/SieveZoneCustom.html";
   }
 
   /**
@@ -202,7 +202,7 @@ class SieveDateTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./date/templates/SieveDateTestUI.html";
+    return "./extensions/date/templates/SieveDateTestUI.html";
   }
 
   /**
@@ -337,7 +337,7 @@ class SieveCurrentDateTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./date/templates/SieveCurrentDateTestUI.html";
+    return "./extensions/date/templates/SieveCurrentDateTestUI.html";
   }
 
   /**

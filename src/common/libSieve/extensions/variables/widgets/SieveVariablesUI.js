@@ -60,7 +60,7 @@ class SieveSetActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./variables/templates/SieveSetActionUI.html";
+    return "./extensions/variables/templates/SieveSetActionUI.html";
   }
 
   /**
@@ -152,7 +152,7 @@ class SieveModifierCaseWidget extends SieveOverlayItemWidget {
    * @inheritdoc
    **/
   getTemplate() {
-    return "./variables/templates/SieveCaseUI.html";
+    return "./extensions/variables/templates/SieveCaseUI.html";
   }
 
   /**
@@ -233,7 +233,7 @@ class SieveModifierCaseFirstWidget extends SieveOverlayItemWidget {
    * @inheritdoc
    **/
   getTemplate() {
-    return "./variables/templates/SieveCaseFirstUI.html";
+    return "./extensions/variables/templates/SieveCaseFirstUI.html";
   }
 
   /**
@@ -313,7 +313,7 @@ class SieveModifierQuoteWildcardWidget extends SieveOverlayItemWidget {
    * @inheritdoc
    **/
   getTemplate() {
-    return "./variables/templates/SieveQuotewildcardUI.html";
+    return "./extensions/variables/templates/SieveQuotewildcardUI.html";
   }
 
   /**
@@ -369,7 +369,7 @@ class SieveModifierLengthWidget extends SieveOverlayItemWidget {
    * @inheritdoc
    **/
   getTemplate() {
-    return "./variables/templates/SieveLengthUI.html";
+    return "./extensions/variables/templates/SieveLengthUI.html";
   }
 
   /**
@@ -454,7 +454,7 @@ class SieveStringTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./variables/templates/SieveStringTestUI.html";
+    return "./extensions/variables/templates/SieveStringTestUI.html";
   }
 
   /**

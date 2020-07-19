@@ -40,7 +40,7 @@ class SieveSizeTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    **/
   getTemplate() {
-    return "./RFC5228/templates/SieveSizeTestUI.html";
+    return "./extensions/RFC5228/templates/SieveSizeTestUI.html";
   }
 
   /**
@@ -115,7 +115,7 @@ class SieveBooleanTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    **/
   getTemplate() {
-    return "./RFC5228/templates/SieveBooleanTest.html";
+    return "./extensions/RFC5228/templates/SieveBooleanTest.html";
   }
 
   /**
@@ -194,7 +194,7 @@ class SieveExistsUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveExistsTestUI.html";
+    return "./extensions/RFC5228/templates/SieveExistsTestUI.html";
   }
 
   /**
@@ -282,7 +282,7 @@ class SieveHeaderUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveHeaderTestUI.html";
+    return "./extensions/RFC5228/templates/SieveHeaderTestUI.html";
   }
 
   /**
@@ -401,7 +401,7 @@ class SieveAddressUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveAddressTestUI.html";
+    return "./extensions/RFC5228/templates/SieveAddressTestUI.html";
   }
 
   /**
@@ -533,7 +533,7 @@ class SieveEnvelopeUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveEnvelopeTestUI.html";
+    return "./extensions/RFC5228/templates/SieveEnvelopeTestUI.html";
   }
 
   /**

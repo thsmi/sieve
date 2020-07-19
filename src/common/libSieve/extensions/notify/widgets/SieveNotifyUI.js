@@ -151,7 +151,7 @@ class SieveNotifyActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./notify/templates/SieveNotifyActionUI.html";
+    return "./extensions/notify/templates/SieveNotifyActionUI.html";
   }
 
   /**
@@ -264,7 +264,7 @@ class SieveNotifyMethodCapabilityUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./notify/templates/SieveNotifyMethodCapabilityTestUI.html";
+    return "./extensions/notify/templates/SieveNotifyMethodCapabilityTestUI.html";
   }
 
   /**
@@ -318,7 +318,7 @@ class SieveValidNotifyMethodUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./notify/templates/SieveValidNotifyMethodTestUI.html";
+    return "./extensions/notify/templates/SieveValidNotifyMethodTestUI.html";
   }
 
   /**
@@ -362,7 +362,7 @@ class SieveModifierEncodeUrlWidget extends SieveOverlayItemWidget {
    * @inheritdoc
    **/
   getTemplate() {
-    return "./notify/templates/SieveEncodeUrlUI.html";
+    return "./extensions/notify/templates/SieveEncodeUrlUI.html";
   }
 
   /**

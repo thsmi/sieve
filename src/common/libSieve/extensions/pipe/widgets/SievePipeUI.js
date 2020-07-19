@@ -47,7 +47,7 @@ class SieveExecuteActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./pipe/templates/SieveExecuteUI.html";
+    return "./extensions/pipe/templates/SieveExecuteUI.html";
   }
 
   /**
@@ -244,7 +244,7 @@ class SieveFilterActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./pipe/templates/SieveFilterUI.html";
+    return "./extensions/pipe/templates/SieveFilterUI.html";
   }
 
   /**
@@ -329,7 +329,7 @@ class SievePipeActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./pipe/templates/SievePipeUI.html";
+    return "./extensions/pipe/templates/SievePipeUI.html";
   }
 
   /**

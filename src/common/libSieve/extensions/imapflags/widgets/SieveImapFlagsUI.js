@@ -71,7 +71,7 @@ class SieveSetFlagUI extends SieveAbstractFlagUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./imapflags/templates/SieveSetFlagActionUI.html";
+    return "./extensions/imapflags/templates/SieveSetFlagActionUI.html";
   }
 
   /**
@@ -99,7 +99,7 @@ class SieveAddFlagUI extends SieveAbstractFlagUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./imapflags/templates/SieveAddFlagActionUI.html";
+    return "./extensions/imapflags/templates/SieveAddFlagActionUI.html";
   }
 
   /**
@@ -128,7 +128,7 @@ class SieveRemoveFlagUI extends SieveAbstractFlagUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./imapflags/templates/SieveRemoveFlagActionUI.html";
+    return "./extensions/imapflags/templates/SieveRemoveFlagActionUI.html";
   }
 
   /**
@@ -219,7 +219,7 @@ class SieveHasFlagUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./imapflags/templates/SieveHasFlagTestUI.html";
+    return "./extensions/imapflags/templates/SieveHasFlagTestUI.html";
   }
 
   /**
@@ -267,7 +267,7 @@ class SieveFlagsTagWidget extends SieveOverlayItemWidget {
    * @inheritdoc
    **/
   getTemplate() {
-    return "./imapflags/templates/SieveFlagsTag.html";
+    return "./extensions/imapflags/templates/SieveFlagsTag.html";
   }
 
   /**

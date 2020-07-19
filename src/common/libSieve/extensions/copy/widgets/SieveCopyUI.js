@@ -24,7 +24,7 @@ class SieveAbstractCopyWidget extends SieveOverlayItemWidget {
    * @inheritdoc
    **/
   getTemplate() {
-    return "./copy/templates/SieveCopyTag.html";
+    return "./extensions/copy/templates/SieveCopyTag.html";
   }
 
   /**

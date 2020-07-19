@@ -27,7 +27,7 @@ class SieveRejectActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./reject/templates/SieveRejectActionUI.html";
+    return "./extensions/reject/templates/SieveRejectActionUI.html";
   }
 
   /**
@@ -81,7 +81,7 @@ class SieveExtendedRejectActionUI extends SieveRejectActionUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./reject/templates/SieveExtendedRejectActionUI.html";
+    return "./extensions/reject/templates/SieveExtendedRejectActionUI.html";
   }
 
 }

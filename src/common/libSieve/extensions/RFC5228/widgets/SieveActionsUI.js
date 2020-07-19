@@ -26,7 +26,7 @@ class SieveStopUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveStopActionUI.html";
+    return "./extensions/RFC5228/templates/SieveStopActionUI.html";
   }
 
   /**
@@ -49,7 +49,7 @@ class SieveDiscardUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveDiscardActionUI.html";
+    return "./extensions/RFC5228/templates/SieveDiscardActionUI.html";
   }
 
   /**
@@ -72,7 +72,7 @@ class SieveKeepUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveKeepActionUI.html";
+    return "./extensions/RFC5228/templates/SieveKeepActionUI.html";
   }
 
   /**
@@ -108,7 +108,7 @@ class SieveRedirectUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveRedirectActionUI.html";
+    return "./extensions/RFC5228/templates/SieveRedirectActionUI.html";
   }
 
   /**
@@ -175,7 +175,7 @@ class SieveFileIntoUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveFileIntoActionUI.html";
+    return "./extensions/RFC5228/templates/SieveFileIntoActionUI.html";
   }
 
   /**

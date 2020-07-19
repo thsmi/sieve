@@ -52,7 +52,7 @@ class SieveUniqueDefaultUI extends SieveAbstractUniqueUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./duplicate/templates/SieveUniqueDefault.html";
+    return "./extensions/duplicate/templates/SieveUniqueDefault.html";
   }
 
   /**
@@ -93,7 +93,7 @@ class SieveUniqueIdUI extends SieveAbstractUniqueUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./duplicate/templates/SieveUniqueId.html";
+    return "./extensions/duplicate/templates/SieveUniqueId.html";
   }
 
   /**
@@ -149,7 +149,7 @@ class SieveUniqueHeaderUI extends SieveAbstractUniqueUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./duplicate/templates/SieveUniqueHeader.html";
+    return "./extensions/duplicate/templates/SieveUniqueHeader.html";
   }
 
   /**
@@ -332,7 +332,7 @@ class SieveDuplicateUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./duplicate/templates/SieveDuplicateTestUI.html";
+    return "./extensions/duplicate/templates/SieveDuplicateTestUI.html";
   }
 
   /**

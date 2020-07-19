@@ -65,7 +65,7 @@ class SieveConvertTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./convert/templates/SieveConvertUI.html";
+    return "./extensions/convert/templates/SieveConvertUI.html";
   }
 
   /**
@@ -157,7 +157,7 @@ class SieveConvertActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./convert/templates/SieveConvertUI.html";
+    return "./extensions/convert/templates/SieveConvertUI.html";
   }
 
   /**

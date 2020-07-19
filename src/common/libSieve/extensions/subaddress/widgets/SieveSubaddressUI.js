@@ -39,7 +39,7 @@ class SieveUserPartUI extends SieveAbstractAddressPartUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./subaddress/templates/SieveAddressPartUser.html";
+    return "./extensions/subaddress/templates/SieveAddressPartUser.html";
   }
 }
 
@@ -66,7 +66,7 @@ class SieveDetailPartUI extends SieveAbstractAddressPartUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./subaddress/templates/SieveAddressPartDetail.html";
+    return "./extensions/subaddress/templates/SieveAddressPartDetail.html";
   }
 }
 

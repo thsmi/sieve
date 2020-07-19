@@ -67,7 +67,7 @@ class SieveOctetComparatorUI extends SieveAbstractComparatorUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveComparatorOctet.html";
+    return "./extensions/RFC5228/templates/SieveComparatorOctet.html";
   }
 }
 
@@ -87,7 +87,7 @@ class SieveAsciiCasemapComparatorUI extends SieveAbstractComparatorUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveComparatorAsciiCasemap.html";
+    return "./extensions/RFC5228/templates/SieveComparatorAsciiCasemap.html";
   }
 }
 
@@ -115,7 +115,7 @@ class SieveAsciiNumericComparatorUI extends SieveAbstractComparatorUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveComparatorAsciiNumeric.html";
+    return "./extensions/RFC5228/templates/SieveComparatorAsciiNumeric.html";
   }
 }
 

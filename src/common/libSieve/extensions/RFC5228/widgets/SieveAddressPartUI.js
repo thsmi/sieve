@@ -67,7 +67,7 @@ class SieveAllPartUI extends SieveAbstractAddressPartUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveAddressPartAll.html";
+    return "./extensions/RFC5228/templates/SieveAddressPartAll.html";
   }
 }
 
@@ -88,7 +88,7 @@ class SieveDomainPartUI extends SieveAbstractAddressPartUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveAddressPartDomain.html";
+    return "./extensions/RFC5228/templates/SieveAddressPartDomain.html";
   }
 }
 
@@ -109,7 +109,7 @@ class SieveLocalPartUI extends SieveAbstractAddressPartUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./RFC5228/templates/SieveAddressPartLocal.html";
+    return "./extensions/RFC5228/templates/SieveAddressPartLocal.html";
   }
 }
 

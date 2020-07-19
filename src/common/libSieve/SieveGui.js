@@ -332,3 +332,6 @@ else
 
 export { setSieveScript };
 export { getSieveScript };
+
+window.setSieveScript = setSieveScript;
+window.getSieveScript = getSieveScript;

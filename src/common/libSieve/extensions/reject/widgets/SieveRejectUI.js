@@ -10,9 +10,9 @@
  *
  */
 
-import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.mjs";
 
-import { SieveActionDialogBoxUI } from "./../../../toolkit/widgets/Boxes.js";
+import { SieveActionDialogBoxUI } from "./../../../toolkit/widgets/Boxes.mjs";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
 

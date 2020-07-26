@@ -10,8 +10,8 @@
  *
  */
 
-import { SieveDesigner } from "./../../../toolkit/SieveDesigner.js";
-import { SieveAbstractMatchTypeUI } from "./../../../extensions/RFC5228/widgets/SieveMatchTypesUI.js";
+import { SieveDesigner } from "./../../../toolkit/SieveDesigner.mjs";
+import { SieveAbstractMatchTypeUI } from "./../../../extensions/RFC5228/widgets/SieveMatchTypesUI.mjs";
 
 /**
  * Provides an UI for the RegEx match type.

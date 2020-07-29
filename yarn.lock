@@ -626,7 +626,7 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-codemirror@^5.55.0:
+codemirror@^5.56.0:
   version "5.56.0"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.56.0.tgz#675640fcc780105cd22d3faa738b5d7ea6426f61"
   integrity sha512-MfKVmYgifXjQpLSgpETuih7A7WTTIsxvKfSLGseTY5+qt0E1UD1wblZGM6WLenORo8sgmf+3X+WTe2WF7mufyw==
@@ -966,10 +966,10 @@ electron-packager@^15.0.0:
     semver "^7.1.3"
     yargs-parser "^18.0.0"
 
-electron@^9.1.0:
-  version "9.1.1"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-9.1.1.tgz#d52c9873be4113287c3eb2b02f85bad6644b100e"
-  integrity sha512-BYvroBLV9x7G4iN33P/IxeZqwjl62/9VuBAF1CoM0m6OeheaiLog1ZMKLlCqVXycJvvrAvLHc454DDEmwnqqhA==
+electron@^9.1.1:
+  version "9.1.2"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-9.1.2.tgz#bfa26d6b192ea13abb6f1461371fd731a8358988"
+  integrity sha512-xEYadr3XqIqJ4ktBPo0lhzPdovv4jLCpiUUGc2M1frUhFhwqXokwhPaTUcE+zfu5+uf/ONDnQApwjzznBsRrgQ==
   dependencies:
     "@electron/get" "^1.0.1"
     "@types/node" "^12.0.12"
@@ -1062,7 +1062,7 @@ escape-string-regexp@^4.0.0:
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
   integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
 
-eslint-plugin-jsdoc@^30.0.2:
+eslint-plugin-jsdoc@^30.0.3:
   version "30.0.3"
   resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-30.0.3.tgz#358896c8114ccbee765774b16f64fd7c952309b1"
   integrity sha512-EviSu0Hgc9Bhz00WhA6829KYC9BaP6JWoycOTA1xFxjQ/2XguRlB3r6nGNA/jkmMDQp5dTQ22s1kAJIaC+dE8Q==

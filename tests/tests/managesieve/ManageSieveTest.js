@@ -13,8 +13,6 @@
 
 (function (exports) {
 
-  "use strict";
-
   const suite = exports.net.tschmid.yautt.test;
 
   if (!suite)

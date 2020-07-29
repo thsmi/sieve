@@ -20,6 +20,55 @@ class AbstractSandboxedTestFixture {
    */
   constructor() {
     this.tests = new Map();
+    this.signal("Ready");
+  }
+
+  /**
+   * Send a signal to the sandbox owner.
+   *
+   * @param {string} type
+   *   the message type
+   * @param {object} data
+   *   the data to be send
+   */
+  send(type, data) {
+    throw new Error(`Implement send(${type}, ${data})`);
+  }
+
+  /**
+   * Send a signal to the sandbox owner.
+   *
+   * @param {string} type
+   *   the signal's message type
+   * @param {object} data
+   *   the data to be send
+   */
+  signal(type, data = {}) {
+    this.send(`${type}Signal`, data);
+  }
+
+  /**
+   * Sends a response message to the sandbox owner.
+   *
+   * @param {string} type
+   *   the response messages type.
+   * @param {object} data
+   *   the data to be send
+   */
+  response(type, data) {
+    this.send(`${type}Resolve`, data);
+  }
+
+  /**
+   * Sends an error response to the sandbox owner.
+   *
+   * @param {string} type
+   *   the error messages type.
+   * @param {object} data
+   *   the data to be send
+   */
+  error(type, data) {
+    this.send(`${type}Reject`, data);
   }
 
   /**
@@ -38,15 +87,14 @@ class AbstractSandboxedTestFixture {
 
   /**
    * Logs a generic log message
-   * @abstract
    *
    * @param {string} message
-   *   the message
-   * @param {string} type
-   *   the message type
+   *   the log message
+   * @param {string} level
+   *   the log level
    */
-  log(message, type) {
-    throw new Error(`Implement log(${message},${type})`);
+  log(message, level) {
+    this.signal("Log", { message: message, level: level });
   }
 
   /**
@@ -145,6 +193,63 @@ class AbstractSandboxedTestFixture {
       message = `Assert failed\nExpected (${expected.length} Bytes): \n${expected}\n\nBut got (${actual.length} Bytes)\n${actual}`;
 
     throw new Error(`${message}`);
+  }
+
+  /**
+   * Dispatches the incoming ipc message to the handler and
+   * returns the result.
+   *
+   * It will also signal exceptions to the sender.
+   *
+   * @param {string} type
+   *   the message type as string
+   * @param {Function} handler
+   *   the message handler which is used to process the message.
+   */
+  async dispatchMessage(type, handler) {
+
+    try {
+      const result = await handler();
+      this.response(type, result);
+    } catch (ex) {
+
+      console.log("Exception :" + ex);
+
+      this.error(type, { message: ex.message, stack: ex.stack} );
+    }
+  }
+
+  /**
+   * Called when a new ipc message arrives.
+   *
+   * @param {string} msg
+   *   the event for the ipc message
+   */
+  onMessage(msg) {
+
+    msg = JSON.parse(msg);
+
+    if (msg.type === "Ready") {
+      this.signal("ReadySignal");
+      return;
+    }
+
+    if (msg.type === "ImportScript") {
+      this.dispatchMessage(msg.type, async () => { return await this.require(msg.payload); });
+      return;
+    }
+
+    if (msg.type === "GetTests") {
+      this.dispatchMessage(msg.type, async () => {
+        return Array.from(await this.get());
+      });
+      return;
+    }
+
+    if (msg.type === "RunTest") {
+      this.dispatchMessage(msg.type, async () => { return await this.run(msg.payload); });
+      return;
+    }
   }
 
 }

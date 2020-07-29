@@ -17,10 +17,12 @@ import { SieveCapabilities } from "./../toolkit/logic/GenericCapabilities.mjs";
 
 let suite = null;
 
-if (global.net)
+if ((typeof(global) !== "undefined") && (global.net))
   suite = global.net.tschmid.yautt.test;
+else if ((typeof(window) !== "undefined") && (window.net))
+  suite = window.net.tschmid.yautt.test;
 else
-  suite = exports.net.tschmid.yautt.test;
+  throw new Error("Failed to detect global scope.");
 
 if (!suite)
   throw new Error("Could not append script test tools to test suite");

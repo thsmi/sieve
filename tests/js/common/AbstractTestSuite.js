@@ -1,7 +1,5 @@
 (function (exports) {
 
-  "use strict";
-
   const TOKEN_FOUND = -1;
 
   /**

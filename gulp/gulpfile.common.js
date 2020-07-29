@@ -41,7 +41,6 @@ const INDEX_PATCH = 2;
  *   the base path which should be cleared.
  */
 async function deleteRecursive(dir) {
-  "use strict";
 
   if (!existsSync(dir))
     return;

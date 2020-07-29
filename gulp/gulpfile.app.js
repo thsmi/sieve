@@ -65,7 +65,6 @@ const OUTPUT_DIR_APP_MACOS = path.join(OUTPUT_DIR_APP, `sieve-${MAC_PLATFORM}-${
  *   the destination folder into which the tar should be extracted.
  */
 async function untar(filename, destination) {
-  "use strict";
 
   logger.debug(`Extracting ${filename} to ${destination}`);
 
@@ -88,8 +87,6 @@ async function untar(filename, destination) {
  *   electrons release as well as the abi version.
  */
 async function getElectronVersion(dir) {
-
-  "use strict";
 
   const versionFile = path.join(dir + '/version');
 
@@ -115,8 +112,6 @@ async function getElectronVersion(dir) {
  */
 function packageDefinition() {
 
-  "use strict";
-
   const BASE_PATH = ".";
 
   return src([
@@ -131,7 +126,6 @@ function packageDefinition() {
  *   a stream to be consumed by gulp
  */
 function packageLicense() {
-  "use strict";
 
   return src([
     "./LICENSE.md"
@@ -158,7 +152,6 @@ function packageCodeMirror() {
  *   a stream to be consumed by gulp
  **/
 function packageBootstrap() {
-  "use strict";
 
   return common.packageBootstrap(
     `${BUILD_DIR_APP}/libs/bootstrap`);
@@ -171,7 +164,6 @@ function packageBootstrap() {
  *   a stream to be consumed by gulp
  */
 function packageSrc() {
-  "use strict";
 
   return src([
     BASE_DIR_APP + "/**"
@@ -186,7 +178,6 @@ function packageSrc() {
  *   a stream to be consumed by gulp
  */
 function packageIcons() {
-  "use strict";
 
   return src([
     path.join(common.BASE_DIR_COMMON, "icons") + "/**"
@@ -200,7 +191,6 @@ function packageIcons() {
  *   a stream to be consumed by gulp
  */
 function packageLibManageSieve() {
-  "use strict";
   return common.packageLibManageSieve(BUILD_DIR_APP_LIBS);
 }
 
@@ -212,7 +202,6 @@ function packageLibManageSieve() {
  *   a stream to be consumed by gulp
  */
 function packageLibSieve() {
-  "use strict";
   return common.packageLibSieve(BUILD_DIR_APP_LIBS);
 }
 
@@ -224,8 +213,6 @@ function packageLibSieve() {
  *   a stream to be consumed by gulp
  */
 function packageManageSieveUi() {
-  "use strict";
-
   return common.packageManageSieveUi(BUILD_DIR_APP_LIBS);
 }
 
@@ -239,7 +226,6 @@ function packageManageSieveUi() {
  *   a stream to be consumed by gulp
  */
 function packageKeytar() {
-  "use strict";
 
   return src([
     BASE_DIR_KEYTAR + "/**",
@@ -276,7 +262,6 @@ function packageKeytar() {
  *   the architecture for the prebuilt packages
  */
 async function deployPrebuilt(electronDest, prebuiltDest, pkgName, platform, arch) {
-  "use strict";
 
   logger.debug(`Packaging Prebuilt ${pkgName} for ${platform}-${arch}`);
 
@@ -320,7 +305,6 @@ async function deployPrebuilt(electronDest, prebuiltDest, pkgName, platform, arc
  * Packages the Keytar prebuilt modules into the win32 build output
  */
 async function packageKeytarWin32() {
-  "use strict";
   await deployPrebuilt(OUTPUT_DIR_APP, KEYTAR_OUTPUT_DIR, KEYTAR_NAME, WIN_PLATFORM, WIN_ARCH);
 }
 
@@ -328,7 +312,6 @@ async function packageKeytarWin32() {
  * Packages the Keytar prebuilt modules into the linux build output
  */
 async function packageKeytarLinux() {
-  "use strict";
   await deployPrebuilt(OUTPUT_DIR_APP, KEYTAR_OUTPUT_DIR, KEYTAR_NAME, LINUX_PLATFORM, LINUX_ARCH);
 }
 
@@ -336,7 +319,6 @@ async function packageKeytarLinux() {
  * Packages the Keytar prebuilt modules into the macOS build output
  */
 async function packageKeytarMacOS() {
-  "use strict";
   await deployPrebuilt(OUTPUT_DIR_APP, KEYTAR_OUTPUT_DIR, KEYTAR_NAME, MAC_PLATFORM, MAC_ARCH);
 }
 
@@ -344,7 +326,6 @@ async function packageKeytarMacOS() {
  * Packages the build directory and electron for windows.
  */
 async function packageWin32() {
-  "use strict";
 
   const options = {
     dir: BUILD_DIR_APP,
@@ -366,7 +347,6 @@ async function packageWin32() {
  * Packages the build directory and electron for linux
  */
 async function packageLinux() {
-  "use strict";
 
   const options = {
     dir: BUILD_DIR_APP,
@@ -388,7 +368,6 @@ async function packageLinux() {
  * Packages the build directory and electron for macOS
  */
 async function packageMacOS() {
-  "use strict";
 
   const options = {
     dir: BUILD_DIR_APP,
@@ -413,7 +392,6 @@ async function packageMacOS() {
  */
 // eslint-disable-next-line require-await
 async function updateVersion() {
-  "use strict";
 
   // there is no need to do anything here.
   // Electron packager will to it for us.
@@ -423,8 +401,6 @@ async function updateVersion() {
  * Watches for changed source files and copies them into the build directory.
  */
 function watchSrc() {
-
-  "use strict";
 
   watch(
     ['./src/**/*.js',
@@ -447,7 +423,6 @@ function watchSrc() {
  * Zip the windows electron app.
  */
 async function zipWin32() {
-  "use strict";
 
   const version = (await common.getPackageVersion()).join(".");
 
@@ -461,7 +436,6 @@ async function zipWin32() {
  * Zip the linux electron app.
  */
 async function zipLinux() {
-  "use strict";
 
   const version = (await common.getPackageVersion()).join(".");
 
@@ -486,7 +460,6 @@ async function zipLinux() {
  *   a stream to be consumed by gulp
  */
 function packageAppImageDir() {
-  "use strict";
 
   return src([
     OUTPUT_DIR_APP_LINUX + "/**/*"
@@ -500,7 +473,6 @@ function packageAppImageDir() {
  *   a stream to be consumed by gulp
  */
 function packageAppImageFiles() {
-  "use strict";
 
   const appImageFiles = path.join(common.BASE_DIR_COMMON, "/appImage/");
 
@@ -513,7 +485,6 @@ function packageAppImageFiles() {
  * Creates a linux appImage Container
  */
 async function packageAppImage() {
-  "use strict";
 
   const latest = await https.fetch(APP_IMAGE_RELEASE_URL);
 
@@ -548,7 +519,6 @@ async function packageAppImage() {
  * Zip the macOS electron app.
  */
 async function zipMacOS() {
-  "use strict";
 
   const version = (await common.getPackageVersion()).join(".");
 

@@ -26,7 +26,6 @@ const BASE_DIR_CODEMIRROR = "./node_modules/codemirror";
 const BASE_DIR_COMMON = "./src/common";
 const BASE_DIR_BUILD = "./build";
 
-const BASE_DIR_LIBMANAGESIEVE = path.join(BASE_DIR_COMMON, "libManageSieve");
 const BASE_DIR_LIBSIEVE = path.join(BASE_DIR_COMMON, "libSieve");
 const BASE_DIR_MANAGESIEVEUI = path.join(BASE_DIR_COMMON, "managesieve.ui");
 
@@ -65,7 +64,6 @@ async function deleteRecursive(dir) {
  * Clean the build environment including all build and packaging artifacts.
  */
 async function clean() {
-  "use strict";
   await deleteRecursive(BASE_DIR_BUILD);
 }
 
@@ -79,7 +77,6 @@ async function clean() {
  *   a stream to be consumed by gulp
  */
 function packageCodeMirror(destination) {
-  "use strict";
 
   return src([
     BASE_DIR_CODEMIRROR + "/addon/edit/**",
@@ -103,7 +100,6 @@ function packageCodeMirror(destination) {
  *   a stream to be consumed by gulp
  **/
 function packageBootstrap(destination) {
-  "use strict";
 
   return src([
     BASE_DIR_BOOTSTRAP + "/css/*.min.css",
@@ -113,22 +109,26 @@ function packageBootstrap(destination) {
 }
 
 /**
-
-/**
- * Packages the common libManageSieve files
+ * An src clone which reasonable default values which avoid code duplication
  *
- * @param {string} destination
- *   where to place the common libManageSieve files
- *
+ * @param {string} dir
+ *   the source directory which contains the files
+ * @param {string|string[]} [files]
+ *   the globs to be applied to the directory. If omitted it will select
+ *   everything except a "doc" folder.
  * @returns {Stream}
- *   a stream to be consumed by gulp
+ *   a vinyl file stream.
  */
-function packageLibManageSieve(destination) {
-  "use strict";
+function src2(dir, files) {
 
-  return src([
-    BASE_DIR_LIBMANAGESIEVE + "/**"
-  ], { base: BASE_DIR_COMMON }).pipe(dest(destination));
+  if (!files)
+    files = [`./**`, `!./doc/**`];
+
+  if (!Array.isArray(files))
+    files = [files];
+
+  return src(
+    files, { base: dir, root: dir, cwd:dir, passthrough: true });
 }
 
 /**
@@ -141,8 +141,6 @@ function packageLibManageSieve(destination) {
  *   a stream to be consumed by gulp
  */
 function packageLibSieve(destination) {
-  "use strict";
-
   return src([
     BASE_DIR_LIBSIEVE + "/**",
     "!" + BASE_DIR_LIBSIEVE + "/libSieve/**/rfc*.txt",
@@ -161,8 +159,6 @@ function packageLibSieve(destination) {
  *   a stream to be consumed by gulp
  */
 function packageManageSieveUi(destination) {
-  "use strict";
-
   return src([
     BASE_DIR_MANAGESIEVEUI + "/**"
   ], { base: BASE_DIR_COMMON }).pipe(dest(destination));
@@ -177,7 +173,6 @@ function packageManageSieveUi(destination) {
  *   the version as a triple of integer
  */
 async function getPackageVersion(file) {
-  "use strict";
 
   if ((typeof (file) === "undefined") || file === null)
     file = "./package.json";
@@ -201,7 +196,6 @@ async function getPackageVersion(file) {
  *   the path to the npm package json file.
  */
 async function setPackageVersion(version, file) {
-  "use strict";
 
   if ((typeof (file) === "undefined") || file === null)
     file = "./package.json";
@@ -224,7 +218,6 @@ async function setPackageVersion(version, file) {
  * The minor and patch level is reset to zero
  */
 async function bumpMajorVersion() {
-  "use strict";
 
   const pkgVersion = await getPackageVersion('./package.json');
 
@@ -244,7 +237,6 @@ async function bumpMajorVersion() {
  * The major version remains untouched but the patch level is reset to zero
  */
 async function bumpMinorVersion() {
-  "use strict";
 
   const pkgVersion = await getPackageVersion('./package.json');
 
@@ -263,7 +255,6 @@ async function bumpMinorVersion() {
  * Neither the major nor the minor version will be changed.
  */
 async function bumpPatchVersion() {
-  "use strict";
 
   const pkgVersion = await getPackageVersion('./package.json');
 
@@ -295,7 +286,6 @@ async function bumpPatchVersion() {
  *   extended instructions for compressing.
  */
 async function compressDirectory(zip, dir, options) {
-  "use strict";
 
   if (typeof (options) === "undefined" || options === null)
     options = {};
@@ -349,8 +339,6 @@ async function compressDirectory(zip, dir, options) {
  */
 async function compress(source, destination, options) {
 
-  "use strict";
-
   if (existsSync(destination)) {
     logger.info(`Deleting ${path.basename(destination)}`);
     await unlink(destination);
@@ -379,7 +367,6 @@ exports["compress"] = compress;
 exports["packageCodeMirror"] = packageCodeMirror;
 exports["packageBootstrap"] = packageBootstrap;
 
-exports["packageLibManageSieve"] = packageLibManageSieve;
 exports["packageLibSieve"] = packageLibSieve;
 exports["packageManageSieveUi"] = packageManageSieveUi;
 
@@ -392,3 +379,5 @@ exports["bumpPatchVersion"] = bumpPatchVersion;
 
 exports["BASE_DIR_BUILD"] = BASE_DIR_BUILD;
 exports["BASE_DIR_COMMON"] = BASE_DIR_COMMON;
+
+exports["src2"] = src2;

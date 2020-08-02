@@ -56,6 +56,9 @@ const OUTPUT_DIR_APP_WIN32 = path.join(OUTPUT_DIR_APP, `sieve-${WIN_PLATFORM}-${
 const OUTPUT_DIR_APP_LINUX = path.join(OUTPUT_DIR_APP, `sieve-${LINUX_PLATFORM}-${LINUX_ARCH}`);
 const OUTPUT_DIR_APP_MACOS = path.join(OUTPUT_DIR_APP, `sieve-${MAC_PLATFORM}-${MAC_ARCH}`);
 
+const PERMISSIONS_EXECUTABLE = 0o100770;
+const PERMISSIONS_NORMAL = 0o100660;
+
 /**
  * Extracts a tar or tar.gz file to the given destination.
  *
@@ -139,8 +142,6 @@ function packageLicense() {
  *   a stream to be consumed by gulp
  */
 function packageCodeMirror() {
-  "use strict";
-
   return common.packageCodeMirror(
     `${BUILD_DIR_APP}/libs/CodeMirror`);
 }
@@ -164,9 +165,9 @@ function packageBootstrap() {
  *   a stream to be consumed by gulp
  */
 function packageSrc() {
-
   return src([
-    BASE_DIR_APP + "/**"
+    BASE_DIR_APP + "/**",
+    `!${BASE_DIR_APP}/libs/libManageSieve/**`
   ]).pipe(dest(BUILD_DIR_APP));
 }
 
@@ -191,7 +192,13 @@ function packageIcons() {
  *   a stream to be consumed by gulp
  */
 function packageLibManageSieve() {
-  return common.packageLibManageSieve(BUILD_DIR_APP_LIBS);
+
+  const BASE_APP = path.join(BASE_DIR_APP, "libs", "libManageSieve");
+  const BASE_COMMON = path.join(common.BASE_DIR_COMMON, "libManageSieve");
+
+  return common.src2(BASE_APP)
+    .pipe(common.src2(BASE_COMMON))
+    .pipe(dest(path.join(BUILD_DIR_APP_LIBS, "libManageSieve")));
 }
 
 
@@ -444,8 +451,8 @@ async function zipLinux() {
 
   const options = {
     permissions: {
-      "sieve": 0o100770,
-      "*": 0o100660
+      "sieve": PERMISSIONS_EXECUTABLE,
+      "*": PERMISSIONS_NORMAL
     }
   };
 
@@ -527,8 +534,8 @@ async function zipMacOS() {
 
   const options = {
     permissions: {
-      "sieve": 0o100770,
-      "*": 0o100660
+      "sieve": PERMISSIONS_EXECUTABLE,
+      "*": PERMISSIONS_NORMAL
     }
   };
 

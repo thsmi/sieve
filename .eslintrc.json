@@ -12,7 +12,7 @@
         "node": true
     },
     "parserOptions": {
-        "ecmaVersion": 8,
+        "ecmaVersion": 11,
         "ecmaFeatures": {
             "jsx": false
         },

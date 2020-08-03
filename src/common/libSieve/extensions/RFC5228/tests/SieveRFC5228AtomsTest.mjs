@@ -59,4 +59,3 @@ suite.add("Escaped quoted strings", () => {
   suite.assertEquals(' "\\\\', elms.shift().getElement("address").value());
 
 });
-  // :comparator "i;ascii-casemap"

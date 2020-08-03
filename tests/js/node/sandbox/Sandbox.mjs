@@ -11,8 +11,15 @@
 
 import { AbstractSandboxedTestFixture } from "./../../common/sandbox/AbstractSandboxedFixture.mjs";
 
+/**
+ * The sandbox is a child process which communicates with his parent via
+ * nodes built in ipc mechanism.
+ */
 class SandboxedTestFixture extends AbstractSandboxedTestFixture {
 
+  /**
+   * @inheritdoc
+   */
   constructor() {
     super();
 
@@ -28,7 +35,10 @@ class SandboxedTestFixture extends AbstractSandboxedTestFixture {
   /**
    * @inheritdoc
    */
-  send(type, data={}) {
+  send(type, data) {
+
+    if (typeof(data) === "undefined" || data === null)
+      data = {};
 
     process.send(JSON.stringify({
       type: `${type}`,
@@ -67,5 +77,5 @@ if (!global.net.tschmid.yautt.test)
 try {
   global.net.tschmid.yautt.test = new SandboxedTestFixture();
 } catch (ex) {
-  console.log(ex);
+  console.error(ex);
 }

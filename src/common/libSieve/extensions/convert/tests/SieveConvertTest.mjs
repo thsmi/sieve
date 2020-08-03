@@ -47,7 +47,7 @@ suite.add("RFC 6558 - Example 2", () => {
 });
 
 
-  // FIXME: Enable tests as soon as for every part is implemented
+// FIXME: Enable tests as soon as for every part is implemented
 /*
 suite.add("RFC 6558 - Example 3", () => {
 

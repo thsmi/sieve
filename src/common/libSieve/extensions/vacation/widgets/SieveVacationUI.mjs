@@ -344,7 +344,7 @@ class SieveVacationIntervalDays extends SieveOverlayItemWidget {
    * @inheritdoc
    **/
   getTemplate() {
-    return "./vacation/template/SieveVacationIntervalDaysUI.html";
+    return "./extensions/vacation/template/SieveVacationIntervalDaysUI.html";
   }
 
   /**
@@ -410,7 +410,7 @@ class SieveVacationIntervalDefault extends SieveOverlayItemWidget {
    * @inheritdoc
    **/
   getTemplate() {
-    return "./vacation/template/SieveVacationIntervalDefaultUI.html";
+    return "./extensions/vacation/template/SieveVacationIntervalDefaultUI.html";
   }
 
   /**

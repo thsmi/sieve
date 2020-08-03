@@ -27,7 +27,7 @@ class SieveReturnUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./include/template/SieveReturnActionUI.html";
+    return "./extensions/include/template/SieveReturnActionUI.html";
   }
 
   /**
@@ -62,7 +62,7 @@ class SieveGlobalActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./include/template/SieveGlobalActionUI.html";
+    return "./extensions/include/template/SieveGlobalActionUI.html";
   }
 
   /**
@@ -189,7 +189,7 @@ class SieveIncludeActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./include/template/SieveIncludeActionUI.html";
+    return "./extensions/include/template/SieveIncludeActionUI.html";
   }
 
   /**

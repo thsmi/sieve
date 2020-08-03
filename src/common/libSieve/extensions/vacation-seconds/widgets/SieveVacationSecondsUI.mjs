@@ -14,8 +14,8 @@ import { SieveDesigner } from "./../../../toolkit/SieveDesigner.mjs";
 import { SieveOverlayItemWidget } from "./../../../toolkit/widgets/Widgets.mjs";
 
 /**
-   * Implements the create overlay for the fileinto action.
-   */
+ * Implements the create overlay for the fileinto action.
+ */
 class SieveVacationIntervalSeconds extends SieveOverlayItemWidget {
 
   /**
@@ -42,7 +42,7 @@ class SieveVacationIntervalSeconds extends SieveOverlayItemWidget {
    * @inheritdoc
    **/
   getTemplate() {
-    return "./vacation-seconds/template/SieveVacationIntervalSecondsUI.html";
+    return "./extensions/vacation-seconds/template/SieveVacationIntervalSecondsUI.html";
   }
 
   /**

@@ -103,7 +103,7 @@
   "account.details.secure" : "(Secure connection)",
   "account.details.fingerprint" : "Fingerprint",
   "account.details.username" : "Username",
-  "account.details.sasl" : "SASL mechanism",
+  "account.details.sasl" : "Authentication",
   "account.details.server.edit" : "Edit Server",
   "account.details.credentials.edit" : "Edit Credentials",
   "account.details.debugging.edit" : "Debugging",

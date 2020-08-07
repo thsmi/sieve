@@ -850,7 +850,7 @@ class SieveStringWidget {
       .querySelector(".sieve-string-dropdown");
 
     button.classList.remove("d-none");
-    button.insertAdjacentElement('beforebegin', menu);
+    button.insertAdjacentElement('afterend', menu);
 
     this.initClickHandler(menu);
     this.initUpdatables(menu);

@@ -46,15 +46,15 @@
       </div>
       <div class="row">
         <div class="col-md-6">
-          <div class="custom-control custom-checkbox">
-            <input id="sieve-editor-casesensitive" type="checkbox" class="custom-control-input"></input>
-            <label class="custom-control-label" for="sieve-editor-casesensitive" data-i18n="texteditor.matchCase"></label>
+          <div class="form-check">
+            <input id="sieve-editor-casesensitive" type="checkbox" class="form-check-input"></input>
+            <label class="form-check-label" for="sieve-editor-casesensitive" data-i18n="texteditor.matchCase"></label>
           </div>
         </div>
         <div class="col-md-6">
-          <div class="custom-control custom-checkbox">
-            <input id="sieve-editor-backward" type="checkbox" class="custom-control-input"></input>
-            <label class="custom-control-label" for="sieve-editor-backward" data-i18n="texteditor.backwards"></label>
+          <div class="form-check">
+            <input id="sieve-editor-backward" type="checkbox" class="form-check-input"></input>
+            <label class="form-check-label" for="sieve-editor-backward" data-i18n="texteditor.backwards"></label>
           </div>
         </div>
       </div>

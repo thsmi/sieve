@@ -16,26 +16,26 @@
           </p>
 
           <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="debugClientServer" />
-            <label class="custom-control-label" for="debugClientServer"
+            <input type="checkbox" class="form-check-input" id="debugClientServer" />
+            <label class="form-check-label" for="debugClientServer"
               data-i18n="debug.transport.clientserver"></label>
           </div>
           <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="debugServerClient" />
-            <label class="custom-control-label" for="debugServerClient"
+            <input type="checkbox" class="form-check-input" id="debugServerClient" />
+            <label class="form-check-label" for="debugServerClient"
               data-i18n="debug.transport.serverclient"></label>
           </div>
           <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="debugStateMachine" />
-            <label class="custom-control-label" for="debugStateMachine" data-i18n="debug.transport.states"></label>
+            <input type="checkbox" class="form-check-input" id="debugStateMachine" />
+            <label class="form-check-label" for="debugStateMachine" data-i18n="debug.transport.states"></label>
           </div>
           <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="debugRawDump" />
-            <label class="custom-control-label" for="debugRawDump" data-i18n="debug.transport.rawdump"></label>
+            <input type="checkbox" class="form-check-input" id="debugRawDump" />
+            <label class="form-check-label" for="debugRawDump" data-i18n="debug.transport.rawdump"></label>
           </div>
           <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="debugSessionManagement" />
-            <label class="custom-control-label" for="debugSessionManagement"
+            <input type="checkbox" class="form-check-input" id="debugSessionManagement" />
+            <label class="form-check-label" for="debugSessionManagement"
               data-i18n="debug.transport.session"></label>
           </div>
           <div class="siv-settings-advanced">
@@ -47,23 +47,23 @@
             </p>
 
             <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input" id="debugActions" />
-              <label data-i18n="debug.global.actions" class="custom-control-label" for="debugActions"></label>
+              <input type="checkbox" class="form-check-input" id="debugActions" />
+              <label data-i18n="debug.global.actions" class="form-check-label" for="debugActions"></label>
             </div>
 
             <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input" id="debugIpcMessages" />
-              <label data-i18n="debug.global.ipc" class="custom-control-label" for="debugIpcMessages"></label>
+              <input type="checkbox" class="form-check-input" id="debugIpcMessages" />
+              <label data-i18n="debug.global.ipc" class="form-check-label" for="debugIpcMessages"></label>
             </div>
 
             <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input" id="debugWidgets" />
-              <label data-i18n="debug.global.widgets" class="custom-control-label" for="debugWidgets"></label>
+              <input type="checkbox" class="form-check-input" id="debugWidgets" />
+              <label data-i18n="debug.global.widgets" class="form-check-label" for="debugWidgets"></label>
             </div>
 
             <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input" id="debugI18n" />
-              <label data-i18n="debug.global.i18n" class="custom-control-label" for="debugI18n"></label>
+              <input type="checkbox" class="form-check-input" id="debugI18n" />
+              <label data-i18n="debug.global.i18n" class="form-check-label" for="debugI18n"></label>
             </div>
           </div>
 

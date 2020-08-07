@@ -1,9 +1,9 @@
 <div>
-  <div class="custom-control custom-radio">
-    <input type="radio" id="sivSpamtestRadio" name="customRadio" class="custom-control-input">
-    <label data-i18n="spamtest.absolute.label" class="custom-control-label" for="sivSpamtestRadio"></label>
+  <div class="form-check">
+    <input type="radio" id="sivSpamtestRadio" name="customRadio" class="form-check-input">
+    <label data-i18n="spamtest.absolute.label" class="form-check-label" for="sivSpamtestRadio"></label>
 
-    <small data-i18n="spamtest.absolute.text" class="form-text text-muted"></small>
+    <div data-i18n="spamtest.absolute.text" class="form-text"></div>
     <div id="sivSpamtestValue" data-list-dropdown="#sivSpamtestTemplate">
     </div>
   </div>
@@ -22,7 +22,7 @@
           <span class="sivSpamtestRangeValue">5</span>
           <small data-i18n="spamtest.absolute.likelyspan" class="text-muted"></small>
         </div>
-        <input type="range" class="custom-range sieve-string-dropdown-updatable" min="2" max="9" value="5"
+        <input type="range" class="form-range sieve-string-dropdown-updatable" min="2" max="9" value="5"
           data-update-element=".sivSpamtestRangeValue">
       </div>
       <button class="dropdown-item" type="button" data-value="10">10
@@ -32,11 +32,11 @@
 
   </div>
 
-  <div class="custom-control custom-radio">
-    <input type="radio" id="sivSpamtestPercentRadio" name="customRadio" class="custom-control-input">
-    <label data-i18n="spamtest.percent.label" class="custom-control-label" for="sivSpamtestPercentRadio"></label>
+  <div class="form-check">
+    <input type="radio" id="sivSpamtestPercentRadio" name="customRadio" class="form-check-input">
+    <label data-i18n="spamtest.percent.label" class="form-check-label" for="sivSpamtestPercentRadio"></label>
 
-    <small data-i18n="spamtest.percent.text" class="form-text text-muted"></small>
+    <div data-i18n="spamtest.percent.text" class="form-text"></div>
 
     <div id="sivSpamtestPercentValue" data-list-dropdown="#sivSpamtestPercentTemplate">
     </div>
@@ -51,7 +51,7 @@
       <div class="dropdown-item" data-value="50">
         <div><span class="sivSpamtestRangeValuePercent">50</span>%
           <small data-i18n="spamtest.percent.likelyspan" class="text-muted"></small></div>
-        <input type="range" class="custom-range sieve-string-dropdown-updatable" min="1" max="99" value="50"
+        <input type="range" class="form-range sieve-string-dropdown-updatable" min="1" max="99" value="50"
           data-update-element=".sivSpamtestRangeValuePercent">
       </div>
       <div class="dropdown-divider"> </div>

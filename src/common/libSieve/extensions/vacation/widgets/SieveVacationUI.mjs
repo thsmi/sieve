@@ -294,7 +294,7 @@ class SieveVacationUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getTemplate() {
-    return "./vacation/template/SieveVacationUI.html";
+    return "./extensions/vacation/template/SieveVacationUI.html";
   }
 
   /**

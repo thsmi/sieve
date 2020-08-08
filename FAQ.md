@@ -11,6 +11,18 @@ and the [sieve application](https://crowdin.com/project/sieve).
 
 In case the language is not supported it will fallback to english.
 
+## App: macOS Builds
+
+Currently on the Azure Pipeline the packaging step is broken and commented.
+
+It is most likely easy to fix. But you need to debug it on a macOS as the very same code works without issues on a windows and linux machine. See [Issue #312](https://github.com/thsmi/sieve/issues/313) for more details.
+
+I don't own a mac, which means I can neither test, debug aw well as support macOS builds.
+
+All in all this means there won't be any macOS builds unless someone steps up, fixes the build pipeline and provids tested builds.
+
+If you are using Sieve on macOS to manage your mailbox filters, consider contributing.
+
 ## WebExtension: Change Language
 
 The WebExtension will use Thunderbird's default language.

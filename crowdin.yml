@@ -1,3 +1,5 @@
 files:
   - source: /src/common/managesieve.ui/i18n/en-US.json
     translation: /src/common/managesieve.ui/i18n/%locale%.json
+  - source: /src/common/libSieve/i18n/en-US.json
+    translation: /src/common/libSieve/i18n/%locale%.json

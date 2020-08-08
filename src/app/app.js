@@ -11,8 +11,6 @@
 
 (async function () {
 
-  "use strict";
-
   const DEFAULT_AUTHENTICATION = 0;
   const DEFAULT_AUTHORIZATION = 3;
 

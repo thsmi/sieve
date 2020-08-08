@@ -160,8 +160,8 @@
         elm.querySelector(".sieve-settings-fingerprint")
           .textContent = account.fingerprint;
 
-        if (account.fingerprint === "")
-          elm.querySelector(".sieve-settings-fingerprint-item").style.display = 'none';
+        if (account.fingerprint !== "")
+          elm.querySelector(".sieve-settings-fingerprint-item").classList.remove("d-none");
       }
 
       // Clear any existing left overs...

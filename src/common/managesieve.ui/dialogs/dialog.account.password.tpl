@@ -9,24 +9,24 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="form-group row">
+        <div class="mb-3 row">
           <div class="col-sm-12" data-i18n="password.dialog.description"></div>
         </div>
-        <div class="form-group row">
+        <div class="mb-3 row">
           <label class="col-sm-3 col-form-label" data-i18n="password.dialog.account"></label>
           <div class="col-sm-8 col-form-label sieve-displayname"></div>
         </div>
-        <div class="form-group row">
+        <div class="mb-3 row">
           <label class="col-sm-3 col-form-label" data-i18n="password.dialog.username"></label>
           <div class="col-sm-8 col-form-label sieve-username"></div>
         </div>
-        <div class="form-group row">
+        <div class="mb-3 row">
           <label class="col-sm-3 col-form-label" data-i18n="password.dialog.password"></label>
           <div class="col-sm-8">
             <input type="password" class="form-control sieve-password">
           </div>
         </div>
-        <div class="form-group row sieve-password-remember">
+        <div class="mb-3 row sieve-password-remember">
           <label class="col-sm-3 col-form-label"></label>
           <div class="col-sm-8 ml-3 custom-control custom-switch">
             <input type="checkbox" class="form-check-input" id="sieve-password-remember">

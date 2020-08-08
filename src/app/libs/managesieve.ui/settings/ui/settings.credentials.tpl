@@ -103,7 +103,7 @@
             </div>
           </div>
 
-          <div class="form-group row sieve-settings-authorization-username">
+          <div class="mb-3 row sieve-settings-authorization-username">
             <label class="col-sm-3 col-form-label" data-i18n="credentials.authorization.username2"></label>
             <div class="col-sm-8">
               <input type="text" class="form-control sieve-settings-text-authorization-username">

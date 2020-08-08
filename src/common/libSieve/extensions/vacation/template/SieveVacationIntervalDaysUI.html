@@ -1,6 +1,10 @@
 <div>
-  <input type="radio" id="cbxVacationIntervalDays" name="interval" value=":days" />
-  <span data-i18n="interval.days.label.pre"></span>
-  <input type="number" id="txtVacationIntervalDays" min="0" />
-  <span data-i18n="interval.days.label.post"></span>
+  <div class="form-check">
+    <input class="form-check-input mt-2" type="radio" id="cbxVacationIntervalDays" name="interval" value=":days" />
+    <label class="form-label d-flex align-items-baseline flex-wrap">
+      <span style="white-space: pre" class="form-label" data-i18n="interval.days.label.pre"></span>
+      <input class="form-control mr-1 ml-1" style="width:7em" type="number" id="txtVacationIntervalDays" min="0" />
+      <span class="form-label" data-i18n="interval.days.label.post"></span>
+    </label>
+  </div>
 </div>

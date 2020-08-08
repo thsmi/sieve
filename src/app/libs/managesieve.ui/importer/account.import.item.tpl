@@ -4,11 +4,11 @@
     (<span class="sieve-import-source"></span>)
   </div>
   <div class="card-body">
-    <div class="form-group row mt-0 mb-0">
+    <div class="mb-3 row mt-0 mb-0">
       <label class="col-sm-3 col-form-label" data-i18n="import.hostname"></label>
       <div class="sieve-import-hostname col-sm-8 col-form-label"></div>
     </div>
-    <div class="form-group row mt-0 mb-0">
+    <div class="mb-3 row mt-0 mb-0">
       <label class="col-sm-3 col-form-label" data-i18n="import.username"></label>
       <div class="sieve-import-username col-sm-8 col-form-label"></div>
     </div>

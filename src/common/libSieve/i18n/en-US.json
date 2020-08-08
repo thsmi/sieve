@@ -610,7 +610,7 @@
   "vacation.tracking.text" : "A vacation message is sent at most every some days to the same sender",
 
   "vacation.response" : "Response Handles",
-  "vacation.response.text" : "The response tracking considers all vacation statements that use the same handle as the same response\n\nThe default handle considers subject, from, mime as well as the message. A custom handle can be any unique strings",
+  "vacation.response.text" : "The response tracking considers all vacation statements that use the same handle as the same response\nThe default handle considers subject, from, mime as well as the message. A custom handle can be any unique strings",
   "vacation.response.default" : "Use default handle",
   "vacation.response.custom" : "Custom Handle",
 

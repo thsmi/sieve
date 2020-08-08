@@ -121,7 +121,7 @@ class SieveStringListWidget {
     // and connect the cloned menu
     item
       .querySelector(".sieve-stringlist-dropdown")
-      .insertAdjacentElement('beforebegin', elm);
+      .insertAdjacentElement('afterend', elm);
 
     for (const menu of elm.querySelectorAll(".dropdown-item")) {
       menu.addEventListener("click", () => {

@@ -4,7 +4,7 @@
   <p class="form-text text-muted">
     <small data-i18n="editor.indentation.description"></small>
   </p>
-  <div class="form-group row">
+  <div class="mb-3 row">
     <label data-i18n="editor.indentation.width" class="col-sm-3 col-form-label"></label>
     <div class="col-sm-2">
       <select id="editor-settings-indentation-width" class="form-control form-control-sm">
@@ -21,7 +21,7 @@
     </div>
   </div>
 
-  <div class="form-group row">
+  <div class="mb-3 row">
     <label class="col-sm-3 col-form-label" data-i18n="editor.indentation.policy"></label>
     <div class="col-sm-9">
       <div id="editor-settings-indentation-policy" class="btn-group">
@@ -38,7 +38,7 @@
       </div>
     </div>
   </div>
-  <div class="form-group row">
+  <div class="mb-3 row">
     <label class="col-sm-3 col-form-label" data-i18n="editor.indentation.tabWidth"></label>
     <div class="col-sm-2">
       <select id="editor-settings-tabulator-width" class="form-control form-control-sm">

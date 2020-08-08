@@ -13,13 +13,13 @@ In case the language is not supported it will fallback to english.
 
 ## App: macOS Builds
 
-Currently on the Azure Pipeline the packaging step is broken and commented.
+If you are a macOS user you need to (build)[BUILD.md] it on your own. Follow the prerequisites and run `gulp app:package-macos`.
 
-It is most likely easy to fix. But you need to debug it on a macOS as the very same code works without issues on a windows and linux machine. See [Issue #312](https://github.com/thsmi/sieve/issues/313) for more details.
+Currently on the Azure Pipeline is commented as it fails in the final packaging step. It is most likely easy to fix. But you need to debug it on a macOS as the very same code works without issues on a windows and linux machine. See [Issue #312](https://github.com/thsmi/sieve/issues/313) for more details.
 
 I don't own a mac, which means I can neither test, debug aw well as support macOS builds.
 
-All in all this means there won't be any macOS builds unless someone steps up, fixes the build pipeline and provids tested builds.
+So there won't be any macOS builds unless someone steps up, fixes the build pipeline and provides tested builds for releases.
 
 If you are using Sieve on macOS to manage your mailbox filters, consider contributing.
 

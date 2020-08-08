@@ -22,10 +22,10 @@
      */
     async init(report, scripts) {
 
-      const program = path.resolve(`${__dirname}/Sandbox/Sandbox.mjs`);
+      const program = path.resolve(`${__dirname}/sandbox/Sandbox.mjs`);
 
       if (!fs.existsSync(program))
-        throw new Error("Could not find sandbox");
+        throw new Error(`Could not find sandbox ${program}`);
 
       const args = [];
 

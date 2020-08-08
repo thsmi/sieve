@@ -82,36 +82,36 @@
             <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
 
                 <h5 data-i18n="vacation.contenttype"></h5>
-                <small data-i18n="vacation.contenttype.text" class="text-muted"></small>
-                <div>
-                    <input type="radio" name="mime" value="false" />
-                    <span data-i18n="vacation.contenttype.default"></span>
+                <p data-i18n="vacation.contenttype.text" class="form-text"></p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="mime" value="false" />
+                    <label class= "form-check-label" data-i18n="vacation.contenttype.default"></label>
                 </div>
-                <div>
-                    <input type="radio" name="mime" value="true" />
-                    <span data-i18n="vacation.contenttype.mime"></span>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="mime" value="true" />
+                    <label class= "form-check-label" data-i18n="vacation.contenttype.mime"></label>
                 </div>
                 <br/>
                 <h5 data-i18n="vacation.tracking"></h5>
-                <small data-i18n="vacation.tracking.text" class="text-muted"></small>
-                <form>
-                   <div id="sivVacationIntervalOverlay"> </div>
-                </form>
+                <p data-i18n="vacation.tracking.text" class="form-text"></p>
+                <div id="sivVacationIntervalOverlay"> </div>
                 <br/>
                 <h5 data-i18n="vacation.response"></h5>
-                <small data-i18n="vacation.response.text" style="white-space: pre-line" class="text-muted"></small>
-                <div>
-                    <input type="radio" name="handle" value="false" />
-                    <span data-i18n="vacation.response.default"></span>
+                <p data-i18n="vacation.response.text" style="white-space: pre-line" class="form-text"></p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="handle" value="false" />
+                    <label class="form-label" data-i18n="vacation.response.default"></label>
                 </div>
-                <div>
-                    <input type="radio" name="handle" value="true" />
-                    <input data-i18n="vacation.response.custom" type="text" id="sivVacationHandle"/>
+                <div class="form-check">
+                    <input class="form-check-input mt-2" type="radio" name="handle" value="true" />
+                    <label class="form-label">
+                        <input class="form-control" data-i18n="vacation.response.custom" type="text" id="sivVacationHandle"/>
+                    </label>
                 </div>
             </div>
 
             <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
-                <p data-i18n="vacation.help" style="white-space: pre-line"></p>
+                <p data-i18n="vacation.help" class="form-text" style="white-space: pre-line"></p>
             </div>
         </div>
     </div>

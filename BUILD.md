@@ -11,7 +11,7 @@ You find all app specific code in `src/app`, the WebExtension code is in `src/wx
 To get started clone the project for github.
 
 Then use either [yarn](https://yarnpkg.com/) or `npm install` to download the dependencies.
-This will download gulp as well as jquery, codemirror, bootstrap, electron and everything else which is needed.
+This will download gulp as well as codemirror, bootstrap, electron and everything else which is needed.
 
 As editor I suggest [Visual Studio Code](https://code.visualstudio.com/)
 

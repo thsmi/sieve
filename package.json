@@ -7,15 +7,13 @@
     "test": "tests"
   },
   "devDependencies": {
-    "bootstrap": "^4.5.0",
+    "bootstrap": "^5.0.0-alpha1",
     "codemirror": "^5.56.0",
     "electron": "^9.1.2",
     "electron-packager": "^15.0.0",
     "eslint": "^7.6.0",
     "eslint-plugin-jsdoc": "^30.1.0",
-    "eslint-plugin-no-jquery": "^2.5.0",
     "gulp": "^4.0.0",
-    "jquery": "^3.5.1",
     "keytar": "^6.0.1",
     "node-abi": "^2.18.0",
     "tar": "^6.0.1",

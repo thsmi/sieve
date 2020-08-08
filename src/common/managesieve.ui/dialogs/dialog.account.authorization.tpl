@@ -9,14 +9,14 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="form-group row">
+        <div class="mb-3 row">
           <div class="col-sm-12" data-i18n="authorization.description"></div>
         </div>
-        <div class="form-group row">
+        <div class="mb-3 row">
           <label class="col-sm-3 col-form-label" data-i18n="authorization.account"></label>
           <div class="col-sm-8 col-form-label sieve-displayname"></div>
         </div>
-        <div class="form-group row">
+        <div class="mb-3 row">
           <label class="col-sm-3 col-form-label" data-i18n="authorization.username"></label>
           <div class="col-sm-8">
             <input class="form-control sieve-authorization" data-i18n="authorization.placeholder">

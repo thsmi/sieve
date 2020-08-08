@@ -17,25 +17,24 @@
     <div class="tab-content m-2">
       <div class="tab-pane fade show active" id="sieve-widget-duplicatetest" role="tabpanel">
 
-        <div class="form-group">
+        <div class="mb-3">
           <h5 data-i18n="duplicate.unique.label"></h5>
           <div id="sivUnique"></div>
         </div>
       </div>
       <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
         <h5 data-i18n="duplicate.tracking.title"></h5>
-        <small data-i18n="duplicate.tracking.text" class="form-text text-muted">
-        </small>
-        <div class="custom-control custom-radio">
-          <input type="radio" id="sivDuplicateDefaultHandle" name="sieve-duplicate-handle" class="custom-control-input"
+        <p data-i18n="duplicate.tracking.text" class="form-text"></p>
+        <div class="form-check">
+          <input type="radio" id="sivDuplicateDefaultHandle" name="sieve-duplicate-handle" class="form-check-input"
             value="false" />
-          <label data-i18n="duplicate.tracking.default" class="custom-control-label"
+          <label data-i18n="duplicate.tracking.default" class="form-check-label"
             for="sivDuplicateDefaultHandle"></label>
         </div>
-        <div class="custom-control custom-radio">
-          <input type="radio" id="sivDuplicateCustomHandle" name="sieve-duplicate-handle" class="custom-control-input"
+        <div class="form-check">
+          <input type="radio" id="sivDuplicateCustomHandle" name="sieve-duplicate-handle" class="form-check-input"
             value="true" />
-          <label class="custom-control-label" for="sivDuplicateCustomHandle">
+          <label class="form-check-label" for="sivDuplicateCustomHandle">
             <form class="was-validated" novalidate="novalidate">
               <input data-i18n="duplicate.tracking.custom" type="text" value="${sender} ${subject}" id="sivDuplicateHandle" required="required"/>
               <div data-i18n="duplicate.tracking.custom.invalid" class="invalid-feedback"></div>
@@ -47,18 +46,18 @@
 
         <h5 data-i18n="duplicate.expiration.title"></h5>
 
-        <small class="form-text text-muted" data-i18n="duplicate.expiration.text"></small>
+        <p class="form-text" data-i18n="duplicate.expiration.text"></p>
 
-        <div class="custom-control custom-radio">
+        <div class="form-check">
           <input type="radio" id="sivDuplicateDefaultExpiration" name="sieve-duplicate-seconds"
-            class="custom-control-input" value="false" />
-          <label data-i18n="duplicate.expiration.default" class="custom-control-label"
+            class="form-check-input" value="false" />
+          <label data-i18n="duplicate.expiration.default" class="form-check-label"
             for="sivDuplicateDefaultExpiration"></label>
         </div>
-        <div class="custom-control custom-radio">
+        <div class="form-check">
           <input type="radio" id="sivDuplicateCustomExpiration" name="sieve-duplicate-seconds"
-            class="custom-control-input" value="true" />
-          <label class="custom-control-label" for="sivDuplicateCustomExpiration">
+            class="form-check-input" value="true" />
+          <label class="form-check-label" for="sivDuplicateCustomExpiration">
             <form class="was-validated" novalidate="novalidate">
               <span data-i18n="duplicate.expiration.custom.pre"></span>
               <input type="number" min="0" id="sivDuplicateSeconds" value="600" required="required"/>
@@ -70,20 +69,20 @@
 
         <br />
 
-        <small class="form-text text-muted" data-i18n="duplicate.time.text"></small>
-        <div class="custom-control custom-radio">
-          <input type="radio" id="sivDuplicateEntryCreated" name="sieve-duplicate-last" class="custom-control-input"
+        <p class="form-text" data-i18n="duplicate.time.text"></p>
+        <div class="form-check">
+          <input type="radio" id="sivDuplicateEntryCreated" name="sieve-duplicate-last" class="form-check-input"
             value="false" />
-          <label class="custom-control-label" for="sivDuplicateEntryCreated" data-i18n="duplicate.time.created"></label>
+          <label class="form-check-label" for="sivDuplicateEntryCreated" data-i18n="duplicate.time.created"></label>
         </div>
-        <div class="custom-control custom-radio">
-          <input type="radio" id="sivDuplicateEntryAccessed" name="sieve-duplicate-last" class="custom-control-input"
+        <div class="form-check">
+          <input type="radio" id="sivDuplicateEntryAccessed" name="sieve-duplicate-last" class="form-check-input"
             value="true" />
-          <label class="custom-control-label" for="sivDuplicateEntryAccessed"
+          <label class="form-check-label" for="sivDuplicateEntryAccessed"
             data-i18n="duplicate.time.accessed"></label>
         </div>
       </div>
-      <div style="white-space: pre-line" class="tab-pane fade" id="sieve-widget-help" role="tabpanel"
+      <div style="white-space: pre-line" class="tab-pane fade form-text" id="sieve-widget-help" role="tabpanel"
         data-i18n="duplicate.help"></div>
     </div>
   </div>

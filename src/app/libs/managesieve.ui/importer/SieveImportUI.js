@@ -13,9 +13,9 @@
 
   "use strict";
 
-  /* global $ */
   /* global SieveTemplate */
   /* global SieveIpcClient */
+  /* global bootstrap */
 
   /**
    * Imports sieve settings from mailers.
@@ -34,6 +34,8 @@
       // we need to call it on the main thread because we don't have
       // to all the libraries we need right here.
       const accounts = await SieveIpcClient.sendMessage("core", "import-thunderbird");
+
+      const modal = new bootstrap.Modal(dialog);
 
       await new Promise((resolve) => {
 
@@ -65,8 +67,7 @@
 
             // fix me remove modal2 from dom.
             await SieveIpcClient.sendMessage("core", "account-create", account2);
-            $(dialog).modal('hide');
-
+            modal.hide();
             resolve(true);
           });
 
@@ -74,11 +75,12 @@
 
         });
 
-        $(dialog).modal('show')
-          .on('hidden.bs.modal', () => {
-            dialog.parentNode.removeChild(dialog);
-            resolve(false);
-          });
+        modal.show();
+
+        dialog.addEventListener('hidden.bs.modal', () => {
+          dialog.parentNode.removeChild(dialog);
+          resolve(false);
+        });
       });
     }
   }

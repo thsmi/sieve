@@ -12,7 +12,7 @@
   <div id="template-content">
     <div class="tab-content m-2">
       <div class="tab-pane fade show active" id="sieve-widget-execute" role="tabpanel">
-        <div class="form-group">
+        <div class="mb-3">
           <label data-i18n="execute.program.label"></label>
           <form class="was-validated" novalidate="novalidate">
             <input id="sivExecuteProgram" type="text" class="form-control col-lg-8" data-i18n="execute.program.placeholder"
@@ -20,35 +20,33 @@
             <div class="invalid-feedback" data-i18n="execute.program.invalid"></div>
           </form>
 
-          <br />
-
-          <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" id="sivExecuteArgumentsCbx" />
-            <label class="custom-control-label" for="sivExecuteArgumentsCbx" data-i18n="execute.arguments.label"></label>
-
-            <small class="form-text text-muted" data-i18n="execute.arguments.text"></small>
+          <div class="form-check mt-2">
+            <input type="checkbox" class="form-check-input" id="sivExecuteArgumentsCbx" />
+            <label class="form-check-label" for="sivExecuteArgumentsCbx">
+              <span data-i18n="execute.arguments.label"></span>
+              <p class="form-text" data-i18n="execute.arguments.text"></p>
+            </label>
 
             <div id="sivExecuteArguments"></div>
           </div>
 
-          <br />
-          <div class="custom-control custom-checkbox">
+          <div class="form-check mt-2">
 
-            <input type="checkbox" class="custom-control-input" id="sivExecuteInputCbx" />
-            <label class="custom-control-label" for="sivExecuteInputCbx" data-i18n="execute.input.label"></label>
+            <input type="checkbox" class="form-check-input" id="sivExecuteInputCbx" />
+            <label class="form-check-label" for="sivExecuteInputCbx" data-i18n="execute.input.label"></label>
 
             <div id="sivExecuteInputCbxContent" class="d-none">
 
-              <div class="custom-control custom-radio">
-                <input type="radio" id="sivExecutePipeRb" name="sieve-execute-input" class="custom-control-input" value="execute/input/pipe" checked/>
-                <label data-i18n="execute.input.pipe.title" class="custom-control-label" for="sivExecutePipeRb"></label>
+              <div class="form-check">
+                <input type="radio" id="sivExecutePipeRb" name="sieve-execute-input" class="form-check-input" value="execute/input/pipe" checked/>
+                <label data-i18n="execute.input.pipe.title" class="form-check-label" for="sivExecutePipeRb"></label>
               </div>
 
-              <div class="custom-control custom-radio">
-                <input type="radio" id="sivExecuteInputRb" name="sieve-execute-input" class="custom-control-input" value="execute/input/input"/>
-                <label data-i18n="execute.input.input.title" class="custom-control-label" for="sivExecuteInputRb"></label>
+              <div class="form-check">
+                <input type="radio" id="sivExecuteInputRb" name="sieve-execute-input" class="form-check-input" value="execute/input/input"/>
+                <label data-i18n="execute.input.input.title" class="form-check-label" for="sivExecuteInputRb"></label>
 
-                <small data-i18n="execute.input.input.text" class="form-text text-muted"></small>
+                <p data-i18n="execute.input.input.text" class="form-text"></p>
 
                 <input id="sivExecuteInputName" type="text" class="form-control col-lg-8" data-i18n="execute.input.placeholder"
                 value="Example" />
@@ -56,15 +54,13 @@
             </div>
           </div>
 
-          <br />
-
-          <div id="sivExecuteOutput" class="d-none">
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="sivExecuteOutputCbx" />
-              <label class="custom-control-label" for="sivExecuteOutputCbx" data-i18n="execute.output.label"></label>
+          <div id="sivExecuteOutput" class="d-none mt-2">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id="sivExecuteOutputCbx" />
+              <label class="form-check-label" for="sivExecuteOutputCbx" data-i18n="execute.output.label"></label>
 
               <div id="sivExecuteOutputCbxContent"  class="d-none">
-                <small class="form-text text-muted" data-i18n="execute.output.text"></small>
+                <p class="form-text" data-i18n="execute.output.text"></p>
                 <input id="sivExecuteOutputName" type="text" class="form-control col-lg-8"
                   data-i18n="execute.output.placeholder" value="Example" />
               </div>
@@ -72,7 +68,7 @@
           </div>
         </div>
       </div>
-      <div data-i18n="execute.help" style="white-space: pre-line" class="tab-pane fade" id="sieve-widget-help"
+      <div data-i18n="execute.help" style="white-space: pre-line" class="tab-pane fade form-text" id="sieve-widget-help"
         role="tabpanel"></div>
     </div>
   </div>

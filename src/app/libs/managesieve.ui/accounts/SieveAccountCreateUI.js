@@ -13,7 +13,7 @@
 
   "use strict";
 
-  /* global $ */
+  /* global bootstrap */
   /* global SieveTemplate */
   /* global SieveIpcClient */
 
@@ -36,6 +36,8 @@
 
       return await new Promise((resolve) => {
 
+        const modal = new bootstrap.Modal(dialog);
+
         dialog
           .querySelector(".sieve-create-account-btn")
           .addEventListener("click", async () => {
@@ -49,15 +51,15 @@
 
             // fix me remove modal2 from dom.
             await SieveIpcClient.sendMessage("core", "account-create", account);
-            $(dialog).modal('hide');
+            modal.hide();
             resolve(true);
           });
 
-        $(dialog).modal('show')
-          .on('hidden.bs.modal', () => {
-            dialog.parentNode.removeChild(dialog);
-            resolve(false);
-          });
+        modal.show();
+        dialog.addEventListener('hidden.bs.modal', () => {
+          dialog.parentNode.removeChild(dialog);
+          resolve(false);
+        });
       });
     }
   }

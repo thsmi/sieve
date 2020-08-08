@@ -13,7 +13,7 @@
 
   "use strict";
 
-  /* global $ */
+  /* global bootstrap */
   /* global SieveTemplate */
 
   /**
@@ -32,8 +32,6 @@
       document.querySelector("#ctx").appendChild(
         await (new SieveTemplate()).load("./accounts/account.capabilities.tpl"));
 
-      $('#sieve-dialog-capabilities').modal('show');
-
       document.querySelector("#sieve-capabilities-server").textContent
         = capabilities.implementation;
       document.querySelector("#sieve-capabilities-version").textContent
@@ -47,12 +45,19 @@
 
       await new Promise((resolve) => {
 
-        $('#sieve-dialog-capabilities').modal("show")
-          .on("hidden.bs.modal", () => {
-            const elm = document.querySelector('#sieve-dialog-capabilities');
-            elm.parentNode.removeChild(elm);
-            resolve();
-          });
+        const dialog = document.querySelector('#sieve-dialog-capabilities');
+
+        const modal = new bootstrap.Modal(dialog);
+        modal.show();
+
+        dialog.addEventListener("hidden.bs.modal", () => {
+          resolve();
+
+          const elm = document.querySelector('#sieve-dialog-capabilities');
+          elm.parentNode.removeChild(elm);
+
+          modal.dispose();
+        });
       });
 
     }

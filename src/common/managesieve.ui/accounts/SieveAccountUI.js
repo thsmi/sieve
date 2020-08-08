@@ -13,7 +13,8 @@
 
   "use strict";
 
-  /* global $ */
+  /* global bootstrap */
+
   /* global SieveLogger */
   /* global SieveTemplate */
   /* global SieveScriptUI */
@@ -159,8 +160,8 @@
         elm.querySelector(".sieve-settings-fingerprint")
           .textContent = account.fingerprint;
 
-        if (account.fingerprint === "")
-          elm.querySelector(".sieve-settings-fingerprint-item").style.display = 'none';
+        if (account.fingerprint !== "")
+          elm.querySelector(".sieve-settings-fingerprint-item").classList.remove("d-none");
       }
 
       // Clear any existing left overs...
@@ -213,7 +214,7 @@
 
       elm.querySelector(".sieve-settings-content").id = `sieve-settings-content-${this.id}`;
       elm.querySelector(".sieve-settings-tab").href = `#sieve-settings-content-${this.id}`;
-      $(elm.querySelector(".sieve-settings-tab")).on('shown.bs.tab', () => { this.renderSettings(); });
+      elm.querySelector(".sieve-settings-tab").addEventListener('shown.bs.tab', () => { this.renderSettings(); });
 
       elm.querySelector(".siv-account-name").textContent
         = await this.send("account-get-displayname");
@@ -321,21 +322,16 @@
      * Shows the settings dialog
      */
     showSettings() {
-      $(`#siv-account-${this.id} .sieve-settings-tab`).tab('show');
+      const tab = document.querySelector(`#siv-account-${this.id} .sieve-settings-tab`);
+      (new bootstrap.Tab(tab)).show();
     }
 
     /**
      * Shows the server settings dialog.
-     * @returns {Promise<boolean>}
-     *   false in case the dialog was dismissed, otherwise true.
      */
     async showServerSettings() {
 
-      const rv = await (new SieveServerSettingsUI(this)).show();
-
-      // render settings in case they got changed.
-      if (rv === false)
-        return rv;
+      await (new SieveServerSettingsUI(this)).show();
 
       this.renderSettings();
 
@@ -343,23 +339,13 @@
       document
         .querySelector(`#siv-account-${this.id} .siv-account-name`)
         .textContent = await this.send("account-get-displayname");
-
-      return rv;
     }
 
     /**
      * Shows the credential settings dialog.
-     * @returns {Promise<boolean>}
-     *   false in case the dialog was dismissed otherwise true.
      **/
-    async showCredentialSettings() {
-
-      const rv = await (new SieveCredentialsSettingsUI(this)).show();
-
-      if (rv === true)
-        this.renderSettings();
-
-      return rv;
+    showCredentialSettings() {
+      (new SieveCredentialsSettingsUI(this)).show();
     }
 
     /**

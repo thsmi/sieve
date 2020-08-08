@@ -11,8 +11,6 @@
 
 (function () {
 
-  "use strict";
-
   const { app, Menu, BrowserWindow, ipcMain, dialog } = require('electron');
   const path = require('path');
   const url = require('url');
@@ -74,7 +72,9 @@
         nodeIntegration: true
       }
     });
-    // win.setMenu(null);
+
+    // Hide the menu bar.
+    win.removeMenu();
 
     // and load the index.html of the app.
     win.loadURL(url.format({

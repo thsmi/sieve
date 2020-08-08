@@ -26,7 +26,6 @@ welcome to modify the source code as you want to meet your needs.
 All of the third party source code is available under licenses which are both free and open source.
 
 * [CodeMirror](http://www.codemirror.net) is released under the [MIT license](http://codemirror.net/LICENSE)
-* [JQuery](http://www.jquery.com) is released under the [MIT License](http://jquery.org/license/)
 * [Bootstrap](https://getbootstrap.com/) is released under the [MIT license](https://raw.githubusercontent.com/twbs/bootstrap/master/LICENSE)
 
 ## Icon

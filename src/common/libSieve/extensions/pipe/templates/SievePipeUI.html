@@ -12,46 +12,37 @@
   <div id="template-content">
     <div class="tab-content m-2">
       <div class="tab-pane fade show active" id="sieve-widget-pipe" role="tabpanel">
-        <div class="form-group">
+        <div class="mb-3">
           <label data-i18n="pipe.program.label"></label>
           <form class="was-validated" novalidate="novalidate">
             <input id="sivPipeProgram" type="text" class="form-control col-lg-8" data-i18n="pipe.program.placeholder" required="required"/>
             <div class="invalid-feedback" data-i18n="pipe.program.invalid"></div>
           </form>
 
-          <br />
-
-          <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" id="sivPipeArgumentsCbx" />
-            <label class="custom-control-label" for="sivPipeArgumentsCbx" data-i18n="pipe.arguments.label"></label>
-
-            <small class="form-text text-muted" data-i18n="pipe.arguments.text"></small>
-
+          <div class="form-check mt-2">
+            <input type="checkbox" class="form-check-input" id="sivPipeArgumentsCbx" />
+            <label class="form-check-label" data-i18n="pipe.arguments.label" for="sivPipeArgumentsCbx" ></label>
+            <p class="form-text" data-i18n="pipe.arguments.text"></p>
             <div id="sivPipeArguments"></div>
           </div>
 
-          <br />
-
-          <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" id="sivPipeTryCbx" />
-            <label class="custom-control-label" for="sivPipeTryCbx" data-i18n="pipe.try.label"></label>
-
-            <small class="form-text text-muted" data-i18n="pipe.try.text"></small>
+          <div class="form-check mt-2">
+            <input type="checkbox" class="form-check-input" id="sivPipeTryCbx" />
+            <label class="form-check-label" for="sivPipeTryCbx"></label>
+            <span data-i18n="pipe.try.label"></span>
+            <p class="form-text" data-i18n="pipe.try.text"></p>
           </div>
 
-          <div id="sivPipeCopy" class="d-none">
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="sivPipeCopyCheckbox" />
-              <label class="custom-control-label" for="sivPipeCopyCheckbox" data-i18n="pipe.copy.label"></label>
-
-              <small class="form-text text-muted" data-i18n="pipe.copy.text"></small>
-            </div>
+          <div id="sivPipeCopy" class="form-check mt-2 d-none">
+            <input type="checkbox" class="form-check-input" id="sivPipeCopyCheckbox" />
+            <label class="form-check-label" for="sivPipeCopyCheckbox" ></label>
+            <span data-i18n="pipe.copy.label"></span>
+            <p class="form-text" data-i18n="pipe.copy.text"></p>
           </div>
         </div>
 
-
       </div>
-      <div data-i18n="pipe.help" style="white-space: pre-line" class="tab-pane fade" id="sieve-widget-help"
+      <div data-i18n="pipe.help" style="white-space: pre-line" class="tab-pane fade form-text" id="sieve-widget-help"
         role="tabpanel"></div>
     </div>
   </div>

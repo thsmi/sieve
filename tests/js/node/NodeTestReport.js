@@ -1,7 +1,4 @@
-/* eslint-disable no-console */
 (function (exports) {
-
-  "use strict";
 
   const { TestSuiteReport, TestFixtureReport, TestCaseReport } = require("./../common/AbstractTestReport.js");
 
@@ -30,6 +27,22 @@
     }
 
     /**
+     * Logs a generic message with of the given type
+     * @param {string} msg
+     *   the message to be logged
+     * @param {string} [type]
+     *   the message type if omitted "Trace" is used.
+     */
+    log(msg, type) {
+      if ((typeof(type) === "undefined") || (type === "Trace")) {
+        this.logTrace(msg);
+        return;
+      }
+
+      console.warn(` ${type}  ${msg}`);
+    }
+
+    /**
      * Logs a trace message.
      *
      * @param {string} msg
@@ -39,6 +52,7 @@
       if (this.verbosity < VERBOSITY_TRACE)
         return;
 
+      // eslint-disable-next-line no-console
       console.log(`\u001B[90m${msg}\u001b[0m`);
     }
 
@@ -52,6 +66,7 @@
       if (this.verbosity < VERBOSITY_INFO)
         return;
 
+      // eslint-disable-next-line no-console
       console.log(msg);
     }
 
@@ -65,6 +80,7 @@
       if (this.verbosity < VERBOSITY_NORMAL)
         return;
 
+      // eslint-disable-next-line no-console
       console.log(`\u001B[31m${msg}\u001b[0m`);
     }
 
@@ -78,6 +94,7 @@
       if (this.verbosity < VERBOSITY_NORMAL)
         return;
 
+      // eslint-disable-next-line no-console
       console.log(`\u001B[31m${msg}\n\u001b[0m`);
     }
 
@@ -92,6 +109,7 @@
       if (this.verbosity < VERBOSITY_NORMAL)
         return;
 
+      // eslint-disable-next-line no-console
       console.log(`\u001B[32m${msg}\u001b[0m`);
     }
 
@@ -106,6 +124,7 @@
       if (this.verbosity < VERBOSITY_NORMAL)
         return;
 
+      // eslint-disable-next-line no-console
       console.log(`\n\u001B[36m\u001b[1m${msg}\u001b[0m\u001b[0m`);
     }
 
@@ -119,6 +138,7 @@
       if (this.verbosity < VERBOSITY_NORMAL)
         return;
 
+      // eslint-disable-next-line no-console
       console.log(`\u001B[33m${msg}\u001b[0m`);
     }
   }

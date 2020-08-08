@@ -55,6 +55,7 @@
   "account.newscript" : "New script",
   "account.donate" : "Donate",
 
+  "server.title" : "Server Settings",
   "server.displayname" : "Display name",
   "server.displayname.placeholder" : "e.g. work or mail@example.com",
   "server.hostname" : "Hostname",
@@ -68,6 +69,7 @@
   "server.idle2" : "minutes of in activity.",
   "server.idle.description" : "Most server will disconnect a client after being inactive for a certain time span. To prevent this and keep the connection alive, idle messages are sent. To disable keep alive messages set the interval to zero.",
 
+  "credentials.title" : "Credentials",
   "credentials.security" : "Security",
   "credentials.forceEncryption" : "Encrypted Connection",
   "credentials.noEncryption" : "None",
@@ -101,7 +103,7 @@
   "account.details.secure" : "(Secure connection)",
   "account.details.fingerprint" : "Fingerprint",
   "account.details.username" : "Username",
-  "account.details.sasl" : "SASL mechanism",
+  "account.details.sasl" : "Authentication",
   "account.details.server.edit" : "Edit Server",
   "account.details.credentials.edit" : "Edit Credentials",
   "account.details.debugging.edit" : "Debugging",

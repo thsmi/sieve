@@ -4,8 +4,7 @@
     <div style="min-width:8em" data-i18n="account.details.server"></div>
       <span class="sieve-settings-hostname"></span>:
       <span class="sieve-settings-port"></span>
-      &nbsp;
-      <span class="sieve-settings-secure" data-i18n="account.details.secure"></span>
+      <span class="sieve-settings-secure ml-1" data-i18n="account.details.secure"></span>
   </div>
   <div class="sieve-settings-fingerprint-item d-none">
     <div class="d-flex flex-row form-label ">

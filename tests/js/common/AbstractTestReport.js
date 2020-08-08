@@ -11,8 +11,6 @@
 
 (function (exports) {
 
-  "use strict";
-
   const STATUS_UNKNOWN = 0;
   const STATUS_RUNNING = 1;
   const STATUS_SUCCESS = 2;

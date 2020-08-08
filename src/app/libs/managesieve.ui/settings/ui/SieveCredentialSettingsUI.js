@@ -9,7 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-/* global $ */
+  /* global bootstrap */
 
 import { SieveTemplate } from "./../../utils/SieveTemplate.js";
 
@@ -172,144 +172,133 @@ class SieveCredentialsSettingsUI {
    *   true in case an encrypted connection should be used otherwise false.
    */
   isEncrypted() {
-    const active = this.getDialog().querySelector(".sieve-settings-encryption .active");
 
-    if (active.classList.contains("sieve-settings-encryption-disabled"))
-      return false;
+      if (this.getDialog().querySelector("#sieve-settings-encryption-off").checked)
+        return false;
 
-    return true;
-  }
+      return true;
+    }
 
-  /**
-   * Sets the encryption settings in the current dialog.
-   *
-   * @param {boolean} encrypted
-   *   the encryption status to set. False in case encryption is disabled
-   *   otherwise it will be enabled
-   * @returns {SieveServerSettingsUI}
-   *   a self reference
-   */
-  setEncrypted(encrypted) {
-    const parent = this.getDialog();
+    /**
+     * Sets the encryption settings in the current dialog.
+     *
+     * @param {boolean} encrypted
+     *   the encryption status to set. False in case encryption is disabled
+     *   otherwise it will be enabled
+     * @returns {SieveServerSettingsUI}
+     *   a self reference
+     */
+    setEncrypted(encrypted) {
+      const parent = this.getDialog();
 
-    // reset the toggle button status...
-    parent
-      .querySelectorAll(".sieve-settings-encryption .active")
-      .forEach((item) => { item.classList.remove("active"); });
+      if (encrypted === false)
+        parent.querySelector("#sieve-settings-encryption-off").checked = true;
+      else
+        parent.querySelector("#sieve-settings-encryption-on").checked = true;
 
-    if (encrypted === false)
-      $(parent.querySelector(".sieve-settings-encryption-disabled")).button('toggle');
-    else
-      $(parent.querySelector(".sieve-settings-encryption-enabled")).button('toggle');
+      return this;
+    }
 
-    return this;
-  }
+    /**
+     * Shows the advanced setting
+     */
+    showAdvanced() {
+      const parent = this.getDialog();
 
-  /**
-   * Shows the advanced setting
-   */
-  showAdvanced() {
-    const parent = this.getDialog();
+      parent.querySelector(".siv-settings-advanced").classList.remove("d-none");
+      parent.querySelector(".siv-settings-show-advanced").classList.add("d-none");
+      parent.querySelector(".siv-settings-hide-advanced").classList.remove("d-none");
+    }
 
-    parent.querySelector(".siv-settings-advanced").classList.remove("d-none");
-    parent.querySelector(".siv-settings-show-advanced").classList.add("d-none");
-    parent.querySelector(".siv-settings-hide-advanced").classList.remove("d-none");
-  }
+    /**
+     * Hides the advanced settings
+     */
+    hideAdvanced() {
+      const parent = this.getDialog();
 
-  /**
-   * Hides the advanced settings
-   */
-  hideAdvanced() {
-    const parent = this.getDialog();
+      parent.querySelector(".siv-settings-advanced").classList.add("d-none");
+      parent.querySelector(".siv-settings-show-advanced").classList.remove("d-none");
+      parent.querySelector(".siv-settings-hide-advanced").classList.add("d-none");
+    }
 
-    parent.querySelector(".siv-settings-advanced").classList.add("d-none");
-    parent.querySelector(".siv-settings-show-advanced").classList.remove("d-none");
-    parent.querySelector(".siv-settings-hide-advanced").classList.add("d-none");
-  }
+    /**
+     * Shows the settings dialog
+     *
+     * @returns {boolean}
+     *   true in case new settings where applied.
+     *   false in case the dialog was canceled.
+     */
+    async show() {
 
-  /**
-   * Shows the settings dialog
-   *
-   * @returns {boolean}
-   *   true in case new settings where applied.
-   *   false in case the dialog was canceled.
-   */
-  async show() {
+      document.querySelector("#ctx").appendChild(
+        await (new SieveTemplate()).load("./settings/ui/settings.credentials.tpl"));
 
-    document.querySelector("#ctx").appendChild(
-      await (new SieveTemplate()).load("./settings/ui/settings.dialog.tpl"));
+      await this.render();
 
-    await this.render();
+      const dialog = this.getDialog();
+      const modal = new bootstrap.Modal(dialog);
 
-    return await new Promise((resolve) => {
+      modal.show();
 
-      $(this.getDialog()).modal('show')
-        .on('hidden.bs.modal', () => {
-          this.getDialog().parentNode.removeChild(this.getDialog());
-          resolve(false);
-        });
-
-      this.getDialog()
+      dialog
         .querySelector(".sieve-settings-apply")
         .addEventListener("click", async () => {
           await this.save();
-          resolve(true);
-
-          // ... now trigger the hidden listener it will cleanup
-          // it is afe to do so due to promise magics, the first
-          // alway resolve wins and all subsequent calls are ignored...
-          $(this.getDialog()).modal("hide");
+          modal.hide();
         });
-    });
-  }
 
-  /**
-   * Validates and saves the setting before closing the dialog.
-   * In case the settings are invalid an error message is displayed.
-   */
-  async save() {
+      return await new Promise((resolve) => {
 
-    const settings = {
-      general: {
-        secure: this.isEncrypted(),
-        sasl: this.getSaslMechanism()
-      },
-      authentication: {
-        username: this.getAuthentication(),
-        mechanism: 0
-      },
-      authorization: {
-        username: this.getAuthorization(),
-        mechanism: this.getAuthorizationType()
-      }
-    };
+        dialog.addEventListener('hidden.bs.modal', () => {
+          modal.dispose();
+          dialog.parentElement.removeChild(dialog);
 
-    await this.account.send("account-settings-set-credentials", settings);
-  }
+          resolve();
+        });
 
-  /**
-   * Returns the currents dialogs UI Element.
-   *
-   * @returns {object}
-   *   the dialogs UI elements.
-   */
-  getDialog() {
-    return document.querySelector("#sieve-dialog-settings");
-  }
+      });
+    }
 
-  /**
-   * Renders the UI element into the dom.
-   */
-  async render() {
-    const parent = this.getDialog();
+    /**
+     * Validates and saves the setting before closing the dialog.
+     * In case the settings are invalid an error message is displayed.
+     */
+    async save() {
 
-    // Load all subsections...
-    const settings = parent.querySelector(".modal-body");
-    while (settings.firstChild)
-      settings.removeChild(settings.firstChild);
+      const settings = {
+        general: {
+          secure: this.isEncrypted(),
+          sasl: this.getSaslMechanism()
+        },
+        authentication: {
+          username: this.getAuthentication(),
+          mechanism: 0
+        },
+        authorization: {
+          username: this.getAuthorization(),
+          mechanism: this.getAuthorizationType()
+        }
+      };
 
-    settings.appendChild(
-      await new SieveTemplate().load("./settings/ui/settings.credentials.tpl"));
+      await this.account.send("account-settings-set-credentials", settings);
+    }
+
+    /**
+     * Returns the currents dialogs UI Element.
+     *
+     * @returns {object}
+     *   the dialogs UI elements.
+     */
+    getDialog() {
+      return document.querySelector("#dialog-settings-credentials");
+    }
+
+    /**
+     * Renders the UI element into the dom.
+     */
+    async render() {
+      const parent = this.getDialog();
+
 
     const credentials = await this.account.send("account-setting-get-credentials");
 

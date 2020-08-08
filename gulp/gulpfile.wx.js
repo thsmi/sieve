@@ -23,9 +23,75 @@ const BASE_DIR_WX = "./src/wx/";
 const { Stream } = require('stream');
 
 /**
+ * A gulp helper to rename mjs modules into js.
+ * This is needed due to a bug in thunderbird.
+ *
+ * It means renaming the files as well as all of their imports.
+ */
+class TransposeMjsToJs extends Stream.Transform {
+
+  /**
+   * Create a new instance
+   */
+  constructor() {
+    super({ readableObjectMode: true, writableObjectMode: true });
+  }
+
+  /**
+   * Implements the stream's transform method which does the actual
+   * work. It renames all mjs files and adjusts the imports.
+   *
+   * @param {File} file
+   *   the vinyl file object
+   * @param {*} enc
+   *   the encoding
+   * @param {Function} cb
+   *   the callback which is called when processing is completed.
+   */
+  _transform(file, enc, cb) {
+    // HTML, js and mjs files can reference other imports
+    if ((file.extname !== ".js") && (file.extname !== ".mjs") && file.extname !== ".html") {
+      cb(null, file);
+      return;
+    }
+
+    if (!file.isBuffer()) {
+      cb(null, file);
+      return;
+    }
+
+    // Rename mjs to js
+    if (file.extname === ".mjs")
+      file.extname = ".js";
+
+    // Update their import sections.
+    if (file.extname === ".js") {
+      let content = file.contents.toString();
+      content = content.replace(
+        /(import\s*({[\w\s\n,]*}\s*from\s*)?)"([\w/.]*)\.mjs"/gm,
+        '$1"$3.js"');
+      file.contents = Buffer.from(content);
+    }
+
+    if (file.extname === ".html") {
+      let content = file.contents.toString();
+
+      content = content.replace(
+        /(<script\s*type="module"\s*src=")([\w/.]*)\.mjs("\s*>)/gm,
+        '$1$2.js$3');
+
+      file.contents = Buffer.from(content);
+    }
+
+    cb(null, file);
+  }
+}
+
+
+/**
  * A gulp helper to transpose import statements to requires.
  */
-class TransposeImports extends Stream.Transform {
+class TransposeImportToRequire extends Stream.Transform {
 
   /**
    * Create a new instance
@@ -90,25 +156,11 @@ class TransposeImports extends Stream.Transform {
  *   a stream to be consumed by gulp
  */
 function packageLicense() {
-  "use strict";
-
   return src([
     "./LICENSE.md"
   ]).pipe(dest(BUILD_DIR_WX));
 }
 
-/**
- * Copies the jquery sources into the build directory.
- *
- * @returns {Stream}
- *   a stream to be consumed by gulp
- */
-function packageJQuery() {
-  "use strict";
-
-  return common.packageJQuery(
-    BUILD_DIR_WX + "/libs/jquery");
-}
 
 /**
  * Copies the codemirror sources into the build directory.
@@ -117,8 +169,6 @@ function packageJQuery() {
  *   a stream to be consumed by gulp
  */
 function packageCodeMirror() {
-  "use strict";
-
   return common.packageCodeMirror(
     `${BUILD_DIR_WX}/libs/CodeMirror`);
 }
@@ -130,8 +180,6 @@ function packageCodeMirror() {
  *   a stream to be consumed by gulp
  **/
 function packageBootstrap() {
-  "use strict";
-
   return common.packageBootstrap(
     `${BUILD_DIR_WX}/libs/bootstrap`);
 }
@@ -157,7 +205,6 @@ function packageSrc() {
  *   a stream to be consumed by gulp
  */
 function packageIcons() {
-  "use strict";
 
   return src([
     path.join(common.BASE_DIR_COMMON, "icons") + "/**"
@@ -178,7 +225,7 @@ function packageLibManageSieve() {
 
   return common.src2(BASE_LIB_DIR_WX)
     .pipe(common.src2(BASE_LIB_DIR_COMMON))
-    .pipe(new TransposeImports())
+    .pipe(new TransposeImportToRequire())
     .pipe(dest(path.join(BUILD_DIR_WX_LIBS, "libManageSieve")));
 }
 
@@ -190,8 +237,15 @@ function packageLibManageSieve() {
  *   a stream to be consumed by gulp
  */
 function packageLibSieve() {
-  "use strict";
-  return common.packageLibSieve(BUILD_DIR_WX_LIBS);
+
+  const BASE_LIB_DIR_WX = path.join(BASE_DIR_WX, "libs", "libSieve");
+  const BASE_LIB_DIR_COMMON = path.join(common.BASE_DIR_COMMON, "libSieve");
+
+  return common.src2(BASE_LIB_DIR_WX)
+    .pipe(common.src2(BASE_LIB_DIR_COMMON))
+    .pipe(new TransposeMjsToJs())
+    .pipe(dest(path.join(BUILD_DIR_WX_LIBS, "libSieve")));
+
 }
 
 
@@ -202,8 +256,6 @@ function packageLibSieve() {
  *   a stream to be consumed by gulp
  */
 function packageManageSieveUi() {
-  "use strict";
-
   return common.packageManageSieveUi(BUILD_DIR_WX_LIBS);
 }
 
@@ -212,8 +264,6 @@ function packageManageSieveUi() {
  * Watches for changed source files and copies them into the build directory.
  */
 function watchSrc() {
-
-  "use strict";
 
   watch(
     ['./src/**/*.js',
@@ -235,7 +285,6 @@ function watchSrc() {
  * It reads the information from the npm package and updates the install.rdf as well as the manifest.json
  */
 async function updateVersion() {
-  "use strict";
 
   const pkgVersion = await common.getPackageVersion();
   await common.setPackageVersion(pkgVersion, './src/wx/manifest.json');
@@ -245,7 +294,6 @@ async function updateVersion() {
  * Zips the build directory and creates a XPI inside the release folder.
  */
 async function packageXpi() {
-  "use strict";
 
   const version = (await common.getPackageVersion()).join(".");
 
@@ -260,7 +308,6 @@ exports["watch"] = watchSrc;
 
 exports["updateVersion"] = updateVersion;
 
-exports["packageJQuery"] = packageJQuery;
 exports["packageCodeMirror"] = packageCodeMirror;
 exports["packageBootstrap"] = packageBootstrap;
 exports["packageLicense"] = packageLicense;
@@ -268,7 +315,6 @@ exports["packageSrc"] = packageSrc;
 
 exports['package'] = series(
   parallel(
-    packageJQuery,
     packageCodeMirror,
     packageBootstrap,
     packageLicense,
@@ -281,4 +327,3 @@ exports['package'] = series(
 );
 
 exports["packageXpi"] = packageXpi;
-

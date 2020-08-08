@@ -11,8 +11,6 @@
 
 (function (exports) {
 
-  "use strict";
-
   const MILLISECONDS_PER_SECOND = 1000;
   const TIMESTAMP_BEGIN = 1;
   const TIMESTAMP_END = 20;

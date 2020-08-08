@@ -1,51 +1,16 @@
 (function (exports) {
 
-  "use strict";
-
   const { AbstractTestSuite, AbstractTestFixture, TestCase } = require("./../common/AbstractTestSuite.js");
 
-  const { existsSync } = require('fs');
-  const { readFile } = require('fs').promises;
+  const { fork } = require('child_process');
   const path = require("path");
-  const vm = require('vm');
-
+  const fs = require('fs');
 
   /**
    * Implements a sandbox to run the unit tests.
    * It uses a separate node context.
    */
   class Sandbox {
-
-    /**
-     * Runs the given command inside the report context.
-     * So that all log messages end up here.
-     *
-     * @param {AbstractTestReport} report
-     *   a reference to a report
-     * @param {Function} callback
-     *   the method to be executed
-     *
-     * @returns {*}
-     *   the callbacks return value.
-     */
-    async runInLoggerContext(report, callback) {
-      // Inject the report logger...
-      this.context.net.tschmid.yautt.logger = {
-        log: (message, level) => { report.log(message, level); }
-      };
-
-      let rv;
-      try {
-        rv = await callback();
-      } finally {
-        // Replace it with a dummy logger.
-        this.context.net.tschmid.yautt.logger = {
-          log: () => { }
-        };
-      }
-
-      return rv;
-    }
 
     /**
      * Initializes the sandbox.
@@ -57,46 +22,100 @@
      */
     async init(report, scripts) {
 
-      const context = { "net": { "tschmid": { "yautt": { "test": {} } } } };
+      const program = path.resolve(`${__dirname}/sandbox/Sandbox.mjs`);
 
-      vm.createContext(context);
+      if (!fs.existsSync(program))
+        throw new Error(`Could not find sandbox ${program}`);
 
-      this.context = context;
+      const args = [];
 
-      await this.runInLoggerContext(report, async () => {
-        for (const script of scripts)
-          await this.require(script, report);
+      const options = {
+        stdio: ['pipe', 'pipe', 'pipe', 'ipc']
+      };
+
+      this.child = fork(program, args, options);
+
+      this.child.on("error", (err) => {
+        // eslint-disable-next-line no-console
+        console.log("Executing Sandbox failed with an error" + err);
+      });
+
+      await this.connect(report);
+
+      await this.require(report, scripts);
+    }
+
+    /**
+     * Initiates a connection. It waits until the sandbox signals
+     * its readiness.
+     */
+    async connect() {
+      return await new Promise((resolve, reject) => {
+
+        const child = this.getChildProcess();
+
+        let cleanup = null;
+
+        const onMessage = function(msg) {
+
+          msg = JSON.parse(msg);
+
+          if (msg.type === `ReadySignal`) {
+            cleanup();
+            resolve(msg.result);
+            return;
+          }
+        };
+
+        const onExit = function() {
+          cleanup();
+          reject( new Error("Child process unexpectedly terminated"));
+        };
+
+        cleanup = () => {
+          child.off("message", onMessage);
+          child.off("exit", onExit);
+        };
+
+        child.on('exit', onExit);
+        child.on('message', onMessage);
+
+        const msg = {
+          type: "ready",
+          payload: ""
+        };
+
+        this.child.send("" + JSON.stringify(msg));
       });
     }
 
     /**
      * Loads java script files into the sandbox context.
-     * @param {string} script
-     *   the script to be loaded.
+     *
      * @param {AbstractTestReport} report
      *   a reference  to the an report.
+     * @param {string[]} scripts
+     *   the scripts to be loaded.
      */
-    async require(script, report) {
+    async require(report, scripts) {
 
-      if (!this.context)
+      if (!this.child)
         throw new Error("Sandbox not initialized");
 
-      // FixMe remove the path voodoo...
-      if (script.startsWith("./../common/"))
-        script = path.join("./src/common/", script);
+      scripts = scripts.map((script) => {
+        if (script.startsWith("./../common/"))
+          script = path.join(__dirname, "./../../../src/common/", script);
 
-      if (script.startsWith("./validators/"))
-        script = path.join("./tests/tests/", script);
+        if (script.startsWith("./validators/"))
+          script = path.join(__dirname, "./../../tests/", script);
 
-      if (script.startsWith("./sieve/"))
-        script = path.join("./tests/tests/", script);
+        if (!fs.existsSync(script))
+          throw new Error(`No such file ${path.resolve(script)}`);
 
-      if (!existsSync(script))
-        throw new Error(`No such file ${path.resolve(script)}`);
+        return `file://${script}`;
+      });
 
-      report.addTrace("Loading Script " + path.resolve(script));
-      (new vm.Script(await readFile(script), { filename: path.resolve(script) }))
-        .runInContext(this.context);
+      await this.execute(report, "ImportScript", scripts);
     }
 
     /**
@@ -104,7 +123,16 @@
      */
     // eslint-disable-next-line require-await
     async destroy() {
-      this.context = null;
+
+      return new Promise((resolve, reject) => {
+        this.child.on("exit", () => {
+          resolve();
+        });
+
+        if (!this.child.kill()) {
+          reject(new Error("Could not terminate child process"));
+        }
+      });
     }
 
     /**
@@ -118,21 +146,8 @@
      */
     // eslint-disable-next-line no-unused-vars
     async getTests(report) {
-      return await this.runInLoggerContext(report, async () => {
-        return await (this.context.net.tschmid.yautt.test.get());
-      });
+      return await this.execute(report, "GetTests");
     }
-
-    /**
-     * Returns the test fixtures description.
-     *
-     * @returns {string[]}
-     *   the descriptions as string array. Each entry specifies a separate line.
-     */
-    async getDescription() {
-      return await (this.context.net.tschmid.yautt.text.description());
-    }
-
 
     /**
      * Runs a test case contained in the sandbox.
@@ -143,8 +158,60 @@
      *   a reference to a report
      */
     async run(name, report) {
-      await this.runInLoggerContext(report, async () => {
-        await this.context.net.tschmid.yautt.test.run(name);
+      await this.execute(report, "RunTest", name);
+    }
+
+    /**
+     * Gets the reference to the child process which runs the tests.
+     * @returns {ChildProcess}
+     *   the child process.
+     */
+    getChildProcess() {
+      return this.child;
+    }
+
+    /**
+     *
+     * @param {*} report
+     * @param {*} type
+     * @param {*} data
+     */
+    async execute(report, type, data) {
+
+      return await new Promise((resolve, reject) => {
+
+        const child = this.getChildProcess();
+
+        child.on('message', function onMessage(msg) {
+
+          msg = JSON.parse(msg);
+
+          if (msg.type === "LogSignal") {
+            // console.log(msg.message);
+            report.getLogger().log(
+              msg.payload.message, msg.payload.level);
+            return;
+          }
+
+          if (msg.type === `${type}Resolve`) {
+            resolve(msg.payload);
+            child.off("message", onMessage);
+            return;
+          }
+
+          if (msg.type === `${type}Reject`) {
+            reject(new Error(msg.payload.message, msg.payload.stack));
+            child.off("message", onMessage);
+            return;
+          }
+        });
+
+        const msg = {
+          type: `${type}`,
+          payload: data
+        };
+
+        this.child.send("" + JSON.stringify(msg));
       });
     }
   }
@@ -166,8 +233,6 @@
      */
     getScripts() {
       return [
-        "./tests/js/common/AbstractSandboxedFixture.js",
-        "./tests/js/node/SandboxedTestFixture.js",
         ...this.test.require,
         this.test.script
       ];

@@ -17,18 +17,15 @@ const { createWriteStream, existsSync } = require('fs');
 
 const path = require('path');
 const yazl = require('yazl');
-const { Stream } = require('stream');
 
 const JSON_INDENTATION = 2;
 
 const BASE_DIR_BOOTSTRAP = "./node_modules/bootstrap/dist";
-const BASE_DIR_JQUERY = "./node_modules/jquery/dist";
 const BASE_DIR_CODEMIRROR = "./node_modules/codemirror";
 
 const BASE_DIR_COMMON = "./src/common";
 const BASE_DIR_BUILD = "./build";
 
-const BASE_DIR_LIBMANAGESIEVE = path.join(BASE_DIR_COMMON, "libManageSieve");
 const BASE_DIR_LIBSIEVE = path.join(BASE_DIR_COMMON, "libSieve");
 const BASE_DIR_MANAGESIEVEUI = path.join(BASE_DIR_COMMON, "managesieve.ui");
 
@@ -43,7 +40,6 @@ const INDEX_PATCH = 2;
  *   the base path which should be cleared.
  */
 async function deleteRecursive(dir) {
-  "use strict";
 
   if (!existsSync(dir))
     return;
@@ -68,26 +64,7 @@ async function deleteRecursive(dir) {
  * Clean the build environment including all build and packaging artifacts.
  */
 async function clean() {
-  "use strict";
   await deleteRecursive(BASE_DIR_BUILD);
-}
-
-/**
- * Copies the jquery sources into the given build directory.
- *
- * @param {string} destination
- *   where to place the jquery sources
- *
- * @returns {Stream}
- *   a stream to be consumed by gulp
- */
-function packageJQuery(destination) {
-  "use strict";
-
-  return src([
-    BASE_DIR_JQUERY + "/jquery.min.js"
-  ], { base: BASE_DIR_JQUERY }).pipe(
-    dest(destination));
 }
 
 /**
@@ -100,7 +77,6 @@ function packageJQuery(destination) {
  *   a stream to be consumed by gulp
  */
 function packageCodeMirror(destination) {
-  "use strict";
 
   return src([
     BASE_DIR_CODEMIRROR + "/addon/edit/**",
@@ -124,7 +100,6 @@ function packageCodeMirror(destination) {
  *   a stream to be consumed by gulp
  **/
 function packageBootstrap(destination) {
-  "use strict";
 
   return src([
     BASE_DIR_BOOTSTRAP + "/css/*.min.css",
@@ -166,8 +141,6 @@ function src2(dir, files) {
  *   a stream to be consumed by gulp
  */
 function packageLibSieve(destination) {
-  "use strict";
-
   return src([
     BASE_DIR_LIBSIEVE + "/**",
     "!" + BASE_DIR_LIBSIEVE + "/libSieve/**/rfc*.txt",
@@ -186,8 +159,6 @@ function packageLibSieve(destination) {
  *   a stream to be consumed by gulp
  */
 function packageManageSieveUi(destination) {
-  "use strict";
-
   return src([
     BASE_DIR_MANAGESIEVEUI + "/**"
   ], { base: BASE_DIR_COMMON }).pipe(dest(destination));
@@ -202,7 +173,6 @@ function packageManageSieveUi(destination) {
  *   the version as a triple of integer
  */
 async function getPackageVersion(file) {
-  "use strict";
 
   if ((typeof (file) === "undefined") || file === null)
     file = "./package.json";
@@ -226,7 +196,6 @@ async function getPackageVersion(file) {
  *   the path to the npm package json file.
  */
 async function setPackageVersion(version, file) {
-  "use strict";
 
   if ((typeof (file) === "undefined") || file === null)
     file = "./package.json";
@@ -249,7 +218,6 @@ async function setPackageVersion(version, file) {
  * The minor and patch level is reset to zero
  */
 async function bumpMajorVersion() {
-  "use strict";
 
   const pkgVersion = await getPackageVersion('./package.json');
 
@@ -269,7 +237,6 @@ async function bumpMajorVersion() {
  * The major version remains untouched but the patch level is reset to zero
  */
 async function bumpMinorVersion() {
-  "use strict";
 
   const pkgVersion = await getPackageVersion('./package.json');
 
@@ -288,7 +255,6 @@ async function bumpMinorVersion() {
  * Neither the major nor the minor version will be changed.
  */
 async function bumpPatchVersion() {
-  "use strict";
 
   const pkgVersion = await getPackageVersion('./package.json');
 
@@ -320,7 +286,6 @@ async function bumpPatchVersion() {
  *   extended instructions for compressing.
  */
 async function compressDirectory(zip, dir, options) {
-  "use strict";
 
   if (typeof (options) === "undefined" || options === null)
     options = {};
@@ -374,8 +339,6 @@ async function compressDirectory(zip, dir, options) {
  */
 async function compress(source, destination, options) {
 
-  "use strict";
-
   if (existsSync(destination)) {
     logger.info(`Deleting ${path.basename(destination)}`);
     await unlink(destination);
@@ -401,7 +364,6 @@ async function compress(source, destination, options) {
 exports["clean"] = clean;
 exports["compress"] = compress;
 
-exports["packageJQuery"] = packageJQuery;
 exports["packageCodeMirror"] = packageCodeMirror;
 exports["packageBootstrap"] = packageBootstrap;
 

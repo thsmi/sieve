@@ -1,23 +1,24 @@
 <div>
   <h4 data-i18n="account.details.title"></h4>
-  <div class="row">
-    <span class="col-3" data-i18n="account.details.server"></span>
-    <span class="sieve-settings-hostname"></span>:
-    <span class="sieve-settings-port"></span>
-    &nbsp;
-    <span class="sieve-settings-secure" data-i18n="account.details.secure"></span>
+  <div class="d-flex flex-row form-label">
+    <div style="min-width:8em" data-i18n="account.details.server"></div>
+      <span class="sieve-settings-hostname"></span>:
+      <span class="sieve-settings-port"></span>
+      <span class="sieve-settings-secure ml-1" data-i18n="account.details.secure"></span>
   </div>
-  <div class="row sieve-settings-fingerprint-item">
-    <span class="col-3" data-i18n="account.details.fingerprint"></span>
-    <span class="sieve-settings-fingerprint"></span>
+  <div class="sieve-settings-fingerprint-item d-none">
+    <div class="d-flex flex-row form-label ">
+      <div style="min-width:8em" data-i18n="account.details.fingerprint"></div>
+      <div class="sieve-settings-fingerprint"></div>
+    </div>
   </div>
-  <div class="row">
-    <span class="col-3" data-i18n="account.details.username"></span>
-    <span class="sieve-settings-username"></span>
+  <div class="d-flex flex-row form-label ">
+    <div style="min-width:8em" data-i18n="account.details.username"></div>
+    <div class="sieve-settings-username"></div>
   </div>
-  <div class="row">
-    <span class="col-3" data-i18n="account.details.sasl"></span>
-    <span class="sieve-settings-mechanism"></span>
+  <div class="d-flex flex-row form-label ">
+    <div style="min-width:8em" data-i18n="account.details.sasl"></div>
+    <div class="sieve-settings-mechanism"></div>
   </div>
   <div class="mt-3">
     <button type="button"

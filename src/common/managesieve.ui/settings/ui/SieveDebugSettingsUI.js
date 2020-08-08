@@ -8,8 +8,8 @@
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
+  /* global bootstrap */
 
-/* global $ */
 
 import { SieveTemplate } from "./../../utils/SieveTemplate.js";
 
@@ -53,20 +53,12 @@ class SieveDebugSettingsUI {
   async render() {
     const dialog = this.getDialog();
 
-    const settings = dialog.querySelector(".modal-body");
-    while (settings.firstChild)
-      settings.removeChild(settings.firstChild);
-
-    settings.appendChild(
-      await (new SieveTemplate().load("./settings/ui/settings.debug.tpl")));
 
     const levels = await this.account.send("account-settings-get-debug");
 
     this.setAccountLogLevel(levels.account);
     this.setGlobalLogLevel(levels.global);
 
-    dialog.querySelector(".sieve-settings-apply")
-      .addEventListener("click", () => { this.save(); });
 
     dialog.querySelector(".siv-settings-show-advanced")
       .addEventListener("click", () => { this.showAdvanced(); });
@@ -83,116 +75,127 @@ class SieveDebugSettingsUI {
   async show() {
 
     document.querySelector("#ctx").appendChild(
-      await (new SieveTemplate()).load("./settings/ui/settings.dialog.tpl"));
+        await (new SieveTemplate()).load("./settings/ui/settings.debug.tpl"));
 
-    await this.render();
+      await this.render();
 
-    await new Promise((resolve) => {
+      const dialog = this.getDialog();
+      const modal = new bootstrap.Modal(dialog);
 
-      $(this.getDialog()).modal("show")
-        .on("hidden.bs.modal", () => {
-          this.getDialog().parentNode.removeChild(this.getDialog());
+      modal.show();
+
+      dialog.querySelector(".sieve-settings-apply")
+        .addEventListener("click", () => {
+          this.save();
+          modal.hide();
+        });
+
+      await new Promise((resolve) => {
+
+        dialog.addEventListener("hidden.bs.modal", () => {
+          modal.dispose();
+          dialog.parentNode.removeChild(dialog);
+
           resolve();
         });
-    });
+      });
 
-  }
+    }
 
-  /**
-   * Reads the currently set account log level from the dialog.
-   *
-   * @returns {int}
-   *   the account log level as integer.
-   */
-  getAccountLogLevel() {
-    let level = 0x00;
+    /**
+     * Reads the currently set account log level from the dialog.
+     *
+     * @returns {int}
+     *   the account log level as integer.
+     */
+    getAccountLogLevel() {
+      let level = 0x00;
 
-    if (document.querySelector("#debugClientServer").checked === true)
-      level |= LOG_ACCOUNT_REQUEST;
+      if (document.querySelector("#debugClientServer").checked === true)
+        level |= LOG_ACCOUNT_REQUEST;
 
-    if (document.querySelector("#debugServerClient").checked === true)
-      level |= LOG_ACCOUNT_RESPONSE;
+      if (document.querySelector("#debugServerClient").checked === true)
+        level |= LOG_ACCOUNT_RESPONSE;
 
-    if (document.querySelector("#debugSessionManagement").checked === true)
-      level |= LOG_ACCOUNT_SESSION_INFO;
+      if (document.querySelector("#debugSessionManagement").checked === true)
+        level |= LOG_ACCOUNT_SESSION_INFO;
 
-    if (document.querySelector("#debugStateMachine").checked === true)
-      level |= LOG_ACCOUNT_STATE;
+      if (document.querySelector("#debugStateMachine").checked === true)
+        level |= LOG_ACCOUNT_STATE;
 
-    if (document.querySelector("#debugRawDump").checked === true)
-      level |= LOG_ACCOUNT_STREAM;
+      if (document.querySelector("#debugRawDump").checked === true)
+        level |= LOG_ACCOUNT_STREAM;
 
-    return level;
-  }
+      return level;
+    }
 
-  /**
-   * Sets the account log level in the dialog.
-   *
-   * @param {int} level
-   *   the account log level as integer
-   */
-  setAccountLogLevel(level) {
+    /**
+     * Sets the account log level in the dialog.
+     *
+     * @param {int} level
+     *   the account log level as integer
+     */
+    setAccountLogLevel(level) {
 
-    document.querySelector("#debugClientServer").checked = (level & LOG_ACCOUNT_REQUEST);
-    document.querySelector("#debugServerClient").checked = (level & LOG_ACCOUNT_RESPONSE);
-    document.querySelector("#debugSessionManagement").checked = (level & LOG_ACCOUNT_SESSION_INFO);
-    document.querySelector("#debugStateMachine").checked = (level & LOG_ACCOUNT_STATE);
-    document.querySelector("#debugRawDump").checked = (level & LOG_ACCOUNT_STREAM);
-  }
+      document.querySelector("#debugClientServer").checked = (level & LOG_ACCOUNT_REQUEST);
+      document.querySelector("#debugServerClient").checked = (level & LOG_ACCOUNT_RESPONSE);
+      document.querySelector("#debugSessionManagement").checked = (level & LOG_ACCOUNT_SESSION_INFO);
+      document.querySelector("#debugStateMachine").checked = (level & LOG_ACCOUNT_STATE);
+      document.querySelector("#debugRawDump").checked = (level & LOG_ACCOUNT_STREAM);
+    }
 
-  /**
-   * Reads the currently set global log level from the dialog.
-   *
-   * @returns {int}
-   *   the global log level as integer.
-   */
-  getGlobalLogLevel() {
-    let level = 0x00;
+    /**
+     * Reads the currently set global log level from the dialog.
+     *
+     * @returns {int}
+     *   the global log level as integer.
+     */
+    getGlobalLogLevel() {
+      let level = 0x00;
 
-    if (document.querySelector("#debugActions").checked)
-      level |= LOG_GLOBAL_ACTION;
+      if (document.querySelector("#debugActions").checked)
+        level |= LOG_GLOBAL_ACTION;
 
-    if (document.querySelector("#debugIpcMessages").checked)
-      level |= LOG_GLOBAL_IPC_MESSAGES;
+      if (document.querySelector("#debugIpcMessages").checked)
+        level |= LOG_GLOBAL_IPC_MESSAGES;
 
-    if (document.querySelector("#debugWidgets").checked)
-      level |= LOG_GLOBAL_WIDGET;
+      if (document.querySelector("#debugWidgets").checked)
+        level |= LOG_GLOBAL_WIDGET;
 
-    if (document.querySelector("#debugI18n").checked)
-      level |= LOG_GLOBAL_I18N;
+      if (document.querySelector("#debugI18n").checked)
+        level |= LOG_GLOBAL_I18N;
 
-    return level;
-  }
+      return level;
+    }
 
-  /**
-   * Sets the global log level in the dialog.
-   *
-   * @param {int} level
-   *   the global log level as integer
-   */
-  setGlobalLogLevel(level) {
-    document.querySelector("#debugActions").checked = (level & LOG_GLOBAL_ACTION);
-    document.querySelector("#debugIpcMessages").checked = (level & LOG_GLOBAL_IPC_MESSAGES);
-    document.querySelector("#debugWidgets").checked = (level & LOG_GLOBAL_WIDGET);
-    document.querySelector("#debugI18n").checked = (level & LOG_GLOBAL_I18N);
-  }
+    /**
+     * Sets the global log level in the dialog.
+     *
+     * @param {int} level
+     *   the global log level as integer
+     */
+    setGlobalLogLevel(level) {
+      document.querySelector("#debugActions").checked = (level & LOG_GLOBAL_ACTION);
+      document.querySelector("#debugIpcMessages").checked = (level & LOG_GLOBAL_IPC_MESSAGES);
+      document.querySelector("#debugWidgets").checked = (level & LOG_GLOBAL_WIDGET);
+      document.querySelector("#debugI18n").checked = (level & LOG_GLOBAL_I18N);
+    }
 
-  /**
-   * Validates and saves the setting before closing the dialog.
-   * In case the settings are invalid an error message is displayed.
-   */
-  async save() {
+    /**
+     * Validates and saves the setting before closing the dialog.
+     * In case the settings are invalid an error message is displayed.
+     */
+    async save() {
 
-    const levels = {
-      account: this.getAccountLogLevel(),
-      global: this.getGlobalLogLevel()
-    };
+      const levels = {
+        account: this.getAccountLogLevel(),
+        global: this.getGlobalLogLevel()
+      };
 
-    await this.account.send("account-settings-set-debug", { "levels": levels });
+      await this.account.send("account-settings-set-debug", { "levels": levels });
 
-    // Validate and close
-    $(this.getDialog()).modal('hide');
-  }
+    }
+
 
   /**
    * Returns the currents dialogs UI Element.
@@ -201,7 +204,7 @@ class SieveDebugSettingsUI {
    *   the dialogs UI elements.
    */
   getDialog() {
-    return document.querySelector("#sieve-dialog-settings");
+      return document.querySelector("#dialog-settings-debug");
   }
 
   /**

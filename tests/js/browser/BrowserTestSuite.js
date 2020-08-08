@@ -4,8 +4,6 @@
 
 (function (exports) {
 
-  "use strict";
-
   /* global AbstractTestSuite */
   /* global AbstractTestFixture */
   /* global TestCase */
@@ -42,7 +40,7 @@
           resolve();
         }, { once: true });
 
-        iframe.src = "./tests/tests.html";
+        iframe.src = "./js/browser/sandbox/sandbox.html";
       });
 
       await this.require(report, scripts);
@@ -62,6 +60,13 @@
 
       if (!iframe)
         throw new Error("Sandbox not initialized");
+
+      scripts = scripts.map((script) => {
+        if (script.startsWith("./../common/"))
+          script = script.replace("./../common/libSieve/", "/gui/libSieve/");
+
+        return script;
+      });
 
       await this.execute(report, "ImportScript", scripts);
     }
@@ -137,18 +142,18 @@
           const msg = JSON.parse(event.data);
 
           if (msg.type === "LogSignal") {
-            report.getLogger().log(msg.message, msg.level);
+            report.getLogger().log(msg.payload.message, msg.payload.level);
             return;
           }
 
           if (msg.type === `${type}Resolve`) {
-            resolve(msg.result);
+            resolve(msg.payload);
             window.removeEventListener("message", onMessage);
             return;
           }
 
           if (msg.type === `${type}Reject`) {
-            reject(new Error(msg.message, msg.stack));
+            reject(new Error(msg.payload.message, msg.payload.stack));
             window.removeEventListener("message", onMessage);
             return;
           }
@@ -156,7 +161,7 @@
 
         const msg = {
           type: `${type}`,
-          data: data
+          payload: data
         };
 
         iframe.contentWindow.postMessage("" + JSON.stringify(msg), "*");

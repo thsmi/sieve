@@ -11,7 +11,7 @@ You find all app specific code in `src/app`, the WebExtension code is in `src/wx
 To get started clone the project for github.
 
 Then use either [yarn](https://yarnpkg.com/) or `npm install` to download the dependencies.
-This will download gulp as well as jquery, codemirror, bootstrap, electron and everything else which is needed.
+This will download gulp as well as codemirror, bootstrap, electron and everything else which is needed.
 
 As editor I suggest [Visual Studio Code](https://code.visualstudio.com/)
 
@@ -45,7 +45,7 @@ The UI is realized by content tabs. These tabs contain normal HTML pages and com
 
 Calls to Thunderbird's core (XPCOM) are done in WebExtension Experiments. An Experiment is special privileged code which is allowed to access XPCOM. But only be accessed through a predefined and very limited API from the background page. You can find the APIs in `src/wx/api/sieve`
 
-To build the webextension call `gulp wx:package`. It creates a build directory (`build\wx`) relative to your sources root directory.
+To build the webextension call `gulp wx:package`. It creates a build directory (`build\thunderbird-wx`) relative to your sources root directory.
 
 Then load the extension. Go to `Tools->Developer Tools->Debug Addons`, click on the `Load Temporary Extension` button and select the `manifest.json` in the build directory. This will load the addon in developer mode.
 

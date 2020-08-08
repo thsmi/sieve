@@ -1,7 +1,5 @@
 (function (exports) {
 
-  "use strict";
-
   /* global TestSuiteReport */
   /* global TestFixtureReport */
   /* global TestCaseReport */

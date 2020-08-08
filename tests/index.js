@@ -1,7 +1,7 @@
 
 const { tests } = require("./tests/tests.js");
 const { NodeTestSuite } = require("./js/node/NodeTestSuite.js");
-const { NodeTestReport } = require("./js/node/NodeTestReport.js");
+const { NodeTestReport } = require("./js/node//NodeTestReport.js");
 
 const { JUnitExporter } = require("./js/exporter/JUnitExporter.js");
 

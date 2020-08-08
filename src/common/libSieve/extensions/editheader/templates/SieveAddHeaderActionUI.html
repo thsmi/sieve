@@ -13,7 +13,7 @@
     <div class="tab-content m-2">
       <div class="tab-pane fade show active" id="sieve-widget-addheader" role="tabpanel">
 
-        <div class="form-group">
+        <div class="mb-3">
           <h5 data-i18n="addheader.name"></h5>
           <form class="was-validated" novalidate="novalidate">
             <input type="text" id="sivNewHeaderName" class="form-control form-control-sm col-lg-8" required="required" pattern="[ -~]+"/>
@@ -27,14 +27,14 @@
           </form>
 
           <h5 data-i18n="addheader.position"></h5>
-          <div class="custom-control custom-radio mr-sm-2">
-            <input type="radio" class="custom-control-input" name="last" value="false" id="sieve-header-first" />
-            <label data-i18n="addheader.first" class="custom-control-label" for="sieve-header-first"></label>
+          <div class="form-check mr-sm-2">
+            <input type="radio" class="form-check-input" name="last" value="false" id="sieve-header-first" />
+            <label data-i18n="addheader.first" class="form-check-label" for="sieve-header-first"></label>
           </div>
 
-          <div class="custom-control custom-radio mr-sm-2">
-            <input type="radio" class="custom-control-input" name="last" value="true" id="sieve-header-last" />
-            <label data-i18n="addheader.last" class="custom-control-label" for="sieve-header-last"></label>
+          <div class="form-check mr-sm-2">
+            <input type="radio" class="form-check-input" name="last" value="true" id="sieve-header-last" />
+            <label data-i18n="addheader.last" class="form-check-label" for="sieve-header-last"></label>
           </div>
         </div>
       </div>

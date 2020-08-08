@@ -9,7 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-/* global $ */
+  /* global bootstrap */
 import { SieveTemplate } from "./../utils/SieveTemplate.js";
 import { SieveIpcClient } from "./../utils/SieveIpcClient.js";
 
@@ -31,6 +31,7 @@ class SieveImportUI {
     // to all the libraries we need right here.
     const accounts = await SieveIpcClient.sendMessage("core", "import-thunderbird");
 
+      const modal = new bootstrap.Modal(dialog);
     await new Promise((resolve) => {
 
       accounts.forEach(async (account) => {
@@ -61,7 +62,7 @@ class SieveImportUI {
 
           // fix me remove modal2 from dom.
           await SieveIpcClient.sendMessage("core", "account-create", account2);
-          $(dialog).modal('hide');
+            modal.hide();
 
           resolve(true);
         });
@@ -70,12 +71,14 @@ class SieveImportUI {
 
       });
 
-      $(dialog).modal('show')
-        .on('hidden.bs.modal', () => {
+
+        modal.show();
+
+        dialog.addEventListener('hidden.bs.modal', () => {
           dialog.parentNode.removeChild(dialog);
           resolve(false);
         });
-    });
+      });
   }
 }
 

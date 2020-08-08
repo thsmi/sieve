@@ -7,8 +7,6 @@ window.module = {
 
 window.require = function (path) {
 
-  "use strict";
-
   if (path === "./SieveResponse.js") {
 
     if (!module.exports.SieveSimpleResponse)

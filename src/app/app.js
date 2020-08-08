@@ -599,7 +599,6 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.js";
   function main() {
     (new SieveTabUI()).init();
 
-    document.querySelector("#accounts").src = "./libs/managesieve.ui/accounts.html";
   }
 
   if (document.readyState !== 'loading')

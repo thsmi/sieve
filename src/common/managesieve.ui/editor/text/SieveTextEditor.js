@@ -54,67 +54,68 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
   async renderSettings() {
 
 
-    const loader = new SieveTemplate();
 
-    // Syntax Checks
-    document
-      .querySelector("#sieve-content-settings")
-      .appendChild(await loader.load("./editor/text/editor.settings.syntax.tpl"));
+      const loader = new SieveTemplate();
 
-    document
-      .querySelector("#sieve-editor-settings-synatxcheck")
-      .addEventListener("click", async () => {
+      // Syntax Checks
+      document
+        .querySelector("#sieve-content-settings")
+        .appendChild(await loader.load("./editor/text/editor.settings.syntax.tpl"));
 
-        if (document.querySelector("#sieve-editor-settings-synatxcheck").checked === true)
-          await this.enableSyntaxCheck();
-        else
-          await this.disableSyntaxCheck();
-      });
+      document
+        .querySelector("#sieve-editor-settings-synatxcheck")
+        .addEventListener("click", async () => {
 
-    document.querySelector("#sieve-editor-settings-synatxcheck")
-      .checked = this.isSyntaxCheckEnabled();
+          if (document.querySelector("#sieve-editor-settings-synatxcheck").checked === true)
+            await this.enableSyntaxCheck();
+          else
+            await this.disableSyntaxCheck();
+        });
 
-    // Indentation
-    document
-      .querySelector("#sieve-content-settings")
-      .appendChild(await loader.load("./editor/text/editor.settings.indentation.tpl"));
+      document.querySelector("#sieve-editor-settings-synatxcheck")
+        .checked = this.isSyntaxCheckEnabled();
 
-    // Indentation width...
-    document
-      .querySelector("#editor-settings-indentation-width")
-      .addEventListener("change", async () => {
-        await this.setIndentWidth(
-          document.querySelector("#editor-settings-indentation-width").value);
-      });
+      // Indentation
+      document
+        .querySelector("#sieve-content-settings")
+        .appendChild(await loader.load("./editor/text/editor.settings.indentation.tpl"));
 
-    document.querySelector("#editor-settings-indentation-width")
-      .value = this.getIndentWidth();
+      // Indentation width...
+      document
+        .querySelector("#editor-settings-indentation-width")
+        .addEventListener("change", async () => {
+          await this.setIndentWidth(
+            document.querySelector("#editor-settings-indentation-width").value);
+        });
 
-    // Indentation policy...
-    document
-      .querySelector("#editor-settings-indentation-policy-spaces")
-      .addEventListener("click", async () => { await this.setIndentWithTabs(false); });
+      document.querySelector("#editor-settings-indentation-width")
+        .value = this.getIndentWidth();
 
-    document
-      .querySelector("#editor-settings-indentation-policy-tabs")
-      .addEventListener("click", async () => { await this.setIndentWithTabs(true); });
+      // Indentation policy...
+      document
+        .querySelector("#editor-settings-indentation-policy-spaces")
+        .addEventListener("change", async () => { await this.setIndentWithTabs(false); });
 
-    if (this.getIndentWithTabs())
-      $("#editor-settings-indentation-policy-tabs").button('toggle');
-    else
-      $("#editor-settings-indentation-policy-spaces").button('toggle');
+      document
+        .querySelector("#editor-settings-indentation-policy-tabs")
+        .addEventListener("change", async () => { await this.setIndentWithTabs(true); });
 
-    // Tabulator width...
-    document
-      .querySelector("#editor-settings-tabulator-width")
-      .addEventListener("change", async () => {
-        await this.setTabWidth(
-          document.querySelector("#editor-settings-tabulator-width").value);
-      });
+      if (this.getIndentWithTabs())
+        document.querySelector("#editor-settings-indentation-policy-tabs").checked = true;
+      else
+        document.querySelector("#editor-settings-indentation-policy-spaces").checked = true;
 
-    document.querySelector("#editor-settings-tabulator-width")
-      .value = this.getTabWidth();
-  }
+      // Tabulator width...
+      document
+        .querySelector("#editor-settings-tabulator-width")
+        .addEventListener("change", async () => {
+          await this.setTabWidth(
+            document.querySelector("#editor-settings-tabulator-width").value);
+        });
+
+      document.querySelector("#editor-settings-tabulator-width")
+        .value = this.getTabWidth();
+    }
 
   /**
    * @inheritdoc
@@ -559,15 +560,6 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
     this.syntaxCheckEnabled = false;
     this.hideSyntaxErrors();
 
-    const settings = document.querySelector("#sieve-editor-settings");
-
-    settings
-      .querySelector(".sieve-editor-disable-syntaxcheck")
-      .style.display = "";
-
-    settings
-      .querySelector(".sieve-editor-enable-syntaxcheck")
-      .style.display = "none";
 
     this.focus();
 

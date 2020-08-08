@@ -9,8 +9,8 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-/* global $ */
 
+  /* global bootstrap */
 import { SieveIpcClient } from "./../utils/SieveIpcClient.js";
 import { SieveTemplate } from "./../utils/SieveTemplate.js";
 
@@ -33,29 +33,32 @@ class SieveAccountCreateUI {
 
     return await new Promise((resolve) => {
 
-      dialog
-        .querySelector(".sieve-create-account-btn")
-        .addEventListener("click", async () => {
 
-          const account = {
-            name: dialog.querySelector(".sieve-create-account-displayname").value,
-            hostname: dialog.querySelector(".sieve-create-account-hostname").value,
-            port: dialog.querySelector(".sieve-create-account-port").value,
-            username: dialog.querySelector(".sieve-create-account-username").value
-          };
+        const modal = new bootstrap.Modal(dialog);
 
-          // fix me remove modal2 from dom.
-          await SieveIpcClient.sendMessage("core", "account-create", account);
-          $(dialog).modal('hide');
-          resolve(true);
-        });
+        dialog
+          .querySelector(".sieve-create-account-btn")
+          .addEventListener("click", async () => {
 
-      $(dialog).modal('show')
-        .on('hidden.bs.modal', () => {
+            const account = {
+              name: dialog.querySelector(".sieve-create-account-displayname").value,
+              hostname: dialog.querySelector(".sieve-create-account-hostname").value,
+              port: dialog.querySelector(".sieve-create-account-port").value,
+              username: dialog.querySelector(".sieve-create-account-username").value
+            };
+
+            // fix me remove modal2 from dom.
+            await SieveIpcClient.sendMessage("core", "account-create", account);
+            modal.hide();
+            resolve(true);
+          });
+
+        modal.show();
+        dialog.addEventListener('hidden.bs.modal', () => {
           dialog.parentNode.removeChild(dialog);
           resolve(false);
         });
-    });
+      });
   }
 }
 

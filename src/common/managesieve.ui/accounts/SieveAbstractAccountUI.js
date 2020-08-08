@@ -9,7 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-/* global $ */
+  /* global bootstrap */
 
 import { SieveIpcClient } from "./../utils/SieveIpcClient.js";
 import { SieveLogger } from "./../utils/SieveLogger.js";
@@ -155,8 +155,8 @@ class SieveAbstractAccountUI {
       elm.querySelector(".sieve-settings-fingerprint")
         .textContent = account.fingerprint;
 
-      if (account.fingerprint === "")
-        elm.querySelector(".sieve-settings-fingerprint-item").style.display = 'none';
+        if (account.fingerprint !== "")
+          elm.querySelector(".sieve-settings-fingerprint-item").classList.remove("d-none");
     }
 
     // Clear any existing left overs...
@@ -209,7 +209,7 @@ class SieveAbstractAccountUI {
 
     elm.querySelector(".sieve-settings-content").id = `sieve-settings-content-${this.id}`;
     elm.querySelector(".sieve-settings-tab").href = `#sieve-settings-content-${this.id}`;
-    $(elm.querySelector(".sieve-settings-tab")).on('shown.bs.tab', () => { this.renderSettings(); });
+      elm.querySelector(".sieve-settings-tab").addEventListener('shown.bs.tab', () => { this.renderSettings(); });
 
     elm.querySelector(".siv-account-name").textContent
       = await this.send("account-get-displayname");
@@ -317,7 +317,30 @@ class SieveAbstractAccountUI {
    * Shows the settings dialog
    */
   showSettings() {
-    $(`#siv-account-${this.id} .sieve-settings-tab`).tab('show');
+      const tab = document.querySelector(`#siv-account-${this.id} .sieve-settings-tab`);
+      (new bootstrap.Tab(tab)).show();
+    }
+
+    /**
+     * Shows the server settings dialog.
+     */
+    async showServerSettings() {
+
+      await (new SieveServerSettingsUI(this)).show();
+
+      this.renderSettings();
+
+      // Update the account name it may have changed.
+      document
+        .querySelector(`#siv-account-${this.id} .siv-account-name`)
+        .textContent = await this.send("account-get-displayname");
+    }
+
+    /**
+     * Shows the credential settings dialog.
+     **/
+    showCredentialSettings() {
+      (new SieveCredentialsSettingsUI(this)).show();
   }
 
   /**

@@ -14,7 +14,7 @@
   <div id="template-content">
     <div class="tab-content m-2">
       <div class="tab-pane fade show active" id="sieve-widget-include" role="tabpanel">
-        <div class="form-group">
+        <div class="mb-3">
           <form class="was-validated" novalidate="novalidate">
             <label data-i18n="include.name"></label>
             <input data-i18n="include.name.placeholder" id="sivIncludeScriptName" type="text" class="form-control col-lg-8" required="required" />
@@ -22,45 +22,41 @@
           </form>
         </div>
 
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" name="once" id="sivIncludeOnce" />
-          <label class="custom-control-label" for="sivIncludeOnce">
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" name="once" id="sivIncludeOnce" />
+          <label class="form-check-label" for="sivIncludeOnce">
             <span data-i18n="include.once.label"></span>
-            <br />
-            <small data-i18n="include.once.text" class="form-text text-muted"></small>
+            <p data-i18n="include.once.text" class="form-text"></p>
           </label>
         </div>
 
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" name="optional" id="sivIncludeOptional" />
-          <label class="custom-control-label" for="sivIncludeOptional">
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" name="optional" id="sivIncludeOptional" />
+          <label class="form-check-label" for="sivIncludeOptional">
             <span data-i18n="include.optional.label"></span>
-            <br />
-            <small data-i18n="include.optional.text" style="white-space: pre-line" class="form-text text-muted"></small>
+            <p data-i18n="include.optional.text" style="white-space: pre-line" class="form-text"></p>
           </label>
         </div>
 
       </div>
       <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
         <p data-i18n="include.storage"></p>
-        <div class="custom-control custom-radio">
-          <input type="radio" id="sivIncludePersonal" name="personal" value="true" class="custom-control-input" />
-          <label class="custom-control-label" for="sivIncludePersonal">
+        <div class="form-check">
+          <input type="radio" id="sivIncludePersonal" name="personal" value="true" class="form-check-input" />
+          <label class="form-check-label" for="sivIncludePersonal">
             <span data-i18n="include.personal.label"></span>
-            <br />
-            <small data-i18n="include.personal.text" class="form-text text-muted"></small>
+            <p data-i18n="include.personal.text" class="form-text"></p>
           </label>
         </div>
-        <div class="custom-control custom-radio">
-          <input type="radio" id="sivIncludeGlobal" name="personal" value="false" class="custom-control-input" />
-          <label class="custom-control-label" for="sivIncludeGlobal">
+        <div class="form-check">
+          <input type="radio" id="sivIncludeGlobal" name="personal" value="false" class="form-check-input" />
+          <label class="form-check-label" for="sivIncludeGlobal">
             <span data-i18n="include.global.label"></span>
-            <br />
-            <small data-i18n="include.global.text" style="white-space: pre-line" class="form-text text-muted"></small>
+            <p data-i18n="include.global.text" style="white-space: pre-line" class="form-text"></p>
           </label>
         </div>
       </div>
-      <div data-i18n="include.help" class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
+      <div data-i18n="include.help" class="tab-pane fade form-text" id="sieve-widget-help" role="tabpanel">
       </div>
     </div>
   </div>

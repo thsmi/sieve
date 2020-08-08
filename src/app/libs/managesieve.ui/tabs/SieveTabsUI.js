@@ -9,7 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-/* global $ */
+  /* global bootstrap */
 import { SieveTemplate } from "./../utils/SieveTemplate.js";
 import { SieveIpcClient } from "./../utils/SieveIpcClient.js";
 import { SieveUniqueId } from "./../utils/SieveUniqueId.js";
@@ -60,7 +60,8 @@ class SieveTab {
    * Ensures the tab's content is shown.
    */
   show() {
-    $(this.getTab().querySelector(".nav-link")).tab('show');
+      const tab = this.getTab().querySelector(".nav-link");
+      (new bootstrap.Tab(tab)).show();
 
     // On Tab show is not fired when the tab is already visible.
     // so we need to emulate this. In worst case we end up with a
@@ -95,21 +96,27 @@ class SieveTab {
    */
   async close() {
 
-    if (await this.hasChanges()) {
-      this.show();
-      const rv = await SieveIpcClient.sendMessage("editor", "editor-close", this.name, this.getContent());
 
-      // Closing was canceled?
-      if (!rv)
-        return false;
-    }
+      if (await this.hasChanges()) {
+        this.show();
+        const rv = await SieveIpcClient.sendMessage("editor", "editor-close", this.name, this.getContent());
 
-    // we need to delete first the content...
-    const content = document.querySelector(`#${this.getId()}-content`);
-    content.parentNode.removeChild(content);
+        // Closing was canceled?
+        if (!rv)
+          return false;
+      }
 
-    // and then the tab, otherwise getId fails...
-    const tab = document.querySelector(`#${this.getId()}-tab`);
+      // we need to delete first the content...
+      const content = document.querySelector(`#${this.getId()}-content`);
+      content.parentNode.removeChild(content);
+
+      // and then the tab, otherwise getId fails...
+      const tab = document.querySelector(`#${this.getId()}-tab`);
+      const elm = bootstrap.Tab.getInstance(tab);
+
+      if (elm)
+        elm.dispose();
+
     tab.parentNode.removeChild(tab);
 
     return true;
@@ -268,7 +275,8 @@ class SieveTabUI {
       return;
     }
 
-    $(document.querySelector("#accounts-tab .nav-link")).tab('show');
+      const newTab = document.querySelector("#accounts-tab .nav-link");
+      (new bootstrap.Tab(newTab)).show();
   }
 
   /**
@@ -334,7 +342,7 @@ class SieveTabUI {
     document.querySelector(`#tabs-content`).appendChild(content);
     document.querySelector(`#tabs-items`).appendChild(tab);
 
-    $(tab).on('shown.bs.tab', () => { this.onTabShown(account, name); });
+      tab.addEventListener('shown.bs.tab', () => { this.onTabShown(account, name); });
 
     this.getTab(account, name).show();
   }

@@ -225,6 +225,7 @@ function packageLibManageSieve() {
 
   return common.src2(BASE_LIB_DIR_WX)
     .pipe(common.src2(BASE_LIB_DIR_COMMON))
+    .pipe(new TransposeMjsToJs())
     .pipe(new TransposeImportToRequire())
     .pipe(dest(path.join(BUILD_DIR_WX_LIBS, "libManageSieve")));
 }

@@ -9,7 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SieveAbstractCrypto } from "./SieveAbstractCrypto.js";
+import { SieveAbstractCrypto } from "./SieveAbstractCrypto.mjs";
 
 /**
  * A Mozilla specific crypto implementation.

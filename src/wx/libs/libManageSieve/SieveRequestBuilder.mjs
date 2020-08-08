@@ -10,7 +10,7 @@
  */
 
 
-import { SieveAbstractRequestBuilder } from "./SieveAbstractRequestBuilder.js";
+import { SieveAbstractRequestBuilder } from "./SieveAbstractRequestBuilder.mjs";
 
 /**
  * @inheritdoc

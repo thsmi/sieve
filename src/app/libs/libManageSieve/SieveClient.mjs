@@ -10,16 +10,16 @@
  */
 
 
-import { SieveAbstractClient } from "./SieveAbstractClient.js";
-import { SieveNodeResponseParser } from "./SieveNodeResponseParser.js";
-import { SieveNodeRequestBuilder } from "./SieveNodeRequestBuilder.js";
+import { SieveAbstractClient } from "./SieveAbstractClient.mjs";
+import { SieveNodeResponseParser } from "./SieveNodeResponseParser.mjs";
+import { SieveNodeRequestBuilder } from "./SieveNodeRequestBuilder.mjs";
 
-import { SieveCertValidationException } from "./SieveExceptions.js";
+import { SieveCertValidationException } from "./SieveExceptions.mjs";
 
-import { SieveTimer } from "./SieveTimer.js";
+import { SieveTimer } from "./SieveTimer.mjs";
 
-const net = require('net');
-const tls = require('tls');
+import net from 'net';
+import tls from 'tls';
 
 const NOT_FOUND = -1;
 

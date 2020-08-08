@@ -8,7 +8,7 @@
  */
 
 
-import { SieveAbstractRequestBuilder } from "./SieveAbstractRequestBuilder.js";
+import { SieveAbstractRequestBuilder } from "./SieveAbstractRequestBuilder.mjs";
 
 /**
  * Realizes a Request builder which uses native node commands

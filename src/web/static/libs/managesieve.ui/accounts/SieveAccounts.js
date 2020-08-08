@@ -11,8 +11,6 @@
 
 (function (exports) {
 
-  "use strict";
-
   /* global SieveAbstractAccounts */
 
   // TODO Remove me.

@@ -10,11 +10,11 @@
  */
 
 // Handle all imports..
-import { SieveAbstractClient } from "./SieveAbstractClient.js";
-import { SieveResponseParser } from "./SieveResponseParser.js";
-import { SieveRequestBuilder } from "./SieveRequestBuilder.js";
+import { SieveAbstractClient } from "./SieveAbstractClient.mjs";
+import { SieveResponseParser } from "./SieveResponseParser.mjs";
+import { SieveRequestBuilder } from "./SieveRequestBuilder.mjs";
 
-import { SieveTimer } from "./SieveTimer.js";
+import { SieveTimer } from "./SieveTimer.mjs";
 
 /**
  * Implements a websocket based transport.

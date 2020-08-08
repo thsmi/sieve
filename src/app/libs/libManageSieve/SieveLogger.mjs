@@ -10,7 +10,7 @@
  */
 
 
-import { SieveAbstractLogger } from "./SieveAbstractLogger.js";
+import { SieveAbstractLogger } from "./SieveAbstractLogger.mjs";
 
 /**
  * Implements a sieve compatible logger instance for node

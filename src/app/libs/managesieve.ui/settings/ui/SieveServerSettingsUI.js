@@ -8,7 +8,7 @@
  * The initial author of the code is:
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
-  /* global bootstrap */
+/* global bootstrap */
 
 import { SieveTemplate } from "./../../utils/SieveTemplate.js";
 
@@ -195,84 +195,84 @@ class SieveServerSettingsUI {
     const parent = this.getDialog();
 
 
-      const server = await this.account.send("account-get-server");
+    const server = await this.account.send("account-get-server");
 
-      this.setDisplayName(server.displayName);
-      this.setHostname(server.hostname);
-      this.setPort(server.port);
-      this.setFingerprint(server.fingerprint);
+    this.setDisplayName(server.displayName);
+    this.setHostname(server.hostname);
+    this.setPort(server.port);
+    this.setFingerprint(server.fingerprint);
 
-      this.setKeepAlive(server.keepAlive);
+    this.setKeepAlive(server.keepAlive);
 
-      parent.querySelector(".siv-settings-show-advanced")
-        .addEventListener("click", () => { this.showAdvanced(); });
-      parent.querySelector(".siv-settings-hide-advanced")
-        .addEventListener("click", () => { this.hideAdvanced(); });
+    parent.querySelector(".siv-settings-show-advanced")
+      .addEventListener("click", () => { this.showAdvanced(); });
+    parent.querySelector(".siv-settings-hide-advanced")
+      .addEventListener("click", () => { this.hideAdvanced(); });
 
-      this.hideAdvanced();
-    }
+    this.hideAdvanced();
+  }
 
-    /**
-     * Shows the settings dialog
-     * @returns {Promise<boolean>}
-     *   false in case the dialog was dismissed otherwise true.
-     */
-    async show() {
+  /**
+   * Shows the settings dialog
+   * @returns {Promise<boolean>}
+   *   false in case the dialog was dismissed otherwise true.
+   */
+  async show() {
 
-      document.querySelector("#ctx").appendChild(
-        await (new SieveTemplate()).load("./settings/ui/settings.server.tpl"));
+    document.querySelector("#ctx").appendChild(
+      await (new SieveTemplate()).load("./settings/ui/settings.server.tpl"));
 
-      await this.render();
+    await this.render();
 
-      const dialog = document.querySelector("#dialog-settings-server");
-      const modal = new bootstrap.Modal(dialog);
+    const dialog = document.querySelector("#dialog-settings-server");
+    const modal = new bootstrap.Modal(dialog);
 
-      modal.show();
+    modal.show();
 
-      dialog
-        .querySelector(".sieve-settings-apply")
-        .addEventListener("click", async () => {
-          await this.save();
-          modal.hide();
-        });
-
-      return await new Promise((resolve) => {
-
-        dialog.addEventListener('hidden.bs.modal', () => {
-          modal.dispose();
-          dialog.parentNode.removeChild(dialog);
-
-          resolve();
-        });
+    dialog
+      .querySelector(".sieve-settings-apply")
+      .addEventListener("click", async () => {
+        await this.save();
+        modal.hide();
       });
-    }
 
-    /**
-     * Validates and saves the setting before closing the dialog.
-     * In case the settings are invalid an error message is displayed.
-     *
-     */
-    async save() {
+    return await new Promise((resolve) => {
 
-      const server = {
-        displayName: await this.getDisplayName(),
-        hostname: await this.getHostname(),
-        port: await this.getPort(),
-        fingerprint: await this.getFingerprint(),
-        keepAlive: await this.getKeepAlive()
-      };
+      dialog.addEventListener('hidden.bs.modal', () => {
+        modal.dispose();
+        dialog.parentNode.removeChild(dialog);
 
-      await this.account.send("account-set-server", server);
-    }
+        resolve();
+      });
+    });
+  }
 
-    /**
-     * Returns the currents dialogs UI Element.
-     *
-     * @returns {HTMLElement}
-     *   the dialogs UI elements.
-     */
-    getDialog() {
-      return document.querySelector("#dialog-settings-server");
+  /**
+   * Validates and saves the setting before closing the dialog.
+   * In case the settings are invalid an error message is displayed.
+   *
+   */
+  async save() {
+
+    const server = {
+      displayName: await this.getDisplayName(),
+      hostname: await this.getHostname(),
+      port: await this.getPort(),
+      fingerprint: await this.getFingerprint(),
+      keepAlive: await this.getKeepAlive()
+    };
+
+    await this.account.send("account-set-server", server);
+  }
+
+  /**
+   * Returns the currents dialogs UI Element.
+   *
+   * @returns {HTMLElement}
+   *   the dialogs UI elements.
+   */
+  getDialog() {
+    return document.querySelector("#dialog-settings-server");
   }
 
 }

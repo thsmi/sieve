@@ -28,25 +28,11 @@ const BASE_DIR_APP = "./src/app/";
  *   a stream to be consumed by gulp
  */
 function packageLicense() {
-  "use strict";
-
   return src([
     "./LICENSE.md"
   ]).pipe(dest(BUILD_DIR_WEB));
 }
 
-/**
- * Copies the jquery sources into the build directory.
- *
- * @returns {Stream}
- *   a stream to be consumed by gulp
- */
-function packageJQuery() {
-  "use strict";
-
-  return common.packageJQuery(
-    path.join(BUILD_DIR_WEB, "static/libs/jquery"));
-}
 
 /**
  * Copies the codemirror sources into the build directory.
@@ -55,7 +41,6 @@ function packageJQuery() {
  *   a stream to be consumed by gulp
  */
 function packageCodeMirror() {
-  "use strict";
 
   return common.packageCodeMirror(
     path.join(BUILD_DIR_WEB, "/static/libs/CodeMirror"));
@@ -68,7 +53,6 @@ function packageCodeMirror() {
  *   a stream to be consumed by gulp
  **/
 function packageBootstrap() {
-  "use strict";
 
   return common.packageBootstrap(
     path.join(BUILD_DIR_WEB, "/static/libs/bootstrap"));
@@ -102,8 +86,8 @@ function packageLibManageSieve() {
   const BASE_COMMON = path.join(common.BASE_DIR_COMMON, "libManageSieve");
 
   return common.src2(BASE_WEB)
-    .pipe(common.src2(BASE_WX, ["SieveResponseParser.js", "SieveRequestBuilder.js"]))
-    .pipe(common.src2(BASE_APP, "SieveLogger.js"))
+    .pipe(common.src2(BASE_WX, ["SieveResponseParser.mjs", "SieveRequestBuilder.mjs"]))
+    .pipe(common.src2(BASE_APP, "SieveLogger.mjs"))
     .pipe(common.src2(BASE_COMMON))
     .pipe(dest(path.join(BUILD_DIR_WEB, 'static/libs/libManageSieve')));
 }
@@ -115,7 +99,6 @@ function packageLibManageSieve() {
  *   a stream to be consumed by gulp
  */
 function packageLibSieve() {
-  "use strict";
   return common.packageLibSieve(path.join(BUILD_DIR_WEB, 'static/libs'));
 }
 
@@ -126,8 +109,6 @@ function packageLibSieve() {
  *   a stream to be consumed by gulp
  */
 function packageManageSieveUi() {
-  "use strict";
-
   return common.packageManageSieveUi(path.join(BUILD_DIR_WEB, 'static/libs'));
 }
 
@@ -138,8 +119,6 @@ function packageManageSieveUi() {
  *   a stream to be consumed by gulp
  */
 function packageManageSieveUiApp() {
-
-  "use strict";
 
   const destination = path.join(BUILD_DIR_WEB, 'static/libs/managesieve.ui');
   const base = path.join(BASE_DIR_APP, "libs/managesieve.ui");
@@ -154,8 +133,6 @@ function packageManageSieveUiApp() {
  * Watches for changed source files and copies them into the build directory.
  */
 function watchSrc() {
-
-  "use strict";
 
   watch(
     ['./src/**/*.js',
@@ -175,7 +152,6 @@ function watchSrc() {
 
 exports["watch"] = watchSrc;
 
-exports["packageJQuery"] = packageJQuery;
 exports["packageCodeMirror"] = packageCodeMirror;
 exports["packageBootstrap"] = packageBootstrap;
 exports["packageLicense"] = packageLicense;
@@ -183,7 +159,6 @@ exports["packageSrc"] = packageSrc;
 
 exports['package'] = series(
   parallel(
-    packageJQuery,
     packageCodeMirror,
     packageBootstrap,
     packageLicense,

@@ -9,7 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SieveSession } from "./SieveSession.js";
+import { SieveSession } from "./SieveSession.mjs";
 
 /**
  * @inheritdoc

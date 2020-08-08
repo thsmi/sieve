@@ -10,8 +10,6 @@
  *
  */
 
-"use strict";
-
 /** the number of bytes to quote in case of an error*/
 const QUOTE_LENGTH = 50;
 const NO_SUCH_TOKEN = -1;

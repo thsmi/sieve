@@ -10,7 +10,7 @@
  */
 
 
-  /* global bootstrap */
+/* global bootstrap */
 import { SieveIpcClient } from "./../utils/SieveIpcClient.js";
 import { SieveTemplate } from "./../utils/SieveTemplate.js";
 
@@ -34,31 +34,31 @@ class SieveAccountCreateUI {
     return await new Promise((resolve) => {
 
 
-        const modal = new bootstrap.Modal(dialog);
+      const modal = new bootstrap.Modal(dialog);
 
-        dialog
-          .querySelector(".sieve-create-account-btn")
-          .addEventListener("click", async () => {
+      dialog
+        .querySelector(".sieve-create-account-btn")
+        .addEventListener("click", async () => {
 
-            const account = {
-              name: dialog.querySelector(".sieve-create-account-displayname").value,
-              hostname: dialog.querySelector(".sieve-create-account-hostname").value,
-              port: dialog.querySelector(".sieve-create-account-port").value,
-              username: dialog.querySelector(".sieve-create-account-username").value
-            };
+          const account = {
+            name: dialog.querySelector(".sieve-create-account-displayname").value,
+            hostname: dialog.querySelector(".sieve-create-account-hostname").value,
+            port: dialog.querySelector(".sieve-create-account-port").value,
+            username: dialog.querySelector(".sieve-create-account-username").value
+          };
 
-            // fix me remove modal2 from dom.
-            await SieveIpcClient.sendMessage("core", "account-create", account);
-            modal.hide();
-            resolve(true);
-          });
-
-        modal.show();
-        dialog.addEventListener('hidden.bs.modal', () => {
-          dialog.parentNode.removeChild(dialog);
-          resolve(false);
+          // fix me remove modal2 from dom.
+          await SieveIpcClient.sendMessage("core", "account-create", account);
+          modal.hide();
+          resolve(true);
         });
+
+      modal.show();
+      dialog.addEventListener('hidden.bs.modal', () => {
+        dialog.parentNode.removeChild(dialog);
+        resolve(false);
       });
+    });
   }
 }
 

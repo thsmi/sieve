@@ -25,7 +25,7 @@ class SieveAccounts extends SieveAbstractAccounts {
    */
   async load() {
 
-    //const items = await (browser.accounts.list());
+    // const items = await (browser.accounts.list());
     const items = [{ id: "1" }];
 
     const accounts = {};

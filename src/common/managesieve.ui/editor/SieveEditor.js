@@ -9,7 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
- /* global bootstrap */
+/* global bootstrap */
 
 import { SieveEditorController } from "./SieveEditorController.js";
 import { SieveTextEditorUI } from "./text/SieveTextEditor.js";
@@ -36,21 +36,21 @@ class SieveEditorUI extends SieveEditorController {
   /**
      * Resizes the widget editors iframe to fill all of the available screen.
      */
-    resize() {
-      const topOffset = document
-        .querySelector("#sieve-widget-editor")
-        .getBoundingClientRect()
-        .top + document.body.scrollTop;
+  resize() {
+    const topOffset = document
+      .querySelector("#sieve-widget-editor")
+      .getBoundingClientRect()
+      .top + document.body.scrollTop;
 
-      const screen = document.documentElement.clientHeight;
+    const screen = document.documentElement.clientHeight;
 
-      // the visible screen size minus the top and bottom offset
-      const size = screen - topOffset - EDITOR_OFFSET_PX;
+    // the visible screen size minus the top and bottom offset
+    const size = screen - topOffset - EDITOR_OFFSET_PX;
 
-      document
-        .querySelector("#sieve-widget-editor")
-        .style.height = `${size}px`;
-    }
+    document
+      .querySelector("#sieve-widget-editor")
+      .style.height = `${size}px`;
+  }
   /**
    * Moves the input focus to the currently active editor.
    */
@@ -77,7 +77,7 @@ class SieveEditorUI extends SieveEditorController {
     document
       .querySelector("#sieve-editor-settings .sieve-editor-settings-show")
       .addEventListener("click", () => {
-          (new bootstrap.Tab(document.querySelector("#sieve-tab-settings"))).show();
+        (new bootstrap.Tab(document.querySelector("#sieve-tab-settings"))).show();
       });
 
     document
@@ -98,37 +98,37 @@ class SieveEditorUI extends SieveEditorController {
         this.save();
       });
 
-      document
-        .querySelector('.nav-item > a[href="#sieve-widget-editor"]')
-        .addEventListener('show.bs.tab', async (e) => {
+    document
+      .querySelector('.nav-item > a[href="#sieve-widget-editor"]')
+      .addEventListener('show.bs.tab', async (e) => {
 
-          if (!this.isTextEditor())
-            return;
+        if (!this.isTextEditor())
+          return;
 
-          e.preventDefault();
+        e.preventDefault();
 
-          if (await this.switchToGraphicalEditor()) {
-            (new bootstrap.Tab(document.querySelector('.nav-item > a[href="#sieve-widget-editor"]'))).show();
-          }
-        });
+        if (await this.switchToGraphicalEditor()) {
+          (new bootstrap.Tab(document.querySelector('.nav-item > a[href="#sieve-widget-editor"]'))).show();
+        }
+      });
 
-      document
-        .querySelector('.nav-item > a[href="#sieve-widget-editor"]')
-        .addEventListener('shown.bs.tab', () => {
-          this.resize();
-        });
+    document
+      .querySelector('.nav-item > a[href="#sieve-widget-editor"]')
+      .addEventListener('shown.bs.tab', () => {
+        this.resize();
+      });
 
     window.addEventListener("resize", () => {
       this.resize();
     });
 
-      document
-        .querySelector('.nav-item > a[href="#sieve-plaintext-editor"]')
-        .addEventListener('shown.bs.tab', () => { this.switchToTextEditor(); });
+    document
+      .querySelector('.nav-item > a[href="#sieve-plaintext-editor"]')
+      .addEventListener('shown.bs.tab', () => { this.switchToTextEditor(); });
 
-      document
-        .querySelector('.nav-item > a[href="#sieve-content-settings"]')
-        .addEventListener('shown.bs.tab', () => { this.switchToSettings(); });
+    document
+      .querySelector('.nav-item > a[href="#sieve-content-settings"]')
+      .addEventListener('shown.bs.tab', () => { this.switchToSettings(); });
     return this;
   }
 
@@ -156,8 +156,8 @@ class SieveEditorUI extends SieveEditorController {
 
     document.querySelector("#sieve-editor-toolbar").appendChild(content);
 
-      // eslint-disable-next-line no-new
-      new bootstrap.Alert(content);
+    // eslint-disable-next-line no-new
+    new bootstrap.Alert(content);
 
     this.resize();
   }

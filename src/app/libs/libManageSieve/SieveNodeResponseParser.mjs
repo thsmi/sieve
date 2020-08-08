@@ -8,8 +8,8 @@
  */
 
 
-import { SieveAbstractResponseParser } from "./SieveAbstractResponseParser.js";
-const { StringDecoder } = require('string_decoder');
+import { SieveAbstractResponseParser } from "./SieveAbstractResponseParser.mjs";
+import { StringDecoder } from 'string_decoder';
 
 /**
  * Implements a node specific response parser

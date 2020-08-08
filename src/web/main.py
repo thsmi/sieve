@@ -29,6 +29,12 @@ class FileHandler:
     if extension[1] == ".js":
       return 'text/javascript'
 
+    if extension[1] == ".mjs":
+      return 'text/javascript'
+
+    if extension[1] == ".cjs":
+      return 'text/javascript'
+
     if extension[1] == ".css":
       return 'text/css'
 

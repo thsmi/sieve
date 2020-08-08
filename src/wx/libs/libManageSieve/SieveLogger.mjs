@@ -11,7 +11,7 @@
 
 /* global Components */
 
-import { SieveAbstractLogger } from "./SieveAbstractLogger.js";
+import { SieveAbstractLogger } from "./SieveAbstractLogger.mjs";
 
 /**
  * A mozilla specific logger

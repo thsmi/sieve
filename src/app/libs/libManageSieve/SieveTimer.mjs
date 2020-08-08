@@ -9,9 +9,8 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SieveAbstractTimer } from "./SieveAbstractTimer.js";
-
-const timers = require('timers');
+import { SieveAbstractTimer } from "./SieveAbstractTimer.mjs";
+import { setTimeout, clearTimeout } from 'timers';
 
 /**
  * By default node does not inject a timer into the standard context.
@@ -31,7 +30,7 @@ class SieveNodeTimer extends SieveAbstractTimer {
     if (ms === 0)
       return;
 
-    this.timer = timers.setTimeout(callback, ms);
+    this.timer = setTimeout(callback, ms);
   }
 
   /**
@@ -41,7 +40,7 @@ class SieveNodeTimer extends SieveAbstractTimer {
     if (!this.timer)
       return;
 
-    timers.clearTimeout(this.timer);
+    clearTimeout(this.timer);
     this.timer = null;
   }
 }

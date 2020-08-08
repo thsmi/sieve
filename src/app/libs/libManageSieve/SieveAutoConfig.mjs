@@ -15,9 +15,9 @@ const SIEVE_PORT_OLD = 2000;
 
 const LOG_LEVEL = 255;
 
-import { SieveLogger } from "./SieveLogger.js";
-import { Sieve } from "./SieveClient.js";
-import { SieveInitRequest } from "./SieveRequest.js";
+import { SieveLogger } from "./SieveLogger.mjs";
+import { Sieve } from "./SieveClient.mjs";
+import { SieveInitRequest } from "./SieveRequest.mjs";
 
 /**
  * Tries to detect the correct sieve port.

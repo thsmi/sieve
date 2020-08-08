@@ -10,7 +10,7 @@
  */
 
 
-import { SieveAbstractResponseParser } from "./SieveAbstractResponseParser.js";
+import { SieveAbstractResponseParser } from "./SieveAbstractResponseParser.mjs";
 
 /**
  * Implements a mozilla specific response parser

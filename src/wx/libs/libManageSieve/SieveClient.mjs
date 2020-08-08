@@ -17,13 +17,13 @@ const Ci = Components.interfaces;
 const Cr = Components.results;
 
 // Handle all imports..
-import { SieveAbstractClient } from "./SieveAbstractClient.js";
-import { SieveResponseParser } from "./SieveResponseParser.js";
-import { SieveRequestBuilder } from "./SieveRequestBuilder.js";
+import { SieveAbstractClient } from "./SieveAbstractClient.mjs";
+import { SieveResponseParser } from "./SieveResponseParser.mjs";
+import { SieveRequestBuilder } from "./SieveRequestBuilder.mjs";
 
-import { SieveCertValidationException } from "./SieveExceptions.js";
+import { SieveCertValidationException } from "./SieveExceptions.mjs";
 
-import { SieveTimer } from "./SieveTimer.js";
+import { SieveTimer } from "./SieveTimer.mjs";
 
 const NEW_TRANSPORT_API = 4;
 const OLD_TRANSPORT_API = 5;
@@ -123,10 +123,16 @@ class SieveMozClient extends SieveAbstractClient {
     securityInfo.StartTLS();
   }
 
+  /**
+   *
+   */
   getTimeoutTimer() {
     return this.timeoutTimer;
   }
 
+  /**
+   *
+   */
   getIdleTimer() {
     return this.idleTimer;
   }

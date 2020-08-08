@@ -11,8 +11,6 @@
 
 (function (exports) {
 
-  "use strict";
-
   /* global ExtensionCommon */
   /* global Components */
   /* global ChromeUtils */

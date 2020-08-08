@@ -9,7 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SieveAbstractTimer } from "./SieveAbstractTimer.js";
+import { SieveAbstractTimer } from "./SieveAbstractTimer.mjs";
 
 /**
  * WebSocket live typically inside a window like javascript context.

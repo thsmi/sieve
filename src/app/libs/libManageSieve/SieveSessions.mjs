@@ -10,7 +10,7 @@
  */
 
 
-import { SieveSession } from "./SieveSession.js";
+import { SieveSession } from "./SieveNodeSession.mjs";
 
 /**
  * Manages Sieve session.
@@ -19,7 +19,7 @@ import { SieveSession } from "./SieveSession.js";
  * As the account id unique, it is typically
  * used as session id.
  */
-class SieveWebSocketSessions {
+class SieveSessions {
 
   /**
    * creates a new instance
@@ -91,6 +91,19 @@ class SieveWebSocketSessions {
   }
 
   /**
+   * Called when a proxy lookup is needed.
+   *
+   * @param {SieveAccount} account
+   *   the current account.
+   * @returns {object}
+   *   the proxy information.
+   */
+  async onProxyLookup(account) {
+    return await account.getProxy().getProxyInfo();
+  }
+
+
+  /**
    * Creates a new session for the given id.
    * In case the session id is in use. It will
    * terminate the connection, and recreate a
@@ -113,13 +126,17 @@ class SieveWebSocketSessions {
       secure: await security.isSecure(),
       sasl: await security.getMechanism(),
       keepAlive: await host.getKeepAlive(),
-      logLevel: await settings.getLogLevel()
+      logLevel: await settings.getLogLevel(),
+      certFingerprints: await host.getFingerprint(),
+      certIgnoreError: await host.getIgnoreCertErrors()
     };
 
     const session = new SieveSession(id, options);
 
+    // TODO move to app so that it can be shared with the wx implementation.
     session.on("authenticate", async (hasPassword) => { return await this.onAuthenticate(account, hasPassword); });
     session.on("authorize", async () => { return await this.onAuthorize(account); });
+    session.on("proxy", async (hostname, port) => { return await this.onProxyLookup(account, hostname, port); });
 
     this.sessions.set(id, session);
   }
@@ -140,4 +157,4 @@ class SieveWebSocketSessions {
 
 }
 
-export { SieveWebSocketSessions as SieveSessions };
+export { SieveSessions };

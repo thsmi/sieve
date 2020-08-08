@@ -9,7 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SieveSessions } from "./libs/libManageSieve/SieveSessions.js";
+import { SieveSessions } from "./libs/libManageSieve/SieveSessions.mjs";
 import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.js";
 import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.js";
 import { SieveIpcClient } from "./libs/managesieve.ui/utils/SieveIpcClient.js";

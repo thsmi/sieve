@@ -14,7 +14,7 @@ import {
   SieveResponseCode,
   SieveResponseCodeSasl,
   SieveResponseCodeReferral
-} from "./SieveResponseCodes.js";
+} from "./SieveResponseCodes.mjs";
 
 const CHAR_LOWERCASE_B = 66;
 const CHAR_UPPERCASE_B = 98;

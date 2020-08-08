@@ -255,10 +255,16 @@ class SieveAbstractClient {
     return this;
   }
 
+  /**
+   *
+   */
   getTimeoutTimer() {
     throw new Error("Implement getTimeoutTimer()");
   }
 
+  /**
+   *
+   */
   getIdleTimer() {
     throw new Error("Implement getIdleTimer()");
   }

@@ -26,8 +26,6 @@ const LANGUAGE_MAPPING = new Map();
 LANGUAGE_MAPPING.set("en", "en-US");
 LANGUAGE_MAPPING.set("de", "de-DE");
 
-/* global SieveLogger */
-
 let instance = null;
 
 /**

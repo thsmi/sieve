@@ -16,9 +16,9 @@
 /* global SieveDeleteScriptDialog */
 /* global SieveScriptBusyDialog */
 
-import {SieveLogger} from "./utils/SieveLogger.js";
-import {SieveI18n} from "./utils/SieveI18n.js";
-import {SieveIpcClient} from "./utils/SieveIpcClient.js";
+import { SieveLogger } from "./utils/SieveLogger.js";
+import { SieveI18n } from "./utils/SieveI18n.js";
+import { SieveIpcClient } from "./utils/SieveIpcClient.js";
 
 /**
  * Shows a prompt which asks the user for the new script name.
@@ -102,5 +102,3 @@ if (document.readyState !== 'loading')
   main();
 else
   document.addEventListener('DOMContentLoaded', () => { main(); }, { once: true });
-
-

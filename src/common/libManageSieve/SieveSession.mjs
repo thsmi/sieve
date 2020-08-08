@@ -10,8 +10,8 @@
  */
 
 
-import { SieveLogger } from "./SieveLogger.js";
-import { Sieve } from "./SieveClient.js";
+import { SieveLogger } from "./SieveLogger.mjs";
+import { Sieve } from "./SieveClient.mjs";
 
 import {
   SieveSaslPlainRequest,
@@ -33,7 +33,7 @@ import {
   SieveNoopRequest,
   SieveCapabilitiesRequest,
   SieveStartTLSRequest
-} from "./SieveRequest.js";
+} from "./SieveRequest.mjs";
 
 import {
   SieveClientException,
@@ -41,7 +41,7 @@ import {
   SieveReferralException,
   SieveTimeOutException,
   SieveCertValidationException
-} from "./SieveExceptions.js";
+} from "./SieveExceptions.mjs";
 
 const FIRST_ELEMENT = 0;
 const SIEVE_PORT = 4190;

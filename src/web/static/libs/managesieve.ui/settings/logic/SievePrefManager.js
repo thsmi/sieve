@@ -46,4 +46,4 @@ class SieveWebSocketPrefManager extends SieveAbstractPrefManager {
   }
 }
 
-export { SieveWebSocketPrefManager as SievePrefManager }
+export { SieveWebSocketPrefManager as SievePrefManager };

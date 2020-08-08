@@ -38,9 +38,9 @@ import {
   SieveSaslCramMd5Response,
   SieveGetScriptResponse,
   SieveSaslScramShaResponse
-} from "./SieveResponse.js";
+} from "./SieveResponse.mjs";
 
-import { SieveCrypto } from "./SieveCrypto.js";
+import { SieveCrypto } from "./SieveCrypto.mjs";
 
 const STATE_CRAM_MD5_INITIALIZED = 0;
 const STATE_CRAM_MD5_CHALLENGED = 1;

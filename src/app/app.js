@@ -22,9 +22,9 @@ import { SieveIpcClient } from "./libs/managesieve.ui/utils/SieveIpcClient.js";
 
 import {
   SieveCertValidationException
-} from "./libs/libManageSieve/SieveExceptions.js";
+} from "./libs/libManageSieve/SieveExceptions.mjs";
 
-import { SieveSessions } from "./libs/libManageSieve/SieveSessions.js";
+import { SieveSessions } from "./libs/libManageSieve/SieveSessions.mjs";
 
 import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccounts.js";
 
@@ -32,7 +32,7 @@ import { SieveUpdater } from "./libs/managesieve.ui/updater/SieveUpdater.js";
 import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.js";
 
 import { SieveThunderbirdImport } from "./libs/managesieve.ui/importer/SieveThunderbirdImport.js";
-import { SieveAutoConfig } from "./libs/libManageSieve/SieveAutoConfig.js";
+import { SieveAutoConfig } from "./libs/libManageSieve/SieveAutoConfig.mjs";
 
 import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.js";
 

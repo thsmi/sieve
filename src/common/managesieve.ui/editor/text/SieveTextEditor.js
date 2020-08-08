@@ -55,67 +55,67 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
 
 
 
-      const loader = new SieveTemplate();
+    const loader = new SieveTemplate();
 
-      // Syntax Checks
-      document
-        .querySelector("#sieve-content-settings")
-        .appendChild(await loader.load("./editor/text/editor.settings.syntax.tpl"));
+    // Syntax Checks
+    document
+      .querySelector("#sieve-content-settings")
+      .appendChild(await loader.load("./editor/text/editor.settings.syntax.tpl"));
 
-      document
-        .querySelector("#sieve-editor-settings-synatxcheck")
-        .addEventListener("click", async () => {
+    document
+      .querySelector("#sieve-editor-settings-synatxcheck")
+      .addEventListener("click", async () => {
 
-          if (document.querySelector("#sieve-editor-settings-synatxcheck").checked === true)
-            await this.enableSyntaxCheck();
-          else
-            await this.disableSyntaxCheck();
-        });
+        if (document.querySelector("#sieve-editor-settings-synatxcheck").checked === true)
+          await this.enableSyntaxCheck();
+        else
+          await this.disableSyntaxCheck();
+      });
 
-      document.querySelector("#sieve-editor-settings-synatxcheck")
-        .checked = this.isSyntaxCheckEnabled();
+    document.querySelector("#sieve-editor-settings-synatxcheck")
+      .checked = this.isSyntaxCheckEnabled();
 
-      // Indentation
-      document
-        .querySelector("#sieve-content-settings")
-        .appendChild(await loader.load("./editor/text/editor.settings.indentation.tpl"));
+    // Indentation
+    document
+      .querySelector("#sieve-content-settings")
+      .appendChild(await loader.load("./editor/text/editor.settings.indentation.tpl"));
 
-      // Indentation width...
-      document
-        .querySelector("#editor-settings-indentation-width")
-        .addEventListener("change", async () => {
-          await this.setIndentWidth(
-            document.querySelector("#editor-settings-indentation-width").value);
-        });
+    // Indentation width...
+    document
+      .querySelector("#editor-settings-indentation-width")
+      .addEventListener("change", async () => {
+        await this.setIndentWidth(
+          document.querySelector("#editor-settings-indentation-width").value);
+      });
 
-      document.querySelector("#editor-settings-indentation-width")
-        .value = this.getIndentWidth();
+    document.querySelector("#editor-settings-indentation-width")
+      .value = this.getIndentWidth();
 
-      // Indentation policy...
-      document
-        .querySelector("#editor-settings-indentation-policy-spaces")
-        .addEventListener("change", async () => { await this.setIndentWithTabs(false); });
+    // Indentation policy...
+    document
+      .querySelector("#editor-settings-indentation-policy-spaces")
+      .addEventListener("change", async () => { await this.setIndentWithTabs(false); });
 
-      document
-        .querySelector("#editor-settings-indentation-policy-tabs")
-        .addEventListener("change", async () => { await this.setIndentWithTabs(true); });
+    document
+      .querySelector("#editor-settings-indentation-policy-tabs")
+      .addEventListener("change", async () => { await this.setIndentWithTabs(true); });
 
-      if (this.getIndentWithTabs())
-        document.querySelector("#editor-settings-indentation-policy-tabs").checked = true;
-      else
-        document.querySelector("#editor-settings-indentation-policy-spaces").checked = true;
+    if (this.getIndentWithTabs())
+      document.querySelector("#editor-settings-indentation-policy-tabs").checked = true;
+    else
+      document.querySelector("#editor-settings-indentation-policy-spaces").checked = true;
 
-      // Tabulator width...
-      document
-        .querySelector("#editor-settings-tabulator-width")
-        .addEventListener("change", async () => {
-          await this.setTabWidth(
-            document.querySelector("#editor-settings-tabulator-width").value);
-        });
+    // Tabulator width...
+    document
+      .querySelector("#editor-settings-tabulator-width")
+      .addEventListener("change", async () => {
+        await this.setTabWidth(
+          document.querySelector("#editor-settings-tabulator-width").value);
+      });
 
-      document.querySelector("#editor-settings-tabulator-width")
-        .value = this.getTabWidth();
-    }
+    document.querySelector("#editor-settings-tabulator-width")
+      .value = this.getTabWidth();
+  }
 
   /**
    * @inheritdoc

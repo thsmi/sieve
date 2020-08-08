@@ -10,8 +10,8 @@
  */
 
 /**
-  * An base class common for all authentication mechanisms
-  **/
+ * An base class common for all authentication mechanisms
+ **/
 class SieveAbstractAuthentication {
 
   /**

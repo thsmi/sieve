@@ -85,7 +85,7 @@
   "account.reconnect": "Reconnect",
   "account.capabilities.show": "Show Server Capabilities",
   "account.details.title": "Account Details",
-  "account.details.server": "Server",
+  "account.details.server": "Kiszolgáló",
   "account.details.secure": "(Secure connection)",
   "account.details.fingerprint": "Fingerprint",
   "account.details.username": "Username",

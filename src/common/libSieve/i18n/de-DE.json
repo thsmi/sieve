@@ -14,7 +14,7 @@
   "debug.capabilities.none": "Nichts auswählen",
   "debug.capabilities.all": "Alles auswählen",
   "debug.capabilities.apply": "Anwenden",
-  "stringlist.add": "Add",
+  "stringlist.add": "Neuer Eintrag",
   "numeric.nounit": "Ohne Einheit",
   "numeric.kilobytes": "Kilobytes",
   "numeric.megabytes": "Megabytes",

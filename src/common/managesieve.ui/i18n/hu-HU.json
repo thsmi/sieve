@@ -55,7 +55,7 @@
   "server.fingerprint.description": "The fingerprint is used to trust certificates which can not be validated automatically. You will need this only if you are using with self-signed certificates.",
   "server.fingerprint.placeholder": "The server's certificates fingerprint.",
   "server.idle1": "Send idle message after",
-  "server.idle2": "minutes of in activity.",
+  "server.idle2": "minutes of inactivity.",
   "server.idle.description": "Most server will disconnect a client after being inactive for a certain time span. To prevent this and keep the connection alive, idle messages are sent. To disable keep alive messages set the interval to zero.",
   "credentials.title": "Hitelesítő adatok",
   "credentials.security": "Biztonság",

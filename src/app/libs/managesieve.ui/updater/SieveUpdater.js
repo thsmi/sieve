@@ -11,8 +11,6 @@
 
 (function (exports) {
 
-  "use strict";
-
   const SIEVE_GITHUB_UPDATE_URL = "https://thsmi.github.io/sieve/update.json";
   const MAJOR_VERSION = 0;
   const MINOR_VERSION = 1;
@@ -39,32 +37,6 @@
       return Number.NaN;
     }
 
-    /**
-     * Checks if the current version is less or equal to the new version.
-     *
-     * For comparison the string values are converted to an integer.
-     * In case no integer comparison is possible a string comparison will be performed.
-     *
-     * @param {string} newVersion
-     *   the new version as string
-     * @param {string} currentVersion
-     *   the current version as string
-     *
-     * @returns {boolean}
-     *   true in case the new version is less than or equal to the old version
-     *   otherwise true
-     */
-    lessThanOrEqual(newVersion, currentVersion) {
-      const newValue = this.getInt(newVersion);
-      const currentValue = this.getInt(currentVersion);
-
-      // in case conversion failed we use string comparison
-      if (newValue === Number.NaN || currentValue === Number.NaN)
-        return (newVersion <= currentVersion);
-
-      // otherwise we compare as int
-      return newValue <= currentValue;
-    }
 
     /**
      * Checks if the current version is less than the new version.
@@ -81,7 +53,7 @@
      *    false in case the current version is the latest
      *    true in case there is a newer version
      */
-    lessThan(newVersion, currentVersion) {
+    isLessThan(newVersion, currentVersion) {
 
       const newValue = this.getInt(newVersion);
       const currentValue = this.getInt(currentVersion);
@@ -91,6 +63,70 @@
         return (newVersion < currentVersion);
 
       return newValue < currentValue;
+    }
+
+    /**
+     * Checks if the current version is greater than the new version.
+     *
+     * For comparison the string values are converted to an integer.
+     * In case no integer comparison is possible a string comparison will be performed.
+     *
+     * @param {string} newVersion
+     *   the new version as string
+     * @param {string} currentVersion
+     *   the current version as string
+     *
+     * @returns {boolean}
+     *    true in case the new version is larger than the current
+     *    false in the new version is smaller than the current.
+     */
+    isGreaterThan(newVersion, currentVersion) {
+      const newValue = this.getInt(newVersion);
+      const currentValue = this.getInt(currentVersion);
+
+      // in case conversion failed we use string comparison
+      if (newValue === Number.NaN || currentValue === Number.NaN)
+        return (newVersion > currentVersion);
+
+      return newValue > currentValue;
+    }
+
+    /**
+     * Compares if the next version is older than the current version.
+     *
+     * @param {string} next
+     *   the next version as dot separated string.
+     * @param {string} current
+     *   the current version as dot separated string.
+     * @returns {boolean}
+     *   true in case the current version is older than the next version otherwise false.
+     */
+    isOlder(next, current) {
+      current = current.split(".");
+      next = next.split(".");
+
+      // In case the new major is larger, then this version is definitely older.
+      if (this.isGreaterThan(next[MAJOR_VERSION], current[MAJOR_VERSION]))
+        return false;
+      // In case the new major is smaller, then this version is definitely newer.
+      if (this.isLessThan(next[MAJOR_VERSION], current[MAJOR_VERSION]))
+        return true;
+
+      // In case it is equal we need to check at the minor version
+      // In case the new minor is larger, then this version is definitely older.
+      if (this.isGreaterThan(next[MINOR_VERSION], current[MINOR_VERSION]))
+        return false;
+      // In case the new minor is smaller, then this version is definitely newer.
+      if (this.isLessThan(next[MINOR_VERSION], current[MINOR_VERSION]))
+        return true;
+
+      // In case it is equal we need to check the patch level.
+      // It is newer if it is larger
+      if (this.isGreaterThan(next[PATCH_VERSION], current[PATCH_VERSION]))
+        return false;
+
+      // Otherwise in case it is less or equal, the version is older or the same.
+      return true;
     }
 
     /**
@@ -104,19 +140,12 @@
      *   true in case the manifest contains a newer version definition.
      */
     compare(manifest, currentVersion) {
-      currentVersion = currentVersion.split(".");
       const items = manifest["addons"]["sieve@mozdev.org"]["updates"];
 
+      // There are no updates if all entries are less or equal to the current version
       for (const item of items) {
-        const version = item.version.split(".");
 
-        if (this.lessThan(version[MAJOR_VERSION], currentVersion[MAJOR_VERSION]))
-          continue;
-
-        if (this.lessThan(version[MINOR_VERSION], currentVersion[MINOR_VERSION]))
-          continue;
-
-        if (this.lessThanOrEqual(version[PATCH_VERSION], currentVersion[PATCH_VERSION]))
+        if (this.isOlder(item.version, currentVersion))
           continue;
 
         return true;

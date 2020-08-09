@@ -437,7 +437,7 @@
   "matchtype.count.equal": "egyenlő",
   "matchtype.count.notEqual": "nem egyenlő",
   "matchtype.count.text": "Counts the number of entities and compares them to the given value",
-  "modifier.length.title": "Karakterek száma",
+  "modifier.length.title": "Count characters",
   "modifier.length.text": "Variables are expanded before determining the number of characters.",
   "modifier.quotewildcard.title": "Escape Wildcards",
   "modifier.quotewildcard.text": "Ensures that the expanded text will only match a literal occurrence if used as a parameter to :matches. Every character with special meaning (\"*\", \"?\", and \"\\\") is prefixed with \"\\\" in the expansion.",

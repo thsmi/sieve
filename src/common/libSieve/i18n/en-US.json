@@ -522,7 +522,7 @@
   "matchtype.count.notEqual" : "not equal to",
   "matchtype.count.text" : "Counts the number of entities and compares them to the given value",
 
-  "modifier.length.title" : "Count character",
+  "modifier.length.title" : "Count characters",
   "modifier.length.text" : "Variables are expanded before determining the number of characters.",
 
   "modifier.quotewildcard.title" : "Escape Wildcards",

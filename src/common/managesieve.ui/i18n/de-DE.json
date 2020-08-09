@@ -55,7 +55,7 @@
   "server.fingerprint.description": "Der Fingerabdruck wird verwendet, um Zertifikaten zu verifizieren, die nicht automatisch validiert werden können. Sie benötigen einen Fingerabdruck nur, wenn Sie mit selbstsignierten Zertifikaten arbeiten.",
   "server.fingerprint.placeholder": "Der Fingerabdruck des Serverzertifikat",
   "server.idle1": "Leere Nachricht nach",
-  "server.idle2": "Minuten Inaktivität.",
+  "server.idle2": "minutes of inactivity.",
   "server.idle.description": "Die meisten Server trennen einen Verbindung, wenn sie über einen längeren Zeitraum inaktiv war. Um dies zu verhindern und die Verbindung zu erhalten, werden leere Nachrichten gesendet. Ein Intervall von \"0\" deaktiviert diese Funktionalität.",
   "credentials.title": "Anmeldedaten",
   "credentials.security": "Sicherheit",

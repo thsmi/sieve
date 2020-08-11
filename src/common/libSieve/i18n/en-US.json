@@ -106,7 +106,7 @@
   "metadataexists.tab.help" : "Help",
   "metadataexists.folder" : "The mailbox (folder) ...",
   "metadataexists.annotations" : "... has all of the following annotations:",
-  "metadataexists.help" : "Checks a mailbox for annotations\n\nThe test return true if all of the annotations exist (i.e., have non-NIL values) for the specified mailbox.",
+  "metadataexists.help" : "Checks a mailbox for annotations\n\nThe test return true if all of the annotations exist (i.e., have non-NIL values) for the specified mailbox.\n\nExamples for annotations are e.g. the Administrator's contact address (/admin) or the suggest interval to check mails (/checkperiod).",
   "metadataexists.summary1" : "Mailbox",
   "metadataexists.summary2" : "has all annotations",
 

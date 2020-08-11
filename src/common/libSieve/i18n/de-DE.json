@@ -139,7 +139,7 @@
   "set.first.text": "Nur das ersten Zeichens wird geändert, die restliche Zeichenkette bleibt unverändert.",
   "set.first.upper": "Großbuchstaben",
   "set.first.lower": "Kleinbuchstaben",
-  "set.help": "Stores the specified value in the variable identified by name.\n\n The name has to be a constant string and conform to the syntax of variable-name. Variable names are case insensitive.\n\n Modifiers are applied before it is stored in the variable. If more than one modifier is specified, they are applied according to this precedence list:\n\n • Variable's case\n • Variable's first character\n • Escape Wildcards\n • Count characters\n",
+  "set.help": "Speichert den angegebenen Wert in die angegebene Variable.\n\nDer Variablenname ist eine konstante Zeichenkette sein und der Syntaxbeschränkungen entsprechen. Groß/Kleinschreibung wird bei Variablennamen nicht unterschieden.\n\nBevor die Variable gespeichert wird, werden die Manipulatoren aufgerufen. Die Manipulatoren werden nach folgender absteigender Priorität aufgerufen:\n\n• Groß/Kleinschreibung ändern\n• Groß/Kleinschreibung des ersten Zeichen ändern\n• Platzhalter schützen\n• Zeichen zählen\n",
   "set.summary1": "Set variable",
   "set.summary2": "to value",
   "ereject.tab.home": "Reject",

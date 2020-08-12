@@ -80,7 +80,7 @@
   "credentials.authorization.prompt": "Kifejezett, felhasználónév kérése",
   "credentials.authorization.username": "Kifejezett, másik felhasználó használata",
   "credentials.authorization.username2": "Felhasználónév",
-  "account.settings.edit": "Edit Settings",
+  "account.settings.edit": "Beállítások szerkesztése",
   "account.disconnect": "Kapcsolat bontása",
   "account.reconnect": "Újracsatlakozás",
   "account.capabilities.show": "Show Server Capabilities",

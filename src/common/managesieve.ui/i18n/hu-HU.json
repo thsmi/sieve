@@ -171,14 +171,14 @@
   "editor.indentation.tabWidth": "Tabulátor szélessége",
   "editor.defaults.title": "Alapértékek",
   "editor.defaults.description": "Use the current settings as default for all editor instances or load the default values.",
-  "editor.defaults.save": "Save as defaults",
-  "editor.defaults.load": "Load defaults",
+  "editor.defaults.save": "Mentés másként alapértelmezéseinek",
+  "editor.defaults.load": "Alapértelmezett betöltése",
   "texteditor.cut": "Kivágás",
   "texteditor.copy": "Másolás",
   "texteditor.paste": "Beillesztés",
   "texteditor.undo": "Visszavonás",
   "texteditor.redo": "Ismét",
-  "texteditor.findAndReplace": "Find & replace",
+  "texteditor.findAndReplace": "Keresés és csere",
   "texteditor.reference": "Reference",
   "texteditor.find": "Find",
   "texteditor.find.text": "Search for...",
@@ -198,6 +198,6 @@
   "debug.global.description": "Used to log and debug the app's UI and rendering. The settings are global and apply to all accounts after restarting the app.",
   "debug.global.actions": "User Events and Actions",
   "debug.global.ipc": "IPC Messages",
-  "debug.global.widgets": "Widgets",
-  "debug.global.i18n": "Internationalization (I18n)"
+  "debug.global.widgets": "Vezérlők",
+  "debug.global.i18n": "Nemzetközivé (I18n)"
 }

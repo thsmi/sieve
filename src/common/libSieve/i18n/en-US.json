@@ -44,14 +44,13 @@
   "fileinto.folder.placeholder" : "Enter folder",
   "fileinto.folder.invalid" : "Invalid folder name",
   "fileinto.help.text" : "The mailbox name is typically a hierarchical name used to determine a folder on the server. So it is equivalent with the folder structure you can see in your mail client.\n\nThere is no precise definition how the hierarchical name is formed. It depends on your mail server implementation. Only the case-insensitive mailbox name INBOX is a special name reserved to mean \"the primary mailbox for this user on this server\".\n\nBut you should avoid using non-graphical characters, the list-wildcard characters (\"%\" and \"*\"), characters which are reserved by the server for the level of hierarchy (typically \"/\" or \".\") as well as \"#\" as \"&\" because they can have special meanings.",
-  "fileinto.summary" : "Save message into:",
+  "fileinto.summary" : "Save message into: ${path}",
 
   "exists.tab.home" : "Exists",
   "exists.tab.help" : "Help",
   "exists.header.label" : "All of the following header exist:",
   "exists.help.text": "",
-  "exists.summary1" : "Header(s)",
-  "exists.summary2" : "exist",
+  "exists.summary" : "Headers ${headers} exist",
 
   "header.tab.home" : "Header",
   "header.tab.advanced" : "Advanced",
@@ -59,7 +58,7 @@
   "header.header": "Any of the following header…",
   "header.keywords": "… any of the keywords…",
   "header.help" : "Compares headers against constant strings.\n\nYou typically use this test with headers containing subject line or a spam score.\n\nDo not use this test, if the header should be matched against a mail addresses. The result will be unreliable, as this test is not aware of display names. Use the address test instead.",
-  "header.summary" : "header",
+  "header.summary" : "Header ${headers} ${matchtype} ${keys}",
 
 
   "addheader.tab.home" : "Add Header",
@@ -221,7 +220,7 @@
   "redirect.address.placeholder" : "Enter mail",
   "redirect.address.invalid" : "Invalid redirect address",
   "redirect.help" : "Redirect forwards the message to the given address. It makes no changes to the message body or existing headers, but it may add new headers.\n\nThe envelope sender address on the outgoing message is chosen by the sieve implementation.\n\nImplementations may ignore a redirect action silently due to policy reasons.",
-  "redirect.summary" : "Redirect message to",
+  "redirect.summary" : "Redirect message to ${address}",
 
   "stop.summary" : "End Script (Stop processing)",
 
@@ -237,10 +236,7 @@
   "size.compare" : "… than…",
   "size.help" : "Compares the message size.\n\nTest the message size is greater or smaller than the given size. The size is measured in bytes, character encoding are ignored.\n\n",
   "size.help.warning" : "There is only a larger or smaller, no equals. A message with exactly 4000 bytes is neither larger nor smaller than 4000 bytes.",
-  "size.summary.message" : "message is",
-  "size.summary.larger" : "larger",
-  "size.summary.smaller" : "smaller",
-  "size.summary.than" : "than",
+  "size.summary" : "Message is ${relation} than ${size}",
 
   "envelope.tab.home" : "Envelope",
   "envelope.tab.advanced" : "Advanced",
@@ -248,7 +244,8 @@
   "envelope.envelopes" : "Any of the following envelope fields…",
   "envelope.keywords" : "… any of the keywords…",
   "envelope.help" : "Compares fields against the envelope\n\nThe envelop is equivalent to the mail delivery protocol. So it does not test against a real header. Instead uses trace information from the mail delivery protocol for specific values.\n\nA \"to\" tests the SMTP sender field \"RCPT TO\" a \"from\" the recipient \"MAIL FROM\".\n\nIt is the most reliant way to test from which address a message was send to or received.\n\nCompares headers against constant strings.\n\nYou typically use this test with headers containing subject line or a spam score.\n\nDo not use this test, if the header should be matched against a mail addresses. The result will be unreliable, as this test is not aware of display names. Use the address test instead.",
-  "envelope.summary" : "envelope",
+  "envelope.summary" : "Any of the envelope fields ${envelopes} ${matchtype} ${addresspart} ${keys}",
+
 
   "address.tab.home" : "Address",
   "address.tab.advanced" : "Advanced",
@@ -256,7 +253,7 @@
   "address.headers" : "Any of the following header…",
   "address.keywords" : "… any of the keywords…",
   "address.help" : "Compares headers against E-Mail addresses.\n\nYou typically use test with headers like \"to\", \"from\", \"cc\" etc.\n\nAs this test is aware of e-mail addresses containing display names. A header containing '\"roadrunner\" <roadrunner@acme.example.com>' is considered to be equivalent to \"'roadrunner@acme.example.com\"\n\nIf the header should be matched against a string use the header test.",
-  "address.summary" : "address",
+  "address.summary" : "Address in any header ${headers} ${matchtype} ${addresspart} ${keys}",
 
 
   "allofanyof.tab.home": "AllOf/AnyOf",
@@ -314,7 +311,7 @@
   "global.tab.help" : "Help",
   "global.title" : "Export variables into the global namespace:",
   "global.help" : "",
-  "global.summary" : "Define global variable(s):",
+  "global.summary" : "Define global variables ${variables}",
 
   "include.tab.home" : "Include",
   "include.tab.advanced" : "Advanced",
@@ -332,10 +329,8 @@
   "include.global.label" : "Global",
   "include.global.text" : "Global scripts are stored in a site-wide Sieve repository.\nIt is accessible to all users any typically provided and maintained by your administrator.",
   "include.help" : "",
-  "include.summary1" : "Include",
-  "include.summary.personal" : "global",
-  "include.summary.global" : "personal",
-  "include.summary2" : "script",
+  "include.summary.personal" : "Include personal script ${script}",
+  "include.summary.global" : "Include global script ${script}",
 
   "date.tab.home" : "Date",
   "date.tab.advanced" : "Advanced",
@@ -346,8 +341,7 @@
   "date.timezone" : "Timezone",
   "date.comparator" : "Comparator",
   "date.help" : "The date/time information is extracted from the header, shifted to the specified time zone, and the value of the given date-part is determined.\n\nThe test returns true if the resulting string matches any of the strings specified in the key-list.\n\nThe date test returns false if the specified header field does not exist, the field exists but does not contain a syntactically valid date-time specification, the date-time isn't valid according to the rules of the calendar system (e.g., January 32nd, February 29 in a non-leap year), or the resulting string fails to match any key-list value\n\nUnlike the header and address tests, the date test can only be applied to a single header field at a time. If multiple header fields with the same name are present, only the first field that is found is used.",
-  "date.summary.inheader" : "in header",
-  "date.summary.anyof" : "any of",
+  "date.summary" : "${datepart} in header ${header} ${matchtype} any of ${keys}",
 
 
   "currentdate.tab.home" : "Current Date",
@@ -358,8 +352,7 @@
   "currentdate.timezone" : "Timezone",
   "currentdate.comparator" : "Comparator",
   "currentdate.help" : "The currentdate test is similar to the date test, except that it operates on the current date/time rather than a value extracted from the message header.\n\nThe test returns true if the current date matches any of the strings specified in the key-list. It returns false if the resulting string fails to match any key-list value.",
-  "currentdate.summary.current" : "The current",
-  "currentdate.summary.anyof" : "any of",
+  "currentdate.summary" : "The current ${datepart} ${matchtype} any of ${keys}",
 
 
   "datepart.year" : "year",

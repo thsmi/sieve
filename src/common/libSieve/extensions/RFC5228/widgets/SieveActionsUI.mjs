@@ -16,6 +16,7 @@ import { SieveActionDialogBoxUI } from "./../../../toolkit/widgets/Boxes.mjs";
 import { SieveOverlayWidget } from "./../../../toolkit/widgets/Widgets.mjs";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
 
 /**
  * Provides a UI for the stop action
@@ -142,13 +143,10 @@ class SieveRedirectUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-          <span data-i18n="redirect.summary"></span>
-          <em class="sivRedirectAddress"></em>
-         </div>`;
+    const msg = SieveI18n.getInstance().getString("redirect.summary")
+      .replace("${address}", '<em class="sivRedirectAddress"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivRedirectAddress").textContent = this.address();
     return elm;
   }
@@ -209,15 +207,12 @@ class SieveFileIntoUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
+    const msg = SieveI18n.getInstance().getString("fileinto.summary")
+      .replace("${path}", '<div><em class="sivFileintoPath"></em></div>');
 
-    const FRAGMENT =
-      `<div>
-          <div data-i18n="fileinto.summary"></div>
-          <div><em class="sivFileintoPath"></em></div>
-         </div>`;
-
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivFileintoPath").textContent = this.path();
+
     return elm;
   }
 }

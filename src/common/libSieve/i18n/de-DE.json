@@ -301,7 +301,7 @@
   "currentdate.tab.advanced": "Erweitert",
   "currentdate.tab.help": "Hilfe",
   "currentdate.datepart": "The current…",
-  "currentdate.keyword": "… any of the keyword(s):",
+  "currentdate.keyword": "… eines der folgenden Schlüsselwörter",
   "currentdate.timezone": "Zeitzone",
   "currentdate.comparator": "Vergleicher",
   "currentdate.help": "The currentdate test is similar to the date test, except that it operates on the current date/time rather than a value extracted from the message header.\n\nThe test returns true if the current date matches any of the strings specified in the key-list. It returns false if the resulting string fails to match any key-list value.",

@@ -161,7 +161,7 @@
   "editor.error.save.description": "The script can not be saved to the server this is most likely due to an invalid syntax.",
   "editor.syntax.title": "Mondattan-ellenőrzés",
   "editor.syntax.description": "While editing script they can be checked for validity. The syntax check is performed by the server. In order to keep network traffic low, syntax check are grouped.",
-  "editor.syntax.switch": "Checks scripts while editing",
+  "editor.syntax.switch": "Parancsfájl-ellenőrzés szerkesztés közben",
   "editor.indentation.title": "Behúzás",
   "editor.indentation.description": "A szerkesztő önműködően behúzza a kódot gépelés közben.",
   "editor.indentation.width": "Behúzás szélessége",

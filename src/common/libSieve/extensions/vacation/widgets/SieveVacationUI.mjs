@@ -21,6 +21,7 @@ import {
 } from "./../../../toolkit/widgets/Widgets.mjs";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
 
 
 const MAX_QUOTE_LEN = 240;
@@ -301,14 +302,11 @@ class SieveVacationUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
+    const msg = SieveI18n.getInstance().getString("vacation.summary")
+      .replace("${reason}", '<div><em class="sivVacationReason"></em></div>');
 
-    const FRAGMENT =
-      `<div>
-           <div data-i18n="vacation.summary"></div>
-           <div><em class="sivVacationReason"></em></div>
-         </div>`;
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
     elm.querySelector(".sivVacationReason").textContent
       = this.reason().quote(MAX_QUOTE_LEN);
     return elm;

@@ -24,6 +24,7 @@ import { SieveMatchTypeWidget } from "./../../../extensions/RFC5228/widgets/Siev
 import { SieveComparatorWidget } from "./../../../extensions/RFC5228/widgets/SieveComparatorsUI.mjs";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
 
 /**
  * Provides a UI for th add header action
@@ -113,15 +114,11 @@ class SieveAddHeaderUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-           <span data-i18n="addheader.summary1"></span>
-           <em class="sivAddheaderName"></em>
-           <span data-i18n="addheader.summary2"></span>
-           <em class="sivAddheaderValue"></em>
-         </div>`;
+    const msg = SieveI18n.getInstance().getString("addheader.summary")
+      .replace("${name}", '<em class="sivAddheaderName"></em>')
+      .replace("${value}", '<em class="sivAddheaderValue"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivAddheaderName").textContent
       = this.name().value();
     elm.querySelector(".sivAddheaderValue").textContent
@@ -375,27 +372,28 @@ class SieveDeleteHeaderUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-           <span data-i18n="deleteheader.summary1"></span>
-           <em class="sivDeleteheaderName"></em>
-           <span class="sivDeleteheaderHasValue">
-             <span data-i18n="deleteheader.summary2"></span>
-             <em class="sivDeleteheaderValue"></em>
-           </span>
-         </div>`;
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    let entity = "deleteheader.summary";
+
+    if (this.getSieve().enable("values"))
+      entity = "deleteheader.summary2";
+
+    const msg = SieveI18n.getInstance().getString(entity)
+      .replace("${name}", '<em class="sivDeleteheaderName"></em>')
+      .replace("${value}", '<em class="sivDeleteheaderValue"></em>')
+      .replace("${matchtype}", '<em class="sivDeleteheaderMatchType"></em>');
+
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+
     elm.querySelector(".sivDeleteheaderName").textContent
       = this.name().value();
 
-    if (!this.getSieve().enable("values")) {
-      elm.querySelector(".sivDeleteheaderHasValue").style.display = "none";
-      return elm;
+    if (elm.querySelector(".sivDeleteheaderValue")) {
+      elm.querySelector(".sivDeleteheaderValue").textContent
+        = this.values().toScript();
+      elm.querySelector(".sivDeleteheaderMatchType").textContent
+        = this.matchtype().getElement().toScript();
     }
-
-    elm.querySelector(".sivDeleteheaderValue").textContent
-      = this.values().toScript();
 
     return elm;
   }

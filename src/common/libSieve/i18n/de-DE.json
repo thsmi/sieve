@@ -344,7 +344,7 @@
   "body.keylist": "… eines der folgenden Schlüsselwörter…",
   "body.comparator": "Vergleicher",
   "body.transform": "Match against…",
-  "body.help": "Der \"body\" Test prüft dem Inhalt einer E-Mailnachricht. Der Inhalt ist alles was nach ersten leeren Kopfzeile folgt. Die Leerzeile, wenn vorhanden, wird nicht als Teil des Inhaltes gezählt.",
+  "body.help": "The body test matches content in the body of an email message, that is, anything following the first empty line after the header. The empty line itself, if present, is not considered to be part of the body.",
   "body.summary": "message body",
   "addflag.tab.home": "Add Flag",
   "addflag.tab.help": "Hilfe",

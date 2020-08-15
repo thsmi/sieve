@@ -15,6 +15,7 @@ import { SieveDesigner } from "./../../../toolkit/SieveDesigner.mjs";
 import { SieveActionDialogBoxUI } from "./../../../toolkit/widgets/Boxes.mjs";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
 
 const MAX_QUOTE_LEN = 240;
 
@@ -58,13 +59,10 @@ class SieveRejectActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-           <div data-i18n="reject.summary"></div>
-           <div><em class="sivRejectReason"></em></div>
-         </div>`;
+    const msg = SieveI18n.getInstance().getString("reject.summary")
+      .replace("${reason}", '<div><em class="sivRejectReason"></em></div>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivRejectReason").textContent
       = this.reason().quote(MAX_QUOTE_LEN);
     return elm;

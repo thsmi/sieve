@@ -29,6 +29,7 @@ import {
 } from "./../../../toolkit/widgets/Widgets.mjs";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
 
 /**
  * Provides a widget for the body transform element
@@ -260,14 +261,12 @@ class SieveBodyUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-           <span data-i18n="body.summary"></span>
-           <span class="sivBodyMatchType"></span>
-           <em class="sivBodyValue"></em>
-         </div>`;
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const msg = SieveI18n.getInstance().getString("body.summary")
+      .replace("${matchtype}", '<span class="sivBodyMatchType"></span>')
+      .replace("${value}", '<em class="sivBodyValue"></em>');
+
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivBodyMatchType").textContent
       = this.matchtype().getElement().toScript();
     elm.querySelector(".sivBodyValue").textContent

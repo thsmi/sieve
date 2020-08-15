@@ -26,6 +26,7 @@ import { SieveMatchTypeWidget } from "./../../../extensions/RFC5228/widgets/Siev
 import { SieveComparatorWidget } from "./../../../extensions/RFC5228/widgets/SieveComparatorsUI.mjs";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
 
 /**
  * Provides an abstract UI for the flags actions.
@@ -78,13 +79,10 @@ class SieveSetFlagUI extends SieveAbstractFlagUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-          <span data-i18n="setflag.summary"></span>
-          <em class="sivSetflagFlags"></em>
-         </div>`;
+    const msg = SieveI18n.getInstance().getString("setflag.summary")
+      .replace("${flags}", '<em class="sivSetflagFlags"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivSetflagFlags").textContent = this.flags().values().join(", ");
     return elm;
   }
@@ -106,13 +104,10 @@ class SieveAddFlagUI extends SieveAbstractFlagUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-           <span data-i18n="addflag.summary"></span>
-           <em class="sivAddflagFlags"></em>
-         </div>`;
+    const msg = SieveI18n.getInstance().getString("addflag.summary")
+      .replace("${flags}", '<em class="sivAddflagFlags"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivAddflagFlags").textContent = this.flags().values().join(", ");
     return elm;
   }
@@ -135,13 +130,10 @@ class SieveRemoveFlagUI extends SieveAbstractFlagUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-           <span data-i18n="removeflag.summary"></span>
-           <em class="sivRemoveflagFlags"></em>
-         </div>`;
+    const msg = SieveI18n.getInstance().getString("removeflag.summary")
+      .replace("${flags}", '<em class="sivRemoveflagFlags"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivRemoveflagFlags").textContent = this.flags().values().join(", ");
     return elm;
   }
@@ -226,13 +218,10 @@ class SieveHasFlagUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-         <span data-i18n="hasflag.summary"></span>
-         <em class="sivHasflagFlags"></em>
-       </div>`;
+    const msg = SieveI18n.getInstance().getString("hasflag.summary")
+      .replace("${flags}", '<em class="sivHasflagFlags"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivHasflagFlags").textContent = this.flags().values().join(", ");
     return elm;
   }

@@ -22,6 +22,7 @@ import {
 } from "./../../../toolkit/widgets/Widgets.mjs";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
 
 /**
  * An abstract unique UI implementation.
@@ -339,13 +340,9 @@ class SieveDuplicateUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-
-    const FRAGMENT =
-      `<div>
-          <span data-i18n="duplicate.summary"></span>
-         </div>`;
-
-    return (new SieveTemplate()).convert(FRAGMENT);
+    const msg = SieveI18n.getInstance().getString("duplicate.summary");
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    return elm;
   }
 }
 

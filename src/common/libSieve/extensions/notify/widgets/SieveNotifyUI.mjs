@@ -27,6 +27,7 @@ import { SieveMatchTypeWidget } from "./../../../extensions/RFC5228/widgets/Siev
 import { SieveComparatorWidget } from "./../../../extensions/RFC5228/widgets/SieveComparatorsUI.mjs";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
 
 /**
  * Implements an UI for the notify action.
@@ -158,12 +159,9 @@ class SieveNotifyActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-         <span data-i18n="notify.summary"></span>
-       </div>`;
-
-    return (new SieveTemplate()).convert(FRAGMENT);
+    const msg = SieveI18n.getInstance().getString("notify.summary");
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    return elm;
   }
 }
 
@@ -271,12 +269,9 @@ class SieveNotifyMethodCapabilityUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-         <span data-i18n="notifymethodcapability.summary"></span>
-       </div>`;
-
-    return (new SieveTemplate()).convert(FRAGMENT);
+    const msg = SieveI18n.getInstance().getString("notifymethodcapability.summary");
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    return elm;
   }
 }
 
@@ -325,13 +320,10 @@ class SieveValidNotifyMethodUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-           <span data-i18n="validnotifymethod.summary"></span>
-           <em class="sivValidNotifyMethodUris"></em>
-         </div>`;
+    const msg = SieveI18n.getInstance().getString("validnotifymethod.summary")
+      .replace("${uri}", '<em class="sivValidNotifyMethodUris"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivValidNotifyMethodUris").textContent = this.uris().toScript();
     return elm;
   }

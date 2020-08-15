@@ -34,10 +34,9 @@ class SieveStopUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div><span data-i18n="stop.summary"></span></div>`;
-
-    return (new SieveTemplate()).convert(FRAGMENT);
+    const msg = SieveI18n.getInstance().getString("stop.summary");
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    return elm;
   }
 }
 
@@ -57,10 +56,9 @@ class SieveDiscardUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div><span data-i18n="discard.summary"></span></div>`;
-
-    return (new SieveTemplate()).convert(FRAGMENT);
+    const msg = SieveI18n.getInstance().getString("discard.summary");
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    return elm;
   }
 }
 
@@ -80,10 +78,9 @@ class SieveKeepUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div><span data-i18n="keep.summary"></span></div>`;
-
-    return (new SieveTemplate()).convert(FRAGMENT);
+    const msg = SieveI18n.getInstance().getString("keep.summary");
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    return elm;
   }
 }
 

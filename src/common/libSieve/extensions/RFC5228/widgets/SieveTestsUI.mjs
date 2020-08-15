@@ -26,6 +26,7 @@ import { SieveAddressPartWidget } from "./../../RFC5228/widgets/SieveAddressPart
 import { SieveComparatorWidget } from "./../../RFC5228/widgets/SieveComparatorsUI.mjs";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
 
 // testunary .append() -> testunary in anyof wrapen  SieveTestUI einführen...
 // testmultary.append -> an entsprechender stelle einfügen SieveTestListUI...
@@ -79,16 +80,12 @@ class SieveSizeTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-           <span data-i18n="size.summary.message"></span>
-           <em data-i18n="size.summary.larger" class="sivSizeLarger d-none"></em>
-           <em data-i18n="size.summary.smaller" class="sivSizeSmaller d-none"></em>
-           <span data-i18n="size.summary.than"></span>
-           <em class="sivSizeLimit"></em>
-         </div>`;
+    const msg = SieveI18n.getInstance().getString("size.summary")
+      .replace("${size}", '<em class="sivSizeLimit"></em>')
+      .replace("${relation}",
+        '<em data-i18n="size.larger" class="sivSizeLarger d-none"></em><em data-i18n="size.smaller" class="sivSizeSmaller d-none"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
 
     const name = this.getSieve().getElement("operator").getCurrentElement().nodeName();
     if (name === "test/size/operator/over")
@@ -218,14 +215,11 @@ class SieveExistsUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-           <span data-i18n="exists.summary1"></span>
-           <em class="sivExistsHeaders"></em>
-           <span data-i18n="exists.summary2"></span>
-         </div>`;
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const msg = SieveI18n.getInstance().getString("exists.summary")
+      .replace("${headers}", '<em class="sivExistsHeaders"></em>');
+
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivExistsHeaders").textContent
       = this.headers().values();
 
@@ -321,15 +315,12 @@ class SieveHeaderUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-         <span data-i18n="header.summary"></span>
-         <em class="sivHeaderValues"></em>
-         <span class="sivHeaderMatchType"></span>
-         <em class="sivHeaderKeys"></em>
-       </div>`;
+    const msg = SieveI18n.getInstance().getString("header.summary")
+      .replace("${headers}", '<em class="sivHeaderValues"></em>')
+      .replace("${matchtype}", '<span class="sivHeaderMatchType"></span>')
+      .replace("${keys}", '<em class="sivHeaderKeys"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivHeaderValues").textContent
       = this.headers().values();
     elm.querySelector(".sivHeaderMatchType").textContent
@@ -445,16 +436,14 @@ class SieveAddressUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-           <span data-i18n="address.summary"></span>
-           <em class="sivAddressHeaders"></em>
-           <span class="sivAddressMatchType"></span>
-           <span class="sivAddressAddressPart d-none"></span>
-           <em class="sivAddressKeys"></em>
-         </div>`;
+    const msg = SieveI18n.getInstance().getString("address.summary")
+      .replace("${headers}", '<em class="sivAddressHeaders"></em>')
+      .replace("${matchtype}", '<span class="sivAddressMatchType"></span>')
+      .replace("${addresspart}", '<span class="sivAddressAddressPart d-none"></span>')
+      .replace("${keys}", '<em class="sivAddressKeys"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+
     elm.querySelector(".sivAddressHeaders").textContent
       = this.headers().values();
     elm.querySelector(".sivAddressMatchType").textContent
@@ -575,16 +564,13 @@ class SieveEnvelopeUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-           <span data-i18n="envelope.summary"></span>
-           <em class="sivEnvelopeEnvelopes"></em>
-           <span class="sivEnvelopeMatchType"></span>
-           <span class="sivEnvelopesAddressPart d-none"></span>
-           <em class="sivEnvelopeKeys"></em>
-         </div>`;
+    const msg = SieveI18n.getInstance().getString("envelope.summary")
+      .replace("${envelopes}", '<em class="sivEnvelopeEnvelopes"></em>')
+      .replace("${matchtype}", '<span class="sivEnvelopeMatchType"></span>')
+      .replace("${addresspart}", '<span class="sivEnvelopesAddressPart d-none"></span>')
+      .replace("${keys}", '<em class="sivEnvelopeKeys"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivEnvelopeEnvelopes").textContent
       = this.envelopes().values();
     elm.querySelector(".sivEnvelopeMatchType").textContent
@@ -603,7 +589,6 @@ class SieveEnvelopeUI extends SieveTestDialogBoxUI {
     return elm;
   }
 }
-
 
 
 SieveDesigner.register("test/address", SieveAddressUI);

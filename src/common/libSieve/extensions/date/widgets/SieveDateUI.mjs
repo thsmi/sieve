@@ -30,6 +30,7 @@ import { SieveMatchTypeWidget } from "./../../../extensions/RFC5228/widgets/Siev
 import { SieveComparatorWidget } from "./../../../extensions/RFC5228/widgets/SieveComparatorsUI.mjs";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
 
 /**
  * Provides a widget for the zone element
@@ -253,17 +254,13 @@ class SieveDateTestUI extends SieveTestDialogBoxUI {
    */
   getSummary() {
 
-    const FRAGMENT =
-      `<div>
-          <span class="sivDateDatePart"></span>
-          <span data-i18n="date.summary.inheader"></span>
-          <span class="sivDateHeader"></span>
-          <span class="sivDateMatchType"></span>
-          <span data-i18n="date.summary.anyof"></span>
-          <span class="sivDateKeys"></span>
-         </div>`;
+    const msg = SieveI18n.getInstance().getString("date.summary")
+      .replace("${datepart}", '<em class="sivDateDatePart"></em>')
+      .replace("${header}", '<em class="sivDateHeader"></em>')
+      .replace("${matchtype}", '<em class="sivDateMatchType"></em>')
+      .replace("${keys}", '<em class="sivDateKeys"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivDateDatePart").textContent
       = this.datepart().value();
     elm.querySelector(".sivDateHeader").textContent
@@ -384,17 +381,12 @@ class SieveCurrentDateTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
+    const msg = SieveI18n.getInstance().getString("currentdate.summary")
+      .replace("${datepart}", '<span class="sivCurrentDateDatePart"></span>')
+      .replace("${matchtype}", '<span class="sivCurrentDateMatchType"></span>')
+      .replace("${keys}", '<span class="sivCurrentDateKeys"></span>');
 
-    const FRAGMENT =
-      `<div>
-          <span data-i18n="currentdate.summary.current"></span>
-          <span class="sivCurrentDateDatePart"></span>
-          <span class="sivCurrentDateMatchType"></span>
-          <span data-i18n="currentdate.summary.anyof"></span>
-          <span class="sivCurrentDateKeys"></span>
-         </div>`;
-
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivCurrentDateDatePart").textContent
       = this.datepart().value();
     elm.querySelector(".sivCurrentDateMatchType").textContent

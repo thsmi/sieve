@@ -17,6 +17,7 @@ import { SieveActionDialogBoxUI } from "./../../../toolkit/widgets/Boxes.mjs";
 import { SieveStringListWidget } from "./../../../toolkit/widgets/Widgets.mjs";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
 
 /**
  * Provides an UI for the Return Action
@@ -97,13 +98,11 @@ class SieveGlobalActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-           <span data-i18n="global.summary"></span>
-           <em class="sivGlobalVariables"></em>
-         </div>`;
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const msg = SieveI18n.getInstance().getString("global.summary")
+      .replace("${variables}", '<em class="sivGlobalVariables"></em>');
+
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivGlobalVariables").textContent
       = this.variables().values();
     return elm;
@@ -232,22 +231,12 @@ class SieveIncludeActionUI extends SieveActionDialogBoxUI {
    */
   getSummary() {
 
-    const FRAGMENT =
-      `<div>
-           <span data-i18n="include.summary1"></span>
-           <span class="sivIncludePersonal" data-i18n="include.summary.personal"></span>
-           <span class="sivIncludeGlobal" data-i18n="include.summary.global"></span>
-           <span data-i18n="include.summary2"></span>
-           <em class="sivIncludeScript"></em>
-         </div>`;
+    const entity = `include.summary.${!this.personal() ? "global" : "personal"}`;
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const msg = SieveI18n.getInstance().getString(entity)
+      .replace("${script}", '<em class="sivIncludeScript"></em>');
 
-    if (!this.personal())
-      elm.querySelector(".sivIncludeGlobal").classList.add("d-none");
-    else
-      elm.querySelector(".sivIncludePersonal").classList.add("d-none");
-
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivIncludeScript").textContent = this.script();
     return elm;
   }

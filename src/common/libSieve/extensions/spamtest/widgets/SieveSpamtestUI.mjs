@@ -20,6 +20,7 @@ import { SieveMatchTypeWidget } from "./../../../extensions/RFC5228/widgets/Siev
 import { SieveComparatorWidget } from "./../../../extensions/RFC5228/widgets/SieveComparatorsUI.mjs";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
 
 /**
  * Provides a ui for the spam test
@@ -182,15 +183,11 @@ class SieveSpamtestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
+    const msg = SieveI18n.getInstance().getString("spamtest.summary")
+      .replace("${matchtype}", '<span class="sivSpamtestMatchtype"></span>')
+      .replace("${score}", '<em class="sivSpamtestValue"></em>');
 
-    const FRAGMENT =
-      `<div>
-         <span data-i18n="spamtest.summary"></span>
-         <span class="sivSpamtestMatchtype"></span>
-         <em class="sivSpamtestValue"></em>
-       </div>`;
-
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivSpamtestMatchtype").textContent
       = this.matchtype().getElement().toScript();
     elm.querySelector(".sivSpamtestValue").textContent
@@ -277,14 +274,11 @@ class SieveVirustestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-         <span data-i18n="virustest.summary"></span>
-         <span class="sivVirustestMatchtype"></span>
-         <em class="sivVirustestValue"></em>
-       </div>`;
+    const msg = SieveI18n.getInstance().getString("virustest.summary")
+      .replace("${matchtype}", '<span class="sivVirustestMatchtype"></span>')
+      .replace("${score}", '<em class="sivVirustestValue"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivVirustestMatchtype").textContent
       = this.matchtype().getElement().toScript();
     elm.querySelector(".sivVirustestValue").textContent

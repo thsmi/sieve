@@ -27,7 +27,7 @@ import { SieveMatchTypeWidget } from "./../../../extensions/RFC5228/widgets/Siev
 import { SieveComparatorWidget } from "./../../../extensions/RFC5228/widgets/SieveComparatorsUI.mjs";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
-
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
 
 const MAX_QUOTE_LEN = 240;
 
@@ -109,15 +109,11 @@ class SieveSetActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-         <span data-i18n="set.summary1"></span>
-         <em class="sivSetVariable"></em>
-         <span data-i18n="set.summary2"></span>
-         <div><em class="sivSetValue"></em></div>
-       </div>`;
+    const msg = SieveI18n.getInstance().getString("set.summary")
+      .replace("${variable}", '<em class="sivSetVariable"></em>')
+      .replace("${value}", '<div><em class="sivSetValue"></em></div>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivSetVariable").textContent
       = this.name().value();
     elm.querySelector(".sivSetValue").textContent
@@ -495,15 +491,13 @@ class SieveStringTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-           <span data-i18n="string.summary"></span>
-           <em class="sivStringSources"></em>
-           <span class="sivStringMatchType"></span>
-           <em class="sivStringValue"></em>
-         </div>`;
+    const msg = SieveI18n.getInstance().getString("string.summary")
+      .replace("${sources}", '<em class="sivStringSources"></em>')
+      .replace("${matchtype}", '<span class="sivStringMatchType"></span>')
+      .replace("${value}", '<em class="sivStringValue"></em>>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+
     elm.querySelector(".sivStringSources").textContent
       = this.sources().values();
     elm.querySelector(".sivStringMatchType").textContent

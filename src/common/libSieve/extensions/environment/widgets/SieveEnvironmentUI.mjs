@@ -25,6 +25,7 @@ import { SieveMatchTypeWidget } from "./../../../extensions/RFC5228/widgets/Siev
 import { SieveComparatorWidget } from "./../../../extensions/RFC5228/widgets/SieveComparatorsUI.mjs";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
 
 /**
  * Provides a ui for the virus test
@@ -117,15 +118,12 @@ class SieveEnvironmentUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-           <span data-i18n="environment.summary"></span>
-           <em class="sivEnvironmentName"></em>
-           <span class="sivEnvironmentMatchType"></span>
-           <em class="sivEnvironmentKeys"></em>
-         </div>`;
+    const msg = SieveI18n.getInstance().getString("environment.summary")
+      .replace("${name}", '<em class="sivEnvironmentName"></em>')
+      .replace("${matchtype}", '<span class="sivEnvironmentMatchType"></span>')
+      .replace("${keys}", '<em class="sivEnvironmentKeys"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivEnvironmentName").textContent = this.name().value();
     elm.querySelector(".sivEnvironmentMatchType").textContent = " " + this.matchtype().getElement().toScript();
     elm.querySelector(".sivEnvironmentKeys").textContent = " " + this.keys().values().join(", ");

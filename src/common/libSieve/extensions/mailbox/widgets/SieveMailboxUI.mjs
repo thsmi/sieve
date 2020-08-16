@@ -23,7 +23,7 @@ import { SieveMatchTypeWidget } from "./../../../extensions/RFC5228/widgets/Siev
 import { SieveComparatorWidget } from "./../../../extensions/RFC5228/widgets/SieveComparatorsUI.mjs";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
-
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
 
 /**
  * Provides a UI for the Mailbox exists test
@@ -70,14 +70,10 @@ class SieveMailboxExistsTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-           <span data-i18n="mailboxexists.summary1"></span>
-           <em class="sivMailboxExistsMailboxes"></em>
-           <span data-i18n="mailboxexists.summary2"></span>
-         </div>`;
+    const msg = SieveI18n.getInstance().getString("mailboxexists.summary")
+      .replace("${mailboxes}", '<em class="sivMailboxExistsMailboxes"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivMailboxExistsMailboxes").textContent
       = this.mailboxes().values();
 
@@ -149,16 +145,11 @@ class SieveMetaDataExistsTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
+    const msg = SieveI18n.getInstance().getString("metadataexists.summary")
+      .replace("${mailbox}", '<em class="sivMetaDataExistsMailbox"></em>')
+      .replace("${annotations}", '<em class="sivMetaDataExistsAnnotations"></em>');
 
-    const FRAGMENT =
-      `<div>
-           <span data-i18n="metadataexists.summary1"></span>
-           <em class="sivMetaDataExistsMailbox"></em>
-           <span data-i18n="metadataexists.summary2"></span>
-           <em class="sivMetaDataExistsAnnotations"></em>
-         </div>`;
-
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivMetaDataExistsMailbox").textContent
       = this.mailbox();
     elm.querySelector(".sivMetaDataExistsAnnotations").textContent
@@ -277,20 +268,13 @@ class SieveMetaDataTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
+    const msg = SieveI18n.getInstance().getString("metadata.summary")
+      .replace("${annotation}", '<em class="sivMetaDataAnnotation"></em>')
+      .replace("${mailbox}", '<em class="sivMetaDataMailbox"></em>')
+      .replace("${matchtype}", '<em class="sivMetaDataMatchType"></em>')
+      .replace("${keys}", '<em class="sivMetaDataKeys"></em>');
 
-    const FRAGMENT =
-      `<div>
-             <span data-i18n="metadata.summary1"></span>
-             <em class="sivMetaDataAnnotation"></em>
-             <span data-i18n="metadata.summary2"></span>
-             <em class="sivMetaDataMailbox"></em>
-             <span data-i18n="metadata.summary3"></span>
-             <em class="sivMetaDataMatchType"></em>
-             <span data-i18n="metadata.summary4"></span>
-             <em class="sivMetaDataKeys"></em>
-           </div>`;
-
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivMetaDataAnnotation").textContent
       = this.annotation();
     elm.querySelector(".sivMetaDataMailbox").textContent
@@ -348,13 +332,10 @@ class SieveServerMetaDataExistsTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-           <span data-i18n="servermetadataexists.summary"></span>
-           <em class="sivServerMetaDataExistsAnnotations"></em>
-         </div>`;
+    const msg = SieveI18n.getInstance().getString("servermetadataexists.summary")
+      .replace("${annotations}", '<em class="sivServerMetaDataExistsAnnotations"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivServerMetaDataExistsAnnotations").textContent
       = this.annotations().values();
 
@@ -455,17 +436,12 @@ class SieveServerMetaDataTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-             <span data-i18n="servermetadata.summary1"></span>
-             <em class="sivServerMetaDataAnnotation"></em>
-             <span data-i18n="servermetadata.summary2"></span>
-             <em class="sivServerMetaDataMatchType"></em>
-             <span data-i18n="servermetadata.summary3"></span>
-             <em class="sivServerMetaDataKeys"></em>
-           </div>`;
+    const msg = SieveI18n.getInstance().getString("servermetadata.summary")
+      .replace("${annotation}", '<em class="sivServerMetaDataAnnotation"></em>')
+      .replace("${matchtype}", '<em class="sivServerMetaDataMatchType"></em>')
+      .replace("${keys}", '<em class="sivServerMetaDataKeys"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivServerMetaDataAnnotation").textContent
       = this.annotation();
     elm.querySelector(".sivServerMetaDataMatchType").textContent

@@ -20,6 +20,8 @@ import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
 import { SieveMoveDragHandler } from "./../../../toolkit/events/DragHandler.mjs";
 import { SieveTestDropHandler } from "./../../../toolkit/events/DropHandler.mjs";
 
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
+
 /**
  * Implements a UI for the pipe execute action/test
  */
@@ -203,18 +205,14 @@ class SieveExecuteActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-         <span data-i18n="execute.summary"></span>
-         <em class="sivExecuteProgram"></em>
-       </div>`;
+    const msg = SieveI18n.getInstance().getString("execute.summary")
+      .replace("${program}", '<em class="sivExecuteProgram"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivExecuteProgram").textContent = this.program().value();
     return elm;
   }
 }
-
 
 
 /**
@@ -289,13 +287,10 @@ class SieveFilterActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-         <span data-i18n="filter.summary"></span>
-         <em class="sivFilterProgram"></em>
-       </div>`;
+    const msg = SieveI18n.getInstance().getString("filter.summary")
+      .replace("${program}", '<em class="sivFilterProgram"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivFilterProgram").textContent = this.program().value();
     return elm;
   }
@@ -391,17 +386,15 @@ class SievePipeActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-         <span data-i18n="pipe.summary"></span>
-         <em class="sivPipeProgram"></em>
-       </div>`;
+    const msg = SieveI18n.getInstance().getString("pipe.summary")
+      .replace("${program}", '<em class="sivPipeProgram"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivPipeProgram").textContent = this.program().value();
     return elm;
   }
 }
+
 
 /**
  * An ugly hack which converts the Filer Action into a Filter Test.
@@ -432,14 +425,10 @@ class SieveFilterTestUI extends SieveFilterActionUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-         <span data-i18n="filter.summary.test.pre"></span>
-         <em class="sivFilterProgram"></em>
-         <span data-i18n="filter.summary.test.post"></span>
-       </div>`;
+    const msg = SieveI18n.getInstance().getString("filter.summary.test")
+      .replace("${program}", '<em class="sivFilterProgram"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivFilterProgram").textContent = this.program().value();
     return elm;
   }
@@ -471,19 +460,14 @@ class SieveExecuteTestUI extends SieveExecuteActionUI {
     return elm;
   }
 
-
   /**
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-         <span data-i18n="execute.summary.test.pre"></span>
-         <em class="sivExecuteProgram"></em>
-         <span data-i18n="execute.summary.test.post"></span>
-       </div>`;
+    const msg = SieveI18n.getInstance().getString("execute.summary.test")
+      .replace("${program}", '<em class="sivExecuteProgram"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivExecuteProgram").textContent = this.program().value();
     return elm;
   }

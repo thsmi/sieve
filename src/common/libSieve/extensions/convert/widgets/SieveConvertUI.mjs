@@ -23,7 +23,7 @@ import {
 } from "./../../../toolkit/widgets/Widgets.mjs";
 
 import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
-
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
 
 /**
  * Provides a ui for the convert test
@@ -101,15 +101,11 @@ class SieveConvertTestUI extends SieveTestDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-         <span data-i18n="convert.summary.from"></span>
-         <em class="sivConvertTo"></em>
-         <span data-i18n="convert.summary.to"></span>
-         <em class="sivConvertFrom"></em>
-       </div>`;
+    const msg = SieveI18n.getInstance().getString("convert.summary")
+      .replace("${from}", '<em class="sivConvertFrom"></em>')
+      .replace("${to}", '<em class="sivConvertTo"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivConvertFrom").textContent = this.from().value();
     elm.querySelector(".sivConvertTo").textContent = this.to().value();
     return elm;
@@ -193,15 +189,11 @@ class SieveConvertActionUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-         <span data-i18n="convert.summary.from"></span>
-         <em class="sivConvertTo"></em>
-         <span data-i18n="convert.summary.to"></span>
-         <em class="sivConvertFrom"></em>
-       </div>`;
+    const msg = SieveI18n.getInstance().getString("convert.summary")
+      .replace("${from}", '<em class="sivConvertFrom"></em>')
+      .replace("${to}", '<em class="sivConvertTo"></em>');
 
-    const elm = (new SieveTemplate()).convert(FRAGMENT);
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivConvertFrom").textContent = this.from().value();
     elm.querySelector(".sivConvertTo").textContent = this.to().value();
     return elm;

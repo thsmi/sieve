@@ -35,12 +35,9 @@ class SieveReturnUI extends SieveActionDialogBoxUI {
    * @inheritdoc
    */
   getSummary() {
-    const FRAGMENT =
-      `<div>
-           <div data-i18n="return.summary"></div>
-         </div>`;
-
-    return (new SieveTemplate()).convert(FRAGMENT);
+    const msg = SieveI18n.getInstance().getString("return.summary");
+    const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
+    return elm;
   }
 }
 

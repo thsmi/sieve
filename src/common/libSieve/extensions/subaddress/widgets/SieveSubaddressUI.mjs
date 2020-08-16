@@ -10,6 +10,8 @@
  *
  */
 
+import "./../logic/SieveSubaddress.mjs";
+
 import { SieveDesigner } from "./../../../toolkit/SieveDesigner.mjs";
 import { SieveAbstractAddressPartUI } from "./../../../extensions/RFC5228/widgets/SieveAddressPartUI.mjs";
 

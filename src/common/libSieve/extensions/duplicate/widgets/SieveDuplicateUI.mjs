@@ -10,6 +10,8 @@
  *
  */
 
+import "./../logic/SieveDuplicate.mjs";
+
 import { SieveDesigner } from "./../../../toolkit/SieveDesigner.mjs";
 
 import {
@@ -21,8 +23,8 @@ import {
   SieveOverlayItemWidget
 } from "./../../../toolkit/widgets/Widgets.mjs";
 
-import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
-import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.mjs";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.mjs";
 
 /**
  * An abstract unique UI implementation.

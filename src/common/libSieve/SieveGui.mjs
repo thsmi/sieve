@@ -10,9 +10,9 @@
  *
  */
 
-import { SieveI18n } from "./toolkit/utils/SieveI18n.js";
-import { SieveLogger } from "./toolkit/utils/SieveLogger.js";
-import { SieveTemplate } from "./toolkit/utils/SieveTemplate.js";
+import { SieveI18n } from "./toolkit/utils/SieveI18n.mjs";
+import { SieveLogger } from "./toolkit/utils/SieveLogger.mjs";
+import { SieveTemplate } from "./toolkit/utils/SieveTemplate.mjs";
 
 import { SieveLexer } from "./toolkit/SieveLexer.mjs";
 import { SieveDesigner } from "./toolkit/SieveDesigner.mjs";

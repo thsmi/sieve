@@ -11,7 +11,7 @@
 */
 
 import { SieveDesigner } from "./../SieveDesigner.mjs";
-import { SieveTemplate } from "./../utils/SieveTemplate.js";
+import { SieveTemplate } from "./../utils/SieveTemplate.mjs";
 
 const DEFAULT_STRING_LIST_MIN = 1;
 

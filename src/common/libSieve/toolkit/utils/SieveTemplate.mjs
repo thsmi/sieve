@@ -9,8 +9,8 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SieveLogger } from "./SieveLogger.js";
-import { SieveI18n } from "./SieveI18n.js";
+import { SieveLogger } from "./SieveLogger.mjs";
+import { SieveI18n } from "./SieveI18n.mjs";
 
 /**
  * Loads an html fragment from a file or url.

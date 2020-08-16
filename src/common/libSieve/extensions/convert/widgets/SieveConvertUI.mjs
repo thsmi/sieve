@@ -9,6 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  *
  */
+import "./../logic/SieveConvert.mjs";
 
 import { SieveDesigner } from "./../../../toolkit/SieveDesigner.mjs";
 
@@ -22,8 +23,8 @@ import {
   SieveStringWidget
 } from "./../../../toolkit/widgets/Widgets.mjs";
 
-import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
-import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.mjs";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.mjs";
 
 /**
  * Provides a ui for the convert test

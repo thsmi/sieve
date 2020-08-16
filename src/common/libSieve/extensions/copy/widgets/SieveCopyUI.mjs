@@ -10,6 +10,8 @@
 *
 */
 
+import "./../logic/SieveCopy.mjs";
+
 import { SieveDesigner } from "./../../../toolkit/SieveDesigner.mjs";
 import { SieveOverlayItemWidget } from "./../../../toolkit/widgets/Widgets.mjs";
 

@@ -10,6 +10,8 @@
  *
  */
 
+import "./../logic/SieveVariables.mjs";
+
 import { SieveDesigner } from "./../../../toolkit/SieveDesigner.mjs";
 
 import {
@@ -26,8 +28,8 @@ import {
 import { SieveMatchTypeWidget } from "./../../../extensions/RFC5228/widgets/SieveMatchTypesUI.mjs";
 import { SieveComparatorWidget } from "./../../../extensions/RFC5228/widgets/SieveComparatorsUI.mjs";
 
-import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
-import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.mjs";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.mjs";
 
 const MAX_QUOTE_LEN = 240;
 

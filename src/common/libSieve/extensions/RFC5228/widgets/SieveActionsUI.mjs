@@ -15,8 +15,8 @@ import { SieveDesigner } from "./../../../toolkit/SieveDesigner.mjs";
 import { SieveActionDialogBoxUI } from "./../../../toolkit/widgets/Boxes.mjs";
 import { SieveOverlayWidget } from "./../../../toolkit/widgets/Widgets.mjs";
 
-import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
-import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.mjs";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.mjs";
 
 /**
  * Provides a UI for the stop action

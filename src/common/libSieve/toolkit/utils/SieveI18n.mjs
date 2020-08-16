@@ -9,7 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SieveLogger } from "./SieveLogger.js";
+import { SieveLogger } from "./SieveLogger.mjs";
 
 const FIRST_ELEMENT = 0;
 
@@ -25,8 +25,6 @@ LANGUAGES.add("de-DE");
 const LANGUAGE_MAPPING = new Map();
 LANGUAGE_MAPPING.set("en", "en-US");
 LANGUAGE_MAPPING.set("de", "de-DE");
-
-/* global SieveLogger */
 
 let instance = null;
 

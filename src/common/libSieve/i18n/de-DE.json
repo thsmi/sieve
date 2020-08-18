@@ -199,7 +199,7 @@
   "envelope.tab.help": "Hilfe",
   "envelope.envelopes": "Eines der folgenden Umschlagfelder…",
   "envelope.keywords": "… eines der folgenden Schlüsselwörter…",
-  "envelope.help": "Compares fields against the envelope\n\nThe envelop is equivalent to the mail delivery protocol. So it does not test against a real header. Instead uses trace information from the mail delivery protocol for specific values.\n\nA \"to\" tests the SMTP sender field \"RCPT TO\" a \"from\" the recipient \"MAIL FROM\".\n\nIt is the most reliant way to test from which address a message was send to or received.\n\nCompares headers against constant strings.\n\nYou typically use this test with headers containing subject line or a spam score.\n\nDo not use this test, if the header should be matched against a mail addresses. The result will be unreliable, as this test is not aware of display names. Use the address test instead.",
+  "envelope.help": "Vergleicht Felder mit des Umschlag einer Mail.\n\nDas Protokoll über das die Mail versendet wurde bildet den Umschlag. Es wird also nicht gegen eine Kopfzeile der Mail getestet, sondern gegen die Informationen des Protokolls.\n\nEin \"to\" testet zum Beispiel die SMTP Eigenschaft \"RCPT TO\" und ein \"from\" den Empfänger in der \"MAIL FROM\" Eigenschaft.\n\nEs ist die zuverlässigste Art herauszufinden von welcher Adresse eine Nachricht gesendet oder empfangen wurde.",
   "envelope.summary": "Eines der Umschlagfelder ${envelopes} ${matchtype} ${addresspart} ${keys}",
   "address.tab.home": "Address",
   "address.tab.advanced": "Erweitert",

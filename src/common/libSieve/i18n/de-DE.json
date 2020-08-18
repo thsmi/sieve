@@ -159,7 +159,7 @@
   "notify.message.custom.text": "Der Text, der in die Benachrichtigung aufgenommen wird. Die Implementierung kann ihn aus technischen oder ästhetischen Gründen verkürzen.",
   "notify.from": "Voreingestellten Absenders überschreiben",
   "notify.from.text": "Die Voreinstellung des Servers ist normalerweise der aktuelle Benutzer. Sie können dies ändern, aber um Missbrauch zu verhindern, kann der Server den Absender beschränken.",
-  "notify.importance": "Override the default importance",
+  "notify.importance": "Priorität überschreiben",
   "notify.importance.text": "Nur wenige Protokolle unterstützen eine Priorität. Lesen Sie die Dokumentation der Methode, um mehr über die Prioritäten und deren Bedeutung zu erfahren.",
   "notify.importance.high": "Hoch",
   "notify.importance.normal": "Normal",

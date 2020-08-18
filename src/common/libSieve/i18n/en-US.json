@@ -479,7 +479,7 @@
   "matchtype.contains.text" : "\"frobnitzm\" contains \"frob\" and \"nit\", but not \"fbm\"",
 
   "matchtype.matches.title" : "… matches…",
-  "matchtype.matches.text" : "\"*\" matches zero or more characters, and \"?\" matches a single character\n\"frobnitzm\" matches \"frob*zm\" or \"frobnit?m\" but not frob?m",
+  "matchtype.matches.text" : "\"*\" matches zero or more characters, a \"?\" matches a single character\n\"frobnitzm\" matches \"frob*zm\" or \"frobnit?m\" but not \"frob?m\"",
 
   "matchtype.value.title" : "… is",
   "matchtype.value.title2" : "…",

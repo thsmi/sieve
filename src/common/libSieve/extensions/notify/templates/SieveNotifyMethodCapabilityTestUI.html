@@ -1,14 +1,13 @@
 <div>
   <ul id="template-tabs">
     <li class="nav-item">
-      <a class="nav-link active" data-toggle="tab" href="#sieve-widget-notifymethodcapability" role="tab">Notify Method
-        Capability</a>
+      <a data-i18n="notifymethodcapability.tab.home" class="nav-link active" data-toggle="tab" href="#sieve-widget-notifymethodcapability" role="tab"></a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab">Advanced</a>
+      <a data-i18n="notifymethodcapability.tab.advanced" class="nav-link" data-toggle="tab" href="#sieve-widget-advanced" role="tab"></a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab">Help</a>
+      <a data-i18n="notifymethodcapability.tab.help" class="nav-link" data-toggle="tab" href="#sieve-widget-help" role="tab"></a>
     </li>
   </ul>
 
@@ -16,28 +15,29 @@
     <div class="tab-content m-2">
       <div class="tab-pane fade show active" id="sieve-widget-notifymethodcapability" role="tabpanel">
 
-        <label>Check if method's...</label>
+        <label data-i18n="notifymethodcapability.method"></label>
         <div id="txtSieveNotifyUri" data-list-dropdown="#sivNotifyUriTemplate">
         </div>
 
         <div id="sivNotifyUriTemplate" class="d-none">
           <div class="dropdown-menu dropdown-menu-right" style="min-width:100%">
             <button class="dropdown-item" type="button" data-value="tel:+1234567890">
-              Send a short message to a phone<br />
-              <small class="text-muted">e.g. tel:+14085551212</small>
+              <div data-i18n="notifymethodcapability.method.tel"></div>
+              <div data-i18n="notifymethodcapability.method.tel.text" class="text-muted"></div>
             </button>
             <button class="dropdown-item" type="button" data-value="xmpp:me@example.com?message;subject=SIEVE;body=You%20got%20mail">
-              Send a xmpp message<br />
-              <small class="text-muted">e.g. xmpp:me@example.com?message;subject=SIEVE;body=You%20got%20mail</small>
+              <div data-i18n="notifymethodcapability.method.xmpp"></div>
+              <div data-i18n="notifymethodcapability.method.xmpp.text" class="text-muted"></div>
             </button>
             <button class="dropdown-item" type="button" data-value="mailto:me@example.com">
-              Send an email message<br />
-              <small class="text-muted">e.g. mailto:me@example.com</small>
+              <div data-i18n="notifymethodcapability.method.mail"></div>
+              <div data-i18n="notifymethodcapability.method.mail.text" class="text-muted"></div>
             </button>
           </div>
+
         </div>
 
-        <label>... notification capability...</label>
+        <label data-i18n="notifymethodcapability.capability"></label>
 
         <div id="txtSieveNotifyCapability">
         </div>
@@ -47,59 +47,32 @@
         </div>
 
         <br/>
-        <label>... any of the keyword(s):</label>
+        <label data-i18n="notifymethodcapability.keywords"></label>
         <div id="sivNotifyKeyList" data-list-dropdown="#sivNotifyKeyListTemplate">
         </div>
 
         <div id="sivNotifyKeyListTemplate" class="d-none">
           <div class="dropdown-menu dropdown-menu-right" style="min-width:100%">
             <button class="dropdown-item" type="button" data-value="yes">
-              yes<br />
-              <small class="text-muted">
-                The entity identified by the notification-uri can receive
-                a notify notification.
+              <span data-i18n="notifymethodcapability.yes"></span><br />
+              <small class="text-muted" data-i18n="notifymethodcapability.yes.text">
               </small>
             </button>
             <button class="dropdown-item" type="button" data-value="no">
-              no<br />
-              <small class="text-muted">
-                The entity identified by the notification-uri is currently not available
-                to receive an immediate notification.
-              </small>
+              <span data-i18n="notifymethodcapability.no"></span><br />
+              <small class="text-muted" data-i18n="notifymethodcapability.no.text"></small>
             </button>
             <button class="dropdown-item" type="button" data-value="maybe">
-              maybe<br />
-              <small class="text-muted">
-                The Sieve interpreter can't determine if the entity
-                identified by the notification-uri is online or not
-              </small>
+              <span data-i18n="notifymethodcapability.maybe"></span><br />
+              <small class="text-muted" data-i18n="notifymethodcapability.maybe.text"></small>
             </button>
           </div>
         </div>
       </div>
       <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
-        <h5>Comparator</h5>
         <div id="sivNotifyComparator"> </div>
       </div>
-      <div class="tab-pane fade" id="sieve-widget-help" role="tabpanel">
-        <p>
-          The notify_method_capability test retrieves the notification
-          capability for given method and matches it to the given values.
-        </p>
-        <p>
-          The capability parameter is case insensitive. Currently only a
-          single capability "online" is defined. But Sieve Notifications
-          extensions may add aditional capabilities.
-        </p>
-        <p>
-          The "online" capabilities result is either "yes", "no" or "maybe".
-          And describes the likelyness for a successfull delivery.
-        </p>
-        <p>
-          Note that even after a "yes", there is no guarantee when and if the
-          notification is received. Transport errors, recipient policy, etc. can
-          prevent that.
-        </p>
+      <div class="tab-pane fade form-text" data-i18n="notifymethodcapability.help" id="sieve-widget-help" role="tabpanel">
       </div>
     </div>
   </div>

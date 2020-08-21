@@ -183,7 +183,7 @@
   "redirect.help": "\"Redirect\" leitet die Nachricht an die angegebene Adresse weiter. Dabei werden den Nachrichtentext noch bestehende Kopfzeilen verändert. Der Server kann jedoch beliebig neue Kopfzeilen hinzugefügten.\n\nDie Absenderadresse lässt sich nicht konfigurieren. Der Server wählt sie immer automatisch aus. \n\nWeiterleitungen sind nur möglich wenn sie die Serverrichtlinien erlauben. Sind sie verboten, werden Weiterleitungen stillschweigend verworfen und die \"redirect\" Aktion ignoriert.",
   "redirect.summary": "Nachricht an ${address} weiterleiten",
   "stop.summary": "Skript beenden",
-  "discard.summary": "Nachricht stillschweigend verwerfen",
+  "discard.summary": "Nachricht verwerfen",
   "keep.summary": "Eine Kopie im Posteingang ablegen",
   "size.tab.home": "Size",
   "size.tab.help": "Hilfe",

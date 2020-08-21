@@ -323,24 +323,22 @@
   "include.summary.global" : "Include global script ${script}",
 
   "date.tab.home" : "Date",
+  "date.tab.timezone" : "Timezone",
   "date.tab.advanced" : "Advanced",
   "date.tab.help" : "Help",
   "date.header" : "Has a Header…",
   "date.datepart" : "… where the…",
   "date.keywords" : "… any of the keywords…",
-  "date.timezone" : "Timezone",
-  "date.comparator" : "Comparator",
   "date.help" : "The date/time information is extracted from the header, shifted to the specified time zone, and the value of the given date-part is determined.\n\nThe test returns true if the resulting string matches any of the strings specified in the key-list.\n\nThe date test returns false if the specified header field does not exist, the field exists but does not contain a syntactically valid date-time specification, the date-time isn't valid according to the rules of the calendar system (e.g., January 32nd, February 29 in a non-leap year), or the resulting string fails to match any key-list value\n\nUnlike the header and address tests, the date test can only be applied to a single header field at a time. If multiple header fields with the same name are present, only the first field that is found is used.",
   "date.summary" : "${datepart} in header ${header} ${matchtype} any of ${keys}",
 
 
   "currentdate.tab.home" : "Current Date",
+  "currentdate.tab.timezone" : "Timezone",
   "currentdate.tab.advanced" : "Advanced",
   "currentdate.tab.help" : "Help",
   "currentdate.datepart" : "The current…",
   "currentdate.keyword" : "… any of the keywords…",
-  "currentdate.timezone" : "Timezone",
-  "currentdate.comparator" : "Comparator",
   "currentdate.help" : "The currentdate test is similar to the date test, except that it operates on the current date/time rather than a value extracted from the message header.\n\nThe test returns true if the current date matches any of the strings specified in the key-list. It returns false if the resulting string fails to match any key-list value.",
   "currentdate.summary" : "The current ${datepart} ${matchtype} any of ${keys}",
 

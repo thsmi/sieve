@@ -205,7 +205,7 @@ class SieveFileIntoUI extends SieveActionDialogBoxUI {
    */
   getSummary() {
     const msg = SieveI18n.getInstance().getString("fileinto.summary")
-      .replace("${path}", '<div><em class="sivFileintoPath"></em></div>');
+      .replace("${path}", '<em class="sivFileintoPath"></em>');
 
     const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
     elm.querySelector(".sivFileintoPath").textContent = this.path();

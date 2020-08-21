@@ -184,7 +184,7 @@
   "redirect.summary": "Nachricht an ${address} weiterleiten",
   "stop.summary": "Skript beenden",
   "discard.summary": "Nachricht verwerfen",
-  "keep.summary": "Eine Kopie im Posteingang ablegen",
+  "keep.summary": "Kopie der Nachricht im Posteingang ablegen",
   "size.tab.home": "Size",
   "size.tab.help": "Hilfe",
   "size.description": "Die Nachrichtengröße ist…",

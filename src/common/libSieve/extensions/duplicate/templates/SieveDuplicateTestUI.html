@@ -5,7 +5,11 @@
         role="tab"></a>
     </li>
     <li class="nav-item">
-      <a data-i18n="duplicate.tab.advanced" class="nav-link" data-toggle="tab" href="#sieve-widget-advanced"
+      <a data-i18n="duplicate.tab.tracking" class="nav-link" data-toggle="tab" href="#sieve-widget-tracking"
+        role="tab"></a>
+    </li>
+    <li class="nav-item">
+      <a data-i18n="duplicate.tab.expiration" class="nav-link" data-toggle="tab" href="#sieve-widget-expiration"
         role="tab"></a>
     </li>
     <li class="nav-item">
@@ -22,8 +26,7 @@
           <div id="sivUnique"></div>
         </div>
       </div>
-      <div class="tab-pane fade" id="sieve-widget-advanced" role="tabpanel">
-        <h5 data-i18n="duplicate.tracking.title"></h5>
+      <div class="tab-pane fade" id="sieve-widget-tracking" role="tabpanel">
         <p data-i18n="duplicate.tracking.text" class="form-text"></p>
         <div class="form-check">
           <input type="radio" id="sivDuplicateDefaultHandle" name="sieve-duplicate-handle" class="form-check-input"
@@ -41,12 +44,9 @@
             </form>
           </label>
         </div>
-
-        <hr />
-
+      </div>
+      <div class="tab-pane fade" id="sieve-widget-expiration" role="tabpanel">
         <h5 data-i18n="duplicate.expiration.title"></h5>
-
-        <p class="form-text" data-i18n="duplicate.expiration.text"></p>
 
         <div class="form-check">
           <input type="radio" id="sivDuplicateDefaultExpiration" name="sieve-duplicate-seconds"

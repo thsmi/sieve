@@ -271,20 +271,19 @@
   "operator.anyof.summary" : "Any of the following:",
 
   "duplicate.tab.home" :"Duplicate",
-  "duplicate.tab.advanced" : "Advanced",
+  "duplicate.tab.tracking" : "Tracking",
+  "duplicate.tab.expiration" : "Expiration",
   "duplicate.tab.help" : "Help",
   "duplicate.summary" : "is a duplicate",
 
   "duplicate.unique.label" : "The unique id is…",
 
-  "duplicate.tracking.title" : "Tracking Handles",
   "duplicate.tracking.text" :  "Duplicate tracking considers only messages which are tagged with the same handle. The rational is to have multiple tracking policies. In case no handle it provided the server will use a default one. A custom handle can be any unique strings.",
   "duplicate.tracking.default" : "Use default handle",
   "duplicate.tracking.custom" : "Custom Handle",
   "duplicate.tracking.custom.invalid" : "Invalid custom handle",
 
-  "duplicate.expiration.title" : "Expiration",
-  "duplicate.expiration.text" : "The server uses a duplicate message list to track duplicates. To keep this list small and fast, the list entries expire. After a list entry is expired it is no more considered as a Duplicate",
+  "duplicate.expiration.text" : "The server uses a duplicate message list to track duplicates. To keep this list small and fast, the list entries expire. After a list entry is expired it is no more considered as a Duplicate.",
   "duplicate.expiration.default" : "Use server's default policy (usually 7 days)",
   "duplicate.expiration.custom.pre" : "Expire after",
   "duplicate.expiration.custom.post" : "seconds",

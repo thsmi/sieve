@@ -561,6 +561,6 @@
   "notifymethodcapability.no.text": "Die über die Methode spezifizierte Gegenstelle kann gerade keine Nachrichten empfangen.",
   "notifymethodcapability.maybe": "maybe",
   "notifymethodcapability.maybe.text": "Es ist unbekannt ob die über die Methode spezifizierte Gegenstelle kann gerade Nachrichten empfangen kann.",
-  "notifymethodcapability.help": "The notify_method_capability test retrieves the notification capability for given method and matches it to the given values.\n\nThe capability parameter is case insensitive. Currently only a single capability \"online\" is defined. But Sieve Notifications extensions may add aditional capabilities.\n\nThe \"online\" capabilities result is either \"yes\", \"no\" or \"maybe\". And describes the likelyness for a successfull delivery.\n\nNote that even after a \"yes\", there is no guarantee when and if the notification is received. Transport errors, recipient policy, etc. can prevent that.",
-  "notifymethodcapability.summary": "Check the notification capabilities."
+  "notifymethodcapability.help": "Der \"notify_method_capability\" prüft die die Benachrichtigungsfähigkeiten der angegebenen Methode.\n\nGroß-/Kleinschreibung wird bei den Namen der Fähigkeiten ignoriert. Derzeit ist nur \"online\" definiert. In Zukunft können jedoch noch weitere hinzukommen.\n\nDie \"online\" Fähigkeiten ist entweder \"Ja\", \"Nein\" oder \"vielleicht\". Und beschreibt die Wahrscheinlichkeit einer erfolgreichen Nachrichtenzustellung.\n\nBeachten Sie, dass es auch nach einem \"Ja\" keine Garantie gibt, wann und ob die Benachrichtigung empfangen wird. Transportfehler, Empfängerrichtlinien usw. können eine Zustellung verhindern.",
+  "notifymethodcapability.summary": "Prüfe die Benachrichtigungsfähigkeiten."
 }

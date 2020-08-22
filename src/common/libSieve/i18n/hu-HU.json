@@ -142,7 +142,7 @@
   "string.variables": "Any of the following strings…",
   "string.keywords": "… any of the keywords…",
   "string.help": "",
-  "string.summary": "Any string ${sources} {matchtype} any of {value}",
+  "string.summary": "Any string ${sources} ${matchtype} any of ${value}",
   "notify.tab.home": "Notify",
   "notify.tab.advanced": "Haladó",
   "notify.tab.help": "Súgó",

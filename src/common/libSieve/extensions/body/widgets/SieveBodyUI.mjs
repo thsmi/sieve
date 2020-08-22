@@ -10,7 +10,7 @@
  *
  */
 
-import "./../widgets/SieveBodyUI.mjs";
+import "./../logic/SieveBody.mjs";
 
 import { SieveDesigner } from "./../../../toolkit/SieveDesigner.mjs";
 

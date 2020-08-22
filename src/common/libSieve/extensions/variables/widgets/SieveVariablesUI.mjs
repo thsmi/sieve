@@ -496,7 +496,7 @@ class SieveStringTestUI extends SieveTestDialogBoxUI {
     const msg = SieveI18n.getInstance().getString("string.summary")
       .replace("${sources}", '<em class="sivStringSources"></em>')
       .replace("${matchtype}", '<span class="sivStringMatchType"></span>')
-      .replace("${value}", '<em class="sivStringValue"></em>>');
+      .replace("${value}", '<em class="sivStringValue"></em>');
 
     const elm = (new SieveTemplate()).convert(`<div>${msg}</div>`);
 

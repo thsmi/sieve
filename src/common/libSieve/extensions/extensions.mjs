@@ -8,7 +8,7 @@ import "./reject/widgets/SieveRejectUI.mjs";
 import "./regex/widgets/SieveRegularExpressionUI.mjs";
 
 // RFC5173 - Body
-import "./body/logic/SieveBody.mjs";
+import "./body/widgets/SieveBodyUI.mjs";
 
 // RFC5230 - Vacation
 import "./vacation/widgets/SieveVacationUI.mjs";

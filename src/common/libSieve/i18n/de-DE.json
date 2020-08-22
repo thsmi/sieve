@@ -142,7 +142,7 @@
   "string.variables": "Eine der folgenden Zeichenketten…",
   "string.keywords": "… eines der folgenden Schlüsselwörter…",
   "string.help": "",
-  "string.summary": "Eine Zeichenkette ${sources} {matchtype} eins von {value}",
+  "string.summary": "Eine Zeichenkette ${sources} ${matchtype} eins von ${value}",
   "notify.tab.home": "Notify",
   "notify.tab.advanced": "Erweitert",
   "notify.tab.help": "Hilfe",
@@ -325,11 +325,11 @@
   "convert.help": "Konvertiert die ganze Nachricht oder ihren Teil in einen neuen Medientyp. Es konvertiert typischerweise Textdokumente und -bilder wie in RFC5259 beschrieben.\n\nTheoretisch wäre es möglich, alles in alles umzuwandeln (z.B. eine Audio Datei in einen Text). Aber in der Realität unterstützt Ihr Server nur eine sehr begrenzte Anzahl von Konvertierungen. Beachten Sie, dass die Konvertierung sehr viel Ressourcen und Bearbeitungszeit erfordern kann, z.B. beim Umrechnen von Bildern oder beim Erstellen von pdfs.\n\nFalls die Konvertierung fehlschlägt, bleibt die Nachricht unverändert. \n\nWird diese Methode in einem Test verwendet, so wir die Konvertierung aus geführt und geprüft, ob die Konvertierung erfolgreich war oder fehlgeschlagen ist.",
   "convert.summary": "${from} in ${to} umwandeln",
   "body.tab.home": "Body",
+  "body.tab.transform": "Transform",
   "body.tab.advanced": "Erweitert",
   "body.tab.help": "Hilfe",
   "body.matchtypes": "Der Nachrichtentext der E-Mail…",
   "body.keylist": "… eines der folgenden Schlüsselwörter…",
-  "body.comparator": "Vergleicher",
   "body.transform": "Match against…",
   "body.help": "Der \"body\" Test prüft dem Inhalt einer E-Mailnachricht. Der Inhalt ist alles was nach ersten leeren Kopfzeile folgt. Die Leerzeile, wenn vorhanden, wird nicht als Teil des Inhaltes gezählt.",
   "body.summary": "Nachrichtentext ${matchtype} ${value}",
@@ -561,6 +561,6 @@
   "notifymethodcapability.no.text": "Die über die Methode spezifizierte Gegenstelle kann gerade keine Nachrichten empfangen.",
   "notifymethodcapability.maybe": "maybe",
   "notifymethodcapability.maybe.text": "Es ist unbekannt ob die über die Methode spezifizierte Gegenstelle kann gerade Nachrichten empfangen kann.",
-  "notifymethodcapability.help": "The notify_method_capability test retrieves the notification capability for given method and matches it to the given values.\n\nThe capability parameter is case insensitive. Currently only a single capability \"online\" is defined. But Sieve Notifications extensions may add aditional capabilities.\n\nThe \"online\" capabilities result is either \"yes\", \"no\" or \"maybe\". And describes the likelyness for a successfull delivery.\n\nNote that even after a \"yes\", there is no guarantee when and if the notification is received. Transport errors, recipient policy, etc. can prevent that.",
-  "notifymethodcapability.summary": "Check the notification capabilities."
+  "notifymethodcapability.help": "Der \"notify_method_capability\" prüft die die Benachrichtigungsfähigkeiten der angegebenen Methode.\n\nGroß-/Kleinschreibung wird bei den Namen der Fähigkeiten ignoriert. Derzeit ist nur \"online\" definiert. In Zukunft können jedoch noch weitere hinzukommen.\n\nDie \"online\" Fähigkeiten ist entweder \"Ja\", \"Nein\" oder \"vielleicht\". Und beschreibt die Wahrscheinlichkeit einer erfolgreichen Nachrichtenzustellung.\n\nBeachten Sie, dass es auch nach einem \"Ja\" keine Garantie gibt, wann und ob die Benachrichtigung empfangen wird. Transportfehler, Empfängerrichtlinien usw. können eine Zustellung verhindern.",
+  "notifymethodcapability.summary": "Prüfe die Benachrichtigungsfähigkeiten."
 }

@@ -142,7 +142,7 @@
   "string.variables": "Eine der folgenden Zeichenketten…",
   "string.keywords": "… eines der folgenden Schlüsselwörter…",
   "string.help": "",
-  "string.summary": "Eine Zeichenkette ${sources} {matchtype} eins von {value}",
+  "string.summary": "Any string ${sources} ${matchtype} any of ${value}",
   "notify.tab.home": "Notify",
   "notify.tab.advanced": "Erweitert",
   "notify.tab.help": "Hilfe",

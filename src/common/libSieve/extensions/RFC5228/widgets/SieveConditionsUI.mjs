@@ -110,7 +110,7 @@ class SieveConditionUI extends SieveSourceBoxUI {
 
          <div class="sivSummaryContent"></div>
 
-         <div class="sivConditionCode" style="display:none">
+         <div class="sivConditionCode" class="d-none">
            <code></code>
            <div class="sivSummaryControls">
              <span class="sivIconEdit invisible"></span>

@@ -402,14 +402,19 @@
       if (status === Cr.NS_OK)
         return false;
 
+      this.getLogger().logState("Checking for certificate errors... ");
+
       const nssErrorsService = Cc["@mozilla.org/nss_errors_service;1"]
         .getService(Ci.nsINSSErrorsService);
 
       try {
         const errorType = nssErrorsService.getErrorClass(status);
+
         if (errorType === Ci.nsINSSErrorsService.ERROR_CLASS_BAD_CERT) {
+          this.getLogger().logState(`... certificated considered bad (${status},${errorType})`);
           return true;
         }
+
       } catch (e) {
         console.warn(e);
         // nsINSSErrorsService.getErrorClass throws if given a non-TLS, non-cert error, so ignore this

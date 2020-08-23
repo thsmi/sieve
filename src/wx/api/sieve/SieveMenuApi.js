@@ -344,7 +344,7 @@
     while (windows.hasMoreElements()) {
       const win = windows.getNext().docShell.domWindow;
 
-      if (`${windowId}` === `${win.windowUtils.outerWindowID}`)
+      if (`${windowId}` === `${win.docShell.outerWindowID}`)
         return new SieveDomHelper(win.document);
     }
 

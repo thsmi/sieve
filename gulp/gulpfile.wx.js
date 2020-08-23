@@ -68,7 +68,7 @@ class TransposeMjsToJs extends Stream.Transform {
     if (file.extname === ".js") {
       let content = file.contents.toString();
       content = content.replace(
-        /(import\s*({[\w\s\n,]*}\s*from\s*)?)"([\w/.]*)\.mjs"/gm,
+        /(import\s*({[\w\s\n,]*}\s*from\s*)?)"([\w/.-]*)\.mjs"/gm,
         '$1"$3.js"');
       file.contents = Buffer.from(content);
     }
@@ -77,7 +77,7 @@ class TransposeMjsToJs extends Stream.Transform {
       let content = file.contents.toString();
 
       content = content.replace(
-        /(<script\s*type="module"\s*src=")([\w/.]*)\.mjs("\s*>)/gm,
+        /(<script\s*type="module"\s*src=")([\w/.-]*)\.mjs("\s*>)/gm,
         '$1$2.js$3');
 
       file.contents = Buffer.from(content);

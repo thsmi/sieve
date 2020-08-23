@@ -143,9 +143,9 @@ function src2(dir, files) {
 function packageLibSieve(destination) {
   return src([
     BASE_DIR_LIBSIEVE + "/**",
-    "!" + BASE_DIR_LIBSIEVE + "/libSieve/**/rfc*.txt",
-    "!" + BASE_DIR_LIBSIEVE + "/libSieve/**/tests/",
-    "!" + BASE_DIR_LIBSIEVE + "/libSieve/**/tests/**"
+    "!" + BASE_DIR_LIBSIEVE + "/**/rfc*.txt",
+    "!" + BASE_DIR_LIBSIEVE + "/**/tests/",
+    "!" + BASE_DIR_LIBSIEVE + "/**/tests/**"
   ], { base: BASE_DIR_COMMON }).pipe(dest(destination));
 }
 

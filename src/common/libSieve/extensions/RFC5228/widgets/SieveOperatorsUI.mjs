@@ -27,7 +27,7 @@ import {
   SieveMoveDragHandler
 } from "./../../../toolkit/events/DragHandler.mjs";
 
-import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.mjs";
 
 const TEST_ELEMENT = 1;
 

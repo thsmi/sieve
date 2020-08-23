@@ -10,6 +10,8 @@
  *
  */
 
+import "./../logic/SieveRegularExpression.mjs";
+
 import { SieveDesigner } from "./../../../toolkit/SieveDesigner.mjs";
 import { SieveAbstractMatchTypeUI } from "./../../../extensions/RFC5228/widgets/SieveMatchTypesUI.mjs";
 

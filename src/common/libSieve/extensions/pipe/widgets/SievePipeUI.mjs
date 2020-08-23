@@ -10,17 +10,19 @@
  *
  */
 
+import "./../logic/SievePipe.mjs";
+
 import { SieveDesigner } from "./../../../toolkit/SieveDesigner.mjs";
 
 import { SieveActionDialogBoxUI } from "./../../../toolkit/widgets/Boxes.mjs";
 import { SieveStringListWidget } from "./../../../toolkit/widgets/Widgets.mjs";
 
-import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.mjs";
 
 import { SieveMoveDragHandler } from "./../../../toolkit/events/DragHandler.mjs";
 import { SieveTestDropHandler } from "./../../../toolkit/events/DropHandler.mjs";
 
-import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.mjs";
 
 /**
  * Implements a UI for the pipe execute action/test

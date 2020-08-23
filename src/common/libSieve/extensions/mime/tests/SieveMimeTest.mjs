@@ -10,7 +10,6 @@
 *
 */
 
-
 /* global net */
 
 const suite = net.tschmid.yautt.test;

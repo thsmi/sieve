@@ -10,6 +10,8 @@
  *
  */
 
+import "./../logic/SieveMailbox.mjs";
+
 import { SieveDesigner } from "./../../../toolkit/SieveDesigner.mjs";
 
 import { SieveTestDialogBoxUI } from "./../../../toolkit/widgets/Boxes.mjs";
@@ -22,8 +24,8 @@ import {
 import { SieveMatchTypeWidget } from "./../../../extensions/RFC5228/widgets/SieveMatchTypesUI.mjs";
 import { SieveComparatorWidget } from "./../../../extensions/RFC5228/widgets/SieveComparatorsUI.mjs";
 
-import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
-import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.mjs";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.mjs";
 
 /**
  * Provides a UI for the Mailbox exists test

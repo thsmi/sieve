@@ -11,7 +11,7 @@
 
 /* global bootstrap */
 
-import { SieveTemplate } from "./../utils/SieveTemplate.js";
+import { SieveTemplate } from "./../utils/SieveTemplate.mjs";
 
 import { SieveMoveDragHandler } from "./../events/DragHandler.mjs";
 

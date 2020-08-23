@@ -155,8 +155,6 @@
   "set.first.lower" : "lower case",
   "set.help" : "Stores the specified value in the variable identified by name.\n\nThe name has to be a constant string and conform to the syntax of variable-name. Variable names are case insensitive.\n\nModifiers are applied before it is stored in the variable. If more than one modifier is specified, they are applied according to this precedence list:\n\n • Variable's case\n • Variable's first character\n • Escape Wildcards\n • Count characters\n",
   "set.summary" : "Set variable ${variable} to ${value}",
-  "set.summary1" : "Set variable",
-  "set.summary2" : "to value",
 
   "ereject.tab.home" : "Reject",
   "ereject.tab.help" : "Help",
@@ -169,7 +167,7 @@
   "string.variables" : "Any of the following strings…",
   "string.keywords" : "… any of the keywords…",
   "string.help" : "",
-  "string.summary" : "Any string ${sources} {matchtype} any of {value}",
+  "string.summary" : "Any string ${sources} ${matchtype} any of ${value}",
 
   "notify.tab.home" : "Notify",
   "notify.tab.advanced" : "Advanced",
@@ -197,8 +195,6 @@
   "notify.options.text" : "Additional options passed to the mechanism as key and value pairs. Refer to the specific mechanisms for more details.",
   "notify.help" : "Specifies that a notification should be sent to a user. The format of the notification is implementation-defined and is affected by the notification method used.\n\nThe notification method is identified by a URI. For example, the notification method can be a tel URI [TEL-URI] with a phone number to send SMS messages to, or an XMPP [XMPP] URI containing an XMPP identifiers [XMPP-URI]. The supported notification methods are site-specific, but support for the [MailTo] method is guaranteed.\n\nSieve scripts should check the supported methods using the valid_notify_method test to be sure that they only use supported ones.",
   "notify.help.alert" : "An implementation may enforce semantic restrictions on URIs. For example, to restrict phone numbers in a tel URI to a particular geographical region. This will cause a parser error.",
-
-  "notifymethodcapability.summary" :"Check Notify Method Capability",
 
   "validnotifymethod.tab.home" : "Valid notify method",
   "validnotifymethod.tab.help" : "Help",
@@ -235,7 +231,7 @@
   "envelope.tab.help" : "Help",
   "envelope.envelopes" : "Any of the following envelope fields…",
   "envelope.keywords" : "… any of the keywords…",
-  "envelope.help" : "Compares fields against the envelope\n\nThe envelop is equivalent to the mail delivery protocol. So it does not test against a real header. Instead uses trace information from the mail delivery protocol for specific values.\n\nA \"to\" tests the SMTP sender field \"RCPT TO\" a \"from\" the recipient \"MAIL FROM\".\n\nIt is the most reliant way to test from which address a message was send to or received.\n\nCompares headers against constant strings.\n\nYou typically use this test with headers containing subject line or a spam score.\n\nDo not use this test, if the header should be matched against a mail addresses. The result will be unreliable, as this test is not aware of display names. Use the address test instead.",
+  "envelope.help" : "Compares fields against the a mail's envelope\n\nThe envelop is equivalent to the mail delivery protocol. So it does not test against a real header. Instead uses trace information from the mail delivery protocol for specific values.\n\nA \"to\" tests the SMTP sender field \"RCPT TO\" a \"from\" the recipient \"MAIL FROM\".\n\nIt is difficult to fake and is the most reliant way to test from which address a message was send to or received. But the Envelope properties are only visible to the server, you can not see them inside your mail client.",
   "envelope.summary" : "Any of the envelope fields ${envelopes} ${matchtype} ${addresspart} ${keys}",
 
 
@@ -273,20 +269,19 @@
   "operator.anyof.summary" : "Any of the following:",
 
   "duplicate.tab.home" :"Duplicate",
-  "duplicate.tab.advanced" : "Advanced",
+  "duplicate.tab.tracking" : "Tracking",
+  "duplicate.tab.expiration" : "Expiration",
   "duplicate.tab.help" : "Help",
   "duplicate.summary" : "is a duplicate",
 
   "duplicate.unique.label" : "The unique id is…",
 
-  "duplicate.tracking.title" : "Tracking Handles",
   "duplicate.tracking.text" :  "Duplicate tracking considers only messages which are tagged with the same handle. The rational is to have multiple tracking policies. In case no handle it provided the server will use a default one. A custom handle can be any unique strings.",
   "duplicate.tracking.default" : "Use default handle",
   "duplicate.tracking.custom" : "Custom Handle",
   "duplicate.tracking.custom.invalid" : "Invalid custom handle",
 
-  "duplicate.expiration.title" : "Expiration",
-  "duplicate.expiration.text" : "The server uses a duplicate message list to track duplicates. To keep this list small and fast, the list entries expire. After a list entry is expired it is no more considered as a Duplicate",
+  "duplicate.expiration.text" : "The server uses a duplicate message list to track duplicates. To keep this list small and fast, the list entries expire. After a list entry is expired it is no more considered as a Duplicate.",
   "duplicate.expiration.default" : "Use server's default policy (usually 7 days)",
   "duplicate.expiration.custom.pre" : "Expire after",
   "duplicate.expiration.custom.post" : "seconds",
@@ -325,24 +320,22 @@
   "include.summary.global" : "Include global script ${script}",
 
   "date.tab.home" : "Date",
+  "date.tab.timezone" : "Timezone",
   "date.tab.advanced" : "Advanced",
   "date.tab.help" : "Help",
   "date.header" : "Has a Header…",
   "date.datepart" : "… where the…",
   "date.keywords" : "… any of the keywords…",
-  "date.timezone" : "Timezone",
-  "date.comparator" : "Comparator",
   "date.help" : "The date/time information is extracted from the header, shifted to the specified time zone, and the value of the given date-part is determined.\n\nThe test returns true if the resulting string matches any of the strings specified in the key-list.\n\nThe date test returns false if the specified header field does not exist, the field exists but does not contain a syntactically valid date-time specification, the date-time isn't valid according to the rules of the calendar system (e.g., January 32nd, February 29 in a non-leap year), or the resulting string fails to match any key-list value\n\nUnlike the header and address tests, the date test can only be applied to a single header field at a time. If multiple header fields with the same name are present, only the first field that is found is used.",
   "date.summary" : "${datepart} in header ${header} ${matchtype} any of ${keys}",
 
 
   "currentdate.tab.home" : "Current Date",
+  "currentdate.tab.timezone" : "Timezone",
   "currentdate.tab.advanced" : "Advanced",
   "currentdate.tab.help" : "Help",
   "currentdate.datepart" : "The current…",
   "currentdate.keyword" : "… any of the keywords…",
-  "currentdate.timezone" : "Timezone",
-  "currentdate.comparator" : "Comparator",
   "currentdate.help" : "The currentdate test is similar to the date test, except that it operates on the current date/time rather than a value extracted from the message header.\n\nThe test returns true if the current date matches any of the strings specified in the key-list. It returns false if the resulting string fails to match any key-list value.",
   "currentdate.summary" : "The current ${datepart} ${matchtype} any of ${keys}",
 
@@ -394,11 +387,11 @@
 
 
   "body.tab.home" : "Body",
+  "body.tab.transform" : "Transform",
   "body.tab.advanced" : "Advanced",
   "body.tab.help" : "Help",
   "body.matchtypes" : "The email's message body…",
   "body.keylist" : "… any of the keywords…",
-  "body.comparator" : "Comparator",
   "body.transform" : "Match against…",
   "body.help" : "The body test matches content in the body of an email message, that is, anything following the first empty line after the header. The empty line itself, if present, is not considered to be part of the body.",
   "body.summary" : "Message body ${matchtype} ${value}",
@@ -442,7 +435,7 @@
   "removeflag.tab.help" : "Help",
   "removeflag.flags.title" : "Remove the following IMAP Flags…",
   "removeflag.flags.text" : "Removeflag clears flags previously set by setflag or addflag",
-  "removeflag.help" : "Removeflag clears flags previously set by \"setflag\" or \"addflag\". Calling removeflag with a flag that wasn't set before is not an error and is ignored.\n\nAdd flags to a message. It doesn't replace any previously set flags. This means that multiple occurrences of addflag are treated additively.\n\nMessage labels are called flags in the IMAP specification and are divided into two types: system flags and user-defined flags.\n\nSystem flags are defined in the IMAP Specification. They start with a leading backslash (\\). The current the following six system flags \\Seen , \\Answered, \\Flagged, \\Deleted, \\Draft, \\Recent are defined.\n\nUser-defined flags are also known as IMAP keywords and, as the name implies, are defined by IMAP users. There is a de facto standard that keywords which are in common use have names that begin with a dollar sign ($).\n\nExamples of common keywords are: $Label1, $Label2, $Label3, $Label4, $Label5. These keywords are typically hardwired to Important, Work, Personal, To Do and Later.\n\nIf you define your own personal keyword, its name should not begin with dollar sign ($) or backslash (\\) because otherwise it might collide with a flag that is used by current or future IMAP clients and servers",
+  "removeflag.help" : "Removeflag clears flags previously set by \"setflag\" or \"addflag\". Calling removeflag with a flag that wasn't set before is not an error and is ignored.\n\nMessage labels are called flags in the IMAP specification and are divided into two types: system flags and user-defined flags.\n\nSystem flags are defined in the IMAP Specification. They start with a leading backslash (\\). The current the following six system flags \\Seen , \\Answered, \\Flagged, \\Deleted, \\Draft, \\Recent are defined.\n\nUser-defined flags are also known as IMAP keywords and, as the name implies, are defined by IMAP users. There is a de facto standard that keywords which are in common use have names that begin with a dollar sign ($).\n\nExamples of common keywords are: $Label1, $Label2, $Label3, $Label4, $Label5. These keywords are typically hardwired to Important, Work, Personal, To Do and Later.\n\nIf you define your own personal keyword, its name should not begin with dollar sign ($) or backslash (\\) because otherwise it might collide with a flag that is used by current or future IMAP clients and servers",
   "removeflag.summary" : "Remove IMAP flags ${flags}",
 
   "setflags.tab.home" : "Set Flag",
@@ -481,7 +474,7 @@
   "matchtype.contains.text" : "\"frobnitzm\" contains \"frob\" and \"nit\", but not \"fbm\"",
 
   "matchtype.matches.title" : "… matches…",
-  "matchtype.matches.text" : "\"*\" matches zero or more characters, and \"?\" matches a single character\n\"frobnitzm\" matches \"frob*zm\" or \"frobnit?m\" but not frob?m",
+  "matchtype.matches.text" : "\"*\" matches zero or more characters, a \"?\" matches a single character\n\"frobnitzm\" matches \"frob*zm\" or \"frobnit?m\" but not \"frob?m\"",
 
   "matchtype.value.title" : "… is",
   "matchtype.value.title2" : "…",
@@ -661,5 +654,27 @@
   "execute.summary" : "Run Program ${program}",
   "execute.summary.test" : "Program ${program} ran without errors",
 
-  "not.summary" : "does not match"
+  "not.summary" : "does not match",
+
+  "notifymethodcapability.tab.home" : "Notify Method Capability",
+  "notifymethodcapability.tab.advanced" : "Advanced",
+  "notifymethodcapability.tab.help" : "Help",
+  "notifymethodcapability.method" : "Check if method's…",
+  "notifymethodcapability.method.tel" : "Send a SMS message to a phone",
+  "notifymethodcapability.method.tel.text" : "e.g. tel:+14085551212",
+  "notifymethodcapability.method.xmpp" : "Send a xmpp message",
+  "notifymethodcapability.method.xmpp.text" : "e.g. xmpp:me@example.com?message;subject=SIEVE;body=You%20got%20mail",
+  "notifymethodcapability.method.mail" : "Send an email message",
+  "notifymethodcapability.method.mail.text" : "e.g. mailto:me@example.com",
+  "notifymethodcapability.capability" : "… notification capability…",
+  "notifymethodcapability.keywords" : "… any of the keywords",
+  "notifymethodcapability.yes" : "yes",
+  "notifymethodcapability.yes.text" : "The entity identified by the notification-uri can receive a notify notification.",
+  "notifymethodcapability.no" : "no",
+  "notifymethodcapability.no.text" : "The entity identified by the notification-uri is currently not available to receive an immediate notification.",
+  "notifymethodcapability.maybe" : "maybe",
+  "notifymethodcapability.maybe.text" : "The Sieve interpreter can't determine if the entity identified by the notification-uri is online or not",
+  "notifymethodcapability.help" :"The notify_method_capability test retrieves the notification capability for given method and matches it to the given values.\n\nThe capability parameter is case insensitive. Currently only a single capability \"online\" is defined. But Sieve Notifications extensions may add aditional capabilities.\n\nThe \"online\" capabilities result is either \"yes\", \"no\" or \"maybe\". And describes the likelyness for a successfull delivery.\n\nNote that even after a \"yes\", there is no guarantee when and if the notification is received. Transport errors, recipient policy, etc. can prevent that.",
+  "notifymethodcapability.summary" :"Check the notification capabilities."
+
 }

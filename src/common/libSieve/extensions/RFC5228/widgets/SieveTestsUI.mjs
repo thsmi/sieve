@@ -25,8 +25,8 @@ import { SieveMatchTypeWidget } from "./../../RFC5228/widgets/SieveMatchTypesUI.
 import { SieveAddressPartWidget } from "./../../RFC5228/widgets/SieveAddressPartUI.mjs";
 import { SieveComparatorWidget } from "./../../RFC5228/widgets/SieveComparatorsUI.mjs";
 
-import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
-import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.mjs";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.mjs";
 
 // testunary .append() -> testunary in anyof wrapen  SieveTestUI einführen...
 // testmultary.append -> an entsprechender stelle einfügen SieveTestListUI...

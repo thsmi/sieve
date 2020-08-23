@@ -292,7 +292,7 @@ class SieveCondition extends SieveBlockBody {
 
   /**
    *
-   * @param {String} childId
+   * @param {string} childId
    *   the childs unique id.
    * @param {boolean} cascade
    * @param {SieveAbstractElement} stop

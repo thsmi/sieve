@@ -10,14 +10,16 @@
  *
  */
 
+import "./../logic/SieveInclude.mjs";
+
 import { SieveDesigner } from "./../../../toolkit/SieveDesigner.mjs";
 
 import { SieveActionDialogBoxUI } from "./../../../toolkit/widgets/Boxes.mjs";
 
 import { SieveStringListWidget } from "./../../../toolkit/widgets/Widgets.mjs";
 
-import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
-import { SieveI18n } from "../../../toolkit/utils/SieveI18n.js";
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.mjs";
+import { SieveI18n } from "../../../toolkit/utils/SieveI18n.mjs";
 
 /**
  * Provides an UI for the Return Action

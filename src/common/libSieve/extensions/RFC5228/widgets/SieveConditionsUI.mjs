@@ -19,7 +19,7 @@ import { SieveMoveDragHandler } from "./../../../toolkit/events/DragHandler.mjs"
 
 import { SieveConditionDropHandler } from "./../../../toolkit/events/DropHandler.mjs";
 
-import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.js";
+import { SieveTemplate } from "./../../../toolkit/utils/SieveTemplate.mjs";
 
 const IS_FIRST_ITEM = 0;
 
@@ -110,7 +110,7 @@ class SieveConditionUI extends SieveSourceBoxUI {
 
          <div class="sivSummaryContent"></div>
 
-         <div class="sivConditionCode" style="display:none">
+         <div class="sivConditionCode" class="d-none">
            <code></code>
            <div class="sivSummaryControls">
              <span class="sivIconEdit invisible"></span>

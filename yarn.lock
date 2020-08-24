@@ -2436,10 +2436,10 @@ next-tick@~1.0.0:
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
   integrity sha1-yobR/ogoFpsBICCOPchCS524NCw=
 
-node-abi@^2.18.0, node-abi@^2.7.0:
-  version "2.18.0"
-  resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-2.18.0.tgz#1f5486cfd7d38bd4f5392fa44a4ad4d9a0dffbf4"
-  integrity sha512-yi05ZoiuNNEbyT/xXfSySZE+yVnQW6fxPZuFbLyS1s6b5Kw3HzV2PHOM4XR+nsjzkHxByK+2Wg+yCQbe35l8dw==
+node-abi@^2.19.0, node-abi@^2.7.0:
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-2.19.0.tgz#11614ff22dd64dad3501074bf656e6923539e17a"
+  integrity sha512-rpKqVe24p9GvMTgtqUXdLR1WQJBGVlkYPU10qHKv9/1i9V/k04MmFLVK2WcHBf1WKKY+ZsdvARPi8F4tfJ4opA==
   dependencies:
     semver "^5.4.1"
 

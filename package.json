@@ -9,7 +9,7 @@
   "devDependencies": {
     "bootstrap": "^5.0.0-alpha1",
     "codemirror": "^5.57.0",
-    "electron": "^9.1.2",
+    "electron": "^9.2.1",
     "electron-packager": "^15.1.0",
     "eslint": "^7.7.0",
     "eslint-plugin-jsdoc": "^30.2.4",

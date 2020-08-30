@@ -192,7 +192,7 @@
   "debug.transport.clientserver": "Client to Server communication (requests)",
   "debug.transport.serverclient": "Server to Client communication (responses)",
   "debug.transport.states": "Exceptions and State Machine Information",
-  "debug.transport.rawdump": "Raw Dump/Dump Byte Stream",
+  "debug.transport.rawdump": "Nyers lerakóhely/bájt-patak lerakóhely",
   "debug.transport.session": "Munkamenet-kezelés",
   "debug.global.title": "Teljes körű",
   "debug.global.description": "Used to log and debug the app's UI and rendering. The settings are global and apply to all accounts after restarting the app.",

@@ -151,7 +151,7 @@
   "notify.method.tel.text": "e.g. tel:+14085551212",
   "notify.method.xmpp": "Send a xmpp message",
   "notify.method.xmpp.text": "például xmpp:én@example.com?message;subject=SZITA;body=Levele%20érkezett",
-  "notify.method.mail": "Send an email message",
+  "notify.method.mail": "E-mail küldése",
   "notify.method.mail.text": "például mailto:én@example.com",
   "notify.message.default": "… to send the server's default message",
   "notify.message.default.text": "A default implementation-specific message is used. It contains at least the value of the \"From\" header field and the value of the \"Subject\".",

@@ -36,7 +36,7 @@
   "fileinto.summary": "Üzenet mentése ide: ${path}",
   "exists.tab.home": "Exists",
   "exists.tab.help": "Súgó",
-  "exists.header.label": "All headers exist:",
+  "exists.header.label": "Minden fejléc létezik:",
   "exists.help.text": "",
   "exists.summary": "Fejléc létezik: ${headers}",
   "header.tab.home": "Header",

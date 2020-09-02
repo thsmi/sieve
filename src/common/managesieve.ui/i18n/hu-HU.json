@@ -35,7 +35,7 @@
   "account.server.username": "Felhasználónév",
   "account.create.accept": "Létrehozás",
   "account.delete.title": "Fiók törlése",
-  "account.delete.description1": "Do you really want to delete the configuration for",
+  "account.delete.description1": "Biztosan törölni szeretné a konfigurációt:",
   "account.delete.description2": "?",
   "account.delete.accept": "Törlés",
   "account.details.delete.title": "Veszélyes területet",
@@ -196,7 +196,7 @@
   "debug.transport.session": "Munkamenet-kezelés",
   "debug.global.title": "Teljes körű",
   "debug.global.description": "Used to log and debug the app's UI and rendering. The settings are global and apply to all accounts after restarting the app.",
-  "debug.global.actions": "User Events and Actions",
+  "debug.global.actions": "Felhasználói események és műveletek",
   "debug.global.ipc": "IPC-üzenetek",
   "debug.global.widgets": "Vezérlők",
   "debug.global.i18n": "Nemzetközivé (I18n)"

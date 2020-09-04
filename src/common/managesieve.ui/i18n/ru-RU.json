@@ -165,7 +165,7 @@
   "editor.indentation.title": "Отступ",
   "editor.indentation.description": "Редактор автоматически отступает код при вводе текста.",
   "editor.indentation.width": "Ширина отступа",
-  "editor.indentation.policy": "Indention Policy",
+  "editor.indentation.policy": "Стиль оступа",
   "editor.indentation.tabs": "Использовать табуляторы",
   "editor.indentation.spaces": "Использовать пробелы",
   "editor.indentation.tabWidth": "Ширина табуляции",

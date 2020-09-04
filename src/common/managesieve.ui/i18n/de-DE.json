@@ -170,7 +170,7 @@
   "editor.indentation.spaces": "Leerzeichen",
   "editor.indentation.tabWidth": "Tabulatorbreite",
   "editor.defaults.title": "Vorgaben",
-  "editor.defaults.description": "Aktuelle Einstellungen als Vorgabe für alle Editor verwenden oder die Vorgben laden.",
+  "editor.defaults.description": "Aktuelle Einstellungen als Vorgabe für alle Editor verwenden oder die Vorgaben laden.",
   "editor.defaults.save": "Als Vorgabe speichern",
   "editor.defaults.load": "Vorgaben laden",
   "texteditor.cut": "Ausschneiden",

@@ -531,7 +531,7 @@
   "execute.program.invalid": "Érvénytelen program neve.",
   "execute.arguments.label": "Pass arguments",
   "execute.arguments.text": "Command line arguments to be passed to the external program.",
-  "execute.input.label": "Pass data to the program",
+  "execute.input.label": "Továbbít adatai a programnak",
   "execute.input.input.title": "Egyéni karakterlánc használata",
   "execute.input.placeholder": "Custom data to be passed.",
   "execute.input.input.text": "The string may contain variable subsitutions which will be resolved before passing the data.",

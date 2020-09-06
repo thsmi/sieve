@@ -39,7 +39,7 @@
   "account.delete.description2": "?",
   "account.delete.accept": "Törlés",
   "account.details.delete.title": "Veszélyes területet",
-  "account.details.delete.description": "Remove this server configuration from the app. Your account on your mail server will remain untouched, no scripts are deleted and the currently active remains active.",
+  "account.details.delete.description": "Távolítsa el ezt a kiszolgáló konfigurációt az alkalmazásból. A levelezőszerveren lévő fiókja érintetlen marad, egyetlen parancsfájl sem törlődik és az aktuálisan aktív marad.",
   "account.details.delete": "Kiszolgáló törlése",
   "account.settings": "Beállítások",
   "account.newscript": "Új parancsfájl",

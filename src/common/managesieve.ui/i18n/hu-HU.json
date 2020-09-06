@@ -21,7 +21,7 @@
   "account.capabilities.extensions": "Szita bővítmények",
   "account.capabilities.languages": "Nyelvek",
   "accounts.create.title": "Hozzáadás vagy importálás",
-  "accounts.create.description": "Add a new account to the Sieve app or import an existing configuration from Thunderbird",
+  "accounts.create.description": "Adjon hozzá új fiókot a Szita alkalmazáshoz vagy importáljon meglévő konfigurációt a Thunderbird alkalmazásból",
   "accounts.create.add": "Kiszolgáló hozzáadása",
   "accounts.create.import.thunderbird": "Importálás Thunderbirdből",
   "accounts.create.import.file": "Importálás fájlból",

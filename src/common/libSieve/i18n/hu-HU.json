@@ -159,7 +159,7 @@
   "notify.message.custom.text": "The message data to be included in the notification. Implementations may shorten the message for technical or aesthetic reasons.",
   "notify.from": "Override the default sender",
   "notify.from.text": "The server’s default is normally the current user. You can override this, but in oder minimize/prevent forgery of the author value, the server implementations impose restrictions on what values can be specified.",
-  "notify.importance": "Override the default importance",
+  "notify.importance": "Alapértelmezett fontosság felülbírálása",
   "notify.importance.text": "Only few protocols support an importance or priority at all. Refer to the method’s documentation for more details on how the importance is mapped.",
   "notify.importance.high": "Nagyon fontos",
   "notify.importance.normal": "Átlagos",

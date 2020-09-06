@@ -351,7 +351,7 @@
   "spamtest.absolute.likelyspan": "Spam-Wahrscheinlichkeit der Nachricht",
   "spamtest.absolute.spam": "Nachricht ist definitiv Spam",
   "spamtest.percent.label": "… Prozentwert…",
-  "spamtest.percent.text": "Der Spamsscore kann auch über eine prozentuale Skala dargestellt werden. Null bedeutet kein Spam während 100 nachweislich Spam ist",
+  "spamtest.percent.text": "Der Spamscore kann auch über eine prozentuale Skala dargestellt werden. Null bedeutet kein Spam während 100 nachweislich Spam ist",
   "spamtest.percent.nospam": "Nachricht wurde nicht auf Spam getestet oder ist frei von Spam",
   "spamtest.percent.likelyspan": "Spam-Wahrscheinlichkeit in Prozent",
   "spamtest.percent.spam": "Nachricht ist definitiv Spam",

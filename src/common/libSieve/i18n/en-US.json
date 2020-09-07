@@ -426,9 +426,9 @@
   "hasflag.tab.home" : "Has Flag",
   "hasflag.tab.advanced" : "Advanced",
   "hasflag.tab.help" : "Help",
-  "hasflag.flags.title" : "An imap flag…",
+  "hasflag.flags.title" : "An IMAP flag…",
   "hasflag.flags.keyword" : "… any of the keywords…",
-  "hasflag.help" : "Checks if a message is tagged with an imap flag or label.\n\nMessage labels are called flags in the IMAP specification and are divided into two types: system flags and user-defined flags.\n\nSystem flags are defined in the IMAP Specification. They start with a leading backslash (\\). The current the following six system flags \\Seen, \\Answered, \\Flagged, \\Deleted, \\Draft, \\Recent are defined.\n\nUser-defined flags are also known as IMAP keywords and, as the name implies, are defined by IMAP users. There is a de facto standard that keywords which are in common use have names that begin with a dollar sign ($).\n\nExamples of common keywords are: $Label1, $Label2, $Label3, $Label4, $Label5. These keywords are typically hardwired to Important, Work, Personal, To Do and Later.\n\nIf you define your own personal keyword, its name should not begin with dollar sign ($) or backslash (\\) because otherwise it might collide with a flag that is used by current or future IMAP clients and servers.",
+  "hasflag.help" : "Checks if a message is tagged with an IMAP flag or label.\n\nMessage labels are called flags in the IMAP specification and are divided into two types: system flags and user-defined flags.\n\nSystem flags are defined in the IMAP Specification. They start with a leading backslash (\\). The current the following six system flags \\Seen, \\Answered, \\Flagged, \\Deleted, \\Draft, \\Recent are defined.\n\nUser-defined flags are also known as IMAP keywords and, as the name implies, are defined by IMAP users. There is a de facto standard that keywords which are in common use have names that begin with a dollar sign ($).\n\nExamples of common keywords are: $Label1, $Label2, $Label3, $Label4, $Label5. These keywords are typically hardwired to Important, Work, Personal, To Do and Later.\n\nIf you define your own personal keyword, its name should not begin with dollar sign ($) or backslash (\\) because otherwise it might collide with a flag that is used by current or future IMAP clients and servers.",
   "hasflag.summary" : "Has IMAP flags ${flags}",
 
   "removeflag.tab.home" : "Remove Flag",
@@ -445,7 +445,7 @@
   "setflag.help":"Setflag is used for setting system flags, it replaces any previously set flags.\n\nMessage labels are called flags in the IMAP specification and are divided into two types: system flags and user-defined flags.\n\nSystem flags are defined in the IMAP Specification. They start with a leading backslash (\\). The current the following six system flags \\Seen , \\Answered, \\Flagged, \\Deleted, \\Draft, \\Recent are defined.\n\nUser-defined flags are also known as IMAP keywords and, as the name implies, are defined by IMAP users. There is a de facto standard that keywords which are in common use have names that begin with a dollar sign ($).\n\nExamples of common keywords are: $Label1, $Label2, $Label3, $Label4, $Label5. These keywords are typically hardwired to Important, Work, Personal, To Do and Later.\n\nIf you define your own personal keyword, its name should not begin with dollar sign ($) or backslash (\\) because otherwise it might collide with a flag that is used by current or future IMAP clients and servers.",
   "setflag.summary" : "Set IMAP flags ${flags}",
 
-  "flags.label" : "Add imap flag",
+  "flags.label" : "Add IMAP flag",
   "flags.text" : "Adds flags to a message. It doesn't replace any previously set flags.",
 
   "copy.label" : "Keep a copy",

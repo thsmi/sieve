@@ -164,6 +164,7 @@ class SieveConditionUI extends SieveSourceBoxUI {
 
     const code = item.querySelector(".sivConditionCode");
     code.id = `${this.uniqueId}-code`;
+    code.classList.add("d-none");
 
     const control = code.querySelector(".sivSummaryControls");
     control.querySelector(".sivIconCode").addEventListener("click", (e) => {

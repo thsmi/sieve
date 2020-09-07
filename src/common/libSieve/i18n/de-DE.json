@@ -79,7 +79,7 @@
   "mailboxexists.tab.home": "Mailbox exists",
   "mailboxexists.tab.help": "Hilfe",
   "mailboxexists.folders": "Alle der folgenden Postfächer (Ordner) existieren:",
-  "mailboxexists.help": "Überprüft ob ein Postfach/Ordner existiert und ob die Zugriffsrechte ausreichen um dort Nachrichten abzulegen.\n\nEs ist keine Garantie, dass eine \"Fileinto\" Aktion fehlerfrei ausgeführt wird, da nicht geprüft wird ob z.B. das Speicherkontingent überschritten wird.",
+  "mailboxexists.help": "Überprüft ob ein Postfach/Ordner existiert und ob die Zugriffsrechte ausreichen um dort Nachrichten abzulegen.\n\nEs ist keine Garantie, dass eine \"Fileinto\" Aktion fehlerfrei ausgeführt wird, da nicht geprüft wird ob zum Beispiel das Speicherkontingent überschritten wird.",
   "mailboxexists.summary": "Ordner ${mailboxes} sind vorhanden",
   "metadataexists.tab.home": "Meta Data exists",
   "metadataexists.tab.help": "Hilfe",

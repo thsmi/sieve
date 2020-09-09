@@ -11,7 +11,7 @@
     "codemirror": "^5.57.0",
     "electron": "^9.2.1",
     "electron-packager": "^15.1.0",
-    "eslint": "^7.7.0",
+    "eslint": "^7.8.1",
     "eslint-plugin-jsdoc": "^30.3.3",
     "gulp": "^4.0.0",
     "keytar": "^6.0.1",

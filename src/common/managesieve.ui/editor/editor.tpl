@@ -18,8 +18,10 @@
             </li>
           </ul>
           <div class="align-self-center">
-            <button data-i18n="editor.save" type="button" class="btn btn-sm btn-outline-secondary mr-1"
-              id="sieve-editor-save"></button>
+            <button type="button" class="btn btn-sm btn-outline-secondary mr-1" id="sieve-editor-save">
+              <span id="sieve-editor-saving" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+              <span data-i18n="editor.save"></span>
+            </button>
             <a class="btn btn-sm btn-outline-info mr-1 " href="https://www.paypal.com/paypalme2/thsmi" target="_blank"
               role="button" data-i18n="editor.donate"></a>
 

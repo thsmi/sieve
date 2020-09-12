@@ -98,8 +98,14 @@
 
       document
         .querySelector("#sieve-editor-save")
-        .addEventListener("click", () => {
-          this.save();
+        .addEventListener("click", async () => {
+          document
+            .querySelector("#sieve-editor-saving").classList.remove("d-none");
+
+          await this.save();
+
+          document
+            .querySelector("#sieve-editor-saving").classList.add("d-none");
         });
 
       document

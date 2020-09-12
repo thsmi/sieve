@@ -86,12 +86,12 @@ class SieveScriptUI {
     }
 
     if (this.isActive === false) {
-        elm.querySelector(".sieve-list-script-active").classList.add("d-none");
+      elm.querySelector(".sieve-list-script-active").classList.add("d-none");
       elm.querySelector(".sieve-script-activate").classList.remove("d-none");
       elm.querySelector(".sieve-script-deactivate").classList.add("d-none");
     }
     else {
-        elm.querySelector(".sieve-list-script-active").classList.remove("d-none");
+      elm.querySelector(".sieve-list-script-active").classList.remove("d-none");
       elm.querySelector(".sieve-script-activate").classList.add("d-none");
       elm.querySelector(".sieve-script-deactivate").classList.remove("d-none");
     }

@@ -131,7 +131,7 @@
         editor.removeChild(editor.firstChild);
 
       editor.appendChild(
-        await loader.load("./editor/text/editor.plaintext.tpl"));
+        await loader.load("./editor/text/editor.plaintext.html"));
 
       this.cm = CodeMirror.fromTextArea(document.getElementById(this.id), {
         lineNumbers: true,
@@ -171,6 +171,10 @@
           cm.indentSelection("subtract");
         }
       });
+
+      const toolbar = document.querySelector("#sieve-plaintext-editor-toolbar");
+      toolbar.appendChild(
+        await loader.load("./editor/text/editor.plaintext.toolbar.html"));
 
       document
         .querySelector("#sieve-editor-undo")

@@ -83,14 +83,14 @@
      */
     getLanguage(language) {
 
-      // Check if it's a well known language.
+      // Check if it's a perfect match with a well known language region.
       if (LANGUAGES.has(language))
         return language;
 
-      // If not then we split the language from the region...
-      language = language.split('-')[FIRST_ELEMENT];
+      // If not we split the language from the region...
+      language = language.split('-')[FIRST_ELEMENT].toLowerCase();
 
-      // ... and try to find the matching well known language.
+      // ... and try to find the matching the language.
       // in case it fails we fall back to the default.
       if (!LANGUAGE_MAPPING.has(language))
         return DEFAULT_LOCALE;

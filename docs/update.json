@@ -3,6 +3,14 @@
     "sieve@mozdev.org": {
       "updates": [
         {
+          "version": "0.5.1",
+          "update_link": "https://github.com/thsmi/sieve/releases/download/0.5.1/sieve-0.5.1.xpi",
+          "update_info_url": "https://github.com/thsmi/sieve/releases/tag/0.5.1",
+          "browser_specific_settings": {
+            "gecko": { "strict_min_version": "68.0a1" }
+          }
+        },
+        {
           "version": "0.5.0",
           "update_link": "https://github.com/thsmi/sieve/releases/download/0.5.0/sieve-0.5.0.xpi",
           "update_info_url": "https://github.com/thsmi/sieve/releases/tag/0.5.0",

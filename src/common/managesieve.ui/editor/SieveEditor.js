@@ -154,7 +154,7 @@
      */
     async showErrorMessage(message) {
 
-      const content = await (new SieveTemplate()).load("./editor/editor.error.save.tpl");
+      const content = await (new SieveTemplate()).load("./editor/editor.error.save.html");
 
       content.querySelector(".sieve-editor-error-msg").textContent = message;
 

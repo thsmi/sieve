@@ -275,7 +275,8 @@ class SieveEditorUI extends SieveEditorController {
    */
   async switchToTextEditor() {
 
-    document.querySelector("#sieve-editor-save").style.display = "";
+      document.querySelector("#sieve-editor-save").classList.remove("d-none");
+      document.querySelector("#sieve-plaintext-editor-toolbar").classList.remove("d-none");
 
     if (this.isTextEditor()) {
       this.getTextEditor().focus();
@@ -305,7 +306,8 @@ class SieveEditorUI extends SieveEditorController {
    */
   async switchToGraphicalEditor() {
 
-    document.querySelector("#sieve-editor-save").style.display = "";
+      document.querySelector("#sieve-editor-save").classList.remove("d-none");
+      document.querySelector("#sieve-plaintext-editor-toolbar").classList.add("d-none");
 
     if (!this.isTextEditor())
       return true;
@@ -327,7 +329,8 @@ class SieveEditorUI extends SieveEditorController {
    * Switches to the settings tab.
    */
   switchToSettings() {
-    document.querySelector("#sieve-editor-save").style.display = "none";
+      document.querySelector("#sieve-plaintext-editor-toolbar").classList.add("d-none");
+      document.querySelector("#sieve-editor-save").classList.add("d-none");
   }
 
   /**

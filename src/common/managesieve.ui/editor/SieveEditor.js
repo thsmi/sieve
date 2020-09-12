@@ -148,7 +148,8 @@
      */
     hideErrorMessage() {
       const elm = document.querySelector("#sieve-editor-error");
-      elm.parentNode.removeChild(elm);
+      if (elm !== null)
+        elm.parentNode.removeChild(elm);
     }
 
     /**
@@ -159,13 +160,13 @@
      */
     async showErrorMessage(message) {
 
-      const content = await (new SieveTemplate()).load("./editor/editor.error.save.tpl");
+      const content = await (new SieveTemplate()).load("./editor/editor.error.save.html");
 
       content.querySelector(".sieve-editor-error-msg").textContent = message;
 
       this.hideErrorMessage();
 
-      document.querySelector("#sieve-editor-toolbar").appendChild(content);
+      document.querySelector("#sieve-editor-errors").appendChild(content);
 
       // eslint-disable-next-line no-new
       new bootstrap.Alert(content);
@@ -287,6 +288,7 @@
     async switchToTextEditor() {
 
       document.querySelector("#sieve-editor-save").classList.remove("d-none");
+      document.querySelector("#sieve-editor-toolbar").classList.remove("d-none");
       document.querySelector("#sieve-plaintext-editor-toolbar").classList.remove("d-none");
 
       if (this.isTextEditor()) {
@@ -318,6 +320,7 @@
     async switchToGraphicalEditor() {
 
       document.querySelector("#sieve-editor-save").classList.remove("d-none");
+      document.querySelector("#sieve-editor-toolbar").classList.add("d-none");
       document.querySelector("#sieve-plaintext-editor-toolbar").classList.add("d-none");
 
       if (!this.isTextEditor())
@@ -327,7 +330,7 @@
         await this.getGraphicalEditor().setScript(
           await this.getTextEditor().getScript());
       } catch (ex) {
-        console.log(ex);
+        await this.switchToTextEditor();
         this.showErrorMessage(`Switching to Graphical editor failed ${ex}`);
         return false;
       }
@@ -340,7 +343,7 @@
      * Switches to the settings tab.
      */
     switchToSettings() {
-      document.querySelector("#sieve-plaintext-editor-toolbar").classList.add("d-none");
+      document.querySelector("#sieve-editor-toolbar").classList.add("d-none");
       document.querySelector("#sieve-editor-save").classList.add("d-none");
     }
 

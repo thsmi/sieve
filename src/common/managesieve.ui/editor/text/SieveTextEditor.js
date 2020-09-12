@@ -172,7 +172,7 @@
         }
       });
 
-      const toolbar = document.querySelector("#sieve-plaintext-editor-toolbar");
+      const toolbar = document.querySelector("#sieve-editor-toolbar");
       toolbar.appendChild(
         await loader.load("./editor/text/editor.plaintext.toolbar.html"));
 

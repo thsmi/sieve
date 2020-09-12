@@ -41,9 +41,10 @@
             </div>
           </div>
         </div>
-        <div id="sieve-plaintext-editor-toolbar" class="p-2" style="border-bottom: 1px solid #eee;">
+        <div id="sieve-editor-toolbar" class="p-2" style="border-bottom: 1px solid #eee;">
           <!-- insert toolbars here -->
         </div>
+        <div id="sieve-editor-errors" class="p-2"></div>
       </div>
 
       <div id="sieve-tab-content"

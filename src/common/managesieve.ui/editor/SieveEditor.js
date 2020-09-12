@@ -143,7 +143,7 @@
     hideErrorMessage() {
       const elm = document.querySelector("#sieve-editor-error");
       if (elm !== null)
-      elm.parentNode.removeChild(elm);
+        elm.parentNode.removeChild(elm);
     }
 
     /**

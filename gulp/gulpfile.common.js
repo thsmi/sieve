@@ -268,6 +268,28 @@ async function bumpPatchVersion() {
 }
 
 /**
+ * Updates the manifest which is used by the apps as well as the WXs
+ * automatic update checker.
+ */
+async function updateVersion() {
+
+  const version = (await getPackageVersion()).join(".");
+
+  const data = JSON.parse(await readFile("./docs/update.json", 'utf8'));
+
+  data["addons"]["sieve@mozdev.org"]["updates"].unshift({
+    "version" : version,
+    "update_link": `https://github.com/thsmi/sieve/releases/download/${version}/sieve-${version}.xpi`,
+    "update_info_url": `https://github.com/thsmi/sieve/releases/tag/${version}`,
+    "browser_specific_settings": {
+      "gecko": { "strict_min_version": "68.0a1" }
+    }
+  });
+
+  await writeFile("./docs/update.json", JSON.stringify(data, null, JSON_INDENTATION), 'utf-8');
+}
+
+/**
  * Compresses the given file or directory recursively.
  *
  * You can set special file permissions via the options.
@@ -376,6 +398,8 @@ exports["setPackageVersion"] = setPackageVersion;
 exports["bumpMajorVersion"] = bumpMajorVersion;
 exports["bumpMinorVersion"] = bumpMinorVersion;
 exports["bumpPatchVersion"] = bumpPatchVersion;
+
+exports["updateVersion"] = updateVersion;
 
 exports["BASE_DIR_BUILD"] = BASE_DIR_BUILD;
 exports["BASE_DIR_COMMON"] = BASE_DIR_COMMON;

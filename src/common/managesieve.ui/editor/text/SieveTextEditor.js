@@ -170,7 +170,7 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
       }
     });
 
-      const toolbar = document.querySelector("#sieve-editor-toolbar");
+    const toolbar = document.querySelector("#sieve-editor-toolbar");
     toolbar.appendChild(
       await loader.load("./editor/text/editor.plaintext.toolbar.html"));
 

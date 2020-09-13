@@ -239,11 +239,16 @@ function packageLibManageSieve() {
  */
 function packageLibSieve() {
 
-  const BASE_LIB_DIR_WX = path.join(BASE_DIR_WX, "libs", "libSieve");
   const BASE_LIB_DIR_COMMON = path.join(common.BASE_DIR_COMMON, "libSieve");
 
-  return common.src2(BASE_LIB_DIR_WX)
-    .pipe(common.src2(BASE_LIB_DIR_COMMON))
+  const files = [
+    "./**",
+    "!./**/rfc*.txt",
+    "!./**/tests/",
+    "!./**/tests/**"
+  ];
+
+  return common.src2(BASE_LIB_DIR_COMMON, files)
     .pipe(new TransposeMjsToJs())
     .pipe(dest(path.join(BUILD_DIR_WX_LIBS, "libSieve")));
 

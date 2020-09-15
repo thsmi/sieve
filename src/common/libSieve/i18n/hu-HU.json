@@ -130,7 +130,7 @@
   "set.first.text": "Only the first character’s case is changed, the rest of the string is unchanged.",
   "set.first.upper": "nagybetű",
   "set.first.lower": "kisbetű",
-  "set.help": "Stores the specified value in the variable identified by name.\n\nThe name has to be a constant string and conform to the syntax of variable-name. Variable names are case insensitive.\n\nModifiers are applied before it is stored in the variable. If more than one modifier is specified, they are applied according to this precedence list:\n\n • Variable’s case\n • Variable’s first character\n • Escape Wildcards\n • Count characters\n",
+  "set.help": "A névvel azonosított változóban megadott értéket tárolja.\n\nA névnek állandó karakterláncnak kell lennie, és meg kell felelnie a változónév mondattanának. A változó nevek nem különböztetik a kis- és nagybetűket.\n\nA módosítókat a változóban való tárolás előtt alkalmazzák. Ha egynél több módosító van megadva, akkor ezeket az elsőbbségi lista szerint alkalmazzák:\n\n • A változó esete\n • A változó első karaktere\n • Menekülési helyettesítő karakterek\n • Számolja a karaktereket",
   "set.summary": "${variable} változó beállítása ${value} értékre",
   "ereject.tab.home": "Reject",
   "ereject.tab.help": "Súgó",

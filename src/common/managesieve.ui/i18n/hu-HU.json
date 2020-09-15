@@ -128,7 +128,7 @@
   "script.create.name": "Új parancsfájl neve",
   "script.create.accept": "Létrehozás",
   "script.delete.title": "Parancsfájl törlése",
-  "script.delete.description1": "Are you sure you want to delete the script",
+  "script.delete.description1": "Biztos, hogy törölni szeretné a parancsfájlt:",
   "script.delete.description2": "?",
   "script.delete.description3": "A művelet nem vonható vissza.",
   "script.delete.accept": "Törlés",

@@ -130,7 +130,7 @@
   "set.first.text": "Only the first character’s case is changed, the rest of the string is unchanged.",
   "set.first.upper": "upper case",
   "set.first.lower": "lower case",
-  "set.help": "Stores the specified value in the variable identified by name.\n\nThe name has to be a constant string and conform to the syntax of variable-name. Variable names are case insensitive.\n\nModifiers are applied before it is stored in the variable. If more than one modifier is specified, they are applied according to this precedence list:\n\n • Variable’s case\n • Variable’s first character\n • Escape Wildcards\n • Count characters\n",
+  "set.help": "Stores the specified value in the variable identified by name.\n\nThe name has to be a constant string and conform to the syntax of variable-name. Variable names are case insensitive.\n\nModifiers are applied before it is stored in the variable. If more than one modifier is specified, they are applied according to this precedence list:\n\n • Variable’s case\n • Variable’s first character\n • Escape Wildcards\n • Count characters",
   "set.summary": "Set variable ${variable} to ${value}",
   "ereject.tab.home": "Reject",
   "ereject.tab.help": "Help",

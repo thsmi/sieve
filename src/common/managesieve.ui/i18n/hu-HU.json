@@ -72,7 +72,7 @@
   "credentials.sasl.none": "Nincs hitelesítés",
   "credentials.username": "Felhasználónév",
   "credentials.forget": "Mentett jelszó törlése",
-  "credentials.authorization1": "A meghatalmazott engedélyezése lehetővé teszi egy hitelesített felhasználó számára, hogy más felhasználók nevében járjon el. A kiszolgálók általában csak speciális emelt szintű rendszergazdai vagy gyökér fiókok számára biztosítják ezt a funkciót.",
+  "credentials.authorization1": "A meghatalmazott engedélyezése lehetővé teszi egy hitelesített felhasználó számára, hogy más felhasználók nevében járjon el. A kiszolgálók általában csak különleges emelt szintű rendszergazdai vagy gyökér fiókok számára biztosítják ezt a funkciót.",
   "credentials.authorization2": "Ne feledje, hogy nagyon kevés hitelesítési mechanizmus támogatja az engedélyezést. Ezért mindig kényszerítenie kell a SASL sima hitelesítés használatát, amikor ezt a funkciót használja.",
   "credentials.authorization": "Engedélyezés",
   "credentials.authorization.implicit": "Beleértett, kiszolgáló dönt (alapértelmezett)",

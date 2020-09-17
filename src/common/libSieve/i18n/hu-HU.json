@@ -100,7 +100,7 @@
   "servermetadataexists.tab.help": "Súgó",
   "servermetadataexists.annotations": "A kiszolgáló rendelkezik az összes alábbi széljegyzetetekkel:",
   "servermetadataexists.help": "Postaláda széljegyzetek ellenőrzése\n\nAz ellenőrzés akkor igaz, ha a széljegyzetekben felsorolt ​​összes kiszolgáló széljegyzetek létezik (azaz nem üres értékekkel rendelkezik).",
-  "servermetadataexists.summary": "The server supports all annotations ${annotations}",
+  "servermetadataexists.summary": "A kiszolgáló támogatja az összes széljegyzetek ${annotations}",
   "servermetadata.tab.home": "Server Meta Data",
   "servermetadata.tab.advanced": "Haladó",
   "servermetadata.tab.help": "Súgó",

@@ -11,7 +11,7 @@
 
 const { src, dest, watch, parallel, series } = require('gulp');
 const { existsSync } = require('fs');
-const { readFile, chmod } = require('fs').promises;
+const { readFile, chmod, unlink } = require('fs').promises;
 
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
@@ -524,22 +524,25 @@ async function packageAppImage() {
 
 /**
  * Zip the macOS electron app.
+ * On macOS we have to use zip, because yazl errors out at symbolic links.
  */
 async function zipMacOS() {
 
   const version = (await common.getPackageVersion()).join(".");
 
   const source = path.resolve(OUTPUT_DIR_APP_MACOS);
-  const destination = path.join(common.BASE_DIR_BUILD, `sieve-${version}-${MAC_PLATFORM}-${MAC_ARCH}.zip`);
+  const destination = path.resolve(path.join(common.BASE_DIR_BUILD, `sieve-${version}-${MAC_PLATFORM}-${MAC_ARCH}.zip`));
 
-  const options = {
-    permissions: {
-      "sieve": PERMISSIONS_EXECUTABLE,
-      "*": PERMISSIONS_NORMAL
-    }
-  };
+  if (existsSync(destination)) {
+    logger.info(`Deleting ${path.basename(destination)}`);
+    await unlink(destination);
+  }
 
-  await common.compress(source, destination, options);
+  logger.info(`Compressing files ${source}/sieve.app`);
+  logger.info(`Creating ${path.basename(destination)}`);
+
+  process.chdir(`${source}/`);
+  await exec(`zip -qry "${destination}" "sieve.app" 2>&1`);
 }
 
 exports["watch"] = watchSrc;

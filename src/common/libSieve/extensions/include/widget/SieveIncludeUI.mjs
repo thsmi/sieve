@@ -77,7 +77,7 @@ class SieveGlobalActionUI extends SieveActionDialogBoxUI {
     }
 
     if (variables.isEmpty()) {
-      alert("Variable list has to be non empty");
+      alert("Variable list has to be non-empty");
       return false;
     }
 

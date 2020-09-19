@@ -99,6 +99,7 @@ exports["bump-patch"] = series(
   common.bumpPatchVersion,
   parallel(
     app.updateVersion,
-    wx.updateVersion
+    wx.updateVersion,
+    common.updateVersion
   )
 );

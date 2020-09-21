@@ -194,7 +194,7 @@
       item.setAttribute("id", this.id);
       item.setAttribute("label", this.label);
 
-      if (typeof (this.accesskey) !== "undefined" || this.accesskey !== null)
+      if (typeof (this.accesskey) !== "undefined" && this.accesskey !== null)
         item.setAttribute("accesskey", this.accesskey);
 
       return item;
@@ -249,7 +249,7 @@
       item.setAttribute("label", this.label);
       item.setAttribute("class", "subviewbutton");
 
-      if (typeof (this.accesskey) !== "undefined" || this.accesskey !== null)
+      if (typeof (this.accesskey) !== "undefined" && this.accesskey !== null)
         item.setAttribute("accesskey", this.accesskey);
 
       return item;

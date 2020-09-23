@@ -20,6 +20,15 @@ class HttpRequest:
     return self.__request[1]
 
   @property
+  def path(self):
+    return self.__request[1].split("?",1)[0]
+
+  @property
+  def query(self):
+    print(self.__request[1].split("?",1))
+    return self.__request[1].split("?",1)[1]
+
+  @property
   def method(self):
     return self.__request[0]
 

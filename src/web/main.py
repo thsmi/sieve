@@ -70,14 +70,14 @@ class FileHandler:
     if request.method != "GET":
       return False
 
-    if self.resolve_filename(request.url) is None:
+    if self.resolve_filename(request.path) is None:
       return False
 
     return True
 
   def handle_request(self, context, request):
 
-    filename = self.resolve_filename(request.url)
+    filename = self.resolve_filename(request.path)
 
     if filename is None:
       raise HttpException(404, "File not found")
@@ -98,7 +98,7 @@ class WebSocketHandler:
     if request.method != "GET":
       return False
 
-    if request.url != "/websocket":
+    if request.path != "/websocket":
       return False
 
     return True

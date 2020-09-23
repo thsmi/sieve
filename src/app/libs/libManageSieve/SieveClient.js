@@ -223,10 +223,17 @@
               return;
             }
 
-            // so let's check the if the server's fingerprint matches the pinned one.
+            // so let's check the if the server's sha1 fingerprint matches the pinned one.
             if (options.fingerprints.indexOf(cert.fingerprint) !== NOT_FOUND) {
               resolve();
-              this.getLogger().logState('Socket upgraded! (Chain of Trust and pinned fingerprint)');
+              this.getLogger().logState('Socket upgraded! (Chain of Trust and pinned SHA1 fingerprint)');
+              return;
+            }
+
+            // then check the sha256 fingerprint.
+            if (options.fingerprints.indexOf(cert.fingerprint256) !== NOT_FOUND) {
+              resolve();
+              this.getLogger().logState('Socket upgraded! (Chain of Trust and pinned SHA256 fingerprint)');
               return;
             }
 
@@ -254,7 +261,15 @@
             if (options.fingerprints.indexOf(cert.fingerprint) !== NOT_FOUND) {
               resolve();
 
-              this.getLogger().logState('Socket upgraded! (Trusted Finger Print)');
+              this.getLogger().logState('Socket upgraded! (Trusted SHA1 Finger Print)');
+              return;
+            }
+
+            // Check if the fingerprint is well known...
+            if (options.fingerprints.indexOf(cert.fingerprint256) !== NOT_FOUND) {
+              resolve();
+
+              this.getLogger().logState('Socket upgraded! (Trusted SHA256 Finger Print)');
               return;
             }
           }

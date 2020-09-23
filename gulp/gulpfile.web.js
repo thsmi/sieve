@@ -125,6 +125,7 @@ function packageManageSieveUiApp() {
 
   return src([
     path.join(base, "/tabs/*.js"),
+    path.join(base, "/tabs/*.tpl"),
     path.join(base, "/utils/SieveIpcClient.js")
   ], { base: base }).pipe(dest(destination));
 }

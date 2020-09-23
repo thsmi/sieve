@@ -10,7 +10,7 @@
  */
 
 import { SieveAbstractTimer } from "./SieveAbstractTimer.mjs";
-import { setTimeout, clearTimeout } from 'timers';
+const { setTimeout, clearTimeout } = require('timers');
 
 /**
  * By default node does not inject a timer into the standard context.

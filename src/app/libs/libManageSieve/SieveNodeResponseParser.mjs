@@ -9,7 +9,7 @@
 
 
 import { SieveAbstractResponseParser } from "./SieveAbstractResponseParser.mjs";
-import { StringDecoder } from 'string_decoder';
+const { StringDecoder } = require('string_decoder');
 
 /**
  * Implements a node specific response parser

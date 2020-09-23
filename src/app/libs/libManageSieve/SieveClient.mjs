@@ -18,8 +18,8 @@ import { SieveCertValidationException } from "./SieveExceptions.mjs";
 
 import { SieveTimer } from "./SieveTimer.mjs";
 
-import net from 'net';
-import tls from 'tls';
+const net = require('net');
+const tls = require('tls');
 
 const NOT_FOUND = -1;
 

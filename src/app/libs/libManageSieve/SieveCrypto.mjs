@@ -11,7 +11,7 @@
 
 
 import { SieveAbstractCrypto } from "./SieveAbstractCrypto.mjs";
-import { createHmac, createHash } from 'crypto';
+const { createHmac, createHash } = require('crypto');
 
 /**
  * A Electron specific crypto implementation.

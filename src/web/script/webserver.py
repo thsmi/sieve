@@ -46,6 +46,7 @@ class WebServer:
         handler.handle_request(context, request)
         return
 
+      print("404 File not found "+request.url)
       raise HttpException(404, "File not found "+request.url)
 
     except HttpException as e:
@@ -81,6 +82,11 @@ class WebServer:
 
           try:
             sslclientsocket.do_handshake()
+          except ConnectionAbortedError:
+            continue
+          except OSError:
+            continue
+
           except ssl.SSLError as err:
             if err.args[1].find("sslv3 alert") == -1:
               raise

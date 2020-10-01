@@ -218,6 +218,7 @@
     constructor(secInfo) {
       super();
       this.fingerprint = secInfo.fingerprint;
+      this.fingerprint256 = secInfo.fingerprint256;
       this.error = secInfo.message;
     }
 
@@ -235,6 +236,12 @@
       this.getDialog()
         .querySelector(".sieve-dialog-fingerprint")
         .textContent = this.fingerprint;
+
+      if ((typeof(this.fingerprint256) !== "undefined") && (this.fingerprint256 !== null)) {
+        this.getDialog()
+          .querySelector(".sieve-dialog-fingerprint256")
+          .textContent = this.fingerprint256;
+      }
 
       this.getDialog()
         .querySelector(".sieve-dialog-certerror")

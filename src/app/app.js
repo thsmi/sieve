@@ -320,7 +320,12 @@
 
           const host = await accounts.getAccountById(account).getHost();
 
+          // Prefer SHA256 if available
+          if ((typeof(secInfo.fingerprint256) !== "undefined") && (secInfo.fingerprint256 !== null))
+            await host.setFingerprint(secInfo.fingerprint256);
+          else
           await host.setFingerprint(secInfo.fingerprint);
+
           await host.setIgnoreCertErrors(secInfo.code);
 
           await actions["account-connecting"](response);

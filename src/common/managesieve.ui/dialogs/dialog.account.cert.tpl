@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" data-i18n="cert.title"></h5>
@@ -8,19 +8,18 @@
         </button>
       </div>
       <div class="modal-body">
-        <p data-i18n="cert.description1"></p>
+        <b><p data-i18n="cert.description1"></p></b>
+
         <div class="alert alert-danger" role="alert">
-          <p data-i18n="cert.description2"></p>
+          <b><p class="sieve-dialog-certerror"></p></b>
 
-          <p data-i18n="cert.error"></p>
-          <p class="sieve-dialog-certerror"></p>
-
-          <p data-i18n="cert.fingerprint"></p>
-          <p class="sieve-dialog-fingerprint"></p>
+          <p class="sieve-dialog-fingerprint text-break"></p>
+          <p class="sieve-dialog-fingerprint256 text-break"></p>
 
         </div>
 
         <p data-i18n="cert.warning"></p>
+        <p data-i18n="cert.warning2"></p>
       </div>
       <div class="modal-footer">
         <button data-i18n="cert.accept" type="button" class="btn btn-danger sieve-dialog-resolve"></button>

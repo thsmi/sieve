@@ -9,7 +9,7 @@
   <div class="sieve-settings-fingerprint-item d-none">
     <div class="d-flex flex-row form-label ">
       <div style="min-width:8em" data-i18n="account.details.fingerprint"></div>
-      <div class="sieve-settings-fingerprint"></div>
+      <div class="sieve-settings-fingerprint text-break"></div>
     </div>
   </div>
   <div class="d-flex flex-row form-label ">

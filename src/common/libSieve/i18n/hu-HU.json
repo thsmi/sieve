@@ -55,9 +55,9 @@
   "addheader.position": "… és hozzáadás mint…",
   "addheader.first": "… első fejléc",
   "addheader.last": "… utolsó fejléc",
-  "addheader.help": "Adds a new header to the message. The existing message header are untouched. By default, the header field is inserted at the beginning of the existing message header.",
-  "addheader.hint": "The header name is by definition a case insensitive 7-bit ASCII string. Leading and tailing whitespace are ignored. Headers with invalid names are silently ignored.",
-  "addheader.summary": "Add header ${name} with value ${value}",
+  "addheader.help": "Új fejléc hozzáadás az üzenethez. A meglévő üzenetfejléc érintetlen. Alapértelmezés szerint a fejléc mező beillesztésre kerül a meglévő üzenetfejléc elejére.",
+  "addheader.hint": "A fejléc neve definíció szerint kis- és nagybetűk nélküli 7 bites ASCII karakterlánc. A vezető és a záró szóközöket figyelmen kívül hagyják. Az érvénytelen nevű fejléceket csendben figyelmen kívül hagyják.",
+  "addheader.summary": "${name} fejléc hozzáadása ${value} értékkel",
   "deleteheader.tab.home": "Delete Header",
   "deleteheader.tab.advanced": "Haladó",
   "deleteheader.tab.help": "Súgó",
@@ -558,9 +558,9 @@
   "notifymethodcapability.yes": "yes",
   "notifymethodcapability.yes.text": "The entity identified by the notification-uri can receive a notify notification.",
   "notifymethodcapability.no": "no",
-  "notifymethodcapability.no.text": "The entity identified by the notification-uri is currently not available to receive an immediate notification.",
+  "notifymethodcapability.no.text": "Az értesítési URI (notification-uri) által azonosított entitás jelenleg nem áll rendelkezésre azonnali értesítéshez.",
   "notifymethodcapability.maybe": "maybe",
   "notifymethodcapability.maybe.text": "A Sieve tolmács nem tudja megállapítani, hogy az értesítési uri által azonosított entitás elérhető-e vagy sem",
   "notifymethodcapability.help": "A notify_method_capability (értesítési_módszer_képességi) vizsgálatot beolvassa az adott módszer értesítési képességét és összehangolja az adott értékekkel.\n\nA képesség paraméter nem különbözteti meg a kis- és nagybetűket. Jelenleg csak egyetlen „online\" képesség van meghatározva. De a Szita értesítési kiterjesztések további képességeket is hozzáadhatnak.\n\nAz „online” képességek eredménye vagy „igen”, „nem” vagy „talán”. És leírja a sikeres szállítás valószínűségét.\n\nVegye figyelembe, hogy még az „igen” után sem garantálható, hogy mikor és mikor érkezik az értesítés. A szállítási hibák, a címzettek házirendje stb. megakadályozhatják ezt.",
-  "notifymethodcapability.summary": "Check the notification capabilities."
+  "notifymethodcapability.summary": "Ellenőrizze az értesítési képességeket."
 }

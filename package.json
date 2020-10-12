@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "devDependencies": {
-    "bootstrap": "^5.0.0-alpha1",
+    "bootstrap": "^5.0.0-alpha2",
     "codemirror": "^5.58.1",
     "electron": "^9.3.1",
     "electron-packager": "^15.1.0",

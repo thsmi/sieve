@@ -59,6 +59,8 @@ function isSuccess(status) {
  */
 async function fetch(url) {
 
+  console.log(`Fetching Url ${url}`);
+
   "use strict";
 
   logger.debug(`Fetching ${url}`);
@@ -113,7 +115,7 @@ async function fetch(url) {
  */
 async function download(url, destination) {
 
-  "use strict";
+  console.log(`Downloading Url ${url}`);
 
   logger.debug(`Downloading ${url} to ${destination}`);
 

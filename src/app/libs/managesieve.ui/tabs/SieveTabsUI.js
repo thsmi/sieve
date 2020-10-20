@@ -324,7 +324,7 @@
       tab.querySelector(".nav-link").href = `#${contentId}`;
       tab.querySelector(".siv-tab-name").textContent = name;
 
-      tab.querySelector(".close").addEventListener("click", async () => {
+      tab.querySelector(".tab-close").addEventListener("click", async () => {
         await this.close(account, name);
       });
 

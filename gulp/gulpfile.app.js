@@ -319,9 +319,6 @@ async function deployPrebuilt(electronDest, prebuiltDest, pkgName, platform, arc
   const tarballSrc = path.join(CACHE_DIR_APP,
     `keytar-${latest.tag_name}-tarball.tar.gz`);
 
-  console.log(latest.asset);
-  console.log(latest.tarball);
-
   // Then download the artifacts and tarball if needed.
   if (!existsSync(prebuiltSrc))
     await https.download(latest.asset, prebuiltSrc);
@@ -331,7 +328,7 @@ async function deployPrebuilt(electronDest, prebuiltDest, pkgName, platform, arc
 
   await mkdir(prebuiltDest, { recursive: true });
 
-  // Untar the prebuild module...
+  // Untar the prebuilt module...
   await untar(prebuiltSrc, prebuiltDest);
 
   // ... then the tarball containing the library.

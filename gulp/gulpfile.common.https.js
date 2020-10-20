@@ -59,7 +59,7 @@ function isSuccess(status) {
  */
 async function fetch(url) {
 
-  console.log(`Fetching Url ${url}`);
+  logger.debug(`Fetching ${url}`);
 
   "use strict";
 

@@ -63,8 +63,6 @@ async function fetch(url) {
 
   "use strict";
 
-  logger.debug(`Fetching ${url}`);
-
   return await new Promise((resolve, reject) => {
 
     // Github requires to have a user agents set.
@@ -84,7 +82,7 @@ async function fetch(url) {
         }
 
         if (!isSuccess(response.statusCode))
-          throw Error(`Response failed with status code ${response.statusCode}.`);
+          throw Error(`Fetching ${url} failed with status code ${response.statusCode}.`);
 
         let data = "";
 
@@ -115,8 +113,6 @@ async function fetch(url) {
  */
 async function download(url, destination) {
 
-  console.log(`Downloading Url ${url}`);
-
   logger.debug(`Downloading ${url} to ${destination}`);
 
   return await new Promise((resolve, reject) => {
@@ -139,7 +135,7 @@ async function download(url, destination) {
         }
 
         if (!isSuccess(response.statusCode))
-          throw Error(`Response failed with status code ${response.statusCode}.`);
+          throw Error(`Downloading ${url} failed with status code ${response.statusCode}.`);
 
         const file = fs.createWriteStream(destination);
 

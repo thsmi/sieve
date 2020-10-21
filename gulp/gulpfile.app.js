@@ -11,7 +11,7 @@
 
 const { src, dest, watch, parallel, series } = require('gulp');
 const { existsSync } = require('fs');
-const { readFile, chmod, unlink } = require('fs').promises;
+const { readFile, chmod, unlink, mkdir } = require('fs').promises;
 
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
@@ -36,8 +36,7 @@ const BUILD_DIR_APP_LIBS = path.join(BUILD_DIR_APP, '/libs');
 
 const KEYTAR_NAME = "keytar";
 const KEYTAR_OUTPUT_DIR = `/libs/${KEYTAR_NAME}`;
-const BASE_DIR_KEYTAR = `./node_modules/${KEYTAR_NAME}/`;
-const PREBUILT_URL_KEYTAR = `https://github.com/atom/node-keytar/releases/download`;
+const KEYTAR_RELEASE_URL = "https://api.github.com/repos/atom/node-keytar/releases";
 
 const WIN_ARCH = "x64";
 const WIN_PLATFORM = "win32";
@@ -67,13 +66,15 @@ const PERMISSIONS_NORMAL = 0o100660;
  * @param {string} destination
  *   the destination folder into which the tar should be extracted.
  */
-async function untar(filename, destination) {
+async function untar(filename, destination, filter, strip) {
 
   logger.debug(`Extracting ${filename} to ${destination}`);
 
   await tar.x({
     file: filename,
     cwd: destination,
+    filter: filter,
+    strip : strip,
     strict: true
   });
 
@@ -223,27 +224,43 @@ function packageManageSieveUi() {
   return common.packageManageSieveUi(BUILD_DIR_APP_LIBS);
 }
 
-
 /**
- * The keytar files need to go into the app/lib directory.
- * After packaging electron the you need to add the native
- * prebuilt libraries.
+ * It checks all assets from a github release for a compatible artifact.
+ * In case no compatible artifact was found an exception will be thrown.
  *
- * @returns {Stream}
- *   a stream to be consumed by gulp
+ * @param {string} url
+ *   the github repository url.
+ * @param {string} abi
+ *   the electron abi compatibility
+ * @param {string} platform
+ *   the platform (e.g. win32, linux, darwin)
+ * @param {string} arch
+ *   the architecture either x86 or x64
+ *
+ * @returns {object}
+ *   the asset url and the source url wrapped into an object.
  */
-function packageKeytar() {
+async function getLatestCompatibleRelease(url, abi, platform, arch) {
 
-  return src([
-    BASE_DIR_KEYTAR + "/**",
-    // Filter out the rfc documents
-    "!" + BASE_DIR_KEYTAR + "/*.gyp",
-    "!" + BASE_DIR_KEYTAR + "/*.ts",
-    "!" + BASE_DIR_KEYTAR + "/src/**",
-    "!" + BASE_DIR_KEYTAR + "/build/**",
-    "!" + BASE_DIR_KEYTAR + "/node_modules/**"
-  ]).pipe(dest(path.join(BUILD_DIR_APP, KEYTAR_OUTPUT_DIR)));
+  const releases = await https.fetch(url);
+
+  // Find the latest compatible version.
+  for (const release of releases) {
+    for (const asset of release.assets) {
+      if (!asset.name.endsWith(`-${RUNTIME_ELECTRON}-v${abi}-${platform}-${arch}.tar.gz`))
+        continue;
+
+      return {
+        "tag_name" : release.tag_name,
+        "asset" : asset.browser_download_url,
+        "tarball" : release.tarball_url
+      };
+    }
+  }
+
+  throw new Error("No Compatible keytar release found.");
 }
+
 
 /**
  * Deploys the native prebuilt node modules into an electron application.
@@ -291,21 +308,32 @@ async function deployPrebuilt(electronDest, prebuiltDest, pkgName, platform, arc
   else
     prebuiltDest = path.join(electronDest, "/resources/app/", prebuiltDest);
 
-  const pkg = JSON.parse(
-    await readFile(path.join(prebuiltDest, '/package.json')));
+  // Now we need to find a compatible keytar releases.
+  // We just browse all available assets and check if their abi, platform and
+  // architecture is compatible
+  const latest = await getLatestCompatibleRelease(
+    KEYTAR_RELEASE_URL, abi, platform, arch);
 
-  // Step three, download the package,
+  const prebuiltSrc = path.join(CACHE_DIR_APP,
+    `keytar-${latest.tag_name}-${RUNTIME_ELECTRON}-v${abi}-${platform}-${arch}.tar.gz`);
+  const tarballSrc = path.join(CACHE_DIR_APP,
+    `keytar-${latest.tag_name}-tarball.tar.gz`);
 
-  const filename = `${pkgName}-v${pkg.version}-${RUNTIME_ELECTRON}-v${abi}-${platform}-${arch}.tar.gz`;
-  const prebuiltSrc = path.join(CACHE_DIR_APP, filename);
+  // Then download the artifacts and tarball if needed.
+  if (!existsSync(prebuiltSrc))
+    await https.download(latest.asset, prebuiltSrc);
 
-  if (!existsSync(prebuiltSrc)) {
-    const url = `${PREBUILT_URL_KEYTAR}/v${pkg.version}/${filename}`;
-    await https.download(url, prebuiltSrc);
-  }
+  if (!existsSync(tarballSrc))
+    await https.download(latest.tarball, tarballSrc);
 
-  // Step four, deploy the prebuilt.
+  await mkdir(prebuiltDest, { recursive: true });
+
+  // Untar the prebuilt module...
   await untar(prebuiltSrc, prebuiltDest);
+
+  // ... then the tarball containing the library.
+  await untar(tarballSrc, prebuiltDest,
+    (entry) => { return (/^.*\/((lib\/.*)|LICENSE.md|package.json)$/gi.test(entry)); }, 1);
 }
 
 /**
@@ -592,8 +620,7 @@ exports['package'] = series(
     packageBootstrap,
     packageLibManageSieve,
     packageLibSieve,
-    packageManageSieveUi,
-    packageKeytar
+    packageManageSieveUi
   ),
   packageSrc
 );

@@ -59,9 +59,9 @@ function isSuccess(status) {
  */
 async function fetch(url) {
 
-  "use strict";
-
   logger.debug(`Fetching ${url}`);
+
+  "use strict";
 
   return await new Promise((resolve, reject) => {
 
@@ -82,7 +82,7 @@ async function fetch(url) {
         }
 
         if (!isSuccess(response.statusCode))
-          throw Error(`Response failed with status code ${response.statusCode}.`);
+          throw Error(`Fetching ${url} failed with status code ${response.statusCode}.`);
 
         let data = "";
 
@@ -113,8 +113,6 @@ async function fetch(url) {
  */
 async function download(url, destination) {
 
-  "use strict";
-
   logger.debug(`Downloading ${url} to ${destination}`);
 
   return await new Promise((resolve, reject) => {
@@ -137,7 +135,7 @@ async function download(url, destination) {
         }
 
         if (!isSuccess(response.statusCode))
-          throw Error(`Response failed with status code ${response.statusCode}.`);
+          throw Error(`Downloading ${url} failed with status code ${response.statusCode}.`);
 
         const file = fs.createWriteStream(destination);
 

@@ -10,7 +10,7 @@ assignees: ''
 ### Prerequisites
  * [ ] Tried the most recent nightly build
  * [ ] Checked if your issue is already reported.
- * [ ] Answered all the questions in this template. 
+ * [ ] Answered all the questions in this template (Or provide a working crystal ball). 
 
 ### What happened? 
 A clear and concise description of what the bug is. 

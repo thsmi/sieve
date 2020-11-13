@@ -249,6 +249,15 @@
       while (scripts.firstChild)
         scripts.removeChild(scripts.firstChild);
 
+      if (!data.length) {
+        const elm = await (new SieveTemplate()).load(`./accounts/account.empty.html`);
+        scripts.appendChild(elm);
+
+        elm
+          .querySelector(".sieve-script-empty-create")
+          .addEventListener("click", () => { this.createScript(); });
+      }
+
       // Sort the script names by their name...
       data.sort((a, b) => {
         const scriptA = a.script.toUpperCase();

@@ -120,6 +120,10 @@
   "account.error.description" : "Failed to connect to the server",
   "account.error.accept" : "Ok",
 
+  "account.empty.title" : "It is empty here...",
+  "account.empty.description" :"... get started by creating and activating a sieve script.",
+  "account.empty.create" : "Create new Script",
+
   "password.dialog.title" : "Password Required",
   "password.dialog.description" : "Please enter the password for your Sieve account.",
   "password.dialog.account" : "Account",

@@ -1,16 +1,34 @@
 <div id="accordion">
-  <div class="card">
-    <div data-i18n="sidebar.actions" class="card-header" data-toggle="collapse" data-target="#collapseOne"></div>
-    <div class="collapse show" data-parent="#accordion" id="collapseOne">
-      <div class="card-body p-2" id="sivActions"></div>
+  <div class="accordion" id="accordionExample">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingOne">
+        <button data-i18n="sidebar.actions" class="accordion-button bg-light" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+        <div class="accordion-body" id="sivActions">
+        </div>
+      </div>
     </div>
-    <div data-i18n="sidebar.tests" class="card-header" data-toggle="collapse" data-target="#collapseTwo"></div>
-    <div class="collapse" data-parent="#accordion" id="collapseTwo">
-      <div class="card-body p-2" id="sivTests"></div>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingTwo">
+        <button data-i18n="sidebar.tests" class="accordion-button collapsed bg-light" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        </button>
+      </h2>
+      <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+        <div class="accordion-body"  id="sivTests">
+        </div>
+      </div>
     </div>
-    <div data-i18n="sidebar.operators" class="card-header" data-toggle="collapse" data-target="#collapseThree"></div>
-    <div class="collapse" data-parent="#accordion" id="collapseThree">
-      <div class="card-body p-2" id="sivOperators"></div>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingThree">
+        <button data-i18n="sidebar.operators" class="accordion-button collapsed bg-light" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+        </button>
+      </h2>
+      <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+        <div class="accordion-body" id="sivOperators">
+        </div>
+      </div>
     </div>
   </div>
 

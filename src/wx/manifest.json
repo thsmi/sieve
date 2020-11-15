@@ -1,7 +1,7 @@
 {
   "name": "Sieve",
   "description": "Manages Sieve Message Filters",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "icons": {
     "64": "libs/icons/linux.png"
   },

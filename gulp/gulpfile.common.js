@@ -26,8 +26,8 @@ const BASE_DIR_CODEMIRROR = "./node_modules/codemirror";
 const BASE_DIR_COMMON = "./src/common";
 const BASE_DIR_BUILD = "./build";
 
-const BASE_DIR_LIBSIEVE = path.join(BASE_DIR_COMMON, "libSieve");
-const BASE_DIR_MANAGESIEVEUI = path.join(BASE_DIR_COMMON, "managesieve.ui");
+const DIR_LIBSIEVE = "./libSieve";
+const DIR_MANAGESIEVEUI = "./managesieve.ui";
 
 const INDEX_MAJOR = 0;
 const INDEX_MINOR = 1;
@@ -131,6 +131,37 @@ function src2(dir, files) {
     files, { base: dir, root: dir, cwd:dir, passthrough: true });
 }
 
+function pack(sources, destination, options) {
+
+  if (!Array.isArray(sources))
+    sources = [sources];
+
+  if (!options)
+    options = {};
+
+  if (!options.transpose)
+    options.transpose = [];
+
+  if (!Array.isArray(options.transpose))
+    options.transpose = [options.transpose];
+
+  let rv;
+
+  for (const source of sources) {
+    const files = src2(source, options.files);
+
+    if (!rv)
+      rv = files;
+    else
+      rv = rv.pipe(files);
+  }
+
+  for (const transpose of options.transpose)
+    rv = rv.pipe(transpose);
+
+  return rv.pipe(dest(destination, "libSieve"));
+}
+
 /**
  * Packages the common libSieve files
  *
@@ -140,13 +171,21 @@ function src2(dir, files) {
  * @returns {Stream}
  *   a stream to be consumed by gulp
  */
-function packageLibSieve(destination) {
-  return src([
-    BASE_DIR_LIBSIEVE + "/**",
-    "!" + BASE_DIR_LIBSIEVE + "/**/rfc*.txt",
-    "!" + BASE_DIR_LIBSIEVE + "/**/tests/",
-    "!" + BASE_DIR_LIBSIEVE + "/**/tests/**"
-  ], { base: BASE_DIR_COMMON }).pipe(dest(destination));
+function packageLibSieve(destination, transpose) {
+  const options = {
+    files: [
+      "./**",
+      "!./**/rfc*.txt",
+      "!./**/tests/",
+      "!./**/tests/**"
+    ],
+    transpose : transpose
+  };
+
+  return pack(
+    path.join(BASE_DIR_COMMON, DIR_LIBSIEVE),
+    path.join(destination, DIR_LIBSIEVE),
+    options);
 }
 
 /**
@@ -158,10 +197,13 @@ function packageLibSieve(destination) {
  * @returns {Stream}
  *   a stream to be consumed by gulp
  */
-function packageManageSieveUi(destination) {
-  return src([
-    BASE_DIR_MANAGESIEVEUI + "/**"
-  ], { base: BASE_DIR_COMMON }).pipe(dest(destination));
+function packageManageSieveUi(destination, transpose) {
+
+  return pack(
+    path.join(BASE_DIR_COMMON, DIR_MANAGESIEVEUI),
+    path.join(destination, DIR_MANAGESIEVEUI),
+    { transpose : transpose }
+  );
 }
 
 /**
@@ -401,7 +443,12 @@ exports["bumpPatchVersion"] = bumpPatchVersion;
 
 exports["updateVersion"] = updateVersion;
 
+exports["pack"] = pack;
+
 exports["BASE_DIR_BUILD"] = BASE_DIR_BUILD;
 exports["BASE_DIR_COMMON"] = BASE_DIR_COMMON;
+
+exports["DIR_LIBSIEVE"] = DIR_LIBSIEVE;
+exports["DIR_MANAGESIEVEUI"] = DIR_MANAGESIEVEUI;
 
 exports["src2"] = src2;

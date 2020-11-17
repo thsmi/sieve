@@ -8,36 +8,26 @@
  *
  */
 
-(function (exports) {
+const ASCII = 36;
+const SEED_OFFSET = 2;
+const SEED_LENGTH = 16;
+/**
+ * Generates a poor mans unique id.
+ * It simply combines the current time with a random number.
+ * Which should be more than sufficient for us.
+ */
+class SieveUniqueId {
 
-  // Enable Strict Mode
-  "use strict";
-
-  const ASCII = 36;
-  const SEED_OFFSET = 2;
-  const SEED_LENGTH = 16;
   /**
-   * Generates a poor mans unique id.
-   * It simply combines the current time with a random number.
-   * Which should be more than sufficient for us.
+   * Creates a pseudo random alpha numerical id.
+   * @returns {string}
+   *   the generated id.
    */
-  class SieveUniqueId {
-
-    /**
-     * Creates a pseudo random alpha numerical id.
-     * @returns {string}
-     *   the generated id.
-     */
-    generate() {
-      // "" + Math.floor(Math.random() * 10000000).toString(16) + Date.now().toString(16)
-      return (new Date()).getTime().toString(ASCII)
-        + "-" + Math.random().toString(ASCII).substr(SEED_OFFSET, SEED_LENGTH);
-    }
+  generate() {
+    // "" + Math.floor(Math.random() * 10000000).toString(16) + Date.now().toString(16)
+    return (new Date()).getTime().toString(ASCII)
+      + "-" + Math.random().toString(ASCII).substr(SEED_OFFSET, SEED_LENGTH);
   }
+}
 
-  if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveUniqueId = SieveUniqueId;
-  else
-    exports.SieveUniqueId = SieveUniqueId;
-
-})(this);
+export { SieveUniqueId };

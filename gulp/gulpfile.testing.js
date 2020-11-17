@@ -52,7 +52,7 @@ function watchSrc() {
 
   watch(
     ['./src/**/*.js',
-      './src/**/*.jsm',
+      './src/**/*.mjs',
       './tests/**/*.json',
       './tests/**/*.js'],
     parallel(

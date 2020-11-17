@@ -9,35 +9,34 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+const DEFAULT_AUTHENTICATION = 0;
+const DEFAULT_AUTHORIZATION = 3;
+
+const FIRST_ELEMENT = 0;
+
+const { ipcRenderer } = require('electron');
+
+// Import the node modules into our global namespace...
+import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.js";
+import { SieveIpcClient } from "./libs/managesieve.ui/utils/SieveIpcClient.js";
+
+import {
+  SieveCertValidationException
+} from "./libs/libManageSieve/SieveExceptions.mjs";
+
+import { SieveSessions } from "./libs/libManageSieve/SieveSessions.mjs";
+
+import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccounts.js";
+
+import { SieveUpdater } from "./libs/managesieve.ui/updater/SieveUpdater.js";
+import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.js";
+
+import { SieveThunderbirdImport } from "./libs/managesieve.ui/importer/SieveThunderbirdImport.js";
+import { SieveAutoConfig } from "./libs/libManageSieve/SieveAutoConfig.mjs";
+
+import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.js";
+
 (async function () {
-
-  const DEFAULT_AUTHENTICATION = 0;
-  const DEFAULT_AUTHORIZATION = 3;
-
-  const FIRST_ELEMENT = 0;
-
-  const { ipcRenderer } = require('electron');
-
-  // Import the node modules into our global namespace...
-  const { SieveLogger } = require("./libs/managesieve.ui/utils/SieveLogger.js");
-  const { SieveIpcClient} = require("./libs/managesieve.ui/utils/SieveIpcClient.js");
-
-  const {
-    SieveCertValidationException
-  } = require("./libs/libManageSieve/SieveExceptions.js");
-
-  const { SieveSessions } = require("./libs/libManageSieve/SieveSessions.js");
-
-  const { SieveAccounts } = require("./libs/managesieve.ui/settings/logic/SieveAccounts.js");
-
-  const { SieveUpdater } = require("./libs/managesieve.ui/updater/SieveUpdater.js");
-  const { SieveTabUI } = require("./libs/managesieve.ui/tabs/SieveTabsUI.js");
-
-  const { SieveThunderbirdImport } = require("./libs/managesieve.ui/importer/SieveThunderbirdImport.js");
-  const { SieveAutoConfig } = require("./libs/libManageSieve/SieveAutoConfig.js");
-
-  const { SieveI18n } = require("./libs/managesieve.ui/utils/SieveI18n.js");
-
   const logger = SieveLogger.getInstance();
 
   // TODO remove me this file should not have any dependency to i18n
@@ -146,7 +145,7 @@
       };
     },
 
-    "settings-get-loglevel": async function() {
+    "settings-get-loglevel": async function () {
       return await accounts.getLogLevel();
     },
 
@@ -167,8 +166,8 @@
       const account = accounts.getAccountById(msg.payload.account);
 
       return {
-        "account" : await account.getSettings().getLogLevel(),
-        "global" : await accounts.getLogLevel()
+        "account": await account.getSettings().getLogLevel(),
+        "global": await accounts.getLogLevel()
       };
     },
 
@@ -196,7 +195,7 @@
       };
     },
 
-    "account-settings-forget-credentials": async function(msg) {
+    "account-settings-forget-credentials": async function (msg) {
       logger.logAction(`Forget credentials for ${msg.payload.account}`);
 
       const account = await accounts.getAccountById(msg.payload.account);
@@ -234,7 +233,7 @@
       await host.setKeepAlive(msg.payload.keepAlive);
     },
 
-    "account-import" : async function() {
+    "account-import": async function () {
       logger.logAction("Import account settings");
 
       const options = {
@@ -261,7 +260,7 @@
       await accounts.import(data);
     },
 
-    "account-export" : async function(msg) {
+    "account-export": async function (msg) {
       logger.logAction("Export account settings");
 
       const host = await accounts.getAccountById(msg.payload.account).getHost();
@@ -314,21 +313,23 @@
           const rv = await SieveIpcClient.sendMessage(
             "accounts", "account-show-certerror", secInfo);
 
-          // save the fingerprint.
+          // Dialog was canceled we bail out.
           if (rv !== true)
             return;
 
+          // save the fingerprint and reconnect.
           const host = await accounts.getAccountById(account).getHost();
 
           // Prefer SHA256 if available
-          if ((typeof(secInfo.fingerprint256) !== "undefined") && (secInfo.fingerprint256 !== null))
+          if ((typeof (secInfo.fingerprint256) !== "undefined") && (secInfo.fingerprint256 !== null))
             await host.setFingerprint(secInfo.fingerprint256);
           else
-          await host.setFingerprint(secInfo.fingerprint);
+            await host.setFingerprint(secInfo.fingerprint);
 
           await host.setIgnoreCertErrors(secInfo.code);
 
-          await actions["account-connecting"](response);
+          await actions["account-disconnect"](response);
+          await actions["account-connect"](response);
           return;
         }
 
@@ -564,7 +565,7 @@
       return value;
     },
 
-    "get-default-preference": async(msg) => {
+    "get-default-preference": async (msg) => {
       const name = msg.payload.data;
 
       logger.logAction(`Get default value for ${name}`);
@@ -582,7 +583,7 @@
       await accounts.getAccountById(account).getEditor().setValue(name, value);
     },
 
-    "set-default-preference": async(msg) => {
+    "set-default-preference": async (msg) => {
       const name = msg.payload.key;
       const value = msg.payload.value;
 

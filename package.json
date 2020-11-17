@@ -1,6 +1,6 @@
 {
   "name": "sieve",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Configures server-side sieve email filters",
   "directories": {
     "doc": "docs",

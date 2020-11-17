@@ -9,92 +9,82 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+/* global browser */
 
-  "use strict";
+const HOST_TYPE_IMAP = 0;
+const CONFIG_HOST_TYPE = "activeHost";
 
-  /* global browser */
+import { SieveAbstractMechanism } from "./SieveAbstractMechanism.js";
+import { SieveAbstractHost } from "./SieveAbstractHost.js";
 
-  const HOST_TYPE_IMAP = 0;
-  const CONFIG_HOST_TYPE = "activeHost";
-
-  const { SieveAbstractMechanism } = require("libs/managesieve.ui/settings/SieveAbstractMechanism.js");
-  const { SieveAbstractHost } = require("libs/managesieve.ui/settings/SieveAbstractHost.js");
+/**
+ * This class loads the hostname from an IMAP account. The hostname is not
+ * cached it. This ensures that always the most recent settings are used.
+ */
+class SieveImapHost extends SieveAbstractHost {
 
   /**
-   * This class loads the hostname from an IMAP account. The hostname is not
-   * cached it. This ensures that always the most recent settings are used.
+   * @inheritdoc
    */
-  class SieveImapHost extends SieveAbstractHost {
+  async getDisplayName() {
+    return await browser.sieve.accounts.getPrettyName(this.account.getId());
+  }
 
-    /**
-     * @inheritdoc
-     */
-    async getDisplayName() {
-      return await browser.sieve.accounts.getPrettyName(this.account.getId());
-    }
+  /**
+   * @inheritdoc
+   */
+  async getHostname() {
+    return await browser.sieve.accounts.getHostname(this.account.getId());
+  }
+}
 
-    /**
-     * @inheritdoc
-     */
-    async getHostname() {
-      return await browser.sieve.accounts.getHostname(this.account.getId());
+/**
+ * A transparent wrapper needed to deal with the different
+ * host mechanism which are provided by electron and thunderbird.
+ **/
+class SieveHost extends SieveAbstractMechanism {
+
+  /**
+   * @inheritdoc
+   **/
+  getKey() {
+    return CONFIG_HOST_TYPE;
+  }
+
+  /**
+   * @inheritdoc
+   **/
+  getDefault() {
+    return HOST_TYPE_IMAP;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  hasMechanism(type) {
+    switch (type) {
+      case HOST_TYPE_IMAP:
+        return true;
+
+      default:
+        return false;
     }
   }
 
   /**
-   * A transparent wrapper needed to deal with the different
-   * host mechanism which are provided by electron and thunderbird.
-   **/
-  class SieveHost extends SieveAbstractMechanism {
+   * @inheritdoc
+   */
+  getMechanismById(type) {
 
-    /**
-     * @inheritdoc
-     **/
-    getKey() {
-      return CONFIG_HOST_TYPE;
+    switch (type) {
+
+      case HOST_TYPE_IMAP:
+      // fall through
+      default:
+        return new SieveImapHost(HOST_TYPE_IMAP, this.account);
     }
-
-    /**
-     * @inheritdoc
-     **/
-    getDefault() {
-      return HOST_TYPE_IMAP;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    hasMechanism(type) {
-      switch (type) {
-        case HOST_TYPE_IMAP:
-          return true;
-
-        default:
-          return false;
-      }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getMechanismById(type) {
-
-      switch (type) {
-
-        case HOST_TYPE_IMAP:
-        // fall through
-        default:
-          return new SieveImapHost(HOST_TYPE_IMAP, this.account);
-      }
-    }
-
   }
 
-  // Require modules need to use export.module
-  if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveHost = SieveHost;
-  else
-    exports.SieveHost = SieveHost;
+}
 
-})(this);
+export { SieveHost };

@@ -9,67 +9,56 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+const AUTHORIZATION_TYPE_USERNAME = 1;
+const CONFIG_AUTHORIZATION_TYPE = "authorization.type";
 
-  "use strict";
+import { SieveAbstractMechanism } from "./SieveAbstractMechanism.js";
+import { SieveDefaultAuthorization } from "./SieveAbstractAuthorization.js";
 
-  const AUTHORIZATION_TYPE_USERNAME = 1;
-  const CONFIG_AUTHORIZATION_TYPE = "authorization.type";
-
-  const { SieveAbstractMechanism } = require("libs/managesieve.ui/settings/SieveAbstractMechanism.js");
-  const { SieveDefaultAuthorization } = require("libs/managesieve.ui/settings/SieveAbstractAuthorization.js");
+/**
+ * Manages the authorization settings.
+ */
+class SieveAuthorization extends SieveAbstractMechanism {
 
   /**
-   * Manages the authorization settings.
-   */
-  class SieveAuthorization extends SieveAbstractMechanism {
+   * @inheritdoc
+   **/
+  getDefault() {
+    return AUTHORIZATION_TYPE_USERNAME;
+  }
 
-    /**
-     * @inheritdoc
-     **/
-    getDefault() {
-      return AUTHORIZATION_TYPE_USERNAME;
-    }
+  /**
+   * @inheritdoc
+   **/
+  getKey() {
+    return CONFIG_AUTHORIZATION_TYPE;
+  }
 
-    /**
-     * @inheritdoc
-     **/
-    getKey() {
-      return CONFIG_AUTHORIZATION_TYPE;
-    }
+  /**
+   * @inheritdoc
+   **/
+  hasMechanism(type) {
+    switch (type) {
+      case AUTHORIZATION_TYPE_USERNAME:
+        return true;
 
-    /**
-     * @inheritdoc
-     **/
-    hasMechanism(type) {
-      switch (type) {
-        case AUTHORIZATION_TYPE_USERNAME:
-          return true;
-
-        default:
-          return false;
-      }
-    }
-
-    /**
-     * @inheritdoc
-     **/
-    getMechanismById(type) {
-      switch (type) {
-        case AUTHORIZATION_TYPE_USERNAME:
-          return new SieveDefaultAuthorization(AUTHORIZATION_TYPE_USERNAME, this.account);
-
-        default:
-          throw new Error("Unknown authorization mechanism");
-      }
+      default:
+        return false;
     }
   }
 
+  /**
+   * @inheritdoc
+   **/
+  getMechanismById(type) {
+    switch (type) {
+      case AUTHORIZATION_TYPE_USERNAME:
+        return new SieveDefaultAuthorization(AUTHORIZATION_TYPE_USERNAME, this.account);
 
-  // Require modules need to use export.module
-  if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveAuthorization = SieveAuthorization;
-  else
-    exports.SieveAuthorization = SieveAuthorization;
+      default:
+        throw new Error("Unknown authorization mechanism");
+    }
+  }
+}
 
-})(this);
+export { SieveAuthorization };

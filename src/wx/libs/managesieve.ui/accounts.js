@@ -9,91 +9,102 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function () {
+import { SieveLogger } from "./utils/SieveLogger.js";
+import { SieveIpcClient } from "./utils/SieveIpcClient.js";
+import { SieveI18n } from "./utils/SieveI18n.js";
 
-  "use strict";
+import { SieveAbstractAccounts as SieveAccounts } from "./accounts/SieveAbstractAccounts.js";
+import {
+  SieveCreateScriptDialog,
+  SieveDeleteScriptDialog,
+  SieveRenameScriptDialog,
+  SieveFingerprintDialog,
+  SieveScriptBusyDialog,
+  SieveErrorDialog
+} from "./dialogs/SieveDialogUI.js";
 
-  /* global SieveAccounts */
-  /* global SieveIpcClient */
-  /* global SieveRenameScriptDialog */
-  /* global SieveCreateScriptDialog */
-  /* global SieveDeleteScriptDialog */
-  /* global SieveScriptBusyDialog */
-  /* global SieveFingerprintDialog */
-  /* global SieveLogger */
-  /* global SieveI18n */
+/**
+ * Shows a prompt which asks the user for the new script name.
+ *
+ * @returns {string}
+ *   the script name or an empty string in case the dialog was canceled.
+ */
+async function onCreateScript() {
+  return await (new SieveCreateScriptDialog()).show();
+}
 
-  /**
-   * Shows a prompt which asks the user for the new script name.
-   *
-   * @returns {string}
-   *   the script name or an empty string in case the dialog was canceled.
-   */
-  async function onCreateScript() {
-    return await (new SieveCreateScriptDialog()).show();
-  }
+/**
+ * Shows a prompt which asks the user if the script should be deleted.
+ *
+ * @param {string} name
+ *   the script name which should be deleted
+ *
+ * @returns {boolean}
+ *   true in case the script shall be deleted otherwise false.
+ */
+async function onDeleteScript(name) {
+  return await (new SieveDeleteScriptDialog(name)).show();
+}
 
-  /**
-   * Shows a prompt which asks the user if the script should be deleted.
-   *
-   * @param {string} name
-   *   the script name which should be deleted
-   *
-   * @returns {boolean}
-   *   true in case the script shall be deleted otherwise false.
-   */
-  async function onDeleteScript(name) {
-    return await (new SieveDeleteScriptDialog(name)).show();
-  }
+/**
+ * Shows a prompt which asks the user if the script should be renamed.
+ *
+ * @param {string} name
+ *   the name which should be renamed
+ *
+ * @returns {string}
+ *   the script name in case the dialog. In case the dialog was
+ *   canceled the original name otherwise the new name.
+ */
+async function onRenameScript(name) {
+  return await (new SieveRenameScriptDialog(name)).show();
+}
 
-  /**
-   * Shows a prompt which asks the user if the script should be renamed.
-   *
-   * @param {string} name
-   *   the name which should be renamed
-   *
-   * @returns {string}
-   *   the script name in case the dialog. In case the dialog was
-   *   canceled the original name otherwise the new name.
-   */
-  async function onRenameScript(name) {
-    return await (new SieveRenameScriptDialog(name)).show();
-  }
+/**
+ * Informs the user that the action can't be performed because
+ * the script is currently in use.
+ *
+ * @param {string} name
+ *   the name of the script which was busy
+ */
+async function onBusy(name) {
+  await (new SieveScriptBusyDialog(name)).show();
+}
 
-  /**
-   * Informs the user that the action can't be performed because
-   * the script is currently in use.
-   *
-   * @param {string} name
-   *   the name of the script which was busy
-   */
-  async function onBusy(name) {
-    await (new SieveScriptBusyDialog(name)).show();
-  }
+/**
+ * Informs the user about a failed certificate validation.
+ *
+ * @param {object} secInfo
+ *   the security information with more details about the validation error.
+ *
+ * @returns {boolean}
+ *   true in case the certificate should be overwritten otherwise false.
+ */
+async function onCertError(secInfo) {
+  return await (new SieveFingerprintDialog(secInfo)).show();
+}
 
-  /**
-   * Informs the user about a failed certificate validation.
-   *
-   * @param {object} secInfo
-   *   the security information with more details about the validation error.
-   *
-   * @returns {boolean}
-   *   true in case the certificate should be overwritten otherwise false.
-   */
-  async function onCertError(secInfo) {
-    return await (new SieveFingerprintDialog(secInfo)).show();
-  }
+/**
+ * Informs the user about a connection error.
+ *
+ * @param {string} message
+ *   the detailed connection error.
+ */
+async function onError(message) {
+  await (new SieveErrorDialog(message)).show();
+}
 
-  /**
-   * The main entry point for the account view
-   */
-  async function main() {
+/**
+ * The main entry point for the account view
+ */
+async function main() {
 
-    // TODO move to editor
-    /*    window.onbeforeunload = (e) => {
-      // if changed...
-      e.preventDefault();
-    };*/
+  // TODO move to editor
+  /*    window.onbeforeunload = (e) => {
+    // if changed...
+    e.preventDefault();
+  };*/
+  try {
 
     SieveLogger.getInstance().level(
       await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
@@ -113,11 +124,14 @@
       async (msg) => { await onBusy(msg.payload); });
     SieveIpcClient.setRequestHandler("accounts", "account-show-certerror",
       async (msg) => { return await onCertError(msg.payload); });
+    SieveIpcClient.setRequestHandler("accounts", "account-show-error",
+      async (msg) => { return await onError(msg.payload); });
+  } catch (ex) {
+    console.error(ex);
   }
+}
 
-  if (document.readyState !== 'loading')
-    main();
-  else
-    document.addEventListener('DOMContentLoaded', () => { main(); }, {once: true});
-
-})();
+if (document.readyState !== 'loading')
+  main();
+else
+  document.addEventListener('DOMContentLoaded', () => { main(); }, { once: true });

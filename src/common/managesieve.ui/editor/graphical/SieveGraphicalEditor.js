@@ -9,61 +9,52 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+import { SieveAbstractEditorUI } from "./../SieveAbstractEditor.js";
 
-  "use strict";
+// FIXME should use an IPC instead of talking directly to the iframe...
 
-  /* global SieveAbstractEditorUI */
-
-  // FIXME should use an IPC instead of talking directly to the iframe...
+/**
+ *
+ */
+class SieveGraphicalEditorUI extends SieveAbstractEditorUI {
 
   /**
+   * Creates a new graphical editor UI.
    *
+   * @param {SieveEditorController} controller
+   *   The controller which is assigned to this editor.
    */
-  class SieveGraphicalEditorUI extends SieveAbstractEditorUI {
-
-    /**
-     * Creates a new graphical editor UI.
-     *
-     * @param {SieveEditorController} controller
-     *   The controller which is assigned to this editor.
-     */
-    constructor(controller) {
-      super(controller);
-      this.id = "sieve-widget-editor";
-    }
-
-    /**
-     * @inheritdoc
-     */
-    async render() {
-    }
-
-    /**
-     * @inheritdoc
-     */
-    async setScript(script) {
-
-      const capabilities = await this.getController().getCapabilities();
-      // set script content...
-      document.getElementById(this.id)
-        .contentWindow
-        .setSieveScript(script, JSON.stringify(capabilities.extensions));
-    }
-
-    /**
-     * @inheritdoc
-     */
-    getScript() {
-      return document.getElementById(this.id)
-        .contentWindow
-        .getSieveScript();
-    }
+  constructor(controller) {
+    super(controller);
+    this.id = "sieve-widget-editor";
   }
 
-  if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveGraphicalEditorUI = SieveGraphicalEditorUI;
-  else
-    exports.SieveGraphicalEditorUI = SieveGraphicalEditorUI;
+  /**
+   * @inheritdoc
+   */
+  async render() {
+  }
 
-})(this);
+  /**
+   * @inheritdoc
+   */
+  async setScript(script) {
+
+    const capabilities = await this.getController().getCapabilities();
+    // set script content...
+    document.getElementById(this.id)
+      .contentWindow
+      .setSieveScript(script, JSON.stringify(capabilities.extensions));
+  }
+
+  /**
+   * @inheritdoc
+   */
+  getScript() {
+    return document.getElementById(this.id)
+      .contentWindow
+      .getSieveScript();
+  }
+}
+
+export { SieveGraphicalEditorUI };

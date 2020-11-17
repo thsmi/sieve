@@ -9,37 +9,26 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
 
-  "use strict";
+import { SieveAbstractAccount } from "./SieveAbstractAccount.js";
 
-  const { SieveAbstractAccount } = require("./SieveAbstractAccount.js");
-
-  // const SievePasswordManager = require('./utils/SievePasswordManager.js');
+/**
+ * Manages the account specific settings
+ */
+class SieveAccount extends SieveAbstractAccount {
 
   /**
-   * Manages the account specific settings
+   *
    */
-  class SieveAccount extends SieveAbstractAccount {
-
-    /**
-     *
-     */
-    getProxy() {
-      return {
-        getProxyInfo: function () {
-          return null;
-        }
-      };
-    }
-
-
+  getProxy() {
+    return {
+      getProxyInfo: function () {
+        return null;
+      }
+    };
   }
 
-  // Require modules need to use export.module
-  if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveAccount = SieveAccount;
-  else
-    exports.SieveAccount = SieveAccount;
 
-})(this);
+}
+
+export { SieveAccount };

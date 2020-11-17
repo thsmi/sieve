@@ -384,7 +384,7 @@
 
             onCommand: new ExtensionCommon.EventManager({
               context,
-              name: "sieve.session.onCommand",
+              name: "sieve.menu.onCommand",
               register: (fire) => {
 
                 const callback = async (windowsId, id) => {

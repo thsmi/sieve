@@ -9,59 +9,49 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+const CONFIG_DEBUG_ACCOUNT = "debug";
+const DEFAULT_LOG_LEVEL = 0;
 
-  "use strict";
-
-  const CONFIG_DEBUG_ACCOUNT = "debug";
-  const DEFAULT_LOG_LEVEL = 0;
+/**
+ * Manages the accounts common settings.
+ */
+class SieveAccountSettings {
 
   /**
-   * Manages the accounts common settings.
+   * Creates a new instance.
+   *
+   * @param {SieveAccount} account
+   *   a reference to the parent sieve account.
    */
-  class SieveAccountSettings {
-
-    /**
-     * Creates a new instance.
-     *
-     * @param {SieveAccount} account
-     *   a reference to the parent sieve account.
-     */
-    constructor(account) {
-      this.account = account;
-    }
-
-    /**
-     * Gets the log levels for the given account.
-     *
-     * @returns {int}
-     *  the current log level
-     */
-    async getLogLevel() {
-      return await this.account.getConfig()
-        .getInteger(CONFIG_DEBUG_ACCOUNT, DEFAULT_LOG_LEVEL);
-    }
-
-    /**
-     * Sets the log level for the given account.
-     *
-     * @param {int} level
-     *   the new log level
-     *
-     * @returns {SieveAccountSettings}
-     *   a self reference.
-     */
-    async setLogLevel(level) {
-      await this.account.getConfig().setInteger(CONFIG_DEBUG_ACCOUNT, level);
-      return this;
-    }
-
+  constructor(account) {
+    this.account = account;
   }
 
-  if (typeof (module) !== "undefined" && module && module.exports) {
-    module.exports.SieveAccountSettings = SieveAccountSettings;
-  } else {
-    exports.SieveAccountSettings = SieveAccountSettings;
+  /**
+   * Gets the log levels for the given account.
+   *
+   * @returns {int}
+   *  the current log level
+   */
+  async getLogLevel() {
+    return await this.account.getConfig()
+      .getInteger(CONFIG_DEBUG_ACCOUNT, DEFAULT_LOG_LEVEL);
   }
 
-})(this);
+  /**
+   * Sets the log level for the given account.
+   *
+   * @param {int} level
+   *   the new log level
+   *
+   * @returns {SieveAccountSettings}
+   *   a self reference.
+   */
+  async setLogLevel(level) {
+    await this.account.getConfig().setInteger(CONFIG_DEBUG_ACCOUNT, level);
+    return this;
+  }
+
+}
+
+export { SieveAccountSettings };

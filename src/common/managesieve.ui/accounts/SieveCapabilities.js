@@ -9,63 +9,54 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-(function (exports) {
+/* global bootstrap */
+import { SieveTemplate } from "./../utils/SieveTemplate.js";
 
-  "use strict";
-
-  /* global bootstrap */
-  /* global SieveTemplate */
+/**
+ * Implements a dialog which displays the accounts capabilities.
+ */
+class SieveCapabilities {
 
   /**
-   * Implements a dialog which displays the accounts capabilities.
+   * Shows the capability dialog.
+   *
+   * @param {object} capabilities
+   *   the server's capabilities.
    */
-  class SieveCapabilities {
+  async show(capabilities) {
 
-    /**
-     * Shows the capability dialog.
-     *
-     * @param {object} capabilities
-     *   the server's capabilities.
-     */
-    async show(capabilities) {
+    document.querySelector("#ctx").appendChild(
+      await (new SieveTemplate()).load("./accounts/account.capabilities.tpl"));
 
-      document.querySelector("#ctx").appendChild(
-        await (new SieveTemplate()).load("./accounts/account.capabilities.tpl"));
+    document.querySelector("#sieve-capabilities-server").textContent
+      = capabilities.implementation;
+    document.querySelector("#sieve-capabilities-version").textContent
+      = capabilities.version;
+    document.querySelector("#sieve-capabilities-sasl").textContent
+      = Object.values(capabilities.sasl).join(" ");
+    document.querySelector("#sieve-capabilities-extensions").textContent
+      = Object.keys(capabilities.extensions).join(" ");
+    document.querySelector("#sieve-capabilities-language").textContent
+      = capabilities.language;
 
-      document.querySelector("#sieve-capabilities-server").textContent
-        = capabilities.implementation;
-      document.querySelector("#sieve-capabilities-version").textContent
-        = capabilities.version;
-      document.querySelector("#sieve-capabilities-sasl").textContent
-        = Object.values(capabilities.sasl).join(" ");
-      document.querySelector("#sieve-capabilities-extensions").textContent
-        = Object.keys(capabilities.extensions).join(" ");
-      document.querySelector("#sieve-capabilities-language").textContent
-        = capabilities.language;
+    await new Promise((resolve) => {
 
-      await new Promise((resolve) => {
+      const dialog = document.querySelector('#sieve-dialog-capabilities');
 
-        const dialog = document.querySelector('#sieve-dialog-capabilities');
+      const modal = new bootstrap.Modal(dialog);
+      modal.show();
 
-        const modal = new bootstrap.Modal(dialog);
-        modal.show();
+      dialog.addEventListener("hidden.bs.modal", () => {
+        resolve();
 
-        dialog.addEventListener("hidden.bs.modal", () => {
-          resolve();
+        const elm = document.querySelector('#sieve-dialog-capabilities');
+        elm.parentNode.removeChild(elm);
 
-          const elm = document.querySelector('#sieve-dialog-capabilities');
-          elm.parentNode.removeChild(elm);
-
-          modal.dispose();
-        });
+        modal.dispose();
       });
+    });
 
-    }
   }
+}
 
-  if (typeof (module) !== "undefined" && module && module.exports)
-    module.exports.SieveCapabilities = SieveCapabilities;
-  else
-    exports.SieveCapabilities = SieveCapabilities;
-
-})(this);
+export { SieveCapabilities };

@@ -9,12 +9,12 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SieveSession } from "./SieveSession.mjs";
+import { SieveAbstractSession } from "./SieveAbstractSession.mjs";
 
 /**
  * A mozilla specific session implementation.
  */
-class SieveMozSession extends SieveSession {
+class SieveMozSession extends SieveAbstractSession {
 
   /**
    * @inheritdoc
@@ -47,6 +47,8 @@ class SieveMozSession extends SieveSession {
    */
   async connect(host, port) {
 
+    // TODO Check if this really needs an async promise executor
+    // eslint-disable-next-line no-async-promise-executor
     await new Promise(async (resolve, reject) => {
 
       try {

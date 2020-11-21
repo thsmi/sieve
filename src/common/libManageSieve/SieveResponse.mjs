@@ -728,57 +728,6 @@ class SieveSaslLoginResponse extends SieveStateFullResponse {
   }
 }
 
-const STATE_CRAMMD5_INITIATED = 0;
-const STATE_CRAMMD5_CHALLENGED = 1;
-const STATE_CRAMMD5_COMPLETED = 4;
-
-/**
- * @author Thomas Schmid
- * @author Max Dittrich
- */
-class SieveSaslCramMd5Response extends SieveStateFullResponse {
-
-  /**
-   * @inheritdoc
-   */
-  parse(parser) {
-
-    if ((this.state === STATE_CRAMMD5_INITIATED) && (parser.isString())) {
-      // The challenge is contained within a string
-      this.challenge = parser.extractString();
-      parser.extractLineBreak();
-
-      this.state = STATE_CRAMMD5_CHALLENGED;
-
-      return this;
-    }
-
-    if (this.state === STATE_CRAMMD5_CHALLENGED) {
-      // Should be either a NO, BYE or OK
-      this.state = STATE_CRAMMD5_COMPLETED;
-
-      // Invoke the parent parser to consume the rest of the message
-      super.parse(parser);
-      return this;
-    }
-
-    throw new Error(`Illegal State: ${this.state} / ${parser.getData()}`);
-  }
-
-  /**
-   * Gets the challenge returned by the server.
-   *
-   * @returns {string}
-   *   the server's challenge which needs to be answered.
-   */
-  getChallenge() {
-    if (this.state < STATE_CRAMMD5_CHALLENGED)
-      throw new Error("Illegal State, request not completed");
-
-    return this.challenge;
-  }
-}
-
 const SHA_STATE_FIRST_MESSAGE = 0;
 const SHA_STATE_FINAL_MESSAGE = 1;
 const SHA_STATE_COMPLETED = 4;
@@ -1092,7 +1041,6 @@ export {
   SieveCapabilitiesResponse,
   SieveListScriptsResponse,
   SieveSaslLoginResponse,
-  SieveSaslCramMd5Response,
   SieveGetScriptResponse,
   SieveSaslScramShaResponse
 };

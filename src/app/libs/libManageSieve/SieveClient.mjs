@@ -10,12 +10,8 @@
  */
 
 import { SieveAbstractClient } from "./SieveAbstractClient.mjs";
-import { SieveNodeResponseParser } from "./SieveNodeResponseParser.mjs";
-import { SieveNodeRequestBuilder } from "./SieveNodeRequestBuilder.mjs";
 
 import { SieveCertValidationException } from "./SieveExceptions.mjs";
-
-import { SieveTimer } from "./SieveTimer.mjs";
 
 const net = require('net');
 const tls = require('tls');
@@ -36,9 +32,6 @@ class SieveNodeClient extends SieveAbstractClient {
   constructor(logger) {
     super();
 
-    this.timeoutTimer = new SieveTimer();
-    this.idleTimer = new SieveTimer();
-
     this.tlsSocket = null;
     this._logger = logger;
     this.secure = true;
@@ -54,36 +47,8 @@ class SieveNodeClient extends SieveAbstractClient {
   /**
    * @inheritdoc
    */
-  createParser(data) {
-    return new SieveNodeResponseParser(data);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  createRequestBuilder() {
-    return new SieveNodeRequestBuilder();
-  }
-
-  /**
-   * @inheritdoc
-   */
   getLogger() {
     return this._logger;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  getTimeoutTimer() {
-    return this.timeoutTimer;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  getIdleTimer() {
-    return this.idleTimer;
   }
 
   /**
@@ -110,7 +75,7 @@ class SieveNodeClient extends SieveAbstractClient {
 
     this.socket = net.connect(this.port, this.host);
 
-    this.socket.on('data', (data) => { this.onReceive(data); });
+    this.socket.on('data', async (data) => { await this.onReceive(data); });
     this.socket.on('error', (error) => {
       // Node guarantees that close is called after error.
       if ((this.listener) && (this.listener.onError))
@@ -236,7 +201,7 @@ class SieveNodeClient extends SieveAbstractClient {
         this.tlsSocket.destroy();
       });
 
-      this.tlsSocket.on('data', (data) => { this.onReceive(data); });
+      this.tlsSocket.on('data', async (data) => { await this.onReceive(data); });
     });
   }
 
@@ -268,7 +233,7 @@ class SieveNodeClient extends SieveAbstractClient {
    * @param {object} buffer
    *   the received data.
    */
-  onReceive(buffer) {
+  async onReceive(buffer) {
 
     this.getLogger().logState(`onDataRead (${buffer.length})`);
 
@@ -278,7 +243,7 @@ class SieveNodeClient extends SieveAbstractClient {
       data[i] = buffer.readUInt8(i);
     }
 
-    super.onReceive(data);
+    await (super.onReceive(data));
   }
 
   /**

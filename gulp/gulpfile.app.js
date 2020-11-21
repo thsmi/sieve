@@ -425,9 +425,7 @@ async function packageMacOS() {
 /**
  * Updates the addons version.
  */
-// eslint-disable-next-line require-await
 async function updateVersion() {
-
   // there is no need to do anything here.
   // Electron packager will to it for us.
 }

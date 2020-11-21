@@ -35,7 +35,7 @@ const DEFAULT_LEVEL = 0;
  * The level is concerning scopes and does not differentiate between
  * warning, error and info.
  */
-class SieveAbstractLogger {
+class SieveLogger {
 
   /**
    * Creates a new instance
@@ -60,7 +60,7 @@ class SieveAbstractLogger {
    * Logs a request related information
    * @param {string} message
    *   the request status to log.
-   * @returns {SieveAbstractLogger}
+   * @returns {SieveLogger}
    *   a self reference
    */
   logRequest(message) {
@@ -71,7 +71,7 @@ class SieveAbstractLogger {
    * Logs response related information
    * @param {byte[]} data
    *   the response status to log
-   * @returns {SieveAbstractLogger}
+   * @returns {SieveLogger}
    *   a self reference
    */
   logResponse(data) {
@@ -86,7 +86,7 @@ class SieveAbstractLogger {
    * Logs state machine information.
    * @param {string} message
    *   the stat information to log.
-   * @returns {SieveAbstractLogger}
+   * @returns {SieveLogger}
    *   a self reference
    */
   logState(message) {
@@ -97,7 +97,7 @@ class SieveAbstractLogger {
    * Dumps raw stream data to the log
    * @param {string} message
    *   the stream information to log.
-   * @returns {SieveAbstractLogger}
+   * @returns {SieveLogger}
    *   a self reference
    */
   logStream(message) {
@@ -108,7 +108,7 @@ class SieveAbstractLogger {
    * Logs information about the session.
    * @param {string} message
    *   the message to log.
-   * @returns {SieveAbstractLogger}
+   * @returns {SieveLogger}
    *   a self reference
    */
   logSession(message) {
@@ -118,17 +118,21 @@ class SieveAbstractLogger {
   /**
    * Logs the given message to the browser console.
    *
-   * @abstract
-   *
    * @param {string} message
    *   The message which should be logged
    * @param {int} [level]
    *   the log level. If omitted the message will be always logged.
-   * @returns {SieveAbstractLogger}
+   * @returns {SieveLogger}
    *   a self reference
    */
   log(message, level) {
-    throw new Error(`Implement log(${message},${level})`);
+    if (!this.isLoggable(level))
+      return this;
+
+    // eslint-disable-next-line no-console
+    console.log(`[${this.getTimestamp()} ${this.prefix()}] ${message}`);
+
+    return this;
   }
 
   /**
@@ -274,4 +278,4 @@ class SieveAbstractLogger {
   }
 }
 
-export { SieveAbstractLogger };
+export { SieveLogger };

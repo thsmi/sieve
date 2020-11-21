@@ -11,15 +11,12 @@
 
 /* global browser */
 
-import { SieveSession } from "./libs/libManageSieve/SieveMozSession.mjs";
+import { SieveSession } from "./libs/libManageSieve/SieveSession.mjs";
+import { SieveCertValidationException } from "./libs/libManageSieve/SieveExceptions.mjs";
 
 import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.mjs";
 import { SieveIpcClient } from "./libs/managesieve.ui/utils/SieveIpcClient.mjs";
 import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccounts.mjs";
-
-import {
-  SieveCertValidationException
-} from "./libs/libManageSieve/SieveExceptions.mjs";
 
 
 (async function () {
@@ -262,7 +259,7 @@ import {
       try {
         await sessions.get(id).connect(hostname, `${port}`);
       } catch (ex) {
-        // TODO Check if is cert error then try to reconnect
+
         if (ex instanceof SieveCertValidationException) {
           const secInfo = ex.getSecurityInfo();
 

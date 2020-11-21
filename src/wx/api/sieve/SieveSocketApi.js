@@ -36,6 +36,12 @@
   const Cr = Components.results;
 
 
+  const HEX_PREFIX_LEN = 2;
+  const HEX_UINT16_LEN = 4;
+  const HEX_UINT32_LEN = 8;
+  const HEX_UINT48_LEN = 12;
+
+
   /**
    * A simple TCP socket implementation.
    */
@@ -564,16 +570,15 @@
              * @returns {string}
              *   return the unique id.
              */
-            // eslint-disable-next-line require-await
             async create(host, port, secure) {
 
               const socket = new SieveSocket(host, port, secure);
 
-              const id = Math.random().toString(STRING_AS_HEX).substring(2, 10)
-                + "-" + Math.random().toString(STRING_AS_HEX).substring(2, 6)
-                + "-" + Math.random().toString(STRING_AS_HEX).substring(2, 6)
-                + "-" + Math.random().toString(STRING_AS_HEX).substring(2, 6)
-                + "-" + Math.random().toString(STRING_AS_HEX).substring(2, 15);
+              const id = Math.random().toString(STRING_AS_HEX).substr(HEX_PREFIX_LEN, HEX_UINT32_LEN)
+                + "-" + Math.random().toString(STRING_AS_HEX).substr(HEX_PREFIX_LEN, HEX_UINT16_LEN)
+                + "-" + Math.random().toString(STRING_AS_HEX).substr(HEX_PREFIX_LEN, HEX_UINT16_LEN)
+                + "-" + Math.random().toString(STRING_AS_HEX).substr(HEX_PREFIX_LEN, HEX_UINT16_LEN)
+                + "-" + Math.random().toString(STRING_AS_HEX).substr(HEX_PREFIX_LEN, HEX_UINT48_LEN);
 
               sockets.set(id, socket);
 
@@ -669,7 +674,6 @@
              * @param {int} flags
              *   the override flags.
              */
-            // eslint-disable-next-line require-await
             async addCertErrorOverride(host, port, rawDER, flags) {
 
               const overrideService = Cc["@mozilla.org/security/certoverride;1"]

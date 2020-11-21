@@ -15,7 +15,7 @@ import { SieveAbstractTimer } from "./SieveAbstractTimer.mjs";
 /**
  * Uses JavaScript's setTimeout() method to implement a timer.
  */
-class SieveMozTimer extends SieveAbstractTimer {
+class SieveWebTimer extends SieveAbstractTimer {
 
 
   /**
@@ -42,4 +42,4 @@ class SieveMozTimer extends SieveAbstractTimer {
   }
 }
 
-export { SieveMozTimer as SieveTimer };
+export { SieveWebTimer as SieveTimer };

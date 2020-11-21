@@ -46,7 +46,6 @@ class SieveAbstractPrefManager {
    * @returns {object}
    *   the value or undefined in case it does not exist.
    */
-  // eslint-disable-next-line require-await
   async getValue(key) {
     throw new Error(`Implement SieveAbstractPrefManager::getValue(${key})`);
   }
@@ -62,7 +61,6 @@ class SieveAbstractPrefManager {
    * @returns {SievePrefManager}
    *   a self reference.
    */
-  // eslint-disable-next-line require-await
   async setValue(key, value) {
     throw new Error(`Implement SieveAbstractPrefManager::setValue(${key},${value})`);
   }

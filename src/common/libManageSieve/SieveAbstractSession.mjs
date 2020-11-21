@@ -15,9 +15,9 @@ import { Sieve } from "./SieveClient.mjs";
 import {
   SieveSaslPlainRequest,
   SieveSaslLoginRequest,
-  SieveSaslCramMd5Request,
   SieveSaslScramSha1Request,
   SieveSaslScramSha256Request,
+  SieveSaslScramSha512Request,
   SieveSaslExternalRequest,
 
   SieveInitRequest,
@@ -38,8 +38,7 @@ import {
   SieveClientException,
   SieveServerException,
   SieveReferralException,
-  SieveTimeOutException,
-  SieveCertValidationException
+  SieveTimeOutException
 } from "./SieveExceptions.mjs";
 
 const FIRST_ELEMENT = 0;
@@ -58,7 +57,7 @@ const SIEVE_PORT = 4190;
  * It is highly async but uses the ES6 await syntax, which makes it behave
  * like a synchronous api.
  */
-class SieveSession {
+class SieveAbstractSession {
 
   /**
    * Creates a new Session instance.
@@ -135,10 +134,15 @@ class SieveSession {
     await this.disconnect(true);
   }
 
+  /**
+   *
+   * @param {boolean} hadError
+   *   indicates if the connection was terminated due to an error.
+   */
   async onDisconnected(hadError) {
     this.getLogger().logSession(`onDisconnected: ${hadError}`);
 
-    // TODO Do ew really need this?
+    // TODO Do we really need this?
     await (this.disconnect(true));
   }
 
@@ -218,14 +222,14 @@ class SieveSession {
         case "PLAIN":
           return new SieveSaslPlainRequest();
 
-        case "CRAM-MD5":
-          return new SieveSaslCramMd5Request();
-
         case "SCRAM-SHA-1":
           return new SieveSaslScramSha1Request();
 
         case "SCRAM-SHA-256":
           return new SieveSaslScramSha256Request();
+
+        case "SCRAM-SHA-512":
+          return new SieveSaslScramSha512Request();
 
         case "EXTERNAL":
           return new SieveSaslExternalRequest();
@@ -422,7 +426,8 @@ class SieveSession {
     if (!Array.isArray(request))
       request = [request];
 
-    return await new Promise((resolve, reject) => {
+    // eslint-disable-next-line no-async-promise-executor
+    return await new Promise(async (resolve, reject) => {
 
       request[FIRST_ELEMENT].addResponseListener((response) => {
         resolve(response);
@@ -453,14 +458,14 @@ class SieveSession {
       });
 
 
-      this.getSieve().addRequest(request[FIRST_ELEMENT]);
+      await (this.getSieve().addRequest(request[FIRST_ELEMENT]));
 
       if (init)
         init();
 
       while (request.length > 1) {
         request.shift();
-        this.getSieve().addRequest(request[FIRST_ELEMENT], true);
+        await (this.getSieve().addRequest(request[FIRST_ELEMENT], true));
       }
     });
   }
@@ -790,4 +795,4 @@ class SieveSession {
 
 }
 
-export { SieveSession };
+export { SieveAbstractSession };

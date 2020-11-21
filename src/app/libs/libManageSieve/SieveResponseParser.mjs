@@ -7,23 +7,24 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SieveAbstractRequestBuilder } from "./SieveAbstractRequestBuilder.mjs";
+import { SieveAbstractResponseParser } from "./SieveAbstractResponseParser.mjs";
+const { StringDecoder } = require('string_decoder');
 
 /**
- * Realizes a Request builder which uses native node commands
+ * Implements a node specific response parser
  */
-class SieveNodeRequestBuilder extends SieveAbstractRequestBuilder {
+class SieveNodeResponseParser extends SieveAbstractResponseParser {
 
   /**
    * @inheritdoc
-   */
-  calculateByteLength(data) {
-    return Buffer.byteLength(data, 'utf8');
+   **/
+  convertToString(byteArray) {
+    return new StringDecoder('utf8').end(Buffer.from(byteArray)).toString();
   }
 
   /**
    * @inheritdoc
-   */
+   **/
   convertToBase64(decoded) {
     return Buffer.from(decoded).toString('base64');
   }
@@ -36,4 +37,4 @@ class SieveNodeRequestBuilder extends SieveAbstractRequestBuilder {
   }
 }
 
-export { SieveNodeRequestBuilder };
+export { SieveNodeResponseParser as SieveResponseParser};

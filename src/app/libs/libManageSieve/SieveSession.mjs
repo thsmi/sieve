@@ -9,12 +9,12 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SieveSession } from "./SieveSession.mjs";
+import { SieveAbstractSession } from "./SieveAbstractSession.mjs";
 
 /**
  * @inheritdoc
  */
-class SieveNodeSession extends SieveSession {
+class SieveNodeSession extends SieveAbstractSession {
 
   /**
    * @inheritdoc
@@ -28,8 +28,6 @@ class SieveNodeSession extends SieveSession {
 
     await super.startTLS(options);
   }
-
-
 
 }
 

@@ -15,9 +15,9 @@ const SIEVE_PORT_OLD = 2000;
 
 const LOG_LEVEL = 255;
 
-import { SieveLogger } from "./SieveLogger.js";
-import { Sieve } from "./SieveClient.js";
-import { SieveInitRequest } from "./SieveRequest.js";
+import { SieveLogger } from "./SieveLogger.mjs";
+import { Sieve } from "./SieveClient.mjs";
+import { SieveInitRequest } from "./SieveRequest.mjs";
 
 /**
  * Tries to detect the correct sieve port.
@@ -65,7 +65,8 @@ class SieveAutoConfig {
 
     const sieve = new Sieve(this.logger);
 
-    return await new Promise((resolve) => {
+    // eslint-disable-next-line no-async-promise-executor
+    return await new Promise(async (resolve) => {
 
       const listener = {
 
@@ -93,7 +94,7 @@ class SieveAutoConfig {
       const request = new SieveInitRequest();
       request.addErrorListener(listener.onError);
       request.addResponseListener(listener.onInitResponse);
-      sieve.addRequest(request);
+      await sieve.addRequest(request);
 
       sieve.addListener(listener);
 

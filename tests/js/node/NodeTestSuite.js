@@ -48,6 +48,8 @@
     /**
      * Initiates a connection. It waits until the sandbox signals
      * its readiness.
+     *
+     * @returns {Promise<undefined>}
      */
     async connect() {
       return await new Promise((resolve, reject) => {
@@ -120,8 +122,9 @@
 
     /**
      * Destroys the sandbox including the context.
+     *
+     * @returns {Promise<undefined>}
      */
-    // eslint-disable-next-line require-await
     async destroy() {
 
       return new Promise((resolve, reject) => {

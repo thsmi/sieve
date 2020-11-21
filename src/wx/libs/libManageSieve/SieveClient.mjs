@@ -13,10 +13,8 @@
 
 // Handle all imports..
 import { SieveAbstractClient } from "./SieveAbstractClient.mjs";
-import { SieveResponseParser } from "./SieveResponseParser.mjs";
-import { SieveRequestBuilder } from "./SieveRequestBuilder.mjs";
 
-import { SieveTimer } from "./SieveTimer.mjs";
+
 import {
   SieveCertValidationException,
   SieveClientException,
@@ -32,15 +30,12 @@ class SieveMozClient extends SieveAbstractClient {
 
   /**
    * Creates a new instance
-   * @param {SieveAbstractLogger} logger
+   * @param {SieveLogger} logger
    *   the logger which should be used.
    */
   constructor(logger) {
 
     super();
-
-    this.timeoutTimer = new SieveTimer();
-    this.idleTimer = new SieveTimer();
 
     this._logger = logger;
     this.secure = true;
@@ -69,34 +64,6 @@ class SieveMozClient extends SieveAbstractClient {
   async startTLS() {
     await super.startTLS();
     await browser.sieve.socket.startTLS(this.socket);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  getTimeoutTimer() {
-    return this.timeoutTimer;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  getIdleTimer() {
-    return this.idleTimer;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  createParser(data) {
-    return new SieveResponseParser(data);
-  }
-
-  /**
-   *  @inheritdoc
-   */
-  createRequestBuilder() {
-    return new SieveRequestBuilder();
   }
 
   /**
@@ -132,8 +99,8 @@ class SieveMozClient extends SieveAbstractClient {
       this.getLogger().logState(message);
     }, this.socket));
 
-    await (browser.sieve.socket.onData.addListener((bytes) => {
-      super.onReceive(bytes);
+    await (browser.sieve.socket.onData.addListener(async (bytes) => {
+      await super.onReceive(bytes);
     }, this.socket));
 
     await (browser.sieve.socket.onError.addListener((error) => {

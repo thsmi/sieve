@@ -9,14 +9,13 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-
 import { SieveAbstractAccountUI } from "./SieveAbstractAccountUI.js";
+
 
 /**
  * A UI renderer for a sieve account
  */
-class SieveMozAccountUI extends SieveAbstractAccountUI{
-
+class SieveMozAccountUI extends SieveAbstractAccountUI {
 }
 
 export { SieveMozAccountUI as SieveAccountUI };

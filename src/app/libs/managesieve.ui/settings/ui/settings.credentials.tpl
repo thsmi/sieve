@@ -39,12 +39,12 @@
                   href="#"></a>
                 <a class="dropdown-item" data-i18n="credentials.sasl.login" data-sieve-authentication="LOGIN"
                   href="#"></a>
-                <a class="dropdown-item" data-i18n="credentials.sasl.crammd5" data-sieve-authentication="CRAM-MD5"
-                  href="#"></a>
                 <a class="dropdown-item" data-i18n="credentials.sasl.scramsha1" data-sieve-authentication="SCRAM-SHA-1"
                   href="#"></a>
                 <a class="dropdown-item" data-i18n="credentials.sasl.scramsha256"
                   data-sieve-authentication="SCRAM-SHA-256" href="#"></a>
+                  <a class="dropdown-item" data-i18n="credentials.sasl.scramsha512"
+                  data-sieve-authentication="SCRAM-SHA-512" href="#"></a>
                 <a class="dropdown-item" data-i18n="credentials.sasl.external" data-sieve-authentication="EXTERNAL"
                   href="#"></a>
                 <div class="dropdown-divider"></div>

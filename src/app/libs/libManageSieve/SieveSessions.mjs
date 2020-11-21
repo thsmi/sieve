@@ -9,7 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SieveSession } from "./SieveNodeSession.mjs";
+import { SieveSession } from "./SieveSession.mjs";
 
 /**
  * Manages Sieve session.
@@ -18,7 +18,7 @@ import { SieveSession } from "./SieveNodeSession.mjs";
  * As the account id unique, it is typically
  * used as session id.
  */
-class SieveSessions {
+class SieveNodeSessions {
 
   /**
    * creates a new instance
@@ -156,4 +156,4 @@ class SieveSessions {
 
 }
 
-export { SieveSessions };
+export { SieveNodeSessions as SieveSessions };

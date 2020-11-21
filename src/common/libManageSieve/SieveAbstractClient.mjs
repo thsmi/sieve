@@ -24,6 +24,10 @@
  *  <p>
  */
 
+import { SieveTimer } from "./SieveTimer.mjs";
+import { SieveResponseParser } from "./SieveResponseParser.mjs";
+import { SieveRequestBuilder } from "./SieveRequestBuilder.mjs";
+
 const DEFAULT_TIMEOUT = 20000;
 const NO_IDLE = 0;
 
@@ -62,6 +66,9 @@ class SieveAbstractClient {
     this.requests = [];
 
     this.idleDelay = 0;
+
+    this.timeoutTimer = new SieveTimer();
+    this.idleTimer = new SieveTimer();
 
 
     // out of the box we support the following manage sieve commands...
@@ -130,7 +137,7 @@ class SieveAbstractClient {
 
   /**
    * Gets a reference to the current logger
-   * @returns {SieveAbstractLogger}
+   * @returns {SieveLogger}
    *   the current logger
    *
    * @abstract
@@ -259,17 +266,25 @@ class SieveAbstractClient {
   }
 
   /**
+   * Returns the timer used to track timeouts.
+   * It is guaranteed to be non null.
    *
+   * @returns {SieveTimer}
+   *   the current timeout timer
    */
   getTimeoutTimer() {
-    throw new Error("Implement getTimeoutTimer()");
+    return this.timeoutTimer;
   }
 
   /**
+   * Returns the timer used to track idle.
+   * It is guaranteed to be non null.
    *
+   * @returns {SieveTimer}
+   *   the current idle timer.
    */
   getIdleTimer() {
-    throw new Error("Implement getIdleTimer()");
+    return this.idleTimer;
   }
 
   /**
@@ -363,7 +378,7 @@ class SieveAbstractClient {
    * @returns {SieveAbstractClient}
    *   a self reference
    */
-  addRequest(request, greedy) {
+  async addRequest(request, greedy) {
 
     // Attach the global bye listener only when needed.
     if (!request.byeListener)
@@ -396,7 +411,7 @@ class SieveAbstractClient {
     if (this.requests[idx] !== request)
       return this;
 
-    this._sendRequest();
+    await this._sendRequest();
 
     return this;
   }
@@ -480,7 +495,7 @@ class SieveAbstractClient {
   }
 
   /**
-   * Called whenever a request was not responded in a reasonable timeframe.
+   * Called whenever a request was not responded in a reasonable time frame.
    * It cancel all pending requests and emits a timeout signal to the listeners.
    */
   onTimeout() {
@@ -516,26 +531,24 @@ class SieveAbstractClient {
 
   /**
    * Creates a new request parser instance
-   * @abstract
    *
    * @param {byte[]} data
    *   the data to be parsed
-   * @returns {SieveNodeResponseParser}
+   * @returns {SieveAbstractResponseParser}
    *   the request parser
    */
   createParser(data) {
-    throw new Error(`Implement SieveAbstractClient::createParser(${data})`);
+    return new SieveResponseParser(data);
   }
 
   /**
    * Creates a new response builder instance
-   * @abstract
    *
    * @returns {SieveAbstractRequestBuilder}
    *   the response builder.
    */
   createRequestBuilder() {
-    throw new Error("Implement SieveAbstractClient::createRequestBuilder");
+    return new SieveRequestBuilder();
   }
 
   /**
@@ -544,7 +557,7 @@ class SieveAbstractClient {
    * @param {byte[]} data
    *   the data received.
    */
-  onReceive(data) {
+  async onReceive(data) {
 
     if (this.getLogger().isLevelStream())
       this.getLogger().logStream(`Server -> Client [Byte Array]\n ${data}`);
@@ -579,7 +592,7 @@ class SieveAbstractClient {
       const parser = this.createParser(this.data);
 
       try {
-        requests[idx].addResponse(parser);
+        await (requests[idx].addResponse(parser));
 
         // We do some cleanup as we don't need the parsed data anymore...
         this.data = parser.getByteArray();
@@ -637,14 +650,9 @@ class SieveAbstractClient {
 
       // Are there any other requests waiting in the queue.
 
-      // TODO FIX ME should always be dispatched, to relax the main thread.
-      // But in mozilla modules we don't have access to a window object and
-      // timeouts are more complicated.
-
-      // var that = this;
-      // window.setTimeout(function () {that._sendRequest()}, 0);
-
-      this._sendRequest();
+      // This is called async in order to relax the main thread and
+      // release the receive handler early.
+      await this._sendRequest();
 
       return;
     }
@@ -662,7 +670,7 @@ class SieveAbstractClient {
   /**
    *
    */
-  _sendRequest() {
+  async _sendRequest() {
 
     let idx = 0;
     while (idx < this.requests.length) {
@@ -679,7 +687,7 @@ class SieveAbstractClient {
     // ... in case the socket is jammed...
     this.onStartTimeout();
 
-    const output = this.requests[idx].getNextRequest(this.createRequestBuilder()).getBytes();
+    const output = (await this.requests[idx].getNextRequest(this.createRequestBuilder())).getBytes();
 
     if (this.getLogger().isLevelRequest())
       this.getLogger().logRequest(`Client -> Server:\n${output}`);

@@ -131,6 +131,26 @@ function src2(dir, files) {
     files, { base: dir, root: dir, cwd:dir, passthrough: true });
 }
 
+/**
+ * Packages the given source directory into the destination directory.
+ * It optically transforms files.
+ *
+ * @param {string|string[]} sources
+ *   a list of files directories.
+ * @param {string} destination
+ *   the folder to which the source files should be copied
+ *
+ * @param {object} options
+ *   additional packaging options. Currently only files and transpose can be set.
+ *
+ *   Files is used to define files to be included or excluded.
+ *
+ *   Transpose point to a vinyl Stream.Transform or an array of Stream.Transform
+ *   object which manipulate the files while streaming.
+ *
+ * @returns {Stream}
+ *   a vinyl file stream.
+ */
 function pack(sources, destination, options) {
 
   if (!Array.isArray(sources))
@@ -168,6 +188,10 @@ function pack(sources, destination, options) {
  * @param {string} destination
  *   where to place the common libSieve files
  *
+ * @param {Stream.Transform | Stream.Transform[]} [transpose]
+ *   an optional viyl stream transformed to be called while processing
+ *   the files.
+ *
  * @returns {Stream}
  *   a stream to be consumed by gulp
  */
@@ -193,6 +217,10 @@ function packageLibSieve(destination, transpose) {
  *
  * @param {string} destination
  *   where to place the common managesieve.ui files
+ *
+ * @param {Stream.Transform | Stream.Transform[]} [transpose]
+ *   an optional viyl stream transformed to be called while processing
+ *   the files.
  *
  * @returns {Stream}
  *   a stream to be consumed by gulp

@@ -3,8 +3,6 @@
 
 (function (exports) {
 
-  "use strict";
-
   /* global BrowserTestSuite */
   /* global BrowserTestReport */
 

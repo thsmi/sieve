@@ -339,7 +339,7 @@
       return {
         "type": "SocketError",
         "status": status,
-        "message" : `Socket failed with error ${status.toString(16)}`
+        "message" : `Socket failed with error ${status.toString(STRING_AS_HEX)}`
       };
     }
 

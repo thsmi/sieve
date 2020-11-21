@@ -237,6 +237,12 @@ function packageLibManageSieve() {
   );
 }
 
+/**
+ * Packages the webextension api experiments.
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
+ */
 function packageExperiments() {
 
   return common.pack(

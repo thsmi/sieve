@@ -9,7 +9,6 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-"use strict";
 
 const CONFIG_ID_GLOBAL = "global";
 const CONFIG_KEY_LOG_LEVEL = "loglevel";

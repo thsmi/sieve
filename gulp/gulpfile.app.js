@@ -47,7 +47,7 @@ const MAC_PLATFORM = "mas";
 
 const RUNTIME_ELECTRON = "electron";
 
-const APP_IMAGE_RELEASE_URL = "https://api.github.com/repos/AppImage/AppImageKit/releases/latest";
+const APP_IMAGE_RELEASE_URL = "https://api.github.com/repos/AppImage/AppImageKit/releases";
 const APP_IMAGE_TOOL_NAME = "appimagetool-x86_64.AppImage";
 const APP_IMAGE_DIR = path.join(OUTPUT_DIR_APP, "sieve.AppDir");
 
@@ -521,18 +521,38 @@ function packageAppImageFiles() {
  */
 async function packageAppImage() {
 
-  const latest = await https.fetch(APP_IMAGE_RELEASE_URL);
+  let releases = await https.fetch(APP_IMAGE_RELEASE_URL);
+
+  if (!releases)
+    throw new Error("Could not load app image tool releases.");
+
+  releases = releases
+    .filter((a) => { return (a.tag_name.toLowerCase() !== "continuous"); });
+
+  if (!releases)
+    throw new Error("Could not detect latest app image tool version.");
+
+  const latest = releases[0];
+
+  if (!latest)
+    throw new Error("Could not detect latest app image tool version.");
 
   let url = null;
+  let tool = null;
+
   for (const asset of latest.assets) {
-    if (asset.name === APP_IMAGE_TOOL_NAME)
-      url = asset.browser_download_url;
+    if (asset.name.toLowerCase() !== APP_IMAGE_TOOL_NAME.toLowerCase())
+      continue;
+
+    url = asset.browser_download_url;
+    tool = path.resolve(path.join(
+      CACHE_DIR_APP, `appimagetool-v${latest.tag_name}.AppImage`));
+
+    break;
   }
 
-  if (!url)
+  if (!url || !tool)
     throw new Error("Could not download app image tool.");
-
-  const tool = path.resolve(path.join(CACHE_DIR_APP, `appimagetool-v${latest.name}.AppImage`));
 
   if (!existsSync(tool))
     await https.download(url, tool);

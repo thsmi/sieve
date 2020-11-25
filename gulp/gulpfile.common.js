@@ -330,12 +330,12 @@ async function compressDirectory(zip, dir, options) {
 
     let fileOptions = null;
     if (options.permissions) {
+
+      if (options.permissions["*"])
+        fileOptions = { mode: options.permissions["*"] };
+
       if (options.permissions[metaPath])
         fileOptions = { mode: options.permissions[metaPath] };
-
-      if (options.permissions["*"]) {
-        fileOptions = { mode: options.permissions["*"] };
-      }
     }
 
     zip.addFile(realPath, metaPath, fileOptions);

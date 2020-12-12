@@ -13,6 +13,7 @@
 
   /* global ExtensionCommon */
   /* global Components */
+  /* global ChromeUtils */
 
   // Input & output stream constants.
   const STREAM_BUFFERED = 0;
@@ -44,21 +45,32 @@
   const STATE_CLOSING = 3;
 
   const SOCKET_STATUS = {
+    // eslint-disable-next-line no-magic-numbers
     0x804b0003 : "resolving",
+    // eslint-disable-next-line no-magic-numbers
     0x804b000b : "resolved",
+    // eslint-disable-next-line no-magic-numbers
     0x804b0007 : "connecting",
+    // eslint-disable-next-line no-magic-numbers
     0x804b0004 : "connected",
+    // eslint-disable-next-line no-magic-numbers
     0x804b0005 : "sending",
+    // eslint-disable-next-line no-magic-numbers
     0x804b000a : "waiting",
+    // eslint-disable-next-line no-magic-numbers
     0x804b0006 : "receiving",
+    // eslint-disable-next-line no-magic-numbers
     0x804b000c : "tls handshake stated",
+    // eslint-disable-next-line no-magic-numbers
     0x804b000d : "tls handshake stopped"
   };
 
   const NS_BASE_STREAM_CLOSED = 0x80470002;
   const NS_ERROR_FAILURE = 0x80004005;
 
+  // eslint-disable-next-line no-magic-numbers
   const LOG_STATE = (1 << 2);
+  // eslint-disable-next-line no-magic-numbers
   const LOG_TRACE = (1 << 5);
 
   /**

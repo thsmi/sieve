@@ -58,7 +58,7 @@ class SieveMozSession extends SieveAbstractSession {
 
         this.on("disconnected", () => {
           this.getLogger().logState("SieveSession:connect:onDisconnected()");
-         // reject(new Error(`Server disconnected`));
+          // reject(new Error(`Server disconnected`));
         });
 
         await super.connect(host, port);

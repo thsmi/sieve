@@ -542,7 +542,7 @@ async function packageAppImage() {
     if (asset.name.toLowerCase() !== APP_IMAGE_TOOL_NAME.toLowerCase())
       continue;
 
-      url = asset.browser_download_url;
+    url = asset.browser_download_url;
     tool = path.resolve(path.join(
       CACHE_DIR_APP, `appimagetool-v${latest.tag_name}.AppImage`));
 

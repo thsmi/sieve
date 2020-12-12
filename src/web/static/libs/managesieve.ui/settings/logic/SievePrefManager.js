@@ -23,14 +23,9 @@ class SieveWebSocketPrefManager extends SieveAbstractPrefManager {
    * @inheritdoc
    */
   async getValue(key) {
+
     key = `${this.getNamespace()}.${key}`;
-
-    const pair = await browser.storage.local.get(key);
-
-    if (pair[key] === undefined)
-      return undefined;
-
-    return pair[key];
+    return await (window.localStorage.getItem(key));
   }
 
   /**
@@ -38,10 +33,8 @@ class SieveWebSocketPrefManager extends SieveAbstractPrefManager {
    */
   async setValue(key, value) {
 
-    const item = {};
-    item[`${this.getNamespace()}.${key}`] = value;
-
-    await browser.storage.local.set(item);
+    key = `${this.getNamespace()}.${key}`;
+    await (window.localStorage.setItem(key, value));
     return this;
   }
 }

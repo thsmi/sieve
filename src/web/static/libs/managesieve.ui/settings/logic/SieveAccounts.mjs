@@ -9,7 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SieveAbstractAccount } from "./SieveAbstractAccount.js";
+import { SieveAccount } from "./SieveAccount.mjs";
 import { SieveAbstractAccounts } from "./SieveAbstractAccounts.js";
 
 /**
@@ -34,10 +34,17 @@ class SieveAccounts extends SieveAbstractAccounts {
       return this;
 
     for (const item of items)
-      accounts[item.id] = new SieveAbstractAccount(item.id);
+      accounts[item.id] = new SieveAccount(item.id);
 
     this.accounts = accounts;
     return this;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async getLogLevel() {
+    return 0xFF;
   }
 
 }

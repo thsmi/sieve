@@ -11,9 +11,9 @@
 import { SievePrefManager } from './SievePrefManager.js';
 
 import { SieveAuthorization } from "./SieveAuthorization.js";
-import { SieveAuthentication } from "./SieveAuthentication.js";
-import { SieveSecurity } from "./SieveSecurity.js";
-import { SieveHost } from "./SieveHost.js";
+import { SieveAuthentication } from "./SieveAuthentication.mjs";
+import { SieveSecurity } from "./SieveSecurity.mjs";
+import { SieveHost } from "./SieveHost.mjs";
 import { SieveAccountSettings } from "./SieveAccountSettings.js";
 import { SieveEditorSettings } from "./SieveEditorSettings.js";
 
@@ -78,8 +78,8 @@ class SieveAbstractAccount {
    * @returns {SieveHost}
    *   the current host settings
    **/
-  async getHost() {
-    return await this.host.get();
+  getHost() {
+    return this.host;
   }
 
   /**
@@ -94,35 +94,13 @@ class SieveAbstractAccount {
   }
 
   /**
-   * Defines which authentication configuration is active.
-   *
-   * An account may support multiple concurrent configurations
-   * from which only one can be active.
-   *
-   * E.g using Thunderbird's account settings
-   * on user specified settings.
-   *
-   * @param {int} type
-   *   the authentication type which should be activated.
-   *
-   * @returns {SieveAbstractAccount}
-   *   a self reference
-   */
-  async setAuthentication(type) {
-    await this.authentication.setMechanism(type);
-    return this;
-  }
-
-  /**
    * Gets the authentication configuration
    *
-   * @param {int} [type]
-   *   optional the configuration type. If omitted the default type is returned.
    * @returns {SieveAbstractAuthentication}
    *   the object managing the authentication for the type.
    */
-  async getAuthentication(type) {
-    return await this.authentication.get(type);
+  getAuthentication() {
+    return this.authentication;
   }
 
   /**

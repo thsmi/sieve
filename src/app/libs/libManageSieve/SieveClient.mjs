@@ -55,6 +55,16 @@ class SieveNodeClient extends SieveAbstractClient {
   /**
    * @inheritdoc
    */
+  isSecured() {
+    if (this.tls !== null)
+      return true;
+
+    return false;
+  }
+
+  /**
+   * @inheritdoc
+   */
   createParser(data) {
     return new SieveNodeResponseParser(data);
   }

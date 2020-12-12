@@ -14,17 +14,10 @@ import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.js";
 import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.js";
 import { SieveIpcClient } from "./libs/managesieve.ui/utils/SieveIpcClient.js";
 
-import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccounts.js";
+import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccounts.mjs";
 import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.js";
 
 (async function () {
-
-  const DEFAULT_AUTHENTICATION = 0;
-  const DEFAULT_AUTHORIZATION = 3;
-
-  const FIRST_ELEMENT = 0;
-
-
 
   const logger = SieveLogger.getInstance();
 
@@ -55,8 +48,10 @@ import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.js";
       const account = msg.payload.account;
       logger.logAction(`Get display name for ${account}`);
 
-      const host = await accounts.getAccountById(account).getHost();
-      return await host.getDisplayName();
+      //TODO : FIXME
+      //const host = await accounts.getAccountById(account).getHost();
+      //return await host.getDisplayName();
+      return "me@example.com";
     },
 
     "account-get-settings": async function (msg) {
@@ -298,6 +293,7 @@ import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.js";
 
     "get-preference": async (msg) => {
 
+      debugger;
       const name = msg.payload.data;
       const account = msg.payload.account;
 
@@ -312,6 +308,8 @@ import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.js";
     },
 
     "get-default-preference": async(msg) => {
+
+      debugger;
       const name = msg.payload.data;
 
       logger.logAction(`Get default value for ${name}`);
@@ -349,6 +347,10 @@ import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.js";
    * Called as soon as the DOM is ready.
    */
   function main() {
+    // Initialize the account tab
+    document.querySelector("#accounts").src = "./libs/managesieve.ui/accounts.html";
+
+    // Then the tab ui.
     (new SieveTabUI()).init();
   }
 

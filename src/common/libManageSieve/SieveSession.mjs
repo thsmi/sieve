@@ -357,6 +357,9 @@ class SieveSession {
    */
   async startTLS(options) {
 
+    if (this.getSieve().isSecured())
+      return;
+
     if (!this.getSieve().isSecure())
       return;
 

@@ -9,24 +9,42 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-const HOST_TYPE_CUSTOM = 1;
+const CONFIG_KEEP_ALIVE_INTERVAL = "keepalive";
+// eslint-disable-next-line no-magic-numbers
+const ONE_MINUTE = 60 * 1000;
+// eslint-disable-next-line no-magic-numbers
+const FIVE_MINUTES = 5 * ONE_MINUTE;
 
-const CONFIG_HOST_TYPE = "activeHost";
-
-import { SieveAbstractMechanism } from "./SieveAbstractMechanism.js";
-import { SieveCustomHost } from "./SieveAbstractHost.js";
+import { SieveCustomHost } from "./SieveAbstractHost.mjs";
 
 /**
  * Extends the CustomHost implementation by a display name and fingerprint setting
  **/
-class SieveCustomHostEx extends SieveCustomHost {
+class SieveElectronHost extends SieveCustomHost {
 
   /**
-   * The human readable display name for this account.
-   * It can be any valid javascript string.
+   * @inheritdoc
+   **/
+  async getHostname() {
+    return await this.account.getConfig().getString("hostname", "");
+  }
+
+  /**
+   * Sets the custom hostname which shall be used.
    *
-   * @returns {string}
-   *   the display name
+   * @param {string} hostname
+   *   the hostname or ip as string.
+   *
+   * @returns {SieveElectronHost}
+   *   a self reference
+   */
+  async setHostname(hostname) {
+    await this.account.getConfig().setString("hostname", hostname);
+    return this;
+  }
+
+  /**
+   * @inheritdoc
    **/
   async getDisplayName() {
     return await this.account.getConfig().getString("host.displayName", "Unnamed Account");
@@ -42,6 +60,29 @@ class SieveCustomHostEx extends SieveCustomHost {
   async setDisplayName(value) {
     await this.account.getConfig().setString("host.displayName", value);
     return this;
+  }
+
+  /**
+   * Configures the maximum idle time after a message is send.
+   * In case the time span elapsed an keep alive message will be
+   * send to the server.
+   *
+   * @param {int} value
+   *   the maximal time in seconds. zero disables keep alive messages
+   *
+   * @returns {SieveAbstractHost}
+   *   a self reference
+   */
+  async setKeepAlive(value) {
+    await this.account.getConfig().setInteger(CONFIG_KEEP_ALIVE_INTERVAL, value);
+    return this;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async getKeepAlive() {
+    return await this.account.getConfig().getInteger(CONFIG_KEEP_ALIVE_INTERVAL, FIVE_MINUTES);
   }
 
   /**
@@ -101,49 +142,4 @@ class SieveCustomHostEx extends SieveCustomHost {
   }
 }
 
-/**
- * A transparent wrapper needed to deal with the different
- * host mechanism which are provided by electron and thunderbird.
- **/
-class SieveHost extends SieveAbstractMechanism {
-
-  /**
-   * @inheritdoc
-   **/
-  getKey() {
-    return CONFIG_HOST_TYPE;
-  }
-
-  /**
-   * @inheritdoc
-   **/
-  getDefault() {
-    return HOST_TYPE_CUSTOM;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  hasMechanism(type) {
-    switch (type) {
-      case HOST_TYPE_CUSTOM:
-        return true;
-
-      default:
-        return false;
-    }
-  }
-
-  /**
-   * @inheritdoc
-   */
-  getMechanismById(type) {
-
-    switch (type) {
-      default:
-        return new SieveCustomHostEx(HOST_TYPE_CUSTOM, this.account);
-    }
-  }
-}
-
-export { SieveHost };
+export { SieveElectronHost as SieveHost };

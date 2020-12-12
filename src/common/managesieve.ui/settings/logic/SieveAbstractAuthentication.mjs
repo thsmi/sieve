@@ -17,13 +17,10 @@ class SieveAbstractAuthentication {
   /**
    * Create a new instance.
    *
-   * @param {int} type
-   *   the accounts unique identifier.
    * @param {SieveAccount} account
    *   a reference to the parent sieve account.
    */
-  constructor(type, account) {
-    this.type = type;
+  constructor(account) {
     this.account = account;
   }
 
@@ -40,7 +37,7 @@ class SieveAbstractAuthentication {
    **/
   // eslint-disable-next-line require-await
   async getPassword() {
-    throw new Error("Implement getPassword");
+    throw new Error("Implement getPassword()");
   }
 
   /**
@@ -53,17 +50,7 @@ class SieveAbstractAuthentication {
    **/
   // eslint-disable-next-line require-await
   async getUsername() {
-    throw new Error("Implement getUsername");
-  }
-
-  /**
-   * Each authentication type has an unique identifier.
-   *
-   * @returns {int}
-   *   the identifier as int.
-   */
-  getType() {
-    return this.type;
+    throw new Error("Implement getUsername()");
   }
 }
 

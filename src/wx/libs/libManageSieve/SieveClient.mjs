@@ -62,7 +62,7 @@ class SieveMozClient extends SieveAbstractClient {
     this.binaryOutStream = null;
 
     this._logger = logger;
-    this.secure = true;
+    this._isSecured = false;
   }
 
 
@@ -121,6 +121,8 @@ class SieveMozClient extends SieveAbstractClient {
 
     const securityInfo = this.socket.securityInfo.QueryInterface(Ci.nsISSLSocketControl);
     securityInfo.StartTLS();
+
+    this._isSecured = true;
   }
 
   /**
@@ -163,7 +165,14 @@ class SieveMozClient extends SieveAbstractClient {
    * @inheritdoc
    */
   isSecure() {
-    return this.secure;
+    return true;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  isSecured() {
+    return this._isSecured;
   }
 
   /**
@@ -306,6 +315,8 @@ class SieveMozClient extends SieveAbstractClient {
     this.binaryOutStream = null;
     this.outstream = null;
     this.socket = null;
+
+    this.isSecured = false;
 
     this.getLogger().logState("Disconnected ...");
   }

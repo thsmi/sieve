@@ -48,17 +48,15 @@ class SieveAuthorization extends SieveAbstractMechanism {
     }
   }
 
+  async getMechanism() {
+    return new SieveDefaultAuthorization(AUTHORIZATION_TYPE_USERNAME, this.account);
+  }
+
   /**
    * @inheritdoc
    **/
-  getMechanismById(type) {
-    switch (type) {
-      case AUTHORIZATION_TYPE_USERNAME:
-        return new SieveDefaultAuthorization(AUTHORIZATION_TYPE_USERNAME, this.account);
-
-      default:
-        throw new Error("Unknown authorization mechanism");
-    }
+  getMechanismById() {
+    return new SieveDefaultAuthorization(AUTHORIZATION_TYPE_USERNAME, this.account);
   }
 }
 

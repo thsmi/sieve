@@ -10,11 +10,16 @@
  */
 
 
-/* global SieveAccounts */
-/* global SieveRenameScriptDialog */
-/* global SieveCreateScriptDialog */
-/* global SieveDeleteScriptDialog */
-/* global SieveScriptBusyDialog */
+
+import { SieveAccounts } from "./accounts/SieveAccounts.mjs";
+
+import {
+  SieveCreateScriptDialog,
+  SieveDeleteScriptDialog,
+  SieveRenameScriptDialog,
+  SieveScriptBusyDialog,
+  SievePasswordDialog
+} from "./dialogs/SieveDialogUI.js";
 
 import { SieveLogger } from "./utils/SieveLogger.js";
 import { SieveI18n } from "./utils/SieveI18n.js";
@@ -68,17 +73,27 @@ async function onBusy(name) {
   await (new SieveScriptBusyDialog(name)).show();
 }
 
+/**
+ * Requests the password from the user.
+ *
+ * @param {string} username
+ *   the username for which the password is requested.
+ * @param {string} account
+ *   the account's display name.
+ * @param {boolean} remember
+ *   show the "remember password" field.
+ * @returns {string}
+ *   the password as string.
+ */
+async function onAuthenticate(username, account, remember) {
+  return await (new SievePasswordDialog(username, account, { remember: remember })).show();
+}
+
 
 /**
  * The main entry point for the account view
  */
 async function main() {
-
-  // TODO move to editor
-  /*    window.onbeforeunload = (e) => {
-    // if changed...
-    e.preventDefault();
-  };*/
 
   SieveLogger.getInstance().level(
     await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
@@ -96,6 +111,9 @@ async function main() {
     async (msg) => { return await onRenameScript(msg.payload); });
   SieveIpcClient.setRequestHandler("accounts", "script-show-busy",
     async (msg) => { await onBusy(msg.payload); });
+  SieveIpcClient.setRequestHandler("accounts", "account-show-authentication",
+    async (msg) => { return await onAuthenticate(msg.payload.username, msg.payload.displayname, msg.payload.remember); });
+
 }
 
 if (document.readyState !== 'loading')

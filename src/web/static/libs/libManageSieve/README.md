@@ -24,7 +24,7 @@ It is a proxy or "man in the middle" approach. And only active during the initia
 
 4. Send capabilities to client
 
-   The SASL mechanisms are set to "SASL" "PLAIN" it is currently the only supported mechanims. And STARTTLS is removed.
+   The SASL mechanisms are set to "SASL" "PLAIN" it is currently the only supported mechanism. And STARTTLS is removed.
 
    The implementation gets a "via Websocket" appended.
 

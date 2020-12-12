@@ -75,8 +75,29 @@ class SieveWebSocketClient extends SieveAbstractClient {
   /**
    * @inheritdoc
    */
+  getTimeoutTimer() {
+    return this.timeoutTimer;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  getIdleTimer() {
+    return this.idleTimer;
+  }
+
+  /**
+   * @inheritdoc
+   */
   isSecure() {
     return this.secure;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  isSecured() {
+    return this.isSecure();
   }
 
   /**
@@ -95,17 +116,20 @@ class SieveWebSocketClient extends SieveAbstractClient {
 
     // Create the socket...
     if (secure)
-      this.socket = new WebSocket(`wss://${host}:${port}`);
+      this.socket = new WebSocket(`wss://${host}:${port}/websocket`);
     else
-      this.socket = new WebSocket(`ws://${host}:${port}`);
+      this.socket = new WebSocket(`ws://${host}:${port}/websocket`);
 
     // ... connect the event listeners.
-    this.socket.onopen = function (ev) {
+    this.socket.onopen = (ev) => {
       this.onOpen(ev);
     };
 
     this.socket.onmessage = (ev) => {
-      this.onReceive(ev.data.text());
+      const data = Array.prototype.slice.call(
+        new Uint8Array(new TextEncoder("UTF-8").encode(ev.data)));
+
+      this.onReceive(data);
     };
 
     this.socket.onerror = async (ev) => {
@@ -165,14 +189,15 @@ class SieveWebSocketClient extends SieveAbstractClient {
    */
   onSend(data) {
 
-    // Convert string into an UTF-8 array...
-    const output = Array.prototype.slice.call(
-      new Uint8Array(new TextEncoder("UTF-8").encode(data)));
+    if (this.getLogger().isLevelStream()) {
+      // Convert string into an UTF-8 array...
+      const output = Array.prototype.slice.call(
+        new Uint8Array(new TextEncoder("UTF-8").encode(data)));
 
-    if (this.getLogger().isLevelStream())
       this.getLogger().logStream(`Client -> Server [Byte Array]:\n${output}`);
+    }
 
-    this.socket.send(output);
+    this.socket.send(data);
   }
 }
 

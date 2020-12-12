@@ -107,13 +107,14 @@ class SieveWebSocketSessions {
 
     const host = await account.getHost();
     const security = await account.getSecurity();
-    const settings = await account.getSettings();
+    //const settings = await account.getSettings();
 
     const options = {
       secure: await security.isSecure(),
       sasl: await security.getMechanism(),
       keepAlive: await host.getKeepAlive(),
-      logLevel: await settings.getLogLevel()
+      // FIXME: Load dynamically.
+      logLevel: 0xFF
     };
 
     const session = new SieveSession(id, options);

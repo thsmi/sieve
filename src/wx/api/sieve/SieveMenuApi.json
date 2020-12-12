@@ -8,31 +8,36 @@
         "type": "function",
         "description": "Checks if the menu item exists.",
         "async": true,
-        "parameters": [{
-          "name": "windowId",
-          "type": "string",
-          "description" : "The unique window id"
-        },{
-          "name": "widgetId",
-          "type": "string",
-          "description" : "the widget unique id",
-          "additionalProperties" :true
-        }]
+        "parameters": [
+          {
+            "name": "windowId",
+            "type": "string",
+            "description": "The unique window id"
+          },
+          {
+            "name": "widgetId",
+            "type": "string",
+            "description": "the widget unique id",
+            "additionalProperties": true
+          }
+        ]
       },
       {
         "name": "add",
         "type": "function",
         "description": "Adds the menu item, in case it exists it will be overwritten",
         "async": true,
-        "parameters": [{
+        "parameters": [
+          {
             "name": "windowId",
             "type": "string",
-            "description" : "The unique window id"
-          },{
+            "description": "The unique window id"
+          },
+          {
             "name": "widget",
             "type": "object",
-            "description" : "the widget description",
-            "additionalProperties" :true
+            "description": "the widget description",
+            "additionalProperties": true
           }
         ]
       },
@@ -41,16 +46,19 @@
         "type": "function",
         "description": "Removes the menu item.",
         "async": true,
-        "parameters": [{
-          "name": "windowId",
-          "type": "string",
-          "description" : "The unique window id"
-        },{
-          "name": "widgetId",
-          "type": "string",
-          "description" : "the widget unique id",
-          "additionalProperties" :true
-        }]
+        "parameters": [
+          {
+            "name": "windowId",
+            "type": "string",
+            "description": "The unique window id"
+          },
+          {
+            "name": "widgetId",
+            "type": "string",
+            "description": "the widget unique id",
+            "additionalProperties": true
+          }
+        ]
       }
     ],
     "events": [

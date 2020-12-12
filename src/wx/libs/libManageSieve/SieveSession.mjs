@@ -32,14 +32,14 @@ class SieveMozSession extends SieveAbstractSession {
   /**
    * @inheritdoc
    */
-  async onDisconnected(hadError) {
+  async onDisconnected() {
 
     if (this.listeners && this.listeners.onDisconnected) {
-      await this.listeners.onDisconnected(hadError);
+      await this.listeners.onDisconnected();
       return;
     }
 
-    super.onDisconnected(hadError);
+    super.onDisconnected();
   }
 
   /**
@@ -47,17 +47,18 @@ class SieveMozSession extends SieveAbstractSession {
    */
   async connect(host, port) {
 
-    // TODO Check if this really needs an async promise executor
     // eslint-disable-next-line no-async-promise-executor
     await new Promise(async (resolve, reject) => {
 
       try {
         this.on("error", (error) => {
+          this.getLogger().logState("SieveSession:connect:onError()");
           reject(error);
         });
 
-        this.on("disconnected", (hadError) => {
-          reject(new Error(`Server disconnected ${hadError}`));
+        this.on("disconnected", () => {
+          this.getLogger().logState("SieveSession:connect:onDisconnected()");
+         // reject(new Error(`Server disconnected`));
         });
 
         await super.connect(host, port);

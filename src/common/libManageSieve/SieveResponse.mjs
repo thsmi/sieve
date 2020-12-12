@@ -323,6 +323,7 @@ class SieveCapabilitiesResponse extends SieveSimpleResponse {
    * @inheritdoc
    */
   parse(parser) {
+
     while (parser.isString()) {
       const tag = parser.extractString();
 
@@ -379,10 +380,20 @@ class SieveCapabilitiesResponse extends SieveSimpleResponse {
       }
     }
 
-    if (this.details.implementation === null)
-      throw new Error("Server did not provide an Implementation string.");
+    super.parse(parser);
 
-    return super.parse(parser);
+    // IMPLEMENTATION and SIEVE are mandatory fields in case of an OK Response
+    // But they do not exist in case of a BYE or NO.
+    if (this.hasError())
+      return this;
+
+    if (this.details.implementation === null)
+      throw new Error("Invalid capability response, no key named IMPLEMENTATION.");
+
+    if (this.details.sieve === null)
+      throw new Error("Invalid capability response, no key named SIEVE.");
+
+    return this;
   }
 
   /**

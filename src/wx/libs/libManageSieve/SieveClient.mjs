@@ -63,6 +63,9 @@ class SieveMozClient extends SieveAbstractClient {
    **/
   async startTLS() {
     await super.startTLS();
+
+    this.getLogger().logState("[SieveClient:startTLS()] Upgrading to secure socket");
+
     await browser.sieve.socket.startTLS(this.socket);
   }
 
@@ -77,27 +80,22 @@ class SieveMozClient extends SieveAbstractClient {
    * @inheritdoc
    */
   isSecure() {
-    return this.secure;
+    return true;
   }
 
   /**
    * @inheritdoc
    */
-  async connect(host, port, secure) {
+  async connect(host, port) {
     if (this.socket)
       return this;
 
     this.host = host;
     this.port = port;
-    this.secure = secure;
 
     this.getLogger().logState(`Connecting to ${this.host}:${this.port} ...`);
 
-    this.socket = await (browser.sieve.socket.create(host, port, secure));
-
-    await (browser.sieve.socket.onLog.addListener((message) => {
-      this.getLogger().logState(message);
-    }, this.socket));
+    this.socket = await (browser.sieve.socket.create(host, port, this.getLogger().level()));
 
     await (browser.sieve.socket.onData.addListener(async (bytes) => {
       await super.onReceive(bytes);
@@ -118,12 +116,8 @@ class SieveMozClient extends SieveAbstractClient {
         (async () => { await this.listener.onError(error); })();
     }, this.socket));
 
-    await (browser.sieve.socket.onClose.addListener((hadError) => {
-      super.disconnect();
-      browser.sieve.socket.destroy(this.socket);
-
-      if ((this.listener) && (this.listener.onDisconnected))
-        (async () => { await this.listener.onDisconnected(hadError); })();
+    await (browser.sieve.socket.onClose.addListener(() => {
+      this.disconnect();
     }, this.socket));
 
     await (browser.sieve.socket.connect(this.socket));
@@ -134,16 +128,25 @@ class SieveMozClient extends SieveAbstractClient {
   /**
    * @inheritdoc
    */
-  disconnect(reason) {
+  async disconnect(reason) {
 
-    super.disconnect(reason);
+    this.getLogger().logState(`[SieveClient:disconnect] Disconnecting ${this.host}:${this.port}...`);
 
-    if (!this.socket)
+    await super.disconnect(reason);
+
+    if (!this.socket) {
+      this.getLogger().logState(`[SieveClient:disconnect()] ... no valid socket`);
       return;
+    }
 
-    browser.sieve.socket.destroy(this.socket);
+    this.getLogger().logState(`[SieveClient:disconnect()] ... destroying socket...`);
+    await browser.sieve.socket.destroy(this.socket);
+    this.socket = null;
 
-    this.getLogger().logState("Disconnected ...");
+    if ((this.listener) && (this.listener.onDisconnected))
+      await this.listener.onDisconnected();
+
+    this.getLogger().logState("[SieveClient:disconnect()] ... disconnected.");
   }
 
 
@@ -154,7 +157,7 @@ class SieveMozClient extends SieveAbstractClient {
 
     // Convert string into an UTF-8 array...
     const output = Array.prototype.slice.call(
-      new Uint8Array(new TextEncoder("UTF-8").encode(data)));
+      new Uint8Array(new TextEncoder().encode(data)));
 
     if (this.getLogger().isLevelStream())
       this.getLogger().logStream(`Client -> Server [Byte Array]:\n${output}`);

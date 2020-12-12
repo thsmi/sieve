@@ -7,113 +7,131 @@
         "name": "create",
         "type": "function",
         "description": "Creates (but does not connect) a server connection",
-        "async":true,
-        "parameters":[{
-          "name": "host",
-          "type": "string",
-          "description" : "The remote's host name"
-        },{
-          "name": "port",
-          "type": "string",
-          "description" : "The remote's port"
-        }, {
-          "secure" : "secure",
-          "type" : "boolean",
-          "description" : "If true the connection can be upgraded via StartTLS"
-        }]
+        "async": true,
+        "parameters": [
+          {
+            "name": "host",
+            "type": "string",
+            "description": "The remote's host name"
+          },
+          {
+            "name": "port",
+            "type": "string",
+            "description": "The remote's port"
+          },
+          {
+            "name": "level",
+            "type": "int",
+            "description": "The log level to be used"
+          }
+        ]
       },
       {
         "name": "connect",
         "type": "function",
         "description": "Connects to a remote server.",
         "async": true,
-        "parameters": [{
-          "name": "id",
-          "type": "string",
-          "description" : "The unique socket handle"
-        }]
+        "parameters": [
+          {
+            "name": "id",
+            "type": "string",
+            "description": "The unique socket handle"
+          }
+        ]
       },
       {
         "name": "startTLS",
         "type": "function",
         "description": "Upgrades the socket to be secure. In case the upgrade fails the socket will be closed",
         "async": true,
-        "parameters": [{
-          "name": "id",
-          "description" : "The unique socket handle",
-          "type": "string"
-        }]
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The unique socket handle",
+            "type": "string"
+          }
+        ]
       },
       {
         "name": "send",
         "type": "function",
         "description": "Upgrades the socket to be secure. In case the upgrade fails the socket will be closed",
         "async": true,
-        "parameters": [{
-          "name": "id",
-          "description" : "The unique socket handle",
-          "type": "string"
-        },{
-          "name": "bytes",
-          "description" : "The unique socket handle",
-          "type": "array",
-          "items": {
-            "type": "integer"
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The unique socket handle",
+            "type": "string"
+          },
+          {
+            "name": "bytes",
+            "description": "The unique socket handle",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
           }
-        }]
+        ]
       },
       {
         "name": "isAlive",
         "type": "function",
         "description": "Checks if the socket is still alive and connected",
         "async": true,
-        "parameters": [{
-          "name": "id",
-          "description" : "The unique socket handle",
-          "type": "string"
-        }]
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The unique socket handle",
+            "type": "string"
+          }
+        ]
       },
       {
         "name": "disconnect",
         "type": "function",
         "description": "Disconnects from the remote server.",
         "async": true,
-        "parameters": [{
-          "name": "id",
-          "type": "string",
-          "description" : "the connection id"
-        }]
+        "parameters": [
+          {
+            "name": "id",
+            "type": "string",
+            "description": "the connection id"
+          }
+        ]
       },
       {
         "name": "destroy",
         "type": "function",
         "description": "Destroys the given session",
-        "async":true,
-        "parameters":[{
-          "name": "id",
-          "type": "string",
-          "description" : "The sessions unique id"
-        }]
-      },{
+        "async": true,
+        "parameters": [
+          {
+            "name": "id",
+            "type": "string",
+            "description": "The sessions unique id"
+          }
+        ]
+      },
+      {
         "name": "addCertErrorOverride",
         "type": "function",
         "description": "Adds a certificate error override for the given cert.",
         "async": true,
         "parameters": [
           {
-            "name" : "host",
-            "type" : "string",
-            "description" : "The hostname to override"
+            "name": "host",
+            "type": "string",
+            "description": "The hostname to override"
           },
           {
-            "name" : "port",
-            "type" : "string",
-            "description" : "The port to override"
+            "name": "port",
+            "type": "string",
+            "description": "The port to override"
           },
           {
             "name": "rawDER",
             "type": "array",
-            "description" : "The server's certificate",
+            "description": "The server's certificate",
             "items": {
               "type": "integer"
             }
@@ -153,14 +171,15 @@
       {
         "name": "onError",
         "type": "function",
-        "description" : "Called whenever the socket was closed unexpectedly",
-        "parameters": [ {
-          "name": "error",
-          "type": "object",
-          "description": "An object containing details about the error."
-        } ],
-        "returns": {
-        },
+        "description": "Called whenever the socket was closed unexpectedly",
+        "parameters": [
+          {
+            "name": "error",
+            "type": "object",
+            "description": "An object containing details about the error."
+          }
+        ],
+        "returns": {},
         "extraParameters": [
           {
             "name": "id",
@@ -172,37 +191,15 @@
       {
         "name": "onClose",
         "type": "function",
-        "description" : "Called after the socket was closed.",
+        "description": "Called after the socket was closed.",
         "parameters": [
           {
-            "name" : "hadError",
-            "description" : "True in case the socket was closed due to an error",
-            "type" : "boolean"
+            "name": "hadError",
+            "description": "True in case the socket was closed due to an error",
+            "type": "boolean"
           }
         ],
-        "returns": {
-        },
-        "extraParameters": [
-          {
-            "name": "id",
-            "description": "The socket's unique id",
-            "type": "string"
-          }
-        ]
-      },
-      {
-        "name": "onLog",
-        "type": "function",
-        "description" : "Called whenever a message should be logged.",
-        "parameters": [
-          {
-            "name" : "message",
-            "description" : "The message to be logged",
-            "type" : "string"
-          }
-        ],
-        "returns": {
-        },
+        "returns": {},
         "extraParameters": [
           {
             "name": "id",
@@ -211,7 +208,6 @@
           }
         ]
       }
-
     ]
   }
 ]

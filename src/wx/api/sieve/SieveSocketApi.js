@@ -15,14 +15,11 @@
   /* global Components */
 
   // Input & output stream constants.
-  const DEFAULT_FLAGS = 0;
+  const STREAM_BUFFERED = 0;
+
   const DEFAULT_SEGMENT_SIZE = 0;
   const DEFAULT_SEGMENT_COUNT = 0;
 
-  const SEGMENT_SIZE = 5000;
-  const SEGMENT_COUNT = 2;
-
-  const TRANSPORT_INSECURE = 0;
   const TRANSPORT_SECURE = 1;
 
   const NEW_TRANSPORT_API = 4;
@@ -41,6 +38,27 @@
   const HEX_UINT32_LEN = 8;
   const HEX_UINT48_LEN = 12;
 
+  const STATE_CLOSED = 0;
+  const STATE_CONNECTING = 1;
+  const STATE_OPEN = 2;
+  const STATE_CLOSING = 3;
+
+  const SOCKET_STATUS = {
+    0x804b0003 : "resolving",
+    0x804b000b : "resolved",
+    0x804b0007 : "connecting",
+    0x804b0004 : "connected",
+    0x804b0005 : "sending",
+    0x804b000a : "waiting",
+    0x804b0006 : "receiving",
+    0x804b000c : "tls handshake stated",
+    0x804b000d : "tls handshake stopped"
+  };
+
+  const NS_BASE_STREAM_CLOSED = 0x80470002;
+  const NS_ERROR_FAILURE = 0x80004005;
+
+  const LOG_STATE = (1 << 2);
 
   /**
    * A simple TCP socket implementation.
@@ -48,25 +66,38 @@
   class SieveSocket {
 
     /**
+     * Constructs a new Sieve Socket object.
+     *
+     * The constructor neither creates nor connects the socket.
+     * You need to do this by calling the corresponding functions.
      *
      * @param {string} host
      *   the host name to which to connect
      * @param {int} port
      *   the host's port
-     * @param {boolean} secure
-     *   if true a secure socket is created.
+     * @param {int} level
+     *   enable logging debug messages
      */
-    constructor(host, port, secure) {
+    constructor(host, port, level) {
       this.socket = null;
 
       this.host = host;
       this.port = parseInt(port, 10);
-      this.secure = secure;
+      this.level = parseInt(level, 10);
 
       this.outstream = null;
+      this.instream = null;
+
       this.binaryOutStream = null;
+      this.buffer = [];
+
+      this.state = STATE_CLOSED;
 
       this.handler = {};
+
+      this.thread = Cc["@mozilla.org/thread-manager;1"]
+        .getService(Ci.nsIThreadManager)
+        .mainThread;
     }
 
     /**
@@ -78,10 +109,15 @@
      *   the message to be logger.
      */
     log(message) {
-      if (!this.handler && !this.handler.onLog)
+
+      if (!(this.level & LOG_STATE))
         return;
 
       this.handler.onLog(message);
+      }
+
+      // eslint-disable-next-line no-console
+      console.log(`[${(new Date()).toISOString()}] [${this.port}] ${message}`);
     }
 
 
@@ -109,14 +145,10 @@
           .getService(Ci.nsISocketTransportService);
 
       if (transportService.createTransport.length === NEW_TRANSPORT_API)
-        return transportService.createTransport(((this.secure) ? ["starttls"] : []), this.host, this.port, proxyInfo);
+        return transportService.createTransport(["starttls"], this.host, this.port, proxyInfo);
 
-      if (transportService.createTransport.length === OLD_TRANSPORT_API) {
-        if (this.secure)
-          return transportService.createTransport(["starttls"], TRANSPORT_SECURE, this.host, this.port, proxyInfo);
-
-        return transportService.createTransport(null, TRANSPORT_INSECURE, this.host, this.port, proxyInfo);
-      }
+      if (transportService.createTransport.length === OLD_TRANSPORT_API)
+        return transportService.createTransport(["starttls"], TRANSPORT_SECURE, this.host, this.port, proxyInfo);
 
       throw new Error("Unknown Create Transport signature");
     }
@@ -128,10 +160,11 @@
      *   the optional proxy information. If omitted a proxy lookup is performed.
      */
     connect(proxy) {
-      this.log(`Connecting to ${this.host}:${this.port} ...`);
+      this.log(`[SieveSocketApi:connect()] Preparing connection to ${this.host}:${this.port}, ...`);
 
       // If we know the proxy setting, we can do a shortcut...
       if (proxy) {
+        this.log("[SieveSocketApi:connect()] ... proxy info ready.");
         this.onProxyAvailable(null, null, proxy[0], null);
         return;
       }
@@ -144,11 +177,11 @@
       // const uri = ios.newURI("x-sieve://" + this.host + ":" + this.port, null, null);
       const uri = ios.newURI(`http://${this.host}:${this.port}`, null, null);
 
-      this.log(`Connecting to ${uri.hostPort} ...`);
-
       const pps = Cc["@mozilla.org/network/protocol-proxy-service;1"]
         .getService(Ci.nsIProtocolProxyService);
       pps.asyncResolve(uri, 0, this);
+
+      this.log("[SieveSocketApi:connect()] ... waiting for proxy info.");
     }
 
     /**
@@ -170,8 +203,170 @@
      * to analyze what caused the error.
      */
     startTLS() {
-      const securityInfo = this.socket.securityInfo.QueryInterface(Ci.nsISSLSocketControl);
-      securityInfo.StartTLS();
+
+      this.log("[SieveSocketApi:startTLS()] Requesting upgrade to secure...");
+
+      if (this.state !== STATE_OPEN)
+        throw new Error("Socket not in open state");
+
+      const control = this.socket.securityInfo
+        .QueryInterface(Ci.nsISSLSocketControl);
+
+      if (!control)
+        throw new Error("Socket can not be upgraded.");
+
+      control.StartTLS();
+
+      this.log("[SieveSocketApi:startTLS()] ... done");
+    }
+
+    /**
+     * Signals a change in the transport status.
+     * We use it only to detect the point when we are connected and
+     * ready to send and receive data.
+     *
+     * @param {*} transport
+     * @param {*} status
+     * @param {*} progress
+     * @param {*} progressMax
+     */
+    // eslint-disable-next-line no-unused-vars
+    onTransportStatus(transport, status, progress, progressMax) {
+
+      this.log(`[SieveSocketApi:onTransportStatus()] Status change to `
+        + `${SOCKET_STATUS[status]} (${status.toString(STRING_AS_HEX)}) ...` );
+
+      if (status !== Ci.nsISocketTransport.STATUS_CONNECTED_TO) {
+        this.log("[SieveSocketApi:onTransportStatus()] ... ignored" );
+        return;
+      }
+
+      this.state = STATE_OPEN;
+      this.registerAsyncWait(this.instream.QueryInterface(Ci.nsIAsyncInputStream));
+
+      this.log("[SieveSocketApi:onTransportStatus()] ... socket now in open state");
+    }
+
+    /**
+     * Wait async for the input stream to have new data.
+     *
+     * @param {nsIAsyncInputStream} stream
+     *   the input stream for which should be waited.
+     */
+    registerAsyncWait(stream) {
+      this.log(`[SieveSocketApi:registerAsyncWait()] Registering async callback ...` );
+
+      if (!stream)
+        throw new Error("Invalid input stream");
+
+      if (!stream.asyncWait)
+        throw new Error("Not an async stream");
+
+      const threads = Cc["@mozilla.org/thread-manager;1"]
+        .getService(Ci.nsIThreadManager);
+
+      // this.log(threads.mainThread);
+      // this.log(threads.currentThread);
+      // this.log(threads.mainThreadEventTarget);
+
+      stream
+        .asyncWait(this, 0, 0, threads.mainThread);
+
+      this.log(`[SieveSocketApi:registerAsyncWait()] ... done` );
+    }
+
+
+    /**
+     * Analyzes if the exception is an error and if so it calls the error
+     * handler if available.
+     *
+     * @param {Error} ex
+     *   the error to be analyzed
+     */
+    onInputStreamError(ex) {
+
+      this.log(`[SieveSocketApi:onInputStreamError()] Parsing error information...`);
+      let status = NS_ERROR_FAILURE;
+
+      if (ex.result)
+        status = ex.result;
+
+      // In case we are closing the socket we expect a stream closed error...
+      if (((this.state === STATE_CLOSING) || (this.state === STATE_CLOSED)) && (status === NS_BASE_STREAM_CLOSED)) {
+        this.log(`[SieveSocketApi:onInputStreamError()] ... skipping, closing stream on a closing socket`);
+        return;
+      }
+
+      // In case is it is no error code we can skip.
+      if (!(status & 0x80000000)) {
+        this.log(`[SieveSocketApi:onInputStreamError()] ... skipping, `
+          + `${status.toString(STRING_AS_HEX)} is not an error code`);
+        return;
+      }
+
+      const error = this.getError(status);
+
+      if (this.handler && this.handler.onError) {
+        this.log(`[SieveSocketApi:onInputStreamError()] ... calling error handler ...`);
+        (async () => { this.handler.onError(error); })();
+      }
+
+      this.log(`[SieveSocketApi:onInputStreamError()] ... done`);
+      return;
+    }
+
+    /**
+     * Calls by the async wait method whenever new data is available
+     * or the stream was closed.
+     *
+     * @param {nsIAsyncInputStream} stream
+     *   the stream with the input data.
+     */
+    onInputStreamReady(stream) {
+
+      this.log(`[SieveSocketApi:onInputStreamReady()] Reading data...`);
+
+      try {
+        // Check if we have data.
+        // This will throw in case the connection was refused or closed.
+        const count = stream.available();
+
+        // Ok we got data, so let's read it.
+        const data = this.binaryInputStream.readByteArray(count);
+
+        this.log(`[SieveSocketApi:onInputStreamReady()] Reading ${count} bytes...`);
+
+        // And then make sure we get notified as soon as new data arrives.
+        this.registerAsyncWait(stream.QueryInterface(Ci.nsIAsyncInputStream));
+
+        // Now it is time to process the data.
+        if ((data.length) && (this.handler && this.handler.onData))
+          (async() => { this.handler.onData(data); })();
+
+      } catch (ex) {
+
+        this.log(`[SieveSocketApi:onInputStreamReady()] ... failed with an error...`);
+
+        // We ignore any errors after being closed
+        if (this.state === STATE_CLOSED) {
+          this.log(`[SieveSocketApi:onInputStreamReady()] ... ignoring error socket is closed`);
+          return;
+        }
+
+        this.log(`[SieveSocketApi:onInputStreamReady()] ... processing error...`);
+        this.onInputStreamError(ex);
+
+        this.log(`[SieveSocketApi:onInputStreamReady()] ... disconnecting socket...`);
+        this.disconnect();
+        this.state = STATE_CLOSED;
+
+        if (this.handler && this.handler.onError) {
+          this.log(`[SieveSocketApi:onInputStreamReady()] ... calling close handler...`);
+          (async () => { this.handler.onClose(); })();
+        }
+      }
+
+      this.log(`[SieveSocketApi:onInputStreamReady()] ... done`);
     }
 
     /**
@@ -181,7 +376,53 @@
      *   the data to be send as byte array.
      */
     send(bytes) {
-      this.binaryOutStream.writeByteArray(bytes, bytes.length);
+      this.log(`[SieveSocketApi:send()] Sending ${bytes.length} bytes...`);
+
+      if (this.state !== STATE_OPEN) {
+        this.log(`[SieveSocketApi:send()] ... error socket is not open`);
+        throw new Error("Socket not in open state");
+      }
+
+      this.buffer.push(bytes);
+
+      if (this.buffer.length) {
+        this.registerAsyncWait(
+          this.outstream.QueryInterface(Ci.nsIAsyncOutputStream));
+      }
+
+      // this.binaryOutStream.writeByteArray(bytes, bytes.length);
+
+      this.log(`[SieveSocketApi:send()] ... done`);
+    }
+
+    /**
+     * Called by the async wait method whenever a write was requested and
+     * successfully scheduled.
+     *
+     * @param {nsIAsyncOutputStream} stream
+     *   the output which cause this callback.
+     */
+    // eslint-disable-next-line no-unused-vars
+    onOutputStreamReady(stream) {
+      this.log(`[SieveSocketApi:onOutputStreamReady()] Writing data...`);
+
+      if (!this.buffer || !this.buffer.length) {
+        this.log(`[SieveSocketApi:onOutputStreamReady()] ... buffer is empty.`);
+        return;
+      }
+
+      while (this.buffer.length) {
+        const bytes = this.buffer.shift();
+
+        this.log(`[SieveSocketApi:onOutputStreamReady()] ... sending from ${bytes.length} buffer...`);
+
+        this.binaryOutStream.writeByteArray(bytes, bytes.length);
+        this.binaryOutStream.flush();
+      }
+
+      this.log(`[SieveSocketApi:onOutputStreamReady()] ... done`);
+
+      return;
     }
 
     /**
@@ -192,19 +433,30 @@
      * After disconnecting the onClose handler will be fired.
      */
     disconnect() {
-      if (!this.socket)
+
+      this.log("[SieveSocketApi:Disconnect()] Disconnecting socket..." );
+
+      if (this.state === STATE_CLOSED || this.state === STATE_CLOSING) {
+        this.log("[SieveSocketApi:Disconnect()] ... already done" );
         return;
+      }
 
-      this.binaryOutStream.close();
-      this.outstream.close();
+      this.state = STATE_CLOSING;
+
+      if (this.outstream) {
+        this.outstream.close();
+        this.outstream = null;
+      }
+
+      if (this.instream) {
+        this.instream.close();
+        this.instream = null;
+      }
+
       this.socket.close(0);
+      this.socket = 0;
 
-      this.binaryOutStream = null;
-      this.outstream = null;
-      this.socket = null;
-
-      if (this.handler && this.handler.onClose)
-        this.handler.onClose();
+      this.log("[SieveSocketApi:Disconnect()] ... done" );
     }
 
     /**
@@ -245,11 +497,6 @@
         return;
       }
 
-      if (name === "log") {
-        this.handler.onLog = callback;
-        return ;
-      }
-
       throw new Error(`Invalid event handler ${name}`);
     }
 
@@ -286,12 +533,16 @@
      *   an exception which describes the certificate error or null
      */
     getCertError() {
-      if (!this.socket || !this.socket.securityInfo)
+      this.log(`[SieveSocketApi:getCertError()] Converting cert error...`);
+
+      if (!this.socket || !this.socket.securityInfo) {
+        this.log(`[SieveSocketApi:getCertError()] ... not a secure socket`);
         return null;
+      }
 
       const secInfo = this.socket.securityInfo.QueryInterface(Ci.nsITransportSecurityInfo);
 
-      return {
+      const rv = {
         "type" : "CertValidationError",
         "host": this.host,
         "port": this.port,
@@ -306,6 +557,43 @@
         "isUntrusted": secInfo.isUntrusted
       };
 
+      this.log(`[SieveSocketApi:getCertError()] ... done`);
+      return rv;
+    }
+
+    /**
+     * Converts the status/error code into an socket error object.
+     *
+     * It load the official description if available.
+     *
+     * @param {int} status
+     *   the error code to be analyzed
+     *
+     * @returns {object}
+     *   a serializable message containing the error details.
+     */
+    getSocketError(status) {
+
+      this.log(`[SieveSocketApi:getSocketError()] Converting socket error ${status.toString(STRING_AS_HEX)}...`);
+
+      const error = {
+        "type": "SocketError",
+        "status": status,
+        "message" : `Socket failed with error ${status.toString(STRING_AS_HEX)}`
+      };
+
+      try {
+        const nssErrorsService = Cc["@mozilla.org/nss_errors_service;1"]
+          .getService(Ci.nsINSSErrorsService);
+
+        error.message = nssErrorsService.getErrorMessage(status);
+        this.log(`[SieveSocketApi:getSocketError()] ... ${error.message} ...`);
+      } catch (ex) {
+        // do nothing here
+      }
+
+      this.log(`[SieveSocketApi:getSocketError()] ... done`);
+      return error;
     }
 
     /**
@@ -323,24 +611,7 @@
       if (this.isCertError(status))
         return this.getCertError();
 
-      try {
-        const nssErrorsService = Cc["@mozilla.org/nss_errors_service;1"]
-          .getService(Ci.nsINSSErrorsService);
-
-        return {
-          "type" : "SocketError",
-          "status" : status,
-          "message" : nssErrorsService.getErrorMessage(status)
-        };
-      } catch (ex) {
-        // do nothing here
-      }
-
-      return {
-        "type": "SocketError",
-        "status": status,
-        "message" : `Socket failed with error ${status.toString(STRING_AS_HEX)}`
-      };
+      return this.getSocketError(status);
     }
 
     /**
@@ -364,111 +635,31 @@
       else
         this.log("Using Proxy: Direct");
 
-
       this.socket = this.createTransport(aProxyInfo);
 
-      const threadManager = Cc["@mozilla.org/thread-manager;1"].getService();
-      this.socket.setEventSink(this, threadManager.currentThread);
+      this.state = STATE_CONNECTING;
 
+      this.socket.setEventSink(this, this.thread);
+
+      this.instream = this.socket.openInputStream(
+        STREAM_BUFFERED, DEFAULT_SEGMENT_SIZE, DEFAULT_SEGMENT_COUNT);
       this.outstream = this.socket.openOutputStream(
-        DEFAULT_FLAGS, DEFAULT_SEGMENT_SIZE, DEFAULT_SEGMENT_COUNT);
+        STREAM_BUFFERED, DEFAULT_SEGMENT_SIZE, DEFAULT_SEGMENT_COUNT);
+
+      // this.registerAsyncWait(this.instream.QueryInterface(Ci.nsIAsyncInputStream));
+
+      this.binaryInputStream = Cc["@mozilla.org/binaryinputstream;1"]
+        .createInstance(Ci.nsIBinaryInputStream);
+      this.binaryInputStream.setInputStream(this.instream);
+
 
       this.binaryOutStream =
         Cc["@mozilla.org/binaryoutputstream;1"]
           .createInstance(Ci.nsIBinaryOutputStream);
 
       this.binaryOutStream.setOutputStream(this.outstream);
-
-      this.instream = this.socket.openInputStream(
-        DEFAULT_FLAGS, DEFAULT_SEGMENT_SIZE, DEFAULT_SEGMENT_COUNT);
-
-      const pump = Cc["@mozilla.org/network/input-stream-pump;1"]
-        .createInstance(Ci.nsIInputStreamPump);
-
-      pump.init(this.instream, SEGMENT_SIZE, SEGMENT_COUNT, true);
-
-      pump.asyncRead(this, null);
     }
 
-
-    /**
-     * Called when the connection to the remote as is ready.
-     *
-     * @param {nsIRequest} request
-     *   the request which is ready.
-     */
-    // eslint-disable-next-line no-unused-vars
-    onStartRequest(request) {
-      this.log(`Connected to ${this.host}:${this.port} ...`);
-    }
-
-    /**
-     * Called whenever the connection is terminated. And no more communication
-     * via this socket is possible.
-     *
-     * If the disconnect is planned/"graceful", the error code is zero.
-     *
-     * Otherwise the status indicates what caused this disconnect.
-     * Common issues are link loss (e.g. by switching to offline mode, when
-     * the network cable is disconnected or when the server closed the connection.)^
-     *
-     * But the socket may be also closed because of non trivial errors. E.g
-     * in case a tls upgrade failed due to an certification validation error.
-     *
-     * @param {nsIRequest} request
-     *   the request which was stopped.
-     * @param {int} status
-     *   the reason why the stop was called.
-     */
-    // eslint-disable-next-line no-unused-vars
-    onStopRequest(request, status) {
-
-      this.log(`Disconnected from  ${this.host}:${this.port} with status ${status}`);
-
-      // we can ignore this if we are already disconnected.
-      if (!this.socket)
-        return;
-
-      // Extract the error details.
-      let reason = undefined;
-
-      if (status !== Cr.NS_OK) {
-
-        reason = this.getError(status);
-
-        if (this.handler && this.handler.onError)
-          this.handler.onError(reason);
-      }
-
-      // Stop timeout timer and do the cleanup.
-      this.disconnect(reason);
-    }
-
-    /**
-     * Call as soon as data arrives and needs to be processed.
-     *
-     * @param {nsIRequest} request
-     *   the request object.
-     * @param {nsIInputStream} inputStream
-     *   the input stream containing the data chunks
-     * @param {offset} offset
-     *   the offset from the beginning of the stream.
-     * @param {int} count
-     *   the maximum number of bytes which can be read in this call.
-     */
-    // eslint-disable-next-line no-unused-vars
-    onDataAvailable(request, inputStream, offset, count) {
-
-      const binaryInStream = Cc["@mozilla.org/binaryinputstream;1"]
-        .createInstance(Ci.nsIBinaryInputStream);
-
-      binaryInStream.setInputStream(inputStream);
-
-      const data = binaryInStream.readByteArray(count);
-
-      if (this.handler && this.handler.onData)
-        this.handler.onData(data);
-    }
 
     /**
      * Implements the Gecko Component Manager's interfaces.
@@ -490,11 +681,11 @@
       // onProxyAvailable...
       if (uuid.equals(Ci.nsIProtocolProxyCallback))
         return this;
-      // onDataAvailable...
-      if (uuid.equals(Ci.nsIStreamListener))
+      // onInputStreamReady
+      if (uuid.equals(Ci.nsIInputStreamCallback))
         return this;
-      // onStartRequest and onStopRequest...
-      if (uuid.equals(Ci.nsIRequestObserver))
+      //  onTransportStatus
+      if (uuid.equals(Ci.nsITransportEventSink))
         return this;
 
       throw Cr.NS_ERROR_NO_INTERFACE;
@@ -539,6 +730,29 @@
    * Implements a webextension api for sieve session and connection management.
    */
   class SieveSocketApi extends ExtensionCommon.ExtensionAPI {
+
+    /**
+     * @inheritdoc
+     */
+    onStartup() {
+      // we're not actually interested in startup, we need the event only
+      // to ensure this experiment gets loaded.
+    }
+
+    /**
+     * @inheritdoc
+     */
+    onShutdown(isAppShutdown) {
+      if (isAppShutdown) {
+        return;
+      }
+
+      // Clear caches that could prevent upgrades from working properly
+      const { Services } = ChromeUtils.import(
+        "resource://gre/modules/Services.jsm");
+      Services.obs.notifyObservers(null, "startupcache-invalidate", null);
+    }
+
     /**
      * @inheritdoc
      */
@@ -564,15 +778,15 @@
              *   the remote server's hostname.
              * @param {string} port
              *   the remote server's port.
-             * @param {boolean} secure
-             *   true in case the socket should be upgradable to secure.
+             * @param {int} level
+             *   true in case logging should be enabled.
              *
              * @returns {string}
              *   return the unique id.
              */
-            async create(host, port, secure) {
+            async create(host, port, level) {
 
-              const socket = new SieveSocket(host, port, secure);
+              const socket = new SieveSocket(host, port, level);
 
               const id = Math.random().toString(STRING_AS_HEX).substr(HEX_PREFIX_LEN, HEX_UINT32_LEN)
                 + "-" + Math.random().toString(STRING_AS_HEX).substr(HEX_PREFIX_LEN, HEX_UINT16_LEN)
@@ -654,10 +868,11 @@
              *   the socket's unique id.
              */
             async destroy(socket) {
+
               if (!hasSocket(socket))
                 return;
 
-              await this.disconnect();
+              await this.disconnect(socket);
 
               sockets.delete(socket);
             },
@@ -759,8 +974,8 @@
               name: "sieve.socket.onClose",
               register: (fire, socket) => {
 
-                const callback = async (hadError) => {
-                  return await fire.async(hadError);
+                const callback = async () => {
+                  return await fire.async();
                 };
 
                 getSocket(socket).on("close", callback);
@@ -770,29 +985,8 @@
                     getSocket(socket).on("close");
                 };
               }
-            }).api(),
-
-            /**
-             * The OnLog handler is called whenever a message should be
-             * forwarded to the logger.
-             */
-            onLog: new ExtensionCommon.EventManager({
-              context,
-              name: "sieve.socket.onLog",
-              register: (fire, socket) => {
-
-                const callback = async (message) => {
-                  return await fire.async(message);
-                };
-
-                getSocket(socket).on("log", callback);
-
-                return () => {
-                  if (hasSocket(socket))
-                    getSocket(socket).on("log");
-                };
-              }
             }).api()
+
           }
         }
       };

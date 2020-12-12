@@ -24,6 +24,8 @@ const LOG_STATE = (1 << 2);
 const LOG_STREAM = (1 << 3);
 // eslint-disable-next-line no-magic-numbers
 const LOG_SESSION_INFO = (1 << 4);
+// eslint-disable-next-line no-magic-numbers
+const LOG_TRACE = (1 << 5);
 
 const DEFAULT_LEVEL = 0;
 
@@ -129,9 +131,14 @@ class SieveLogger {
     if (!this.isLoggable(level))
       return this;
 
+    if (this.isLoggable(LOG_TRACE)) {
+      // eslint-disable-next-line no-console
+      console.trace(`[${this.getTimestamp()} ${this.prefix()}] ${message}`);
+      return this;
+    }
+
     // eslint-disable-next-line no-console
     console.log(`[${this.getTimestamp()} ${this.prefix()}] ${message}`);
-
     return this;
   }
 

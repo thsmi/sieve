@@ -66,6 +66,8 @@ class SieveAbstractRequest {
     this.byeListener = null;
 
     this.responseListener = null;
+
+    this.optional = false;
   }
 
   /**
@@ -148,23 +150,49 @@ class SieveAbstractRequest {
   }
 
   /**
-   * In general Sieve uses an unsolicited communication.
-   * The client sends messages to server and the server responds
-   * to those.
+   * Marks this request a optional. See isOptional for more details.
    *
-   * But there are some exceptions to this rule, e.g. the
-   * init request upon connecting or after tls completed.
-   * Both are send by the server to the client.
+   * @returns {SieveAbstractRequest}
+   *   a self reference.
+   */
+  makeOptional() {
+    this.optional = true;
+    return this;
+  }
+
+  /**
+   * Optional means the request will be send to the server. But a server
+   * response is not required. This is used to workaround a common bug in
+   * old sieve implementations.
+   *
+   * Please note an optional request will resolve earliest after the next
+   * subsequent request was resolved.
    *
    * @returns {boolean}
-   *   true in case the request is unsolicited. Which means
+   *   false in case this request is not optional which is the default.
+   */
+  isOptional() {
+    return this.optional;
+  }
+
+  /**
+   * In general sieve is bidirectional, client first communication. This means
+   * the client sends a request to server and the server responds to it. Request
+   * and responses typically form pairs.
+   *
+   * But there are exceptions to this rule, e.g. the init response upon
+   * connect or after tls handshake. In this case it is a one-way communication.
+   * The server sends a response without being triggered by a request.
+   *
+   * @returns {boolean}
+   *   true in case the request is bidirectional. Which means
    *   the client sends a request and the server responds
    *   to that.
-   *   false in case the request is solicited. Which means
-   *   it was send by the server without an explicit
-   *   request from the client.
+   *   false in case the request is unidirectional. Which means
+   *   it was send by the server without being explicitly
+   *   request by the client.
    */
-  isUnsolicited() {
+  hasRequest() {
     return true;
   }
 
@@ -206,6 +234,9 @@ class SieveAbstractRequest {
    *   the optional reason why the request was canceled.
    */
   cancel(reason) {
+    if (this.optional)
+      return;
+
     if (this.timeoutListener)
       this.timeoutListener(reason);
   }
@@ -264,16 +295,26 @@ class SieveAbstractRequest {
    *   a self reference
    */
   async addResponse(response) {
-    if (response.getResponse() === RESPONSE_OK)
-      await this.onOk(response);
-    else if (response.getResponse() === RESPONSE_BYE)
-      await this.onBye(response);
-    else if (response.getResponse() === RESPONSE_NO)
-      await this.onNo(response);
-    else
-      throw new Error("Invalid Response Code");
 
-    return this;
+    if (response.getResponse() === RESPONSE_OK) {
+      await this.onOk(response);
+      return this;
+    }
+
+    if (this.isOptional())
+      throw new Error("Invalid Response for an Optional Request");
+
+    if (response.getResponse() === RESPONSE_BYE) {
+      await this.onBye(response);
+      return this;
+    }
+
+    if (response.getResponse() === RESPONSE_NO) {
+      await this.onNo(response);
+      return this;
+    }
+
+    throw new Error("Invalid Response Code");
   }
 }
 
@@ -886,7 +927,7 @@ class SieveInitRequest extends SieveAbstractRequest {
   /**
    * @inheritdoc
    */
-  isUnsolicited() {
+  hasRequest() {
     return false;
   }
 

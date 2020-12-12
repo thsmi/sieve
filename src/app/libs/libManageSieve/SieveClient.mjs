@@ -77,15 +77,14 @@ class SieveNodeClient extends SieveAbstractClient {
 
     this.socket.on('data', async (data) => { await this.onReceive(data); });
     this.socket.on('error', (error) => {
+      this.getLogger().logState(`SieveClient: OnError (Connection ${this.host}:${this.port})`);
       // Node guarantees that close is called after error.
       if ((this.listener) && (this.listener.onError))
         (async () => { await this.listener.onError(error); })();
     });
-    this.socket.on('close', (hadError) => {
-      this.disconnect();
-
-      if ((this.listener) && (this.listener.onDisconnected))
-        (async () => { await this.listener.onDisconnected(hadError); })();
+    this.socket.on('close', async () => {
+      this.getLogger().logState(`SieveClient: OnClose (Connection ${this.host}:${this.port})`);
+      await this.disconnect();
     });
 
     return this;
@@ -208,24 +207,35 @@ class SieveNodeClient extends SieveAbstractClient {
   /**
    * @inheritdoc
    */
-  disconnect() {
+  async disconnect() {
 
-    super.disconnect();
+    this.getLogger().logState(`SieveClient: Disconnecting ${this.host}:${this.port}...`);
 
-    this.getLogger().logState("Disconnecting...");
+    // Just a precaution ensures all timers are stopped.
+    await super.disconnect();
+
+    // In case the socket is gone we can skip right here
+    if (!this.socket)
+      return;
+
     if (this.socket) {
       this.socket.destroy();
-      this.socket.unref();
+      if (this.socket && this.socket.unref)
+        this.socket.unref();
       this.socket = null;
     }
 
     if (this.tlsSocket) {
       this.tlsSocket.destroy();
-      this.tlsSocket.unref();
+      if (this.socket && this.socket.unref)
+        this.tlsSocket.unref();
       this.tlsSocket = null;
     }
 
-    this.getLogger().logState("Disconnected ...");
+    if ((this.listener) && (this.listener.onDisconnected))
+      await this.listener.onDisconnected();
+
+    this.getLogger().logState("SieveClient: ... client disconnected.");
   }
 
   /**

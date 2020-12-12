@@ -44,10 +44,10 @@ class SieveWebCrypto extends SieveAbstractCrypto {
   async HMAC(key, bytes, output) {
 
     if (!Array.isArray(key))
-      key = new TextEncoder("UTF-8").encode(key);
+      key = new TextEncoder().encode(key);
 
     if (!Array.isArray(bytes))
-      bytes = new TextEncoder("UTF-8").encode(bytes);
+      bytes = new TextEncoder().encode(bytes);
 
     key = await crypto.subtle.importKey(
       "raw", new Uint8Array(key),
@@ -70,7 +70,7 @@ class SieveWebCrypto extends SieveAbstractCrypto {
 
     if (!Array.isArray(bytes)) {
       // bytes = this.strToByteArray(bytes);
-      bytes = new TextEncoder("UTF-8").encode(bytes);
+      bytes = new TextEncoder().encode(bytes);
     }
 
     // this.name is the algorithm.

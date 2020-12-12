@@ -28,7 +28,7 @@ class SieveMozRequestBuilder extends SieveAbstractRequestBuilder {
    */
   jsStringToByteArray(str) {
     // with chrome we have to use the TextEncoder.
-    const data = new Uint8Array(new TextEncoder("UTF-8").encode(str));
+    const data = new Uint8Array(new TextEncoder().encode(str));
     return Array.prototype.slice.call(data);
   }
 
@@ -50,6 +50,16 @@ class SieveMozRequestBuilder extends SieveAbstractRequestBuilder {
     if (Array.isArray(decoded))
       decoded = String.fromCharCode(...new Uint8Array(decoded));
 
+    // Convert from a js string to an utf8 byte array
+    decoded = new TextEncoder().encode(decoded);
+
+    // and we the byte array into a string. This is done byte by byte
+    // not character by character so that we end up with an ASCII string
+    // in UTF Encoding.
+    decoded = String.fromCodePoint(...new Uint8Array(decoded));
+
+    // This is needed because btoa accepts only ASCII strings. Which then
+    // can be converted into base64
     return btoa(decoded);
   }
 

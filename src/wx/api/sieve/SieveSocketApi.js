@@ -59,6 +59,7 @@
   const NS_ERROR_FAILURE = 0x80004005;
 
   const LOG_STATE = (1 << 2);
+  const LOG_TRACE = (1 << 5);
 
   /**
    * A simple TCP socket implementation.
@@ -113,7 +114,10 @@
       if (!(this.level & LOG_STATE))
         return;
 
-      this.handler.onLog(message);
+      if (this.level & LOG_TRACE) {
+        // eslint-disable-next-line no-console
+        console.trace(`[${(new Date()).toISOString()}] [${this.port}] ${message}`);
+        return;
       }
 
       // eslint-disable-next-line no-console

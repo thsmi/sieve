@@ -23,6 +23,8 @@ const LOG_ACCOUNT_STATE = (1 << 2);
 const LOG_ACCOUNT_STREAM = (1 << 3);
 // eslint-disable-next-line no-magic-numbers
 const LOG_ACCOUNT_SESSION_INFO = (1 << 4);
+// eslint-disable-next-line no-magic-numbers
+const LOG_ACCOUNT_TRACE = (1 << 5);
 
 // eslint-disable-next-line no-magic-numbers
 const LOG_GLOBAL_IPC_MESSAGES = (1 << 0);
@@ -32,6 +34,8 @@ const LOG_GLOBAL_ACTION = (1 << 1);
 const LOG_GLOBAL_WIDGET = (1 << 2);
 // eslint-disable-next-line no-magic-numbers
 const LOG_GLOBAL_I18N = (1 << 3);
+// eslint-disable-next-line no-magic-numbers
+const LOG_GLOBAL_TRACE = (1 << 5);
 
 /**
  * A UI renderer for the sieve debug settings dialog
@@ -124,6 +128,9 @@ class SieveDebugSettingsUI {
     if (document.querySelector("#debugRawDump").checked === true)
       level |= LOG_ACCOUNT_STREAM;
 
+    if (document.querySelector("#debugBackEndTrace").checked)
+      level |= LOG_ACCOUNT_TRACE;
+
     return level;
   }
 
@@ -140,6 +147,7 @@ class SieveDebugSettingsUI {
     document.querySelector("#debugSessionManagement").checked = (level & LOG_ACCOUNT_SESSION_INFO);
     document.querySelector("#debugStateMachine").checked = (level & LOG_ACCOUNT_STATE);
     document.querySelector("#debugRawDump").checked = (level & LOG_ACCOUNT_STREAM);
+    document.querySelector("#debugBackEndTrace").checked = (level & LOG_ACCOUNT_TRACE);
   }
 
   /**
@@ -163,6 +171,9 @@ class SieveDebugSettingsUI {
     if (document.querySelector("#debugI18n").checked)
       level |= LOG_GLOBAL_I18N;
 
+    if (document.querySelector("#debugFrontEndTrace").checked)
+      level |= LOG_GLOBAL_TRACE;
+
     return level;
   }
 
@@ -177,6 +188,7 @@ class SieveDebugSettingsUI {
     document.querySelector("#debugIpcMessages").checked = (level & LOG_GLOBAL_IPC_MESSAGES);
     document.querySelector("#debugWidgets").checked = (level & LOG_GLOBAL_WIDGET);
     document.querySelector("#debugI18n").checked = (level & LOG_GLOBAL_I18N);
+    document.querySelector("#debugFrontEndTrace").checked = (level & LOG_GLOBAL_TRACE);
   }
 
   /**

@@ -174,10 +174,14 @@
     }
 
     /**
+     * Runs a command inside the sandbox and waits for the result.
+     * In case the command fails an exception is thrown.
      *
      * @param {*} report
      * @param {*} type
      * @param {*} data
+
+
      */
     async execute(report, type, data) {
 

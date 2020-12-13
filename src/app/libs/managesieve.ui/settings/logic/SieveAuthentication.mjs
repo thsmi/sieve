@@ -10,22 +10,17 @@
  */
 
 
-const AUTH_TYPE_PROMPT = 0;
-const DEFAULT_AUTH_TYPE = AUTH_TYPE_PROMPT;
-
-const CONFIG_AUTHENTICATION_TYPE = "activeLogin";
-
-import { SieveAbstractAuthentication } from "./SieveAbstractAuthentication.js";
-import { SieveAbstractMechanism } from "./SieveAbstractMechanism.js";
+import { SieveAbstractAuthentication } from "./SieveAbstractAuthentication.mjs";
 
 import { SieveIpcClient } from "./../../utils/SieveIpcClient.js";
 
 let keytar = null;
+const KEY_USERNAME = "authentication.username";
 
 /**
  * Prompts for a password.
  */
-class SievePromptAuthentication extends SieveAbstractAuthentication {
+class SieveElectronAuthentication extends SieveAbstractAuthentication {
 
   /**
    * Sets the username.
@@ -35,14 +30,14 @@ class SievePromptAuthentication extends SieveAbstractAuthentication {
    *
    */
   async setUsername(username) {
-    await this.account.getConfig().setString("authentication.username", username);
+    await this.account.getConfig().setString(KEY_USERNAME, username);
   }
 
   /**
    * @inheritdoc
    */
   async getUsername() {
-    return await this.account.getConfig().getString("authentication.username");
+    return await this.account.getConfig().getString(KEY_USERNAME);
   }
 
   /**
@@ -194,49 +189,4 @@ class SievePromptAuthentication extends SieveAbstractAuthentication {
   }
 }
 
-/**
- * Manages the authorization settings.
- */
-class SieveAuthentication extends SieveAbstractMechanism {
-
-  /**
-   * @inheritdoc
-   **/
-  getDefault() {
-    return DEFAULT_AUTH_TYPE;
-  }
-
-  /**
-   * @inheritdoc
-   **/
-  getKey() {
-    return CONFIG_AUTHENTICATION_TYPE;
-  }
-
-  /**
-   * @inheritdoc
-   **/
-  hasMechanism(type) {
-    switch (type) {
-      case AUTH_TYPE_PROMPT:
-        return true;
-
-      default:
-        return false;
-    }
-  }
-
-  /**
-   * @inheritdoc
-   **/
-  getMechanismById(type) {
-    switch (type) {
-      case AUTH_TYPE_PROMPT:
-      // fall through we just implement prompt authentication
-      default:
-        return new SievePromptAuthentication(AUTH_TYPE_PROMPT, this.account);
-    }
-  }
-}
-
-export { SieveAuthentication };
+export { SieveElectronAuthentication as SieveAuthentication };

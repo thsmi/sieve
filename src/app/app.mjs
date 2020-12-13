@@ -9,7 +9,6 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-const DEFAULT_AUTHENTICATION = 0;
 const DEFAULT_AUTHORIZATION = 3;
 
 const FIRST_ELEMENT = 0;
@@ -183,9 +182,9 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.js";
           sasl: await account.getSecurity().getMechanism()
         },
         "authentication": {
-          type: await (await account.getAuthentication()).getType(),
-          username: await (await account.getAuthentication(DEFAULT_AUTHENTICATION)).getUsername(),
-          stored: await (await account.getAuthentication(DEFAULT_AUTHENTICATION)).hasStoredPassword()
+
+          username: await (await account.getAuthentication()).getUsername(),
+          stored: await (await account.getAuthentication()).hasStoredPassword()
         },
 
         "authorization": {
@@ -199,7 +198,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.js";
       logger.logAction(`Forget credentials for ${msg.payload.account}`);
 
       const account = await accounts.getAccountById(msg.payload.account);
-      await (await account.getAuthentication(DEFAULT_AUTHENTICATION)).forget();
+      await (await account.getAuthentication()).forget();
     },
 
     "account-settings-set-credentials": async function (msg) {
@@ -211,8 +210,7 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.js";
       await account.getSecurity().setSecure(msg.payload.general.secure);
       await account.getSecurity().setMechanism(msg.payload.general.sasl);
 
-      await account.setAuthentication(msg.payload.authentication.mechanism);
-      await (await account.getAuthentication(DEFAULT_AUTHENTICATION)).setUsername(msg.payload.authentication.username);
+      await account.getAuthentication().setUsername(msg.payload.authentication.username);
 
       await account.setAuthorization(msg.payload.authorization.mechanism);
       await (await account.getAuthorization(DEFAULT_AUTHORIZATION)).setAuthorization(msg.payload.authorization.username);
@@ -313,11 +311,10 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.js";
           const rv = await SieveIpcClient.sendMessage(
             "accounts", "account-show-certerror", secInfo);
 
-          // Dialog was canceled we bail out.
+          // save the fingerprint.
           if (rv !== true)
             return;
 
-          // save the fingerprint and reconnect.
           const host = await accounts.getAccountById(account).getHost();
 
           // Prefer SHA256 if available

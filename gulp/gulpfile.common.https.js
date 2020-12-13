@@ -52,12 +52,13 @@ function isSuccess(status) {
  *
  * @param {string} url
  *   the json file to be loaded.
+ * @returns {string}
+ *   the bytes received.
  */
 async function fetch(url) {
 
   logger.debug(`Fetching ${url}`);
 
-  "use strict";
 
   return await new Promise((resolve, reject) => {
 
@@ -106,6 +107,7 @@ async function fetch(url) {
  * @param {string} destination
  *   the file into which the downloaded data should be stored.
  *   In case the file exists it will be silently overwritten.
+ * @returns {undefined}
  */
 async function download(url, destination) {
 

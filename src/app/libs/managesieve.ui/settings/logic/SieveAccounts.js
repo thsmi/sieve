@@ -15,7 +15,6 @@ const JSON_INDENTATION = 2;
 const CONFIG_ID_GLOBAL = "global";
 const CONFIG_KEY_ACCOUNTS = "accounts";
 
-const DEFAULT_AUTHENTICATION = 1;
 
 const SETTINGS_VERSION_I = 1;
 
@@ -102,7 +101,7 @@ class SieveAccounts extends SieveAbstractAccounts {
       await (await this.accounts[id].getHost()).setPort(details.port);
 
     if ((details.username !== null) && (details.username !== undefined))
-      await (await this.accounts[id].getAuthentication(DEFAULT_AUTHENTICATION)).setUsername(details.username);
+      await (await this.accounts[id].getAuthentication()).setUsername(details.username);
 
     if ((details.name !== null) && (details.name !== undefined))
       await (await this.accounts[id].getHost()).setDisplayName(details.name);

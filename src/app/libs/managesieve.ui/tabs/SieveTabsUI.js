@@ -373,9 +373,5 @@ class SieveTabUI {
 
 }
 
-if (typeof (module) !== "undefined" && module !== null && module.exports)
-  module.exports.SieveTabUI = SieveTabUI;
-else
-  exports.SieveTabUI = SieveTabUI;
 
 export { SieveTabUI };

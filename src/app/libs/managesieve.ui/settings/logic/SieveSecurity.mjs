@@ -12,27 +12,16 @@
 const PREF_MECHANISM = "security.mechanism";
 const PREF_TLS = "security.tls";
 
+import { SieveAbstractSecurity } from "./SieveAbstractSecurity.mjs";
+
 /**
  * Manages the account's security related settings
  */
-class SieveSecurity {
+class SieveSecurity extends SieveAbstractSecurity {
 
   /**
-   * Creates a new instance.
-   *
-   * @param {SieveAccount} account
-   *   the account with is associated with this account.
+   * @inheritdoc
    */
-  constructor(account) {
-    this.account = account;
-  }
-
-  /**
-   * Gets the currently configured sasl mechanism.
-   *
-   * @returns {string}
-   *   the sasl mechanism
-   **/
   async getMechanism() {
     return await this.account.getConfig().getString(PREF_MECHANISM, "default");
   }
@@ -52,12 +41,8 @@ class SieveSecurity {
   }
 
   /**
-   * Gets the current security settings. In case it is set to true
-   * a secure connection shall be used.
-   *
-   * @returns {boolean}
-   *   true in  case a secure connection should be used.
-   **/
+   * @inheritdoc
+   */
   async isSecure() {
     return await this.account.getConfig().getBoolean(PREF_TLS, true);
   }

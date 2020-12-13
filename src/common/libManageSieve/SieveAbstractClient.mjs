@@ -462,7 +462,6 @@ class SieveAbstractClient {
 
     this.cancel(reason);
 
-    this.getLogger().logState(`SieveAbstractClient: Disconnected ${this.host}:${this.port}...`);
 
     // free requests...
     // this.requests = new Array();

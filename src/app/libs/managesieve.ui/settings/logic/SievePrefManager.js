@@ -16,7 +16,7 @@ import { SieveAbstractPrefManager } from "./SieveAbstractPrefManager.js";
  * Manages preferences.
  * It uses the DOM's local storage interface
  */
-class SievePrefManager extends SieveAbstractPrefManager {
+class SieveElectronPrefManager extends SieveAbstractPrefManager {
 
   /**
    * Returns all the keys contained by this namespace.
@@ -76,4 +76,4 @@ class SievePrefManager extends SieveAbstractPrefManager {
   }
 }
 
-export { SievePrefManager };
+export { SieveElectronPrefManager as SievePrefManager };

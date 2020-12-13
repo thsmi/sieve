@@ -20,7 +20,6 @@ class SieveMozResponseParser extends SieveAbstractResponseParser {
    * @inheritdoc
    **/
   convertToString(byteArray) {
-    // The new code should run with Google and Mozilla
     byteArray = new Uint8Array(byteArray);
     return (new TextDecoder("UTF-8")).decode(byteArray);
   }

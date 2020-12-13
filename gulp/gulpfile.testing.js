@@ -20,7 +20,6 @@ const BUILD_DIR_TEST = path.join(common.BASE_DIR_BUILD, "test/");
  * Copies the common files into the test folder.
  */
 async function packageCommon() {
-  "use strict";
 
   await src([
     common.BASE_DIR_COMMON + "/**",
@@ -34,7 +33,6 @@ async function packageCommon() {
  * Copies the test suite files into the test folder.
  */
 async function packageTestSuite() {
-  "use strict";
 
   const BASE_PATH = "./tests";
 
@@ -48,11 +46,10 @@ async function packageTestSuite() {
  */
 function watchSrc() {
 
-  "use strict";
 
   watch(
     ['./src/**/*.js',
-      './src/**/*.jsm',
+      './src/**/*.mjs',
       './tests/**/*.json',
       './tests/**/*.js'],
     parallel(

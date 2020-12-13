@@ -19,7 +19,8 @@ import {
   SieveDeleteScriptDialog,
   SieveRenameScriptDialog,
   SieveFingerprintDialog,
-  SieveScriptBusyDialog
+  SieveScriptBusyDialog,
+  SieveErrorDialog
 } from "./dialogs/SieveDialogUI.js";
 
 /**
@@ -84,6 +85,16 @@ async function onCertError(secInfo) {
 }
 
 /**
+ * Informs the user about a connection error.
+ *
+ * @param {string} message
+ *   the detailed connection error.
+ */
+async function onError(message) {
+  await (new SieveErrorDialog(message)).show();
+}
+
+/**
  * The main entry point for the account view
  */
 async function main() {
@@ -93,6 +104,7 @@ async function main() {
     // if changed...
     e.preventDefault();
   };*/
+  try {
 
   SieveLogger.getInstance().level(
     await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
@@ -112,6 +124,11 @@ async function main() {
     async (msg) => { await onBusy(msg.payload); });
   SieveIpcClient.setRequestHandler("accounts", "account-show-certerror",
     async (msg) => { return await onCertError(msg.payload); });
+    SieveIpcClient.setRequestHandler("accounts", "account-show-error",
+      async (msg) => { return await onError(msg.payload); });
+  } catch (ex) {
+    console.error(ex);
+  }
 }
 
 if (document.readyState !== 'loading')

@@ -9,9 +9,8 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SieveAbstractAccounts } from "./SieveAbstractAccounts.js";
 
-// TODO Remove me...
+import { SieveAbstractAccounts } from "./SieveAbstractAccounts.js";
 
 /**
  * @inheritdoc

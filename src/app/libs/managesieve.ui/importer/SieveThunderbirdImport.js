@@ -39,7 +39,7 @@ class SieveThunderbirdImport {
   parseProfileSection(section) {
     const lines = section.split(/\r?\n/g);
 
-    let profile = "";
+    let profileDir = "";
     let isRelative = false;
     let isDefault = false;
 
@@ -50,14 +50,14 @@ class SieveThunderbirdImport {
         isDefault = true;
 
       if (line.toLocaleLowerCase().startsWith("path="))
-        profile = line.split("=")[FIRST_MATCH];
+        profileDir = line.split("=")[FIRST_MATCH];
 
       if (line.toLocaleLowerCase() === "isrelative=1")
         isRelative = true;
     }
 
     return {
-      "path": profile,
+      "path": profileDir,
       "isRelative": isRelative,
       "isDefault": isDefault
     };

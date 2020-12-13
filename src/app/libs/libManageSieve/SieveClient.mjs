@@ -11,12 +11,9 @@
 
 
 import { SieveAbstractClient } from "./SieveAbstractClient.mjs";
-import { SieveNodeResponseParser } from "./SieveNodeResponseParser.mjs";
-import { SieveNodeRequestBuilder } from "./SieveNodeRequestBuilder.mjs";
 
 import { SieveCertValidationException } from "./SieveExceptions.mjs";
 
-import { SieveTimer } from "./SieveTimer.mjs";
 
 const net = require('net');
 const tls = require('tls');
@@ -37,8 +34,6 @@ class SieveNodeClient extends SieveAbstractClient {
   constructor(logger) {
     super();
 
-    this.timeoutTimer = new SieveTimer();
-    this.idleTimer = new SieveTimer();
 
     this.tlsSocket = null;
     this._logger = logger;
@@ -55,46 +50,8 @@ class SieveNodeClient extends SieveAbstractClient {
   /**
    * @inheritdoc
    */
-  isSecured() {
-    if (this.tls !== null)
-      return true;
-
-    return false;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  createParser(data) {
-    return new SieveNodeResponseParser(data);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  createRequestBuilder() {
-    return new SieveNodeRequestBuilder();
-  }
-
-  /**
-   * @inheritdoc
-   */
   getLogger() {
     return this._logger;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  getTimeoutTimer() {
-    return this.timeoutTimer;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  getIdleTimer() {
-    return this.idleTimer;
   }
 
   /**
@@ -119,21 +76,19 @@ class SieveNodeClient extends SieveAbstractClient {
     this.port = port;
     this.secure = secure;
 
-    this.getLogger().logState(`Connecting to ${this.host}:${this.port} ...`);
 
     this.socket = net.connect(this.port, this.host);
 
-    this.socket.on('data', (data) => { this.onReceive(data); });
-    this.socket.on('error', async (error) => {
+    this.socket.on('data', async (data) => { await this.onReceive(data); });
+    this.socket.on('error', (error) => {
+      this.getLogger().logState(`SieveClient: OnError (Connection ${this.host}:${this.port})`);
       // Node guarantees that close is called after error.
       if ((this.listener) && (this.listener.onError))
-        await this.listener.onError(error);
+        (async () => { await this.listener.onError(error); })();
     });
     this.socket.on('close', async () => {
-      this.disconnect();
-
-      if ((this.listener) && (this.listener.onDisconnect))
-        await this.listener.onDisconnect();
+      this.getLogger().logState(`SieveClient: OnClose (Connection ${this.host}:${this.port})`);
+      await this.disconnect();
     });
 
     return this;
@@ -182,10 +137,17 @@ class SieveNodeClient extends SieveAbstractClient {
             return;
           }
 
-          // so let's check the if the server's fingerprint matches the pinned one.
+          // so let's check the if the server's sha1 fingerprint matches the pinned one.
           if (options.fingerprints.indexOf(cert.fingerprint) !== NOT_FOUND) {
             resolve();
-            this.getLogger().logState('Socket upgraded! (Chain of Trust and pinned fingerprint)');
+            this.getLogger().logState('Socket upgraded! (Chain of Trust and pinned SHA1 fingerprint)');
+            return;
+          }
+
+          // then check the sha256 fingerprint.
+          if (options.fingerprints.indexOf(cert.fingerprint256) !== NOT_FOUND) {
+            resolve();
+            this.getLogger().logState('Socket upgraded! (Chain of Trust and pinned SHA256 fingerprint)');
             return;
           }
 
@@ -213,7 +175,15 @@ class SieveNodeClient extends SieveAbstractClient {
           if (options.fingerprints.indexOf(cert.fingerprint) !== NOT_FOUND) {
             resolve();
 
-            this.getLogger().logState('Socket upgraded! (Trusted Finger Print)');
+            this.getLogger().logState('Socket upgraded! (Trusted SHA1 Finger Print)');
+            return;
+          }
+
+          // Check if the fingerprint is well known...
+          if (options.fingerprints.indexOf(cert.fingerprint256) !== NOT_FOUND) {
+            resolve();
+
+            this.getLogger().logState('Socket upgraded! (Trusted SHA256 Finger Print)');
             return;
           }
         }
@@ -234,31 +204,41 @@ class SieveNodeClient extends SieveAbstractClient {
         this.tlsSocket.destroy();
       });
 
-      this.tlsSocket.on('data', (data) => { this.onReceive(data); });
+      this.tlsSocket.on('data', async (data) => { await this.onReceive(data); });
     });
   }
 
   /**
    * @inheritdoc
    */
-  disconnect() {
+  async disconnect() {
 
-    super.disconnect();
+    this.getLogger().logState(`SieveClient: Disconnecting ${this.host}:${this.port}...`);
 
-    this.getLogger().logState("Disconnecting...");
+    // Just a precaution ensures all timers are stopped.
+    await super.disconnect();
+
+    // In case the socket is gone we can skip right here
+    if (!this.socket)
+      return;
     if (this.socket) {
       this.socket.destroy();
+      if (this.socket && this.socket.unref)
       this.socket.unref();
       this.socket = null;
     }
 
     if (this.tlsSocket) {
       this.tlsSocket.destroy();
+      if (this.socket && this.socket.unref)
       this.tlsSocket.unref();
       this.tlsSocket = null;
     }
 
-    this.getLogger().logState("Disconnected ...");
+    if ((this.listener) && (this.listener.onDisconnected))
+      await this.listener.onDisconnected();
+
+    this.getLogger().logState("SieveClient: ... client disconnected.");
   }
 
   /**
@@ -266,7 +246,7 @@ class SieveNodeClient extends SieveAbstractClient {
    * @param {object} buffer
    *   the received data.
    */
-  onReceive(buffer) {
+  async onReceive(buffer) {
 
     this.getLogger().logState(`onDataRead (${buffer.length})`);
 
@@ -276,7 +256,7 @@ class SieveNodeClient extends SieveAbstractClient {
       data[i] = buffer.readUInt8(i);
     }
 
-    super.onReceive(data);
+    await (super.onReceive(data));
   }
 
   /**
@@ -287,7 +267,7 @@ class SieveNodeClient extends SieveAbstractClient {
     if (this.getLogger().isLevelStream()) {
       // Force String to UTF-8...
       const output = Array.prototype.slice.call(
-        new Uint8Array(new TextEncoder("UTF-8").encode(data)));
+        new Uint8Array(new TextEncoder().encode(data)));
 
       this.getLogger().logStream(`Client -> Server [Byte Array]:\n${output}`);
     }

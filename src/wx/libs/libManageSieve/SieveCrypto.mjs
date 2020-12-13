@@ -10,35 +10,13 @@
  */
 
 
-/* global Components */
 
 import { SieveAbstractCrypto } from "./SieveAbstractCrypto.mjs";
 
 /**
- * A Mozilla specific crypto implementation.
+ * Implements a crypto provider which is backed by the web crypto api.
  */
-class SieveMozCrypto extends SieveAbstractCrypto {
-
-  /**
-   * Returns the HMAC implementation for the given name.
-   * In case the algorithm is unknown an exception is thrown.
-   *
-   * @returns {nsICryptoHMAC}
-   *   the HMAC type.
-   */
-  getCryptoHMAC() {
-
-    if (this.name === "SHA1")
-      return Components.interfaces.nsICryptoHMAC.SHA1;
-
-    if (this.name === "SHA256")
-      return Components.interfaces.nsICryptoHMAC.SHA256;
-
-    if (this.name === "MD5")
-      return Components.interfaces.nsICryptoHMAC.MD5;
-
-    throw Error(`Unknown HMAC algorithm ${this.name}`);
-  }
+class SieveWebCrypto extends SieveAbstractCrypto {
 
   /**
    * Returns the hashing implementation for the given name.
@@ -49,13 +27,13 @@ class SieveMozCrypto extends SieveAbstractCrypto {
    */
   getCryptoHash() {
     if (this.name === "SHA1")
-      return Components.interfaces.nsICryptoHash.SHA1;
+      return "SHA-1";
 
     if (this.name === "SHA256")
-      return Components.interfaces.nsICryptoHash.SHA256;
+      return "SHA-256";
 
-    if (this.name === "MD5")
-      return Components.interfaces.nsICryptoHash.MD5;
+    if (this.name === "SHA512")
+      return "SHA-512";
 
     throw Error(`Unknown HASH algorithm ${this.name}`);
   }
@@ -63,59 +41,48 @@ class SieveMozCrypto extends SieveAbstractCrypto {
   /**
    * @inheritdoc
    */
-  HMAC(key, bytes, output) {
+  async HMAC(key, bytes, output) {
 
-    if (typeof (key) === "undefined" || key === null)
-      throw new Error("Invalid key");
+    if (!Array.isArray(key))
+      key = new TextEncoder().encode(key);
 
-    // Mozilla's api is odd. This means we need some magic here
-    // The salt has to be a string while the data needs to be an byte array
+    if (!Array.isArray(bytes))
+      bytes = new TextEncoder().encode(bytes);
 
-    if (Array.isArray(bytes) === false)
-      bytes = this.strToByteArray(bytes);
+    key = await crypto.subtle.importKey(
+      "raw", new Uint8Array(key),
+      { name: "HMAC", hash: {name: this.getCryptoHash()}},
+      false, ["sign", "verify"]);
 
-    if (Array.isArray(key) === true)
-      key = this.byteArrayToStr(key);
-
-    const crypto = Components.classes["@mozilla.org/security/hmac;1"]
-      .createInstance(Components.interfaces.nsICryptoHMAC);
-    const keyObject = Components.classes["@mozilla.org/security/keyobjectfactory;1"]
-      .getService(Components.interfaces.nsIKeyObjectFactory)
-      .keyFromString(Components.interfaces.nsIKeyObject.HMAC, key);
-
-    crypto.init(this.getCryptoHMAC(), keyObject);
-    crypto.update(bytes, bytes.length);
-
-    const rv = this.strToByteArray(crypto.finish(false));
+    const signature = crypto.subtle.sign(
+      "HMAC", new Uint8Array(key), new Uint8Array(bytes));
 
     if (typeof (output) !== "undefined" && output === "hex")
-      return this.byteArrayToHexString(rv);
+      return this.byteArrayToHexString(signature);
 
-    return rv;
+    return Array.from(signature);
   }
 
   /**
    * @inheritdoc
    */
-  H(bytes, output) {
+  async H(bytes, output) {
 
-    if (Array.isArray(bytes) === false)
-      bytes = this.strToByteArray(bytes);
+    if (!Array.isArray(bytes)) {
+      // bytes = this.strToByteArray(bytes);
+      bytes = new TextEncoder().encode(bytes);
+    }
 
-    const crypto = Components.classes["@mozilla.org/security/hash;1"]
-      .createInstance(Components.interfaces.nsICryptoHash);
-
-    crypto.init(this.getCryptoHash());
-    crypto.update(bytes, bytes.length);
-
-    const rv = this.strToByteArray(crypto.finish(false));
+    // this.name is the algorithm.
+    const digest = await crypto.subtle
+      .digest(this.getCryptoHash(), new Uint8Array(bytes));
 
     if (typeof (output) !== "undefined" && output === "hex")
-      return this.byteArrayToHexString(rv);
+      return this.byteArrayToHexString(digest);
 
-    return rv;
+    return Array.from(digest);
   }
 
 }
 
-export { SieveMozCrypto as SieveCrypto };
+export { SieveWebCrypto as SieveCrypto };

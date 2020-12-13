@@ -37,7 +37,6 @@ class SieveAbstractAccounts {
    * @returns {SieveAccounts}
    *   a self reference.
    */
-  // eslint-disable-next-line require-await
   async load() {
     throw new Error("Implement me");
   }

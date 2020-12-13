@@ -15,6 +15,12 @@ const { createHmac, createHash } = require('crypto');
 
 /**
  * A Electron specific crypto implementation.
+ *
+ * @deprecated
+ * Node implements since version 15.x the web crypto api which makes
+ * this class obsolete as the new api is marked as mature.
+ * See https://nodejs.org/api/webcrypto.html for more details.
+ *
  */
 class SieveNodeCrypto extends SieveAbstractCrypto {
 
@@ -35,7 +41,8 @@ class SieveNodeCrypto extends SieveAbstractCrypto {
     if (typeof (output) === "undefined" || output === null)
       output = "latin1";
 
-    const rv = createHmac(this.name, key)
+    const rv =
+      createHmac(this.name, key)
       .update(bytes)
       .digest(output);
 

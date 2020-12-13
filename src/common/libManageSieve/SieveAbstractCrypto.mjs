@@ -105,7 +105,7 @@ class SieveAbstractCrypto {
    *   the calculated HMAC keyed hash for the given input string. E.g. HMAC-SHA-1 hashes are
    *   always always 20 octets long.
    */
-  HMAC(key, bytes) {
+  async HMAC(key, bytes) {
     throw new Error(`Implement HMAC Algorithm for ${this.name} with key ${key} and data ${bytes}`);
   }
 

@@ -10,9 +10,12 @@
  */
 
 /* global browser */
-import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.js";
-import { SieveIpcClient } from "./libs/managesieve.ui/utils/SieveIpcClient.js";
-import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccounts.js";
+import { SieveSession } from "./libs/libManageSieve/SieveSession.mjs";
+import { SieveCertValidationException } from "./libs/libManageSieve/SieveExceptions.mjs";
+
+import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.mjs";
+import { SieveIpcClient } from "./libs/managesieve.ui/utils/SieveIpcClient.mjs";
+import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccounts.mjs";
 
 (async function () {
 
@@ -26,6 +29,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
 
   const accounts = await (new SieveAccounts().load());
 
+  const sessions = new Map();
   // TODO Extract into separate class..
   /**
    * Gets a tab by its script and account name.
@@ -72,8 +76,13 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
     if (tabs.length)
       return;
 
-    for (const id of accounts.getAccountIds())
-      browser.sieve.session.destroy(id);
+    for (const id of accounts.getAccountIds()) {
+      if (!sessions.has(id))
+        continue;
+
+      await (sessions.get(id).disconnect(true));
+      sessions.delete(id);
+    }
   });
 
   // ------------------------------------------------------------------------ //
@@ -182,7 +191,10 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       logger.logAction(`Is connected ${msg.payload.account}`);
 
       const id = msg.payload.account;
-      return browser.sieve.session.isConnected(id);
+      if (!sessions.has(id))
+        return false;
+
+      return sessions.get(id).isConnected();
     },
 
     "account-connect": async function (msg) {
@@ -226,12 +238,31 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
         return await authorization.getAuthorization();
       };
 
-      const onCertError = async (secInfo) => {
-        logger.logAction(`Certificate Error for ${secInfo.host}:${secInfo.port}`);
+      if (sessions.has(id))
+        throw new Error("Id already in use");
 
-        const rv = await SieveIpcClient.sendMessage(
-          "accounts", "script-show-certerror", secInfo);
+      sessions.set(id,
+        new SieveSession(id, options));
 
+      sessions.get(id).on("authenticate",
+        async (hasPassword) => { return await onAuthenticate(hasPassword); });
+      sessions.get(id).on("authorize",
+        async () => { return await onAuthorize(); });
+
+      const hostname = await host.getHostname();
+      const port = await host.getPort();
+
+      try {
+        await sessions.get(id).connect(hostname, `${port}`);
+      } catch (ex) {
+
+        if (ex instanceof SieveCertValidationException) {
+          const secInfo = ex.getSecurityInfo();
+
+          const rv = (await SieveIpcClient.sendMessage(
+            "accounts", "account-show-certerror", secInfo));
+
+          // Dialog was canceled we bail out.
         if (!rv)
           return;
 
@@ -245,38 +276,44 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
         if (secInfo.isDomainMismatch)
           overrideBits |= ERROR_MISMATCH;
 
-        await browser.sieve.session.addCertErrorOverride(
-          secInfo.host, secInfo.port, secInfo.rawDER, overrideBits);
-      };
+          await (browser.sieve.socket.addCertErrorOverride(
+            secInfo.host, `${secInfo.port}`, secInfo.rawDER, overrideBits));
 
-      await browser.sieve.session.create(id, options);
-      await browser.sieve.session.onAuthenticate.addListener(
-        async (hasPassword) => { return await onAuthenticate(hasPassword); }, id);
-      await browser.sieve.session.onAuthorize.addListener(
-        async () => { return await onAuthorize(); }, id);
+          await (actions["account-disconnect"](msg));
+          await (actions["account-connect"](msg));
 
-      await browser.sieve.session.onCertError.addListener(
-        async (secInfo) => { return await onCertError(secInfo); }, id);
+          return;
+        }
 
-      const hostname = await host.getHostname();
-      const port = await host.getPort();
+        // connecting failed for some reason, which means we
+        // need to handle the error.
+        console.error(ex);
 
-      await browser.sieve.session.connect(id, hostname, `${port}`);
+        await SieveIpcClient.sendMessage(
+          "accounts", "account-show-error", ex.message);
+
+        throw ex;
+      }
     },
 
     "account-disconnect": async function (msg) {
       logger.logAction(`Disconnect ${msg.payload.account}`);
-      await browser.sieve.session.destroy(msg.payload.account);
+      const id = msg.payload.account;
+      if (!sessions.has(id))
+        return;
+
+      await sessions.get(id).disconnect(msg.payload.account);
+      sessions.delete(id);
     },
 
     "account-list": async function (msg) {
       logger.logAction(`List scripts for ${msg.payload.account}`);
-      return await browser.sieve.session.listScripts(msg.payload.account);
+      return await sessions.get(msg.payload.account).listScripts();
     },
 
     "account-capabilities": async function (msg) {
       logger.logAction(`Get capabilities for ${msg.payload.account}`);
-      return await browser.sieve.session.capabilities(msg.payload.account);
+      return await sessions.get(msg.payload.account).capabilities();
     },
 
     // Script endpoint...
@@ -288,7 +325,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       const name = await SieveIpcClient.sendMessage("accounts", "script-show-create", account);
 
       if (name.trim() !== "")
-        await browser.sieve.session.putScript(account, name, "#test\r\n");
+        await sessions.get(account).putScript(name, "#test\r\n");
 
       return name;
     },
@@ -309,7 +346,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       if (newName === oldName)
         return false;
 
-      await browser.sieve.session.renameScript(account, oldName, newName);
+      await sessions.get(account).renameScript(oldName, newName);
       return true;
     },
 
@@ -327,7 +364,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
       const rv = await SieveIpcClient.sendMessage("accounts", "script-show-delete", name);
 
       if (rv === true)
-        await browser.sieve.session.deleteScript(account, name);
+        await sessions.get(account).deleteScript(name);
 
       return rv;
     },
@@ -338,7 +375,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
 
       logger.logAction(`Activate ${name} for ${account}`);
 
-      await browser.sieve.session.activateScript(account, name);
+      await sessions.get(account).activateScript(name);
     },
 
     "script-deactivate": async function (msg) {
@@ -346,7 +383,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
 
       logger.logAction(`Deactivate script for ${account}`);
 
-      await browser.sieve.session.activateScript(account);
+      await sessions.get(account).activateScript();
     },
 
     "script-edit": async function (msg) {
@@ -380,7 +417,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
 
       logger.logAction(`Get ${name} for ${account}`);
 
-      return await browser.sieve.session.getScript(account, name);
+      return await sessions.get(account).getScript(name);
     },
 
     "script-check": async function (msg) {
@@ -389,7 +426,14 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
 
       logger.logAction(`Check Script for ${account}`);
 
-      return await browser.sieve.session.checkScript(account, script);
+      try {
+        await sessions.get(account).checkScript(script);
+      } catch (ex) {
+        // FIXME We need to rethrow incase checkscript returns a SieveServerException.
+        return ex.getResponse().getMessage();
+      }
+
+      return "";
     },
 
     "script-save": async function (msg) {
@@ -399,7 +443,7 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
 
       logger.logAction(`Save ${name} for ${account}`);
 
-      await browser.sieve.session.putScript(account, name, script);
+      await sessions.get(account).putScript(name, script);
     },
 
     "account-get-settings": async function (msg) {

@@ -28,7 +28,6 @@ import {
 } from "./dialogs/SieveDialogUI.js";
 
 
-(function () {
 
   /**
    * Shows a prompt which asks the user for the new script name.
@@ -185,4 +184,3 @@ import {
   else
     document.addEventListener('DOMContentLoaded', () => { main(); }, { once: true });
 
-})();

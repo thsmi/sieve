@@ -4,9 +4,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" data-i18n="settings.title"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
 
@@ -38,6 +36,11 @@
             <label class="form-check-label" for="debugSessionManagement"
               data-i18n="debug.transport.session"></label>
           </div>
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="form-check-input" id="debugBackEndTrace" />
+            <label class="form-check-label" for="debugBackEndTrace"
+              data-i18n="debug.transport.trace"></label>
+          </div>
           <div class="siv-settings-advanced">
             <hr />
             <h5 data-i18n="debug.global.title"></h5>
@@ -64,6 +67,12 @@
             <div class="custom-control custom-switch">
               <input type="checkbox" class="form-check-input" id="debugI18n" />
               <label data-i18n="debug.global.i18n" class="form-check-label" for="debugI18n"></label>
+            </div>
+
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="form-check-input" id="debugFrontEndTrace" />
+              <label class="form-check-label" for="debugFrontEndTrace"
+                data-i18n="debug.global.trace"></label>
             </div>
           </div>
 

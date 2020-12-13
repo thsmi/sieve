@@ -30,7 +30,6 @@ const HTTP_REDIRECT_MAX = 399;
  *   the true in case the server requested a redirection otherwise false.
  */
 function isRedirection(status) {
-  "use strict";
 
   return (status >= HTTP_REDIRECT_MIN) && (status <= HTTP_REDIRECT_MAX);
 }
@@ -45,7 +44,6 @@ function isRedirection(status) {
  *   the true in case the server signaled a success otherwise false.
  */
 function isSuccess(status) {
-  "use strict";
 
   return (status >= HTTP_SUCCESS_MIN) && (status <= HTTP_SUCCESS_MAX);
 }
@@ -59,7 +57,6 @@ function isSuccess(status) {
  */
 async function fetch(url) {
 
-  "use strict";
 
   logger.debug(`Fetching ${url}`);
 
@@ -82,7 +79,7 @@ async function fetch(url) {
         }
 
         if (!isSuccess(response.statusCode))
-          throw Error(`Response failed with status code ${response.statusCode}.`);
+          throw Error(`Fetching ${url} failed with status code ${response.statusCode}.`);
 
         let data = "";
 
@@ -113,7 +110,6 @@ async function fetch(url) {
  */
 async function download(url, destination) {
 
-  "use strict";
 
   logger.debug(`Downloading ${url} to ${destination}`);
 
@@ -137,7 +133,7 @@ async function download(url, destination) {
         }
 
         if (!isSuccess(response.statusCode))
-          throw Error(`Response failed with status code ${response.statusCode}.`);
+          throw Error(`Downloading ${url} failed with status code ${response.statusCode}.`);
 
         const file = fs.createWriteStream(destination);
 

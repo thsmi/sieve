@@ -38,4 +38,4 @@ class SieveNodeResponseParser extends SieveAbstractResponseParser {
   }
 }
 
-export { SieveNodeResponseParser };
+export { SieveNodeResponseParser as SieveResponseParser};

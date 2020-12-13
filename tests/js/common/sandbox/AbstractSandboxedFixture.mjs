@@ -212,6 +212,7 @@ class AbstractSandboxedTestFixture {
       const result = await handler();
       this.response(type, result);
     } catch (ex) {
+      console.log("Exception :" + ex);
       this.error(type, { message: ex.message, stack: ex.stack} );
     }
   }

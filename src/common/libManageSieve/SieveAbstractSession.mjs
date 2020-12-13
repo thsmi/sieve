@@ -16,9 +16,9 @@ import { Sieve } from "./SieveClient.mjs";
 import {
   SieveSaslPlainRequest,
   SieveSaslLoginRequest,
-  SieveSaslCramMd5Request,
   SieveSaslScramSha1Request,
   SieveSaslScramSha256Request,
+  SieveSaslScramSha512Request,
   SieveSaslExternalRequest,
 
   SieveInitRequest,
@@ -39,11 +39,9 @@ import {
   SieveClientException,
   SieveServerException,
   SieveReferralException,
-  SieveTimeOutException,
-  SieveCertValidationException
+  SieveTimeOutException
 } from "./SieveExceptions.mjs";
 
-const FIRST_ELEMENT = 0;
 const SIEVE_PORT = 4190;
 
 
@@ -59,7 +57,7 @@ const SIEVE_PORT = 4190;
  * It is highly async but uses the ES6 await syntax, which makes it behave
  * like a synchronous api.
  */
-class SieveSession {
+class SieveAbstractSession {
 
   /**
    * Creates a new Session instance.
@@ -104,7 +102,7 @@ class SieveSession {
    * Creates a new sieve client for this session.
    */
   createSieve() {
-    if (this.sieve !== undefined && this.sieve !== null)
+    if (typeof(this.sieve) !== "undefined" && this.sieve !== null)
       throw new SieveClientException("Sieve Connection Active");
 
     this.sieve = new Sieve(this.getLogger());
@@ -120,6 +118,32 @@ class SieveSession {
   async onIdle() {
     this.getLogger().logSession("Sending keep alive packet...");
     await this.noop();
+  }
+
+  /**
+   * The default error handler called upon any unhandled error or exception.
+   * Called e.g. when the connection to the server was terminated unexpectedly.
+   *
+   * The default behaviour is to disconnect.
+   *
+   * @param {Error} error
+   *   the error message which causes this exceptional state.
+   */
+  async onError(error) {
+    this.getLogger().logSession(`SieveAbstractSession OnError: ${error.message}`);
+    await this.disconnect(true);
+  }
+
+  /**
+   *
+   * @param {boolean} hadError
+   *   indicates if the connection was terminated due to an error.
+   */
+  async onDisconnected() {
+    this.getLogger().logSession(`SieveAbstractSession: onDisconnected`);
+
+    // TODO Do we really need this?
+    await this.disconnect(true);
   }
 
   /**
@@ -198,8 +222,6 @@ class SieveSession {
         case "PLAIN":
           return new SieveSaslPlainRequest();
 
-        case "CRAM-MD5":
-          return new SieveSaslCramMd5Request();
 
         case "SCRAM-SHA-1":
           return new SieveSaslScramSha1Request();
@@ -207,6 +229,8 @@ class SieveSession {
         case "SCRAM-SHA-256":
           return new SieveSaslScramSha256Request();
 
+        case "SCRAM-SHA-512":
+          return new SieveSaslScramSha512Request();
         case "EXTERNAL":
           return new SieveSaslExternalRequest();
 
@@ -276,8 +300,13 @@ class SieveSession {
       return;
     }
 
-    if (name === "certerror") {
-      this.listeners.onCertError = callback;
+    if (name === "error") {
+      this.listeners.onError = callback;
+      return;
+    }
+
+    if (name === "disconnected") {
+      this.listeners.onDisconnected = callback;
       return;
     }
 
@@ -337,7 +366,7 @@ class SieveSession {
         request.setAuthorization(authorization);
     }
 
-    await this.sendRequest(request, false);
+    await this.sendRequest(request);
   }
 
   /**
@@ -357,8 +386,6 @@ class SieveSession {
    */
   async startTLS(options) {
 
-    if (this.getSieve().isSecured())
-      return;
 
     if (!this.getSieve().isSecure())
       return;
@@ -366,35 +393,26 @@ class SieveSession {
     if (!this.getSieve().capabilities.tls)
       throw new SieveClientException("Server does not support a secure connection.");
 
-    try {
-      await this.sendRequest(new SieveStartTLSRequest(), false);
+    await this.sendRequest(new SieveStartTLSRequest());
 
       await this.getSieve().startTLS(options);
 
-      // A bug free server we end up with two capability request, one
-      // implicit after startTLS and one explicit from capabilities.
-      // So we have to consume one of them silently...
-      const capabilities = await this.sendRequest([
-        new SieveCapabilitiesRequest(),
-        new SieveInitRequest()], false);
+    // After a successfully tls handshake the server will advertise
+    // the capabilities, especially the SASL mechanism are likely to change.
 
-      this.setCapabilities(capabilities);
+    // Old Cyrus implementation fail to advertise the capabilities.
+    // So that we actively request them as optional. This does not
+    // hurt bug free implementations and makes cyrus happy.
+    const capabilities = await this.sendRequest(new SieveCapabilitiesRequest());
+    this.sendRequest(new SieveInitRequest().makeOptional());
 
-    } catch (ex) {
-      // Upon a cert validation we emit a notification...
-      if (ex instanceof SieveCertValidationException)
-        if (this.listeners.onCertError)
-          this.listeners.onCertError(ex.getSecurityInfo());
-
-      // ... and then rethrow.
-      throw ex;
-    }
+    this.setCapabilities(capabilities);
   }
 
   /**
    * Converts a callback driven request into async/await code.
    *
-   * @param {SieveAbstractRequest|Array<SieveAbstractRequest>} request
+   * @param {SieveAbstractRequest} request
    *   a request or list of request to be executed. They will be queued
    *   at the same time and only the first request is used to resolve
    *   the promise.
@@ -408,20 +426,18 @@ class SieveSession {
    */
   async promisify(request, init) {
 
-    if (!Array.isArray(request))
-      request = [request];
+    // eslint-disable-next-line no-async-promise-executor
+    return await new Promise(async (resolve, reject) => {
 
-    return await new Promise((resolve, reject) => {
-
-      request[FIRST_ELEMENT].addResponseListener((response) => {
+      request.addResponseListener((response) => {
         resolve(response);
       });
 
-      request[FIRST_ELEMENT].addErrorListener((response) => {
+      request.addErrorListener((response) => {
         reject(new SieveServerException(response));
       });
 
-      request[FIRST_ELEMENT].addByeListener((response) => {
+      request.addByeListener((response) => {
 
         if (response.getResponseCode().equalsCode("REFERRAL")) {
           reject(new SieveReferralException(response));
@@ -431,7 +447,7 @@ class SieveSession {
         reject(new SieveServerException(response));
       });
 
-      request[FIRST_ELEMENT].addTimeoutListener((error) => {
+      request.addTimeoutListener((error) => {
 
         if (error) {
           reject(error);
@@ -442,16 +458,35 @@ class SieveSession {
       });
 
 
-      this.getSieve().addRequest(request[FIRST_ELEMENT]);
+      await (this.getSieve().addRequest(request));
 
       if (init)
         init();
 
-      while (request.length > 1) {
-        request.shift();
-        this.getSieve().addRequest(request[FIRST_ELEMENT], true);
-      }
     });
+  }
+
+  /**
+   * Refers the connection to a different server.
+   *
+   * The server can send a referral request to the client at any time.
+   * The client's job is to disconnects and reconnect to the referred
+   * server's hostname and port.
+   *
+   * @param {string} host
+   *   the new hostname
+   * @param {int} port
+   *   the new hostname's port
+   *
+   * @returns {SieveAbstractSession}
+   *   the response for the first request or an exception in case of an error.
+   */
+  async refer(host, port) {
+    this.getLogger().logSession(`SieveAbstractSession: Disconnecting old connection`);
+    await this.disconnect(true);
+
+    this.getLogger().logSession(`SieveAbstractSession: Connecting to referred Server: ${host}:${port}`);
+    return await this.connect(host, port);
   }
 
   /**
@@ -462,11 +497,6 @@ class SieveSession {
    *   at the same time and only the first request is used to resolve
    *   the promise.
    *
-   * @param {boolean} [follow]
-   *   If true or omitted the request should follow server side referrals.
-   *   In case the server responded with a bye and a referral url. The request
-   *   will be queued into the new connections request queue.
-   *
    * @param {Function} [init]
    *   an optional init function which will be called directly after
    *   the first request was queued
@@ -474,33 +504,53 @@ class SieveSession {
    * @returns {SieveAbstractResponse}
    *   the response for the first request or an exception in case of an error.
    */
-  async sendRequest(request, follow, init) {
-
-    if (follow === undefined || follow === null)
-      follow = true;
+  async sendRequest(request, init) {
 
     try {
       return await this.promisify(request, init);
     }
     catch (ex) {
 
-      if (!(ex instanceof SieveReferralException)) {
-        this.getLogger().logSession(`Sending Request failed ${ex}`);
-        throw ex;
+      if ((ex instanceof SieveReferralException) && (this.canRefer)) {
+        this.getLogger().logSession(`Referral received`);
+        this.getLogger().logSession(`Switching to ${ex.getHostname()}:${ex.getPort()}`);
+        await this.refer(ex.getHostname(), ex.getPort());
+        return await this.promisify(request, init);
       }
 
-      if (!follow) {
         this.getLogger().logSession(`Sending Request failed ${ex}`);
         throw ex;
-      }
-
-      await this.disconnect(true);
-
-      this.getLogger().logSession(`Referred to Server: ${ex.getHostname()}`);
-      await this.connect(ex.getHostname(), ex.getPort());
-
-      return await this.promisify(request, init);
     }
+      }
+
+  /**
+   * By default a request will follow automatically a referral.
+   * This means it will transparently disconnect from the old
+   * and reconnect to the new host.
+   *
+   * In case the following is disabled an exception will be thrown
+   * instead.
+   *
+   * You want to disable the implicit referral during stateful phases
+   * like initial connection.
+   *
+   * Imagine the following scenario. The connection is secured via
+   * startTLS and during authentication the referral is received.
+   * Then the automatic referral would then disconnect from the old
+   * host and connect to the new host. Then it would try to continue
+   * with the authentication step on a non secure connection. The startTLS
+   * step simply got lost.
+   */
+  disableReferrals() {
+    this.canRefer = false;
+    }
+  /**
+   * Enables automatic referral following.
+   *
+   * see the disableReferrals method for more details.
+   */
+  enableReferrals() {
+    this.canRefer = true;
   }
 
 
@@ -532,6 +582,11 @@ class SieveSession {
     let proxy = null;
     if (this.listeners.onProxyLookup)
       proxy = await this.listeners.onProxyLookup(hostname, port);
+    // A referral during connection means we need to connect to the new
+    // server and start the whole handshake process again.
+    this.disableReferrals();
+
+    try {
 
     const init = () => {
       this.getSieve().connect(
@@ -542,11 +597,24 @@ class SieveSession {
     };
 
     this.setCapabilities(
-      await this.sendRequest(new SieveInitRequest(), false, init));
+        await this.sendRequest(new SieveInitRequest(), init));
 
     await this.startTLS();
 
     await this.authenticate();
+    } catch (ex) {
+
+      if (!(ex instanceof SieveReferralException))
+        throw ex;
+
+      // In case we got a referral we renegotiate the whole authentication
+      this.getLogger().logSession(`Referral received during authentication`);
+      this.getLogger().logSession(`Switching to ${ex.getHostname()}:${ex.getPort()}`);
+
+      await this.refer(ex.getHostname(), ex.getPort());
+    } finally {
+      this.enableReferrals(true);
+    }
 
     return this;
   }
@@ -568,6 +636,7 @@ class SieveSession {
     if (this.getSieve() === null)
       return this;
 
+    this.getLogger().logSession(`SieveAbstractSession: Disconnecting Session ${force}`);
     // We try to exit with a graceful Logout request...
     if (!force && this.getSieve().isAlive()) {
       try {
@@ -579,6 +648,7 @@ class SieveSession {
 
     // ... in case it failed for we do it the hard way
     if (this.getSieve()) {
+      this.getLogger().logSession(`SieveAbstractSession: Forcing Disconnect`);
       await this.getSieve().disconnect();
       this.sieve = null;
     }
@@ -774,9 +844,9 @@ class SieveSession {
    * hangup the connection.
    */
   async logout() {
-    await this.sendRequest(new SieveLogoutRequest(), false);
+    await this.sendRequest(new SieveLogoutRequest());
   }
 
 }
 
-export { SieveSession };
+export { SieveAbstractSession };

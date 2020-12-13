@@ -37,4 +37,4 @@ class SieveNodeRequestBuilder extends SieveAbstractRequestBuilder {
   }
 }
 
-export { SieveNodeRequestBuilder };
+export { SieveNodeRequestBuilder as SieveRequestBuilder };

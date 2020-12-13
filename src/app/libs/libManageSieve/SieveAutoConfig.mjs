@@ -65,7 +65,8 @@ class SieveAutoConfig {
 
     const sieve = new Sieve(this.logger);
 
-    return await new Promise((resolve) => {
+    // eslint-disable-next-line no-async-promise-executor
+    return await new Promise(async (resolve) => {
 
       const listener = {
 
@@ -84,7 +85,7 @@ class SieveAutoConfig {
           sieve.disconnect();
         },
 
-        onDisconnect: function () {
+        onDisconnected: function () {
           // we are already disconnected....
           resolve(false);
         }
@@ -93,7 +94,7 @@ class SieveAutoConfig {
       const request = new SieveInitRequest();
       request.addErrorListener(listener.onError);
       request.addResponseListener(listener.onInitResponse);
-      sieve.addRequest(request);
+      await sieve.addRequest(request);
 
       sieve.addListener(listener);
 

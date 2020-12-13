@@ -191,10 +191,17 @@ function packageBootstrap() {
  *   a stream to be consumed by gulp
  */
 function packageSrc() {
-  return src([
-    BASE_DIR_WX + "/**",
-    `!${BASE_DIR_WX}/libs/libManageSieve/**`
-  ]).pipe(dest(BUILD_DIR_WX));
+  const options = {
+    files : [
+      "./**",
+      "!./libs/libManageSieve/**",
+      "!./api/**"
+    ],
+    transpose : new TransposeMjsToJs()
+  };
+
+  return common.pack(
+    BASE_DIR_WX, BUILD_DIR_WX, options);
 }
 
 /**
@@ -223,13 +230,25 @@ function packageLibManageSieve() {
   const BASE_LIB_DIR_WX = path.join(BASE_DIR_WX, "libs", "libManageSieve");
   const BASE_LIB_DIR_COMMON = path.join(common.BASE_DIR_COMMON, "libManageSieve");
 
-  return common.src2(BASE_LIB_DIR_WX)
-    .pipe(common.src2(BASE_LIB_DIR_COMMON))
-    .pipe(new TransposeMjsToJs())
-    .pipe(new TransposeImportToRequire())
-    .pipe(dest(path.join(BUILD_DIR_WX_LIBS, "libManageSieve")));
+  return common.pack(
+    [BASE_LIB_DIR_WX, BASE_LIB_DIR_COMMON],
+    path.join(BUILD_DIR_WX_LIBS, "libManageSieve"),
+    { transpose: new TransposeMjsToJs() }
+  );
 }
 
+/**
+ * Packages the webextension api experiments.
+ *
+ * @returns {Stream}
+ *   a stream to be consumed by gulp
+ */
+function packageExperiments() {
+
+  return common.pack(
+    path.join(BASE_DIR_WX, "api"),
+    path.join(BUILD_DIR_WX, "api"));
+}
 
 /**
  * Copies the common libSieve files into the app's lib folder
@@ -239,18 +258,9 @@ function packageLibManageSieve() {
  */
 function packageLibSieve() {
 
-  const BASE_LIB_DIR_COMMON = path.join(common.BASE_DIR_COMMON, "libSieve");
-
-  const files = [
-    "./**",
-    "!./**/rfc*.txt",
-    "!./**/tests/",
-    "!./**/tests/**"
-  ];
-
-  return common.src2(BASE_LIB_DIR_COMMON, files)
-    .pipe(new TransposeMjsToJs())
-    .pipe(dest(path.join(BUILD_DIR_WX_LIBS, "libSieve")));
+  return common.packageLibSieve(
+    BUILD_DIR_WX_LIBS,
+    new TransposeMjsToJs());
 
 }
 
@@ -262,7 +272,7 @@ function packageLibSieve() {
  *   a stream to be consumed by gulp
  */
 function packageManageSieveUi() {
-  return common.packageManageSieveUi(BUILD_DIR_WX_LIBS);
+  return common.packageManageSieveUi(BUILD_DIR_WX_LIBS, new TransposeMjsToJs());
 }
 
 
@@ -273,7 +283,7 @@ function watchSrc() {
 
   watch(
     ['./src/**/*.js',
-      './src/**/*.jsm',
+      './src/**/*.mjs',
       './src/**/*.html',
       './src/**/*.tpl',
       './src/**/*.css',
@@ -327,7 +337,8 @@ exports['package'] = series(
     packageIcons,
     packageLibManageSieve,
     packageLibSieve,
-    packageManageSieveUi
+    packageManageSieveUi,
+    packageExperiments
   ),
   packageSrc
 );

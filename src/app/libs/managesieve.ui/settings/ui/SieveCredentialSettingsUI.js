@@ -271,7 +271,8 @@ class SieveCredentialsSettingsUI {
         sasl: this.getSaslMechanism()
       },
       authentication: {
-        username: this.getAuthentication()
+        username: this.getAuthentication(),
+        mechanism: 0
       },
       authorization: {
         username: this.getAuthorization(),

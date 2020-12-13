@@ -10,6 +10,7 @@ assignees: ''
 ### Prerequisites
  * [ ] Tried the most recent nightly build
  * [ ] Checked if your issue is already reported.
+ * [ ] Answered all the questions in this template (Or provide a working crystal ball). 
 
 ### What happened? 
 A clear and concise description of what the bug is. 
@@ -22,16 +23,16 @@ A clear and concise description of what the bug is.
 
 ### What did you expect to happen?
 
-### Logs and Traces
+#### Logs and Traces
 If applicable, include a debug log/trace with your issue. Just go to the extensions settings and enable debugging options in the debug tab. Dumping "byte arrays" is usually not necessary. Keep in mind the line starting with "AUTHENTICATE" contains your password. So scramble this line.
 
 If applicable and possible, include information and logs from your mail server.
 
-### Screenshots
+#### Screenshots
 If applicable, add screenshots to help explain your problem.
 
-### Version
-Include information about your system and server.
+### Which Version
+Include information about your system, server and most important if it is about the app or webextension.
 
  - Standalone app or addon version
  - Operating system e.g. Windows, Linux

@@ -21,6 +21,8 @@ const LOG_ACTION = (1 << 1);
 const LOG_UI = (1 << 2);
 // eslint-disable-next-line no-magic-numbers
 const LOG_I18N = (1 << 3);
+// eslint-disable-next-line no-magic-numbers
+const LOG_TRACE = (1 << 5);
 
 const DEFAULT_LEVEL = 0x00;
 
@@ -132,6 +134,11 @@ class SieveLogger {
 
     if ((typeof (prefix) === "undefined") || prefix === null)
       prefix = "";
+    if (this.isLoggable(LOG_TRACE)) {
+      // eslint-disable-next-line no-console
+      console.trace(`[${this.getTimestamp()} ${prefix}] ${message}`);
+      return this;
+    }
 
     // eslint-disable-next-line no-console
     console.log(`[${this.getTimestamp()} ${prefix}] ${message}`);

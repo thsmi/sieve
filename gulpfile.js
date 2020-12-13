@@ -28,7 +28,7 @@ exports['wx:package-xpi'] = series(
   wx.packageXpi
 );
 
-// Web related gulp tats
+// Web related gulp tasks
 exports["web:watch"] = web.watch;
 exports["web:package"] = web.package;
 

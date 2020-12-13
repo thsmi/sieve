@@ -26,8 +26,8 @@ const BASE_DIR_CODEMIRROR = "./node_modules/codemirror";
 const BASE_DIR_COMMON = "./src/common";
 const BASE_DIR_BUILD = "./build";
 
-const BASE_DIR_LIBSIEVE = path.join(BASE_DIR_COMMON, "libSieve");
-const BASE_DIR_MANAGESIEVEUI = path.join(BASE_DIR_COMMON, "managesieve.ui");
+const DIR_LIBSIEVE = "./libSieve";
+const DIR_MANAGESIEVEUI = "./managesieve.ui";
 
 const INDEX_MAJOR = 0;
 const INDEX_MINOR = 1;
@@ -132,21 +132,84 @@ function src2(dir, files) {
 }
 
 /**
+ * Packages the given source directory into the destination directory.
+ * It optically transforms files.
+ *
+ * @param {string|string[]} sources
+ *   a list of files directories.
+ * @param {string} destination
+ *   the folder to which the source files should be copied
+ *
+ * @param {object} options
+ *   additional packaging options. Currently only files and transpose can be set.
+ *
+ *   Files is used to define files to be included or excluded.
+ *
+ *   Transpose point to a vinyl Stream.Transform or an array of Stream.Transform
+ *   object which manipulate the files while streaming.
+ *
+ * @returns {Stream}
+ *   a vinyl file stream.
+ */
+function pack(sources, destination, options) {
+
+  if (!Array.isArray(sources))
+    sources = [sources];
+
+  if (!options)
+    options = {};
+
+  if (!options.transpose)
+    options.transpose = [];
+
+  if (!Array.isArray(options.transpose))
+    options.transpose = [options.transpose];
+
+  let rv;
+
+  for (const source of sources) {
+    const files = src2(source, options.files);
+
+    if (!rv)
+      rv = files;
+    else
+      rv = rv.pipe(files);
+  }
+
+  for (const transpose of options.transpose)
+    rv = rv.pipe(transpose);
+
+  return rv.pipe(dest(destination, "libSieve"));
+}
+
+/**
  * Packages the common libSieve files
  *
  * @param {string} destination
  *   where to place the common libSieve files
  *
+ * @param {Stream.Transform | Stream.Transform[]} [transpose]
+ *   an optional viyl stream transformed to be called while processing
+ *   the files.
+ *
  * @returns {Stream}
  *   a stream to be consumed by gulp
  */
-function packageLibSieve(destination) {
-  return src([
-    BASE_DIR_LIBSIEVE + "/**",
-    "!" + BASE_DIR_LIBSIEVE + "/**/rfc*.txt",
-    "!" + BASE_DIR_LIBSIEVE + "/**/tests/",
-    "!" + BASE_DIR_LIBSIEVE + "/**/tests/**"
-  ], { base: BASE_DIR_COMMON }).pipe(dest(destination));
+function packageLibSieve(destination, transpose) {
+  const options = {
+    files: [
+      "./**",
+      "!./**/rfc*.txt",
+      "!./**/tests/",
+      "!./**/tests/**"
+    ],
+    transpose : transpose
+  };
+
+  return pack(
+    path.join(BASE_DIR_COMMON, DIR_LIBSIEVE),
+    path.join(destination, DIR_LIBSIEVE),
+    options);
 }
 
 /**
@@ -155,13 +218,20 @@ function packageLibSieve(destination) {
  * @param {string} destination
  *   where to place the common managesieve.ui files
  *
+ * @param {Stream.Transform | Stream.Transform[]} [transpose]
+ *   an optional viyl stream transformed to be called while processing
+ *   the files.
+ *
  * @returns {Stream}
  *   a stream to be consumed by gulp
  */
-function packageManageSieveUi(destination) {
-  return src([
-    BASE_DIR_MANAGESIEVEUI + "/**"
-  ], { base: BASE_DIR_COMMON }).pipe(dest(destination));
+function packageManageSieveUi(destination, transpose) {
+
+  return pack(
+    path.join(BASE_DIR_COMMON, DIR_MANAGESIEVEUI),
+    path.join(destination, DIR_MANAGESIEVEUI),
+    { transpose : transpose }
+  );
 }
 
 /**
@@ -330,12 +400,11 @@ async function compressDirectory(zip, dir, options) {
 
     let fileOptions = null;
     if (options.permissions) {
+
+      if (options.permissions["*"])
+        fileOptions = { mode: options.permissions["*"] };
       if (options.permissions[metaPath])
         fileOptions = { mode: options.permissions[metaPath] };
-
-      if (options.permissions["*"]) {
-        fileOptions = { mode: options.permissions["*"] };
-      }
     }
 
     zip.addFile(realPath, metaPath, fileOptions);
@@ -401,7 +470,10 @@ exports["bumpPatchVersion"] = bumpPatchVersion;
 
 exports["updateVersion"] = updateVersion;
 
+exports["pack"] = pack;
 exports["BASE_DIR_BUILD"] = BASE_DIR_BUILD;
 exports["BASE_DIR_COMMON"] = BASE_DIR_COMMON;
+exports["DIR_LIBSIEVE"] = DIR_LIBSIEVE;
+exports["DIR_MANAGESIEVEUI"] = DIR_MANAGESIEVEUI;
 
 exports["src2"] = src2;

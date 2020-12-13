@@ -17,7 +17,6 @@ window.require = function (path) {
       "SieveCapabilitiesResponse": module.exports.SieveCapabilitiesResponse,
       "SieveListScriptsResponse": module.exports.SieveListScriptsResponse,
       "SieveSaslLoginResponse": module.exports.SieveSaslLoginResponse,
-      "SieveSaslCramMd5Response": module.exports.SieveSaslCramMd5Response,
       "SieveGetScriptResponse": module.exports.SieveGetScriptResponse,
       "SieveSaslScramShaResponse": module.exports.SieveSaslScramShaResponse
     };

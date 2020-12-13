@@ -10,8 +10,6 @@
  */
 
 /* global bootstrap */
-/* global SieveServerSettingsUI */
-/* global SieveCredentialsSettingsUI */
 
 import { SieveIpcClient } from "./../utils/SieveIpcClient.js";
 import { SieveLogger } from "./../utils/SieveLogger.js";
@@ -169,31 +167,12 @@ class SieveAbstractAccountUI {
     // ... and append the new element
     settings.appendChild(elm);
 
-    // ... finally connect the listeners.
-    if (elm.querySelector(".sieve-account-delete-server")) {
-      elm.querySelector(".sieve-account-delete-server")
-        .addEventListener("click", () => { this.remove(); });
-    }
-
-    if (elm.querySelector(".sieve-account-edit-server")) {
-      elm.querySelector(".sieve-account-edit-server")
-        .addEventListener("click", () => { this.showServerSettings(); });
-    }
-
-    if (elm.querySelector(".sieve-account-edit-credentials")) {
-      elm.querySelector(".sieve-account-edit-credentials")
-        .addEventListener("click", () => { this.showCredentialSettings(); });
-    }
 
     if (elm.querySelector(".sieve-account-edit-debug")) {
       elm.querySelector(".sieve-account-edit-debug")
         .addEventListener("click", () => { this.showAdvancedSettings(); });
     }
 
-    if (elm.querySelector(".sieve-account-export")) {
-      elm.querySelector(".sieve-account-export")
-        .addEventListener("click", () => { this.exportSettings(); });
-    }
 
   }
 
@@ -246,6 +225,14 @@ class SieveAbstractAccountUI {
     while (scripts.firstChild)
       scripts.removeChild(scripts.firstChild);
 
+    if (!data.length) {
+      const elm = await (new SieveTemplate()).load(`./accounts/account.empty.html`);
+      scripts.appendChild(elm);
+
+      elm
+        .querySelector(".sieve-script-empty-create")
+        .addEventListener("click", () => { this.createScript(); });
+    }
     // Sort the script names by their name...
     data.sort((a, b) => {
       const scriptA = a.script.toUpperCase();
@@ -307,15 +294,6 @@ class SieveAbstractAccountUI {
   }
 
   /**
-   * Asks the user if he is sure to delete the account.
-   * If yes it triggers expunging the account settings.
-   * This can not be undone.
-   */
-  async remove() {
-    await this.accounts.remove(this);
-  }
-
-  /**
    * Shows the settings dialog
    */
   showSettings() {
@@ -324,39 +302,10 @@ class SieveAbstractAccountUI {
   }
 
   /**
-   * Shows the server settings dialog.
-   */
-  async showServerSettings() {
-
-    await (new SieveServerSettingsUI(this)).show();
-
-    this.renderSettings();
-
-    // Update the account name it may have changed.
-    document
-      .querySelector(`#siv-account-${this.id} .siv-account-name`)
-      .textContent = await this.send("account-get-displayname");
-  }
-
-  /**
-   * Shows the credential settings dialog.
-   **/
-  showCredentialSettings() {
-    (new SieveCredentialsSettingsUI(this)).show();
-  }
-
-  /**
    * Show the advanced settings dialog
    */
   showAdvancedSettings() {
     (new SieveDebugSettingsUI(this)).show();
-  }
-
-  /**
-   * Exports the account's settings to a file.
-   */
-  async exportSettings() {
-    await this.send("account-export");
   }
 
   /**

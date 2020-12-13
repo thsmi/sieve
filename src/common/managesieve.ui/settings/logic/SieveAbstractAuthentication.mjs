@@ -35,7 +35,6 @@ class SieveAbstractAuthentication {
    * @returns {string | null}
    *   the password or null e.g. when the password prompt was dismissed.
    **/
-  // eslint-disable-next-line require-await
   async getPassword() {
     throw new Error("Implement getPassword()");
   }
@@ -48,7 +47,6 @@ class SieveAbstractAuthentication {
    * @returns {string}
    *   the username as string.
    **/
-  // eslint-disable-next-line require-await
   async getUsername() {
     throw new Error("Implement getUsername()");
   }

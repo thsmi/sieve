@@ -24,6 +24,9 @@
  *  <p>
  */
 
+import { SieveTimer } from "./SieveTimer.mjs";
+import { SieveResponseParser } from "./SieveResponseParser.mjs";
+import { SieveRequestBuilder } from "./SieveRequestBuilder.mjs";
 
 const DEFAULT_TIMEOUT = 20000;
 const NO_IDLE = 0;
@@ -64,6 +67,8 @@ class SieveAbstractClient {
 
     this.idleDelay = 0;
 
+    this.timeoutTimer = new SieveTimer();
+    this.idleTimer = new SieveTimer();
 
     // out of the box we support the following manage sieve commands...
     // ... the server might advertise additional commands they are added ...
@@ -131,7 +136,7 @@ class SieveAbstractClient {
 
   /**
    * Gets a reference to the current logger
-   * @returns {SieveAbstractLogger}
+   * @returns {SieveLogger}
    *   the current logger
    *
    * @abstract
@@ -167,18 +172,6 @@ class SieveAbstractClient {
   }
 
   /**
-   * Checks if the socket is upgraded to a secure level.
-   *
-   * @abstract
-   *
-   * @returns {boolean}
-   *   true in case the socket is secure, otherwise false
-   */
-  isSecured() {
-    throw new Error("Implement isSecured()");
-  }
-
-  /**
    * This method secures the connection to the sieve server. By activating
    * Transport Layer Security all Data exchanged is encrypted.
    *
@@ -190,8 +183,6 @@ class SieveAbstractClient {
    *   a self reference
    **/
   startTLS() {
-    if (this.isSecured())
-      return this;
 
     if (!this.isSecure())
       throw new Error("TLS can't be started no secure socket");
@@ -207,6 +198,8 @@ class SieveAbstractClient {
    * An internal callback which is triggered when the request timeout timer
    * should be started. This is typically whenever a new request is about to
    * be send to the server.
+   *
+   * @abstract
    */
   onStartTimeout() {
     // clear any existing timeouts
@@ -225,6 +218,8 @@ class SieveAbstractClient {
    * An internal callback which is triggered when the request timeout timer
    * should be stopped. This is typically whenever a response was received and
    * the request was completed.
+   *
+   * @abstract
    */
   onStopTimeout() {
 
@@ -271,21 +266,30 @@ class SieveAbstractClient {
   }
 
   /**
+   * Returns the timer used to track timeouts.
+   * It is guaranteed to be non null.
    *
+   * @returns {SieveTimer}
+   *   the current timeout timer
    */
   getTimeoutTimer() {
-    throw new Error("Implement getTimeoutTimer()");
+    return this.timeoutTimer;
   }
 
   /**
+   * Returns the timer used to track idle.
+   * It is guaranteed to be non null.
    *
+   * @returns {SieveTimer}
+   *   the current idle timer.
    */
   getIdleTimer() {
-    throw new Error("Implement getIdleTimer()");
+    return this.idleTimer;
   }
 
   /**
    * Internal method trigged after a request was completely processed.
+   * @abstract
    */
   onStartIdle() {
     // first ensure the timer is stopped..
@@ -302,7 +306,6 @@ class SieveAbstractClient {
 
   /**
    * Internal method triggered when a new request is processed.
-   * @abstract
    */
   onStopIdle() {
     this.getIdleTimer().cancel();
@@ -347,7 +350,7 @@ class SieveAbstractClient {
   }
 
   /**
-   *
+   * Sets the callback listener.
    * @param {*} listener
    */
   addListener(listener) {
@@ -361,30 +364,19 @@ class SieveAbstractClient {
    * until they are fully processed. If the request fails, the error
    * handler is triggered and the request is dequeued.
    *
-   * A greedy request in contrast accepts whatever it can get. Upon an
-   * error greedy request are not dequeued. They fail silently and the next
-   * requests is processed. This continues until a request succeeds, a non
-   * greedy request fails or the queue has no more requests.
-   *
    * @param {SieveAbstractRequest} request
    *   the request object which should be added to the queue
-   *
-   * @param {boolean} [greedy]
-   *   if true requests fail silently
    *
    * @returns {SieveAbstractClient}
    *   a self reference
    */
-  addRequest(request, greedy) {
+  async addRequest(request) {
 
     // Attach the global bye listener only when needed.
     if (!request.byeListener)
       if (this.listener && this.listener.onByeResponse)
         request.addByeListener(this.listener.onByeResponse);
 
-    // TODO: we should really store this internally, instead of tagging objects
-    if (greedy)
-      request.isGreedy = true;
 
     // Add the request to the message queue
     this.requests.push(request);
@@ -399,7 +391,7 @@ class SieveAbstractClient {
     let idx;
     // ... or it contains more than one full request
     for (idx = 0; idx < this.requests.length; idx++)
-      if (this.requests[idx].isUnsolicited())
+      if (this.requests[idx].hasRequest())
         break;
 
     if (idx === this.requests.length)
@@ -408,7 +400,7 @@ class SieveAbstractClient {
     if (this.requests[idx] !== request)
       return this;
 
-    this._sendRequest();
+    await this._sendRequest();
 
     return this;
   }
@@ -462,9 +454,9 @@ class SieveAbstractClient {
    * @param {Error} [reason]
    *   the optional reason why the client was disconnected.
    */
-  disconnect(reason) {
+  async disconnect(reason) {
 
-    this.getLogger().logState(`Disconnecting ${this.host}:${this.port}...`);
+    this.getLogger().logState(`SieveAbstractClient: Disconnecting ${this.host}:${this.port}...`);
 
     this.getIdleTimer().cancel();
     this.getTimeoutTimer().cancel();
@@ -504,17 +496,11 @@ class SieveAbstractClient {
     // clear receive buffer and any pending request...
     this.data = null;
 
-    let idx = 0;
-    while ((idx < this.requests.length) && (this.requests[idx].isGreedy))
-      idx++;
 
     // ... and cancel the active request. It will automatically invoke the ...
     // ... request's onTimeout() listener.
-    if (idx < this.requests.length) {
-      const request = this.requests[idx];
-      this.requests.splice(0, idx + 1);
-
-      request.cancel(new Error("Timeout"));
+    if (this.requests.length) {
+      this.requests.shift().cancel(new Error("Timeout"));
       return;
     }
 
@@ -528,26 +514,24 @@ class SieveAbstractClient {
 
   /**
    * Creates a new request parser instance
-   * @abstract
    *
    * @param {byte[]} data
    *   the data to be parsed
-   * @returns {SieveNodeResponseParser}
+   * @returns {SieveAbstractResponseParser}
    *   the request parser
    */
   createParser(data) {
-    throw new Error(`Implement SieveAbstractClient::createParser(${data})`);
+    return new SieveResponseParser(data);
   }
 
   /**
    * Creates a new response builder instance
-   * @abstract
    *
    * @returns {SieveAbstractRequestBuilder}
    *   the response builder.
    */
   createRequestBuilder() {
-    throw new Error("Implement SieveAbstractClient::createRequestBuilder");
+    return new SieveRequestBuilder();
   }
 
   /**
@@ -556,10 +540,12 @@ class SieveAbstractClient {
    * @param {byte[]} data
    *   the data received.
    */
-  onReceive(data) {
+  async onReceive(data) {
+
+    this.getLogger().logState("[SieveAbstractClient:onReceive] Processing received data");
 
     if (this.getLogger().isLevelStream())
-      this.getLogger().logStream(`Server -> Client [Byte Array]\n ${data}`);
+      this.getLogger().logStream(`[SieveAbstractClient:onReceive] Server -> Client [Byte Array]\n ${data}`);
 
     if (this.getLogger().isLevelResponse())
       this.getLogger().logResponse(data);
@@ -571,114 +557,107 @@ class SieveAbstractClient {
       this.data = this.data.concat(data);
 
     // is a request handler waiting?
-    if (this.requests.length === 0)
+    if (this.requests.length === 0) {
+      this.getLogger().logState("[SieveAbstractClient:onReceive] Processing received data");
       return;
+    }
 
     // first clear the timeout, parsing starts...
     this.onStopTimeout();
 
-    // As we are callback driven, we need to lock the event queue. Otherwise our
-    // callbacks could manipulate the event queue while we are working on it.
-    let requests = this._lockMessageQueue();
+    // Sound strange but as we are async, we need to lock the event queue.
+    // Otherwise an async function may manipulate the event queue while
+    // we are waiting for a callback.
+    this.getLogger().logState("[SieveAbstractClient:onReceive] Locking Message Queue");
+    const requests = this._lockMessageQueue();
+    try {
+      let offset = 0;
 
-    // greedy request take might have an response but do not have to have one.
-    // They munch what they get. If there's a request they are fine,
-    // if there's no matching request it's also ok.
-    let idx = -1;
+      while (offset !== requests.length) {
 
-    while (idx + 1 < requests.length) {
-      idx++;
+        this.getLogger().logState(`[SieveAbstractClient:onReceive] `
+          + `Start parsing ${offset}, ${requests.length}, ${this.data.length}`);
+
+        // We can abort if we ran out of data
+        if (!this.data.length) {
+          this.getLogger().logState("[SieveAbstractClient:onReceive] ... ran out of data, waiting for more");
+          return;
+        }
       const parser = this.createParser(this.data);
 
       try {
-        requests[idx].addResponse(parser);
+          await (requests[offset].addResponse(parser));
 
         // We do some cleanup as we don't need the parsed data anymore...
         this.data = parser.getByteArray();
 
-        // parsing was successful, so drop every previous request...
-        // ... keep in mid previous greedy request continue on exceptions.
-        requests = requests.slice(idx);
+          this.getLogger().logState(`[SieveAbstractClient:onReceive] `
+            + `Parsing successfully, remaining ${this.data.length} bytes`);
 
-        // we started to parse the request, so it can't be greedy anymore.
+        } catch (ex) {
+
+          if (requests[offset].isOptional()) {
+            this.getLogger().logState(`[SieveAbstractClient:onReceive] `
+              + `... failed but is optional, skipping to next request`);
+
+            offset++;
+            continue;
       }
-      catch (ex) {
-        // request could be fragmented or something else, as it's greedy,
-        // we don't care about any exception. We just log them in oder
-        // to make debugging easier....
+          // Parsing the response failed. This is most likely caused by fragmentation
+          // and will be resolved as soon as the remaining bytes arrive.
+          //
+          // In case it is really a syntax error the we will run into a timeout.
+          //
+          // So in either way the next packet or the timeout will resolve this
+          // situation for us.
         if (this.getLogger().isLevelState()) {
           this.getLogger().logState(`Parsing Warning in libManageSieve/Sieve.js:\\n${ex.toString()}`);
           this.getLogger().logState(ex.stack);
         }
 
-        // a greedy request might or might not get an request, thus
-        // it's ok if it fails
-        if (requests[idx].isGreedy)
-          continue;
-
-        // ... but a non greedy response must parse without an error. Otherwise...
-        // ... something is broken. this is most likely caused by a fragmented ...
-        // ... packet, but could be also a broken response. So skip processing...
-        // ... and restart the timeout. Either way the next packet or the ...
-        // ... timeout will resolve this situation for us.
-
-        this._unlockMessageQueue(requests);
+          // Restore the message queue and restart the timer.
         this.onStartTimeout();
 
+          this.getLogger().logState("[SieveAbstractClient:onReceive] Waiting for more data to continue");
         return;
       }
 
-      // Request is completed...
-      if (!requests[0].hasNextRequest()) {
-        // so remove it from the event queue.
-        const request = requests.shift();
-        // and update the index
-        idx--;
+        // Remove the request in case it is completed.
+        if (!requests[offset].hasNextRequest()) {
+          requests.splice(0, offset + 1);
+          offset = 0;
 
-        // ... if it was greedy, we munched an unexpected packet...
-        // ... so there is still a valid request dangling around.
-        if (request.isGreedy)
+          this.getLogger().logState(`[SieveAbstractClient:onReceive] `
+            + `Removing request from queue ${offset}, ${requests.length}, ${this.data.length}`);
           continue;
       }
 
-      if (!parser.isEmpty())
-        continue;
+      }
+    } finally {
 
       this._unlockMessageQueue(requests);
-
-
-      // Are there any other requests waiting in the queue.
-
-      // TODO FIX ME should always be dispatched, to relax the main thread.
-      // But in mozilla modules we don't have access to a window object and
-      // timeouts are more complicated.
-
-      // var that = this;
-      // window.setTimeout(function () {that._sendRequest()}, 0);
-
-      this._sendRequest();
-
-      return;
     }
 
 
-    // we end up here only if all responses where greedy or there were no...
-    // ... response parser at all. Thus all we can do is release the message...
-    // ... queue, cache the data and wait for a new response to be added.
+    // Finally we need to check if a new request arrived while we were
+    // parsing the response and restart the message processing
+    if (this.requests.length) {
+      this.getLogger().logState("[SieveAbstractClient:onReceive] Restarting request processing");
+      await this._sendRequest();
+    }
 
-    this._unlockMessageQueue(requests);
 
-    this.getLogger().logState("Skipping Event Queue");
+    this.getLogger().logState("[SieveAbstractClient:onReceive] Finished processing received data");
   }
 
   /**
-   *
+   * Send the next request, if available.
    */
-  _sendRequest() {
+  async _sendRequest() {
 
     let idx = 0;
     while (idx < this.requests.length) {
-      if (this.requests[idx].isUnsolicited())
+      if (this.requests[idx].hasRequest())
         break;
 
       idx++;
@@ -691,7 +670,7 @@ class SieveAbstractClient {
     // ... in case the socket is jammed...
     this.onStartTimeout();
 
-    const output = this.requests[idx].getNextRequest(this.createRequestBuilder()).getBytes();
+    const output = (await this.requests[idx].getNextRequest(this.createRequestBuilder())).getBytes();
 
     if (this.getLogger().isLevelRequest())
       this.getLogger().logRequest(`Client -> Server:\n${output}`);
@@ -713,10 +692,20 @@ class SieveAbstractClient {
   }
 
   /**
+   * Locks the message queue.
    *
+   * We are async which means while waiting for a callback, some other
+   * function may manipulate the event queue.
+   *
+   * It technically sets a lock/semaphore and then removes all entries from
+   * the request queue and returns.
+   *
+   * @returns {SieveAbstractRequest[]}
+   *   a list with all of the locked requests.
    */
   _lockMessageQueue() {
     this.queueLocked = true;
+    // Copies the requests array.
     const requests = this.requests.concat();
 
     this.requests = [];
@@ -725,8 +714,12 @@ class SieveAbstractClient {
   }
 
   /**
+   * Unlocks the message queue.
    *
-   * @param {*} requests
+   * It concatenates the locked requests and newly added requests.
+   *
+   * @param {SieveAbstractRequest[]} requests
+   *   typically the processed _lockMessageQueue list after processing it.
    */
   _unlockMessageQueue(requests) {
     this.requests = requests.concat(this.requests);

@@ -11,27 +11,64 @@
 
 
 import { SieveAbstractAccountUI } from "./SieveAbstractAccountUI.js";
-import { SieveServerSettingsUI } from "./../settings/ui/SieveServerSettingsUI.js";
 import { SieveCredentialsSettingsUI } from "./../settings/ui/SieveCredentialSettingsUI.js";
+import { SieveServerSettingsUI } from "./../settings/ui/SieveServerSettingsUI.js";
 
 /**
  * A UI renderer for a sieve account
  */
 class SieveNodeAccountUI extends SieveAbstractAccountUI{
 
+  /**
+   * Renders the settings pane
+   *
+   */
+  async renderSettings() {
+
+    await super.renderSettings();
+
+    const elm = document.querySelector(`#siv-account-${this.id} .sieve-settings-content`);
+
+    // ... finally connect the listeners.
+    if (elm.querySelector(".sieve-account-delete-server")) {
+      elm.querySelector(".sieve-account-delete-server")
+        .addEventListener("click", () => { this.remove(); });
+    }
+
+    if (elm.querySelector(".sieve-account-edit-server")) {
+      elm.querySelector(".sieve-account-edit-server")
+        .addEventListener("click", () => { this.showServerSettings(); });
+    }
+
+    if (elm.querySelector(".sieve-account-edit-credentials")) {
+      elm.querySelector(".sieve-account-edit-credentials")
+        .addEventListener("click", () => { this.showCredentialSettings(); });
+    }
+
+    if (elm.querySelector(".sieve-account-export")) {
+      elm.querySelector(".sieve-account-export")
+        .addEventListener("click", () => { this.exportSettings(); });
+    }
+
+  }
+
+
+
+  /**
+   * Asks the user if he is sure to delete the account.
+   * If yes it triggers expunging the account settings.
+   * This can not be undone.
+   */
+  async remove() {
+    await this.accounts.remove(this);
+  }
 
   /**
    * Shows the server settings dialog.
-   * @returns {Promise<boolean>}
-   *   false in case the dialog was dismissed, otherwise true.
    */
   async showServerSettings() {
 
-    const rv = await (new SieveServerSettingsUI(this)).show();
-
-    // render settings in case they got changed.
-    if (rv === false)
-      return rv;
+    await (new SieveServerSettingsUI(this)).show();
 
     this.renderSettings();
 
@@ -40,22 +77,13 @@ class SieveNodeAccountUI extends SieveAbstractAccountUI{
       .querySelector(`#siv-account-${this.id} .siv-account-name`)
       .textContent = await this.send("account-get-displayname");
 
-    return rv;
   }
 
   /**
    * Shows the credential settings dialog.
-   * @returns {Promise<boolean>}
-   *   false in case the dialog was dismissed otherwise true.
    **/
-  async showCredentialSettings() {
-
-    const rv = await (new SieveCredentialsSettingsUI(this)).show();
-
-    if (rv === true)
-      this.renderSettings();
-
-    return rv;
+  showCredentialSettings() {
+    (new SieveCredentialsSettingsUI(this)).show();
   }
 
 

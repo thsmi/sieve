@@ -49,7 +49,7 @@
      * Initiates a connection. It waits until the sandbox signals
      * its readiness.
      *
-     * @returns {undefined}
+     * @returns {Promise<undefined>}
      */
     async connect() {
       return await new Promise((resolve, reject) => {
@@ -64,7 +64,7 @@
 
           if (msg.type === `ReadySignal`) {
             cleanup();
-            resolve();
+            resolve(msg.result);
             return;
           }
         };
@@ -122,9 +122,9 @@
 
     /**
      * Destroys the sandbox including the context.
-     * @returns {undefined}
+     *
+     * @returns {Promise<undefined>}
      */
-    // eslint-disable-next-line require-await
     async destroy() {
 
       return new Promise((resolve, reject) => {
@@ -180,9 +180,6 @@
      * @param {*} report
      * @param {*} type
      * @param {*} data
-     *
-     * @returns {object}
-     *   the response from the child process.
      */
     async execute(report, type, data) {
 

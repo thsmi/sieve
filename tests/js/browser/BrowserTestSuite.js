@@ -74,7 +74,6 @@
     /**
      * Destroys the sandbox and removes the Iframe.
      */
-    // eslint-disable-next-line require-await
     async destroy() {
       const el = document.getElementById(this.getUniqueId());
 

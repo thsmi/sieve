@@ -12,7 +12,7 @@
 
 import { SieveAbstractAuthentication } from "./SieveAbstractAuthentication.mjs";
 
-import { SieveIpcClient } from "./../../utils/SieveIpcClient.js";
+import { SieveIpcClient } from "./../../utils/SieveIpcClient.mjs";
 
 let keytar = null;
 const KEY_USERNAME = "authentication.username";

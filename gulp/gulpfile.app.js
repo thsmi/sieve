@@ -439,7 +439,6 @@ function watchSrc() {
     ['./src/**/*.js',
       './src/**/*.mjs',
       './src/**/*.html',
-      './src/**/*.tpl',
       './src/**/*.css',
       './src/**/*.xul',
       './src/**/*.dtd',

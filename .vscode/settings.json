@@ -7,10 +7,6 @@
     "build/**": true
   },
   "eslint.enable": true,
-  "files.associations": {
-    "*.tpl": "html",
-    "*.jsm": "javascript"
-  },
   "files.eol": "\n",
   "editor.tabSize": 2,
   "editor.useTabStops": false,

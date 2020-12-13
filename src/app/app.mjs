@@ -16,8 +16,8 @@ const FIRST_ELEMENT = 0;
 const { ipcRenderer } = require('electron');
 
 // Import the node modules into our global namespace...
-import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.js";
-import { SieveIpcClient } from "./libs/managesieve.ui/utils/SieveIpcClient.js";
+import { SieveLogger } from "./libs/managesieve.ui/utils/SieveLogger.mjs";
+import { SieveIpcClient } from "./libs/managesieve.ui/utils/SieveIpcClient.mjs";
 
 import {
   SieveCertValidationException
@@ -25,15 +25,15 @@ import {
 
 import { SieveSessions } from "./libs/libManageSieve/SieveSessions.mjs";
 
-import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccounts.js";
+import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccounts.mjs";
 
-import { SieveUpdater } from "./libs/managesieve.ui/updater/SieveUpdater.js";
-import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.js";
+import { SieveUpdater } from "./libs/managesieve.ui/updater/SieveUpdater.mjs";
+import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.mjs";
 
-import { SieveThunderbirdImport } from "./libs/managesieve.ui/importer/SieveThunderbirdImport.js";
+import { SieveThunderbirdImport } from "./libs/managesieve.ui/importer/SieveThunderbirdImport.mjs";
 import { SieveAutoConfig } from "./libs/libManageSieve/SieveAutoConfig.mjs";
 
-import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.js";
+import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
 
 (async function () {
   const logger = SieveLogger.getInstance();

@@ -16,19 +16,6 @@ import { SieveAbstractAccount } from "./SieveAbstractAccount.mjs";
  * Manages the account specific settings
  */
 class SieveAccount extends SieveAbstractAccount {
-
-  /**
-   *
-   */
-  getProxy() {
-    return {
-      getProxyInfo: function () {
-        return null;
-      }
-    };
-  }
-
-
 }
 
 export { SieveAccount };

@@ -89,17 +89,6 @@ class SieveNodeSessions {
     return await (await account.getAuthorization()).getAuthorization();
   }
 
-  /**
-   * Called when a proxy lookup is needed.
-   *
-   * @param {SieveAccount} account
-   *   the current account.
-   * @returns {object}
-   *   the proxy information.
-   */
-  async onProxyLookup(account) {
-    return await account.getProxy().getProxyInfo();
-  }
 
 
   /**
@@ -132,10 +121,8 @@ class SieveNodeSessions {
 
     const session = new SieveSession(id, options);
 
-    // TODO move to app so that it can be shared with the wx implementation.
     session.on("authenticate", async (hasPassword) => { return await this.onAuthenticate(account, hasPassword); });
     session.on("authorize", async () => { return await this.onAuthorize(account); });
-    session.on("proxy", async (hostname, port) => { return await this.onProxyLookup(account, hostname, port); });
 
     this.sessions.set(id, session);
   }

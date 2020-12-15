@@ -67,6 +67,7 @@
 
   const NS_BASE_STREAM_CLOSED = 0x80470002;
   const NS_ERROR_FAILURE = 0x80004005;
+  const NS_FAILURE_FLAG = 0x80000000;
 
   // eslint-disable-next-line no-magic-numbers
   const LOG_STATE = (1 << 2);
@@ -241,10 +242,14 @@
      * We use it only to detect the point when we are connected and
      * ready to send and receive data.
      *
-     * @param {*} transport
-     * @param {*} status
-     * @param {*} progress
-     * @param {*} progressMax
+     * @param {nsITransport} transport
+     *   the transport which triggered this status update
+     * @param {int} status
+     *   the status as error code
+     * @param {int} progress
+     *   the amount of data read or written depending on the status code.
+     * @param {int} progressMax
+     *   the maximum amount of data which will be read or written.
      */
     // eslint-disable-next-line no-unused-vars
     onTransportStatus(transport, status, progress, progressMax) {
@@ -314,7 +319,7 @@
       }
 
       // In case is it is no error code we can skip.
-      if (!(status & 0x80000000)) {
+      if (!(status & NS_FAILURE_FLAG)) {
         this.log(`[SieveSocketApi:onInputStreamError()] ... skipping, `
           + `${status.toString(STRING_AS_HEX)} is not an error code`);
         return;
@@ -635,16 +640,17 @@
      *
      * @private
      * @param {nsIRequest} request
-     *   thr request for which the proxy information as requested.
-     * @param {*} aURI
-     * @param {*} aProxyInfo
+     *   the request for which the proxy information as requested.
+     * @param {nsIChannel} channel
+     *   the channel for which the proxy information was requested.
+     * @param {nsIProxyInfo} aProxyInfo
      *   the proxy information from the lookup, if null a direct
      *   connection will be used.
-     * @param {*} status
-     *
+     * @param {int} status
+     *   the failure code in case the proxy could not be resolved.
      **/
     // eslint-disable-next-line no-unused-vars
-    onProxyAvailable(request, aURI, aProxyInfo, status) {
+    onProxyAvailable(request, channel, aProxyInfo, status) {
 
       if (aProxyInfo)
         this.log(`Using Proxy: [${aProxyInfo.type}] ${aProxyInfo.host}:${aProxyInfo.port}`);

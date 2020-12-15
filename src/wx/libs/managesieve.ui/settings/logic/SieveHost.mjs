@@ -44,7 +44,7 @@ class SieveMozHost extends SieveCustomHost {
    */
   async getKeepAlive() {
     return await this.account.getConfig().getInteger(CONFIG_KEEP_ALIVE_INTERVAL, FIVE_MINUTES);
-    }
   }
+}
 
 export { SieveMozHost as SieveHost };

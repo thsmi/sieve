@@ -294,11 +294,6 @@ class SieveAbstractSession {
       return;
     }
 
-    if (name === "proxy") {
-      this.listeners.onProxyLookup = callback;
-      return;
-    }
-
     if (name === "error") {
       this.listeners.onError = callback;
       return;
@@ -577,10 +572,6 @@ class SieveAbstractSession {
     // TODO do we really need this? Or do we need this only for keep alive?
     this.getSieve().addListener(this);
 
-    let proxy = null;
-    if (this.listeners.onProxyLookup)
-      proxy = await this.listeners.onProxyLookup(hostname, port);
-
     // A referral during connection means we need to connect to the new
     // server and start the whole handshake process again.
     this.disableReferrals();
@@ -592,7 +583,7 @@ class SieveAbstractSession {
           hostname, port,
           this.getOption("secure", true),
           this,
-          proxy);
+          null);
       };
 
       this.setCapabilities(

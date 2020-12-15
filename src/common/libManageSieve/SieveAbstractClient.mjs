@@ -416,19 +416,12 @@ class SieveAbstractClient {
    * @param {boolean} secure
    *   If true, a secure socket will be created. This allows switching to a secure
    *   connection.
-   * @param {nsIProxyInfo[]} proxy
-   *   An Array of nsIProxyInfo Objects which specifies the proxy to use.
-   *   Pass an empty array for no proxy.
-   *   Set to null if the default proxy should be resolved. Resolving proxy info is
-   *   done asynchronous. The connect method returns immediately, without any
-   *   information on the connection status...
-   *   Currently only the first array entry is evaluated.
    *
    * @returns {SieveAbstractClient}
    *   a self reference
    */
   // eslint-disable-next-line no-unused-vars
-  connect(host, port, secure, proxy) {
+  connect(host, port, secure) {
     throw new Error("Implement me SieveAbstractClient ");
   }
 

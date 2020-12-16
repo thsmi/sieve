@@ -67,8 +67,28 @@ class SieveDebugSettingsUI {
     dialog.querySelector(".siv-settings-hide-advanced")
       .addEventListener("click", () => { this.hideAdvanced(); });
 
-    this.hideAdvanced();
+    dialog.querySelector(".siv-settings-open-developer-tools")
+      .addEventListener("click", () => { this.openDeveloperTools(); });
 
+    dialog.querySelector(".siv-settings-reload-ui")
+      .addEventListener("click", () => { this.reloadApp(); });
+
+
+    this.hideAdvanced();
+  }
+
+  /**
+   * Reloads the application.
+   */
+  reloadApp() {
+    this.account.send("reload-ui");
+  }
+
+  /**
+   * Opens the developer tools.
+   */
+  openDeveloperTools() {
+    this.account.send("open-developer-tools");
   }
 
   /**

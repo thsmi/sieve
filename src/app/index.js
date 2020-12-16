@@ -53,6 +53,19 @@
     return await app.getVersion();
   });
 
+  ipcMain.handle("open-developer-tools", () => {
+    // Open the DevTools.
+    win.webContents.openDevTools({
+      "mode": "detach",
+      "activate" : true
+    });
+  });
+
+  ipcMain.handle("reload-ui", () => {
+    // Force reload...
+    win.webContents.reloadIgnoringCache();
+  });
+
   /**
    * Creates the main window
    */

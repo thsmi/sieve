@@ -238,5 +238,8 @@
   "debug.global.actions" : "User Events and Actions",
   "debug.global.ipc" : "IPC Messages",
   "debug.global.widgets" : "Widgets",
-  "debug.global.i18n" : "Internationalization (I18n)"
+  "debug.global.i18n" : "Internationalization (I18n)",
+
+  "debug.console.show" : "Show Console",
+  "debug.ui.reload" : "Reload UI"
 }

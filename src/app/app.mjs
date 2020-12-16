@@ -587,6 +587,14 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
       logger.logAction(`Set default value for ${name}`);
 
       await accounts.getEditor().setValue(name, value);
+    },
+
+    "open-developer-tools": async() => {
+      await ipcRenderer.invoke("open-developer-tools");
+    },
+
+    "reload-ui" : async() => {
+      await ipcRenderer.invoke("reload-ui");
     }
   };
 

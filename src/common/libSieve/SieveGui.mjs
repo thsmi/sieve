@@ -300,7 +300,7 @@ async function main() {
   document.querySelector("#CapabilitiesReset")
     .addEventListener("click", () => { loadCapabilities(); });
 
-  document.querySelector('a[data-toggle="tab"][href="#debugcapabilities"]')
+  document.querySelector('a[data-bs-toggle="tab"][href="#debugcapabilities"]')
     .addEventListener('show.bs.tab', function () { loadCapabilities(); });
 
 

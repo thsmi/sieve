@@ -162,7 +162,7 @@ class SieveAnyOfAllOfUI extends SieveDialogBoxUI {
 
       const ul = document.createElement("ul");
       ul.classList.add("mb-0");
-      ul.classList.add("pl-3");
+      ul.classList.add("ps-3");
 
       const li = document.createElement("li");
       li.appendChild(test[TEST_ELEMENT].html());

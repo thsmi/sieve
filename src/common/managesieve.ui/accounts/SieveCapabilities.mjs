@@ -25,7 +25,7 @@ class SieveCapabilities {
    */
   async show(capabilities) {
 
-    document.querySelector("#ctx").appendChild(
+    document.querySelector("#ctx").append(
       await (new SieveTemplate()).load("./accounts/account.capabilities.html"));
 
     document.querySelector("#sieve-capabilities-server").textContent
@@ -50,7 +50,7 @@ class SieveCapabilities {
         resolve();
 
         const elm = document.querySelector('#sieve-dialog-capabilities');
-        elm.parentNode.removeChild(elm);
+        elm.remove();
 
         modal.dispose();
       });

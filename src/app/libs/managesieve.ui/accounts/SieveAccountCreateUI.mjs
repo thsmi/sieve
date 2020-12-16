@@ -28,7 +28,7 @@ class SieveAccountCreateUI {
 
     const dialog = await (new SieveTemplate())
       .load("./accounts/account.dialog.create.html");
-    document.querySelector("#ctx").appendChild(dialog);
+    document.querySelector("#ctx").append(dialog);
 
     return await new Promise((resolve) => {
 
@@ -53,7 +53,7 @@ class SieveAccountCreateUI {
 
       modal.show();
       dialog.addEventListener('hidden.bs.modal', () => {
-        dialog.parentNode.removeChild(dialog);
+        dialog.remove();
         resolve(false);
       });
     });

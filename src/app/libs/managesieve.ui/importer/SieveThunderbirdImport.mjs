@@ -79,7 +79,7 @@ class SieveThunderbirdImport {
     const file = fs.readFileSync(
       path.join(directory, "profiles.ini"), "utf-8");
 
-    const sections = file.split(/\[\w*\]/gm);
+    const sections = file.split(/\[\w*]/gm);
 
     for (let section of sections) {
 

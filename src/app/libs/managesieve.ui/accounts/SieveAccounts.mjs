@@ -28,7 +28,7 @@ class SieveNodeAccounts extends SieveAbstractAccounts {
 
     if (!document.querySelector(".siv-accounts-items")) {
 
-      document.querySelector(".siv-accounts").appendChild(
+      document.querySelector(".siv-accounts").append(
         (await (new SieveTemplate()).load("./accounts/accounts.html")));
 
       document.querySelector("#sieve-account-import-file")

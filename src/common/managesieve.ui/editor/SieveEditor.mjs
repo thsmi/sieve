@@ -67,7 +67,7 @@ class SieveEditorUI extends SieveEditorController {
    */
   async render() {
 
-    document.querySelector("#sieve-editor").appendChild(
+    document.querySelector("#sieve-editor").append(
       await (new SieveTemplate()).load("./editor/editor.html"));
 
     await this.getTextEditor().render();
@@ -146,7 +146,7 @@ class SieveEditorUI extends SieveEditorController {
   hideErrorMessage() {
     const elm = document.querySelector("#sieve-editor-error");
     if (elm !== null)
-      elm.parentNode.removeChild(elm);
+      elm.remove();
   }
 
   /**
@@ -163,7 +163,7 @@ class SieveEditorUI extends SieveEditorController {
 
     this.hideErrorMessage();
 
-    document.querySelector("#sieve-editor-errors").appendChild(content);
+    document.querySelector("#sieve-editor-errors").append(content);
 
     // eslint-disable-next-line no-new
     new bootstrap.Alert(content);
@@ -408,12 +408,12 @@ class SieveEditorUI extends SieveEditorController {
 
     const parent = document.querySelector("#sieve-content-settings");
     while (parent.firstChild)
-      parent.removeChild(parent.firstChild);
+      parent.firstChild.remove();
 
     await this.getTextEditor().renderSettings();
     // this.getGraphicalEditor().renderSettings();
 
-    parent.appendChild(
+    parent.append(
       await (new SieveTemplate()).load("./editor/editor.settings.defaults.html"));
 
     document.querySelector("#editor-settings-save-defaults")

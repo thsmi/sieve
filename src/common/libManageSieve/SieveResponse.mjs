@@ -49,7 +49,7 @@ const TOKEN_OK = [CHAR_O, CHAR_K];
 const TOKEN_BYE = [CHAR_B, CHAR_Y, CHAR_E];
 const TOKEN_NO = [CHAR_N, CHAR_O];
 
-const SIEVE_VERSION_1 = 1.0;
+const SIEVE_VERSION_1 = 1;
 
 const ONE_CHAR = 1;
 
@@ -349,7 +349,7 @@ class SieveCapabilitiesResponse extends SieveSimpleResponse {
           this.details.extensions = this.parseSieveExtensions(value);
           break;
         case "VERSION":
-          this.details.version = parseFloat(value);
+          this.details.version = Number.parseFloat(value);
           if (this.details.version < SIEVE_VERSION_1)
             break;
 
@@ -360,7 +360,7 @@ class SieveCapabilitiesResponse extends SieveSimpleResponse {
 
           break;
         case "MAXREDIRECTS":
-          this.details.maxredirects = parseInt(value, 10);
+          this.details.maxredirects = Number.parseInt(value, 10);
           break;
         case "LANGUAGE":
           this.details.language = value;
@@ -832,7 +832,7 @@ class SieveSaslScramShaResponse extends SieveStateFullResponse {
     tokens.shift();
 
     // Remove the prefix and convert to an integer
-    return parseInt(token.substr(SHA_PREFIX_LENGTH), 10);
+    return Number.parseInt(token.substr(SHA_PREFIX_LENGTH), 10);
   }
 
   /**

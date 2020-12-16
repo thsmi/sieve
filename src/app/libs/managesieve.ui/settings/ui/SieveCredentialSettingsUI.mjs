@@ -230,7 +230,7 @@ class SieveCredentialsSettingsUI {
    */
   async show() {
 
-    document.querySelector("#ctx").appendChild(
+    document.querySelector("#ctx").append(
       await (new SieveTemplate()).load("./settings/ui/settings.credentials.html"));
 
     await this.render();
@@ -251,7 +251,7 @@ class SieveCredentialsSettingsUI {
 
       dialog.addEventListener('hidden.bs.modal', () => {
         modal.dispose();
-        dialog.parentElement.removeChild(dialog);
+        dialog.remove();
 
         resolve();
       });

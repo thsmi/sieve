@@ -165,7 +165,7 @@ class SieveAbstractPrefManager {
 
     try {
       value = Number.parseInt(value, 10);
-    } catch (ex) {
+    } catch {
       return fallback;
     }
 
@@ -224,7 +224,7 @@ class SieveAbstractPrefManager {
 
     try {
       return JSON.parse(value);
-    } catch (ex) {
+    } catch {
       return fallback;
     }
   }

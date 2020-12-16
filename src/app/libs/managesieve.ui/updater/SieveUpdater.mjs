@@ -28,7 +28,7 @@ class SieveUpdater {
    *   returns the integer value or NaN in case the string is no integer.
    */
   getInt(version) {
-    const value = parseInt(version, 10);
+    const value = Number.parseInt(version, 10);
 
     if (Number.isInteger(value))
       return value;

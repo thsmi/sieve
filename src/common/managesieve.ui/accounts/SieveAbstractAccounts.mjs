@@ -37,7 +37,7 @@ class SieveAbstractAccounts {
 
     const items = document.querySelector(".siv-accounts-items");
     while (items.firstChild)
-      items.removeChild(items.firstChild);
+      items.firstChild.remove();
 
     const accounts = await SieveIpcClient.sendMessage("core", "accounts-list");
 

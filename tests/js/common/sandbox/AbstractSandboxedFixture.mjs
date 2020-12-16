@@ -241,7 +241,7 @@ class AbstractSandboxedTestFixture {
 
     if (msg.type === "GetTests") {
       this.dispatchMessage(msg.type, async () => {
-        return Array.from(await this.get());
+        return [...await this.get()];
       });
       return;
     }

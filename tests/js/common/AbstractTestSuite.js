@@ -1,7 +1,5 @@
 (function (exports) {
 
-  const TOKEN_FOUND = -1;
-
   /**
    * Runs the actual test case inside the sandbox.
    */
@@ -127,7 +125,7 @@
         this.getReport().addTrace(
           "Checking if environment is compatible with " + agent + " ...");
 
-        if (userAgent.indexOf(agent) > TOKEN_FOUND) {
+        if (userAgent.includes(agent)) {
           this.getReport().addTrace("... Yes");
           return true;
         }

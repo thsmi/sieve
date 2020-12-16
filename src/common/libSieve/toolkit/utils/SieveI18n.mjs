@@ -132,7 +132,7 @@ class SieveI18n {
 
     try {
       await this.loadDictionary(`${path}${locale}.json`);
-    } catch (ex) {
+    } catch {
       // In case loading the dictionary failed e.g. due to a parsing error
       // we try falling back to our default one which is used during development.
       await this.loadDictionary(`${path}${DEFAULT_LOCALE}.json`);
@@ -158,7 +158,7 @@ class SieveI18n {
     try {
       data = await (await fetch(dictionary, { cache: "no-store" })).text();
     } catch (ex) {
-      this.getLogger().logI18n(`Failed to load dictionary ${dictionary}`);
+      this.getLogger().logI18n(`Loading dictionary ${dictionary} failed with error ${ex}`);
       throw new Error(`Failed to load dictionary ${dictionary}`);
     }
 

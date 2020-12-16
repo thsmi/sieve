@@ -191,7 +191,7 @@ class SieveParser {
       return result;
     }
 
-    if (isNaN(parseInt(length, 10)))
+    if (Number.isNaN(Number.parseInt(length, 10)))
       throw new Error("Extract failed, length parameter is not a number");
 
     result = this.bytes(length);
@@ -242,7 +242,7 @@ class SieveParser {
     if (this._pos + offset > this._data.length)
       throw new Error("Parser out of bounds");
 
-    return !isNaN(parseInt(this._data.charAt(this._pos + offset), 10));
+    return !Number.isNaN(Number.parseInt(this._data.charAt(this._pos + offset), 10));
   }
 
   /**

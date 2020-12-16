@@ -35,7 +35,7 @@ class SieveWebCrypto extends SieveAbstractCrypto {
     if (this.name === "SHA512")
       return "SHA-512";
 
-    throw Error(`Unknown HASH algorithm ${this.name}`);
+    throw new Error(`Unknown HASH algorithm ${this.name}`);
   }
 
   /**
@@ -60,7 +60,7 @@ class SieveWebCrypto extends SieveAbstractCrypto {
     if (typeof (output) !== "undefined" && output === "hex")
       return this.byteArrayToHexString(signature);
 
-    return Array.from(signature);
+    return [...signature];
   }
 
   /**
@@ -80,7 +80,7 @@ class SieveWebCrypto extends SieveAbstractCrypto {
     if (typeof (output) !== "undefined" && output === "hex")
       return this.byteArrayToHexString(digest);
 
-    return Array.from(digest);
+    return [...digest];
   }
 
 }

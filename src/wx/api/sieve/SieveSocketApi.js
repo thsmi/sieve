@@ -46,23 +46,23 @@
 
   const SOCKET_STATUS = {
     // eslint-disable-next-line no-magic-numbers
-    0x804b0003 : "resolving",
+    0x804B0003 : "resolving",
     // eslint-disable-next-line no-magic-numbers
-    0x804b000b : "resolved",
+    0x804B000B : "resolved",
     // eslint-disable-next-line no-magic-numbers
-    0x804b0007 : "connecting",
+    0x804B0007 : "connecting",
     // eslint-disable-next-line no-magic-numbers
-    0x804b0004 : "connected",
+    0x804B0004 : "connected",
     // eslint-disable-next-line no-magic-numbers
-    0x804b0005 : "sending",
+    0x804B0005 : "sending",
     // eslint-disable-next-line no-magic-numbers
-    0x804b000a : "waiting",
+    0x804B000A : "waiting",
     // eslint-disable-next-line no-magic-numbers
-    0x804b0006 : "receiving",
+    0x804B0006 : "receiving",
     // eslint-disable-next-line no-magic-numbers
-    0x804b000c : "tls handshake stated",
+    0x804B000C : "tls handshake stated",
     // eslint-disable-next-line no-magic-numbers
-    0x804b000d : "tls handshake stopped"
+    0x804B000D : "tls handshake stopped"
   };
 
   const NS_BASE_STREAM_CLOSED = 0x80470002;
@@ -96,8 +96,8 @@
       this.socket = null;
 
       this.host = host;
-      this.port = parseInt(port, 10);
-      this.level = parseInt(level, 10);
+      this.port = Number.parseInt(port, 10);
+      this.level = Number.parseInt(level, 10);
 
       this.outstream = null;
       this.instream = null;
@@ -539,8 +539,7 @@
         if (errorClass === Ci.nsINSSErrorsService.ERROR_CLASS_BAD_CERT)
           return true;
 
-        return false;
-      } catch (ex) {
+      } catch {
         this.log(`Failed to extract error class`);
       }
 
@@ -609,8 +608,8 @@
 
         error.message = nssErrorsService.getErrorMessage(status);
         this.log(`[SieveSocketApi:getSocketError()] ... ${error.message} ...`);
-      } catch (ex) {
-        // do nothing here
+      } catch {
+        // do nothing here we fallback to our generic default.
       }
 
       this.log(`[SieveSocketApi:getSocketError()] ... done`);

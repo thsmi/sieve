@@ -53,7 +53,7 @@
         return;
 
       // eslint-disable-next-line no-console
-      console.log(`\u001B[90m${msg}\u001b[0m`);
+      console.log(`\u001B[90m${msg}\u001B[0m`);
     }
 
     /**
@@ -81,7 +81,7 @@
         return;
 
       // eslint-disable-next-line no-console
-      console.log(`\u001B[31m${msg}\u001b[0m`);
+      console.log(`\u001B[31m${msg}\u001B[0m`);
     }
 
     /**
@@ -95,7 +95,7 @@
         return;
 
       // eslint-disable-next-line no-console
-      console.log(`\u001B[31m${msg}\n\u001b[0m`);
+      console.log(`\u001B[31m${msg}\n\u001B[0m`);
     }
 
     /**
@@ -110,7 +110,7 @@
         return;
 
       // eslint-disable-next-line no-console
-      console.log(`\u001B[32m${msg}\u001b[0m`);
+      console.log(`\u001B[32m${msg}\u001B[0m`);
     }
 
     /**
@@ -125,7 +125,7 @@
         return;
 
       // eslint-disable-next-line no-console
-      console.log(`\n\u001B[36m\u001b[1m${msg}\u001b[0m\u001b[0m`);
+      console.log(`\n\u001B[36m\u001B[1m${msg}\u001B[0m\u001B[0m`);
     }
 
     /**
@@ -139,7 +139,7 @@
         return;
 
       // eslint-disable-next-line no-console
-      console.log(`\u001B[33m${msg}\u001b[0m`);
+      console.log(`\u001B[33m${msg}\u001B[0m`);
     }
   }
 

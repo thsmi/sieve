@@ -42,7 +42,7 @@ class SieveGraphicalEditorUI extends SieveAbstractEditorUI {
 
     const capabilities = await this.getController().getCapabilities();
     // set script content...
-    document.getElementById(this.id)
+    document.querySelector(`#${this.id}`)
       .contentWindow
       .setSieveScript(script, JSON.stringify(capabilities.extensions));
   }
@@ -51,7 +51,7 @@ class SieveGraphicalEditorUI extends SieveAbstractEditorUI {
    * @inheritdoc
    */
   getScript() {
-    return document.getElementById(this.id)
+    return document.querySelector(`#${this.id}`)
       .contentWindow
       .getSieveScript();
   }

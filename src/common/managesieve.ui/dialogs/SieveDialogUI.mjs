@@ -108,7 +108,7 @@ class SieveDialog {
    */
   destroy() {
     const elm = this.getDialog();
-    elm.parentNode.removeChild(elm);
+    elm.remove();
   }
 
   /**
@@ -123,7 +123,7 @@ class SieveDialog {
 
     const dialog = await (new SieveTemplate()).load(this.getTemplate());
     dialog.id = this.id;
-    document.querySelector("#ctx").appendChild(dialog);
+    document.querySelector("#ctx").append(dialog);
 
     this.onInit();
 
@@ -295,7 +295,7 @@ class SieveCreateScriptDialog extends SieveDialog {
    */
   onInit() {
     this.getDialog().querySelector('.sieve-create-dialog-name').addEventListener("keypress", (e) => {
-      if (e.which === KEY_RETURN) {
+      if (e.key === "Enter") {
         const event = document.createEvent('HTMLEvents');
         event.initEvent('click', true, false);
         this.getDialog().querySelector(".sieve-dialog-resolve").dispatchEvent(event);
@@ -352,7 +352,7 @@ class SieveRenameScriptDialog extends SieveDialog {
    */
   onInit() {
     this.getDialog().querySelector('.sieve-rename-dialog-newname').addEventListener("keypress", (e) => {
-      if (e.which === KEY_RETURN) {
+      if (e.key === "Enter") {
         const event = document.createEvent('HTMLEvents');
         event.initEvent('click', true, false);
         this.getDialog().querySelector(".sieve-dialog-resolve").dispatchEvent(event);
@@ -435,7 +435,7 @@ class SievePasswordDialog extends SieveDialog {
     dialog.querySelector(".sieve-displayname").textContent = this.displayName;
 
     this.getDialog().querySelector('.sieve-password').addEventListener("keypress", (e) => {
-      if (e.which === KEY_RETURN) {
+      if (e.key === "Enter") {
         const event = document.createEvent('HTMLEvents');
         event.initEvent('click', true, false);
         this.getDialog().querySelector(".sieve-dialog-resolve").dispatchEvent(event);
@@ -502,7 +502,7 @@ class SieveAuthorizationDialog extends SieveDialog {
     dialog.querySelector(".sieve-displayname").textContent = this.displayName;
 
     dialog.querySelector('.sieve-authorization').addEventListener("keypress", (e) => {
-      if (e.which === KEY_RETURN) {
+      if (e.key === "Enter") {
         const event = document.createEvent('HTMLEvents');
         event.initEvent('click', true, false);
         this.getDialog().querySelector(".sieve-dialog-resolve").dispatchEvent(event);

@@ -33,7 +33,7 @@
 
       document
         .querySelector("#divFrame")
-        .appendChild(iframe);
+        .append(iframe);
 
       await new Promise((resolve) => {
         iframe.addEventListener('load', () => {
@@ -56,7 +56,7 @@
      */
     async require(report, scripts) {
 
-      const iframe = document.getElementById(this.getUniqueId());
+      const iframe = document.querySelector(`#${this.getUniqueId()}`);
 
       if (!iframe)
         throw new Error("Sandbox not initialized");
@@ -75,10 +75,10 @@
      * Destroys the sandbox and removes the Iframe.
      */
     async destroy() {
-      const el = document.getElementById(this.getUniqueId());
+      const el = document.querySelector(`#${this.getUniqueId()}`);
 
       if (el)
-        el.parentNode.removeChild(el);
+        el.remove();
     }
 
     /**
@@ -106,7 +106,7 @@
      */
     async run(name, report) {
 
-      const iframe = document.getElementById(this.getUniqueId());
+      const iframe = document.querySelector(`#${this.getUniqueId()}`);
 
       if (!iframe)
         throw new Error("Sandbox not initialized");
@@ -129,7 +129,7 @@
      *   the actions return value
      */
     async execute(report, type, data) {
-      const iframe = document.getElementById(this.getUniqueId());
+      const iframe = document.querySelector(`#${this.getUniqueId()}`);
 
       if (!iframe)
         throw new Error("Sandbox not initialized");

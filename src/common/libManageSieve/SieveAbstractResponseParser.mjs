@@ -161,7 +161,7 @@ class SieveAbstractResponseParser {
       throw new Error(`Error unbalanced parentheses "{" in \n ${this.getData()}`);
 
     // extract the size, and ignore "+"
-    const size = parseInt(this.getData(this.pos, nextBracket).replace(/\+/, ""), 10);
+    const size = Number.parseInt(this.getData(this.pos, nextBracket).replace(/\+/, ""), 10);
 
     this.pos = nextBracket + CHAR_LEN;
 

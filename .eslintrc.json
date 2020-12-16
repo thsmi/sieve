@@ -3,7 +3,8 @@
         "jsdoc"
     ],
     "extends": [
-        "eslint:recommended"
+        "eslint:recommended",
+        "plugin:unicorn/recommended"
     ],
     "env": {
         "browser": true,
@@ -206,6 +207,22 @@
         "jsdoc/require-hyphen-before-param-description": 0,
 
         "jsdoc/check-alignment": 1,
-        "jsdoc/check-examples": ["warn", {"paddedIndent": 4 }]
+        "jsdoc/check-examples": ["warn", {"paddedIndent": 4 }],
+
+        "unicorn/prefer-type-error" : "off",
+        "unicorn/prefer-math-trunc" : "off",
+        "unicorn/prefer-ternary" : "off",
+        //"unicorn/filename-case": [ "warn", { "case" : "pascalCase" }],
+        "unicorn/filename-case": "off",
+        "unicorn/catch-error-name": "off",
+        "unicorn/prefer-string-slice" : "off",
+        "unicorn/explicit-length-check": "off",
+        "unicorn/no-fn-reference-in-iterator":"off",
+        "unicorn/no-for-loop":"off",
+        "unicorn/no-null": "off",
+        "unicorn/no-unused-properties": "error",
+        "unicorn/no-useless-undefined" : "off",
+        "unicorn/prefer-optional-catch-binding" : "warn",
+        "unicorn/prevent-abbreviations" : "off"
    }
 }

@@ -107,7 +107,7 @@ class SieveTab {
 
     // we need to delete first the content...
     const content = document.querySelector(`#${this.getId()}-content`);
-    content.parentNode.removeChild(content);
+    content.remove();
 
     // and then the tab, otherwise getId fails...
     const tab = document.querySelector(`#${this.getId()}-tab`);
@@ -116,7 +116,7 @@ class SieveTab {
     if (elm)
       elm.dispose();
 
-    tab.parentNode.removeChild(tab);
+    tab.remove();
 
     return true;
   }
@@ -338,8 +338,8 @@ class SieveTabUI {
 
     content.src = url.toString();
 
-    document.querySelector(`#tabs-content`).appendChild(content);
-    document.querySelector(`#tabs-items`).appendChild(tab);
+    document.querySelector(`#tabs-content`).append(content);
+    document.querySelector(`#tabs-items`).append(tab);
 
     tab.addEventListener('shown.bs.tab', () => { this.onTabShown(account, name); });
 

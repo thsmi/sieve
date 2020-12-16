@@ -25,7 +25,7 @@ class SieveImportUI {
 
     const dialog = await (new SieveTemplate()).load("./importer/account.import.html");
     dialog.querySelector(".sieve-import-progress").classList.add("d-none");
-    document.querySelector("#ctx").appendChild(dialog);
+    document.querySelector("#ctx").append(dialog);
 
     // we need to call it on the main thread because we don't have
     // to all the libraries we need right here.
@@ -67,14 +67,14 @@ class SieveImportUI {
           resolve(true);
         });
 
-        dialog.querySelector(".sieve-import-items").appendChild(item);
+        dialog.querySelector(".sieve-import-items").append(item);
 
       });
 
       modal.show();
 
       dialog.addEventListener('hidden.bs.modal', () => {
-        dialog.parentNode.removeChild(dialog);
+        dialog.remove();
         resolve(false);
       });
     });

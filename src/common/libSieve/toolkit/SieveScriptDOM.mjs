@@ -292,7 +292,7 @@ class SieveDocument {
 
     // scan for null nodes..
     for (item in this._nodes)
-      if (whitelist.indexOf(this._nodes[item]) === NO_ELEMENT)
+      if (!whitelist.includes(this._nodes[item]))
         if (this._nodes[item].parent() === null)
           items.push(item);
 
@@ -305,7 +305,7 @@ class SieveDocument {
       const it = items.shift();
 
       for (item in this._nodes)
-        if (whitelist.indexOf(this._nodes[item]) === NO_ELEMENT)
+        if (!whitelist.includes(this._nodes[item]))
           if (this._nodes[item].parent().id() === it)
             items.push(item);
 

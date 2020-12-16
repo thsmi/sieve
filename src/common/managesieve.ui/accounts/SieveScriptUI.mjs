@@ -69,7 +69,7 @@ class SieveScriptUI {
 
       document
         .querySelector(`#siv-account-${this.account.id} .siv-tpl-scripts`)
-        .appendChild(elm);
+        .append(elm);
 
       elm.querySelector(".sieve-list-script-name").textContent = this.name;
 

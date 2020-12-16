@@ -86,7 +86,7 @@ class SieveMultiLineString extends SieveAbstractElement {
     this.text = parser.extractUntil("\r\n.\r\n");
 
     // dump the first linebreak and remove dot stuffing
-    this.text = this.text.substr("\r\n".length).replace(/^\.\./mg, ".");
+    this.text = this.text.substr("\r\n".length).replace(/^\.\./gm, ".");
 
     return this;
   }
@@ -117,7 +117,7 @@ class SieveMultiLineString extends SieveAbstractElement {
       text += "\r\n";
 
     // Dot stuffing...
-    text = text.replace(/^\./mg, "..");
+    text = text.replace(/^\./gm, "..");
 
     return "text:"
       + this.whiteSpace.toScript()

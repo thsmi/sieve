@@ -749,7 +749,7 @@ class SieveGenericStructure extends SieveAbstractElement {
         try {
           element.parse(parser);
         }
-        catch (ex) {
+        catch {
           // TODO reset item
           // Reset the position as if nothing happened
           parser.pos(pos);
@@ -769,7 +769,7 @@ class SieveGenericStructure extends SieveAbstractElement {
         try {
           element.parse(parser);
 
-        } catch (ex) {
+        } catch {
 
           prev.enabled = false;
 

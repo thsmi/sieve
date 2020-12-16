@@ -97,7 +97,7 @@ class SieveAbstractEditorUI {
     const digest = await crypto.subtle.digest('SHA-256',
       new TextEncoder().encode(await this.getScript()));
 
-    return Array.from(new Uint8Array(digest)).map(
+    return [...new Uint8Array(digest)].map(
       (b) => { return b.toString(HEX).padStart(HEX_LENGTH, '0'); }).join('');
   }
 

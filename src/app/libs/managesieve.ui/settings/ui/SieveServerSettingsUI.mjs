@@ -220,7 +220,7 @@ class SieveServerSettingsUI {
    */
   async show() {
 
-    document.querySelector("#ctx").appendChild(
+    document.querySelector("#ctx").append(
       await (new SieveTemplate()).load("./settings/ui/settings.server.html"));
 
     await this.render();
@@ -241,7 +241,7 @@ class SieveServerSettingsUI {
 
       dialog.addEventListener('hidden.bs.modal', () => {
         modal.dispose();
-        dialog.parentNode.removeChild(dialog);
+        dialog.remove();
 
         resolve();
       });

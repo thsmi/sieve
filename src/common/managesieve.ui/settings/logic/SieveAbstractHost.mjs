@@ -91,9 +91,9 @@ class SieveCustomHost extends SieveAbstractHost {
    *   a self reference
    */
   async setPort(port) {
-    port = parseInt(port, 10);
+    port = Number.parseInt(port, 10);
 
-    if (isNaN(port))
+    if (Number.isNaN(port))
       port = PORT_SIEVE_RFC;
 
     await this.account.getConfig().setInteger(CONFIG_HOST_PORT, port);

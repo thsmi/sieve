@@ -59,7 +59,7 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
     // Syntax Checks
     document
       .querySelector("#sieve-content-settings")
-      .appendChild(await loader.load("./editor/text/editor.settings.syntax.html"));
+      .append(await loader.load("./editor/text/editor.settings.syntax.html"));
 
     document
       .querySelector("#sieve-editor-settings-synatxcheck")
@@ -77,7 +77,7 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
     // Indentation
     document
       .querySelector("#sieve-content-settings")
-      .appendChild(await loader.load("./editor/text/editor.settings.indentation.html"));
+      .append(await loader.load("./editor/text/editor.settings.indentation.html"));
 
     // Indentation width...
     document
@@ -125,12 +125,12 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
 
     const editor = document.querySelector("#sieve-plaintext-editor");
     while (editor.firstChild)
-      editor.removeChild(editor.firstChild);
+      editor.firstChild.remove();
 
-    editor.appendChild(
+    editor.append(
       await loader.load("./editor/text/editor.plaintext.html"));
 
-    this.cm = CodeMirror.fromTextArea(document.getElementById(this.id), {
+    this.cm = CodeMirror.fromTextArea(document.querySelector(`#${this.id}`), {
       lineNumbers: true,
       lineWrapping: true,
 
@@ -153,7 +153,7 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
         if (cm.somethingSelected()) {
           const sel = cm.getSelection("\n");
           // Indent only if there are multiple lines selected, or if the selection spans a full line
-          if (sel.length > 0 && (sel.indexOf("\n") > -1 || sel.length === cm.getLine(cm.getCursor().line).length)) {
+          if (sel.length > 0 && (sel.includes("\n") || sel.length === cm.getLine(cm.getCursor().line).length)) {
             cm.indentSelection("add");
             return;
           }
@@ -170,7 +170,7 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
     });
 
     const toolbar = document.querySelector("#sieve-editor-toolbar");
-    toolbar.appendChild(
+    toolbar.append(
       await loader.load("./editor/text/editor.plaintext.toolbar.html"));
 
     document
@@ -595,7 +595,7 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
 
     const details = msg.querySelector(".sieve-editor-msg-details");
     while (details.firstChild)
-      details.removeChild(details.firstChild);
+      details.firstChild.remove();
 
     details.textContent = errors;
   }
@@ -616,9 +616,9 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
    *   a self reference
    */
   async setIndentWidth(width) {
-    width = parseInt(width, 10);
+    width = Number.parseInt(width, 10);
 
-    if (isNaN(width))
+    if (Number.isNaN(width))
       throw new Error("Invalid Indent width");
 
     this.cm.setOption("indentUnit", width);
@@ -672,9 +672,9 @@ class SieveTextEditorUI extends SieveAbstractEditorUI {
    *   a self reference
    */
   async setTabWidth(tabSize) {
-    tabSize = parseInt(tabSize, 10);
+    tabSize = Number.parseInt(tabSize, 10);
 
-    if (isNaN(tabSize))
+    if (Number.isNaN(tabSize))
       throw new Error(`Invalid Tab width ${tabSize}`);
 
     this.cm.setOption("tabSize", tabSize);

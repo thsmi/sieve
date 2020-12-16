@@ -93,9 +93,9 @@ class SieveAbstractAccountUI {
 
     const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
     while (scripts.firstChild)
-      scripts.removeChild(scripts.firstChild);
+      scripts.firstChild.remove();
 
-    scripts.appendChild(item);
+    scripts.append(item);
 
     try {
       await this.send("account-connect");
@@ -115,9 +115,9 @@ class SieveAbstractAccountUI {
 
     const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
     while (scripts.firstChild)
-      scripts.removeChild(scripts.firstChild);
+      scripts.firstChild.remove();
 
-    scripts.appendChild(item);
+    scripts.append(item);
 
     await this.send("account-disconnect");
     await this.render();
@@ -162,10 +162,10 @@ class SieveAbstractAccountUI {
     // Clear any existing left overs...
     const settings = document.querySelector(`#siv-account-${this.id} .sieve-settings-content`);
     while (settings.firstChild)
-      settings.removeChild(settings.firstChild);
+      settings.firstChild.remove();
 
     // ... and append the new element
-    settings.appendChild(elm);
+    settings.append(elm);
 
     if (elm.querySelector(".sieve-account-edit-debug")) {
       elm.querySelector(".sieve-account-edit-debug")
@@ -192,7 +192,7 @@ class SieveAbstractAccountUI {
     elm.querySelector(".siv-account-name").textContent
       = await this.send("account-get-displayname");
 
-    document.querySelector(".siv-accounts-items").appendChild(elm);
+    document.querySelector(".siv-accounts-items").append(elm);
 
     elm
       .querySelector(".siv-account-create")
@@ -220,11 +220,11 @@ class SieveAbstractAccountUI {
     const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
 
     while (scripts.firstChild)
-      scripts.removeChild(scripts.firstChild);
+      scripts.firstChild.remove();
 
     if (!data.length) {
       const elm = await (new SieveTemplate()).load(`./accounts/account.empty.html`);
-      scripts.appendChild(elm);
+      scripts.append(elm);
 
       elm
         .querySelector(".sieve-script-empty-create")
@@ -262,9 +262,9 @@ class SieveAbstractAccountUI {
     const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
 
     while (scripts.firstChild)
-      scripts.removeChild(scripts.firstChild);
+      scripts.firstChild.remove();
 
-    scripts.appendChild(elm);
+    scripts.append(elm);
 
     elm.querySelector(".sieve-script-connect")
       .addEventListener("click", () => { this.connect(); });

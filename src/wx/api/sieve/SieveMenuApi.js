@@ -40,7 +40,7 @@
      *   true in case the element exists otherwise false.
      */
     hasNode(id) {
-      const node = this.document.getElementById(id);
+      const node = this.document.querySelector(`#${id}`);
 
       if (!node)
         return false;
@@ -58,7 +58,7 @@
      *   the dom element or throws an exception.
      */
     getNode(id) {
-      const node = this.document.getElementById(id);
+      const node = this.document.querySelector(`#${id}`);
       if (!node)
         throw new Error(`Unknown element ${id}`);
 
@@ -72,9 +72,9 @@
      *   the node to be removed.
      */
     removeNode(id) {
-      const elm = this.document.getElementById(id);
+      const elm = this.document.querySelector(`#${id}`);
       if (elm)
-        elm.parentNode.removeChild(elm);
+        elm.remove();
     }
 
     /**
@@ -119,7 +119,7 @@
       const ref = this.getNode(refId);
       this.removeNode(item.getId());
 
-      ref.appendChild(item.createNode(this.document));
+      ref.append(item.createNode(this.document));
     }
   }
 

@@ -81,13 +81,11 @@ function packageSrc() {
 function packageLibManageSieve() {
 
   const BASE_WX = path.join(BASE_DIR_WX, "libs/libManageSieve");
-  const BASE_APP = path.join(BASE_DIR_APP, "libs/libManageSieve");
   const BASE_WEB = path.join(BASE_DIR_WEB, "static/libs/libManageSieve");
   const BASE_COMMON = path.join(common.BASE_DIR_COMMON, "libManageSieve");
 
   return common.src2(BASE_WEB)
     .pipe(common.src2(BASE_WX, ["SieveResponseParser.mjs", "SieveRequestBuilder.mjs"]))
-    .pipe(common.src2(BASE_APP, "SieveLogger.mjs"))
     .pipe(common.src2(BASE_COMMON))
     .pipe(dest(path.join(BUILD_DIR_WEB, 'static/libs/libManageSieve')));
 }

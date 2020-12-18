@@ -79,7 +79,7 @@ class SieveAbstractAccount {
    *   the current host settings
    **/
   async getHost() {
-    return await this.host.get();
+    return await this.host;
   }
 
   /**

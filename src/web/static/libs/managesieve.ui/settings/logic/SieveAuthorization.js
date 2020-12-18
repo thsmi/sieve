@@ -48,6 +48,9 @@ class SieveAuthorization extends SieveAbstractMechanism {
     }
   }
 
+  /**
+   *
+   */
   async getMechanism() {
     return new SieveDefaultAuthorization(AUTHORIZATION_TYPE_USERNAME, this.account);
   }

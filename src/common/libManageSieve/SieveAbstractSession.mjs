@@ -102,7 +102,7 @@ class SieveAbstractSession {
    * Creates a new sieve client for this session.
    */
   createSieve() {
-    if (typeof(this.sieve) !== "undefined" && this.sieve !== null)
+    if (typeof (this.sieve) !== "undefined" && this.sieve !== null)
       throw new SieveClientException("Sieve Connection Active");
 
     this.sieve = new Sieve(this.getLogger());
@@ -395,7 +395,7 @@ class SieveAbstractSession {
 
     await this.sendRequest(new SieveStartTLSRequest());
 
-      await this.getSieve().startTLS(options);
+    await this.getSieve().startTLS(options);
 
     // After a successfully tls handshake the server will advertise
     // the capabilities, especially the SASL mechanism are likely to change.
@@ -518,10 +518,10 @@ class SieveAbstractSession {
         return await this.promisify(request, init);
       }
 
-        this.getLogger().logSession(`Sending Request failed ${ex}`);
-        throw ex;
+      this.getLogger().logSession(`Sending Request failed ${ex}`);
+      throw ex;
     }
-      }
+  }
 
   /**
    * By default a request will follow automatically a referral.
@@ -543,7 +543,7 @@ class SieveAbstractSession {
    */
   disableReferrals() {
     this.canRefer = false;
-    }
+  }
   /**
    * Enables automatic referral following.
    *
@@ -588,20 +588,20 @@ class SieveAbstractSession {
 
     try {
 
-    const init = () => {
-      this.getSieve().connect(
-        hostname, port,
-        this.getOption("secure", true),
-        this,
-        proxy);
-    };
+      const init = () => {
+        this.getSieve().connect(
+          hostname, port,
+          this.getOption("secure", true),
+          this,
+          proxy);
+      };
 
-    this.setCapabilities(
+      this.setCapabilities(
         await this.sendRequest(new SieveInitRequest(), init));
 
-    await this.startTLS();
+      await this.startTLS();
 
-    await this.authenticate();
+      await this.authenticate();
     } catch (ex) {
 
       if (!(ex instanceof SieveReferralException))

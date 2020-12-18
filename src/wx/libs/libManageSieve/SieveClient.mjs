@@ -111,7 +111,7 @@ class SieveMozClient extends SieveAbstractClient {
         error = new SieveCertValidationException(error);
       else if (error && error.type === "SocketError")
         error = new SieveClientException(error.message);
-    else
+      else
         error = new SieveException(`Socket failed without providing an error code.`);
 
       if ((this.listener) && (this.listener.onError))

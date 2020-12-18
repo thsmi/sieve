@@ -297,8 +297,8 @@ class SieveAbstractRequest {
 
     if (response.getResponse() === RESPONSE_OK) {
       await this.onOk(response);
-    return this;
-  }
+      return this;
+    }
     if (this.isOptional())
       throw new Error("Invalid Response for an Optional Request");
 
@@ -507,7 +507,7 @@ class SievePutScriptRequest extends SieveAbstractRequest {
    * @inheritdoc
    */
   async addResponse(parser) {
-    return await(super.addResponse(
+    return await (super.addResponse(
       (new SieveSimpleResponse()).parse(parser)));
   }
 }
@@ -570,7 +570,7 @@ class SieveCheckScriptRequest extends SieveAbstractRequest {
    * @inheritdoc
    */
   async addResponse(parser) {
-    return await(super.addResponse(
+    return await (super.addResponse(
       (new SieveSimpleResponse()).parse(parser)));
   }
 }
@@ -621,7 +621,7 @@ class SieveSetActiveRequest extends SieveAbstractRequest {
    * @inheritdoc
    */
   async addResponse(parser) {
-    return await(super.addResponse(
+    return await (super.addResponse(
       (new SieveSimpleResponse()).parse(parser)));
   }
 }
@@ -660,7 +660,7 @@ class SieveCapabilitiesRequest extends SieveAbstractRequest {
    * @inheritdoc
    */
   async addResponse(parser) {
-    return await(super.addResponse(
+    return await (super.addResponse(
       (new SieveCapabilitiesResponse()).parse(parser)));
   }
 }
@@ -703,7 +703,7 @@ class SieveDeleteScriptRequest extends SieveAbstractRequest {
    * @inheritdoc
    */
   async addResponse(parser) {
-    return await(super.addResponse(
+    return await (super.addResponse(
       (new SieveSimpleResponse()).parse(parser)));
   }
 }
@@ -736,7 +736,7 @@ class SieveNoopRequest extends SieveAbstractRequest {
    * @inheritdoc
    */
   async addResponse(parser) {
-    return await(super.addResponse(
+    return await (super.addResponse(
       (new SieveSimpleResponse()).parse(parser)));
   }
 }
@@ -786,7 +786,7 @@ class SieveRenameScriptRequest extends SieveAbstractRequest {
    * @inheritdoc
    */
   async addResponse(parser) {
-    return await(super.addResponse(
+    return await (super.addResponse(
       (new SieveSimpleResponse()).parse(parser)));
   }
 }
@@ -817,7 +817,7 @@ class SieveListScriptsRequest extends SieveAbstractRequest {
    * @inheritdoc
    */
   async addResponse(parser) {
-    return await(super.addResponse(
+    return await (super.addResponse(
       new SieveListScriptsResponse().parse(parser)));
   }
 }
@@ -847,7 +847,7 @@ class SieveStartTLSRequest extends SieveAbstractRequest {
    * @inheritdoc
    */
   async addResponse(parser) {
-    return await(super.addResponse(
+    return await (super.addResponse(
       (new SieveSimpleResponse()).parse(parser)));
   }
 }
@@ -892,7 +892,7 @@ class SieveLogoutRequest extends SieveAbstractRequest {
    * @inheritdoc
    */
   async addResponse(parser) {
-    return await(super.addResponse(
+    return await (super.addResponse(
       (new SieveSimpleResponse()).parse(parser)));
   }
 }
@@ -933,7 +933,7 @@ class SieveInitRequest extends SieveAbstractRequest {
    * @inheritdoc
    */
   async addResponse(parser) {
-    return await(super.addResponse(
+    return await (super.addResponse(
       (new SieveCapabilitiesResponse()).parse(parser)));
   }
 }
@@ -974,7 +974,7 @@ class SieveSaslPlainRequest extends SieveAbstractSaslRequest {
    * @inheritdoc
    */
   async addResponse(parser) {
-    return await(super.addResponse(
+    return await (super.addResponse(
       (new SieveSimpleResponse()).parse(parser)));
   }
 }
@@ -1052,7 +1052,7 @@ class SieveSaslLoginRequest extends SieveAbstractSaslRequest {
     if (this.hasNextRequest())
       return this;
 
-    return await(super.addResponse(this.response));
+    return await (super.addResponse(this.response));
   }
 }
 
@@ -1118,7 +1118,7 @@ class SieveAbstractSaslScramRequest extends SieveAbstractSaslRequest {
 
     const crypto = this.getCrypto();
 
-    this._cnonce = await(crypto.H("" + (Math.random() * SEED), "hex"));
+    this._cnonce = await (crypto.H("" + (Math.random() * SEED), "hex"));
 
     // For integration tests, we need to fake the nonce...
     // ... so we take the nonce from the rfc otherwise the verification fails.
@@ -1277,7 +1277,7 @@ class SieveAbstractSaslScramRequest extends SieveAbstractSaslRequest {
     if (this.hasNextRequest())
       return this;
 
-    return await(super.addResponse(this.response));
+    return await (super.addResponse(this.response));
   }
 }
 

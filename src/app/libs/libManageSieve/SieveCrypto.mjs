@@ -43,8 +43,8 @@ class SieveNodeCrypto extends SieveAbstractCrypto {
 
     const rv =
       createHmac(this.name, key)
-      .update(bytes)
-      .digest(output);
+        .update(bytes)
+        .digest(output);
 
     if (output === "hex")
       return rv;

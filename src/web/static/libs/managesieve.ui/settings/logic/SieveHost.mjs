@@ -27,7 +27,7 @@ class SieveWebSocketHost extends SieveAbstractHost {
    */
   async getDisplayName() {
     return "Some thing";
-    //return await browser.sieve.accounts.getPrettyName(this.account.getId());
+    // return await browser.sieve.accounts.getPrettyName(this.account.getId());
   }
 
   /**

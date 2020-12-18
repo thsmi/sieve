@@ -41,7 +41,6 @@ class SieveWebTimer extends SieveAbstractTimer {
     this.timer = window.setTimeout(callback, ms);
   }
 
-
-  }
+}
 
 export { SieveWebTimer as SieveTimer };

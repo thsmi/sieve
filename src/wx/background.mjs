@@ -263,18 +263,18 @@ import { SieveAccounts } from "./libs/managesieve.ui/settings/logic/SieveAccount
             "accounts", "account-show-certerror", secInfo));
 
           // Dialog was canceled we bail out.
-        if (!rv)
-          return;
+          if (!rv)
+            return;
 
-        let overrideBits = 0;
-        if (secInfo.isNotValidAtThisTime)
-          overrideBits |= ERROR_TIME;
+          let overrideBits = 0;
+          if (secInfo.isNotValidAtThisTime)
+            overrideBits |= ERROR_TIME;
 
-        if (secInfo.isUntrusted)
-          overrideBits |= ERROR_UNTRUSTED;
+          if (secInfo.isUntrusted)
+            overrideBits |= ERROR_UNTRUSTED;
 
-        if (secInfo.isDomainMismatch)
-          overrideBits |= ERROR_MISMATCH;
+          if (secInfo.isDomainMismatch)
+            overrideBits |= ERROR_MISMATCH;
 
           await (browser.sieve.socket.addCertErrorOverride(
             secInfo.host, `${secInfo.port}`, secInfo.rawDER, overrideBits));

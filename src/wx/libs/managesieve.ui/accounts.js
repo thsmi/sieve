@@ -106,24 +106,24 @@ async function main() {
   };*/
   try {
 
-  SieveLogger.getInstance().level(
-    await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
+    SieveLogger.getInstance().level(
+      await SieveIpcClient.sendMessage("core", "settings-get-loglevel"));
 
-  await (SieveI18n.getInstance()).load();
+    await (SieveI18n.getInstance()).load();
 
-  const accounts = new SieveAccounts();
-  accounts.render();
+    const accounts = new SieveAccounts();
+    accounts.render();
 
-  SieveIpcClient.setRequestHandler("accounts", "script-show-create",
-    async () => { return await onCreateScript(); });
-  SieveIpcClient.setRequestHandler("accounts", "script-show-delete",
-    async (msg) => { return await onDeleteScript(msg.payload); });
-  SieveIpcClient.setRequestHandler("accounts", "script-show-rename",
-    async (msg) => { return await onRenameScript(msg.payload); });
-  SieveIpcClient.setRequestHandler("accounts", "script-show-busy",
-    async (msg) => { await onBusy(msg.payload); });
-  SieveIpcClient.setRequestHandler("accounts", "account-show-certerror",
-    async (msg) => { return await onCertError(msg.payload); });
+    SieveIpcClient.setRequestHandler("accounts", "script-show-create",
+      async () => { return await onCreateScript(); });
+    SieveIpcClient.setRequestHandler("accounts", "script-show-delete",
+      async (msg) => { return await onDeleteScript(msg.payload); });
+    SieveIpcClient.setRequestHandler("accounts", "script-show-rename",
+      async (msg) => { return await onRenameScript(msg.payload); });
+    SieveIpcClient.setRequestHandler("accounts", "script-show-busy",
+      async (msg) => { await onBusy(msg.payload); });
+    SieveIpcClient.setRequestHandler("accounts", "account-show-certerror",
+      async (msg) => { return await onCertError(msg.payload); });
     SieveIpcClient.setRequestHandler("accounts", "account-show-error",
       async (msg) => { return await onError(msg.payload); });
   } catch (ex) {

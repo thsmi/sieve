@@ -48,9 +48,9 @@ import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.js";
       const account = msg.payload.account;
       logger.logAction(`Get display name for ${account}`);
 
-      //TODO : FIXME
-      //const host = await accounts.getAccountById(account).getHost();
-      //return await host.getDisplayName();
+      // TODO return real display name
+      // const host = await accounts.getAccountById(account).getHost();
+      // return await host.getDisplayName();
       return "me@example.com";
     },
 
@@ -293,7 +293,6 @@ import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.js";
 
     "get-preference": async (msg) => {
 
-      debugger;
       const name = msg.payload.data;
       const account = msg.payload.account;
 
@@ -309,7 +308,6 @@ import { SieveTabUI } from "./libs/managesieve.ui/tabs/SieveTabsUI.js";
 
     "get-default-preference": async(msg) => {
 
-      debugger;
       const name = msg.payload.data;
 
       logger.logAction(`Get default value for ${name}`);

@@ -107,7 +107,7 @@ class SieveWebSocketSessions {
 
     const host = await account.getHost();
     const security = await account.getSecurity();
-    //const settings = await account.getSettings();
+    // const settings = await account.getSettings();
 
     const options = {
       secure: await security.isSecure(),

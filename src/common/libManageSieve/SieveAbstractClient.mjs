@@ -583,13 +583,13 @@ class SieveAbstractClient {
           this.getLogger().logState("[SieveAbstractClient:onReceive] ... ran out of data, waiting for more");
           return;
         }
-      const parser = this.createParser(this.data);
+        const parser = this.createParser(this.data);
 
-      try {
+        try {
           await (requests[offset].addResponse(parser));
 
-        // We do some cleanup as we don't need the parsed data anymore...
-        this.data = parser.getByteArray();
+          // We do some cleanup as we don't need the parsed data anymore...
+          this.data = parser.getByteArray();
 
           this.getLogger().logState(`[SieveAbstractClient:onReceive] `
             + `Parsing successfully, remaining ${this.data.length} bytes`);
@@ -602,7 +602,7 @@ class SieveAbstractClient {
 
             offset++;
             continue;
-      }
+          }
           // Parsing the response failed. This is most likely caused by fragmentation
           // and will be resolved as soon as the remaining bytes arrive.
           //
@@ -610,17 +610,17 @@ class SieveAbstractClient {
           //
           // So in either way the next packet or the timeout will resolve this
           // situation for us.
-        if (this.getLogger().isLevelState()) {
-          this.getLogger().logState(`Parsing Warning in libManageSieve/Sieve.js:\\n${ex.toString()}`);
-          this.getLogger().logState(ex.stack);
-        }
+          if (this.getLogger().isLevelState()) {
+            this.getLogger().logState(`Parsing Warning in libManageSieve/Sieve.js:\\n${ex.toString()}`);
+            this.getLogger().logState(ex.stack);
+          }
 
           // Restore the message queue and restart the timer.
-        this.onStartTimeout();
+          this.onStartTimeout();
 
           this.getLogger().logState("[SieveAbstractClient:onReceive] Waiting for more data to continue");
-        return;
-      }
+          return;
+        }
 
         // Remove the request in case it is completed.
         if (!requests[offset].hasNextRequest()) {
@@ -630,7 +630,7 @@ class SieveAbstractClient {
           this.getLogger().logState(`[SieveAbstractClient:onReceive] `
             + `Removing request from queue ${offset}, ${requests.length}, ${this.data.length}`);
           continue;
-      }
+        }
 
       }
     } finally {

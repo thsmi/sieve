@@ -224,14 +224,14 @@ class SieveNodeClient extends SieveAbstractClient {
     if (this.socket) {
       this.socket.destroy();
       if (this.socket && this.socket.unref)
-      this.socket.unref();
+        this.socket.unref();
       this.socket = null;
     }
 
     if (this.tlsSocket) {
       this.tlsSocket.destroy();
       if (this.socket && this.socket.unref)
-      this.tlsSocket.unref();
+        this.tlsSocket.unref();
       this.tlsSocket = null;
     }
 

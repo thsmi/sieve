@@ -97,11 +97,12 @@ class WebSocket:
 
     if length == 126:
       data = self.__context.socket.recv(2)
-      length = (data[0] << (1*8)) + (data[1] << (0*8))
+      return (data[0] << (1*8)) + (data[1] << (0*8))
+
 
     if length == 127:
       data = self.__context.socket.recv(8)
-      length = (data[0] << (7*8)) + (data[1] << (6*8)) + (data[2] << (5*8)) + (data[3] << (4*8)) \
+      return (data[0] << (7*8)) + (data[1] << (6*8)) + (data[2] << (5*8)) + (data[3] << (4*8)) \
         + (data[4] << (3*8)) + (data[5] << (2*8)) + (data[6] << (1*8)) + (data[7] << (0*8))
 
     return length

@@ -51,23 +51,23 @@ class WebSocket:
     if self.request.get_header("Upgrade") != "websocket":
       raise HttpException(400, "Upgrade header expected")
 
-    secKey = self.request.get_header("Sec-WebSocket-Key")
+    key = self.request.get_header("Sec-WebSocket-Key")
 
-    if secKey is None:
+    if key is None:
       raise HttpException(400, "Upgrade header expected")
 
-    m = sha1()
-    m.update(secKey.encode())
-    m.update(b"258EAFA5-E914-47DA-95CA-C5AB0DC85B11")
+    message = sha1()
+    message.update(key.encode())
+    message.update(b"258EAFA5-E914-47DA-95CA-C5AB0DC85B11")
 
-    secAccept = b64encode(m.digest()).decode()
+    accept = b64encode(message.digest()).decode()
 
     response = HttpResponse()
-    response.set_status(101,"Switching Protocols")
+    response.set_status(101, "Switching Protocols")
     response.add_headers(headers={
-        "Upgrade": "websocket",
-        "Connection": "Upgrade",
-        "Sec-WebSocket-Accept": secAccept
+      "Upgrade": "websocket",
+      "Connection": "Upgrade",
+      "Sec-WebSocket-Accept": accept
     })
     response.send(self.__context)
 
@@ -84,7 +84,7 @@ class WebSocket:
     mask = self.__context.socket.recv(4)
     payload += self.__context.socket.recv(length)
 
-    for i in range(len(payload)):
+    for i in enumerate(payload):
       payload[i] = mask[i % 4] ^ payload[i]
 
     return payload
@@ -138,7 +138,7 @@ class WebSocket:
         self.handle_pong(data)
         continue
 
-      if (opcode == 0) or (opcode == 1) or (opcode == 2) :
+      if (opcode == 0) or (opcode == 1) or (opcode == 2):
 
         if not bool(data[1] & 0b10000000):
           raise Exception("Client to server messages have to be masked.")
@@ -175,7 +175,7 @@ class WebSocket:
       data.append((length >> (1*8)) & 0xFF)
       data.append((length >> (0*8)) & 0xFF)
 
-    if (isinstance(payload, (bytes, bytearray))):
+    if isinstance(payload, (bytes, bytearray)):
       data.extend(payload)
     else:
       data.extend(payload.encode())

@@ -1,14 +1,14 @@
 import ssl
 import socket
 
-from .websocket import WebSocket
-from .http import HttpRequest, HttpException, HttpResponse
 from concurrent.futures import ThreadPoolExecutor
+
+from .http import HttpRequest, HttpException, HttpResponse
 
 class HttpContext:
 
-  def __init__(self, socket, handlers):
-    self.__socket = socket
+  def __init__(self, sock, handlers):
+    self.__socket = sock
     self.__handers = handlers
 
   @property
@@ -26,6 +26,7 @@ class WebServer:
     self.__port = port
     self.__hostname = "127.0.0.1"
     self.__handlers = []
+    self.__executor = None
 
   def add_handler(self, handler):
     self.__handlers.append(handler)
@@ -49,14 +50,14 @@ class WebServer:
       print("404 File not found "+request.url)
       raise HttpException(404, "File not found "+request.url)
 
-    except HttpException as e:
+    except HttpException as ex:
       response = HttpResponse()
-      response.set_status(e.code, e.reason)
+      response.set_status(ex.code, ex.reason)
       response.add_headers({'Connection': 'close'})
       response.send(context)
 
-    except Exception as e:
-      print(e)
+    except Exception as ex:
+      print(ex)
     finally:
       context.socket.close()
 
@@ -73,24 +74,28 @@ class WebServer:
       print("Listening on https://"+self.__hostname+":"+str(self.__port))
 
       while True:
-          # accept connections from outside
-          (clientsocket, address) = sock.accept()
+        # accept connections from outside
+        (clientsocket, address) = sock.accept()
 
-          sslclientsocket = ssl.wrap_socket(clientsocket, server_side=True, certfile="d:\\python.cert",
-               keyfile="d:\\python.key", cert_reqs=ssl.CERT_NONE,
-                          do_handshake_on_connect=False, )
+        sslclientsocket = ssl.wrap_socket(
+          clientsocket,
+          server_side=True,
+          certfile="d:\\python.cert",
+          keyfile="d:\\python.key",
+          cert_reqs=ssl.CERT_NONE,
+          do_handshake_on_connect=False, )
 
-          try:
-            sslclientsocket.do_handshake()
-          except ConnectionAbortedError:
-            continue
-          except OSError:
-            continue
+        try:
+          sslclientsocket.do_handshake()
+        except ConnectionAbortedError:
+          continue
+        except OSError:
+          continue
 
-          except ssl.SSLError as err:
-            if err.args[1].find("sslv3 alert") == -1:
-              raise
+        except ssl.SSLError as err:
+          if err.args[1].find("sslv3 alert") == -1:
+            raise
 
-          self.__executor.submit(
-            self.handle_message,
-            HttpContext(sslclientsocket, self.__handlers))
+        self.__executor.submit(
+          self.handle_message,
+          HttpContext(sslclientsocket, self.__handlers))

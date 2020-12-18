@@ -9,29 +9,29 @@ class Parser:
   def __init__(self, data):
     self.__data = data
 
-  def isLineBreak(self):
+  def is_line_break(self):
     return self.__data.startswith(b'\r\n')
 
-  def extractLineBreak(self):
-    if not self.isLineBreak():
+  def extract_line_break(self):
+    if not self.is_line_break():
       raise Exception("No Linebreak found")
 
     self.__data = self.__data[2:]
 
-  def isSpace(self):
+  def is_space(self):
     return self.__data.startswith(b' ')
 
-  def extractSpace(self):
-    if not self.isSpace():
+  def extract_space(self):
+    if not self.is_space():
       raise Exception("No Space found")
 
     self.__data = self.__data[1:]
 
-  def isString(self):
+  def is_string(self):
     return self.__data.startswith(b'"')
 
-  def startsWith(self, token):
-    return self.__data.startsWith(token)
+  def startswith(self, token):
+    return self.__data.startswith(token)
 
   def extract(self, token):
     for item in token:
@@ -44,10 +44,10 @@ class Parser:
 
     raise Exception("Failed to extract token")
 
-  def extractString(self):
+  def extract_string(self):
 
-    if not self.isString():
-       raise Exception("Expected Quote")
+    if not self.is_string():
+      raise Exception("Expected Quote")
 
     pos = 1
 
@@ -60,12 +60,12 @@ class Parser:
       pos += 1
 
       # Handle Escape Characters
-      if (self.__data[pos-2] != b"\\"):
+      if self.__data[pos-2] != b"\\":
         break
 
       cnt = 0
-      for c in self.__data[pos-2:1:-1]:
-        if c != b"\\" :
+      for char in self.__data[pos-2:1:-1]:
+        if char != b"\\":
           break
 
         cnt += 1
@@ -79,36 +79,43 @@ class Parser:
 
     return result
 
-  def getData(self):
+  def get_data(self):
     return self.__data
 
 
 class Response:
 
-  def decode(self, data) :
+  def __init__(self):
+    self.__status = None
+
+  def decode(self, data):
 
     parser = Parser(data)
 
-    self.__requestStatus = parser.extract([b"OK", b"NO", b"BYE"])
+    self.__status = parser.extract([b"OK", b"NO", b"BYE"])
 
-    if parser.isSpace() :
-      parser.extractSpace()
+    if parser.is_space():
+      parser.extract_space()
       parser.extract(b"(")
 
-      while not parser.startsWith(")"):
-        parser.extractSpace()
-        parser.extractString()
+      while not parser.startswith(")"):
+        parser.extract_space()
+        parser.extract_string()
 
-    if (parser.isSpace()) :
-      parser.extractSpace()
-      parser.extractString()
+    if parser.is_space():
+      parser.extract_space()
+      parser.extract_string()
 
-    parser.extractLineBreak()
+    parser.extract_line_break()
 
 class Capabilities(Response):
 
   def __init__(self):
+    super().__init__()
     self._capabilities = {}
+
+  def get_capabilities(self):
+    return self._capabilities
 
   def decode(self, data):
 
@@ -116,22 +123,22 @@ class Capabilities(Response):
 
     self._capabilities = {}
 
-    while parser.isString():
-      key = parser.extractString()
+    while parser.is_string():
+      key = parser.extract_string()
 
       value = ""
-      if not parser.isLineBreak():
-        parser.extractSpace()
-        value = parser.extractString()
+      if not parser.is_line_break():
+        parser.extract_space()
+        value = parser.extract_string()
 
-      parser.extractLineBreak()
+      parser.extract_line_break()
 
       self._capabilities[key.upper()] = value
 
     if b'"IMPLEMENTATION"' not in self._capabilities:
       raise Exception("Implementation expected")
 
-    super().decode(parser.getData())
+    super().decode(parser.get_data())
 
   def encode(self):
 
@@ -150,7 +157,7 @@ class Capabilities(Response):
 
       result += key
       if len(value):
-        result+=b" "+value
+        result += b" "+value
 
       result += b"\r\n"
 
@@ -163,6 +170,7 @@ class SieveSocket:
 
   def __init__(self, hostname, port):
     self.__socket = None
+    self.__old_socket = None
     self.__capabilities = None
 
     self.__hostname = hostname
@@ -187,10 +195,10 @@ class SieveSocket:
     capabilities = Capabilities()
     capabilities.decode(self.recv())
 
-    if b'"SASL"' not in capabilities._capabilities:
+    if b'"SASL"' not in capabilities.get_capabilities():
       raise Exception("Sasl Plain not supported")
 
-    if b'PLAIN' not in capabilities._capabilities[b'"SASL"'][1:-1].split(b" "):
+    if b'PLAIN' not in capabilities.get_capabilities()[b'"SASL"'][1:-1].split(b" "):
       raise Exception("Sasl Plain not supported")
 
     self.__capabilities = capabilities
@@ -206,7 +214,7 @@ class SieveSocket:
       self.__socket.close()
 
     self.__socket = None
-    self.__oldSocket = None
+    self.__old_socket = None
 
   def upgrade(self):
     #self.__oldSocket =  self.__socket
@@ -215,7 +223,7 @@ class SieveSocket:
   def wait(self):
     while True:
       ready_to_read, ready_to_write, in_error = select.select(
-        [self.__socket],[],[self.__socket])
+        [self.__socket], [], [self.__socket])
 
       if self.__socket in in_error:
         raise Exception("Socket in error")
@@ -235,17 +243,17 @@ class SieveSocket:
     self.__socket.send(data)
 
   def start_tls(self):
-      if b'"STARTTLS"' not in self.__capabilities._capabilities:
-        raise Exception("Starttls not supported")
+    if b'"STARTTLS"' not in self.__capabilities.get_capabilities():
+      raise Exception("Starttls not supported")
 
-      self.send(b"STARTTLS\r\n")
+    self.send(b"STARTTLS\r\n")
 
-      # TODO we should ensure that we got an ok
-      print(self.recv())
-      self.upgrade()
+    # TODO we should ensure that we got an ok
+    print(self.recv())
+    self.upgrade()
 
-      #update the capabilities
-      self.__capabilities.decode(self.recv())
+    #update the capabilities
+    self.__capabilities.decode(self.recv())
 
 
   def authenticate(self, authentication, password, authorization):
@@ -258,5 +266,4 @@ class SieveSocket:
 
   @property
   def capabilities(self):
-     return self.__capabilities.encode()
-
+    return self.__capabilities.encode()

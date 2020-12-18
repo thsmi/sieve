@@ -6,7 +6,7 @@ class MessagePump:
   def wait(self, server, client):
 
     ready_to_read, ready_to_write, in_error \
-      = select.select([server, client],[],[server,client])
+      = select.select([server, client], [], [server, client])
 
     if server in in_error:
       raise Exception("Reading server connection failed")

@@ -3,17 +3,18 @@ import time
 
 class HttpException(Exception):
 
-   def __init__(self, code, reason):
-        self.code = code
-        self.reason = reason
-        super().__init__(self.reason)
+  def __init__(self, code, reason):
+    self.code = code
+    self.reason = reason
+    super().__init__(self.reason)
 
 
 class HttpRequest:
 
   def __init__(self):
     self.__headers = {}
-    self.__request = ["","",""]
+    self.__request = ["", "", ""]
+    self.__payload = None
 
   @property
   def url(self):
@@ -21,12 +22,12 @@ class HttpRequest:
 
   @property
   def path(self):
-    return self.__request[1].split("?",1)[0]
+    return self.__request[1].split("?", 1)[0]
 
   @property
   def query(self):
-    print(self.__request[1].split("?",1))
-    return self.__request[1].split("?",1)[1]
+    print(self.__request[1].split("?", 1))
+    return self.__request[1].split("?", 1)[1]
 
   @property
   def method(self):
@@ -42,7 +43,7 @@ class HttpRequest:
 
     while True:
       ready_to_read, ready_to_write, in_error = select.select(
-        [context.socket],[],[context.socket])
+        [context.socket], [], [context.socket])
 
       if context.socket in in_error:
         raise Exception("Socket in error")
@@ -59,7 +60,7 @@ class HttpRequest:
 
     data = context.socket.recv(4096).decode()
 
-    data = data.split("\r\n\r\n",1)
+    data = data.split("\r\n\r\n", 1)
 
     headers = data[0].split("\r\n")
 
@@ -107,7 +108,7 @@ class HttpResponse:
 
     response += "\r\n"
 
-    if data != None:
+    if data is not None:
       response += data
 
     context.socket.send(response.encode())

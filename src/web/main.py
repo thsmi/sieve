@@ -78,13 +78,13 @@ class FileHandler:
     if filename is None:
       raise HttpException(404, "File not found")
 
-    with open(filename,encoding='utf-8') as f:
+    with open(filename, encoding='utf-8') as file:
       response = HttpResponse()
       response.add_headers({
         'Content-Type': self.get_content_type(filename),
         'Connection': 'close'
       })
-      response.send(context,f.read())
+      response.send(context, file.read())
 
 
 
@@ -102,16 +102,16 @@ class WebSocketHandler:
   def handle_request(self, context, request):
 
     # Websocket is read
-    with WebSocket(request, context) as webSocket:
-      with SieveSocket("imap.1und1.com",4190) as sieveSocket:
+    with WebSocket(request, context) as websocket:
+      with SieveSocket("imap.1und1.com", 4190) as sievesocket:
 
-        sieveSocket.start_tls()
+        sievesocket.start_tls()
         #sieveSocket.authenticate()
 
         # Publish capabilities to client...
-        webSocket.send(sieveSocket.capabilities)
+        websocket.send(sievesocket.capabilities)
 
-        MessagePump().run(webSocket, sieveSocket)
+        MessagePump().run(websocket, sievesocket)
 
 
 webServer = WebServer()

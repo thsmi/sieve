@@ -1,7 +1,3 @@
-
-import threading
-
-import time
 import os
 
 from script.http import HttpException, HttpResponse

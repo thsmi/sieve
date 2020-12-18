@@ -19,5 +19,6 @@
   ],
   "[json]": {
     "editor.wordWrap": "on"
-  }
+  },
+  "python.linting.enabled": true
 }

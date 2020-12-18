@@ -13,9 +13,9 @@ class SocketMock:
   def data(self):
     return self.__data
 
-  def recv(self, len):
-    result = self.__data[:len]
-    del self.__data[:len]
+  def recv(self, length):
+    result = self.__data[:length]
+    del self.__data[:length]
 
     return result
 

@@ -9,30 +9,28 @@ It is a proxy or "man in the middle" approach. And only active during the initia
 
 ## Connecting
 
-1. Client Connects to Proxy
-2. Proxy creates connection to server
+ 1. Client Connects to Proxy
+ 2. Proxy creates connection to server
 
    It caches the initial capability message.
 
-3. Proxy Secures connection to server
+ 3. Proxy Secures connection to server
 
    1. Proxy calls STARTTLS
    2. Proxy parses STARTTLS response and returns it as welcome MESSAGE to the client.
 
       It updates the initial capability message.
 
-
-4. Send capabilities to client
+ 4. Send capabilities to client
 
    The SASL mechanisms are set to "SASL" "PLAIN" it is currently the only supported mechanism. And STARTTLS is removed.
 
    The implementation gets a "via Websocket" appended.
 
-5. Normal Sieve communication
+ 5. Normal Sieve communication
 
    The sieve client can now start normal communication.
    Typically it will first try to authenticate.
-
 
 ## Components
 

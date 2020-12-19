@@ -68,7 +68,7 @@ class TransposeMjsToJs extends Stream.Transform {
     if (file.extname === ".js") {
       let content = file.contents.toString();
       content = content.replace(
-        /(import\s*({[\w\s\n,]*}\s*from\s*)?)"([\w/.-]*)\.mjs"/gm,
+        /(import\s*({[\s\w,]*}\s*from\s*)?)"([\w./-]*)\.mjs"/gm,
         '$1"$3.js"');
       file.contents = Buffer.from(content);
     }
@@ -77,7 +77,7 @@ class TransposeMjsToJs extends Stream.Transform {
       let content = file.contents.toString();
 
       content = content.replace(
-        /(<script\s*type="module"\s*src=")([\w/.-]*)\.mjs("\s*>)/gm,
+        /(<script\s*type="module"\s*src=")([\w./-]*)\.mjs("\s*>)/gm,
         '$1$2.js$3');
 
       file.contents = Buffer.from(content);
@@ -127,7 +127,7 @@ class TransposeImportToRequire extends Stream.Transform {
     let content = file.contents.toString();
 
     // Convert all ES6 imports...
-    content = content.replace(/import\s*{([\w\s\n,]*)}\s*from\s*("[\w/.]*");/g, "const {$1} = require($2);");
+    content = content.replace(/import\s*{([\s\w,]*)}\s*from\s*("[\w./]*");/g, "const {$1} = require($2);");
 
     // ... and then all ES6 exports, but we have three styles here:
     // First one is "exports { something as somethingElse }"
@@ -136,7 +136,7 @@ class TransposeImportToRequire extends Stream.Transform {
     content = content.replace(/export\s*{\s*(\w*)\s*};/g, "module.exports.$1 = $1");
 
     // And the most complex one is the third one "exports { something,\n  somethingElse }"
-    const matches = content.matchAll(/export\s*{((?:[\s\n]*\w+[\s\n,]*)+)};/g);
+    const matches = content.matchAll(/export\s*{((?:\s*\w+[\s,]*)+)};/g);
 
     for (const match of matches) {
       const result = match[1].replace(/[^\S\n]*(\w+)(?:\s*,)?/g, "module.exports.$1 = $1;");
@@ -148,6 +148,7 @@ class TransposeImportToRequire extends Stream.Transform {
     cb(null, file);
   }
 }
+
 
 /**
  * Copies the license file into the build directory.

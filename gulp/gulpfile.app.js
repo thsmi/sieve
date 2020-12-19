@@ -13,8 +13,8 @@ const { src, dest, watch, parallel, series } = require('gulp');
 const { existsSync } = require('fs');
 const { readFile, chmod, unlink, mkdir } = require('fs').promises;
 
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
+const { promisify } = require('util');
+const exec = promisify(require('child_process').exec);
 
 const logger = require('gulplog');
 
@@ -65,6 +65,11 @@ const PERMISSIONS_NORMAL = 0o100660;
  *   the path to the tar file
  * @param {string} destination
  *   the destination folder into which the tar should be extracted.
+ * @param {Function} filter
+ *   a filter method which will be called for each entry. If it returns
+ *   true the element will be extracted otherwise false.
+ * @param {number} strip
+ *   the number of leading path elements to be stripped.
  */
 async function untar(filename, destination, filter, strip) {
 
@@ -333,7 +338,7 @@ async function deployPrebuilt(electronDest, prebuiltDest, pkgName, platform, arc
 
   // ... then the tarball containing the library.
   await untar(tarballSrc, prebuiltDest,
-    (entry) => { return (/^.*\/((lib\/.*)|LICENSE.md|package.json)$/gi.test(entry)); }, 1);
+    (entry) => { return (/^.*\/((lib\/.*)|license.md|package.json)$/gi.test(entry)); }, 1);
 }
 
 /**

@@ -33,6 +33,10 @@ const INDEX_MAJOR = 0;
 const INDEX_MINOR = 1;
 const INDEX_PATCH = 2;
 
+const MAJOR_INCREMENT = 1;
+const MINOR_INCREMENT = 1;
+const PATCH_INCREMENT = 1;
+
 /**
  * Delete all files from the given path.
  *
@@ -293,7 +297,7 @@ async function bumpMajorVersion() {
 
   logger.info("Major bump from " + pkgVersion.join(".") + " ...");
 
-  pkgVersion[INDEX_MAJOR] = parseInt(pkgVersion[INDEX_MAJOR], 10) + 1;
+  pkgVersion[INDEX_MAJOR] = Number.parseInt(pkgVersion[INDEX_MAJOR], 10) + MAJOR_INCREMENT;
   pkgVersion[INDEX_MINOR] = 0;
   pkgVersion[INDEX_PATCH] = 0;
 
@@ -312,7 +316,7 @@ async function bumpMinorVersion() {
 
   logger.info("Minor bump from " + pkgVersion.join("."));
 
-  pkgVersion[INDEX_MINOR] = parseInt(pkgVersion[INDEX_MINOR], 10) + 1;
+  pkgVersion[INDEX_MINOR] = Number.parseInt(pkgVersion[INDEX_MINOR], 10) + MINOR_INCREMENT;
   pkgVersion[INDEX_PATCH] = 0;
 
   logger.info("... to " + pkgVersion.join("."));
@@ -330,7 +334,7 @@ async function bumpPatchVersion() {
 
   logger.info("Patch bump from " + pkgVersion.join("."));
 
-  pkgVersion[INDEX_PATCH] = parseInt(pkgVersion[INDEX_PATCH], 10) + 1;
+  pkgVersion[INDEX_PATCH] = Number.parseInt(pkgVersion[INDEX_PATCH], 10) + PATCH_INCREMENT;
 
   logger.info("... to " + pkgVersion.join("."));
 

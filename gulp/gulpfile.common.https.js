@@ -79,7 +79,7 @@ async function fetch(url) {
         }
 
         if (!isSuccess(response.statusCode))
-          throw Error(`Fetching ${url} failed with status code ${response.statusCode}.`);
+          throw new Error(`Fetching ${url} failed with status code ${response.statusCode}.`);
 
         let data = "";
 
@@ -133,7 +133,7 @@ async function download(url, destination) {
         }
 
         if (!isSuccess(response.statusCode))
-          throw Error(`Downloading ${url} failed with status code ${response.statusCode}.`);
+          throw new Error(`Downloading ${url} failed with status code ${response.statusCode}.`);
 
         const file = fs.createWriteStream(destination);
 

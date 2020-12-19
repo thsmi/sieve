@@ -1,17 +1,15 @@
 
 .sivAction[data-sieve-flavour],
 .sivConditionText,
-.sivConditionCode
-{
-  border: 1px #DDE4E9 solid;
-  background-color: #F3F6F7;
-  padding-left:3px;
+.sivConditionCode {
+  border: 1px #dde4e9 solid;
+  background-color: #f3f6f7;
+  padding-left: 3px;
 
   cursor: default;
 }
 
-.sivConditionCode code
-{
+.sivConditionCode code {
   flex: auto 1 1;
   white-space: pre-wrap;
 }
@@ -19,17 +17,17 @@
 .sivConditionCode,
 .sivConditionText,
 .sivEditableElement[data-sieve-flavour],
-.sivEditableElement
-{
+.sivEditableElement {
   display: flex;
   flex-direction: row;
 }
+
 .sivEditableElement > .sivSummaryContent,
 .sivEditableElement > .sivSummaryCode {
   flex: 1 1 auto;
 }
 
-.sivEditableElement > .sivSummaryCode > code{
+.sivEditableElement > .sivSummaryCode > code {
   white-space: pre-wrap;
 }
 
@@ -42,9 +40,8 @@
 }
 
 
-.sivEditableElement:hover
-{
-  border: 1px red #EDEDED solid;
+.sivEditableElement:hover {
+  border: 1px red #ededed solid;
   background-color: white;
   box-shadow: 0 0 7px gray;
 }
@@ -55,101 +52,92 @@ div[data-sieve-flavour][data-sieve-dragging] {
   box-shadow: 0 0 5px red;
 }
 
-.sivSummaryContent em{
-  font-family:courier;
-  font-style:normal;
+.sivSummaryContent em {
+  font-family: courier;
+  font-style: normal;
 }
 
 
-  .sivEditableElement h1 {
-    font-size:1em;
-    padding:0px;
-    margin:0px;
-  }
-
+.sivEditableElement h1 {
+  font-size: 1em;
+  padding: 0;
+  margin: 0;
+}
 
 /* Blocks */
 
-.sivBlock > .sivBlockChild:nth-last-of-type(2)
-{
+.sivBlock > .sivBlockChild:nth-last-of-type(2) {
   background-image: url('hline.png');
   background-position: 2px top;
   background-repeat: no-repeat;
 }
 
 
-.sivBlock > .sivBlockSpacer:nth-last-of-type(1)
-{
+.sivBlock > .sivBlockSpacer:nth-last-of-type(1) {
   background-image: none;
-  padding-bottom: 0px;
+  padding-bottom: 0;
 }
 
-.sivBlockChild
-{
+.sivBlockChild {
   background-image: url('vline.png'), url('hline.png');
-  background-position:  -7px center, 2px top;
+  background-position: -7px center, 2px top;
   background-repeat: repeat-y, no-repeat;
 }
 
 .sivConditionChild,
 .sivConditionSpacer:not(:first-of-type) {
   background-image: url('vline2.png');
-  background-position:  -4px center;
+  background-position: -4px center;
   background-repeat: repeat-y;
 }
 
 .sivBlockChild,
 .sivConditionChild {
-  padding-left:15px;
+  padding-left: 15px;
 }
 
 .sivConditionalChild {
-  padding:3px 0px 3px 3px;
-  background-color: #E8EDF0;
-  border: 1px #DDE4E9 solid
+  padding: 3px 0 3px 3px;
+  background-color: #e8edf0;
+  border: 1px #dde4e9 solid
 }
 
-/* Dropmarkers*/
-.sivBlockSpacer
-{
+/* Dropmarkers */
+.sivBlockSpacer {
   background-image: url('vline.png');
-  background-position:  -7px top;
+  background-position: -7px top;
   background-repeat: repeat-y;
 
-  padding:2px 0px 2px 0px;
+  padding:2px 0 2px 0;
 }
 
-.sivConditionSpacer{
-  padding:0px;
+.sivConditionSpacer {
+  padding: 0;
 }
 
 .sivBlockSpacer,
 .sivOperatorSpacer,
-.sivConditionSpacer
-{
+.sivConditionSpacer {
   height: 6px;
 }
 
 .sivBlockSpacer > div,
 .sivConditionSpacer > div,
-.sivOperatorSpacer > div
-{
+.sivOperatorSpacer > div {
   height: 3px;
 }
 
 .sivBlockSpacer[data-sieve-dragging] > div,
 .sivConditionSpacer[data-sieve-dragging] > div,
-.sivOperatorSpacer[data-sieve-dragging] > div
-{
+.sivOperatorSpacer[data-sieve-dragging] > div {
   background-color : red;
   background-image: linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
   box-shadow: 0 0 5px red;
 }
 
-#toolbar div[data-sieve-flavour]
-{
-  margin:2px 5px;
-  padding:0px 3px;
+#toolbar div[data-sieve-flavour] {
+  margin: 2px 5px;
+  padding: 0 3px;
   background-color: lightgray;
   border-radius:3px;
   border: 1px solid gray;

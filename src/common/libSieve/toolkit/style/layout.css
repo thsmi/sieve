@@ -1,9 +1,9 @@
 body {
-  margin:0px;
+  margin: 0;
 }
 
 #content {
-  padding: 0px 10px;
+  padding: 0 10px;
   margin-left: 180px;
 }
 
@@ -14,20 +14,18 @@ body {
 }
 
 #toolbar .SivElement {
-   width:140px;
+   width: 140px;
 }
 
-#sivTrash .sivTrashBin
-{
+#sivTrash .sivTrashBin {
   height: 80px;
-  min-width:80px;
-  background-color:transparent;
-  background-image:url('trash.png');
-  background-repeat:no-repeat;
-  background-position:center center;
+  min-width: 80px;
+  background-color: transparent;
+  background-image: url('trash.png');
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 
-#sivTrash .sivTrashBin[data-sieve-dragging]
-{
-  background-image:url('trash-full.png');
+#sivTrash .sivTrashBin[data-sieve-dragging] {
+  background-image: url('trash-full.png');
 }

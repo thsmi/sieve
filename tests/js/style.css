@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -7,14 +8,14 @@ html, body {
 
 #content {
   flex: 1;
-	flex-grow: 1;
-	height: 100%;
-	overflow: scroll;
+  flex-grow: 1;
+  height: 100%;
+  overflow: scroll;
   padding-left: 10px;
 }
 
 #sidebar {
-  flex-grow : 0;
+  flex-grow: 0;
   flex-basis: 250px;
   background-color: #f5f5f5;
   padding-left: 10px;
@@ -33,7 +34,7 @@ html, body {
   color: red;
 }
 
-#divOutput.showTrace .logTrace{
+#divOutput.showTrace .logTrace {
   display: inherit !important;
 }
 
@@ -48,10 +49,10 @@ html, body {
 }
 
 .logHeader {
-  font-size : 1.2em;
+  font-size: 1.2em;
   border-bottom: 1px solid lightgray;
   margin-bottom: 10px;
-  margin-top : 20px;
+  margin-top: 20px;
 }
 
 .logError {

@@ -39,7 +39,6 @@
   margin-bottom: inherit;
 }
 
-
 .sivEditableElement:hover {
   border: 1px red #ededed solid;
   background-color: white;
@@ -53,10 +52,9 @@ div[data-sieve-flavour][data-sieve-dragging] {
 }
 
 .sivSummaryContent em {
-  font-family: courier;
+  font-family: courier, serif;
   font-style: normal;
 }
-
 
 .sivEditableElement h1 {
   font-size: 1em;
@@ -71,7 +69,6 @@ div[data-sieve-flavour][data-sieve-dragging] {
   background-position: 2px top;
   background-repeat: no-repeat;
 }
-
 
 .sivBlock > .sivBlockSpacer:nth-last-of-type(1) {
   background-image: none;
@@ -99,7 +96,7 @@ div[data-sieve-flavour][data-sieve-dragging] {
 .sivConditionalChild {
   padding: 3px 0 3px 3px;
   background-color: #e8edf0;
-  border: 1px #dde4e9 solid
+  border: 1px #dde4e9 solid;
 }
 
 /* Dropmarkers */
@@ -130,8 +127,8 @@ div[data-sieve-flavour][data-sieve-dragging] {
 .sivBlockSpacer[data-sieve-dragging] > div,
 .sivConditionSpacer[data-sieve-dragging] > div,
 .sivOperatorSpacer[data-sieve-dragging] > div {
-  background-color : red;
-  background-image: linear-gradient(rgba(255,255,255,.25), rgba(0,0,0,.15));
+  background-color: red;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.15));
   box-shadow: 0 0 5px red;
 }
 
@@ -139,6 +136,6 @@ div[data-sieve-flavour][data-sieve-dragging] {
   margin: 2px 5px;
   padding: 0 3px;
   background-color: lightgray;
-  border-radius:3px;
+  border-radius: 3px;
   border: 1px solid gray;
 }

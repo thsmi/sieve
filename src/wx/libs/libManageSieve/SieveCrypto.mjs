@@ -54,8 +54,8 @@ class SieveWebCrypto extends SieveAbstractCrypto {
       { name: "HMAC", hash: {name: this.getCryptoHash()}},
       false, ["sign", "verify"]);
 
-    const signature = crypto.subtle.sign(
-      "HMAC", new Uint8Array(key), new Uint8Array(bytes));
+    const signature = new Uint8Array(await crypto.subtle.sign(
+      "HMAC", key, new Uint8Array(bytes)));
 
     if (typeof (output) !== "undefined" && output === "hex")
       return this.byteArrayToHexString(signature);
@@ -74,13 +74,15 @@ class SieveWebCrypto extends SieveAbstractCrypto {
     }
 
     // this.name is the algorithm.
-    const digest = await crypto.subtle
-      .digest(this.getCryptoHash(), new Uint8Array(bytes));
+    const hash = new Uint8Array(await crypto.subtle
+      .digest(this.getCryptoHash(), new Uint8Array(bytes)));
 
-    if (typeof (output) !== "undefined" && output === "hex")
-      return this.byteArrayToHexString(digest);
+    if (typeof (output) !== "undefined" && output === "hex") {
+      const rv = this.byteArrayToHexString(hash);
+      return rv;
+    }
 
-    return [...digest];
+    return [...hash];
   }
 
 }

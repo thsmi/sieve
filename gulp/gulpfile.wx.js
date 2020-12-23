@@ -342,3 +342,5 @@ exports['package'] = series(
 );
 
 exports["packageXpi"] = packageXpi;
+
+exports["BASE_DIR_WX"] = BASE_DIR_WX;

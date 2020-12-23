@@ -12,20 +12,59 @@
 const { src, dest, watch, parallel } = require('gulp');
 
 const common = require("./gulpfile.common.js");
+const app = require("./gulpfile.app.js");
+const wx = require("./gulpfile.wx.js");
 const path = require('path');
 
 const BUILD_DIR_TEST = path.join(common.BASE_DIR_BUILD, "test/");
 
-/**
- * Copies the common files into the test folder.
- */
-async function packageCommon() {
+async function packageAppTests() {
   await src([
     common.BASE_DIR_COMMON + "/**",
 
     // Filter out the rfc documents
-    "!" + common.BASE_DIR_COMMON + "/libSieve/**/rfc*.txt"
-  ]).pipe(dest(`${BUILD_DIR_TEST}/common/`));
+    "!" + common.BASE_DIR_COMMON + "/libSieve/**/rfc*.txt",
+    "!**/*.html",
+    "!**/appImage/**",
+    "!**/doc/**",
+    "!**/icons/**"
+  ]).pipe(dest(`${BUILD_DIR_TEST}/app/`));
+
+  await src([
+    path.join(app.BASE_DIR_APP, "/libs") + "/**",
+
+    // Filter out the rfc documents
+    "!" + common.BASE_DIR_COMMON + "/libSieve/**/rfc*.txt",
+    "!**/*.html",
+    "!**/appImage/**",
+    "!**/doc/**",
+    "!**/icons/**"
+  ]).pipe(dest(`${BUILD_DIR_TEST}/app/`));
+}
+
+async function packageWxTests() {
+
+  await src([
+    path.join(common.BASE_DIR_COMMON, "/**"),
+
+    // Filter out the rfc documents
+    "!" + common.BASE_DIR_COMMON + "/libSieve/**/rfc*.txt",
+    "!**/*.html",
+    "!**/appImage/**",
+    "!**/doc/**",
+    "!**/icons/**"
+  ]).pipe(dest(`${BUILD_DIR_TEST}/wx/common/`));
+
+  await src([
+    path.join(wx.BASE_DIR_WX, "/libs") + "/**",
+
+    // Filter out the rfc documents
+    "!" + common.BASE_DIR_COMMON + "/libSieve/**/rfc*.txt",
+    "!**/*.html",
+    "!**/appImage/**",
+    "!**/doc/**",
+    "!**/icons/**"
+  ]).pipe(dest(`${BUILD_DIR_TEST}/wx/`));
 }
 
 /**
@@ -51,14 +90,15 @@ function watchSrc() {
       './tests/**/*.json',
       './tests/**/*.js'],
     parallel(
-      packageCommon,
+      packageAppTests,
       packageTestSuite)
   );
 }
 
 exports["package"] = parallel(
-  packageCommon,
-  packageTestSuite
+  packageTestSuite,
+  packageAppTests
+  //packageWxTests
 );
 
 exports["watch"] = watchSrc;

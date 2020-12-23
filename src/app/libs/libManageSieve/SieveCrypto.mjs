@@ -10,7 +10,7 @@
  */
 
 import { SieveAbstractCrypto } from "./SieveAbstractCrypto.mjs";
-const { createHmac, createHash } = require('crypto');
+import { createHmac, createHash } from 'crypto';
 
 /**
  * A Electron specific crypto implementation.
@@ -26,7 +26,7 @@ class SieveNodeCrypto extends SieveAbstractCrypto {
   /**
    * @inheritdoc
    */
-  HMAC(key, bytes, output) {
+  async HMAC(key, bytes, output) {
 
     if (typeof (key) === "undefined" || key === null)
       throw new Error("Invalid key");
@@ -54,7 +54,7 @@ class SieveNodeCrypto extends SieveAbstractCrypto {
   /**
    * @inheritdoc
    */
-  H(bytes, output) {
+  async H(bytes, output) {
 
     if (typeof (output) === "undefined" || output === null)
       output = "latin1";

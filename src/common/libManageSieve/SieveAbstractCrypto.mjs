@@ -120,7 +120,7 @@ class SieveAbstractCrypto {
    * @returns {byte[]}
    *   the calculated hash value for the input string.s
    */
-  H(bytes) {
+  async H(bytes) {
     throw new Error(`Implement Hashing Algorithm for ${this.name} with data ${bytes}`);
   }
 
@@ -153,7 +153,7 @@ class SieveAbstractCrypto {
    * @returns {byte[]}
    *   the pseudorandom value as byte string
    */
-  Hi(str, salt, i) {
+  async Hi(str, salt, i) {
 
     if (Array.isArray(str) === false)
       str = this.strToByteArray(str);
@@ -169,12 +169,12 @@ class SieveAbstractCrypto {
 
     salt.push(0, 0, 0, 1);
 
-    salt = this.HMAC(str, salt);
+    salt = await this.HMAC(str, salt);
 
     const hi = salt;
 
     while (--i) {
-      salt = this.HMAC(str, salt);
+      salt = await this.HMAC(str, salt);
 
       for (let j = 0; j < hi.length; j++)
         hi[j] ^= salt[j];

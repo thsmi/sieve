@@ -646,3 +646,5 @@ exports['package'] = series(
   ),
   packageSrc
 );
+
+exports["BASE_DIR_APP"] = BASE_DIR_APP;

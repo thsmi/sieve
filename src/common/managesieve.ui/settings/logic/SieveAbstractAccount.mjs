@@ -9,7 +9,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SievePrefManager } from './SievePrefManager.mjs';
+import { SievePrefManager } from "./SievePrefManager.mjs";
 
 import { SieveAuthorization } from "./SieveAuthorization.mjs";
 import { SieveAuthentication } from "./SieveAuthentication.mjs";

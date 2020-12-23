@@ -16,7 +16,7 @@ const CONFIG_KEY_LOG_LEVEL = "loglevel";
 const DEFAULT_LOG_LEVEL = 0;
 
 import { SieveUniqueId } from "./../../utils/SieveUniqueId.mjs";
-import { SievePrefManager } from './SievePrefManager.mjs';
+import { SievePrefManager } from "./SievePrefManager.mjs";
 import { SieveEditorSettings } from "./SieveEditorSettings.mjs";
 
 /**

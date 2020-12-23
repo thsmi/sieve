@@ -20,7 +20,7 @@ const SETTINGS_VERSION_I = 1;
 
 import { SieveLogger } from "./../../utils/SieveLogger.mjs";
 
-import { SievePrefManager } from './SievePrefManager.mjs';
+import { SievePrefManager } from "./SievePrefManager.mjs";
 
 import { SieveAccount } from "./SieveAccount.mjs";
 import { SieveAbstractAccounts } from "./SieveAbstractAccounts.mjs";

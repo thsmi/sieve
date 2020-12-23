@@ -21,7 +21,7 @@
           },
           {
             "name": "level",
-            "type": "int",
+            "type": "integer",
             "description": "The log level to be used"
           }
         ]

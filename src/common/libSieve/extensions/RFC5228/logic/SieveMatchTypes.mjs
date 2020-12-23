@@ -12,7 +12,7 @@
 
 import { SieveGrammar } from "./../../../toolkit/logic/GenericElements.mjs";
 
-// TODO match-type items (matchtype/) should not eat tailing whitespaces...
+// TODO match-type items (matchtype/) should not eat trailing whitespaces...
 // they this should be done my the match-type group
 
 SieveGrammar.addTag({

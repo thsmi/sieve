@@ -636,10 +636,10 @@ commander@^5.0.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-5.1.0.tgz#46abbd1652f8e059bddaef99bbdcb2ad9cf179ae"
   integrity sha512-P0CysNDQ7rtVw4QIQtm+MRxV66vKFSvlsQvGYXZWR3qFU0jlMKHZZZgw8e+8DSah4UDKMqnknRDQz+xuQXQ/Zg==
 
-comment-parser@^0.7.6:
-  version "0.7.6"
-  resolved "https://registry.yarnpkg.com/comment-parser/-/comment-parser-0.7.6.tgz#0e743a53c8e646c899a1323db31f6cd337b10f12"
-  integrity sha512-GKNxVA7/iuTnAqGADlTWX4tkhzxZKXp5fLJqKTlQLHkE65XDUKutZ3BHaJC5IGcper2tT3QRD1xr4o3jNpgXXg==
+comment-parser@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/comment-parser/-/comment-parser-1.1.1.tgz#c0581d520677e2cfab1a568e94ea0400df9fe4bd"
+  integrity sha512-vue7cRi1ZO5/72FJ+wZ5+siTSBlUv3ZksTk8bWD2IkaA6obitzMZP3yI65azTJLckwmi8lxfPP5Sd9oGuZ8e2g==
 
 compare-version@^0.1.2:
   version "0.1.2"
@@ -1033,12 +1033,12 @@ escape-string-regexp@^4.0.0:
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
   integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
 
-eslint-plugin-jsdoc@^30.7.9:
-  version "30.7.9"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-30.7.9.tgz#b0a9881990edc1bc8a635467bad9edfae9ecbaaf"
-  integrity sha512-qMM0fNx7/6OCnIh3jRpIrEBAhTG1THNXXbr3yfJ8yqLrDbzJR98xsstX25xt9GCPlrjNc/bBpTHfJQOvn7nVMA==
+eslint-plugin-jsdoc@^31.0.7:
+  version "31.0.7"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-31.0.7.tgz#a3ed0c1060521374f5c413e5a4bb90ef2ab9a60a"
+  integrity sha512-aAfVrXxgS+x9nW97DYZ1hEdKvobSqfT6S9xIU+pZYZ9mQW03B4l6s79CcAz6Q/RqYJj/nq+IOQO5ZFA8v7e0Og==
   dependencies:
-    comment-parser "^0.7.6"
+    comment-parser "1.1.1"
     debug "^4.3.1"
     jsdoctypeparser "^9.0.0"
     lodash "^4.17.20"

@@ -15,7 +15,7 @@
     "eslint-plugin-jsdoc": "^31.6.0",
     "gulp": "^4.0.0",
     "node-abi": "^2.19.3",
-    "tar": "^6.0.5",
+    "tar": "^6.1.0",
     "yazl": "^2.5.1"
   },
   "scripts": {

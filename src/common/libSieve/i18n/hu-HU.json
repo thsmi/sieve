@@ -473,7 +473,7 @@
   "vacation.from.default": "Szita parancsfájl tulajdonosának címe",
   "vacation.from.custom": "Egyéni feladó cím",
   "vacation.addresses": "További címzettek címei",
-  "vacation.addresses.text": "Alapértelmezés szerint egy válaszüzenetet csak akkor küldenek, ha a címzett felhasználónak vagy a Szita parancsfájl-tulajdonosnak címezték.",
+  "vacation.addresses.text": "Alapértelmezés szerint egy válaszüzenetet csak akkor küldenek, ha a címzett felhasználónak vagy a Szita parancsfájl tulajdonosnak címezték. \nMegadhat további e-mail címeket. Például, ha a leveleket továbbítják, vagy több álneve van egy e-mail címhez",
   "vacation.contenttype": "Üzenet tartalom típusa",
   "vacation.contenttype.text": "Sima szöveg helyett az üzenet megadható MIME üzenetként",
   "vacation.contenttype.default": "Sima szövegű üzenet (alapértelmezett)",

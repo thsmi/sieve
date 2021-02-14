@@ -495,7 +495,7 @@
   "environment.name.location": "Provides additional information about the type of service that is evaluating the script.\nWell known services are \"MTA\" (Message Transfer Agent), \"MDA\" (Mail Delivery Agent),\n\"MUA\" (Mail User Agent) and \"MS\" (Message Store).",
   "environment.name.name": "Szita tolmács neve.",
   "environment.name.phase": "A jelenlegi kézbesítési szakasz.\nLehet előtte (pre), közben (during) és a végső kézbesítés után (post)",
-  "environment.name.remotehost": "Host name of remote client as a Fully Qualified Domain Name (FQDN)\nAn empty string means, sieve failed to obtain this information",
+  "environment.name.remotehost": "A távoli ügyfél állomásneve, mint teljes tartománynév (FQDN)\nAz üres karakterlánc azt jelenti, hogy a Szitának nem sikerült megszereznie ezeket az információkat",
   "environment.name.remoteip": "Távoli ügyfél IP-címe szabványos jelöléssel",
   "environment.name.version": "Szita tolmácsa változat száma.",
   "environment.keys": "… az alábbi kulcsok bármelyike…",

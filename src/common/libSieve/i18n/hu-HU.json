@@ -432,7 +432,7 @@
   "addresspart.detail.title": "… ezzel a részletes alrésszel…",
   "addresspart.detail.text": "Everything between the + sign and the @ sign, or before a -- sequence.\nThe local-part is case sensitive.\ne.g.: \"user+detail@example.com\" or \"detail--user@example.com\" is stripped to \"detail\"",
   "comparator.asciicasemap.title": "Kis- és nagybetűk használatától független (alapértelmezett)",
-  "comparator.asciicasemap.text": "Treats uppercase and lowercase ASCII characters as the same.\nAll non ASCII characters are compared byte by byte.",
+  "comparator.asciicasemap.text": "A kis- és nagybetűs ASCII karaktereket ugyanúgy kezeli.\nAz összes nem ASCII karakter bájtonként hasonlítja össze.",
   "comparator.asciinumeric.title": "Numerikus",
   "comparator.asciinumeric.text": "Átalakítja a karakterláncot egész számra és numerikus összehasonlítást végez.",
   "comparator.octet.title": "Kis- és nagybetűk megkülönböztetése",

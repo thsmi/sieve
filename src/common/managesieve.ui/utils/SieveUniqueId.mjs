@@ -25,7 +25,7 @@ class SieveUniqueId {
    */
   generate() {
     // "" + Math.floor(Math.random() * 10000000).toString(16) + Date.now().toString(16)
-    return (new Date()).getTime().toString(ASCII)
+    return Date.now().toString(ASCII)
       + "-" + Math.random().toString(ASCII).substr(SEED_OFFSET, SEED_LENGTH);
   }
 }

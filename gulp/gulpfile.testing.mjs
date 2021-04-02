@@ -18,6 +18,9 @@ import path from 'path';
 
 const BUILD_DIR_TEST = path.join(common.BASE_DIR_BUILD, "test/");
 
+/**
+ *
+ */
 async function packageAppTests() {
   await gulp.src([
     common.BASE_DIR_COMMON + "/**",
@@ -42,6 +45,9 @@ async function packageAppTests() {
   ]).pipe(gulp.dest(`${BUILD_DIR_TEST}/app/`));
 }
 
+/**
+ *
+ */
 async function packageWxTests() {
 
   await gulp.src([

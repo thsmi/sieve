@@ -136,7 +136,9 @@ class LockedMessageQueue {
   }
 }
 
-
+/**
+ * Implements a simple message queue logic.
+ */
 class MessageQueue {
 
   /**
@@ -205,6 +207,14 @@ class MessageQueue {
     return (this.locked !== null);
   }
 
+  /**
+   * Returns the locked and protected message queue.
+   * It will work only in case the queue is locked.
+   * Otherwise and exception will be thrown.
+   *
+   * @returns {LockedMessageQueue}
+   *   the currently locked message queue.
+   */
   getLock() {
     if (!this.locked)
       throw new Error("Message queue is not locked");

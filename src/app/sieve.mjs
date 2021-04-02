@@ -9,7 +9,6 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
- //{ app, Menu, BrowserWindow, ipcMain, dialog }
 import path from 'path';
 import url from 'url';
 
@@ -18,6 +17,9 @@ const DEFAULT_WINDOW_HEIGHT = 600;
 
 /**
  * Creates the main window
+ *
+ * @param {Electron} electron
+ *   a reference to the electron's root context object.
  */
 function createWindow(electron) {
 
@@ -85,6 +87,12 @@ function createWindow(electron) {
   win.webContents.on('new-window', handleRedirect);
 }
 
+/**
+ * The main entry point into this application.
+ *
+ * @param {Electron} electron
+ *   a reference to the electron's root context object.
+ */
 async function main(electron) {
 
   // Keep a global reference of the window object, if you don't, the window will

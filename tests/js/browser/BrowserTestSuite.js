@@ -90,7 +90,7 @@
     getUniqueId() {
 
       if (!this.id) {
-        this.id = (new Date()).getTime().toString(ASCII)
+        this.id = Date.now().toString(ASCII)
           + "-" + Math.random().toString(ASCII).substr(SEED_OFFSET, SEED_LENGTH);
       }
 

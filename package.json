@@ -27,7 +27,7 @@
     "test": "gulp \"test:package\" && node ./tests/index.js ./build/test/app",
     "server": "node ./tools/Server/Server.js",
     "gulp": "gulp",
-    "lint": "eslint --config .eslintrc.json ./src/**/*.js ./src/**/*.mjs ./tests/**/*.js ./tests/**/*.mjs gulpfile.js ./gulp"
+    "lint": "eslint --config .eslintrc.json ./src/**/*.js ./src/**/*.mjs ./tests/**/*.js ./tests/**/*.mjs gulpfile.mjs ./gulp/**.mjs"
   },
   "repository": {
     "type": "git",

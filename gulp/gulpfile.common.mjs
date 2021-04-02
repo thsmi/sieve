@@ -9,14 +9,14 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-const { src, dest } = require('gulp');
-const logger = require('gulplog');
+import gulp from 'gulp';
+import logger from 'gulplog';
 
-const { readdir, unlink, rmdir, readFile, writeFile } = require('fs').promises;
-const { createWriteStream, existsSync } = require('fs');
+import { readdir, unlink, rmdir, readFile, writeFile } from 'fs/promises';
+import { createWriteStream, existsSync } from 'fs';
 
-const path = require('path');
-const yazl = require('yazl');
+import path from 'path';
+import yazl from 'yazl';
 
 const JSON_INDENTATION = 2;
 
@@ -82,7 +82,7 @@ async function clean() {
  */
 function packageCodeMirror(destination) {
 
-  return src([
+  return gulp.src([
     BASE_DIR_CODEMIRROR + "/addon/edit/**",
     BASE_DIR_CODEMIRROR + "/addon/search/**",
     BASE_DIR_CODEMIRROR + "/lib/**",
@@ -91,7 +91,7 @@ function packageCodeMirror(destination) {
     BASE_DIR_CODEMIRROR + "/LICENSE",
     BASE_DIR_CODEMIRROR + "/package.json"
   ], { base: BASE_DIR_CODEMIRROR }).pipe(
-    dest(destination));
+    gulp.dest(destination));
 }
 
 /**
@@ -105,11 +105,11 @@ function packageCodeMirror(destination) {
  **/
 function packageBootstrap(destination) {
 
-  return src([
+  return gulp.src([
     BASE_DIR_BOOTSTRAP + "/css/*.min.css",
     BASE_DIR_BOOTSTRAP + "/js/*.bundle.min.js"
   ], { base: BASE_DIR_BOOTSTRAP }).pipe(
-    dest(destination));
+    gulp.dest(destination));
 }
 
 /**
@@ -131,7 +131,7 @@ function src2(dir, files) {
   if (!Array.isArray(files))
     files = [files];
 
-  return src(
+  return gulp.src(
     files, { base: dir, root: dir, cwd:dir, passthrough: true });
 }
 
@@ -183,7 +183,7 @@ function pack(sources, destination, options) {
   for (const transpose of options.transpose)
     rv = rv.pipe(transpose);
 
-  return rv.pipe(dest(destination, "libSieve"));
+  return rv.pipe(gulp.dest(destination, "libSieve"));
 }
 
 /**
@@ -457,30 +457,32 @@ async function compress(source, destination, options) {
   });
 }
 
-exports["clean"] = clean;
-exports["compress"] = compress;
+export default {
+  clean: clean,
+  compress: compress,
 
-exports["packageCodeMirror"] = packageCodeMirror;
-exports["packageBootstrap"] = packageBootstrap;
+  packageCodeMirror: packageCodeMirror,
+  packageBootstrap: packageBootstrap,
 
-exports["packageLibSieve"] = packageLibSieve;
-exports["packageManageSieveUi"] = packageManageSieveUi;
+  packageLibSieve: packageLibSieve,
+  packageManageSieveUi: packageManageSieveUi,
 
-exports["getPackageVersion"] = getPackageVersion;
-exports["setPackageVersion"] = setPackageVersion;
+  getPackageVersion: getPackageVersion,
+  setPackageVersion: setPackageVersion,
 
-exports["bumpMajorVersion"] = bumpMajorVersion;
-exports["bumpMinorVersion"] = bumpMinorVersion;
-exports["bumpPatchVersion"] = bumpPatchVersion;
+  bumpMajorVersion: bumpMajorVersion,
+  bumpMinorVersion: bumpMinorVersion,
+  bumpPatchVersion: bumpPatchVersion,
 
-exports["updateVersion"] = updateVersion;
+  updateVersion: updateVersion,
 
-exports["pack"] = pack;
+  pack: pack,
 
-exports["BASE_DIR_BUILD"] = BASE_DIR_BUILD;
-exports["BASE_DIR_COMMON"] = BASE_DIR_COMMON;
+  BASE_DIR_BUILD: BASE_DIR_BUILD,
+  BASE_DIR_COMMON: BASE_DIR_COMMON,
 
-exports["DIR_LIBSIEVE"] = DIR_LIBSIEVE;
-exports["DIR_MANAGESIEVEUI"] = DIR_MANAGESIEVEUI;
+  DIR_LIBSIEVE: DIR_LIBSIEVE,
+  DIR_MANAGESIEVEUI: DIR_MANAGESIEVEUI,
 
-exports["src2"] = src2;
+  src2: src2
+};

@@ -9,21 +9,23 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-const { src, dest, watch, parallel, series } = require('gulp');
-const { existsSync } = require('fs');
-const { readFile, chmod, unlink, mkdir } = require('fs').promises;
+import gulp from 'gulp';
+import logger from 'gulplog';
 
-const { promisify } = require('util');
-const exec = promisify(require('child_process').exec);
+import { existsSync } from 'fs';
+import { readFile, chmod, unlink, mkdir } from 'fs/promises';
 
-const logger = require('gulplog');
+import { promisify } from 'util';
+import { exec } from 'child_process';
 
-const common = require("./gulpfile.common.js");
-const https = require("./gulpfile.common.https.js");
+import common from "./gulpfile.common.mjs";
+import https from "./gulpfile.common.https.mjs";
 
-const path = require('path');
-const tar = require('tar');
-const { getAbi } = require('node-abi');
+import path from 'path';
+import tar from 'tar';
+import { getAbi } from 'node-abi';
+
+import packager from 'electron-packager';
 
 
 const CACHE_DIR_APP = path.join(common.BASE_DIR_BUILD, "electron/cache");
@@ -123,9 +125,9 @@ function packageDefinition() {
 
   const BASE_PATH = ".";
 
-  return src([
+  return gulp.src([
     BASE_PATH + "/package.json"
-  ], { base: BASE_PATH }).pipe(dest(BUILD_DIR_APP));
+  ], { base: BASE_PATH }).pipe(gulp.dest(BUILD_DIR_APP));
 }
 
 /**
@@ -136,9 +138,9 @@ function packageDefinition() {
  */
 function packageLicense() {
 
-  return src([
+  return gulp.src([
     "./LICENSE.md"
-  ]).pipe(dest(BUILD_DIR_APP));
+  ]).pipe(gulp.dest(BUILD_DIR_APP));
 }
 
 /**
@@ -171,10 +173,10 @@ function packageBootstrap() {
  *   a stream to be consumed by gulp
  */
 function packageSrc() {
-  return src([
+  return gulp.src([
     BASE_DIR_APP + "/**",
     `!${BASE_DIR_APP}/libs/libManageSieve/**`
-  ]).pipe(dest(BUILD_DIR_APP));
+  ]).pipe(gulp.dest(BUILD_DIR_APP));
 }
 
 /**
@@ -186,9 +188,9 @@ function packageSrc() {
  */
 function packageIcons() {
 
-  return src([
+  return gulp.src([
     path.join(common.BASE_DIR_COMMON, "icons") + "/**"
-  ], { base: common.BASE_DIR_COMMON }).pipe(dest(BUILD_DIR_APP_LIBS));
+  ], { base: common.BASE_DIR_COMMON }).pipe(gulp.dest(BUILD_DIR_APP_LIBS));
 }
 
 /**
@@ -204,7 +206,7 @@ function packageLibManageSieve() {
 
   return common.src2(BASE_APP)
     .pipe(common.src2(BASE_COMMON))
-    .pipe(dest(path.join(BUILD_DIR_APP_LIBS, "libManageSieve")));
+    .pipe(gulp.dest(path.join(BUILD_DIR_APP_LIBS, "libManageSieve")));
 }
 
 
@@ -379,7 +381,6 @@ async function packageWin32() {
     icon: path.join(common.BASE_DIR_COMMON, "icons/win.ico")
   };
 
-  const packager = require('electron-packager');
   await packager(options);
 }
 
@@ -400,7 +401,6 @@ async function packageLinux() {
     prune: true
   };
 
-  const packager = require('electron-packager');
   await packager(options);
 }
 
@@ -423,7 +423,6 @@ async function packageMacOS() {
     // app-bundle-id: "net.tschmid.sieve"
   };
 
-  const packager = require('electron-packager');
   await packager(options);
 }
 
@@ -438,9 +437,9 @@ async function updateVersion() {
 /**
  * Watches for changed source files and copies them into the build directory.
  */
-function watchSrc() {
+function watch() {
 
-  watch(
+  gulp.watch(
     ['./src/**/*.js',
       './src/**/*.mjs',
       './src/**/*.html',
@@ -448,7 +447,7 @@ function watchSrc() {
       './src/**/*.xul',
       './src/**/*.dtd',
       './src/**/*.properties'],
-    parallel(
+    gulp.parallel(
       packageSrc,
       packageManageSieveUi,
       packageLibSieve,
@@ -498,9 +497,9 @@ async function zipLinux() {
  */
 function packageAppImageDir() {
 
-  return src([
+  return gulp.src([
     OUTPUT_DIR_APP_LINUX + "/**/*"
-  ]).pipe(dest(APP_IMAGE_DIR));
+  ]).pipe(gulp.dest(APP_IMAGE_DIR));
 }
 
 /**
@@ -513,9 +512,9 @@ function packageAppImageFiles() {
 
   const appImageFiles = path.join(common.BASE_DIR_COMMON, "/appImage/");
 
-  return src([
+  return gulp.src([
     appImageFiles + "/**/*"
-  ], { base: appImageFiles}).pipe(dest(APP_IMAGE_DIR));
+  ], { base: appImageFiles}).pipe(gulp.dest(APP_IMAGE_DIR));
 }
 
 /**
@@ -569,7 +568,7 @@ async function packageAppImage() {
   const source = path.resolve(APP_IMAGE_DIR);
   const destination = path.resolve(path.join(common.BASE_DIR_BUILD, `sieve-${version}-${LINUX_PLATFORM}-${LINUX_ARCH}.AppImage`));
 
-  await exec(`${tool} "${source}" "${destination}"  2>&1`);
+  await promisify(exec(`${tool} "${source}" "${destination}"  2>&1`));
 }
 
 /**
@@ -592,59 +591,62 @@ async function zipMacOS() {
   logger.info(`Creating ${path.basename(destination)}`);
 
   process.chdir(`${source}/`);
-  await exec(`zip -qry "${destination}" "sieve.app" 2>&1`);
+  await promisify(exec(`zip -qry "${destination}" "sieve.app" 2>&1`));
 }
 
-exports["watch"] = watchSrc;
+export default {
 
-exports["updateVersion"] = updateVersion;
+  watch,
 
-exports["packageDefinition"] = packageDefinition;
-exports["packageCodeMirror"] = packageCodeMirror;
-exports["packageBootstrap"] = packageBootstrap;
-exports["packageLicense"] = packageLicense;
-exports["packageSrc"] = packageSrc;
-exports["packageLibManageSieve"] = packageLibManageSieve;
-exports["packageLibSieve"] = packageLibSieve;
-exports["packageManageSieveUi"] = packageManageSieveUi;
+  updateVersion: updateVersion,
 
-exports["packageWin32"] = series(
-  packageWin32,
-  packageKeytarWin32
-);
+  packageDefinition: packageDefinition,
+  packageCodeMirror: packageCodeMirror,
+  packageBootstrap: packageBootstrap,
+  packageLicense: packageLicense,
+  packageSrc: packageSrc,
+  packageLibManageSieve: packageLibManageSieve,
+  packageLibSieve: packageLibSieve,
+  packageManageSieveUi: packageManageSieveUi,
 
-exports["packageLinux"] = series(
-  packageLinux,
-  packageKeytarLinux
-);
-
-exports["packageMacOS"] = series(
-  packageMacOS,
-  packageKeytarMacOS
-);
-
-exports["zipWin32"] = zipWin32;
-exports["zipLinux"] = zipLinux;
-exports["zipMacOS"] = zipMacOS;
-
-exports["appImageLinux"] = series(
-  packageAppImageDir,
-  packageAppImageFiles,
-  packageAppImage
-);
-
-exports['package'] = series(
-  packageDefinition,
-  parallel(
-    packageLicense,
-    packageIcons,
-    packageCodeMirror,
-    packageBootstrap,
-    packageLibManageSieve,
-    packageLibSieve,
-    packageManageSieveUi
+  packageWin32: gulp.series(
+    packageWin32,
+    packageKeytarWin32
   ),
-  packageSrc
-);
 
-exports["BASE_DIR_APP"] = BASE_DIR_APP;
+  packageLinux: gulp.series(
+    packageLinux,
+    packageKeytarLinux
+  ),
+
+  packageMacOS: gulp.series(
+    packageMacOS,
+    packageKeytarMacOS
+  ),
+
+  zipWin32: zipWin32,
+  zipLinux: zipLinux,
+  zipMacOS: zipMacOS,
+
+  appImageLinux: gulp.series(
+    packageAppImageDir,
+    packageAppImageFiles,
+    packageAppImage
+  ),
+
+  packageApp: gulp.series(
+    packageDefinition,
+    gulp.parallel(
+      packageLicense,
+      packageIcons,
+      packageCodeMirror,
+      packageBootstrap,
+      packageLibManageSieve,
+      packageLibSieve,
+      packageManageSieveUi
+    ),
+    packageSrc
+  ),
+
+  BASE_DIR_APP: BASE_DIR_APP
+};

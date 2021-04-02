@@ -9,18 +9,19 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-const { src, dest, watch, parallel, series } = require('gulp');
+import gulp from 'gulp';
 
-const common = require("./gulpfile.common.js");
+import common from "./gulpfile.common.mjs";
 
-const path = require('path');
+import path from 'path';
+import { Stream } from 'stream';
 
 const BUILD_DIR_WX = path.join(common.BASE_DIR_BUILD, "wx");
 const BUILD_DIR_WX_LIBS = path.join(BUILD_DIR_WX, '/libs');
 
 const BASE_DIR_WX = "./src/wx/";
 
-const { Stream } = require('stream');
+
 
 /**
  * A gulp helper to rename mjs modules into js.
@@ -157,9 +158,9 @@ class TransposeImportToRequire extends Stream.Transform {
  *   a stream to be consumed by gulp
  */
 function packageLicense() {
-  return src([
+  return gulp.src([
     "./LICENSE.md"
-  ]).pipe(dest(BUILD_DIR_WX));
+  ]).pipe(gulp.dest(BUILD_DIR_WX));
 }
 
 
@@ -214,9 +215,9 @@ function packageSrc() {
  */
 function packageIcons() {
 
-  return src([
+  return gulp.src([
     path.join(common.BASE_DIR_COMMON, "icons") + "/**"
-  ], { base: common.BASE_DIR_COMMON }).pipe(dest(BUILD_DIR_WX_LIBS));
+  ], { base: common.BASE_DIR_COMMON }).pipe(gulp.dest(BUILD_DIR_WX_LIBS));
 }
 
 /**
@@ -280,13 +281,13 @@ function packageManageSieveUi() {
  */
 function watchSrc() {
 
-  watch(
+  gulp.watch(
     ['./src/**/*.js',
       './src/**/*.mjs',
       './src/**/*.html',
       './src/**/*.css',
       './src/**/*.json'],
-    parallel(
+    gulp.parallel(
       packageSrc,
       packageManageSieveUi,
       packageLibSieve,
@@ -317,30 +318,29 @@ async function packageXpi() {
   await common.compress(source, destination);
 }
 
+export default {
+  watch: watchSrc,
+  updateVersion,
+  packageCodeMirror,
+  packageBootstrap,
+  packageLicense,
+  packageSrc,
 
-exports["watch"] = watchSrc;
-
-exports["updateVersion"] = updateVersion;
-
-exports["packageCodeMirror"] = packageCodeMirror;
-exports["packageBootstrap"] = packageBootstrap;
-exports["packageLicense"] = packageLicense;
-exports["packageSrc"] = packageSrc;
-
-exports['package'] = series(
-  parallel(
-    packageCodeMirror,
-    packageBootstrap,
-    packageLicense,
-    packageIcons,
-    packageLibManageSieve,
-    packageLibSieve,
-    packageManageSieveUi,
-    packageExperiments
+  packageWx: gulp.series(
+    gulp.parallel(
+      packageCodeMirror,
+      packageBootstrap,
+      packageLicense,
+      packageIcons,
+      packageLibManageSieve,
+      packageLibSieve,
+      packageManageSieveUi,
+      packageExperiments
+    ),
+    packageSrc
   ),
-  packageSrc
-);
 
-exports["packageXpi"] = packageXpi;
+  packageXpi,
 
-exports["BASE_DIR_WX"] = BASE_DIR_WX;
+  BASE_DIR_WX
+};

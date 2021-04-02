@@ -9,17 +9,17 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-const { src, dest, watch, parallel } = require('gulp');
+import gulp from 'gulp';
 
-const common = require("./gulpfile.common.js");
-const app = require("./gulpfile.app.js");
-const wx = require("./gulpfile.wx.js");
-const path = require('path');
+import common from "./gulpfile.common.mjs";
+import app from "./gulpfile.app.mjs";
+import wx from "./gulpfile.wx.mjs";
+import path from 'path';
 
 const BUILD_DIR_TEST = path.join(common.BASE_DIR_BUILD, "test/");
 
 async function packageAppTests() {
-  await src([
+  await gulp.src([
     common.BASE_DIR_COMMON + "/**",
 
     // Filter out the rfc documents
@@ -28,9 +28,9 @@ async function packageAppTests() {
     "!**/appImage/**",
     "!**/doc/**",
     "!**/icons/**"
-  ]).pipe(dest(`${BUILD_DIR_TEST}/app/`));
+  ]).pipe(gulp.dest(`${BUILD_DIR_TEST}/app/`));
 
-  await src([
+  await gulp.src([
     path.join(app.BASE_DIR_APP, "/libs") + "/**",
 
     // Filter out the rfc documents
@@ -39,12 +39,12 @@ async function packageAppTests() {
     "!**/appImage/**",
     "!**/doc/**",
     "!**/icons/**"
-  ]).pipe(dest(`${BUILD_DIR_TEST}/app/`));
+  ]).pipe(gulp.dest(`${BUILD_DIR_TEST}/app/`));
 }
 
 async function packageWxTests() {
 
-  await src([
+  await gulp.src([
     path.join(common.BASE_DIR_COMMON, "/**"),
 
     // Filter out the rfc documents
@@ -53,9 +53,9 @@ async function packageWxTests() {
     "!**/appImage/**",
     "!**/doc/**",
     "!**/icons/**"
-  ]).pipe(dest(`${BUILD_DIR_TEST}/wx/common/`));
+  ]).pipe(gulp.dest(`${BUILD_DIR_TEST}/wx/common/`));
 
-  await src([
+  await gulp.src([
     path.join(wx.BASE_DIR_WX, "/libs") + "/**",
 
     // Filter out the rfc documents
@@ -64,7 +64,7 @@ async function packageWxTests() {
     "!**/appImage/**",
     "!**/doc/**",
     "!**/icons/**"
-  ]).pipe(dest(`${BUILD_DIR_TEST}/wx/`));
+  ]).pipe(gulp.dest(`${BUILD_DIR_TEST}/wx/`));
 }
 
 /**
@@ -74,31 +74,34 @@ async function packageTestSuite() {
 
   const BASE_PATH = "./tests";
 
-  await src([
+  await gulp.src([
     BASE_PATH + "/**"
-  ]).pipe(dest(BUILD_DIR_TEST + '/'));
+  ]).pipe(gulp.dest(BUILD_DIR_TEST + '/'));
 }
 
 /**
  * Watches for changed source files and copies them into the build directory.
  */
-function watchSrc() {
+function watchTests() {
 
-  watch(
+  gulp.watch(
     ['./src/**/*.js',
       './src/**/*.mjs',
       './tests/**/*.json',
       './tests/**/*.js'],
-    parallel(
+    gulp.parallel(
       packageAppTests,
       packageTestSuite)
   );
 }
 
-exports["package"] = parallel(
+const packageTests = gulp.parallel(
   packageTestSuite,
-  packageAppTests
-  //packageWxTests
+  packageAppTests,
+  packageWxTests
 );
 
-exports["watch"] = watchSrc;
+export default {
+  packageTests,
+  watchTests
+};

@@ -9,10 +9,10 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-const logger = require('gulplog');
+import logger from 'gulplog';
 
-const https = require('https');
-const fs = require('fs');
+import https from 'https';
+import fs from 'fs';
 
 const HTTP_SUCCESS_MIN = 200;
 const HTTP_SUCCESS_MAX = 299;
@@ -151,6 +151,7 @@ async function download(url, destination) {
   });
 }
 
-
-exports["download"] = download;
-exports["fetch"] = fetch;
+export default {
+  download,
+  fetch
+};

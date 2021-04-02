@@ -34,10 +34,6 @@ body {
   color: red;
 }
 
-#divOutput.showTrace .logTrace {
-  display: inherit !important;
-}
-
 .logInfo {
   white-space: pre;
 }
@@ -46,6 +42,10 @@ body {
   white-space: pre;
   color: gray;
   display: none;
+}
+
+#divOutput.showTrace .logTrace {
+  display: inherit !important;
 }
 
 .logHeader {

@@ -14,6 +14,7 @@
   /* global ExtensionCommon */
   /* global Components */
   /* global ChromeUtils */
+  /* global Services */
 
   // Input & output stream constants.
   const STREAM_BUFFERED = 0;
@@ -23,8 +24,8 @@
 
   const TRANSPORT_SECURE = 1;
 
-  const NEW_TRANSPORT_API = 4;
-  const OLD_TRANSPORT_API = 5;
+  const OLD_TRANSPORT_API = 4;
+  const REALLY_OLD_TRANSPORT_API = 5;
 
   const STRING_AS_HEX = 16;
 
@@ -161,13 +162,23 @@
         Cc["@mozilla.org/network/socket-transport-service;1"]
           .getService(Ci.nsISocketTransportService);
 
-      if (transportService.createTransport.length === NEW_TRANSPORT_API)
+      // The createTransport API changed several times so we need some magic.
+      //
+      // We currently have to support three versions. Thunderbird before 69 take
+      // five arguments. Between 69 and 89 take four arguments and after 89 they
+      // are back to five.
+
+      // We know if it is before 78 we need to test if it is the really old API
+      if (Services.vc.compare(Services.appinfo.platformVersion, "78.0") < 0) {
+        if (transportService.createTransport.length === REALLY_OLD_TRANSPORT_API)
+          return transportService.createTransport(["starttls"], TRANSPORT_SECURE, this.host, this.port, proxyInfo);
+      }
+
+      // After 78 we know it is either the old or the new api.
+      if (transportService.createTransport.length === OLD_TRANSPORT_API)
         return transportService.createTransport(["starttls"], this.host, this.port, proxyInfo);
 
-      if (transportService.createTransport.length === OLD_TRANSPORT_API)
-        return transportService.createTransport(["starttls"], TRANSPORT_SECURE, this.host, this.port, proxyInfo);
-
-      throw new Error("Unknown Create Transport signature");
+      return transportService.createTransport(["starttls"], this.host, this.port, proxyInfo, null);
     }
 
     /**

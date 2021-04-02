@@ -450,6 +450,17 @@ class SieveAbstractResponseParser {
   convertFromBase64(encoded) {
     throw new Error(`Implement convertFromBase64(${encoded})`);
   }
+
+  /**
+   * Returns the read pointes current position.
+   * Can be used to resync the parser with a buffer.
+   *
+   * @returns {int}
+   *   the current read pointer offset relative to the start in bytes.
+   */
+  getPosition() {
+    return this.pos;
+  }
 }
 
 export { SieveAbstractResponseParser };

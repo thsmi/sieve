@@ -53,7 +53,7 @@
 
     // SERVER -> CLIENT
     // Server responds with a "VXNlcm5hbWU6" which is a "USERNAME:"
-    request.addResponse(
+    request.onResponse(
       new SieveMozResponseParser([0x22, 0x56, 0x58, 0x4E, 0x6C, 0x63, 0x6D, 0x35, 0x68, 0x62, 0x57, 0x55, 0x36, 0x22, 0x0D, 0x0A]));
 
     // CLIENT -> SERVER
@@ -64,7 +64,7 @@
 
     // SERVER -> CLIENT
     // Server responds with a "UGFzc3dvcmQ6" which is a "PASSWORD:"
-    request.addResponse(
+    request.onResponse(
       new module.exports.SieveMozResponseParser([0x22, 0x55, 0x47, 0x46, 0x7A, 0x63, 0x33, 0x64, 0x76, 0x63, 0x6D, 0x51, 0x36, 0x22, 0x0D, 0x0A]));
 
     // CLIENT -> SERVER
@@ -75,11 +75,11 @@
 
     // SERVER -> CLIENT
     // Server sends OK
-    request.addResponse(
+    request.onResponse(
       new module.exports.SieveMozResponseParser([0x4F, 0x4B, 0x0D, 0x0A]));
 
     // Server sends NO
-    // request.addResponse(new SieveResponseParser([0x4e,0x4f,0x0D,0x0A]));
+    // request.onResponse(new SieveResponseParser([0x4e,0x4f,0x0D,0x0A]));
 
     suite.assertEquals(false, request.hasNextRequest());
 
@@ -111,7 +111,7 @@
     suite.assertEquals(false, request.hasNextRequest());
 
     // SERVER -> CLIENT
-    request.addResponse(
+    request.onResponse(
       new module.exports.SieveMozResponseParser([0x4F, 0x4B, 0x0D, 0x0A]));
 
     // This works only because of closures and javascript single threaded nature...
@@ -144,7 +144,7 @@
     suite.assertEquals(false, request.hasNextRequest());
 
     // SERVER -> CLIENT
-    request.addResponse(
+    request.onResponse(
       new module.exports.SieveMozResponseParser([0x4E, 0x4F, 0x0D, 0x0A]));
 
     // This works only because of closures and javascript single threaded nature...

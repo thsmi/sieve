@@ -101,7 +101,7 @@ class SieveAbstractRequestBuilder {
    * Returns the current request as it was cached and build up to the call.
    *
    * @returns {string}
-   *   the current request including a tailing line break
+   *   the current request including a trailing line break
    */
   getBytes() {
     return this.data + "\r\n";

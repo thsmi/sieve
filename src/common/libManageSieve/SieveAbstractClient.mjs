@@ -31,6 +31,350 @@ import { SieveRequestBuilder } from "./SieveRequestBuilder.mjs";
 const DEFAULT_TIMEOUT = 20000;
 const NO_IDLE = 0;
 
+
+const NOT_STARTED = -1;
+
+/**
+ * Implements a locked message queue.
+ */
+class LockedMessageQueue {
+
+  /**
+   * Creates a new instance and moves all of the given requests
+   * into the locked queue.
+   *
+   * @param {SieveAbstractRequest[]} items
+   *   the data which should be moved.
+   */
+  constructor(items) {
+    this.offset = NOT_STARTED;
+    this.items = [...items.splice(0, items.length)];
+  }
+
+  /**
+   * Removes all remaining element from the queue and returns them
+   * as array
+   *
+   * @returns {SieveAbstractRequest[]}
+   *   all remaining items.
+   */
+  dequeue() {
+    let offset = this.offset;
+
+    if (offset === NOT_STARTED)
+      offset = 0;
+
+    this.offset = NOT_STARTED;
+    return this.items.splice(offset, this.items.length);
+  }
+
+  /**
+   * Used to drain the message queue. Marks all  all pending requests as abandoned
+   * This typically happens when the connection was lost or upon an
+   * forced disconnect.
+   *
+   * @param {object} reason
+   *   the reason why the message queue was abandoned. Typically an exception.
+   */
+  shutdown(reason) {
+    for (const item of this.items)
+      item.abandon(reason);
+  }
+
+  /**
+   * Truncates the queue on the current position.
+   * The current element plus all previous elements will be removed.
+   * The queue iterator will be reset to not started;
+   */
+  trunc() {
+    if (this.offset === NOT_STARTED)
+      return;
+
+    this.items.splice(0, this.offset + 1);
+    this.reset();
+  }
+
+  /**
+   * Returns the remaining number of elements contained inside this queue.
+   *
+   * @returns {int}
+   *   the number of remaining elements.
+   */
+  length() {
+    if (this.offset === NOT_STARTED)
+      return this.items.length;
+
+    return this.items.length - this.offset;
+  }
+
+  /**
+   * Resets the iterator to not started.
+   */
+  reset() {
+    this.offset = NOT_STARTED;
+  }
+
+  /**
+   * Checks if the queue has remaining elements.
+   *
+   * @returns {boolean}
+   *   true in case there are more elements. False in case end was reached.
+   */
+  hasNext() {
+    return (this.offset + 1 < this.items.length);
+  }
+
+  /**
+   * Returns the queues next element.
+   *
+   * @returns {SieveAbstractRequest}
+   *   the next queued request.
+   */
+  getNext() {
+    this.offset++;
+    return this.items[this.offset];
+  }
+}
+
+
+class MessageQueue {
+
+  /**
+   * Creates a new message queue instance.
+   */
+  constructor() {
+    this.queued = [];
+    this.locked = null;
+    this.canceled = false;
+  }
+
+  /**
+   * Adds a new request to the end of the message queue
+   *
+   * @param {SieveAbstractRequest} request
+   *   the request to be added.
+   *
+   * @returns {MessageQueue}
+   *   a self reference.
+   */
+  enqueue(request) {
+    this.queued.push(request);
+    return this;
+  }
+
+  /**
+   * Used to drain the message queue. Marks all all enqueued requests as abandoned.
+   *
+   * @param {string} reason
+   *   the human readable string why the message queue was abandoned.
+   *
+   * @returns {MessageQueue}
+   *   a self reference.
+   */
+  shutdown(reason) {
+
+    if (this.isLocked())
+      this.getLock().shutdown(reason);
+
+    while (this.queued.length)
+      this.queued.shift().abandon(reason);
+
+    return this;
+  }
+
+  /**
+   * Checks if the message queue has non completed request.
+   *
+   * @returns {boolean}
+   *   true in case the queue is locked otherwise false.
+   */
+  isEmpty() {
+    if (this.isLocked() && this.locked.length())
+      return false;
+
+    return (this.queued.length === 0);
+  }
+
+  /**
+   * Checks if the message queue is currently busy.
+   *
+   * @returns {boolean}
+   *   true in case the message queue is busy otherwise false.
+   */
+  isLocked() {
+    return (this.locked !== null);
+  }
+
+  getLock() {
+    if (!this.locked)
+      throw new Error("Message queue is not locked");
+
+    return this.locked;
+  }
+
+  /**
+   * Locks and protects the current message queue from changes.
+   *
+   * @returns {MessageQueue}
+   *    a self reference
+   */
+  lock() {
+
+    if (this.isLocked())
+      throw new Error("Message queue is already locked");
+
+    this.locked = (new LockedMessageQueue(this.queued));
+    return this;
+  }
+
+  /**
+   * Unlocks the message queue, and allows changes.
+   *
+   * @returns {MessageQueue}
+   *   a self reference
+   */
+  unlock() {
+    if (!this.isLocked())
+      return this;
+
+    // Copy all entries from the locked queue back into our normal queue.
+    this.queued = [...this.locked.dequeue(), ...this.queued];
+    this.locked = null;
+
+    return this;
+  }
+
+  /**
+   * Checks if the queue is unlocked and if there are any
+   * queued request which are ready to be processed.
+   *
+   * @returns {SieveAbstractRequest}
+   *   the next element or null in case the queue is locked or no
+   *   request is enqueued.
+   */
+  peek() {
+    // The queue is locked this means we should not send anything.
+    if (this.isLocked())
+      return null;
+
+    // Check if there is any request which can be send out.
+    for (const item of this.queued) {
+      if (!item.hasRequest())
+        continue;
+
+      return item;
+    }
+
+    return null;
+  }
+}
+
+/**
+ * A simple double buffer implementation.
+ *
+ * JavaScript is single threaded but async. Which means when deferring
+ * a call it can happen that some one else modifies the buffer.
+ *
+ * In order to prevent this we use two buffers one buffer which can be
+ * always safely written and an other buffer which can be always read.
+ *
+ * When calling flush the write buffer will be transferred into the read buffer
+ * Calling trunc cleans the read buffer.
+ */
+class DoubleBuffer {
+
+  /**
+   * Creates a new instance.
+   */
+  constructor() {
+    this.writer = [];
+    this.reader = [];
+  }
+
+  /**
+   * Stores data inside the double buffer.
+   *
+   * @param {byte[]} data
+   *   the data to be stored inside the writer
+   * @returns {DoubleBuffer}
+   *   a self reference.
+   */
+  write(data) {
+    this.writer.push(...data);
+    return this;
+  }
+
+  /**
+   * Returns a reference to the data stored inside the reader.
+   * It will update and sync the reader buffer with the writer buffer
+   * before returning.
+   *
+   * It does not change or consume any reader buffer data.
+   * To shrink or truncate the reader buffer call truncate.
+   *
+   * @returns {byte[]}
+   *   the data stored inside the reader.
+   */
+  read() {
+    // We need the reader length to determine the number of new bytes.
+    const offset = this.reader.length;
+
+    // Copy the writer into the reader.
+    this.reader.push(...this.writer);
+    // an then shrink the writer.
+    this.writer.splice(0, this.reader.length - offset);
+
+    return this.reader;
+  }
+
+  /**
+   * Truncates the read buffer
+   *
+   * @param {int} count
+   *   the number of bytes to be truncated
+   * @returns {DoubleBuffer}
+   *   a self reference
+   */
+  trunc(count) {
+    this.reader.splice(0, count);
+    return this;
+  }
+
+  /**
+   * Checks if the write buffer is dirty.
+   * This means new data has arrived and wait to be processed.
+   *
+   * @returns {boolean}
+   *  true in case the write buffer is dirty otherwise false;
+   */
+  isDirty() {
+    return (this.writer.length !== 0);
+  }
+
+  /**
+   * Clears the read as well as the write buffer.
+   *
+   * @returns {DoubleBuffer}
+   *   a self reference
+   */
+  clear() {
+    this.reader = [];
+    this.writer = [];
+
+    return this;
+  }
+
+  /**
+   * Returns the total buffer length, the sum of the read plus the write buffer.
+   *
+   * @returns {int}
+   *   the total buffer length
+   */
+  length() {
+    return this.reader.length + this.writer.length;
+  }
+}
+
 /**
  * An abstract implementation for the manage sieve protocol.
  *
@@ -59,9 +403,8 @@ class SieveAbstractClient {
     this.port = null;
 
     this.socket = null;
-    this.data = null;
-
-    this.queueLocked = false;
+    this.buffer = new DoubleBuffer();
+    this.queue = new MessageQueue();
 
     this.requests = [];
 
@@ -202,6 +545,8 @@ class SieveAbstractClient {
    * @abstract
    */
   onStartTimeout() {
+
+    this.getLogger().logState("[SieveAbstractClient:onStartTimeout()] Starting/Restarting timeout");
     // clear any existing timeouts
     this.getTimeoutTimer().cancel();
 
@@ -222,6 +567,7 @@ class SieveAbstractClient {
    * @abstract
    */
   onStopTimeout() {
+    this.getLogger().logState("[SieveAbstractClient:onStopTimeout()] Stopping timeout");
 
     // clear any existing timeouts.
     this.getTimeoutTimer().cancel();
@@ -378,27 +724,7 @@ class SieveAbstractClient {
         request.addByeListener(this.listener.onByeResponse);
 
     // Add the request to the message queue
-    this.requests.push(request);
-
-    // If the message queue was empty, we might have to reinitialize the...
-    // ... request pump.
-
-    // We can skip this if queue is locked...
-    if (this.queueLocked)
-      return this;
-
-    let idx;
-    // ... or it contains more than one full request
-    for (idx = 0; idx < this.requests.length; idx++)
-      if (this.requests[idx].hasRequest())
-        break;
-
-    if (idx === this.requests.length)
-      return this;
-
-    if (this.requests[idx] !== request)
-      return this;
-
+    this.queue.enqueue(request);
     await this._sendRequest();
 
     return this;
@@ -433,8 +759,14 @@ class SieveAbstractClient {
    */
   cancel(reason) {
 
-    while (this.requests.length)
-      this.requests.shift().cancel(reason);
+    this.getLogger().logState(`[SieveAbstractClient:cancel()] Shutting down message queue ${reason}`);
+
+    // Mark the queue as canceled...
+    this.queue.shutdown(reason);
+
+    // ... and then retrigger the queue with an empty message.
+    // does not hurt...
+    this.onReceive([]);
   }
 
   /**
@@ -454,10 +786,6 @@ class SieveAbstractClient {
     this.getTimeoutTimer().cancel();
 
     this.cancel(reason);
-
-
-    // free requests...
-    // this.requests = new Array();
   }
 
   /**
@@ -481,26 +809,13 @@ class SieveAbstractClient {
    * It cancel all pending requests and emits a timeout signal to the listeners.
    */
   onTimeout() {
+    this.getLogger().logState("[SieveAbstractClient:onTimeout()] Timeout fired");
 
     this.onStopTimeout();
 
-    this.getLogger().logState("libManageSieve/Sieve.js:\nOnTimeout");
+    this.queue.shutdown(new Error("Timeout"));
 
-    // clear receive buffer and any pending request...
-    this.data = null;
-
-    // ... and cancel the active request. It will automatically invoke the ...
-    // ... request's onTimeout() listener.
-    if (this.requests.length) {
-      this.requests.shift().cancel(new Error("Timeout"));
-      return;
-    }
-
-    // in case no request is active, we call the global listener
-    this.requests = [];
-
-    if (this.listener && this.listener.onTimeout)
-      this.listener.onTimeout();
+    return;
   }
 
   /**
@@ -525,6 +840,7 @@ class SieveAbstractClient {
     return new SieveRequestBuilder();
   }
 
+
   /**
    * Called when data was received on the socket.
    *
@@ -533,7 +849,7 @@ class SieveAbstractClient {
    */
   async onReceive(data) {
 
-    this.getLogger().logState("[SieveAbstractClient:onReceive] Processing received data");
+    this.getLogger().logState("[SieveAbstractClient:onReceive] Starting processing received data...");
 
     if (this.getLogger().isLevelStream())
       this.getLogger().logStream(`[SieveAbstractClient:onReceive] Server -> Client [Byte Array]\n ${data}`);
@@ -542,14 +858,17 @@ class SieveAbstractClient {
       this.getLogger().logResponse(data);
 
     // responses packets could be fragmented...
-    if ((this.data === null) || (this.data.length === 0))
-      this.data = data;
-    else
-      this.data = this.data.concat(data);
+    this.getLogger().logState("[SieveAbstractClient:onReceive] ... add data to buffer...");
+    this.buffer.write(data);
 
     // is a request handler waiting?
-    if (this.requests.length === 0) {
-      this.getLogger().logState("[SieveAbstractClient:onReceive] Processing received data");
+    if (this.queue.isEmpty()) {
+      this.getLogger().logState("[SieveAbstractClient:onReceive] ... skipping, no request handler ready.");
+      return;
+    }
+
+    if (this.queue.isLocked()) {
+      this.getLogger().logState("[SieveAbstractClient:onReceive] ... skipping queue is locked.");
       return;
     }
 
@@ -559,40 +878,50 @@ class SieveAbstractClient {
     // Sound strange but as we are async, we need to lock the event queue.
     // Otherwise an async function may manipulate the event queue while
     // we are waiting for a callback.
-    this.getLogger().logState("[SieveAbstractClient:onReceive] Locking Message Queue");
-    const requests = this._lockMessageQueue();
+    this.getLogger().logState("[SieveAbstractClient:onReceive] ... locking Message Queue ...");
+
     try {
-      let offset = 0;
+      const lock = this.queue.lock().getLock();
 
-      while (offset !== requests.length) {
+      while (lock.hasNext()) {
 
-        this.getLogger().logState(`[SieveAbstractClient:onReceive] `
-          + `Start parsing ${offset}, ${requests.length}, ${this.data.length}`);
+        const request = lock.getNext();
 
-        // We can abort if we ran out of data
-        if (!this.data.length) {
+        if (request.isAbandoned()) {
+          this.getLogger().logState("[SieveAbstractClient:onReceive] ... skipping abandoned request ...");
+          await request.onAbandoned();
+          this.buffer.clear();
+          lock.trunc();
+          continue;
+        }
+
+        // We can bail out in case we ran out of data
+        if (!this.buffer.length()) {
           this.getLogger().logState("[SieveAbstractClient:onReceive] ... ran out of data, waiting for more");
+          this.onStartTimeout();
           return;
         }
 
-        const parser = this.createParser(this.data);
+        this.getLogger().logState(`[SieveAbstractClient:onReceive] `
+          + `Start parsing ${this.buffer.length()}`);
 
         try {
-          await (requests[offset].addResponse(parser));
+          const parser = this.createParser(this.buffer.read());
+
+          await (request.onResponse(parser));
 
           // We do some cleanup as we don't need the parsed data anymore...
-          this.data = parser.getByteArray();
+          this.buffer.trunc(parser.getPosition());
 
           this.getLogger().logState(`[SieveAbstractClient:onReceive] `
-            + `Parsing successfully, remaining ${this.data.length} bytes`);
+            + `Parsing successful, remaining ${this.buffer.length()} bytes`);
 
         } catch (ex) {
 
-          if (requests[offset].isOptional()) {
+          if (request.isOptional()) {
             this.getLogger().logState(`[SieveAbstractClient:onReceive] `
               + `... failed but is optional, skipping to next request`);
 
-            offset++;
             continue;
           }
 
@@ -609,30 +938,46 @@ class SieveAbstractClient {
             this.getLogger().logState(ex.stack);
           }
 
+          // In case the buffer is dirty new data arrived while we were parsing
+          // and we are ready to try it again.
+          if (this.buffer.isDirty()) {
+            this.getLogger().logState(`[SieveAbstractClient:onReceive] `
+              + `... buffers are dirty, restarting parsing.`);
+
+            lock.reset();
+            continue;
+          }
+
           // Restore the message queue and restart the timer.
           this.onStartTimeout();
-
           this.getLogger().logState("[SieveAbstractClient:onReceive] Waiting for more data to continue");
           return;
         }
 
-        // Remove the request in case it is completed.
-        if (!requests[offset].hasNextRequest()) {
-          requests.splice(0, offset + 1);
-          offset = 0;
-
-          this.getLogger().logState(`[SieveAbstractClient:onReceive] `
-            + `Removing request from queue ${offset}, ${requests.length}, ${this.data.length}`);
-          continue;
+        // The request was processed but it is not yet completed because
+        // is needs to send a new response.
+        //
+        // This means we need to stop here so that the message queue restarts.
+        if (request.hasNextRequest()) {
+          // First drop all processed request and then restart the processing
+          lock.reset();
+          break;
         }
+
+        // The request was processed and is completed. So let's get rid of it.
+        lock.trunc();
+
+        this.getLogger().logState(`[SieveAbstractClient:onReceive] `
+          + `Removing request from queue ${lock.length()}, ${this.buffer.length()}`);
       }
     } finally {
-      this._unlockMessageQueue(requests);
+      this.getLogger().logState("[SieveAbstractClient:onReceive] ... unlocking Message Queue ...");
+      this.queue.unlock();
     }
 
     // Finally we need to check if a new request arrived while we were
     // parsing the response and restart the message processing
-    if (this.requests.length) {
+    if (!this.queue.isEmpty()) {
       this.getLogger().logState("[SieveAbstractClient:onReceive] Restarting request processing");
       await this._sendRequest();
     }
@@ -645,22 +990,16 @@ class SieveAbstractClient {
    */
   async _sendRequest() {
 
-    let idx = 0;
-    while (idx < this.requests.length) {
-      if (this.requests[idx].hasRequest())
-        break;
+    const request = this.queue.peek();
 
-      idx++;
-    }
-
-    if (idx >= this.requests.length)
+    if (!request)
       return;
 
     // start the timeout, before sending anything. So that we will timeout...
     // ... in case the socket is jammed...
     this.onStartTimeout();
 
-    const output = (await this.requests[idx].getNextRequest(this.createRequestBuilder())).getBytes();
+    const output = (await request.getNextRequest(this.createRequestBuilder())).getBytes();
 
     if (this.getLogger().isLevelRequest())
       this.getLogger().logRequest(`Client -> Server:\n${output}`);
@@ -679,42 +1018,6 @@ class SieveAbstractClient {
    */
   onSend(data) {
     throw new Error(`Implement SieveAbstractClient::onSend(${data})`);
-  }
-
-  /**
-   * Locks the message queue.
-   *
-   * We are async which means while waiting for a callback, some other
-   * function may manipulate the event queue.
-   *
-   * It technically sets a lock/semaphore and then removes all entries from
-   * the request queue and returns.
-   *
-   * @returns {SieveAbstractRequest[]}
-   *   a list with all of the locked requests.
-   */
-  _lockMessageQueue() {
-    this.queueLocked = true;
-
-    // Copies the requests array.
-    const requests = this.requests.concat();
-
-    this.requests = [];
-
-    return requests;
-  }
-
-  /**
-   * Unlocks the message queue.
-   *
-   * It concatenates the locked requests and newly added requests.
-   *
-   * @param {SieveAbstractRequest[]} requests
-   *   typically the processed _lockMessageQueue list after processing it.
-   */
-  _unlockMessageQueue(requests) {
-    this.requests = requests.concat(this.requests);
-    this.queueLocked = false;
   }
 }
 

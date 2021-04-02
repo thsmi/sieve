@@ -102,22 +102,22 @@ class SieveSimpleResponse {
      * 'NO (0000)\r\n'
      */
 
-    this.message = "";
+    this.setMessage("");
     this.responseCode = [];
 
     // OK
     if (parser.startsWith(TOKEN_OK)) {
-      this.response = RESPONSE_OK;
+      this.setResponse(RESPONSE_OK);
       parser.extract(TOKEN_OK.length);
     }
     // BYE
     else if (parser.startsWith(TOKEN_BYE)) {
-      this.response = RESPONSE_BYE;
+      this.setResponse(RESPONSE_BYE);
       parser.extract(TOKEN_BYE.length);
     }
     // NO
     else if (parser.startsWith(TOKEN_NO)) {
-      this.response = RESPONSE_NO;
+      this.setResponse(RESPONSE_NO);
       parser.extract(TOKEN_NO.length);
     }
     else
@@ -183,8 +183,7 @@ class SieveSimpleResponse {
       parser.extractSpace();
     }
 
-    this.message = parser.extractString();
-
+    this.setMessage(parser.extractString());
     parser.extractLineBreak();
 
     return this;
@@ -192,27 +191,40 @@ class SieveSimpleResponse {
 
   /**
    * The server may return a human readable (error) message
+   *
    * @returns {string}
    *   the human readable message
    */
   getMessage() {
     if ((typeof (this.message) === 'undefined') || (this.message === null))
-      throw new Error("Message not Initialized");
+      throw new Error("Message not initialized");
 
     return this.message;
   }
 
   /**
+   * Set or changes the server's response message.
+   *
+   * @param {string} [message]
+   *   the optional message
+   *
+   * @returns {SieveSimpleResponse}
+   *   a self reference
+   */
+  setMessage(message) {
+    this.message = message;
+    return this;
+  }
+
+  /**
    * Checks if the request failed. In this case the server returns an error
    * instead of the expected response.
+   *
    * @returns {boolean}
    *   true in case the request succeeded, false in case it failed due to an error.
    */
   hasError() {
-    if ((typeof (this.response) === 'undefined') || (this.response === null))
-      throw new Error("response not Initialized");
-
-    if (this.response === RESPONSE_OK)
+    if (this.getResponse() === RESPONSE_OK)
       return false;
 
     return true;
@@ -225,7 +237,24 @@ class SieveSimpleResponse {
    *   the servers response. It is set to 0 in case of an OK, to 1 in case of a BYE and to 3 incase of a NO
    */
   getResponse() {
+    if ((typeof (this.response) === 'undefined') || (this.response === null))
+      throw new Error("Response not initialized");
+
     return this.response;
+  }
+
+  /**
+   * Set or changes the server's response.
+   *
+   * @param {int} response
+   *   the server's response code
+   *
+   * @returns {SieveSimpleResponse}
+   *   a self reference
+   */
+  setResponse(response) {
+    this.response = response;
+    return this;
   }
 
   /**

@@ -305,6 +305,11 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
 
       } catch (e) {
 
+        // As first step we disconnect. Our connection sequence failed.
+        // So ensure the connection is closed. Anyhow we have no chance to recover.
+
+        await (actions["account-disconnect"](response));
+
         if (e instanceof SieveCertValidationException) {
           const secInfo = e.getSecurityInfo();
 
@@ -325,19 +330,16 @@ import { SieveI18n } from "./libs/managesieve.ui/utils/SieveI18n.mjs";
 
           await host.setIgnoreCertErrors(secInfo.code);
 
-          await actions["account-disconnect"](response);
           await actions["account-connect"](response);
           return;
         }
 
         // connecting failed for some reason, which means we
         // need to handle the error.
-        console.error(e);
+        logger.logAction("Connecting failed due to an error " + e);
 
         await SieveIpcClient.sendMessage(
           "accounts", "account-show-error", e.message);
-
-        throw e;
       }
 
     },

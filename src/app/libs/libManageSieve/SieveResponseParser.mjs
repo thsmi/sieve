@@ -7,8 +7,8 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-import { SieveAbstractResponseParser } from "./SieveAbstractResponseParser.mjs";
 const { StringDecoder } = require('string_decoder');
+import { SieveAbstractResponseParser } from "./SieveAbstractResponseParser.mjs";
 
 /**
  * Implements a node specific response parser

@@ -89,7 +89,7 @@ class SieveAbstractAccountUI {
    */
   async connect() {
 
-    const item = await (new SieveTemplate()).load(`./accounts/account.connecting.tpl`);
+    const item = await (new SieveTemplate()).load(`./accounts/account.connecting.html`);
 
     const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
     while (scripts.firstChild)
@@ -97,13 +97,7 @@ class SieveAbstractAccountUI {
 
     scripts.append(item);
 
-    try {
-      await this.send("account-connect");
-    }
-    catch (ex) {
-      await this.disconnect();
-    }
-
+    await this.send("account-connect");
     await this.render();
   }
 
@@ -111,7 +105,7 @@ class SieveAbstractAccountUI {
    * Disconnects the account from the server.
    */
   async disconnect() {
-    const item = await (new SieveTemplate()).load(`./accounts/account.disconnecting.tpl`);
+    const item = await (new SieveTemplate()).load(`./accounts/account.disconnecting.html`);
 
     const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
     while (scripts.firstChild)
@@ -257,7 +251,7 @@ class SieveAbstractAccountUI {
    */
   async onRenderDisconnected() {
 
-    const elm = await (new SieveTemplate()).load(`./accounts/account.disconnected.tpl`);
+    const elm = await (new SieveTemplate()).load(`./accounts/account.disconnected.html`);
 
     const scripts = document.querySelector(`#siv-account-${this.id} .siv-tpl-scripts`);
 
@@ -281,14 +275,12 @@ class SieveAbstractAccountUI {
       this.renderSettings();
     }
 
-    const status = await this.isConnected();
-
-    if (status === false) {
-      await this.onRenderDisconnected("disconnected");
+    if (await this.isConnected()) {
+      await this.onRenderConnected();
       return;
     }
 
-    this.onRenderConnected();
+    await this.onRenderDisconnected("disconnected");
   }
 
   /**

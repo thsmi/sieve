@@ -136,7 +136,7 @@ class SieveNodeSessions {
    */
   async destroy(id) {
     if (this.has(id))
-      await this.get(id).disconnect();
+      await (this.get(id).disconnect());
 
     this.sessions.delete(id);
   }

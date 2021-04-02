@@ -2,6 +2,7 @@
   "name": "sieve",
   "version": "0.5.3",
   "description": "Configures server-side sieve email filters",
+  "main": "main_esm.js",
   "directories": {
     "doc": "docs",
     "test": "tests"

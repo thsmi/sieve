@@ -568,7 +568,9 @@ async function packageAppImage() {
   const source = path.resolve(APP_IMAGE_DIR);
   const destination = path.resolve(path.join(common.BASE_DIR_BUILD, `sieve-${version}-${LINUX_PLATFORM}-${LINUX_ARCH}.AppImage`));
 
-  await promisify(exec(`${tool} "${source}" "${destination}"  2>&1`));
+  logger.info(`Packaging app image`);
+
+  await (promisify(exec)(`${tool} "${source}" "${destination}"  2>&1`));
 }
 
 /**
@@ -591,7 +593,7 @@ async function zipMacOS() {
   logger.info(`Creating ${path.basename(destination)}`);
 
   process.chdir(`${source}/`);
-  await promisify(exec(`zip -qry "${destination}" "sieve.app" 2>&1`));
+  await (promisify(exec)(`zip -qry "${destination}" "sieve.app" 2>&1`));
 }
 
 export default {

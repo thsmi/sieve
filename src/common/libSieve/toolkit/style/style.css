@@ -64,21 +64,30 @@ div[data-sieve-flavour][data-sieve-dragging] {
 
 /* Blocks */
 
+.sivBlockChild {
+  background-image: url('vline.png'), url('hline.png');
+  background-position: -7px center, 2px top;
+  background-repeat: repeat-y, no-repeat;
+}
+
 .sivBlock > .sivBlockChild:nth-last-of-type(2) {
   background-image: url('hline.png');
   background-position: 2px top;
   background-repeat: no-repeat;
 }
 
+/* Dropmarkers */
+.sivBlockSpacer {
+  background-image: url('vline.png');
+  background-position: -7px top;
+  background-repeat: repeat-y;
+
+  padding: 2px 0 2px 0;
+}
+
 .sivBlock > .sivBlockSpacer:nth-last-of-type(1) {
   background-image: none;
   padding-bottom: 0;
-}
-
-.sivBlockChild {
-  background-image: url('vline.png'), url('hline.png');
-  background-position: -7px center, 2px top;
-  background-repeat: repeat-y, no-repeat;
 }
 
 .sivConditionChild,
@@ -97,15 +106,6 @@ div[data-sieve-flavour][data-sieve-dragging] {
   padding: 3px 0 3px 3px;
   background-color: #e8edf0;
   border: 1px #dde4e9 solid;
-}
-
-/* Dropmarkers */
-.sivBlockSpacer {
-  background-image: url('vline.png');
-  background-position: -7px top;
-  background-repeat: repeat-y;
-
-  padding:2px 0 2px 0;
 }
 
 .sivConditionSpacer {

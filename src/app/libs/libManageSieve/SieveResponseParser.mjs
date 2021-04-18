@@ -7,20 +7,12 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-const { StringDecoder } = require('string_decoder');
 import { SieveAbstractResponseParser } from "./SieveAbstractResponseParser.mjs";
 
 /**
  * Implements a node specific response parser
  */
 class SieveNodeResponseParser extends SieveAbstractResponseParser {
-
-  /**
-   * @inheritdoc
-   **/
-  convertToString(byteArray) {
-    return new StringDecoder('utf8').end(Buffer.from(byteArray)).toString();
-  }
 
   /**
    * @inheritdoc
@@ -35,6 +27,7 @@ class SieveNodeResponseParser extends SieveAbstractResponseParser {
   convertFromBase64(encoded) {
     return Buffer.from(encoded, 'base64').toString("latin1");
   }
+
 }
 
 export { SieveNodeResponseParser as SieveResponseParser};

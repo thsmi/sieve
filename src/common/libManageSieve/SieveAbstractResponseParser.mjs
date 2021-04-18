@@ -389,7 +389,8 @@ class SieveAbstractResponseParser {
       startIndex = this.pos;
 
     const byteArray = this.data.slice(startIndex, endIndex);
-    return this.convertToString(byteArray);
+
+    return (new TextDecoder("UTF-8")).decode(new Uint8Array(byteArray));
   }
 
 
@@ -407,20 +408,6 @@ class SieveAbstractResponseParser {
     return false;
   }
 
-  /**
-   * Converts a byte array into an UTF8 encoded string
-   *
-   * @param {byte[]} byteArray
-   *   the byte array which should be converted.
-   *
-   * @returns {string}
-   *   the UT8 encoded string.
-   *
-   * @abstract
-   */
-  convertToString(byteArray) {
-    throw new Error(`convertToString(${byteArray})`);
-  }
 
   /**
    * Encodes a clear text string to a base64 encoded string.
@@ -438,7 +425,7 @@ class SieveAbstractResponseParser {
 
 
   /**
-   * Decodes an base64 encoded string into a cleat text string.
+   * Decodes a base64 encoded string into a clear text string.
    *
    * @param {string} encoded
    *   the base64 encoded string which should be decoded.

@@ -19,14 +19,6 @@ class SieveMozResponseParser extends SieveAbstractResponseParser {
   /**
    * @inheritdoc
    **/
-  convertToString(byteArray) {
-    byteArray = new Uint8Array(byteArray);
-    return (new TextDecoder("UTF-8")).decode(byteArray);
-  }
-
-  /**
-   * @inheritdoc
-   **/
   convertToBase64(decoded) {
     return btoa(decoded);
   }
@@ -37,6 +29,7 @@ class SieveMozResponseParser extends SieveAbstractResponseParser {
   convertFromBase64(encoded) {
     return atob(encoded);
   }
+
 }
 
 export { SieveMozResponseParser as SieveResponseParser };

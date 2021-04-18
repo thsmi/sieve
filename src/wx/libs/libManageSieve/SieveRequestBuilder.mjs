@@ -17,26 +17,10 @@ import { SieveAbstractRequestBuilder } from "./SieveAbstractRequestBuilder.mjs";
 class SieveMozRequestBuilder extends SieveAbstractRequestBuilder {
 
   /**
-   * Manage Sieve uses for literals UTF-8 as encoding, network sockets are usually
-   * binary, and javascript is something in between. This means we have to convert
-   * UTF-8 into a binary by our own...
-   *
-   * @param {string} str The binary string which should be converted
-   * @returns {string} The converted string in UTF8
-   *
-   * @author Thomas Schmid <schmid-thomas@gmx.net>
-   */
-  jsStringToByteArray(str) {
-    // with chrome we have to use the TextEncoder.
-    const data = new Uint8Array(new TextEncoder().encode(str));
-    return Array.prototype.slice.call(data);
-  }
-
-  /**
    * @inheritdoc
    */
   calculateByteLength(data) {
-    return this.jsStringToByteArray(data).length;
+    return new Uint8Array(new TextEncoder().encode(data)).byteLength;
   }
 
   /**

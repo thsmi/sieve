@@ -171,7 +171,7 @@
         // and run the scripts
         for (const name of await sandbox.getTests()) {
           const test = this.createTestCase(name);
-          await test.run(this.getReport(), sandbox);
+          await (test.run(this.getReport(), sandbox));
         }
 
         this.getReport().complete();

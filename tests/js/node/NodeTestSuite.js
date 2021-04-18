@@ -52,7 +52,7 @@
      * @returns {Promise<undefined>}
      */
     async connect() {
-      return await new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
 
         const child = this.getChildProcess();
 
@@ -184,7 +184,7 @@
      */
     async execute(report, type, data) {
 
-      return await new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
 
         const child = this.getChildProcess();
 

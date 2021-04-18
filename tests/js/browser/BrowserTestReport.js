@@ -135,7 +135,7 @@
       document
         .querySelector(`#tests input[value='${this.getName()}']`)
         .parentNode
-        .classList.add("success");
+        .classList.add(this.hasFailed() ? "failure" : "success");
 
       return this;
     }

@@ -51,7 +51,7 @@ async function packageAppTests() {
 async function packageWxTests() {
 
   await gulp.src([
-    path.join(common.BASE_DIR_COMMON, "/**"),
+    common.BASE_DIR_COMMON + "/**",
 
     // Filter out the rfc documents
     "!" + common.BASE_DIR_COMMON + "/libSieve/**/rfc*.txt",
@@ -59,7 +59,7 @@ async function packageWxTests() {
     "!**/appImage/**",
     "!**/doc/**",
     "!**/icons/**"
-  ]).pipe(gulp.dest(`${BUILD_DIR_TEST}/wx/common/`));
+  ]).pipe(gulp.dest(`${BUILD_DIR_TEST}/wx/`));
 
   await gulp.src([
     path.join(wx.BASE_DIR_WX, "/libs") + "/**",
@@ -97,6 +97,7 @@ function watchTests() {
       './tests/**/*.js'],
     gulp.parallel(
       packageAppTests,
+      packageWxTests,
       packageTestSuite)
   );
 }

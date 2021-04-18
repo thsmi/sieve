@@ -62,6 +62,10 @@
         throw new Error("Sandbox not initialized");
 
       scripts = scripts.map((script) => {
+
+        if (script.startsWith("${workspace}/"))
+          script = script.replace("${workspace}/", "/test/wx/");
+
         if (script.startsWith("./../common/"))
           script = script.replace("./../common/libSieve/", "/gui/libSieve/");
 
@@ -111,7 +115,8 @@
       if (!iframe)
         throw new Error("Sandbox not initialized");
 
-      await this.execute(report, "RunTest", name);
+      const rv = await this.execute(report, "RunTest", name);
+      return rv;
     }
 
     /**
@@ -134,10 +139,9 @@
       if (!iframe)
         throw new Error("Sandbox not initialized");
 
-      return await new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
 
-        window.addEventListener("message", function onMessage() {
-
+        const onMessage = (event) => {
           const msg = JSON.parse(event.data);
 
           if (msg.type === "LogSignal") {
@@ -146,17 +150,19 @@
           }
 
           if (msg.type === `${type}Resolve`) {
-            resolve(msg.payload);
             window.removeEventListener("message", onMessage);
+            resolve(msg.payload);
             return;
           }
 
           if (msg.type === `${type}Reject`) {
-            reject(new Error(msg.payload.message, msg.payload.stack));
             window.removeEventListener("message", onMessage);
+            reject(new Error(msg.payload.message, msg.payload.stack));
             return;
           }
-        });
+        };
+
+        window.addEventListener("message", onMessage);
 
         const msg = {
           type: `${type}`,

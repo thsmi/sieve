@@ -60,7 +60,7 @@ body {
   color: red;
 }
 
-.logFail {
+.logFailure {
   white-space: pre;
   color: red;
   padding-top: 10px;

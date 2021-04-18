@@ -214,7 +214,6 @@ class AbstractSandboxedTestFixture {
     } catch (ex) {
 
       console.log("Exception :" + ex);
-
       this.error(type, { message: ex.message, stack: ex.stack} );
     }
   }

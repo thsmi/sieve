@@ -287,8 +287,7 @@ class SieveAbstractAccountUI {
    * Shows the settings dialog
    */
   showSettings() {
-    const tab = document.querySelector(`#siv-account-${this.id} .sieve-settings-tab`);
-    (new bootstrap.Tab(tab)).show();
+    (new bootstrap.Tab(`#siv-account-${this.id} .sieve-settings-tab`)).show();
   }
 
   /**

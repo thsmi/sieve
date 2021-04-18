@@ -78,7 +78,7 @@ class SieveEditorUI extends SieveEditorController {
     document
       .querySelector("#sieve-editor-settings .sieve-editor-settings-show")
       .addEventListener("click", () => {
-        (new bootstrap.Tab(document.querySelector("#sieve-tab-settings"))).show();
+        (new bootstrap.Tab("#sieve-tab-settings")).show();
       });
 
     document
@@ -115,7 +115,7 @@ class SieveEditorUI extends SieveEditorController {
         e.preventDefault();
 
         if (await this.switchToGraphicalEditor()) {
-          (new bootstrap.Tab(document.querySelector('.nav-item > a[href="#sieve-widget-editor"]'))).show();
+          (new bootstrap.Tab('.nav-item > a[href="#sieve-widget-editor"]')).show();
         }
       });
 

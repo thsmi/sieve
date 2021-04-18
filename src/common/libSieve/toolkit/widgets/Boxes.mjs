@@ -419,7 +419,7 @@ class SieveDialogBoxUI extends SieveSourceBoxUI {
   async showEditor() {
 
     // TODO hide the save button in case we have only a help tab...
-    (new bootstrap.Modal(document.querySelector('#sivDialog2'))).show();
+    (new bootstrap.Modal('#sivDialog2')).show();
 
     const save = () => { this.save(); };
 

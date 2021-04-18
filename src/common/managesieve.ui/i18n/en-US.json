@@ -232,6 +232,7 @@
   "debug.transport.states" : "Exceptions and State Machine Information",
   "debug.transport.rawdump" : "Raw Dump/Dump Byte Stream",
   "debug.transport.session" : "Session management",
+  "debug.transport.trace" : "Print full stack trace for log messages",
 
   "debug.global.title" : "Global",
   "debug.global.description" : "Used to log and debug the app's UI and rendering. The settings are global and apply to all accounts after restarting the app.",

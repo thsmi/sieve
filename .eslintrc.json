@@ -219,7 +219,6 @@
         "unicorn/no-unused-properties": "error",
         "unicorn/no-useless-undefined" : "off",
         "unicorn/prefer-optional-catch-binding" : "warn",
-        "unicorn/prefer-spread" : "warn",
         "unicorn/better-regex" : "warn",
 
         // Rules which make no sense
@@ -236,6 +235,9 @@
         // Obviously Broken Rules which can not work reliably.
         "unicorn/prefer-array-some" : "off",
         "unicorn/no-array-callback-reference" : "off",
-        "unicorn/prefer-dom-node-remove" : "off"
+        "unicorn/prefer-dom-node-remove" : "off",
+        "unicorn/consistent-function-scoping" : "off",
+        "unicorn/prefer-spread" : "off"
+
    }
 }

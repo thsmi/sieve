@@ -134,9 +134,7 @@ class SieveAbstractSession {
   }
 
   /**
-   *
-   * @param {boolean} hadError
-   *   indicates if the connection was terminated due to an error.
+   * Called when the connection gets disconnected by the server.
    */
   async onDisconnected() {
     this.getLogger().logSession(`SieveAbstractSession: onDisconnected`);

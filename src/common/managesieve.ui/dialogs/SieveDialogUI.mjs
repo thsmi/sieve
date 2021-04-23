@@ -9,8 +9,6 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
-const KEY_RETURN = 13;
-
 const DIALOG_CANCELED = 0;
 const DIALOG_ACCEPTED = 1;
 const DIALOG_DISCARDED = 2;

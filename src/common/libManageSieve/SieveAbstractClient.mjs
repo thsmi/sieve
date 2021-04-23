@@ -833,7 +833,7 @@ class SieveAbstractClient {
    *
    * @param {byte[]} data
    *   the data to be parsed
-   * @returns {SieveAbstractResponseParser}
+   * @returns {SieveResponseParser}
    *   the request parser
    */
   createParser(data) {
@@ -843,7 +843,7 @@ class SieveAbstractClient {
   /**
    * Creates a new response builder instance
    *
-   * @returns {SieveAbstractRequestBuilder}
+   * @returns {SieveRequestBuilder}
    *   the response builder.
    */
   createRequestBuilder() {

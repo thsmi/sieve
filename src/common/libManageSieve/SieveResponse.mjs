@@ -16,6 +16,8 @@ import {
   SieveResponseCodeReferral
 } from "./SieveResponseCodes.mjs";
 
+import { SieveBase64Decoder } from "./SieveBase64.mjs";
+
 const CHAR_LOWERCASE_B = 66;
 const CHAR_UPPERCASE_B = 98;
 const CHAR_B = [CHAR_LOWERCASE_B, CHAR_UPPERCASE_B];
@@ -53,6 +55,7 @@ const SIEVE_VERSION_1 = 1;
 
 const ONE_CHAR = 1;
 
+const RESPONSE_UNKNOWN = -1;
 const RESPONSE_OK = 0;
 const RESPONSE_BYE = 1;
 const RESPONSE_NO = 2;
@@ -80,13 +83,13 @@ class SieveSimpleResponse {
   constructor() {
     this.message = null;
     this.responseCode = null;
-    this.response = null;
+    this.response = RESPONSE_UNKNOWN;
   }
 
   /**
    * Parses the server's status response. It indicates if the command succeeded or failed.
    *
-   * @param {SieveAbstractResponseParser} parser
+   * @param {SieveResponseParser} parser
    *  a SieveResponseParser object containing the response sent by the server.
    * @returns {SieveSimpleResponse}
    *   a self reference
@@ -224,7 +227,10 @@ class SieveSimpleResponse {
    *   true in case the request succeeded, false in case it failed due to an error.
    */
   hasError() {
-    if (this.getResponse() === RESPONSE_OK)
+    if (this.response === RESPONSE_UNKNOWN)
+      return false;
+
+    if (this.response === RESPONSE_OK)
       return false;
 
     return true;
@@ -237,7 +243,7 @@ class SieveSimpleResponse {
    *   the servers response. It is set to 0 in case of an OK, to 1 in case of a BYE and to 3 incase of a NO
    */
   getResponse() {
-    if ((typeof (this.response) === 'undefined') || (this.response === null))
+    if (this.response === RESPONSE_UNKNOWN)
       throw new Error("Response not initialized");
 
     return this.response;
@@ -884,14 +890,16 @@ class SieveSaslScramShaResponse extends SieveStateFullResponse {
    * @private
    */
   _parseFirstMessage(parser) {
-    this._serverFirstMessage = parser.convertFromBase64(parser.extractString());
+
+    this._serverFirstMessage =
+      (new SieveBase64Decoder(parser.extractString())).toUtf8();
 
     const tokens = this._serverFirstMessage.split(',');
 
     this._extractReservedMext(tokens);
     this._nonce = this._extractNonce(tokens);
 
-    this._salt = parser.convertFromBase64(this._extractSalt(tokens));
+    this._salt = (new SieveBase64Decoder(this._extractSalt(tokens))).toArray();
     this._iter = this._extractIterations(tokens);
   }
 
@@ -917,13 +925,15 @@ class SieveSaslScramShaResponse extends SieveStateFullResponse {
    *
    * @private
    */
-  _parseFinalMessage(parser, data) {
+  async _parseFinalMessage(parser, data) {
 
     if (typeof (data) === "undefined" || data === null)
       data = parser.extractString();
 
     // server-final-message = (server-error / verifier) ["," extensions]
-    const token = parser.convertFromBase64(data).split(",")[SHA_FIRST_TOKEN];
+    data = (new SieveBase64Decoder(data)).toUtf8();
+
+    const token = data.split(",")[SHA_FIRST_TOKEN];
 
     if (token.length <= SHA_PREFIX_LENGTH)
       throw new Error(`Response expected but got: ${data}`);
@@ -936,7 +946,8 @@ class SieveSaslScramShaResponse extends SieveStateFullResponse {
 
     // verifier = "v=" base64
     if (token.startsWith("v=")) {
-      this._verifier = parser.convertFromBase64(token.substr(SHA_PREFIX_LENGTH));
+      this._verifier = (new SieveBase64Decoder(
+        token.substr(SHA_PREFIX_LENGTH))).toArray();
       return;
     }
 
@@ -946,10 +957,10 @@ class SieveSaslScramShaResponse extends SieveStateFullResponse {
   /**
    * @inheritdoc
    */
-  parse(parser) {
+  async parse(parser) {
 
     if ((this.state === SHA_STATE_FIRST_MESSAGE) && (parser.isString())) {
-      this._parseFirstMessage(parser);
+      await this._parseFirstMessage(parser);
       parser.extractLineBreak();
 
       this.state = SHA_STATE_FINAL_MESSAGE;
@@ -959,7 +970,7 @@ class SieveSaslScramShaResponse extends SieveStateFullResponse {
 
 
     // There are two valid responses...
-    // ... either the Server sends us something like that:
+    // ... either the Server sends us an explicit final message:
     //
     //   S: cnNwYXV0aD1lYTQwZjYwMzM1YzQyN2I1NTI3Yjg0ZGJhYmNkZmZmZA==
     //   C: ""
@@ -967,7 +978,7 @@ class SieveSaslScramShaResponse extends SieveStateFullResponse {
 
     if ((this.state === SHA_STATE_FINAL_MESSAGE) && (parser.isString())) {
 
-      this._parseFinalMessage(parser);
+      await this._parseFinalMessage(parser);
       parser.extractLineBreak();
 
       this.state = 2;
@@ -975,28 +986,27 @@ class SieveSaslScramShaResponse extends SieveStateFullResponse {
       return this;
     }
 
-    if (this.state === 2) {
-      super.parse(parser);
-      this.state = SHA_STATE_COMPLETED;
-      return this;
-    }
-
     // Or the response is wrapped into the ResponseCode in order to save...
     // ... roundtrip time so we end up with the following
     //
     // S: OK (SASL "cnNwYXV0aD1lYTQwZjYwMzM1YzQyN2I1NTI3Yjg0ZGJhYmNkZmZmZA==")
+    super.parse(parser);
 
-    if (this.state === SHA_STATE_FINAL_MESSAGE) {
-      super.parse(parser);
+    if (this.hasError())
+      return this;
 
-      this._parseFinalMessage(parser, this.getResponseCode().getSasl(), parser);
-
+    if (this.state === 2) {
       this.state = SHA_STATE_COMPLETED;
-
       return this;
     }
 
-    throw new Error(`Illegal State: ${this.state} / ${parser.getData()}`);
+    if (this.state === SHA_STATE_FINAL_MESSAGE) {
+      await this._parseFinalMessage(parser, this.getResponseCode().getSasl());
+      this.state = SHA_STATE_COMPLETED;
+      return this;
+    }
+
+    return this;
   }
 
   /**

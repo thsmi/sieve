@@ -95,7 +95,7 @@ class SieveAbstractEditorUI {
   async getChecksum() {
 
     const digest = await crypto.subtle.digest('SHA-256',
-      new TextEncoder().encode(await this.getScript()));
+      (new TextEncoder()).encode(await this.getScript()));
 
     return [...new Uint8Array(digest)].map(
       (b) => { return b.toString(HEX).padStart(HEX_LENGTH, '0'); }).join('');

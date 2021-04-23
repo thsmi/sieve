@@ -7,6 +7,7 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+
 const CHAR_LF = 10;
 const CHAR_CR = 13;
 const CHAR_SPACE = 32;
@@ -29,7 +30,7 @@ const CHAR_LEN = 1;
  * Tokens are automatically converted from UTF-8 encoded byte arrays to JavaScript Unicode Strings
  * during extraction.
  */
-class SieveAbstractResponseParser {
+class SieveResponseParser {
 
   /**
    * Expects as input a byte array using UTF-8 encoding. It's because the manage sieve
@@ -410,35 +411,6 @@ class SieveAbstractResponseParser {
 
 
   /**
-   * Encodes a clear text string to a base64 encoded string.
-   *
-   * @param {string} decoded
-   *   the clear text string which should be encoded.
-   * @returns {string}
-   *   the base64 encoded string.
-   *
-   * @abstract
-   */
-  convertToBase64(decoded) {
-    throw new Error(`Implement convertToBase64(${decoded})`);
-  }
-
-
-  /**
-   * Decodes a base64 encoded string into a clear text string.
-   *
-   * @param {string} encoded
-   *   the base64 encoded string which should be decoded.
-   * @returns {string}
-   *   the decoded string.
-   *
-   * @abstract
-   */
-  convertFromBase64(encoded) {
-    throw new Error(`Implement convertFromBase64(${encoded})`);
-  }
-
-  /**
    * Returns the read pointes current position.
    * Can be used to resync the parser with a buffer.
    *
@@ -450,4 +422,4 @@ class SieveAbstractResponseParser {
   }
 }
 
-export { SieveAbstractResponseParser };
+export { SieveResponseParser };

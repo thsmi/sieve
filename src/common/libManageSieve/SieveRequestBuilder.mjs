@@ -7,10 +7,12 @@
  *   Thomas Schmid <schmid-thomas@gmx.net>
  */
 
+import { SieveBase64Encoder } from "./SieveBase64.mjs";
+
 /**
  * A helper class used to build standard compliant sieve requests.
  */
-class SieveAbstractRequestBuilder {
+class SieveRequestBuilder {
 
   /**
    * Creates a new instance
@@ -34,7 +36,7 @@ class SieveAbstractRequestBuilder {
     if (token === undefined || token === null)
       throw new Error("Invalid token");
 
-    this.addLiteral('"' + this.convertToBase64(token) + '"');
+    this.addLiteral(`"${(new SieveBase64Encoder(token)).toUtf8()}"`);
     return this;
   }
 
@@ -74,7 +76,11 @@ class SieveAbstractRequestBuilder {
    *   a self reference
    */
   addMultiLineString(token) {
-    this.addLiteral('{' + this.calculateByteLength(token) + '+}\r\n' + token);
+    // Calculate the length in bytes
+    const length = (new TextEncoder()).encode(token).byteLength;
+    // return Buffer.byteLength(data, 'utf8');
+
+    this.addLiteral(`{${length}+}\n\n${token}`);
     return this;
   }
 
@@ -108,23 +114,6 @@ class SieveAbstractRequestBuilder {
   }
 
   /**
-   * Calculates a strings length in bytes.
-   *
-   * UTF uses variable length characters. Which means the length in bytes
-   * in not necessarily equivalent to the number of characters.
-   *
-   * @param {string} data
-   *   the string for which the byte length should be calculated.
-   * @returns {int}
-   *   the string's length in bytes.
-   *
-   * @abstract
-   */
-  calculateByteLength(data) {
-    throw new Error(`Implement SieveAbstractRequestBuilder::calculateByteLength(${data})`);
-  }
-
-  /**
    * Escapes a string. All Backslashes are converted to \\  while
    * all quotes are escaped as \"
    *
@@ -137,31 +126,6 @@ class SieveAbstractRequestBuilder {
     return str.replace(/\\/g, "\\\\").replace(/"/g, "\\\"");
   }
 
-  /**
-   * Encodes a string into base64
-   * @param  {string|byte[]} decoded
-   *   the string or byte array which shall be converted to base64
-   * @returns {string}
-   *   the encoded string.
-   *
-   * @abstract
-   */
-  convertToBase64(decoded) {
-    throw new Error(`Implement SieveAbstractRequestBuilder::convertToBase64(${decoded})`);
-  }
-
-  /**
-   * Decodes a base64 encoded string
-   * @param {string} encoded
-   *   the base64 encoded string which should be decoded
-   * @returns {string}
-   *   the decoded string
-   *
-   * @abstract
-   */
-  convertFromBase64(encoded) {
-    throw new Error(`Implement SieveAbstractRequestBuilder::convertFromBase64(${encoded})`);
-  }
 }
 
-export { SieveAbstractRequestBuilder };
+export { SieveRequestBuilder };

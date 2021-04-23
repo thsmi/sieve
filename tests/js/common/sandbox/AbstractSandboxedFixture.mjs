@@ -169,6 +169,27 @@ class AbstractSandboxedTestFixture {
     this.assertEquals(false, actual, message);
   }
 
+  /**
+   * Checks if the given array matches the expectation.
+   * It is a binary byte wise comparison.
+   *
+   * @param {Uint8Array|string} expected
+   *  the expected array. In case of a string it will be encoded.
+   * @param {Uint8Array|string} actual
+   *   the array which should be tested. In case of a string it will be encoded.
+   * @param {string} [message]
+   *   the message to display in case of a failure
+   */
+  assertArrayEquals(expected, actual, message) {
+    if (!(expected instanceof Uint8Array))
+      expected = (new TextEncoder()).encode(expected);
+
+    if (!(actual instanceof Uint8Array))
+      actual = (new TextEncoder()).encode(actual);
+
+    this.assertEquals(expected.toString(), actual.toString(), message);
+  }
+
 
   /**
    * Checks if the actual value matches the expectation.

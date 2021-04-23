@@ -261,8 +261,7 @@ class SieveNodeClient extends SieveAbstractClient {
 
     if (this.getLogger().isLevelStream()) {
       // Force String to UTF-8...
-      const output = Array.prototype.slice.call(
-        new Uint8Array(new TextEncoder().encode(data)));
+      const output = Array.prototype.slice.call((new TextEncoder()).encode(data));
 
       this.getLogger().logStream(`Client -> Server [Byte Array]:\n${output}`);
     }

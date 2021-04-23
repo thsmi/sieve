@@ -278,18 +278,22 @@
     ]
   });
 
-  tests.set("managesieve", {
-    script: "./managesieve/ManageSieveTest.mjs",
-    agents: ["Firefox"],
+  tests.set("managesieve-sasl-request", {
+    script: "${workspace}/libManageSieve/tests/SieveSaslRequestTest.mjs",
     require: [
-      "./managesieve/Require.mjs",
       "${workspace}/libManageSieve/SieveResponseCodes.mjs",
       "${workspace}/libManageSieve/SieveResponse.mjs",
       "${workspace}/libManageSieve/SieveRequest.mjs",
-      "${workspace}/libManageSieve/SieveAbstractRequestBuilder.mjs",
-      "${workspace}/libManageSieve/SieveAbstractResponseParser.mjs",
-      "${workspace}/addon/libs/libManageSieve/SieveMozRequestBuilder.mjs",
-      "${workspace}/addon/libs//libManageSieve/SieveMozResponseParser.mjs"
+      "${workspace}/libManageSieve/SieveResponseParser.mjs",
+      "${workspace}/libManageSieve/SieveRequestBuilder.mjs"
+    ]
+  });
+
+  tests.set("managesieve-base64", {
+    script: "${workspace}/libManageSieve/tests/SieveBase64Test.mjs",
+    require: [
+      "${workspace}/libManageSieve/SieveAbstractBase64.mjs",
+      "${workspace}/libManageSieve/SieveBase64.mjs"
     ]
   });
 

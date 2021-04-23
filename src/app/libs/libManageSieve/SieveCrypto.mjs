@@ -10,18 +10,56 @@
  */
 
 import { SieveAbstractCrypto } from "./SieveAbstractCrypto.mjs";
-import { createHmac, createHash } from 'crypto';
+
+// The hash names as they are used the web crypto api.
+const HASH_SHA1 = "SHA-1";
+const HASH_SHA256 = "SHA-256";
+const HASH_SHA512 = "SHA-512";
+
+// Node sadly node uses a slightly different naming scheme.
+const NODE_HASH_SHA1 = "SHA1";
+const NODE_HASH_SHA256 = "SHA256";
+const NODE_HASH_SHA512 = "SHA512";
 
 /**
  * A Electron specific crypto implementation.
  *
  * @deprecated
  * Node implements since version 15.x the web crypto api which makes
- * this class obsolete as the new api is marked as mature.
+ * this class obsolete as soon as the new api is marked as mature.
  * See https://nodejs.org/api/webcrypto.html for more details.
  *
  */
 class SieveNodeCrypto extends SieveAbstractCrypto {
+
+  /**
+   * @inheritdoc
+   */
+  getCryptoHash() {
+
+    if (this.name === HASH_SHA1)
+      return NODE_HASH_SHA1;
+
+    if (this.name === HASH_SHA256)
+      return NODE_HASH_SHA256;
+
+    if (this.name === HASH_SHA512)
+      return NODE_HASH_SHA512;
+
+    throw new Error(`Unknown Hash algorithm ${name}`);
+  }
+
+  /**
+   * Loads the crypto module either as classic commonsjs or as ecma module.
+   * @returns {Crypto}
+   *   the crypto module.
+   */
+  async getCrypto() {
+    if (typeof(require) !== "undefined")
+      return require("crypto");
+
+    return await import("crypto");
+  }
 
   /**
    * @inheritdoc
@@ -41,7 +79,7 @@ class SieveNodeCrypto extends SieveAbstractCrypto {
       output = "latin1";
 
     const rv =
-      createHmac(this.name, key)
+      (await this.getCrypto()).createHmac(this.getCryptoHash(), key)
         .update(bytes)
         .digest(output);
 
@@ -62,7 +100,7 @@ class SieveNodeCrypto extends SieveAbstractCrypto {
     if (Array.isArray(bytes))
       bytes = Buffer.from(bytes);
 
-    const rv = createHash(this.name)
+    const rv = (await this.getCrypto()).createHash(this.getCryptoHash())
       .update(bytes)
       .digest(output);
 

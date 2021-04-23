@@ -157,7 +157,7 @@ class SieveMozClient extends SieveAbstractClient {
 
     // Convert string into an UTF-8 array...
     const output = Array.prototype.slice.call(
-      new Uint8Array(new TextEncoder().encode(data)));
+      (new TextEncoder()).encode(data));
 
     if (this.getLogger().isLevelStream())
       this.getLogger().logStream(`Client -> Server [Byte Array]:\n${output}`);

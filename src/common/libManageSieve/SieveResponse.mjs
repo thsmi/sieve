@@ -1024,6 +1024,9 @@ class SieveSaslScramShaResponse extends SieveStateFullResponse {
   }
 
   /**
+   * Returns the number of iterations required by the server.
+   * It is only available after the final message was received.
+   *
    * @returns {int}
    *   the number of iterations.
    */
@@ -1063,7 +1066,10 @@ class SieveSaslScramShaResponse extends SieveStateFullResponse {
   }
 
   /**
+   * Returns the error message returned by the server.
    *
+   * @returns {string}
+   *   the error message;
    */
   getServerError() {
     if (this.state < 2)

@@ -19,7 +19,7 @@ import path from 'path';
 const BUILD_DIR_TEST = path.join(common.BASE_DIR_BUILD, "test/");
 
 /**
- *
+ * Packs the unit test for the standalone application.
  */
 async function packageAppTests() {
   await gulp.src([
@@ -46,7 +46,7 @@ async function packageAppTests() {
 }
 
 /**
- *
+ * Packs the unit test for the web extension.
  */
 async function packageWxTests() {
 

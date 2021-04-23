@@ -60,6 +60,8 @@ const OUTPUT_DIR_APP_MACOS = path.join(OUTPUT_DIR_APP, `sieve-${MAC_PLATFORM}-${
 const PERMISSIONS_EXECUTABLE = 0o100770;
 const PERMISSIONS_NORMAL = 0o100660;
 
+const STRIP_ONE_LEVEL = 1;
+
 /**
  * Extracts a tar or tar.gz file to the given destination.
  *
@@ -340,7 +342,8 @@ async function deployPrebuilt(electronDest, prebuiltDest, pkgName, platform, arc
 
   // ... then the tarball containing the library.
   await untar(tarballSrc, prebuiltDest,
-    (entry) => { return (/^.*\/((lib\/.*)|license.md|package.json)$/gi.test(entry)); }, 1);
+    (entry) => { return (/^.*\/((lib\/.*)|license.md|package.json)$/gi.test(entry)); },
+    STRIP_ONE_LEVEL);
 }
 
 /**

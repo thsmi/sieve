@@ -15,6 +15,7 @@
   try {
     await (await import('./sieve.mjs')).main(electron);
   } catch (ex) {
+    // eslint-disable-next-line no-console
     console.log(ex);
   }
 })();

@@ -103,6 +103,7 @@ async function main(electron) {
   const isLocked = electron.app.requestSingleInstanceLock();
 
   if (!isLocked) {
+    // eslint-disable-next-line no-console
     console.log("Exiting app is locked");
     electron.app.quit();
     return;

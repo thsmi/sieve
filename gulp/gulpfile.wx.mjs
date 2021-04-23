@@ -88,69 +88,6 @@ class TransposeMjsToJs extends Stream.Transform {
   }
 }
 
-
-/**
- * A gulp helper to transpose import statements to requires.
- */
-class TransposeImportToRequire extends Stream.Transform {
-
-  /**
-   * Create a new instance
-   */
-  constructor() {
-    super({ readableObjectMode: true, writableObjectMode: true });
-  }
-
-  /**
-   * Implements the stream's transform method which does the actual
-   * work and transforms the ES6 imports and export statements into
-   * commons modules require and export statements.
-   *
-   * @param {File} file
-   *   the vinyl file object
-   * @param {*} enc
-   *   the encoding
-   * @param {Function} cb
-   *   the callback which is called when processing is completed.
-   */
-  _transform(file, enc, cb) {
-
-    if (file.extname !== ".js") {
-      cb(null, file);
-      return;
-    }
-
-    if (!file.isBuffer()) {
-      cb(null, file);
-      return;
-    }
-
-    let content = file.contents.toString();
-
-    // Convert all ES6 imports...
-    content = content.replace(/import\s*{([\s\w,]*)}\s*from\s*("[\w./]*");/g, "const {$1} = require($2);");
-
-    // ... and then all ES6 exports, but we have three styles here:
-    // First one is "exports { something as somethingElse }"
-    content = content.replace(/export\s*{\s*(\w*)\s*as\s*(\w*)\s*};/g, "module.exports.$2 = $1");
-    // Second one is "exports { something }"
-    content = content.replace(/export\s*{\s*(\w*)\s*};/g, "module.exports.$1 = $1");
-
-    // And the most complex one is the third one "exports { something,\n  somethingElse }"
-    const matches = content.matchAll(/export\s*{((?:\s*\w+[\s,]*)+)};/g);
-
-    for (const match of matches) {
-      const result = match[1].replace(/[^\S\n]*(\w+)(?:\s*,)?/g, "module.exports.$1 = $1;");
-      content = content.replace(match[0], result);
-    }
-
-    file.contents = Buffer.from(content);
-
-    cb(null, file);
-  }
-}
-
-
 /**
  * Copies the license file into the build directory.
  *

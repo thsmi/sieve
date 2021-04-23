@@ -776,6 +776,7 @@ class SieveSaslLoginResponse extends SieveStateFullResponse {
 
 const SHA_STATE_FIRST_MESSAGE = 0;
 const SHA_STATE_FINAL_MESSAGE = 1;
+const SHA_STATE_SIEVE_RESPONSE = 2;
 const SHA_STATE_COMPLETED = 4;
 
 const SHA_FIRST_TOKEN = 0;
@@ -981,7 +982,7 @@ class SieveSaslScramShaResponse extends SieveStateFullResponse {
       await this._parseFinalMessage(parser);
       parser.extractLineBreak();
 
-      this.state = 2;
+      this.state = SHA_STATE_SIEVE_RESPONSE;
 
       return this;
     }
@@ -995,7 +996,7 @@ class SieveSaslScramShaResponse extends SieveStateFullResponse {
     if (this.hasError())
       return this;
 
-    if (this.state === 2) {
+    if (this.state === SHA_STATE_SIEVE_RESPONSE) {
       this.state = SHA_STATE_COMPLETED;
       return this;
     }
@@ -1072,7 +1073,7 @@ class SieveSaslScramShaResponse extends SieveStateFullResponse {
    *   the error message;
    */
   getServerError() {
-    if (this.state < 2)
+    if (this.state < SHA_STATE_SIEVE_RESPONSE)
       throw new Error("Illegal State, request not completed");
 
     return this._serverError;
@@ -1085,7 +1086,7 @@ class SieveSaslScramShaResponse extends SieveStateFullResponse {
    *   the server's signature
    */
   getVerifier() {
-    if (this.state < 2)
+    if (this.state < SHA_STATE_SIEVE_RESPONSE)
       throw new Error("Illegal State, request not completed");
 
     return this._verifier;

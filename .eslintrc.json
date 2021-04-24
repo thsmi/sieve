@@ -231,13 +231,17 @@
         "unicorn/no-for-loop":"off",
         "unicorn/consistent-destructuring" : "off",
 
-        // Obviously Broken Rules which can not work reliably.
+        // Rules which ae broken or design flaws which cannot work.
         "unicorn/prefer-array-some" : "off",
         "unicorn/no-array-callback-reference" : "off",
         "unicorn/prefer-dom-node-remove" : "off",
         "unicorn/consistent-function-scoping" : "off",
         "unicorn/prefer-spread" : "off",
-        "unicorn/better-regex" : "off"
+        "unicorn/better-regex" : "off",
+        "unicorn/prefer-module" : "off",
+
+        // Currently off requires a newer node version
+        "unicorn/prefer-node-protocol" : "off"
 
    }
 }

@@ -15,6 +15,13 @@ import url from 'url';
 const DEFAULT_WINDOW_WIDTH = 1200;
 const DEFAULT_WINDOW_HEIGHT = 600;
 
+// Out main window, it defines the lifecycle of your application
+// so we need to protect it from the garbage collector and keep a
+// global reference active. Otherwise the window will be automatically
+// cleaned up and thus closed.
+
+let win = null;
+
 /**
  * Creates the main window
  *
@@ -30,7 +37,7 @@ function createWindow(electron) {
     icon = path.join(__dirname, 'libs/icons/linux.png');
 
   // Create the browser window.
-  let win = new electron.BrowserWindow({
+  win = new electron.BrowserWindow({
     width: DEFAULT_WINDOW_WIDTH,
     height: DEFAULT_WINDOW_HEIGHT,
     icon: icon,
@@ -94,10 +101,6 @@ function createWindow(electron) {
  *   a reference to the electron's root context object.
  */
 async function main(electron) {
-
-  // Keep a global reference of the window object, if you don't, the window will
-  // be closed automatically when the JavaScript object is garbage collected.
-  let win;
 
   // ensure we are running as a singleton.
   const isLocked = electron.app.requestSingleInstanceLock();

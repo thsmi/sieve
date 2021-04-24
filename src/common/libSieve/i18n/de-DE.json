@@ -260,7 +260,7 @@
   "include.once.label": "Maximal einmal einbetten",
   "include.once.text": "Mehrfaches einbetten eines schon eingebundenen Skripts ignorieren",
   "include.optional.label": "Skript ist optional",
-  "include.optional.text": "Ein 'include' wirft einen Fehler, wenn das Skript nicht gefunden wird.\nWenn das Skript jedoch als 'optional' markiert ist, wird es stillschweigend im Fehlerfall ignoriert.",
+  "include.optional.text": "Ein 'include' wirft einen Fehler, sofern das Skript nicht gefunden wird.\nFalls das Skript als 'optional' markiert ist, werden Fehler ignoriert.",
   "include.storage": "Ablageort",
   "include.personal.label": "Privat (Standard)",
   "include.personal.text": "Persönliche Skripte befinden sich in ihrer privaten Sieve Skript Ablage, nur Sie haben Zugriff hierauf.",

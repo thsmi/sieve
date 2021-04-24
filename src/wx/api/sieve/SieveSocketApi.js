@@ -780,8 +780,6 @@
       }
 
       // Clear caches that could prevent upgrades from working properly
-      const { Services } = ChromeUtils.import(
-        "resource://gre/modules/Services.jsm");
       Services.obs.notifyObservers(null, "startupcache-invalidate", null);
     }
 

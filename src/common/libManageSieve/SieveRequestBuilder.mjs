@@ -80,7 +80,7 @@ class SieveRequestBuilder {
     const length = (new TextEncoder()).encode(token).byteLength;
     // return Buffer.byteLength(data, 'utf8');
 
-    this.addLiteral(`{${length}+}\n\n${token}`);
+    this.addLiteral(`{${length}+}\r\n${token}`);
     return this;
   }
 
